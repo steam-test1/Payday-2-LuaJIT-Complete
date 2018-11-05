@@ -2365,6 +2365,44 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.agave.expire_t = 0.6
 	self.melee_weapons.agave.repeat_expire_t = 0.8
 	self.melee_weapons.agave.stats.concealment = 29
+	self.melee_weapons.happy = deep_clone(self.melee_weapons.tomahawk)
+	self.melee_weapons.happy.name_id = "bm_melee_happy"
+	self.melee_weapons.happy.type = "blunt"
+	self.melee_weapons.happy.align_objects = {"a_weapon_right"}
+	self.melee_weapons.happy.unit = "units/pd2_dlc_joy/weapons/wpn_fps_mel_happy/wpn_fps_mel_happy"
+	self.melee_weapons.happy.third_unit = "units/pd2_dlc_joy/weapons/wpn_fps_mel_happy/wpn_third_mel_happy"
+	self.melee_weapons.happy.animation = nil
+	self.melee_weapons.happy.anim_global_param = "melee_happy"
+	self.melee_weapons.happy.dlc = "joy"
+	self.melee_weapons.happy.texture_bundle_folder = "joy"
+	self.melee_weapons.happy.stats = {
+		min_damage = 3,
+		max_damage = 9,
+		min_damage_effect = 5,
+		max_damage_effect = 3,
+		charge_time = 3,
+		range = 250,
+		remove_weapon_movement_penalty = true,
+		weapon_type = "blunt"
+	}
+	self.melee_weapons.happy.anim_attack_vars = {
+		"var1",
+		"var2",
+		"var3",
+		"var4"
+	}
+	self.melee_weapons.happy.repeat_expire_t = 0.6
+	self.melee_weapons.happy.expire_t = 0.7
+	self.melee_weapons.happy.melee_damage_delay = 0.1
+	self.melee_weapons.happy.sounds = {
+		equip = "baton_equip_02",
+		hit_air = "baton_hit_air",
+		hit_gen = "baton_hit_gen",
+		hit_body = "baton_hit_body",
+		charge = "baton_charge"
+	}
+	self.melee_weapons.happy.stats.concealment = 30
+	self.melee_weapons.happy.anims = {charge = {anim = "charge"}}
 	self.melee_weapons.push = deep_clone(self.melee_weapons.fists)
 	self.melee_weapons.push.name_id = "bm_melee_push"
 	self.melee_weapons.push.free = nil

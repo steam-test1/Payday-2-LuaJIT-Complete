@@ -95,6 +95,7 @@ function EconomyTweakData:_init_armor_skins()
 		["units/payday2/characters/npc_criminal_female_1/mtr_fem1"] = "units/payday2/characters/npc_criminal_female_1/mtr_fem1_cc",
 		["units/pd2_dlc_bonnie/characters/npc_criminal_bonnie/mtr_bonnie"] = "units/pd2_dlc_bonnie/characters/npc_criminal_bonnie/mtr_bonnie_cc",
 		["units/pd2_dlc_wild/characters/npc_criminals_wild_1/mtr_criminal_wild_1"] = "units/pd2_dlc_wild/characters/npc_criminals_wild_1/mtr_criminal_wild_1_cc",
+		["units/pd2_dlc_joy/characters/npc_criminals_joy_1/mtr_criminal_joy_1"] = "units/pd2_dlc_joy/characters/npc_criminals_joy_1/mtr_criminal_joy_1_cc",
 		["units/payday2/characters/npc_criminals_suit_1/mtr_sokol"] = "units/payday2/characters/npc_criminals_suit_1/mtr_sokol_cc",
 		["units/pd2_dlc_myh/characters/npc_criminals_myh/mtr_criminal_myh"] = "units/pd2_dlc_myh/characters/npc_criminals_myh/mtr_criminal_myh_cc",
 		["units/payday2/characters/npc_criminals_suit_1/mtr_dallas"] = "units/payday2/characters/npc_criminals_suit_1/mtr_dallas_cc"
@@ -126,6 +127,7 @@ function EconomyTweakData:_init_armor_skins()
 		wild = Idstring("units/pd2_dlc_wild/characters/npc_criminals_wild_1/mtr_criminal_wild_1_cc"),
 		chico = Idstring("units/pd2_dlc_chico/characters/npc_criminals_terry/mtr_criminal_terry_cc"),
 		max = Idstring("units/pd2_dlc_max/characters/npc_criminals_max/mtr_criminal_max_cc"),
+		joy = Idstring("units/pd2_dlc_joy/characters/npc_criminals_joy_1/mtr_criminal_joy_1_cc"),
 		myh = Idstring("units/pd2_dlc_myh/characters/npc_criminals_myh/mtr_criminal_myh_cc"),
 		ecp_female = Idstring("units/pd2_dlc_ecp/characters/npc_criminals_ecp_female/mtr_criminal_ecp_female_cc"),
 		ecp_male = Idstring("units/pd2_dlc_ecp/characters/npc_criminals_ecp_male/mtr_criminal_ecp_male_cc")

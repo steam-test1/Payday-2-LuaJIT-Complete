@@ -23790,6 +23790,38 @@ function BlackMarketTweakData:_init_weapon_skins()
 		pattern = Idstring("units/pd2_dlc_tam/pattern/tam_pattern_001_df"),
 		pattern_tweak = Vector3(1, 0, 0)
 	}
+	self.weapon_skins.shepheard_tam = {
+		name_id = "bm_wskn_tam",
+		desc_id = "bm_wskn_tam_desc",
+		lock_id = "bm_wskn_tam_locked",
+		weapon_id = "shepheard",
+		global_value = "tam",
+		is_a_unlockable = true,
+		rarity = "epic",
+		bonus = "spread_p1",
+		reserve_quality = true,
+		texture_bundle_folder = "joy/textures/pd2/blackmarket/icons",
+		base_gradient = Idstring("units/pd2_dlc_tam/base_gradient/tam_basegradient_001_df"),
+		pattern_gradient = Idstring("units/pd2_dlc_tam/pattern_gradient/tam_patterngradient_001_df"),
+		pattern = Idstring("units/pd2_dlc_tam/pattern/tam_pattern_001_df"),
+		pattern_tweak = Vector3(1, 0, 0)
+	}
+	self.weapon_skins.x_shepheard_tam = {
+		name_id = "bm_wskn_tam",
+		desc_id = "bm_wskn_tam_desc",
+		lock_id = "bm_wskn_tam_locked",
+		weapon_id = "x_shepheard",
+		global_value = "tam",
+		is_a_unlockable = true,
+		rarity = "epic",
+		bonus = "spread_p1",
+		reserve_quality = true,
+		texture_bundle_folder = "joy/textures/pd2/blackmarket/icons",
+		base_gradient = Idstring("units/pd2_dlc_tam/base_gradient/tam_basegradient_001_df"),
+		pattern_gradient = Idstring("units/pd2_dlc_tam/pattern_gradient/tam_patterngradient_001_df"),
+		pattern = Idstring("units/pd2_dlc_tam/pattern/tam_pattern_001_df"),
+		pattern_tweak = Vector3(1, 0, 0)
+	}
 	self.weapon_skins.mp7_cat = {
 		name_id = "bm_wskn_mp7_cat",
 		desc_id = "bm_wskn_mp7_cat_desc",

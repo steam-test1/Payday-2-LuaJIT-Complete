@@ -112,6 +112,10 @@ function MenuSceneManager:init()
 
 	table.insert(self._forced_secondaries, "ray")
 
+	self._global_poses.x_shepheard = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
 	self._global_poses.x_coal = {
 		"husk_akimbo1",
 		"husk_akimbo2"

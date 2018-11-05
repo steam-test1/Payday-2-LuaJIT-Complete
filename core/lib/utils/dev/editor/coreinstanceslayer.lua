@@ -1320,6 +1320,8 @@ function InstancesLayer:_update_overlay_gui()
 end
 
 function InstancesLayer:on_simulation_started()
+	self._stashed_instance_units = {}
+
 	for _, instance_data in ipairs(managers.world_instance:instance_data()) do
 		if instance_data.mission_placed then
 			local instance_units = self:get_instance_units_by_name(instance_data.name)

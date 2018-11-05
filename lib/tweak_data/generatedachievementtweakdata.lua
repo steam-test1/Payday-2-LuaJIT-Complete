@@ -8304,9 +8304,10 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		tag_1 = {
-			additional_id = true,
-			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_D0",
 			icon_id = "C_Locke_H_BreakinFeds_AllDiffs_D0",
+			ladder = "H_BreakinFeds",
+			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_D0",
+			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.normal,
@@ -8336,9 +8337,10 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		tag_2 = {
-			additional_id = true,
-			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_D1",
 			icon_id = "C_Locke_H_BreakinFeds_AllDiffs_D1",
+			ladder = "H_BreakinFeds",
+			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_D1",
+			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.hard,
@@ -8347,9 +8349,10 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		tag_3 = {
-			additional_id = true,
-			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_D2",
 			icon_id = "C_Locke_H_BreakinFeds_AllDiffs_D2",
+			ladder = "H_BreakinFeds",
+			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_D2",
+			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.very_hard,
@@ -8358,9 +8361,10 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		tag_4 = {
-			additional_id = true,
-			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_D3",
 			icon_id = "C_Locke_H_BreakinFeds_AllDiffs_D3",
+			ladder = "H_BreakinFeds",
+			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_D3",
+			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.overkill,
@@ -8369,9 +8373,10 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		tag_5 = {
-			additional_id = true,
-			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_D4",
 			icon_id = "C_Locke_H_BreakinFeds_AllDiffs_D4",
+			ladder = "H_BreakinFeds",
+			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_D4",
+			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.mayhem,
@@ -8380,9 +8385,10 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		tag_6 = {
-			additional_id = true,
-			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_D5",
 			icon_id = "C_Locke_H_BreakinFeds_AllDiffs_D5",
+			ladder = "H_BreakinFeds",
+			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_D5",
+			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.death_wish,
@@ -8391,9 +8397,10 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		tag_7 = {
-			additional_id = true,
-			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_D6",
 			icon_id = "C_Locke_H_BreakinFeds_AllDiffs_D6",
+			ladder = "H_BreakinFeds",
+			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_D6",
+			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.death_sentence,
@@ -8402,9 +8409,10 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		tag_8 = {
-			additional_id = true,
-			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_OD_D6",
 			icon_id = "C_Locke_H_BreakinFeds_AllDiffs_OD_D6",
+			ladder = "H_BreakinFeds",
+			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_OD_D6",
+			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.death_sentence,
@@ -8555,9 +8563,10 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		des_1 = {
-			additional_id = true,
-			sort_name = "C_Locke_H_HenrysRock_AllDiffs_D0",
 			icon_id = "C_Locke_H_HenrysRock_AllDiffs_D0",
+			ladder = "H_HenrysRock",
+			sort_name = "C_Locke_H_HenrysRock_AllDiffs_D0",
+			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.normal,
@@ -8589,9 +8598,10 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		des_2 = {
-			additional_id = true,
-			sort_name = "C_Locke_H_HenrysRock_AllDiffs_D1",
 			icon_id = "C_Locke_H_HenrysRock_AllDiffs_D1",
+			ladder = "H_HenrysRock",
+			sort_name = "C_Locke_H_HenrysRock_AllDiffs_D1",
+			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.hard,
@@ -8600,9 +8610,10 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		des_3 = {
-			additional_id = true,
-			sort_name = "C_Locke_H_HenrysRock_AllDiffs_D2",
 			icon_id = "C_Locke_H_HenrysRock_AllDiffs_D2",
+			ladder = "H_HenrysRock",
+			sort_name = "C_Locke_H_HenrysRock_AllDiffs_D2",
+			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.very_hard,
@@ -8611,9 +8622,10 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		des_4 = {
-			additional_id = true,
-			sort_name = "C_Locke_H_HenrysRock_AllDiffs_D3",
 			icon_id = "C_Locke_H_HenrysRock_AllDiffs_D3",
+			ladder = "H_HenrysRock",
+			sort_name = "C_Locke_H_HenrysRock_AllDiffs_D3",
+			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.overkill,
@@ -8622,9 +8634,10 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		des_5 = {
-			additional_id = true,
-			sort_name = "C_Locke_H_HenrysRock_AllDiffs_D4",
 			icon_id = "C_Locke_H_HenrysRock_AllDiffs_D4",
+			ladder = "H_HenrysRock",
+			sort_name = "C_Locke_H_HenrysRock_AllDiffs_D4",
+			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.mayhem,
@@ -8633,9 +8646,10 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		des_6 = {
-			additional_id = true,
-			sort_name = "C_Locke_H_HenrysRock_AllDiffs_D5",
 			icon_id = "C_Locke_H_HenrysRock_AllDiffs_D5",
+			ladder = "H_HenrysRock",
+			sort_name = "C_Locke_H_HenrysRock_AllDiffs_D5",
+			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.death_wish,
@@ -8644,9 +8658,10 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		des_7 = {
-			additional_id = true,
-			sort_name = "C_Locke_H_HenrysRock_AllDiffs_D6",
 			icon_id = "C_Locke_H_HenrysRock_AllDiffs_D6",
+			ladder = "H_HenrysRock",
+			sort_name = "C_Locke_H_HenrysRock_AllDiffs_D6",
+			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.death_sentence,
@@ -8655,13 +8670,14 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		des_8 = {
-			additional_id = true,
-			sort_name = "C_Locke_H_HenrysRock_AllDiffs_OD_D6",
 			icon_id = "C_Locke_H_HenrysRock_AllDiffs_OD_D6",
+			ladder = "H_HenrysRock",
+			sort_name = "C_Locke_H_HenrysRock_AllDiffs_OD_D6",
+			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.death_sentence,
-				tags.tactics.stealth,
+				tags.tactics.loud,
 				tags.contracts.locke
 			}
 		},

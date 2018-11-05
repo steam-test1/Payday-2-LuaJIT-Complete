@@ -25,6 +25,8 @@ function CoreEditor:build_toolbar()
 	self._toolbar:add_separator()
 	self._toolbar:add_tool("TB UNIT DEBUG LIST", "Unit debug list", icons_path .. "unit_list.bmp", "Unit debug list")
 	self._toolbar:connect("TB UNIT DEBUG LIST", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_unit_list"), "")
+	self._toolbar:add_tool("TB_UNIT_DUPLICATE_ID_LIST", "Unit duplicate ID list", icons_path .. "unit_duplicate_id_list.bmp", "Unit duplicate ID list")
+	self._toolbar:connect("TB_UNIT_DUPLICATE_ID_LIST", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_unit_duplicate_id_list"), "")
 	self._toolbar:add_separator()
 	self._toolbar:add_tool("TB_SELECT_GROUP_BY_NAME", "Select group by name", icons_path .. "select_group_by_name.bmp", "Select group by name")
 	self._toolbar:connect("TB_SELECT_GROUP_BY_NAME", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_select_group_by_name"), "")
@@ -389,6 +391,14 @@ function CoreEditor:on_unit_list()
 		self._unit_list = UnitList:new()
 	else
 		self._unit_list:set_visible(true)
+	end
+end
+
+function CoreEditor:on_unit_duplicate_id_list()
+	if not self._duplicate_id_list then
+		self._duplicate_id_list = UnitDuplicateIdList:new()
+	else
+		self._duplicate_id_list:set_visible(true)
 	end
 end
 

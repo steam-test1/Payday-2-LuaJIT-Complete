@@ -613,6 +613,250 @@ function UnitList:thaw()
 	self._unit_list:thaw()
 	self._list:thaw()
 end
+UnitDuplicateIdList = UnitDuplicateIdList or class()
+
+function UnitDuplicateIdList:init()
+	self._dialog = EWS:Dialog(nil, "Unit duplicate ID list", "", Vector3(100, 100, 0), Vector3(850, 600, 0), "DEFAULT_DIALOG_STYLE,RESIZE_BORDER")
+	local dialog_sizer = EWS:BoxSizer("HORIZONTAL")
+
+	self._dialog:set_sizer(dialog_sizer)
+
+	local panel = EWS:Panel(self._dialog, "", "")
+	self._panel = panel
+	local panel_sizer = EWS:BoxSizer("VERTICAL")
+
+	panel:set_sizer(panel_sizer)
+
+	self._list = EWS:ListCtrl(panel, "", "LC_REPORT,LC_SORT_ASCENDING")
+
+	self._list:clear_all()
+	self._list:append_column("ID")
+	self._list:append_column("Duplicates")
+
+	self._column_states = {}
+
+	table.insert(self._column_states, {
+		value = "id",
+		state = "ascending"
+	})
+	table.insert(self._column_states, {
+		value = "duplicates",
+		state = "random"
+	})
+	panel_sizer:add(self._list, 2, 0, "EXPAND,TOP,BOTTOM")
+
+	self._unit_list = EWS:ListCtrl(panel, "", "LC_REPORT,LC_SORT_ASCENDING")
+
+	self._unit_list:clear_all()
+	self._unit_list:connect("EVT_COMMAND_LIST_ITEM_ACTIVATED", callback(self, self, "on_select_unit_list_unit"), nil)
+	self._unit_list:append_column("Name ID")
+	self._list:connect("EVT_COMMAND_LIST_ITEM_SELECTED", callback(self, self, "on_select_unit_list"), nil)
+	self._list:connect("EVT_COMMAND_LIST_COL_CLICK", callback(self, self, "column_click_list"), nil)
+	self._list:connect("EVT_KEY_DOWN", callback(self, self, "key_cancel"), "")
+	self._unit_list:connect("EVT_KEY_DOWN", callback(self, self, "key_cancel"), "")
+
+	local bottom_sizer = EWS:BoxSizer("HORIZONTAL")
+
+	bottom_sizer:add(self._unit_list, 7, 0, "EXPAND")
+
+	local stats_sizer = EWS:BoxSizer("VERTICAL")
+	local update_btn = EWS:Button(panel, "Update", "", "BU_BOTTOM")
+
+	stats_sizer:add(update_btn, 0, 5, "EXPAND,LEFT,TOP")
+	update_btn:connect("EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "fill_unit_list"), "all")
+	bottom_sizer:add(stats_sizer, 2, 5, "EXPAND,RIGHT")
+	panel_sizer:add(bottom_sizer, 1, 0, "EXPAND")
+
+	local button_sizer = EWS:BoxSizer("HORIZONTAL")
+	local cancel_btn = EWS:Button(panel, "Cancel", "", "")
+
+	button_sizer:add(cancel_btn, 0, 2, "RIGHT,LEFT")
+	cancel_btn:connect("EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "on_cancel"), "")
+	panel_sizer:add(button_sizer, 0, 0, "ALIGN_RIGHT")
+	dialog_sizer:add(panel, 1, 0, "EXPAND")
+	self:reset()
+	self._dialog:set_visible(true)
+end
+
+function UnitDuplicateIdList:on_select_unit_list_unit()
+	local list = self._list
+	local unit_list = self._unit_list
+	local index = unit_list:selected_item() + 1
+	local unit = self._unit_list_units[index]
+
+	if not unit:unit_data().instance then
+		managers.editor:select_unit(unit)
+	end
+
+	managers.editor:center_view_on_unit(unit)
+end
+
+function UnitDuplicateIdList:key_cancel(ctrlr, event)
+	event:skip()
+
+	if EWS:name_to_key_code("K_ESCAPE") == event:key_code() then
+		self:on_cancel()
+	end
+end
+
+function UnitDuplicateIdList:on_cancel()
+	self._dialog:set_visible(false)
+end
+
+function UnitDuplicateIdList:column_click_list(data, event)
+	local column = event:get_column() + 1
+	local value = self._column_states[column].value
+	local state = self._column_states[column].state
+
+	for name, s in pairs(self._column_states) do
+		s = "random"
+	end
+
+	if state == "random" then
+		state = "ascending"
+	elseif state == "ascending" then
+		state = "descending"
+	elseif state == "descending" then
+		state = "ascending"
+	end
+
+	self._column_states[column].state = state
+	local f = nil
+	f = state == "ascending" and function (item1, item2)
+		if item1[value] < item2[value] then
+			return -1
+		elseif item2[value] < item1[value] then
+			return 1
+		end
+
+		return 0
+	end or function (item1, item2)
+		if item2[value] < item1[value] then
+			return -1
+		elseif item1[value] < item2[value] then
+			return 1
+		end
+
+		return 0
+	end
+
+	self._list:sort(f)
+end
+
+function UnitDuplicateIdList:on_select_unit_list(ignore_unit)
+	local list = self._list
+	local unit_list = self._unit_list
+	local units = World:find_units_quick("all")
+	local index = list:selected_item()
+
+	unit_list:delete_all_items()
+
+	if index ~= -1 then
+		self._unit_list_units = {}
+		local unit_id = list:get_item(index, 0)
+		local j = 1
+
+		for _, unit in pairs(units) do
+			if unit:unit_data() and tostring(unit:unit_data().unit_id) == unit_id then
+				local i = unit_list:append_item(unit:unit_data().name_id)
+				self._unit_list_units[j] = unit
+				j = j + 1
+			end
+		end
+	end
+end
+
+function UnitDuplicateIdList:on_select_unit_id()
+	local list = self._list
+	local unit_list = self._unit_list
+	local index = unit_list:selected_item()
+	local unit = self._unit_list_units[unit_list:get_item_data(index)]
+
+	if not unit:unit_data().instance then
+		managers.editor:select_unit(unit)
+	end
+
+	managers.editor:center_view_on_unit(unit)
+end
+
+function UnitDuplicateIdList:reset()
+	self._unit_list:delete_all_items()
+	self:fill_unit_list("all")
+end
+
+function UnitDuplicateIdList:fill_unit_list(type)
+	self:freeze()
+
+	local list = self._list
+
+	list:delete_all_items()
+
+	local unit_list = self._unit_list
+	local units = World:find_units_quick("all")
+	local seen = {}
+
+	for _, unit in pairs(units) do
+		if unit:unit_data() then
+			if not seen[unit:unit_data().unit_id] then
+				local captured = false
+
+				for id, v in pairs(seen) do
+					for _, name in pairs(v) do
+						if id == unit:unit_data().unit_id then
+							captured = true
+						end
+					end
+				end
+
+				if unit:unit_data().unit_id ~= 0 and not captured then
+					seen[unit:unit_data().unit_id] = {[#seen[unit:unit_data().unit_id] + 1] = unit:unit_data()}
+				end
+			else
+				seen[unit:unit_data().unit_id][#seen[unit:unit_data().unit_id] + 1] = unit:unit_data()
+			end
+		end
+	end
+
+	for k, v in pairs(seen) do
+		if #v > 1 then
+			self:append_item(k, #v)
+		end
+	end
+
+	self._panel:layout()
+	self:_autosize_columns()
+	self:thaw()
+end
+
+function UnitDuplicateIdList:_autosize_columns()
+	for i = 0, self._list:column_count() - 1, 1 do
+		self._list:autosize_column(i)
+	end
+end
+
+function UnitDuplicateIdList:append_item(id, duplicates)
+	local i = self._list:append_item(id)
+
+	self._list:set_item(i, 1, duplicates)
+end
+
+function UnitDuplicateIdList:set_visible(visible)
+	self._dialog:set_visible(visible)
+end
+
+function UnitDuplicateIdList:visible()
+	self._dialog:visible()
+end
+
+function UnitDuplicateIdList:freeze()
+	self._list:freeze()
+	self._unit_list:freeze()
+end
+
+function UnitDuplicateIdList:thaw()
+	self._unit_list:thaw()
+	self._list:thaw()
+end
 UnitTreeBrowser = UnitTreeBrowser or class(CoreEditorEwsDialog)
 
 function UnitTreeBrowser:init(...)

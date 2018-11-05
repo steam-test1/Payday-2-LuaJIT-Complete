@@ -4,7 +4,7 @@ require("lib/utils/InventoryDescription")
 local IS_WIN_32 = SystemInfo:platform() == Idstring("WIN32")
 local NOT_WIN_32 = not IS_WIN_32
 local TOP_ADJUSTMENT = NOT_WIN_32 and 50 or 55
-local BOT_ADJUSTMENT = NOT_WIN_32 and 50 or 60
+local BOT_ADJUSTMENT = NOT_WIN_32 and 40 or 60
 
 local function select_anim(o, box, instant)
 	if box.image_object then

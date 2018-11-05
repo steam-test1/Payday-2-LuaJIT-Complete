@@ -230,6 +230,8 @@ function WeaponFactoryTweakData:init()
 	self:_init_lemming()
 	self:_init_chinchilla()
 	self:_init_x_chinchilla()
+	self:_init_shepheard()
+	self:_init_x_shepheard()
 	self:_init_breech()
 	self:_init_ching()
 	self:_init_erma()
@@ -825,6 +827,10 @@ function WeaponFactoryTweakData:_init_sights()
 			},
 			wpn_fps_smg_coal = {
 				translation = Vector3(0, 5, -4),
+				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_smg_shepheard = {
+				translation = Vector3(0, 5, -0.45),
 				rotation = Rotation(0, 0, 0)
 			},
 			wpn_fps_ass_ching = {
@@ -1600,6 +1606,10 @@ function WeaponFactoryTweakData:_init_content_dlc2_dec16()
 			},
 			wpn_fps_smg_coal = {
 				translation = Vector3(0, 15, -4),
+				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_smg_shepheard = {
+				translation = Vector3(0, 5, -0.45),
 				rotation = Rotation(0, 0, 0)
 			},
 			wpn_fps_ass_ching = {
@@ -29059,6 +29069,10 @@ function WeaponFactoryTweakData:_init_varmods()
 			wpn_fps_ass_corgi = {
 				translation = Vector3(0, 0, -2.3),
 				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_smg_shepheard = {
+				translation = Vector3(0, 5, -0.45),
+				rotation = Rotation(0, 0, 0)
 			}
 		},
 		visibility = {{
@@ -29297,6 +29311,307 @@ function WeaponFactoryTweakData:_init_lemming()
 	}
 	self.wpn_fps_pis_lemming_npc = deep_clone(self.wpn_fps_pis_lemming)
 	self.wpn_fps_pis_lemming_npc.unit = "units/pd2_dlc_fi7/weapons/wpn_fps_pis_lemming/wpn_fps_pis_lemming_npc"
+end
+
+function WeaponFactoryTweakData:_init_shepheard()
+	self.parts.wpn_fps_smg_shepheard_b_standard = {
+		a_obj = "a_b",
+		type = "barrel",
+		name_id = "bm_wp_shepard_b_standard",
+		unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_fps_smg_shepheard_b_standard",
+		stats = {value = 1}
+	}
+	self.parts.wpn_fps_smg_shepheard_body = {
+		a_obj = "a_body",
+		type = "foregrip",
+		name_id = "bm_wp_shepheard_body_standard",
+		unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_fps_smg_shepheard_body",
+		stats = {value = 1}
+	}
+	self.parts.wpn_fps_smg_shepheard_body_short = {
+		texture_bundle_folder = "joy",
+		a_obj = "a_body",
+		type = "foregrip",
+		dlc = "pd2_clan",
+		name_id = "bm_wp_shepheard_body_short",
+		unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_fps_smg_shepheard_body_short",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		override = {
+			wpn_fps_smg_shepheard_b_standard = {
+				third_unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_third_smg_shepheard_b_short",
+				unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_fps_smg_shepheard_b_short"
+			},
+			wpn_fps_smg_shepheard_o_standard = {
+				third_unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_third_smg_shepheard_o_short",
+				unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_fps_smg_shepheard_o_short"
+			}
+		},
+		stats = {
+			concealment = 2,
+			value = 1,
+			spread = -2
+		}
+	}
+	self.parts.wpn_fps_smg_shepheard_dh_standard = {
+		a_obj = "a_dh",
+		type = "drag_handle",
+		name_id = "bm_wp_shepheard_dh_standard",
+		unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_fps_smg_shepheard_dh_standard",
+		stats = {value = 1}
+	}
+	self.parts.wpn_fps_smg_shepheard_g_standard = {
+		a_obj = "a_g",
+		type = "grip",
+		name_id = "bm_wp_shepheard_g_standard",
+		unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_fps_smg_shepheard_g_standard",
+		stats = {value = 1}
+	}
+	self.parts.wpn_fps_smg_shepheard_mag_standard = {
+		a_obj = "a_m",
+		type = "magazine",
+		name_id = "bm_wp_shepheard_m_standard",
+		unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_fps_smg_shepheard_mag_standard",
+		bullet_objects = {
+			amount = 20,
+			prefix = "g_bullet_"
+		},
+		stats = {value = 1}
+	}
+	self.parts.wpn_fps_smg_shepheard_mag_extended = {
+		type = "magazine",
+		texture_bundle_folder = "joy",
+		a_obj = "a_m",
+		dlc = "pd2_clan",
+		name_id = "bm_wp_shepheard_m_extended",
+		unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_fps_smg_shepheard_mag_extended",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		bullet_objects = {
+			amount = 30,
+			prefix = "g_bullet_"
+		},
+		stats = {
+			value = 1,
+			extra_ammo = 15
+		}
+	}
+	self.parts.wpn_fps_smg_shepheard_ns_standard = {
+		parent = "barrel",
+		a_obj = "a_ns",
+		type = "barrel_ext",
+		name_id = "bm_wp_shepheard_ns_standard",
+		unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_fps_smg_shepheard_ns_standard",
+		stats = {value = 1}
+	}
+	self.parts.wpn_fps_smg_shepheard_s_standard = {
+		a_obj = "a_s",
+		type = "stock",
+		name_id = "bm_wp_shepheard_s_standard",
+		unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_fps_smg_shepheard_s_standard",
+		stats = {value = 1}
+	}
+	self.parts.wpn_fps_smg_shepheard_s_no = {
+		texture_bundle_folder = "joy",
+		dlc = "pd2_clan",
+		type = "stock",
+		name_id = "bm_wp_shepheard_s_no",
+		a_obj = "a_s",
+		unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_fps_smg_shepheard_s_no",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		stats = {
+			concealment = 2,
+			recoil = -2,
+			value = 1
+		}
+	}
+	self.parts.wpn_fps_smg_shepheard_s_adapter = {
+		a_obj = "a_s",
+		type = "stock_adapter",
+		name_id = "bm_wp_m4_s_adapter",
+		unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_fps_smg_shepheard_s_adapter",
+		stats = {value = 1}
+	}
+	self.parts.wpn_fps_smg_shepheard_bolt_standard = {
+		name_id = "bm_wp_ak_s_skfoldable",
+		unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_fps_smg_shepheard_bolt_standard",
+		a_obj = "a_bolt",
+		type = "bolt"
+	}
+	self.parts.wpn_fps_smg_shepheard_o_standard = {
+		a_obj = "a_o",
+		type = "sight",
+		name_id = "bm_wp_ak_s_skfoldable",
+		unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_fps_smg_shepheard_o_standard",
+		forbids = {"wpn_fps_upg_o_xpsg33_magnifier"}
+	}
+	self.parts.wpn_fps_smg_shepheard_b_standard.third_unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_third_smg_shepheard_b_standard"
+	self.parts.wpn_fps_smg_shepheard_body.third_unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_third_smg_shepheard_body"
+	self.parts.wpn_fps_smg_shepheard_body_short.third_unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_third_smg_shepheard_body_short"
+	self.parts.wpn_fps_smg_shepheard_dh_standard.third_unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_third_smg_shepheard_dh_standard"
+	self.parts.wpn_fps_smg_shepheard_g_standard.third_unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_third_smg_shepheard_g_standard"
+	self.parts.wpn_fps_smg_shepheard_mag_standard.third_unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_third_smg_shepheard_mag_standard"
+	self.parts.wpn_fps_smg_shepheard_mag_extended.third_unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_third_smg_shepheard_mag_extended"
+	self.parts.wpn_fps_smg_shepheard_ns_standard.third_unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_third_smg_shepheard_ns_standard"
+	self.parts.wpn_fps_smg_shepheard_s_standard.third_unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_third_smg_shepheard_s_standard"
+	self.parts.wpn_fps_smg_shepheard_s_adapter.third_unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_third_smg_shepheard_s_adapter"
+	self.parts.wpn_fps_smg_shepheard_bolt_standard.third_unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_third_smg_shepheard_bolt_standard"
+	self.parts.wpn_fps_smg_shepheard_o_standard.third_unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard_pts/wpn_third_smg_shepheard_o_standard"
+	self.wpn_fps_smg_shepheard = {
+		unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard/wpn_fps_smg_shepheard",
+		animations = {
+			reload = "reload",
+			fire = "recoil",
+			fire_steelsight = "recoil",
+			reload_not_empty = "reload_not_empty"
+		},
+		optional_types = {
+			"barrel_ext",
+			"gadget"
+		},
+		stock_adapter = "wpn_fps_smg_shepheard_s_adapter",
+		default_blueprint = {
+			"wpn_fps_smg_shepheard_b_standard",
+			"wpn_fps_smg_shepheard_body",
+			"wpn_fps_smg_shepheard_mag_standard",
+			"wpn_fps_smg_shepheard_dh_standard",
+			"wpn_fps_smg_shepheard_ns_standard",
+			"wpn_fps_smg_shepheard_s_standard",
+			"wpn_fps_smg_shepheard_g_standard",
+			"wpn_fps_smg_shepheard_bolt_standard",
+			"wpn_fps_smg_shepheard_o_standard"
+		},
+		uses_parts = {
+			"wpn_fps_smg_shepheard_b_standard",
+			"wpn_fps_smg_shepheard_body",
+			"wpn_fps_smg_shepheard_body_short",
+			"wpn_fps_smg_shepheard_g_standard",
+			"wpn_fps_smg_shepheard_dh_standard",
+			"wpn_fps_smg_shepheard_ns_standard",
+			"wpn_fps_smg_shepheard_s_standard",
+			"wpn_fps_smg_shepheard_s_no",
+			"wpn_fps_smg_shepheard_s_adapter",
+			"wpn_fps_smg_shepheard_mag_standard",
+			"wpn_fps_smg_shepheard_mag_extended",
+			"wpn_fps_smg_shepheard_bolt_standard",
+			"wpn_fps_smg_shepheard_o_standard",
+			"wpn_fps_upg_i_singlefire",
+			"wpn_fps_upg_i_autofire",
+			"wpn_fps_upg_fl_ass_smg_sho_peqbox",
+			"wpn_fps_upg_fl_ass_smg_sho_surefire",
+			"wpn_fps_upg_fl_ass_utg",
+			"wpn_fps_upg_fl_ass_peq15",
+			"wpn_fps_upg_fl_ass_laser",
+			"wpn_fps_upg_ns_ass_smg_large",
+			"wpn_fps_upg_ns_ass_smg_medium",
+			"wpn_fps_upg_ns_ass_smg_small",
+			"wpn_fps_upg_ass_ns_battle",
+			"wpn_fps_upg_ass_ns_jprifles",
+			"wpn_fps_upg_ass_ns_linear",
+			"wpn_fps_upg_ass_ns_surefire",
+			"wpn_fps_upg_ns_ass_smg_firepig",
+			"wpn_fps_upg_ns_ass_smg_stubby",
+			"wpn_fps_upg_ns_ass_smg_tank",
+			"wpn_fps_upg_ak_ns_ak105",
+			"wpn_fps_upg_o_specter",
+			"wpn_fps_upg_o_aimpoint",
+			"wpn_fps_upg_o_docter",
+			"wpn_fps_upg_o_eotech",
+			"wpn_fps_upg_o_t1micro",
+			"wpn_fps_upg_o_cmore",
+			"wpn_fps_upg_o_aimpoint_2",
+			"wpn_fps_upg_o_acog",
+			"wpn_fps_upg_o_eotech_xps",
+			"wpn_fps_upg_o_reflex",
+			"wpn_fps_upg_o_rx01",
+			"wpn_fps_upg_o_rx30",
+			"wpn_fps_upg_o_cs",
+			"wpn_fps_upg_m4_s_ubr",
+			"wpn_fps_upg_m4_s_crane",
+			"wpn_fps_upg_m4_s_mk46",
+			"wpn_fps_upg_m4_s_standard_vanilla",
+			"wpn_fps_upg_m4_s_pts",
+			"wpn_fps_upg_o_spot",
+			"wpn_fps_upg_o_xpsg33_magnifier"
+		}
+	}
+	self.wpn_fps_smg_shepheard_npc = deep_clone(self.wpn_fps_smg_shepheard)
+	self.wpn_fps_smg_shepheard_npc.unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_shepheard/wpn_fps_smg_shepheard_npc"
+end
+
+function WeaponFactoryTweakData:_init_x_shepheard()
+	self.parts.wpn_fps_smg_shepheard_s_no_vanilla = deep_clone(self.parts.wpn_fps_smg_shepheard_s_no)
+	self.parts.wpn_fps_smg_shepheard_s_no_vanilla.stats = nil
+	self.parts.wpn_fps_smg_shepheard_s_no_vanilla.pcs = nil
+	self.wpn_fps_smg_x_shepheard = {
+		unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_x_shepheard/wpn_fps_smg_x_shepheard",
+		optional_types = {
+			"barrel_ext",
+			"gadget",
+			"vertical_grip"
+		},
+		override = {wpn_fps_smg_shepheard_mag_extended = {stats = {
+			value = 1,
+			extra_ammo = 30
+		}}},
+		default_blueprint = {
+			"wpn_fps_smg_shepheard_b_standard",
+			"wpn_fps_smg_shepheard_body",
+			"wpn_fps_smg_shepheard_mag_standard",
+			"wpn_fps_smg_shepheard_dh_standard",
+			"wpn_fps_smg_shepheard_ns_standard",
+			"wpn_fps_smg_shepheard_s_no_vanilla",
+			"wpn_fps_smg_shepheard_g_standard",
+			"wpn_fps_smg_shepheard_bolt_standard",
+			"wpn_fps_smg_shepheard_o_standard"
+		},
+		uses_parts = {
+			"wpn_fps_smg_shepheard_b_standard",
+			"wpn_fps_smg_shepheard_body",
+			"wpn_fps_smg_shepheard_body_short",
+			"wpn_fps_smg_shepheard_g_standard",
+			"wpn_fps_smg_shepheard_dh_standard",
+			"wpn_fps_smg_shepheard_ns_standard",
+			"wpn_fps_smg_shepheard_s_no_vanilla",
+			"wpn_fps_smg_shepheard_mag_standard",
+			"wpn_fps_smg_shepheard_mag_extended",
+			"wpn_fps_smg_shepheard_bolt_standard",
+			"wpn_fps_smg_shepheard_o_standard",
+			"wpn_fps_upg_i_singlefire",
+			"wpn_fps_upg_i_autofire",
+			"wpn_fps_upg_fl_ass_smg_sho_peqbox",
+			"wpn_fps_upg_fl_ass_smg_sho_surefire",
+			"wpn_fps_upg_fl_ass_utg",
+			"wpn_fps_upg_fl_ass_peq15",
+			"wpn_fps_upg_fl_ass_laser",
+			"wpn_fps_upg_ns_ass_smg_large",
+			"wpn_fps_upg_ns_ass_smg_medium",
+			"wpn_fps_upg_ns_ass_smg_small",
+			"wpn_fps_upg_ass_ns_battle",
+			"wpn_fps_upg_ass_ns_jprifles",
+			"wpn_fps_upg_ass_ns_linear",
+			"wpn_fps_upg_ass_ns_surefire",
+			"wpn_fps_upg_ns_ass_smg_firepig",
+			"wpn_fps_upg_ns_ass_smg_stubby",
+			"wpn_fps_upg_ns_ass_smg_tank",
+			"wpn_fps_upg_ak_ns_ak105"
+		}
+	}
+	self.wpn_fps_smg_x_shepheard_npc = deep_clone(self.wpn_fps_smg_x_shepheard)
+	self.wpn_fps_smg_x_shepheard_npc.unit = "units/pd2_dlc_joy/weapons/wpn_fps_smg_x_shepheard/wpn_fps_smg_x_shepheard_npc"
 end
 
 function WeaponFactoryTweakData:_init_chinchilla()

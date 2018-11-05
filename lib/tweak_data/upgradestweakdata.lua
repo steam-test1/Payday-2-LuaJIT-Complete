@@ -1280,6 +1280,17 @@ function UpgradesTweakData:_init_pd2_values()
 		5,
 		1
 	}}
+	self.values.player.pocket_ecm_jammer_base = {{
+		cooldown_drain = 6,
+		duration = 6
+	}}
+	self.values.player.pocket_ecm_heal_on_kill = {2}
+	self.values.team.pocket_ecm_heal_on_kill = {1}
+	self.values.temporary.pocket_ecm_kill_dodge = {{
+		0.2,
+		30,
+		1
+	}}
 	self.values.player.dodge_shot_gain = {{
 		0.2,
 		4
@@ -3227,6 +3238,48 @@ function UpgradesTweakData:_init_pd2_values()
 		}
 	})
 
+	local duration = self.values.player.pocket_ecm_jammer_base[1].duration
+	local charges = 2
+	local cooldown = 100
+	local cooldown_drain = self.values.player.pocket_ecm_jammer_base[1].cooldown_drain
+	local health_bonus = (self.values.player.passive_health_multiplier[2] - 1) * 100
+	local kill_health_gain = self.values.player.pocket_ecm_heal_on_kill[1] * 10
+	local kill_health_gain_team = self.values.team.pocket_ecm_heal_on_kill[1] * 10
+	local kill_dodge_bonus_count = 1
+	local kill_dodge_bonus = 20
+	local kill_dodge_bonus_duration = 30
+
+	table.insert(editable_specialization_descs, {
+		{
+			duration,
+			charges,
+			cooldown,
+			cooldown_drain
+		},
+		{"25%"},
+		{health_bonus .. "%"},
+		{
+			"+1",
+			"15%",
+			"45%"
+		},
+		{kill_health_gain},
+		{"135%"},
+		{
+			kill_dodge_bonus_count,
+			kill_dodge_bonus,
+			kill_dodge_bonus_duration
+		},
+		{
+			"5%",
+			"20%"
+		},
+		{
+			kill_health_gain_team,
+			"10%"
+		}
+	})
+
 	self.specialization_descs = {}
 
 	for tree, data in pairs(editable_specialization_descs) do
@@ -3415,6 +3468,9 @@ function UpgradesTweakData:init(tweak_data)
 				"rep_upgrade2",
 				"schakal",
 				"agave",
+				"happy",
+				"shepheard",
+				"x_shepheard",
 				"slap",
 				"x_schakal"
 			}
@@ -4013,6 +4069,8 @@ function UpgradesTweakData:init(tweak_data)
 	self:_lemming_weapon_definitions()
 	self:_chinchilla_weapon_definitions()
 	self:_x_chinchilla_weapon_definitions()
+	self:_shepheard_weapon_definitions()
+	self:_x_shepheard_weapon_definitions()
 	self:_breech_weapon_definitions()
 	self:_ching_weapon_definitions()
 	self:_erma_weapon_definitions()
@@ -7759,6 +7817,43 @@ function UpgradesTweakData:_player_definitions()
 			category = "player"
 		}
 	}
+	self.definitions.player_pocket_ecm_jammer_base = {
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "pocket_ecm_jammer_base",
+			synced = true,
+			category = "player"
+		}
+	}
+	self.definitions.player_pocket_ecm_kill_dodge_1 = {
+		name_id = "menu_player_pocket_ecm_kill_dodge_1",
+		category = "temporary",
+		upgrade = {
+			value = 1,
+			upgrade = "pocket_ecm_kill_dodge",
+			category = "temporary"
+		}
+	}
+	self.definitions.player_pocket_ecm_heal_on_kill_1 = {
+		name_id = "menu_player_pocket_ecm_heal_on_kill_1",
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "pocket_ecm_heal_on_kill",
+			category = "player"
+		}
+	}
+	self.definitions.team_pocket_ecm_heal_on_kill_1 = {
+		name_id = "menu_team_pocket_ecm_heal_on_kill_1",
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "pocket_ecm_heal_on_kill",
+			synced = true,
+			category = "team"
+		}
+	}
 	self.definitions.player_tag_team_base = {
 		category = "feature",
 		upgrade = {
@@ -10156,6 +10251,7 @@ function UpgradesTweakData:_melee_weapon_definitions()
 		category = "melee_weapon"
 	}
 	self.definitions.agave = {category = "melee_weapon"}
+	self.definitions.happy = {category = "melee_weapon"}
 	self.definitions.push = {category = "melee_weapon"}
 	self.definitions.grip = {
 		dlc = "raidww2_clan",
@@ -10224,6 +10320,7 @@ function UpgradesTweakData:_grenades_definitions()
 		dlc = "pd2_clan",
 		category = "grenade"
 	}
+	self.definitions.pocket_ecm_jammer = {category = "grenade"}
 	self.definitions.tag_team = {
 		dlc = "ecp",
 		category = "grenade"
@@ -13472,6 +13569,22 @@ function UpgradesTweakData:_x_chinchilla_weapon_definitions()
 		dlc = "max",
 		factory_id = "wpn_fps_pis_x_chinchilla",
 		weapon_id = "x_chinchilla",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_shepheard_weapon_definitions()
+	self.definitions.shepheard = {
+		factory_id = "wpn_fps_smg_shepheard",
+		weapon_id = "shepheard",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_shepheard_weapon_definitions()
+	self.definitions.x_shepheard = {
+		factory_id = "wpn_fps_smg_x_shepheard",
+		weapon_id = "x_shepheard",
 		category = "weapon"
 	}
 end

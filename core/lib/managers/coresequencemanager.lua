@@ -5814,21 +5814,7 @@ function WwiseElement:play(env)
 	local event = self:run_parsed_func(env, self._event)
 	local skip_save = self:run_parsed_func(env, self._skip_save)
 	local switch = self:run_parsed_func(env, self._switch)
-	local sound_source = nil
-
-	if source then
-		sound_source = source == "" and env.dest_unit:sound_source() or env.dest_unit:sound_source(Idstring(source))
-
-		if not sound_source then
-			self:print_attribute_error("source", source, nil, true, env, nil)
-		end
-	elseif object then
-		sound_source = env.dest_unit:damage():get_sound_source(object)
-
-		if not sound_source then
-			self:print_attribute_error("object", object, nil, true, env, nil)
-		end
-	end
+	local sound_source = self:_get_sound_source(env)
 
 	if not event then
 		self:print_attribute_error("event", event, nil, true, env, nil)
@@ -5890,6 +5876,47 @@ function WwiseElement:stop(env)
 			event
 		})
 	end
+end
+
+function WwiseElement:set_switch(env)
+	local switch = self:run_parsed_func(env, self._switch)
+	local sound_source = self:_get_sound_source(env)
+
+	if switch then
+		local switches = string.split(switch, " ")
+		local i = 1
+
+		while i < #switches do
+			local switch_name = switches[i]
+			local value = switches[i + 1]
+
+			sound_source:set_switch(switch_name, value)
+
+			i = i + 2
+		end
+	end
+end
+
+function WwiseElement:_get_sound_source(env)
+	local source = self:run_parsed_func(env, self._source)
+	local object = self:run_parsed_func(env, self._object)
+	local sound_source = nil
+
+	if source then
+		sound_source = source == "" and env.dest_unit:sound_source() or env.dest_unit:sound_source(Idstring(source))
+
+		if not sound_source then
+			self:print_attribute_error("source", source, nil, true, env, nil)
+		end
+	elseif object then
+		sound_source = env.dest_unit:damage():get_sound_source(object)
+
+		if not sound_source then
+			self:print_attribute_error("object", object, nil, true, env, nil)
+		end
+	end
+
+	return sound_source
 end
 
 function WwiseElement.load(unit, data)

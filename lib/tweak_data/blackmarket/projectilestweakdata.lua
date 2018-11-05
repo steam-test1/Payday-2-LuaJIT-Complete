@@ -443,6 +443,17 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 		anim_global_param = "projectile_frag_com",
 		no_shouting = true
 	}
+	self.projectiles.pocket_ecm_jammer = {
+		name_id = "bm_grenade_pocket_ecm_jammer",
+		desc_id = "bm_grenade_pocket_ecm_jammer_desc",
+		ignore_statistics = true,
+		icon = "guis/dlcs/joy/textures/pd2/hud_pocket_ecm_jammer",
+		texture_bundle_folder = "joy",
+		ability = true,
+		base_cooldown = 100,
+		max_amount = 2,
+		sounds = {cooldown = "perkdeck_cooldown_over"}
+	}
 	self.projectiles.dada_com = {
 		name_id = "bm_grenade_dada_com",
 		desc_id = "bm_grenade_dada_com_desc",
@@ -554,6 +565,7 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 		"ecp_arrow",
 		"ecp_arrow_exp",
 		"ecp_arrow_poison",
+		"pocket_ecm_jammer",
 		"launcher_frag_slap",
 		"launcher_incendiary_slap"
 	}

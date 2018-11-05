@@ -537,6 +537,10 @@ function GenericDLCManager:has_ztm()
 	return self:is_dlc_unlocked("ztm")
 end
 
+function GenericDLCManager:has_joy()
+	return self:is_dlc_unlocked("joy")
+end
+
 function GenericDLCManager:has_fdm()
 	return self:is_dlc_unlocked("fdm")
 end
@@ -559,6 +563,10 @@ end
 
 function GenericDLCManager:has_osa()
 	return self:is_dlc_unlocked("osa")
+end
+
+function GenericDLCManager:has_gwm()
+	return self:is_dlc_unlocked("gwm")
 end
 
 function GenericDLCManager:has_ami()
@@ -1142,15 +1150,11 @@ end
 
 function PS4DLCManager:_verify_dlcs()
 	local unlock_all_test = false
-	local owns_TheBigScore = false
-
-	if PS3:has_theBigScore() then
-		owns_TheBigScore = true
-	end
+	local titleVersion = PS3:get_titleVersion()
 
 	for dlc_name, dlc_data in pairs(Global.dlc_manager.all_dlc_data) do
-		if unlock_all_test then
-			dlc_data.verified = false
+		if titleVersion == 2 or unlock_all_test then
+			dlc_data.verified = true
 		else
 			if dlc_data.is_default or dlc_data.verified == true then
 				dlc_data.verified = true
@@ -1158,7 +1162,7 @@ function PS4DLCManager:_verify_dlcs()
 				dlc_data.verified = PS3:has_entitlement(dlc_data.product_id)
 			end
 
-			if owns_TheBigScore and dlc_data.verified_for_TheBigScore == true then
+			if titleVersion == 1 and dlc_data.verified_for_TheBigScore == true then
 				dlc_data.verified = true
 			end
 		end
@@ -1449,7 +1453,7 @@ function XB1DLCManager:_verify_dlcs()
 		old_verified = dlc_data.verified or false
 
 		if unlock_all_test then
-			dlc_data.verified = false
+			dlc_data.verified = true
 		elseif dlc_data.is_default then
 			dlc_data.verified = true
 		else
@@ -1838,6 +1842,10 @@ function WINDLCManager:init()
 				app_id = "735640",
 				no_install = true
 			},
+			joy = {
+				app_id = "218620",
+				no_install = true
+			},
 			raidww2_clan = {source_id = "103582791460014708"},
 			fdm = {
 				app_id = "707620",
@@ -1883,6 +1891,10 @@ function WINDLCManager:init()
 				app_id = "218620",
 				no_install = true
 			},
+			gwm = {
+				app_id = "218620",
+				no_install = true
+			},
 			dmg = {
 				app_id = "218620",
 				no_install = true
@@ -1923,6 +1935,58 @@ function WINDLCManager:_verify_dlcs()
 		if not dlc_data.verified and self:_check_dlc_data(dlc_data) then
 			dlc_data.verified = true
 		end
+	end
+end
+
+function WINDLCManager:check_pdth(clbk)
+	if not self._check_pdth_request and clbk and Global.dlc_manager.has_pdth ~= nil then
+		clbk(Global.dlc_manager.has_pdth, Global.dlc_manager.pdth_tester)
+
+		return
+	end
+
+	self._check_pdth_callback = clbk
+
+	if self._check_pdth_request or Global.dlc_manager.has_pdth ~= nil then
+		return
+	end
+
+	local has_pdth = Steam:is_product_owned(24240)
+	Global.dlc_manager.has_pdth = has_pdth
+
+	if has_pdth then
+
+		local function result_function(success, page)
+			if success then
+				local json_reply_match = "\"([^,:\"]+)\"%s*:%s*\"([^\"]+)\""
+				local key, value = string.gmatch(page, json_reply_match)()
+
+				if key and value then
+					key = string.lower(key)
+					value = string.lower(value)
+
+					if key == "achieved" and value == "true" then
+						Global.dlc_manager.pdth_tester = true
+					elseif key == "error" then
+						print("[WINDLCManager:check_pdth] Request error ", value)
+					end
+				end
+			end
+
+			if self._check_pdth_callback then
+				self._check_pdth_callback(Global.dlc_manager.has_pdth, Global.dlc_manager.pdth_tester)
+
+				self._check_pdth_callback = nil
+			end
+
+			self._check_pdth_request = nil
+		end
+
+		print("[WINDLCManager:check_pdth] Send request")
+
+		self._check_pdth_request = true
+
+		Steam:http_request("http://fbi.overkillsoftware.com/veterancheck/veterancheck.php?steamid=" .. Steam:userid(), result_function)
 	end
 end
 

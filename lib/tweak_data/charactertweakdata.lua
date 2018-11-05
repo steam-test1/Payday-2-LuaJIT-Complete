@@ -95,6 +95,7 @@ function CharacterTweakData:init(tweak_data)
 	self:_init_chavez_boss(presets)
 	self:_init_chico(presets)
 	self:_init_max(presets)
+	self:_init_joy(presets)
 	self:_init_myh(presets)
 	self:_init_ecp(presets)
 	self:_init_bolivians(presets)
@@ -3434,6 +3435,28 @@ function CharacterTweakData:_init_max(presets)
 	self.max.weapon_voice = "3"
 	self.max.access = "teamAI1"
 	self.max.arrest = {
+		timeout = 240,
+		aggression_timeout = 6,
+		arrest_timeout = 240
+	}
+end
+
+function CharacterTweakData:_init_joy(presets)
+	self.joy = {
+		damage = presets.gang_member_damage,
+		weapon = deep_clone(presets.weapon.gang_member)
+	}
+	self.joy.weapon.weapons_of_choice = {
+		primary = "wpn_fps_ass_m4_npc",
+		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
+	}
+	self.joy.detection = presets.detection.gang_member
+	self.joy.move_speed = presets.move_speed.very_fast
+	self.joy.crouch_move = false
+	self.joy.speech_prefix = "rb19"
+	self.joy.weapon_voice = "3"
+	self.joy.access = "teamAI1"
+	self.joy.arrest = {
 		timeout = 240,
 		aggression_timeout = 6,
 		arrest_timeout = 240

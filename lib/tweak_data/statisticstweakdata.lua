@@ -230,6 +230,7 @@ function StatisticsTweakData:statistics_table()
 		"wild",
 		"chico",
 		"max",
+		"joy",
 		"myh",
 		"ecp_female",
 		"ecp_male"

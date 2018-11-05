@@ -6,6 +6,7 @@ EnvironmentEffectsManager = EnvironmentEffectsManager or class(CoreEnvironmentEf
 function EnvironmentEffectsManager:init()
 	EnvironmentEffectsManager.super.init(self)
 	self:add_effect("rain", RainEffect:new(tweak_data.env_effect.rain))
+	self:add_effect("rain_only", RainEffect:new(tweak_data.env_effect.rain_only))
 	self:add_effect("snow", RainEffect:new(tweak_data.env_effect.snow))
 	self:add_effect("snow_slow", RainEffect:new(tweak_data.env_effect.snow_slow))
 

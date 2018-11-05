@@ -2347,6 +2347,7 @@ function PlayerManager:skill_dodge_chance(running, crouching, on_zipline, overri
 	chance = chance + self:get_value_from_risk_upgrade(detection_risk_add_dodge_chance, detection_risk)
 	chance = chance + self:upgrade_value("player", tostring(override_armor or managers.blackmarket:equipped_armor(true, true)) .. "_dodge_addend", 0)
 	chance = chance + self:upgrade_value("team", "crew_add_dodge", 0)
+	chance = chance + self:temporary_upgrade_value("temporary", "pocket_ecm_kill_dodge", 0)
 
 	return chance
 end
@@ -5352,6 +5353,31 @@ function PlayerManager:_attempt_chico_injector()
 	end
 
 	self:register_message(Message.OnEnemyKilled, "speed_up_chico_injector", speed_up_on_kill)
+
+	return true
+end
+
+function PlayerManager:_attempt_pocket_ecm_jammer()
+	local player_inventory = self:player_unit():inventory()
+
+	if player_inventory:is_jammer_active() then
+		return false
+	end
+
+	if managers.groupai and managers.groupai:state():whisper_mode() then
+		player_inventory:start_jammer_effect()
+	else
+		player_inventory:start_feedback_effect()
+	end
+
+	local base_upgrade = self:upgrade_value("player", "pocket_ecm_jammer_base")
+
+	local function speed_up_on_kill()
+		managers.player:speed_up_grenade_cooldown(base_upgrade.cooldown_drain)
+	end
+
+	self:register_message(Message.OnEnemyKilled, "speed_up_pocket_ecm_jammer", speed_up_on_kill)
+	managers.hud:activate_teammate_ability_radial(HUDManager.PLAYER_PANEL, base_upgrade.duration)
 
 	return true
 end

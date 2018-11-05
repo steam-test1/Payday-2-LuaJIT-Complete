@@ -212,46 +212,6 @@ function NetworkMatchMakingXBL:add_cancelable_callback()
 	return self._next_cancel_callback_id
 end
 
-function NetworkMatchMakingXBL:_find_server_callback(cancel_id, servers, mode)
-	self._searching_lobbys = nil
-
-	if self:check_callback_canceled(cancel_id) then
-		return
-	end
-
-	self._last_mode = mode
-
-	print("find_server_callback", mode, inspect(servers))
-
-	if not servers then
-		print("SEaRCH FAILED")
-
-		return
-	end
-
-	local info = {
-		room_list = {},
-		attribute_list = {}
-	}
-
-	for _, server in ipairs(servers) do
-		self._test_server = server
-
-		print(inspect(server))
-		table.insert(info.room_list, {
-			owner_name = server.properties.GAMERHOSTNAME,
-			xuid = server.properties.GAMERHOSTXUID,
-			room_id = server.info:id(),
-			info = server.info
-		})
-		table.insert(info.attribute_list, {numbers = self:_server_to_numbers(server)})
-	end
-
-	self:_call_callback("search_lobby", info)
-
-	local player_index = managers.user:get_platform_id()
-end
-
 function NetworkMatchMakingXBL:check_callback_canceled(id)
 	local is_canceled = self._cancel_callback_map[id]
 	self._cancel_callback_map[id] = nil
@@ -340,7 +300,7 @@ function NetworkMatchMakingXBL:_save_globals()
 	Global.xbl.match.is_client = self._is_client_var
 	Global.xbl.match.players = self._players
 	Global.xbl.match.hopper_variables = self._hopper_variables
-	Global.xbl.match.host_session_attributes = self._host_session_attributes
+	Global.xbl.match._host_session_attributes = self._host_session_attributes
 end
 
 function NetworkMatchMakingXBL:update()
@@ -406,8 +366,47 @@ function NetworkMatchMakingXBL:set_difficulty_filter(filter)
 	self._difficulty_filter = filter
 end
 
+function NetworkMatchMakingXBL:game_mode()
+	return self._game_mode
+end
+
+function NetworkMatchMakingXBL:set_gamemode(game_mode)
+	self._game_mode = game_mode
+end
+
 function NetworkMatchMakingXBL:get_lobby_data()
-	return {}
+	local numbers = self._host_session_attributes.numbers
+	local lobby_data = {
+		owner_name = managers.network.account:username_id(),
+		owner_id = managers.network.account:player_id(),
+		level = numbers[1] % 1000,
+		difficulty = numbers[2],
+		permission = numbers[3],
+		state = numbers[4] or 1,
+		min_level = numbers[7] or 0,
+		num_players = self._num_players or 1,
+		drop_in = numbers[6] or 1,
+		job_id = math.floor(numbers[1] / 1000)
+	}
+
+	if self._attributes_numbers then
+		local numbers = self._attributes_numbers
+		lobby_data.crime_spree = numbers[9] or -1
+
+		if lobby_data.crime_spree ~= -1 then
+			lobby_data.crime_spree_mission = numbers[10] or 0
+		end
+	end
+
+	if self._host_session_mutators then
+		local mutators = managers.mutators:matchmake_partial_unpack_string(self._host_session_mutators)
+
+		for k, v in pairs(mutators) do
+			lobby_data[k] = v
+		end
+	end
+
+	return lobby_data
 end
 
 function NetworkMatchMakingXBL:get_lobby_return_count()
@@ -461,7 +460,7 @@ function NetworkMatchMakingXBL:_find_server_callback(cancel_id, servers, mode)
 	print("find_server_callback", mode, inspect(servers))
 
 	if not servers then
-		print("SEaRCH FAILED")
+		print("SEARCH FAILED")
 
 		return
 	end
@@ -668,12 +667,23 @@ function NetworkMatchMakingXBL:_join_by_smartmatch(job_id_filter, difficulty_fil
 	XboxLive:set_context("GAME_TYPE", "STANDARD")
 	XboxLive:set_context("game_mode", "ONLINE")
 
+	local lobby_mode = 0
+
+	if managers.user:get_setting("crimenet_filter_crimespree") then
+		lobby_mode = 1
+	end
+
+	if managers.user:get_setting("crimenet_filter_mutators") then
+		lobby_mode = 2
+	end
+
 	self._hopper_variables = {
 		NrHosts = 0,
 		NrClients = 1,
 		PrefMission = tostring(job_id_filter == -1 and job_id_filter or tweak_data.narrative:get_index_from_job_id(job_id_filter)),
 		PrefDifficulty = difficulty_filter,
-		PlayerLevel = self:_get_smartmatch_player_level()
+		PlayerLevel = self:_get_smartmatch_player_level(),
+		GameMode = lobby_mode
 	}
 	local clbk_params = {cancel_id = self:add_cancelable_callback()}
 	local progress_clbk = callback(self, self, "clbk_create_client_lobby", clbk_params)
@@ -973,14 +983,27 @@ function NetworkMatchMakingXBL:create_lobby(settings)
 
 	managers.system_menu:show(dialog_data)
 
+	local lobby_mode = 0
+
+	if settings.crime_spree > -1 then
+		lobby_mode = 1
+	end
+
+	if #self._host_session_mutators > 0 then
+		lobby_mode = 2
+	end
+
 	if self:is_host_lobby_public() then
 		self._hopper_variables = {
 			NrHosts = 1,
 			NrClients = 0,
 			PrefMission = tostring(tweak_data.narrative:get_index_from_job_id(managers.job:current_job_id())),
 			PrefDifficulty = tweak_data:difficulty_to_index(Global.game_settings.difficulty),
-			PlayerLevel = self:_get_smartmatch_player_level()
+			PlayerLevel = self:_get_smartmatch_player_level(),
+			GameMode = lobby_mode
 		}
+
+		print("[Hopper Variables]", inspect(self._hopper_variables))
 	end
 
 	local success = XboxLive:create_session("smartmatch_host_game_v1", true, callback(self, self, "_create_lobby_callback", {
@@ -988,6 +1011,7 @@ function NetworkMatchMakingXBL:create_lobby(settings)
 		settings = settings
 	}))
 
+	print("[NetworkMatchMakingXBL:create_lobby] create_session result", success)
 	print("[NetworkMatchMakingXBL:create_lobby] create_session result", success)
 end
 
@@ -1317,15 +1341,28 @@ end
 
 function NetworkMatchMakingXBL:set_attributes(settings)
 	local player_index = managers.user:get_platform_id()
+	local old_server_state = 1
+
+	if XboxLive:has_property("SERVERSTATE") then
+		old_server_state = XboxLive:get_property("SERVERSTATE", "NUMBER")
+	end
 
 	XboxLive:set_property("LEVELINDEX", settings.numbers[1])
 	XboxLive:set_property("DIFFICULTY", settings.numbers[2])
 	XboxLive:set_property("PERMISSION", settings.numbers[3])
-	XboxLive:set_property("SERVERSTATE", settings.numbers[4] or XboxLive:get_property("SERVERSTATE"))
+	XboxLive:set_property("SERVERSTATE", settings.numbers[4] or old_server_state)
 	XboxLive:set_property("NUMPLAYERS", self._num_players or 1)
 	XboxLive:set_property("ALLOWDROPIN", settings.numbers[6])
 	XboxLive:set_property("MINLEVEL", settings.numbers[7])
 	XboxLive:set_property("GAMEVERSION", self.GAMEVERSION)
+
+	local mutators_data = managers.mutators:matchmake_pack_string(1)
+
+	XboxLive:set_property("MUTATORS", mutators_data[1])
+
+	self._host_session_mutators = mutators_data[1]
+
+	managers.crime_spree:apply_matchmake_attributes(settings)
 
 	self._host_session_attributes = settings
 end

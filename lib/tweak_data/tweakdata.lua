@@ -605,6 +605,17 @@ function TweakData:init()
 				body_g_object = Idstring("g_body_max")
 			},
 			{
+				name = "joy",
+				order = 19,
+				static_data = {
+					voice = "rb19",
+					ai_mask_id = "joy",
+					ai_character_id = "ai_joy",
+					ssuffix = "z"
+				},
+				body_g_object = Idstring("g_body")
+			},
+			{
 				name = "myh",
 				order = 20,
 				static_data = {

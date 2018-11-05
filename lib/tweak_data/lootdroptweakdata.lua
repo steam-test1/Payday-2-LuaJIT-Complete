@@ -1491,6 +1491,20 @@ function LootDropTweakData:init(tweak_data)
 		dlc = true,
 		category = "dlc"
 	}
+	self.global_values.joy = {
+		name_id = "bm_global_value_joy",
+		desc_id = "menu_l_global_value_joy",
+		color = dlc_color,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 300,
+		dlc = true,
+		category = "dlc",
+		unlock_id = "bm_global_value_joy_unlock"
+	}
 	self.global_values.raidww2_clan = {
 		name_id = "bm_global_value_raidww2_clan",
 		desc_id = "menu_l_global_value_raidww2_clan",
@@ -1757,6 +1771,7 @@ function LootDropTweakData:init(tweak_data)
 		"pn2",
 		"max",
 		"dgm",
+		"joy",
 		"fdm",
 		"ecp",
 		"cmo",

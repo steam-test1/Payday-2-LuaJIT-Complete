@@ -159,6 +159,9 @@ function CustomSafehouseTweakData:_init_heisters(tweak_data)
 	self.heisters.max = clone(self.heisters.base)
 	self.heisters.max.character_material = "var_mtr_max"
 	self.heisters.max.voice = self:get_voice(tweak_data, "max")
+	self.heisters.joy = clone(self.heisters.base)
+	self.heisters.joy.character_material = "var_mtr_joy"
+	self.heisters.joy.voice = self:get_voice(tweak_data, "joy")
 	self.heisters.myh = clone(self.heisters.base)
 	self.heisters.myh.character_material = "var_mtr_myh"
 	self.heisters.myh.voice = self:get_voice(tweak_data, "myh")
@@ -585,6 +588,18 @@ function CustomSafehouseTweakData:_init_safehouse_rooms(tweak_data)
 			"guis/dlcs/chill/textures/pd2/rooms/safehouse_room_preview_max_lvl1",
 			"guis/dlcs/chill/textures/pd2/rooms/safehouse_room_preview_max_lvl2",
 			"guis/dlcs/chill/textures/pd2/rooms/safehouse_room_preview_max_lvl3"
+		}
+	})
+	table.insert(self.rooms, {
+		title_id = "menu_cs_title_joy",
+		tier_max = 3,
+		name_id = "menu_joy",
+		room_id = "joy",
+		help_id = "menu_cs_help_joy",
+		images = {
+			"guis/dlcs/joy/textures/pd2/rooms/safehouse_room_preview_joy_lvl1",
+			"guis/dlcs/joy/textures/pd2/rooms/safehouse_room_preview_joy_lvl2",
+			"guis/dlcs/joy/textures/pd2/rooms/safehouse_room_preview_joy_lvl3"
 		}
 	})
 	table.insert(self.rooms, {
@@ -1229,6 +1244,45 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		desc_id = "trophy_brb_1_desc",
 		objectives = {self:_achievement("brb_4")}
 	})
+	table.insert(self.trophies, {
+		name_id = "trophy_box_1",
+		image_id = "safehouse_trophies_preview_box1_healer",
+		objective_id = "trophy_box_1_completion_objective",
+		id = "trophy_box_1",
+		gives_reward = false,
+		desc_id = "trophy_box_1_desc",
+		objectives = {
+			self:_achievement("trk_gg_0"),
+			self:_achievement("des_1")
+		}
+	})
+	table.insert(self.trophies, {
+		name_id = "trophy_box_2",
+		image_id = "safehouse_trophies_preview_box2_elephant",
+		objective_id = "trophy_box_2_completion_objective",
+		id = "trophy_box_2",
+		gives_reward = false,
+		desc_id = "trophy_box_2_desc",
+		objectives = {self:_achievement("tag_1")}
+	})
+	table.insert(self.trophies, {
+		name_id = "trophy_box_3",
+		image_id = "safehouse_trophies_preview_box3_scribe",
+		objective_id = "trophy_box_3_completion_objective",
+		id = "trophy_box_3",
+		gives_reward = false,
+		desc_id = "trophy_box_3_desc",
+		objectives = {self:_achievement("des_1")}
+	})
+	table.insert(self.trophies, {
+		name_id = "trophy_device_parts",
+		hidden_in_list = true,
+		objective_id = "trophy_device_parts_completion_objective",
+		id = "trophy_device_parts",
+		gives_reward = false,
+		desc_id = "trophy_device_parts_desc",
+		objectives = {self:_progress("trophy_device_parts", 1)}
+	})
 end
 
 function CustomSafehouseTweakData:get_trophy_data(id)
@@ -1573,6 +1627,7 @@ function CustomSafehouseTweakData:_init_map(tweak_data)
 			"wild",
 			"livingroom",
 			"max",
+			"joy",
 			"ecp"
 		}
 	})
@@ -1707,6 +1762,12 @@ function CustomSafehouseTweakData:_init_map(tweak_data)
 		icon = "safehouse_character_icon_max",
 		x = 1295,
 		y = 1015
+	}
+	self.map.rooms.joy = {
+		path = "guis/dlcs/joy/textures/pd2/blackmarket/icons/safehouse_icons/",
+		icon = "safehouse_character_icon_joy",
+		x = 1040,
+		y = 780
 	}
 	self.map.rooms.myh = {
 		path = "guis/dlcs/myh/textures/pd2/blackmarket/icons/safehouse_icons/",

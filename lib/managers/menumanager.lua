@@ -201,6 +201,19 @@ function MenuManager:init(is_start_menu)
 end
 
 function MenuManager:init_finalize()
+	if not Global._menu_started_once then
+		managers.dlc:check_pdth(function (pdth, tester)
+			if pdth then
+				managers.statistics:publish_custom_stat_to_steam("pdth")
+			end
+
+			if tester then
+				managers.statistics:publish_custom_stat_to_steam("tester")
+			end
+		end)
+	end
+
+	Global._menu_started_once = true
 end
 
 function MenuManager:post_event(event)
@@ -8946,6 +8959,9 @@ function MenuCrimeNetFiltersInitiator:modify_node(original_node, data)
 		end
 
 		self:add_filters(node)
+	elseif MenuCallbackHandler:is_xb1() then
+		node:item("toggle_mutated_lobby"):set_value(Global.game_settings.search_mutated_lobbies and "on" or "off")
+		node:item("toggle_crimespree_lobby"):set_value(Global.game_settings.search_crimespree_lobbies and "on" or "off")
 	end
 
 	self:update_node(node)
@@ -8979,6 +8995,21 @@ function MenuCrimeNetFiltersInitiator:update_node(node)
 		node:item("difficulty_filter"):set_visible(self:is_standard())
 		node:item("job_id_filter"):set_visible(self:is_standard())
 		node:item("max_spree_difference_filter"):set_visible(self:is_crime_spree())
+	elseif MenuCallbackHandler:is_xb1() then
+		if Global.game_settings.search_friends_only then
+			node:item("toggle_mutated_lobby"):set_enabled(false)
+			node:item("toggle_crimespree_lobby"):set_enabled(false)
+		elseif Global.game_settings.search_mutated_lobbies then
+			node:item("toggle_friends_only"):set_enabled(false)
+			node:item("toggle_crimespree_lobby"):set_enabled(false)
+		elseif Global.game_settings.search_crimespree_lobbies then
+			node:item("toggle_friends_only"):set_enabled(false)
+			node:item("toggle_mutated_lobby"):set_enabled(false)
+		else
+			node:item("toggle_friends_only"):set_enabled(true)
+			node:item("toggle_mutated_lobby"):set_enabled(true)
+			node:item("toggle_crimespree_lobby"):set_enabled(true)
+		end
 	end
 end
 

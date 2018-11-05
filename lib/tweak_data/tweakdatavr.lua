@@ -129,9 +129,11 @@ function TweakDataVR:init(tweak_data)
 			polymer = {position = Vector3(-0.5, -0.5, -0.5)},
 			baka = {position = Vector3(-0.2, -0.5, 2.5)},
 			sr2 = {position = Vector3(-0.2, -0.5, 0)},
+			shepheard = {position = Vector3(-0.2, 1, 1)},
 			erma = {position = Vector3(-0.2, 2, 3.2)},
 			x_akmsu = {position = Vector3(0, 2, 2)},
 			x_sr2 = {position = Vector3(-0.2, -0.5, 0)},
+			x_shepheard = {position = Vector3(-0.2, 1, 1)},
 			x_p90 = {
 				grip = "weapon_2_grip",
 				position = Vector3(-0.5, 2, 1)
@@ -459,6 +461,10 @@ function TweakDataVR:init(tweak_data)
 			position = Vector3(1, 2, 8),
 			rotation = Rotation(0, -15, 0)
 		},
+		shepheard = {
+			position = Vector3(0, 0, 6),
+			rotation = Rotation(0, -20, 0)
+		},
 		x_mp5 = {
 			position = Vector3(0, 0, 6),
 			rotation = Rotation(0, -20, 0)
@@ -470,6 +476,10 @@ function TweakDataVR:init(tweak_data)
 		x_sr2 = {
 			position = Vector3(1, 2, 5),
 			rotation = Rotation(0, -15, 0)
+		},
+		x_shepheard = {
+			position = Vector3(0, 0, 6),
+			rotation = Rotation(0, -20, 0)
 		},
 		x_olympic = {
 			position = Vector3(0, 3, 2),
@@ -878,6 +888,7 @@ function TweakDataVR:init(tweak_data)
 			schakal = {position = Vector3(0, 23, -2)},
 			scorpion = {position = Vector3(0, 13, -2)},
 			tec9 = {position = Vector3(0, 13, -2)},
+			shepheard = {position = Vector3(0, 16, 4)},
 			new_m4 = {
 				grip = "idle_wpn",
 				position = Vector3(-2, 25, 3)
@@ -2647,6 +2658,56 @@ function TweakDataVR:init(tweak_data)
 					time = 0.6,
 					sound = "wp_erma_slide_release",
 					pos = Vector3()
+				}
+			}
+		},
+		shepheard = {
+			start = {
+				{
+					time = 0,
+					sound = "shepheard_clip_out"
+				},
+				{
+					time = 0.02,
+					pos = Vector3(0, 2, -4),
+					rot = Rotation(0, 20, 0)
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 2, -20),
+					rot = Rotation(0, 10, 0)
+				},
+				{
+					time = 0.051,
+					pos = Vector3(0, 2, -10),
+					rot = Rotation()
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "shepheard_clip_in",
+					visible = true,
+					pos = Vector3(0, 2, -10),
+					rot = Rotation()
+				},
+				{
+					time = 0.04,
+					pos = Vector3(0, 2, -4),
+					rot = Rotation()
+				},
+				{
+					time = 0.045,
+					pos = Vector3(0, 2, -4),
+					rot = Rotation(0, 30, 0)
+				},
+				{
+					time = 0.5,
+					sound = "shepheard_bolt_forward",
+					pos = Vector3(),
+					rot = Rotation()
 				}
 			}
 		},
@@ -5713,6 +5774,56 @@ function TweakDataVR:init(tweak_data)
 				}
 			}
 		},
+		x_shepheard = {
+			start = {
+				{
+					time = 0,
+					sound = "shepheard_clip_out"
+				},
+				{
+					time = 0.02,
+					pos = Vector3(0, 2, -4),
+					rot = Rotation(0, 20, 0)
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 2, -20),
+					rot = Rotation(0, 10, 0)
+				},
+				{
+					time = 0.051,
+					pos = Vector3(0, 2, -10),
+					rot = Rotation()
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "shepheard_clip_in",
+					visible = true,
+					pos = Vector3(0, 2, -10),
+					rot = Rotation()
+				},
+				{
+					time = 0.04,
+					pos = Vector3(0, 2, -4),
+					rot = Rotation()
+				},
+				{
+					time = 0.045,
+					pos = Vector3(0, 2, -4),
+					rot = Rotation(0, 30, 0)
+				},
+				{
+					time = 0.5,
+					sound = "shepheard_bolt_forward",
+					pos = Vector3(),
+					rot = Rotation()
+				}
+			}
+		},
 		x_basset = {
 			start = {
 				{
@@ -7527,7 +7638,8 @@ function TweakDataVR:init_specializations(tweak_data)
 		"health",
 		"dodge",
 		"health",
-		"health"
+		"health",
+		"none"
 	}
 	local addons = {
 		health = {

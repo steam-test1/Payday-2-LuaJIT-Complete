@@ -4133,6 +4133,82 @@ function SkillTreeTweakData:init()
 			name_id = "menu_st_spec_20",
 			dlc = "ecp",
 			desc_id = "menu_st_spec_20_desc"
+		},
+		{
+			{
+				cost = 200,
+				texture_bundle_folder = "joy",
+				desc_id = "menu_deck21_1_desc",
+				name_id = "menu_deck21_1",
+				upgrades = {
+					"pocket_ecm_jammer",
+					"player_pocket_ecm_jammer_base"
+				},
+				icon_xy = {
+					0,
+					0
+				}
+			},
+			deck2,
+			{
+				cost = 400,
+				texture_bundle_folder = "joy",
+				desc_id = "menu_deck21_3_desc",
+				name_id = "menu_deck21_3",
+				upgrades = {
+					"player_passive_health_multiplier_1",
+					"player_passive_health_multiplier_2"
+				},
+				icon_xy = {
+					1,
+					0
+				}
+			},
+			deck4,
+			{
+				cost = 1000,
+				texture_bundle_folder = "joy",
+				desc_id = "menu_deck21_5_desc",
+				name_id = "menu_deck21_5",
+				upgrades = {
+					"player_pocket_ecm_heal_on_kill_1",
+					"player_passive_dodge_chance_1"
+				},
+				icon_xy = {
+					2,
+					0
+				}
+			},
+			deck6,
+			{
+				cost = 2400,
+				texture_bundle_folder = "joy",
+				desc_id = "menu_deck21_7_desc",
+				name_id = "menu_deck21_7",
+				upgrades = {"player_pocket_ecm_kill_dodge_1"},
+				icon_xy = {
+					3,
+					0
+				}
+			},
+			deck8,
+			{
+				cost = 4000,
+				texture_bundle_folder = "joy",
+				desc_id = "menu_deck21_9_desc",
+				name_id = "menu_deck21_9",
+				upgrades = {
+					"player_passive_loot_drop_multiplier",
+					"team_pocket_ecm_heal_on_kill_1",
+					"player_passive_dodge_chance_2"
+				},
+				icon_xy = {
+					0,
+					1
+				}
+			},
+			desc_id = "menu_st_spec_21_desc",
+			name_id = "menu_st_spec_21"
 		}
 	}
 end

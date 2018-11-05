@@ -73,6 +73,7 @@ function DLCTweakData:init(tweak_data)
 			wmp = true,
 			opera = true,
 			pd2_goty = 1,
+			joy = true,
 			mrm = 1,
 			big_bank = true,
 			character_pack_dragan = true,
@@ -6362,6 +6363,16 @@ function DLCTweakData:init(tweak_data)
 	}
 	self.osa_bundle.content.loot_global_value = "osa"
 	self.osa_bundle.content.loot_drops = {}
+	self.gwm_bundle = {
+		free = true,
+		content = {}
+	}
+	self.gwm_bundle.content.loot_global_value = "pd2_clan"
+	self.gwm_bundle.content.loot_drops = {{
+		type_items = "masks",
+		item_entry = "gwm",
+		amount = 1
+	}}
 	self.rvd_bundle = {
 		dlc = "has_rvd",
 		content = {}
@@ -7262,6 +7273,16 @@ function DLCTweakData:init(tweak_data)
 			}
 		}
 	}
+	self.joy_bundle = {
+		dlc = "has_joy",
+		content = {}
+	}
+	self.joy_bundle.content.loot_global_value = "infamous"
+	self.joy_bundle.content.loot_drops = {{
+		type_items = "masks",
+		item_entry = "joy",
+		amount = 1
+	}}
 
 	self:init_generated()
 end

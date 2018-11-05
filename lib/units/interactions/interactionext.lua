@@ -3168,6 +3168,18 @@ function AccessPD2StashInteractionExt:interact(player)
 
 	return true
 end
+AccessBankInvadersInteractionExt = AccessBankInvadersInteractionExt or class(UseInteractionExt)
+
+function AccessBankInvadersInteractionExt:_interact_blocked(player)
+	return false
+end
+
+function AccessBankInvadersInteractionExt:interact(player)
+	AccessBankInvadersInteractionExt.super.super.interact(self, player)
+	Steam:overlay_activate("url", "http://www.overkillsoftware.com/bankinvaders2/")
+
+	return true
+end
 AccessSideJobsInteractionExt = AccessSideJobsInteractionExt or class(UseInteractionExt)
 
 function AccessSideJobsInteractionExt:_interact_blocked(player)

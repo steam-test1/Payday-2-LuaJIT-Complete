@@ -2208,6 +2208,15 @@ function GuiTweakData:init()
 			},
 			{
 				{
+					desc_id = "menu_joy_desc_codex",
+					post_event = "pln_contact_joy",
+					videos = {"joy1"}
+				},
+				name_id = "menu_joy",
+				id = "joy"
+			},
+			{
+				{
 					desc_id = "menu_myh_desc_codex",
 					post_event = "pln_contact_duke",
 					videos = {"myh1"}
@@ -4969,6 +4978,11 @@ function GuiTweakData:init()
 	}
 	self.new_heists = {limit = 5}
 
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_icebreaker",
+		texture_path = "guis/textures/pd2/new_heists/icebreaker",
+		url = "https://www.overkillsoftware.com/games/icebreaker/"
+	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_sft",
 		texture_path = "guis/textures/pd2/new_heists/menu_nh_sft",

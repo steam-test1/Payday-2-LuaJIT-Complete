@@ -4298,6 +4298,10 @@ function InteractionTweakData:init(tweak_data)
 		text_id = "hud_press_reset_damage_counter",
 		interact_distance = 150
 	}
+	self.play_bank_invaders = {
+		text_id = "hud_chill_access_bankinvader",
+		interact_distance = 200
+	}
 	self.access_fbi_files = {
 		text_id = "hud_chill_access_fbi",
 		interact_distance = 200
@@ -5438,6 +5442,21 @@ function InteractionTweakData:init(tweak_data)
 		interact_distance = 150,
 		start_active = false,
 		sound_done = "bar_laser_weapon_button_push_finished"
+	}
+	self.hold_remove_parts = {
+		text_id = "hud_int_hold_remove_parts",
+		action_text_id = "hud_action_remove_parts",
+		start_active = true,
+		timer = 3,
+		interact_distance = 150
+	}
+	self.press_use_medallion = {
+		text_id = "hud_int_press_use_medallion",
+		equipment_text_id = "hud_int_hint_medallion",
+		special_equipment = "medallion",
+		equipment_consume = false,
+		start_active = true,
+		interact_distance = 150
 	}
 	self.hold_choose_hand_left = {
 		text_id = "hud_int_hold_choose_hand_left",

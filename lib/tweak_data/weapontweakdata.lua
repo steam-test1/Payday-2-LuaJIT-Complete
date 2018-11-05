@@ -167,6 +167,8 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_lemming_crew()
 	self:_init_data_chinchilla_crew()
 	self:_init_data_x_chinchilla_crew()
+	self:_init_data_shepheard_crew()
+	self:_init_data_x_shepheard_crew()
 	self:_init_data_breech_crew()
 	self:_init_data_ching_crew()
 	self:_init_data_erma_crew()
@@ -3360,6 +3362,41 @@ function WeaponTweakData:_init_data_x_chinchilla_crew()
 	self.x_chinchilla_crew.FIRE_MODE = "single"
 end
 
+function WeaponTweakData:_init_data_shepheard_crew()
+	self.shepheard_crew.categories = clone(self.shepheard.categories)
+	self.shepheard_crew.sounds.prefix = "shepheard_npc"
+	self.shepheard_crew.use_data.selection_index = SELECTION.SECONDARY
+	self.shepheard_crew.DAMAGE = 2
+	self.shepheard_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.shepheard_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.shepheard_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.shepheard_crew.CLIP_AMMO_MAX = 20
+	self.shepheard_crew.NR_CLIPS_MAX = 5
+	self.shepheard_crew.auto.fire_rate = 0.092
+	self.shepheard_crew.hold = "rifle"
+	self.shepheard_crew.pull_magazine_during_reload = "smg"
+	self.shepheard_crew.alert_size = 5000
+	self.shepheard_crew.suppression = 1
+	self.shepheard_crew.FIRE_MODE = "auto"
+end
+
+function WeaponTweakData:_init_data_x_shepheard_crew()
+	self.x_shepheard_crew.categories = clone(self.x_shepheard.categories)
+	self.x_shepheard_crew.sounds.prefix = "shepheard_x_npc"
+	self.x_shepheard_crew.use_data.selection_index = SELECTION.PRIMARY
+	self.x_shepheard_crew.DAMAGE = 1.25
+	self.x_shepheard_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.x_shepheard_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.x_shepheard_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.x_shepheard_crew.CLIP_AMMO_MAX = 40
+	self.x_shepheard_crew.NR_CLIPS_MAX = 5
+	self.x_shepheard_crew.hold = "akimbo_pistol"
+	self.x_shepheard_crew.pull_magazine_during_reload = "smg"
+	self.x_shepheard_crew.alert_size = 1800
+	self.x_shepheard_crew.suppression = 2
+	self.x_shepheard_crew.FIRE_MODE = "auto"
+end
+
 function WeaponTweakData:_init_data_breech_crew()
 	self.breech_crew.categories = clone(self.breech.categories)
 	self.breech_crew.sounds.prefix = "breech_npc"
@@ -4863,6 +4900,8 @@ function WeaponTweakData:_init_new_weapons(weapon_data)
 	self:_init_lemming(weapon_data)
 	self:_init_chinchilla(weapon_data)
 	self:_init_x_chinchilla(weapon_data)
+	self:_init_shepheard(weapon_data)
+	self:_init_x_shepheard(weapon_data)
 	self:_init_breech(weapon_data)
 	self:_init_ching(weapon_data)
 	self:_init_erma(weapon_data)
@@ -16445,6 +16484,205 @@ function WeaponTweakData:_init_x_chinchilla(weapon_data)
 	}
 end
 
+function WeaponTweakData:_init_shepheard(weapon_data)
+	self.shepheard = {
+		categories = {"smg"},
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.shepheard.sounds.fire = "shepheard_fire_single"
+	self.shepheard.sounds.fire_single = "shepheard_fire_single"
+	self.shepheard.sounds.fire_auto = "shepheard_fire"
+	self.shepheard.sounds.stop_fire = "shepheard_stop"
+	self.shepheard.sounds.dryfire = "secondary_dryfire"
+	self.shepheard.sounds.enter_steelsight = "secondary_steel_sight_enter"
+	self.shepheard.sounds.leave_steelsight = "secondary_steel_sight_exit"
+	self.shepheard.timers = {
+		reload_not_empty = 2.11,
+		reload_empty = 2.85,
+		unequip = 0.6,
+		equip = 0.5
+	}
+	self.shepheard.FIRE_MODE = "single"
+	self.shepheard.fire_mode_data = {fire_rate = 0.08}
+	self.shepheard.single = {fire_rate = 0.08}
+	self.shepheard.name_id = "bm_w_shepheard"
+	self.shepheard.desc_id = "bm_w_shepheard_desc"
+	self.shepheard.description_id = "des_shepheard"
+	self.shepheard.texture_bundle_folder = "joy"
+	self.shepheard.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
+	self.shepheard.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
+	self.shepheard.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.shepheard.use_data = {selection_index = SELECTION.SECONDARY}
+	self.shepheard.DAMAGE = 1
+	self.shepheard.CLIP_AMMO_MAX = 20
+	self.shepheard.NR_CLIPS_MAX = 10
+	self.shepheard.AMMO_MAX = self.shepheard.CLIP_AMMO_MAX * self.shepheard.NR_CLIPS_MAX
+	self.shepheard.AMMO_PICKUP = self:_pickup_chance(self.shepheard.AMMO_MAX, PICKUP.OTHER)
+	self.shepheard.FIRE_MODE = "auto"
+	self.shepheard.fire_mode_data = {fire_rate = 0.08}
+	self.shepheard.CAN_TOGGLE_FIREMODE = true
+	self.shepheard.auto = {fire_rate = 0.08}
+	self.shepheard.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight
+	}
+	self.shepheard.kick = {standing = {
+		-0.2,
+		0.4,
+		-1,
+		1
+	}}
+	self.shepheard.kick.crouching = self.shepheard.kick.standing
+	self.shepheard.kick.steelsight = self.shepheard.kick.standing
+	self.shepheard.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.shepheard.crosshair.standing.offset = 0.4
+	self.shepheard.crosshair.standing.moving_offset = 0.7
+	self.shepheard.crosshair.standing.kick_offset = 0.6
+	self.shepheard.crosshair.crouching.offset = 0.3
+	self.shepheard.crosshair.crouching.moving_offset = 0.6
+	self.shepheard.crosshair.crouching.kick_offset = 0.4
+	self.shepheard.crosshair.steelsight.hidden = true
+	self.shepheard.crosshair.steelsight.offset = 0
+	self.shepheard.crosshair.steelsight.moving_offset = 0
+	self.shepheard.crosshair.steelsight.kick_offset = 0.4
+	self.shepheard.shake = {
+		fire_multiplier = 0.5,
+		fire_steelsight_multiplier = -0.5
+	}
+	self.shepheard.autohit = weapon_data.autohit_smg_default
+	self.shepheard.aim_assist = weapon_data.aim_assist_smg_default
+	self.shepheard.weapon_hold = "shepheard"
+	self.shepheard.animations = {
+		equip_id = "equip_shepheard",
+		recoil_steelsight = true
+	}
+	self.shepheard.panic_suppression_chance = 0.2
+	self.shepheard.stats = {
+		zoom = 3,
+		total_ammo_mod = 21,
+		damage = 44,
+		alert_size = 7,
+		spread = 12,
+		spread_moving = 14,
+		recoil = 12,
+		value = 1,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 14,
+		concealment = 24
+	}
+end
+
+function WeaponTweakData:_init_x_shepheard(weapon_data)
+	self.x_shepheard = {
+		categories = {
+			"akimbo",
+			"smg"
+		},
+		allow_akimbo_autofire = true,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.x_shepheard.sounds.fire = "shepheard_x_fire"
+	self.x_shepheard.sounds.fire_single = "shepheard_x_fire_single"
+	self.x_shepheard.sounds.fire_auto = "shepheard_x_fire"
+	self.x_shepheard.sounds.stop_fire = "shepheard_x_stop"
+	self.x_shepheard.sounds.enter_steelsight = "pistol_steel_sight_enter"
+	self.x_shepheard.sounds.leave_steelsight = "pistol_steel_sight_exit"
+	self.x_shepheard.sounds.dryfire = "secondary_dryfire"
+	self.x_shepheard.timers = {
+		reload_not_empty = 2.5,
+		reload_empty = 3,
+		unequip = 0.5,
+		equip = 0.5
+	}
+	self.x_shepheard.name_id = "bm_w_x_shepheard"
+	self.x_shepheard.desc_id = "bm_w_x_shepheard_desc"
+	self.x_shepheard.description_id = "des_x_shepheard"
+	self.x_shepheard.texture_bundle_folder = "joy"
+	self.x_shepheard.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
+	self.x_shepheard.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
+	self.x_shepheard.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.x_shepheard.use_data = {selection_index = SELECTION.PRIMARY}
+	self.x_shepheard.DAMAGE = 1
+	self.x_shepheard.CLIP_AMMO_MAX = 40
+	self.x_shepheard.NR_CLIPS_MAX = 6
+	self.x_shepheard.AMMO_MAX = self.x_shepheard.CLIP_AMMO_MAX * self.x_shepheard.NR_CLIPS_MAX
+	self.x_shepheard.AMMO_PICKUP = self:_pickup_chance(self.x_shepheard.AMMO_MAX, PICKUP.OTHER)
+	self.x_shepheard.FIRE_MODE = "auto"
+	self.x_shepheard.fire_mode_data = {fire_rate = 0.08}
+	self.x_shepheard.single = {fire_rate = 0.08}
+	self.x_shepheard.CAN_TOGGLE_FIREMODE = true
+	self.x_shepheard.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight
+	}
+	self.x_shepheard.kick = {standing = {
+		1,
+		0.8,
+		-0.5,
+		0.5
+	}}
+	self.x_shepheard.kick.crouching = self.x_shepheard.kick.standing
+	self.x_shepheard.kick.steelsight = self.x_shepheard.kick.standing
+	self.x_shepheard.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.x_shepheard.crosshair.standing.offset = 0.2
+	self.x_shepheard.crosshair.standing.moving_offset = 0.6
+	self.x_shepheard.crosshair.standing.kick_offset = 0.4
+	self.x_shepheard.crosshair.crouching.offset = 0.1
+	self.x_shepheard.crosshair.crouching.moving_offset = 0.6
+	self.x_shepheard.crosshair.crouching.kick_offset = 0.3
+	self.x_shepheard.crosshair.steelsight.hidden = true
+	self.x_shepheard.crosshair.steelsight.offset = 0
+	self.x_shepheard.crosshair.steelsight.moving_offset = 0
+	self.x_shepheard.crosshair.steelsight.kick_offset = 0.1
+	self.x_shepheard.shake = {
+		fire_multiplier = 1,
+		fire_steelsight_multiplier = -1
+	}
+	self.x_shepheard.autohit = weapon_data.autohit_smg_default
+	self.x_shepheard.aim_assist = weapon_data.aim_assist_smg_default
+	self.x_shepheard.weapon_hold = "x_akmsu"
+	self.x_shepheard.animations = {
+		has_steelsight_stance = true,
+		recoil_steelsight = true
+	}
+	self.x_shepheard.panic_suppression_chance = 0.2
+	self.x_shepheard.stats = {
+		zoom = 3,
+		total_ammo_mod = 21,
+		damage = 44,
+		alert_size = 7,
+		spread = 12,
+		spread_moving = 14,
+		recoil = 12,
+		value = 1,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 14,
+		concealment = 24
+	}
+end
+
 function WeaponTweakData:_init_breech(weapon_data)
 	self.breech = {
 		categories = {"pistol"},
@@ -21556,6 +21794,18 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.x_chinchilla_crew = {
+		usage = "akimbo_pistol",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.shepheard_crew = {
+		usage = "is_smg",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.x_shepheard_crew = {
 		usage = "akimbo_pistol",
 		sounds = {},
 		use_data = {},

@@ -15,6 +15,10 @@ function EnvEffectTweakData:init()
 		effect_name = Idstring("effects/particles/rain/rain_01_a"),
 		ripples = true
 	}
+	self.rain_only = {
+		effect_name = Idstring("effects/particles/rain/rain_only"),
+		ripples = true
+	}
 	self.snow = {effect_name = Idstring("effects/particles/snow/snow_01")}
 	self.snow_slow = {effect_name = Idstring("effects/particles/snow/snow_slow")}
 end

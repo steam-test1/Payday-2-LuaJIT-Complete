@@ -287,6 +287,21 @@ function BlackMarketTweakData:_init_characters(tweak_data)
 		npc_unit = "units/pd2_dlc_max/characters/npc_criminals_max/max/npc_criminal_max",
 		sequence = "var_mtr_max"
 	}
+	self.characters.joy = {
+		fps_unit = "units/pd2_dlc_joy/characters/npc_criminals_joy_1/fps_joy_mover",
+		npc_unit = "units/pd2_dlc_joy/characters/npc_criminals_joy_1/npc_criminal_joy_1",
+		menu_unit = "units/pd2_dlc_joy/characters/npc_criminals_joy_1/npc_criminal_joy_1_menu",
+		texture_bundle_folder = "joy",
+		sequence = "var_mtr_joy",
+		mask_on_sequence = "mask_on_joy",
+		mask_off_sequence = "mask_off_joy"
+	}
+	self.characters.ai_joy = {
+		npc_unit = "units/pd2_dlc_joy/characters/npc_criminals_joy_1/joy_1/npc_criminal_joy_1",
+		sequence = "var_mtr_joy",
+		mask_on_sequence = "mask_on_joy",
+		mask_off_sequence = "mask_off_joy"
+	}
 	self.characters.myh = {
 		fps_unit = "units/pd2_dlc_myh/characters/npc_criminals_myh/fps_myh_mover",
 		npc_unit = "units/pd2_dlc_myh/characters/npc_criminals_myh/npc_criminal_myh",

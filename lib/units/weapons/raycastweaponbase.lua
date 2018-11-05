@@ -502,6 +502,7 @@ function RaycastWeaponBase:_collect_hits(from, to)
 	local wall_mask = managers.slot:get_mask("world_geometry", "vehicles")
 	local shield_mask = managers.slot:get_mask("enemy_shield_check")
 	local ai_vision_ids = Idstring("ai_vision")
+	local bulletproof_ids = Idstring("bulletproof")
 	ray_hits = self._can_shoot_through_wall and World:raycast_wall("ray", from, to, "slot_mask", self._bullet_slotmask, "ignore_unit", self._setup.ignore_units, "thickness", 40, "thickness_mask", wall_mask) or World:raycast_all("ray", from, to, "slot_mask", self._bullet_slotmask, "ignore_unit", self._setup.ignore_units)
 	local units_hit = {}
 	local unique_hits = {}
@@ -513,6 +514,7 @@ function RaycastWeaponBase:_collect_hits(from, to)
 			hit.hit_position = hit.position
 			hit_enemy = hit_enemy or hit.unit:in_slot(enemy_mask)
 			local weak_body = hit.body:has_ray_type(ai_vision_ids)
+			weak_body = weak_body or hit.body:has_ray_type(bulletproof_ids)
 
 			if not self._can_shoot_through_enemy and hit_enemy then
 				break

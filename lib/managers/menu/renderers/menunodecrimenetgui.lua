@@ -32,7 +32,7 @@ function MenuNodeCrimenetGui:_setup_item_panel(safe_rect, res)
 
 	if SystemInfo:platform() ~= Idstring("WIN32") then
 		width = 900
-		height = is_nextgen and 550 or 525
+		height = is_nextgen and 570 or 525
 	end
 
 	self.item_panel:set_rightbottom((self.item_panel:parent():w() * 0.5 + width / 2) - 10, (self.item_panel:parent():h() * 0.5 + height / 2) - 10)

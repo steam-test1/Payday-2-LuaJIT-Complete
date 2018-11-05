@@ -631,6 +631,13 @@ function CrimeNetManager:_find_online_games_xb1(friends_only)
 			local state_name = state_string_id and managers.localization:text("menu_lobby_server_state_" .. state_string_id) or "UNKNOWN"
 			local state = attributes_numbers[4]
 			local num_plrs = attributes_numbers[5]
+			local mutators_data = attribute_list[i].mutators
+			local mutators = managers.mutators:matchmake_unpack_string(mutators_data)
+
+			if next(mutators) == nil then
+				mutators = false
+			end
+
 			local is_friend = XboxLive:is_friend(room.xuid)
 			local is_ok = (not friends_only or is_friend) and managers.network.matchmake:is_server_ok(friends_only, room.owner_id, attributes_numbers)
 
@@ -658,6 +665,7 @@ function CrimeNetManager:_find_online_games_xb1(friends_only)
 							state_name = state_name,
 							state = state,
 							level_name = level_name,
+							mutators = mutators,
 							job_id = job_id,
 							is_friend = is_friend
 						})
@@ -675,6 +683,7 @@ function CrimeNetManager:_find_online_games_xb1(friends_only)
 						state_name = state_name,
 						state = state,
 						level_name = level_name,
+						mutators = mutators,
 						job_id = job_id,
 						is_friend = is_friend
 					})
@@ -3993,7 +4002,7 @@ function CrimeNetGui:special_btn_pressed(button)
 		if is_x360 then
 			XboxLive:show_friends_ui(managers.user:get_platform_id())
 		elseif is_xb1 then
-			
+			managers.menu:open_node("crimenet_contract_smart_matchmaking", {})
 		else
 			managers.menu:open_node("crimenet_filters", {})
 		end
