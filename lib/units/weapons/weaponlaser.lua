@@ -79,11 +79,19 @@ local mvec2 = Vector3()
 local mvec_l_dir = Vector3()
 
 function WeaponLaser:update(unit, t, dt)
-	mrotation.y(self._laser_obj:rotation(), mvec_l_dir)
+	local rotation = self._custom_rotation or self._laser_obj:rotation()
+
+	mrotation.y(rotation, mvec_l_dir)
 
 	local from = mvec1
 
-	mvector3.set(from, self._laser_obj:position())
+	if self._custom_position then
+		mvector3.set(from, self._laser_obj:local_position())
+		mvector3.rotate_with(from, rotation)
+		mvector3.add(from, self._custom_position)
+	else
+		mvector3.set(from, self._laser_obj:position())
+	end
 
 	local to = mvec2
 
@@ -123,6 +131,9 @@ function WeaponLaser:update(unit, t, dt)
 		self._light_glow:set_final_position(to)
 		self._brush:cylinder(from, to, self._is_npc and 0.5 or 0.25)
 	end
+
+	self._custom_position = nil
+	self._custom_rotation = nil
 end
 
 function WeaponLaser:_check_state(current_state)
