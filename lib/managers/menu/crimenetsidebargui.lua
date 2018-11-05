@@ -64,7 +64,7 @@ function CrimeNetSidebarGui:_setup()
 	})
 
 	local next_position = padding
-	local item_margin = 4
+	local item_margin = 2
 
 	for i, item in ipairs(tweak_data.gui.crime_net.sidebar) do
 		local visible = true
@@ -367,6 +367,41 @@ end
 
 function CrimeNetSidebarGui:clbk_open_story_missions()
 	managers.menu:open_node("story_missions")
+end
+CrimeNetSidebarSeparator = CrimeNetSidebarSeparator or class()
+
+function CrimeNetSidebarSeparator:init(sidebar, parent_panel, parameters)
+	self._full_width = parent_panel:width() - padding * 2
+	self._collapsed_width = 24
+	self._panel = parent_panel:panel({
+		h = 10,
+		layer = 10,
+		w = self._full_width,
+		x = padding,
+		y = parameters.position
+	})
+	local bitmap = self._panel:bitmap({
+		texture = "guis/dlcs/sju/textures/pd2/crimenet_menu_dots_df",
+		name = "separator",
+		color = tweak_data.screen_colors.button_stage_3
+	})
+
+	bitmap:set_center_y(self._panel:height() * 0.5)
+end
+
+function CrimeNetSidebarSeparator:panel()
+	return self._panel
+end
+
+function CrimeNetSidebarSeparator:set_collapsed(collapsed)
+	self._panel:set_width(collapsed and self._collapsed_width or self._full_width)
+end
+
+function CrimeNetSidebarSeparator:accepts_interaction()
+	return false
+end
+
+function CrimeNetSidebarSeparator:update(t, dt)
 end
 CrimeNetSidebarItem = CrimeNetSidebarItem or class()
 

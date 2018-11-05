@@ -5169,6 +5169,15 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		infamous = true,
 		global_value = "infamous"
 	}
+	self.masks.mmh = {
+		unit = "units/pd2_dlc_mmh/masks/mmh_01/msk_mmh",
+		name_id = "bm_msk_mmh",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "mmh",
+		sort_number = 56,
+		global_value = "mmh"
+	}
 	self.masks.sds_01 = {
 		unit = "units/pd2_dlc_sds/masks/sds_01/msk_sds_01",
 		name_id = "bm_msl_sds_01",
@@ -5857,6 +5866,15 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		sort_number = 69,
 		dlc = "toon",
 		global_value = "toon"
+	}
+	self.masks.tam = {
+		unit = "units/pd2_dlc_tam/masks/tam/msk_tam",
+		name_id = "bm_msk_tam",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "tam",
+		sort_number = 70,
+		global_value = "tam"
 	}
 	local free_dlcs = tweak_data:free_dlc_list()
 

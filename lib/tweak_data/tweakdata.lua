@@ -2307,6 +2307,7 @@ Play the full version soon to get your full PAYDAY!]],
 	self.quickplay.stealth_levels.kosugi = true
 	self.quickplay.stealth_levels.cage = true
 	self.quickplay.stealth_levels.fish = true
+	self.quickplay.stealth_levels.tag = true
 	self.team_ai = {stop_action = {}}
 	self.team_ai.stop_action.delay = 0.8
 	self.team_ai.stop_action.distance = 3000

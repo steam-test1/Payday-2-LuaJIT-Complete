@@ -1203,6 +1203,7 @@ function MoneyManager:on_buy_casino_fee(secured_cards, increase_infamous, prefer
 	local amount = self:get_cost_of_casino_fee(secured_cards, increase_infamous, preferred_card)
 
 	self:deduct_from_offshore(amount)
+	self:dispatch_event("casino_fee_paid", amount)
 end
 
 function MoneyManager:has_unlock_skill_switch_cost(selected_skill_switch)

@@ -10909,6 +10909,15 @@ function HudIconsTweakData:init()
 	self.sidebar_crimespree = self:create_next_icon(sidebar_atlas)
 	self.sidebar_filters = self:create_next_icon(sidebar_atlas)
 	self.sidebar_question = self:create_next_icon(sidebar_atlas)
+	self.sidebar_side_jobs = {
+		texture = "guis/dlcs/sju/textures/pd2/crimenet_sidebar_sidejobs",
+		texture_rect = {
+			0,
+			0,
+			64,
+			64
+		}
+	}
 	self.C_Locke_H_AlsDeal_AllDiffs_D0 = {
 		texture = "guis/dlcs/wwh/textures/pd2/wwh_achievements_atlas",
 		texture_rect = {
@@ -12084,6 +12093,348 @@ function HudIconsTweakData:init()
 		texture_rect = {
 			2,
 			89,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_ArtGallery_Masterpiece = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			350,
+			176,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_ArtGallery_VanGogh = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			437,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_ReservoirDogs_JustShutUP = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			176,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_ReservoirDogs_Silver = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			2,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_ShadowRaid_IWillSucceed = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			89,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Classics_H_Any_DownPayment = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			263,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_Classics_H_Counterfeit_Why = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			350,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_Classics_H_FirstWorldBank_Federal = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			524,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_Classics_H_PanicRoom_QuickDraw = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			176,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Classics_H_Undercover_IFeelLike = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			437,
+			176,
+			85,
+			85
+		}
+	}
+	self.C_Dentist_H_BigBank_Matrix = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			2,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Dentist_H_GoldenGrinCasino_ItWasRigged = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			350,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_Dentist_H_HoxtonBreakout_WatchThePower = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			524,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Elephant_H_BigOil_DamItBile = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			437,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_Elephant_H_BigOil_Junkyard = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			263,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Event_H_CursedKillRoom_FasterFaster = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			176,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Event_H_CursedKillRoom_SayHello = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			437,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Hoxton_H_SafeHouse_Draganborn = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			698,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Hoxton_H_SafeHouse_TheRaid = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			611,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_Jimmy_H_Boiling_Remember = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			2,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_AlsDeal_GlobalWarming = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			611,
+			176,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_BirthOfSky_Expert = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			263,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Vlad_H_Ukrainian_ImSure = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			89,
+			2,
+			85,
+			85
+		}
+	}
+	self.Other_H_Any_ATazed = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			176,
+			2,
+			85,
+			85
+		}
+	}
+	self.Other_H_Any_C40 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			89,
+			263,
+			85,
+			85
+		}
+	}
+	self.Other_H_Any_CompactConf = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			89,
+			350,
+			85,
+			85
+		}
+	}
+	self.Other_H_Any_Denied = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			176,
+			176,
+			85,
+			85
+		}
+	}
+	self.Other_H_Any_DriveBy = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			263,
+			2,
+			85,
+			85
+		}
+	}
+	self.Other_H_Any_Hipster = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			350,
+			89,
+			85,
+			85
+		}
+	}
+	self.Other_H_Any_HumanSentry = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			437,
+			2,
+			85,
+			85
+		}
+	}
+	self.Other_H_Any_Lieutenant = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			524,
+			350,
+			85,
+			85
+		}
+	}
+	self.Other_H_Any_NoHardFeelings = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			263,
+			176,
+			85,
+			85
+		}
+	}
+	self.Other_H_Any_OneMan = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			2,
+			89,
+			85,
+			85
+		}
+	}
+	self.Other_H_Any_SnipeThis = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			350,
+			350,
+			85,
+			85
+		}
+	}
+	self.Other_H_Any_TheSafeWords = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			611,
+			350,
+			85,
+			85
+		}
+	}
+	self.Other_H_Any_Virus = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			89,
+			176,
+			85,
+			85
+		}
+	}
+	self.Other_H_Any_WULULU = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			2,
+			176,
+			85,
+			85
+		}
+	}
+	self.Other_H_NONE_GoldenGrin = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_cac",
+		texture_rect = {
+			524,
+			176,
 			85,
 			85
 		}

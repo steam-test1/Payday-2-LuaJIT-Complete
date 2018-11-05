@@ -10,6 +10,22 @@ function DLCTweakData:init_generated()
 		item_entry = "flm",
 		amount = 1
 	}}
+	self.mmh_bundle = {
+		free = true,
+		content = {}
+	}
+	self.mmh_bundle.content.loot_global_value = "mmh"
+	self.mmh_bundle.content.loot_drops = {{
+		type_items = "masks",
+		item_entry = "mmh",
+		amount = 1
+	}}
+	self.tam_bundle = {
+		free = true,
+		content = {}
+	}
+	self.tam_bundle.content.loot_global_value = "tam"
+	self.tam_bundle.content.loot_drops = {}
 	self.tjp_bundle = {
 		dlc = "has_tjp",
 		content = {}

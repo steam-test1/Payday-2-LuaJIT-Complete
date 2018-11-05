@@ -933,7 +933,8 @@ function CopActionShoot:anim_clbk_melee_strike()
 				body = self._unit:body("body"),
 				position = self._common_data.pos + math.UP * 100
 			},
-			attack_dir = -1 * target_vec:normalized()
+			attack_dir = -1 * target_vec:normalized(),
+			name_id = managers.blackmarket:equipped_melee_weapon()
 		}
 
 		self._unit:character_damage():damage_melee(action_data)

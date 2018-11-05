@@ -944,6 +944,34 @@ function EconomyTweakData:init()
 		bonus = false,
 		contains = {weapon_skins = table.list_add(self.contents.css_01.contains.weapon_skins, self.contents.css_01_legendary.contains.weapon_skins)}
 	}
+	self.contents.dss_01 = {
+		def_id = 10052,
+		contains = {
+			weapon_skins = {
+				"gre_m79_dss",
+				"erma_dss",
+				"boot_dss",
+				"m1928_dss",
+				"peacemaker_dss",
+				"m45_dss",
+				"x_shrew_dss",
+				"mg42_dss",
+				"ching_dss",
+				"colt_1911_dss",
+				"chinchilla_dss",
+				"c96_dss",
+				"winchester1874_dss",
+				"huntsman_dss",
+				"b682_dss"
+			},
+			contents = {"dss_01_legendary"}
+		}
+	}
+	self.contents.dss_01_legendary = {
+		def_id = 10053,
+		contains = {weapon_skins = {"shrew_dss"}},
+		rarity = "legendary"
+	}
 	self.safes.overkill_01 = {
 		def_id = 50000,
 		promo = true,
@@ -1205,6 +1233,15 @@ function EconomyTweakData:init()
 		texture_bundle_folder = "cash/safes/css",
 		market_link = "https://steamcommunity.com/market/listings/218620/Community%20Safe%206"
 	}
+	self.safes.dss_01 = {
+		free = true,
+		drill = "dss_01",
+		content = "dss_01",
+		name_id = "bm_menu_safe_dss_01",
+		unit_name = "units/payday2_cash/safes/dss/safe/eco_safe_dss",
+		texture_bundle_folder = "cash/safes/dss",
+		market_link = "https://steamcommunity.com/market/listings/218620/Duke%20Safe"
+	}
 	self.drills.overkill_01 = {
 		safe = "overkill_01",
 		def_id = 70000,
@@ -1381,6 +1418,10 @@ function EconomyTweakData:init()
 	self.drills.css_01 = {
 		safe = "css_01",
 		unit_name = "units/payday2_cash/safes/css/drill/eco_drill_css"
+	}
+	self.drills.dss_01 = {
+		safe = "dss_01",
+		unit_name = "units/payday2_cash/safes/dss/drill/eco_drill_dss"
 	}
 	self.bonuses = {concealment_p1 = {}}
 	self.bonuses.concealment_p1.name_id = "bm_menu_bonus_concealment"

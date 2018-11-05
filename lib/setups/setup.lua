@@ -523,7 +523,7 @@ function Setup:init_finalize()
 		managers.user:init_finalize()
 	end
 
-	managers.player:aquire_default_upgrades()
+	managers.player:init_finalize()
 	managers.blackmarket:init_finalize()
 
 	if SystemInfo:platform() == Idstring("WIN32") then

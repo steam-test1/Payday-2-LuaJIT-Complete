@@ -6813,7 +6813,8 @@ function BlackMarketGui:update_info_text()
 			local safe = self:get_safe_for_economy_item(slot_data.name)
 			safe = safe and safe.name_id or "invalid skin"
 			local macros = {safe = managers.localization:text(safe)}
-			updated_texts[5].text = (slot_data.default_blueprint and "" or "\n") .. managers.localization:text("bm_menu_wcc_not_owned", macros)
+			local lock_text_id = slot_data.lock_text_id or "bm_menu_wcc_not_owned"
+			updated_texts[5].text = (slot_data.default_blueprint and "" or "\n") .. managers.localization:text(lock_text_id, macros)
 		end
 
 		updated_texts[4].resource_color = {}
@@ -11039,6 +11040,7 @@ function BlackMarketGui:populate_weapon_cosmetics(data)
 			name = cosmetic_id,
 			name_localized = my_cd and my_cd.name_id and managers.localization:text(my_cd.name_id) or managers.localization:text("bm_menu_no_mod"),
 			desc_id = my_cd and my_cd.desc_id,
+			lock_text_id = my_cd and my_cd.lock_id,
 			category = data.category or data.prev_node_data and data.prev_node_data.category,
 			default_blueprint = my_cd and my_cd.default_blueprint,
 			locked_cosmetics = my_cd and my_cd.locked
@@ -11163,8 +11165,9 @@ function BlackMarketGui:populate_weapon_cosmetics(data)
 		my_cd = cosmetics_data[cosmetic_id]
 
 		if not my_cd.is_template and not owned_cosmetics[cosmetic_id] then
-			local unlocked = false
-			local equipped = false
+			local global_value = my_cd and my_cd.global_value or "normal"
+			local unlocked = managers.blackmarket:get_item_amount(global_value, "weapon_skins", cosmetic_id, true) > 0
+			local equipped = crafted and crafted.cosmetics and crafted.cosmetics.instance_id == cosmetic_id
 			new_data = make_cosmetic_data(cosmetic_id, unlocked, "mint", nil, equipped)
 			data[index_i] = new_data
 			index_i = index_i + 1

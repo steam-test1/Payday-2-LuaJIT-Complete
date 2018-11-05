@@ -57,11 +57,24 @@ function BlackMarketManager:_setup()
 	self._category_resource_loaded = {}
 	self._skin_editor = SkinEditor:new()
 	self._armor_skin_editor = ArmorSkinEditor:new()
+	self._event_listener_holder = EventListenerHolder:new()
 end
 
 function BlackMarketManager:init_finalize()
 	print("BlackMarketManager:init_finalize()")
 	managers.network.account:inventory_load()
+end
+
+function BlackMarketManager:add_event_listener(...)
+	self._event_listener_holder:add(...)
+end
+
+function BlackMarketManager:remove_event_listener(...)
+	self._event_listener_holder:remove(...)
+end
+
+function BlackMarketManager:dispatch_event(...)
+	self._event_listener_holder:call(...)
 end
 
 function BlackMarketManager:skin_editor()
@@ -1975,6 +1988,7 @@ function BlackMarketManager:add_to_inventory(global_value, category, id, not_new
 	end
 
 	self:alter_global_value_item(global_value, category, nil, id, INV_ADD)
+	self:dispatch_event("added_to_inventory", id, category, global_value)
 end
 
 function BlackMarketManager:_add_gvi_to_inventory(global_value, category, id)
@@ -6339,6 +6353,10 @@ function BlackMarketManager:on_equip_weapon_cosmetics(category, slot, instance_i
 	end
 
 	local item_data = self:get_inventory_tradable()[instance_id]
+	item_data = item_data or {
+		quality = "mint",
+		entry = instance_id
+	}
 
 	if not item_data then
 		return
@@ -6611,7 +6629,9 @@ function BlackMarketManager:tradable_update(tradable_list, remove_missing)
 		for category, category_data in pairs(crafted_list) do
 			if category == "primaries" or category == "secondaries" then
 				for slot, weapon_data in pairs(category_data) do
-					if weapon_data.cosmetics and not self._global.inventory_tradable[weapon_data.cosmetics.instance_id] then
+					local cosmetic_tweak = weapon_data.cosmetics and tweak_data.blackmarket.weapon_skins[weapon_data.cosmetics.id]
+
+					if weapon_data.cosmetics and not cosmetic_tweak.is_a_unlockable and not self._global.inventory_tradable[weapon_data.cosmetics.instance_id] then
 						managers.blackmarket:on_remove_weapon_cosmetics(category, slot, true)
 
 						if managers.blackmarket:equipped_weapon_slot(category) == slot then

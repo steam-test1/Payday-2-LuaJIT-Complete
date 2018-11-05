@@ -582,6 +582,8 @@ function GameSetup:init_finalize()
 	if Network:is_server() and managers.job:current_job_id() == "chill" then
 		managers.custom_safehouse:send_room_tiers()
 	end
+
+	managers.achievment:post_init()
 end
 
 function GameSetup:update(t, dt)

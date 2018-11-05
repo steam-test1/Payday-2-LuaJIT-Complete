@@ -1,6 +1,7 @@
 EconomyTweakData.sorting_groups = EconomyTweakData.sorting_groups or {}
 EconomyTweakData.ordered_sorting_groups = EconomyTweakData.ordered_sorting_groups or {}
 EconomyTweakData.sorting_groups.armor_skins = {
+	tam = 3,
 	camo = 2,
 	crime_spree = 1,
 	none = 0
@@ -8,7 +9,8 @@ EconomyTweakData.sorting_groups.armor_skins = {
 EconomyTweakData.ordered_sorting_groups.armor_skins = {
 	"none",
 	"crime_spree",
-	"camo"
+	"camo",
+	"tam"
 }
 local sorting_groups = EconomyTweakData.sorting_groups.armor_skins
 
@@ -709,6 +711,31 @@ function EconomyTweakData:_init_armor_skins_armor_safe()
 			[7] = Vector3(0, 1, 0)
 		},
 		steam_economy = true
+	}
+	self.armor_skins.tam = {
+		name_id = "bm_askn_tam",
+		unlock_id = "bm_askn_tam_unlock",
+		rarity = "epic",
+		reserve_quality = false,
+		texture_bundle_folder = "tam/textures/pd2/blackmarket/icons",
+		base_gradient = "units/pd2_dlc_tam/base_gradient/tam_basegradient_001_armor_df",
+		sticker = "units/pd2_dlc_tam/sticker/tam_sticker_003_armor_df",
+		pattern_tweak = Vector3(7.88457, 0, 1),
+		uv_scale = {
+			[2] = Vector3(1.01, 1.01, 0),
+			[7] = Vector3(1.01, 1.01, 0)
+		},
+		uv_offset_rot = {
+			[2] = Vector3(0.588123, 1.11581, 3.15133),
+			[7] = Vector3(0, 1.00003, 0),
+			[6] = Vector3(0.0017407, 0.999791, 0)
+		},
+		normal_map = {
+			[2] = Idstring("units/payday2/characters/shared_textures/vest_small_nm"),
+			[3] = Idstring("units/pd2_dlc_tam/normal_map/tam_nm")
+		},
+		steam_economy = false,
+		sorting_idx = sorting_groups.tam
 	}
 	self.armor_skins.cvc_woodland_camo = {
 		name_id = "bm_askn_cvc_woodland_camo",

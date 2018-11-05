@@ -5136,6 +5136,25 @@ function InteractionTweakData:init(tweak_data)
 		timer = 2,
 		equipment_consume = true
 	}
+	self.tag_laptop = {
+		text_id = "hud_int_hack_laptop",
+		action_text_id = "hud_action_hack_laptop",
+		timer = 3,
+		axis = "y",
+		sound_start = "bar_keyboard",
+		sound_interupt = "bar_keyboard_cancel",
+		sound_done = "bar_keyboard_finished"
+	}
+	self.hold_new_hack_tag = {
+		text_id = "hud_int_hold_start_new_hack",
+		action_text_id = "hud_action_starting_new_hack",
+		start_active = false,
+		timer = 3,
+		axis = "y",
+		sound_start = "bar_keyboard",
+		sound_interupt = "bar_keyboard_cancel",
+		sound_done = "bar_keyboard_finished"
+	}
 	self.tag_take_unknown = {
 		text_id = "hud_int_hold_take_box",
 		action_text_id = "hud_action_taking_box",

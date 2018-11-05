@@ -1913,6 +1913,12 @@ function InstantBulletBase:on_collision(col_ray, weapon_unit, user_unit, damage,
 		if local_damage then
 			col_ray.body:extension().damage:damage_bullet(user_unit, col_ray.normal, col_ray.position, col_ray.ray, 1)
 			col_ray.body:extension().damage:damage_damage(user_unit, col_ray.normal, col_ray.position, col_ray.ray, damage)
+
+			if alive(weapon_unit) and weapon_unit:base():categories() then
+				for _, category in ipairs(weapon_unit:base():categories()) do
+					col_ray.body:extension().damage:damage_bullet_type(category, user_unit, col_ray.normal, col_ray.position, col_ray.ray, 1)
+				end
+			end
 		end
 	end
 
@@ -2097,6 +2103,12 @@ function InstantExplosiveBulletBase:on_collision(col_ray, weapon_unit, user_unit
 			if local_damage then
 				col_ray.body:extension().damage:damage_bullet(user_unit, col_ray.normal, col_ray.position, col_ray.ray, 1)
 				col_ray.body:extension().damage:damage_damage(user_unit, col_ray.normal, col_ray.position, col_ray.ray, damage)
+
+				if alive(weapon_unit) and weapon_unit:base():categories() then
+					for _, category in ipairs(weapon_unit:base():categories()) do
+						col_ray.body:extension().damage:damage_bullet_type(category, user_unit, col_ray.normal, col_ray.position, col_ray.ray, 1)
+					end
+				end
 			end
 		end
 
@@ -2215,6 +2227,12 @@ function FlameBulletBase:on_collision(col_ray, weapon_unit, user_unit, damage, b
 		if local_damage then
 			col_ray.body:extension().damage:damage_bullet(user_unit, col_ray.normal, col_ray.position, col_ray.ray, 1)
 			col_ray.body:extension().damage:damage_damage(user_unit, col_ray.normal, col_ray.position, col_ray.ray, damage)
+
+			if alive(weapon_unit) and weapon_unit:base():categories() then
+				for _, category in ipairs(weapon_unit:base():categories()) do
+					col_ray.body:extension().damage:damage_bullet_type(category, user_unit, col_ray.normal, col_ray.position, col_ray.ray, 1)
+				end
+			end
 		end
 	end
 
@@ -2323,6 +2341,12 @@ function DragonBreathBulletBase:on_collision(col_ray, weapon_unit, user_unit, da
 		if local_damage then
 			col_ray.body:extension().damage:damage_bullet(user_unit, col_ray.normal, col_ray.position, col_ray.ray, 1)
 			col_ray.body:extension().damage:damage_damage(user_unit, col_ray.normal, col_ray.position, col_ray.ray, damage)
+
+			if alive(weapon_unit) and weapon_unit:base():categories() then
+				for _, category in ipairs(weapon_unit:base():categories()) do
+					col_ray.body:extension().damage:damage_bullet_type(category, user_unit, col_ray.normal, col_ray.position, col_ray.ray, 1)
+				end
+			end
 		end
 	end
 

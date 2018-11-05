@@ -45,20 +45,22 @@ function DLCTweakData:init(tweak_data)
 			hoxton_revenge = 1,
 			ecp = true,
 			hl_miami = true,
-			steel = true,
+			tam = true,
 			pn2 = true,
+			steel = true,
 			hlm2 = true,
-			speedrunners = 1,
 			pim = true,
 			cash = true,
-			humble_summer_2015 = 1,
-			bbq = true,
 			alienware_alpha = true,
+			bbq = true,
+			humble_summer_2015 = 1,
 			jigg = 1,
 			season_pass = true,
 			gage_pack_snp = true,
 			dlc1 = true,
+			speedrunners = 1,
 			pd2_million = true,
+			mmh = true,
 			fgl = true,
 			pd2_hw_boxing = true,
 			infamous = 1,
@@ -6268,6 +6270,35 @@ function DLCTweakData:init(tweak_data)
 		item_entry = "ami_06",
 		amount = 1
 	}}
+	self.ami_13 = {
+		dlc = "has_achievement_milestone",
+		milestone_id = "ami_13",
+		content = {}
+	}
+	self.ami_13.content.loot_global_value = "tam"
+	self.ami_13.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "tam",
+			amount = 1
+		},
+		{
+			type_items = "armor_skins",
+			item_entry = "tam"
+		}
+	}
+
+	for key, _ in pairs(tweak_data.weapon) do
+		if tweak_data.blackmarket.weapon_skins[key .. "_tam"] then
+			local drop = {
+				type_items = "weapon_skins",
+				item_entry = key .. "_tam"
+			}
+
+			table.insert(self.ami_13.content.loot_drops, drop)
+		end
+	end
+
 	self.ecp_bundle = {
 		dlc = "has_ecp",
 		content = {}

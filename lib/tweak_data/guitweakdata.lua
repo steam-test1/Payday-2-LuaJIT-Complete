@@ -1788,6 +1788,7 @@ function GuiTweakData:init()
 			name_id = "menu_cn_filters_sidebar",
 			icon = "sidebar_filters"
 		},
+		{item_class = "CrimeNetSidebarSeparator"},
 		{
 			visible_callback = "clbk_visible_not_in_lobby",
 			callback = "clbk_the_basics",
@@ -1813,10 +1814,16 @@ function GuiTweakData:init()
 			icon = "sidebar_broker",
 			callback = "clbk_contract_broker"
 		},
+		{item_class = "CrimeNetSidebarSeparator"},
 		{
-			name_id = "menu_cn_contact_info",
-			icon = "sidebar_codex",
-			callback = "clbk_contact_database"
+			name_id = "menu_cn_side_jobs",
+			icon = "sidebar_side_jobs",
+			callback = "clbk_side_jobs"
+		},
+		{
+			name_id = "menu_cn_gage_assignment",
+			icon = "sidebar_gage",
+			callback = "clbk_gage_courier"
 		},
 		{
 			name_id = "menu_cn_casino",
@@ -1824,10 +1831,11 @@ function GuiTweakData:init()
 			callback = "clbk_offshore_payday"
 		},
 		{
-			name_id = "menu_cn_gage_assignment",
-			icon = "sidebar_gage",
-			callback = "clbk_gage_courier"
+			name_id = "menu_cn_contact_info",
+			icon = "sidebar_codex",
+			callback = "clbk_contact_database"
 		},
+		{item_class = "CrimeNetSidebarSeparator"},
 		{
 			name_id = "menu_mutators",
 			callback = "clbk_mutators",

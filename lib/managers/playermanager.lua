@@ -124,8 +124,11 @@ function PlayerManager:init()
 	self._accuracy_multiplier = 1
 	self._damage_absorption = {}
 	self._consumable_upgrades = {}
+end
 
+function PlayerManager:init_finalize()
 	self:check_skills()
+	self:aquire_default_upgrades()
 end
 
 function PlayerManager:check_skills()
@@ -246,6 +249,19 @@ function PlayerManager:check_skills()
 		self:register_message(Message.OnPlayerDodge, "dodge_replenish_armor", callback(self, self, "_dodge_replenish_armor"))
 	else
 		self:unregister_message(Message.OnPlayerDodge, "dodge_replenish_armor")
+	end
+
+	if managers.blackmarket:equipped_grenade() == "smoke_screen_grenade" then
+
+		local function speed_up_on_kill()
+			if #managers.player:smoke_screens() == 0 then
+				managers.player:speed_up_grenade_cooldown(1)
+			end
+		end
+
+		self:register_message(Message.OnEnemyKilled, "speed_up_smoke_grenade", speed_up_on_kill)
+	else
+		self:unregister_message(Message.OnEnemyKilled, "speed_up_smoke_grenade")
 	end
 
 	self:add_coroutine("damage_control", PlayerAction.DamageControl)
@@ -984,6 +1000,7 @@ function PlayerManager:_change_player_state()
 	end
 
 	unit:movement():change_state(self._current_state)
+	self:send_message("player_state_changed", nil, self._current_state)
 end
 
 function PlayerManager:player_destroyed(id)

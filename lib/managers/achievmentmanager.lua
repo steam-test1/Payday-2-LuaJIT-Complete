@@ -3,6 +3,8 @@ AchievmentManager.PATH = "gamedata/achievments"
 AchievmentManager.FILE_EXTENSION = "achievment"
 AchievmentManager.MAX_TRACKED = 4
 
+require("lib/managers/achievement/CAC_CustomAchievements")
+
 function AchievmentManager:init()
 	self.exp_awards = {
 		b = 1500,
@@ -111,6 +113,10 @@ function AchievmentManager:init()
 	end
 
 	self._mission_end_achievements = {}
+end
+
+function AchievmentManager:post_init()
+	self:init_cac_custom_achievements()
 end
 
 function AchievmentManager:save(data)

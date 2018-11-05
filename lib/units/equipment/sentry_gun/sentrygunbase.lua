@@ -91,6 +91,10 @@ function SentryGunBase:is_category(...)
 	return false
 end
 
+function SentryGunBase:categories()
+	return self:weapon_tweak_data().categories
+end
+
 function SentryGunBase:post_init()
 	if self._difficulty_sequences then
 		local difficulty = Global.game_settings and Global.game_settings.difficulty or "normal"

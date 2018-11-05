@@ -516,8 +516,14 @@ function ElementSpecialObjective:get_objective(instigator)
 			if path_style == "destination" then
 				local rotation = self._values.rotation
 
-				if not rotation and alive(instigator) and mvector3.distance_sq(instigator:movement():m_pos(), self._values.position) < 2500 then
-					objective.rot = instigator:rotation()
+				if type_name(instigator) == "Unit" then
+					if alive(instigator) and not instigator:movement() then
+						debug_pause_unit(instigator, "Unit with path_style does not have a movement extension!")
+					end
+
+					if not rotation and alive(instigator) and instigator:movement() and mvector3.distance_sq(instigator:movement():m_pos(), self._values.position) < 2500 then
+						objective.rot = instigator:rotation()
+					end
 				end
 
 				local path_data = managers.ai_data:destination_path(self._values.position, Rotation(rotation or 0, 0, 0))

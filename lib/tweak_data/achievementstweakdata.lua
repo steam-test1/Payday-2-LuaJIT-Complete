@@ -3,7 +3,7 @@ require("lib/tweak_data/GeneratedAchievementTweakData")
 local function get_texture_path(tweak_data, category, id)
 	local td = nil
 	local rtn = {}
-	td = tweak_data:get_raw_value("blackmarket", category, id)
+	td = category == "armor_skins" and tweak_data.economy.armor_skins[id] or tweak_data:get_raw_value("blackmarket", category, id)
 
 	if category == "textures" then
 		rtn.texture = td.texture
@@ -16,7 +16,11 @@ local function get_texture_path(tweak_data, category, id)
 			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
 		end
 
-		rtn.texture = guis_catalog .. "textures/pd2/blackmarket/icons/" .. (category == "weapon_mods" and "mods" or category) .. "/" .. id
+		if category == "armor_skins" then
+			rtn.texture = guis_catalog .. "armor_skins/" .. id
+		else
+			rtn.texture = guis_catalog .. "textures/pd2/blackmarket/icons/" .. (category == "weapon_mods" and "mods" or category) .. "/" .. id
+		end
 	end
 
 	if not DB:has(Idstring("texture"), Idstring(rtn.texture)) then
@@ -481,6 +485,13 @@ function AchievementsTweakData:init(tweak_data)
 			kill = true,
 			explosive = true,
 			challenge_stat = "explosive_kills"
+		},
+		cac_1 = {
+			kill = true,
+			grenade_type = "launcher_frag_slap",
+			distance = 4000,
+			enemy = "sniper",
+			award = "cac_1"
 		}
 	}
 	self.shotgun_single_shot_kills = {tango_1 = {
@@ -835,6 +846,11 @@ function AchievementsTweakData:init(tweak_data)
 		aru_4 = {
 			stat = "aru_4",
 			weapons = {"ching"}
+		},
+		cac_35 = {
+			player_state = "driving",
+			stat = "cac_35_stats",
+			enemy_tags_all = {"law"}
 		}
 	}
 	self.enemy_melee_hit_achievements = {
@@ -1037,6 +1053,50 @@ function AchievementsTweakData:init(tweak_data)
 			stat = "rvd_12_stats",
 			difficulty = overkill_and_above,
 			enemy_tags_all = {"special"}
+		},
+		cac_6 = {
+			award = "cac_6",
+			melee_id = "moneybundle",
+			enemy = "cop_female",
+			job = "rvd"
+		},
+		cac_14 = {
+			melee_id = "baton",
+			award = "cac_14",
+			result = "death",
+			enemy_tags_all = {"spooc"}
+		},
+		cac_25 = {
+			award = "cac_25",
+			melee_id = "moneybundle",
+			enemy = "bank_manager",
+			job = "red2"
+		},
+		cac_29 = {
+			award = "cac_29",
+			result = "death",
+			enemy_tags_all = {"sniper"}
+		},
+		cac_32 = {
+			award = "cac_32",
+			enemy_tags_all = {"spooc"},
+			melee_weapons = {
+				"taser",
+				"zeus"
+			},
+			action = {
+				body_part = 1,
+				type = "spooc"
+			}
+		},
+		cac_36 = {
+			award = "cac_36",
+			result = "death",
+			enemy_tags_all = {"taser"},
+			melee_weapons = {
+				"taser",
+				"zeus"
+			}
 		}
 	}
 	self.complete_heist_achievements = {
@@ -4234,6 +4294,45 @@ function AchievementsTweakData:init(tweak_data)
 			job = "tag",
 			difficulty = sm_wish_and_above
 		},
+		cac_4 = {
+			loud = true,
+			award = "cac_4",
+			memory = {is_shortterm = false}
+		},
+		cac_5 = {
+			award = "cac_5",
+			job = "kosugi",
+			no_preplan = true,
+			difficulty = overkill_and_above
+		},
+		cac_23 = {
+			everyone_killed_by_grenade = 0,
+			award = "cac_23",
+			job = "man",
+			everyone_used_weapon_category = "bow",
+			everyone_killed_by_melee = 0,
+			no_bots = true,
+			difficulty = overkill_and_above,
+			equipped_team = {
+				primary_unmodded = true,
+				primary_category = "bow"
+			}
+		},
+		cac_27 = {
+			everyone_killed_by_grenade = 0,
+			award = "cac_27",
+			job = "wwh",
+			everyone_used_weapon_category = "flamethrower",
+			everyone_killed_by_melee = 0,
+			equipped_team = {primary_category = "flamethrower"}
+		},
+		cac_31 = {
+			loud = true,
+			award = "cac_31",
+			max_players = 1,
+			no_bots = true,
+			difficulty = overkill_and_above
+		},
 		bain_jobs = {
 			complete_job = true,
 			contract = "bain",
@@ -5513,6 +5612,22 @@ function AchievementsTweakData:init(tweak_data)
 		rvd_12_stats = {{
 			award = "rvd_12",
 			at = 92
+		}},
+		cac_3_stats = {{
+			award = "cac_3",
+			at = 30
+		}},
+		cac_7_stats = {{
+			award = "cac_7",
+			at = 1000000000
+		}},
+		cac_34_stats = {{
+			award = "cac_34",
+			at = 300
+		}},
+		cac_35_stats = {{
+			award = "cac_35",
+			at = 10
 		}}
 	}
 	local jobs = {}
@@ -6626,6 +6741,13 @@ function AchievementsTweakData:init(tweak_data)
 			id = "ami_12",
 			coins = 36,
 			texture = default
+		},
+		{
+			at = 1000,
+			has_drop = true,
+			id = "ami_13",
+			coins = 36,
+			texture = default
 		}
 	}
 	local last_at = 0
@@ -6642,7 +6764,11 @@ function AchievementsTweakData:init(tweak_data)
 
 			for _, loot in ipairs(data.content.loot_drops) do
 				local td, data = nil
-				td = tweak_data:get_raw_value("blackmarket", loot.type_items, loot.item_entry)
+				td = loot.type_items == "armor_skins" and tweak_data.economy.armor_skins[loot.item_entry] or tweak_data:get_raw_value("blackmarket", loot.type_items, loot.item_entry)
+
+				if v.id == "ami_13" and loot.type_items == "weapon_skins" then
+					td = nil
+				end
 
 				if td then
 					data = get_texture_path(tweak_data, loot.type_items, loot.item_entry)
@@ -6655,6 +6781,15 @@ function AchievementsTweakData:init(tweak_data)
 
 		v.last_at = last_at
 		last_at = v.at
+
+		if v.id == "ami_13" then
+			local tam_weapon_skin_reward = {
+				texture = "guis/dlcs/tam/textures/pd2/blackmarket/icons/weapon_skins/tam_achievement_reward",
+				name_id = "bm_wskn_tam"
+			}
+
+			table.insert(v.rewards, tam_weapon_skin_reward)
+		end
 	end
 
 	self:_init_visual(tweak_data)
@@ -7099,5 +7234,76 @@ function AchievementsTweakData:_init_non_auto_generated(tweak_data)
 		end,
 		max = self.spend_money_to_make_money
 	}
+
+	local function dummy_progress()
+		return 0
+	end
+
+	local function from_mission_counter(counter, counter_total, inverted)
+		local counter_element, counter_total_element = nil
+
+		local function get_current()
+			counter_element = counter_element or managers.mission:get_mission_element_by_name(counter)
+
+			if not counter_element then
+				return 0
+			end
+
+			local current_count = counter_element:counter_value()
+
+			if inverted then
+				counter_total_element = counter_total_element or managers.mission:get_mission_element_by_name(counter_total)
+				current_count = counter_total_element:counter_value() - current_count
+			end
+
+			return current_count
+		end
+
+		local function get_max()
+			counter_total_element = counter_total_element or managers.mission:get_mission_element_by_name(counter_total)
+
+			if not counter_total_element then
+				return 0
+			end
+
+			return counter_total_element:counter_value()
+		end
+
+		return {
+			get = get_current,
+			max = type(counter_total) == "string" and get_max or counter_total,
+			update = tracking.realtime
+		}
+	end
+
+	self.visual.cac_2.progress = {
+		max = 0,
+		get = dummy_progress,
+		update = tracking.realtime
+	}
+	self.visual.cac_20.progress = {
+		max = 7,
+		get = function ()
+			local masks = {
+				"sds_01",
+				"sds_02",
+				"sds_03",
+				"sds_04",
+				"sds_05",
+				"sds_06",
+				"sds_07"
+			}
+			local count = 0
+
+			for _, mask_id in ipairs(masks) do
+				if managers.blackmarket:has_item("halloween", "masks", mask_id) then
+					count = count + 1
+				end
+			end
+
+			return count
+		end
+	}
+	self.visual.cac_33.progress = from_mission_counter("cac_33_counter", 200, false)
 end
 

@@ -76,7 +76,6 @@ function CustomSafehouseGuiPageDaily:_setup_side_menu()
 	table.insert(self._scrollable_panels, self._side_panel)
 
 	local categories = {
-		"menu",
 		"safehouse_daily",
 		"daily",
 		"weekly",
@@ -112,38 +111,6 @@ function CustomSafehouseGuiPageDaily:_setup_side_menu()
 
 	for k, v in pairs(challenges) do
 		v.category_id = "menu_challenge_div_cat_" .. k
-	end
-
-	challenges.menu = {
-		{
-			id = "introduction",
-			data = {
-				name_id = "menu_challenge_introduction_title",
-				desc_id = "menu_challenge_introduction_desc",
-				category = "menu"
-			}
-		},
-		{
-			id = "summary",
-			data = {
-				name_id = "menu_challenge_summary_title",
-				desc_id = "menu_challenge_summary_desc",
-				category = "menu"
-			}
-		},
-		{
-			id = "daily_summary",
-			data = {
-				name_id = "menu_cs_daily_title",
-				desc_id = "menu_cs_daily_desc",
-				category = "menu"
-			}
-		},
-		category_id = "menu_gage_assignment_div_menu"
-	}
-
-	for i, challenge_data in ipairs(challenges.menu) do
-		self._challenges[challenge_data.id] = challenge_data.data
 	end
 
 	local current_daily = managers.custom_safehouse:get_daily_challenge()
