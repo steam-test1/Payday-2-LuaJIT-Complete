@@ -805,7 +805,6 @@ ElementSpecialObjective._stealth_idles = {
 	"e_so_ntl_look_around",
 	"e_so_ntl_look_behind",
 	"e_so_ntl_look_up",
-	"e_so_ntl_pick_up",
 	"e_so_ntl_restless",
 	"e_so_ntl_scratches_chin",
 	"e_so_ntl_stretch_shoulders",

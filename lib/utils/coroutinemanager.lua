@@ -19,12 +19,14 @@ function CoroutineManager:update(t, dt)
 	for i = 1, size, 1 do
 		for key, value in pairs(self._coroutines[i]) do
 			if value then
-				local result = coroutine.resume(value.co, unpack(value.arg))
+				local result, error_msg = coroutine.resume(value.co, unpack(value.arg))
 				local status = coroutine.status(value.co)
 
-				if status == "dead" then
-					print("[CoroutineManager:update] ", value, " has ended ", result)
+				if result == false then
+					Application:error("Coroutine failed (" .. tostring(key) .. "): " .. error_msg)
+				end
 
+				if status == "dead" then
 					self._coroutines[i][key] = nil
 				end
 			end
@@ -48,8 +50,12 @@ end
 function CoroutineManager:add_and_run_coroutine(name, func, ...)
 	local arg = {...}
 	local co = coroutine.create(func.Function)
-	local result = coroutine.resume(co, unpack(arg))
+	local result, error_msg = coroutine.resume(co, unpack(arg))
 	local status = coroutine.status(co)
+
+	if result == false then
+		Application:error("Coroutine failed (" .. tostring(name) .. "): " .. error_msg)
+	end
 
 	if status ~= "dead" then
 		self._coroutines[func.Priority][name] = {
@@ -103,5 +109,9 @@ function CoroutineManager:remove_coroutine(name)
 			return
 		end
 	end
+end
+
+function CoroutineManager:clear()
+	self:init()
 end
 

@@ -1360,7 +1360,7 @@ end
 GrenadeCrateInteractionExt = GrenadeCrateInteractionExt or class(UseInteractionExt)
 
 function GrenadeCrateInteractionExt:_interact_blocked(player)
-	if managers.blackmarket:has_equipped_ability() then
+	if not managers.blackmarket:equipped_grenade_allows_pickups() then
 		return true, false, "ability_no_grenade_pickup"
 	end
 

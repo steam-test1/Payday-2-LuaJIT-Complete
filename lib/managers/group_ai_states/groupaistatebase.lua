@@ -3652,7 +3652,10 @@ function GroupAIStateBase:sync_hostage_headcount(nr_hostages)
 	end
 
 	if managers.player:has_team_category_upgrade("damage", "hostage_absorption") then
-		managers.player:set_damage_absorption(managers.player:team_upgrade_value("damage", "hostage_absorption", 0) * math.min(self._hostage_headcount, tweak_data.upgrades.values.team.damage.hostage_absorption_limit))
+		local hostage_count = math.min(self._hostage_headcount, tweak_data.upgrades.values.team.damage.hostage_absorption_limit)
+		local absorption = managers.player:team_upgrade_value("damage", "hostage_absorption", 0) * hostage_count
+
+		managers.player:set_damage_absorption("hostage_absorption", absorption)
 	end
 
 	managers.hud:set_control_info({nr_hostages = self._hostage_headcount})

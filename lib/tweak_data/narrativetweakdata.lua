@@ -4609,11 +4609,7 @@ function NarrativeTweakData:init(tweak_data)
 		briefing_event = "Play_loc_wwh_cbf_01",
 		debrief_event = nil,
 		crimenet_callouts = {"Play_loc_wwh_cnc_01"},
-		crimenet_videos = {
-			"cn_jewel1",
-			"cn_jewel2",
-			"cn_jewel3"
-		},
+		crimenet_videos = {"contact_locke1"},
 		payout = {
 			60000,
 			150000,

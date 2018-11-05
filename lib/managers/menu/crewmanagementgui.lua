@@ -911,7 +911,7 @@ function CrewManagementGui:open_character_menu(henchman_index)
 	local selected_tab = self:create_pages(new_node_data, henchman_index, "custom", nil, 3, 6, 1)
 	new_node_data.can_move_over_tabs = true
 	new_node_data.selected_tab = selected_tab
-	new_node_data.scroll_tab_anywhere = true
+	new_node_data.scroll_tab_anywhere = false
 	new_node_data.hide_detection_panel = true
 	new_node_data.custom_callback = {
 		custom_select = callback(self, self, "select_characters"),

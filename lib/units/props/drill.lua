@@ -883,6 +883,10 @@ function Drill:on_melee_hit(peer_id)
 			self._unit:timer_gui():set_jammed(false)
 			self._unit:interaction():set_active(false, true)
 			self._unit:interaction():check_for_upgrade()
+
+			if self._kickstarter_success_sequence then
+				self._unit:damage():run_sequence_simple(self._kickstarter_success_sequence)
+			end
 		end
 	end
 end

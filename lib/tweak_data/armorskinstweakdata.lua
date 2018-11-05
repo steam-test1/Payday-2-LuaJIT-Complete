@@ -92,6 +92,7 @@ function EconomyTweakData:_init_armor_skins()
 		["units/pd2_dlc_bonnie/characters/npc_criminal_bonnie/mtr_bonnie"] = "units/pd2_dlc_bonnie/characters/npc_criminal_bonnie/mtr_bonnie_cc",
 		["units/pd2_dlc_wild/characters/npc_criminals_wild_1/mtr_criminal_wild_1"] = "units/pd2_dlc_wild/characters/npc_criminals_wild_1/mtr_criminal_wild_1_cc",
 		["units/payday2/characters/npc_criminals_suit_1/mtr_sokol"] = "units/payday2/characters/npc_criminals_suit_1/mtr_sokol_cc",
+		["units/pd2_dlc_myh/characters/npc_criminals_myh/mtr_criminal_myh"] = "units/pd2_dlc_myh/characters/npc_criminals_myh/mtr_criminal_myh_cc",
 		["units/payday2/characters/npc_criminals_suit_1/mtr_dallas"] = "units/payday2/characters/npc_criminals_suit_1/mtr_dallas_cc"
 	}
 	self.armor_skins_configs = {}
@@ -120,7 +121,8 @@ function EconomyTweakData:_init_armor_skins()
 		sydney = Idstring("units/pd2_dlc_opera/characters/npc_criminals_fem_3/mtr_criminal_sydney_cc"),
 		wild = Idstring("units/pd2_dlc_wild/characters/npc_criminals_wild_1/mtr_criminal_wild_1_cc"),
 		chico = Idstring("units/pd2_dlc_chico/characters/npc_criminals_terry/mtr_criminal_terry_cc"),
-		max = Idstring("units/pd2_dlc_max/characters/npc_criminals_max/mtr_criminal_max_cc")
+		max = Idstring("units/pd2_dlc_max/characters/npc_criminals_max/mtr_criminal_max_cc"),
+		myh = Idstring("units/pd2_dlc_myh/characters/npc_criminals_myh/mtr_criminal_myh_cc")
 	}
 	self.armor_skins = {none = {}}
 	self.armor_skins.none.name_id = "bm_askn_none"

@@ -287,6 +287,21 @@ function BlackMarketTweakData:_init_characters(tweak_data)
 		npc_unit = "units/pd2_dlc_max/characters/npc_criminals_max/max/npc_criminal_max",
 		sequence = "var_mtr_max"
 	}
+	self.characters.myh = {
+		fps_unit = "units/pd2_dlc_myh/characters/npc_criminals_myh/fps_myh_mover",
+		npc_unit = "units/pd2_dlc_myh/characters/npc_criminals_myh/npc_criminal_myh",
+		menu_unit = "units/pd2_dlc_myh/characters/npc_criminals_myh/npc_criminal_myh_menu",
+		texture_bundle_folder = "myh",
+		sequence = "var_mtr_myh",
+		mask_on_sequence = "mask_on_myh",
+		mask_off_sequence = "mask_off_myh"
+	}
+	self.characters.ai_myh = {
+		npc_unit = "units/pd2_dlc_myh/characters/npc_criminals_myh/myh/npc_criminal_myh",
+		sequence = "var_mtr_myh",
+		mask_on_sequence = "mask_on_myh",
+		mask_off_sequence = "mask_off_myh"
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.characters) do

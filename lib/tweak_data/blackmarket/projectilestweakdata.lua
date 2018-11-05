@@ -456,6 +456,16 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 		dlc = "pd2_clan",
 		texture_bundle_folder = "mtl"
 	}
+	self.projectiles.damage_control = {
+		name_id = "bm_grenade_damage_control",
+		desc_id = "bm_grenade_damage_control_desc",
+		icon = "damage_control",
+		ability = true,
+		texture_bundle_folder = "myh",
+		max_amount = 1,
+		base_cooldown = 10,
+		sounds = {cooldown = "perkdeck_cooldown_over"}
+	}
 	self._projectiles_index = {
 		"frag",
 		"launcher_frag",

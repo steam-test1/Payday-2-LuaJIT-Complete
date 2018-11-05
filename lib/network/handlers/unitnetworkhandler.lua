@@ -2214,6 +2214,23 @@ function UnitNetworkHandler:sync_grenades(grenade, amount, register_peer_id, sen
 	managers.player:set_synced_grenades(peer:id(), grenade, amount, register_peer_id)
 end
 
+function UnitNetworkHandler:sync_grenades_cooldown(end_time, duration, sender)
+	local peer = self._verify_sender(sender)
+
+	if not peer or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local teammate_panel = managers.hud:get_teammate_panel_by_peer(peer)
+
+	if teammate_panel then
+		teammate_panel:set_grenade_cooldown({
+			end_time = end_time,
+			duration = duration
+		})
+	end
+end
+
 function UnitNetworkHandler:sync_ammo_amount(selection_index, max_clip, current_clip, current_left, max, sender)
 	local peer = self._verify_sender(sender)
 
@@ -3612,7 +3629,7 @@ function UnitNetworkHandler:sync_flashbang_event(unit, event_id, sender)
 	end
 end
 
-function UnitNetworkHandler:sync_ability_hud(ability_id, time, sender)
+function UnitNetworkHandler:sync_ability_hud(end_time, time_total, sender)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
@@ -3634,7 +3651,9 @@ function UnitNetworkHandler:sync_ability_hud(ability_id, time, sender)
 	end
 
 	if panel_id then
-		managers.hud:activate_teammate_ability_radial(panel_id, time)
+		local current_time = managers.game_play_central:get_heist_timer()
+
+		managers.hud:activate_teammate_ability_radial(panel_id, end_time - current_time, time_total)
 	else
 		Application:error("HUD panel not found from peer id!")
 	end
@@ -3662,7 +3681,7 @@ function UnitNetworkHandler:sync_ability_hud_cooldown(ability_id, cooldown, send
 	end
 
 	if panel_id then
-		managers.hud:set_teammate_ability_cooldown(panel_id, {cooldown = cooldown})
+		managers.hud:set_teammate_grenade_cooldown(panel_id, {cooldown = cooldown})
 	else
 		Application:error("HUD panel not found from peer id!")
 	end
@@ -3898,5 +3917,33 @@ function UnitNetworkHandler:sync_carry_set_position_and_throw(unit, destination,
 	end
 
 	unit:carry_data():set_position_and_throw(destination, direction, force)
+end
+
+function UnitNetworkHandler:sync_delayed_damage_hud(delayed_damage, sender)
+	local peer = self._verify_sender(sender)
+
+	if not peer or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local teammate_panel = managers.hud:get_teammate_panel_by_peer(peer)
+
+	if teammate_panel then
+		teammate_panel:set_delayed_damage(delayed_damage)
+	end
+end
+
+function UnitNetworkHandler:sync_damage_absorption_hud(absorption_amount, sender)
+	local peer = self._verify_sender(sender)
+
+	if not peer or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local teammate_panel = managers.hud:get_teammate_panel_by_peer(peer)
+
+	if teammate_panel then
+		teammate_panel:set_absorb_active(absorption_amount)
+	end
 end
 

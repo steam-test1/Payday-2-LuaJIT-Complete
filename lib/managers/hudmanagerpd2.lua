@@ -307,8 +307,12 @@ function HUDManager:set_teammate_ability_radial(i, data)
 	self._teammate_panels[i]:set_ability_radial(data)
 end
 
-function HUDManager:activate_teammate_ability_radial(i, time)
-	self._teammate_panels[i]:activate_ability_radial(time)
+function HUDManager:activate_teammate_ability_radial(i, time_left, time_total)
+	self._teammate_panels[i]:activate_ability_radial(time_left, time_total)
+end
+
+function HUDManager:set_teammate_delayed_damage(i, delayed_damage)
+	self._teammate_panels[i]:set_delayed_damage(delayed_damage)
 end
 
 function HUDManager:set_player_armor(data)
@@ -394,21 +398,8 @@ function HUDManager:set_stored_health_max(stored_health_ratio)
 	self._teammate_panels[HUDManager.PLAYER_PANEL]:set_stored_health_max(stored_health_ratio)
 end
 
-function HUDManager:update_cocaine_hud()
-	for _, panel in pairs(self._teammate_panels) do
-		
-	end
-end
-
 function HUDManager:set_info_meter(i, data)
 	self._teammate_panels[i or HUDManager.PLAYER_PANEL]:set_info_meter(data)
-end
-
-function HUDManager:set_absorb_max(absorb_amount)
-end
-
-function HUDManager:set_absorb_personal(i, absorb_amount)
-	self._teammate_panels[i or HUDManager.PLAYER_PANEL]:set_absorb_personal(absorb_amount)
 end
 
 function HUDManager:set_absorb_active(i, absorb_amount)
@@ -450,20 +441,29 @@ function HUDManager:set_teammate_deployable_equipment_amount_from_string(i, inde
 	self._teammate_panels[i]:set_deployable_equipment_amount_from_string(index, data)
 end
 
-function HUDManager:set_player_ability_cooldown(data)
-	self:set_teammate_ability_cooldown(HUDManager.PLAYER_PANEL, data)
+function HUDManager:set_player_grenade_cooldown(data)
+	self:set_teammate_grenade_cooldown(HUDManager.PLAYER_PANEL, data)
 end
 
-function HUDManager:set_teammate_ability_cooldown(i, data)
-	self._teammate_panels[i]:set_ability_cooldown(data)
+function HUDManager:set_teammate_grenade_cooldown(i, data)
+	self._teammate_panels[i]:set_grenade_cooldown(data)
+end
+
+function HUDManager:set_ability_icon(i, icon)
+	self._teammate_panels[i]:set_ability_icon(icon)
 end
 
 function HUDManager:set_teammate_grenades(i, data)
 	self._teammate_panels[i]:set_grenades(data)
+	self:set_ability_icon(i, data.icon)
 end
 
 function HUDManager:set_teammate_grenades_amount(i, data)
 	self._teammate_panels[i]:set_grenades_amount(data)
+end
+
+function HUDManager:animate_grenade_flash(i)
+	self._teammate_panels[i]:animate_grenade_flash()
 end
 
 function HUDManager:set_player_condition(icon_data, text)
@@ -683,12 +683,12 @@ function HUDManager:add_teammate_panel(character_name, player_name, ai, peer_id)
 			local peer_grenades = managers.player:get_synced_grenades(peer_id)
 
 			if peer_grenades then
-				local icon = tweak_data.blackmarket.projectiles[peer_grenades.grenade].icon
+				local grenades_tweak = tweak_data.blackmarket.projectiles[peer_grenades.grenade]
+				local icon = grenades_tweak.icon
 
 				self:set_teammate_grenades(i, {
 					icon = icon,
-					amount = Application:digest_value(peer_grenades.amount, false),
-					has_cooldown = not not tweak_data.blackmarket.projectiles[peer_grenades.grenade].base_cooldown
+					amount = Application:digest_value(peer_grenades.amount, false)
 				})
 			end
 		end
@@ -770,6 +770,18 @@ function HUDManager:remove_teammate_panel(id)
 
 	managers.hud._teammate_panels[HUDManager.PLAYER_PANEL]:add_panel()
 	managers.hud._teammate_panels[HUDManager.PLAYER_PANEL]:set_state("player")
+end
+
+function HUDManager:get_teammate_panel_by_peer(peer)
+	if not peer then
+		return self._teammate_panels[HUDManager.PLAYER_PANEL]
+	end
+
+	for _, teammate_panel in ipairs(self._teammate_panels) do
+		if teammate_panel:peer_id() == peer:id() then
+			return teammate_panel
+		end
+	end
 end
 
 function HUDManager:teampanels_height()
@@ -2023,6 +2035,10 @@ function HUDManager:set_ai_stopped(ai_id, stopped)
 end
 
 function HUDManager:achievement_popup(id)
+	if managers.network.account:signin_state() ~= "signed in" then
+		return
+	end
+
 	local d = tweak_data.achievement.visual[id]
 
 	HudChallangeNotification.queue(managers.localization:to_upper_text("hud_achieved_popup"), managers.localization:to_upper_text(d.name_id), d.icon_id)

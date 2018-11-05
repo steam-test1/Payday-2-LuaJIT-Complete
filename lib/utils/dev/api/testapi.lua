@@ -243,6 +243,8 @@ TestAPIHelper.register_API_function("get_jobs", "jobs", "", function ()
 end, "Returns a table with all available jobs.")
 
 local function start(job_id, difficulty, stage)
+	assert(not not tweak_data.narrative.jobs[job_id], string.format("invalid job: %s", job_id))
+
 	Global.game_settings.single_player = true
 
 	managers.network:host_game()

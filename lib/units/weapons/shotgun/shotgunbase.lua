@@ -4,8 +4,6 @@ function ShotgunBase:init(...)
 	ShotgunBase.super.init(self, ...)
 	self:setup_default()
 
-	self._player_run_and_shoot = managers.player:has_category_upgrade("player", "run_and_shoot")
-	self._run_and_shoot = managers.player:has_category_upgrade("shotgun", "hip_run_and_shoot") or self._player_run_and_shoot
 	self._hip_fire_rate_inc = 0
 end
 

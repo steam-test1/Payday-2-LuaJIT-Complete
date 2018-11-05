@@ -2442,6 +2442,28 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 		start_time = -1
 	}
 	self.melee_weapons.grip.locks = {dlc = "raidww2_clan"}
+	self.melee_weapons.sap = deep_clone(self.melee_weapons.tomahawk)
+	self.melee_weapons.sap.name_id = "bm_melee_sap"
+	self.melee_weapons.sap.unit = "units/pd2_dlc_myh/weapons/wpn_fps_mel_sap/wpn_fps_mel_sap"
+	self.melee_weapons.sap.third_unit = "units/pd2_dlc_myh/weapons/wpn_fps_mel_sap/wpn_third_mel_sap"
+	self.melee_weapons.sap.stats.weapon_type = "blunt"
+	self.melee_weapons.sap.stats.min_damage = 2
+	self.melee_weapons.sap.stats.max_damage = 4
+	self.melee_weapons.sap.stats.min_damage_effect = 10
+	self.melee_weapons.sap.stats.max_damage_effect = 10
+	self.melee_weapons.sap.stats.charge_time = 3
+	self.melee_weapons.sap.stats.range = 200
+	self.melee_weapons.sap.stats.weapon_type = "blunt"
+	self.melee_weapons.sap.sounds = {
+		equip = "sap_equip",
+		hit_air = "sap_hit_air",
+		hit_gen = "sap_hit_gen",
+		hit_body = "sap_hit_body",
+		charge = "sap_charge"
+	}
+	self.melee_weapons.sap.stats.concealment = 30
+	self.melee_weapons.sap.dlc = nil
+	self.melee_weapons.sap.texture_bundle_folder = "myh"
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.melee_weapons) do

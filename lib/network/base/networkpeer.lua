@@ -903,7 +903,7 @@ function NetworkPeer:send(func_name, ...)
 
 	local send_resume = Network:get_connection_send_status(rpc)
 
-	if send_resume then
+	if type(send_resume) == "table" then
 		local nr_queued_packets = 0
 
 		for delivery_type, amount in pairs(send_resume) do

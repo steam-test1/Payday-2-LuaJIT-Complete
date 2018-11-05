@@ -2837,27 +2837,31 @@ function PlayerStandard:_get_intimidation_action(prime_target, char_table, amoun
 			end
 
 			local amount = 0
-			local rally_skill_data = self._ext_movement:rally_skill_data()
+			local current_state_name = self._unit:movement():current_state_name()
 
-			if rally_skill_data and mvector3.distance_sq(self._pos, record.m_pos) < rally_skill_data.range_sq then
-				local needs_revive, is_arrested, action_stop = nil
+			if current_state_name ~= "arrested" and current_state_name ~= "bleed_out" and current_state_name ~= "fatal" and current_state_name ~= "incapacitated" then
+				local rally_skill_data = self._ext_movement:rally_skill_data()
 
-				if not secondary then
-					if prime_target.unit:base().is_husk_player then
-						is_arrested = prime_target.unit:movement():current_state_name() == "arrested"
-						needs_revive = prime_target.unit:interaction():active() and prime_target.unit:movement():need_revive() and not is_arrested
-					else
-						is_arrested = prime_target.unit:character_damage():arrested()
-						needs_revive = prime_target.unit:character_damage():need_revive()
-					end
+				if rally_skill_data and mvector3.distance_sq(self._pos, record.m_pos) < rally_skill_data.range_sq then
+					local needs_revive, is_arrested, action_stop = nil
 
-					if needs_revive and managers.player:has_enabled_cooldown_upgrade("cooldown", "long_dis_revive") then
-						voice_type = "revive"
+					if not secondary then
+						if prime_target.unit:base().is_husk_player then
+							is_arrested = prime_target.unit:movement():current_state_name() == "arrested"
+							needs_revive = prime_target.unit:interaction():active() and prime_target.unit:movement():need_revive() and not is_arrested
+						else
+							is_arrested = prime_target.unit:character_damage():arrested()
+							needs_revive = prime_target.unit:character_damage():need_revive()
+						end
 
-						managers.player:disable_cooldown_upgrade("cooldown", "long_dis_revive")
-					elseif not is_arrested and not needs_revive and rally_skill_data.morale_boost_delay_t and rally_skill_data.morale_boost_delay_t < managers.player:player_timer():time() then
-						voice_type = "boost"
-						amount = 1
+						if needs_revive and managers.player:has_enabled_cooldown_upgrade("cooldown", "long_dis_revive") then
+							voice_type = "revive"
+
+							managers.player:disable_cooldown_upgrade("cooldown", "long_dis_revive")
+						elseif not is_arrested and not needs_revive and rally_skill_data.morale_boost_delay_t and rally_skill_data.morale_boost_delay_t < managers.player:player_timer():time() then
+							voice_type = "boost"
+							amount = 1
+						end
 					end
 				end
 			end

@@ -656,6 +656,15 @@ function TweakData:_init_pd2()
 			32
 		}
 	}
+	self.hud_icons.damage_control = {
+		texture = "guis/textures/pd2/equipment_02",
+		texture_rect = {
+			0,
+			64,
+			32,
+			32
+		}
+	}
 	self.hud_icons.none_icon = {
 		texture = "guis/textures/pd2/equipment_02",
 		texture_rect = {

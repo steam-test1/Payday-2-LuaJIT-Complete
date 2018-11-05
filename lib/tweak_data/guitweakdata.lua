@@ -2183,6 +2183,15 @@ function GuiTweakData:init()
 				name_id = "menu_max",
 				id = "max"
 			},
+			{
+				{
+					desc_id = "menu_myh_desc_codex",
+					post_event = "pln_contact_duke",
+					videos = {"myh1"}
+				},
+				name_id = "menu_myh",
+				id = "myh"
+			},
 			name_id = "menu_playable_characters",
 			id = "playable_characters"
 		}

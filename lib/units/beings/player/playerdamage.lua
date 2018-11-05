@@ -155,6 +155,11 @@ function PlayerDamage:init(unit)
 		self:set_mission_damage_blockers("damage_fall_disabled", true)
 		self:set_mission_damage_blockers("invulnerable", true)
 	end
+
+	self._delayed_damage = {
+		epsilon = 0.001,
+		chunks = {}
+	}
 end
 
 function PlayerDamage:_init_standard_listeners()
@@ -181,7 +186,9 @@ end
 function PlayerDamage:_on_damage_event()
 	self:set_regenerate_timer_to_max()
 
-	if self:get_real_armor() <= 0 and self._has_damage_speed then
+	local armor_broken = self:_max_armor() > 0 and self:get_real_armor() <= 0
+
+	if armor_broken and self._has_damage_speed then
 		managers.player:activate_temporary_upgrade("temporary", "damage_speed_multiplier")
 
 		if self._has_damage_speed_team then
@@ -458,6 +465,10 @@ function PlayerDamage:update(unit, t, dt)
 	if not self._dead and not self._bleed_out and not self._check_berserker_done then
 		self:_upd_health_regen(t, dt)
 	end
+
+	if not self:is_downed() then
+		self:_update_delayed_damage(t, dt)
+	end
 end
 
 function PlayerDamage:get_revives()
@@ -477,8 +488,7 @@ function PlayerDamage:_update_armor_hud(t, dt)
 	if math.abs(self._current_armor_fill - real_armor) > 0.01 then
 		managers.hud:set_player_armor({
 			current = self._current_armor_fill,
-			total = self:_total_armor(),
-			max = self:_max_armor()
+			total = self:_max_armor()
 		})
 	end
 
@@ -644,7 +654,9 @@ function PlayerDamage:armor_stored_health(amount)
 end
 
 function PlayerDamage:armor_ratio()
-	return self:get_real_armor() / self:_max_armor()
+	local max_armor = self:_max_armor()
+
+	return max_armor ~= 0 and self:get_real_armor() / max_armor or 0
 end
 
 function PlayerDamage:add_armor_stored_health(amount)
@@ -759,10 +771,10 @@ end
 
 function PlayerDamage:_check_update_max_armor()
 	local max_armor = self:_max_armor()
-	self._current_max_armor = self._current_max_armor or self:_max_armor()
+	self._current_max_armor = self._current_max_armor or max_armor
 
 	if self._current_max_armor ~= max_armor then
-		local ratio = max_armor / self._current_max_armor
+		local ratio = self._current_max_armor ~= 0 and max_armor / self._current_max_armor or 0
 		self._current_armor_fill = self._current_armor_fill * ratio
 		self._armor = Application:digest_value(math.clamp(self:get_real_armor() * ratio, 0, max_armor), true)
 		self._current_max_armor = max_armor
@@ -806,10 +818,10 @@ function PlayerDamage:health_ratio()
 end
 
 function PlayerDamage:health_ratio_100()
-	return math.floor(self:get_real_health() / self:_max_health() * 100)
+	return math.floor(self:health_ratio() * 100)
 end
 
-function PlayerDamage:_max_health()
+function PlayerDamage:_raw_max_health()
 	local base_max_health = self._HEALTH_INIT + managers.player:health_skill_addend()
 	local mul = managers.player:health_skill_multiplier()
 	mul = managers.crime_spree:modify_value("PlayerDamage:GetMaxHealth", mul)
@@ -817,7 +829,19 @@ function PlayerDamage:_max_health()
 	return base_max_health * mul
 end
 
-function PlayerDamage:_total_armor()
+function PlayerDamage:_max_health()
+	local max_health = self:_raw_max_health()
+
+	if managers.player:has_category_upgrade("player", "armor_to_health_conversion") then
+		local max_armor = self:_raw_max_armor()
+		local conversion_factor = managers.player:upgrade_value("player", "armor_to_health_conversion") * 0.01
+		max_health = max_health + max_armor * conversion_factor
+	end
+
+	return max_health
+end
+
+function PlayerDamage:_raw_max_armor()
 	local base_max_armor = self._ARMOR_INIT + managers.player:body_armor_value("armor") + managers.player:body_armor_skill_addend()
 	local mul = managers.player:body_armor_skill_multiplier()
 	mul = managers.crime_spree:modify_value("PlayerDamage:GetMaxArmor", mul)
@@ -826,7 +850,14 @@ function PlayerDamage:_total_armor()
 end
 
 function PlayerDamage:_max_armor()
-	return self:_total_armor()
+	local max_armor = self:_raw_max_armor()
+
+	if managers.player:has_category_upgrade("player", "armor_to_health_conversion") then
+		local conversion_factor = managers.player:upgrade_value("player", "armor_to_health_conversion") * 0.01
+		max_armor = max_armor * (1 - conversion_factor)
+	end
+
+	return max_armor
 end
 
 function PlayerDamage:_armor_steps()
@@ -988,16 +1019,10 @@ function PlayerDamage:damage_bullet(attack_data)
 	attack_data.damage = attack_data.damage * dmg_mul
 	attack_data.damage = managers.mutators:modify_value("PlayerDamage:TakeDamageBullet", attack_data.damage)
 	attack_data.damage = managers.crime_spree:modify_value("PlayerDamage:TakeDamageBullet", attack_data.damage)
-	local damage_absorption = pm:get_best_cocaine_damage_absorption()
+	local damage_absorption = pm:damage_absorption()
 
 	if damage_absorption > 0 then
 		attack_data.damage = math.max(0, attack_data.damage - damage_absorption)
-	end
-
-	local hostage_absorption = pm:damage_absorption()
-
-	if hostage_absorption > 0 then
-		attack_data.damage = math.max(0, attack_data.damage - hostage_absorption)
 	end
 
 	if self._god_mode then
@@ -1083,6 +1108,8 @@ function PlayerDamage:damage_bullet(attack_data)
 	self:_hit_direction(attack_data.attacker_unit:position())
 	pm:check_damage_carry(attack_data)
 
+	attack_data.damage = managers.player:modify_value("damage_taken", attack_data.damage, attack_data)
+
 	if self._bleed_out then
 		self:_bleed_out_damage(attack_data)
 
@@ -1134,7 +1161,7 @@ function PlayerDamage:_calc_armor_damage(attack_data)
 		health_subtracted = health_subtracted - self:get_real_armor()
 
 		self:_damage_screen()
-		SoundDevice:set_rtpc("shield_status", self:get_real_armor() / self:_total_armor() * 100)
+		SoundDevice:set_rtpc("shield_status", self:armor_ratio() * 100)
 		self:_send_set_armor()
 
 		if self:get_real_armor() <= 0 then
@@ -1223,7 +1250,7 @@ function PlayerDamage:_check_chico_heal(attack_data)
 			local upg_values = managers.player:upgrade_value("player", "chico_injector_health_to_speed")
 			local times = math.floor(self._injector_overflow / upg_values[1])
 
-			managers.player:speed_up_ability_timer("chico_injector", upg_values[2] * times)
+			managers.player:speed_up_grenade_cooldown(upg_values[2] * times)
 
 			self._injector_overflow = self._injector_overflow - upg_values[1] * times
 		else
@@ -1279,6 +1306,8 @@ function PlayerDamage:damage_killzone(attack_data)
 	if self._bleed_out then
 		return
 	end
+
+	attack_data.damage = managers.player:modify_value("damage_taken", attack_data.damage, attack_data)
 
 	self:_check_chico_heal(attack_data)
 
@@ -1421,6 +1450,7 @@ function PlayerDamage:damage_explosion(attack_data)
 	local dmg_mul = managers.player:damage_reduction_skill_multiplier("explosion")
 	attack_data.damage = damage * dmg_mul
 	attack_data.damage = managers.crime_spree:modify_value("PlayerDamage:OnTakeExplosionDamage", attack_data.damage)
+	attack_data.damage = managers.player:modify_value("damage_taken", attack_data.damage, attack_data)
 
 	self:_check_chico_heal(attack_data)
 
@@ -1472,12 +1502,54 @@ function PlayerDamage:damage_fire(attack_data)
 
 	local dmg_mul = managers.player:damage_reduction_skill_multiplier("fire")
 	attack_data.damage = damage * dmg_mul
+	attack_data.damage = managers.player:modify_value("damage_taken", attack_data.damage, attack_data)
 
 	self:_check_chico_heal(attack_data)
 
 	local armor_subtracted = self:_calc_armor_damage(attack_data)
 	attack_data.damage = attack_data.damage - (armor_subtracted or 0)
 	local health_subtracted = self:_calc_health_damage(attack_data)
+
+	self:_call_listeners(damage_info)
+end
+
+function PlayerDamage:damage_simple(attack_data)
+	local damage_info = {result = {
+		type = "hurt",
+		variant = attack_data.variant
+	}}
+
+	if self._god_mode or self._invulnerable or self._mission_damage_blockers.invulnerable then
+		self:_call_listeners(damage_info)
+
+		return
+	elseif self:incapacitated() then
+		return
+	elseif self._unit:movement():current_state().immortal then
+		return
+	end
+
+	self._unit:sound():play("player_hit")
+
+	attack_data.damage = managers.player:modify_value("damage_taken", attack_data.damage, attack_data)
+
+	if self._bleed_out then
+		self:_bleed_out_damage(attack_data)
+
+		return
+	end
+
+	self:_check_chico_heal(attack_data)
+
+	local armor_reduction_multiplier = 0
+
+	if self:get_real_armor() <= 0 then
+		armor_reduction_multiplier = 1
+	end
+
+	local health_subtracted = self:_calc_armor_damage(attack_data)
+	attack_data.damage = attack_data.damage * armor_reduction_multiplier
+	health_subtracted = health_subtracted + self:_calc_health_damage(attack_data)
 
 	self:_call_listeners(damage_info)
 end
@@ -1657,6 +1729,7 @@ function PlayerDamage:on_downed()
 	self:_stop_tinnitus()
 	self:_stop_concussion()
 	self:clear_armor_stored_health()
+	self:clear_delayed_damage()
 	self._listener_holder:call("on_enter_bleedout")
 end
 
@@ -1804,8 +1877,9 @@ function PlayerDamage:_hit_direction(position_vector)
 end
 
 function PlayerDamage:_damage_screen()
-	self._hurt_value = 1 - math.clamp(0.8 - math.pow(self:get_real_armor() / self:_max_armor(), 2), 0, 1)
-	self._armor_value = math.clamp(self:get_real_armor() / self:_max_armor(), 0, 1)
+	local armor_ratio = self:armor_ratio()
+	self._hurt_value = 1 - math.clamp(0.8 - math.pow(armor_ratio, 2), 0, 1)
+	self._armor_value = math.clamp(armor_ratio, 0, 1)
 
 	managers.environment_controller:set_hurt_value(self._hurt_value)
 	self._listener_holder:call("on_damage")
@@ -1839,7 +1913,7 @@ function PlayerDamage:revive(helped_self)
 
 	if not arrested then
 		self:set_health(self:_max_health() * tweak_data.player.damage.REVIVE_HEALTH_STEPS[self._revive_health_i] * (self._revive_health_multiplier or 1) * managers.player:upgrade_value("player", "revived_health_regain", 1))
-		self:set_armor(self:_total_armor())
+		self:set_armor(self:_max_armor())
 
 		self._revive_health_i = math.min(#tweak_data.player.damage.REVIVE_HEALTH_STEPS, self._revive_health_i + 1)
 		self._revive_miss = 2
@@ -1980,8 +2054,8 @@ end
 
 function PlayerDamage:_send_set_armor()
 	if self._unit:network() then
-		local armor = math.round(self:get_real_armor() / self:_total_armor() * 100)
-		local max_mul = math.min(self:_total_armor() / 100, 1)
+		local armor = math.round(self:armor_ratio() * 100)
+		local max_mul = math.min(self:_max_armor() / 100, 1)
 
 		self._unit:network():send("set_armor", math.clamp(armor, 0, 100), max_mul)
 	end
@@ -2341,6 +2415,79 @@ end
 
 function PlayerDamage:get_armor_regenerate_speed()
 	return self._regenerate_speed or 1
+end
+
+function PlayerDamage:_update_delayed_damage(t, dt)
+	local no_chunks = #self._delayed_damage.chunks == 0
+	local time_for_tick = self._delayed_damage.next_tick and t < self._delayed_damage.next_tick
+
+	if no_chunks or time_for_tick then
+		return
+	end
+
+	self._delayed_damage.next_tick = t + 1
+	local total_tick = 0
+	local remaining_chunks = {}
+
+	for _, damage_chunk in ipairs(self._delayed_damage.chunks) do
+		total_tick = total_tick + damage_chunk.tick
+		damage_chunk.remaining = damage_chunk.remaining - damage_chunk.tick
+
+		if self._delayed_damage.epsilon < damage_chunk.remaining then
+			table.insert(remaining_chunks, damage_chunk)
+		end
+	end
+
+	self._delayed_damage.chunks = remaining_chunks
+
+	if total_tick > 0 then
+		self:damage_simple({
+			variant = "delayed_tick",
+			damage = total_tick
+		})
+	end
+
+	local remaining_damage = self:remaining_delayed_damage()
+
+	if remaining_damage == 0 then
+		self._delayed_damage.next_tick = nil
+	end
+
+	managers.hud:set_teammate_delayed_damage(HUDManager.PLAYER_PANEL, remaining_damage)
+end
+
+function PlayerDamage:delay_damage(damage, seconds)
+	local damage_chunk = {
+		tick = damage / seconds,
+		remaining = damage
+	}
+
+	if not self._delayed_damage.next_tick then
+		self._delayed_damage.next_tick = TimerManager:game():time() + 1
+	end
+
+	table.insert(self._delayed_damage.chunks, damage_chunk)
+	managers.hud:set_teammate_delayed_damage(HUDManager.PLAYER_PANEL, self:remaining_delayed_damage())
+end
+
+function PlayerDamage:clear_delayed_damage()
+	local remaining_damage = self:remaining_delayed_damage()
+	self._delayed_damage.chunks = {}
+	self._delayed_damage.next_tick = nil
+
+	managers.hud:set_teammate_delayed_damage(HUDManager.PLAYER_PANEL, 0)
+
+	return remaining_damage
+end
+
+function PlayerDamage:remaining_delayed_damage()
+	local remaining_damage = 0
+
+	for _, damage_chunk in ipairs(self._delayed_damage.chunks) do
+		remaining_damage = remaining_damage + damage_chunk.remaining
+	end
+
+	return remaining_damage
 end
 PlayerBodyDamage = PlayerBodyDamage or class()
 

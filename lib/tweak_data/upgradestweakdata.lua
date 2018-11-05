@@ -1258,6 +1258,23 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.dodge_replenish_armor = {true}
 	self.values.player.smoke_screen_ally_dodge_bonus = {0.1}
 	self.values.player.sicario_multiplier = {2}
+	self.values.player.armor_to_health_conversion = {100}
+	self.values.player.damage_control_passive = {{
+		75,
+		6.25
+	}}
+	self.values.player.damage_control_auto_shrug = {4}
+	self.values.player.damage_control_cooldown_drain = {
+		{
+			0,
+			1
+		},
+		{
+			35,
+			2
+		}
+	}
+	self.values.player.damage_control_healing = {50}
 	self.values.team.crew_add_health = {6}
 	self.values.team.crew_add_armor = {3}
 	self.values.team.crew_add_dodge = {0.05}
@@ -2901,6 +2918,42 @@ function UpgradesTweakData:_init_pd2_values()
 			}
 		}
 	}
+	local delayed_percentage = self.values.player.damage_control_passive[1][1]
+	local tick_percentage = self.values.player.damage_control_passive[1][2] * 0.01 * delayed_percentage
+	local damage_duration = math.ceil(delayed_percentage / tick_percentage)
+	local auto_shrug_time = self.values.player.damage_control_auto_shrug[1]
+	local health_threshold = self.values.player.damage_control_cooldown_drain[2][1]
+	local cooldown_drain_1 = self.values.player.damage_control_cooldown_drain[1][2]
+	local cooldown_drain_2 = self.values.player.damage_control_cooldown_drain[2][2]
+	local heal_percentage = self.values.player.damage_control_healing[1]
+
+	table.insert(editable_specialization_descs, {
+		{
+			tostring(delayed_percentage) .. "%",
+			damage_duration,
+			"10"
+		},
+		{"25%"},
+		{},
+		{
+			"+1",
+			"15%",
+			"45%"
+		},
+		{auto_shrug_time},
+		{"135%"},
+		{
+			tostring(health_threshold) .. "%",
+			cooldown_drain_2,
+			cooldown_drain_1
+		},
+		{
+			"5%",
+			"20%"
+		},
+		{tostring(heal_percentage) .. "%"}
+	})
+
 	self.specialization_descs = {}
 
 	for tree, data in pairs(editable_specialization_descs) do
@@ -3127,7 +3180,8 @@ function UpgradesTweakData:init(tweak_data)
 				"push",
 				"breech",
 				"ching",
-				"erma"
+				"erma",
+				"sap"
 			}
 		},
 		[26] = {
@@ -3149,6 +3203,8 @@ function UpgradesTweakData:init(tweak_data)
 				"g26",
 				"twins",
 				"pitchfork",
+				"shrew",
+				"x_shrew",
 				"basset",
 				"x_basset"
 			}
@@ -3648,6 +3704,8 @@ function UpgradesTweakData:init(tweak_data)
 	self:_breech_weapon_definitions()
 	self:_ching_weapon_definitions()
 	self:_erma_weapon_definitions()
+	self:_shrew_weapon_definitions()
+	self:_x_shrew_weapon_definitions()
 	self:_basset_weapon_definitions()
 	self:_x_basset_weapon_definitions()
 	self:_melee_weapon_definitions()
@@ -7342,6 +7400,54 @@ function UpgradesTweakData:_player_definitions()
 			category = "player"
 		}
 	}
+	self.definitions.player_armor_to_health_conversion = {
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "armor_to_health_conversion",
+			category = "player"
+		}
+	}
+	self.definitions.player_damage_control_passive = {
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "damage_control_passive",
+			category = "player"
+		}
+	}
+	self.definitions.player_damage_control_auto_shrug = {
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "damage_control_auto_shrug",
+			category = "player"
+		}
+	}
+	self.definitions.player_damage_control_cooldown_drain_1 = {
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "damage_control_cooldown_drain",
+			category = "player"
+		}
+	}
+	self.definitions.player_damage_control_cooldown_drain_2 = {
+		category = "feature",
+		upgrade = {
+			value = 2,
+			upgrade = "damage_control_cooldown_drain",
+			category = "player"
+		}
+	}
+	self.definitions.player_damage_control_healing = {
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "damage_control_healing",
+			category = "player"
+		}
+	}
 	self.definitions.toolset = {
 		description_text_id = "toolset",
 		category = "equipment",
@@ -9463,6 +9569,7 @@ function UpgradesTweakData:_melee_weapon_definitions()
 		dlc = "raidww2_clan",
 		category = "melee_weapon"
 	}
+	self.definitions.sap = {category = "melee_weapon"}
 end
 
 function UpgradesTweakData:_grenades_definitions()
@@ -9516,6 +9623,7 @@ function UpgradesTweakData:_grenades_definitions()
 		dlc = "pd2_clan",
 		category = "grenade"
 	}
+	self.definitions.damage_control = {category = "grenade"}
 end
 
 function UpgradesTweakData:_weapon_definitions()
@@ -12792,6 +12900,22 @@ function UpgradesTweakData:_erma_weapon_definitions()
 	self.definitions.erma = {
 		factory_id = "wpn_fps_smg_erma",
 		weapon_id = "erma",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_shrew_weapon_definitions()
+	self.definitions.shrew = {
+		factory_id = "wpn_fps_pis_shrew",
+		weapon_id = "shrew",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_shrew_weapon_definitions()
+	self.definitions.x_shrew = {
+		factory_id = "wpn_fps_pis_x_shrew",
+		weapon_id = "x_shrew",
 		category = "weapon"
 	}
 end

@@ -35,16 +35,17 @@ function DLCTweakData:init(tweak_data)
 			wwh = true,
 			paydaycon2016 = 1,
 			pic = true,
-			the_bomb = true,
+			myh = true,
 			mdm = 1,
+			the_bomb = true,
 			steel = true,
-			hlm2 = true,
 			fdm = true,
 			hoxton_revenge = 1,
-			speedrunners = 1,
+			hlm2 = true,
 			hl_miami = true,
-			alienware_alpha = true,
+			speedrunners = 1,
 			pn2 = true,
+			alienware_alpha = true,
 			humble_summer_2015 = 1,
 			pim = true,
 			cash = true,
@@ -6078,5 +6079,15 @@ function DLCTweakData:init(tweak_data)
 		free = true,
 		content = {}
 	}
+	self.kwm_bundle = {
+		free = true,
+		content = {}
+	}
+	self.kwm_bundle.content.loot_global_value = "normal"
+	self.kwm_bundle.content.loot_drops = {{
+		type_items = "masks",
+		item_entry = "kwm",
+		amount = 1
+	}}
 end
 

@@ -585,6 +585,16 @@ function TweakData:init()
 					ai_character_id = "ai_max",
 					ssuffix = "y"
 				}
+			},
+			{
+				name = "myh",
+				order = 20,
+				static_data = {
+					voice = "rb22",
+					ai_mask_id = "myh",
+					ai_character_id = "ai_myh",
+					ssuffix = "ac"
+				}
 			}
 		},
 		character_names = {}

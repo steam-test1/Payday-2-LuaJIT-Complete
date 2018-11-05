@@ -4,6 +4,7 @@ require("lib/states/MenuTitlescreenState")
 require("lib/states/MenuMainState")
 require("lib/states/EditorState")
 require("lib/states/WorldCameraState")
+require("lib/utils/game_state_machine/GameStateFilters")
 require("lib/states/IngamePlayerBase")
 require("lib/states/IngameStandard")
 require("lib/states/IngameMaskOff")
@@ -143,5 +144,11 @@ function GameStateMachine:change_state_by_name(state_name, params)
 	local state = assert(self._states[name], "[GameStateMachine] Name '" .. tostring(name) .. "' does not correspond to a valid state.")
 
 	self:change_state(state, params)
+end
+
+function GameStateMachine:verify_game_state(filter, state)
+	state = state or self:last_queued_state_name()
+
+	return filter[state]
 end
 

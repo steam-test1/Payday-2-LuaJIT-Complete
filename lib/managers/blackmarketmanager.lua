@@ -492,12 +492,11 @@ function BlackMarketManager:equipped_projectile()
 	return self:equipped_grenade()
 end
 
-function BlackMarketManager:has_equipped_ability()
+function BlackMarketManager:equipped_grenade_allows_pickups()
 	local id = self:equipped_grenade()
+	local grenade_tweak = id and tweak_data.blackmarket.projectiles[id]
 
-	if id then
-		return tweak_data.blackmarket.projectiles[id] and tweak_data.blackmarket.projectiles[id].ability and true or false
-	end
+	return grenade_tweak and not grenade_tweak.base_cooldown
 end
 
 function BlackMarketManager:equipped_grenade()
@@ -513,13 +512,11 @@ function BlackMarketManager:equipped_grenade()
 
 	local grenade = nil
 
-	for grenade_id, data in pairs(tweak_data.blackmarket.projectiles) do
+	for grenade_id, tweak in pairs(tweak_data.blackmarket.projectiles) do
 		grenade = Global.blackmarket_manager.grenades[grenade_id]
 
-		if data.throwable and grenade.equipped and grenade.unlocked then
+		if grenade and grenade.equipped and grenade.unlocked then
 			return grenade_id, grenade.amount or 0
-		elseif data.ability and grenade.equipped and grenade.unlocked then
-			return grenade_id, 1
 		end
 	end
 

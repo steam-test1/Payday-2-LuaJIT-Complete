@@ -4507,7 +4507,8 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		locke = {
 			"pbr",
-			"pbr2"
+			"pbr2",
+			"wwh"
 		},
 		jimmy = {
 			"mad",

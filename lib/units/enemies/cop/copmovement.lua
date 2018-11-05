@@ -243,9 +243,6 @@ function CopMovement:post_init()
 	self._tweak_data = tweak_data.character[self._ext_base._tweak_table]
 
 	tweak_data:add_reload_callback(self, self.tweak_data_clbk_reload)
-
-	self._machine = self._unit:anim_state_machine()
-
 	self._machine:set_callback_object(self)
 
 	self._stance = {

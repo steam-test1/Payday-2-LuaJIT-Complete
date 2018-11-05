@@ -4055,7 +4055,7 @@ function PlayerInventoryGui:open_throwable_menu()
 		category = "grenades",
 		override_slots = {
 			4,
-			4
+			5
 		},
 		identifier = BlackMarketGui.identifiers.grenade
 	})
@@ -4330,8 +4330,8 @@ function PlayerInventoryGui:open_character_menu()
 		on_create_func_name = "populate_characters",
 		category = "characters",
 		override_slots = {
-			6,
-			3
+			5,
+			4
 		},
 		identifier = BlackMarketGui.identifiers.character
 	})
@@ -5385,6 +5385,16 @@ function PlayerInventoryGui:_get_armor_stats(name)
 		end
 
 		skill_stats[stat.name].skill_in_effect = skill_stats[stat.name].skill_in_effect or skill_stats[stat.name].value ~= 0
+	end
+
+	if managers.player:has_category_upgrade("player", "armor_to_health_conversion") then
+		local conversion_ratio = managers.player:upgrade_value("player", "armor_to_health_conversion") * 0.01
+		local converted_armor = (base_stats.armor.value + skill_stats.armor.value) * conversion_ratio
+		local skill_in_effect = converted_armor ~= 0
+		skill_stats.armor.value = skill_stats.armor.value - converted_armor
+		skill_stats.health.value = skill_stats.health.value + converted_armor
+		skill_stats.armor.skill_in_effect = skill_in_effect
+		skill_stats.health.skill_in_effect = skill_in_effect
 	end
 
 	return base_stats, mods_stats, skill_stats

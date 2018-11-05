@@ -604,7 +604,7 @@ function ContractBrokerGui:_setup_filter_time()
 		last_y = text:bottom() + 1
 	end
 
-	self:add_filter("chain", ContractBrokerGui.perform_filter_time)
+	self:add_filter("job_id", ContractBrokerGui.perform_filter_time)
 	self:set_sorting_function(ContractBrokerGui.perform_standard_sort)
 end
 
@@ -652,7 +652,15 @@ function ContractBrokerGui:perform_filter_contact(value)
 end
 
 function ContractBrokerGui:perform_filter_time(value)
-	return table.size(value) == self._current_filter
+	local job_tweak = tweak_data.narrative:job_data(value)
+
+	if job_tweak.job_wrapper then
+		job_tweak = tweak_data.narrative.jobs[job_tweak.job_wrapper[1]]
+
+		return (job_tweak and job_tweak.chain and table.size(job_tweak.chain) or 1) == self._current_filter
+	else
+		return table.size(job_tweak.chain) == self._current_filter
+	end
 end
 
 function ContractBrokerGui:perform_filter_tactic(value)

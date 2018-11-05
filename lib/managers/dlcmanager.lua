@@ -508,6 +508,10 @@ function GenericDLCManager:has_fdm()
 	return self:is_dlc_unlocked("fdm")
 end
 
+function GenericDLCManager:has_myh()
+	return self:is_dlc_unlocked("myh")
+end
+
 function GenericDLCManager:has_goty_all_dlc_bundle_2014()
 	return self:has_goty_weapon_bundle_2014() and self:has_goty_heist_bundle_2014() and self:is_dlcs_unlocked({"character_pack_clover"})
 end
@@ -1777,6 +1781,10 @@ function WINDLCManager:init()
 				no_install = true
 			},
 			wwh = {
+				app_id = "218620",
+				no_install = true
+			},
+			myh = {
 				app_id = "218620",
 				no_install = true
 			}

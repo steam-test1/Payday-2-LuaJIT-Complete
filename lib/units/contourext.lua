@@ -325,6 +325,8 @@ function ContourExt:remove_by_id(id, sync)
 		return
 	end
 
+	local remove_type = id.type
+
 	for i, setup in ipairs(self._contour_list) do
 		if setup == id then
 			self:_remove(i, sync)
@@ -337,7 +339,7 @@ function ContourExt:remove_by_id(id, sync)
 		end
 	end
 
-	self:apply_to_linked("remove_by_id", id, sync)
+	self:apply_to_linked("remove", remove_type, sync)
 end
 
 function ContourExt:has_id(id)
@@ -356,7 +358,12 @@ function ContourExt:_clear()
 end
 
 function ContourExt:_remove(index, sync)
-	local setup = self._contour_list[index]
+	local setup = self._contour_list and self._contour_list[index]
+
+	if not setup then
+		return
+	end
+
 	local contour_type = setup.type
 	local data = self._types[setup.type]
 
@@ -402,8 +409,6 @@ function ContourExt:_remove(index, sync)
 
 		managers.network:session():send_to_peers_synched("sync_contour_state", self._unit, u_id, table.index_of(ContourExt.indexed_types, contour_type), false, 1)
 	end
-
-	self:apply_to_linked("_remove", index, sync)
 end
 
 function ContourExt:update(unit, t, dt)
@@ -485,6 +490,10 @@ function ContourExt:_upd_opacity(opacity, is_retry)
 end
 
 function ContourExt:_upd_color(is_retry)
+	if not self._contour_list then
+		return
+	end
+
 	local color = self._types[self._contour_list[1].type].color or self._contour_list[1].color
 
 	if not color then

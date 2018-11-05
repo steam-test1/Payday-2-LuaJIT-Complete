@@ -1,5 +1,6 @@
 require("lib/player_actions/PlayerActionManager")
 require("lib/managers/player/SmokeScreenEffect")
+require("lib/utils/ValueModifier")
 
 PlayerManager = PlayerManager or class()
 PlayerManager.WEAPON_SLOTS = 2
@@ -49,6 +50,7 @@ function PlayerManager:init()
 	self._properties = PropertyManager:new()
 	self._action_mgr = PlayerActionManager:new()
 	self._temporary_properties = TemporaryPropertyManager:new()
+	self._value_modifier = ValueModifier:new()
 	self._player_name = Idstring("units/multiplayer/mp_fps_mover/mp_fps_mover")
 	self._players = {}
 	self._nr_players = Global.nr_players or 1
@@ -119,15 +121,14 @@ function PlayerManager:init()
 	self._crit_mul = 1
 	self._melee_dmg_mul = 1
 	self._accuracy_multiplier = 1
-	self._damage_absorption = Application:digest_value(0, true)
+	self._damage_absorption = {}
 	self._consumable_upgrades = {}
 
 	self:check_skills()
 end
 
 function PlayerManager:check_skills()
-	self._coroutine_mgr:remove_coroutine(PlayerAction.UnseenStrike)
-	self._coroutine_mgr:remove_coroutine(PlayerAction.BloodthirstBase)
+	self._coroutine_mgr:clear()
 
 	self._saw_panic_when_kill = self:has_category_upgrade("saw", "panic_when_kill")
 	self._unseen_strike = self:has_category_upgrade("player", "unseen_increased_crit_chance")
@@ -244,17 +245,29 @@ function PlayerManager:check_skills()
 	else
 		self:unregister_message(Message.OnPlayerDodge, "dodge_replenish_armor")
 	end
+
+	if self:has_category_upgrade("player", "damage_control_passive") then
+		self:add_coroutine("damage_control", PlayerAction.DamageControl)
+	end
 end
 
 function PlayerManager:damage_absorption()
-	local absorb = Application:digest_value(self._damage_absorption, false)
-	absorb = managers.crime_spree:modify_value("PlayerManager:GetDamageAbsorption", absorb)
+	local total = 0
 
-	return absorb
+	for _, absorption in pairs(self._damage_absorption) do
+		total = total + Application:digest_value(absorption, false)
+	end
+
+	total = total + self:get_best_cocaine_damage_absorption()
+	total = managers.crime_spree:modify_value("PlayerManager:GetDamageAbsorption", total)
+
+	return total
 end
 
-function PlayerManager:set_damage_absorption(value)
-	self._damage_absorption = Application:digest_value(value, true)
+function PlayerManager:set_damage_absorption(key, value)
+	self._damage_absorption[key] = value and Application:digest_value(value, true) or nil
+
+	managers.hud:set_absorb_active(HUDManager.PLAYER_PANEL, self:damage_absorption())
 end
 
 function PlayerManager:_on_expert_handling_event(attacker_unit, unit, variant)
@@ -463,6 +476,18 @@ function PlayerManager:has_active_temporary_property(name)
 	return self._temporary_properties:has_active_property(name)
 end
 
+function PlayerManager:add_modifier(...)
+	return self._value_modifier:add_modifier(...)
+end
+
+function PlayerManager:remove_modifier(...)
+	return self._value_modifier:remove_modifier(...)
+end
+
+function PlayerManager:modify_value(...)
+	return self._value_modifier:modify_value(...)
+end
+
 function PlayerManager:_setup()
 	self._equipment = {
 		selections = {},
@@ -578,12 +603,6 @@ function PlayerManager:update(t, dt)
 		if data ~= 0 then
 			self._coroutine_mgr:add_coroutine(PlayerAction.UnseenStrike, PlayerAction.UnseenStrike, self, data.min_time, data.max_duration, data.crit_chance)
 		end
-	end
-
-	local equipped_grenade = managers.blackmarket:equipped_grenade()
-
-	if self:player_unit() and equipped_grenade and tweak_data.blackmarket.projectiles[equipped_grenade] and tweak_data.blackmarket.projectiles[equipped_grenade].base_cooldown then
-		self:update_ability_hud(equipped_grenade)
 	end
 
 	self:update_smoke_screens(t, dt)
@@ -929,6 +948,12 @@ function PlayerManager:spawned_player(id, unit)
 	if id == 1 then
 		managers.hud:set_teammate_weapon_firemode(HUDManager.PLAYER_PANEL, 1, unit:inventory():unit_by_selection(1):base():fire_mode())
 		managers.hud:set_teammate_weapon_firemode(HUDManager.PLAYER_PANEL, 2, unit:inventory():unit_by_selection(2):base():fire_mode())
+
+		local grenade_cooldown = tweak_data.blackmarket.projectiles[managers.blackmarket:equipped_grenade()].base_cooldown
+
+		if grenade_cooldown and not self:got_max_grenades() then
+			self:replenish_grenades(grenade_cooldown)
+		end
 	end
 end
 
@@ -951,6 +976,10 @@ end
 function PlayerManager:player_destroyed(id)
 	self._players[id] = nil
 	self._respawn = true
+
+	if id == 1 then
+		self:clear_timers()
+	end
 end
 
 function PlayerManager:players()
@@ -1482,6 +1511,8 @@ function PlayerManager:unaquire_equipment(upgrade, id)
 end
 
 function PlayerManager:aquire_upgrade(upgrade)
+	print("[Debug] PlayerManager:aquire_upgrade", upgrade.upgrade)
+
 	self._global.upgrades[upgrade.category] = self._global.upgrades[upgrade.category] or {}
 	self._global.upgrades[upgrade.category][upgrade.upgrade] = math.max(upgrade.value, self._global.upgrades[upgrade.category][upgrade.upgrade] or 0)
 	local value = tweak_data.upgrades.values[upgrade.category][upgrade.upgrade][upgrade.value]
@@ -1624,15 +1655,15 @@ function PlayerManager:crew_ability_upgrade_value(upgrade, default)
 end
 
 function PlayerManager:start_custom_cooldown(category, upgrade, cooldown)
-	self:start_ability_timer(category .. "_" .. upgrade, TimerManager:game():time() + cooldown)
+	self:start_timer(category .. "_" .. upgrade, cooldown)
 end
 
 function PlayerManager:is_custom_cooldown_not_active(category, upgrade)
-	return self:has_category_upgrade(category, upgrade) and not self:has_active_ability_timer(category .. "_" .. upgrade)
+	return self:has_category_upgrade(category, upgrade) and not self:has_active_timer(category .. "_" .. upgrade)
 end
 
 function PlayerManager:get_custom_cooldown_left(category, upgrade)
-	return self:get_ability_time_left(category .. "_" .. upgrade)
+	return self:get_timer_remaining(category .. "_" .. upgrade)
 end
 
 function PlayerManager:consumable_upgrade_value(upgrade, default)
@@ -3067,21 +3098,8 @@ function PlayerManager:set_synced_cocaine_stacks(peer_id, amount, in_use, upgrad
 end
 
 function PlayerManager:update_cocaine_hud()
-	if not managers.network:session() or not managers.criminals or not managers.hud then
-		return
-	end
-
-	local my_peer_id = managers.network:session():local_peer():id()
-
-	for _, peer in pairs(managers.network:session():all_peers()) do
-		local peer_id = peer:id()
-		local character_data = managers.criminals:character_data_by_peer_id(peer_id)
-
-		if character_data then
-			local best_damage_absorption = self:get_best_cocaine_damage_absorption(peer_id)
-
-			managers.hud:set_absorb_active(character_data.panel_id, best_damage_absorption)
-		end
+	if managers.hud then
+		managers.hud:set_absorb_active(HUDManager.PLAYER_PANEL, self:damage_absorption())
 	end
 end
 
@@ -4200,16 +4218,68 @@ function PlayerManager:_set_grenade(params)
 	self:update_grenades_amount_to_peers(grenade, amount)
 	managers.hud:set_teammate_grenades(HUDManager.PLAYER_PANEL, {
 		amount = amount,
-		icon = icon,
-		has_cooldown = not not tweak_data.base_cooldown
+		icon = icon
+	})
+end
+
+function PlayerManager:_on_grenade_cooldown_end()
+	local tweak = tweak_data.blackmarket.projectiles[managers.blackmarket:equipped_grenade()]
+
+	if tweak and tweak.sounds and tweak.sounds.cooldown then
+		self:player_unit():sound():play(tweak.sounds.cooldown)
+	end
+
+	self:add_grenade_amount(1)
+end
+
+function PlayerManager:replenish_grenades(cooldown)
+	if self:has_active_timer("replenish_grenades") then
+		return
+	end
+
+	self:start_timer("replenish_grenades", cooldown, callback(self, self, "_on_grenade_cooldown_end"))
+	managers.hud:set_player_grenade_cooldown({
+		end_time = managers.game_play_central:get_heist_timer() + cooldown,
+		duration = cooldown
+	})
+end
+
+function PlayerManager:speed_up_grenade_cooldown(time)
+	local timer = self._timers.replenish_grenades
+
+	if not timer then
+		return
+	end
+
+	timer.t = timer.t - time
+	local peer_id = managers.network:session():local_peer():id()
+	local grenade = self._global.synced_grenades[peer_id].grenade
+	local tweak = tweak_data.blackmarket.projectiles[grenade]
+	local time_left = self:get_timer_remaining("replenish_grenades") or 0
+
+	managers.hud:set_player_grenade_cooldown({
+		end_time = managers.game_play_central:get_heist_timer() + time_left,
+		duration = tweak.base_cooldown
 	})
 end
 
 function PlayerManager:add_grenade_amount(amount, sync)
 	local peer_id = managers.network:session():local_peer():id()
 	local grenade = self._global.synced_grenades[peer_id].grenade
-	local icon = tweak_data.blackmarket.projectiles[grenade].icon
-	amount = math.min(Application:digest_value(self._global.synced_grenades[peer_id].amount, false) + amount, self:get_max_grenades_by_peer_id(peer_id))
+	local tweak = tweak_data.blackmarket.projectiles[grenade]
+	local max_amount = self:get_max_grenades_by_peer_id(peer_id)
+	local icon = tweak.icon
+	local previous_amount = self._global.synced_grenades[peer_id].amount
+
+	if amount > 0 and tweak.base_cooldown then
+		managers.hud:animate_grenade_flash(HUDManager.PLAYER_PANEL)
+	end
+
+	amount = math.min(Application:digest_value(previous_amount, false) + amount, max_amount)
+
+	if amount < max_amount and tweak.base_cooldown then
+		self:replenish_grenades(tweak.base_cooldown)
+	end
 
 	managers.hud:set_teammate_grenades_amount(HUDManager.PLAYER_PANEL, {
 		icon = icon,
@@ -4237,8 +4307,16 @@ function PlayerManager:update_grenades_amount_to_peers(grenade, amount, register
 end
 
 function PlayerManager:set_synced_grenades(peer_id, grenade, amount, register_peer_id)
-	local only_update_amount = self._global.synced_grenades[peer_id] and self._global.synced_grenades[peer_id].grenade == grenade
+	local synced_grenade = self._global.synced_grenades[peer_id]
+	local only_update_amount = false
 	local digested_amount = Application:digest_value(amount, true)
+	local incremented = false
+
+	if synced_grenade then
+		only_update_amount = synced_grenade.grenade == grenade
+		incremented = Application:digest_value(synced_grenade.amount, false) < amount
+	end
+
 	self._global.synced_grenades[peer_id] = {
 		grenade = grenade,
 		amount = digested_amount
@@ -4251,15 +4329,17 @@ function PlayerManager:set_synced_grenades(peer_id, grenade, amount, register_pe
 		if only_update_amount then
 			managers.hud:set_teammate_grenades_amount(character_data.panel_id, {
 				icon = icon,
-				amount = amount,
-				ability = tweak_data.blackmarket.projectiles[grenade].ability
+				amount = amount
 			})
 		else
 			managers.hud:set_teammate_grenades(character_data.panel_id, {
 				icon = icon,
-				amount = amount,
-				ability = tweak_data.blackmarket.projectiles[grenade].ability
+				amount = amount
 			})
+		end
+
+		if incremented and tweak_data.blackmarket.projectiles[grenade].base_cooldown then
+			managers.hud:animate_grenade_flash(character_data.panel_id)
 		end
 	end
 
@@ -4277,12 +4357,6 @@ function PlayerManager:get_synced_grenades(peer_id)
 end
 
 function PlayerManager:can_throw_grenade()
-	local equipped_grenade = managers.blackmarket:equipped_grenade()
-
-	if tweak_data.blackmarket.projectiles[equipped_grenade].base_cooldown then
-		return not self:has_active_ability_timer(equipped_grenade)
-	end
-
 	local peer_id = managers.network:session():local_peer():id()
 
 	return self:get_grenade_amount(peer_id) > 0
@@ -4317,20 +4391,6 @@ end
 
 function PlayerManager:on_throw_grenade()
 	local should_decrement = true
-	local equipped_grenade = managers.blackmarket:equipped_grenade()
-	local td = tweak_data.blackmarket.projectiles[equipped_grenade]
-
-	if td.base_cooldown then
-		self:start_ability_timer(equipped_grenade, TimerManager:game():time() + td.base_cooldown)
-
-		should_decrement = false
-
-		local function speed_up_on_kill()
-			managers.player:speed_up_ability_timer(equipped_grenade, td.kill_speedup or 1)
-		end
-
-		self:register_message(Message.OnEnemyKilled, "speed_up_" .. equipped_grenade, speed_up_on_kill)
-	end
 
 	if should_decrement then
 		self:add_grenade_amount(-1)
@@ -5172,15 +5232,19 @@ function PlayerManager:on_hallowSPOOCed()
 end
 
 function PlayerManager:attempt_ability(ability)
-	if not self:player_unit() or self:has_activate_temporary_upgrade("temporary", ability) then
+	if not self:player_unit() then
 		return
 	end
 
-	if self:has_active_ability_timer(ability) then
+	local local_peer_id = managers.network:session():local_peer():id()
+
+	if self:get_grenade_amount(local_peer_id) == 0 then
 		return
 	end
 
-	if self["_attempt_" .. ability] and not self["_attempt_" .. ability](self) then
+	local attempt_func = self["_attempt_" .. ability]
+
+	if attempt_func and not attempt_func(self) then
 		return
 	end
 
@@ -5190,20 +5254,23 @@ function PlayerManager:attempt_ability(ability)
 		self:player_unit():sound():play(tweak.sounds.activate)
 	end
 
-	local td = tweak_data.blackmarket.projectiles[ability]
-
-	if td.base_cooldown then
-		self:start_ability_timer(ability, TimerManager:game():time() + td.base_cooldown)
-	end
-
-	managers.network:session():send_to_peers("sync_ability_hud", self:temporary_upgrade_index("temporary", ability), self:upgrade_value("temporary", ability)[2])
+	self:add_grenade_amount(-1)
+	self._message_system:notify("ability_activated", nil, ability)
 end
 
 function PlayerManager:_attempt_chico_injector()
+	if self:has_activate_temporary_upgrade("temporary", "chico_injector") then
+		return false
+	end
+
+	local duration = self:upgrade_value("temporary", "chico_injector")[2]
+	local now = managers.game_play_central:get_heist_timer()
+
+	managers.network:session():send_to_peers("sync_ability_hud", now + duration, duration)
 	self:activate_temporary_upgrade("temporary", "chico_injector")
 
 	local function speed_up_on_kill()
-		managers.player:speed_up_ability_timer("chico_injector", 1)
+		managers.player:speed_up_grenade_cooldown(1)
 	end
 
 	self:register_message(Message.OnEnemyKilled, "speed_up_chico_injector", speed_up_on_kill)
@@ -5212,97 +5279,54 @@ function PlayerManager:_attempt_chico_injector()
 end
 
 function PlayerManager:_update_timers(t)
-	local cd = table.map_copy(self._timers)
+	local timers_copy = table.map_copy(self._timers)
 
-	for k, d in pairs(cd) do
-		if not d.t or d.t <= t then
-			self._timers[k] = nil
+	for key, timer in pairs(timers_copy) do
+		if not timer.t or timer.t <= t then
+			self._timers[key] = nil
 
-			if d.func then
-				d.func(k, d.t)
+			if timer.func then
+				timer.func(key, timer.t)
 			end
 		end
 	end
 end
 
-function PlayerManager:start_ability_timer(ability, time, func)
-	self._timers[ability] = {
-		t = time,
-		func = func
+function PlayerManager:start_timer(key, duration, callback)
+	local end_time = TimerManager:game():time() + duration
+	self._timers[key] = {
+		t = end_time,
+		func = callback
 	}
 end
 
-function PlayerManager:stop_ability_timer(ability, call_func)
-	if call_func then
-		local d = self._timers[ability] or {}
-
-		if d.func then
-			d.func(ability, d.t)
-		end
-	end
-
-	self._timers[ability] = nil
-end
-
-function PlayerManager:has_active_ability_timer(ability)
-	return self:get_ability_timer(ability) and true or false
-end
-
-function PlayerManager:get_ability_timer(ability)
-	if not ability then
+function PlayerManager:get_timer(key)
+	if not key then
 		return
 	end
 
-	local d = self._timers[ability]
+	local timer = self._timers[key]
 
-	return d and TimerManager:game():time() < d.t and d.t or nil
+	return timer and TimerManager:game():time() < timer.t and timer.t or nil
 end
 
-function PlayerManager:speed_up_ability_timer(ability, time)
-	local d = self._timers[ability] or {t = 0}
-	d.t = d.t - time
+function PlayerManager:has_active_timer(key)
+	return self:get_timer(key) ~= nil
 end
 
-function PlayerManager:get_ability_time_left(ability)
-	if not self:has_active_ability_timer(ability) then
-		return
-	end
+function PlayerManager:get_timer_remaining(key)
+	local time = self:get_timer(key)
+	local now = TimerManager:game():time()
 
-	return self:get_ability_timer(ability) - TimerManager:game():time()
+	return time and time - now
 end
-local last_synced_cooldown = nil
 
-function PlayerManager:update_ability_hud(ability)
-	local tweak = tweak_data.blackmarket.projectiles[ability]
-
-	if not self:has_active_ability_timer(ability) then
-		if self._should_reset_ability_hud then
-			self:reset_ability_hud()
-
-			if tweak.sounds and tweak.sounds.cooldown and alive(self:player_unit()) then
-				self:player_unit():sound():play(tweak.sounds.cooldown)
-			end
-		end
-
-		return
-	end
-
-	local base_cooldown = tweak.base_cooldown
-	local cooldown = self:get_ability_time_left(ability)
-
-	managers.hud:set_player_ability_cooldown({cooldown = cooldown})
-
-	self._should_reset_ability_hud = true
-
-	if cooldown ~= last_synced_cooldown and managers.network:session() then
-		managers.network:session():send_to_peers("sync_ability_hud_cooldown", self:temporary_upgrade_index("temporary", ability), cooldown)
-
-		last_synced_cooldown = cooldown
-	end
+function PlayerManager:clear_timers()
+	self._timers = {}
 end
 
 function PlayerManager:reset_ability_hud()
-	managers.hud:set_player_ability_cooldown({0})
+	managers.hud:set_player_grenade_cooldown(nil)
 	managers.hud:set_player_ability_radial({
 		current = 0,
 		total = 1

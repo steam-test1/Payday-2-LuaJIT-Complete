@@ -333,12 +333,16 @@ function AchievmentManager:award(id)
 		return
 	end
 
-	if self:get_info(id).awarded then
+	local info = self:get_info(id)
+
+	if info.awarded then
 		return
 	end
 
-	if managers.hud then
+	if managers.hud and not info.showed_awarded then
 		managers.hud:achievement_popup(id)
+
+		info.showed_awarded = true
 	end
 
 	if id == "christmas_present" then
