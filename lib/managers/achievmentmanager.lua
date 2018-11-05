@@ -855,6 +855,8 @@ function AchievmentManager:check_complete_heist_stats_achivements()
 
 					if completion_count > 0 then
 						table.remove(remaining_jobs, id)
+
+						break
 					end
 				end
 			end

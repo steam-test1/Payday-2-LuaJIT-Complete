@@ -542,14 +542,12 @@ function GroupAIStateBesiege:_upd_assault_task()
 		if not self._hunt_mode then
 			local min_enemies_left = 50
 
-			if enemies_left < min_enemies_left or task_data.phase_end_t + 350 < t then
-				if task_data.phase_end_t - 8 < t and not task_data.said_retreat then
-					if self._drama_data.amount < tweak_data.drama.assault_fade_end then
-						task_data.said_retreat = true
+			if enemies_left < min_enemies_left or task_data.phase_end_t + 30 < t then
+				if not task_data.said_retreat then
+					task_data.said_retreat = true
 
-						self:_police_announce_retreat()
-					end
-				elseif task_data.phase_end_t < t and self._drama_data.amount < tweak_data.drama.assault_fade_end and self:_count_criminals_engaged_force(4) <= 3 then
+					self:_police_announce_retreat()
+				elseif task_data.phase_end_t < t and (self._drama_data.amount < tweak_data.drama.assault_fade_end and self:_count_criminals_engaged_force(11) <= 10 or task_data.phase_end_t + 60 < t) then
 					end_assault = true
 				end
 			end

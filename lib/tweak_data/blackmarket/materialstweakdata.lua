@@ -1808,7 +1808,7 @@ function BlackMarketTweakData:_init_materials(tweak_data)
 			30,
 			40
 		},
-		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_purple_desaturated_df",
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_pink_desaturated_df",
 		value = 0,
 		material_amount = 0,
 		texture_bundle_folder = "pmp"

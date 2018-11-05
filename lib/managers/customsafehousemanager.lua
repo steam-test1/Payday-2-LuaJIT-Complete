@@ -594,6 +594,10 @@ function CustomSafehouseManager:update_progress(key, id, amount)
 end
 
 function CustomSafehouseManager:_update_trophy_progress(trophy, key, id, amount, complete_func)
+	if trophy.completed then
+		return
+	end
+
 	for obj_idx, objective in ipairs(trophy.objectives) do
 		if not objective.completed and objective[key] == id then
 			local pass = true

@@ -96,7 +96,7 @@ function ElementDialogue:on_executed(instigator)
 			end
 		end
 	elseif Application:editor() then
-		managers.editor:output_error("Cant start dialogue " .. self._values.dialogue .. " in element " .. self._editor_name .. ".", nil, true)
+		managers.editor:output_warning("Dialogue not specified in element " .. self._editor_name .. ".", nil, true)
 	end
 
 	ElementDialogue.super.on_executed(self, instigator, nil, self._values.execute_on_executed_when_done)

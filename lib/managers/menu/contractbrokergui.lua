@@ -46,7 +46,7 @@ function ContractBrokerGui:init(ws, fullscreen_ws, node)
 	self._highlighted_filter = Global.contract_broker and Global.contract_broker.filter or 1
 	self._current_tab = Global.contract_broker and Global.contract_broker.tab or 1
 	self._highlighted_tab = Global.contract_broker and Global.contract_broker.tab or 1
-	self._current_selection = 1
+	self._current_selection = 0
 	self._active_filters = {}
 	self._buttons = {}
 	self._tab_buttons = {}
@@ -105,7 +105,13 @@ function ContractBrokerGui:setup()
 	self:_setup_tabs()
 	self:_setup_filters()
 	self:_setup_jobs()
-	self:_set_selection(1)
+
+	if managers.menu:is_pc_controller() then
+		self:connect_search_input()
+	else
+		self:_set_selection(1)
+	end
+
 	self:refresh()
 end
 
@@ -127,7 +133,6 @@ function ContractBrokerGui:_setup_change_search()
 	self:clear_filters()
 	self:_setup_filters()
 	self:_setup_jobs()
-	self:_set_selection(1)
 	self:refresh()
 end
 
@@ -930,6 +935,7 @@ end
 
 function ContractBrokerGui:_move_selection(dir)
 	self:_set_selection((self._current_selection or 0) + dir)
+	self:disconnect_search_input()
 end
 
 function ContractBrokerGui:_set_selection(idx)

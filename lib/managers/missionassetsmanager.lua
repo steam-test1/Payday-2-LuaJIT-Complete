@@ -193,8 +193,12 @@ end
 
 function MissionAssetsManager:reset()
 	Global.asset_manager = nil
+	local old_triggers = self._triggers
 
 	self:_setup()
+
+	self._triggers = old_triggers
+
 	self:_check_triggers("asset")
 end
 

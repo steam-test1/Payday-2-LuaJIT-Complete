@@ -757,6 +757,7 @@ end
 
 function VehicleDrivingExt:find_exit_position(player)
 	local seat = self:find_seat_for_player(player)
+	local seat_position = self._vehicle:object_position(seat.object)
 	local exit_position = self._unit:get_object(Idstring(VehicleDrivingExt.EXIT_PREFIX .. seat.name))
 	local found_exit = true
 	local rot = self._vehicle:rotation()
@@ -765,14 +766,14 @@ function VehicleDrivingExt:find_exit_position(player)
 	mvector3.rotate_with(offset, rot)
 
 	local slot_mask = World:make_slot_mask(1, 11)
-	local ray = World:raycast("ray_type", "body bag mover", "ray", player:position() + offset, exit_position:position() + offset, "sphere_cast_radius", 35, "slot_mask", slot_mask)
+	local ray = World:raycast("ray_type", "body bag mover", "ray", seat_position + offset, exit_position:position() + offset, "sphere_cast_radius", 35, "slot_mask", slot_mask)
 
 	if ray and ray.unit then
 		found_exit = false
 
 		for _, seat in pairs(self._tweak_data.seats) do
 			exit_position = self._unit:get_object(Idstring(VehicleDrivingExt.EXIT_PREFIX .. seat.name))
-			ray = World:raycast("ray_type", "body bag mover", "ray", player:position() + offset, exit_position:position() + offset, "sphere_cast_radius", 35, "slot_mask", slot_mask)
+			ray = World:raycast("ray_type", "body bag mover", "ray", seat_position + offset, exit_position:position() + offset, "sphere_cast_radius", 35, "slot_mask", slot_mask)
 
 			if not ray or not ray.unit then
 				found_exit = true
@@ -786,7 +787,7 @@ function VehicleDrivingExt:find_exit_position(player)
 			exit_position = self._unit:get_object(Idstring("v_exit_alternate_" .. i_alt))
 
 			while exit_position do
-				ray = World:raycast("ray_type", "body bag mover", "ray", player:position() + offset, exit_position:position() + offset, "sphere_cast_radius", 35, "slot_mask", slot_mask)
+				ray = World:raycast("ray_type", "body bag mover", "ray", seat_position + offset, exit_position:position() + offset, "sphere_cast_radius", 35, "slot_mask", slot_mask)
 
 				if not ray or not ray.unit then
 					found_exit = true

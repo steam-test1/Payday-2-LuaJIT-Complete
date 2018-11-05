@@ -1,6 +1,14 @@
 core:import("CoreEditorUtils")
 
 function CoreEditor:create_projection_light(type)
+	if type == "all" then
+		local confirm = EWS:message_box(Global.frame_panel, "Rebuild all?", "Generate projection light", "YES_NO,ICON_QUESTION", Vector3(-1, -1, 0))
+
+		if confirm ~= "YES" then
+			return
+		end
+	end
+
 	local lights = {}
 	local units = {}
 

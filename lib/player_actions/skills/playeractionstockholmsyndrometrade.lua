@@ -100,7 +100,7 @@ function StockholmSyndromeTradeAction:update(t, dt)
 			elseif feedback_idx > 0 and not auto_activate then
 				self.on_failure(feedback_idx)
 			end
-		else
+		elseif managers.network:session() then
 			managers.network:session():send_to_host("request_stockholm_syndrome", self._pos, self._peer_id, auto_activate)
 
 			self._request_hostage_trade = true

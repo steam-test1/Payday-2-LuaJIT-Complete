@@ -59,6 +59,8 @@ function HuskCopBrain:clbk_death(my_unit, damage_info)
 
 		self._following_hostage_contour_id = nil
 	end
+
+	self._unit:movement():set_attention()
 end
 
 function HuskCopBrain:set_interaction_voice(voice)

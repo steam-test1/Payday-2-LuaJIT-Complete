@@ -8658,7 +8658,11 @@ function WeaponFactoryTweakData:_init_g22c()
 			"barrel_ext",
 			"gadget"
 		},
-		override = {wpn_fps_upg_o_rmr = {parent = "slide"}},
+		override = {
+			wpn_fps_upg_o_rmr = {parent = "slide"},
+			wpn_fps_pis_g26_g_gripforce = {a_obj = "a_g_2"},
+			wpn_fps_pis_g26_g_laser = {a_obj = "a_g_2"}
+		},
 		default_blueprint = {
 			"wpn_fps_pis_g22c_b_standard",
 			"wpn_fps_pis_g22c_body_standard",
@@ -20106,7 +20110,9 @@ function WeaponFactoryTweakData:_init_x_g22c()
 				fire_steelsight = "recoil",
 				reload = "reload_right",
 				magazine_empty = "last_recoil"
-			}}
+			}},
+			wpn_fps_pis_g26_g_gripforce = {a_obj = "a_g_2"},
+			wpn_fps_pis_g26_g_laser = {a_obj = "a_g_2"}
 		},
 		default_blueprint = {
 			"wpn_fps_pis_g22c_b_standard",

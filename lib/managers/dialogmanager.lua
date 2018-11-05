@@ -21,7 +21,13 @@ function DialogManager:queue_dialog(id, params)
 	end
 
 	if not self._dialog_list[id] then
-		debug_pause("The dialog script tries to queue a dialog with id '" .. tostring(id) .. "' which doesn't seem to exist!")
+		local error_message = "The dialog script tries to queue a dialog with id '" .. tostring(id) .. "' which doesn't seem to exist!"
+
+		if Application:editor() then
+			managers.editor:output_error(error_message, false, true)
+		else
+			debug_pause(error_message)
+		end
 
 		return false
 	end

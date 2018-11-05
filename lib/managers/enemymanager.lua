@@ -705,6 +705,7 @@ function EnemyManager:on_enemy_died(dead_unit, damage_info)
 		Network:detach_unit(dead_unit)
 	end
 
+	managers.hud:remove_waypoint("wp_hostage_trade" .. tostring(dead_unit:key()))
 	managers.crime_spree:run_func("OnEnemyDied", dead_unit, damage_info)
 end
 
@@ -815,6 +816,8 @@ function EnemyManager:on_civilian_died(dead_unit, damage_info)
 	if self:is_corpse_disposal_enabled() then
 		Network:detach_unit(dead_unit)
 	end
+
+	managers.hud:remove_waypoint("wp_hostage_trade" .. tostring(dead_unit:key()))
 end
 
 function EnemyManager:on_civilian_destroyed(enemy)

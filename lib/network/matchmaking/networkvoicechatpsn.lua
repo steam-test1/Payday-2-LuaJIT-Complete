@@ -83,6 +83,7 @@ function NetworkVoiceChatPSN:num_peers()
 end
 
 function NetworkVoiceChatPSN:open_session(roomid)
+	self:update_settings()
 	print("[VOICECHAT] NetworkVoiceChatPSN:open_session( ", roomid, " ) self._room_id: ", self._room_id, "self._restart_session: ", self._restart_session)
 
 	if self._room_id and self._room_id == roomid then
@@ -121,7 +122,6 @@ function NetworkVoiceChatPSN:open_session(roomid)
 	self._joining = true
 
 	PSNVoice:start_session(roomid)
-	self:update_settings()
 end
 
 function NetworkVoiceChatPSN:close_session()
@@ -266,16 +266,12 @@ function NetworkVoiceChatPSN:update_settings()
 	self._push_to_talk = false
 	self._enabled = managers.user:get_setting("voice_chat")
 
-	print("GN: Update settings")
-
 	if self._enabled then
 		PSNVoice:start_recording()
 		PSNVoice:set_enable(true)
-		print("GN: Voice chat set to true 1")
 	else
 		PSNVoice:stop_recording()
 		PSNVoice:set_enable(false)
-		print("GN: Voice chat set to false 1")
 	end
 
 	if self._enabled and self._push_to_talk then
@@ -419,5 +415,10 @@ end
 
 function NetworkVoiceChatPSN:is_muted(peer)
 	return self._muted_players[peer:name()] or false
+end
+
+function NetworkVoiceChatPSN:set_voicechat(enable)
+	PSNVoice:set_enable(enable)
+	print("set_voicechat( enable ) = ", enable)
 end
 

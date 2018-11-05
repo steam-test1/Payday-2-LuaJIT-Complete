@@ -790,6 +790,7 @@ function CarryTweakData:init(tweak_data)
 		name_id = "hud_carry_battery",
 		unit = "units/payday2/pickups/gen_pku_toolbag/gen_pku_toolbag",
 		visual_unit_name = "units/payday2/characters/npc_acc_tools_bag_1/npc_acc_tools_bag_1",
+		skip_exit_secure = true,
 		AI_carry = {SO_category = "enemies"}
 	}
 	self.box_unknown = {

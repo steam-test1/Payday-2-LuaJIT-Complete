@@ -1358,10 +1358,18 @@ function CopActionAct:init(action_desc, common_data)
 		end
 	end
 
+	if self._unit:character_damage().set_mover_collision_state then
+		self._unit:character_damage():set_mover_collision_state(false)
+	end
+
 	return true
 end
 
 function CopActionAct:on_exit()
+	if self._unit:character_damage().set_mover_collision_state then
+		self._unit:character_damage():set_mover_collision_state(true)
+	end
+
 	if self._changed_driving then
 		self._unit:set_driving("script")
 

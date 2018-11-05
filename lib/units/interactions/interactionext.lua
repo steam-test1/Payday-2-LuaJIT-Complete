@@ -935,10 +935,6 @@ function ECMJammerInteractionExt:interact(player)
 	self:remove_interact()
 end
 
-function ECMJammerInteractionExt:can_interact(player)
-	return ECMJammerInteractionExt.super.can_interact(self, player) and self._unit:base():owner() == player
-end
-
 function ECMJammerInteractionExt:selected(player)
 	if not self:can_interact(player) then
 		return

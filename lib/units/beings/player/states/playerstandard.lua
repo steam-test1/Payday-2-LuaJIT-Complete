@@ -470,6 +470,13 @@ function PlayerStandard:_calculate_standard_variables(t, dt)
 	mvector3.normalize(self._cam_fwd_flat)
 
 	local last_vel_xy = self._last_velocity_xy
+
+	if self._in_air_velocity and not self._state_data.on_ladder then
+		self._unit:set_velocity(self._in_air_velocity)
+
+		self._in_air_velocity = nil
+	end
+
 	local sampled_vel_dir = self._unit:sampled_velocity()
 
 	if not self._state_data.on_ladder then
@@ -728,6 +735,8 @@ end
 
 function PlayerStandard:update_check_actions_paused(t, dt)
 	self:_update_check_actions(Application:time(), 0.1, true)
+
+	self._in_air_velocity = self._unit:sampled_velocity()
 end
 
 function PlayerStandard:_update_check_actions(t, dt, paused)
@@ -2233,7 +2242,7 @@ function PlayerStandard:_calc_melee_hit_ray(t, sphere_cast_radius)
 	return self._unit:raycast("ray", from, to, "slot_mask", self._slotmask_bullet_impact_targets, "sphere_cast_radius", sphere_cast_radius, "ray_type", "body melee")
 end
 
-function PlayerStandard:_do_melee_damage(t, bayonet_melee, melee_hit_ray, melee_entry)
+function PlayerStandard:_do_melee_damage(t, bayonet_melee, melee_hit_ray, melee_entry, hand_id)
 	melee_entry = melee_entry or managers.blackmarket:equipped_melee_weapon()
 	local instant_hit = tweak_data.blackmarket.melee_weapons[melee_entry].instant
 	local melee_damage_delay = tweak_data.blackmarket.melee_weapons[melee_entry].melee_damage_delay or 0
@@ -2301,13 +2310,8 @@ function PlayerStandard:_do_melee_damage(t, bayonet_melee, melee_hit_ray, melee_
 
 		local custom_data = nil
 
-		if _G.IS_VR then
-			local melee_hand_id = self._unit:hand():get_active_hand_id("melee")
-			melee_hand_id = melee_hand_id or self._unit:hand():get_active_hand_id("weapon")
-
-			if melee_hand_id then
-				custom_data = {engine = melee_hand_id == 1 and "right" or "left"}
-			end
+		if _G.IS_VR and hand_id then
+			custom_data = {engine = hand_id == 1 and "right" or "left"}
 		end
 
 		managers.rumble:play("melee_hit", nil, nil, custom_data)

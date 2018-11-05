@@ -545,7 +545,7 @@ end
 function MissionLayer:build_panel(notebook)
 	MissionLayer.super.build_panel(self, notebook, {
 		units_noteboook_proportion = 0,
-		units_notebook_min_size = Vector3(-1, 160, 0)
+		units_notebook_min_size = Vector3(-1, 320, 0)
 	})
 	cat_print("editor", "MissionLayer:build_panel")
 	self:_build_scripts()

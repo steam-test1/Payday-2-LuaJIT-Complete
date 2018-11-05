@@ -22,9 +22,7 @@ function CopLogicTrade.enter(data, new_logic_name, enter_params)
 end
 
 function CopLogicTrade.hostage_trade(unit, enable, trade_success, skip_hint)
-	local wp_id = "wp_hostage_trade"
-
-	print("[CopLogicTrade.hostage_trade]", unit, enable, trade_success)
+	local wp_id = "wp_hostage_trade" .. tostring(unit:key())
 
 	if enable then
 		local text = managers.localization:text("debug_trade_hostage")
@@ -43,8 +41,6 @@ function CopLogicTrade.hostage_trade(unit, enable, trade_success, skip_hint)
 		if Network:is_server() and managers.enemy:all_civilians()[unit:key()] and unit:anim_data().stand and unit:brain():is_tied() then
 			unit:brain():on_hostage_move_interaction(nil, "stay")
 		end
-
-		unit:character_damage():set_invulnerable(true)
 
 		if Network:is_server() then
 			unit:interaction():set_tweak_data("hostage_trade")

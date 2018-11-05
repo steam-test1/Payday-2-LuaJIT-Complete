@@ -89,9 +89,13 @@ function RaycastWeaponBase:has_part(part_id)
 	return false
 end
 
+function RaycastWeaponBase:categories()
+	return self:weapon_tweak_data().categories
+end
+
 function RaycastWeaponBase:is_category(...)
 	local arg = {...}
-	local categories = self:weapon_tweak_data().categories
+	local categories = self:categories()
 
 	if not categories then
 		return false
@@ -324,10 +328,6 @@ function RaycastWeaponBase:trigger_pressed(...)
 	end
 
 	return fired
-end
-
-function RaycastWeaponBase:categories()
-	return self:weapon_tweak_data().categories
 end
 
 function RaycastWeaponBase:trigger_held(...)

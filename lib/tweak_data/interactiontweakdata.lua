@@ -1086,7 +1086,8 @@ function InteractionTweakData:init(tweak_data)
 			}
 		},
 		timer = 2,
-		no_contour = true
+		no_contour = true,
+		force_update_position = true
 	}
 	self.laptop_objective = {
 		icon = "laptop_objective",

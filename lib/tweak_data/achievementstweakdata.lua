@@ -5498,7 +5498,9 @@ function AchievementsTweakData:init(tweak_data)
 			"pbr",
 			"pbr2",
 			"wwh",
-			"brb"
+			"brb",
+			"tag",
+			"des"
 		},
 		jimmy = {
 			"mad",

@@ -2643,10 +2643,12 @@ function GroupAIStateBase:_update_point_of_no_return(t, dt)
 
 	if plr_unit and alive(plr_unit) then
 		for _, area in ipairs(self._point_of_no_return_areas) do
-			if area._shape:is_inside(plr_unit:movement():m_pos()) then
-				is_inside = true
+			for _, shape in ipairs(area._shapes) do
+				if shape:is_inside(plr_unit:movement():m_pos()) then
+					is_inside = true
 
-				break
+					break
+				end
 			end
 		end
 	end

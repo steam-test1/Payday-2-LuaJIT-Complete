@@ -191,7 +191,7 @@ function HandMelee:update(unit, t, dt)
 					managers.player:mul_melee_damage(dmg_mul * dmg_mul)
 				end
 
-				managers.player:player_unit():movement():current_state():_do_melee_damage(t, has_bayonet, ray, self._entry)
+				managers.player:player_unit():movement():current_state():_do_melee_damage(t, has_bayonet, ray, self._entry, PlayerHand.hand_id(self._hand_unit:base():name()))
 
 				self._next_hit_t = t + tweak_data.blackmarket.melee_weapons[self._entry].expire_t
 				self._next_full_hit_t = self._next_hit_t

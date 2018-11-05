@@ -792,7 +792,7 @@ function LevelsTweakData:init()
 		music = "heist",
 		package = "packages/narr_mia_1",
 		cube = "cube_apply_heist_bank",
-		max_bags = 15,
+		max_bags = 20,
 		ai_group_type = america
 	}
 	self.mia_2 = {
@@ -805,7 +805,7 @@ function LevelsTweakData:init()
 		music = "heist",
 		package = "packages/narr_mia_2",
 		cube = "cube_apply_heist_bank",
-		max_bags = 28,
+		max_bags = 35,
 		ai_group_type = america,
 		load_screen = "guis/dlcs/pic/textures/loading/job_hlm_02",
 		teams = {
