@@ -7138,9 +7138,9 @@ function init_auto_generated_achievement_data(tags)
 		},
 		eng_3 = {
 			need_unlock_icons = true,
-			icon_id = "Other_H_Any_TheOneWhoDeclared",
+			icon_id = "Other_H_Any_TheOneThatSurvived",
 			progress = true,
-			sort_name = "Other_H_Any_TheOneWho",
+			sort_name = "Other_H_Any_TheOneThatSur",
 			unlock_id = true,
 			tags = {
 				tags.progress.heisting,
@@ -7151,9 +7151,9 @@ function init_auto_generated_achievement_data(tags)
 		},
 		eng_4 = {
 			need_unlock_icons = true,
-			icon_id = "Other_H_Any_TheOneThatSurvived",
+			icon_id = "Other_H_Any_TheOneWhoDeclared",
 			progress = true,
-			sort_name = "Other_H_Any_TheOneThatSur",
+			sort_name = "Other_H_Any_TheOneWho",
 			unlock_id = true,
 			tags = {
 				tags.progress.heisting,

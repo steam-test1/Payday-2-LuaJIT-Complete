@@ -3898,8 +3898,6 @@ function UnitNetworkHandler:sync_carry_set_position_and_throw(unit, destination,
 end
 
 function UnitNetworkHandler:sync_tag_team(tagged, owner, sender)
-	print("[Debug] UnitNetworkHandler:sync_tag_team", tagged, owner)
-
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
 		return
 	end
@@ -3912,8 +3910,6 @@ function UnitNetworkHandler:sync_tag_team(tagged, owner, sender)
 end
 
 function UnitNetworkHandler:end_tag_team(tagged, owner, sender)
-	print("[Debug] UnitNetworkHandler:end_tag_team")
-
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
 		return
 	end

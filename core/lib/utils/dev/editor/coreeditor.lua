@@ -2690,17 +2690,14 @@ function CoreEditor:update_ruler(t, dt)
 		ray_type = "body editor",
 		mask = managers.slot:get_mask("all")
 	})
+	local end_position = nil
+	end_position = (not ray or not ray.position) and self._current_pos or ray.position
+	local len = (pos - end_position):length()
 
-	if not ray or not ray.position then
-		return
-	end
-
-	local len = (pos - ray.position):length()
-
-	Application:draw_sphere(ray.position, 10, 1, 1, 1)
-	Application:draw_line(pos, ray.position, 1, 1, 1)
+	Application:draw_sphere(end_position, 10, 1, 1, 1)
+	Application:draw_line(pos, end_position, 1, 1, 1)
 	self:set_value_info(string.format("Length: %.2fm", len / 100))
-	self:set_value_info_pos(self:world_to_screen(ray.position))
+	self:set_value_info_pos(self:world_to_screen(end_position))
 end
 
 function CoreEditor:current_orientation(offset_move_vec, unit)
@@ -4399,13 +4396,11 @@ function CoreEditor:set_ruler_points()
 		ray_type = "body editor",
 		mask = managers.slot:get_mask("all")
 	})
-
-	if not ray or not ray.position then
-		return
-	end
+	local start_position = nil
+	start_position = (not ray or not ray.position) and self._current_pos or ray.position
 
 	if #self._ruler_points == 0 then
-		table.insert(self._ruler_points, ray.position)
+		table.insert(self._ruler_points, start_position)
 		self:set_value_info_visibility(true)
 	else
 		self:set_value_info_visibility(false)

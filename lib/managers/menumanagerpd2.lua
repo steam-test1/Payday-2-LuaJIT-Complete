@@ -10,12 +10,6 @@ core:import("CoreEvent")
 
 function MenuManager:update(t, dt, ...)
 	MenuManager.super.update(self, t, dt, ...)
-
-	if managers.menu_scene then
-		managers.menu_scene:update(t, dt)
-	end
-
-	managers.menu_component:update(t, dt)
 end
 
 function MenuManager:on_view_character(user)

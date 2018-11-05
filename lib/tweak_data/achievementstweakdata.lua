@@ -19,7 +19,9 @@ local function get_texture_path(tweak_data, category, id)
 	end
 
 	if not DB:has(Idstring("texture"), Idstring(rtn.texture)) then
-		debug_pause("[Track]", "ERROR TEXTURE PATH", category, id)
+		Application:error("ERROR MISSING TEXTURE:", rtn.texture)
+
+		rtn.texture = "guis/textures/pd2/endscreen/exp_ring"
 	end
 
 	return rtn
@@ -5916,6 +5918,111 @@ function AchievementsTweakData:init(tweak_data)
 
 	if SystemInfo:platform() == Idstring("PS4") or SystemInfo:platform() == Idstring("XB1") then
 		self.weapon_part_tracker = {}
+	end
+
+	local default = "guis/dlcs/ami/textures/pd2/milestone_trophy_icon"
+	self.milestones = {
+		{
+			id = "ami_0",
+			at = 20,
+			coins = 4,
+			texture = default
+		},
+		{
+			id = "ami_1",
+			at = 50,
+			coins = 8,
+			texture = default
+		},
+		{
+			at = 90,
+			has_drop = true,
+			id = "ami_2",
+			coins = 12,
+			texture = default
+		},
+		{
+			id = "ami_3",
+			at = 140,
+			coins = 16,
+			texture = default
+		},
+		{
+			at = 200,
+			has_drop = true,
+			id = "ami_4",
+			coins = 20,
+			texture = default
+		},
+		{
+			id = "ami_5",
+			at = 270,
+			coins = 24,
+			texture = default
+		},
+		{
+			at = 350,
+			has_drop = true,
+			id = "ami_6",
+			coins = 28,
+			texture = default
+		},
+		{
+			id = "ami_7",
+			at = 450,
+			coins = 36,
+			texture = default
+		},
+		{
+			at = 550,
+			has_drop = true,
+			id = "ami_8",
+			coins = 36,
+			texture = default
+		},
+		{
+			id = "ami_9",
+			at = 650,
+			coins = 36,
+			texture = default
+		},
+		{
+			at = 750,
+			has_drop = true,
+			id = "ami_10",
+			coins = 36,
+			texture = default
+		},
+		{
+			id = "ami_11",
+			at = 850,
+			coins = 36,
+			texture = default
+		}
+	}
+	local last_at = 0
+
+	for _, v in ipairs(self.milestones) do
+		v.rewards = v.coins and {{
+			name_id = "menu_cs_coins",
+			texture = "guis/dlcs/chill/textures/pd2/safehouse/continental_coins_drop",
+			amount = v.coins
+		}} or {}
+
+		if v.has_drop then
+			local data = tweak_data.dlc[v.id]
+
+			for _, loot in ipairs(data.content.loot_drops) do
+				local td = tweak_data:get_raw_value("blackmarket", loot.type_items, loot.item_entry)
+				local data = get_texture_path(tweak_data, loot.type_items, loot.item_entry)
+				data.name_id = td.name_id
+
+				table.insert(v.rewards, data)
+			end
+		end
+
+		v.last_at = last_at
+		last_at = v.at
 	end
 
 	self:_init_visual(tweak_data)

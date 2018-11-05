@@ -23,7 +23,7 @@ function CoroutineManager:update(t, dt)
 				local status = coroutine.status(value.co)
 
 				if result == false then
-					Application:error("Coroutine failed (" .. tostring(key) .. "): " .. error_msg)
+					Application:error("Coroutine failed (" .. tostring(key) .. "): " .. tostring(error_msg))
 				end
 
 				if status == "dead" then

@@ -6356,6 +6356,10 @@ function BlackMarketGui:update_info_text()
 					updated_texts[4].text = updated_texts[4].text .. managers.localization:text("bm_msk_achievement_postfix")
 				end
 
+				if managers.dlc:is_mask_achievement_milestone_locked(mask_id) and (not tweak_data.blackmarket.masks[mask_id].pcs or #tweak_data.blackmarket.masks[mask_id].pcs <= 0) then
+					updated_texts[4].text = updated_texts[4].text .. managers.localization:text("bm_msk_achievement_milestone_postfix")
+				end
+
 				if slot_data.global_value and slot_data.global_value ~= "normal" then
 					updated_texts[4].text = updated_texts[4].text .. "\n##" .. managers.localization:to_upper_text(tweak_data.lootdrop.global_values[slot_data.global_value].desc_id) .. "##"
 					updated_texts[4].resource_color = tweak_data.lootdrop.global_values[slot_data.global_value].color
@@ -11401,7 +11405,7 @@ function BlackMarketGui:populate_mods(data)
 			if new_data.unlocked then
 				local weapon_mod_tweak = tweak_data.weapon.factory.parts[mod_name]
 
-				if weapon_mod_tweak and weapon_mod_tweak.type ~= "bonus" and weapon_mod_tweak.is_a_unlockable ~= true and can_apply then
+				if weapon_mod_tweak and weapon_mod_tweak.type ~= "bonus" and weapon_mod_tweak.is_a_unlockable ~= true and can_apply and managers.custom_safehouse:unlocked() then
 					table.insert(new_data, "wm_buy_mod")
 				end
 			end
@@ -11467,7 +11471,7 @@ function BlackMarketGui:populate_mods(data)
 
 				local weapon_mod_tweak = tweak_data.weapon.factory.parts[data[equipped].name]
 
-				if weapon_mod_tweak and weapon_mod_tweak.type ~= "bonus" and weapon_mod_tweak.is_a_unlockable ~= true then
+				if weapon_mod_tweak and weapon_mod_tweak.type ~= "bonus" and weapon_mod_tweak.is_a_unlockable ~= true and managers.custom_safehouse:unlocked() then
 					table.insert(data[equipped], "wm_buy_mod")
 				end
 			end

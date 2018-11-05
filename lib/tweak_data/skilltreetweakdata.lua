@@ -3993,7 +3993,6 @@ function SkillTreeTweakData:init()
 				desc_id = "menu_deck19_1_desc",
 				name_id = "menu_deck19_1",
 				upgrades = {
-					"temporary_damage_control",
 					"damage_control",
 					"player_damage_control_passive",
 					"player_damage_control_cooldown_drain_1"

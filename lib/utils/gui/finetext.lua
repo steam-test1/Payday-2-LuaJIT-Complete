@@ -7,12 +7,16 @@ function FineText:init(parent, config)
 	config.color = config.color or tweak_data.screen_colors.text
 	local text_obj = parent:text(config)
 
-	self.super.init(self, text_obj)
+	FineText.super.init(self, text_obj)
 	self:shrink_wrap()
 end
 
 function FineText:shrink_wrap()
 	local x, y, w, h = self._gui_obj:text_rect()
+
+	if self._gui_obj:wrap() then
+		w = self._gui_obj:width()
+	end
 
 	self._gui_obj:set_size(w, h)
 	self._gui_obj:set_world_position(math.round(x), math.round(y))

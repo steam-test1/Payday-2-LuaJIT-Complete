@@ -779,7 +779,8 @@ function MenuInput:_give_special_buttons()
 			"cancel",
 			"next_page",
 			"previous_page",
-			"menu_update"
+			"menu_update",
+			"continue"
 		}
 
 		for _, button in ipairs(special_btns) do

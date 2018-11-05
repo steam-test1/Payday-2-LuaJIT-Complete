@@ -213,10 +213,10 @@ CopActionHurt.hurt_anim_variants = {
 		}
 	}},
 	expl_hurt = {
-		bwd = 8,
-		l = 7,
-		fwd = 8,
-		r = 7
+		bwd = 15,
+		l = 13,
+		fwd = 15,
+		r = 13
 	},
 	fire_hurt = {
 		bwd = 8,

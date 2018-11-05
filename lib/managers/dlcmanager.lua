@@ -27,6 +27,7 @@ end
 
 function GenericDLCManager:_create_achievement_locked_content_table()
 	self._achievement_locked_content = {}
+	self._achievement_milestone_locked_content = {}
 	self._dlc_locked_content = {}
 
 	for name, dlc in pairs(tweak_data.dlc) do
@@ -41,6 +42,9 @@ function GenericDLCManager:_create_achievement_locked_content_table()
 						if dlc.achievement_id then
 							self._achievement_locked_content[loot_drop.type_items] = self._achievement_locked_content[loot_drop.type_items] or {}
 							self._achievement_locked_content[loot_drop.type_items][loot_drop.item_entry] = name
+						elseif dlc.milestone_id then
+							self._achievement_milestone_locked_content[loot_drop.type_items] = self._achievement_milestone_locked_content[loot_drop.type_items] or {}
+							self._achievement_milestone_locked_content[loot_drop.type_items][loot_drop.item_entry] = name
 						else
 							self._dlc_locked_content[loot_drop.type_items] = self._dlc_locked_content[loot_drop.type_items] or {}
 							self._dlc_locked_content[loot_drop.type_items][loot_drop.item_entry] = name
@@ -126,6 +130,10 @@ end
 
 function GenericDLCManager:is_weapon_mod_achievement_locked(weapon_mod_id)
 	return self._achievement_locked_content.weapon_mods and self._achievement_locked_content.weapon_mods[weapon_mod_id]
+end
+
+function GenericDLCManager:is_mask_achievement_milestone_locked(mask_id)
+	return self._achievement_milestone_locked_content.masks and self._achievement_milestone_locked_content.masks[mask_id]
 end
 
 function GenericDLCManager:on_tweak_data_reloaded()
@@ -528,6 +536,10 @@ function GenericDLCManager:has_fgl()
 	return self:is_dlc_unlocked("fgl")
 end
 
+function GenericDLCManager:has_ami()
+	return self:is_dlc_unlocked("ami")
+end
+
 function GenericDLCManager:has_goty_all_dlc_bundle_2014()
 	return self:has_goty_weapon_bundle_2014() and self:has_goty_heist_bundle_2014() and self:is_dlcs_unlocked({"character_pack_clover"})
 end
@@ -564,6 +576,12 @@ function GenericDLCManager:has_achievement(data)
 	local achievement = managers.achievment and data and data.achievement_id and managers.achievment:get_info(data.achievement_id)
 
 	return achievement and achievement.awarded or false
+end
+
+function GenericDLCManager:has_achievement_milestone(data)
+	local milestone = data and data.milestone_id and managers.achievment:get_milestone(data.milestone_id)
+
+	return milestone.awarded
 end
 
 function GenericDLCManager:has_dlc_or_soundtrack_or_cce(dlc)
@@ -1821,6 +1839,10 @@ function WINDLCManager:init()
 				no_install = true
 			},
 			fgl = {
+				app_id = "218620",
+				no_install = true
+			},
+			ami = {
 				app_id = "218620",
 				no_install = true
 			}

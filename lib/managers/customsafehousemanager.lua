@@ -213,6 +213,27 @@ function CustomSafehouseManager:add_coins(amount)
 	end
 end
 
+function CustomSafehouseManager:add_coins_ingore_locked(amount)
+	local need_to_give_inital = self:total_coins_earned() == 0
+
+	if self:total_coins_earned() == 0 then
+		print("[Safehouse] adding initial coins! ", tweak_data.safehouse.rewards.initial)
+
+		amount = amount + tweak_data.safehouse.rewards.initial
+	end
+
+	local new_total = self:total_coins_earned() + amount
+	local new_current = self:coins() + amount
+	Global.custom_safehouse_manager.total = Application:digest_value(new_current, true)
+	Global.custom_safehouse_manager.total_collected = Application:digest_value(new_total, true)
+
+	print("[Safehouse] adding coins to safehouse: ", amount, Application:digest_value(self._global.total, false))
+
+	if managers.statistics then
+		managers.statistics:aquired_coins(amount)
+	end
+end
+
 function CustomSafehouseManager:deduct_coins(amount)
 	amount = math.clamp(amount, 0, self:coins())
 	Global.custom_safehouse_manager.total = Application:digest_value(self:coins() - amount, true)

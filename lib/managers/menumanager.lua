@@ -9654,7 +9654,11 @@ function MenuOptionInitiator:modify_controls(node)
 		cs_item:set_value(managers.user:get_setting("enable_camera_sensitivity_separate") and "on" or "off")
 	end
 
-	node:item("toggle_fov_based_zoom"):set_value(managers.user:get_setting("enable_fov_based_sensitivity") and "on" or "off")
+	local cs_item = node:item("toggle_fov_based_zoom")
+
+	if cs_item then
+		cs_item:set_value(managers.user:get_setting("enable_fov_based_sensitivity") and "on" or "off")
+	end
 
 	return node
 end

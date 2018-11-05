@@ -101,6 +101,15 @@ function AchievmentManager:init()
 		end
 	end
 
+	self._milestones = Global.achievment_manager.milestones
+	self._current_milestone = Global.achievment_manager.current_milestone
+
+	if not self._milestones then
+		self._milestones = deep_clone(tweak_data.achievement.milestones)
+		Global.achievment_manager.milestones = self._milestones
+		self._current_milestone = self._milestones[1]
+	end
+
 	self._mission_end_achievements = {}
 end
 
@@ -113,6 +122,14 @@ function AchievmentManager:save(data)
 	for k, v in pairs(self.achievments) do
 		if v.tracked then
 			table.insert(save.tracked, k)
+		end
+	end
+
+	save.awarded_milestones = {}
+
+	for _, v in pairs(self._milestones) do
+		if v.awarded then
+			save.awarded_milestones[v.id] = v.awarded
 		end
 	end
 
@@ -143,6 +160,16 @@ function AchievmentManager:load(data, version)
 			v.tracked = true
 		end
 	end
+
+	for id, awarded in pairs(data.achievement.awarded_milestones or {}) do
+		local m = self:get_milestone(id)
+
+		if m then
+			m.awarded = awarded
+		end
+	end
+
+	self:_update_current_milestone()
 end
 
 function AchievmentManager:init_finalize()
@@ -312,6 +339,72 @@ end
 
 function AchievmentManager:heist_success_awards()
 	return self._mission_end_achievements
+end
+
+function AchievmentManager:get_milestone(id)
+	for _, d in ipairs(self._milestones) do
+		if d.id == id then
+			return d
+		end
+	end
+end
+
+function AchievmentManager:milestones()
+	return self._milestones
+end
+
+function AchievmentManager:current_milestone()
+	return self._current_milestone
+end
+
+function AchievmentManager:get_recent_milestones(dont_update_shown)
+	local rtn = {}
+
+	for _, d in ipairs(self._milestones) do
+		if d.awarded == 0 then
+			table.insert(rtn, d)
+
+			if not dont_update_shown then
+				d.awarded = true
+			end
+		end
+	end
+
+	return rtn
+end
+
+function AchievmentManager:_update_current_milestone()
+	local current_count = self:total_unlocked()
+	local check_drops = false
+	self._current_milestone = nil
+
+	for _, milestone in ipairs(self._milestones) do
+		if current_count < milestone.at then
+			self._current_milestone = milestone
+
+			break
+		end
+
+		if not milestone.awarded then
+			milestone.awarded = 0
+
+			if milestone.coins then
+				managers.custom_safehouse:add_coins_ingore_locked(milestone.coins)
+			end
+
+			if milestone.has_drop then
+				check_drops = true
+			end
+
+			if managers.hud then
+				managers.hud:achievement_milestone_popup(milestone.id)
+			end
+		end
+	end
+
+	if check_drops then
+		managers.dlc:on_achievement_award_loot()
+	end
 end
 
 function AchievmentManager:award_data(t, name)
@@ -537,6 +630,8 @@ function AchievmentManager:_give_reward(id, skip_exp)
 	if data.dlc_loot then
 		managers.dlc:on_achievement_award_loot()
 	end
+
+	self:_update_current_milestone()
 end
 
 function AchievmentManager:award_progress(stat, value)

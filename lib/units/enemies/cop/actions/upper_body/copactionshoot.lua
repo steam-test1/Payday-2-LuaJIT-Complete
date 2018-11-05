@@ -440,6 +440,7 @@ function CopActionShoot:update(t)
 					local firemode = nil
 
 					if self._automatic_weap then
+						firemode = falloff.mode and falloff.mode[1] or 1
 						local random_mode = self:_pseudorandom()
 
 						for i_mode, mode_chance in ipairs(falloff.mode) do

@@ -3,7 +3,7 @@ require("lib/managers/HUDManagerAnimatePD2")
 require("lib/managers/hud/HUDTeammate")
 require("lib/managers/hud/HUDInteraction")
 require("lib/managers/hud/NewHudStatsScreen")
-require("lib/managers/hud/HudChallangeNotification")
+require("lib/managers/hud/HudChallengeNotification")
 require("lib/managers/hud/HUDObjectives")
 require("lib/managers/hud/HUDPresenter")
 require("lib/managers/hud/HUDAssaultCorner")
@@ -2055,19 +2055,19 @@ function HUDManager:achievement_popup(id)
 
 	local d = tweak_data.achievement.visual[id]
 
-	HudChallangeNotification.queue(managers.localization:to_upper_text("hud_achieved_popup"), managers.localization:to_upper_text(d.name_id), d.icon_id)
+	HudChallengeNotification.queue(managers.localization:to_upper_text("hud_achieved_popup"), managers.localization:to_upper_text(d.name_id), d.icon_id)
 end
 
 function HUDManager:challenge_popup(d)
-	HudChallangeNotification.queue(managers.localization:to_upper_text("hud_challenge_popup"), managers.localization:to_upper_text(d.name_id))
+	HudChallengeNotification.queue(managers.localization:to_upper_text("hud_challenge_popup"), managers.localization:to_upper_text(d.name_id))
 end
 
 function HUDManager:custom_ingame_popup(title_id, text_id, icon_id)
-	HudChallangeNotification.queue(managers.localization:to_upper_text(title_id), managers.localization:to_upper_text(text_id), icon_id)
+	HudChallengeNotification.queue(managers.localization:to_upper_text(title_id), managers.localization:to_upper_text(text_id), icon_id)
 end
 
 function HUDManager:custom_ingame_popup_text(title, text, icon_id)
-	HudChallangeNotification.queue(title, text, icon_id)
+	HudChallengeNotification.queue(title, text, icon_id)
 end
 
 function HUDManager:safe_house_challenge_popup(id, c_type)
@@ -2088,8 +2088,16 @@ function HUDManager:safe_house_challenge_popup(id, c_type)
 	end
 
 	if not d.hidden_in_list then
-		HudChallangeNotification.queue(managers.localization:to_upper_text(title_id), managers.localization:to_upper_text(d.name_id))
+		HudChallengeNotification.queue(managers.localization:to_upper_text(title_id), managers.localization:to_upper_text(d.name_id))
 	end
+end
+
+function HUDManager:achievement_milestone_popup(id)
+	local milestone = managers.achievment:get_milestone(id)
+	local title = managers.localization:to_upper_text("hud_achievement_milestone_popup")
+	local description = managers.localization:to_upper_text("menu_milestone_item_title", {AT = milestone.at})
+
+	HudChallengeNotification.queue(title, description, "milestone_trophy", milestone.rewards)
 end
 
 function HUDManager:register_ingame_workspace(name, obj)

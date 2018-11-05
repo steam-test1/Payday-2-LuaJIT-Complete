@@ -98,7 +98,7 @@ function AchievementRecentListItem:init(parent, item, black_bg)
 	if black_bg then
 		self:rect({
 			layer = -1,
-			color = Color.black:with_alpha(0.6)
+			color = Color(0.5, 0.1, 0.1, 0.1)
 		})
 	end
 end
@@ -169,8 +169,9 @@ function AchievementRecentListGui:init(parent, list, back_callback)
 
 	if managers.menu:is_pc_controller() then
 		local back = OnPressedTextButton:new(self, {
+			text_id = "menu_continue_btn",
+			binding = "continue",
 			input = true,
-			text_id = "menu_back",
 			font = medium_font,
 			font_size = medium_font_size
 		}, function ()
@@ -183,7 +184,7 @@ function AchievementRecentListGui:init(parent, list, back_callback)
 
 	local back_panel = self:panel({layer = -2})
 
-	back_panel:rect({color = Color(255, 15, 18, 24) / 255})
+	back_panel:rect({color = Color.black:with_alpha(0.8)})
 	BoxGuiObject:new(back_panel, {sides = {
 		1,
 		1,

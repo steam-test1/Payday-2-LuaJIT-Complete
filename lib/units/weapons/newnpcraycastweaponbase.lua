@@ -426,11 +426,10 @@ function NewNPCRaycastWeaponBase:_get_spread(user_unit)
 end
 
 function NewNPCRaycastWeaponBase:_sound_autofire_start(nr_shots)
-	local tweak_sound = tweak_data.weapon[self._name_id].sounds
-	local sound_name = tweak_sound.prefix .. self._setup.user_sound_variant .. self._voice .. (nr_shots and "_" .. tostring(nr_shots) .. "shot" or "_loop")
-
 	self._sound_fire:stop()
 
+	local tweak_sound = tweak_data.weapon[self._name_id].sounds
+	local sound_name = tweak_sound.prefix .. self._setup.user_sound_variant .. self._voice .. (nr_shots and "_" .. tostring(nr_shots) .. "shot" or "_loop")
 	local sound = self._sound_fire:post_event(sound_name, callback(self, self, "_on_auto_fire_stop"), nil, "end_of_event")
 
 	if not sound then

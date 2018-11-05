@@ -1645,7 +1645,7 @@ function NewRaycastWeaponBase:enter_steelsight_speed_multiplier()
 		multiplier = multiplier + 1 - managers.player:upgrade_value("weapon", "silencer_enter_steelsight_speed_multiplier", 1)
 
 		for _, category in ipairs(categories) do
-			multiplier = multiplier + 1 - managers.player:upgrade_value(categories, "silencer_enter_steelsight_speed_multiplier", 1)
+			multiplier = multiplier + 1 - managers.player:upgrade_value(category, "silencer_enter_steelsight_speed_multiplier", 1)
 		end
 	end
 

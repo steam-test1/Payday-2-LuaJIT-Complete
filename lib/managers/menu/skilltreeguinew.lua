@@ -657,13 +657,14 @@ function NewSkillTreeGui:_update_description(item)
 
 	text:set_text(full_string)
 	managers.menu_component:make_color_text(text)
+	text:set_font_size(small_font_size)
 
 	local _, _, _, h = text:text_rect()
 
-	if desc_panel:h() - text:top() < h then
-		text:set_font_size(small_font_size * 0.95)
-	else
-		text:set_font_size(small_font_size)
+	while desc_panel:h() - text:top() < h do
+		text:set_font_size(text:font_size() * 0.98)
+
+		_, _, _, h = text:text_rect()
 	end
 end
 

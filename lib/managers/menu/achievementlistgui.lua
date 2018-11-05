@@ -1,6 +1,8 @@
 require("lib/managers/menu/ExtendedUiElemets")
 require("lib/managers/menu/AchievementDetailGui")
 require("lib/managers/menu/AchievementRecentListGui")
+require("lib/managers/menu/AchievementMilestoneGui")
+require("lib/managers/menu/AchievementMilestoneRewardGui")
 
 local massive_font = tweak_data.menu.pd2_massive_font
 local large_font = tweak_data.menu.pd2_large_font
@@ -362,6 +364,10 @@ function AchievementListItem:_on_toggle_tracked()
 	self:_selected_changed(self._select_panel:visible())
 end
 
+function AchievementListItem:sort_item()
+	return self._data
+end
+
 function AchievementListItem:toggle_force()
 	if self._force then
 		self._force:_trigger()
@@ -535,19 +541,25 @@ function AchievementSortPicker:init(parent, on_change)
 		"chronological",
 		"progress"
 	}
+
+	for k, id in pairs(strings) do
+		strings[k] = managers.localization:to_upper_text("menu_achievements_sort_order_picker", {SORT = managers.localization:text(id)})
+	end
+
 	Global.achievements_filters = Global.achievements_filters or {sort_order = "default"}
 	local current_id = Global.achievements_filters.sort_order
 	self._items = {}
 	self._on_change = on_change
 	local current_index = 1
-	local max_w = 0
+	local max_w = 200
 
 	for _, id in pairs(order) do
 		local t = self:fine_text({
 			align = "center",
-			text = managers.localization:to_upper_text(strings[id]),
-			font = medium_font,
-			font_size = medium_font_size
+			text = strings[id],
+			font = small_font,
+			font_size = small_font_size,
+			color = tweak_data.screen_colors.button_stage_2
 		})
 
 		table.insert(self._items, {
@@ -574,12 +586,6 @@ function AchievementSortPicker:init(parent, on_change)
 	local normal_color = tweak_data.screen_colors.button_stage_3
 	local hover_color = tweak_data.screen_colors.button_stage_2
 
-	placer:add_right(self:fine_text({
-		text = managers.localization:to_upper_text("menu_achievements_sort_order"),
-		font = medium_font,
-		font_size = medium_font_size
-	}))
-
 	if not managers.menu:is_pc_controller() then
 		placer:add_right(IconButton:new(self, {
 			texture = "guis/textures/menu_arrows",
@@ -596,14 +602,14 @@ function AchievementSortPicker:init(parent, on_change)
 		}, callback(self, self, "_prev")), 20)
 		placer:add_right(self:fine_text({
 			text = managers.localization:btn_macro("previous_page", true),
-			font = medium_font,
-			font_size = medium_font_size,
+			font = small_font,
+			font_size = small_font_size,
 			color = Color.white
 		}), 0)
-		placer:add_right(current)
+		placer:add_right_center(current)
 		placer:add_right(self:fine_text({
 			text = managers.localization:btn_macro("next_page", true),
-			font = medium_font,
+			font = small_font,
 			font_size = medium_font_size,
 			color = Color.white
 		}))
@@ -625,6 +631,7 @@ function AchievementSortPicker:init(parent, on_change)
 		placer:add_right(IconButton:new(self, {
 			texture = "guis/textures/menu_arrows",
 			size = 32,
+			rotation = 360,
 			normal_color = normal_color,
 			hover_color = hover_color,
 			texture_rect = {
@@ -633,8 +640,8 @@ function AchievementSortPicker:init(parent, on_change)
 				24,
 				24
 			}
-		}, callback(self, self, "_prev")), 20)
-		placer:add_right(current)
+		}, callback(self, self, "_prev")))
+		placer:add_right_center(current)
 		placer:add_right(IconButton:new(self, {
 			texture = "guis/textures/menu_arrows",
 			size = 32,
@@ -653,6 +660,26 @@ function AchievementSortPicker:init(parent, on_change)
 	for _, t in pairs(self._items) do
 		t.item:set_position(current:position())
 	end
+
+	self._bg = self:rect({
+		layer = -1,
+		color = Color.black:with_alpha(0.25)
+	})
+
+	BoxGuiObject:new(self, {sides = {
+		1,
+		1,
+		1,
+		1
+	}})
+end
+
+function AchievementSortPicker:mouse_moved(...)
+	local hit, icon = AchievementSortPicker.super.mouse_moved(self, ...)
+
+	self._bg:set_color(hit and tweak_data.screen_colors.button_stage_2:with_alpha(0.2) or Color.black:with_alpha(0.25))
+
+	return hit, icon
 end
 
 function AchievementSortPicker:_set_current(item, no_callback)
@@ -714,6 +741,10 @@ function AchievementListGui:init(ws, fullscreen_ws, node)
 	AchievementListGui.super.init(self, ws:panel())
 
 	AchievementListGui.panel_crash_protection = self
+
+	managers.achievment:_update_current_milestone()
+
+	self._ws = ws
 	self._main_panel = ToggleInputPanel:new(self, {input = true})
 
 	if not managers.menu:is_pc_controller() then
@@ -795,13 +826,13 @@ function AchievementListGui:init(ws, fullscreen_ws, node)
 
 	self._scroll:add_lines_and_static_down_indicator()
 
-	self._sort_item = AchievementSortPicker:new(self, callback(self, self, "clear_and_start_adding"))
+	self._sort_item = AchievementSortPicker:new(self, callback(self, self, "_redo_sort"))
 
-	self._sort_item:set_bottom(self._scroll:top())
-	self._sort_item:set_right(self._scroll:right() - 26)
+	self._sort_item:set_top(self._scroll:bottom() + 2)
+	self._sort_item:set_world_right(self._scroll:canvas():world_right())
 
 	local canvas = self._scroll:canvas()
-	local b_placer = UiPlacer:new(canvas:world_right(), self._scroll:bottom() + 5, 5)
+	local b_placer = UiPlacer:new(canvas:world_right(), self._scroll:top() - 26, 5)
 	local num_forced = #managers.achievment:get_force_tracked()
 	self._forced_text = b_placer:add_left(self._main_panel:fine_text({
 		align = "right",
@@ -840,7 +871,7 @@ function AchievementListGui:init(ws, fullscreen_ws, node)
 	})
 
 	back_panel:set_lefttop(self._scroll:lefttop())
-	back_panel:rect({color = Color(255, 15, 18, 24) / 255})
+	back_panel:rect({color = Color.black:with_alpha(0.8)})
 
 	self._filter_panel = GrowPanel:new(self._main_panel, {
 		input = true,
@@ -872,6 +903,69 @@ function AchievementListGui:init(ws, fullscreen_ws, node)
 		back_btn:set_righttop(self._filter_panel:right(), self._scroll:bottom())
 	end
 
+	if managers.menu:is_pc_controller() and not self._search then
+		local search_panel = self._main_panel:panel({
+			alpha = 1,
+			layer = 2,
+			h = medium_font_size
+		})
+
+		search_panel:set_w(256)
+		search_panel:set_h(self._sort_item:h())
+		search_panel:set_top(self._sort_item:top())
+		search_panel:set_right(self._sort_item:left() - 5)
+
+		local search_placeholder = search_panel:text({
+			vertical = "top",
+			align = "center",
+			alpha = 0.6,
+			layer = 2,
+			text = managers.localization:to_upper_text("menu_filter_search"),
+			font = medium_font,
+			font_size = medium_font_size,
+			color = tweak_data.screen_colors.text
+		})
+		local search_text = search_panel:text({
+			vertical = "top",
+			alpha = 1,
+			align = "center",
+			text = "",
+			layer = 2,
+			font = medium_font,
+			font_size = medium_font_size,
+			color = tweak_data.screen_colors.text,
+			w = search_panel:w() - 3
+		})
+		local caret = search_panel:rect({
+			name = "caret",
+			h = 0,
+			y = 0,
+			w = 0,
+			x = 0,
+			layer = 200,
+			color = Color(0.05, 1, 1, 1)
+		})
+
+		caret:set_right(search_panel:w() * 0.5)
+		search_panel:rect({
+			layer = -1,
+			color = Color.black:with_alpha(0.25)
+		})
+		BoxGuiObject:new(search_panel, {sides = {
+			1,
+			1,
+			1,
+			1
+		}})
+
+		self._search = {
+			panel = search_panel,
+			placeholder = search_placeholder,
+			text = search_text,
+			caret = caret
+		}
+	end
+
 	self._all_achievements = {}
 
 	for k, data in pairs(tweak_data.achievement.visual) do
@@ -881,7 +975,8 @@ function AchievementListGui:init(ws, fullscreen_ws, node)
 			key = k,
 			data = data,
 			info = info,
-			title = string.lower(managers.localization:text(data.name_id))
+			title = string.lower(managers.localization:text(data.name_id)),
+			desc = string.lower(managers.localization:text(data.desc_id))
 		})
 	end
 
@@ -891,8 +986,15 @@ function AchievementListGui:init(ws, fullscreen_ws, node)
 	WalletGuiObject.set_wallet(self)
 
 	local recent_list = managers.achievment:get_recent_achievements()
+	local recent_milestones = managers.achievment:get_recent_milestones()
 
-	if #recent_list > 0 then
+	if #recent_milestones > 0 then
+		local on_done = #recent_list <= 0 and callback(self, self, "_on_popup_done") or function ()
+			self:_do_popup(AchievementRecentListGui:new(self, recent_list, callback(self, self, "_on_popup_done")))
+		end
+
+		self:_do_popup(AchievementMilestoneRewardGui:new(self, recent_milestones, on_done))
+	elseif #recent_list > 0 then
 		self:_do_popup(AchievementRecentListGui:new(self, recent_list, callback(self, self, "_on_popup_done")))
 	end
 
@@ -920,7 +1022,7 @@ end
 function AchievementListGui:_show_tracked()
 	self._view_tracked = true
 
-	self:clear_and_start_adding()
+	self:_redo_filter_and_sort()
 	self:generate_side_panel()
 
 	if self._track_btn then
@@ -935,7 +1037,7 @@ end
 function AchievementListGui:_show_all()
 	self._view_tracked = false
 
-	self:clear_and_start_adding()
+	self:_redo_filter_and_sort()
 	self:generate_side_panel()
 
 	if self._track_btn then
@@ -961,6 +1063,7 @@ function AchievementListGui:generate_side_panel()
 	self._filter_panel:clear()
 
 	local placer = self._filter_panel:placer()
+	local milestone = managers.achievment:current_milestone()
 
 	if self._view_tracked then
 		placer:add_bottom(LeftRightText:new(self._filter_panel, {
@@ -984,6 +1087,12 @@ function AchievementListGui:generate_side_panel()
 				font = medium_font,
 				font_size = medium_font_size
 			}, managers.localization:to_upper_text("menu_filtered_achievements"), string.format("%d / %d", count_done(self._current_list), #self._current_list)), 0)
+		elseif milestone then
+			local t = placer:add_bottom(LeftRightText:new(self._filter_panel, {
+				w = self._filter_panel:row_w(),
+				font = medium_font,
+				font_size = medium_font_size
+			}, managers.localization:to_upper_text("menu_milestone_next_at"), string.format("%d", milestone.at)), 0)
 		end
 
 		local current_progress = #self._current_list == 0 and 0 or count_done(self._current_list) / #self._current_list
@@ -995,28 +1104,64 @@ function AchievementListGui:generate_side_panel()
 			font = tiny_font,
 			font_size = tiny_font_size
 		}, current_progress))
-		local filter = placer:add_bottom(TextButton:new(self._filter_panel, {
+
+		if not self._filtered and milestone then
+			for _, m in pairs(managers.achievment:milestones()) do
+				if m == milestone then
+					local x = progress:x() + progress:w() * m.at / #self._current_list
+
+					self._filter_panel:rect({
+						w = 2,
+						h = progress:h(),
+						color = Color(255, 80, 80, 85) / 255,
+						x = x + 1,
+						y = progress:y()
+					})
+
+					local arrow = self._filter_panel:bitmap({texture = "guis/dlcs/ami/textures/pd2/milestone_marker_arrow"})
+
+					arrow:set_bottom(progress:top() - 3)
+					arrow:set_center_x(x + 2)
+				elseif milestone.at < m.at then
+					self._filter_panel:rect({
+						w = 2,
+						h = progress:h(),
+						color = Color(255, 80, 80, 85) / 255,
+						x = progress:x() + progress:w() * m.at / #self._current_list + 1,
+						y = progress:y()
+					})
+				end
+			end
+		end
+
+		local r_btn = placer:add_bottom(TextButton:new(self._filter_panel, {
 			blend = "add",
 			text_id = "menu_achievements_filter_btn",
 			binding = "menu_toggle_filters",
 			font = small_font,
 			font_size = small_font_size
 		}, callback(self, self, "open_filter_popup")))
-		local clear_filter = TextButton:new(self._filter_panel, {
+		local l_btn = self._filtered and TextButton:new(self._filter_panel, {
 			blend = "add",
 			text_id = "menu_achievements_clear_filter_btn",
 			binding = "menu_clear",
 			font = small_font,
 			font_size = small_font_size
-		}, callback(self, self, "_clear_filters"))
+		}, callback(self, self, "_clear_filters")) or TextButton:new(self._filter_panel, {
+			blend = "add",
+			text_id = "menu_milestone_btn",
+			binding = "menu_respec_tree_all",
+			font = small_font,
+			font_size = small_font_size
+		}, callback(self, self, "_on_milestone"))
 
-		filter:set_right(progress:right())
-		clear_filter:set_left(progress:left())
-		clear_filter:set_top(filter:top())
+		r_btn:set_right(progress:right())
+		l_btn:set_left(progress:left())
+		l_btn:set_top(r_btn:top())
 	end
 
 	self._filter_panel:rect({
-		color = Color(255, 15, 18, 24) / 255,
+		color = Color.black:with_alpha(0.8),
 		layer = self._filter_panel:layer() - 1
 	})
 	BoxGuiObject:new(self._filter_panel, {sides = {
@@ -1037,7 +1182,7 @@ function AchievementListGui:generate_side_panel()
 	self._detail_bg = self._detail_scroll:panel()
 
 	self._detail_bg:rect({
-		color = Color(255, 15, 18, 24) / 255,
+		color = Color.black:with_alpha(0.8),
 		layer = self._filter_panel:layer() - 1
 	})
 	BoxGuiObject:new(self._detail_bg, {sides = {
@@ -1107,7 +1252,7 @@ function AchievementListGui:update_detail()
 		}), 0)
 	end
 
-	add_achievement_detail_text(self._detail_scroll, placer, visual, info, tweak_data.screen_colors.achievement_grey)
+	add_achievement_detail_text(self._detail_scroll, placer, visual, info)
 end
 
 function AchievementListGui:update(...)
@@ -1239,6 +1384,16 @@ function AchievementListGui:_filter_func()
 		end
 	end
 
+	if self._search then
+		local text = string.lower(self._search.text:text())
+
+		if #text > 0 then
+			table.insert(filters, function (v)
+				return string.find(v.title, text, nil, true) or string.find(v.desc, text, nil, true)
+			end)
+		end
+	end
+
 	if #filters > 0 then
 		return function (v)
 			for _, f in ipairs(filters) do
@@ -1294,6 +1449,44 @@ function AchievementListGui:clear_and_start_adding()
 
 	self:keep_filling_list()
 	self:generate_side_panel()
+end
+
+function AchievementListGui:_redo_filter_and_sort()
+	if self._adding_to_data then
+		self:clear_and_start_adding()
+
+		return
+	end
+
+	self:_redo_filter()
+	self:_redo_sort()
+end
+
+function AchievementListGui:_redo_filter()
+	self._filtered = false
+	local list = self._all_achievements
+	self._current_list, self._filtered = self:filter(list)
+
+	self._scroll:filter_items(function (item)
+		return table.find_value(self._current_list, function (v)
+			return v.key == item._id
+		end)
+	end, nil, true)
+	self:generate_side_panel()
+end
+
+function AchievementListGui:_redo_sort()
+	if self._adding_to_data then
+		self:clear_and_start_adding()
+
+		return
+	end
+
+	local func = self:_get_sort_func()
+
+	self._scroll:sort_items(function (lhs, rhs)
+		return func(lhs:sort_item(), rhs:sort_item())
+	end, nil, true)
 end
 
 function AchievementListGui:keep_filling_list()
@@ -1408,7 +1601,7 @@ function AchievementListGui:_on_toggle_unlocked()
 	local data = Global.achievements_filters
 	data.hide_unlocked = not data.hide_unlocked
 
-	self:clear_and_start_adding()
+	self:_redo_filter()
 end
 
 function AchievementListGui:_do_popup(gui)
@@ -1438,7 +1631,7 @@ end
 
 function AchievementListGui:_on_filters_done()
 	self:remove_blur()
-	self:clear_and_start_adding()
+	self:_redo_filter_and_sort()
 
 	if self._sort_item then
 		self._sort_item:refresh()
@@ -1461,7 +1654,9 @@ function AchievementListGui:_clear_filters()
 	data.hide_ladder = nil
 	data.tags = {}
 
-	self:clear_and_start_adding()
+	self._search.text:set_text("")
+	self:update_caret()
+	self:_redo_filter()
 end
 
 function AchievementListGui.default_order(lhs, rhs)
@@ -1542,6 +1737,329 @@ function AchievementListGui:allow_input()
 end
 
 function AchievementListGui:input_focus()
-	return self:allow_input() and (self._popup and true or 1)
+	return self:allow_input() and ((self._popup or self._search_focus) and true or 1)
+end
+
+function AchievementListGui:back_pressed()
+	if self._search_focus then
+		return
+	end
+
+	return AchievementListGui.super.back_pressed(self)
+end
+
+function AchievementListGui:special_btn_pressed(...)
+	if self._search_focus then
+		return
+	end
+
+	return AchievementListGui.super.special_btn_pressed(self, ...)
+end
+
+function AchievementListGui:mouse_clicked(o, button, x, y)
+	if button == Idstring("0") and self._search.panel:inside(x, y) then
+		self:connect_search_input()
+
+		return true
+	elseif self._search_focus then
+		self:disconnect_search_input()
+	end
+
+	return AchievementListGui.super.mouse_clicked(self, o, button, x, y)
+end
+
+function AchievementListGui:_on_milestone()
+	self:_do_popup(AchievementMilestoneGui:new(self, callback(self, self, "_on_popup_done")))
+end
+AchievementListGui.MAX_SEARCH_LENGTH = 28
+
+function AchievementListGui:connect_search_input()
+	if self._adding_to_data or self._search_focus then
+		return
+	end
+
+	self._ws:connect_keyboard(Input:keyboard())
+	self._search.panel:key_press(callback(self, self, "search_key_press"))
+	self._search.panel:key_release(callback(self, self, "search_key_release"))
+
+	self._enter_callback = callback(self, self, "enter_key_callback")
+	self._esc_callback = callback(self, self, "esc_key_callback")
+	self._search_focus = true
+	self._focus = true
+
+	self:update_caret()
+end
+
+function AchievementListGui:disconnect_search_input()
+	if self._search_focus then
+		self._ws:disconnect_keyboard()
+		self._search.panel:key_press(nil)
+		self._search.panel:key_release(nil)
+
+		if self._key_pressed then
+			self:search_key_release(nil, self._key_pressed)
+		end
+
+		self._search_focus = nil
+		self._focus = nil
+
+		self:update_caret()
+		self:_redo_filter()
+	end
+end
+
+function AchievementListGui:_setup_change_search()
+	self:_redo_filter()
+end
+
+function AchievementListGui:search_key_press(o, k)
+	if self._skip_first then
+		self._skip_first = false
+
+		return
+	end
+
+	if not self._enter_text_set then
+		self._search.panel:enter_text(callback(self, self, "enter_text"))
+
+		self._enter_text_set = true
+	end
+
+	local text = self._search.text
+	local s, e = text:selection()
+	local n = utf8.len(text:text())
+	local d = math.abs(e - s)
+	self._key_pressed = k
+
+	text:stop()
+	text:animate(callback(self, self, "update_key_down"), k)
+
+	local len = utf8.len(text:text())
+
+	text:clear_range_color(0, len)
+
+	if k == Idstring("backspace") then
+		if s == e and s > 0 then
+			text:set_selection(s - 1, e)
+		end
+
+		text:replace_text("")
+		self:enter_text()
+	elseif k == Idstring("delete") then
+		if s == e and s < n then
+			text:set_selection(s, e + 1)
+		end
+
+		text:replace_text("")
+	elseif k == Idstring("insert") then
+		local clipboard = Application:get_clipboard() or ""
+
+		text:replace_text(clipboard)
+
+		local lbs = text:line_breaks()
+
+		if AchievementListGui.MAX_SEARCH_LENGTH < #text:text() then
+			text:set_text(string.sub(text:text(), 1, AchievementListGui.MAX_SEARCH_LENGTH))
+		end
+
+		if #lbs > 1 then
+			local s = lbs[2]
+			local e = utf8.len(text:text())
+
+			text:set_selection(s, e)
+			text:replace_text("")
+		end
+	elseif k == Idstring("left") then
+		if s < e then
+			text:set_selection(s, s)
+		elseif s > 0 then
+			text:set_selection(s - 1, s - 1)
+		end
+	elseif k == Idstring("right") then
+		if s < e then
+			text:set_selection(e, e)
+		elseif s < n then
+			text:set_selection(s + 1, s + 1)
+		end
+	elseif self._key_pressed == Idstring("end") then
+		text:set_selection(n, n)
+	elseif self._key_pressed == Idstring("home") then
+		text:set_selection(0, 0)
+	elseif k == Idstring("enter") then
+		if type(self._enter_callback) ~= "number" then
+			self._enter_callback()
+		end
+	elseif k == Idstring("esc") and type(self._esc_callback) ~= "number" then
+		text:set_text("")
+		text:set_selection(0, 0)
+		self._esc_callback()
+	end
+
+	self:update_caret()
+end
+
+function AchievementListGui:search_key_release(o, k)
+	if self._key_pressed == k then
+		self._key_pressed = false
+
+		self:_setup_change_search()
+	end
+end
+
+function AchievementListGui:update_key_down(o, k)
+	wait(0.6)
+
+	local text = self._search.text
+
+	while self._key_pressed == k do
+		local s, e = text:selection()
+		local n = utf8.len(text:text())
+		local d = math.abs(e - s)
+
+		if self._key_pressed == Idstring("backspace") then
+			if s == e and s > 0 then
+				text:set_selection(s - 1, e)
+			end
+
+			text:replace_text("")
+		elseif self._key_pressed == Idstring("delete") then
+			if s == e and s < n then
+				text:set_selection(s, e + 1)
+			end
+
+			text:replace_text("")
+		elseif self._key_pressed == Idstring("insert") then
+			local clipboard = Application:get_clipboard() or ""
+
+			text:replace_text(clipboard)
+
+			if AchievementListGui.MAX_SEARCH_LENGTH < #text:text() then
+				text:set_text(string.sub(text:text(), 1, AchievementListGui.MAX_SEARCH_LENGTH))
+			end
+
+			local lbs = text:line_breaks()
+
+			if #lbs > 1 then
+				local s = lbs[2]
+				local e = utf8.len(text:text())
+
+				text:set_selection(s, e)
+				text:replace_text("")
+			end
+		elseif self._key_pressed == Idstring("left") then
+			if s < e then
+				text:set_selection(s, s)
+			elseif s > 0 then
+				text:set_selection(s - 1, s - 1)
+			end
+		elseif self._key_pressed == Idstring("right") then
+			if s < e then
+				text:set_selection(e, e)
+			elseif s < n then
+				text:set_selection(s + 1, s + 1)
+			end
+		else
+			self._key_pressed = false
+		end
+
+		self:update_caret()
+		wait(0.03)
+	end
+end
+
+function AchievementListGui:enter_text(o, s)
+	if self._skip_first then
+		self._skip_first = false
+
+		return
+	end
+
+	local text = self._search.text
+
+	if #text:text() < AchievementListGui.MAX_SEARCH_LENGTH then
+		text:replace_text(s)
+	end
+
+	local lbs = text:line_breaks()
+
+	if #lbs > 1 then
+		local s = lbs[2]
+		local e = utf8.len(text:text())
+
+		text:set_selection(s, e)
+		text:replace_text("")
+	end
+
+	self:update_caret()
+	self:_setup_change_search()
+end
+
+function AchievementListGui:enter_key_callback()
+	self:_setup_change_search()
+end
+
+function AchievementListGui:esc_key_callback()
+	call_on_next_update(function ()
+		self:disconnect_search_input()
+	end)
+end
+
+function AchievementListGui.blink(o)
+	while true do
+		o:set_color(Color(0, 1, 1, 1))
+		wait(0.3)
+		o:set_color(Color.white)
+		wait(0.3)
+	end
+end
+
+function AchievementListGui:set_blinking(b)
+	local caret = self._search.caret
+
+	if b == self._blinking then
+		return
+	end
+
+	if b then
+		caret:animate(self.blink)
+	else
+		caret:stop()
+	end
+
+	self._blinking = b
+
+	if not self._blinking then
+		caret:set_color(Color.white)
+	end
+end
+
+function AchievementListGui:update_caret()
+	local text = self._search.text
+	local caret = self._search.caret
+	local s, e = text:selection()
+	local x, y, w, h = text:selection_rect()
+
+	if s == 0 and e == 0 then
+		x = text:world_center_x()
+		y = text:world_y()
+	end
+
+	h = text:h()
+
+	if w < 3 then
+		w = 3
+	end
+
+	if not self._focus then
+		w = 0
+		h = 0
+	end
+
+	caret:set_world_shape(x, y + 2, w, h - 4)
+	self:set_blinking(s == e and self._focus)
+
+	local text_s = text:text()
+
+	self._search.placeholder:set_visible(not self._focus and #text_s == 0)
 end
 

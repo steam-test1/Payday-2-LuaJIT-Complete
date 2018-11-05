@@ -3766,9 +3766,9 @@ function TweakData:get_controller_help_coords()
 	end
 
 	if managers.user and managers.user:get_setting("southpaw") then
-		local tmp = coords.normal.menu_button_move
-		coords.normal.menu_button_move = coords.normal.menu_button_look
-		coords.normal.menu_button_look = tmp
+		local tmp = coords.normal.left.id
+		coords.normal.left.id = coords.normal.right.id
+		coords.normal.right.id = tmp
 	end
 
 	return coords

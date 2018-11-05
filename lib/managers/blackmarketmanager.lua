@@ -474,7 +474,6 @@ function BlackMarketManager:set_equipped_armor_skin(skin_id)
 		local skin = tweak_data.economy:get_armor_skin_id(skin_id)
 
 		managers.menu_scene._character_unit:base():set_cosmetics_data(skin)
-		managers.menu_scene._character_unit:base():_apply_cosmetics({})
 	end
 
 	MenuCallbackHandler:_update_outfit_information()
@@ -844,13 +843,15 @@ function BlackMarketManager:equip_deployable(data, loading)
 	end
 end
 
-function BlackMarketManager:equip_character(character_id)
+function BlackMarketManager:equip_character(character_name)
+	local character_id = self:get_character_id_by_character_name(character_name)
+
 	for s, data in pairs(Global.blackmarket_manager.characters) do
 		data.equipped = s == character_id
 	end
 
 	if managers.menu_scene then
-		managers.menu_scene:set_character(character_id, true)
+		managers.menu_scene:set_character(character_name, true)
 	end
 
 	MenuCallbackHandler:_update_outfit_information()
@@ -5068,13 +5069,8 @@ function BlackMarketManager:_update_preferred_character(update_character)
 		local character = self._global._preferred_characters[1]
 		local new_name = CriminalsManager.convert_old_to_new_character_workname(character)
 		self._global._preferred_character = character
-		local is_locked = tweak_data.blackmarket.characters.locked[new_name]
 
-		if is_locked then
-			self:equip_character("locked")
-		elseif self:equipped_character() ~= character then
-			self:equip_character(character)
-		end
+		self:equip_character(new_name)
 
 		if managers.menu_scene then
 			managers.menu_scene:on_set_preferred_character()
@@ -6177,110 +6173,52 @@ function BlackMarketManager:character_sequence_by_character_id(character_id, pee
 	return shared_char_seq
 end
 
-function BlackMarketManager:character_sequence_by_character_name(character, peer_id)
-	if managers.network and managers.network:session() and peer_id then
-		print("character_sequence_by_character_name", managers.network:session(), peer_id, character_name)
+function BlackMarketManager:character_sequence_by_character_name(character, use_cc)
+	character = CriminalsManager.convert_old_to_new_character_workname(character)
+	local sequence = self:_character_tweak_data_by_name(character).sequence
 
-		local peer = managers.network:session():peer(peer_id)
+	if use_cc then
+		local cc_sequences = {
+			"var_mtr_chains",
+			"var_mtr_dallas",
+			"var_mtr_hoxton",
+			"var_mtr_dragan",
+			"var_mtr_jacket",
+			"var_mtr_old_hoxton",
+			"var_mtr_wolf",
+			"var_mtr_john_wick",
+			"var_mtr_sokol",
+			"var_mtr_jiro",
+			"var_mtr_bodhi",
+			"var_mtr_jimmy"
+		}
 
-		if peer then
-			character = peer:character() or character
-
-			if not peer:character() then
-				Application:error("character_sequence_by_character_name: Peer missing character", "peer_id", peer_id)
-				print(inspect(peer))
-			end
+		if table.contains(cc_sequences, sequence) then
+			sequence = sequence .. "_cc"
 		end
 	end
 
-	character = CriminalsManager.convert_old_to_new_character_workname(character)
-
-	if tweak_data.blackmarket.characters.locked[character] then
-		return tweak_data.blackmarket.characters.locked[character].sequence
-	end
-
-	return tweak_data.blackmarket.characters[character].sequence
+	return sequence
 end
 
-function BlackMarketManager:character_mask_on_sequence_by_character_id(character_id, peer_id, character_name)
-	if not peer_id and character_id ~= "locked" then
-		return tweak_data.blackmarket.characters[character_id].mask_on_sequence
-	end
-
-	local character = character_name or self:get_preferred_character()
-
-	if managers.network and managers.network:session() and peer_id then
-		local peer = managers.network:session():peer(peer_id)
-
-		if peer then
-			character = peer:character() or character
-
-			if not peer:character() then
-				Application:error("character_sequence_by_character_id: Peer missing character", "peer_id", peer_id)
-				print(inspect(peer))
-			end
-		end
-	end
-
+function BlackMarketManager:character_mask_on_sequence_by_character_name(character)
 	character = CriminalsManager.convert_old_to_new_character_workname(character)
 
-	if tweak_data.blackmarket.characters.locked[character] then
-		return tweak_data.blackmarket.characters.locked[character].mask_on_sequence
-	end
-
-	return tweak_data.blackmarket.characters[character].mask_on_sequence
+	return self:_character_tweak_data_by_name(character).mask_on_sequence
 end
 
-function BlackMarketManager:character_mask_off_sequence_by_character_id(character_id, peer_id, character_name)
-	if not peer_id and character_id ~= "locked" then
-		return tweak_data.blackmarket.characters[character_id].mask_off_sequence
-	end
-
-	local character = character_name or self:get_preferred_character()
-
-	if managers.network and managers.network:session() and peer_id then
-		local peer = managers.network:session():peer(peer_id)
-
-		if peer then
-			character = peer:character() or character
-
-			if not peer:character() then
-				Application:error("character_sequence_by_character_id: Peer missing character", "peer_id", peer_id)
-				print(inspect(peer))
-			end
-		end
-	end
-
+function BlackMarketManager:character_mask_off_sequence_by_character_name(character)
 	character = CriminalsManager.convert_old_to_new_character_workname(character)
 
-	if tweak_data.blackmarket.characters.locked[character] then
-		return tweak_data.blackmarket.characters.locked[character].mask_off_sequence
-	end
-
-	return tweak_data.blackmarket.characters[character].mask_off_sequence
+	return self:_character_tweak_data_by_name(character).mask_off_sequence
 end
 
-function BlackMarketManager:character_mask_on_sequence_by_character_name(character, peer_id)
-	if managers.network and managers.network:session() and peer_id then
-		local peer = managers.network:session():peer(peer_id)
-
-		if peer then
-			character = peer:character() or character
-
-			if not peer:character() then
-				Application:error("character_sequence_by_character_id: Peer missing character", "peer_id", peer_id)
-				print(inspect(peer))
-			end
-		end
+function BlackMarketManager:_character_tweak_data_by_name(character_name)
+	if tweak_data.blackmarket.characters.locked[character_name] then
+		return tweak_data.blackmarket.characters.locked[character_name]
 	end
 
-	character = CriminalsManager.convert_old_to_new_character_workname(character)
-
-	if tweak_data.blackmarket.characters.locked[character] then
-		return tweak_data.blackmarket.characters.locked[character].mask_on_sequence
-	end
-
-	return tweak_data.blackmarket.characters[character].mask_on_sequence
+	return tweak_data.blackmarket.characters[character_name]
 end
 
 function BlackMarketManager:weapon_cosmetics_type_check(weapon_id, weapon_skin_id)
@@ -7213,7 +7151,7 @@ function BlackMarketManager:_load_done()
 	self:aquire_default_masks()
 
 	if managers.menu_scene then
-		managers.menu_scene:set_character(self:equipped_character())
+		managers.menu_scene:set_character(self:get_preferred_character())
 		managers.menu_scene:on_set_preferred_character()
 
 		local equipped_mask = self:equipped_mask()

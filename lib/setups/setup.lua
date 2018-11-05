@@ -519,6 +519,12 @@ function Setup:update(t, dt)
 	managers.system_menu:update(main_t, main_dt)
 	managers.savefile:update(t, dt)
 	managers.menu:update(main_t, main_dt)
+
+	if managers.menu_scene then
+		managers.menu_scene:update(t, dt)
+	end
+
+	managers.menu_component:update(t, dt)
 	managers.player:update(t, dt)
 	managers.blackmarket:update(t, dt)
 	managers.vote:update(t, dt)
@@ -542,6 +548,12 @@ function Setup:paused_update(t, dt)
 	managers.system_menu:paused_update(t, dt)
 	managers.savefile:paused_update(t, dt)
 	managers.menu:update(t, dt)
+
+	if managers.menu_scene then
+		managers.menu_scene:update(t, dt)
+	end
+
+	managers.menu_component:update(t, dt)
 	managers.blackmarket:update(t, dt)
 	game_state_machine:paused_update(t, dt)
 	TestAPIHelper.update(t, dt)

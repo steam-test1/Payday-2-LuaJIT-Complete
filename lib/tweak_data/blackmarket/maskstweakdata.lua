@@ -5571,6 +5571,62 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 			}
 		}
 	}
+	self.masks.ami_01 = {
+		unit = "units/pd2_dlc_ami/masks/ami_01/msk_ami_01",
+		name_id = "bm_msk_ami_01",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "ami",
+		sort_number = 62,
+		global_value = "infamous",
+		offsets = {
+			dragon = {
+				Vector3(0, 0.673745, 0),
+				Rotation(-0, -0, -0)
+			},
+			bodhi = {
+				Vector3(0, 0.196759, 0),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.ami_02 = {
+		unit = "units/pd2_dlc_ami/masks/ami_02/msk_ami_02",
+		name_id = "bm_msk_ami_02",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "ami",
+		sort_number = 62,
+		global_value = "infamous"
+	}
+	self.masks.ami_03 = {
+		unit = "units/pd2_dlc_ami/masks/ami_03/msk_ami_03",
+		name_id = "bm_msk_ami_03",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "ami",
+		sort_number = 62,
+		global_value = "infamous"
+	}
+	self.masks.ami_04 = {
+		unit = "units/pd2_dlc_ami/masks/ami_04/msk_ami_04",
+		name_id = "bm_msk_ami_04",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		texture_bundle_folder = "ami",
+		sort_number = 62,
+		global_value = "infamous"
+	}
+	self.masks.ami_05 = {
+		unit = "units/pd2_dlc_ami/masks/ami_05/msk_ami_05",
+		name_id = "bm_msk_ami_05",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "ami",
+		sort_number = 62,
+		global_value = "infamous"
+	}
 	self.masks.cmt_01 = {
 		unit = "units/pd2_dlc_cmt/masks/cmt_01/msk_cmt_01",
 		name_id = "bm_msk_cmt_01",

@@ -48,6 +48,10 @@ function AkimboWeaponBase:_create_second_gun(unit_name)
 	self._second_gun:base().SKIP_AMMO = true
 	self._second_gun:base().parent_weapon = self._unit
 
+	if self:fire_mode() == "auto" then
+		self._second_gun:base():mute_firing()
+	end
+
 	new_unit:base():setup(self._setup)
 
 	self.akimbo = true
@@ -267,6 +271,32 @@ function AkimboWeaponBase:destroy(...)
 		self._second_gun:set_slot(0)
 	end
 end
+
+function AkimboWeaponBase:mute_firing()
+	self._firing_muted = true
+
+	self._sound_fire:stop()
+end
+
+function AkimboWeaponBase:unmute_firing()
+	self._firing_muted = nil
+end
+
+function AkimboWeaponBase:_sound_autofire_start(...)
+	if self._firing_muted then
+		return
+	end
+
+	AkimboWeaponBase.super._sound_autofire_start(self, ...)
+end
+
+function AkimboWeaponBase:_sound_singleshot()
+	if self._firing_muted then
+		return
+	end
+
+	AkimboWeaponBase.super._sound_singleshot(self)
+end
 NPCAkimboWeaponBase = NPCAkimboWeaponBase or class(NewNPCRaycastWeaponBase)
 NPCAkimboWeaponBase.AKIMBO = true
 
@@ -462,6 +492,30 @@ function NPCAkimboWeaponBase:destroy(...)
 		self._second_gun:set_slot(0)
 	end
 end
+
+function NPCAkimboWeaponBase:mute_firing()
+	AkimboWeaponBase.mute_firing(self)
+end
+
+function NPCAkimboWeaponBase:unmute_firing()
+	AkimboWeaponBase.unmute_firing(self)
+end
+
+function NPCAkimboWeaponBase:_sound_autofire_start(...)
+	if self._firing_muted then
+		return
+	end
+
+	NPCAkimboWeaponBase.super._sound_autofire_start(self, ...)
+end
+
+function NPCAkimboWeaponBase:_sound_singleshot()
+	if self._firing_muted then
+		return
+	end
+
+	NPCAkimboWeaponBase.super._sound_singleshot(self)
+end
 EnemyAkimboWeaponBase = EnemyAkimboWeaponBase or class(NPCRaycastWeaponBase)
 EnemyAkimboWeaponBase.AKIMBO = true
 
@@ -483,6 +537,10 @@ function EnemyAkimboWeaponBase:create_second_gun(unit_name)
 	self._second_gun = new_unit
 	self._second_gun:base().SKIP_AMMO = true
 	self._second_gun:base().parent_weapon = self._unit
+
+	if self:fire_mode() == "auto" then
+		self._second_gun:base():mute_firing()
+	end
 
 	new_unit:base():setup(self._setup)
 
@@ -519,8 +577,6 @@ function EnemyAkimboWeaponBase:tweak_data_anim_play(anim, ...)
 end
 
 function EnemyAkimboWeaponBase:anim_play(anim, speed_multiplier)
-	print("anim oookay ", anim)
-
 	if anim then
 		local length = self._unit:anim_length(Idstring(anim))
 		speed_multiplier = speed_multiplier or 1
@@ -544,5 +600,29 @@ end
 
 function EnemyAkimboWeaponBase:anim_stop(anim)
 	self._second_gun:anim_stop(Idstring(anim))
+end
+
+function EnemyAkimboWeaponBase:mute_firing()
+	AkimboWeaponBase.mute_firing(self)
+end
+
+function EnemyAkimboWeaponBase:unmute_firing()
+	AkimboWeaponBase.unmute_firing(self)
+end
+
+function EnemyAkimboWeaponBase:_sound_autofire_start(...)
+	if self._firing_muted then
+		return
+	end
+
+	EnemyAkimboWeaponBase.super._sound_autofire_start(self, ...)
+end
+
+function EnemyAkimboWeaponBase:_sound_singleshot()
+	if self._firing_muted then
+		return
+	end
+
+	EnemyAkimboWeaponBase.super._sound_singleshot(self)
 end
 

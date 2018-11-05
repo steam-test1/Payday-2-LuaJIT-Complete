@@ -869,14 +869,7 @@ function MenuSceneManager:add_callback(clbk, delay, param)
 end
 
 function MenuSceneManager:on_blackmarket_reset()
-	for character_id, data in pairs(tweak_data.blackmarket.characters) do
-		if Global.blackmarket_manager.characters[character_id].equipped then
-			self:set_character(character_id)
-
-			break
-		end
-	end
-
+	self:set_character(managers.blackmarket:get_preferred_character())
 	self:_set_character_equipment()
 end
 
@@ -891,12 +884,7 @@ function MenuSceneManager:_setup_bg()
 
 	self._menu_logo = World:spawn_unit(Idstring("units/menu/menu_scene/menu_logo"), Vector3(0, 0, 0), Rotation(yaw, 0, 0))
 
-	for character_id, data in pairs(tweak_data.blackmarket.characters) do
-		if Global.blackmarket_manager.characters[character_id].equipped then
-			self:set_character(character_id)
-		end
-	end
-
+	self:set_character(managers.blackmarket:get_preferred_character())
 	self:_setup_lobby_characters()
 	self:_setup_henchmen_characters()
 end
@@ -1305,9 +1293,7 @@ function MenuSceneManager:set_henchmen_loadout(index, character, loadout)
 		self._henchmen_characters[index] = unit
 	end
 
-	local sequence = managers.blackmarket:character_sequence_by_character_name(character)
-
-	unit:damage():run_sequence_simple(sequence)
+	unit:base():set_character_name(character)
 
 	local mask = loadout.mask
 	local mask_blueprint = loadout.mask_blueprint
@@ -1413,8 +1399,8 @@ function MenuSceneManager:_init_character(unit, peer_id)
 	unit:anim_state_machine():set_parameter(state, "husk" .. peer_id, 1)
 end
 
-function MenuSceneManager:change_lobby_character(i, character_id)
-	local unit = self._lobby_characters[i]
+function MenuSceneManager:change_lobby_character(peer_id, character_id)
+	local unit = self._lobby_characters[peer_id]
 	local unit_name = tweak_data.blackmarket.characters[character_id].menu_unit
 
 	if not alive(unit) or Idstring(unit_name) ~= unit:name() then
@@ -1428,14 +1414,12 @@ function MenuSceneManager:change_lobby_character(i, character_id)
 
 		unit = World:spawn_unit(Idstring(unit_name), pos, rot)
 
-		self:_init_character(unit, i)
+		self:_init_character(unit, peer_id)
 
-		self._lobby_characters[i] = unit
+		self._lobby_characters[peer_id] = unit
 	end
 
-	local sequence = managers.blackmarket:character_sequence_by_character_id(character_id, i)
-
-	unit:damage():run_sequence_simple(sequence)
+	unit:base():set_character_name(managers.network:session():peer(peer_id):character())
 
 	local mask_data = self._mask_units[unit:key()]
 
@@ -1658,7 +1642,7 @@ function MenuSceneManager:set_character_mask_by_id(mask_id, blueprint, unit, pee
 
 	local owner_unit = unit or self._character_unit
 
-	self:_check_character_mask_sequence(owner_unit, mask_id, peer_id, character_name)
+	owner_unit:base():request_cosmetics_update()
 end
 
 function MenuSceneManager:clbk_mask_loaded(blueprint, mask_unit)
@@ -1734,6 +1718,7 @@ function MenuSceneManager:clbk_mask_unit_loaded(mask_data_param, status, asset_t
 
 	mask_data.unit:link(mask_align:name(), mask_unit)
 	self:update_mask_offset(mask_data)
+	mask_data.unit:base():set_mask_id(mask_data.mask_id)
 	self:_chk_character_visibility(mask_data.unit)
 
 	if mask_data.ready_clbk then
@@ -1834,24 +1819,6 @@ function MenuSceneManager:set_character_equipped_weapon(unit, factory_id, bluepr
 	end
 
 	self:_chk_character_visibility(unit)
-end
-
-function MenuSceneManager:_check_character_mask_sequence(character_unit, mask_id, peer_id, character_name)
-	local character_id = character_name and managers.blackmarket:get_character_id_by_character_name(character_name) or managers.blackmarket:equipped_character()
-
-	if tweak_data.blackmarket.masks[mask_id].skip_mask_on_sequence then
-		local mask_off_sequence = managers.blackmarket:character_mask_off_sequence_by_character_id(character_id, peer_id, character_name)
-
-		if mask_off_sequence and character_unit:damage():has_sequence(mask_off_sequence) then
-			character_unit:damage():run_sequence_simple(mask_off_sequence)
-		end
-	else
-		local mask_on_sequence = managers.blackmarket:character_mask_on_sequence_by_character_id(character_id, peer_id, character_name)
-
-		if mask_on_sequence and character_unit:damage():has_sequence(mask_on_sequence) then
-			character_unit:damage():run_sequence_simple(mask_on_sequence)
-		end
-	end
 end
 
 function MenuSceneManager:_is_lobby_character(char_unit)
@@ -2119,15 +2086,12 @@ function MenuSceneManager:set_main_character_outfit(outfit_string)
 end
 
 function MenuSceneManager:on_set_preferred_character()
-	local sequence = managers.blackmarket:character_sequence_by_character_id(managers.blackmarket:equipped_character())
-
-	self._character_unit:damage():run_sequence_simple(sequence)
+	self._character_unit:base():set_character_name(managers.blackmarket:get_preferred_character())
 
 	local equipped_mask = managers.blackmarket:equipped_mask()
 
 	if equipped_mask.mask_id then
 		self:set_character_mask_by_id(equipped_mask.mask_id, equipped_mask.blueprint)
-		self:_check_character_mask_sequence(self._character_unit, equipped_mask.mask_id, nil)
 	end
 
 	self:set_character_armor_skin(managers.blackmarket:equipped_armor_skin(), self._character_unit)
@@ -2139,42 +2103,16 @@ function MenuSceneManager:on_set_preferred_character()
 	end
 end
 
-function MenuSceneManager:set_character(character_id, force_recreate)
+function MenuSceneManager:set_character(character_name, force_recreate)
+	local character_id = managers.blackmarket:get_character_id_by_character_name(character_name)
 	local unit_name = tweak_data.blackmarket.characters[character_id].menu_unit
-	self._player_character_name = character_id
+	self._player_character_name = character_name
 
 	if force_recreate or not alive(self._character_unit) or Idstring(unit_name) ~= self._character_unit:name() then
 		self:_set_player_character_unit(unit_name, self._character_unit)
 	end
 
-	local sequence = managers.blackmarket:character_sequence_by_character_id(character_id)
-	local cc_sequences = {
-		"var_mtr_chains",
-		"var_mtr_dallas",
-		"var_mtr_hoxton",
-		"var_mtr_dragan",
-		"var_mtr_jacket",
-		"var_mtr_old_hoxton",
-		"var_mtr_wolf",
-		"var_mtr_john_wick",
-		"var_mtr_sokol",
-		"var_mtr_jiro",
-		"var_mtr_bodhi"
-	}
-
-	if table.contains(cc_sequences, sequence) and managers.blackmarket:equipped_armor_skin() ~= "none" then
-		sequence = sequence .. "_cc"
-	end
-
-	call_on_next_update(function ()
-		self._character_unit:damage():run_sequence_simple(sequence)
-
-		local equipped_mask = managers.blackmarket:equipped_mask()
-
-		if equipped_mask.mask_id then
-			self:_check_character_mask_sequence(self._character_unit, equipped_mask.mask_id, nil)
-		end
-	end)
+	self._character_unit:base():set_character_name(character_name)
 
 	if tweak_data.blackmarket.characters[character_id].special_materials then
 		local special_material = nil
@@ -3371,17 +3309,11 @@ function MenuSceneManager:mouse_moved(o, x, y)
 		end
 
 		if alive(self._economy_character) then
-			local diff = (y - self._item_grabbed_current_y) / 4
-			self._item_yaw = (self._item_yaw + (x - self._item_grabbed_current_x) / 4) % 360
-			self._item_pitch = 0
-			self._item_roll = 0
+			local diff = (x - self._item_grabbed_current_x) / 4
 
-			mrotation.set_yaw_pitch_roll(self._item_rot_temp, self._item_yaw, self._item_pitch, self._item_roll)
-			mrotation.set_zero(self._item_rot)
-			mrotation.multiply(self._item_rot, self._camera_object:rotation())
-			mrotation.multiply(self._item_rot, self._item_rot_temp)
-			mrotation.multiply(self._item_rot, self._item_rot_mod)
-			self._economy_character:set_rotation(self._item_rot)
+			if diff ~= 0 then
+				self._economy_character:rotate_with(Rotation(Vector3(0, 0, 1), diff))
+			end
 		end
 
 		self._item_grabbed_current_x = x
@@ -3774,13 +3706,14 @@ function MenuSceneManager:load_safe_result_content(result, ready_clbk)
 		local unit = World:spawn_unit(Idstring(unit_name), pos, ang)
 
 		self:_set_character_unit_pose(rarity_data.armor_sequence or "cvc_var1", unit)
-
-		local sequence = managers.blackmarket:character_sequence_by_character_id(managers.blackmarket:equipped_character())
-
-		unit:damage():run_sequence_simple(sequence)
+		unit:base():set_character_name(self._character_unit:base():character_name())
+		unit:base():set_mask_id(self._character_unit:base():mask_id())
 		unit:set_visible(false)
 
 		self._economy_character = unit
+
+		self._economy_character:set_rotation(Rotation(180, 0, 0))
+
 		self._safe_result_content_data.ready_flags.armor_ready = false
 		local armors = managers.blackmarket:get_sorted_armors()
 
@@ -3870,7 +3803,6 @@ function MenuSceneManager:_create_safe_result(created_clbk)
 
 		if equipped_mask.mask_id then
 			self:set_character_mask_by_id(equipped_mask.mask_id, equipped_mask.blueprint, self._economy_character)
-			self:_check_character_mask_sequence(self._economy_character, equipped_mask.mask_id, nil)
 		end
 
 		self:_set_character_and_outfit_visibility(self._economy_character, true)

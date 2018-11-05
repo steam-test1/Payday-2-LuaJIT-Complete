@@ -123,7 +123,7 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 	self._back_callback = back_callback
 	self._info = self._info or managers.achievment:get_info(self._id) or {}
 	self._visual = self._visual or tweak_data.achievement.visual[self._id]
-	local grey_color = tweak_data.screen_colors.achievement_grey
+	local grey_color = nil
 	local placer = self:placer()
 
 	placer:push_right()
@@ -161,6 +161,15 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 			font = small_font,
 			font_size = small_font_size,
 			color = grey_color
+		}), 5)
+	elseif self._info.forced or self._info.tracked then
+		local text_id = self._info.forced and "menu_achievements_forced_notify" or "menu_achievements_tracking_notify"
+
+		placer:add_bottom(self:fine_text({
+			text_id = text_id,
+			font = small_font,
+			font_size = small_font_size,
+			color = tweak_data.screen_colors.achievement_grey
 		}), 5)
 	end
 
@@ -274,14 +283,14 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 	local circle_size = 42
 	local friend_circle = placer:add_left(HalfCircleProgressBar:new(self, {
 		texture = "guis/dlcs/trk/textures/pd2/circle_inside",
-		alpha = 0.6,
+		alpha = 1,
 		back_alpha = 0.1,
 		w = circle_size,
 		h = circle_size
 	}, friend_p), 15)
 	local global_circle = HalfCircleProgressBar:new(self, {
 		texture = "guis/dlcs/trk/textures/pd2/circle_outside",
-		alpha = 0.8,
+		alpha = 1,
 		back_alpha = 0.1,
 		w = circle_size,
 		h = circle_size
@@ -349,7 +358,7 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 
 	local back_panel = self:panel({layer = -1})
 
-	back_panel:rect({color = Color(255, 15, 18, 24) / 255})
+	back_panel:rect({color = Color.black:with_alpha(0.8)})
 	BoxGuiObject:new(back_panel, {sides = {
 		1,
 		1,

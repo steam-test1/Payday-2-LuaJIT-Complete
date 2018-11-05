@@ -11262,6 +11262,16 @@ function HudIconsTweakData:init()
 	}
 
 	TextureCorrectionTweakData:new(self)
+
+	self.milestone_trophy = {
+		texture = "guis/dlcs/ami/textures/pd2/milestone_trophy_icon",
+		texture_rect = {
+			0,
+			0,
+			128,
+			128
+		}
+	}
 end
 local atlas_data = nil
 
