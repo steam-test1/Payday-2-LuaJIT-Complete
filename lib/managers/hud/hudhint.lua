@@ -145,3 +145,7 @@ end
 function HUDHint:show_done()
 end
 
+if _G.IS_VR then
+	require("lib/managers/hud/vr/HUDHintVR")
+end
+

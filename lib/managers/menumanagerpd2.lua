@@ -2985,6 +2985,10 @@ end
 function MenuCallbackHandler:toggle_loading_hints(item)
 	managers.user:set_setting("loading_screen_show_hints", item:value() == "on")
 end
+
+function MenuCallbackHandler:toggle_vr_descs(item)
+	managers.user:set_setting("show_vr_descs", item:value() == "on")
+end
 MenuArmorSkinEditorInitiator = MenuArmorSkinEditorInitiator or class(MenuInitiatorBase)
 
 function MenuArmorSkinEditorInitiator:modify_node(node, data)

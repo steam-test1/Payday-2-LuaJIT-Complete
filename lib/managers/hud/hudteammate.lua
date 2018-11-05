@@ -2365,3 +2365,7 @@ function HUDTeammate:set_info_meter(data)
 	end)
 end
 
+if _G.IS_VR then
+	require("lib/managers/hud/vr/HUDTeammateVR")
+end
+

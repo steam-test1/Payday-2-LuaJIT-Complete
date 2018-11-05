@@ -100,7 +100,7 @@ function GenericUserManager:setup_setting_map()
 	self:setup_setting(47, "use_thq_weapon_parts", true)
 	self:setup_setting(48, "video_ao", "aob")
 	self:setup_setting(49, "parallax_mapping", true)
-	self:setup_setting(50, "video_aa", "fxaa")
+	self:setup_setting(50, "video_aa", not _G.IS_VR and "fxaa" or "off")
 	self:setup_setting(51, "workshop", false)
 	self:setup_setting(52, "enable_fov_based_sensitivity", false)
 	self:setup_setting(53, "quickplay_stealth", true)
@@ -134,7 +134,10 @@ function GenericUserManager:setup_setting_map()
 	self:setup_setting(84, "loading_screen_show_controller", true)
 	self:setup_setting(85, "loading_screen_show_hints", true)
 	self:setup_setting(86, "crimenet_filter_modded", true)
+	self:setup_setting(87, "show_vr_descs", false)
 	self:setup_setting(88, "crimenet_filter_one_down", false)
+	self:setup_setting(300, "adaptive_quality", true)
+	self:setup_setting(301, "window_zoom", true)
 end
 
 function GenericUserManager:setup_setting(id, name, default_value)
@@ -218,7 +221,9 @@ function GenericUserManager:reset_video_setting_map()
 		"video_ao",
 		"parallax_mapping",
 		"video_aa",
-		"corpse_limit"
+		"corpse_limit",
+		"adaptive_quality",
+		"window_zoom"
 	}
 
 	for _, name in pairs(settings) do

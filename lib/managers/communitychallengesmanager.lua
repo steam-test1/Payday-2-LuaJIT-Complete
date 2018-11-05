@@ -27,8 +27,10 @@ function CommunityChallengesManager:fetch_community_challenge_data()
 
 		self._next_stat_request_limit = now + 10
 
-		Steam:sa_handler():refresh_global_stats_cb(callback(self, self, "_on_global_stats_refresh_complete"))
-		Steam:sa_handler():refresh_global_stats()
+		if not _G.IS_VR then
+			Steam:sa_handler():refresh_global_stats_cb(callback(self, self, "_on_global_stats_refresh_complete"))
+			Steam:sa_handler():refresh_global_stats()
+		end
 	end
 end
 

@@ -63,6 +63,7 @@ function CrimeSpreeContractMenuComponent:_setup()
 	local blur = self._fullscreen_panel:bitmap({
 		texture = "guis/textures/test_blur_df",
 		render_template = "VertexColorTexturedBlur3D",
+		layer = 1,
 		w = self._fullscreen_ws:panel():w(),
 		h = self._fullscreen_ws:panel():h()
 	})
@@ -83,6 +84,7 @@ function CrimeSpreeContractMenuComponent:_setup()
 	self._contact_text_header = self._panel:text({
 		vertical = "top",
 		align = "left",
+		layer = 1,
 		text = managers.localization:to_upper_text(spree_text, {level = managers.experience:cash_string(spree_level, "")}),
 		font_size = tweak_data.menu.pd2_large_font_size,
 		font = tweak_data.menu.pd2_large_font,
@@ -173,6 +175,7 @@ function CrimeSpreeContractMenuComponent:_setup_new_crime_spree(text_w, text_h)
 
 	local h = CrimeSpreeStartingLevelItem.size.h + padding * 2
 	self._levels_panel = self._contract_panel:panel({
+		layer = 1,
 		x = padding,
 		y = ((self._contract_panel:h() - h) - padding * 2) - tweak_data.menu.pd2_medium_font_size,
 		w = text_w,
@@ -603,13 +606,13 @@ function CrimeSpreeStartingLevelItem:init(parent, data)
 	})
 	self._highlight = self._panel:rect({
 		blend_mode = "add",
-		layer = -1,
+		layer = 1,
 		color = tweak_data.screen_colors.button_stage_3
 	})
 	self._active_bg = self._panel:rect({
 		alpha = 0.8,
 		blend_mode = "add",
-		layer = -1,
+		layer = 0,
 		color = tweak_data.screen_colors.button_stage_3
 	})
 	local level_w = self._level / (data.highest_level or 100)

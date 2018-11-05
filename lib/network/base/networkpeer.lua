@@ -846,6 +846,7 @@ function NetworkPeer:set_in_lobby(state)
 	end
 
 	self:sync_mods()
+	self:sync_is_vr()
 	self:_chk_flush_msg_queues()
 end
 
@@ -1745,6 +1746,7 @@ function NetworkPeer:sync_lobby_data(peer)
 	end
 
 	self:sync_mods(peer)
+	self:sync_is_vr(peer)
 end
 
 function NetworkPeer:sync_data(peer)
@@ -1765,6 +1767,7 @@ function NetworkPeer:sync_data(peer)
 	managers.player:update_husk_bipod_to_peer(peer)
 	managers.player:update_cocaine_stacks_to_peer(peer)
 	self:sync_mods(peer)
+	self:sync_is_vr(peer)
 
 	if Network:is_server() then
 		managers.vehicle:update_vehicles_data_to_peer(peer)
@@ -1903,6 +1906,10 @@ function NetworkPeer:spawn_unit(spawn_point_id, is_drop_in, spawn_as)
 	if vehicle and not spawn_in_custody then
 		Application:debug("[NetworkPeer] Spawning peer_id in vehicle, peer_id:" .. self._id)
 		managers.player:server_enter_vehicle(vehicle, self._id, unit)
+	end
+
+	if self:is_vr() and unit:movement() and unit:movement().set_is_vr then
+		unit:movement():set_is_vr()
 	end
 
 	return unit
@@ -2108,5 +2115,27 @@ function NetworkPeer:sync_mods(to_peer)
 			managers.network:session():send_to_peers_loaded("sync_player_installed_mod", self:id(), data[2], data[1])
 		end
 	end
+end
+
+function NetworkPeer:sync_is_vr(to_peer)
+	if _G.IS_VR then
+		if self == managers.network:session():local_peer() then
+			self:set_is_vr()
+		end
+
+		if to_peer then
+			to_peer:send_queued_sync("sync_is_vr")
+		else
+			managers.network:session():send_to_peers_loaded("sync_is_vr")
+		end
+	end
+end
+
+function NetworkPeer:set_is_vr()
+	self._is_vr = true
+end
+
+function NetworkPeer:is_vr()
+	return self._is_vr
 end
 

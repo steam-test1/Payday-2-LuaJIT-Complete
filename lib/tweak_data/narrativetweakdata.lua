@@ -5038,6 +5038,130 @@ function NarrativeTweakData:init(tweak_data)
 	self.jobs.pal.contract_visuals.preview_image = {id = "counterfeit"}
 	self.jobs.man.contract_visuals.preview_image = {id = "undercover"}
 	self.jobs.haunted.contract_visuals = {preview_image = {id = "safehouse_old"}}
+	self.stages.lbe_lobby_end = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "lbe_lobby_end",
+		mission_filter = {2}
+	}
+	self.jobs.lbe_lobby_end = {
+		name_id = "heist_lbe_lobby_end",
+		briefing_id = "heist_lbe_lobby_end_crimenet",
+		package = "packages/load_default",
+		contact = "wip",
+		region = "street",
+		jc = 30,
+		chain = {self.stages.lbe_lobby_end},
+		briefing_event = "pln_branchbank_cash_brf_speak",
+		debrief_event = nil,
+		crimenet_callouts = {"pln_branchbank_cash_cnc_01"},
+		crimenet_videos = {
+			"cn_branchbank1",
+			"cn_branchbank2",
+			"cn_branchbank3"
+		},
+		payout = {
+			10000,
+			15000,
+			40000,
+			60000,
+			75000,
+			75000,
+			75000
+		},
+		contract_cost = {
+			16000,
+			32000,
+			80000,
+			160000,
+			200000,
+			200000,
+			200000
+		},
+		contract_visuals = {}
+	}
+	self.jobs.lbe_lobby_end.contract_visuals.min_mission_xp = {
+		12000,
+		12000,
+		12000,
+		12000,
+		12000,
+		12000,
+		12000
+	}
+	self.jobs.lbe_lobby_end.contract_visuals.max_mission_xp = {
+		12000,
+		12000,
+		12000,
+		12000,
+		12000,
+		12000,
+		12000
+	}
+	self.stages.lbe_lobby = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "lbe_lobby",
+		mission_filter = {1}
+	}
+	self.jobs.lbe_lobby = {
+		name_id = "heist_lbe_lobby",
+		briefing_id = "heist_lbe_lobby_crimenet",
+		package = "packages/load_default",
+		contact = "wip",
+		region = "street",
+		jc = 30,
+		chain = {
+			self.stages.lbe_lobby,
+			self.stages.bbv,
+			self.stages.lbe_lobby_end
+		},
+		briefing_event = "pln_branchbank_cash_brf_speak",
+		debrief_event = nil,
+		crimenet_callouts = {"pln_branchbank_cash_cnc_01"},
+		crimenet_videos = {
+			"cn_branchbank1",
+			"cn_branchbank2",
+			"cn_branchbank3"
+		},
+		payout = {
+			10000,
+			15000,
+			40000,
+			60000,
+			75000,
+			75000,
+			75000
+		},
+		contract_cost = {
+			16000,
+			32000,
+			80000,
+			160000,
+			200000,
+			200000,
+			200000
+		},
+		contract_visuals = {}
+	}
+	self.jobs.lbe_lobby.contract_visuals.min_mission_xp = {
+		12000,
+		12000,
+		12000,
+		12000,
+		12000,
+		12000,
+		12000
+	}
+	self.jobs.lbe_lobby.contract_visuals.max_mission_xp = {
+		12000,
+		12000,
+		12000,
+		12000,
+		12000,
+		12000,
+		12000
+	}
 	self._jobs_index = {
 		"jewelry_store",
 		"four_stores",
@@ -5112,6 +5236,55 @@ function NarrativeTweakData:init(tweak_data)
 		"hvh",
 		"wwh",
 		"brb"
+	}
+	self.forced_jobs = {
+		firestarter = true,
+		branchbank_prof = true,
+		branchbank_cash = true,
+		welcome_to_the_jungle = true,
+		ukrainian_job_prof = true,
+		arm_par = true,
+		branchbank_deposit = true,
+		brb = true,
+		hox_3 = true,
+		hox = true,
+		pines = true,
+		dinner = true,
+		moon = true,
+		wwh = true,
+		arm_cro = true,
+		jewelry_store = true,
+		welcome_to_the_jungle_wrapper_prof = true,
+		welcome_to_the_jungle_prof = true,
+		spa = true,
+		kosugi = true,
+		arm_fac = true,
+		friend = true,
+		fish = true,
+		run = true,
+		election_day = true,
+		flat = true,
+		man = true,
+		help = true,
+		branchbank_gold_prof = true,
+		family = true,
+		nightclub = true,
+		mallcrasher = true,
+		welcome_to_the_jungle_night = true,
+		welcome_to_the_jungle_night_prof = true,
+		pal = true,
+		rvd = true,
+		mad = true,
+		four_stores = true,
+		arm_for = true,
+		watchdogs_wrapper = true,
+		arm_und = true,
+		dark = true,
+		red2 = true,
+		arm_hcm = true,
+		mia = true,
+		welcome_to_the_jungle_wrapper = true,
+		gallery = true
 	}
 
 	if SystemInfo:distribution() == Idstring("STEAM") then
@@ -5271,5 +5444,9 @@ function NarrativeTweakData:test_contract_packages()
 			print("test_contract_packages", "2", job_id)
 		end
 	end
+end
+
+function NarrativeTweakData:is_job_locked(job_id)
+	return false
 end
 

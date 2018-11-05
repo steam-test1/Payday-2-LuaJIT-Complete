@@ -154,6 +154,7 @@ function MissionManager:init(...)
 	self:add_area_instigator_categories("player2")
 	self:add_area_instigator_categories("player3")
 	self:add_area_instigator_categories("player4")
+	self:add_area_instigator_categories("vr_player")
 	self:set_default_area_instigator("player")
 	self:set_global_event_list({
 		"bankmanager_key",

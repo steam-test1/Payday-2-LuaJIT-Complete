@@ -171,6 +171,10 @@ function LocalizationManager:btn_macro(button, to_upper, nil_if_empty)
 end
 
 function LocalizationManager:key_to_btn_text(key, to_upper, type)
+	if _G.IS_VR and not key then
+		return ""
+	end
+
 	key = tostring(key)
 	type = type or managers.controller:get_default_wrapper_type()
 	local translations = self._input_translations[type]

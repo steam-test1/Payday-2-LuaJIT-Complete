@@ -364,6 +364,10 @@ end
 
 function PlayerTased:_check_action_interact(t, input)
 	if input.btn_interact_press and (not self._intimidate_t or tweak_data.player.movement_state.interaction_delay < t - self._intimidate_t) and not alive(self._counter_taser_unit) then
+		if _G.IS_VR then
+			self._interact_hand = input.btn_interact_left_press and PlayerHand.LEFT or PlayerHand.RIGHT
+		end
+
 		self._intimidate_t = t
 
 		self:call_teammate(nil, t, true, true)

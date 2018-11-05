@@ -1,6 +1,6 @@
 NetworkMatchMakingSTEAM = NetworkMatchMakingSTEAM or class()
 NetworkMatchMakingSTEAM.OPEN_SLOTS = tweak_data.max_players
-NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "payday2_v1.87.537"
+NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "payday2_v1.88.545"
 
 function NetworkMatchMakingSTEAM:init()
 	cat_print("lobby", "matchmake = NetworkMatchMakingSTEAM")
@@ -563,6 +563,14 @@ function NetworkMatchMakingSTEAM:is_server_ok(friends_only, room, attributes_lis
 		return false
 	end
 
+	local job_id = tweak_data.narrative:get_job_name_from_index(job_index)
+
+	if tweak_data.narrative:is_job_locked(job_id) then
+		Application:debug("NetworkMatchMakingSTEAM:is_server_ok() server rejected. LOCKED")
+
+		return false, 5
+	end
+
 	if permission == "public" then
 		return true
 	end
@@ -611,6 +619,8 @@ function NetworkMatchMakingSTEAM:join_server_with_check(room_id, is_invite)
 				managers.menu:show_too_low_level()
 			elseif ok_error == 4 then
 				managers.menu:show_does_not_own_heist()
+			elseif ok_error == 5 then
+				managers.menu:show_heist_is_locked_dialog()
 			end
 
 			self:search_lobby(self:search_friends_only())

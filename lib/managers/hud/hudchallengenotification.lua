@@ -170,9 +170,14 @@ function HudChallengeNotification.queue(title, text, icon, rewards, queue)
 end
 
 function HudChallengeNotification:init(title, text, icon, rewards, queue)
-	self._ws = managers.gui_data:create_fullscreen_workspace()
+	if _G.IS_VR then
+		HudChallengeNotification.super.init(self, managers.hud:prompt_panel())
+	else
+		self._ws = managers.gui_data:create_fullscreen_workspace()
 
-	HudChallengeNotification.super.init(self, self._ws:panel())
+		HudChallengeNotification.super.init(self, self._ws:panel())
+	end
+
 	self:set_layer(1000)
 
 	self._queue = queue or {}
@@ -283,7 +288,7 @@ end
 function HudChallengeNotification:close()
 	self:remove_self()
 
-	if self._ws then
+	if self._ws and not _G.IS_VR then
 		managers.gui_data:destroy_workspace(self._ws)
 
 		self._ws = nil

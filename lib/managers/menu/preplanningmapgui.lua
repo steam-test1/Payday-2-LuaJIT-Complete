@@ -249,6 +249,12 @@ function PrePlanningPoint:add_properties(category, type, index)
 			w = self._panel:w(),
 			h = self._panel:h()
 		})
+
+		if _G.IS_VR then
+			self._bg:set_rotation(0)
+			self._box:set_rotation(0)
+		end
+
 		local type_data = tweak_data:get_raw_value("preplanning", "types", type)
 
 		if type_data and type_data.plan then
@@ -285,6 +291,10 @@ function PrePlanningPoint:add_properties(category, type, index)
 					font_size = tweak_data.menu.pd2_small_font_size,
 					color = tweak_data.screen_colors.text
 				})
+
+				if _G.IS_VR then
+					self._plan_icon:set_rotation(0)
+				end
 			end
 		end
 
@@ -1211,6 +1221,11 @@ function PrePlanningLocation:init(panel, index, size, active_node)
 		h = self._panel:h(),
 		render_template = map_render_template
 	})
+
+	if _G.IS_VR then
+		self._map:set_rotation(0)
+	end
+
 	local texture_width = self._map:texture_width()
 	local texture_height = self._map:texture_height()
 	local rot_cos = math.cos(-self._rotation)

@@ -177,3 +177,7 @@ function HUDInteraction:_animate_interaction_complete(bitmap, circle)
 	circle:remove()
 end
 
+if _G.IS_VR then
+	require("lib/managers/hud/vr/HUDInteractionVR")
+end
+

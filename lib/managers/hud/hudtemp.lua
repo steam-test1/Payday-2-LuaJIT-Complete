@@ -364,3 +364,7 @@ function HUDTemp:_animate_low_stamina(input_panel)
 	end
 end
 
+if _G.IS_VR then
+	require("lib/managers/hud/vr/HUDTempVR")
+end
+

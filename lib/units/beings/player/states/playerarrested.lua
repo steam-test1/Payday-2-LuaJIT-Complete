@@ -140,6 +140,10 @@ function PlayerArrested:_check_action_interact(t, input)
 	local interaction_wanted = input.btn_interact_press
 
 	if interaction_wanted then
+		if _G.IS_VR then
+			self._interact_hand = input.btn_interact_left_press and PlayerHand.LEFT or PlayerHand.RIGHT
+		end
+
 		local action_forbidden = self:chk_action_forbidden("interact") or self._stats_screen
 
 		if not action_forbidden then

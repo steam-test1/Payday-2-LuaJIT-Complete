@@ -2010,17 +2010,28 @@ function SkillTreeGui:update_spec_descriptions(item)
 	self._spec_description_title:set_text(name_string)
 	self._spec_description_progress:set_text(progress_string)
 
-	local x, y, w, h = self._spec_description_title:text_rect()
+	local font_size = nil
 
-	self._spec_description_locked:set_y(self._spec_description_title:y() + h + 15)
+	repeat
+		font_size = font_size and font_size * 0.98 or tweak_data.menu.pd2_small_font_size
 
-	local x, y, w, h = self._spec_description_locked:text_rect()
+		self._spec_description_text:set_font_size(font_size)
 
-	self._spec_description_text:set_y(self._spec_description_locked:y() + h + 10)
+		local x, y, w, h = self._spec_description_title:text_rect()
 
-	local x, y, w, h = self._spec_description_text:text_rect()
+		self._spec_description_locked:set_y(self._spec_description_title:y() + h + 15)
 
-	self._spec_description_progress:set_y(self._spec_description_text:y() + h + 10)
+		local x, y, w, h = self._spec_description_locked:text_rect()
+
+		self._spec_description_text:set_y(self._spec_description_locked:y() + h + 10)
+
+		local x, y, w, h = self._spec_description_text:text_rect()
+
+		self._spec_description_progress:set_y(self._spec_description_text:y() + h + 10)
+
+		local _, _, _, h = self._spec_description_progress:text_rect()
+		local y = self._spec_description_progress:y()
+	until y + h < self._spec_description_progress:parent():h()
 end
 
 function SkillTreeGui:set_hover_spec_item(item, no_sound)
@@ -4065,6 +4076,16 @@ function SpecializationTierItem:init(tier_data, tree_panel, tree, tier, x, y, w,
 	self._tier_data = tier_data
 	self._name_string = tier_data.name_id and managers.localization:text(tier_data.name_id) or "NO_NAME_" .. tostring(tree) .. "_" .. tostring(tier)
 	self._desc_string = tier_data.desc_id and managers.localization:text(tier_data.desc_id, macroes) or "NO_DESC_" .. tostring(tree) .. "_" .. tostring(tier)
+
+	if _G.IS_VR or managers.user:get_setting("show_vr_descs") then
+		local vr_desc_data = tweak_data:get_raw_value("vr", "specialization_descs_addons", self._tree, self._tier)
+
+		if vr_desc_data then
+			local vr_string = managers.localization:text("menu_vr_skill_addon") .. " " .. managers.localization:text(vr_desc_data.desc_id, vr_desc_data.macros)
+			self._desc_string = self._desc_string .. "\n\n" .. vr_string
+		end
+	end
+
 	local tier_panel = tree_panel:panel({
 		halign = "scale",
 		valign = "scale",

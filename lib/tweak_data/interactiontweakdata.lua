@@ -5124,5 +5124,28 @@ function InteractionTweakData:init(tweak_data)
 		timer = 2,
 		equipment_consume = true
 	}
+	self.hold_choose_hand_left = {
+		text_id = "hud_int_hold_choose_hand_left",
+		action_text_id = "hud_int_hold_action_choose_hand_left",
+		timer = 2,
+		interact_distance = 200,
+		sound_done = "pick_up_poster"
+	}
+	self.hold_choose_hand_right = {
+		text_id = "hud_int_hold_choose_hand_right",
+		action_text_id = "hud_int_hold_action_choose_hand_right",
+		timer = 2,
+		interact_distance = 200,
+		sound_done = "pick_up_poster"
+	}
+	self.hold_search_fridge_des = {
+		text_id = "hud_int_search_fridge",
+		action_text_id = "hud_action_searching_fridge",
+		timer = 10,
+		interact_distance = 200,
+		start_active = false,
+		sound_start = "bar_restaurant_kitchen_loop",
+		sound_interupt = "bar_restaurant_kitchen_cancel"
+	}
 end
 

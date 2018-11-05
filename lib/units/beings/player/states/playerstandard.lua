@@ -119,7 +119,7 @@ function PlayerStandard:init(unit)
 	self._on_melee_restart_drill = pm:has_category_upgrade("player", "drill_melee_hit_restart_chance")
 	local controller = unit:base():controller()
 
-	if controller:get_type() ~= "pc" then
+	if controller:get_type() ~= "pc" and controller:get_type() ~= "vr" then
 		self._input = {}
 
 		table.insert(self._input, BipodDeployControllerInput:new())
@@ -184,7 +184,7 @@ function PlayerStandard:enter(state_data, enter_data)
 		self:_activate_mover(PlayerStandard.MOVER_STAND)
 	end
 
-	if (enter_data and enter_data.wants_crouch or not self:_can_stand()) and not self._state_data.ducking then
+	if not _G.IS_VR and (enter_data and enter_data.wants_crouch or not self:_can_stand()) and not self._state_data.ducking then
 		self:_start_action_ducking(managers.player:player_timer():time())
 	end
 
@@ -242,17 +242,21 @@ function PlayerStandard:_enter(enter_data)
 	end
 
 	local skip_equip = enter_data and enter_data.skip_equip
+	local skip_mask_anim = enter_data and enter_data.skip_mask_anim
 
 	if not self:_changing_weapon() and not skip_equip then
 		if not self._state_data.mask_equipped then
 			self._state_data.mask_equipped = true
-			local equipped_mask = managers.blackmarket:equipped_mask()
-			local peer_id = managers.network:session() and managers.network:session():local_peer():id()
-			local mask_id = managers.blackmarket:get_real_mask_id(equipped_mask.mask_id, peer_id)
-			local equipped_mask_type = tweak_data.blackmarket.masks[mask_id].type
 
-			self._camera_unit:anim_state_machine():set_global((equipped_mask_type or "mask") .. "_equip", 1)
-			self:_start_action_equip(self:get_animation("mask_equip"), 1.6)
+			if not skip_mask_anim then
+				local equipped_mask = managers.blackmarket:equipped_mask()
+				local peer_id = managers.network:session() and managers.network:session():local_peer():id()
+				local mask_id = managers.blackmarket:get_real_mask_id(equipped_mask.mask_id, peer_id)
+				local equipped_mask_type = tweak_data.blackmarket.masks[mask_id].type
+
+				self._camera_unit:anim_state_machine():set_global((equipped_mask_type or "mask") .. "_equip", 1)
+				self:_start_action_equip(self:get_animation("mask_equip"), 1.6)
+			end
 		else
 			self:_start_action_equip(self:get_animation("equip"))
 		end
@@ -747,7 +751,7 @@ function PlayerStandard:_update_check_actions(t, dt, paused)
 	if not new_action then
 		new_action = self:_check_action_primary_attack(t, input)
 
-		if not new_action then
+		if not _G.IS_VR and not new_action then
 			self:_check_stop_shooting()
 		end
 	end
@@ -1083,12 +1087,12 @@ function PlayerStandard:update_fov_external()
 	self._camera_unit:base():set_fov_instant(new_fov)
 end
 
-function PlayerStandard:_get_max_walk_speed(t)
+function PlayerStandard:_get_max_walk_speed(t, force_run)
 	local speed_tweak = self._tweak_data.movement.speed
 	local movement_speed = speed_tweak.STANDARD_MAX
 	local speed_state = "walk"
 
-	if self._state_data.in_steelsight and not managers.player:has_category_upgrade("player", "steelsight_normal_movement_speed") then
+	if self._state_data.in_steelsight and not managers.player:has_category_upgrade("player", "steelsight_normal_movement_speed") and not _G.IS_VR then
 		movement_speed = speed_tweak.STEELSIGHT_MAX
 		speed_state = "steelsight"
 	elseif self:on_ladder() then
@@ -1100,7 +1104,7 @@ function PlayerStandard:_get_max_walk_speed(t)
 	elseif self._state_data.in_air then
 		movement_speed = speed_tweak.INAIR_MAX
 		speed_state = nil
-	elseif self._running then
+	elseif self._running or force_run then
 		movement_speed = speed_tweak.RUNNING_MAX
 		speed_state = "run"
 	end
@@ -1108,6 +1112,7 @@ function PlayerStandard:_get_max_walk_speed(t)
 	movement_speed = managers.crime_spree:modify_value("PlayerStandard:GetMaxWalkSpeed", movement_speed, self._state_data, speed_tweak)
 	local morale_boost_bonus = self._ext_movement:morale_boost()
 	local multiplier = managers.player:movement_speed_multiplier(speed_state, speed_state and morale_boost_bonus and morale_boost_bonus.move_speed_bonus, nil, self._ext_damage:health_ratio())
+	multiplier = multiplier * (self._tweak_data.movement.multiplier[speed_state] or 1)
 	local apply_weapon_penalty = true
 
 	if self:_is_meleeing() then
@@ -1734,23 +1739,29 @@ function PlayerStandard:_check_action_interact(t, input)
 	local keyboard = self._controller.TYPE == "pc" or managers.controller:get_default_wrapper_type() == "pc"
 	local new_action, timer, interact_object = nil
 
-	if input.btn_interact_press and not self:_action_interact_forbidden() then
-		new_action, timer, interact_object = self._interaction:interact(self._unit, input.data, self._interact_hand)
-
-		if new_action then
-			self:_play_interact_redirect(t, input)
+	if input.btn_interact_press then
+		if _G.IS_VR then
+			self._interact_hand = input.btn_interact_left_press and PlayerHand.LEFT or PlayerHand.RIGHT
 		end
 
-		if timer then
-			new_action = true
+		if not self:_action_interact_forbidden() then
+			new_action, timer, interact_object = self._interaction:interact(self._unit, input.data, self._interact_hand)
 
-			self._ext_camera:camera_unit():base():set_limits(80, 50)
-			self:_start_action_interact(t, input, timer, interact_object)
-		end
+			if new_action then
+				self:_play_interact_redirect(t, input)
+			end
 
-		if not new_action then
-			self._start_intimidate = true
-			self._start_intimidate_t = t
+			if timer then
+				new_action = true
+
+				self._ext_camera:camera_unit():base():set_limits(80, 50)
+				self:_start_action_interact(t, input, timer, interact_object)
+			end
+
+			if not new_action then
+				self._start_intimidate = true
+				self._start_intimidate_t = t
+			end
 		end
 	end
 
@@ -1763,6 +1774,11 @@ function PlayerStandard:_check_action_interact(t, input)
 
 	if input.btn_interact_release then
 		local released = true
+
+		if _G.IS_VR then
+			local release_hand = input.btn_interact_left_release and PlayerHand.LEFT or PlayerHand.RIGHT
+			released = release_hand == self._interact_hand
+		end
 
 		if released then
 			if self._start_intimidate and not self:_action_interact_forbidden() then
@@ -2230,6 +2246,15 @@ function PlayerStandard:_do_melee_damage(t, bayonet_melee, melee_hit_ray, melee_
 
 		local custom_data = nil
 
+		if _G.IS_VR then
+			local melee_hand_id = self._unit:hand():get_active_hand_id("melee")
+			melee_hand_id = melee_hand_id or self._unit:hand():get_active_hand_id("weapon")
+
+			if melee_hand_id then
+				custom_data = {engine = melee_hand_id == 1 and "right" or "left"}
+			end
+		end
+
 		managers.rumble:play("melee_hit", nil, nil, custom_data)
 		managers.game_play_central:physics_push(col_ray)
 
@@ -2286,6 +2311,10 @@ function PlayerStandard:_do_melee_damage(t, bayonet_melee, melee_hit_ray, melee_
 
 			if special_weapon == "taser" then
 				action_data.variant = "taser_tased"
+			end
+
+			if _G.IS_VR and melee_entry == "weapon" and not bayonet_melee then
+				dmg_multiplier = 0.1
 			end
 
 			action_data.damage = shield_knock and 0 or damage * dmg_multiplier
@@ -2981,6 +3010,13 @@ function PlayerStandard:_get_unit_intimidation_action(intimidate_enemies, intimi
 	local unit_type_turret = 4
 	local cam_fwd = self._ext_camera:forward()
 	local my_head_pos = self._ext_movement:m_head_pos()
+
+	if _G.IS_VR then
+		local hand_unit = self._unit:hand():hand_unit(self._interact_hand)
+		cam_fwd = hand_unit:rotation():y()
+		my_head_pos = hand_unit:position()
+	end
+
 	local spotting_mul = managers.player:upgrade_value("player", "marked_distance_mul", 1)
 	local range_mul = managers.player:upgrade_value("player", "intimidate_range_mul", 1) * managers.player:upgrade_value("player", "passive_intimidate_range_mul", 1)
 	local intimidate_range_civ = tweak_data.player.long_dis_interaction.intimidate_range_civilians * range_mul
@@ -3232,6 +3268,10 @@ function PlayerStandard:_do_action_intimidate(t, interact_type, sound_name, skip
 		self._intimidate_t = t
 
 		self:say_line(sound_name, skip_alert)
+
+		if _G.IS_VR then
+			self._unit:hand():intimidate(self._interact_hand)
+		end
 
 		if interact_type and not self:_is_using_bipod() then
 			self:_play_distance_interact_redirect(t, interact_type)

@@ -23,7 +23,9 @@ function TvGui:setup()
 		video = self._video
 	})
 
-	self._video_panel:set_render_template(Idstring("gui:DIFFUSE_TEXTURE:VERTEX_COLOR:VERTEX_COLOR_ALPHA"))
+	if not _G.IS_VR then
+		self._video_panel:set_render_template(Idstring("gui:DIFFUSE_TEXTURE:VERTEX_COLOR:VERTEX_COLOR_ALPHA"))
+	end
 
 	if not self._playing then
 		self._video_panel:pause()

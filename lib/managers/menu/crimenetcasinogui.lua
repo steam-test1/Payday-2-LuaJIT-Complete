@@ -16,6 +16,7 @@ function CrimeNetCasinoGui:init(ws, fullscreen_ws, node)
 	local blur = self._fullscreen_panel:bitmap({
 		texture = "guis/textures/test_blur_df",
 		render_template = "VertexColorTexturedBlur3D",
+		layer = 1,
 		w = self._fullscreen_ws:panel():w(),
 		h = self._fullscreen_ws:panel():h()
 	})

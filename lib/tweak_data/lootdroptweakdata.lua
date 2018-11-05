@@ -553,6 +553,7 @@ function LootDropTweakData:init(tweak_data)
 		unlock_id = "bm_global_value_jigg_unlock",
 		color = event_color,
 		dlc = true,
+		category = "global_event",
 		chance = 1,
 		value_multiplier = 1,
 		durability_multiplier = 1,
@@ -560,7 +561,6 @@ function LootDropTweakData:init(tweak_data)
 		track = true,
 		sort_number = 82,
 		hide_unavailable = true,
-		category = "global_event",
 		ignore_ulti = true
 	}
 	self.global_values.xmas_soundtrack = {
@@ -1135,9 +1135,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.dbd_clan = {
 		name_id = "bm_global_value_dbd_clan",
 		desc_id = "menu_l_global_value_dbd_clan",
-		unlock_id = "bm_global_value_dbd_clan_unlock",
 		color = community_color,
-		dlc = true,
 		chance = 1,
 		value_multiplier = tweak_data:get_value("money_manager", "global_value_multipliers", "dbd_clan"),
 		durability_multiplier = 1,
@@ -1146,6 +1144,8 @@ function LootDropTweakData:init(tweak_data)
 		sort_number = -100,
 		unique_lock_icon = "guis/textures/pd2/lock_community",
 		sort_number = 2,
+		unlock_id = "bm_global_value_dbd_clan_unlock",
+		dlc = true,
 		category = "pd2_clan",
 		ignore_ulti = true
 	}
@@ -1196,9 +1196,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.solus_clan = {
 		name_id = "bm_global_value_solus_clan",
 		desc_id = "menu_l_global_value_solus_clan",
-		unlock_id = "bm_global_value_solus_clan_unlock",
 		color = community_color,
-		dlc = true,
 		chance = 1,
 		value_multiplier = tweak_data:get_value("money_manager", "global_value_multipliers", "solus_clan"),
 		durability_multiplier = 1,
@@ -1207,6 +1205,8 @@ function LootDropTweakData:init(tweak_data)
 		sort_number = -100,
 		unique_lock_icon = "guis/textures/pd2/lock_community",
 		sort_number = 2,
+		unlock_id = "bm_global_value_solus_clan_unlock",
+		dlc = true,
 		category = "pd2_clan",
 		ignore_ulti = true
 	}
@@ -1226,9 +1226,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.sparkle = {
 		name_id = "bm_global_value_sparkle",
 		desc_id = "menu_l_global_value_sparkle",
-		unlock_id = "bm_global_value_sparkle_unlock",
 		color = event_color,
-		dlc = true,
 		chance = 1,
 		value_multiplier = tweak_data:get_value("money_manager", "global_value_multipliers", "sparkle"),
 		durability_multiplier = 1,
@@ -1236,6 +1234,8 @@ function LootDropTweakData:init(tweak_data)
 		track = true,
 		sort_number = 71,
 		hide_unavailable = true,
+		unlock_id = "bm_global_value_sparkle_unlock",
+		dlc = true,
 		category = "global_event",
 		ignore_ulti = true
 	}
@@ -1298,24 +1298,22 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.rvd = {
 		name_id = "bm_global_value_rvd",
 		desc_id = "menu_l_global_value_rvd",
-		unlock_id = "bm_global_value_rvd_unlock",
 		color = dlc_color,
-		dlc = true,
 		chance = 1,
 		value_multiplier = 1,
 		durability_multiplier = 1,
 		drops = true,
 		track = true,
 		sort_number = 301,
+		dlc = true,
 		category = "collaboration",
+		unlock_id = "bm_global_value_rvd_unlock",
 		ignore_ulti = true
 	}
 	self.global_values.swm = {
 		name_id = "bm_global_value_swm",
 		desc_id = "menu_l_global_value_swm",
-		unlock_id = "bm_global_value_swm_unlock",
 		color = event_color,
-		dlc = true,
 		chance = 1,
 		value_multiplier = tweak_data:get_value("money_manager", "global_value_multipliers", "swm_bundle"),
 		durability_multiplier = 1,
@@ -1323,22 +1321,24 @@ function LootDropTweakData:init(tweak_data)
 		track = true,
 		sort_number = 301,
 		hide_unavailable = true,
+		dlc = true,
+		unlock_id = "bm_global_value_swm_unlock",
 		category = "global_event",
 		ignore_ulti = true
 	}
 	self.global_values.sha = {
 		name_id = "bm_global_value_sha",
 		desc_id = "menu_l_global_value_sha",
-		unlock_id = "bm_global_value_sha_unlock",
 		color = dlc_color,
-		dlc = true,
 		chance = 1,
 		value_multiplier = tweak_data:get_value("money_manager", "global_value_multipliers", "sha"),
 		durability_multiplier = 1,
 		drops = true,
 		track = true,
 		sort_number = 302,
+		unlock_id = "bm_global_value_sha_unlock",
 		category = "collaboration",
+		dlc = true,
 		ignore_ulti = true
 	}
 	self.global_values.spa = {
@@ -1400,9 +1400,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.ant = {
 		name_id = "bm_global_value_ant",
 		desc_id = "menu_l_global_value_ant",
-		unlock_id = "bm_global_value_ant_unlock",
 		color = dlc_color,
-		dlc = true,
 		chance = 1,
 		value_multiplier = tweak_data:get_value("money_manager", "global_value_multipliers", "ant"),
 		durability_multiplier = 1,
@@ -1410,15 +1408,15 @@ function LootDropTweakData:init(tweak_data)
 		track = true,
 		sort_number = 305,
 		unique_lock_icon = "guis/textures/pd2/blackmarket/money_lock",
+		unlock_id = "bm_global_value_ant_unlock",
+		dlc = true,
 		category = "collaboration",
 		ignore_ulti = true
 	}
 	self.global_values.ant_free = {
 		name_id = "bm_global_value_ant",
 		desc_id = "menu_l_global_value_ant",
-		unlock_id = "bm_global_value_ant_free_unlock",
 		color = dlc_color,
-		dlc = true,
 		chance = 1,
 		value_multiplier = tweak_data:get_value("money_manager", "global_value_multipliers", "ant_free"),
 		durability_multiplier = 1,
@@ -1426,15 +1424,15 @@ function LootDropTweakData:init(tweak_data)
 		track = true,
 		sort_number = 305,
 		unique_lock_icon = "guis/textures/pd2/blackmarket/money_lock",
+		unlock_id = "bm_global_value_ant_free_unlock",
+		dlc = true,
 		category = "collaboration",
 		ignore_ulti = true
 	}
 	self.global_values.eng = {
 		name_id = "bm_global_value_eng",
 		desc_id = "menu_l_global_value_eng",
-		unlock_id = "bm_global_value_eng_unlock",
 		color = dlc_color,
-		dlc = true,
 		chance = 1,
 		value_multiplier = tweak_data:get_value("money_manager", "global_value_multipliers", "eng"),
 		durability_multiplier = 1,
@@ -1442,6 +1440,8 @@ function LootDropTweakData:init(tweak_data)
 		track = true,
 		sort_number = 306,
 		unique_lock_icon = "guis/textures/pd2/blackmarket/money_lock",
+		unlock_id = "bm_global_value_eng_unlock",
+		dlc = true,
 		category = "collaboration",
 		ignore_ulti = true
 	}
@@ -1478,15 +1478,15 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.dgm = {
 		name_id = "bm_global_value_dgm",
 		desc_id = "menu_l_global_value_dgm",
-		unlock_id = "bm_global_value_dgm_unlock",
 		color = dlc_color,
-		dlc = true,
 		chance = 1,
 		value_multiplier = 1,
 		durability_multiplier = 1,
 		drops = true,
 		track = true,
 		sort_number = 301,
+		unlock_id = "bm_global_value_dgm_unlock",
+		dlc = true,
 		category = "dlc"
 	}
 	self.global_values.raidww2_clan = {
@@ -1507,9 +1507,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.fdm = {
 		name_id = "bm_global_value_fdm",
 		desc_id = "menu_l_global_value_fdm",
-		unlock_id = "bm_global_value_fdm_unlock",
 		color = event_color,
-		dlc = true,
 		chance = 1,
 		value_multiplier = tweak_data:get_value("money_manager", "global_value_multipliers", "fdm"),
 		durability_multiplier = 1,
@@ -1517,8 +1515,10 @@ function LootDropTweakData:init(tweak_data)
 		track = true,
 		sort_number = 86,
 		hide_unavailable = true,
-		category = "global_event",
-		ignore_ulti = true
+		ignore_ulti = true,
+		dlc = true,
+		unlock_id = "bm_global_value_fdm_unlock",
+		category = "global_event"
 	}
 	self.global_values.ecp = {
 		name_id = "bm_global_value_ecp",
@@ -1538,16 +1538,15 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.cmo = {
 		name_id = "bm_global_value_cmo",
 		desc_id = "menu_l_global_value_cmo",
-		unlock_id = "bm_global_value_cmo_unlock",
 		color = dlc_color,
-		dlc = true,
 		chance = 1,
 		value_multiplier = 1,
 		durability_multiplier = 1,
 		drops = true,
 		track = true,
 		sort_number = 300,
-		category = "dlc"
+		unlock_id = "bm_global_value_cmo_unlock",
+		dlc = true
 	}
 	self.global_values.cmt = {
 		name_id = "bm_global_value_cmt",
@@ -1566,9 +1565,7 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.pbm = {
 		name_id = "bm_global_value_pbm",
 		desc_id = "menu_l_global_value_pbm",
-		unlock_id = "bm_global_value_pbm_unlock",
 		color = event_color,
-		dlc = true,
 		chance = 1,
 		value_multiplier = tweak_data:get_value("money_manager", "global_value_multipliers", "pbm"),
 		durability_multiplier = 1,
@@ -1576,21 +1573,23 @@ function LootDropTweakData:init(tweak_data)
 		track = true,
 		sort_number = 87,
 		hide_unavailable = true,
+		unlock_id = "bm_global_value_pbm_unlock",
+		dlc = true,
 		category = "global_event",
 		ignore_ulti = true
 	}
 	self.global_values.dnm = {
 		name_id = "bm_global_value_dnm",
 		desc_id = "menu_l_global_value_dnm",
-		unlock_id = "bm_global_value_dnm_unlock",
 		color = dlc_color,
-		dlc = true,
 		chance = 1,
 		value_multiplier = 1,
 		durability_multiplier = 1,
 		drops = true,
 		track = true,
 		sort_number = 300,
+		unlock_id = "bm_global_value_dnm_unlock",
+		dlc = true,
 		category = "dlc"
 	}
 	self.global_values.myh = {

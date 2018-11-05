@@ -118,6 +118,7 @@ function CrimeNetManager:get_jobs_by_player_stars(span)
 
 	for _, job_id in ipairs(tweak_data.narrative:get_jobs_index()) do
 		local pass_all_tests = true
+		pass_all_tests = pass_all_tests and not tweak_data.narrative:is_job_locked(job_id)
 
 		if pass_all_tests then
 			local job_data = tweak_data.narrative:job_data(job_id)
@@ -159,6 +160,7 @@ function CrimeNetManager:_get_jobs_by_jc()
 		local dlc = tweak_data.narrative:job_data(job_id).dlc
 		local is_not_dlc_or_got = not dlc or managers.dlc:is_dlc_unlocked(dlc)
 		local pass_all_tests = is_cooldown_ok and is_not_wrapped and is_not_dlc_or_got
+		pass_all_tests = pass_all_tests and not tweak_data.narrative:is_job_locked(job_id)
 
 		if pass_all_tests then
 			local job_data = tweak_data.narrative:job_data(job_id)
@@ -2138,6 +2140,12 @@ function CrimeNetGui:make_color_text(text_object, color)
 end
 
 function CrimeNetGui:_create_polylines()
+	if _G.IS_VR then
+		self._region_locations = {}
+
+		return
+	end
+
 	local regions = tweak_data.gui.crime_net.regions
 
 	if alive(self._region_panel) then

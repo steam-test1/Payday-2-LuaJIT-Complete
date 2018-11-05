@@ -90,8 +90,13 @@ function CarryData:_update_throw_link(unit, t, dt)
 
 					if body then
 						local bag_center = bag_object:oobb():center()
+						local body_oobb = body:oobb()
 
-						if body:inside_oobb(bag_center) then
+						if _G.IS_VR then
+							body_oobb:grow(50)
+						end
+
+						if body_oobb:point_inside(bag_center) then
 							unit = data.unit
 
 							break

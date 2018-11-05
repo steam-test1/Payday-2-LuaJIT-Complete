@@ -515,3 +515,7 @@ function HUDObjectives:_animate_icon_objectivebox(icon_objectivebox)
 	icon_objectivebox:set_y(0)
 end
 
+if _G.IS_VR then
+	require("lib/managers/hud/vr/HUDObjectivesVR")
+end
+

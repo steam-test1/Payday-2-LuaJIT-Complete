@@ -193,6 +193,10 @@ function UnderlayPathFeeder:apply(handler, viewport, scene)
 	Global._underlay_ref_camera:set_far_range(10000000)
 	Global._underlay_ref_camera:set_fov(75)
 
+	if _G.IS_VR then
+		Global._underlay_ref_camera:set_hmd_tracking(false)
+	end
+
 	UnderlayPathFeeder.sky_material = Underlay:material(ids_sky)
 	UnderlayPathFeeder.ref_cam_obj = Underlay:get_object(ids_ref_cam_obj)
 

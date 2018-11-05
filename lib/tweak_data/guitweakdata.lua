@@ -4935,6 +4935,11 @@ function GuiTweakData:init()
 	self.new_heists = {limit = 5}
 
 	table.insert(self.new_heists, {
+		name_id = "menu_nh_pd2vr_launch",
+		texture_path = "guis/textures/pd2/new_heists/pd2vr_launch",
+		url = "http://steamcommunity.com/games/218620/announcements/detail/1669019670888919416"
+	})
+	table.insert(self.new_heists, {
 		name_id = "menu_nh_ggez",
 		texture_path = "guis/textures/pd2/new_heists/difficultyandsniper_update",
 		url = "http://steamcommunity.com/games/218620/announcements/detail/1666767238319907275"

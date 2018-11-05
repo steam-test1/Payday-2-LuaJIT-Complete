@@ -19,6 +19,8 @@ function ElementAreaTrigger:project_instigators()
 			if managers.network:session() and managers.network:session():local_peer():id() == id then
 				table.insert(instigators, managers.player:player_unit())
 			end
+		elseif self._values.instigator == "vr_player" and _G.IS_VR then
+			table.insert(instigators, managers.player:player_unit())
 		end
 
 		return instigators
@@ -27,6 +29,8 @@ function ElementAreaTrigger:project_instigators()
 	if self._values.instigator == "player" then
 		table.insert(instigators, managers.player:player_unit())
 	elseif self._values.instigator == "player_not_in_vehicle" then
+		table.insert(instigators, managers.player:player_unit())
+	elseif self._values.instigator == "vr_player" and _G.IS_VR then
 		table.insert(instigators, managers.player:player_unit())
 	elseif self._values.instigator == "vehicle" then
 		local vehicles = managers.vehicle:get_all_vehicles()

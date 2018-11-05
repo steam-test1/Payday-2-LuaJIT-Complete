@@ -41,6 +41,15 @@ function PlayerCivilian:_enter(enter_data)
 	self._ext_network:send("set_stance", 1, false, false)
 
 	self._show_casing_t = Application:time() + 4
+
+	if _G.IS_VR then
+		managers.hud:belt():set_visible(false)
+
+		self._weapon_hand_id = self._unit:hand():get_active_hand_id("weapon")
+
+		self._unit:hand():set_default_state(PlayerHand.LEFT, "idle", true)
+		self._unit:hand():set_default_state(PlayerHand.RIGHT, "idle", true)
+	end
 end
 
 function PlayerCivilian:exit(state_data, new_state_name)
@@ -69,6 +78,11 @@ function PlayerCivilian:exit(state_data, new_state_name)
 		managers.groupai:state():remove_listener(self._enemy_weapons_hot_listen_id)
 
 		self._enemy_weapons_hot_listen_id = nil
+	end
+
+	if _G.IS_VR then
+		managers.hud:belt():set_visible(true)
+		self._unit:hand():set_default_state(self._weapon_hand_id or PlayerHand.hand_id(managers.vr:get_setting("default_weapon_hand") or "right"), "weapon")
 	end
 end
 
@@ -122,6 +136,10 @@ function PlayerCivilian:_check_action_interact(t, input)
 	local new_action, timer, interact_object = nil
 
 	if input.btn_interact_press then
+		if _G.IS_VR then
+			self._interact_hand = input.btn_interact_left_press and PlayerHand.LEFT or PlayerHand.RIGHT
+		end
+
 		local action_forbidden = self:chk_action_forbidden("interact") or self._unit:base():stats_screen_visible() or self:_interacting() or self._ext_movement:has_carry_restriction() or self:_on_zipline()
 
 		if not action_forbidden then
@@ -148,6 +166,12 @@ function PlayerCivilian:_check_action_interact(t, input)
 end
 
 function PlayerCivilian:_start_action_interact(t, input, timer, interact_object)
+	if _G.IS_VR then
+		managers.hud:link_interaction_hud(self._unit:hand():hand_unit(self._interact_hand), interact_object)
+
+		self._state_data.interacting = true
+	end
+
 	self._interact_expire_t = timer
 	self._interact_params = {
 		object = interact_object,
@@ -173,6 +197,12 @@ function PlayerCivilian:_interupt_action_interact(t, input, complete)
 		managers.network:session():send_to_peers_synched("sync_teammate_progress", 1, false, self._interact_params.tweak_data, 0, complete and true or false)
 
 		self._interact_params = nil
+	end
+
+	if _G.IS_VR then
+		managers.hud:hide_interaction_bar(complete)
+
+		self._state_data.interacting = false
 	end
 end
 

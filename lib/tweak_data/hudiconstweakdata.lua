@@ -12025,6 +12025,42 @@ function HudIconsTweakData:init()
 			85
 		}
 	}
+	self.C_Event_H_SafeHouseNightmare_GiliamsSweet = {
+		texture = "guis/dlcs/trk/textures/pd2/achievement_atlas_nbm",
+		texture_rect = {
+			89,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_Event_H_SafeHouseNightmare_Temper = {
+		texture = "guis/dlcs/trk/textures/pd2/achievement_atlas_nbm",
+		texture_rect = {
+			89,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Event_H_SafeHouseNightmare_CheerfulChild = {
+		texture = "guis/dlcs/trk/textures/pd2/achievement_atlas_nbm",
+		texture_rect = {
+			2,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_Event_H_SafeHouseNightmare_WaterWorks = {
+		texture = "guis/dlcs/trk/textures/pd2/achievement_atlas_nbm",
+		texture_rect = {
+			2,
+			89,
+			85,
+			85
+		}
+	}
 
 	TextureCorrectionTweakData:new(self)
 

@@ -6,6 +6,12 @@ function ObjectInteractionManager:init()
 	self._interactive_count = 0
 	self._update_index = 0
 	self._close_units = {}
+
+	if _G.IS_VR then
+		table.insert(self._close_units, {})
+		table.insert(self._close_units, {})
+	end
+
 	self._close_index = 0
 	self._close_freq = 1
 	self._active_unit = nil
@@ -17,14 +23,37 @@ function ObjectInteractionManager:update(t, dt)
 	local player_unit = managers.player:player_unit()
 
 	if self._interactive_count > 0 and alive(player_unit) then
-		local player_pos = player_unit:movement():m_head_pos()
+		if _G.IS_VR then
+			local hand_ids = player_unit:hand():interaction_ids()
 
-		self:_update_targeted(player_pos, player_unit)
+			if self._interact_hand and not table.contains(hand_ids, self._interact_hand) then
+				table.insert(hand_ids, self._interact_hand)
+			end
+
+			for _, id in ipairs(hand_ids) do
+				if self._skip_hand ~= id then
+					local hand_unit = player_unit:hand():hand_unit(id)
+					local player_pos = hand_unit:position()
+
+					self:_update_targeted(player_pos, player_unit, hand_unit, id)
+				end
+			end
+		end
+
+		if not _G.IS_VR then
+			local player_pos = player_unit:movement():m_head_pos()
+
+			self:_update_targeted(player_pos, player_unit)
+		end
 	end
 end
 
 function ObjectInteractionManager:interact(player, data, hand_id)
 	if alive(self._active_unit) then
+		if _G.IS_VR and self._interact_hand ~= hand_id then
+			return false
+		end
+
 		local interacted, timer = self._active_unit:interaction():interact_start(player, data)
 
 		if timer then
@@ -71,6 +100,11 @@ function ObjectInteractionManager:remove_unit(unit)
 			if self._interactive_count == 0 then
 				self._close_units = {}
 
+				if _G.IS_VR then
+					table.insert(self._close_units, {})
+					table.insert(self._close_units, {})
+				end
+
 				if alive(self._active_unit) then
 					self._active_unit:interaction():remove_interact()
 				end
@@ -87,14 +121,24 @@ local index_table = {}
 
 function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand_unit, hand_id)
 	local close_units_list = self._close_units
+
+	if _G.IS_VR then
+		close_units_list = self._close_units[hand_id]
+	end
+
 	local mvec3_dis = mvector3.distance
 
 	if #close_units_list > 0 then
 		for k, unit in pairs(close_units_list) do
 			if alive(unit) and unit:interaction():active() then
 				local distance = mvec3_dis(player_pos, unit:interaction():interact_position())
+				local should_remove = unit:interaction():interact_distance() < distance or distance < unit:interaction():max_interact_distance()
 
-				if unit:interaction():interact_distance() < distance or distance < unit:interaction():max_interact_distance() then
+				if _G.IS_VR then
+					should_remove = should_remove or hand_unit:raycast("ray", hand_unit:position(), player_unit:movement():m_head_pos(), "slot_mask", 1)
+				end
+
+				if should_remove then
 					table.remove(close_units_list, k)
 				end
 			else
@@ -114,8 +158,13 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 
 		if alive(unit) and unit:interaction():active() and not self:_in_close_list(unit, hand_id) then
 			local distance = mvec3_dis(player_pos, unit:interaction():interact_position())
+			local valid = distance <= unit:interaction():interact_distance() and unit:interaction():max_interact_distance() <= distance
 
-			if distance <= unit:interaction():interact_distance() and unit:interaction():max_interact_distance() <= distance then
+			if _G.IS_VR then
+				valid = valid and not hand_unit:raycast("ray", hand_unit:position(), player_unit:movement():m_head_pos(), "slot_mask", 1)
+			end
+
+			if valid then
 				table.insert(close_units_list, unit)
 			end
 		end
@@ -129,6 +178,7 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 		else
 			local distance = mvec3_dis(player_pos, self._active_unit:interaction():interact_position())
 			locked = self._active_unit:interaction():interact_dont_interupt_on_distance() or distance <= self._active_unit:interaction():interact_distance()
+			locked = locked or _G.IS_VR
 		end
 	end
 
@@ -149,8 +199,20 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 		local has_distance_passed = false
 		local current_distance = 10000
 		local player_fwd, camera_pos = nil
-		player_fwd = player_unit:camera():forward()
-		camera_pos = player_unit:camera():position()
+
+		if _G.IS_VR then
+			local rot = hand_unit:rotation()
+			player_fwd = rot:y()
+			camera_pos = hand_unit:position()
+			dot_limit = 0.7
+			current_dot = last_dot or dot_limit
+		end
+
+		if not _G.IS_VR then
+			player_fwd = player_unit:camera():forward()
+			camera_pos = player_unit:camera():position()
+		end
+
 		self._close_test_index = self._close_test_index or 0
 		self._close_test_index = self._close_test_index + 1
 
@@ -203,6 +265,13 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 					local dot = mvector3.dot(player_fwd, mvec1)
 					local interaction_passed = current_dot < dot or alive(last_active) and unit == last_active and dot_limit < dot
 
+					if _G.IS_VR then
+						local distance_pass = distance < 30 and distance < current_distance
+						has_distance_passed = has_distance_passed or distance_pass
+						interaction_passed = distance_pass or not has_distance_passed
+						current_distance = math.min(distance, current_distance)
+					end
+
 					if interaction_passed then
 						local interact_axis = unit:interaction():interact_axis()
 
@@ -214,6 +283,10 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 					end
 				end
 			end
+		end
+
+		if self._active_unit and not active_unit and self._interact_hand and self._interact_hand ~= hand_id then
+			return
 		end
 
 		if active_unit and self._active_unit ~= active_unit then
@@ -243,6 +316,10 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 		self._active_unit = active_unit
 		self._current_dot = current_dot
 	else
+		if self._active_unit and not active_unit and self._interact_hand and self._interact_hand ~= hand_id then
+			return
+		end
+
 		self._active_unit = nil
 	end
 
@@ -250,6 +327,29 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 		self._active_unit = nil
 
 		last_active:interaction():unselect()
+	end
+
+	if _G.IS_VR then
+		if last_active ~= self._active_unit then
+			if self._active_unit then
+				player_unit:hand():start_show_intrest(not self._active_unit:interaction():can_interact(player_unit), hand_id)
+
+				self._interact_hand = hand_id
+				self._skip_hand = nil
+			else
+				player_unit:hand():end_show_intrest(hand_id)
+
+				self._interact_hand = nil
+			end
+		end
+
+		if self._active_unit and self._active_unit == active_unit and self._interact_hand and self._interact_hand ~= hand_id and mvec3_dis(hand_unit:position(), self._active_unit:position()) < mvec3_dis(player_unit:hand():hand_unit(self._interact_hand):position(), self._active_unit:position()) then
+			player_unit:hand():end_show_intrest(self._interact_hand)
+
+			self._skip_hand = self._interact_hand
+			self._interact_hand = nil
+			self._active_unit = nil
+		end
 	end
 end
 local m_obj_pos = Vector3()
@@ -284,6 +384,10 @@ end
 
 function ObjectInteractionManager:_in_close_list(unit, id)
 	local close_units_list = self._close_units
+
+	if _G.IS_VR then
+		close_units_list = self._close_units[id or 1]
+	end
 
 	if #close_units_list > 0 then
 		for k, v in pairs(close_units_list) do

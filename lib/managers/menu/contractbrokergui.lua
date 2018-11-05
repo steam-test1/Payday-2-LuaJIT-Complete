@@ -862,6 +862,7 @@ function ContractBrokerGui:_setup_jobs()
 		if filter_pass and contact_pass and not tweak_data.narrative:is_wrapped_to_job(job_id) then
 			local dlc = job_tweak.dlc
 			dlc = not dlc or managers.dlc:is_dlc_unlocked(dlc)
+			dlc = dlc and not tweak_data.narrative:is_job_locked(job_id)
 			local date_value = job_tweak.date_added and (job_tweak.date_added[1] * 30 * 12 + job_tweak.date_added[2] * 30 + job_tweak.date_added[3]) - date_value or false
 
 			table.insert(jobs, {

@@ -26,7 +26,10 @@ function IngameMaskOffState:at_enter()
 		managers.hud:load_hud(self._MASK_OFF_HUD, false, false, true, {})
 	end
 
-	managers.hud:show(self._MASK_OFF_HUD)
+	if not _G.IS_VR then
+		managers.hud:show(self._MASK_OFF_HUD)
+	end
+
 	managers.hud:show(PlayerBase.PLAYER_INFO_HUD)
 	managers.hud:show(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN)
 

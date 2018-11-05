@@ -300,6 +300,18 @@ function MenuComponentManager:init()
 		}
 	}
 	self._alive_components = {}
+
+	if _G.IS_VR and managers.menu._is_start_menu then
+		local vr_bg = self._fullscreen_ws:panel():bitmap({
+			texture = "guis/dlcs/vr/textures/pd2/bg",
+			name = "vr_bg",
+			layer = -2
+		})
+		local h = self._fullscreen_ws:panel():h()
+		local dh = h / vr_bg:texture_height()
+
+		vr_bg:set_size(vr_bg:texture_width() * dh, h)
+	end
 end
 
 function MenuComponentManager:save(data)
@@ -2593,6 +2605,10 @@ function MenuComponentManager:close_contract_gui()
 		self._contract_gui:close()
 
 		self._contract_gui = nil
+
+		if _G.IS_VR then
+			managers.menu_scene:clear_character_text_panels()
+		end
 	end
 end
 
@@ -4480,6 +4496,10 @@ function MenuComponentManager:new_post_event_instance()
 end
 
 function MenuComponentManager:post_event(event, unique)
+	if _G.IS_VR then
+		managers.menu:post_event_vr(event)
+	end
+
 	if alive(self._post_event) then
 		self._post_event:stop()
 

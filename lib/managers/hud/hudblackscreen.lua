@@ -40,6 +40,11 @@ function HUDBlackScreen:init(hud)
 
 	local is_server = Network:is_server()
 	local continue_button = managers.menu:is_pc_controller() and "[ENTER]" or nil
+
+	if _G.IS_VR then
+		continue_button = managers.localization:btn_macro("laser_primary", true)
+	end
+
 	local text = utf8.to_upper(managers.localization:text("hud_skip_blackscreen", {BTN_ACCEPT = continue_button}))
 	local skip_text = self._blackscreen_panel:text({
 		y = 0,

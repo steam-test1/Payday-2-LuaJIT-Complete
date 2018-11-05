@@ -39,6 +39,10 @@ function MousePointerManager:_setup_mouse_pointer(ws)
 		})
 		local visible_pointer = true
 
+		if _G.IS_VR then
+			visible_pointer = false
+		end
+
 		mouse:bitmap({
 			texture = "guis/textures/mouse_pointer",
 			name = "pointer",
@@ -261,7 +265,11 @@ function MousePointerManager:_activate()
 	self._enabled = true
 
 	self._ws:show()
-	self._ws:connect_mouse(managers.controller:get_mouse_controller())
+
+	if not _G.IS_VR then
+		self._ws:connect_mouse(managers.controller:get_mouse_controller())
+	end
+
 	self._ws:feed_mouse_position(self._mouse:world_position())
 
 	if not self._controller_updater then

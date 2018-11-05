@@ -1705,7 +1705,6 @@ function LevelsTweakData:init()
 		"driving_escapes_industry_day",
 		"driving_escapes_city_day",
 		"jolly",
-		"inttest",
 		"cane",
 		"red2",
 		"dinner",

@@ -267,6 +267,10 @@ function MenuRenderer:trigger_item(item)
 end
 
 function MenuRenderer:post_event(event)
+	if _G.IS_VR then
+		managers.menu:post_event_vr(event)
+	end
+
 	self._sound_source:post_event(event)
 end
 

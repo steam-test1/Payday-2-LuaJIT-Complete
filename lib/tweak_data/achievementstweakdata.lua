@@ -4128,6 +4128,42 @@ function AchievementsTweakData:init(tweak_data)
 			job = "hvh",
 			difficulty = sm_wish_and_above
 		},
+		nbm_1 = {
+			award = "nbm_1",
+			job = "haunted",
+			difficulty = normal_and_above
+		},
+		nbm_2 = {
+			award = "nbm_2",
+			job = "haunted",
+			difficulty = hard_and_above
+		},
+		nbm_3 = {
+			award = "nbm_3",
+			job = "haunted",
+			difficulty = veryhard_and_above
+		},
+		nbm_4 = {
+			award = "nbm_4",
+			job = "haunted",
+			difficulty = overkill_and_above
+		},
+		pick_666 = {
+			award = "pick_666",
+			job = "haunted",
+			difficulty = easywish_and_above
+		},
+		halloween_nightmare_5 = {
+			award = "halloween_nightmare_5",
+			job = "haunted",
+			difficulty = deathwish_and_above
+		},
+		axe_666 = {
+			award = "axe_666",
+			one_down = true,
+			job = "haunted",
+			difficulty = sm_wish_and_above
+		},
 		bain_jobs = {
 			complete_job = true,
 			contract = "bain",

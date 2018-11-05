@@ -122,6 +122,10 @@ function PlayerMaskOff:_check_action_interact(t, input)
 	local new_action, timer, interact_object = nil
 
 	if input.btn_interact_press then
+		if _G.IS_VR then
+			self._interact_hand = input.btn_interact_left_press and PlayerHand.LEFT or PlayerHand.RIGHT
+		end
+
 		local action_forbidden = self:chk_action_forbidden("interact") or self._unit:base():stats_screen_visible() or self:_interacting() or self._ext_movement:has_carry_restriction() or self:is_deploying() or self:_on_zipline()
 
 		if not action_forbidden then

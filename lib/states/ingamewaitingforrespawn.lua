@@ -22,11 +22,22 @@ function IngameWaitingForRespawnState:_setup_controller()
 	self._controller = managers.controller:create_controller("waiting_for_respawn", managers.controller:get_default_wrapper_index(), false)
 	self._next_player_cb = callback(self, self, "cb_next_player")
 	self._prev_player_cb = callback(self, self, "cb_prev_player")
+	local next_btn = "right"
+	local prev_btn = "left"
 
-	self._controller:add_trigger("left", self._prev_player_cb)
-	self._controller:add_trigger("right", self._next_player_cb)
-	self._controller:add_trigger("primary_attack", self._prev_player_cb)
-	self._controller:add_trigger("secondary_attack", self._next_player_cb)
+	if _G.IS_VR then
+		next_btn = "suvcam_next"
+		prev_btn = "suvcam_prev"
+	end
+
+	self._controller:add_trigger(prev_btn, self._prev_player_cb)
+	self._controller:add_trigger(next_btn, self._next_player_cb)
+
+	if not _G.IS_VR then
+		self._controller:add_trigger("primary_attack", self._prev_player_cb)
+		self._controller:add_trigger("secondary_attack", self._next_player_cb)
+	end
+
 	self._controller:set_enabled(true)
 	managers.controller:set_ingame_mode("main")
 end
@@ -57,10 +68,16 @@ function IngameWaitingForRespawnState:_setup_camera()
 	self._camera_object:set_far_range(1000000)
 	self._camera_object:set_fov(75)
 
-	self._viewport = managers.viewport:new_vp(0, 0, 1, 1, "spectator", CoreManagerBase.PRIO_WORLDCAMERA)
+	if _G.IS_VR then
+		self._camera_object:set_aspect_ratio(1.7777777777777777)
+		self._camera_object:set_stereo(false)
+		managers.menu:set_override_ingame_camera(self._camera_object)
+	else
+		self._viewport = managers.viewport:new_vp(0, 0, 1, 1, "spectator", CoreManagerBase.PRIO_WORLDCAMERA)
 
-	self._viewport:set_camera(self._camera_object)
-	self._viewport:set_active(true)
+		self._viewport:set_camera(self._camera_object)
+		self._viewport:set_active(true)
+	end
 end
 
 function IngameWaitingForRespawnState:_clear_camera()
@@ -73,6 +90,10 @@ function IngameWaitingForRespawnState:_clear_camera()
 	World:delete_camera(self._camera_object)
 
 	self._camera_object = nil
+
+	if _G.IS_VR then
+		managers.menu:set_override_ingame_camera(nil)
+	end
 end
 
 function IngameWaitingForRespawnState:_setup_sound_listener()
@@ -274,6 +295,10 @@ function IngameWaitingForRespawnState:_upd_watch(t, dt)
 
 		mvec3_set(self._vec_dir, self._controller:get_input_axis("look"))
 
+		if _G.IS_VR then
+			mvec3_set(self._vec_dir, self._controller:get_input_axis("touchpad_primary"))
+		end
+
 		local controller_type = self._controller:get_default_controller_id()
 		local stick_input_x = mvec3_x(self._vec_dir)
 
@@ -372,6 +397,10 @@ function IngameWaitingForRespawnState:_upd_watch(t, dt)
 end
 
 function IngameWaitingForRespawnState:at_enter()
+	if _G.IS_VR then
+		managers.menu:open_menu("custody")
+	end
+
 	managers.player:force_drop_carry()
 	managers.hud:set_player_health({
 		total = 100,
@@ -449,6 +478,10 @@ function IngameWaitingForRespawnState:at_enter()
 end
 
 function IngameWaitingForRespawnState:at_exit()
+	if _G.IS_VR then
+		managers.menu:close_menu("custody")
+	end
+
 	if self.music_on_death then
 		managers.music:track_listen_stop()
 

@@ -412,6 +412,14 @@ function PlayerInventory:_place_selection(selection_index, is_equip)
 end
 
 function PlayerInventory:_link_weapon(unit, align_place)
+	if _G.IS_VR then
+		local is_player = managers.player:player_unit() == self._unit
+
+		if is_player then
+			return
+		end
+	end
+
 	local parent_unit = align_place.on_body and self._unit or self._unit:camera()._camera_unit
 	local res = parent_unit:link(align_place.obj3d_name, unit, unit:orientation_object():name())
 

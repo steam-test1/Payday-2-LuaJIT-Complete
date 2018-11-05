@@ -6055,10 +6055,13 @@ function BlackMarketGui:update_info_text()
 						end
 					end
 
+					local vr_lock_text = slot_data.vr_locked and "bm_menu_vr_locked"
 					local text = ""
 
 					if slot_data.install_lock then
 						text = text .. managers.localization:to_upper_text(slot_data.install_lock, {}) .. "\n"
+					elseif vr_lock_text then
+						text = text .. managers.localization:to_upper_text(vr_lock_text) .. "\n"
 					elseif dlc_text_id then
 						text = text .. managers.localization:to_upper_text(dlc_text_id, {}) .. "\n"
 					elseif part_dlc_text_id then
@@ -6142,9 +6145,12 @@ function BlackMarketGui:update_info_text()
 			local level_text_id = level_based and "bm_menu_level_req" or false
 			local dlc_text_id = dlc_based and slot_data.dlc_locked or false
 			local text = ""
+			local vr_lock_text = slot_data.vr_locked and "bm_menu_vr_locked"
 
 			if slot_data.install_lock then
 				text = text .. managers.localization:to_upper_text(slot_data.install_lock, {}) .. "\n"
+			elseif vr_lock_text then
+				text = text .. managers.localization:to_upper_text(vr_lock_text) .. "\n"
 			elseif skill_text_id then
 				text = text .. managers.localization:to_upper_text(skill_text_id, {slot_data.name_localized}) .. "\n"
 			elseif dlc_text_id then
@@ -7840,6 +7846,10 @@ function BlackMarketGui:mouse_pressed(button, x, y)
 	if self._selected_slot and self._selected_slot._equipped_rect then
 		self._selected_slot._equipped_rect:set_alpha(0.6)
 	end
+
+	if _G.IS_VR and button == Idstring("0") and self._selected_slot._panel:inside(x, y) then
+		self:press_first_btn(button)
+	end
 end
 
 function BlackMarketGui:mouse_released(o, button, x, y)
@@ -8635,6 +8645,10 @@ function BlackMarketGui:get_lock_icon(data, default)
 	local level = data.level
 	local skill_based = data.skill_based
 	local func_based = data.func_based
+
+	if _G.IS_VR and data.vr_locked then
+		return "units/pd2_dlc_vr/player/lock_vr"
+	end
 
 	if unlocked and (type(unlocked) ~= "number" or unlocked > 0) then
 		return nil
@@ -10596,6 +10610,12 @@ function BlackMarketGui:populate_weapon_category_new(data)
 			new_data.stream = true
 			new_data.comparision_data = not new_data.ignore_slot and managers.blackmarket:get_weapon_stats(category, index)
 			new_data.global_value = part_dlc_lock or tweak_data.weapon[new_data.name] and tweak_data.weapon[new_data.name].global_value or "normal"
+
+			if _G.IS_VR then
+				new_data.vr_locked = tweak_data.vr:is_locked("weapons", crafted.weapon_id)
+				new_data.unlocked = new_data.unlocked and not tweak_data.vr:is_locked("weapons", crafted.weapon_id)
+			end
+
 			new_data.dlc_locked = tweak_data.lootdrop.global_values[new_data.global_value].unlock_id or nil
 			new_data.lock_texture = new_data.ignore_slot or self:get_lock_icon(new_data)
 			new_data.holding = currently_holding and hold_crafted_item.slot == index
@@ -10875,6 +10895,10 @@ function BlackMarketGui:populate_melee_weapons_new(data)
 		new_data.skill_based = melee_weapon_data[2].skill_based
 		new_data.skill_name = "bm_menu_skill_locked_" .. new_data.name
 		new_data.func_based = melee_weapon_data[2].func_based
+
+		if _G.IS_VR then
+			new_data.vr_locked = melee_weapon_data[2].vr_locked
+		end
 
 		if m_tweak_data and m_tweak_data.locks then
 			local dlc = m_tweak_data.locks.dlc
@@ -13451,6 +13475,10 @@ function BlackMarketGui:open_weapon_buy_menu(data, check_allowed_item_func)
 	for category, items in pairs(item_categories) do
 		table.insert(sorted_categories, category)
 		table.sort(items, function (x, y)
+			if _G.IS_VR and x.vr_locked ~= y.vr_locked then
+				return not x.vr_locked
+			end
+
 			x_unlocked = managers.blackmarket:weapon_unlocked(x.weapon_id)
 			y_unlocked = managers.blackmarket:weapon_unlocked(y.weapon_id)
 

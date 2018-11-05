@@ -8,7 +8,11 @@ function EnvironmentEffectsManager:init()
 	self:add_effect("rain", RainEffect:new())
 	self:add_effect("snow", SnowEffect:new())
 	self:add_effect("snow_slow", SnowEffectSlow:new())
-	self:add_effect("raindrop_screen", RainDropScreenEffect:new())
+
+	if not _G.IS_VR then
+		self:add_effect("raindrop_screen", RainDropScreenEffect:new())
+	end
+
 	self:add_effect("lightning", LightningEffect:new())
 
 	self._camera_position = Vector3()
@@ -445,13 +449,11 @@ function RainDropEffect:start()
 		rotation = Rotation()
 	}
 	self._raindrops = World:effect_manager():spawn(t)
-	self._extra_raindrops = World:effect_manager():spawn(t)
 end
 
 function RainDropEffect:stop()
 	if self._raindrops then
 		World:effect_manager():fade_kill(self._raindrops)
-		World:effect_manager():fade_kill(self._extra_raindrops)
 
 		self._raindrops = nil
 	end

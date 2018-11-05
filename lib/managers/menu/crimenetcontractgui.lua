@@ -29,6 +29,7 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 	local blur = self._fullscreen_panel:bitmap({
 		texture = "guis/textures/test_blur_df",
 		render_template = "VertexColorTexturedBlur3D",
+		layer = 1,
 		w = self._fullscreen_ws:panel():w(),
 		h = self._fullscreen_ws:panel():h()
 	})
@@ -47,6 +48,7 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 		text = " ",
 		vertical = "top",
 		align = "left",
+		layer = 1,
 		font_size = tweak_data.menu.pd2_large_font_size,
 		font = tweak_data.menu.pd2_large_font,
 		color = tweak_data.screen_colors.text
@@ -57,7 +59,7 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 	self._contact_text_header:set_center_x(self._panel:w() * 0.5)
 
 	self._contract_panel = self._panel:panel({
-		layer = 1,
+		layer = 5,
 		h = height,
 		w = width,
 		x = self._contact_text_header:x(),
@@ -173,6 +175,18 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 		self:make_fine_text(ghostable_text)
 
 		last_bottom = ghostable_text:bottom()
+	end
+
+	if tweak_data.narrative:is_job_locked(job_data.job_id) then
+		local locked_text = self._contract_panel:text({
+			font = tweak_data.menu.pd2_small_font,
+			font_size = font_size,
+			text = managers.localization:to_upper_text("bm_menu_vr_locked"),
+			color = tweak_data.screen_colors.important_1
+		})
+
+		self:make_fine_text(locked_text)
+		locked_text:set_position(contract_text:x(), last_bottom + 10)
 	end
 
 	local contact_panel = self._contract_panel:panel({

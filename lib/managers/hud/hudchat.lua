@@ -682,3 +682,7 @@ function HUDChat:remove()
 	managers.chat:unregister_receiver(self._channel_id, self)
 end
 
+if _G.IS_VR then
+	require("lib/managers/hud/vr/HUDChatVR")
+end
+

@@ -55,6 +55,10 @@ function MenuMainState:at_enter(old_state)
 				color = Color.black
 			})
 		end
+
+		if _G.IS_VR then
+			managers.menu:initialize_customization_gui()
+		end
 	end
 
 	local has_invite = false

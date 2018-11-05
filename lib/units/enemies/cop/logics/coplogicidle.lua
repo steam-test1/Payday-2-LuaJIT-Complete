@@ -1259,6 +1259,11 @@ function CopLogicIdle._get_priority_attention(data, attention_objects, reaction_
 					if managers.player:has_activate_temporary_upgrade("temporary", "chico_injector") and managers.player:upgrade_value("player", "chico_preferred_target", false) then
 						weight_mul = (weight_mul or 1) * 1000
 					end
+
+					if _G.IS_VR and tweak_data.vr.long_range_damage_reduction_distance[1] < distance then
+						local mul = math.clamp((distance / tweak_data.vr.long_range_damage_reduction_distance[2]) / 2, 0, 1) + 1
+						weight_mul = (weight_mul or 1) * mul
+					end
 				elseif att_unit:base() and att_unit:base().upgrade_value then
 					if att_unit:movement() and not att_unit:movement()._move_data and att_unit:movement()._pose_code and att_unit:movement()._pose_code == 2 then
 						weight_mul = (weight_mul or 1) * (att_unit:base():upgrade_value("player", "stand_still_crouch_camouflage_bonus") or 1)
@@ -1266,6 +1271,11 @@ function CopLogicIdle._get_priority_attention(data, attention_objects, reaction_
 
 					if att_unit:base().has_activate_temporary_upgrade and att_unit:base():has_activate_temporary_upgrade("temporary", "chico_injector") and att_unit:base():upgrade_value("player", "chico_preferred_target") then
 						weight_mul = (weight_mul or 1) * 1000
+					end
+
+					if att_unit:movement().is_vr and att_unit:movement():is_vr() and tweak_data.vr.long_range_damage_reduction_distance[1] < distance then
+						local mul = math.clamp((distance / tweak_data.vr.long_range_damage_reduction_distance[2]) / 2, 0, 1) + 1
+						weight_mul = (weight_mul or 1) * mul
 					end
 				end
 

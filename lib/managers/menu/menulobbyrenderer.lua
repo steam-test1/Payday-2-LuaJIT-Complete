@@ -76,6 +76,17 @@ function MenuLobbyRenderer:open(...)
 
 	self._player_slots = {}
 	self._menu_bg = self._fullscreen_panel:panel({})
+
+	if _G.IS_VR then
+		self._menu_bg:rect({
+			halign = "scale",
+			valign = "scale",
+			visible = true,
+			layer = -1000,
+			color = Color.black
+		})
+	end
+
 	local is_server = Network:is_server()
 	local server_peer = is_server and managers.network:session():local_peer() or managers.network:session():server_peer()
 	local is_single_player = Global.game_settings.single_player

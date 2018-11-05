@@ -1,3 +1,7 @@
+if _G.IS_VR then
+	require("lib/units/cameras/ScopeCamera")
+end
+
 PlayerCamera = PlayerCamera or class()
 PlayerCamera.IDS_NOTHING = Idstring("")
 
@@ -21,6 +25,10 @@ function PlayerCamera:init(unit)
 	self._last_sync_t = 0
 
 	self:setup_viewport(managers.player:viewport_config())
+
+	if _G.IS_VR then
+		self._scope_camera = ScopeCamera:new(self)
+	end
 end
 
 function PlayerCamera:setup_viewport(data)
@@ -36,17 +44,22 @@ function PlayerCamera:setup_viewport(data)
 
 	self._shaker:set_timer(managers.player:player_timer())
 
-	self._camera_controller = self._director:make_camera(self._camera_object, Idstring("fps"))
+	if not _G.IS_VR then
+		self._camera_controller = self._director:make_camera(self._camera_object, Idstring("fps"))
 
-	self._director:set_camera(self._camera_controller)
-	self._director:position_as(self._camera_object)
-	self._camera_controller:set_both(self._camera_unit)
-	self._camera_controller:set_timer(managers.player:player_timer())
+		self._director:set_camera(self._camera_controller)
+		self._director:position_as(self._camera_object)
+		self._camera_controller:set_both(self._camera_unit)
+		self._camera_controller:set_timer(managers.player:player_timer())
+	end
 
-	self._shakers = {
-		breathing = self._shaker:play("breathing", 0.3),
-		headbob = self._shaker:play("headbob", 0)
-	}
+	self._shakers = {}
+
+	if not _G.IS_VR then
+		self._shakers.breathing = self._shaker:play("breathing", 0.3)
+	end
+
+	self._shakers.headbob = self._shaker:play("headbob", 0)
 
 	vp:set_camera(self._camera_object)
 
@@ -73,6 +86,10 @@ function PlayerCamera:spawn_camera_unit()
 	self._camera_unit:base():set_parent_unit(self._unit)
 	self._camera_unit:base():reset_properties()
 	self._camera_unit:base():set_stance_instant("standard")
+
+	if _G.IS_VR then
+		self._camera_unit:set_visible(false)
+	end
 end
 
 function PlayerCamera:camera_object()
@@ -117,6 +134,20 @@ end
 
 function PlayerCamera:anim_data()
 	return self._camera_unit:anim_data()
+end
+
+function PlayerCamera:link_scope(camera_object, screen_object, material, texture_channel, zoom)
+	self._scope_camera:link_scope(camera_object, screen_object, material, texture_channel, zoom)
+end
+
+function PlayerCamera:unlink_scope()
+	self._scope_camera:unlink_scope()
+end
+
+function PlayerCamera:update(unit, t, dt)
+	if self._scope_camera then
+		self._scope_camera:update(t, dt)
+	end
 end
 
 function PlayerCamera:destroy()
@@ -202,6 +233,13 @@ function PlayerCamera:forward_with_shake_toward_reticle(reticle_obj)
 end
 
 function PlayerCamera:set_position(pos)
+	if _G.IS_VR then
+		self._camera_object:set_position(pos)
+		mvector3.set(self._m_cam_pos, pos)
+
+		return
+	end
+
 	self._camera_controller:set_camera(pos)
 	mvector3.set(self._m_cam_pos, pos)
 end
@@ -212,12 +250,24 @@ end
 local mvec1 = Vector3()
 
 function PlayerCamera:set_rotation(rot)
+	if _G.IS_VR then
+		self._camera_object:set_rotation(rot)
+	end
+
 	mrotation.y(rot, mvec1)
 	mvector3.multiply(mvec1, 100000)
 	mvector3.add(mvec1, self._m_cam_pos)
-	self._camera_controller:set_target(mvec1)
+
+	if not _G.IS_VR then
+		self._camera_controller:set_target(mvec1)
+	end
+
 	mrotation.z(rot, mvec1)
-	self._camera_controller:set_default_up(mvec1)
+
+	if not _G.IS_VR then
+		self._camera_controller:set_default_up(mvec1)
+	end
+
 	mrotation.set_yaw_pitch_roll(self._m_cam_rot, rot:yaw(), rot:pitch(), rot:roll())
 	mrotation.y(self._m_cam_rot, self._m_cam_fwd)
 
@@ -275,6 +325,10 @@ function PlayerCamera:set_shaker_parameter(effect, parameter, value)
 end
 
 function PlayerCamera:play_shaker(effect, amplitude, frequency, offset)
+	if _G.IS_VR then
+		return
+	end
+
 	return self._shaker:play(effect, amplitude or 1, frequency or 1, offset or 0)
 end
 

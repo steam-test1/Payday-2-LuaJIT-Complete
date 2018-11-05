@@ -655,6 +655,12 @@ function NewSkillTreeGui:_update_description(item)
 	local desc_string = managers.localization:text(tweak_data.skilltree.skills[skill_id].desc_id, macroes)
 	local full_string = skill_string .. "\n\n" .. desc_string
 
+	if (_G.IS_VR or managers.user:get_setting("show_vr_descs")) and tweak_data.vr.skill_descs_addons[skill_id] then
+		local addon_data = tweak_data.vr.skill_descs_addons[skill_id]
+		local vr_addon = managers.localization:text(addon_data.text_id, addon_data.macros)
+		full_string = full_string .. "\n\n" .. managers.localization:text("menu_vr_skill_addon") .. "\n" .. vr_addon
+	end
+
 	text:set_text(full_string)
 	managers.menu_component:make_color_text(text)
 	text:set_font_size(small_font_size)

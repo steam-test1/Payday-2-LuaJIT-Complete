@@ -3213,21 +3213,6 @@ function WeaponTweakData:_init_data_slap_crew()
 	self.slap_crew.FIRE_MODE = "single"
 end
 
-function WeaponTweakData:_init_data_shuno_crew()
-	self.shuno_crew.sounds.prefix = "minigun_npc"
-	self.shuno_crew.use_data.selection_index = SELECTION.PRIMARY
-	self.shuno_crew.DAMAGE = 2
-	self.shuno_crew.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
-	self.shuno_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
-	self.shuno_crew.CLIP_AMMO_MAX = 750
-	self.shuno_crew.NR_CLIPS_MAX = 1
-	self.shuno_crew.auto.fire_rate = 0.05
-	self.shuno_crew.hold = "rifle"
-	self.shuno_crew.alert_size = 5000
-	self.shuno_crew.suppression = 1
-	self.shuno_crew.FIRE_MODE = "auto"
-end
-
 function WeaponTweakData:_init_data_player_weapons(tweak_data)
 	local autohit_rifle_default, autohit_pistol_default, autohit_shotgun_default, autohit_lmg_default, autohit_snp_default, autohit_smg_default, autohit_minigun_default, aim_assist_rifle_default, aim_assist_pistol_default, aim_assist_shotgun_default, aim_assist_lmg_default, aim_assist_snp_default, aim_assist_smg_default, aim_assist_minigun_default = nil
 
@@ -3690,6 +3675,18 @@ function WeaponTweakData:_init_stats()
 			25,
 			20
 		},
+		zoom = _G.IS_VR and {
+			30,
+			30,
+			30,
+			30,
+			30,
+			20,
+			20,
+			20,
+			20,
+			20
+		},
 		spread = {
 			2,
 			1.92,
@@ -3843,7 +3840,27 @@ end
 function WeaponTweakData:_pickup_chance(max_ammo, selection_index)
 	local low, high = nil
 
-	if selection_index == PICKUP.AR_HIGH_CAPACITY then
+	if _G.IS_VR then
+		if selection_index == PICKUP.AR_HIGH_CAPACITY then
+			low = 0.03
+			high = 0.055
+		elseif selection_index == PICKUP.AR_MED_CAPACITY then
+			low = 0.03
+			high = 0.055
+		elseif selection_index == PICKUP.SHOTGUN_HIGH_CAPACITY then
+			low = 0.05
+			high = 0.075
+		elseif selection_index == PICKUP.SNIPER_LOW_DAMAGE then
+			low = 0.05
+			high = 0.075
+		elseif selection_index == PICKUP.SNIPER_HIGH_DAMAGE then
+			low = 0.005
+			high = 0.015
+		else
+			low = 0.01
+			high = 0.035
+		end
+	elseif selection_index == PICKUP.AR_HIGH_CAPACITY then
 		low = 0.03
 		high = 0.055
 	elseif selection_index == PICKUP.AR_MED_CAPACITY then
@@ -16509,106 +16526,6 @@ function WeaponTweakData:_init_slap(weapon_data)
 		concealment = 22
 	}
 	self.slap.stats_modifiers = {damage = 10}
-end
-
-function WeaponTweakData:_init_shuno(weapon_data)
-	self.shuno = {
-		categories = {"minigun"},
-		has_description = false,
-		damage_melee = weapon_data.damage_melee_default,
-		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
-		sounds = {}
-	}
-	self.shuno.sounds.fire = "minigun_fire_single"
-	self.shuno.sounds.fire_single = "minigun_fire_single"
-	self.shuno.sounds.fire_auto = "minigun_fire"
-	self.shuno.sounds.stop_fire = "minigun_stop"
-	self.shuno.sounds.dryfire = "primary_dryfire"
-	self.shuno.sounds.enter_steelsight = "lmg_steelsight_enter"
-	self.shuno.sounds.leave_steelsight = "lmg_steelsight_exit"
-	self.shuno.timers = {
-		reload_not_empty = 7.8,
-		reload_empty = 7.8,
-		unequip = 0.9,
-		equip = 0.9
-	}
-	self.shuno.name_id = "bm_w_shuno"
-	self.shuno.desc_id = "bm_w_shuno_desc"
-	self.shuno.description_id = "des_shuno"
-	self.shuno.texture_bundle_folder = "dmg"
-	self.shuno.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
-	self.shuno.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
-	self.shuno.use_data = {
-		selection_index = SELECTION.PRIMARY,
-		align_place = "left_hand"
-	}
-	self.shuno.DAMAGE = 1
-	self.shuno.CLIP_AMMO_MAX = 750
-	self.shuno.NR_CLIPS_MAX = 1
-	self.shuno.AMMO_MAX = self.shuno.CLIP_AMMO_MAX * self.shuno.NR_CLIPS_MAX
-	self.shuno.AMMO_PICKUP = self:_pickup_chance(self.shuno.CLIP_AMMO_MAX, PICKUP.OTHER)
-	self.shuno.FIRE_MODE = "auto"
-	self.shuno.fire_mode_data = {fire_rate = 0.02}
-	self.shuno.CAN_TOGGLE_FIREMODE = false
-	self.shuno.auto = {fire_rate = 0.05}
-	self.shuno.spread = {
-		standing = self.new_m4.spread.standing,
-		crouching = self.new_m4.spread.crouching,
-		steelsight = self.new_m4.spread.steelsight,
-		moving_standing = self.new_m4.spread.moving_standing,
-		moving_crouching = self.new_m4.spread.moving_crouching,
-		moving_steelsight = self.new_m4.spread.moving_steelsight
-	}
-	self.shuno.kick = {standing = {
-		-0.05,
-		0.1,
-		-0.15,
-		0.2
-	}}
-	self.shuno.kick.crouching = self.shuno.kick.standing
-	self.shuno.kick.steelsight = self.shuno.kick.standing
-	self.shuno.crosshair = {
-		standing = {},
-		crouching = {},
-		steelsight = {}
-	}
-	self.shuno.crosshair.standing.offset = 0.16
-	self.shuno.crosshair.standing.moving_offset = 1
-	self.shuno.crosshair.standing.kick_offset = 0.8
-	self.shuno.crosshair.crouching.offset = 0.1
-	self.shuno.crosshair.crouching.moving_offset = 0.6
-	self.shuno.crosshair.crouching.kick_offset = 0.4
-	self.shuno.crosshair.steelsight.hidden = true
-	self.shuno.crosshair.steelsight.offset = 0
-	self.shuno.crosshair.steelsight.moving_offset = 0
-	self.shuno.crosshair.steelsight.kick_offset = 0.14
-	self.shuno.shake = {
-		fire_multiplier = 0.5,
-		fire_steelsight_multiplier = -0.5
-	}
-	self.shuno.autohit = weapon_data.autohit_minigun_default
-	self.shuno.aim_assist = weapon_data.aim_assist_lmg_default
-	self.shuno.weapon_hold = "shuno"
-	self.shuno.animations = {
-		equip_id = "equip_shuno",
-		recoil_steelsight = true,
-		thq_align_anim = "thq"
-	}
-	self.shuno.panic_suppression_chance = 0.2
-	self.shuno.stats = {
-		zoom = 1,
-		total_ammo_mod = 21,
-		damage = 25,
-		alert_size = 8,
-		spread = 9,
-		spread_moving = 9,
-		recoil = 7,
-		value = 9,
-		extra_ammo = 6,
-		reload = 11,
-		suppression = 4,
-		concealment = 5
-	}
 end
 
 function WeaponTweakData:_create_table_structure()

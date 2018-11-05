@@ -1249,6 +1249,14 @@ function PlayerManager:on_killshot(killed_unit, variant, headshot, weapon_id)
 	end
 
 	self._on_killshot_t = t + (tweak_data.upgrades.on_killshot_cooldown or 0)
+
+	if _G.IS_VR then
+		local steelsight_multiplier = equipped_unit:base():enter_steelsight_speed_multiplier()
+		local stamina_percentage = (steelsight_multiplier - 1) * tweak_data.vr.steelsight_stamina_regen
+		local stamina_regen = player_unit:movement():_max_stamina() * stamina_percentage
+
+		player_unit:movement():add_stamina(stamina_regen)
+	end
 end
 
 function PlayerManager:chk_wild_kill_counter(killed_unit, variant)
@@ -3694,7 +3702,7 @@ function PlayerManager:switch_equipment()
 
 	local equipment = self:selected_equipment()
 
-	if equipment then
+	if equipment and not _G.IS_VR then
 		add_hud_item(get_as_digested(equipment.amount), equipment.icon)
 	end
 
@@ -3846,6 +3854,14 @@ function PlayerManager:check_selected_equipment_placement_valid(player)
 end
 
 function PlayerManager:selected_equipment_deploy_timer()
+	if _G.IS_VR then
+		local deployable_hand = self:player_unit():hand():get_active_hand("deployable")
+
+		if deployable_hand then
+			return 0
+		end
+	end
+
 	local equipment_data = managers.player:selected_equipment()
 
 	if not equipment_data then
@@ -4493,6 +4509,16 @@ function PlayerManager:drop_carry(zipline_unit)
 	local position = camera_ext:position()
 	local rotation = camera_ext:rotation()
 	local forward = player:camera():forward()
+
+	if _G.IS_VR then
+		local active_hand = player:hand():get_active_hand("bag")
+
+		if active_hand then
+			position = active_hand:position()
+			rotation = active_hand:rotation()
+			forward = rotation:y()
+		end
+	end
 
 	if Network:is_client() then
 		managers.network:session():send_to_host("server_drop_carry", carry_data.carry_id, carry_data.multiplier, dye_initiated, has_dye_pack, dye_value_multiplier, position, rotation, forward, throw_distance_multiplier_upgrade_level, zipline_unit)

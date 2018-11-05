@@ -1165,6 +1165,8 @@ function WorldDefinition:_setup_ladder(unit, data)
 
 	unit:ladder():set_width(data.ladder.width)
 	unit:ladder():set_height(data.ladder.height)
+	unit:ladder():set_pc_disabled(data.ladder.pc_disabled)
+	unit:ladder():set_vr_disabled(data.ladder.vr_disabled)
 end
 
 function WorldDefinition:_setup_zipline(unit, data)

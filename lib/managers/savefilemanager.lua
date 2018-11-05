@@ -13,6 +13,11 @@ if SystemInfo:platform() == Idstring("X360") then
 	SavefileManager.TASK_MIN_DURATION = 3
 end
 
+if _G.IS_VR then
+	SavefileManager.SETTING_SLOT = 12
+end
+
+SavefileManager.VR_BETA_PROGRESS_SLOT = 96
 SavefileManager.IDLE_TASK_TYPE = 1
 SavefileManager.LOAD_TASK_TYPE = 2
 SavefileManager.SAVE_TASK_TYPE = 3
@@ -118,6 +123,10 @@ function SavefileManager:storage_changed()
 
 		if self._backup_data == nil and SystemInfo:platform() == Idstring("WIN32") then
 			self:load_progress("local_hdd")
+		end
+
+		if self._vr_progress_data == nil then
+			self:load_vr_beta_progress()
 		end
 
 		local task_data = {
@@ -461,6 +470,10 @@ function SavefileManager:_save_cache(slot)
 	if is_setting_slot then
 		managers.user:save(cache)
 		managers.music:save_settings(cache)
+
+		if _G.IS_VR then
+			managers.vr:save(cache)
+		end
 	else
 		managers.player:save(cache)
 		managers.experience:save(cache)
@@ -536,6 +549,138 @@ function SavefileManager:_save_done(slot, cache_only, task_data, slot_data, succ
 			managers.system_menu:show(dialog_data)
 		end
 	end
+end
+
+function SavefileManager:clbk_result_load_vr_beta_progress(task_data, result_data)
+	cat_print("savefile_manager", "[SavefileManager:clbk_result_load_vr_beta_progress]")
+
+	if not self:_on_task_completed(task_data) then
+		return
+	end
+
+	if type_name(result_data) == "table" then
+		for slot, slot_data in pairs(result_data) do
+			if slot == SavefileManager.VR_BETA_PROGRESS_SLOT then
+				self._vr_progress_data = false
+
+				if slot_data.status == "OK" then
+					local cache = slot_data.data
+					local version = cache.version or 0
+					local version_name = cache.version_name
+
+					if SystemInfo:distribution() == Idstring("STEAM") and cache.user_id ~= (self._USER_ID_OVERRRIDE or Steam:userid()) then
+						cat_print("savefile_manager", "[SavefileManager:clbk_result_load_backup] User ID missmatch. cache.user_id:", cache.user_id, ". expected user id:", self._USER_ID_OVERRRIDE or Steam:userid())
+					elseif version <= SavefileManager.VERSION then
+						cat_print("savefile_manager", "[SavefileManager:clbk_result_load_backup] vr beta progress loaded")
+
+						self._vr_progress_data = {save_data = slot_data}
+					else
+						Application:error("[SavefileManager:clbk_result_load_backup] vr beta progress is wrong version")
+					end
+				end
+			end
+		end
+	end
+end
+
+function SavefileManager:load_vr_beta_progress(slot, save_system)
+	local task_data = {
+		queued_in_save_manager = true,
+		task_type = self.LOAD_TASK_TYPE,
+		first_slot = slot or SavefileManager.VR_BETA_PROGRESS_SLOT,
+		user_index = managers.user:get_platform_id()
+	}
+
+	if SystemInfo:distribution() == Idstring("STEAM") then
+		task_data.save_system = save_system or "steam_cloud"
+	end
+
+	local load_callback_obj = callback(self, self, "clbk_result_load_vr_beta_progress")
+
+	self:_on_task_queued(task_data)
+	SaveGameManager:load(task_data, load_callback_obj)
+end
+
+function SavefileManager:_save_data_to_slot(target_slot, data, clbk, save_system)
+	local task_data = {
+		queued_in_save_manager = true,
+		date_format = "%c",
+		max_queue_size = 1,
+		first_slot = target_slot,
+		task_type = self.SAVE_TASK_TYPE,
+		user_index = managers.user:get_platform_id(),
+		subtitle = managers.localization:text("savefile_progress", {VERSION = self.LOWEST_COMPATIBLE_VERSION}),
+		details = managers.localization:text("savefile_progress_description"),
+		data = {data}
+	}
+
+	if SystemInfo:distribution() == Idstring("STEAM") then
+		task_data.save_system = save_system or "steam_cloud"
+	end
+
+	local function save_callback_obj(task_data, result_data)
+		if not self:_on_task_completed(task_data) then
+			clbk(false)
+
+			return
+		end
+
+		if type_name(result_data) == "table" then
+			for slot, slot_data in pairs(result_data) do
+				if slot == target_slot and slot_data.status == "OK" then
+					clbk(true)
+
+					return
+				end
+			end
+		end
+
+		clbk(false)
+	end
+
+	self:_on_task_queued(task_data)
+	SaveGameManager:save(task_data, save_callback_obj)
+end
+
+function SavefileManager:clbk_result_load_copy_slot(src_slot, target_slot, task_data, result_data, clbk)
+	if not self:_on_task_completed(task_data) then
+		clbk(false)
+
+		return
+	end
+
+	if type_name(result_data) == "table" then
+		for slot, slot_data in pairs(result_data) do
+			if slot == src_slot and slot_data.status == "OK" then
+				self:_save_data_to_slot(target_slot, slot_data.data, clbk)
+
+				return
+			end
+		end
+	end
+
+	clbk(false)
+end
+
+function SavefileManager:_copy_slot(src_slot, target_slot, clbk, save_system)
+	local task_data = {
+		queued_in_save_manager = true,
+		task_type = self.LOAD_TASK_TYPE,
+		first_slot = src_slot,
+		user_index = managers.user:get_platform_id()
+	}
+
+	if SystemInfo:distribution() == Idstring("STEAM") then
+		task_data.save_system = save_system or "steam_cloud"
+	end
+
+	local function load_callback_obj(td, rd)
+		self:clbk_result_load_copy_slot(src_slot, target_slot, td, rd, clbk or function ()
+		end)
+	end
+
+	self:_on_task_queued(task_data)
+	SaveGameManager:load(task_data, load_callback_obj)
 end
 
 function SavefileManager:_load(slot, cache_only, save_system)
@@ -658,6 +803,20 @@ function SavefileManager:_load_done(slot, cache_only, wrong_user, wrong_version)
 
 		if cache and managers.experience:chk_ask_use_backup(cache, self._backup_data.save_data.data) then
 			self:_ask_load_backup("low_progress", true, {
+				cache_only,
+				wrong_user
+			})
+
+			return
+		end
+	end
+
+	if self._vr_progress_data and is_progress_slot then
+		local meta_data = self:_meta_data(slot)
+		local cache = meta_data.cache
+
+		if cache and managers.experience:chk_ask_use_backup(cache, self._vr_progress_data.save_data.data) then
+			self:_ask_load_vr_progress(true, {
 				cache_only,
 				wrong_user
 			})
@@ -824,6 +983,11 @@ function SavefileManager:_load_cache(slot)
 		if is_setting_slot then
 			managers.user:load(cache, version)
 			managers.music:load_settings(cache, version)
+
+			if _G.IS_VR then
+				managers.vr:load(cache, version)
+			end
+
 			self:_set_setting_changed(false)
 		else
 			managers.blackmarket:load(cache, version)
@@ -1030,6 +1194,45 @@ function SavefileManager:fetch_savegame_hdd_space_required()
 	return self._savegame_hdd_space_required
 end
 
+function SavefileManager:_ask_load_vr_progress(has_progress, load_params)
+	local dialog_data = {title = managers.localization:text("dialog_error_title")}
+	local yes_button = {text = managers.localization:text("dialog_yes")}
+	local no_button = {text = managers.localization:text("dialog_no")}
+	dialog_data.button_list = {
+		yes_button,
+		no_button
+	}
+
+	function yes_button.callback_func()
+		self._save_slots_to_load[self.PROGRESS_SLOT] = nil
+
+		self:_set_cache(self.PROGRESS_SLOT, self._vr_progress_data.save_data.data)
+
+		self._vr_progress_data = nil
+
+		self:_load_cache(self.PROGRESS_SLOT)
+	end
+
+	if has_progress then
+
+		function no_button.callback_func()
+			self._vr_progress_data = nil
+
+			self:_load_done(self.PROGRESS_SLOT, unpack(load_params))
+		end
+	else
+
+		function no_button.callback_func()
+			self._vr_progress_data = nil
+			self._save_slots_to_load[self.PROGRESS_SLOT] = nil
+		end
+	end
+
+	dialog_data.text = managers.localization:text("dialog_ask_load_vr_beta_progress")
+
+	managers.system_menu:show(dialog_data)
+end
+
 function SavefileManager:_ask_load_backup(reason, dialog_at_init, load_params)
 	dialog_at_init = false
 	local dialog_data = {title = managers.localization:text("dialog_error_title")}
@@ -1221,6 +1424,12 @@ function SavefileManager:clbk_result_iterate_savegame_slots(task_data, result_da
 		self._save_slots_to_load[self.PROGRESS_SLOT] = true
 
 		self:_ask_load_backup("no_progress", true)
+	end
+
+	if not found_progress_slot and self._vr_progress_data then
+		self._save_slots_to_load[self.PROGRESS_SLOT] = true
+
+		self:_ask_load_vr_progress(false)
 	end
 end
 

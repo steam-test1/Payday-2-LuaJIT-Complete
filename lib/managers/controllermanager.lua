@@ -208,5 +208,28 @@ function ControllerManager:get_mouse_controller()
 	return Input:mouse()
 end
 
+function ControllerManager:get_vr_wrapper_index()
+	for index = 1, self._wrapper_count, 1 do
+		local wrapper_class = self._wrapper_class_map and self._wrapper_class_map[index]
+
+		if wrapper_class and wrapper_class.TYPE == "vr" then
+			return index
+		end
+	end
+end
+
+function ControllerManager:get_vr_controller()
+	for index = 1, self._wrapper_count, 1 do
+		local wrapper_class = self._wrapper_class_map and self._wrapper_class_map[index]
+
+		if wrapper_class and wrapper_class.TYPE == "vr" then
+			local controller_index = self._wrapper_to_controller_list[index][1]
+			local controller = Input:controller(controller_index)
+
+			return controller
+		end
+	end
+end
+
 CoreClass.override_class(CoreControllerManager.ControllerManager, ControllerManager)
 

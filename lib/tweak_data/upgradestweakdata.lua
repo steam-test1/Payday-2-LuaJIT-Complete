@@ -61,16 +61,38 @@ function UpgradesTweakData:_init_pd2_values()
 			0.85,
 			0.8,
 			0.7
-		},
-		skill_ammo_mul = {
-			1,
-			1.02,
-			1.04,
-			1.06,
-			1.8,
-			1.1,
-			1.12
 		}
+	}
+
+	if _G.IS_VR then
+		self.values.player.body_armor.armor = {
+			0,
+			3,
+			4,
+			5,
+			7,
+			9,
+			15
+		}
+		self.values.player.body_armor.dodge = {
+			0.05,
+			-0.05,
+			-0.1,
+			-0.15,
+			-0.2,
+			-0.25,
+			-0.55
+		}
+	end
+
+	self.values.player.body_armor.skill_ammo_mul = {
+		1,
+		1.02,
+		1.04,
+		1.06,
+		1.8,
+		1.1,
+		1.12
 	}
 	self.values.player.ballistic_vest_concealment = {4}
 	self.values.player.body_armor.skill_max_health_store = {
@@ -314,6 +336,12 @@ function UpgradesTweakData:_init_pd2_values()
 	}
 	self.values.player.non_special_melee_multiplier = {2}
 	self.values.player.melee_damage_multiplier = {2}
+
+	if _G.IS_VR then
+		self.values.player.non_special_melee_multiplier = {2}
+		self.values.player.melee_damage_multiplier = {2}
+	end
+
 	self.values.player.primary_weapon_when_downed = {true}
 	self.values.player.armor_regen_timer_multiplier = {0.85}
 	self.values.temporary.dmg_multiplier_outnumbered = {{
@@ -1300,6 +1328,150 @@ function UpgradesTweakData:_init_pd2_values()
 		}
 	}
 	self.values.player.damage_control_healing = {50}
+	self.values.player.warp_health = {
+		{
+			0,
+			0.3,
+			5,
+			5
+		},
+		{
+			0,
+			0.6,
+			5,
+			5
+		},
+		{
+			0,
+			0.9,
+			5,
+			5
+		},
+		{
+			0,
+			1.2,
+			5,
+			5
+		},
+		{
+			0,
+			1.5,
+			5,
+			5
+		}
+	}
+	self.values.player.warp_armor = {
+		{
+			0.2,
+			0.6,
+			3,
+			3
+		},
+		{
+			0.4,
+			1,
+			3,
+			3
+		},
+		{
+			0.6,
+			1.4,
+			3,
+			3
+		},
+		{
+			0.8,
+			1.8,
+			3,
+			3
+		},
+		{
+			1,
+			2.2,
+			3,
+			3
+		}
+	}
+	self.values.player.warp_dodge = {
+		{
+			0.01,
+			0.06,
+			3
+		},
+		{
+			0.01,
+			0.07,
+			3
+		},
+		{
+			0.01,
+			0.08,
+			3
+		},
+		{
+			0.01,
+			0.09,
+			3
+		},
+		{
+			0.01,
+			0.1,
+			3
+		}
+	}
+	self.values.player.warp_armor_lite = {
+		{
+			0.1,
+			0.3,
+			3,
+			5
+		},
+		{
+			0.2,
+			0.5,
+			3,
+			5
+		},
+		{
+			0.3,
+			0.7,
+			3,
+			5
+		},
+		{
+			0.4,
+			0.9,
+			3,
+			5
+		},
+		{
+			0.5,
+			1.1,
+			3,
+			5
+		}
+	}
+	self.values.player.stamina_ammo_refill_single = {{
+		25,
+		0.01
+	}}
+	self.values.player.stamina_ammo_refill_auto = {{
+		40,
+		0.05
+	}}
+	self.values.player.post_warp_suppression = {{
+		800,
+		1,
+		3
+	}}
+	self.values.player.post_warp_reload_speed = {{
+		0.2,
+		0.5
+	}}
+	self.values.player.run_dodge_chance_vr = {{
+		1,
+		5
+	}}
 	self.values.snp.graze_damage = {
 		{
 			radius = 100,
@@ -2330,6 +2502,14 @@ function UpgradesTweakData:_init_pd2_values()
 		hoxton_tier5 = {{}},
 		hoxton_tier6 = {{}}
 	}
+
+	if _G.IS_VR then
+		editable_skill_descs.steroids = {
+			{"100%"},
+			{"100%"}
+		}
+	end
+
 	self.skill_descs = {}
 
 	for skill_id, skill_desc in pairs(editable_skill_descs) do
@@ -7594,6 +7774,206 @@ function UpgradesTweakData:_player_definitions()
 			category = "player"
 		}
 	}
+	self.definitions.player_warp_health_1 = {
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "warp_health",
+			category = "player"
+		}
+	}
+	self.definitions.player_warp_health_2 = {
+		category = "feature",
+		upgrade = {
+			value = 2,
+			upgrade = "warp_health",
+			category = "player"
+		}
+	}
+	self.definitions.player_warp_health_3 = {
+		category = "feature",
+		upgrade = {
+			value = 3,
+			upgrade = "warp_health",
+			category = "player"
+		}
+	}
+	self.definitions.player_warp_health_4 = {
+		category = "feature",
+		upgrade = {
+			value = 4,
+			upgrade = "warp_health",
+			category = "player"
+		}
+	}
+	self.definitions.player_warp_health_5 = {
+		category = "feature",
+		upgrade = {
+			value = 5,
+			upgrade = "warp_health",
+			category = "player"
+		}
+	}
+	self.definitions.player_warp_armor_1 = {
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "warp_armor",
+			category = "player"
+		}
+	}
+	self.definitions.player_warp_armor_2 = {
+		category = "feature",
+		upgrade = {
+			value = 2,
+			upgrade = "warp_armor",
+			category = "player"
+		}
+	}
+	self.definitions.player_warp_armor_3 = {
+		category = "feature",
+		upgrade = {
+			value = 3,
+			upgrade = "warp_armor",
+			category = "player"
+		}
+	}
+	self.definitions.player_warp_armor_4 = {
+		category = "feature",
+		upgrade = {
+			value = 4,
+			upgrade = "warp_armor",
+			category = "player"
+		}
+	}
+	self.definitions.player_warp_armor_5 = {
+		category = "feature",
+		upgrade = {
+			value = 5,
+			upgrade = "warp_armor",
+			category = "player"
+		}
+	}
+	self.definitions.player_warp_dodge_1 = {
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "warp_dodge",
+			category = "player"
+		}
+	}
+	self.definitions.player_warp_dodge_2 = {
+		category = "feature",
+		upgrade = {
+			value = 2,
+			upgrade = "warp_dodge",
+			category = "player"
+		}
+	}
+	self.definitions.player_warp_dodge_3 = {
+		category = "feature",
+		upgrade = {
+			value = 3,
+			upgrade = "warp_dodge",
+			category = "player"
+		}
+	}
+	self.definitions.player_warp_dodge_4 = {
+		category = "feature",
+		upgrade = {
+			value = 4,
+			upgrade = "warp_dodge",
+			category = "player"
+		}
+	}
+	self.definitions.player_warp_dodge_5 = {
+		category = "feature",
+		upgrade = {
+			value = 5,
+			upgrade = "warp_dodge",
+			category = "player"
+		}
+	}
+	self.definitions.player_warp_armor_lite_1 = {
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "warp_armor_lite",
+			category = "player"
+		}
+	}
+	self.definitions.player_warp_armor_lite_2 = {
+		category = "feature",
+		upgrade = {
+			value = 2,
+			upgrade = "warp_armor_lite",
+			category = "player"
+		}
+	}
+	self.definitions.player_warp_armor_lite_3 = {
+		category = "feature",
+		upgrade = {
+			value = 3,
+			upgrade = "warp_armor_lite",
+			category = "player"
+		}
+	}
+	self.definitions.player_warp_armor_lite_4 = {
+		category = "feature",
+		upgrade = {
+			value = 4,
+			upgrade = "warp_armor_lite",
+			category = "player"
+		}
+	}
+	self.definitions.player_warp_armor_lite_5 = {
+		category = "feature",
+		upgrade = {
+			value = 5,
+			upgrade = "warp_armor_lite",
+			category = "player"
+		}
+	}
+	self.definitions.player_stamina_ammo_refill_single = {
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "stamina_ammo_refill_single",
+			category = "player"
+		}
+	}
+	self.definitions.player_stamina_ammo_refill_auto = {
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "stamina_ammo_refill_auto",
+			category = "player"
+		}
+	}
+	self.definitions.player_post_warp_suppression = {
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "post_warp_suppression",
+			category = "player"
+		}
+	}
+	self.definitions.player_post_warp_reload_speed = {
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "post_warp_reload_speed",
+			category = "player"
+		}
+	}
+	self.definitions.player_run_dodge_chance_vr = {
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "run_dodge_chance_vr",
+			category = "player"
+		}
+	}
 	self.definitions.toolset = {
 		description_text_id = "toolset",
 		category = "equipment",
@@ -9395,15 +9775,6 @@ function UpgradesTweakData:_m134_weapon_definitions()
 		dlc = "overkill_pack",
 		factory_id = "wpn_fps_lmg_m134",
 		weapon_id = "m134",
-		category = "weapon"
-	}
-end
-
-function UpgradesTweakData:_shuno_weapon_definitions()
-	self.definitions.shuno = {
-		dlc = "dmg",
-		factory_id = "wpn_fps_lmg_shuno",
-		weapon_id = "shuno",
 		category = "weapon"
 	}
 end

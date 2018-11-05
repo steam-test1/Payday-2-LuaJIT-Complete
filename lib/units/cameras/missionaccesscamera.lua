@@ -12,6 +12,14 @@ function MissionAccessCamera:init(unit)
 
 	local scale_x = 1
 	local scale_y = 1
+
+	if _G.IS_VR then
+		local rt_resolution = managers.menu:player():render_target_resolution()
+		local resolution = VRManager:target_resolution()
+		scale_x = rt_resolution.x / resolution.x
+		scale_y = rt_resolution.y / resolution.y
+	end
+
 	self._viewport = managers.viewport:new_vp(0, 0, scale_x, scale_y, "MissionAccessCamera", CoreManagerBase.PRIO_WORLDCAMERA)
 	self._director = self._viewport:director()
 	self._shaker = self._director:shaker()
@@ -21,6 +29,13 @@ function MissionAccessCamera:init(unit)
 	self._director:set_camera(self._camera_controller)
 	self._director:position_as(self._camera)
 	self._camera_controller:set_both(self._unit)
+
+	if _G.IS_VR then
+		self._camera:set_aspect_ratio(1.7777777777777777)
+		self._camera:set_stereo(false)
+		self._viewport:set_enable_adaptive_quality(false)
+		managers.viewport:move_to_front(self._viewport)
+	end
 end
 
 function MissionAccessCamera:_setup_sound_listener()

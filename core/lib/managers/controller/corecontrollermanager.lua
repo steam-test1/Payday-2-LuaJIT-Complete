@@ -7,6 +7,7 @@ core:import("CoreControllerWrapperPS3")
 core:import("CoreControllerWrapperPS4")
 core:import("CoreControllerWrapperXB1")
 core:import("CoreControllerWrapperSteam")
+core:import("CoreControllerWrapperVR")
 core:import("CoreControllerWrapperDebug")
 core:import("CoreManagerBase")
 core:import("CoreEvent")
@@ -46,6 +47,10 @@ function ControllerManager:init(path, default_settings_path)
 	if SystemInfo:platform() == Idstring("WIN32") then
 		self._supported_wrapper_types[CoreControllerWrapperPC.ControllerWrapperPC.TYPE] = CoreControllerWrapperPC.ControllerWrapperPC
 		self._supported_wrapper_types[CoreControllerWrapperXbox360.ControllerWrapperXbox360.TYPE] = CoreControllerWrapperXbox360.ControllerWrapperXbox360
+
+		if _G.IS_VR then
+			self._supported_wrapper_types[CoreControllerWrapperVR.ControllerWrapperVR.TYPE] = CoreControllerWrapperVR.ControllerWrapperVR
+		end
 	elseif SystemInfo:platform() == Idstring("PS3") then
 		self._supported_wrapper_types[CoreControllerWrapperPS3.ControllerWrapperPS3.TYPE] = CoreControllerWrapperPS3.ControllerWrapperPS3
 	elseif SystemInfo:platform() == Idstring("PS4") then
@@ -324,6 +329,10 @@ function ControllerManager:get_preferred_default_wrapper_index()
 		if Input:controller(wrapper_index):connected() and wrapper_class.TYPE ~= "pc" then
 			return wrapper_index
 		end
+	end
+
+	if _G.IS_VR then
+		return 2
 	end
 
 	return 1

@@ -132,7 +132,9 @@ function _editable_ladder_table(unit)
 	if unit:ladder() then
 		t = {
 			width = unit:ladder():width(),
-			height = unit:ladder():height()
+			height = unit:ladder():height(),
+			pc_disabled = unit:ladder():pc_disabled(),
+			vr_disabled = unit:ladder():vr_disabled()
 		}
 	end
 

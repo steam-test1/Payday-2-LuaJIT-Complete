@@ -107,9 +107,28 @@ function HUDManager:_setup_workspaces()
 	self._fullscreen_workspace = self._workspaces.overlay.fullscreen_workspace
 	self._saferect = self._workspaces.overlay.saferect
 	self._workspace = self._workspaces.overlay.workspace
+
+	if _G.IS_VR then
+		self._workspaces.menu = {
+			mid_saferect = managers.gui_data:create_saferect_workspace(nil, MenuRoom:gui()),
+			fullscreen_workspace = managers.gui_data:create_fullscreen_16_9_workspace(nil, MenuRoom:gui()),
+			saferect = managers.gui_data:create_saferect_workspace(nil, MenuRoom:gui()),
+			workspace = managers.gui_data:create_fullscreen_workspace(nil, MenuRoom:gui())
+		}
+
+		managers.gui_data:layout_corner_saferect_1280_workspace(self._workspaces.menu.saferect)
+	end
 end
 
 function HUDManager:workspace(name, group)
+	if _G.IS_VR and group then
+		local t = self._workspaces[group]
+
+		if t then
+			return t[name]
+		end
+	end
+
 	return self._workspaces.overlay[name]
 end
 
@@ -179,6 +198,10 @@ function HUDManager:init_finalize()
 	if not self:exists(IngameAccessCamera.GUI_SAFERECT) then
 		local group = nil
 
+		if _G.IS_VR then
+			group = "menu"
+		end
+
 		managers.hud:load_hud(IngameAccessCamera.GUI_FULLSCREEN, false, false, false, {}, nil, nil, nil, group)
 		managers.hud:load_hud(IngameAccessCamera.GUI_SAFERECT, false, false, true, {}, nil, nil, nil, group)
 	end
@@ -200,6 +223,10 @@ function HUDManager:set_safe_rect(rect)
 end
 
 function HUDManager:load_hud_menu(name, visible, using_collision, using_saferect, mutex_list, bounding_box_list, using_mid_saferect, using_16_9_fullscreen)
+	if _G.IS_VR then
+		return self:load_hud(name, visible, using_collision, using_saferect, mutex_list, bounding_box_list, using_mid_saferect, using_16_9_fullscreen, "menu")
+	end
+
 	return self:load_hud(name, visible, using_collision, using_saferect, mutex_list, bounding_box_list, using_mid_saferect, using_16_9_fullscreen)
 end
 
@@ -684,6 +711,13 @@ function HUDManager:resolution_changed()
 	managers.gui_data:layout_fullscreen_workspace(self._workspace)
 	managers.gui_data:layout_workspace(self._mid_saferect)
 	managers.gui_data:layout_fullscreen_16_9_workspace(self._fullscreen_workspace)
+
+	if _G.IS_VR then
+		managers.gui_data:layout_corner_saferect_1280_workspace(self._workspace.menu.saferect)
+		managers.gui_data:layout_fullscreen_workspace(self._workspace.menu.workspace)
+		managers.gui_data:layout_workspace(self._workspace.menu.mid_saferect)
+		managers.gui_data:layout_fullscreen_16_9_workspace(self._workspace.menu.fullscreen_workspace)
+	end
 
 	for name, gui in pairs(self._component_map) do
 		self:layout(gui.idstring)
@@ -1826,6 +1860,10 @@ function HUDManager:pd_start_progress(current, total, msg, icon_id)
 
 			self._pd2_hud_interaction:set_interaction_bar_width(t, total)
 		end
+	end
+
+	if _G.IS_VR then
+		return
 	end
 
 	self._pd2_hud_interaction._interact_circle._circle:stop()

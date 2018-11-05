@@ -31,6 +31,7 @@ function _ScriptViewport:init(x, y, width, height, vpm, name)
 	}
 	self._env_handler = CoreEnvironmentHandler.EnvironmentHandler:new(vpm:_get_environment_manager(), self == vpm:active_vp())
 	self._ref_fov_stack = {}
+	self._enable_adaptive_quality = true
 	self._init_trace = debug.traceback()
 end
 
@@ -263,6 +264,14 @@ end
 
 function _ScriptViewport:set_environment_editor_callback(env_editor_callback)
 	self._env_editor_callback = env_editor_callback
+end
+
+function _ScriptViewport:set_enable_adaptive_quality(enable)
+	self._enable_adaptive_quality = enable
+end
+
+function _ScriptViewport:use_adaptive_quality()
+	return self._enable_adaptive_quality
 end
 
 function _ScriptViewport:_update(nr, t, dt)

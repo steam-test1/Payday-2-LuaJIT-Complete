@@ -161,6 +161,10 @@ function CivilianDamage:damage_melee(attack_data)
 		return
 	end
 
+	if _G.IS_VR and attack_data.damage == 0 then
+		return
+	end
+
 	attack_data.damage = 10
 
 	return CopDamage.damage_melee(self, attack_data)

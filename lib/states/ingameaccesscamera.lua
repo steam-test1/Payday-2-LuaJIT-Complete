@@ -3,7 +3,7 @@ require("lib/states/GameState")
 IngameAccessCamera = IngameAccessCamera or class(IngamePlayerBaseState)
 IngameAccessCamera.GUI_SAFERECT = Idstring("guis/access_camera_saferect")
 IngameAccessCamera.GUI_FULLSCREEN = Idstring("guis/access_camera_fullrect")
-local old_buttons = true
+local old_buttons = not _G.IS_VR
 local tmp_vec1 = Vector3()
 local tmp_rot1 = Rotation()
 
@@ -14,6 +14,13 @@ end
 function IngameAccessCamera:_setup_controller()
 	self._controller = managers.controller:create_controller("ingame_access_camera", managers.controller:get_default_wrapper_index(), false)
 	self._leave_cb = callback(self, self, "cb_leave")
+
+	if _G.IS_VR then
+		self._leave_cb = callback(self, self, "cb_leave_vr")
+
+		managers.menu:player():attach_controller(self._controller)
+	end
+
 	self._prev_camera_cb = callback(self, self, "_prev_camera")
 	self._next_camera_cb = callback(self, self, "_next_camera")
 
@@ -26,6 +33,10 @@ end
 
 function IngameAccessCamera:_clear_controller()
 	if self._controller then
+		if _G.IS_VR then
+			managers.menu:player():dettach_controller(self._controller)
+		end
+
 		self._controller:remove_trigger(old_buttons and "jump" or "suvcam_exit", self._leave_cb)
 		self._controller:remove_trigger(old_buttons and "primary_attack" or "suvcam_prev", self._prev_camera_cb)
 		self._controller:remove_trigger(old_buttons and "secondary_attack" or "suvcam_next", self._next_camera_cb)
@@ -45,6 +56,16 @@ function IngameAccessCamera:set_controller_enabled(enabled)
 end
 
 function IngameAccessCamera:cb_leave()
+	game_state_machine:change_state_by_name(self._old_state)
+end
+
+function IngameAccessCamera:cb_leave_vr()
+	local active_menu = managers.menu:active_menu()
+
+	if active_menu and active_menu.name ~= "ingame_access_camera_menu" then
+		return
+	end
+
 	game_state_machine:change_state_by_name(self._old_state)
 end
 
@@ -144,6 +165,16 @@ function IngameAccessCamera:_show_camera()
 end
 
 function IngameAccessCamera:update(t, dt)
+	if _G.IS_VR then
+		local active_menu = managers.menu:active_menu()
+
+		if active_menu and active_menu.name == "ingame_access_camera_menu" then
+			self._controller:set_active(true)
+		else
+			self._controller:set_active(false)
+		end
+	end
+
 	if self._no_feeds then
 		return
 	end
@@ -167,6 +198,19 @@ function IngameAccessCamera:update(t, dt)
 	end
 
 	local look_d = self._controller:get_input_axis("look")
+
+	if _G.IS_VR then
+		look_d = self._controller:get_input_axis("touchpad_primary")
+
+		if math.abs(look_d.x) < 0.01 then
+			self._target_yaw = self._yaw
+		end
+
+		if math.abs(look_d.y) < 0.01 then
+			self._target_pitch = self._pitch
+		end
+	end
+
 	local zoomed_value = self._cam_unit:camera():zoomed_value()
 	self._target_yaw = self._target_yaw - look_d.x * zoomed_value
 
@@ -186,6 +230,10 @@ function IngameAccessCamera:update(t, dt)
 	self._cam_unit:camera():set_offset_rotation(self._yaw, self._pitch, roll)
 
 	local move_d = self._controller:get_input_axis("move")
+
+	if _G.IS_VR then
+		move_d = self._controller:get_input_axis("touchpad_secondary")
+	end
 
 	self._cam_unit:camera():modify_fov(-move_d.y * dt * 12)
 
@@ -277,6 +325,10 @@ function IngameAccessCamera:at_enter(old_state, ...)
 	end
 
 	self:_setup_controller()
+
+	if _G.IS_VR then
+		managers.menu:open_menu("ingame_access_camera_menu")
+	end
 end
 
 function IngameAccessCamera:_any_enabled_cameras()
@@ -326,6 +378,10 @@ function IngameAccessCamera:at_exit()
 		player:base():set_enabled(true)
 		player:base():set_visible(true)
 		player:character_damage():remove_listener("IngameAccessCamera")
+	end
+
+	if _G.IS_VR then
+		managers.menu:close_menu("ingame_access_camera_menu")
 	end
 end
 

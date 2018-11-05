@@ -33,6 +33,11 @@ require("lib/managers/ExplosionManager")
 require("lib/managers/DOTManager")
 require("lib/managers/WaitManager")
 require("lib/units/ArmorSkinExt")
+
+if _G.IS_VR then
+	require("lib/managers/HUDManagerVR")
+end
+
 core:import("SequenceManager")
 
 if Application:editor() then
@@ -53,26 +58,33 @@ require("lib/units/beings/player/PlayerEquipment")
 require("lib/units/beings/player/PlayerMovement")
 require("lib/player_actions/PlayerAction")
 
-PlayerHand = PlayerHand or class()
+if _G.IS_VR then
+	require("lib/units/beings/player/PlayerHand")
+	require("lib/units/beings/player/PlayerWarp")
+	require("lib/units/beings/player/HandMelee")
+	require("lib/units/beings/player/HandExt")
+else
+	PlayerHand = PlayerHand or class()
 
-function PlayerHand:init(unit)
-end
+	function PlayerHand:init(unit)
+	end
 
-function PlayerHand:destroy()
-end
-PlayerWarp = PlayerWarp or class()
+	function PlayerHand:destroy()
+	end
+	PlayerWarp = PlayerWarp or class()
 
-function PlayerWarp:init(unit)
-end
+	function PlayerWarp:init(unit)
+	end
 
-function PlayerWarp:destroy()
-end
-HandMelee = HandMelee or class()
+	function PlayerWarp:destroy()
+	end
+	HandMelee = HandMelee or class()
 
-function HandMelee:init(unit)
-end
+	function HandMelee:init(unit)
+	end
 
-function HandMelee:destroy()
+	function HandMelee:destroy()
+	end
 end
 
 require("lib/network/base/extensions/NetworkBaseExtension")

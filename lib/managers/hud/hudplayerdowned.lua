@@ -93,3 +93,7 @@ function HUDPlayerDowned:hide_arrest_finished()
 	self._hud.arrest_finished_text:set_visible(false)
 end
 
+if _G.IS_VR then
+	require("lib/managers/hud/vr/HUDPlayerDownedVR")
+end
+

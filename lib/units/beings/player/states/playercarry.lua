@@ -261,3 +261,7 @@ function PlayerCarry:_get_input(...)
 	return PlayerCarry.super._get_input(self, ...)
 end
 
+if _G.IS_VR then
+	require("lib/units/beings/player/states/vr/PlayerCarryVR")
+end
+

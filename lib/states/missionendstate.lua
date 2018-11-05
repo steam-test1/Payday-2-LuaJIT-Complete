@@ -91,6 +91,10 @@ function MissionEndState:at_enter(old_state, params)
 		player:camera():remove_sound_listener()
 		player:camera():play_redirect(Idstring("idle"))
 		player:character_damage():disable_berserker()
+
+		if _G.IS_VR then
+			player:character_damage():stop_vr_heartbeat()
+		end
 	end
 
 	managers.job:stop_sounds()

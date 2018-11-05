@@ -2395,7 +2395,9 @@ function MenuSceneManager:set_scene_template(template, data, custom_name, skip_t
 			end
 		end
 
-		self:_select_character_pose()
+		if not _G.IS_VR then
+			self:_select_character_pose()
+		end
 
 		if alive(self._menu_logo) then
 			self._menu_logo:set_visible(not template_data.hide_menu_logo)
@@ -3543,15 +3545,17 @@ function MenuSceneManager:start_open_economy_safe()
 	self._safe_scene_destroyed = false
 
 	if self:_check_safe_data_loaded() then
-		self._safe_shake = self._shaker:play("cash_opening", 0)
+		if not _G.IS_VR then
+			self._safe_shake = self._shaker:play("cash_opening", 0)
 
-		self._shaker:set_parameter(self._safe_shake, "amplitude", 1)
+			self._shaker:set_parameter(self._safe_shake, "amplitude", 1)
 
-		self._safe_shake_transition = {
-			lerp = 0,
-			speed = 0.05
-		}
-		self._safe_shake_transition.target_speed = self._safe_shake_transition.speed
+			self._safe_shake_transition = {
+				lerp = 0,
+				speed = 0.05
+			}
+			self._safe_shake_transition.target_speed = self._safe_shake_transition.speed
+		end
 
 		self:_create_economy_safe_scene()
 
@@ -3922,5 +3926,9 @@ function MenuSceneManager:destroy()
 	if self._vp then
 		self._vp:destroy()
 	end
+end
+
+if _G.IS_VR then
+	require("lib/managers/MenuSceneManagerVR")
 end
 

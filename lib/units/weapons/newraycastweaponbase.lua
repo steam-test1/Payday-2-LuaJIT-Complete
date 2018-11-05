@@ -16,6 +16,7 @@ local ids_auto = Idstring("auto")
 NewRaycastWeaponBase = NewRaycastWeaponBase or class(RaycastWeaponBase)
 
 require("lib/units/weapons/CosmeticsWeaponBase")
+require("lib/units/weapons/ScopeBase")
 
 function NewRaycastWeaponBase:init(unit)
 	NewRaycastWeaponBase.super.init(self, unit)
@@ -183,6 +184,7 @@ function NewRaycastWeaponBase:clbk_assembly_complete(clbk, parts, blueprint)
 	end)
 	self:apply_texture_switches()
 	self:apply_material_parameters()
+	self:configure_scope()
 	self:check_npc()
 	self:_set_parts_enabled(self._enabled)
 
@@ -1312,6 +1314,34 @@ function NewRaycastWeaponBase:set_gadget_color(color)
 		end
 	end
 end
+local tmp_pos_vec = Vector3()
+
+function NewRaycastWeaponBase:set_gadget_position(pos)
+	if not self._enabled then
+		return
+	end
+
+	local active_gadget = self:get_active_gadget()
+
+	if active_gadget and active_gadget.set_position then
+		mvec3_set(tmp_pos_vec, active_gadget._unit:position())
+		mvec3_sub(tmp_pos_vec, self._unit:position())
+		mvec3_add(tmp_pos_vec, pos)
+		active_gadget:set_position(tmp_pos_vec)
+	end
+end
+
+function NewRaycastWeaponBase:set_gadget_rotation(rot)
+	if not self._enabled then
+		return
+	end
+
+	local active_gadget = self:get_active_gadget()
+
+	if active_gadget and active_gadget.set_rotation then
+		active_gadget:set_rotation(rot)
+	end
+end
 
 function NewRaycastWeaponBase:is_gadget_of_type_on(gadget_type)
 	local gadget = nil
@@ -1682,6 +1712,10 @@ function NewRaycastWeaponBase:reload_speed_multiplier()
 		if morale_boost_bonus then
 			multiplier = multiplier + 1 - morale_boost_bonus.reload_speed_bonus
 		end
+
+		if self._setup.user_unit:movement():next_reload_speed_multiplier() then
+			multiplier = multiplier + 1 - self._setup.user_unit:movement():next_reload_speed_multiplier()
+		end
 	end
 
 	if managers.player:has_activate_temporary_upgrade("temporary", "reload_weapon_faster") then
@@ -2006,5 +2040,9 @@ function NewRaycastWeaponBase:set_magazine_empty(is_empty)
 			self:set_objects_visible(part.unit, magazine_empty_objects, not is_empty)
 		end
 	end
+end
+
+if _G.IS_VR then
+	require("lib/units/weapons/vr/NewRaycastWeaponBaseVR")
 end
 

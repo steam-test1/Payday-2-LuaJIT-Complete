@@ -24,6 +24,11 @@ function Renderer:init(logic, parameters)
 	self._base_layer = parameters.layer or 200
 	self.ws = managers.gui_data:create_saferect_workspace()
 	self._fullscreen_ws = managers.gui_data:create_fullscreen_workspace()
+
+	if _G.IS_VR then
+		self._fullscreen_ws:set_pinned_screen(true)
+	end
+
 	self._fullscreen_panel = self._fullscreen_ws:panel():panel({
 		valign = "scale",
 		halign = "scale",

@@ -328,3 +328,7 @@ function HUDSuspicion:discovered()
 	self._discovered = true
 end
 
+if _G.IS_VR then
+	require("lib/managers/hud/vr/HUDSuspicionVR")
+end
+

@@ -66,6 +66,10 @@ function StateMachineTransitionQueue:do_state_change()
 			trans_func(old_state, new_state, params)
 		else
 			cat_print("state_machine", "[StateMachine] Condition failed, blocking state change '" .. tostring(old_state:name()) .. "' 
+
+			self._queued_transitions = nil
+
+			return
 		end
 
 		i = i + 1

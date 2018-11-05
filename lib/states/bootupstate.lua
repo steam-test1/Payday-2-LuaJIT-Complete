@@ -98,7 +98,14 @@ function BootupState:setup()
 	local is_win32 = SystemInfo:platform() == Idstring("WIN32")
 	local is_x360 = SystemInfo:platform() == Idstring("X360")
 	local show_esrb = false
-	self._full_workspace = gui:create_screen_workspace()
+
+	if _G.IS_VR then
+		self._full_workspace = managers.gui_data:create_fullscreen_workspace()
+		res = Vector3(1280, 720, 0)
+	else
+		self._full_workspace = gui:create_screen_workspace()
+	end
+
 	self._workspace = managers.gui_data:create_saferect_workspace()
 	self._back_drop_gui = MenuBackdropGUI:new()
 
@@ -225,7 +232,16 @@ function BootupState:at_enter()
 	self._clbk_game_has_music_control_callback = callback(self, self, "clbk_game_has_music_control")
 
 	managers.platform:add_event_callback("media_player_control", self._clbk_game_has_music_control_callback)
-	self:play_next()
+
+	if _G.IS_VR then
+		managers.menu:_enter_menu_room()
+	end
+
+	self._wait_for_textures = _G.IS_VR
+
+	if not self._wait_for_textures then
+		self:play_next()
+	end
 
 	if Global.exe_argument_level then
 		self:gsm():change_state_by_name("menu_titlescreen")
@@ -239,6 +255,18 @@ function BootupState:clbk_game_has_music_control(status)
 end
 
 function BootupState:update(t, dt)
+	if self._wait_for_textures then
+		if TextureCache:check_textures_loaded() then
+			self._wait_for_textures = false
+
+			managers.vr:stop_loading()
+			managers.overlay_effect:play_effect(tweak_data.overlay_effects.level_fade_in)
+			setup:set_main_thread_loading_screen_visible(false)
+		end
+
+		return
+	end
+
 	self:check_confirm_pressed()
 
 	if not self:is_playing() or (self._play_data.can_skip or Global.override_bootup_can_skip) and self:is_skipped() then
@@ -375,6 +403,11 @@ function BootupState:play_next(is_skipped)
 		end
 
 		local res = RenderSettings.resolution
+
+		if _G.IS_VR then
+			res = Vector3(1280, 720, 0)
+		end
+
 		local width, height = nil
 		local padding = self._play_data.padding or 0
 
@@ -459,7 +492,11 @@ function BootupState:at_exit()
 	end
 
 	if alive(self._full_workspace) then
-		Overlay:gui():destroy_workspace(self._full_workspace)
+		if _G.IS_VR then
+			managers.gui_data:destroy_workspace(self._full_workspace)
+		else
+			Overlay:gui():destroy_workspace(self._full_workspace)
+		end
 
 		self._full_workspace = nil
 	end

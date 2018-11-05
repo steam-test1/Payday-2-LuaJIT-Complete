@@ -22,6 +22,7 @@ require("lib/units/weapons/WeaponUnderbarrelLauncher")
 require("lib/units/menu/MenuArmourBase")
 require("lib/units/ArmorSkinExt")
 require("lib/managers/EnvironmentEffectsManager")
+require("lib/units/MenuDummyExtensions")
 require("lib/wip")
 core:import("SequenceManager")
 
@@ -41,6 +42,14 @@ function MenuSetup:load_packages()
 
 	if not PackageManager:loaded("packages/load_default") then
 		PackageManager:load("packages/load_default")
+	end
+
+	if _G.IS_VR and not PackageManager:loaded("packages/vr_base") then
+		PackageManager:load("packages/vr_base")
+	end
+
+	if _G.IS_VR and not PackageManager:loaded("packages/vr_menu") then
+		PackageManager:load("packages/vr_menu")
 	end
 
 	local prefix = "packages/dlcs/"
@@ -114,6 +123,10 @@ function MenuSetup:unload_packages()
 	if PackageManager:loaded("packages/start_menu") then
 		PackageManager:unload("packages/start_menu")
 	end
+
+	if _G.IS_VR and PackageManager:loaded("packages/vr_menu") then
+		PackageManager:unload("packages/vr_menu")
+	end
 end
 
 function MenuSetup:init_game()
@@ -152,9 +165,11 @@ function MenuSetup:init_game()
 					world_setting = arg_list[i + 1]
 					i = i + 1
 				elseif arg == "-skip_intro" then
-					game_state_machine:set_boot_intro_done(true)
+					if not _G.IS_VR then
+						game_state_machine:set_boot_intro_done(true)
 
-					intro_skipped = true
+						intro_skipped = true
+					end
 				elseif arg == "+connect_lobby" then
 					Global.boot_invite = arg_list[i + 1]
 				elseif arg == "-auto_enter_level" then

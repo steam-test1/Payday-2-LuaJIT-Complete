@@ -274,6 +274,10 @@ function CriminalsManager:add_character(name, unit, peer_id, ai, ai_loadout)
 		if sequence and alive(unit) then
 			local unit_damage = unit:damage() or unit:camera() and unit:camera():camera_unit():damage()
 
+			if _G.IS_VR and unit:camera() then
+				unit_damage = nil
+			end
+
 			if unit_damage then
 				unit_damage:run_sequence_simple(sequence)
 			end

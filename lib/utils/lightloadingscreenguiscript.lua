@@ -6,6 +6,11 @@ function LightLoadingScreenGuiScript:init(scene_gui, res, progress, base_layer, 
 	self._scene_gui = scene_gui
 	self._res = res
 	self._ws = scene_gui:create_screen_workspace()
+
+	if _G.IS_VR then
+		self._ws:set_pinned_screen(true)
+	end
+
 	self._safe_rect_pixels = self:get_safe_rect_pixels(res)
 	self._saferect = self._scene_gui:create_screen_workspace()
 
@@ -173,6 +178,10 @@ function LightLoadingScreenGuiScript:set_visible(visible, res)
 	end
 
 	if visible then
+		if _G.IS_VR then
+			return
+		end
+
 		self._ws:show()
 		self._saferect:show()
 	else

@@ -48,6 +48,10 @@ function IngameWaitingForSpawnAllowed:update(t, dt)
 end
 
 function IngameWaitingForSpawnAllowed:at_enter()
+	if _G.IS_VR then
+		managers.menu:open_menu("custody")
+	end
+
 	managers.overlay_effect:play_effect(tweak_data.overlay_effects.fade_in)
 	self:_setup_camera()
 	self:_setup_controller()
@@ -100,6 +104,10 @@ function IngameWaitingForSpawnAllowed:at_enter()
 end
 
 function IngameWaitingForSpawnAllowed:at_exit(data)
+	if _G.IS_VR then
+		managers.menu:close_menu("custody")
+	end
+
 	if self.music_on_death then
 		managers.music:track_listen_stop()
 

@@ -559,7 +559,7 @@ function HuskPlayerMovement:update(unit, t, dt)
 	if self._auto_firing >= 2 then
 		local equipped_weapon = self._unit:inventory():equipped_unit()
 
-		if equipped_weapon:base().auto_trigger_held then
+		if alive(equipped_weapon) and equipped_weapon:base().auto_trigger_held then
 			equipped_weapon:base():auto_trigger_held(self._look_dir, true)
 
 			self._aim_up_expire_t = TimerManager:game():time() + 2
@@ -4571,8 +4571,8 @@ function HuskPlayerMovement:sync_action_jump(pos, jump_vec)
 end
 
 function HuskPlayerMovement:sync_action_teleport(pos)
-	self:sync_action_walk_nav_point(nil, "teleport_start", sync_action_force)
-	self:sync_action_walk_nav_point(pos, "teleport_end", sync_action_force_and_execute)
+	self:sync_action_walk_nav_point(nil, nil, "teleport_start", sync_action_force)
+	self:sync_action_walk_nav_point(pos, nil, "teleport_end", sync_action_force_and_execute)
 end
 
 function HuskPlayerMovement:_cleanup_previous_state(previous_state)
@@ -4714,5 +4714,13 @@ function HuskPlayerMovement:anim_clbk_flush_wanted_items()
 	self._wanted_items = nil
 
 	self:_destroy_items()
+end
+
+function HuskPlayerMovement:is_vr()
+	return self._is_vr
+end
+
+function HuskPlayerMovement:set_is_vr()
+	self._is_vr = true
 end
 

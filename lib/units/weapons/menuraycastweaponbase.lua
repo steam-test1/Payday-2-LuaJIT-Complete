@@ -111,8 +111,10 @@ function NewRaycastWeaponBase:_assemble_completed(clbk, parts, blueprint)
 	end)
 	self:apply_texture_switches()
 	self:apply_material_parameters()
+	self:configure_scope()
 	self:_update_fire_object()
 	self:_update_stats_values()
+	self:set_scope_enabled(true)
 
 	if clbk then
 		clbk()

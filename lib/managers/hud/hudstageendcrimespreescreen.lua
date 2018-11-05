@@ -3,7 +3,9 @@ HUDStageEndCrimeSpreeScreen = HUDStageEndCrimeSpreeScreen or class()
 function HUDStageEndCrimeSpreeScreen:init(hud, workspace)
 	self._backdrop = MenuBackdropGUI:new(workspace)
 
-	self._backdrop:create_black_borders()
+	if not _G.IS_VR then
+		self._backdrop:create_black_borders()
+	end
 
 	self._hud = hud
 	self._workspace = workspace

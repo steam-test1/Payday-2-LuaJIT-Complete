@@ -1591,6 +1591,8 @@ function Layer:clone_edited_values(unit, source)
 	if unit:ladder() then
 		unit:ladder():set_width(source:ladder():width())
 		unit:ladder():set_height(source:ladder():height())
+		unit:ladder():set_pc_disabled(source:ladder():pc_disabled())
+		unit:ladder():set_vr_disabled(source:ladder():vr_disabled())
 	end
 end
 

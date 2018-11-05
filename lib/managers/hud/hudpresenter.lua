@@ -192,3 +192,7 @@ function HUDPresenter:_animate_hide_text(title, text)
 	text:set_visible(false)
 end
 
+if _G.IS_VR then
+	require("lib/managers/hud/vr/HUDPresenterVR")
+end
+

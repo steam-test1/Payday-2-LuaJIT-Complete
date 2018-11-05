@@ -413,9 +413,6 @@ function NetworkVoiceChatPSN:update()
 end
 
 function NetworkVoiceChatPSN:voice_ui_update_callback(user_info)
-	Application:trace("
-	Application:trace(inspect(user_info))
-	Application:trace("
 end
 
 function NetworkVoiceChatPSN:psn_session_destroyed(roomid)

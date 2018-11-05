@@ -4388,13 +4388,12 @@ function init_auto_generated_achievement_data(tags)
 		},
 		halloween_nightmare_1 = {
 			need_unlock_icons = true,
-			icon_id = "C_Event_H_SafeHouseNightmare_AllDiffs_D0",
-			ladder = "H_SafeHouseNightmare",
-			sort_name = "C_Event_H_SafeHouseNightmare_AllDiffs_D0",
+			icon_id = "C_Event_H_SafeHouseNightmare_CheerfulChild",
+			sort_name = "C_Event_H_SafeHouseNightmare_CheerfulChild",
 			additional_id = true,
 			unlock_id = true,
 			tags = {
-				tags.progress.completion,
+				tags.progress.heisting,
 				tags.difficulty.normal,
 				tags.unlock.mask,
 				tags.tactics.loud,
@@ -4403,13 +4402,12 @@ function init_auto_generated_achievement_data(tags)
 		},
 		halloween_nightmare_2 = {
 			need_unlock_icons = true,
-			icon_id = "C_Event_H_SafeHouseNightmare_AllDiffs_D1",
-			ladder = "H_SafeHouseNightmare",
-			sort_name = "C_Event_H_SafeHouseNightmare_AllDiffs_D1",
+			icon_id = "C_Event_H_SafeHouseNightmare_GiliamsSweet",
+			sort_name = "C_Event_H_SafeHouseNightmare_GiliamsSweet",
 			additional_id = true,
 			unlock_id = true,
 			tags = {
-				tags.progress.completion,
+				tags.progress.heisting,
 				tags.difficulty.hard,
 				tags.unlock.mask,
 				tags.tactics.loud,
@@ -4418,13 +4416,12 @@ function init_auto_generated_achievement_data(tags)
 		},
 		halloween_nightmare_3 = {
 			need_unlock_icons = true,
-			icon_id = "C_Event_H_SafeHouseNightmare_AllDiffs_D2",
-			ladder = "H_SafeHouseNightmare",
-			sort_name = "C_Event_H_SafeHouseNightmare_AllDiffs_D2",
+			icon_id = "C_Event_H_SafeHouseNightmare_Temper",
+			sort_name = "C_Event_H_SafeHouseNightmare_Temper",
 			additional_id = true,
 			unlock_id = true,
 			tags = {
-				tags.progress.completion,
+				tags.progress.heisting,
 				tags.difficulty.very_hard,
 				tags.unlock.mask,
 				tags.tactics.loud,
@@ -4433,13 +4430,12 @@ function init_auto_generated_achievement_data(tags)
 		},
 		halloween_nightmare_4 = {
 			need_unlock_icons = true,
-			icon_id = "C_Event_H_SafeHouseNightmare_AllDiffs_D3",
-			ladder = "H_SafeHouseNightmare",
-			sort_name = "C_Event_H_SafeHouseNightmare_AllDiffs_D3",
+			icon_id = "C_Event_H_SafeHouseNightmare_WaterWorks",
+			sort_name = "C_Event_H_SafeHouseNightmare_WaterWorks",
 			additional_id = true,
 			unlock_id = true,
 			tags = {
-				tags.progress.completion,
+				tags.progress.heisting,
 				tags.difficulty.overkill,
 				tags.unlock.mask,
 				tags.tactics.loud,
@@ -8165,6 +8161,194 @@ function init_auto_generated_achievement_data(tags)
 				tags.contracts.the_butcher
 			}
 		},
+		eng_1 = {
+			need_unlock_icons = true,
+			icon_id = "Other_H_Any_TheOnlyOne",
+			progress = true,
+			sort_name = "Other_H_Any_TheOnlyOne",
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.unlock.mask,
+				tags.tactics.loud,
+				tags.tactics.stealth
+			}
+		},
+		eng_2 = {
+			need_unlock_icons = true,
+			icon_id = "Other_H_Any_TheOneThatHad",
+			progress = true,
+			sort_name = "Other_H_Any_TheOneThatHad",
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.unlock.mask,
+				tags.tactics.loud,
+				tags.tactics.stealth
+			}
+		},
+		eng_3 = {
+			need_unlock_icons = true,
+			icon_id = "Other_H_Any_TheOneThatSur",
+			progress = true,
+			sort_name = "Other_H_Any_TheOneThatSur",
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.unlock.mask,
+				tags.tactics.loud,
+				tags.tactics.stealth
+			}
+		},
+		eng_4 = {
+			need_unlock_icons = true,
+			icon_id = "Other_H_Any_TheOneWho",
+			progress = true,
+			sort_name = "Other_H_Any_TheOneWho",
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.unlock.mask,
+				tags.tactics.loud,
+				tags.tactics.stealth
+			}
+		},
+		nbm_1 = {
+			icon_id = "C_Event_H_SafeHouseNightmare_AllDiffs_D0",
+			ladder = "H_SafeHouseNightmare",
+			sort_name = "C_Event_H_SafeHouseNightmare_AllDiffs_D0",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.contracts.events
+			}
+		},
+		nbm_2 = {
+			icon_id = "C_Event_H_SafeHouseNightmare_AllDiffs_D1",
+			ladder = "H_SafeHouseNightmare",
+			sort_name = "C_Event_H_SafeHouseNightmare_AllDiffs_D1",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.hard,
+				tags.tactics.loud,
+				tags.contracts.events
+			}
+		},
+		nbm_3 = {
+			icon_id = "C_Event_H_SafeHouseNightmare_AllDiffs_D2",
+			ladder = "H_SafeHouseNightmare",
+			sort_name = "C_Event_H_SafeHouseNightmare_AllDiffs_D2",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.very_hard,
+				tags.tactics.loud,
+				tags.contracts.events
+			}
+		},
+		nbm_4 = {
+			icon_id = "C_Event_H_SafeHouseNightmare_AllDiffs_D3",
+			ladder = "H_SafeHouseNightmare",
+			sort_name = "C_Event_H_SafeHouseNightmare_AllDiffs_D3",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.contracts.events
+			}
+		},
+		ckr_1 = {
+			icon_id = "C_Event_H_CursedKillRoom_AllDiffs_D0",
+			ladder = "H_CursedKill",
+			sort_name = "C_Event_H_CursedKillRoom_AllDiffs_D0",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.normal,
+				tags.tactics.stealth,
+				tags.contracts.events
+			}
+		},
+		ckr_2 = {
+			icon_id = "C_Event_H_CursedKillRoom_AllDiffs_D1",
+			ladder = "H_CursedKill",
+			sort_name = "C_Event_H_CursedKillRoom_AllDiffs_D1",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.hard,
+				tags.tactics.loud,
+				tags.contracts.events
+			}
+		},
+		ckr_3 = {
+			icon_id = "C_Event_H_CursedKillRoom_AllDiffs_D2",
+			ladder = "H_CursedKill",
+			sort_name = "C_Event_H_CursedKillRoom_AllDiffs_D2",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.very_hard,
+				tags.tactics.stealth,
+				tags.contracts.events
+			}
+		},
+		ckr_4 = {
+			icon_id = "C_Event_H_CursedKillRoom_AllDiffs_D3",
+			ladder = "H_CursedKill",
+			sort_name = "C_Event_H_CursedKillRoom_AllDiffs_D3",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.contracts.events
+			}
+		},
+		ckr_5 = {
+			icon_id = "C_Event_H_CursedKillRoom_AllDiffs_D4",
+			ladder = "H_CursedKill",
+			sort_name = "C_Event_H_CursedKillRoom_AllDiffs_D4",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.mayhem,
+				tags.tactics.stealth,
+				tags.contracts.events
+			}
+		},
+		ckr_6 = {
+			icon_id = "C_Event_H_CursedKillRoom_AllDiffs_D5",
+			ladder = "H_CursedKill",
+			sort_name = "C_Event_H_CursedKillRoom_AllDiffs_D5",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_wish,
+				tags.tactics.loud,
+				tags.contracts.events
+			}
+		},
+		ckr_7 = {
+			icon_id = "C_Event_H_CursedKillRoom_AllDiffs_OD_D6",
+			ladder = "H_CursedKill",
+			sort_name = "C_Event_H_CursedKillRoom_AllDiffs_OD_D6",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_sentence,
+				tags.tactics.stealth,
+				tags.contracts.events
+			}
+		},
 		rvd_1 = {
 			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_D0",
 			ladder = "H_Reservoir",
@@ -8305,146 +8489,6 @@ function init_auto_generated_achievement_data(tags)
 				tags.difficulty.normal,
 				tags.tactics.loud,
 				tags.contracts.bain
-			}
-		},
-		ckr_1 = {
-			icon_id = "C_Event_H_CursedKillRoom_AllDiffs_D0",
-			ladder = "H_CursedKill",
-			sort_name = "C_Event_H_CursedKillRoom_AllDiffs_D0",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.normal,
-				tags.tactics.stealth,
-				tags.contracts.events
-			}
-		},
-		ckr_2 = {
-			icon_id = "C_Event_H_CursedKillRoom_AllDiffs_D1",
-			ladder = "H_CursedKill",
-			sort_name = "C_Event_H_CursedKillRoom_AllDiffs_D1",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.hard,
-				tags.tactics.loud,
-				tags.contracts.events
-			}
-		},
-		ckr_3 = {
-			icon_id = "C_Event_H_CursedKillRoom_AllDiffs_D2",
-			ladder = "H_CursedKill",
-			sort_name = "C_Event_H_CursedKillRoom_AllDiffs_D2",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.very_hard,
-				tags.tactics.stealth,
-				tags.contracts.events
-			}
-		},
-		ckr_4 = {
-			icon_id = "C_Event_H_CursedKillRoom_AllDiffs_D3",
-			ladder = "H_CursedKill",
-			sort_name = "C_Event_H_CursedKillRoom_AllDiffs_D3",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.overkill,
-				tags.tactics.loud,
-				tags.contracts.events
-			}
-		},
-		ckr_5 = {
-			icon_id = "C_Event_H_CursedKillRoom_AllDiffs_D4",
-			ladder = "H_CursedKill",
-			sort_name = "C_Event_H_CursedKillRoom_AllDiffs_D4",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.mayhem,
-				tags.tactics.stealth,
-				tags.contracts.events
-			}
-		},
-		ckr_6 = {
-			icon_id = "C_Event_H_CursedKillRoom_AllDiffs_D5",
-			ladder = "H_CursedKill",
-			sort_name = "C_Event_H_CursedKillRoom_AllDiffs_D5",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.death_wish,
-				tags.tactics.loud,
-				tags.contracts.events
-			}
-		},
-		ckr_7 = {
-			icon_id = "C_Event_H_CursedKillRoom_AllDiffs_OD_D6",
-			ladder = "H_CursedKill",
-			sort_name = "C_Event_H_CursedKillRoom_AllDiffs_OD_D6",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.death_sentence,
-				tags.tactics.stealth,
-				tags.contracts.events
-			}
-		},
-		eng_1 = {
-			need_unlock_icons = true,
-			icon_id = "Other_H_Any_TheOnlyOne",
-			progress = true,
-			sort_name = "Other_H_Any_TheOnlyOne",
-			unlock_id = true,
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.normal,
-				tags.unlock.mask,
-				tags.tactics.loud,
-				tags.tactics.stealth
-			}
-		},
-		eng_2 = {
-			need_unlock_icons = true,
-			icon_id = "Other_H_Any_TheOneThatHad",
-			progress = true,
-			sort_name = "Other_H_Any_TheOneThatHad",
-			unlock_id = true,
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.normal,
-				tags.unlock.mask,
-				tags.tactics.loud,
-				tags.tactics.stealth
-			}
-		},
-		eng_3 = {
-			need_unlock_icons = true,
-			icon_id = "Other_H_Any_TheOneThatSur",
-			progress = true,
-			sort_name = "Other_H_Any_TheOneThatSur",
-			unlock_id = true,
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.normal,
-				tags.unlock.mask,
-				tags.tactics.loud,
-				tags.tactics.stealth
-			}
-		},
-		eng_4 = {
-			need_unlock_icons = true,
-			icon_id = "Other_H_Any_TheOneWho",
-			progress = true,
-			sort_name = "Other_H_Any_TheOneWho",
-			unlock_id = true,
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.normal,
-				tags.unlock.mask,
-				tags.tactics.loud,
-				tags.tactics.stealth
 			}
 		},
 		brb_1 = {

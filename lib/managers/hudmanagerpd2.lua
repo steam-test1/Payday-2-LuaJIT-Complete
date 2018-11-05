@@ -821,9 +821,13 @@ function HUDManager:_create_teammates_panel(hud)
 		}
 		local pw = teammate_w + (is_player and 0 or 64)
 		local teammate = HUDTeammate:new(i, teammates_panel, is_player, pw)
-		local x = math.floor((pw + small_gap) * (i - 1) + (i == HUDManager.PLAYER_PANEL and player_gap or 0))
 
-		teammate._panel:set_x(math.floor(x))
+		if not _G.IS_VR then
+			local x = math.floor((pw + small_gap) * (i - 1) + (i == HUDManager.PLAYER_PANEL and player_gap or 0))
+
+			teammate._panel:set_x(math.floor(x))
+		end
+
 		table.insert(self._teammate_panels, teammate)
 	end
 end
@@ -2033,6 +2037,13 @@ function HUDManager:set_ai_stopped(ai_id, stopped)
 				texture = tweak_data.hud_icons.ai_stopped.texture,
 				texture_rect = tweak_data.hud_icons.ai_stopped.texture_rect
 			})
+
+			if _G.IS_VR then
+				label_stop_icon:configure({
+					depth_mode = "disabled",
+					render_template = Idstring("OverlayVertexColorTextured")
+				})
+			end
 
 			label_stop_icon:set_right(label.text:left())
 			label_stop_icon:set_center_y(label.text:center_y())

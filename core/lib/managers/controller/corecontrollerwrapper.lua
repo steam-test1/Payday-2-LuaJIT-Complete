@@ -44,6 +44,9 @@ function ControllerWrapper:init(manager, id, name, controller_map, default_contr
 	self._input_bool_cache = {}
 	self._input_float_cache = {}
 	self._input_axis_cache = {}
+	self._input_touch_bool_cache = {}
+	self._input_touch_pressed_cache = {}
+	self._input_touch_released_cache = {}
 
 	self:reset_cache(false)
 
@@ -111,6 +114,18 @@ function ControllerWrapper:reset_cache(check_time)
 			self._input_axis_cache = {}
 		end
 
+		if next(self._input_touch_bool_cache) then
+			self._input_touch_bool_cache = {}
+		end
+
+		if next(self._input_touch_pressed_cache) then
+			self._input_touch_pressed_cache = {}
+		end
+
+		if next(self._input_touch_released_cache) then
+			self._input_touch_released_cache = {}
+		end
+
 		self:update_multi_input()
 		self:update_delay_input()
 
@@ -165,6 +180,23 @@ function ControllerWrapper:update_multi_input()
 					self._input_pressed_cache[connection_name] = false
 					self._input_float_cache[connection_name] = 0
 					self._input_axis_cache[connection_name] = Vector3()
+				end
+
+				local touch = nil
+
+				for _, single_connection_name in ipairs(single_connection_name_list) do
+					touch = self._virtual_controller:touch(Idstring(single_connection_name))
+
+					if not touch then
+						break
+					end
+				end
+
+				if touch then
+					self._input_touch_bool_cache[connection_name] = touch
+				else
+					self._input_touch_bool_cache[connection_name] = false
+					self._input_touch_pressed_cache[connection_name] = false
 				end
 			end
 		end
@@ -880,6 +912,69 @@ function ControllerWrapper:get_input_bool(connection_name)
 		end
 
 		self._input_bool_cache[connection_name] = cache
+	end
+
+	return cache
+end
+
+function ControllerWrapper:get_input_touch_bool(connection_name)
+	local cache = self._input_touch_bool_cache[connection_name]
+
+	if cache == nil then
+		if self._connection_map[connection_name] then
+			id_strings[connection_name] = id_strings[connection_name] or Idstring(connection_name)
+			local ids = id_strings[connection_name]
+			cache = self._enabled and self._virtual_controller and self:get_connection_enabled(connection_name) and self._virtual_controller:touch(ids) or false
+			cache = not not cache
+		else
+			self:print_invalid_connection_error(connection_name)
+
+			cache = false
+		end
+
+		self._input_touch_bool_cache[connection_name] = cache
+	end
+
+	return cache
+end
+
+function ControllerWrapper:get_input_touch_pressed(connection_name)
+	local cache = self._input_touch_pressed_cache[connection_name]
+
+	if cache == nil then
+		if self._connection_map[connection_name] then
+			id_strings[connection_name] = id_strings[connection_name] or Idstring(connection_name)
+			local ids = id_strings[connection_name]
+			cache = self._enabled and self._virtual_controller and self:get_connection_enabled(connection_name) and self._virtual_controller:touch_pressed(ids) or false
+			cache = not not cache
+		else
+			self:print_invalid_connection_error(connection_name)
+
+			cache = false
+		end
+
+		self._input_touch_pressed_cache[connection_name] = cache
+	end
+
+	return cache
+end
+
+function ControllerWrapper:get_input_touch_released(connection_name)
+	local cache = self._input_touch_released_cache[connection_name]
+
+	if cache == nil then
+		if self._connection_map[connection_name] then
+			id_strings[connection_name] = id_strings[connection_name] or Idstring(connection_name)
+			local ids = id_strings[connection_name]
+			cache = self._enabled and self._virtual_controller and self:get_connection_enabled(connection_name) and self._virtual_controller:touch_released(ids) or false
+			cache = not not cache
+		else
+			self:print_invalid_connection_error(connection_name)
+
+			cache = false
+		end
+
+		self._input_touch_released_cache[connection_name] = cache
 	end
 
 	return cache

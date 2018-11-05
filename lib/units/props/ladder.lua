@@ -6,6 +6,11 @@ Ladder.LADDERS_PER_FRAME = 1
 Ladder.SNAP_LENGTH = 125
 Ladder.SEGMENT_LENGTH = 200
 Ladder.MOVER_NORMAL_OFFSET = 30
+
+if _G.IS_VR then
+	Ladder.MOVER_NORMAL_OFFSET = 50
+end
+
 Ladder.EXIT_OFFSET_TOP = 50
 Ladder.ON_LADDER_NORMAL_OFFSET = 60
 Ladder.DEBUG = false
@@ -112,6 +117,8 @@ function Ladder:set_config(check_ground_clipping)
 
 	self._up_dot = math.dot(self._up, math.UP)
 	self._w_dir_half = self._w_dir * self._width * 0.5
+
+	self:set_enabled(self._enabled)
 end
 
 function Ladder:check_ground_clipping()
@@ -130,7 +137,7 @@ end
 local mvec1 = Vector3()
 
 function Ladder:can_access(pos, move_dir)
-	if not self._enabled then
+	if not self:enabled() then
 		return
 	end
 
@@ -138,6 +145,10 @@ function Ladder:can_access(pos, move_dir)
 		local brush = Draw:brush(Color.red)
 
 		brush:cylinder(self._bottom, self._top, 5)
+	end
+
+	if _G.IS_VR then
+		return self:_can_access_vr(pos, move_dir)
 	end
 
 	mvector3.set(mvec1, pos)
@@ -172,9 +183,70 @@ function Ladder:can_access(pos, move_dir)
 	end
 end
 
-function Ladder:check_end_climbing(pos, move_dir, gnd_ray)
-	if not self._enabled then
+function Ladder:_can_access_vr(pos, move_dir)
+	if self._up_dot < 0.5 then
+		return false
+	end
+
+	local min_dis = tweak_data.vr.ladder.distance * tweak_data.vr.ladder.distance
+
+	if mvector3.distance_sq(pos, self:bottom()) < min_dis or mvector3.distance_sq(pos, self:top()) < min_dis then
 		return true
+	end
+end
+
+function Ladder:_check_end_climbing_vr(pos, move_dir, gnd_ray)
+	mvector3.set(mvec1, pos)
+	mvector3.subtract(mvec1, self._corners[1])
+
+	local w_dot = mvector3.dot(self._w_dir, mvec1)
+	local h_dot = mvector3.dot(self._up, mvec1)
+
+	if w_dot < 100 or self._width + 100 < w_dot then
+		return true
+	elseif h_dot < 0 or self._height < h_dot then
+		return true
+	elseif gnd_ray and move_dir then
+		local towards_dot = mvector3.dot(move_dir, self._normal)
+
+		if towards_dot > 0 then
+			if self._height - self._climb_on_top_offset < h_dot then
+				return false
+			end
+
+			return true
+		end
+	end
+end
+
+function Ladder:on_ladder_vr(pos, t)
+	local l_pos = self:position(t) - self._w_dir_half
+
+	mvector3.set(mvec1, pos)
+	mvector3.subtract(mvec1, l_pos)
+
+	local w_dot = math.dot(self._w_dir, mvec1)
+
+	if w_dot < -100 or self._width + 100 < w_dot then
+		return false
+	end
+
+	local n_dot = math.dot(self._normal, mvec1)
+
+	if Ladder.ON_LADDER_NORMAL_OFFSET + 50 < n_dot then
+		return false
+	end
+
+	return true
+end
+
+function Ladder:check_end_climbing(pos, move_dir, gnd_ray)
+	if not self:enabled() then
+		return true
+	end
+
+	if _G.IS_VR then
+		return self:_check_end_climbing_vr(pos, move_dir, gnd_ray)
 	end
 
 	mvector3.set(mvec1, pos)
@@ -220,6 +292,10 @@ function Ladder:position(t)
 end
 
 function Ladder:on_ladder(pos, t)
+	if _G.IS_VR then
+		return self:on_ladder_vr(pos, t)
+	end
+
 	local l_pos = self:position(t) - self._w_dir_half
 
 	mvector3.set(mvec1, pos)
@@ -314,13 +390,21 @@ end
 function Ladder:set_enabled(enabled)
 	self._enabled = enabled
 
-	if self._enabled then
+	if self:enabled() then
 		if not table.contains(Ladder.active_ladders, self._unit) then
 			table.insert(Ladder.active_ladders, self._unit)
 		end
 	else
 		table.delete(Ladder.active_ladders, self._unit)
 	end
+end
+
+function Ladder:enabled()
+	if self._pc_disabled and not _G.IS_VR or self._vr_disabled and _G.IS_VR then
+		return false
+	end
+
+	return self._enabled
 end
 
 function Ladder:destroy(unit)
@@ -346,7 +430,9 @@ function Ladder:save(data)
 	local state = {
 		enabled = self._enabled,
 		height = self._height,
-		width = self._width
+		width = self._width,
+		pc_disabled = self._pc_disabled,
+		vr_disabled = self._vr_disabled
 	}
 	data.Ladder = state
 end
@@ -360,7 +446,29 @@ function Ladder:load(data)
 
 	self._width = state.width
 	self._height = state.height
+	self._pc_disabled = state.pc_disabled
+	self._vr_disabled = state.vr_disabled
 
 	self:set_config()
+end
+
+function Ladder:set_pc_disabled(disabled)
+	self._pc_disabled = disabled
+
+	self:set_config()
+end
+
+function Ladder:pc_disabled()
+	return self._pc_disabled
+end
+
+function Ladder:set_vr_disabled(disabled)
+	self._vr_disabled = disabled
+
+	self:set_config()
+end
+
+function Ladder:vr_disabled()
+	return self._vr_disabled
 end
 

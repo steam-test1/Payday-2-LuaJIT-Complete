@@ -44,6 +44,7 @@ function BikeDrivingExt:update(unit, t, dt)
 		end
 
 		local use_tilt = true
+		use_tilt = not _G.IS_VR
 
 		if steer > 0 then
 			self._unit:anim_stop(Idstring("anim_tilt_right"))

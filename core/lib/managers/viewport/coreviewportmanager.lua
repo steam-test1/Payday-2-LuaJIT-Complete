@@ -216,6 +216,10 @@ function ViewportManager:set_override_environment(environment_path, blend_durati
 	end
 end
 
+function ViewportManager:move_to_front(vp)
+	self:_move_ao_to_front(vp)
+end
+
 function ViewportManager:_viewport_destroyed(vp)
 	self:_del_accessobj(vp)
 

@@ -37,6 +37,15 @@ function PlayerClean:_enter(enter_data)
 	end
 
 	self._ext_network:send("set_stance", 1, false, false)
+
+	if _G.IS_VR then
+		managers.hud:belt():set_visible(false)
+
+		self._weapon_hand_id = self._unit:hand():get_active_hand_id("weapon")
+
+		self._unit:hand():_set_hand_state(PlayerHand.RIGHT, "idle")
+		self._unit:hand():_set_hand_state(PlayerHand.LEFT, "idle")
+	end
 end
 
 function PlayerClean:exit(state_data, new_state_name)
@@ -54,6 +63,11 @@ function PlayerClean:exit(state_data, new_state_name)
 		managers.groupai:state():remove_listener(self._enemy_weapons_hot_listen_id)
 
 		self._enemy_weapons_hot_listen_id = nil
+	end
+
+	if _G.IS_VR then
+		managers.hud:belt():set_visible(true)
+		self._unit:hand():_change_hand_to_default(self._weapon_hand_id or PlayerHand.hand_id(managers.vr:get_setting("default_weapon_hand") or "right"), "weapon")
 	end
 end
 

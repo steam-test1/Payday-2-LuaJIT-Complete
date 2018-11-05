@@ -833,10 +833,42 @@ function WeaponFactoryTweakData:_init_sights()
 				"screen"
 			}
 		},
-		material_parameters = {gfx_reddot = {{
-			id = Idstring("holo_reticle_scale"),
-			value = Vector3(0.2, 1.5, 40)
-		}}}
+		material_parameters = {gfx_reddot = {
+			{
+				id = Idstring("holo_reticle_scale"),
+				value = Vector3(0.2, 1.5, 40),
+				condition = function ()
+					return not _G.IS_VR
+				end
+			},
+			{
+				id = Idstring("holo_reticle_scale"),
+				value = Vector3(0.2, 1, 20),
+				condition = function ()
+					return _G.IS_VR
+				end
+			}
+		}},
+		visibility = {{
+			condition = function (self, part, npc)
+				return _G.IS_VR and not npc
+			end,
+			objects = {
+				g_glass = false,
+				g_vr_phong = true,
+				g_gfx_specter = false,
+				g_screen = true,
+				g_vr_lens = true,
+				g_gfx = false
+			}
+		}},
+		camera = {
+			a_camera = "a_camera",
+			material = "screen",
+			fov = 13,
+			a_screen = "g_screen",
+			channel = "macrodetail_diffuse_texture"
+		}
 	}
 	self.parts.wpn_fps_upg_o_aimpoint = {
 		type = "sight",
@@ -1137,8 +1169,8 @@ function WeaponFactoryTweakData:_init_sights()
 		texture_bundle_folder = "gage_pack_snp",
 		dlc = "gage_pack_snp",
 		a_obj = "a_o",
-		type = "sight",
 		reticle_obj = "g_reddot",
+		type = "sight",
 		name_id = "bm_wp_upg_o_specter",
 		unit = "units/pd2_dlc_gage_snp/weapons/wpn_fps_upg_o_shortdot/wpn_fps_upg_o_shortdot",
 		stats = {
@@ -1164,6 +1196,28 @@ function WeaponFactoryTweakData:_init_sights()
 				"gfx_reddot1",
 				"screen"
 			}
+		},
+		visibility = {{
+			condition = function (self, part, npc)
+				return _G.IS_VR and not npc
+			end,
+			objects = {
+				g_vr_lens = true,
+				g_gfx_lens = false,
+				g_gfx_lens_2 = false,
+				g_gfx_lens_3 = false,
+				g_reddot = false,
+				g_screen = true,
+				g_vr_phong = true,
+				g_reticle = false
+			}
+		}},
+		camera = {
+			a_camera = "a_camera",
+			material = "screen",
+			fov = 9,
+			a_screen = "g_screen",
+			channel = "macrodetail_diffuse_texture"
 		}
 	}
 	self.parts.wpn_fps_upg_o_leupold = {
@@ -1205,6 +1259,28 @@ function WeaponFactoryTweakData:_init_sights()
 				"gfx_reddot1",
 				"screen"
 			}
+		},
+		visibility = {{
+			condition = function (self, part, npc)
+				return _G.IS_VR and not npc
+			end,
+			objects = {
+				g_vr_lens = true,
+				g_gfx_lens = false,
+				g_gfx_lens_2 = false,
+				g_gfx_lens_3 = false,
+				g_reddot = false,
+				g_screen = true,
+				g_vr_phong = true,
+				g_reticle = false
+			}
+		}},
+		camera = {
+			a_camera = "a_camera",
+			material = "screen",
+			fov = 7,
+			a_screen = "g_screen",
+			channel = "macrodetail_diffuse_texture"
 		}
 	}
 	self.parts.wpn_fps_upg_o_45iron.third_unit = "units/pd2_dlc_gage_snp/weapons/wpn_fps_upg_o_45iron/wpn_third_upg_o_45iron"
@@ -1531,6 +1607,26 @@ function WeaponFactoryTweakData:_init_content_dlc2_dec16()
 				"gfx_reddot",
 				"screen"
 			}
+		},
+		visibility = {{
+			condition = function (self, part, npc)
+				return _G.IS_VR and not npc
+			end,
+			objects = {
+				g_vr_lens = true,
+				g_reticle = false,
+				g_screen = true,
+				g_reddot = false,
+				g_vr_acog = true,
+				g_vr_phong = true
+			}
+		}},
+		camera = {
+			a_camera = "a_camera",
+			material = "screen",
+			fov = 13,
+			a_screen = "g_screen",
+			channel = "macrodetail_diffuse_texture"
 		},
 		third_unit = "units/pd2_dlc2/weapons/wpn_fps_upg_o_acog/wpn_third_upg_o_acog"
 	}
@@ -2220,6 +2316,24 @@ function WeaponFactoryTweakData:_init_content_jobs()
 				"gfx_reddot",
 				"screen"
 			}
+		},
+		visibility = {{
+			condition = function (self, part, npc)
+				return _G.IS_VR and not npc
+			end,
+			objects = {
+				g_vr_lens = true,
+				g_screen = true,
+				g_vr_gfx_lens = true,
+				g_reddot = false
+			}
+		}},
+		camera = {
+			a_camera = "a_camera",
+			material = "screen",
+			fov = 13,
+			a_screen = "g_screen",
+			channel = "macrodetail_diffuse_texture"
 		}
 	}
 	self.parts.wpn_fps_upg_o_rmr.third_unit = "units/pd2_dlc_gage_jobs/weapons/wpn_third_upg_o_rmr/wpn_third_upg_o_rmr"
@@ -6142,7 +6256,8 @@ function WeaponFactoryTweakData:_init_mp5()
 		stats = {value = 1},
 		animations = {
 			reload = "reload",
-			fire = "recoil"
+			fire = "recoil",
+			fire_steelsight = "recoil"
 		}
 	}
 	self.parts.wpn_fps_smg_mp5_body_rail = {
@@ -15992,8 +16107,33 @@ function WeaponFactoryTweakData:_init_c96()
 		perks = {"scope"},
 		stance_mod = {wpn_fps_pis_c96 = {translation = Vector3(-3.41, -12, 0.93)}},
 		texture_switch = {
-			material = "gfx_reddot1",
-			channel = "diffuse_texture"
+			channel = "diffuse_texture",
+			material = {
+				"gfx_reddot1",
+				"screen"
+			}
+		},
+		visibility = {{
+			condition = function (self, part, npc)
+				return _G.IS_VR and not npc
+			end,
+			objects = {
+				g_vr_lens = true,
+				g_gfx_lens = false,
+				g_gfx_lens_2 = false,
+				g_gfx_lens_3 = false,
+				g_reddot = false,
+				g_vr_screen = true,
+				g_vr_phong = true,
+				g_reticle = false
+			}
+		}},
+		camera = {
+			a_camera = "a_camera",
+			material = "screen",
+			fov = 9,
+			a_screen = "g_vr_screen",
+			channel = "macrodetail_diffuse_texture"
 		}
 	}
 	self.parts.wpn_fps_pis_c96_rail = {
@@ -20923,7 +21063,29 @@ function WeaponFactoryTweakData:_init_winchester1874()
 			value = 0,
 			concealment = -3
 		},
-		stance_mod = {wpn_fps_snp_winchester = {translation = Vector3(0, -28, -1.69)}}
+		stance_mod = {wpn_fps_snp_winchester = {translation = Vector3(0, -28, -1.69)}},
+		visibility = {{
+			condition = function (self, part, npc)
+				return _G.IS_VR and not npc
+			end,
+			objects = {
+				g_vr_lens = true,
+				g_gfx_lens = false,
+				g_gfx_lens_2 = false,
+				g_gfx_lens_3 = false,
+				g_vr_scope = true,
+				g_vr_phong = true,
+				g_reticle = false,
+				g_screen = true
+			}
+		}},
+		camera = {
+			a_camera = "a_camera",
+			material = "screen",
+			fov = 12,
+			a_screen = "g_screen",
+			channel = "macrodetail_diffuse_texture"
+		}
 	}
 	self.parts.wpn_fps_snp_winchester_b_standard.third_unit = "units/pd2_dlc_west/weapons/wpn_third_snp_winchester/wpn_third_snp_winchester_b_standard"
 	self.parts.wpn_fps_snp_winchester_b_long.third_unit = "units/pd2_dlc_west/weapons/wpn_third_snp_winchester/wpn_third_snp_winchester_b_long"
@@ -26902,6 +27064,28 @@ function WeaponFactoryTweakData:_init_tng()
 				"gfx_reddot1",
 				"screen"
 			}
+		},
+		visibility = {{
+			condition = function (self, part, npc)
+				return _G.IS_VR and not npc
+			end,
+			objects = {
+				g_vr_lens = true,
+				g_gfx_lens_2 = false,
+				g_gfx_lens = false,
+				g_gfx_lens_3 = false,
+				g_screen = true,
+				g_reddot = false,
+				g_vr_phong = true,
+				g_vr_spot = true
+			}
+		}},
+		camera = {
+			a_camera = "a_camera",
+			material = "screen",
+			fov = 13,
+			a_screen = "g_screen",
+			channel = "macrodetail_diffuse_texture"
 		}
 	}
 	self.parts.wpn_fps_upg_o_box = {
@@ -26943,17 +27127,35 @@ function WeaponFactoryTweakData:_init_tng()
 				"gfx_reddot1",
 				"screen"
 			}
+		},
+		visibility = {{
+			condition = function (self, part, npc)
+				return _G.IS_VR and not npc
+			end,
+			objects = {
+				g_vr_lens = true,
+				g_reticle = false,
+				g_screen = true,
+				g_reddot = false
+			}
+		}},
+		camera = {
+			a_camera = "a_camera",
+			material = "screen",
+			fov = 7,
+			a_screen = "g_screen",
+			channel = "macrodetail_diffuse_texture"
 		}
 	}
 	self.parts.wpn_fps_ass_g36_o_vintage = {
-		is_a_unlockable = true,
+		reticle_obj = "g_reticle",
 		texture_bundle_folder = "tng",
 		dlc = "tango",
-		a_obj = "a_body",
 		type = "sight",
-		name_id = "bm_wp_g36_o_vintage",
 		unit = "units/pd2_dlc_tng/weapons/wpn_fps_ass_g36_body_optics/wpn_fps_ass_g36_o_vintage",
-		reticle_obj = "g_reticle",
+		is_a_unlockable = true,
+		a_obj = "a_body",
+		name_id = "bm_wp_g36_o_vintage",
 		pcs = {},
 		stats = {
 			zoom = 5,
@@ -26974,8 +27176,42 @@ function WeaponFactoryTweakData:_init_tng()
 		stance_mod = {wpn_fps_ass_g36 = {translation = Vector3(-0.02, 0, -2.35)}},
 		forbids = {"wpn_fps_upg_o_xpsg33_magnifier"},
 		texture_switch = {
-			material = "gfx_reddot1",
-			channel = "diffuse_texture"
+			channel = "diffuse_texture",
+			material = {"sight"}
+		},
+		material_parameters = {gfx_reddot = {
+			{
+				id = Idstring("holo_reticle_scale"),
+				value = Vector3(0.2, 1.5, 40),
+				condition = function ()
+					return not _G.IS_VR
+				end
+			},
+			{
+				id = Idstring("holo_reticle_scale"),
+				value = Vector3(0.2, 1, 20),
+				condition = function ()
+					return _G.IS_VR
+				end
+			}
+		}},
+		visibility = {{
+			condition = function (self, part, npc)
+				return _G.IS_VR and not npc
+			end,
+			objects = {
+				g_vr_lens = true,
+				g_vr_phong = true,
+				g_vr_optic = true,
+				g_screen = true
+			}
+		}},
+		camera = {
+			a_camera = "a_camera",
+			material = "screen",
+			fov = 13,
+			a_screen = "g_screen",
+			channel = "macrodetail_diffuse_texture"
 		}
 	}
 	self.parts.wpn_fps_upg_g36_fg_long = {
@@ -27661,7 +27897,23 @@ function WeaponFactoryTweakData:_init_ray()
 		type = "sight",
 		name_id = "bm_wp_gre_ray_body",
 		unit = "units/pd2_dlc_friend/weapons/wpn_fps_gre_ray_pts/wpn_fps_gre_ray_sight",
-		stats = {value = 1}
+		stats = {value = 1},
+		material_parameters = {sight = {
+			{
+				id = Idstring("holo_reticle_scale"),
+				value = Vector3(0.2, 1.5, 40),
+				condition = function ()
+					return not _G.IS_VR
+				end
+			},
+			{
+				id = Idstring("holo_reticle_scale"),
+				value = Vector3(0.2, 1, 20),
+				condition = function ()
+					return _G.IS_VR
+				end
+			}
+		}}
 	}
 	self.parts.wpn_fps_gre_ray_sight_lid = {
 		a_obj = "a_lid",
@@ -28761,6 +29013,25 @@ function WeaponFactoryTweakData:_init_varmods()
 				translation = Vector3(0, 0, -2.3),
 				rotation = Rotation(0, 0, 0)
 			}
+		},
+		visibility = {{
+			condition = function (self, part, npc)
+				return _G.IS_VR and not npc
+			end,
+			objects = {
+				g_vr_lens = true,
+				g_vr_phong = true,
+				g_glass = false,
+				g_screen = true,
+				g_vr_g33 = true
+			}
+		}},
+		camera = {
+			a_camera = "a_camera",
+			material = "screen",
+			fov = 13,
+			a_screen = "g_screen",
+			channel = "macrodetail_diffuse_texture"
 		}
 	}
 	self.parts.wpn_fps_upg_o_45rds_v2 = {
@@ -30984,149 +31255,5 @@ function WeaponFactoryTweakData:_init_slap()
 	}
 	self.wpn_fps_gre_slap_npc = deep_clone(self.wpn_fps_gre_slap)
 	self.wpn_fps_gre_slap_npc.unit = "units/pd2_dlc_fgl/weapons/wpn_fps_gre_slap/wpn_fps_gre_slap_npc"
-end
-
-function WeaponFactoryTweakData:_init_shuno()
-	self.parts.wpn_fps_lmg_shuno_body_standard = {
-		a_obj = "a_body",
-		type = "lower_reciever",
-		name_id = "bm_wp_shuno_body",
-		unit = "units/pd2_dlc_dmg/weapons/wpn_fps_lmg_shuno_pts/wpn_fps_lmg_shuno_body_standard",
-		stats = {value = 1}
-	}
-	self.parts.wpn_fps_lmg_shuno_m_standard = {
-		a_obj = "a_m",
-		type = "magazine",
-		name_id = "bm_wp_shuno_m_standard",
-		unit = "units/pd2_dlc_dmg/weapons/wpn_fps_lmg_shuno_pts/wpn_fps_lmg_shuno_m_standard",
-		stats = {value = 1}
-	}
-	self.parts.wpn_fps_lmg_shuno_b_standard = {
-		a_obj = "a_b",
-		type = "upper_reciever",
-		name_id = "bm_wp_shuno_barrel",
-		unit = "units/pd2_dlc_dmg/weapons/wpn_fps_lmg_shuno_pts/wpn_fps_lmg_shuno_b_standard",
-		stats = {value = 1}
-	}
-	self.parts.wpn_fps_lmg_shuno_b_short = {
-		a_obj = "a_b",
-		type = "upper_reciever",
-		name_id = "bm_wp_shuno_b_short",
-		unit = "units/pd2_dlc_dmg/weapons/wpn_fps_lmg_shuno_pts/wpn_fps_lmg_shuno_b_short",
-		pcs = {
-			10,
-			20,
-			30,
-			40
-		},
-		stats = {
-			spread = -1,
-			recoil = 3,
-			value = 1,
-			concealment = 3
-		},
-		override = {wpn_fps_lmg_shuno_b_dummy_long = {unit = "units/pd2_dlc_dmg/weapons/wpn_fps_lmg_shuno_pts/wpn_fps_lmg_shuno_b_dummy_short"}}
-	}
-	self.parts.wpn_fps_lmg_shuno_b_heat_short = {
-		a_obj = "a_b",
-		type = "upper_reciever",
-		name_id = "bm_wp_shuno_b_heat_short",
-		unit = "units/pd2_dlc_dmg/weapons/wpn_fps_lmg_shuno_pts/wpn_fps_lmg_shuno_b_heat_short",
-		pcs = {
-			10,
-			20,
-			30,
-			40
-		},
-		stats = {
-			spread = 1,
-			recoil = -3,
-			value = 1,
-			concealment = -3
-		},
-		override = {wpn_fps_lmg_shuno_b_dummy_long = {unit = "units/pd2_dlc_dmg/weapons/wpn_fps_lmg_shuno_pts/wpn_fps_lmg_shuno_b_dummy_short"}}
-	}
-	self.parts.wpn_fps_lmg_shuno_b_heat_long = {
-		unit = "units/pd2_dlc_dmg/weapons/wpn_fps_lmg_shuno_pts/wpn_fps_lmg_shuno_b_heat_long",
-		a_obj = "a_b",
-		type = "upper_reciever",
-		name_id = "bm_wp_shuno_b_heat_long",
-		pcs = {
-			10,
-			20,
-			30,
-			40
-		},
-		stats = {
-			spread = 1,
-			recoil = -3,
-			value = 1,
-			concealment = -3
-		}
-	}
-	self.parts.wpn_fps_lmg_shuno_b_dummy_long = {
-		name_id = "bm_wp_shuno_b_dummy_long",
-		unit = "units/pd2_dlc_dmg/weapons/wpn_fps_lmg_shuno_pts/wpn_fps_lmg_shuno_b_dummy_long",
-		a_obj = "a_b_dumb",
-		type = "barrel"
-	}
-	self.parts.wpn_fps_lmg_shuno_b_dummy_short = {
-		name_id = "bm_wp_shuno_b_dummy_short",
-		unit = "units/pd2_dlc_dmg/weapons/wpn_fps_lmg_shuno_pts/wpn_fps_lmg_shuno_b_dummy_short",
-		a_obj = "a_b_dumb",
-		type = "barrel"
-	}
-	self.parts.wpn_fps_lmg_shuno_s_standard = {
-		name_id = "bm_wp_shuno_s_standard",
-		unit = "units/pd2_dlc_dmg/weapons/wpn_fps_lmg_shuno_pts/wpn_fps_lmg_shuno_s_standard",
-		a_obj = "a_body",
-		type = "stock"
-	}
-	self.parts.wpn_fps_lmg_shuno_body_standard.third_unit = "units/pd2_dlc_dmg/weapons/wpn_fps_lmg_shuno_pts/wpn_fps_lmg_shuno_body_standard"
-	self.parts.wpn_fps_lmg_shuno_m_standard.third_unit = "units/pd2_dlc_dmg/weapons/wpn_fps_lmg_shuno_pts/wpn_fps_lmg_shuno_m_standard"
-	self.parts.wpn_fps_lmg_shuno_s_standard.third_unit = "units/pd2_dlc_dmg/weapons/wpn_fps_lmg_shuno_pts/wpn_fps_lmg_shuno_s_standard"
-	self.parts.wpn_fps_lmg_shuno_b_standard.third_unit = "units/pd2_dlc_dmg/weapons/wpn_fps_lmg_shuno_pts/wpn_fps_lmg_shuno_b_standard"
-	self.parts.wpn_fps_lmg_shuno_b_short.third_unit = "units/pd2_dlc_dmg/weapons/wpn_fps_lmg_shuno_pts/wpn_fps_lmg_shuno_b_short"
-	self.parts.wpn_fps_lmg_shuno_b_heat_short.third_unit = "units/pd2_dlc_dmg/weapons/wpn_fps_lmg_shuno_pts/wpn_fps_lmg_shuno_b_heat_short"
-	self.parts.wpn_fps_lmg_shuno_b_heat_long.third_unit = "units/pd2_dlc_dmg/weapons/wpn_fps_lmg_shuno_pts/wpn_fps_lmg_shuno_b_heat_long"
-	self.wpn_fps_lmg_shuno = {
-		unit = "units/pd2_dlc_dmg/weapons/wpn_fps_lmg_shuno/wpn_fps_lmg_shuno",
-		animations = {
-			reload_not_empty = "reload",
-			reload = "reload",
-			fire_steelsight = "recoil",
-			fire = "recoil"
-		},
-		optional_types = {
-			"gadget",
-			"sight",
-			"barrel_ext"
-		},
-		default_blueprint = {
-			"wpn_fps_lmg_shuno_body_standard",
-			"wpn_fps_lmg_shuno_b_standard",
-			"wpn_fps_lmg_shuno_m_standard",
-			"wpn_fps_lmg_shuno_s_standard",
-			"wpn_fps_lmg_shuno_b_dummy_long"
-		},
-		uses_parts = {
-			"wpn_fps_lmg_shuno_body_standard",
-			"wpn_fps_lmg_shuno_m_standard",
-			"wpn_fps_lmg_shuno_s_standard",
-			"wpn_fps_lmg_shuno_b_standard",
-			"wpn_fps_lmg_shuno_b_short",
-			"wpn_fps_lmg_shuno_b_heat_long",
-			"wpn_fps_lmg_shuno_b_heat_short",
-			"wpn_fps_lmg_shuno_b_dummy_short",
-			"wpn_fps_lmg_shuno_b_dummy_long",
-			"wpn_fps_upg_fl_ass_smg_sho_peqbox",
-			"wpn_fps_upg_fl_ass_smg_sho_surefire",
-			"wpn_fps_upg_fl_ass_peq15",
-			"wpn_fps_upg_fl_ass_laser",
-			"wpn_fps_upg_fl_ass_utg"
-		}
-	}
-	self.wpn_fps_lmg_shuno_npc = deep_clone(self.wpn_fps_lmg_shuno)
-	self.wpn_fps_lmg_shuno_npc.unit = "units/pd2_dlc_dmg/weapons/wpn_fps_lmg_shuno/wpn_fps_lmg_shuno_npc"
 end
 

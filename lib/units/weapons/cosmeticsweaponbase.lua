@@ -41,6 +41,8 @@ function NewRaycastWeaponBase:get_cosmetics_data()
 end
 
 function NewRaycastWeaponBase:_material_config_name(part_id, unit_name, use_cc_material_config, force_third_person)
+	force_third_person = force_third_person or _G.IS_VR
+
 	if self:is_npc() or force_third_person then
 		if use_cc_material_config and tweak_data.weapon.factory.parts[part_id].cc_thq_material_config then
 			return tweak_data.weapon.factory.parts[part_id].cc_thq_material_config
@@ -71,6 +73,7 @@ function NewRaycastWeaponBase:_update_materials()
 	local use = not self:is_npc() or self:use_thq()
 	local use_cc_material_config = use and self._cosmetics_data and true or false
 	local is_thq = self:is_npc() and self:use_thq()
+	is_thq = is_thq or not self:is_npc() and _G.IS_VR
 
 	if is_thq or use_cc_material_config then
 		if not self._materials then
@@ -293,6 +296,183 @@ function NewRaycastWeaponBase:_set_material_textures()
 			texture_data.applied = true
 
 			TextureCache:unretrieve(texture_data.name)
+		end
+	end
+end
+
+function NewRaycastWeaponBase:spawn_magazine_unit(pos, rot, hide_bullets)
+	local mag_data = nil
+	local mag_list = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("magazine", self._factory_id, self._blueprint)
+	local mag_id = mag_list and mag_list[1]
+
+	if not mag_id then
+		return
+	end
+
+	mag_data = managers.weapon_factory:get_part_data_by_part_id_from_weapon(mag_id, self._factory_id, self._blueprint)
+	local part_data = self._parts[mag_id]
+
+	if not mag_data or not part_data then
+		return
+	end
+
+	pos = pos or Vector3()
+	rot = rot or Rotation()
+	local is_thq = managers.weapon_factory:use_thq_weapon_parts()
+	local use_cc_material_config = is_thq and self:get_cosmetics_data() and true or false
+	local material_config_ids = Idstring("material_config")
+	local mag_unit = World:spawn_unit(part_data.name, pos, rot)
+	local new_material_config_ids = self:_material_config_name(mag_id, mag_data.unit, use_cc_material_config, true)
+
+	if mag_unit:material_config() ~= new_material_config_ids and DB:has(material_config_ids, new_material_config_ids) then
+		mag_unit:set_material_config(new_material_config_ids, true)
+	end
+
+	if hide_bullets and part_data.bullet_objects then
+		local prefix = part_data.bullet_objects.prefix
+
+		for i = 1, part_data.bullet_objects.amount, 1 do
+			local target_object = mag_unit:get_object(Idstring(prefix .. i))
+			local ref_object = part_data.unit:get_object(Idstring(prefix .. i))
+
+			if target_object then
+				if ref_object then
+					target_object:set_visibility(ref_object:visibility())
+				else
+					target_object:set_visibility(false)
+				end
+			end
+		end
+	end
+
+	local materials = {}
+	local unit_materials = mag_unit:get_objects_by_type(Idstring("material")) or {}
+
+	for _, m in ipairs(unit_materials) do
+		if m:variable_exists(Idstring("wear_tear_value")) then
+			table.insert(materials, m)
+		end
+	end
+
+	local textures = {}
+	local base_variable, base_texture, mat_variable, mat_texture, type_variable, type_texture, p_type, custom_variable, texture_key = nil
+	local cosmetics_data = self:get_cosmetics_data() or {}
+	local cosmetics_quality = self._cosmetics_quality
+	local wear_tear_value = cosmetics_quality and tweak_data.economy.qualities[cosmetics_quality] and tweak_data.economy.qualities[cosmetics_quality].wear_tear_value or 1
+
+	for _, material in pairs(materials) do
+		material:set_variable(Idstring("wear_tear_value"), wear_tear_value)
+
+		p_type = managers.weapon_factory:get_type_from_part_id(mag_id)
+
+		for key, variable in pairs(material_variables) do
+			mat_variable = cosmetics_data.parts and cosmetics_data.parts[mag_id] and cosmetics_data.parts[mag_id][material:name():key()] and cosmetics_data.parts[mag_id][material:name():key()][key]
+			type_variable = cosmetics_data.types and cosmetics_data.types[p_type] and cosmetics_data.types[p_type][key]
+			base_variable = cosmetics_data[key]
+
+			if mat_variable or type_variable or base_variable then
+				material:set_variable(Idstring(variable), mat_variable or type_variable or base_variable)
+			end
+		end
+
+		for key, material_texture in pairs(material_textures) do
+			mat_texture = cosmetics_data.parts and cosmetics_data.parts[mag_id] and cosmetics_data.parts[mag_id][material:name():key()] and cosmetics_data.parts[mag_id][material:name():key()][key]
+			type_texture = cosmetics_data.types and cosmetics_data.types[p_type] and cosmetics_data.types[p_type][key]
+			base_texture = cosmetics_data[key]
+			local texture_name = mat_texture or type_texture or base_texture
+
+			if texture_name then
+				if type_name(texture_name) ~= "Idstring" then
+					texture_name = Idstring(texture_name)
+				end
+
+				Application:set_material_texture(material, Idstring(material_texture), texture_name, Idstring("normal"))
+			end
+		end
+	end
+
+	return mag_unit
+end
+NewRaycastWeaponBase.magazine_collisions = {
+	small = {
+		Idstring("units/payday2/weapons/box_collision/box_collision_small_pistol"),
+		Idstring("rp_box_collision_small")
+	},
+	medium = {
+		Idstring("units/payday2/weapons/box_collision/box_collision_medium_ar"),
+		Idstring("rp_box_collision_medium")
+	},
+	large = {
+		Idstring("units/payday2/weapons/box_collision/box_collision_large_metal"),
+		Idstring("rp_box_collision_large")
+	},
+	pistol = {
+		Idstring("units/payday2/weapons/box_collision/box_collision_small_pistol"),
+		Idstring("rp_box_collision_small")
+	},
+	smg = {
+		Idstring("units/payday2/weapons/box_collision/box_collision_small_smg"),
+		Idstring("rp_box_collision_small")
+	},
+	rifle = {
+		Idstring("units/payday2/weapons/box_collision/box_collision_medium_ar"),
+		Idstring("rp_box_collision_medium")
+	},
+	large_plastic = {
+		Idstring("units/payday2/weapons/box_collision/box_collision_large_plastic"),
+		Idstring("rp_box_collision_large")
+	},
+	large_metal = {
+		Idstring("units/payday2/weapons/box_collision/box_collision_large_metal"),
+		Idstring("rp_box_collision_large")
+	}
+}
+local tmp_vec1 = Vector3()
+local tmp_vec2 = Vector3()
+local tmp_vec3 = Vector3()
+local mvec3_set = mvector3.set
+local mvec3_add = mvector3.add
+local mvec3_sub = mvector3.subtract
+local mvec3_mul = mvector3.multiply
+
+function NewRaycastWeaponBase:drop_magazine_object()
+	if not self._name_id then
+		return
+	end
+
+	local name_id = self._name_id
+
+	for original_name, name in pairs(tweak_data.animation.animation_redirects) do
+		if name == name_id then
+			name_id = original_name
+
+			break
+		end
+	end
+
+	local w_td_crew = tweak_data.weapon[name_id .. "_crew"]
+
+	for part_id, part_data in pairs(self._parts) do
+		local part = tweak_data.weapon.factory.parts[part_id]
+
+		if part and part.type == "magazine" then
+			local pos = part_data.unit:position()
+			local rot = part_data.unit:rotation()
+			local dropped_mag = self:spawn_magazine_unit(pos, rot, true)
+			local mag_size = w_td_crew and w_td_crew.pull_magazine_during_reload or "medium"
+
+			mvec3_set(tmp_vec1, dropped_mag:oobb():center())
+			mvec3_sub(tmp_vec1, dropped_mag:position())
+			mvec3_set(tmp_vec2, dropped_mag:position())
+			mvec3_add(tmp_vec2, tmp_vec1)
+
+			local dropped_col = World:spawn_unit(NewRaycastWeaponBase.magazine_collisions[mag_size][1], tmp_vec2, part_data.unit:rotation())
+
+			dropped_col:link(NewRaycastWeaponBase.magazine_collisions[mag_size][2], dropped_mag)
+			mvec3_set(tmp_vec3, -rot:z())
+			mvec3_mul(tmp_vec3, 100)
+			dropped_col:push(20, tmp_vec3)
+			managers.enemy:add_magazine(dropped_mag, dropped_col)
 		end
 	end
 end

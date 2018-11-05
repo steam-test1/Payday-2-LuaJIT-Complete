@@ -62,6 +62,7 @@ function PlayerDriving:_enter(enter_data)
 		self:_set_camera_limits("driving")
 
 		local use_fps_material = true
+		use_fps_material = not _G.IS_VR
 
 		if use_fps_material and self._vehicle_unit:damage():has_sequence("local_driving_enter") then
 			self._vehicle_unit:damage():run_sequence("local_driving_enter")
@@ -120,6 +121,11 @@ function PlayerDriving:exit(state_data, new_state_name)
 
 		self._unit:set_position(pos)
 		self._unit:camera():set_position(pos)
+
+		if _G.IS_VR then
+			self._unit:movement():set_ghost_position(exit_position:position())
+		end
+
 		self._unit:camera():camera_unit():base():set_spin(exit_rot:y():to_polar().spin)
 		self._unit:camera():camera_unit():base():set_pitch(0)
 		self._unit:camera():camera_unit():base():set_target_tilt(0)
@@ -561,6 +567,10 @@ function PlayerDriving:_update_input(dt)
 		local forced_gear = -1
 		local vehicle_state = self._vehicle:get_state()
 		local steer = self._vehicle:get_steer()
+
+		if _G.IS_VR then
+			steer = -move_d.x
+		end
 
 		if steer == 0 and not self._wheel_idle then
 			self._unit:camera():play_redirect(self.IDS_STEER_IDLE_REDIRECT)

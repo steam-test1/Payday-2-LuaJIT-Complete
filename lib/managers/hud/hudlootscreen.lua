@@ -5,7 +5,9 @@ HUDLootScreen = HUDLootScreen or class()
 function HUDLootScreen:init(hud, workspace, saved_lootdrop, saved_selected, saved_chosen, saved_setup)
 	self._backdrop = MenuBackdropGUI:new(workspace)
 
-	self._backdrop:create_black_borders()
+	if not _G.IS_VR then
+		self._backdrop:create_black_borders()
+	end
 
 	self._active = false
 	self._hud = hud

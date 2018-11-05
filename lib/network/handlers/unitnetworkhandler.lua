@@ -3909,6 +3909,18 @@ function UnitNetworkHandler:sync_carry_set_position_and_throw(unit, destination,
 	unit:carry_data():set_position_and_throw(destination, direction, force)
 end
 
+function UnitNetworkHandler:action_teleport(unit, position, sender)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
+		return
+	end
+
+	if not alive(unit) then
+		return
+	end
+
+	unit:movement():sync_action_teleport(position)
+end
+
 function UnitNetworkHandler:sync_tag_team(tagged, owner, sender)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
 		return
