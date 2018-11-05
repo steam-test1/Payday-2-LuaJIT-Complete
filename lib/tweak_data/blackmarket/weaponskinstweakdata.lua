@@ -23598,8 +23598,8 @@ function BlackMarketTweakData:_init_weapon_skins()
 		pattern_tweak = Vector3(1, 0, 0)
 	}
 	self.weapon_skins.x_pl14_tam = {
-		name_id = "bm_wskn_x_pl14_tam",
-		desc_id = "bm_wskn_x_pl14_tam_desc",
+		name_id = "bm_wskn_tam",
+		desc_id = "bm_wskn_tam_desc",
 		weapon_id = "x_pl14",
 		is_a_unlockable = true,
 		lock_id = "bm_wskn_tam_locked",

@@ -381,6 +381,144 @@ function StoryMissionsTweakData:_init_missions(tweak_data)
 				crimespree = true
 			})}},
 			rewards = self:_default_reward()
+		}),
+		self:_mission("sm_28", {
+			reward_id = "menu_sm_default_reward",
+			voice_line = "Play_pln_stq_31",
+			objectives = {
+				{self:_level_progress("story_very_hard_alesso", 1, {name_id = "menu_sm_very_hard_alesso"})},
+				{self:_level_progress("story_very_hard_counterfeit", 1, {name_id = "menu_sm_very_hard_counterfeit"})}
+			},
+			rewards = self:_default_reward()
+		}),
+		self:_mission("sm_29", {
+			reward_id = "menu_sm_default_reward",
+			voice_line = "Play_pln_stq_32",
+			objectives = {{self:_level_progress("story_very_hard_first_world_bank", 1, {name_id = "menu_sm_very_hard_first_world_bank"})}},
+			rewards = self:_default_reward()
+		}),
+		self:_mission("sm_30", {
+			reward_id = "menu_sm_default_reward",
+			voice_line = "Play_pln_stq_33",
+			objectives = {{self:_level_progress("story_very_hard_murky_station", 1, {name_id = "menu_sm_very_hard_murky_station"})}},
+			rewards = self:_default_reward()
+		}),
+		self:_mission("sm_31", {
+			reward_id = "menu_sm_default_reward",
+			voice_line = "Play_pln_stq_34",
+			objectives = {{self:_level_progress("story_very_hard_boiling_point", 1, {name_id = "menu_sm_very_hard_boiling_point"})}},
+			rewards = self:_default_reward()
+		}),
+		self:_mission("sm_32", {
+			reward_id = "menu_sm_default_reward",
+			voice_line = "Play_pln_stq_35",
+			objectives = {
+				{self:_level_progress("story_very_hard_goat_sim", 1, {name_id = "menu_sm_very_hard_goat_sim"})},
+				{self:_level_progress("story_very_hard_santas_workshop", 1, {name_id = "menu_sm_very_hard_santas_workshop"})}
+			},
+			rewards = self:_default_reward()
+		}),
+		self:_mission("sm_33", {
+			reward_id = "menu_sm_default_reward",
+			voice_line = "Play_pln_stq_36",
+			objectives = {{self:_level_progress("story_very_hard_car_shop", 1, {name_id = "menu_sm_very_hard_car_shop"})}},
+			rewards = self:_default_reward()
+		}),
+		self:_mission("sm_34", {
+			reward_id = "menu_sm_default_reward",
+			voice_line = "Play_pln_stq_37",
+			objectives = {{self:_level_progress("story_very_hard_biker_heist", 1, {name_id = "menu_sm_very_hard_biker_heist"})}},
+			rewards = self:_default_reward()
+		}),
+		self:_mission("sm_35", {
+			reward_id = "menu_sm_default_reward",
+			voice_line = "Play_pln_stq_38",
+			objectives = {{self:_level_progress("story_very_hard_panic_room", 1, {name_id = "menu_sm_very_hard_panic_room"})}},
+			rewards = self:_default_reward()
+		}),
+		self:_mission("sm_36", {
+			reward_id = "menu_sm_default_reward",
+			voice_line = "Play_pln_stq_39",
+			objectives = {{self:_level_progress("story_very_hard_brooklyn_10_10", 1, {name_id = "menu_sm_very_hard_brooklyn_10_10"})}},
+			rewards = self:_default_reward()
+		}),
+		self:_mission("sm_37", {
+			reward_id = "menu_sm_default_reward",
+			voice_line = "Play_pln_stq_40",
+			objectives = {{self:_level_progress("story_very_hard_yacht", 1, {name_id = "menu_sm_very_hard_yacht"})}},
+			rewards = self:_default_reward()
+		}),
+		self:_mission("sm_38", {
+			reward_id = "menu_sm_default_reward",
+			voice_line = "Play_pln_stq_41",
+			objectives = {{self:_level_progress("story_very_hard_undercover", 1, {name_id = "menu_sm_very_hard_undercover"})}},
+			rewards = self:_default_reward()
+		}),
+		self:_mission("sm_39", {
+			reward_id = "menu_sm_default_reward",
+			voice_line = "Play_pln_stq_42",
+			objectives = {{self:_level_progress("story_very_hard_slaughterhouse", 1, {name_id = "menu_sm_very_hard_slaughterhouse"})}},
+			rewards = self:_default_reward()
+		}),
+		self:_mission("sm_40", {
+			reward_id = "menu_sm_default_reward",
+			voice_line = "Play_pln_stq_43",
+			objectives = {{self:_level_progress("story_very_hard_beneath_the_mountain", 1, {name_id = "menu_sm_very_hard_beneath_the_mountain"})}},
+			rewards = self:_default_reward()
+		}),
+		self:_mission("sm_41", {
+			reward_id = "menu_sm_default_reward",
+			voice_line = "Play_pln_stq_44",
+			objectives = {{self:_level_progress("story_very_hard_birth_of_sky", 1, {name_id = "menu_sm_very_hard_birth_of_sky"})}},
+			rewards = self:_default_reward()
+		}),
+		self:_mission("sm_42", {
+			reward_id = "menu_sm_default_reward",
+			voice_line = "Play_pln_stq_45",
+			objectives = {{self:_level_progress("story_very_hard_heat_street", 1, {name_id = "menu_sm_very_hard_heat_street"})}},
+			rewards = self:_default_reward()
+		}),
+		self:_mission("sm_43", {
+			reward_id = "menu_sm_default_reward",
+			voice_line = "Play_pln_stq_46",
+			objectives = {{self:_level_progress("story_very_hard_green_bridge", 1, {name_id = "menu_sm_very_hard_green_bridge"})}},
+			rewards = self:_default_reward()
+		}),
+		self:_mission("sm_44", {
+			reward_id = "menu_sm_default_reward",
+			voice_line = "Play_pln_stq_47",
+			objectives = {{self:_level_progress("story_very_hard_alaskan_deal", 1, {name_id = "menu_sm_very_hard_alaskan_deal"})}},
+			rewards = self:_default_reward()
+		}),
+		self:_mission("sm_45", {
+			reward_id = "menu_sm_default_reward",
+			voice_line = "Play_pln_stq_48",
+			objectives = {{self:_level_progress("story_very_hard_diamond_heist", 1, {name_id = "menu_sm_very_hard_diamond_heist"})}},
+			rewards = self:_default_reward()
+		}),
+		self:_mission("sm_46", {
+			reward_id = "menu_sm_default_reward",
+			voice_line = "Play_pln_stq_49",
+			objectives = {{self:_level_progress("story_very_hard_reservoir_dogs", 1, {name_id = "menu_sm_very_hard_reservoir_dogs"})}},
+			rewards = self:_default_reward()
+		}),
+		self:_mission("sm_47", {
+			reward_id = "menu_sm_default_reward",
+			voice_line = "Play_loc_stq_01",
+			objectives = {{self:_level_progress("story_very_hard_brooklyn_bank", 1, {name_id = "menu_sm_very_hard_brooklyn_bank"})}},
+			rewards = self:_default_reward()
+		}),
+		self:_mission("sm_48", {
+			reward_id = "menu_sm_default_reward",
+			voice_line = "Play_loc_stq_02",
+			objectives = {{self:_level_progress("story_very_hard_breakin_feds", 1, {name_id = "menu_sm_very_hard_breakin_feds"})}},
+			rewards = self:_default_reward()
+		}),
+		self:_mission("sm_49", {
+			reward_id = "menu_sm_default_reward",
+			voice_line = "Play_loc_stq_03",
+			objectives = {{self:_level_progress("story_very_hard_henrys_rock", 1, {name_id = "menu_sm_very_hard_henrys_rock"})}},
+			rewards = self:_default_reward()
 		})
 	}
 end

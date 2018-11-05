@@ -303,7 +303,6 @@ function TweakDataVR:init(tweak_data)
 		x_hs2000 = {position = Vector3(0, 1, 5)},
 		x_sparrow = {position = Vector3(0, 2, -2)},
 		x_pl14 = {position = Vector3(0, 3, -2)},
-		x_lemming = {position = Vector3(0, 1.5, -2)},
 		x_breech = {
 			position = Vector3(2, 0, -4),
 			rotation = Rotation(0, 20, 0)
@@ -313,10 +312,6 @@ function TweakDataVR:init(tweak_data)
 			rotation = Rotation(-45, 12, -20)
 		},
 		x_mateba = {
-			position = Vector3(3, 2, 2),
-			rotation = Rotation(-45, 12, -20)
-		},
-		x_peacemaker = {
 			position = Vector3(3, 2, 2),
 			rotation = Rotation(-45, 12, -20)
 		},
@@ -4688,34 +4683,6 @@ function TweakDataVR:init(tweak_data)
 				}
 			}
 		},
-		x_peacemaker = {
-			custom_mag_unit = "units/pd2_dlc_vr/units/wpn_vr_m_44/wpn_vr_m_44",
-			start = {
-				{
-					time = 0,
-					sound = "wp_pmkr45_cylinder_click_02",
-					anims = {{
-						anim_group = "reload",
-						from = 2.7
-					}}
-				},
-				{
-					time = 0.5,
-					sound = "wp_pmkr45_shell_land"
-				}
-			},
-			finish = {
-				{
-					time = 0,
-					sound = "wp_pmkr45_load_bullet"
-				},
-				{
-					time = 0.5,
-					sound = "wp_foley_generic_lever_release",
-					pos = Vector3()
-				}
-			}
-		},
 		x_2006m = {
 			custom_mag_unit = "units/pd2_dlc_vr/units/wpn_pis_speedloader_6x/wpn_pis_speedloader_6x",
 			start = {
@@ -4832,41 +4799,6 @@ function TweakDataVR:init(tweak_data)
 				{
 					time = 0.6,
 					sound = "wp_sparrow_cock",
-					pos = Vector3()
-				}
-			}
-		},
-		x_lemming = {
-			start = {
-				{
-					time = 0,
-					sound = "wp_lemming_mag_out"
-				},
-				{
-					drop_mag = true,
-					time = 0.05,
-					visible = false,
-					pos = Vector3(0, -5, -20)
-				}
-			},
-			finish = {
-				{
-					time = 0,
-					sound = "wp_lemming_mag_in",
-					visible = true,
-					pos = Vector3(0, -5, -20)
-				},
-				{
-					time = 0.1,
-					pos = Vector3(0, -3, -10)
-				},
-				{
-					time = 0.56,
-					pos = Vector3(0, -3, -10)
-				},
-				{
-					time = 0.6,
-					sound = "wp_lemming_mantle_forward",
 					pos = Vector3()
 				}
 			}

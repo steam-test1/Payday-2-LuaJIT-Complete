@@ -37,6 +37,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_saiga_npc()
 	self:_init_data_sentry_gun_npc()
 	self:_init_data_swat_van_turret_module_npc()
+	self:_init_data_aa_turret_module_npc()
 	self:_init_data_ceiling_turret_module_npc()
 	self:_init_data_s552_npc()
 	self:_init_data_scar_npc()
@@ -229,6 +230,9 @@ function WeaponTweakData:_set_normal()
 	self.ceiling_turret_module.HEALTH_INIT = 875
 	self.ceiling_turret_module.SHIELD_HEALTH_INIT = 2
 	self.ceiling_turret_module.DAMAGE = 0.2
+	self.aa_turret_module.HEALTH_INIT = 4500
+	self.aa_turret_module.SHIELD_HEALTH_INIT = 70
+	self.aa_turret_module.DAMAGE = 0.2
 end
 
 function WeaponTweakData:_set_hard()
@@ -242,6 +246,9 @@ function WeaponTweakData:_set_hard()
 	self.ceiling_turret_module.HEALTH_INIT = 875
 	self.ceiling_turret_module.SHIELD_HEALTH_INIT = 70
 	self.ceiling_turret_module.DAMAGE = 0.5
+	self.aa_turret_module.HEALTH_INIT = 4500
+	self.aa_turret_module.SHIELD_HEALTH_INIT = 70
+	self.aa_turret_module.DAMAGE = 0.2
 end
 
 function WeaponTweakData:_set_overkill()
@@ -251,6 +258,9 @@ function WeaponTweakData:_set_overkill()
 	self.ceiling_turret_module.HEALTH_INIT = 6250
 	self.ceiling_turret_module.SHIELD_HEALTH_INIT = 150
 	self.ceiling_turret_module.DAMAGE = 1.3
+	self.aa_turret_module.HEALTH_INIT = 13500
+	self.aa_turret_module.SHIELD_HEALTH_INIT = 300
+	self.aa_turret_module.DAMAGE = 0.2
 end
 
 function WeaponTweakData:_set_overkill_145()
@@ -261,6 +271,9 @@ function WeaponTweakData:_set_overkill_145()
 	self.ceiling_turret_module.HEALTH_INIT = 12500
 	self.ceiling_turret_module.SHIELD_HEALTH_INIT = 250
 	self.ceiling_turret_module.DAMAGE = 2
+	self.aa_turret_module.HEALTH_INIT = 2600
+	self.aa_turret_module.SHIELD_HEALTH_INIT = 500
+	self.aa_turret_module.DAMAGE = 0.2
 end
 
 function WeaponTweakData:_set_easy_wish()
@@ -274,6 +287,9 @@ function WeaponTweakData:_set_easy_wish()
 	self.ceiling_turret_module.SHIELD_HEALTH_INIT = 350
 	self.ceiling_turret_module.DAMAGE = 3.5
 	self.ceiling_turret_module.CLIP_SIZE = 800
+	self.aa_turret_module.HEALTH_INIT = 40100
+	self.aa_turret_module.SHIELD_HEALTH_INIT = 700
+	self.aa_turret_module.DAMAGE = 0.2
 end
 
 function WeaponTweakData:_set_overkill_290()
@@ -286,6 +302,9 @@ function WeaponTweakData:_set_overkill_290()
 	self.ceiling_turret_module.SHIELD_HEALTH_INIT = 350
 	self.ceiling_turret_module.DAMAGE = 3.5
 	self.ceiling_turret_module.CLIP_SIZE = 800
+	self.aa_turret_module.HEALTH_INIT = 40100
+	self.aa_turret_module.SHIELD_HEALTH_INIT = 700
+	self.aa_turret_module.DAMAGE = 0.2
 end
 
 function WeaponTweakData:_set_sm_wish()
@@ -301,6 +320,9 @@ function WeaponTweakData:_set_sm_wish()
 	self.ceiling_turret_module.SHIELD_HEALTH_INIT = 350
 	self.ceiling_turret_module.DAMAGE = 3.5
 	self.ceiling_turret_module.CLIP_SIZE = 800
+	self.aa_turret_module.HEALTH_INIT = 40100
+	self.aa_turret_module.SHIELD_HEALTH_INIT = 700
+	self.aa_turret_module.DAMAGE = 0.2
 end
 
 function WeaponTweakData:_init_data_npc_melee()
@@ -336,6 +358,7 @@ function WeaponTweakData:_set_npc_weapon_damage_multiplier(mul)
 end
 
 function WeaponTweakData:_init_data_c45_npc()
+	self.c45_npc.categories = {"pistol"}
 	self.c45_npc.sounds.prefix = "c45_npc"
 	self.c45_npc.use_data.selection_index = SELECTION.SECONDARY
 	self.c45_npc.DAMAGE = 1
@@ -353,6 +376,10 @@ function WeaponTweakData:_init_data_c45_npc()
 end
 
 function WeaponTweakData:_init_data_x_c45_npc()
+	self.x_c45_npc.categories = {
+		"akimbo",
+		"pistol"
+	}
 	self.x_c45_npc.sounds.prefix = "c45_npc"
 	self.x_c45_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.x_c45_npc.DAMAGE = 1
@@ -368,6 +395,7 @@ function WeaponTweakData:_init_data_x_c45_npc()
 end
 
 function WeaponTweakData:_init_data_beretta92_npc()
+	self.beretta92_npc.categories = clone(self.b92fs.categories)
 	self.beretta92_npc.sounds.prefix = "beretta_npc"
 	self.beretta92_npc.use_data.selection_index = SELECTION.SECONDARY
 	self.beretta92_npc.DAMAGE = 1
@@ -383,6 +411,7 @@ function WeaponTweakData:_init_data_beretta92_npc()
 end
 
 function WeaponTweakData:_init_data_glock_18_npc()
+	self.glock_18_npc.categories = clone(self.glock_18c.categories)
 	self.glock_18_npc.sounds.prefix = "g18c_npc"
 	self.glock_18_npc.use_data.selection_index = SELECTION.SECONDARY
 	self.glock_18_npc.DAMAGE = 1
@@ -399,6 +428,7 @@ function WeaponTweakData:_init_data_glock_18_npc()
 end
 
 function WeaponTweakData:_init_data_raging_bull_npc()
+	self.raging_bull_npc.categories = clone(self.new_raging_bull.categories)
 	self.raging_bull_npc.sounds.prefix = "rbull_npc"
 	self.raging_bull_npc.use_data.selection_index = SELECTION.SECONDARY
 	self.raging_bull_npc.DAMAGE = 4
@@ -414,6 +444,7 @@ function WeaponTweakData:_init_data_raging_bull_npc()
 end
 
 function WeaponTweakData:_init_data_m4_npc()
+	self.m4_npc.categories = clone(self.new_m4.categories)
 	self.m4_npc.sounds.prefix = "m4_npc"
 	self.m4_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.m4_npc.DAMAGE = 1
@@ -430,6 +461,7 @@ function WeaponTweakData:_init_data_m4_npc()
 end
 
 function WeaponTweakData:_init_data_ak47_npc()
+	self.ak47_npc.categories = {"assault_rifle"}
 	self.ak47_npc.sounds.prefix = "akm_npc"
 	self.ak47_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.ak47_npc.DAMAGE = 3
@@ -445,6 +477,7 @@ function WeaponTweakData:_init_data_ak47_npc()
 end
 
 function WeaponTweakData:_init_data_m14_npc()
+	self.m14_npc.categories = clone(self.new_m14.categories)
 	self.m14_npc.sounds.prefix = "m14_npc"
 	self.m14_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.m14_npc.DAMAGE = 4
@@ -460,6 +493,7 @@ function WeaponTweakData:_init_data_m14_npc()
 end
 
 function WeaponTweakData:_init_data_m14_sniper_npc()
+	self.m14_sniper_npc.categories = {"snp"}
 	self.m14_sniper_npc.sounds.prefix = "sniper_npc"
 	self.m14_sniper_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.m14_sniper_npc.DAMAGE = 2
@@ -480,6 +514,7 @@ function WeaponTweakData:_init_data_m14_sniper_npc()
 end
 
 function WeaponTweakData:_init_data_r870_npc()
+	self.r870_npc.categories = clone(self.r870.categories)
 	self.r870_npc.sounds.prefix = "remington_npc"
 	self.r870_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.r870_npc.DAMAGE = 5
@@ -498,6 +533,7 @@ function WeaponTweakData:_init_data_r870_npc()
 end
 
 function WeaponTweakData:_init_data_mossberg_npc()
+	self.mossberg_npc.categories = {"shotgun"}
 	self.mossberg_npc.sounds.prefix = "mossberg_npc"
 	self.mossberg_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.mossberg_npc.DAMAGE = 6
@@ -515,6 +551,7 @@ function WeaponTweakData:_init_data_mossberg_npc()
 end
 
 function WeaponTweakData:_init_data_mp5_npc()
+	self.mp5_npc.categories = clone(self.new_mp5.categories)
 	self.mp5_npc.sounds.prefix = "mp5_npc"
 	self.mp5_npc.use_data.selection_index = SELECTION.SECONDARY
 	self.mp5_npc.DAMAGE = 1
@@ -537,6 +574,7 @@ function WeaponTweakData:_init_data_mp5_npc()
 end
 
 function WeaponTweakData:_init_data_mac11_npc()
+	self.mac11_npc.categories = {"smg"}
 	self.mac11_npc.sounds.prefix = "mp5_npc"
 	self.mac11_npc.use_data.selection_index = SELECTION.SECONDARY
 	self.mac11_npc.DAMAGE = 1
@@ -556,6 +594,7 @@ function WeaponTweakData:_init_data_mac11_npc()
 end
 
 function WeaponTweakData:_init_data_g36_npc()
+	self.g36_npc.categories = clone(self.g36.categories)
 	self.g36_npc.sounds.prefix = "g36_npc"
 	self.g36_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.g36_npc.DAMAGE = 3
@@ -571,6 +610,7 @@ function WeaponTweakData:_init_data_g36_npc()
 end
 
 function WeaponTweakData:_init_data_mp9_npc()
+	self.mp9_npc.categories = clone(self.mp9.categories)
 	self.mp9_npc.sounds.prefix = "mp9_npc"
 	self.mp9_npc.use_data.selection_index = SELECTION.SECONDARY
 	self.mp9_npc.DAMAGE = 1
@@ -588,6 +628,7 @@ function WeaponTweakData:_init_data_mp9_npc()
 end
 
 function WeaponTweakData:_init_data_saiga_npc()
+	self.saiga_npc.categories = clone(self.saiga.categories)
 	self.saiga_npc.sounds.prefix = "saiga_npc"
 	self.saiga_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.saiga_npc.DAMAGE = 3
@@ -768,6 +809,98 @@ function WeaponTweakData:_init_data_swat_van_turret_module_npc()
 	self.swat_van_turret_module.suppression = 0.8
 end
 
+function WeaponTweakData:_init_data_aa_turret_module_npc()
+	self.aa_turret_module.name_id = "debug_sentry_gun"
+	self.aa_turret_module.DAMAGE = 3
+	self.aa_turret_module.DAMAGE_MUL_RANGE = {
+		{
+			800,
+			4
+		},
+		{
+			1000,
+			1.1
+		},
+		{
+			1500,
+			1
+		}
+	}
+	self.aa_turret_module.SUPPRESSION = 1
+	self.aa_turret_module.SPREAD = 0.5
+	self.aa_turret_module.FIRE_RANGE = 10000
+	self.aa_turret_module.CLIP_SIZE = 400
+	self.aa_turret_module.AUTO_RELOAD = true
+	self.aa_turret_module.AUTO_RELOAD_DURATION = 8
+	self.aa_turret_module.CAN_GO_IDLE = true
+	self.aa_turret_module.IDLE_WAIT_TIME = 5
+	self.aa_turret_module.AUTO_REPAIR = true
+	self.aa_turret_module.AUTO_REPAIR_MAX_COUNT = math.huge
+	self.aa_turret_module.AUTO_REPAIR_DURATION = 30
+	self.aa_turret_module.ECM_HACKABLE = true
+	self.aa_turret_module.HACKABLE_WITH_ECM = true
+	self.aa_turret_module.VELOCITY_COMPENSATION = {
+		OVERCOMPENSATION = 50,
+		SNAPSHOT_INTERVAL = 0.3
+	}
+	self.aa_turret_module.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
+	self.aa_turret_module.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
+	self.aa_turret_module.auto.fire_rate = 0.06
+	self.aa_turret_module.alert_size = 2500
+	self.aa_turret_module.headshot_dmg_mul = 4
+	self.aa_turret_module.EXPLOSION_DMG_MUL = 7
+	self.aa_turret_module.FIRE_DMG_MUL = 0.1
+	self.aa_turret_module.BAG_DMG_MUL = 100
+	self.aa_turret_module.SHIELD_DMG_MUL = 1
+	self.aa_turret_module.HEALTH_INIT = 5000
+	self.aa_turret_module.SHIELD_HEALTH_INIT = 1000
+	self.aa_turret_module.SHIELD_DAMAGE_CLAMP = 350
+	self.aa_turret_module.BODY_DAMAGE_CLAMP = 4200
+	self.aa_turret_module.DEATH_VERIFICATION = {
+		0.4,
+		0.75
+	}
+	self.aa_turret_module.DETECTION_RANGE = 8000
+	self.aa_turret_module.DETECTION_DELAY = {
+		{
+			900,
+			0.3
+		},
+		{
+			3500,
+			1.5
+		}
+	}
+	self.aa_turret_module.KEEP_FIRE_ANGLE = 0.9
+	self.aa_turret_module.MAX_VEL_SPIN = 72
+	self.aa_turret_module.MIN_VEL_SPIN = self.aa_turret_module.MAX_VEL_SPIN * 0.05
+	self.aa_turret_module.SLOWDOWN_ANGLE_SPIN = 30
+	self.aa_turret_module.ACC_SPIN = self.aa_turret_module.MAX_VEL_SPIN * 5
+	self.aa_turret_module.MAX_VEL_PITCH = 60
+	self.aa_turret_module.MIN_VEL_PITCH = self.aa_turret_module.MAX_VEL_PITCH * 0.05
+	self.aa_turret_module.SLOWDOWN_ANGLE_PITCH = 20
+	self.aa_turret_module.ACC_PITCH = self.aa_turret_module.MAX_VEL_PITCH * 5
+	self.aa_turret_module.recoil = {
+		horizontal = {
+			1,
+			1.5,
+			1,
+			1
+		},
+		vertical = {
+			1,
+			1.5,
+			1,
+			1
+		}
+	}
+	self.aa_turret_module.challenges = {
+		group = "sentry_gun",
+		weapon = "sentry_gun"
+	}
+	self.aa_turret_module.suppression = 0.8
+end
+
 function WeaponTweakData:_init_data_ceiling_turret_module_npc()
 	self.ceiling_turret_module.name_id = "debug_sentry_gun"
 	self.ceiling_turret_module.DAMAGE = 3
@@ -880,6 +1013,7 @@ function WeaponTweakData:_init_data_ceiling_turret_module_npc()
 end
 
 function WeaponTweakData:_init_data_s552_npc()
+	self.s552_npc.categories = clone(self.s552.categories)
 	self.s552_npc.sounds.prefix = "sig552_npc"
 	self.s552_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.s552_npc.DAMAGE = 2
@@ -895,6 +1029,7 @@ function WeaponTweakData:_init_data_s552_npc()
 end
 
 function WeaponTweakData:_init_data_scar_npc()
+	self.scar_npc.categories = clone(self.scar.categories)
 	self.scar_npc.sounds.prefix = "scar_npc"
 	self.scar_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.scar_npc.DAMAGE = 2
@@ -910,6 +1045,7 @@ function WeaponTweakData:_init_data_scar_npc()
 end
 
 function WeaponTweakData:_init_data_hk21_npc()
+	self.hk21_npc.categories = clone(self.hk21.categories)
 	self.hk21_npc.sounds.prefix = "hk23e_npc"
 	self.hk21_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.hk21_npc.DAMAGE = 2
@@ -925,6 +1061,7 @@ function WeaponTweakData:_init_data_hk21_npc()
 end
 
 function WeaponTweakData:_init_data_m249_npc()
+	self.m249_npc.categories = clone(self.m249.categories)
 	self.m249_npc.sounds.prefix = "m249_npc"
 	self.m249_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.m249_npc.DAMAGE = 2
@@ -941,6 +1078,7 @@ function WeaponTweakData:_init_data_m249_npc()
 end
 
 function WeaponTweakData:_init_data_mini_npc()
+	self.mini_npc.categories = clone(self.m134.categories)
 	self.mini_npc.sounds.prefix = "minigun_npc"
 	self.mini_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.mini_npc.DAMAGE = 2
@@ -956,6 +1094,7 @@ function WeaponTweakData:_init_data_mini_npc()
 end
 
 function WeaponTweakData:_init_data_contraband_npc()
+	self.contraband_npc.categories = clone(self.contraband.categories)
 	self.contraband_npc.sounds.prefix = "contraband_npc"
 	self.contraband_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.contraband_npc.DAMAGE = 2
@@ -985,6 +1124,7 @@ function WeaponTweakData:_init_data_contraband_npc()
 end
 
 function WeaponTweakData:_init_data_c45_crew()
+	self.c45_crew.categories = {"pistol"}
 	self.c45_crew.sounds.prefix = "c45_npc"
 	self.c45_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.c45_crew.DAMAGE = 1
@@ -1003,6 +1143,10 @@ function WeaponTweakData:_init_data_c45_crew()
 end
 
 function WeaponTweakData:_init_data_x_c45_crew()
+	self.x_c45_crew.categories = {
+		"akimbo",
+		"pistol"
+	}
 	self.x_c45_crew.sounds.prefix = "c45_npc"
 	self.x_c45_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_c45_crew.DAMAGE = 1
@@ -1018,6 +1162,7 @@ function WeaponTweakData:_init_data_x_c45_crew()
 end
 
 function WeaponTweakData:_init_data_beretta92_crew()
+	self.beretta92_crew.categories = clone(self.b92fs.categories)
 	self.beretta92_crew.sounds.prefix = "beretta_npc"
 	self.beretta92_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.beretta92_crew.DAMAGE = 1
@@ -1036,6 +1181,7 @@ function WeaponTweakData:_init_data_beretta92_crew()
 end
 
 function WeaponTweakData:_init_data_glock_18_crew()
+	self.glock_18_crew.categories = clone(self.glock_18c.categories)
 	self.glock_18_crew.sounds.prefix = "g18c_npc"
 	self.glock_18_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.glock_18_crew.DAMAGE = 1
@@ -1055,6 +1201,7 @@ function WeaponTweakData:_init_data_glock_18_crew()
 end
 
 function WeaponTweakData:_init_data_raging_bull_crew()
+	self.raging_bull_crew.categories = clone(self.new_raging_bull.categories)
 	self.raging_bull_crew.sounds.prefix = "rbull_npc"
 	self.raging_bull_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.raging_bull_crew.DAMAGE = 4
@@ -1073,6 +1220,7 @@ function WeaponTweakData:_init_data_raging_bull_crew()
 end
 
 function WeaponTweakData:_init_data_m4_crew()
+	self.m4_crew.categories = clone(self.new_m4.categories)
 	self.m4_crew.sounds.prefix = "m4_npc"
 	self.m4_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.m4_crew.DAMAGE = 1.5
@@ -1092,6 +1240,7 @@ function WeaponTweakData:_init_data_m4_crew()
 end
 
 function WeaponTweakData:_init_data_ak47_crew()
+	self.ak47_crew.categories = {"assault_rifle"}
 	self.ak47_crew.sounds.prefix = "akm_npc"
 	self.ak47_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.ak47_crew.DAMAGE = 3
@@ -1107,6 +1256,7 @@ function WeaponTweakData:_init_data_ak47_crew()
 end
 
 function WeaponTweakData:_init_data_m14_crew()
+	self.m14_crew.categories = clone(self.new_m14.categories)
 	self.m14_crew.sounds.prefix = "m14_npc"
 	self.m14_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.m14_crew.DAMAGE = 1.28
@@ -1123,6 +1273,7 @@ function WeaponTweakData:_init_data_m14_crew()
 end
 
 function WeaponTweakData:_init_data_r870_crew()
+	self.r870_crew.categories = clone(self.r870.categories)
 	self.r870_crew.sounds.prefix = "remington_npc"
 	self.r870_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.r870_crew.DAMAGE = 8.7
@@ -1139,6 +1290,7 @@ function WeaponTweakData:_init_data_r870_crew()
 end
 
 function WeaponTweakData:_init_data_mossberg_crew()
+	self.mossberg_crew.categories = {"shotgun"}
 	self.mossberg_crew.sounds.prefix = "mossberg_npc"
 	self.mossberg_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.mossberg_crew.DAMAGE = 6
@@ -1154,6 +1306,7 @@ function WeaponTweakData:_init_data_mossberg_crew()
 end
 
 function WeaponTweakData:_init_data_mp5_crew()
+	self.mp5_crew.categories = clone(self.new_mp5.categories)
 	self.mp5_crew.sounds.prefix = "mp5_npc"
 	self.mp5_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.mp5_crew.DAMAGE = 1
@@ -1171,6 +1324,7 @@ function WeaponTweakData:_init_data_mp5_crew()
 end
 
 function WeaponTweakData:_init_data_g36_crew()
+	self.g36_crew.categories = clone(self.g36.categories)
 	self.g36_crew.sounds.prefix = "g36_npc"
 	self.g36_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.g36_crew.DAMAGE = 1.28
@@ -1187,6 +1341,7 @@ function WeaponTweakData:_init_data_g36_crew()
 end
 
 function WeaponTweakData:_init_data_g17_crew()
+	self.g17_crew.categories = clone(self.glock_17.categories)
 	self.g17_crew.sounds.prefix = "g17_npc"
 	self.g17_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.g17_crew.DAMAGE = 1
@@ -1203,6 +1358,7 @@ function WeaponTweakData:_init_data_g17_crew()
 end
 
 function WeaponTweakData:_init_data_mp9_crew()
+	self.mp9_crew.categories = clone(self.mp9.categories)
 	self.mp9_crew.sounds.prefix = "mp9_npc"
 	self.mp9_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.mp9_crew.DAMAGE = 1
@@ -1224,6 +1380,7 @@ function WeaponTweakData:_init_data_mp9_crew()
 end
 
 function WeaponTweakData:_init_data_olympic_crew()
+	self.olympic_crew.categories = clone(self.olympic.categories)
 	self.olympic_crew.sounds.prefix = "m4_olympic_npc"
 	self.olympic_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.olympic_crew.DAMAGE = 1.5
@@ -1243,6 +1400,7 @@ function WeaponTweakData:_init_data_olympic_crew()
 end
 
 function WeaponTweakData:_init_data_m16_crew()
+	self.m16_crew.categories = clone(self.m16.categories)
 	self.m16_crew.sounds.prefix = "m16_npc"
 	self.m16_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.m16_crew.DAMAGE = 1.05
@@ -1259,6 +1417,7 @@ function WeaponTweakData:_init_data_m16_crew()
 end
 
 function WeaponTweakData:_init_data_aug_crew()
+	self.aug_crew.categories = clone(self.aug.categories)
 	self.aug_crew.sounds.prefix = "aug_npc"
 	self.aug_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.aug_crew.DAMAGE = 1.2
@@ -1280,6 +1439,7 @@ function WeaponTweakData:_init_data_aug_crew()
 end
 
 function WeaponTweakData:_init_data_ak74_crew()
+	self.ak74_crew.categories = clone(self.ak74.categories)
 	self.ak74_crew.sounds.prefix = "ak74_npc"
 	self.ak74_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.ak74_crew.DAMAGE = 1.38
@@ -1298,6 +1458,7 @@ function WeaponTweakData:_init_data_ak74_crew()
 end
 
 function WeaponTweakData:_init_data_ak5_crew()
+	self.ak5_crew.categories = clone(self.ak5.categories)
 	self.ak5_crew.sounds.prefix = "ak5_npc"
 	self.ak5_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.ak5_crew.DAMAGE = 1.28
@@ -1314,6 +1475,7 @@ function WeaponTweakData:_init_data_ak5_crew()
 end
 
 function WeaponTweakData:_init_data_p90_crew()
+	self.p90_crew.categories = clone(self.p90.categories)
 	self.p90_crew.sounds.prefix = "p90_npc"
 	self.p90_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.p90_crew.DAMAGE = 1
@@ -1335,6 +1497,7 @@ function WeaponTweakData:_init_data_p90_crew()
 end
 
 function WeaponTweakData:_init_data_amcar_crew()
+	self.amcar_crew.categories = clone(self.amcar.categories)
 	self.amcar_crew.sounds.prefix = "amcar_npc"
 	self.amcar_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.amcar_crew.DAMAGE = 1.65
@@ -1351,6 +1514,7 @@ function WeaponTweakData:_init_data_amcar_crew()
 end
 
 function WeaponTweakData:_init_data_mac10_crew()
+	self.mac10_crew.categories = clone(self.mac10.categories)
 	self.mac10_crew.sounds.prefix = "mac10_npc"
 	self.mac10_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.mac10_crew.DAMAGE = 0.75
@@ -1368,6 +1532,7 @@ function WeaponTweakData:_init_data_mac10_crew()
 end
 
 function WeaponTweakData:_init_data_akmsu_crew()
+	self.akmsu_crew.categories = clone(self.akmsu.categories)
 	self.akmsu_crew.sounds.prefix = "akmsu_npc"
 	self.akmsu_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.akmsu_crew.DAMAGE = 3
@@ -1387,6 +1552,7 @@ function WeaponTweakData:_init_data_akmsu_crew()
 end
 
 function WeaponTweakData:_init_data_akm_crew()
+	self.akm_crew.categories = clone(self.akm.categories)
 	self.akm_crew.sounds.prefix = "akm_npc"
 	self.akm_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.akm_crew.DAMAGE = 1.61
@@ -1403,6 +1569,7 @@ function WeaponTweakData:_init_data_akm_crew()
 end
 
 function WeaponTweakData:_init_data_akm_gold_crew()
+	self.akm_gold_crew.categories = clone(self.akm_gold.categories)
 	self.akm_gold_crew.sounds.prefix = "akm_npc"
 	self.akm_gold_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.akm_gold_crew.DAMAGE = 1.61
@@ -1419,6 +1586,7 @@ function WeaponTweakData:_init_data_akm_gold_crew()
 end
 
 function WeaponTweakData:_init_data_deagle_crew()
+	self.deagle_crew.categories = clone(self.deagle.categories)
 	self.deagle_crew.sounds.prefix = "deagle_npc"
 	self.deagle_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.deagle_crew.DAMAGE = 4
@@ -1437,6 +1605,7 @@ function WeaponTweakData:_init_data_deagle_crew()
 end
 
 function WeaponTweakData:_init_data_serbu_crew()
+	self.serbu_crew.categories = clone(self.serbu.categories)
 	self.serbu_crew.sounds.prefix = "serbu_npc"
 	self.serbu_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.serbu_crew.DAMAGE = 5
@@ -1452,6 +1621,7 @@ function WeaponTweakData:_init_data_serbu_crew()
 end
 
 function WeaponTweakData:_init_data_saiga_crew()
+	self.saiga_crew.categories = clone(self.saiga.categories)
 	self.saiga_crew.sounds.prefix = "saiga_npc"
 	self.saiga_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.saiga_crew.DAMAGE = 2.7
@@ -1469,6 +1639,7 @@ function WeaponTweakData:_init_data_saiga_crew()
 end
 
 function WeaponTweakData:_init_data_huntsman_crew()
+	self.huntsman_crew.categories = clone(self.huntsman.categories)
 	self.huntsman_crew.sounds.prefix = "huntsman_npc"
 	self.huntsman_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.huntsman_crew.DAMAGE = 17.4
@@ -1485,6 +1656,7 @@ function WeaponTweakData:_init_data_huntsman_crew()
 end
 
 function WeaponTweakData:_init_data_saw_crew()
+	self.saw_crew.categories = clone(self.saw.categories)
 	self.saw_crew.sounds.prefix = "saw_npc"
 	self.saw_crew.sounds.fire = "Play_npc_saw_handheld_start"
 	self.saw_crew.sounds.stop_fire = "Play_npc_saw_handheld_end"
@@ -1503,6 +1675,7 @@ function WeaponTweakData:_init_data_saw_crew()
 end
 
 function WeaponTweakData:_init_data_usp_crew()
+	self.usp_crew.categories = clone(self.usp.categories)
 	self.usp_crew.sounds.prefix = "usp45_npc"
 	self.usp_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.usp_crew.DAMAGE = 1.25
@@ -1520,6 +1693,7 @@ function WeaponTweakData:_init_data_usp_crew()
 end
 
 function WeaponTweakData:_init_data_g22c_crew()
+	self.g22c_crew.categories = clone(self.g22c.categories)
 	self.g22c_crew.sounds.prefix = "g22_npc"
 	self.g22c_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.g22c_crew.DAMAGE = 1.25
@@ -1537,6 +1711,7 @@ function WeaponTweakData:_init_data_g22c_crew()
 end
 
 function WeaponTweakData:_init_data_judge_crew()
+	self.judge_crew.categories = clone(self.judge.categories)
 	self.judge_crew.sounds.prefix = "judge_npc"
 	self.judge_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.judge_crew.DAMAGE = 4
@@ -1553,6 +1728,7 @@ function WeaponTweakData:_init_data_judge_crew()
 end
 
 function WeaponTweakData:_init_data_m45_crew()
+	self.m45_crew.categories = clone(self.m45.categories)
 	self.m45_crew.sounds.prefix = "m45_npc"
 	self.m45_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.m45_crew.DAMAGE = 2
@@ -1569,6 +1745,7 @@ function WeaponTweakData:_init_data_m45_crew()
 end
 
 function WeaponTweakData:_init_data_s552_crew()
+	self.s552_crew.categories = clone(self.s552.categories)
 	self.s552_crew.sounds.prefix = "sig552_npc"
 	self.s552_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.s552_crew.DAMAGE = 1.26
@@ -1587,6 +1764,7 @@ function WeaponTweakData:_init_data_s552_crew()
 end
 
 function WeaponTweakData:_init_data_ppk_crew()
+	self.ppk_crew.categories = clone(self.ppk.categories)
 	self.ppk_crew.sounds.prefix = "w_ppk_npc"
 	self.ppk_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.ppk_crew.DAMAGE = 1
@@ -1603,6 +1781,7 @@ function WeaponTweakData:_init_data_ppk_crew()
 end
 
 function WeaponTweakData:_init_data_mp7_crew()
+	self.mp7_crew.categories = clone(self.mp7.categories)
 	self.mp7_crew.sounds.prefix = "mp7_npc"
 	self.mp7_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.mp7_crew.DAMAGE = 2
@@ -1624,6 +1803,7 @@ function WeaponTweakData:_init_data_mp7_crew()
 end
 
 function WeaponTweakData:_init_data_scar_crew()
+	self.scar_crew.categories = clone(self.scar.categories)
 	self.scar_crew.sounds.prefix = "scar_npc"
 	self.scar_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.scar_crew.DAMAGE = 1.47
@@ -1640,6 +1820,7 @@ function WeaponTweakData:_init_data_scar_crew()
 end
 
 function WeaponTweakData:_init_data_p226_crew()
+	self.p226_crew.categories = clone(self.p226.categories)
 	self.p226_crew.sounds.prefix = "p226r_npc"
 	self.p226_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.p226_crew.DAMAGE = 1
@@ -1656,6 +1837,7 @@ function WeaponTweakData:_init_data_p226_crew()
 end
 
 function WeaponTweakData:_init_data_hk21_crew()
+	self.hk21_crew.categories = clone(self.hk21.categories)
 	self.hk21_crew.sounds.prefix = "hk23e_npc"
 	self.hk21_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.hk21_crew.DAMAGE = 1.25
@@ -1671,6 +1853,7 @@ function WeaponTweakData:_init_data_hk21_crew()
 end
 
 function WeaponTweakData:_init_data_m249_crew()
+	self.m249_crew.categories = clone(self.m249.categories)
 	self.m249_crew.sounds.prefix = "m249_npc"
 	self.m249_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.m249_crew.DAMAGE = 0.99
@@ -1686,6 +1869,7 @@ function WeaponTweakData:_init_data_m249_crew()
 end
 
 function WeaponTweakData:_init_data_rpk_crew()
+	self.rpk_crew.categories = clone(self.rpk.categories)
 	self.rpk_crew.sounds.prefix = "rpk_npc"
 	self.rpk_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.rpk_crew.DAMAGE = 1.2
@@ -1701,6 +1885,7 @@ function WeaponTweakData:_init_data_rpk_crew()
 end
 
 function WeaponTweakData:_init_data_m95_crew()
+	self.m95_crew.categories = clone(self.m95.categories)
 	self.m95_crew.sounds.prefix = "barrett_npc"
 	self.m95_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.m95_crew.DAMAGE = 22.5
@@ -1718,6 +1903,7 @@ function WeaponTweakData:_init_data_m95_crew()
 end
 
 function WeaponTweakData:_init_data_msr_crew()
+	self.msr_crew.categories = clone(self.msr.categories)
 	self.msr_crew.sounds.prefix = "msr_npc"
 	self.msr_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.msr_crew.DAMAGE = 15
@@ -1734,6 +1920,7 @@ function WeaponTweakData:_init_data_msr_crew()
 end
 
 function WeaponTweakData:_init_data_r93_crew()
+	self.r93_crew.categories = clone(self.r93.categories)
 	self.r93_crew.sounds.prefix = "blazer_npc"
 	self.r93_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.r93_crew.DAMAGE = 18
@@ -1750,6 +1937,7 @@ function WeaponTweakData:_init_data_r93_crew()
 end
 
 function WeaponTweakData:_init_data_fal_crew()
+	self.fal_crew.categories = clone(self.fal.categories)
 	self.fal_crew.sounds.prefix = "fn_fal_npc"
 	self.fal_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.fal_crew.DAMAGE = 1.29
@@ -1766,6 +1954,7 @@ function WeaponTweakData:_init_data_fal_crew()
 end
 
 function WeaponTweakData:_init_data_ben_crew()
+	self.ben_crew.categories = {"shotgun"}
 	self.ben_crew.sounds.prefix = "benelli_m4_npc"
 	self.ben_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.ben_crew.DAMAGE = 2.1
@@ -1784,6 +1973,7 @@ function WeaponTweakData:_init_data_ben_crew()
 end
 
 function WeaponTweakData:_init_data_striker_crew()
+	self.striker_crew.categories = clone(self.striker.categories)
 	self.striker_crew.sounds.prefix = "striker_npc"
 	self.striker_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.striker_crew.DAMAGE = 5
@@ -1804,6 +1994,7 @@ function WeaponTweakData:_init_data_striker_crew()
 end
 
 function WeaponTweakData:_init_data_ksg_crew()
+	self.ksg_crew.categories = clone(self.ksg.categories)
 	self.ksg_crew.sounds.prefix = "keltec_npc"
 	self.ksg_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.ksg_crew.DAMAGE = 8.7
@@ -1820,6 +2011,7 @@ function WeaponTweakData:_init_data_ksg_crew()
 end
 
 function WeaponTweakData:_init_data_gre_m79_crew()
+	self.gre_m79_crew.categories = clone(self.gre_m79.categories)
 	self.gre_m79_crew.sounds.prefix = "gl40_npc"
 	self.gre_m79_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.gre_m79_crew.DAMAGE = 2
@@ -1838,6 +2030,7 @@ function WeaponTweakData:_init_data_gre_m79_crew()
 end
 
 function WeaponTweakData:_init_data_g3_crew()
+	self.g3_crew.categories = clone(self.g3.categories)
 	self.g3_crew.sounds.prefix = "g3_npc"
 	self.g3_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.g3_crew.DAMAGE = 1.43
@@ -1854,6 +2047,7 @@ function WeaponTweakData:_init_data_g3_crew()
 end
 
 function WeaponTweakData:_init_data_galil_crew()
+	self.galil_crew.categories = clone(self.galil.categories)
 	self.galil_crew.sounds.prefix = "galil_npc"
 	self.galil_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.galil_crew.DAMAGE = 1.07
@@ -1870,6 +2064,7 @@ function WeaponTweakData:_init_data_galil_crew()
 end
 
 function WeaponTweakData:_init_data_famas_crew()
+	self.famas_crew.categories = clone(self.famas.categories)
 	self.famas_crew.sounds.prefix = "famas_npc"
 	self.famas_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.famas_crew.DAMAGE = 0.9
@@ -1889,6 +2084,7 @@ function WeaponTweakData:_init_data_famas_crew()
 end
 
 function WeaponTweakData:_init_data_scorpion_crew()
+	self.scorpion_crew.categories = clone(self.scorpion.categories)
 	self.scorpion_crew.sounds.prefix = "skorpion_npc"
 	self.scorpion_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.scorpion_crew.DAMAGE = 2
@@ -1906,6 +2102,7 @@ function WeaponTweakData:_init_data_scorpion_crew()
 end
 
 function WeaponTweakData:_init_data_tec9_crew()
+	self.tec9_crew.categories = clone(self.tec9.categories)
 	self.tec9_crew.sounds.prefix = "tec9_npc"
 	self.tec9_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.tec9_crew.DAMAGE = 2
@@ -1923,6 +2120,7 @@ function WeaponTweakData:_init_data_tec9_crew()
 end
 
 function WeaponTweakData:_init_data_uzi_crew()
+	self.uzi_crew.categories = clone(self.uzi.categories)
 	self.uzi_crew.sounds.prefix = "uzi_npc"
 	self.uzi_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.uzi_crew.DAMAGE = 2
@@ -1944,6 +2142,7 @@ function WeaponTweakData:_init_data_uzi_crew()
 end
 
 function WeaponTweakData:_init_data_jowi_crew()
+	self.jowi_crew.categories = clone(self.jowi.categories)
 	self.jowi_crew.sounds.prefix = "g17_npc"
 	self.jowi_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.jowi_crew.DAMAGE = 1
@@ -1959,6 +2158,7 @@ function WeaponTweakData:_init_data_jowi_crew()
 end
 
 function WeaponTweakData:_init_data_x_1911_crew()
+	self.x_1911_crew.categories = clone(self.x_1911.categories)
 	self.x_1911_crew.sounds.prefix = "c45_npc"
 	self.x_1911_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_1911_crew.DAMAGE = 1
@@ -1974,6 +2174,7 @@ function WeaponTweakData:_init_data_x_1911_crew()
 end
 
 function WeaponTweakData:_init_data_x_b92fs_crew()
+	self.x_b92fs_crew.categories = clone(self.x_b92fs.categories)
 	self.x_b92fs_crew.sounds.prefix = "beretta_npc"
 	self.x_b92fs_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_b92fs_crew.DAMAGE = 1
@@ -1989,6 +2190,7 @@ function WeaponTweakData:_init_data_x_b92fs_crew()
 end
 
 function WeaponTweakData:_init_data_x_deagle_crew()
+	self.x_deagle_crew.categories = clone(self.x_deagle.categories)
 	self.x_deagle_crew.sounds.prefix = "deagle_npc"
 	self.x_deagle_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_deagle_crew.DAMAGE = 1
@@ -2004,6 +2206,7 @@ function WeaponTweakData:_init_data_x_deagle_crew()
 end
 
 function WeaponTweakData:_init_data_g26_crew()
+	self.g26_crew.categories = clone(self.g26.categories)
 	self.g26_crew.sounds.prefix = "g17_npc"
 	self.g26_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.g26_crew.DAMAGE = 1
@@ -2020,6 +2223,7 @@ function WeaponTweakData:_init_data_g26_crew()
 end
 
 function WeaponTweakData:_init_data_spas12_crew()
+	self.spas12_crew.categories = clone(self.spas12.categories)
 	self.spas12_crew.sounds.prefix = "spas_npc"
 	self.spas12_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.spas12_crew.DAMAGE = 3
@@ -2036,6 +2240,7 @@ function WeaponTweakData:_init_data_spas12_crew()
 end
 
 function WeaponTweakData:_init_data_mg42_crew()
+	self.mg42_crew.categories = clone(self.mg42.categories)
 	self.mg42_crew.sounds.prefix = "mg42_npc"
 	self.mg42_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.mg42_crew.DAMAGE = 0.75
@@ -2054,6 +2259,7 @@ function WeaponTweakData:_init_data_mg42_crew()
 end
 
 function WeaponTweakData:_init_data_c96_crew()
+	self.c96_crew.categories = clone(self.c96.categories)
 	self.c96_crew.sounds.prefix = "c96_npc"
 	self.c96_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.c96_crew.DAMAGE = 1
@@ -2069,6 +2275,7 @@ function WeaponTweakData:_init_data_c96_crew()
 end
 
 function WeaponTweakData:_init_data_sterling_crew()
+	self.sterling_crew.categories = clone(self.sterling.categories)
 	self.sterling_crew.sounds.prefix = "sterling_npc"
 	self.sterling_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.sterling_crew.DAMAGE = 2
@@ -2085,6 +2292,7 @@ function WeaponTweakData:_init_data_sterling_crew()
 end
 
 function WeaponTweakData:_init_data_mosin_crew()
+	self.mosin_crew.categories = clone(self.mosin.categories)
 	self.mosin_crew.sounds.prefix = "nagant_npc"
 	self.mosin_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.mosin_crew.DAMAGE = 15
@@ -2102,6 +2310,7 @@ function WeaponTweakData:_init_data_mosin_crew()
 end
 
 function WeaponTweakData:_init_data_m1928_crew()
+	self.m1928_crew.categories = clone(self.m1928.categories)
 	self.m1928_crew.sounds.prefix = "m1928_npc"
 	self.m1928_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.m1928_crew.DAMAGE = 2
@@ -2119,6 +2328,7 @@ function WeaponTweakData:_init_data_m1928_crew()
 end
 
 function WeaponTweakData:_init_data_l85a2_crew()
+	self.l85a2_crew.categories = clone(self.l85a2.categories)
 	self.l85a2_crew.sounds.prefix = "l85_npc"
 	self.l85a2_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.l85a2_crew.DAMAGE = 2
@@ -2137,6 +2347,7 @@ function WeaponTweakData:_init_data_l85a2_crew()
 end
 
 function WeaponTweakData:_init_data_vhs_crew()
+	self.vhs_crew.categories = clone(self.vhs.categories)
 	self.vhs_crew.sounds.prefix = "vhs_npc"
 	self.vhs_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.vhs_crew.DAMAGE = 1.05
@@ -2157,6 +2368,7 @@ function WeaponTweakData:_init_data_vhs_crew()
 end
 
 function WeaponTweakData:_init_data_m134_crew()
+	self.m134_crew.categories = clone(self.m134.categories)
 	self.m134_crew.sounds.prefix = "minigun_npc"
 	self.m134_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.m134_crew.DAMAGE = 2
@@ -2174,6 +2386,7 @@ function WeaponTweakData:_init_data_m134_crew()
 end
 
 function WeaponTweakData:_init_data_rpg7_crew()
+	self.rpg7_crew.categories = clone(self.rpg7.categories)
 	self.rpg7_crew.sounds.prefix = "rpg_npc"
 	self.rpg7_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.rpg7_crew.DAMAGE = 2
@@ -2191,6 +2404,7 @@ function WeaponTweakData:_init_data_rpg7_crew()
 end
 
 function WeaponTweakData:_init_data_hs2000_crew()
+	self.hs2000_crew.categories = clone(self.hs2000.categories)
 	self.hs2000_crew.sounds.prefix = "p226r_npc"
 	self.hs2000_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.hs2000_crew.DAMAGE = 1
@@ -2207,6 +2421,7 @@ function WeaponTweakData:_init_data_hs2000_crew()
 end
 
 function WeaponTweakData:_init_data_cobray_crew()
+	self.cobray_crew.categories = clone(self.cobray.categories)
 	self.cobray_crew.sounds.prefix = "cobray_npc"
 	self.cobray_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.cobray_crew.DAMAGE = 2
@@ -2228,6 +2443,7 @@ function WeaponTweakData:_init_data_cobray_crew()
 end
 
 function WeaponTweakData:_init_data_b682_crew()
+	self.b682_crew.categories = clone(self.b682.categories)
 	self.b682_crew.sounds.prefix = "b682_npc"
 	self.b682_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.b682_crew.DAMAGE = 17.4
@@ -2244,6 +2460,7 @@ function WeaponTweakData:_init_data_b682_crew()
 end
 
 function WeaponTweakData:_init_data_x_g22c_crew()
+	self.x_g22c_crew.categories = clone(self.x_g22c.categories)
 	self.x_g22c_crew.sounds.prefix = "g22_npc"
 	self.x_g22c_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_g22c_crew.DAMAGE = 1.25
@@ -2259,6 +2476,7 @@ function WeaponTweakData:_init_data_x_g22c_crew()
 end
 
 function WeaponTweakData:_init_data_x_g17_crew()
+	self.x_g17_crew.categories = clone(self.x_g17.categories)
 	self.x_g17_crew.sounds.prefix = "g17_npc"
 	self.x_g17_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_g17_crew.DAMAGE = 1.25
@@ -2274,6 +2492,7 @@ function WeaponTweakData:_init_data_x_g17_crew()
 end
 
 function WeaponTweakData:_init_data_x_usp_crew()
+	self.x_usp_crew.categories = clone(self.x_usp.categories)
 	self.x_usp_crew.sounds.prefix = "usp45_npc"
 	self.x_usp_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_usp_crew.DAMAGE = 1.25
@@ -2289,6 +2508,7 @@ function WeaponTweakData:_init_data_x_usp_crew()
 end
 
 function WeaponTweakData:_init_data_flamethrower_mk2_crew()
+	self.flamethrower_mk2_crew.categories = clone(self.flamethrower_mk2.categories)
 	self.flamethrower_mk2_crew.sounds.prefix = "flamethrower_npc"
 	self.flamethrower_mk2_crew.sounds.fire = "flamethrower_npc_fire"
 	self.flamethrower_mk2_crew.sounds.stop_fire = "flamethrower_npc_fire_stop"
@@ -2312,6 +2532,7 @@ function WeaponTweakData:_init_data_flamethrower_mk2_crew()
 end
 
 function WeaponTweakData:_init_data_m32_crew()
+	self.m32_crew.categories = clone(self.m32.categories)
 	self.m32_crew.sounds.prefix = "mgl_npc"
 	self.m32_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.m32_crew.DAMAGE = 2
@@ -2330,6 +2551,7 @@ function WeaponTweakData:_init_data_m32_crew()
 end
 
 function WeaponTweakData:_init_data_aa12_crew()
+	self.aa12_crew.categories = clone(self.aa12.categories)
 	self.aa12_crew.sounds.prefix = "aa12_npc"
 	self.aa12_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.aa12_crew.DAMAGE = 3
@@ -2347,6 +2569,7 @@ function WeaponTweakData:_init_data_aa12_crew()
 end
 
 function WeaponTweakData:_init_data_peacemaker_crew()
+	self.peacemaker_crew.categories = clone(self.peacemaker.categories)
 	self.peacemaker_crew.sounds.prefix = "pmkr45_npc"
 	self.peacemaker_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.peacemaker_crew.DAMAGE = 4
@@ -2364,6 +2587,7 @@ function WeaponTweakData:_init_data_peacemaker_crew()
 end
 
 function WeaponTweakData:_init_data_winchester1874_crew()
+	self.winchester1874_crew.categories = clone(self.winchester1874.categories)
 	self.winchester1874_crew.sounds.prefix = "m1873_npc"
 	self.winchester1874_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.winchester1874_crew.DAMAGE = 10.5
@@ -2382,6 +2606,7 @@ function WeaponTweakData:_init_data_winchester1874_crew()
 end
 
 function WeaponTweakData:_init_data_plainsrider_crew()
+	self.plainsrider_crew.categories = clone(self.plainsrider.categories)
 	self.plainsrider_crew.sounds.prefix = "bow_npc"
 	self.plainsrider_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.plainsrider_crew.use_data.align_place = "left_hand"
@@ -2401,6 +2626,7 @@ function WeaponTweakData:_init_data_plainsrider_crew()
 end
 
 function WeaponTweakData:_init_data_mateba_crew()
+	self.mateba_crew.categories = clone(self.mateba.categories)
 	self.mateba_crew.sounds.prefix = "mateba_npc"
 	self.mateba_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.mateba_crew.DAMAGE = 4
@@ -2417,6 +2643,7 @@ function WeaponTweakData:_init_data_mateba_crew()
 end
 
 function WeaponTweakData:_init_data_asval_crew()
+	self.asval_crew.categories = clone(self.asval.categories)
 	self.asval_crew.sounds.prefix = "val_npc"
 	self.asval_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.asval_crew.DAMAGE = 1.01
@@ -2433,6 +2660,7 @@ function WeaponTweakData:_init_data_asval_crew()
 end
 
 function WeaponTweakData:_init_data_sub2000_crew()
+	self.sub2000_crew.categories = clone(self.sub2000.categories)
 	self.sub2000_crew.sounds.prefix = "sub2k_npc"
 	self.sub2000_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.sub2000_crew.DAMAGE = 1.28
@@ -2450,6 +2678,7 @@ function WeaponTweakData:_init_data_sub2000_crew()
 end
 
 function WeaponTweakData:_init_data_wa2000_crew()
+	self.wa2000_crew.categories = clone(self.wa2000.categories)
 	self.wa2000_crew.sounds.prefix = "lakner_npc"
 	self.wa2000_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.wa2000_crew.DAMAGE = 7.5
@@ -2470,6 +2699,7 @@ function WeaponTweakData:_init_data_wa2000_crew()
 end
 
 function WeaponTweakData:_init_data_polymer_crew()
+	self.polymer_crew.categories = clone(self.polymer.categories)
 	self.polymer_crew.sounds.prefix = "polymer_npc"
 	self.polymer_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.polymer_crew.DAMAGE = 2
@@ -2491,6 +2721,7 @@ function WeaponTweakData:_init_data_polymer_crew()
 end
 
 function WeaponTweakData:_init_data_hunter_crew()
+	self.hunter_crew.categories = clone(self.hunter.categories)
 	self.hunter_crew.sounds.prefix = "hunter_npc"
 	self.hunter_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.hunter_crew.DAMAGE = 2
@@ -2509,6 +2740,7 @@ function WeaponTweakData:_init_data_hunter_crew()
 end
 
 function WeaponTweakData:_init_data_baka_crew()
+	self.baka_crew.categories = clone(self.baka.categories)
 	self.baka_crew.sounds.prefix = "baka_npc"
 	self.baka_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.baka_crew.DAMAGE = 2
@@ -2526,6 +2758,7 @@ function WeaponTweakData:_init_data_baka_crew()
 end
 
 function WeaponTweakData:_init_data_arblast_crew()
+	self.arblast_crew.categories = clone(self.arblast.categories)
 	self.arblast_crew.sounds.prefix = "arblast_npc"
 	self.arblast_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.arblast_crew.DAMAGE = 2
@@ -2544,6 +2777,7 @@ function WeaponTweakData:_init_data_arblast_crew()
 end
 
 function WeaponTweakData:_init_data_frankish_crew()
+	self.frankish_crew.categories = clone(self.frankish.categories)
 	self.frankish_crew.sounds.prefix = "frankish_npc"
 	self.frankish_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.frankish_crew.DAMAGE = 2
@@ -2562,6 +2796,7 @@ function WeaponTweakData:_init_data_frankish_crew()
 end
 
 function WeaponTweakData:_init_data_long_crew()
+	self.long_crew.categories = clone(self.long.categories)
 	self.long_crew.sounds.prefix = "bow_npc"
 	self.long_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.long_crew.use_data.align_place = "left_hand"
@@ -2581,6 +2816,7 @@ function WeaponTweakData:_init_data_long_crew()
 end
 
 function WeaponTweakData:_init_data_par_crew()
+	self.par_crew.categories = clone(self.par.categories)
 	self.par_crew.sounds.prefix = "svinet_npc"
 	self.par_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.par_crew.DAMAGE = 0.99
@@ -2599,6 +2835,7 @@ function WeaponTweakData:_init_data_par_crew()
 end
 
 function WeaponTweakData:_init_data_sparrow_crew()
+	self.sparrow_crew.categories = clone(self.sparrow.categories)
 	self.sparrow_crew.sounds.prefix = "sparrow_npc"
 	self.sparrow_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.sparrow_crew.DAMAGE = 1
@@ -2615,6 +2852,7 @@ function WeaponTweakData:_init_data_sparrow_crew()
 end
 
 function WeaponTweakData:_init_data_model70_crew()
+	self.model70_crew.categories = clone(self.model70.categories)
 	self.model70_crew.sounds.prefix = "model70_npc"
 	self.model70_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.model70_crew.DAMAGE = 15
@@ -2632,6 +2870,7 @@ function WeaponTweakData:_init_data_model70_crew()
 end
 
 function WeaponTweakData:_init_data_m37_crew()
+	self.m37_crew.categories = clone(self.m37.categories)
 	self.m37_crew.sounds.prefix = "m37_npc"
 	self.m37_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.m37_crew.DAMAGE = 5
@@ -2649,6 +2888,7 @@ function WeaponTweakData:_init_data_m37_crew()
 end
 
 function WeaponTweakData:_init_data_china_crew()
+	self.china_crew.categories = clone(self.china.categories)
 	self.china_crew.sounds.prefix = "china_npc"
 	self.china_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.china_crew.DAMAGE = 2
@@ -2667,6 +2907,7 @@ function WeaponTweakData:_init_data_china_crew()
 end
 
 function WeaponTweakData:_init_data_sr2_crew()
+	self.sr2_crew.categories = clone(self.sr2.categories)
 	self.sr2_crew.sounds.prefix = "sr2_npc"
 	self.sr2_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.sr2_crew.DAMAGE = 2
@@ -2688,6 +2929,7 @@ function WeaponTweakData:_init_data_sr2_crew()
 end
 
 function WeaponTweakData:_init_data_x_sr2_crew()
+	self.x_sr2_crew.categories = clone(self.x_sr2.categories)
 	self.x_sr2_crew.sounds.prefix = "sr2_x_npc"
 	self.x_sr2_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_sr2_crew.DAMAGE = 1.25
@@ -2703,6 +2945,7 @@ function WeaponTweakData:_init_data_x_sr2_crew()
 end
 
 function WeaponTweakData:_init_data_pl14_crew()
+	self.pl14_crew.categories = clone(self.pl14.categories)
 	self.pl14_crew.sounds.prefix = "pl14_npc"
 	self.pl14_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.pl14_crew.DAMAGE = 1
@@ -2719,6 +2962,7 @@ function WeaponTweakData:_init_data_pl14_crew()
 end
 
 function WeaponTweakData:_init_data_x_mp5_crew()
+	self.x_mp5_crew.categories = clone(self.x_mp5.categories)
 	self.x_mp5_crew.sounds.prefix = "mp5_x_npc"
 	self.x_mp5_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_mp5_crew.DAMAGE = 1.25
@@ -2734,6 +2978,7 @@ function WeaponTweakData:_init_data_x_mp5_crew()
 end
 
 function WeaponTweakData:_init_data_x_akmsu_crew()
+	self.x_akmsu_crew.categories = clone(self.x_akmsu.categories)
 	self.x_akmsu_crew.sounds.prefix = "akmsu_x_npc"
 	self.x_akmsu_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_akmsu_crew.DAMAGE = 1.25
@@ -2749,6 +2994,7 @@ function WeaponTweakData:_init_data_x_akmsu_crew()
 end
 
 function WeaponTweakData:_init_data_tecci_crew()
+	self.tecci_crew.categories = clone(self.tecci.categories)
 	self.tecci_crew.sounds.prefix = "tecci_npc"
 	self.tecci_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.tecci_crew.DAMAGE = 1.35
@@ -2765,6 +3011,7 @@ function WeaponTweakData:_init_data_tecci_crew()
 end
 
 function WeaponTweakData:_init_data_hajk_crew()
+	self.hajk_crew.categories = clone(self.hajk.categories)
 	self.hajk_crew.sounds.prefix = "hajk_npc"
 	self.hajk_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.hajk_crew.DAMAGE = 1.5
@@ -2782,6 +3029,7 @@ function WeaponTweakData:_init_data_hajk_crew()
 end
 
 function WeaponTweakData:_init_data_boot_crew()
+	self.boot_crew.categories = clone(self.boot.categories)
 	self.boot_crew.sounds.prefix = "boot_npc"
 	self.boot_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.boot_crew.DAMAGE = 11.25
@@ -2798,6 +3046,7 @@ function WeaponTweakData:_init_data_boot_crew()
 end
 
 function WeaponTweakData:_init_data_packrat_crew()
+	self.packrat_crew.categories = clone(self.packrat.categories)
 	self.packrat_crew.sounds.prefix = "packrat_npc"
 	self.packrat_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.packrat_crew.DAMAGE = 1
@@ -2814,6 +3063,7 @@ function WeaponTweakData:_init_data_packrat_crew()
 end
 
 function WeaponTweakData:_init_data_schakal_crew()
+	self.schakal_crew.categories = clone(self.schakal.categories)
 	self.schakal_crew.sounds.prefix = "schakal_npc"
 	self.schakal_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.schakal_crew.DAMAGE = 2
@@ -2835,6 +3085,7 @@ function WeaponTweakData:_init_data_schakal_crew()
 end
 
 function WeaponTweakData:_init_data_desertfox_crew()
+	self.desertfox_crew.categories = clone(self.desertfox.categories)
 	self.desertfox_crew.sounds.prefix = "desertfox_npc"
 	self.desertfox_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.desertfox_crew.DAMAGE = 15
@@ -2854,6 +3105,7 @@ function WeaponTweakData:_init_data_desertfox_crew()
 end
 
 function WeaponTweakData:_init_data_x_packrat_crew()
+	self.x_packrat_crew.categories = clone(self.x_packrat.categories)
 	self.x_packrat_crew.sounds.prefix = "packrat_npc"
 	self.x_packrat_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_packrat_crew.DAMAGE = 1
@@ -2869,6 +3121,7 @@ function WeaponTweakData:_init_data_x_packrat_crew()
 end
 
 function WeaponTweakData:_init_data_rota_crew()
+	self.rota_crew.categories = clone(self.rota.categories)
 	self.rota_crew.sounds.prefix = "rota_npc"
 	self.rota_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.rota_crew.DAMAGE = 5
@@ -2888,6 +3141,7 @@ function WeaponTweakData:_init_data_rota_crew()
 end
 
 function WeaponTweakData:_init_data_arbiter_crew()
+	self.arbiter_crew.categories = clone(self.arbiter.categories)
 	self.arbiter_crew.sounds.prefix = "mgl_npc"
 	self.arbiter_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.arbiter_crew.DAMAGE = 2
@@ -2907,6 +3161,7 @@ function WeaponTweakData:_init_data_arbiter_crew()
 end
 
 function WeaponTweakData:_init_data_contraband_crew()
+	self.contraband_crew.categories = clone(self.contraband.categories)
 	self.contraband_crew.sounds.prefix = "contraband_npc"
 	self.contraband_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.contraband_crew.DAMAGE = 1.47
@@ -2943,6 +3198,7 @@ function WeaponTweakData:_init_data_contraband_crew()
 end
 
 function WeaponTweakData:_init_data_ray_crew()
+	self.ray_crew.categories = clone(self.ray.categories)
 	self.ray_crew.sounds.prefix = "ray_npc"
 	self.ray_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.ray_crew.DAMAGE = 2
@@ -2961,6 +3217,7 @@ function WeaponTweakData:_init_data_ray_crew()
 end
 
 function WeaponTweakData:_init_data_tti_crew()
+	self.tti_crew.categories = clone(self.tti.categories)
 	self.tti_crew.sounds.prefix = "tti_npc"
 	self.tti_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.tti_crew.DAMAGE = 6
@@ -2978,6 +3235,7 @@ function WeaponTweakData:_init_data_tti_crew()
 end
 
 function WeaponTweakData:_init_data_siltstone_crew()
+	self.siltstone_crew.categories = clone(self.siltstone.categories)
 	self.siltstone_crew.sounds.prefix = "siltstone_npc"
 	self.siltstone_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.siltstone_crew.DAMAGE = 2
@@ -2994,6 +3252,7 @@ function WeaponTweakData:_init_data_siltstone_crew()
 end
 
 function WeaponTweakData:_init_data_flint_crew()
+	self.flint_crew.categories = clone(self.flint.categories)
 	self.flint_crew.sounds.prefix = "flint_npc"
 	self.flint_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.flint_crew.DAMAGE = 2
@@ -3010,6 +3269,7 @@ function WeaponTweakData:_init_data_flint_crew()
 end
 
 function WeaponTweakData:_init_data_coal_crew()
+	self.coal_crew.categories = clone(self.coal.categories)
 	self.coal_crew.sounds.prefix = "coal_npc"
 	self.coal_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.coal_crew.DAMAGE = 2
@@ -3027,6 +3287,7 @@ function WeaponTweakData:_init_data_coal_crew()
 end
 
 function WeaponTweakData:_init_data_lemming_crew()
+	self.lemming_crew.categories = clone(self.lemming.categories)
 	self.lemming_crew.sounds.prefix = "lemming_npc"
 	self.lemming_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.lemming_crew.DAMAGE = 1
@@ -3043,6 +3304,7 @@ function WeaponTweakData:_init_data_lemming_crew()
 end
 
 function WeaponTweakData:_init_data_chinchilla_crew()
+	self.chinchilla_crew.categories = clone(self.chinchilla.categories)
 	self.chinchilla_crew.sounds.prefix = "chinchilla_npc"
 	self.chinchilla_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.chinchilla_crew.DAMAGE = 1
@@ -3058,6 +3320,7 @@ function WeaponTweakData:_init_data_chinchilla_crew()
 end
 
 function WeaponTweakData:_init_data_x_chinchilla_crew()
+	self.x_chinchilla_crew.categories = clone(self.x_chinchilla.categories)
 	self.x_chinchilla_crew.sounds.prefix = "chinchilla_npc"
 	self.x_chinchilla_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_chinchilla_crew.DAMAGE = 1
@@ -3073,6 +3336,7 @@ function WeaponTweakData:_init_data_x_chinchilla_crew()
 end
 
 function WeaponTweakData:_init_data_breech_crew()
+	self.breech_crew.categories = clone(self.breech.categories)
 	self.breech_crew.sounds.prefix = "breech_npc"
 	self.breech_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.breech_crew.DAMAGE = 1
@@ -3089,6 +3353,7 @@ function WeaponTweakData:_init_data_breech_crew()
 end
 
 function WeaponTweakData:_init_data_ching_crew()
+	self.ching_crew.categories = clone(self.ching.categories)
 	self.ching_crew.sounds.prefix = "ching_npc"
 	self.ching_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.ching_crew.DAMAGE = 1.28
@@ -3107,6 +3372,7 @@ function WeaponTweakData:_init_data_ching_crew()
 end
 
 function WeaponTweakData:_init_data_erma_crew()
+	self.erma_crew.categories = clone(self.erma.categories)
 	self.erma_crew.sounds.prefix = "erma_npc"
 	self.erma_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.erma_crew.DAMAGE = 2
@@ -3125,6 +3391,7 @@ function WeaponTweakData:_init_data_erma_crew()
 end
 
 function WeaponTweakData:_init_data_ecp_crew()
+	self.ecp_crew.categories = clone(self.ecp.categories)
 	self.ecp_crew.sounds.prefix = "ecp_npc"
 	self.ecp_crew.use_data.selection_index = 2
 	self.ecp_crew.DAMAGE = 2
@@ -3143,6 +3410,7 @@ function WeaponTweakData:_init_data_ecp_crew()
 end
 
 function WeaponTweakData:_init_data_shrew_crew()
+	self.shrew_crew.categories = clone(self.shrew.categories)
 	self.shrew_crew.sounds.prefix = "shrew_npc"
 	self.shrew_crew.use_data.selection_index = 1
 	self.shrew_crew.DAMAGE = 1
@@ -3159,6 +3427,7 @@ function WeaponTweakData:_init_data_shrew_crew()
 end
 
 function WeaponTweakData:_init_data_x_shrew_crew()
+	self.x_shrew_crew.categories = clone(self.x_shrew.categories)
 	self.x_shrew_crew.sounds.prefix = "shrew_npc"
 	self.x_shrew_crew.use_data.selection_index = 2
 	self.x_shrew_crew.DAMAGE = 1.25
@@ -3174,6 +3443,7 @@ function WeaponTweakData:_init_data_x_shrew_crew()
 end
 
 function WeaponTweakData:_init_data_basset_crew()
+	self.basset_crew.categories = clone(self.basset.categories)
 	self.basset_crew.sounds.prefix = "basset_npc"
 	self.basset_crew.use_data.selection_index = 1
 	self.basset_crew.DAMAGE = 3
@@ -3191,6 +3461,7 @@ function WeaponTweakData:_init_data_basset_crew()
 end
 
 function WeaponTweakData:_init_data_x_basset_crew()
+	self.x_basset_crew.categories = clone(self.x_basset.categories)
 	self.x_basset_crew.sounds.prefix = "basset_x_npc"
 	self.x_basset_crew.use_data.selection_index = 2
 	self.x_basset_crew.DAMAGE = 1.25
@@ -3207,6 +3478,7 @@ function WeaponTweakData:_init_data_x_basset_crew()
 end
 
 function WeaponTweakData:_init_data_corgi_crew()
+	self.corgi_crew.categories = clone(self.corgi.categories)
 	self.corgi_crew.sounds.prefix = "corgi_npc"
 	self.corgi_crew.use_data.selection_index = 2
 	self.corgi_crew.DAMAGE = 1.05
@@ -3227,6 +3499,7 @@ function WeaponTweakData:_init_data_corgi_crew()
 end
 
 function WeaponTweakData:_init_data_slap_crew()
+	self.slap_crew.categories = clone(self.slap.categories)
 	self.slap_crew.sounds.prefix = "slap_npc"
 	self.slap_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.slap_crew.DAMAGE = 1
@@ -3249,6 +3522,7 @@ function WeaponTweakData:_init_data_slap_crew()
 end
 
 function WeaponTweakData:_init_data_x_coal_crew()
+	self.x_coal_crew.categories = clone(self.x_coal.categories)
 	self.x_coal_crew.sounds.prefix = "coal_x_npc"
 	self.x_coal_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_coal_crew.DAMAGE = 1.25
@@ -3264,6 +3538,7 @@ function WeaponTweakData:_init_data_x_coal_crew()
 end
 
 function WeaponTweakData:_init_data_x_baka_crew()
+	self.x_baka_crew.categories = clone(self.x_baka.categories)
 	self.x_baka_crew.sounds.prefix = "baka_x_npc"
 	self.x_baka_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_baka_crew.DAMAGE = 1.25
@@ -3279,6 +3554,7 @@ function WeaponTweakData:_init_data_x_baka_crew()
 end
 
 function WeaponTweakData:_init_data_x_cobray_crew()
+	self.x_cobray_crew.categories = clone(self.x_cobray.categories)
 	self.x_cobray_crew.sounds.prefix = "cobray_x_npc"
 	self.x_cobray_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_cobray_crew.DAMAGE = 1.25
@@ -3294,6 +3570,7 @@ function WeaponTweakData:_init_data_x_cobray_crew()
 end
 
 function WeaponTweakData:_init_data_x_erma_crew()
+	self.x_erma_crew.categories = clone(self.x_erma.categories)
 	self.x_erma_crew.sounds.prefix = "erma_x_npc"
 	self.x_erma_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_erma_crew.DAMAGE = 1.25
@@ -3309,6 +3586,7 @@ function WeaponTweakData:_init_data_x_erma_crew()
 end
 
 function WeaponTweakData:_init_data_x_hajk_crew()
+	self.x_hajk_crew.categories = clone(self.x_hajk.categories)
 	self.x_hajk_crew.sounds.prefix = "hajk_x_npc"
 	self.x_hajk_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_hajk_crew.DAMAGE = 1.25
@@ -3324,6 +3602,7 @@ function WeaponTweakData:_init_data_x_hajk_crew()
 end
 
 function WeaponTweakData:_init_data_x_m45_crew()
+	self.x_m45_crew.categories = clone(self.x_m45.categories)
 	self.x_m45_crew.sounds.prefix = "m45_x_npc"
 	self.x_m45_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_m45_crew.DAMAGE = 1.25
@@ -3339,6 +3618,7 @@ function WeaponTweakData:_init_data_x_m45_crew()
 end
 
 function WeaponTweakData:_init_data_x_m1928_crew()
+	self.x_m1928_crew.categories = clone(self.x_m1928.categories)
 	self.x_m1928_crew.sounds.prefix = "m1928_x_npc"
 	self.x_m1928_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_m1928_crew.DAMAGE = 1.25
@@ -3354,6 +3634,7 @@ function WeaponTweakData:_init_data_x_m1928_crew()
 end
 
 function WeaponTweakData:_init_data_x_mac10_crew()
+	self.x_mac10_crew.categories = clone(self.x_mac10.categories)
 	self.x_mac10_crew.sounds.prefix = "mac10_x_npc"
 	self.x_mac10_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_mac10_crew.DAMAGE = 1.25
@@ -3369,6 +3650,7 @@ function WeaponTweakData:_init_data_x_mac10_crew()
 end
 
 function WeaponTweakData:_init_data_x_mp7_crew()
+	self.x_mp7_crew.categories = clone(self.x_mp7.categories)
 	self.x_mp7_crew.sounds.prefix = "mp7_x_npc"
 	self.x_mp7_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_mp7_crew.DAMAGE = 1.25
@@ -3384,6 +3666,7 @@ function WeaponTweakData:_init_data_x_mp7_crew()
 end
 
 function WeaponTweakData:_init_data_x_mp9_crew()
+	self.x_mp9_crew.categories = clone(self.x_mp9.categories)
 	self.x_mp9_crew.sounds.prefix = "mp9_x_npc"
 	self.x_mp9_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_mp9_crew.DAMAGE = 1.25
@@ -3399,6 +3682,7 @@ function WeaponTweakData:_init_data_x_mp9_crew()
 end
 
 function WeaponTweakData:_init_data_x_olympic_crew()
+	self.x_olympic_crew.categories = clone(self.x_olympic.categories)
 	self.x_olympic_crew.sounds.prefix = "m4_olympic_x_npc"
 	self.x_olympic_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_olympic_crew.DAMAGE = 1.25
@@ -3414,6 +3698,7 @@ function WeaponTweakData:_init_data_x_olympic_crew()
 end
 
 function WeaponTweakData:_init_data_x_p90_crew()
+	self.x_p90_crew.categories = clone(self.x_p90.categories)
 	self.x_p90_crew.sounds.prefix = "p90_x_npc"
 	self.x_p90_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_p90_crew.DAMAGE = 1.25
@@ -3429,6 +3714,7 @@ function WeaponTweakData:_init_data_x_p90_crew()
 end
 
 function WeaponTweakData:_init_data_x_polymer_crew()
+	self.x_polymer_crew.categories = clone(self.x_polymer.categories)
 	self.x_polymer_crew.sounds.prefix = "polymer_x_npc"
 	self.x_polymer_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_polymer_crew.DAMAGE = 1.25
@@ -3444,6 +3730,7 @@ function WeaponTweakData:_init_data_x_polymer_crew()
 end
 
 function WeaponTweakData:_init_data_x_schakal_crew()
+	self.x_schakal_crew.categories = clone(self.x_schakal.categories)
 	self.x_schakal_crew.sounds.prefix = "schakal_x_npc"
 	self.x_schakal_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_schakal_crew.DAMAGE = 1.25
@@ -3459,6 +3746,7 @@ function WeaponTweakData:_init_data_x_schakal_crew()
 end
 
 function WeaponTweakData:_init_data_x_scorpion_crew()
+	self.x_scorpion_crew.categories = clone(self.x_scorpion.categories)
 	self.x_scorpion_crew.sounds.prefix = "skorpion_x_npc"
 	self.x_scorpion_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_scorpion_crew.DAMAGE = 1.25
@@ -3474,6 +3762,7 @@ function WeaponTweakData:_init_data_x_scorpion_crew()
 end
 
 function WeaponTweakData:_init_data_x_sterling_crew()
+	self.x_sterling_crew.categories = clone(self.x_sterling.categories)
 	self.x_sterling_crew.sounds.prefix = "sterling_x_npc"
 	self.x_sterling_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_sterling_crew.DAMAGE = 1.25
@@ -3489,6 +3778,7 @@ function WeaponTweakData:_init_data_x_sterling_crew()
 end
 
 function WeaponTweakData:_init_data_x_tec9_crew()
+	self.x_tec9_crew.categories = clone(self.x_tec9.categories)
 	self.x_tec9_crew.sounds.prefix = "tec9_x_npc"
 	self.x_tec9_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_tec9_crew.DAMAGE = 1.25
@@ -3504,6 +3794,7 @@ function WeaponTweakData:_init_data_x_tec9_crew()
 end
 
 function WeaponTweakData:_init_data_x_uzi_crew()
+	self.x_uzi_crew.categories = clone(self.x_uzi.categories)
 	self.x_uzi_crew.sounds.prefix = "uzi_x_npc"
 	self.x_uzi_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_uzi_crew.DAMAGE = 1.25
@@ -3519,6 +3810,7 @@ function WeaponTweakData:_init_data_x_uzi_crew()
 end
 
 function WeaponTweakData:_init_data_x_2006m_crew()
+	self.x_2006m_crew.categories = clone(self.x_2006m.categories)
 	self.x_2006m_crew.sounds.prefix = "mateba_npc"
 	self.x_2006m_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_2006m_crew.DAMAGE = 1
@@ -3534,6 +3826,7 @@ function WeaponTweakData:_init_data_x_2006m_crew()
 end
 
 function WeaponTweakData:_init_data_x_breech_crew()
+	self.x_breech_crew.categories = clone(self.x_breech.categories)
 	self.x_breech_crew.sounds.prefix = "breech_npc"
 	self.x_breech_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_breech_crew.DAMAGE = 1
@@ -3549,6 +3842,7 @@ function WeaponTweakData:_init_data_x_breech_crew()
 end
 
 function WeaponTweakData:_init_data_x_c96_crew()
+	self.x_c96_crew.categories = clone(self.x_c96.categories)
 	self.x_c96_crew.sounds.prefix = "c96_npc"
 	self.x_c96_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_c96_crew.DAMAGE = 1
@@ -3564,6 +3858,7 @@ function WeaponTweakData:_init_data_x_c96_crew()
 end
 
 function WeaponTweakData:_init_data_x_g18c_crew()
+	self.x_g18c_crew.categories = clone(self.x_g18c.categories)
 	self.x_g18c_crew.sounds.prefix = "g18c_x_npc"
 	self.x_g18c_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_g18c_crew.DAMAGE = 1
@@ -3579,6 +3874,7 @@ function WeaponTweakData:_init_data_x_g18c_crew()
 end
 
 function WeaponTweakData:_init_data_x_hs2000_crew()
+	self.x_hs2000_crew.categories = clone(self.x_hs2000.categories)
 	self.x_hs2000_crew.sounds.prefix = "p226r_npc"
 	self.x_hs2000_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_hs2000_crew.DAMAGE = 1
@@ -3594,6 +3890,7 @@ function WeaponTweakData:_init_data_x_hs2000_crew()
 end
 
 function WeaponTweakData:_init_data_x_p226_crew()
+	self.x_p226_crew.categories = clone(self.x_p226.categories)
 	self.x_p226_crew.sounds.prefix = "p226r_npc"
 	self.x_p226_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_p226_crew.DAMAGE = 1
@@ -3609,6 +3906,7 @@ function WeaponTweakData:_init_data_x_p226_crew()
 end
 
 function WeaponTweakData:_init_data_x_pl14_crew()
+	self.x_pl14_crew.categories = clone(self.x_pl14.categories)
 	self.x_pl14_crew.sounds.prefix = "pl14_npc"
 	self.x_pl14_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_pl14_crew.DAMAGE = 1
@@ -3624,6 +3922,7 @@ function WeaponTweakData:_init_data_x_pl14_crew()
 end
 
 function WeaponTweakData:_init_data_x_ppk_crew()
+	self.x_ppk_crew.categories = clone(self.x_ppk.categories)
 	self.x_ppk_crew.sounds.prefix = "w_ppk_npc"
 	self.x_ppk_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_ppk_crew.DAMAGE = 1
@@ -3639,6 +3938,7 @@ function WeaponTweakData:_init_data_x_ppk_crew()
 end
 
 function WeaponTweakData:_init_data_x_rage_crew()
+	self.x_rage_crew.categories = clone(self.x_rage.categories)
 	self.x_rage_crew.sounds.prefix = "rbull_npc"
 	self.x_rage_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_rage_crew.DAMAGE = 1
@@ -3654,6 +3954,7 @@ function WeaponTweakData:_init_data_x_rage_crew()
 end
 
 function WeaponTweakData:_init_data_x_sparrow_crew()
+	self.x_sparrow_crew.categories = clone(self.x_sparrow.categories)
 	self.x_sparrow_crew.sounds.prefix = "sparrow_npc"
 	self.x_sparrow_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_sparrow_crew.DAMAGE = 1
@@ -3669,6 +3970,7 @@ function WeaponTweakData:_init_data_x_sparrow_crew()
 end
 
 function WeaponTweakData:_init_data_x_judge_crew()
+	self.x_judge_crew.categories = clone(self.x_judge.categories)
 	self.x_judge_crew.sounds.prefix = "judge_x_npc"
 	self.x_judge_crew.use_data.selection_index = 2
 	self.x_judge_crew.DAMAGE = 1.25
@@ -3685,6 +3987,7 @@ function WeaponTweakData:_init_data_x_judge_crew()
 end
 
 function WeaponTweakData:_init_data_x_rota_crew()
+	self.x_rota_crew.categories = clone(self.x_rota.categories)
 	self.x_rota_crew.sounds.prefix = "rota_x_npc"
 	self.x_rota_crew.use_data.selection_index = 2
 	self.x_rota_crew.DAMAGE = 1.25
@@ -3701,6 +4004,7 @@ function WeaponTweakData:_init_data_x_rota_crew()
 end
 
 function WeaponTweakData:_init_data_shuno_crew()
+	self.shuno_crew.categories = clone(self.shuno.categories)
 	self.shuno_crew.sounds.prefix = "shuno_npc"
 	self.shuno_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.shuno_crew.DAMAGE = 2
@@ -18873,7 +19177,8 @@ function WeaponTweakData:_init_x_2006m(weapon_data)
 	self.x_2006m = {
 		categories = {
 			"akimbo",
-			"pistol"
+			"pistol",
+			"revolver"
 		},
 		damage_melee = weapon_data.damage_melee_default,
 		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
@@ -19682,7 +19987,8 @@ function WeaponTweakData:_init_x_rage(weapon_data)
 	self.x_rage = {
 		categories = {
 			"akimbo",
-			"pistol"
+			"pistol",
+			"revolver"
 		},
 		damage_melee = weapon_data.damage_melee_default,
 		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
@@ -19886,7 +20192,6 @@ function WeaponTweakData:_init_x_judge(weapon_data)
 			"akimbo",
 			"shotgun"
 		},
-		has_magazine = true,
 		damage_melee = weapon_data.damage_melee_default,
 		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
@@ -20290,6 +20595,10 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.swat_van_turret_module = {
+		sounds = {},
+		auto = {}
+	}
+	self.aa_turret_module = {
 		sounds = {},
 		auto = {}
 	}

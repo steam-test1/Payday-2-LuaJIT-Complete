@@ -230,7 +230,9 @@ function ElementAreaTrigger:project_instigators()
 				"old_wine",
 				"winch_part_2",
 				"winch_part_3",
-				"box_unknown_tag"
+				"box_unknown_tag",
+				"battery",
+				"box_unknown"
 			}
 
 			if table.contains(carry_list, carry_id) then

@@ -13459,22 +13459,41 @@ function BlackMarketGui:open_weapon_buy_menu(data, check_allowed_item_func)
 	local weapon_tweak = tweak_data.weapon
 	local x_id, y_id, x_level, y_level, x_unlocked, y_unlocked, x_skill, y_skill, x_gv, y_gv, x_sn, y_sn = nil
 	local item_categories = {}
+	local sorted_categories = {}
+	local gui_categories = tweak_data.gui.buy_weapon_categories[data.category]
+
+	for i = 1, #gui_categories, 1 do
+		table.insert(item_categories, {})
+	end
+
+	local function test_weapon_categories(weapon_categories, gui_weapon_categories)
+		for i, weapon_category in ipairs(gui_weapon_categories) do
+			if weapon_category ~= (tweak_data.gui.buy_weapon_category_aliases[weapon_categories[i]] or weapon_categories[i]) then
+				return false
+			end
+		end
+
+		return true
+	end
 
 	for _, item in ipairs(blackmarket_items) do
 		local weapon_data = tweak_data.weapon[item.weapon_id]
-		local category = tweak_data.gui.buy_weapon_category_groups[weapon_data.categories[1]] or weapon_data.categories[1]
 
-		if not check_allowed_item_func or check_allowed_item_func(weapon_data) then
-			item_categories[category] = item_categories[category] or {}
-
-			table.insert(item_categories[category], item)
+		for i, gui_category in ipairs(gui_categories) do
+			if test_weapon_categories(weapon_data.categories, gui_category) then
+				table.insert(item_categories[i], item)
+			end
 		end
 	end
 
-	local sorted_categories = {}
+	for i, category in ipairs(item_categories) do
+		local category_key = table.concat(gui_categories[i], "_")
+		item_categories[category_key] = category
+		item_categories[i] = nil
+		sorted_categories[i] = category_key
+	end
 
 	for category, items in pairs(item_categories) do
-		table.insert(sorted_categories, category)
 		table.sort(items, function (x, y)
 			if _G.IS_VR and x.vr_locked ~= y.vr_locked then
 				return not x.vr_locked
@@ -13515,10 +13534,6 @@ function BlackMarketGui:open_weapon_buy_menu(data, check_allowed_item_func)
 			return x_id < y_id
 		end)
 	end
-
-	table.sort(sorted_categories, function (x, y)
-		return #item_categories[y] < #item_categories[x]
-	end)
 
 	local item_data = nil
 

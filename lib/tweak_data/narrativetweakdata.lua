@@ -5101,6 +5101,69 @@ function NarrativeTweakData:init(tweak_data)
 		4,
 		23
 	}
+	self.stages.des = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "des"
+	}
+	self.jobs.des = {
+		name_id = "heist_des",
+		briefing_id = "heist_des_crimenet",
+		contact = "locke",
+		region = "street",
+		jc = 30,
+		chain = {self.stages.des},
+		briefing_event = "Play_rb22_des_cbf_01",
+		debrief_event = nil,
+		crimenet_callouts = {"Play_loc_des_cnc_01"},
+		crimenet_videos = {"contact_locke1"},
+		payout = {
+			50000,
+			125000,
+			250000,
+			550000,
+			700000,
+			700000,
+			700000
+		},
+		contract_cost = {
+			24000,
+			48000,
+			120000,
+			240000,
+			300000,
+			300000,
+			300000
+		},
+		contract_visuals = {}
+	}
+	self.jobs.des.contract_visuals.min_mission_xp = {
+		14200,
+		14200,
+		14200,
+		14200,
+		14200,
+		14200,
+		14200
+	}
+	self.jobs.des.contract_visuals.max_mission_xp = {
+		23200,
+		23200,
+		23200,
+		23200,
+		23200,
+		23200,
+		23200
+	}
+	self.jobs.des.contract_visuals.preview_image = {
+		id = "des",
+		folder = "des"
+	}
+	self.jobs.des.date_added = {
+		2018,
+		4,
+		29
+	}
 	self.stages.lbe_lobby_end = {
 		type = "d",
 		type_id = "heist_type_assault",
@@ -5299,7 +5362,8 @@ function NarrativeTweakData:init(tweak_data)
 		"hvh",
 		"wwh",
 		"brb",
-		"tag"
+		"tag",
+		"des"
 	}
 	self.forced_jobs = {
 		firestarter = true,

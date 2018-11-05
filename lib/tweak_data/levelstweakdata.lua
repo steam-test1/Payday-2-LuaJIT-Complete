@@ -1658,6 +1658,21 @@ function LevelsTweakData:init()
 		ghost_required = true,
 		load_screen = "guis/dlcs/tag/textures/loading/job_tag_df"
 	}
+	self.des = {
+		name_id = "heist_des_hl",
+		briefing_id = "heist_des_briefing",
+		package = "packages/job_des",
+		briefing_dialog = "Play_loc_des_brf",
+		world_name = "narratives/locke/des",
+		intro_event = "Play_loc_des_intro",
+		outro_event = "Play_loc_des_end",
+		music = "heist",
+		cube = "cube_apply_heist_bank",
+		max_bags = 20,
+		ai_group_type = america,
+		narrator = "locke",
+		load_screen = "guis/dlcs/des/textures/loading/job_des_df"
+	}
 	self._level_index = {
 		"welcome_to_the_jungle_1",
 		"welcome_to_the_jungle_1_night",
@@ -1759,7 +1774,8 @@ function LevelsTweakData:init()
 		"hvh",
 		"wwh",
 		"brb",
-		"tag"
+		"tag",
+		"des"
 	}
 
 	if SystemInfo:distribution() == Idstring("STEAM") then

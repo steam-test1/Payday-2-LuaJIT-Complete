@@ -1440,6 +1440,51 @@ function HudIconsTweakData:init()
 			32
 		}
 	}
+	self.equipment_compounda = {
+		texture = "guis/dlcs/des/textures/pd2/hud_pickups_des",
+		texture_rect = {
+			0,
+			0,
+			32,
+			32
+		}
+	}
+	self.equipment_compoundb = {
+		texture = "guis/dlcs/des/textures/pd2/hud_pickups_des",
+		texture_rect = {
+			32,
+			0,
+			32,
+			32
+		}
+	}
+	self.equipment_compoundc = {
+		texture = "guis/dlcs/des/textures/pd2/hud_pickups_des",
+		texture_rect = {
+			0,
+			32,
+			32,
+			32
+		}
+	}
+	self.equipment_compoundd = {
+		texture = "guis/dlcs/des/textures/pd2/hud_pickups_des",
+		texture_rect = {
+			32,
+			32,
+			32,
+			32
+		}
+	}
+	self.equipment_compoundok = {
+		texture = "guis/dlcs/des/textures/pd2/hud_pickups_des",
+		texture_rect = {
+			64,
+			0,
+			32,
+			32
+		}
+	}
 	self.interaction_free = {
 		texture = "guis/textures/hud_icons",
 		texture_rect = {
@@ -12534,6 +12579,105 @@ function HudIconsTweakData:init()
 		texture_rect = {
 			2,
 			350,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_HenrysRock_AllDiffs_D0 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_des",
+		texture_rect = {
+			85,
+			85,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_HenrysRock_AllDiffs_D1 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_des",
+		texture_rect = {
+			170,
+			170,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_HenrysRock_AllDiffs_D2 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_des",
+		texture_rect = {
+			85,
+			0,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_HenrysRock_AllDiffs_D3 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_des",
+		texture_rect = {
+			170,
+			85,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_HenrysRock_AllDiffs_D4 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_des",
+		texture_rect = {
+			255,
+			170,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_HenrysRock_AllDiffs_D5 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_des",
+		texture_rect = {
+			170,
+			0,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_HenrysRock_AllDiffs_D6 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_des",
+		texture_rect = {
+			255,
+			85,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_HenrysRock_AllDiffs_OD_D6 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_des",
+		texture_rect = {
+			0,
+			170,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_HenrysRock_BoomHead = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_des",
+		texture_rect = {
+			0,
+			0,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_HenrysRock_Hidden = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_des",
+		texture_rect = {
+			85,
+			170,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_HenrysRock_TheRedButt = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_des",
+		texture_rect = {
+			0,
+			85,
 			85,
 			85
 		}

@@ -16280,6 +16280,18 @@ function CharacterTweakData:character_map()
 				"ene_locke"
 			}
 		},
+		des = {
+			path = "units/pd2_dlc_des/characters/",
+			list = {
+				"ene_murkywater_no_light_not_security",
+				"ene_murkywater_not_security_1",
+				"ene_murkywater_not_security_2",
+				"ene_male_des",
+				"civ_male_hazmat",
+				"civ_male_des_scientist_01",
+				"civ_male_des_scientist_02"
+			}
+		},
 		tag = {
 			path = "units/pd2_dlc_tag/characters/",
 			list = {"ene_male_commissioner"}

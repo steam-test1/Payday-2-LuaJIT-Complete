@@ -785,6 +785,22 @@ function CarryTweakData:init(tweak_data)
 		unit = "units/payday2/pickups/gen_pku_cage_bag/gen_pku_cage_bag",
 		visual_unit_name = "units/payday2/characters/npc_acc_cage_bag_1/npc_acc_cage_bag_1"
 	}
+	self.battery = {
+		type = "slightly_heavy",
+		name_id = "hud_carry_battery",
+		unit = "units/payday2/pickups/gen_pku_toolbag/gen_pku_toolbag",
+		visual_unit_name = "units/payday2/characters/npc_acc_tools_bag_1/npc_acc_tools_bag_1",
+		AI_carry = {SO_category = "enemies"}
+	}
+	self.box_unknown = {
+		type = "heavy",
+		bag_value = "box_unknown",
+		name_id = "hud_carry_box",
+		skip_exit_secure = false,
+		AI_carry = {SO_category = "enemies"},
+		unit = "units/payday2/pickups/gen_pku_cage_bag/gen_pku_cage_bag",
+		visual_unit_name = "units/payday2/characters/npc_acc_cage_bag_1/npc_acc_cage_bag_1"
+	}
 	self.old_wine = {
 		type = "slightly_heavy",
 		name_id = "hud_carry_old_wine",

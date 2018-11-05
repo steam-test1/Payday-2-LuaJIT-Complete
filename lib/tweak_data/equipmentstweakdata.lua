@@ -639,6 +639,32 @@ function EquipmentsTweakData:init()
 		transfer_quantity = 4,
 		text_id = "hud_int_equipment_stapler"
 	}
+	self.specials.compound_a = {
+		sync_possession = false,
+		icon = "equipment_compounda",
+		text_id = "hud_int_equipment_compound_a"
+	}
+	self.specials.compound_b = {
+		sync_possession = false,
+		icon = "equipment_compoundb",
+		text_id = "hud_int_equipment_compound_b"
+	}
+	self.specials.compound_c = {
+		sync_possession = false,
+		icon = "equipment_compoundc",
+		text_id = "hud_int_equipment_compound_c"
+	}
+	self.specials.compound_d = {
+		sync_possession = false,
+		icon = "equipment_compoundd",
+		text_id = "hud_int_equipment_compound_d"
+	}
+	self.specials.concoction = {
+		action_message = "thermite_obtained",
+		icon = "equipment_thermite",
+		sync_possession = true,
+		text_id = "hud_int_equipment_concoction"
+	}
 	self.specials.briefcase = {
 		sync_possession = true,
 		icon = "equipment_briefcase",

@@ -10427,7 +10427,7 @@ function MenuChooseWeaponRewardInitiator:modify_node(original_node, data)
 					data.loot_table = loot_table
 
 					for _, category in ipairs(weapon_tweak[weapon_data.weapon_id].categories) do
-						category = tweak_data.gui.buy_weapon_category_groups[category] or category
+						category = tweak_data.gui.buy_weapon_category_aliases[category] or category
 						items[category] = items[category] or {}
 
 						table.insert(items[category], data)

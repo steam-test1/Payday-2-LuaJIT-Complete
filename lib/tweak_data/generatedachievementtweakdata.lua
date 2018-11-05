@@ -8554,6 +8554,127 @@ function init_auto_generated_achievement_data(tags)
 				tags.contracts.events
 			}
 		},
+		des_1 = {
+			additional_id = true,
+			sort_name = "C_Locke_H_HenrysRock_AllDiffs_D0",
+			icon_id = "C_Locke_H_HenrysRock_AllDiffs_D0",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		des_10 = {
+			additional_id = true,
+			sort_name = "C_Locke_H_HenrysRock_Hidden",
+			icon_id = "C_Locke_H_HenrysRock_Hidden",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		des_11 = {
+			sort_name = "C_Locke_H_HenrysRock_BoomHead",
+			icon_id = "C_Locke_H_HenrysRock_BoomHead",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.tactics.killer,
+				tags.contracts.locke
+			}
+		},
+		des_2 = {
+			additional_id = true,
+			sort_name = "C_Locke_H_HenrysRock_AllDiffs_D1",
+			icon_id = "C_Locke_H_HenrysRock_AllDiffs_D1",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.hard,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		des_3 = {
+			additional_id = true,
+			sort_name = "C_Locke_H_HenrysRock_AllDiffs_D2",
+			icon_id = "C_Locke_H_HenrysRock_AllDiffs_D2",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.very_hard,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		des_4 = {
+			additional_id = true,
+			sort_name = "C_Locke_H_HenrysRock_AllDiffs_D3",
+			icon_id = "C_Locke_H_HenrysRock_AllDiffs_D3",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		des_5 = {
+			additional_id = true,
+			sort_name = "C_Locke_H_HenrysRock_AllDiffs_D4",
+			icon_id = "C_Locke_H_HenrysRock_AllDiffs_D4",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.mayhem,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		des_6 = {
+			additional_id = true,
+			sort_name = "C_Locke_H_HenrysRock_AllDiffs_D5",
+			icon_id = "C_Locke_H_HenrysRock_AllDiffs_D5",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_wish,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		des_7 = {
+			additional_id = true,
+			sort_name = "C_Locke_H_HenrysRock_AllDiffs_D6",
+			icon_id = "C_Locke_H_HenrysRock_AllDiffs_D6",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_sentence,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		des_8 = {
+			additional_id = true,
+			sort_name = "C_Locke_H_HenrysRock_AllDiffs_OD_D6",
+			icon_id = "C_Locke_H_HenrysRock_AllDiffs_OD_D6",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_sentence,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		des_9 = {
+			additional_id = true,
+			sort_name = "C_Locke_H_HenrysRock_TheRedButt",
+			icon_id = "C_Locke_H_HenrysRock_TheRedButt",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
 		eng_1 = {
 			need_unlock_icons = true,
 			icon_id = "Other_H_Any_TheOnlyOne",

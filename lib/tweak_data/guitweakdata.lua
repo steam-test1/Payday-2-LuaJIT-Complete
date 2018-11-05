@@ -720,13 +720,40 @@ function GuiTweakData:init()
 	self.mod_preview_max_fov = 3
 	self.stats_present_multiplier = 10
 	self.armor_damage_shake_base = 1.1
-	self.buy_weapon_category_groups = {
+	self.buy_weapon_category_aliases = {
 		flamethrower = "wpn_special",
 		grenade_launcher = "wpn_special",
 		bow = "wpn_special",
 		crossbow = "wpn_special",
 		minigun = "wpn_special",
 		saw = "wpn_special"
+	}
+	self.buy_weapon_categories = {
+		primaries = {
+			{"assault_rifle"},
+			{"shotgun"},
+			{"lmg"},
+			{"snp"},
+			{
+				"akimbo",
+				"pistol"
+			},
+			{
+				"akimbo",
+				"smg"
+			},
+			{
+				"akimbo",
+				"shotgun"
+			},
+			{"wpn_special"}
+		},
+		secondaries = {
+			{"pistol"},
+			{"smg"},
+			{"wpn_special"},
+			{"shotgun"}
+		}
 	}
 	self.LONGEST_CHAR_NAME = "JOHN WICK"
 	self.crime_net.regions = {

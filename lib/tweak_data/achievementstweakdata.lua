@@ -4299,6 +4299,47 @@ function AchievementsTweakData:init(tweak_data)
 			job = "tag",
 			difficulty = sm_wish_and_above
 		},
+		des_1 = {
+			award = "des_1",
+			job = "des",
+			difficulty = normal_and_above
+		},
+		des_2 = {
+			award = "des_2",
+			job = "des",
+			difficulty = hard_and_above
+		},
+		des_3 = {
+			award = "des_3",
+			job = "des",
+			difficulty = veryhard_and_above
+		},
+		des_4 = {
+			award = "des_4",
+			job = "des",
+			difficulty = overkill_and_above
+		},
+		des_5 = {
+			award = "des_5",
+			job = "des",
+			difficulty = easywish_and_above
+		},
+		des_6 = {
+			award = "des_6",
+			job = "des",
+			difficulty = deathwish_and_above
+		},
+		des_7 = {
+			award = "des_7",
+			job = "des",
+			difficulty = sm_wish_and_above
+		},
+		des_8 = {
+			award = "des_8",
+			one_down = true,
+			job = "des",
+			difficulty = sm_wish_and_above
+		},
 		cac_4 = {
 			loud = true,
 			award = "cac_4",
@@ -5078,6 +5119,126 @@ function AchievementsTweakData:init(tweak_data)
 		story_very_hard_scarface = {
 			job = "friend",
 			story = "story_very_hard_scarface",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_alesso = {
+			job = "arena",
+			story = "story_very_hard_alesso",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_counterfeit = {
+			job = "pal",
+			story = "story_very_hard_counterfeit",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_first_world_bank = {
+			job = "red2",
+			story = "story_very_hard_first_world_bank",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_murky_station = {
+			job = "dark",
+			story = "story_very_hard_murky_station",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_boiling_point = {
+			job = "mad",
+			story = "story_very_hard_boiling_point",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_goat_sim = {
+			job = "peta",
+			story = "story_very_hard_goat_sim",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_santas_workshop = {
+			job = "cane",
+			story = "story_very_hard_santas_workshop",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_car_shop = {
+			job = "cage",
+			story = "story_very_hard_car_shop",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_biker_heist = {
+			job = "born",
+			story = "story_very_hard_biker_heist",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_panic_room = {
+			job = "flat",
+			story = "story_very_hard_panic_room",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_brooklyn_10_10 = {
+			job = "spa",
+			story = "story_very_hard_brooklyn_10_10",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_yacht = {
+			job = "fish",
+			story = "story_very_hard_yacht",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_undercover = {
+			job = "man",
+			story = "story_very_hard_undercover",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_slaughterhouse = {
+			job = "dinner",
+			story = "story_very_hard_slaughterhouse",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_beneath_the_mountain = {
+			job = "pbr",
+			story = "story_very_hard_beneath_the_mountain",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_birth_of_sky = {
+			job = "pbr2",
+			story = "story_very_hard_birth_of_sky",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_heat_street = {
+			job = "run",
+			story = "story_very_hard_heat_street",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_green_bridge = {
+			job = "glace",
+			story = "story_very_hard_green_bridge",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_alaskan_deal = {
+			job = "wwh",
+			story = "story_very_hard_alaskan_deal",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_diamond_heist = {
+			job = "dah",
+			story = "story_very_hard_diamond_heist",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_reservoir_dogs = {
+			job = "rvd",
+			story = "story_very_hard_reservoir_dogs",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_brooklyn_bank = {
+			job = "brb",
+			story = "story_very_hard_brooklyn_bank",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_breakin_feds = {
+			job = "tag",
+			story = "story_very_hard_breakin_feds",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_henrys_rock = {
+			job = "des",
+			story = "story_very_hard_henrys_rock",
 			difficulty = veryhard_and_above
 		},
 		challenge_srtd = {

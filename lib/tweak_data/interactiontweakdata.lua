@@ -4336,6 +4336,8 @@ function InteractionTweakData:init(tweak_data)
 		end
 	end
 
+	self.jiro_no_interaction = clone(self.talk_to_heister)
+	self.jiro_no_interaction.interact_distance = 0
 	self.press_start_weapon_course = {
 		text_id = "hud_press_start_weapon_course",
 		interact_distance = 150
@@ -5237,6 +5239,191 @@ function InteractionTweakData:init(tweak_data)
 		equipment_consume = true,
 		interact_distance = 150,
 		start_active = false
+	}
+	self.hold_charge_gun = {
+		icon = "equipment_hack_ipad",
+		text_id = "hold_interact_charge_gun",
+		timer = 5,
+		sound_start = "bar_keyboard",
+		sound_interupt = "bar_keyboard_cancel",
+		sound_done = "bar_keyboard_finished",
+		axis = "y"
+	}
+	self.hold_mix_concoction = {
+		text_id = "hud_int_hold_mix_concoction",
+		action_text_id = "hud_action_mixing_concoction",
+		special_equipment_block = "concoction",
+		interact_distance = 150,
+		timer = 3,
+		start_active = false,
+		sound_start = "bar_mix_compounds_start",
+		sound_interupt = "bar_mix_compounds_cancel",
+		sound_done = "bar_mix_compounds_finish"
+	}
+	self.hold_take_concoction = {
+		text_id = "hud_int_hold_take_concoction",
+		action_text_id = "hud_action_taking_concoction",
+		special_equipment_block = "concoction",
+		interact_distance = 150,
+		timer = 1,
+		start_active = false,
+		sound_done = "liquid_nitrogen_pick_up"
+	}
+	self.apply_concoction_paste = {
+		text_id = "hud_int_hold_ignite_concoction",
+		action_text_id = "hud_action_ignite_concoction",
+		special_equipment = "concoction",
+		equipment_text_id = "hud_int_need_concoction_paste",
+		equipment_consume = true,
+		start_active = false,
+		contour = "interactable_icon",
+		timer = 2,
+		sound_start = "bar_thermal_lance_fix",
+		sound_interupt = "bar_thermal_lance_fix_cancel",
+		sound_done = "bar_thermal_lance_fix_finished"
+	}
+	self.push_button_des = {
+		text_id = "hud_int_push_button",
+		axis = "z"
+	}
+	self.push_button_secret = {
+		text_id = "hud_int_push_button",
+		interact_distance = 90,
+		axis = "z"
+	}
+	self.hold_push_button = {
+		text_id = "hud_int_push_button",
+		action_text_id = "hud_action_pushing_button",
+		axis = "z"
+	}
+	self.hold_move_crane = {
+		text_id = "hud_int_hold_move_crane",
+		action_text_id = "hud_action_moving_crane",
+		timer = 2,
+		sound_start = "bar_crane_control_panel",
+		sound_interupt = "bar_crane_control_panel_cancel",
+		sound_done = "bar_crane_control_panel_finished"
+	}
+	self.hold_search_documents = {
+		text_id = "hud_int_hold_search_documents",
+		action_text_id = "hud_int_hold_action_searching_documents",
+		timer = 2,
+		sound_start = "bar_shuffle_papers",
+		sound_interupt = "bar_shuffle_papers_cancel",
+		sound_done = "bar_shuffle_papers_finished"
+	}
+	self.des_take_unknown = {
+		text_id = "hud_int_hold_take_box",
+		action_text_id = "hud_action_taking_box",
+		timer = 2,
+		interact_distance = 200,
+		start_active = false
+	}
+	self.hold_add_compound_a = {
+		text_id = "hud_int_hold_add_compound_a",
+		action_text_id = "hud_action_adding_compound",
+		equipment_text_id = "hint_no_compound_a",
+		special_equipment = "compound_a",
+		timer = 2,
+		equipment_consume = true,
+		interact_distance = 150,
+		start_active = false,
+		sound_start = "liquid_pour",
+		sound_interupt = "liquid_pour_stop",
+		sound_done = "liquid_pour_stop"
+	}
+	self.hold_add_compound_b = {
+		text_id = "hud_int_hold_add_compound_b",
+		action_text_id = "hud_action_adding_compound",
+		equipment_text_id = "hint_no_compound_b",
+		special_equipment = "compound_b",
+		timer = 2,
+		equipment_consume = true,
+		interact_distance = 150,
+		start_active = false,
+		sound_start = "liquid_pour",
+		sound_interupt = "liquid_pour_stop",
+		sound_done = "liquid_pour_stop"
+	}
+	self.hold_add_compound_c = {
+		text_id = "hud_int_hold_add_compound_c",
+		action_text_id = "hud_action_adding_compound",
+		equipment_text_id = "hint_no_compound_c",
+		special_equipment = "compound_c",
+		timer = 2,
+		equipment_consume = true,
+		interact_distance = 150,
+		start_active = false,
+		sound_start = "liquid_pour",
+		sound_interupt = "liquid_pour_stop",
+		sound_done = "liquid_pour_stop"
+	}
+	self.hold_add_compound_d = {
+		text_id = "hud_int_hold_add_compound_d",
+		action_text_id = "hud_action_adding_compound",
+		equipment_text_id = "hint_no_compound_d",
+		special_equipment = "compound_d",
+		timer = 2,
+		equipment_consume = true,
+		interact_distance = 150,
+		start_active = false,
+		sound_start = "liquid_pour",
+		sound_interupt = "liquid_pour_stop",
+		sound_done = "liquid_pour_stop"
+	}
+	self.hold_take_compound_a = {
+		text_id = "hud_int_hold_take_compound_a",
+		special_equipment_block = "compound_a",
+		interact_distance = 150,
+		start_active = false,
+		sound_done = "liquid_nitrogen_pick_up"
+	}
+	self.hold_take_compound_b = {
+		text_id = "hud_int_hold_take_compound_b",
+		special_equipment_block = "compound_b",
+		interact_distance = 150,
+		start_active = false,
+		sound_done = "liquid_nitrogen_pick_up"
+	}
+	self.hold_take_compound_c = {
+		text_id = "hud_int_hold_take_compound_c",
+		special_equipment_block = "compound_c",
+		interact_distance = 150,
+		start_active = false,
+		sound_done = "liquid_nitrogen_pick_up"
+	}
+	self.hold_take_compound_d = {
+		text_id = "hud_int_hold_take_compound_d",
+		special_equipment_block = "compound_d",
+		interact_distance = 150,
+		start_active = false,
+		sound_done = "liquid_nitrogen_pick_up"
+	}
+	self.hold_take_battery = {
+		text_id = "hud_int_hold_take_battery",
+		action_text_id = "hud_int_hold_action_taking_battery",
+		interact_distance = 210,
+		timer = 2,
+		start_active = false
+	}
+	self.hold_remove_battery = {
+		text_id = "hud_int_hold_remove_battery",
+		action_text_id = "hud_int_hold_action_removing_battery",
+		interact_distance = 200,
+		start_active = false
+	}
+	self.hold_aim_laser = {
+		text_id = "hud_int_hold_aim_laser",
+		action_text_id = "hud_int_hold_action_aiming_laser",
+		interact_distance = 150,
+		timer = 2,
+		start_active = false
+	}
+	self.hold_fire_laser = {
+		text_id = "hud_int_press_fire_laser",
+		interact_distance = 150,
+		start_active = false,
+		sound_done = "bar_laser_weapon_button_push_finished"
 	}
 	self.hold_choose_hand_left = {
 		text_id = "hud_int_hold_choose_hand_left",

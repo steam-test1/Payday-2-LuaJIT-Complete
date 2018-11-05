@@ -528,7 +528,14 @@ function UnitNetworkHandler:reload_weapon_cop(unit, sender)
 		return
 	end
 
-	unit:inventory():equipped_unit():base():ammo_base():set_ammo_remaining_in_clip(0)
+	local inventory = alive(unit) and unit:inventory()
+	local weapon = inventory and inventory:equipped_unit()
+	local weapon_base = weapon and weapon:base()
+	local ammo_base = weapon_base and weapon_base:ammo_base()
+
+	if ammo_base then
+		ammo_base:set_ammo_remaining_in_clip(0)
+	end
 end
 
 function UnitNetworkHandler:reload_weapon_interupt(unit, sender)
@@ -629,6 +636,14 @@ function UnitNetworkHandler:sync_body_damage_bullet(body, attacker, normal_yaw, 
 	mrotation.y(tmp_rot1, direction)
 	body:extension().damage:damage_bullet(attacker, normal, position, direction, 1)
 	body:extension().damage:damage_damage(attacker, normal, position, direction, damage / 163.84)
+
+	local weapon_categories = attacker and alive(attacker) and attacker:inventory() and attacker:inventory():equipped_unit() and attacker:inventory():equipped_unit():base():categories()
+
+	if weapon_categories then
+		for _, category in ipairs(weapon_categories) do
+			body:extension().damage:damage_bullet_type(category, attacker, normal, position, direction, 1)
+		end
+	end
 end
 
 function UnitNetworkHandler:sync_body_damage_lock(body, damage, sender)
