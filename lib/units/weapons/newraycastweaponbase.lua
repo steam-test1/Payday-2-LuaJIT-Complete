@@ -260,30 +260,40 @@ function NewRaycastWeaponBase:apply_texture_switches()
 
 		for part_id, texture_data in pairs(self._texture_switches) do
 			if self._parts_texture_switches[part_id] ~= texture_data then
-				switch_material = nil
+				local switch_materials = {}
 				texture_switch = parts_tweak[part_id] and parts_tweak[part_id].texture_switch
 				part_data = self._parts and self._parts[part_id]
 
 				if texture_switch and part_data then
 					unit = part_data.unit
-					material_ids = Idstring(texture_switch.material)
 					material_config = unit:get_objects_by_type(Idstring("material"))
+					local ids = {}
+
+					if type(texture_switch.material) == "table" then
+						for _, name in ipairs(texture_switch.material) do
+							table.insert(ids, Idstring(name))
+						end
+					else
+						table.insert(ids, Idstring(texture_switch.material))
+					end
 
 					for _, material in ipairs(material_config) do
-						if material:name() == material_ids then
-							switch_material = material
-
-							break
+						for _, material_name in ipairs(ids) do
+							if material:name() == material_name then
+								table.insert(switch_materials, material)
+							end
 						end
 					end
 
-					if switch_material then
+					if #switch_materials > 0 then
 						local texture_id = managers.blackmarket:get_texture_switch_from_data(texture_data, part_id)
 
 						if texture_id and DB:has(Idstring("texture"), texture_id) then
 							local retrieved_texture = TextureCache:retrieve(texture_id, "normal")
 
-							Application:set_material_texture(switch_material, Idstring(texture_switch.channel), retrieved_texture)
+							for _, switch_material in ipairs(switch_materials) do
+								Application:set_material_texture(switch_material, Idstring(texture_switch.channel), retrieved_texture)
+							end
 
 							if self._parts_texture_switches[part_id] then
 								TextureCache:unretrieve(Idstring(self._parts_texture_switches[part_id]))

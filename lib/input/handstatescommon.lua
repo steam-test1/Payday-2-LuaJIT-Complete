@@ -51,3 +51,19 @@ function M:toggle_menu_condition(hand, key_map)
 	return hand == default_hand
 end
 
+function M:movement_condition(hand, key_map, connection_name)
+	local default_hand = managers.vr:get_setting("default_weapon_hand") == "right" and 1 or 2
+
+	for key, connections in pairs(key_map) do
+		if table.contains(connections, connection_name) then
+			if hand == default_hand then
+				return false
+			else
+				return "exclusive"
+			end
+		end
+	end
+
+	return true
+end
+

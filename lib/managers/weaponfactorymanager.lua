@@ -818,6 +818,7 @@ function WeaponFactoryManager:clbk_part_unit_loaded(task_data, status, u_type, u
 	for part_id, part in pairs(task_data.parts) do
 		if alive(part.unit) then
 			part.unit:set_enabled(true)
+			self:_set_visibility(part_id, part)
 		end
 	end
 
@@ -828,6 +829,28 @@ function WeaponFactoryManager:clbk_part_unit_loaded(task_data, status, u_type, u
 	end
 
 	task_data.done_cb(task_data.parts, task_data.blueprint)
+end
+
+function WeaponFactoryManager:_set_visibility(part_id, part)
+	local visibility = self:_visibility_from_part_id(part_id)
+
+	if visibility then
+		for _, group in ipairs(visibility) do
+			if not group.condition or group.condition() then
+				for object_name, visible in pairs(group.objects) do
+					local object = part.unit:get_object(Idstring(object_name))
+
+					object:set_visibility(visible)
+				end
+			end
+		end
+	end
+end
+
+function WeaponFactoryManager:_visibility_from_part_id(part_id)
+	local factory = tweak_data.weapon.factory
+
+	return factory.parts[part_id] and factory.parts[part_id].visibility
 end
 
 function WeaponFactoryManager:_spawn_and_link_unit(u_name, a_obj, third_person, link_to_unit)

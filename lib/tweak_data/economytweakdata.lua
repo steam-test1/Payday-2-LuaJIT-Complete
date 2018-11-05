@@ -909,6 +909,41 @@ function EconomyTweakData:init()
 			"cas_gensec"
 		}}
 	}
+	self.contents.css_01 = {
+		def_id = 10050,
+		contains = {
+			weapon_skins = {
+				"x_1911_css",
+				"contraband_css",
+				"par_css",
+				"breech_css",
+				"c96_css",
+				"m95_css",
+				"m37_css",
+				"sparrow_css",
+				"g26_css",
+				"flint_css",
+				"coal_css",
+				"r93_css",
+				"ching_css",
+				"lemming_css",
+				"ppk_css"
+			},
+			contents = {"css_01_legendary"}
+		}
+	}
+	self.contents.css_01_legendary = {
+		def_id = 10051,
+		contains = {weapon_skins = {"polymer_css"}},
+		rarity = "legendary"
+	}
+	self.bundles.css_01 = {
+		def_id = 30006,
+		dlc_id = "802500",
+		quality = "mint",
+		bonus = false,
+		contains = {weapon_skins = table.list_add(self.contents.css_01.contains.weapon_skins, self.contents.css_01_legendary.contains.weapon_skins)}
+	}
 	self.safes.overkill_01 = {
 		def_id = 50000,
 		promo = true,
@@ -1160,6 +1195,16 @@ function EconomyTweakData:init()
 		texture_bundle_folder = "cash/safes/cas",
 		market_link = "https://steamcommunity.com/market/listings/218620/Community%20Armor%20Safe%201"
 	}
+	self.safes.css_01 = {
+		free = true,
+		drill = "css_01",
+		content = "css_01",
+		bundle = "css_01",
+		name_id = "bm_menu_safe_css_01",
+		unit_name = "units/payday2_cash/safes/css/safe/eco_safe_css",
+		texture_bundle_folder = "cash/safes/css",
+		market_link = "https://steamcommunity.com/market/listings/218620/Community%20Safe%206"
+	}
 	self.drills.overkill_01 = {
 		safe = "overkill_01",
 		def_id = 70000,
@@ -1332,6 +1377,10 @@ function EconomyTweakData:init()
 	self.drills.cas_01 = {
 		safe = "cas_01",
 		unit_name = "units/payday2_cash/safes/cas/drill/eco_drill_cas"
+	}
+	self.drills.css_01 = {
+		safe = "css_01",
+		unit_name = "units/payday2_cash/safes/css/drill/eco_drill_css"
 	}
 	self.bonuses = {concealment_p1 = {}}
 	self.bonuses.concealment_p1.name_id = "bm_menu_bonus_concealment"

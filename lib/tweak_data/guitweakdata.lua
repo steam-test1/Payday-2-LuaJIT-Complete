@@ -4935,6 +4935,16 @@ function GuiTweakData:init()
 	self.new_heists = {limit = 5}
 
 	table.insert(self.new_heists, {
+		name_id = "menu_nh_css",
+		texture_path = "guis/textures/pd2/new_heists/css",
+		url = "http://steamcommunity.com/games/218620/announcements/detail/1671268301110805355"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_ami",
+		texture_path = "guis/textures/pd2/new_heists/ami",
+		url = "http://steamcommunity.com/games/218620/announcements/detail/1664512272293565206"
+	})
+	table.insert(self.new_heists, {
 		name_id = "menu_nh_fgl",
 		texture_path = "guis/textures/pd2/new_heists/fgl",
 		url = "http://steamcommunity.com/games/218620/announcements/detail/2784778964087853978"

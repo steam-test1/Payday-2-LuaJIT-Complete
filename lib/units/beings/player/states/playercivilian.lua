@@ -125,7 +125,7 @@ function PlayerCivilian:_check_action_interact(t, input)
 		local action_forbidden = self:chk_action_forbidden("interact") or self._unit:base():stats_screen_visible() or self:_interacting() or self._ext_movement:has_carry_restriction() or self:_on_zipline()
 
 		if not action_forbidden then
-			new_action, timer, interact_object = managers.interaction:interact(self._unit)
+			new_action, timer, interact_object = managers.interaction:interact(self._unit, input.data, self._interact_hand)
 
 			if timer then
 				new_action = true

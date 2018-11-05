@@ -827,8 +827,11 @@ function WeaponFactoryTweakData:_init_sights()
 			"wpn_fps_upg_o_xpsg33_magnifier"
 		},
 		texture_switch = {
-			material = "sight",
-			channel = "diffuse_texture"
+			channel = "diffuse_texture",
+			material = {
+				"sight",
+				"screen"
+			}
 		},
 		material_parameters = {gfx_reddot = {{
 			id = Idstring("holo_reticle_scale"),
@@ -1156,8 +1159,11 @@ function WeaponFactoryTweakData:_init_sights()
 		},
 		forbids = {"wpn_fps_upg_o_xpsg33_magnifier"},
 		texture_switch = {
-			material = "gfx_reddot1",
-			channel = "diffuse_texture"
+			channel = "diffuse_texture",
+			material = {
+				"gfx_reddot1",
+				"screen"
+			}
 		}
 	}
 	self.parts.wpn_fps_upg_o_leupold = {
@@ -1166,7 +1172,7 @@ function WeaponFactoryTweakData:_init_sights()
 		dlc = "gage_pack_snp",
 		a_obj = "a_o",
 		type = "sight",
-		reticle_obj = "g_reticle",
+		reticle_obj = "g_reddot",
 		name_id = "bm_wp_upg_o_leupold",
 		unit = "units/pd2_dlc_gage_snp/weapons/wpn_fps_upg_o_leupold/wpn_fps_upg_o_leupold",
 		pcs = {},
@@ -1194,8 +1200,11 @@ function WeaponFactoryTweakData:_init_sights()
 		},
 		forbids = {"wpn_fps_upg_o_xpsg33_magnifier"},
 		texture_switch = {
-			material = "gfx_reddot1",
-			channel = "diffuse_texture"
+			channel = "diffuse_texture",
+			material = {
+				"gfx_reddot1",
+				"screen"
+			}
 		}
 	}
 	self.parts.wpn_fps_upg_o_45iron.third_unit = "units/pd2_dlc_gage_snp/weapons/wpn_fps_upg_o_45iron/wpn_third_upg_o_45iron"
@@ -1340,6 +1349,7 @@ end
 function WeaponFactoryTweakData:_init_content_dlc2_dec16()
 	self.parts.wpn_fps_upg_o_acog = {
 		type = "sight",
+		reticle_obj = "g_reddot",
 		a_obj = "a_o",
 		name_id = "bm_wp_upg_o_acog",
 		unit = "units/pd2_dlc2/weapons/wpn_fps_upg_o_acog/wpn_fps_upg_o_acog",
@@ -1516,8 +1526,11 @@ function WeaponFactoryTweakData:_init_content_dlc2_dec16()
 			"wpn_fps_upg_o_xpsg33_magnifier"
 		},
 		texture_switch = {
-			material = "gfx_reddot",
-			channel = "diffuse_texture"
+			channel = "diffuse_texture",
+			material = {
+				"gfx_reddot",
+				"screen"
+			}
 		},
 		third_unit = "units/pd2_dlc2/weapons/wpn_fps_upg_o_acog/wpn_third_upg_o_acog"
 	}
@@ -2182,6 +2195,7 @@ function WeaponFactoryTweakData:_init_content_jobs()
 		texture_bundle_folder = "gage_pack_jobs",
 		dlc = "gage_pack_jobs",
 		a_obj = "a_o",
+		reticle_obj = "g_reddot",
 		name_id = "bm_wp_upg_o_cs",
 		unit = "units/pd2_dlc_gage_jobs/weapons/wpn_fps_upg_o_cs/wpn_fps_upg_o_cs",
 		pcs = {},
@@ -2201,8 +2215,11 @@ function WeaponFactoryTweakData:_init_content_jobs()
 			"wpn_fps_upg_o_xpsg33_magnifier"
 		},
 		texture_switch = {
-			material = "gfx_reddot",
-			channel = "diffuse_texture"
+			channel = "diffuse_texture",
+			material = {
+				"gfx_reddot",
+				"screen"
+			}
 		}
 	}
 	self.parts.wpn_fps_upg_o_rmr.third_unit = "units/pd2_dlc_gage_jobs/weapons/wpn_third_upg_o_rmr/wpn_third_upg_o_rmr"
@@ -2832,7 +2849,8 @@ function WeaponFactoryTweakData:_init_g18c()
 		stats = {value = 1},
 		animations = {
 			fire = "recoil",
-			reload = "reload",
+			reload = "reload_right",
+			reload_left = "reload_left",
 			magazine_empty = "last_recoil"
 		}
 	}
@@ -2889,7 +2907,8 @@ function WeaponFactoryTweakData:_init_g18c()
 		},
 		animations = {
 			reload_not_empty = "reload_not_empty",
-			reload = "reload"
+			reload = "reload_right",
+			reload_left = "reload_left"
 		}
 	}
 	self.parts.wpn_fps_pis_g18c_m_mag_17rnd = {
@@ -2900,7 +2919,8 @@ function WeaponFactoryTweakData:_init_g18c()
 		stats = {value = 1},
 		animations = {
 			reload_not_empty = "reload_not_empty",
-			reload = "reload"
+			reload = "reload_right",
+			reload_left = "reload_left"
 		}
 	}
 	self.parts.wpn_fps_pis_g18c_s_stock = {
@@ -6118,7 +6138,10 @@ function WeaponFactoryTweakData:_init_mp5()
 		name_id = "bm_wp_mp5_body_mp5",
 		unit = "units/payday2/weapons/wpn_fps_smg_mp5_pts/wpn_fps_smg_mp5_body_mp5",
 		stats = {value = 1},
-		animations = {fire = "recoil"}
+		animations = {
+			reload = "reload",
+			fire = "recoil"
+		}
 	}
 	self.parts.wpn_fps_smg_mp5_body_rail = {
 		a_obj = "a_body",
@@ -6218,11 +6241,7 @@ function WeaponFactoryTweakData:_init_mp5()
 		type = "magazine",
 		name_id = "bm_wp_mp5_m_drum",
 		unit = "units/payday2/weapons/wpn_fps_smg_mp5_pts/wpn_fps_smg_mp5_m_drum",
-		stats = {value = 5},
-		animations = {
-			reload_not_empty = "reload_not_empty",
-			reload = "reload"
-		}
+		stats = {value = 5}
 	}
 	self.parts.wpn_fps_smg_mp5_m_std = {
 		a_obj = "a_m",
@@ -6233,11 +6252,7 @@ function WeaponFactoryTweakData:_init_mp5()
 			amount = 1,
 			prefix = "g_bullet_"
 		},
-		stats = {value = 1},
-		animations = {
-			reload_not_empty = "reload_not_empty",
-			reload = "reload"
-		}
+		stats = {value = 1}
 	}
 	self.parts.wpn_fps_smg_mp5_s_adjust = {
 		unit = "units/payday2/weapons/wpn_fps_smg_mp5_pts/wpn_fps_smg_mp5_s_adjust",
@@ -6297,6 +6312,10 @@ function WeaponFactoryTweakData:_init_mp5()
 			"gadget",
 			"sight",
 			"vertical_grip"
+		},
+		animations = {
+			reload_not_empty = "reload_not_empty",
+			reload = "reload"
 		},
 		adds = {
 			wpn_fps_upg_o_specter = {"wpn_fps_smg_mp5_body_rail"},
@@ -17413,6 +17432,24 @@ function WeaponFactoryTweakData:_init_vhs()
 end
 
 function WeaponFactoryTweakData:_init_hs2000()
+	self.parts.wpn_fps_pis_hs2000_b_standard = {
+		name_id = "bm_wp_hs2000_body_standard",
+		unit = "units/pd2_dlc_the_bomb/weapons/wpn_fps_pis_hs2000_pts/wpn_fps_pis_hs2000_b_standard",
+		a_obj = "a_b",
+		type = "barrel"
+	}
+	self.parts.wpn_fps_pis_hs2000_b_custom = {
+		name_id = "bm_wp_hs2000_body_standard",
+		unit = "units/pd2_dlc_the_bomb/weapons/wpn_fps_pis_hs2000_pts/wpn_fps_pis_hs2000_b_custom",
+		a_obj = "a_b",
+		type = "barrel"
+	}
+	self.parts.wpn_fps_pis_hs2000_b_long = {
+		name_id = "bm_wp_hs2000_body_standard",
+		unit = "units/pd2_dlc_the_bomb/weapons/wpn_fps_pis_hs2000_pts/wpn_fps_pis_hs2000_b_long",
+		a_obj = "a_b",
+		type = "barrel"
+	}
 	self.parts.wpn_fps_pis_hs2000_sl_standard = {
 		texture_bundle_folder = "the_bomb",
 		a_obj = "a_sl",
@@ -17420,16 +17457,11 @@ function WeaponFactoryTweakData:_init_hs2000()
 		name_id = "bm_wp_hs2000_sl_standard",
 		unit = "units/pd2_dlc_the_bomb/weapons/wpn_fps_pis_hs2000_pts/wpn_fps_pis_hs2000_sl_standard",
 		stats = {value = 1},
-		animations = {
-			fire = "recoil",
-			reload = "reload",
-			fire_steelsight = "recoil",
-			magazine_empty = "last_recoil"
-		}
+		adds = {"wpn_fps_pis_hs2000_b_standard"}
 	}
 	self.parts.wpn_fps_pis_hs2000_sl_custom = {
-		texture_bundle_folder = "the_bomb",
 		type = "slide",
+		texture_bundle_folder = "the_bomb",
 		a_obj = "a_sl",
 		dlc = "the_bomb",
 		name_id = "bm_wp_hs2000_sl_custom",
@@ -17447,16 +17479,11 @@ function WeaponFactoryTweakData:_init_hs2000()
 			value = 4,
 			recoil = 1
 		},
-		animations = {
-			fire = "recoil",
-			reload = "reload",
-			fire_steelsight = "recoil",
-			magazine_empty = "last_recoil"
-		}
+		adds = {"wpn_fps_pis_hs2000_b_custom"}
 	}
 	self.parts.wpn_fps_pis_hs2000_sl_long = {
-		texture_bundle_folder = "the_bomb",
 		type = "slide",
+		texture_bundle_folder = "the_bomb",
 		a_obj = "a_sl",
 		dlc = "the_bomb",
 		name_id = "bm_wp_hs2000_sl_long",
@@ -17475,12 +17502,7 @@ function WeaponFactoryTweakData:_init_hs2000()
 			spread = 2,
 			recoil = 1
 		},
-		animations = {
-			fire = "recoil",
-			reload = "reload",
-			fire_steelsight = "recoil",
-			magazine_empty = "last_recoil"
-		},
+		adds = {"wpn_fps_pis_hs2000_b_long"},
 		stance_mod = {wpn_fps_pis_hs2000 = {translation = Vector3(0, 0, -0.25)}},
 		override = {wpn_fps_upg_o_rmr = {stance_mod = {wpn_fps_pis_hs2000 = {translation = Vector3(0, 0, -0.5)}}}}
 	}
@@ -17502,16 +17524,12 @@ function WeaponFactoryTweakData:_init_hs2000()
 			amount = 3,
 			prefix = "g_bullet_"
 		},
-		stats = {value = 1},
-		animations = {
-			reload_not_empty = "reload_not_empty",
-			reload = "reload"
-		}
+		stats = {value = 1}
 	}
 	self.parts.wpn_fps_pis_hs2000_m_extended = {
+		type = "magazine",
 		texture_bundle_folder = "the_bomb",
 		a_obj = "a_m",
-		type = "magazine",
 		dlc = "the_bomb",
 		name_id = "bm_wp_hs2000_m_extended",
 		unit = "units/pd2_dlc_the_bomb/weapons/wpn_fps_pis_hs2000_pts/wpn_fps_pis_hs2000_m_extended",
@@ -17529,12 +17547,11 @@ function WeaponFactoryTweakData:_init_hs2000()
 			extra_ammo = 4,
 			spread_moving = -2,
 			value = 1
-		},
-		animations = {
-			reload_not_empty = "reload_not_empty",
-			reload = "reload"
 		}
 	}
+	self.parts.wpn_fps_pis_hs2000_b_standard.third_unit = "units/pd2_dlc_the_bomb/weapons/wpn_fps_pis_hs2000_pts/wpn_third_pis_hs2000_b_standard"
+	self.parts.wpn_fps_pis_hs2000_b_custom.third_unit = "units/pd2_dlc_the_bomb/weapons/wpn_fps_pis_hs2000_pts/wpn_third_pis_hs2000_b_custom"
+	self.parts.wpn_fps_pis_hs2000_b_long.third_unit = "units/pd2_dlc_the_bomb/weapons/wpn_fps_pis_hs2000_pts/wpn_third_pis_hs2000_b_long"
 	self.parts.wpn_fps_pis_hs2000_sl_standard.third_unit = "units/pd2_dlc_the_bomb/weapons/wpn_fps_pis_hs2000_pts/wpn_third_pis_hs2000_sl_standard"
 	self.parts.wpn_fps_pis_hs2000_sl_custom.third_unit = "units/pd2_dlc_the_bomb/weapons/wpn_fps_pis_hs2000_pts/wpn_third_pis_hs2000_sl_custom"
 	self.parts.wpn_fps_pis_hs2000_sl_long.third_unit = "units/pd2_dlc_the_bomb/weapons/wpn_fps_pis_hs2000_pts/wpn_third_pis_hs2000_sl_long"
@@ -17547,13 +17564,60 @@ function WeaponFactoryTweakData:_init_hs2000()
 			reload = "reload",
 			fire = "recoil",
 			fire_steelsight = "recoil",
+			reload_not_empty = "reload_not_empty",
 			magazine_empty = "last_recoil"
 		},
 		optional_types = {
 			"barrel_ext",
 			"gadget"
 		},
-		override = {wpn_fps_upg_o_rmr = {parent = "slide"}},
+		override = {
+			wpn_fps_upg_o_rmr = {parent = "slide"},
+			wpn_fps_upg_pis_ns_flash = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_medium_slim = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_ass_filter = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_jungle = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_large = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_medium = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_small = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_large_kac = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_medium_gem = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_ipsccomp = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_meatgrinder = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			}
+		},
 		default_blueprint = {
 			"wpn_fps_pis_hs2000_body_standard",
 			"wpn_fps_pis_hs2000_m_standard",
@@ -17566,6 +17630,9 @@ function WeaponFactoryTweakData:_init_hs2000()
 			"wpn_fps_pis_hs2000_sl_standard",
 			"wpn_fps_pis_hs2000_sl_custom",
 			"wpn_fps_pis_hs2000_sl_long",
+			"wpn_fps_pis_hs2000_b_standard",
+			"wpn_fps_pis_hs2000_b_custom",
+			"wpn_fps_pis_hs2000_b_long",
 			"wpn_fps_upg_fl_pis_laser",
 			"wpn_fps_upg_fl_pis_tlr1",
 			"wpn_fps_upg_ns_pis_large",
@@ -19286,9 +19353,9 @@ function WeaponFactoryTweakData:_init_butchermodpack()
 		}
 	}
 	self.parts.wpn_fps_smg_mp5_m_straight = {
+		type = "magazine",
 		texture_bundle_folder = "butcher_pack_mods",
 		a_obj = "a_m",
-		type = "magazine",
 		dlc = "butch_pack_free",
 		name_id = "bm_wp_mp5_m_straight",
 		unit = "units/pd2_dlc_butcher_mods/weapons/wpn_fps_smg_mp5_m_straight/wpn_fps_smg_mp5_m_straight",
@@ -19306,10 +19373,6 @@ function WeaponFactoryTweakData:_init_butchermodpack()
 			value = 1,
 			recoil = 2,
 			concealment = -1
-		},
-		animations = {
-			reload_not_empty = "reload_not_empty",
-			reload = "reload"
 		}
 	}
 	self.parts.wpn_fps_smg_mp9_b_suppressed = {
@@ -24759,7 +24822,8 @@ function WeaponFactoryTweakData:_init_x_mp5()
 			wpn_fps_smg_mp5_fg_mp5a5 = {animations = {}},
 			wpn_fps_smg_mp5_fg_mp5sd = {animations = {}},
 			wpn_fps_smg_mp5_m_std = {animations = {}},
-			wpn_fps_smg_mp5_m_straight = {animations = {}}
+			wpn_fps_smg_mp5_m_straight = {animations = {}},
+			wpn_fps_smg_mp5_body_mp5 = {animations = {fire = "recoil"}}
 		},
 		adds = {
 			wpn_fps_upg_o_specter = {"wpn_fps_smg_mp5_body_rail"},
@@ -26693,6 +26757,7 @@ function WeaponFactoryTweakData:_init_tng()
 		dlc = "tango",
 		a_obj = "a_o",
 		type = "sight",
+		reticle_obj = "g_reticle",
 		name_id = "bm_wp_upg_o_spot",
 		unit = "units/pd2_dlc_tng/weapons/wpn_fps_upg_o_spot/wpn_fps_upg_o_spot",
 		pcs = {},
@@ -26712,8 +26777,11 @@ function WeaponFactoryTweakData:_init_tng()
 			"wpn_fps_upg_o_xpsg33_magnifier"
 		},
 		texture_switch = {
-			material = "gfx_reddot1",
-			channel = "diffuse_texture"
+			channel = "diffuse_texture",
+			material = {
+				"gfx_reddot1",
+				"screen"
+			}
 		}
 	}
 	self.parts.wpn_fps_upg_o_box = {
@@ -26750,8 +26818,11 @@ function WeaponFactoryTweakData:_init_tng()
 		},
 		forbids = {"wpn_fps_upg_o_xpsg33_magnifier"},
 		texture_switch = {
-			material = "gfx_reddot1",
-			channel = "diffuse_texture"
+			channel = "diffuse_texture",
+			material = {
+				"gfx_reddot1",
+				"screen"
+			}
 		}
 	}
 	self.parts.wpn_fps_ass_g36_o_vintage = {
@@ -26762,6 +26833,7 @@ function WeaponFactoryTweakData:_init_tng()
 		type = "sight",
 		name_id = "bm_wp_g36_o_vintage",
 		unit = "units/pd2_dlc_tng/weapons/wpn_fps_ass_g36_body_optics/wpn_fps_ass_g36_o_vintage",
+		reticle_obj = "g_reticle",
 		pcs = {},
 		stats = {
 			zoom = 5,
@@ -26780,11 +26852,11 @@ function WeaponFactoryTweakData:_init_tng()
 			}
 		},
 		stance_mod = {wpn_fps_ass_g36 = {translation = Vector3(-0.02, 0, -2.35)}},
+		forbids = {"wpn_fps_upg_o_xpsg33_magnifier"},
 		texture_switch = {
 			material = "gfx_reddot1",
 			channel = "diffuse_texture"
-		},
-		forbids = {"wpn_fps_upg_o_xpsg33_magnifier"}
+		}
 	}
 	self.parts.wpn_fps_upg_g36_fg_long = {
 		is_a_unlockable = true,

@@ -106,6 +106,9 @@ end
 function CoreSetup:paused_update(t, dt)
 end
 
+function CoreSetup:pre_render()
+end
+
 function CoreSetup:render()
 end
 
@@ -384,6 +387,7 @@ end
 
 function CoreSetup:__render()
 	managers.portal:render()
+	self:pre_render()
 	managers.viewport:render()
 	managers.overlay_effect:render()
 	self:render()

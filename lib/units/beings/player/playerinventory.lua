@@ -324,6 +324,7 @@ function PlayerInventory:equip_selection(selection_index, instant)
 		end
 
 		self:equipped_unit():base():set_flashlight_enabled(true)
+		self:equipped_unit():base():set_scope_enabled(true)
 
 		return true
 	end
@@ -363,6 +364,7 @@ function PlayerInventory:unequip_selection(selection_index, instant)
 	if not selection_index or selection_index == self._equipped_selection then
 		self:_call_listeners("unequip")
 		self:equipped_unit():base():set_flashlight_enabled(false)
+		self:equipped_unit():base():set_scope_enabled(false)
 
 		selection_index = selection_index or self._equipped_selection
 

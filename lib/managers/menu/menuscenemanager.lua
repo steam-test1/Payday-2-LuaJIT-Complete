@@ -3782,7 +3782,11 @@ function MenuSceneManager:_create_safe_result(created_clbk)
 	end
 
 	self:_start_safe_explosion_blur()
-	self._shaker:play("player_fall_damage")
+
+	if self._shaker then
+		self._shaker:play("player_fall_damage")
+	end
+
 	managers.environment_controller:set_dof_distance(100, true)
 
 	if self._safe_result_content_data.factory_id then
@@ -3814,7 +3818,10 @@ function MenuSceneManager:_create_safe_result(created_clbk)
 		created_clbk()
 	end
 
-	self._economy_saferoom:damage():run_sequence_simple("int_seq_darken_background")
+	if alive(self._economy_saferoom) then
+		self._economy_saferoom:damage():run_sequence_simple("int_seq_darken_background")
+	end
+
 	managers.menu:set_cash_safe_scene_done(true)
 end
 

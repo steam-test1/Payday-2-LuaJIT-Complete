@@ -2223,7 +2223,7 @@ function WeaponTweakData:_init_data_x_g22c_crew()
 end
 
 function WeaponTweakData:_init_data_x_g17_crew()
-	self.x_g17_crew.sounds.prefix = "g22_npc"
+	self.x_g17_crew.sounds.prefix = "g17_npc"
 	self.x_g17_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_g17_crew.DAMAGE = 1.25
 	self.x_g17_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
@@ -2238,7 +2238,7 @@ function WeaponTweakData:_init_data_x_g17_crew()
 end
 
 function WeaponTweakData:_init_data_x_usp_crew()
-	self.x_usp_crew.sounds.prefix = "g22_npc"
+	self.x_usp_crew.sounds.prefix = "usp45_npc"
 	self.x_usp_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_usp_crew.DAMAGE = 1.25
 	self.x_usp_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"

@@ -1841,6 +1841,9 @@ end
 function RaycastWeaponBase:set_flashlight_enabled(enabled)
 end
 
+function RaycastWeaponBase:set_scope_enabled(enabled)
+end
+
 function RaycastWeaponBase:set_timer(timer)
 	self._timer = timer
 
