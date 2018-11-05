@@ -276,8 +276,6 @@ function NewRaycastWeaponBaseVR:update_reload_mag(time)
 
 	if mag_data.anims then
 		for _, anim_data in ipairs(mag_data.anims) do
-			local anim_group_id = Idstring(anim_data.anim_group)
-
 			if anim_data.part then
 				local part_list = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk(anim_data.part, self._factory_id, self._blueprint)
 
@@ -285,10 +283,14 @@ function NewRaycastWeaponBaseVR:update_reload_mag(time)
 					local part_data = self._parts[part_name]
 
 					if part_data.animations and part_data.animations[anim_data.anim_group] then
+						local anim_group_id = Idstring(part_data.animations[anim_data.anim_group])
+
 						self:_play_reload_anim(anim_group_id, anim_data.to, anim_data.from, part_data.unit)
 					end
 				end
 			else
+				local anim_group_id = Idstring(anim_data.anim_group)
+
 				self:_play_reload_anim(anim_group_id, anim_data.to, anim_data.from)
 			end
 		end

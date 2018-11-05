@@ -1823,6 +1823,21 @@ function PlayerStandard:_switch_equipment()
 	managers.player:switch_equipment()
 end
 
+function PlayerStandard:_play_equip_animation()
+	local tweak_data = self._equipped_unit:base():weapon_tweak_data()
+	self._equip_weapon_expire_t = managers.player:player_timer():time() + (tweak_data.timers.equip or 0.7)
+	local result = self._ext_camera:play_redirect(self:get_animation("equip"))
+
+	self._equipped_unit:base():tweak_data_anim_stop("unequip")
+	self._equipped_unit:base():tweak_data_anim_play("equip")
+end
+
+function PlayerStandard:_play_unequip_animation()
+	self._ext_camera:play_redirect(self:get_animation("unequip"))
+	self._equipped_unit:base():tweak_data_anim_stop("equip")
+	self._equipped_unit:base():tweak_data_anim_play("unequip")
+end
+
 function PlayerStandard:_start_action_interact(t, input, timer, interact_object)
 	self:_interupt_action_reload(t)
 	self:_interupt_action_steelsight(t)
@@ -1839,9 +1854,7 @@ function PlayerStandard:_start_action_interact(t, input, timer, interact_object)
 		tweak_data = interact_object:interaction().tweak_data
 	}
 
-	self._ext_camera:play_redirect(self:get_animation("unequip"))
-	self._equipped_unit:base():tweak_data_anim_stop("equip")
-	self._equipped_unit:base():tweak_data_anim_play("unequip")
+	self:_play_unequip_animation()
 	managers.hud:show_interaction_bar(start_timer, final_timer)
 	managers.network:session():send_to_peers_synched("sync_teammate_progress", 1, true, self._interact_params.tweak_data, final_timer, false)
 	self._unit:network():send("sync_interaction_anim", true, self._interact_params.tweak_data)
@@ -1860,13 +1873,9 @@ function PlayerStandard:_interupt_action_interact(t, input, complete)
 		managers.network:session():send_to_peers_synched("sync_teammate_progress", 1, false, self._interact_params.tweak_data, 0, complete and true or false)
 
 		self._interact_params = nil
-		local tweak_data = self._equipped_unit:base():weapon_tweak_data()
-		self._equip_weapon_expire_t = managers.player:player_timer():time() + (tweak_data.timers.equip or 0.7)
-		local result = self._ext_camera:play_redirect(self:get_animation("equip"))
 
+		self:_play_equip_animation()
 		managers.hud:hide_interaction_bar(complete)
-		self._equipped_unit:base():tweak_data_anim_stop("unequip")
-		self._equipped_unit:base():tweak_data_anim_play("equip")
 		self._unit:network():send("sync_interaction_anim", false, "")
 	end
 end
@@ -1927,11 +1936,11 @@ function PlayerStandard:_check_action_weapon_firemode(t, input)
 	end
 end
 
-function PlayerStandard:_check_action_weapon_gadget(t, input)
-	if input.btn_weapon_gadget_press and self._equipped_unit:base().toggle_gadget and self._equipped_unit:base():has_gadget() and self._equipped_unit:base():toggle_gadget(self) then
-		self._unit:network():send("set_weapon_gadget_state", self._equipped_unit:base()._gadget_on)
+function PlayerStandard:_toggle_gadget(weap_base)
+	if weap_base.toggle_gadget and weap_base:has_gadget() and weap_base:toggle_gadget(self) then
+		self._unit:network():send("set_weapon_gadget_state", weap_base._gadget_on)
 
-		local gadget = self._equipped_unit:base():get_active_gadget()
+		local gadget = weap_base:get_active_gadget()
 
 		if gadget and gadget.color then
 			local col = gadget:color()
@@ -1940,8 +1949,14 @@ function PlayerStandard:_check_action_weapon_gadget(t, input)
 		end
 
 		if alive(self._equipped_unit) then
-			managers.hud:set_ammo_amount(self._equipped_unit:base():selection_index(), self._equipped_unit:base():ammo_info())
+			managers.hud:set_ammo_amount(weap_base:selection_index(), weap_base:ammo_info())
 		end
+	end
+end
+
+function PlayerStandard:_check_action_weapon_gadget(t, input)
+	if input.btn_weapon_gadget_press then
+		self:_toggle_gadget(self._equipped_unit:base())
 	end
 end
 
@@ -2651,9 +2666,7 @@ function PlayerStandard:_start_action_use_item(t)
 	local deploy_timer = managers.player:selected_equipment_deploy_timer()
 	self._use_item_expire_t = t + deploy_timer
 
-	self._ext_camera:play_redirect(self:get_animation("unequip"))
-	self._equipped_unit:base():tweak_data_anim_stop("equip")
-	self._equipped_unit:base():tweak_data_anim_play("unequip")
+	self:_play_unequip_animation()
 	managers.hud:show_progress_timer_bar(0, deploy_timer)
 
 	local text = managers.player:selected_equipment_deploying_text() or managers.localization:text("hud_deploying_equipment", {EQUIPMENT = managers.player:selected_equipment_name()})
@@ -2693,10 +2706,8 @@ function PlayerStandard:_interupt_action_use_item(t, input, complete)
 		self._use_item_expire_t = nil
 		local tweak_data = self._equipped_unit:base():weapon_tweak_data()
 		self._equip_weapon_expire_t = managers.player:player_timer():time() + (tweak_data.timers.equip or 0.7)
-		local result = self._ext_camera:play_redirect(self:get_animation("equip"))
 
-		self._equipped_unit:base():tweak_data_anim_stop("unequip")
-		self._equipped_unit:base():tweak_data_anim_play("equip")
+		self:_play_equip_animation()
 		managers.hud:hide_progress_timer_bar(complete)
 		managers.hud:remove_progress_timer()
 
@@ -3013,6 +3024,11 @@ function PlayerStandard:_get_unit_intimidation_action(intimidate_enemies, intimi
 
 	if _G.IS_VR then
 		local hand_unit = self._unit:hand():hand_unit(self._interact_hand)
+
+		if hand_unit:raycast("ray", hand_unit:position(), my_head_pos, "slot_mask", 1) then
+			return
+		end
+
 		cam_fwd = hand_unit:rotation():y()
 		my_head_pos = hand_unit:position()
 	end

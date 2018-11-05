@@ -27,6 +27,19 @@ function MoneyManager:_setup()
 	self._mutators_reduction = 0
 	self._cash_tousand_separator = managers.localization:text("cash_tousand_separator")
 	self._cash_sign = managers.localization:text("cash_sign")
+	self._event_listener_holder = EventListenerHolder:new()
+end
+
+function MoneyManager:add_event_listener(...)
+	self._event_listener_holder:add(...)
+end
+
+function MoneyManager:remove_event_listener(...)
+	self._event_listener_holder:remove(...)
+end
+
+function MoneyManager:dispatch_event(...)
+	self._event_listener_holder:call(...)
 end
 
 function MoneyManager:total_string_no_currency()

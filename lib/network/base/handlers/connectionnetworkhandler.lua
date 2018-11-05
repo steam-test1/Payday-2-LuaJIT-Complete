@@ -184,6 +184,8 @@ function ConnectionNetworkHandler:set_dropin()
 	if game_state_machine:current_state().set_dropin then
 		game_state_machine:current_state():set_dropin(managers.network:session():local_peer():character())
 	end
+
+	Global.statistics_manager.playing_from_start = nil
 end
 
 function ConnectionNetworkHandler:set_waiting(...)

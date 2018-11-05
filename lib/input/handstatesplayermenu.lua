@@ -24,7 +24,8 @@ M.EmptyHandState.init = function (self)
 		warp = {inputs = common.warp_inputs},
 		warp_target = {inputs = common.warp_target_inputs},
 		touchpad_move = {inputs = {"dpad_"}},
-		touchpad_secondary = {inputs = {"dpad_"}}
+		touchpad_secondary = {inputs = {"dpad_"}},
+		menu_challenge_claim = {inputs = {"trigger_"}}
 	}
 end
 M.LaserHandState = M.LaserHandState or class(HandState)

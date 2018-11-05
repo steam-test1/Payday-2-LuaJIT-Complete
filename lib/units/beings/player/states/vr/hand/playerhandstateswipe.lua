@@ -63,11 +63,21 @@ function PlayerHandStateSwipe:update(t, dt)
 		inside = true
 	end
 
-	managers.hud:on_touch(inside, Vector3(x_len / width, y_len / height, 0))
+	self._swiped = self._swiped and inside
+	local controller = managers.vr:hand_state_machine():controller()
+	local ws_pos = tmp_vec
+
+	mvector3.set_static(ws_pos, x_len / width, y_len / height, 0)
+
+	if inside and controller:get_input_pressed("tablet_interact") then
+		managers.hud:on_interact(ws_pos)
+	end
+
+	managers.hud:on_touch(inside, ws_pos)
 
 	self._current_swipe = x_len
 
-	if not self._flick_delay_t or t - self._flick_delay_t > 0 then
+	if not self._swiped and not self._flick_delay_t or t - self._flick_delay_t > 0 then
 		if inside and not self._start_swipe then
 			self._start_swipe = self._start_swipe or x_len
 			self._start_t = self._start_t or t
@@ -106,6 +116,7 @@ function PlayerHandStateSwipe:_check_flick(t, pos, x)
 		self:post_event("matrix_tablet_swipe_" .. dir_string)
 
 		self._flick_delay_t = t + flick_time
+		self._swiped = true
 
 		return true
 	end

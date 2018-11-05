@@ -5,7 +5,7 @@ function HUDChatVR:init(ws, hud)
 	local old_panel = hud.panel
 	hud.panel = managers.hud:tablet_page("left_page")
 
-	self:old_init(ws, hud)
+	self:old_init(managers.hud:tablet_ws(), hud)
 	self._panel:set_bottom(self._hud_panel:h())
 
 	hud.panel = old_panel

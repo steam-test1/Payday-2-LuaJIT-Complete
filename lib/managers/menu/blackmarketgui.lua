@@ -6367,8 +6367,12 @@ function BlackMarketGui:update_info_text()
 				end
 
 				if slot_data.global_value and slot_data.global_value ~= "normal" then
-					updated_texts[4].text = updated_texts[4].text .. "\n##" .. managers.localization:to_upper_text(tweak_data.lootdrop.global_values[slot_data.global_value].desc_id) .. "##"
-					updated_texts[4].resource_color = tweak_data.lootdrop.global_values[slot_data.global_value].color
+					local gvalue_tweak = tweak_data.lootdrop.global_values[slot_data.global_value]
+
+					if gvalue_tweak.desc_id then
+						updated_texts[4].text = updated_texts[4].text .. "\n##" .. managers.localization:to_upper_text(gvalue_tweak.desc_id) .. "##"
+						updated_texts[4].resource_color = gvalue_tweak.color
+					end
 				end
 			end
 		elseif slot_data.locked_slot then

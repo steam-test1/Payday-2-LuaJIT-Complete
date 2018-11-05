@@ -1,5 +1,9 @@
 MenuArmourBase = MenuArmourBase or class(UnitBase)
 local material_defaults = {
+	bump_normal_texture = {
+		[2] = Idstring("units/payday2/characters/shared_textures/vest_small_nm"),
+		[3] = Idstring("units/payday2/characters/shared_textures/vest_big_nm")
+	},
 	diffuse_layer1_texture = Idstring("units/payday2_cash/safes/default/base_gradient/base_default_df"),
 	diffuse_layer2_texture = Idstring("units/payday2_cash/safes/default/pattern_gradient/gradient_default_df"),
 	diffuse_layer0_texture = Idstring("units/payday2_cash/safes/default/pattern/pattern_default_df"),
@@ -7,8 +11,9 @@ local material_defaults = {
 }
 local material_textures = {
 	pattern = "diffuse_layer0_texture",
-	sticker = "diffuse_layer3_texture",
 	pattern_gradient = "diffuse_layer2_texture",
+	normal_map = "bump_normal_texture",
+	sticker = "diffuse_layer3_texture",
 	base_gradient = "diffuse_layer1_texture"
 }
 local material_variables = {
@@ -275,12 +280,13 @@ function MenuArmourBase:_set_material_textures()
 		return
 	end
 
+	local armor_level = self:armor_level()
 	local p_type, base_texture, new_texture = nil
 
 	for _, material in pairs(self._materials) do
 		for key, material_texture in pairs(material_textures) do
-			base_texture = tweak_data.economy:get_armor_based_value(cosmetics_data[key], self:armor_level())
-			new_texture = base_texture or material_defaults[material_texture]
+			base_texture = tweak_data.economy:get_armor_based_value(cosmetics_data[key], armor_level)
+			new_texture = base_texture or tweak_data.economy:get_armor_based_value(material_defaults[material_texture], armor_level)
 
 			if type(new_texture) == "string" then
 				new_texture = Idstring(new_texture)

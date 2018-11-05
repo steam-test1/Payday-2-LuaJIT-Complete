@@ -649,6 +649,8 @@ function TweakData:init()
 		table.insert(self.criminals.character_names, character.name)
 	end
 
+	self:init_screen_colors()
+
 	self.hud_icons = HudIconsTweakData:new()
 	self.weapon = WeaponTweakData:new(self)
 	local weapon_tweak_meta = {__index = function (table, key)
@@ -871,79 +873,6 @@ function TweakData:init()
 		Color("ffff7800"),
 		Color("ffffff00")
 	}
-	self.screen_colors = {
-		text = Color(255, 255, 255, 255) / 255,
-		resource = Color(255, 77, 198, 255) / 255,
-		important_1 = Color(255, 255, 51, 51) / 255,
-		important_2 = Color(125, 255, 51, 51) / 255,
-		item_stage_1 = Color(255, 255, 255, 255) / 255,
-		item_stage_2 = Color(255, 89, 115, 128) / 255,
-		item_stage_3 = Color(255, 23, 33, 38) / 255,
-		button_stage_1 = Color(255, 0, 0, 0) / 255,
-		button_stage_2 = Color(255, 77, 198, 255) / 255,
-		button_stage_3 = Color(127, 0, 170, 255) / 255,
-		crimenet_lines = Color(255, 127, 157, 182) / 255,
-		risk = Color(255, 255, 204, 0) / 255,
-		friend_color = Color(255, 41, 204, 122) / 255,
-		regular_color = Color(255, 41, 150, 240) / 255,
-		pro_color = Color(255, 255, 51, 51) / 255,
-		dlc_color = Color(255, 255, 212, 0) / 255,
-		skill_color = Color(255, 77, 198, 255) / 255,
-		ghost_color = Color("4ca6ff"),
-		extra_bonus_color = Color(255, 255, 255, 255) / 255,
-		community_color = Color(255, 59, 174, 254) / 255,
-		challenge_completed_color = Color(255, 255, 168, 0) / 255,
-		stat_maxed = Color("FF00FF"),
-		competitive_color = Color(255, 41, 204, 122) / 255,
-		mutators_color = Color(255, 211, 133, 255) / 255,
-		mutators_color_text = Color(255, 211, 133, 255) / 255,
-		crime_spree_risk = Color(255, 255, 255, 0) / 255,
-		achievement_grey = Color(255, 145, 145, 145) / 255,
-		heat_cold_color = Color(255, 255, 51, 51) / 255,
-		heat_warm_color = Color("ff7f00"),
-		heat_standard_color = Color(255, 255, 255, 255) / 255
-	}
-	self.screen_colors.heat_color = self.screen_colors.heat_standard_color
-	self.screen_colors.one_down = Color(255, 250, 30, 0) / 255
-	self.screen_colors.challenge_title = Color(255, 255, 168, 0) / 255
-	self.screen_colors.stats_positive = Color(255, 191, 221, 125) / 255
-	self.screen_colors.stats_negative = Color(255, 254, 93, 99) / 255
-	self.screen_colors.stats_mods = Color(255, 229, 229, 76) / 255
-
-	if Global.test_new_colors then
-		for i, d in pairs(self.screen_colors) do
-			self.screen_colors[i] = Color.purple
-		end
-	end
-
-	if Global.old_colors_purple then
-		self.screen_color_white = Color.purple
-		self.screen_color_red = Color.purple
-		self.screen_color_green = Color.purple
-		self.screen_color_grey = Color.purple
-		self.screen_color_light_grey = Color.purple
-		self.screen_color_blue = Color.purple
-		self.screen_color_blue_selected = Color.purple
-		self.screen_color_blue_highlighted = Color.purple
-		self.screen_color_blue_noselected = Color.purple
-		self.screen_color_yellow = Color.purple
-		self.screen_color_yellow_selected = Color.purple
-		self.screen_color_yellow_noselected = Color.purple
-	else
-		self.screen_color_white = Color(1, 1, 1)
-		self.screen_color_red = Color(0.7137254901960784, 0.24705882352941178, 0.21176470588235294)
-		self.screen_color_green = Color(0.12549019607843137, 1, 0.5176470588235295)
-		self.screen_color_grey = Color(0.39215686274509803, 0.39215686274509803, 0.39215686274509803)
-		self.screen_color_light_grey = Color(0.7843137254901961, 0.7843137254901961, 0.7843137254901961)
-		self.screen_color_blue = Color(0.30196078431372547, 0.7764705882352941, 1)
-		self.screen_color_blue_selected = Color(0.30196078431372547, 0.7764705882352941, 1)
-		self.screen_color_blue_highlighted = self.screen_color_blue_selected:with_alpha(0.75)
-		self.screen_color_blue_noselected = self.screen_color_blue_selected:with_alpha(0.5)
-		self.screen_color_yellow = Color(0.8627450980392157, 0.6745098039215687, 0.17647058823529413)
-		self.screen_color_yellow_selected = Color(1, 0.8, 0)
-		self.screen_color_yellow_noselected = Color(0.7333333333333333, 0.42745098039215684, 0.0784313725490196)
-	end
-
 	self.dialog = {
 		WIDTH = 400,
 		HEIGHT = 300,
@@ -2419,6 +2348,82 @@ Play the full version soon to get your full PAYDAY!]],
 	self:set_difficulty()
 	self:set_mode()
 	self:digest_tweak_data()
+end
+
+function TweakData:init_screen_colors()
+	self.screen_colors = {
+		text = Color(255, 255, 255, 255) / 255,
+		resource = Color(255, 77, 198, 255) / 255,
+		important_1 = Color(255, 255, 51, 51) / 255,
+		important_2 = Color(125, 255, 51, 51) / 255,
+		item_stage_1 = Color(255, 255, 255, 255) / 255,
+		item_stage_2 = Color(255, 89, 115, 128) / 255,
+		item_stage_3 = Color(255, 23, 33, 38) / 255,
+		button_stage_1 = Color(255, 0, 0, 0) / 255,
+		button_stage_2 = Color(255, 77, 198, 255) / 255,
+		button_stage_3 = Color(127, 0, 170, 255) / 255,
+		crimenet_lines = Color(255, 127, 157, 182) / 255,
+		risk = Color(255, 255, 204, 0) / 255,
+		friend_color = Color(255, 41, 204, 122) / 255,
+		regular_color = Color(255, 41, 150, 240) / 255,
+		pro_color = Color(255, 255, 51, 51) / 255,
+		dlc_color = Color(255, 255, 212, 0) / 255,
+		skill_color = Color(255, 77, 198, 255) / 255,
+		ghost_color = Color("4ca6ff"),
+		extra_bonus_color = Color(255, 255, 255, 255) / 255,
+		community_color = Color(255, 59, 174, 254) / 255,
+		challenge_completed_color = Color(255, 255, 168, 0) / 255,
+		stat_maxed = Color("FF00FF"),
+		competitive_color = Color(255, 41, 204, 122) / 255,
+		event_color = Color(255, 255, 145, 0) / 255,
+		mutators_color = Color(255, 211, 133, 255) / 255,
+		mutators_color_text = Color(255, 211, 133, 255) / 255,
+		crime_spree_risk = Color(255, 255, 255, 0) / 255,
+		achievement_grey = Color(255, 145, 145, 145) / 255,
+		heat_cold_color = Color(255, 255, 51, 51) / 255,
+		heat_warm_color = Color("ff7f00"),
+		heat_standard_color = Color(255, 255, 255, 255) / 255
+	}
+	self.screen_colors.heat_color = self.screen_colors.heat_standard_color
+	self.screen_colors.one_down = Color(255, 250, 30, 0) / 255
+	self.screen_colors.challenge_title = Color(255, 255, 168, 0) / 255
+	self.screen_colors.stats_positive = Color(255, 191, 221, 125) / 255
+	self.screen_colors.stats_negative = Color(255, 254, 93, 99) / 255
+	self.screen_colors.stats_mods = Color(255, 229, 229, 76) / 255
+
+	if Global.test_new_colors then
+		for i, d in pairs(self.screen_colors) do
+			self.screen_colors[i] = Color.purple
+		end
+	end
+
+	if Global.old_colors_purple then
+		self.screen_color_white = Color.purple
+		self.screen_color_red = Color.purple
+		self.screen_color_green = Color.purple
+		self.screen_color_grey = Color.purple
+		self.screen_color_light_grey = Color.purple
+		self.screen_color_blue = Color.purple
+		self.screen_color_blue_selected = Color.purple
+		self.screen_color_blue_highlighted = Color.purple
+		self.screen_color_blue_noselected = Color.purple
+		self.screen_color_yellow = Color.purple
+		self.screen_color_yellow_selected = Color.purple
+		self.screen_color_yellow_noselected = Color.purple
+	else
+		self.screen_color_white = Color(1, 1, 1)
+		self.screen_color_red = Color(0.7137254901960784, 0.24705882352941178, 0.21176470588235294)
+		self.screen_color_green = Color(0.12549019607843137, 1, 0.5176470588235295)
+		self.screen_color_grey = Color(0.39215686274509803, 0.39215686274509803, 0.39215686274509803)
+		self.screen_color_light_grey = Color(0.7843137254901961, 0.7843137254901961, 0.7843137254901961)
+		self.screen_color_blue = Color(0.30196078431372547, 0.7764705882352941, 1)
+		self.screen_color_blue_selected = Color(0.30196078431372547, 0.7764705882352941, 1)
+		self.screen_color_blue_highlighted = self.screen_color_blue_selected:with_alpha(0.75)
+		self.screen_color_blue_noselected = self.screen_color_blue_selected:with_alpha(0.5)
+		self.screen_color_yellow = Color(0.8627450980392157, 0.6745098039215687, 0.17647058823529413)
+		self.screen_color_yellow_selected = Color(1, 0.8, 0)
+		self.screen_color_yellow_noselected = Color(0.7333333333333333, 0.42745098039215684, 0.0784313725490196)
+	end
 end
 
 function TweakData:free_dlc_list()

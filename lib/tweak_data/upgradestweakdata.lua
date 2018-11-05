@@ -3250,6 +3250,7 @@ function UpgradesTweakData:init(tweak_data)
 			"frag",
 			"dynamite",
 			"molotov",
+			"wpn_dallas_mask",
 			"corgi",
 			"clean"
 		}},
@@ -10159,6 +10160,7 @@ function UpgradesTweakData:_grenades_definitions()
 		category = "grenade"
 	}
 	self.definitions.damage_control = {category = "grenade"}
+	self.definitions.wpn_dallas_mask = {category = "grenade"}
 end
 
 function UpgradesTweakData:_weapon_definitions()

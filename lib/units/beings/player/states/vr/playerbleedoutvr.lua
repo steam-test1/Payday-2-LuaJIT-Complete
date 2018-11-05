@@ -101,6 +101,12 @@ function PlayerBleedOutVR:set_belt_and_hands_enabled(enabled)
 			self._unit:hand():_change_hand_to_default(disallowed_hand_id)
 		end
 
+		self._bow_hand_id = self._unit:hand():get_active_hand_id("bow")
+
+		if self._bow_hand_id then
+			self._unit:hand():set_default_state(self._bow_hand_id, "idle")
+		end
+
 		local belt_states = {
 			melee = managers.hud:belt():state("melee"),
 			deployable = managers.hud:belt():state("deployable"),
@@ -113,6 +119,10 @@ function PlayerBleedOutVR:set_belt_and_hands_enabled(enabled)
 			end
 		end
 	else
+		if self._bow_hand_id then
+			self._unit:hand():set_default_state(self._bow_hand_id, "bow")
+		end
+
 		managers.hud:belt():set_state("melee", "default")
 
 		for slot, equipment in ipairs({

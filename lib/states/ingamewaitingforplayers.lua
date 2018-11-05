@@ -467,9 +467,6 @@ end
 
 function IngameWaitingForPlayersState:set_dropin(char_name)
 	self._started_from_beginning = false
-	Global.statistics_manager.playing_from_start = nil
-
-	print("Joining as " .. char_name)
 end
 
 function IngameWaitingForPlayersState:check_is_dropin()

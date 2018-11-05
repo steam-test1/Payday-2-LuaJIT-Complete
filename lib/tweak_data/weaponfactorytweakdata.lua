@@ -10274,7 +10274,7 @@ function WeaponFactoryTweakData:_init_p226()
 	self.parts.wpn_fps_pis_p226_o_standard.third_unit = "units/pd2_dlc_dec5/weapons/wpn_fps_pis_p226_pts/wpn_third_pis_p226_o_standard"
 	self.parts.wpn_fps_pis_p226_o_long.third_unit = "units/pd2_dlc_dec5/weapons/wpn_fps_pis_p226_pts/wpn_third_pis_p226_o_long"
 	self.parts.wpn_fps_pis_p226_co_comp_1 = {
-		parent = "slide",
+		parent = "barrel",
 		dlc = "gage_pack",
 		type = "barrel_ext",
 		name_id = "bm_wp_p226_co_comp_1",
@@ -10295,7 +10295,7 @@ function WeaponFactoryTweakData:_init_p226()
 		}
 	}
 	self.parts.wpn_fps_pis_p226_co_comp_2 = {
-		parent = "slide",
+		parent = "barrel",
 		dlc = "gage_pack",
 		type = "barrel_ext",
 		name_id = "bm_wp_p226_co_comp_2",

@@ -1627,9 +1627,28 @@ function VRBeltCustomization:init(is_start_menu)
 		})
 	}
 
+	self:set_mode("adjuster")
+end
+
+function VRBeltCustomization:set_back_button_enabled(hand_id, enabled)
+	if self._back_button_enabled == enabled then
+		return
+	end
+
+	tag_print("VRBeltCustomization:set_back_button_enabled", hand_id, enabled)
+
+	local player = managers.menu:player()
+
+	if not enabled then
+		player._hand_state_machine:enter_hand_state(hand_id, hand_id == player:primary_hand_index() and "customization" or "customization_empty")
+	else
+		player._hand_state_machine:enter_hand_state(hand_id, hand_id == player:primary_hand_index() and "laser" or "empty")
+	end
+
 	managers.menu:active_menu().input:focus(false)
 	managers.menu:active_menu().input:focus(true)
-	self:set_mode("adjuster")
+
+	self._back_button_enabled = enabled
 end
 
 function VRBeltCustomization:reset()
@@ -1682,12 +1701,11 @@ function VRBeltCustomization:destroy()
 		adjuster:destroy()
 	end
 
-	local player = managers.menu:player()
-
-	player._hand_state_machine:enter_hand_state(player:primary_hand_index(), "laser")
-	player._hand_state_machine:enter_hand_state(3 - player:primary_hand_index(), "empty")
-
 	if managers.menu:active_menu() then
+		local player = managers.menu:player()
+
+		player._hand_state_machine:enter_hand_state(player:primary_hand_index(), "laser")
+		player._hand_state_machine:enter_hand_state(3 - player:primary_hand_index(), "empty")
 		managers.menu:active_menu().input:focus(false)
 		managers.menu:active_menu().input:focus(true)
 	end
@@ -1742,6 +1760,7 @@ function VRBeltCustomization:__update_grid(t, dt)
 					self._belt:remove_help_text(self._selected_interaction, "layout_help")
 					self._belt:remove_help_text(self._selected_interaction, "size_help")
 					self._belt:set_alpha(self._belt_alpha, self._selected_interaction)
+					self:set_back_button_enabled(i, true)
 				end
 
 				if interaction then
@@ -1750,6 +1769,7 @@ function VRBeltCustomization:__update_grid(t, dt)
 					self._belt:add_help_text(interaction, "layout_help", "menu_vr_belt_grip_grid", "above")
 					self._belt:add_help_text(interaction, "size_help", "menu_vr_belt_grip_grid_size", "below")
 					self._belt:set_alpha(self._belt_alpha + 0.2, interaction)
+					self:set_back_button_enabled(i, false)
 				else
 					self._active_hand_id = nil
 				end
@@ -1835,6 +1855,8 @@ function VRBeltCustomization:_update_adjuster(t, dt)
 					adjuster:set_help_state("inactive")
 
 					self._active_adjuster = nil
+
+					self:set_back_button_enabled(i, true)
 				else
 					if managers.menu:get_controller():get_input_pressed(interact_btn) then
 						self._grip_offset = hand:position() - self._belt_unit:position()
@@ -1857,6 +1879,8 @@ function VRBeltCustomization:_update_adjuster(t, dt)
 					adjuster:save()
 
 					self._active_adjuster = nil
+
+					self:set_back_button_enabled(i, true)
 				end
 			end
 
@@ -1882,6 +1906,8 @@ function VRBeltCustomization:_update_adjuster(t, dt)
 					self._active_hand_id = nil
 				else
 					self._active_hand_id = i
+
+					self:set_back_button_enabled(i, false)
 				end
 			end
 		end

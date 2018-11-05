@@ -10,6 +10,8 @@ function NetworkVoiceChatPSN:init()
 	self:_load_globals()
 
 	self._muted_players = {}
+
+	PSNVoice:set_voice_ui_update_callback(callback(self, self, "voice_ui_update_callback"))
 end
 
 function NetworkVoiceChatPSN:check_status_information()
@@ -119,6 +121,7 @@ function NetworkVoiceChatPSN:open_session(roomid)
 	self._joining = true
 
 	PSNVoice:start_session(roomid)
+	self:update_settings()
 end
 
 function NetworkVoiceChatPSN:close_session()
@@ -252,47 +255,6 @@ function NetworkVoiceChatPSN:_save_globals(disable_voice)
 
 		Global.psn.voice.restart = disable_voice
 		Global.psn.voice.team = 1
-	end
-end
-
-function NetworkVoiceChatPSN:enabled()
-	return managers.user:get_setting("voice_chat")
-end
-
-function NetworkVoiceChatPSN:update_settings()
-	self._push_to_talk = managers.user:get_setting("push_to_talk")
-	self._enabled = managers.user:get_setting("voice_chat")
-
-	if self._enabled then
-		PSNVoice:start_recording()
-	else
-		PSNVoice:stop_recording()
-	end
-
-	if self._enabled and self._push_to_talk then
-		PSNVoice:stop_recording()
-	end
-end
-
-function NetworkVoiceChatPSN:set_recording(button_pushed_to_talk)
-	self:update_settings()
-
-	if not self._enabled then
-		PSNVoice:stop_recording()
-
-		return
-	end
-
-	if not self._push_to_talk then
-		if self._enabled then
-			PSNVoice:start_recording()
-		else
-			PSNVoice:stop_recording()
-		end
-	elseif button_pushed_to_talk then
-		PSNVoice:start_recording()
-	else
-		PSNVoice:stop_recording()
 	end
 end
 

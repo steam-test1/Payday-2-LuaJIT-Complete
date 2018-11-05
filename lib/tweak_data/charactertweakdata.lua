@@ -154,10 +154,12 @@ end
 
 function CharacterTweakData:_init_security(presets)
 	self.security = deep_clone(presets.base)
+	self.security.tags = {"law"}
 	self.security.experience = {}
 	self.security.weapon = presets.weapon.normal
 	self.security.detection = presets.detection.guard
 	self.security.HEALTH_INIT = 4
+	self.security.headshot_dmg_mul = 2
 	self.security.headshot_dmg_mul = 2
 	self.security.move_speed = presets.move_speed.normal
 	self.security.crouch_move = nil
@@ -199,6 +201,7 @@ end
 
 function CharacterTweakData:_init_gensec(presets)
 	self.gensec = deep_clone(presets.base)
+	self.gensec.tags = {"law"}
 	self.gensec.experience = {}
 	self.gensec.weapon = presets.weapon.normal
 	self.gensec.detection = presets.detection.guard
@@ -238,6 +241,7 @@ end
 
 function CharacterTweakData:_init_cop(presets)
 	self.cop = deep_clone(presets.base)
+	self.cop.tags = {"law"}
 	self.cop.experience = {}
 	self.cop.weapon = presets.weapon.normal
 	self.cop.detection = presets.detection.normal
@@ -286,6 +290,7 @@ end
 
 function CharacterTweakData:_init_fbi(presets)
 	self.fbi = deep_clone(presets.base)
+	self.fbi.tags = {"law"}
 	self.fbi.experience = {}
 	self.fbi.weapon = presets.weapon.normal
 	self.fbi.detection = presets.detection.normal
@@ -322,6 +327,7 @@ end
 function CharacterTweakData:_init_medic(presets)
 	self.medic = deep_clone(presets.base)
 	self.medic.tags = {
+		"law",
 		"medic",
 		"special"
 	}
@@ -367,6 +373,7 @@ end
 
 function CharacterTweakData:_init_swat(presets)
 	self.swat = deep_clone(presets.base)
+	self.swat.tags = {"law"}
 	self.swat.experience = {}
 	self.swat.weapon = presets.weapon.normal
 	self.swat.detection = presets.detection.normal
@@ -402,6 +409,7 @@ end
 
 function CharacterTweakData:_init_heavy_swat(presets)
 	self.heavy_swat = deep_clone(presets.base)
+	self.heavy_swat.tags = {"law"}
 	self.heavy_swat.experience = {}
 	self.heavy_swat.weapon = presets.weapon.normal
 	self.heavy_swat.detection = presets.detection.normal
@@ -439,6 +447,7 @@ end
 
 function CharacterTweakData:_init_fbi_swat(presets)
 	self.fbi_swat = deep_clone(presets.base)
+	self.fbi_swat.tags = {"law"}
 	self.fbi_swat.experience = {}
 	self.fbi_swat.weapon = presets.weapon.good
 	self.fbi_swat.detection = presets.detection.normal
@@ -473,6 +482,7 @@ end
 
 function CharacterTweakData:_init_fbi_heavy_swat(presets)
 	self.fbi_heavy_swat = deep_clone(presets.base)
+	self.fbi_heavy_swat.tags = {"law"}
 	self.fbi_heavy_swat.experience = {}
 	self.fbi_heavy_swat.weapon = presets.weapon.good
 	self.fbi_heavy_swat.detection = presets.detection.normal
@@ -507,6 +517,7 @@ end
 
 function CharacterTweakData:_init_city_swat(presets)
 	self.city_swat = deep_clone(presets.base)
+	self.city_swat.tags = {"law"}
 	self.city_swat.experience = {}
 	self.city_swat.weapon = presets.weapon.good
 	self.city_swat.detection = presets.detection.normal
@@ -543,6 +554,7 @@ end
 function CharacterTweakData:_init_sniper(presets)
 	self.sniper = deep_clone(presets.base)
 	self.sniper.tags = {
+		"law",
 		"sniper",
 		"special"
 	}
@@ -1625,6 +1637,7 @@ end
 function CharacterTweakData:_init_tank(presets)
 	self.tank = deep_clone(presets.base)
 	self.tank.tags = {
+		"law",
 		"tank",
 		"special"
 	}
@@ -2201,6 +2214,7 @@ end
 function CharacterTweakData:_init_spooc(presets)
 	self.spooc = deep_clone(presets.base)
 	self.spooc.tags = {
+		"law",
 		"spooc",
 		"special"
 	}
@@ -2266,6 +2280,7 @@ end
 function CharacterTweakData:_init_shield(presets)
 	self.shield = deep_clone(presets.base)
 	self.shield.tags = {
+		"law",
 		"shield",
 		"special"
 	}
@@ -2581,6 +2596,7 @@ end
 function CharacterTweakData:_init_taser(presets)
 	self.taser = deep_clone(presets.base)
 	self.taser.tags = {
+		"law",
 		"taser",
 		"special"
 	}
@@ -2814,6 +2830,7 @@ function CharacterTweakData:_init_civilian(presets)
 		}}
 	}
 	self.civilian.experience.cable_tie = "tie_civ"
+	self.civilian.silent_priority_shout = "f37"
 	self.civilian.speech_prefix_p1 = "cm"
 	self.civilian.speech_prefix_count = 2
 	self.civilian.access = "civ_male"
@@ -2832,6 +2849,7 @@ function CharacterTweakData:_init_civilian(presets)
 	self.robbers_safehouse.intimidateable = false
 	self.robbers_safehouse.ignores_aggression = true
 	self.robbers_safehouse.ignores_contours = true
+	self.robbers_safehouse.use_ik = true
 end
 
 function CharacterTweakData:_init_melee_box(presets)

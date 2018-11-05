@@ -17,7 +17,7 @@ function PlayerHandStateMelee:_spawn_melee_unit()
 		local align = nil
 
 		if #aligns > 1 then
-			align = self._hsm:hand_id() == 1 and "a_weapon_left" or "a_weapon_right"
+			align = self._hsm:hand_id() == 1 and "a_weapon_right" or "a_weapon_left"
 
 			if not table.contains(aligns, align) then
 				Application:error("[PlayerHandStateMelee:_spawn_melee_unit] can't spawn melee weapon in this hand", melee_entry, self._hand_unit)
@@ -36,11 +36,25 @@ function PlayerHandStateMelee:_spawn_melee_unit()
 		local offset = tweak_data.vr:get_offset_by_id(melee_entry)
 
 		if offset then
-			self._melee_unit:set_local_position(offset.position or Vector3())
+			if offset.position then
+				if self:hsm():hand_id() == PlayerHand.LEFT then
+					local x = -offset.position.x
+
+					self._melee_unit:set_local_position(offset.position:with_x(x))
+				else
+					self._melee_unit:set_local_position(offset.position)
+				end
+			end
 
 			if offset.rotation then
-				if offset.hand_flip and self:hsm():hand_id() == PlayerHand.LEFT then
-					self._melee_unit:set_local_rotation(offset.rotation * Rotation(180))
+				if self:hsm():hand_id() == PlayerHand.LEFT then
+					local rot = Rotation(-offset.rotation:yaw(), offset.rotation:pitch(), -offset.rotation:roll())
+
+					if offset.hand_flip then
+						rot = rot * Rotation(180)
+					end
+
+					self._melee_unit:set_local_rotation(rot)
 				else
 					self._melee_unit:set_local_rotation(offset.rotation)
 				end

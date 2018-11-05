@@ -55,6 +55,7 @@ core:import("CoreGuiDataManager")
 
 if _G.IS_VR then
 	require("lib/managers/VRManagerPD2")
+	require("lib/managers/subtitle/SubtitlePresenterVR")
 end
 
 require("lib/managers/ControllerWrapper")

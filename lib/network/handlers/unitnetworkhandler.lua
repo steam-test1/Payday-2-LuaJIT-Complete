@@ -2734,7 +2734,7 @@ function UnitNetworkHandler:mark_minion(unit, minion_owner_peer_id, convert_enem
 
 	unit:character_damage():convert_to_criminal(health_multiplier)
 	unit:contour():add("friendly", false)
-	managers.groupai:state():sync_converted_enemy(unit)
+	managers.groupai:state():sync_converted_enemy(unit, minion_owner_peer_id)
 
 	if minion_owner_peer_id == managers.network:session():local_peer():id() then
 		managers.player:count_up_player_minions()

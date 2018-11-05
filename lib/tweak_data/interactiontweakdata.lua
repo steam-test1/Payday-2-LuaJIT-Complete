@@ -4272,10 +4272,6 @@ function InteractionTweakData:init(tweak_data)
 		text_id = "hud_press_reset_damage_counter",
 		interact_distance = 150
 	}
-	self.press_start_weapon_course = {
-		text_id = "hud_press_start_weapon_course",
-		interact_distance = 150
-	}
 	self.access_fbi_files = {
 		text_id = "hud_chill_access_fbi",
 		interact_distance = 200
@@ -4328,6 +4324,10 @@ function InteractionTweakData:init(tweak_data)
 		end
 	end
 
+	self.press_start_weapon_course = {
+		text_id = "hud_press_start_weapon_course",
+		interact_distance = 150
+	}
 	self.pku_scubagear_tank = {
 		text_id = "hud_int_hold_take_scubagear_tank_and_flippers",
 		action_text_id = "hud_action_taking_scubagear_tank_and_flippers",

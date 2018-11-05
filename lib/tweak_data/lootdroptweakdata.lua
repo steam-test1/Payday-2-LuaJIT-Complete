@@ -1,5 +1,7 @@
 LootDropTweakData = LootDropTweakData or class()
 
+require("lib/tweak_data/GeneratedLootDropTweakData")
+
 function LootDropTweakData:init(tweak_data)
 	self.PC_STEP = 10
 	self.no_drop = {
@@ -1716,6 +1718,7 @@ function LootDropTweakData:init(tweak_data)
 		"fgl"
 	}
 
+	self:init_generated(tweak_data)
 	self:_create_global_value_list_map()
 end
 

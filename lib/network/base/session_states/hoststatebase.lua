@@ -28,6 +28,7 @@ function HostStateBase:_send_request_denied(sender, reason, my_user_id)
 		"",
 		1,
 		1,
+		false,
 		0,
 		"",
 		my_user_id,

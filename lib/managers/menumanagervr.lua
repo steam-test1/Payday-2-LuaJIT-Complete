@@ -341,6 +341,7 @@ function MenuManagerVR:_enter_menu_room()
 		if not self._is_start_menu then
 			self._ingame_camera_bm:set_visible(true)
 			self._ingame_viewport:set_active(true)
+			self:set_ingame_subtitle_presenter(false)
 		end
 	end
 end
@@ -359,10 +360,20 @@ function MenuManagerVR:_exit_menu_room()
 			if self._customization_gui then
 				self._customization_gui:exit_menu()
 			end
+
+			self:set_ingame_subtitle_presenter(true)
 		end
 
 		managers.overlay_effect:play_effect(self._exit_fade_in)
 	end
+end
+
+function MenuManagerVR:set_ingame_subtitle_presenter(ingame)
+	local presenter = nil
+	presenter = ingame and CoreSubtitlePresenter.IngamePresenterVR:new(tweak_data.menu.pd2_medium_font, tweak_data.menu.pd2_medium_font_size, managers.hud:subtitle_workspace()) or CoreSubtitlePresenter.OverlayPresenter:new(tweak_data.menu.pd2_medium_font, tweak_data.menu.pd2_medium_font_size)
+
+	managers.subtitle:set_presenter(presenter)
+	presenter:show()
 end
 
 function MenuManagerVR:player()

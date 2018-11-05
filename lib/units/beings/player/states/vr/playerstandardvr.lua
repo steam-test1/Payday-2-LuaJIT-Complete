@@ -1030,6 +1030,16 @@ function PlayerStandardVR:_check_action_primary_attack(t, input)
 			local weapon_hand_id = self._unit:hand():get_active_hand_id("weapon")
 
 			if self._equipped_unit then
+				if table.contains(self._equipped_unit:base():weapon_tweak_data().categories, "bow") then
+					local bow_hand_id = self._unit:hand():get_active_hand_id("bow")
+
+					if not bow_hand_id or not self._unit:hand():current_hand_state(bow_hand_id):can_grip_string() then
+						input.btn_primary_attack_press = nil
+						input.btn_primary_attack_state = nil
+						input.btn_primary_attack_release = nil
+					end
+				end
+
 				if self._equipped_unit:base().akimbo then
 					new_action = self:_check_fire_per_weapon(t, input.btn_akimbo_fire_press, input.btn_akimbo_fire_state, input.btn_akimbo_fire_release, self._equipped_unit:base()._second_gun:base(), true) or new_action
 				end
@@ -1065,14 +1075,16 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 			return false
 		end
 
-		if self:_is_using_bipod() or not managers.vr:get_setting("auto_reload") then
+		local should_reload_immediately = self._equipped_unit:base().should_reload_immediately and self._equipped_unit:base():should_reload_immediately()
+
+		if self:_is_using_bipod() or not managers.vr:get_setting("auto_reload") and not should_reload_immediately then
 			if pressed then
 				weap_base:dryfire()
 			end
 
 			weap_base:tweak_data_anim_stop("fire")
 		elseif fire_mode == "single" then
-			if pressed then
+			if pressed or should_reload_immediately then
 				self:_start_action_reload_enter(t)
 			end
 		else
@@ -1149,6 +1161,10 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 			elseif fire_on_release then
 				if released then
 					fired = weap_base:trigger_released(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
+
+					if fired then
+						self:_start_action_reload_enter(t)
+					end
 				elseif held then
 					weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
 				end
@@ -1162,14 +1178,6 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 			if not self._shooting_forbidden then
 				fired = weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
 			end
-		end
-
-		local charging_weapon = fire_on_release and weap_base:charging()
-
-		if not self._state_data.charging_weapon and charging_weapon then
-			self:_start_action_charging_weapon(t)
-		elseif self._state_data.charging_weapon and not charging_weapon then
-			self:_end_action_charging_weapon(t)
 		end
 
 		new_action = true
@@ -1271,23 +1279,12 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 end
 
 function PlayerStandardVR:_check_action_weapon_gadget(t, input)
-
-	local function toggle_gadget(weap_base)
-		if weap_base.toggle_gadget and weap_base:has_gadget() and weap_base:toggle_gadget(self) then
-			self._unit:network():send("set_weapon_gadget_state", weap_base._gadget_on)
-
-			if alive(self._equipped_unit) then
-				managers.hud:set_ammo_amount(weap_base:selection_index(), weap_base:ammo_info())
-			end
-		end
-	end
-
 	if input.btn_weapon_gadget_press then
 		if self._equipped_unit:base().akimbo then
-			toggle_gadget(self._equipped_unit:base()._second_gun:base())
+			self:_toggle_gadget(self._equipped_unit:base()._second_gun:base())
 		end
 
-		toggle_gadget(self._equipped_unit:base())
+		self:_toggle_gadget(self._equipped_unit:base())
 	end
 end
 local tmp_head_fwd = Vector3(0, 0, 0)
@@ -1351,7 +1348,24 @@ function PlayerStandardVR:_update_fwd_ray()
 	end
 end
 
-function PlayerStandardVR:swap_weapon(hand_id, selection_wanted, clbk)
+function PlayerStandardVR:_start_action_unequip_weapon(t, data)
+	local _, selection_wanted = nil
+
+	if data.next then
+		_, selection_wanted = self._ext_inventory:get_next_selection()
+	elseif data.previous then
+		_, selection_wanted = self._ext_inventory:get_previous_selection()
+	else
+		selection_wanted = data.selection_wanted
+	end
+
+	if selection_wanted then
+		self._ext_inventory:equip_selection(selection_wanted, false)
+		self:swap_weapon(selection_wanted)
+	end
+end
+
+function PlayerStandardVR:swap_weapon(selection_wanted)
 	if self._ext_inventory:is_equipped(selection_wanted) then
 		return
 	end
@@ -1409,7 +1423,7 @@ function PlayerStandardVR:_start_action_reload(t)
 		end
 
 		if not managers.vr:get_setting("auto_reload") then
-			reload_time = reload_time - tweak_data.vr.reload_buff
+			reload_time = table.contains(tweak.categories, "bow") and 0 or reload_time - tweak_data.vr.reload_buff
 		end
 
 		self._state_data.reload_start_t = t
@@ -1560,42 +1574,10 @@ function PlayerStandardVR:trigger_reload()
 	self._ext_movement:reset_next_reload_speed_multiplier()
 end
 
-function PlayerStandardVR:_interupt_action_interact(t, input, complete)
-	if self._interact_expire_t then
-		self._interact_expire_t = nil
-
-		if alive(self._interact_params.object) then
-			self._interact_params.object:interaction():interact_interupt(self._unit, complete)
-		end
-
-		self._interaction:interupt_action_interact(self._unit)
-		managers.network:session():send_to_peers_synched("sync_teammate_progress", 1, false, self._interact_params.tweak_data, 0, complete and true or false)
-
-		self._interact_params = nil
-
-		managers.hud:hide_interaction_bar(complete)
-		self._unit:network():send("sync_interaction_anim", false, "")
-
-		self._state_data.interacting = false
-	end
+function PlayerStandardVR:_play_equip_animation()
 end
 
-function PlayerStandardVR:_interupt_action_use_item(t, input, complete)
-	if self._use_item_expire_t then
-		self._use_item_expire_t = nil
-
-		managers.hud:hide_progress_timer_bar(complete)
-		managers.hud:remove_progress_timer()
-
-		local post_event = managers.player:selected_equipment_sound_interupt()
-
-		if not complete and post_event then
-			self._unit:sound_source():post_event(post_event)
-		end
-
-		self._unit:equipment():on_deploy_interupted()
-		managers.network:session():send_to_peers_synched("sync_teammate_progress", 2, false, "", 0, complete and true or false)
-	end
+function PlayerStandardVR:_play_unequip_animation()
 end
 local __start_action_interact = PlayerStandard._start_action_interact
 
@@ -1605,6 +1587,13 @@ function PlayerStandardVR:_start_action_interact(t, input, timer, interact_objec
 	self._state_data.interacting = true
 
 	__start_action_interact(self, t, input, timer, interact_object)
+end
+local __interupt_action_interact = PlayerStandard._interupt_action_interact
+
+function PlayerStandardVR:_interupt_action_interact(t, input, complete)
+	self._state_data.interacting = false
+
+	__interupt_action_interact(self, t, input, complete)
 end
 local __start_action_use_item = PlayerStandard._start_action_use_item
 

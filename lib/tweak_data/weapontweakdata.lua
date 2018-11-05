@@ -3818,7 +3818,7 @@ function WeaponTweakData:_init_stats()
 		extra_ammo = {}
 	}
 
-	for i = -10, 100, 2 do
+	for i = -100, 100, 2 do
 		table.insert(self.stats.extra_ammo, i)
 	end
 
@@ -4111,7 +4111,7 @@ function WeaponTweakData:_init_new_m4(weapon_data)
 		spread_moving = 10,
 		recoil = 16,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 10,
 		concealment = 20
@@ -4205,7 +4205,7 @@ function WeaponTweakData:_init_glock_17(weapon_data)
 		spread_moving = 14,
 		recoil = 16,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 16,
 		concealment = 30
@@ -4300,7 +4300,7 @@ function WeaponTweakData:_init_mp9(weapon_data)
 		spread_moving = 8,
 		recoil = 20,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 16,
 		concealment = 26
@@ -4399,7 +4399,7 @@ function WeaponTweakData:_init_r870(weapon_data)
 		spread_moving = 12,
 		recoil = 9,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 5,
 		concealment = 11
@@ -4504,7 +4504,7 @@ function WeaponTweakData:_init_glock_18c(weapon_data)
 		spread_moving = 14,
 		recoil = 15,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 14,
 		concealment = 29
@@ -4597,7 +4597,7 @@ function WeaponTweakData:_init_amcar(weapon_data)
 		spread_moving = 8,
 		recoil = 20,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 10,
 		concealment = 21
@@ -4690,7 +4690,7 @@ function WeaponTweakData:_init_m16(weapon_data)
 		spread_moving = 13,
 		recoil = 9,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 10,
 		concealment = 17
@@ -4783,7 +4783,7 @@ function WeaponTweakData:_init_olympic(weapon_data)
 		spread_moving = 11,
 		recoil = 17,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 10,
 		concealment = 24
@@ -4876,7 +4876,7 @@ function WeaponTweakData:_init_ak74(weapon_data)
 		spread_moving = 11,
 		recoil = 16,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 10,
 		concealment = 16
@@ -4969,7 +4969,7 @@ function WeaponTweakData:_init_akm(weapon_data)
 		spread_moving = 14,
 		recoil = 12,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 8,
 		concealment = 13
@@ -5063,7 +5063,7 @@ function WeaponTweakData:_init_akm_gold(weapon_data)
 		spread_moving = 14,
 		recoil = 12,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 8,
 		concealment = 11
@@ -5156,7 +5156,7 @@ function WeaponTweakData:_init_akmsu(weapon_data)
 		spread_moving = 16,
 		recoil = 12,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 8,
 		concealment = 21
@@ -5250,7 +5250,7 @@ function WeaponTweakData:_init_saiga(weapon_data)
 		spread_moving = 8,
 		recoil = 12,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 5,
 		concealment = 13
@@ -5342,7 +5342,7 @@ function WeaponTweakData:_init_ak5(weapon_data)
 		spread_moving = 14,
 		recoil = 16,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 10,
 		concealment = 18
@@ -5430,7 +5430,7 @@ function WeaponTweakData:_init_aug(weapon_data)
 		spread_moving = 15,
 		recoil = 11,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 10,
 		concealment = 20
@@ -5519,7 +5519,7 @@ function WeaponTweakData:_init_g36(weapon_data)
 		spread_moving = 9,
 		recoil = 17,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 11,
 		concealment = 19
@@ -5607,7 +5607,7 @@ function WeaponTweakData:_init_p90(weapon_data)
 		spread_moving = 14,
 		recoil = 16,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 12,
 		concealment = 25
@@ -5696,7 +5696,7 @@ function WeaponTweakData:_init_new_m14(weapon_data)
 		spread_moving = 20,
 		recoil = 10,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 4,
 		concealment = 8
@@ -5782,7 +5782,7 @@ function WeaponTweakData:_init_deagle(weapon_data)
 		spread_moving = 20,
 		recoil = 8,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 7,
 		concealment = 28
@@ -5872,7 +5872,7 @@ function WeaponTweakData:_init_new_mp5(weapon_data)
 		spread_moving = 8,
 		recoil = 21,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 17,
 		concealment = 24
@@ -5960,7 +5960,7 @@ function WeaponTweakData:_init_colt_1911(weapon_data)
 		spread_moving = 18,
 		recoil = 14,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 14,
 		concealment = 29
@@ -6050,7 +6050,7 @@ function WeaponTweakData:_init_mac10(weapon_data)
 		spread_moving = 13,
 		recoil = 17,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 14,
 		concealment = 27
@@ -6139,7 +6139,7 @@ function WeaponTweakData:_init_serbu(weapon_data)
 		spread_moving = 10,
 		recoil = 10,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 5,
 		concealment = 23
@@ -6235,7 +6235,7 @@ function WeaponTweakData:_init_huntsman(weapon_data)
 		spread_moving = 16,
 		recoil = 10,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 2,
 		concealment = 7
@@ -6324,7 +6324,7 @@ function WeaponTweakData:_init_b92fs(weapon_data)
 		spread_moving = 15,
 		recoil = 16,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 17,
 		concealment = 30
@@ -6413,7 +6413,7 @@ function WeaponTweakData:_init_new_raging_bull(weapon_data)
 		spread_moving = 5,
 		recoil = 2,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 7,
 		concealment = 26
@@ -6520,7 +6520,7 @@ function WeaponTweakData:_init_saw(weapon_data)
 		spread_moving = 7,
 		value = 1,
 		recoil = 7,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 7,
 		concealment = 16
@@ -6624,7 +6624,7 @@ function WeaponTweakData:_init_usp(weapon_data)
 		spread_moving = 18,
 		recoil = 14,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 16,
 		concealment = 29
@@ -6720,7 +6720,7 @@ function WeaponTweakData:_init_g22c(weapon_data)
 		spread_moving = 18,
 		recoil = 14,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 15,
 		concealment = 29
@@ -6819,7 +6819,7 @@ function WeaponTweakData:_init_judge(weapon_data)
 		spread_moving = 14,
 		recoil = 8,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 5,
 		concealment = 29
@@ -6910,7 +6910,7 @@ function WeaponTweakData:_init_m45(weapon_data)
 		spread_moving = 18,
 		recoil = 12,
 		value = 5,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 14,
 		concealment = 24
@@ -7001,7 +7001,7 @@ function WeaponTweakData:_init_s552(weapon_data)
 		spread_moving = 8,
 		recoil = 15,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 12,
 		concealment = 22
@@ -7091,7 +7091,7 @@ function WeaponTweakData:_init_ppk(weapon_data)
 		spread_moving = 12,
 		recoil = 16,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 18,
 		concealment = 30
@@ -7184,7 +7184,7 @@ function WeaponTweakData:_init_mp7(weapon_data)
 		spread_moving = 17,
 		recoil = 18,
 		value = 7,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 16,
 		concealment = 23
@@ -7275,7 +7275,7 @@ function WeaponTweakData:_init_scar(weapon_data)
 		spread_moving = 15,
 		recoil = 12,
 		value = 9,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 8,
 		concealment = 8
@@ -7365,7 +7365,7 @@ function WeaponTweakData:_init_p226(weapon_data)
 		spread_moving = 18,
 		recoil = 14,
 		value = 4,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 15,
 		concealment = 29
@@ -7473,7 +7473,7 @@ function WeaponTweakData:_init_hk21(weapon_data)
 		spread_moving = 10,
 		recoil = 3,
 		value = 9,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 2,
 		concealment = 1
@@ -7581,7 +7581,7 @@ function WeaponTweakData:_init_m249(weapon_data)
 		spread_moving = 8,
 		recoil = 8,
 		value = 9,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 4,
 		concealment = 1
@@ -7689,7 +7689,7 @@ function WeaponTweakData:_init_rpk(weapon_data)
 		spread_moving = 6,
 		recoil = 3,
 		value = 9,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 8,
 		concealment = 1
@@ -7788,7 +7788,7 @@ function WeaponTweakData:_init_m95(weapon_data)
 		spread_moving = 24,
 		recoil = 2,
 		value = 9,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 2,
 		concealment = 1
@@ -7890,7 +7890,7 @@ function WeaponTweakData:_init_msr(weapon_data)
 		spread_moving = 22,
 		recoil = 8,
 		value = 9,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 6,
 		concealment = 5
@@ -7995,7 +7995,7 @@ function WeaponTweakData:_init_r93(weapon_data)
 		spread_moving = 24,
 		recoil = 4,
 		value = 9,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 4,
 		concealment = 5
@@ -8087,7 +8087,7 @@ function WeaponTweakData:_init_fal(weapon_data)
 		spread_moving = 16,
 		recoil = 12,
 		value = 4,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 8,
 		concealment = 10
@@ -8179,7 +8179,7 @@ function WeaponTweakData:_init_benelli(weapon_data)
 		spread_moving = 7,
 		recoil = 12,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 6,
 		concealment = 12
@@ -8277,7 +8277,7 @@ function WeaponTweakData:_init_striker(weapon_data)
 		spread_moving = 8,
 		recoil = 12,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 5,
 		concealment = 21
@@ -8378,7 +8378,7 @@ function WeaponTweakData:_init_ksg(weapon_data)
 		spread_moving = 12,
 		recoil = 12,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 5,
 		concealment = 22
@@ -8480,7 +8480,7 @@ function WeaponTweakData:_init_gre_m79(weapon_data)
 		spread_moving = 6,
 		recoil = 25,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 2,
 		concealment = 18
@@ -8571,7 +8571,7 @@ function WeaponTweakData:_init_g3(weapon_data)
 		spread_moving = 16,
 		recoil = 13,
 		value = 4,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 6,
 		concealment = 12
@@ -8663,7 +8663,7 @@ function WeaponTweakData:_init_galil(weapon_data)
 		spread_moving = 10,
 		recoil = 18,
 		value = 4,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 7,
 		concealment = 15
@@ -8753,7 +8753,7 @@ function WeaponTweakData:_init_famas(weapon_data)
 		spread_moving = 8,
 		recoil = 18,
 		value = 4,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 10,
 		concealment = 24
@@ -8845,7 +8845,7 @@ function WeaponTweakData:_init_scorpion(weapon_data)
 		spread_moving = 8,
 		recoil = 18,
 		value = 7,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 17,
 		concealment = 28
@@ -8937,7 +8937,7 @@ function WeaponTweakData:_init_tec9(weapon_data)
 		spread_moving = 8,
 		recoil = 20,
 		value = 7,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 12,
 		concealment = 27
@@ -9029,7 +9029,7 @@ function WeaponTweakData:_init_uzi(weapon_data)
 		spread_moving = 14,
 		recoil = 18,
 		value = 7,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 12,
 		concealment = 24
@@ -9129,7 +9129,7 @@ function WeaponTweakData:_init_jowi(weapon_data)
 		spread_moving = 14,
 		recoil = 16,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 15,
 		concealment = 30
@@ -9229,7 +9229,7 @@ function WeaponTweakData:_init_x_1911(weapon_data)
 		spread_moving = 18,
 		recoil = 14,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 14,
 		concealment = 27
@@ -9330,7 +9330,7 @@ function WeaponTweakData:_init_x_b92fs(weapon_data)
 		spread_moving = 14,
 		recoil = 16,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 17,
 		concealment = 28
@@ -9429,7 +9429,7 @@ function WeaponTweakData:_init_x_deagle(weapon_data)
 		spread_moving = 4,
 		recoil = 8,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 7,
 		concealment = 26
@@ -9518,7 +9518,7 @@ function WeaponTweakData:_init_g26(weapon_data)
 		spread_moving = 14,
 		recoil = 16,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 18,
 		concealment = 30
@@ -9614,7 +9614,7 @@ function WeaponTweakData:_init_spas12(weapon_data)
 		spread_moving = 8,
 		recoil = 12,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 5,
 		concealment = 14
@@ -9722,7 +9722,7 @@ function WeaponTweakData:_init_mg42(weapon_data)
 		spread_moving = 8,
 		recoil = 8,
 		value = 9,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 4,
 		concealment = 1
@@ -9812,7 +9812,7 @@ function WeaponTweakData:_init_c96(weapon_data)
 		spread_moving = 12,
 		recoil = 16,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 14,
 		concealment = 28
@@ -9905,7 +9905,7 @@ function WeaponTweakData:_init_sterling(weapon_data)
 		spread_moving = 8,
 		recoil = 20,
 		value = 7,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 12,
 		concealment = 20
@@ -10008,7 +10008,7 @@ function WeaponTweakData:_init_mosin(weapon_data)
 		spread_moving = 24,
 		recoil = 4,
 		value = 9,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 5,
 		concealment = 6
@@ -10107,7 +10107,7 @@ function WeaponTweakData:_init_m1928(weapon_data)
 		spread_moving = 13,
 		recoil = 18,
 		value = 9,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 12,
 		concealment = 18
@@ -10203,7 +10203,7 @@ function WeaponTweakData:_init_l85a2(weapon_data)
 		spread_moving = 15,
 		recoil = 16,
 		value = 9,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 12,
 		concealment = 16
@@ -10299,7 +10299,7 @@ function WeaponTweakData:_init_vhs(weapon_data)
 		spread_moving = 15,
 		recoil = 16,
 		value = 9,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 12,
 		concealment = 17
@@ -10389,7 +10389,7 @@ function WeaponTweakData:_init_hs2000(weapon_data)
 		spread_moving = 18,
 		recoil = 14,
 		value = 4,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 15,
 		concealment = 29
@@ -10490,7 +10490,7 @@ function WeaponTweakData:_init_m134(weapon_data)
 		spread_moving = 9,
 		recoil = 7,
 		value = 9,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 4,
 		concealment = 5
@@ -10591,7 +10591,7 @@ function WeaponTweakData:_init_rpg7(weapon_data)
 		spread_moving = 25,
 		recoil = 25,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 2,
 		concealment = 5
@@ -10690,7 +10690,7 @@ function WeaponTweakData:_init_cobray(weapon_data)
 		spread_moving = 14,
 		recoil = 18,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 14,
 		concealment = 25
@@ -10790,7 +10790,7 @@ function WeaponTweakData:_init_b682(weapon_data)
 		spread_moving = 16,
 		recoil = 8,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 2,
 		concealment = 5
@@ -10892,7 +10892,7 @@ function WeaponTweakData:_init_x_g22c(weapon_data)
 		spread_moving = 18,
 		recoil = 14,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 15,
 		concealment = 29
@@ -10993,7 +10993,7 @@ function WeaponTweakData:_init_x_g17(weapon_data)
 		spread_moving = 14,
 		recoil = 16,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 16,
 		concealment = 30
@@ -11094,7 +11094,7 @@ function WeaponTweakData:_init_x_usp(weapon_data)
 		spread_moving = 18,
 		recoil = 14,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 16,
 		concealment = 29
@@ -11200,7 +11200,7 @@ function WeaponTweakData:_init_flamethrower_mk2(weapon_data)
 		spread_moving = 6,
 		recoil = 0,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 2,
 		concealment = 7
@@ -11309,7 +11309,7 @@ function WeaponTweakData:_init_m32(weapon_data)
 		spread_moving = 25,
 		recoil = 25,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 2,
 		concealment = 10
@@ -11408,7 +11408,7 @@ function WeaponTweakData:_init_aa12(weapon_data)
 		spread_moving = 8,
 		recoil = 12,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 5,
 		concealment = 9
@@ -11509,7 +11509,7 @@ function WeaponTweakData:_init_peacemaker(weapon_data)
 		spread_moving = 22,
 		recoil = 4,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 5,
 		concealment = 26
@@ -11613,7 +11613,7 @@ function WeaponTweakData:_init_winchester1874(weapon_data)
 		spread_moving = 24,
 		recoil = 6,
 		value = 9,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 5,
 		concealment = 12
@@ -11714,7 +11714,7 @@ function WeaponTweakData:_init_plainsider(weapon_data)
 		spread_moving = 12,
 		recoil = 25,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 2,
 		concealment = 30
@@ -11806,7 +11806,7 @@ function WeaponTweakData:_init_mateba(weapon_data)
 		spread_moving = 22,
 		recoil = 4,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 7,
 		concealment = 20
@@ -11901,7 +11901,7 @@ function WeaponTweakData:_init_asval(weapon_data)
 		spread_moving = 8,
 		recoil = 17,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 24,
 		concealment = 26
@@ -11990,7 +11990,7 @@ function WeaponTweakData:_init_sub2000(weapon_data)
 		spread_moving = 16,
 		recoil = 9,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 4,
 		concealment = 27
@@ -12087,7 +12087,7 @@ function WeaponTweakData:_init_wa2000(weapon_data)
 		spread_moving = 24,
 		recoil = 6,
 		value = 9,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 12,
 		concealment = 16
@@ -12186,7 +12186,7 @@ function WeaponTweakData:_init_polymer(weapon_data)
 		spread_moving = 14,
 		recoil = 20,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 14,
 		concealment = 20
@@ -12284,7 +12284,7 @@ function WeaponTweakData:_init_hunter(weapon_data)
 		spread_moving = 25,
 		recoil = 25,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 14,
 		concealment = 26
@@ -12382,7 +12382,7 @@ function WeaponTweakData:_init_baka(weapon_data)
 		spread_moving = 4,
 		recoil = 20,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 14,
 		concealment = 29
@@ -12480,7 +12480,7 @@ function WeaponTweakData:_init_arblast(weapon_data)
 		spread_moving = 25,
 		recoil = 25,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 14,
 		concealment = 28
@@ -12579,7 +12579,7 @@ function WeaponTweakData:_init_frankish(weapon_data)
 		spread_moving = 25,
 		recoil = 25,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 14,
 		concealment = 29
@@ -12678,7 +12678,7 @@ function WeaponTweakData:_init_long(weapon_data)
 		spread_moving = 25,
 		recoil = 25,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 2,
 		concealment = 29
@@ -12786,7 +12786,7 @@ function WeaponTweakData:_init_par(weapon_data)
 		spread_moving = 8,
 		recoil = 8,
 		value = 9,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 4,
 		concealment = 1
@@ -12876,7 +12876,7 @@ function WeaponTweakData:_init_sparrow(weapon_data)
 		spread_moving = 18,
 		recoil = 9,
 		value = 4,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 15,
 		concealment = 29
@@ -12978,7 +12978,7 @@ function WeaponTweakData:_init_model70(weapon_data)
 		spread_moving = 24,
 		recoil = 4,
 		value = 9,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 5,
 		concealment = 6
@@ -13086,7 +13086,7 @@ function WeaponTweakData:_init_m37(weapon_data)
 		spread_moving = 12,
 		recoil = 14,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 5,
 		concealment = 22
@@ -13195,7 +13195,7 @@ function WeaponTweakData:_init_china(weapon_data)
 		spread_moving = 6,
 		recoil = 25,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 2,
 		concealment = 18
@@ -13293,7 +13293,7 @@ function WeaponTweakData:_init_sr2(weapon_data)
 		spread_moving = 14,
 		recoil = 14,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 14,
 		concealment = 28
@@ -13397,7 +13397,7 @@ function WeaponTweakData:_init_x_sr2(weapon_data)
 		spread_moving = 14,
 		recoil = 14,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 15,
 		concealment = 28
@@ -13486,7 +13486,7 @@ function WeaponTweakData:_init_pl14(weapon_data)
 		spread_moving = 18,
 		recoil = 9,
 		value = 4,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 15,
 		concealment = 29
@@ -13586,7 +13586,7 @@ function WeaponTweakData:_init_x_mp5(weapon_data)
 		spread_moving = 8,
 		recoil = 21,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 17,
 		concealment = 24
@@ -13686,7 +13686,7 @@ function WeaponTweakData:_init_x_akmsu(weapon_data)
 		spread_moving = 16,
 		recoil = 12,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 8,
 		concealment = 21
@@ -13781,7 +13781,7 @@ function WeaponTweakData:_init_tecci(weapon_data)
 		spread_moving = 10,
 		recoil = 14,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 10,
 		concealment = 20
@@ -13878,7 +13878,7 @@ function WeaponTweakData:_init_hajk(weapon_data)
 		spread_moving = 15,
 		recoil = 18,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 14,
 		concealment = 18
@@ -13984,7 +13984,7 @@ function WeaponTweakData:_init_boot(weapon_data)
 		spread_moving = 12,
 		recoil = 8,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 5,
 		concealment = 20
@@ -14074,7 +14074,7 @@ function WeaponTweakData:_init_packrat(weapon_data)
 		spread_moving = 18,
 		recoil = 16,
 		value = 4,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 15,
 		concealment = 29
@@ -14172,7 +14172,7 @@ function WeaponTweakData:_init_schakal(weapon_data)
 		spread_moving = 14,
 		recoil = 14,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 14,
 		concealment = 24
@@ -14275,7 +14275,7 @@ function WeaponTweakData:_init_desertfox(weapon_data)
 		spread_moving = 24,
 		recoil = 4,
 		value = 10,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 5,
 		concealment = 19
@@ -14379,7 +14379,7 @@ function WeaponTweakData:_init_x_packrat(weapon_data)
 		spread_moving = 18,
 		recoil = 16,
 		value = 4,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 15,
 		concealment = 27
@@ -14474,7 +14474,7 @@ function WeaponTweakData:_init_rota(weapon_data)
 		spread_moving = 8,
 		recoil = 12,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 5,
 		concealment = 13
@@ -14579,7 +14579,7 @@ function WeaponTweakData:_init_arbiter(weapon_data)
 		spread_moving = 6,
 		recoil = 25,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 2,
 		concealment = 18
@@ -14672,7 +14672,7 @@ function WeaponTweakData:_init_contraband(weapon_data)
 		spread_moving = 15,
 		recoil = 12,
 		value = 9,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 8,
 		concealment = 8
@@ -14772,7 +14772,7 @@ function WeaponTweakData:_init_contraband(weapon_data)
 		spread_moving = 6,
 		recoil = 25,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 2,
 		concealment = 18
@@ -14878,7 +14878,7 @@ function WeaponTweakData:_init_ray(weapon_data)
 		spread_moving = 25,
 		recoil = 25,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 2,
 		concealment = 5
@@ -14976,7 +14976,7 @@ function WeaponTweakData:_init_tti(weapon_data)
 		spread_moving = 24,
 		recoil = 2,
 		value = 9,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 12,
 		concealment = 16
@@ -15075,7 +15075,7 @@ function WeaponTweakData:_init_grv(weapon_data)
 		spread_moving = 24,
 		recoil = 2,
 		value = 9,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 12,
 		concealment = 16
@@ -15171,7 +15171,7 @@ function WeaponTweakData:_init_flint(weapon_data)
 		spread_moving = 11,
 		recoil = 16,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 10,
 		concealment = 16
@@ -15268,7 +15268,7 @@ function WeaponTweakData:_init_coal(weapon_data)
 		spread_moving = 14,
 		recoil = 14,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 14,
 		concealment = 24
@@ -15361,7 +15361,7 @@ function WeaponTweakData:_init_lemming(weapon_data)
 		spread_moving = 18,
 		recoil = 10,
 		value = 4,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 15,
 		concealment = 29
@@ -15452,7 +15452,7 @@ function WeaponTweakData:_init_chinchilla(weapon_data)
 		spread_moving = 5,
 		recoil = 2,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 7,
 		concealment = 28
@@ -15552,7 +15552,7 @@ function WeaponTweakData:_init_x_chinchilla(weapon_data)
 		spread_moving = 5,
 		recoil = 2,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 7,
 		concealment = 28
@@ -15641,7 +15641,7 @@ function WeaponTweakData:_init_breech(weapon_data)
 		spread_moving = 18,
 		recoil = 7,
 		value = 4,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 15,
 		concealment = 29
@@ -15736,7 +15736,7 @@ function WeaponTweakData:_init_ching(weapon_data)
 		spread_moving = 20,
 		recoil = 10,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 4,
 		concealment = 20
@@ -15829,7 +15829,7 @@ function WeaponTweakData:_init_erma(weapon_data)
 		spread_moving = 18,
 		recoil = 12,
 		value = 5,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 14,
 		concealment = 24
@@ -15928,7 +15928,7 @@ function WeaponTweakData:_init_ecp(weapon_data)
 		spread_moving = 22,
 		recoil = 22,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 14,
 		concealment = 5
@@ -16024,7 +16024,7 @@ function WeaponTweakData:_init_shrew(weapon_data)
 		spread_moving = 14,
 		recoil = 16,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 16,
 		concealment = 30
@@ -16125,7 +16125,7 @@ function WeaponTweakData:_init_x_shrew(weapon_data)
 		spread_moving = 14,
 		recoil = 16,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 16,
 		concealment = 30
@@ -16221,7 +16221,7 @@ function WeaponTweakData:_init_basset(weapon_data)
 		spread_moving = 8,
 		recoil = 13,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 5,
 		concealment = 21
@@ -16326,7 +16326,7 @@ function WeaponTweakData:_init_x_basset(weapon_data)
 		spread_moving = 8,
 		recoil = 13,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 5,
 		concealment = 21
@@ -16417,7 +16417,7 @@ function WeaponTweakData:_init_corgi(weapon_data)
 		spread_moving = 15,
 		recoil = 18,
 		value = 9,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 12,
 		concealment = 20
@@ -16520,7 +16520,7 @@ function WeaponTweakData:_init_slap(weapon_data)
 		spread_moving = 6,
 		recoil = 22,
 		value = 1,
-		extra_ammo = 6,
+		extra_ammo = 51,
 		reload = 11,
 		suppression = 2,
 		concealment = 22

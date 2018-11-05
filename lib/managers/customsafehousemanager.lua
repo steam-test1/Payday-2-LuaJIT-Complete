@@ -531,7 +531,7 @@ CustomSafehouseManager._mutator_achievement_categories = {
 	"complete_heist_achievements",
 	"grenade_achievements",
 	"enemy_kill_achievements",
-	"enemy_melee_kill_achievements"
+	"enemy_melee_hit_achievements"
 }
 
 function CustomSafehouseManager:can_progress_trophies(id)

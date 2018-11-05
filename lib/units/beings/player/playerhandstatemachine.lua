@@ -48,8 +48,14 @@ function PlayerHandStateMachine:init(hand_unit, hand_id, transition_queue)
 		return next_state:hsm():other_hand():current_state_name() == "weapon"
 	end
 
+	local function weapon_swipe_condition(prev_state, next_state)
+		local other_hand = next_state:hsm():other_hand()
+
+		return other_hand:current_state_name() ~= "bow" or not other_hand:current_state():gripping_string()
+	end
+
 	local function weapon_belt_condition(prev_state, next_state)
-		return next_state:hsm():other_hand():current_state_name() ~= "weapon_assist"
+		return next_state:hsm():other_hand():current_state_name() ~= "weapon_assist" and weapon_swipe_condition(prev_state, next_state)
 	end
 
 	local function exit_driving_condition(prev_state, next_state)
@@ -72,7 +78,7 @@ function PlayerHandStateMachine:init(hand_unit, hand_id, transition_queue)
 	self:add_transition(weapon, point, weapon_func)
 	self:add_transition(weapon, ready, weapon_func)
 	self:add_transition(weapon, belt, weapon_func, weapon_belt_condition)
-	self:add_transition(weapon, swipe, weapon_func)
+	self:add_transition(weapon, swipe, weapon_func, weapon_swipe_condition)
 	self:add_transition(weapon, akimbo, weapon_func)
 	self:add_transition(weapon, cuffed, weapon_func)
 	self:add_transition(weapon, driving, weapon_func)

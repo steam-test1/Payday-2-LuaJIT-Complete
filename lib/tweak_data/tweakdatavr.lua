@@ -6,6 +6,7 @@ function TweakDataVR:init(tweak_data)
 		types = {fists = {rotation = Rotation(180, 70, 180)}},
 		weapons = {
 			boxing_gloves = {
+				hand_flip = true,
 				rotation = Rotation(0, 0, 90),
 				position = Vector3(0, -17, -2),
 				hit_point = Vector3(-2, 20, 0)
@@ -40,12 +41,11 @@ function TweakDataVR:init(tweak_data)
 			beardy = {position = Vector3(0, 8, 26)},
 			buck = {
 				hand_flip = true,
-				rotation = Rotation(-30, 90, 0),
-				position = Vector3(-3, 0, 0),
+				rotation = Rotation(30, 90, 0),
+				position = Vector3(3, 0, 0),
 				hit_point = Vector3(4, 0, 2)
 			},
 			brick = {
-				hand_flip = true,
 				rotation = Rotation(-90, 0, -10),
 				position = Vector3(4, 0, 0),
 				hit_point = Vector3(0, 0, 18)
@@ -73,7 +73,11 @@ function TweakDataVR:init(tweak_data)
 				position = Vector3(0, 1.5, 0)
 			}
 		},
-		bayonets = {wpn_fps_snp_mosin_ns_bayonet = {hit_point = Vector3(0, 30, -3)}}
+		bayonets = {wpn_fps_snp_mosin_ns_bayonet = {hit_point = Vector3(0, 30, -3)}},
+		custom = {
+			plainsrider = {hit_point = Vector3(0, -5, 60)},
+			long = {hit_point = Vector3(0, -15, 80)}
+		}
 	}
 	self.weapon_offsets = {
 		default = {
@@ -181,6 +185,25 @@ function TweakDataVR:init(tweak_data)
 			ching = {
 				grip = "weapon_2_grip",
 				position = Vector3(-0.5, 3, -3)
+			},
+			plainsrider = {grip = "grip_wpn"},
+			long = {grip = "grip_wpn"}
+		}
+	}
+	self.bow_offsets = {
+		default = {grip = "weapon_1_grip"},
+		plainsrider = {
+			position = Vector3(0, -5, 0),
+			string_distance = {
+				10,
+				50
+			}
+		},
+		long = {
+			position = Vector3(0, -5, 0),
+			string_distance = {
+				10,
+				60
 			}
 		}
 	}
@@ -2557,6 +2580,11 @@ function TweakDataVR:init(tweak_data)
 							"g_bullet_4",
 							"g_bullet_5"
 						}}
+					},
+					effect = {
+						part = "lower_reciever",
+						name = "effects/payday2/particles/weapons/shells/shell_judge_dump",
+						object = "align_house_align"
 					}
 				}
 			},
@@ -2756,30 +2784,31 @@ function TweakDataVR:init(tweak_data)
 			}
 		},
 		hunter = {
+			reload_part_type = "ammo",
 			custom_mag_unit = "units/pd2_dlc_turtles/weapons/wpn_fps_bow_hunter_pts/wpn_fps_bow_hunter_m_standard",
 			start = {{
 				time = 0,
 				sound = "wp_dragon_lever_pull",
-				anims = {{
-					anim_group = "reload",
-					to = 0.5
-				}}
+				anims = {
+					{
+						anim_group = "reload",
+						part = "barrel"
+					},
+					{
+						anim_group = "reload",
+						part = "lower_reciever"
+					}
+				}
 			}},
 			finish = {
 				{
-					time = 0,
 					sound = "wp_dragon_insert_arrow",
-					visible = true,
-					pos = Vector3(0, -20, 0)
+					time = 0,
+					visible = true
 				},
 				{
 					time = 0.5,
-					sound = "wp_dragon_lever_release",
-					pos = Vector3(),
-					anims = {{
-						anim_group = "reload",
-						from = 2.7
-					}}
+					sound = "wp_dragon_lever_release"
 				}
 			}
 		},
@@ -2873,24 +2902,75 @@ function TweakDataVR:init(tweak_data)
 			start = {
 				{
 					time = 0,
-					visible = false
+					anims = {{
+						anim_group = "reload",
+						to = 2,
+						from = 1
+					}}
 				},
 				{
-					time = 0.03,
-					pos = Vector3(0, -40, 0)
+					time = 0.01,
+					sound = "wp_ray_grab"
+				},
+				{
+					time = 0.1,
+					sound = "wp_ray_pull_out"
+				},
+				{
+					time = 0.15,
+					sound = "wp_ray_lift"
+				},
+				{
+					drop_mag = true,
+					time = 0.2,
+					visible = {
+						visible = false,
+						parts = {
+							magazine = true,
+							foregrip = true
+						}
+					}
+				},
+				{
+					time = 0.22,
+					sound = "wp_ray_lift"
 				}
 			},
 			finish = {
 				{
+					sound = "wp_ray_ammo_contact",
 					time = 0,
-					sound = "wp_ray_push_down_01",
-					visible = true,
-					pos = Vector3(0, -40, 0)
+					visible = {
+						visible = true,
+						parts = {
+							magazine = true,
+							foregrip = true
+						}
+					},
+					anims = {{
+						anim_group = "reload",
+						from = 5.5
+					}}
+				},
+				{
+					time = 0.01,
+					sound = "wp_ray_push_down_01"
+				},
+				{
+					time = 0.05,
+					sound = "wp_ray_shoulder"
+				},
+				{
+					time = 0.1,
+					sound = "wp_ray_hit"
+				},
+				{
+					time = 0.45,
+					sound = "wp_ray_push_down_02"
 				},
 				{
 					time = 0.5,
-					sound = "wp_ray_hit",
-					pos = Vector3()
+					sound = "wp_ray_pull_up"
 				}
 			}
 		},
@@ -5649,9 +5729,22 @@ function TweakDataVR:init(tweak_data)
 			}
 		},
 		arblast = {
+			reload_part_type = "ammo",
 			custom_mag_unit = "units/pd2_dlc_steel/weapons/wpn_fps_bow_arblast_pts/wpn_fps_bow_arblast_m_standard",
 			start = {
-				{time = 0},
+				{
+					time = 0,
+					anims = {
+						{
+							anim_group = "reload",
+							part = "barrel"
+						},
+						{
+							anim_group = "reload",
+							part = "lower_reciever"
+						}
+					}
+				},
 				{
 					time = 0.03,
 					visible = false,
@@ -5672,9 +5765,22 @@ function TweakDataVR:init(tweak_data)
 			}
 		},
 		frankish = {
+			reload_part_type = "ammo",
 			custom_mag_unit = "units/pd2_dlc_steel/weapons/wpn_fps_bow_frankish_pts/wpn_fps_bow_frankish_m_standard",
 			start = {
-				{time = 0},
+				{
+					time = 0,
+					anims = {
+						{
+							anim_group = "reload",
+							part = "barrel"
+						},
+						{
+							anim_group = "reload",
+							part = "lower_reciever"
+						}
+					}
+				},
 				{
 					time = 0.03,
 					visible = false,
@@ -5817,7 +5923,7 @@ function TweakDataVR:init(tweak_data)
 	self.tablet = {
 		interaction_radius_sq = 350,
 		view_angle_th = 0.4,
-		swipe_length = 3,
+		swipe_length = 6,
 		interaction_angle_th = 0.2,
 		flick_time = 0.2,
 		interaction_volume_start = {
@@ -6318,6 +6424,8 @@ end
 function TweakDataVR:get_offset_by_id(id, ...)
 	if id == "magazine" then
 		return self:_get_magazine_offsets_by_id(...)
+	elseif id == "bow" then
+		return self:_get_bow_offsets_by_id(...)
 	end
 
 	if tweak_data.blackmarket.melee_weapons[id] then
@@ -6398,6 +6506,18 @@ function TweakDataVR:_get_magazine_offsets_by_id(id)
 	end
 
 	combine_offset(offset, self.magazine_offsets.default)
+
+	return offset
+end
+
+function TweakDataVR:_get_bow_offsets_by_id(id)
+	local offset = {}
+
+	if self.bow_offsets[id] then
+		combine_offset(offset, self.bow_offsets[id])
+	end
+
+	combine_offset(offset, self.bow_offsets.default)
 
 	return offset
 end

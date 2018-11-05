@@ -41,7 +41,8 @@ function PlayerHand:init(unit)
 		tablet = TabletHandState:new(),
 		belt = BeltHandState:new(),
 		repeater = RepeaterHandState:new(),
-		driving = DrivingHandState:new()
+		driving = DrivingHandState:new(),
+		arrow = ArrowHandState:new()
 	}
 	self._hand_state_machine = HandStateMachine:new(hand_states, hand_states.empty, hand_states.empty)
 
@@ -439,10 +440,6 @@ function PlayerHand:update_tablet(t, dt, hmd_forward)
 		end
 	elseif not looking_at_tablet or tablet.interaction_radius_sq < mvector3.distance_sq(pos, center) or tablet.interaction_angle_th < mvector3.dot(hand_rotation:y(), up) then
 		self:set_point_at_tablet(false)
-	end
-
-	if not looking_at_tablet and managers.hud:current_tablet_page() ~= "main" then
-		managers.hud:set_tablet_page("main")
 	end
 end
 

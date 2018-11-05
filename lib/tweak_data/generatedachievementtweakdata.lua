@@ -8161,62 +8161,6 @@ function init_auto_generated_achievement_data(tags)
 				tags.contracts.the_butcher
 			}
 		},
-		eng_1 = {
-			need_unlock_icons = true,
-			icon_id = "Other_H_Any_TheOnlyOne",
-			progress = true,
-			sort_name = "Other_H_Any_TheOnlyOne",
-			unlock_id = true,
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.normal,
-				tags.unlock.mask,
-				tags.tactics.loud,
-				tags.tactics.stealth
-			}
-		},
-		eng_2 = {
-			need_unlock_icons = true,
-			icon_id = "Other_H_Any_TheOneThatHad",
-			progress = true,
-			sort_name = "Other_H_Any_TheOneThatHad",
-			unlock_id = true,
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.normal,
-				tags.unlock.mask,
-				tags.tactics.loud,
-				tags.tactics.stealth
-			}
-		},
-		eng_3 = {
-			need_unlock_icons = true,
-			icon_id = "Other_H_Any_TheOneThatSur",
-			progress = true,
-			sort_name = "Other_H_Any_TheOneThatSur",
-			unlock_id = true,
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.normal,
-				tags.unlock.mask,
-				tags.tactics.loud,
-				tags.tactics.stealth
-			}
-		},
-		eng_4 = {
-			need_unlock_icons = true,
-			icon_id = "Other_H_Any_TheOneWho",
-			progress = true,
-			sort_name = "Other_H_Any_TheOneWho",
-			unlock_id = true,
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.normal,
-				tags.unlock.mask,
-				tags.tactics.loud,
-				tags.tactics.stealth
-			}
-		},
 		nbm_1 = {
 			icon_id = "C_Event_H_SafeHouseNightmare_AllDiffs_D0",
 			ladder = "H_SafeHouseNightmare",
@@ -8855,6 +8799,62 @@ function init_auto_generated_achievement_data(tags)
 				tags.difficulty.overkill,
 				tags.tactics.loud,
 				tags.contracts.locke
+			}
+		},
+		eng_1 = {
+			need_unlock_icons = true,
+			icon_id = "Other_H_Any_TheOnlyOne",
+			progress = true,
+			sort_name = "Other_H_Any_TheOnlyOne",
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.unlock.mask,
+				tags.tactics.loud,
+				tags.tactics.stealth
+			}
+		},
+		eng_2 = {
+			need_unlock_icons = true,
+			icon_id = "Other_H_Any_TheOneThatHad",
+			progress = true,
+			sort_name = "Other_H_Any_TheOneThatHad",
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.unlock.mask,
+				tags.tactics.loud,
+				tags.tactics.stealth
+			}
+		},
+		eng_3 = {
+			need_unlock_icons = true,
+			icon_id = "Other_H_Any_TheOneThatSur",
+			progress = true,
+			sort_name = "Other_H_Any_TheOneThatSur",
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.unlock.mask,
+				tags.tactics.loud,
+				tags.tactics.stealth
+			}
+		},
+		eng_4 = {
+			need_unlock_icons = true,
+			icon_id = "Other_H_Any_TheOneWho",
+			progress = true,
+			sort_name = "Other_H_Any_TheOneWho",
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.unlock.mask,
+				tags.tactics.loud,
+				tags.tactics.stealth
 			}
 		},
 		glace_1 = {

@@ -9,11 +9,16 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 	end
 
 	local size = 200
+
+	if _G.IS_VR then
+		size = 150
+	end
+
 	local assault_panel = self._hud_panel:panel({
-		w = 400,
 		name = "assault_panel",
 		h = 100,
-		visible = false
+		visible = false,
+		w = size * 2
 	})
 
 	assault_panel:set_top(0)
@@ -47,11 +52,12 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 
 	icon_assaultbox:set_right(icon_assaultbox:parent():w())
 
+	self._bg_box_size = size * 1.5 - 58
 	self._bg_box = HUDBGBox_create(assault_panel, {
-		w = 242,
 		x = 0,
 		h = 38,
-		y = 0
+		y = 0,
+		w = self._bg_box_size
 	}, {
 		blend_mode = "add",
 		color = self._assault_color
@@ -138,7 +144,7 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 
 	if self:is_safehouse_raid() then
 		self._wave_panel_size = {
-			250,
+			145,
 			38
 		}
 		local wave_w = 38
@@ -228,10 +234,10 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 	icon_noreturnbox:set_right(icon_noreturnbox:parent():w())
 
 	self._noreturn_bg_box = HUDBGBox_create(point_of_no_return_panel, {
-		w = 242,
 		x = 0,
 		h = 38,
-		y = 0
+		y = 0,
+		w = self._bg_box_size
 	}, {
 		blend_mode = "add",
 		color = self._noreturn_color
@@ -310,10 +316,10 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 	icon_casingbox:set_right(icon_casingbox:parent():w())
 
 	self._casing_bg_box = HUDBGBox_create(casing_panel, {
-		w = 242,
 		x = 0,
 		h = 38,
-		y = 0
+		y = 0,
+		w = self._bg_box_size
 	}, {
 		blend_mode = "add",
 		color = self._casing_color
@@ -535,11 +541,11 @@ function HUDAssaultCorner:sync_start_assault(assault_number)
 	end
 
 	self:_update_assault_hud_color(color)
+	self:set_assault_wave_number(assault_number)
 
 	self._start_assault_after_hostage_offset = true
 
 	self:_set_hostage_offseted(true)
-	self:set_assault_wave_number(assault_number)
 end
 
 function HUDAssaultCorner:set_assault_wave_number(assault_number)
@@ -701,7 +707,7 @@ function HUDAssaultCorner:_start_assault(text_list)
 	}
 
 	self._bg_box:stop()
-	self._bg_box:animate(callback(nil, _G, "HUDBGBox_animate_open_left"), 0.75, 242, function ()
+	self._bg_box:animate(callback(nil, _G, "HUDBGBox_animate_open_left"), 0.75, self._bg_box_size, function ()
 	end, config)
 
 	local box_text_panel = self._bg_box:child("text_panel")
@@ -1035,7 +1041,7 @@ function HUDAssaultCorner:_animate_show_casing(casing_panel, delay_time)
 	end
 
 	self._casing_bg_box:stop()
-	self._casing_bg_box:animate(callback(nil, _G, "HUDBGBox_animate_open_left"), 0.75, 242, open_done, {
+	self._casing_bg_box:animate(callback(nil, _G, "HUDBGBox_animate_open_left"), 0.75, self._bg_box_size, open_done, {
 		attention_forever = true,
 		attention_color = self._casing_color
 	})
@@ -1068,7 +1074,7 @@ function HUDAssaultCorner:_animate_show_noreturn(point_of_no_return_panel, delay
 	end
 
 	self._noreturn_bg_box:stop()
-	self._noreturn_bg_box:animate(callback(nil, _G, "HUDBGBox_animate_open_left"), 0.75, 242, open_done, {
+	self._noreturn_bg_box:animate(callback(nil, _G, "HUDBGBox_animate_open_left"), 0.75, self._bg_box_size, open_done, {
 		attention_forever = true,
 		attention_color = self._casing_color
 	})

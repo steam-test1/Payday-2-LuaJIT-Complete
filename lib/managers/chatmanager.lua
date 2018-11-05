@@ -1316,6 +1316,11 @@ function ChatGui:_on_focus()
 
 	self._input_panel:child("focus_indicator"):set_color(Color(0, 0, 0):with_alpha(0.2))
 	self._ws:connect_keyboard(Input:keyboard())
+
+	if _G.IS_VR then
+		Input:keyboard():show()
+	end
+
 	self._input_panel:key_press(callback(self, self, "key_press"))
 	self._input_panel:key_release(callback(self, self, "key_release"))
 

@@ -20,6 +20,7 @@ function HUDManagerVR:init()
 	self:_init_interaction()
 	self:_init_full_hmd_gui()
 	self:_init_floating_gui()
+	self:_init_ingame_subtitle_ws()
 end
 
 function HUDManagerVR:destroy()
@@ -87,8 +88,20 @@ function HUDManagerVR:_init_tablet_gui()
 		left = {right = "main"}
 	}
 	self._current_page = "main"
+	self._page_callbacks = {
+		on_interact = {},
+		on_focus = {}
+	}
 
 	self._tablet_ws:hide()
+end
+
+function HUDManagerVR:add_page_callback(page, type, clbk)
+	if self._page_callbacks[type] then
+		self._page_callbacks[type][page] = self._page_callbacks[type][page] or {}
+
+		table.insert(self._page_callbacks[type][page], clbk)
+	end
 end
 
 function HUDManagerVR:_init_prompt_gui()
@@ -179,6 +192,12 @@ function HUDManagerVR:_init_floating_gui()
 	self._floating_ws:panel():set_visible(false)
 end
 
+function HUDManagerVR:_init_ingame_subtitle_ws()
+	self._subtitle_ws = self._gui:create_world_workspace(1280, 720, Vector3(0, 0, 0), Vector3(1, 0, 0), Vector3(0, 1, 0))
+
+	self._subtitle_ws:hide()
+end
+
 function HUDManagerVR:set_ammo_flash_color(color)
 	local ammo_flash = self:ammo_flash()
 	local trans = color:with_alpha(0)
@@ -239,6 +258,10 @@ function HUDManagerVR:holo_count()
 	return self._holo_count
 end
 
+function HUDManagerVR:tablet_ws()
+	return self._tablet_ws
+end
+
 function HUDManagerVR:tablet_page(page)
 	return self._tablet_ws:panel():child(page or "main_page")
 end
@@ -287,13 +310,19 @@ function HUDManagerVR:belt_workspace()
 	return self._belt_ws
 end
 
+function HUDManagerVR:subtitle_workspace()
+	return self._subtitle_ws
+end
+
 function HUDManagerVR:on_touch(enter, position)
 	local visible = self._tablet_highlight:visible()
 
 	if enter and not visible then
 		self._tablet_highlight:show()
+		self:on_focus(true)
 	elseif not enter and visible then
 		self._tablet_highlight:hide()
+		self:on_focus(false)
 	end
 
 	local width = self._tablet_highlight:w()
@@ -303,6 +332,26 @@ function HUDManagerVR:on_touch(enter, position)
 	self._tablet_touch:set_h(40)
 	self._tablet_touch:set_center_x(width * 0.5 + position.x * width * 0.5)
 	self._tablet_touch:set_center_y(height * 0.5 + position.y * height * 0.5)
+end
+
+function HUDManagerVR:on_interact(position)
+	local clbks = self._page_callbacks.on_interact[self._current_page]
+
+	if clbks then
+		for _, clbk in ipairs(clbks) do
+			clbk(position)
+		end
+	end
+end
+
+function HUDManagerVR:on_focus(focus)
+	local clbks = self._page_callbacks.on_focus[self._current_page]
+
+	if clbks then
+		for _, clbk in ipairs(clbks) do
+			clbk(focus)
+		end
+	end
 end
 
 function HUDManagerVR:on_flick(dir, time)
@@ -357,7 +406,11 @@ function HUDManagerVR:on_flick(dir, time)
 		panel:animate(panel_swipe, x, y)
 	end
 
+	self:on_focus(false)
+
 	self._current_page = self._pages[self._current_page][dir]
+
+	self:on_focus(true)
 
 	return true
 end
@@ -462,6 +515,12 @@ function HUDManagerVR:link_floating_hud(float_unit)
 
 	self._floating_ws:set_linked(1024, 1024, float_unit:orientation_object(), float_unit:position() + Vector3(-size / 2, size / 2, 0):rotate_with(rot), x_vec, y_vec)
 	self._floating_ws:show()
+
+	local sub_h = size / 1280 * 720
+	y_vec = Vector3(0, 0, -1):rotate_with(rot) * sub_h
+
+	self._subtitle_ws:set_linked(1280, 720, float_unit:orientation_object(), float_unit:position() + Vector3(-size / 2, size / 2, -10):rotate_with(rot), x_vec, y_vec)
+	self._subtitle_ws:show()
 	VRManagerPD2.depth_disable_helper(self._floating_ws:panel())
 end
 

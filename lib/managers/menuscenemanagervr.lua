@@ -135,6 +135,7 @@ function MenuSceneManagerVR:_set_up_templates()
 	self._scene_templates.crew_management.henchmen_characters_visible = true
 	self._scene_templates.lobby_vr = deep_clone(self._scene_templates.lobby)
 	self._scene_templates.lobby_vr.lobby_characters_visible = true
+	self._scene_templates.safe.character_visible = false
 	local item_templates = {
 		"blackmarket_item",
 		"blackmarket_mask",

@@ -121,10 +121,13 @@ TabletHandState = TabletHandState or class(HandState)
 function TabletHandState:init()
 	TabletHandState.super.init(self)
 
-	self._connections = {toggle_menu = {
-		inputs = {"menu_"},
-		condition = common.toggle_menu_condition
-	}}
+	self._connections = {
+		toggle_menu = {
+			inputs = {"menu_"},
+			condition = common.toggle_menu_condition
+		},
+		tablet_interact = {inputs = {"trigger_"}}
+	}
 end
 BeltHandState = BeltHandState or class(HandState)
 
@@ -175,5 +178,12 @@ function DrivingHandState:init()
 			inputs = {"grip_"}
 		}
 	}
+end
+ArrowHandState = ArrowHandState or class(HandState)
+
+function ArrowHandState:init()
+	ArrowHandState.super.init(self, 1)
+
+	self._connections = {secondary_attack = {inputs = {"grip_"}}}
 end
 

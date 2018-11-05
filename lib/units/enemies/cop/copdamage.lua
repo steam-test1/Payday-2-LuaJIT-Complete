@@ -628,8 +628,9 @@ function CopDamage:_check_damage_achievements(attack_data, head)
 		managers.achievment:award_progress(tweak_data.achievement.pump_action.stat)
 	end
 
-	local unit_type = self._unit:base()._tweak_table
-	local unit_weapon = self._unit:base()._default_weapon_id
+	local enemy_base = self._unit:base()
+	local unit_type = enemy_base._tweak_table
+	local unit_weapon = enemy_base._default_weapon_id
 	local unit_anim = self._unit.anim_data and self._unit:anim_data()
 	local achievements = tweak_data.achievement.enemy_kill_achievements or {}
 	local current_mask_id = managers.blackmarket:equipped_mask().mask_id
@@ -645,7 +646,7 @@ function CopDamage:_check_damage_achievements(attack_data, head)
 
 	managers.job:set_memory("kill_count_" .. (managers.player:is_carrying() and "carry" or "no_carry"), kill_count_carry_or_not, true)
 
-	local is_cop = CopDamage.is_cop(self._unit:base()._tweak_table)
+	local is_cop = CopDamage.is_cop(enemy_base._tweak_table)
 	local weapon_category = {}
 
 	if attack_weapon:base().weapon_tweak_data then
@@ -685,13 +686,11 @@ function CopDamage:_check_damage_achievements(attack_data, head)
 			complete_count_pass = total == achievement_data.complete_count
 		end
 
-		local enemy_type = self._unit:base()._tweak_table
-
 		if achievement_data.enemies then
 			enemy_pass = false
 
 			for _, enemy in pairs(achievement_data.enemies) do
-				if enemy == enemy_type then
+				if enemy == unit_type then
 					enemy_pass = true
 
 					break
@@ -1685,6 +1684,9 @@ function CopDamage:damage_melee(attack_data)
 	end
 
 	local result = nil
+	local is_civlian = CopDamage.is_civilian(self._unit:base()._tweak_table)
+	local is_gangster = CopDamage.is_gangster(self._unit:base()._tweak_table)
+	local is_cop = not is_civlian and not is_gangster
 	local head = self._head_body_name and attack_data.col_ray.body and attack_data.col_ray.body:name() == self._ids_head_body_name
 	local damage = attack_data.damage
 
@@ -1782,10 +1784,6 @@ function CopDamage:damage_melee(attack_data)
 			self:_show_death_hint(self._unit:base()._tweak_table)
 			managers.statistics:killed(data)
 
-			local is_civlian = CopDamage.is_civilian(self._unit:base()._tweak_table)
-			local is_gangster = CopDamage.is_gangster(self._unit:base()._tweak_table)
-			local is_cop = not is_civlian and not is_gangster
-
 			if not is_civlian and managers.groupai:state():whisper_mode() and managers.blackmarket:equipped_mask().mask_id == tweak_data.achievement.cant_hear_you_scream.mask then
 				managers.achievment:award_progress(tweak_data.achievement.cant_hear_you_scream.stat)
 			end
@@ -1797,73 +1795,6 @@ function CopDamage:damage_melee(attack_data)
 
 			local from_behind = mvector3.dot(mvec_1, mvec_2) >= 0
 
-			if tweak_data.blackmarket.melee_weapons[attack_data.name_id] then
-				local achievements = tweak_data.achievement.enemy_melee_kill_achievements or {}
-				local melee_type = tweak_data.blackmarket.melee_weapons[attack_data.name_id].type
-				local enemy_base = self._unit:base()
-				local enemy_type = enemy_base._tweak_table
-				local unit_weapon = enemy_base._default_weapon_id
-				local health_ratio = managers.player:player_unit():character_damage():health_ratio() * 100
-				local melee_pass, melee_weapons_pass, type_pass, enemy_pass, enemy_weapon_pass, diff_pass, health_pass, level_pass, job_pass, jobs_pass, enemy_count_pass, tags_all_pass, tags_any_pass, all_pass, cop_pass, gangster_pass, civilian_pass, stealth_pass, on_fire_pass, behind_pass, mutators_pass, critical_pass = nil
-
-				for achievement, achievement_data in pairs(achievements) do
-					melee_pass = not achievement_data.melee_id or achievement_data.melee_id == attack_data.name_id
-					melee_weapons_pass = not achievement_data.melee_weapons or table.contains(achievement_data.melee_weapons, attack_data.name_id)
-					type_pass = not achievement_data.melee_type or melee_type == achievement_data.melee_type
-					enemy_pass = not achievement_data.enemy or enemy_type == achievement_data.enemy
-					enemy_weapon_pass = not achievement_data.enemy_weapon or unit_weapon == achievement_data.enemy_weapon
-					behind_pass = not achievement_data.from_behind or from_behind
-					diff_pass = not achievement_data.difficulty or table.contains(achievement_data.difficulty, Global.game_settings.difficulty)
-					health_pass = not achievement_data.health or health_ratio <= achievement_data.health
-					level_pass = not achievement_data.level_id or (managers.job:current_level_id() or "") == achievement_data.level_id
-					job_pass = not achievement_data.job or managers.job:current_real_job_id() == achievement_data.job
-					jobs_pass = not achievement_data.jobs or table.contains(achievement_data.jobs, managers.job:current_real_job_id())
-					enemy_count_pass = not achievement_data.enemy_kills or achievement_data.enemy_kills.count <= managers.statistics:session_enemy_killed_by_type(achievement_data.enemy_kills.enemy, "melee")
-					tags_all_pass = not achievement_data.enemy_tags_all or enemy_base:has_all_tags(achievement_data.enemy_tags_all)
-					tags_any_pass = not achievement_data.enemy_tags_any or enemy_base:has_any_tag(achievement_data.enemy_tags_any)
-					cop_pass = not achievement_data.is_cop or is_cop
-					gangster_pass = not achievement_data.is_gangster or is_gangster
-					civilian_pass = not achievement_data.is_not_civilian or not is_civlian
-					stealth_pass = not achievement_data.is_stealth or managers.groupai:state():whisper_mode()
-					on_fire_pass = not achievement_data.is_on_fire or managers.fire:is_set_on_fire(self._unit)
-
-					if achievement_data.enemies then
-						enemy_pass = false
-
-						for _, enemy in pairs(achievement_data.enemies) do
-							if enemy == enemy_type then
-								enemy_pass = true
-
-								break
-							end
-						end
-					end
-
-					mutators_pass = managers.mutators:check_achievements(achievement_data)
-					critical_pass = not achievement_data.critical
-
-					if achievement_data.critical then
-						critical_pass = attack_data.critical_hit
-					end
-
-					all_pass = melee_pass and melee_weapons_pass and type_pass and enemy_pass and enemy_weapon_pass and behind_pass and diff_pass and health_pass and level_pass and job_pass and jobs_pass and cop_pass and gangster_pass and civilian_pass and stealth_pass and on_fire_pass and enemy_count_pass and tags_all_pass and tags_any_pass and mutators_pass and critical_pass
-
-					if all_pass then
-						if achievement_data.stat then
-							managers.achievment:award_progress(achievement_data.stat)
-						elseif achievement_data.award then
-							managers.achievment:award(achievement_data.award)
-						elseif achievement_data.challenge_stat then
-							managers.challenge:award_progress(achievement_data.challenge_stat)
-						elseif achievement_data.trophy_stat then
-							managers.custom_safehouse:award(achievement_data.trophy_stat)
-						elseif achievement_data.challenge_award then
-							managers.challenge:award(achievement_data.challenge_award)
-						end
-					end
-				end
-			end
-
 			if is_cop and Global.game_settings.level_id == "nightclub" and attack_data.name_id and attack_data.name_id == "fists" then
 				managers.achievment:award_progress(tweak_data.achievement.final_rule.stat)
 			end
@@ -1873,6 +1804,75 @@ function CopDamage:damage_melee(attack_data)
 			elseif math.rand(1) < managers.player:upgrade_value("player", "melee_kill_snatch_pager_chance", 0) then
 				snatch_pager = true
 				self._unit:unit_data().has_alarm_pager = false
+			end
+		end
+	end
+
+	if tweak_data.blackmarket.melee_weapons[attack_data.name_id] then
+		local achievements = tweak_data.achievement.enemy_melee_hit_achievements or {}
+		local melee_type = tweak_data.blackmarket.melee_weapons[attack_data.name_id].type
+		local enemy_base = self._unit:base()
+		local enemy_movement = self._unit:movement()
+		local enemy_type = enemy_base._tweak_table
+		local unit_weapon = enemy_base._default_weapon_id
+		local health_ratio = managers.player:player_unit():character_damage():health_ratio() * 100
+		local melee_pass, melee_weapons_pass, type_pass, enemy_pass, enemy_weapon_pass, diff_pass, health_pass, level_pass, job_pass, jobs_pass, enemy_count_pass, tags_all_pass, tags_any_pass, all_pass, cop_pass, gangster_pass, civilian_pass, stealth_pass, on_fire_pass, behind_pass, result_pass, mutators_pass, critical_pass = nil
+
+		for achievement, achievement_data in pairs(achievements) do
+			melee_pass = not achievement_data.melee_id or achievement_data.melee_id == attack_data.name_id
+			melee_weapons_pass = not achievement_data.melee_weapons or table.contains(achievement_data.melee_weapons, attack_data.name_id)
+			type_pass = not achievement_data.melee_type or melee_type == achievement_data.melee_type
+			result_pass = not achievement_data.result or attack_data.result.type == achievement_data.result
+			enemy_pass = not achievement_data.enemy or enemy_type == achievement_data.enemy
+			enemy_weapon_pass = not achievement_data.enemy_weapon or unit_weapon == achievement_data.enemy_weapon
+			behind_pass = not achievement_data.from_behind or from_behind
+			diff_pass = not achievement_data.difficulty or table.contains(achievement_data.difficulty, Global.game_settings.difficulty)
+			health_pass = not achievement_data.health or health_ratio <= achievement_data.health
+			level_pass = not achievement_data.level_id or (managers.job:current_level_id() or "") == achievement_data.level_id
+			job_pass = not achievement_data.job or managers.job:current_real_job_id() == achievement_data.job
+			jobs_pass = not achievement_data.jobs or table.contains(achievement_data.jobs, managers.job:current_real_job_id())
+			enemy_count_pass = not achievement_data.enemy_kills or achievement_data.enemy_kills.count <= managers.statistics:session_enemy_killed_by_type(achievement_data.enemy_kills.enemy, "melee")
+			tags_all_pass = not achievement_data.enemy_tags_all or enemy_base:has_all_tags(achievement_data.enemy_tags_all)
+			tags_any_pass = not achievement_data.enemy_tags_any or enemy_base:has_any_tag(achievement_data.enemy_tags_any)
+			cop_pass = not achievement_data.is_cop or is_cop
+			gangster_pass = not achievement_data.is_gangster or is_gangster
+			civilian_pass = not achievement_data.is_not_civilian or not is_civlian
+			stealth_pass = not achievement_data.is_stealth or managers.groupai:state():whisper_mode()
+			on_fire_pass = not achievement_data.is_on_fire or managers.fire:is_set_on_fire(self._unit)
+
+			if achievement_data.enemies then
+				enemy_pass = false
+
+				for _, enemy in pairs(achievement_data.enemies) do
+					if enemy == enemy_type then
+						enemy_pass = true
+
+						break
+					end
+				end
+			end
+
+			mutators_pass = managers.mutators:check_achievements(achievement_data)
+			critical_pass = not achievement_data.critical
+
+			if achievement_data.critical then
+				critical_pass = attack_data.critical_hit
+			end
+
+			all_pass = melee_pass and melee_weapons_pass and type_pass and enemy_pass and enemy_weapon_pass and behind_pass and diff_pass and health_pass and level_pass and job_pass and jobs_pass and cop_pass and gangster_pass and civilian_pass and stealth_pass and on_fire_pass and enemy_count_pass and tags_all_pass and tags_any_pass and result_pass and action_pass and mutators_pass and critical_pass
+
+			if all_pass then
+				if achievement_data.stat then
+					managers.achievment:award_progress(achievement_data.stat)
+				elseif achievement_data.award then
+					managers.achievment:award(achievement_data.award)
+				elseif achievement_data.challenge_stat then
+					managers.challenge:award_progress(achievement_data.challenge_stat)
+				elseif achievement_data.trophy_stat then
+					managers.custom_safehouse:award(achievement_data.trophy_stat)
+				elseif achievement_data.challenge_award then
+					managers.challenge:award(achievement_data.challenge_award)
+				end
 			end
 		end
 	end

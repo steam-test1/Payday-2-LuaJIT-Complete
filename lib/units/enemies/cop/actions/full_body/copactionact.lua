@@ -787,6 +787,13 @@ CopActionAct._act_redirects.SO = {
 	"e_so_stair_idle1",
 	"e_so_sit_1m_idle",
 	"e_so_aim_pistol_at",
+	"e_so_react_var1",
+	"e_so_react_var2",
+	"e_so_react_var3",
+	"e_so_react_var4",
+	"e_so_react_var5",
+	"e_so_react_var6",
+	"e_so_weapon_butt",
 	"e_so_hands_on_1m_table",
 	"e_so_lean_back_hand_on_1m",
 	"e_so_idle_hand_on_belt",
@@ -1349,7 +1356,7 @@ function CopActionAct:on_exit()
 end
 
 function CopActionAct:_init_ik()
-	if managers.job:current_level_id() == "chill" then
+	if managers.job:current_level_id() == "chill" or self._ext_base:char_tweak().use_ik then
 		self._look_vec = mvector3.copy(self._common_data.fwd)
 		self._ik_update = callback(self, self, "_ik_update_func")
 		self._m_head_pos = self._ext_movement:m_head_pos()

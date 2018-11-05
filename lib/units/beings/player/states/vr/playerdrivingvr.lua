@@ -235,7 +235,7 @@ function PlayerDrivingVR:_postion_player_on_seat(seat)
 	self._ext_movement:reset_ghost_position()
 	self._ext_movement:reset_hmd_position()
 
-	self._initial_hmd_rotation = VRManager:hmd_rotation()
+	self._initial_hmd_rotation_inv = Rotation(VRManager:hmd_rotation():yaw(), 0, 0):inverse()
 	self._hmd_delta = Vector3()
 end
 local __update = PlayerDriving.update
@@ -259,9 +259,8 @@ function PlayerDrivingVR:update(t, dt)
 		self._ext_network:send("sync_vehicle_change_stance", self._stance)
 	end
 
-	mrotation.set_yaw_pitch_roll(hmd_rot, self._initial_hmd_rotation:yaw(), 0, 0)
-	mrotation.invert(hmd_rot)
-	mrotation.multiply(hmd_rot, seat_rot)
+	mrotation.set_yaw_pitch_roll(hmd_rot, seat_rot:yaw(), seat_rot:pitch(), seat_rot:roll())
+	mrotation.multiply(hmd_rot, self._initial_hmd_rotation_inv)
 	self._unit:hand():set_base_rotation(hmd_rot)
 	mvector3.add(self._hmd_delta, self._ext_movement:hmd_delta())
 	mvector3.set(hmd_delta, self._hmd_delta)

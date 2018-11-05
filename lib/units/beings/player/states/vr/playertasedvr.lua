@@ -22,6 +22,10 @@ function PlayerTasedVR:exit(...)
 		if self._equipped_unit:base().akimbo then
 			self._equipped_unit:base()._second_gun:base():stop_shooting()
 		end
+
+		if table.contains(self._equipped_unit:base():weapon_tweak_data().categories, "bow") then
+			self:_start_action_reload_enter(TimerManager:game():time())
+		end
 	end
 
 	self._state_data.tased = false

@@ -27,6 +27,10 @@ end
 function SubtitleManager:set_presenter(presenter)
 	assert(presenter == nil or type(presenter.preprocess_sequence) == "function", "Invalid presenter.")
 
+	if self.__player then
+		self.__player = nil
+	end
+
 	if self.__presenter then
 		self.__presenter:destroy()
 	end
@@ -129,10 +133,6 @@ end
 function SubtitleManager:_update_presenter_visibility()
 	local presenter = self:presenter()
 	local show_presenter = self:enabled() and self:visible() and (not managers.user or managers.user:get_setting("subtitle"))
-
-	if _G.IS_VR then
-		show_presenter = false
-	end
 
 	presenter[show_presenter and "show" or "hide"](presenter)
 end

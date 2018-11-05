@@ -4632,7 +4632,7 @@ function GroupAIStateBase:convert_hostage_to_criminal(unit, peer_unit)
 
 	u_data.so_access = unit:brain():SO_access()
 
-	self:_set_converted_police(u_key, unit)
+	self:_set_converted_police(u_key, unit, player_unit)
 
 	minions[u_key] = u_data
 
@@ -4762,7 +4762,7 @@ function GroupAIStateBase:remove_minion(minion_key, player_key)
 	managers.crime_spree:run_func("OnMinionRemoved")
 end
 
-function GroupAIStateBase:_set_converted_police(u_key, unit)
+function GroupAIStateBase:_set_converted_police(u_key, unit, owner_unit)
 	self._converted_police[u_key] = unit
 
 	if tweak_data.achievement.double_trouble then
@@ -4785,14 +4785,16 @@ function GroupAIStateBase:_set_converted_police(u_key, unit)
 	end
 end
 
-function GroupAIStateBase:sync_converted_enemy(converted_enemy)
+function GroupAIStateBase:sync_converted_enemy(converted_enemy, owner_peer_id)
 	local u_data = self._police[converted_enemy:key()]
 
 	if not u_data then
 		return
 	end
 
-	self:_set_converted_police(converted_enemy:key(), converted_enemy)
+	local owner_unit = managers.criminals:character_unit_by_peer_id(owner_peer_id)
+
+	self:_set_converted_police(converted_enemy:key(), converted_enemy, owner_unit)
 
 	u_data.is_converted = true
 end

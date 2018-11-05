@@ -52,6 +52,10 @@ function AkimboWeaponBaseVR:update_reload_finish(...)
 end
 
 function AkimboWeaponBaseVR:on_enabled(...)
+	if alive(self.parent_weapon) then
+		self._last_gadget_idx = self.parent_weapon:base()._gadget_on
+	end
+
 	AkimboWeaponBaseVR.super.on_enabled(self, ...)
 end
 

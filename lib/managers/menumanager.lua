@@ -901,6 +901,28 @@ function MenuManager:is_na()
 	return MenuManager.IS_NORTH_AMERICA
 end
 
+function MenuManager:check_vr_dlc()
+	local result = managers.dlc:chk_vr_dlc()
+
+	if result == true then
+		local dialog_data = {}
+		local ok_button = {text = managers.localization:text("dialog_ok")}
+		dialog_data.button_list = {ok_button}
+		dialog_data.title = managers.localization:text("dialog_vr_dlc_installed_title")
+		dialog_data.text = managers.localization:text("dialog_vr_dlc_installed")
+
+		managers.system_menu:show(dialog_data)
+	elseif result == false then
+		local dialog_data = {}
+		local ok_button = {text = managers.localization:text("dialog_ok")}
+		dialog_data.button_list = {ok_button}
+		dialog_data.title = managers.localization:text("dialog_vr_dlc_uninstalled_title")
+		dialog_data.text = managers.localization:text("dialog_vr_dlc_uninstalled")
+
+		managers.system_menu:show(dialog_data)
+	end
+end
+
 function MenuManager:open_sign_in_menu(cb)
 	if self:is_ps3() then
 		managers.network.matchmake:register_callback("found_game", callback(self, self, "_cb_matchmake_found_game"))
