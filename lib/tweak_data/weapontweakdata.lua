@@ -208,6 +208,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_x_judge_crew()
 	self:_init_data_x_rota_crew()
 	self:_init_data_shuno_crew()
+	self:_init_data_system_crew()
 	self:_precalculate_values()
 end
 
@@ -4044,6 +4045,28 @@ function WeaponTweakData:_init_data_shuno_crew()
 	self.shuno_crew.has_fire_animation = true
 end
 
+function WeaponTweakData:_init_data_system_crew()
+	self.system_crew.categories = clone(self.system.categories)
+	self.system_crew.sounds.prefix = "system_npc"
+	self.system_crew.sounds.fire = "system_npc_fire"
+	self.system_crew.sounds.stop_fire = "system_npc_fire_stop"
+	self.system_crew.use_data.selection_index = SELECTION.SECONDARY
+	self.system_crew.DAMAGE = 1
+	self.system_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.system_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.system_crew.shell_ejection = "effects/payday2/particles/weapons/shells/empty"
+	self.system_crew.CLIP_AMMO_MAX = 300
+	self.system_crew.NR_CLIPS_MAX = 4
+	self.system_crew.pull_magazine_during_reload = "large_metal"
+	self.system_crew.hold = "bullpup"
+	self.system_crew.reload = "rifle"
+	self.system_crew.auto.fire_rate = 0.05
+	self.system_crew.hud_icon = "rifle"
+	self.system_crew.alert_size = 2500
+	self.system_crew.suppression = 0.45
+	self.system_crew.FIRE_MODE = "auto"
+end
+
 function WeaponTweakData:_init_data_player_weapons(tweak_data)
 	local autohit_rifle_default, autohit_pistol_default, autohit_shotgun_default, autohit_lmg_default, autohit_snp_default, autohit_smg_default, autohit_minigun_default, aim_assist_rifle_default, aim_assist_pistol_default, aim_assist_shotgun_default, aim_assist_lmg_default, aim_assist_snp_default, aim_assist_smg_default, aim_assist_minigun_default = nil
 
@@ -4881,6 +4904,7 @@ function WeaponTweakData:_init_new_weapons(weapon_data)
 	self:_init_x_judge(weapon_data)
 	self:_init_x_rota(weapon_data)
 	self:_init_shuno(weapon_data)
+	self:_init_system(weapon_data)
 end
 
 function WeaponTweakData:_init_new_m4(weapon_data)
@@ -11993,10 +12017,10 @@ function WeaponTweakData:_init_flamethrower_mk2(weapon_data)
 	}
 	self.flamethrower_mk2.DAMAGE = 1
 	self.flamethrower_mk2.rays = 12
-	self.flamethrower_mk2.CLIP_AMMO_MAX = 300
+	self.flamethrower_mk2.CLIP_AMMO_MAX = 900
 	self.flamethrower_mk2.NR_CLIPS_MAX = 2
 	self.flamethrower_mk2.AMMO_MAX = self.flamethrower_mk2.CLIP_AMMO_MAX * self.flamethrower_mk2.NR_CLIPS_MAX
-	self.flamethrower_mk2.AMMO_PICKUP = self:_pickup_chance(self.flamethrower_mk2.CLIP_AMMO_MAX, PICKUP.OTHER)
+	self.flamethrower_mk2.AMMO_PICKUP = self:_pickup_chance(self.flamethrower_mk2.CLIP_AMMO_MAX, PICKUP.SNIPER_HIGH_DAMAGE)
 	self.flamethrower_mk2.FIRE_MODE = "auto"
 	self.flamethrower_mk2.fire_mode_data = {fire_rate = 0.03}
 	self.flamethrower_mk2.auto = {fire_rate = 0.05}
@@ -12056,7 +12080,7 @@ function WeaponTweakData:_init_flamethrower_mk2(weapon_data)
 	self.flamethrower_mk2.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 14,
+		damage = 7,
 		alert_size = 1,
 		spread = 1,
 		spread_moving = 6,
@@ -20513,6 +20537,113 @@ function WeaponTweakData:_init_shuno(weapon_data)
 	}
 end
 
+function WeaponTweakData:_init_system(weapon_data)
+	self.system = {
+		categories = {"flamethrower"},
+		has_description = false,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.system.sounds.fire = "system_fire"
+	self.system.sounds.stop_fire = "system_stop"
+	self.system.sounds.dryfire = "flamethrower_dryfire"
+	self.system.sounds.enter_steelsight = "secondary_steel_sight_enter"
+	self.system.sounds.leave_steelsight = "secondary_steel_sight_exit"
+	self.system.timers = {
+		reload_not_empty = 8.5,
+		reload_empty = 8.5,
+		unequip = 0.85,
+		equip = 0.85
+	}
+	self.system.name_id = "bm_w_system"
+	self.system.desc_id = "bm_w_system_desc"
+	self.system.description_id = "des_system"
+	self.system.texture_bundle_folder = "sft"
+	self.system.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
+	self.system.shell_ejection = "effects/payday2/particles/weapons/heat/overheat"
+	self.system.use_data = {
+		selection_index = SELECTION.SECONDARY,
+		align_place = "right_hand"
+	}
+	self.system.DAMAGE = 1
+	self.system.rays = 12
+	self.system.CLIP_AMMO_MAX = 700
+	self.system.NR_CLIPS_MAX = 2
+	self.system.AMMO_MAX = self.system.CLIP_AMMO_MAX * self.system.NR_CLIPS_MAX
+	self.system.AMMO_PICKUP = self:_pickup_chance(self.system.CLIP_AMMO_MAX, PICKUP.SNIPER_HIGH_DAMAGE)
+	self.system.FIRE_MODE = "auto"
+	self.system.fire_mode_data = {fire_rate = 0.03}
+	self.system.auto = {fire_rate = 0.05}
+	self.system.spread = {
+		standing = self.r870.spread.standing,
+		crouching = self.r870.spread.crouching,
+		steelsight = self.r870.spread.steelsight,
+		moving_standing = self.r870.spread.moving_standing,
+		moving_crouching = self.r870.spread.moving_crouching,
+		moving_steelsight = self.r870.spread.moving_steelsight
+	}
+	self.system.kick = {standing = {
+		0,
+		0,
+		0,
+		0
+	}}
+	self.system.kick.crouching = self.system.kick.standing
+	self.system.kick.steelsight = self.system.kick.standing
+	self.system.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.system.crosshair.standing.offset = 0.16
+	self.system.crosshair.standing.moving_offset = 0.8
+	self.system.crosshair.standing.kick_offset = 0.6
+	self.system.crosshair.standing.hidden = true
+	self.system.crosshair.crouching.offset = 0.08
+	self.system.crosshair.crouching.moving_offset = 0.7
+	self.system.crosshair.crouching.kick_offset = 0.4
+	self.system.crosshair.crouching.hidden = true
+	self.system.crosshair.steelsight.hidden = true
+	self.system.crosshair.steelsight.offset = 0
+	self.system.crosshair.steelsight.moving_offset = 0
+	self.system.crosshair.steelsight.kick_offset = 0.1
+	self.system.shake = {
+		fire_multiplier = 0,
+		fire_steelsight_multiplier = 0
+	}
+	self.system.autohit = weapon_data.autohit_shotgun_default
+	self.system.aim_assist = weapon_data.aim_assist_shotgun_default
+	self.system.animations = {}
+	self.system.weapon_hold = "system"
+	self.system.animations.equip_id = "equip_system"
+	self.system.animations.recoil_steelsight = false
+	self.system.flame_max_range = 1000
+	self.system.single_flame_effect_duration = 1
+	self.system.panic_suppression_chance = 0.2
+	self.system.fire_dot_data = {
+		dot_trigger_chance = 75,
+		dot_damage = 30,
+		dot_length = 1.6,
+		dot_trigger_max_distance = 3000,
+		dot_tick_period = 0.5
+	}
+	self.system.stats = {
+		zoom = 3,
+		total_ammo_mod = 21,
+		damage = 7,
+		alert_size = 1,
+		spread = 1,
+		spread_moving = 6,
+		recoil = 0,
+		value = 1,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 2,
+		concealment = 15
+	}
+end
+
 function WeaponTweakData:_create_table_structure()
 	self.c45_npc = {
 		usage = "is_pistol",
@@ -21672,6 +21803,12 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.shuno_crew = {
+		usage = "is_rifle",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.system_crew = {
 		usage = "is_rifle",
 		sounds = {},
 		use_data = {},

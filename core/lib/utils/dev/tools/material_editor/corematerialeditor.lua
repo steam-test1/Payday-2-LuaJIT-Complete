@@ -22,6 +22,7 @@ CoreMaterialEditor.NEW_ICON = CoreEWS.image_path("toolbar/new_16x16.png")
 CoreMaterialEditor.OPEN_ICON = CoreEWS.image_path("toolbar/open_16x16.png")
 CoreMaterialEditor.SAVE_ICON = CoreEWS.image_path("toolbar/save_16x16.png")
 CoreMaterialEditor.RELOAD_ICON = CoreEWS.image_path("toolbar/refresh_16x16.png")
+CoreMaterialEditor.LOCK_ICON = CoreEWS.image_path("lock_16x16.png")
 CoreMaterialEditor.PROBLEM_SOLVER_ICON = CoreEWS.image_path("help_16x16.png")
 CoreMaterialEditor.RENDER_TEMPLATE_PATH = "settings/render_templates"
 CoreMaterialEditor.SHADER_LIB_PATH = "settings/shader_libs"
@@ -50,6 +51,8 @@ function CoreMaterialEditor:init()
 	self._start_dialog = CoreMaterialEditorStartDialog:new(self._main_frame, self)
 
 	self._start_dialog:show_modal()
+
+	self._material_lock = false
 end
 
 function CoreMaterialEditor:update(t, dt)
@@ -197,6 +200,16 @@ end
 function CoreMaterialEditor:_on_reload()
 	if self._material_config_path then
 		Application:reload_material_config(Idstring(managers.database:entry_path(self._material_config_path)))
+	end
+end
+
+function CoreMaterialEditor:_on_toggle_lock()
+	if self._material_lock == true then
+		self._material_lock = false
+
+		self:_find_selected_unit()
+	else
+		self._material_lock = true
 	end
 end
 

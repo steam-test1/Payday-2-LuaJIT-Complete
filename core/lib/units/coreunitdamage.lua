@@ -920,6 +920,16 @@ function CoreUnitDamage:remove_trigger_data(trigger_name, id)
 	end
 end
 
+function CoreUnitDamage:get_trigger_data(trigger_name, id)
+	if self._trigger_data_map and self._trigger_data_map[trigger_name] then
+		for index, data in ipairs(self._trigger_data_map[trigger_name]) do
+			if data.id == id then
+				return data
+			end
+		end
+	end
+end
+
 function CoreUnitDamage:add_trigger_sequence(trigger_name, notify_unit_sequence, notify_unit, start_time, repeat_nr, params, is_editor)
 	if not trigger_name or not self._unit_element:has_trigger_name(trigger_name) then
 		Application:stack_dump_error("Trigger \"" .. tostring(trigger_name) .. "\" doesn't exist. Only the following triggers are available: " .. managers.sequence:get_keys_as_string(self._unit_element:get_trigger_name_map(), "[None]", true))

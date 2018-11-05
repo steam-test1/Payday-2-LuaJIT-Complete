@@ -35,7 +35,12 @@ function EditUnitTriggable:init(editor)
 	self._btn_toolbar:connect("ADD_UNIT_LIST", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "add_unit_list_btn"), nil)
 	self._btn_toolbar:realize()
 	sequence_sizer:add(self._btn_toolbar, 0, 1, "EXPAND,LEFT")
+
+	local paste_btn = EWS:Button(panel, "Paste", "", "BU_EXACTFIT,NO_BORDER")
+
+	paste_btn:connect("EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "paste_element"), nil)
 	sizer:add(sequence_sizer, 0, 0, "EXPAND")
+	sizer:add(paste_btn, 0, 0, "EXPAND")
 	sizer:add(self:_build_scrolled_window(), 1, 0, "EXPAND")
 	panel:layout()
 	panel:set_enabled(false)
@@ -80,6 +85,10 @@ function EditUnitTriggable:build_element_gui(data)
 
 	panel:set_sizer(sizer)
 
+	local copy_btn = EWS:Button(panel, "Copy", "", "BU_EXACTFIT,NO_BORDER")
+
+	sizer:add(copy_btn, 0, 0, "EXPAND")
+
 	local remove_btn = EWS:Button(panel, "Remove", "", "BU_EXACTFIT,NO_BORDER")
 
 	sizer:add(remove_btn, 0, 0, "EXPAND")
@@ -108,6 +117,7 @@ function EditUnitTriggable:build_element_gui(data)
 		time = time
 	}
 
+	copy_btn:connect("EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "copy_element"), ctrls)
 	remove_btn:connect("EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "remove_element"), ctrls)
 	trigger:connect("EVT_COMMAND_COMBOBOX_SELECTED", callback(self, self, "change_sequence"), ctrls)
 	time:connect("EVT_CHAR", callback(nil, _G, "verify_number"), time)
@@ -191,6 +201,22 @@ function EditUnitTriggable:update_element_gui()
 
 	self._scrolled_window:fit_inside()
 	managers.editor:layout_edit_panel()
+end
+
+function EditUnitTriggable:copy_element(ctrls)
+	local trigger_data = self._ctrls.unit:damage():get_trigger_data(ctrls.trigger_name, ctrls.id)
+	self._copied_trigger_data = trigger_data
+end
+
+function EditUnitTriggable:paste_element()
+	if self._copied_trigger_data then
+		if alive(self._copied_trigger_data.notify_unit) and self._copied_trigger_data.notify_unit:damage() then
+			self._ctrls.unit:damage():add_trigger_sequence(self._copied_trigger_data.trigger_name, self._copied_trigger_data.notify_unit_sequence, self._copied_trigger_data.notify_unit, self._copied_trigger_data.time, nil, nil, true)
+			self:update_element_gui()
+		else
+			self._copied_trigger_data = nil
+		end
+	end
 end
 
 function EditUnitTriggable:add_unit(unit)

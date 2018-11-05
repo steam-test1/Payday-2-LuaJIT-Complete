@@ -3,7 +3,7 @@ core:import("CoreEditorUtils")
 EditUnitDialog = EditUnitDialog or class(CoreEditorEwsDialog)
 
 function EditUnitDialog:init(toolbar, btn)
-	CoreEditorEwsDialog.init(self, nil, "Edit Unit", "", Vector3(300, 150, 0), Vector3(360, 338, 0), "DEFAULT_DIALOG_STYLE,RESIZE_BORDER,MINIMIZE_BOX,MAXIMIZE_BOX")
+	CoreEditorEwsDialog.init(self, nil, "Edit Unit", "", Vector3(300, 150, 0), Vector3(550, 450, 0), "DEFAULT_DIALOG_STYLE,RESIZE_BORDER,MINIMIZE_BOX,MAXIMIZE_BOX")
 	self:create_panel("VERTICAL")
 	self._dialog:connect("EVT_CLOSE_WINDOW", callback(self, self, "dialog_closed"), "")
 	self._dialog:connect("EVT_KEY_DOWN", callback(self, self, "key_cancel"), "")

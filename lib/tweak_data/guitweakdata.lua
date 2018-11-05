@@ -4970,14 +4970,14 @@ function GuiTweakData:init()
 	self.new_heists = {limit = 5}
 
 	table.insert(self.new_heists, {
-		name_id = "menu_nh_euu",
-		texture_path = "guis/textures/pd2/new_heists/euu",
-		url = "https://steamcommunity.com/games/218620/announcements"
+		name_id = "menu_nh_sft",
+		texture_path = "guis/textures/pd2/new_heists/menu_nh_sft",
+		url = "https://steamcommunity.com/games/218620/announcements/detail/2885003081979937951"
 	})
 	table.insert(self.new_heists, {
-		name_id = "menu_nh_summer_sale_2018",
-		texture_path = "guis/textures/pd2/new_heists/summer_sale_2018",
-		url = "http://store.steampowered.com/app/218620/PAYDAY_2/"
+		name_id = "menu_nh_euu",
+		texture_path = "guis/textures/pd2/new_heists/euu",
+		url = "https://steamcommunity.com/games/218620/announcements/detail/1698303218390483331"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_cat",

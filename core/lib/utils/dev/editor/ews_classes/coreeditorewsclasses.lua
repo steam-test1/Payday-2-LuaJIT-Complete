@@ -1036,6 +1036,10 @@ function GlobalSelectUnit:_on_units_focus_lost(ctrlr, event)
 end
 
 function GlobalSelectUnit:_on_unit_preview_start(unit_to_preview)
+	if unit_to_preview == nil then
+		return
+	end
+
 	self._preview_unit = unit_to_preview
 	local previewed_unit_height = self:_calculate_bounding_sphere_radius(unit_to_preview)
 	local desired_distance_to_camera = previewed_unit_height
@@ -1192,6 +1196,20 @@ end
 
 function GlobalSelectUnit:update_list(current)
 	local filter = self._filter:get_value()
+	local filter_pattern = filter
+
+	if string.len(string.gsub(filter, "%s", "")) > 0 then
+		filter_pattern = ".*"
+		local sub_filters = {}
+
+		for sub_filter in filter:gmatch("%w+") do
+			sub_filters[#sub_filters + 1] = sub_filter
+		end
+
+		for key, value in ipairs(sub_filters) do
+			filter_pattern = filter_pattern .. value .. ".*"
+		end
+	end
 
 	self._units:delete_all_items()
 
@@ -1206,7 +1224,7 @@ function GlobalSelectUnit:update_list(current)
 			if self._layer_cbs[type]:get_value() then
 				local stripped_name = self._short_name:get_value() and self:_stripped_unit_name(name) or name
 
-				if string.find(stripped_name, filter, 1, true) then
+				if string.find(stripped_name, filter_pattern, 1) then
 					table.insert(self._units_to_append, {
 						stripped_name = stripped_name,
 						name = name
@@ -1221,7 +1239,7 @@ function GlobalSelectUnit:update_list(current)
 			if self._layer_cbs[type]:get_value() then
 				local stripped_name = self._short_name:get_value() and self:_stripped_unit_name(name) or name
 
-				if string.find(stripped_name, filter, 1, true) then
+				if string.find(stripped_name, filter_pattern, 1) then
 					table.insert(self._units_to_append, {
 						stripped_name = stripped_name,
 						name = name

@@ -272,6 +272,7 @@ function WeaponFactoryTweakData:init()
 	self:_init_x_judge()
 	self:_init_x_rota()
 	self:_init_shuno()
+	self:_init_system()
 	self:create_ammunition()
 	self:_init_cc_material_config()
 	self:_init_bipods()
@@ -20379,7 +20380,7 @@ function WeaponFactoryTweakData:_init_flamethrower_mk2()
 		stats = {
 			value = 1,
 			total_ammo_mod = 5,
-			damage = -3
+			damage = -4
 		}
 	}
 	self.parts.wpn_fps_fla_mk2_mag = {
@@ -20404,7 +20405,7 @@ function WeaponFactoryTweakData:_init_flamethrower_mk2()
 		stats = {
 			value = 1,
 			total_ammo_mod = -5,
-			damage = 3
+			damage = 7
 		}
 	}
 	self.parts.wpn_fps_fla_mk2_body.third_unit = "units/pd2_dlc_bbq/weapons/wpn_fps_fla_mk2_pts/wpn_third_fla_mk2_body"
@@ -33606,5 +33607,136 @@ function WeaponFactoryTweakData:_init_shuno()
 	}
 	self.wpn_fps_lmg_shuno_npc = deep_clone(self.wpn_fps_lmg_shuno)
 	self.wpn_fps_lmg_shuno_npc.unit = "units/pd2_dlc_dmg/weapons/wpn_fps_lmg_shuno/wpn_fps_lmg_shuno_npc"
+end
+
+function WeaponFactoryTweakData:_init_system()
+	self.parts.wpn_fps_fla_system_b_standard = {
+		a_obj = "a_b",
+		type = "barrel",
+		name_id = "bm_wp_system_body_standard",
+		unit = "units/pd2_dlc_sft/weapons/wpn_fps_fla_system_pts/wpn_fps_fla_system_b_standard",
+		stats = {value = 1}
+	}
+	self.parts.wpn_fps_fla_system_b_wtf = {
+		texture_bundle_folder = "sft",
+		a_obj = "a_b",
+		type = "barrel",
+		name_id = "bm_wp_system_b_wtf",
+		unit = "units/pd2_dlc_sft/weapons/wpn_fps_fla_system_pts/wpn_fps_fla_system_b_wtf",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		stats = {
+			concealment = 5,
+			total_ammo_mod = -5,
+			value = 1
+		}
+	}
+	self.parts.wpn_fps_fla_system_body_standard = {
+		a_obj = "a_body",
+		type = "lower_reciever",
+		name_id = "bm_wp_system_body_standard",
+		unit = "units/pd2_dlc_sft/weapons/wpn_fps_fla_system_pts/wpn_fps_fla_system_body_standard",
+		stats = {value = 1}
+	}
+	self.parts.wpn_fps_fla_system_body_upper = {
+		a_obj = "a_body",
+		type = "upper_reciever",
+		name_id = "bm_wp_system_body_standard",
+		unit = "units/pd2_dlc_sft/weapons/wpn_fps_fla_system_pts/wpn_fps_fla_system_body_upper",
+		stats = {value = 1}
+	}
+	self.parts.wpn_fps_fla_system_dh_standard = {
+		a_obj = "a_dh",
+		type = "drag_handle",
+		name_id = "bm_wp_system_body_standard",
+		unit = "units/pd2_dlc_sft/weapons/wpn_fps_fla_system_pts/wpn_fps_fla_system_dh_standard",
+		stats = {value = 1}
+	}
+	self.parts.wpn_fps_fla_system_m_high = {
+		texture_bundle_folder = "sft",
+		a_obj = "a_m",
+		type = "magazine",
+		name_id = "bm_wp_system_m_high",
+		unit = "units/pd2_dlc_sft/weapons/wpn_fps_fla_system_pts/wpn_fps_fla_system_m_high",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		stats = {
+			value = 1,
+			total_ammo_mod = -5,
+			damage = 7
+		}
+	}
+	self.parts.wpn_fps_fla_system_m_low = {
+		texture_bundle_folder = "sft",
+		a_obj = "a_m",
+		type = "magazine",
+		name_id = "bm_wp_system_m_low",
+		unit = "units/pd2_dlc_sft/weapons/wpn_fps_fla_system_pts/wpn_fps_fla_system_m_low",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		stats = {
+			value = 1,
+			total_ammo_mod = 5,
+			damage = -4
+		}
+	}
+	self.parts.wpn_fps_fla_system_m_standard = {
+		a_obj = "a_m",
+		type = "magazine",
+		name_id = "bm_wp_system_body_standard",
+		unit = "units/pd2_dlc_sft/weapons/wpn_fps_fla_system_pts/wpn_fps_fla_system_m_standard",
+		stats = {value = 1}
+	}
+	self.parts.wpn_fps_fla_system_b_standard.third_unit = "units/pd2_dlc_sft/weapons/wpn_fps_fla_system_pts/wpn_third_fla_system_b_standard"
+	self.parts.wpn_fps_fla_system_b_wtf.third_unit = "units/pd2_dlc_sft/weapons/wpn_fps_fla_system_pts/wpn_third_fla_system_b_wtf"
+	self.parts.wpn_fps_fla_system_body_standard.third_unit = "units/pd2_dlc_sft/weapons/wpn_fps_fla_system_pts/wpn_third_fla_system_body_standard"
+	self.parts.wpn_fps_fla_system_body_upper.third_unit = "units/pd2_dlc_sft/weapons/wpn_fps_fla_system_pts/wpn_third_fla_system_body_upper"
+	self.parts.wpn_fps_fla_system_dh_standard.third_unit = "units/pd2_dlc_sft/weapons/wpn_fps_fla_system_pts/wpn_third_fla_system_dh_standard"
+	self.parts.wpn_fps_fla_system_m_high.third_unit = "units/pd2_dlc_sft/weapons/wpn_fps_fla_system_pts/wpn_third_fla_system_m_high"
+	self.parts.wpn_fps_fla_system_m_low.third_unit = "units/pd2_dlc_sft/weapons/wpn_fps_fla_system_pts/wpn_third_fla_system_m_low"
+	self.parts.wpn_fps_fla_system_m_standard.third_unit = "units/pd2_dlc_sft/weapons/wpn_fps_fla_system_pts/wpn_third_fla_system_m_standard"
+	self.wpn_fps_fla_system = {
+		unit = "units/pd2_dlc_sft/weapons/wpn_fps_fla_system/wpn_fps_fla_system",
+		animations = {
+			reload_not_empty = "reload",
+			reload = "reload"
+		},
+		default_blueprint = {
+			"wpn_fps_fla_system_b_standard",
+			"wpn_fps_fla_system_body_standard",
+			"wpn_fps_fla_system_body_upper",
+			"wpn_fps_fla_system_dh_standard",
+			"wpn_fps_fla_system_m_standard"
+		},
+		uses_parts = {
+			"wpn_fps_fla_system_b_standard",
+			"wpn_fps_fla_system_b_wtf",
+			"wpn_fps_fla_system_body_standard",
+			"wpn_fps_fla_system_body_upper",
+			"wpn_fps_fla_system_dh_standard",
+			"wpn_fps_fla_system_m_high",
+			"wpn_fps_fla_system_m_low",
+			"wpn_fps_fla_system_m_standard",
+			"wpn_fps_upg_fl_ass_smg_sho_peqbox",
+			"wpn_fps_upg_fl_ass_smg_sho_surefire",
+			"wpn_fps_upg_fl_ass_peq15",
+			"wpn_fps_upg_fl_ass_laser",
+			"wpn_fps_upg_fl_ass_utg"
+		}
+	}
+	self.wpn_fps_fla_system_npc = deep_clone(self.wpn_fps_fla_system)
+	self.wpn_fps_fla_system_npc.unit = "units/pd2_dlc_sft/weapons/wpn_fps_fla_system/wpn_fps_fla_system_npc"
 end
 

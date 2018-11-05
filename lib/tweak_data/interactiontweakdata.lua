@@ -2219,6 +2219,13 @@ function InteractionTweakData:init(tweak_data)
 		axis = "y",
 		start_active = false
 	}
+	self.hold_open_vault_2s = {
+		text_id = "hud_int_hold_open_vault",
+		action_text_id = "hud_action_opening_vault",
+		timer = 2,
+		axis = "y",
+		start_active = false
+	}
 	self.samurai_armor = {
 		text_id = "hud_int_hold_bag_sa_armor",
 		action_text_id = "hud_action_bagging_sa_armor",

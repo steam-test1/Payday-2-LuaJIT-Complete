@@ -615,6 +615,12 @@ function CoreEnvEditor:write_sky(file)
 end
 
 function CoreEnvEditor:on_close()
+	local close_dialog = EWS:MessageDialog(self._main_frame, "Do you want to save environment changes?", "Save Changes?", "YES_NO")
+
+	if close_dialog:show_modal() == "ID_YES" then
+		self:on_save_file()
+	end
+
 	managers.toolhub:close("Environment Editor")
 end
 

@@ -175,6 +175,7 @@ CopActionAct._act_redirects.enemy_spawn = {
 	"e_sp_climb_up_6m_down_1m",
 	"e_sp_over_1m_down_7m",
 	"e_sp_climb_up_3m_down_1m",
+	"e_sp_over_1_3m_down_8_3_m",
 	"e_sp_window_down_7n25m",
 	"e_sp_climb_up_bridge_v2",
 	"e_sp_dwn_11m",

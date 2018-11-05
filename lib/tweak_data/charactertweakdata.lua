@@ -16233,6 +16233,7 @@ function CharacterTweakData:character_map()
 			list = {
 				"ene_bulldozer_medic",
 				"ene_bulldozer_minigun",
+				"ene_bulldozer_minigun_classic",
 				"ene_zeal_swat_heavy_sniper"
 			}
 		},

@@ -1204,11 +1204,11 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.lmg.recoil_index_addend = {1}
 	self.values.snp.recoil_index_addend = {2}
 	self.values.akimbo.recoil_index_addend = {
-		-6,
-		-4,
-		-2,
-		0,
-		2
+		-9,
+		-7,
+		-5,
+		-3,
+		-1
 	}
 	self.values.weapon.steelsight_highlight_specials = {true}
 	self.armor_health_store_kill_amount = 1
@@ -3679,7 +3679,8 @@ function UpgradesTweakData:init(tweak_data)
 			upgrades = {
 				"freedom",
 				"whiskey",
-				"arbiter"
+				"arbiter",
+				"system"
 			}
 		},
 		[48] = {
@@ -4053,6 +4054,7 @@ function UpgradesTweakData:init(tweak_data)
 	self:_x_judge_weapon_definitions()
 	self:_x_rota_weapon_definitions()
 	self:_shuno_weapon_definitions()
+	self:_system_weapon_definitions()
 	self:_melee_weapon_definitions()
 	self:_grenades_definitions()
 	self:_carry_definitions()
@@ -13816,6 +13818,14 @@ function UpgradesTweakData:_shuno_weapon_definitions()
 		dlc = "dmg",
 		factory_id = "wpn_fps_lmg_shuno",
 		weapon_id = "shuno",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_system_weapon_definitions()
+	self.definitions.system = {
+		factory_id = "wpn_fps_fla_system",
+		weapon_id = "system",
 		category = "weapon"
 	}
 end
