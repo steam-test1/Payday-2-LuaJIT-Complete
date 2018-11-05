@@ -1012,6 +1012,10 @@ function ActionSpooc:anim_act_clbk(anim_act)
 
 			self._beating_end_t = self._stroke_t + 1
 
+			if Global.game_settings.difficulty == "sm_wish" then
+				MutatorCloakerEffect.effect_smoke(nil, self._unit)
+			end
+
 			managers.mutators:_run_func("OnPlayerCloakerKicked", self._unit)
 			managers.crime_spree:run_func("OnPlayerCloakerKicked", self._unit)
 
@@ -1069,6 +1073,10 @@ function ActionSpooc:anim_act_clbk(anim_act)
 
 		self._strike_unit = self._target_unit
 		local spooc_res = self._strike_unit:movement():on_SPOOCed(self._unit, self:is_flying_strike() and "flying_strike" or "sprint_attack")
+
+		if Global.game_settings.difficulty == "sm_wish" then
+			MutatorCloakerEffect.effect_smoke(nil, self._unit)
+		end
 
 		managers.mutators:_run_func("OnPlayerCloakerKicked", self._unit)
 		managers.crime_spree:run_func("OnPlayerCloakerKicked", self._unit)

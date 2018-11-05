@@ -2816,6 +2816,15 @@ function MenuSceneManager:spawn_item_weapon(factory_id, blueprint, cosmetics, te
 	return new_unit
 end
 
+function MenuSceneManager:update_weapon_texture_switches(factory_id, texture_switches)
+	local unit = self._item_unit and self._item_unit.unit
+
+	if alive(unit) and unit:base() and unit:base()._factory_id == factory_id then
+		unit:base():set_texture_switches(texture_switches)
+		unit:base():apply_texture_switches()
+	end
+end
+
 function MenuSceneManager:_set_item_unit(unit, oobb_object, max_mod, type, second_unit, custom_data)
 	self:remove_item()
 
@@ -3692,7 +3701,7 @@ function MenuSceneManager:load_safe_result_content(result, ready_clbk)
 
 		managers.dyn_resource:load(ids_unit, weapon_name, DynamicResourceManager.DYN_RESOURCES_PACKAGE, callback(self, self, "_set_safe_result_ready_flag", "weapon_ready"))
 
-		local parts = managers.weapon_factory:preload_blueprint(factory_id, blueprint, false, callback(self, self, "_safe_result_parts_loaded"), false)
+		local parts = managers.weapon_factory:preload_blueprint(factory_id, blueprint, false, false, callback(self, self, "_safe_result_parts_loaded"), false)
 	elseif result.category == "armor_skins" then
 		self._safe_result_content_data.armor_id = result.entry
 

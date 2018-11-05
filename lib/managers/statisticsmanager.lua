@@ -21,6 +21,7 @@ StatisticsManager.special_unit_ids = {
 	"drug_lord_boss",
 	"drug_lord_boss_stealth"
 }
+StatisticsManager.JOB_STATS_VERSION = 2
 
 function StatisticsManager:init()
 	self:_setup()
@@ -362,6 +363,7 @@ function StatisticsManager:_setup(reset)
 	self._defaults.experience = {}
 	self._defaults.misc = {}
 	self._defaults.play_time = {minutes = 0}
+	self._defaults.sessions.job_stats_version = StatisticsManager.JOB_STATS_VERSION
 
 	if not Global.statistics_manager or reset then
 		Global.statistics_manager = deep_clone(self._defaults)
@@ -531,13 +533,12 @@ function StatisticsManager:start_session(data)
 	can_record_session = can_record_session and not managers.mutators:should_disable_statistics()
 
 	if can_record_session then
-		local job_stat = tostring(job_id) .. "_" .. tostring(Global.game_settings.difficulty)
-
-		if Global.statistics_manager.playing_from_start then
-			self._global.sessions.jobs[job_stat .. "_started"] = (self._global.sessions.jobs[job_stat .. "_started"] or 0) + 1
-		else
-			self._global.sessions.jobs[job_stat .. "_started_dropin"] = (self._global.sessions.jobs[job_stat .. "_started_dropin"] or 0) + 1
-		end
+		local job_stats = self._global.sessions.jobs
+		local stat_name = tostring(job_id)
+		stat_name = stat_name .. "_" .. tostring(Global.game_settings.difficulty)
+		stat_name = stat_name .. (Global.game_settings.one_down and "_od" or "")
+		stat_name = stat_name .. (Global.statistics_manager.playing_from_start and "_started" or "_started_dropin")
+		job_stats[stat_name] = (job_stats[stat_name] or 0) + 1
 	end
 
 	self._global.session = deep_clone(self._defaults)
@@ -597,27 +598,23 @@ function StatisticsManager:stop_session(data)
 	can_record_session = can_record_session and not managers.mutators:should_disable_statistics()
 
 	if can_record_session then
-		local job_stat = tostring(job_id) .. "_" .. tostring(Global.game_settings.difficulty)
+		local job_stats = self._global.sessions.jobs
+		local dropped_in = not Global.statistics_manager.playing_from_start
+		local stat_name = tostring(job_id)
+		stat_name = stat_name .. "_" .. tostring(Global.game_settings.difficulty)
+		stat_name = stat_name .. (Global.game_settings.one_down and "_od" or "")
 
 		if data.type == "victory" then
 			if managers.job:on_last_stage() then
-				if Global.statistics_manager.playing_from_start then
-					self._global.sessions.jobs[job_stat .. "_completed"] = (self._global.sessions.jobs[job_stat .. "_completed"] or 0) + 1
-					completion = "win_begin"
-				else
-					self._global.sessions.jobs[job_stat .. "_completed_dropin"] = (self._global.sessions.jobs[job_stat .. "_completed_dropin"] or 0) + 1
-					completion = "win_dropin"
-				end
+				stat_name = stat_name .. (dropped_in and "_completed_dropin" or "_completed")
+				job_stats[stat_name] = (job_stats[stat_name] or 0) + 1
+				completion = dropped_in and "win_dropin" or "win_begin"
 			else
 				completion = "done"
 			end
 		elseif data.type == "gameover" then
-			if Global.statistics_manager.playing_from_start then
-				self._global.sessions.jobs[job_stat .. "_failed"] = (self._global.sessions.jobs[job_stat .. "_failed"] or 0) + 1
-			else
-				self._global.sessions.jobs[job_stat .. "_failed_dropin"] = (self._global.sessions.jobs[job_stat .. "_failed_dropin"] or 0) + 1
-			end
-
+			stat_name = stat_name .. (dropped_in and "_failed_dropin" or "_failed")
+			job_stats[stat_name] = (job_stats[stat_name] or 0) + 1
 			completion = "fail"
 		end
 	end
@@ -1736,29 +1733,43 @@ function StatisticsManager:register_melee_hit()
 	self._global.session.melee_hit = true
 end
 
-function StatisticsManager:completed_job(job_id, difficulty)
+function StatisticsManager:completed_job(job_id, difficulty, require_one_down)
+	local job_stats = self._global.sessions.jobs
+	local tweak_jobs = tweak_data.narrative.jobs
+	local job_wrapper = nil
+
 	if tweak_data.narrative:has_job_wrapper(job_id) then
-		local count = 0
-		local job_wrapper = tweak_data.narrative.jobs[job_id].job_wrapper
-
-		for _, wrapped_job in ipairs(job_wrapper) do
-			count = count + (self._global.sessions.jobs[tostring(wrapped_job) .. "_" .. tostring(difficulty) .. "_completed"] or 0)
-		end
-
-		return count
+		job_wrapper = tweak_jobs[job_id].job_wrapper
 	elseif tweak_data.narrative:is_wrapped_to_job(job_id) then
-		local count = 0
-		local tweak_jobs = tweak_data.narrative.jobs
-		local job_wrapper = tweak_jobs[tweak_jobs[job_id].wrapped_to_job].job_wrapper
+		job_wrapper = tweak_jobs[tweak_jobs[job_id].wrapped_to_job].job_wrapper
+	end
 
-		for _, wrapped_job in ipairs(job_wrapper) do
-			count = count + (self._global.sessions.jobs[tostring(wrapped_job) .. "_" .. tostring(difficulty) .. "_completed"] or 0)
+	local function single_job_count(job_id, difficulty, require_one_down)
+		local stat_prefix = tostring(job_id) .. "_" .. tostring(difficulty)
+		local stat_suffix = "_completed"
+		local count = 0
+		count = count + (job_stats[stat_prefix .. "_od" .. stat_suffix] or 0)
+
+		if not require_one_down then
+			count = count + (job_stats[stat_prefix .. stat_suffix] or 0)
 		end
 
 		return count
 	end
 
-	return self._global.sessions.jobs[tostring(job_id) .. "_" .. tostring(difficulty) .. "_completed"] or 0
+	local count = 0
+
+	if job_wrapper then
+		local count = 0
+
+		for _, wrapped_job in ipairs(job_wrapper) do
+			count = count + single_job_count(wrapped_job, difficulty, require_one_down)
+		end
+
+		return count
+	end
+
+	return single_job_count(job_id, difficulty, require_one_down)
 end
 
 function StatisticsManager:tied(data)
@@ -1850,18 +1861,19 @@ function StatisticsManager:shot_fired(data)
 	end
 
 	if data.hit then
-		self._global.shots_fired.hits = self._global.shots_fired.hits + 1
-		self._global.session.shots_fired.hits = self._global.session.shots_fired.hits + 1
+		local count = data.hit_count or 1
+		self._global.shots_fired.hits = self._global.shots_fired.hits + count
+		self._global.session.shots_fired.hits = self._global.session.shots_fired.hits + count
 		self._global.session.shots_by_weapon[name_id] = self._global.session.shots_by_weapon[name_id] or {
 			total = 0,
 			hits = 0
 		}
-		self._global.session.shots_by_weapon[name_id].hits = self._global.session.shots_by_weapon[name_id].hits + 1
+		self._global.session.shots_by_weapon[name_id].hits = self._global.session.shots_by_weapon[name_id].hits + count
 		self._global.shots_by_weapon[name_id] = self._global.shots_by_weapon[name_id] or {
 			total = 0,
 			hits = 0
 		}
-		self._global.shots_by_weapon[name_id].hits = self._global.shots_by_weapon[name_id].hits + 1
+		self._global.shots_by_weapon[name_id].hits = self._global.shots_by_weapon[name_id].hits + count
 	end
 end
 
@@ -2074,6 +2086,37 @@ function StatisticsManager:_check_loaded_data()
 
 	self._global.sessions.jobs = self._global.sessions.jobs or {}
 	self._global.experience = self._global.experience or deep_clone(self._defaults.experience)
+
+	self:_migrate_job_completion_stats()
+end
+
+function StatisticsManager:_migrate_job_completion_stats()
+	local from_version = self._global.sessions.job_stats_version or 1
+	local job_stats = self._global.sessions.jobs
+
+	if from_version == 1 then
+		local migrated_stats = {}
+		local job_stats = self._global.sessions.jobs
+
+		for key, stat in pairs(job_stats) do
+			local job_id, suffix = key:match("([%w_]+)_sm_wish_([%w_]+)")
+
+			if job_id then
+				local new_stat_name = job_id .. "_sm_wish_od_" .. suffix
+				migrated_stats[new_stat_name] = job_stats[key]
+			else
+				migrated_stats[key] = stat
+			end
+		end
+
+		self._global.sessions.jobs = migrated_stats
+
+		if managers.achievment.achievments.axe_66.awarded then
+			managers.achievment:award("ggez_1")
+		end
+	end
+
+	self._global.sessions.job_stats_version = StatisticsManager.JOB_STATS_VERSION
 end
 
 function StatisticsManager:time_played()

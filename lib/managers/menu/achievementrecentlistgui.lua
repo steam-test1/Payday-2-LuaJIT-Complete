@@ -40,9 +40,10 @@ function AchievementRecentListItem:init(parent, item, black_bg)
 		texture = texture,
 		texture_rect = texture_rect
 	}))
+	local name_text = managers.localization:text(self._visual.name_id)
 
 	placer:add_right(self:fine_text({
-		text_id = self._visual.name_id,
+		text = name_text,
 		font = medium_font,
 		font_size = medium_font_size
 	}))

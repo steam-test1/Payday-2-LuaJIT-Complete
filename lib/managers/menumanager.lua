@@ -2836,6 +2836,13 @@ function MenuCallbackHandler:choice_modded_lobbies_filter(item)
 	managers.network.matchmake:search_lobby(managers.network.matchmake:search_friends_only())
 end
 
+function MenuCallbackHandler:chocie_one_down_filter(item)
+	local allow_one_down = item:value() == "on" and true or false
+	Global.game_settings.search_one_down_lobbies = allow_one_down
+
+	managers.user:set_setting("crimenet_filter_one_down", allow_one_down)
+end
+
 function MenuCallbackHandler:choice_server_state_lobby(item)
 	local state_filter = item:value()
 
@@ -3054,6 +3061,10 @@ function MenuCallbackHandler:change_contract_difficulty(item)
 
 	buy_contract_item:set_enabled(can_afford)
 	self:refresh_node()
+end
+
+function MenuCallbackHandler:choice_crimenet_one_down(item)
+	managers.menu_component:set_crimenet_contract_one_down(item:value() == "on")
 end
 
 function MenuCallbackHandler:choice_difficulty_filter_ps3(item)
@@ -6134,6 +6145,8 @@ function MenuCrimeNetContractInitiator:modify_node(original_node, data)
 				buy_contract_item:set_enabled(can_afford)
 			end
 		end
+
+		node:item("toggle_one_down"):set_value("off")
 	end
 
 	if data and data.back_callback then
@@ -6385,12 +6398,14 @@ function MenuCallbackHandler:play_chill_combat(item)
 		self:_dialog_leave_lobby_yes()
 	end
 
-	item:parameters().gui_node:remove_blur()
-
+	local node = item:parameters().gui_node
 	local job_data = {
 		job_id = "chill_combat",
-		difficulty = item:parameters().gui_node:get_difficulty()
+		difficulty = node:get_difficulty(),
+		one_down = node:get_one_down()
 	}
+
+	node:remove_blur()
 
 	if Global.game_settings.single_player then
 		MenuCallbackHandler:start_single_player_job(job_data)
@@ -6407,6 +6422,10 @@ end
 
 function MenuCallbackHandler:_on_chill_change_difficulty(item)
 	item:parameters().gui_node:set_difficulty(item._options[item._current_index]:value())
+end
+
+function MenuCallbackHandler:_on_chill_change_one_down(item)
+	item:parameters().gui_node:set_one_down(item:value() == "on")
 end
 MenuCrimeNetContactChillInitiator = MenuCrimeNetContactChillInitiator or class()
 
@@ -6462,6 +6481,48 @@ function MenuCrimeNetContactChillInitiator:modify_node(original_node, data)
 	}
 	local new_item = node:create_item(data_node, params)
 
+	new_item:set_enabled(true)
+	node:add_item(new_item)
+
+	params = {
+		callback = "_on_chill_change_one_down",
+		name = "toggle_one_down",
+		text_id = "menu_toggle_one_down"
+	}
+	data_node = {
+		{
+			w = "24",
+			y = "0",
+			h = "24",
+			s_y = "24",
+			value = "on",
+			s_w = "24",
+			s_h = "24",
+			s_x = "24",
+			_meta = "option",
+			icon = "guis/textures/menu_tickbox",
+			x = "24",
+			s_icon = "guis/textures/menu_tickbox"
+		},
+		{
+			w = "24",
+			y = "0",
+			h = "24",
+			s_y = "24",
+			value = "off",
+			s_w = "24",
+			s_h = "24",
+			s_x = "0",
+			_meta = "option",
+			icon = "guis/textures/menu_tickbox",
+			x = "0",
+			s_icon = "guis/textures/menu_tickbox"
+		},
+		type = "CoreMenuItemToggle.ItemToggle"
+	}
+	new_item = node:create_item(data_node, params)
+
+	new_item:set_value("off")
 	new_item:set_enabled(true)
 	node:add_item(new_item)
 
@@ -8839,6 +8900,7 @@ function MenuCrimeNetFiltersInitiator:modify_node(original_node, data)
 		node:item("toggle_allow_safehouses"):set_value(Global.game_settings.allow_search_safehouses and "on" or "off")
 		node:item("toggle_mutated_lobby"):set_value(Global.game_settings.search_mutated_lobbies and "on" or "off")
 		node:item("toggle_modded_lobby"):set_value(Global.game_settings.search_modded_lobbies and "on" or "off")
+		node:item("toggle_one_down_lobby"):set_value(Global.game_settings.search_one_down_lobbies and "on" or "off")
 		node:item("max_lobbies_filter"):set_value(managers.network.matchmake:get_lobby_return_count())
 		node:item("server_filter"):set_value(managers.network.matchmake:distance_filter())
 		node:item("difficulty_filter"):set_value(matchmake_filters.difficulty and matchmake_filters.difficulty.value or -1)
@@ -8888,6 +8950,7 @@ function MenuCrimeNetFiltersInitiator:update_node(node)
 		node:item("toggle_job_appropriate_lobby"):set_visible(self:is_standard())
 		node:item("toggle_allow_safehouses"):set_visible(self:is_standard())
 		node:item("toggle_mutated_lobby"):set_visible(self:is_standard())
+		node:item("toggle_one_down_lobby"):set_visible(self:is_standard())
 		node:item("difficulty_filter"):set_visible(self:is_standard())
 		node:item("job_id_filter"):set_visible(self:is_standard())
 		node:item("max_spree_difference_filter"):set_visible(self:is_crime_spree())

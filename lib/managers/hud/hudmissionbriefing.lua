@@ -299,6 +299,20 @@ function HUDMissionBriefing:init(hud, workspace)
 	self._paygrade_panel:set_right(self._background_layer_one:w())
 	pg_text:set_right(self._paygrade_panel:left())
 
+	if Global.game_settings.one_down then
+		local one_down_text = self._foreground_layer_one:text({
+			name = "one_down_text",
+			text = managers.localization:to_upper_text("menu_one_down"),
+			font = content_font,
+			font_size = content_font_size,
+			color = tweak_data.screen_colors.one_down
+		})
+		local _, _, w, h = one_down_text:text_rect()
+
+		one_down_text:set_size(w, h)
+		one_down_text:set_righttop(pg_text:left() - 10, pg_text:top())
+	end
+
 	self._job_schedule_panel = self._background_layer_one:panel({
 		h = 70,
 		w = self._background_layer_one:w() / 2

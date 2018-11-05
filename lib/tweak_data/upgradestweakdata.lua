@@ -249,7 +249,10 @@ function UpgradesTweakData:_init_pd2_values()
 		2
 	}
 	self.values.player.convert_enemies_health_multiplier = {0.45}
-	self.values.player.convert_enemies_damage_multiplier = {1.35}
+	self.values.player.convert_enemies_damage_multiplier = {
+		0.65,
+		1
+	}
 	self.values.player.xp_multiplier = {1.15}
 	self.values.team.xp.multiplier = {1.3}
 	self.values.pistol.reload_speed_multiplier = {1.5}
@@ -267,14 +270,14 @@ function UpgradesTweakData:_init_pd2_values()
 	}}
 	self.values.pistol.stacking_hit_damage_multiplier = {
 		{
-			max_stacks = 4,
+			max_stacks = 1,
 			max_time = 2,
-			damage_bonus = 1.2
+			damage_bonus = 2.2
 		},
 		{
-			max_stacks = 4,
-			max_time = 10,
-			damage_bonus = 1.2
+			max_stacks = 1,
+			max_time = 4,
+			damage_bonus = 2.2
 		}
 	}
 	self.values.assault_rifle.reload_speed_multiplier = {1.15}
@@ -1297,6 +1300,18 @@ function UpgradesTweakData:_init_pd2_values()
 		}
 	}
 	self.values.player.damage_control_healing = {50}
+	self.values.snp.graze_damage = {
+		{
+			radius = 100,
+			damage_factor = 0.2,
+			damage_factor_headshot = 0.2
+		},
+		{
+			radius = 100,
+			damage_factor = 0.2,
+			damage_factor_headshot = 1
+		}
+	}
 	self.values.team.crew_add_health = {6}
 	self.values.team.crew_add_armor = {3}
 	self.values.team.crew_add_dodge = {0.05}
@@ -1581,15 +1596,14 @@ function UpgradesTweakData:_init_pd2_values()
 				"10%"
 			}
 		},
-		hitman = {
+		single_shot_ammo_return = {
 			{
-				"15%",
-				"15%"
+				"20%",
+				"100cm"
 			},
 			{
-				"15%",
-				"20%",
-				"15%"
+				"100%",
+				"20%"
 			}
 		},
 		inside_man = {
@@ -1910,7 +1924,7 @@ function UpgradesTweakData:_init_pd2_values()
 			{"8"},
 			{"16"}
 		},
-		spotter_teamwork = {
+		hitman = {
 			{"15%"},
 			{
 				"50%",
@@ -1925,7 +1939,7 @@ function UpgradesTweakData:_init_pd2_values()
 				"4"
 			}
 		},
-		single_shot_ammo_return = {
+		spotter_teamwork = {
 			{
 				"3",
 				"6",
@@ -2210,12 +2224,12 @@ function UpgradesTweakData:_init_pd2_values()
 			{
 				"10%",
 				"2",
-				"4",
-				"20%"
+				"1",
+				"120%"
 			},
 			{
 				"8",
-				"10"
+				"4"
 			}
 		},
 		perseverance = {
@@ -6361,11 +6375,21 @@ function UpgradesTweakData:_player_definitions()
 			category = "player"
 		}
 	}
-	self.definitions.player_convert_enemies_damage_multiplier = {
-		name_id = "menu_player_convert_enemies_damage_multiplier",
+	self.definitions.player_convert_enemies_damage_multiplier_1 = {
+		name_id = "menu_player_convert_enemies_damage_multiplier_1",
 		category = "feature",
 		upgrade = {
 			value = 1,
+			upgrade = "convert_enemies_damage_multiplier",
+			synced = true,
+			category = "player"
+		}
+	}
+	self.definitions.player_convert_enemies_damage_multiplier_2 = {
+		name_id = "menu_player_convert_enemies_damage_multiplier_2",
+		category = "feature",
+		upgrade = {
+			value = 2,
 			upgrade = "convert_enemies_damage_multiplier",
 			synced = true,
 			category = "player"
@@ -9375,6 +9399,15 @@ function UpgradesTweakData:_m134_weapon_definitions()
 	}
 end
 
+function UpgradesTweakData:_shuno_weapon_definitions()
+	self.definitions.shuno = {
+		dlc = "dmg",
+		factory_id = "wpn_fps_lmg_shuno",
+		weapon_id = "shuno",
+		category = "weapon"
+	}
+end
+
 function UpgradesTweakData:_rpg7_weapon_definitions()
 	self.definitions.rpg7 = {
 		dlc = "overkill_pack",
@@ -10086,24 +10119,6 @@ function UpgradesTweakData:_weapon_definitions()
 			category = "weapon"
 		}
 	}
-	self.definitions.weapon_silencer_damage_multiplier_1 = {
-		name_id = "silencer_damage_multiplier",
-		category = "feature",
-		upgrade = {
-			value = 1,
-			upgrade = "silencer_damage_multiplier",
-			category = "weapon"
-		}
-	}
-	self.definitions.weapon_silencer_damage_multiplier_2 = {
-		name_id = "silencer_damage_multiplier",
-		category = "feature",
-		upgrade = {
-			value = 2,
-			upgrade = "silencer_damage_multiplier",
-			category = "weapon"
-		}
-	}
 	self.definitions.weapon_passive_reload_speed_multiplier = {
 		name_id = "menu_weapon_reload_speed",
 		category = "feature",
@@ -10174,6 +10189,24 @@ function UpgradesTweakData:_weapon_definitions()
 			value = 1,
 			upgrade = "fire_rate_multiplier",
 			category = "weapon"
+		}
+	}
+	self.definitions.snp_graze_damage_1 = {
+		name_id = "menu_snp_graze_damage",
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "graze_damage",
+			category = "snp"
+		}
+	}
+	self.definitions.snp_graze_damage_2 = {
+		name_id = "menu_snp_graze_damage",
+		category = "feature",
+		upgrade = {
+			value = 2,
+			upgrade = "graze_damage",
+			category = "snp"
 		}
 	}
 end

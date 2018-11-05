@@ -3,9 +3,10 @@ MutatorShieldDozers._type = "MutatorShieldDozers"
 MutatorShieldDozers.name_id = "mutator_shield_dozers"
 MutatorShieldDozers.desc_id = "mutator_shield_dozers_desc"
 MutatorShieldDozers.reductions = {
-	money = 0.5,
-	exp = 0.5
+	money = 0,
+	exp = 0
 }
+MutatorShieldDozers.disables_achievements = true
 MutatorShieldDozers.categories = {"enemies"}
 MutatorShieldDozers.icon_coords = {
 	1,

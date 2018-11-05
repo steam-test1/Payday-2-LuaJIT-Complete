@@ -48,7 +48,7 @@ function ClientNetworkSession:request_join_host(host_rpc, result_cb)
 	self._last_join_request_t = self._first_join_request_t
 end
 
-function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_character, level_index, difficulty_index, state_index, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, sender)
+function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_character, level_index, difficulty_index, one_down, state_index, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, sender)
 	print("[ClientNetworkSession:on_join_request_reply] ", self._server_peer and self._server_peer:user_id(), user_id, sender:ip_at_index(0), sender:protocol_at_index(0))
 
 	if not self._server_peer or not self._cb_find_game then
@@ -95,6 +95,7 @@ function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_charac
 		self._host_sanity_send_t = TimerManager:wall():time() + self.HOST_SANITY_CHECK_INTERVAL
 		Global.game_settings.level_id = tweak_data.levels:get_level_name_from_index(level_index)
 		Global.game_settings.difficulty = tweak_data:index_to_difficulty(difficulty_index)
+		Global.game_settings.one_down = one_down
 		Global.game_settings.mission = mission
 		Global.game_settings.join_state_index = state_index
 

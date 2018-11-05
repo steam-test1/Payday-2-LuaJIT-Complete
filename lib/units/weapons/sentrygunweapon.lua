@@ -213,6 +213,10 @@ function SentryGunWeapon:start_autofire()
 end
 
 function SentryGunWeapon:stop_autofire()
+	if self._unit:damage() and self._unit:damage():has_sequence("anim_fire_stop_seq") then
+		self._unit:damage():run_sequence_simple("anim_fire_stop_seq")
+	end
+
 	if not self._shooting then
 		return
 	end
@@ -271,6 +275,10 @@ function SentryGunWeapon:fire(blanks, expend_ammo, shoot_player, target_unit)
 
 	if self._use_shell_ejection_effect then
 		World:effect_manager():spawn(self._shell_ejection_effect_table)
+	end
+
+	if self._unit:damage() and self._unit:damage():has_sequence("anim_fire_seq") then
+		self._unit:damage():run_sequence_simple("anim_fire_seq")
 	end
 
 	local ray_res = self:_fire_raycast(from_pos, direction, shoot_player, target_unit)

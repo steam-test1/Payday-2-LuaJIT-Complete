@@ -1442,13 +1442,6 @@ function PlayerStandard:_check_action_throw_projectile(t, input)
 		return self:_check_action_use_ability(t, input)
 	end
 
-	if not managers.player:can_throw_grenade() then
-		self._state_data.projectile_throw_wanted = nil
-		self._state_data.projectile_idle_wanted = nil
-
-		return
-	end
-
 	if self._state_data.projectile_throw_wanted then
 		if not self._state_data.projectile_throw_allowed_t then
 			self._state_data.projectile_throw_wanted = nil
@@ -1462,6 +1455,13 @@ function PlayerStandard:_check_action_throw_projectile(t, input)
 	local action_wanted = input.btn_projectile_press or input.btn_projectile_release or self._state_data.projectile_idle_wanted
 
 	if not action_wanted then
+		return
+	end
+
+	if not managers.player:can_throw_grenade() then
+		self._state_data.projectile_throw_wanted = nil
+		self._state_data.projectile_idle_wanted = nil
+
 		return
 	end
 
@@ -1593,30 +1593,16 @@ function PlayerStandard:_update_throw_projectile_timers(t, input)
 		return self:_update_throw_grenade_timers(t, input)
 	end
 
-	if self._state_data.throwing_projectile then
-		
-	end
-
 	if self._state_data.projectile_throw_allowed_t and self._state_data.projectile_throw_allowed_t <= t then
 		self._state_data.projectile_start_t = t
 		self._state_data.projectile_throw_allowed_t = nil
-		local projectile_entry = managers.blackmarket:equipped_projectile()
-		local instant = tweak_data.blackmarket.projectiles[projectile_entry].instant
-
-		if instant then
-			self:_do_action_throw_projectile(t, input)
-
-			return
-		end
 	end
 
 	if self._state_data.projectile_repeat_expire_t and self._state_data.projectile_repeat_expire_t <= t then
 		self._state_data.projectile_repeat_expire_t = nil
 
 		if input.btn_projectile_state then
-			local projectile_entry = managers.blackmarket:equipped_projectile()
-			local instant_throw = tweak_data.blackmarket.projectiles[projectile_entry].instant
-			self._state_data.projectile_idle_wanted = not instant_throw and true
+			self._state_data.projectile_idle_wanted = true
 		end
 	end
 

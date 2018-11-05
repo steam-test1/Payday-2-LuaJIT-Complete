@@ -8,11 +8,7 @@ PlayerDamage._UPPERS_COOLDOWN = 20
 
 function PlayerDamage:init(unit)
 	self._lives_init = tweak_data.player.damage.LIVES_INIT
-
-	if Global.game_settings.difficulty == "sm_wish" then
-		self._lives_init = 2
-	end
-
+	self._lives_init = Global.game_settings.one_down and 2
 	self._lives_init = managers.crime_spree:modify_value("PlayerDamage:GetMaximumLives", self._lives_init)
 	self._unit = unit
 	self._max_health_reduction = managers.player:upgrade_value("player", "max_health_reduction", 1)

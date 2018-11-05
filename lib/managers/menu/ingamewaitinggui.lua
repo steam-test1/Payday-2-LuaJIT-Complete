@@ -754,7 +754,10 @@ function IngameWaitingGui:mouse_moved(o, x, y)
 	if self._content_panel:inside(x, y) then
 		if not self._highlighted then
 			self:dummy_set_highlight(true)
-			managers.menu:active_menu().logic:mouse_over_select_item(self._dummy_item.name, false)
+
+			if self._dummy_item then
+				managers.menu:active_menu().logic:mouse_over_select_item(self._dummy_item.name, false)
+			end
 		end
 	else
 		return

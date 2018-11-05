@@ -234,6 +234,7 @@ end
 
 function WeaponTweakData:_set_easy_wish()
 	self.ak47_ass_npc.DAMAGE = 2.5
+	self.g36_npc.DAMAGE = 1
 	self.swat_van_turret_module.HEALTH_INIT = 40000
 	self.swat_van_turret_module.SHIELD_HEALTH_INIT = 700
 	self.swat_van_turret_module.DAMAGE = 3.5
@@ -3212,6 +3213,21 @@ function WeaponTweakData:_init_data_slap_crew()
 	self.slap_crew.FIRE_MODE = "single"
 end
 
+function WeaponTweakData:_init_data_shuno_crew()
+	self.shuno_crew.sounds.prefix = "minigun_npc"
+	self.shuno_crew.use_data.selection_index = SELECTION.PRIMARY
+	self.shuno_crew.DAMAGE = 2
+	self.shuno_crew.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
+	self.shuno_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
+	self.shuno_crew.CLIP_AMMO_MAX = 750
+	self.shuno_crew.NR_CLIPS_MAX = 1
+	self.shuno_crew.auto.fire_rate = 0.05
+	self.shuno_crew.hold = "rifle"
+	self.shuno_crew.alert_size = 5000
+	self.shuno_crew.suppression = 1
+	self.shuno_crew.FIRE_MODE = "auto"
+end
+
 function WeaponTweakData:_init_data_player_weapons(tweak_data)
 	local autohit_rifle_default, autohit_pistol_default, autohit_shotgun_default, autohit_lmg_default, autohit_snp_default, autohit_smg_default, autohit_minigun_default, aim_assist_rifle_default, aim_assist_pistol_default, aim_assist_shotgun_default, aim_assist_lmg_default, aim_assist_snp_default, aim_assist_smg_default, aim_assist_minigun_default = nil
 
@@ -4072,7 +4088,7 @@ function WeaponTweakData:_init_new_m4(weapon_data)
 	self.new_m4.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 38,
+		damage = 52,
 		alert_size = 7,
 		spread = 12,
 		spread_moving = 10,
@@ -4254,13 +4270,14 @@ function WeaponTweakData:_init_mp9(weapon_data)
 	self.mp9.aim_assist = weapon_data.aim_assist_smg_default
 	self.mp9.animations = {
 		equip_id = "equip_mac11_rifle",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.mp9.panic_suppression_chance = 0.2
 	self.mp9.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 36,
+		damage = 44,
 		alert_size = 7,
 		spread = 8,
 		spread_moving = 8,
@@ -4557,7 +4574,7 @@ function WeaponTweakData:_init_amcar(weapon_data)
 	self.amcar.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 36,
+		damage = 42,
 		alert_size = 7,
 		spread = 10,
 		spread_moving = 8,
@@ -4650,7 +4667,7 @@ function WeaponTweakData:_init_m16(weapon_data)
 	self.m16.stats = {
 		zoom = 4,
 		total_ammo_mod = 21,
-		damage = 80,
+		damage = 94,
 		alert_size = 7,
 		spread = 15,
 		spread_moving = 13,
@@ -4743,7 +4760,7 @@ function WeaponTweakData:_init_olympic(weapon_data)
 	self.olympic.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 38,
+		damage = 55,
 		alert_size = 7,
 		spread = 12,
 		spread_moving = 11,
@@ -4836,7 +4853,7 @@ function WeaponTweakData:_init_ak74(weapon_data)
 	self.ak74.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 40,
+		damage = 56,
 		alert_size = 7,
 		spread = 13,
 		spread_moving = 11,
@@ -4929,7 +4946,7 @@ function WeaponTweakData:_init_akm(weapon_data)
 	self.akm.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 80,
+		damage = 97,
 		alert_size = 7,
 		spread = 16,
 		spread_moving = 14,
@@ -5023,7 +5040,7 @@ function WeaponTweakData:_init_akm_gold(weapon_data)
 	self.akm_gold.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 80,
+		damage = 97,
 		alert_size = 7,
 		spread = 16,
 		spread_moving = 14,
@@ -5116,7 +5133,7 @@ function WeaponTweakData:_init_akmsu(weapon_data)
 	self.akmsu.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 80,
+		damage = 99,
 		alert_size = 7,
 		spread = 16,
 		spread_moving = 16,
@@ -5302,7 +5319,7 @@ function WeaponTweakData:_init_ak5(weapon_data)
 	self.ak5.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 38,
+		damage = 56,
 		alert_size = 7,
 		spread = 16,
 		spread_moving = 14,
@@ -5390,7 +5407,7 @@ function WeaponTweakData:_init_aug(weapon_data)
 	self.aug.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 38,
+		damage = 55,
 		alert_size = 7,
 		spread = 17,
 		spread_moving = 15,
@@ -5479,7 +5496,7 @@ function WeaponTweakData:_init_g36(weapon_data)
 	self.g36.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 36,
+		damage = 44,
 		alert_size = 7,
 		spread = 11,
 		spread_moving = 9,
@@ -5567,7 +5584,7 @@ function WeaponTweakData:_init_p90(weapon_data)
 	self.p90.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 38,
+		damage = 56,
 		alert_size = 7,
 		spread = 14,
 		spread_moving = 14,
@@ -5832,7 +5849,7 @@ function WeaponTweakData:_init_new_mp5(weapon_data)
 	self.new_mp5.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 40,
+		damage = 44,
 		alert_size = 7,
 		spread = 12,
 		spread_moving = 8,
@@ -5912,8 +5929,6 @@ function WeaponTweakData:_init_colt_1911(weapon_data)
 	self.colt_1911.aim_assist = weapon_data.aim_assist_pistol_default
 	self.colt_1911.animations = {
 		fire = "recoil",
-		reload = "reload",
-		reload_not_empty = "reload_not_empty",
 		equip_id = "equip_glock",
 		recoil_steelsight = true,
 		magazine_empty = "last_recoil"
@@ -6012,7 +6027,7 @@ function WeaponTweakData:_init_mac10(weapon_data)
 	self.mac10.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 40,
+		damage = 58,
 		alert_size = 7,
 		spread = 13,
 		spread_moving = 13,
@@ -6872,7 +6887,7 @@ function WeaponTweakData:_init_m45(weapon_data)
 	self.m45.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 80,
+		damage = 99,
 		alert_size = 7,
 		spread = 18,
 		spread_moving = 18,
@@ -6963,7 +6978,7 @@ function WeaponTweakData:_init_s552(weapon_data)
 	self.s552.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 35,
+		damage = 42,
 		alert_size = 7,
 		spread = 10,
 		spread_moving = 8,
@@ -7139,13 +7154,14 @@ function WeaponTweakData:_init_mp7(weapon_data)
 	self.mp7.weapon_hold = "mp9"
 	self.mp7.animations = {
 		equip_id = "equip_mp9",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.mp7.panic_suppression_chance = 0.2
 	self.mp7.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 40,
+		damage = 58,
 		alert_size = 7,
 		spread = 17,
 		spread_moving = 17,
@@ -7236,7 +7252,7 @@ function WeaponTweakData:_init_scar(weapon_data)
 	self.scar.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 81,
+		damage = 98,
 		alert_size = 7,
 		spread = 19,
 		spread_moving = 15,
@@ -7851,7 +7867,7 @@ function WeaponTweakData:_init_msr(weapon_data)
 	self.msr.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 160,
+		damage = 123,
 		alert_size = 7,
 		spread = 23,
 		spread_moving = 22,
@@ -7863,7 +7879,7 @@ function WeaponTweakData:_init_msr(weapon_data)
 		concealment = 5
 	}
 	self.msr.armor_piercing_chance = 1
-	self.msr.stats_modifiers = {damage = 1}
+	self.msr.stats_modifiers = {damage = 2}
 end
 
 function WeaponTweakData:_init_r93(weapon_data)
@@ -7956,7 +7972,7 @@ function WeaponTweakData:_init_r93(weapon_data)
 	self.r93.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 150,
+		damage = 120,
 		alert_size = 8,
 		spread = 24,
 		spread_moving = 24,
@@ -7968,7 +7984,7 @@ function WeaponTweakData:_init_r93(weapon_data)
 		concealment = 5
 	}
 	self.r93.armor_piercing_chance = 1
-	self.r93.stats_modifiers = {damage = 2}
+	self.r93.stats_modifiers = {damage = 4}
 end
 
 function WeaponTweakData:_init_fal(weapon_data)
@@ -8048,7 +8064,7 @@ function WeaponTweakData:_init_fal(weapon_data)
 	self.fal.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 80,
+		damage = 98,
 		alert_size = 7,
 		spread = 18,
 		spread_moving = 16,
@@ -8470,8 +8486,8 @@ function WeaponTweakData:_init_g3(weapon_data)
 	self.g3.sounds.enter_steelsight = "secondary_steel_sight_enter"
 	self.g3.sounds.leave_steelsight = "secondary_steel_sight_exit"
 	self.g3.timers = {
-		reload_not_empty = 2.6,
-		reload_empty = 3.8,
+		reload_not_empty = 1.4,
+		reload_empty = 2,
 		unequip = 0.6,
 		equip = 0.65
 	}
@@ -8532,7 +8548,7 @@ function WeaponTweakData:_init_g3(weapon_data)
 	self.g3.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 80,
+		damage = 99,
 		alert_size = 7,
 		spread = 18,
 		spread_moving = 16,
@@ -8624,7 +8640,7 @@ function WeaponTweakData:_init_galil(weapon_data)
 	self.galil.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 42,
+		damage = 57,
 		alert_size = 7,
 		spread = 13,
 		spread_moving = 10,
@@ -8714,7 +8730,7 @@ function WeaponTweakData:_init_famas(weapon_data)
 	self.famas.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 35,
+		damage = 41,
 		alert_size = 7,
 		spread = 10,
 		spread_moving = 8,
@@ -8806,7 +8822,7 @@ function WeaponTweakData:_init_scorpion(weapon_data)
 	self.scorpion.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 36,
+		damage = 44,
 		alert_size = 7,
 		spread = 8,
 		spread_moving = 8,
@@ -8898,7 +8914,7 @@ function WeaponTweakData:_init_tec9(weapon_data)
 	self.tec9.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 36,
+		damage = 44,
 		alert_size = 7,
 		spread = 8,
 		spread_moving = 8,
@@ -8990,7 +9006,7 @@ function WeaponTweakData:_init_uzi(weapon_data)
 	self.uzi.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 40,
+		damage = 44,
 		alert_size = 7,
 		spread = 14,
 		spread_moving = 14,
@@ -9859,13 +9875,14 @@ function WeaponTweakData:_init_sterling(weapon_data)
 	self.sterling.weapon_hold = "sterling"
 	self.sterling.animations = {
 		equip_id = "equip_sterling",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.sterling.panic_suppression_chance = 0.2
 	self.sterling.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 36,
+		damage = 42,
 		alert_size = 7,
 		spread = 8,
 		spread_moving = 8,
@@ -9968,7 +9985,7 @@ function WeaponTweakData:_init_mosin(weapon_data)
 	self.mosin.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 150,
+		damage = 120,
 		alert_size = 7,
 		spread = 24,
 		spread_moving = 24,
@@ -9980,7 +9997,7 @@ function WeaponTweakData:_init_mosin(weapon_data)
 		concealment = 6
 	}
 	self.mosin.armor_piercing_chance = 1
-	self.mosin.stats_modifiers = {damage = 2}
+	self.mosin.stats_modifiers = {damage = 4}
 end
 
 function WeaponTweakData:_init_m1928(weapon_data)
@@ -10067,7 +10084,7 @@ function WeaponTweakData:_init_m1928(weapon_data)
 	self.m1928.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 40,
+		damage = 58,
 		alert_size = 8,
 		spread = 13,
 		spread_moving = 13,
@@ -10163,7 +10180,7 @@ function WeaponTweakData:_init_l85a2(weapon_data)
 	self.l85a2.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 40,
+		damage = 58,
 		alert_size = 8,
 		spread = 17,
 		spread_moving = 15,
@@ -10259,7 +10276,7 @@ function WeaponTweakData:_init_vhs(weapon_data)
 	self.vhs.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 40,
+		damage = 58,
 		alert_size = 8,
 		spread = 16,
 		spread_moving = 15,
@@ -10643,13 +10660,14 @@ function WeaponTweakData:_init_cobray(weapon_data)
 	self.cobray.weapon_hold = "cobray"
 	self.cobray.animations = {
 		equip_id = "equip_cobray",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.cobray.panic_suppression_chance = 0.2
 	self.cobray.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 40,
+		damage = 57,
 		alert_size = 7,
 		spread = 14,
 		spread_moving = 14,
@@ -11572,7 +11590,7 @@ function WeaponTweakData:_init_winchester1874(weapon_data)
 	self.winchester1874.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 160,
+		damage = 123,
 		alert_size = 7,
 		spread = 24,
 		spread_moving = 24,
@@ -11584,7 +11602,7 @@ function WeaponTweakData:_init_winchester1874(weapon_data)
 		concealment = 12
 	}
 	self.winchester1874.armor_piercing_chance = 1
-	self.winchester1874.stats_modifiers = {damage = 1}
+	self.winchester1874.stats_modifiers = {damage = 2}
 end
 
 function WeaponTweakData:_init_plainsider(weapon_data)
@@ -11860,7 +11878,7 @@ function WeaponTweakData:_init_asval(weapon_data)
 	self.asval.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 36,
+		damage = 41,
 		alert_size = 12,
 		spread = 15,
 		spread_moving = 8,
@@ -11994,7 +12012,7 @@ function WeaponTweakData:_init_wa2000(weapon_data)
 	self.wa2000.AMMO_MAX = self.wa2000.CLIP_AMMO_MAX * self.wa2000.NR_CLIPS_MAX
 	self.wa2000.AMMO_PICKUP = self:_pickup_chance(self.wa2000.AMMO_MAX, PICKUP.SNIPER_LOW_DAMAGE)
 	self.wa2000.FIRE_MODE = "single"
-	self.wa2000.fire_mode_data = {fire_rate = 0.5}
+	self.wa2000.fire_mode_data = {fire_rate = 0.4}
 	self.wa2000.CAN_TOGGLE_FIREMODE = false
 	self.wa2000.single = {fire_rate = 0.4}
 	self.wa2000.spread = {
@@ -12145,7 +12163,7 @@ function WeaponTweakData:_init_polymer(weapon_data)
 	self.polymer.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 42,
+		damage = 58,
 		alert_size = 7,
 		spread = 14,
 		spread_moving = 14,
@@ -12341,7 +12359,7 @@ function WeaponTweakData:_init_baka(weapon_data)
 	self.baka.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 36,
+		damage = 44,
 		alert_size = 7,
 		spread = 8,
 		spread_moving = 4,
@@ -12937,7 +12955,7 @@ function WeaponTweakData:_init_model70(weapon_data)
 	self.model70.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 150,
+		damage = 120,
 		alert_size = 7,
 		spread = 24,
 		spread_moving = 24,
@@ -12949,7 +12967,7 @@ function WeaponTweakData:_init_model70(weapon_data)
 		concealment = 6
 	}
 	self.model70.armor_piercing_chance = 1
-	self.model70.stats_modifiers = {damage = 2}
+	self.model70.stats_modifiers = {damage = 4}
 end
 
 function WeaponTweakData:_init_m37(weapon_data)
@@ -13252,7 +13270,7 @@ function WeaponTweakData:_init_sr2(weapon_data)
 	self.sr2.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 40,
+		damage = 58,
 		alert_size = 7,
 		spread = 14,
 		spread_moving = 14,
@@ -13356,7 +13374,7 @@ function WeaponTweakData:_init_x_sr2(weapon_data)
 	self.x_sr2.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 40,
+		damage = 58,
 		alert_size = 7,
 		spread = 14,
 		spread_moving = 14,
@@ -13545,7 +13563,7 @@ function WeaponTweakData:_init_x_mp5(weapon_data)
 	self.x_mp5.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 40,
+		damage = 44,
 		alert_size = 7,
 		spread = 12,
 		spread_moving = 8,
@@ -13645,7 +13663,7 @@ function WeaponTweakData:_init_x_akmsu(weapon_data)
 	self.x_akmsu.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 80,
+		damage = 99,
 		alert_size = 7,
 		spread = 16,
 		spread_moving = 16,
@@ -13740,7 +13758,7 @@ function WeaponTweakData:_init_tecci(weapon_data)
 	self.tecci.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 38,
+		damage = 40,
 		alert_size = 7,
 		spread = 7,
 		spread_moving = 10,
@@ -13830,13 +13848,14 @@ function WeaponTweakData:_init_hajk(weapon_data)
 	self.hajk.aim_assist = weapon_data.aim_assist_smg_default
 	self.hajk.animations = {
 		equip_id = "equip_hajk",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.hajk.panic_suppression_chance = 0.2
 	self.hajk.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 80,
+		damage = 99,
 		alert_size = 7,
 		spread = 19,
 		spread_moving = 15,
@@ -14123,13 +14142,14 @@ function WeaponTweakData:_init_schakal(weapon_data)
 	self.schakal.weapon_hold = "schakal"
 	self.schakal.animations = {
 		equip_id = "equip_schakal",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.schakal.panic_suppression_chance = 0.2
 	self.schakal.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 80,
+		damage = 99,
 		alert_size = 7,
 		spread = 16,
 		spread_moving = 14,
@@ -14232,7 +14252,7 @@ function WeaponTweakData:_init_desertfox(weapon_data)
 	self.desertfox.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 150,
+		damage = 120,
 		alert_size = 7,
 		spread = 20,
 		spread_moving = 24,
@@ -14244,7 +14264,7 @@ function WeaponTweakData:_init_desertfox(weapon_data)
 		concealment = 19
 	}
 	self.desertfox.armor_piercing_chance = 1
-	self.desertfox.stats_modifiers = {damage = 2}
+	self.desertfox.stats_modifiers = {damage = 4}
 end
 
 function WeaponTweakData:_init_x_packrat(weapon_data)
@@ -14935,7 +14955,7 @@ function WeaponTweakData:_init_tti(weapon_data)
 		total_ammo_mod = 21,
 		damage = 160,
 		alert_size = 8,
-		spread = 20,
+		spread = 16,
 		spread_moving = 24,
 		recoil = 2,
 		value = 9,
@@ -14976,16 +14996,13 @@ function WeaponTweakData:_init_grv(weapon_data)
 	self.siltstone.use_data = {selection_index = SELECTION.PRIMARY}
 	self.siltstone.DAMAGE = 1
 	self.siltstone.CLIP_AMMO_MAX = 10
-	self.siltstone.NR_CLIPS_MAX = 3
+	self.siltstone.NR_CLIPS_MAX = 4
 	self.siltstone.AMMO_MAX = self.siltstone.CLIP_AMMO_MAX * self.siltstone.NR_CLIPS_MAX
-	self.siltstone.AMMO_PICKUP = {
-		0.7,
-		1
-	}
+	self.siltstone.AMMO_PICKUP = self:_pickup_chance(self.siltstone.AMMO_MAX, PICKUP.SNIPER_LOW_DAMAGE)
 	self.siltstone.FIRE_MODE = "single"
-	self.siltstone.fire_mode_data = {fire_rate = 1}
+	self.siltstone.fire_mode_data = {fire_rate = 0.4}
 	self.siltstone.CAN_TOGGLE_FIREMODE = false
-	self.siltstone.single = {fire_rate = 1}
+	self.siltstone.single = {fire_rate = 0.4}
 	self.siltstone.spread = {
 		standing = self.new_m4.spread.standing,
 		crouching = self.new_m4.spread.crouching,
@@ -15035,7 +15052,7 @@ function WeaponTweakData:_init_grv(weapon_data)
 	self.siltstone.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 150,
+		damage = 160,
 		alert_size = 8,
 		spread = 19,
 		spread_moving = 24,
@@ -15047,7 +15064,7 @@ function WeaponTweakData:_init_grv(weapon_data)
 		concealment = 16
 	}
 	self.siltstone.armor_piercing_chance = 1
-	self.siltstone.stats_modifiers = {damage = 2}
+	self.siltstone.stats_modifiers = {damage = 1}
 end
 
 function WeaponTweakData:_init_flint(weapon_data)
@@ -15131,7 +15148,7 @@ function WeaponTweakData:_init_flint(weapon_data)
 	self.flint.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 80,
+		damage = 99,
 		alert_size = 7,
 		spread = 16,
 		spread_moving = 11,
@@ -15228,7 +15245,7 @@ function WeaponTweakData:_init_coal(weapon_data)
 	self.coal.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 80,
+		damage = 99,
 		alert_size = 7,
 		spread = 14,
 		spread_moving = 14,
@@ -15789,7 +15806,7 @@ function WeaponTweakData:_init_erma(weapon_data)
 	self.erma.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 80,
+		damage = 99,
 		alert_size = 7,
 		spread = 18,
 		spread_moving = 18,
@@ -16377,7 +16394,7 @@ function WeaponTweakData:_init_corgi(weapon_data)
 	self.corgi.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 40,
+		damage = 58,
 		alert_size = 8,
 		spread = 18,
 		spread_moving = 15,
@@ -16404,7 +16421,7 @@ function WeaponTweakData:_init_slap(weapon_data)
 	self.slap.sounds.dryfire = "shotgun_dryfire"
 	self.slap.sounds.enter_steelsight = "secondary_steel_sight_enter"
 	self.slap.sounds.leave_steelsight = "secondary_steel_sight_exit"
-	self.slap.timers = {reload_not_empty = 3.1}
+	self.slap.timers = {reload_not_empty = 2.5}
 	self.slap.timers.reload_empty = self.slap.timers.reload_not_empty
 	self.slap.timers.unequip = 0.6
 	self.slap.timers.equip = 0.6
@@ -16465,13 +16482,13 @@ function WeaponTweakData:_init_slap(weapon_data)
 	self.slap.crosshair.steelsight.moving_offset = 0
 	self.slap.crosshair.steelsight.kick_offset = 0.1
 	self.slap.shake = {
-		fire_multiplier = 2,
-		fire_steelsight_multiplier = 2
+		fire_multiplier = 1,
+		fire_steelsight_multiplier = 1
 	}
 	self.slap.autohit = weapon_data.autohit_shotgun_default
 	self.slap.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.slap.animations = {
-		equip_id = "equip_gre_m79",
+		equip_id = "equip_slap",
 		recoil_steelsight = true
 	}
 	self.slap.panic_suppression_chance = 0.2
@@ -16492,6 +16509,106 @@ function WeaponTweakData:_init_slap(weapon_data)
 		concealment = 22
 	}
 	self.slap.stats_modifiers = {damage = 10}
+end
+
+function WeaponTweakData:_init_shuno(weapon_data)
+	self.shuno = {
+		categories = {"minigun"},
+		has_description = false,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.shuno.sounds.fire = "minigun_fire_single"
+	self.shuno.sounds.fire_single = "minigun_fire_single"
+	self.shuno.sounds.fire_auto = "minigun_fire"
+	self.shuno.sounds.stop_fire = "minigun_stop"
+	self.shuno.sounds.dryfire = "primary_dryfire"
+	self.shuno.sounds.enter_steelsight = "lmg_steelsight_enter"
+	self.shuno.sounds.leave_steelsight = "lmg_steelsight_exit"
+	self.shuno.timers = {
+		reload_not_empty = 7.8,
+		reload_empty = 7.8,
+		unequip = 0.9,
+		equip = 0.9
+	}
+	self.shuno.name_id = "bm_w_shuno"
+	self.shuno.desc_id = "bm_w_shuno_desc"
+	self.shuno.description_id = "des_shuno"
+	self.shuno.texture_bundle_folder = "dmg"
+	self.shuno.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
+	self.shuno.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
+	self.shuno.use_data = {
+		selection_index = SELECTION.PRIMARY,
+		align_place = "left_hand"
+	}
+	self.shuno.DAMAGE = 1
+	self.shuno.CLIP_AMMO_MAX = 750
+	self.shuno.NR_CLIPS_MAX = 1
+	self.shuno.AMMO_MAX = self.shuno.CLIP_AMMO_MAX * self.shuno.NR_CLIPS_MAX
+	self.shuno.AMMO_PICKUP = self:_pickup_chance(self.shuno.CLIP_AMMO_MAX, PICKUP.OTHER)
+	self.shuno.FIRE_MODE = "auto"
+	self.shuno.fire_mode_data = {fire_rate = 0.02}
+	self.shuno.CAN_TOGGLE_FIREMODE = false
+	self.shuno.auto = {fire_rate = 0.05}
+	self.shuno.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight
+	}
+	self.shuno.kick = {standing = {
+		-0.05,
+		0.1,
+		-0.15,
+		0.2
+	}}
+	self.shuno.kick.crouching = self.shuno.kick.standing
+	self.shuno.kick.steelsight = self.shuno.kick.standing
+	self.shuno.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.shuno.crosshair.standing.offset = 0.16
+	self.shuno.crosshair.standing.moving_offset = 1
+	self.shuno.crosshair.standing.kick_offset = 0.8
+	self.shuno.crosshair.crouching.offset = 0.1
+	self.shuno.crosshair.crouching.moving_offset = 0.6
+	self.shuno.crosshair.crouching.kick_offset = 0.4
+	self.shuno.crosshair.steelsight.hidden = true
+	self.shuno.crosshair.steelsight.offset = 0
+	self.shuno.crosshair.steelsight.moving_offset = 0
+	self.shuno.crosshair.steelsight.kick_offset = 0.14
+	self.shuno.shake = {
+		fire_multiplier = 0.5,
+		fire_steelsight_multiplier = -0.5
+	}
+	self.shuno.autohit = weapon_data.autohit_minigun_default
+	self.shuno.aim_assist = weapon_data.aim_assist_lmg_default
+	self.shuno.weapon_hold = "shuno"
+	self.shuno.animations = {
+		equip_id = "equip_shuno",
+		recoil_steelsight = true,
+		thq_align_anim = "thq"
+	}
+	self.shuno.panic_suppression_chance = 0.2
+	self.shuno.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 25,
+		alert_size = 8,
+		spread = 9,
+		spread_moving = 9,
+		recoil = 7,
+		value = 9,
+		extra_ammo = 6,
+		reload = 11,
+		suppression = 4,
+		concealment = 5
+	}
 end
 
 function WeaponTweakData:_create_table_structure()

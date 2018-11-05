@@ -7,6 +7,7 @@ MutatorEnemyDamage.reductions = {
 	money = 0,
 	exp = 0
 }
+MutatorEnemyDamage.disables_achievements = true
 MutatorEnemyDamage.categories = {"enemies"}
 MutatorEnemyDamage.icon_coords = {
 	5,

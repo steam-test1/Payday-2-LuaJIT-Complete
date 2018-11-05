@@ -16,7 +16,8 @@ CopDamage._ATTACK_VARIANTS = {
 	"explosion",
 	"stun",
 	"fire",
-	"healed"
+	"healed",
+	"graze"
 }
 CopDamage._HEALTH_GRANULARITY = 512
 CopDamage.WEAPON_TYPE_GRANADE = 1
@@ -338,10 +339,6 @@ function CopDamage:damage_bullet(attack_data)
 
 	local is_civilian = CopDamage.is_civilian(self._unit:base()._tweak_table)
 
-	if not is_civilian then
-		managers.player:send_message(Message.OnEnemyShot, nil, attack_data.attacker_unit, self._unit, attack_data and attack_data.variant or "bullet")
-	end
-
 	if self._has_plate and attack_data.col_ray.body and attack_data.col_ray.body:name() == self._ids_plate_name and not attack_data.armor_piercing then
 		local armor_pierce_roll = math.rand(1)
 		local armor_pierce_value = 0
@@ -446,6 +443,7 @@ function CopDamage:damage_bullet(attack_data)
 
 	damage = self:_apply_damage_reduction(damage)
 	attack_data.raw_damage = damage
+	attack_data.headshot = head
 	local damage_percent = math.ceil(math.clamp(damage / self._HEALTH_INIT_PRECENT, 1, self._HEALTH_GRANULARITY))
 	damage = damage_percent * self._HEALTH_INIT_PRECENT
 	damage, damage_percent = self:_apply_min_health_limit(damage, damage_percent)
@@ -584,6 +582,12 @@ function CopDamage:damage_bullet(attack_data)
 
 	self:_send_bullet_attack_result(attack_data, attacker, damage_percent, body_index, hit_offset_height, variant)
 	self:_on_damage_received(attack_data)
+
+	if not is_civilian then
+		managers.player:send_message(Message.OnEnemyShot, nil, self._unit, attack_data)
+	end
+
+	result.attack_data = attack_data
 
 	return result
 end
@@ -856,10 +860,6 @@ function CopDamage:damage_fire(attack_data)
 	local damage = attack_data.damage
 	local is_civilian = CopDamage.is_civilian(self._unit:base()._tweak_table)
 
-	if not is_civilian and attack_data.attacker_unit and alive(attack_data.attacker_unit) then
-		managers.player:send_message(Message.OnEnemyShot, nil, attack_data.attacker_unit, self._unit, "fire")
-	end
-
 	if attack_data.attacker_unit == managers.player:player_unit() then
 		local critical_hit, crit_damage = self:roll_critical_hit(attack_data)
 		damage = crit_damage
@@ -1036,6 +1036,10 @@ function CopDamage:damage_fire(attack_data)
 
 	self:_send_fire_attack_result(attack_data, attacker, damage_percent, attack_data.is_fire_dot_damage, attack_data.col_ray.ray, attack_data.result.type == "healed")
 	self:_on_damage_received(attack_data)
+
+	if not is_civilian and attack_data.attacker_unit and alive(attack_data.attacker_unit) then
+		managers.player:send_message(Message.OnEnemyShot, nil, self._unit, attack_data)
+	end
 end
 
 function CopDamage:damage_dot(attack_data)
@@ -1134,11 +1138,6 @@ function CopDamage:damage_explosion(attack_data)
 	end
 
 	local is_civilian = CopDamage.is_civilian(self._unit:base()._tweak_table)
-
-	if not is_civilian and attack_data.attacker_unit and alive(attack_data.attacker_unit) then
-		managers.player:send_message(Message.OnEnemyShot, nil, attack_data.attacker_unit, self._unit, "explosion")
-	end
-
 	local result = nil
 	local damage = attack_data.damage
 	damage = managers.crime_spree:modify_value("CopDamage:DamageExplosion", damage, self._unit:base()._tweak_table)
@@ -1276,6 +1275,126 @@ function CopDamage:damage_explosion(attack_data)
 
 	self:_send_explosion_attack_result(attack_data, attacker, damage_percent, self:_get_attack_variant_index(attack_data.result.variant), attack_data.col_ray.ray)
 	self:_on_damage_received(attack_data)
+
+	if not is_civilian and attack_data.attacker_unit and alive(attack_data.attacker_unit) then
+		managers.player:send_message(Message.OnEnemyShot, nil, self._unit, attack_data)
+	end
+
+	return result
+end
+
+function CopDamage:damage_simple(attack_data)
+	if self._dead or self._invulnerable then
+		return
+	end
+
+	local is_civilian = CopDamage.is_civilian(self._unit:base()._tweak_table)
+	local result = nil
+	local damage = attack_data.damage
+
+	if self._unit:base():char_tweak().DAMAGE_CLAMP_SHOCK then
+		damage = math.min(damage, self._unit:base():char_tweak().DAMAGE_CLAMP_SHOCK)
+	end
+
+	damage = math.clamp(damage, 0, self._HEALTH_INIT)
+	local damage_percent = math.ceil(damage / self._HEALTH_INIT_PRECENT)
+	damage = damage_percent * self._HEALTH_INIT_PRECENT
+	damage, damage_percent = self:_apply_min_health_limit(damage, damage_percent)
+
+	if self._immortal then
+		damage = math.min(damage, self._health - 1)
+	end
+
+	if self._health <= damage then
+		if self:check_medic_heal() then
+			attack_data.variant = "healed"
+			result = {
+				type = "healed",
+				variant = attack_data.variant
+			}
+		else
+			attack_data.damage = self._health
+			result = {
+				type = "death",
+				variant = attack_data.variant
+			}
+
+			self:die(attack_data)
+		end
+	else
+		attack_data.damage = damage
+		local result_type = self:get_damage_type(damage_percent)
+		result = {
+			type = result_type,
+			variant = attack_data.variant
+		}
+
+		self:_apply_damage_to_health(damage)
+	end
+
+	attack_data.result = result
+	local attacker = attack_data.attacker_unit
+
+	if not attacker or attacker:id() == -1 then
+		attacker = self._unit
+	end
+
+	if result.type == "death" then
+		local data = {
+			name = self._unit:base()._tweak_table,
+			stats_name = self._unit:base()._stats_name,
+			owner = attack_data.owner,
+			weapon_unit = attack_data.weapon_unit,
+			variant = attack_data.variant
+		}
+
+		managers.statistics:killed_by_anyone(data)
+
+		local attacker_unit = attack_data.attacker_unit
+
+		if attacker_unit and attacker_unit:base() and attacker_unit:base().thrower_unit then
+			attacker_unit = attacker_unit:base():thrower_unit()
+			data.weapon_unit = attack_data.attacker_unit
+		end
+
+		if not is_civilian and managers.player:has_category_upgrade("temporary", "overkill_damage_multiplier") and attacker_unit == managers.player:player_unit() and attack_data.weapon_unit and attack_data.weapon_unit:base().weapon_tweak_data and not attack_data.weapon_unit:base().thrower_unit and attack_data.weapon_unit:base():is_category("shotgun", "saw") then
+			managers.player:activate_temporary_upgrade("temporary", "overkill_damage_multiplier")
+		end
+
+		self:chk_killshot(attacker_unit, "shock")
+
+		if attacker_unit == managers.player:player_unit() then
+			if alive(attacker_unit) then
+				self:_comment_death(attacker_unit, self._unit)
+			end
+
+			self:_show_death_hint(self._unit:base()._tweak_table)
+			managers.statistics:killed(data)
+
+			if is_civilian then
+				managers.money:civilian_killed()
+			end
+
+			self:_check_damage_achievements(attack_data, false)
+		end
+	end
+
+	if not self._no_blood then
+		managers.game_play_central:sync_play_impact_flesh(attack_data.pos, attack_data.attack_dir)
+	end
+
+	local i_result = ({
+		healed = 3,
+		knock_down = 1,
+		stagger = 2
+	})[result.type] or 0
+
+	self:_send_simple_attack_result(attacker, damage_percent, self:_get_attack_variant_index(attack_data.result.variant), i_result)
+	self:_on_damage_received(attack_data)
+
+	if not is_civilian and attack_data.attacker_unit and alive(attack_data.attacker_unit) then
+		managers.player:send_message(Message.OnEnemyShot, nil, self._unit, attack_data)
+	end
 
 	return result
 end
@@ -2550,6 +2669,81 @@ function CopDamage:sync_damage_dot(attacker_unit, damage_percent, death, variant
 	self:_on_damage_received(attack_data)
 end
 
+function CopDamage:sync_damage_simple(attacker_unit, damage_percent, i_attack_variant, i_result, death)
+	if self._dead then
+		return
+	end
+
+	local damage = damage_percent * self._HEALTH_INIT_PRECENT
+	local attack_data = {}
+	local hit_pos = mvector3.copy(self._unit:movement():m_pos())
+
+	mvector3.set_z(hit_pos, hit_pos.z + 100)
+
+	local variant = CopDamage._ATTACK_VARIANTS[i_attack_variant]
+	attack_data.pos = hit_pos
+	attack_data.attacker_unit = attacker_unit
+	attack_data.variant = variant
+	local attack_dir, distance = nil
+
+	if attacker_unit then
+		attack_dir = hit_pos - attacker_unit:movement():m_head_pos()
+		distance = mvector3.normalize(attack_dir)
+	else
+		attack_dir = self._unit:rotation():y()
+	end
+
+	attack_data.attack_dir = attack_dir
+	local result = nil
+
+	if death then
+		result = {
+			type = "death",
+			variant = variant
+		}
+
+		self:die(attack_data)
+		self:chk_killshot(attacker_unit, variant)
+
+		local data = {
+			head_shot = false,
+			name = self._unit:base()._tweak_table,
+			stats_name = self._unit:base()._stats_name,
+			weapon_unit = attacker_unit and attacker_unit:inventory() and attacker_unit:inventory():equipped_unit(),
+			variant = attack_data.variant
+		}
+
+		if data.weapon_unit then
+			managers.statistics:killed_by_anyone(data)
+		end
+	else
+		local result_type = i_result == 1 and "knock_down" or i_result == 2 and "stagger" or self:get_damage_type(damage_percent)
+
+		if i_result == 3 then
+			result_type = "healed"
+		end
+
+		result = {
+			type = result_type,
+			variant = variant
+		}
+
+		if result_type ~= "healed" then
+			self:_apply_damage_to_health(damage)
+		end
+	end
+
+	attack_data.result = result
+	attack_data.damage = damage
+	attack_data.is_synced = true
+
+	if not self._no_blood then
+		managers.game_play_central:sync_play_impact_flesh(hit_pos, attack_dir)
+	end
+
+	self:_on_damage_received(attack_data)
+end
+
 function CopDamage:_sync_dismember(attacker_unit)
 	local dismember_victim = false
 
@@ -2765,6 +2959,10 @@ function CopDamage:_send_melee_attack_result(attack_data, damage_percent, damage
 	body_index = math.clamp(body_index, 0, 128)
 
 	self._unit:network():send("damage_melee", attack_data.attacker_unit, damage_percent, damage_effect_percent, body_index, hit_offset_height, variant, self._dead and true or false)
+end
+
+function CopDamage:_send_simple_attack_result(attacker, damage_percent, i_attack_variant, i_result)
+	self._unit:network():send("damage_simple", attacker, damage_percent, i_attack_variant, i_result, self._dead and true or false)
 end
 
 function CopDamage:_send_sync_bullet_attack_result(attack_data, hit_offset_height)

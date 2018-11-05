@@ -107,6 +107,8 @@ function NavigationManager:init()
 	if self._debug then
 		self._pos_reservations = {}
 	end
+
+	self._use_fast_drawing = getmetatable(self._quad_field).set_draw_state and true
 end
 
 function NavigationManager:_init_draw_data()
@@ -151,7 +153,7 @@ function NavigationManager:update(t, dt)
 			local data = self._draw_data
 			local progress = math.clamp((t - data.start_t) / (data.duration * 0.5), 0, 1)
 
-			if options.quads then
+			if not self._use_fast_drawing and options.quads then
 				self:_draw_rooms(progress)
 			end
 
@@ -159,7 +161,7 @@ function NavigationManager:update(t, dt)
 				self:_draw_room_boundaries(progress)
 			end
 
-			if options.doors then
+			if not self._use_fast_drawing and options.doors then
 				self:_draw_doors(progress)
 			end
 
@@ -167,7 +169,7 @@ function NavigationManager:update(t, dt)
 				self:_draw_nav_blockers()
 			end
 
-			if options.vis_graph then
+			if not self._use_fast_drawing and options.vis_graph then
 				self:_draw_visibility_groups(progress)
 			end
 
@@ -175,7 +177,7 @@ function NavigationManager:update(t, dt)
 				self:_draw_coarse_graph()
 			end
 
-			if options.nav_links then
+			if not self._use_fast_drawing and options.nav_links then
 				self:_draw_anim_nav_links()
 			end
 
@@ -183,7 +185,7 @@ function NavigationManager:update(t, dt)
 				self:_draw_covers()
 			end
 
-			if options.pos_rsrv then
+			if not self._use_fast_drawing and options.pos_rsrv then
 				self:_draw_pos_reservations(t)
 			end
 
@@ -624,6 +626,16 @@ function NavigationManager:delete_nav_segment(id)
 	self:set_debug_draw_state(false)
 	self._builder:delete_segment(id)
 	self:_refresh_data_from_builder()
+	self:send_nav_field_to_engine()
+
+	if self._use_fast_drawing and id == self._selected_segment then
+		self._selected_segment = nil
+
+		if draw_options then
+			draw_options.selected_segment = nil
+		end
+	end
+
 	self:set_debug_draw_state(draw_options)
 end
 
@@ -650,11 +662,25 @@ function NavigationManager:set_debug_draw_state(options)
 		self._draw_data.start_t = TimerManager:game():time()
 	end
 
+	if self._use_fast_drawing then
+		if options then
+			options.selected_segment = self._selected_segment
+			local fast_options = deep_clone(options)
+			fast_options.coarse_graph = nil
+
+			self._quad_field:set_draw_state(fast_options)
+		else
+			self._quad_field:set_draw_state(nil)
+		end
+	end
+
 	self._draw_enabled = options
 end
 
 function NavigationManager:set_selected_segment(unit)
 	self._selected_segment = unit and unit:unit_data().unit_id
+
+	self:set_debug_draw_state(self._draw_enabled)
 end
 
 function NavigationManager:_draw_rooms(progress)
@@ -1129,7 +1155,6 @@ function NavigationManager:_draw_coarse_graph()
 	local all_nav_segments = self._nav_segments
 	local all_doors = self._room_doors
 	local all_vis_groups = self._visibility_groups
-	local brush = self._draw_data.brush.coarse_graph
 	local cone_height = Vector3(0, 0, 50)
 
 	for seg_id, seg_data in pairs(all_nav_segments) do
@@ -1138,7 +1163,7 @@ function NavigationManager:_draw_coarse_graph()
 		for neigh_i_seg, door_list in pairs(neighbours) do
 			local pos = all_nav_segments[neigh_i_seg].pos
 
-			brush:cone(pos, seg_data.pos, 12)
+			Application:draw_cone(pos, seg_data.pos, 12, 1, 1, 0)
 			Application:draw_cone(pos, pos + cone_height, 40, 1, 1, 0)
 		end
 	end
@@ -1487,9 +1512,7 @@ function NavigationManager:find_cover_in_nav_seg_1(nav_seg_id)
 		nav_seg_id = self._convert_nav_seg_map_to_vec(nav_seg_id)
 	end
 
-	local search_params = {in_nav_seg = nav_seg_id}
-
-	return self._quad_field:find_cover(search_params)
+	return self._quad_field:find_cover_in_set(nav_seg_id)
 end
 
 function NavigationManager:find_cover_in_nav_seg_2(nav_seg_id, defend_pos, defend_dir)
@@ -1537,24 +1560,7 @@ function NavigationManager:find_cover_from_threat(nav_seg_id, optimal_threat_dis
 end
 
 function NavigationManager:find_cover_in_cone_from_threat_pos_1(threat_pos, furthest_pos, near_pos, search_from_pos, angle, min_dis, nav_seg, optimal_threat_dis, rsrv_filter)
-	if type(nav_seg) == "table" then
-		nav_seg = self._convert_nav_seg_map_to_vec(nav_seg)
-	end
-
-	local search_params = {
-		variation_z = 250,
-		near_pos = near_pos,
-		threat_pos = threat_pos,
-		search_start_pos = search_from_pos,
-		min_threat_distance = min_dis,
-		cone_angle = angle,
-		cone_base = furthest_pos,
-		in_nav_seg = nav_seg,
-		optimal_threat_dis = optimal_threat_dis,
-		rsrv_filter = rsrv_filter
-	}
-
-	return self._quad_field:find_cover(search_params)
+	return self._quad_field:find_cover_in_cone(near_pos, threat_pos, angle, furthest_pos, rsrv_filter)
 end
 
 function NavigationManager:find_walls_accross_tracker(from_tracker, accross_vec, angle, nr_rays)

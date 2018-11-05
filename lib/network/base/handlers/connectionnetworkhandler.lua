@@ -50,14 +50,15 @@ function ConnectionNetworkHandler:request_join(peer_name, preferred_character, d
 	managers.network:session():on_join_request_received(peer_name, preferred_character, dlcs, xuid, peer_level, peer_rank, gameversion, join_attempt_identifier, auth_ticket, sender)
 end
 
-function ConnectionNetworkHandler:join_request_reply(reply_id, my_peer_id, my_character, level_index, difficulty_index, state, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, sender)
-	print(" 1 ConnectionNetworkHandler:join_request_reply", reply_id, my_peer_id, my_character, level_index, difficulty_index, state, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, sender)
+function ConnectionNetworkHandler:join_request_reply(reply_id, my_peer_id, my_character, level_index, difficulty_index, one_down, state, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, sender)
+	print("[Debug] ConnectionNetworkHandler:join_request_reply - one_down:", one_down)
+	print(" 1 ConnectionNetworkHandler:join_request_reply", reply_id, my_peer_id, my_character, level_index, difficulty_index, one_down, state, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, sender)
 
 	if not self._verify_in_client_session() then
 		return
 	end
 
-	managers.network:session():on_join_request_reply(reply_id, my_peer_id, my_character, level_index, difficulty_index, state, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, sender)
+	managers.network:session():on_join_request_reply(reply_id, my_peer_id, my_character, level_index, difficulty_index, one_down, state, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, sender)
 end
 
 function ConnectionNetworkHandler:peer_handshake(name, peer_id, ip, in_lobby, loading, synched, character, slot, mask_set, xuid, xnaddr)
@@ -296,7 +297,7 @@ function ConnectionNetworkHandler:set_peer_entered_lobby(sender)
 	managers.network:session():on_peer_entered_lobby(peer)
 end
 
-function ConnectionNetworkHandler:sync_game_settings(job_index, level_id_index, difficulty_index, sender)
+function ConnectionNetworkHandler:sync_game_settings(job_index, level_id_index, difficulty_index, one_down, sender)
 	local peer = self._verify_sender(sender)
 
 	if not peer then
@@ -313,6 +314,7 @@ function ConnectionNetworkHandler:sync_game_settings(job_index, level_id_index, 
 	Global.game_settings.mission = managers.job:current_mission()
 	Global.game_settings.world_setting = managers.job:current_world_setting()
 	Global.game_settings.difficulty = difficulty
+	Global.game_settings.one_down = one_down
 
 	if managers.platform then
 		managers.platform:update_discord_heist()

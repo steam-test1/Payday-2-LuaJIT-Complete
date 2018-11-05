@@ -1845,6 +1845,10 @@ function WINDLCManager:init()
 			ami = {
 				app_id = "218620",
 				no_install = true
+			},
+			ggac = {
+				app_id = "218620",
+				no_install = true
 			}
 		}
 

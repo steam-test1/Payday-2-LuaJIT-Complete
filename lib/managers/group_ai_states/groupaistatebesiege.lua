@@ -9,10 +9,12 @@ function GroupAIStateBesiege:init(group_ai_state)
 	end
 
 	self._tweak_data = tweak_data.group_ai[group_ai_state]
+	self._spawn_group_timers = {}
+	self._graph_distance_cache = {}
 end
 
 function GroupAIStateBesiege:_init_misc_data()
-	GroupAIStateBesiege.super:_init_misc_data(self)
+	GroupAIStateBesiege.super._init_misc_data(self)
 
 	if managers.navigation:is_data_ready() then
 		self._nr_dynamic_waves = 0
@@ -469,6 +471,8 @@ function GroupAIStateBesiege:_upd_assault_task()
 
 	if task_data.phase == "anticipation" then
 		if task_spawn_allowance <= 0 then
+			print("spawn_pool empty: 
+
 			task_data.phase = "fade"
 			task_data.phase_end_t = t + self._tweak_data.assault.fade_duration
 		elseif task_data.phase_end_t < t or self._drama_data.zone == "high" then
@@ -536,7 +540,7 @@ function GroupAIStateBesiege:_upd_assault_task()
 		local enemies_left = self:_count_police_force("assault")
 
 		if not self._hunt_mode then
-			local min_enemies_left = 7
+			local min_enemies_left = 50
 
 			if enemies_left < min_enemies_left or task_data.phase_end_t + 350 < t then
 				if task_data.phase_end_t - 8 < t and not task_data.said_retreat then
@@ -959,6 +963,17 @@ function GroupAIStateBesiege:_find_spawn_points_near_area(target_area, nr_wanted
 	return #s_points > 0 and s_points
 end
 
+local function make_dis_id(from, to)
+	local f = from < to and from or to
+	local t = to < from and from or to
+
+	return tostring(f) .. "-" .. tostring(t)
+end
+
+local function spawn_group_id(spawn_group)
+	return spawn_group.mission_element:id()
+end
+
 function GroupAIStateBesiege:_find_spawn_group_near_area(target_area, allowed_groups, target_pos, max_dis, verify_clbk)
 	local all_areas = self._area_data
 	local mvec3_dis = mvector3.distance_sq
@@ -978,13 +993,43 @@ function GroupAIStateBesiege:_find_spawn_group_near_area(target_area, allowed_gr
 		if spawn_groups then
 			for _, spawn_group in ipairs(spawn_groups) do
 				if spawn_group.delay_t <= t and (not verify_clbk or verify_clbk(spawn_group)) then
-					local my_dis = mvec3_dis(target_pos, spawn_group.pos)
+					local dis_id = make_dis_id(spawn_group.nav_seg, target_area.pos_nav_seg)
 
-					if not max_dis or my_dis < max_dis then
-						total_dis = total_dis + my_dis
+					if not self._graph_distance_cache[dis_id] then
+						local coarse_params = {
+							access_pos = "swat",
+							from_seg = spawn_group.nav_seg,
+							to_seg = target_area.pos_nav_seg,
+							id = dis_id
+						}
+						local path = managers.navigation:search_coarse(coarse_params)
 
-						table.insert(valid_spawn_groups, spawn_group)
-						table.insert(valid_spawn_group_distances, my_dis)
+						if path and #path >= 2 then
+							local dis = 0
+							local current = spawn_group.pos
+
+							for i = 2, #path, 1 do
+								local nxt = path[i][2]
+
+								if current and nxt then
+									dis = dis + mvector3.distance(current, nxt)
+								end
+
+								current = nxt
+							end
+
+							self._graph_distance_cache[dis_id] = dis
+						end
+					end
+
+					if self._graph_distance_cache[dis_id] then
+						local my_dis = self._graph_distance_cache[dis_id]
+
+						if not max_dis or my_dis < max_dis then
+							total_dis = total_dis + my_dis
+							valid_spawn_groups[spawn_group_id(spawn_group)] = spawn_group
+							valid_spawn_group_distances[spawn_group_id(spawn_group)] = my_dis
+						end
 					end
 				end
 			end
@@ -1003,24 +1048,51 @@ function GroupAIStateBesiege:_find_spawn_group_near_area(target_area, allowed_gr
 		return
 	end
 
+	local time = TimerManager:game():time()
+	local timer_can_spawn = false
+
+	for id in pairs(valid_spawn_groups) do
+		if not self._spawn_group_timers[id] or self._spawn_group_timers[id] <= time then
+			timer_can_spawn = true
+
+			break
+		end
+	end
+
+	if not timer_can_spawn then
+		self._spawn_group_timers = {}
+	end
+
+	for id in pairs(valid_spawn_groups) do
+		if self._spawn_group_timers[id] and time < self._spawn_group_timers[id] then
+			valid_spawn_groups[id] = nil
+			valid_spawn_group_distances[id] = nil
+		end
+	end
+
 	if total_dis == 0 then
 		total_dis = 1
 	end
 
 	local total_weight = 0
 	local candidate_groups = {}
-	local dis_limit = 100000000
+	self._debug_weights = {}
+	local dis_limit = 5000
 
-	for i, dis in ipairs(valid_spawn_group_distances) do
-		local my_wgt = valid_spawn_group_distances[i]
-		my_wgt = math.lerp(1, 0.2, math.min(1, my_wgt / dis_limit))
+	for i, dis in pairs(valid_spawn_group_distances) do
+		local my_wgt = math.lerp(1, 0.2, math.min(1, dis / dis_limit)) * 5
 		local my_spawn_group = valid_spawn_groups[i]
 		local my_group_types = my_spawn_group.mission_element:spawn_groups()
+		my_spawn_group.distance = dis
 		total_weight = total_weight + self:_choose_best_groups(candidate_groups, my_spawn_group, my_group_types, allowed_groups, my_wgt)
 	end
 
 	if total_weight == 0 then
 		return
+	end
+
+	for _, group in ipairs(candidate_groups) do
+		table.insert(self._debug_weights, clone(group))
 	end
 
 	return self:_choose_best_group(candidate_groups, total_weight)
@@ -1040,7 +1112,9 @@ function GroupAIStateBesiege:_choose_best_groups(best_groups, group, group_types
 				table.insert(best_groups, {
 					group = group,
 					group_type = group_type,
-					wght = mod_weight
+					wght = mod_weight,
+					cat_weight = cat_weight,
+					dis_weight = weight
 				})
 
 				total_weight = total_weight + mod_weight
@@ -1061,6 +1135,7 @@ function GroupAIStateBesiege:_choose_best_group(best_groups, total_weight)
 		rand_wgt = rand_wgt - candidate.wght
 
 		if rand_wgt <= 0 then
+			self._spawn_group_timers[spawn_group_id(candidate.group)] = TimerManager:game():time() + math.random(15, 20)
 			best_grp = candidate.group
 			best_grp_type = candidate.group_type
 			best_grp.delay_t = self._t + best_grp.interval
@@ -1093,6 +1168,7 @@ function GroupAIStateBesiege:force_spawn_group(group, group_types, guarantee)
 			}
 
 			self:_spawn_in_group(spawn_group, spawn_group_type, grp_objective)
+			self:_upd_group_spawning(true)
 		end
 	end
 end
@@ -1199,6 +1275,10 @@ function GroupAIStateBesiege:_spawn_in_group(spawn_group, spawn_group_type, grp_
 		end
 	end
 
+	for _, sp_data in ipairs(spawn_group.spawn_pts) do
+		sp_data.delay_t = self._t + math.rand(0.5)
+	end
+
 	local spawn_task = {
 		objective = not grp_objective.element and self._create_objective_from_group_objective(grp_objective),
 		units_remaining = {},
@@ -1293,17 +1373,17 @@ function GroupAIStateBesiege:_spawn_in_group(spawn_group, spawn_group_type, grp_
 	return group
 end
 
-function GroupAIStateBesiege:_upd_group_spawning()
-	local spawn_task = self._spawning_groups[1]
+function GroupAIStateBesiege:_upd_group_spawning(use_last)
+	local spawn_task = self._spawning_groups[use_last and #self._spawning_groups or 1]
 
 	if not spawn_task then
 		return
 	end
 
-	self:_perform_group_spawning(spawn_task)
+	self:_perform_group_spawning(spawn_task, nil, use_last)
 end
 
-function GroupAIStateBesiege:_perform_group_spawning(spawn_task, force)
+function GroupAIStateBesiege:_perform_group_spawning(spawn_task, force, use_last)
 	local nr_units_spawned = 0
 	local produce_data = {
 		name = true,
@@ -1381,6 +1461,7 @@ function GroupAIStateBesiege:_perform_group_spawning(spawn_task, force)
 
 					if spawn_task.ai_task then
 						spawn_task.ai_task.force_spawned = spawn_task.ai_task.force_spawned + 1
+						spawned_unit:brain()._logic_data.spawned_in_phase = spawn_task.ai_task.phase
 					end
 
 					sp_data.delay_t = self._t + sp_data.interval
@@ -1440,7 +1521,7 @@ function GroupAIStateBesiege:_perform_group_spawning(spawn_task, force)
 	if complete then
 		spawn_task.group.has_spawned = true
 
-		table.remove(self._spawning_groups, 1)
+		table.remove(self._spawning_groups, use_last and #self._spawning_groups or 1)
 
 		if spawn_task.group.size <= 0 then
 			self._groups[spawn_task.group.id] = nil
@@ -1769,6 +1850,10 @@ function GroupAIStateBesiege:_draw_enemy_activity(t)
 
 		if not l_data.group and l_data.team then
 			text_str = l_data.team.id .. ":" .. text_str
+		end
+
+		if l_data.spawned_in_phase then
+			text_str = text_str .. ":" .. l_data.spawned_in_phase
 		end
 
 		if logic_name_text then
@@ -2239,6 +2324,33 @@ function GroupAIStateBesiege:_draw_spawn_points()
 					Application:draw_cylinder(sp_data.pos, tmp_vec3, 63, 0.1, 0.4, 0.6)
 					Application:draw_cylinder(spawn_group.pos, sp_data.pos, 20, 0.2, 0.1, 0.75)
 				end
+			end
+		end
+	end
+
+	if self._debug_weights then
+		local camera = managers.viewport:get_current_camera()
+		local offsets = {}
+
+		if camera then
+			for _, data in ipairs(self._debug_weights) do
+				mvector3.set(tmp_vec3, math.UP)
+				mvector3.multiply(tmp_vec3, 2500)
+				mvector3.add(tmp_vec3, data.group.pos)
+
+				local text = ""
+				offsets[data.group.id] = offsets[data.group.id] or 0
+				local pos = tmp_vec3 + Vector3(0, 0, offsets[data.group.id])
+				text = text .. data.group_type
+				text = text .. " weight:" .. string.format("%.3f", data.wght)
+				text = text .. " snubb:" .. string.format("%.3f", data.cat_weight)
+				text = text .. " dis weight:" .. string.format("%.3f", data.dis_weight)
+				text = text .. " distance:" .. string.format("%.3f", (data.group.distance or 0) / 100)
+
+				self._AI_draw_data.brush_misc:set_font(Idstring("fonts/font_medium"), 16)
+				self._AI_draw_data.brush_misc:center_text(pos, text)
+
+				offsets[data.group.id] = offsets[data.group.id] + 30
 			end
 		end
 	end

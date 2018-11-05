@@ -229,6 +229,25 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 	self:make_fine_text(modifiers_text)
 	modifiers_text:set_bottom(math.round(self._contract_panel:h() * 0.5))
 
+	local next_top = modifiers_text:bottom()
+	local one_down_active = job_data.one_down == 1
+
+	if one_down_active then
+		local one_down_warning_text = self._contract_panel:text({
+			name = "one_down_warning_text",
+			text = managers.localization:to_upper_text("menu_one_down"),
+			font = font,
+			font_size = font_size,
+			color = tweak_data.screen_colors.one_down
+		})
+
+		self:make_fine_text(one_down_warning_text)
+		one_down_warning_text:set_top(next_top)
+		one_down_warning_text:set_left(20)
+
+		next_top = one_down_warning_text:bottom()
+	end
+
 	local ghost_bonus_mul = managers.job:get_ghost_bonus()
 	local skill_bonus = managers.player:get_skill_exp_multiplier()
 	local infamy_bonus = managers.player:get_infamy_exp_multiplier()
@@ -257,9 +276,13 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 	})
 
 	self:make_fine_text(ghost_warning_text)
-	ghost_warning_text:set_top(modifiers_text:bottom())
+	ghost_warning_text:set_top(next_top)
 	ghost_warning_text:set_left(20)
 	ghost_warning_text:set_visible(has_ghost_bonus)
+
+	if ghost_warning_text:visible() then
+		next_top = ghost_warning_text:bottom()
+	end
 
 	local job_heat_value = managers.job:get_job_heat(job_data.job_id)
 	local ignore_heat = job_heat_value > 0 and self._customizable
@@ -274,6 +297,7 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 
 	self._is_job_heated = is_job_heated
 	local heat_color = managers.job:get_job_heat_color(job_data.job_id)
+	local heat_text_id = "menu_heat_" .. (job_heat_mul > 0 and "warm" or job_heat_mul < 0 and "cold" or "ok")
 	local heat_warning_text = self._contract_panel:text({
 		name = "heat_warning_text",
 		vertical = "top",
@@ -281,7 +305,7 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 		wrap = true,
 		align = "left",
 		blend_mode = "normal",
-		text = managers.localization:to_upper_text("menu_heat_" .. (job_heat_mul > 0 and "warm" or job_heat_mul < 0 and "cold" or "ok"), {job_heat = job_heat_string}),
+		text = managers.localization:to_upper_text(heat_text_id, {job_heat = job_heat_string}),
 		font = font,
 		font_size = font_size,
 		color = heat_color,
@@ -289,11 +313,16 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 	})
 
 	self:make_fine_text(heat_warning_text)
-	heat_warning_text:set_top(has_ghost_bonus and ghost_warning_text:bottom() or modifiers_text:bottom())
+	heat_warning_text:set_top(next_top)
 	heat_warning_text:set_left(20)
 	heat_warning_text:set_visible(is_job_heated)
 
 	self._heat_color = heat_color
+
+	if heat_warning_text:visible() then
+		next_top = heat_warning_text:bottom()
+	end
+
 	local pro_warning_text = self._contract_panel:text({
 		name = "pro_warning_text",
 		vertical = "top",
@@ -311,9 +340,16 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 	self:make_fine_text(pro_warning_text)
 	pro_warning_text:set_h(pro_warning_text:h())
 	pro_warning_text:set_left(20)
-	pro_warning_text:set_top(is_job_heated and heat_warning_text:bottom() or has_ghost_bonus and ghost_warning_text:bottom() or modifiers_text:bottom())
+	pro_warning_text:set_top(next_top)
 	pro_warning_text:set_visible(narrative.professional)
-	modifiers_text:set_visible(heat_warning_text:visible() or pro_warning_text:visible() or ghost_warning_text:visible())
+
+	if pro_warning_text:visible() then
+		next_top = pro_warning_text:bottom()
+	end
+
+	next_top = next_top + 5
+
+	modifiers_text:set_visible(heat_warning_text:visible() or one_down_active or pro_warning_text:visible() or ghost_warning_text:visible())
 
 	local risk_title = self._contract_panel:text({
 		x = 10,
@@ -324,7 +360,7 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 	})
 
 	self:make_fine_text(risk_title)
-	risk_title:set_top((pro_warning_text:visible() and pro_warning_text:bottom() or heat_warning_text:visible() and heat_warning_text:bottom() or ghost_warning_text:visible() and ghost_warning_text:bottom() or math.round(self._contract_panel:h() * 0.5)) + 5)
+	risk_title:set_top(next_top)
 
 	local menu_risk_id = "menu_risk_pd"
 
@@ -2051,6 +2087,11 @@ function CrimeNetContractGui:set_difficulty_id(difficulty_id)
 
 	risk_text:set_text(managers.localization:to_upper_text(menu_risk_id) .. " " .. managers.localization:to_upper_text("menu_stat_job_completed", {stat = tostring(stat)}) .. " ")
 	self:set_potential_rewards(self._potential_show_max)
+end
+
+function CrimeNetContractGui:set_one_down(one_down)
+	local job_data = self._node:parameters().menu_component_data
+	job_data.one_down = one_down
 end
 
 function CrimeNetContractGui:close()

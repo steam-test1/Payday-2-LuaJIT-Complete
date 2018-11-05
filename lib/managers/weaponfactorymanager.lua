@@ -265,11 +265,11 @@ function WeaponFactoryManager:_check_task()
 	end
 end
 
-function WeaponFactoryManager:preload_blueprint(factory_id, blueprint, third_person, done_cb, only_record)
-	return self:_preload_blueprint(factory_id, blueprint, third_person, done_cb, only_record)
+function WeaponFactoryManager:preload_blueprint(factory_id, blueprint, third_person, npc, done_cb, only_record)
+	return self:_preload_blueprint(factory_id, blueprint, third_person, npc, done_cb, only_record)
 end
 
-function WeaponFactoryManager:_preload_blueprint(factory_id, blueprint, third_person, done_cb, only_record)
+function WeaponFactoryManager:_preload_blueprint(factory_id, blueprint, third_person, npc, done_cb, only_record)
 	if not done_cb then
 		Application:error("[WeaponFactoryManager] _preload_blueprint(): No done_cb!", "factory_id: " .. factory_id, "blueprint: " .. inspect(blueprint))
 		Application:stack_dump()
@@ -279,10 +279,10 @@ function WeaponFactoryManager:_preload_blueprint(factory_id, blueprint, third_pe
 	local factory_weapon = factory[factory_id]
 	local forbidden = self:_get_forbidden_parts(factory_id, blueprint)
 
-	return self:_preload_parts(factory_id, factory_weapon, blueprint, forbidden, third_person, done_cb, only_record)
+	return self:_preload_parts(factory_id, factory_weapon, blueprint, forbidden, third_person, npc, done_cb, only_record)
 end
 
-function WeaponFactoryManager:_preload_parts(factory_id, factory_weapon, blueprint, forbidden, third_person, done_cb, only_record)
+function WeaponFactoryManager:_preload_parts(factory_id, factory_weapon, blueprint, forbidden, third_person, npc, done_cb, only_record)
 	local parts = {}
 	local need_parent = {}
 	local override = self:_get_override_parts(factory_id, blueprint)
@@ -292,6 +292,7 @@ function WeaponFactoryManager:_preload_parts(factory_id, factory_weapon, bluepri
 		async_task_data = {
 			spawn = false,
 			third_person = third_person,
+			npc = npc,
 			parts = parts,
 			done_cb = done_cb,
 			blueprint = blueprint
@@ -434,17 +435,17 @@ function WeaponFactoryManager:_preload_part(factory_id, part_id, forbidden, over
 	end
 end
 
-function WeaponFactoryManager:assemble_default(factory_id, p_unit, third_person, done_cb, skip_queue)
+function WeaponFactoryManager:assemble_default(factory_id, p_unit, third_person, npc, done_cb, skip_queue)
 	local blueprint = clone(tweak_data.weapon.factory[factory_id].default_blueprint)
 
-	return self:_assemble(factory_id, p_unit, blueprint, third_person, done_cb, skip_queue), blueprint
+	return self:_assemble(factory_id, p_unit, blueprint, third_person, npc, done_cb, skip_queue), blueprint
 end
 
-function WeaponFactoryManager:assemble_from_blueprint(factory_id, p_unit, blueprint, third_person, done_cb, skip_queue)
-	return self:_assemble(factory_id, p_unit, blueprint, third_person, done_cb, skip_queue)
+function WeaponFactoryManager:assemble_from_blueprint(factory_id, p_unit, blueprint, third_person, npc, done_cb, skip_queue)
+	return self:_assemble(factory_id, p_unit, blueprint, third_person, npc, done_cb, skip_queue)
 end
 
-function WeaponFactoryManager:_assemble(factory_id, p_unit, blueprint, third_person, done_cb, skip_queue)
+function WeaponFactoryManager:_assemble(factory_id, p_unit, blueprint, third_person, npc, done_cb, skip_queue)
 	if not done_cb then
 		Application:error("
 		Application:stack_dump()
@@ -454,7 +455,7 @@ function WeaponFactoryManager:_assemble(factory_id, p_unit, blueprint, third_per
 	local factory_weapon = factory[factory_id]
 	local forbidden = self:_get_forbidden_parts(factory_id, blueprint)
 
-	return self:_add_parts(p_unit, factory_id, factory_weapon, blueprint, forbidden, third_person, done_cb, skip_queue)
+	return self:_add_parts(p_unit, factory_id, factory_weapon, blueprint, forbidden, third_person, npc, done_cb, skip_queue)
 end
 
 function WeaponFactoryManager:_get_forbidden_parts(factory_id, blueprint)
@@ -562,7 +563,7 @@ function WeaponFactoryManager:_update_task(task)
 	return true
 end
 
-function WeaponFactoryManager:_add_parts(p_unit, factory_id, factory_weapon, blueprint, forbidden, third_person, done_cb, skip_queue)
+function WeaponFactoryManager:_add_parts(p_unit, factory_id, factory_weapon, blueprint, forbidden, third_person, npc, done_cb, skip_queue)
 	self._tasks = self._tasks or {}
 	local parts = {}
 	local need_parent = {}
@@ -578,6 +579,7 @@ function WeaponFactoryManager:_add_parts(p_unit, factory_id, factory_weapon, blu
 			blueprint = blueprint,
 			forbidden = forbidden,
 			third_person = third_person,
+			npc = npc,
 			parts = parts,
 			need_parent = need_parent,
 			override = override
@@ -589,6 +591,7 @@ function WeaponFactoryManager:_add_parts(p_unit, factory_id, factory_weapon, blu
 			async_task_data = {
 				spawn = true,
 				third_person = third_person,
+				npc = npc,
 				parts = parts,
 				done_cb = done_cb,
 				blueprint = blueprint
@@ -818,7 +821,7 @@ function WeaponFactoryManager:clbk_part_unit_loaded(task_data, status, u_type, u
 	for part_id, part in pairs(task_data.parts) do
 		if alive(part.unit) then
 			part.unit:set_enabled(true)
-			self:_set_visibility(part_id, part)
+			self:_set_visibility(part_id, part, task_data.npc)
 		end
 	end
 
@@ -831,16 +834,18 @@ function WeaponFactoryManager:clbk_part_unit_loaded(task_data, status, u_type, u
 	task_data.done_cb(task_data.parts, task_data.blueprint)
 end
 
-function WeaponFactoryManager:_set_visibility(part_id, part)
+function WeaponFactoryManager:_set_visibility(part_id, part, npc)
 	local visibility = self:_visibility_from_part_id(part_id)
 
 	if visibility then
 		for _, group in ipairs(visibility) do
-			if not group.condition or group.condition() then
+			if not group.condition or group:condition(part, npc) then
 				for object_name, visible in pairs(group.objects) do
 					local object = part.unit:get_object(Idstring(object_name))
 
-					object:set_visibility(visible)
+					if object then
+						object:set_visibility(visible)
+					end
 				end
 			end
 		end

@@ -2049,6 +2049,12 @@ function MenuComponentManager:set_crimenet_contract_difficulty_id(difficulty_id)
 	end
 end
 
+function MenuComponentManager:set_crimenet_contract_one_down(one_down)
+	if self._crimenet_contract_gui then
+		self._crimenet_contract_gui:set_one_down(one_down)
+	end
+end
+
 function MenuComponentManager:_create_crimenet_filters_gui(node)
 	self:close_crimenet_filters_gui()
 

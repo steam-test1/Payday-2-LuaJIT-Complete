@@ -1503,11 +1503,11 @@ end
 function BlackMarketManager:load_equipped_weapons()
 	local weapon = self:equipped_primary()
 
-	managers.weapon_factory:preload_blueprint(weapon.factory_id, weapon.blueprint, false, callback(self, self, "resource_loaded_callback", "primaries"), false)
+	managers.weapon_factory:preload_blueprint(weapon.factory_id, weapon.blueprint, false, false, callback(self, self, "resource_loaded_callback", "primaries"), false)
 
 	local weapon = self:equipped_secondary()
 
-	managers.weapon_factory:preload_blueprint(weapon.factory_id, weapon.blueprint, false, callback(self, self, "resource_loaded_callback", "secondaries"), false)
+	managers.weapon_factory:preload_blueprint(weapon.factory_id, weapon.blueprint, false, false, callback(self, self, "resource_loaded_callback", "secondaries"), false)
 end
 
 function BlackMarketManager:load_all_crafted_weapons()
@@ -1515,14 +1515,14 @@ function BlackMarketManager:load_all_crafted_weapons()
 
 	for i, weapon in pairs(self._global.crafted_items.primaries) do
 		print("loading crafted weapon", "index", i, "weapon", weapon)
-		managers.weapon_factory:preload_blueprint(weapon.factory_id, weapon.blueprint, false, callback(self, self, "resource_loaded_callback", "primaries" .. tostring(i)), false)
+		managers.weapon_factory:preload_blueprint(weapon.factory_id, weapon.blueprint, false, false, callback(self, self, "resource_loaded_callback", "primaries" .. tostring(i)), false)
 	end
 
 	print("
 
 	for i, weapon in pairs(self._global.crafted_items.secondaries) do
 		print("loading crafted weapon", "index", i, "weapon", weapon)
-		managers.weapon_factory:preload_blueprint(weapon.factory_id, weapon.blueprint, false, callback(self, self, "resource_loaded_callback", "secondaries" .. tostring(i)), false)
+		managers.weapon_factory:preload_blueprint(weapon.factory_id, weapon.blueprint, false, false, callback(self, self, "resource_loaded_callback", "secondaries" .. tostring(i)), false)
 	end
 end
 
@@ -1577,7 +1577,7 @@ function BlackMarketManager:load_economy_safe(safe_entry, safe_scene_data)
 end
 
 function BlackMarketManager:preload_weapon_blueprint(category, factory_id, blueprint, spawn_workbench)
-	local parts = managers.weapon_factory:preload_blueprint(factory_id, blueprint, false, function ()
+	local parts = managers.weapon_factory:preload_blueprint(factory_id, blueprint, false, false, function ()
 	end, true)
 	local factory_weapon = tweak_data.weapon.factory[factory_id]
 	local ids_unit_name = Idstring(factory_weapon.unit)
@@ -5198,6 +5198,10 @@ function BlackMarketManager:set_part_texture_switch(category, slot, part_id, dat
 
 	crafted_item.texture_switches = crafted_item.texture_switches or {}
 	crafted_item.texture_switches[part_id] = data_string
+
+	if managers.menu_scene then
+		managers.menu_scene:update_weapon_texture_switches(crafted_item.factory_id, crafted_item.texture_switches)
+	end
 end
 
 function BlackMarketManager:get_part_texture_switch_data(category, slot, part_id)

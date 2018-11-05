@@ -134,6 +134,7 @@ function GenericUserManager:setup_setting_map()
 	self:setup_setting(84, "loading_screen_show_controller", true)
 	self:setup_setting(85, "loading_screen_show_hints", true)
 	self:setup_setting(86, "crimenet_filter_modded", true)
+	self:setup_setting(88, "crimenet_filter_one_down", false)
 end
 
 function GenericUserManager:setup_setting(id, name, default_value)

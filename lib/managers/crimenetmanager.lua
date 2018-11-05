@@ -1048,7 +1048,8 @@ function CrimeNetManager:_find_online_games_win32(friends_only)
 								drop_in = drop_in,
 								permission = permission,
 								min_level = min_level,
-								mods = attribute_list[i].mods
+								mods = attribute_list[i].mods,
+								one_down = attribute_list[i].one_down
 							})
 						end
 					else
@@ -1075,7 +1076,8 @@ function CrimeNetManager:_find_online_games_win32(friends_only)
 							drop_in = drop_in,
 							permission = permission,
 							min_level = min_level,
-							mods = attribute_list[i].mods
+							mods = attribute_list[i].mods,
+							one_down = attribute_list[i].one_down
 						})
 					end
 				end
@@ -2684,6 +2686,7 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 	local star_size = 16
 	local job_num = 0
 	local job_cash = 0
+	local one_down_active = data.one_down == 1
 	local difficulty_name = side_panel:text({
 		text = "",
 		name = "difficulty_name",
@@ -2693,6 +2696,16 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
 		color = color
+	})
+	local one_down_label = one_down_active and side_panel:text({
+		name = "one_down_label",
+		vertical = "center",
+		blend_mode = "add",
+		layer = 0,
+		text = managers.localization:to_upper_text("menu_one_down"),
+		font = tweak_data.menu.pd2_small_font,
+		font_size = tweak_data.menu.pd2_small_font_size,
+		color = tweak_data.screen_colors.one_down
 	})
 	local heat_name = side_panel:text({
 		text = "",
@@ -3020,10 +3033,18 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 	difficulty_name:set_top(info_name:bottom() - 3)
 	difficulty_name:set_right(0)
 
+	if one_down_active then
+		local _, _, w, h = one_down_label:text_rect()
+
+		one_down_label:set_size(w, h - 4)
+		one_down_label:set_top(difficulty_name:bottom() - 3)
+		one_down_label:set_right(0)
+	end
+
 	local _, _, w, h = heat_name:text_rect()
 
 	heat_name:set_size(w, h - 4)
-	heat_name:set_top(difficulty_name:bottom() - 3)
+	heat_name:set_top(one_down_active and one_down_label:bottom() - 3 or difficulty_name:bottom() - 3)
 	heat_name:set_right(0)
 
 	if not got_heat_text then
@@ -3207,21 +3228,42 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		h = 64,
 		layer = 26
 	})
+	local next_icon_right = 16
+	local side_icons_top = 0
+
+	for child in ipairs(icon_panel:children()) do
+		side_icons_top = math.max(side_icons_top, child:bottom())
+	end
+
+	local ghost_icon = nil
 
 	if data.job_id and managers.job:is_job_ghostable(data.job_id) then
-		local ghost_icon = icon_panel:bitmap({
+		ghost_icon = icon_panel:bitmap({
 			texture = "guis/textures/pd2/cn_minighost",
 			name = "ghost_icon",
 			blend_mode = "add",
 			color = tweak_data.screen_colors.ghost_color
 		})
-		local y = 0
 
-		for i = 1, #icon_panel:children() - 1, 1 do
-			y = math.max(y, icon_panel:children()[i]:bottom())
-		end
+		ghost_icon:set_top(side_icons_top)
+		ghost_icon:set_right(next_icon_right)
 
-		ghost_icon:set_y(y)
+		next_icon_right = next_icon_right - 12
+	end
+
+	if one_down_active then
+		local one_down_icon = icon_panel:bitmap({
+			blend_mode = "add",
+			name = "one_down_icon",
+			texture = "guis/textures/pd2/cn_mini_onedown",
+			rotation = 360,
+			color = tweak_data.screen_colors.one_down
+		})
+
+		one_down_icon:set_top(side_icons_top)
+		one_down_icon:set_right(next_icon_right)
+
+		next_icon_right = next_icon_right - 12
 	end
 
 	if is_server then
@@ -3425,6 +3467,7 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		focus = focus,
 		difficulty = data.difficulty,
 		difficulty_id = data.difficulty_id,
+		one_down = data.one_down,
 		num_plrs = data.num_plrs,
 		job_x = x,
 		job_y = y,
@@ -3625,10 +3668,11 @@ function CrimeNetGui:update_server_job(data, i)
 	local updated_level_data = self:_update_job_variable(job_index, "level_data", level_data)
 	local updated_difficulty = self:_update_job_variable(job_index, "difficulty", data.difficulty)
 	local updated_difficulty_id = self:_update_job_variable(job_index, "difficulty_id", data.difficulty_id)
+	local updated_one_down = self:_update_job_variable(job_index, "one_down", data.one_down)
 	local updated_state = self:_update_job_variable(job_index, "state", data.state)
 	local updated_friend = self:_update_job_variable(job_index, "is_friend", data.is_friend)
 	local updated_job_plan = self:_update_job_variable(job_index, "job_plan", data.job_plan)
-	local recreate_job = updated_room or updated_job or updated_level_id or updated_level_data or updated_difficulty or updated_difficulty_id or updated_state or updated_friend or updated_job_plan
+	local recreate_job = updated_room or updated_job or updated_level_id or updated_level_data or updated_difficulty or updated_difficulty_id or updated_one_down or updated_state or updated_friend or updated_job_plan
 	job.server_data = data
 	job.mutators = data.mutators
 	job.mods = data.mods
@@ -3980,6 +4024,7 @@ function CrimeNetGui:check_job_pressed(x, y)
 			local data = {
 				difficulty = job.difficulty,
 				difficulty_id = job.difficulty_id,
+				one_down = job.one_down,
 				job_id = job.job_id,
 				level_id = job.level_id,
 				id = id,
@@ -4356,14 +4401,21 @@ function CrimeNetGui:update_job_gui(job, inside)
 			local contact_name = job.side_panel:child("contact_name")
 			local info_name = job.side_panel:child("info_name")
 			local difficulty_name = job.side_panel:child("difficulty_name")
+			local one_down_label = job.side_panel:child("one_down_label")
 			local heat_name = job.side_panel:child("heat_name")
 			local stars_panel = job.side_panel:child("stars_panel")
 			local spree_panel = job.side_panel:child("spree_panel")
 			local base_h = math.round(host_name:h() + job_name:h() + stars_panel:h())
-			local expand_h = math.round(base_h + info_name:h() + difficulty_name:h() + heat_name:h() + math.max(contact_name:h() - job_name:h(), 0))
+			local expand_h = math.round(base_h + info_name:h() + difficulty_name:h() + (one_down_label and one_down_label:h() or 0) + heat_name:h() + math.max(contact_name:h() - job_name:h(), 0))
 			local start_x = 0
-			local max_x = math.round(math.max(contact_name:w(), info_name:w(), difficulty_name:w(), heat_name:w()))
-			start_x = job.text_on_right and math.round(math.max(contact_name:right(), info_name:right(), difficulty_name:right(), heat_name:right())) or math.round(job.side_panel:w() - math.min(contact_name:left(), info_name:left(), difficulty_name:left(), heat_name:left()))
+			local max_x = math.round(math.max(contact_name:w(), info_name:w(), difficulty_name:w(), one_down_label and one_down_label:w() or 0, heat_name:w()))
+
+			if job.text_on_right then
+				start_x = math.round(math.max(contact_name:right(), info_name:right(), difficulty_name:right(), one_down_label and one_down_label:right() or 0, heat_name:right()))
+			else
+				start_x = math.round(job.side_panel:w() - math.min(contact_name:left(), info_name:left(), difficulty_name:left(), one_down_label and one_down_label:left() or 0, heat_name:left()))
+			end
+
 			local x = start_x
 			local object_alpha = {}
 			local text_alpha = job.side_panel:alpha()
@@ -4467,12 +4519,20 @@ function CrimeNetGui:update_job_gui(job, inside)
 						info_name:set_left(math.round(math.min(x - info_name:w(), 0)))
 						difficulty_name:set_left(math.round(math.min(x - difficulty_name:w(), 0)))
 						heat_name:set_left(math.round(math.min(x - heat_name:w(), 0)))
+
+						if one_down_label then
+							one_down_label:set_left(math.round(math.min(x - one_down_label:w(), 0)))
+						end
 					else
 						job_name:set_right(math.round(job.side_panel:w() - math.min(x, contact_name:w())))
 						contact_name:set_right(math.round(job.side_panel:w() - math.min(x - contact_name:w(), 0)))
 						info_name:set_right(math.round(job.side_panel:w() - math.min(x - info_name:w(), 0)))
 						difficulty_name:set_right(math.round(job.side_panel:w() - math.min(x - difficulty_name:w(), 0)))
 						heat_name:set_right(math.round(job.side_panel:w() - math.min(x - heat_name:w(), 0)))
+
+						if one_down_label then
+							one_down_label:set_right(math.round(job.side_panel:w() - math.min(x - one_down_label:w(), 0)))
+						end
 					end
 
 					pushout_met = x == (inside and max_x or 0)

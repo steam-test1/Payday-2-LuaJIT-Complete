@@ -286,12 +286,21 @@ function ContractBoxGui:create_contract_box()
 		local sx = risk_text_header:right() + 5
 		local difficulty = tweak_data.difficulties[difficulty_stars + 2] or 1
 		local difficulty_string_id = tweak_data.difficulty_name_ids[difficulty]
+		local difficulty_string = managers.localization:to_upper_text(difficulty_string_id)
 		local difficulty_text = self._contract_panel:text({
 			font = font,
 			font_size = font_size,
-			text = managers.localization:to_upper_text(difficulty_string_id),
+			text = difficulty_string,
 			color = tweak_data.screen_colors.text
 		})
+
+		if Global.game_settings.one_down then
+			local one_down_string = managers.localization:to_upper_text("menu_one_down")
+
+			difficulty_text:set_text(difficulty_string .. " " .. one_down_string)
+			difficulty_text:set_range_color(#difficulty_string + 1, math.huge, tweak_data.screen_colors.one_down)
+		end
+
 		local _, _, tw, th = difficulty_text:text_rect()
 
 		difficulty_text:set_size(tw, th)

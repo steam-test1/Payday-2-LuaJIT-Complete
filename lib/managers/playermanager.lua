@@ -1,6 +1,7 @@
 require("lib/player_actions/PlayerActionManager")
 require("lib/managers/player/SmokeScreenEffect")
 require("lib/utils/ValueModifier")
+require("lib/managers/player/SniperGrazeDamage")
 
 PlayerManager = PlayerManager or class()
 PlayerManager.WEAPON_SLOTS = 2
@@ -248,6 +249,12 @@ function PlayerManager:check_skills()
 	end
 
 	self:add_coroutine("damage_control", PlayerAction.DamageControl)
+
+	if self:has_category_upgrade("snp", "graze_damage") then
+		self:register_message(Message.OnWeaponFired, "graze_damage", callback(SniperGrazeDamage, SniperGrazeDamage, "on_weapon_fired"))
+	else
+		self:unregister_message(Message.OnWeaponFired, "graze_damage")
+	end
 end
 
 function PlayerManager:damage_absorption()
@@ -269,7 +276,10 @@ function PlayerManager:set_damage_absorption(key, value)
 	managers.hud:set_absorb_active(HUDManager.PLAYER_PANEL, self:damage_absorption())
 end
 
-function PlayerManager:_on_expert_handling_event(attacker_unit, unit, variant)
+function PlayerManager:_on_expert_handling_event(unit, attack_data)
+	local attacker_unit = attack_data.attacker_unit
+	local variant = attack_data.variant
+
 	if attacker_unit == self:player_unit() and self:is_current_weapon_of_category("pistol") and variant == "bullet" and not self._coroutine_mgr:is_running(PlayerAction.ExpertHandling) then
 		local data = self:upgrade_value("pistol", "stacked_accuracy_bonus", nil)
 
@@ -279,7 +289,10 @@ function PlayerManager:_on_expert_handling_event(attacker_unit, unit, variant)
 	end
 end
 
-function PlayerManager:_on_enter_trigger_happy_event(attacker_unit, unit, variant)
+function PlayerManager:_on_enter_trigger_happy_event(unit, attack_data)
+	local attacker_unit = attack_data.attacker_unit
+	local variant = attack_data.variant
+
 	if attacker_unit == self:player_unit() and variant == "bullet" and not self._coroutine_mgr:is_running("trigger_happy") and self:is_current_weapon_of_category("pistol") then
 		local data = self:upgrade_value("pistol", "stacking_hit_damage_multiplier", 0)
 

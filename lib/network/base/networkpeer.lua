@@ -1538,7 +1538,7 @@ function NetworkPeer:_reload_outfit()
 	local ids_primary_u_name = Idstring(tweak_data.weapon.factory[factory_id].unit)
 	new_outfit_assets.unit.primary_w = {name = ids_primary_u_name}
 	local use_fps_parts = is_local_peer or managers.weapon_factory:use_thq_weapon_parts() and not tweak_data.weapon.factory[factory_id].skip_thq_parts
-	local primary_w_parts = managers.weapon_factory:preload_blueprint(complete_outfit.primary.factory_id, complete_outfit.primary.blueprint, not use_fps_parts, function ()
+	local primary_w_parts = managers.weapon_factory:preload_blueprint(complete_outfit.primary.factory_id, complete_outfit.primary.blueprint, not use_fps_parts, not is_local_peer, function ()
 	end, true)
 
 	for part_id, part in pairs(primary_w_parts) do
@@ -1549,7 +1549,7 @@ function NetworkPeer:_reload_outfit()
 	local ids_secondary_u_name = Idstring(tweak_data.weapon.factory[factory_id].unit)
 	new_outfit_assets.unit.secondary_w = {name = ids_secondary_u_name}
 	local use_fps_parts = is_local_peer or managers.weapon_factory:use_thq_weapon_parts() and not tweak_data.weapon.factory[factory_id].skip_thq_parts
-	local secondary_w_parts = managers.weapon_factory:preload_blueprint(complete_outfit.secondary.factory_id, complete_outfit.secondary.blueprint, not use_fps_parts, function ()
+	local secondary_w_parts = managers.weapon_factory:preload_blueprint(complete_outfit.secondary.factory_id, complete_outfit.secondary.blueprint, not use_fps_parts, not is_local_peer, function ()
 	end, true)
 
 	for part_id, part in pairs(secondary_w_parts) do

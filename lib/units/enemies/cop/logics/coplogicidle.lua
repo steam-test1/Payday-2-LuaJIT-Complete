@@ -1015,6 +1015,42 @@ function CopLogicIdle._chk_relocate(data)
 
 			return true
 		end
+	elseif data.objective and data.objective.type == "defend_area" then
+		local area = data.objective.area
+
+		if area and not next(area.criminal.units) then
+			local found_areas = {[area] = true}
+			local areas_to_search = {area}
+			local target_area = nil
+
+			while next(areas_to_search) do
+				local current_area = table.remove(areas_to_search)
+
+				if next(current_area.criminal.units) then
+					target_area = current_area
+
+					break
+				end
+
+				for _, n_area in pairs(current_area.neighbours) do
+					if not found_areas[n_area] then
+						found_areas[n_area] = true
+
+						table.insert(areas_to_search, n_area)
+					end
+				end
+			end
+
+			if target_area then
+				data.objective.in_place = nil
+				data.objective.nav_seg = next(target_area.nav_segs)
+				data.objective.path_data = {{data.objective.nav_seg}}
+
+				data.logic._exit(data.unit, "travel")
+
+				return true
+			end
+		end
 	end
 end
 

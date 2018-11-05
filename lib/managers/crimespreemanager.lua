@@ -1008,6 +1008,7 @@ function CrimeSpreeManager:_setup_global_from_mission_id(mission_id)
 
 	if mission_data then
 		Global.game_settings.difficulty = tweak_data.crime_spree.base_difficulty
+		Global.game_settings.one_down = false
 		Global.game_settings.level_id = mission_data.level.level_id
 		Global.game_settings.mission = mission_data.mission or "none"
 	end

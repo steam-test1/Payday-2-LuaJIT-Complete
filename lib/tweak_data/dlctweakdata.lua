@@ -82,6 +82,7 @@ function DLCTweakData:init(tweak_data)
 			turtles = true,
 			gage_pack_jobs = false,
 			butcher_pack_mods = true,
+			ggac = true,
 			gcm = true,
 			character_pack_bonnie = true,
 			animal = true,
@@ -6254,6 +6255,17 @@ function DLCTweakData:init(tweak_data)
 		item_entry = "ami_01",
 		amount = 1
 	}}
+	self.ami_12 = {
+		dlc = "has_achievement_milestone",
+		milestone_id = "ami_12",
+		content = {}
+	}
+	self.ami_12.content.loot_global_value = "infamous"
+	self.ami_12.content.loot_drops = {{
+		type_items = "masks",
+		item_entry = "ami_06",
+		amount = 1
+	}}
 	self.ecp_bundle = {
 		dlc = "has_ecp",
 		content = {}
@@ -6361,5 +6373,16 @@ function DLCTweakData:init(tweak_data)
 	}
 	self.ami_bundle.content.loot_global_value = "normal"
 	self.ami_bundle.content.loot_drops = {}
+	self.ach_ggez_1 = {
+		dlc = "has_achievement",
+		achievement_id = "ggez_1",
+		content = {}
+	}
+	self.ach_ggez_1.content.loot_global_value = "infamous"
+	self.ach_ggez_1.content.loot_drops = {{
+		type_items = "masks",
+		item_entry = "ggac_od_t2",
+		amount = 1
+	}}
 end
 

@@ -56,13 +56,17 @@ function StateMachineTransitionQueue:do_state_change()
 		local params = transition[2]
 		local state_machine = transition[3]
 		local old_state = state_machine._current_state
-		local trans_func = state_machine._transitions[old_state][new_state]
+		local trans_func, condition = unpack(state_machine._transitions[old_state][new_state])
 
-		cat_print("state_machine", "[StateMachine] Executing state change '" .. tostring(old_state:name()) .. "' 
+		if not condition or condition(old_state, new_state) then
+			cat_print("state_machine", "[StateMachine] Executing state change '" .. tostring(old_state:name()) .. "' 
 
-		state_machine._current_state = new_state
+			state_machine._current_state = new_state
 
-		trans_func(old_state, new_state, params)
+			trans_func(old_state, new_state, params)
+		else
+			cat_print("state_machine", "[StateMachine] Condition failed, blocking state change '" .. tostring(old_state:name()) .. "' 
+		end
 
 		i = i + 1
 	until i == #self._queued_transitions + 1
@@ -104,7 +108,7 @@ function StateMachine:init(start_state, shared_queue)
 	local init = InitState:new(self)
 	self._states[init:name()] = init
 	self._transitions[init] = self._transitions[init] or {}
-	self._transitions[init][start_state] = init.default_transition
+	self._transitions[init][start_state] = {init.default_transition}
 	self._current_state = init
 	self._transition_queue = shared_queue or StateMachineTransitionQueue:new()
 
@@ -121,11 +125,14 @@ function StateMachine:destroy()
 	self._transitions = {}
 end
 
-function StateMachine:add_transition(from, to, trans_func)
+function StateMachine:add_transition(from, to, trans_func, condition)
 	self._states[from:name()] = from
 	self._states[to:name()] = to
 	self._transitions[from] = self._transitions[from] or {}
-	self._transitions[from][to] = trans_func
+	self._transitions[from][to] = {
+		trans_func,
+		condition
+	}
 end
 
 function StateMachine:current_state()

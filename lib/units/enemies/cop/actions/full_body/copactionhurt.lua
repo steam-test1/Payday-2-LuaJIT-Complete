@@ -174,7 +174,7 @@ CopActionHurt.death_anim_fe_variants = {
 		}
 	}
 }
-CopActionHurt.hurt_anim_variants_highest_num = 18
+CopActionHurt.hurt_anim_variants_highest_num = 21
 CopActionHurt.hurt_anim_variants = {
 	hurt = {not_crouching = {
 		fwd = {
@@ -182,34 +182,34 @@ CopActionHurt.hurt_anim_variants = {
 			low = 5
 		},
 		bwd = {
-			high = 2,
-			low = 1
+			high = 5,
+			low = 2
 		},
 		l = {
-			high = 3,
-			low = 1
+			high = 5,
+			low = 2
 		},
 		r = {
-			high = 3,
-			low = 1
+			high = 5,
+			low = 2
 		}
 	}},
 	heavy_hurt = {not_crouching = {
 		fwd = {
-			high = 18,
+			high = 21,
 			low = 7
 		},
 		bwd = {
-			high = 3,
-			low = 2
+			high = 14,
+			low = 7
 		},
 		l = {
-			high = 4,
-			low = 2
+			high = 11,
+			low = 4
 		},
 		r = {
-			high = 4,
-			low = 2
+			high = 11,
+			low = 4
 		}
 	}},
 	expl_hurt = {

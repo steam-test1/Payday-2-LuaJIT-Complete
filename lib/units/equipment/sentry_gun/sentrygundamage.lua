@@ -97,8 +97,6 @@ function SentryGunDamage:damage_bullet(attack_data)
 		return
 	end
 
-	managers.player:send_message(Message.OnEnemyShot, nil, attack_data.attacker_unit, self._unit, attack_data and attack_data.variant or "bullet")
-
 	local hit_shield = attack_data.col_ray.body and hit_body_name == self._shield_body_name_ids
 	local hit_bag = attack_data.col_ray.body and hit_body_name == self._bag_body_name_ids
 	local dmg_adjusted = attack_data.damage
@@ -139,6 +137,7 @@ function SentryGunDamage:damage_bullet(attack_data)
 		type = "dmg_rcv"
 	}
 	local damage_sync = self:_apply_damage(dmg_adjusted, dmg_shield, not dmg_shield, true, attack_data.attacker_unit, attack_data.variant)
+	attack_data.result = result
 
 	if self._ignore_client_damage then
 		local health_percent = math.ceil(self._health / self._HEALTH_INIT_PERCENT)
@@ -173,6 +172,8 @@ function SentryGunDamage:damage_bullet(attack_data)
 	if attacker_unit == managers.player:player_unit() and attack_data then
 		managers.player:on_damage_dealt(self._unit, attack_data)
 	end
+
+	managers.player:send_message(Message.OnEnemyShot, nil, self._unit, attack_data)
 
 	return result
 end

@@ -93,7 +93,7 @@ local difficulty_order = {
 	"difficulty_overkill",
 	"difficulty_mayhem",
 	"difficulty_death_wish",
-	"difficulty_one_down"
+	"difficulty_death_sentence"
 }
 
 local function difficulty_sort(lhs, rhs)
@@ -106,7 +106,7 @@ end
 
 local difficulty_translate = {
 	difficulty_death_wish = "menu_difficulty_apocalypse",
-	difficulty_one_down = "menu_difficulty_sm_wish",
+	difficulty_death_sentence = "menu_difficulty_sm_wish",
 	difficulty_normal = "menu_difficulty_normal",
 	difficulty_hard = "menu_difficulty_hard",
 	difficulty_very_hard = "menu_difficulty_very_hard",

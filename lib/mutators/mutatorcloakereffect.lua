@@ -4,9 +4,10 @@ MutatorCloakerEffect.name_id = "mutator_cloaker_effect"
 MutatorCloakerEffect.desc_id = "mutator_cloaker_effect_desc"
 MutatorCloakerEffect.has_options = true
 MutatorCloakerEffect.reductions = {
-	money = 0.25,
-	exp = 0.25
+	money = 0,
+	exp = 0
 }
+MutatorCloakerEffect.disables_achievements = true
 MutatorCloakerEffect.categories = {"enemies"}
 MutatorCloakerEffect.icon_coords = {
 	2,

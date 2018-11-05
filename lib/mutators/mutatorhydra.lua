@@ -4,9 +4,10 @@ MutatorHydra.name_id = "mutator_hydra"
 MutatorHydra.desc_id = "mutator_hydra_desc"
 MutatorHydra.has_options = true
 MutatorHydra.reductions = {
-	money = 0.1,
-	exp = 0.1
+	money = 0,
+	exp = 0
 }
+MutatorHydra.disables_achievements = true
 MutatorHydra.categories = {
 	"enemies",
 	"gameplay"

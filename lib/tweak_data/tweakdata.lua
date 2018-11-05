@@ -903,6 +903,7 @@ function TweakData:init()
 		heat_standard_color = Color(255, 255, 255, 255) / 255
 	}
 	self.screen_colors.heat_color = self.screen_colors.heat_standard_color
+	self.screen_colors.one_down = Color(255, 250, 30, 0) / 255
 	self.screen_colors.challenge_title = Color(255, 255, 168, 0) / 255
 	self.screen_colors.stats_positive = Color(255, 191, 221, 125) / 255
 	self.screen_colors.stats_negative = Color(255, 254, 93, 99) / 255

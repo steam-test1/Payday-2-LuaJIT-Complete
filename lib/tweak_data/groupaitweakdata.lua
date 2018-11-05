@@ -228,6 +228,30 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 			tank = 2,
 			spooc = 2
 		}
+	elseif difficulty_index == 6 then
+		self.special_unit_spawn_limits = {
+			shield = 4,
+			medic = 3,
+			taser = 3,
+			tank = 2,
+			spooc = 2
+		}
+	elseif difficulty_index == 7 then
+		self.special_unit_spawn_limits = {
+			shield = 4,
+			medic = 3,
+			taser = 3,
+			tank = 2,
+			spooc = 2
+		}
+	elseif difficulty_index == 8 then
+		self.special_unit_spawn_limits = {
+			shield = 4,
+			medic = 3,
+			taser = 3,
+			tank = 3,
+			spooc = 2
+		}
 	else
 		self.special_unit_spawn_limits = {
 			shield = 8,
@@ -244,7 +268,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 		self.unit_categories.spooc = {
 			special_type = "spooc",
 			unit_types = {
-				america = {Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_cloaker/ene_zeal_cloaker")},
+				america = {Idstring("units/payday2/characters/ene_spook_1/ene_spook_1")},
 				russia = {Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_spooc_asval_smg/ene_akan_fbi_spooc_asval_smg")},
 				zombie = {Idstring("units/pd2_dlc_hvh/characters/ene_spook_hvh_1/ene_spook_hvh_1")}
 			},
@@ -654,17 +678,20 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				america = {
 					Idstring("units/payday2/characters/ene_bulldozer_1/ene_bulldozer_1"),
 					Idstring("units/payday2/characters/ene_bulldozer_2/ene_bulldozer_2"),
-					Idstring("units/payday2/characters/ene_bulldozer_3/ene_bulldozer_3")
+					Idstring("units/payday2/characters/ene_bulldozer_3/ene_bulldozer_3"),
+					Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_minigun/ene_bulldozer_minigun")
 				},
 				russia = {
 					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_r870/ene_akan_fbi_tank_r870"),
 					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_saiga/ene_akan_fbi_tank_saiga"),
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_rpk_lmg/ene_akan_fbi_tank_rpk_lmg")
+					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_rpk_lmg/ene_akan_fbi_tank_rpk_lmg"),
+					Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_minigun/ene_bulldozer_minigun")
 				},
 				zombie = {
 					Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_1/ene_bulldozer_hvh_1"),
 					Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_2/ene_bulldozer_hvh_2"),
-					Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_3/ene_bulldozer_hvh_3")
+					Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_3/ene_bulldozer_hvh_3"),
+					Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_minigun/ene_bulldozer_minigun")
 				}
 			},
 			access = access_type_all
@@ -676,17 +703,23 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				america = {
 					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_bulldozer/ene_zeal_bulldozer"),
 					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_bulldozer_2/ene_zeal_bulldozer_2"),
-					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_bulldozer_3/ene_zeal_bulldozer_3")
+					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_bulldozer_3/ene_zeal_bulldozer_3"),
+					Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_medic/ene_bulldozer_medic"),
+					Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_minigun/ene_bulldozer_minigun")
 				},
 				russia = {
 					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_r870/ene_akan_fbi_tank_r870"),
 					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_saiga/ene_akan_fbi_tank_saiga"),
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_rpk_lmg/ene_akan_fbi_tank_rpk_lmg")
+					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_rpk_lmg/ene_akan_fbi_tank_rpk_lmg"),
+					Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_medic/ene_bulldozer_medic"),
+					Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_minigun/ene_bulldozer_minigun")
 				},
 				zombie = {
 					Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_1/ene_bulldozer_hvh_1"),
 					Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_1/ene_bulldozer_hvh_1"),
-					Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_1/ene_bulldozer_hvh_1")
+					Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_1/ene_bulldozer_hvh_1"),
+					Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_medic/ene_bulldozer_medic"),
+					Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_minigun/ene_bulldozer_minigun")
 				}
 			},
 			access = access_type_all
@@ -2316,17 +2349,35 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 	else
 		self.enemy_spawn_groups.tac_tazer_flanking = {
 			amount = {
-				2,
-				2
+				6,
+				6
 			},
-			spawn = {{
-				amount_min = 2,
-				freq = 1,
-				amount_max = 2,
-				rank = 3,
-				unit = "CS_tazer",
-				tactics = self._tactics.tazer_flanking
-			}}
+			spawn = {
+				{
+					amount_min = 2,
+					freq = 1,
+					amount_max = 2,
+					rank = 3,
+					unit = "CS_tazer",
+					tactics = self._tactics.tazer_flanking
+				},
+				{
+					amount_min = 1,
+					freq = 1,
+					amount_max = 1,
+					rank = 2,
+					unit = "FBI_swat_M4",
+					tactics = self._tactics.swat_rifle_flank
+				},
+				{
+					amount_min = 3,
+					freq = 3,
+					amount_max = 3,
+					rank = 3,
+					unit = "FBI_heavy_G36",
+					tactics = self._tactics.swat_rifle_flank
+				}
+			}
 		}
 	end
 
@@ -2408,17 +2459,35 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 	else
 		self.enemy_spawn_groups.tac_tazer_charge = {
 			amount = {
-				2,
-				2
+				6,
+				6
 			},
-			spawn = {{
-				amount_min = 2,
-				freq = 1,
-				amount_max = 2,
-				rank = 3,
-				unit = "CS_tazer",
-				tactics = self._tactics.tazer_charge
-			}}
+			spawn = {
+				{
+					amount_min = 2,
+					freq = 1,
+					amount_max = 2,
+					rank = 3,
+					unit = "CS_tazer",
+					tactics = self._tactics.tazer_charge
+				},
+				{
+					amount_min = 1,
+					freq = 1,
+					amount_max = 1,
+					rank = 2,
+					unit = "FBI_swat_M4",
+					tactics = self._tactics.swat_rifle_flank
+				},
+				{
+					amount_min = 3,
+					freq = 3,
+					amount_max = 3,
+					rank = 3,
+					unit = "FBI_heavy_G36",
+					tactics = self._tactics.swat_rifle_flank
+				}
+			}
 		}
 	end
 
@@ -2500,17 +2569,35 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 	else
 		self.enemy_spawn_groups.tac_bull_rush = {
 			amount = {
-				2,
-				2
+				6,
+				6
 			},
-			spawn = {{
-				amount_min = 2,
-				freq = 1,
-				amount_max = 2,
-				rank = 3,
-				unit = "FBI_tank",
-				tactics = self._tactics.tank_rush
-			}}
+			spawn = {
+				{
+					amount_min = 2,
+					freq = 1,
+					amount_max = 2,
+					rank = 3,
+					unit = "FBI_tank",
+					tactics = self._tactics.tank_rush
+				},
+				{
+					amount_min = 1,
+					freq = 1,
+					amount_max = 1,
+					rank = 2,
+					unit = "FBI_swat_M4",
+					tactics = self._tactics.swat_rifle_flank
+				},
+				{
+					amount_min = 3,
+					freq = 3,
+					amount_max = 3,
+					rank = 3,
+					unit = "FBI_heavy_G36",
+					tactics = self._tactics.swat_rifle_flank
+				}
+			}
 		}
 	end
 
@@ -2667,8 +2754,8 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 			recurring_cloaker_spawn = {
 				retire_delay = 30,
 				interval = {
-					20,
-					40
+					15,
+					30
 				}
 			},
 			recurring_spawn_1 = {interval = {
@@ -2766,9 +2853,9 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 
 	if is_console then
 		self.besiege.assault.force = {
-			0,
-			4,
-			7
+			3,
+			7,
+			10
 		}
 		self.besiege.assault.force_pool = {
 			0,
@@ -2777,14 +2864,14 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 		}
 	else
 		self.besiege.assault.force = {
-			10,
-			12,
-			14
+			14,
+			16,
+			18
 		}
 		self.besiege.assault.force_pool = {
-			100,
-			125,
-			175
+			150,
+			175,
+			225
 		}
 	end
 
@@ -3299,59 +3386,59 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 	elseif difficulty_index == 8 then
 		self.besiege.assault.groups = {
 			tac_swat_shotgun_rush = {
-				0.13,
-				0.13,
-				0.13
+				0.18,
+				0.18,
+				0.18
 			},
 			tac_swat_shotgun_flank = {
-				0.13,
-				0.13,
-				0.13
+				0.18,
+				0.18,
+				0.18
 			},
 			tac_swat_rifle = {
-				0.13,
-				0.13,
-				0.13
+				0.18,
+				0.18,
+				0.18
 			},
 			tac_swat_rifle_flank = {
-				0.13,
-				0.13,
-				0.13
+				0.18,
+				0.18,
+				0.18
 			},
 			tac_shield_wall_ranged = {
-				0.06,
-				0.06,
-				0.06
+				0.03,
+				0.03,
+				0.03
 			},
 			tac_shield_wall_charge = {
-				0.05,
-				0.05,
-				0.05
+				0.04,
+				0.04,
+				0.04
 			},
 			tac_shield_wall = {
+				0.03,
+				0.03,
+				0.03
+			},
+			tac_tazer_flanking = {
 				0.05,
 				0.05,
 				0.05
 			},
-			tac_tazer_flanking = {
-				0.09,
-				0.09,
-				0.09
-			},
 			tac_tazer_charge = {
-				0.09,
-				0.09,
-				0.09
+				0.05,
+				0.05,
+				0.05
 			},
 			FBI_spoocs = {
-				0.01,
-				0.01,
-				0.01
+				0.05,
+				0.05,
+				0.05
 			},
 			tac_bull_rush = {
-				0.09,
-				0.09,
-				0.09
+				0.05,
+				0.05,
+				0.05
 			}
 		}
 	else
@@ -3433,116 +3520,116 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 	if difficulty_index <= 2 then
 		self.besiege.reenforce.groups = {
 			tac_swat_shotgun_rush = {
-				0.1,
-				0.1,
-				0.1
+				0,
+				0,
+				0
 			},
 			tac_swat_shotgun_flank = {
-				0.1,
-				0.1,
-				0.1
+				0,
+				0,
+				0
 			},
 			tac_swat_rifle = {
-				0.1,
-				0.1,
-				0.1
+				0,
+				0,
+				0
 			},
 			tac_swat_rifle_flank = {
-				0.1,
-				0.1,
-				0.1
+				0,
+				0,
+				0
 			}
 		}
 	elseif difficulty_index == 3 then
 		self.besiege.reenforce.groups = {
 			tac_swat_shotgun_rush = {
-				0.1,
-				0.1,
-				0.1
+				0,
+				0,
+				0
 			},
 			tac_swat_shotgun_flank = {
-				0.1,
-				0.1,
-				0.1
+				0,
+				0,
+				0
 			},
 			tac_swat_rifle = {
-				0.1,
-				0.1,
-				0.1
+				0,
+				0,
+				0
 			},
 			tac_swat_rifle_flank = {
-				0.1,
-				0.1,
-				0.1
+				0,
+				0,
+				0
 			}
 		}
 	elseif difficulty_index == 4 then
 		self.besiege.reenforce.groups = {
 			tac_swat_shotgun_rush = {
-				0.1,
-				0.1,
-				0.1
+				0,
+				0,
+				0
 			},
 			tac_swat_shotgun_flank = {
-				0.1,
-				0.1,
-				0.1
+				0,
+				0,
+				0
 			},
 			tac_swat_rifle = {
-				0.1,
-				0.1,
-				0.1
+				0,
+				0,
+				0
 			},
 			tac_swat_rifle_flank = {
-				0.1,
-				0.1,
-				0.1
+				0,
+				0,
+				0
 			}
 		}
 	elseif difficulty_index == 5 then
 		self.besiege.reenforce.groups = {
 			tac_swat_shotgun_rush = {
-				0.1,
-				0.1,
-				0.1
+				0,
+				0,
+				0
 			},
 			tac_swat_shotgun_flank = {
-				0.1,
-				0.1,
-				0.1
+				0,
+				0,
+				0
 			},
 			tac_swat_rifle = {
-				0.1,
-				0.1,
-				0.1
+				0,
+				0,
+				0
 			},
 			tac_swat_rifle_flank = {
-				0.1,
-				0.1,
-				0.1
+				0,
+				0,
+				0
 			}
 		}
 	else
 		self.besiege.reenforce.groups = {
 			tac_swat_shotgun_rush = {
-				0.1,
-				0.1,
-				0.1
+				0,
+				0,
+				0
 			},
 			tac_swat_shotgun_flank = {
-				0.1,
-				0.1,
-				0.1
+				0,
+				0,
+				0
 			},
 			tac_swat_rifle = {
-				0.1,
-				0.1,
-				0.1
+				0,
+				0,
+				0
 			},
 			tac_swat_rifle_flank = {
-				0.1,
-				0.1,
-				0.1
+				0,
+				0,
+				0
 			}
 		}
 	end

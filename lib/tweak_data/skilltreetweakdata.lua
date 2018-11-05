@@ -360,6 +360,7 @@ function SkillTreeTweakData:init()
 	self.skills.joker = {
 		{
 			upgrades = {
+				"player_convert_enemies_damage_multiplier_1",
 				"player_convert_enemies",
 				"player_convert_enemies_max_minions_1"
 			},
@@ -367,7 +368,7 @@ function SkillTreeTweakData:init()
 		},
 		{
 			upgrades = {
-				"player_convert_enemies_damage_multiplier",
+				"player_convert_enemies_damage_multiplier_2",
 				"player_convert_enemies_interaction_speed_multiplier"
 			},
 			cost = self.costs.hightierpro
@@ -1318,22 +1319,6 @@ function SkillTreeTweakData:init()
 			9
 		}
 	}
-	self.skills.hitman = {
-		{
-			upgrades = {"weapon_silencer_damage_multiplier_1"},
-			cost = self.costs.hightier
-		},
-		{
-			upgrades = {"weapon_silencer_damage_multiplier_2"},
-			cost = self.costs.hightierpro
-		},
-		name_id = "menu_hitman_beta",
-		desc_id = "menu_hitman_beta_desc",
-		icon_xy = {
-			5,
-			9
-		}
-	}
 	self.skills.silence_expert = {
 		{
 			upgrades = {
@@ -1731,7 +1716,7 @@ function SkillTreeTweakData:init()
 			5
 		}
 	}
-	self.skills.spotter_teamwork = {
+	self.skills.hitman = {
 		{
 			upgrades = {"player_marked_enemy_extra_damage"},
 			cost = self.costs.hightier
@@ -1752,7 +1737,7 @@ function SkillTreeTweakData:init()
 			2
 		}
 	}
-	self.skills.single_shot_ammo_return = {
+	self.skills.spotter_teamwork = {
 		{
 			upgrades = {"head_shot_ammo_return_1"},
 			cost = self.costs.hightier
@@ -2268,6 +2253,22 @@ function SkillTreeTweakData:init()
 		icon_xy = {
 			1,
 			5
+		}
+	}
+	self.skills.single_shot_ammo_return = {
+		{
+			upgrades = {"snp_graze_damage_1"},
+			cost = self.costs.hightier
+		},
+		{
+			upgrades = {"snp_graze_damage_2"},
+			cost = self.costs.hightierpro
+		},
+		name_id = "menu_sniper_graze_damage",
+		desc_id = "menu_sniper_graze_damage_desc",
+		icon_xy = {
+			11,
+			9
 		}
 	}
 	self.trees = {

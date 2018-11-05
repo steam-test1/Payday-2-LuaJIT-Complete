@@ -1662,26 +1662,31 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		sm_wish_ukranian = {
 			award = "axe_1",
+			one_down = true,
 			job = "ukrainian_job_prof",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_mallcrasher = {
 			award = "axe_2",
+			one_down = true,
 			job = "mallcrasher",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_four_stores = {
 			award = "axe_3",
+			one_down = true,
 			job = "four_stores",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_nightclub = {
 			award = "axe_4",
+			one_down = true,
 			job = "nightclub",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_watchdogs = {
 			award = "axe_5",
+			one_down = true,
 			difficulty = sm_wish_and_above,
 			jobs = {
 				"watchdogs_wrapper",
@@ -1691,21 +1696,25 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		sm_wish_rats = {
 			award = "axe_7",
+			one_down = true,
 			job = "alex",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_firestarter = {
 			award = "axe_9",
+			one_down = true,
 			job = "firestarter",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_framing_frame = {
 			award = "axe_11",
+			one_down = true,
 			job = "framing_frame",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_big_oil = {
 			award = "axe_13",
+			one_down = true,
 			difficulty = sm_wish_and_above,
 			jobs = {
 				"welcome_to_the_jungle_wrapper_prof",
@@ -1715,246 +1724,295 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		sm_wish_jewelry_store = {
 			award = "axe_14",
+			one_down = true,
 			job = "jewelry_store",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_diamond_store = {
 			award = "axe_15",
+			one_down = true,
 			job = "family",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_go_bank = {
 			award = "axe_16",
+			one_down = true,
 			job = "roberts",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_bank_heist = {
 			award = "axe_17",
+			one_down = true,
 			job = "branchbank_prof",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_bank_heist_gold = {
 			award = "axe_18",
+			one_down = true,
 			job = "branchbank_gold_prof",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_bank_heist_cash = {
 			award = "axe_19",
+			one_down = true,
 			job = "branchbank_cash",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_bank_heist_deposit = {
 			award = "axe_20",
+			one_down = true,
 			job = "branchbank_deposit",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_transport_crossroads = {
 			award = "axe_21",
+			one_down = true,
 			job = "arm_cro",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_transport_downtown = {
 			award = "axe_22",
+			one_down = true,
 			job = "arm_hcm",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_transport_harbor = {
 			award = "axe_23",
+			one_down = true,
 			job = "arm_fac",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_transport_park = {
 			award = "axe_24",
+			one_down = true,
 			job = "arm_par",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_transport_underpass = {
 			award = "axe_25",
+			one_down = true,
 			job = "arm_und",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_transport_train = {
 			award = "axe_26",
+			one_down = true,
 			job = "arm_for",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_election_day = {
 			award = "axe_27",
+			one_down = true,
 			job = "election_day",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_kosugi = {
 			award = "axe_29",
+			one_down = true,
 			job = "kosugi",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_bigbank = {
 			award = "axe_30",
+			one_down = true,
 			job = "big",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_miami = {
 			award = "axe_31",
+			one_down = true,
 			job = "mia",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_artgallery = {
 			award = "axe_33",
+			one_down = true,
 			job = "gallery",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_hoxton = {
 			award = "axe_34",
+			one_down = true,
 			job = "hox",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_mus = {
 			award = "axe_36",
+			one_down = true,
 			job = "mus",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_red = {
 			award = "axe_37",
+			one_down = true,
 			job = "red2",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_dinner = {
 			award = "axe_38",
+			one_down = true,
 			job = "dinner",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_hox_3 = {
 			award = "axe_39",
+			one_down = true,
 			job = "hox_3",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_rat = {
 			award = "axe_40",
+			one_down = true,
 			job = "rat",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_cage = {
 			award = "axe_41",
+			one_down = true,
 			job = "cage",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_shoutout = {
 			award = "axe_42",
+			one_down = true,
 			job = "shoutout_raid",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_arena = {
 			award = "axe_43",
+			one_down = true,
 			job = "arena",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_kenaz = {
 			award = "axe_44",
+			one_down = true,
 			difficulty = sm_wish_and_above,
 			jobs = {"kenaz"}
 		},
 		sm_wish_sinus = {
+			one_down = true,
 			award = "axe_45",
 			job = "jolly",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_nails = {
+			one_down = true,
 			award = "axe_46",
 			job = "nail",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_berry = {
 			award = "axe_47",
+			one_down = true,
 			job = "pbr",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_jerry = {
 			award = "axe_48",
+			one_down = true,
 			job = "pbr2",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_peta = {
 			award = "axe_49",
+			one_down = true,
 			difficulty = sm_wish_and_above,
 			jobs = {"peta"}
 		},
 		sm_wish_pal = {
 			award = "axe_51",
+			one_down = true,
 			job = "pal",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_man = {
 			award = "axe_52",
+			one_down = true,
 			job = "man",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_dark = {
 			award = "axe_53",
+			one_down = true,
 			job = "dark",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_cane = {
 			award = "axe_54",
+			one_down = true,
 			job = "cane",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_flat = {
 			award = "axe_55",
+			one_down = true,
 			job = "flat",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_mad = {
 			award = "axe_56",
+			one_down = true,
 			job = "mad",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_born = {
 			award = "axe_57",
+			one_down = true,
 			job = "born",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_help = {
 			award = "orange_3",
+			one_down = true,
 			job = "help",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_moon = {
 			award = "moon_3",
+			one_down = true,
 			job = "moon",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_friend = {
 			award = "friend_3",
+			one_down = true,
 			job = "friend",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_spa = {
 			award = "spa_3",
+			one_down = true,
 			job = "spa",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_fish = {
 			award = "fish_3",
+			one_down = true,
 			job = "fish",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_glace = {
 			award = "glace_7",
+			one_down = true,
 			job = "glace",
 			difficulty = sm_wish_and_above
 		},
 		sm_wish_run = {
 			award = "run_7",
+			one_down = true,
 			job = "run",
 			difficulty = sm_wish_and_above
 		},
 		complete_pines_sm_wish = {
 			award = "axe_59",
+			one_down = true,
 			difficulty = sm_wish_and_above,
 			jobs = {"pines"}
 		},
 		complete_crojob_for_sm_wish = {
 			award = "axe_60",
+			one_down = true,
 			difficulty = sm_wish_and_above,
 			jobs = {
 				"crojob_wrapper",
@@ -1964,6 +2022,7 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		complete_crojob_dock_sm_wish = {
 			award = "axe_61",
+			one_down = true,
 			difficulty = sm_wish_and_above,
 			jobs = {"crojob1"}
 		},
@@ -2391,6 +2450,7 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		wwh_7 = {
 			award = "wwh_7",
+			one_down = true,
 			job = "wwh",
 			difficulty = sm_wish_and_above
 		},
@@ -2426,6 +2486,7 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		dah_7 = {
 			award = "dah_7",
+			one_down = true,
 			job = "dah",
 			difficulty = sm_wish_and_above
 		},
@@ -3289,6 +3350,7 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		trk_sa_6 = {
 			award = "trk_sa_6",
+			one_down = true,
 			job = "chill_combat",
 			difficulty = sm_wish_and_above
 		},
@@ -3640,6 +3702,7 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		rvd_7 = {
 			award = "rvd_7",
+			one_down = true,
 			job = "rvd",
 			difficulty = sm_wish_and_above
 		},
@@ -3683,7 +3746,386 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		brb_7 = {
 			award = "brb_7",
+			one_down = true,
 			job = "brb",
+			difficulty = sm_wish_and_above
+		},
+		ggez_13 = {
+			award = "ggez_13",
+			job = "fish",
+			difficulty = sm_wish_and_above
+		},
+		ggez_14 = {
+			award = "ggez_14",
+			job = "haunted",
+			difficulty = sm_wish_and_above
+		},
+		ggez_15 = {
+			award = "ggez_15",
+			job = "jolly",
+			difficulty = sm_wish_and_above
+		},
+		ggez_16 = {
+			award = "ggez_16",
+			job = "wwh",
+			difficulty = sm_wish_and_above
+		},
+		ggez_17 = {
+			award = "ggez_17",
+			job = "arena",
+			difficulty = sm_wish_and_above
+		},
+		ggez_18 = {
+			award = "ggez_18",
+			job = "gallery",
+			difficulty = sm_wish_and_above
+		},
+		ggez_19 = {
+			award = "ggez_19",
+			job = "branchbank_cash",
+			difficulty = sm_wish_and_above
+		},
+		ggez_20 = {
+			award = "ggez_20",
+			job = "branchbank_deposit",
+			difficulty = sm_wish_and_above
+		},
+		ggez_21 = {
+			award = "ggez_21",
+			job = "branchbank_gold_prof",
+			difficulty = sm_wish_and_above
+		},
+		ggez_22 = {
+			award = "ggez_22",
+			job = "branchbank_prof",
+			difficulty = sm_wish_and_above
+		},
+		ggez_23 = {
+			award = "ggez_23",
+			job = "pbr",
+			difficulty = sm_wish_and_above
+		},
+		ggez_24 = {
+			award = "ggez_24",
+			job = "big",
+			difficulty = sm_wish_and_above
+		},
+		ggez_25 = {
+			award = "ggez_25",
+			difficulty = sm_wish_and_above,
+			jobs = {
+				"welcome_to_the_jungle_wrapper_prof",
+				"welcome_to_the_jungle_night_prof",
+				"welcome_to_the_jungle_prof"
+			}
+		},
+		ggez_26 = {
+			award = "ggez_26",
+			job = "born",
+			difficulty = sm_wish_and_above
+		},
+		ggez_27 = {
+			award = "ggez_27",
+			job = "pbr2",
+			difficulty = sm_wish_and_above
+		},
+		ggez_28 = {
+			award = "ggez_28",
+			job = "mad",
+			difficulty = sm_wish_and_above
+		},
+		ggez_29 = {
+			award = "ggez_29",
+			job = "crojob1",
+			difficulty = sm_wish_and_above
+		},
+		ggez_30 = {
+			award = "ggez_30",
+			difficulty = sm_wish_and_above,
+			jobs = {
+				"crojob_wrapper",
+				"crojob2",
+				"crojob2_night"
+			}
+		},
+		ggez_31 = {
+			award = "ggez_31",
+			job = "spa",
+			difficulty = sm_wish_and_above
+		},
+		ggez_32 = {
+			award = "ggez_32",
+			job = "brb",
+			difficulty = sm_wish_and_above
+		},
+		ggez_33 = {
+			award = "ggez_33",
+			job = "cage",
+			difficulty = sm_wish_and_above
+		},
+		ggez_34 = {
+			award = "ggez_34",
+			job = "rat",
+			difficulty = sm_wish_and_above
+		},
+		ggez_35 = {
+			award = "ggez_35",
+			job = "pal",
+			difficulty = sm_wish_and_above
+		},
+		ggez_36 = {
+			award = "ggez_36",
+			job = "dah",
+			difficulty = sm_wish_and_above
+		},
+		ggez_37 = {
+			award = "ggez_37",
+			job = "mus",
+			difficulty = sm_wish_and_above
+		},
+		ggez_38 = {
+			award = "ggez_38",
+			job = "family",
+			difficulty = sm_wish_and_above
+		},
+		ggez_39 = {
+			award = "ggez_39",
+			job = "election_day",
+			difficulty = sm_wish_and_above
+		},
+		ggez_40 = {
+			award = "ggez_40",
+			job = "firestarter",
+			difficulty = sm_wish_and_above
+		},
+		ggez_41 = {
+			award = "ggez_41",
+			job = "red2",
+			difficulty = sm_wish_and_above
+		},
+		ggez_42 = {
+			award = "ggez_42",
+			job = "four_stores",
+			difficulty = sm_wish_and_above
+		},
+		ggez_43 = {
+			award = "ggez_43",
+			job = "framing_frame",
+			difficulty = sm_wish_and_above
+		},
+		ggez_44 = {
+			award = "ggez_44",
+			job = "roberts",
+			difficulty = sm_wish_and_above
+		},
+		ggez_45 = {
+			award = "ggez_45",
+			job = "peta",
+			difficulty = sm_wish_and_above
+		},
+		ggez_46 = {
+			award = "ggez_46",
+			job = "kenaz",
+			difficulty = sm_wish_and_above
+		},
+		ggez_47 = {
+			award = "ggez_47",
+			job = "glace",
+			difficulty = sm_wish_and_above
+		},
+		ggez_48 = {
+			award = "ggez_48",
+			job = "run",
+			difficulty = sm_wish_and_above
+		},
+		ggez_49 = {
+			award = "ggez_49",
+			job = "mia",
+			difficulty = sm_wish_and_above
+		},
+		ggez_50 = {
+			award = "ggez_50",
+			job = "hox",
+			difficulty = sm_wish_and_above
+		},
+		ggez_51 = {
+			award = "ggez_51",
+			job = "hox_3",
+			difficulty = sm_wish_and_above
+		},
+		ggez_52 = {
+			award = "ggez_52",
+			job = "jewelry_store",
+			difficulty = sm_wish_and_above
+		},
+		ggez_53 = {
+			award = "ggez_53",
+			job = "nail",
+			difficulty = sm_wish_and_above
+		},
+		ggez_54 = {
+			award = "ggez_54",
+			job = "mallcrasher",
+			difficulty = sm_wish_and_above
+		},
+		ggez_55 = {
+			award = "ggez_55",
+			job = "shoutout_raid",
+			difficulty = sm_wish_and_above
+		},
+		ggez_56 = {
+			award = "ggez_56",
+			job = "dark",
+			difficulty = sm_wish_and_above
+		},
+		ggez_57 = {
+			award = "ggez_57",
+			job = "nightclub",
+			difficulty = sm_wish_and_above
+		},
+		ggez_58 = {
+			award = "ggez_58",
+			job = "flat",
+			difficulty = sm_wish_and_above
+		},
+		ggez_59 = {
+			award = "ggez_59",
+			job = "help",
+			difficulty = sm_wish_and_above
+		},
+		ggez_60 = {
+			award = "ggez_60",
+			job = "alex",
+			difficulty = sm_wish_and_above
+		},
+		ggez_61 = {
+			award = "ggez_61",
+			job = "rvd",
+			difficulty = sm_wish_and_above
+		},
+		ggez_62 = {
+			award = "ggez_62",
+			job = "chill_combat",
+			difficulty = sm_wish_and_above
+		},
+		ggez_63 = {
+			award = "ggez_63",
+			job = "cane",
+			difficulty = sm_wish_and_above
+		},
+		ggez_64 = {
+			award = "ggez_64",
+			job = "friend",
+			difficulty = sm_wish_and_above
+		},
+		ggez_65 = {
+			award = "ggez_65",
+			job = "kosugi",
+			difficulty = sm_wish_and_above
+		},
+		ggez_66 = {
+			award = "ggez_66",
+			job = "dinner",
+			difficulty = sm_wish_and_above
+		},
+		ggez_67 = {
+			award = "ggez_67",
+			job = "moon",
+			difficulty = sm_wish_and_above
+		},
+		ggez_68 = {
+			award = "ggez_68",
+			job = "arm_cro",
+			difficulty = sm_wish_and_above
+		},
+		ggez_69 = {
+			award = "ggez_69",
+			job = "arm_hcm",
+			difficulty = sm_wish_and_above
+		},
+		ggez_70 = {
+			award = "ggez_70",
+			job = "arm_fac",
+			difficulty = sm_wish_and_above
+		},
+		ggez_71 = {
+			award = "ggez_71",
+			job = "arm_par",
+			difficulty = sm_wish_and_above
+		},
+		ggez_72 = {
+			award = "ggez_72",
+			job = "arm_for",
+			difficulty = sm_wish_and_above
+		},
+		ggez_73 = {
+			award = "ggez_73",
+			job = "arm_und",
+			difficulty = sm_wish_and_above
+		},
+		ggez_74 = {
+			award = "ggez_74",
+			job = "ukrainian_job_prof",
+			difficulty = sm_wish_and_above
+		},
+		ggez_75 = {
+			award = "ggez_75",
+			job = "man",
+			difficulty = sm_wish_and_above
+		},
+		ggez_76 = {
+			award = "ggez_76",
+			difficulty = sm_wish_and_above,
+			jobs = {
+				"watchdogs_wrapper",
+				"watchdogs_night",
+				"watchdogs"
+			}
+		},
+		ggez_77 = {
+			award = "ggez_77",
+			job = "pines",
+			difficulty = sm_wish_and_above
+		},
+		ggez_78 = {
+			award = "ggez_78",
+			job = "hvh",
+			difficulty = sm_wish_and_above
+		},
+		ckr_1 = {
+			award = "ckr_1",
+			job = "hvh",
+			difficulty = normal_and_above
+		},
+		ckr_2 = {
+			award = "ckr_2",
+			job = "hvh",
+			difficulty = hard_and_above
+		},
+		ckr_3 = {
+			award = "ckr_3",
+			job = "hvh",
+			difficulty = veryhard_and_above
+		},
+		ckr_4 = {
+			award = "ckr_4",
+			job = "hvh",
+			difficulty = overkill_and_above
+		},
+		ckr_5 = {
+			award = "ckr_5",
+			job = "hvh",
+			difficulty = easywish_and_above
+		},
+		ckr_6 = {
+			award = "ckr_6",
+			job = "hvh",
+			difficulty = deathwish_and_above
+		},
+		ckr_7 = {
+			award = "ckr_7",
+			one_down = true,
+			job = "hvh",
 			difficulty = sm_wish_and_above
 		},
 		bain_jobs = {
@@ -5041,21 +5483,25 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		sm_vlad = {
 			award = "axe_62",
+			one_down = true,
 			contact = "vlad",
 			difficulty = sm_wish_and_above
 		},
 		sm_hector = {
 			award = "axe_63",
+			one_down = true,
 			contact = "hector",
 			difficulty = sm_wish_and_above
 		},
 		sm_elephant = {
 			award = "axe_64",
+			one_down = true,
 			contact = "the_elephant",
 			difficulty = sm_wish_and_above
 		},
 		sm_bain = {
 			award = "axe_65",
+			one_down = true,
 			contact = "bain",
 			difficulty = sm_wish_and_above
 		},
@@ -5146,6 +5592,7 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		trk_c_6 = {
 			award = "trk_c_6",
+			one_down = true,
 			contact = "the_continental",
 			difficulty = sm_wish_and_above
 		},
@@ -5181,6 +5628,7 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		trk_cb_6 = {
 			award = "trk_cb_6",
+			one_down = true,
 			contact = "the_butcher",
 			difficulty = sm_wish_and_above
 		},
@@ -5216,6 +5664,7 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		trk_cc_6 = {
 			award = "trk_cc_6",
+			one_down = true,
 			contact = "classic",
 			difficulty = sm_wish_and_above
 		},
@@ -5251,6 +5700,7 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		trk_d_6 = {
 			award = "trk_d_6",
+			one_down = true,
 			contact = "the_dentist",
 			difficulty = sm_wish_and_above
 		},
@@ -5306,6 +5756,7 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		trk_ev_6 = {
 			award = "trk_ev_6",
+			one_down = true,
 			contact = "events",
 			difficulty = sm_wish_and_above
 		},
@@ -5361,6 +5812,7 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		trk_j_6 = {
 			award = "trk_j_6",
+			one_down = true,
 			contact = "jimmy",
 			difficulty = sm_wish_and_above
 		},
@@ -5396,6 +5848,7 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		trk_l_6 = {
 			award = "trk_l_6",
+			one_down = true,
 			contact = "locke",
 			difficulty = sm_wish_and_above
 		},
@@ -5419,9 +5872,71 @@ function AchievementsTweakData:init(tweak_data)
 			contact = "vlad",
 			difficulty = overkill_and_above
 		},
-		trophy_smwish = {
+		ggez_1 = {
+			award = "ggez_1",
+			one_down = true,
 			contact = "all",
+			difficulty = sm_wish_and_above
+		},
+		ggez_2 = {
+			award = "ggez_2",
+			contact = "bain",
+			difficulty = sm_wish_and_above
+		},
+		ggez_3 = {
+			award = "ggez_3",
+			contact = "classic",
+			difficulty = sm_wish_and_above
+		},
+		ggez_4 = {
+			award = "ggez_4",
+			contact = "events",
+			difficulty = sm_wish_and_above
+		},
+		ggez_5 = {
+			award = "ggez_5",
+			contact = "the_dentist",
+			difficulty = sm_wish_and_above
+		},
+		ggez_6 = {
+			award = "ggez_6",
+			contact = "hector",
+			difficulty = sm_wish_and_above
+		},
+		ggez_7 = {
+			award = "ggez_7",
+			contact = "jimmy",
+			difficulty = sm_wish_and_above
+		},
+		ggez_8 = {
+			award = "ggez_8",
+			contact = "locke",
+			difficulty = sm_wish_and_above
+		},
+		ggez_9 = {
+			award = "ggez_9",
+			contact = "the_butcher",
+			difficulty = sm_wish_and_above
+		},
+		ggez_10 = {
+			award = "ggez_10",
+			contact = "the_continental",
+			difficulty = sm_wish_and_above
+		},
+		ggez_11 = {
+			award = "ggez_11",
+			contact = "the_elephant",
+			difficulty = sm_wish_and_above
+		},
+		ggez_12 = {
+			award = "ggez_12",
+			contact = "vlad",
+			difficulty = sm_wish_and_above
+		},
+		trophy_smwish = {
+			one_down = true,
 			trophy_stat = "trophy_smwish",
+			contact = "all",
 			difficulty = sm_wish_and_above
 		}
 	}
@@ -5998,6 +6513,13 @@ function AchievementsTweakData:init(tweak_data)
 			at = 850,
 			coins = 36,
 			texture = default
+		},
+		{
+			at = 950,
+			has_drop = true,
+			id = "ami_12",
+			coins = 36,
+			texture = default
 		}
 	}
 	local last_at = 0
@@ -6048,7 +6570,7 @@ local function from_complete_heist_stats_item(self, item)
 
 		for _, job in pairs(heists) do
 			for _, difficulty in ipairs(item.difficulty) do
-				if managers.statistics:completed_job(job, difficulty) > 0 then
+				if managers.statistics:completed_job(job, difficulty, item.one_down) > 0 then
 					res[job] = nil
 
 					break
@@ -6152,7 +6674,7 @@ function AchievementsTweakData:_init_visual(tweak_data)
 			"overkill",
 			"mayhem",
 			"death_wish",
-			"one_down"
+			"death_sentence"
 		},
 		unlock = {
 			"mask",
@@ -6302,7 +6824,7 @@ function AchievementsTweakData:_init_non_auto_generated(tweak_data)
 	self.visual.armored_2.need_unlock_icons = false
 
 	for k, v in pairs(self.complete_heist_stats_achievements) do
-		if v.award then
+		if v.award and self.visual[v.award] then
 			self.visual[v.award].progress = from_complete_heist_stats_item(self, v)
 		end
 	end

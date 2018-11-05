@@ -1,6 +1,6 @@
 NetworkMatchMakingSTEAM = NetworkMatchMakingSTEAM or class()
 NetworkMatchMakingSTEAM.OPEN_SLOTS = tweak_data.max_players
-NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "payday2_v1.87.524"
+NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "payday2_v1.87.537"
 
 function NetworkMatchMakingSTEAM:init()
 	cat_print("lobby", "matchmake = NetworkMatchMakingSTEAM")
@@ -89,6 +89,8 @@ function NetworkMatchMakingSTEAM:load_user_filters()
 	Global.game_settings.search_appropriate_jobs = managers.user:get_setting("crimenet_filter_level_appopriate")
 	Global.game_settings.allow_search_safehouses = managers.user:get_setting("crimenet_filter_safehouses")
 	Global.game_settings.search_mutated_lobbies = managers.user:get_setting("crimenet_filter_mutators")
+	Global.game_settings.search_modded_lobbies = managers.user:get_setting("crimenet_filter_modded")
+	Global.game_settings.search_one_down_lobbies = managers.user:get_setting("crimenet_filter_one_down")
 	Global.game_settings.gamemode_filter = managers.user:get_setting("crimenet_gamemode_filter")
 	Global.game_settings.crime_spree_max_lobby_diff = managers.user:get_setting("crime_spree_lobby_diff")
 	local new_servers = managers.user:get_setting("crimenet_filter_new_servers_only")
@@ -120,6 +122,7 @@ function NetworkMatchMakingSTEAM:reset_filters()
 	usr:set_setting("crimenet_gamemode_filter", usr:get_default_setting("crimenet_gamemode_filter"))
 	usr:set_setting("crime_spree_lobby_diff", usr:get_default_setting("crime_spree_lobby_diff"))
 	usr:set_setting("crimenet_filter_modded", usr:get_default_setting("crimenet_filter_modded"))
+	usr:set_setting("crimenet_filter_one_down", usr:get_default_setting("crimenet_filter_one_down"))
 	usr:set_setting("crimenet_filter_new_servers_only", usr:get_default_setting("crimenet_filter_new_servers_only"))
 	usr:set_setting("crimenet_filter_in_lobby", usr:get_default_setting("crimenet_filter_in_lobby"))
 	usr:set_setting("crimenet_filter_max_servers", usr:get_default_setting("crimenet_filter_max_servers"))
@@ -248,6 +251,12 @@ function NetworkMatchMakingSTEAM:get_friends_lobbies()
 
 						if is_key_valid(mods_key) then
 							attributes_data.mods = mods_key
+						end
+
+						local lobby_one_down = lobby:key_value("one_down")
+
+						if is_key_valid(lobby_one_down) then
+							attributes_data.one_down = tonumber(lobby_one_down)
 						end
 
 						table.insert(info.attribute_list, attributes_data)
@@ -391,6 +400,12 @@ function NetworkMatchMakingSTEAM:search_lobby(friends_only, no_filters)
 							attributes_data.mods = mods_key
 						end
 
+						local lobby_one_down = lobby:key_value("one_down")
+
+						if is_key_valid(lobby_one_down) then
+							attributes_data.one_down = tonumber(lobby_one_down)
+						end
+
 						table.insert(info.attribute_list, attributes_data)
 					end
 				end
@@ -439,6 +454,7 @@ function NetworkMatchMakingSTEAM:search_lobby(friends_only, no_filters)
 		local filter_value, filter_type = self:get_allow_mods_filter()
 
 		self.browser:set_lobby_filter("allow_mods", filter_value, filter_type)
+		self.browser:set_lobby_filter("one_down", Global.game_settings.search_one_down_lobbies and 1 or 0, "equalto_less_than")
 
 		if use_filters then
 			self.browser:set_lobby_filter("min_level", managers.experience:current_level(), "equalto_less_than")
@@ -965,7 +981,8 @@ function NetworkMatchMakingSTEAM:set_attributes(settings)
 		job_class_max = settings.numbers[9] or 10,
 		job_plan = settings.numbers[10],
 		mods = self:build_mods_list(),
-		allow_mods = self:get_allow_mods_setting()
+		allow_mods = self:get_allow_mods_setting(),
+		one_down = Global.game_settings.one_down and 1 or 0
 	}
 
 	if self._BUILD_SEARCH_INTEREST_KEY then

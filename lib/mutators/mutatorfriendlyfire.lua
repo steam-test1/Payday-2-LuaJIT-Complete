@@ -7,6 +7,7 @@ MutatorFriendlyFire.reductions = {
 	money = 0,
 	exp = 0
 }
+MutatorFriendlyFire.disables_achievements = true
 MutatorFriendlyFire.categories = {"gameplay"}
 MutatorFriendlyFire.icon_coords = {
 	3,

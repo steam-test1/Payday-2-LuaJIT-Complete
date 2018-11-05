@@ -6,7 +6,10 @@ PlayerAction.TriggerHappy.Function = function (player_manager, damage_bonus, max
 	local current_time = Application:time()
 	local current_stacks = 1
 
-	local function on_hit(attacker_unit, unit, variant)
+	local function on_hit(unit, attack_data)
+		local attacker_unit = attack_data.attacker_unit
+		local variant = attack_data.variant
+
 		if attacker_unit == player_manager:player_unit() and variant == "bullet" then
 			current_stacks = current_stacks + 1
 

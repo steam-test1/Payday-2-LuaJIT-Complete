@@ -372,7 +372,7 @@ function MutatorsManager:are_trophies_disabled()
 end
 
 function MutatorsManager:should_disable_statistics()
-	return self:get_cash_reduction() > 0 or self:get_experience_reduction() > 0
+	return self:get_cash_reduction() > 0 or self:get_experience_reduction() > 0 or self:are_achievements_disabled()
 end
 
 function MutatorsManager:delay_lobby_time()

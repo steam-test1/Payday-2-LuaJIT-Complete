@@ -60,7 +60,7 @@ function ElementInventoryDummy:assemble_weapon(factory_id, blueprint, position, 
 	managers.dyn_resource:load(Idstring("unit"), Idstring(unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 
 	self._weapon_unit = World:spawn_unit(Idstring(unit_name), position, rotation)
-	self._parts, self._blueprint = managers.weapon_factory:assemble_from_blueprint(factory_id, self._weapon_unit, blueprint, true, callback(self, self, "_assemble_completed"))
+	self._parts, self._blueprint = managers.weapon_factory:assemble_from_blueprint(factory_id, self._weapon_unit, blueprint, true, true, callback(self, self, "_assemble_completed"))
 
 	self._weapon_unit:set_moving(true)
 end

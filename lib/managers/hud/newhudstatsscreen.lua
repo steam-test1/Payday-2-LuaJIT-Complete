@@ -234,13 +234,24 @@ function HUDStatsScreen:recreate_left()
 				local difficulty_stars = managers.job:current_difficulty_stars()
 				local difficulty = tweak_data.difficulties[difficulty_stars + 2] or 1
 				local difficulty_string = managers.localization:to_upper_text(tweak_data.difficulty_name_ids[difficulty])
-
-				placer:add_right(self._left:fine_text({
+				local difficulty_text = self._left:fine_text({
 					font = medium_font,
 					font_size = tweak_data.hud_stats.loot_size,
 					text = difficulty_string,
 					color = difficulty_stars > 0 and tweak_data.screen_colors.risk or tweak_data.screen_colors.text
-				}))
+				})
+
+				if Global.game_settings.one_down then
+					local one_down_string = managers.localization:to_upper_text("menu_one_down")
+
+					difficulty_text:set_text(difficulty_string .. " " .. one_down_string)
+					difficulty_text:set_range_color(#difficulty_string + 1, math.huge, tweak_data.screen_colors.one_down)
+				end
+
+				local _, _, tw, th = difficulty_text:text_rect()
+
+				difficulty_text:set_size(tw, th)
+				placer:add_right(difficulty_text)
 			end
 
 			placer:new_row(8, 0)

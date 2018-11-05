@@ -38,7 +38,7 @@ function SentryGunMovement:init(unit)
 	self._warmup_t = 0
 	self._rot_speed_mul = 1
 
-	self:_set_updator("_update_inactive")
+	self:_set_state("inactive")
 end
 
 function SentryGunMovement:post_init()
@@ -74,15 +74,10 @@ function SentryGunMovement:_update_activating(t, dt)
 	self:_upd_mutables()
 
 	if not self._unit:anim_is_playing(self._activation_anim_group_name_ids) then
-		self._activated = true
-		self._activating = false
-		self._inactivated = false
-		self._inactivating = false
-
 		if self._rearming then
-			self:_set_updator("_update_rearming")
+			self:_set_state("rearming")
 		else
-			self:_set_updator("_update_active")
+			self:_set_state("active")
 		end
 
 		self._unit:weapon():update_laser()
@@ -97,12 +92,7 @@ function SentryGunMovement:_update_inactivating(t, dt)
 	self:_upd_mutables()
 
 	if not self._unit:anim_is_playing(self._activation_anim_group_name_ids) then
-		self._activated = false
-		self._activating = false
-		self._inactivated = true
-		self._inactivating = false
-
-		self:_set_updator("_update_inactive")
+		self:_set_state("inactive")
 		self._unit:weapon():update_laser()
 	end
 end
@@ -124,9 +114,7 @@ function SentryGunMovement:complete_rearming()
 		self._rearm_event = nil
 	end
 
-	self._rearming = false
-
-	self:_set_updator("_update_active")
+	self:_set_state("active")
 	self._unit:weapon():update_laser()
 end
 
@@ -147,9 +135,7 @@ function SentryGunMovement:complete_repairing()
 		self._unit:damage():run_sequence_simple(self._repair_complete_seq)
 	end
 
-	self._repairing = false
-
-	self:_set_updator("_update_active")
+	self:_set_state("active")
 
 	if Network:is_server() then
 		self._unit:character_damage():repair_shield()
@@ -159,9 +145,8 @@ end
 
 function SentryGunMovement:setup(rot_speed_multiplier)
 	self._rot_speed_mul = rot_speed_multiplier
-	self._activated = true
 
-	self:_set_updator("_update_active")
+	self:_set_state("active")
 end
 
 function SentryGunMovement:on_activated()
@@ -176,10 +161,7 @@ function SentryGunMovement:on_activated()
 		self._activation_anim_group_name_ids = Idstring(self._activation_anim_group_name)
 
 		self._unit:damage():run_sequence_simple("activate")
-
-		self._activating = true
-
-		self:_set_updator("_update_activating")
+		self:_set_state("activating")
 	end
 end
 
@@ -207,19 +189,13 @@ function SentryGunMovement:set_idle(state)
 			self._activation_anim_group_name_ids = Idstring(self._activation_anim_group_name)
 
 			self._unit:damage():run_sequence_simple("deactivate")
-
-			self._inactivating = true
-
-			self:_set_updator("_update_inactivating")
+			self:_set_state("inactivating")
 		end
 	elseif self._unit:damage() and self._unit:damage():has_sequence("activate") and self._activation_anim_group_name then
 		self._activation_anim_group_name_ids = Idstring(self._activation_anim_group_name)
 
 		self._unit:damage():run_sequence_simple("activate")
-
-		self._activating = true
-
-		self:_set_updator("_update_activating")
+		self:_set_state("activating")
 	end
 
 	self._unit:weapon():update_laser()
@@ -621,15 +597,15 @@ function SentryGunMovement:warming_up(t)
 end
 
 function SentryGunMovement:is_activating()
-	return self._updator_name == "_update_activating"
+	return self._state == "activating"
 end
 
 function SentryGunMovement:is_inactivating()
-	return self._updator_name == "_update_inactivating"
+	return self._state == "inactivating"
 end
 
 function SentryGunMovement:is_inactivated()
-	return self._updator_name == "_update_inactive"
+	return self._state == "inactive"
 end
 
 function SentryGunMovement:switch_off()
@@ -643,11 +619,9 @@ function SentryGunMovement:switch_on()
 	self:set_active(true)
 end
 
-function SentryGunMovement:_set_updator(updator_name)
-	print("SentryGunMovement:_set_updator", updator_name)
-
-	self._updator_name = updator_name
-	self._updator = callback(self, self, updator_name)
+function SentryGunMovement:_set_state(state)
+	self._state = state
+	self._updator = callback(self, self, "_update_" .. state)
 end
 
 function SentryGunMovement:save(save_data)
@@ -670,13 +644,7 @@ function SentryGunMovement:save(save_data)
 	end
 
 	my_save_data.team = self._team.id
-	my_save_data.activating = self._activating
-	my_save_data.activated = self._activated
-	my_save_data.inactivating = self._inactivating
-	my_save_data.inactivated = self._inactivated
-	my_save_data.rearming = self._rearming
-	my_save_data.reparing = self._repairing
-	my_save_data.updator_name = self._updator_name
+	my_save_data.state = self._state
 end
 
 function SentryGunMovement:load(save_data)
@@ -700,15 +668,7 @@ function SentryGunMovement:load(save_data)
 	self._team = managers.groupai:state():team_data(my_save_data.team)
 
 	managers.groupai:state():add_listener("SentryGunMovement_team_def_" .. tostring(self._unit:key()), {"team_def"}, callback(self, self, "clbk_team_def"))
-
-	self._activating = my_save_data.activating
-	self._activated = my_save_data.activated
-	self._inactivating = my_save_data.inactivating
-	self._inactivated = my_save_data.inactivated
-	self._rearming = my_save_data.rearming
-	self._repairing = my_save_data.repairing
-
-	self:_set_updator(my_save_data.updator_name)
+	self:_set_state(my_save_data.state)
 	self._unit:weapon():update_laser()
 end
 
@@ -766,13 +726,11 @@ function SentryGunMovement:not_cool_t()
 end
 
 function SentryGunMovement:rearming()
-	return self._rearming
+	return self._state == "rearming"
 end
 
 function SentryGunMovement:rearm()
-	self:_set_updator("_update_rearming")
-
-	self._rearming = true
+	self:_set_state("rearming")
 
 	if Network:is_server() then
 		self._rearm_complete_t = TimerManager:game():time() + self._tweak.AUTO_RELOAD_DURATION
@@ -789,17 +747,15 @@ function SentryGunMovement:rearm()
 end
 
 function SentryGunMovement:repairing()
-	return self._repairing
+	return self._state == "repairing"
 end
 
 function SentryGunMovement:repair()
-	self:_set_updator("_update_repairing")
+	self:_set_state("repairing")
 
 	if self._repair_start_seq then
 		self._unit:damage():run_sequence_simple(self._repair_start_seq)
 	end
-
-	self._repairing = true
 
 	if Network:is_server() then
 		self._repair_complete_t = TimerManager:game():time() + self._tweak.AUTO_REPAIR_DURATION

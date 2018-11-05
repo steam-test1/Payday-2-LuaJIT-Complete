@@ -4,9 +4,10 @@ MutatorShotgunTweak.name_id = "mutator_shotgun_tweak"
 MutatorShotgunTweak.desc_id = "mutator_shotgun_tweak_desc"
 MutatorShotgunTweak.has_options = true
 MutatorShotgunTweak.reductions = {
-	money = 0.25,
-	exp = 0.25
+	money = 0,
+	exp = 0
 }
+MutatorShotgunTweak.disables_achievements = true
 MutatorShotgunTweak.icon_coords = {
 	7,
 	1

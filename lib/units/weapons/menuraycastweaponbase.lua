@@ -71,7 +71,7 @@ end
 
 function NewRaycastWeaponBase:assemble(factory_id, skip_queue)
 	local third_person = self:_third_person()
-	self._parts, self._blueprint = managers.weapon_factory:assemble_default(factory_id, self._unit, third_person, callback(self, self, "_assemble_completed", function ()
+	self._parts, self._blueprint = managers.weapon_factory:assemble_default(factory_id, self._unit, third_person, self:is_npc(), callback(self, self, "_assemble_completed", function ()
 	end), skip_queue)
 
 	self:_check_thq_align_anim()
@@ -80,7 +80,7 @@ function NewRaycastWeaponBase:assemble(factory_id, skip_queue)
 	return
 
 	local third_person = self:is_npc()
-	self._parts, self._blueprint = managers.weapon_factory:assemble_default(factory_id, self._unit, third_person)
+	self._parts, self._blueprint = managers.weapon_factory:assemble_default(factory_id, self._unit, third_person, self:is_npc())
 
 	self:_update_fire_object()
 	self:_update_stats_values()
@@ -88,7 +88,7 @@ end
 
 function NewRaycastWeaponBase:assemble_from_blueprint(factory_id, blueprint, skip_queue, clbk)
 	local third_person = self:_third_person()
-	self._parts, self._blueprint = managers.weapon_factory:assemble_from_blueprint(factory_id, self._unit, blueprint, third_person, callback(self, self, "_assemble_completed", clbk or function ()
+	self._parts, self._blueprint = managers.weapon_factory:assemble_from_blueprint(factory_id, self._unit, blueprint, third_person, self:is_npc(), callback(self, self, "_assemble_completed", clbk or function ()
 	end), skip_queue)
 
 	self:_check_thq_align_anim()
@@ -97,7 +97,7 @@ function NewRaycastWeaponBase:assemble_from_blueprint(factory_id, blueprint, ski
 	return
 
 	local third_person = self:is_npc()
-	self._parts, self._blueprint = managers.weapon_factory:assemble_from_blueprint(factory_id, self._unit, blueprint, third_person)
+	self._parts, self._blueprint = managers.weapon_factory:assemble_from_blueprint(factory_id, self._unit, blueprint, third_person, self:is_npc())
 
 	self:_update_fire_object()
 	self:_update_stats_values()
@@ -194,7 +194,7 @@ function NewRaycastWeaponBase:apply_texture_switches()
 							end
 
 							if self._parts_texture_switches[part_id] then
-								TextureCache:unretrieve(Idstring(self._parts_texture_switches[part_id]))
+								TextureCache:unretrieve(self._parts_texture_switches[part_id])
 							end
 
 							self._parts_texture_switches[part_id] = Idstring(texture_id)

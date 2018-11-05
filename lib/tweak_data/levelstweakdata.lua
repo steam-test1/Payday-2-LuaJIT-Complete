@@ -1239,8 +1239,7 @@ function LevelsTweakData:init()
 		music = "heist",
 		package = "packages/lvl_mad",
 		cube = "cube_apply_heist_bank",
-		ai_group_type = russia,
-		spawn_dis_limit = 150
+		ai_group_type = russia
 	}
 	self.biker_train = {
 		name_id = "heist_biker_train_hl",

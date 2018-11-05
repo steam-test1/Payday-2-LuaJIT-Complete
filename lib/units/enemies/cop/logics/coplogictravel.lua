@@ -169,6 +169,7 @@ end
 function CopLogicTravel.queued_update(data)
 	local my_data = data.internal_data
 	data.t = TimerManager:game():time()
+	my_data.close_to_criminal = nil
 	local delay = CopLogicTravel._upd_enemy_detection(data)
 
 	if data.internal_data ~= my_data then
@@ -392,7 +393,7 @@ function CopLogicTravel._update_cover(ignore_this, data)
 	end
 
 	if nearest_cover or best_cover then
-		CopLogicBase.add_delayed_clbk(my_data, my_data.cover_update_task_key, callback(CopLogicTravel, CopLogicTravel, "_update_cover", data), data.t + 1)
+		CopLogicBase.add_delayed_clbk(my_data, my_data.cover_update_task_key, callback(CopLogicTravel, CopLogicTravel, "_update_cover", data), data.t + 2)
 	end
 end
 
@@ -467,6 +468,11 @@ function CopLogicTravel.action_complete_clbk(data, action)
 				my_data.best_cover[4] = high_ray
 				my_data.in_cover = true
 				local cover_wait_time = my_data.coarse_path_index == #my_data.coarse_path - 1 and 0.3 or 0.6 + 0.4 * math.random()
+
+				if not CopLogicTravel._chk_close_to_criminal(data, my_data) then
+					cover_wait_time = 0
+				end
+
 				my_data.cover_leave_t = data.t + cover_wait_time
 			else
 				managers.navigation:release_cover(my_data.moving_to_cover[1])
@@ -1129,10 +1135,35 @@ function CopLogicTravel.complete_coarse_path(data, my_data, coarse_path)
 	return 1
 end
 
+function CopLogicTravel._chk_close_to_criminal(data, my_data)
+	if my_data.close_to_criminal == nil then
+		my_data.close_to_criminal = false
+		local my_area = managers.groupai:state():get_area_from_nav_seg_id(data.unit:movement():nav_tracker():nav_segment())
+
+		if next(my_area.criminal.units) then
+			my_data.close_to_criminal = true
+		else
+			for _, nbr in pairs(my_area.neighbours) do
+				if next(nbr.criminal.units) then
+					my_data.close_to_criminal = true
+
+					break
+				end
+			end
+		end
+	end
+
+	return my_data.close_to_criminal
+end
+
 function CopLogicTravel.chk_group_ready_to_move(data, my_data)
 	local my_objective = data.objective
 
 	if not my_objective.grp_objective then
+		return true
+	end
+
+	if not CopLogicTravel._chk_close_to_criminal(data, my_data) then
 		return true
 	end
 
