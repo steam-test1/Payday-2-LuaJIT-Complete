@@ -7,17 +7,18 @@ ScrollablePanel.SCROLL_SPEED = SCROLL_SPEED
 function ScrollablePanel:init(parent_panel, name, data)
 	data = data or {}
 	self._alphas = {}
-	self._padding = data.padding ~= nil and data.padding or PANEL_PADDING
+	self._x_padding = data.x_padding ~= nil and data.x_padding or data.padding ~= nil and data.padding or PANEL_PADDING
+	self._y_padding = data.y_padding ~= nil and data.y_padding or data.padding ~= nil and data.padding or PANEL_PADDING
 	self._force_scroll_indicators = data.force_scroll_indicators
 	local layer = data.layer ~= nil and data.layer or 50
 	data.name = data.name or name and name .. "Base"
 	self._panel = parent_panel:panel(data)
 	self._scroll_panel = self._panel:panel({
 		name = name and name .. "Scroll",
-		x = self:padding(),
-		y = self:padding(),
-		w = self._panel:w() - self:padding() * 2,
-		h = self._panel:h() - self:padding() * 2
+		x = self:x_padding(),
+		y = self:y_padding(),
+		w = self._panel:w() - self:x_padding() * 2,
+		h = self._panel:h() - self:y_padding() * 2
 	})
 	self._canvas = self._scroll_panel:panel({
 		name = name and name .. "Canvas",
@@ -32,8 +33,8 @@ function ScrollablePanel:init(parent_panel, name, data)
 			valign = "top",
 			alpha = 0,
 			layer = layer,
-			x = self:padding(),
-			y = self:padding(),
+			x = self:x_padding(),
+			y = self:y_padding(),
 			w = self:canvas():w()
 		})
 
@@ -52,10 +53,10 @@ function ScrollablePanel:init(parent_panel, name, data)
 			halign = "right",
 			alpha = 0,
 			layer = layer,
-			x = self:padding(),
-			y = self:padding(),
+			x = self:x_padding(),
+			y = self:y_padding(),
 			w = self:canvas():w(),
-			h = self:panel():h() - self:padding() * 2
+			h = self:panel():h() - self:y_padding() * 2
 		})
 
 		BoxGuiObject:new(scroll_down_indicator_shade, {sides = {
@@ -78,8 +79,8 @@ function ScrollablePanel:init(parent_panel, name, data)
 		color = Color.white
 	})
 
-	scroll_up_indicator_arrow:set_top(self:padding() + 6)
-	scroll_up_indicator_arrow:set_right(self:panel():w() - self:scrollbar_padding())
+	scroll_up_indicator_arrow:set_top(self:y_padding() + 6)
+	scroll_up_indicator_arrow:set_right(self:panel():w() - self:scrollbar_x_padding())
 
 	local scroll_down_indicator_arrow = self:panel():bitmap({
 		name = "scroll_down_indicator_arrow",
@@ -93,8 +94,8 @@ function ScrollablePanel:init(parent_panel, name, data)
 		color = Color.white
 	})
 
-	scroll_down_indicator_arrow:set_bottom((self:panel():h() - self:padding()) - 6)
-	scroll_down_indicator_arrow:set_right(self:panel():w() - self:scrollbar_padding())
+	scroll_down_indicator_arrow:set_bottom((self:panel():h() - self:y_padding()) - 6)
+	scroll_down_indicator_arrow:set_right(self:panel():w() - self:scrollbar_x_padding())
 
 	if data.left_scrollbar then
 		scroll_up_indicator_arrow:set_left(2)
@@ -141,15 +142,27 @@ function ScrollablePanel:canvas()
 	return self._canvas
 end
 
-function ScrollablePanel:padding()
-	return self._padding
+function ScrollablePanel:x_padding()
+	return self._x_padding
 end
 
-function ScrollablePanel:scrollbar_padding()
-	if self._padding == 0 then
+function ScrollablePanel:y_padding()
+	return self._y_padding
+end
+
+function ScrollablePanel:scrollbar_x_padding()
+	if self._x_padding == 0 then
 		return PANEL_PADDING
 	else
-		return self._padding
+		return self._x_padding
+	end
+end
+
+function ScrollablePanel:scrollbar_y_padding()
+	if self._y_padding == 0 then
+		return PANEL_PADDING
+	else
+		return self._y_padding
 	end
 end
 
@@ -165,17 +178,17 @@ end
 
 function ScrollablePanel:set_size(w, h)
 	self:panel():set_size(w, h)
-	self:scroll_panel():set_size(w - self:padding() * 2, h - self:padding() * 2)
+	self:scroll_panel():set_size(w - self:x_padding() * 2, h - self:y_padding() * 2)
 
 	local scroll_up_indicator_arrow = self:panel():child("scroll_up_indicator_arrow")
 
-	scroll_up_indicator_arrow:set_top(self:padding() + 6)
-	scroll_up_indicator_arrow:set_right(self:panel():w() - self:scrollbar_padding())
+	scroll_up_indicator_arrow:set_top(self:y_padding() + 6)
+	scroll_up_indicator_arrow:set_right(self:panel():w() - self:scrollbar_x_padding())
 
 	local scroll_down_indicator_arrow = self:panel():child("scroll_down_indicator_arrow")
 
-	scroll_down_indicator_arrow:set_bottom((self:panel():h() - self:padding()) - 6)
-	scroll_down_indicator_arrow:set_right(self:panel():w() - self:scrollbar_padding())
+	scroll_down_indicator_arrow:set_bottom((self:panel():h() - self:y_padding()) - 6)
+	scroll_down_indicator_arrow:set_right(self:panel():w() - self:scrollbar_x_padding())
 	self._scroll_bar:set_bottom(scroll_down_indicator_arrow:top())
 	self._scroll_bar:set_center_x(scroll_down_indicator_arrow:center_x())
 end
@@ -189,7 +202,7 @@ function ScrollablePanel:canvas_max_width()
 end
 
 function ScrollablePanel:canvas_scroll_width()
-	return (self:scroll_panel():w() - self:padding()) - 5
+	return (self:scroll_panel():w() - self:x_padding()) - 5
 end
 
 function ScrollablePanel:canvas_scroll_height()
@@ -371,7 +384,7 @@ function ScrollablePanel:_check_scroll_indicator_states()
 	self:set_element_alpha_target("scroll_up_indicator_arrow", up_alpha, FADEOUT_SPEED)
 	self:set_element_alpha_target("scroll_down_indicator_arrow", down_alpha, FADEOUT_SPEED)
 
-	if self:padding() > 0 or self._force_scroll_indicators then
+	if self:y_padding() > 0 or self._force_scroll_indicators then
 		self:set_element_alpha_target("scroll_up_indicator_shade", up_alpha, FADEOUT_SPEED)
 		self:set_element_alpha_target("scroll_down_indicator_shade", down_alpha, FADEOUT_SPEED)
 	end

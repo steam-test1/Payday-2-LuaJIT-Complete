@@ -73,6 +73,10 @@ function ButtonBoxGui:_setup_buttons_panel(info_area, button_list, focus_button,
 	return buttons_panel
 end
 
+function ButtonBoxGui:_override_info_area_size(info_area, scroll_panel, buttons_panel)
+	info_area:set_h(math.min(scroll_panel:bottom() + buttons_panel:h() + 10 + 5, 620))
+end
+
 function ButtonBoxGui:set_focus_button(focus_button, allow_callbacks)
 	if focus_button ~= self._text_box_focus_button then
 		managers.menu:post_event("highlight")
@@ -97,17 +101,34 @@ function ButtonBoxGui:_set_button_selected(index, is_selected, allow_callbacks)
 	if allow_callbacks and is_selected and self._button_list then
 		local button = self._button_list[index]
 
-		if button then
+		if button and button.focus_callback_func then
 			button.focus_callback_func()
 		end
 	end
+end
+
+function ButtonBoxGui:change_focus_button(change, override_at)
+	local button_count = self._text_box_buttons_panel:num_children() - 1
+	local focus_button = ((override_at or self._text_box_focus_button) + change) % button_count
+
+	if focus_button == 0 then
+		focus_button = button_count
+	end
+
+	if self._button_list[focus_button].no_selection then
+		self:change_focus_button(change, focus_button)
+
+		return
+	end
+
+	self:set_focus_button(focus_button)
 end
 
 function ButtonBoxGui:_scroll_buttons(direction)
 	local SCROLL_SPEED = 28
 	local speed = SCROLL_SPEED * TimerManager:main():delta_time() * 200
 	local new_y = self._text_box_buttons_panel:y() + speed * direction
-	new_y = math.clamp(new_y, (-1 * self._text_box_buttons_panel:h() + self._panel:h()) - 10, tweak_data.menu.pd2_large_font_size + 5)
+	new_y = math.clamp(new_y, (self._info_area:h() - 10) - self._text_box_buttons_panel:h(), tweak_data.menu.pd2_large_font_size + 4)
 
 	self._text_box_buttons_panel:set_y(new_y)
 end

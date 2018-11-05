@@ -126,7 +126,6 @@ end
 
 function PlayerManager:check_skills()
 	self._coroutine_mgr:remove_coroutine(PlayerAction.UnseenStrike)
-	self._coroutine_mgr:remove_coroutine(PlayerAction.UnseenStrikeStart)
 	self._coroutine_mgr:remove_coroutine(PlayerAction.BloodthirstBase)
 
 	self._saw_panic_when_kill = self:has_category_upgrade("saw", "panic_when_kill")
@@ -571,7 +570,7 @@ function PlayerManager:update(t, dt)
 	self._coroutine_mgr:update(t, dt)
 	self._action_mgr:update(t, dt)
 
-	if self._unseen_strike and not self._coroutine_mgr:is_running(PlayerAction.UnseenStrike) and not self._coroutine_mgr:is_running(PlayerAction.UnseenStrikeStart) then
+	if self._unseen_strike and not self._coroutine_mgr:is_running(PlayerAction.UnseenStrike) then
 		local data = self:upgrade_value("player", "unseen_increased_crit_chance", 0)
 
 		if data ~= 0 then
@@ -2280,6 +2279,7 @@ function PlayerManager:critical_hit_chance()
 	multiplier = multiplier + self:upgrade_value("weapon", "critical_hit_chance", 0)
 	multiplier = multiplier + self:team_upgrade_value("critical_hit", "chance", 0)
 	multiplier = (multiplier + self:get_hostage_bonus_multiplier("critical_hit")) - 1
+	multiplier = multiplier + managers.player:temporary_upgrade_value("temporary", "unseen_strike", 1) - 1
 	multiplier = (multiplier + self._crit_mul) - 1
 	local detection_risk_add_crit_chance = managers.player:upgrade_value("player", "detection_risk_add_crit_chance")
 	multiplier = multiplier + self:get_value_from_risk_upgrade(detection_risk_add_crit_chance)

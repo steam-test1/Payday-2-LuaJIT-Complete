@@ -416,6 +416,10 @@ function GenericDLCManager:has_pd2_clan()
 	return self:is_dlc_unlocked("pd2_clan")
 end
 
+function GenericDLCManager:has_raidww2_clan()
+	return self:is_dlc_unlocked("raidww2_clan")
+end
+
 function GenericDLCManager:has_twitch_pack()
 	return self:is_dlc_unlocked("twitch_pack")
 end
@@ -494,6 +498,14 @@ end
 
 function GenericDLCManager:has_dgm()
 	return self:is_dlc_unlocked("dgm")
+end
+
+function GenericDLCManager:has_gcm()
+	return self:is_dlc_unlocked("gcm")
+end
+
+function GenericDLCManager:has_fdm()
+	return self:is_dlc_unlocked("fdm")
 end
 
 function GenericDLCManager:has_goty_all_dlc_bundle_2014()
@@ -1020,6 +1032,40 @@ function PS4DLCManager:init()
 			rota = {
 				verified_for_TheBigScore = true,
 				verified = true
+			},
+			pim = {
+				verified = false,
+				product_id = "PD2DLCJWICKWPN18",
+				verified_for_TheBigScore = false
+			},
+			tango = {
+				verified = false,
+				product_id = "PD2DLCGAGESPEC19",
+				verified_for_TheBigScore = false
+			},
+			friend = {
+				verified = false,
+				product_id = "PD2DLCSCARFHST20",
+				verified_for_TheBigScore = false
+			},
+			chico = {
+				verified = false,
+				product_id = "PD2DLCSCARFCHA21",
+				verified_for_TheBigScore = false
+			},
+			spa = {
+				verified = false,
+				product_id = "PD2DLCJWICKHST22",
+				verified_for_TheBigScore = false
+			},
+			grv = {
+				verified = false,
+				product_id = "PD2DLCGAGERUSS23",
+				verified_for_TheBigScore = false
+			},
+			pn2 = {
+				verified_for_TheBigScore = true,
+				verified = true
 			}
 		}
 
@@ -1028,6 +1074,7 @@ function PS4DLCManager:init()
 end
 
 function PS4DLCManager:_verify_dlcs()
+	local unlock_all_test = false
 	local owns_TheBigScore = false
 
 	if PS3:has_theBigScore() then
@@ -1035,14 +1082,18 @@ function PS4DLCManager:_verify_dlcs()
 	end
 
 	for dlc_name, dlc_data in pairs(Global.dlc_manager.all_dlc_data) do
-		if dlc_data.is_default or dlc_data.verified == true then
-			dlc_data.verified = true
+		if unlock_all_test then
+			dlc_data.verified = false
 		else
-			dlc_data.verified = PS3:has_entitlement(dlc_data.product_id)
-		end
+			if dlc_data.is_default or dlc_data.verified == true then
+				dlc_data.verified = true
+			else
+				dlc_data.verified = PS3:has_entitlement(dlc_data.product_id)
+			end
 
-		if owns_TheBigScore and dlc_data.verified_for_TheBigScore == true then
-			dlc_data.verified = true
+			if owns_TheBigScore and dlc_data.verified_for_TheBigScore == true then
+				dlc_data.verified = true
+			end
 		end
 	end
 end
@@ -1325,11 +1376,14 @@ end
 function XB1DLCManager:_verify_dlcs()
 	local dlc_content_updated = false
 	local old_verified = nil
+	local unlock_all_test = false
 
 	for dlc_name, dlc_data in pairs(Global.dlc_manager.all_dlc_data) do
 		old_verified = dlc_data.verified or false
 
-		if dlc_data.is_default then
+		if unlock_all_test then
+			dlc_data.verified = false
+		elseif dlc_data.is_default then
 			dlc_data.verified = true
 		else
 			dlc_data.verified = XboxLive and XboxLive:check_dlc(dlc_data.product_id)
@@ -1348,7 +1402,7 @@ function XB1DLCManager:chk_content_updated()
 		print("[XB1DLCManager:chk_content_updated] content updated")
 
 		if managers.experience and managers.upgrades then
-			for level = 1, managers.experience:current_level(), 1 do
+			for level = 0, managers.experience:current_level(), 1 do
 				managers.upgrades:aquire_from_level_tree(level, true)
 				managers.upgrades:verify_level_tree(level, true)
 			end
@@ -1703,6 +1757,11 @@ function WINDLCManager:init()
 			},
 			dgm = {
 				app_id = "218620",
+				no_install = true
+			},
+			raidww2_clan = {source_id = "103582791460014708"},
+			fdm = {
+				app_id = "707620",
 				no_install = true
 			}
 		}

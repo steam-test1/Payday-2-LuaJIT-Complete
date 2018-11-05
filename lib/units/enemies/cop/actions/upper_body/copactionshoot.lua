@@ -309,18 +309,16 @@ function CopActionShoot:update(t)
 				self._autoshots_fired = nil
 			end
 
-			if self._ext_anim.base_no_reload then
-				self._weapon_unit:base():on_reload()
-			else
+			if not self._ext_anim.base_no_reload then
 				local res = CopActionReload._play_reload(self)
 
 				if res then
 					self._machine:set_speed(res, self._reload_speed)
 				end
-			end
 
-			if Network:is_server() then
-				managers.network:session():send_to_peers("reload_weapon_cop", self._unit)
+				if Network:is_server() then
+					managers.network:session():send_to_peers("reload_weapon_cop", self._unit)
+				end
 			end
 		elseif self._autofiring then
 			if not target_vec or not self._common_data.allow_fire then

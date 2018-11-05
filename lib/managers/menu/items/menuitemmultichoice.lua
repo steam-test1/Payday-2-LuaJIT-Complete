@@ -541,3 +541,55 @@ function MenuItemMultiChoiceWithIcon:set_icon_visible(state)
 	self._icon:set_visible(state)
 end
 
+function MenuItemMultiChoice:popup_choice(row_item)
+	local dialog_data = {
+		title = row_item.gui_text:text(),
+		text = "",
+		button_list = {}
+	}
+
+	for _, option in pairs(self:options()) do
+		local text = option:parameters().text_id
+
+		if option:parameters().localize == nil or option:parameters().localize then
+			text = managers.localization:text(text)
+		end
+
+		table.insert(dialog_data.button_list, {
+			text = text,
+			callback_func = function ()
+				self:set_value(option:parameters().value)
+			end
+		})
+	end
+
+	local divider = {
+		no_text = true,
+		no_selection = true
+	}
+
+	table.insert(dialog_data.button_list, divider)
+
+	local no_button = {
+		text = managers.localization:text("dialog_cancel"),
+		cancel_button = true
+	}
+
+	table.insert(dialog_data.button_list, no_button)
+
+	dialog_data.image_blend_mode = "normal"
+	dialog_data.text_blend_mode = "add"
+	dialog_data.use_text_formating = true
+	dialog_data.w = 480
+	dialog_data.h = 532
+	dialog_data.title_font = tweak_data.menu.pd2_medium_font
+	dialog_data.title_font_size = tweak_data.menu.pd2_medium_font_size
+	dialog_data.font = tweak_data.menu.pd2_small_font
+	dialog_data.font_size = tweak_data.menu.pd2_small_font_size
+	dialog_data.text_formating_color = Color.white
+	dialog_data.text_formating_color_table = {}
+	dialog_data.clamp_to_screen = true
+
+	managers.system_menu:show_buttons(dialog_data)
+end
+

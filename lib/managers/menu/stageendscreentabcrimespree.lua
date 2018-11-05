@@ -60,7 +60,7 @@ end
 
 function CrimeSpreeResultTabItem:_create_level(total_w)
 	self._level_panel = self._cs_panel:panel({})
-	local level_gain = managers.crime_spree:spree_level_gained()
+	local level_gain = managers.crime_spree:mission_completion_gain()
 	local gain_x = self._level_panel:w() * (1 - total_w) * 0.5
 	local gain_y = self._level_panel:h() * 0.25
 	local gain_text = "+" .. managers.localization:text("menu_cs_level", {level = managers.experience:cash_string(0, "")})
@@ -98,12 +98,11 @@ function CrimeSpreeResultTabItem:_create_level(total_w)
 		local font = tweak_data.menu.pd2_small_font
 		local font_size = tweak_data.menu.pd2_small_font_size
 		local bonus = self._level_panel:text({
-			vertical = "center",
 			blend_mode = "add",
-			align = "center",
+			vertical = "center",
 			alpha = 0,
+			align = "center",
 			layer = 10,
-			name = "bonus" .. tostring(bonus_i),
 			text = text or "",
 			h = font_size,
 			font_size = font_size,
@@ -119,13 +118,12 @@ function CrimeSpreeResultTabItem:_create_level(total_w)
 
 		if level ~= nil then
 			bonus_amt = self._level_panel:text({
-				w = 200,
 				vertical = "center",
-				align = "center",
 				blend_mode = "add",
+				w = 200,
+				align = "center",
 				alpha = 0,
 				layer = 10,
-				name = "amount" .. tostring(bonus_i),
 				text = "+" .. managers.localization:text("menu_cs_level", {level = level or 0}),
 				h = font_size,
 				font_size = font_size,

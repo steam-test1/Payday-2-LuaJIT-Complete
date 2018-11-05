@@ -8469,6 +8469,7 @@ function BlackMarketGui.get_func_based(func_based)
 end
 
 function BlackMarketGui:populate_weapon_category(category, data)
+	managers.blackmarket:clear_temporary()
 	managers.blackmarket:clear_preview_blueprint()
 
 	local crafted_category = managers.blackmarket:get_crafted_category(category) or {}
@@ -9192,16 +9193,22 @@ function BlackMarketGui:populate_melee_weapons(data)
 		new_data.global_value = tweak_data.lootdrop.global_values[m_tweak_data.dlc] and m_tweak_data.dlc or "normal"
 		new_data.skill_based = melee_weapon_data[2].skill_based
 		new_data.skill_name = "bm_menu_skill_locked_" .. new_data.name
+		new_data.func_based = melee_weapon_data[2].func_based
 
 		if m_tweak_data and m_tweak_data.locks then
 			local dlc = m_tweak_data.locks.dlc
 			local achievement = m_tweak_data.locks.achievement
 			local saved_job_value = m_tweak_data.locks.saved_job_value
 			local level = m_tweak_data.locks.level
+			local func = m_tweak_data.locks.func
 			new_data.dlc_based = true
 			new_data.lock_texture = self:get_lock_icon(new_data, "guis/textures/pd2/lock_community")
 
-			if achievement and managers.achievment:get_info(achievement) and not managers.achievment:get_info(achievement).awarded then
+			if func and not BlackMarketGui.get_func_based(func) then
+				local _, name, icon = BlackMarketGui.get_func_based(func)
+				new_data.lock_texture = icon or new_data.lock_texture
+				new_data.dlc_locked = name
+			elseif achievement and managers.achievment:get_info(achievement) and not managers.achievment:get_info(achievement).awarded then
 				new_data.dlc_locked = "menu_bm_achievement_locked_" .. tostring(achievement)
 			elseif dlc and not managers.dlc:is_dlc_unlocked(dlc) then
 				new_data.dlc_locked = tweak_data.lootdrop.global_values[dlc] and tweak_data.lootdrop.global_values[dlc].unlock_id or "bm_menu_dlc_locked"
@@ -10314,6 +10321,9 @@ function BlackMarketGui:populate_masks_new(data)
 end
 
 function BlackMarketGui:populate_weapon_category_new(data)
+	managers.blackmarket:clear_temporary()
+	managers.blackmarket:clear_preview_blueprint()
+
 	local category = data.category
 	local crafted_category = managers.blackmarket:get_crafted_category(category) or {}
 	local last_weapon = table.size(crafted_category) == 1
@@ -10656,16 +10666,23 @@ function BlackMarketGui:populate_melee_weapons_new(data)
 		new_data.global_value = tweak_data.lootdrop.global_values[m_tweak_data.dlc] and m_tweak_data.dlc or "normal"
 		new_data.skill_based = melee_weapon_data[2].skill_based
 		new_data.skill_name = "bm_menu_skill_locked_" .. new_data.name
+		new_data.func_based = melee_weapon_data[2].func_based
 
 		if m_tweak_data and m_tweak_data.locks then
 			local dlc = m_tweak_data.locks.dlc
 			local achievement = m_tweak_data.locks.achievement
 			local saved_job_value = m_tweak_data.locks.saved_job_value
 			local level = m_tweak_data.locks.level
+			local func = m_tweak_data.locks.func
 			new_data.dlc_based = true
 			new_data.lock_texture = self:get_lock_icon(new_data, "guis/textures/pd2/lock_community")
 
-			if achievement and managers.achievment:get_info(achievement) and not managers.achievment:get_info(achievement).awarded then
+			if func and not BlackMarketGui.get_func_based(func) then
+				local _, name, icon = BlackMarketGui.get_func_based(func)
+				new_data.lock_texture = icon or "guis/textures/pd2/lock_community"
+				new_data.dlc_locked = name
+				new_data.unlocked = false
+			elseif achievement and managers.achievment:get_info(achievement) and not managers.achievment:get_info(achievement).awarded then
 				new_data.dlc_locked = "menu_bm_achievement_locked_" .. tostring(achievement)
 			elseif dlc and not managers.dlc:is_dlc_unlocked(dlc) then
 				new_data.dlc_locked = tweak_data.lootdrop.global_values[dlc] and tweak_data.lootdrop.global_values[dlc].unlock_id or "bm_menu_dlc_locked"
@@ -11228,13 +11245,15 @@ function BlackMarketGui:populate_mods(data)
 			table.insert(data[equipped], "wm_remove_buy")
 
 			if not data[equipped].is_internal then
+				local preview_forbidden = managers.blackmarket:is_previewing_legendary_skin() or managers.blackmarket:preview_mod_forbidden(data[equipped].category, data[equipped].slot, data[equipped].name)
+
 				if managers.blackmarket:is_previewing_any_mod() then
 					table.insert(data[equipped], "wm_clear_mod_preview")
 				end
 
 				if managers.blackmarket:is_previewing_mod(data[equipped].name) then
 					table.insert(data[equipped], "wm_remove_preview")
-				else
+				elseif not preview_forbidden then
 					table.insert(data[equipped], "wm_preview_mod")
 				end
 			else

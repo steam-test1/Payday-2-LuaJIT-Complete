@@ -922,6 +922,13 @@ function MenuManager:show_new_tradable_item_received(params)
 			name = params.item_name
 		})
 	else
+		if item.category == "armor_skins" then
+			dialog_data.text = managers.localization:to_upper_text("dialog_new_tradable_item", {
+				quality = "",
+				name = params.item_name
+			})
+		end
+
 		local entry_data = (tweak_data.economy[item.category] or tweak_data.blackmarket[item.category])[item.entry]
 
 		if item.bonus and entry_data.bonus then

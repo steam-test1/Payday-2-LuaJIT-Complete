@@ -1,6 +1,7 @@
 SentryGunDamage = SentryGunDamage or class()
 SentryGunDamage._HEALTH_GRANULARITY = CopDamage._HEALTH_GRANULARITY
 SentryGunDamage._ATTACK_VARIANTS = CopDamage._ATTACK_VARIANTS
+SentryGunDamage.can_be_critical = CopDamage.can_be_critical
 
 function SentryGunDamage:init(unit)
 	self._unit = unit
@@ -104,7 +105,7 @@ function SentryGunDamage:damage_bullet(attack_data)
 
 	if attack_data.attacker_unit == managers.player:player_unit() then
 		self._char_tweak = tweak_data.weapon[self._unit:base():get_name_id()]
-		local critical_hit, damage = CopDamage.roll_critical_hit(self, dmg_adjusted)
+		local critical_hit, damage = CopDamage.roll_critical_hit(self, attack_data)
 		dmg_adjusted = damage
 
 		if critical_hit then
@@ -253,10 +254,11 @@ function SentryGunDamage:damage_explosion(attack_data)
 	end
 
 	local damage = attack_data.damage * tweak_data.weapon[self._unit:base():get_name_id()].EXPLOSION_DMG_MUL
+	attack_data.damage = damage
 
 	if attacker_unit and attacker_unit == managers.player:player_unit() then
 		self._char_tweak = tweak_data.weapon[self._unit:base():get_name_id()]
-		local critical_hit, crit_damage = CopDamage.roll_critical_hit(self, damage)
+		local critical_hit, crit_damage = CopDamage.roll_critical_hit(self, attack_data)
 		damage = crit_damage
 
 		if critical_hit then

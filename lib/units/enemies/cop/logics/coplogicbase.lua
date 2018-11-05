@@ -650,8 +650,15 @@ function CopLogicBase._upd_attention_obj_detection(data, min_reaction, max_react
 
 				attention_info.dis = dis
 				attention_info.vis_ray = vis_ray and vis_ray.dis or nil
+				local is_ignored = false
 
-				if verified then
+				if attention_info.unit:movement() and attention_info.unit:movement().is_cuffed then
+					is_ignored = attention_info.unit:movement():is_cuffed()
+				end
+
+				if is_ignored then
+					CopLogicBase._destroy_detected_attention_object_data(data, attention_info)
+				elseif verified then
 					attention_info.release_t = nil
 					attention_info.verified_t = t
 

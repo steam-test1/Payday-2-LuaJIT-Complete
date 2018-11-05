@@ -380,6 +380,10 @@ function PlayerMovement:on_cuffed()
 	end
 end
 
+function PlayerMovement:is_cuffed()
+	return self._current_state_name == "arrested"
+end
+
 function PlayerMovement:on_uncovered(enemy_unit)
 	if self._current_state_name ~= "mask_off" and self._current_state_name ~= "clean" or self._current_state_name == "civilian" then
 		return

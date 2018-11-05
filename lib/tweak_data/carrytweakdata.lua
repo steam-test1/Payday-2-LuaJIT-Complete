@@ -32,6 +32,12 @@ function CarryTweakData:init(tweak_data)
 		can_run = false,
 		throw_distance_multiplier = 0.5
 	}
+	self.types.slightly_heavy = {
+		move_speed_modifier = 0.6,
+		jump_modifier = 1,
+		can_run = false,
+		throw_distance_multiplier = 0.8
+	}
 	self.types.medium = {
 		move_speed_modifier = 0.75,
 		jump_modifier = 1,

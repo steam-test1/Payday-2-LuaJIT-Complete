@@ -36,13 +36,13 @@ function BoxGuiObject:create_sides(panel, config)
 	local top_side = config.sides and config.sides[3] or config.top or 0
 	local bottom_side = config.sides and config.sides[4] or config.bottom or 0
 
-	self:_create_side(self._panel, "left", left_side)
-	self:_create_side(self._panel, "right", right_side)
-	self:_create_side(self._panel, "top", top_side)
-	self:_create_side(self._panel, "bottom", bottom_side)
+	self:_create_side(self._panel, "left", left_side, config.texture)
+	self:_create_side(self._panel, "right", right_side, config.texture)
+	self:_create_side(self._panel, "top", top_side, config.texture)
+	self:_create_side(self._panel, "bottom", bottom_side, config.texture)
 end
 
-function BoxGuiObject:_create_side(panel, side, type)
+function BoxGuiObject:_create_side(panel, side, type, texture)
 	local ids_side = Idstring(side)
 	local ids_left = Idstring("left")
 	local ids_right = Idstring("right")
@@ -72,16 +72,16 @@ function BoxGuiObject:_create_side(panel, side, type)
 		return
 	elseif type == 1 or type == 3 or type == 4 then
 		local one = side_panel:bitmap({
-			texture = "guis/textures/pd2/shared_lines",
 			valign = "grow",
 			wrap_mode = "wrap",
-			halign = "grow"
+			halign = "grow",
+			texture = texture or "guis/textures/pd2/shared_lines"
 		})
 		local two = side_panel:bitmap({
-			texture = "guis/textures/pd2/shared_lines",
 			valign = "grow",
 			wrap_mode = "wrap",
-			halign = "grow"
+			halign = "grow",
+			texture = texture or "guis/textures/pd2/shared_lines"
 		})
 		local x = math.random(1, 255)
 		local y = math.random(0, one:texture_height() / 2 - 1) * 2
@@ -130,10 +130,10 @@ function BoxGuiObject:_create_side(panel, side, type)
 		two:set_visible(type == 1 or type == 4)
 	elseif type == 2 then
 		local full = side_panel:bitmap({
-			texture = "guis/textures/pd2/shared_lines",
 			valign = "grow",
 			halign = "grow",
 			wrap_mode = "wrap",
+			texture = texture or "guis/textures/pd2/shared_lines",
 			w = side_panel:w(),
 			h = side_panel:h()
 		})

@@ -34,20 +34,31 @@ function CarryData:trigger_load(instigator)
 end
 
 function CarryData:update(unit, t, dt)
-	if not Network:is_server() then
-		return
+	if Network:is_server() then
+		self:_update_explode_t(unit, t, dt)
+		self:_update_unlink_check(unit, t, dt)
+		self:_update_throw_link(unit, t, dt)
+		self:_update_teleport(unit, t, dt)
+	else
+		self:_update_teleport(unit, t, dt)
 	end
+end
 
+function CarryData:_update_explode_t(unit, t, dt)
 	if self._explode_t and self._explode_t < t then
 		self._explode_t = nil
 
 		self:_explode()
 	end
+end
 
+function CarryData:_update_unlink_check(unit, t, dt)
 	if alive(self._linked_to) and self._linked_to.character_damage and self._linked_to:character_damage():dead() then
 		self:unlink()
 	end
+end
 
+function CarryData:_update_throw_link(unit, t, dt)
 	if not self._linked_to then
 		local bag_object = self._unit:get_object(Idstring("g_bag")) or self._unit:get_object(Idstring("g_canvasbag")) or self._unit:get_object(Idstring("g_g")) or self._unit:get_object(Idstring("g_goat")) or self._unit:get_object(Idstring("g_bodybag"))
 
@@ -100,10 +111,36 @@ function CarryData:update(unit, t, dt)
 
 					if unit:movement().set_carrying_bag then
 						unit:movement():set_carrying_bag(self._unit)
+						unit:sound():say("r03x_sin", true)
 					end
 				end
 			end
 		end
+	end
+end
+
+function CarryData:_update_teleport(unit, t, dt)
+	if self._perform_push and self._teleport_push then
+		self._unit:push(unpack(self._teleport_push))
+
+		self._teleport_push = nil
+		self._perform_push = nil
+	end
+
+	if self._reset_dynamic_bodies and self._dynamic_bodies then
+		for i, body in ipairs(self._dynamic_bodies) do
+			body:set_dynamic()
+		end
+
+		self._reset_dynamic_bodies = nil
+		self._perform_push = true
+	end
+
+	if self:is_teleporting() then
+		self._unit:set_position(self._teleport)
+
+		self._reset_dynamic_bodies = true
+		self._teleport = nil
 	end
 end
 
@@ -914,5 +951,47 @@ end
 
 function CarryData:is_linked_to_unit()
 	return self._linked_to or false
+end
+
+function CarryData:is_teleporting()
+	return self._teleport
+end
+
+function CarryData:teleport_to(pos)
+	self._dynamic_bodies = {}
+	local nr_bodies = self._unit:num_bodies()
+
+	for i = 0, nr_bodies - 1, 1 do
+		local body = self._unit:body(i)
+
+		if body:dynamic() then
+			body:set_keyframed()
+			table.insert(self._dynamic_bodies, body)
+		end
+	end
+
+	self._teleport = pos
+end
+
+function CarryData:teleport_push(force, direction)
+	self._teleport_push = {
+		force,
+		direction
+	}
+end
+
+function CarryData:set_position_and_throw(position, direction, force)
+	if Network:is_client() then
+		self:unlink()
+	end
+
+	if not self._linked_to then
+		self:teleport_to(position)
+		self:teleport_push(force, direction)
+	end
+
+	if Network:is_server() then
+		managers.network:session():send_to_peers("sync_carry_set_position_and_throw", self._unit, position, direction, force)
+	end
 end
 

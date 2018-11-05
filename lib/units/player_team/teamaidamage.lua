@@ -619,7 +619,75 @@ function TeamAIDamage:_clamp_health_percentage(health_abs)
 	return health_abs, health_percent
 end
 
+function TeamAIDamage:_get_closest_player(ignore_constraints)
+	local desired_player = nil
+	local player_distance = math.huge
+	local ai_pos = self._unit:movement():m_pos()
+
+	for _, data in ipairs(managers.criminals:characters()) do
+		if data.taken and not data.ai and alive(data.unit) and self._unit ~= data.unit then
+			local new_dist = mvector3.distance(ai_pos, data.unit:position())
+
+			if new_dist < player_distance then
+				local peer = managers.network:session():peer_by_unit(data.unit)
+
+				if peer then
+					local peer_id = peer:id()
+					local vehicle_data = managers.player:get_vehicle_for_peer(peer_id)
+					local zipline_unit = data.unit:movement():zipline_unit()
+					local being_tased = data.unit:movement():tased()
+					local is_valid = not vehicle_data and not zipline_unit and not being_tased
+
+					if ignore_constraints or is_valid then
+						desired_player = data.unit
+						player_distance = new_dist
+					end
+				end
+			end
+		end
+	end
+
+	return desired_player
+end
+
+function TeamAIDamage:_teleport_carried_bag()
+	if self._unit:movement()._carry_unit then
+		self._unit:movement():throw_bag()
+	end
+
+	local dropped_bag = self._unit:movement():was_carrying_bag()
+
+	if dropped_bag and alive(dropped_bag.unit) then
+		local distance = mvector3.distance_sq(self._unit:movement():m_pos(), dropped_bag.unit:position())
+		local max_distance = math.pow(tweak_data.ai_carry.death_distance_teleport, 2)
+
+		if distance <= max_distance then
+			local desired_player = self:_get_closest_player(false)
+			desired_player = desired_player or self:_get_closest_player(true)
+
+			if desired_player then
+				local pos = desired_player:movement():m_head_pos()
+				local dir = desired_player:movement():m_head_rot():z()
+
+				if managers.player:player_unit() == desired_player then
+					dir = desired_player:camera():forward()
+				end
+
+				dropped_bag.unit:carry_data():set_position_and_throw(pos, dir * 5000, 1)
+
+				return true
+			else
+				Application:error("Couldn't find a valid player to teleport AI carried bag to: ", dropped_bag.unit)
+			end
+		end
+	end
+
+	return false
+end
+
 function TeamAIDamage:_die()
+	self:_teleport_carried_bag()
+
 	self._dead = true
 	self._revive_reminder_line_t = nil
 
@@ -897,6 +965,21 @@ function TeamAIDamage:revive(reviving_unit)
 
 	managers.hud:set_mugshot_normal(self._unit:unit_data().mugshot_id)
 	self._unit:sound():say("s05x_sin", true)
+
+	local dropped_bag = self._unit:movement():was_carrying_bag()
+
+	if dropped_bag and alive(dropped_bag.unit) then
+		local distance = mvector3.distance_sq(self._unit:movement():m_pos(), dropped_bag.unit:position())
+		local max_distance = math.pow(tweak_data.ai_carry.revive_distance_autopickup, 2)
+
+		if distance <= max_distance then
+			dropped_bag.unit:carry_data():link_to(self._unit, false)
+
+			if self._unit:movement().set_carrying_bag then
+				self._unit:movement():set_carrying_bag(dropped_bag.unit)
+			end
+		end
+	end
 end
 
 function TeamAIDamage:_send_bullet_attack_result(attack_data, hit_offset_height)

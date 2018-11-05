@@ -75,6 +75,7 @@ end
 
 function SentryGunWeapon:set_fire_mode_net(use_armor_piercing)
 	self:_set_fire_mode(use_armor_piercing)
+	self._unit:event_listener():call("on_switch_fire_mode", self._use_armor_piercing)
 end
 
 function SentryGunWeapon:flip_fire_sound()
@@ -136,7 +137,7 @@ function SentryGunWeapon:setup(setup_data)
 
 	if setup_data.alert_AI then
 		self._alert_events = {}
-		self._alert_size = tweak_data.weapon[self._name_id].alert_size
+		self._alert_size = self._alert_size or tweak_data.weapon[self._name_id].alert_size
 		self._alert_fires = {}
 	else
 		self._alert_events = nil

@@ -345,6 +345,7 @@ function CharacterTweakData:_init_medic(presets)
 	self.medic.steal_loot = false
 	self.medic.priority_shout = "f47"
 	self.medic.priority_shout_max_dis = 700
+	self.medic.die_sound_event = "mdc_x02a_any_3p"
 
 	table.insert(self._enemy_list, "medic")
 end
@@ -1870,6 +1871,7 @@ function CharacterTweakData:_init_tank(presets)
 	self.tank.melee_weapon_dmg_multiplier = 2.5
 	self.tank.melee_anims = {"cbt_std_melee"}
 	self.tank.critical_hits = {damage_mul = self.tank.headshot_dmg_mul * 1}
+	self.tank.die_sound_event = "bdz_x02a_any_3p"
 	self.tank.damage.hurt_severity = presets.hurt_severities.no_hurts
 	self.tank.chatter = {
 		retreat = true,
@@ -1945,7 +1947,8 @@ function CharacterTweakData:_init_tank(presets)
 		}
 	}
 	self.tank_hw.HEALTH_INIT = 200
-	self.tank_hw.headshot_dmg_mul = 2
+	self.tank_hw.headshot_dmg_mul = 1
+	self.tank_hw.ignore_headshot = true
 	self.tank_hw.damage.explosion_damage_mul = 1
 	self.tank_hw.use_animation_on_fire_damage = false
 	self.tank_hw.flammable = true
@@ -2023,7 +2026,7 @@ function CharacterTweakData:_init_tank(presets)
 	self.tank_mini.weapon.mini.focus_dis = 800
 	self.tank_mini.weapon.mini.spread = 20
 	self.tank_mini.weapon.mini.miss_dis = 40
-	self.tank_mini.weapon.mini.RELOAD_SPEED = 0
+	self.tank_mini.weapon.mini.RELOAD_SPEED = 1
 	self.tank_mini.weapon.mini.melee_speed = 1
 	self.tank_mini.weapon.mini.melee_dmg = 25
 	self.tank_mini.weapon.mini.melee_retry_delay = {
@@ -2058,8 +2061,8 @@ function CharacterTweakData:_init_tank(presets)
 				1
 			},
 			autofire_rounds = {
-				150,
-				200
+				500,
+				700
 			}
 		},
 		{
@@ -2080,8 +2083,8 @@ function CharacterTweakData:_init_tank(presets)
 				1
 			},
 			autofire_rounds = {
-				120,
-				160
+				500,
+				500
 			}
 		},
 		{
@@ -2102,8 +2105,8 @@ function CharacterTweakData:_init_tank(presets)
 				1
 			},
 			autofire_rounds = {
-				100,
-				140
+				300,
+				500
 			}
 		},
 		{
@@ -2124,8 +2127,8 @@ function CharacterTweakData:_init_tank(presets)
 				1
 			},
 			autofire_rounds = {
-				60,
-				100
+				100,
+				300
 			}
 		},
 		{
@@ -2147,7 +2150,7 @@ function CharacterTweakData:_init_tank(presets)
 			},
 			autofire_rounds = {
 				40,
-				80
+				100
 			}
 		}
 	}
@@ -2487,6 +2490,7 @@ function CharacterTweakData:_init_shield(presets)
 	self.shield.announce_incomming = "incomming_shield"
 	self.shield.steal_loot = nil
 	self.shield.use_animation_on_fire_damage = false
+	self.shield.die_sound_event = "shd_x02a_any_3p_01"
 
 	table.insert(self._enemy_list, "shield")
 end
@@ -2690,6 +2694,7 @@ function CharacterTweakData:_init_taser(presets)
 	}
 	self.taser.announce_incomming = "incomming_taser"
 	self.taser.steal_loot = nil
+	self.taser.die_sound_event = "tsr_x02a_any_3p"
 	self.taser.special_deaths = {bullet = {["head":id():key()] = {
 		sequence = "kill_tazer_headshot",
 		special_comment = "x01",
@@ -8321,7 +8326,7 @@ function CharacterTweakData:_presets(tweak_data)
 	presets.weapon.gang_member = {is_pistol = {}}
 	presets.weapon.gang_member.is_pistol.aim_delay = {
 		0,
-		1
+		0.5
 	}
 	presets.weapon.gang_member.is_pistol.focus_delay = 1
 	presets.weapon.gang_member.is_pistol.focus_dis = 2000
@@ -8373,7 +8378,7 @@ function CharacterTweakData:_presets(tweak_data)
 	presets.weapon.gang_member.is_rifle = {
 		aim_delay = {
 			0,
-			1
+			0.5
 		},
 		focus_delay = 1,
 		focus_dis = 3000,
@@ -8428,10 +8433,121 @@ function CharacterTweakData:_presets(tweak_data)
 			}
 		}
 	}
+	presets.weapon.gang_member.is_sniper = {
+		aim_delay = {
+			0.25,
+			1
+		},
+		focus_delay = 1,
+		focus_dis = 3000,
+		spread = 25,
+		miss_dis = 10,
+		RELOAD_SPEED = 1,
+		melee_speed = 2,
+		melee_dmg = 3,
+		melee_retry_delay = presets.weapon.normal.is_rifle.melee_retry_delay,
+		range = {
+			optimal = 4000,
+			far = 6000,
+			close = 2000
+		},
+		FALLOFF = {
+			{
+				dmg_mul = 10,
+				r = 500,
+				acc = {
+					1,
+					1
+				},
+				recoil = {
+					1,
+					1
+				},
+				mode = {
+					1,
+					0,
+					0,
+					0
+				}
+			},
+			{
+				dmg_mul = 10,
+				r = 1000,
+				acc = {
+					1,
+					1
+				},
+				recoil = {
+					1,
+					1
+				},
+				mode = {
+					1,
+					0,
+					0,
+					0
+				}
+			},
+			{
+				dmg_mul = 10,
+				r = 2500,
+				acc = {
+					0.95,
+					1
+				},
+				recoil = {
+					1,
+					1
+				},
+				mode = {
+					1,
+					0,
+					0,
+					0
+				}
+			},
+			{
+				dmg_mul = 5,
+				r = 4000,
+				acc = {
+					0.9,
+					0.95
+				},
+				recoil = {
+					1,
+					1
+				},
+				mode = {
+					1,
+					0,
+					0,
+					0
+				}
+			},
+			{
+				dmg_mul = 5,
+				r = 10000,
+				acc = {
+					0.85,
+					0.9
+				},
+				recoil = {
+					1,
+					1
+				},
+				mode = {
+					1,
+					0,
+					0,
+					0
+				}
+			}
+		}
+	}
 	presets.weapon.gang_member.is_lmg = {
 		aim_delay = {
 			0,
-			1
+			0.5
 		},
 		focus_delay = 1,
 		focus_dis = 3000,
@@ -8561,7 +8677,7 @@ function CharacterTweakData:_presets(tweak_data)
 	presets.weapon.gang_member.is_shotgun_pump = {
 		aim_delay = {
 			0,
-			0.02
+			0.25
 		},
 		focus_delay = 1,
 		focus_dis = 2000,
@@ -8614,7 +8730,7 @@ function CharacterTweakData:_presets(tweak_data)
 	presets.weapon.gang_member.is_shotgun_mag = {
 		aim_delay = {
 			0,
-			0.02
+			0.25
 		},
 		focus_delay = 1,
 		focus_dis = 2000,
@@ -9931,7 +10047,8 @@ function CharacterTweakData:_create_table_structure()
 		"x_c45",
 		"sg417",
 		"svdsil_snp",
-		"mini"
+		"mini",
+		"heavy_zeal_sniper"
 	}
 	self.weap_unit_names = {
 		Idstring("units/payday2/weapons/wpn_npc_beretta92/wpn_npc_beretta92"),
@@ -9961,7 +10078,8 @@ function CharacterTweakData:_create_table_structure()
 		Idstring("units/payday2/weapons/wpn_npc_c45/wpn_npc_x_c45"),
 		Idstring("units/pd2_dlc_chico/weapons/wpn_npc_sg417/wpn_npc_sg417"),
 		Idstring("units/pd2_dlc_spa/weapons/wpn_npc_svd_silenced/wpn_npc_svd_silenced"),
-		Idstring("units/pd2_dlc_drm/weapons/wpn_npc_mini/wpn_npc_mini")
+		Idstring("units/pd2_dlc_drm/weapons/wpn_npc_mini/wpn_npc_mini"),
+		Idstring("units/pd2_dlc_drm/weapons/wpn_npc_heavy_zeal_sniper/wpn_npc_heavy_zeal_sniper")
 	}
 end
 
@@ -10569,6 +10687,208 @@ function CharacterTweakData:_set_normal()
 			}
 		}
 	}
+	self.presets.weapon.gang_member.is_sniper.FALLOFF = {
+		{
+			dmg_mul = 4,
+			r = 500,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 4,
+			r = 1000,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 4,
+			r = 2500,
+			acc = {
+				0.95,
+				1
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 2,
+			r = 4000,
+			acc = {
+				0.9,
+				0.95
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 2,
+			r = 10000,
+			acc = {
+				0.85,
+				0.9
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		}
+	}
+	self.presets.weapon.gang_member.is_lmg.FALLOFF = {
+		{
+			dmg_mul = 2,
+			r = 100,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				0.25,
+				0.45
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 1.5,
+			r = 1000,
+			acc = {
+				0.85,
+				0.9
+			},
+			recoil = {
+				0.4,
+				0.65
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 1,
+			r = 2000,
+			acc = {
+				0.6,
+				0.8
+			},
+			recoil = {
+				0.8,
+				1.25
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 0.5,
+			r = 3000,
+			acc = {
+				0.5,
+				0.7
+			},
+			recoil = {
+				0.8,
+				1.25
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 0.3,
+			r = 4000,
+			acc = {
+				0.02,
+				0.25
+			},
+			recoil = {
+				1,
+				2
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 0.1,
+			r = 10000,
+			acc = {
+				0.01,
+				0.1
+			},
+			recoil = {
+				2,
+				3
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		}
+	}
 	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF = {
 		{
 			dmg_mul = 2,
@@ -10604,6 +10924,116 @@ function CharacterTweakData:_set_normal()
 				0.3,
 				4,
 				7
+			}
+		}
+	}
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF = {
+		{
+			dmg_mul = 2,
+			r = 100,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				0.1,
+				0.1
+			},
+			mode = {
+				1,
+				1,
+				4,
+				6
+			}
+		},
+		{
+			dmg_mul = 2,
+			r = 500,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				0.1,
+				0.1
+			},
+			mode = {
+				1,
+				1,
+				4,
+				5
+			}
+		},
+		{
+			dmg_mul = 1,
+			r = 1000,
+			acc = {
+				0.85,
+				0.95
+			},
+			recoil = {
+				0.1,
+				0.15
+			},
+			mode = {
+				1,
+				2,
+				4,
+				4
+			}
+		},
+		{
+			dmg_mul = 0.75,
+			r = 2000,
+			acc = {
+				0.75,
+				0.9
+			},
+			recoil = {
+				0.25,
+				0.45
+			},
+			mode = {
+				1,
+				4,
+				4,
+				1
+			}
+		},
+		{
+			dmg_mul = 0.25,
+			r = 3000,
+			acc = {
+				0.4,
+				0.7
+			},
+			recoil = {
+				0.4,
+				0.5
+			},
+			mode = {
+				4,
+				2,
+				1,
+				0
+			}
+		},
+		{
+			dmg_mul = 0.1,
+			r = 10000,
+			acc = {
+				0.05,
+				0.2
+			},
+			recoil = {
+				0.5,
+				1
+			},
+			mode = {
+				2,
+				1,
+				0,
+				0
 			}
 		}
 	}
@@ -10808,6 +11238,208 @@ function CharacterTweakData:_set_hard()
 			}
 		}
 	}
+	self.presets.weapon.gang_member.is_sniper.FALLOFF = {
+		{
+			dmg_mul = 4,
+			r = 500,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 4,
+			r = 1000,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 4,
+			r = 2500,
+			acc = {
+				0.95,
+				1
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 2,
+			r = 4000,
+			acc = {
+				0.9,
+				0.95
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 2,
+			r = 10000,
+			acc = {
+				0.85,
+				0.9
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		}
+	}
+	self.presets.weapon.gang_member.is_lmg.FALLOFF = {
+		{
+			dmg_mul = 2,
+			r = 100,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				0.25,
+				0.45
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 1.5,
+			r = 1000,
+			acc = {
+				0.85,
+				0.9
+			},
+			recoil = {
+				0.4,
+				0.65
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 1,
+			r = 2000,
+			acc = {
+				0.6,
+				0.8
+			},
+			recoil = {
+				0.8,
+				1.25
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 0.5,
+			r = 3000,
+			acc = {
+				0.5,
+				0.7
+			},
+			recoil = {
+				0.8,
+				1.25
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 0.3,
+			r = 4000,
+			acc = {
+				0.02,
+				0.25
+			},
+			recoil = {
+				1,
+				2
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 0.1,
+			r = 10000,
+			acc = {
+				0.01,
+				0.1
+			},
+			recoil = {
+				2,
+				3
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		}
+	}
 	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF = {
 		{
 			dmg_mul = 2,
@@ -10843,6 +11475,116 @@ function CharacterTweakData:_set_hard()
 				0.3,
 				4,
 				7
+			}
+		}
+	}
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF = {
+		{
+			dmg_mul = 2,
+			r = 100,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				0.1,
+				0.1
+			},
+			mode = {
+				1,
+				1,
+				4,
+				6
+			}
+		},
+		{
+			dmg_mul = 2,
+			r = 500,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				0.1,
+				0.1
+			},
+			mode = {
+				1,
+				1,
+				4,
+				5
+			}
+		},
+		{
+			dmg_mul = 1,
+			r = 1000,
+			acc = {
+				0.85,
+				0.95
+			},
+			recoil = {
+				0.1,
+				0.15
+			},
+			mode = {
+				1,
+				2,
+				4,
+				4
+			}
+		},
+		{
+			dmg_mul = 0.75,
+			r = 2000,
+			acc = {
+				0.75,
+				0.9
+			},
+			recoil = {
+				0.25,
+				0.45
+			},
+			mode = {
+				1,
+				4,
+				4,
+				1
+			}
+		},
+		{
+			dmg_mul = 0.25,
+			r = 3000,
+			acc = {
+				0.4,
+				0.7
+			},
+			recoil = {
+				0.4,
+				0.5
+			},
+			mode = {
+				4,
+				2,
+				1,
+				0
+			}
+		},
+		{
+			dmg_mul = 0.1,
+			r = 10000,
+			acc = {
+				0.05,
+				0.2
+			},
+			recoil = {
+				0.5,
+				1
+			},
+			mode = {
+				2,
+				1,
+				0,
+				0
 			}
 		}
 	}
@@ -11110,6 +11852,208 @@ function CharacterTweakData:_set_overkill()
 			}
 		}
 	}
+	self.presets.weapon.gang_member.is_sniper.FALLOFF = {
+		{
+			dmg_mul = 7,
+			r = 500,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 7,
+			r = 1000,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 7,
+			r = 2500,
+			acc = {
+				0.95,
+				1
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 3.5,
+			r = 4000,
+			acc = {
+				0.9,
+				0.95
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 3.5,
+			r = 10000,
+			acc = {
+				0.85,
+				0.9
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		}
+	}
+	self.presets.weapon.gang_member.is_lmg.FALLOFF = {
+		{
+			dmg_mul = 3,
+			r = 100,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				0.25,
+				0.45
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 2,
+			r = 1000,
+			acc = {
+				0.85,
+				0.9
+			},
+			recoil = {
+				0.4,
+				0.65
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 1.5,
+			r = 2000,
+			acc = {
+				0.6,
+				0.8
+			},
+			recoil = {
+				0.8,
+				1.25
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 1,
+			r = 3000,
+			acc = {
+				0.5,
+				0.7
+			},
+			recoil = {
+				0.8,
+				1.25
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 0.66,
+			r = 4000,
+			acc = {
+				0.02,
+				0.25
+			},
+			recoil = {
+				1,
+				2
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 0.2,
+			r = 10000,
+			acc = {
+				0.01,
+				0.1
+			},
+			recoil = {
+				2,
+				3
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		}
+	}
 	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF = {
 		{
 			dmg_mul = 3.5,
@@ -11145,6 +12089,116 @@ function CharacterTweakData:_set_overkill()
 				0.3,
 				4,
 				7
+			}
+		}
+	}
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF = {
+		{
+			dmg_mul = 3.5,
+			r = 100,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				0.1,
+				0.1
+			},
+			mode = {
+				1,
+				1,
+				4,
+				6
+			}
+		},
+		{
+			dmg_mul = 3.5,
+			r = 500,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				0.1,
+				0.1
+			},
+			mode = {
+				1,
+				1,
+				4,
+				5
+			}
+		},
+		{
+			dmg_mul = 1.5,
+			r = 1000,
+			acc = {
+				0.85,
+				0.95
+			},
+			recoil = {
+				0.1,
+				0.15
+			},
+			mode = {
+				1,
+				2,
+				4,
+				4
+			}
+		},
+		{
+			dmg_mul = 1,
+			r = 2000,
+			acc = {
+				0.75,
+				0.9
+			},
+			recoil = {
+				0.25,
+				0.45
+			},
+			mode = {
+				1,
+				4,
+				4,
+				1
+			}
+		},
+		{
+			dmg_mul = 0.5,
+			r = 3000,
+			acc = {
+				0.4,
+				0.7
+			},
+			recoil = {
+				0.4,
+				0.5
+			},
+			mode = {
+				4,
+				2,
+				1,
+				0
+			}
+		},
+		{
+			dmg_mul = 0.2,
+			r = 10000,
+			acc = {
+				0.05,
+				0.2
+			},
+			recoil = {
+				0.5,
+				1
+			},
+			mode = {
+				2,
+				1,
+				0,
+				0
 			}
 		}
 	}
@@ -11512,6 +12566,208 @@ function CharacterTweakData:_set_easy_wish()
 			}
 		}
 	}
+	self.presets.weapon.gang_member.is_sniper.FALLOFF = {
+		{
+			dmg_mul = 20,
+			r = 500,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 20,
+			r = 1000,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 20,
+			r = 2500,
+			acc = {
+				0.95,
+				1
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 10,
+			r = 4000,
+			acc = {
+				0.9,
+				0.95
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 10,
+			r = 10000,
+			acc = {
+				0.85,
+				0.9
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		}
+	}
+	self.presets.weapon.gang_member.is_lmg.FALLOFF = {
+		{
+			dmg_mul = 10,
+			r = 100,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				0.25,
+				0.45
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 7.5,
+			r = 1000,
+			acc = {
+				0.85,
+				0.9
+			},
+			recoil = {
+				0.4,
+				0.65
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 5,
+			r = 2000,
+			acc = {
+				0.6,
+				0.8
+			},
+			recoil = {
+				0.8,
+				1.25
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 3,
+			r = 3000,
+			acc = {
+				0.5,
+				0.7
+			},
+			recoil = {
+				0.8,
+				1.25
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 2,
+			r = 4000,
+			acc = {
+				0.02,
+				0.25
+			},
+			recoil = {
+				1,
+				2
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 0.5,
+			r = 10000,
+			acc = {
+				0.01,
+				0.1
+			},
+			recoil = {
+				2,
+				3
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		}
+	}
 	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF = {
 		{
 			dmg_mul = 10,
@@ -11547,6 +12803,116 @@ function CharacterTweakData:_set_easy_wish()
 				0.3,
 				4,
 				7
+			}
+		}
+	}
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF = {
+		{
+			dmg_mul = 10,
+			r = 100,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				0.1,
+				0.1
+			},
+			mode = {
+				1,
+				1,
+				4,
+				6
+			}
+		},
+		{
+			dmg_mul = 8,
+			r = 500,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				0.1,
+				0.1
+			},
+			mode = {
+				1,
+				1,
+				4,
+				5
+			}
+		},
+		{
+			dmg_mul = 7,
+			r = 1000,
+			acc = {
+				0.85,
+				0.95
+			},
+			recoil = {
+				0.1,
+				0.15
+			},
+			mode = {
+				1,
+				2,
+				4,
+				4
+			}
+		},
+		{
+			dmg_mul = 5,
+			r = 2000,
+			acc = {
+				0.75,
+				0.9
+			},
+			recoil = {
+				0.25,
+				0.45
+			},
+			mode = {
+				1,
+				4,
+				4,
+				1
+			}
+		},
+		{
+			dmg_mul = 2,
+			r = 3000,
+			acc = {
+				0.4,
+				0.7
+			},
+			recoil = {
+				0.4,
+				0.5
+			},
+			mode = {
+				4,
+				2,
+				1,
+				0
+			}
+		},
+		{
+			dmg_mul = 0.2,
+			r = 10000,
+			acc = {
+				0.05,
+				0.2
+			},
+			recoil = {
+				0.5,
+				1
+			},
+			mode = {
+				2,
+				1,
+				0,
+				0
 			}
 		}
 	}
@@ -11846,6 +13212,208 @@ function CharacterTweakData:_set_overkill_290()
 			}
 		}
 	}
+	self.presets.weapon.gang_member.is_sniper.FALLOFF = {
+		{
+			dmg_mul = 20,
+			r = 500,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 20,
+			r = 1000,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 20,
+			r = 2500,
+			acc = {
+				0.95,
+				1
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 10,
+			r = 4000,
+			acc = {
+				0.9,
+				0.95
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 10,
+			r = 10000,
+			acc = {
+				0.85,
+				0.9
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		}
+	}
+	self.presets.weapon.gang_member.is_lmg.FALLOFF = {
+		{
+			dmg_mul = 15,
+			r = 100,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				0.25,
+				0.45
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 12,
+			r = 1000,
+			acc = {
+				0.85,
+				0.9
+			},
+			recoil = {
+				0.4,
+				0.65
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 10,
+			r = 2000,
+			acc = {
+				0.6,
+				0.8
+			},
+			recoil = {
+				0.8,
+				1.25
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 10,
+			r = 3000,
+			acc = {
+				0.5,
+				0.7
+			},
+			recoil = {
+				0.8,
+				1.25
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 8,
+			r = 4000,
+			acc = {
+				0.02,
+				0.25
+			},
+			recoil = {
+				1,
+				2
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 5,
+			r = 10000,
+			acc = {
+				0.01,
+				0.1
+			},
+			recoil = {
+				2,
+				3
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		}
+	}
 	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF = {
 		{
 			dmg_mul = 15,
@@ -11881,6 +13449,116 @@ function CharacterTweakData:_set_overkill_290()
 				0,
 				0,
 				1
+			}
+		}
+	}
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF = {
+		{
+			dmg_mul = 15,
+			r = 100,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				0.1,
+				0.1
+			},
+			mode = {
+				1,
+				1,
+				4,
+				6
+			}
+		},
+		{
+			dmg_mul = 15,
+			r = 500,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				0.1,
+				0.1
+			},
+			mode = {
+				1,
+				1,
+				4,
+				5
+			}
+		},
+		{
+			dmg_mul = 12,
+			r = 1000,
+			acc = {
+				0.85,
+				0.95
+			},
+			recoil = {
+				0.1,
+				0.15
+			},
+			mode = {
+				1,
+				2,
+				4,
+				4
+			}
+		},
+		{
+			dmg_mul = 8,
+			r = 2000,
+			acc = {
+				0.75,
+				0.9
+			},
+			recoil = {
+				0.25,
+				0.45
+			},
+			mode = {
+				1,
+				4,
+				4,
+				1
+			}
+		},
+		{
+			dmg_mul = 5,
+			r = 3000,
+			acc = {
+				0.4,
+				0.7
+			},
+			recoil = {
+				0.4,
+				0.5
+			},
+			mode = {
+				4,
+				2,
+				1,
+				0
+			}
+		},
+		{
+			dmg_mul = 1,
+			r = 10000,
+			acc = {
+				0.05,
+				0.2
+			},
+			recoil = {
+				0.5,
+				1
+			},
+			mode = {
+				2,
+				1,
+				0,
+				0
 			}
 		}
 	}
@@ -12742,6 +14420,208 @@ function CharacterTweakData:_set_sm_wish()
 			}
 		}
 	}
+	self.presets.weapon.gang_member.is_sniper.FALLOFF = {
+		{
+			dmg_mul = 20,
+			r = 500,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 20,
+			r = 1000,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 20,
+			r = 2500,
+			acc = {
+				0.95,
+				1
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 10,
+			r = 4000,
+			acc = {
+				0.9,
+				0.95
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 10,
+			r = 10000,
+			acc = {
+				0.85,
+				0.9
+			},
+			recoil = {
+				1,
+				1
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		}
+	}
+	self.presets.weapon.gang_member.is_lmg.FALLOFF = {
+		{
+			dmg_mul = 15,
+			r = 100,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				0.25,
+				0.45
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 12,
+			r = 1000,
+			acc = {
+				0.85,
+				0.9
+			},
+			recoil = {
+				0.4,
+				0.65
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 10,
+			r = 2000,
+			acc = {
+				0.6,
+				0.8
+			},
+			recoil = {
+				0.8,
+				1.25
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 10,
+			r = 3000,
+			acc = {
+				0.5,
+				0.7
+			},
+			recoil = {
+				0.8,
+				1.25
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 8,
+			r = 4000,
+			acc = {
+				0.02,
+				0.25
+			},
+			recoil = {
+				1,
+				2
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		},
+		{
+			dmg_mul = 5,
+			r = 10000,
+			acc = {
+				0.01,
+				0.1
+			},
+			recoil = {
+				2,
+				3
+			},
+			mode = {
+				0,
+				0,
+				0,
+				1
+			}
+		}
+	}
 	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF = {
 		{
 			dmg_mul = 15,
@@ -12777,6 +14657,116 @@ function CharacterTweakData:_set_sm_wish()
 				0.3,
 				4,
 				7
+			}
+		}
+	}
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF = {
+		{
+			dmg_mul = 15,
+			r = 100,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				0.1,
+				0.1
+			},
+			mode = {
+				1,
+				1,
+				4,
+				6
+			}
+		},
+		{
+			dmg_mul = 15,
+			r = 500,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				0.1,
+				0.1
+			},
+			mode = {
+				1,
+				1,
+				4,
+				5
+			}
+		},
+		{
+			dmg_mul = 12,
+			r = 1000,
+			acc = {
+				0.85,
+				0.95
+			},
+			recoil = {
+				0.1,
+				0.15
+			},
+			mode = {
+				1,
+				2,
+				4,
+				4
+			}
+		},
+		{
+			dmg_mul = 8,
+			r = 2000,
+			acc = {
+				0.75,
+				0.9
+			},
+			recoil = {
+				0.25,
+				0.45
+			},
+			mode = {
+				1,
+				4,
+				4,
+				1
+			}
+		},
+		{
+			dmg_mul = 5,
+			r = 3000,
+			acc = {
+				0.4,
+				0.7
+			},
+			recoil = {
+				0.4,
+				0.5
+			},
+			mode = {
+				4,
+				2,
+				1,
+				0
+			}
+		},
+		{
+			dmg_mul = 1,
+			r = 10000,
+			acc = {
+				0.05,
+				0.2
+			},
+			recoil = {
+				0.5,
+				1
+			},
+			mode = {
+				2,
+				1,
+				0,
+				0
 			}
 		}
 	}

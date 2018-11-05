@@ -2002,6 +2002,14 @@ function NetworkPeer:_update_equipped_armor()
 			self._unit:damage():run_sequence_simple(armor_sequence)
 		end
 
+		if self._unit:base() and self._unit:base().set_armor_id then
+			self._unit:base():set_armor_id(new_armor_id)
+		end
+
+		if self._unit:armor_skin() and self._unit:armor_skin().set_armor_id then
+			self._unit:armor_skin():set_armor_id(new_armor_id)
+		end
+
 		local con_mul, index = managers.blackmarket:get_concealment_of_peer(self)
 
 		self._unit:base():set_suspicion_multiplier("equipment", 1 / con_mul)

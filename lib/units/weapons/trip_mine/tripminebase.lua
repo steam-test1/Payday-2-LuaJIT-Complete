@@ -71,6 +71,16 @@ function TripMineBase:interaction_text_id()
 	return self._sensor_upgrade and (self:armed() and "hud_int_equipment_sensor_mode_trip_mine" or "hud_int_equipment_normal_mode_trip_mine") or "debug_interact_trip_mine"
 end
 
+function TripMineBase:is_category(...)
+	for _, cat in ipairs({...}) do
+		if cat == "trip_mine" then
+			return true
+		end
+	end
+
+	return false
+end
+
 function TripMineBase:sync_setup(sensor_upgrade)
 	if self._validate_clbk_id then
 		managers.enemy:remove_delayed_clbk(self._validate_clbk_id)

@@ -242,8 +242,10 @@ function GroupAIStateBase:set_AI_enabled(state)
 		end
 
 		for u_key, u_data in pairs(managers.enemy:all_civilians()) do
-			Network:detach_unit(u_data.unit)
-			World:delete_unit(u_data.unit)
+			if alive(u_data.unit) then
+				Network:detach_unit(u_data.unit)
+				World:delete_unit(u_data.unit)
+			end
 		end
 
 		for _, char in ipairs(managers.criminals:characters()) do
@@ -2208,9 +2210,13 @@ function GroupAIStateBase:_execute_so(so_data, so_rooms, so_administered)
 	local nav_manager = managers.navigation
 	local access_f = nav_manager.check_access
 
+	local function check_allowed(u_key, u_unit_dat)
+		return (not so_administered or not so_administered[u_key]) and (so_objective.forced or u_unit_dat.unit:brain():is_available_for_assignment(so_objective)) and (not so_data.verification_clbk or so_data.verification_clbk(u_unit_dat.unit)) and access_f(nav_manager, so_access, u_unit_dat.so_access, 0)
+	end
+
 	if ai_group == "enemies" then
 		for e_key, enemy_unit_data in pairs(self._police) do
-			if (not so_administered or not so_administered[e_key]) and (so_objective.forced or enemy_unit_data.unit:brain():is_available_for_assignment(so_objective)) and (not so_data.verification_clbk or so_data.verification_clbk(enemy_unit_data.unit)) and access_f(nav_manager, so_access, enemy_unit_data.so_access, 0) then
+			if check_allowed(e_key, enemy_unit_data) and not enemy_unit_data.unit:brain():surrendered() then
 				local dis = max_dis and mvec3_dis_sq(enemy_unit_data.m_pos, pos)
 
 				if (not closest_dis or dis < closest_dis) and (not max_dis or dis < max_dis) then
@@ -2221,7 +2227,7 @@ function GroupAIStateBase:_execute_so(so_data, so_rooms, so_administered)
 		end
 	elseif ai_group == "friendlies" then
 		for u_key, u_unit_data in pairs(self._ai_criminals) do
-			if (not so_administered or not so_administered[u_key]) and (so_objective.forced or u_unit_data.unit:brain():is_available_for_assignment(so_objective)) and (not so_data.verification_clbk or so_data.verification_clbk(u_unit_data.unit)) and access_f(nav_manager, so_access, u_unit_data.so_access, 0) then
+			if check_allowed(u_key, u_unit_data) then
 				local dis = mvec3_dis_sq(u_unit_data.m_pos, pos)
 
 				if (not closest_dis or dis < closest_dis) and (not max_dis or dis < max_dis) then
@@ -2232,7 +2238,7 @@ function GroupAIStateBase:_execute_so(so_data, so_rooms, so_administered)
 		end
 	elseif ai_group == "civilians" then
 		for u_key, u_unit_data in pairs(managers.enemy:all_civilians()) do
-			if (not so_administered or not so_administered[u_key]) and (so_objective.forced or u_unit_data.unit:brain():is_available_for_assignment(so_objective)) and (not so_data.verification_clbk or so_data.verification_clbk(u_unit_data.unit)) and access_f(nav_manager, so_access, u_unit_data.so_access, 0) then
+			if check_allowed(u_key, u_unit_data) then
 				local dis = mvec3_dis_sq(u_unit_data.m_pos, pos)
 
 				if (not closest_dis or dis < closest_dis) and (not max_dis or dis < max_dis) then
@@ -2790,7 +2796,9 @@ function GroupAIStateBase:remove_one_teamAI(name_to_remove, replace_with_player)
 	managers.network:session():send_to_peers_synched("sync_remove_one_teamAI", name, replace_with_player)
 
 	if alive(unit) then
-		if unit:movement():carrying_bag() then
+		local teleported = unit:character_damage():_teleport_carried_bag()
+
+		if not teleported and unit:movement():carrying_bag() then
 			unit:movement():throw_bag()
 		end
 

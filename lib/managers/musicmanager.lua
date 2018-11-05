@@ -15,6 +15,18 @@ function MusicManager:init_globals(...)
 	self:_set_default_values()
 end
 
+function MusicManager:on_steam_overlay_open()
+	if game_state_machine:current_state_name() == "menu_main" then
+		self:clbk_game_has_music_control(false)
+	end
+end
+
+function MusicManager:on_steam_overlay_close()
+	if SystemInfo:platform() ~= Idstring("X360") then
+		self:clbk_game_has_music_control(true)
+	end
+end
+
 function MusicManager:track_listen_start(event, track)
 	if self._current_track == track and self._current_event == event then
 		return
@@ -144,6 +156,13 @@ function MusicManager:load_settings(data)
 		Global.music_manager.unlocked_tracks = state.unlocked_tracks or {}
 
 		self:_set_default_values()
+	end
+
+	if managers.network and not self._added_overlay_listeners then
+		managers.network.account:add_overlay_listener("steam_music_manager_open", {"overlay_open"}, callback(self, self, "on_steam_overlay_open"))
+		managers.network.account:add_overlay_listener("steam_music_manager_close", {"overlay_close"}, callback(self, self, "on_steam_overlay_close"))
+
+		self._added_overlay_listeners = true
 	end
 end
 

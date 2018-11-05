@@ -1405,7 +1405,12 @@ function CopActionWalk:_get_current_max_walk_speed(move_dir)
 
 	if not is_host then
 		self._host_peer = self._host_peer or managers.network:session():peer(1)
-		local ping_multiplier = 1 + Network:qos(self._host_peer:rpc()).ping / 1000
+		local ping_multiplier = 1
+
+		if self._host_peer then
+			ping_multiplier = ping_multiplier + Network:qos(self._host_peer:rpc()).ping / 1000
+		end
+
 		local lod = self._ext_base:lod_stage()
 		local lod_multiplier = 1 + (Unit.occluded(self._unit) and 1 or CopActionWalk.lod_multipliers[lod] or 1)
 		speed = managers.groupai:state():enemy_weapons_hot() and speed * lod_multiplier or speed * tweak_data.network.stealth_speed_boost

@@ -716,7 +716,7 @@ function GuiTweakData:init()
 	}
 	self.rename_max_letters = 20
 	self.rename_skill_set_max_letters = 15
-	self.mod_preview_min_fov = -20
+	self.mod_preview_min_fov = -19
 	self.mod_preview_max_fov = 3
 	self.stats_present_multiplier = 10
 	self.armor_damage_shake_base = 1.1
@@ -1744,6 +1744,7 @@ function GuiTweakData:init()
 			id = "crime_spree",
 			icon = "guis/textures/pd2/crimenet_marker_crimespree",
 			x = 675,
+			no_session_only = true,
 			pulse_color = Color(255, 255, 255, 0) / 255
 		},
 		{
@@ -4855,8 +4856,28 @@ function GuiTweakData:init()
 		"category",
 		"bonus"
 	}
-	self.new_heists = {limit = 4}
+	self.new_heists = {limit = 5}
 
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_aldstone_room",
+		texture_path = "guis/textures/pd2/new_heists/aldstone_room",
+		url = "http://www.overkillsoftware.com/games/aldstonesheritage/"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_golden_chains",
+		texture_path = "guis/textures/pd2/new_heists/golden_chains",
+		url = "http://steamcommunity.com/games/218620/announcements/detail/1444947199697735668"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_community_safe_4",
+		texture_path = "guis/textures/pd2/new_heists/community_safe_4",
+		url = "http://www.overkillsoftware.com/games/communitysafe4/"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_dsync_beta_is_live",
+		texture_path = "guis/textures/pd2/new_heists/desync_beta_is_live",
+		url = "http://steamcommunity.com/games/218620/announcements/detail/1342486185513464930"
+	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_crime_spree_update",
 		texture_path = "guis/textures/pd2/new_heists/crime_spree_update",
@@ -4871,11 +4892,6 @@ function GuiTweakData:init()
 		name_id = "menu_nh_russian_national_day",
 		texture_path = "guis/textures/pd2/new_heists/russian_national_day",
 		url = "http://store.steampowered.com/news/?appids=218620"
-	})
-	table.insert(self.new_heists, {
-		name_id = "menu_nh_dsync_beta",
-		texture_path = "guis/textures/pd2/new_heists/desync_beta",
-		url = "http://steamcommunity.com/app/218620/discussions/29/"
 	})
 end
 

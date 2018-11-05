@@ -113,6 +113,7 @@ require("lib/managers/mission/ElementInvulnerable")
 require("lib/managers/mission/ElementCharacterDamage")
 require("lib/managers/mission/ElementAIForceAttention")
 require("lib/managers/mission/ElementAIForceAttentionOperator")
+require("lib/managers/mission/ElementSideJob")
 require("lib/managers/mission/ElementPlayerSpawner")
 require("lib/managers/mission/ElementAreaTrigger")
 require("lib/managers/mission/ElementSpawnEnemyDummy")
@@ -241,6 +242,10 @@ function MissionManager:get_job_value(key)
 end
 
 function MissionManager:on_job_deactivated()
+	self:clear_job_values()
+end
+
+function MissionManager:clear_job_values()
 	Global.mission_manager.job_values = {}
 	Global.mission_manager.stage_job_values = {}
 end

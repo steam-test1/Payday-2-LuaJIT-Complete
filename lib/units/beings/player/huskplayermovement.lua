@@ -432,7 +432,13 @@ function HuskPlayerMovement:set_visual_deployable_equipment(deployable, amount)
 	self._unit:get_object(object_name_ids):set_visibility(visible)
 end
 
+function HuskPlayerMovement:carry_id()
+	return self._carry_id
+end
+
 function HuskPlayerMovement:set_visual_carry(carry_id)
+	self._carry_id = carry_id
+
 	if carry_id then
 		if tweak_data.carry[carry_id].visual_unit_name then
 			self:_create_carry_unit(tweak_data.carry[carry_id].visual_unit_name)
@@ -2990,6 +2996,10 @@ function HuskPlayerMovement:sync_reload_weapon(empty_reload, reload_speed_multip
 	local w_td_crew = self:_equipped_weapon_crew_tweak_data() or {}
 
 	if w_td then
+		if w_td_crew.hold == "bow" then
+			return
+		end
+
 		local reload_anim_time, hold_type = self:get_reload_animation_time(w_td_crew.hold)
 		local reload_time = 1
 		local timers = w_td.timers
@@ -3442,7 +3452,21 @@ HuskPlayerMovement.switch_weapon_times = {cbt = {
 	unequip = 0.4666666666666667
 }}
 
+function HuskPlayerMovement:_can_play_weapon_switch_anim()
+	if self:downed() or self._ext_anim.bleedout or self._ext_anim.bleedout_falling then
+		return false
+	end
+
+	return true
+end
+
 function HuskPlayerMovement:sync_switch_weapon(unequip_multiplier, equip_multiplier)
+	print("self:_can_play_weapon_switch_anim ", self:_can_play_weapon_switch_anim())
+
+	if not self:_can_play_weapon_switch_anim() then
+		return
+	end
+
 	self._switch_weapon_multipliers = {
 		unequip = unequip_multiplier or 1,
 		equip = equip_multiplier or 1
@@ -3468,6 +3492,12 @@ function HuskPlayerMovement:anim_clbk_switch_weapon()
 end
 
 function HuskPlayerMovement:sync_equip_weapon()
+	print("self:_can_play_weapon_switch_anim ", self:_can_play_weapon_switch_anim())
+
+	if not self:_can_play_weapon_switch_anim() then
+		return
+	end
+
 	if not self._switch_weapon_multipliers then
 		self._switch_weapon_multipliers = {
 			equip = 1,
@@ -3946,13 +3976,15 @@ function HuskPlayerMovement:clbk_inventory_event(unit, event)
 			table.insert(self._weapon_hold, weap_tweak.hold)
 		end
 
-		local weapon_usage = weap_tweak.usage
+		local weapon_usage = weap_tweak.anim_usage or weap_tweak.usage
 
 		self._machine:set_global(weapon_usage, 1)
 
 		self._weapon_anim_global = weapon_usage
 
-		self:play_state("std/stand/still/idle/look")
+		if self:_can_play_weapon_switch_anim() then
+			self:play_state("std/stand/still/idle/look")
+		end
 	end
 end
 
@@ -4285,6 +4317,18 @@ function HuskPlayerMovement:_get_max_move_speed(run)
 		move_speed = move_speed * math.clamp(speed_boost, 1, 3)
 	end
 
+	if not self._in_air and not zipline and self:carry_id() then
+		local carry_tweak = tweak_data.carry[self:carry_id()]
+
+		if carry_tweak then
+			local type_tweak = tweak_data.carry.types[carry_tweak.type]
+
+			if type_tweak and type_tweak.move_speed_modifier then
+				move_speed = move_speed * type_tweak.move_speed_modifier * (1 + type_tweak.move_speed_modifier)
+			end
+		end
+	end
+
 	return move_speed
 end
 
@@ -4374,8 +4418,8 @@ function HuskPlayerMovement:on_exit_zipline()
 end
 
 function HuskPlayerMovement:zipline_unit()
-	if self._sequenced_events[1] and self._sequenced_events[1].zipline_unit then
-		return self._sequenced_events[1].zipline_unit
+	if self._zipline and self._zipline.zipline_unit then
+		return self._zipline.zipline_unit
 	end
 end
 
@@ -4414,6 +4458,10 @@ function HuskPlayerMovement:sync_action_jump(pos, jump_vec)
 end
 
 function HuskPlayerMovement:_cleanup_previous_state(previous_state)
+	if self._tase_effect then
+		World:effect_manager():fade_kill(self._tase_effect)
+	end
+
 	if alive(self._parachute_unit) then
 		local position = self._parachute_unit:position()
 		local rotation = self._parachute_unit:rotation()

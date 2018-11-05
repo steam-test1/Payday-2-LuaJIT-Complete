@@ -329,6 +329,10 @@ function CrimeSpreeManager:spree_level_gained()
 	return self._spree_add or 0
 end
 
+function CrimeSpreeManager:mission_completion_gain()
+	return self._mission_completion_gain or 0
+end
+
 function CrimeSpreeManager:catchup_bonus()
 	return math.floor(self._catchup_bonus or 0)
 end
@@ -434,7 +438,7 @@ function CrimeSpreeManager:modifiers_to_select(table_name, add_repeating)
 		base_number = math.min(base_number, #modifiers_table)
 	end
 
-	for _, modifier_data in ipairs(self:active_modifiers()) do
+	for _, modifier_data in ipairs(self:server_active_modifiers()) do
 		local contains = false
 
 		for _, modifier in ipairs(modifiers_table) do
@@ -557,7 +561,11 @@ function CrimeSpreeManager:get_start_cost(level)
 end
 
 function CrimeSpreeManager:get_continue_cost(level)
-	return math.floor(tweak_data.crime_spree.continue_cost[1] + tweak_data.crime_spree.continue_cost[2] * (level or 0))
+	if level == 0 then
+		return 0
+	else
+		return math.floor(tweak_data.crime_spree.continue_cost[1] + tweak_data.crime_spree.continue_cost[2] * (level or 0))
+	end
 end
 
 function CrimeSpreeManager:set_starting_level(level)
@@ -606,7 +614,7 @@ function CrimeSpreeManager:_get_modifiers(table_name, max_count, add_repeating)
 	for _, modifier in ipairs(modifiers_table) do
 		local contains = false
 
-		for _, modifier_data in ipairs(self:active_modifiers()) do
+		for _, modifier_data in ipairs(self:server_active_modifiers()) do
 			if modifier_data.id == modifier.id then
 				contains = true
 
@@ -1182,9 +1190,12 @@ function CrimeSpreeManager:on_mission_completed(mission_id)
 		return
 	end
 
+	managers.mission:clear_job_values()
+
 	if not self:has_failed() then
 		local mission_data = self:get_mission(mission_id)
 		local spree_add = mission_data.add
+		self._mission_completion_gain = mission_data.add
 
 		if not self:_is_host() and self._global.start_data and self._global.start_data.server_spree_level then
 			local server_level = self._global.start_data and self._global.start_data.server_spree_level or -1
@@ -1227,7 +1238,8 @@ function CrimeSpreeManager:on_mission_completed(mission_id)
 
 		if self:in_progress() then
 			self._global.spree_level = self._global.spree_level + spree_add
-			self._global.highest_level = math.max(self._global.highest_level or 0, self._global.spree_level or 0)
+
+			self:_check_highest_level(self._global.spree_level or 0)
 		end
 
 		self._global.reward_level = self._global.reward_level + reward_add
@@ -1301,8 +1313,8 @@ function CrimeSpreeManager:on_spree_complete()
 	local rewards = self:calculate_rewards()
 
 	self:award_rewards(rewards)
+	self:_check_highest_level(self:spree_level() or 0)
 
-	self._global.highest_level = math.max(self._global.highest_level or 0, self:spree_level() or 0)
 	self._global.in_progress = false
 
 	MenuCallbackHandler:save_progress()
@@ -1556,6 +1568,14 @@ function CrimeSpreeManager:consumable_value(name)
 		self._consumable_values[name] = nil
 
 		return value
+	end
+end
+
+function CrimeSpreeManager:_check_highest_level(value)
+	if self._global.highest_level or value > 0 then
+		self._global.highest_level = value
+
+		managers.mission:call_global_event(Message.OnHighestCrimeSpree, value)
 	end
 end
 

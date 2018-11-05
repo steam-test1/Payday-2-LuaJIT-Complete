@@ -380,6 +380,8 @@ end
 function StatisticsManager:_reset_session()
 	if self._global then
 		self._global.session = deep_clone(self._defaults)
+
+		self:_check_days_in_row()
 	end
 end
 
@@ -467,10 +469,55 @@ function StatisticsManager:update(t, dt)
 	end
 end
 
+function StatisticsManager:_check_days_in_row()
+	local SEC_IN_DAY = 86400
+	local d = self._global.days_in_row
+	local current = os.time()
+
+	if not d or SEC_IN_DAY < current - d.last then
+		self._global.days_in_row = {
+			count = 0,
+			first = current,
+			last = current
+		}
+	else
+		local days = (current - d.first) / SEC_IN_DAY
+
+		if d.count + 1 < days then
+			local count = math.floor(days)
+			d.count = count
+
+			print("[StatisticsManager].days_in_row", count)
+			managers.mission:call_global_event(Message.OnDaysInRow, count)
+		end
+
+		d.last = current
+	end
+end
+
+function StatisticsManager:get_days_in_row()
+	return self._global.days_in_row and self._global.days_in_row.count or 0
+end
+
+function StatisticsManager:_check_days_alone(sp)
+	local d = self._global.days_alone
+	self._global.days_alone_time = sp and self._global.days_alone_time or os.time()
+end
+
+function StatisticsManager:get_days_alone()
+	local SEC_IN_DAY = 86400
+	self._global.days_alone_time = self._global.days_alone_time or os.time()
+
+	return (os.time() - self._global.days_alone_time) / SEC_IN_DAY
+end
+
 function StatisticsManager:start_session(data)
 	if self._session_started then
 		return
 	end
+
+	self:_check_days_in_row()
+	self:_check_days_alone(Global.game_settings.single_player)
 
 	if Global.level_data.level_id and self._global.sessions.levels[Global.level_data.level_id] then
 		self._global.sessions.levels[Global.level_data.level_id].started = self._global.sessions.levels[Global.level_data.level_id].started + 1
@@ -519,6 +566,7 @@ function StatisticsManager:stop_session(data)
 		return
 	end
 
+	self:_check_days_in_row()
 	Application:debug("StatisticsManager:stop_session( data ) level_id: ", Global.level_data.level_id)
 
 	if not self._global.sessions.levels[Global.level_data.level_id] then
@@ -1870,6 +1918,10 @@ function StatisticsManager:get_play_time()
 	return self._global and self._global.play_time and self._global.play_time.minutes or 0
 end
 
+function StatisticsManager:get_play_time_hours()
+	return self:get_play_time() / 60
+end
+
 function StatisticsManager:count_up(id)
 	if not self._statistics[id] then
 		Application:stack_dump_error("Bad id to count up, " .. tostring(id) .. ".")
@@ -2100,7 +2152,13 @@ function StatisticsManager:session_favourite_weapon()
 		end
 	end
 
-	return weapon_id and managers.localization:text(tweak_data.weapon[weapon_id].name_id) or managers.localization:text("debug_undecided")
+	local weapon_tweak_data = tweak_data.weapon[weapon_id]
+
+	if not weapon_tweak_data then
+		return managers.localization:text("debug_undecided")
+	end
+
+	return weapon_id and managers.localization:text(weapon_tweak_data.name_id) or managers.localization:text("debug_undecided")
 end
 
 function StatisticsManager:session_used_weapons()
@@ -2424,7 +2482,9 @@ function StatisticsManager:save(data)
 		shots_by_weapon = self._global.shots_by_weapon,
 		health = self._global.health,
 		misc = self._global.misc,
-		play_time = self._global.play_time
+		play_time = self._global.play_time,
+		days_in_row = self._global.days_in_row,
+		days_alone_time = self._global.days_alone_time
 	}
 	data.StatisticsManager = state
 end

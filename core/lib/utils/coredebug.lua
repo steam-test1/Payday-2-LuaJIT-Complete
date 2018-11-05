@@ -354,3 +354,27 @@ end
 function debug_pause_unit(unit, ...)
 end
 
+function get_n_key(t, n)
+	n = n or 1
+
+	for k, _ in pairs(t) do
+		if n == 1 then
+			return k
+		else
+			n = n - 1
+		end
+	end
+end
+
+function get_n_value(t, n)
+	n = n or 1
+
+	for _, v in pairs(t) do
+		if n == 1 then
+			return v
+		else
+			n = n - 1
+		end
+	end
+end
+

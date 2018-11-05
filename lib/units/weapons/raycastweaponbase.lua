@@ -73,6 +73,7 @@ function RaycastWeaponBase:init(unit)
 		hit = false,
 		weapon_unit = self._unit
 	}
+	self._magazine_empty_objects = {}
 end
 
 function RaycastWeaponBase:change_fire_object(new_obj)
@@ -262,6 +263,19 @@ function RaycastWeaponBase:recoil_wait()
 end
 
 function RaycastWeaponBase:_fire_sound()
+	if self:weapon_tweak_data().sounds.fire_ammo then
+		local fire_ammo = self:weapon_tweak_data().sounds.fire_ammo
+		local ammo = self:ammo_base():get_ammo_remaining_in_clip() - 1
+
+		for _, data in ipairs(fire_ammo) do
+			if (type(data[1]) ~= "table" or data[1][1] <= ammo and ammo <= data[1][2]) and data[1] == ammo then
+				self:play_sound(data[2])
+
+				return
+			end
+		end
+	end
+
 	self:play_tweak_data_sound(self:fire_mode() == "auto" and "fire_auto" or "fire_single", "fire")
 end
 
@@ -360,6 +374,27 @@ function RaycastWeaponBase:fire(from_pos, direction, dmg_mul, shoot_player, spre
 			end
 		end
 
+		local mag = base:get_ammo_remaining_in_clip()
+		local remaining_ammo = mag - ammo_usage
+
+		if mag > 0 and remaining_ammo <= (self.AKIMBO and 1 or 0) then
+			local w_td = self:weapon_tweak_data()
+
+			if w_td.animations and w_td.animations.magazine_empty then
+				self:tweak_data_anim_play("magazine_empty")
+			end
+
+			if w_td.sounds and w_td.sounds.magazine_empty then
+				self:play_tweak_data_sound("magazine_empty")
+			end
+
+			if w_td.effects and w_td.effects.magazine_empty then
+				self:_spawn_tweak_data_effect("magazine_empty")
+			end
+
+			self:set_magazine_empty(true)
+		end
+
 		base:set_ammo_remaining_in_clip(base:get_ammo_remaining_in_clip() - ammo_usage)
 		base:set_ammo_total(base:get_ammo_total() - ammo_usage)
 	end
@@ -415,6 +450,22 @@ function RaycastWeaponBase:_spawn_shell_eject_effect()
 	if self._use_shell_ejection_effect then
 		World:effect_manager():spawn(self._shell_ejection_effect_table)
 	end
+end
+
+function RaycastWeaponBase:_spawn_tweak_data_effect(effect_id)
+	local effect_data = self:weapon_tweak_data().effects[effect_id]
+	self._tweak_data_effects = self._tweak_data_effects or {}
+
+	if not self._tweak_data_effects[effect_id] then
+		self._tweak_data_effects[effect_id] = {
+			effect = Idstring(effect_data.effect),
+			parent = self._unit:get_object(Idstring(effect_data.parent))
+		}
+	end
+
+	local effect_table = self._tweak_data_effects[effect_id]
+
+	World:effect_manager():spawn(effect_table)
 end
 
 function RaycastWeaponBase:_check_ammo_total(unit)
@@ -977,6 +1028,14 @@ function RaycastWeaponBase:_get_tweak_data_weapon_animation(anim)
 	return animations and animations[anim]
 end
 
+function RaycastWeaponBase:_get_anim_start_offset(anim)
+	if anim == "reload" and self:ammo_base():get_ammo_remaining_in_clip() <= (self.AKIMBO and 1 or 0) then
+		return 0.033
+	end
+
+	return false
+end
+
 function RaycastWeaponBase:tweak_data_anim_play(anim, ...)
 	local animation = self:_get_tweak_data_weapon_animation(anim)
 
@@ -996,6 +1055,35 @@ function RaycastWeaponBase:anim_play(anim, speed_multiplier)
 
 		self._unit:anim_stop(Idstring(anim))
 		self._unit:anim_play_to(Idstring(anim), length, speed_multiplier)
+
+		local offset = self:_get_anim_start_offset(anim)
+
+		if offset then
+			self._unit:anim_set_time(Idstring(anim), offset)
+		end
+	end
+end
+
+function RaycastWeaponBase:tweak_data_anim_play_at_end(anim, ...)
+	local animation = self:_get_tweak_data_weapon_animation(anim)
+
+	if animation then
+		self:anim_play_at_end(animation, ...)
+
+		return true
+	end
+
+	return false
+end
+
+function RaycastWeaponBase:anim_play_at_end(anim, speed_multiplier)
+	if anim then
+		local length = self._unit:anim_length(Idstring(anim))
+		speed_multiplier = speed_multiplier or 1
+
+		self._unit:anim_stop(Idstring(anim))
+		self._unit:anim_play_to(Idstring(anim), length, speed_multiplier)
+		self._unit:anim_set_time(Idstring(anim), length)
 	end
 end
 
@@ -1013,6 +1101,20 @@ end
 
 function RaycastWeaponBase:anim_stop(anim)
 	self._unit:anim_stop(Idstring(anim))
+end
+
+function RaycastWeaponBase:tweak_data_anim_is_playing(anim)
+	local animation = self:_get_tweak_data_weapon_animation(anim)
+
+	if animation then
+		return self:is_playing_anim(animation)
+	end
+
+	return false
+end
+
+function RaycastWeaponBase:is_playing_anim(anim)
+	return self._unit:anim_is_playing(anim)
 end
 
 function RaycastWeaponBase:digest_value(value, digest)
@@ -1407,6 +1509,8 @@ end
 
 function RaycastWeaponBase:start_reload()
 	self._reload_ammo_base = self:ammo_base()
+
+	self:set_magazine_empty(false)
 end
 
 function RaycastWeaponBase:reload_interuptable()
@@ -1504,6 +1608,14 @@ function RaycastWeaponBase:add_ammo(ratio, add_amount_override)
 	local picked_up, add_amount = nil
 	picked_up, add_amount = _add_ammo(self, ratio, add_amount_override)
 
+	if self.AKIMBO then
+		local akimbo_rounding = self:get_ammo_total() % 2 + #self._fire_callbacks
+
+		if akimbo_rounding > 0 then
+			_add_ammo(self, nil, akimbo_rounding)
+		end
+	end
+
 	for _, gadget in ipairs(self:get_all_override_weapon_gadgets()) do
 		if gadget and gadget.ammo_base then
 			local p, a = _add_ammo(gadget:ammo_base(), ratio, add_amount_override)
@@ -1591,6 +1703,21 @@ function RaycastWeaponBase:reduce_ammo_by_procentage_of_total(ammo_procentage)
 end
 
 function RaycastWeaponBase:on_equip(user_unit)
+	self:_check_magazine_empty()
+end
+
+function RaycastWeaponBase:_check_magazine_empty()
+	local mag = self:ammo_base():get_ammo_remaining_in_clip()
+
+	if mag <= (self.AKIMBO and 1 or 0) then
+		local w_td = self:weapon_tweak_data()
+
+		if w_td.animations and w_td.animations.magazine_empty then
+			self:tweak_data_anim_play_at_end("magazine_empty")
+		end
+
+		self:set_magazine_empty(true)
+	end
 end
 
 function RaycastWeaponBase:on_unequip(user_unit)
@@ -1601,6 +1728,8 @@ end
 
 function RaycastWeaponBase:on_enabled()
 	self._enabled = true
+
+	self:_check_magazine_empty()
 end
 
 function RaycastWeaponBase:on_disabled()
@@ -1693,6 +1822,38 @@ function RaycastWeaponBase:set_timer(timer)
 	self._unit:set_timer(timer)
 	self._unit:set_animation_timer(timer)
 end
+
+function RaycastWeaponBase:set_objects_visible(unit, objects, visible)
+	if type(objects) == "string" then
+		objects = {objects}
+	end
+
+	for _, object_name in ipairs(objects) do
+		local graphic_object = unit:get_object(Idstring(object_name))
+
+		if graphic_object then
+			graphic_object:set_visibility(visible)
+		end
+	end
+end
+
+function RaycastWeaponBase:set_magazine_empty(is_empty)
+	local data = tweak_data.weapon.factory[self._factory_id]
+
+	if data then
+		local magazine_empty_objects = data.magazine_empty_objects
+
+		if magazine_empty_objects then
+			self._magazine_empty_objects[self._name_id] = magazine_empty_objects
+		elseif self._magazine_empty_objects then
+			magazine_empty_objects = self._magazine_empty_objects[self.name_id]
+		end
+
+		if magazine_empty_objects then
+			self:set_objects_visible(self._unit, magazine_empty_objects, not is_empty)
+		end
+	end
+end
 InstantBulletBase = InstantBulletBase or class()
 InstantBulletBase.id = "instant"
 
@@ -1751,7 +1912,7 @@ function InstantBulletBase:on_collision(col_ray, weapon_unit, user_unit, damage,
 
 	local result = nil
 
-	if hit_unit:character_damage() and hit_unit:character_damage().damage_bullet then
+	if alive(weapon_unit) and hit_unit:character_damage() and hit_unit:character_damage().damage_bullet then
 		local is_alive = not hit_unit:character_damage():dead()
 		local knock_down = weapon_unit:base()._knock_down and weapon_unit:base()._knock_down > 0 and math.random() < weapon_unit:base()._knock_down
 		result = self:give_impact_damage(col_ray, weapon_unit, user_unit, damage, weapon_unit:base()._use_armor_piercing, false, knock_down, weapon_unit:base()._stagger, weapon_unit:base()._variant)

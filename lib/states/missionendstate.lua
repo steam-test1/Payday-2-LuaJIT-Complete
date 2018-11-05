@@ -110,6 +110,8 @@ function MissionEndState:at_enter(old_state, params)
 		end
 	end
 
+	managers.mission:call_global_event(Message.OnMissionEnd, self._success, self._type, managers.job:current_level_id(), Global.game_settings.difficulty)
+
 	if SystemInfo:platform() == Idstring("WIN32") and managers.network.account:has_alienware() then
 		LightFX:set_lamps(0, 255, 0, 255)
 	end
@@ -532,6 +534,7 @@ function MissionEndState:on_statistics_result(best_kills_peer_id, best_kills_sco
 				managers.achievment:award_progress(achievement_data.stat)
 			elseif achievement_data.award then
 				managers.achievment:award(achievement_data.award)
+				managers.generic_side_jobs:award(achievement_data.award)
 			elseif achievement_data.challenge_stat then
 				managers.challenge:award_progress(achievement_data.challenge_stat)
 			elseif achievement_data.trophy_stat then
@@ -627,8 +630,6 @@ function MissionEndState:generate_safehouse_statistics()
 	end
 
 	self._statistics_data.stage_safehouse_summary = stage_safehouse_summary_string
-
-	managers.custom_safehouse:flush_completed_trophies()
 end
 
 function MissionEndState:_on_safehouse_trophy_unlocked(trophy_id)

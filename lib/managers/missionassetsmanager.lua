@@ -212,7 +212,7 @@ function MissionAssetsManager:reload_locks()
 
 	for _, id in ipairs(unlocked) do
 		if self:get_asset_can_unlock_by_id(id) then
-			self:unlock_asset(id)
+			self:unlock_asset(id, false)
 		end
 	end
 
@@ -269,7 +269,7 @@ function MissionAssetsManager:trigger_asset_tweak(asset_id)
 	end
 end
 
-function MissionAssetsManager:unlock_asset(asset_id)
+function MissionAssetsManager:unlock_asset(asset_id, is_show_chat_message)
 	if Idstring(asset_id) == Idstring("none") then
 		return
 	end
@@ -281,7 +281,7 @@ function MissionAssetsManager:unlock_asset(asset_id)
 	if (not Network:is_server() or not self:get_asset_triggered_by_id(asset_id)) and self.ALLOW_CLIENTS_UNLOCK and not self:get_asset_unlocked_by_id(asset_id) then
 		self._money_spent = self._money_spent + managers.money:on_buy_mission_asset(asset_id)
 
-		managers.network:session():send_to_host("server_unlock_asset", asset_id)
+		managers.network:session():send_to_host("server_unlock_asset", asset_id, is_show_chat_message)
 		self:_on_asset_unlocked(asset_id)
 	end
 
@@ -312,19 +312,19 @@ function MissionAssetsManager:get_money_spent()
 	return self._money_spent
 end
 
-function MissionAssetsManager:server_unlock_asset(asset_id, peer)
+function MissionAssetsManager:server_unlock_asset(asset_id, is_show_chat_message, peer)
 	if not self:is_unlock_asset_allowed() then
 		return
 	end
 
 	peer = peer or managers.network:session():local_peer()
 
-	managers.network:session():send_to_peers_synched("sync_unlock_asset", asset_id, peer:id())
-	self:sync_unlock_asset(asset_id, peer)
+	managers.network:session():send_to_peers_synched("sync_unlock_asset", asset_id, is_show_chat_message, peer:id())
+	self:sync_unlock_asset(asset_id, is_show_chat_message, peer)
 	self:_check_triggers("asset")
 end
 
-function MissionAssetsManager:sync_unlock_asset(asset_id, peer)
+function MissionAssetsManager:sync_unlock_asset(asset_id, is_show_chat_message, peer)
 	local asset = self:_get_asset_by_id(asset_id)
 
 	if not asset then
@@ -347,7 +347,7 @@ function MissionAssetsManager:sync_unlock_asset(asset_id, peer)
 	if managers.chat and peer then
 		local asset_tweak_data = tweak_data.assets[asset_id]
 
-		if asset_tweak_data then
+		if asset_tweak_data and is_show_chat_message then
 			managers.chat:feed_system_message(ChatManager.GAME, managers.localization:text("menu_chat_peer_unlocked_asset", {
 				name = peer:name(),
 				asset = managers.localization:text(asset_tweak_data.name_id)

@@ -152,6 +152,9 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_lemming_crew()
 	self:_init_data_chinchilla_crew()
 	self:_init_data_x_chinchilla_crew()
+	self:_init_data_breech_crew()
+	self:_init_data_ching_crew()
+	self:_init_data_erma_crew()
 	self:_precalculate_values()
 end
 
@@ -407,6 +410,8 @@ function WeaponTweakData:_init_data_m14_sniper_npc()
 	self.svd_snp_npc = deep_clone(self.m14_sniper_npc)
 	self.svdsil_snp_npc = deep_clone(self.m14_sniper_npc)
 	self.svdsil_snp_npc.has_suppressor = "suppressed_a"
+	self.heavy_snp_npc = deep_clone(self.m14_sniper_npc)
+	self.heavy_snp_npc.sounds.prefix = "zsniper_npc"
 end
 
 function WeaponTweakData:_init_data_r870_npc()
@@ -650,7 +655,7 @@ function WeaponTweakData:_init_data_swat_van_turret_module_npc()
 		0.4,
 		0.75
 	}
-	self.swat_van_turret_module.DETECTION_RANGE = self.swat_van_turret_module.FIRE_RANGE
+	self.swat_van_turret_module.DETECTION_RANGE = 8000
 	self.swat_van_turret_module.DETECTION_DELAY = {
 		{
 			900,
@@ -861,7 +866,7 @@ function WeaponTweakData:_init_data_mini_npc()
 	self.mini_npc.DAMAGE = 2
 	self.mini_npc.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
 	self.mini_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
-	self.mini_npc.CLIP_AMMO_MAX = 500
+	self.mini_npc.CLIP_AMMO_MAX = 1000
 	self.mini_npc.NR_CLIPS_MAX = 2
 	self.mini_npc.auto.fire_rate = 0.02
 	self.mini_npc.hold = "rifle"
@@ -2863,6 +2868,55 @@ function WeaponTweakData:_init_data_x_chinchilla_crew()
 	self.x_chinchilla_crew.suppression = 1
 end
 
+function WeaponTweakData:_init_data_breech_crew()
+	self.breech_crew.sounds.prefix = "breech_npc"
+	self.breech_crew.use_data.selection_index = 1
+	self.breech_crew.DAMAGE = 1
+	self.breech_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.breech_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.breech_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.breech_crew.CLIP_AMMO_MAX = 15
+	self.breech_crew.NR_CLIPS_MAX = 5
+	self.breech_crew.pull_magazine_during_reload = "pistol"
+	self.breech_crew.hold = "pistol"
+	self.breech_crew.alert_size = 2500
+	self.breech_crew.suppression = 1
+end
+
+function WeaponTweakData:_init_data_ching_crew()
+	self.ching_crew.sounds.prefix = "ching_npc"
+	self.ching_crew.use_data.selection_index = 2
+	self.ching_crew.DAMAGE = 1.28
+	self.ching_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
+	self.ching_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
+	self.ching_crew.CLIP_AMMO_MAX = 10
+	self.ching_crew.NR_CLIPS_MAX = 8
+	self.ching_crew.pull_magazine_during_reload = "rifle"
+	self.ching_crew.reload = "looped"
+	self.ching_crew.looped_reload_speed = 1
+	self.ching_crew.auto.fire_rate = 0.085
+	self.ching_crew.hold = "rifle"
+	self.ching_crew.alert_size = 5000
+	self.ching_crew.suppression = 1
+end
+
+function WeaponTweakData:_init_data_erma_crew()
+	self.erma_crew.sounds.prefix = "erma_npc"
+	self.erma_crew.use_data.selection_index = 1
+	self.erma_crew.DAMAGE = 2
+	self.erma_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.erma_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.erma_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.erma_crew.CLIP_AMMO_MAX = 40
+	self.erma_crew.NR_CLIPS_MAX = 5
+	self.erma_crew.reload = "rifle"
+	self.erma_crew.pull_magazine_during_reload = "smg"
+	self.erma_crew.auto.fire_rate = 0.1
+	self.erma_crew.hold = "rifle"
+	self.erma_crew.alert_size = 2800
+	self.erma_crew.suppression = 1
+end
+
 function WeaponTweakData:_init_data_player_weapons(tweak_data)
 	local autohit_rifle_default, autohit_pistol_default, autohit_shotgun_default, autohit_lmg_default, autohit_snp_default, autohit_smg_default, autohit_minigun_default, aim_assist_rifle_default, aim_assist_pistol_default, aim_assist_shotgun_default, aim_assist_lmg_default, aim_assist_snp_default, aim_assist_smg_default, aim_assist_minigun_default = nil
 
@@ -3591,6 +3645,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.glock_17.sounds.dryfire = "secondary_dryfire"
 	self.glock_17.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.glock_17.sounds.leave_steelsight = "pistol_steel_sight_exit"
+	self.glock_17.sounds.magazine_empty = "wp_pistol_slide_lock"
 	self.glock_17.FIRE_MODE = "single"
 	self.glock_17.fire_mode_data = {fire_rate = 0.125}
 	self.glock_17.single = {fire_rate = 0.125}
@@ -3652,7 +3707,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.glock_17.weapon_hold = "glock"
 	self.glock_17.animations = {
 		equip_id = "equip_glock",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.glock_17.transition_duration = 0
 	self.glock_17.panic_suppression_chance = 0.2
@@ -3870,6 +3926,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.glock_18c.sounds.dryfire = "secondary_dryfire"
 	self.glock_18c.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.glock_18c.sounds.leave_steelsight = "pistol_steel_sight_exit"
+	self.glock_18c.sounds.magazine_empty = "wp_pistol_slide_lock"
 	self.glock_18c.timers = {
 		reload_not_empty = 1.47,
 		reload_empty = 2.12,
@@ -3930,7 +3987,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = "reload",
 		reload_not_empty = "reload_not_empty",
 		equip_id = "equip_glock",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.glock_18c.challenges = {
 		group = "handgun",
@@ -5112,6 +5170,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.deagle.sounds.dryfire = "secondary_dryfire"
 	self.deagle.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.deagle.sounds.leave_steelsight = "pistol_steel_sight_exit"
+	self.deagle.sounds.magazine_empty = "wp_pistol_slide_lock"
 	self.deagle.FIRE_MODE = "single"
 	self.deagle.fire_mode_data = {fire_rate = 0.25}
 	self.deagle.single = {fire_rate = 0.25}
@@ -5166,7 +5225,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.deagle.aim_assist = aim_assist_pistol_default
 	self.deagle.animations = {
 		equip_id = "equip_glock",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.deagle.panic_suppression_chance = 0.2
 	self.deagle.stats = {
@@ -5280,6 +5340,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.colt_1911.sounds.dryfire = "secondary_dryfire"
 	self.colt_1911.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.colt_1911.sounds.leave_steelsight = "pistol_steel_sight_exit"
+	self.colt_1911.sounds.magazine_empty = "wp_pistol_slide_lock"
 	self.colt_1911.FIRE_MODE = "single"
 	self.colt_1911.fire_mode_data = {fire_rate = 0.166}
 	self.colt_1911.single = {fire_rate = 0.166}
@@ -5338,7 +5399,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		reload = "reload",
 		reload_not_empty = "reload_not_empty",
 		equip_id = "equip_glock",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.colt_1911.panic_suppression_chance = 0.2
 	self.colt_1911.stats = {
@@ -5632,6 +5694,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.b92fs.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.b92fs.sounds.leave_steelsight = "pistol_steel_sight_exit"
 	self.b92fs.sounds.dryfire = "secondary_dryfire"
+	self.b92fs.sounds.magazine_empty = "wp_pistol_slide_lock"
 	self.b92fs.timers = {
 		reload_not_empty = 1.47,
 		reload_empty = 2.12,
@@ -5688,7 +5751,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.b92fs.weapon_hold = "glock"
 	self.b92fs.animations = {
 		equip_id = "equip_glock",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.b92fs.panic_suppression_chance = 0.2
 	self.b92fs.stats = {
@@ -5913,6 +5977,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.usp.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.usp.sounds.leave_steelsight = "pistol_steel_sight_exit"
 	self.usp.sounds.dryfire = "secondary_dryfire"
+	self.usp.sounds.magazine_empty = "wp_pistol_slide_lock"
 	self.usp.timers = {
 		reload_not_empty = 1.47,
 		reload_empty = 2.2,
@@ -5977,7 +6042,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.usp.weapon_hold = "colt_1911"
 	self.usp.animations = {
 		equip_id = "equip_glock",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.usp.panic_suppression_chance = 0.2
 	self.usp.stats = {
@@ -6004,6 +6070,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.g22c.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.g22c.sounds.leave_steelsight = "pistol_steel_sight_exit"
 	self.g22c.sounds.dryfire = "secondary_dryfire"
+	self.g22c.sounds.magazine_empty = "wp_pistol_slide_lock"
 	self.g22c.timers = {
 		reload_not_empty = 1.47,
 		reload_empty = 2.2,
@@ -6068,7 +6135,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.g22c.weapon_hold = "glock"
 	self.g22c.animations = {
 		equip_id = "equip_glock",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.g22c.panic_suppression_chance = 0.2
 	self.g22c.stats = {
@@ -6367,6 +6435,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.ppk.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.ppk.sounds.leave_steelsight = "pistol_steel_sight_exit"
 	self.ppk.sounds.dryfire = "secondary_dryfire"
+	self.ppk.sounds.magazine_empty = "wp_pistol_slide_lock"
 	self.ppk.timers = {
 		reload_not_empty = 1.55,
 		reload_empty = 2.12,
@@ -6423,7 +6492,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.ppk.weapon_hold = "glock"
 	self.ppk.animations = {
 		equip_id = "equip_glock",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.ppk.global_value = "armored_transport"
 	self.ppk.texture_bundle_folder = "dlc1"
@@ -6629,6 +6699,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.p226.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.p226.sounds.leave_steelsight = "pistol_steel_sight_exit"
 	self.p226.sounds.dryfire = "secondary_dryfire"
+	self.p226.sounds.magazine_empty = "wp_pistol_slide_lock"
 	self.p226.timers = {
 		reload_not_empty = 1.47,
 		reload_empty = 2.12,
@@ -6685,7 +6756,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.p226.weapon_hold = "colt_1911"
 	self.p226.animations = {
 		equip_id = "equip_glock",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.p226.global_value = "gage_pack"
 	self.p226.texture_bundle_folder = "gage_pack"
@@ -8330,6 +8402,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.jowi.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.jowi.sounds.leave_steelsight = "pistol_steel_sight_exit"
 	self.jowi.sounds.dryfire = "secondary_dryfire"
+	self.jowi.sounds.magazine_empty = "wp_pistol_slide_lock"
 	self.jowi.timers = {
 		reload_not_empty = 3.17,
 		reload_empty = 4,
@@ -8395,7 +8468,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 			reload = "reload_left"
 		},
 		has_steelsight_stance = true,
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.jowi.panic_suppression_chance = 0.2
 	self.jowi.stats = {
@@ -8425,6 +8499,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_1911.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.x_1911.sounds.leave_steelsight = "pistol_steel_sight_exit"
 	self.x_1911.sounds.dryfire = "secondary_dryfire"
+	self.x_1911.sounds.magazine_empty = "wp_akimbo_pistol_slide_lock"
 	self.x_1911.timers = {
 		reload_not_empty = 3.17,
 		reload_empty = 4,
@@ -8490,7 +8565,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 			reload = "reload_left"
 		},
 		has_steelsight_stance = true,
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.x_1911.panic_suppression_chance = 0.2
 	self.x_1911.stats = {
@@ -8520,6 +8596,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_b92fs.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.x_b92fs.sounds.leave_steelsight = "pistol_steel_sight_exit"
 	self.x_b92fs.sounds.dryfire = "secondary_dryfire"
+	self.x_b92fs.sounds.magazine_empty = "wp_akimbo_pistol_slide_lock"
 	self.x_b92fs.timers = {
 		reload_not_empty = 3.17,
 		reload_empty = 4,
@@ -8586,7 +8663,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 			reload = "reload_left"
 		},
 		has_steelsight_stance = true,
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.x_b92fs.panic_suppression_chance = 0.2
 	self.x_b92fs.stats = {
@@ -8616,6 +8694,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_deagle.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.x_deagle.sounds.leave_steelsight = "pistol_steel_sight_exit"
 	self.x_deagle.sounds.dryfire = "secondary_dryfire"
+	self.x_deagle.sounds.magazine_empty = "wp_akimbo_pistol_slide_lock"
 	self.x_deagle.timers = {
 		reload_not_empty = 3.17,
 		reload_empty = 4,
@@ -8680,7 +8759,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 			reload = "reload_left"
 		},
 		has_steelsight_stance = true,
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.x_deagle.panic_suppression_chance = 0.2
 	self.x_deagle.stats = {
@@ -8707,6 +8787,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.g26.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.g26.sounds.leave_steelsight = "pistol_steel_sight_exit"
 	self.g26.sounds.dryfire = "secondary_dryfire"
+	self.g26.sounds.magazine_empty = "wp_pistol_slide_lock"
 	self.g26.timers = {
 		reload_not_empty = 1.47,
 		reload_empty = 2.12,
@@ -8763,7 +8844,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.g26.weapon_hold = "glock"
 	self.g26.animations = {
 		equip_id = "equip_glock",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.g26.global_value = "pd2_clan"
 	self.g26.panic_suppression_chance = 0.2
@@ -8989,6 +9071,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.c96.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.c96.sounds.leave_steelsight = "pistol_steel_sight_exit"
 	self.c96.sounds.dryfire = "secondary_dryfire"
+	self.c96.sounds.magazine_empty = "wp_pistol_slide_lock"
 	self.c96.timers = {
 		reload_not_empty = 4,
 		reload_empty = 4.17,
@@ -9045,7 +9128,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.c96.weapon_hold = "glock"
 	self.c96.animations = {
 		equip_id = "equip_glock",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.c96.global_value = "gage_pack_historical"
 	self.c96.texture_bundle_folder = "gage_pack_historical"
@@ -9545,6 +9629,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.hs2000.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.hs2000.sounds.leave_steelsight = "pistol_steel_sight_exit"
 	self.hs2000.sounds.dryfire = "secondary_dryfire"
+	self.hs2000.sounds.magazine_empty = "wp_pistol_slide_lock"
 	self.hs2000.timers = {
 		reload_not_empty = 1.47,
 		reload_empty = 2.12,
@@ -9601,7 +9686,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.hs2000.weapon_hold = "glock"
 	self.hs2000.animations = {
 		equip_id = "equip_glock",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.hs2000.global_value = "the_bomb"
 	self.hs2000.texture_bundle_folder = "the_bomb"
@@ -10022,6 +10108,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_g22c.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.x_g22c.sounds.leave_steelsight = "pistol_steel_sight_exit"
 	self.x_g22c.sounds.dryfire = "secondary_dryfire"
+	self.x_g22c.sounds.magazine_empty = "wp_akimbo_pistol_slide_lock"
 	self.x_g22c.timers = {
 		reload_not_empty = 3.17,
 		reload_empty = 4,
@@ -10087,7 +10174,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 			reload = "reload_left"
 		},
 		has_steelsight_stance = true,
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.x_g22c.panic_suppression_chance = 0.2
 	self.x_g22c.texture_bundle_folder = "butcher_pack_mods"
@@ -10118,6 +10206,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_g17.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.x_g17.sounds.leave_steelsight = "pistol_steel_sight_exit"
 	self.x_g17.sounds.dryfire = "secondary_dryfire"
+	self.x_g17.sounds.magazine_empty = "wp_akimbo_pistol_slide_lock"
 	self.x_g17.timers = {
 		reload_not_empty = 3.17,
 		reload_empty = 4,
@@ -10183,6 +10272,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 			reload = "reload_left"
 		},
 		has_steelsight_stance = true,
+		magazine_empty = "last_recoil",
 		recoil_steelsight = true
 	}
 	self.x_g17.panic_suppression_chance = 0.2
@@ -10214,6 +10304,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_usp.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.x_usp.sounds.leave_steelsight = "pistol_steel_sight_exit"
 	self.x_usp.sounds.dryfire = "secondary_dryfire"
+	self.x_usp.sounds.magazine_empty = "wp_akimbo_pistol_slide_lock"
 	self.x_usp.timers = {
 		reload_not_empty = 3.17,
 		reload_empty = 4,
@@ -10279,6 +10370,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 			reload = "reload_left"
 		},
 		has_steelsight_stance = true,
+		magazine_empty = "last_recoil",
 		recoil_steelsight = true
 	}
 	self.x_usp.panic_suppression_chance = 0.2
@@ -11948,6 +12040,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.sparrow.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.sparrow.sounds.leave_steelsight = "pistol_steel_sight_exit"
 	self.sparrow.sounds.dryfire = "secondary_dryfire"
+	self.sparrow.sounds.magazine_empty = "wp_pistol_slide_lock"
 	self.sparrow.timers = {
 		reload_not_empty = 1.47,
 		reload_empty = 2.12,
@@ -12004,7 +12097,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.sparrow.weapon_hold = "colt_1911"
 	self.sparrow.animations = {
 		equip_id = "equip_glock",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.sparrow.global_value = "berry"
 	self.sparrow.texture_bundle_folder = "rip"
@@ -12538,6 +12632,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.pl14.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.pl14.sounds.leave_steelsight = "pistol_steel_sight_exit"
 	self.pl14.sounds.dryfire = "secondary_dryfire"
+	self.pl14.sounds.magazine_empty = "wp_pistol_slide_lock"
 	self.pl14.timers = {
 		reload_not_empty = 1.47,
 		reload_empty = 2.12,
@@ -12594,7 +12689,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.pl14.weapon_hold = "colt_1911"
 	self.pl14.animations = {
 		equip_id = "equip_glock",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.pl14.texture_bundle_folder = "mad"
 	self.pl14.panic_suppression_chance = 0.2
@@ -13102,6 +13198,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.packrat.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.packrat.sounds.leave_steelsight = "pistol_steel_sight_exit"
 	self.packrat.sounds.dryfire = "secondary_dryfire"
+	self.packrat.sounds.magazine_empty = "wp_pistol_slide_lock"
 	self.packrat.timers = {
 		reload_not_empty = 1.52,
 		reload_empty = 2.32,
@@ -13158,7 +13255,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.packrat.weapon_hold = "packrat"
 	self.packrat.animations = {
 		equip_id = "equip_packrat",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.packrat.global_value = "pim"
 	self.packrat.texture_bundle_folder = "pim"
@@ -13386,6 +13484,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_packrat.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.x_packrat.sounds.leave_steelsight = "pistol_steel_sight_exit"
 	self.x_packrat.sounds.dryfire = "secondary_dryfire"
+	self.x_packrat.sounds.magazine_empty = "wp_akimbo_pistol_slide_lock"
 	self.x_packrat.timers = {
 		reload_not_empty = 3.17,
 		reload_empty = 4,
@@ -13451,7 +13550,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 			reload = "reload_left"
 		},
 		has_steelsight_stance = true,
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.x_packrat.global_value = "pim"
 	self.x_packrat.texture_bundle_folder = "pim"
@@ -14348,6 +14448,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.lemming.sounds.enter_steelsight = "pistol_steel_sight_enter"
 	self.lemming.sounds.leave_steelsight = "pistol_steel_sight_exit"
 	self.lemming.sounds.dryfire = "secondary_dryfire"
+	self.lemming.sounds.magazine_empty = "wp_pistol_slide_lock"
 	self.lemming.timers = {
 		reload_not_empty = 1.5,
 		reload_empty = 2.15,
@@ -14404,7 +14505,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.lemming.weapon_hold = "packrat"
 	self.lemming.animations = {
 		equip_id = "equip_packrat",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.lemming.global_value = "pd2_clan"
 	self.lemming.texture_bundle_folder = "fi7"
@@ -14611,6 +14713,276 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 7,
 		concealment = 28
 	}
+	self.breech = {
+		categories = {"pistol"},
+		damage_melee = damage_melee_default,
+		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.breech.sounds.fire = "breech_fire"
+	self.breech.sounds.enter_steelsight = "pistol_steel_sight_enter"
+	self.breech.sounds.leave_steelsight = "pistol_steel_sight_exit"
+	self.breech.sounds.dryfire = "secondary_dryfire"
+	self.breech.sounds.magazine_empty = "wp_pistol_slide_lock"
+	self.breech.timers = {
+		reload_not_empty = 1.33,
+		reload_empty = 2.1,
+		unequip = 0.5,
+		equip = 0.35
+	}
+	self.breech.name_id = "bm_w_breech"
+	self.breech.desc_id = "bm_w_breech_desc"
+	self.breech.description_id = "des_breech"
+	self.breech.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
+	self.breech.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
+	self.breech.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.breech.use_data = {selection_index = 1}
+	self.breech.DAMAGE = 1
+	self.breech.CLIP_AMMO_MAX = 8
+	self.breech.NR_CLIPS_MAX = 7
+	self.breech.AMMO_MAX = self.breech.CLIP_AMMO_MAX * self.breech.NR_CLIPS_MAX
+	self.breech.AMMO_PICKUP = self:_pickup_chance(self.breech.AMMO_MAX, 1)
+	self.breech.FIRE_MODE = "single"
+	self.breech.fire_mode_data = {fire_rate = 0.166}
+	self.breech.single = {fire_rate = 0.166}
+	self.breech.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight
+	}
+	self.breech.kick = {standing = self.glock_17.kick.standing}
+	self.breech.kick.crouching = self.breech.kick.standing
+	self.breech.kick.steelsight = self.breech.kick.standing
+	self.breech.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.breech.crosshair.standing.offset = 0.1
+	self.breech.crosshair.standing.moving_offset = 0.4
+	self.breech.crosshair.standing.kick_offset = 0.3
+	self.breech.crosshair.crouching.offset = 0.1
+	self.breech.crosshair.crouching.moving_offset = 0.5
+	self.breech.crosshair.crouching.kick_offset = 0.2
+	self.breech.crosshair.steelsight.hidden = true
+	self.breech.crosshair.steelsight.offset = 0
+	self.breech.crosshair.steelsight.moving_offset = 0
+	self.breech.crosshair.steelsight.kick_offset = 0.1
+	self.breech.shake = {
+		fire_multiplier = 1,
+		fire_steelsight_multiplier = -1
+	}
+	self.breech.autohit = autohit_pistol_default
+	self.breech.aim_assist = aim_assist_pistol_default
+	self.breech.weapon_hold = "breech"
+	self.breech.animations = {
+		equip_id = "equip_breech",
+		magazine_empty = "last_recoil",
+		recoil_steelsight = true
+	}
+	self.breech.texture_bundle_folder = "old"
+	self.breech.panic_suppression_chance = 0.2
+	self.breech.stats = {
+		zoom = 3,
+		total_ammo_mod = 21,
+		damage = 180,
+		alert_size = 7,
+		spread = 20,
+		spread_moving = 18,
+		recoil = 7,
+		value = 4,
+		extra_ammo = 6,
+		reload = 11,
+		suppression = 15,
+		concealment = 29
+	}
+	self.breech.unlock_func = "has_unlocked_breech"
+	self.ching = {
+		categories = {"assault_rifle"},
+		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
+		damage_melee = damage_melee_default,
+		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.ching.sounds.fire = "ching_fire"
+	self.ching.sounds.fire_single = "ching_fire"
+	self.ching.sounds.dryfire = "primary_dryfire"
+	self.ching.sounds.magazine_empty = "ching_magazine_empty"
+	self.ching.sounds.enter_steelsight = "primary_steel_sight_enter"
+	self.ching.sounds.leave_steelsight = "primary_steel_sight_exit"
+	self.ching.timers = {
+		reload_not_empty = 2.56,
+		reload_empty = 1.52,
+		unequip = 0.6,
+		equip = 0.55
+	}
+	self.ching.name_id = "bm_w_ching"
+	self.ching.desc_id = "bm_w_ching_desc"
+	self.ching.description_id = "des_ching"
+	self.ching.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
+	self.ching.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
+	self.ching.effects = {magazine_empty = {
+		parent = "a_shell",
+		effect = "effects/payday2/particles/weapons/magazine/ching_clip"
+	}}
+	self.ching.use_data = {selection_index = 2}
+	self.ching.DAMAGE = 2
+	self.ching.CLIP_AMMO_MAX = 8
+	self.ching.NR_CLIPS_MAX = 9
+	self.ching.AMMO_MAX = self.ching.CLIP_AMMO_MAX * self.ching.NR_CLIPS_MAX
+	self.ching.AMMO_PICKUP = self:_pickup_chance(self.ching.AMMO_MAX, 1)
+	self.ching.FIRE_MODE = "single"
+	self.ching.fire_mode_data = {fire_rate = 0.1}
+	self.ching.CAN_TOGGLE_FIREMODE = false
+	self.ching.single = {fire_rate = 0.1}
+	self.ching.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight
+	}
+	self.ching.kick = {standing = self.new_m4.kick.standing}
+	self.ching.kick.crouching = self.ching.kick.standing
+	self.ching.kick.steelsight = self.ching.kick.standing
+	self.ching.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.ching.crosshair.standing.offset = 0.16
+	self.ching.crosshair.standing.moving_offset = 0.8
+	self.ching.crosshair.standing.kick_offset = 0.6
+	self.ching.crosshair.crouching.offset = 0.08
+	self.ching.crosshair.crouching.moving_offset = 0.7
+	self.ching.crosshair.crouching.kick_offset = 0.4
+	self.ching.crosshair.steelsight.hidden = true
+	self.ching.crosshair.steelsight.offset = 0
+	self.ching.crosshair.steelsight.moving_offset = 0
+	self.ching.crosshair.steelsight.kick_offset = 0.1
+	self.ching.shake = {
+		fire_multiplier = 1,
+		fire_steelsight_multiplier = 1
+	}
+	self.ching.autohit = autohit_rifle_default
+	self.ching.aim_assist = aim_assist_rifle_default
+	self.ching.animations = {
+		fire = "recoil",
+		equip_id = "equip_ching",
+		magazine_empty = "last_recoil",
+		recoil_steelsight = true
+	}
+	self.ching.texture_bundle_folder = "old"
+	self.ching.panic_suppression_chance = 0.2
+	self.ching.stats = {
+		zoom = 3,
+		total_ammo_mod = 21,
+		damage = 160,
+		alert_size = 7,
+		spread = 22,
+		spread_moving = 20,
+		recoil = 10,
+		value = 1,
+		extra_ammo = 6,
+		reload = 11,
+		suppression = 4,
+		concealment = 20
+	}
+	self.ching.unlock_func = "has_unlocked_ching"
+	self.erma = {
+		categories = {"smg"},
+		damage_melee = damage_melee_default,
+		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.erma.sounds.fire = "erma_fire_single"
+	self.erma.sounds.fire_single = "erma_fire_single"
+	self.erma.sounds.fire_auto = "erma_fire"
+	self.erma.sounds.stop_fire = "erma_stop"
+	self.erma.sounds.dryfire = "secondary_dryfire"
+	self.erma.sounds.magazine_empty = "wp_rifle_slide_lock"
+	self.erma.sounds.enter_steelsight = "secondary_steel_sight_enter"
+	self.erma.sounds.leave_steelsight = "secondary_steel_sight_exit"
+	self.erma.timers = {
+		reload_not_empty = 1.9,
+		reload_empty = 3.05,
+		unequip = 0.5,
+		equip = 0.6
+	}
+	self.erma.name_id = "bm_w_erma"
+	self.erma.desc_id = "bm_w_erma_desc"
+	self.erma.description_id = "des_erma"
+	self.erma.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
+	self.erma.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
+	self.erma.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.erma.use_data = {selection_index = 1}
+	self.erma.DAMAGE = 1
+	self.erma.CLIP_AMMO_MAX = 40
+	self.erma.NR_CLIPS_MAX = 2
+	self.erma.AMMO_MAX = self.erma.CLIP_AMMO_MAX * self.erma.NR_CLIPS_MAX
+	self.erma.AMMO_PICKUP = self:_pickup_chance(self.erma.AMMO_MAX, 1)
+	self.erma.FIRE_MODE = "auto"
+	self.erma.fire_mode_data = {fire_rate = 0.1}
+	self.erma.auto = {fire_rate = 0.1}
+	self.erma.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight
+	}
+	self.erma.kick = {standing = self.mp9.kick.standing}
+	self.erma.kick.crouching = self.erma.kick.standing
+	self.erma.kick.steelsight = self.erma.kick.standing
+	self.erma.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.erma.crosshair.standing.offset = 0.4
+	self.erma.crosshair.standing.moving_offset = 0.7
+	self.erma.crosshair.standing.kick_offset = 0.6
+	self.erma.crosshair.crouching.offset = 0.3
+	self.erma.crosshair.crouching.moving_offset = 0.6
+	self.erma.crosshair.crouching.kick_offset = 0.4
+	self.erma.crosshair.steelsight.hidden = true
+	self.erma.crosshair.steelsight.offset = 0
+	self.erma.crosshair.steelsight.moving_offset = 0
+	self.erma.crosshair.steelsight.kick_offset = 0.4
+	self.erma.shake = {
+		fire_multiplier = 1,
+		fire_steelsight_multiplier = -1
+	}
+	self.erma.autohit = autohit_smg_default
+	self.erma.aim_assist = aim_assist_smg_default
+	self.erma.weapon_hold = "erma"
+	self.erma.animations = {
+		equip_id = "equip_erma",
+		magazine_empty = "last_recoil",
+		recoil_steelsight = true
+	}
+	self.erma.texture_bundle_folder = "old"
+	self.erma.panic_suppression_chance = 0.2
+	self.erma.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 80,
+		alert_size = 7,
+		spread = 18,
+		spread_moving = 18,
+		recoil = 12,
+		value = 5,
+		extra_ammo = 6,
+		reload = 11,
+		suppression = 14,
+		concealment = 24
+	}
+	self.erma.unlock_func = "has_unlocked_erma"
 end
 
 function WeaponTweakData:_init_data_offhand_weapons()
@@ -14742,8 +15114,7 @@ function WeaponTweakData:_create_table_structure()
 	self.m14_sniper_npc = {
 		usage = "is_rifle",
 		sounds = {},
-		use_data = {},
-		auto = {}
+		use_data = {}
 	}
 	self.r870_npc = {
 		usage = "is_shotgun_pump",
@@ -15125,19 +15496,22 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.m95_crew = {
-		usage = "is_bullpup",
+		usage = "is_sniper",
+		anim_usage = "is_bullpup",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.msr_crew = {
-		usage = "is_rifle",
+		usage = "is_sniper",
+		anim_usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.r93_crew = {
-		usage = "is_rifle",
+		usage = "is_sniper",
+		anim_usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
@@ -15263,7 +15637,8 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.mosin_crew = {
-		usage = "is_rifle",
+		usage = "is_sniper",
+		anim_usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
@@ -15359,7 +15734,8 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.winchester1874_crew = {
-		usage = "is_shotgun_pump",
+		usage = "is_sniper",
+		anim_usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {},
 		auto = {}
@@ -15389,7 +15765,8 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.wa2000_crew = {
-		usage = "is_bullpup",
+		usage = "is_sniper",
+		anim_usage = "is_bullpup",
 		sounds = {},
 		use_data = {},
 		auto = {}
@@ -15443,7 +15820,8 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.model70_crew = {
-		usage = "is_rifle",
+		usage = "is_sniper",
+		anim_usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
@@ -15521,7 +15899,8 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.desertfox_crew = {
-		usage = "is_bullpup",
+		usage = "is_sniper",
+		anim_usage = "is_bullpup",
 		sounds = {},
 		use_data = {},
 		auto = {}
@@ -15563,13 +15942,15 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.tti_crew = {
-		usage = "is_rifle",
+		usage = "is_sniper",
+		anim_usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.siltstone_crew = {
-		usage = "is_rifle",
+		usage = "is_sniper",
+		anim_usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
@@ -15600,6 +15981,24 @@ function WeaponTweakData:_create_table_structure()
 	}
 	self.x_chinchilla_crew = {
 		usage = "akimbo_pistol",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.breech_crew = {
+		usage = "is_pistol",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.ching_crew = {
+		usage = "is_rifle",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.erma_crew = {
+		usage = "is_bullpup",
 		sounds = {},
 		use_data = {},
 		auto = {}

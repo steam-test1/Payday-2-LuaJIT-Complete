@@ -4196,10 +4196,6 @@ function InteractionTweakData:init(tweak_data)
 		text_id = "hud_press_answering_play",
 		interact_distance = 200
 	}
-	self.press_play_jacket_sound = {
-		text_id = "hud_press_play_jacket_sound",
-		interact_distance = 200
-	}
 	self.press_shoot_puck = {
 		text_id = "hud_int_press_shoot_puck",
 		interact_distance = 350
@@ -4712,6 +4708,10 @@ function InteractionTweakData:init(tweak_data)
 		start_active = false,
 		sound_start = "bar_turn_off_cooling_system_start",
 		sound_interupt = "bar_turn_off_cooling_system_cancel"
+	}
+	self.press_play_jacket_sound = {
+		text_id = "hud_press_play_jacket_sound",
+		interact_distance = 200
 	}
 	self.hold_move_car_spa = {
 		text_id = "hud_int_hold_move_car",

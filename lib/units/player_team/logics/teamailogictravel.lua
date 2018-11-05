@@ -83,7 +83,12 @@ function TeamAILogicTravel.enter(data, new_logic_name, enter_params)
 
 	data.unit:movement():set_allow_fire(false)
 
-	my_data.weapon_range = data.char_tweak.weapon[data.unit:inventory():equipped_unit():base():weapon_tweak_data().usage].range
+	local w_td = alive(data.unit) and data.unit:inventory():equipped_unit() and data.unit:inventory():equipped_unit():base():weapon_tweak_data()
+
+	if w_td then
+		local cw_td = data.char_tweak.weapon[w_td.usage]
+		my_data.weapon_range = (cw_td or {}).range or 5000
+	end
 
 	if not data.unit:movement():chk_action_forbidden("walk") or data.unit:anim_data().act_idle then
 		local new_action = {

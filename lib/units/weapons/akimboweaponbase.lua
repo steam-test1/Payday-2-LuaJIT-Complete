@@ -142,6 +142,36 @@ function AkimboWeaponBase:_fire_second(params)
 	end
 end
 
+function AkimboWeaponBase:_do_update_bullet_objects(weapon_base, ammo_func, is_second_gun)
+	if weapon_base._bullet_objects then
+		for i, objects in pairs(weapon_base._bullet_objects) do
+			for _, object in ipairs(objects) do
+				local ammo_base = weapon_base:ammo_base()
+				local ammo = ammo_base[ammo_func](ammo_base) / 2
+				ammo = is_second_gun and math.ceil(ammo) or math.floor(ammo)
+
+				object[1]:set_visibility(i <= ammo)
+			end
+		end
+	end
+end
+
+function AkimboWeaponBase:_update_bullet_objects(ammo_func)
+	self:_do_update_bullet_objects(self, ammo_func, false)
+
+	if alive(self._second_gun) then
+		self:_do_update_bullet_objects(self._second_gun:base(), ammo_func, true)
+	end
+end
+
+function AkimboWeaponBase:_check_magazine_empty()
+	AkimboWeaponBase.super._check_magazine_empty(self)
+
+	if alive(self._second_gun) then
+		self._second_gun:base():_check_magazine_empty()
+	end
+end
+
 function AkimboWeaponBase:on_enabled(...)
 	AkimboWeaponBase.super.on_enabled(self, ...)
 
@@ -155,6 +185,22 @@ function AkimboWeaponBase:on_disabled(...)
 
 	if alive(self._second_gun) then
 		self._second_gun:base():on_disabled(...)
+	end
+end
+
+function AkimboWeaponBase:on_equip(...)
+	AkimboWeaponBase.super.on_equip(self, ...)
+
+	if alive(self._second_gun) then
+		self._second_gun:base():on_equip(...)
+	end
+end
+
+function AkimboWeaponBase:set_magazine_empty(...)
+	AkimboWeaponBase.super.set_magazine_empty(self, ...)
+
+	if alive(self._second_gun) then
+		self._second_gun:base():set_magazine_empty(...)
 	end
 end
 

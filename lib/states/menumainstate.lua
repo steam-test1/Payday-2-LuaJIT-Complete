@@ -35,6 +35,17 @@ function MenuMainState:at_enter(old_state)
 			else
 				self:on_server_left()
 			end
+		elseif Global.load_crime_net then
+			managers.overlay_effect:play_effect({
+				sustain = 0.5,
+				fade_in = 0,
+				blend_mode = "normal",
+				fade_out = 0.5,
+				color = Color.black
+			})
+			managers.menu:open_node("crimenet")
+
+			Global.load_crime_net = false
 		elseif Global.load_start_menu then
 			managers.overlay_effect:play_effect({
 				sustain = 0.25,
@@ -111,6 +122,8 @@ function MenuMainState:at_enter(old_state)
 		if managers.crime_spree:was_cleared() then
 			managers.crime_spree:show_cleared_dialog()
 		end
+
+		managers.promo_unlocks:check_unlocks()
 	end
 
 	if Global.savefile_manager.backup_save_enabled then

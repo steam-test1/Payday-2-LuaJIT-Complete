@@ -192,6 +192,16 @@ function MenuTitlescreenState:get_start_pressed_controller_index()
 	return nil
 end
 
+function MenuTitlescreenState:get_first_keyboard_controller_index()
+	for index, controller in ipairs(self._controller_list) do
+		if controller._default_controller_id == "keyboard" then
+			return index
+		end
+	end
+
+	return nil
+end
+
 function MenuTitlescreenState:check_confirm_pressed()
 	for index, controller in ipairs(self._controller_list) do
 		if controller:get_input_pressed("confirm") then

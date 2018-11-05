@@ -1726,6 +1726,16 @@ function FPCameraPlayerBase:_unspawn_shotgun_shell()
 	self._shell = nil
 end
 
+function FPCameraPlayerBase:anim_clbk_stop_weapon_magazine_empty()
+	if alive(self._parent_unit) then
+		local weapon = self._parent_unit:inventory():equipped_unit()
+
+		if alive(weapon) then
+			weapon:base():tweak_data_anim_stop("magazine_empty")
+		end
+	end
+end
+
 function FPCameraPlayerBase:load_fps_mask_units()
 	if not self._mask_backface_loaded then
 		self._mask_backface_loaded = true

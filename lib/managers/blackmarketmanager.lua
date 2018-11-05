@@ -839,7 +839,7 @@ function BlackMarketManager:equip_character(character_id)
 	end
 
 	if managers.menu_scene then
-		managers.menu_scene:set_character(character_id)
+		managers.menu_scene:set_character(character_id, true)
 	end
 
 	MenuCallbackHandler:_update_outfit_information()
@@ -5007,8 +5007,11 @@ function BlackMarketManager:_update_preferred_character(update_character)
 		local character = self._global._preferred_characters[1]
 		local new_name = CriminalsManager.convert_old_to_new_character_workname(character)
 		self._global._preferred_character = character
+		local is_locked = tweak_data.blackmarket.characters.locked[new_name]
 
-		if (not tweak_data.blackmarket.characters.locked[new_name] or self:equipped_character() ~= "locked") and self:equipped_character() ~= character then
+		if is_locked then
+			self:equip_character("locked")
+		elseif self:equipped_character() ~= character then
 			self:equip_character(character)
 		end
 
@@ -6002,8 +6005,6 @@ function BlackMarketManager:character_sequence_by_character_id(character_id, pee
 	local character = self:get_preferred_character()
 
 	if managers.network and managers.network:session() and peer_id then
-		print("character_sequence_by_character_id", managers.network:session(), peer_id, character)
-
 		local peer = managers.network:session():peer(peer_id)
 
 		if peer then
@@ -6017,9 +6018,6 @@ function BlackMarketManager:character_sequence_by_character_id(character_id, pee
 	end
 
 	character = CriminalsManager.convert_old_to_new_character_workname(character)
-
-	print("character_sequence_by_character_id", "character", character, "character_id", character_id)
-
 	local shared_char_seq = nil
 	shared_char_seq = tweak_data.blackmarket.characters.locked[character] and tweak_data.blackmarket.characters.locked[character].sequence or tweak_data.blackmarket.characters[character].sequence
 	local cc_sequences = {
@@ -6098,8 +6096,6 @@ function BlackMarketManager:character_mask_on_sequence_by_character_id(character
 
 	character = CriminalsManager.convert_old_to_new_character_workname(character)
 
-	print("character_sequence_by_character_id", "character", character, "character_id", character_id)
-
 	if tweak_data.blackmarket.characters.locked[character] then
 		return tweak_data.blackmarket.characters.locked[character].mask_on_sequence
 	end
@@ -6128,8 +6124,6 @@ function BlackMarketManager:character_mask_off_sequence_by_character_id(characte
 	end
 
 	character = CriminalsManager.convert_old_to_new_character_workname(character)
-
-	print("character_sequence_by_character_id", "character", character, "character_id", character_id)
 
 	if tweak_data.blackmarket.characters.locked[character] then
 		return tweak_data.blackmarket.characters.locked[character].mask_off_sequence
@@ -8678,5 +8672,25 @@ end
 
 function BlackMarketManager:has_unlocked_arbiter()
 	return managers.tango:has_unlocked_arbiter()
+end
+
+function BlackMarketManager:has_unlocked_breech()
+	return managers.generic_side_jobs:has_completed_and_claimed_rewards("aru_1"), "bm_menu_locked_breech"
+end
+
+function BlackMarketManager:has_unlocked_ching()
+	return managers.generic_side_jobs:has_completed_and_claimed_rewards("aru_3"), "bm_menu_locked_ching"
+end
+
+function BlackMarketManager:has_unlocked_erma()
+	return managers.generic_side_jobs:has_completed_and_claimed_rewards("aru_2"), "bm_menu_locked_erma"
+end
+
+function BlackMarketManager:has_unlocked_push()
+	return true
+end
+
+function BlackMarketManager:has_unlocked_grip()
+	return true
 end
 

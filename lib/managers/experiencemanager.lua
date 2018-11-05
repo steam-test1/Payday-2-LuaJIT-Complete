@@ -827,7 +827,7 @@ function ExperienceManager:load(data)
 
 		self:_set_current_level(math.min(self:current_level(), self:level_cap()))
 
-		for level = 1, self:current_level(), 1 do
+		for level = 0, self:current_level(), 1 do
 			managers.upgrades:aquire_from_level_tree(level, true)
 		end
 

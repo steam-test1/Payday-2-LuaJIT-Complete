@@ -99,11 +99,12 @@ function WorkshopManager:_new_item_path()
 	local date = Application:date()
 	date = date:gsub(":", "")
 	date = date:gsub(" ", "-")
-	local next_path = WorkshopManager.FULL_PATH .. date
+	local date_path = WorkshopManager.FULL_PATH .. date
+	local next_path = date_path
 	local counter = 2
 
 	while SystemFS:exists(next_path) do
-		next_path = WorkshopManager.FULL_PATH .. date .. "_" .. counter
+		next_path = date_path .. "_" .. counter
 		counter = counter + 1
 	end
 

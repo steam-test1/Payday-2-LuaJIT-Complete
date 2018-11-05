@@ -295,6 +295,44 @@ function CustomSafehouseGuiPageTrophies:_setup_trophies_info()
 	objective_text:set_top(unlock_text:bottom())
 	self:make_fine_text(objective_text)
 
+	local reward_header = scroll:canvas():text({
+		name = "RewardHeader",
+		blend_mode = "add",
+		vertical = "top",
+		align = "left",
+		valign = "top",
+		halign = "left",
+		layer = 1,
+		font_size = small_font_size,
+		font = small_font,
+		color = tweak_data.screen_colors.challenge_title,
+		text = managers.localization:to_upper_text("menu_reward"),
+		w = scroll:canvas():w()
+	})
+
+	self:make_fine_text(reward_header)
+	reward_header:set_top(objective_text:bottom() + PANEL_PADDING)
+
+	local reward_text = scroll:canvas():text({
+		name = "RewardText",
+		blend_mode = "add",
+		wrap = true,
+		align = "left",
+		word_wrap = true,
+		vertical = "top",
+		valign = "top",
+		halign = "left",
+		layer = 1,
+		font_size = small_font_size,
+		font = small_font,
+		color = tweak_data.screen_colors.title,
+		text = managers.localization:text("bm_cs_continental_coin_cost", {cost = tweak_data.safehouse.rewards.challenge}),
+		w = scroll:canvas():w()
+	})
+
+	reward_text:set_top(reward_header:bottom())
+	self:make_fine_text(reward_text)
+
 	local progress_header = scroll:canvas():text({
 		name = "ProgressHeader",
 		blend_mode = "add",
@@ -356,10 +394,12 @@ function CustomSafehouseGuiPageTrophies:update_info_panel_width(new_width)
 	local info_panel = self._info_scroll:canvas()
 	local desc_text = info_panel:child("DescText")
 	local objective_text = info_panel:child("ObjectiveText")
+	local reward_text = info_panel:child("RewardText")
 	local image_panel = info_panel:child("TrophyImagePanel")
 
 	desc_text:set_w(new_width)
 	objective_text:set_w(new_width)
+	reward_text:set_w(new_width)
 	image_panel:set_w(new_width)
 	image_panel:set_h(new_width / 2)
 	self._image_outline:close()
@@ -396,6 +436,8 @@ function CustomSafehouseGuiPageTrophies:set_trophy_info(trophy, update_size)
 	local desc_text = info_panel:child("DescText")
 	local objective_header = info_panel:child("ObjectiveHeader")
 	local objective_text = info_panel:child("ObjectiveText")
+	local reward_header = info_panel:child("RewardHeader")
+	local reward_text = info_panel:child("RewardText")
 	local progress_header = info_panel:child("ProgressHeader")
 	local data = trophy:trophy_data()
 
@@ -426,6 +468,10 @@ function CustomSafehouseGuiPageTrophies:set_trophy_info(trophy, update_size)
 	desc_text:set_h(h)
 	objective_header:set_top(desc_text:bottom() + PANEL_PADDING)
 	objective_text:set_top(objective_header:bottom())
+	reward_header:set_top(objective_text:bottom() + PANEL_PADDING)
+	reward_text:set_top(reward_header:bottom())
+	reward_header:set_visible(data.gives_reward ~= false)
+	reward_text:set_visible(data.gives_reward ~= false)
 
 	local macros = {}
 
@@ -455,7 +501,7 @@ function CustomSafehouseGuiPageTrophies:set_trophy_info(trophy, update_size)
 
 	if data.show_progress then
 		progress_header:set_visible(true)
-		progress_header:set_top(objective_text:bottom() + PANEL_PADDING)
+		progress_header:set_top(reward_text:bottom() + PANEL_PADDING)
 
 		self._progress_items = {}
 

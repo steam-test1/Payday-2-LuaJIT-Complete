@@ -28,6 +28,7 @@ require("lib/utils/MessageSystem")
 require("lib/utils/CoroutineManager")
 require("lib/utils/EventListenerHolder")
 require("lib/utils/Quickhull")
+require("lib/utils/Easing")
 require("lib/managers/UpgradesManager")
 require("lib/managers/ExperienceManager")
 require("lib/managers/PlayerManager")
@@ -99,6 +100,10 @@ require("lib/managers/CustomSafehouseManager")
 require("lib/managers/MutatorsManager")
 require("lib/managers/TangoManager")
 require("lib/managers/CrimeSpreeManager")
+require("lib/managers/PromoUnlockManager")
+require("lib/managers/GenericSideJobsManager")
+require("lib/managers/SideJobGenericDLCManager")
+require("lib/managers/RaidJobsManager")
 require("lib/utils/StatisticsGenerator")
 require("lib/utils/Bitwise")
 require("lib/utils/WeightedSelector")
@@ -259,8 +264,11 @@ function Setup:init_managers(managers)
 	managers.ban_list = BanListManager:new()
 	managers.mutators = MutatorsManager:new()
 	managers.butler_mirroring = ButlerMirroringManager:new()
+	managers.generic_side_jobs = GenericSideJobsManager:new()
 	managers.tango = TangoManager:new()
 	managers.crime_spree = CrimeSpreeManager:new()
+	managers.promo_unlocks = PromoUnlockManager:new()
+	managers.raid_jobs = RaidJobsManager:new()
 
 	managers.savefile:load_settings()
 
@@ -578,6 +586,7 @@ function Setup:load_level(level, mission, world_setting, level_class_name, level
 	Global.load_level = true
 	Global.load_start_menu = false
 	Global.load_start_menu_lobby = false
+	Global.load_crime_net = false
 	Global.level_data.level = level
 	Global.level_data.mission = mission
 	Global.level_data.world_setting = world_setting

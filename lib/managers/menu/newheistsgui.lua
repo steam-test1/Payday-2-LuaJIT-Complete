@@ -138,7 +138,9 @@ function NewHeistsGui:try_get_dummy()
 	if active_node_gui then
 		self._dummy_item = active_node_gui:row_item_by_name("ad_dummy")
 
-		self._dummy_item.item:set_actual_item(self)
+		if self._dummy_item and self._dummy_item.item then
+			self._dummy_item.item:set_actual_item(self)
+		end
 	end
 
 	return self._dummy_item

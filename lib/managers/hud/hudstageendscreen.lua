@@ -1788,7 +1788,6 @@ function HUDStageEndScreen:safehouse_currency_init(t, dt)
 
 	local is_success = game_state_machine:current_state().is_success and game_state_machine:current_state():is_success()
 	local has_completed_daily = managers.custom_safehouse:has_completed_daily() and not managers.custom_safehouse:has_rewarded_daily()
-	local was_safehouse_raid = managers.job:current_job_id() == "chill_combat"
 
 	if has_completed_daily then
 		table.insert(trophies, {
@@ -1799,6 +1798,8 @@ function HUDStageEndScreen:safehouse_currency_init(t, dt)
 
 		exp_income = exp_income - tweak_data.safehouse.rewards.daily_complete
 	end
+
+	local was_safehouse_raid = managers.job:current_job_id() == "chill_combat"
 
 	if was_safehouse_raid and is_success then
 		table.insert(trophies, {
@@ -1816,6 +1817,9 @@ function HUDStageEndScreen:safehouse_currency_init(t, dt)
 		current = managers.custom_safehouse:coins() - total_income,
 		trophies = trophies
 	}
+
+	managers.custom_safehouse:flush_completed_trophies()
+
 	local partial_coins = self._safehouse_data.current % 1
 
 	self._coins_circle:set_color(Color(partial_coins, 1, 1))

@@ -742,6 +742,58 @@ function EconomyTweakData:init()
 		contains = {weapon_skins = {"x_chinchilla_mxs"}},
 		rarity = "legendary"
 	}
+	self.contents.cs4_01 = {
+		def_id = 10042,
+		contains = {
+			weapon_skins = {
+				"polymer_cs4",
+				"l85a2_cs4",
+				"amcar_cs4",
+				"usp_cs4",
+				"m16_cs4",
+				"benelli_cs4",
+				"wa2000_cs4",
+				"serbu_cs4",
+				"arbiter_cs4",
+				"flint_cs4",
+				"chinchilla_cs4",
+				"rpg7_cs4",
+				"mac10_cs4",
+				"new_raging_bull_cs4",
+				"striker_cs4"
+			},
+			contents = {"cs4_01_legendary"}
+		}
+	}
+	self.contents.cs4_01_legendary = {
+		def_id = 10043,
+		contains = {weapon_skins = {"p90_cs4"}},
+		rarity = "legendary"
+	}
+	self.bundles.cs4_01 = {
+		def_id = 30003,
+		dlc_id = "694940",
+		quality = "mint",
+		bonus = false,
+		contains = {weapon_skins = {
+			"polymer_cs4",
+			"l85a2_cs4",
+			"amcar_cs4",
+			"usp_cs4",
+			"m16_cs4",
+			"benelli_cs4",
+			"wa2000_cs4",
+			"serbu_cs4",
+			"arbiter_cs4",
+			"flint_cs4",
+			"chinchilla_cs4",
+			"rpg7_cs4",
+			"mac10_cs4",
+			"new_raging_bull_cs4",
+			"striker_cs4",
+			"p90_cs4"
+		}}
+	}
 	self.safes.overkill_01 = {
 		def_id = 50000,
 		promo = true,
@@ -945,6 +997,16 @@ function EconomyTweakData:init()
 		texture_bundle_folder = "cash/safes/mxs",
 		market_link = "https://steamcommunity.com/market/listings/218620/Sangres%20Safe"
 	}
+	self.safes.cs4_01 = {
+		free = true,
+		drill = "cs4_01",
+		content = "cs4_01",
+		bundle = "cs4_01",
+		name_id = "bm_menu_safe_cs4_01",
+		unit_name = "units/payday2_cash/safes/cs4/safe/eco_safe_cs4",
+		texture_bundle_folder = "cash/safes/cs4",
+		market_link = "https://steamcommunity.com/market/listings/218620/Community%20Safe%204"
+	}
 	self.drills.overkill_01 = {
 		safe = "overkill_01",
 		def_id = 70000,
@@ -1097,6 +1159,10 @@ function EconomyTweakData:init()
 	self.drills.mxs_01 = {
 		safe = "mxs_01",
 		unit_name = "units/payday2_cash/safes/mxs/drill/eco_drill_mxs"
+	}
+	self.drills.cs4_01 = {
+		safe = "cs4_01",
+		unit_name = "units/payday2_cash/safes/cs4/drill/eco_drill_cs4"
 	}
 	self.bonuses = {concealment_p1 = {}}
 	self.bonuses.concealment_p1.name_id = "bm_menu_bonus_concealment"

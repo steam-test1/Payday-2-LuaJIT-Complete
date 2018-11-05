@@ -36,4 +36,8 @@ Message.OnSafeHouseUpgrade = set_enum()
 Message.OnDailyGenerated = set_enum()
 Message.OnDailyCompleted = set_enum()
 Message.OnDailyRewardCollected = set_enum()
+Message.OnMissionEnd = set_enum()
+Message.OnSafeOpened = set_enum()
+Message.OnDaysInRow = set_enum()
+Message.OnHighestCrimeSpree = set_enum()
 

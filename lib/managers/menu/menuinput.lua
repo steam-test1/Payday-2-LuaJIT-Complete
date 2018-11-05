@@ -415,7 +415,7 @@ function MenuInput:mouse_pressed(o, button, x, y)
 			for _, row_item in pairs(node_gui.row_items) do
 				if row_item.item:parameters().pd2_corner then
 					if row_item.gui_text:inside(x, y) then
-						local item = row_item.item
+						local item = self._logic:selected_item()
 
 						if item then
 							self._item_input_action_map[item.TYPE](item, self._controller, true)
@@ -451,7 +451,7 @@ function MenuInput:mouse_pressed(o, button, x, y)
 							end
 						end
 					elseif row_item.type == "kitslot" then
-						local item = row_item.item
+						local item = self._logic:selected_item()
 
 						if row_item.arrow_right:inside(x, y) then
 							item:next()
@@ -475,17 +475,22 @@ function MenuInput:mouse_pressed(o, button, x, y)
 					elseif row_item.type == "multi_choice" then
 						local item = row_item.item
 
-						if (not row_item.arrow_right:inside(x, y) or item:next()) and (not row_item.arrow_left:inside(x, y) or item:previous()) and row_item.gui_text:inside(x, y) and (row_item.align ~= "left" or item:previous()) and item:next() then
+						if (not row_item.arrow_right:inside(x, y) or item:next()) and (not row_item.arrow_left:inside(x, y) or item:previous()) and (not row_item.gui_text:inside(x, y) or (row_item.align ~= "left" or item:previous()) and item:next()) and row_item.choice_panel:inside(x, y) and item:enabled() then
+							item:popup_choice(row_item)
 							self:post_event("selection_next")
 							self._logic:trigger_item(true, item)
 						end
 					elseif row_item.type ~= "chat" or row_item.chat_input:inside(x, y) then
-						local item = row_item.item
+						if row_item.type == "divider" then
+							
+						else
+							local item = self._logic:selected_item()
 
-						if item then
-							self._item_input_action_map[item.TYPE](item, self._controller, true)
+							if item then
+								self._item_input_action_map[item.TYPE](item, self._controller, true)
 
-							return node_gui.mouse_pressed and node_gui:mouse_pressed(button, x, y)
+								return node_gui.mouse_pressed and node_gui:mouse_pressed(button, x, y)
+							end
 						end
 					end
 				end

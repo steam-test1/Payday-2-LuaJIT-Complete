@@ -336,8 +336,13 @@ function TeamAILogicIdle.on_long_dis_interacted(data, other_unit, secondary)
 		if data.unit:movement():carrying_bag() and not data.unit:movement()._should_stay then
 			local throw_distance = tweak_data.ai_carry.throw_distance * data.unit:movement():carry_tweak().throw_distance_multiplier
 			local dist = data.unit:position() - other_unit:position()
+			local throw_bag = mvector3.dot(dist, dist) < throw_distance * throw_distance
 
-			if mvector3.dot(dist, dist) < throw_distance * throw_distance then
+			if throw_bag and (other_unit ~= managers.player:player_unit() or other_unit:movement():current_state_name() == "carry" and false) and other_unit:movement():carry_id() ~= nil then
+				throw_bag = false
+			end
+
+			if throw_bag then
 				objective = {
 					type = "throw_bag",
 					unit = other_unit

@@ -2052,11 +2052,17 @@ function SkillTreeTweakData:init()
 	}
 	self.skills.unseen_strike = {
 		{
-			upgrades = {"player_unseen_increased_crit_chance_1"},
+			upgrades = {
+				"player_unseen_increased_crit_chance_1",
+				"player_unseen_temp_increased_crit_chance_1"
+			},
 			cost = self.costs.hightier
 		},
 		{
-			upgrades = {"player_unseen_increased_crit_chance_2"},
+			upgrades = {
+				"player_unseen_increased_crit_chance_2",
+				"player_unseen_temp_increased_crit_chance_2"
+			},
 			cost = self.costs.hightierpro
 		},
 		name_id = "menu_unseen_strike_beta",

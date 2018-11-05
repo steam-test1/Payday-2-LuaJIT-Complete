@@ -951,7 +951,7 @@ function CrimeNetManager:save(data)
 end
 
 function CrimeNetManager:load(data)
-	Global.crimenet = data.crimenet or {quickplay = {}}
+	Global.crimenet = data.crimenet or Global.crimenet
 	self._global = Global.crimenet
 end
 
@@ -2397,6 +2397,7 @@ function CrimeNetGui:add_special_contracts(no_casino, no_quickplay)
 
 		skip = skip or special_contract.sp_only and not Global.game_settings.single_player
 		skip = skip or special_contract.mp_only and Global.game_settings.single_player
+		skip = skip or special_contract.no_session_only and managers.network:session()
 
 		if not skip then
 			self:add_special_contract(special_contract, no_casino, no_quickplay)
@@ -3645,7 +3646,9 @@ function CrimeNetGui:update(t, dt)
 		end
 	end
 
-	if not managers.menu:is_pc_controller() and managers.mouse_pointer:mouse_move_x() == 0 and managers.mouse_pointer:mouse_move_y() == 0 then
+	local update_controller_snap = true
+
+	if update_controller_snap and not managers.menu:is_pc_controller() and managers.mouse_pointer:mouse_move_x() == 0 and managers.mouse_pointer:mouse_move_y() == 0 then
 		local closest_job = nil
 		local closest_dist = 100000000
 		local closest_job_x = 0

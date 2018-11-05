@@ -299,6 +299,15 @@ function WinPlatformManager:set_rich_presence(name)
 			local job_data = managers.job:current_job_data()
 			local job_name = job_data and managers.localization:text(job_data.name_id) or "no heist"
 
+			if managers.crime_spree and managers.crime_spree:is_active() then
+				local level_id = Global.game_settings.level_id
+				local name_id = level_id and _G.tweak_data.levels[level_id] and _G.tweak_data.levels[level_id].name_id
+
+				if name_id then
+					job_name = managers.localization:text(name_id) or job_name
+				end
+			end
+
 			if in_lobby then
 				if job_data then
 					presence = presence .. managers.localization:text("steam_rp_in_lobby_heist", {heist = job_name})

@@ -287,6 +287,7 @@ function NewSkillTreeGui:_setup()
 	end
 
 	self._selected_page = self._tree_items[1]
+	self._legend_buttons = {}
 	local legends_panel = self._panel:panel({
 		name = "LegendsPanel",
 		w = self._panel:w() * 0.75,
@@ -311,7 +312,7 @@ function NewSkillTreeGui:_setup()
 		h = tweak_data.menu.pd2_medium_font_size
 	})
 
-	legend_panel_reset_skills:set_righttop(self._panel:w(), tweak_data.menu.pd2_medium_font_size)
+	legend_panel_reset_skills:set_righttop(self._panel:w() - 2, tweak_data.menu.pd2_medium_font_size)
 	legend_panel_reset_skills:text({
 		text = "RESET SKILLS",
 		name = "LegendTextResetSkills",
@@ -393,13 +394,21 @@ function NewSkillTreeGui:refresh_reset_skills_legends(trees_idx)
 			blend_mode = "add",
 			text = localization:to_upper_text("skill_tree_reset_all_skills_button", {BTN_RESET_ALL_SKILLS = localization:btn_macro("menu_respec_tree_all")}),
 			font = small_font,
-			font_size = small_font_size
+			font_size = small_font_size,
+			color = managers.menu:is_pc_controller() and tweak_data.screen_colors.button_stage_3 or Color.white
 		})
 
 		make_fine_text(text)
 		text:set_right(right)
 
 		right = text:left()
+
+		table.insert(self._legend_buttons, {
+			text = text,
+			callback = function ()
+				self:respec_all()
+			end
+		})
 	else
 		return
 	end
@@ -409,11 +418,18 @@ function NewSkillTreeGui:refresh_reset_skills_legends(trees_idx)
 			blend_mode = "add",
 			text = localization:to_upper_text("skill_tree_reset_skills_button", {BTN_RESET_SKILLS = localization:btn_macro("menu_respec_tree")}),
 			font = small_font,
-			font_size = small_font_size
+			font_size = small_font_size,
+			color = managers.menu:is_pc_controller() and tweak_data.screen_colors.button_stage_3 or Color.white
 		})
 
 		make_fine_text(text)
 		text:set_right(right)
+		table.insert(self._legend_buttons, {
+			text = text,
+			callback = function ()
+				self:respec_page(self._tree_items[self._active_page])
+			end
+		})
 	end
 end
 
@@ -658,7 +674,13 @@ function NewSkillTreeGui:_update_legends(item)
 	local can_refund = step > 1
 	local legends = {}
 
-	table.insert(legends, {string_id = "menu_st_switch_skillset"})
+	table.insert(legends, {
+		string_id = "menu_st_switch_skillset",
+		is_button = managers.menu:is_pc_controller(),
+		callback = function ()
+			managers.menu:open_node("skill_switch", {})
+		end
+	})
 
 	if (not managers.menu:is_pc_controller() or can_invest) and can_invest then
 		table.insert(legends, {string_id = "menu_controller_invest"})
@@ -697,6 +719,14 @@ function NewSkillTreeGui:_update_legends(item)
 			icon:set_right(right)
 
 			right = icon:left()
+		end
+
+		if text and legend.is_button then
+			text:set_color(managers.menu:is_pc_controller() and tweak_data.screen_colors.button_stage_3 or Color.white)
+			table.insert(self._legend_buttons, {
+				text = text,
+				callback = legend.callback
+			})
 		end
 
 		right = right - 4
@@ -825,6 +855,19 @@ function NewSkillTreeGui:mouse_moved(o, x, y)
 
 			self._panel:child("BackButton"):set_color(tweak_data.screen_colors.button_stage_3)
 		end
+
+		for _, legend in ipairs(self._legend_buttons) do
+			if alive(legend.text) then
+				if legend.text:inside(x, y) then
+					legend.text:set_color(tweak_data.screen_colors.button_stage_2)
+
+					inside = true
+					pointer = "link"
+				else
+					legend.text:set_color(tweak_data.screen_colors.button_stage_3)
+				end
+			end
+		end
 	end
 
 	if not inside and self._panel:inside(x, y) then
@@ -889,10 +932,22 @@ function NewSkillTreeGui:mouse_pressed(button, x, y)
 		return
 	end
 
-	if managers.menu:is_pc_controller() and self._back_highlight and self._panel:child("BackButton"):inside(x, y) then
-		managers.menu:back()
+	if managers.menu:is_pc_controller() then
+		if self._back_highlight and self._panel:child("BackButton"):inside(x, y) then
+			managers.menu:back()
 
-		return
+			return
+		end
+
+		for _, legend in ipairs(self._legend_buttons) do
+			if alive(legend.text) and legend.text:inside(x, y) then
+				if legend.callback then
+					legend.callback()
+				end
+
+				return
+			end
+		end
 	end
 end
 

@@ -74,29 +74,12 @@ function CrimeSpreeModifierDetailsPage:init(...)
 
 	self._next_panel = self:panel():panel({h = next_modifiers_h})
 	local name_color = managers.crime_spree:in_progress() and tweak_data.screen_colors.text or tweak_data.screen_colors.important_1
-	local upcoming_modifiers_text = ""
-
-	for i, category in ipairs({
-		"forced",
-		"loud",
-		"stealth"
-	}) do
-		local next_level = managers.crime_spree:next_modifier_level(category)
-
-		if next_level then
-			local text_id = "menu_cs_next_modifier_" .. category
-			local padding = i > 1 and "  " or ""
-			local localized = managers.localization:to_upper_text(text_id, {next = next_level})
-			upcoming_modifiers_text = upcoming_modifiers_text .. padding .. localized
-		end
-	end
-
 	self._next_text = self._next_panel:text({
 		vertical = "center",
 		align = "left",
 		halign = "left",
 		layer = 1,
-		text = upcoming_modifiers_text,
+		text = self:upcoming_modifiers_text(),
 		x = padding,
 		color = name_color,
 		font = tweak_data.menu.pd2_tiny_font,
@@ -146,6 +129,27 @@ function CrimeSpreeModifierDetailsPage:init(...)
 	}})
 end
 
+function CrimeSpreeModifierDetailsPage:upcoming_modifiers_text()
+	local upcoming_modifiers_text = ""
+
+	for i, category in ipairs({
+		"forced",
+		"loud",
+		"stealth"
+	}) do
+		local next_level = managers.crime_spree:next_modifier_level(category)
+
+		if next_level then
+			local text_id = "menu_cs_next_modifier_" .. category
+			local padding = i > 1 and "  " or ""
+			local localized = managers.localization:to_upper_text(text_id, {next = next_level - managers.crime_spree:server_spree_level()})
+			upcoming_modifiers_text = upcoming_modifiers_text .. padding .. localized
+		end
+	end
+
+	return upcoming_modifiers_text
+end
+
 function CrimeSpreeModifierDetailsPage:make_fine_text(text)
 	local x, y, w, h = text:text_rect()
 
@@ -172,13 +176,7 @@ function CrimeSpreeModifierDetailsPage:update(t, dt)
 	end
 
 	if self._cached_server_level ~= managers.crime_spree:server_spree_level() then
-		local params = {
-			forced = managers.crime_spree:next_modifier_level("forced") - managers.crime_spree:server_spree_level(),
-			loud = managers.crime_spree:next_modifier_level("loud") - managers.crime_spree:server_spree_level(),
-			stealth = managers.crime_spree:next_modifier_level("stealth") - managers.crime_spree:server_spree_level()
-		}
-
-		self._next_text:set_text(managers.localization:text("menu_cs_next_modifiers_drm", params))
+		self._next_text:set_text(self:upcoming_modifiers_text())
 
 		self._cached_server_level = managers.crime_spree:server_spree_level()
 	end

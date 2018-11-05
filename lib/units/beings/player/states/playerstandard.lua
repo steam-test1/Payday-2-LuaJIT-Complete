@@ -2943,7 +2943,7 @@ function PlayerStandard:_get_unit_intimidation_action(intimidate_enemies, intimi
 		local civilians = managers.enemy:all_civilians()
 
 		for u_key, u_data in pairs(civilians) do
-			if u_data.unit:in_slot(21) and not u_data.unit:movement():cool() and not u_data.unit:anim_data().long_dis_interact_disabled then
+			if alive(u_data.unit) and u_data.unit:in_slot(21) and not u_data.unit:movement():cool() and not u_data.unit:anim_data().long_dis_interact_disabled then
 				local is_escort = u_data.char_tweak.is_escort
 
 				if not is_escort or intimidate_escorts then
@@ -3053,7 +3053,13 @@ function PlayerStandard:_start_action_intimidate(t, secondary)
 			sound_name = "l01x_" .. sound_suffix
 		elseif voice_type == "mark_cop" or voice_type == "mark_cop_quiet" then
 			interact_type = "cmd_point"
-			sound_name = voice_type == "mark_cop_quiet" and tweak_data.character[prime_target.unit:base()._tweak_table].silent_priority_shout .. "_any" or tweak_data.character[prime_target.unit:base()._tweak_table].priority_shout .. "x_any"
+
+			if voice_type == "mark_cop_quiet" then
+				sound_name = tweak_data.character[prime_target.unit:base()._tweak_table].silent_priority_shout .. "_any"
+			else
+				sound_name = tweak_data.character[prime_target.unit:base()._tweak_table].priority_shout .. "x_any"
+				sound_name = managers.crime_spree:modify_value("PlayerStandart:_start_action_intimidate", sound_name, prime_target.unit)
+			end
 
 			if managers.player:has_category_upgrade("player", "special_enemy_highlight") then
 				prime_target.unit:contour():add(managers.player:get_contour_for_marked_enemy(), true, managers.player:upgrade_value("player", "mark_enemy_time_multiplier", 1))
@@ -3694,6 +3700,8 @@ function PlayerStandard:_update_omniscience(t, dt)
 
 		for _, unit in ipairs(sensed_targets) do
 			if alive(unit) and not unit:base():char_tweak().is_escort then
+				print("[Lua] ", "IS ESCORT: ", unit:base():char_tweak().is_escort)
+
 				self._state_data.omniscience_units_detected = self._state_data.omniscience_units_detected or {}
 
 				if not self._state_data.omniscience_units_detected[unit:key()] or self._state_data.omniscience_units_detected[unit:key()] <= t then

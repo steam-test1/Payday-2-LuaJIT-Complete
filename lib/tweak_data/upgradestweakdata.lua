@@ -373,6 +373,16 @@ function UpgradesTweakData:_init_pd2_values()
 		20
 	}}
 	self.values.player.overkill_all_weapons = {true}
+	self.values.temporary.unseen_strike = {
+		{
+			1.35,
+			6
+		},
+		{
+			1.35,
+			18
+		}
+	}
 	self.values.player.passive_suppression_multiplier = {
 		1.1,
 		1.2
@@ -2908,16 +2918,18 @@ end
 
 function UpgradesTweakData:init(tweak_data)
 	self.level_tree = {
+		[0] = {upgrades = {
+			"frag",
+			"dynamite",
+			"molotov"
+		}},
 		{
 			name_id = "body_armor",
 			upgrades = {
 				"body_armor2",
 				"ak74",
-				"nin",
 				"frag_com",
-				"frag",
-				"dynamite",
-				"molotov",
+				"nin",
 				"concussion",
 				"fir_com",
 				"dada_com"
@@ -3110,7 +3122,12 @@ function UpgradesTweakData:init(tweak_data)
 				"boxing_gloves",
 				"meat_cleaver",
 				"wpn_prj_four",
-				"sr2"
+				"sr2",
+				"grip",
+				"push",
+				"breech",
+				"ching",
+				"erma"
 			}
 		},
 		[26] = {
@@ -3626,6 +3643,9 @@ function UpgradesTweakData:init(tweak_data)
 	self:_lemming_weapon_definitions()
 	self:_chinchilla_weapon_definitions()
 	self:_x_chinchilla_weapon_definitions()
+	self:_breech_weapon_definitions()
+	self:_ching_weapon_definitions()
+	self:_erma_weapon_definitions()
 	self:_melee_weapon_definitions()
 	self:_grenades_definitions()
 	self:_carry_definitions()
@@ -4001,6 +4021,24 @@ function UpgradesTweakData:_player_definitions()
 			value = 2,
 			upgrade = "unseen_increased_crit_chance",
 			category = "player"
+		}
+	}
+	self.definitions.player_unseen_temp_increased_crit_chance_1 = {
+		name_id = "menu_player_unseen_increased_crit_chance",
+		category = "temporary",
+		upgrade = {
+			value = 1,
+			upgrade = "unseen_strike",
+			category = "temporary"
+		}
+	}
+	self.definitions.player_unseen_temp_increased_crit_chance_2 = {
+		name_id = "menu_player_unseen_increased_crit_chance",
+		category = "temporary",
+		upgrade = {
+			value = 2,
+			upgrade = "unseen_strike",
+			category = "temporary"
 		}
 	}
 	self.definitions.player_mark_enemy_time_multiplier = {
@@ -9416,6 +9454,11 @@ function UpgradesTweakData:_melee_weapon_definitions()
 		category = "melee_weapon"
 	}
 	self.definitions.agave = {category = "melee_weapon"}
+	self.definitions.push = {category = "melee_weapon"}
+	self.definitions.grip = {
+		dlc = "raidww2_clan",
+		category = "melee_weapon"
+	}
 end
 
 function UpgradesTweakData:_grenades_definitions()
@@ -9464,10 +9507,7 @@ function UpgradesTweakData:_grenades_definitions()
 		dlc = "pd2_clan",
 		category = "grenade"
 	}
-	self.definitions.smoke_screen_grenade = {
-		dlc = "max",
-		category = "grenade"
-	}
+	self.definitions.smoke_screen_grenade = {category = "grenade"}
 	self.definitions.dada_com = {
 		dlc = "pd2_clan",
 		category = "grenade"
@@ -12724,6 +12764,30 @@ function UpgradesTweakData:_x_chinchilla_weapon_definitions()
 		dlc = "max",
 		factory_id = "wpn_fps_pis_x_chinchilla",
 		weapon_id = "x_chinchilla",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_breech_weapon_definitions()
+	self.definitions.breech = {
+		factory_id = "wpn_fps_pis_breech",
+		weapon_id = "breech",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_ching_weapon_definitions()
+	self.definitions.ching = {
+		factory_id = "wpn_fps_ass_ching",
+		weapon_id = "ching",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_erma_weapon_definitions()
+	self.definitions.erma = {
+		factory_id = "wpn_fps_smg_erma",
+		weapon_id = "erma",
 		category = "weapon"
 	}
 end

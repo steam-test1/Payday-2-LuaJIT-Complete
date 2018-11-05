@@ -41,6 +41,9 @@ require("lib/tweak_data/CrimeSpreeTweakData")
 require("lib/tweak_data/FireTweakData")
 require("lib/tweak_data/NetworkTweakData")
 require("lib/tweak_data/AnimationTweakData")
+require("lib/tweak_data/PromotionalMenusTweakData")
+require("lib/tweak_data/PromoUnlocksTweakData")
+require("lib/tweak_data/RaidJobsTweakData")
 
 TweakData = TweakData or class()
 
@@ -677,9 +680,13 @@ function TweakData:init()
 	self.fire = FireTweakData:new(self)
 	self.network = NetworkTweakData:new(self)
 	self.animation = AnimationTweakData:new(self)
+	self.promo_unlocks = PromoUnlocksTweakData:new(self)
+	self.raid_jobs = RaidJobsTweakData:new(self)
 	self.ai_carry = {
 		throw_distance = 500,
-		throw_force = 100
+		throw_force = 100,
+		revive_distance_autopickup = 300,
+		death_distance_teleport = 300
 	}
 	self.EFFECT_QUALITY = 0.5
 
@@ -1913,6 +1920,33 @@ Play the full version soon to get your full PAYDAY!]],
 		infamous_cost = 3000000,
 		infamous_chance = 3
 	}
+	self.weapon_disable_crit_for_damage = {
+		frag = {
+			explosion = false,
+			fire = false
+		},
+		dada_com = {
+			explosion = false,
+			fire = false
+		},
+		fir_com = {
+			explosion = false,
+			fire = false
+		},
+		launcher_frag = {
+			explosion = false,
+			fire = false
+		},
+		launcher_rocket = {
+			explosion = false,
+			fire = false
+		},
+		rocket_ray_frag = {
+			explosion = false,
+			fire = false
+		},
+		environment_fire = {fire = false}
+	}
 	self.projectiles = {frag = {}}
 	self.projectiles.frag.damage = 160
 	self.projectiles.frag.curve_pow = 0.1
@@ -1982,7 +2016,7 @@ Play the full version soon to get your full PAYDAY!]],
 		init_timer = 2.5,
 		mass_look_up_modifier = 1,
 		sound_event = "gl_explode",
-		sound_event_impact_duration = 1,
+		sound_event_impact_duration = 0.25,
 		name_id = "bm_launcher_incendiary",
 		burn_duration = 6,
 		burn_tick_period = 0.5
@@ -2018,7 +2052,7 @@ Play the full version soon to get your full PAYDAY!]],
 		init_timer = 2.5,
 		mass_look_up_modifier = 1,
 		sound_event = "gl_explode",
-		sound_event_impact_duration = 1,
+		sound_event_impact_duration = 0.25,
 		name_id = "bm_launcher_incendiary",
 		burn_duration = 3,
 		burn_tick_period = 0.5
@@ -2292,6 +2326,7 @@ Play the full version soon to get your full PAYDAY!]],
 			max_distance = math.pow(4000, 2)
 		}
 	}}
+	self.promos = PromotionalMenusTweakData:new(self)
 
 	self:_init_wip_tweak_data()
 	self:set_difficulty()

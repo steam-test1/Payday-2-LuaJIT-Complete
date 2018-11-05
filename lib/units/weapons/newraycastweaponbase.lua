@@ -309,9 +309,13 @@ function NewRaycastWeaponBase:check_highlight_unit(unit)
 		return
 	end
 
-	if unit:base().can_be_marked then
-		managers.game_play_central:auto_highlight_enemy(unit, true)
+	local is_enemy_in_cool_state = managers.enemy:is_enemy(unit) and not managers.groupai:state():enemy_weapons_hot()
+
+	if not is_enemy_in_cool_state and not unit:base().can_be_marked then
+		return
 	end
+
+	managers.game_play_central:auto_highlight_enemy(unit, true)
 end
 
 function NewRaycastWeaponBase:change_part(part_id)
@@ -695,20 +699,6 @@ function NewRaycastWeaponBase:_get_tweak_data_weapon_animation(anim)
 	return anim
 end
 
-function NewRaycastWeaponBase:set_objects_visible(unit, objects, visible)
-	if type(objects) == "string" then
-		objects = {objects}
-	end
-
-	for _, object_name in ipairs(objects) do
-		local graphic_object = unit:get_object(Idstring(object_name))
-
-		if graphic_object then
-			graphic_object:set_visibility(visible)
-		end
-	end
-end
-
 function NewRaycastWeaponBase:set_reload_objects_visible(visible, anim)
 	local data = tweak_data.weapon.factory[self._factory_id]
 	local reload_objects = anim and data.reload_objects and data.reload_objects[anim]
@@ -745,26 +735,74 @@ function NewRaycastWeaponBase:tweak_data_anim_play(anim, speed_multiplier)
 
 	if data.animations and data.animations[unit_anim] then
 		local anim_name = data.animations[unit_anim]
-		local length = self._unit:anim_length(Idstring(anim_name))
+		local ids_anim_name = Idstring(anim_name)
+		local length = self._unit:anim_length(ids_anim_name)
 		speed_multiplier = speed_multiplier or 1
 
-		self._unit:anim_stop(Idstring(anim_name))
-		self._unit:anim_play_to(Idstring(anim_name), length, speed_multiplier)
+		self._unit:anim_stop(ids_anim_name)
+		self._unit:anim_play_to(ids_anim_name, length, speed_multiplier)
+
+		local offset = self:_get_anim_start_offset(anim_name)
+
+		if offset then
+			self._unit:anim_set_time(ids_anim_name, offset)
+		end
 	end
 
 	for part_id, data in pairs(self._parts) do
 		if data.animations and data.animations[unit_anim] then
 			local anim_name = data.animations[unit_anim]
-			local length = data.unit:anim_length(Idstring(anim_name))
+			local ids_anim_name = Idstring(anim_name)
+			local length = data.unit:anim_length(ids_anim_name)
 			speed_multiplier = speed_multiplier or 1
 
-			data.unit:anim_stop(Idstring(anim_name))
-			data.unit:anim_play_to(Idstring(anim_name), length, speed_multiplier)
+			data.unit:anim_stop(ids_anim_name)
+			data.unit:anim_play_to(ids_anim_name, length, speed_multiplier)
+
+			local offset = self:_get_anim_start_offset(anim_name)
+
+			if offset then
+				data.unit:anim_set_time(ids_anim_name, offset)
+			end
 		end
 	end
 
 	self:set_reload_objects_visible(true, anim)
 	NewRaycastWeaponBase.super.tweak_data_anim_play(self, orig_anim, speed_multiplier)
+
+	return true
+end
+
+function NewRaycastWeaponBase:tweak_data_anim_play_at_end(anim, speed_multiplier)
+	local orig_anim = anim
+	local unit_anim = self:_get_tweak_data_weapon_animation(orig_anim)
+	local data = tweak_data.weapon.factory[self._factory_id]
+
+	if data.animations and data.animations[unit_anim] then
+		local anim_name = data.animations[unit_anim]
+		local ids_anim_name = Idstring(anim_name)
+		local length = self._unit:anim_length(ids_anim_name)
+		speed_multiplier = speed_multiplier or 1
+
+		self._unit:anim_stop(ids_anim_name)
+		self._unit:anim_play_to(ids_anim_name, length, speed_multiplier)
+		self._unit:anim_set_time(ids_anim_name, length)
+	end
+
+	for part_id, data in pairs(self._parts) do
+		if data.animations and data.animations[unit_anim] then
+			local anim_name = data.animations[unit_anim]
+			local ids_anim_name = Idstring(anim_name)
+			local length = data.unit:anim_length(ids_anim_name)
+			speed_multiplier = speed_multiplier or 1
+
+			data.unit:anim_stop(ids_anim_name)
+			data.unit:anim_play_to(ids_anim_name, length, speed_multiplier)
+			data.unit:anim_set_time(ids_anim_name, length)
+		end
+	end
+
+	NewRaycastWeaponBase.super.tweak_data_anim_play_at_end(self, orig_anim, speed_multiplier)
 
 	return true
 end
@@ -790,6 +828,36 @@ function NewRaycastWeaponBase:tweak_data_anim_stop(anim)
 
 	self:set_reload_objects_visible(false, anim)
 	NewRaycastWeaponBase.super.tweak_data_anim_stop(self, orig_anim)
+end
+
+function NewRaycastWeaponBase:tweak_data_anim_is_playing(anim)
+	local orig_anim = anim
+	local unit_anim = self:_get_tweak_data_weapon_animation(orig_anim)
+	local data = tweak_data.weapon.factory[self._factory_id]
+
+	if data.animations and data.animations[unit_anim] then
+		local anim_name = data.animations[unit_anim]
+
+		if self._unit:anim_is_playing(Idstring(anim_name)) then
+			return true
+		end
+	end
+
+	for part_id, data in pairs(self._parts) do
+		if data.unit and data.animations and data.animations[unit_anim] then
+			local anim_name = data.animations[unit_anim]
+
+			if data.unit:anim_is_playing(Idstring(anim_name)) then
+				return
+			end
+		end
+	end
+
+	if NewRaycastWeaponBase.super.tweak_data_anim_is_playing(self, orig_anim) then
+		return true
+	end
+
+	return false
 end
 
 function NewRaycastWeaponBase:_set_parts_enabled(enabled)
@@ -960,6 +1028,8 @@ function NewRaycastWeaponBase:has_part(part_id)
 end
 
 function NewRaycastWeaponBase:on_equip(user_unit)
+	NewRaycastWeaponBase.super.on_equip(self, user_unit)
+
 	if self:was_gadget_on() then
 		local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
 
@@ -1711,6 +1781,24 @@ function NewRaycastWeaponBase:gadget_function_override(func, ...)
 
 	if gadget and gadget[func] then
 		return gadget[func](gadget, ...)
+	end
+end
+
+function NewRaycastWeaponBase:set_magazine_empty(is_empty)
+	NewRaycastWeaponBase.super.set_magazine_empty(self, is_empty)
+
+	for part_id, part in pairs(self._parts) do
+		local magazine_empty_objects = part.magazine_empty_objects
+
+		if magazine_empty_objects then
+			self._magazine_empty_objects[part_id] = magazine_empty_objects
+		elseif self._magazine_empty_objects then
+			magazine_empty_objects = self._magazine_empty_objects[part_id]
+		end
+
+		if magazine_empty_objects then
+			self:set_objects_visible(part.unit, magazine_empty_objects, not is_empty)
+		end
 	end
 end
 

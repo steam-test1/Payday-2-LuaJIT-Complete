@@ -604,7 +604,8 @@ function AchievementsTweakData:init(tweak_data)
 				"new_m4",
 				"m16",
 				"akmsu",
-				"olympic"
+				"olympic",
+				"flint"
 			}
 		},
 		scorpion_4 = {
@@ -730,6 +731,18 @@ function AchievementsTweakData:init(tweak_data)
 				"flint",
 				"coal"
 			}
+		},
+		aru_2 = {
+			stat = "aru_2",
+			weapons = {"breech"}
+		},
+		aru_3 = {
+			stat = "aru_3",
+			weapons = {"erma"}
+		},
+		aru_4 = {
+			stat = "aru_4",
+			weapons = {"ching"}
 		}
 	}
 	self.enemy_melee_kill_achievements = {
@@ -881,6 +894,11 @@ function AchievementsTweakData:init(tweak_data)
 		daily_hangover = {
 			melee_id = "whiskey",
 			trophy_stat = "daily_hangover",
+			is_not_civilian = true
+		},
+		raid_aru_1 = {
+			melee_id = "push",
+			stat = "aru_1",
 			is_not_civilian = true
 		}
 	}
@@ -1264,11 +1282,6 @@ function AchievementsTweakData:init(tweak_data)
 		death_firestarter = {
 			award = "death_32",
 			job = "firestarter",
-			difficulty = deathwish_and_above
-		},
-		death_firestarter_prof = {
-			award = "death_8",
-			job = "firestarter_prof",
 			difficulty = deathwish_and_above
 		},
 		death_framing_frame = {
@@ -2305,32 +2318,32 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		trophy_transport_crossroads = {
 			trophy_stat = "trophy_transport_crossroads",
-			job = "arm_cro",
+			level_id = "arm_cro",
 			difficulty = overkill_and_above
 		},
 		trophy_transport_downtown = {
 			trophy_stat = "trophy_transport_downtown",
-			job = "arm_hcm",
+			level_id = "arm_hcm",
 			difficulty = overkill_and_above
 		},
 		trophy_transport_harbor = {
 			trophy_stat = "trophy_transport_harbor",
-			job = "arm_fac",
+			level_id = "arm_fac",
 			difficulty = overkill_and_above
 		},
 		trophy_transport_park = {
 			trophy_stat = "trophy_transport_park",
-			job = "arm_par",
+			level_id = "arm_par",
 			difficulty = overkill_and_above
 		},
 		trophy_transport_underpass = {
 			trophy_stat = "trophy_transport_underpass",
-			job = "arm_und",
+			level_id = "arm_und",
 			difficulty = overkill_and_above
 		},
 		trophy_transport_train = {
 			trophy_stat = "trophy_transport_train",
-			job = "arm_for",
+			level_id = "arm_for",
 			difficulty = overkill_and_above
 		},
 		trophy_escapes = {

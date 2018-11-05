@@ -365,7 +365,13 @@ function TextBoxGui:_create_text_box(ws, title, text, content_data, config)
 
 	text:set_h(tth)
 	scroll_panel:set_h(forced_h or math.min(h - th, tth))
-	info_area:set_h(scroll_panel:bottom() + buttons_panel:h() + 10 + 5)
+
+	if self._override_info_area_size then
+		self:_override_info_area_size(info_area, scroll_panel, buttons_panel)
+	else
+		info_area:set_h(scroll_panel:bottom() + buttons_panel:h() + 10 + 5)
+	end
+
 	buttons_panel:set_bottom(info_area:h() - 10)
 
 	if not preset_or_config_y then

@@ -208,17 +208,11 @@ function MutatorEnemyReplacer:_get_unit_group_shield(difficulty_index)
 				access = access_type_all
 			}
 		else
-			self._groups.FBI_shield = {
+			self._groups.shield = {
 				special_type = "shield",
 				unit_types = {
-					america = {
-						Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_swat_shield/ene_zeal_swat_shield"),
-						Idstring("units/payday2/characters/ene_shield_2/ene_shield_2")
-					},
-					russia = {
-						Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_shield_dw_sr2_smg/ene_akan_fbi_shield_dw_sr2_smg"),
-						Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_shield_sr2_smg/ene_akan_fbi_shield_sr2_smg")
-					}
+					america = {Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_swat_shield/ene_zeal_swat_shield")},
+					russia = {Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_shield_dw_sr2_smg/ene_akan_fbi_shield_dw_sr2_smg")}
 				},
 				access = access_type_all
 			}

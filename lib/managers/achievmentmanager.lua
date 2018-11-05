@@ -256,6 +256,7 @@ function AchievmentManager:award(id)
 
 	managers.challenge:on_achievement_awarded(id)
 	managers.custom_safehouse:on_achievement_awarded(id)
+	managers.generic_side_jobs:award(id)
 
 	if managers.mutators:are_achievements_disabled() then
 		return
@@ -271,8 +272,8 @@ function AchievmentManager:award(id)
 		managers.network.account._masks.gold = true
 	end
 
-	managers.mission:call_global_event(Message.OnAchievement, id)
 	self:do_award(id)
+	managers.mission:call_global_event(Message.OnAchievement, id)
 end
 
 function AchievmentManager:_give_reward(id, skip_exp)
@@ -293,6 +294,7 @@ function AchievmentManager:award_progress(stat, value)
 
 	managers.challenge:on_achievement_progressed(stat)
 	managers.custom_safehouse:on_achievement_progressed(stat, value)
+	managers.generic_side_jobs:award(stat)
 
 	if managers.mutators:are_mutators_active() and game_state_machine:current_state_name() ~= "menu_main" then
 		return

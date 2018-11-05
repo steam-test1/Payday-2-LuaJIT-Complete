@@ -69,6 +69,16 @@ function ProjectileBase:get_name_id()
 	return alive(self._weapon_unit) and self._weapon_unit:base():get_name_id() or self._projectile_entry
 end
 
+function ProjectileBase:is_category(...)
+	for _, cat in ipairs({...}) do
+		if cat == "projectile" then
+			return true
+		end
+	end
+
+	return false
+end
+
 function ProjectileBase:set_active(active)
 	self._active = active
 

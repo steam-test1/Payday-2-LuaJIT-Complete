@@ -399,7 +399,7 @@ end
 
 function NewNPCRaycastWeaponBase:_sound_autofire_start(nr_shots)
 	local tweak_sound = tweak_data.weapon[self._name_id].sounds
-	local sound_name = tweak_sound.prefix .. self._setup.user_sound_variant .. self._voice .. "_loop"
+	local sound_name = tweak_sound.prefix .. self._setup.user_sound_variant .. self._voice .. (nr_shots and "_" .. tostring(nr_shots) .. "shot" or "_loop")
 
 	self._sound_fire:stop()
 

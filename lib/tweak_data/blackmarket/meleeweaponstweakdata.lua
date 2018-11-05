@@ -879,7 +879,7 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.poker.name_id = "bm_melee_poker"
 	self.melee_weapons.poker.dlc = "bbq"
 	self.melee_weapons.poker.texture_bundle_folder = "bbq"
-	self.melee_weapons.poker.anim_global_param = "melee_knife"
+	self.melee_weapons.poker.anim_global_param = "melee_blunt"
 	self.melee_weapons.poker.type = "axe"
 	self.melee_weapons.poker.align_objects = {"a_weapon_right"}
 	self.melee_weapons.poker.unit = "units/pd2_dlc_bbq/weapons/poker/wpn_fps_mel_poker"
@@ -2365,6 +2365,83 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.agave.expire_t = 0.6
 	self.melee_weapons.agave.repeat_expire_t = 0.8
 	self.melee_weapons.agave.stats.concealment = 29
+	self.melee_weapons.push = deep_clone(self.melee_weapons.fists)
+	self.melee_weapons.push.name_id = "bm_melee_push"
+	self.melee_weapons.push.free = nil
+	self.melee_weapons.push.type = "fists"
+	self.melee_weapons.push.align_objects = {
+		"a_weapon_left",
+		"a_weapon_right"
+	}
+	self.melee_weapons.push.unit = "units/pd2_dlc_old/weapons/wpn_fps_mel_push/wpn_fps_mel_push"
+	self.melee_weapons.push.third_unit = "units/pd2_dlc_old/weapons/wpn_fps_mel_push/wpn_third_mel_push"
+	self.melee_weapons.push.stats.min_damage = 3
+	self.melee_weapons.push.stats.max_damage = 8
+	self.melee_weapons.push.stats.min_damage_effect = 1
+	self.melee_weapons.push.stats.max_damage_effect = 1
+	self.melee_weapons.push.stats.charge_time = 2
+	self.melee_weapons.push.stats.range = 150
+	self.melee_weapons.push.sounds.equip = "bbq_fork_equip"
+	self.melee_weapons.push.sounds.hit_air = "bbq_fork_hit_air"
+	self.melee_weapons.push.sounds.hit_gen = "bbq_fork_hit_gen"
+	self.melee_weapons.push.sounds.hit_body = "bbq_fork_hit_body"
+	self.melee_weapons.push.sounds.charge = "bbq_fork_charge"
+	self.melee_weapons.push.stats.concealment = 30
+	self.melee_weapons.push.texture_bundle_folder = "old"
+	self.melee_weapons.push.graphic_objects = {
+		a_weapon_right = "g_push",
+		a_weapon_left = "g_push_left"
+	}
+	self.melee_weapons.push.menu_scene_anim = "menu"
+	self.melee_weapons.push.menu_scene_params = {
+		loop = false,
+		start_time = -1
+	}
+	self.melee_weapons.push.locks = {func = "has_unlocked_push"}
+	self.melee_weapons.grip = deep_clone(self.melee_weapons.fists)
+	self.melee_weapons.grip.name_id = "bm_melee_grip"
+	self.melee_weapons.grip.free = nil
+	self.melee_weapons.grip.type = "fists"
+	self.melee_weapons.grip.anim_global_param = "melee_grip"
+	self.melee_weapons.grip.anim_attack_vars = {
+		"var1",
+		"var2",
+		"var3",
+		"var4"
+	}
+	self.melee_weapons.grip.repeat_expire_t = 0.6
+	self.melee_weapons.grip.expire_t = 0.7
+	self.melee_weapons.grip.melee_damage_delay = 0.1
+	self.melee_weapons.grip.align_objects = {
+		"a_weapon_left",
+		"a_weapon_right"
+	}
+	self.melee_weapons.grip.unit = "units/pd2_dlc_old/weapons/wpn_fps_mel_grip/wpn_fps_mel_grip"
+	self.melee_weapons.grip.third_unit = "units/pd2_dlc_old/weapons/wpn_fps_mel_grip/wpn_third_mel_grip"
+	self.melee_weapons.grip.stats.min_damage = 3
+	self.melee_weapons.grip.stats.max_damage = 8
+	self.melee_weapons.grip.stats.min_damage_effect = 1
+	self.melee_weapons.grip.stats.max_damage_effect = 1
+	self.melee_weapons.grip.stats.charge_time = 2
+	self.melee_weapons.grip.stats.range = 150
+	self.melee_weapons.grip.sounds.equip = "knife_equip"
+	self.melee_weapons.grip.sounds.hit_air = "knife_hit_air"
+	self.melee_weapons.grip.sounds.hit_gen = "knife_hit_gen"
+	self.melee_weapons.grip.sounds.hit_body = "knife_hit_body"
+	self.melee_weapons.grip.sounds.charge = "knife_charge"
+	self.melee_weapons.grip.stats.concealment = 30
+	self.melee_weapons.grip.dlc = "raidww2_clan"
+	self.melee_weapons.grip.texture_bundle_folder = "old"
+	self.melee_weapons.grip.graphic_objects = {
+		a_weapon_right = "g_grip",
+		a_weapon_left = "g_grip_left"
+	}
+	self.melee_weapons.grip.menu_scene_anim = "menu"
+	self.melee_weapons.grip.menu_scene_params = {
+		loop = false,
+		start_time = -1
+	}
+	self.melee_weapons.grip.locks = {dlc = "raidww2_clan"}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.melee_weapons) do

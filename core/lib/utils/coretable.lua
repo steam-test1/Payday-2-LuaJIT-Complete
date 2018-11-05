@@ -230,6 +230,18 @@ function table.size(v)
 	return i
 end
 
+function table.count(v, func)
+	local i = 0
+
+	for k, item in pairs(v) do
+		if func(item, k) then
+			i = i + 1
+		end
+	end
+
+	return i
+end
+
 function table.crop(t, size)
 	while t[size + 1] do
 		table.remove(t, size + 1)
@@ -319,9 +331,9 @@ function table.sorted_copy(t, predicate)
 end
 
 function table.find_value(t, func)
-	for _, value in ipairs(t) do
+	for k, value in ipairs(t) do
 		if func(value) then
-			return value
+			return value, k
 		end
 	end
 end
@@ -605,6 +617,30 @@ function table.print_data(data, t)
 		end
 	else
 		CoreDebug.cat_debug("debug", CoreClass.type_name(data), tostring(data))
+	end
+end
+
+function table.lower_bound(t, target, func)
+	func = func or function (a, b)
+		return a < b
+	end
+
+	for k, v in ipairs(t) do
+		if not func(v, target) then
+			return v, k
+		end
+	end
+end
+
+function table.upper_bound(t, target, func)
+	func = func or function (a, b)
+		return a < b
+	end
+
+	for k, v in ipairs(t) do
+		if func(target, v) then
+			return v, k
+		end
 	end
 end
 

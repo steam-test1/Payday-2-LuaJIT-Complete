@@ -48,6 +48,9 @@ require("lib/managers/menu/IngameContractGuiCrimeSpree")
 require("lib/managers/menu/CrimeSpreeContractBoxGui")
 require("lib/managers/menu/LobbyCharacterData")
 require("lib/managers/menu/CrewManagementGui")
+require("lib/managers/menu/PromotionalMenuGui")
+require("lib/managers/menu/PromotionalWeaponPreviewGui")
+require("lib/managers/menu/RaidMenuGui")
 
 MenuComponentManager = MenuComponentManager or class()
 
@@ -257,6 +260,22 @@ function MenuComponentManager:init()
 		crew_management = {
 			create = callback(self, self, "create_crew_management_gui"),
 			close = callback(self, self, "close_crew_management_gui")
+		},
+		raid_menu = {
+			create = callback(self, self, "create_raid_menu_gui"),
+			close = callback(self, self, "close_raid_menu_gui")
+		},
+		raid_weapons_menu = {
+			create = callback(self, self, "create_raid_weapons_menu_gui"),
+			close = callback(self, self, "close_raid_weapons_menu_gui")
+		},
+		raid_special_menu = {
+			create = callback(self, self, "create_raid_special_menu_gui"),
+			close = callback(self, self, "close_raid_special_menu_gui")
+		},
+		raid_weapon_preview = {
+			create = callback(self, self, "create_raid_weapon_preview_gui"),
+			close = callback(self, self, "close_raid_weapon_preview_gui")
 		}
 	}
 	self._alive_components = {}
@@ -1852,11 +1871,9 @@ function MenuComponentManager:can_afford()
 end
 
 function MenuComponentManager:_create_crimenet_gui(...)
-	if self._crimenet_gui then
-		return
+	if not self._crimenet_gui then
+		self._crimenet_gui = CrimeNetGui:new(self._ws, self._fullscreen_ws, ...)
 	end
-
-	self._crimenet_gui = CrimeNetGui:new(self._ws, self._fullscreen_ws, ...)
 end
 
 function MenuComponentManager:start_crimenet_job()
@@ -4732,5 +4749,93 @@ function MenuComponentManager:close_crew_management_gui()
 
 		self:unregister_component("crew_management")
 	end
+end
+
+function MenuComponentManager:create_raid_menu_gui(node)
+	self:close_raid_menu_gui()
+
+	self._raid_menu_gui = RaidMenuGui:new(self._ws, self._fullscreen_ws, node, "raid")
+
+	self:register_component("raid_menu", self._raid_menu_gui)
+end
+
+function MenuComponentManager:close_raid_menu_gui()
+	if self._raid_menu_gui then
+		self._raid_menu_gui:close()
+
+		self._raid_menu_gui = nil
+
+		self:unregister_component("raid_menu")
+	end
+end
+
+function MenuComponentManager:raid_menu_gui()
+	return self._raid_menu_gui
+end
+
+function MenuComponentManager:create_raid_weapons_menu_gui(node)
+	self:close_raid_weapons_menu_gui()
+
+	self._raid_weapons_menu_gui = RaidMenuGui:new(self._ws, self._fullscreen_ws, node, "raid_weapons")
+
+	self:register_component("raid_weapons_menu", self._raid_weapons_menu_gui)
+end
+
+function MenuComponentManager:close_raid_weapons_menu_gui()
+	if self._raid_weapons_menu_gui then
+		self._raid_weapons_menu_gui:close()
+
+		self._raid_weapons_menu_gui = nil
+
+		self:unregister_component("raid_weapons_menu")
+	end
+end
+
+function MenuComponentManager:raid_weapons_menu_gui()
+	return self._raid_weapons_menu_gui
+end
+
+function MenuComponentManager:create_raid_special_menu_gui(node)
+	self:close_raid_special_menu_gui()
+
+	self._raid_special_menu_gui = RaidMenuGui:new(self._ws, self._fullscreen_ws, node, "raid_special")
+
+	self:register_component("raid_special_menu", self._raid_special_menu_gui)
+end
+
+function MenuComponentManager:close_raid_special_menu_gui()
+	if self._raid_special_menu_gui then
+		self._raid_special_menu_gui:close()
+
+		self._raid_special_menu_gui = nil
+
+		self:unregister_component("raid_special_menu")
+	end
+end
+
+function MenuComponentManager:raid_special_menu_gui()
+	return self._raid_special_menu_gui
+end
+
+function MenuComponentManager:create_raid_weapon_preview_gui(node)
+	self:close_raid_weapon_preview_gui()
+
+	self._raid_weapon_preview_gui = PromotionalWeaponPreviewGui:new(self._ws, self._fullscreen_ws, node)
+
+	self:register_component("raid_weapon_preview", self._raid_weapon_preview_gui)
+end
+
+function MenuComponentManager:close_raid_weapon_preview_gui()
+	if self._raid_weapon_preview_gui then
+		self._raid_weapon_preview_gui:close()
+
+		self._raid_weapon_preview_gui = nil
+
+		self:unregister_component("raid_weapon_preview")
+	end
+end
+
+function MenuComponentManager:raid_weapon_preview_gui()
+	return self._raid_weapon_preview_gui
 end
 

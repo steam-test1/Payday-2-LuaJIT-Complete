@@ -745,6 +745,20 @@ function UseInteractionExt:interact(player)
 		managers.mission:call_global_event(self._global_event, player)
 	end
 
+	if self._achievement_stat then
+		managers.achievment:award_progress(self._achievement_stat)
+	elseif self._achievement_id then
+		managers.achievment:award(self._achievement_id)
+	elseif self._challenge_stat then
+		managers.challenge:award_progress(self._challenge_stat)
+	elseif self._trophy_stat then
+		managers.custom_safehouse:award(self._trophy_stat)
+	elseif self._challenge_award then
+		managers.challenge:award(self._challenge_award)
+	elseif self._sidejob_award then
+		managers.generic_side_jobs:award(self._sidejob_award)
+	end
+
 	self:set_active(false)
 
 	return true
@@ -759,6 +773,22 @@ function UseInteractionExt:sync_interacted(peer, player, status, skip_alive_chec
 
 	if not skip_alive_check and not alive(player) then
 		return
+	end
+
+	if player ~= managers.player:player_unit() then
+		if self._achievement_stat then
+			managers.achievment:award_progress(self._achievement_stat)
+		elseif self._achievement_id then
+			managers.achievment:award(self._achievement_id)
+		elseif self._challenge_stat then
+			managers.challenge:award_progress(self._challenge_stat)
+		elseif self._trophy_stat then
+			managers.custom_safehouse:award(self._trophy_stat)
+		elseif self._challenge_award then
+			managers.challenge:award(self._challenge_award)
+		elseif self._sidejob_award then
+			managers.generic_side_jobs:award(self._sidejob_award)
+		end
 	end
 
 	self:remove_interact()
@@ -1791,7 +1821,7 @@ function IntimitateInteractionExt:sync_interacted(peer, player, status, skip_ali
 			unit = peer and peer:unit()
 
 			if not unit then
-				print("[IntimitateInteractionExt:sync_interacted] missing unit", inspect(peer))
+				
 			end
 		end
 

@@ -1100,6 +1100,42 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		image_id = "safehouse_trophies_preview_yacht",
 		objectives = {self:_progress("trophy_glace_completion", 1)}
 	})
+	table.insert(self.trophies, {
+		name_id = "trophy_aru_1",
+		image_id = "safehouse_trophies_preview_push_dagger",
+		objective_id = "trophy_aru_1_completion_objective",
+		id = "trophy_aru_1",
+		gives_reward = false,
+		desc_id = "trophy_aru_1_desc",
+		objectives = {self:_progress("sidejob_aru_1", 1)}
+	})
+	table.insert(self.trophies, {
+		name_id = "trophy_aru_2",
+		image_id = "safehouse_trophies_preview_luger",
+		objective_id = "trophy_aru_2_completion_objective",
+		id = "trophy_aru_2",
+		gives_reward = false,
+		desc_id = "trophy_aru_2_desc",
+		objectives = {self:_progress("sidejob_aru_2", 1)}
+	})
+	table.insert(self.trophies, {
+		name_id = "trophy_aru_3",
+		image_id = "safehouse_trophies_preview_mp40",
+		objective_id = "trophy_aru_3_completion_objective",
+		id = "trophy_aru_3",
+		gives_reward = false,
+		desc_id = "trophy_aru_3_desc",
+		objectives = {self:_progress("sidejob_aru_3", 1)}
+	})
+	table.insert(self.trophies, {
+		name_id = "trophy_aru_4",
+		image_id = "safehouse_trophies_preview_garand",
+		objective_id = "trophy_aru_4_completion_objective",
+		id = "trophy_aru_4",
+		gives_reward = false,
+		desc_id = "trophy_aru_4_desc",
+		objectives = {self:_progress("sidejob_aru_4", 1)}
+	})
 end
 
 function CustomSafehouseTweakData:get_trophy_data(id)

@@ -2058,6 +2058,10 @@ function MenuCallbackHandler:is_win32()
 	return SystemInfo:platform() == Idstring("WIN32")
 end
 
+function MenuCallbackHandler:is_actually_win32()
+	return SystemInfo:platform() == Idstring("WIN32")
+end
+
 function MenuCallbackHandler:is_steam()
 	return SystemInfo:distribution() == Idstring("STEAM")
 end
@@ -4137,6 +4141,8 @@ end
 function MenuCallbackHandler:leave_safehouse()
 
 	local function yes_func()
+		Global.load_crime_net = true
+
 		self:_dialog_end_game_yes()
 	end
 

@@ -79,6 +79,7 @@ function MenuNodeEconomySafe:_safe_result_recieved(error, items_new, items_remov
 		managers.menu:set_cash_safe_scene_done(true, true)
 	end
 
+	managers.mission:call_global_event(Message.OnSafeOpened, result)
 	print("B: RESULT RECIEVED", result.weapon_skin, Application:time())
 
 	local function ready_clbk()

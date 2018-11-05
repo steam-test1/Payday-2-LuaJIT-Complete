@@ -290,12 +290,14 @@ end
 
 function CrimeSpreeMissionsMenuComponent:confirm_pressed()
 	if not self:_is_host() then
-		return false
+		return nil
 	end
 
 	for idx, btn in ipairs(self._buttons) do
 		if btn:is_selected() and btn:callback() then
 			btn:callback()()
+
+			return true
 		end
 	end
 end

@@ -596,6 +596,35 @@ function MenuSceneManager:_set_up_templates()
 			})
 		}
 	}
+	self._scene_templates.raid_menu = {
+		use_character_grab = false,
+		camera_pos = offset:rotate_with(Rotation(90)),
+		target_pos = target_pos,
+		character_pos = c_ref:position() + Vector3(0, 500, 0),
+		character_visible = false,
+		lobby_characters_visible = false,
+		henchmen_characters_visible = true,
+		fov = 40,
+		lights = {
+			self:_create_light({
+				far_range = 300,
+				color = Vector3(0.86, 0.57, 0.31) * 3,
+				position = Vector3(56, 100, -10)
+			}),
+			self:_create_light({
+				far_range = 3000,
+				specular_multiplier = 6,
+				color = Vector3(1, 2.5, 4.5) * 3,
+				position = Vector3(-1000, -300, 800)
+			}),
+			self:_create_light({
+				far_range = 800,
+				specular_multiplier = 0,
+				color = Vector3(1, 1, 1) * 0.35,
+				position = Vector3(300, 100, 0)
+			})
+		}
+	}
 end
 
 function MenuSceneManager:_set_up_environments()
@@ -1693,6 +1722,7 @@ function MenuSceneManager:set_character_armor(armor_id, unit)
 	local sequence = tweak_data.blackmarket.armors[armor_id].sequence
 
 	unit:damage():run_sequence_simple(sequence)
+	unit:base():set_armor_id(armor_id)
 	self:set_character_armor_skin(managers.blackmarket:equipped_armor_skin())
 end
 

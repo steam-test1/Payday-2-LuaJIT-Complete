@@ -604,7 +604,9 @@ function StatisticsTweakData:statistics_table()
 		"ant_06",
 		"ant_07",
 		"ant_08",
-		"dgm"
+		"dgm",
+		"gcm",
+		"fdm"
 	}
 	local weapon_list = {
 		"ak5",
@@ -726,7 +728,10 @@ function StatisticsTweakData:statistics_table()
 		"coal",
 		"lemming",
 		"chinchilla",
-		"x_chinchilla"
+		"x_chinchilla",
+		"breech",
+		"ching",
+		"erma"
 	}
 	local melee_list = {
 		"weapon",
@@ -811,7 +816,9 @@ function StatisticsTweakData:statistics_table()
 		"catch",
 		"oxide",
 		"sword",
-		"agave"
+		"agave",
+		"push",
+		"grip"
 	}
 	local grenade_list = {
 		"frag",

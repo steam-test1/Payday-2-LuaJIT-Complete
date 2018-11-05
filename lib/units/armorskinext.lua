@@ -24,6 +24,7 @@ function ArmorSkinExt:init(unit, update_enabled)
 	self._unit = unit
 
 	unit:set_extension_update_enabled(Idstring("armor_skin"), true)
+	self:set_armor_id("level_1")
 end
 
 function ArmorSkinExt:update(unit, t, dt)
@@ -31,6 +32,26 @@ function ArmorSkinExt:update(unit, t, dt)
 		self:_apply_cosmetics()
 
 		self._request_update = nil
+	end
+end
+
+function ArmorSkinExt:set_armor_id(armor_id)
+	local data = tweak_data.blackmarket.armors[armor_id]
+
+	if data then
+		self._level = data.upgrade_level
+	else
+		self._level = 1
+	end
+end
+
+function ArmorSkinExt:armor_level()
+	if self._level then
+		return self._level
+	else
+		local armor = tweak_data.blackmarket.armors[managers.blackmarket:equipped_armor()]
+
+		return armor and armor.upgrade_level or 1
 	end
 end
 
@@ -97,7 +118,7 @@ function ArmorSkinExt:_apply_cosmetics(clbks)
 			base_variable = cosmetics_data[key]
 
 			if base_variable then
-				material:set_variable(Idstring(variable), base_variable)
+				material:set_variable(Idstring(variable), tweak_data.economy:get_armor_based_value(base_variable, self:armor_level()))
 			end
 		end
 
@@ -105,6 +126,7 @@ function ArmorSkinExt:_apply_cosmetics(clbks)
 			base_texture = cosmetics_data[key]
 
 			if base_texture then
+				base_texture = tweak_data.economy:get_armor_based_value(base_texture, self:armor_level())
 				texture_key = base_texture and base_texture:key()
 				textures[texture_key] = textures[texture_key] or {
 					applied = false,
@@ -214,7 +236,7 @@ function ArmorSkinExt:_set_material_textures()
 
 	for _, material in pairs(self._materials) do
 		for key, material_texture in pairs(material_textures) do
-			base_texture = cosmetics_data[key]
+			base_texture = tweak_data.economy:get_armor_based_value(cosmetics_data[key], self:armor_level())
 			new_texture = base_texture or material_defaults[material_texture]
 
 			if type(new_texture) == "string" then
