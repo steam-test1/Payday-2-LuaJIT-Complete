@@ -57,10 +57,15 @@ function CarryData:_update_unlink_check(unit, t, dt)
 		self:unlink()
 	end
 end
+local ids_g_bag = Idstring("g_bag")
+local ids_g_canvasbag = Idstring("g_canvasbag")
+local ids_g_g = Idstring("g_g")
+local ids_g_goat = Idstring("g_goat")
+local ids_g_bodybag = Idstring("g_bodybag")
 
 function CarryData:_update_throw_link(unit, t, dt)
 	if not self._linked_to then
-		local bag_object = self._unit:get_object(Idstring("g_bag")) or self._unit:get_object(Idstring("g_canvasbag")) or self._unit:get_object(Idstring("g_g")) or self._unit:get_object(Idstring("g_goat")) or self._unit:get_object(Idstring("g_bodybag"))
+		local bag_object = self._unit:get_object(ids_g_bag) or self._unit:get_object(ids_g_canvasbag) or self._unit:get_object(ids_g_g) or self._unit:get_object(ids_g_goat) or self._unit:get_object(ids_g_bodybag)
 
 		if bag_object then
 			local unit = nil

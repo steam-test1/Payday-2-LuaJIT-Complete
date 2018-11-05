@@ -3181,16 +3181,16 @@ function AchievementsTweakData:init(tweak_data)
 	}
 	self.inventory = {}
 	self.crime_spree = {
-		{
-			id = "cee_1",
+		cee_1 = {
+			award = "cee_1",
 			level = 50
 		},
-		{
-			id = "cee_2",
+		cee_2 = {
+			award = "cee_2",
 			level = 100
 		},
-		{
-			id = "cee_3",
+		cee_3 = {
+			award = "cee_3",
 			level = 250
 		}
 	}

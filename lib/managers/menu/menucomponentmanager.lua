@@ -2089,11 +2089,11 @@ function MenuComponentManager:start_crimenet_job()
 end
 
 function MenuComponentManager:enable_crimenet()
-	self._set_crimenet_enabled = true
+	self._set_crimenet_enabled = self._set_crimenet_enabled == nil and true
 end
 
 function MenuComponentManager:disable_crimenet()
-	self._set_crimenet_enabled = false
+	self._set_crimenet_enabled = self._set_crimenet_enabled == nil and false
 end
 
 function MenuComponentManager:update_crimenet_gui(t, dt)

@@ -1298,9 +1298,9 @@ function CrimeSpreeManager:check_achievements()
 		return
 	end
 
-	for i, achievement in ipairs(tweak_data.achievement.crime_spree) do
+	for id, achievement in pairs(tweak_data.achievement.crime_spree) do
 		if achievement.level <= self:spree_level() then
-			managers.achievment:award(achievement.id)
+			managers.achievment:award_data(achievement)
 		end
 	end
 end
