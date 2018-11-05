@@ -43,6 +43,7 @@ function LevelsTweakData:init()
 		cube = "cube_apply_heist_bank",
 		ghost_bonus = 0.025,
 		max_bags = 13,
+		repossess_bags = true,
 		ai_group_type = america
 	}
 	self.framing_frame_3 = {
@@ -151,6 +152,7 @@ function LevelsTweakData:init()
 		package = "packages/narr_alex2",
 		cube = "cube_apply_heist_bank",
 		max_bags = 19,
+		repossess_bags = true,
 		ai_group_type = america
 	}
 	self.alex_3 = {
@@ -208,6 +210,7 @@ function LevelsTweakData:init()
 		package = {"packages/narr_watchdogs2"},
 		cube = "cube_apply_heist_bank",
 		max_bags = 16,
+		repossess_bags = true,
 		ai_group_type = america
 	}
 	self.watchdogs_2_day = deep_clone(self.watchdogs_2)
@@ -423,7 +426,8 @@ function LevelsTweakData:init()
 		music = "heist",
 		package = "packages/escape_cafe",
 		cube = "cube_apply_heist_bank",
-		ai_group_type = america
+		ai_group_type = america,
+		repossess_bags = true
 	}
 	self.escape_park_day = {
 		name_id = "heist_escape_park_hl",
@@ -434,7 +438,8 @@ function LevelsTweakData:init()
 		outro_event = "nothing",
 		music = "heist",
 		package = "packages/escape_park",
-		cube = "cube_apply_heist_bank"
+		cube = "cube_apply_heist_bank",
+		repossess_bags = true
 	}
 	self.escape_cafe = {
 		name_id = "heist_escape_cafe_hl",
@@ -446,7 +451,8 @@ function LevelsTweakData:init()
 		music = "heist",
 		package = "packages/escape_cafe",
 		cube = "cube_apply_heist_bank",
-		ai_group_type = america
+		ai_group_type = america,
+		repossess_bags = true
 	}
 	self.escape_park = {
 		name_id = "heist_escape_park_hl",
@@ -458,7 +464,8 @@ function LevelsTweakData:init()
 		music = "heist",
 		package = "packages/escape_park",
 		cube = "cube_apply_heist_bank",
-		ai_group_type = america
+		ai_group_type = america,
+		repossess_bags = true
 	}
 	self.escape_street = {
 		name_id = "heist_escape_street_hl",
@@ -470,7 +477,8 @@ function LevelsTweakData:init()
 		music = "heist",
 		package = "packages/escape_street",
 		cube = "cube_apply_heist_bank",
-		ai_group_type = america
+		ai_group_type = america,
+		repossess_bags = true
 	}
 	self.escape_overpass = {
 		name_id = "heist_escape_overpass_hl",
@@ -482,7 +490,8 @@ function LevelsTweakData:init()
 		music = "heist",
 		package = "packages/escape_overpass",
 		cube = "cube_apply_heist_bank",
-		ai_group_type = america
+		ai_group_type = america,
+		repossess_bags = true
 	}
 	self.escape_overpass_night = deep_clone(self.escape_overpass)
 	self.escape_garage = {
@@ -495,7 +504,8 @@ function LevelsTweakData:init()
 		music = "heist",
 		package = "packages/escape_garage",
 		cube = "cube_apply_heist_bank",
-		ai_group_type = america
+		ai_group_type = america,
+		repossess_bags = true
 	}
 	self.driving_escapes_industry_day = {
 		name_id = "heist_driving_escapes_industry_hl",
@@ -1137,7 +1147,8 @@ function LevelsTweakData:init()
 		music = "heist",
 		package = "packages/narr_peta2",
 		cube = "cube_apply_heist_bank",
-		ai_group_type = america
+		ai_group_type = america,
+		repossess_bags = true
 	}
 	self.pal = {
 		name_id = "heist_pal_hl",

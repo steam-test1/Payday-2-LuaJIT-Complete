@@ -6,9 +6,11 @@ function SetOutlineElement:init(unit)
 
 	self._hed.elements = {}
 	self._hed.set_outline = true
+	self._hed.use_instigator = false
 
 	table.insert(self._save_values, "elements")
 	table.insert(self._save_values, "set_outline")
+	table.insert(self._save_values, "use_instigator")
 end
 
 function SetOutlineElement:_build_panel(panel, panel_sizer)
@@ -31,6 +33,7 @@ function SetOutlineElement:_build_panel(panel, panel_sizer)
 		ctrlr = set_outline
 	})
 	panel_sizer:add(set_outline, 0, 0, "EXPAND")
+	self:_build_value_checkbox(panel, panel_sizer, "use_instigator", "Sets outline on the instigator")
 end
 
 function SetOutlineElement:draw_links(t, dt, selected_unit, all_units)

@@ -39,8 +39,9 @@ function InventoryIconCreator:_create_weapon(factory_id, blueprint, weapon_skin)
 
 	managers.dyn_resource:load(Idstring("unit"), Idstring(unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 
-	local rot = Rotation(180, 0, 0)
-	self._weapon_unit = World:spawn_unit(Idstring(unit_name), Vector3(), rot)
+	local thisrot = self._item_rotation
+	local rot = Rotation(thisrot[1] + 180, thisrot[2], thisrot[3])
+	self._weapon_unit = World:spawn_unit(Idstring(unit_name), self._item_position, rot)
 
 	self._weapon_unit:base():set_factory_data(factory_id)
 	self._weapon_unit:base():set_cosmetics_data(cosmetics)
@@ -53,12 +54,13 @@ function InventoryIconCreator:_create_mask(mask_id, blueprint)
 	self:destroy_items()
 
 	self._current_texture_name = mask_id
-	local rot = Rotation(90, 90, 0)
+	local thisrot = self._item_rotation
+	local rot = Rotation(thisrot[1] + 90, thisrot[2] + 90, thisrot[3])
 	local mask_unit_name = managers.blackmarket:mask_unit_name_by_mask_id(mask_id)
 
 	managers.dyn_resource:load(Idstring("unit"), Idstring(mask_unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 
-	self._mask_unit = World:spawn_unit(Idstring(mask_unit_name), Vector3(), rot)
+	self._mask_unit = World:spawn_unit(Idstring(mask_unit_name), self._item_position, rot)
 
 	if not tweak_data.blackmarket.masks[mask_id].type then
 		
@@ -75,12 +77,13 @@ function InventoryIconCreator:_create_melee(melee_id)
 	self:destroy_items()
 
 	self._current_texture_name = melee_id
-	local rot = Rotation()
+	local thisrot = self._item_rotation
+	local rot = Rotation(thisrot[1], thisrot[2], thisrot[3])
 	local melee_unit_name = tweak_data.blackmarket.melee_weapons[melee_id].unit
 
 	managers.dyn_resource:load(Idstring("unit"), Idstring(melee_unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 
-	self._melee_unit = World:spawn_unit(Idstring(melee_unit_name), Vector3(), rot)
+	self._melee_unit = World:spawn_unit(Idstring(melee_unit_name), self._item_position, rot)
 
 	self._melee_unit:set_moving(true)
 end
@@ -89,12 +92,13 @@ function InventoryIconCreator:_create_throwable(throwable_id)
 	self:destroy_items()
 
 	self._current_texture_name = throwable_id
-	local rot = Rotation()
+	local thisrot = self._item_rotation
+	local rot = Rotation(thisrot[1], thisrot[2], thisrot[3])
 	local throwable_unit_name = tweak_data.blackmarket.projectiles[throwable_id].unit_dummy
 
 	managers.dyn_resource:load(Idstring("unit"), Idstring(throwable_unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 
-	self._throwable_unit = World:spawn_unit(Idstring(throwable_unit_name), Vector3(), rot)
+	self._throwable_unit = World:spawn_unit(Idstring(throwable_unit_name), self._item_position, rot)
 
 	for _, effect_spawner in ipairs(self._throwable_unit:get_objects_by_type(Idstring("effect_spawner"))) do
 		effect_spawner:set_enabled(false)
@@ -714,8 +718,16 @@ function InventoryIconCreator:_create_custom_job(panel, sizer)
 
 	self._backdrop_position = Vector3(-500, 0, 0)
 	self._backdrop_rotation = Rotation(180, 0, -90)
-	self._backdrop_position_control = self:_create_position_control("Backdrop position ", self._backdrop_position, panel, sizer, callback(self, self, "_update_backdrop_position"))
-	self._backdrop_rotation_control = self:_create_rotation_control("Backdrop rotation ", self._backdrop_rotation, panel, sizer, callback(self, self, "_update_backdrop_rotation"))
+	self._item_position = Vector3(0, 0, 0)
+	self._item_rotation = {
+		0,
+		0,
+		0
+	}
+	self._backdrop_position_control = self:_create_position_control("Backdrop Position: ", self._backdrop_position, panel, sizer, callback(self, self, "_update_backdrop_position"))
+	self._backdrop_rotation_control = self:_create_rotation_control("Backdrop Rotation: ", self._backdrop_rotation, panel, sizer, callback(self, self, "_update_backdrop_rotation"))
+	self._item_position_control = self:_create_item_position("Item Position: ", self._item_position, panel, sizer, callback(self, self, "_update_item_position"))
+	self._item_rotation_control = self:_create_item_rotation("Item Rotation: ", self._item_rotation, panel, sizer, callback(self, self, "_update_item_rotation"))
 end
 
 function InventoryIconCreator:_update_backdrop_position(position)
@@ -724,6 +736,14 @@ end
 
 function InventoryIconCreator:_update_backdrop_rotation(rotation)
 	self._backdrop_rotation = rotation
+end
+
+function InventoryIconCreator:_update_item_position(position)
+	self._item_position = position
+end
+
+function InventoryIconCreator:_update_item_rotation(rotation)
+	self._item_rotation = rotation
 end
 
 function InventoryIconCreator:_create_axis_control(name, default_value, panel, sizer, cb, prop)
@@ -763,13 +783,13 @@ function InventoryIconCreator:_create_position_control(name, default_value, pane
 
 	local pp = {}
 
-	table.insert(pp, self:_create_axis_control("X:", default_value.x, panel, h_sizer, function ()
+	table.insert(pp, self:_create_axis_control(" X:", default_value.x, panel, h_sizer, function ()
 		cb(Vector3(pp[1].value, pp[2].value, pp[3].value))
 	end))
-	table.insert(pp, self:_create_axis_control("Y:", default_value.y, panel, h_sizer, function ()
+	table.insert(pp, self:_create_axis_control(" Y:", default_value.y, panel, h_sizer, function ()
 		cb(Vector3(pp[1].value, pp[2].value, pp[3].value))
 	end))
-	table.insert(pp, self:_create_axis_control("Z:", default_value.z, panel, h_sizer, function ()
+	table.insert(pp, self:_create_axis_control(" Z:", default_value.z, panel, h_sizer, function ()
 		cb(Vector3(pp[1].value, pp[2].value, pp[3].value))
 	end))
 
@@ -787,17 +807,77 @@ function InventoryIconCreator:_create_rotation_control(name, default_value, pane
 
 	local rp = {}
 
-	table.insert(rp, self:_create_axis_control("Yaw:", default_value:yaw(), panel, h_sizer, function ()
+	table.insert(rp, self:_create_axis_control(" Yaw:", default_value:yaw(), panel, h_sizer, function ()
 		cb(Rotation(rp[1].value, rp[2].value, rp[3].value))
 	end, 2))
-	table.insert(rp, self:_create_axis_control("Pitch:", default_value:pitch(), panel, h_sizer, function ()
+	table.insert(rp, self:_create_axis_control(" Pitch:", default_value:pitch(), panel, h_sizer, function ()
 		cb(Rotation(rp[1].value, rp[2].value, rp[3].value))
 	end, 2))
-	table.insert(rp, self:_create_axis_control("Roll:", default_value:roll(), panel, h_sizer, function ()
+	table.insert(rp, self:_create_axis_control(" Roll:", default_value:roll(), panel, h_sizer, function ()
 		cb(Rotation(rp[1].value, rp[2].value, rp[3].value))
 	end, 2))
 
 	return rp
+end
+
+function InventoryIconCreator:_create_item_position(name, default_value, panel, sizer, cb)
+	local h_sizer = EWS:BoxSizer("HORIZONTAL")
+
+	sizer:add(h_sizer, 0, 0, "EXPAND")
+
+	local text_ctrlr = EWS:StaticText(panel, name, 0, "ALIGN_LEFT")
+
+	h_sizer:add(text_ctrlr, 0, 0, "ALIGN_LEFT")
+
+	local ppx = {}
+
+	table.insert(ppx, self:_create_axis_control(" X:", default_value.x, panel, h_sizer, function ()
+		cb(Vector3(ppx[1].value, ppx[2].value, ppx[3].value))
+	end))
+	table.insert(ppx, self:_create_axis_control(" Y:", default_value.y, panel, h_sizer, function ()
+		cb(Vector3(ppx[1].value, ppx[2].value, ppx[3].value))
+	end))
+	table.insert(ppx, self:_create_axis_control(" Z:", default_value.z, panel, h_sizer, function ()
+		cb(Vector3(ppx[1].value, ppx[2].value, ppx[3].value))
+	end))
+
+	return ppx
+end
+
+function InventoryIconCreator:_create_item_rotation(name, default_value, panel, sizer, cb)
+	local h_sizer = EWS:BoxSizer("HORIZONTAL")
+
+	sizer:add(h_sizer, 0, 0, "EXPAND")
+
+	local text_ctrlr = EWS:StaticText(panel, name, 0, "ALIGN_LEFT")
+
+	h_sizer:add(text_ctrlr, 0, 0, "ALIGN_LEFT")
+
+	local rpx = {}
+
+	table.insert(rpx, self:_create_axis_control(" Yaw:", 0, panel, h_sizer, function ()
+		cb({
+			rpx[1].value,
+			rpx[2].value,
+			rpx[3].value
+		})
+	end, 2))
+	table.insert(rpx, self:_create_axis_control(" Pitch:", 0, panel, h_sizer, function ()
+		cb({
+			rpx[1].value,
+			rpx[2].value,
+			rpx[3].value
+		})
+	end, 2))
+	table.insert(rpx, self:_create_axis_control(" Roll:", 0, panel, h_sizer, function ()
+		cb({
+			rpx[1].value,
+			rpx[2].value,
+			rpx[3].value
+		})
+	end, 2))
+
+	return rpx
 end
 
 function InventoryIconCreator:_create_weapons_page(notebook)

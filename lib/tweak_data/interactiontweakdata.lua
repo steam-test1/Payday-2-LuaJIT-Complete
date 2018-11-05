@@ -1437,6 +1437,18 @@ function InteractionTweakData:init(tweak_data)
 		sound_interupt = "bar_bag_money_cancel",
 		sound_done = "bar_bag_money_finished"
 	}
+	self.money_wrap_axis = {
+		icon = "interaction_money_wrap",
+		text_id = "debug_interact_money_wrap_take_money",
+		start_active = false,
+		timer = 3,
+		action_text_id = "hud_action_taking_money",
+		blocked_hint = "carry_block",
+		sound_start = "bar_bag_money",
+		sound_interupt = "bar_bag_money_cancel",
+		sound_done = "bar_bag_money_finished",
+		axis = "y"
+	}
 	self.weapon_case_axis_x = deep_clone(self.money_wrap)
 	self.weapon_case_axis_x.axis = "x"
 	self.suburbia_money_wrap = {

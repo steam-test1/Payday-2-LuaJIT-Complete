@@ -2872,11 +2872,11 @@ function HudIconsTweakData:get_icon_data(icon_id, default_rect)
 	return icon, texture_rect
 end
 
-function HudIconsTweakData:get_icon_or(icon_id, default_data)
+function HudIconsTweakData:get_icon_or(icon_id, ...)
 	local icon_data = self[icon_id]
 
 	if not icon_data then
-		return default_data
+		return ...
 	end
 
 	return icon_data.texture, icon_data.texture_rect

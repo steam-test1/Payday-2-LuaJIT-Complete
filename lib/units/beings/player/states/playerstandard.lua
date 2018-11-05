@@ -1405,10 +1405,11 @@ end
 
 function PlayerStandard:_check_action_throw_projectile(t, input)
 	local projectile_entry = managers.blackmarket:equipped_projectile()
+	local projectile_tweak = tweak_data.blackmarket.projectiles[projectile_entry]
 
-	if tweak_data.blackmarket.projectiles[projectile_entry].is_a_grenade then
+	if projectile_tweak.is_a_grenade then
 		return self:_check_action_throw_grenade(t, input)
-	elseif tweak_data.blackmarket.projectiles[projectile_entry].ability then
+	elseif projectile_tweak.ability then
 		return self:_check_action_use_ability(t, input)
 	end
 

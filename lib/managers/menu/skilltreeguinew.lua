@@ -1766,7 +1766,6 @@ function NewSkillTreePage:set_active(active)
 	self:refresh()
 
 	if active then
-		Application:stack_dump()
 		self._gui:refresh_reset_skills_legends(self:trees_idx())
 	end
 

@@ -1679,15 +1679,6 @@ function GuiTweakData:init()
 			x = 425
 		},
 		{
-			name_id = "menu_cn_premium_buy",
-			menu_node = "crimenet_contract_special",
-			x = 420,
-			y = 846,
-			id = "premium_buy",
-			icon = "guis/textures/pd2/crimenet_marker_buy",
-			desc_id = "menu_cn_premium_buy_desc"
-		},
-		{
 			name_id = "menu_cn_contact_info",
 			menu_node = "crimenet_contact_info",
 			x = 912,
@@ -1707,6 +1698,15 @@ function GuiTweakData:init()
 			icon = "guis/textures/pd2/crimenet_casino",
 			x = 385,
 			pulse_color = Color(204, 255, 209, 32) / 255
+		},
+		{
+			name_id = "menu_cn_premium_buy",
+			menu_node = "crimenet_contract_special",
+			x = 420,
+			y = 846,
+			id = "premium_buy",
+			icon = "guis/textures/pd2/crimenet_marker_buy",
+			desc_id = "menu_cn_premium_buy_desc"
 		},
 		{
 			name_id = "menu_cn_short",
@@ -4859,6 +4859,11 @@ function GuiTweakData:init()
 	self.new_heists = {limit = 5}
 
 	table.insert(self.new_heists, {
+		name_id = "menu_nh_community_safe_5",
+		texture_path = "guis/textures/pd2/new_heists/community_safe_5",
+		url = "http://www.overkillsoftware.com/games/communitysafe5/"
+	})
+	table.insert(self.new_heists, {
 		name_id = "menu_nh_aldstone_room",
 		texture_path = "guis/textures/pd2/new_heists/aldstone_room",
 		url = "http://www.overkillsoftware.com/games/aldstonesheritage/"
@@ -4874,14 +4879,14 @@ function GuiTweakData:init()
 		url = "http://www.overkillsoftware.com/games/communitysafe4/"
 	})
 	table.insert(self.new_heists, {
-		name_id = "menu_nh_crime_spree_update",
-		texture_path = "guis/textures/pd2/new_heists/crime_spree_update",
-		url = "http://store.steampowered.com/news/?appids=218620"
-	})
-	table.insert(self.new_heists, {
 		name_id = "menu_nh_ultimate_edition",
 		texture_path = "guis/textures/pd2/new_heists/ultimate_edition",
 		url = "http://store.steampowered.com/app/218620"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_crime_spree_update",
+		texture_path = "guis/textures/pd2/new_heists/crime_spree_update",
+		url = "http://store.steampowered.com/news/?appids=218620"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_dsync_beta_is_live",

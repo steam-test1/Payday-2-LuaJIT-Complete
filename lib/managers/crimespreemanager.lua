@@ -833,11 +833,8 @@ function CrimeSpreeManager:calculate_rewards()
 end
 
 function CrimeSpreeManager:generate_loot_drops(amount)
-	local drop_data = {}
-
-	managers.lootdrop:new_make_mass_drop(amount, tweak_data.crime_spree.loot_drop_reward_pay_class, drop_data)
-
-	return drop_data.items
+	self._generated_loot_drops = {}
+	self._loot_drops_coroutine = managers.lootdrop:new_make_mass_drop(amount, tweak_data.crime_spree.loot_drop_reward_pay_class, self._generated_loot_drops)
 end
 
 function CrimeSpreeManager:loot_drops()
@@ -933,7 +930,7 @@ function CrimeSpreeManager:award_rewards(rewards_table)
 		elseif id == "continental_coins" then
 			managers.custom_safehouse:add_coins(amount)
 		elseif id == "loot_drop" then
-			self._loot_drops = self:generate_loot_drops(amount)
+			self:generate_loot_drops(amount)
 		elseif id == "random_cosmetic" then
 			self._cosmetic_drops = self:generate_cosmetic_drops(amount)
 		end
@@ -1320,6 +1317,42 @@ function CrimeSpreeManager:on_spree_complete()
 	MenuCallbackHandler:save_progress()
 end
 
+function CrimeSpreeManager:is_generating_rewards()
+	return self._loot_drops_coroutine ~= nil
+end
+
+function CrimeSpreeManager:reward_generation_progress()
+	if self._generated_loot_drops then
+		return self._generated_loot_drops.progress.current or 0, self._generated_loot_drops.progress.total or 1
+	end
+
+	return 1
+end
+
+function CrimeSpreeManager:has_finished_generating_rewards()
+	if self._loot_drops_coroutine then
+		local status = coroutine.status(self._loot_drops_coroutine)
+
+		if status == "dead" then
+			self._loot_drops = clone(self._generated_loot_drops.items)
+			self._generated_loot_drops = nil
+			self._loot_drops_coroutine = nil
+
+			MenuCallbackHandler:save_progress()
+
+			return true
+		elseif status == "suspended" then
+			coroutine.resume(self._loot_drops_coroutine)
+
+			return false
+		else
+			return false
+		end
+	end
+
+	return true
+end
+
 function CrimeSpreeManager:enable_crime_spree_gamemode()
 	game_state_machine:change_gamemode_by_name("crime_spree")
 end
@@ -1572,7 +1605,7 @@ function CrimeSpreeManager:consumable_value(name)
 end
 
 function CrimeSpreeManager:_check_highest_level(value)
-	if self._global.highest_level or value > 0 then
+	if (self._global.highest_level or 0) < value then
 		self._global.highest_level = value
 
 		managers.mission:call_global_event(Message.OnHighestCrimeSpree, value)

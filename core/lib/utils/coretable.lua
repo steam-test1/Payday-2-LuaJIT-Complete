@@ -265,10 +265,10 @@ function table.random_key(t)
 	local key = nil
 
 	for i = 1, rand_nr, 1 do
-		key = next(t, prev_key)
+		key = next(t, key)
 	end
 
-	return prev_key
+	return key
 end
 
 function table.concat_map(map, concat_values, none_string, wrap, sep, last_sep)

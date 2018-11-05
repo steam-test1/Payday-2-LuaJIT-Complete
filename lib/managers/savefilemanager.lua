@@ -497,6 +497,8 @@ function SavefileManager:_save_cache(slot)
 
 	self:_set_cache(slot, cache)
 	self:_set_synched_cache(slot, false)
+
+	return cache
 end
 
 function SavefileManager:_save_done(slot, cache_only, task_data, slot_data, success)
@@ -958,7 +960,7 @@ function SavefileManager:_set_synched_cache(slot, is_synched_cache)
 	end
 end
 
-function SavefileManager:_set_cache(slot, cache)
+function SavefileManager:_set_cache(slot, cache, force)
 	local meta_data = self:_meta_data(slot)
 
 	if meta_data.cache ~= cache then
@@ -1106,12 +1108,14 @@ function SavefileManager:clbk_result_load(task_data, result_data)
 			cat_print("savefile_manager", "slot:", slot, "\n", inspect(slot_data))
 
 			local status = slot_data.status
-			local cache = nil
+			local cache, force_cache = nil
 			local wrong_user = status == "WRONG_USER"
 			local wrong_version = status == "WRONG_VERSION"
 
 			if status == "OK" or wrong_user then
 				cache = slot_data.data
+			elseif status == "FILE_NOT_FOUND" then
+				cache = self:_save_cache(slot)
 			end
 
 			if cache and SystemInfo:platform() == Idstring("WIN32") and cache.version ~= SavefileManager.VERSION then
@@ -1126,8 +1130,8 @@ function SavefileManager:clbk_result_load(task_data, result_data)
 				wrong_user = true
 			end
 
-			self:_set_cache(slot, cache)
-			self:_load_done(slot, false, wrong_user, wrong_version)
+			self:_set_cache(slot, cache, force_cache)
+			self:_load_done(slot, cache ~= nil, wrong_user, wrong_version)
 		end
 	else
 		Application:error("[SavefileManager:clbk_result_load] error:", result_data)

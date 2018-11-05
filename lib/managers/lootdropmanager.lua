@@ -398,61 +398,79 @@ function LootDropManager:new_make_mass_drop(amount, item_pc, return_data, setup_
 	local droppable_items, maxed_inventory_items = self:droppable_items(item_pc or 40, infamous_success, setup_data and setup_data.skip_types)
 	local global_value, entry = nil
 	return_data.items = {}
+	return_data.progress = {total = amount}
+	local co = coroutine.create(function ()
+		local itr = 0
 
-	for i = 1, amount, 1 do
-		local weighted_type_chance = {}
-		local sum = 0
+		for i = 1, amount, 1 do
+			local weighted_type_chance = {}
+			local sum = 0
 
-		for type, items in pairs(droppable_items) do
-			weighted_type_chance[type] = tweak_data.lootdrop.WEIGHTED_TYPE_CHANCE[pc][type]
-			sum = sum + weighted_type_chance[type]
-		end
-
-		if setup_data and setup_data.preferred_type and setup_data.preferred_chance then
-			local increase = setup_data.preferred_chance * sum
-			weighted_type_chance[setup_data.preferred_type] = (weighted_type_chance[setup_data.preferred_type] or 0) + increase
-			sum = sum + increase
-		end
-
-		local normalized_chance = {}
-
-		for type, items in pairs(droppable_items) do
-			normalized_chance[type] = weighted_type_chance[type] > 0 and weighted_type_chance[type] / sum or 0
-		end
-
-		local pc_type = setup_data and setup_data.preferred_type_drop or self:_get_type_items(normalized_chance, true)
-		local drop_table = droppable_items[pc_type] or maxed_inventory_items[pc_type]
-
-		if drop_table then
-			sum = 0
-
-			for index, item_data in ipairs(drop_table) do
-				sum = sum + item_data.weight
+			for type, items in pairs(droppable_items) do
+				weighted_type_chance[type] = tweak_data.lootdrop.WEIGHTED_TYPE_CHANCE[pc][type]
+				sum = sum + weighted_type_chance[type]
 			end
 
-			normalized_chance = {}
-
-			for index, item_data in ipairs(drop_table) do
-				normalized_chance[index] = item_data.weight / sum
+			if setup_data and setup_data.preferred_type and setup_data.preferred_chance then
+				local increase = setup_data.preferred_chance * sum
+				weighted_type_chance[setup_data.preferred_type] = (weighted_type_chance[setup_data.preferred_type] or 0) + increase
+				sum = sum + increase
 			end
 
-			local dropped_index = self:_get_type_items(normalized_chance, true)
-			local dropped_item = drop_table[dropped_index]
+			local normalized_chance = {}
 
-			managers.blackmarket:add_to_inventory(dropped_item.global_value, pc_type, dropped_item.entry)
+			for type, items in pairs(droppable_items) do
+				normalized_chance[type] = weighted_type_chance[type] > 0 and weighted_type_chance[type] / sum or 0
+			end
 
-			global_value = dropped_item.global_value
-			entry = dropped_item.entry
+			local pc_type = setup_data and setup_data.preferred_type_drop or self:_get_type_items(normalized_chance, true)
+			local drop_table = droppable_items[pc_type] or maxed_inventory_items[pc_type]
+
+			if drop_table then
+				sum = 0
+
+				for index, item_data in ipairs(drop_table) do
+					sum = sum + item_data.weight
+				end
+
+				normalized_chance = {}
+
+				for index, item_data in ipairs(drop_table) do
+					normalized_chance[index] = item_data.weight / sum
+				end
+
+				local dropped_index = self:_get_type_items(normalized_chance, true)
+				local dropped_item = drop_table[dropped_index]
+
+				managers.blackmarket:add_to_inventory(dropped_item.global_value, pc_type, dropped_item.entry)
+
+				global_value = dropped_item.global_value
+				entry = dropped_item.entry
+			end
+
+			local item = {
+				global_value = global_value,
+				type_items = pc_type,
+				item_entry = entry
+			}
+
+			table.insert(return_data.items, item)
+
+			itr = itr + 1
+
+			if itr > 5 then
+				coroutine.yield()
+
+				itr = 0
+				return_data.progress.current = i
+				droppable_items, maxed_inventory_items = self:droppable_items(item_pc or 40, infamous_success, setup_data and setup_data.skip_types)
+			end
 		end
+	end)
+	local result = coroutine.resume(co)
+	local status = coroutine.status(co)
 
-		local item = {
-			global_value = global_value,
-			type_items = pc_type,
-			item_entry = entry
-		}
-
-		table.insert(return_data.items, item)
-	end
+	return co
 end
 
 function LootDropManager:debug_drop(amount, add_to_inventory, stars)

@@ -1372,6 +1372,7 @@ function MenuManager:do_clear_progress()
 	managers.crimenet:reset_seed()
 	managers.custom_safehouse:reset()
 	managers.tango:reset()
+	managers.generic_side_jobs:reset()
 
 	if Global.game_settings.difficulty == "overkill_145" then
 		Global.game_settings.difficulty = "overkill"

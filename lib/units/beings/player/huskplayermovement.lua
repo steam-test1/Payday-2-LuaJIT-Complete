@@ -594,6 +594,14 @@ function HuskPlayerMovement:update(unit, t, dt)
 			end
 		end
 	end
+
+	if self._retry_sync_movement_state_driving then
+		self._retry_sync_movement_state_driving = nil
+
+		if self._state == "driving" then
+			self:_sync_movement_state_driving()
+		end
+	end
 end
 
 function HuskPlayerMovement:enable_update()
@@ -1406,7 +1414,7 @@ function HuskPlayerMovement:_upd_attention_driving(t, dt)
 		else
 			self._atention_on = true
 
-			if self._vehicle_shooting_stance == PlayerDriving.STANCE_NORMAL and not self._allow_shooting then
+			if self._vehicle_shooting_stance == PlayerDriving.STANCE_NORMAL and not self._vehicle_allows_shooting then
 				self._machine:forbid_modifier(self._look_modifier_name)
 				self._machine:force_modifier(self._head_modifier_name)
 				self._machine:forbid_modifier(self._arm_modifier_name)
@@ -1462,7 +1470,7 @@ function HuskPlayerMovement:update_sync_look_dir(t, dt)
 	local rot_adj = Rotation(error_axis, rot_amount)
 	self._look_dir = self._look_dir:rotate_with(rot_adj)
 
-	if self._vehicle_shooting_stance == PlayerDriving.STANCE_NORMAL and not self._allow_shooting then
+	if self._vehicle_shooting_stance == PlayerDriving.STANCE_NORMAL and not self._vehicle_allows_shooting then
 		self._head_modifier:set_target_z(self._look_dir)
 	else
 		self._look_modifier:set_target_y(self._look_dir)
@@ -3525,7 +3533,9 @@ HuskPlayerMovement.switch_weapon_times = {cbt = {
 }}
 
 function HuskPlayerMovement:_can_play_weapon_switch_anim()
-	if self:downed() or self._ext_anim.bleedout or self._ext_anim.bleedout_falling then
+	local blocked_by_vehicle = self._vehicle and not self._vehicle_allows_shooting
+
+	if self:downed() or self._ext_anim.bleedout or self._ext_anim.bleedout_falling or blocked_by_vehicle then
 		return false
 	end
 
@@ -3897,13 +3907,15 @@ function HuskPlayerMovement:_sync_movement_state_driving(event_descriptor)
 	local vehicle_data = managers.player:get_vehicle_for_peer(peer_id)
 
 	if not vehicle_data then
+		self._retry_sync_movement_state_driving = true
+
 		return false
 	end
 
-	local vehicle_tweak_data = vehicle_data.vehicle_unit:vehicle_driving()._tweak_data
 	local vehicle_unit = vehicle_data.vehicle_unit
+	local vehicle_tweak_data = vehicle_unit:vehicle_driving()._tweak_data
 	local animation = vehicle_tweak_data.animations[vehicle_data.seat]
-	self._allow_shooting = vehicle_tweak_data.seats[vehicle_data.seat].allow_shooting
+	self._vehicle_allows_shooting = vehicle_tweak_data.seats[vehicle_data.seat].allow_shooting
 	self._vehicle = vehicle_unit:vehicle()
 	self._driver = false
 

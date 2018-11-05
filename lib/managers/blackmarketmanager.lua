@@ -6724,6 +6724,9 @@ function BlackMarketManager:reset()
 	self:aquire_default_masks()
 	self:_verfify_equipped()
 	self:_on_reset_unlock_aquired_weapons()
+
+	self._global._unlocked_crew_items = {}
+
 	self:_setup_unlocked_crew_items()
 
 	if managers.menu_scene then

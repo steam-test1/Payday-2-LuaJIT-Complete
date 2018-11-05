@@ -905,7 +905,7 @@ function CopActionShoot:anim_clbk_melee_strike()
 	local is_weapon = melee_weapon == "weapon"
 	local damage = is_weapon and self._w_usage_tweak.melee_dmg or tweak_data.weapon.npc_melee[melee_weapon].damage
 	local dmg_mul = is_weapon and 1 or self._common_data.char_tweak.melee_weapon_dmg_multiplier or 1
-	dmg_mul = dmg_mul * 1 + self._unit:base():get_total_buff("base_damage")
+	dmg_mul = dmg_mul * (1 + self._unit:base():get_total_buff("base_damage"))
 	damage = damage * dmg_mul
 	local action_data = {
 		variant = "melee",

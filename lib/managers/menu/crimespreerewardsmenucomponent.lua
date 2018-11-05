@@ -24,9 +24,18 @@ function CrimeSpreeRewardsMenuComponent:init(ws, fullscreen_ws, node)
 end
 
 function CrimeSpreeRewardsMenuComponent:close()
-	self._ws:panel():remove(self._panel)
-	self._ws:panel():remove(self._text_header)
-	self._fullscreen_ws:panel():remove(self._fullscreen_panel)
+	if alive(self._panel) then
+		self._ws:panel():remove(self._panel)
+	end
+
+	if alive(self._text_header) then
+		self._ws:panel():remove(self._text_header)
+	end
+
+	if alive(self._fullscreen_panel) then
+		self._fullscreen_ws:panel():remove(self._fullscreen_panel)
+	end
+
 	managers.menu_component:post_event("count_1_finished")
 end
 
@@ -106,6 +115,52 @@ function CrimeSpreeRewardsMenuComponent:_setup()
 		1
 	}})
 
+	local progress_bar_h = 24
+	self._progress_panel = self._panel:panel({
+		layer = 10,
+		w = self._panel:w() * 0.8,
+		h = progress_bar_h + tweak_data.menu.pd2_medium_font_size
+	})
+
+	self._progress_panel:set_center_x(self._panel:w() * 0.5)
+	self._progress_panel:set_center_y(self._panel:h() * 0.5)
+	self._progress_panel:text({
+		vertical = "top",
+		align = "left",
+		text = managers.localization:to_upper_text("menu_cs_generating_rewards"),
+		font_size = tweak_data.menu.pd2_medium_font_size,
+		font = tweak_data.menu.pd2_medium_font,
+		color = tweak_data.screen_colors.text
+	})
+
+	self._progress_text = self._progress_panel:text({
+		text = "",
+		vertical = "top",
+		align = "right",
+		font_size = tweak_data.menu.pd2_medium_font_size,
+		font = tweak_data.menu.pd2_medium_font,
+		color = tweak_data.screen_colors.text
+	})
+	local progress_bar_panel = self._progress_panel:panel({h = progress_bar_h})
+
+	progress_bar_panel:set_bottom(self._progress_panel:h())
+	BoxGuiObject:new(progress_bar_panel:panel({layer = 100}), {sides = {
+		1,
+		1,
+		1,
+		1
+	}})
+
+	self._progress_bar = progress_bar_panel:rect({
+		alpha = 0.8,
+		blend_mode = "add",
+		color = tweak_data.screen_colors.button_stage_2
+	})
+end
+
+function CrimeSpreeRewardsMenuComponent:_setup_gui()
+	self._progress_panel:animate(callback(self, self, "fade_out"), 0.5, 0)
+
 	local panel_w = math.floor(self._panel:w() / 3)
 	self._rewards_panel = self._panel:panel({})
 
@@ -123,12 +178,6 @@ end
 function CrimeSpreeRewardsMenuComponent:mouse_wheel_down(x, y)
 	if self._list_scroll then
 		return self._list_scroll:scroll(x, y, -1)
-	end
-end
-
-function CrimeSpreeRewardsMenuComponent:update(t, dt)
-	for idx, btn in ipairs(self._buttons) do
-		btn:update(t, dt)
 	end
 end
 
@@ -669,6 +718,25 @@ CrimeSpreeRewardsMenuComponent.states = {
 }
 
 function CrimeSpreeRewardsMenuComponent:update(t, dt)
+	if managers.crime_spree:is_generating_rewards() then
+		local current, total = managers.crime_spree:reward_generation_progress()
+		local complete = managers.crime_spree:has_finished_generating_rewards()
+
+		if alive(self._progress_text) then
+			self._progress_text:set_text(string.format("%i/%i", complete and total or current, total))
+
+			if alive(self._progress_bar) then
+				self._progress_bar:set_w(self._progress_panel:w() * (complete and 1 or current / total))
+			end
+		end
+
+		if complete then
+			self:_setup_gui()
+		end
+
+		return
+	end
+
 	if self._wait_t then
 		self._wait_t = self._wait_t - dt
 
@@ -693,6 +761,10 @@ function CrimeSpreeRewardsMenuComponent:update(t, dt)
 
 	if self[func] then
 		self[func](self, t, dt)
+	end
+
+	for idx, btn in ipairs(self._buttons) do
+		btn:update(t, dt)
 	end
 end
 
@@ -1229,11 +1301,12 @@ function CrimeSpreeRewardsMenuComponent:_update_loot_drops()
 	local max_lines = 3
 	local max_items = items_per_line * max_lines
 	local item_size = self._loot_scroll:canvas():w() / items_per_line
+	local max_pages = 3
 	local c = 0
 	local intial_delay = 0
 	local end_t = 0
 
-	for i = 1, num_items, 1 do
+	for i = 1, math.min(num_items, max_items * max_pages), 1 do
 		local lootdrop_data = loot_drops[i]
 		local card_types = {
 			weapon_mods = "upcard_weapon",
@@ -1302,6 +1375,24 @@ function CrimeSpreeRewardsMenuComponent:_update_loot_drops()
 		end
 
 		end_t = t
+	end
+
+	if max_items * max_pages < num_items then
+		local more_text = self._loot_scroll:canvas():text({
+			vertical = "center",
+			align = "center",
+			alpha = 0,
+			text = managers.localization:text("menu_cs_loot_drops_not_shown", {remaining = tostring(num_items - max_items * max_pages)}),
+			font_size = tweak_data.menu.pd2_large_font_size,
+			font = tweak_data.menu.pd2_large_font,
+			color = tweak_data.screen_colors.text
+		})
+		local t = end_t
+
+		more_text:animate(callback(self, self, "fade_in"), 0.25, t)
+		more_text:animate(callback(self, self, "fade_out"), 0.25, t + 2)
+
+		end_t = end_t + 2.5
 	end
 
 	self._loot_scroll:update_canvas_size()

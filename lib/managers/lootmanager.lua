@@ -5,28 +5,21 @@ function LootManager:init()
 end
 
 function LootManager:_setup()
-	local distribute = {}
-	local saved_secured = {}
-	local saved_mandatory_bags = Global.loot_manager and Global.loot_manager.mandatory_bags
-	local postponed_small_loot = Global.loot_manager and Global.loot_manager.postponed_small_loot
+	Global.loot_manager = Global.loot_manager or {
+		secured = {},
+		mandatory_bags = {},
+		postponed_small_loot = {}
+	}
+	self._global = Global.loot_manager
+	self._initial_loot = deep_clone(self._global.secured)
+	self._distribution_loot = {}
+	local level_id = Global.level_data and Global.level_data.level_id
+	local level_tweak = tweak_data.levels[level_id]
 
-	if Global.loot_manager and Global.loot_manager.secured then
-		saved_secured = deep_clone(Global.loot_manager.secured)
-
-		for _, data in ipairs(Global.loot_manager.secured) do
-			if not tweak_data.carry.small_loot[data.carry_id] then
-				table.insert(distribute, data)
-			end
-		end
+	if level_tweak and level_tweak.repossess_bags then
+		self:_repossess_bags_for_distribution()
 	end
 
-	Global.loot_manager = {}
-	Global.loot_manager.secured = {}
-	Global.loot_manager.distribute = distribute
-	Global.loot_manager.saved_secured = saved_secured
-	Global.loot_manager.mandatory_bags = saved_mandatory_bags or {}
-	Global.loot_manager.postponed_small_loot = postponed_small_loot
-	self._global = Global.loot_manager
 	self._triggers = {}
 	self._respawns = {}
 end
@@ -55,8 +48,6 @@ function LootManager:add_trigger(id, type, amount, callback)
 end
 
 function LootManager:_check_triggers(type)
-	print("LootManager:_check_triggers", type)
-
 	if not self._triggers[type] then
 		return
 	end
@@ -85,7 +76,7 @@ function LootManager:_check_triggers(type)
 end
 
 function LootManager:on_retry_job_stage()
-	self._global.secured = self._global.saved_secured
+	self._global.secured = self._initial_loot
 end
 
 function LootManager:get_secured()
@@ -99,7 +90,7 @@ function LootManager:get_secured_random()
 end
 
 function LootManager:get_distribute()
-	return table.remove(self._global.distribute, 1)
+	return table.remove(self._distribution_loot, 1)
 end
 
 function LootManager:get_respawn()
@@ -111,6 +102,19 @@ function LootManager:add_to_respawn(carry_id, multiplier)
 		carry_id = carry_id,
 		multiplier = multiplier
 	})
+end
+
+function LootManager:_repossess_bags_for_distribution()
+	local small_loot = {}
+	local distribute = self._distribution_loot
+
+	for _, data in ipairs(self._global.secured) do
+		local is_small = tweak_data.carry.small_loot[data.carry_id] ~= nil
+
+		table.insert(is_small and small_loot or distribute, data)
+	end
+
+	self._global.secured = small_loot
 end
 
 function LootManager:on_job_deactivated()
@@ -191,13 +195,7 @@ function LootManager:_count_achievement_secured(achievement, secured_data)
 end
 
 function LootManager:_check_secured(achievement, secured_data)
-	print("[LootManager:_check_secured]")
-	print(inspect(achievement))
-	print(inspect(secured_data))
-
 	local total_amount, amount, value = self:_count_achievement_secured(achievement, secured_data)
-
-	print("Did we get it?", secured_data.total_amount and secured_data.total_amount <= total_amount or secured_data.amount and secured_data.amount <= amount or secured_data.value and secured_data.value <= value)
 
 	return secured_data.total_amount and secured_data.total_amount <= total_amount or secured_data.amount and secured_data.amount <= amount or secured_data.value and secured_data.value <= value
 end
@@ -297,17 +295,7 @@ function LootManager:check_secured_mandatory_bags()
 
 	local amount = self:get_secured_mandatory_bags_amount()
 
-	print("mandatory amount", amount)
-
 	return self._global.mandatory_bags.amount <= amount
-end
-
-function LootManager:add_saved_bags_to_secured()
-	for _, data in ipairs(self._global.distribute) do
-		table.insert(self._global.secured, data)
-	end
-
-	self._global.distribute = {}
 end
 
 function LootManager:get_secured_mandatory_bags_amount(is_vehicle)
@@ -569,13 +557,7 @@ function LootManager:_present(carry_id, multiplier)
 end
 
 function LootManager:sync_save(data)
-	data.LootManager = {}
-
-	for key, value in pairs(self._global) do
-		data.LootManager[key] = value
-	end
-
-	data.LootManager.distribute = {}
+	data.LootManager = clone(self._global)
 end
 
 function LootManager:sync_load(data)

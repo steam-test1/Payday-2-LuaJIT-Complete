@@ -49,7 +49,7 @@ function MessageSystem:notify_now(message, uid, ...)
 end
 
 function MessageSystem:_notify()
-	local messages = deep_clone(self._messages)
+	local messages = table.list_copy(self._messages)
 	local count = #self._messages
 
 	for i = 1, count, 1 do
@@ -59,13 +59,13 @@ function MessageSystem:_notify()
 	self._messages = nil
 	self._messages = {}
 
-	for i = 1, count, 1 do
-		if self._listeners[messages[i].message] then
-			if messages[i].uid then
-				self._listeners[messages[i].message][messages[i].uid](unpack(messages[i].arg))
+	for i, m in ipairs(messages) do
+		if self._listeners[m.message] then
+			if m.uid then
+				self._listeners[m.message][m.uid](unpack(m.arg))
 			else
-				for key, value in pairs(self._listeners[messages[i].message]) do
-					value(unpack(messages[i].arg))
+				for key, value in pairs(self._listeners[m.message]) do
+					value(unpack(m.arg))
 				end
 			end
 		end

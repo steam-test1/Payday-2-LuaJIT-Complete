@@ -5971,5 +5971,9 @@ function DLCTweakData:init(tweak_data)
 		item_entry = "fdm",
 		amount = 1
 	}}
+	self.jfr = {
+		free = true,
+		content = {}
+	}
 end
 

@@ -4263,7 +4263,7 @@ function PlayerManager:can_throw_grenade()
 	local equipped_grenade = managers.blackmarket:equipped_grenade()
 
 	if tweak_data.blackmarket.projectiles[equipped_grenade].base_cooldown then
-		return not self["_cooldown_" .. equipped_grenade] or self["_cooldown_" .. equipped_grenade] < TimerManager:game():time()
+		return not self:has_active_ability_cooldown(equipped_grenade)
 	end
 
 	local peer_id = managers.network:session():local_peer():id()
@@ -4301,13 +4301,15 @@ end
 function PlayerManager:on_throw_grenade()
 	local should_decrement = true
 	local equipped_grenade = managers.blackmarket:equipped_grenade()
+	local td = tweak_data.blackmarket.projectiles[equipped_grenade]
 
-	if tweak_data.blackmarket.projectiles[equipped_grenade].base_cooldown then
-		self["_cooldown_" .. equipped_grenade] = TimerManager:game():time() + tweak_data.blackmarket.projectiles[equipped_grenade].base_cooldown
+	if td.base_cooldown then
+		self:start_ability_cooldown(equipped_grenade, TimerManager:game():time() + td.base_cooldown)
+
 		should_decrement = false
 
 		local function speed_up_on_kill()
-			managers.player:speed_up_ability_cooldown(equipped_grenade, 1)
+			managers.player:speed_up_ability_cooldown(equipped_grenade, td.kill_speedup or 1)
 		end
 
 		self:register_message(Message.OnEnemyKilled, "speed_up_" .. equipped_grenade, speed_up_on_kill)
@@ -5161,7 +5163,8 @@ function PlayerManager:activate_ability(ability)
 
 	local t = TimerManager:game():time()
 	local tweak = tweak_data.blackmarket.projectiles[ability]
-	self["_cooldown_" .. ability] = t + tweak.base_cooldown
+
+	self:start_ability_cooldown(ability, t + tweak.base_cooldown)
 
 	if self["_on_activate_" .. ability] then
 		self["_on_activate_" .. ability](self)
@@ -5181,6 +5184,10 @@ function PlayerManager:_on_activate_chico_injector()
 	end
 
 	self:register_message(Message.OnEnemyKilled, "speed_up_chico_injector", speed_up_on_kill)
+end
+
+function PlayerManager:start_ability_cooldown(ability, time)
+	self["_cooldown_" .. ability] = time
 end
 
 function PlayerManager:has_active_ability_cooldown(ability)

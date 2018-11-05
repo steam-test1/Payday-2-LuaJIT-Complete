@@ -831,6 +831,58 @@ function EconomyTweakData:init()
 		contains = {weapon_skins = {"colt_1911_wwt"}},
 		rarity = "legendary"
 	}
+	self.contents.skf_01 = {
+		def_id = 10047,
+		contains = {
+			weapon_skins = {
+				"new_m4_skf",
+				"p226_skf",
+				"amcar_skf",
+				"ppk_skf",
+				"aug_skf",
+				"lemming_skf",
+				"g26_skf",
+				"ching_skf",
+				"mp7_skf",
+				"ray_skf",
+				"b682_skf",
+				"ak5_skf",
+				"scar_skf",
+				"famas_skf",
+				"g36_skf"
+			},
+			contents = {"skf_01_legendary"}
+		}
+	}
+	self.contents.skf_01_legendary = {
+		def_id = 10048,
+		contains = {weapon_skins = {"mac10_skf"}},
+		rarity = "legendary"
+	}
+	self.bundles.skf_01 = {
+		def_id = 30004,
+		dlc_id = "627400",
+		quality = "mint",
+		bonus = false,
+		contains = {weapon_skins = {
+			"new_m4_skf",
+			"p226_skf",
+			"amcar_skf",
+			"ppk_skf",
+			"aug_skf",
+			"lemming_skf",
+			"g26_skf",
+			"ching_skf",
+			"mp7_skf",
+			"ray_skf",
+			"b682_skf",
+			"ak5_skf",
+			"scar_skf",
+			"famas_skf",
+			"g36_skf",
+			"mac10_skf"
+		}}
+	}
 	self.safes.overkill_01 = {
 		def_id = 50000,
 		promo = true,
@@ -1062,6 +1114,16 @@ function EconomyTweakData:init()
 		texture_bundle_folder = "cash/safes/wwt",
 		market_link = "https://steamcommunity.com/market/listings/218620/Aldstone%27s%20Heritage%20Safe"
 	}
+	self.safes.skf_01 = {
+		free = true,
+		drill = "skf_01",
+		content = "skf_01",
+		bundle = "skf_01",
+		name_id = "bm_menu_safe_skf_01",
+		unit_name = "units/payday2_cash/safes/skf/safe/eco_safe_skf",
+		texture_bundle_folder = "cash/safes/skf",
+		market_link = "https://steamcommunity.com/market/listings/218620/Community%20Safe%205"
+	}
 	self.drills.overkill_01 = {
 		safe = "overkill_01",
 		def_id = 70000,
@@ -1226,6 +1288,10 @@ function EconomyTweakData:init()
 	self.drills.wwt_01 = {
 		safe = "wwt_01",
 		unit_name = "units/payday2_cash/safes/wwt/drill/eco_drill_wwt"
+	}
+	self.drills.skf_01 = {
+		safe = "skf_01",
+		unit_name = "units/payday2_cash/safes/skf/drill/eco_drill_skf"
 	}
 	self.bonuses = {concealment_p1 = {}}
 	self.bonuses.concealment_p1.name_id = "bm_menu_bonus_concealment"

@@ -24,10 +24,14 @@ function ElementSetOutline:on_executed(instigator)
 		end
 	end
 
-	for _, id in ipairs(self._values.elements) do
-		local element = self:get_mission_element(id)
+	if self._values.use_instigator then
+		f(instigator)
+	else
+		for _, id in ipairs(self._values.elements) do
+			local element = self:get_mission_element(id)
 
-		element:execute_on_all_units(f)
+			element:execute_on_all_units(f)
+		end
 	end
 
 	ElementSetOutline.super.on_executed(self, instigator)

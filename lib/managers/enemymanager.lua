@@ -551,7 +551,7 @@ function EnemyManager:is_clbk_registered(id)
 	return false
 end
 
-function EnemyManager:remove_delayed_clbk(id)
+function EnemyManager:remove_delayed_clbk(id, no_pause)
 	local all_clbks = self._delayed_clbks
 
 	for i, clbk_data in ipairs(all_clbks) do
@@ -562,7 +562,9 @@ function EnemyManager:remove_delayed_clbk(id)
 		end
 	end
 
-	debug_pause("[EnemyManager:remove_delayed_clbk] id", id, "was not scheduled!!!")
+	if not no_pause then
+		debug_pause("[EnemyManager:remove_delayed_clbk] id", id, "was not scheduled!!!")
+	end
 end
 
 function EnemyManager:reschedule_delayed_clbk(id, execute_t)
