@@ -5692,6 +5692,42 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		sort_number = 62,
 		global_value = "cmt"
 	}
+	self.masks.sdm_01 = {
+		unit = "units/pd2_dlc_sdm/masks/sdm_01/msk_sdm_01",
+		name_id = "bm_msk_sdm_01",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "sdm",
+		sort_number = 64,
+		global_value = "sdm"
+	}
+	self.masks.sdm_02 = {
+		unit = "units/pd2_dlc_sdm/masks/sdm_02/msk_sdm_02",
+		name_id = "bm_msk_sdm_02",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "sdm",
+		sort_number = 64,
+		global_value = "sdm"
+	}
+	self.masks.sdm_03 = {
+		unit = "units/pd2_dlc_sdm/masks/sdm_03/msk_sdm_03",
+		name_id = "bm_msk_sdm_03",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "sdm",
+		sort_number = 64,
+		global_value = "sdm"
+	}
+	self.masks.sdm_04 = {
+		unit = "units/pd2_dlc_sdm/masks/sdm_04/msk_sdm_04",
+		name_id = "bm_msk_sdm_04",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "sdm",
+		sort_number = 64,
+		global_value = "sdm"
+	}
 	self.masks.ggac_od_t2 = {
 		unit = "units/pd2_dlc_ggac/masks/ggac_od_t2/msk_ggac_od_t2",
 		name_id = "bm_msk_ggac",

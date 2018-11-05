@@ -1626,6 +1626,38 @@ function LootDropTweakData:init(tweak_data)
 		category = "dlc",
 		ignore_ulti = true
 	}
+	self.global_values.osa = {
+		name_id = "bm_global_value_osa",
+		desc_id = "menu_l_global_value_osa",
+		unlock_id = "bm_global_value_osa_unlock",
+		color = dlc_color,
+		dlc = true,
+		free = true,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 300,
+		category = "dlc",
+		ignore_ulti = true
+	}
+	self.global_values.dmg = {
+		name_id = "bm_global_value_dmg",
+		desc_id = "menu_l_global_value_dmg",
+		unlock_id = "bm_global_value_dmg_unlock",
+		color = dlc_color,
+		dlc = true,
+		free = true,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 300,
+		category = "dlc",
+		ignore_ulti = true
+	}
 
 	if SystemInfo:platform() == Idstring("PS3") then
 		self.global_values.sweettooth = {

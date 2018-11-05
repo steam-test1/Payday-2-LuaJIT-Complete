@@ -38,11 +38,13 @@ function PlayerHandStateAkimbo:at_enter(prev_state)
 	if alive(managers.player:player_unit()) then
 		local equipped_weapon = managers.player:player_unit():inventory():equipped_unit()
 
-		if not equipped_weapon:base().akimbo then
-			debug_pause("[PlayerHandStateAkimbo] Entered akimbo state without an akimbo equipped")
-		end
+		if alive(equipped_weapon) then
+			if not equipped_weapon:base().akimbo then
+				debug_pause("[PlayerHandStateAkimbo] Entered akimbo state without an akimbo equipped")
+			end
 
-		self:_link_weapon(equipped_weapon:base()._second_gun)
+			self:_link_weapon(equipped_weapon:base()._second_gun)
+		end
 	end
 
 	self._hand_unit:melee():set_weapon_unit(self._weapon_unit)

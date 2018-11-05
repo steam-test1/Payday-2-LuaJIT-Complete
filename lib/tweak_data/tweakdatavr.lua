@@ -105,6 +105,13 @@ function TweakDataVR:init(tweak_data)
 			x_chinchilla = {position = Vector3(-0.5, 2, 2)},
 			x_shrew = {position = Vector3(-0.5, 1, 1)},
 			x_deagle = {position = Vector3(-0.5, 1, 2)},
+			x_rage = {position = Vector3(-0.5, 3, 2)},
+			x_ppk = {position = Vector3(-0.5, 2, 1)},
+			x_p226 = {position = Vector3(-0.2, 2, 2)},
+			x_mateba = {position = Vector3(-0.5, 4, 2)},
+			x_sparrow = {position = Vector3(-0.5, 1, 1.5)},
+			x_pl14 = {position = Vector3(-0.5, 2, 2)},
+			x_breech = {position = Vector3(-0.5, 1, 1)},
 			akmsu = {position = Vector3(0, 2, 2)},
 			p90 = {
 				grip = "weapon_2_grip",
@@ -125,6 +132,22 @@ function TweakDataVR:init(tweak_data)
 			erma = {position = Vector3(-0.2, 2, 3.2)},
 			x_akmsu = {position = Vector3(0, 2, 2)},
 			x_sr2 = {position = Vector3(-0.2, -0.5, 0)},
+			x_p90 = {
+				grip = "weapon_2_grip",
+				position = Vector3(-0.5, 2, 1)
+			},
+			x_mp9 = {position = Vector3(-0.5, -0.3, 1.5)},
+			x_mac10 = {position = Vector3(-0.5, -1.5, 2)},
+			x_m45 = {position = Vector3(-0.1, -0.4, 1)},
+			x_mp7 = {position = Vector3(-0.5, -1, 2)},
+			x_scorpion = {position = Vector3(0, 0.3, 2)},
+			x_tec9 = {position = Vector3(-0.5, 0, 0)},
+			x_uzi = {position = Vector3(-0.5, 0, 1.5)},
+			x_m1928 = {position = Vector3(-0.5, 1, 1.5)},
+			x_cobray = {position = Vector3(-0.5, -1, 1.5)},
+			x_polymer = {position = Vector3(-0.5, -0.5, -0.5)},
+			x_baka = {position = Vector3(-0.2, -0.5, 2.5)},
+			x_erma = {position = Vector3(-0.2, 2, 3.2)},
 			r870 = {position = Vector3(-0.5, 2, 1)},
 			serbu = {position = Vector3(-0.5, 2, 1.2)},
 			huntsman = {
@@ -151,6 +174,8 @@ function TweakDataVR:init(tweak_data)
 			rota = {position = Vector3(-0.1, 2, 1.2)},
 			basset = {position = Vector3(-0.1, 2, 1.2)},
 			x_basset = {position = Vector3(-0.1, 2, 1.2)},
+			x_judge = {position = Vector3(-0.5, 3, 1.2)},
+			x_rota = {position = Vector3(-0.1, 2, 1.2)},
 			mosin = {position = Vector3(0, -6, 2)},
 			r93 = {position = Vector3(-0.8, 0, 1)},
 			wa2000 = {position = Vector3(0, -2, 2)},
@@ -274,6 +299,31 @@ function TweakDataVR:init(tweak_data)
 			position = Vector3(3, 2, 2),
 			rotation = Rotation(-45, 12, -20)
 		},
+		x_ppk = {position = Vector3(0, 18, 0)},
+		x_hs2000 = {position = Vector3(0, 1, 5)},
+		x_sparrow = {position = Vector3(0, 2, -2)},
+		x_pl14 = {position = Vector3(0, 3, -2)},
+		x_lemming = {position = Vector3(0, 1.5, -2)},
+		x_breech = {
+			position = Vector3(2, 0, -4),
+			rotation = Rotation(0, 20, 0)
+		},
+		x_new_raging_bull = {
+			position = Vector3(3, 2, 2),
+			rotation = Rotation(-45, 12, -20)
+		},
+		x_mateba = {
+			position = Vector3(3, 2, 2),
+			rotation = Rotation(-45, 12, -20)
+		},
+		x_peacemaker = {
+			position = Vector3(3, 2, 2),
+			rotation = Rotation(-45, 12, -20)
+		},
+		x_c96 = {
+			position = Vector3(0, 0, 2),
+			rotation = Rotation(0, -15, 0)
+		},
 		r870 = {
 			position = Vector3(3, 0, 0),
 			rotation = Rotation(-223, -129, 70),
@@ -335,6 +385,14 @@ function TweakDataVR:init(tweak_data)
 		x_basset = {
 			position = Vector3(0, 1, 3),
 			rotation = Rotation(0, -25, 0)
+		},
+		x_judge = {
+			position = Vector3(3, 0, 0),
+			rotation = Rotation(-223, -129, 70)
+		},
+		x_rota = {
+			position = Vector3(3, 0, 1),
+			rotation = Rotation(-1, 55, -4)
 		},
 		olympic = {
 			position = Vector3(0, 3, 2),
@@ -416,6 +474,64 @@ function TweakDataVR:init(tweak_data)
 		},
 		x_sr2 = {
 			position = Vector3(1, 2, 5),
+			rotation = Rotation(0, -15, 0)
+		},
+		x_olympic = {
+			position = Vector3(0, 3, 2),
+			rotation = Rotation(0, -25, 0)
+		},
+		x_mp9 = {position = Vector3(0, 1, 10)},
+		x_mac10 = {position = Vector3(0, 0, 10)},
+		x_m45 = {position = Vector3(0, 0, 6)},
+		x_p90 = {
+			position = Vector3(0, 1, 7),
+			rotation = Rotation(-90, 90, 170)
+		},
+		x_mp7 = {
+			position = Vector3(0, 3.5, 10),
+			rotation = Rotation(0, -15, 0)
+		},
+		x_scorpion = {
+			position = Vector3(0, -2, 5),
+			rotation = Rotation(0, -25, 0)
+		},
+		x_tec9 = {
+			position = Vector3(1, -9, 8),
+			rotation = Rotation(0, -15, 0)
+		},
+		x_uzi = {
+			position = Vector3(1, 3, 12),
+			rotation = Rotation(0, -15, 0)
+		},
+		x_sterling = {
+			position = Vector3(0, 0, 5),
+			rotation = Rotation(90, -90, -75)
+		},
+		x_m1928 = {position = Vector3(10, -2, 8)},
+		x_cobray = {
+			position = Vector3(1, 3, 12),
+			rotation = Rotation(0, -15, 0)
+		},
+		x_polymer = {position = Vector3(0, 2, 8)},
+		x_baka = {
+			position = Vector3(1, 0, -5),
+			rotation = Rotation(0, -15, 0)
+		},
+		x_hajk = {
+			position = Vector3(0, 3, 2),
+			rotation = Rotation(0, -25, 0)
+		},
+		x_schakal = {
+			position = Vector3(0, 0, 6),
+			rotation = Rotation(0, -20, 0)
+		},
+		x_coal = {
+			grip = "idle_wpn",
+			position = Vector3(8, 2, 12),
+			rotation = Rotation(50, 86, 20)
+		},
+		x_erma = {
+			position = Vector3(1, 2, 8),
 			rotation = Rotation(0, -15, 0)
 		},
 		new_m4 = {
@@ -896,7 +1012,8 @@ function TweakDataVR:init(tweak_data)
 			},
 			ray = {position = Vector3(0, 20, -6)},
 			ecp = {position = Vector3(0, 25, -2)},
-			slap = {position = Vector3(0, 18, -1)}
+			slap = {position = Vector3(0, 18, -1)},
+			shuno = {position = Vector3(-24, 30, 0)}
 		},
 		limits = {
 			pistol_max = 20,
@@ -4393,6 +4510,461 @@ function TweakDataVR:init(tweak_data)
 				}
 			}
 		},
+		x_ppk = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_g17_clip_slide_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, -5, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_g17_clip_slide_in",
+					visible = true,
+					pos = Vector3(0, -5, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, -2.5, -10)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, -2.5, -10)
+				},
+				{
+					time = 0.6,
+					sound = "wp_g17_lever_release",
+					pos = Vector3()
+				}
+			}
+		},
+		x_p226 = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_usp_clip_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, -5, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_usp_clip_out",
+					visible = true,
+					pos = Vector3(0, -5, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, -2.5, -10)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, -2.5, -10)
+				},
+				{
+					time = 0.6,
+					sound = "wp_usp_mantel_back",
+					pos = Vector3()
+				}
+			}
+		},
+		x_c96 = {
+			custom_mag_unit = "units/pd2_dlc_vr/units/wpn_pis_c96_mag/wpn_pis_c96_mag",
+			start = {
+				{
+					time = 0,
+					sound = "wp_c96_mantel_back"
+				},
+				{time = 0.05}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_c96_mantel_back",
+					anims = {{
+						anim_group = "reload",
+						to = 2.7,
+						from = 2.6,
+						part = "magazine"
+					}}
+				},
+				{
+					time = 0,
+					sound = "wp_c96_second_slide"
+				},
+				{
+					time = 0.5,
+					sound = "wp_c96_release"
+				},
+				{
+					time = 0.99,
+					anims = {{
+						anim_group = "reload",
+						to = 0,
+						part = "magazine"
+					}}
+				}
+			}
+		},
+		x_g18c = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_g17_clip_slide_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, -7, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_g17_clip_slide_in",
+					visible = true,
+					pos = Vector3(0, -7, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, -4, -10)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, -4, -10)
+				},
+				{
+					time = 0.6,
+					sound = "wp_g17_lever_release",
+					pos = Vector3()
+				}
+			}
+		},
+		x_hs2000 = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_usp_clip_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, -5, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_usp_clip_out",
+					visible = true,
+					pos = Vector3(0, -5, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, -2, -7)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, -2, -7)
+				},
+				{
+					time = 0.6,
+					sound = "wp_usp_mantel_back",
+					pos = Vector3()
+				}
+			}
+		},
+		x_peacemaker = {
+			custom_mag_unit = "units/pd2_dlc_vr/units/wpn_vr_m_44/wpn_vr_m_44",
+			start = {
+				{
+					time = 0,
+					sound = "wp_pmkr45_cylinder_click_02",
+					anims = {{
+						anim_group = "reload",
+						from = 2.7
+					}}
+				},
+				{
+					time = 0.5,
+					sound = "wp_pmkr45_shell_land"
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_pmkr45_load_bullet"
+				},
+				{
+					time = 0.5,
+					sound = "wp_foley_generic_lever_release",
+					pos = Vector3()
+				}
+			}
+		},
+		x_2006m = {
+			custom_mag_unit = "units/pd2_dlc_vr/units/wpn_pis_speedloader_6x/wpn_pis_speedloader_6x",
+			start = {
+				{
+					time = 0,
+					sound = "wp_mateba_open_barrel",
+					anims = {{
+						anim_group = "reload",
+						to = 0.7,
+						from = 0.3,
+						part = "magazine"
+					}}
+				},
+				{
+					time = 0.15,
+					sound = "wp_mateba_empty_barrel"
+				},
+				{
+					time = 0.15,
+					visible = {
+						visible = false,
+						parts = {magazine = {"g_bullets"}}
+					},
+					effect = {
+						part = "magazine",
+						name = "effects/payday2/particles/weapons/shells/shell_revolver_dump",
+						object = "align_bullets"
+					}
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_mateba_put_in_bullets",
+					visible = {
+						visible = true,
+						parts = {magazine = {"g_bullets"}}
+					},
+					anims = {{
+						anim_group = "reload",
+						part = "magazine",
+						from = 3.2
+					}}
+				},
+				{
+					time = 0.99,
+					sound = "wp_mateba_close_barrel"
+				}
+			}
+		},
+		x_sparrow = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_pmkr45_open_latch"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, -5, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_pmkr45_load_bullet",
+					visible = true,
+					pos = Vector3(0, -5, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, -2, -7)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, -2, -7)
+				},
+				{
+					time = 0.6,
+					sound = "wp_pmkr45_close_latch",
+					pos = Vector3()
+				}
+			}
+		},
+		x_pl14 = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_sparrow_mag_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, -5, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_sparrow_mag_in",
+					visible = true,
+					pos = Vector3(0, -5, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, -3, -10)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, -3, -10)
+				},
+				{
+					time = 0.6,
+					sound = "wp_sparrow_cock",
+					pos = Vector3()
+				}
+			}
+		},
+		x_lemming = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_lemming_mag_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, -5, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_lemming_mag_in",
+					visible = true,
+					pos = Vector3(0, -5, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, -3, -10)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, -3, -10)
+				},
+				{
+					time = 0.6,
+					sound = "wp_lemming_mantle_forward",
+					pos = Vector3()
+				}
+			}
+		},
+		x_breech = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_breech_clip_slide_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, -13, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_breech_clip_slide_in",
+					visible = true,
+					pos = Vector3(0, -13, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, -6, -10)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, -6, -10)
+				},
+				{
+					time = 0.6,
+					sound = "wp_breech_lock_release",
+					pos = Vector3()
+				}
+			}
+		},
+		x_chinchilla = {
+			custom_mag_unit = "units/pd2_dlc_vr/units/wpn_pis_speedloader_6x/wpn_pis_speedloader_6x",
+			start = {
+				{
+					time = 0,
+					sound = "wp_chinchilla_cylinder_out",
+					anims = {
+						{
+							anim_group = "reload_right",
+							to = 0.5
+						},
+						{
+							anim_group = "reload_left",
+							to = 0.5
+						}
+					}
+				},
+				{
+					time = 0.02,
+					sound = "wp_chinchilla_eject_shells"
+				},
+				{
+					time = 0.25,
+					visible = false,
+					effect = {
+						object = "a_m",
+						name = "effects/payday2/particles/weapons/shells/shell_revolver_dump"
+					}
+				}
+			},
+			finish = {
+				{
+					visible = true,
+					time = 0,
+					sound = "wp_chinchilla_insert"
+				},
+				{
+					time = 0,
+					visible = {
+						visible = false,
+						parts = {magazine = {"g_speedloader"}}
+					}
+				},
+				{
+					time = 0.5,
+					sound = "wp_chinchilla_cylinder_in",
+					anims = {
+						{
+							anim_group = "reload_right",
+							from = 3.45
+						},
+						{
+							anim_group = "reload_left",
+							from = 3.45
+						}
+					}
+				}
+			}
+		},
 		x_sr2 = {
 			start = {
 				{
@@ -4518,6 +5090,697 @@ function TweakDataVR:init(tweak_data)
 				}
 			}
 		},
+		x_mp9 = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_mac10_clip_slide_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 0, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_mac10_clip_slide_in",
+					visible = true,
+					pos = Vector3(0, 0, -10)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, 0, -4.5)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, 0, -4)
+				},
+				{
+					time = 0.6,
+					sound = "wp_mac10_lever_release",
+					pos = Vector3()
+				}
+			}
+		},
+		x_olympic = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_m4_clip_grab_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 5, -20),
+					rot = Rotation(0, 30, 0)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_m4_clip_slide_in",
+					visible = true,
+					pos = Vector3(0, 0, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, 0, -4.5)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, 0, -4)
+				},
+				{
+					time = 0.6,
+					sound = "wp_m4_lever_release",
+					pos = Vector3()
+				}
+			}
+		},
+		x_p90 = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_p90_clip_slide_out"
+				},
+				{
+					time = 0.01,
+					pos = Vector3(0, -1, 2),
+					rot = Rotation(0, -5, 0)
+				},
+				{
+					time = 0.03,
+					pos = Vector3(0, -1.2, 2.2),
+					rot = Rotation(0, -5, 0)
+				},
+				{
+					time = 0.04,
+					pos = Vector3(0, -15, 4),
+					rot = Rotation(0, 0, 0)
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(10, -15, 4),
+					rot = Rotation(1, -4, -4)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_p90_clip_slide_in",
+					visible = true,
+					pos = Vector3(0, -15, 4),
+					rot = Rotation(0, 0, 0)
+				},
+				{
+					time = 0.01,
+					pos = Vector3(0, -1.2, 2.2),
+					rot = Rotation(0, -5, 0)
+				},
+				{
+					time = 0.45,
+					pos = Vector3(0, -1, 2),
+					rot = Rotation(0, -5, 0)
+				},
+				{
+					time = 0.5,
+					sound = "wp_p90_lever_release",
+					pos = Vector3(),
+					rot = Rotation()
+				}
+			}
+		},
+		x_mac10 = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_mac10_clip_slide_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 0, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_mac10_clip_slide_in",
+					visible = true,
+					pos = Vector3(0, 0, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, 0, -4.5)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, 0, -4)
+				},
+				{
+					time = 0.6,
+					sound = "wp_mac10_lever_release",
+					pos = Vector3()
+				}
+			}
+		},
+		x_m45 = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_m45_clip_grab_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 0, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_m45_clip_slide_in",
+					visible = true,
+					pos = Vector3(0, 0, -10)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, 0, -4.5)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, 0, -4)
+				},
+				{
+					time = 0.6,
+					sound = "wp_m45_lever_release",
+					pos = Vector3()
+				}
+			}
+		},
+		x_mp7 = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_mp7_clip_slide_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 0, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_mp7_clip_slide_in",
+					visible = true,
+					pos = Vector3(0, 0, -10)
+				},
+				{
+					time = 0.2,
+					pos = Vector3(0, 0, -7.5)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, 0, -7)
+				},
+				{
+					time = 0.6,
+					sound = "wp_mp7_lever_release",
+					pos = Vector3()
+				}
+			}
+		},
+		x_scorpion = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_scorpion_clip_slide_out"
+				},
+				{
+					time = 0.02,
+					pos = Vector3(0, 4, -1),
+					rot = Rotation(0, 30, 0)
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 10, -20),
+					rot = Rotation(0, 60, 0)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_scorpion_clip_slide_in",
+					visible = true,
+					pos = Vector3(0, 0, -20),
+					rot = Rotation()
+				},
+				{
+					time = 0.3,
+					pos = Vector3(0, 4, -1),
+					rot = Rotation(0, 30, 0)
+				},
+				{
+					time = 0.5,
+					sound = "wp_scorpion_lever_release",
+					pos = Vector3(),
+					rot = Rotation()
+				}
+			}
+		},
+		x_tec9 = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_tec9_clip_slide_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 0, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_tec9_clip_slide_in",
+					visible = true,
+					pos = Vector3(0, 0, -10)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, 0, -4.5)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, 0, -4)
+				},
+				{
+					time = 0.6,
+					sound = "wp_tec9_lever_release",
+					pos = Vector3()
+				}
+			}
+		},
+		x_uzi = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_uzi_clip_slide_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 0, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_uzi_clip_slide_in",
+					visible = true,
+					pos = Vector3(0, 0, -10)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, 0, -4.5)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, 0, -4)
+				},
+				{
+					time = 0.6,
+					sound = "wp_uzi_clip_lever_release",
+					pos = Vector3()
+				}
+			}
+		},
+		x_sterling = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_sterling_clip_remove"
+				},
+				{
+					time = 0.019,
+					pos = Vector3(-3, 4, 0),
+					rot = Rotation(0, 0, 0)
+				},
+				{
+					time = 0.02,
+					pos = Vector3(-3, 4, 0),
+					rot = Rotation(-30, 0, 0)
+				},
+				{
+					drop_mag = true,
+					time = 0.03,
+					visible = false,
+					pos = Vector3(-20, 0, 0),
+					rot = Rotation(-60, 0, 0)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_sterling_clip_insert",
+					visible = true,
+					pos = Vector3(-10, 0, 0),
+					rot = Rotation()
+				},
+				{
+					time = 0.1,
+					pos = Vector3(-5, 0, 0),
+					rot = Rotation(-30, 0, 0)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(-5, 0, 0),
+					rot = Rotation(-30, 0, 0)
+				},
+				{
+					time = 0.6,
+					sound = "wp_sterling_lever_pull",
+					pos = Vector3(),
+					rot = Rotation()
+				}
+			}
+		},
+		x_m1928 = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_m1928_mag_empty_out"
+				},
+				{
+					time = 0.01,
+					pos = Vector3(-4, 0, 0)
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(-8, 0, -10)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_m1928_mag_slide_in",
+					visible = true,
+					pos = Vector3(-8, 0, -10)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(-4, 0, -0.5)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(-4, 0, -0.1)
+				},
+				{
+					time = 0.6,
+					sound = "wp_m1928_lever_release",
+					pos = Vector3()
+				}
+			}
+		},
+		x_cobray = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_cobray_mag_slipping"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 0, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_cobray_mag_slap",
+					visible = true,
+					pos = Vector3(0, 0, -10)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, 0, -4.5)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, 0, -4)
+				},
+				{
+					time = 0.6,
+					sound = "wp_cobray_lever_release",
+					pos = Vector3()
+				}
+			}
+		},
+		x_polymer = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_polymer_mag_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, -7, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_polymer_mag_in",
+					visible = true,
+					pos = Vector3(0, -7, -15)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, -3.5, -11)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, -3.5, -10)
+				},
+				{
+					time = 0.6,
+					sound = "wp_polymer_button_press",
+					pos = Vector3()
+				}
+			}
+		},
+		x_baka = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_baka_mag_slide_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 0, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_baka_mag_slide_in",
+					visible = true,
+					pos = Vector3(0, 0, -10)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, 0, -4.5)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, 0, -4)
+				},
+				{
+					time = 0.6,
+					sound = "wp_baka_lever_release",
+					pos = Vector3()
+				}
+			}
+		},
+		x_hajk = {
+			start = {
+				{
+					time = 0,
+					sound = "hajk_push_mag_release"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 5, -20),
+					rot = Rotation(0, 30, 0)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "hajk_push_in_mag",
+					visible = true,
+					pos = Vector3(0, 0, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, 0, -4.5)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, 0, -4)
+				},
+				{
+					time = 0.6,
+					sound = "hajk_release_lever",
+					pos = Vector3()
+				}
+			}
+		},
+		x_schakal = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_schakal_mag_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 5, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_schakal_mag_in",
+					visible = true,
+					pos = Vector3(0, 2.5, -10)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, 0.9, -3.5)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, 0.9, -3.5)
+				},
+				{
+					time = 0.6,
+					sound = "wp_schakal_bolt_slap",
+					pos = Vector3()
+				}
+			}
+		},
+		x_coal = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_coal_mag_out_back"
+				},
+				{
+					time = 0.001,
+					pos = Vector3(0, 0, 0),
+					rot = Rotation(0, 5, 0)
+				},
+				{
+					time = 0.025,
+					pos = Vector3(0, 0, 0),
+					rot = Rotation(0, 6, 0)
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 0, -12),
+					rot = Rotation(0, 40, 0)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_coal_mag_in_back",
+					visible = true,
+					pos = Vector3(0, 0, -12),
+					rot = Rotation(0, 40, 0)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, 0, 0),
+					rot = Rotation(0, 6, 0)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, 0, 0),
+					rot = Rotation(0, 5, 0)
+				},
+				{
+					time = 0.6,
+					sound = "wp_coal_release_lever",
+					pos = Vector3(),
+					rot = Rotation()
+				}
+			}
+		},
+		x_erma = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_erma_mag_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 0, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_erma_mag_in",
+					visible = true,
+					pos = Vector3(0, 0, -10)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, 0, -3.5)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, 0, -3.5)
+				},
+				{
+					time = 0.6,
+					sound = "wp_erma_slide_release",
+					pos = Vector3()
+				}
+			}
+		},
 		x_basset = {
 			start = {
 				{
@@ -4553,6 +5816,109 @@ function TweakDataVR:init(tweak_data)
 				{
 					time = 0.5,
 					sound = "basset_lever_release",
+					pos = Vector3(),
+					rot = Rotation()
+				}
+			}
+		},
+		x_judge = {
+			reload_part_type = "lower_reciever",
+			custom_mag_unit = "units/pd2_dlc_vr/units/wpn_vr_m_slug/wpn_vr_m_slug_6",
+			start = {
+				{
+					time = 0,
+					sound = "wp_rbull_drum_open",
+					anims = {{
+						anim_group = "reload",
+						to = 1,
+						from = 0.5,
+						part = "lower_reciever"
+					}}
+				},
+				{
+					time = 0.02,
+					sound = "wp_rbull_shells_out"
+				},
+				{
+					time = 0.09,
+					visible = {
+						visible = false,
+						parts = {lower_reciever = {
+							"g_bullet_1",
+							"g_bullet_2",
+							"g_bullet_3",
+							"g_bullet_4",
+							"g_bullet_5"
+						}}
+					},
+					effect = {
+						part = "lower_reciever",
+						name = "effects/payday2/particles/weapons/shells/shell_judge_dump",
+						object = "align_house_align"
+					}
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_rbull_shells_in",
+					anims = {{
+						anim_group = "reload",
+						part = "lower_reciever",
+						from = 1.9
+					}},
+					visible = {
+						visible = true,
+						parts = {lower_reciever = {
+							"g_bullet_1",
+							"g_bullet_2",
+							"g_bullet_3",
+							"g_bullet_4",
+							"g_bullet_5"
+						}}
+					}
+				},
+				{
+					time = 0.5,
+					sound = "wp_rbull_drum_close"
+				}
+			}
+		},
+		x_rota = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_rota_slide_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 0, -20),
+					rot = Rotation(0, 30, 0)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_rota_slide_slide_in",
+					visible = true,
+					pos = Vector3(0, 0, -20),
+					rot = Rotation(0, 30, 0)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, 0, -4),
+					rot = Rotation(0, 10, 60)
+				},
+				{
+					time = 0.8,
+					pos = Vector3(0, 0, -3),
+					rot = Rotation(0, 10, 60)
+				},
+				{
+					time = 0.99,
+					sound = "wp_rota_rotate_mag",
 					pos = Vector3(),
 					rot = Rotation()
 				}
@@ -5846,6 +7212,50 @@ function TweakDataVR:init(tweak_data)
 				{
 					time = 0.5,
 					sound = "wp_long_new_arrow",
+					pos = Vector3()
+				}
+			}
+		},
+		shuno = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_minigun_belt_out"
+				},
+				{
+					time = 0.001,
+					pos = Vector3(4, 0, -1)
+				},
+				{
+					time = 0.03,
+					sound = "wp_minigun_box_out",
+					pos = Vector3(4, 0, -1)
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(20, 0, -10)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_minigun_box_in",
+					visible = true,
+					pos = Vector3(20, 0, -10)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(4, 0, -1)
+				},
+				{
+					time = 0.88,
+					pos = Vector3(4, 0, -1)
+				},
+				{
+					time = 0.9,
+					sound = "wp_minigun_belt_in",
 					pos = Vector3()
 				}
 			}

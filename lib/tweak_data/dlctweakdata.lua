@@ -67,6 +67,7 @@ function DLCTweakData:init(tweak_data)
 			pines = true,
 			born = true,
 			trk = true,
+			pmp = true,
 			wmp = true,
 			opera = true,
 			pd2_goty = 1,
@@ -75,6 +76,7 @@ function DLCTweakData:init(tweak_data)
 			character_pack_dragan = true,
 			spa = true,
 			kenaz = true,
+			osa = true,
 			dlc_arena = true,
 			dragon = true,
 			gage_pack = true,
@@ -6342,6 +6344,12 @@ function DLCTweakData:init(tweak_data)
 	}
 	self.fgl_bundle.content.loot_global_value = "fgl"
 	self.fgl_bundle.content.loot_drops = {}
+	self.osa_bundle = {
+		dlc = "has_osa",
+		content = {}
+	}
+	self.osa_bundle.content.loot_global_value = "osa"
+	self.osa_bundle.content.loot_drops = {}
 	self.rvd_bundle = {
 		dlc = "has_rvd",
 		content = {}
@@ -6406,6 +6414,12 @@ function DLCTweakData:init(tweak_data)
 	}
 	self.ami_bundle.content.loot_global_value = "normal"
 	self.ami_bundle.content.loot_drops = {}
+	self.dmg_bundle = {
+		dlc = "has_dmg",
+		content = {}
+	}
+	self.dmg_bundle.content.loot_global_value = "dmg"
+	self.dmg_bundle.content.loot_drops = {}
 	self.ach_ggez_1 = {
 		dlc = "has_achievement",
 		achievement_id = "ggez_1",
@@ -6417,6 +6431,825 @@ function DLCTweakData:init(tweak_data)
 		item_entry = "ggac_od_t2",
 		amount = 1
 	}}
+	self.pmp_bundle = {
+		dlc = "has_pmp",
+		content = {}
+	}
+	self.pmp_bundle.content.loot_global_value = "normal"
+	self.pmp_bundle.content.loot_drops = {
+		{
+			type_items = "textures",
+			item_entry = "pizzaface"
+		},
+		{
+			{
+				type_items = "materials",
+				item_entry = "solid_greyscale70"
+			},
+			{
+				type_items = "materials",
+				item_entry = "solid_greyscale50"
+			},
+			{
+				type_items = "materials",
+				item_entry = "solid_greyscale10"
+			}
+		},
+		{
+			{
+				type_items = "materials",
+				item_entry = "solid_green"
+			},
+			{
+				type_items = "materials",
+				item_entry = "solid_yellow"
+			},
+			{
+				type_items = "materials",
+				item_entry = "solid_orange"
+			}
+		},
+		{
+			{
+				type_items = "materials",
+				item_entry = "solid_purple"
+			},
+			{
+				type_items = "materials",
+				item_entry = "solid_blue"
+			},
+			{
+				type_items = "materials",
+				item_entry = "solid_paydayblue"
+			},
+			{
+				type_items = "materials",
+				item_entry = "solid_teal"
+			}
+		},
+		{
+			{
+				type_items = "materials",
+				item_entry = "solid_red"
+			},
+			{
+				type_items = "materials",
+				item_entry = "solid_pink"
+			},
+			{
+				type_items = "materials",
+				item_entry = "solid_magenta"
+			}
+		},
+		{
+			{
+				type_items = "materials",
+				item_entry = "solid_green_dark"
+			},
+			{
+				type_items = "materials",
+				item_entry = "solid_yellow_dark"
+			},
+			{
+				type_items = "materials",
+				item_entry = "solid_orange_dark"
+			}
+		},
+		{
+			{
+				type_items = "materials",
+				item_entry = "solid_purple_dark"
+			},
+			{
+				type_items = "materials",
+				item_entry = "solid_blue_dark"
+			},
+			{
+				type_items = "materials",
+				item_entry = "solid_paydayblue_dark"
+			},
+			{
+				type_items = "materials",
+				item_entry = "solid_teal_dark"
+			}
+		},
+		{
+			{
+				type_items = "materials",
+				item_entry = "solid_pink_dark"
+			},
+			{
+				type_items = "materials",
+				item_entry = "solid_magenta_dark"
+			},
+			{
+				type_items = "materials",
+				item_entry = "solid_red_dark"
+			}
+		},
+		{
+			{
+				type_items = "materials",
+				item_entry = "solid_green_desaturated"
+			},
+			{
+				type_items = "materials",
+				item_entry = "solid_yellow_desaturated"
+			},
+			{
+				type_items = "materials",
+				item_entry = "solid_orange_desaturated"
+			}
+		},
+		{
+			{
+				type_items = "materials",
+				item_entry = "solid_purple_desaturated"
+			},
+			{
+				type_items = "materials",
+				item_entry = "solid_blue_desaturated"
+			},
+			{
+				type_items = "materials",
+				item_entry = "solid_paydayblue_desaturated"
+			},
+			{
+				type_items = "materials",
+				item_entry = "solid_teal_desaturated"
+			}
+		},
+		{
+			{
+				type_items = "materials",
+				item_entry = "solid_pink_desaturated"
+			},
+			{
+				type_items = "materials",
+				item_entry = "solid_magenta_desaturated"
+			},
+			{
+				type_items = "materials",
+				item_entry = "solid_red_desaturated"
+			}
+		},
+		{
+			{
+				type_items = "colors",
+				item_entry = "red_gray"
+			},
+			{
+				type_items = "colors",
+				item_entry = "red_scary_green"
+			},
+			{
+				type_items = "colors",
+				item_entry = "red_dark_gray"
+			},
+			{
+				type_items = "colors",
+				item_entry = "red_orange"
+			}
+		},
+		{
+			{
+				type_items = "colors",
+				item_entry = "coral_red_white"
+			},
+			{
+				type_items = "colors",
+				item_entry = "coral_red_dark_gray"
+			},
+			{
+				type_items = "colors",
+				item_entry = "coral_red_black"
+			},
+			{
+				type_items = "colors",
+				item_entry = "coral_red_light_gray"
+			},
+			{
+				type_items = "colors",
+				item_entry = "coral_red_solid"
+			}
+		},
+		{
+			{
+				type_items = "colors",
+				item_entry = "dark_red_red"
+			},
+			{
+				type_items = "colors",
+				item_entry = "dark_red_bright_yellow"
+			},
+			{
+				type_items = "colors",
+				item_entry = "dark_red_black"
+			},
+			{
+				type_items = "colors",
+				item_entry = "dark_red_gray"
+			},
+			{
+				type_items = "colors",
+				item_entry = "blood_red_toxic_green"
+			},
+			{
+				type_items = "colors",
+				item_entry = "blood_red_cobalt_blue"
+			}
+		},
+		{
+			{
+				type_items = "colors",
+				item_entry = "pink_yellow"
+			},
+			{
+				type_items = "colors",
+				item_entry = "pink_cobalt_blue"
+			},
+			{
+				type_items = "colors",
+				item_entry = "pink_black"
+			},
+			{
+				type_items = "colors",
+				item_entry = "pink_white"
+			},
+			{
+				type_items = "colors",
+				item_entry = "pink_navy_blue"
+			},
+			{
+				type_items = "colors",
+				item_entry = "pink_gray"
+			}
+		},
+		{
+			{
+				type_items = "colors",
+				item_entry = "turquoise_black"
+			},
+			{
+				type_items = "colors",
+				item_entry = "turquoise_warm_yellow"
+			},
+			{
+				type_items = "colors",
+				item_entry = "turquoise_gray"
+			},
+			{
+				type_items = "colors",
+				item_entry = "turquoise_black"
+			},
+			{
+				type_items = "colors",
+				item_entry = "turquoise_white"
+			},
+			{
+				type_items = "colors",
+				item_entry = "turquoise_solid"
+			}
+		},
+		{
+			{
+				type_items = "colors",
+				item_entry = "light_blue_black"
+			},
+			{
+				type_items = "colors",
+				item_entry = "light_blue_white"
+			},
+			{
+				type_items = "colors",
+				item_entry = "light_blue_bright_yellow"
+			},
+			{
+				type_items = "colors",
+				item_entry = "light_blue_coral_red"
+			},
+			{
+				type_items = "colors",
+				item_entry = "light_blue_navy_blue"
+			},
+			{
+				type_items = "colors",
+				item_entry = "light_blue_orange"
+			}
+		},
+		{
+			{
+				type_items = "colors",
+				item_entry = "cobalt_blue_solid"
+			},
+			{
+				type_items = "colors",
+				item_entry = "cobalt_blue_warm_yellow"
+			},
+			{
+				type_items = "colors",
+				item_entry = "cobalt_blue_gray"
+			},
+			{
+				type_items = "colors",
+				item_entry = "cobalt_blue_orange"
+			},
+			{
+				type_items = "colors",
+				item_entry = "cobalt_blue_black"
+			}
+		},
+		{
+			{
+				type_items = "colors",
+				item_entry = "blue_white"
+			},
+			{
+				type_items = "colors",
+				item_entry = "blue_black"
+			},
+			{
+				type_items = "colors",
+				item_entry = "blue_navy_blue"
+			},
+			{
+				type_items = "colors",
+				item_entry = "blue_gray"
+			}
+		},
+		{
+			{
+				type_items = "colors",
+				item_entry = "white_yellow"
+			},
+			{
+				type_items = "colors",
+				item_entry = "white_orange"
+			},
+			{
+				type_items = "colors",
+				item_entry = "white_dark_red"
+			},
+			{
+				type_items = "colors",
+				item_entry = "white_cyan"
+			},
+			{
+				type_items = "colors",
+				item_entry = "white_scary_green"
+			}
+		},
+		{
+			{
+				type_items = "colors",
+				item_entry = "black_cyan"
+			},
+			{
+				type_items = "colors",
+				item_entry = "black_green"
+			},
+			{
+				type_items = "colors",
+				item_entry = "black_yellow"
+			},
+			{
+				type_items = "colors",
+				item_entry = "black_gray"
+			}
+		},
+		{
+			{
+				type_items = "colors",
+				item_entry = "dark_gray_white"
+			},
+			{
+				type_items = "colors",
+				item_entry = "dark_gray_black"
+			},
+			{
+				type_items = "colors",
+				item_entry = "dark_gray_coral_red"
+			},
+			{
+				type_items = "colors",
+				item_entry = "dark_gray_cobalt_blue"
+			},
+			{
+				type_items = "colors",
+				item_entry = "dark_gray_turquoise"
+			},
+			{
+				type_items = "colors",
+				item_entry = "dark_gray_green"
+			}
+		},
+		{
+			{
+				type_items = "colors",
+				item_entry = "dark_gray_yellow"
+			},
+			{
+				type_items = "colors",
+				item_entry = "dark_gray_magenta"
+			},
+			{
+				type_items = "colors",
+				item_entry = "dark_gray_dark_red"
+			},
+			{
+				type_items = "colors",
+				item_entry = "dark_gray_purple"
+			},
+			{
+				type_items = "colors",
+				item_entry = "dark_gray_bright_yellow"
+			}
+		},
+		{
+			{
+				type_items = "colors",
+				item_entry = "gray_white"
+			},
+			{
+				type_items = "colors",
+				item_entry = "gray_purple"
+			},
+			{
+				type_items = "colors",
+				item_entry = "gray_cobalt_blue"
+			},
+			{
+				type_items = "colors",
+				item_entry = "gray_turquoise"
+			},
+			{
+				type_items = "colors",
+				item_entry = "gray_green"
+			},
+			{
+				type_items = "colors",
+				item_entry = "gray_yellow"
+			}
+		},
+		{
+			{
+				type_items = "colors",
+				item_entry = "gray_dark_red"
+			},
+			{
+				type_items = "colors",
+				item_entry = "gray_magenta"
+			},
+			{
+				type_items = "colors",
+				item_entry = "gray_orange"
+			},
+			{
+				type_items = "colors",
+				item_entry = "gray_red"
+			},
+			{
+				type_items = "colors",
+				item_entry = "gray_bright_yellow"
+			}
+		},
+		{
+			{
+				type_items = "colors",
+				item_entry = "light_brown_black"
+			},
+			{
+				type_items = "colors",
+				item_entry = "light_brown_white"
+			},
+			{
+				type_items = "colors",
+				item_entry = "light_brown_gray"
+			}
+		},
+		{
+			{
+				type_items = "colors",
+				item_entry = "purple_black"
+			},
+			{
+				type_items = "colors",
+				item_entry = "purple_white"
+			},
+			{
+				type_items = "colors",
+				item_entry = "purple_cyan"
+			}
+		},
+		{
+			{
+				type_items = "colors",
+				item_entry = "leaf_green_black"
+			},
+			{
+				type_items = "colors",
+				item_entry = "leaf_green_dark_green"
+			},
+			{
+				type_items = "colors",
+				item_entry = "dark_green_leaf_green"
+			}
+		},
+		{
+			{
+				type_items = "colors",
+				item_entry = "magenta_black"
+			},
+			{
+				type_items = "colors",
+				item_entry = "magenta_white"
+			},
+			{
+				type_items = "colors",
+				item_entry = "magenta_yellow"
+			},
+			{
+				type_items = "colors",
+				item_entry = "magenta_warm_yellow"
+			},
+			{
+				type_items = "colors",
+				item_entry = "magenta_dark_gray"
+			}
+		},
+		{
+			{
+				type_items = "colors",
+				item_entry = "yellow_black"
+			},
+			{
+				type_items = "colors",
+				item_entry = "yellow_white"
+			},
+			{
+				type_items = "colors",
+				item_entry = "yellow_gray"
+			},
+			{
+				type_items = "colors",
+				item_entry = "yellow_dark_gray"
+			},
+			{
+				type_items = "colors",
+				item_entry = "yellow_red"
+			}
+		},
+		{
+			{
+				type_items = "colors",
+				item_entry = "orange_gray"
+			},
+			{
+				type_items = "colors",
+				item_entry = "orange_turquoise"
+			},
+			{
+				type_items = "colors",
+				item_entry = "bright_yellow_solid"
+			},
+			{
+				type_items = "colors",
+				item_entry = "bright_yellow_dark_red"
+			}
+		},
+		{
+			{
+				type_items = "colors",
+				item_entry = "warm_yellow_light_blue"
+			},
+			{
+				type_items = "colors",
+				item_entry = "warm_yellow_purple"
+			},
+			{
+				type_items = "colors",
+				item_entry = "warm_yellow_dark_red"
+			},
+			{
+				type_items = "colors",
+				item_entry = "warm_yellow_solid"
+			}
+		},
+		{
+			{
+				type_items = "textures",
+				item_entry = "hands_batman"
+			},
+			{
+				type_items = "textures",
+				item_entry = "hands_ok"
+			},
+			{
+				type_items = "textures",
+				item_entry = "hands_peace"
+			},
+			{
+				type_items = "textures",
+				item_entry = "hands_loser"
+			},
+			{
+				type_items = "textures",
+				item_entry = "hands_shutup"
+			},
+			{
+				type_items = "textures",
+				item_entry = "hands_pans"
+			}
+		},
+		{
+			{
+				type_items = "textures",
+				item_entry = "clowns_qc"
+			},
+			{
+				type_items = "textures",
+				item_entry = "clowns_ahe"
+			},
+			{
+				type_items = "textures",
+				item_entry = "clowns_hoc"
+			},
+			{
+				type_items = "textures",
+				item_entry = "clowns_in"
+			},
+			{
+				type_items = "textures",
+				item_entry = "clowns_it"
+			}
+		},
+		{
+			{
+				type_items = "textures",
+				item_entry = "barf"
+			},
+			{
+				type_items = "textures",
+				item_entry = "basketball"
+			},
+			{
+				type_items = "textures",
+				item_entry = "crashdummy"
+			},
+			{
+				type_items = "textures",
+				item_entry = "friedegg"
+			},
+			{
+				type_items = "textures",
+				item_entry = "phantom"
+			}
+		},
+		{
+			{
+				type_items = "textures",
+				item_entry = "facepaint_cupcake"
+			},
+			{
+				type_items = "textures",
+				item_entry = "facepaint_flowers"
+			},
+			{
+				type_items = "textures",
+				item_entry = "facepaint_football"
+			},
+			{
+				type_items = "textures",
+				item_entry = "facepaint_rainbow"
+			},
+			{
+				type_items = "textures",
+				item_entry = "facepaint_skull"
+			}
+		},
+		{
+			{
+				type_items = "textures",
+				item_entry = "heraldry_ord_fess"
+			},
+			{
+				type_items = "textures",
+				item_entry = "heraldry_ord_pale"
+			},
+			{
+				type_items = "textures",
+				item_entry = "heraldry_ord_pall"
+			},
+			{
+				type_items = "textures",
+				item_entry = "heraldry_ord_saltire"
+			}
+		},
+		{
+			{
+				type_items = "textures",
+				item_entry = "heraldry_ord_cross"
+			},
+			{
+				type_items = "textures",
+				item_entry = "heraldry_ord_chevron"
+			},
+			{
+				type_items = "textures",
+				item_entry = "heraldry_ord_bend"
+			}
+		},
+		{
+			{
+				type_items = "textures",
+				item_entry = "heraldry_div_tiercedpall"
+			},
+			{
+				type_items = "textures",
+				item_entry = "heraldry_div_quarterly"
+			},
+			{
+				type_items = "textures",
+				item_entry = "heraldry_div_persaltire"
+			},
+			{
+				type_items = "textures",
+				item_entry = "heraldry_div_perpale"
+			}
+		},
+		{
+			{
+				type_items = "textures",
+				item_entry = "heraldry_div_perfess"
+			},
+			{
+				type_items = "textures",
+				item_entry = "heraldry_div_perchevron"
+			},
+			{
+				type_items = "textures",
+				item_entry = "heraldry_div_perbend"
+			}
+		},
+		{
+			{
+				type_items = "textures",
+				item_entry = "heraldry_geo_paly"
+			},
+			{
+				type_items = "textures",
+				item_entry = "heraldry_geo_lozengy"
+			},
+			{
+				type_items = "textures",
+				item_entry = "heraldry_geo_gyronny"
+			},
+			{
+				type_items = "textures",
+				item_entry = "heraldry_geo_fusil"
+			}
+		},
+		{
+			{
+				type_items = "textures",
+				item_entry = "heraldry_geo_checky"
+			},
+			{
+				type_items = "textures",
+				item_entry = "heraldry_geo_bendy"
+			},
+			{
+				type_items = "textures",
+				item_entry = "heraldry_geo_barrypale"
+			},
+			{
+				type_items = "textures",
+				item_entry = "heraldry_geo_barry"
+			}
+		},
+		{
+			{
+				type_items = "textures",
+				item_entry = "warpaint_freedom"
+			},
+			{
+				type_items = "textures",
+				item_entry = "warpaint_half_hawk"
+			},
+			{
+				type_items = "textures",
+				item_entry = "warpaint_crow_beak"
+			},
+			{
+				type_items = "textures",
+				item_entry = "warpaint_cross_marking"
+			},
+			{
+				type_items = "textures",
+				item_entry = "warpaint_darkness_eyes"
+			}
+		}
+	}
 
 	self:init_generated()
 end

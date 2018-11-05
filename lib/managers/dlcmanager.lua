@@ -553,8 +553,16 @@ function GenericDLCManager:has_fgl()
 	return self:is_dlc_unlocked("fgl")
 end
 
+function GenericDLCManager:has_osa()
+	return self:is_dlc_unlocked("osa")
+end
+
 function GenericDLCManager:has_ami()
 	return self:is_dlc_unlocked("ami")
+end
+
+function GenericDLCManager:has_pmp()
+	return self:is_dlc_unlocked("pmp")
 end
 
 function GenericDLCManager:has_goty_all_dlc_bundle_2014()
@@ -1859,11 +1867,23 @@ function WINDLCManager:init()
 				app_id = "218620",
 				no_install = true
 			},
+			osa = {
+				app_id = "218620",
+				no_install = true
+			},
 			ami = {
 				app_id = "218620",
 				no_install = true
 			},
+			dmg = {
+				app_id = "218620",
+				no_install = true
+			},
 			ggac = {
+				app_id = "218620",
+				no_install = true
+			},
+			pmp = {
 				app_id = "218620",
 				no_install = true
 			}

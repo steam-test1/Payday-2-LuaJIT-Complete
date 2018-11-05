@@ -241,7 +241,6 @@ function MenuSetup:init_finalize()
 
 	managers.dyn_resource:post_init()
 	TestAPIHelper.on_event("exit_to_menu")
-	managers.achievment:post_init()
 end
 
 function MenuSetup:update_wait_for_savegame_info(t, dt)

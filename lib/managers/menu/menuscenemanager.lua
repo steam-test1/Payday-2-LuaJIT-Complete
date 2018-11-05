@@ -111,6 +111,136 @@ function MenuSceneManager:init()
 	self._global_poses.ray = {"husk_ray"}
 
 	table.insert(self._forced_secondaries, "ray")
+
+	self._global_poses.x_coal = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_baka = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_cobray = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_erma = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_hajk = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_m45 = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_m1928 = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_mac10 = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_mp7 = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_mp9 = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_olympic = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_p90 = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_polymer = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_schakal = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_scorpion = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_sterling = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_tec9 = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_uzi = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_2006m = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_breech = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_c96 = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_g18c = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_hs2000 = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_lemming = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_p226 = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_peacemaker = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_pl14 = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_ppk = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_rage = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_sparrow = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_judge = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+	self._global_poses.x_rota = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
+
 	self:_init_lobby_poses()
 
 	self._mask_units = {}

@@ -2079,6 +2079,1406 @@ function BlackMarketTweakData:_init_colors(tweak_data)
 		},
 		value = 3
 	}
+	self.colors.red_gray = {
+		colors = {
+			red,
+			gray
+		},
+		name_id = "bm_clr_red_grey",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.red_scary_green = {
+		colors = {
+			red,
+			scary_green
+		},
+		name_id = "bm_clr_red_scary_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.red_dark_gray = {
+		colors = {
+			red,
+			dark_gray
+		},
+		name_id = "bm_clr_red_dark_grey",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.red_orange = {
+		colors = {
+			red,
+			orange
+		},
+		name_id = "bm_clr_red_orange",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.orange_gray = {
+		colors = {
+			orange,
+			gray
+		},
+		name_id = "bm_clr_orange_gray",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.orange_turquoise = {
+		colors = {
+			orange,
+			turquoise
+		},
+		name_id = "bm_clr_orange_turquoise",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 8
+	}
+	self.colors.warm_yellow_light_blue = {
+		colors = {
+			warm_yellow,
+			light_blue
+		},
+		name_id = "bm_clr_warm_yellow_light_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.warm_yellow_purple = {
+		colors = {
+			warm_yellow,
+			purple
+		},
+		name_id = "bm_clr_warm_yellow_purple",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.warm_yellow_solid = {
+		colors = {
+			warm_yellow,
+			warm_yellow
+		},
+		name_id = "bm_clr_warm_yellow_solid",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.warm_yellow_dark_red = {
+		colors = {
+			warm_yellow,
+			dark_red
+		},
+		name_id = "bm_clr_warm_yellow_dark_red",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.turquoise_black = {
+		colors = {
+			turquoise,
+			black
+		},
+		name_id = "bm_clr_turquoise_black",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.turquoise_white = {
+		colors = {
+			turquoise,
+			white
+		},
+		name_id = "bm_clr_turquoise_white",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.turquoise_warm_yellow = {
+		colors = {
+			turquoise,
+			warm_yellow
+		},
+		name_id = "bm_clr_turquoise_warm_yellow",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.turquoise_solid = {
+		colors = {
+			turquoise,
+			turquoise
+		},
+		name_id = "bm_clr_turquoise_solid",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.turquoise_gray = {
+		colors = {
+			turquoise,
+			gray
+		},
+		name_id = "bm_clr_turquoise_gray",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.blue_white = {
+		colors = {
+			blue,
+			white
+		},
+		name_id = "bm_clr_blue_white",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.blue_black = {
+		colors = {
+			blue,
+			black
+		},
+		name_id = "bm_clr_blue_black",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.blue_navy_blue = {
+		colors = {
+			blue,
+			navy_blue
+		},
+		name_id = "bm_clr_blue_navy_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.blue_gray = {
+		colors = {
+			blue,
+			gray
+		},
+		name_id = "bm_clr_blue_gray",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.white_yellow = {
+		colors = {
+			white,
+			yellow
+		},
+		name_id = "bm_clr_white_yellow",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.white_orange = {
+		colors = {
+			white,
+			orange
+		},
+		name_id = "bm_clr_white_orange",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.white_dark_red = {
+		colors = {
+			white,
+			dark_red
+		},
+		name_id = "bm_clr_white_dark_red",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.white_cyan = {
+		colors = {
+			white,
+			cyan
+		},
+		name_id = "bm_clr_white_cyan",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.white_scary_green = {
+		colors = {
+			white,
+			scary_green
+		},
+		name_id = "bm_clr_white_scary_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.dark_gray_white = {
+		colors = {
+			dark_gray,
+			white
+		},
+		name_id = "bm_clr_dark_gray_white",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.dark_gray_black = {
+		colors = {
+			dark_gray,
+			black
+		},
+		name_id = "bm_clr_dark_gray_black",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.dark_gray_coral_red = {
+		colors = {
+			dark_gray,
+			coral_red
+		},
+		name_id = "bm_clr_dark_gray_coral_red",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.dark_gray_cobalt_blue = {
+		colors = {
+			dark_gray,
+			cobalt_blue
+		},
+		name_id = "bm_clr_dark_gray_cobalt_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.dark_gray_turquoise = {
+		colors = {
+			dark_gray,
+			turquoise
+		},
+		name_id = "bm_clr_dark_gray_turquoise",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.dark_gray_green = {
+		colors = {
+			dark_gray,
+			green
+		},
+		name_id = "bm_clr_dark_gray_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.dark_gray_yellow = {
+		colors = {
+			dark_gray,
+			yellow
+		},
+		name_id = "bm_clr_dark_gray_yellow",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.dark_gray_magenta = {
+		colors = {
+			dark_gray,
+			magenta
+		},
+		name_id = "bm_clr_dark_gray_magenta",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.dark_gray_dark_red = {
+		colors = {
+			dark_gray,
+			dark_red
+		},
+		name_id = "bm_clr_dark_gray_dark_red",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.dark_gray_purple = {
+		colors = {
+			dark_gray,
+			purple
+		},
+		name_id = "bm_clr_dark_gray_purple",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.dark_gray_bright_yellow = {
+		colors = {
+			dark_gray,
+			bright_yellow
+		},
+		name_id = "bm_clr_dark_gray_bright_yellow",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.coral_red_white = {
+		colors = {
+			coral_red,
+			white
+		},
+		name_id = "bm_clr_coral_red_white",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.coral_red_dark_gray = {
+		colors = {
+			coral_red,
+			dark_gray
+		},
+		name_id = "bm_clr_coral_red_dark_gray",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.coral_red_black = {
+		colors = {
+			coral_red,
+			black
+		},
+		name_id = "bm_clr_coral_red_black",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.coral_red_light_gray = {
+		colors = {
+			coral_red,
+			light_gray
+		},
+		name_id = "bm_clr_coral_red_light_gray",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.coral_red_solid = {
+		colors = {
+			coral_red,
+			coral_red
+		},
+		name_id = "bm_clr_coral_red_solid",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.dark_red_red = {
+		colors = {
+			dark_red,
+			red
+		},
+		name_id = "bm_clr_dark_red_red",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.dark_red_bright_yellow = {
+		colors = {
+			dark_red,
+			bright_yellow
+		},
+		name_id = "bm_clr_dark_red_bright_yellow",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.dark_red_black = {
+		colors = {
+			dark_red,
+			black
+		},
+		name_id = "bm_clr_dark_red_black",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.dark_red_gray = {
+		colors = {
+			dark_red,
+			gray
+		},
+		name_id = "bm_clr_dark_gray",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.blood_red_toxic_green = {
+		colors = {
+			blood_red,
+			toxic_green
+		},
+		name_id = "bm_clr_blood_red_toxic_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.blood_red_cobalt_blue = {
+		colors = {
+			blood_red,
+			cobalt_blue
+		},
+		name_id = "bm_clr_blood_red_cobalt_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.light_brown_black = {
+		colors = {
+			light_brown,
+			black
+		},
+		name_id = "bm_clr_light_brown_black",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.light_brown_white = {
+		colors = {
+			light_brown,
+			white
+		},
+		name_id = "bm_clr_light_brown_white",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.light_brown_gray = {
+		colors = {
+			light_brown,
+			gray
+		},
+		name_id = "bm_clr_light_brown_gray",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.bright_yellow_solid = {
+		colors = {
+			bright_yellow,
+			bright_yellow
+		},
+		name_id = "bm_clr_bright_yellow_solid",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.bright_yellow_dark_red = {
+		colors = {
+			bright_yellow,
+			dark_red
+		},
+		name_id = "bm_clr_bright_yellow_dark_red",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 3
+	}
+	self.colors.turquoise_black = {
+		colors = {
+			turquoise,
+			black
+		},
+		name_id = "bm_clr_turquoise_black",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.purple_black = {
+		colors = {
+			purple,
+			black
+		},
+		name_id = "bm_clr_purple_black",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.purple_white = {
+		colors = {
+			purple,
+			white
+		},
+		name_id = "bm_clr_purple_white",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.purple_cyan = {
+		colors = {
+			purple,
+			cyan
+		},
+		name_id = "bm_clr_purple_cyan",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.black_cyan = {
+		colors = {
+			black,
+			cyan
+		},
+		name_id = "bm_clr_black_cyan",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.black_green = {
+		colors = {
+			black,
+			green
+		},
+		name_id = "bm_clr_black_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.black_yellow = {
+		colors = {
+			black,
+			yellow
+		},
+		name_id = "bm_clr_black_yellow",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.black_gray = {
+		colors = {
+			black,
+			gray
+		},
+		name_id = "bm_clr_black_gray",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.yellow_black = {
+		colors = {
+			yellow,
+			black
+		},
+		name_id = "bm_clr_yellow_black",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.yellow_white = {
+		colors = {
+			yellow,
+			white
+		},
+		name_id = "bm_clr_yellow_white",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.yellow_gray = {
+		colors = {
+			yellow,
+			gray
+		},
+		name_id = "bm_clr_yellow_gray",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.yellow_dark_gray = {
+		colors = {
+			yellow,
+			dark_gray
+		},
+		name_id = "bm_clr_yellow_dark_gray",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.yellow_red = {
+		colors = {
+			yellow,
+			red
+		},
+		name_id = "bm_clr_yellow_red",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.leaf_green_black = {
+		colors = {
+			leaf_green,
+			black
+		},
+		name_id = "bm_clr_leaf_green_black",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.leaf_green_dark_green = {
+		colors = {
+			leaf_green,
+			dark_green
+		},
+		name_id = "bm_clr_leaf_green_dark_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.dark_green_leaf_green = {
+		colors = {
+			dark_green,
+			leaf_green
+		},
+		name_id = "bm_clr_dark_green_leaf_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 2
+	}
+	self.colors.cobalt_blue_solid = {
+		colors = {
+			cobalt_blue,
+			cobalt_blue
+		},
+		name_id = "bm_clr_cobalt_blue_solid",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.cobalt_blue_warm_yellow = {
+		colors = {
+			cobalt_blue,
+			warm_yellow
+		},
+		name_id = "bm_clr_cobalt_blue_warm_yellow",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.cobalt_blue_gray = {
+		colors = {
+			cobalt_blue,
+			gray
+		},
+		name_id = "bm_clr_cobalt_blue_gray",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.cobalt_blue_orange = {
+		colors = {
+			cobalt_blue,
+			orange
+		},
+		name_id = "bm_clr_cobalt_blue_orange",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.cobalt_blue_black = {
+		colors = {
+			cobalt_blue,
+			black
+		},
+		name_id = "bm_clr_cobalt_blue_black",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.magenta_black = {
+		colors = {
+			magenta,
+			black
+		},
+		name_id = "bm_clr_magenta_black",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.magenta_white = {
+		colors = {
+			magenta,
+			white
+		},
+		name_id = "bm_clr_magenta_white",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.magenta_yellow = {
+		colors = {
+			magenta,
+			yellow
+		},
+		name_id = "bm_clr_magenta_yellow",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.magenta_warm_yellow = {
+		colors = {
+			magenta,
+			warm_yellow
+		},
+		name_id = "bm_clr_magenta_warm_yellow",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.magenta_dark_gray = {
+		colors = {
+			magenta,
+			dark_gray
+		},
+		name_id = "bm_clr_magenta_dark_gray",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.gray_white = {
+		colors = {
+			gray,
+			white
+		},
+		name_id = "bm_clr_gray_white",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.gray_purple = {
+		colors = {
+			gray,
+			purple
+		},
+		name_id = "bm_clr_gray_purple",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.gray_cobalt_blue = {
+		colors = {
+			gray,
+			cobalt_blue
+		},
+		name_id = "bm_clr_gray_cobalt_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.gray_turquoise = {
+		colors = {
+			gray,
+			turquoise
+		},
+		name_id = "bm_clr_gray_turquoise",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.gray_green = {
+		colors = {
+			gray,
+			green
+		},
+		name_id = "bm_clr_gray_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.gray_yellow = {
+		colors = {
+			gray,
+			yellow
+		},
+		name_id = "bm_clr_gray_yellow",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.gray_magenta = {
+		colors = {
+			gray,
+			magenta
+		},
+		name_id = "bm_clr_gray_magenta",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.gray_dark_red = {
+		colors = {
+			gray,
+			dark_red
+		},
+		name_id = "bm_clr_gray_dark_red",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.gray_orange = {
+		colors = {
+			gray,
+			orange
+		},
+		name_id = "bm_clr_gray_orange",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.gray_red = {
+		colors = {
+			gray,
+			red
+		},
+		name_id = "bm_clr_gray_red",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.gray_bright_yellow = {
+		colors = {
+			gray,
+			bright_yellow
+		},
+		name_id = "bm_clr_gray_bright_yellow",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.light_blue_black = {
+		colors = {
+			light_blue,
+			black
+		},
+		name_id = "bm_clr_light_blue_black",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.light_blue_white = {
+		colors = {
+			light_blue,
+			white
+		},
+		name_id = "bm_clr_light_blue_white",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.light_blue_bright_yellow = {
+		colors = {
+			light_blue,
+			bright_yellow
+		},
+		name_id = "bm_clr_light_blue_bright_yellow",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.light_blue_coral_red = {
+		colors = {
+			light_blue,
+			coral_red
+		},
+		name_id = "bm_clr_light_blue_coral_red",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.light_blue_navy_blue = {
+		colors = {
+			light_blue,
+			navy_blue
+		},
+		name_id = "bm_clr_light_blue_navy_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.light_blue_orange = {
+		colors = {
+			light_blue,
+			orange
+		},
+		name_id = "bm_clr_light_blue_orange",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.pink_yellow = {
+		colors = {
+			pink,
+			yellow
+		},
+		name_id = "bm_clr_pink_yellow",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.pink_cobalt_blue = {
+		colors = {
+			pink,
+			cobalt_blue
+		},
+		name_id = "bm_clr_pink_cobalt_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.pink_black = {
+		colors = {
+			pink,
+			black
+		},
+		name_id = "bm_clr_pink_black",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.pink_white = {
+		colors = {
+			pink,
+			white
+		},
+		name_id = "bm_clr_pink_white",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.pink_navy_blue = {
+		colors = {
+			pink,
+			navy_blue
+		},
+		name_id = "bm_clr_pink_navy_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
+	self.colors.pink_gray = {
+		colors = {
+			pink,
+			gray
+		},
+		name_id = "bm_clr_pink_gray",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 4
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.colors) do

@@ -492,6 +492,11 @@ function AchievementsTweakData:init(tweak_data)
 			distance = 4000,
 			enemy = "sniper",
 			award = "cac_1"
+		},
+		cac_35 = {
+			player_state = "driving",
+			stat = "cac_35_stats",
+			enemy_tags_all = {"law"}
 		}
 	}
 	self.shotgun_single_shot_kills = {tango_1 = {

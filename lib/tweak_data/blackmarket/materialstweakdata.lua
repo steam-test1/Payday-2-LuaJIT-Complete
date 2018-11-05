@@ -1540,6 +1540,435 @@ function BlackMarketTweakData:_init_materials(tweak_data)
 		value = 0,
 		dlc = "grv"
 	}
+	self.materials.solid_greyscale70 = {
+		name_id = "bm_mtl_matcap_solid_greyscale70",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_greyscale70_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_greyscale50 = {
+		name_id = "bm_mtl_matcap_solid_grey50",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_greyscale50_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_greyscale10 = {
+		name_id = "bm_mtl_matcap_solid_greyscale10",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_greyscale10_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_green = {
+		name_id = "bm_mtl_matcap_solid_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_green_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_green_dark = {
+		name_id = "bm_mtl_matcap_solid_green_dark",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_green_dark_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_green_desaturated = {
+		name_id = "bm_mtl_matcap_solid_green_desaturated",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_green_desaturated_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_yellow = {
+		name_id = "bm_mtl_matcap_solid_yellow",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_yellow_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_yellow_dark = {
+		name_id = "bm_mtl_matcap_solid_yellow_dark",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_yellow_dark_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_yellow_desaturated = {
+		name_id = "bm_mtl_matcap_solid_yellow_desaturated",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_yellow_desaturated_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_orange = {
+		name_id = "bm_mtl_matcap_solid_orange",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_orange_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_orange_dark = {
+		name_id = "bm_mtl_matcap_solid_orange_dark",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_orange_dark_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_orange_desaturated = {
+		name_id = "bm_mtl_matcap_solid_orange_desaturated",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_orange_desaturated_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_red = {
+		name_id = "bm_mtl_matcap_solid_red",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_red_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_red_dark = {
+		name_id = "bm_mtl_matcap_solid_red_dark",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_red_dark_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_red_desaturated = {
+		name_id = "bm_mtl_matcap_solid_red_desaturated",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_red_desaturated_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_purple = {
+		name_id = "bm_mtl_matcap_solid_purple",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_purple_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_purple_dark = {
+		name_id = "bm_mtl_matcap_solid_purple_dark",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_purple_dark_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_purple_desaturated = {
+		name_id = "bm_mtl_matcap_solid_purple_desaturated",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_purple_desaturated_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_pink = {
+		name_id = "bm_mtl_matcap_solid_pink",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_pink_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_pink_dark = {
+		name_id = "bm_mtl_matcap_solid_pink_dark",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_pink_dark_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_pink_desaturated = {
+		name_id = "bm_mtl_matcap_solid_pink_desaturated",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_purple_desaturated_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_blue = {
+		name_id = "bm_mtl_matcap_solid_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_blue_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_blue_dark = {
+		name_id = "bm_mtl_matcap_solid_blue_dark",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_blue_dark_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_blue_desaturated = {
+		name_id = "bm_mtl_matcap_solid_blue_desaturated",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_blue_desaturated_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_paydayblue = {
+		name_id = "bm_mtl_matcap_solid_paydayblue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_paydayblue_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_paydayblue_dark = {
+		name_id = "bm_mtl_matcap_solid_paydayblue_dark",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_paydayblue_dark_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_paydayblue_desaturated = {
+		name_id = "bm_mtl_matcap_solid_paydayblue_desaturated",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_paydayblue_desaturated_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_teal = {
+		name_id = "bm_mtl_matcap_solid_teal",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_teal_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_teal_dark = {
+		name_id = "bm_mtl_matcap_solid_teal_dark",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_teal_dark_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_teal_desaturated = {
+		name_id = "bm_mtl_matcap_solid_teal_desaturated",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_teal_desaturated_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_magenta = {
+		name_id = "bm_mtl_matcap_solid_magenta",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_magenta_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_magenta_dark = {
+		name_id = "bm_mtl_matcap_solid_magenta_dark",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_magenta_dark_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
+	self.materials.solid_magenta_desaturated = {
+		name_id = "bm_mtl_matcap_solid_magenta_desaturated",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/materials/matcap_solid_magenta_desaturated_df",
+		value = 0,
+		material_amount = 0,
+		texture_bundle_folder = "pmp"
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.materials) do

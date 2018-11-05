@@ -115,10 +115,6 @@ function AchievmentManager:init()
 	self._mission_end_achievements = {}
 end
 
-function AchievmentManager:post_init()
-	self:init_cac_custom_achievements()
-end
-
 function AchievmentManager:save(data)
 	local save = {
 		forced = table.list_copy(self._forced),
@@ -180,6 +176,7 @@ end
 
 function AchievmentManager:init_finalize()
 	managers.savefile:add_load_sequence_done_callback_handler(callback(self, self, "_load_done"))
+	self:init_cac_custom_achievements()
 end
 
 function AchievmentManager:fetch_trophies()

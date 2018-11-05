@@ -20,6 +20,33 @@ function DLCTweakData:init_generated()
 		item_entry = "mmh",
 		amount = 1
 	}}
+	self.sdm_bundle = {
+		free = true,
+		content = {}
+	}
+	self.sdm_bundle.content.loot_global_value = "sdm"
+	self.sdm_bundle.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "sdm_01",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "sdm_02",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "sdm_03",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "sdm_04",
+			amount = 1
+		}
+	}
 	self.tam_bundle = {
 		free = true,
 		content = {}

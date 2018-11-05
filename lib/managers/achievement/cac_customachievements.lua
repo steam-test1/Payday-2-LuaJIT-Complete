@@ -119,7 +119,10 @@ local function init_cac_20()
 
 	local function attempt_award()
 		for _, mask_id in ipairs(masks) do
-			if not managers.blackmarket:has_item("halloween", "masks", mask_id) then
+			local has_in_inventory = managers.blackmarket:has_item("halloween", "masks", mask_id)
+			local has_crafted = managers.blackmarket:get_crafted_item_amount("masks", mask_id) > 0
+
+			if not has_in_inventory and not has_crafted then
 				return
 			end
 		end
@@ -136,7 +139,7 @@ local function init_cac_20()
 	end
 
 	managers.blackmarket:add_event_listener(listener_key, "added_to_inventory", on_item_added_to_inventory)
-	attempt_award()
+	managers.savefile:add_load_sequence_done_callback_handler(attempt_award)
 end
 
 local function init_cac_28()

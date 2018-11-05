@@ -2375,6 +2375,540 @@ function BlackMarketTweakData:_init_textures(tweak_data)
 		value = 0,
 		dlc = "grv"
 	}
+	self.textures.hands_batman = {
+		name_id = "bm_txt_hands_batman",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_hands_batman_df",
+		value = 0
+	}
+	self.textures.hands_ok = {
+		name_id = "bm_txt_hands_ok",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_hands_ok_df",
+		value = 0
+	}
+	self.textures.hands_peace = {
+		name_id = "bm_txt_hands_peace",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_hands_peace_df",
+		value = 0
+	}
+	self.textures.hands_loser = {
+		name_id = "bm_txt_hands_loser",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_hands_loser_df",
+		value = 0
+	}
+	self.textures.hands_shutup = {
+		name_id = "bm_txt_hands_shutup",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_hands_shutup_df",
+		value = 0
+	}
+	self.textures.hands_pans = {
+		name_id = "bm_txt_hands_pans",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_hands_pans_df",
+		value = 0
+	}
+	self.textures.clowns_qc = {
+		name_id = "bm_txt_clowns_qc",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_clowns_qc_df",
+		value = 0
+	}
+	self.textures.clowns_ahe = {
+		name_id = "bm_txt_clowns_ahe",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_clowns_ahe_df",
+		value = 0
+	}
+	self.textures.clowns_hoc = {
+		name_id = "bm_txt_clowns_hoc",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_clowns_hoc_df",
+		value = 0
+	}
+	self.textures.clowns_in = {
+		name_id = "bm_txt_clowns_in",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_clowns_in_df",
+		value = 0
+	}
+	self.textures.clowns_it = {
+		name_id = "bm_txt_clowns_it",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_clowns_it_df",
+		value = 0
+	}
+	self.textures.barf = {
+		name_id = "bm_txt_barf",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_barf_df",
+		value = 0
+	}
+	self.textures.basketball = {
+		name_id = "bm_txt_basketball",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_basketball_df",
+		value = 0
+	}
+	self.textures.crashdummy = {
+		name_id = "bm_txt_crashdummy",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_crashdummy_df",
+		value = 0
+	}
+	self.textures.friedegg = {
+		name_id = "bm_txt_friedegg",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_friedegg_df",
+		value = 0
+	}
+	self.textures.phantom = {
+		name_id = "bm_txt_phantom",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_phantom_df",
+		value = 0
+	}
+	self.textures.facepaint_cupcake = {
+		name_id = "bm_txt_facepaint_cupcake",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_facepaint_cupcake_df",
+		value = 0
+	}
+	self.textures.facepaint_flowers = {
+		name_id = "bm_txt_facepaint_flowers",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_facepaint_flowers_df",
+		value = 0
+	}
+	self.textures.facepaint_football = {
+		name_id = "bm_txt_facepaint_football",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_facepaint_football_df",
+		value = 0
+	}
+	self.textures.facepaint_rainbow = {
+		name_id = "bm_txt_facepaint_rainbow",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_facepaint_rainbow_df",
+		value = 0
+	}
+	self.textures.facepaint_skull = {
+		name_id = "bm_txt_facepaint_skull",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_facepaint_skull_df",
+		value = 0
+	}
+	self.textures.heraldry_ord_fess = {
+		name_id = "bm_txt_heraldry_ord_fess",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_heraldry_ord_fess_df",
+		value = 0
+	}
+	self.textures.heraldry_ord_pale = {
+		name_id = "bm_txt_heraldry_ord_pale",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_heraldry_ord_pale_df",
+		value = 0
+	}
+	self.textures.heraldry_ord_pall = {
+		name_id = "bm_txt_heraldry_ord_pall",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_heraldry_ord_pall_df",
+		value = 0
+	}
+	self.textures.heraldry_ord_saltire = {
+		name_id = "bm_txt_heraldry_ord_saltire",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_heraldry_ord_saltire_df",
+		value = 0
+	}
+	self.textures.heraldry_ord_cross = {
+		name_id = "bm_txt_heraldry_ord_cross",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_heraldry_ord_cross_df",
+		value = 0
+	}
+	self.textures.heraldry_ord_chevron = {
+		name_id = "bm_txt_heraldry_ord_chevron",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_heraldry_ord_chevron_df",
+		value = 0
+	}
+	self.textures.heraldry_ord_bend = {
+		name_id = "bm_txt_heraldry_ord_bend",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_heraldry_ord_bend_df",
+		value = 0
+	}
+	self.textures.heraldry_div_tiercedpall = {
+		name_id = "bm_txt_heraldry_div_tiercedpall",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_heraldry_div_tiercedpall_df",
+		value = 0
+	}
+	self.textures.heraldry_div_quarterly = {
+		name_id = "bm_txt_heraldry_div_quarterly",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_heraldry_div_quarterly_df",
+		value = 0
+	}
+	self.textures.heraldry_div_persaltire = {
+		name_id = "bm_txt_heraldry_div_persaltire",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_heraldry_div_persaltire_df",
+		value = 0
+	}
+	self.textures.heraldry_div_perpale = {
+		name_id = "bm_txt_heraldry_div_perpale",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_heraldry_div_perpale_df",
+		value = 0
+	}
+	self.textures.heraldry_div_perfess = {
+		name_id = "bm_txt_heraldry_div_perfess",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_heraldry_div_perfess_df",
+		value = 0
+	}
+	self.textures.heraldry_div_perchevron = {
+		name_id = "bm_txt_heraldry_div_perchevron",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_heraldry_div_perchevron_df",
+		value = 0
+	}
+	self.textures.heraldry_div_perbend = {
+		name_id = "bm_txt_heraldry_div_perbend",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_heraldry_div_perbend_df",
+		value = 0
+	}
+	self.textures.heraldry_geo_paly = {
+		name_id = "bm_txt_heraldry_geo_paly",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_heraldry_geo_paly_df",
+		value = 0
+	}
+	self.textures.heraldry_geo_lozengy = {
+		name_id = "bm_txt_heraldry_geo_lozengy",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_heraldry_geo_lozengy_df",
+		value = 0
+	}
+	self.textures.heraldry_geo_gyronny = {
+		name_id = "bm_txt_heraldry_geo_gyronny",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_heraldry_geo_gyronny_df",
+		value = 0
+	}
+	self.textures.heraldry_geo_fusil = {
+		name_id = "bm_txt_heraldry_geo_fusil",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_heraldry_geo_fusil_df",
+		value = 0
+	}
+	self.textures.heraldry_geo_checky = {
+		name_id = "bm_txt_heraldry_geo_checky",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_heraldry_geo_checky_df",
+		value = 0
+	}
+	self.textures.heraldry_geo_bendy = {
+		name_id = "bm_txt_heraldry_geo_bendy",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_heraldry_geo_bendy_df",
+		value = 0
+	}
+	self.textures.heraldry_geo_barrypale = {
+		name_id = "bm_txt_heraldry_geo_barrypale",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_heraldry_geo_barrypale_df",
+		value = 0
+	}
+	self.textures.heraldry_geo_barry = {
+		name_id = "bm_txt_heraldry_geo_barry",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_heraldry_geo_barry_df",
+		value = 0
+	}
+	self.textures.warpaint_freedom = {
+		name_id = "bm_txt_warpaint_freedom",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_warpaint_freedom_df",
+		value = 0
+	}
+	self.textures.warpaint_half_hawk = {
+		name_id = "bm_txt_warpaint_half_hawk",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_warpaint_half_hawk_df",
+		value = 0
+	}
+	self.textures.warpaint_crow_beak = {
+		name_id = "bm_txt_warpaint_crow_beak",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_warpaint_crow_beak_df",
+		value = 0
+	}
+	self.textures.warpaint_cross_marking = {
+		name_id = "bm_txt_pattern_warpaint_cross_marking",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_warpaint_cross_marking_df",
+		value = 0
+	}
+	self.textures.warpaint_darkness_eyes = {
+		name_id = "bm_txt_pattern_warpaint_darkness_eyes",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_warpaint_darkness_eyes_df",
+		value = 0
+	}
+	self.textures.pizzaface = {
+		name_id = "bm_txt_pattern_pizzaface",
+		pcs = {},
+		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_pizzaface_df",
+		value = 0
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.textures) do

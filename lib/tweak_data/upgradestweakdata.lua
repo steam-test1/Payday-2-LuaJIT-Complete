@@ -907,10 +907,8 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.ecm_jammer.can_retrigger = {true}
 	self.values.player.panic_suppression = {true}
 	self.values.akimbo.extra_ammo_multiplier = {
-		1.25,
 		1.5,
-		2,
-		2.5
+		2
 	}
 	self.values.akimbo.damage_multiplier = {
 		1.5,
@@ -3272,7 +3270,9 @@ function UpgradesTweakData:init(tweak_data)
 			upgrades = {
 				"colt_1911",
 				"mac10",
-				"hajk"
+				"hajk",
+				"x_hajk",
+				"x_mac10"
 			}
 		},
 		{
@@ -3294,7 +3294,8 @@ function UpgradesTweakData:init(tweak_data)
 			name_id = "weapons",
 			upgrades = {
 				"new_raging_bull",
-				"b92fs"
+				"b92fs",
+				"x_rage"
 			}
 		},
 		[7] = {
@@ -3325,7 +3326,8 @@ function UpgradesTweakData:init(tweak_data)
 			upgrades = {
 				"body_armor3",
 				"cobray",
-				"boxcutter"
+				"boxcutter",
+				"x_cobray"
 			}
 		},
 		[13] = {
@@ -3344,7 +3346,10 @@ function UpgradesTweakData:init(tweak_data)
 				"m1928",
 				"sparrow",
 				"gator",
-				"pl14"
+				"pl14",
+				"x_m1928",
+				"x_sparrow",
+				"x_pl14"
 			}
 		},
 		[15] = {
@@ -3387,7 +3392,8 @@ function UpgradesTweakData:init(tweak_data)
 				"scorpion",
 				"oldbaton",
 				"hockey",
-				"meter"
+				"meter",
+				"x_scorpion"
 			}
 		},
 		[19] = {
@@ -3397,7 +3403,10 @@ function UpgradesTweakData:init(tweak_data)
 				"mp9",
 				"baka",
 				"pugio",
-				"ballistic"
+				"ballistic",
+				"x_baka",
+				"x_olympic",
+				"x_mp9"
 			}
 		},
 		[20] = {
@@ -3406,7 +3415,8 @@ function UpgradesTweakData:init(tweak_data)
 				"rep_upgrade2",
 				"schakal",
 				"agave",
-				"slap"
+				"slap",
+				"x_schakal"
 			}
 		},
 		[21] = {
@@ -3437,6 +3447,8 @@ function UpgradesTweakData:init(tweak_data)
 				"par",
 				"m37",
 				"rota",
+				"x_rota",
+				"x_c96",
 				"cs",
 				"brick",
 				"ostry"
@@ -3463,6 +3475,8 @@ function UpgradesTweakData:init(tweak_data)
 				"breech",
 				"ching",
 				"erma",
+				"x_breech",
+				"x_erma",
 				"sap"
 			}
 		},
@@ -3497,7 +3511,8 @@ function UpgradesTweakData:init(tweak_data)
 				"hs2000",
 				"vhs",
 				"bowie",
-				"micstand"
+				"micstand",
+				"x_hs2000"
 			}
 		},
 		[29] = {
@@ -3506,12 +3521,16 @@ function UpgradesTweakData:init(tweak_data)
 				"akmsu",
 				"glock_18c",
 				"asval",
-				"long"
+				"long",
+				"x_g18c"
 			}
 		},
 		[30] = {
 			name_id = "lvl_30",
-			upgrades = {"rep_upgrade3"}
+			upgrades = {
+				"rep_upgrade3",
+				"shuno"
+			}
 		},
 		[31] = {
 			name_id = "body_armor5",
@@ -3528,7 +3547,8 @@ function UpgradesTweakData:init(tweak_data)
 				"x46",
 				"tec9",
 				"tiger",
-				"model70"
+				"model70",
+				"x_tec9"
 			}
 		},
 		[33] = {
@@ -3550,7 +3570,8 @@ function UpgradesTweakData:init(tweak_data)
 				"taser",
 				"desertfox",
 				"wpn_prj_target",
-				"tti"
+				"tti",
+				"x_2006m"
 			}
 		},
 		[35] = {
@@ -3559,7 +3580,8 @@ function UpgradesTweakData:init(tweak_data)
 				"r93",
 				"judge",
 				"mining_pick",
-				"wing"
+				"wing",
+				"x_judge"
 			}
 		},
 		[36] = {
@@ -3567,7 +3589,8 @@ function UpgradesTweakData:init(tweak_data)
 			upgrades = {
 				"p90",
 				"deagle",
-				"winchester1874"
+				"winchester1874",
+				"x_p90"
 			}
 		},
 		[37] = {
@@ -3593,7 +3616,8 @@ function UpgradesTweakData:init(tweak_data)
 				"m16",
 				"huntsman",
 				"polymer",
-				"china"
+				"china",
+				"x_polymer"
 			}
 		},
 		[40] = {
@@ -3616,7 +3640,8 @@ function UpgradesTweakData:init(tweak_data)
 			upgrades = {
 				"fal",
 				"tomahawk",
-				"coal"
+				"coal",
+				"x_coal"
 			}
 		},
 		[43] = {
@@ -3672,7 +3697,8 @@ function UpgradesTweakData:init(tweak_data)
 			name_id = "weapons",
 			upgrades = {
 				"machete",
-				"sterling"
+				"sterling",
+				"x_sterling"
 			}
 		},
 		[52] = {
@@ -3692,7 +3718,10 @@ function UpgradesTweakData:init(tweak_data)
 		},
 		[55] = {
 			name_id = "weapons",
-			upgrades = {"uzi"}
+			upgrades = {
+				"uzi",
+				"x_uzi"
+			}
 		},
 		[60] = {
 			name_id = "lvl_60",
@@ -3993,6 +4022,39 @@ function UpgradesTweakData:init(tweak_data)
 	self:_x_basset_weapon_definitions()
 	self:_corgi_weapon_definitions()
 	self:_slap_weapon_definitions()
+	self:_x_coal_weapon_definitions()
+	self:_x_baka_weapon_definitions()
+	self:_x_cobray_weapon_definitions()
+	self:_x_erma_weapon_definitions()
+	self:_x_hajk_weapon_definitions()
+	self:_x_m45_weapon_definitions()
+	self:_x_m1928_weapon_definitions()
+	self:_x_mac10_weapon_definitions()
+	self:_x_mp7_weapon_definitions()
+	self:_x_mp9_weapon_definitions()
+	self:_x_olympic_weapon_definitions()
+	self:_x_p90_weapon_definitions()
+	self:_x_polymer_weapon_definitions()
+	self:_x_schakal_weapon_definitions()
+	self:_x_scorpion_weapon_definitions()
+	self:_x_sterling_weapon_definitions()
+	self:_x_tec9_weapon_definitions()
+	self:_x_uzi_weapon_definitions()
+	self:_x_2006m_weapon_definitions()
+	self:_x_breech_weapon_definitions()
+	self:_x_c96_weapon_definitions()
+	self:_x_g18c_weapon_definitions()
+	self:_x_hs2000_weapon_definitions()
+	self:_x_lemming_weapon_definitions()
+	self:_x_p226_weapon_definitions()
+	self:_x_peacemaker_weapon_definitions()
+	self:_x_pl14_weapon_definitions()
+	self:_x_ppk_weapon_definitions()
+	self:_x_rage_weapon_definitions()
+	self:_x_sparrow_weapon_definitions()
+	self:_x_judge_weapon_definitions()
+	self:_x_rota_weapon_definitions()
+	self:_shuno_weapon_definitions()
 	self:_melee_weapon_definitions()
 	self:_grenades_definitions()
 	self:_carry_definitions()
@@ -12760,16 +12822,6 @@ function UpgradesTweakData:_akimbo_definitions()
 			category = "akimbo"
 		}
 	}
-	self.definitions.akimbo_extra_ammo_multiplier_3 = {
-		incremental = true,
-		name_id = "menu_akimbo_extra_ammo_multiplier",
-		category = "feature",
-		upgrade = {
-			value = 3,
-			upgrade = "extra_ammo_multiplier",
-			category = "akimbo"
-		}
-	}
 	self.definitions.akimbo_recoil_multiplier_1 = {
 		name_id = "menu_akimbo_recoil_multiplier",
 		category = "feature",
@@ -13499,6 +13551,271 @@ function UpgradesTweakData:_slap_weapon_definitions()
 	self.definitions.slap = {
 		factory_id = "wpn_fps_gre_slap",
 		weapon_id = "slap",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_coal_weapon_definitions()
+	self.definitions.x_coal = {
+		factory_id = "wpn_fps_smg_x_coal",
+		weapon_id = "x_coal",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_baka_weapon_definitions()
+	self.definitions.x_baka = {
+		factory_id = "wpn_fps_smg_x_baka",
+		weapon_id = "x_baka",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_cobray_weapon_definitions()
+	self.definitions.x_cobray = {
+		factory_id = "wpn_fps_smg_x_cobray",
+		weapon_id = "x_cobray",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_erma_weapon_definitions()
+	self.definitions.x_erma = {
+		factory_id = "wpn_fps_smg_x_erma",
+		weapon_id = "x_erma",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_hajk_weapon_definitions()
+	self.definitions.x_hajk = {
+		factory_id = "wpn_fps_smg_x_hajk",
+		weapon_id = "x_hajk",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_m45_weapon_definitions()
+	self.definitions.x_m45 = {
+		factory_id = "wpn_fps_smg_x_m45",
+		weapon_id = "x_m45",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_m1928_weapon_definitions()
+	self.definitions.x_m1928 = {
+		factory_id = "wpn_fps_smg_x_m1928",
+		weapon_id = "x_m1928",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_mac10_weapon_definitions()
+	self.definitions.x_mac10 = {
+		factory_id = "wpn_fps_smg_x_mac10",
+		weapon_id = "x_mac10",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_mp7_weapon_definitions()
+	self.definitions.x_mp7 = {
+		factory_id = "wpn_fps_smg_x_mp7",
+		weapon_id = "x_mp7",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_mp9_weapon_definitions()
+	self.definitions.x_mp9 = {
+		factory_id = "wpn_fps_smg_x_mp9",
+		weapon_id = "x_mp9",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_olympic_weapon_definitions()
+	self.definitions.x_olympic = {
+		factory_id = "wpn_fps_smg_x_olympic",
+		weapon_id = "x_olympic",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_p90_weapon_definitions()
+	self.definitions.x_p90 = {
+		factory_id = "wpn_fps_smg_x_p90",
+		weapon_id = "x_p90",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_polymer_weapon_definitions()
+	self.definitions.x_polymer = {
+		factory_id = "wpn_fps_smg_x_polymer",
+		weapon_id = "x_polymer",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_schakal_weapon_definitions()
+	self.definitions.x_schakal = {
+		factory_id = "wpn_fps_smg_x_schakal",
+		weapon_id = "x_schakal",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_scorpion_weapon_definitions()
+	self.definitions.x_scorpion = {
+		factory_id = "wpn_fps_smg_x_scorpion",
+		weapon_id = "x_scorpion",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_sterling_weapon_definitions()
+	self.definitions.x_sterling = {
+		factory_id = "wpn_fps_smg_x_sterling",
+		weapon_id = "x_sterling",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_tec9_weapon_definitions()
+	self.definitions.x_tec9 = {
+		factory_id = "wpn_fps_smg_x_tec9",
+		weapon_id = "x_tec9",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_uzi_weapon_definitions()
+	self.definitions.x_uzi = {
+		factory_id = "wpn_fps_smg_x_uzi",
+		weapon_id = "x_uzi",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_2006m_weapon_definitions()
+	self.definitions.x_2006m = {
+		factory_id = "wpn_fps_pis_x_2006m",
+		weapon_id = "x_2006m",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_breech_weapon_definitions()
+	self.definitions.x_breech = {
+		factory_id = "wpn_fps_pis_x_breech",
+		weapon_id = "x_breech",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_c96_weapon_definitions()
+	self.definitions.x_c96 = {
+		factory_id = "wpn_fps_pis_x_c96",
+		weapon_id = "x_c96",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_g18c_weapon_definitions()
+	self.definitions.x_g18c = {
+		factory_id = "wpn_fps_pis_x_g18c",
+		weapon_id = "x_g18c",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_hs2000_weapon_definitions()
+	self.definitions.x_hs2000 = {
+		factory_id = "wpn_fps_pis_x_hs2000",
+		weapon_id = "x_hs2000",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_lemming_weapon_definitions()
+	self.definitions.x_lemming = {
+		factory_id = "wpn_fps_pis_x_lemming",
+		weapon_id = "x_lemming",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_p226_weapon_definitions()
+	self.definitions.x_p226 = {
+		factory_id = "wpn_fps_pis_x_p226",
+		weapon_id = "x_p226",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_peacemaker_weapon_definitions()
+	self.definitions.x_peacemaker = {
+		factory_id = "wpn_fps_pis_x_peacemaker",
+		weapon_id = "x_peacemaker",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_pl14_weapon_definitions()
+	self.definitions.x_pl14 = {
+		factory_id = "wpn_fps_pis_x_pl14",
+		weapon_id = "x_pl14",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_ppk_weapon_definitions()
+	self.definitions.x_ppk = {
+		factory_id = "wpn_fps_pis_x_ppk",
+		weapon_id = "x_ppk",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_rage_weapon_definitions()
+	self.definitions.x_rage = {
+		factory_id = "wpn_fps_pis_x_rage",
+		weapon_id = "x_rage",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_sparrow_weapon_definitions()
+	self.definitions.x_sparrow = {
+		factory_id = "wpn_fps_pis_x_sparrow",
+		weapon_id = "x_sparrow",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_judge_weapon_definitions()
+	self.definitions.x_judge = {
+		factory_id = "wpn_fps_pis_x_judge",
+		weapon_id = "x_judge",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_rota_weapon_definitions()
+	self.definitions.x_rota = {
+		factory_id = "wpn_fps_sho_x_rota",
+		weapon_id = "x_rota",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_shuno_weapon_definitions()
+	self.definitions.shuno = {
+		dlc = "dmg",
+		factory_id = "wpn_fps_lmg_shuno",
+		weapon_id = "shuno",
 		category = "weapon"
 	}
 end

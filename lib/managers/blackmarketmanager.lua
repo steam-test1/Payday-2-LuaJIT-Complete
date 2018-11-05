@@ -7337,6 +7337,7 @@ function BlackMarketManager:_cleanup_blackmarket()
 		end
 	end
 
+	local missing_from_default = {wpn_fps_smg_olympic = {"wpn_fps_amcar_bolt_standard"}}
 	local factory = tweak_data.weapon.factory
 
 	for _, category in ipairs({
@@ -7356,6 +7357,16 @@ function BlackMarketManager:_cleanup_blackmarket()
 			local cosmetics = item.cosmetics
 			local index_table = {}
 			local default_blueprint = managers.weapon_factory:get_default_blueprint_by_factory_id(factory_id)
+
+			if missing_from_default[factory_id] then
+				for _, part in ipairs(missing_from_default[factory_id]) do
+					if not table.contains(blueprint, part) then
+						tag_print("BlackMarketManager:_cleanup_blackmarket()", "Weapon is missing a default part from it's blueprint", weapon_id, part)
+						table.insert(blueprint, part)
+					end
+				end
+			end
+
 			local weapon_invalid = not tweak_data.weapon[weapon_id] or not tweak_data.weapon.factory[factory_id] or managers.weapon_factory:get_factory_id_by_weapon_id(weapon_id) ~= factory_id or managers.weapon_factory:get_weapon_id_by_factory_id(factory_id) ~= weapon_id or not chk_global_value_func(tweak_data.weapon[weapon_id].global_value)
 
 			if weapon_invalid then

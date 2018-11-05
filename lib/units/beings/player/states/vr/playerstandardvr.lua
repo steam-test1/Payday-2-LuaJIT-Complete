@@ -1200,10 +1200,7 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 			self._ext_camera:play_shaker("fire_weapon_kick", 1 * shake_multiplier, 1, 0.15)
 			weap_base:tweak_data_anim_stop("unequip")
 			weap_base:tweak_data_anim_stop("equip")
-
-			if not self._state_data.in_steelsight or not weap_base:tweak_data_anim_play("fire_steelsight", weap_base:fire_rate_multiplier()) then
-				weap_base:tweak_data_anim_play("fire", weap_base:fire_rate_multiplier())
-			end
+			weap_base:tweak_data_anim_play("fire", weap_base:fire_rate_multiplier())
 
 			if fire_mode == "single" and weap_base:get_name_id() ~= "saw" then
 				if not self._state_data.in_steelsight then

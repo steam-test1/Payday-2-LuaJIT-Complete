@@ -1,4 +1,5 @@
 core:import("CoreSequenceManager")
+core:import("CoreCode")
 
 CoreUnitDamage = CoreUnitDamage or class()
 CoreUnitDamage.ALL_TRIGGERS = "*"
@@ -1145,6 +1146,11 @@ function CoreUnitDamage:run_sequence_simple3(name, endurance_type, source_unit, 
 end
 
 function CoreUnitDamage:run_sequence(name, endurance_type, source_unit, dest_body, normal, position, direction, damage, velocity, params)
+	if name == "explode" then
+		print("[Debug] CoreUnitDamage:run_sequence: explode")
+		CoreCode.tag_print("Debug", Application:stack())
+	end
+
 	self._unit_element:run_sequence(name, endurance_type, source_unit, self._unit, dest_body, normal, position, direction, damage, velocity, params)
 end
 

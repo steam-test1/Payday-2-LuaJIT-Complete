@@ -655,7 +655,7 @@ function RaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul
 		end
 
 		if not tweak_data.achievement.tango_4.difficulty or table.contains(tweak_data.achievement.tango_4.difficulty, Global.game_settings.difficulty) then
-			if self._has_gadget and table.contains(self._has_gadget, "wpn_fps_upg_o_45rds") and hit_result and hit_result.type == "death" and managers.player:player_unit():movement():current_state():in_steelsight() and (not hit.unit:base() or not hit.unit:base():has_tag("civilian")) then
+			if self._gadgets and table.contains(self._gadgets, "wpn_fps_upg_o_45rds") and hit_result and hit_result.type == "death" and managers.player:player_unit():movement():current_state():in_steelsight() and (not hit.unit:base() or not hit.unit:base():has_tag("civilian")) then
 				if self._tango_4_data then
 					if self._gadget_on == self._tango_4_data.last_gadget_state then
 						self._tango_4_data = nil
