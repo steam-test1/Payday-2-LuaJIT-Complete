@@ -63,6 +63,20 @@ local ids_g_g = Idstring("g_g")
 local ids_g_goat = Idstring("g_goat")
 local ids_g_bodybag = Idstring("g_bodybag")
 
+function CarryData:_get_carry_body(unit)
+	local body = nil
+
+	for _, char in ipairs(tweak_data.criminals.characters) do
+		body = unit:get_object(char.body_g_object)
+
+		if body then
+			return body
+		end
+	end
+
+	return nil
+end
+
 function CarryData:_update_throw_link(unit, t, dt)
 	if not self._linked_to then
 		local bag_object = self._unit:get_object(ids_g_bag) or self._unit:get_object(ids_g_canvasbag) or self._unit:get_object(ids_g_g) or self._unit:get_object(ids_g_goat) or self._unit:get_object(ids_g_bodybag)
@@ -72,7 +86,7 @@ function CarryData:_update_throw_link(unit, t, dt)
 
 			for key, data in pairs(managers.groupai:state():all_AI_criminals()) do
 				if alive(data.unit) then
-					local body = data.unit:get_object(Idstring("g_body")) or data.unit:get_object(Idstring("g_body_terry")) or data.unit:get_object(Idstring("g_body_max"))
+					local body = self:_get_carry_body(data.unit)
 
 					if body then
 						local bag_center = bag_object:oobb():center()

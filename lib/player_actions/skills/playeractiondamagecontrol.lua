@@ -4,10 +4,15 @@ PlayerAction.DamageControl.Priority = 1
 PlayerAction.DamageControl.Function = function ()
 	local timer = TimerManager:game()
 	local auto_shrug_time = nil
-	local damage_delay_values = managers.player:upgrade_value("player", "damage_control_passive")
 	local cooldown_drain = managers.player:upgrade_value("player", "damage_control_cooldown_drain")
+	local damage_delay_values = managers.player:has_category_upgrade("player", "damage_control_passive") and managers.player:upgrade_value("player", "damage_control_passive")
 	local auto_shrug_delay = managers.player:has_category_upgrade("player", "damage_control_auto_shrug") and managers.player:upgrade_value("player", "damage_control_auto_shrug")
 	local shrug_healing = managers.player:has_category_upgrade("player", "damage_control_healing") and managers.player:upgrade_value("player", "damage_control_healing") * 0.01
+
+	if not damage_delay_values then
+		return
+	end
+
 	damage_delay_values = {
 		delay_ratio = damage_delay_values[1] * 0.01,
 		tick_ratio = damage_delay_values[2] * 0.01
@@ -30,7 +35,9 @@ PlayerAction.DamageControl.Function = function ()
 	end
 
 	local function modify_damage_taken(amount, attack_data)
-		if attack_data.variant == "delayed_tick" then
+		local is_downed = game_state_machine:verify_game_state(GameStateFilters.downed)
+
+		if attack_data.variant == "delayed_tick" or is_downed then
 			return
 		end
 
@@ -63,9 +70,23 @@ PlayerAction.DamageControl.Function = function ()
 		end
 	end
 
-	managers.player:register_message(Message.OnEnemyKilled, "DamageControl.on_enemy_killed", on_enemy_killed)
-	managers.player:register_message("ability_activated", "DamageControl.on_ability_activated", on_ability_activated)
-	managers.player:add_modifier("damage_taken", modify_damage_taken)
+	local on_check_skills_key = {}
+	local on_enemy_killed_key = {}
+	local on_ability_activated_key = {}
+
+	managers.player:register_message(Message.OnEnemyKilled, on_enemy_killed_key, on_enemy_killed)
+	managers.player:register_message("ability_activated", on_ability_activated_key, on_ability_activated)
+
+	local damage_taken_key = managers.player:add_modifier("damage_taken", modify_damage_taken)
+
+	local function remove_listeners()
+		managers.player:unregister_message("check_skills", on_check_skills_key)
+		managers.player:unregister_message(Message.OnEnemyKilled, on_enemy_killed_key)
+		managers.player:unregister_message("ability_activated", on_ability_activated_key)
+		managers.player:remove_modifier("damage_taken", damage_taken_key)
+	end
+
+	managers.player:register_message("check_skills", on_check_skills_key, remove_listeners)
 
 	while true do
 		coroutine.yield()

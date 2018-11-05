@@ -6089,5 +6089,15 @@ function DLCTweakData:init(tweak_data)
 		item_entry = "kwm",
 		amount = 1
 	}}
+	self.mmj_bundle = {
+		free = true,
+		content = {}
+	}
+	self.mmj_bundle.content.loot_global_value = "normal"
+	self.mmj_bundle.content.loot_drops = {{
+		type_items = "masks",
+		item_entry = "mmj",
+		amount = 1
+	}}
 end
 

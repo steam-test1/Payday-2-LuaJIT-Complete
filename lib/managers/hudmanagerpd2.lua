@@ -777,8 +777,10 @@ function HUDManager:get_teammate_panel_by_peer(peer)
 		return self._teammate_panels[HUDManager.PLAYER_PANEL]
 	end
 
-	for _, teammate_panel in ipairs(self._teammate_panels) do
-		if teammate_panel:peer_id() == peer:id() then
+	for i, teammate_panel in ipairs(self._teammate_panels) do
+		local is_player_panel = i == HUDManager.PLAYER_PANEL
+
+		if teammate_panel:peer_id() == peer:id() and not is_player_panel then
 			return teammate_panel
 		end
 	end

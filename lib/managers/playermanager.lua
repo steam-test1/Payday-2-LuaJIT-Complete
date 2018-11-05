@@ -128,6 +128,7 @@ function PlayerManager:init()
 end
 
 function PlayerManager:check_skills()
+	self:send_message_now("check_skills")
 	self._coroutine_mgr:clear()
 
 	self._saw_panic_when_kill = self:has_category_upgrade("saw", "panic_when_kill")
@@ -246,9 +247,7 @@ function PlayerManager:check_skills()
 		self:unregister_message(Message.OnPlayerDodge, "dodge_replenish_armor")
 	end
 
-	if self:has_category_upgrade("player", "damage_control_passive") then
-		self:add_coroutine("damage_control", PlayerAction.DamageControl)
-	end
+	self:add_coroutine("damage_control", PlayerAction.DamageControl)
 end
 
 function PlayerManager:damage_absorption()
