@@ -614,7 +614,11 @@ function StatisticsTweakData:statistics_table()
 		"wmp_01",
 		"wmp_02",
 		"wmp_03",
-		"wmp_04"
+		"wmp_04",
+		"eng_01",
+		"eng_02",
+		"eng_03",
+		"eng_04"
 	}
 	local weapon_list = {
 		"ak5",

@@ -5172,6 +5172,10 @@ function PlayerManager:attempt_ability(ability)
 		return
 	end
 
+	if self:has_active_ability_timer(ability) then
+		return
+	end
+
 	if self["_attempt_" .. ability] and not self["_attempt_" .. ability](self) then
 		return
 	end
@@ -5180,6 +5184,12 @@ function PlayerManager:attempt_ability(ability)
 
 	if tweak and tweak.sounds and tweak.sounds.activate then
 		self:player_unit():sound():play(tweak.sounds.activate)
+	end
+
+	local td = tweak_data.blackmarket.projectiles[ability]
+
+	if td.base_cooldown then
+		self:start_ability_timer(ability, TimerManager:game():time() + td.base_cooldown)
 	end
 
 	managers.network:session():send_to_peers("sync_ability_hud", self:temporary_upgrade_index("temporary", ability), self:upgrade_value("temporary", ability)[2])

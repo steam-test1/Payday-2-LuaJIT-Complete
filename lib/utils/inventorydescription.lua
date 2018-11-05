@@ -427,7 +427,7 @@ function WeaponDescription._get_skill_stats(name, category, slot, base_stats, mo
 				local has_magazine = weapon_tweak.has_magazine
 				local add_modifier = false
 
-				if primary_category == "shotgun" and has_magazine then
+				if is_weapon_category(weapon_tweak, "shotgun") and has_magazine then
 					skill_stats[stat.name].value = skill_stats[stat.name].value + managers.player:upgrade_value("shotgun", "magazine_capacity_inc", 0)
 					add_modifier = managers.player:has_category_upgrade("shotgun", "magazine_capacity_inc")
 				elseif is_weapon_category(weapon_tweak, "pistol") and not is_weapon_category(weapon_tweak, "revolver") and managers.player:has_category_upgrade("pistol", "magazine_capacity_inc") then
