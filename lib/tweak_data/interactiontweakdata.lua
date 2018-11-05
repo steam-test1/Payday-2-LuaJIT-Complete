@@ -1253,6 +1253,12 @@ function InteractionTweakData:init(tweak_data)
 		start_active = false,
 		axis = "z"
 	}
+	self.circuit_breaker_off = {
+		icon = "interaction_powerbox",
+		text_id = "hud_int_hold_turn_off_power",
+		start_active = false,
+		axis = "z"
+	}
 	self.hold_circuit_breaker = deep_clone(self.circuit_breaker)
 	self.hold_circuit_breaker.timer = 2
 	self.hold_circuit_breaker.text_id = "hud_int_hold_turn_on_power"

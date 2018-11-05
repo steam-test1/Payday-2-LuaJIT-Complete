@@ -1466,6 +1466,7 @@ function HUDTeammate:set_ammo_amount_by_type(type, max_clip, current_clip, curre
 	ammo_clip:set_text(zero .. tostring(current_clip))
 	ammo_clip:set_color(color_clip)
 	ammo_clip:set_range_color(0, string.len(zero), color_clip:with_alpha(0.5))
+	ammo_clip:set_font_size(string.len(current_clip) < 4 and 32 or 24)
 
 	local ammo_total = weapon_panel:child("ammo_total")
 	local zero = current_left < 10 and "00" or current_left < 100 and "0" or ""
@@ -1473,6 +1474,7 @@ function HUDTeammate:set_ammo_amount_by_type(type, max_clip, current_clip, curre
 	ammo_total:set_text(zero .. tostring(current_left))
 	ammo_total:set_color(color_total)
 	ammo_total:set_range_color(0, string.len(zero), color_total:with_alpha(0.5))
+	ammo_total:set_font_size(string.len(current_left) < 4 and 24 or 20)
 end
 
 function HUDTeammate:set_health(data)

@@ -833,7 +833,7 @@ function HUDLootScreen:begin_choose_card(peer_id, card_id)
 		return
 	end
 
-	print("YOU CHOOSED " .. card_id .. ", mr." .. peer_id)
+	print("YOU CHOSE " .. card_id .. ", mr." .. peer_id)
 
 	local panel = self._peers_panel:child("peer" .. tostring(peer_id))
 
