@@ -897,6 +897,18 @@ function EconomyTweakData:init()
 			contents = {}
 		}
 	}
+	self.bundles.cas_01 = {
+		def_id = 30005,
+		dlc_id = "763390",
+		contains = {armor_skins = {
+			"cas_m90",
+			"cas_police",
+			"cas_miami",
+			"cas_slayer",
+			"cas_trash",
+			"cas_gensec"
+		}}
+	}
 	self.safes.overkill_01 = {
 		def_id = 50000,
 		promo = true,
@@ -1142,10 +1154,11 @@ function EconomyTweakData:init()
 		free = true,
 		drill = "cas_01",
 		content = "cas_01",
+		bundle = "cas_01",
 		name_id = "bm_menu_safe_cas_01",
 		unit_name = "units/payday2_cash/safes/cas/safe/eco_safe_cas",
 		texture_bundle_folder = "cash/safes/cas",
-		market_link = "https://steamcommunity.com/market/listings/218620/Armor%20Safe%202%3A%20cas"
+		market_link = "https://steamcommunity.com/market/listings/218620/Community%20Armor%20Safe%201"
 	}
 	self.drills.overkill_01 = {
 		safe = "overkill_01",
