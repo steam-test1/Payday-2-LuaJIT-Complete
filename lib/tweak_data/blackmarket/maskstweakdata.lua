@@ -4526,6 +4526,134 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		sort_number = 50,
 		global_value = "pd2_clan"
 	}
+	self.masks.wmp_01 = {
+		unit = "units/pd2_dlc_wmp/masks/wmp_01/msk_wmp_01",
+		name_id = "bm_msk_wmp_01",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "wmp",
+		sort_number = 52,
+		type = "helmet",
+		global_value = "pd2_clan",
+		offsets = {sydney = {
+			Vector3(0, 0.435252, 0),
+			Rotation(0, 2.27524, 0)
+		}}
+	}
+	self.masks.wmp_02 = {
+		unit = "units/pd2_dlc_wmp/masks/wmp_02/msk_wmp_02",
+		name_id = "bm_msk_wmp_02",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "wmp",
+		sort_number = 52,
+		type = "helmet",
+		global_value = "pd2_clan",
+		offsets = {
+			wild = {
+				Vector3(0, -1.11495, 0),
+				Rotation(0, 0, -0)
+			},
+			wolf = {
+				Vector3(0, -0.757211, 0),
+				Rotation(0, 0, -0)
+			},
+			dragan = {
+				Vector3(0, -0.637965, 0),
+				Rotation(-0, -0, -0)
+			},
+			chains = {
+				Vector3(0, -0.518719, 0),
+				Rotation(0, 0, -0)
+			},
+			max = {
+				Vector3(0, -0.637965, 0),
+				Rotation(0, 0, -0)
+			},
+			jacket = {
+				Vector3(0, -0.757211, 0),
+				Rotation(0, 0, -0)
+			},
+			bonnie = {
+				Vector3(0, -0.280226, 0),
+				Rotation(0, 0, -0)
+			}
+		}
+	}
+	self.masks.wmp_03 = {
+		unit = "units/pd2_dlc_wmp/masks/wmp_03/msk_wmp_03",
+		name_id = "bm_msk_wmp_03",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "wmp",
+		sort_number = 52,
+		type = "tiara",
+		global_value = "pd2_clan",
+		offsets = {
+			jacket = {
+				Vector3(0, 0.435252, 0),
+				Rotation(-0, -0, -0)
+			},
+			sydney = {
+				Vector3(0, 1.26998, 2.46244),
+				Rotation(0, -9.74479, 0)
+			},
+			dragon = {
+				Vector3(0, 0, 0.316006),
+				Rotation(0, 0, -0)
+			},
+			female_1 = {
+				Vector3(0.077513, 2.1047, 0.077513),
+				Rotation(-0, -0, -0)
+			},
+			wild = {
+				Vector3(0, 0.316006, 0),
+				Rotation(-0, -0, -0)
+			},
+			sokol = {
+				Vector3(0, 0.554498, 0.435252),
+				Rotation(0, 0, -0)
+			},
+			bonnie = {
+				Vector3(0, 1.26998, 0.316006),
+				Rotation(0, 0, -0)
+			},
+			wolf = {
+				Vector3(0, 0.077513, 0.554498),
+				Rotation(0, 0, -0)
+			},
+			chico = {
+				Vector3(0, 0.673745, 0.316006),
+				Rotation(0, 0, -0)
+			},
+			bodhi = {
+				Vector3(0, 0, 0.554498),
+				Rotation(0, 0, -0)
+			},
+			jimmy = {
+				Vector3(0, 0.554498, 0),
+				Rotation(0, 0, -0)
+			},
+			jowi = {
+				Vector3(0, 0, 0.792991),
+				Rotation(0, 0, -0)
+			},
+			dragan = {
+				Vector3(0, 0.316006, 0.554498),
+				Rotation(0, 0, -0)
+			}
+		}
+	}
+	self.masks.wmp_04 = {
+		unit = "units/pd2_dlc_wmp/masks/wmp_04/msk_wmp_04",
+		name_id = "bm_msk_wmp_04",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "wmp",
+		sort_number = 52,
+		type = "helmet",
+		global_value = "pd2_clan"
+	}
 	self.masks.gcm = {
 		unit = "units/pd2_dlc_gcm/masks/msk_gcm",
 		name_id = "bm_msk_gcm",

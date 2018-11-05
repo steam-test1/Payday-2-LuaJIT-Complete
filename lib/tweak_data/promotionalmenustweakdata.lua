@@ -37,7 +37,7 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 			},
 			{
 				type = "RaidPromotionalMenuButton",
-				callback = "open_raid_preorder",
+				callback = "open_raid_preorder_menu",
 				position = {
 					4,
 					1
@@ -510,6 +510,50 @@ function PromotionalMenusTweakData:_init_raid(tweak_data)
 					1
 				},
 				background = {image = "guis/dlcs/aru/textures/pd2/preorder_special_edition"}
+			}
+		}
+	}
+	self.menus.raid_preorder = {
+		size = 0.8,
+		layout = {
+			x = 1,
+			y = 1
+		},
+		buttons = {
+			{
+				type = "PromotionalMenuUnselectableButton",
+				zoom_factor = 1,
+				can_be_selected = false,
+				position = {
+					1,
+					1
+				},
+				size = {
+					1,
+					1
+				},
+				background = {image = "guis/dlcs/aru/textures/pd2/raid_preorder"}
+			},
+			{
+				type = "RaidPromotionalMenuFloatingButton",
+				callback = "open_raid_preorder",
+				position = {
+					1,
+					1
+				},
+				size = {
+					1,
+					1
+				},
+				floating_position = {
+					260,
+					350
+				},
+				floating_size = {
+					256,
+					64
+				},
+				background = {image = "guis/dlcs/aru/textures/pd2/raid_preorder_button"}
 			}
 		}
 	}

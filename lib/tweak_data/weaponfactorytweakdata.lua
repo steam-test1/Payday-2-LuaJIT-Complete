@@ -28320,6 +28320,10 @@ function WeaponFactoryTweakData:_init_varmods()
 			wpn_fps_smg_coal = {
 				translation = Vector3(0, 11, -4),
 				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_ass_ching = {
+				translation = Vector3(0, 11, -2.8),
+				rotation = Rotation(0, 0, 0)
 			}
 		}
 	}
@@ -28976,7 +28980,10 @@ function WeaponFactoryTweakData:_init_ching()
 			recoil = -4,
 			concealment = 4
 		},
-		override = {wpn_fps_ass_ching_extra_swiwel = {unit = "units/pd2_dlc_old/weapons/wpn_fps_ass_ching_pts/wpn_fps_ass_ching_extra_swiwel_empty"}}
+		override = {wpn_fps_ass_ching_extra_swiwel = {
+			third_unit = "units/pd2_dlc_old/weapons/wpn_fps_ass_ching_pts/wpn_fps_ass_ching_extra_swiwel_empty",
+			unit = "units/pd2_dlc_old/weapons/wpn_fps_ass_ching_pts/wpn_fps_ass_ching_extra_swiwel_empty"
+		}}
 	}
 	self.parts.wpn_fps_ass_ching_b_standard = {
 		a_obj = "a_b",
@@ -29097,7 +29104,7 @@ function WeaponFactoryTweakData:_init_ching()
 	self.parts.wpn_fps_ass_ching_body_standard.third_unit = "units/pd2_dlc_old/weapons/wpn_fps_ass_ching_pts/wpn_third_ass_ching_body_standard"
 	self.parts.wpn_fps_ass_ching_bolt_standard.third_unit = "units/pd2_dlc_old/weapons/wpn_fps_ass_ching_pts/wpn_third_ass_ching_bolt_standard"
 	self.parts.wpn_fps_ass_ching_dh_standard.third_unit = "units/pd2_dlc_old/weapons/wpn_fps_ass_ching_pts/wpn_third_ass_ching_dh_standard"
-	self.parts.wpn_fps_ass_ching_extra_swiwel_empty.third_unit = "units/pd2_dlc_old/weapons/wpn_fps_ass_ching_pts/wpn_third_ass_ching_extra_swiwel_extra"
+	self.parts.wpn_fps_ass_ching_extra_swiwel_empty.third_unit = "units/pd2_dlc_old/weapons/wpn_fps_ass_ching_pts/wpn_fps_ass_ching_extra_swiwel_empty"
 	self.parts.wpn_fps_ass_ching_extra_swiwel.third_unit = "units/pd2_dlc_old/weapons/wpn_fps_ass_ching_pts/wpn_third_ass_ching_extra_swiwel"
 	self.parts.wpn_fps_ass_ching_extra1_swiwel.third_unit = "units/pd2_dlc_old/weapons/wpn_fps_ass_ching_pts/wpn_third_ass_ching_extra1_swiwel"
 	self.parts.wpn_fps_ass_ching_fg_railed.third_unit = "units/pd2_dlc_old/weapons/wpn_fps_ass_ching_pts/wpn_third_ass_ching_fg_railed"

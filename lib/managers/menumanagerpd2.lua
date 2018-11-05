@@ -2737,4 +2737,1096 @@ end
 function MenuCallbackHandler:toggle_loading_hints(item)
 	managers.user:set_setting("loading_screen_show_hints", item:value() == "on")
 end
+MenuArmorSkinEditorInitiator = MenuArmorSkinEditorInitiator or class(MenuInitiatorBase)
+
+function MenuArmorSkinEditorInitiator:modify_node(node, data)
+	data = data or {}
+	local name = node:parameters().name
+	local editor = managers.blackmarket:armor_skin_editor()
+
+	editor:set_active(true)
+	call_on_next_update(function ()
+		local skin = editor:get_current_skin()
+
+		if skin then
+			local cdata = skin:config().data
+
+			editor:apply_changes_to_character(cdata)
+		end
+	end)
+
+	if name == "armor_skin_editor" then
+		local name_input = node:item("name_input")
+
+		if editor and editor:get_current_skin() then
+			local skin = editor:get_current_skin()
+
+			name_input:set_input_text(skin:config().name or "")
+		else
+			name_input:set_input_text("")
+		end
+
+		local skin_exists = editor:get_current_skin() and true
+
+		local function disable_func(item)
+			if not skin_exists and item:name() ~= "new_skin" and item:name() ~= "edit_skin" then
+				item:set_enabled(false)
+			else
+				item:set_enabled(true)
+			end
+		end
+
+		table.for_each_value(node:items(), disable_func)
+	elseif name == "armor_skin_editor_select" then
+		node:clean_items()
+
+		if editor:skin_count() < 1 then
+			self:create_item(node, {
+				name = "no_skins",
+				enabled = false,
+				text_id = "debug_wskn_no_skin"
+			})
+		else
+			local skins = editor:skins()
+			local default_item = editor:get_current_skin():config().name or "untitled"
+
+			for id, skin in ipairs(skins) do
+				local name = skin:config().name or "untitled"
+
+				self:create_item(node, {
+					enabled = true,
+					localize = false,
+					callback = "select_armor_skin",
+					name = name,
+					text_id = name,
+					skin_id = id
+				})
+			end
+
+			node:set_default_item_name(default_item)
+			node:select_item(default_item)
+		end
+	elseif name == "armor_skin_editor_base" then
+		node:clean_items()
+
+		local skin = editor:get_current_skin()
+
+		if skin then
+			local cdata = skin:config().data
+
+			editor:reload_current_skin()
+
+			local armor_level = MenuCallbackHandler:editor_get_armor_level()
+			local base_gradient_textures = editor:get_texture_list_by_type(skin, "base_gradient")
+			local multichoice_list = {{
+				text_id = "DEFAULT",
+				localize = false,
+				_meta = "option"
+			}}
+
+			for id, texture in ipairs(base_gradient_textures) do
+				table.insert(multichoice_list, {
+					localize = false,
+					_meta = "option",
+					text_id = texture,
+					value = texture
+				})
+			end
+
+			local base_gradient_item = self:create_multichoice(node, multichoice_list, {
+				text_id = "debug_wskn_base_gradient",
+				name = "base_gradient",
+				callback = "armor_skin_changed",
+				text_offset = 50,
+				part_id = data.part_id,
+				material_name = data.material_name,
+				mod_type = data.mod_type
+			})
+
+			base_gradient_item:set_value(tweak_data.economy:get_armor_based_value(cdata.base_gradient_name or cdata.base_gradient, armor_level))
+
+			local pattern_gradient_textures = editor:get_texture_list_by_type(skin, "pattern_gradient")
+			multichoice_list = {{
+				text_id = "DEFAULT",
+				localize = false,
+				_meta = "option"
+			}}
+
+			for id, texture in ipairs(pattern_gradient_textures) do
+				table.insert(multichoice_list, {
+					localize = false,
+					_meta = "option",
+					text_id = texture,
+					value = texture
+				})
+			end
+
+			local pattern_gradient_item = self:create_multichoice(node, multichoice_list, {
+				text_id = "debug_wskn_pattern_gradient",
+				name = "pattern_gradient",
+				callback = "armor_skin_changed",
+				text_offset = 50,
+				part_id = data.part_id,
+				material_name = data.material_name,
+				mod_type = data.mod_type
+			})
+
+			pattern_gradient_item:set_value(tweak_data.economy:get_armor_based_value(cdata.pattern_gradient_name or cdata.pattern_gradient, armor_level))
+
+			local pattern_textures = editor:get_texture_list_by_type(skin, "pattern")
+			multichoice_list = {{
+				text_id = "DEFAULT",
+				localize = false,
+				_meta = "option"
+			}}
+
+			for id, texture in ipairs(pattern_textures) do
+				table.insert(multichoice_list, {
+					localize = false,
+					_meta = "option",
+					text_id = texture,
+					value = texture
+				})
+			end
+
+			local pattern_item = self:create_multichoice(node, multichoice_list, {
+				text_id = "debug_wskn_pattern",
+				name = "pattern",
+				callback = "armor_skin_changed",
+				text_offset = 50,
+				part_id = data.part_id,
+				material_name = data.material_name,
+				mod_type = data.mod_type
+			})
+
+			pattern_item:set_value(tweak_data.economy:get_armor_based_value(cdata.pattern_name or cdata.pattern, armor_level))
+			self:create_divider(node, "sliders")
+
+			local pattern_pos = tweak_data.economy:get_armor_based_value(cdata.pattern_pos, armor_level)
+			local pattern_tweak = tweak_data.economy:get_armor_based_value(cdata.pattern_tweak, armor_level)
+			local cubemap_pattern_control = tweak_data.economy:get_armor_based_value(cdata.cubemap_pattern_control, armor_level)
+			local pattern_pos_x_item = self:create_slider(node, {
+				name = "pattern_pos1",
+				key = "pattern_pos",
+				max = 2,
+				text_id = "debug_wskn_pattern_pos_x",
+				step = 0.001,
+				vector = 1,
+				min = -2,
+				callback = "armor_skin_changed",
+				show_value = true,
+				part_id = data.part_id,
+				material_name = data.material_name,
+				mod_type = data.mod_type
+			})
+
+			pattern_pos_x_item:set_value(pattern_pos and mvector3.x(pattern_pos) or 0)
+
+			local pattern_pos_y_item = self:create_slider(node, {
+				name = "pattern_pos2",
+				key = "pattern_pos",
+				max = 2,
+				text_id = "debug_wskn_pattern_pos_y",
+				step = 0.001,
+				vector = 2,
+				min = -2,
+				callback = "armor_skin_changed",
+				show_value = true,
+				part_id = data.part_id,
+				material_name = data.material_name,
+				mod_type = data.mod_type
+			})
+
+			pattern_pos_y_item:set_value(pattern_pos and mvector3.y(pattern_pos) or 0)
+
+			local pattern_tweak_x_item = self:create_slider(node, {
+				name = "pattern_tweak1",
+				key = "pattern_tweak",
+				max = 20,
+				text_id = "debug_wskn_pattern_tweak_x",
+				step = 0.001,
+				vector = 1,
+				min = 0,
+				callback = "armor_skin_changed",
+				show_value = true,
+				part_id = data.part_id,
+				material_name = data.material_name,
+				mod_type = data.mod_type
+			})
+
+			pattern_tweak_x_item:set_value(pattern_tweak and mvector3.x(pattern_tweak) or 1)
+			self:create_divider(node, 1)
+
+			local pattern_tweak_y_item = self:create_slider(node, {
+				name = "pattern_tweak2",
+				key = "pattern_tweak",
+				text_id = "debug_wskn_pattern_tweak_y",
+				step = 0.001,
+				vector = 2,
+				min = 0,
+				callback = "armor_skin_changed",
+				show_value = true,
+				max = 2 * math.pi,
+				part_id = data.part_id,
+				material_name = data.material_name,
+				mod_type = data.mod_type
+			})
+
+			pattern_tweak_y_item:set_value(pattern_tweak and mvector3.y(pattern_tweak) or 0)
+
+			local pattern_tweak_z_item = self:create_slider(node, {
+				name = "pattern_tweak3",
+				key = "pattern_tweak",
+				max = 1,
+				text_id = "debug_wskn_pattern_tweak_z",
+				step = 0.001,
+				vector = 3,
+				min = 0,
+				callback = "armor_skin_changed",
+				show_value = true,
+				part_id = data.part_id,
+				material_name = data.material_name,
+				mod_type = data.mod_type
+			})
+
+			pattern_tweak_z_item:set_value(pattern_tweak and mvector3.z(pattern_tweak) or 1)
+			self:create_divider(node, 2)
+
+			local cubemap_pattern_control_x_item = self:create_slider(node, {
+				name = "cubemap_pattern_control1",
+				key = "cubemap_pattern_control",
+				max = 1,
+				text_id = "debug_wskn_cubemap_pattern_control_x",
+				step = 0.001,
+				vector = 1,
+				min = 0,
+				callback = "armor_skin_changed",
+				show_value = true,
+				part_id = data.part_id,
+				material_name = data.material_name,
+				mod_type = data.mod_type
+			})
+
+			cubemap_pattern_control_x_item:set_value(cubemap_pattern_control and mvector3.x(cubemap_pattern_control) or 0)
+
+			local cubemap_pattern_control_y_item = self:create_slider(node, {
+				name = "cubemap_pattern_control2",
+				key = "cubemap_pattern_control",
+				max = 1,
+				text_id = "debug_wskn_cubemap_pattern_control_y",
+				step = 0.001,
+				vector = 2,
+				min = 0,
+				callback = "armor_skin_changed",
+				show_value = true,
+				part_id = data.part_id,
+				material_name = data.material_name,
+				mod_type = data.mod_type
+			})
+
+			cubemap_pattern_control_y_item:set_value(cubemap_pattern_control and mvector3.y(cubemap_pattern_control) or 0)
+			self:create_divider(node, "sticker")
+			self:create_divider(node, "sticker2")
+
+			local sticker_textures = editor:get_texture_list_by_type(skin, "sticker")
+			multichoice_list = {{
+				text_id = "DEFAULT",
+				localize = false,
+				_meta = "option"
+			}}
+
+			for id, texture in ipairs(sticker_textures) do
+				table.insert(multichoice_list, {
+					localize = false,
+					_meta = "option",
+					text_id = texture,
+					value = texture
+				})
+			end
+
+			local sticker_item = self:create_multichoice(node, multichoice_list, {
+				text_id = "debug_wskn_sticker",
+				name = "sticker",
+				callback = "armor_skin_changed",
+				text_offset = 50,
+				part_id = data.part_id,
+				material_name = data.material_name,
+				mod_type = data.mod_type
+			})
+
+			sticker_item:set_value(tweak_data.economy:get_armor_based_value(cdata.sticker_name or cdata.sticker, armor_level))
+
+			local uv_offset_rot = tweak_data.economy:get_armor_based_value(cdata.uv_offset_rot, armor_level)
+			local uv_scale = tweak_data.economy:get_armor_based_value(cdata.uv_scale, armor_level)
+			local uv_offset_rot_x_item = self:create_slider(node, {
+				name = "uv_offset_rot1",
+				key = "uv_offset_rot",
+				max = 2,
+				text_id = "debug_wskn_uv_offset_rot_x",
+				step = 0.001,
+				vector = 1,
+				min = -2,
+				callback = "armor_skin_changed",
+				show_value = true,
+				part_id = data.part_id,
+				material_name = data.material_name,
+				mod_type = data.mod_type
+			})
+
+			uv_offset_rot_x_item:set_value(uv_offset_rot and mvector3.x(uv_offset_rot) or 0)
+
+			local uv_offset_rot_y_item = self:create_slider(node, {
+				name = "uv_offset_rot2",
+				key = "uv_offset_rot",
+				max = 2,
+				text_id = "debug_wskn_uv_offset_rot_y",
+				step = 0.001,
+				vector = 2,
+				min = -2,
+				callback = "armor_skin_changed",
+				show_value = true,
+				part_id = data.part_id,
+				material_name = data.material_name,
+				mod_type = data.mod_type
+			})
+
+			uv_offset_rot_y_item:set_value(uv_offset_rot and mvector3.y(uv_offset_rot) or 0)
+
+			local uv_scale_x_item = self:create_slider(node, {
+				name = "uv_scale1",
+				key = "uv_scale",
+				max = 20,
+				text_id = "debug_wskn_uv_scale_x",
+				step = 0.001,
+				vector = 1,
+				min = 0.01,
+				callback = "armor_skin_changed",
+				show_value = true,
+				part_id = data.part_id,
+				material_name = data.material_name,
+				mod_type = data.mod_type
+			})
+
+			uv_scale_x_item:set_value(20.01 - (uv_scale and mvector3.x(uv_scale) or 1))
+
+			local uv_scale_y_item = self:create_slider(node, {
+				name = "uv_scale2",
+				key = "uv_scale",
+				max = 20,
+				text_id = "debug_wskn_uv_scale_y",
+				step = 0.001,
+				vector = 2,
+				min = 0.01,
+				callback = "armor_skin_changed",
+				show_value = true,
+				part_id = data.part_id,
+				material_name = data.material_name,
+				mod_type = data.mod_type
+			})
+
+			uv_scale_y_item:set_value(20.01 - (uv_scale and mvector3.y(uv_scale) or 1))
+
+			local uv_scale_lock_item = self:create_toggle(node, {
+				localize = true,
+				name = "uv_scale_lock",
+				enabled = true,
+				text_id = "debug_wskn_uv_scale_lock"
+			})
+
+			uv_scale_lock_item:set_value("on")
+			self:create_divider(node, 3)
+
+			local uv_offset_rot_z_item = self:create_slider(node, {
+				name = "uv_offset_rot3",
+				key = "uv_offset_rot",
+				text_id = "debug_wskn_uv_offset_rot_z",
+				step = 0.001,
+				vector = 3,
+				min = 0,
+				callback = "armor_skin_changed",
+				show_value = true,
+				max = 2 * math.pi,
+				part_id = data.part_id,
+				material_name = data.material_name,
+				mod_type = data.mod_type
+			})
+
+			uv_offset_rot_z_item:set_value(uv_offset_rot and mvector3.z(uv_offset_rot) or 0)
+
+			local uv_scale_z_item = self:create_slider(node, {
+				name = "uv_scale3",
+				key = "uv_scale",
+				max = 1,
+				text_id = "debug_wskn_uv_scale_z",
+				step = 0.001,
+				vector = 3,
+				min = 0,
+				callback = "armor_skin_changed",
+				show_value = true,
+				part_id = data.part_id,
+				material_name = data.material_name,
+				mod_type = data.mod_type
+			})
+
+			uv_scale_z_item:set_value(uv_scale and mvector3.z(uv_scale) or 1)
+			node:set_default_item_name("base_gradient")
+			node:select_item("base_gradient")
+		end
+	elseif name == "armor_skin_editor_screenshot" then
+		local multichoice_list = {
+			{
+				value = "none",
+				text_id = "debug_wskn_none",
+				_meta = "option"
+			},
+			{
+				value = "green",
+				text_id = "debug_wskn_green",
+				_meta = "option"
+			},
+			{
+				value = "black",
+				text_id = "debug_wskn_black",
+				_meta = "option"
+			},
+			{
+				value = "red",
+				text_id = "debug_wskn_red",
+				_meta = "option"
+			},
+			{
+				value = "blue",
+				text_id = "debug_wskn_blue",
+				_meta = "option"
+			},
+			{
+				value = "pink",
+				text_id = "debug_wskn_pink",
+				_meta = "option"
+			},
+			{
+				value = "cyan",
+				text_id = "debug_wskn_cyan",
+				_meta = "option"
+			},
+			{
+				value = "yellow",
+				text_id = "debug_wskn_yellow",
+				_meta = "option"
+			},
+			{
+				value = "white",
+				text_id = "debug_wskn_white",
+				_meta = "option"
+			}
+		}
+
+		if node:item("screenshot_color") then
+			node:delete_item("screenshot_color")
+		end
+
+		local color_item = self:create_multichoice(node, multichoice_list, {
+			text_id = "debug_wskn_color",
+			text_offset = 50,
+			name = "screenshot_color",
+			callback = "armor_screenshot_color_changed"
+		})
+
+		color_item:set_value("none")
+
+		if node:item("hide_weapons") then
+			node:delete_item("hide_weapons")
+		end
+
+		self:create_item(node, {
+			localize = true,
+			name = "hide_weapons",
+			enabled = true,
+			text_id = "bm_menu_btn_hide_weapons",
+			callback = "armor_screenshots_hide_weapons"
+		})
+
+		if node:item("show_weapons") then
+			node:delete_item("show_weapons")
+		end
+
+		self:create_item(node, {
+			localize = true,
+			name = "show_weapons",
+			enabled = true,
+			text_id = "bm_menu_btn_show_weapons",
+			callback = "armor_screenshots_show_weapons"
+		})
+		editor:enter_screenshot_mode()
+	elseif name == "armor_skin_editor_screenshot_level" or name == "armor_skin_editor_select_level" then
+		local sort_types = {}
+
+		for armor_name, armor_table in pairs(tweak_data.blackmarket.armors) do
+			if not table.contains(sort_types, armor_name) then
+				table.insert(sort_types, armor_name)
+			end
+		end
+
+		table.sort(sort_types, function (a, b)
+			return b < a
+		end)
+
+		for _, armor_name in ipairs(sort_types) do
+			if node:item(armor_name) then
+				node:delete_item(armor_name)
+			end
+
+			self:create_item(node, {
+				localize = true,
+				enabled = true,
+				callback = "select_armor_skin_level",
+				name = armor_name,
+				text_id = "bm_armor_" .. armor_name
+			})
+		end
+	elseif name == "armor_skin_editor_screenshot_pose" or name == "armor_skin_editor_select_pose" then
+		local sort_types = {}
+
+		for pose_name, pose_table in pairs(managers.menu_scene._global_poses) do
+			for _, pose in ipairs(pose_table) do
+				if not table.contains(sort_types, pose) then
+					table.insert(sort_types, pose)
+				end
+			end
+		end
+
+		table.sort(sort_types)
+
+		for _, pose in ipairs(sort_types) do
+			if node:item(pose) then
+				node:delete_item(pose)
+			end
+
+			self:create_item(node, {
+				localize = false,
+				enabled = true,
+				callback = "select_armor_skin_pose",
+				name = pose,
+				text_id = pose
+			})
+		end
+	elseif name == "armor_skin_editor_publish" then
+		local title_input = node:item("title_input")
+		local desc_input = node:item("desc_input")
+
+		if editor and editor:get_current_skin() then
+			local skin = editor:get_current_skin()
+
+			title_input:set_input_text(skin:title() or "")
+			desc_input:set_input_text(skin:description() or "")
+		end
+
+		if node:item("screenshot") then
+			node:delete_item("screenshot")
+		end
+
+		local multichoice_list = {{
+			text_id = "NONE",
+			localize = false,
+			_meta = "option"
+		}}
+
+		if editor:has_screenshots(editor:get_current_skin()) then
+			local screenshots = editor:get_screenshot_list()
+
+			for id, screenshot in ipairs(screenshots) do
+				table.insert(multichoice_list, {
+					localize = false,
+					_meta = "option",
+					text_id = screenshot,
+					value = screenshot
+				})
+			end
+		end
+
+		local item_index = table.index_of(node:items(), node:item("divider_publish"))
+		local screenshot_item = self:create_multichoice(node, multichoice_list, {
+			text_id = "debug_wskn_screenshot_skin",
+			text_offset = 50,
+			name = "screenshot",
+			callback = "armor_screenshot_chosen"
+		}, item_index)
+
+		screenshot_item:set_value(nil)
+	end
+
+	if not node:item("divider_end") then
+		self:create_divider(node, "end")
+		self:add_back_button(node)
+	end
+
+	return node
+end
+
+function MenuCallbackHandler:clear_armor_skin()
+	local editor = managers.blackmarket:armor_skin_editor()
+
+	if editor then
+		editor:clear_current_skin()
+	end
+end
+
+function MenuCallbackHandler:new_armor_skin()
+	local editor = managers.blackmarket:armor_skin_editor()
+
+	if editor then
+		local skin = editor:create_new_skin({})
+
+		editor:select_skin(skin)
+	end
+end
+
+function MenuCallbackHandler:select_armor_skin(item)
+	local editor = managers.blackmarket:armor_skin_editor()
+
+	if editor then
+		editor:select_skin(item:parameters().skin_id)
+	end
+end
+
+function MenuCallbackHandler:delete_armor_skin()
+	local editor = managers.blackmarket:armor_skin_editor()
+
+	if editor then
+		local dialog_data = {
+			title = managers.localization:text("dialog_warning_title"),
+			text = managers.localization:text("debug_wskn_sure_to_delete")
+		}
+		local yes_button = {
+			text = managers.localization:text("dialog_yes"),
+			callback_func = callback(self, self, "_dialog_delete_armor_skin_yes")
+		}
+		local no_button = {
+			text = managers.localization:text("dialog_no"),
+			callback_func = callback(self, self, "_dialog_delete_armor_skin_no"),
+			cancel_button = true
+		}
+		dialog_data.button_list = {
+			yes_button,
+			no_button
+		}
+
+		managers.system_menu:show(dialog_data)
+	end
+end
+
+function MenuCallbackHandler:_dialog_delete_armor_skin_yes()
+	local editor = managers.blackmarket:armor_skin_editor()
+
+	if editor then
+		editor:delete_current()
+	end
+end
+
+function MenuCallbackHandler:_dialog_delete_armor_skin_no()
+end
+
+function MenuCallbackHandler:browse_armor_skin()
+	local editor = managers.blackmarket:armor_skin_editor()
+
+	if editor then
+		local skin = editor:get_current_skin()
+
+		if skin then
+			local path = Application:nice_path(skin:path(), false)
+
+			Application:shell_explore_to_folder(path)
+		end
+	end
+end
+
+function MenuCallbackHandler:save_armor_skin()
+	local editor = managers.blackmarket:armor_skin_editor()
+
+	if editor then
+		local name = managers.menu:active_menu().logic:selected_node():item("name_input"):input_text()
+
+		if not name or name == "" then
+			name = "My Skin"
+		end
+
+		local name_id = string.gsub(string.lower(name), " ", "_")
+		local copy_data = deep_clone(editor:get_current_skin():config().data)
+		copy_data.name_id = "bm_askn_" .. name_id
+		copy_data.reserve_quality = true
+
+		editor:save_current_skin(name, copy_data)
+	end
+end
+
+function MenuCallbackHandler:need_convert_armor_skin(item)
+	return false
+end
+
+function MenuCallbackHandler:convert_armor_skin()
+end
+
+function MenuCallbackHandler:on_exit_armor_skin_editor(item)
+	local editor = managers.blackmarket:armor_skin_editor()
+
+	if not editor then
+		return true
+	end
+
+	if not editor:get_current_skin() then
+		return false
+	end
+
+	if not editor:unsaved() then
+		editor:set_ignore_unsaved(false)
+
+		editor._unsaved = false
+
+		editor:set_active(false)
+
+		return false
+	end
+
+	local function on_yes()
+		editor:save_current_skin()
+		managers.menu:back(true)
+	end
+
+	local function on_no()
+		editor:set_ignore_unsaved(true)
+		managers.menu:back(true)
+	end
+
+	local dialog_data = {
+		title = managers.localization:text("dialog_warning_title"),
+		text = managers.localization:text("debug_wskn_want_to_save")
+	}
+	local yes_button = {
+		text = managers.localization:text("dialog_yes"),
+		callback_func = on_yes
+	}
+	local no_button = {
+		text = managers.localization:text("dialog_no"),
+		callback_func = on_no
+	}
+	local cancel_button = {
+		text = managers.localization:text("dialog_cancel"),
+		cancel_button = true
+	}
+	dialog_data.button_list = {
+		yes_button,
+		no_button,
+		cancel_button
+	}
+
+	managers.system_menu:show(dialog_data)
+
+	return true
+end
+
+function MenuCallbackHandler:armor_skin_changed(item)
+	local key = item:parameters().key or item:name()
+	local value = item:value()
+	local vector = item:parameters().vector
+	local editor = managers.blackmarket:armor_skin_editor()
+	local skin = editor and editor:get_current_skin()
+	local data = skin and skin:config().data
+
+	if not data then
+		return
+	end
+
+	if value then
+		local lock = false
+
+		if string.find(item:parameters().name, "uv_scale[1-2]") then
+			value = 20.01 - value
+			local lock_item = managers.menu:active_menu().logic:selected_node():item("uv_scale_lock")
+
+			if lock_item then
+				lock = lock_item:value() == "on"
+			end
+		end
+
+		if vector then
+			local armor_level = MenuCallbackHandler:editor_get_armor_level()
+			local v = tweak_data.economy:get_armor_based_value(data[key], armor_level)
+
+			if not v then
+				local i1 = managers.menu:active_menu().logic:selected_node():item(key .. "1")
+				local i2 = managers.menu:active_menu().logic:selected_node():item(key .. "2")
+				local i3 = managers.menu:active_menu().logic:selected_node():item(key .. "3")
+				local i1v = i1 and i1:value() or 0
+				local i2v = i2 and i2:value() or 0
+				local i3v = i3 and i3:value() or 0
+
+				if string.find(item:parameters().name, "uv_scale") then
+					i1v = 20.01 - i1v
+					i2v = 20.01 - i2v
+				end
+
+				v = Vector3(i1v, i2v, i3v)
+			end
+
+			if vector == 1 then
+				mvector3.set_x(v, value)
+
+				if lock then
+					mvector3.set_y(v, value)
+				end
+			elseif vector == 2 then
+				mvector3.set_y(v, value)
+
+				if lock then
+					mvector3.set_x(v, value)
+				end
+			elseif vector == 3 then
+				mvector3.set_z(v, value)
+			end
+
+			value = v
+			local i1 = managers.menu:active_menu().logic:selected_node():item(key .. "1")
+			local i2 = managers.menu:active_menu().logic:selected_node():item(key .. "2")
+			local i3 = managers.menu:active_menu().logic:selected_node():item(key .. "3")
+
+			if string.find(item:parameters().name, "uv_scale") then
+				i1:set_value(20.01 - mvector3.x(value))
+				i2:set_value(20.01 - mvector3.y(value))
+			else
+				i1:set_value(mvector3.x(value))
+				i2:set_value(mvector3.y(value))
+			end
+
+			if i3 then
+				i3:set_value(mvector3.z(value))
+			end
+		elseif item:parameters().type ~= "CoreMenuItemSlider.ItemSlider" then
+			local orig_value = value
+			value = editor:get_texture_string(skin, orig_value, key)
+			data[key .. "_name"] = orig_value
+
+			editor:load_textures(skin)
+
+			if not editor:check_texture_db(value, true) then
+				return
+			elseif not editor:check_texture_disk(value) then
+				if not item.options then
+					return
+				end
+
+				local index = table.index_of(item:options(), table.find_value(item:options(), function (v)
+					return v:value() == orig_value
+				end))
+
+				item:clear_options()
+				item:add_option(CoreMenuItemOption.ItemOption:new({
+					text_id = "DEFAULT",
+					localize = false,
+					_meta = "option"
+				}))
+				editor:load_textures(skin)
+
+				local textures = editor:get_texture_list_by_type(skin, key)
+
+				for _, texture in ipairs(textures) do
+					item:add_option(CoreMenuItemOption.ItemOption:new({
+						localize = false,
+						_meta = "option",
+						text_id = texture,
+						value = texture
+					}))
+				end
+
+				item:dirty()
+
+				value = nil
+				data[key .. "_name"] = nil
+			end
+		end
+
+		data[key] = data[key] or {}
+
+		if type(data[key]) ~= "table" then
+			data[key] = {}
+		end
+
+		if type_name(value) == "Vector3" then
+			data[key][self:editor_get_armor_level()] = mvector3.copy(value)
+		else
+			data[key][self:editor_get_armor_level()] = value
+		end
+	else
+		if data[key] then
+			data[key][self:editor_get_armor_level()] = nil
+		end
+
+		data[key .. "_name"] = nil
+	end
+
+	editor:apply_changes(skin:config().data)
+end
+
+function MenuCallbackHandler:editor_get_armor_level()
+	local armor_level = 1
+
+	if managers.menu_scene._character_unit and managers.menu_scene._character_unit:base() then
+		armor_level = managers.menu_scene._character_unit:base():armor_level()
+	else
+		local armor = tweak_data.blackmarket.armors[managers.blackmarket:equipped_armor()]
+		armor_level = armor and armor.upgrade_level or 1
+	end
+
+	return armor_level
+end
+
+function MenuCallbackHandler:publish_armor_skin(item)
+	local title = managers.menu:active_menu().logic:selected_node():item("title_input"):input_text()
+	local desc = managers.menu:active_menu().logic:selected_node():item("desc_input"):input_text()
+	local changelog = managers.menu:active_menu().logic:selected_node():item("changelog_input"):input_text()
+
+	if not changelog or changelog == "" then
+		changelog = "Initial submission"
+	end
+
+	local editor = managers.blackmarket:armor_skin_editor()
+	local skin = editor:get_current_skin()
+
+	if skin:config().screenshot then
+		local screenshot_path = editor:get_screenshot_path(skin)
+
+		SystemFS:copy_file(screenshot_path .. "/" .. skin:config().screenshot, Application:nice_path(skin:path(), true) .. "preview.png")
+	else
+		local dialog_data = {
+			title = managers.localization:text("dialog_warning_title"),
+			text = managers.localization:text("debug_wskn_submit_no_screenshot")
+		}
+		local ok_button = {
+			text = managers.localization:text("dialog_ok"),
+			callback_func = callback(self, self, "_dialog_ok")
+		}
+		dialog_data.button_list = {ok_button}
+
+		managers.system_menu:show(dialog_data)
+
+		return
+	end
+
+	editor:publish_skin(skin, title, desc, changelog)
+end
+
+function MenuCallbackHandler:should_add_changelog_armor_skin(item)
+	return managers.blackmarket:armor_skin_editor():get_current_skin():item_exists()
+end
+
+function MenuCallbackHandler:armor_screenshot_chosen(item)
+	local skin = managers.blackmarket:armor_skin_editor():get_current_skin()
+	skin:config().screenshot = item:value()
+end
+
+function MenuCallbackHandler:take_armor_screenshot_skin(item)
+	local editor = managers.blackmarket:armor_skin_editor()
+
+	if not editor then
+		return
+	end
+
+	local function screenshot_done(success)
+		managers.mouse_pointer:enable()
+		managers.menu:active_menu().renderer:show()
+		item:set_enabled(true)
+	end
+
+	managers.menu:active_menu().renderer:hide()
+	managers.mouse_pointer:disable()
+
+	local name = editor:get_screenshot_name()
+	local x, y, w, h = editor:get_screenshot_rect()
+
+	item:set_enabled(false)
+
+	local function co_screenshot(o)
+		for i = 0, 5, 1 do
+			coroutine.yield()
+		end
+
+		Application:screenshot(name, x, y, w, h, true, screenshot_done, 1024, 576)
+	end
+
+	managers.menu:active_menu().renderer.ws:panel():animate(co_screenshot)
+end
+
+function MenuCallbackHandler:leave_armor_screenshot_menu(item)
+	local editor = managers.blackmarket:armor_skin_editor()
+
+	if editor then
+		editor:leave_screenshot_mode()
+		editor:reload_current_skin()
+	end
+end
+
+function MenuCallbackHandler:armor_screenshot_color_changed(item)
+	local skin_editor = managers.blackmarket:armor_skin_editor()
+
+	if item:value() == "none" then
+		skin_editor:hide_screenshot_bg()
+	elseif item:value() == "green" then
+		skin_editor:set_screenshot_color(Color(0, 1, 0))
+	elseif item:value() == "black" then
+		skin_editor:set_screenshot_color(Color(0, 0, 0))
+	elseif item:value() == "red" then
+		skin_editor:set_screenshot_color(Color(1, 0, 0))
+	elseif item:value() == "blue" then
+		skin_editor:set_screenshot_color(Color(0, 0, 1))
+	elseif item:value() == "cyan" then
+		skin_editor:set_screenshot_color(Color(0, 1, 1))
+	elseif item:value() == "pink" then
+		skin_editor:set_screenshot_color(Color(1, 0, 1))
+	elseif item:value() == "yellow" then
+		skin_editor:set_screenshot_color(Color(1, 1, 0))
+	elseif item:value() == "white" then
+		skin_editor:set_screenshot_color(Color(1, 1, 1))
+	end
+end
+
+function MenuCallbackHandler:armor_screenshots_hide_weapons(item)
+	for _, data in pairs(managers.menu_scene._weapon_units) do
+		for _, u_data in pairs(data) do
+			if alive(u_data.unit) then
+				self:_armor_screenshots_set_weapon_visibility(u_data.unit, false)
+			end
+		end
+	end
+end
+
+function MenuCallbackHandler:armor_screenshots_show_weapons(item)
+	for _, data in pairs(managers.menu_scene._weapon_units) do
+		for _, u_data in pairs(data) do
+			if alive(u_data.unit) then
+				self:_armor_screenshots_set_weapon_visibility(u_data.unit, true)
+			end
+		end
+	end
+end
+
+function MenuCallbackHandler:_armor_screenshots_set_weapon_visibility(unit, state)
+	unit:set_enabled(state)
+
+	for _, child_unit in ipairs(unit:children()) do
+		self:_armor_screenshots_set_weapon_visibility(child_unit, state)
+	end
+end
+
+function MenuCallbackHandler:select_armor_skin_level(item)
+	managers.menu_scene:set_character_armor(item:name())
+
+	local editor = managers.blackmarket:armor_skin_editor()
+
+	if editor then
+		editor:reload_current_skin()
+	end
+end
+
+function MenuCallbackHandler:select_armor_skin_pose(item)
+	managers.menu_scene:_set_character_unit_pose(item:name(), managers.menu_scene._character_unit)
+end
 

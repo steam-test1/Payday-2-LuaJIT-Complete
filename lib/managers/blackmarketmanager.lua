@@ -1,4 +1,5 @@
 require("lib/managers/workshop/SkinEditor")
+require("lib/managers/workshop/ArmorSkinEditor")
 
 BlackMarketManager = BlackMarketManager or class()
 local INV_TO_CRAFT = Idstring("inventory_to_crafted")
@@ -54,6 +55,7 @@ function BlackMarketManager:_setup()
 	self._preloading_index = 0
 	self._category_resource_loaded = {}
 	self._skin_editor = SkinEditor:new()
+	self._armor_skin_editor = ArmorSkinEditor:new()
 end
 
 function BlackMarketManager:init_finalize()
@@ -63,6 +65,10 @@ end
 
 function BlackMarketManager:skin_editor()
 	return self._skin_editor
+end
+
+function BlackMarketManager:armor_skin_editor()
+	return self._armor_skin_editor
 end
 
 function BlackMarketManager:_setup_armors()

@@ -53,6 +53,7 @@ function DLCTweakData:init(tweak_data)
 			infamous = 1,
 			pines = true,
 			born = true,
+			wmp = true,
 			opera = true,
 			pd2_goty = 1,
 			mrm = 1,
@@ -5933,6 +5934,33 @@ function DLCTweakData:init(tweak_data)
 		item_entry = "gcm",
 		amount = 1
 	}}
+	self.wmp_bundle = {
+		free = true,
+		content = {}
+	}
+	self.wmp_bundle.content.loot_global_value = "pd2_clan"
+	self.wmp_bundle.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "wmp_01",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "wmp_02",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "wmp_03",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "wmp_04",
+			amount = 1
+		}
+	}
 	self.fdm_bundle = {
 		dlc = "has_fdm",
 		content = {}

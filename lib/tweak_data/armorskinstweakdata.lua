@@ -446,6 +446,122 @@ function EconomyTweakData:_init_armor_skins_crime_spree()
 end
 
 function EconomyTweakData:_init_armor_skins_armor_safe()
+	self.armor_skins.ast_armor1 = {
+		name_id = "bm_askn_ast_armor1",
+		desc_id = "bm_askn_ast_armor1_desc",
+		rarity = "uncommon",
+		reserve_quality = false,
+		texture_bundle_folder = "cash/safes/ast",
+		base_gradient = {[7.0] = "units/payday2_cash/safes/ast/base_gradient/base_ast_001_df"},
+		pattern_gradient = {[7.0] = "units/payday2_cash/safes/ast/pattern_gradient/gradient_ast_004_df"},
+		pattern = {[7.0] = "units/payday2_cash/safes/ast/pattern/ast_pattern_005_df"},
+		sticker = {[7.0] = "units/payday2_cash/safes/ast/sticker/ast_sticker_005_df"},
+		pattern_tweak = {[7] = Vector3(1.39757, 0, 1)},
+		pattern_pos = {[7] = Vector3(-0.404006, -1.06225, 0)},
+		uv_scale = {[7] = Vector3(20, 20, 0)},
+		uv_offset_rot = {[7] = Vector3(0.216075, 0.931553, 0)},
+		steam_economy = true
+	}
+	self.armor_skins.ast_armor2 = {
+		name_id = "bm_askn_ast_armor2",
+		desc_id = "bm_askn_ast_armor2_desc",
+		rarity = "uncommon",
+		reserve_quality = false,
+		texture_bundle_folder = "cash/safes/ast",
+		base_gradient = {[7.0] = "units/payday2_cash/safes/ast/base_gradient/base_ast_002_df"},
+		pattern_gradient = {[7.0] = "units/payday2_cash/safes/ast/pattern_gradient/gradient_ast_002_df"},
+		pattern = {[7.0] = "units/payday2_cash/safes/ast/pattern/ast_pattern_002_df"},
+		sticker = {[7.0] = "units/payday2_cash/safes/ast/sticker/ast_sticker_004_df"},
+		pattern_tweak = {[7] = Vector3(3.83019, 0, 1)},
+		pattern_pos = {[7] = Vector3(0, 0, 0)},
+		uv_scale = {[7] = Vector3(1.01, 1.01, 0)},
+		uv_offset_rot = {
+			[7] = Vector3(0, 0.998331, 0),
+			[2] = Vector3(-2, -2, 0)
+		},
+		steam_economy = true
+	}
+	self.armor_skins.ast_armor3 = {
+		name_id = "bm_askn_ast_armor3",
+		desc_id = "bm_askn_ast_armor3_desc",
+		rarity = "uncommon",
+		reserve_quality = false,
+		texture_bundle_folder = "cash/safes/ast",
+		base_gradient = {[7.0] = "units/payday2_cash/safes/ast/base_gradient/base_ast_003_df"},
+		pattern_gradient = {[7.0] = "units/payday2_cash/safes/ast/pattern_gradient/gradient_ast_003_df"},
+		pattern = {[7.0] = "units/payday2_cash/safes/ast/pattern/ast_pattern_004_df"},
+		sticker = {[7.0] = "units/payday2_cash/safes/ast/sticker/ast_sticker_002_df"},
+		pattern_tweak = {[7] = Vector3(2.87622, 0, 1)},
+		pattern_pos = {[7] = Vector3(-0.0224181, -0.461245, 0)},
+		uv_scale = {[7] = Vector3(11.4173, 11.4173, 0)},
+		uv_offset_rot = {[7] = Vector3(-0.324689, 1.38854, 0)},
+		steam_economy = true
+	}
+	self.armor_skins.ast_armor4 = {
+		name_id = "bm_askn_ast_armor4",
+		desc_id = "bm_askn_ast_armor4_desc",
+		rarity = "rare",
+		reserve_quality = false,
+		texture_bundle_folder = "cash/safes/ast",
+		base_gradient = {[7.0] = "units/payday2_cash/safes/ast/base_gradient/base_ast_004_df"},
+		pattern_gradient = {[7.0] = "units/payday2_cash/safes/red/pattern_gradient/gradient_france_df"},
+		pattern = {[7.0] = "units/payday2_cash/safes/default/pattern/pattern_default_df"},
+		sticker = {
+			[2.0] = "units/payday2_cash/safes/wwt/sticker/wwt_sticker_001_df",
+			[7.0] = "units/payday2_cash/safes/ast/sticker/ast_sticker_001_df"
+		},
+		pattern_tweak = {[7] = Vector3(1, 0, 1)},
+		pattern_pos = {[7] = Vector3(0, 0, 0)},
+		uv_scale = {
+			[2] = Vector3(1.20187, 2.10769, 1),
+			[7] = Vector3(1.00349, 1.00349, 0)
+		},
+		uv_offset_rot = {
+			[2] = Vector3(0.001, 1.12589, 6.28319),
+			[7] = Vector3(0.001, 1.00163, 6.28319)
+		},
+		cubemap_pattern_control = {[7] = Vector3(0, 0, 0)},
+		steam_economy = true
+	}
+	self.armor_skins.ast_armor5 = {
+		name_id = "bm_askn_ast_armor5",
+		desc_id = "bm_askn_ast_armor5_desc",
+		rarity = "rare",
+		reserve_quality = false,
+		texture_bundle_folder = "cash/safes/ast",
+		base_gradient = {[7.0] = "units/payday2_cash/safes/ast/base_gradient/base_ast_005_df"},
+		pattern_gradient = {[7.0] = "units/payday2_cash/safes/red/pattern_gradient/gradient_france_df"},
+		sticker = {[7.0] = "units/payday2_cash/safes/ast/sticker/ast_sticker_003_df"},
+		uv_scale = {
+			[2] = Vector3(0.629771, 1.00417, 0.367994),
+			[7] = Vector3(1.0325, 1.0325, 0.367994)
+		},
+		uv_offset_rot = {
+			[2] = Vector3(-0.445466, 1.06887, 0),
+			[7] = Vector3(0, 1.01087, 0)
+		},
+		steam_economy = true
+	}
+	self.armor_skins.ast_armor6 = {
+		name_id = "bm_askn_ast_armor6",
+		desc_id = "bm_askn_ast_armor6_desc",
+		rarity = "epic",
+		reserve_quality = false,
+		texture_bundle_folder = "cash/safes/ast",
+		base_gradient = {[7.0] = "units/payday2_cash/safes/ast/base_gradient/base_ast_006_df"},
+		pattern_gradient = {[7.0] = "units/payday2_cash/safes/red/pattern_gradient/gradient_france_df"},
+		pattern = {[7.0] = "units/payday2_cash/safes/default/pattern/pattern_default_df"},
+		sticker = {[7.0] = "units/payday2_cash/safes/ast/sticker/ast_sticker_006_df"},
+		uv_scale = {
+			[7] = Vector3(1.01117, 1.01117, 0),
+			[2] = Vector3(0.486747, 0.868144, 0)
+		},
+		uv_offset_rot = {
+			[2] = Vector3(0.590884, 1.10919, 3.16632),
+			[7] = Vector3(0.00266134, 1.01049, 0)
+		},
+		steam_economy = true
+	}
 	self.armor_skins.cvc_woodland_camo = {
 		name_id = "bm_askn_cvc_woodland_camo",
 		desc_id = "bm_askn_cvc_woodland_camo_desc",

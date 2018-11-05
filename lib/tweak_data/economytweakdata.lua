@@ -794,6 +794,43 @@ function EconomyTweakData:init()
 			"p90_cs4"
 		}}
 	}
+	self.contents.ast_01 = {
+		def_id = 10044,
+		contains = {
+			armor_skins = {
+				"ast_armor1",
+				"ast_armor2",
+				"ast_armor3",
+				"ast_armor4",
+				"ast_armor5",
+				"ast_armor6"
+			},
+			contents = {}
+		}
+	}
+	self.contents.wwt_01 = {
+		def_id = 10045,
+		contains = {
+			weapon_skins = {
+				"m1928_wwt",
+				"b682_wwt",
+				"flamethrower_mk2_wwt",
+				"sterling_wwt",
+				"peacemaker_wwt",
+				"erma_wwt",
+				"ching_wwt",
+				"m37_wwt",
+				"breech_wwt",
+				"mg42_wwt"
+			},
+			contents = {"wwt_01_legendary"}
+		}
+	}
+	self.contents.wwt_01_legendary = {
+		def_id = 10046,
+		contains = {weapon_skins = {"colt_1911_wwt"}},
+		rarity = "legendary"
+	}
 	self.safes.overkill_01 = {
 		def_id = 50000,
 		promo = true,
@@ -1007,6 +1044,24 @@ function EconomyTweakData:init()
 		texture_bundle_folder = "cash/safes/cs4",
 		market_link = "https://steamcommunity.com/market/listings/218620/Community%20Safe%204"
 	}
+	self.safes.ast_01 = {
+		free = true,
+		drill = "ast_01",
+		content = "ast_01",
+		name_id = "bm_menu_safe_ast_01",
+		unit_name = "units/payday2_cash/safes/ast/safe/eco_safe_ast",
+		texture_bundle_folder = "cash/safes/ast",
+		market_link = "https://steamcommunity.com/market/listings/218620/Armor%20Safe%202"
+	}
+	self.safes.wwt_01 = {
+		free = true,
+		drill = "wwt_01",
+		content = "wwt_01",
+		name_id = "bm_menu_safe_wwt_01",
+		unit_name = "units/payday2_cash/safes/wwt/safe/eco_safe_wwt",
+		texture_bundle_folder = "cash/safes/wwt",
+		market_link = "https://steamcommunity.com/market/listings/218620/Armor%20Safe%202"
+	}
 	self.drills.overkill_01 = {
 		safe = "overkill_01",
 		def_id = 70000,
@@ -1163,6 +1218,14 @@ function EconomyTweakData:init()
 	self.drills.cs4_01 = {
 		safe = "cs4_01",
 		unit_name = "units/payday2_cash/safes/cs4/drill/eco_drill_cs4"
+	}
+	self.drills.ast_01 = {
+		safe = "ast_01",
+		unit_name = "units/payday2_cash/safes/ast/drill/eco_drill_ast"
+	}
+	self.drills.wwt_01 = {
+		safe = "wwt_01",
+		unit_name = "units/payday2_cash/safes/wwt/drill/eco_drill_wwt"
 	}
 	self.bonuses = {concealment_p1 = {}}
 	self.bonuses.concealment_p1.name_id = "bm_menu_bonus_concealment"

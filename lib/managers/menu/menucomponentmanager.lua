@@ -269,6 +269,10 @@ function MenuComponentManager:init()
 			create = callback(self, self, "create_raid_weapons_menu_gui"),
 			close = callback(self, self, "close_raid_weapons_menu_gui")
 		},
+		raid_preorder_menu = {
+			create = callback(self, self, "create_raid_preorder_menu_gui"),
+			close = callback(self, self, "close_raid_preorder_menu_gui")
+		},
 		raid_special_menu = {
 			create = callback(self, self, "create_raid_special_menu_gui"),
 			close = callback(self, self, "close_raid_special_menu_gui")
@@ -4793,6 +4797,28 @@ end
 
 function MenuComponentManager:raid_weapons_menu_gui()
 	return self._raid_weapons_menu_gui
+end
+
+function MenuComponentManager:create_raid_preorder_menu_gui(node)
+	self:close_raid_preorder_menu_gui()
+
+	self._raid_preorder_menu_gui = RaidMenuGui:new(self._ws, self._fullscreen_ws, node, "raid_preorder")
+
+	self:register_component("raid_preorder_menu", self._raid_preorder_menu_gui)
+end
+
+function MenuComponentManager:close_raid_preorder_menu_gui()
+	if self._raid_preorder_menu_gui then
+		self._raid_preorder_menu_gui:close()
+
+		self._raid_preorder_menu_gui = nil
+
+		self:unregister_component("raid_preorder_menu")
+	end
+end
+
+function MenuComponentManager:raid_preorder_menu_gui()
+	return self._raid_preorder_menu_gui
 end
 
 function MenuComponentManager:create_raid_special_menu_gui(node)

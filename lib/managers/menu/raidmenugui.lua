@@ -85,6 +85,11 @@ function RaidMenuGui:open_raid_twitch()
 	Steam:overlay_activate("url", "https://www.twitch.tv/liongamelion")
 end
 
+function RaidMenuGui:open_raid_preorder_menu()
+	managers.menu:open_node("raid_beta_preorder", {})
+	managers.menu:post_event("menu_enter")
+end
+
 function RaidMenuGui:open_raid_preorder()
 	Steam:overlay_activate("url", "https://store.steampowered.com/app/" .. RaidMenuGui.RaidAppId .. "/")
 end

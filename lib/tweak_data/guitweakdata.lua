@@ -4874,11 +4874,6 @@ function GuiTweakData:init()
 		url = "http://www.overkillsoftware.com/games/communitysafe4/"
 	})
 	table.insert(self.new_heists, {
-		name_id = "menu_nh_dsync_beta_is_live",
-		texture_path = "guis/textures/pd2/new_heists/desync_beta_is_live",
-		url = "http://steamcommunity.com/games/218620/announcements/detail/1342486185513464930"
-	})
-	table.insert(self.new_heists, {
 		name_id = "menu_nh_crime_spree_update",
 		texture_path = "guis/textures/pd2/new_heists/crime_spree_update",
 		url = "http://store.steampowered.com/news/?appids=218620"
@@ -4887,6 +4882,11 @@ function GuiTweakData:init()
 		name_id = "menu_nh_ultimate_edition",
 		texture_path = "guis/textures/pd2/new_heists/ultimate_edition",
 		url = "http://store.steampowered.com/app/218620"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_dsync_beta_is_live",
+		texture_path = "guis/textures/pd2/new_heists/desync_beta_is_live",
+		url = "http://steamcommunity.com/games/218620/announcements/detail/1342486185513464930"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_russian_national_day",

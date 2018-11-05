@@ -494,6 +494,60 @@ function MenuSceneManager:_set_up_templates()
 		color = Vector3(1, 1, 1) * 0.8,
 		position = Vector3(1600, -1750, -25)
 	})}
+	self._scene_templates.blackmarket_armor_workshop = {
+		fov = 20,
+		can_change_fov = true,
+		use_character_grab2 = true,
+		use_character_pan = true,
+		character_visible = true,
+		recreate_character = true,
+		lobby_characters_visible = false,
+		hide_menu_logo = true,
+		camera_pos = Vector3(1460, -2200, 0)
+	}
+	self._scene_templates.blackmarket_armor_workshop.target_pos = self._scene_templates.blackmarket_armor_workshop.camera_pos + Vector3(0.15, 1, -0.105) * 100
+	local camera_look = self._scene_templates.blackmarket_armor_workshop.target_pos - self._scene_templates.blackmarket_armor_workshop.camera_pos:normalized()
+
+	mvector3.rotate_with(camera_look, Rotation(6, 2.75, 0))
+
+	self._scene_templates.blackmarket_armor_workshop.character_pos = self._scene_templates.blackmarket_armor_workshop.camera_pos + camera_look * 600 + Vector3(30, 0, -120)
+	self._scene_templates.blackmarket_armor_workshop.environment = "crafting"
+	self._scene_templates.blackmarket_armor_workshop.use_workbench_room = true
+	self._scene_templates.blackmarket_armor_workshop.remove_infamy_card = true
+	self._scene_templates.blackmarket_armor_workshop.lights = {
+		self:_create_light({
+			far_range = 600,
+			color = Vector3(1, 1, 1) * 0.8,
+			position = Vector3(1400, -1650, -45)
+		}),
+		self:_create_light({
+			far_range = 400,
+			color = Vector3(1, 1, 1) * 2,
+			position = Vector3(1600, -1750, -25)
+		})
+	}
+	self._scene_templates.blackmarket_armor_screenshot = deep_clone(self._scene_templates.blackmarket_armor)
+	self._scene_templates.blackmarket_armor_screenshot.fov = 25
+	self._scene_templates.blackmarket_armor_screenshot.can_change_fov = true
+	self._scene_templates.blackmarket_armor_screenshot.use_character_grab2 = true
+	self._scene_templates.blackmarket_armor_screenshot.use_character_pan = true
+	local camera_look = self._scene_templates.blackmarket_armor_screenshot.target_pos - self._scene_templates.blackmarket_armor_screenshot.camera_pos:normalized()
+
+	mvector3.rotate_with(camera_look, Rotation(6, 2.75, 0))
+
+	self._scene_templates.blackmarket_armor_screenshot.character_pos = self._scene_templates.blackmarket_armor_screenshot.camera_pos + camera_look * 600 + Vector3(60, 0, -120)
+	self._scene_templates.blackmarket_armor_screenshot.lights = {
+		self:_create_light({
+			far_range = 600,
+			color = Vector3(1, 1, 1) * 0.8,
+			position = Vector3(1400, -1650, -45)
+		}),
+		self:_create_light({
+			far_range = 400,
+			color = Vector3(1, 1, 1) * 2,
+			position = Vector3(1600, -1750, -25)
+		})
+	}
 	self._scene_templates.blackmarket_screenshot = {
 		fov = 40,
 		can_change_fov = true,
