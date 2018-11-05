@@ -71,3 +71,4 @@ local function length_function(coefficients, derivative1_for)
 	end
 end
 
+return length_function

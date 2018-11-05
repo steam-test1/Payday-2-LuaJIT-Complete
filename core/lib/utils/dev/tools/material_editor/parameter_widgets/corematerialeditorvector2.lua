@@ -119,3 +119,4 @@ function CoreMaterialEditorVector2:_from_slider_range(v)
 	return Vector3(CoreMaterialEditorParameter.from_slider_range(self, v.x, self._parameter_info.min.x, step_x), CoreMaterialEditorParameter.from_slider_range(self, v.y, self._parameter_info.min.y, step_y))
 end
 
+return CoreMaterialEditorVector2

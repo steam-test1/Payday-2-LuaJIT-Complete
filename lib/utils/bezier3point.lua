@@ -78,3 +78,4 @@ return {
 	point_angle = point_angle,
 	reflect_point = reflect_point,
 	reflect_point_distance = reflect_point_distance
+}

@@ -67,3 +67,4 @@ function M:movement_condition(hand, key_map, connection_name)
 	return true
 end
 
+return M

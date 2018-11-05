@@ -216,3 +216,4 @@ function CoreMaterialEditorParameter:_copy_to_parent(name)
 	self._editor._parent_combo_box:set_value(parent)
 end
 
+return CoreMaterialEditorParameter

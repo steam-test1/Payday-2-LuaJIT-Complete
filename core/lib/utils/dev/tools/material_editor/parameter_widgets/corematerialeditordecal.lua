@@ -152,3 +152,4 @@ function CoreMaterialEditorDecal:_fill_decal_materials()
 	self._combo_box:set_value(self._value)
 end
 
+return CoreMaterialEditorDecal
