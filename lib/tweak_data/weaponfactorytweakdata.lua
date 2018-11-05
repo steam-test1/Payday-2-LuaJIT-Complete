@@ -676,7 +676,10 @@ function WeaponFactoryTweakData:_init_sights()
 			wpn_fps_shot_r870 = {translation = Vector3(0.01, 0, -3.3)},
 			wpn_fps_shot_serbu = {translation = Vector3(0, 0, -3.3)},
 			wpn_fps_smg_akmsu = {translation = Vector3(-0.028, 0, -3.35)},
-			wpn_fps_ass_ak5 = {translation = Vector3(0.025, 0, -3.725)},
+			wpn_fps_ass_ak5 = {
+				translation = Vector3(0, 0, -3.5),
+				rotation = Rotation(0, 0, 0)
+			},
 			wpn_fps_ass_aug = {translation = Vector3(0, 0, -2.8)},
 			wpn_fps_ass_g36 = {translation = Vector3(0, 0, -3)},
 			wpn_fps_smg_p90 = {translation = Vector3(0, 0, -2.97)},
@@ -1366,10 +1369,7 @@ function WeaponFactoryTweakData:_init_content_dlc2_dec16()
 			wpn_fps_shot_r870 = {translation = Vector3(0.015, 0, -3.25)},
 			wpn_fps_shot_serbu = {translation = Vector3(0, 0, -3.25)},
 			wpn_fps_smg_akmsu = {translation = Vector3(-0.028, 0, -3.3)},
-			wpn_fps_ass_ak5 = {
-				translation = Vector3(0.025, 0, -3.45),
-				rotation = Rotation(0, -0.35, 0)
-			},
+			wpn_fps_ass_ak5 = {translation = Vector3(0, 0, -3.5)},
 			wpn_fps_ass_aug = {translation = Vector3(0, 0, -2.8)},
 			wpn_fps_ass_g36 = {translation = Vector3(0, 0, -3)},
 			wpn_fps_smg_p90 = {translation = Vector3(0, 0, -2.97)},
@@ -2031,16 +2031,22 @@ function WeaponFactoryTweakData:_init_content_jobs()
 		stance_mod = {
 			wpn_fps_pis_1911 = {translation = Vector3(0, 0, -0.45)},
 			wpn_fps_pis_beretta = {
-				translation = Vector3(0, 0, -0.7),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 0, -0.4),
+				rotation = Rotation(0, -0.5, 0)
 			},
-			wpn_fps_pis_deagle = {translation = Vector3(0, 0, -0.78)},
+			wpn_fps_pis_deagle = {
+				translation = Vector3(0, 0, -0.48),
+				rotation = Rotation(0, -0.5, 0)
+			},
 			wpn_fps_pis_g17 = {translation = Vector3(0, 0, -0.85)},
 			wpn_fps_pis_g18c = {translation = Vector3(0, 0, -0.45)},
 			wpn_fps_pis_usp = {translation = Vector3(-0.015, 0, -0.34)},
 			wpn_fps_pis_ppk = {translation = Vector3(0, 0, -1)},
 			wpn_fps_pis_p226 = {translation = Vector3(0, 0, -0.6)},
-			wpn_fps_pis_g22c = {translation = Vector3(0, 0, -0.45)},
+			wpn_fps_pis_g22c = {
+				translation = Vector3(0, 0, -0.45),
+				rotation = Rotation(0, -0.3, 0)
+			},
 			wpn_fps_pis_g26 = {translation = Vector3(-0.01, 0, -0.35)},
 			wpn_fps_pis_c96 = {translation = Vector3(0, 0, -1.2)},
 			wpn_fps_pis_hs2000 = {translation = Vector3(0, 0, -0.75)},
@@ -26564,7 +26570,7 @@ function WeaponFactoryTweakData:_init_tng()
 				rotation = Rotation(0, 0, -45)
 			},
 			wpn_fps_ass_ak5 = {
-				translation = Vector3(-1.3, 0, -13.6),
+				translation = Vector3(-1.25, 0, -13.5),
 				rotation = Rotation(0, 0, -45)
 			},
 			wpn_fps_ass_aug = {
@@ -28435,7 +28441,7 @@ function WeaponFactoryTweakData:_init_varmods()
 			wpn_fps_shot_r870 = {translation = Vector3(0.01, 6, -3.3)},
 			wpn_fps_shot_serbu = {translation = Vector3(0, 6, -3.3)},
 			wpn_fps_smg_akmsu = {translation = Vector3(-0.028, 6, -3.35)},
-			wpn_fps_ass_ak5 = {translation = Vector3(0.025, 6, -3.725)},
+			wpn_fps_ass_ak5 = {translation = Vector3(0, 0, -3.5)},
 			wpn_fps_ass_aug = {translation = Vector3(0, 6, -2.8)},
 			wpn_fps_ass_g36 = {translation = Vector3(0, 6, -3)},
 			wpn_fps_smg_p90 = {translation = Vector3(0, 6, -2.97)},

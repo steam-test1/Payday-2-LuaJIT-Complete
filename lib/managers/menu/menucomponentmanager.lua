@@ -4929,7 +4929,7 @@ function MenuComponentManager:create_crime_spree_mission_end_gui(node)
 
 	self._crime_spree_mission_end = self._crime_spree_mission_end or CrimeSpreeMissionEndOptions:new(self._ws, self._fullscreen_ws, node)
 
-	self:register_component("crime_spree_mission_end", self._crime_spree_mission_end)
+	self:register_component("crime_spree_mission_end", self._crime_spree_mission_end, -1)
 end
 
 function MenuComponentManager:close_crime_spree_mission_end_gui(node)

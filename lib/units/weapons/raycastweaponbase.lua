@@ -1616,7 +1616,13 @@ function RaycastWeaponBase:add_ammo(ratio, add_amount_override)
 
 		local add_amount = add_amount_override
 		local picked_up = true
-		add_amount = add_amount or rng_ammo > 0 or math.max(0, math.round(rng_ammo))
+
+		if not add_amount then
+			local rng_ammo = math.lerp(ammo_base._ammo_pickup[1] * multiplier_min, ammo_base._ammo_pickup[2] * multiplier_max, math.random())
+			picked_up = rng_ammo > 0
+			add_amount = math.max(0, math.round(rng_ammo))
+		end
+
 		add_amount = math.floor(add_amount * (ratio or 1))
 
 		ammo_base:set_ammo_total(math.clamp(ammo_base:get_ammo_total() + add_amount, 0, ammo_base:get_ammo_max()))

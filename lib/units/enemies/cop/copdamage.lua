@@ -2911,7 +2911,16 @@ function CopDamage:build_suppression(amount, panic_chance)
 
 	if not Network:is_server() then
 		local sync_amount = nil
-		sync_amount = amount == "panic" and 16 or amount == "max" and 15 or sup_tweak.brown_point and (sup_tweak.brown_point[2] <= 0 and 1 or amount_val / sup_tweak.brown_point[2]) or sup_tweak.react_point[2] <= 0 and 1 or amount_val / sup_tweak.react_point[2] or math.clamp(math.ceil(sync_amount_ratio * 15), 1, 15)
+
+		if amount == "panic" then
+			sync_amount = 16
+		elseif amount == "max" then
+			sync_amount = 15
+		else
+			local sync_amount_ratio = nil
+			sync_amount_ratio = sup_tweak.brown_point and (sup_tweak.brown_point[2] <= 0 and 1 or amount_val / sup_tweak.brown_point[2]) or sup_tweak.react_point[2] <= 0 and 1 or amount_val / sup_tweak.react_point[2]
+			sync_amount = math.clamp(math.ceil(sync_amount_ratio * 15), 1, 15)
+		end
 
 		managers.network:session():send_to_host("suppression", self._unit, sync_amount)
 

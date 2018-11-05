@@ -2786,6 +2786,7 @@ function CharacterTweakData:_init_civilian(presets)
 	self.civilian = {
 		experience = {},
 		detection = presets.detection.civilian,
+		tags = {"civilian"},
 		HEALTH_INIT = 0.9,
 		headshot_dmg_mul = 1,
 		move_speed = presets.move_speed.civ_fast,

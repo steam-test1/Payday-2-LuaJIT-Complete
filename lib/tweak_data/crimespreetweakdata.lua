@@ -179,6 +179,111 @@ function CrimeSpreeTweakData:init_missions(tweak_data)
 				id = "brb",
 				icon = "csm_brb",
 				level = tweak_data.narrative.stages.brb
+			},
+			{
+				stage_id = "arm_cro",
+				id = "arm_cro",
+				icon = "csm_crossroads",
+				add = debug_short_add,
+				level = tweak_data.narrative.stages.arm_cro
+			},
+			{
+				stage_id = "help",
+				id = "help",
+				icon = "csm_prison",
+				add = debug_short_add,
+				level = tweak_data.narrative.stages.help
+			},
+			{
+				stage_id = "cage",
+				id = "arm_und",
+				icon = "csm_overpass",
+				add = debug_short_add,
+				level = tweak_data.narrative.stages.arm_und
+			},
+			{
+				stage_id = "arm_hcm",
+				id = "arm_hcm",
+				icon = "csm_downtown",
+				add = debug_short_add,
+				level = tweak_data.narrative.stages.arm_hcm
+			},
+			{
+				stage_id = "arm_par",
+				id = "arm_par",
+				icon = "csm_park",
+				add = debug_short_add,
+				level = tweak_data.narrative.stages.arm_par
+			},
+			{
+				stage_id = "arm_fac",
+				id = "arm_fac",
+				icon = "csm_harbor",
+				add = debug_short_add,
+				level = tweak_data.narrative.stages.arm_fac
+			},
+			{
+				stage_id = "chew",
+				add = 3,
+				id = "biker_2",
+				icon = "csm_biker_2",
+				level = tweak_data.narrative.stages.chew
+			},
+			{
+				stage_id = "firestarter_1",
+				add = 4,
+				id = "fs_1",
+				icon = "csm_fs_1",
+				level = tweak_data.narrative.stages.firestarter_1
+			},
+			{
+				stage_id = "nail",
+				id = "nail",
+				icon = "csm_labrats",
+				add = debug_short_add,
+				level = tweak_data.narrative.stages.nail
+			},
+			{
+				stage_id = "watchdogs_1_d",
+				add = 6,
+				id = "watchdogs_1_d",
+				icon = "csm_watchdogs_1",
+				level = tweak_data.narrative.stages.watchdogs_1_d
+			},
+			{
+				stage_id = "pines",
+				id = "pines",
+				icon = "csm_white_xmas",
+				add = debug_med_add,
+				level = tweak_data.narrative.stages.pines
+			},
+			{
+				stage_id = "moon",
+				id = "moon",
+				icon = "csm_stealing_xmas",
+				add = debug_med_add,
+				level = tweak_data.narrative.stages.moon
+			},
+			{
+				stage_id = "spa",
+				add = 8,
+				id = "spa",
+				icon = "csm_brooklyn",
+				level = tweak_data.narrative.stages.spa
+			},
+			{
+				stage_id = "cane",
+				add = 8,
+				id = "cane",
+				icon = "csm_santas_workshop",
+				level = tweak_data.narrative.stages.cane
+			},
+			{
+				stage_id = "mia_2",
+				add = 8,
+				id = "mia_2",
+				icon = "csm_miami_2",
+				level = tweak_data.narrative.stages.mia_2
 			}
 		},
 		{

@@ -605,8 +605,8 @@ function PlayerTweakData:_init_new_stances()
 	self.stances.saiga.steelsight.vel_overshot.pitch_neg = -20
 	self.stances.saiga.steelsight.vel_overshot.pitch_pos = 20
 	self.stances.ak5 = deep_clone(self.stances.default)
-	local pivot_shoulder_translation = Vector3(10.6857, 15.6186, -2.80523)
-	local pivot_shoulder_rotation = Rotation(0.106673, -0.431536, 0.628573)
+	local pivot_shoulder_translation = Vector3(10.6877, 15.6166, -2.8033)
+	local pivot_shoulder_rotation = Rotation(0.106298, -0.085067, 0.62852)
 	local pivot_head_translation = Vector3(8, 11, -3)
 	local pivot_head_rotation = Rotation(0, 0, 0)
 	self.stances.ak5.standard.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
@@ -617,7 +617,7 @@ function PlayerTweakData:_init_new_stances()
 	self.stances.ak5.standard.vel_overshot.pitch_neg = -10
 	self.stances.ak5.standard.vel_overshot.pitch_pos = 10
 	local pivot_head_translation = Vector3(-0.017, 18, 0)
-	local pivot_head_rotation = Rotation(0.035, 0, 0)
+	local pivot_head_rotation = Rotation(0, 0, 0)
 	self.stances.ak5.steelsight.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
 	self.stances.ak5.steelsight.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
 	self.stances.ak5.steelsight.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -10, 0)
