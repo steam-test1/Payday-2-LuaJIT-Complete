@@ -2124,6 +2124,9 @@ Play the full version soon to get your full PAYDAY!]],
 		burn_duration = 3,
 		burn_tick_period = 0.5
 	}
+	self.projectiles.launcher_frag_slap = deep_clone(self.projectiles.launcher_frag)
+	self.projectiles.launcher_frag_arbiter.damage = 130
+	self.projectiles.launcher_incendiary_slap = deep_clone(self.projectiles.launcher_incendiary)
 	self.projectiles.fir_com = {
 		damage = 3,
 		curve_pow = 0.1,

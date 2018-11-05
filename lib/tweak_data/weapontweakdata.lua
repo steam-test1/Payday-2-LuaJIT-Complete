@@ -174,6 +174,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_basset_crew()
 	self:_init_data_x_basset_crew()
 	self:_init_data_corgi_crew()
+	self:_init_data_slap_crew()
 	self:_precalculate_values()
 end
 
@@ -3036,6 +3037,27 @@ function WeaponTweakData:_init_data_corgi_crew()
 	self.corgi_crew.suppression = 1
 end
 
+function WeaponTweakData:_init_data_slap_crew()
+	self.slap_crew.sounds.prefix = "slap_npc"
+	self.slap_crew.use_data.selection_index = SELECTION.PRIMARY
+	self.slap_crew.DAMAGE = 1
+	self.slap_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.slap_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.slap_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	self.slap_crew.no_trail = true
+	self.slap_crew.CLIP_AMMO_MAX = 1
+	self.slap_crew.NR_CLIPS_MAX = 4
+	self.slap_crew.looped_reload_speed = 0.16666666666666666
+	self.slap_crew.reload = "looped"
+	self.slap_crew.auto.fire_rate = 0.1
+	self.slap_crew.hold = {
+		"bullpup",
+		"rifle"
+	}
+	self.slap_crew.alert_size = 2800
+	self.slap_crew.suppression = 1
+end
+
 function WeaponTweakData:_init_data_player_weapons(tweak_data)
 	local autohit_rifle_default, autohit_pistol_default, autohit_shotgun_default, autohit_lmg_default, autohit_snp_default, autohit_smg_default, autohit_minigun_default, aim_assist_rifle_default, aim_assist_pistol_default, aim_assist_shotgun_default, aim_assist_lmg_default, aim_assist_snp_default, aim_assist_smg_default, aim_assist_minigun_default = nil
 
@@ -3809,6 +3831,7 @@ function WeaponTweakData:_init_new_weapons(weapon_data)
 	self:_init_basset(weapon_data)
 	self:_init_x_basset(weapon_data)
 	self:_init_corgi(weapon_data)
+	self:_init_slap(weapon_data)
 end
 
 function WeaponTweakData:_init_new_m4(weapon_data)
@@ -16205,6 +16228,110 @@ function WeaponTweakData:_init_corgi(weapon_data)
 	}
 end
 
+function WeaponTweakData:_init_slap(weapon_data)
+	self.slap = {
+		categories = {"grenade_launcher"},
+		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
+		projectile_type = "launcher_frag_slap",
+		projectile_types = {launcher_incendiary = "launcher_incendiary_slap"},
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.slap.sounds.fire = "slap_fire"
+	self.slap.sounds.dryfire = "shotgun_dryfire"
+	self.slap.sounds.enter_steelsight = "secondary_steel_sight_enter"
+	self.slap.sounds.leave_steelsight = "secondary_steel_sight_exit"
+	self.slap.timers = {reload_not_empty = 3.1}
+	self.slap.timers.reload_empty = self.slap.timers.reload_not_empty
+	self.slap.timers.unequip = 0.6
+	self.slap.timers.equip = 0.6
+	self.slap.name_id = "bm_w_slap"
+	self.slap.desc_id = "bm_w_slap_desc"
+	self.slap.description_id = "des_slap"
+	self.slap.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
+	self.slap.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	self.slap.use_data = {
+		selection_index = 1,
+		align_place = "right_hand"
+	}
+	self.slap.DAMAGE = 6
+	self.slap.damage_near = 2000
+	self.slap.damage_far = 3000
+	self.slap.rays = 6
+	self.slap.CLIP_AMMO_MAX = 1
+	self.slap.NR_CLIPS_MAX = math.round((weapon_data.total_damage_primary / 50) / self.slap.CLIP_AMMO_MAX)
+	self.slap.AMMO_MAX = self.slap.CLIP_AMMO_MAX * self.slap.NR_CLIPS_MAX
+	self.slap.AMMO_PICKUP = {
+		0.05,
+		0.65
+	}
+	self.slap.FIRE_MODE = "single"
+	self.slap.fire_mode_data = {fire_rate = 2}
+	self.slap.single = {fire_rate = 2}
+	self.slap.spread = {
+		standing = self.r870.spread.standing,
+		crouching = self.r870.spread.crouching,
+		steelsight = self.r870.spread.steelsight,
+		moving_standing = self.r870.spread.moving_standing,
+		moving_crouching = self.r870.spread.moving_crouching,
+		moving_steelsight = self.r870.spread.moving_steelsight
+	}
+	self.slap.kick = {standing = {
+		2.9,
+		3,
+		-0.5,
+		0.5
+	}}
+	self.slap.kick.crouching = self.slap.kick.standing
+	self.slap.kick.steelsight = self.slap.kick.standing
+	self.slap.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.slap.crosshair.standing.offset = 0.16
+	self.slap.crosshair.standing.moving_offset = 0.8
+	self.slap.crosshair.standing.kick_offset = 0.6
+	self.slap.crosshair.standing.hidden = true
+	self.slap.crosshair.crouching.offset = 0.08
+	self.slap.crosshair.crouching.moving_offset = 0.7
+	self.slap.crosshair.crouching.kick_offset = 0.4
+	self.slap.crosshair.crouching.hidden = true
+	self.slap.crosshair.steelsight.hidden = true
+	self.slap.crosshair.steelsight.offset = 0
+	self.slap.crosshair.steelsight.moving_offset = 0
+	self.slap.crosshair.steelsight.kick_offset = 0.1
+	self.slap.shake = {
+		fire_multiplier = 2,
+		fire_steelsight_multiplier = 2
+	}
+	self.slap.autohit = weapon_data.autohit_shotgun_default
+	self.slap.aim_assist = weapon_data.aim_assist_shotgun_default
+	self.slap.animations = {
+		equip_id = "equip_gre_m79",
+		recoil_steelsight = true
+	}
+	self.slap.panic_suppression_chance = 0.2
+	self.slap.texture_bundle_folder = "fgl"
+	self.slap.ignore_damage_upgrades = true
+	self.slap.stats = {
+		zoom = 3,
+		total_ammo_mod = 21,
+		damage = 130,
+		alert_size = 7,
+		spread = 22,
+		spread_moving = 6,
+		recoil = 22,
+		value = 1,
+		extra_ammo = 6,
+		reload = 11,
+		suppression = 2,
+		concealment = 22
+	}
+	self.slap.stats_modifiers = {damage = 10}
+end
+
 function WeaponTweakData:_create_table_structure()
 	self.c45_npc = {
 		usage = "is_pistol",
@@ -17162,6 +17289,12 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.corgi_crew = {
+		usage = "is_bullpup",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.slap_crew = {
 		usage = "is_bullpup",
 		sounds = {},
 		use_data = {},

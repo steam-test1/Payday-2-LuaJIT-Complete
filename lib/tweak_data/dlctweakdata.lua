@@ -57,6 +57,7 @@ function DLCTweakData:init(tweak_data)
 			gage_pack_snp = true,
 			dlc1 = true,
 			pd2_million = true,
+			fgl = true,
 			pd2_hw_boxing = true,
 			infamous = 1,
 			pines = true,
@@ -6235,6 +6236,12 @@ function DLCTweakData:init(tweak_data)
 			amount = 1
 		}
 	}
+	self.fgl_bundle = {
+		dlc = "has_fgl",
+		content = {}
+	}
+	self.fgl_bundle.content.loot_global_value = "fgl"
+	self.fgl_bundle.content.loot_drops = {}
 	self.rvd_bundle = {
 		dlc = "has_rvd",
 		content = {}
