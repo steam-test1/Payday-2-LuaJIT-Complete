@@ -808,9 +808,9 @@ function PlayerTweakData:_init_new_stances()
 	self.stances.new_mp5.crouched.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
 	self.stances.new_mp5.crouched.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -10, 0)
 	self.stances.colt_1911 = deep_clone(self.stances.default)
-	local pivot_shoulder_translation = Vector3(11.719, 28.426, -5.57873)
-	local pivot_shoulder_rotation = Rotation(0.000179346, 1.51534e-05, -0.000675548)
-	local pivot_head_translation = Vector3(7, 25, -3)
+	local pivot_shoulder_translation = Vector3(8.51072, 41.1823, -3.19592)
+	local pivot_shoulder_rotation = Rotation(0.0999825, -0.688529, 0.630296)
+	local pivot_head_translation = Vector3(7, 32, -3)
 	local pivot_head_rotation = Rotation(0, 0, 0)
 	self.stances.colt_1911.standard.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
 	self.stances.colt_1911.standard.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
@@ -819,7 +819,7 @@ function PlayerTweakData:_init_new_stances()
 	self.stances.colt_1911.standard.vel_overshot.yaw_pos = -10
 	self.stances.colt_1911.standard.vel_overshot.pitch_neg = -8
 	self.stances.colt_1911.standard.vel_overshot.pitch_pos = 8
-	local pivot_head_translation = Vector3(0, 32, 0)
+	local pivot_head_translation = Vector3(0, 42, 0)
 	local pivot_head_rotation = Rotation(0, 0, 0)
 	self.stances.colt_1911.steelsight.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
 	self.stances.colt_1911.steelsight.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
@@ -829,7 +829,7 @@ function PlayerTweakData:_init_new_stances()
 	self.stances.colt_1911.steelsight.vel_overshot.yaw_pos = -8
 	self.stances.colt_1911.steelsight.vel_overshot.pitch_neg = -12
 	self.stances.colt_1911.steelsight.vel_overshot.pitch_pos = 12
-	local pivot_head_translation = Vector3(6, 24, -4)
+	local pivot_head_translation = Vector3(6, 31, -4)
 	local pivot_head_rotation = Rotation(0, 0, 0)
 	self.stances.colt_1911.crouched.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
 	self.stances.colt_1911.crouched.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()

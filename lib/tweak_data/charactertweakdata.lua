@@ -3,6 +3,13 @@ CharacterTweakData = CharacterTweakData or class()
 function CharacterTweakData:init(tweak_data)
 	self:_create_table_structure()
 
+	self._enemy_list = {}
+	self._speech_prefix_p2 = "n"
+
+	if Global and Global.game_settings and Global.game_settings.difficulty then
+		self._speech_prefix_p2 = Global.game_settings.difficulty == "sm_wish" and "d" or "n"
+	end
+
 	local func = "_init_region_" .. tostring(tweak_data.levels:get_ai_group_type())
 
 	self[func](self)
@@ -35,12 +42,6 @@ function CharacterTweakData:init(tweak_data)
 	local presets = self:_presets(tweak_data)
 	self.presets = presets
 	self.tweak_data = tweak_data
-	self._enemy_list = {}
-	self._speech_prefix_p2 = "n"
-
-	if Global and Global.game_settings and Global.game_settings.difficulty then
-		self._speech_prefix_p2 = Global.game_settings.difficulty == "sm_wish" and "d" or "n"
-	end
 
 	self:_init_security(presets)
 	self:_init_gensec(presets)
@@ -147,6 +148,7 @@ function CharacterTweakData:_init_region_zombie()
 		bulldozer = "bdz",
 		medic = "mdc"
 	}
+	self._speech_prefix_p2 = "n"
 end
 
 function CharacterTweakData:_init_security(presets)

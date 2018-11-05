@@ -41,7 +41,7 @@ function StatisticsTweakData:init()
 end
 
 function StatisticsTweakData:statistics_specializations()
-	return 18
+	return table.size(tweak_data.skilltree.specializations)
 end
 
 function StatisticsTweakData:statistics_table()
@@ -146,7 +146,7 @@ function StatisticsTweakData:statistics_table()
 		self._grenade_list = {}
 
 		for id, data in pairs(tweak_data.blackmarket.projectiles) do
-			if not data.skip_statistics and data.name_id and not data.weapon_id then
+			if not data.ignore_statistics and data.name_id and not data.weapon_id then
 				table.insert(self._grenade_list, id)
 			end
 		end
