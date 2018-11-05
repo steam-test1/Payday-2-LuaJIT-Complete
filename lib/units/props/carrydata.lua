@@ -81,7 +81,7 @@ function CarryData:_update_throw_link(unit, t, dt)
 	if not self._linked_to then
 		local bag_object = self._unit:get_object(ids_g_bag) or self._unit:get_object(ids_g_canvasbag) or self._unit:get_object(ids_g_g) or self._unit:get_object(ids_g_goat) or self._unit:get_object(ids_g_bodybag)
 
-		if bag_object then
+		if bag_object and bag_object:visibility() then
 			local unit = nil
 
 			for key, data in pairs(managers.groupai:state():all_AI_criminals()) do

@@ -36,10 +36,12 @@ function WaypointUnitElement:init(unit)
 	self._hed.icon = "pd2_goto"
 	self._hed.text_id = "debug_none"
 	self._hed.only_in_civilian = false
+	self._hed.only_on_instigator = false
 
 	table.insert(self._save_values, "icon")
 	table.insert(self._save_values, "text_id")
 	table.insert(self._save_values, "only_in_civilian")
+	table.insert(self._save_values, "only_on_instigator")
 end
 
 function WaypointUnitElement:_add_text_options_from_file(path)
@@ -83,6 +85,7 @@ function WaypointUnitElement:_build_panel(panel, panel_sizer)
 	self:_build_value_checkbox(panel, panel_sizer, "only_in_civilian", "This waypoint will only be visible for players that are in civilian mode")
 	self:_build_value_combobox(panel, panel_sizer, "icon", self._icon_options, "Select an icon")
 	self:_build_value_combobox(panel, panel_sizer, "text_id", self._text_options, "Select a text id")
+	self:_build_value_checkbox(panel, panel_sizer, "only_on_instigator", "This waypoint will only be visible for the player that triggers it")
 
 	local text_sizer = EWS:BoxSizer("HORIZONTAL")
 

@@ -234,6 +234,7 @@ function PlayerMovement:update(unit, t, dt)
 	end
 
 	self:update_stamina(t, dt)
+	self:update_teleport(t, dt)
 end
 
 function PlayerMovement:update_stamina(t, dt, ignore_running)
@@ -459,6 +460,10 @@ end
 
 function PlayerMovement:current_state_name()
 	return self._current_state_name
+end
+
+function PlayerMovement:in_clean_state()
+	return self._current_state_name == "clean" or self._current_state_name == "civilian" or self._current_state_name == "mask_off"
 end
 
 function PlayerMovement:state_enter_time()
@@ -1037,5 +1042,81 @@ end
 
 function PlayerMovement:zipline_unit()
 	return self._zipline_unit
+end
+
+function PlayerMovement:trigger_teleport(data)
+	if not data.position then
+		Application:error("[PlayerMovement:trigger_teleport] Tried to teleport without position")
+
+		return
+	end
+
+	local t = managers.player:player_timer():time()
+	self._teleport_data = clone(data)
+	local fade_in = self._teleport_data.fade_in
+	local sustain = self._teleport_data.sustain
+	local fade_out = self._teleport_data.fade_out
+	self._teleport_t = t + fade_in
+	self._teleport_done_t = self._teleport_t + sustain + fade_out
+	local effect = clone(managers.overlay_effect:presets().fade_out_in)
+	effect.fade_in = fade_in
+	effect.sustain = sustain
+	effect.fade_out = fade_out
+
+	managers.overlay_effect:play_effect(effect)
+	self._unit:base():controller():set_enabled(false)
+end
+
+function PlayerMovement:update_teleport(t, dt)
+	if not self._teleport_data then
+		return
+	end
+
+	if self._teleport_t and self._teleport_t < t then
+		self:warp_to(self._teleport_data.position, self._teleport_data.rotation)
+		self._unit:network():send("action_teleport", self._teleport_data.position)
+
+		self._teleport_t = nil
+		local new_selection = nil
+
+		if self._teleport_data.equip_selection and self._teleport_data.equip_selection ~= "none" then
+			local selection = self._teleport_data.equip_selection == "primary" and 2 or 1
+
+			if self._teleport_data.state ~= "mask_off" and self._teleport_data.state ~= "civilian" and self._teleport_data.state ~= "lobby_empty" then
+				if managers.player:current_state() == "mask_off" or managers.player:current_state() == "civilian" or managers.player:current_state() == "lobby_empty" then
+					new_selection = selection
+				else
+					self:current_state():_start_action_unequip_weapon(t, {selection_wanted = selection})
+				end
+			else
+				managers.player:player_unit():inventory()._equipped_selection = selection
+			end
+		end
+
+		if self._teleport_data.state then
+			managers.player:set_player_state(self._teleport_data.state)
+		end
+
+		if new_selection then
+			self:current_state():_start_action_unequip_weapon(t, {selection_wanted = new_selection})
+		end
+
+		if managers.player:is_carrying() then
+			managers.player:drop_carry()
+		end
+
+		self._unit:base():controller():set_enabled(true)
+	elseif self._teleport_done_t and self._teleport_done_t < t then
+		self._teleport_done_t = nil
+		self._teleport_data = nil
+	end
+end
+
+function PlayerMovement:teleporting()
+	return not not self._teleport_data
+end
+
+function PlayerMovement:has_teleport_data(key)
+	return self._teleport_data and not not self._teleport_data[key]
 end
 

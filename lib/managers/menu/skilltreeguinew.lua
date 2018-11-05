@@ -7,6 +7,13 @@ local function make_fine_text(text_gui)
 	text_gui:set_position(math.round(text_gui:x()), math.round(text_gui:y()))
 end
 
+local function fit_text_height(text_gui)
+	local _, y, _, h = text_gui:text_rect()
+
+	text_gui:set_h(h)
+	text_gui:set_y(math.round(text_gui:y()))
+end
+
 local massive_font = tweak_data.menu.pd2_massive_font
 local large_font = tweak_data.menu.pd2_large_font
 local medium_font = tweak_data.menu.pd2_medium_font

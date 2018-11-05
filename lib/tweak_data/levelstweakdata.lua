@@ -1564,6 +1564,35 @@ function LevelsTweakData:init()
 		player_sequence = "spawn_prop_sneak_suit",
 		load_screen = "guis/dlcs/pic/textures/loading/job_diamond_heist_df"
 	}
+	self.rvd1 = {
+		name_id = "heist_rvd1_hl",
+		briefing_id = "heist_rvd1_briefing",
+		briefing_dialog = "Play_loc_rvd_brf",
+		world_name = "narratives/bain/rvd/stage1",
+		intro_event = "Play_loc_rvd_intro",
+		outro_event = "Play_loc_rvd_end",
+		music = "heist",
+		package = "packages/job_rvd",
+		cube = "cube_apply_heist_bank",
+		max_bags = 10,
+		ai_group_type = america,
+		narrator = "locke",
+		load_screen = "guis/dlcs/rvd/textures/loading/job_rvd_01_df"
+	}
+	self.rvd2 = {
+		name_id = "heist_rvd2_hl",
+		briefing_id = "heist_rvd2_briefing",
+		briefing_dialog = "Play_pln_rvd_brf",
+		world_name = "narratives/bain/rvd/stage2",
+		intro_event = "Play_pln_rvd_02",
+		outro_event = "Play_pln_rvd_end",
+		music = "heist",
+		package = "packages/job_rvd2",
+		cube = "cube_apply_heist_bank",
+		ai_group_type = america,
+		max_bags = 30,
+		load_screen = "guis/dlcs/rvd/textures/loading/job_rvd_02_df"
+	}
 	self.hvh = {
 		name_id = "heist_hvh_hl",
 		briefing_id = "heist_hvh_briefing",
@@ -1693,6 +1722,8 @@ function LevelsTweakData:init()
 		"run",
 		"glace",
 		"dah",
+		"rvd1",
+		"rvd2",
 		"hvh",
 		"wwh"
 	}

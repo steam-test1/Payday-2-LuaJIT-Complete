@@ -307,7 +307,7 @@ function ControllerWrapperConnection:get_name()
 end
 
 function ControllerWrapperConnection:set_input_name_list(input_name_list)
-	if self._input_name_list and next(self._input_name_list) then
+	if input_name_list and next(input_name_list) then
 		self._input_name_list = input_name_list
 	else
 		self._input_name_list = nil

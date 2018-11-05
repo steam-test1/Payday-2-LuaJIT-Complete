@@ -81,6 +81,10 @@ function RaycastWeaponBase:change_fire_object(new_obj)
 	self._muzzle_effect_table.parent = new_obj
 end
 
+function RaycastWeaponBase:fire_object()
+	return self._obj_fire
+end
+
 function RaycastWeaponBase:get_name_id()
 	return self._name_id
 end
@@ -402,7 +406,7 @@ function RaycastWeaponBase:fire(from_pos, direction, dmg_mul, shoot_player, spre
 		end
 
 		base:set_ammo_remaining_in_clip(base:get_ammo_remaining_in_clip() - ammo_usage)
-		base:set_ammo_total(base:get_ammo_total() - ammo_usage)
+		self:use_ammo(base, ammo_usage)
 	end
 
 	local user_unit = self._setup.user_unit
@@ -430,6 +434,14 @@ function RaycastWeaponBase:fire(from_pos, direction, dmg_mul, shoot_player, spre
 	end
 
 	return ray_res
+end
+
+function RaycastWeaponBase:use_ammo(base, ammo_usage)
+	local is_player = self._setup.user_unit == managers.player:player_unit()
+
+	if ammo_usage > 0 then
+		base:set_ammo_total(base:get_ammo_total() - ammo_usage)
+	end
 end
 
 function RaycastWeaponBase:_spawn_muzzle_effect()
@@ -1523,14 +1535,15 @@ function RaycastWeaponBase:reload_interuptable()
 	return false
 end
 
-function RaycastWeaponBase:on_reload()
+function RaycastWeaponBase:on_reload(amount)
 	local ammo_base = self._reload_ammo_base or self:ammo_base()
+	amount = amount or ammo_base:get_ammo_max_per_clip()
 
 	if self._setup.expend_ammo then
-		ammo_base:set_ammo_remaining_in_clip(math.min(ammo_base:get_ammo_total(), ammo_base:get_ammo_max_per_clip()))
+		ammo_base:set_ammo_remaining_in_clip(math.min(ammo_base:get_ammo_total(), amount))
 	else
-		ammo_base:set_ammo_remaining_in_clip(ammo_base:get_ammo_max_per_clip())
-		ammo_base:set_ammo_total(ammo_base:get_ammo_max_per_clip())
+		ammo_base:set_ammo_remaining_in_clip(amount)
+		ammo_base:set_ammo_total(amount)
 	end
 
 	managers.job:set_memory("kill_count_no_reload_" .. tostring(self._name_id), nil, true)

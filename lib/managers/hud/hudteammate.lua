@@ -20,6 +20,7 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		name = "" .. i,
 		w = math.round(width)
 	})
+	self._panel = teammate_panel
 
 	if not main_player then
 		teammate_panel:set_h(84)
@@ -165,7 +166,126 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 	})
 
 	radial_health_panel:set_bottom(self._player_panel:h())
+	self:_create_radial_health(radial_health_panel, main_player)
 
+	local weapon_panel_w = 80
+	local weapons_panel = self._player_panel:panel({
+		name = "weapons_panel",
+		visible = true,
+		layer = 0,
+		w = weapon_panel_w,
+		h = radial_health_panel:h(),
+		x = radial_health_panel:right() + 4,
+		y = radial_health_panel:y()
+	})
+
+	self:_create_weapon_panels(weapons_panel)
+	self:_create_equipment_panels(self._player_panel, weapons_panel:right(), weapons_panel:top(), weapons_panel:bottom())
+
+	local bag_w = 32
+	local bag_h = 31
+	local carry_panel = self._player_panel:panel({
+		name = "carry_panel",
+		visible = false,
+		x = 0,
+		layer = 1,
+		w = bag_w,
+		h = bag_h + 2,
+		y = radial_health_panel:top() - bag_h
+	})
+
+	self:_create_carry(carry_panel)
+
+	local interact_panel = self._player_panel:panel({
+		layer = 3,
+		name = "interact_panel",
+		visible = false
+	})
+
+	interact_panel:set_shape(weapons_panel:shape())
+	interact_panel:set_shape(radial_health_panel:shape())
+	interact_panel:set_size(radial_size * 1.25, radial_size * 1.25)
+	interact_panel:set_center(radial_health_panel:center())
+
+	local radius = interact_panel:h() / 2 - 4
+	self._interact = CircleBitmapGuiObject:new(interact_panel, {
+		blend_mode = "add",
+		use_bg = true,
+		rotation = 360,
+		layer = 0,
+		radius = radius,
+		color = Color.white
+	})
+
+	self._interact:set_position(4, 4)
+
+	self._special_equipment = {}
+
+	self:create_waiting_panel(teammates_panel)
+end
+
+function HUDTeammate:_create_carry(carry_panel)
+	self._carry_panel = carry_panel
+	local tabs_texture = "guis/textures/pd2/hud_tabs"
+	local bg_color = Color.white / 3
+	local bag_rect = {
+		32,
+		33,
+		32,
+		31
+	}
+	local bg_rect = {
+		84,
+		0,
+		44,
+		32
+	}
+	local bag_w = bag_rect[3]
+	local bag_h = bag_rect[4]
+
+	carry_panel:set_x(24 - bag_w / 2)
+	carry_panel:set_center_x(self._radial_health_panel:center_x())
+	carry_panel:bitmap({
+		name = "bg",
+		visible = false,
+		w = 100,
+		layer = 0,
+		y = 0,
+		x = 0,
+		texture = tabs_texture,
+		texture_rect = bg_rect,
+		color = bg_color,
+		h = carry_panel:h()
+	})
+	carry_panel:bitmap({
+		name = "bag",
+		layer = 0,
+		y = 1,
+		visible = true,
+		x = 1,
+		texture = tabs_texture,
+		w = bag_w,
+		h = bag_h,
+		texture_rect = bag_rect,
+		color = Color.white
+	})
+	carry_panel:text({
+		y = 0,
+		vertical = "center",
+		name = "value",
+		text = "",
+		font = "fonts/font_small_mf",
+		visible = false,
+		layer = 0,
+		color = Color.white,
+		x = bag_rect[3] + 4,
+		font_size = tweak_data.hud.small_font_size
+	})
+end
+
+function HUDTeammate:_create_radial_health(radial_health_panel)
+	self._radial_health_panel = radial_health_panel
+	local radial_size = self._main_player and 64 or 48
 	local radial_bg = radial_health_panel:bitmap({
 		texture = "guis/textures/pd2/hud_radialbg",
 		name = "radial_bg",
@@ -272,7 +392,7 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		h = radial_delayed_damage_panel:h()
 	})
 
-	if main_player then
+	if self._main_player then
 		local radial_rip = radial_health_panel:bitmap({
 			texture = "guis/textures/pd2/hud_rip",
 			name = "radial_rip",
@@ -358,10 +478,12 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		w = radial_health_panel:w(),
 		h = radial_health_panel:h()
 	})
+	self:_create_condition(radial_health_panel)
+end
 
+function HUDTeammate:_create_condition(radial_health_panel)
 	local x, y, w, h = radial_health_panel:shape()
-
-	teammate_panel:bitmap({
+	self._condition_icon = self._panel:bitmap({
 		name = "condition_icon",
 		visible = false,
 		layer = 4,
@@ -371,8 +493,7 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		w = w,
 		h = h
 	})
-
-	local condition_timer = teammate_panel:text({
+	local condition_timer = self._panel:text({
 		y = 0,
 		vertical = "center",
 		name = "condition_timer",
@@ -386,7 +507,10 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 	})
 
 	condition_timer:set_shape(radial_health_panel:shape())
+end
 
+function HUDTeammate:_create_weapon_panels(weapons_panel)
+	local bg_color = Color.white / 3
 	local w_selection_w = 12
 	local weapon_panel_w = 80
 	local extra_clip_w = 4
@@ -411,15 +535,6 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		12,
 		32
 	}
-	local weapons_panel = self._player_panel:panel({
-		name = "weapons_panel",
-		visible = true,
-		layer = 0,
-		w = weapon_panel_w,
-		h = radial_health_panel:h(),
-		x = radial_health_panel:right() + 4,
-		y = radial_health_panel:y()
-	})
 	local primary_weapon_panel = weapons_panel:panel({
 		y = 0,
 		name = "primary_weapon_panel",
@@ -448,7 +563,7 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		blend_mode = "normal",
 		x = 0,
 		layer = 1,
-		visible = main_player and true,
+		visible = self._main_player and true,
 		text = "0" .. math.random(40),
 		color = Color.white,
 		w = ammo_text_w + extra_clip_w,
@@ -476,7 +591,7 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 	local weapon_selection_panel = primary_weapon_panel:panel({
 		name = "weapon_selection",
 		layer = 1,
-		visible = main_player and true,
+		visible = self._main_player and true,
 		w = w_selection_w,
 		x = weapon_panel_w - w_selection_w
 	})
@@ -490,7 +605,7 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 	})
 	self:_create_primary_weapon_firemode()
 
-	if not main_player then
+	if not self._main_player then
 		local ammo_total = primary_weapon_panel:child("ammo_total")
 		local _x, _y, _w, _h = ammo_total:text_rect()
 
@@ -539,7 +654,7 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		blend_mode = "normal",
 		x = 0,
 		layer = 1,
-		visible = main_player and true,
+		visible = self._main_player and true,
 		text = "" .. math.random(40),
 		color = Color.white,
 		w = ammo_text_w + extra_clip_w,
@@ -567,7 +682,7 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 	local weapon_selection_panel = secondary_weapon_panel:panel({
 		name = "weapon_selection",
 		layer = 1,
-		visible = main_player and true,
+		visible = self._main_player and true,
 		w = w_selection_w,
 		x = weapon_panel_w - w_selection_w
 	})
@@ -582,7 +697,7 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 	secondary_weapon_panel:set_bottom(weapons_panel:h())
 	self:_create_secondary_weapon_firemode()
 
-	if not main_player then
+	if not self._main_player then
 		local ammo_total = secondary_weapon_panel:child("ammo_total")
 		local _x, _y, _w, _h = ammo_total:text_rect()
 
@@ -602,7 +717,11 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		secondary_weapon_panel:child("bg"):set_image(tabs_texture, eq_rect[1], eq_rect[2], eq_rect[3], eq_rect[4])
 		secondary_weapon_panel:child("bg"):set_size(secondary_weapon_panel:size())
 	end
+end
 
+function HUDTeammate:_create_equipment_panels(player_panel, x, top, bottom)
+	local tabs_texture = "guis/textures/pd2/hud_tabs"
+	local bg_color = Color.white / 3
 	local eq_rect = {
 		84,
 		0,
@@ -618,8 +737,8 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		layer = 1,
 		w = eq_w,
 		h = eq_h,
-		x = weapons_panel:right() + 4,
-		y = weapons_panel:y()
+		x = x + 4,
+		y = top
 	})
 
 	deployable_equipment_panel:bitmap({
@@ -658,7 +777,7 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		h = deployable_equipment_panel:h()
 	})
 
-	if not main_player then
+	if not self._main_player then
 		local scale = eq_tm_scale
 
 		deployable_equipment_panel:set_size(deployable_equipment_panel:w() * 0.9, deployable_equipment_panel:h() * scale)
@@ -667,22 +786,23 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		equipment:set_x(equipment:x() + 4)
 		amount:set_center_y(deployable_equipment_panel:h() / 2)
 		amount:set_right(deployable_equipment_panel:w() - 4)
-		deployable_equipment_panel:set_x(weapons_panel:right() - 8)
-		deployable_equipment_panel:set_bottom(weapons_panel:bottom())
+		deployable_equipment_panel:set_x(x - 8)
+		deployable_equipment_panel:set_bottom(bottom)
 
 		local bg = deployable_equipment_panel:child("bg")
 
 		bg:set_size(deployable_equipment_panel:size())
 	end
 
+	self._deployable_equipment_panel = deployable_equipment_panel
 	local texture, rect = tweak_data.hud_icons:get_icon_data(tweak_data.equipments.specials.cable_tie.icon)
 	local cable_ties_panel = self._player_panel:panel({
 		name = "cable_ties_panel",
 		layer = 1,
 		w = eq_w,
 		h = eq_h,
-		x = weapons_panel:right() + 4,
-		y = weapons_panel:y()
+		x = x + 4,
+		y = top
 	})
 
 	cable_ties_panel:bitmap({
@@ -722,12 +842,12 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 	})
 
 	if PlayerBase.USE_GRENADES then
-		cable_ties_panel:set_center_y(weapons_panel:center_y())
+		cable_ties_panel:set_center_y(top + (bottom - top) / 2)
 	else
-		cable_ties_panel:set_bottom(weapons_panel:bottom())
+		cable_ties_panel:set_bottom(bottom)
 	end
 
-	if not main_player then
+	if not self._main_player then
 		local scale = eq_tm_scale
 
 		cable_ties_panel:set_size(cable_ties_panel:w() * 0.9, cable_ties_panel:h() * scale)
@@ -744,6 +864,8 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		bg:set_size(cable_ties_panel:size())
 	end
 
+	self._cable_ties_panel = cable_ties_panel
+
 	if PlayerBase.USE_GRENADES then
 		local texture, rect = tweak_data.hud_icons:get_icon_data("frag_grenade")
 		local grenades_panel = self._player_panel:panel({
@@ -752,8 +874,8 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 			layer = 1,
 			w = eq_w,
 			h = eq_h,
-			x = weapons_panel:right() + 4,
-			y = weapons_panel:y()
+			x = x + 4,
+			y = top
 		})
 		local grenades_bg = grenades_panel:bitmap({
 			name = "bg",
@@ -821,9 +943,9 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 			h = grenades_panel:h()
 		})
 
-		grenades_panel:set_bottom(weapons_panel:bottom())
+		grenades_panel:set_bottom(bottom)
 
-		if not main_player then
+		if not self._main_player then
 			local scale = eq_tm_scale
 
 			grenades_panel:set_size(grenades_panel:w() * 0.9, grenades_panel:h() * scale)
@@ -839,98 +961,9 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 			grenades_panel:set_bottom(cable_ties_panel:bottom())
 			grenades_bg:set_size(grenades_panel:size())
 		end
+
+		self._grenades_panel = grenades_panel
 	end
-
-	local bag_rect = {
-		32,
-		33,
-		32,
-		31
-	}
-	local bg_rect = {
-		84,
-		0,
-		44,
-		32
-	}
-	local bag_w = bag_rect[3]
-	local bag_h = bag_rect[4]
-	local carry_panel = self._player_panel:panel({
-		name = "carry_panel",
-		visible = false,
-		x = 0,
-		layer = 1,
-		w = bag_w,
-		h = bag_h + 2,
-		y = radial_health_panel:top() - bag_h
-	})
-
-	carry_panel:set_x(24 - bag_w / 2)
-	carry_panel:set_center_x(radial_health_panel:center_x())
-	carry_panel:bitmap({
-		name = "bg",
-		visible = false,
-		w = 100,
-		layer = 0,
-		y = 0,
-		x = 0,
-		texture = tabs_texture,
-		texture_rect = bg_rect,
-		color = bg_color,
-		h = carry_panel:h()
-	})
-	carry_panel:bitmap({
-		name = "bag",
-		layer = 0,
-		y = 1,
-		visible = true,
-		x = 1,
-		texture = tabs_texture,
-		w = bag_w,
-		h = bag_h,
-		texture_rect = bag_rect,
-		color = Color.white
-	})
-	carry_panel:text({
-		y = 0,
-		vertical = "center",
-		name = "value",
-		text = "",
-		font = "fonts/font_small_mf",
-		visible = false,
-		layer = 0,
-		color = Color.white,
-		x = bag_rect[3] + 4,
-		font_size = tweak_data.hud.small_font_size
-	})
-
-	local interact_panel = self._player_panel:panel({
-		layer = 3,
-		name = "interact_panel",
-		visible = false
-	})
-
-	interact_panel:set_shape(weapons_panel:shape())
-	interact_panel:set_shape(radial_health_panel:shape())
-	interact_panel:set_size(radial_size * 1.25, radial_size * 1.25)
-	interact_panel:set_center(radial_health_panel:center())
-
-	local radius = interact_panel:h() / 2 - 4
-	self._interact = CircleBitmapGuiObject:new(interact_panel, {
-		blend_mode = "add",
-		use_bg = true,
-		rotation = 360,
-		layer = 0,
-		radius = radius,
-		color = Color.white
-	})
-
-	self._interact:set_position(4, 4)
-
-	self._special_equipment = {}
-	self._panel = teammate_panel
-
-	self:create_waiting_panel(teammates_panel)
 end
 
 function HUDTeammate:recreate_weapon_firemode()
@@ -1329,7 +1362,7 @@ function HUDTeammate:add_panel()
 	end
 end
 
-function HUDTeammate:remove_panel()
+function HUDTeammate:remove_panel(weapons_panel)
 	local teammate_panel = self._panel
 
 	teammate_panel:set_visible(false)
@@ -1341,20 +1374,17 @@ function HUDTeammate:remove_panel()
 	end
 
 	self:set_condition("mugshot_normal")
-	self._player_panel:child("weapons_panel"):child("secondary_weapon_panel"):set_visible(false)
-	self._player_panel:child("weapons_panel"):child("primary_weapon_panel"):set_visible(false)
 
-	local deployable_equipment_panel = self._player_panel:child("deployable_equipment_panel")
+	weapons_panel = weapons_panel or self._player_panel:child("weapons_panel")
 
-	deployable_equipment_panel:child("equipment"):set_visible(false)
-	deployable_equipment_panel:child("amount"):set_visible(false)
-
-	local cable_ties_panel = self._player_panel:child("cable_ties_panel")
-
-	cable_ties_panel:child("cable_ties"):set_visible(false)
-	cable_ties_panel:child("amount"):set_visible(false)
-	self._player_panel:child("carry_panel"):set_visible(false)
-	self._player_panel:child("carry_panel"):child("value"):set_text("")
+	weapons_panel:child("secondary_weapon_panel"):set_visible(false)
+	weapons_panel:child("primary_weapon_panel"):set_visible(false)
+	self._deployable_equipment_panel:child("equipment"):set_visible(false)
+	self._deployable_equipment_panel:child("amount"):set_visible(false)
+	self._cable_ties_panel:child("cable_ties"):set_visible(false)
+	self._cable_ties_panel:child("amount"):set_visible(false)
+	self._carry_panel:set_visible(false)
+	self._carry_panel:child("value"):set_text("")
 	self:set_cheater(false)
 	self:set_info_meter({
 		total = 0,
@@ -1415,8 +1445,8 @@ function HUDTeammate:set_weapon_firemode(id, firemode)
 	end
 end
 
-function HUDTeammate:set_ammo_amount_by_type(type, max_clip, current_clip, current_left, max)
-	local weapon_panel = self._player_panel:child("weapons_panel"):child(type .. "_weapon_panel")
+function HUDTeammate:set_ammo_amount_by_type(type, max_clip, current_clip, current_left, max, weapon_panel)
+	local weapon_panel = weapon_panel or self._player_panel:child("weapons_panel"):child(type .. "_weapon_panel")
 
 	weapon_panel:set_visible(true)
 
@@ -1448,7 +1478,7 @@ end
 function HUDTeammate:set_health(data)
 	self._health_data = data
 	local teammate_panel = self._panel:child("player")
-	local radial_health_panel = teammate_panel:child("radial_health_panel")
+	local radial_health_panel = self._radial_health_panel
 	local radial_health = radial_health_panel:child("radial_health")
 	local radial_rip = radial_health_panel:child("radial_rip")
 	local radial_rip_bg = radial_health_panel:child("radial_rip_bg")
@@ -1491,7 +1521,7 @@ end
 function HUDTeammate:set_armor(data)
 	local teammate_panel = self._panel:child("player")
 	self._armor_data = data
-	local radial_health_panel = teammate_panel:child("radial_health_panel")
+	local radial_health_panel = self._radial_health_panel
 	local radial_shield = radial_health_panel:child("radial_shield")
 	local ratio = data.total ~= 0 and data.current / data.total or 0
 
@@ -1501,7 +1531,7 @@ end
 
 function HUDTeammate:set_custom_radial(data)
 	local teammate_panel = self._panel:child("player")
-	local radial_health_panel = teammate_panel:child("radial_health_panel")
+	local radial_health_panel = self._radial_health_panel
 	local radial_custom = radial_health_panel:child("radial_custom")
 	local red = data.current / data.total
 
@@ -1511,7 +1541,7 @@ end
 
 function HUDTeammate:_damage_taken()
 	local teammate_panel = self._panel:child("player")
-	local radial_health_panel = teammate_panel:child("radial_health_panel")
+	local radial_health_panel = self._radial_health_panel
 	local damage_indicator = radial_health_panel:child("damage_indicator")
 
 	damage_indicator:stop()
@@ -1732,7 +1762,7 @@ function HUDTeammate:set_grenades(data)
 end
 
 function HUDTeammate:set_ability_icon(icon)
-	local ability_icon = self._player_panel:child("radial_health_panel"):child("radial_ability"):child("ability_icon")
+	local ability_icon = self._radial_health_panel:child("radial_ability"):child("ability_icon")
 	local texture, texture_rect = tweak_data.hud_icons:get_icon_data(icon, {
 		0,
 		0,
@@ -1822,8 +1852,7 @@ function HUDTeammate:animate_grenade_flash()
 end
 
 function HUDTeammate:set_ability_radial(data)
-	local teammate_panel = self._panel:child("player")
-	local radial_health_panel = teammate_panel:child("radial_health_panel")
+	local radial_health_panel = self._radial_health_panel
 	local radial_ability_panel = radial_health_panel:child("radial_ability")
 	local ability_meter = radial_ability_panel:child("ability_meter")
 	local progress = data.current / data.total
@@ -1833,8 +1862,7 @@ function HUDTeammate:set_ability_radial(data)
 end
 
 function HUDTeammate:activate_ability_radial(time_left, time_total)
-	local teammate_panel = self._panel:child("player")
-	local radial_health_panel = teammate_panel:child("radial_health_panel")
+	local radial_health_panel = self._radial_health_panel
 	local radial_ability_panel = radial_health_panel:child("radial_ability")
 	local ability_meter = radial_ability_panel:child("ability_meter")
 	time_total = time_total or time_left
@@ -1873,7 +1901,7 @@ end
 
 function HUDTeammate:update_delayed_damage()
 	local damage = self._delayed_damage or 0
-	local health_panel = self._player_panel:child("radial_health_panel")
+	local health_panel = self._radial_health_panel
 	local health_radial = health_panel:child("radial_health")
 	local armor_radial = health_panel:child("radial_shield")
 	local delayed_damage_panel = health_panel:child("radial_delayed_damage")
@@ -1913,7 +1941,7 @@ function HUDTeammate:set_grenades_amount(data)
 end
 
 function HUDTeammate:set_carry_info(carry_id, value)
-	local carry_panel = self._player_panel:child("carry_panel")
+	local carry_panel = self._carry_panel
 
 	carry_panel:set_visible(true)
 
@@ -2066,16 +2094,14 @@ function HUDTeammate:clear_special_equipment()
 end
 
 function HUDTeammate:set_condition(icon_data, text)
-	local condition_icon = self._panel:child("condition_icon")
-
 	if icon_data == "mugshot_normal" then
-		condition_icon:set_visible(false)
+		self._condition_icon:set_visible(false)
 	else
-		condition_icon:set_visible(true)
+		self._condition_icon:set_visible(true)
 
 		local icon, texture_rect = tweak_data.hud_icons:get_icon_data(icon_data)
 
-		condition_icon:set_image(icon, texture_rect[1], texture_rect[2], texture_rect[3], texture_rect[4])
+		self._condition_icon:set_image(icon, texture_rect[1], texture_rect[2], texture_rect[3], texture_rect[4])
 	end
 end
 
@@ -2189,7 +2215,7 @@ end
 
 function HUDTeammate:set_stored_health_max(stored_health_ratio)
 	local teammate_panel = self._panel:child("player")
-	local radial_health_panel = teammate_panel:child("radial_health_panel")
+	local radial_health_panel = self._radial_health_panel
 	local radial_rip_bg = radial_health_panel:child("radial_rip_bg")
 
 	if alive(radial_rip_bg) then
@@ -2202,7 +2228,7 @@ end
 
 function HUDTeammate:set_stored_health(stored_health_ratio)
 	local teammate_panel = self._panel:child("player")
-	local radial_health_panel = teammate_panel:child("radial_health_panel")
+	local radial_health_panel = self._radial_health_panel
 	local radial_rip = radial_health_panel:child("radial_rip")
 
 	if alive(radial_rip) then
@@ -2236,7 +2262,7 @@ function HUDTeammate:_animate_update_absorb(o, radial_absorb_shield_name, radial
 	until alive(self._panel) and self[var_name] and self._armor_data and self._health_data
 
 	local teammate_panel = self._panel:child("player")
-	local radial_health_panel = teammate_panel:child("radial_health_panel")
+	local radial_health_panel = self._radial_health_panel
 	local radial_shield = radial_health_panel:child("radial_shield")
 	local radial_health = radial_health_panel:child("radial_health")
 	local radial_absorb_shield = radial_health_panel:child(radial_absorb_shield_name)
@@ -2314,7 +2340,7 @@ end
 
 function HUDTeammate:set_info_meter(data)
 	local teammate_panel = self._panel:child("player")
-	local radial_health_panel = teammate_panel:child("radial_health_panel")
+	local radial_health_panel = self._radial_health_panel
 	local radial_info_meter = radial_health_panel:child("radial_info_meter")
 	local radial_info_meter_bg = radial_health_panel:child("radial_info_meter_bg")
 	local red = math.clamp(data.total / data.max, 0, 1)

@@ -42,6 +42,13 @@ function CircleGuiObject:set_position(x, y)
 	self._circle:set_position(x, y)
 end
 
+function CircleGuiObject:set_align(h, v)
+	v = v or h
+
+	self._circle:set_halign(h)
+	self._circle:set_valign(v)
+end
+
 function CircleGuiObject:set_layer(layer)
 	self._circle:set_layer(layer)
 end
@@ -75,7 +82,7 @@ function CircleBitmapGuiObject:init(panel, config)
 
 	if config.use_bg then
 		local bg_config = deep_clone(config)
-		bg_config.texture = "guis/textures/pd2/hud_progress_bg"
+		bg_config.texture = config.bg or "guis/textures/pd2/hud_progress_bg"
 		bg_config.layer = bg_config.layer - 1
 		bg_config.blend_mode = "normal"
 		self._bg_circle = self._panel:bitmap(bg_config)
@@ -95,6 +102,18 @@ end
 
 function CircleBitmapGuiObject:position()
 	return self._circle:position()
+end
+
+function CircleBitmapGuiObject:set_align(h, v)
+	v = v or h
+
+	self._circle:set_halign(h)
+	self._circle:set_valign(v)
+
+	if self._bg_circle then
+		self._bg_circle:set_halign(h)
+		self._bg_circle:set_valign(v)
+	end
 end
 
 function CircleBitmapGuiObject:set_position(x, y)

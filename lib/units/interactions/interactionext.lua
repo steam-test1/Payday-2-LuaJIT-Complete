@@ -211,7 +211,7 @@ function BaseInteractionExt:can_select(player)
 	return true
 end
 
-function BaseInteractionExt:selected(player)
+function BaseInteractionExt:selected(player, locator, hand_id)
 	if not self:can_select(player) then
 		return
 	end
@@ -2642,9 +2642,18 @@ function DrivingInteractionExt:selected(player, locator)
 	end
 
 	self._action = action
+	self._selected_locator = locator
 	local res = DrivingInteractionExt.super.selected(self, player)
 
 	return res
+end
+
+function DrivingInteractionExt:interact_position()
+	if alive(self._selected_locator) then
+		return self._selected_locator:position()
+	end
+
+	return DrivingInteractionExt.super.interact_position(self)
 end
 
 function DrivingInteractionExt:can_select(player, locator)

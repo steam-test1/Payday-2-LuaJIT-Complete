@@ -4,17 +4,17 @@ HUDManager.STATS_SCREEN_SAFERECT = Idstring("guis/stats_screen/stats_screen_safe
 HUDManager.STATS_SCREEN_FULLSCREEN = Idstring("guis/stats_screen/stats_screen_fullscreen")
 HUDManager.WAITING_FOR_PLAYERS_SAFERECT = Idstring("guis/waiting_saferect")
 HUDManager.ASSAULT_DIALOGS = {
-	"gen_ban_b01a",
-	"gen_ban_b01b",
-	"gen_ban_b02a",
-	"gen_ban_b02b",
-	"gen_ban_b02c",
-	"gen_ban_b03x",
-	"gen_ban_b04x",
-	"gen_ban_b05x",
-	"gen_ban_b10",
-	"gen_ban_b11",
-	"gen_ban_b12"
+	"b01a",
+	"b01b",
+	"b02a",
+	"b02b",
+	"b02c",
+	"b03x",
+	"b04x",
+	"b05x",
+	"b10",
+	"b11",
+	"b12"
 }
 HUDManager.ASSAULTS_MAX = 1024
 
@@ -37,13 +37,9 @@ function HUDManager:init()
 		w = safe_rect.width,
 		h = safe_rect.height
 	}
-	self._mid_saferect = managers.gui_data:create_saferect_workspace()
-	self._fullscreen_workspace = managers.gui_data:create_fullscreen_16_9_workspace()
-	self._saferect = managers.gui_data:create_saferect_workspace()
 
-	managers.gui_data:layout_corner_saferect_1280_workspace(self._saferect)
+	self:_setup_workspaces()
 
-	self._workspace = managers.gui_data:create_fullscreen_workspace()
 	self._updators = {}
 
 	managers.viewport:add_resolution_changed_func(callback(self, self, "resolution_changed"))
@@ -95,6 +91,26 @@ end
 
 function HUDManager:destroy()
 	self._controller:destroy()
+end
+
+function HUDManager:_setup_workspaces()
+	self._workspaces = {overlay = {
+		mid_saferect = managers.gui_data:create_saferect_workspace("screen", Overlay:gui()),
+		fullscreen_workspace = managers.gui_data:create_fullscreen_16_9_workspace("screen", Overlay:gui()),
+		saferect = managers.gui_data:create_saferect_workspace("screen", Overlay:gui()),
+		workspace = managers.gui_data:create_fullscreen_workspace("screen", Overlay:gui())
+	}}
+
+	managers.gui_data:layout_corner_saferect_1280_workspace(self._workspaces.overlay.saferect)
+
+	self._mid_saferect = self._workspaces.overlay.mid_saferect
+	self._fullscreen_workspace = self._workspaces.overlay.fullscreen_workspace
+	self._saferect = self._workspaces.overlay.saferect
+	self._workspace = self._workspaces.overlay.workspace
+end
+
+function HUDManager:workspace(name, group)
+	return self._workspaces.overlay[name]
 end
 
 function HUDManager:_toggle_hud_callback()
@@ -161,8 +177,10 @@ function HUDManager:init_finalize()
 	end
 
 	if not self:exists(IngameAccessCamera.GUI_SAFERECT) then
-		managers.hud:load_hud(IngameAccessCamera.GUI_FULLSCREEN, false, false, false, {})
-		managers.hud:load_hud(IngameAccessCamera.GUI_SAFERECT, false, false, true, {})
+		local group = nil
+
+		managers.hud:load_hud(IngameAccessCamera.GUI_FULLSCREEN, false, false, false, {}, nil, nil, nil, group)
+		managers.hud:load_hud(IngameAccessCamera.GUI_SAFERECT, false, false, true, {}, nil, nil, nil, group)
 	end
 
 	if not self:exists(PlayerBase.PLAYER_INFO_HUD_PD2) then
@@ -181,7 +199,11 @@ function HUDManager:set_safe_rect(rect)
 	self._saferect:set_screen(rect.w, rect.h, rect.x, rect.y, RenderSettings.resolution.x)
 end
 
-function HUDManager:load_hud(name, visible, using_collision, using_saferect, mutex_list, bounding_box_list, using_mid_saferect, using_16_9_fullscreen)
+function HUDManager:load_hud_menu(name, visible, using_collision, using_saferect, mutex_list, bounding_box_list, using_mid_saferect, using_16_9_fullscreen)
+	return self:load_hud(name, visible, using_collision, using_saferect, mutex_list, bounding_box_list, using_mid_saferect, using_16_9_fullscreen)
+end
+
+function HUDManager:load_hud(name, visible, using_collision, using_saferect, mutex_list, bounding_box_list, using_mid_saferect, using_16_9_fullscreen, group)
 	if self._component_map[name:key()] then
 		Application:error("ERROR! Component " .. tostring(name) .. " have already been loaded!")
 
@@ -189,8 +211,9 @@ function HUDManager:load_hud(name, visible, using_collision, using_saferect, mut
 	end
 
 	local bounding_box = {}
+	group = group or "overlay"
 	local panel = nil
-	panel = using_16_9_fullscreen and self._fullscreen_workspace:panel():gui(name, {}) or using_mid_saferect and self._mid_saferect:panel():gui(name, {}) or using_saferect and self._saferect:panel():gui(name, {}) or self._workspace:panel():gui(name, {})
+	panel = using_16_9_fullscreen and self._workspaces[group].fullscreen_workspace:panel():gui(name, {}) or using_mid_saferect and self._workspaces[group].mid_saferect:panel():gui(name, {}) or using_saferect and self._workspaces[group].saferect:panel():gui(name, {}) or self._workspaces[group].workspace:panel():gui(name, {})
 
 	panel:hide()
 
@@ -1470,7 +1493,7 @@ function HUDManager:sync_assault_dialog(index)
 
 	local dialog = HUDManager.ASSAULT_DIALOGS[index]
 
-	managers.dialog:queue_dialog(dialog, {})
+	managers.dialog:queue_narrator_dialog(dialog, {})
 end
 
 function HUDManager:set_crosshair_offset(offset)

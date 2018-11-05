@@ -922,7 +922,7 @@ function GroupAIStateBase:on_hostage_state(state, key, police, skip_announcement
 	end
 
 	if state and not skip_announcement and self._hostage_headcount == 1 and self._task_data.assault.disabled then
-		managers.dialog:queue_dialog("ban_h01a", {})
+		managers.dialog:queue_narrator_dialog("h01a", {})
 	end
 
 	if police then
@@ -1756,10 +1756,10 @@ function GroupAIStateBase:report_criminal_downed(unit)
 	end
 
 	local character_code = managers.criminals:character_static_data_by_unit(unit).ssuffix
-	local bain_line = "ban_q01" .. character_code
+	local bain_line = "q01" .. character_code
 
 	if unit ~= managers.player:player_unit() then
-		managers.dialog:queue_dialog(bain_line, {})
+		managers.dialog:queue_narrator_dialog(bain_line, {})
 	end
 
 	managers.network:session():send_to_peers_synched("bain_comment", bain_line)
@@ -1863,13 +1863,13 @@ function GroupAIStateBase:sync_warn_about_civilian_free(i)
 	end
 
 	if i == 1 then
-		managers.dialog:queue_dialog("ban_r01", {})
+		managers.dialog:queue_narrator_dialog("r01", {})
 	elseif i == 2 then
-		managers.dialog:queue_dialog("ban_r02", {})
+		managers.dialog:queue_narrator_dialog("r02", {})
 	elseif i == 3 then
-		managers.dialog:queue_dialog("ban_r03", {})
+		managers.dialog:queue_narrator_dialog("r03", {})
 	elseif i == 4 then
-		managers.dialog:queue_dialog("ban_r04", {})
+		managers.dialog:queue_narrator_dialog("r04", {})
 	end
 end
 
@@ -3092,9 +3092,9 @@ end
 function GroupAIStateBase:_coach_last_man_clbk()
 	if table.size(self:all_char_criminals()) == 1 and self:bain_state() then
 		if self:hostage_count() <= 0 then
-			managers.dialog:queue_dialog("Play_ban_h40", {})
+			managers.dialog:queue_narrator_dialog("h40", {})
 		else
-			managers.dialog:queue_dialog("Play_ban_h42", {})
+			managers.dialog:queue_narrator_dialog("h42", {})
 		end
 	end
 end
@@ -3239,11 +3239,11 @@ function GroupAIStateBase:sync_hostage_killed_warning(warning)
 	end
 
 	if warning == 1 then
-		return managers.dialog:queue_dialog("Play_ban_c01", {})
+		return managers.dialog:queue_narrator_dialog("c01", {})
 	elseif warning == 2 then
-		return managers.dialog:queue_dialog("Play_ban_c02", {})
+		return managers.dialog:queue_narrator_dialog("c02", {})
 	elseif warning == 3 then
-		return managers.dialog:queue_dialog("Play_ban_c03", {})
+		return managers.dialog:queue_narrator_dialog("c03", {})
 	end
 end
 

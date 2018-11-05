@@ -176,6 +176,9 @@ function MenuMainState:at_exit(new_state)
 	end
 end
 
+function MenuMainState:update(t, dt)
+end
+
 function MenuMainState:on_server_left()
 	if managers.network:session() and (managers.network:session():has_recieved_ok_to_load_level() or managers.network:session():closing()) then
 		return

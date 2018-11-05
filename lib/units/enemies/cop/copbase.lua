@@ -89,7 +89,19 @@ end
 function CopBase:has_tag(tag)
 	local tags = self:char_tweak().tags
 
-	return tags and table.contains(tags, tag)
+	return tags and table.contains(tags, tag) or false
+end
+
+function CopBase:has_all_tags(tags)
+	local my_tags = self:char_tweak().tags
+
+	return my_tags and table.contains_all(my_tags, tags) or false
+end
+
+function CopBase:has_any_tag(tags)
+	local my_tags = self:char_tweak().tags
+
+	return my_tags and table.contains_any(my_tags, tags) or false
 end
 
 function CopBase:default_weapon_name()

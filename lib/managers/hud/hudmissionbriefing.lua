@@ -388,19 +388,34 @@ function HUDMissionBriefing:init(hud, workspace)
 		end
 	end
 
+	local stage_crossed_icon = {
+		texture = "guis/textures/pd2/mission_briefing/calendar_xo",
+		texture_rect = {
+			0,
+			0,
+			80,
+			64
+		}
+	}
+	local stage_circled_icon = {
+		texture = "guis/textures/pd2/mission_briefing/calendar_xo",
+		texture_rect = {
+			80,
+			0,
+			80,
+			64
+		}
+	}
+
 	for i = 1, managers.job:current_stage() or 0, 1 do
+		local icon = i == managers.job:current_stage() and stage_circled_icon or stage_crossed_icon
 		local stage_marker = self._job_schedule_panel:bitmap({
-			texture = "guis/textures/pd2/mission_briefing/calendar_xo",
 			h = 64,
 			layer = 1,
 			w = 80,
 			name = "stage_done_" .. tostring(i),
-			texture_rect = {
-				i == managers.job:current_stage() and 80 or 0,
-				0,
-				80,
-				64
-			},
+			texture = icon.texture,
+			texture_rect = icon.texture_rect,
 			rotation = math.rand(-10, 10)
 		})
 
@@ -502,6 +517,32 @@ function HUDMissionBriefing:init(hud, workspace)
 		big_text:set_world_x(self._foreground_layer_one:child("job_text"):world_x())
 		big_text:move(-13, 9)
 		self._backdrop:animate_bg_text(big_text)
+	end
+
+	if managers.job:current_job_data().name_id == "heist_rvd" then
+		local day_1_text = self._job_schedule_panel:child("day_1")
+		local day_1_sticker = self._job_schedule_panel:bitmap({
+			texture = "guis/dlcs/rvd/textures/pd2/mission_briefing/day2",
+			h = 48,
+			w = 96,
+			rotation = 360,
+			layer = 2
+		})
+
+		day_1_sticker:set_center(day_1_text:center())
+		day_1_sticker:move(math.random(4) - 2, math.random(4) - 2)
+
+		local day_2_text = self._job_schedule_panel:child("day_2")
+		local day_2_sticker = self._job_schedule_panel:bitmap({
+			texture = "guis/dlcs/rvd/textures/pd2/mission_briefing/day1",
+			h = 48,
+			w = 96,
+			rotation = 360,
+			layer = 2
+		})
+
+		day_2_sticker:set_center(day_2_text:center())
+		day_2_sticker:move(math.random(4) - 2, math.random(4) - 2)
 	end
 
 	if managers.crime_spree:is_active() then

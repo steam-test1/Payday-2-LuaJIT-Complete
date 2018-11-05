@@ -41,8 +41,11 @@ function HudTrackedAchievement:init(parent, id, black_bg)
 		})
 	end
 
+	local title_text = managers.localization:text(self._visual.name_id)
+	local desc_text = managers.localization:text(self._visual.desc_id)
+
 	placer:add_right(self:fine_text({
-		text_id = self._visual.name_id,
+		text = title_text,
 		font = medium_font,
 		font_size = medium_font_size
 	}))
@@ -50,7 +53,7 @@ function HudTrackedAchievement:init(parent, id, black_bg)
 	local desc = self:text({
 		wrap = true,
 		word_wrap = true,
-		text_id = self._visual.desc_id,
+		text = desc_text,
 		font = tiny_font,
 		font_size = tiny_font_size,
 		color = tweak_data.screen_colors.achievement_grey,

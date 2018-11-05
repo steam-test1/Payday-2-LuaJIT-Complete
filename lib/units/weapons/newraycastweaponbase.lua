@@ -953,15 +953,26 @@ end
 function NewRaycastWeaponBase:on_enabled(...)
 	NewRaycastWeaponBase.super.on_enabled(self, ...)
 	self:_set_parts_enabled(true)
+	self:set_gadget_on(self._last_gadget_idx, false)
+
+	if self:clip_empty() then
+		self:tweak_data_anim_play_at_end("magazine_empty")
+	end
 end
 
 function NewRaycastWeaponBase:on_disabled(...)
+	if self:enabled() then
+		self._last_gadget_idx = self._gadget_on
+
+		self:gadget_off()
+	end
+
 	NewRaycastWeaponBase.super.on_disabled(self, ...)
-
-	self._last_gadget_idx = self._gadget_on
-
-	self:gadget_off()
 	self:_set_parts_enabled(false)
+end
+
+function NewRaycastWeaponBase:_is_part_visible(part_id)
+	return true
 end
 
 function NewRaycastWeaponBase:_set_parts_visible(visible)
@@ -970,7 +981,7 @@ function NewRaycastWeaponBase:_set_parts_visible(visible)
 			local unit = data.unit or data.link_to_unit
 
 			if alive(unit) then
-				unit:set_visible(visible)
+				unit:set_visible(visible and self:_is_part_visible(part_id))
 			end
 		end
 	end
@@ -1166,7 +1177,7 @@ function NewRaycastWeaponBase:set_gadget_on(gadget_on, ignore_enable, gadgets, c
 		for i, id in ipairs(gadgets) do
 			gadget = self._parts[id]
 
-			if gadget then
+			if gadget and alive(gadget.unit) then
 				gadget.unit:base():set_state(self._gadget_on == i, self._sound_fire, current_state)
 			end
 		end
@@ -1810,8 +1821,8 @@ function NewRaycastWeaponBase:on_reload_stop()
 	self._reload_objects = {}
 end
 
-function NewRaycastWeaponBase:on_reload()
-	NewRaycastWeaponBase.super.on_reload(self)
+function NewRaycastWeaponBase:on_reload(...)
+	NewRaycastWeaponBase.super.on_reload(self, ...)
 
 	local user_unit = managers.player:player_unit()
 

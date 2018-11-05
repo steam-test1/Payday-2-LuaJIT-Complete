@@ -303,9 +303,9 @@ function IngameWaitingForPlayersState:at_enter()
 	self._sound_listener:activate(true)
 	managers.crime_spree:on_mission_started(managers.crime_spree:current_mission())
 	managers.crimenet:set_job_played_today(managers.job:current_job_id())
-	managers.hud:load_hud(self.GUI_SAFERECT, false, true, true, {})
+	managers.hud:load_hud_menu(self.GUI_SAFERECT, false, true, true, {})
 	managers.hud:show(self.GUI_SAFERECT)
-	managers.hud:load_hud(self.GUI_FULLSCREEN, false, true, false, {}, nil, nil, true)
+	managers.hud:load_hud_menu(self.GUI_FULLSCREEN, false, true, false, {}, nil, nil, true)
 	managers.hud:show(self.GUI_FULLSCREEN)
 	managers.hud._hud_mission_briefing:reload()
 	managers.hud._hud_mission_briefing:show()
@@ -319,10 +319,10 @@ function IngameWaitingForPlayersState:at_enter()
 	end
 
 	if not managers.hud:exists(self.LEVEL_INTRO_GUI) then
-		managers.hud:load_hud(self.LEVEL_INTRO_GUI, false, false, true, {})
+		managers.hud:load_hud_menu(self.LEVEL_INTRO_GUI, false, false, true, {})
 	end
 
-	managers.menu:close_menu()
+	managers.menu:close_menu("pause_menu")
 	managers.menu:open_menu("kit_menu")
 
 	self._kit_menu = managers.menu:get_menu("kit_menu")
@@ -420,7 +420,7 @@ function IngameWaitingForPlayersState:clbk_file_streamer_status(workload)
 end
 
 function IngameWaitingForPlayersState:_chk_show_skip_prompt()
-	if not self._skip_promt_shown and not self._file_streamer_max_workload and not managers.menu:active_menu() and managers.network:session() then
+	if not self._skip_promt_shown and not self._file_streamer_max_workload and (not managers.menu:active_menu() or managers.menu:active_menu().name == "waiting_for_players") and managers.network:session() then
 		if managers.network:session():are_peers_done_streaming() then
 			self._skip_promt_shown = true
 
@@ -484,7 +484,10 @@ function IngameWaitingForPlayersState:at_exit()
 	managers.menu_component:close_mission_briefing_gui()
 	managers.menu_component:kill_preplanning_map_gui()
 	managers.overlay_effect:play_effect(tweak_data.overlay_effects.level_fade_in)
-	managers.overlay_effect:stop_effect(self._fade_out_id)
+
+	if self._fade_out_id then
+		managers.overlay_effect:stop_effect(self._fade_out_id)
+	end
 
 	if self._sound_listener then
 		self._sound_listener:delete()
@@ -513,10 +516,10 @@ function IngameWaitingForPlayersState:at_exit()
 	local rich_presence = nil
 	rich_presence = is_safe_house and "SafeHousePlaying" or Global.game_settings.single_player and "SPPlaying" or "MPPlaying"
 
+	managers.game_play_central:start_heist_timer()
 	managers.platform:set_presence("Playing")
 	managers.platform:set_rich_presence(rich_presence)
 	managers.platform:set_playing(true)
-	managers.game_play_central:start_heist_timer()
 
 	if not Network:is_server() and managers.network:session() and managers.network:session():server_peer() then
 		managers.network:session():server_peer():verify_job(managers.job:current_job_id())

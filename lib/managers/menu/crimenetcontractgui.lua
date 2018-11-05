@@ -119,6 +119,7 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 
 	self._contact_text_header:set_text(managers.localization:to_upper_text("menu_cn_contract_title", {job = managers.localization:text(narrative.name_id)}))
 
+	local last_bottom = 0
 	local contract_text = self._contract_panel:text({
 		vertical = "top",
 		wrap = true,
@@ -142,6 +143,7 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 	contract_text:set_font_size(font_size * scale)
 	self:make_fine_text(contract_text)
 
+	last_bottom = contract_text:bottom()
 	local contact_w = (width - (text_w + 20)) - 10
 	local contact_h = contact_w / 1.7777777777777777
 	local is_job_ghostable = managers.job:is_job_ghostable(job_data.job_id)
@@ -167,8 +169,10 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 			color = tweak_data.screen_colors.ghost_color
 		})
 
-		ghostable_text:set_position(contract_text:x(), contract_text:bottom() + 10)
+		ghostable_text:set_position(contract_text:x(), last_bottom + 10)
 		self:make_fine_text(ghostable_text)
+
+		last_bottom = ghostable_text:bottom()
 	end
 
 	local contact_panel = self._contract_panel:panel({

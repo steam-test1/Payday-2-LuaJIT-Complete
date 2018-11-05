@@ -2990,6 +2990,7 @@ function init_auto_generated_achievement_data(tags)
 			tags = {
 				tags.progress.heisting,
 				tags.tactics.loud,
+				tags.tactics.killer,
 				tags.inventory.weapon,
 				tags.contracts.vlad
 			}
@@ -3423,6 +3424,7 @@ function init_auto_generated_achievement_data(tags)
 				tags.progress.heisting,
 				tags.unlock.weapon,
 				tags.tactics.loud,
+				tags.tactics.killer,
 				tags.inventory.weapon,
 				tags.contracts.vlad
 			}
@@ -6243,6 +6245,7 @@ function init_auto_generated_achievement_data(tags)
 				tags.unlock.mask,
 				tags.unlock.weapon,
 				tags.tactics.loud,
+				tags.tactics.killer,
 				tags.inventory.weapon,
 				tags.contracts.the_dentist
 			}
@@ -6333,6 +6336,7 @@ function init_auto_generated_achievement_data(tags)
 				tags.difficulty.overkill,
 				tags.unlock.mask,
 				tags.tactics.loud,
+				tags.tactics.killer,
 				tags.inventory.weapon,
 				tags.contracts.jimmy
 			}
@@ -6961,6 +6965,147 @@ function init_auto_generated_achievement_data(tags)
 				tags.contracts.escape
 			}
 		},
+		rvd_1 = {
+			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_D0",
+			ladder = "H_Reservoir ",
+			sort_name = "C_Bain_H_ReservoirDogs_AllDiffs_D0",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		rvd_10 = {
+			additional_id = true,
+			sort_name = "C_Bain_H_ReservoirDogs_Pinky_D5",
+			icon_id = "C_Bain_H_ReservoirDogs_Pinky_D5",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.death_wish,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		rvd_11 = {
+			sort_name = "C_Bain_H_ReservoirDogs_WasteNot_D3",
+			icon_id = "C_Bain_H_ReservoirDogs_WasteNot_D3",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		rvd_12 = {
+			sort_name = "C_Bain_H_ReservoirDogs_CloseShave_D3",
+			icon_id = "C_Bain_H_ReservoirDogs_CloseShave_D3",
+			progress = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.tactics.killer,
+				tags.inventory.weapon,
+				tags.contracts.bain
+			}
+		},
+		rvd_2 = {
+			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_D1",
+			ladder = "H_Reservoir ",
+			sort_name = "C_Bain_H_ReservoirDogs_AllDiffs_D1",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.hard,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		rvd_3 = {
+			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_D2",
+			ladder = "H_Reservoir ",
+			sort_name = "C_Bain_H_ReservoirDogs_AllDiffs_D2",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.very_hard,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		rvd_4 = {
+			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_D3",
+			ladder = "H_Reservoir ",
+			sort_name = "C_Bain_H_ReservoirDogs_AllDiffs_D3",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		rvd_5 = {
+			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_D4",
+			ladder = "H_Reservoir ",
+			sort_name = "C_Bain_H_ReservoirDogs_AllDiffs_D4",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.mayhem,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		rvd_6 = {
+			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_D5",
+			ladder = "H_Reservoir ",
+			sort_name = "C_Bain_H_ReservoirDogs_AllDiffs_D5",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_wish,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		rvd_7 = {
+			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_D6",
+			ladder = "H_Reservoir ",
+			sort_name = "C_Bain_H_ReservoirDogs_AllDiffs_D6",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.one_down,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		rvd_8 = {
+			additional_id = true,
+			sort_name = "C_Bain_H_ReservoirDogs_United_D3",
+			icon_id = "C_Bain_H_ReservoirDogs_United_D3",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.tactics.killer,
+				tags.inventory.weapon,
+				tags.contracts.bain
+			}
+		},
+		rvd_9 = {
+			additional_id = true,
+			sort_name = "C_Bain_H_ReservoirDogs_GetOffMy",
+			icon_id = "C_Bain_H_ReservoirDogs_GetOffMy",
+			tags = {
+				tags.progress.heisting,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
 		eng_1 = {
 			need_unlock_icons = true,
 			icon_id = "Other_H_Any_TheOnlyOne",
@@ -7011,6 +7156,245 @@ function init_auto_generated_achievement_data(tags)
 				tags.unlock.mask,
 				tags.tactics.loud,
 				tags.tactics.stealth
+			}
+		},
+		dah_1 = {
+			icon_id = "C_Bain_H_DiamondHesit_AllDiffs_D0",
+			ladder = "H_DiamondHeist",
+			sort_name = "C_Classics_H_DiamondHesit_AllDiffs_D0",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.classic
+			}
+		},
+		dah_10 = {
+			additional_id = true,
+			sort_name = "C_Classics_H_DiamondHesit_DeadChange_D0",
+			icon_id = "C_Bain_H_DiamondHesit_DeadChange_D0",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.contracts.classic
+			}
+		},
+		dah_2 = {
+			icon_id = "C_Bain_H_DiamondHesit_AllDiffs_D1",
+			ladder = "H_DiamondHeist",
+			sort_name = "C_Classics_H_DiamondHesit_AllDiffs_D1",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.hard,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.classic
+			}
+		},
+		dah_3 = {
+			icon_id = "C_Bain_H_DiamondHesit_AllDiffs_D2",
+			ladder = "H_DiamondHeist",
+			sort_name = "C_Classics_H_DiamondHesit_AllDiffs_D2",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.very_hard,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.classic
+			}
+		},
+		dah_4 = {
+			icon_id = "C_Bain_H_DiamondHesit_AllDiffs_D3",
+			ladder = "H_DiamondHeist",
+			sort_name = "C_Classics_H_DiamondHesit_AllDiffs_D3",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.classic
+			}
+		},
+		dah_5 = {
+			icon_id = "C_Bain_H_DiamondHesit_AllDiffs_D4",
+			ladder = "H_DiamondHeist",
+			sort_name = "C_Classics_H_DiamondHesit_AllDiffs_D4",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.mayhem,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.classic
+			}
+		},
+		dah_6 = {
+			icon_id = "C_Bain_H_DiamondHesit_AllDiffs_D5",
+			ladder = "H_DiamondHeist",
+			sort_name = "C_Classics_H_DiamondHesit_AllDiffs_D5",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_wish,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.classic
+			}
+		},
+		dah_7 = {
+			icon_id = "C_Bain_H_DiamondHesit_AllDiffs_D6",
+			ladder = "H_DiamondHeist",
+			sort_name = "C_Classics_H_DiamondHesit_AllDiffs_D6",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.one_down,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.classic
+			}
+		},
+		dah_8 = {
+			sort_name = "C_Classics_H_DiamondHesit_TheHuntfor_D3",
+			icon_id = "C_Bain_H_DiamondHesit_TheHuntfor_D3",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.classic
+			}
+		},
+		dah_9 = {
+			additional_id = true,
+			sort_name = "C_Classics_H_DiamondHesit_BloodDia_D3",
+			icon_id = "C_Bain_H_DiamondHesit_BloodDia_D3",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.classic
+			}
+		},
+		wwh_1 = {
+			icon_id = "C_Locke_H_AlsDeal_AllDiffs_D0",
+			ladder = "H_Alaskan",
+			sort_name = "C_Locke_H_AlsDeal_AllDiffs_D0",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		wwh_10 = {
+			sort_name = "C_Locke_H_AlsDeal_HeadlessSnow_D0",
+			icon_id = "C_Locke_H_AlsDeal_HeadlessSnow_D0",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		wwh_2 = {
+			icon_id = "C_Locke_H_AlsDeal_AllDiffs_D1",
+			ladder = "H_Alaskan",
+			sort_name = "C_Locke_H_AlsDeal_AllDiffs_D1",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.hard,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		wwh_3 = {
+			icon_id = "C_Locke_H_AlsDeal_AllDiffs_D2",
+			ladder = "H_Alaskan",
+			sort_name = "C_Locke_H_AlsDeal_AllDiffs_D2",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.very_hard,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		wwh_4 = {
+			icon_id = "C_Locke_H_AlsDeal_AllDiffs_D3",
+			ladder = "H_Alaskan",
+			sort_name = "C_Locke_H_AlsDeal_AllDiffs_D3",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		wwh_5 = {
+			icon_id = "C_Locke_H_AlsDeal_AllDiffs_D4",
+			ladder = "H_Alaskan",
+			sort_name = "C_Locke_H_AlsDeal_AllDiffs_D4",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.mayhem,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		wwh_6 = {
+			icon_id = "C_Locke_H_AlsDeal_AllDiffs_D5",
+			ladder = "H_Alaskan",
+			sort_name = "C_Locke_H_AlsDeal_AllDiffs_D5",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_wish,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		wwh_7 = {
+			icon_id = "C_Locke_H_AlsDeal_AllDiffs_D6",
+			ladder = "H_Alaskan",
+			sort_name = "C_Locke_H_AlsDeal_AllDiffs_D6",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.one_down,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		wwh_8 = {
+			sort_name = "C_Locke_H_AlsDeal_ThereWasRoom_D0",
+			icon_id = "C_Locke_H_AlsDeal_ThereWasRoom_D0",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		wwh_9 = {
+			sort_name = "C_Locke_H_AlsDeal_TheFuelMust_D3",
+			icon_id = "C_Locke_H_AlsDeal_TheFuelMust_D3",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.contracts.locke
 			}
 		},
 		glace_1 = {
@@ -10827,245 +11211,6 @@ function init_auto_generated_achievement_data(tags)
 				tags.difficulty.overkill,
 				tags.tactics.stealth,
 				tags.contracts.the_continental
-			}
-		},
-		dah_1 = {
-			icon_id = "C_Bain_H_DiamondHesit_AllDiffs_D0",
-			ladder = "H_DiamondHeist",
-			sort_name = "C_Classics_H_DiamondHesit_AllDiffs_D0",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.normal,
-				tags.tactics.loud,
-				tags.tactics.stealth,
-				tags.contracts.classic
-			}
-		},
-		dah_10 = {
-			additional_id = true,
-			sort_name = "C_Classics_H_DiamondHesit_DeadChange_D0",
-			icon_id = "C_Bain_H_DiamondHesit_DeadChange_D0",
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.normal,
-				tags.tactics.loud,
-				tags.contracts.classic
-			}
-		},
-		dah_2 = {
-			icon_id = "C_Bain_H_DiamondHesit_AllDiffs_D1",
-			ladder = "H_DiamondHeist",
-			sort_name = "C_Classics_H_DiamondHesit_AllDiffs_D1",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.hard,
-				tags.tactics.loud,
-				tags.tactics.stealth,
-				tags.contracts.classic
-			}
-		},
-		dah_3 = {
-			icon_id = "C_Bain_H_DiamondHesit_AllDiffs_D2",
-			ladder = "H_DiamondHeist",
-			sort_name = "C_Classics_H_DiamondHesit_AllDiffs_D2",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.very_hard,
-				tags.tactics.loud,
-				tags.tactics.stealth,
-				tags.contracts.classic
-			}
-		},
-		dah_4 = {
-			icon_id = "C_Bain_H_DiamondHesit_AllDiffs_D3",
-			ladder = "H_DiamondHeist",
-			sort_name = "C_Classics_H_DiamondHesit_AllDiffs_D3",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.overkill,
-				tags.tactics.loud,
-				tags.tactics.stealth,
-				tags.contracts.classic
-			}
-		},
-		dah_5 = {
-			icon_id = "C_Bain_H_DiamondHesit_AllDiffs_D4",
-			ladder = "H_DiamondHeist",
-			sort_name = "C_Classics_H_DiamondHesit_AllDiffs_D4",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.mayhem,
-				tags.tactics.loud,
-				tags.tactics.stealth,
-				tags.contracts.classic
-			}
-		},
-		dah_6 = {
-			icon_id = "C_Bain_H_DiamondHesit_AllDiffs_D5",
-			ladder = "H_DiamondHeist",
-			sort_name = "C_Classics_H_DiamondHesit_AllDiffs_D5",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.death_wish,
-				tags.tactics.loud,
-				tags.tactics.stealth,
-				tags.contracts.classic
-			}
-		},
-		dah_7 = {
-			icon_id = "C_Bain_H_DiamondHesit_AllDiffs_D6",
-			ladder = "H_DiamondHeist",
-			sort_name = "C_Classics_H_DiamondHesit_AllDiffs_D6",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.one_down,
-				tags.tactics.loud,
-				tags.tactics.stealth,
-				tags.contracts.classic
-			}
-		},
-		dah_8 = {
-			sort_name = "C_Classics_H_DiamondHesit_TheHuntfor_D3",
-			icon_id = "C_Bain_H_DiamondHesit_TheHuntfor_D3",
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.overkill,
-				tags.tactics.loud,
-				tags.tactics.stealth,
-				tags.contracts.classic
-			}
-		},
-		dah_9 = {
-			additional_id = true,
-			sort_name = "C_Classics_H_DiamondHesit_BloodDia_D3",
-			icon_id = "C_Bain_H_DiamondHesit_BloodDia_D3",
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.overkill,
-				tags.tactics.loud,
-				tags.tactics.stealth,
-				tags.contracts.classic
-			}
-		},
-		wwh_1 = {
-			icon_id = "C_Locke_H_AlsDeal_AllDiffs_D0",
-			ladder = "H_Alaskan",
-			sort_name = "C_Locke_H_AlsDeal_AllDiffs_D0",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.normal,
-				tags.tactics.loud,
-				tags.contracts.locke
-			}
-		},
-		wwh_10 = {
-			sort_name = "C_Locke_H_AlsDeal_HeadlessSnow_D0",
-			icon_id = "C_Locke_H_AlsDeal_HeadlessSnow_D0",
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.normal,
-				tags.tactics.loud,
-				tags.contracts.locke
-			}
-		},
-		wwh_2 = {
-			icon_id = "C_Locke_H_AlsDeal_AllDiffs_D1",
-			ladder = "H_Alaskan",
-			sort_name = "C_Locke_H_AlsDeal_AllDiffs_D1",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.hard,
-				tags.tactics.loud,
-				tags.contracts.locke
-			}
-		},
-		wwh_3 = {
-			icon_id = "C_Locke_H_AlsDeal_AllDiffs_D2",
-			ladder = "H_Alaskan",
-			sort_name = "C_Locke_H_AlsDeal_AllDiffs_D2",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.very_hard,
-				tags.tactics.loud,
-				tags.contracts.locke
-			}
-		},
-		wwh_4 = {
-			icon_id = "C_Locke_H_AlsDeal_AllDiffs_D3",
-			ladder = "H_Alaskan",
-			sort_name = "C_Locke_H_AlsDeal_AllDiffs_D3",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.overkill,
-				tags.tactics.loud,
-				tags.contracts.locke
-			}
-		},
-		wwh_5 = {
-			icon_id = "C_Locke_H_AlsDeal_AllDiffs_D4",
-			ladder = "H_Alaskan",
-			sort_name = "C_Locke_H_AlsDeal_AllDiffs_D4",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.mayhem,
-				tags.tactics.loud,
-				tags.contracts.locke
-			}
-		},
-		wwh_6 = {
-			icon_id = "C_Locke_H_AlsDeal_AllDiffs_D5",
-			ladder = "H_Alaskan",
-			sort_name = "C_Locke_H_AlsDeal_AllDiffs_D5",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.death_wish,
-				tags.tactics.loud,
-				tags.contracts.locke
-			}
-		},
-		wwh_7 = {
-			icon_id = "C_Locke_H_AlsDeal_AllDiffs_D6",
-			ladder = "H_Alaskan",
-			sort_name = "C_Locke_H_AlsDeal_AllDiffs_D6",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.one_down,
-				tags.tactics.loud,
-				tags.contracts.locke
-			}
-		},
-		wwh_8 = {
-			sort_name = "C_Locke_H_AlsDeal_ThereWasRoom_D0",
-			icon_id = "C_Locke_H_AlsDeal_ThereWasRoom_D0",
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.normal,
-				tags.tactics.loud,
-				tags.contracts.locke
-			}
-		},
-		wwh_9 = {
-			sort_name = "C_Locke_H_AlsDeal_TheFuelMust_D3",
-			icon_id = "C_Locke_H_AlsDeal_TheFuelMust_D3",
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.overkill,
-				tags.tactics.loud,
-				tags.contracts.locke
 			}
 		}
 	}

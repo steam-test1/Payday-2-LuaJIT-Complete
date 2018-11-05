@@ -239,6 +239,7 @@ function WeaponFactoryTweakData:init()
 	self:_init_basset()
 	self:_init_x_basset()
 	self:_init_icc()
+	self:_init_corgi()
 	self:create_ammunition()
 	self:_init_cc_material_config()
 	self:_init_bipods()
@@ -804,6 +805,10 @@ function WeaponFactoryTweakData:_init_sights()
 			},
 			wpn_fps_sho_basset = {
 				translation = Vector3(0, 5, -0.68),
+				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_ass_corgi = {
+				translation = Vector3(0, 0, -2.3),
 				rotation = Rotation(0, 0, 0)
 			}
 		},
@@ -1478,6 +1483,10 @@ function WeaponFactoryTweakData:_init_content_dlc2_dec16()
 			},
 			wpn_fps_sho_basset = {
 				translation = Vector3(0, 5, -0.68),
+				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_ass_corgi = {
+				translation = Vector3(0, 0, -2.3),
 				rotation = Rotation(0, 0, 0)
 			}
 		},
@@ -19260,8 +19269,8 @@ function WeaponFactoryTweakData:_init_butchermodpack()
 		},
 		stats = {
 			value = 1,
-			recoil = -7,
-			damage = 4
+			recoil = 2,
+			concealment = -1
 		},
 		animations = {
 			reload_not_empty = "reload_not_empty",
@@ -28515,6 +28524,10 @@ function WeaponFactoryTweakData:_init_varmods()
 			wpn_fps_sho_basset = {
 				translation = Vector3(0, 11, -0.68),
 				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_ass_corgi = {
+				translation = Vector3(0, 0, -2.3),
+				rotation = Rotation(0, 0, 0)
 			}
 		}
 	}
@@ -30444,5 +30457,184 @@ function WeaponFactoryTweakData:_init_icc()
 		}},
 		third_unit = "units/pd2_dlc_icc/weapons/wpn_fps_pis_judge_body_modern/wpn_third_pis_judge_body_modern"
 	}
+end
+
+function WeaponFactoryTweakData:_init_corgi()
+	self.parts.wpn_fps_ass_corgi_body_lower_standard = {
+		a_obj = "a_body",
+		type = "lower_reciever",
+		name_id = "bm_wp_corgi_body",
+		unit = "units/pd2_dlc_rvd/weapons/wpn_fps_ass_corgi_pts/wpn_fps_ass_corgi_body_lower_standard",
+		stats = {value = 1}
+	}
+	self.parts.wpn_fps_ass_corgi_body_lower_strap = {
+		texture_bundle_folder = "rvd",
+		a_obj = "a_body",
+		type = "lower_reciever",
+		name_id = "bm_wp_corgi_body_strap",
+		unit = "units/pd2_dlc_rvd/weapons/wpn_fps_ass_corgi_pts/wpn_fps_ass_corgi_body_lower_strap",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		stats = {
+			value = 1,
+			recoil = 2,
+			concealment = -2
+		}
+	}
+	self.parts.wpn_fps_ass_corgi_body_upper = {
+		a_obj = "a_body",
+		type = "upper_reciever",
+		name_id = "bm_wp_corgi_body",
+		unit = "units/pd2_dlc_rvd/weapons/wpn_fps_ass_corgi_pts/wpn_fps_ass_corgi_body_upper",
+		stats = {value = 1}
+	}
+	self.parts.wpn_fps_ass_corgi_b_long = {
+		a_obj = "a_b",
+		type = "barrel",
+		name_id = "bm_wp_corgi_body",
+		unit = "units/pd2_dlc_rvd/weapons/wpn_fps_ass_corgi_pts/wpn_fps_ass_corgi_b_long",
+		stats = {value = 1}
+	}
+	self.parts.wpn_fps_ass_corgi_b_short = {
+		texture_bundle_folder = "rvd",
+		a_obj = "a_b",
+		type = "barrel",
+		name_id = "bm_wp_corgi_b_short",
+		unit = "units/pd2_dlc_rvd/weapons/wpn_fps_ass_corgi_pts/wpn_fps_ass_corgi_b_short",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		stats = {
+			spread = -2,
+			value = 1,
+			concealment = 3
+		}
+	}
+	self.parts.wpn_fps_ass_corgi_dh_standard = {
+		a_obj = "a_dh",
+		type = "drag_handle",
+		name_id = "bm_wp_corgi_body",
+		unit = "units/pd2_dlc_rvd/weapons/wpn_fps_ass_corgi_pts/wpn_fps_ass_corgi_dh_standard",
+		stats = {value = 1}
+	}
+	self.parts.wpn_fps_ass_corgi_fg_rail = {
+		a_obj = "a_fg",
+		type = "foregrip",
+		name_id = "bm_wp_corgi_body",
+		unit = "units/pd2_dlc_rvd/weapons/wpn_fps_ass_corgi_pts/wpn_fps_ass_corgi_fg_rail",
+		stats = {value = 1}
+	}
+	self.parts.wpn_fps_ass_corgi_ns_standard = {
+		parent = "barrel",
+		a_obj = "a_ns",
+		type = "barrel_ext",
+		name_id = "bm_wp_corgi_body",
+		unit = "units/pd2_dlc_rvd/weapons/wpn_fps_ass_corgi_pts/wpn_fps_ass_corgi_ns_standard",
+		stats = {value = 1}
+	}
+	self.parts.wpn_fps_ass_corgi_ejector_standard = {
+		a_obj = "a_ejector",
+		type = "ejector",
+		name_id = "bm_wp_corgi_body",
+		unit = "units/pd2_dlc_rvd/weapons/wpn_fps_ass_corgi_pts/wpn_fps_ass_corgi_ejector_standard",
+		stats = {value = 1}
+	}
+	self.parts.wpn_fps_ass_corgi_b_long.third_unit = "units/pd2_dlc_rvd/weapons/wpn_third_ass_corgi_pts/wpn_third_ass_corgi_b_long"
+	self.parts.wpn_fps_ass_corgi_b_short.third_unit = "units/pd2_dlc_rvd/weapons/wpn_third_ass_corgi_pts/wpn_third_ass_corgi_b_short"
+	self.parts.wpn_fps_ass_corgi_body_lower_standard.third_unit = "units/pd2_dlc_rvd/weapons/wpn_third_ass_corgi_pts/wpn_third_ass_corgi_body_lower_standard"
+	self.parts.wpn_fps_ass_corgi_body_lower_strap.third_unit = "units/pd2_dlc_rvd/weapons/wpn_third_ass_corgi_pts/wpn_third_ass_corgi_body_lower_strap"
+	self.parts.wpn_fps_ass_corgi_body_upper.third_unit = "units/pd2_dlc_rvd/weapons/wpn_third_ass_corgi_pts/wpn_third_ass_corgi_body_upper"
+	self.parts.wpn_fps_ass_corgi_dh_standard.third_unit = "units/pd2_dlc_rvd/weapons/wpn_third_ass_corgi_pts/wpn_third_ass_corgi_dh_standard"
+	self.parts.wpn_fps_ass_corgi_ejector_standard.third_unit = "units/pd2_dlc_rvd/weapons/wpn_third_ass_corgi_pts/wpn_third_ass_corgi_ejector_standard"
+	self.parts.wpn_fps_ass_corgi_fg_rail.third_unit = "units/pd2_dlc_rvd/weapons/wpn_third_ass_corgi_pts/wpn_third_ass_corgi_fg_rail"
+	self.parts.wpn_fps_ass_corgi_ns_standard.third_unit = "units/pd2_dlc_rvd/weapons/wpn_third_ass_corgi_pts/wpn_third_ass_corgi_ns_standard"
+	self.wpn_fps_ass_corgi = {
+		unit = "units/pd2_dlc_rvd/weapons/wpn_fps_ass_corgi/wpn_fps_ass_corgi",
+		optional_types = {
+			"gadget",
+			"sight",
+			"barrel_ext"
+		},
+		animations = {
+			reload_not_empty = "reload_not_empty",
+			reload = "reload"
+		},
+		adds = {},
+		forbids = {"wpn_fps_addon_ris"},
+		default_blueprint = {
+			"wpn_fps_ass_corgi_body_lower_standard",
+			"wpn_fps_ass_corgi_body_upper",
+			"wpn_fps_ass_corgi_b_long",
+			"wpn_fps_ass_corgi_dh_standard",
+			"wpn_fps_ass_corgi_fg_rail",
+			"wpn_fps_ass_corgi_ns_standard",
+			"wpn_fps_ass_corgi_ejector_standard",
+			"wpn_fps_smg_hajk_vg_moe",
+			"wpn_fps_m4_uupg_m_std_vanilla"
+		},
+		uses_parts = {
+			"wpn_fps_ass_corgi_body_lower_standard",
+			"wpn_fps_ass_corgi_body_lower_strap",
+			"wpn_fps_ass_corgi_body_upper",
+			"wpn_fps_ass_corgi_b_long",
+			"wpn_fps_ass_corgi_b_short",
+			"wpn_fps_ass_corgi_dh_standard",
+			"wpn_fps_ass_corgi_fg_rail",
+			"wpn_fps_ass_corgi_ns_standard",
+			"wpn_fps_ass_corgi_ejector_standard",
+			"wpn_fps_smg_hajk_vg_moe",
+			"wpn_fps_m4_uupg_m_std_vanilla",
+			"wpn_fps_upg_m4_m_drum",
+			"wpn_fps_upg_m4_m_pmag",
+			"wpn_fps_upg_m4_m_straight",
+			"wpn_fps_upg_m4_m_quad",
+			"wpn_fps_ass_l85a2_m_emag",
+			"wpn_fps_upg_m4_m_l5",
+			"wpn_fps_upg_o_specter",
+			"wpn_fps_upg_o_aimpoint",
+			"wpn_fps_upg_o_docter",
+			"wpn_fps_upg_o_eotech",
+			"wpn_fps_upg_o_t1micro",
+			"wpn_fps_upg_o_cmore",
+			"wpn_fps_upg_o_aimpoint_2",
+			"wpn_fps_upg_o_acog",
+			"wpn_fps_upg_fl_ass_smg_sho_peqbox",
+			"wpn_fps_upg_fl_ass_smg_sho_surefire",
+			"wpn_fps_upg_ns_ass_smg_large",
+			"wpn_fps_upg_ns_ass_smg_medium",
+			"wpn_fps_upg_ns_ass_smg_small",
+			"wpn_fps_upg_ns_ass_smg_firepig",
+			"wpn_fps_upg_ns_ass_smg_stubby",
+			"wpn_fps_upg_ns_ass_smg_tank",
+			"wpn_fps_upg_o_eotech_xps",
+			"wpn_fps_upg_o_reflex",
+			"wpn_fps_upg_o_rx01",
+			"wpn_fps_upg_o_rx30",
+			"wpn_fps_upg_o_cs",
+			"wpn_fps_upg_ass_ns_jprifles",
+			"wpn_fps_upg_ass_ns_linear",
+			"wpn_fps_upg_ass_ns_surefire",
+			"wpn_fps_upg_fl_ass_peq15",
+			"wpn_fps_upg_fl_ass_laser",
+			"wpn_fps_upg_i_singlefire",
+			"wpn_fps_upg_i_autofire",
+			"wpn_fps_upg_ass_ns_battle",
+			"wpn_fps_upg_fl_ass_utg",
+			"wpn_fps_upg_o_45rds",
+			"wpn_fps_upg_o_spot",
+			"wpn_fps_m4_upg_m_quick",
+			"wpn_fps_upg_o_xpsg33_magnifier",
+			"wpn_fps_upg_o_45rds_v2"
+		}
+	}
+	self.wpn_fps_ass_corgi_npc = deep_clone(self.wpn_fps_ass_corgi)
+	self.wpn_fps_ass_corgi_npc.unit = "units/pd2_dlc_rvd/weapons/wpn_fps_ass_corgi/wpn_fps_ass_corgi_npc"
 end
 

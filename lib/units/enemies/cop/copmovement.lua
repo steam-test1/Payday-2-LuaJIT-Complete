@@ -85,7 +85,9 @@ CopMovement._gadgets = {
 	vodka_bottle = {Idstring("units/pd2_dlc_slu/props/slu_prop_vodka_bottle/slu_prop_vodka_bottle")},
 	machete = {Idstring("units/pd2_dlc_max/characters/npc_acc_machete/npc_acc_machete")},
 	beer = {Idstring("units/pd2_dlc_max/props/max_prop_dos_calveras/max_sicario_beer_a")},
-	tequila = {Idstring("units/pd2_dlc_max/props/max_prop_tequila_bottle/max_prop_tequila_bottle")}
+	tequila = {Idstring("units/pd2_dlc_max/props/max_prop_tequila_bottle/max_prop_tequila_bottle")},
+	barrista_cup = {Idstring("units/pd2_dlc_rvd/characters/civ_acc_barista_cup_medium/civ_acc_barista_cup_medium")},
+	blood_splatter = {Idstring("units/pd2_dlc_rvd/characters/civ_acc_blood_splatter/civ_acc_blood_splatter")}
 }
 local action_variants = {security = {
 	idle = CopActionIdle,

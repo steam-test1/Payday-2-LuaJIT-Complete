@@ -526,7 +526,48 @@ function PortalLayer:set_height(data)
 end
 
 function PortalLayer:clone()
-	managers.editor:output("Clone not yet supported in Portals layer")
+	managers.editor:freeze_gui_lists()
+
+	if self._selected_unit and not self:condition() then
+		local clone_units = self._selected_units
+
+		if managers.editor:using_groups() then
+			self._clone_create_group = true
+		end
+
+		self._selected_units = {}
+
+		for _, unit in ipairs(clone_units) do
+			local new_unit = self:do_spawn_unit(unit:name():s(), unit:position(), unit:rotation())
+
+			if new_unit then
+				self:remove_name_id(new_unit)
+
+				new_unit:unit_data().name_id = self:get_name_id(new_unit, unit:unit_data().name_id)
+
+				managers.editor:unit_name_changed(new_unit)
+				self:clone_edited_values(new_unit, unit)
+			end
+		end
+
+		self:set_select_unit(nil)
+		self:update_unit_settings()
+	end
+
+	managers.editor:thaw_gui_lists()
+	self:_cloning_done()
+end
+
+function PortalLayer:clone_edited_values(unit, source)
+	PortalLayer.super.clone_edited_values(self, unit, source)
+
+	if unit:name() == Idstring(self._portal_shape_unit) then
+		local source_props = source:unit_data().portal_group_shape._properties
+		local props = unit:unit_data().portal_group_shape._properties
+		props.depth = source_props.depth
+		props.height = source_props.height
+		props.width = source_props.width
+	end
 end
 
 function PortalLayer:click_select_unit()

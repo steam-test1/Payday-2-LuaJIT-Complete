@@ -11,6 +11,7 @@ function DialogueUnitElement:init(unit)
 	self._hed.force_quit_current = nil
 	self._hed.use_instigator = false
 	self._hed.can_not_be_muted = false
+	self._hed.play_on_player_instigator_only = false
 
 	table.insert(self._save_values, "dialogue")
 	table.insert(self._save_values, "execute_on_executed_when_done")
@@ -18,6 +19,7 @@ function DialogueUnitElement:init(unit)
 	table.insert(self._save_values, "force_quit_current")
 	table.insert(self._save_values, "use_instigator")
 	table.insert(self._save_values, "can_not_be_muted")
+	table.insert(self._save_values, "play_on_player_instigator_only")
 end
 
 function DialogueUnitElement:new_save_values(...)
@@ -60,5 +62,6 @@ function DialogueUnitElement:_build_panel(panel, panel_sizer)
 	self:_build_value_checkbox(panel, panel_sizer, "use_position")
 	self:_build_value_checkbox(panel, panel_sizer, "use_instigator", "Play on instigator")
 	self:_build_value_checkbox(panel, panel_sizer, "can_not_be_muted", "This dialogue will play regardless of if the player has disabled contractor VO")
+	self:_build_value_checkbox(panel, panel_sizer, "play_on_player_instigator_only", "This dialogue will only play on the player that triggers it")
 end
 

@@ -257,3 +257,7 @@ end
 function PlayerCarry:destroy()
 end
 
+function PlayerCarry:_get_input(...)
+	return PlayerCarry.super._get_input(self, ...)
+end
+

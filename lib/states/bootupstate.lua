@@ -452,7 +452,7 @@ function BootupState:at_exit()
 	managers.platform:remove_event_callback("media_player_control", self._clbk_game_has_music_control_callback)
 
 	if alive(self._workspace) then
-		Overlay:gui():destroy_workspace(self._workspace)
+		managers.gui_data:destroy_workspace(self._workspace)
 
 		self._workspace = nil
 		self._gui_obj = nil

@@ -1657,6 +1657,26 @@ function NetworkPeer:_chk_outfit_loading_complete()
 	self._loading_outfit_assets = nil
 
 	managers.network:session():on_peer_outfit_loaded(self)
+
+	if self._outfit_loaded_clbks then
+		for _, clbk in ipairs(self._outfit_loaded_clbks) do
+			clbk()
+		end
+
+		self._outfit_loaded_clbks = nil
+	end
+end
+
+function NetworkPeer:add_outfit_loaded_clbk(clbk)
+	if self:is_outfit_loaded() then
+		clbk()
+
+		return
+	end
+
+	self._outfit_loaded_clbks = self._outfit_loaded_clbks or {}
+
+	table.insert(self._outfit_loaded_clbks, clbk)
 end
 
 function NetworkPeer:set_other_peer_outfit_loaded_status(status)
@@ -1773,7 +1793,7 @@ function NetworkPeer:spawn_unit(spawn_point_id, is_drop_in, spawn_as)
 	local pos_rot = nil
 
 	if is_drop_in then
-		pos_rot = managers.criminals:get_valid_player_spawn_pos_rot()
+		pos_rot = managers.criminals:get_valid_player_spawn_pos_rot(self:id())
 
 		if not pos_rot then
 			local spawn_point = managers.network:session():get_next_spawn_point() or managers.network:spawn_point(1)

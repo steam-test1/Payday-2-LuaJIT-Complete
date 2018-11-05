@@ -108,7 +108,7 @@ function CriminalsManager:get_any_unit()
 	end
 end
 
-function CriminalsManager:get_valid_player_spawn_pos_rot()
+function CriminalsManager:get_valid_player_spawn_pos_rot(peer_id)
 	local server_unit = managers.network:session():local_peer():unit()
 
 	if alive(server_unit) then

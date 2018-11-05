@@ -65,6 +65,12 @@ function ElementDialogue:on_executed(instigator)
 		return
 	end
 
+	if self._values.play_on_player_instigator_only and instigator ~= managers.player:player_unit() then
+		ElementDialogue.super.on_executed(self, instigator, nil, self._values.execute_on_executed_when_done)
+
+		return
+	end
+
 	if self._values.dialogue ~= "none" then
 		if self:_can_play() then
 			if self._values.force_quit_current then

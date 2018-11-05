@@ -24,14 +24,14 @@ function SmallLootBase:take(unit)
 	managers.loot:show_small_loot_taken_hint(self.small_loot, multiplier)
 
 	if Network:is_server() then
-		self:taken(small_loot_multiplier_upgrade_level)
+		self:taken(small_loot_multiplier_upgrade_level, managers.network:session() and managers.network:session():local_peer():id())
 	else
 		managers.network:session():send_to_host("sync_small_loot_taken", self._unit, small_loot_multiplier_upgrade_level)
 	end
 end
 
-function SmallLootBase:taken(small_loot_multiplier_upgrade_level)
-	managers.loot:secure_small_loot(self.small_loot, small_loot_multiplier_upgrade_level)
+function SmallLootBase:taken(small_loot_multiplier_upgrade_level, peer_id)
+	managers.loot:secure_small_loot(self.small_loot, small_loot_multiplier_upgrade_level, peer_id)
 	self:_set_empty()
 end
 

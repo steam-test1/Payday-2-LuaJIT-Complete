@@ -33,6 +33,7 @@ function EnemyManager:init()
 	self._shield_disposal_upd_interval = 15
 	self._shield_disposal_lifetime = 60
 	self._MAX_NR_SHIELDS = 8
+	self._queue_buffer = 0
 end
 
 function EnemyManager:update(t, dt)
@@ -40,7 +41,7 @@ function EnemyManager:update(t, dt)
 	self._queued_task_executed = nil
 
 	self:_update_gfx_lod()
-	self:_update_queued_tasks(t)
+	self:_update_queued_tasks(t, dt)
 end
 
 function EnemyManager:corpse_limit()
@@ -492,7 +493,7 @@ function EnemyManager:_execute_queued_task(i)
 	task.clbk(task.data)
 end
 
-function EnemyManager:_update_queued_tasks(t)
+function EnemyManager:_update_queued_tasks(t, dt)
 	local i_asap_task, asp_task_t = nil
 
 	for i_task, task_data in ipairs(self._queued_tasks) do

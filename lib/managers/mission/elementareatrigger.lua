@@ -13,6 +13,12 @@ function ElementAreaTrigger:project_instigators()
 	if Network:is_client() then
 		if self._values.instigator == "player" or self._values.instigator == "local_criminals" or self._values.instigator == "persons" then
 			table.insert(instigators, managers.player:player_unit())
+		elseif self._values.instigator == "player1" or self._values.instigator == "player2" or self._values.instigator == "player3" or self._values.instigator == "player4" then
+			local id = tonumber(string.match(self._values.instigator, "%d$"))
+
+			if managers.network:session() and managers.network:session():local_peer():id() == id then
+				table.insert(instigators, managers.player:player_unit())
+			end
 		end
 
 		return instigators
@@ -214,6 +220,7 @@ function ElementAreaTrigger:project_instigators()
 				"vr_headset",
 				"diamond_necklace",
 				"yayo",
+				"rubies",
 				"red_diamond",
 				"diamonds_dah",
 				"old_wine"
@@ -237,19 +244,27 @@ function ElementAreaTrigger:project_instigators()
 				table.insert(instigators, unit)
 			end
 		end
-	elseif self._values.instigator == "equipment" and self._values.instigator_name ~= nil then
-		local all_found = World:find_units_quick("all", 14)
+	elseif self._values.instigator == "equipment" then
+		if self._values.instigator_name ~= nil then
+			local all_found = World:find_units_quick("all", 14)
 
-		local function filter_func(unit)
-			if unit:base() and unit:base().get_name_id and unit:base():get_name_id() == self._values.instigator_name then
-				return true
+			local function filter_func(unit)
+				if unit:base() and unit:base().get_name_id and unit:base():get_name_id() == self._values.instigator_name then
+					return true
+				end
+			end
+
+			for _, unit in ipairs(all_found) do
+				if filter_func(unit) then
+					table.insert(instigators, unit)
+				end
 			end
 		end
+	elseif self._values.instigator == "player1" or self._values.instigator == "player2" or self._values.instigator == "player3" or self._values.instigator == "player4" and not Global.game_host then
+		local id = tonumber(string.match(self._values.instigator, "%d$"))
 
-		for _, unit in ipairs(all_found) do
-			if filter_func(unit) then
-				table.insert(instigators, unit)
-			end
+		if managers.network:session() and managers.network:session():local_peer():id() == id then
+			table.insert(instigators, managers.player:player_unit())
 		end
 	end
 

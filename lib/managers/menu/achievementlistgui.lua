@@ -281,9 +281,10 @@ function AchievementListItem:init(parent, data, owner)
 
 	self._click:set_w(left - 10)
 
+	local title_str = managers.localization:text(visual.name_id)
 	self._title = self:fine_text({
 		y = 5,
-		text_id = visual.name_id,
+		text = title_str,
 		font = medium_font,
 		font_size = medium_font_size,
 		color = self.NT_SD_COLOR,

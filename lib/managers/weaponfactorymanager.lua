@@ -59,7 +59,7 @@ function WeaponFactoryManager:_read_factory_data()
 		if factory_id ~= "parts" then
 			self._parts_by_weapon[factory_id] = self._parts_by_weapon[factory_id] or {}
 
-			for _, part_id in ipairs(data.uses_parts) do
+			for _, part_id in ipairs(data.uses_parts or {}) do
 				local type = tweak_data.weapon.factory.parts[part_id].type
 				self._parts_by_weapon[factory_id][type] = self._parts_by_weapon[factory_id][type] or {}
 

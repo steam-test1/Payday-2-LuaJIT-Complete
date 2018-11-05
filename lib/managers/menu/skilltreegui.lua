@@ -16,6 +16,13 @@ local function make_fine_text(text)
 	text:set_position(math.round(text:x()), math.round(text:y()))
 end
 
+local function fit_text_height(text_gui)
+	local _, y, _, h = text_gui:text_rect()
+
+	text_gui:set_h(h)
+	text_gui:set_y(math.round(text_gui:y()))
+end
+
 SkillTreeItem = SkillTreeItem or class()
 
 function SkillTreeItem:init()

@@ -472,6 +472,10 @@ function GenericDLCManager:has_sha()
 	return self:is_dlc_unlocked("sha")
 end
 
+function GenericDLCManager:has_rvd()
+	return self:is_dlc_unlocked("rvd")
+end
+
 function GenericDLCManager:has_grv()
 	return self:is_dlc_unlocked("grv")
 end
@@ -1709,6 +1713,10 @@ function WINDLCManager:init()
 			},
 			chico = {
 				app_id = "548422",
+				no_install = true
+			},
+			rvd = {
+				app_id = "218620",
 				no_install = true
 			},
 			pd2_clan = {source_id = "103582791433980119"},

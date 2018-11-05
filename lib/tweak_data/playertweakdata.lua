@@ -69,6 +69,7 @@ end
 
 function PlayerTweakData:init()
 	local is_console = SystemInfo:platform() ~= Idstring("WIN32")
+	local is_vr = false
 	self.arrest = {
 		aggression_timeout = 60,
 		arrest_timeout = 240
@@ -100,7 +101,13 @@ function PlayerTweakData:init()
 		0.98,
 		0.99
 	}
-	self.damage.HEALTH_INIT = 23
+
+	if is_vr then
+		self.damage.HEALTH_INIT = 28
+	else
+		self.damage.HEALTH_INIT = 23
+	end
+
 	self.damage.LIVES_INIT = 4
 
 	if is_console then
@@ -1088,6 +1095,7 @@ function PlayerTweakData:_init_new_stances()
 	self:_init_x_shrew()
 	self:_init_basset()
 	self:_init_x_basset()
+	self:_init_corgi()
 end
 
 function PlayerTweakData:_init_hs2000()
@@ -4100,5 +4108,38 @@ function PlayerTweakData:_init_x_basset()
 	self.stances.x_basset.crouched.vel_overshot.yaw_pos = 5
 	self.stances.x_basset.crouched.vel_overshot.pitch_neg = 12
 	self.stances.x_basset.crouched.vel_overshot.pitch_pos = -12
+end
+
+function PlayerTweakData:_init_corgi()
+	self.stances.corgi = deep_clone(self.stances.default)
+	local pivot_shoulder_translation = Vector3(11.8414, 20.7689, -4.23194)
+	local pivot_shoulder_rotation = Rotation(2.71007e-05, -0.00103648, -0.000739368)
+	local pivot_head_translation = Vector3(10, 18, -3)
+	local pivot_head_rotation = Rotation(0, 0, 1)
+	self.stances.corgi.standard.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
+	self.stances.corgi.standard.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
+	self.stances.corgi.standard.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -22, 0)
+	self.stances.corgi.standard.vel_overshot.yaw_neg = 5
+	self.stances.corgi.standard.vel_overshot.yaw_pos = -5
+	self.stances.corgi.standard.vel_overshot.pitch_neg = -5
+	self.stances.corgi.standard.vel_overshot.pitch_pos = 5
+	local pivot_head_translation = Vector3(0, 18, 0)
+	local pivot_head_rotation = Rotation(0, 0, 0)
+	self.stances.corgi.steelsight.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
+	self.stances.corgi.steelsight.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
+	self.stances.corgi.steelsight.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -25, 0)
+	self.stances.corgi.steelsight.vel_overshot.yaw_neg = -2
+	self.stances.corgi.steelsight.vel_overshot.yaw_pos = 2
+	self.stances.corgi.steelsight.vel_overshot.pitch_neg = 1
+	self.stances.corgi.steelsight.vel_overshot.pitch_pos = -1
+	local pivot_head_translation = Vector3(9, 19, -4)
+	local pivot_head_rotation = Rotation(0, 0, 0)
+	self.stances.corgi.crouched.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
+	self.stances.corgi.crouched.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
+	self.stances.corgi.crouched.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -22, 0)
+	self.stances.corgi.crouched.vel_overshot.yaw_neg = -3
+	self.stances.corgi.crouched.vel_overshot.yaw_pos = 3
+	self.stances.corgi.crouched.vel_overshot.pitch_neg = 2
+	self.stances.corgi.crouched.vel_overshot.pitch_pos = -2
 end
 

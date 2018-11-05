@@ -147,8 +147,9 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 
 	placer:add_right(nil)
 
+	local title_text = managers.localization:text(self._visual.name_id)
 	local title = placer:add_bottom(self:fine_text({
-		text_id = self._visual.name_id,
+		text = title_text,
 		font = medium_font,
 		font_size = medium_font_size
 	}))

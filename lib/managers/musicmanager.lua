@@ -360,6 +360,8 @@ function MusicManager:jukebox_default_tracks()
 		heist_jewelry_store = "track_01",
 		heist_watchdogs1 = "track_02",
 		heist_born1 = "all",
+		heist_rvd1 = "track_57",
+		heist_rvd2 = "track_58",
 		heist_pines = "track_23",
 		mainmenu = "menu_music",
 		credits = "criminals_ambition",

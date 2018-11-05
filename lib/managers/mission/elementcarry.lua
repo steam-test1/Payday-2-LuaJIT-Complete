@@ -59,8 +59,9 @@ function ElementCarry:on_executed(instigator)
 					local silent = self._values.operation == "secure_silent"
 					local carry_id = carry_ext:carry_id()
 					local multiplier = carry_ext:multiplier()
+					local peer_id = carry_ext:latest_peer_id()
 
-					managers.loot:secure(carry_id, multiplier, silent)
+					managers.loot:secure(carry_id, multiplier, silent, peer_id)
 				end
 
 				carry_ext:set_value(0)

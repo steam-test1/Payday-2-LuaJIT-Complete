@@ -207,7 +207,7 @@ function GenericDialog:set_input_enabled(enabled)
 		if enabled then
 			self._controller:add_trigger("confirm", self._confirm_func)
 
-			if managers.controller:get_default_wrapper_type() == "pc" or managers.controller:get_default_wrapper_type() == "steam" then
+			if managers.controller:get_default_wrapper_type() == "pc" or managers.controller:get_default_wrapper_type() == "steam" or managers.controller:get_default_wrapper_type() == "vr" then
 				self._controller:add_trigger("toggle_menu", self._cancel_func)
 
 				self._mouse_id = managers.mouse_pointer:get_id()
@@ -230,7 +230,7 @@ function GenericDialog:set_input_enabled(enabled)
 			self._panel_script:release_scroll_bar()
 			self._controller:remove_trigger("confirm", self._confirm_func)
 
-			if managers.controller:get_default_wrapper_type() == "pc" or managers.controller:get_default_wrapper_type() == "steam" then
+			if managers.controller:get_default_wrapper_type() == "pc" or managers.controller:get_default_wrapper_type() == "steam" or managers.controller:get_default_wrapper_type() == "vr" then
 				self._controller:remove_trigger("toggle_menu", self._cancel_func)
 			else
 				self._controller:remove_trigger("cancel", self._cancel_func)
@@ -337,7 +337,7 @@ function GenericDialog:remove_mouse()
 	if not self._removed_mouse then
 		self._removed_mouse = true
 
-		if managers.controller:get_default_wrapper_type() == "pc" or managers.controller:get_default_wrapper_type() == "steam" then
+		if managers.controller:get_default_wrapper_type() == "pc" or managers.controller:get_default_wrapper_type() == "steam" or managers.controller:get_default_wrapper_type() == "vr" then
 			managers.mouse_pointer:remove_mouse(self._mouse_id)
 		else
 			managers.mouse_pointer:enable()

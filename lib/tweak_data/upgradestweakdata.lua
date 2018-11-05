@@ -1213,8 +1213,8 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.cocaine_stacks_decay_multiplier = {0.5}
 	self.values.player.sync_cocaine_upgrade_level = {2}
 	self.values.player.cocaine_stack_absorption_multiplier = {2}
-	self.wild_trigger_time = 15
-	self.wild_max_triggers_per_time = 10
+	self.wild_trigger_time = 4
+	self.wild_max_triggers_per_time = 4
 	self.values.player.wild_health_amount = {0.5}
 	self.values.player.wild_armor_amount = {0.5}
 	self.values.player.less_health_wild_armor = {{
@@ -1223,7 +1223,7 @@ function UpgradesTweakData:_init_pd2_values()
 	}}
 	self.values.player.less_health_wild_cooldown = {{
 		0.1,
-		1
+		0.1
 	}}
 	self.values.player.less_armor_wild_health = {{
 		0.1,
@@ -1231,7 +1231,7 @@ function UpgradesTweakData:_init_pd2_values()
 	}}
 	self.values.player.less_armor_wild_cooldown = {{
 		0.1,
-		1
+		0.1
 	}}
 	self.values.temporary.chico_injector = {{
 		0.75,
@@ -2852,8 +2852,8 @@ function UpgradesTweakData:_init_pd2_values()
 			{
 				"5",
 				"5",
-				"10",
-				"15"
+				"4",
+				"4"
 			},
 			{"25%"},
 			{
@@ -2867,8 +2867,8 @@ function UpgradesTweakData:_init_pd2_values()
 			},
 			{
 				"10%",
-				"15",
-				"1"
+				"4",
+				"0.1"
 			},
 			{"135%"},
 			{
@@ -2881,8 +2881,8 @@ function UpgradesTweakData:_init_pd2_values()
 			},
 			{
 				"10%",
-				"15",
-				"1",
+				"4",
+				"0.1",
 				"10%"
 			}
 		},
@@ -3055,7 +3055,9 @@ function UpgradesTweakData:init(tweak_data)
 		[0] = {upgrades = {
 			"frag",
 			"dynamite",
-			"molotov"
+			"molotov",
+			"corgi",
+			"clean"
 		}},
 		{
 			name_id = "body_armor",
@@ -3792,6 +3794,7 @@ function UpgradesTweakData:init(tweak_data)
 	self:_x_shrew_weapon_definitions()
 	self:_basset_weapon_definitions()
 	self:_x_basset_weapon_definitions()
+	self:_corgi_weapon_definitions()
 	self:_melee_weapon_definitions()
 	self:_grenades_definitions()
 	self:_carry_definitions()
@@ -9687,6 +9690,7 @@ function UpgradesTweakData:_melee_weapon_definitions()
 		category = "melee_weapon"
 	}
 	self.definitions.sap = {category = "melee_weapon"}
+	self.definitions.clean = {category = "melee_weapon"}
 	self.definitions.meter = {
 		dlc = "ecp",
 		category = "melee_weapon"
@@ -13066,6 +13070,14 @@ function UpgradesTweakData:_x_basset_weapon_definitions()
 	self.definitions.x_basset = {
 		factory_id = "wpn_fps_sho_x_basset",
 		weapon_id = "x_basset",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_corgi_weapon_definitions()
+	self.definitions.corgi = {
+		factory_id = "wpn_fps_ass_corgi",
+		weapon_id = "corgi",
 		category = "weapon"
 	}
 end

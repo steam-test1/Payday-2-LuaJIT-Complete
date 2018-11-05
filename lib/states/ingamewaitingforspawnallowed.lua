@@ -18,7 +18,8 @@ function IngameWaitingForSpawnAllowed.spawn_waiting_player(peer_to_spawn)
 	if Network:is_client() then
 		debug_pause("Trying to request player spawn on client trough IngameWaitingForSpawnAllowed")
 	else
-		local pos_rot = managers.criminals:get_valid_player_spawn_pos_rot()
+		local peer = managers.network:session():peer(peer_to_spawn)
+		local pos_rot = managers.criminals:get_valid_player_spawn_pos_rot(peer and peer:id())
 
 		if not pos_rot and managers.network then
 			local spawn_point = managers.network:session() and managers.network:session():get_next_spawn_point() or managers.network:spawn_point(1)

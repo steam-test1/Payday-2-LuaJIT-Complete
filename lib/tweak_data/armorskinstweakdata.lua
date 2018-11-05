@@ -538,13 +538,15 @@ function EconomyTweakData:_init_armor_skins_armor_safe()
 		base_gradient = {[7.0] = "units/payday2_cash/safes/ast/base_gradient/base_ast_005_df"},
 		pattern_gradient = {[7.0] = "units/payday2_cash/safes/red/pattern_gradient/gradient_france_df"},
 		sticker = {[7.0] = "units/payday2_cash/safes/ast/sticker/ast_sticker_003_df"},
+		pattern_pos = {[6] = Vector3(0, 0, 0)},
 		uv_scale = {
 			[2] = Vector3(0.629771, 1.00417, 0.367994),
 			[7] = Vector3(1.0325, 1.0325, 0.367994)
 		},
 		uv_offset_rot = {
 			[2] = Vector3(-0.445466, 1.06887, 0),
-			[7] = Vector3(0, 1.01087, 0)
+			[7] = Vector3(0, 1.01187, 0),
+			[6] = Vector3(0.009, 1.01087, 0)
 		},
 		steam_economy = true
 	}

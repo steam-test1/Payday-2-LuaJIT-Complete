@@ -43,14 +43,18 @@ function BikeDrivingExt:update(unit, t, dt)
 			self._wheel_idle = true
 		end
 
+		local use_tilt = true
+
 		if steer > 0 then
 			self._unit:anim_stop(Idstring("anim_tilt_right"))
 
 			local tilt_anim_length = self._unit:anim_length(Idstring("anim_tilt_left"))
 			local steer_anim_length = self._unit:anim_length(Idstring("anim_steering_wheel_left"))
 
-			self._unit:anim_set_time(Idstring("anim_tilt_left"), math.abs(steer) * tilt_anim_length)
-			self._unit:anim_play(Idstring("anim_tilt_left"))
+			if use_tilt then
+				self._unit:anim_set_time(Idstring("anim_tilt_left"), math.abs(steer) * tilt_anim_length)
+				self._unit:anim_play(Idstring("anim_tilt_left"))
+			end
 
 			if self._seats.driver.occupant ~= managers.player:player_unit() then
 				self._unit:anim_stop(Idstring("anim_steering_wheel_right"))
@@ -68,12 +72,17 @@ function BikeDrivingExt:update(unit, t, dt)
 			local tilt_anim_length = self._unit:anim_length(Idstring("anim_tilt_right"))
 			local steer_anim_length = self._unit:anim_length(Idstring("anim_steering_wheel_right"))
 
-			self._unit:anim_set_time(Idstring("anim_tilt_right"), math.abs(steer) * tilt_anim_length)
-			self._unit:anim_play(Idstring("anim_tilt_right"))
+			if use_tilt then
+				self._unit:anim_set_time(Idstring("anim_tilt_right"), math.abs(steer) * tilt_anim_length)
+				self._unit:anim_play(Idstring("anim_tilt_right"))
+			end
 
 			if self._seats.driver.occupant ~= managers.player:player_unit() then
-				self._unit:anim_set_time(Idstring("anim_tilt_right"), math.abs(steer) * tilt_anim_length * left_length_fix)
-				self._unit:anim_play(Idstring("anim_tilt_right"))
+				if use_tilt then
+					self._unit:anim_set_time(Idstring("anim_tilt_right"), math.abs(steer) * tilt_anim_length * left_length_fix)
+					self._unit:anim_play(Idstring("anim_tilt_right"))
+				end
+
 				self._unit:anim_stop(Idstring("anim_steering_wheel_left"))
 				self._unit:anim_set_time(Idstring("anim_steering_wheel_right"), math.abs(steer) * steer_anim_length * left_length_fix)
 				self._unit:anim_play(Idstring("anim_steering_wheel_right"))

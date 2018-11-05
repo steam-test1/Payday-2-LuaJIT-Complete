@@ -194,6 +194,9 @@ function MenuManager:init(is_start_menu)
 	self:workshop_changed(nil, nil, managers.user:get_setting("workshop"))
 end
 
+function MenuManager:init_finalize()
+end
+
 function MenuManager:post_event(event)
 	local event = self._sound_source:post_event(event)
 end
@@ -1599,6 +1602,11 @@ function MenuCallbackHandler:dlc_buy_chico_pc()
 	Steam:overlay_activate("url", tweak_data.gui.store_page)
 end
 
+function MenuCallbackHandler:dlc_buy_rvd_pc()
+	print("[MenuCallbackHandler:dlc_buy_rvd_pc]")
+	Steam:overlay_activate("url", tweak_data.gui.store_page)
+end
+
 function MenuCallbackHandler:dlc_buy_spa_pc()
 	print("[MenuCallbackHandler:dlc_buy_spa_pc]")
 	Steam:overlay_activate("url", tweak_data.gui.store_page)
@@ -1716,6 +1724,7 @@ function MenuCallbackHandler:is_dlc_latest_locked(check_dlc)
 		"mp2",
 		"amp",
 		"grv",
+		"rvd",
 		"spa",
 		"friend",
 		"chico",
@@ -2011,6 +2020,13 @@ function MenuCallbackHandler:visible_callback_chico(item)
 	return self:is_dlc_latest_locked("chico")
 end
 
+function MenuCallbackHandler:visible_callback_rvd(item)
+	item:set_parameter("text_id", "menu_dlc_buy_ue")
+	item:set_parameter("help_id", "menu_dlc_buy_ue_help")
+
+	return self:is_dlc_latest_locked("rvd")
+end
+
 function MenuCallbackHandler:visible_callback_spa(item)
 	item:set_parameter("text_id", "menu_dlc_buy_ue")
 	item:set_parameter("help_id", "menu_dlc_buy_ue_help")
@@ -2083,6 +2099,10 @@ function MenuCallbackHandler:is_win32()
 end
 
 function MenuCallbackHandler:is_actually_win32()
+	return SystemInfo:platform() == Idstring("WIN32")
+end
+
+function MenuCallbackHandler:is_win32_pc()
 	return SystemInfo:platform() == Idstring("WIN32")
 end
 

@@ -3,6 +3,10 @@ CivilianBase = CivilianBase or class(CopBase)
 function CivilianBase:post_init()
 	self._ext_movement = self._unit:movement()
 	self._ext_anim = self._unit:anim_data()
+
+	self:set_anim_lod(1)
+
+	self._lod_stage = 1
 	local spawn_state = nil
 
 	if self._spawn_state then

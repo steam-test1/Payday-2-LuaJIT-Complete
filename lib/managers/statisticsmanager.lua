@@ -321,6 +321,7 @@ function StatisticsManager:_setup(reset)
 		},
 		shots_by_weapon = {},
 		used_weapons = {},
+		melee_hit = false,
 		sessions = {
 			count = 0,
 			time = 0
@@ -1731,6 +1732,10 @@ function StatisticsManager:_get_name_id_and_throwable_id(weapon_unit)
 	end
 end
 
+function StatisticsManager:register_melee_hit()
+	self._global.session.melee_hit = true
+end
+
 function StatisticsManager:completed_job(job_id, difficulty)
 	if tweak_data.narrative:has_job_wrapper(job_id) then
 		local count = 0
@@ -2184,6 +2189,10 @@ function StatisticsManager:session_used_weapons()
 	end
 
 	return weapons_used
+end
+
+function StatisticsManager:session_melee_hit()
+	return self._global.session.melee_hit
 end
 
 function StatisticsManager:session_killed_by_grenade()

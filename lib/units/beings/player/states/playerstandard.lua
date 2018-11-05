@@ -1731,7 +1731,7 @@ function PlayerStandard:_check_action_interact(t, input)
 	local new_action, timer, interact_object = nil
 
 	if input.btn_interact_press and not self:_action_interact_forbidden() then
-		new_action, timer, interact_object = self._interaction:interact(self._unit, input.data)
+		new_action, timer, interact_object = self._interaction:interact(self._unit, input.data, self._interact_hand)
 
 		if new_action then
 			self:_play_interact_redirect(t, input)
@@ -1758,14 +1758,18 @@ function PlayerStandard:_check_action_interact(t, input)
 	end
 
 	if input.btn_interact_release then
-		if self._start_intimidate and not self:_action_interact_forbidden() then
-			if t < self._start_intimidate_t + secondary_delay then
-				self:_start_action_intimidate(t)
+		local released = true
 
-				self._start_intimidate = false
+		if released then
+			if self._start_intimidate and not self:_action_interact_forbidden() then
+				if t < self._start_intimidate_t + secondary_delay then
+					self:_start_action_intimidate(t)
+
+					self._start_intimidate = false
+				end
+			else
+				self:_interupt_action_interact()
 			end
-		else
-			self:_interupt_action_interact()
 		end
 	end
 
@@ -2154,8 +2158,8 @@ function PlayerStandard:_calc_melee_hit_ray(t, sphere_cast_radius)
 	return self._unit:raycast("ray", from, to, "slot_mask", self._slotmask_bullet_impact_targets, "sphere_cast_radius", sphere_cast_radius, "ray_type", "body melee")
 end
 
-function PlayerStandard:_do_melee_damage(t, bayonet_melee, melee_hit_ray)
-	local melee_entry = managers.blackmarket:equipped_melee_weapon()
+function PlayerStandard:_do_melee_damage(t, bayonet_melee, melee_hit_ray, melee_entry)
+	melee_entry = melee_entry or managers.blackmarket:equipped_melee_weapon()
 	local instant_hit = tweak_data.blackmarket.melee_weapons[melee_entry].instant
 	local melee_damage_delay = tweak_data.blackmarket.melee_weapons[melee_entry].melee_damage_delay or 0
 	local charge_lerp_value = instant_hit and 0 or self:_get_melee_charge_lerp_value(t, melee_damage_delay)
@@ -2220,7 +2224,9 @@ function PlayerStandard:_do_melee_damage(t, bayonet_melee, melee_hit_ray)
 			})
 		end
 
-		managers.rumble:play("melee_hit")
+		local custom_data = nil
+
+		managers.rumble:play("melee_hit", nil, nil, custom_data)
 		managers.game_play_central:physics_push(col_ray)
 
 		local character_unit, shield_knock = nil
@@ -4053,6 +4059,8 @@ function PlayerStandard:_check_action_primary_attack(t, input)
 								end
 							end
 						else
+							self:_check_stop_shooting()
+
 							return false
 						end
 					end
@@ -4660,6 +4668,14 @@ function PlayerStandard:pre_destroy()
 end
 
 function PlayerStandard:tweak_data_clbk_reload()
-	self._tweak_data = tweak_data.player.movement_state.standard
+	local state_name = self._ext_movement:current_state_name()
+
+	if state_name == "jerry1" then
+		self._tweak_data = tweak_data.player.freefall
+	elseif state_name == "jerry2" then
+		self._tweak_data = tweak_data.player.parachute
+	else
+		self._tweak_data = tweak_data.player.movement_state.standard
+	end
 end
 

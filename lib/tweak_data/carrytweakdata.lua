@@ -62,6 +62,7 @@ function CarryTweakData:init(tweak_data)
 	self.types.cloaker_explosives.can_poof = true
 	self.small_loot = {
 		money_bundle = tweak_data:get_value("money_manager", "small_loot", "money_bundle"),
+		money_bundle_value = tweak_data:get_value("money_manager", "small_loot", "money_bundle_value"),
 		ring_band = tweak_data:get_value("money_manager", "small_loot", "ring_band"),
 		diamondheist_vault_bust = tweak_data:get_value("money_manager", "small_loot", "diamondheist_vault_bust"),
 		diamondheist_vault_diamond = tweak_data:get_value("money_manager", "small_loot", "diamondheist_vault_diamond"),
@@ -736,6 +737,13 @@ function CarryTweakData:init(tweak_data)
 		type = "coke_light",
 		name_id = "hud_carry_yayo",
 		bag_value = "coke",
+		visual_unit_name = "units/payday2/characters/npc_acc_loot_bag_1/npc_acc_loot_bag_1",
+		AI_carry = {SO_category = "enemies"}
+	}
+	self.rubies = {
+		type = "heavy",
+		name_id = "hud_carry_rubies",
+		bag_value = "rubies",
 		visual_unit_name = "units/payday2/characters/npc_acc_loot_bag_1/npc_acc_loot_bag_1",
 		AI_carry = {SO_category = "enemies"}
 	}

@@ -87,7 +87,7 @@ function SpecializationDialog:remove_mouse()
 	if not self._removed_mouse then
 		self._removed_mouse = true
 
-		if managers.controller:get_default_wrapper_type() == "pc" or managers.controller:get_default_wrapper_type() == "steam" then
+		if managers.controller:get_default_wrapper_type() == "pc" or managers.controller:get_default_wrapper_type() == "steam" or managers.controller:get_default_wrapper_type() == "vr" then
 			managers.mouse_pointer:remove_mouse(self._mouse_id)
 		else
 			managers.mouse_pointer:enable()

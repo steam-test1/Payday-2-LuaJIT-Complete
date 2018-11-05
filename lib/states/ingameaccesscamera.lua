@@ -3,6 +3,7 @@ require("lib/states/GameState")
 IngameAccessCamera = IngameAccessCamera or class(IngamePlayerBaseState)
 IngameAccessCamera.GUI_SAFERECT = Idstring("guis/access_camera_saferect")
 IngameAccessCamera.GUI_FULLSCREEN = Idstring("guis/access_camera_fullrect")
+local old_buttons = true
 local tmp_vec1 = Vector3()
 local tmp_rot1 = Rotation()
 
@@ -16,18 +17,18 @@ function IngameAccessCamera:_setup_controller()
 	self._prev_camera_cb = callback(self, self, "_prev_camera")
 	self._next_camera_cb = callback(self, self, "_next_camera")
 
-	self._controller:add_trigger("jump", self._leave_cb)
-	self._controller:add_trigger("primary_attack", self._prev_camera_cb)
-	self._controller:add_trigger("secondary_attack", self._next_camera_cb)
+	self._controller:add_trigger(old_buttons and "jump" or "suvcam_exit", self._leave_cb)
+	self._controller:add_trigger(old_buttons and "primary_attack" or "suvcam_prev", self._prev_camera_cb)
+	self._controller:add_trigger(old_buttons and "secondary_attack" or "suvcam_next", self._next_camera_cb)
 	self._controller:set_enabled(true)
 	managers.controller:set_ingame_mode("access_camera")
 end
 
 function IngameAccessCamera:_clear_controller()
 	if self._controller then
-		self._controller:remove_trigger("jump", self._leave_cb)
-		self._controller:remove_trigger("primary_attack", self._prev_camera_cb)
-		self._controller:remove_trigger("secondary_attack", self._next_camera_cb)
+		self._controller:remove_trigger(old_buttons and "jump" or "suvcam_exit", self._leave_cb)
+		self._controller:remove_trigger(old_buttons and "primary_attack" or "suvcam_prev", self._prev_camera_cb)
+		self._controller:remove_trigger(old_buttons and "secondary_attack" or "suvcam_next", self._next_camera_cb)
 		self._controller:set_enabled(false)
 		self._controller:destroy()
 

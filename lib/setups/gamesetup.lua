@@ -52,6 +52,29 @@ require("lib/units/beings/player/PlayerInventory")
 require("lib/units/beings/player/PlayerEquipment")
 require("lib/units/beings/player/PlayerMovement")
 require("lib/player_actions/PlayerAction")
+
+PlayerHand = PlayerHand or class()
+
+function PlayerHand:init(unit)
+end
+
+function PlayerHand:destroy()
+end
+PlayerWarp = PlayerWarp or class()
+
+function PlayerWarp:init(unit)
+end
+
+function PlayerWarp:destroy()
+end
+HandMelee = HandMelee or class()
+
+function HandMelee:init(unit)
+end
+
+function HandMelee:destroy()
+end
+
 require("lib/network/base/extensions/NetworkBaseExtension")
 require("lib/units/beings/player/HuskPlayerMovement")
 require("lib/units/beings/player/HuskPlayerInventory")
@@ -130,6 +153,7 @@ require("lib/units/equipment/bodybags_bag/BodyBagsBagBase")
 require("lib/units/ContourExt")
 require("lib/units/BlinkExt")
 require("lib/units/VanSkinExt")
+require("lib/units/IngameUIExt")
 require("lib/units/weapons/RaycastWeaponBase")
 require("lib/units/weapons/NewRaycastWeaponBase")
 require("lib/units/weapons/NPCRaycastWeaponBase")
@@ -200,6 +224,7 @@ require("lib/units/props/TextTemplateBase")
 require("lib/units/props/ExplodingProp")
 require("lib/units/props/SafehouseVaultMoneyStacks")
 require("lib/units/characters/PlayerBodyBoneMergeBase")
+require("lib/units/SyncMaterials")
 require("lib/managers/menu/FadeoutGuiObject")
 require("lib/units/cameras/CinematicStateCamera")
 

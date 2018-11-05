@@ -199,7 +199,8 @@ function GamePlayCentralManager:update(t, dt)
 		managers.hud:feed_heist_time(Application:time() - self._heist_timer.start_time + self._heist_timer.offset_time)
 
 		if Network:is_server() and self._heist_timer.next_sync < Application:time() then
-			self._heist_timer.next_sync = Application:time() + 9
+			local sync_interval = 9
+			self._heist_timer.next_sync = Application:time() + sync_interval
 			local heist_time = Application:time() - self._heist_timer.start_time
 
 			for peer_id, peer in pairs(managers.network:session():peers()) do

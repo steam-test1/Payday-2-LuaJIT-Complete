@@ -10,7 +10,7 @@ function IngameLobbyMenuState:init(game_state_machine)
 	if managers.hud then
 		self._setup = true
 
-		managers.hud:load_hud(self.GUI_LOOTSCREEN, false, true, false, {}, nil, nil, true)
+		managers.hud:load_hud_menu(self.GUI_LOOTSCREEN, false, true, false, {}, nil, nil, true)
 		managers.hud:hide(self.GUI_LOOTSCREEN)
 	end
 
@@ -117,7 +117,7 @@ function IngameLobbyMenuState:at_enter()
 
 	self._continue_block_timer = Application:time() + 0.5
 
-	managers.menu:close_menu()
+	managers.menu:close_menu("pause_menu")
 
 	if managers.job:stage_success() then
 		managers.job:next_stage()

@@ -321,7 +321,10 @@ end
 
 function CharacterTweakData:_init_medic(presets)
 	self.medic = deep_clone(presets.base)
-	self.medic.tags = {"medic"}
+	self.medic.tags = {
+		"medic",
+		"special"
+	}
 	self.medic.experience = {}
 	self.medic.weapon = presets.weapon.normal
 	self.medic.detection = presets.detection.normal
@@ -539,7 +542,10 @@ end
 
 function CharacterTweakData:_init_sniper(presets)
 	self.sniper = deep_clone(presets.base)
-	self.sniper.tags = {"sniper"}
+	self.sniper.tags = {
+		"sniper",
+		"special"
+	}
 	self.sniper.experience = {}
 	self.sniper.weapon = presets.weapon.sniper
 	self.sniper.detection = presets.detection.sniper
@@ -1618,7 +1624,10 @@ end
 
 function CharacterTweakData:_init_tank(presets)
 	self.tank = deep_clone(presets.base)
-	self.tank.tags = {"tank"}
+	self.tank.tags = {
+		"tank",
+		"special"
+	}
 	self.tank.experience = {}
 	self.tank.damage.tased_response = {
 		light = {
@@ -2191,7 +2200,10 @@ end
 
 function CharacterTweakData:_init_spooc(presets)
 	self.spooc = deep_clone(presets.base)
-	self.spooc.tags = {"spooc"}
+	self.spooc.tags = {
+		"spooc",
+		"special"
+	}
 	self.spooc.experience = {}
 	self.spooc.weapon = deep_clone(presets.weapon.good)
 	self.spooc.detection = presets.detection.normal
@@ -2253,7 +2265,10 @@ end
 
 function CharacterTweakData:_init_shield(presets)
 	self.shield = deep_clone(presets.base)
-	self.shield.tags = {"shield"}
+	self.shield.tags = {
+		"shield",
+		"special"
+	}
 	self.shield.experience = {}
 	self.shield.weapon = deep_clone(presets.weapon.normal)
 	self.shield.detection = presets.detection.normal
@@ -2565,7 +2580,10 @@ end
 
 function CharacterTweakData:_init_taser(presets)
 	self.taser = deep_clone(presets.base)
-	self.taser.tags = {"taser"}
+	self.taser.tags = {
+		"taser",
+		"special"
+	}
 	self.taser.experience = {}
 	self.taser.weapon = {is_rifle = {
 		melee_speed = 0.5,
@@ -16121,6 +16139,23 @@ function CharacterTweakData:character_map()
 		run = {
 			path = "units/pd2_dlc_run/characters/",
 			list = {"npc_matt"}
+		},
+		rvd = {
+			path = "units/pd2_dlc_rvd/characters/",
+			list = {
+				"npc_cop",
+				"npc_cop_01",
+				"npc_mr_brown",
+				"npc_mr_pink",
+				"npc_mr_orange",
+				"npc_mr_blonde",
+				"npc_mr_pink_escort",
+				"ene_la_cop_1",
+				"ene_la_cop_2",
+				"ene_la_cop_3",
+				"ene_la_cop_4",
+				"ene_female_civ_undercover"
+			}
 		},
 		drm = {
 			path = "units/pd2_dlc_drm/characters/",

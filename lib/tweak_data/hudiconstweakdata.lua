@@ -1404,6 +1404,15 @@ function HudIconsTweakData:init()
 			32
 		}
 	}
+	self.equipment_liquid_nitrogen_canister = {
+		texture = "guis/textures/pd2/hud_pickups",
+		texture_rect = {
+			128,
+			96,
+			32,
+			32
+		}
+	}
 	self.interaction_free = {
 		texture = "guis/textures/hud_icons",
 		texture_rect = {
@@ -10995,6 +11004,114 @@ function HudIconsTweakData:init()
 		texture_rect = {
 			348,
 			87,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_ReservoirDogs_AllDiffs_D0 = {
+		texture = "guis/dlcs/rvd/textures/pd2/rvd_achievements_atlas",
+		texture_rect = {
+			89,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_ReservoirDogs_AllDiffs_D1 = {
+		texture = "guis/dlcs/rvd/textures/pd2/rvd_achievements_atlas",
+		texture_rect = {
+			176,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_ReservoirDogs_AllDiffs_D2 = {
+		texture = "guis/dlcs/rvd/textures/pd2/rvd_achievements_atlas",
+		texture_rect = {
+			2,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_ReservoirDogs_AllDiffs_D3 = {
+		texture = "guis/dlcs/rvd/textures/pd2/rvd_achievements_atlas",
+		texture_rect = {
+			89,
+			176,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_ReservoirDogs_AllDiffs_D4 = {
+		texture = "guis/dlcs/rvd/textures/pd2/rvd_achievements_atlas",
+		texture_rect = {
+			176,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_ReservoirDogs_AllDiffs_D5 = {
+		texture = "guis/dlcs/rvd/textures/pd2/rvd_achievements_atlas",
+		texture_rect = {
+			263,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_ReservoirDogs_AllDiffs_D6 = {
+		texture = "guis/dlcs/rvd/textures/pd2/rvd_achievements_atlas",
+		texture_rect = {
+			2,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_ReservoirDogs_United_D3 = {
+		texture = "guis/dlcs/rvd/textures/pd2/rvd_achievements_atlas",
+		texture_rect = {
+			89,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_ReservoirDogs_GetOffMy = {
+		texture = "guis/dlcs/rvd/textures/pd2/rvd_achievements_atlas",
+		texture_rect = {
+			2,
+			176,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_ReservoirDogs_Pinky_D5 = {
+		texture = "guis/dlcs/rvd/textures/pd2/rvd_achievements_atlas",
+		texture_rect = {
+			2,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_ReservoirDogs_WasteNot_D3 = {
+		texture = "guis/dlcs/rvd/textures/pd2/rvd_achievements_atlas",
+		texture_rect = {
+			2,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_ReservoirDogs_CloseShave_D3 = {
+		texture = "guis/dlcs/rvd/textures/pd2/rvd_achievements_atlas",
+		texture_rect = {
+			89,
+			350,
 			85,
 			85
 		}

@@ -3,6 +3,11 @@ Ladder.ladders = Ladder.ladders or {}
 Ladder.active_ladders = Ladder.active_ladders or {}
 Ladder.ladder_index = 1
 Ladder.LADDERS_PER_FRAME = 1
+Ladder.SNAP_LENGTH = 125
+Ladder.SEGMENT_LENGTH = 200
+Ladder.MOVER_NORMAL_OFFSET = 30
+Ladder.EXIT_OFFSET_TOP = 50
+Ladder.ON_LADDER_NORMAL_OFFSET = 60
 Ladder.DEBUG = false
 Ladder.EVENT_IDS = {}
 
@@ -35,7 +40,7 @@ function Ladder:init(unit)
 	table.insert(Ladder.ladders, self._unit)
 end
 
-function Ladder:set_config()
+function Ladder:set_config(check_ground_clipping)
 	self._ladder_orientation_obj = self._unit:get_object(Idstring(self._ladder_orientation_obj_name))
 	local rotation = self._ladder_orientation_obj:rotation()
 	local position = self._ladder_orientation_obj:position()
@@ -49,6 +54,24 @@ function Ladder:set_config()
 	self._w_dir = math.cross(self._up, self._normal)
 	position = position + self._up * self._offset
 	local top = position + self._up * self._height
+
+	if check_ground_clipping then
+		local middle_pos = (position - top) / 2 + top
+		local up_ray = self._unit:raycast("ray", middle_pos + self._normal * self.MOVER_NORMAL_OFFSET, top + self._normal * self.MOVER_NORMAL_OFFSET, "slot_mask", 1)
+
+		if up_ray then
+			top = (up_ray.position - self._normal * self.MOVER_NORMAL_OFFSET) - self._up * 10
+		end
+
+		local bottom_ray = self._unit:raycast("ray", middle_pos + self._normal * self.MOVER_NORMAL_OFFSET, position + self._normal * self.MOVER_NORMAL_OFFSET, "slot_mask", 1)
+
+		if bottom_ray then
+			position = bottom_ray.position - self._normal * self.MOVER_NORMAL_OFFSET + self._up * 10
+		end
+
+		self._height = mvector3.distance(top, position)
+	end
+
 	self._bottom = position
 	self._top = top
 	self._rotation = Rotation(self._w_dir, self._up, self._normal)
@@ -58,6 +81,45 @@ function Ladder:set_config()
 		top + (self._w_dir * self._width) / 2,
 		top - (self._w_dir * self._width) / 2
 	}
+	local snap_start = Ladder.SNAP_LENGTH
+
+	if 2 * Ladder.SNAP_LENGTH < self._height then
+		self._climb_distance = self._height - 2 * Ladder.SNAP_LENGTH
+	else
+		snap_start = self._height * 0.2
+		self._climb_distance = self._height * 0.6
+	end
+
+	self._start_point = self._bottom + self._up * snap_start + self._normal * Ladder.MOVER_NORMAL_OFFSET
+	local segments = 1
+
+	if Ladder.SEGMENT_LENGTH < self._climb_distance then
+		segments = self._climb_distance / Ladder.SEGMENT_LENGTH
+		local percent = (segments - math.floor(segments)) / math.floor(segments)
+		segments = percent > 0.1 and math.ceil(segments) or math.floor(segments)
+	end
+
+	self._segments = segments
+	self._top_exit = mvector3.copy(self._normal)
+
+	mvector3.multiply(self._top_exit, -Ladder.EXIT_OFFSET_TOP)
+	mvector3.add(self._top_exit, self._top)
+
+	self._bottom_exit = mvector3.copy(self._normal)
+
+	mvector3.multiply(self._bottom_exit, Ladder.MOVER_NORMAL_OFFSET)
+	mvector3.add(self._bottom_exit, self._bottom)
+
+	self._up_dot = math.dot(self._up, math.UP)
+	self._w_dir_half = self._w_dir * self._width * 0.5
+end
+
+function Ladder:check_ground_clipping()
+	if not self._has_checked_ground then
+		self:set_config(true)
+
+		self._has_checked_ground = true
+	end
 end
 
 function Ladder:update(t, dt)
@@ -148,6 +210,47 @@ function Ladder:get_normal_move_offset(pos)
 	return normal_move_offset
 end
 
+function Ladder:position(t)
+	local pos = mvector3.copy(self._up)
+
+	mvector3.multiply(pos, t * self._climb_distance)
+	mvector3.add(pos, self._start_point)
+
+	return pos
+end
+
+function Ladder:on_ladder(pos, t)
+	local l_pos = self:position(t) - self._w_dir_half
+
+	mvector3.set(mvec1, pos)
+	mvector3.subtract(mvec1, l_pos)
+
+	local w_dot = math.dot(self._w_dir, mvec1)
+
+	if w_dot < 0 or self._width < w_dot then
+		return false
+	end
+
+	local n_dot = math.dot(self._normal, mvec1)
+
+	if Ladder.ON_LADDER_NORMAL_OFFSET < n_dot then
+		return false
+	end
+
+	return true
+end
+
+function Ladder:horizontal_offset(pos)
+	mvector3.set(mvec1, pos)
+	mvector3.subtract(mvec1, self._bottom)
+
+	local offset = mvector3.copy(self._w_dir)
+
+	mvector3.multiply(offset, math.dot(self._w_dir, mvec1))
+
+	return offset
+end
+
 function Ladder:rotation()
 	return self._rotation
 end
@@ -168,8 +271,20 @@ function Ladder:bottom()
 	return self._bottom
 end
 
+function Ladder:bottom_exit()
+	return self._bottom_exit
+end
+
 function Ladder:top()
 	return self._top
+end
+
+function Ladder:top_exit()
+	return self._top_exit
+end
+
+function Ladder:segments()
+	return self._segments
 end
 
 function Ladder:set_width(width)

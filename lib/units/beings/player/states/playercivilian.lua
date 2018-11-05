@@ -181,8 +181,6 @@ function PlayerCivilian:_update_interaction_timers(t)
 		local dt = self:_get_interaction_speed()
 		self._interact_expire_t = self._interact_expire_t - dt
 
-		print("self._interact_expire_t: ", self._interact_expire_t)
-
 		if not alive(self._interact_params.object) or self._interact_params.object ~= managers.interaction:active_unit() or self._interact_params.tweak_data ~= self._interact_params.object:interaction().tweak_data or self._interact_params.object:interaction():check_interupt() then
 			self:_interupt_action_interact(t)
 		else

@@ -610,6 +610,17 @@ function EquipmentsTweakData:init()
 		icon = "equipment_soda",
 		text_id = "hud_equipment_scubagear_vest"
 	}
+	self.specials.briefcase_diamond = {
+		sync_possession = true,
+		icon = "equipment_briefcase",
+		text_id = "hud_int_equipment_briefcase_diamond"
+	}
+	self.specials.liquid_nitrogen = {
+		sync_possession = true,
+		icon = "equipment_liquid_nitrogen_canister",
+		transfer_quantity = 4,
+		text_id = "hud_int_equipment_liquid_nitrogen"
+	}
 	self.specials.briefcase = {
 		sync_possession = true,
 		icon = "equipment_briefcase",

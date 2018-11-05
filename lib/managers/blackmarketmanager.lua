@@ -499,6 +499,14 @@ function BlackMarketManager:equipped_grenade_allows_pickups()
 	return grenade_tweak and not grenade_tweak.base_cooldown
 end
 
+function BlackMarketManager:has_equipped_ability()
+	local id = self:equipped_grenade()
+
+	if id then
+		return tweak_data.blackmarket.projectiles[id] and tweak_data.blackmarket.projectiles[id].ability and true or false
+	end
+end
+
 function BlackMarketManager:equipped_grenade()
 	local forced_throwable = self:forced_throwable()
 
@@ -7429,23 +7437,27 @@ function BlackMarketManager:_cleanup_blackmarket()
 						end
 					end
 
-					if default_mod then
-						table.insert(invalid_parts, {
-							global_value = "normal",
-							refund = false,
-							reason = "duplicate part (default)",
-							slot = slot,
-							default_mod = default_mod,
-							part_id = part_id
-						})
-					else
-						table.insert(invalid_parts, {
-							refund = true,
-							reason = "duplicate part",
-							slot = slot,
-							global_value = item.global_values[part_id] or "normal",
-							part_id = part_id
-						})
+					local remove_part = true
+
+					if remove_part then
+						if default_mod then
+							table.insert(invalid_parts, {
+								global_value = "normal",
+								refund = false,
+								reason = "duplicate part (default)",
+								slot = slot,
+								default_mod = default_mod,
+								part_id = part_id
+							})
+						else
+							table.insert(invalid_parts, {
+								refund = true,
+								reason = "duplicate part",
+								slot = slot,
+								global_value = item.global_values[part_id] or "normal",
+								part_id = part_id
+							})
+						end
 					end
 				end
 
@@ -8514,7 +8526,7 @@ function BlackMarketManager:player_owns_silenced_weapon()
 	return false
 end
 
-function BlackMarketManager:equip_weapon_in_game(category, slot)
+function BlackMarketManager:equip_weapon_in_game(category, slot, force_equip, done_cb)
 	if managers.job:current_real_job_id() ~= "chill" then
 		Application:error("[BlackMarketManager:equip_weapon_in_game] feature not available outside safehouse")
 
@@ -8543,14 +8555,14 @@ function BlackMarketManager:equip_weapon_in_game(category, slot)
 			first_time = false
 		end
 
-		if not managers.network:session():local_peer():is_outfit_loaded() then
-			return false
-		end
-
 		local weapon = self._global.crafted_items[category][slot]
 		local texture_switches = managers.blackmarket:get_weapon_texture_switches(category, slot, weapon)
 
-		managers.player:player_unit():inventory():add_unit_by_factory_name(weapon.factory_id, true, false, weapon.blueprint, weapon.cosmetics, texture_switches)
+		managers.player:player_unit():inventory():add_unit_by_factory_name(weapon.factory_id, false, false, weapon.blueprint, weapon.cosmetics, texture_switches)
+
+		if done_cb then
+			done_cb()
+		end
 
 		return true
 	end
@@ -8562,10 +8574,20 @@ function BlackMarketManager:equip_weapon_in_game(category, slot)
 		managers.dyn_resource:load(Idstring("unit"), ids_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
 	end
 
-	managers.player:player_unit():movement():current_state():_start_action_unequip_weapon(TimerManager:game():time(), {
-		selection_wanted = primary and 2 or 1,
-		unequip_callback = clbk
-	})
+	local selection_categories = {
+		"secondaries",
+		"primaries"
+	}
+	local should_equip = selection_categories[managers.player:player_unit():inventory():equipped_selection()] == category or force_equip
+
+	if should_equip then
+		managers.player:player_unit():movement():current_state():_start_action_unequip_weapon(TimerManager:game():time(), {
+			selection_wanted = primary and 2 or 1,
+			unequip_callback = clbk
+		})
+	else
+		managers.network:session():local_peer():add_outfit_loaded_clbk(clbk)
+	end
 end
 
 function BlackMarketManager:get_reload_time(weapon_id)
@@ -8805,6 +8827,20 @@ end
 
 function BlackMarketManager:has_unlocked_arbiter()
 	return managers.tango:has_unlocked_arbiter()
+end
+
+function BlackMarketManager:get_type_by_id(id)
+	for key, data in pairs(self._global) do
+		if type(data) == "table" and data[id] then
+			return key
+		end
+	end
+
+	for key, data in pairs(tweak_data.blackmarket) do
+		if type(data) == "table" and data[id] then
+			return key
+		end
+	end
 end
 
 function BlackMarketManager:has_unlocked_breech()

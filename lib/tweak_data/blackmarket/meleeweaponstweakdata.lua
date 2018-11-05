@@ -2464,6 +2464,54 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.sap.stats.concealment = 30
 	self.melee_weapons.sap.dlc = nil
 	self.melee_weapons.sap.texture_bundle_folder = "myh"
+	self.melee_weapons.clean = {
+		name_id = "bm_melee_clean",
+		animation = nil,
+		anim_attack_vars = {
+			"var1",
+			"var2"
+		},
+		anim_global_param = "melee_clean",
+		dlc = "rvd",
+		texture_bundle_folder = "rvd",
+		type = "knife",
+		align_objects = {"a_weapon_right"},
+		unit = "units/pd2_dlc_rvd/weapons/wpn_fps_mel_clean/wpn_fps_mel_clean",
+		third_unit = "units/pd2_dlc_rvd/weapons/wpn_fps_mel_clean/wpn_third_mel_clean",
+		sounds = {}
+	}
+	self.melee_weapons.clean.sounds.equip = "clean_equip"
+	self.melee_weapons.clean.sounds.hit_air = "clean_hit_air"
+	self.melee_weapons.clean.sounds.hit_gen = "clean_hit_gen"
+	self.melee_weapons.clean.sounds.hit_body = "clean_hit_body"
+	self.melee_weapons.clean.sounds.charge = "clean_charge"
+	self.melee_weapons.clean.stats = {
+		weapon_type = "sharp",
+		min_damage = 3,
+		max_damage = 8,
+		min_damage_effect = 1,
+		max_damage_effect = 1,
+		charge_time = 2,
+		range = 150,
+		concealment = 29,
+		remove_weapon_movement_penalty = true
+	}
+	self.melee_weapons.clean.repeat_expire_t = 0.36
+	self.melee_weapons.clean.expire_t = 0.6
+	self.melee_weapons.clean.melee_charge_shaker = "player_melee_charge_wing"
+	self.melee_weapons.clean.menu_scene_anim = "menu"
+	self.melee_weapons.clean.menu_scene_params = {
+		loop = false,
+		start_time = -1
+	}
+	self.melee_weapons.clean.anims = {
+		var1_attack = {anim = "var1"},
+		var2_attack = {anim = "var1"},
+		charge = {
+			loop = false,
+			anim = "charge"
+		}
+	}
 	self.melee_weapons.meter = {
 		name_id = "bm_melee_meter",
 		animation = nil,

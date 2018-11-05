@@ -5277,6 +5277,300 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		sort_number = 60,
 		global_value = "ecp"
 	}
+	self.masks.rvd_01 = {
+		unit = "units/pd2_dlc_rvd/masks/msk_rvd_01/msk_rvd_01",
+		name_id = "bm_msk_rvd_01",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 0,
+		texture_bundle_folder = "rvd",
+		sort_number = 61,
+		type = "glasses",
+		skip_mask_on_sequence = true,
+		global_value = "rvd",
+		offsets = {
+			sydney = {
+				Vector3(0, 4.01264, -1.94967),
+				Rotation(0, 18.5881, 0)
+			},
+			dragon = {
+				Vector3(0.196759, 4.48963, -1.2342),
+				Rotation(0, 15.1538, 0)
+			},
+			female_1 = {
+				Vector3(0, 3.6549, -1.11495),
+				Rotation(0, 15.1538, 0)
+			},
+			hoxton = {
+				Vector3(0, 3.6549, -1.94967),
+				Rotation(0, 15.1538, 0)
+			},
+			sokol = {
+				Vector3(0, 2.82018, -0.637965),
+				Rotation(0, 10.0024, 0)
+			},
+			wolf = {
+				Vector3(0, 3.53566, -0.280226),
+				Rotation(0, 10.861, 0)
+			},
+			bodhi = {
+				Vector3(-0.16098, 3.6549, -1.94967),
+				Rotation(0, 16.0124, 0)
+			},
+			jimmy = {
+				Vector3(0, 3.53566, -0.757211),
+				Rotation(0, 10.0024, 0)
+			},
+			max = {
+				Vector3(0, 4.13189, -2.66515),
+				Rotation(0, 18.5881, 0)
+			},
+			dallas = {
+				Vector3(0, 3.17792, -1.71118),
+				Rotation(0, 14.2953, 0)
+			},
+			dragan = {
+				Vector3(0, 3.05867, -1.59194),
+				Rotation(0, 14.2953, 0)
+			},
+			wild = {
+				Vector3(0, 3.17792, -1.47269),
+				Rotation(0, 9.14383, 0)
+			},
+			old_hoxton = {
+				Vector3(0, 3.6549, -2.54591),
+				Rotation(0, 18.5881, 0)
+			},
+			chains = {
+				Vector3(0, 3.6549, -1.11495),
+				Rotation(0, 14.2953, 0)
+			},
+			ecp_female = {
+				Vector3(0, 2.70093, -1.11495),
+				Rotation(0, 10.861, 0)
+			},
+			ecp_male = {
+				Vector3(0.077513, 3.17792, -1.2342),
+				Rotation(0, 14.2953, 0)
+			},
+			jowi = {
+				Vector3(0.077513, 3.29716, -1.59194),
+				Rotation(0, 15.1538, 0)
+			},
+			chico = {
+				Vector3(0, 4.13189, -2.90365),
+				Rotation(0, 18.5881, 0)
+			},
+			myh = {
+				Vector3(0, 3.6549, -2.7844),
+				Rotation(0, 19.4467, 0)
+			},
+			jacket = {
+				Vector3(0.077513, 4.01264, -1.59194),
+				Rotation(0, 16.0124, 0)
+			},
+			bonnie = {
+				Vector3(0, 3.8934, -1.2342),
+				Rotation(0, 14.2953, 0)
+			}
+		}
+	}
+	self.masks.rvd_02 = {
+		unit = "units/pd2_dlc_rvd/masks/msk_rvd_02/msk_rvd_02",
+		name_id = "bm_msk_rvd_02",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 0,
+		texture_bundle_folder = "rvd",
+		type = "glasses",
+		skip_mask_on_sequence = true,
+		sort_number = 60,
+		global_value = "rvd",
+		offsets = {
+			jacket = {
+				Vector3(0, 1.03149, -1.11495),
+				Rotation(0, 3.9924, 0)
+			},
+			dallas = {
+				Vector3(0, 0.316008, -1.47269),
+				Rotation(0, 3.9924, 0)
+			},
+			jowi = {
+				Vector3(0, 0.673747, -1.59193),
+				Rotation(0, 7.4267, 0)
+			},
+			max = {
+				Vector3(0, 1.15073, -1.59193),
+				Rotation(0, 4.85098, 0)
+			},
+			dragon = {
+				Vector3(0, 0.435254, -0.399471),
+				Rotation(-0, -0, -0)
+			},
+			old_hoxton = {
+				Vector3(0, 0.435254, -1.83043),
+				Rotation(0, 6.56812, 0)
+			},
+			chains = {
+				Vector3(0.0775149, 0.792993, -1.11495),
+				Rotation(-0.300467, 4.85098, 1.66753e-09)
+			},
+			chico = {
+				Vector3(-0.0417315, 0.673747, -1.2342),
+				Rotation(0, 3.13383, 0)
+			},
+			myh = {
+				Vector3(0, 0.5545, -1.47269),
+				Rotation(0, 5.70955, 0)
+			},
+			hoxton = {
+				Vector3(0, 0.5545, -0.876456),
+				Rotation(0, 3.13383, 0)
+			},
+			sokol = {
+				Vector3(0, -0.637963, -0.0417315),
+				Rotation(0, -2.01761, 0)
+			},
+			ecp_female = {
+				Vector3(0, -0.518717, -0.876456),
+				Rotation(-0, -0, -0)
+			},
+			ecp_male = {
+				Vector3(0, 0.5545, -1.2342),
+				Rotation(0, 7.4267, 0)
+			},
+			wild = {
+				Vector3(0, 0.5545, -1.2342),
+				Rotation(0, 3.9924, 0)
+			},
+			bodhi = {
+				Vector3(0, 0.912239, -0.75721),
+				Rotation(0, 5.70955, 0)
+			},
+			jimmy = {
+				Vector3(0, 1.26998, -1.11495),
+				Rotation(0, 4.85098, 0)
+			},
+			chains = {
+				Vector3(0, 0.316008, -0.995702),
+				Rotation(-0, -0, -0)
+			},
+			bonnie = {
+				Vector3(0, 0.316008, 0.0775149),
+				Rotation(0, -0.300467, 0)
+			}
+		}
+	}
+	self.masks.rvd_03 = {
+		unit = "units/pd2_dlc_rvd/masks/rvd_03/msk_rvd_03",
+		name_id = "bm_msk_rvd_03",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 0,
+		texture_bundle_folder = "rvd",
+		sort_number = 61,
+		type = "glasses",
+		skip_mask_on_sequence = true,
+		global_value = "rvd",
+		offsets = {
+			sydney = {
+				Vector3(0.077513, 3.53566, -1.11495),
+				Rotation(0, 13.4367, 0)
+			},
+			dragon = {
+				Vector3(0.196759, 3.29716, -1.11495),
+				Rotation(0, 10.861, 0)
+			},
+			female_1 = {
+				Vector3(0, 2.34319, -0.995704),
+				Rotation(0, 8.28526, 0)
+			},
+			hoxton = {
+				Vector3(0, 3.29716, -1.83043),
+				Rotation(0, 13.4367, 0)
+			},
+			sokol = {
+				Vector3(0, 1.26998, 0.673745),
+				Rotation(0, 0, -0)
+			},
+			wolf = {
+				Vector3(0, 3.05867, -0.280226),
+				Rotation(0, 10.0024, 0)
+			},
+			bodhi = {
+				Vector3(0, 2.93943, -1.71118),
+				Rotation(0, 11.7196, 0)
+			},
+			jowi = {
+				Vector3(0, 3.05867, -1.94967),
+				Rotation(0, 14.2953, -0.30048)
+			},
+			jacket = {
+				Vector3(-0.0417333, 2.93943, -0.399472),
+				Rotation(0, 6.56811, 0)
+			},
+			dallas = {
+				Vector3(0, 2.70093, -1.35344),
+				Rotation(0, 10.0024, 0)
+			},
+			bonnie = {
+				Vector3(0, 2.70093, -0.518719),
+				Rotation(0, 6.56811, 0)
+			},
+			chains = {
+				Vector3(0, 3.41641, -1.83043),
+				Rotation(0, 13.4367, 0)
+			},
+			old_hoxton = {
+				Vector3(0, 2.58169, -1.71118),
+				Rotation(0, 11.7196, 0)
+			},
+			wild = {
+				Vector3(0, 2.34319, -0.399472),
+				Rotation(0, 4.85096, 0)
+			},
+			ecp_female = {
+				Vector3(0, 2.1047, -0.876458),
+				Rotation(0, 5.70954, 0)
+			},
+			ecp_male = {
+				Vector3(0, 3.29716, -1.2342),
+				Rotation(0, 16.0124, 0)
+			},
+			max = {
+				Vector3(0, 3.41641, -2.30741),
+				Rotation(0, 15.1538, 0)
+			},
+			chico = {
+				Vector3(0, 2.93943, -1.2342),
+				Rotation(0, 11.7196, 0)
+			},
+			myh = {
+				Vector3(0, 3.05867, -2.06892),
+				Rotation(0, 15.1538, 0)
+			},
+			jimmy = {
+				Vector3(0, 4.13189, -1.47269),
+				Rotation(0, 12.5781, 0)
+			},
+			dragan = {
+				Vector3(0, 2.46244, -0.876458),
+				Rotation(0, 9.14383, 0)
+			}
+		}
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.masks) do

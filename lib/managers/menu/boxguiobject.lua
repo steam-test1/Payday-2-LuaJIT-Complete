@@ -24,8 +24,8 @@ function BoxGuiObject:create_sides(panel, config)
 
 	self._panel = panel:panel({
 		layer = 1,
-		halign = "grow",
-		valign = "grow",
+		halign = "scale",
+		valign = "scale",
 		name = config.name,
 		w = config.w,
 		h = config.h
@@ -61,34 +61,28 @@ function BoxGuiObject:_create_side(panel, side, type, texture)
 	end
 
 	local side_panel = panel:panel({
-		halign = "grow",
-		valign = "grow",
 		name = side,
 		w = w,
-		h = h
+		h = h,
+		halign = left_or_right and side or "scale",
+		valign = left_or_right and "scale" or side
 	})
 
 	if type == 0 then
 		return
 	elseif type == 1 or type == 3 or type == 4 then
-		local one = side_panel:bitmap({
-			valign = "grow",
-			wrap_mode = "wrap",
-			halign = "grow",
-			texture = texture or "guis/textures/pd2/shared_lines"
-		})
-		local two = side_panel:bitmap({
-			valign = "grow",
-			wrap_mode = "wrap",
-			halign = "grow",
-			texture = texture or "guis/textures/pd2/shared_lines"
-		})
+		local one = side_panel:bitmap({texture = texture or "guis/textures/pd2/shared_lines"})
+		local two = side_panel:bitmap({texture = texture or "guis/textures/pd2/shared_lines"})
 		local x = math.random(1, 255)
 		local y = math.random(0, one:texture_height() / 2 - 1) * 2
 		local tw = math.min(10, w)
 		local th = math.min(10, h)
 
 		if left_or_right then
+			one:set_halign(side)
+			two:set_halign(side)
+			one:set_valign("scale")
+			two:set_valign("scale")
 			mvector3.set_static(mvector_tl, x, y + tw, 0)
 			mvector3.set_static(mvector_tr, x, y, 0)
 			mvector3.set_static(mvector_bl, x + th, y + tw, 0)
@@ -107,6 +101,10 @@ function BoxGuiObject:_create_side(panel, side, type, texture)
 			two:set_size(2, th)
 			two:set_bottom(h)
 		else
+			one:set_halign("scale")
+			two:set_halign("scale")
+			one:set_valign(side)
+			two:set_valign(side)
 			mvector3.set_static(mvector_tl, x, y, 0)
 			mvector3.set_static(mvector_tr, x + tw, y, 0)
 			mvector3.set_static(mvector_bl, x, y + th, 0)
@@ -130,9 +128,6 @@ function BoxGuiObject:_create_side(panel, side, type, texture)
 		two:set_visible(type == 1 or type == 4)
 	elseif type == 2 then
 		local full = side_panel:bitmap({
-			valign = "grow",
-			halign = "grow",
-			wrap_mode = "wrap",
 			texture = texture or "guis/textures/pd2/shared_lines",
 			w = side_panel:w(),
 			h = side_panel:h()
@@ -141,12 +136,16 @@ function BoxGuiObject:_create_side(panel, side, type, texture)
 		local y = math.random(0, math.round(full:texture_height() / 2 - 1)) * 2
 
 		if left_or_right then
+			full:set_halign(side)
+			full:set_valign("scale")
 			mvector3.set_static(mvector_tl, x, y + w, 0)
 			mvector3.set_static(mvector_tr, x, y, 0)
 			mvector3.set_static(mvector_bl, x + h, y + w, 0)
 			mvector3.set_static(mvector_br, x + h, y, 0)
 			full:set_texture_coordinates(mvector_tl, mvector_tr, mvector_bl, mvector_br)
 		else
+			full:set_halign("scale")
+			full:set_valign(side)
 			mvector3.set_static(mvector_tl, x, y, 0)
 			mvector3.set_static(mvector_tr, x + w, y, 0)
 			mvector3.set_static(mvector_bl, x, y + h, 0)

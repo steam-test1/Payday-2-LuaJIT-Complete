@@ -548,6 +548,17 @@ function InteractionTweakData:init(tweak_data)
 		sound_done = "bar_thermal_lance_apply_finished",
 		action_text_id = "hud_action_placing_lance"
 	}
+	self.lance_bbv = {
+		icon = "equipment_drill",
+		text_id = "hud_int_equipment_lance",
+		equipment_text_id = "hud_int_equipment_no_lance",
+		timer = 3,
+		blocked_hint = "no_lance",
+		sound_start = "bar_thermal_lance_apply",
+		sound_interupt = "bar_thermal_lance_apply_cancel",
+		sound_done = "bar_thermal_lance_apply_finished",
+		action_text_id = "hud_action_placing_lance"
+	}
 	self.lance_jammed = {
 		icon = "equipment_drill",
 		text_id = "hud_int_equipment_lance_jammed",
@@ -4164,6 +4175,7 @@ function InteractionTweakData:init(tweak_data)
 		text_id = "hud_int_invisible_interaction_open",
 		action_text_id = "hud_action_opening",
 		start_active = false,
+		interact_distance = 200,
 		timer = 1
 	}
 	self.hold_open_hatch = {
@@ -4759,6 +4771,71 @@ function InteractionTweakData:init(tweak_data)
 		sound_start = "bar_elevator_crowbar_open",
 		sound_interupt = "bar_elevator_crowbar_cancel"
 	}
+	self.hold_signal_mr_blonde = {
+		text_id = "hud_int_hold_signal_mr_blonde",
+		action_text_id = "hud_int_hold_action_signaling_mr_blonde",
+		timer = 4
+	}
+	self.hold_take_diamond_briefcase = {
+		text_id = "hud_int_hold_take_diamond_briefcase",
+		action_text_id = "hud_int_hold_action_take_diamond_breifcase",
+		timer = 1
+	}
+	self.press_hand_over_diamond_briefcase = {
+		text_id = "hud_int_press_hand_over_breifcase",
+		equipment_text_id = "hud_hint_no_briefcase",
+		special_equipment = "briefcase_diamond",
+		equipment_consume = true
+	}
+	self.press_pour_liquid_nitrogen = {
+		text_id = "hud_int_press_pour_liquid_nitrogen",
+		equipment_text_id = "hud_hint_no_liquid_nitrogen",
+		special_equipment = "hydrogen_chloride",
+		equipment_consume = true
+	}
+	self.press_take_liquid_nitrogen = {
+		text_id = "hud_int_take_liquid_nitrogen",
+		start_active = false,
+		special_equipment_block = "liquid_nitrogen",
+		sound_done = "liquid_nitrogen_pick_up"
+	}
+	self.hold_place_liquid_nitrogen = {
+		text_id = "hud_int_hold_place_liquid_nitrogen",
+		action_text_id = "hud_action_placing_liquid_nitrogen",
+		equipment_text_id = "hud_equipment_liquid_nitrogen",
+		special_equipment = "liquid_nitrogen",
+		equipment_consume = true,
+		timer = 4,
+		sound_done = "bar_liquid_nitrogen_attach_finished",
+		sound_start = "bar_liquid_nitrogen_attach",
+		sound_interupt = "bar_liquid_nitrogen_attach_cancel"
+	}
+	self.hold_remove_liquid_nitrogen = {
+		text_id = "hud_int_hold_remove_liquid_nitrogen",
+		action_text_id = "hud_int_hold_action_removing_liquid_nitrogen",
+		timer = 2
+	}
+	self.hold_cut_wires = {
+		text_id = "hud_int_hold_cut_wires",
+		action_text_id = "hud_int_hold_action_cutting_wires",
+		timer = 4,
+		start_active = false,
+		axis = "y",
+		sound_start = "bar_wire_cut",
+		sound_interupt = "bar_wire_cut_cancel",
+		sound_done = "bar_wire_cut_finished"
+	}
+	self.hold_rvd_open_vault = {
+		text_id = "hud_int_hold_open_vault",
+		action_text_id = "hud_action_opening_vault",
+		timer = 2,
+		start_active = false
+	}
+	self.invisible_interaction_open_axis_rvd = deep_clone(self.invisible_interaction_open)
+	self.invisible_interaction_open_axis_rvd.axis = "y"
+	self.invisible_interaction_open_axis_rvd.sound_start = "bar_train_panel_hacking"
+	self.invisible_interaction_open_axis_rvd.sound_interupt = "bar_train_panel_hacking_cancel"
+	self.invisible_interaction_open_axis_rvd.sound_done = "bar_train_panel_hacking_finished"
 	self.press_take_folder = {
 		text_id = "hud_int_german_folder",
 		interact_distance = 200,

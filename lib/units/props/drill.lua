@@ -75,7 +75,7 @@ function Drill:start()
 			self:_set_alert_state(true)
 
 			if not self.is_hacking_device then
-				managers.dialog:queue_dialog("Play_pln_drl_wrn", {})
+				managers.dialog:queue_narrator_dialog("drl_wrn_snd", {})
 			end
 
 			if not self._ene_weap_hot_listen_id then
@@ -821,7 +821,7 @@ function Drill:clbk_bain_report_sabotage()
 	self._bain_report_sabotage_clbk_id = nil
 
 	if self._jammed then
-		managers.dialog:queue_dialog("Play_pln_csod_01", {})
+		managers.dialog:queue_narrator_dialog("csod_01", {})
 	end
 end
 

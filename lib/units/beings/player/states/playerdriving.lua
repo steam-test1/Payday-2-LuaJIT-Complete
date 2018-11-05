@@ -61,7 +61,9 @@ function PlayerDriving:_enter(enter_data)
 	if self._seat.driving then
 		self:_set_camera_limits("driving")
 
-		if self._vehicle_unit:damage():has_sequence("local_driving_enter") then
+		local use_fps_material = true
+
+		if use_fps_material and self._vehicle_unit:damage():has_sequence("local_driving_enter") then
 			self._vehicle_unit:damage():run_sequence("local_driving_enter")
 		end
 
@@ -548,9 +550,13 @@ function PlayerDriving:cb_leave()
 	managers.player:set_player_state("standard")
 end
 
+function PlayerDriving:_get_drive_axis()
+	return self._controller:get_input_axis("drive")
+end
+
 function PlayerDriving:_update_input(dt)
 	if self._seat.driving then
-		local move_d = self._controller:get_input_axis("drive")
+		local move_d = self:_get_drive_axis()
 		local direction = 1
 		local forced_gear = -1
 		local vehicle_state = self._vehicle:get_state()

@@ -121,25 +121,30 @@ function LootManager:on_job_deactivated()
 	self:clear()
 end
 
-function LootManager:secure(carry_id, multiplier_level, silent)
+function LootManager:secure(carry_id, multiplier_level, silent, peer_id)
 	if Network:is_server() then
-		self:server_secure_loot(carry_id, multiplier_level, silent)
+		self:server_secure_loot(carry_id, multiplier_level, silent, peer_id)
 	else
-		managers.network:session():send_to_host("server_secure_loot", carry_id, multiplier_level)
+		managers.network:session():send_to_host("server_secure_loot", carry_id, multiplier_level, peer_id)
 	end
 end
 
-function LootManager:server_secure_loot(carry_id, multiplier_level, silent)
-	managers.network:session():send_to_peers_synched("sync_secure_loot", carry_id, multiplier_level, silent)
-	self:sync_secure_loot(carry_id, multiplier_level, silent)
+function LootManager:server_secure_loot(carry_id, multiplier_level, silent, peer_id)
+	managers.network:session():send_to_peers_synched("sync_secure_loot", carry_id, multiplier_level, silent, peer_id)
+	self:sync_secure_loot(carry_id, multiplier_level, silent, peer_id)
 end
 
-function LootManager:sync_secure_loot(carry_id, multiplier_level, silent)
+function LootManager:sync_secure_loot(carry_id, multiplier_level, silent, peer_id)
+	if peer_id == 0 then
+		peer_id = nil
+	end
+
 	local multiplier = tweak_data.carry.small_loot[carry_id] and managers.player:upgrade_value_by_level("player", "small_loot_multiplier", multiplier_level, 1) or 1
 
 	table.insert(self._global.secured, {
 		carry_id = carry_id,
-		multiplier = multiplier
+		multiplier = multiplier,
+		peer_id = peer_id
 	})
 	managers.hud:loot_value_updated()
 	self:_check_triggers("amount")
@@ -271,8 +276,8 @@ function LootManager:check_achievements(carry_id, multiplier)
 	end
 end
 
-function LootManager:secure_small_loot(type, multiplier_level)
-	self:secure(type, multiplier_level)
+function LootManager:secure_small_loot(type, multiplier_level, peer_id)
+	self:secure(type, multiplier_level, nil, peer_id)
 end
 
 function LootManager:show_small_loot_taken_hint(type, multiplier)

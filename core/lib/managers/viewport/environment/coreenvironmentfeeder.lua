@@ -624,7 +624,9 @@ EnvironmentEffectFeeder.FILTER_CATEGORY = "Effect"
 function EnvironmentEffectFeeder:apply(handler, viewport, scene)
 	local effects = string.split(self._current, ";")
 
-	managers.environment_effects:set_active_effects(effects)
+	if managers.environment_effects then
+		managers.environment_effects:set_active_effects(effects)
+	end
 end
 UnderlayPathFeeder.AFFECTED_LIST = {
 	GlobalLightColorScaleFeeder,

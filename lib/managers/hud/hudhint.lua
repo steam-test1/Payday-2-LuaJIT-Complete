@@ -101,8 +101,12 @@ function HUDHint:_animate_show(hint_panel, done_cb, seconds, text)
 
 	while presenting do
 		local dt = coroutine.yield()
-		w = math.clamp(w + dt * speed, 0, target_w)
-		presenting = w ~= target_w
+		w = w + dt * speed
+
+		if target_w < w then
+			presenting = false
+			w = target_w
+		end
 
 		clip_panel:set_w(w)
 		hint_text:set_text("")

@@ -159,9 +159,9 @@ function TradeManager:update(t, dt)
 			local cable_tie_data = managers.player:has_special_equipment("cable_tie")
 
 			if cable_tie_data and Application:digest_value(cable_tie_data.amount, false) > 0 then
-				managers.dialog:queue_dialog("ban_h01x", {})
+				managers.dialog:queue_narrator_dialog("h01x", {})
 			elseif self:get_criminal_to_trade(true) ~= nil then
-				managers.dialog:queue_dialog("Play_ban_h22x", {})
+				managers.dialog:queue_narrator_dialog("h22x", {})
 			end
 		end
 
@@ -320,7 +320,7 @@ function TradeManager:_announce_spawn(criminal_name)
 
 	local character_code = managers.criminals:character_static_data_by_name(criminal_name).ssuffix
 
-	managers.dialog:queue_dialog("ban_q02" .. character_code, {})
+	managers.dialog:queue_narrator_dialog("q02" .. character_code, {})
 end
 
 function TradeManager:sync_set_trade_spawn(criminal_name)
@@ -373,7 +373,7 @@ function TradeManager:play_custody_voice(criminal_name)
 			if managers.groupai:state():bain_state() then
 				local character_code = managers.criminals:character_static_data_by_name(criminal_left).ssuffix
 
-				managers.dialog:queue_dialog("Play_ban_i20" .. character_code, {})
+				managers.dialog:queue_narrator_dialog("i20" .. character_code, {})
 			end
 
 			return
@@ -383,7 +383,7 @@ function TradeManager:play_custody_voice(criminal_name)
 	if managers.groupai:state():bain_state() then
 		local character_code = managers.criminals:character_static_data_by_name(criminal_name).ssuffix
 
-		managers.dialog:queue_dialog("Play_ban_h11" .. character_code, {})
+		managers.dialog:queue_narrator_dialog("h11" .. character_code, {})
 	end
 end
 
@@ -716,17 +716,17 @@ function TradeManager:sync_hostage_trade_dialog(i)
 	if i == 1 then
 		self:_get_megaphone_sound_source():post_event("mga_t01a_con_plu")
 	elseif i == 2 then
-		managers.dialog:queue_dialog("ban_h02a", {})
+		managers.dialog:queue_narrator_dialog("h02a", {})
 	elseif i == 3 then
-		managers.dialog:queue_dialog("ban_h02b", {})
+		managers.dialog:queue_narrator_dialog("h02b", {})
 	elseif i == 4 then
-		managers.dialog:queue_dialog("ban_h02c", {})
+		managers.dialog:queue_narrator_dialog("h02c", {})
 	elseif i == 5 then
-		managers.dialog:queue_dialog("ban_h02d", {})
+		managers.dialog:queue_narrator_dialog("h02d", {})
 	elseif i == 6 then
-		managers.dialog:queue_dialog("Play_ban_h50x", {})
+		managers.dialog:queue_narrator_dialog("h50x", {})
 	elseif i == 7 then
-		managers.dialog:queue_dialog("Play_ban_h02", {})
+		managers.dialog:queue_narrator_dialog("h02", {})
 	end
 end
 

@@ -641,11 +641,12 @@ function PlayerManager:_internal_load()
 		return
 	end
 
+	local default_weapon_selection = 1
 	local secondary = managers.blackmarket:equipped_secondary()
 	local secondary_slot = managers.blackmarket:equipped_weapon_slot("secondaries")
 	local texture_switches = managers.blackmarket:get_weapon_texture_switches("secondaries", secondary_slot, secondary)
 
-	player:inventory():add_unit_by_factory_name(secondary.factory_id, true, false, secondary.blueprint, secondary.cosmetics, texture_switches)
+	player:inventory():add_unit_by_factory_name(secondary.factory_id, default_weapon_selection == 1, false, secondary.blueprint, secondary.cosmetics, texture_switches)
 
 	local primary = managers.blackmarket:equipped_primary()
 
@@ -653,7 +654,7 @@ function PlayerManager:_internal_load()
 		local primary_slot = managers.blackmarket:equipped_weapon_slot("primaries")
 		local texture_switches = managers.blackmarket:get_weapon_texture_switches("primaries", primary_slot, primary)
 
-		player:inventory():add_unit_by_factory_name(primary.factory_id, false, false, primary.blueprint, primary.cosmetics, texture_switches)
+		player:inventory():add_unit_by_factory_name(primary.factory_id, default_weapon_selection == 2, false, primary.blueprint, primary.cosmetics, texture_switches)
 	end
 
 	player:inventory():set_melee_weapon(managers.blackmarket:equipped_melee_weapon())
@@ -3809,8 +3810,8 @@ function PlayerManager:use_selected_equipment(unit)
 	}
 end
 
-function PlayerManager:check_selected_equipment_placement_valid(player)
-	local equipment_data = managers.player:selected_equipment()
+function PlayerManager:check_equipment_placement_valid(player, equipment)
+	local equipment_data = managers.player:equipment_data_by_name(equipment)
 
 	if not equipment_data then
 		return false
@@ -3825,6 +3826,10 @@ function PlayerManager:check_selected_equipment_placement_valid(player)
 	end
 
 	return player:equipment():valid_placement(tweak_data.equipments[equipment_data.equipment]) and true or false
+end
+
+function PlayerManager:check_selected_equipment_placement_valid(player)
+	return self:check_equipment_placement_valid(player, self:selected_equipment_id())
 end
 
 function PlayerManager:selected_equipment_deploy_timer()
@@ -4444,8 +4449,9 @@ end
 
 function PlayerManager:bank_carry()
 	local carry_data = self:get_my_carry_data()
+	local peer_id = managers.network:session() and managers.network:session():local_peer():id()
 
-	managers.loot:secure(carry_data.carry_id, carry_data.multiplier)
+	managers.loot:secure(carry_data.carry_id, carry_data.multiplier, nil, peer_id)
 	managers.hud:remove_teammate_carry_info(HUDManager.PLAYER_PANEL)
 	managers.hud:temp_hide_carry_bag()
 	self:update_removed_synced_carry_to_peers()

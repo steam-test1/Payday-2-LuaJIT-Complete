@@ -320,7 +320,6 @@ function FPCameraPlayerBase:_update_movement(t, dt)
 
 	data.pitch = look_polar_pitch
 	data.spin = look_polar_spin
-	self._output_data.position = new_head_pos
 	self._output_data.rotation = new_head_rot or self._output_data.rotation
 
 	if self._camera_properties.current_tilt ~= self._camera_properties.target_tilt then
@@ -330,6 +329,8 @@ function FPCameraPlayerBase:_update_movement(t, dt)
 	if self._camera_properties.current_tilt ~= 0 then
 		self._output_data.rotation = Rotation(self._output_data.rotation:yaw(), self._output_data.rotation:pitch(), self._output_data.rotation:roll() + self._camera_properties.current_tilt)
 	end
+
+	self._output_data.position = new_head_pos
 
 	mvector3.set(new_shoulder_pos, self._shoulder_stance.translation)
 	mvector3.add(new_shoulder_pos, self._vel_overshot.translation)

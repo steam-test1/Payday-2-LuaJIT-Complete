@@ -2467,30 +2467,36 @@ function UnitNetworkHandler:sync_add_doted_enemy(enemy_unit, fire_damage_receive
 	managers.fire:sync_add_fire_dot(enemy_unit, fire_damage_received_time, weapon_unit, dot_length, dot_damage, user_unit, peer, is_molotov)
 end
 
-function UnitNetworkHandler:server_secure_loot(carry_id, multiplier_level, sender)
+function UnitNetworkHandler:server_secure_loot(carry_id, multiplier_level, peer_id, sender)
 	local peer = self._verify_sender(sender)
 
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not peer then
 		return
 	end
 
-	managers.loot:server_secure_loot(carry_id, multiplier_level)
+	managers.loot:server_secure_loot(carry_id, multiplier_level, nil, peer_id)
 end
 
-function UnitNetworkHandler:sync_secure_loot(carry_id, multiplier_level, silent, sender)
+function UnitNetworkHandler:sync_secure_loot(carry_id, multiplier_level, silent, peer_id, sender)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) and not self._verify_gamestate(self._gamestate_filter.any_end_game) or not self._verify_sender(sender) then
 		return
 	end
 
-	managers.loot:sync_secure_loot(carry_id, multiplier_level, silent)
+	managers.loot:sync_secure_loot(carry_id, multiplier_level, silent, peer_id)
 end
 
 function UnitNetworkHandler:sync_small_loot_taken(unit, multiplier_level, sender)
-	if not alive(unit) or not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
+	if not alive(unit) and self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
 
-	unit:base():taken(multiplier_level)
+	local peer = self._verify_sender(sender)
+
+	if not peer then
+		return
+	end
+
+	unit:base():taken(multiplier_level, peer:id())
 end
 
 function UnitNetworkHandler:server_unlock_asset(asset_id, is_show_chat_message, sender)
@@ -2836,7 +2842,7 @@ function UnitNetworkHandler:bain_comment(bain_line, sender)
 	end
 
 	if managers.dialog and managers.groupai and managers.groupai:state():bain_state() then
-		managers.dialog:queue_dialog(bain_line, {})
+		managers.dialog:queue_narrator_dialog(bain_line, {})
 	end
 end
 

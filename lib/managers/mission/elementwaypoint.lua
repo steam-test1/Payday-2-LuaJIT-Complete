@@ -25,6 +25,12 @@ function ElementWaypoint:on_executed(instigator)
 		return
 	end
 
+	if self._values.only_on_instigator and instigator ~= managers.player:player_unit() then
+		ElementWaypoint.super.on_executed(self, instigator)
+
+		return
+	end
+
 	if not self._values.only_in_civilian or managers.player:current_state() == "civilian" then
 		local text = managers.localization:text(self._values.text_id)
 

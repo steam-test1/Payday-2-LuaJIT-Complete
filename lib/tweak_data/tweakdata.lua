@@ -1612,6 +1612,8 @@ Play the full version soon to get your full PAYDAY!]],
 		{track = "track_54"},
 		{track = "track_55"},
 		{track = "track_56"},
+		{track = "track_57"},
+		{track = "track_58"},
 		{track = "track_32_lcv"},
 		{track = "track_33_lcv"},
 		{track = "track_34_lcv"},
@@ -2016,7 +2018,7 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.frag.range = 500
 	self.projectiles.frag.name_id = "bm_grenade_frag"
 	self.projectiles.launcher_frag = {
-		damage = 130,
+		damage = 96,
 		launch_speed = 1250,
 		curve_pow = 0.1,
 		player_damage = 8,
@@ -2088,7 +2090,7 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.launcher_frag_china = deep_clone(self.projectiles.launcher_frag)
 	self.projectiles.launcher_incendiary_china = deep_clone(self.projectiles.launcher_incendiary)
 	self.projectiles.launcher_frag_arbiter = {
-		damage = 70,
+		damage = 48,
 		launch_speed = 7000,
 		curve_pow = 0.1,
 		player_damage = 8,

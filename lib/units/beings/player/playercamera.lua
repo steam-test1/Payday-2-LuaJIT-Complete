@@ -205,6 +205,10 @@ function PlayerCamera:set_position(pos)
 	self._camera_controller:set_camera(pos)
 	mvector3.set(self._m_cam_pos, pos)
 end
+
+function PlayerCamera:update_transform()
+	self._camera_object:transform()
+end
 local mvec1 = Vector3()
 
 function PlayerCamera:set_rotation(rot)
@@ -234,6 +238,10 @@ function PlayerCamera:set_rotation(rot)
 	if tweak_data.network then
 		local update_network = tweak_data.network.camera.network_sync_delta_t < sync_dt and angle_delta > 0 or tweak_data.network.camera.network_angle_delta < angle_delta
 
+		if self._forced_next_sync_t and t < self._forced_next_sync_t then
+			update_network = false
+		end
+
 		if update_network then
 			self._unit:network():send("set_look_dir", sync_yaw, sync_pitch)
 
@@ -242,6 +250,10 @@ function PlayerCamera:set_rotation(rot)
 			self._last_sync_t = t
 		end
 	end
+end
+
+function PlayerCamera:set_forced_sync_delay(t)
+	self._forced_next_sync_t = t
 end
 
 function PlayerCamera:set_FOV(fov_value)

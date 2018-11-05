@@ -301,6 +301,8 @@ function AssetsTweakData:_init_assets(tweak_data)
 			"spa",
 			"glace",
 			"run",
+			"rvd1",
+			"rvd2",
 			"dah",
 			"wwh",
 			"hvh"
@@ -348,6 +350,8 @@ function AssetsTweakData:_init_assets(tweak_data)
 			"spa",
 			"glace",
 			"run",
+			"rvd1",
+			"rvd2",
 			"dah",
 			"wwh",
 			"hvh"
@@ -392,6 +396,8 @@ function AssetsTweakData:_init_assets(tweak_data)
 			"spa",
 			"glace",
 			"run",
+			"rvd1",
+			"rvd2",
 			"dah",
 			"wwh",
 			"hvh"

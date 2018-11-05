@@ -141,6 +141,44 @@ end
 function PlayerTased:_update_check_actions(t, dt)
 	local input = self:_get_input(t, dt)
 
+	self:_check_action_shock(t, input)
+
+	self._taser_value = math.step(self._taser_value, 0.8, dt / 4)
+
+	managers.environment_controller:set_taser_value(self._taser_value)
+
+	local shooting = self:_check_action_primary_attack(t, input)
+
+	if shooting then
+		self._camera_unit:base():recoil_kick(-5, 5, -5, 5)
+	end
+
+	if self._unequip_weapon_expire_t and self._unequip_weapon_expire_t <= t then
+		self._unequip_weapon_expire_t = nil
+
+		self:_start_action_equip_weapon(t)
+	end
+
+	if self._equip_weapon_expire_t and self._equip_weapon_expire_t <= t then
+		self._equip_weapon_expire_t = nil
+	end
+
+	if input.btn_stats_screen_press then
+		self._unit:base():set_stats_screen_visible(true)
+	elseif input.btn_stats_screen_release then
+		self._unit:base():set_stats_screen_visible(false)
+	end
+
+	self:_update_foley(t, input)
+
+	local new_action = nil
+
+	self:_check_action_interact(t, input)
+
+	local new_action = nil
+end
+
+function PlayerTased:_check_action_shock(t, input)
 	if self._next_shock < t then
 		self._num_shocks = self._num_shocks + 1
 		self._next_shock = t + 0.25 + math.rand(1)
@@ -177,40 +215,6 @@ function PlayerTased:_update_check_actions(t, dt)
 			self._camera_unit:base():stop_shooting()
 		end
 	end
-
-	self._taser_value = math.step(self._taser_value, 0.8, dt / 4)
-
-	managers.environment_controller:set_taser_value(self._taser_value)
-
-	self._shooting = self:_check_action_primary_attack(t, input)
-
-	if self._shooting then
-		self._camera_unit:base():recoil_kick(-5, 5, -5, 5)
-	end
-
-	if self._unequip_weapon_expire_t and self._unequip_weapon_expire_t <= t then
-		self._unequip_weapon_expire_t = nil
-
-		self:_start_action_equip_weapon(t)
-	end
-
-	if self._equip_weapon_expire_t and self._equip_weapon_expire_t <= t then
-		self._equip_weapon_expire_t = nil
-	end
-
-	if input.btn_stats_screen_press then
-		self._unit:base():set_stats_screen_visible(true)
-	elseif input.btn_stats_screen_release then
-		self._unit:base():set_stats_screen_visible(false)
-	end
-
-	self:_update_foley(t, input)
-
-	local new_action = nil
-
-	self:_check_action_interact(t, input)
-
-	local new_action = nil
 end
 
 function PlayerTased:_check_action_primary_attack(t, input)
@@ -352,6 +356,8 @@ function PlayerTased:_check_action_primary_attack(t, input)
 		self._equipped_unit:base():stop_shooting()
 		self._camera_unit:base():stop_shooting()
 	end
+
+	self._shooting = new_action
 
 	return new_action
 end

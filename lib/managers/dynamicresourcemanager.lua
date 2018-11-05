@@ -272,5 +272,6 @@ function DynamicResourceManager:clbk_streaming_chunk_size_changed(name, old_valu
 end
 
 function DynamicResourceManager:preload_units()
+	print("[DynamicResourceManager:preload_units]")
 end
 

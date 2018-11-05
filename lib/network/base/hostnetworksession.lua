@@ -452,7 +452,7 @@ function HostNetworkSession:dropin_peer()
 end
 
 function HostNetworkSession:add_peer(name, rpc, in_lobby, loading, synched, id, character, user_id, xuid, xnaddr)
-	id = id or self:_get_free_client_id()
+	id = id or self:_get_free_client_id(user_id)
 
 	if not id then
 		return
@@ -472,7 +472,7 @@ function HostNetworkSession:add_peer(name, rpc, in_lobby, loading, synched, id, 
 	return id, peer
 end
 
-function HostNetworkSession:_get_free_client_id()
+function HostNetworkSession:_get_free_client_id(user_id)
 	local i = 2
 
 	repeat

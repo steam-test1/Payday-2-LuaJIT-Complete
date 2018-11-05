@@ -44,6 +44,17 @@ function ManagerBase:_all_ao()
 	return self.__aos
 end
 
+function ManagerBase:_move_ao_to_front(ao)
+	for i, v in ipairs(self.__aos) do
+		if v == ao then
+			table.remove(self.__aos, i)
+			table.insert(self.__aos, 1, ao)
+
+			return
+		end
+	end
+end
+
 function ManagerBase:_all_really_active()
 	return self.__really_active
 end

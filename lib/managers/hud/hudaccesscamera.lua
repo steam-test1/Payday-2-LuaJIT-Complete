@@ -1,4 +1,5 @@
 HUDAccessCamera = HUDAccessCamera or class()
+local old_buttons = true
 
 function HUDAccessCamera:init(hud, full_hud)
 	self._hud_panel = hud.panel
@@ -167,9 +168,9 @@ function HUDAccessCamera:start()
 	local prev = "hud_prev_camera"
 	local next = "hud_next_camera"
 
-	self._hud_panel:child("legend_prev"):set_text(utf8.to_upper(managers.localization:text(prev, {BTN_PRIMARY = managers.localization:btn_macro("primary_attack")})))
-	self._hud_panel:child("legend_next"):set_text(utf8.to_upper(managers.localization:text(next, {BTN_SECONDARY = managers.localization:btn_macro("secondary_attack")})))
-	self._hud_panel:child("legend_exit"):set_text(utf8.to_upper(managers.localization:text("hud_exit_camera", {BTN_JUMP = managers.localization:btn_macro("jump")})))
+	self._hud_panel:child("legend_prev"):set_text(utf8.to_upper(managers.localization:text(prev, {BTN_PRIMARY = managers.localization:btn_macro(old_buttons and "primary_attack" or "suvcam_prev")})))
+	self._hud_panel:child("legend_next"):set_text(utf8.to_upper(managers.localization:text(next, {BTN_SECONDARY = managers.localization:btn_macro(old_buttons and "secondary_attack" or "suvcam_next")})))
+	self._hud_panel:child("legend_exit"):set_text(utf8.to_upper(managers.localization:text("hud_exit_camera", {BTN_JUMP = managers.localization:btn_macro(old_buttons and "jump" or "suvcam_exit")})))
 
 	self._active = true
 

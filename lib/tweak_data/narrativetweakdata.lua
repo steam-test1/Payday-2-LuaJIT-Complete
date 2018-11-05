@@ -4653,6 +4653,76 @@ function NarrativeTweakData:init(tweak_data)
 		10,
 		27
 	}
+	self.stages.rvd_1 = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "rvd1"
+	}
+	self.stages.rvd_2 = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "rvd2"
+	}
+	self.jobs.rvd = {
+		name_id = "heist_rvd",
+		briefing_id = "heist_rvd_crimenet",
+		package = "packages/narr_rvd",
+		contact = "bain",
+		region = "street",
+		jc = 60,
+		chain = {
+			self.stages.rvd_1,
+			self.stages.rvd_2
+		},
+		briefing_event = "Play_pln_rvd_cbf_01",
+		debrief_event = nil,
+		crimenet_callouts = {"Play_pln_rvd_cnc_01"},
+		crimenet_videos = {
+			"cn_branchbank1",
+			"cn_branchbank3"
+		},
+		payout = {
+			20000,
+			30000,
+			40000,
+			70000,
+			80000,
+			80000,
+			80000
+		},
+		contract_cost = {
+			16000,
+			32000,
+			80000,
+			160000,
+			200000,
+			200000,
+			200000
+		},
+		contract_visuals = {}
+	}
+	self.jobs.rvd.contract_visuals.preview_image = {
+		id = "rvd",
+		folder = "rvd"
+	}
+	self.jobs.rvd.contract_visuals.min_mission_xp = {
+		29500,
+		29500,
+		29500,
+		29500,
+		29500,
+		29500,
+		29500
+	}
+	self.jobs.rvd.contract_visuals.max_mission_xp = {
+		47500,
+		47500,
+		47500,
+		47500,
+		47500,
+		47500,
+		47500
+	}
 	self.jobs.crime_spree = {
 		name_id = "heist_crime_spree",
 		briefing_id = "heist_crime_spree_brief",
@@ -4969,6 +5039,7 @@ function NarrativeTweakData:init(tweak_data)
 		"run",
 		"glace",
 		"dah",
+		"rvd",
 		"crime_spree",
 		"hvh",
 		"wwh"

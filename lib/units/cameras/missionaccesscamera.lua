@@ -10,7 +10,9 @@ function MissionAccessCamera:init(unit)
 	self._camera:set_near_range(15)
 	self._camera:set_far_range(250000)
 
-	self._viewport = managers.viewport:new_vp(0, 0, 1, 1, "MissionAccessCamera", CoreManagerBase.PRIO_WORLDCAMERA)
+	local scale_x = 1
+	local scale_y = 1
+	self._viewport = managers.viewport:new_vp(0, 0, scale_x, scale_y, "MissionAccessCamera", CoreManagerBase.PRIO_WORLDCAMERA)
 	self._director = self._viewport:director()
 	self._shaker = self._director:shaker()
 	self._camera_controller = self._director:make_camera(self._camera, Idstring("previs_camera"))

@@ -4,6 +4,10 @@ function PlayerEquipment:init(unit)
 	self._unit = unit
 end
 
+function PlayerEquipment:_m_deploy_rot()
+	return self._unit:movement():m_head_rot()
+end
+
 function PlayerEquipment:on_deploy_interupted()
 	if alive(self._dummy_unit) then
 		World:delete_unit(self._dummy_unit)
@@ -101,7 +105,7 @@ function PlayerEquipment:use_ammo_bag()
 
 	if ray then
 		local pos = ray.position
-		local rot = self._unit:movement():m_head_rot()
+		local rot = self:_m_deploy_rot()
 		rot = Rotation(rot:yaw(), 0, 0)
 
 		PlayerStandard.say_line(self, "s01x_plu")
@@ -127,7 +131,7 @@ function PlayerEquipment:use_doctor_bag()
 
 	if ray then
 		local pos = ray.position
-		local rot = self._unit:movement():m_head_rot()
+		local rot = self:_m_deploy_rot()
 		rot = Rotation(rot:yaw(), 0, 0)
 
 		PlayerStandard.say_line(self, "s02x_plu")
@@ -162,7 +166,7 @@ function PlayerEquipment:use_first_aid_kit()
 
 	if ray then
 		local pos = ray.position
-		local rot = self._unit:movement():m_head_rot()
+		local rot = self:_m_deploy_rot()
 		rot = Rotation(rot:yaw(), 0, 0)
 
 		PlayerStandard.say_line(self, "s12")
@@ -212,7 +216,7 @@ function PlayerEquipment:use_bodybags_bag()
 
 	if ray then
 		local pos = ray.position
-		local rot = self._unit:movement():m_head_rot()
+		local rot = self:_m_deploy_rot()
 		rot = Rotation(rot:yaw(), 0, 0)
 
 		PlayerStandard.say_line(self, "s13")
@@ -412,7 +416,7 @@ function PlayerEquipment:use_sentry_gun(selected_index, unit_idstring_index)
 
 	if ray and self:_can_place("sentry_gun") then
 		local pos = ray.position
-		local rot = self._unit:movement():m_head_rot()
+		local rot = self:_m_deploy_rot()
 		rot = Rotation(rot:yaw(), 0, 0)
 
 		managers.statistics:use_sentry_gun()

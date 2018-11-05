@@ -403,7 +403,7 @@ function ArrowBase:sync_attach_to_unit(instant_dynamic_pickup, parent_unit, pare
 		world_position = self._unit:position()
 		dir = self._unit:rotation():y()
 	else
-		world_position = parent_obj and local_pos:rotate_with(parent_obj:rotation()) + parent_obj:position() or alive(parent_unit) and local_pos:rotate_with(parent_unit:rotation()) + parent_unit:position() or local_pos
+		world_position = parent_obj and local_pos:rotate_with(parent_obj:rotation()) + parent_obj:position() or alive(parent_unit) and parent_body and local_pos:rotate_with(parent_unit:rotation()) + parent_unit:position() or local_pos
 	end
 
 	self._col_ray = {

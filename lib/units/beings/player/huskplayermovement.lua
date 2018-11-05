@@ -268,6 +268,11 @@ HuskPlayerMovement._look_modifier_name = Idstring("action_upper_body")
 HuskPlayerMovement._head_modifier_name = Idstring("look_head")
 HuskPlayerMovement._arm_modifier_name = Idstring("aim_r_arm")
 HuskPlayerMovement._mask_off_modifier_name = Idstring("look_mask_off")
+HuskPlayerMovement.clean_states = {
+	civilian = true,
+	clean = true,
+	mask_off = true
+}
 
 function HuskPlayerMovement:init(unit)
 	self._unit = unit
@@ -1822,6 +1827,14 @@ function HuskPlayerMovement:_perform_catchup_zipline_end()
 	self:_perform_movement_action_zipline_end()
 end
 
+function HuskPlayerMovement:_perform_catchup_teleport_start()
+	self:_perform_movement_action_teleport_start()
+end
+
+function HuskPlayerMovement:_perform_catchup_teleport_end()
+	self:_perform_movement_action_teleport_end()
+end
+
 function HuskPlayerMovement:force_start_moving()
 	self._moving = true
 end
@@ -1980,6 +1993,18 @@ function HuskPlayerMovement:_perform_movement_action_zipline_end(idx, node)
 		self._zipline.enabled = false
 		self._zipline.attached = false
 	end
+end
+
+function HuskPlayerMovement:_perform_movement_action_teleport_start(idx, node)
+	local next_idx = idx and idx + 1 or #self._movement_path
+	local next_node = self._movement_path[next_idx]
+
+	if next_node then
+		self:set_position(next_node.pos)
+	end
+end
+
+function HuskPlayerMovement:_perform_movement_action_teleport_end(idx, node)
 end
 
 function HuskPlayerMovement:_perform_movement_action_enter_bleedout(idx, node)
@@ -2599,7 +2624,7 @@ function HuskPlayerMovement:_start_standard(event_desc)
 	self:set_need_assistance(false)
 	managers.hud:set_mugshot_normal(self._unit:unit_data().mugshot_id)
 
-	if self._state == "mask_off" or self._state == "clean" or self._state == "civilian" then
+	if self.clean_states[self._state] then
 		self._unit:set_slot(5)
 		self:_change_pose(1)
 		self._unit:inventory():hide_equipped_unit()
@@ -2616,7 +2641,7 @@ function HuskPlayerMovement:_start_standard(event_desc)
 
 	local previous_state = event_desc.previous_state
 
-	if (previous_state == "mask_off" or previous_state == "clean" or previous_state == "civilian") and self._state ~= "mask_off" and self._state ~= "clean" and self._state ~= "civilian" then
+	if self.clean_states[self._state] and not self.clean_states[self._state] then
 		local redir_res = self:play_redirect("equip")
 
 		if redir_res then
@@ -2657,7 +2682,7 @@ function HuskPlayerMovement:_start_standard(event_desc)
 		self._atention_on = false
 	end
 
-	if self._state == "mask_off" or self._state == "clean" or self._state == "civilian" then
+	if self.clean_states[self._state] then
 		self._attention_updator = callback(self, self, "_upd_attention_mask_off")
 		self._movement_updator = callback(self, self, "_upd_move_standard")
 
@@ -2876,7 +2901,7 @@ function HuskPlayerMovement:_adjust_walk_anim_speed(dt, target_speed)
 end
 
 function HuskPlayerMovement:sync_shot_blank(impact)
-	if self._state == "mask_off" or self._state == "clean" or self._state == "civilian" then
+	if self.clean_states[self._state] then
 		return
 	end
 
@@ -2898,7 +2923,7 @@ function HuskPlayerMovement:sync_shot_blank(impact)
 end
 
 function HuskPlayerMovement:sync_start_auto_fire_sound()
-	if self._state == "mask_off" or self._state == "clean" or self._state == "civilian" then
+	if self.clean_states[self._state] then
 		return
 	end
 
@@ -2931,7 +2956,7 @@ function HuskPlayerMovement:sync_start_auto_fire_sound()
 end
 
 function HuskPlayerMovement:sync_raise_weapon()
-	if self._state == "mask_off" or self._state == "clean" or self._state == "civilian" then
+	if self.clean_states[self._state] then
 		return
 	end
 
@@ -2957,7 +2982,7 @@ function HuskPlayerMovement:sync_raise_weapon()
 end
 
 function HuskPlayerMovement:sync_stop_auto_fire_sound()
-	if self._state == "mask_off" or self._state == "clean" or self._state == "civilian" then
+	if self.clean_states[self._state] then
 		return
 	end
 
@@ -3328,6 +3353,8 @@ function HuskPlayerMovement:anim_clbk_show_magazine_in_hand(unit, name)
 	if not self:allow_dropped_magazines() then
 		return
 	end
+
+	self:destroy_magazine_in_hand()
 
 	local w_td_crew = self:_equipped_weapon_crew_tweak_data()
 
@@ -3739,7 +3766,7 @@ function HuskPlayerMovement:_sync_movement_state_standard(event_descriptor)
 
 	local previous_state = event_descriptor.previous_state
 
-	if (previous_state == "mask_off" or previous_state == "clean" or previous_state == "civilian") and self._state ~= "mask_off" and self._state ~= "clean" and self._state ~= "civilian" then
+	if self.clean_states[previous_state] and not self.clean_states[self._state] then
 		local redir_res = self:play_redirect("equip")
 
 		if redir_res then
@@ -4033,7 +4060,7 @@ function HuskPlayerMovement:clbk_inventory_event(unit, event)
 	local weapon = self._unit:inventory():equipped_unit()
 
 	if weapon then
-		if self._state == "mask_off" or self._state == "clean" or self._state == "civilian" then
+		if self.clean_states[self._state] then
 			self._unit:inventory():hide_equipped_unit()
 		end
 
@@ -4327,7 +4354,7 @@ end
 
 function HuskPlayerMovement:_chk_change_stance()
 	local wanted_stance_code = nil
-	wanted_stance_code = (self._state == "mask_off" or self._state == "clean" or self._state == "civilian") and self._stance.owner_stance_code or self._is_weapon_gadget_on and 3 or self._aim_up_expire_t and 3 or self._stance.owner_stance_code
+	wanted_stance_code = self.clean_states[self._state] and self._stance.owner_stance_code or self._is_weapon_gadget_on and 3 or self._aim_up_expire_t and 3 or self._stance.owner_stance_code
 
 	if wanted_stance_code ~= self._stance.code then
 		self:_change_stance(wanted_stance_code)
@@ -4541,6 +4568,11 @@ end
 function HuskPlayerMovement:sync_action_jump(pos, jump_vec)
 	self:_override_last_node_action("land", true)
 	self:sync_action_walk_nav_point(pos, nil, "jump", sync_action_force)
+end
+
+function HuskPlayerMovement:sync_action_teleport(pos)
+	self:sync_action_walk_nav_point(nil, "teleport_start", sync_action_force)
+	self:sync_action_walk_nav_point(pos, "teleport_end", sync_action_force_and_execute)
 end
 
 function HuskPlayerMovement:_cleanup_previous_state(previous_state)

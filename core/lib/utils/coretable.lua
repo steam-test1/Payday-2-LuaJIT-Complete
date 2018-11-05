@@ -190,6 +190,30 @@ function table.contains_any(v, e)
 	return false
 end
 
+function table.contains_all(v, e)
+	for _, element in ipairs(e) do
+		local element_found = false
+
+		for _, value in pairs(v) do
+			if value == element then
+				element_found = true
+
+				break
+			end
+		end
+
+		if not element_found then
+			return false
+		end
+	end
+
+	return true
+end
+
+function table.contains_only(v, e)
+	return table.contains_all(e, v)
+end
+
 function table.index_of(v, e)
 	for index, value in ipairs(v) do
 		if value == e then

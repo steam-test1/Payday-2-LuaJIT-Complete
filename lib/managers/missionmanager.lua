@@ -114,7 +114,11 @@ require("lib/managers/mission/ElementCharacterDamage")
 require("lib/managers/mission/ElementAIForceAttention")
 require("lib/managers/mission/ElementAIForceAttentionOperator")
 require("lib/managers/mission/ElementSideJob")
+require("lib/managers/mission/ElementTeleportPlayer")
 require("lib/managers/mission/ElementHeistTimer")
+require("lib/managers/mission/ElementDropInPoint")
+require("lib/managers/mission/ElementSpawnTeamAI")
+require("lib/managers/mission/ElementArcadeState")
 require("lib/managers/mission/ElementPlayerSpawner")
 require("lib/managers/mission/ElementAreaTrigger")
 require("lib/managers/mission/ElementSpawnEnemyDummy")
@@ -146,6 +150,10 @@ function MissionManager:init(...)
 	self:add_area_instigator_categories("hostages")
 	self:add_area_instigator_categories("equipment")
 	self:add_area_instigator_categories("intimidated_enemies")
+	self:add_area_instigator_categories("player1")
+	self:add_area_instigator_categories("player2")
+	self:add_area_instigator_categories("player3")
+	self:add_area_instigator_categories("player4")
 	self:set_default_area_instigator("player")
 	self:set_global_event_list({
 		"bankmanager_key",
@@ -210,6 +218,7 @@ function MissionManager:init(...)
 		"pku_red_diamond",
 		"pku_diamond_dah",
 		"pku_blue_diamond",
+		"pku_jewelry_instant",
 		"pku_german_folder",
 		"pku_old_wine"
 	})

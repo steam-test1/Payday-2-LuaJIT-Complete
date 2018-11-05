@@ -63,7 +63,7 @@ function MenuInput:set_back_enabled(enabled)
 end
 
 function MenuInput:activate_mouse(position, controller_activated)
-	if not controller_activated and managers.controller:get_default_wrapper_type() ~= "pc" and managers.controller:get_default_wrapper_type() ~= "steam" then
+	if not controller_activated and managers.controller:get_default_wrapper_type() ~= "pc" and managers.controller:get_default_wrapper_type() ~= "steam" and managers.controller:get_default_wrapper_type() ~= "vr" then
 		return
 	end
 
@@ -119,7 +119,7 @@ function MenuInput:deactivate_mouse()
 
 	self._mouse_active = false
 
-	managers.mouse_pointer:remove_mouse(self._menu_name)
+	return managers.mouse_pointer:remove_mouse(self._menu_name)
 end
 
 function MenuInput:open(position, ...)

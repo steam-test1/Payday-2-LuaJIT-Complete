@@ -173,6 +173,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_x_shrew_crew()
 	self:_init_data_basset_crew()
 	self:_init_data_x_basset_crew()
+	self:_init_data_corgi_crew()
 	self:_precalculate_values()
 end
 
@@ -3016,6 +3017,25 @@ function WeaponTweakData:_init_data_x_basset_crew()
 	self.x_basset_crew.suppression = 2
 end
 
+function WeaponTweakData:_init_data_corgi_crew()
+	self.corgi_crew.sounds.prefix = "corgi_npc"
+	self.corgi_crew.use_data.selection_index = 2
+	self.corgi_crew.DAMAGE = 1.05
+	self.corgi_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.corgi_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.corgi_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.corgi_crew.CLIP_AMMO_MAX = 30
+	self.corgi_crew.NR_CLIPS_MAX = 5
+	self.corgi_crew.pull_magazine_during_reload = "rifle"
+	self.corgi_crew.auto.fire_rate = 0.07
+	self.corgi_crew.hold = {
+		"bullpup",
+		"rifle"
+	}
+	self.corgi_crew.alert_size = 5000
+	self.corgi_crew.suppression = 1
+end
+
 function WeaponTweakData:_init_data_player_weapons(tweak_data)
 	local autohit_rifle_default, autohit_pistol_default, autohit_shotgun_default, autohit_lmg_default, autohit_snp_default, autohit_smg_default, autohit_minigun_default, aim_assist_rifle_default, aim_assist_pistol_default, aim_assist_shotgun_default, aim_assist_lmg_default, aim_assist_snp_default, aim_assist_smg_default, aim_assist_minigun_default = nil
 
@@ -3788,6 +3808,7 @@ function WeaponTweakData:_init_new_weapons(weapon_data)
 	self:_init_x_shrew(weapon_data)
 	self:_init_basset(weapon_data)
 	self:_init_x_basset(weapon_data)
+	self:_init_corgi(weapon_data)
 end
 
 function WeaponTweakData:_init_new_m4(weapon_data)
@@ -5629,16 +5650,16 @@ function WeaponTweakData:_init_new_mp5(weapon_data)
 	self.new_mp5.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 36,
+		damage = 40,
 		alert_size = 7,
-		spread = 8,
+		spread = 12,
 		spread_moving = 8,
-		recoil = 20,
+		recoil = 21,
 		value = 1,
 		extra_ammo = 6,
 		reload = 11,
 		suppression = 17,
-		concealment = 23
+		concealment = 24
 	}
 end
 
@@ -7231,11 +7252,11 @@ function WeaponTweakData:_init_hk21(weapon_data)
 	self.hk21.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 40,
+		damage = 120,
 		alert_size = 8,
 		spread = 10,
 		spread_moving = 10,
-		recoil = 10,
+		recoil = 5,
 		value = 9,
 		extra_ammo = 6,
 		reload = 11,
@@ -7281,7 +7302,7 @@ function WeaponTweakData:_init_m249(weapon_data)
 	self.m249.CLIP_AMMO_MAX = 200
 	self.m249.NR_CLIPS_MAX = 2
 	self.m249.AMMO_MAX = self.m249.CLIP_AMMO_MAX * self.m249.NR_CLIPS_MAX
-	self.m249.AMMO_PICKUP = self:_pickup_chance(self.m249.AMMO_MAX, PICKUP.OTHER)
+	self.m249.AMMO_PICKUP = self:_pickup_chance(self.m249.AMMO_MAX, PICKUP.AR_HIGH_CAPACITY)
 	self.m249.FIRE_MODE = "auto"
 	self.m249.fire_mode_data = {fire_rate = 0.066}
 	self.m249.CAN_TOGGLE_FIREMODE = false
@@ -7339,9 +7360,9 @@ function WeaponTweakData:_init_m249(weapon_data)
 	self.m249.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 36,
+		damage = 80,
 		alert_size = 8,
-		spread = 8,
+		spread = 13,
 		spread_moving = 8,
 		recoil = 10,
 		value = 9,
@@ -7447,11 +7468,11 @@ function WeaponTweakData:_init_rpk(weapon_data)
 	self.rpk.stats = {
 		zoom = 2,
 		total_ammo_mod = 21,
-		damage = 40,
+		damage = 120,
 		alert_size = 7,
 		spread = 8,
 		spread_moving = 6,
-		recoil = 10,
+		recoil = 5,
 		value = 9,
 		extra_ammo = 6,
 		reload = 11,
@@ -8238,7 +8259,7 @@ function WeaponTweakData:_init_gre_m79(weapon_data)
 	self.gre_m79.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 130,
+		damage = 96,
 		alert_size = 7,
 		spread = 25,
 		spread_moving = 6,
@@ -9422,7 +9443,7 @@ function WeaponTweakData:_init_mg42(weapon_data)
 	self.mg42.CLIP_AMMO_MAX = 150
 	self.mg42.NR_CLIPS_MAX = 3
 	self.mg42.AMMO_MAX = self.mg42.CLIP_AMMO_MAX * self.mg42.NR_CLIPS_MAX
-	self.mg42.AMMO_PICKUP = self:_pickup_chance(self.mg42.AMMO_MAX, PICKUP.OTHER)
+	self.mg42.AMMO_PICKUP = self:_pickup_chance(self.mg42.AMMO_MAX, PICKUP.AR_HIGH_CAPACITY)
 	self.mg42.FIRE_MODE = "auto"
 	self.mg42.fire_mode_data = {fire_rate = 0.05}
 	self.mg42.CAN_TOGGLE_FIREMODE = false
@@ -9480,9 +9501,9 @@ function WeaponTweakData:_init_mg42(weapon_data)
 	self.mg42.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 36,
+		damage = 80,
 		alert_size = 8,
-		spread = 8,
+		spread = 13,
 		spread_moving = 8,
 		recoil = 10,
 		value = 9,
@@ -10195,7 +10216,7 @@ function WeaponTweakData:_init_m134(weapon_data)
 	self.m134.CLIP_AMMO_MAX = 750
 	self.m134.NR_CLIPS_MAX = 1
 	self.m134.AMMO_MAX = self.m134.CLIP_AMMO_MAX * self.m134.NR_CLIPS_MAX
-	self.m134.AMMO_PICKUP = self:_pickup_chance(90, PICKUP.OTHER)
+	self.m134.AMMO_PICKUP = self:_pickup_chance(self.m134.CLIP_AMMO_MAX, PICKUP.OTHER)
 	self.m134.FIRE_MODE = "auto"
 	self.m134.fire_mode_data = {fire_rate = 0.02}
 	self.m134.CAN_TOGGLE_FIREMODE = false
@@ -10209,10 +10230,10 @@ function WeaponTweakData:_init_m134(weapon_data)
 		moving_steelsight = self.new_m4.spread.moving_steelsight
 	}
 	self.m134.kick = {standing = {
-		-0.1,
-		0.2,
-		-0.3,
-		0.4
+		-0.05,
+		0.1,
+		-0.15,
+		0.2
 	}}
 	self.m134.kick.crouching = self.m134.kick.standing
 	self.m134.kick.steelsight = self.m134.kick.standing
@@ -10247,11 +10268,11 @@ function WeaponTweakData:_init_m134(weapon_data)
 	self.m134.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 38,
+		damage = 25,
 		alert_size = 8,
-		spread = 5,
+		spread = 9,
 		spread_moving = 9,
-		recoil = 2,
+		recoil = 7,
 		value = 9,
 		extra_ammo = 6,
 		reload = 11,
@@ -11065,7 +11086,7 @@ function WeaponTweakData:_init_m32(weapon_data)
 	self.m32.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 130,
+		damage = 96,
 		alert_size = 7,
 		spread = 25,
 		spread_moving = 25,
@@ -12484,7 +12505,7 @@ function WeaponTweakData:_init_par(weapon_data)
 	self.par.CLIP_AMMO_MAX = 200
 	self.par.NR_CLIPS_MAX = 2
 	self.par.AMMO_MAX = self.par.CLIP_AMMO_MAX * self.par.NR_CLIPS_MAX
-	self.par.AMMO_PICKUP = self:_pickup_chance(self.par.AMMO_MAX, PICKUP.OTHER)
+	self.par.AMMO_PICKUP = self:_pickup_chance(self.par.AMMO_MAX, PICKUP.AR_HIGH_CAPACITY)
 	self.par.FIRE_MODE = "auto"
 	self.par.fire_mode_data = {fire_rate = 0.066}
 	self.par.CAN_TOGGLE_FIREMODE = false
@@ -12542,9 +12563,9 @@ function WeaponTweakData:_init_par(weapon_data)
 	self.par.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 37,
+		damage = 80,
 		alert_size = 8,
-		spread = 9,
+		spread = 14,
 		spread_moving = 8,
 		recoil = 10,
 		value = 9,
@@ -12951,7 +12972,7 @@ function WeaponTweakData:_init_china(weapon_data)
 	self.china.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 130,
+		damage = 96,
 		alert_size = 7,
 		spread = 25,
 		spread_moving = 6,
@@ -13340,16 +13361,16 @@ function WeaponTweakData:_init_x_mp5(weapon_data)
 	self.x_mp5.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 36,
+		damage = 40,
 		alert_size = 7,
-		spread = 8,
+		spread = 12,
 		spread_moving = 8,
-		recoil = 20,
+		recoil = 21,
 		value = 1,
 		extra_ammo = 6,
 		reload = 11,
 		suppression = 17,
-		concealment = 23
+		concealment = 24
 	}
 end
 
@@ -14330,7 +14351,7 @@ function WeaponTweakData:_init_arbiter(weapon_data)
 	self.arbiter.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 70,
+		damage = 48,
 		alert_size = 7,
 		spread = 25,
 		spread_moving = 6,
@@ -14523,7 +14544,7 @@ function WeaponTweakData:_init_contraband(weapon_data)
 	self.contraband_m203.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 130,
+		damage = 960,
 		alert_size = 7,
 		spread = 25,
 		spread_moving = 6,
@@ -16093,6 +16114,97 @@ function WeaponTweakData:_init_x_basset(weapon_data)
 	}
 end
 
+function WeaponTweakData:_init_corgi(weapon_data)
+	self.corgi = {
+		categories = {"assault_rifle"},
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.corgi.sounds.fire = "corgi_fire_single"
+	self.corgi.sounds.fire_single = "corgi_fire_single"
+	self.corgi.sounds.fire_auto = "corgi_fire"
+	self.corgi.sounds.stop_fire = "corgi_stop"
+	self.corgi.sounds.dryfire = "primary_dryfire"
+	self.corgi.sounds.enter_steelsight = "primary_steel_sight_enter"
+	self.corgi.sounds.leave_steelsight = "primary_steel_sight_exit"
+	self.corgi.timers = {
+		reload_not_empty = 2.1,
+		reload_empty = 2.9,
+		unequip = 0.6,
+		equip = 0.6
+	}
+	self.corgi.name_id = "bm_w_corgi"
+	self.corgi.desc_id = "bm_w_corgi_desc"
+	self.corgi.description_id = "des_corgi"
+	self.corgi.muzzleflash = "effects/payday2/particles/weapons/556_auto_fps"
+	self.corgi.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
+	self.corgi.use_data = {selection_index = SELECTION.PRIMARY}
+	self.corgi.DAMAGE = 1
+	self.corgi.CLIP_AMMO_MAX = 30
+	self.corgi.NR_CLIPS_MAX = 5
+	self.corgi.AMMO_MAX = self.corgi.CLIP_AMMO_MAX * self.corgi.NR_CLIPS_MAX
+	self.corgi.AMMO_PICKUP = self:_pickup_chance(self.corgi.AMMO_MAX, 3)
+	self.corgi.FIRE_MODE = "auto"
+	self.corgi.fire_mode_data = {fire_rate = 0.07}
+	self.corgi.CAN_TOGGLE_FIREMODE = true
+	self.corgi.auto = {fire_rate = 0.07}
+	self.corgi.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight
+	}
+	self.corgi.kick = {standing = self.new_m4.kick.standing}
+	self.corgi.kick.crouching = self.corgi.kick.standing
+	self.corgi.kick.steelsight = self.corgi.kick.standing
+	self.corgi.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.corgi.crosshair.standing.offset = 0.16
+	self.corgi.crosshair.standing.moving_offset = 1
+	self.corgi.crosshair.standing.kick_offset = 0.8
+	self.corgi.crosshair.crouching.offset = 0.1
+	self.corgi.crosshair.crouching.moving_offset = 0.6
+	self.corgi.crosshair.crouching.kick_offset = 0.4
+	self.corgi.crosshair.steelsight.hidden = true
+	self.corgi.crosshair.steelsight.offset = 0
+	self.corgi.crosshair.steelsight.moving_offset = 0
+	self.corgi.crosshair.steelsight.kick_offset = 0.14
+	self.corgi.shake = {
+		fire_multiplier = 0.3,
+		fire_steelsight_multiplier = -0.3
+	}
+	self.corgi.autohit = weapon_data.autohit_rifle_default
+	self.corgi.aim_assist = weapon_data.aim_assist_rifle_default
+	self.corgi.weapon_hold = "corgi"
+	self.corgi.animations = {
+		equip_id = "equip_corgi",
+		recoil_steelsight = true
+	}
+	self.corgi.global_value = "rvd"
+	self.corgi.texture_bundle_folder = "rvd"
+	self.corgi.panic_suppression_chance = 0.2
+	self.corgi.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 40,
+		alert_size = 8,
+		spread = 18,
+		spread_moving = 15,
+		recoil = 18,
+		value = 9,
+		extra_ammo = 6,
+		reload = 11,
+		suppression = 12,
+		concealment = 20
+	}
+end
+
 function WeaponTweakData:_create_table_structure()
 	self.c45_npc = {
 		usage = "is_pistol",
@@ -17045,6 +17157,12 @@ function WeaponTweakData:_create_table_structure()
 	}
 	self.x_basset_crew = {
 		usage = "akimbo_pistol",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.corgi_crew = {
+		usage = "is_bullpup",
 		sounds = {},
 		use_data = {},
 		auto = {}

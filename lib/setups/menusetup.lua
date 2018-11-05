@@ -21,6 +21,7 @@ require("lib/units/weapons/WeaponUnderbarrel")
 require("lib/units/weapons/WeaponUnderbarrelLauncher")
 require("lib/units/menu/MenuArmourBase")
 require("lib/units/ArmorSkinExt")
+require("lib/managers/EnvironmentEffectsManager")
 require("lib/wip")
 core:import("SequenceManager")
 

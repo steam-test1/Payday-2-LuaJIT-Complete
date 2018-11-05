@@ -90,7 +90,7 @@ function ActionMessagingManager:_show_message(id, instigator)
 	})
 
 	if self:message(id).dialog_id then
-		managers.dialog:queue_dialog(self:message(id).dialog_id, {})
+		managers.dialog:queue_narrator_dialog(self:message(id).dialog_id, {})
 	end
 end
 

@@ -6229,5 +6229,27 @@ function DLCTweakData:init(tweak_data)
 			amount = 1
 		}
 	}
+	self.rvd_bundle = {
+		dlc = "has_rvd",
+		content = {}
+	}
+	self.rvd_bundle.content.loot_global_value = "rvd"
+	self.rvd_bundle.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "rvd_01",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "rvd_02",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "rvd_03",
+			amount = 1
+		}
+	}
 end
 
