@@ -3,7 +3,7 @@ ProjectileWeaponBase = ProjectileWeaponBase or class(NewRaycastWeaponBase)
 function ProjectileWeaponBase:init(...)
 	ProjectileWeaponBase.super.init(self, ...)
 
-	self._projectile_type_index = self:weapon_tweak_data().projectile_type_index
+	self._projectile_type = self:weapon_tweak_data().projectile_type
 end
 local mvec_spread_direction = Vector3()
 
@@ -20,10 +20,15 @@ function ProjectileWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_
 	mvector3.add(mvec_spread_direction, right * math.rad(ax))
 	mvector3.add(mvec_spread_direction, up * math.rad(ay))
 
-	local projectile_type_index = self._projectile_type_index or 2
+	local projectile_type = self._projectile_type or tweak_data.blackmarket:get_projectile_name_from_index(2)
 
 	if self._ammo_data and self._ammo_data.launcher_grenade then
-		projectile_type_index = self:weapon_tweak_data().projectile_type_indices and self:weapon_tweak_data().projectile_type_indices[self._ammo_data.launcher_grenade] and self:weapon_tweak_data().projectile_type_indices[self._ammo_data.launcher_grenade] or tweak_data.blackmarket:get_index_from_projectile_id(self._ammo_data.launcher_grenade)
+		if self:weapon_tweak_data().projectile_types then
+			local equipped_type = self:weapon_tweak_data().projectile_types[self._ammo_data.launcher_grenade]
+			projectile_type = equipped_type or self._ammo_data.launcher_grenade
+		else
+			projectile_type = self._ammo_data.launcher_grenade
+		end
 	end
 
 	self:_adjust_throw_z(mvec_spread_direction)
@@ -34,12 +39,14 @@ function ProjectileWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_
 
 	if not self._client_authoritative then
 		if Network:is_client() then
+			local projectile_type_index = tweak_data.blackmarket:get_index_from_projectile_id(projectile_type)
+
 			managers.network:session():send_to_host("request_throw_projectile", projectile_type_index, from_pos, mvec_spread_direction)
 		else
-			unit = ProjectileBase.throw_projectile(projectile_type_index, from_pos, mvec_spread_direction, managers.network:session():local_peer():id())
+			unit = ProjectileBase.throw_projectile(projectile_type, from_pos, mvec_spread_direction, managers.network:session():local_peer():id())
 		end
 	else
-		unit = ProjectileBase.throw_projectile(projectile_type_index, from_pos, mvec_spread_direction, managers.network:session():local_peer():id())
+		unit = ProjectileBase.throw_projectile(projectile_type, from_pos, mvec_spread_direction, managers.network:session():local_peer():id())
 	end
 
 	managers.statistics:shot_fired({

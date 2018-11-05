@@ -4036,6 +4036,80 @@ function SkillTreeTweakData:init()
 			},
 			desc_id = "menu_st_spec_19_desc",
 			name_id = "menu_st_spec_19"
+		},
+		{
+			{
+				cost = 200,
+				texture_bundle_folder = "ecp",
+				desc_id = "menu_deck20_1_desc",
+				name_id = "menu_deck20_1",
+				upgrades = {
+					"tag_team",
+					"player_tag_team_base",
+					"player_tag_team_cooldown_drain_1"
+				},
+				icon_xy = {
+					0,
+					0
+				}
+			},
+			deck2,
+			{
+				cost = 400,
+				texture_bundle_folder = "ecp",
+				desc_id = "menu_deck20_3_desc",
+				name_id = "menu_deck20_3",
+				upgrades = {
+					"player_passive_health_multiplier_1",
+					"player_passive_health_multiplier_2"
+				},
+				icon_xy = {
+					1,
+					0
+				}
+			},
+			deck4,
+			{
+				cost = 1000,
+				texture_bundle_folder = "ecp",
+				desc_id = "menu_deck20_5_desc",
+				name_id = "menu_deck20_5",
+				upgrades = {"player_tag_team_damage_absorption"},
+				icon_xy = {
+					2,
+					0
+				}
+			},
+			deck6,
+			{
+				cost = 2400,
+				texture_bundle_folder = "ecp",
+				desc_id = "menu_deck20_7_desc",
+				name_id = "menu_deck20_7",
+				upgrades = {"player_passive_health_multiplier_3"},
+				icon_xy = {
+					3,
+					0
+				}
+			},
+			deck8,
+			{
+				cost = 4000,
+				texture_bundle_folder = "ecp",
+				desc_id = "menu_deck20_9_desc",
+				name_id = "menu_deck20_9",
+				upgrades = {
+					"player_passive_loot_drop_multiplier",
+					"player_tag_team_cooldown_drain_2"
+				},
+				icon_xy = {
+					0,
+					1
+				}
+			},
+			name_id = "menu_st_spec_20",
+			dlc = "ecp",
+			desc_id = "menu_st_spec_20_desc"
 		}
 	}
 end

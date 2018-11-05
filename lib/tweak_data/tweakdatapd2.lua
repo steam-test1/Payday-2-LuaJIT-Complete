@@ -665,6 +665,15 @@ function TweakData:_init_pd2()
 			32
 		}
 	}
+	self.hud_icons.tag_team = {
+		texture = "guis/textures/pd2/equipment_02",
+		texture_rect = {
+			32,
+			64,
+			32,
+			32
+		}
+	}
 	self.hud_icons.none_icon = {
 		texture = "guis/textures/pd2/equipment_02",
 		texture_rect = {

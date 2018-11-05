@@ -2811,8 +2811,13 @@ function CivilianHeisterInteractionExt:is_daily_accepted()
 end
 
 function CivilianHeisterInteractionExt:update_character()
-	local character_name = CriminalsManager.convert_new_to_old_character_workname(self.character)
-	local character_tier = managers.custom_safehouse:get_host_room_tier(character_name)
+	local room_name = CriminalsManager.convert_new_to_old_character_workname(self.character)
+
+	if room_name == "ecp_male" or room_name == "ecp_female" then
+		room_name = "ecp"
+	end
+
+	local character_tier = managers.custom_safehouse:get_host_room_tier(room_name)
 
 	if self._unit:damage() and self.heister_data.character_material then
 		self._unit:damage():run_sequence_simple(self.heister_data.character_material)

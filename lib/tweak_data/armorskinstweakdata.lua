@@ -84,6 +84,8 @@ function EconomyTweakData:_init_armor_skins()
 		["units/payday2/characters/npc_criminals_suit_1/mtr_old_hoxton"] = "units/payday2/characters/npc_criminals_suit_1/mtr_old_hoxton_cc",
 		["units/payday2/characters/npc_criminals_suit_1/mtr_jacket"] = "units/payday2/characters/npc_criminals_suit_1/mtr_jacket_cc",
 		["units/pd2_dlc_max/characters/npc_criminals_max/mtr_criminal_max"] = "units/pd2_dlc_max/characters/npc_criminals_max/mtr_criminal_max_cc",
+		["units/pd2_dlc_ecp/characters/npc_criminals_ecp_female/mtr_criminal_ecp_female"] = "units/pd2_dlc_ecp/characters/npc_criminals_ecp_female/mtr_criminal_ecp_female_cc",
+		["units/pd2_dlc_ecp/characters/npc_criminals_ecp_male/mtr_criminal_ecp_male"] = "units/pd2_dlc_ecp/characters/npc_criminals_ecp_male/mtr_criminal_ecp_male_cc",
 		["units/payday2/characters/npc_criminals_suit_1/mtr_hoxton"] = "units/payday2/characters/npc_criminals_suit_1/mtr_hoxton_cc",
 		["units/payday2/characters/npc_criminals_suit_1/mtr_jimmy"] = "units/payday2/characters/npc_criminals_suit_1/mtr_jimmy_cc",
 		["units/payday2/characters/npc_criminals_suit_1/mtr_jiro"] = "units/payday2/characters/npc_criminals_suit_1/mtr_jiro_cc",
@@ -122,7 +124,9 @@ function EconomyTweakData:_init_armor_skins()
 		wild = Idstring("units/pd2_dlc_wild/characters/npc_criminals_wild_1/mtr_criminal_wild_1_cc"),
 		chico = Idstring("units/pd2_dlc_chico/characters/npc_criminals_terry/mtr_criminal_terry_cc"),
 		max = Idstring("units/pd2_dlc_max/characters/npc_criminals_max/mtr_criminal_max_cc"),
-		myh = Idstring("units/pd2_dlc_myh/characters/npc_criminals_myh/mtr_criminal_myh_cc")
+		myh = Idstring("units/pd2_dlc_myh/characters/npc_criminals_myh/mtr_criminal_myh_cc"),
+		ecp_female = Idstring("units/pd2_dlc_ecp/characters/npc_criminals_ecp_female/mtr_criminal_ecp_female_cc"),
+		ecp_male = Idstring("units/pd2_dlc_ecp/characters/npc_criminals_ecp_male/mtr_criminal_ecp_male_cc")
 	}
 	self.armor_skins = {none = {}}
 	self.armor_skins.none.name_id = "bm_askn_none"

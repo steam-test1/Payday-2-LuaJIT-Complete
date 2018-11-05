@@ -456,6 +456,44 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 		dlc = "pd2_clan",
 		texture_bundle_folder = "mtl"
 	}
+	self.projectiles.tag_team = {
+		name_id = "bm_grenade_tag_team",
+		desc_id = "bm_grenade_tag_team_desc",
+		icon = "tag_team",
+		ability = "tag_team",
+		texture_bundle_folder = "ecp",
+		max_amount = 1,
+		base_cooldown = 60,
+		sounds = {
+			activate = "perkdeck_activate",
+			cooldown = "perkdeck_cooldown_over"
+		}
+	}
+	self.projectiles.ecp_arrow = {
+		unit = "units/pd2_dlc_ecp/weapons/wpn_prj_ecp_arrow/wpn_prj_ecp_arrow",
+		local_unit = "units/pd2_dlc_ecp/weapons/wpn_prj_ecp_arrow/wpn_prj_ecp_arrow_local",
+		weapon_id = "ecp",
+		no_cheat_count = true,
+		impact_detonation = true,
+		client_authoritative = true
+	}
+	self.projectiles.ecp_arrow_poison = {
+		unit = "units/pd2_dlc_ecp/weapons/wpn_prj_ecp_arrow_poison/wpn_prj_ecp_arrow_poison",
+		local_unit = "units/pd2_dlc_ecp/weapons/wpn_prj_ecp_arrow_poison/wpn_prj_ecp_arrow_poison_local",
+		weapon_id = "ecp",
+		no_cheat_count = true,
+		impact_detonation = true,
+		client_authoritative = true
+	}
+	self.projectiles.ecp_arrow_exp = {
+		unit = "units/pd2_dlc_ecp/weapons/wpn_prj_ecp_arrow_exp/wpn_prj_ecp_arrow_exp",
+		local_unit = "units/pd2_dlc_ecp/weapons/wpn_prj_ecp_arrow_exp/wpn_prj_ecp_arrow_exp_local",
+		weapon_id = "ecp",
+		no_cheat_count = true,
+		impact_detonation = true,
+		client_authoritative = true,
+		is_explosive = true
+	}
 	self.projectiles.damage_control = {
 		name_id = "bm_grenade_damage_control",
 		desc_id = "bm_grenade_damage_control_desc",
@@ -506,7 +544,11 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 		"rocket_ray_frag",
 		"fir_com",
 		"smoke_screen_grenade",
-		"dada_com"
+		"dada_com",
+		"tag_team",
+		"ecp_arrow",
+		"ecp_arrow_exp",
+		"ecp_arrow_poison"
 	}
 	local free_dlcs = tweak_data:free_dlc_list()
 

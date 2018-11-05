@@ -694,6 +694,7 @@ function ProgressBar:init(parent, config, progress)
 		w = 0,
 		color = self._progress_color
 	})
+	self._at = 0
 
 	if progress then
 		self:set_progress(progress)
@@ -705,15 +706,15 @@ function ProgressBar:max()
 end
 
 function ProgressBar:set_progress(v)
-	v = math.clamp(v, 0, self._max)
+	self._at = math.clamp(v, 0, self._max)
 
-	self._progress:set_w((self._back:w() * v) / self._max)
+	self._progress:set_w((self._back:w() * self._at) / self._max)
 
-	return v
+	return self._at
 end
 
 function ProgressBar:set_max(v, dont_scale_current)
-	local current = dont_scale_current and self._progress:w() / self._back:w() * self._max or self._progress:w() / self._back:w() * v
+	local current = dont_scale_current and self._at or self._at / self._max * v
 	self._max = v
 
 	self:set_progress(current)
@@ -733,6 +734,7 @@ function TextProgressBar:init(parent, config, text_config, progress)
 		self._percentage = not config.max
 	end
 
+	self._to_text_func = config.format_func or self._percentage and self._percentage_format or self._normal_format
 	text_config.text = text_config.text or self._percentage and " 0% " or string.format(" 0 / %d ", self._max)
 	text_config.color = text_config.color or self._on_back_color
 	text_config.layer = text_config.layer or self._progress:layer() + 1
@@ -745,19 +747,23 @@ function TextProgressBar:init(parent, config, text_config, progress)
 	end
 end
 
+function TextProgressBar:_percentage_format()
+	local num = self._at / self._max * 100
+
+	return string.format(" %d%% ", num)
+end
+
+function TextProgressBar:_normal_format()
+	return string.format(" %d / %d ", self._at, self._max)
+end
+
 function TextProgressBar:set_progress(v)
-	v = TextProgressBar.super.set_progress(self, v)
+	TextProgressBar.super.set_progress(self, v)
+
 	local at = self._progress:right()
 	local max = self._back:right()
 
-	if self._percentage then
-		local num = v * 100
-
-		self._text:set_text(string.format(" %d%% ", num))
-	else
-		self._text:set_text(string.format(" %d / %d ", v, self._max))
-	end
-
+	self._text:set_text(self:_to_text_func(self._at, self._max))
 	self.make_fine_text(self._text)
 	self._text:set_left(at)
 
@@ -770,6 +776,8 @@ function TextProgressBar:set_progress(v)
 	end
 
 	self._text:set_color(col)
+
+	return self._at
 end
 SpecialButtonBinding = SpecialButtonBinding or class()
 

@@ -75,6 +75,10 @@ function PlayerCamera:spawn_camera_unit()
 	self._camera_unit:base():set_stance_instant("standard")
 end
 
+function PlayerCamera:camera_object()
+	return self._camera_object
+end
+
 function PlayerCamera:camera_unit()
 	return self._camera_unit
 end

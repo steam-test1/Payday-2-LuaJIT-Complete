@@ -168,6 +168,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_breech_crew()
 	self:_init_data_ching_crew()
 	self:_init_data_erma_crew()
+	self:_init_data_ecp_crew()
 	self:_init_data_shrew_crew()
 	self:_init_data_x_shrew_crew()
 	self:_init_data_basset_crew()
@@ -2938,6 +2939,23 @@ function WeaponTweakData:_init_data_erma_crew()
 	self.erma_crew.suppression = 1
 end
 
+function WeaponTweakData:_init_data_ecp_crew()
+	self.ecp_crew.sounds.prefix = "ecp_npc"
+	self.ecp_crew.use_data.selection_index = 2
+	self.ecp_crew.DAMAGE = 2
+	self.ecp_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.ecp_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.ecp_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	self.ecp_crew.CLIP_AMMO_MAX = 6
+	self.ecp_crew.NR_CLIPS_MAX = 5
+	self.ecp_crew.reload = "looped"
+	self.ecp_crew.pull_magazine_during_reload = "smg"
+	self.ecp_crew.auto.fire_rate = 20
+	self.ecp_crew.hold = "bullpup"
+	self.ecp_crew.alert_size = 5000
+	self.ecp_crew.suppression = 1
+end
+
 function WeaponTweakData:_init_data_shrew_crew()
 	self.shrew_crew.sounds.prefix = "shrew_npc"
 	self.shrew_crew.use_data.selection_index = 1
@@ -3765,6 +3783,7 @@ function WeaponTweakData:_init_new_weapons(weapon_data)
 	self:_init_breech(weapon_data)
 	self:_init_ching(weapon_data)
 	self:_init_erma(weapon_data)
+	self:_init_ecp(weapon_data)
 	self:_init_shrew(weapon_data)
 	self:_init_x_shrew(weapon_data)
 	self:_init_basset(weapon_data)
@@ -10242,7 +10261,7 @@ function WeaponTweakData:_init_rpg7(weapon_data)
 		categories = {"grenade_launcher"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
 		has_description = true,
-		projectile_type_index = 3,
+		projectile_type = "rocket_frag",
 		damage_melee = weapon_data.damage_melee_default,
 		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
@@ -10950,8 +10969,8 @@ function WeaponTweakData:_init_m32(weapon_data)
 	self.m32 = {
 		categories = {"grenade_launcher"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		projectile_type_index = 6,
-		projectile_type_indices = {launcher_incendiary = 26},
+		projectile_type = "launcher_frag_m32",
+		projectile_types = {launcher_incendiary = "launcher_incendiary_m32"},
 		damage_melee = weapon_data.damage_melee_default,
 		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
@@ -11365,7 +11384,7 @@ function WeaponTweakData:_init_plainsider(weapon_data)
 	self.plainsrider = {
 		categories = {"bow"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		projectile_type_index = 7,
+		projectile_type = "west_arrow",
 		not_allowed_in_bleedout = true,
 		damage_melee = weapon_data.damage_melee_default,
 		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
@@ -11935,7 +11954,7 @@ end
 function WeaponTweakData:_init_hunter(weapon_data)
 	self.hunter = {
 		categories = {"crossbow"},
-		projectile_type_index = 11,
+		projectile_type = "crossbow_arrow",
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
 		damage_melee = weapon_data.damage_melee_default,
 		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
@@ -12131,7 +12150,7 @@ end
 function WeaponTweakData:_init_arblast(weapon_data)
 	self.arblast = {
 		categories = {"crossbow"},
-		projectile_type_index = 17,
+		projectile_type = "arblast_arrow",
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
 		damage_melee = weapon_data.damage_melee_default,
 		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
@@ -12230,7 +12249,7 @@ end
 function WeaponTweakData:_init_frankish(weapon_data)
 	self.frankish = {
 		categories = {"crossbow"},
-		projectile_type_index = 20,
+		projectile_type = "frankish_arrow",
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
 		damage_melee = weapon_data.damage_melee_default,
 		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
@@ -12330,7 +12349,7 @@ function WeaponTweakData:_init_long(weapon_data)
 	self.long = {
 		categories = {"bow"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		projectile_type_index = 23,
+		projectile_type = "long_arrow",
 		not_allowed_in_bleedout = true,
 		damage_melee = weapon_data.damage_melee_default,
 		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
@@ -12836,8 +12855,8 @@ function WeaponTweakData:_init_china(weapon_data)
 	self.china = {
 		categories = {"grenade_launcher"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		projectile_type_index = 27,
-		projectile_type_indices = {launcher_incendiary = 28},
+		projectile_type = "launcher_frag_china",
+		projectile_types = {launcher_incendiary = "launcher_incendiary_china"},
 		damage_melee = weapon_data.damage_melee_default,
 		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
@@ -14218,8 +14237,8 @@ end
 function WeaponTweakData:_init_arbiter(weapon_data)
 	self.arbiter = {
 		categories = {"grenade_launcher"},
-		projectile_type_index = 33,
-		projectile_type_indices = {launcher_incendiary = 34},
+		projectile_type = "launcher_frag_arbiter",
+		projectile_types = {launcher_incendiary = "launcher_incendiary_arbiter"},
 		damage_melee = weapon_data.damage_melee_default,
 		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
@@ -14519,7 +14538,7 @@ function WeaponTweakData:_init_ray(weapon_data)
 		categories = {"grenade_launcher"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
 		has_description = true,
-		projectile_type_index = 37,
+		projectile_type = "rocket_ray_frag",
 		damage_melee = weapon_data.damage_melee_default,
 		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
@@ -15572,6 +15591,105 @@ function WeaponTweakData:_init_erma(weapon_data)
 		concealment = 24
 	}
 	self.erma.unlock_func = "has_unlocked_erma"
+end
+
+function WeaponTweakData:_init_ecp(weapon_data)
+	self.ecp = {
+		categories = {"crossbow"},
+		projectile_type = "ecp_arrow",
+		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.ecp.sounds.fire = "ecp_fire"
+	self.ecp.sounds.fire_single = "ecp_fire"
+	self.ecp.sounds.fire_auto = "ecp_fire"
+	self.ecp.sounds.dryfire = "dry_fire_ecp"
+	self.ecp.sounds.enter_steelsight = "secondary_steel_sight_enter"
+	self.ecp.sounds.leave_steelsight = "secondary_steel_sight_exit"
+	self.ecp.timers = {
+		reload_not_empty = 3,
+		reload_empty = 3,
+		unequip = 0.7,
+		equip = 0.5
+	}
+	self.ecp.name_id = "bm_w_ecp"
+	self.ecp.desc_id = "bm_w_ecp_desc"
+	self.ecp.description_id = "des_ecp"
+	self.ecp.muzzleflash = "effects/payday2/particles/weapons/air_pressure"
+	self.ecp.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	self.ecp.use_data = {selection_index = SELECTION.PRIMARY}
+	self.ecp.DAMAGE = 1
+	self.ecp.CLIP_AMMO_MAX = 6
+	self.ecp.NR_CLIPS_MAX = 5
+	self.ecp.AMMO_MAX = self.ecp.CLIP_AMMO_MAX * self.ecp.NR_CLIPS_MAX
+	self.ecp.AMMO_PICKUP = self:_pickup_chance(0, 1)
+	self.ecp.FIRE_MODE = "single"
+	self.ecp.fire_mode_data = {fire_rate = 0.5}
+	self.ecp.CAN_TOGGLE_FIREMODE = false
+	self.ecp.single = {fire_rate = 0.5}
+	self.ecp.spread = {
+		standing = self.new_m4.spread.standing * 0.7,
+		crouching = self.new_m4.spread.standing * 0.7,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.standing * 0.7,
+		moving_crouching = self.new_m4.spread.standing * 0.7,
+		moving_steelsight = self.new_m4.spread.moving_steelsight
+	}
+	self.ecp.kick = {standing = {
+		-0.2,
+		0.4,
+		-1,
+		1
+	}}
+	self.ecp.kick.crouching = self.ecp.kick.standing
+	self.ecp.kick.steelsight = self.ecp.kick.standing
+	self.ecp.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.ecp.crosshair.standing.offset = 0.4
+	self.ecp.crosshair.standing.moving_offset = 0.7
+	self.ecp.crosshair.standing.kick_offset = 0.6
+	self.ecp.crosshair.crouching.offset = 0.3
+	self.ecp.crosshair.crouching.moving_offset = 0.6
+	self.ecp.crosshair.crouching.kick_offset = 0.4
+	self.ecp.crosshair.steelsight.hidden = true
+	self.ecp.crosshair.steelsight.offset = 0
+	self.ecp.crosshair.steelsight.moving_offset = 0
+	self.ecp.crosshair.steelsight.kick_offset = 0.4
+	self.ecp.shake = {
+		fire_multiplier = 1,
+		fire_steelsight_multiplier = -1
+	}
+	self.ecp.autohit = weapon_data.autohit_smg_default
+	self.ecp.aim_assist = weapon_data.aim_assist_smg_default
+	self.ecp.weapon_hold = "ecp"
+	self.ecp.animations = {
+		equip_id = "equip_ecp",
+		recoil_steelsight = true
+	}
+	self.ecp.global_value = "ecp"
+	self.ecp.texture_bundle_folder = "ecp"
+	self.ecp.panic_suppression_chance = 0.2
+	self.ecp.ignore_damage_upgrades = true
+	self.ecp.stats = {
+		zoom = 3,
+		total_ammo_mod = 21,
+		damage = 70,
+		alert_size = 7,
+		spread = 22,
+		spread_moving = 22,
+		recoil = 22,
+		value = 1,
+		extra_ammo = 6,
+		reload = 11,
+		suppression = 14,
+		concealment = 28
+	}
+	self.ecp.stats_modifiers = {damage = 10}
 end
 
 function WeaponTweakData:_init_shrew(weapon_data)
@@ -16893,6 +17011,12 @@ function WeaponTweakData:_create_table_structure()
 	}
 	self.erma_crew = {
 		usage = "is_bullpup",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.ecp_crew = {
+		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}

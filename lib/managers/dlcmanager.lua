@@ -508,6 +508,10 @@ function GenericDLCManager:has_fdm()
 	return self:is_dlc_unlocked("fdm")
 end
 
+function GenericDLCManager:has_ecp()
+	return self:is_dlc_unlocked("ecp")
+end
+
 function GenericDLCManager:has_myh()
 	return self:is_dlc_unlocked("myh")
 end
@@ -1774,6 +1778,10 @@ function WINDLCManager:init()
 			raidww2_clan = {source_id = "103582791460014708"},
 			fdm = {
 				app_id = "707620",
+				no_install = true
+			},
+			ecp = {
+				app_id = "758420",
 				no_install = true
 			},
 			cmo = {

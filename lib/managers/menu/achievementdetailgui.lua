@@ -184,7 +184,7 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 	local detail_canvas = detail:canvas()
 	local detail_placer = detail:canvas():placer()
 
-	add_achievement_detail_text(detail, detail_placer, self._visual, grey_color)
+	add_achievement_detail_text(detail, detail_placer, self._visual, self._info, grey_color)
 
 	local tag_str = nil
 

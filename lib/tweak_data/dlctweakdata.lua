@@ -41,14 +41,15 @@ function DLCTweakData:init(tweak_data)
 			steel = true,
 			fdm = true,
 			hoxton_revenge = 1,
-			hlm2 = true,
+			ecp = true,
 			hl_miami = true,
-			speedrunners = 1,
+			hlm2 = true,
 			pn2 = true,
+			speedrunners = 1,
 			alienware_alpha = true,
-			humble_summer_2015 = 1,
 			pim = true,
 			cash = true,
+			humble_summer_2015 = 1,
 			bbq = true,
 			jigg = 1,
 			season_pass = true,
@@ -6191,5 +6192,42 @@ function DLCTweakData:init(tweak_data)
 		item_entry = "mmj",
 		amount = 1
 	}}
+	self.ecp_bundle = {
+		dlc = "has_ecp",
+		content = {}
+	}
+	self.ecp_bundle.content.loot_global_value = "ecp"
+	self.ecp_bundle.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "ecp_female",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "ecp_male",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "ecp_female_begins",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "ecp_male_begins",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_bow_ecp_m_arrows_explosive",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_bow_ecp_m_arrows_poison",
+			amount = 1
+		}
+	}
 end
 

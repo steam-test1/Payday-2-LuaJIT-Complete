@@ -2464,6 +2464,43 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.sap.stats.concealment = 30
 	self.melee_weapons.sap.dlc = nil
 	self.melee_weapons.sap.texture_bundle_folder = "myh"
+	self.melee_weapons.meter = {
+		name_id = "bm_melee_meter",
+		animation = nil,
+		anim_attack_vars = {
+			"var1",
+			"var2",
+			"var3",
+			"var4"
+		},
+		anim_global_param = "melee_great",
+		dlc = "ecp",
+		texture_bundle_folder = "ecp",
+		type = "sword",
+		align_objects = {"a_weapon_right"},
+		unit = "units/pd2_dlc_ecp/weapons/wpn_fps_mel_meter/wpn_fps_mel_meter",
+		third_unit = "units/pd2_dlc_ecp/weapons/wpn_fps_mel_meter/wpn_third_mel_meter",
+		sounds = {}
+	}
+	self.melee_weapons.meter.sounds.equip = "meter_equip"
+	self.melee_weapons.meter.sounds.hit_air = "meter_hit_air"
+	self.melee_weapons.meter.sounds.hit_gen = "meter_hit_gen"
+	self.melee_weapons.meter.sounds.hit_body = "meter_hit_body"
+	self.melee_weapons.meter.sounds.charge = "meter_charge"
+	self.melee_weapons.meter.stats = {
+		weapon_type = "sharp",
+		min_damage = 7,
+		max_damage = 45,
+		min_damage_effect = 1,
+		max_damage_effect = 1,
+		charge_time = 4,
+		range = 275,
+		concealment = 27,
+		remove_weapon_movement_penalty = true
+	}
+	self.melee_weapons.meter.repeat_expire_t = 1.1
+	self.melee_weapons.meter.expire_t = 1.5
+	self.melee_weapons.meter.melee_damage_delay = 0.6
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.melee_weapons) do

@@ -1258,6 +1258,28 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.dodge_replenish_armor = {true}
 	self.values.player.smoke_screen_ally_dodge_bonus = {0.1}
 	self.values.player.sicario_multiplier = {2}
+	self.values.player.tag_team_base = {{
+		kill_health_gain = 1,
+		radius = 0.3,
+		distance = 10,
+		kill_extension = 0.6,
+		duration = 12,
+		tagged_health_gain_ratio = 0.5
+	}}
+	self.values.player.tag_team_cooldown_drain = {
+		{
+			tagged = 0,
+			owner = 2
+		},
+		{
+			tagged = 2,
+			owner = 2
+		}
+	}
+	self.values.player.tag_team_damage_absorption = {{
+		kill_gain = 0.2,
+		max = 2
+	}}
 	self.values.player.armor_to_health_conversion = {100}
 	self.values.player.damage_control_passive = {{
 		75,
@@ -2957,6 +2979,52 @@ function UpgradesTweakData:_init_pd2_values()
 		}
 	})
 
+	local distance = self.values.player.tag_team_base[1].distance
+	local heal_amount = self.values.player.tag_team_base[1].kill_health_gain * 10
+	local heal_amount_tagged = heal_amount * self.values.player.tag_team_base[1].tagged_health_gain_ratio
+	local kill_extension = self.values.player.tag_team_base[1].kill_extension
+	local duration = self.values.player.tag_team_base[1].duration
+	local cooldown = 60
+	local cooldown_drain_owner = self.values.player.tag_team_cooldown_drain[1].owner
+	local cooldown_drain_tagged = self.values.player.tag_team_cooldown_drain[2].tagged
+	local health_bonus_1 = (self.values.player.passive_health_multiplier[2] - 1) * 100
+	local health_bonus_2 = (self.values.player.passive_health_multiplier[3] - 1) * 100 - health_bonus_1
+	local kill_absorption = self.values.player.tag_team_damage_absorption[1].kill_gain * 10
+	local kill_absorption_max = self.values.player.tag_team_damage_absorption[1].max * 10
+
+	table.insert(editable_specialization_descs, {
+		{
+			distance,
+			heal_amount,
+			heal_amount_tagged,
+			kill_extension,
+			cooldown_drain_owner,
+			duration,
+			cooldown
+		},
+		{"25%"},
+		{health_bonus_1 .. "%"},
+		{
+			"+1",
+			"15%",
+			"45%"
+		},
+		{
+			kill_absorption,
+			kill_absorption_max
+		},
+		{"135%"},
+		{health_bonus_2 .. "%"},
+		{
+			"5%",
+			"20%"
+		},
+		{
+			cooldown_drain_tagged,
+			"10%"
+		}
+	})
+
 	self.specialization_descs = {}
 
 	for tree, data in pairs(editable_specialization_descs) do
@@ -3100,7 +3168,8 @@ function UpgradesTweakData:init(tweak_data)
 				"akm_gold",
 				"baton",
 				"slot_lever",
-				"frankish"
+				"frankish",
+				"ecp"
 			}
 		},
 		[18] = {
@@ -3109,7 +3178,8 @@ function UpgradesTweakData:init(tweak_data)
 				"baseballbat",
 				"scorpion",
 				"oldbaton",
-				"hockey"
+				"hockey",
+				"meter"
 			}
 		},
 		[19] = {
@@ -3707,6 +3777,7 @@ function UpgradesTweakData:init(tweak_data)
 	self:_breech_weapon_definitions()
 	self:_ching_weapon_definitions()
 	self:_erma_weapon_definitions()
+	self:_ecp_weapon_definitions()
 	self:_shrew_weapon_definitions()
 	self:_x_shrew_weapon_definitions()
 	self:_basset_weapon_definitions()
@@ -7403,6 +7474,39 @@ function UpgradesTweakData:_player_definitions()
 			category = "player"
 		}
 	}
+	self.definitions.player_tag_team_base = {
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "tag_team_base",
+			synced = true,
+			category = "player"
+		}
+	}
+	self.definitions.player_tag_team_damage_absorption = {
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "tag_team_damage_absorption",
+			category = "player"
+		}
+	}
+	self.definitions.player_tag_team_cooldown_drain_1 = {
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "tag_team_cooldown_drain",
+			category = "player"
+		}
+	}
+	self.definitions.player_tag_team_cooldown_drain_2 = {
+		category = "feature",
+		upgrade = {
+			value = 2,
+			upgrade = "tag_team_cooldown_drain",
+			category = "player"
+		}
+	}
 	self.definitions.player_armor_to_health_conversion = {
 		category = "feature",
 		upgrade = {
@@ -9573,6 +9677,10 @@ function UpgradesTweakData:_melee_weapon_definitions()
 		category = "melee_weapon"
 	}
 	self.definitions.sap = {category = "melee_weapon"}
+	self.definitions.meter = {
+		dlc = "ecp",
+		category = "melee_weapon"
+	}
 end
 
 function UpgradesTweakData:_grenades_definitions()
@@ -9624,6 +9732,10 @@ function UpgradesTweakData:_grenades_definitions()
 	self.definitions.smoke_screen_grenade = {category = "grenade"}
 	self.definitions.dada_com = {
 		dlc = "pd2_clan",
+		category = "grenade"
+	}
+	self.definitions.tag_team = {
+		dlc = "ecp",
 		category = "grenade"
 	}
 	self.definitions.damage_control = {category = "grenade"}
@@ -12903,6 +13015,15 @@ function UpgradesTweakData:_erma_weapon_definitions()
 	self.definitions.erma = {
 		factory_id = "wpn_fps_smg_erma",
 		weapon_id = "erma",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_ecp_weapon_definitions()
+	self.definitions.ecp = {
+		dlc = "ecp",
+		factory_id = "wpn_fps_bow_ecp",
+		weapon_id = "ecp",
 		category = "weapon"
 	}
 end

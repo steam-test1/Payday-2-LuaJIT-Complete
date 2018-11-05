@@ -2317,7 +2317,7 @@ function UnitNetworkHandler:sync_cocaine_stacks(amount, in_use, upgrade_level, p
 	managers.player:set_synced_cocaine_stacks(peer_id, amount, in_use, upgrade_level, power_level)
 end
 
-function UnitNetworkHandler:request_throw_projectile(projectile_type, position, dir, sender)
+function UnitNetworkHandler:request_throw_projectile(projectile_type_index, position, dir, sender)
 	local peer = self._verify_sender(sender)
 
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not peer then
@@ -2325,8 +2325,8 @@ function UnitNetworkHandler:request_throw_projectile(projectile_type, position, 
 	end
 
 	local peer_id = peer:id()
-	local projectile_entry = tweak_data.blackmarket:get_projectile_name_from_index(projectile_type)
-	local no_cheat_count = tweak_data.blackmarket.projectiles[projectile_entry].no_cheat_count
+	local projectile_type = tweak_data.blackmarket:get_projectile_name_from_index(projectile_type_index)
+	local no_cheat_count = tweak_data.blackmarket.projectiles[projectile_type].no_cheat_count
 
 	if not no_cheat_count and not managers.player:verify_grenade(peer_id) then
 		return
@@ -2335,7 +2335,7 @@ function UnitNetworkHandler:request_throw_projectile(projectile_type, position, 
 	ProjectileBase.throw_projectile(projectile_type, position, dir, peer_id)
 end
 
-function UnitNetworkHandler:sync_throw_projectile(unit, pos, dir, projectile_type, peer_id, sender)
+function UnitNetworkHandler:sync_throw_projectile(unit, pos, dir, projectile_type_index, peer_id, sender)
 	local peer = self._verify_sender(sender)
 
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not peer then
@@ -2344,8 +2344,8 @@ function UnitNetworkHandler:sync_throw_projectile(unit, pos, dir, projectile_typ
 		return
 	end
 
-	local projectile_entry = tweak_data.blackmarket:get_projectile_name_from_index(projectile_type)
-	local tweak_entry = tweak_data.blackmarket.projectiles[projectile_entry]
+	local projectile_type = tweak_data.blackmarket:get_projectile_name_from_index(projectile_type_index)
+	local tweak_entry = tweak_data.blackmarket.projectiles[projectile_type]
 
 	if tweak_entry.client_authoritative then
 		if not unit then
@@ -2390,7 +2390,7 @@ function UnitNetworkHandler:sync_throw_projectile(unit, pos, dir, projectile_typ
 	unit:base():sync_throw_projectile(dir, projectile_type)
 end
 
-function UnitNetworkHandler:sync_attach_projectile(unit, instant_dynamic_pickup, parent_unit, parent_body, parent_object, local_pos, dir, projectile_type, peer_id, sender)
+function UnitNetworkHandler:sync_attach_projectile(unit, instant_dynamic_pickup, parent_unit, parent_body, parent_object, local_pos, dir, projectile_type_index, peer_id, sender)
 	local peer = self._verify_sender(sender)
 
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not peer then
@@ -2402,12 +2402,12 @@ function UnitNetworkHandler:sync_attach_projectile(unit, instant_dynamic_pickup,
 	local world_position = parent_object and local_pos:rotate_with(parent_object:rotation()) + parent_object:position() or local_pos
 
 	if Network:is_server() then
-		local projectile_entry = tweak_data.blackmarket:get_projectile_name_from_index(projectile_type)
-		local tweak_entry = tweak_data.blackmarket.projectiles[projectile_entry]
+		local projectile_type = tweak_data.blackmarket:get_projectile_name_from_index(projectile_type_index)
+		local tweak_entry = tweak_data.blackmarket.projectiles[projectile_type]
 		local unit_name = Idstring(tweak_entry.unit)
 		local synced_unit = World:spawn_unit(unit_name, world_position, Rotation(dir, math.UP))
 
-		managers.network:session():send_to_peers_synched("sync_attach_projectile", synced_unit, instant_dynamic_pickup, alive(parent_unit) and parent_unit:id() ~= -1 and parent_unit or nil, alive(parent_unit) and parent_unit:id() ~= -1 and parent_body or nil, alive(parent_unit) and parent_unit:id() ~= -1 and parent_object or nil, local_pos, dir, projectile_type, peer_id)
+		managers.network:session():send_to_peers_synched("sync_attach_projectile", synced_unit, instant_dynamic_pickup, alive(parent_unit) and parent_unit:id() ~= -1 and parent_unit or nil, alive(parent_unit) and parent_unit:id() ~= -1 and parent_body or nil, alive(parent_unit) and parent_unit:id() ~= -1 and parent_object or nil, local_pos, dir, projectile_type_index, peer_id)
 		synced_unit:base():set_thrower_unit_by_peer_id(peer_id)
 		synced_unit:base():sync_attach_to_unit(instant_dynamic_pickup, parent_unit, parent_body, parent_object, local_pos, dir)
 	elseif unit then
@@ -3659,34 +3659,6 @@ function UnitNetworkHandler:sync_ability_hud(end_time, time_total, sender)
 	end
 end
 
-function UnitNetworkHandler:sync_ability_hud_cooldown(ability_id, cooldown, sender)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
-		return
-	end
-
-	local peer = self._verify_sender(sender)
-
-	if not peer then
-		return
-	end
-
-	local panel_id = nil
-
-	for i, panel in ipairs(managers.hud._teammate_panels) do
-		if panel._peer_id == peer:id() then
-			panel_id = i
-
-			break
-		end
-	end
-
-	if panel_id then
-		managers.hud:set_teammate_grenade_cooldown(panel_id, {cooldown = cooldown})
-	else
-		Application:error("HUD panel not found from peer id!")
-	end
-end
-
 function UnitNetworkHandler:sync_underbarrel_switch(selection_index, underbarrel_id, is_on, sender)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
@@ -3917,6 +3889,30 @@ function UnitNetworkHandler:sync_carry_set_position_and_throw(unit, destination,
 	end
 
 	unit:carry_data():set_position_and_throw(destination, direction, force)
+end
+
+function UnitNetworkHandler:sync_tag_team(tagged, owner, sender)
+	print("[Debug] UnitNetworkHandler:sync_tag_team", tagged, owner)
+
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
+		return
+	end
+
+	if not alive(tagged) or not alive(owner) then
+		return
+	end
+
+	managers.player:sync_tag_team(tagged, owner)
+end
+
+function UnitNetworkHandler:end_tag_team(tagged, owner, sender)
+	print("[Debug] UnitNetworkHandler:end_tag_team")
+
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
+		return
+	end
+
+	managers.player:end_tag_team(tagged, owner)
 end
 
 function UnitNetworkHandler:sync_delayed_damage_hud(delayed_damage, sender)

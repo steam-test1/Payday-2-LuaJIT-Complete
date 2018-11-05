@@ -613,6 +613,28 @@ function TweakData:init()
 					ssuffix = "ac"
 				},
 				body_g_object = Idstring("g_body_myh")
+			},
+			{
+				name = "ecp_male",
+				order = 21,
+				static_data = {
+					voice = "rb20",
+					ai_mask_id = "ecp_male",
+					ai_character_id = "ai_ecp_male",
+					ssuffix = "aa"
+				},
+				body_g_object = Idstring("g_body_ecp_male")
+			},
+			{
+				name = "ecp_female",
+				order = 22,
+				static_data = {
+					voice = "rb21",
+					ai_mask_id = "ecp_female",
+					ai_character_id = "ai_ecp_female",
+					ssuffix = "ab"
+				},
+				body_g_object = Idstring("g_body_ecp_female")
 			}
 		},
 		character_names = {}
@@ -2304,6 +2326,20 @@ Play the full version soon to get your full PAYDAY!]],
 		name_id = "bm_grenade_dada_com",
 		sound_event = "mtl_explosion"
 	}
+	self.projectiles.ecp_arrow = {
+		damage = 70,
+		launch_speed = 3500,
+		adjust_z = 0,
+		mass_look_up_modifier = 1,
+		push_at_body_index = 0
+	}
+	self.projectiles.ecp_arrow_poison = deep_clone(self.projectiles.ecp_arrow)
+	self.projectiles.ecp_arrow_poison.damage = 10
+	self.projectiles.ecp_arrow_poison.bullet_class = "PoisonBulletBase"
+	self.projectiles.ecp_arrow_exp = deep_clone(self.projectiles.ecp_arrow)
+	self.projectiles.ecp_arrow_exp.damage = 55
+	self.projectiles.ecp_arrow_exp.bullet_class = "InstantExplosiveBulletBase"
+	self.projectiles.ecp_arrow_exp.remove_on_impact = true
 	self.voting = {
 		timeout = 30,
 		cooldown = 50,

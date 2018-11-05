@@ -96,6 +96,7 @@ function CharacterTweakData:init(tweak_data)
 	self:_init_chico(presets)
 	self:_init_max(presets)
 	self:_init_myh(presets)
+	self:_init_ecp(presets)
 	self:_init_bolivians(presets)
 	self:_init_drug_lord_boss(presets)
 	self:_init_drug_lord_boss_stealth(presets)
@@ -3409,6 +3410,30 @@ function CharacterTweakData:_init_myh(presets)
 		aggression_timeout = 6,
 		arrest_timeout = 240
 	}
+end
+
+function CharacterTweakData:_init_ecp(presets)
+	self.ecp_female = {
+		damage = presets.gang_member_damage,
+		weapon = deep_clone(presets.weapon.gang_member)
+	}
+	self.ecp_female.weapon.weapons_of_choice = {
+		primary = "wpn_fps_ass_m4_npc",
+		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
+	}
+	self.ecp_female.detection = presets.detection.gang_member
+	self.ecp_female.move_speed = presets.move_speed.very_fast
+	self.ecp_female.crouch_move = false
+	self.ecp_female.speech_prefix = "rb21"
+	self.ecp_female.weapon_voice = "3"
+	self.ecp_female.access = "teamAI1"
+	self.ecp_female.arrest = {
+		timeout = 240,
+		aggression_timeout = 6,
+		arrest_timeout = 240
+	}
+	self.ecp_male = deep_clone(self.ecp_female)
+	self.ecp_male.speech_prefix = "rb20"
 end
 
 function CharacterTweakData:_presets(tweak_data)

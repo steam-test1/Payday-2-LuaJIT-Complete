@@ -156,11 +156,9 @@ function ProjectileBase:throw(params)
 end
 
 function ProjectileBase:sync_throw_projectile(dir, projectile_type)
-	local projectile_entry = tweak_data.blackmarket:get_projectile_name_from_index(projectile_type)
-
 	self:throw({
 		dir = dir,
-		projectile_entry = projectile_entry
+		projectile_entry = projectile_type
 	})
 end
 
@@ -260,13 +258,11 @@ function ProjectileBase:destroy()
 end
 
 function ProjectileBase.throw_projectile(projectile_type, pos, dir, owner_peer_id)
-	local projectile_entry = tweak_data.blackmarket:get_projectile_name_from_index(projectile_type)
-
 	if not ProjectileBase.check_time_cheat(projectile_type, owner_peer_id) then
 		return
 	end
 
-	local tweak_entry = tweak_data.blackmarket.projectiles[projectile_entry]
+	local tweak_entry = tweak_data.blackmarket.projectiles[projectile_type]
 	local unit_name = Idstring(not Network:is_server() and tweak_entry.local_unit or tweak_entry.unit)
 	local unit = World:spawn_unit(unit_name, pos, Rotation(dir, math.UP))
 
@@ -285,16 +281,18 @@ function ProjectileBase.throw_projectile(projectile_type, pos, dir, owner_peer_i
 
 	unit:base():throw({
 		dir = dir,
-		projectile_entry = projectile_entry
+		projectile_entry = projectile_type
 	})
 
 	if unit:base().set_owner_peer_id then
 		unit:base():set_owner_peer_id(owner_peer_id)
 	end
 
-	managers.network:session():send_to_peers_synched("sync_throw_projectile", unit:id() ~= -1 and unit or nil, pos, dir, projectile_type, owner_peer_id or 0)
+	local projectile_type_index = tweak_data.blackmarket:get_index_from_projectile_id(projectile_type)
 
-	if tweak_data.blackmarket.projectiles[projectile_entry].impact_detonation then
+	managers.network:session():send_to_peers_synched("sync_throw_projectile", unit:id() ~= -1 and unit or nil, pos, dir, projectile_type_index, owner_peer_id or 0)
+
+	if tweak_data.blackmarket.projectiles[projectile_type].impact_detonation then
 		unit:damage():add_body_collision_callback(callback(unit:base(), unit:base(), "clbk_impact"))
 		unit:base():create_sweep_data()
 	end
@@ -321,16 +319,16 @@ function ProjectileBase.check_time_cheat(projectile_type, owner_peer_id)
 		return true
 	end
 
-	local projectile_entry = tweak_data.blackmarket:get_projectile_name_from_index(projectile_type)
+	local projectile_type_index = tweak_data.blackmarket:get_index_from_projectile_id(projectile_type)
 
-	if tweak_data.blackmarket.projectiles[projectile_entry].time_cheat then
-		ProjectileBase.time_cheat[projectile_type] = ProjectileBase.time_cheat[projectile_type] or {}
+	if tweak_data.blackmarket.projectiles[projectile_type].time_cheat then
+		ProjectileBase.time_cheat[projectile_type_index] = ProjectileBase.time_cheat[projectile_type_index] or {}
 
-		if ProjectileBase.time_cheat[projectile_type][owner_peer_id] and Application:time() < ProjectileBase.time_cheat[projectile_type][owner_peer_id] then
+		if ProjectileBase.time_cheat[projectile_type_index][owner_peer_id] and Application:time() < ProjectileBase.time_cheat[projectile_type_index][owner_peer_id] then
 			return false
 		end
 
-		ProjectileBase.time_cheat[projectile_type][owner_peer_id] = Application:time() + tweak_data.blackmarket.projectiles[projectile_entry].time_cheat
+		ProjectileBase.time_cheat[projectile_type_index][owner_peer_id] = Application:time() + tweak_data.blackmarket.projectiles[projectile_type].time_cheat
 	end
 
 	return true

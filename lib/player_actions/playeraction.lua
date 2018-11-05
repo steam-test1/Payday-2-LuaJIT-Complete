@@ -12,5 +12,6 @@ require("lib/player_actions/skills/PlayerActionMessiahGetUp")
 require("lib/player_actions/skills/PlayerActionTaserMalfunction")
 require("lib/player_actions/skills/PlayerActionTriggerHappy")
 require("lib/player_actions/skills/PlayerActionStockholmSyndromeTrade")
+require("lib/player_actions/skills/PlayerActionTagTeam")
 require("lib/player_actions/skills/PlayerActionDamageControl")
 

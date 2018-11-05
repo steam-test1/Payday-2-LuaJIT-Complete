@@ -16,11 +16,8 @@ function WeaponUnderbarrelLauncher:_fire_raycast(weapon_base, user_unit, from_po
 	mvector3.add(mvec_spread_direction, right * math.rad(ax))
 	mvector3.add(mvec_spread_direction, up * math.rad(ay))
 
-	local projectile_type_index = self._projectile_type_index or 2
-
-	if self._ammo_data and self._ammo_data.launcher_grenade then
-		projectile_type_index = tweak_data.blackmarket:get_index_from_projectile_id(self._ammo_data.launcher_grenade)
-	end
+	local projectile_type = self.launcher_projectile
+	local projectile_type_index = tweak_data.blackmarket:get_index_from_projectile_id(projectile_type)
 
 	self:_adjust_throw_z(mvec_spread_direction)
 
@@ -32,10 +29,10 @@ function WeaponUnderbarrelLauncher:_fire_raycast(weapon_base, user_unit, from_po
 		if Network:is_client() then
 			managers.network:session():send_to_host("request_throw_projectile", projectile_type_index, from_pos, mvec_spread_direction)
 		else
-			unit = ProjectileBase.throw_projectile(projectile_type_index, from_pos, mvec_spread_direction, managers.network:session():local_peer():id())
+			unit = ProjectileBase.throw_projectile(projectile_type, from_pos, mvec_spread_direction, managers.network:session():local_peer():id())
 		end
 	else
-		unit = ProjectileBase.throw_projectile(projectile_type_index, from_pos, mvec_spread_direction, managers.network:session():local_peer():id())
+		unit = ProjectileBase.throw_projectile(projectile_type, from_pos, mvec_spread_direction, managers.network:session():local_peer():id())
 	end
 
 	managers.statistics:shot_fired({

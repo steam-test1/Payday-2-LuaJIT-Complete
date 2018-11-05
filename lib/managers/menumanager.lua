@@ -1624,6 +1624,10 @@ function MenuCallbackHandler:dlc_buy_max_pc()
 	Steam:overlay_activate("url", tweak_data.gui.store_page)
 end
 
+function MenuCallbackHandler:dlc_buy_ecp_pc()
+	Steam:overlay_activate("store", 758420)
+end
+
 function MenuCallbackHandler:dlc_buy_ps3()
 	print("[MenuCallbackHandler:dlc_buy_ps3]")
 	managers.dlc:buy_product("dlc1")
@@ -1707,6 +1711,7 @@ end
 
 function MenuCallbackHandler:is_dlc_latest_locked(check_dlc)
 	local dlcs = {
+		"ecp",
 		"max",
 		"mp2",
 		"amp",
@@ -2039,6 +2044,10 @@ function MenuCallbackHandler:visible_callback_max(item)
 	item:set_parameter("help_id", "menu_dlc_buy_ue_help")
 
 	return self:is_dlc_latest_locked("max")
+end
+
+function MenuCallbackHandler:visible_callback_ecp(item)
+	return self:is_dlc_latest_locked("ecp")
 end
 
 function MenuCallbackHandler:not_has_all_dlcs()

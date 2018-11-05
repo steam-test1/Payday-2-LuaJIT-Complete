@@ -7596,11 +7596,7 @@ function BlackMarketGui:mouse_pressed(button, x, y)
 	if self._extra_options_data then
 		local selected_slot = nil
 
-		if button == Idstring("mouse wheel down") then
-			selected_slot = math.min(self._extra_options_data.selected + 1, self._extra_options_data.num_panels)
-		elseif button == Idstring("mouse wheel up") then
-			selected_slot = math.max(self._extra_options_data.selected - 1, 1)
-		elseif button == Idstring("0") or button == Idstring("1") then
+		if button == Idstring("0") or button == Idstring("1") then
 			self._extra_options_data.selected = self._extra_options_data.selected or 1
 
 			for i = 1, self._extra_options_data.num_panels, 1 do
@@ -8326,8 +8322,6 @@ function BlackMarketGui:next_page(no_sound)
 		end
 
 		self:set_selected_tab(s, no_sound)
-	else
-		self:move(1, 0)
 	end
 end
 
@@ -8349,8 +8343,6 @@ function BlackMarketGui:previous_page(no_sound)
 		end
 
 		self:set_selected_tab(s, no_sound)
-	else
-		self:move(-1, 0)
 	end
 end
 

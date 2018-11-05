@@ -608,7 +608,7 @@ function NewNPCRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, d
 end
 
 function NewNPCRaycastWeaponBase:_spawn_trail_effect(direction, col_ray)
-	if alive(not self._obj_fire) then
+	if not alive(self._obj_fire) then
 		return
 	end
 

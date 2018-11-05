@@ -162,6 +162,12 @@ function CustomSafehouseTweakData:_init_heisters(tweak_data)
 	self.heisters.myh = clone(self.heisters.base)
 	self.heisters.myh.character_material = "var_mtr_myh"
 	self.heisters.myh.voice = self:get_voice(tweak_data, "myh")
+	self.heisters.ecp_female = clone(self.heisters.base)
+	self.heisters.ecp_female.character_material = "var_mtr_ecp_female"
+	self.heisters.ecp_female.voice = self:get_voice(tweak_data, "ecp_female")
+	self.heisters.ecp_male = clone(self.heisters.base)
+	self.heisters.ecp_male.character_material = "var_mtr_ecp_male"
+	self.heisters.ecp_male.voice = self:get_voice(tweak_data, "ecp_male")
 	self.heisters.butler = clone(self.heisters.base)
 	self.heisters.butler.character_material = ""
 	self.heisters.vlad = clone(self.heisters.base)
@@ -591,6 +597,18 @@ function CustomSafehouseTweakData:_init_safehouse_rooms(tweak_data)
 			"guis/dlcs/chill/textures/pd2/rooms/safehouse_room_preview_duke_lvl1",
 			"guis/dlcs/chill/textures/pd2/rooms/safehouse_room_preview_duke_lvl2",
 			"guis/dlcs/chill/textures/pd2/rooms/safehouse_room_preview_duke_lvl3"
+		}
+	})
+	table.insert(self.rooms, {
+		title_id = "menu_cs_title_ecp",
+		tier_max = 3,
+		name_id = "menu_ecp",
+		room_id = "ecp",
+		help_id = "menu_cs_help_ecp",
+		images = {
+			"guis/dlcs/chill/textures/pd2/rooms/safehouse_room_preview_ecp_lvl1",
+			"guis/dlcs/chill/textures/pd2/rooms/safehouse_room_preview_ecp_lvl2",
+			"guis/dlcs/chill/textures/pd2/rooms/safehouse_room_preview_ecp_lvl3"
 		}
 	})
 	table.insert(self.rooms, {
@@ -1545,7 +1563,8 @@ function CustomSafehouseTweakData:_init_map(tweak_data)
 			"sydney",
 			"wild",
 			"livingroom",
-			"max"
+			"max",
+			"ecp"
 		}
 	})
 	table.insert(self.map.floors, {
@@ -1650,8 +1669,8 @@ function CustomSafehouseTweakData:_init_map(tweak_data)
 	}
 	self.map.rooms.livingroom = {
 		icon = "safehouse_character_icon_livingroom",
-		x = 1140,
-		y = 830
+		x = 1170,
+		y = 930
 	}
 	self.map.rooms.old_hoxton = {
 		icon = "safehouse_character_icon_reborn",
@@ -1685,6 +1704,12 @@ function CustomSafehouseTweakData:_init_map(tweak_data)
 		icon = "safehouse_character_icon_myh",
 		x = 1155,
 		y = 955
+	}
+	self.map.rooms.ecp = {
+		path = "guis/dlcs/ecp/textures/pd2/blackmarket/icons/safehouse_icons/",
+		icon = "safehouse_character_icon_ecp",
+		x = 1140,
+		y = 830
 	}
 end
 

@@ -1066,7 +1066,7 @@ function WeaponFactoryManager:get_part_desc_by_part_id_from_weapon(part_id, fact
 		return managers.localization:text(desc_id, params)
 	end
 
-	return Application:production_build() and "Add ##desc_id## to ##" .. part_id .. "## in tweak_data.blackmarket.weapon_mods" or ""
+	return Application:production_build() and managers.localization:text(desc_id) or ""
 end
 
 function WeaponFactoryManager:get_part_data_by_part_id_from_weapon(part_id, factory_id, blueprint)

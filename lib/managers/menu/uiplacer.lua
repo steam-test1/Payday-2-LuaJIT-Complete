@@ -264,10 +264,10 @@ function UiPlacer:push()
 	})
 
 	self._most = {
-		bottom = -999,
-		right = -999,
-		left = self._most.right * 999,
-		top = self._most.bottom * 999
+		bottom = -9999,
+		right = -9999,
+		left = self._most.right + 9999,
+		top = self._most.bottom + 9999
 	}
 end
 

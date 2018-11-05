@@ -302,6 +302,38 @@ function BlackMarketTweakData:_init_characters(tweak_data)
 		mask_on_sequence = "mask_on_myh",
 		mask_off_sequence = "mask_off_myh"
 	}
+	self.characters.ecp_female = {
+		fps_unit = "units/pd2_dlc_ecp/characters/npc_criminals_ecp_female/fps_ecp_female_mover",
+		npc_unit = "units/pd2_dlc_ecp/characters/npc_criminals_ecp_female/npc_criminal_ecp_female",
+		menu_unit = "units/pd2_dlc_ecp/characters/npc_criminals_ecp_female/npc_criminal_ecp_female_menu",
+		texture_bundle_folder = "ecp",
+		sequence = "var_mtr_ecp_female",
+		mask_on_sequence = "mask_on_ecp_female",
+		mask_off_sequence = "mask_off_ecp_female",
+		dlc = "ecp"
+	}
+	self.characters.ecp_male = {
+		fps_unit = "units/pd2_dlc_ecp/characters/npc_criminals_ecp_male/fps_ecp_male_mover",
+		npc_unit = "units/pd2_dlc_ecp/characters/npc_criminals_ecp_male/npc_criminal_ecp_male",
+		menu_unit = "units/pd2_dlc_ecp/characters/npc_criminals_ecp_male/npc_criminal_ecp_male_menu",
+		texture_bundle_folder = "ecp",
+		sequence = "var_mtr_ecp_male",
+		mask_on_sequence = "mask_on_ecp_male",
+		mask_off_sequence = "mask_off_ecp_male",
+		dlc = "ecp"
+	}
+	self.characters.ai_ecp_female = {
+		npc_unit = "units/pd2_dlc_ecp/characters/npc_criminals_ecp_female/ecp_female/npc_criminal_ecp_female",
+		sequence = "var_mtr_ecp_female",
+		mask_on_sequence = "mask_on_ecp_female",
+		mask_off_sequence = "mask_off_ecp_female"
+	}
+	self.characters.ai_ecp_male = {
+		npc_unit = "units/pd2_dlc_ecp/characters/npc_criminals_ecp_male/ecp_male/npc_criminal_ecp_male",
+		sequence = "var_mtr_ecp_male",
+		mask_on_sequence = "mask_on_ecp_male",
+		mask_off_sequence = "mask_off_ecp_male"
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.characters) do

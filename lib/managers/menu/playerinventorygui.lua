@@ -4330,13 +4330,12 @@ function PlayerInventoryGui:open_character_menu()
 		on_create_func_name = "populate_characters",
 		category = "characters",
 		override_slots = {
-			5,
-			4
+			6,
+			3
 		},
 		identifier = BlackMarketGui.identifiers.character
 	})
 
-	new_node_data.scroll_tab_anywhere = true
 	new_node_data.extra_options_panel = {
 		h = 100,
 		on_create_func_name = "populate_preferred_character_options"
