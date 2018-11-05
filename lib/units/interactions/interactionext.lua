@@ -2437,12 +2437,9 @@ function SpecialEquipmentInteractionExt:interact(player)
 		self:set_active(false)
 	end
 
-	if Network:is_client() then
-		managers.network:session():send_to_host("sync_interacted", self._unit, -2, self.tweak_data, 1)
-	else
-		self:sync_interacted(nil, player)
-		self:apply_item_pickup()
-	end
+	managers.network:session():send_to_peers_synched("sync_interacted", self._unit, -2, self.tweak_data, 1)
+	self:sync_interacted(nil, player)
+	self:apply_item_pickup()
 
 	return true
 end
@@ -2454,7 +2451,7 @@ function SpecialEquipmentInteractionExt:sync_interacted(peer, player, status, sk
 		self._unit:damage():run_sequence_simple("load")
 	end
 
-	if self._global_event then
+	if self._global_event and Network:is_server() then
 		managers.mission:call_global_event(self._global_event, player)
 	end
 

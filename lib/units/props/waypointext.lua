@@ -30,7 +30,7 @@ function WaypointExt:add_waypoint(icon_name, pos_z_offset, pos_locator, map_icon
 		radius = 200,
 		waypoint_origin = "waypoint_extension",
 		blend_mode = "add",
-		no_sync = false,
+		no_sync = true,
 		waypoint_type = "unit_waypoint",
 		icon = self._icon_name,
 		map_icon = map_icon,

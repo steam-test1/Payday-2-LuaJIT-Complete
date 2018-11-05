@@ -377,12 +377,15 @@ end
 
 function AiLayer:_build_ai_unit_settings()
 	local options = {}
+	local xml = SystemFS:parse_xml(Application:base_path() .. "../../assets/strings/atmospheric_text.strings")
 
-	for _, id_string in ipairs(managers.localization:ids("strings/atmospheric_text")) do
-		local s = id_string:s()
+	if xml then
+		for child in xml:children() do
+			local s_id = child:parameter("id")
 
-		if string.find(s, "location_") then
-			table.insert(options, s)
+			if string.find(s_id, "location_") then
+				table.insert(options, s_id)
+			end
 		end
 	end
 

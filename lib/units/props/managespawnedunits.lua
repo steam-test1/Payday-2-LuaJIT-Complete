@@ -102,6 +102,12 @@ function ManageSpawnedUnits:spawn_and_link_unit(joint_table, unit_id, unit)
 	if Network:is_server() and not self.local_only then
 		managers.network:session():send_to_peers_synched("sync_link_spawned_unit", self._unit, unit_id, joint_table, "spawn_manager")
 	end
+
+	local spawned_unit = self._spawned_units[unit_id] and self._spawned_units[unit_id].unit
+
+	if spawned_unit and spawned_unit:base() and spawned_unit:base().on_unit_link_successful then
+		spawned_unit:base():on_unit_link_successful(self._unit)
+	end
 end
 
 function ManageSpawnedUnits:linked_units()

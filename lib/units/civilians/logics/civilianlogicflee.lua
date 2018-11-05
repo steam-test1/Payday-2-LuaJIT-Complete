@@ -908,13 +908,16 @@ function CivilianLogicFlee._get_coarse_flee_path(data)
 		return
 	end
 
-	local flee_point = managers.groupai:state():safe_flee_point(data.unit:movement():nav_tracker():nav_segment())
+	local ignore_segments = {}
+	local flee_point = managers.groupai:state():safe_flee_point(data.unit:movement():nav_tracker():nav_segment(), ignore_segments)
 	local test = false
 
 	if not flee_point then
 		return
 	end
 
+	local iterations = 1
+	local coarse_path = nil
 	local my_data = data.internal_data
 	local verify_clbk = callback(CivilianLogicFlee, CivilianLogicFlee, "_flee_coarse_path_verify_clbk")
 	local search_params = {
@@ -924,7 +927,30 @@ function CivilianLogicFlee._get_coarse_flee_path(data)
 		access_pos = data.char_tweak.access,
 		verify_clbk = callback(CivilianLogicFlee, CivilianLogicFlee, "_flee_coarse_path_verify_clbk")
 	}
-	local coarse_path = managers.navigation:search_coarse(search_params)
+	local max_attempts = 8
+
+	while iterations < max_attempts do
+		search_params.to_seg = flee_point.nav_seg
+		coarse_path = managers.navigation:search_coarse(search_params)
+
+		if not coarse_path then
+			coarse_path = nil
+
+			table.insert(ignore_segments, flee_point.nav_seg)
+		else
+			break
+		end
+
+		iterations = iterations + 1
+
+		if iterations < max_attempts then
+			flee_point = managers.groupai:state():safe_flee_point(data.unit:movement():nav_tracker():nav_segment(), ignore_segments)
+
+			if not flee_point then
+				return
+			end
+		end
+	end
 
 	if not coarse_path then
 		return

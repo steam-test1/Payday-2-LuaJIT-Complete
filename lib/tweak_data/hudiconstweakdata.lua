@@ -10909,6 +10909,96 @@ function HudIconsTweakData:init()
 			85
 		}
 	}
+	self.C_Bain_H_DiamondHesit_AllDiffs_D0 = {
+		texture = "guis/dlcs/dah/textures/pd2/achievements_atlas_dah",
+		texture_rect = {
+			0,
+			0,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_DiamondHesit_AllDiffs_D1 = {
+		texture = "guis/dlcs/dah/textures/pd2/achievements_atlas_dah",
+		texture_rect = {
+			87,
+			87,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_DiamondHesit_AllDiffs_D2 = {
+		texture = "guis/dlcs/dah/textures/pd2/achievements_atlas_dah",
+		texture_rect = {
+			87,
+			0,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_DiamondHesit_AllDiffs_D3 = {
+		texture = "guis/dlcs/dah/textures/pd2/achievements_atlas_dah",
+		texture_rect = {
+			174,
+			87,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_DiamondHesit_AllDiffs_D4 = {
+		texture = "guis/dlcs/dah/textures/pd2/achievements_atlas_dah",
+		texture_rect = {
+			174,
+			0,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_DiamondHesit_AllDiffs_D5 = {
+		texture = "guis/dlcs/dah/textures/pd2/achievements_atlas_dah",
+		texture_rect = {
+			261,
+			87,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_DiamondHesit_AllDiffs_D6 = {
+		texture = "guis/dlcs/dah/textures/pd2/achievements_atlas_dah",
+		texture_rect = {
+			261,
+			0,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_DiamondHesit_BloodDia_D3 = {
+		texture = "guis/dlcs/dah/textures/pd2/achievements_atlas_dah",
+		texture_rect = {
+			0,
+			87,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_DiamondHesit_DeadChange_D0 = {
+		texture = "guis/dlcs/dah/textures/pd2/achievements_atlas_dah",
+		texture_rect = {
+			348,
+			0,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_DiamondHesit_TheHuntfor_D3 = {
+		texture = "guis/dlcs/dah/textures/pd2/achievements_atlas_dah",
+		texture_rect = {
+			348,
+			87,
+			85,
+			85
+		}
+	}
 
 	TextureCorrectionTweakData:new(self)
 end

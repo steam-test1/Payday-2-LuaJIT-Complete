@@ -226,7 +226,8 @@ function AssetsTweakData:_init_assets(tweak_data)
 			"red2",
 			"dark",
 			"friend",
-			"fish"
+			"fish",
+			"dah"
 		},
 		visible_if_locked = true,
 		unlock_desc_id = "menu_asset_bodybags_bag_desc",
@@ -300,6 +301,7 @@ function AssetsTweakData:_init_assets(tweak_data)
 			"spa",
 			"glace",
 			"run",
+			"dah",
 			"wwh"
 		},
 		visible_if_locked = true,
@@ -345,6 +347,7 @@ function AssetsTweakData:_init_assets(tweak_data)
 			"spa",
 			"glace",
 			"run",
+			"dah",
 			"wwh"
 		},
 		visible_if_locked = true,
@@ -387,6 +390,7 @@ function AssetsTweakData:_init_assets(tweak_data)
 			"spa",
 			"glace",
 			"run",
+			"dah",
 			"wwh"
 		},
 		visible_if_locked = true,

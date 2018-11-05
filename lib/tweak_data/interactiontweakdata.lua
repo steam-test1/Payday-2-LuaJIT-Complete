@@ -4885,5 +4885,77 @@ function InteractionTweakData:init(tweak_data)
 		timer = 1,
 		interact_distance = 100
 	}
+	self.hack_dah_jammed_x = deep_clone(self.hack_suburbia_jammed)
+	self.hack_dah_jammed_x.axis = "x"
+	self.diamond_pickup_3sec = {
+		icon = "interaction_diamond",
+		text_id = "hud_int_take_diamond",
+		action_text_id = "hud_action_taking_diamond",
+		sound_event = "money_grab",
+		start_active = false,
+		timer = 3,
+		requires_mask_off_upgrade = {
+			upgrade = "mask_off_pickup",
+			category = "player"
+		}
+	}
+	self.diamonds_pickup = {
+		icon = "interaction_diamond",
+		text_id = "hud_int_take_diamonds_dah",
+		action_text_id = "hud_action_taking_diamonds_dah",
+		sound_event = "money_grab",
+		start_active = false,
+		timer = 3,
+		axis = "y",
+		requires_mask_off_upgrade = {
+			upgrade = "mask_off_pickup",
+			category = "player"
+		}
+	}
+	self.red_diamond_pickup = {
+		icon = "interaction_diamond",
+		text_id = "hud_int_take_red_diamond",
+		action_text_id = "hud_action_taking_red_diamond",
+		sound_event = "money_grab",
+		start_active = false,
+		timer = 3,
+		axis = "x",
+		requires_mask_off_upgrade = {
+			upgrade = "mask_off_pickup",
+			category = "player"
+		}
+	}
+	self.red_diamond_pickup_no_axis = {
+		icon = "interaction_diamond",
+		text_id = "hud_int_take_red_diamond",
+		action_text_id = "hud_action_taking_red_diamond",
+		sound_event = "money_grab",
+		start_active = false,
+		timer = 3,
+		requires_mask_off_upgrade = {
+			upgrade = "mask_off_pickup",
+			category = "player"
+		}
+	}
+	self.dah_panicroom_keycard = {
+		text_id = "hud_int_open_panicroom",
+		action_text_id = "hud_action_open_panicroom",
+		equipment_text_id = "hud_int_equipment_no_keycard",
+		special_equipment = "bank_manager_key",
+		equipment_consume = true,
+		start_active = true,
+		timer = 0.5
+	}
+	self.diamond_pickup_axis = {
+		icon = "interaction_diamond",
+		text_id = "hud_int_take_jewelry",
+		sound_event = "money_grab",
+		axis = "y",
+		start_active = false,
+		requires_mask_off_upgrade = {
+			upgrade = "mask_off_pickup",
+			category = "player"
+		}
+	}
 end
 

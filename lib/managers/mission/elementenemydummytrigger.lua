@@ -22,3 +22,6 @@ function ElementEnemyDummyTrigger:on_executed(instigator)
 	ElementEnemyDummyTrigger.super.on_executed(self, instigator)
 end
 
+function ElementEnemyDummyTrigger:load()
+end
+

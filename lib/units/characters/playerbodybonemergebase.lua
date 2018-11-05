@@ -6,6 +6,27 @@ function PlayerBodyBoneMergeBase:init(unit)
 	self._visibility_state = true
 	self._allow_invisible = true
 	self._is_in_original_material = true
+	self._lifetime = 0
+end
+
+function PlayerBodyBoneMergeBase:on_unit_link_successful(parent_unit)
+	self._parent_unit = parent_unit
+
+	if self.bonemerge_success_sequence then
+		self._unit:set_extension_update_enabled(Idstring("base"), true)
+	end
+end
+
+function PlayerBodyBoneMergeBase:update(unit, t, dt)
+	self._lifetime = self._lifetime + dt
+
+	if self._lifetime > 3 then
+		if self._parent_unit and self._parent_unit:damage() and self._parent_unit:damage():has_sequence(self.bonemerge_success_sequence) then
+			self._parent_unit:damage():run_sequence_simple(self.bonemerge_success_sequence)
+		end
+
+		self._unit:set_extension_update_enabled(Idstring("base"), false)
+	end
 end
 
 function PlayerBodyBoneMergeBase:char_tweak()

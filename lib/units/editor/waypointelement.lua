@@ -42,16 +42,24 @@ function WaypointUnitElement:init(unit)
 	table.insert(self._save_values, "only_in_civilian")
 end
 
+function WaypointUnitElement:_add_text_options_from_file(path)
+	local xml = SystemFS:parse_xml(Application:base_path() .. "../../assets/" .. path)
+
+	if xml then
+		for child in xml:children() do
+			local s_id = child:parameter("id")
+
+			if string.find(s_id, "wp_") then
+				table.insert(self._text_options, s_id)
+			end
+		end
+	end
+end
+
 function WaypointUnitElement:_add_wp_options()
 	self._text_options = {"debug_none"}
 
-	for _, id_string in ipairs(managers.localization:ids("strings/system_text")) do
-		local s = id_string:s()
-
-		if string.find(s, "wp_") then
-			table.insert(self._text_options, s)
-		end
-	end
+	self:_add_text_options_from_file("strings/system_text.strings")
 end
 
 function WaypointUnitElement:_set_text()

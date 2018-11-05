@@ -64,24 +64,25 @@ end
 function AccessCameraUnitElement:update_editing()
 end
 
+function AccessCameraUnitElement:_add_text_options_from_file(path)
+	local xml = SystemFS:parse_xml(Application:base_path() .. "../../assets/" .. path)
+
+	if xml then
+		for child in xml:children() do
+			local s_id = child:parameter("id")
+
+			if string.find(s_id, "cam_") then
+				table.insert(self._text_options, s_id)
+			end
+		end
+	end
+end
+
 function AccessCameraUnitElement:_add_text_options()
 	self._text_options = {"debug_none"}
 
-	for _, id_string in ipairs(managers.localization:ids("strings/hud")) do
-		local s = id_string:s()
-
-		if string.find(s, "cam_") then
-			table.insert(self._text_options, s)
-		end
-	end
-
-	for _, id_string in ipairs(managers.localization:ids("strings/wip")) do
-		local s = id_string:s()
-
-		if string.find(s, "cam_") then
-			table.insert(self._text_options, s)
-		end
-	end
+	self:_add_text_options_from_file("strings/hud.strings")
+	self:_add_text_options_from_file("strings/wip.strings")
 end
 
 function AccessCameraUnitElement:_set_text()

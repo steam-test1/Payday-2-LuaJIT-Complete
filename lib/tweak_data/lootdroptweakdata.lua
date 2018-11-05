@@ -1519,6 +1519,22 @@ function LootDropTweakData:init(tweak_data)
 		sort_number = 300,
 		category = "dlc"
 	}
+	self.global_values.pbm = {
+		name_id = "bm_global_value_pbm",
+		desc_id = "menu_l_global_value_pbm",
+		unlock_id = "bm_global_value_pbm_unlock",
+		color = event_color,
+		dlc = true,
+		chance = 1,
+		value_multiplier = tweak_data:get_value("money_manager", "global_value_multipliers", "pbm"),
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 87,
+		hide_unavailable = true,
+		category = "global_event",
+		ignore_ulti = true
+	}
 	self.global_values.dnm = {
 		name_id = "bm_global_value_dnm",
 		desc_id = "menu_l_global_value_dnm",
@@ -1633,6 +1649,7 @@ function LootDropTweakData:init(tweak_data)
 		"dgm",
 		"fdm",
 		"cmo",
+		"pbm",
 		"eng"
 	}
 

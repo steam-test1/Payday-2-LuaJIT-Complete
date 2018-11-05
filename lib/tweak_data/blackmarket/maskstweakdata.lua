@@ -4992,6 +4992,17 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		sort_number = 29,
 		texture_bundle_folder = "dnm"
 	}
+	self.masks.pbm = {
+		unit = "units/pd2_dlc_pbm/masks/msk_pbm",
+		name_id = "bm_msk_pbm",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "pbm",
+		sort_number = 57,
+		type = "helmet",
+		dlc = "pbm",
+		global_value = "pbm"
+	}
 	self.masks.kwm = {
 		unit = "units/pd2_dlc_kwm/masks/msk_kwm",
 		name_id = "bm_msk_kwm",

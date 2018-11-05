@@ -1387,7 +1387,8 @@ Play the full version soon to get your full PAYDAY!]],
 		keycard_outlined = {unit = Idstring("units/pd2_dlc_red/pickups/gen_pku_keycard_outlined/gen_pku_keycard_outlined")},
 		keycard_standard_outlined = {unit = Idstring("units/payday2/pickups/gen_pku_keycard_standard_outline/gen_pku_keycard_standard_outline")},
 		hotel_room_key = {unit = Idstring("units/pd2_dlc_casino/props/cas_prop_keycard/cas_prop_keycard")},
-		pku_rambo = {unit = Idstring("units/pd2_dlc_jolly/pickups/gen_pku_rambo/gen_pku_rambo")}
+		pku_rambo = {unit = Idstring("units/pd2_dlc_jolly/pickups/gen_pku_rambo/gen_pku_rambo")},
+		keycard_outlined_waypoint = {unit = Idstring("units/pd2_dlc_red/pickups/gen_pku_keycard_outlined_waypoint/gen_pku_keycard_outlined_waypoint")}
 	}
 	self.danger_zones = {
 		0.6,
@@ -1589,6 +1590,7 @@ Play the full version soon to get your full PAYDAY!]],
 		{track = "track_52"},
 		{track = "track_53"},
 		{track = "track_54"},
+		{track = "track_55"},
 		{track = "track_32_lcv"},
 		{track = "track_33_lcv"},
 		{track = "track_34_lcv"},

@@ -846,6 +846,7 @@ function CopActionHurt:_pseudorandom(a, b)
 	end
 
 	local t = math.floor(ht * mult + 0.5) / mult
+	local r = math.random() * 999 + 1
 	local uid = self._unit:id()
 	local seed = (uid ^ (t / 183.62) * 100) % 100000
 
@@ -854,9 +855,9 @@ function CopActionHurt:_pseudorandom(a, b)
 	local ret = nil
 	ret = a and b and math.random(a, b) or a and math.random(a) or math.random()
 
-	math.randomseed(math.ceil(math.floor(os.time() * 0.01) / ret))
+	math.randomseed(os.time() / r + Application:time())
 
-	for i = 1, 5, 1 do
+	for i = 1, math.round(math.random() * 10), 1 do
 		math.random()
 	end
 

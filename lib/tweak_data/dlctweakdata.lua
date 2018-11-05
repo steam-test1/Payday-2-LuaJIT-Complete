@@ -84,6 +84,7 @@ function DLCTweakData:init(tweak_data)
 			animal = true,
 			gage_pack_assault = true,
 			character_pack_sokol = true,
+			pbm = true,
 			sha = true,
 			character_pack_clover = true,
 			twitch_pack = 1
@@ -5995,6 +5996,16 @@ function DLCTweakData:init(tweak_data)
 			amount = 1
 		}
 	}
+	self.pbm_bundle = {
+		dlc = "has_pbm",
+		content = {}
+	}
+	self.pbm_bundle.content.loot_global_value = "pbm"
+	self.pbm_bundle.content.loot_drops = {{
+		type_items = "masks",
+		item_entry = "pbm",
+		amount = 1
+	}}
 	self.dnm = {
 		free = true,
 		content = {}

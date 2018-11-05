@@ -8526,7 +8526,8 @@ function WeaponFactoryTweakData:_init_judge()
 			"wpn_fps_pis_judge_g_legend",
 			"wpn_fps_upg_o_spot",
 			"wpn_fps_upg_ns_duck",
-			"wpn_fps_upg_o_xpsg33_magnifier"
+			"wpn_fps_upg_o_xpsg33_magnifier",
+			"wpn_fps_pis_judge_body_modern"
 		}
 	}
 	self.wpn_fps_pis_judge_npc = deep_clone(self.wpn_fps_pis_judge)
@@ -30031,6 +30032,31 @@ function WeaponFactoryTweakData:_init_icc()
 			fire_steelsight = "recoil"
 		},
 		third_unit = "units/pd2_dlc_icc/weapons/wpn_fps_pis_beretta_body_modern/wpn_third_pis_beretta_body_modern"
+	}
+	self.parts.wpn_fps_pis_judge_body_modern = {
+		texture_bundle_folder = "icc",
+		a_obj = "a_body",
+		type = "lower_reciever",
+		is_event_mod = "bm_wp_judge_body_modern_locked",
+		name_id = "bm_wp_judge_body_modern",
+		unit = "units/pd2_dlc_icc/weapons/wpn_fps_pis_judge_body_modern/wpn_fps_pis_judge_body_modern",
+		pcs = {},
+		stats = {value = 1},
+		forbids = {
+			"wpn_fps_addon_ris",
+			"wpn_fps_pis_judge_fl_adapter"
+		},
+		animations = {
+			reload_not_empty = "reload_not_empty",
+			reload = "reload",
+			fire_steelsight = "recoil",
+			fire = "recoil"
+		},
+		override = {wpn_fps_pis_judge_g_standard = {
+			third_unit = "units/pd2_dlc_icc/weapons/wpn_fps_pis_judge_body_modern/wpn_third_pis_judge_g_modern",
+			unit = "units/pd2_dlc_icc/weapons/wpn_fps_pis_judge_body_modern/wpn_fps_pis_judge_g_modern"
+		}},
+		third_unit = "units/pd2_dlc_icc/weapons/wpn_fps_pis_judge_body_modern/wpn_third_pis_judge_body_modern"
 	}
 end
 

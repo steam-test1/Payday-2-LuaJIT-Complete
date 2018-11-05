@@ -107,6 +107,7 @@ function MoneyTweakData:init(tweak_data)
 		expensive_vine = 2875,
 		ordinary_wine = 2875,
 		robot_toy = 2875,
+		red_diamond = 10000,
 		old_wine = 2000
 	}
 	self.bag_value_multiplier = self._create_value_table(((self.cut_lootbag_bonus / 5) / self.offshore_rate) / self.bag_values.default, (self.cut_lootbag_bonus / self.offshore_rate) / self.bag_values.default, 7, true, 0.85)
@@ -265,7 +266,8 @@ function MoneyTweakData:init(tweak_data)
 		dgm = 1,
 		raidww2_clan = 1,
 		fdm = 0,
-		eng = 1
+		eng = 1,
+		pbm = 0
 	}
 	self.global_value_bonus_multiplier = {
 		normal = 0,
@@ -356,7 +358,8 @@ function MoneyTweakData:init(tweak_data)
 		dgm = 1,
 		raidww2_clan = 1,
 		fdm = 1,
-		eng = 1
+		eng = 1,
+		pbm = 1
 	}
 	local smallest_cashout = (self.stage_completion[1] + self.job_completion[1]) * self.offshore_rate
 	local biggest_mask_cost = self.biggest_cashout * 40

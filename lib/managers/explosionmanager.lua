@@ -382,7 +382,13 @@ function ExplosionManager:detect_and_give_dmg(params)
 			damage = dmg * math.pow(math.clamp(1 - len / range, 0, 1), curve_pow)
 
 			if apply_dmg then
-				self:_apply_body_damage(true, hit_body, user_unit, dir, damage)
+				local prop_damage = damage
+
+				if 1 - len / range < -5 then
+					prop_damage = math.max(damage, 1)
+				end
+
+				self:_apply_body_damage(true, hit_body, user_unit, dir, prop_damage)
 			end
 
 			damage = math.max(damage, 1)

@@ -2112,7 +2112,7 @@ function GroupAIStateBesiege:flee_point(start_nav_seg)
 	until #to_search_areas == 0
 end
 
-function GroupAIStateBesiege:safe_flee_point(start_nav_seg)
+function GroupAIStateBesiege:safe_flee_point(start_nav_seg, ignore_segs)
 	local start_area = self:get_area_from_nav_seg_id(start_nav_seg)
 
 	if next(start_area.criminal.units) then
@@ -2128,14 +2128,16 @@ function GroupAIStateBesiege:safe_flee_point(start_nav_seg)
 		if search_area.flee_points and next(search_area.flee_points) then
 			local flee_point_id, flee_point = next(search_area.flee_points)
 
-			return flee_point
-		else
-			for other_area_id, other_area in pairs(search_area.neighbours) do
-				if not found_areas[other_area] and not next(other_area.criminal.units) then
-					table.insert(to_search_areas, other_area)
+			if not ignore_segs or not table.contains(ignore_segs, flee_point.nav_seg) then
+				return flee_point
+			end
+		end
 
-					found_areas[other_area] = true
-				end
+		for other_area_id, other_area in pairs(search_area.neighbours) do
+			if not found_areas[other_area] and not next(other_area.criminal.units) then
+				table.insert(to_search_areas, other_area)
+
+				found_areas[other_area] = true
 			end
 		end
 	until #to_search_areas == 0

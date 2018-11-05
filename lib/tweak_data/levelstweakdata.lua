@@ -1528,6 +1528,25 @@ function LevelsTweakData:init()
 		equipment = {"saw"},
 		player_sequence = "spawn_prop_raincoat"
 	}
+	self.dah = {
+		name_id = "heist_dah_hl",
+		briefing_id = "heist_dah_briefing",
+		package = "packages/lvl_dah",
+		briefing_dialog = "Play_pln_dah_brf",
+		world_name = "narratives/classics/dah",
+		intro_event = "Play_pln_dah_intro",
+		outro_event = {
+			"Play_pln_dah_end_stealth",
+			"Play_pln_dah_end_loud"
+		},
+		music = "heist",
+		cube = "cube_apply_heist_bank",
+		max_bags = 20,
+		ghost_bonus = 0.1,
+		ai_group_type = america,
+		player_sequence = "spawn_prop_sneak_suit",
+		load_screen = "guis/dlcs/pic/textures/loading/job_diamond_heist_df"
+	}
 	self.wwh = {
 		name_id = "heist_wwh_hl",
 		briefing_id = "heist_wwh_briefing",
@@ -1638,6 +1657,7 @@ function LevelsTweakData:init()
 		"fish",
 		"run",
 		"glace",
+		"dah",
 		"wwh"
 	}
 

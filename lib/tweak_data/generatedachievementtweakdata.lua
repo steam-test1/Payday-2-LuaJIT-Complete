@@ -10827,6 +10827,131 @@ function init_auto_generated_achievement_data(tags)
 				tags.contracts.the_continental
 			}
 		},
+		dah_1 = {
+			icon_id = "C_Bain_H_DiamondHesit_AllDiffs_D0",
+			ladder = "H_DiamondHeist",
+			sort_name = "C_Classics_H_DiamondHesit_AllDiffs_D0",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.classic
+			}
+		},
+		dah_10 = {
+			additional_id = true,
+			sort_name = "C_Classics_H_DiamondHesit_DeadChange_D0",
+			icon_id = "C_Bain_H_DiamondHesit_DeadChange_D0",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.contracts.classic
+			}
+		},
+		dah_2 = {
+			icon_id = "C_Bain_H_DiamondHesit_AllDiffs_D1",
+			ladder = "H_DiamondHeist",
+			sort_name = "C_Classics_H_DiamondHesit_AllDiffs_D1",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.hard,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.classic
+			}
+		},
+		dah_3 = {
+			icon_id = "C_Bain_H_DiamondHesit_AllDiffs_D2",
+			ladder = "H_DiamondHeist",
+			sort_name = "C_Classics_H_DiamondHesit_AllDiffs_D2",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.very_hard,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.classic
+			}
+		},
+		dah_4 = {
+			icon_id = "C_Bain_H_DiamondHesit_AllDiffs_D3",
+			ladder = "H_DiamondHeist",
+			sort_name = "C_Classics_H_DiamondHesit_AllDiffs_D3",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.classic
+			}
+		},
+		dah_5 = {
+			icon_id = "C_Bain_H_DiamondHesit_AllDiffs_D4",
+			ladder = "H_DiamondHeist",
+			sort_name = "C_Classics_H_DiamondHesit_AllDiffs_D4",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.mayhem,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.classic
+			}
+		},
+		dah_6 = {
+			icon_id = "C_Bain_H_DiamondHesit_AllDiffs_D5",
+			ladder = "H_DiamondHeist",
+			sort_name = "C_Classics_H_DiamondHesit_AllDiffs_D5",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_wish,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.classic
+			}
+		},
+		dah_7 = {
+			icon_id = "C_Bain_H_DiamondHesit_AllDiffs_D6",
+			ladder = "H_DiamondHeist",
+			sort_name = "C_Classics_H_DiamondHesit_AllDiffs_D6",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.one_down,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.classic
+			}
+		},
+		dah_8 = {
+			sort_name = "C_Classics_H_DiamondHesit_TheHuntfor_D3",
+			icon_id = "C_Bain_H_DiamondHesit_TheHuntfor_D3",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.classic
+			}
+		},
+		dah_9 = {
+			additional_id = true,
+			sort_name = "C_Classics_H_DiamondHesit_BloodDia_D3",
+			icon_id = "C_Bain_H_DiamondHesit_BloodDia_D3",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.classic
+			}
+		},
 		wwh_1 = {
 			icon_id = "C_Locke_H_AlsDeal_AllDiffs_D0",
 			ladder = "H_Alaskan",

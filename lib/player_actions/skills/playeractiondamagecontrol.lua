@@ -26,6 +26,12 @@ PlayerAction.DamageControl.Function = function ()
 	local function shrug_off_damage()
 		local player_damage = managers.player:player_unit():character_damage()
 		local remaining_damage = player_damage:clear_delayed_damage()
+		local is_downed = game_state_machine:verify_game_state(GameStateFilters.downed)
+		local swan_song_active = managers.player:has_activate_temporary_upgrade("temporary", "berserker_damage_multiplier")
+
+		if is_downed or swan_song_active then
+			return
+		end
 
 		if shrug_healing then
 			player_damage:restore_health(remaining_damage * shrug_healing, true)

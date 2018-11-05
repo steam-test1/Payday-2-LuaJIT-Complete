@@ -199,6 +199,7 @@ require("lib/units/props/ZipLine")
 require("lib/units/props/TextTemplateBase")
 require("lib/units/props/ExplodingProp")
 require("lib/units/props/SafehouseVaultMoneyStacks")
+require("lib/units/characters/PlayerBodyBoneMergeBase")
 require("lib/managers/menu/FadeoutGuiObject")
 require("lib/units/cameras/CinematicStateCamera")
 

@@ -5236,8 +5236,11 @@ function PlayerManager:attempt_ability(ability)
 	end
 
 	local local_peer_id = managers.network:session():local_peer():id()
+	local has_no_grenades = self:get_grenade_amount(local_peer_id) == 0
+	local is_downed = game_state_machine:verify_game_state(GameStateFilters.downed)
+	local swan_song_active = managers.player:has_activate_temporary_upgrade("temporary", "berserker_damage_multiplier")
 
-	if self:get_grenade_amount(local_peer_id) == 0 then
+	if has_no_grenades or is_downed or swan_song_active then
 		return
 	end
 

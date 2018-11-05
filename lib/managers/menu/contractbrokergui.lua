@@ -663,10 +663,11 @@ function ContractBrokerGui:perform_filter_time(value)
 	end
 end
 
-function ContractBrokerGui:perform_filter_tactic(value)
+function ContractBrokerGui:perform_filter_tactic(job_tweak, wrapped_tweak)
 	local allow = false
+	local chain = wrapped_tweak and wrapped_tweak.chain or job_tweak.chain
 
-	for _, data in ipairs(value.chain) do
+	for _, data in ipairs(chain) do
 		local level_data = tweak_data.levels[data.level_id]
 
 		if level_data then

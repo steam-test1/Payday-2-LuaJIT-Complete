@@ -1668,17 +1668,44 @@ end
 function HUDTeammate:set_deployable_equipment_amount_from_string(index, data)
 	local teammate_panel = self._panel:child("player")
 	local deployable_equipment_panel = self._player_panel:child("deployable_equipment_panel")
+	local icon = deployable_equipment_panel:child("equipment")
 	local amount = deployable_equipment_panel:child("amount")
-	local visible = false
+	local amounts = ""
+	local zero_ranges = {}
+	local color = Color(0.5, 1, 1, 1)
 
-	for i = 1, #data.amount, 1 do
-		if data.amount[i] > 0 then
-			visible = true
+	for i, amount in ipairs(data.amount) do
+		local amount_str = string.format("%01d", amount)
+
+		if i > 1 then
+			amounts = amounts .. "|"
+		end
+
+		if amount == 0 then
+			local current_length = string.len(amounts)
+
+			table.insert(zero_ranges, {
+				current_length,
+				current_length + string.len(amount_str)
+			})
+		end
+
+		amounts = amounts .. amount_str
+
+		if amount > 0 then
+			color = Color.white
 		end
 	end
 
-	deployable_equipment_panel:child("equipment"):set_visible(visible)
-	amount:set_text(data.amount_str)
+	icon:set_color(color)
+	icon:set_visible(true)
+	amount:set_text(amounts)
+	amount:set_color(color)
+	amount:set_visible(true)
+
+	for _, range in ipairs(zero_ranges) do
+		amount:set_range_color(range[1], range[2], Color(0.5, 1, 1, 1))
+	end
 end
 
 function HUDTeammate:set_grenades(data)
@@ -1686,7 +1713,12 @@ function HUDTeammate:set_grenades(data)
 		return
 	end
 
-	local icon, texture_rect = tweak_data.hud_icons:get_icon_data(data.icon)
+	local icon, texture_rect = tweak_data.hud_icons:get_icon_data(data.icon, {
+		0,
+		0,
+		32,
+		32
+	})
 	local grenades_panel = self._player_panel:child("grenades_panel")
 	local grenades_icon = grenades_panel:child("grenades_icon")
 	local grenades_icon_ghost = grenades_panel:child("grenades_icon_ghost")
@@ -1699,9 +1731,14 @@ end
 
 function HUDTeammate:set_ability_icon(icon)
 	local ability_icon = self._player_panel:child("radial_health_panel"):child("radial_ability"):child("ability_icon")
-	icon = tweak_data.hud_icons[icon]
+	local texture, texture_rect = tweak_data.hud_icons:get_icon_data(icon, {
+		0,
+		0,
+		32,
+		32
+	})
 
-	ability_icon:set_image(icon.texture, unpack(icon.texture_rect))
+	ability_icon:set_image(texture, unpack(texture_rect))
 end
 
 function HUDTeammate:set_grenade_cooldown(data)

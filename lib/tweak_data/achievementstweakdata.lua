@@ -2360,6 +2360,41 @@ function AchievementsTweakData:init(tweak_data)
 			job = "wwh",
 			difficulty = sm_wish_and_above
 		},
+		dah_1 = {
+			award = "dah_1",
+			job = "dah",
+			difficulty = normal_and_above
+		},
+		dah_2 = {
+			award = "dah_2",
+			job = "dah",
+			difficulty = hard_and_above
+		},
+		dah_3 = {
+			award = "dah_3",
+			job = "dah",
+			difficulty = veryhard_and_above
+		},
+		dah_4 = {
+			award = "dah_4",
+			job = "dah",
+			difficulty = overkill_and_above
+		},
+		dah_5 = {
+			award = "dah_5",
+			job = "dah",
+			difficulty = easywish_and_above
+		},
+		dah_6 = {
+			award = "dah_6",
+			job = "dah",
+			difficulty = deathwish_and_above
+		},
+		dah_7 = {
+			award = "dah_7",
+			job = "dah",
+			difficulty = sm_wish_and_above
+		},
 		trk_af_0 = {
 			award = "trk_af_0",
 			job = "jolly",
@@ -4003,7 +4038,8 @@ function AchievementsTweakData:init(tweak_data)
 				"pal",
 				"man",
 				"run",
-				"glace"
+				"glace",
+				"dah"
 			}
 		},
 		daily_discord = {
@@ -4353,6 +4389,15 @@ function AchievementsTweakData:init(tweak_data)
 				value = 1000000
 			}
 		},
+		dah_9 = {
+			award = "dah_9",
+			job = "dah",
+			difficulties = overkill_and_above,
+			secured = {
+				carry_id = "red_diamond",
+				amount = 1
+			}
+		},
 		trophy_tfturret = {
 			trophy_stat = "trophy_tfturret",
 			is_dropin = false,
@@ -4503,7 +4548,8 @@ function AchievementsTweakData:init(tweak_data)
 			"man",
 			"flat",
 			"run",
-			"glace"
+			"glace",
+			"dah"
 		},
 		locke = {
 			"pbr",

@@ -4534,6 +4534,66 @@ function NarrativeTweakData:init(tweak_data)
 		28000,
 		28000
 	}
+	self.stages.dah = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "dah"
+	}
+	self.jobs.dah = {
+		name_id = "heist_dah",
+		briefing_id = "heist_dah_crimenet",
+		contact = "classic",
+		region = "street",
+		jc = 30,
+		chain = {self.stages.dah},
+		briefing_event = "Play_pln_dah_cbf_01",
+		debrief_event = nil,
+		crimenet_callouts = {"Play_pln_dah_cnc_01"},
+		crimenet_videos = {"cn_branchbank1"},
+		payout = {
+			50000,
+			125000,
+			250000,
+			550000,
+			700000,
+			700000,
+			700000
+		},
+		contract_cost = {
+			24000,
+			48000,
+			120000,
+			240000,
+			300000,
+			300000,
+			300000
+		},
+		contract_visuals = {}
+	}
+	self.jobs.dah.contract_visuals.min_mission_xp = {
+		14200,
+		14200,
+		14200,
+		14200,
+		14200,
+		14200,
+		14200
+	}
+	self.jobs.dah.contract_visuals.max_mission_xp = {
+		23200,
+		23200,
+		23200,
+		23200,
+		23200,
+		23200,
+		23200
+	}
+	self.jobs.dah.contract_visuals.preview_image = {id = "dah"}
+	self.jobs.dah.date_added = {
+		2017,
+		10,
+		27
+	}
 	self.jobs.crime_spree = {
 		name_id = "heist_crime_spree",
 		briefing_id = "heist_crime_spree_brief",
@@ -4781,6 +4841,7 @@ function NarrativeTweakData:init(tweak_data)
 		"moon",
 		"run",
 		"glace",
+		"dah",
 		"crime_spree",
 		"wwh"
 	}
