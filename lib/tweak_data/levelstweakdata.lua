@@ -2,14 +2,17 @@ LevelsTweakData = LevelsTweakData or class()
 LevelsTweakData.LevelType = {}
 LevelsTweakData.LevelType.America = "america"
 LevelsTweakData.LevelType.Russia = "russia"
+LevelsTweakData.LevelType.Zombie = "zombie"
 
 function LevelsTweakData:init()
 	local america = LevelsTweakData.LevelType.America
 	local russia = LevelsTweakData.LevelType.Russia
+	local zombie = LevelsTweakData.LevelType.Zombie
 	self.ai_groups = {
 		default = america,
 		america = america,
-		russia = russia
+		russia = russia,
+		zombie = zombie
 	}
 	self.framing_frame_1 = {
 		name_id = "heist_framing_frame_1_hl",
@@ -1499,6 +1502,20 @@ function LevelsTweakData:init()
 		max_bags = 9999,
 		ai_group_type = america
 	}
+	self.haunted = {
+		name_id = "heist_haunted_hl",
+		briefing_id = "heist_haunted_briefing",
+		world_name = "narratives/haunted_safehouse",
+		intro_event = "Play_hw13_intro",
+		outro_event = {
+			"lol",
+			"lolo"
+		},
+		music = "heist",
+		package = "packages/narr_haunted",
+		cube = "cube_apply_heist_bank",
+		max_bags = 4
+	}
 	self.run = {
 		name_id = "heist_run_hl",
 		briefing_id = "heist_run_briefing",
@@ -1546,6 +1563,23 @@ function LevelsTweakData:init()
 		ai_group_type = america,
 		player_sequence = "spawn_prop_sneak_suit",
 		load_screen = "guis/dlcs/pic/textures/loading/job_diamond_heist_df"
+	}
+	self.hvh = {
+		name_id = "heist_hvh_hl",
+		briefing_id = "heist_hvh_briefing",
+		package = "packages/narr_hvh",
+		briefing_dialog = "Play_hvh_brf_01",
+		world_name = "narratives/bain/hvh",
+		intro_event = "Play_hvh_intro_01",
+		outro_event = {
+			"lol",
+			"lolo"
+		},
+		music = "heist",
+		cube = "cube_apply_heist_bank",
+		max_bags = 80,
+		ai_group_type = zombie,
+		load_screen = "guis/dlcs/pic/textures/loading/job_halloween2017"
 	}
 	self.wwh = {
 		name_id = "heist_wwh_hl",
@@ -1652,12 +1686,14 @@ function LevelsTweakData:init()
 		"friend",
 		"flat",
 		"help",
+		"haunted",
 		"moon",
 		"spa",
 		"fish",
 		"run",
 		"glace",
 		"dah",
+		"hvh",
 		"wwh"
 	}
 

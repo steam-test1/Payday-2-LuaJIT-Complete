@@ -4534,6 +4534,65 @@ function NarrativeTweakData:init(tweak_data)
 		28000,
 		28000
 	}
+	self.stages.haunted = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "haunted"
+	}
+	self.jobs.haunted = {
+		name_id = "heist_haunted",
+		briefing_id = "heist_haunted_crimenet",
+		contact = "events",
+		region = "street",
+		jc = 10,
+		chain = {self.stages.haunted},
+		load_screen = "guis/dlcs/pic/textures/loading/old_safehouse_halloween_df",
+		briefing_event = nil,
+		debrief_event = nil,
+		crimenet_videos = {
+			"cn_branchbank1",
+			"cn_branchbank2",
+			"cn_branchbank3"
+		},
+		payout = {
+			20000,
+			30000,
+			40000,
+			70000,
+			80000,
+			90000,
+			100000
+		},
+		contract_cost = {
+			16000,
+			32000,
+			80000,
+			160000,
+			200000,
+			240000,
+			280000
+		},
+		is_halloween_level = true,
+		contract_visuals = {}
+	}
+	self.jobs.haunted.contract_visuals.min_mission_xp = {
+		10000,
+		10000,
+		10000,
+		10000,
+		10000,
+		10000,
+		10000
+	}
+	self.jobs.haunted.contract_visuals.max_mission_xp = {
+		10000,
+		10000,
+		10000,
+		10000,
+		10000,
+		10000,
+		10000
+	}
 	self.stages.dah = {
 		type = "d",
 		type_id = "heist_type_assault",
@@ -4654,6 +4713,71 @@ function NarrativeTweakData:init(tweak_data)
 	}
 	self.jobs.crime_spree.ignore_heat = true
 	self.jobs.crime_spree.hidden = true
+	self.stages.hvh = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "hvh"
+	}
+	self.jobs.hvh = {
+		name_id = "heist_hvh",
+		briefing_id = "heist_hvh_crimenet",
+		package = "packages/narr_hvh",
+		contact = "events",
+		region = "street",
+		jc = 30,
+		chain = {self.stages.hvh},
+		briefing_event = "hvh_cbf_01",
+		debrief_event = nil,
+		crimenet_callouts = {"hvh_cnc_01"},
+		crimenet_videos = {
+			"cn_jewel1",
+			"cn_jewel2",
+			"cn_jewel3"
+		},
+		payout = {
+			20000,
+			30000,
+			40000,
+			70000,
+			80000,
+			80000,
+			80000
+		},
+		contract_cost = {
+			16000,
+			32000,
+			80000,
+			160000,
+			200000,
+			200000,
+			200000
+		},
+		is_halloween_level = true,
+		contract_visuals = {}
+	}
+	self.jobs.hvh.contract_visuals.min_mission_xp = {
+		2000,
+		2000,
+		2000,
+		2000,
+		2000,
+		2000,
+		2000
+	}
+	self.jobs.hvh.contract_visuals.max_mission_xp = {
+		60000,
+		60000,
+		60000,
+		60000,
+		60000,
+		60000,
+		60000
+	}
+	self.jobs.hvh.date_added = {
+		2017,
+		10,
+		31
+	}
 	self.stages.wwh = {
 		type = "d",
 		type_id = "heist_type_assault",
@@ -4767,6 +4891,7 @@ function NarrativeTweakData:init(tweak_data)
 	self.jobs.shoutout_raid.contract_visuals.preview_image = {id = "meltdown"}
 	self.jobs.nail.contract_visuals.preview_image = {id = "labrats"}
 	self.jobs.help.contract_visuals.preview_image = {id = "prison_nightmare"}
+	self.jobs.hvh.contract_visuals.preview_image = {id = "halloween2017"}
 	self.jobs.red2.contract_visuals.preview_image = {id = "fwb"}
 	self.jobs.glace.contract_visuals.preview_image = {id = "green_bridge"}
 	self.jobs.run.contract_visuals.preview_image = {id = "heat_street"}
@@ -4774,6 +4899,7 @@ function NarrativeTweakData:init(tweak_data)
 	self.jobs.dinner.contract_visuals.preview_image = {id = "slaughterhouse"}
 	self.jobs.pal.contract_visuals.preview_image = {id = "counterfeit"}
 	self.jobs.man.contract_visuals.preview_image = {id = "undercover"}
+	self.jobs.haunted.contract_visuals = {preview_image = {id = "safehouse_old"}}
 	self._jobs_index = {
 		"jewelry_store",
 		"four_stores",
@@ -4836,6 +4962,7 @@ function NarrativeTweakData:init(tweak_data)
 		"friend",
 		"flat",
 		"help",
+		"haunted",
 		"spa",
 		"fish",
 		"moon",
@@ -4843,6 +4970,7 @@ function NarrativeTweakData:init(tweak_data)
 		"glace",
 		"dah",
 		"crime_spree",
+		"hvh",
 		"wwh"
 	}
 

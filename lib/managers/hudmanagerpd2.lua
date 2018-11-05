@@ -1085,6 +1085,10 @@ function HUDManager:feed_heist_time(time)
 	self._hud_heist_timer:set_time(time)
 end
 
+function HUDManager:modify_heist_time(time)
+	self._hud_heist_timer:modify_time(time)
+end
+
 function HUDManager:_create_temp_hud(hud)
 	hud = hud or managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
 	self._hud_temp = HUDTemp:new(hud)

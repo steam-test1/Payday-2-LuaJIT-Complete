@@ -3345,12 +3345,13 @@ function EnduranceElement:init(node, unit_element)
 
 	self._can_skip = self:get("can_skip")
 	self._can_skip = self._can_skip and self._can_skip(SequenceEnvironment)
+	self._players_only = self:get("players_only")
 	self._next = {}
 	self._endurance = {}
 	self._abs = {}
 
 	for k, v in pairs(self._parameters) do
-		if k ~= "can_skip" and string.sub(k, -4) ~= "_abs" then
+		if k ~= "can_skip" and k ~= "players_only" and string.sub(k, -4) ~= "_abs" then
 			self._endurance[k] = self:get(k)
 			self._endurance[k] = self._endurance[k] and self._endurance[k](SequenceEnvironment)
 
@@ -3389,6 +3390,14 @@ end
 
 function EnduranceElement:damage(env)
 	local new_damage = env.damage - self._abs[env.damage_type]
+
+	if self._players_only then
+		local attacker_id = managers.criminals:character_peer_id_by_unit(env.src_unit)
+
+		if not attacker_id then
+			return
+		end
+	end
 
 	if new_damage >= 0 then
 		local extension = env.dest_body:extension().damage

@@ -3698,6 +3698,16 @@ function AchievementsTweakData:init(tweak_data)
 			crime_spree = true,
 			challenge_stat = "challenge_crime_spree"
 		},
+		challenge_walking_nightmare = {
+			need_full_job = true,
+			challenge_award = "challenge_walking_nightmare",
+			jobs = {
+				"pines",
+				"cane",
+				"moon"
+			},
+			mutators = {"MutatorTitandozers"}
+		},
 		challenge_clone_1 = {
 			challenge_award = "challenge_clone_1",
 			need_full_job = true,

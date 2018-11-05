@@ -36,7 +36,14 @@ function HUDHeistTimer:init(hud, tweak_hud)
 end
 
 function HUDHeistTimer:set_time(time)
-	if not self._enabled or math.floor(time) < self._last_time then
+	local inverted = false
+
+	if time < 0 then
+		inverted = true
+		time = math.abs(time)
+	end
+
+	if not self._enabled or not inverted and math.floor(time) < self._last_time then
 		return
 	end
 
@@ -51,6 +58,10 @@ function HUDHeistTimer:set_time(time)
 	local text = text .. (minutes < 10 and "0" .. minutes or minutes) .. ":" .. (seconds < 10 and "0" .. seconds or seconds)
 
 	self._timer_text:set_text(text)
+end
+
+function HUDHeistTimer:modify_time(time)
+	self:set_time(self._last_time + time)
 end
 
 function HUDHeistTimer:reset()

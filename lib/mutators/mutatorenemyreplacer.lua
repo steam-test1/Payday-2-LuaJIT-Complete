@@ -357,4 +357,55 @@ function MutatorMediDozer:modify_unit_categories(group_ai_tweak, difficulty_inde
 		end
 	end
 end
+MutatorTitandozers = MutatorTitandozers or class(BaseMutator)
+MutatorTitandozers._type = "MutatorTitandozers"
+MutatorTitandozers.name_id = "mutator_titandozers"
+MutatorTitandozers.desc_id = "mutator_titandozers_desc"
+MutatorTitandozers.reductions = {
+	money = 0.25,
+	exp = 0.25
+}
+MutatorTitandozers.categories = {"enemies"}
+MutatorTitandozers.incompatibility_tags = {}
+MutatorTitandozers.icon_coords = {
+	1,
+	3
+}
+MutatorTitandozers.load_priority = -10
+
+function MutatorTitandozers:setup()
+	self._groups = self._groups or {}
+	local difficulty = Global.game_settings and Global.game_settings.difficulty or "normal"
+	local difficulty_index = tweak_data:difficulty_to_index(difficulty)
+
+	self:modify_unit_categories(tweak_data.group_ai, difficulty_index)
+end
+
+function MutatorTitandozers:modify_unit_categories(group_ai_tweak, difficulty_index)
+	group_ai_tweak.special_unit_spawn_limits.tank = math.huge
+	local unit_group = self:_get_unit_group_titandozer(difficulty_index)
+
+	for group, units_data in pairs(group_ai_tweak.unit_categories) do
+		if not table.contains(ignored_groups, group) and units_data.special_type == "tank" then
+			print("[Mutators] Replacing unit group:", group)
+
+			group_ai_tweak.unit_categories[group] = unit_group
+		end
+	end
+end
+
+function MutatorTitandozers:_get_unit_group_titandozer(difficulty_index)
+	if not self._groups.tank then
+		self._groups.tank = {
+			special_type = "tank",
+			unit_types = {
+				america = {Idstring("units/payday2/characters/ene_bulldozer_4/ene_bulldozer_4")},
+				russia = {Idstring("units/payday2/characters/ene_bulldozer_4/ene_bulldozer_4")}
+			},
+			access = access_type_all
+		}
+	end
+
+	return self._groups.tank
+end
 

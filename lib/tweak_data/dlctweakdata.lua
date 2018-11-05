@@ -683,6 +683,87 @@ function DLCTweakData:init(tweak_data)
 		item_entry = "satan",
 		amount = 1
 	}}
+	self.free_halloween_textures = {
+		free = true,
+		content = {}
+	}
+	self.free_halloween_textures.content.loot_global_value = "halloween"
+	self.free_halloween_textures.content.loot_drops = {
+		{
+			type_items = "textures",
+			item_entry = "pumpgrin",
+			amount = 1
+		},
+		{
+			type_items = "textures",
+			item_entry = "shout",
+			amount = 1
+		},
+		{
+			type_items = "textures",
+			item_entry = "webbed",
+			amount = 1
+		},
+		{
+			type_items = "textures",
+			item_entry = "hannibalistic",
+			amount = 1
+		},
+		{
+			type_items = "textures",
+			item_entry = "stitches",
+			amount = 1
+		},
+		{
+			type_items = "textures",
+			item_entry = "doomweaver",
+			amount = 1
+		}
+	}
+	self.halloween_nightmare_1 = {
+		dlc = "has_achievement",
+		achievement_id = "halloween_nightmare_1",
+		content = {}
+	}
+	self.halloween_nightmare_1.content.loot_global_value = "halloween"
+	self.halloween_nightmare_1.content.loot_drops = {{
+		type_items = "masks",
+		item_entry = "baby_happy",
+		amount = 1
+	}}
+	self.halloween_nightmare_2 = {
+		dlc = "has_achievement",
+		achievement_id = "halloween_nightmare_2",
+		content = {}
+	}
+	self.halloween_nightmare_2.content.loot_global_value = "halloween"
+	self.halloween_nightmare_2.content.loot_drops = {{
+		type_items = "masks",
+		item_entry = "brazil_baby",
+		amount = 1
+	}}
+	self.halloween_nightmare_3 = {
+		dlc = "has_achievement",
+		achievement_id = "halloween_nightmare_3",
+		content = {}
+	}
+	self.halloween_nightmare_3.content.loot_global_value = "halloween"
+	self.halloween_nightmare_3.content.loot_drops = {{
+		type_items = "masks",
+		item_entry = "baby_angry",
+		amount = 1
+	}}
+	self.halloween_nightmare_4 = {
+		dlc = "has_achievement",
+		achievement_id = "halloween_nightmare_4",
+		content = {}
+	}
+	self.halloween_nightmare_4.content.loot_global_value = "halloween"
+	self.halloween_nightmare_4.content.loot_drops = {{
+		type_items = "masks",
+		item_entry = "baby_cry",
+		amount = 1
+	}}
 	self.armored_transport = {content = {}}
 	self.armored_transport.content.loot_drops = {
 		{

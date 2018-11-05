@@ -5434,7 +5434,10 @@ function GroupAIStateBase:on_criminal_suspicion_progress(u_suspect, u_observer, 
 		return
 	end
 
-	if u_observer:brain() and u_observer:brain()._ignore_suspicion then
+	local ignore_suspicion = u_observer:brain() and u_observer:brain()._ignore_suspicion
+	local observer_is_dead = u_observer:character_damage() and u_observer:character_damage():dead()
+
+	if ignore_suspicion or observer_is_dead then
 		return
 	end
 

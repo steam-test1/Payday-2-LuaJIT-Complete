@@ -40,7 +40,8 @@ function MutatorsManager:init()
 		MutatorEnemyReplacer:new(self),
 		MutatorMediDozer:new(self),
 		MutatorCloakerEffect:new(self),
-		MutatorShieldDozers:new(self)
+		MutatorShieldDozers:new(self),
+		MutatorTitandozers:new(self)
 	}
 	self._active_mutators = {}
 	local activate = Global.mutators and Global.mutators.active_on_load

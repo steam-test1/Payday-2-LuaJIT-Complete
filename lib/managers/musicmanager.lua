@@ -379,6 +379,7 @@ function MusicManager:jukebox_default_tracks()
 		heist_haunted = "track_22",
 		heist_mad = "track_44",
 		heist_branchbank = "track_03",
+		heist_hvh = "track_56",
 		heist_red2 = "track_31",
 		heist_shoutout_raid = "track_28",
 		heist_hox1 = "track_20",

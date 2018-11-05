@@ -45,7 +45,6 @@ require("lib/tweak_data/StoryMissionsTweakData")
 require("lib/tweak_data/PromotionalMenusTweakData")
 require("lib/tweak_data/PromoUnlocksTweakData")
 require("lib/tweak_data/RaidJobsTweakData")
-require("lib/tweak_data/Crimefest2017JobsTweakData")
 
 TweakData = TweakData or class()
 
@@ -714,7 +713,6 @@ function TweakData:init()
 	self.story = StoryMissionsTweakData:new(self)
 	self.promo_unlocks = PromoUnlocksTweakData:new(self)
 	self.raid_jobs = RaidJobsTweakData:new(self)
-	self.crimefest_2017_jobs = Crimefest2017JobsTweakData:new(self)
 	self.ai_carry = {
 		throw_distance = 500,
 		throw_force = 100,
@@ -1591,6 +1589,7 @@ Play the full version soon to get your full PAYDAY!]],
 		{track = "track_53"},
 		{track = "track_54"},
 		{track = "track_55"},
+		{track = "track_56"},
 		{track = "track_32_lcv"},
 		{track = "track_33_lcv"},
 		{track = "track_34_lcv"},

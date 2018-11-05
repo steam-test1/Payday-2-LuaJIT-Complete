@@ -765,6 +765,10 @@ function UseInteractionExt:interact(player)
 		managers.challenge:award(self._challenge_award)
 	elseif self._sidejob_award then
 		managers.generic_side_jobs:award(self._sidejob_award)
+	elseif self.award_blackmarket then
+		local args = string.split(self.award_blackmarket, " ")
+
+		managers.blackmarket:add_to_inventory(unpack(args))
 	end
 
 	self:set_active(false)
@@ -796,6 +800,10 @@ function UseInteractionExt:sync_interacted(peer, player, status, skip_alive_chec
 			managers.challenge:award(self._challenge_award)
 		elseif self._sidejob_award then
 			managers.generic_side_jobs:award(self._sidejob_award)
+		elseif self.award_blackmarket then
+			local args = string.split(self.award_blackmarket, " ")
+
+			managers.blackmarket:add_to_inventory(unpack(args))
 		end
 	end
 

@@ -643,10 +643,28 @@ function GamePlayCentralManager:get_heist_timer()
 end
 
 function GamePlayCentralManager:start_heist_timer()
+	if self._heist_timer and self._heist_timer.inverted then
+		return
+	end
+
 	self._heist_timer.running = true
 	self._heist_timer.start_time = Application:time()
 	self._heist_timer.offset_time = 0
 	self._heist_timer.next_sync = Application:time() + 10
+end
+
+function GamePlayCentralManager:start_inverted_heist_timer(time)
+	self._heist_timer.running = true
+	self._heist_timer.start_time = Application:time() + time
+	self._heist_timer.offset_time = 0
+	self._heist_timer.next_sync = Application:time() + 10
+	self._heist_timer.inverted = true
+end
+
+function GamePlayCentralManager:modify_heist_timer(time)
+	self._heist_timer.start_time = self._heist_timer.start_time + time
+
+	managers.hud:modify_heist_time(time)
 end
 
 function GamePlayCentralManager:stop_heist_timer()
