@@ -3367,9 +3367,15 @@ function MissionBriefingGui:init(saferect_ws, fullrect_ws, node)
 
 	self._items = {}
 	local index = 1
-	local level_tweak = tweak_data.levels[managers.job:current_level_id()]
-	local narrator = level_tweak.narrator or "bain"
-	self._description_item = DescriptionItem:new(self._panel, utf8.to_upper(managers.localization:text("menu_description_" .. narrator)), index, self._node:parameters().menu_component_data.saved_descriptions)
+	local description_text_id = "menu_description"
+
+	if managers.job:has_active_job() then
+		local level_tweak = tweak_data.levels[managers.job:current_level_id()]
+		local narrator = level_tweak and level_tweak.narrator or "bain"
+		description_text_id = "menu_description_" .. narrator
+	end
+
+	self._description_item = DescriptionItem:new(self._panel, utf8.to_upper(managers.localization:text(description_text_id)), index, self._node:parameters().menu_component_data.saved_descriptions)
 
 	table.insert(self._items, self._description_item)
 

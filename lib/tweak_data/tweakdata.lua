@@ -2081,7 +2081,7 @@ Play the full version soon to get your full PAYDAY!]],
 		init_timer = 2.5,
 		mass_look_up_modifier = 1,
 		sound_event = "gl_explode",
-		sound_event_impact_duration = 0.25,
+		sound_event_impact_duration = 1,
 		name_id = "bm_launcher_incendiary",
 		burn_duration = 6,
 		burn_tick_period = 0.5
