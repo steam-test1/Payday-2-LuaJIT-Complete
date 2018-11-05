@@ -5091,6 +5091,16 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 			}
 		}
 	}
+	self.masks.ztm = {
+		unit = "units/pd2_dlc_ztm/masks/msk_ztm",
+		name_id = "bm_msk_ztm",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "ztm",
+		sort_number = 55,
+		dlc = "ztm",
+		global_value = "ztm"
+	}
 	self.masks.cmo_01 = {
 		unit = "units/pd2_dlc_cmo/masks/cmo_01/msk_cmo_01",
 		name_id = "bm_msk_cmo_01",

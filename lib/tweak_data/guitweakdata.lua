@@ -4967,22 +4967,32 @@ function GuiTweakData:init()
 		"category",
 		"bonus"
 	}
-	self.new_heists = {limit = 5}
+	self.new_heists = {limit = 4}
 
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_summer_sale_2018",
+		texture_path = "guis/textures/pd2/new_heists/summer_sale_2018",
+		url = "http://store.steampowered.com/app/218620/PAYDAY_2/"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_cat",
+		texture_path = "guis/textures/pd2/new_heists/cat",
+		url = "http://www.overkillsoftware.com/games/communitysafe7/"
+	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_sb_2018_thesecretisreallyreal",
 		texture_path = "guis/textures/pd2/new_heists/sb_2018_thesecretisreallyreal",
 		url = "http://www.overkillsoftware.com/archive/thesecretisreallyreal/"
 	})
 	table.insert(self.new_heists, {
-		name_id = "menu_nh_sb_2018_sale",
-		texture_path = "guis/textures/pd2/new_heists/sb_2018_sale",
-		url = "http://store.steampowered.com/app/218620/PAYDAY_2/"
-	})
-	table.insert(self.new_heists, {
 		name_id = "menu_nh_pd2vr_launch",
 		texture_path = "guis/textures/pd2/new_heists/pd2vr_launch",
 		url = "http://steamcommunity.com/games/218620/announcements/detail/1669019670888919416"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_sb_2018_sale",
+		texture_path = "guis/textures/pd2/new_heists/sb_2018_sale",
+		url = "http://store.steampowered.com/app/218620/PAYDAY_2/"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_ggez",

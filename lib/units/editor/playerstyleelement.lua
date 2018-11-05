@@ -27,7 +27,7 @@ function PlayerStyleElement:_build_panel(panel, panel_sizer)
 		sorted = true,
 		panel = panel,
 		sizer = style_sizer,
-		options = {"_scrubs"},
+		options = {"scrub"},
 		value = self._hed.style
 	}
 	local style = CoreEWS.combobox(self._style_params)

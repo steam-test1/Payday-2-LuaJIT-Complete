@@ -533,6 +533,10 @@ function GenericDLCManager:has_gcm()
 	return self:is_dlc_unlocked("gcm")
 end
 
+function GenericDLCManager:has_ztm()
+	return self:is_dlc_unlocked("ztm")
+end
+
 function GenericDLCManager:has_fdm()
 	return self:is_dlc_unlocked("fdm")
 end
@@ -1828,6 +1832,10 @@ function WINDLCManager:init()
 			},
 			dgm = {
 				app_id = "218620",
+				no_install = true
+			},
+			ztm = {
+				app_id = "735640",
 				no_install = true
 			},
 			raidww2_clan = {source_id = "103582791460014708"},

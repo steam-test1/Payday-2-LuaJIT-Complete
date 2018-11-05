@@ -266,22 +266,50 @@ function CriminalsManager:add_character(name, unit, peer_id, ai, ai_loadout)
 	self:event_listener():call("on_criminal_added", name, unit, peer_id, ai)
 	managers.sync:send_all_synced_units_to(peer_id)
 
+	local sequence = self:active_player_sequence()
+
+	if sequence and alive(unit) then
+		local unit_damage = unit:damage() or unit:camera() and unit:camera():camera_unit():damage()
+
+		if _G.IS_VR and unit:camera() then
+			unit_damage = nil
+		end
+
+		if unit_damage then
+			unit_damage:run_sequence_simple(sequence)
+		end
+	end
+end
+
+function CriminalsManager:set_active_player_sequence(sequence)
+	if sequence and self._player_sequence ~= sequence then
+		for _, char in ipairs(self:characters()) do
+			if alive(char.unit) then
+				local unit_damage = char.unit:damage() or char.unit:camera() and char.unit:camera():camera_unit():damage()
+
+				if _G.IS_VR and char.unit:camera() then
+					unit_damage = nil
+				end
+
+				if unit_damage then
+					unit_damage:run_sequence_simple(sequence)
+				end
+			end
+		end
+	end
+
+	self._player_sequence = sequence
+end
+
+function CriminalsManager:active_player_sequence()
+	if self._player_sequence then
+		return self._player_sequence
+	end
+
 	local current_level = managers.job and managers.job:current_level_id()
 
 	if current_level then
-		local sequence = tweak_data.levels[current_level] and tweak_data.levels[current_level].player_sequence
-
-		if sequence and alive(unit) then
-			local unit_damage = unit:damage() or unit:camera() and unit:camera():camera_unit():damage()
-
-			if _G.IS_VR and unit:camera() then
-				unit_damage = nil
-			end
-
-			if unit_damage then
-				unit_damage:run_sequence_simple(sequence)
-			end
-		end
+		return tweak_data.levels[current_level] and tweak_data.levels[current_level].player_sequence
 	end
 end
 

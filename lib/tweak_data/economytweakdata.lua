@@ -972,6 +972,41 @@ function EconomyTweakData:init()
 		contains = {weapon_skins = {"shrew_dss"}},
 		rarity = "legendary"
 	}
+	self.contents.cat_01 = {
+		def_id = 10054,
+		contains = {
+			weapon_skins = {
+				"mp7_cat",
+				"x_coal_cat",
+				"m16_cat",
+				"scar_cat",
+				"deagle_cat",
+				"p90_cat",
+				"ksg_cat",
+				"serbu_cat",
+				"x_judge_cat",
+				"new_mp5_cat",
+				"x_chinchilla_cat",
+				"boot_cat",
+				"erma_cat",
+				"x_usp_cat",
+				"usp_cat"
+			},
+			contents = {"cat_01_legendary"}
+		}
+	}
+	self.contents.cat_01_legendary = {
+		def_id = 10055,
+		contains = {weapon_skins = {"p226_cat"}},
+		rarity = "legendary"
+	}
+	self.bundles.cat_01 = {
+		def_id = 30007,
+		dlc_id = "892410",
+		quality = "mint",
+		bonus = false,
+		contains = {weapon_skins = table.list_add(self.contents.cat_01.contains.weapon_skins, self.contents.cat_01_legendary.contains.weapon_skins)}
+	}
 	self.safes.overkill_01 = {
 		def_id = 50000,
 		promo = true,
@@ -1242,6 +1277,16 @@ function EconomyTweakData:init()
 		texture_bundle_folder = "cash/safes/dss",
 		market_link = "https://steamcommunity.com/market/listings/218620/Duke%20Safe"
 	}
+	self.safes.cat_01 = {
+		free = true,
+		drill = "cat_01",
+		content = "cat_01",
+		bundle = "cat_01",
+		name_id = "bm_menu_safe_cat_01",
+		unit_name = "units/payday2_cash/safes/cat/safe/eco_safe_cat",
+		texture_bundle_folder = "cash/safes/cat",
+		market_link = "https://steamcommunity.com/market/listings/218620/Community%20Safe%207"
+	}
 	self.drills.overkill_01 = {
 		safe = "overkill_01",
 		def_id = 70000,
@@ -1422,6 +1467,10 @@ function EconomyTweakData:init()
 	self.drills.dss_01 = {
 		safe = "dss_01",
 		unit_name = "units/payday2_cash/safes/dss/drill/eco_drill_dss"
+	}
+	self.drills.cat_01 = {
+		safe = "cat_01",
+		unit_name = "units/payday2_cash/safes/cat/drill/eco_drill_cat"
 	}
 	self.bonuses = {concealment_p1 = {}}
 	self.bonuses.concealment_p1.name_id = "bm_menu_bonus_concealment"
