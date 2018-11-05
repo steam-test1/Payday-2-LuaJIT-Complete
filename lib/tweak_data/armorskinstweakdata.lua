@@ -447,8 +447,8 @@ end
 
 function EconomyTweakData:_init_armor_skins_armor_safe()
 	self.armor_skins.ast_armor1 = {
-		name_id = "bm_askn_ast_armor1",
-		desc_id = "bm_askn_ast_armor1_desc",
+		name_id = "bm_askn_ast_armor3",
+		desc_id = "bm_askn_ast_armor3_desc",
 		rarity = "uncommon",
 		reserve_quality = false,
 		texture_bundle_folder = "cash/safes/ast",
@@ -463,8 +463,8 @@ function EconomyTweakData:_init_armor_skins_armor_safe()
 		steam_economy = true
 	}
 	self.armor_skins.ast_armor2 = {
-		name_id = "bm_askn_ast_armor2",
-		desc_id = "bm_askn_ast_armor2_desc",
+		name_id = "bm_askn_ast_armor1",
+		desc_id = "bm_askn_ast_armor1_desc",
 		rarity = "uncommon",
 		reserve_quality = false,
 		texture_bundle_folder = "cash/safes/ast",
@@ -482,8 +482,8 @@ function EconomyTweakData:_init_armor_skins_armor_safe()
 		steam_economy = true
 	}
 	self.armor_skins.ast_armor3 = {
-		name_id = "bm_askn_ast_armor3",
-		desc_id = "bm_askn_ast_armor3_desc",
+		name_id = "bm_askn_ast_armor2",
+		desc_id = "bm_askn_ast_armor2_desc",
 		rarity = "uncommon",
 		reserve_quality = false,
 		texture_bundle_folder = "cash/safes/ast",
