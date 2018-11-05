@@ -1914,7 +1914,7 @@ function InstantBulletBase:on_collision(col_ray, weapon_unit, user_unit, damage,
 			col_ray.body:extension().damage:damage_bullet(user_unit, col_ray.normal, col_ray.position, col_ray.ray, 1)
 			col_ray.body:extension().damage:damage_damage(user_unit, col_ray.normal, col_ray.position, col_ray.ray, damage)
 
-			if alive(weapon_unit) and weapon_unit:base():categories() then
+			if alive(weapon_unit) and weapon_unit:base().categories and weapon_unit:base():categories() then
 				for _, category in ipairs(weapon_unit:base():categories()) do
 					col_ray.body:extension().damage:damage_bullet_type(category, user_unit, col_ray.normal, col_ray.position, col_ray.ray, 1)
 				end
@@ -2104,7 +2104,7 @@ function InstantExplosiveBulletBase:on_collision(col_ray, weapon_unit, user_unit
 				col_ray.body:extension().damage:damage_bullet(user_unit, col_ray.normal, col_ray.position, col_ray.ray, 1)
 				col_ray.body:extension().damage:damage_damage(user_unit, col_ray.normal, col_ray.position, col_ray.ray, damage)
 
-				if alive(weapon_unit) and weapon_unit:base():categories() then
+				if alive(weapon_unit) and weapon_unit:base().categories and weapon_unit:base():categories() then
 					for _, category in ipairs(weapon_unit:base():categories()) do
 						col_ray.body:extension().damage:damage_bullet_type(category, user_unit, col_ray.normal, col_ray.position, col_ray.ray, 1)
 					end
@@ -2228,7 +2228,7 @@ function FlameBulletBase:on_collision(col_ray, weapon_unit, user_unit, damage, b
 			col_ray.body:extension().damage:damage_bullet(user_unit, col_ray.normal, col_ray.position, col_ray.ray, 1)
 			col_ray.body:extension().damage:damage_damage(user_unit, col_ray.normal, col_ray.position, col_ray.ray, damage)
 
-			if alive(weapon_unit) and weapon_unit:base():categories() then
+			if alive(weapon_unit) and weapon_unit:base().categories and weapon_unit:base():categories() then
 				for _, category in ipairs(weapon_unit:base():categories()) do
 					col_ray.body:extension().damage:damage_bullet_type(category, user_unit, col_ray.normal, col_ray.position, col_ray.ray, 1)
 				end
@@ -2342,7 +2342,7 @@ function DragonBreathBulletBase:on_collision(col_ray, weapon_unit, user_unit, da
 			col_ray.body:extension().damage:damage_bullet(user_unit, col_ray.normal, col_ray.position, col_ray.ray, 1)
 			col_ray.body:extension().damage:damage_damage(user_unit, col_ray.normal, col_ray.position, col_ray.ray, damage)
 
-			if alive(weapon_unit) and weapon_unit:base():categories() then
+			if alive(weapon_unit) and weapon_unit:base().categories and weapon_unit:base():categories() then
 				for _, category in ipairs(weapon_unit:base():categories()) do
 					col_ray.body:extension().damage:damage_bullet_type(category, user_unit, col_ray.normal, col_ray.position, col_ray.ray, 1)
 				end

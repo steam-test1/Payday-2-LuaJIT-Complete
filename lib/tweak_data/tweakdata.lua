@@ -2379,6 +2379,7 @@ function TweakData:init_screen_colors()
 		stat_maxed = Color("FF00FF"),
 		competitive_color = Color(255, 41, 204, 122) / 255,
 		event_color = Color(255, 255, 145, 0) / 255,
+		infamous_color = Color(1, 0.1, 1),
 		mutators_color = Color(255, 211, 133, 255) / 255,
 		mutators_color_text = Color(255, 211, 133, 255) / 255,
 		crime_spree_risk = Color(255, 255, 255, 0) / 255,
