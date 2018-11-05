@@ -4238,6 +4238,76 @@ function TweakDataVR:init(tweak_data)
 				}
 			}
 		},
+		x_packrat = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_packrat_mag_throw"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, -6, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_packrat_mag_in",
+					visible = true,
+					pos = Vector3(0, -6, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, -2.5, -7)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, -2.5, -7)
+				},
+				{
+					time = 0.6,
+					sound = "wp_packrat_slide_release",
+					pos = Vector3()
+				}
+			}
+		},
+		x_shrew = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_g17_clip_slide_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, -7, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_g17_clip_slide_in",
+					visible = true,
+					pos = Vector3(0, -7, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, -4, -10)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, -4, -10)
+				},
+				{
+					time = 0.6,
+					sound = "wp_g17_lever_release",
+					pos = Vector3()
+				}
+			}
+		},
 		x_sr2 = {
 			start = {
 				{
@@ -4360,41 +4430,6 @@ function TweakDataVR:init(tweak_data)
 					sound = "wp_ak47_lever_release",
 					pos = Vector3(),
 					rot = Rotation()
-				}
-			}
-		},
-		x_mp9 = {
-			start = {
-				{
-					time = 0,
-					sound = "wp_mac10_clip_slide_out"
-				},
-				{
-					drop_mag = true,
-					time = 0.05,
-					visible = false,
-					pos = Vector3(0, 0, -20)
-				}
-			},
-			finish = {
-				{
-					time = 0,
-					sound = "wp_mac10_clip_slide_in",
-					visible = true,
-					pos = Vector3(0, 0, -10)
-				},
-				{
-					time = 0.1,
-					pos = Vector3(0, 0, -4.5)
-				},
-				{
-					time = 0.56,
-					pos = Vector3(0, 0, -4)
-				},
-				{
-					time = 0.6,
-					sound = "wp_mac10_lever_release",
-					pos = Vector3()
 				}
 			}
 		},

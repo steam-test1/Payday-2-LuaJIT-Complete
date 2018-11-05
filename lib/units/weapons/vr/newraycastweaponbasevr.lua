@@ -333,7 +333,9 @@ function NewRaycastWeaponBaseVR:_mag_data()
 end
 
 function NewRaycastWeaponBaseVR:custom_magazine_name()
-	return tweak_data.vr.reload_timelines[self.name_id].custom_mag_unit
+	local data = tweak_data.vr.reload_timelines[self.name_id]
+
+	return data and data.custom_mag_unit
 end
 
 function NewRaycastWeaponBaseVR:spawn_belt_magazine_unit(pos)
