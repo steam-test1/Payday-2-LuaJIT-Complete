@@ -88,6 +88,9 @@ function HUDPlayerCustody:init(hud)
 	trade_text1:set_h(h)
 	trade_text1:set_y((self._hud_panel:h() - 152) - 80)
 
+	local level_id = Global.level_data and Global.level_data.level_id
+	local level_tweak = tweak_data.levels[level_id]
+	local trade_text2_id = "menu_spectator_being_traded_hesitant_" .. (level_tweak and level_tweak.narrator or "bain")
 	local trade_text2 = self._hud.trade_text2
 
 	trade_text2:set_font(Idstring(tweak_data.hud_custody.custody_font))
@@ -95,7 +98,7 @@ function HUDPlayerCustody:init(hud)
 	trade_text2:set_visible(true)
 	trade_text2:set_align("right")
 	trade_text2:set_valign("bottom")
-	trade_text2:set_text(utf8.to_upper(managers.localization:text("menu_spectator_being_traded_hesitant")))
+	trade_text2:set_text(utf8.to_upper(managers.localization:text(trade_text2_id)))
 
 	local _, _, w, h = trade_text2:text_rect()
 

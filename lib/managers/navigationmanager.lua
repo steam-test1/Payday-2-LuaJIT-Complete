@@ -557,6 +557,8 @@ function NavigationManager:_clear()
 	self._debug_geographic_segments = {}
 	self._debug_vis_groups = {}
 	self._coarse_searches = {}
+
+	self:send_nav_field_to_engine()
 end
 
 function NavigationManager:is_data_ready()
@@ -2282,10 +2284,10 @@ function NavigationManager:send_nav_field_to_engine()
 	send_data.doors = self._room_doors
 	send_data.nav_segments = self._nav_segments
 	send_data.quad_grid_size = self._grid_size
-	send_data.sector_grid_offset = self._geog_segment_offset
+	send_data.sector_grid_offset = self._geog_segment_offset or Vector3()
 	send_data.sector_grid_size = self._geog_segment_size
-	send_data.sector_max_x = self._nr_geog_segments.x
-	send_data.sector_max_y = self._nr_geog_segments.y
+	send_data.sector_max_x = self._nr_geog_segments and self._nr_geog_segments.x or 0
+	send_data.sector_max_y = self._nr_geog_segments and self._nr_geog_segments.y or 0
 	local vis_groups = {}
 	send_data.visibility_groups = vis_groups
 

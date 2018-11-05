@@ -336,7 +336,7 @@ function ElementSpecialObjective:on_executed(instigator)
 			Application:error("[ElementSpecialObjective:on_executed] Nav link without animation specified. Element id:", self._id)
 		end
 	else
-		local objective = self:get_objective(instigator)
+		local objective = self:get_objective()
 
 		if objective then
 			local search_dis_sq = self._values.search_distance

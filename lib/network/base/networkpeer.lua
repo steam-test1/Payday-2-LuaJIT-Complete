@@ -937,12 +937,6 @@ function NetworkPeer:_send_queued(queue_name, func_name, ...)
 end
 
 function NetworkPeer:send_after_load(...)
-	if not self._ip_verified then
-		print("[NetworkPeer:send_after_load] ip unverified:", ...)
-
-		return
-	end
-
 	self:_send_queued("load", ...)
 end
 
@@ -977,7 +971,7 @@ function NetworkPeer:_chk_flush_msg_queues()
 end
 
 function NetworkPeer:chk_enable_queue()
-	if self._loading then
+	if not self._loaded then
 		self._msg_queues = self._msg_queues or {}
 		self._msg_queues.load = self._msg_queues.load or {}
 	end
@@ -1029,6 +1023,10 @@ function NetworkPeer:_clean_queue()
 end
 
 function NetworkPeer:_flush_queue(queue_name)
+	if not self._ip_verified then
+		error("[NetworkPeer:_flush_queue] ip unverified:", queue_name)
+	end
+
 	local msg_queue = self._msg_queues[queue_name]
 
 	if not msg_queue then

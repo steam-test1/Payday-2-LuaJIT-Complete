@@ -457,7 +457,7 @@ function BlackMarketManager:equipped_armor(chk_armor_kit, chk_player_state)
 	if chk_armor_kit then
 		local equipped_deployable = self:equipped_deployable()
 
-		if managers.player:has_equipment_in_any_slot("armor_kit") and (managers.player:get_equipment_amount("armor_kit") > 0 or game_state_machine and game_state_machine:current_state_name() == "ingame_waiting_for_players") then
+		if managers.player:equipment_slot("armor_kit") and (managers.player:get_equipment_amount("armor_kit") > 0 or game_state_machine and game_state_machine:current_state_name() == "ingame_waiting_for_players") then
 			return self._defaults.armor
 		end
 	end
@@ -1631,6 +1631,8 @@ function BlackMarketManager:preload_weapon_blueprint(category, factory_id, bluep
 			table.insert(self._preloading_list, new_loading)
 
 			loading_parts[part_id] = part
+		elseif self._category_resource_loaded[category] and self._category_resource_loaded[category][part_id] then
+			loading_parts[part_id] = part
 		end
 	end
 
@@ -1649,10 +1651,12 @@ function BlackMarketManager:resource_loaded_callback(category, loaded_table, par
 
 	if loaded_category then
 		for part_id, unload in pairs(loaded_category) do
-			if unload.package then
-				managers.weapon_factory:unload_package(unload.package)
-			else
-				managers.dyn_resource:unload(Idstring("unit"), unload.name, managers.dyn_resource.DYN_RESOURCES_PACKAGE, false)
+			if not loaded_table[part_id] then
+				if unload.package then
+					managers.weapon_factory:unload_package(unload.package)
+				else
+					managers.dyn_resource:unload(Idstring("unit"), unload.name, managers.dyn_resource.DYN_RESOURCES_PACKAGE, false)
+				end
 			end
 		end
 	end
@@ -4536,6 +4540,11 @@ function BlackMarketManager:modify_weapon(category, slot, global_value, part_id,
 		return
 	end
 
+	if self:is_previewing_legendary_skin() then
+		managers.blackmarket:view_weapon(category, slot, nil, nil, BlackMarketGui.get_crafting_custom_data())
+		managers.blackmarket:clear_preview_blueprint()
+	end
+
 	local replaces, removes = self:get_modify_weapon_consequence(category, slot, part_id, remove_part)
 	local craft_data = self._global.crafted_items[category][slot]
 
@@ -4601,12 +4610,6 @@ function BlackMarketManager:buy_and_modify_weapon(category, slot, global_value, 
 		return
 	end
 
-	if self:is_previewing_legendary_skin() then
-		managers.blackmarket:view_weapon(category, slot, nil, nil, BlackMarketGui.get_crafting_custom_data())
-		managers.blackmarket:clear_preview_blueprint()
-	end
-
-	managers.weapon_factory:change_part_blueprint_only(self._global.crafted_items[category][slot].factory_id, part_id, self:get_preview_blueprint(category, slot))
 	self:modify_weapon(category, slot, global_value, part_id)
 
 	if not free_of_charge then
@@ -5368,7 +5371,22 @@ function BlackMarketManager:get_part_custom_colors(category, slot, part_id, requ
 	local custom_colors = crafted_item and crafted_item.custom_colors
 
 	if custom_colors and custom_colors[part_id] then
-		return self:get_custom_colors_from_string(custom_colors and custom_colors[part_id])
+		local part_tweak = tweak_data.weapon.factory.parts[part_id]
+		local colors = self:get_custom_colors_from_string(custom_colors and custom_colors[part_id])
+		local sub_types = {[part_tweak.sub_type] = true}
+
+		if part_tweak.adds then
+			for _, added_part_id in pairs(part_tweak.adds) do
+				local added_part_tweak = tweak_data.weapon.factory.parts[part_id]
+				sub_types[added_part_tweak.sub_type] = true
+			end
+		end
+
+		for sub_type, _ in pairs(sub_types) do
+			colors[sub_type] = colors[sub_type] or tweak_data.custom_colors.defaults[sub_type]
+		end
+
+		return colors
 	elseif not require_existing then
 		return {
 			laser = tweak_data.custom_colors.defaults.laser,
@@ -6353,10 +6371,17 @@ function BlackMarketManager:on_equip_weapon_cosmetics(category, slot, instance_i
 	end
 
 	local item_data = self:get_inventory_tradable()[instance_id]
-	item_data = item_data or {
-		quality = "mint",
-		entry = instance_id
-	}
+
+	if not item_data then
+		local is_not_steam_inventory_item = tweak_data.blackmarket.weapon_skins[instance_id] and tweak_data.blackmarket.weapon_skins[instance_id].is_a_unlockable
+
+		if is_not_steam_inventory_item then
+			item_data = {
+				quality = "mint",
+				entry = instance_id
+			}
+		end
+	end
 
 	if not item_data then
 		return

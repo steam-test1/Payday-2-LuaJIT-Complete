@@ -1177,7 +1177,8 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 			end
 		elseif held then
 			if not self._next_wall_check_t or self._next_wall_check_t < t then
-				self._shooting_forbidden = self._unit:hand():check_hand_through_wall(self._unit:hand():get_active_hand_id(akimbo and "akimbo" or "weapon"), weap_base:fire_object())
+				local wall_check_obj = tweak_data.vr.custom_wall_check[weap_base.name_id] and weap_base._unit:get_object(Idstring(tweak_data.vr.custom_wall_check[weap_base.name_id])) or weap_base:fire_object()
+				self._shooting_forbidden = self._unit:hand():check_hand_through_wall(self._unit:hand():get_active_hand_id(akimbo and "akimbo" or "weapon"), wall_check_obj)
 				self._next_wall_check_t = t + tweak_data.vr.wall_check_delay
 			end
 
@@ -1257,7 +1258,7 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 			elseif fire_mode == "single" or weap_base.akimbo then
 				self._ext_network:send("shot_blank", impact)
 			end
-		else
+		elseif fire_mode == "single" or self._shooting_forbidden then
 			new_action = false
 		end
 	end

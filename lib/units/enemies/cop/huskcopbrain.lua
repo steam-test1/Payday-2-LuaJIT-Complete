@@ -125,6 +125,18 @@ function HuskCopBrain:surrendered()
 	return self._surrendered
 end
 
+function HuskCopBrain:sync_converted()
+	self._converted = true
+end
+
+function HuskCopBrain:converted()
+	return self._converted
+end
+
+function HuskCopBrain:is_hostile()
+	return not self._surrendered and not self._converted
+end
+
 function HuskCopBrain:on_long_dis_interacted(amount, aggressor_unit, secondary)
 	secondary = secondary or false
 	amount = math.clamp(math.ceil(amount * 10), 0, 10)

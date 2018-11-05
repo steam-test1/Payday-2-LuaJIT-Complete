@@ -261,6 +261,30 @@ function MenuCallbackHandler:got_completed_story_mission()
 	return current.completed and not current.rewarded
 end
 
+function MenuCallbackHandler:show_side_job_menu_icon()
+	local all_challenges = {}
+
+	for _, challenge in pairs(managers.challenge:get_all_active_challenges()) do
+		table.insert(all_challenges, challenge)
+	end
+
+	for _, challenge in ipairs(managers.tango:challenges()) do
+		table.insert(all_challenges, challenge)
+	end
+
+	for _, side_jobs in ipairs(managers.generic_side_jobs:side_jobs()) do
+		for _, challenge in ipairs(side_jobs.manager:challenges()) do
+			table.insert(all_challenges, challenge)
+		end
+	end
+
+	for _, challenge in ipairs(all_challenges) do
+		if challenge.completed and not challenge.rewarded then
+			return true
+		end
+	end
+end
+
 function MenuCallbackHandler:show_custom_safehouse_menu_icon()
 	return managers.custom_safehouse:is_daily_new() or managers.custom_safehouse:has_completed_daily() and not managers.custom_safehouse:has_rewarded_daily()
 end

@@ -267,6 +267,8 @@ function BaseNetworkSession:add_peer(name, rpc, in_lobby, loading, synched, id, 
 		self:remove_connection_from_soft_remove_peers(rpc)
 	end
 
+	managers.network:dispatch_event("session_peer_added", peer)
+
 	return id, peer
 end
 
@@ -1287,6 +1289,8 @@ function BaseNetworkSession:on_peer_entered_lobby(peer)
 	if peer:ip_verified() then
 		self._local_peer:sync_lobby_data(peer)
 	end
+
+	managers.network:dispatch_event("session_peer_entered_lobby", peer)
 end
 
 function BaseNetworkSession:on_entered_lobby()
@@ -1485,6 +1489,8 @@ function BaseNetworkSession:on_peer_sync_complete(peer, peer_id)
 	if Network:is_server() then
 		self:check_start_game_intro()
 	end
+
+	managers.network:dispatch_event("session_peer_sync_complete", peer)
 end
 
 function BaseNetworkSession:on_streaming_progress_received(peer, progress)

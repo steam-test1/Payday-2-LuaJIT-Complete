@@ -70,6 +70,7 @@ end
 
 function MenuArmourBase:set_character_name(name)
 	self._character_name = name
+	self._special_material = self:_pick_special_material()
 
 	self:request_cosmetics_update()
 end
@@ -309,13 +310,55 @@ function MenuArmourBase:_set_material_textures()
 	end
 end
 
+function MenuArmourBase:_pick_special_material()
+	local character_id = managers.blackmarket:get_character_id_by_character_name(self:character_name())
+	local special_materials = tweak_data.blackmarket.characters[character_id].special_materials
+
+	if not special_materials then
+		return nil
+	end
+
+	local special_material = nil
+
+	for sequence, chance in pairs(special_materials) do
+		if type(chance) == "number" then
+			local rand = math.rand(chance)
+
+			if rand <= 1 then
+				special_material = sequence
+
+				break
+			end
+		end
+	end
+
+	special_material = special_material or table.random(special_materials)
+	local special_material_ids = Idstring(special_material)
+
+	if not DB:has(Idstring("material_config"), special_material_ids) then
+		print("[MenuArmourBase:_pick_special_material] Missing material config", special_material)
+
+		special_material = nil
+	end
+
+	return special_material
+end
+
 function MenuArmourBase:_get_cc_material_config()
+	if self._special_material then
+		return Idstring(self._special_material .. "_cc")
+	end
+
 	local character_name = CriminalsManager.convert_new_to_old_character_workname(self._character_name)
 
 	return tweak_data.economy.character_cc_configs[character_name]
 end
 
 function MenuArmourBase:_get_original_material_config()
+	if self._special_material then
+		return Idstring(self._special_material)
+	end
+
 	local cc_config_key = self:_get_cc_material_config():key()
 
 	return tweak_data.economy.armor_skins_configs_map[cc_config_key]

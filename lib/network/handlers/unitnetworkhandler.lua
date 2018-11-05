@@ -1493,7 +1493,7 @@ function UnitNetworkHandler:sync_trip_mine_set_armed(unit, bool, length, sender)
 	unit:base():sync_trip_mine_set_armed(bool, length)
 end
 
-function UnitNetworkHandler:request_place_ecm_jammer(pos, normal, battery_life_upgrade_lvl, rpc)
+function UnitNetworkHandler:request_place_ecm_jammer(battery_life_upgrade_lvl, body, rel_pos, rel_rot, rpc)
 	local peer = self._verify_sender(rpc)
 
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not peer then
@@ -1512,16 +1512,16 @@ function UnitNetworkHandler:request_place_ecm_jammer(pos, normal, battery_life_u
 		return
 	end
 
-	local rot = Rotation(normal, math.UP)
 	local peer = self._verify_sender(rpc)
-	local unit = ECMJammerBase.spawn(pos, rot, battery_life_upgrade_lvl, owner_unit, peer:id())
+	local unit = ECMJammerBase.spawn(Vector3(), Rotation(), battery_life_upgrade_lvl, owner_unit, peer:id())
 
 	unit:base():set_server_information(peer:id())
 	unit:base():set_active(true)
-	rpc:from_server_ecm_jammer_place_result(unit)
+	unit:base():link_attachment(body, rel_pos, rel_rot)
+	rpc:from_server_ecm_jammer_place_result(unit, body, rel_pos, rel_rot)
 end
 
-function UnitNetworkHandler:from_server_ecm_jammer_place_result(unit, rpc)
+function UnitNetworkHandler:from_server_ecm_jammer_place_result(unit, body, rel_pos, rel_rot, rpc)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
@@ -1537,6 +1537,19 @@ function UnitNetworkHandler:from_server_ecm_jammer_place_result(unit, rpc)
 	end
 
 	unit:base():set_owner(managers.player:player_unit())
+	unit:base():link_attachment(body, rel_pos, rel_rot)
+end
+
+function UnitNetworkHandler:sync_deployable_attachment(unit, body, relative_pos, relative_rot, rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	if not alive(unit) then
+		return
+	end
+
+	unit:base():link_attachment(body, relative_pos, relative_rot)
 end
 
 function UnitNetworkHandler:from_server_ecm_jammer_rejected(rpc)
@@ -1673,6 +1686,14 @@ function UnitNetworkHandler:from_server_sentry_gun_place_result(owner_peer_id, e
 	sentry_gun_unit:weapon():setup_virtual_ammo(ammo_mul)
 	sentry_gun_unit:event_listener():call("on_setup", sentry_gun_unit:base():is_owner())
 	sentry_gun_unit:base():post_setup()
+end
+
+function UnitNetworkHandler:sync_sentrygun_dynamic(unit)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	unit:base():sync_set_dynamic()
 end
 
 function UnitNetworkHandler:sentrygun_ammo(unit, ammo_ratio, owner_id)
@@ -3775,6 +3796,18 @@ function UnitNetworkHandler:sync_unit_surrendered(unit, surrendered)
 	end
 
 	unit:brain():sync_surrender(surrendered)
+end
+
+function UnitNetworkHandler:sync_unit_converted(unit)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	if not alive(unit) and unit:brain() and unit:brain().sync_converted then
+		return
+	end
+
+	unit:brain():sync_converted()
 end
 
 function UnitNetworkHandler:sync_link_spawned_unit(parent_unit, unit_id, joint_table, parent_extension_name)

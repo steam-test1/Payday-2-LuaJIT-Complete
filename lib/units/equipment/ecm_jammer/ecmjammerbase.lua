@@ -158,6 +158,18 @@ function ECMJammerBase:setup(battery_life_upgrade_lvl, owner)
 	end
 end
 
+function ECMJammerBase:link_attachment(body, relative_pos, relative_rot)
+	if relative_pos then
+		body:unit():link(body:root_object():name(), self._unit, self._unit:orientation_object():name())
+		self._unit:set_local_position(relative_pos)
+		self._unit:set_local_rotation(relative_rot)
+	else
+		body:unit():link(body:root_object():name(), self._unit)
+	end
+
+	self._attached_body = body
+end
+
 function ECMJammerBase:set_active(active)
 	active = active and true
 
@@ -167,20 +179,6 @@ function ECMJammerBase:set_active(active)
 
 	if Network:is_server() then
 		if active then
-			local from_pos = self._unit:position() + self._unit:rotation():y() * 10
-			local to_pos = self._unit:position() + self._unit:rotation():y() * -10
-			local ray = self._unit:raycast("ray", from_pos, to_pos, "slot_mask", managers.slot:get_mask("trip_mine_placeables"))
-
-			if ray then
-				self._attached_data = {
-					body = ray.body,
-					position = ray.body:position(),
-					rotation = ray.body:rotation(),
-					index = 1,
-					max_index = 3
-				}
-			end
-
 			self._alert_filter = self:owner():movement():SO_access()
 			local jam_cameras, jam_pagers = nil
 
@@ -319,23 +317,9 @@ function ECMJammerBase:sync_set_battery_life(battery_life)
 end
 
 function ECMJammerBase:_check_body()
-	if not self._attached_data then
-		return
-	end
-
-	if self._attached_data.index == 1 then
-		if not alive(self._attached_data.body) or not self._attached_data.body:enabled() then
-			self:_force_remove()
-		end
-	elseif self._attached_data.index == 2 then
-		if not alive(self._attached_data.body) or not mrotation.equal(self._attached_data.rotation, self._attached_data.body:rotation()) then
-			self:_force_remove()
-		end
-	elseif self._attached_data.index == 3 and (not alive(self._attached_data.body) or mvector3.not_equal(self._attached_data.position, self._attached_data.body:position())) then
+	if not alive(self._attached_body) or not self._attached_body:enabled() then
 		self:_force_remove()
 	end
-
-	self._attached_data.index = (self._attached_data.index < self._attached_data.max_index and self._attached_data.index or 0) + 1
 end
 
 function ECMJammerBase:feedback_active()

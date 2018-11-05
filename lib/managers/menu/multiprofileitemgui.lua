@@ -303,12 +303,18 @@ function MultiProfileItemGui:mouse_pressed(button, x, y)
 		if self:arrow_selection() == "left" then
 			managers.multi_profile:previous_profile()
 			managers.menu_component:post_event("menu_enter")
+
+			return
 		elseif self:arrow_selection() == "right" then
 			managers.multi_profile:next_profile()
 			managers.menu_component:post_event("menu_enter")
+
+			return
 		elseif self:arrow_selection() == "quick" then
 			managers.multi_profile:open_quick_select()
 			managers.menu_component:post_event("menu_enter")
+
+			return
 		end
 
 		if self._name_selection then

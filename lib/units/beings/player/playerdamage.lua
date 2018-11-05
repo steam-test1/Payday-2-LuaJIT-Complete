@@ -156,6 +156,8 @@ function PlayerDamage:init(unit)
 		epsilon = 0.001,
 		chunks = {}
 	}
+
+	self:clear_delayed_damage()
 end
 
 function PlayerDamage:_init_standard_listeners()

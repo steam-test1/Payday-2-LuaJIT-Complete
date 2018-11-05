@@ -23601,6 +23601,7 @@ function BlackMarketTweakData:_init_weapon_skins()
 		name_id = "bm_wskn_tam",
 		desc_id = "bm_wskn_tam_desc",
 		weapon_id = "x_pl14",
+		global_value = "tam",
 		is_a_unlockable = true,
 		lock_id = "bm_wskn_tam_locked",
 		rarity = "epic",

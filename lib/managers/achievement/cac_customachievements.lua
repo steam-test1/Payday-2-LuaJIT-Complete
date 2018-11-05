@@ -143,34 +143,45 @@ local function init_cac_20()
 end
 
 local function init_cac_28()
-	if not managers.criminals then
-		return
-	end
+	local lobby_listener_key = {}
+	local sync_listener_key = {}
 
-	local listener_key = {}
+	local function attempt_infection(peer)
+		local is_infected = managers.achievment.achievments.cac_28.awarded
 
-	local function on_criminal_added(name, unit, peer_id, ai)
-		local session = managers.network:session()
-		local peer = session:peer(peer_id)
-
-		if not peer or peer == session:local_peer() then
-			return
+		if is_infected then
+			peer:send_after_load("get_virus_achievement")
 		end
-
-		local user_sa_viewer = Steam:usa_viewer(peer:user_id())
-
-		user_sa_viewer:refresh(function (success)
-			if not success then
-				return
-			end
-
-			if user_sa_viewer:has_achievement("cac_28") then
-				managers.achievment:award("cac_28")
-			end
-		end)
 	end
 
-	managers.criminals:add_listener(listener_key, "on_criminal_added", on_criminal_added)
+	local function on_peer_entered_lobby(peer)
+		local local_peer = managers.network:session():local_peer()
+
+		if peer ~= local_peer then
+			attempt_infection(peer)
+		end
+	end
+
+	local function on_peer_added(peer)
+		local local_peer = managers.network:session():local_peer()
+		local in_lobby = game_state_machine:verify_game_state(GameStateFilters.lobby) and local_peer:in_lobby()
+
+		if peer ~= local_peer and in_lobby then
+			attempt_infection(peer)
+		end
+	end
+
+	local function on_peer_sync_complete(peer)
+		local local_peer = managers.network:session():local_peer()
+
+		if peer ~= local_peer then
+			attempt_infection(peer)
+		end
+	end
+
+	managers.network:add_event_listener(lobby_listener_key, "session_peer_entered_lobby", on_peer_entered_lobby)
+	managers.network:add_event_listener({}, "session_peer_added", on_peer_added)
+	managers.network:add_event_listener(sync_listener_key, "session_peer_sync_complete", on_peer_sync_complete)
 end
 
 function AchievmentManager:init_cac_custom_achievements()

@@ -101,7 +101,17 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 			40
 		},
 		infamous = true,
-		value = 7
+		value = 7,
+		offsets = {
+			jacket = {
+				Vector3(0, 0, 0.554498),
+				Rotation(0, 0, -0)
+			},
+			joy = {
+				Vector3(0, 0, 0.554498),
+				Rotation(-0, -0, -0)
+			}
+		}
 	}
 	self.masks.hoxton = {
 		unit = "units/payday2/masks/msk_hoxton/msk_hoxton",
@@ -2531,7 +2541,10 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		value = 0,
 		type = "tiara",
 		skip_mask_on_sequence = true,
-		offsets = {}
+		offsets = {sydney = {
+			Vector3(0, -1.71118, 5.08586),
+			Rotation(0, -20.9063, 0)
+		}}
 	}
 	self.masks.baba_yaga = {
 		unit = "units/pd2_crimefest_2015/update_2/masks/baba_yaga/msk_baba_yaga",
@@ -2931,6 +2944,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		pcs = {},
 		value = 0,
 		type = "helmet",
+		skip_mask_on_sequence = true,
 		texture_bundle_folder = "mad",
 		sort_number = 17
 	}
@@ -5036,8 +5050,8 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 				Rotation(0, 0, -0)
 			},
 			dallas = {
-				Vector3(0.316008, -1.47269, 0.196761),
-				Rotation(-3.3458e-08, 2.27525, -4.59334)
+				Vector3(0, -2.66515, 2.58169),
+				Rotation(0, -11.4619, 0)
 			},
 			old_hoxton = {
 				Vector3(0, -1.71118, 0),

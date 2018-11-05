@@ -5240,6 +5240,11 @@ function InteractionTweakData:init(tweak_data)
 		interact_distance = 150,
 		start_active = false
 	}
+	self.push_button_secret = {
+		text_id = "hud_int_push_button",
+		interact_distance = 90,
+		axis = "z"
+	}
 	self.hold_charge_gun = {
 		icon = "equipment_hack_ipad",
 		text_id = "hold_interact_charge_gun",
@@ -5284,11 +5289,6 @@ function InteractionTweakData:init(tweak_data)
 	}
 	self.push_button_des = {
 		text_id = "hud_int_push_button",
-		axis = "z"
-	}
-	self.push_button_secret = {
-		text_id = "hud_int_push_button",
-		interact_distance = 90,
 		axis = "z"
 	}
 	self.hold_push_button = {

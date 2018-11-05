@@ -23,10 +23,6 @@ function SentryGunBase:init(unit)
 	SentryGunBase.super.init(self, unit, false)
 
 	self._unit = unit
-	self._frame_callbacks = FrameCallback:new()
-
-	self._frame_callbacks:add("check_body", callback(self, self, "_check_body"), 15)
-
 	self._damage_multiplier = 1
 
 	if self._place_snd_event then
@@ -330,7 +326,6 @@ function SentryGunBase:_on_picked_up_cash(unit)
 
 		mvector3.set_z(new_pos, mvector3.z(self._attached_data.position))
 		self._unit:set_position(new_pos)
-		self._frame_callbacks:reset_counter("check_body")
 	end
 end
 
@@ -347,7 +342,7 @@ function SentryGunBase:get_type()
 end
 
 function SentryGunBase:update(unit, t, dt)
-	self._frame_callbacks:update()
+	self:_check_body()
 end
 
 function SentryGunBase:on_interaction()
@@ -385,35 +380,41 @@ function SentryGunBase.on_picked_up(sentry_type, ammo_ratio, sentry_uid)
 	end
 end
 
+function SentryGunBase:server_set_dynamic()
+	self:sync_set_dynamic()
+
+	if managers.network:session() then
+		managers.network:session():send_to_peers_synched("sync_sentrygun_dynamic", self._unit)
+	end
+end
+
+function SentryGunBase:sync_set_dynamic()
+	self._is_dynamic = true
+
+	self._unit:body("dynamic_base"):set_enabled(true)
+end
+
 function SentryGunBase:_check_body()
+	if self._is_dynamic then
+		return
+	end
+
 	if self._attached_data.index == 1 then
 		if alive(self._attached_data.body) and not self._attached_data.body:enabled() then
-			self._attached_data = self._attach(nil, nil, self._unit)
-
-			if not self._attached_data then
-				self:remove()
-
-				return
-			end
-		end
-	elseif self._attached_data.index == 2 then
-		if not alive(self._attached_data.body) or not mrotation.equal(self._attached_data.rotation, self._attached_data.body:rotation()) then
-			self._attached_data = self._attach(nil, nil, self._unit)
-
-			if not self._attached_data then
-				self:remove()
-
-				return
-			end
-		end
-	elseif self._attached_data.index == 3 and (not alive(self._attached_data.body) or mvector3.not_equal(self._attached_data.position, self._attached_data.body:position())) then
-		self._attached_data = self._attach(nil, nil, self._unit)
-
-		if not self._attached_data then
-			self:remove()
+			self:server_set_dynamic()
 
 			return
 		end
+	elseif self._attached_data.index == 2 then
+		if not alive(self._attached_data.body) or not mrotation.equal(self._attached_data.rotation, self._attached_data.body:rotation()) then
+			self:server_set_dynamic()
+
+			return
+		end
+	elseif self._attached_data.index == 3 and (not alive(self._attached_data.body) or mvector3.not_equal(self._attached_data.position, self._attached_data.body:position())) then
+		self:server_set_dynamic()
+
+		return
 	end
 
 	self._attached_data.index = (self._attached_data.index < self._attached_data.max_index and self._attached_data.index or 0) + 1
@@ -677,6 +678,7 @@ function SentryGunBase:save(save_data)
 	save_data.base = my_save_data
 	my_save_data.tweak_table_id = self._tweak_table_id
 	my_save_data.is_module = self._is_module
+	my_save_data.is_dynamic = self._is_dynamic
 end
 
 function SentryGunBase:ammo_ratio()
@@ -688,6 +690,10 @@ function SentryGunBase:load(save_data)
 	local my_save_data = save_data.base
 	self._tweak_table_id = my_save_data.tweak_table_id
 	self._is_module = my_save_data.is_module
+
+	if my_save_data.is_dynamic then
+		self:sync_set_dynamic()
+	end
 
 	if self._is_module then
 		local turret_units = managers.groupai:state():turrets()

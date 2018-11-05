@@ -61,6 +61,7 @@ function NetworkManager:init()
 			indexes = {}
 		}
 	}
+	self._event_listener_holder = EventListenerHolder:new()
 
 	if SystemInfo:platform() == Idstring("PS3") then
 		self._is_ps3 = true
@@ -178,6 +179,18 @@ function NetworkManager:_create_lobby()
 
 		return
 	end
+end
+
+function NetworkManager:add_event_listener(...)
+	self._event_listener_holder:add(...)
+end
+
+function NetworkManager:remove_event_listener(...)
+	self._event_listener_holder:remove(...)
+end
+
+function NetworkManager:dispatch_event(...)
+	self._event_listener_holder:call(...)
 end
 
 function NetworkManager:ps3_determine_voice(lan)

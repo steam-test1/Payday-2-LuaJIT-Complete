@@ -19252,7 +19252,7 @@ function WeaponTweakData:_init_x_2006m(weapon_data)
 	}
 	self.x_2006m.autohit = weapon_data.autohit_pistol_default
 	self.x_2006m.aim_assist = weapon_data.aim_assist_pistol_default
-	self.x_2006m.weapon_hold = "jowi_pistol"
+	self.x_2006m.weapon_hold = "x_judge"
 	self.x_2006m.animations = {
 		has_steelsight_stance = true,
 		recoil_steelsight = true
@@ -20062,7 +20062,7 @@ function WeaponTweakData:_init_x_rage(weapon_data)
 	}
 	self.x_rage.autohit = weapon_data.autohit_pistol_default
 	self.x_rage.aim_assist = weapon_data.aim_assist_pistol_default
-	self.x_rage.weapon_hold = "jowi_pistol"
+	self.x_rage.weapon_hold = "x_judge"
 	self.x_rage.animations = {
 		second_gun_versions = {
 			reload_not_empty = "reload_not_empty_left",
@@ -20268,7 +20268,7 @@ function WeaponTweakData:_init_x_judge(weapon_data)
 	}
 	self.x_judge.autohit = weapon_data.autohit_smg_default
 	self.x_judge.aim_assist = weapon_data.aim_assist_smg_default
-	self.x_judge.weapon_hold = "jowi_pistol"
+	self.x_judge.weapon_hold = "x_judge"
 	self.x_judge.animations = {
 		has_steelsight_stance = true,
 		recoil_steelsight = true

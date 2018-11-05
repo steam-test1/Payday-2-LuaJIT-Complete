@@ -653,29 +653,29 @@ function RaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul
 				end
 			end
 		end
+	end
 
-		if not tweak_data.achievement.tango_4.difficulty or table.contains(tweak_data.achievement.tango_4.difficulty, Global.game_settings.difficulty) then
-			if self._gadgets and table.contains(self._gadgets, "wpn_fps_upg_o_45rds") and hit_result and hit_result.type == "death" and managers.player:player_unit():movement():current_state():in_steelsight() and (not hit.unit:base() or not hit.unit:base():has_tag("civilian")) then
-				if self._tango_4_data then
-					if self._gadget_on == self._tango_4_data.last_gadget_state then
-						self._tango_4_data = nil
-					else
-						self._tango_4_data.last_gadget_state = self._gadget_on
-						self._tango_4_data.count = self._tango_4_data.count + 1
-					end
-
-					if self._tango_4_data and tweak_data.achievement.tango_4.count <= self._tango_4_data.count then
-						managers.achievment:_award_achievement(tweak_data.achievement.tango_4, "tango_4")
-					end
+	if not tweak_data.achievement.tango_4.difficulty or table.contains(tweak_data.achievement.tango_4.difficulty, Global.game_settings.difficulty) then
+		if self._gadgets and table.contains(self._gadgets, "wpn_fps_upg_o_45rds") and cop_kill_count > 0 and managers.player:player_unit():movement():current_state():in_steelsight() then
+			if self._tango_4_data then
+				if self._gadget_on == self._tango_4_data.last_gadget_state then
+					self._tango_4_data = nil
 				else
-					self._tango_4_data = {
-						count = 1,
-						last_gadget_state = self._gadget_on
-					}
+					self._tango_4_data.last_gadget_state = self._gadget_on
+					self._tango_4_data.count = self._tango_4_data.count + 1
 				end
-			elseif self._tango_4_data then
-				self._tango_4_data = nil
+
+				if self._tango_4_data and tweak_data.achievement.tango_4.count <= self._tango_4_data.count then
+					managers.achievment:_award_achievement(tweak_data.achievement.tango_4, "tango_4")
+				end
+			else
+				self._tango_4_data = {
+					count = 1,
+					last_gadget_state = self._gadget_on
+				}
 			end
+		elseif self._tango_4_data then
+			self._tango_4_data = nil
 		end
 	end
 
@@ -2424,8 +2424,8 @@ function DOTBulletBase:_dot_data_by_weapon(weapon_unit)
 end
 
 function DOTBulletBase:start_dot_damage(col_ray, weapon_unit, dot_data, weapon_id)
-	local hurt_animation = not dot_data.hurt_animation_chance or math.rand(1) < dot_data.hurt_animation_chance
 	dot_data = dot_data or self.DOT_DATA
+	local hurt_animation = not dot_data.hurt_animation_chance or math.rand(1) < dot_data.hurt_animation_chance
 
 	managers.dot:add_doted_enemy(col_ray.unit, TimerManager:game():time(), weapon_unit, dot_data.dot_length, dot_data.dot_damage, hurt_animation, self.VARIANT, weapon_id)
 end
@@ -2457,7 +2457,7 @@ function ProjectilesPoisonBulletBase:on_collision(col_ray, weapon_unit, user_uni
 	local result = DOTBulletBase.super.on_collision(self, col_ray, weapon_unit, user_unit, damage, blank, self.NO_BULLET_INPACT_SOUND)
 	local hit_unit = col_ray.unit
 
-	if hit_unit:character_damage() and hit_unit:character_damage().damage_dot and not hit_unit:character_damage():dead() then
+	if hit_unit:character_damage() and hit_unit:character_damage().damage_dot and not hit_unit:character_damage():dead() and alive(weapon_unit) then
 		local dot_data = tweak_data.projectiles[weapon_unit:base()._projectile_entry].dot_data
 
 		if not dot_data then

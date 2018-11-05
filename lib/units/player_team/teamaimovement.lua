@@ -192,7 +192,9 @@ function TeamAIMovement:_switch_to_not_cool(instant)
 
 	if instant then
 		if self._switch_to_not_cool_clbk_id then
-			managers.enemy:remove_delayed_clbk(self._switch_to_not_cool_clbk_id)
+			local mute_debug_pause = self._switch_to_not_cool_clbk_id == "dummy"
+
+			managers.enemy:remove_delayed_clbk(self._switch_to_not_cool_clbk_id, mute_debug_pause)
 		end
 
 		self._switch_to_not_cool_clbk_id = "dummy"

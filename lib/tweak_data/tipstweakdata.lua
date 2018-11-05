@@ -863,7 +863,7 @@ function TipsTweakData:init()
 		{
 			cat_index = 3,
 			image = "general_heisters",
-			consoles = true,
+			consoles = false,
 			category = "heister"
 		},
 		{
@@ -905,7 +905,7 @@ function TipsTweakData:init()
 		{
 			cat_index = 10,
 			image = "weapon_inspect_gun",
-			consoles = true,
+			consoles = false,
 			category = "heister"
 		},
 		{
@@ -977,7 +977,7 @@ function TipsTweakData:init()
 		{
 			cat_index = 22,
 			image = "weapon_mods",
-			consoles = true,
+			consoles = false,
 			category = "heister"
 		},
 		{
@@ -1193,7 +1193,7 @@ function TipsTweakData:init()
 		{
 			cat_index = 6,
 			image = "heister_jimmy",
-			consoles = true,
+			consoles = false,
 			category = "trivia"
 		},
 		{

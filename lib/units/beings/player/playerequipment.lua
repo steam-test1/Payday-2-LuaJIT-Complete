@@ -249,16 +249,23 @@ function PlayerEquipment:use_ecm_jammer()
 		managers.statistics:use_ecm_jammer()
 
 		local duration_multiplier = managers.player:upgrade_level("ecm_jammer", "duration_multiplier", 0) + managers.player:upgrade_level("ecm_jammer", "duration_multiplier_2", 0) + 1
+		local relative_pos = ray.position - ray.body:position()
+
+		mvector3.rotate_with(relative_pos, ray.body:rotation():inverse())
+
+		local relative_rot = ray.body:rotation():inverse() * Rotation(ray.normal, math.UP)
 
 		if Network:is_client() then
 			self._ecm_jammer_placement_requested = true
 
-			managers.network:session():send_to_host("request_place_ecm_jammer", ray.position, ray.normal, duration_multiplier)
+			managers.network:session():send_to_host("request_place_ecm_jammer", duration_multiplier, ray.body, relative_pos, relative_rot)
 		else
 			local rot = Rotation(ray.normal, math.UP)
 			local unit = ECMJammerBase.spawn(ray.position, rot, duration_multiplier, self._unit, managers.network:session():local_peer():id())
 
 			unit:base():set_active(true)
+			unit:base():link_attachment(ray.body, relative_pos, relative_rot)
+			managers.network:session():send_to_peers_synched("sync_deployable_attachment", unit, ray.body, relative_pos, relative_rot)
 		end
 
 		return true

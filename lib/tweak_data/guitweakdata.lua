@@ -4972,7 +4972,7 @@ function GuiTweakData:init()
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_sb_2018_thesecretisreallyreal",
 		texture_path = "guis/textures/pd2/new_heists/sb_2018_thesecretisreallyreal",
-		url = "https://www.thesecretisreallyreal.com/"
+		url = "http://www.overkillsoftware.com/archive/thesecretisreallyreal/"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_sb_2018_sale",

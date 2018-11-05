@@ -295,9 +295,13 @@ function CustomSafehouseGuiPageMap:_setup_map()
 			font_size = medium_font_size,
 			layer = raid_layer + 10
 		})
-		local new_button = CustomSafehouseGuiRaidButton:new(raid_panel, raid_layer + 10, text:bottom() + PANEL_PADDING * 2, callback(self, self, "defend_safehouse"))
+		local show_defend_btn = Global.game_settings.single_player or Network:is_server() or not managers.network:session()
 
-		table.insert(self._buttons, new_button)
+		if show_defend_btn then
+			local new_button = CustomSafehouseGuiRaidButton:new(raid_panel, raid_layer + 10, text:bottom() + PANEL_PADDING * 2, callback(self, self, "defend_safehouse"))
+
+			table.insert(self._buttons, new_button)
+		end
 	end
 
 	BoxGuiObject:new(self._floor_control_panel, {sides = {

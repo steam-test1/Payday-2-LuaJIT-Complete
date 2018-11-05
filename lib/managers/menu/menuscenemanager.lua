@@ -2120,7 +2120,7 @@ end
 function MenuSceneManager:_spawn_mask(mask_unit_name, as_item, pos, rot, mask_id)
 	local mask_unit = World:spawn_unit(mask_unit_name, pos, rot)
 
-	if not tweak_data.blackmarket.masks[mask_id].type then
+	if not tweak_data.blackmarket.masks[managers.blackmarket:get_real_mask_id(mask_id)].type then
 		local back_name = as_item and "units/payday2/masks/msk_fps_back_straps/msk_fps_back_straps" or "units/payday2/masks/msk_backside/msk_backside"
 		local backside = World:spawn_unit(Idstring(back_name), pos, rot)
 
@@ -2243,38 +2243,6 @@ function MenuSceneManager:set_character(character_name, force_recreate)
 	end
 
 	self._character_unit:base():set_character_name(character_name)
-
-	if tweak_data.blackmarket.characters[character_id].special_materials then
-		local special_material = nil
-		local special_materials = tweak_data.blackmarket.characters[character_id].special_materials
-
-		for sequence, chance in pairs(special_materials) do
-			if type(chance) == "number" then
-				local rand = math.rand(chance)
-
-				if rand <= 1 then
-					special_material = sequence
-
-					break
-				end
-			end
-		end
-
-		special_material = special_material or table.random(special_materials)
-
-		if managers.blackmarket:equipped_armor_skin() ~= "none" then
-			special_material = special_material .. "_cc"
-		end
-
-		local special_material_ids = Idstring(special_material)
-
-		if not DB:has(Idstring("material_config"), special_material_ids) then
-			print("[MenuSceneManager:set_character] Missing material config", special_material)
-		else
-			self._character_unit:set_material_config(special_material_ids, true)
-		end
-	end
-
 	self:set_character_armor_skin(managers.blackmarket:equipped_armor_skin(), self._character_unit)
 end
 

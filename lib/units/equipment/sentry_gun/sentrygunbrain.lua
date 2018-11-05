@@ -900,3 +900,7 @@ end
 function SentryGunBrain:on_intimidated(amount, aggressor_unit)
 end
 
+function SentryGunBrain:is_hostile()
+	return not self._idle
+end
+

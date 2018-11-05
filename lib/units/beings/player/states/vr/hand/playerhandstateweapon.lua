@@ -35,6 +35,7 @@ function PlayerHandStateWeapon:_link_weapon(weapon_unit)
 
 		self._weapon_unit:base():on_enabled()
 		self._weapon_unit:base():set_visibility_state(true)
+		self._weapon_unit:set_position(self:hsm():position())
 
 		if weapon_unit:base().akimbo then
 			self:hsm():other_hand():set_default_state("akimbo")

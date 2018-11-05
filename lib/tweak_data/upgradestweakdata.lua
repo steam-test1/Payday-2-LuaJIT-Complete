@@ -6570,6 +6570,7 @@ function UpgradesTweakData:_player_definitions()
 		}
 	}
 	self.definitions.player_convert_enemies_max_minions_1 = {
+		incremental = true,
 		name_id = "menu_player_convert_enemies_max_minions",
 		category = "feature",
 		upgrade = {
@@ -6580,6 +6581,7 @@ function UpgradesTweakData:_player_definitions()
 		}
 	}
 	self.definitions.player_convert_enemies_max_minions_2 = {
+		incremental = true,
 		name_id = "menu_player_convert_enemies_max_minions",
 		category = "feature",
 		upgrade = {

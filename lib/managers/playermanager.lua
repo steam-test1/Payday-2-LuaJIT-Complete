@@ -1519,6 +1519,10 @@ function PlayerManager:_check_damage_to_hot(t, unit, damage_info)
 		return
 	end
 
+	if not unit:brain():is_hostile() then
+		return
+	end
+
 	local player_armor = managers.blackmarket:equipped_armor(data.works_with_armor_kit, true)
 
 	if not table.contains(data.armors_allowed or {}, player_armor) then
@@ -1535,11 +1539,11 @@ function PlayerManager:unaquire_equipment(upgrade, id)
 		return
 	end
 
-	local is_equipped = managers.player:equipment_in_slot(upgrade.slot) == id
+	local in_slot = self:equipment_slot(id)
 	self._global.equipment[id] = nil
 
-	if is_equipped then
-		self:set_equipment_in_slot(nil, upgrade.slot)
+	if in_slot then
+		self:set_equipment_in_slot(nil, in_slot)
 		self:_verify_equipment_kit(false)
 	end
 
@@ -2662,10 +2666,10 @@ function PlayerManager:equipment_slots()
 	return self._global.kit.equipment_slots
 end
 
-function PlayerManager:has_equipment_in_any_slot(equipment)
+function PlayerManager:equipment_slot(equipment)
 	for i = 1, #self._global.kit.equipment_slots, 1 do
 		if self._global.kit.equipment_slots[i] == equipment then
-			return true
+			return i
 		end
 	end
 
@@ -4016,6 +4020,8 @@ function PlayerManager:add_sentry_gun(num, sentry_type)
 	if self._equipment.selected_index and self._equipment.selections[self._equipment.selected_index].equipment ~= sentry_type and Application:digest_value(self._equipment.selections[self._equipment.selected_index].amount[1], false) == 0 then
 		self._equipment.selected_index = index
 		update_hud = true
+	elseif _G.IS_VR then
+		self._equipment.selected_index = index
 	end
 
 	if update_hud and equipment then

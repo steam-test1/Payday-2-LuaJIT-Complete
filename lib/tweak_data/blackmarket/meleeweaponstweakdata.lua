@@ -1965,7 +1965,7 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.nin.melee_damage_delay = 0.1
 	self.melee_weapons.ballistic = deep_clone(self.melee_weapons.kabar)
 	self.melee_weapons.ballistic.name_id = "bm_melee_ballistic"
-	self.melee_weapons.ballistic.dlc = "nil"
+	self.melee_weapons.ballistic.dlc = nil
 	self.melee_weapons.ballistic.texture_bundle_folder = "coco"
 	self.melee_weapons.ballistic.free = nil
 	self.melee_weapons.ballistic.anim_global_param = "melee_ballistic"

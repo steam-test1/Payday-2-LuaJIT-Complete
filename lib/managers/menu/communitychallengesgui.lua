@@ -1,3 +1,6 @@
+require("lib/utils/gui/GUIObjectWrapper")
+require("lib/utils/gui/FineText")
+
 Tween = Tween or class()
 
 function Tween:init(target, name, opts)
@@ -330,8 +333,9 @@ function CommunityChallengesGui:init(parent)
 	self.super.init(self, panel)
 
 	self._panel = panel
+	local width = 346
 
-	panel:set_size(346, 100)
+	panel:set_size(width, 100)
 
 	local font = tweak_data.menu.pd2_small_font
 	local font_size = tweak_data.menu.pd2_small_font_size
@@ -366,7 +370,7 @@ function CommunityChallengesGui:init(parent)
 		color = color_text
 	})
 	self._info_text = FineText:new(self._stats_container, {
-		text = managers.localization:to_upper_text("menu_community_challenges_info", {bonus = CommunityChallengesManager.PER_CHALLENGE_BONUS * 100}),
+		text = managers.localization:to_upper_text("menu_community_challenges_info_ended", {bonus = CommunityChallengesManager.PER_CHALLENGE_BONUS * 100}),
 		font = tweak_data.menu.pd2_tiny_font,
 		font_size = tweak_data.menu.pd2_tiny_font_size,
 		color = color_muted

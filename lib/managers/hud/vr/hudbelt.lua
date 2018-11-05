@@ -699,8 +699,24 @@ function HUDBelt:init(ws)
 	self._grid_box_sizes_clbk = callback(self, self, "_grid_box_sizes_changed")
 
 	managers.vr:add_setting_changed_callback("belt_box_sizes", self._grid_box_sizes_clbk)
+
+	if not self:verify_belt_ids(managers.vr:get_setting("belt_layout")) or not self:verify_belt_ids(managers.vr:get_setting("belt_box_sizes")) then
+		managers.vr:reset_setting("belt_layout")
+		managers.vr:reset_setting("belt_box_sizes")
+	end
+
 	self:layout_grid(managers.vr:get_setting("belt_layout"))
 	self:set_box_sizes(managers.vr:get_setting("belt_box_sizes"))
+end
+
+function HUDBelt:verify_belt_ids(layout)
+	for id, _ in pairs(layout) do
+		if not self._interactions[id] then
+			return false
+		end
+	end
+
+	return true
 end
 
 function HUDBelt:destroy()

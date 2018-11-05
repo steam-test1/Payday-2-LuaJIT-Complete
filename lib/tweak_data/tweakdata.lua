@@ -1945,7 +1945,15 @@ Play the full version soon to get your full PAYDAY!]],
 			fire = false
 		},
 		environment_fire = {fire = false},
-		dynamite = {fire = false}
+		dynamite = {fire = false},
+		launcher_frag_arbiter = {
+			explosion = false,
+			fire = false
+		},
+		launcher_m203 = {
+			explosion = false,
+			fire = false
+		}
 	}
 	self.projectiles = {frag = {}}
 	self.projectiles.frag.damage = 160

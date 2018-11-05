@@ -4717,7 +4717,8 @@ function AchievementsTweakData:init(tweak_data)
 				"framing_frame",
 				"dark",
 				"friend",
-				"fish"
+				"fish",
+				"tag"
 			}
 		},
 		trophy_bank_heists = {

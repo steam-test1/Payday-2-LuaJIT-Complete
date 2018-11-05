@@ -204,7 +204,7 @@ function MutatorExplodingEnemies:_detonate(cop_damage, attack_data)
 		local normal = attack_data.attack_dir or math.UP
 		local slot_mask = managers.slot:get_mask("explosion_targets")
 		local curve_pow = 4
-		local unit_tweak = cop_damage._unit:base()._tweak_table
+		local unit_tweak = alive(cop_damage._unit) and cop_damage._unit:base()._tweak_table
 
 		if unit_tweak and unit_tweak == "tank" and self:use_nuclear_bulldozers() then
 			range = 2000

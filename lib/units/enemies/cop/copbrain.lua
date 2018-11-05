@@ -882,6 +882,10 @@ function CopBrain:clbk_group_member_attention_identified(member_unit, attention_
 	self._current_logic.identify_attention_obj_instant(self._logic_data, attention_u_key)
 end
 
+function CopBrain:is_hostile()
+	return self._current_logic_name ~= "intimidated" and not self._logic_data.is_converted
+end
+
 function CopBrain:convert_to_criminal(mastermind_criminal)
 	self._logic_data.is_converted = true
 	self._logic_data.group = nil
@@ -958,6 +962,7 @@ function CopBrain:convert_to_criminal(mastermind_criminal)
 
 	self._unit:brain():action_request(action_data)
 	self._unit:sound():say("cn1", true, nil)
+	managers.network:session():send_to_peers_synched("sync_unit_converted", self._unit)
 end
 
 function CopBrain:on_surrender_chance()

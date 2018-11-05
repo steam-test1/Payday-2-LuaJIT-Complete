@@ -89,7 +89,7 @@ function MutatorShotgunTweak:modify_value(id, value)
 			return math.min(value, 16)
 		end
 	elseif id == "ShotgunBase:_fire_raycast" then
-		if value and value.hit_enemy and value.hit_enemy.type == "death" then
+		if value and value.hit_enemy and value.type == "death" then
 			value.type = "death"
 		end
 
