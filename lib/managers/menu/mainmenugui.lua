@@ -452,7 +452,7 @@ function MainMenuGui:create_box(params, index)
 		local gui_object = nil
 
 		if background_image then
-			gui_object = bg_select_area and select_object or panel:bitmap({
+			gui_object = (bg_select_area and select_object or panel):bitmap({
 				layer = 0,
 				texture = background_image,
 				color = unselected_color,
@@ -460,7 +460,7 @@ function MainMenuGui:create_box(params, index)
 				visible = not selectable
 			})
 		else
-			gui_object = bg_select_area and select_object or panel:rect({
+			gui_object = (bg_select_area and select_object or panel):rect({
 				layer = 0,
 				color = unselected_color,
 				blend_mode = unselected_blend_mode,

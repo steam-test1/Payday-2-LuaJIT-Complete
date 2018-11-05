@@ -573,7 +573,7 @@ function CoreCutsceneEditor:_create_sequencer(parent_frame)
 	self._sequencer_panel = EWS:Panel(parent_frame)
 	local panel_sizer = EWS:BoxSizer("VERTICAL")
 
-	self._sequencer_panel:set_background_colour(EWS:get_system_colour("3DSHADOW") * 255:unpack())
+	self._sequencer_panel:set_background_colour((EWS:get_system_colour("3DSHADOW") * 255):unpack())
 	self._sequencer_panel:set_sizer(panel_sizer)
 
 	self._sequencer = CoreCutsceneSequencerPanel:new(self._sequencer_panel)
@@ -590,12 +590,12 @@ function CoreCutsceneEditor:_create_attribute_panel(parent_frame)
 	self._attribute_panel = EWS:Panel(parent_frame)
 	local panel_sizer = EWS:BoxSizer("VERTICAL")
 
-	self._attribute_panel:set_background_colour(EWS:get_system_colour("3DSHADOW") * 255:unpack())
+	self._attribute_panel:set_background_colour((EWS:get_system_colour("3DSHADOW") * 255):unpack())
 	self._attribute_panel:set_sizer(panel_sizer)
 
 	self._attribute_panel_area = EWS:ScrolledWindow(self._attribute_panel, "", "")
 
-	self._attribute_panel_area:set_background_colour(EWS:get_system_colour("3DFACE") * 255:unpack())
+	self._attribute_panel_area:set_background_colour((EWS:get_system_colour("3DFACE") * 255):unpack())
 	self:_refresh_attribute_panel()
 	panel_sizer:add(self._attribute_panel_area, 1, 1, "LEFT,BOTTOM,EXPAND")
 end
@@ -679,7 +679,7 @@ end
 
 function CoreCutsceneEditor:_sizer_with_editable_attributes_for_current_context(parent_frame)
 	local selected_keys = self._sequencer:selected_keys()
-	local displayed_item = #selected_keys == 1 and selected_keys[1] or responder(nil):metadata()
+	local displayed_item = (#selected_keys == 1 and selected_keys[1] or responder(nil)):metadata()
 
 	if displayed_item and displayed_item.populate_sizer_with_editable_attributes then
 		local sizer = EWS:BoxSizer("VERTICAL")
@@ -701,7 +701,7 @@ function CoreCutsceneEditor:_create_selected_footage_track(parent_frame)
 	local panel = EWS:Panel(parent_frame)
 	local panel_sizer = EWS:BoxSizer("VERTICAL")
 
-	panel:set_background_colour(EWS:get_system_colour("3DSHADOW") * 255:unpack())
+	panel:set_background_colour((EWS:get_system_colour("3DSHADOW") * 255):unpack())
 	panel:set_sizer(panel_sizer)
 
 	self._selected_footage_track_scrolled_area = EWS:ScrolledWindow(panel, "", "HSCROLL,NO_BORDER,ALWAYS_SHOW_SB")
@@ -1178,7 +1178,7 @@ function CoreCutsceneEditor:end_update(time, delta_time)
 		end
 
 		local selected_items = self._sequencer:selected_keys()
-		local selected_item = #selected_items == 1 and selected_items[1] or responder(nil):metadata()
+		local selected_item = (#selected_items == 1 and selected_items[1] or responder(nil)):metadata()
 
 		if selected_item and selected_item.update_gui then
 			selected_item:update_gui(time, delta_time, self._player)
@@ -2082,7 +2082,7 @@ function CoreCutsceneEditor:_draw_joint(start_object, end_object, radius)
 		if start_position then
 			self:_pen():set(Color(0.5, 0.5, 0.5))
 
-			local joint_normal = end_position - start_position:normalized()
+			local joint_normal = (end_position - start_position):normalized()
 
 			self:_pen():cone(end_position - joint_normal * radius, start_position + joint_normal * radius, radius, 4, 4)
 		else

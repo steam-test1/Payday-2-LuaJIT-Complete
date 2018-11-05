@@ -1117,7 +1117,7 @@ function SequenceManager:do_area_damage(damage_type, attack_unit, pos, range, co
 
 			if body_extension then
 				local hit_pos = body:center_of_mass()
-				local dir = hit_pos - pos:normalized()
+				local dir = (hit_pos - pos):normalized()
 				local unit_extension = unit:damage()
 				local body_damage = nil
 				body_damage = get_damage_func and get_damage_func(unit, body, dir, hit_pos, damage_type, attack_unit, pos, range, constant_damage, damage, velocity, ignore_unit, direct_attack_unit, ignore_mask) or constant_damage and damage or damage * (1 - math.clamp(get_distance_to_body(body, pos) / range, 0, 1))
@@ -1156,9 +1156,9 @@ function SequenceManager:do_area_damage(damage_type, attack_unit, pos, range, co
 			local hit, hit_pos = self:is_hit_by_area_damage(unit, pos, ray_caller, ignore_unit)
 
 			if hit then
-				local dir = unit:position() - pos:normalized()
+				local dir = (unit:position() - pos):normalized()
 				local unit_damage = nil
-				unit_damage = get_damage_func and get_damage_func(unit, nil, dir, hit_pos, damage_type, attack_unit, pos, range, constant_damage, damage, velocity, ignore_unit, direct_attack_unit, ignore_mask) or constant_damage and damage or damage * (1 - math.clamp(hit_pos - pos:length() / range, 0, 1))
+				unit_damage = get_damage_func and get_damage_func(unit, nil, dir, hit_pos, damage_type, attack_unit, pos, range, constant_damage, damage, velocity, ignore_unit, direct_attack_unit, ignore_mask) or constant_damage and damage or damage * (1 - math.clamp((hit_pos - pos):length() / range, 0, 1))
 				local dead, damage = self:do_area_damage_on_unit(unit, nil, unit_extension, damage_type, attack_unit, -dir, pos, dir, unit_damage, velocity, ignore_unit, direct_attack_unit)
 				hit_being_map[unit_key] = unit
 
@@ -1676,7 +1676,7 @@ function SequenceEnvironment.angle(v1, v2, up)
 end
 
 function SequenceEnvironment.pos_side(obj, pos)
-	local dir = pos - obj:position():normalized()
+	local dir = (pos - obj:position()):normalized()
 
 	return SequenceEnvironment.dir_side(obj, dir)
 end
@@ -2652,7 +2652,7 @@ function ZoneFilterElement:is_allowed(env)
 	local obj = obj_name and env.dest_unit:get_object(obj_name:id())
 
 	if obj then
-		local zone_vector = env.pos - obj:position():rotate_with(obj:rotation():inverse())
+		local zone_vector = (env.pos - obj:position()):rotate_with(obj:rotation():inverse())
 		local allowed = true
 
 		for _, func in ipairs(self._func_list) do
@@ -3709,7 +3709,7 @@ function AreaDamageElement:get_falloff_preset1_damage(params, unit, body, dir, h
 end
 
 function AreaDamageElement:get_distance(body, hit_pos, pos)
-	return body and get_distance_to_body(body, pos) or hit_pos - pos:length()
+	return body and get_distance_to_body(body, pos) or (hit_pos - pos):length()
 end
 AreaDamageKeyElement = AreaDamageKeyElement or class(BaseElement)
 
@@ -5019,7 +5019,7 @@ function ProjectDecalElement:activate_callback(env)
 		end
 
 		if ray_distance then
-			local ray = ignore_unit or World:raycast("ray", position, position + direction * ray_distance, "slot_mask", slotmask)
+			local ray = (ignore_unit or World):raycast("ray", position, position + direction * ray_distance, "slot_mask", slotmask)
 
 			if ray then
 				position = ray.position

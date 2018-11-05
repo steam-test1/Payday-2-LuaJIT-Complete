@@ -116,7 +116,7 @@ function BrushLayer:reposition_all()
 							local brush_header = self:add_brush_header(name)
 							local correct_pos = brush_header:spawn_brush(ray.position, rotations[counter])
 							self._amount_dirty = true
-							local nudge_length = ray.position - correct_pos:length()
+							local nudge_length = (ray.position - correct_pos):length()
 
 							if nudge_length > 0.05 then
 								nudged_units = nudged_units + 1
@@ -259,7 +259,7 @@ function BrushLayer:update(time, rel_time)
 
 		Application:draw_circle(tip, self._brush_size, 0, 0.7, 0, ray.normal)
 	else
-		local ray_normal = to - from:normalized()
+		local ray_normal = (to - from):normalized()
 		base = from + ray_normal * 1000
 		tip = from + ray_normal * 10000
 		local tunnel = 9000

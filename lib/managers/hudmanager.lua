@@ -853,7 +853,7 @@ function HUDManager:add_waypoint(id, data)
 		name = "arrow" .. id,
 		texture = arrow_icon,
 		texture_rect = arrow_texture_rect,
-		color = data.color or Color.white:with_alpha(0.75),
+		color = (data.color or Color.white):with_alpha(0.75),
 		w = arrow_texture_rect[3],
 		h = arrow_texture_rect[4],
 		blend_mode = data.blend_mode

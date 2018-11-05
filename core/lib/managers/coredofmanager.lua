@@ -126,7 +126,7 @@ function DOFManager:remove_expired_effects(t, dt)
 
 	while id do
 		if effect.prog_data.finish_t then
-			local eff_t = effect.preset.timer or self._game_timer:time()
+			local eff_t = (effect.preset.timer or self._game_timer):time()
 
 			if effect.prog_data.finish_t <= eff_t then
 				self:intern_remove_effect(id)
@@ -314,7 +314,7 @@ function DOFManager:stop(id, instant)
 				self._current_effect = nil
 			end
 		else
-			local t = effect.preset.timer or self._game_timer:time()
+			local t = (effect.preset.timer or self._game_timer):time()
 			effect.prog_data.sustain_end = t
 			effect.prog_data.finish_t = t + (effect.preset.fade_out or 0)
 		end

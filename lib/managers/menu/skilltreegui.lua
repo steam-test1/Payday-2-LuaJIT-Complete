@@ -2895,10 +2895,10 @@ function SkillTreeGui:set_skilltree_page_active(active)
 
 		skilltree_text:set_color(active and tweak_data.screen_colors.text or tweak_data.screen_colors.button_stage_3)
 		specialization_text:set_color(active and tweak_data.screen_colors.button_stage_3 or tweak_data.screen_colors.text)
-		title_bg:set_text(active and skilltree_text or specialization_text:text())
+		title_bg:set_text((active and skilltree_text or specialization_text):text())
 
-		local wx = active and skilltree_text or specialization_text:world_x()
-		local wy = active and skilltree_text or specialization_text:world_center_y()
+		local wx = (active and skilltree_text or specialization_text):world_x()
+		local wy = (active and skilltree_text or specialization_text):world_center_y()
 		local x, y = managers.gui_data:safe_to_full_16_9(wx, wy)
 
 		title_bg:set_world_left(x)

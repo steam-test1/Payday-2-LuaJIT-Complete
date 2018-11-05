@@ -809,7 +809,7 @@ function PlayerStandard:_update_movement(t, dt)
 			local fwd_dot = jump_dir:dot(input_move_vec)
 
 			if fwd_dot < jump_vel then
-				local sustain_dot = input_move_vec:normalized() * jump_vel:dot(jump_dir)
+				local sustain_dot = (input_move_vec:normalized() * jump_vel):dot(jump_dir)
 				local new_move_vec = input_move_vec + jump_dir * (sustain_dot - fwd_dot)
 
 				mvector3.step(achieved_walk_vel, self._last_velocity_xy, new_move_vec, 700 * dt)
@@ -3478,7 +3478,7 @@ function PlayerStandard:_start_action_zipline(t, input, zipline_unit)
 		self._state_data.zipline_data.start_pos = self._unit:position()
 		self._state_data.zipline_data.end_pos = self._fwd_ray.position
 		self._state_data.zipline_data.slack = math.max(0, math.abs(self._state_data.zipline_data.start_pos.z - self._state_data.zipline_data.end_pos.z) / 3)
-		self._state_data.zipline_data.tot_t = self._state_data.zipline_data.end_pos - self._state_data.zipline_data.start_pos:length() / 1000
+		self._state_data.zipline_data.tot_t = (self._state_data.zipline_data.end_pos - self._state_data.zipline_data.start_pos):length() / 1000
 	end
 
 	self._state_data.zipline_data.t = 0
@@ -3600,7 +3600,7 @@ function PlayerStandard:set_stance_switch_delay(delay)
 end
 
 function PlayerStandard:_is_underbarrel_attachment_active(weapon_unit)
-	local weapon = weapon_unit or self._equipped_unit:base()
+	local weapon = (weapon_unit or self._equipped_unit):base()
 	local underbarrel_names = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("underbarrel", weapon._factory_id, weapon._blueprint)
 
 	if underbarrel_names and underbarrel_names[1] then
