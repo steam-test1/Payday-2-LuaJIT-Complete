@@ -227,11 +227,14 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		w = radial_health_panel:w(),
 		h = radial_health_panel:h()
 	})
-	local radial_ability_panel = radial_health_panel:panel({name = "radial_ability"})
+	local radial_ability_panel = radial_health_panel:panel({
+		visible = false,
+		name = "radial_ability"
+	})
 	local radial_ability_meter = radial_ability_panel:bitmap({
 		blend_mode = "add",
 		name = "ability_meter",
-		texture = "guis/dlcs/chico/textures/pd2/hud_fearless",
+		texture = "guis/textures/pd2/hud_fearless",
 		render_template = "VertexColorTexturedRadial",
 		layer = 5,
 		color = Color(1, 0, 0, 0),
@@ -241,7 +244,6 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 	local radial_ability_icon = radial_ability_panel:bitmap({
 		blend_mode = "add",
 		name = "ability_icon",
-		visible = false,
 		alpha = 1,
 		layer = 5,
 		w = radial_size * 0.5,

@@ -1165,71 +1165,85 @@ function MissionEndState:chk_complete_heist_achievements()
 				equipped_pass = not achievement_data.equipped or false
 
 				if achievement_data.equipped then
-					for category, data in pairs(achievement_data.equipped) do
+					equipped_pass = true
+
+					for category, equipped_data in pairs(achievement_data.equipped) do
+						local category_pass = false
 						weapon_data = managers.blackmarket:equipped_item(category)
 
-						if (category == "grenades" or category == "armors") and data == weapon_data then
-							equipped_pass = true
-						elseif weapon_data and weapon_data.weapon_id and (data.weapon_id and data.weapon_id == weapon_data.weapon_id or data.category and data.category == tweak_data:get_raw_value("weapon", weapon_data.weapon_id, "categories", 1)) then
-							equipped_pass = true
+						if (category == "grenades" or category == "armors") and equipped_data == weapon_data then
+							category_pass = true
+						elseif weapon_data and weapon_data.weapon_id then
+							local weapon_match = equipped_data.weapon_id and equipped_data.weapon_id == weapon_data.weapon_id
+							local weapon_category_match = equipped_data.category and table.contains(tweak_data:get_raw_value("weapon", weapon_data.weapon_id, "categories"), equipped_data.category)
 
-							if data.blueprint and weapon_data.blueprint then
-								for _, part_or_parts in ipairs(data.blueprint) do
-									if type(part_or_parts) == "string" then
-										if not table.contains(weapon_data.blueprint, part_or_parts) then
-											equipped_pass = false
+							if weapon_match or weapon_category_match then
+								category_pass = true
 
-											break
-										end
-									else
-										local found_one = false
-
-										for _, part_id in ipairs(part_or_parts) do
-											if table.contains(weapon_data.blueprint, part_id) then
-												found_one = true
+								if equipped_data.blueprint and weapon_data.blueprint then
+									for _, part_or_parts in ipairs(equipped_data.blueprint) do
+										if type(part_or_parts) == "string" then
+											if not table.contains(weapon_data.blueprint, part_or_parts) then
+												category_pass = false
 
 												break
 											end
-										end
+										else
+											local found_one = false
 
-										if not found_one then
-											equipped_pass = false
-
-											break
-										end
-									end
-								end
-							end
-
-							if data.blueprint_part_data and weapon_data.blueprint then
-								for key, req_value in pairs(data.blueprint_part_data) do
-									local found_one = false
-
-									for i, part_id in ipairs(weapon_data.blueprint) do
-										local part_data = tweak_data.weapon.factory.parts[part_id]
-
-										if part_data then
-											if type(req_value) == "table" then
-												if table.contains(req_value, part_data[key]) then
+											for _, part_id in ipairs(part_or_parts) do
+												if table.contains(weapon_data.blueprint, part_id) then
 													found_one = true
 
 													break
 												end
-											elseif part_data[key] == req_value then
-												found_one = true
+											end
+
+											if not found_one then
+												category_pass = false
 
 												break
 											end
 										end
 									end
+								end
 
-									if not found_one then
-										equipped_pass = false
+								if equipped_data.blueprint_part_data and weapon_data.blueprint then
+									for key, req_value in pairs(equipped_data.blueprint_part_data) do
+										local found_one = false
 
-										break
+										for i, part_id in ipairs(weapon_data.blueprint) do
+											local part_data = tweak_data.weapon.factory.parts[part_id]
+
+											if part_data then
+												if type(req_value) == "table" then
+													if table.contains(req_value, part_data[key]) then
+														found_one = true
+
+														break
+													end
+												elseif part_data[key] == req_value then
+													found_one = true
+
+													break
+												end
+											end
+										end
+
+										if not found_one then
+											category_pass = false
+
+											break
+										end
 									end
 								end
 							end
+						end
+
+						if not category_pass then
+							equipped_pass = false
+
+							break
 						end
 					end
 				end

@@ -127,6 +127,20 @@ function UiPlacer:add_right(item, padding)
 	return item
 end
 
+function UiPlacer:add_right_center(item, padding)
+	padding = self:_padd_x(padding)
+
+	if item then
+		item:set_left(self._right + padding)
+		item:set_center_y((self._top + self._bottom) / 2)
+		self:set_at_from(item)
+	else
+		return self:set_at(self._right + padding, nil)
+	end
+
+	return item
+end
+
 function UiPlacer:add_left(item, padding)
 	padding = self:_padd_x(padding)
 
@@ -135,6 +149,20 @@ function UiPlacer:add_left(item, padding)
 		self:set_at_from(item)
 	else
 		return self:set_at(self._left - padding, self._top)
+	end
+
+	return item
+end
+
+function UiPlacer:add_left_center(item, padding)
+	padding = self:_padd_x(padding)
+
+	if item then
+		item:set_right(self._left - padding)
+		item:set_center_y((self._top + self._bottom) / 2)
+		self:set_at_from(item)
+	else
+		return self:set_at(self._left - padding, nil)
 	end
 
 	return item
@@ -205,6 +233,10 @@ function UiPlacer:add_row(item, padding_x, padding_y)
 	self:new_row(padding_x, padding_y)
 
 	return self:add_right(item)
+end
+
+function UiPlacer:is_first_in_row()
+	return self._first
 end
 
 function UiPlacer:_push(x, y)

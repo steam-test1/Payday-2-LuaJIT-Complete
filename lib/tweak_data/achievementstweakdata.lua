@@ -1,5 +1,30 @@
 require("lib/tweak_data/GeneratedAchievementTweakData")
 
+local function get_texture_path(tweak_data, category, id)
+	local td = tweak_data:get_raw_value("blackmarket", category, id)
+	local rtn = {}
+
+	if category == "textures" then
+		rtn.texture = td.texture
+		rtn.render_template = "VertexColorTexturedPatterns"
+	else
+		local guis_catalog = "guis/"
+		local bundle_folder = td.texture_bundle_folder
+
+		if bundle_folder then
+			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
+		end
+
+		rtn.texture = guis_catalog .. "textures/pd2/blackmarket/icons/" .. (category == "weapon_mods" and "mods" or category) .. "/" .. id
+	end
+
+	if not DB:has(Idstring("texture"), Idstring(rtn.texture)) then
+		debug_pause("[Track]", "ERROR TEXTURE PATH", category, id)
+	end
+
+	return rtn
+end
+
 AchievementsTweakData = AchievementsTweakData or class()
 
 function AchievementsTweakData:init(tweak_data)
@@ -3841,10 +3866,16 @@ function AchievementsTweakData:init(tweak_data)
 			used_weapon_category = "pistol",
 			difficulty = deathwish_and_above,
 			jobs = {"kenaz"},
-			equipped = {secondaries = {
-				category = "pistol",
-				blueprint_part_data = {sub_type = "silencer"}
-			}}
+			equipped = {
+				primaries = {
+					category = "pistol",
+					blueprint_part_data = {sub_type = "silencer"}
+				},
+				secondaries = {
+					category = "pistol",
+					blueprint_part_data = {sub_type = "silencer"}
+				}
+			}
 		},
 		trophy_nightclub_dw = {
 			stealth = true,
@@ -5317,7 +5348,8 @@ function AchievementsTweakData:init(tweak_data)
 				"skulloverkill",
 				"skulloverkillplus",
 				"gitgud_e_wish",
-				"gitgud_sm_wish"
+				"gitgud_sm_wish",
+				"dnm"
 			}
 		},
 		funding_father = {
@@ -5784,32 +5816,6 @@ function AchievementsTweakData:init(tweak_data)
 
 	self:_init_visual(tweak_data)
 end
-
-local function get_texture_path(tweak_data, category, id)
-	local td = tweak_data:get_raw_value("blackmarket", category, id)
-	local rtn = {}
-
-	if category == "textures" then
-		rtn.texture = td.texture
-		rtn.render_template = "VertexColorTexturedPatterns"
-	else
-		local guis_catalog = "guis/"
-		local bundle_folder = td.texture_bundle_folder
-
-		if bundle_folder then
-			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-		end
-
-		rtn.texture = guis_catalog .. "textures/pd2/blackmarket/icons/" .. (category == "weapon_mods" and "mods" or category) .. "/" .. id
-	end
-
-	if not DB:has(Idstring("texture"), Idstring(rtn.texture)) then
-		debug_pause("[Track]", "ERROR TEXTURE PATH", category, id)
-	end
-
-	return rtn
-end
-
 local tracking = {
 	second = "second",
 	realtime = "realtime",

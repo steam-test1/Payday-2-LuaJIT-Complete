@@ -1510,8 +1510,6 @@ function PlayerManager:unaquire_equipment(upgrade, id)
 end
 
 function PlayerManager:aquire_upgrade(upgrade)
-	print("[Debug] PlayerManager:aquire_upgrade", upgrade.upgrade)
-
 	self._global.upgrades[upgrade.category] = self._global.upgrades[upgrade.category] or {}
 	self._global.upgrades[upgrade.category][upgrade.upgrade] = math.max(upgrade.value, self._global.upgrades[upgrade.category][upgrade.upgrade] or 0)
 	local value = tweak_data.upgrades.values[upgrade.category][upgrade.upgrade][upgrade.value]

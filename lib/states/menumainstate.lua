@@ -115,7 +115,7 @@ function MenuMainState:at_enter(old_state)
 		end
 
 		if not managers.custom_safehouse:unlocked() then
-			if not Global.mission_manager.has_played_tutorial then
+			if not Global.mission_manager.has_played_tutorial and not Global.skip_menu_dialogs then
 
 				local function yes_func()
 					MenuCallbackHandler:play_safehouse({skip_question = true})
@@ -123,7 +123,7 @@ function MenuMainState:at_enter(old_state)
 
 				managers.menu:show_question_start_tutorial({yes_func = yes_func})
 			end
-		elseif not managers.custom_safehouse:has_entered_safehouse() then
+		elseif not managers.custom_safehouse:has_entered_safehouse() and not Global.skip_menu_dialogs then
 
 			local function yes_func()
 				MenuCallbackHandler:play_single_player()

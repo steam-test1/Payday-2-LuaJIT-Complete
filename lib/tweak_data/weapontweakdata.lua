@@ -1,5 +1,18 @@
 require("lib/tweak_data/WeaponFactoryTweakData")
 
+local PICKUP = {
+	SNIPER_HIGH_DAMAGE = 6,
+	SHOTGUN_HIGH_CAPACITY = 4,
+	AR_HIGH_CAPACITY = 2,
+	OTHER = 1,
+	SNIPER_LOW_DAMAGE = 5,
+	AR_MED_CAPACITY = 3
+}
+local SELECTION = {
+	SECONDARY = 1,
+	PRIMARY = 2,
+	UNDERBARREL = 3
+}
 WeaponTweakData = WeaponTweakData or class()
 
 function WeaponTweakData:init(tweak_data)
@@ -289,7 +302,7 @@ end
 
 function WeaponTweakData:_init_data_c45_npc()
 	self.c45_npc.sounds.prefix = "c45_npc"
-	self.c45_npc.use_data.selection_index = 1
+	self.c45_npc.use_data.selection_index = SELECTION.SECONDARY
 	self.c45_npc.DAMAGE = 1
 	self.c45_npc.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.c45_npc.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -300,12 +313,12 @@ function WeaponTweakData:_init_data_c45_npc()
 	self.c45_npc.alert_size = 2500
 	self.c45_npc.suppression = 1
 	self.colt_1911_primary_npc = deep_clone(self.c45_npc)
-	self.colt_1911_primary_npc.use_data.selection_index = 2
+	self.colt_1911_primary_npc.use_data.selection_index = SELECTION.PRIMARY
 end
 
 function WeaponTweakData:_init_data_x_c45_npc()
 	self.x_c45_npc.sounds.prefix = "c45_npc"
-	self.x_c45_npc.use_data.selection_index = 2
+	self.x_c45_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.x_c45_npc.DAMAGE = 1
 	self.x_c45_npc.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.x_c45_npc.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -319,7 +332,7 @@ end
 
 function WeaponTweakData:_init_data_beretta92_npc()
 	self.beretta92_npc.sounds.prefix = "beretta_npc"
-	self.beretta92_npc.use_data.selection_index = 1
+	self.beretta92_npc.use_data.selection_index = SELECTION.SECONDARY
 	self.beretta92_npc.DAMAGE = 1
 	self.beretta92_npc.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.beretta92_npc.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -333,7 +346,7 @@ end
 
 function WeaponTweakData:_init_data_glock_18_npc()
 	self.glock_18_npc.sounds.prefix = "g18c_npc"
-	self.glock_18_npc.use_data.selection_index = 1
+	self.glock_18_npc.use_data.selection_index = SELECTION.SECONDARY
 	self.glock_18_npc.DAMAGE = 1
 	self.glock_18_npc.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.glock_18_npc.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -348,7 +361,7 @@ end
 
 function WeaponTweakData:_init_data_raging_bull_npc()
 	self.raging_bull_npc.sounds.prefix = "rbull_npc"
-	self.raging_bull_npc.use_data.selection_index = 1
+	self.raging_bull_npc.use_data.selection_index = SELECTION.SECONDARY
 	self.raging_bull_npc.DAMAGE = 4
 	self.raging_bull_npc.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.raging_bull_npc.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -362,7 +375,7 @@ end
 
 function WeaponTweakData:_init_data_m4_npc()
 	self.m4_npc.sounds.prefix = "m4_npc"
-	self.m4_npc.use_data.selection_index = 2
+	self.m4_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.m4_npc.DAMAGE = 1
 	self.m4_npc.muzzleflash = "effects/payday2/particles/weapons/556_auto"
 	self.m4_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -377,7 +390,7 @@ end
 
 function WeaponTweakData:_init_data_ak47_npc()
 	self.ak47_npc.sounds.prefix = "akm_npc"
-	self.ak47_npc.use_data.selection_index = 2
+	self.ak47_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.ak47_npc.DAMAGE = 3
 	self.ak47_npc.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.ak47_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -391,7 +404,7 @@ end
 
 function WeaponTweakData:_init_data_m14_npc()
 	self.m14_npc.sounds.prefix = "m14_npc"
-	self.m14_npc.use_data.selection_index = 2
+	self.m14_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.m14_npc.DAMAGE = 4
 	self.m14_npc.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.m14_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -405,7 +418,7 @@ end
 
 function WeaponTweakData:_init_data_m14_sniper_npc()
 	self.m14_sniper_npc.sounds.prefix = "sniper_npc"
-	self.m14_sniper_npc.use_data.selection_index = 2
+	self.m14_sniper_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.m14_sniper_npc.DAMAGE = 2
 	self.m14_sniper_npc.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.m14_sniper_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -424,7 +437,7 @@ end
 
 function WeaponTweakData:_init_data_r870_npc()
 	self.r870_npc.sounds.prefix = "remington_npc"
-	self.r870_npc.use_data.selection_index = 2
+	self.r870_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.r870_npc.DAMAGE = 5
 	self.r870_npc.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.r870_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug_semi"
@@ -441,7 +454,7 @@ end
 
 function WeaponTweakData:_init_data_mossberg_npc()
 	self.mossberg_npc.sounds.prefix = "mossberg_npc"
-	self.mossberg_npc.use_data.selection_index = 2
+	self.mossberg_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.mossberg_npc.DAMAGE = 6
 	self.mossberg_npc.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.mossberg_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug_semi"
@@ -457,7 +470,7 @@ end
 
 function WeaponTweakData:_init_data_mp5_npc()
 	self.mp5_npc.sounds.prefix = "mp5_npc"
-	self.mp5_npc.use_data.selection_index = 1
+	self.mp5_npc.use_data.selection_index = SELECTION.SECONDARY
 	self.mp5_npc.DAMAGE = 1
 	self.mp5_npc.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.mp5_npc.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -478,7 +491,7 @@ end
 
 function WeaponTweakData:_init_data_mac11_npc()
 	self.mac11_npc.sounds.prefix = "mp5_npc"
-	self.mac11_npc.use_data.selection_index = 1
+	self.mac11_npc.use_data.selection_index = SELECTION.SECONDARY
 	self.mac11_npc.DAMAGE = 1
 	self.mac11_npc.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.mac11_npc.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -496,7 +509,7 @@ end
 
 function WeaponTweakData:_init_data_g36_npc()
 	self.g36_npc.sounds.prefix = "g36_npc"
-	self.g36_npc.use_data.selection_index = 2
+	self.g36_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.g36_npc.DAMAGE = 3
 	self.g36_npc.muzzleflash = "effects/payday2/particles/weapons/556_auto"
 	self.g36_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -510,7 +523,7 @@ end
 
 function WeaponTweakData:_init_data_mp9_npc()
 	self.mp9_npc.sounds.prefix = "mp9_npc"
-	self.mp9_npc.use_data.selection_index = 1
+	self.mp9_npc.use_data.selection_index = SELECTION.SECONDARY
 	self.mp9_npc.DAMAGE = 1
 	self.mp9_npc.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.mp9_npc.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -526,7 +539,7 @@ end
 
 function WeaponTweakData:_init_data_saiga_npc()
 	self.saiga_npc.sounds.prefix = "saiga_npc"
-	self.saiga_npc.use_data.selection_index = 2
+	self.saiga_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.saiga_npc.DAMAGE = 3
 	self.saiga_npc.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.saiga_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug"
@@ -813,7 +826,7 @@ end
 
 function WeaponTweakData:_init_data_s552_npc()
 	self.s552_npc.sounds.prefix = "sig552_npc"
-	self.s552_npc.use_data.selection_index = 2
+	self.s552_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.s552_npc.DAMAGE = 2
 	self.s552_npc.muzzleflash = "effects/payday2/particles/weapons/556_auto"
 	self.s552_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -827,7 +840,7 @@ end
 
 function WeaponTweakData:_init_data_scar_npc()
 	self.scar_npc.sounds.prefix = "scar_npc"
-	self.scar_npc.use_data.selection_index = 2
+	self.scar_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.scar_npc.DAMAGE = 2
 	self.scar_npc.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.scar_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -841,7 +854,7 @@ end
 
 function WeaponTweakData:_init_data_hk21_npc()
 	self.hk21_npc.sounds.prefix = "hk23e_npc"
-	self.hk21_npc.use_data.selection_index = 2
+	self.hk21_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.hk21_npc.DAMAGE = 2
 	self.hk21_npc.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
 	self.hk21_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
@@ -855,7 +868,7 @@ end
 
 function WeaponTweakData:_init_data_m249_npc()
 	self.m249_npc.sounds.prefix = "m249_npc"
-	self.m249_npc.use_data.selection_index = 2
+	self.m249_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.m249_npc.DAMAGE = 2
 	self.m249_npc.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
 	self.m249_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
@@ -870,7 +883,7 @@ end
 
 function WeaponTweakData:_init_data_mini_npc()
 	self.mini_npc.sounds.prefix = "minigun_npc"
-	self.mini_npc.use_data.selection_index = 2
+	self.mini_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.mini_npc.DAMAGE = 2
 	self.mini_npc.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
 	self.mini_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
@@ -884,7 +897,7 @@ end
 
 function WeaponTweakData:_init_data_contraband_npc()
 	self.contraband_npc.sounds.prefix = "contraband_npc"
-	self.contraband_npc.use_data.selection_index = 2
+	self.contraband_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.contraband_npc.DAMAGE = 2
 	self.contraband_npc.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.contraband_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -895,7 +908,7 @@ function WeaponTweakData:_init_data_contraband_npc()
 	self.contraband_npc.alert_size = 5000
 	self.contraband_npc.suppression = 1
 	self.contraband_m203_npc.sounds.prefix = "contrabandm203_npc"
-	self.contraband_m203_npc.use_data.selection_index = 2
+	self.contraband_m203_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.contraband_m203_npc.DAMAGE = 2
 	self.contraband_m203_npc.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.contraband_m203_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
@@ -911,7 +924,7 @@ end
 
 function WeaponTweakData:_init_data_c45_crew()
 	self.c45_crew.sounds.prefix = "c45_npc"
-	self.c45_crew.use_data.selection_index = 1
+	self.c45_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.c45_crew.DAMAGE = 1
 	self.c45_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.c45_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -923,12 +936,12 @@ function WeaponTweakData:_init_data_c45_crew()
 	self.c45_crew.alert_size = 2500
 	self.c45_crew.suppression = 1
 	self.colt_1911_primary_crew = deep_clone(self.c45_crew)
-	self.colt_1911_primary_crew.use_data.selection_index = 2
+	self.colt_1911_primary_crew.use_data.selection_index = SELECTION.PRIMARY
 end
 
 function WeaponTweakData:_init_data_x_c45_crew()
 	self.x_c45_crew.sounds.prefix = "c45_npc"
-	self.x_c45_crew.use_data.selection_index = 2
+	self.x_c45_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_c45_crew.DAMAGE = 1
 	self.x_c45_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.x_c45_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -942,7 +955,7 @@ end
 
 function WeaponTweakData:_init_data_beretta92_crew()
 	self.beretta92_crew.sounds.prefix = "beretta_npc"
-	self.beretta92_crew.use_data.selection_index = 1
+	self.beretta92_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.beretta92_crew.DAMAGE = 1
 	self.beretta92_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.beretta92_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -954,12 +967,12 @@ function WeaponTweakData:_init_data_beretta92_crew()
 	self.beretta92_crew.alert_size = 300
 	self.beretta92_crew.suppression = 0.3
 	self.beretta92_primary_crew = deep_clone(self.beretta92_crew)
-	self.beretta92_primary_crew.use_data.selection_index = 2
+	self.beretta92_primary_crew.use_data.selection_index = SELECTION.PRIMARY
 end
 
 function WeaponTweakData:_init_data_glock_18_crew()
 	self.glock_18_crew.sounds.prefix = "g18c_npc"
-	self.glock_18_crew.use_data.selection_index = 1
+	self.glock_18_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.glock_18_crew.DAMAGE = 1
 	self.glock_18_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.glock_18_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -972,12 +985,12 @@ function WeaponTweakData:_init_data_glock_18_crew()
 	self.glock_18_crew.alert_size = 2500
 	self.glock_18_crew.suppression = 0.45
 	self.glock_18c_primary_crew = deep_clone(self.glock_18_crew)
-	self.glock_18c_primary_crew.use_data.selection_index = 2
+	self.glock_18c_primary_crew.use_data.selection_index = SELECTION.PRIMARY
 end
 
 function WeaponTweakData:_init_data_raging_bull_crew()
 	self.raging_bull_crew.sounds.prefix = "rbull_npc"
-	self.raging_bull_crew.use_data.selection_index = 1
+	self.raging_bull_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.raging_bull_crew.DAMAGE = 4
 	self.raging_bull_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.raging_bull_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -989,12 +1002,12 @@ function WeaponTweakData:_init_data_raging_bull_crew()
 	self.raging_bull_crew.alert_size = 5000
 	self.raging_bull_crew.suppression = 1.8
 	self.raging_bull_primary_crew = deep_clone(self.raging_bull_crew)
-	self.raging_bull_primary_crew.use_data.selection_index = 2
+	self.raging_bull_primary_crew.use_data.selection_index = SELECTION.PRIMARY
 end
 
 function WeaponTweakData:_init_data_m4_crew()
 	self.m4_crew.sounds.prefix = "m4_npc"
-	self.m4_crew.use_data.selection_index = 2
+	self.m4_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.m4_crew.DAMAGE = 1.5
 	self.m4_crew.muzzleflash = "effects/payday2/particles/weapons/556_auto"
 	self.m4_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -1006,13 +1019,13 @@ function WeaponTweakData:_init_data_m4_crew()
 	self.m4_crew.alert_size = 5000
 	self.m4_crew.suppression = 1
 	self.m4_secondary_crew = deep_clone(self.m4_crew)
-	self.m4_secondary_crew.use_data.selection_index = 1
+	self.m4_secondary_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.ak47_ass_crew = deep_clone(self.m4_crew)
 end
 
 function WeaponTweakData:_init_data_ak47_crew()
 	self.ak47_crew.sounds.prefix = "akm_npc"
-	self.ak47_crew.use_data.selection_index = 2
+	self.ak47_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.ak47_crew.DAMAGE = 3
 	self.ak47_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.ak47_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -1026,7 +1039,7 @@ end
 
 function WeaponTweakData:_init_data_m14_crew()
 	self.m14_crew.sounds.prefix = "m14_npc"
-	self.m14_crew.use_data.selection_index = 2
+	self.m14_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.m14_crew.DAMAGE = 1.28
 	self.m14_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.m14_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -1041,7 +1054,7 @@ end
 
 function WeaponTweakData:_init_data_r870_crew()
 	self.r870_crew.sounds.prefix = "remington_npc"
-	self.r870_crew.use_data.selection_index = 2
+	self.r870_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.r870_crew.DAMAGE = 8.7
 	self.r870_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.r870_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug_semi"
@@ -1056,7 +1069,7 @@ end
 
 function WeaponTweakData:_init_data_mossberg_crew()
 	self.mossberg_crew.sounds.prefix = "mossberg_npc"
-	self.mossberg_crew.use_data.selection_index = 2
+	self.mossberg_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.mossberg_crew.DAMAGE = 6
 	self.mossberg_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.mossberg_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug_semi"
@@ -1070,7 +1083,7 @@ end
 
 function WeaponTweakData:_init_data_mp5_crew()
 	self.mp5_crew.sounds.prefix = "mp5_npc"
-	self.mp5_crew.use_data.selection_index = 1
+	self.mp5_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.mp5_crew.DAMAGE = 1
 	self.mp5_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.mp5_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1086,7 +1099,7 @@ end
 
 function WeaponTweakData:_init_data_g36_crew()
 	self.g36_crew.sounds.prefix = "g36_npc"
-	self.g36_crew.use_data.selection_index = 2
+	self.g36_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.g36_crew.DAMAGE = 1.28
 	self.g36_crew.muzzleflash = "effects/payday2/particles/weapons/556_auto"
 	self.g36_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -1101,7 +1114,7 @@ end
 
 function WeaponTweakData:_init_data_g17_crew()
 	self.g17_crew.sounds.prefix = "g17_npc"
-	self.g17_crew.use_data.selection_index = 1
+	self.g17_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.g17_crew.DAMAGE = 1
 	self.g17_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.g17_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1116,7 +1129,7 @@ end
 
 function WeaponTweakData:_init_data_mp9_crew()
 	self.mp9_crew.sounds.prefix = "mp9_npc"
-	self.mp9_crew.use_data.selection_index = 1
+	self.mp9_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.mp9_crew.DAMAGE = 1
 	self.mp9_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.mp9_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1136,7 +1149,7 @@ end
 
 function WeaponTweakData:_init_data_olympic_crew()
 	self.olympic_crew.sounds.prefix = "m4_olympic_npc"
-	self.olympic_crew.use_data.selection_index = 1
+	self.olympic_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.olympic_crew.DAMAGE = 1.5
 	self.olympic_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.olympic_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1149,12 +1162,12 @@ function WeaponTweakData:_init_data_olympic_crew()
 	self.olympic_crew.alert_size = 1000
 	self.olympic_crew.suppression = 1
 	self.olympic_primary_crew = deep_clone(self.olympic_crew)
-	self.olympic_primary_crew.use_data.selection_index = 2
+	self.olympic_primary_crew.use_data.selection_index = SELECTION.PRIMARY
 end
 
 function WeaponTweakData:_init_data_m16_crew()
 	self.m16_crew.sounds.prefix = "m16_npc"
-	self.m16_crew.use_data.selection_index = 2
+	self.m16_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.m16_crew.DAMAGE = 1.05
 	self.m16_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.m16_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -1169,7 +1182,7 @@ end
 
 function WeaponTweakData:_init_data_aug_crew()
 	self.aug_crew.sounds.prefix = "aug_npc"
-	self.aug_crew.use_data.selection_index = 2
+	self.aug_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.aug_crew.DAMAGE = 1.2
 	self.aug_crew.muzzleflash = "effects/payday2/particles/weapons/556_auto"
 	self.aug_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -1184,12 +1197,12 @@ function WeaponTweakData:_init_data_aug_crew()
 	self.aug_crew.alert_size = 5000
 	self.aug_crew.suppression = 1
 	self.aug_secondary_crew = deep_clone(self.aug_crew)
-	self.aug_secondary_crew.use_data.selection_index = 1
+	self.aug_secondary_crew.use_data.selection_index = SELECTION.SECONDARY
 end
 
 function WeaponTweakData:_init_data_ak74_crew()
 	self.ak74_crew.sounds.prefix = "ak74_npc"
-	self.ak74_crew.use_data.selection_index = 2
+	self.ak74_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.ak74_crew.DAMAGE = 1.38
 	self.ak74_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.ak74_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -1201,12 +1214,12 @@ function WeaponTweakData:_init_data_ak74_crew()
 	self.ak74_crew.alert_size = 5000
 	self.ak74_crew.suppression = 1
 	self.ak74_secondary_crew = deep_clone(self.ak74_crew)
-	self.ak74_secondary_crew.use_data.selection_index = 1
+	self.ak74_secondary_crew.use_data.selection_index = SELECTION.SECONDARY
 end
 
 function WeaponTweakData:_init_data_ak5_crew()
 	self.ak5_crew.sounds.prefix = "ak5_npc"
-	self.ak5_crew.use_data.selection_index = 2
+	self.ak5_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.ak5_crew.DAMAGE = 1.28
 	self.ak5_crew.muzzleflash = "effects/payday2/particles/weapons/556_auto"
 	self.ak5_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -1221,7 +1234,7 @@ end
 
 function WeaponTweakData:_init_data_p90_crew()
 	self.p90_crew.sounds.prefix = "p90_npc"
-	self.p90_crew.use_data.selection_index = 1
+	self.p90_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.p90_crew.DAMAGE = 1
 	self.p90_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.p90_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1241,7 +1254,7 @@ end
 
 function WeaponTweakData:_init_data_amcar_crew()
 	self.amcar_crew.sounds.prefix = "amcar_npc"
-	self.amcar_crew.use_data.selection_index = 2
+	self.amcar_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.amcar_crew.DAMAGE = 1.65
 	self.amcar_crew.muzzleflash = "effects/payday2/particles/weapons/556_auto"
 	self.amcar_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -1256,7 +1269,7 @@ end
 
 function WeaponTweakData:_init_data_mac10_crew()
 	self.mac10_crew.sounds.prefix = "mac10_npc"
-	self.mac10_crew.use_data.selection_index = 1
+	self.mac10_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.mac10_crew.DAMAGE = 0.75
 	self.mac10_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.mac10_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1272,7 +1285,7 @@ end
 
 function WeaponTweakData:_init_data_akmsu_crew()
 	self.akmsu_crew.sounds.prefix = "akmsu_npc"
-	self.akmsu_crew.use_data.selection_index = 1
+	self.akmsu_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.akmsu_crew.DAMAGE = 3
 	self.akmsu_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.akmsu_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1285,12 +1298,12 @@ function WeaponTweakData:_init_data_akmsu_crew()
 	self.akmsu_crew.alert_size = 1000
 	self.akmsu_crew.suppression = 1
 	self.akmsu_primary_crew = deep_clone(self.akmsu_crew)
-	self.akmsu_primary_crew.use_data.selection_index = 2
+	self.akmsu_primary_crew.use_data.selection_index = SELECTION.PRIMARY
 end
 
 function WeaponTweakData:_init_data_akm_crew()
 	self.akm_crew.sounds.prefix = "akm_npc"
-	self.akm_crew.use_data.selection_index = 2
+	self.akm_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.akm_crew.DAMAGE = 1.61
 	self.akm_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.akm_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -1305,7 +1318,7 @@ end
 
 function WeaponTweakData:_init_data_akm_gold_crew()
 	self.akm_gold_crew.sounds.prefix = "akm_npc"
-	self.akm_gold_crew.use_data.selection_index = 2
+	self.akm_gold_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.akm_gold_crew.DAMAGE = 1.61
 	self.akm_gold_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.akm_gold_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -1320,7 +1333,7 @@ end
 
 function WeaponTweakData:_init_data_deagle_crew()
 	self.deagle_crew.sounds.prefix = "deagle_npc"
-	self.deagle_crew.use_data.selection_index = 1
+	self.deagle_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.deagle_crew.DAMAGE = 4
 	self.deagle_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.deagle_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1332,12 +1345,12 @@ function WeaponTweakData:_init_data_deagle_crew()
 	self.deagle_crew.alert_size = 2500
 	self.deagle_crew.suppression = 1
 	self.deagle_primary_crew = deep_clone(self.deagle_crew)
-	self.deagle_primary_crew.use_data.selection_index = 2
+	self.deagle_primary_crew.use_data.selection_index = SELECTION.PRIMARY
 end
 
 function WeaponTweakData:_init_data_serbu_crew()
 	self.serbu_crew.sounds.prefix = "serbu_npc"
-	self.serbu_crew.use_data.selection_index = 1
+	self.serbu_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.serbu_crew.DAMAGE = 5
 	self.serbu_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.serbu_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug_semi"
@@ -1351,7 +1364,7 @@ end
 
 function WeaponTweakData:_init_data_saiga_crew()
 	self.saiga_crew.sounds.prefix = "saiga_npc"
-	self.saiga_crew.use_data.selection_index = 2
+	self.saiga_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.saiga_crew.DAMAGE = 2.7
 	self.saiga_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.saiga_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug"
@@ -1367,7 +1380,7 @@ end
 
 function WeaponTweakData:_init_data_huntsman_crew()
 	self.huntsman_crew.sounds.prefix = "huntsman_npc"
-	self.huntsman_crew.use_data.selection_index = 2
+	self.huntsman_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.huntsman_crew.DAMAGE = 17.4
 	self.huntsman_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.huntsman_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
@@ -1384,7 +1397,7 @@ function WeaponTweakData:_init_data_saw_crew()
 	self.saw_crew.sounds.prefix = "saw_npc"
 	self.saw_crew.sounds.fire = "Play_npc_saw_handheld_start"
 	self.saw_crew.sounds.stop_fire = "Play_npc_saw_handheld_end"
-	self.saw_crew.use_data.selection_index = 2
+	self.saw_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.saw_crew.DAMAGE = 1
 	self.saw_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.saw_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
@@ -1394,12 +1407,12 @@ function WeaponTweakData:_init_data_saw_crew()
 	self.saw_crew.alert_size = 4500
 	self.saw_crew.suppression = 1.8
 	self.saw_secondary_crew = deep_clone(self.saw_crew)
-	self.saw_secondary_crew.use_data.selection_index = 1
+	self.saw_secondary_crew.use_data.selection_index = SELECTION.SECONDARY
 end
 
 function WeaponTweakData:_init_data_usp_crew()
 	self.usp_crew.sounds.prefix = "usp45_npc"
-	self.usp_crew.use_data.selection_index = 1
+	self.usp_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.usp_crew.DAMAGE = 1.25
 	self.usp_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.usp_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1415,7 +1428,7 @@ end
 
 function WeaponTweakData:_init_data_g22c_crew()
 	self.g22c_crew.sounds.prefix = "g22_npc"
-	self.g22c_crew.use_data.selection_index = 1
+	self.g22c_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.g22c_crew.DAMAGE = 1.25
 	self.g22c_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.g22c_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1431,7 +1444,7 @@ end
 
 function WeaponTweakData:_init_data_judge_crew()
 	self.judge_crew.sounds.prefix = "judge_npc"
-	self.judge_crew.use_data.selection_index = 1
+	self.judge_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.judge_crew.DAMAGE = 4
 	self.judge_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.judge_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1446,7 +1459,7 @@ end
 
 function WeaponTweakData:_init_data_m45_crew()
 	self.m45_crew.sounds.prefix = "m45_npc"
-	self.m45_crew.use_data.selection_index = 1
+	self.m45_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.m45_crew.DAMAGE = 2
 	self.m45_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.m45_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1461,7 +1474,7 @@ end
 
 function WeaponTweakData:_init_data_s552_crew()
 	self.s552_crew.sounds.prefix = "sig552_npc"
-	self.s552_crew.use_data.selection_index = 2
+	self.s552_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.s552_crew.DAMAGE = 1.26
 	self.s552_crew.muzzleflash = "effects/payday2/particles/weapons/556_auto"
 	self.s552_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -1473,12 +1486,12 @@ function WeaponTweakData:_init_data_s552_crew()
 	self.s552_crew.alert_size = 5000
 	self.s552_crew.suppression = 1
 	self.s552_secondary_crew = deep_clone(self.s552_crew)
-	self.s552_secondary_crew.use_data.selection_index = 1
+	self.s552_secondary_crew.use_data.selection_index = SELECTION.SECONDARY
 end
 
 function WeaponTweakData:_init_data_ppk_crew()
 	self.ppk_crew.sounds.prefix = "w_ppk_npc"
-	self.ppk_crew.use_data.selection_index = 1
+	self.ppk_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.ppk_crew.DAMAGE = 1
 	self.ppk_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.ppk_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1493,7 +1506,7 @@ end
 
 function WeaponTweakData:_init_data_mp7_crew()
 	self.mp7_crew.sounds.prefix = "mp7_npc"
-	self.mp7_crew.use_data.selection_index = 1
+	self.mp7_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.mp7_crew.DAMAGE = 2
 	self.mp7_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.mp7_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1513,7 +1526,7 @@ end
 
 function WeaponTweakData:_init_data_scar_crew()
 	self.scar_crew.sounds.prefix = "scar_npc"
-	self.scar_crew.use_data.selection_index = 2
+	self.scar_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.scar_crew.DAMAGE = 1.47
 	self.scar_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.scar_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -1528,7 +1541,7 @@ end
 
 function WeaponTweakData:_init_data_p226_crew()
 	self.p226_crew.sounds.prefix = "p226r_npc"
-	self.p226_crew.use_data.selection_index = 1
+	self.p226_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.p226_crew.DAMAGE = 1
 	self.p226_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.p226_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1543,7 +1556,7 @@ end
 
 function WeaponTweakData:_init_data_hk21_crew()
 	self.hk21_crew.sounds.prefix = "hk23e_npc"
-	self.hk21_crew.use_data.selection_index = 2
+	self.hk21_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.hk21_crew.DAMAGE = 1.25
 	self.hk21_crew.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
 	self.hk21_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
@@ -1557,7 +1570,7 @@ end
 
 function WeaponTweakData:_init_data_m249_crew()
 	self.m249_crew.sounds.prefix = "m249_npc"
-	self.m249_crew.use_data.selection_index = 2
+	self.m249_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.m249_crew.DAMAGE = 0.99
 	self.m249_crew.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
 	self.m249_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
@@ -1571,7 +1584,7 @@ end
 
 function WeaponTweakData:_init_data_rpk_crew()
 	self.rpk_crew.sounds.prefix = "rpk_npc"
-	self.rpk_crew.use_data.selection_index = 2
+	self.rpk_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.rpk_crew.DAMAGE = 1.2
 	self.rpk_crew.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
 	self.rpk_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -1585,7 +1598,7 @@ end
 
 function WeaponTweakData:_init_data_m95_crew()
 	self.m95_crew.sounds.prefix = "barrett_npc"
-	self.m95_crew.use_data.selection_index = 2
+	self.m95_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.m95_crew.DAMAGE = 22.5
 	self.m95_crew.muzzleflash = "effects/payday2/particles/weapons/50cal_auto"
 	self.m95_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_sniper_m95"
@@ -1601,7 +1614,7 @@ end
 
 function WeaponTweakData:_init_data_msr_crew()
 	self.msr_crew.sounds.prefix = "msr_npc"
-	self.msr_crew.use_data.selection_index = 2
+	self.msr_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.msr_crew.DAMAGE = 15
 	self.msr_crew.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
 	self.msr_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_sniper"
@@ -1616,7 +1629,7 @@ end
 
 function WeaponTweakData:_init_data_r93_crew()
 	self.r93_crew.sounds.prefix = "blazer_npc"
-	self.r93_crew.use_data.selection_index = 2
+	self.r93_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.r93_crew.DAMAGE = 18
 	self.r93_crew.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
 	self.r93_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_sniper"
@@ -1631,7 +1644,7 @@ end
 
 function WeaponTweakData:_init_data_fal_crew()
 	self.fal_crew.sounds.prefix = "fn_fal_npc"
-	self.fal_crew.use_data.selection_index = 2
+	self.fal_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.fal_crew.DAMAGE = 1.29
 	self.fal_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.fal_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -1646,7 +1659,7 @@ end
 
 function WeaponTweakData:_init_data_ben_crew()
 	self.ben_crew.sounds.prefix = "benelli_m4_npc"
-	self.ben_crew.use_data.selection_index = 2
+	self.ben_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.ben_crew.DAMAGE = 2.1
 	self.ben_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.ben_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug"
@@ -1663,7 +1676,7 @@ end
 
 function WeaponTweakData:_init_data_striker_crew()
 	self.striker_crew.sounds.prefix = "striker_npc"
-	self.striker_crew.use_data.selection_index = 1
+	self.striker_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.striker_crew.DAMAGE = 5
 	self.striker_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.striker_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug"
@@ -1682,7 +1695,7 @@ end
 
 function WeaponTweakData:_init_data_ksg_crew()
 	self.ksg_crew.sounds.prefix = "keltec_npc"
-	self.ksg_crew.use_data.selection_index = 2
+	self.ksg_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.ksg_crew.DAMAGE = 8.7
 	self.ksg_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.ksg_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug"
@@ -1697,7 +1710,7 @@ end
 
 function WeaponTweakData:_init_data_gre_m79_crew()
 	self.gre_m79_crew.sounds.prefix = "gl40_npc"
-	self.gre_m79_crew.use_data.selection_index = 2
+	self.gre_m79_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.gre_m79_crew.DAMAGE = 2
 	self.gre_m79_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.gre_m79_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1714,7 +1727,7 @@ end
 
 function WeaponTweakData:_init_data_g3_crew()
 	self.g3_crew.sounds.prefix = "g3_npc"
-	self.g3_crew.use_data.selection_index = 2
+	self.g3_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.g3_crew.DAMAGE = 1.43
 	self.g3_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.g3_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -1729,7 +1742,7 @@ end
 
 function WeaponTweakData:_init_data_galil_crew()
 	self.galil_crew.sounds.prefix = "galil_npc"
-	self.galil_crew.use_data.selection_index = 2
+	self.galil_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.galil_crew.DAMAGE = 1.07
 	self.galil_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.galil_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -1744,7 +1757,7 @@ end
 
 function WeaponTweakData:_init_data_famas_crew()
 	self.famas_crew.sounds.prefix = "famas_npc"
-	self.famas_crew.use_data.selection_index = 2
+	self.famas_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.famas_crew.DAMAGE = 0.9
 	self.famas_crew.muzzleflash = "effects/payday2/particles/weapons/556_auto"
 	self.famas_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -1762,7 +1775,7 @@ end
 
 function WeaponTweakData:_init_data_scorpion_crew()
 	self.scorpion_crew.sounds.prefix = "skorpion_npc"
-	self.scorpion_crew.use_data.selection_index = 1
+	self.scorpion_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.scorpion_crew.DAMAGE = 2
 	self.scorpion_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.scorpion_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1778,7 +1791,7 @@ end
 
 function WeaponTweakData:_init_data_tec9_crew()
 	self.tec9_crew.sounds.prefix = "tec9_npc"
-	self.tec9_crew.use_data.selection_index = 1
+	self.tec9_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.tec9_crew.DAMAGE = 2
 	self.tec9_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.tec9_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1794,7 +1807,7 @@ end
 
 function WeaponTweakData:_init_data_uzi_crew()
 	self.uzi_crew.sounds.prefix = "uzi_npc"
-	self.uzi_crew.use_data.selection_index = 1
+	self.uzi_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.uzi_crew.DAMAGE = 2
 	self.uzi_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.uzi_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1814,7 +1827,7 @@ end
 
 function WeaponTweakData:_init_data_jowi_crew()
 	self.jowi_crew.sounds.prefix = "g17_npc"
-	self.jowi_crew.use_data.selection_index = 2
+	self.jowi_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.jowi_crew.DAMAGE = 1
 	self.jowi_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.jowi_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1828,7 +1841,7 @@ end
 
 function WeaponTweakData:_init_data_x_1911_crew()
 	self.x_1911_crew.sounds.prefix = "c45_npc"
-	self.x_1911_crew.use_data.selection_index = 2
+	self.x_1911_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_1911_crew.DAMAGE = 1
 	self.x_1911_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.x_1911_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1842,7 +1855,7 @@ end
 
 function WeaponTweakData:_init_data_x_b92fs_crew()
 	self.x_b92fs_crew.sounds.prefix = "beretta_npc"
-	self.x_b92fs_crew.use_data.selection_index = 2
+	self.x_b92fs_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_b92fs_crew.DAMAGE = 1
 	self.x_b92fs_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.x_b92fs_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1856,7 +1869,7 @@ end
 
 function WeaponTweakData:_init_data_x_deagle_crew()
 	self.x_deagle_crew.sounds.prefix = "deagle_npc"
-	self.x_deagle_crew.use_data.selection_index = 2
+	self.x_deagle_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_deagle_crew.DAMAGE = 1
 	self.x_deagle_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.x_deagle_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1870,7 +1883,7 @@ end
 
 function WeaponTweakData:_init_data_g26_crew()
 	self.g26_crew.sounds.prefix = "g17_npc"
-	self.g26_crew.use_data.selection_index = 1
+	self.g26_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.g26_crew.DAMAGE = 1
 	self.g26_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.g26_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1885,7 +1898,7 @@ end
 
 function WeaponTweakData:_init_data_spas12_crew()
 	self.spas12_crew.sounds.prefix = "spas_npc"
-	self.spas12_crew.use_data.selection_index = 2
+	self.spas12_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.spas12_crew.DAMAGE = 3
 	self.spas12_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.spas12_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug"
@@ -1900,7 +1913,7 @@ end
 
 function WeaponTweakData:_init_data_mg42_crew()
 	self.mg42_crew.sounds.prefix = "mg42_npc"
-	self.mg42_crew.use_data.selection_index = 2
+	self.mg42_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.mg42_crew.DAMAGE = 0.75
 	self.mg42_crew.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
 	self.mg42_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
@@ -1911,13 +1924,13 @@ function WeaponTweakData:_init_data_mg42_crew()
 	self.mg42_crew.alert_size = 5000
 	self.mg42_crew.suppression = 1
 	self.mg42_secondary_crew = deep_clone(self.mg42_crew)
-	self.mg42_secondary_crew.use_data.selection_index = 1
+	self.mg42_secondary_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.mg42_secondary_crew.armor_piercing = true
 end
 
 function WeaponTweakData:_init_data_c96_crew()
 	self.c96_crew.sounds.prefix = "c96_npc"
-	self.c96_crew.use_data.selection_index = 1
+	self.c96_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.c96_crew.DAMAGE = 1
 	self.c96_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.c96_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1931,7 +1944,7 @@ end
 
 function WeaponTweakData:_init_data_sterling_crew()
 	self.sterling_crew.sounds.prefix = "sterling_npc"
-	self.sterling_crew.use_data.selection_index = 1
+	self.sterling_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.sterling_crew.DAMAGE = 2
 	self.sterling_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.sterling_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1946,7 +1959,7 @@ end
 
 function WeaponTweakData:_init_data_mosin_crew()
 	self.mosin_crew.sounds.prefix = "nagant_npc"
-	self.mosin_crew.use_data.selection_index = 2
+	self.mosin_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.mosin_crew.DAMAGE = 15
 	self.mosin_crew.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
 	self.mosin_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_sniper"
@@ -1957,12 +1970,12 @@ function WeaponTweakData:_init_data_mosin_crew()
 	self.mosin_crew.alert_size = 5000
 	self.mosin_crew.suppression = 1
 	self.mosin_secondary_crew = deep_clone(self.mosin_crew)
-	self.mosin_secondary_crew.use_data.selection_index = 1
+	self.mosin_secondary_crew.use_data.selection_index = SELECTION.SECONDARY
 end
 
 function WeaponTweakData:_init_data_m1928_crew()
 	self.m1928_crew.sounds.prefix = "m1928_npc"
-	self.m1928_crew.use_data.selection_index = 2
+	self.m1928_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.m1928_crew.DAMAGE = 2
 	self.m1928_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.m1928_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1978,7 +1991,7 @@ end
 
 function WeaponTweakData:_init_data_l85a2_crew()
 	self.l85a2_crew.sounds.prefix = "l85_npc"
-	self.l85a2_crew.use_data.selection_index = 2
+	self.l85a2_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.l85a2_crew.DAMAGE = 2
 	self.l85a2_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.l85a2_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -1995,7 +2008,7 @@ end
 
 function WeaponTweakData:_init_data_vhs_crew()
 	self.vhs_crew.sounds.prefix = "vhs_npc"
-	self.vhs_crew.use_data.selection_index = 2
+	self.vhs_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.vhs_crew.DAMAGE = 1.05
 	self.vhs_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.vhs_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2014,7 +2027,7 @@ end
 
 function WeaponTweakData:_init_data_m134_crew()
 	self.m134_crew.sounds.prefix = "minigun_npc"
-	self.m134_crew.use_data.selection_index = 2
+	self.m134_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.m134_crew.DAMAGE = 2
 	self.m134_crew.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
 	self.m134_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
@@ -2030,7 +2043,7 @@ end
 
 function WeaponTweakData:_init_data_rpg7_crew()
 	self.rpg7_crew.sounds.prefix = "rpg_npc"
-	self.rpg7_crew.use_data.selection_index = 2
+	self.rpg7_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.rpg7_crew.DAMAGE = 2
 	self.rpg7_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.rpg7_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2046,7 +2059,7 @@ end
 
 function WeaponTweakData:_init_data_hs2000_crew()
 	self.hs2000_crew.sounds.prefix = "p226r_npc"
-	self.hs2000_crew.use_data.selection_index = 1
+	self.hs2000_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.hs2000_crew.DAMAGE = 1
 	self.hs2000_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.hs2000_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2061,7 +2074,7 @@ end
 
 function WeaponTweakData:_init_data_cobray_crew()
 	self.cobray_crew.sounds.prefix = "cobray_npc"
-	self.cobray_crew.use_data.selection_index = 1
+	self.cobray_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.cobray_crew.DAMAGE = 2
 	self.cobray_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.cobray_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2081,7 +2094,7 @@ end
 
 function WeaponTweakData:_init_data_b682_crew()
 	self.b682_crew.sounds.prefix = "b682_npc"
-	self.b682_crew.use_data.selection_index = 2
+	self.b682_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.b682_crew.DAMAGE = 17.4
 	self.b682_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.b682_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
@@ -2096,7 +2109,7 @@ end
 
 function WeaponTweakData:_init_data_x_g22c_crew()
 	self.x_g22c_crew.sounds.prefix = "g22_npc"
-	self.x_g22c_crew.use_data.selection_index = 2
+	self.x_g22c_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_g22c_crew.DAMAGE = 1.25
 	self.x_g22c_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.x_g22c_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2110,7 +2123,7 @@ end
 
 function WeaponTweakData:_init_data_x_g17_crew()
 	self.x_g17_crew.sounds.prefix = "g22_npc"
-	self.x_g17_crew.use_data.selection_index = 2
+	self.x_g17_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_g17_crew.DAMAGE = 1.25
 	self.x_g17_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.x_g17_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2124,7 +2137,7 @@ end
 
 function WeaponTweakData:_init_data_x_usp_crew()
 	self.x_usp_crew.sounds.prefix = "g22_npc"
-	self.x_usp_crew.use_data.selection_index = 2
+	self.x_usp_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_usp_crew.DAMAGE = 1.25
 	self.x_usp_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.x_usp_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2140,7 +2153,7 @@ function WeaponTweakData:_init_data_flamethrower_mk2_crew()
 	self.flamethrower_mk2_crew.sounds.prefix = "flamethrower_npc"
 	self.flamethrower_mk2_crew.sounds.fire = "flamethrower_npc_fire"
 	self.flamethrower_mk2_crew.sounds.stop_fire = "flamethrower_npc_fire_stop"
-	self.flamethrower_mk2_crew.use_data.selection_index = 2
+	self.flamethrower_mk2_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.flamethrower_mk2_crew.DAMAGE = 1
 	self.flamethrower_mk2_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.flamethrower_mk2_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2160,7 +2173,7 @@ end
 
 function WeaponTweakData:_init_data_m32_crew()
 	self.m32_crew.sounds.prefix = "mgl_npc"
-	self.m32_crew.use_data.selection_index = 2
+	self.m32_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.m32_crew.DAMAGE = 2
 	self.m32_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.m32_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2177,7 +2190,7 @@ end
 
 function WeaponTweakData:_init_data_aa12_crew()
 	self.aa12_crew.sounds.prefix = "aa12_npc"
-	self.aa12_crew.use_data.selection_index = 2
+	self.aa12_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.aa12_crew.DAMAGE = 3
 	self.aa12_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.aa12_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug"
@@ -2193,7 +2206,7 @@ end
 
 function WeaponTweakData:_init_data_peacemaker_crew()
 	self.peacemaker_crew.sounds.prefix = "pmkr45_npc"
-	self.peacemaker_crew.use_data.selection_index = 1
+	self.peacemaker_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.peacemaker_crew.DAMAGE = 4
 	self.peacemaker_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.peacemaker_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2209,7 +2222,7 @@ end
 
 function WeaponTweakData:_init_data_winchester1874_crew()
 	self.winchester1874_crew.sounds.prefix = "m1873_npc"
-	self.winchester1874_crew.use_data.selection_index = 2
+	self.winchester1874_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.winchester1874_crew.DAMAGE = 10.5
 	self.winchester1874_crew.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
 	self.winchester1874_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_sniper"
@@ -2221,12 +2234,12 @@ function WeaponTweakData:_init_data_winchester1874_crew()
 	self.winchester1874_crew.alert_size = 5000
 	self.winchester1874_crew.suppression = 1
 	self.winchester1874_secondary_crew = deep_clone(self.winchester1874_crew)
-	self.winchester1874_secondary_crew.use_data.selection_index = 1
+	self.winchester1874_secondary_crew.use_data.selection_index = SELECTION.SECONDARY
 end
 
 function WeaponTweakData:_init_data_plainsrider_crew()
 	self.plainsrider_crew.sounds.prefix = "bow_npc"
-	self.plainsrider_crew.use_data.selection_index = 2
+	self.plainsrider_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.plainsrider_crew.use_data.align_place = "left_hand"
 	self.plainsrider_crew.DAMAGE = 2
 	self.plainsrider_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
@@ -2244,7 +2257,7 @@ end
 
 function WeaponTweakData:_init_data_mateba_crew()
 	self.mateba_crew.sounds.prefix = "mateba_npc"
-	self.mateba_crew.use_data.selection_index = 1
+	self.mateba_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.mateba_crew.DAMAGE = 4
 	self.mateba_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.mateba_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2259,7 +2272,7 @@ end
 
 function WeaponTweakData:_init_data_asval_crew()
 	self.asval_crew.sounds.prefix = "val_npc"
-	self.asval_crew.use_data.selection_index = 2
+	self.asval_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.asval_crew.DAMAGE = 1.01
 	self.asval_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.asval_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -2274,7 +2287,7 @@ end
 
 function WeaponTweakData:_init_data_sub2000_crew()
 	self.sub2000_crew.sounds.prefix = "sub2k_npc"
-	self.sub2000_crew.use_data.selection_index = 2
+	self.sub2000_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.sub2000_crew.DAMAGE = 1.28
 	self.sub2000_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.sub2000_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -2290,7 +2303,7 @@ end
 
 function WeaponTweakData:_init_data_wa2000_crew()
 	self.wa2000_crew.sounds.prefix = "lakner_npc"
-	self.wa2000_crew.use_data.selection_index = 2
+	self.wa2000_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.wa2000_crew.DAMAGE = 7.5
 	self.wa2000_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.wa2000_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2309,7 +2322,7 @@ end
 
 function WeaponTweakData:_init_data_polymer_crew()
 	self.polymer_crew.sounds.prefix = "polymer_npc"
-	self.polymer_crew.use_data.selection_index = 1
+	self.polymer_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.polymer_crew.DAMAGE = 2
 	self.polymer_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.polymer_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2329,7 +2342,7 @@ end
 
 function WeaponTweakData:_init_data_hunter_crew()
 	self.hunter_crew.sounds.prefix = "hunter_npc"
-	self.hunter_crew.use_data.selection_index = 1
+	self.hunter_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.hunter_crew.DAMAGE = 2
 	self.hunter_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.hunter_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2346,7 +2359,7 @@ end
 
 function WeaponTweakData:_init_data_baka_crew()
 	self.baka_crew.sounds.prefix = "baka_npc"
-	self.baka_crew.use_data.selection_index = 1
+	self.baka_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.baka_crew.DAMAGE = 2
 	self.baka_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.baka_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2362,7 +2375,7 @@ end
 
 function WeaponTweakData:_init_data_arblast_crew()
 	self.arblast_crew.sounds.prefix = "arblast_npc"
-	self.arblast_crew.use_data.selection_index = 2
+	self.arblast_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.arblast_crew.DAMAGE = 2
 	self.arblast_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.arblast_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2379,7 +2392,7 @@ end
 
 function WeaponTweakData:_init_data_frankish_crew()
 	self.frankish_crew.sounds.prefix = "frankish_npc"
-	self.frankish_crew.use_data.selection_index = 2
+	self.frankish_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.frankish_crew.DAMAGE = 2
 	self.frankish_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.frankish_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2396,7 +2409,7 @@ end
 
 function WeaponTweakData:_init_data_long_crew()
 	self.long_crew.sounds.prefix = "bow_npc"
-	self.long_crew.use_data.selection_index = 2
+	self.long_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.long_crew.use_data.align_place = "left_hand"
 	self.long_crew.DAMAGE = 2
 	self.long_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
@@ -2414,7 +2427,7 @@ end
 
 function WeaponTweakData:_init_data_par_crew()
 	self.par_crew.sounds.prefix = "svinet_npc"
-	self.par_crew.use_data.selection_index = 2
+	self.par_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.par_crew.DAMAGE = 0.99
 	self.par_crew.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
 	self.par_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
@@ -2425,13 +2438,13 @@ function WeaponTweakData:_init_data_par_crew()
 	self.par_crew.alert_size = 5000
 	self.par_crew.suppression = 1
 	self.par_secondary_crew = deep_clone(self.par_crew)
-	self.par_secondary_crew.use_data.selection_index = 1
+	self.par_secondary_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.par_secondary_crew.armor_piercing = true
 end
 
 function WeaponTweakData:_init_data_sparrow_crew()
 	self.sparrow_crew.sounds.prefix = "sparrow_npc"
-	self.sparrow_crew.use_data.selection_index = 1
+	self.sparrow_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.sparrow_crew.DAMAGE = 1
 	self.sparrow_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.sparrow_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2446,7 +2459,7 @@ end
 
 function WeaponTweakData:_init_data_model70_crew()
 	self.model70_crew.sounds.prefix = "model70_npc"
-	self.model70_crew.use_data.selection_index = 2
+	self.model70_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.model70_crew.DAMAGE = 15
 	self.model70_crew.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
 	self.model70_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_sniper"
@@ -2457,12 +2470,12 @@ function WeaponTweakData:_init_data_model70_crew()
 	self.model70_crew.alert_size = 5000
 	self.model70_crew.suppression = 1
 	self.model70_secondary_crew = deep_clone(self.model70_crew)
-	self.model70_secondary_crew.use_data.selection_index = 1
+	self.model70_secondary_crew.use_data.selection_index = SELECTION.SECONDARY
 end
 
 function WeaponTweakData:_init_data_m37_crew()
 	self.m37_crew.sounds.prefix = "m37_npc"
-	self.m37_crew.use_data.selection_index = 1
+	self.m37_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.m37_crew.DAMAGE = 5
 	self.m37_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.m37_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug"
@@ -2478,7 +2491,7 @@ end
 
 function WeaponTweakData:_init_data_china_crew()
 	self.china_crew.sounds.prefix = "china_npc"
-	self.china_crew.use_data.selection_index = 1
+	self.china_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.china_crew.DAMAGE = 2
 	self.china_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.china_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2495,7 +2508,7 @@ end
 
 function WeaponTweakData:_init_data_sr2_crew()
 	self.sr2_crew.sounds.prefix = "sr2_npc"
-	self.sr2_crew.use_data.selection_index = 1
+	self.sr2_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.sr2_crew.DAMAGE = 2
 	self.sr2_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.sr2_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2515,7 +2528,7 @@ end
 
 function WeaponTweakData:_init_data_x_sr2_crew()
 	self.x_sr2_crew.sounds.prefix = "sr2_x_npc"
-	self.x_sr2_crew.use_data.selection_index = 2
+	self.x_sr2_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_sr2_crew.DAMAGE = 1.25
 	self.x_sr2_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.x_sr2_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2529,7 +2542,7 @@ end
 
 function WeaponTweakData:_init_data_pl14_crew()
 	self.pl14_crew.sounds.prefix = "pl14_npc"
-	self.pl14_crew.use_data.selection_index = 1
+	self.pl14_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.pl14_crew.DAMAGE = 1
 	self.pl14_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.pl14_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2544,7 +2557,7 @@ end
 
 function WeaponTweakData:_init_data_x_mp5_crew()
 	self.x_mp5_crew.sounds.prefix = "mp5_x_npc"
-	self.x_mp5_crew.use_data.selection_index = 2
+	self.x_mp5_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_mp5_crew.DAMAGE = 1.25
 	self.x_mp5_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.x_mp5_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2558,7 +2571,7 @@ end
 
 function WeaponTweakData:_init_data_x_akmsu_crew()
 	self.x_akmsu_crew.sounds.prefix = "akmsu_x_npc"
-	self.x_akmsu_crew.use_data.selection_index = 2
+	self.x_akmsu_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_akmsu_crew.DAMAGE = 1.25
 	self.x_akmsu_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.x_akmsu_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2572,7 +2585,7 @@ end
 
 function WeaponTweakData:_init_data_tecci_crew()
 	self.tecci_crew.sounds.prefix = "tecci_npc"
-	self.tecci_crew.use_data.selection_index = 2
+	self.tecci_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.tecci_crew.DAMAGE = 1.35
 	self.tecci_crew.muzzleflash = "effects/payday2/particles/weapons/556_auto"
 	self.tecci_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -2587,7 +2600,7 @@ end
 
 function WeaponTweakData:_init_data_hajk_crew()
 	self.hajk_crew.sounds.prefix = "hajk_npc"
-	self.hajk_crew.use_data.selection_index = 1
+	self.hajk_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.hajk_crew.DAMAGE = 1.5
 	self.hajk_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.hajk_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2603,7 +2616,7 @@ end
 
 function WeaponTweakData:_init_data_boot_crew()
 	self.boot_crew.sounds.prefix = "boot_npc"
-	self.boot_crew.use_data.selection_index = 2
+	self.boot_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.boot_crew.DAMAGE = 11.25
 	self.boot_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.boot_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2619,7 +2632,7 @@ end
 
 function WeaponTweakData:_init_data_packrat_crew()
 	self.packrat_crew.sounds.prefix = "packrat_npc"
-	self.packrat_crew.use_data.selection_index = 1
+	self.packrat_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.packrat_crew.DAMAGE = 1
 	self.packrat_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.packrat_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2634,7 +2647,7 @@ end
 
 function WeaponTweakData:_init_data_schakal_crew()
 	self.schakal_crew.sounds.prefix = "schakal_npc"
-	self.schakal_crew.use_data.selection_index = 1
+	self.schakal_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.schakal_crew.DAMAGE = 2
 	self.schakal_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.schakal_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2654,7 +2667,7 @@ end
 
 function WeaponTweakData:_init_data_desertfox_crew()
 	self.desertfox_crew.sounds.prefix = "desertfox_npc"
-	self.desertfox_crew.use_data.selection_index = 2
+	self.desertfox_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.desertfox_crew.DAMAGE = 15
 	self.desertfox_crew.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
 	self.desertfox_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_sniper"
@@ -2667,12 +2680,12 @@ function WeaponTweakData:_init_data_desertfox_crew()
 	self.desertfox_crew.alert_size = 5000
 	self.desertfox_crew.suppression = 1
 	self.desertfox_secondary_crew = deep_clone(self.desertfox_crew)
-	self.desertfox_secondary_crew.use_data.selection_index = 1
+	self.desertfox_secondary_crew.use_data.selection_index = SELECTION.SECONDARY
 end
 
 function WeaponTweakData:_init_data_x_packrat_crew()
 	self.x_packrat_crew.sounds.prefix = "packrat_npc"
-	self.x_packrat_crew.use_data.selection_index = 2
+	self.x_packrat_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_packrat_crew.DAMAGE = 1
 	self.x_packrat_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.x_packrat_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2686,7 +2699,7 @@ end
 
 function WeaponTweakData:_init_data_rota_crew()
 	self.rota_crew.sounds.prefix = "rota_npc"
-	self.rota_crew.use_data.selection_index = 1
+	self.rota_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.rota_crew.DAMAGE = 5
 	self.rota_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.rota_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
@@ -2704,7 +2717,7 @@ end
 
 function WeaponTweakData:_init_data_arbiter_crew()
 	self.arbiter_crew.sounds.prefix = "mgl_npc"
-	self.arbiter_crew.use_data.selection_index = 1
+	self.arbiter_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.arbiter_crew.DAMAGE = 2
 	self.arbiter_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.arbiter_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2722,7 +2735,7 @@ end
 
 function WeaponTweakData:_init_data_contraband_crew()
 	self.contraband_crew.sounds.prefix = "contraband_npc"
-	self.contraband_crew.use_data.selection_index = 2
+	self.contraband_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.contraband_crew.DAMAGE = 1.47
 	self.contraband_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.contraband_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -2738,7 +2751,7 @@ function WeaponTweakData:_init_data_contraband_crew()
 	self.contraband_crew.alert_size = 5000
 	self.contraband_crew.suppression = 1
 	self.contraband_m203_crew.sounds.prefix = "contrabandm203_npc"
-	self.contraband_m203_crew.use_data.selection_index = 2
+	self.contraband_m203_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.contraband_m203_crew.DAMAGE = 2
 	self.contraband_m203_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.contraband_m203_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
@@ -2756,7 +2769,7 @@ end
 
 function WeaponTweakData:_init_data_ray_crew()
 	self.ray_crew.sounds.prefix = "ray_npc"
-	self.ray_crew.use_data.selection_index = 1
+	self.ray_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.ray_crew.DAMAGE = 2
 	self.ray_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.ray_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2773,7 +2786,7 @@ end
 
 function WeaponTweakData:_init_data_tti_crew()
 	self.tti_crew.sounds.prefix = "tti_npc"
-	self.tti_crew.use_data.selection_index = 2
+	self.tti_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.tti_crew.DAMAGE = 6
 	self.tti_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.tti_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2789,7 +2802,7 @@ end
 
 function WeaponTweakData:_init_data_siltstone_crew()
 	self.siltstone_crew.sounds.prefix = "siltstone_npc"
-	self.siltstone_crew.use_data.selection_index = 2
+	self.siltstone_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.siltstone_crew.DAMAGE = 2
 	self.siltstone_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.siltstone_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2804,7 +2817,7 @@ end
 
 function WeaponTweakData:_init_data_flint_crew()
 	self.flint_crew.sounds.prefix = "flint_npc"
-	self.flint_crew.use_data.selection_index = 2
+	self.flint_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.flint_crew.DAMAGE = 2
 	self.flint_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.flint_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -2819,7 +2832,7 @@ end
 
 function WeaponTweakData:_init_data_coal_crew()
 	self.coal_crew.sounds.prefix = "coal_npc"
-	self.coal_crew.use_data.selection_index = 1
+	self.coal_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.coal_crew.DAMAGE = 2
 	self.coal_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.coal_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2835,7 +2848,7 @@ end
 
 function WeaponTweakData:_init_data_lemming_crew()
 	self.lemming_crew.sounds.prefix = "lemming_npc"
-	self.lemming_crew.use_data.selection_index = 1
+	self.lemming_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.lemming_crew.DAMAGE = 1
 	self.lemming_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.lemming_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2850,7 +2863,7 @@ end
 
 function WeaponTweakData:_init_data_chinchilla_crew()
 	self.chinchilla_crew.sounds.prefix = "chinchilla_npc"
-	self.chinchilla_crew.use_data.selection_index = 1
+	self.chinchilla_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.chinchilla_crew.DAMAGE = 1
 	self.chinchilla_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.chinchilla_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
@@ -2864,7 +2877,7 @@ end
 
 function WeaponTweakData:_init_data_x_chinchilla_crew()
 	self.x_chinchilla_crew.sounds.prefix = "chinchilla_npc"
-	self.x_chinchilla_crew.use_data.selection_index = 2
+	self.x_chinchilla_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.x_chinchilla_crew.DAMAGE = 1
 	self.x_chinchilla_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.x_chinchilla_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2878,7 +2891,7 @@ end
 
 function WeaponTweakData:_init_data_breech_crew()
 	self.breech_crew.sounds.prefix = "breech_npc"
-	self.breech_crew.use_data.selection_index = 1
+	self.breech_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.breech_crew.DAMAGE = 1
 	self.breech_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.breech_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -2893,7 +2906,7 @@ end
 
 function WeaponTweakData:_init_data_ching_crew()
 	self.ching_crew.sounds.prefix = "ching_npc"
-	self.ching_crew.use_data.selection_index = 2
+	self.ching_crew.use_data.selection_index = SELECTION.PRIMARY
 	self.ching_crew.DAMAGE = 1.28
 	self.ching_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.ching_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
@@ -2910,7 +2923,7 @@ end
 
 function WeaponTweakData:_init_data_erma_crew()
 	self.erma_crew.sounds.prefix = "erma_npc"
-	self.erma_crew.use_data.selection_index = 1
+	self.erma_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.erma_crew.DAMAGE = 2
 	self.erma_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.erma_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -3140,7 +3153,27 @@ function WeaponTweakData:_init_data_player_weapons(tweak_data)
 	self.factory = WeaponFactoryTweakData:new()
 
 	tweak_data._init_wip_weapon_factory(self.factory, tweak_data)
-	self:_init_new_weapons(autohit_rifle_default, autohit_pistol_default, autohit_shotgun_default, autohit_lmg_default, autohit_snp_default, autohit_smg_default, autohit_minigun_default, damage_melee_default, damage_melee_effect_multiplier_default, aim_assist_rifle_default, aim_assist_pistol_default, aim_assist_shotgun_default, aim_assist_lmg_default, aim_assist_snp_default, aim_assist_smg_default, aim_assist_minigun_default)
+
+	local weapon_data = {
+		autohit_rifle_default = autohit_rifle_default,
+		autohit_pistol_default = autohit_pistol_default,
+		autohit_shotgun_default = autohit_shotgun_default,
+		autohit_lmg_default = autohit_lmg_default,
+		autohit_snp_default = autohit_snp_default,
+		autohit_smg_default = autohit_smg_default,
+		autohit_minigun_default = autohit_minigun_default,
+		damage_melee_default = damage_melee_default,
+		damage_melee_effect_multiplier_default = damage_melee_effect_multiplier_default,
+		aim_assist_rifle_default = aim_assist_rifle_default,
+		aim_assist_pistol_default = aim_assist_pistol_default,
+		aim_assist_shotgun_default = aim_assist_shotgun_default,
+		aim_assist_lmg_default = aim_assist_lmg_default,
+		aim_assist_snp_default = aim_assist_snp_default,
+		aim_assist_smg_default = aim_assist_smg_default,
+		aim_assist_minigun_default = aim_assist_minigun_default
+	}
+
+	self:_init_new_weapons(weapon_data)
 
 	local free_dlcs = tweak_data:free_dlc_list()
 
@@ -3580,19 +3613,19 @@ end
 function WeaponTweakData:_pickup_chance(max_ammo, selection_index)
 	local low, high = nil
 
-	if selection_index == 2 then
+	if selection_index == PICKUP.AR_HIGH_CAPACITY then
 		low = 0.03
 		high = 0.055
-	elseif selection_index == 3 then
+	elseif selection_index == PICKUP.AR_MED_CAPACITY then
 		low = 0.03
 		high = 0.055
-	elseif selection_index == 4 then
+	elseif selection_index == PICKUP.SHOTGUN_HIGH_CAPACITY then
 		low = 0.05
 		high = 0.075
-	elseif selection_index == 5 then
+	elseif selection_index == PICKUP.SNIPER_LOW_DAMAGE then
 		low = 0.05
 		high = 0.075
-	elseif selection_index == 6 then
+	elseif selection_index == PICKUP.SNIPER_HIGH_DAMAGE then
 		low = 0.005
 		high = 0.015
 	else
@@ -3606,14 +3639,143 @@ function WeaponTweakData:_pickup_chance(max_ammo, selection_index)
 	}
 end
 
-function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol_default, autohit_shotgun_default, autohit_lmg_default, autohit_snp_default, autohit_smg_default, autohit_minigun_default, damage_melee_default, damage_melee_effect_multiplier_default, aim_assist_rifle_default, aim_assist_pistol_default, aim_assist_shotgun_default, aim_assist_lmg_default, aim_assist_snp_default, aim_assist_smg_default, aim_assist_minigun_default)
-	local total_damage_primary = 300
-	local total_damage_secondary = 150
-	local default_bipod_spread = 1.6
+function WeaponTweakData:_init_new_weapons(weapon_data)
+	weapon_data.total_damage_primary = 300
+	weapon_data.total_damage_secondary = 150
+	weapon_data.default_bipod_spread = 1.6
+
+	self:_init_new_m4(weapon_data)
+	self:_init_glock_17(weapon_data)
+	self:_init_mp9(weapon_data)
+	self:_init_r870(weapon_data)
+	self:_init_glock_18c(weapon_data)
+	self:_init_amcar(weapon_data)
+	self:_init_m16(weapon_data)
+	self:_init_olympic(weapon_data)
+	self:_init_ak74(weapon_data)
+	self:_init_akm(weapon_data)
+	self:_init_akm_gold(weapon_data)
+	self:_init_akmsu(weapon_data)
+	self:_init_saiga(weapon_data)
+	self:_init_ak5(weapon_data)
+	self:_init_aug(weapon_data)
+	self:_init_g36(weapon_data)
+	self:_init_p90(weapon_data)
+	self:_init_new_m14(weapon_data)
+	self:_init_deagle(weapon_data)
+	self:_init_new_mp5(weapon_data)
+	self:_init_colt_1911(weapon_data)
+	self:_init_mac10(weapon_data)
+	self:_init_serbu(weapon_data)
+	self:_init_huntsman(weapon_data)
+	self:_init_b92fs(weapon_data)
+	self:_init_new_raging_bull(weapon_data)
+	self:_init_saw(weapon_data)
+	self:_init_usp(weapon_data)
+	self:_init_g22c(weapon_data)
+	self:_init_judge(weapon_data)
+	self:_init_m45(weapon_data)
+	self:_init_s552(weapon_data)
+	self:_init_ppk(weapon_data)
+	self:_init_mp7(weapon_data)
+	self:_init_scar(weapon_data)
+	self:_init_p226(weapon_data)
+	self:_init_hk21(weapon_data)
+	self:_init_m249(weapon_data)
+	self:_init_rpk(weapon_data)
+	self:_init_m95(weapon_data)
+	self:_init_msr(weapon_data)
+	self:_init_r93(weapon_data)
+	self:_init_fal(weapon_data)
+	self:_init_benelli(weapon_data)
+	self:_init_striker(weapon_data)
+	self:_init_ksg(weapon_data)
+	self:_init_gre_m79(weapon_data)
+	self:_init_g3(weapon_data)
+	self:_init_galil(weapon_data)
+	self:_init_famas(weapon_data)
+	self:_init_scorpion(weapon_data)
+	self:_init_tec9(weapon_data)
+	self:_init_uzi(weapon_data)
+	self:_init_jowi(weapon_data)
+	self:_init_x_1911(weapon_data)
+	self:_init_x_b92fs(weapon_data)
+	self:_init_x_deagle(weapon_data)
+	self:_init_g26(weapon_data)
+	self:_init_spas12(weapon_data)
+	self:_init_mg42(weapon_data)
+	self:_init_c96(weapon_data)
+	self:_init_sterling(weapon_data)
+	self:_init_mosin(weapon_data)
+	self:_init_m1928(weapon_data)
+	self:_init_l85a2(weapon_data)
+	self:_init_vhs(weapon_data)
+	self:_init_hs2000(weapon_data)
+	self:_init_m134(weapon_data)
+	self:_init_rpg7(weapon_data)
+	self:_init_cobray(weapon_data)
+	self:_init_b682(weapon_data)
+	self:_init_x_g22c(weapon_data)
+	self:_init_x_g17(weapon_data)
+	self:_init_x_usp(weapon_data)
+	self:_init_flamethrower_mk2(weapon_data)
+	self:_init_m32(weapon_data)
+	self:_init_aa12(weapon_data)
+	self:_init_peacemaker(weapon_data)
+	self:_init_winchester1874(weapon_data)
+	self:_init_plainsider(weapon_data)
+	self:_init_mateba(weapon_data)
+	self:_init_asval(weapon_data)
+	self:_init_sub2000(weapon_data)
+	self:_init_wa2000(weapon_data)
+	self:_init_polymer(weapon_data)
+	self:_init_hunter(weapon_data)
+	self:_init_baka(weapon_data)
+	self:_init_arblast(weapon_data)
+	self:_init_frankish(weapon_data)
+	self:_init_long(weapon_data)
+	self:_init_par(weapon_data)
+	self:_init_sparrow(weapon_data)
+	self:_init_model70(weapon_data)
+	self:_init_m37(weapon_data)
+	self:_init_china(weapon_data)
+	self:_init_sr2(weapon_data)
+	self:_init_x_sr2(weapon_data)
+	self:_init_pl14(weapon_data)
+	self:_init_x_mp5(weapon_data)
+	self:_init_x_akmsu(weapon_data)
+	self:_init_tecci(weapon_data)
+	self:_init_hajk(weapon_data)
+	self:_init_boot(weapon_data)
+	self:_init_packrat(weapon_data)
+	self:_init_x_packrat(weapon_data)
+	self:_init_schakal(weapon_data)
+	self:_init_desertfox(weapon_data)
+	self:_init_rota(weapon_data)
+	self:_init_arbiter(weapon_data)
+	self:_init_contraband(weapon_data)
+	self:_init_ray(weapon_data)
+	self:_init_tti(weapon_data)
+	self:_init_grv(weapon_data)
+	self:_init_flint(weapon_data)
+	self:_init_coal(weapon_data)
+	self:_init_lemming(weapon_data)
+	self:_init_chinchilla(weapon_data)
+	self:_init_x_chinchilla(weapon_data)
+	self:_init_breech(weapon_data)
+	self:_init_ching(weapon_data)
+	self:_init_erma(weapon_data)
+	self:_init_shrew(weapon_data)
+	self:_init_x_shrew(weapon_data)
+	self:_init_basset(weapon_data)
+	self:_init_x_basset(weapon_data)
+end
+
+function WeaponTweakData:_init_new_m4(weapon_data)
 	self.new_m4 = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.new_m4.sounds.fire = "m4_fire_single"
@@ -3635,12 +3797,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.new_m4.description_id = "des_m4"
 	self.new_m4.muzzleflash = "effects/payday2/particles/weapons/556_auto_fps"
 	self.new_m4.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.new_m4.use_data = {selection_index = 2}
+	self.new_m4.use_data = {selection_index = SELECTION.PRIMARY}
 	self.new_m4.DAMAGE = 1
 	self.new_m4.CLIP_AMMO_MAX = 30
 	self.new_m4.NR_CLIPS_MAX = 5
 	self.new_m4.AMMO_MAX = self.new_m4.CLIP_AMMO_MAX * self.new_m4.NR_CLIPS_MAX
-	self.new_m4.AMMO_PICKUP = self:_pickup_chance(self.new_m4.AMMO_MAX, 3)
+	self.new_m4.AMMO_PICKUP = self:_pickup_chance(self.new_m4.AMMO_MAX, PICKUP.AR_MED_CAPACITY)
 	self.new_m4.FIRE_MODE = "auto"
 	self.new_m4.fire_mode_data = {fire_rate = 0.1}
 	self.new_m4.CAN_TOGGLE_FIREMODE = true
@@ -3678,8 +3840,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.new_m4.autohit = autohit_rifle_default
-	self.new_m4.aim_assist = aim_assist_rifle_default
+	self.new_m4.autohit = weapon_data.autohit_rifle_default
+	self.new_m4.aim_assist = weapon_data.aim_assist_rifle_default
 	self.new_m4.weapon_hold = "m4"
 	self.new_m4.animations = {
 		reload = "reload",
@@ -3703,10 +3865,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 10,
 		concealment = 20
 	}
+end
+
+function WeaponTweakData:_init_glock_17(weapon_data)
 	self.glock_17 = {
 		categories = {"pistol"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.glock_17.sounds.fire = "g17_fire"
@@ -3729,12 +3894,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.glock_17.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.glock_17.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.glock_17.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.glock_17.use_data = {selection_index = 1}
+	self.glock_17.use_data = {selection_index = SELECTION.SECONDARY}
 	self.glock_17.DAMAGE = 1
 	self.glock_17.CLIP_AMMO_MAX = 17
 	self.glock_17.NR_CLIPS_MAX = 9
 	self.glock_17.AMMO_MAX = self.glock_17.CLIP_AMMO_MAX * self.glock_17.NR_CLIPS_MAX
-	self.glock_17.AMMO_PICKUP = self:_pickup_chance(self.glock_17.AMMO_MAX, 1)
+	self.glock_17.AMMO_PICKUP = self:_pickup_chance(self.glock_17.AMMO_MAX, PICKUP.OTHER)
 	self.glock_17.spread = {
 		standing = self.new_m4.spread.standing,
 		crouching = self.new_m4.spread.crouching,
@@ -3770,8 +3935,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = 1
 	}
-	self.glock_17.autohit = autohit_pistol_default
-	self.glock_17.aim_assist = aim_assist_pistol_default
+	self.glock_17.autohit = weapon_data.autohit_pistol_default
+	self.glock_17.aim_assist = weapon_data.aim_assist_pistol_default
 	self.glock_17.weapon_hold = "glock"
 	self.glock_17.animations = {
 		equip_id = "equip_glock",
@@ -3794,10 +3959,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 16,
 		concealment = 30
 	}
+end
+
+function WeaponTweakData:_init_mp9(weapon_data)
 	self.mp9 = {
 		categories = {"smg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.mp9.sounds.fire = "mp9_fire_single"
@@ -3819,12 +3987,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.mp9.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.mp9.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.mp9.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.mp9.use_data = {selection_index = 1}
+	self.mp9.use_data = {selection_index = SELECTION.SECONDARY}
 	self.mp9.DAMAGE = 1
 	self.mp9.CLIP_AMMO_MAX = 30
 	self.mp9.NR_CLIPS_MAX = 7
 	self.mp9.AMMO_MAX = self.mp9.CLIP_AMMO_MAX * self.mp9.NR_CLIPS_MAX
-	self.mp9.AMMO_PICKUP = self:_pickup_chance(self.mp9.AMMO_MAX, 2)
+	self.mp9.AMMO_PICKUP = self:_pickup_chance(self.mp9.AMMO_MAX, PICKUP.AR_HIGH_CAPACITY)
 	self.mp9.FIRE_MODE = "auto"
 	self.mp9.fire_mode_data = {fire_rate = 0.063}
 	self.mp9.CAN_TOGGLE_FIREMODE = true
@@ -3864,8 +4032,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.mp9.autohit = autohit_smg_default
-	self.mp9.aim_assist = aim_assist_smg_default
+	self.mp9.autohit = weapon_data.autohit_smg_default
+	self.mp9.aim_assist = weapon_data.aim_assist_smg_default
 	self.mp9.animations = {
 		equip_id = "equip_mac11_rifle",
 		recoil_steelsight = true
@@ -3885,10 +4053,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 16,
 		concealment = 26
 	}
+end
+
+function WeaponTweakData:_init_r870(weapon_data)
 	self.r870 = {
 		categories = {"shotgun"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.r870.sounds.fire = "remington_fire"
@@ -3905,7 +4076,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.r870.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.r870.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug_semi"
 	self.r870.use_data = {
-		selection_index = 2,
+		selection_index = SELECTION.PRIMARY,
 		align_place = "right_hand"
 	}
 	self.r870.DAMAGE = 6
@@ -3915,7 +4086,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.r870.CLIP_AMMO_MAX = 6
 	self.r870.NR_CLIPS_MAX = 7
 	self.r870.AMMO_MAX = self.r870.CLIP_AMMO_MAX * self.r870.NR_CLIPS_MAX
-	self.r870.AMMO_PICKUP = self:_pickup_chance(self.r870.AMMO_MAX, 1)
+	self.r870.AMMO_PICKUP = self:_pickup_chance(self.r870.AMMO_MAX, PICKUP.OTHER)
 	self.r870.FIRE_MODE = "single"
 	self.r870.fire_mode_data = {fire_rate = 0.575}
 	self.r870.single = {fire_rate = 0.575}
@@ -3959,8 +4130,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.r870.autohit = autohit_shotgun_default
-	self.r870.aim_assist = aim_assist_shotgun_default
+	self.r870.autohit = weapon_data.autohit_shotgun_default
+	self.r870.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.r870.weapon_hold = "r870_shotgun"
 	self.r870.animations = {
 		equip_id = "equip_r870_shotgun",
@@ -3981,10 +4152,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 5,
 		concealment = 11
 	}
+end
+
+function WeaponTweakData:_init_glock_18c(weapon_data)
 	self.glock_18c = {
 		categories = {"pistol"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.glock_18c.sounds.fire = "g18c_fire_single"
@@ -4007,12 +4181,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.glock_18c.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.glock_18c.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.glock_18c.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.glock_18c.use_data = {selection_index = 1}
+	self.glock_18c.use_data = {selection_index = SELECTION.SECONDARY}
 	self.glock_18c.DAMAGE = 1
 	self.glock_18c.CLIP_AMMO_MAX = 20
 	self.glock_18c.NR_CLIPS_MAX = 8
 	self.glock_18c.AMMO_MAX = self.glock_18c.CLIP_AMMO_MAX * self.glock_18c.NR_CLIPS_MAX
-	self.glock_18c.AMMO_PICKUP = self:_pickup_chance(self.glock_18c.AMMO_MAX, 1)
+	self.glock_18c.AMMO_PICKUP = self:_pickup_chance(self.glock_18c.AMMO_MAX, PICKUP.OTHER)
 	self.glock_18c.FIRE_MODE = "auto"
 	self.glock_18c.fire_mode_data = {fire_rate = 0.066}
 	self.glock_18c.CAN_TOGGLE_FIREMODE = true
@@ -4047,8 +4221,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = 1
 	}
-	self.glock_18c.autohit = autohit_pistol_default
-	self.glock_18c.aim_assist = aim_assist_pistol_default
+	self.glock_18c.autohit = weapon_data.autohit_pistol_default
+	self.glock_18c.aim_assist = weapon_data.aim_assist_pistol_default
 	self.glock_18c.weapon_hold = "glock"
 	self.glock_18c.animations = {
 		fire = "recoil",
@@ -4078,10 +4252,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 16,
 		concealment = 29
 	}
+end
+
+function WeaponTweakData:_init_amcar(weapon_data)
 	self.amcar = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.amcar.sounds.fire = "amcar_fire_single"
@@ -4103,12 +4280,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.amcar.description_id = "des_m4"
 	self.amcar.muzzleflash = "effects/payday2/particles/weapons/556_auto_fps"
 	self.amcar.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.amcar.use_data = {selection_index = 2}
+	self.amcar.use_data = {selection_index = SELECTION.PRIMARY}
 	self.amcar.DAMAGE = 1
 	self.amcar.CLIP_AMMO_MAX = 20
 	self.amcar.NR_CLIPS_MAX = 11
 	self.amcar.AMMO_MAX = self.amcar.CLIP_AMMO_MAX * self.amcar.NR_CLIPS_MAX
-	self.amcar.AMMO_PICKUP = self:_pickup_chance(self.amcar.AMMO_MAX, 2)
+	self.amcar.AMMO_PICKUP = self:_pickup_chance(self.amcar.AMMO_MAX, PICKUP.AR_HIGH_CAPACITY)
 	self.amcar.FIRE_MODE = "auto"
 	self.amcar.fire_mode_data = {fire_rate = 0.11}
 	self.amcar.CAN_TOGGLE_FIREMODE = true
@@ -4143,8 +4320,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.amcar.autohit = autohit_rifle_default
-	self.amcar.aim_assist = aim_assist_rifle_default
+	self.amcar.autohit = weapon_data.autohit_rifle_default
+	self.amcar.aim_assist = weapon_data.aim_assist_rifle_default
 	self.amcar.weapon_hold = "m4"
 	self.amcar.animations = {
 		reload = "reload",
@@ -4167,10 +4344,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 10,
 		concealment = 21
 	}
+end
+
+function WeaponTweakData:_init_m16(weapon_data)
 	self.m16 = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.m16.sounds.fire = "m16_fire_single"
@@ -4192,12 +4372,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.m16.description_id = "des_m4"
 	self.m16.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.m16.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.m16.use_data = {selection_index = 2}
+	self.m16.use_data = {selection_index = SELECTION.PRIMARY}
 	self.m16.DAMAGE = 1
 	self.m16.CLIP_AMMO_MAX = 30
 	self.m16.NR_CLIPS_MAX = 3
 	self.m16.AMMO_MAX = self.m16.CLIP_AMMO_MAX * self.m16.NR_CLIPS_MAX
-	self.m16.AMMO_PICKUP = self:_pickup_chance(self.m16.AMMO_MAX, 1)
+	self.m16.AMMO_PICKUP = self:_pickup_chance(self.m16.AMMO_MAX, PICKUP.OTHER)
 	self.m16.FIRE_MODE = "auto"
 	self.m16.fire_mode_data = {fire_rate = 0.07}
 	self.m16.CAN_TOGGLE_FIREMODE = true
@@ -4232,8 +4412,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.m16.autohit = autohit_rifle_default
-	self.m16.aim_assist = aim_assist_rifle_default
+	self.m16.autohit = weapon_data.autohit_rifle_default
+	self.m16.aim_assist = weapon_data.aim_assist_rifle_default
 	self.m16.weapon_hold = "m4"
 	self.m16.animations = {
 		reload = "reload",
@@ -4256,10 +4436,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 10,
 		concealment = 17
 	}
+end
+
+function WeaponTweakData:_init_olympic(weapon_data)
 	self.olympic = {
 		categories = {"smg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.olympic.sounds.fire = "m4_olympic_fire_single"
@@ -4281,12 +4464,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.olympic.description_id = "des_m4"
 	self.olympic.muzzleflash = "effects/payday2/particles/weapons/556_auto_fps"
 	self.olympic.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.olympic.use_data = {selection_index = 1}
+	self.olympic.use_data = {selection_index = SELECTION.SECONDARY}
 	self.olympic.DAMAGE = 1
 	self.olympic.CLIP_AMMO_MAX = 25
 	self.olympic.NR_CLIPS_MAX = 6
 	self.olympic.AMMO_MAX = self.olympic.CLIP_AMMO_MAX * self.olympic.NR_CLIPS_MAX
-	self.olympic.AMMO_PICKUP = self:_pickup_chance(self.olympic.AMMO_MAX, 3)
+	self.olympic.AMMO_PICKUP = self:_pickup_chance(self.olympic.AMMO_MAX, PICKUP.AR_MED_CAPACITY)
 	self.olympic.FIRE_MODE = "auto"
 	self.olympic.fire_mode_data = {fire_rate = 0.088}
 	self.olympic.CAN_TOGGLE_FIREMODE = true
@@ -4321,8 +4504,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.olympic.autohit = autohit_smg_default
-	self.olympic.aim_assist = aim_assist_smg_default
+	self.olympic.autohit = weapon_data.autohit_smg_default
+	self.olympic.aim_assist = weapon_data.aim_assist_smg_default
 	self.olympic.weapon_hold = "m4"
 	self.olympic.animations = {
 		reload = "reload",
@@ -4345,10 +4528,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 10,
 		concealment = 24
 	}
+end
+
+function WeaponTweakData:_init_ak74(weapon_data)
 	self.ak74 = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.ak74.sounds.fire = "ak74_fire_single"
@@ -4369,12 +4555,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.ak74.description_id = "des_ak47"
 	self.ak74.muzzleflash = "effects/payday2/particles/weapons/556_auto_fps"
 	self.ak74.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.ak74.use_data = {selection_index = 2}
+	self.ak74.use_data = {selection_index = SELECTION.PRIMARY}
 	self.ak74.DAMAGE = 1
 	self.ak74.CLIP_AMMO_MAX = 30
 	self.ak74.NR_CLIPS_MAX = 5
 	self.ak74.AMMO_MAX = self.ak74.CLIP_AMMO_MAX * self.ak74.NR_CLIPS_MAX
-	self.ak74.AMMO_PICKUP = self:_pickup_chance(self.ak74.AMMO_MAX, 3)
+	self.ak74.AMMO_PICKUP = self:_pickup_chance(self.ak74.AMMO_MAX, PICKUP.AR_MED_CAPACITY)
 	self.ak74.FIRE_MODE = "auto"
 	self.ak74.fire_mode_data = {fire_rate = 0.092}
 	self.ak74.CAN_TOGGLE_FIREMODE = true
@@ -4409,8 +4595,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.ak74.autohit = autohit_rifle_default
-	self.ak74.aim_assist = aim_assist_rifle_default
+	self.ak74.autohit = weapon_data.autohit_rifle_default
+	self.ak74.aim_assist = weapon_data.aim_assist_rifle_default
 	self.ak74.weapon_hold = "ak47"
 	self.ak74.animations = {
 		equip_id = "equip_ak47",
@@ -4435,10 +4621,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 10,
 		concealment = 16
 	}
+end
+
+function WeaponTweakData:_init_akm(weapon_data)
 	self.akm = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.akm.sounds.fire = "akm_fire_single"
@@ -4459,12 +4648,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.akm.description_id = "des_ak47"
 	self.akm.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.akm.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.akm.use_data = {selection_index = 2}
+	self.akm.use_data = {selection_index = SELECTION.PRIMARY}
 	self.akm.DAMAGE = 1.25
 	self.akm.CLIP_AMMO_MAX = 30
 	self.akm.NR_CLIPS_MAX = 3
 	self.akm.AMMO_MAX = self.akm.CLIP_AMMO_MAX * self.akm.NR_CLIPS_MAX
-	self.akm.AMMO_PICKUP = self:_pickup_chance(self.akm.AMMO_MAX, 1)
+	self.akm.AMMO_PICKUP = self:_pickup_chance(self.akm.AMMO_MAX, PICKUP.OTHER)
 	self.akm.FIRE_MODE = "auto"
 	self.akm.fire_mode_data = {fire_rate = 0.107}
 	self.akm.CAN_TOGGLE_FIREMODE = true
@@ -4499,8 +4688,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.akm.autohit = autohit_rifle_default
-	self.akm.aim_assist = aim_assist_rifle_default
+	self.akm.autohit = weapon_data.autohit_rifle_default
+	self.akm.aim_assist = weapon_data.aim_assist_rifle_default
 	self.akm.weapon_hold = "ak47"
 	self.akm.animations = {
 		equip_id = "equip_ak47",
@@ -4525,10 +4714,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 8,
 		concealment = 13
 	}
+end
+
+function WeaponTweakData:_init_akm_gold(weapon_data)
 	self.akm_gold = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.akm_gold.sounds.fire = "akm_fire_single"
@@ -4549,12 +4741,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.akm_gold.description_id = "des_ak47"
 	self.akm_gold.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.akm_gold.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.akm_gold.use_data = {selection_index = 2}
+	self.akm_gold.use_data = {selection_index = SELECTION.PRIMARY}
 	self.akm_gold.DAMAGE = 1.25
 	self.akm_gold.CLIP_AMMO_MAX = 30
 	self.akm_gold.NR_CLIPS_MAX = 3
 	self.akm_gold.AMMO_MAX = self.akm_gold.CLIP_AMMO_MAX * self.akm_gold.NR_CLIPS_MAX
-	self.akm_gold.AMMO_PICKUP = self:_pickup_chance(self.akm_gold.AMMO_MAX, 1)
+	self.akm_gold.AMMO_PICKUP = self:_pickup_chance(self.akm_gold.AMMO_MAX, PICKUP.OTHER)
 	self.akm_gold.FIRE_MODE = "auto"
 	self.akm_gold.fire_mode_data = {fire_rate = 0.107}
 	self.akm_gold.CAN_TOGGLE_FIREMODE = true
@@ -4589,8 +4781,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.akm_gold.autohit = autohit_rifle_default
-	self.akm_gold.aim_assist = aim_assist_rifle_default
+	self.akm_gold.autohit = weapon_data.autohit_rifle_default
+	self.akm_gold.aim_assist = weapon_data.aim_assist_rifle_default
 	self.akm_gold.weapon_hold = "ak47"
 	self.akm_gold.animations = {
 		equip_id = "equip_ak47",
@@ -4616,10 +4808,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 8,
 		concealment = 11
 	}
+end
+
+function WeaponTweakData:_init_akmsu(weapon_data)
 	self.akmsu = {
 		categories = {"smg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.akmsu.sounds.fire = "akmsu_fire_single"
@@ -4640,12 +4835,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.akmsu.description_id = "des_ak47"
 	self.akmsu.muzzleflash = "effects/payday2/particles/weapons/556_auto_fps"
 	self.akmsu.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.akmsu.use_data = {selection_index = 1}
+	self.akmsu.use_data = {selection_index = SELECTION.SECONDARY}
 	self.akmsu.DAMAGE = 1
 	self.akmsu.CLIP_AMMO_MAX = 30
 	self.akmsu.NR_CLIPS_MAX = 3
 	self.akmsu.AMMO_MAX = self.akmsu.CLIP_AMMO_MAX * self.akmsu.NR_CLIPS_MAX
-	self.akmsu.AMMO_PICKUP = self:_pickup_chance(self.akmsu.AMMO_MAX, 1)
+	self.akmsu.AMMO_PICKUP = self:_pickup_chance(self.akmsu.AMMO_MAX, PICKUP.OTHER)
 	self.akmsu.FIRE_MODE = "auto"
 	self.akmsu.fire_mode_data = {fire_rate = 0.073}
 	self.akmsu.CAN_TOGGLE_FIREMODE = true
@@ -4680,8 +4875,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.akmsu.autohit = autohit_smg_default
-	self.akmsu.aim_assist = aim_assist_smg_default
+	self.akmsu.autohit = weapon_data.autohit_smg_default
+	self.akmsu.aim_assist = weapon_data.aim_assist_smg_default
 	self.akmsu.weapon_hold = "ak47"
 	self.akmsu.animations = {
 		equip_id = "equip_ak47",
@@ -4706,11 +4901,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 8,
 		concealment = 21
 	}
+end
+
+function WeaponTweakData:_init_saiga(weapon_data)
 	self.saiga = {
 		categories = {"shotgun"},
 		has_magazine = true,
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.saiga.sounds.fire = "saiga_play"
@@ -4730,7 +4928,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.saiga.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.saiga.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug"
 	self.saiga.use_data = {
-		selection_index = 2,
+		selection_index = SELECTION.PRIMARY,
 		align_place = "right_hand"
 	}
 	self.saiga.DAMAGE = 6
@@ -4740,7 +4938,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.saiga.CLIP_AMMO_MAX = 7
 	self.saiga.NR_CLIPS_MAX = 10
 	self.saiga.AMMO_MAX = self.saiga.CLIP_AMMO_MAX * self.saiga.NR_CLIPS_MAX
-	self.saiga.AMMO_PICKUP = self:_pickup_chance(self.saiga.AMMO_MAX, 4)
+	self.saiga.AMMO_PICKUP = self:_pickup_chance(self.saiga.AMMO_MAX, PICKUP.SHOTGUN_HIGH_CAPACITY)
 	self.saiga.FIRE_MODE = "auto"
 	self.saiga.fire_mode_data = {fire_rate = 0.18}
 	self.saiga.CAN_TOGGLE_FIREMODE = true
@@ -4775,8 +4973,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 2,
 		fire_steelsight_multiplier = 1.25
 	}
-	self.saiga.autohit = autohit_shotgun_default
-	self.saiga.aim_assist = aim_assist_shotgun_default
+	self.saiga.autohit = weapon_data.autohit_shotgun_default
+	self.saiga.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.saiga.weapon_hold = "saiga"
 	self.saiga.animations = {
 		equip_id = "equip_saiga",
@@ -4797,10 +4995,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 5,
 		concealment = 13
 	}
+end
+
+function WeaponTweakData:_init_ak5(weapon_data)
 	self.ak5 = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.ak5.sounds.fire = "ak5_fire_single"
@@ -4822,12 +5023,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.ak5.description_id = "des_m4"
 	self.ak5.muzzleflash = "effects/payday2/particles/weapons/556_auto_fps"
 	self.ak5.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.ak5.use_data = {selection_index = 2}
+	self.ak5.use_data = {selection_index = SELECTION.PRIMARY}
 	self.ak5.DAMAGE = 1
 	self.ak5.CLIP_AMMO_MAX = 30
 	self.ak5.NR_CLIPS_MAX = 5
 	self.ak5.AMMO_MAX = self.ak5.CLIP_AMMO_MAX * self.ak5.NR_CLIPS_MAX
-	self.ak5.AMMO_PICKUP = self:_pickup_chance(self.ak5.AMMO_MAX, 3)
+	self.ak5.AMMO_PICKUP = self:_pickup_chance(self.ak5.AMMO_MAX, PICKUP.AR_MED_CAPACITY)
 	self.ak5.FIRE_MODE = "auto"
 	self.ak5.fire_mode_data = {fire_rate = 0.085}
 	self.ak5.CAN_TOGGLE_FIREMODE = true
@@ -4862,8 +5063,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = 1
 	}
-	self.ak5.autohit = autohit_rifle_default
-	self.ak5.aim_assist = aim_assist_rifle_default
+	self.ak5.autohit = weapon_data.autohit_rifle_default
+	self.ak5.aim_assist = weapon_data.aim_assist_rifle_default
 	self.ak5.weapon_hold = "m4"
 	self.ak5.animations = {
 		reload_not_empty = "reload_not_empty",
@@ -4886,10 +5087,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 10,
 		concealment = 18
 	}
+end
+
+function WeaponTweakData:_init_aug(weapon_data)
 	self.aug = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.aug.sounds.fire = "aug_fire_single"
@@ -4910,12 +5114,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.aug.description_id = "des_aug"
 	self.aug.muzzleflash = "effects/payday2/particles/weapons/556_auto_fps"
 	self.aug.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.aug.use_data = {selection_index = 2}
+	self.aug.use_data = {selection_index = SELECTION.PRIMARY}
 	self.aug.DAMAGE = 1
 	self.aug.CLIP_AMMO_MAX = 30
 	self.aug.NR_CLIPS_MAX = 5
 	self.aug.AMMO_MAX = self.aug.CLIP_AMMO_MAX * self.aug.NR_CLIPS_MAX
-	self.aug.AMMO_PICKUP = self:_pickup_chance(self.aug.AMMO_MAX, 3)
+	self.aug.AMMO_PICKUP = self:_pickup_chance(self.aug.AMMO_MAX, PICKUP.AR_MED_CAPACITY)
 	self.aug.FIRE_MODE = "auto"
 	self.aug.fire_mode_data = {fire_rate = 0.08}
 	self.aug.CAN_TOGGLE_FIREMODE = true
@@ -4950,8 +5154,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = 1
 	}
-	self.aug.autohit = autohit_pistol_default
-	self.aug.aim_assist = aim_assist_pistol_default
+	self.aug.autohit = weapon_data.autohit_pistol_default
+	self.aug.aim_assist = weapon_data.aim_assist_pistol_default
 	self.aug.animations = {
 		equip_id = "equip_mp5_rifle",
 		recoil_steelsight = true
@@ -4971,10 +5175,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 10,
 		concealment = 20
 	}
+end
+
+function WeaponTweakData:_init_g36(weapon_data)
 	self.g36 = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.g36.sounds.fire = "g36_fire_single"
@@ -4996,12 +5203,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.g36.description_id = "des_m4"
 	self.g36.muzzleflash = "effects/payday2/particles/weapons/556_auto_fps"
 	self.g36.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.g36.use_data = {selection_index = 2}
+	self.g36.use_data = {selection_index = SELECTION.PRIMARY}
 	self.g36.DAMAGE = 1
 	self.g36.CLIP_AMMO_MAX = 30
 	self.g36.NR_CLIPS_MAX = 8
 	self.g36.AMMO_MAX = self.g36.CLIP_AMMO_MAX * self.g36.NR_CLIPS_MAX
-	self.g36.AMMO_PICKUP = self:_pickup_chance(self.g36.AMMO_MAX, 2)
+	self.g36.AMMO_PICKUP = self:_pickup_chance(self.g36.AMMO_MAX, PICKUP.AR_HIGH_CAPACITY)
 	self.g36.FIRE_MODE = "auto"
 	self.g36.fire_mode_data = {fire_rate = 0.085}
 	self.g36.CAN_TOGGLE_FIREMODE = true
@@ -5036,8 +5243,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.g36.autohit = autohit_rifle_default
-	self.g36.aim_assist = aim_assist_rifle_default
+	self.g36.autohit = weapon_data.autohit_rifle_default
+	self.g36.aim_assist = weapon_data.aim_assist_rifle_default
 	self.g36.animations = {
 		equip_id = "equip_m4",
 		recoil_steelsight = true
@@ -5057,10 +5264,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 11,
 		concealment = 19
 	}
+end
+
+function WeaponTweakData:_init_p90(weapon_data)
 	self.p90 = {
 		categories = {"smg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.p90.sounds.fire = "p90_fire_single"
@@ -5081,12 +5291,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.p90.description_id = "des_p90"
 	self.p90.muzzleflash = "effects/payday2/particles/weapons/556_auto_fps"
 	self.p90.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.p90.use_data = {selection_index = 1}
+	self.p90.use_data = {selection_index = SELECTION.SECONDARY}
 	self.p90.DAMAGE = 1
 	self.p90.CLIP_AMMO_MAX = 50
 	self.p90.NR_CLIPS_MAX = 3
 	self.p90.AMMO_MAX = self.p90.CLIP_AMMO_MAX * self.p90.NR_CLIPS_MAX
-	self.p90.AMMO_PICKUP = self:_pickup_chance(self.p90.AMMO_MAX, 3)
+	self.p90.AMMO_PICKUP = self:_pickup_chance(self.p90.AMMO_MAX, PICKUP.AR_MED_CAPACITY)
 	self.p90.FIRE_MODE = "auto"
 	self.p90.fire_mode_data = {fire_rate = 0.066}
 	self.p90.CAN_TOGGLE_FIREMODE = true
@@ -5121,8 +5331,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = 1
 	}
-	self.p90.autohit = autohit_smg_default
-	self.p90.aim_assist = aim_assist_smg_default
+	self.p90.autohit = weapon_data.autohit_smg_default
+	self.p90.aim_assist = weapon_data.aim_assist_smg_default
 	self.p90.animations = {
 		equip_id = "equip_mac11_rifle",
 		recoil_steelsight = true
@@ -5142,10 +5352,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 12,
 		concealment = 25
 	}
+end
+
+function WeaponTweakData:_init_new_m14(weapon_data)
 	self.new_m14 = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.new_m14.sounds.fire = "m14_fire"
@@ -5166,12 +5379,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.new_m14.description_id = "des_m14"
 	self.new_m14.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.new_m14.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.new_m14.use_data = {selection_index = 2}
+	self.new_m14.use_data = {selection_index = SELECTION.PRIMARY}
 	self.new_m14.DAMAGE = 2
 	self.new_m14.CLIP_AMMO_MAX = 10
 	self.new_m14.NR_CLIPS_MAX = 7
 	self.new_m14.AMMO_MAX = self.new_m14.CLIP_AMMO_MAX * self.new_m14.NR_CLIPS_MAX
-	self.new_m14.AMMO_PICKUP = self:_pickup_chance(self.new_m14.AMMO_MAX, 1)
+	self.new_m14.AMMO_PICKUP = self:_pickup_chance(self.new_m14.AMMO_MAX, PICKUP.OTHER)
 	self.new_m14.FIRE_MODE = "single"
 	self.new_m14.fire_mode_data = {fire_rate = 0.085}
 	self.new_m14.CAN_TOGGLE_FIREMODE = true
@@ -5206,8 +5419,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = 1
 	}
-	self.new_m14.autohit = autohit_rifle_default
-	self.new_m14.aim_assist = aim_assist_rifle_default
+	self.new_m14.autohit = weapon_data.autohit_rifle_default
+	self.new_m14.aim_assist = weapon_data.aim_assist_rifle_default
 	self.new_m14.animations = {
 		fire = "recoil",
 		equip_id = "equip_m14_rifle",
@@ -5228,10 +5441,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 4,
 		concealment = 8
 	}
+end
+
+function WeaponTweakData:_init_deagle(weapon_data)
 	self.deagle = {
 		categories = {"pistol"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.deagle.sounds.fire = "deagle_fire"
@@ -5253,12 +5469,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.deagle.description_id = "des_deagle"
 	self.deagle.muzzleflash = "effects/payday2/particles/weapons/556_auto_fps"
 	self.deagle.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.deagle.use_data = {selection_index = 1}
+	self.deagle.use_data = {selection_index = SELECTION.SECONDARY}
 	self.deagle.DAMAGE = 2
 	self.deagle.CLIP_AMMO_MAX = 10
 	self.deagle.NR_CLIPS_MAX = 5
 	self.deagle.AMMO_MAX = self.deagle.CLIP_AMMO_MAX * self.deagle.NR_CLIPS_MAX
-	self.deagle.AMMO_PICKUP = self:_pickup_chance(self.deagle.AMMO_MAX, 1)
+	self.deagle.AMMO_PICKUP = self:_pickup_chance(self.deagle.AMMO_MAX, PICKUP.OTHER)
 	self.deagle.spread = {
 		standing = self.new_m4.spread.standing,
 		crouching = self.new_m4.spread.crouching,
@@ -5289,8 +5505,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = -1,
 		fire_steelsight_multiplier = -1
 	}
-	self.deagle.autohit = autohit_pistol_default
-	self.deagle.aim_assist = aim_assist_pistol_default
+	self.deagle.autohit = weapon_data.autohit_pistol_default
+	self.deagle.aim_assist = weapon_data.aim_assist_pistol_default
 	self.deagle.animations = {
 		equip_id = "equip_glock",
 		recoil_steelsight = true,
@@ -5311,10 +5527,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 7,
 		concealment = 28
 	}
+end
+
+function WeaponTweakData:_init_new_mp5(weapon_data)
 	self.new_mp5 = {
 		categories = {"smg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.new_mp5.sounds.fire = "mp5_fire_single"
@@ -5336,12 +5555,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.new_mp5.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.new_mp5.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.new_mp5.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.new_mp5.use_data = {selection_index = 1}
+	self.new_mp5.use_data = {selection_index = SELECTION.SECONDARY}
 	self.new_mp5.DAMAGE = 1
 	self.new_mp5.CLIP_AMMO_MAX = 30
 	self.new_mp5.NR_CLIPS_MAX = 7
 	self.new_mp5.AMMO_MAX = self.new_mp5.CLIP_AMMO_MAX * self.new_mp5.NR_CLIPS_MAX
-	self.new_mp5.AMMO_PICKUP = self:_pickup_chance(self.new_mp5.AMMO_MAX, 2)
+	self.new_mp5.AMMO_PICKUP = self:_pickup_chance(self.new_mp5.AMMO_MAX, PICKUP.AR_HIGH_CAPACITY)
 	self.new_mp5.FIRE_MODE = "auto"
 	self.new_mp5.fire_mode_data = {fire_rate = 0.08}
 	self.new_mp5.CAN_TOGGLE_FIREMODE = true
@@ -5376,8 +5595,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = 0.5
 	}
-	self.new_mp5.autohit = autohit_smg_default
-	self.new_mp5.aim_assist = aim_assist_smg_default
+	self.new_mp5.autohit = weapon_data.autohit_smg_default
+	self.new_mp5.aim_assist = weapon_data.aim_assist_smg_default
 	self.new_mp5.weapon_hold = "mp5"
 	self.new_mp5.animations = {
 		equip_id = "equip_mp5_rifle",
@@ -5398,10 +5617,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 17,
 		concealment = 23
 	}
+end
+
+function WeaponTweakData:_init_colt_1911(weapon_data)
 	self.colt_1911 = {
 		categories = {"pistol"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.colt_1911.sounds.fire = "c45_fire"
@@ -5424,12 +5646,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.colt_1911.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.colt_1911.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.colt_1911.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.colt_1911.use_data = {selection_index = 1}
+	self.colt_1911.use_data = {selection_index = SELECTION.SECONDARY}
 	self.colt_1911.DAMAGE = 1
 	self.colt_1911.CLIP_AMMO_MAX = 10
 	self.colt_1911.NR_CLIPS_MAX = 9
 	self.colt_1911.AMMO_MAX = self.colt_1911.CLIP_AMMO_MAX * self.colt_1911.NR_CLIPS_MAX
-	self.colt_1911.AMMO_PICKUP = self:_pickup_chance(self.colt_1911.AMMO_MAX, 1)
+	self.colt_1911.AMMO_PICKUP = self:_pickup_chance(self.colt_1911.AMMO_MAX, PICKUP.OTHER)
 	self.colt_1911.spread = {
 		standing = self.new_m4.spread.standing,
 		crouching = self.new_m4.spread.crouching,
@@ -5460,8 +5682,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.colt_1911.autohit = autohit_pistol_default
-	self.colt_1911.aim_assist = aim_assist_pistol_default
+	self.colt_1911.autohit = weapon_data.autohit_pistol_default
+	self.colt_1911.aim_assist = weapon_data.aim_assist_pistol_default
 	self.colt_1911.animations = {
 		fire = "recoil",
 		reload = "reload",
@@ -5485,10 +5707,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 14,
 		concealment = 29
 	}
+end
+
+function WeaponTweakData:_init_mac10(weapon_data)
 	self.mac10 = {
 		categories = {"smg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.mac10.sounds.fire = "mac10_fire_single"
@@ -5510,12 +5735,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.mac10.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.mac10.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.mac10.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.mac10.use_data = {selection_index = 1}
+	self.mac10.use_data = {selection_index = SELECTION.SECONDARY}
 	self.mac10.DAMAGE = 1
 	self.mac10.CLIP_AMMO_MAX = 40
 	self.mac10.NR_CLIPS_MAX = 4
 	self.mac10.AMMO_MAX = self.mac10.CLIP_AMMO_MAX * self.mac10.NR_CLIPS_MAX
-	self.mac10.AMMO_PICKUP = self:_pickup_chance(self.mac10.AMMO_MAX, 3)
+	self.mac10.AMMO_PICKUP = self:_pickup_chance(self.mac10.AMMO_MAX, PICKUP.AR_MED_CAPACITY)
 	self.mac10.FIRE_MODE = "auto"
 	self.mac10.fire_mode_data = {fire_rate = 0.06}
 	self.mac10.CAN_TOGGLE_FIREMODE = true
@@ -5550,8 +5775,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 0.65,
 		fire_steelsight_multiplier = -1
 	}
-	self.mac10.autohit = autohit_smg_default
-	self.mac10.aim_assist = aim_assist_smg_default
+	self.mac10.autohit = weapon_data.autohit_smg_default
+	self.mac10.aim_assist = weapon_data.aim_assist_smg_default
 	self.mac10.weapon_hold = "mac11"
 	self.mac10.animations = {
 		equip_id = "equip_mac11_rifle",
@@ -5572,10 +5797,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 14,
 		concealment = 27
 	}
+end
+
+function WeaponTweakData:_init_serbu(weapon_data)
 	self.serbu = {
 		categories = {"shotgun"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.serbu.sounds.fire = "serbu_fire"
@@ -5592,7 +5820,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.serbu.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.serbu.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug_semi"
 	self.serbu.use_data = {
-		selection_index = 1,
+		selection_index = SELECTION.SECONDARY,
 		align_place = "right_hand"
 	}
 	self.serbu.DAMAGE = 6
@@ -5602,7 +5830,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.serbu.CLIP_AMMO_MAX = 6
 	self.serbu.NR_CLIPS_MAX = 7
 	self.serbu.AMMO_MAX = self.serbu.CLIP_AMMO_MAX * self.serbu.NR_CLIPS_MAX
-	self.serbu.AMMO_PICKUP = self:_pickup_chance(self.serbu.AMMO_MAX, 1)
+	self.serbu.AMMO_PICKUP = self:_pickup_chance(self.serbu.AMMO_MAX, PICKUP.OTHER)
 	self.serbu.FIRE_MODE = "single"
 	self.serbu.fire_mode_data = {fire_rate = 0.375}
 	self.serbu.single = {fire_rate = 0.375}
@@ -5636,8 +5864,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.serbu.autohit = autohit_shotgun_default
-	self.serbu.aim_assist = aim_assist_shotgun_default
+	self.serbu.autohit = weapon_data.autohit_shotgun_default
+	self.serbu.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.serbu.weapon_hold = "r870_shotgun"
 	self.serbu.animations = {
 		equip_id = "equip_r870_shotgun",
@@ -5658,11 +5886,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 5,
 		concealment = 23
 	}
+end
+
+function WeaponTweakData:_init_huntsman(weapon_data)
 	self.huntsman = {
 		categories = {"shotgun"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.huntsman.sounds.fire = "huntsman_fire"
@@ -5679,7 +5910,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.huntsman.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.huntsman.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.huntsman.use_data = {
-		selection_index = 2,
+		selection_index = SELECTION.PRIMARY,
 		align_place = "right_hand"
 	}
 	self.huntsman.DAMAGE = 6
@@ -5689,7 +5920,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.huntsman.CLIP_AMMO_MAX = 2
 	self.huntsman.NR_CLIPS_MAX = 16
 	self.huntsman.AMMO_MAX = self.huntsman.CLIP_AMMO_MAX * self.huntsman.NR_CLIPS_MAX
-	self.huntsman.AMMO_PICKUP = self:_pickup_chance(self.huntsman.AMMO_MAX, 1)
+	self.huntsman.AMMO_PICKUP = self:_pickup_chance(self.huntsman.AMMO_MAX, PICKUP.OTHER)
 	self.huntsman.FIRE_MODE = "single"
 	self.huntsman.fire_mode_data = {fire_rate = 0.12}
 	self.huntsman.single = {fire_rate = 0.12}
@@ -5730,8 +5961,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 2,
 		fire_steelsight_multiplier = 2
 	}
-	self.huntsman.autohit = autohit_shotgun_default
-	self.huntsman.aim_assist = aim_assist_shotgun_default
+	self.huntsman.autohit = weapon_data.autohit_shotgun_default
+	self.huntsman.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.huntsman.animations = {
 		equip_id = "equip_huntsman",
 		recoil_steelsight = true
@@ -5752,10 +5983,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		concealment = 7
 	}
 	self.huntsman.stats_modifiers = {damage = 1}
+end
+
+function WeaponTweakData:_init_b92fs(weapon_data)
 	self.b92fs = {
 		categories = {"pistol"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.b92fs.sounds.fire = "beretta_fire"
@@ -5775,12 +6009,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.b92fs.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.b92fs.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.b92fs.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.b92fs.use_data = {selection_index = 1}
+	self.b92fs.use_data = {selection_index = SELECTION.SECONDARY}
 	self.b92fs.DAMAGE = 1
 	self.b92fs.CLIP_AMMO_MAX = 14
 	self.b92fs.NR_CLIPS_MAX = 11
 	self.b92fs.AMMO_MAX = self.b92fs.CLIP_AMMO_MAX * self.b92fs.NR_CLIPS_MAX
-	self.b92fs.AMMO_PICKUP = self:_pickup_chance(self.b92fs.AMMO_MAX, 1)
+	self.b92fs.AMMO_PICKUP = self:_pickup_chance(self.b92fs.AMMO_MAX, PICKUP.OTHER)
 	self.b92fs.FIRE_MODE = "single"
 	self.b92fs.fire_mode_data = {fire_rate = 0.125}
 	self.b92fs.single = {fire_rate = 0.125}
@@ -5814,8 +6048,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.b92fs.autohit = autohit_pistol_default
-	self.b92fs.aim_assist = aim_assist_pistol_default
+	self.b92fs.autohit = weapon_data.autohit_pistol_default
+	self.b92fs.aim_assist = weapon_data.aim_assist_pistol_default
 	self.b92fs.weapon_hold = "glock"
 	self.b92fs.animations = {
 		equip_id = "equip_glock",
@@ -5837,14 +6071,17 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 17,
 		concealment = 30
 	}
+end
+
+function WeaponTweakData:_init_new_raging_bull(weapon_data)
 	self.new_raging_bull = {
 		categories = {
 			"pistol",
 			"revolver"
 		},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.new_raging_bull.sounds.fire = "rbull_fire"
@@ -5865,12 +6102,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.new_raging_bull.description_id = "des_new_raging_bull"
 	self.new_raging_bull.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.new_raging_bull.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
-	self.new_raging_bull.use_data = {selection_index = 1}
+	self.new_raging_bull.use_data = {selection_index = SELECTION.SECONDARY}
 	self.new_raging_bull.DAMAGE = 2
 	self.new_raging_bull.CLIP_AMMO_MAX = 6
 	self.new_raging_bull.NR_CLIPS_MAX = 9
 	self.new_raging_bull.AMMO_MAX = self.new_raging_bull.CLIP_AMMO_MAX * self.new_raging_bull.NR_CLIPS_MAX
-	self.new_raging_bull.AMMO_PICKUP = self:_pickup_chance(self.new_raging_bull.AMMO_MAX, 1)
+	self.new_raging_bull.AMMO_PICKUP = self:_pickup_chance(self.new_raging_bull.AMMO_MAX, PICKUP.OTHER)
 	self.new_raging_bull.spread = {
 		standing = self.new_m4.spread.standing,
 		crouching = self.new_m4.spread.crouching,
@@ -5901,8 +6138,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.new_raging_bull.autohit = autohit_pistol_default
-	self.new_raging_bull.aim_assist = aim_assist_pistol_default
+	self.new_raging_bull.autohit = weapon_data.autohit_pistol_default
+	self.new_raging_bull.aim_assist = weapon_data.aim_assist_pistol_default
 	self.new_raging_bull.weapon_hold = "raging_bull"
 	self.new_raging_bull.animations = {
 		equip_id = "equip_raging_bull",
@@ -5923,11 +6160,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 7,
 		concealment = 26
 	}
+end
+
+function WeaponTweakData:_init_saw(weapon_data)
 	self.saw = {
 		categories = {"saw"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.saw.sounds.fire = "Play_saw_handheld_start"
@@ -5946,7 +6186,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.saw.description_id = "des_mp5"
 	self.saw.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.saw.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
-	self.saw.use_data = {selection_index = 2}
+	self.saw.use_data = {selection_index = SELECTION.PRIMARY}
 	self.saw.DAMAGE = 0.2
 	self.saw.CLIP_AMMO_MAX = 150
 	self.saw.NR_CLIPS_MAX = 2
@@ -6005,8 +6245,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = 1
 	}
-	self.saw.autohit = autohit_pistol_default
-	self.saw.aim_assist = aim_assist_pistol_default
+	self.saw.autohit = weapon_data.autohit_pistol_default
+	self.saw.aim_assist = weapon_data.aim_assist_pistol_default
 	self.saw.weapon_hold = "saw"
 	self.saw.animations = {
 		equip_id = "equip_saw",
@@ -6030,15 +6270,18 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.saw.hit_alert_size_increase = 4
 	self.saw_secondary = deep_clone(self.saw)
 	self.saw_secondary.parent_weapon_id = "saw"
-	self.saw_secondary.use_data.selection_index = 1
+	self.saw_secondary.use_data.selection_index = SELECTION.SECONDARY
 	self.saw_secondary.animations.reload_name_id = "saw"
 	self.saw_secondary.use_stance = "saw"
 	self.saw_secondary.texture_name = "saw"
 	self.saw_secondary.weapon_hold = "saw"
+end
+
+function WeaponTweakData:_init_usp(weapon_data)
 	self.usp = {
 		categories = {"pistol"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.usp.sounds.fire = "usp45_fire"
@@ -6055,10 +6298,11 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.usp.name_id = "bm_w_usp"
 	self.usp.desc_id = "bm_w_usp_desc"
 	self.usp.description_id = "des_usp"
+	self.usp.global_value = "pd2_clan"
 	self.usp.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.usp.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.usp.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.usp.use_data = {selection_index = 1}
+	self.usp.use_data = {selection_index = SELECTION.SECONDARY}
 	self.usp.DAMAGE = 1
 	self.usp.FIRE_MODE = "single"
 	self.usp.fire_mode_data = {fire_rate = 0.166}
@@ -6066,7 +6310,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.usp.CLIP_AMMO_MAX = 13
 	self.usp.NR_CLIPS_MAX = 7
 	self.usp.AMMO_MAX = self.usp.CLIP_AMMO_MAX * self.usp.NR_CLIPS_MAX
-	self.usp.AMMO_PICKUP = self:_pickup_chance(self.usp.AMMO_MAX, 1)
+	self.usp.AMMO_PICKUP = self:_pickup_chance(self.usp.AMMO_MAX, PICKUP.OTHER)
 	self.usp.spread = {
 		standing = self.new_m4.spread.standing,
 		crouching = self.new_m4.spread.crouching,
@@ -6085,7 +6329,6 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		crouching = self.glock_17.kick.standing,
 		steelsight = self.glock_17.kick.standing
 	}
-	self.usp.global_value = "pd2_clan"
 	self.usp.crosshair = {
 		standing = {},
 		crouching = {},
@@ -6105,8 +6348,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.usp.autohit = autohit_pistol_default
-	self.usp.aim_assist = aim_assist_pistol_default
+	self.usp.autohit = weapon_data.autohit_pistol_default
+	self.usp.aim_assist = weapon_data.aim_assist_pistol_default
 	self.usp.weapon_hold = "colt_1911"
 	self.usp.animations = {
 		equip_id = "equip_glock",
@@ -6128,10 +6371,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 16,
 		concealment = 29
 	}
+end
+
+function WeaponTweakData:_init_g22c(weapon_data)
 	self.g22c = {
 		categories = {"pistol"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.g22c.sounds.fire = "g22_fire"
@@ -6148,10 +6394,11 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.g22c.name_id = "bm_w_g22c"
 	self.g22c.desc_id = "bm_w_g22c_desc"
 	self.g22c.description_id = "des_g22c"
+	self.g22c.global_value = "pd2_clan"
 	self.g22c.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.g22c.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.g22c.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.g22c.use_data = {selection_index = 1}
+	self.g22c.use_data = {selection_index = SELECTION.SECONDARY}
 	self.g22c.DAMAGE = 1
 	self.g22c.FIRE_MODE = "single"
 	self.g22c.fire_mode_data = {fire_rate = 0.166}
@@ -6159,7 +6406,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.g22c.CLIP_AMMO_MAX = 16
 	self.g22c.NR_CLIPS_MAX = 6
 	self.g22c.AMMO_MAX = self.g22c.CLIP_AMMO_MAX * self.g22c.NR_CLIPS_MAX
-	self.g22c.AMMO_PICKUP = self:_pickup_chance(self.g22c.AMMO_MAX, 1)
+	self.g22c.AMMO_PICKUP = self:_pickup_chance(self.g22c.AMMO_MAX, PICKUP.OTHER)
 	self.g22c.spread = {
 		standing = self.new_m4.spread.standing,
 		crouching = self.new_m4.spread.crouching,
@@ -6178,7 +6425,6 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		crouching = self.glock_17.kick.standing,
 		steelsight = self.glock_17.kick.standing
 	}
-	self.g22c.global_value = "pd2_clan"
 	self.g22c.crosshair = {
 		standing = {},
 		crouching = {},
@@ -6198,8 +6444,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.g22c.autohit = autohit_pistol_default
-	self.g22c.aim_assist = aim_assist_pistol_default
+	self.g22c.autohit = weapon_data.autohit_pistol_default
+	self.g22c.aim_assist = weapon_data.aim_assist_pistol_default
 	self.g22c.weapon_hold = "glock"
 	self.g22c.animations = {
 		equip_id = "equip_glock",
@@ -6221,11 +6467,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 15,
 		concealment = 29
 	}
+end
+
+function WeaponTweakData:_init_judge(weapon_data)
 	self.judge = {
 		categories = {"shotgun"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.judge.sounds.fire = "judge_fire"
@@ -6244,10 +6493,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.judge.name_id = "bm_w_judge"
 	self.judge.desc_id = "bm_w_judge_desc"
 	self.judge.description_id = "des_judge"
+	self.judge.global_value = "pd2_clan"
+	self.judge.texture_bundle_folder = "pd2_million"
 	self.judge.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.judge.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.judge.use_data = {
-		selection_index = 1,
+		selection_index = SELECTION.SECONDARY,
 		align_place = "right_hand"
 	}
 	self.judge.DAMAGE = 6
@@ -6257,7 +6508,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.judge.CLIP_AMMO_MAX = 5
 	self.judge.NR_CLIPS_MAX = 5
 	self.judge.AMMO_MAX = self.judge.CLIP_AMMO_MAX * self.judge.NR_CLIPS_MAX
-	self.judge.AMMO_PICKUP = self:_pickup_chance(self.judge.AMMO_MAX, 1)
+	self.judge.AMMO_PICKUP = self:_pickup_chance(self.judge.AMMO_MAX, PICKUP.OTHER)
 	self.judge.spread = {
 		standing = self.r870.spread.standing,
 		crouching = self.r870.spread.crouching,
@@ -6293,15 +6544,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 2,
 		fire_steelsight_multiplier = 2
 	}
-	self.judge.autohit = autohit_shotgun_default
-	self.judge.aim_assist = aim_assist_shotgun_default
+	self.judge.autohit = weapon_data.autohit_shotgun_default
+	self.judge.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.judge.weapon_hold = "raging_bull"
 	self.judge.animations = {
 		equip_id = "equip_raging_bull",
 		recoil_steelsight = true
 	}
-	self.judge.global_value = "pd2_clan"
-	self.judge.texture_bundle_folder = "pd2_million"
 	self.judge.panic_suppression_chance = 0.2
 	self.judge.stats = {
 		zoom = 3,
@@ -6317,10 +6566,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 5,
 		concealment = 29
 	}
+end
+
+function WeaponTweakData:_init_m45(weapon_data)
 	self.m45 = {
 		categories = {"smg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.m45.sounds.fire = "m45_fire_single"
@@ -6339,15 +6591,17 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.m45.name_id = "bm_w_m45"
 	self.m45.desc_id = "bm_w_m45_desc"
 	self.m45.description_id = "des_m45"
+	self.m45.global_value = "armored_transport"
+	self.m45.texture_bundle_folder = "dlc1"
 	self.m45.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.m45.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.m45.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.m45.use_data = {selection_index = 1}
+	self.m45.use_data = {selection_index = SELECTION.SECONDARY}
 	self.m45.DAMAGE = 1
 	self.m45.CLIP_AMMO_MAX = 40
 	self.m45.NR_CLIPS_MAX = 2
 	self.m45.AMMO_MAX = self.m45.CLIP_AMMO_MAX * self.m45.NR_CLIPS_MAX
-	self.m45.AMMO_PICKUP = self:_pickup_chance(self.m45.AMMO_MAX, 1)
+	self.m45.AMMO_PICKUP = self:_pickup_chance(self.m45.AMMO_MAX, PICKUP.OTHER)
 	self.m45.FIRE_MODE = "auto"
 	self.m45.fire_mode_data = {fire_rate = 0.1}
 	self.m45.auto = {fire_rate = 0.1}
@@ -6381,15 +6635,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.m45.autohit = autohit_smg_default
-	self.m45.aim_assist = aim_assist_smg_default
+	self.m45.autohit = weapon_data.autohit_smg_default
+	self.m45.aim_assist = weapon_data.aim_assist_smg_default
 	self.m45.weapon_hold = "m45"
 	self.m45.animations = {
 		equip_id = "equip_m45",
 		recoil_steelsight = true
 	}
-	self.m45.global_value = "armored_transport"
-	self.m45.texture_bundle_folder = "dlc1"
 	self.m45.panic_suppression_chance = 0.2
 	self.m45.stats = {
 		zoom = 1,
@@ -6405,10 +6657,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 14,
 		concealment = 24
 	}
+end
+
+function WeaponTweakData:_init_s552(weapon_data)
 	self.s552 = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.s552.sounds.fire = "sig552_fire_single"
@@ -6427,14 +6682,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.s552.name_id = "bm_w_s552"
 	self.s552.desc_id = "bm_w_s552_desc"
 	self.s552.description_id = "des_s552"
+	self.s552.global_value = "armored_transport"
+	self.s552.texture_bundle_folder = "dlc1"
 	self.s552.muzzleflash = "effects/payday2/particles/weapons/556_auto_fps"
 	self.s552.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.s552.use_data = {selection_index = 2}
+	self.s552.use_data = {selection_index = SELECTION.PRIMARY}
 	self.s552.DAMAGE = 1
 	self.s552.CLIP_AMMO_MAX = 30
 	self.s552.NR_CLIPS_MAX = 8
 	self.s552.AMMO_MAX = self.s552.CLIP_AMMO_MAX * self.s552.NR_CLIPS_MAX
-	self.s552.AMMO_PICKUP = self:_pickup_chance(self.s552.AMMO_MAX, 2)
+	self.s552.AMMO_PICKUP = self:_pickup_chance(self.s552.AMMO_MAX, PICKUP.AR_HIGH_CAPACITY)
 	self.s552.FIRE_MODE = "auto"
 	self.s552.fire_mode_data = {fire_rate = 0.084}
 	self.s552.CAN_TOGGLE_FIREMODE = true
@@ -6469,15 +6726,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.s552.autohit = autohit_rifle_default
-	self.s552.aim_assist = aim_assist_rifle_default
+	self.s552.autohit = weapon_data.autohit_rifle_default
+	self.s552.aim_assist = weapon_data.aim_assist_rifle_default
 	self.s552.weapon_hold = "ak47"
 	self.s552.animations = {
 		equip_id = "equip_ak47",
 		recoil_steelsight = true
 	}
-	self.s552.global_value = "armored_transport"
-	self.s552.texture_bundle_folder = "dlc1"
 	self.s552.panic_suppression_chance = 0.2
 	self.s552.stats = {
 		zoom = 3,
@@ -6493,10 +6748,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 12,
 		concealment = 22
 	}
+end
+
+function WeaponTweakData:_init_ppk(weapon_data)
 	self.ppk = {
 		categories = {"pistol"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.ppk.sounds.fire = "w_ppk_fire"
@@ -6513,15 +6771,17 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.ppk.name_id = "bm_w_ppk"
 	self.ppk.desc_id = "bm_w_ppk_desc"
 	self.ppk.description_id = "des_ppk"
+	self.ppk.global_value = "armored_transport"
+	self.ppk.texture_bundle_folder = "dlc1"
 	self.ppk.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.ppk.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.ppk.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.ppk.use_data = {selection_index = 1}
+	self.ppk.use_data = {selection_index = SELECTION.SECONDARY}
 	self.ppk.DAMAGE = 1
 	self.ppk.CLIP_AMMO_MAX = 14
 	self.ppk.NR_CLIPS_MAX = 11
 	self.ppk.AMMO_MAX = self.ppk.CLIP_AMMO_MAX * self.ppk.NR_CLIPS_MAX
-	self.ppk.AMMO_PICKUP = self:_pickup_chance(self.ppk.AMMO_MAX, 1)
+	self.ppk.AMMO_PICKUP = self:_pickup_chance(self.ppk.AMMO_MAX, PICKUP.OTHER)
 	self.ppk.FIRE_MODE = "single"
 	self.ppk.fire_mode_data = {fire_rate = 0.125}
 	self.ppk.single = {fire_rate = 0.125}
@@ -6555,16 +6815,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.ppk.autohit = autohit_pistol_default
-	self.ppk.aim_assist = aim_assist_pistol_default
+	self.ppk.autohit = weapon_data.autohit_pistol_default
+	self.ppk.aim_assist = weapon_data.aim_assist_pistol_default
 	self.ppk.weapon_hold = "glock"
 	self.ppk.animations = {
 		equip_id = "equip_glock",
 		recoil_steelsight = true,
 		magazine_empty = "last_recoil"
 	}
-	self.ppk.global_value = "armored_transport"
-	self.ppk.texture_bundle_folder = "dlc1"
 	self.ppk.panic_suppression_chance = 0.2
 	self.ppk.stats = {
 		zoom = 3,
@@ -6580,10 +6838,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 18,
 		concealment = 30
 	}
+end
+
+function WeaponTweakData:_init_mp7(weapon_data)
 	self.mp7 = {
 		categories = {"smg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.mp7.sounds.fire = "mp7_fire_single"
@@ -6602,15 +6863,17 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.mp7.name_id = "bm_w_mp7"
 	self.mp7.desc_id = "bm_w_mp7_desc"
 	self.mp7.description_id = "des_mp7"
+	self.mp7.global_value = "gage_pack"
+	self.mp7.texture_bundle_folder = "gage_pack"
 	self.mp7.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.mp7.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.mp7.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.mp7.use_data = {selection_index = 1}
+	self.mp7.use_data = {selection_index = SELECTION.SECONDARY}
 	self.mp7.DAMAGE = 1
 	self.mp7.CLIP_AMMO_MAX = 20
 	self.mp7.NR_CLIPS_MAX = 8
 	self.mp7.AMMO_MAX = self.mp7.CLIP_AMMO_MAX * self.mp7.NR_CLIPS_MAX
-	self.mp7.AMMO_PICKUP = self:_pickup_chance(self.mp7.AMMO_MAX, 3)
+	self.mp7.AMMO_PICKUP = self:_pickup_chance(self.mp7.AMMO_MAX, PICKUP.AR_MED_CAPACITY)
 	self.mp7.FIRE_MODE = "auto"
 	self.mp7.fire_mode_data = {fire_rate = 0.063}
 	self.mp7.CAN_TOGGLE_FIREMODE = true
@@ -6645,15 +6908,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.mp7.autohit = autohit_smg_default
-	self.mp7.aim_assist = aim_assist_smg_default
+	self.mp7.autohit = weapon_data.autohit_smg_default
+	self.mp7.aim_assist = weapon_data.aim_assist_smg_default
 	self.mp7.weapon_hold = "mp9"
 	self.mp7.animations = {
 		equip_id = "equip_mp9",
 		recoil_steelsight = true
 	}
-	self.mp7.global_value = "gage_pack"
-	self.mp7.texture_bundle_folder = "gage_pack"
 	self.mp7.panic_suppression_chance = 0.2
 	self.mp7.stats = {
 		zoom = 1,
@@ -6669,10 +6930,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 16,
 		concealment = 23
 	}
+end
+
+function WeaponTweakData:_init_scar(weapon_data)
 	self.scar = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.scar.sounds.fire = "scar_fire_single"
@@ -6691,14 +6955,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.scar.name_id = "bm_w_scar"
 	self.scar.desc_id = "bm_w_scar_desc"
 	self.scar.description_id = "des_scar"
+	self.scar.global_value = "gage_pack"
+	self.scar.texture_bundle_folder = "gage_pack"
 	self.scar.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.scar.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.scar.use_data = {selection_index = 2}
+	self.scar.use_data = {selection_index = SELECTION.PRIMARY}
 	self.scar.DAMAGE = 1
 	self.scar.CLIP_AMMO_MAX = 20
 	self.scar.NR_CLIPS_MAX = 5
 	self.scar.AMMO_MAX = self.scar.CLIP_AMMO_MAX * self.scar.NR_CLIPS_MAX
-	self.scar.AMMO_PICKUP = self:_pickup_chance(self.scar.AMMO_MAX, 1)
+	self.scar.AMMO_PICKUP = self:_pickup_chance(self.scar.AMMO_MAX, PICKUP.OTHER)
 	self.scar.FIRE_MODE = "auto"
 	self.scar.fire_mode_data = {fire_rate = 0.098}
 	self.scar.CAN_TOGGLE_FIREMODE = true
@@ -6733,15 +6999,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.scar.autohit = autohit_rifle_default
-	self.scar.aim_assist = aim_assist_rifle_default
+	self.scar.autohit = weapon_data.autohit_rifle_default
+	self.scar.aim_assist = weapon_data.aim_assist_rifle_default
 	self.scar.weapon_hold = "m4"
 	self.scar.animations = {
 		equip_id = "equip_m4",
 		recoil_steelsight = true
 	}
-	self.scar.global_value = "gage_pack"
-	self.scar.texture_bundle_folder = "gage_pack"
 	self.scar.panic_suppression_chance = 0.2
 	self.scar.stats = {
 		zoom = 3,
@@ -6757,10 +7021,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 8,
 		concealment = 8
 	}
+end
+
+function WeaponTweakData:_init_p226(weapon_data)
 	self.p226 = {
 		categories = {"pistol"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.p226.sounds.fire = "p226r_fire"
@@ -6777,15 +7044,17 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.p226.name_id = "bm_w_p226"
 	self.p226.desc_id = "bm_w_p226_desc"
 	self.p226.description_id = "des_p226"
+	self.p226.global_value = "gage_pack"
+	self.p226.texture_bundle_folder = "gage_pack"
 	self.p226.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.p226.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.p226.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.p226.use_data = {selection_index = 1}
+	self.p226.use_data = {selection_index = SELECTION.SECONDARY}
 	self.p226.DAMAGE = 1
 	self.p226.CLIP_AMMO_MAX = 12
 	self.p226.NR_CLIPS_MAX = 7
 	self.p226.AMMO_MAX = self.p226.CLIP_AMMO_MAX * self.p226.NR_CLIPS_MAX
-	self.p226.AMMO_PICKUP = self:_pickup_chance(self.p226.AMMO_MAX, 1)
+	self.p226.AMMO_PICKUP = self:_pickup_chance(self.p226.AMMO_MAX, PICKUP.OTHER)
 	self.p226.FIRE_MODE = "single"
 	self.p226.fire_mode_data = {fire_rate = 0.166}
 	self.p226.single = {fire_rate = 0.166}
@@ -6819,16 +7088,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.p226.autohit = autohit_pistol_default
-	self.p226.aim_assist = aim_assist_pistol_default
+	self.p226.autohit = weapon_data.autohit_pistol_default
+	self.p226.aim_assist = weapon_data.aim_assist_pistol_default
 	self.p226.weapon_hold = "colt_1911"
 	self.p226.animations = {
 		equip_id = "equip_glock",
 		recoil_steelsight = true,
 		magazine_empty = "last_recoil"
 	}
-	self.p226.global_value = "gage_pack"
-	self.p226.texture_bundle_folder = "gage_pack"
 	self.p226.panic_suppression_chance = 0.2
 	self.p226.stats = {
 		zoom = 3,
@@ -6844,10 +7111,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 15,
 		concealment = 29
 	}
+end
+
+function WeaponTweakData:_init_hk21(weapon_data)
 	self.hk21 = {
 		categories = {"lmg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.hk21.sounds.fire = "hk23e_fire"
@@ -6871,14 +7141,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.hk21.name_id = "bm_w_hk21"
 	self.hk21.desc_id = "bm_w_hk21_desc"
 	self.hk21.description_id = "des_hk21"
+	self.hk21.global_value = "gage_pack_lmg"
+	self.hk21.texture_bundle_folder = "gage_pack_lmg"
 	self.hk21.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
 	self.hk21.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
-	self.hk21.use_data = {selection_index = 2}
+	self.hk21.use_data = {selection_index = SELECTION.PRIMARY}
 	self.hk21.DAMAGE = 1
 	self.hk21.CLIP_AMMO_MAX = 150
 	self.hk21.NR_CLIPS_MAX = 2
 	self.hk21.AMMO_MAX = self.hk21.CLIP_AMMO_MAX * self.hk21.NR_CLIPS_MAX
-	self.hk21.AMMO_PICKUP = self:_pickup_chance(self.hk21.AMMO_MAX, 1)
+	self.hk21.AMMO_PICKUP = self:_pickup_chance(self.hk21.AMMO_MAX, PICKUP.OTHER)
 	self.hk21.FIRE_MODE = "auto"
 	self.hk21.fire_mode_data = {fire_rate = 0.083}
 	self.hk21.CAN_TOGGLE_FIREMODE = false
@@ -6890,7 +7162,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		moving_standing = self.new_m4.spread.moving_standing,
 		moving_crouching = self.new_m4.spread.moving_crouching,
 		moving_steelsight = self.new_m4.spread.moving_steelsight,
-		bipod = default_bipod_spread
+		bipod = weapon_data.default_bipod_spread
 	}
 	self.hk21.kick = {standing = {
 		-0.2,
@@ -6919,8 +7191,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 0.8,
 		fire_steelsight_multiplier = -0.8
 	}
-	self.hk21.autohit = autohit_lmg_default
-	self.hk21.aim_assist = aim_assist_lmg_default
+	self.hk21.autohit = weapon_data.autohit_lmg_default
+	self.hk21.aim_assist = weapon_data.aim_assist_lmg_default
 	self.hk21.weapon_hold = "hk21"
 	self.hk21.animations = {
 		equip_id = "equip_hk21",
@@ -6932,8 +7204,6 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		bipod_recoil_loop = "bipod_recoil_loop",
 		bipod_recoil_exit = "bipod_recoil_exit"
 	}
-	self.hk21.global_value = "gage_pack_lmg"
-	self.hk21.texture_bundle_folder = "gage_pack_lmg"
 	self.hk21.panic_suppression_chance = 0.2
 	self.hk21.stats = {
 		zoom = 3,
@@ -6949,10 +7219,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 2,
 		concealment = 2
 	}
+end
+
+function WeaponTweakData:_init_m249(weapon_data)
 	self.m249 = {
 		categories = {"lmg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.m249.sounds.fire = "m249_fire_single"
@@ -6976,14 +7249,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.m249.name_id = "bm_w_m249"
 	self.m249.desc_id = "bm_w_m249_desc"
 	self.m249.description_id = "des_m249"
+	self.m249.global_value = "gage_pack_lmg"
+	self.m249.texture_bundle_folder = "gage_pack_lmg"
 	self.m249.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
 	self.m249.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
-	self.m249.use_data = {selection_index = 2}
+	self.m249.use_data = {selection_index = SELECTION.PRIMARY}
 	self.m249.DAMAGE = 1
 	self.m249.CLIP_AMMO_MAX = 200
 	self.m249.NR_CLIPS_MAX = 2
 	self.m249.AMMO_MAX = self.m249.CLIP_AMMO_MAX * self.m249.NR_CLIPS_MAX
-	self.m249.AMMO_PICKUP = self:_pickup_chance(self.m249.AMMO_MAX, 1)
+	self.m249.AMMO_PICKUP = self:_pickup_chance(self.m249.AMMO_MAX, PICKUP.OTHER)
 	self.m249.FIRE_MODE = "auto"
 	self.m249.fire_mode_data = {fire_rate = 0.066}
 	self.m249.CAN_TOGGLE_FIREMODE = false
@@ -6995,7 +7270,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		moving_standing = self.new_m4.spread.moving_standing,
 		moving_crouching = self.new_m4.spread.moving_crouching,
 		moving_steelsight = self.new_m4.spread.moving_steelsight,
-		bipod = default_bipod_spread
+		bipod = weapon_data.default_bipod_spread
 	}
 	self.m249.kick = {standing = {
 		-0.2,
@@ -7024,8 +7299,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 0.5,
 		fire_steelsight_multiplier = -0.5
 	}
-	self.m249.autohit = autohit_lmg_default
-	self.m249.aim_assist = aim_assist_lmg_default
+	self.m249.autohit = weapon_data.autohit_lmg_default
+	self.m249.aim_assist = weapon_data.aim_assist_lmg_default
 	self.m249.weapon_hold = "m249"
 	self.m249.animations = {
 		equip_id = "equip_m249",
@@ -7037,8 +7312,6 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		bipod_recoil_loop = "bipod_recoil_loop",
 		bipod_recoil_exit = "bipod_recoil_exit"
 	}
-	self.m249.global_value = "gage_pack_lmg"
-	self.m249.texture_bundle_folder = "gage_pack_lmg"
 	self.m249.panic_suppression_chance = 0.2
 	self.m249.stats = {
 		zoom = 1,
@@ -7054,10 +7327,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 4,
 		concealment = 2
 	}
+end
+
+function WeaponTweakData:_init_rpk(weapon_data)
 	self.rpk = {
 		categories = {"lmg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.rpk.sounds.fire = "rpk_fire_single"
@@ -7081,14 +7357,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.rpk.name_id = "bm_w_rpk"
 	self.rpk.desc_id = "bm_w_rpk_desc"
 	self.rpk.description_id = "des_rpk"
+	self.rpk.global_value = "gage_pack_lmg"
+	self.rpk.texture_bundle_folder = "gage_pack_lmg"
 	self.rpk.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
 	self.rpk.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.rpk.use_data = {selection_index = 2}
+	self.rpk.use_data = {selection_index = SELECTION.PRIMARY}
 	self.rpk.DAMAGE = 1
 	self.rpk.CLIP_AMMO_MAX = 100
 	self.rpk.NR_CLIPS_MAX = 3
 	self.rpk.AMMO_MAX = self.rpk.CLIP_AMMO_MAX * self.rpk.NR_CLIPS_MAX
-	self.rpk.AMMO_PICKUP = self:_pickup_chance(self.rpk.AMMO_MAX, 1)
+	self.rpk.AMMO_PICKUP = self:_pickup_chance(self.rpk.AMMO_MAX, PICKUP.OTHER)
 	self.rpk.FIRE_MODE = "auto"
 	self.rpk.fire_mode_data = {fire_rate = 0.08}
 	self.rpk.CAN_TOGGLE_FIREMODE = false
@@ -7100,7 +7378,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		moving_standing = self.new_m4.spread.moving_standing,
 		moving_crouching = self.new_m4.spread.moving_crouching,
 		moving_steelsight = self.new_m4.spread.moving_steelsight,
-		bipod = default_bipod_spread
+		bipod = weapon_data.default_bipod_spread
 	}
 	self.rpk.kick = {standing = {
 		-0.2,
@@ -7129,8 +7407,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.rpk.autohit = autohit_lmg_default
-	self.rpk.aim_assist = aim_assist_lmg_default
+	self.rpk.autohit = weapon_data.autohit_lmg_default
+	self.rpk.aim_assist = weapon_data.aim_assist_lmg_default
 	self.rpk.weapon_hold = "rpk"
 	self.rpk.animations = {
 		equip_id = "equip_rpk",
@@ -7142,8 +7420,6 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		bipod_recoil_loop = "bipod_recoil_loop",
 		bipod_recoil_exit = "bipod_recoil_exit"
 	}
-	self.rpk.global_value = "gage_pack_lmg"
-	self.rpk.texture_bundle_folder = "gage_pack_lmg"
 	self.rpk.panic_suppression_chance = 0.2
 	self.rpk.stats = {
 		zoom = 2,
@@ -7159,11 +7435,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 8,
 		concealment = 5
 	}
+end
+
+function WeaponTweakData:_init_m95(weapon_data)
 	self.m95 = {
 		categories = {"snp"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.m95.sounds.fire = "barrett_fire"
@@ -7179,9 +7458,11 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.m95.name_id = "bm_w_m95"
 	self.m95.desc_id = "bm_w_m95_desc"
 	self.m95.description_id = "des_m95"
+	self.m95.global_value = "gage_pack_snp"
+	self.m95.texture_bundle_folder = "gage_pack_snp"
 	self.m95.muzzleflash = "effects/payday2/particles/weapons/50cal_auto_fps"
 	self.m95.shell_ejection = "effects/payday2/particles/weapons/shells/shell_sniper_m95"
-	self.m95.use_data = {selection_index = 2}
+	self.m95.use_data = {selection_index = SELECTION.PRIMARY}
 	self.m95.DAMAGE = 1
 	self.m95.CLIP_AMMO_MAX = 5
 	self.m95.NR_CLIPS_MAX = 3
@@ -7229,14 +7510,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 3.8,
 		fire_steelsight_multiplier = -3.8
 	}
-	self.m95.autohit = autohit_snp_default
-	self.m95.aim_assist = aim_assist_snp_default
+	self.m95.autohit = weapon_data.autohit_snp_default
+	self.m95.aim_assist = weapon_data.aim_assist_snp_default
 	self.m95.animations = {
 		equip_id = "equip_m95",
 		recoil_steelsight = true
 	}
-	self.m95.global_value = "gage_pack_snp"
-	self.m95.texture_bundle_folder = "gage_pack_snp"
 	self.m95.can_shoot_through_enemy = true
 	self.m95.can_shoot_through_shield = true
 	self.m95.can_shoot_through_wall = true
@@ -7257,11 +7536,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.m95.armor_piercing_chance = 1
 	self.m95.stats_modifiers = {damage = 20}
+end
+
+function WeaponTweakData:_init_msr(weapon_data)
 	self.msr = {
 		categories = {"snp"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.msr.sounds.fire = "msr_fire"
@@ -7277,17 +7559,19 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.msr.name_id = "bm_w_msr"
 	self.msr.desc_id = "bm_w_msr_desc"
 	self.msr.description_id = "des_msr"
+	self.msr.global_value = "gage_pack_snp"
+	self.msr.texture_bundle_folder = "gage_pack_snp"
 	self.msr.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
 	self.msr.shell_ejection = "effects/payday2/particles/weapons/shells/shell_sniper"
 	self.msr.use_data = {
-		selection_index = 2,
+		selection_index = SELECTION.PRIMARY,
 		align_place = "left_hand"
 	}
 	self.msr.DAMAGE = 1
 	self.msr.CLIP_AMMO_MAX = 10
 	self.msr.NR_CLIPS_MAX = 4
 	self.msr.AMMO_MAX = self.msr.CLIP_AMMO_MAX * self.msr.NR_CLIPS_MAX
-	self.msr.AMMO_PICKUP = self:_pickup_chance(self.msr.AMMO_MAX, 5)
+	self.msr.AMMO_PICKUP = self:_pickup_chance(self.msr.AMMO_MAX, PICKUP.SNIPER_LOW_DAMAGE)
 	self.msr.FIRE_MODE = "single"
 	self.msr.fire_mode_data = {fire_rate = 1}
 	self.msr.CAN_TOGGLE_FIREMODE = false
@@ -7327,15 +7611,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 3.5,
 		fire_steelsight_multiplier = -3.5
 	}
-	self.msr.autohit = autohit_snp_default
-	self.msr.aim_assist = aim_assist_snp_default
+	self.msr.autohit = weapon_data.autohit_snp_default
+	self.msr.aim_assist = weapon_data.aim_assist_snp_default
 	self.msr.weapon_hold = "msr"
 	self.msr.animations = {
 		equip_id = "equip_msr",
 		recoil_steelsight = true
 	}
-	self.msr.global_value = "gage_pack_snp"
-	self.msr.texture_bundle_folder = "gage_pack_snp"
 	self.msr.can_shoot_through_enemy = true
 	self.msr.can_shoot_through_shield = true
 	self.msr.can_shoot_through_wall = true
@@ -7356,11 +7638,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.msr.armor_piercing_chance = 1
 	self.msr.stats_modifiers = {damage = 1}
+end
+
+function WeaponTweakData:_init_r93(weapon_data)
 	self.r93 = {
 		categories = {"snp"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.r93.sounds.fire = "blazer_fire"
@@ -7376,10 +7661,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.r93.name_id = "bm_w_r93"
 	self.r93.desc_id = "bm_w_r93_desc"
 	self.r93.description_id = "des_r93"
+	self.r93.global_value = "gage_pack_snp"
+	self.r93.texture_bundle_folder = "gage_pack_snp"
 	self.r93.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
 	self.r93.shell_ejection = "effects/payday2/particles/weapons/shells/shell_sniper"
 	self.r93.use_data = {
-		selection_index = 2,
+		selection_index = SELECTION.PRIMARY,
 		align_place = "left_hand"
 	}
 	self.r93.DAMAGE = 1
@@ -7429,15 +7716,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 2.8,
 		fire_steelsight_multiplier = -2.8
 	}
-	self.r93.autohit = autohit_snp_default
-	self.r93.aim_assist = aim_assist_snp_default
+	self.r93.autohit = weapon_data.autohit_snp_default
+	self.r93.aim_assist = weapon_data.aim_assist_snp_default
 	self.r93.weapon_hold = "r93"
 	self.r93.animations = {
 		equip_id = "equip_r93",
 		recoil_steelsight = true
 	}
-	self.r93.global_value = "gage_pack_snp"
-	self.r93.texture_bundle_folder = "gage_pack_snp"
 	self.r93.can_shoot_through_enemy = true
 	self.r93.can_shoot_through_shield = true
 	self.r93.can_shoot_through_wall = true
@@ -7458,10 +7743,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.r93.armor_piercing_chance = 1
 	self.r93.stats_modifiers = {damage = 2}
+end
+
+function WeaponTweakData:_init_fal(weapon_data)
 	self.fal = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.fal.sounds.fire = "fn_fal_fire_1p"
@@ -7480,14 +7768,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.fal.name_id = "bm_w_fal"
 	self.fal.desc_id = "bm_w_fal_desc"
 	self.fal.description_id = "des_fal"
+	self.fal.global_value = "big_bank"
+	self.fal.texture_bundle_folder = "big_bank"
 	self.fal.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.fal.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.fal.use_data = {selection_index = 2}
+	self.fal.use_data = {selection_index = SELECTION.PRIMARY}
 	self.fal.DAMAGE = 1
 	self.fal.CLIP_AMMO_MAX = 20
 	self.fal.NR_CLIPS_MAX = 5
 	self.fal.AMMO_MAX = self.fal.CLIP_AMMO_MAX * self.fal.NR_CLIPS_MAX
-	self.fal.AMMO_PICKUP = self:_pickup_chance(self.fal.AMMO_MAX, 1)
+	self.fal.AMMO_PICKUP = self:_pickup_chance(self.fal.AMMO_MAX, PICKUP.OTHER)
 	self.fal.FIRE_MODE = "auto"
 	self.fal.fire_mode_data = {fire_rate = 0.086}
 	self.fal.CAN_TOGGLE_FIREMODE = true
@@ -7522,14 +7812,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.fal.autohit = autohit_rifle_default
-	self.fal.aim_assist = aim_assist_rifle_default
+	self.fal.autohit = weapon_data.autohit_rifle_default
+	self.fal.aim_assist = weapon_data.aim_assist_rifle_default
 	self.fal.animations = {
 		equip_id = "equip_m4",
 		recoil_steelsight = true
 	}
-	self.fal.global_value = "big_bank"
-	self.fal.texture_bundle_folder = "big_bank"
 	self.fal.panic_suppression_chance = 0.2
 	self.fal.stats = {
 		zoom = 3,
@@ -7545,10 +7833,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 8,
 		concealment = 10
 	}
+end
+
+function WeaponTweakData:_init_benelli(weapon_data)
 	self.benelli = {
 		categories = {"shotgun"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.benelli.sounds.fire = "benelli_m4_fire"
@@ -7563,10 +7854,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.benelli.name_id = "bm_w_benelli"
 	self.benelli.desc_id = "bm_w_benelli_desc"
 	self.benelli.description_id = "des_benelli"
+	self.benelli.texture_bundle_folder = "gage_pack_shotgun"
+	self.benelli.global_value = "gage_pack_shotgun"
 	self.benelli.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.benelli.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug"
 	self.benelli.use_data = {
-		selection_index = 2,
+		selection_index = SELECTION.PRIMARY,
 		align_place = "right_hand"
 	}
 	self.benelli.DAMAGE = 6
@@ -7576,7 +7869,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.benelli.CLIP_AMMO_MAX = 8
 	self.benelli.NR_CLIPS_MAX = 8
 	self.benelli.AMMO_MAX = self.benelli.CLIP_AMMO_MAX * self.benelli.NR_CLIPS_MAX
-	self.benelli.AMMO_PICKUP = self:_pickup_chance(self.benelli.AMMO_MAX, 4)
+	self.benelli.AMMO_PICKUP = self:_pickup_chance(self.benelli.AMMO_MAX, PICKUP.SHOTGUN_HIGH_CAPACITY)
 	self.benelli.FIRE_MODE = "single"
 	self.benelli.fire_mode_data = {fire_rate = 0.14}
 	self.benelli.CAN_TOGGLE_FIREMODE = false
@@ -7611,14 +7904,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 2,
 		fire_steelsight_multiplier = 1.25
 	}
-	self.benelli.autohit = autohit_shotgun_default
-	self.benelli.aim_assist = aim_assist_shotgun_default
+	self.benelli.autohit = weapon_data.autohit_shotgun_default
+	self.benelli.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.benelli.animations = {
 		equip_id = "equip_r870_shotgun",
 		recoil_steelsight = true
 	}
-	self.benelli.texture_bundle_folder = "gage_pack_shotgun"
-	self.benelli.global_value = "gage_pack_shotgun"
 	self.benelli.panic_suppression_chance = 0.2
 	self.benelli.stats = {
 		zoom = 3,
@@ -7634,10 +7925,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 6,
 		concealment = 12
 	}
+end
+
+function WeaponTweakData:_init_striker(weapon_data)
 	self.striker = {
 		categories = {"shotgun"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.striker.sounds.fire = "striker_fire"
@@ -7657,10 +7951,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.striker.name_id = "bm_w_striker"
 	self.striker.desc_id = "bm_w_striker_desc"
 	self.striker.description_id = "des_striker"
+	self.striker.texture_bundle_folder = "gage_pack_shotgun"
+	self.striker.global_value = "gage_pack_shotgun"
 	self.striker.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.striker.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug"
 	self.striker.use_data = {
-		selection_index = 1,
+		selection_index = SELECTION.SECONDARY,
 		align_place = "left_hand"
 	}
 	self.striker.DAMAGE = 6
@@ -7670,7 +7966,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.striker.CLIP_AMMO_MAX = 12
 	self.striker.NR_CLIPS_MAX = 6
 	self.striker.AMMO_MAX = self.striker.CLIP_AMMO_MAX * self.striker.NR_CLIPS_MAX
-	self.striker.AMMO_PICKUP = self:_pickup_chance(self.striker.AMMO_MAX, 4)
+	self.striker.AMMO_PICKUP = self:_pickup_chance(self.striker.AMMO_MAX, PICKUP.SHOTGUN_HIGH_CAPACITY)
 	self.striker.FIRE_MODE = "single"
 	self.striker.fire_mode_data = {fire_rate = 0.14}
 	self.striker.CAN_TOGGLE_FIREMODE = false
@@ -7705,15 +8001,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 2,
 		fire_steelsight_multiplier = 1.25
 	}
-	self.striker.autohit = autohit_shotgun_default
-	self.striker.aim_assist = aim_assist_shotgun_default
+	self.striker.autohit = weapon_data.autohit_shotgun_default
+	self.striker.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.striker.animations = {
 		equip_id = "equip_r870_shotgun",
 		recoil_steelsight = true,
 		reload_shell_data = {align = "right"}
 	}
-	self.striker.texture_bundle_folder = "gage_pack_shotgun"
-	self.striker.global_value = "gage_pack_shotgun"
 	self.striker.panic_suppression_chance = 0.2
 	self.striker.stats = {
 		zoom = 3,
@@ -7729,10 +8023,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 5,
 		concealment = 21
 	}
+end
+
+function WeaponTweakData:_init_ksg(weapon_data)
 	self.ksg = {
 		categories = {"shotgun"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.ksg.sounds.fire = "keltec_fire"
@@ -7746,10 +8043,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.ksg.name_id = "bm_w_ksg"
 	self.ksg.desc_id = "bm_w_ksg_desc"
 	self.ksg.description_id = "des_ksg"
+	self.ksg.texture_bundle_folder = "gage_pack_shotgun"
+	self.ksg.global_value = "gage_pack_shotgun"
 	self.ksg.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.ksg.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug_semi"
 	self.ksg.use_data = {
-		selection_index = 2,
+		selection_index = SELECTION.PRIMARY,
 		align_place = "right_hand"
 	}
 	self.ksg.DAMAGE = 6
@@ -7759,7 +8058,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.ksg.CLIP_AMMO_MAX = 14
 	self.ksg.NR_CLIPS_MAX = 3
 	self.ksg.AMMO_MAX = self.ksg.CLIP_AMMO_MAX * self.ksg.NR_CLIPS_MAX
-	self.ksg.AMMO_PICKUP = self:_pickup_chance(self.ksg.AMMO_MAX, 1)
+	self.ksg.AMMO_PICKUP = self:_pickup_chance(self.ksg.AMMO_MAX, PICKUP.OTHER)
 	self.ksg.FIRE_MODE = "single"
 	self.ksg.fire_mode_data = {fire_rate = 0.575}
 	self.ksg.single = {fire_rate = 0.575}
@@ -7803,15 +8102,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.ksg.autohit = autohit_shotgun_default
-	self.ksg.aim_assist = aim_assist_shotgun_default
+	self.ksg.autohit = weapon_data.autohit_shotgun_default
+	self.ksg.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.ksg.weapon_hold = "ksg"
 	self.ksg.animations = {
 		equip_id = "equip_r870_shotgun",
 		recoil_steelsight = true
 	}
-	self.ksg.texture_bundle_folder = "gage_pack_shotgun"
-	self.ksg.global_value = "gage_pack_shotgun"
 	self.ksg.panic_suppression_chance = 0.2
 	self.ksg.stats = {
 		zoom = 3,
@@ -7827,11 +8124,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 5,
 		concealment = 22
 	}
+end
+
+function WeaponTweakData:_init_gre_m79(weapon_data)
 	self.gre_m79 = {
 		categories = {"grenade_launcher"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.gre_m79.sounds.fire = "gl40_fire"
@@ -7845,10 +8145,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.gre_m79.name_id = "bm_w_gre_m79"
 	self.gre_m79.desc_id = "bm_w_gre_m79_desc"
 	self.gre_m79.description_id = "des_gre_m79"
+	self.gre_m79.global_value = "gage_pack_assault"
+	self.gre_m79.texture_bundle_folder = "gage_pack_assault"
 	self.gre_m79.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.gre_m79.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.gre_m79.use_data = {
-		selection_index = 2,
+		selection_index = SELECTION.PRIMARY,
 		align_place = "right_hand"
 	}
 	self.gre_m79.DAMAGE = 6
@@ -7856,7 +8158,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.gre_m79.damage_far = 3000
 	self.gre_m79.rays = 6
 	self.gre_m79.CLIP_AMMO_MAX = 1
-	self.gre_m79.NR_CLIPS_MAX = math.round((total_damage_primary / 50) / self.gre_m79.CLIP_AMMO_MAX)
+	self.gre_m79.NR_CLIPS_MAX = math.round((weapon_data.total_damage_primary / 50) / self.gre_m79.CLIP_AMMO_MAX)
 	self.gre_m79.AMMO_MAX = self.gre_m79.CLIP_AMMO_MAX * self.gre_m79.NR_CLIPS_MAX
 	self.gre_m79.AMMO_PICKUP = {
 		0.05,
@@ -7902,14 +8204,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 2,
 		fire_steelsight_multiplier = 2
 	}
-	self.gre_m79.autohit = autohit_shotgun_default
-	self.gre_m79.aim_assist = aim_assist_shotgun_default
+	self.gre_m79.autohit = weapon_data.autohit_shotgun_default
+	self.gre_m79.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.gre_m79.animations = {
 		equip_id = "equip_gre_m79",
 		recoil_steelsight = true
 	}
-	self.gre_m79.global_value = "gage_pack_assault"
-	self.gre_m79.texture_bundle_folder = "gage_pack_assault"
 	self.gre_m79.panic_suppression_chance = 0.2
 	self.gre_m79.ignore_damage_upgrades = true
 	self.gre_m79.stats = {
@@ -7927,10 +8227,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		concealment = 18
 	}
 	self.gre_m79.stats_modifiers = {damage = 10}
+end
+
+function WeaponTweakData:_init_g3(weapon_data)
 	self.g3 = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.g3.sounds.fire = "g3_fire_single"
@@ -7949,14 +8252,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.g3.name_id = "bm_w_g3"
 	self.g3.desc_id = "bm_w_g3_desc"
 	self.g3.description_id = "des_g3"
+	self.g3.global_value = "gage_pack_assault"
+	self.g3.texture_bundle_folder = "gage_pack_assault"
 	self.g3.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.g3.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.g3.use_data = {selection_index = 2}
+	self.g3.use_data = {selection_index = SELECTION.PRIMARY}
 	self.g3.DAMAGE = 1
 	self.g3.CLIP_AMMO_MAX = 20
 	self.g3.NR_CLIPS_MAX = 5
 	self.g3.AMMO_MAX = self.g3.CLIP_AMMO_MAX * self.g3.NR_CLIPS_MAX
-	self.g3.AMMO_PICKUP = self:_pickup_chance(self.g3.AMMO_MAX, 1)
+	self.g3.AMMO_PICKUP = self:_pickup_chance(self.g3.AMMO_MAX, PICKUP.OTHER)
 	self.g3.FIRE_MODE = "auto"
 	self.g3.fire_mode_data = {fire_rate = 0.092}
 	self.g3.CAN_TOGGLE_FIREMODE = true
@@ -7991,14 +8296,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.g3.autohit = autohit_rifle_default
-	self.g3.aim_assist = aim_assist_rifle_default
+	self.g3.autohit = weapon_data.autohit_rifle_default
+	self.g3.aim_assist = weapon_data.aim_assist_rifle_default
 	self.g3.animations = {
 		equip_id = "equip_m4",
 		recoil_steelsight = true
 	}
-	self.g3.global_value = "gage_pack_assault"
-	self.g3.texture_bundle_folder = "gage_pack_assault"
 	self.g3.panic_suppression_chance = 0.2
 	self.g3.stats = {
 		zoom = 3,
@@ -8014,10 +8317,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 6,
 		concealment = 12
 	}
+end
+
+function WeaponTweakData:_init_galil(weapon_data)
 	self.galil = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.galil.sounds.fire = "galil_fire"
@@ -8036,14 +8342,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.galil.name_id = "bm_w_galil"
 	self.galil.desc_id = "bm_w_galil_desc"
 	self.galil.description_id = "des_galil"
+	self.galil.global_value = "gage_pack_assault"
+	self.galil.texture_bundle_folder = "gage_pack_assault"
 	self.galil.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.galil.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.galil.use_data = {selection_index = 2}
+	self.galil.use_data = {selection_index = SELECTION.PRIMARY}
 	self.galil.DAMAGE = 1
 	self.galil.CLIP_AMMO_MAX = 30
 	self.galil.NR_CLIPS_MAX = 5
 	self.galil.AMMO_MAX = self.galil.CLIP_AMMO_MAX * self.galil.NR_CLIPS_MAX
-	self.galil.AMMO_PICKUP = self:_pickup_chance(self.galil.AMMO_MAX, 3)
+	self.galil.AMMO_PICKUP = self:_pickup_chance(self.galil.AMMO_MAX, PICKUP.AR_MED_CAPACITY)
 	self.galil.FIRE_MODE = "auto"
 	self.galil.fire_mode_data = {fire_rate = 0.071}
 	self.galil.CAN_TOGGLE_FIREMODE = true
@@ -8078,16 +8386,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.galil.autohit = autohit_rifle_default
-	self.galil.aim_assist = aim_assist_rifle_default
+	self.galil.autohit = weapon_data.autohit_rifle_default
+	self.galil.aim_assist = weapon_data.aim_assist_rifle_default
 	self.galil.weapon_hold = "ak47"
 	self.galil.animations = {}
 	self.galil.animations = {
 		equip_id = "equip_ak47",
 		recoil_steelsight = true
 	}
-	self.galil.global_value = "gage_pack_assault"
-	self.galil.texture_bundle_folder = "gage_pack_assault"
 	self.galil.panic_suppression_chance = 0.2
 	self.galil.stats = {
 		zoom = 3,
@@ -8103,10 +8409,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 7,
 		concealment = 15
 	}
+end
+
+function WeaponTweakData:_init_famas(weapon_data)
 	self.famas = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.famas.sounds.fire = "famas_fire_single"
@@ -8125,14 +8434,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.famas.name_id = "bm_w_famas"
 	self.famas.desc_id = "bm_w_famas_desc"
 	self.famas.description_id = "des_famas"
+	self.famas.global_value = "gage_pack_assault"
+	self.famas.texture_bundle_folder = "gage_pack_assault"
 	self.famas.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.famas.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.famas.use_data = {selection_index = 2}
+	self.famas.use_data = {selection_index = SELECTION.PRIMARY}
 	self.famas.DAMAGE = 1
 	self.famas.CLIP_AMMO_MAX = 30
 	self.famas.NR_CLIPS_MAX = 8
 	self.famas.AMMO_MAX = self.famas.CLIP_AMMO_MAX * self.famas.NR_CLIPS_MAX
-	self.famas.AMMO_PICKUP = self:_pickup_chance(self.famas.AMMO_MAX, 2)
+	self.famas.AMMO_PICKUP = self:_pickup_chance(self.famas.AMMO_MAX, PICKUP.AR_HIGH_CAPACITY)
 	self.famas.FIRE_MODE = "auto"
 	self.famas.fire_mode_data = {fire_rate = 0.06}
 	self.famas.CAN_TOGGLE_FIREMODE = true
@@ -8167,14 +8478,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.famas.autohit = autohit_rifle_default
-	self.famas.aim_assist = aim_assist_rifle_default
+	self.famas.autohit = weapon_data.autohit_rifle_default
+	self.famas.aim_assist = weapon_data.aim_assist_rifle_default
 	self.famas.animations = {
 		equip_id = "equip_m4",
 		recoil_steelsight = true
 	}
-	self.famas.global_value = "gage_pack_assault"
-	self.famas.texture_bundle_folder = "gage_pack_assault"
 	self.famas.panic_suppression_chance = 0.2
 	self.famas.stats = {
 		zoom = 3,
@@ -8190,10 +8499,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 10,
 		concealment = 24
 	}
+end
+
+function WeaponTweakData:_init_scorpion(weapon_data)
 	self.scorpion = {
 		categories = {"smg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.scorpion.sounds.fire = "skorpion_fire_single"
@@ -8212,15 +8524,17 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.scorpion.name_id = "bm_w_scorpion"
 	self.scorpion.desc_id = "bm_w_scorpion_desc"
 	self.scorpion.description_id = "des_scorpion"
+	self.scorpion.global_value = "hl_miami"
+	self.scorpion.texture_bundle_folder = "hl_miami"
 	self.scorpion.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.scorpion.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.scorpion.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.scorpion.use_data = {selection_index = 1}
+	self.scorpion.use_data = {selection_index = SELECTION.SECONDARY}
 	self.scorpion.DAMAGE = 1
 	self.scorpion.CLIP_AMMO_MAX = 20
 	self.scorpion.NR_CLIPS_MAX = 11
 	self.scorpion.AMMO_MAX = self.scorpion.CLIP_AMMO_MAX * self.scorpion.NR_CLIPS_MAX
-	self.scorpion.AMMO_PICKUP = self:_pickup_chance(self.scorpion.AMMO_MAX, 2)
+	self.scorpion.AMMO_PICKUP = self:_pickup_chance(self.scorpion.AMMO_MAX, PICKUP.AR_HIGH_CAPACITY)
 	self.scorpion.FIRE_MODE = "auto"
 	self.scorpion.fire_mode_data = {fire_rate = 0.06}
 	self.scorpion.CAN_TOGGLE_FIREMODE = true
@@ -8255,15 +8569,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.scorpion.autohit = autohit_smg_default
-	self.scorpion.aim_assist = aim_assist_smg_default
+	self.scorpion.autohit = weapon_data.autohit_smg_default
+	self.scorpion.aim_assist = weapon_data.aim_assist_smg_default
 	self.scorpion.weapon_hold = "scorpion"
 	self.scorpion.animations = {
 		equip_id = "equip_scorpion",
 		recoil_steelsight = true
 	}
-	self.scorpion.global_value = "hl_miami"
-	self.scorpion.texture_bundle_folder = "hl_miami"
 	self.scorpion.panic_suppression_chance = 0.2
 	self.scorpion.stats = {
 		zoom = 1,
@@ -8279,10 +8591,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 17,
 		concealment = 28
 	}
+end
+
+function WeaponTweakData:_init_tec9(weapon_data)
 	self.tec9 = {
 		categories = {"smg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.tec9.sounds.fire = "tec9_fire_single"
@@ -8301,15 +8616,17 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.tec9.name_id = "bm_w_tec9"
 	self.tec9.desc_id = "bm_w_tec9_desc"
 	self.tec9.description_id = "des_tec9"
+	self.tec9.global_value = "hl_miami"
+	self.tec9.texture_bundle_folder = "hl_miami"
 	self.tec9.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.tec9.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.tec9.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.tec9.use_data = {selection_index = 1}
+	self.tec9.use_data = {selection_index = SELECTION.SECONDARY}
 	self.tec9.DAMAGE = 1
 	self.tec9.CLIP_AMMO_MAX = 20
 	self.tec9.NR_CLIPS_MAX = 11
 	self.tec9.AMMO_MAX = self.tec9.CLIP_AMMO_MAX * self.tec9.NR_CLIPS_MAX
-	self.tec9.AMMO_PICKUP = self:_pickup_chance(self.tec9.AMMO_MAX, 2)
+	self.tec9.AMMO_PICKUP = self:_pickup_chance(self.tec9.AMMO_MAX, PICKUP.AR_HIGH_CAPACITY)
 	self.tec9.FIRE_MODE = "auto"
 	self.tec9.fire_mode_data = {fire_rate = 0.067}
 	self.tec9.CAN_TOGGLE_FIREMODE = true
@@ -8344,15 +8661,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.tec9.autohit = autohit_smg_default
-	self.tec9.aim_assist = aim_assist_smg_default
+	self.tec9.autohit = weapon_data.autohit_smg_default
+	self.tec9.aim_assist = weapon_data.aim_assist_smg_default
 	self.tec9.weapon_hold = "tec9"
 	self.tec9.animations = {
 		equip_id = "equip_tec9",
 		recoil_steelsight = true
 	}
-	self.tec9.global_value = "hl_miami"
-	self.tec9.texture_bundle_folder = "hl_miami"
 	self.tec9.panic_suppression_chance = 0.2
 	self.tec9.stats = {
 		zoom = 1,
@@ -8368,10 +8683,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 12,
 		concealment = 27
 	}
+end
+
+function WeaponTweakData:_init_uzi(weapon_data)
 	self.uzi = {
 		categories = {"smg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.uzi.sounds.fire = "uzi_fire_single"
@@ -8390,15 +8708,17 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.uzi.name_id = "bm_w_uzi"
 	self.uzi.desc_id = "bm_w_uzi_desc"
 	self.uzi.description_id = "des_uzi"
+	self.uzi.global_value = "hl_miami"
+	self.uzi.texture_bundle_folder = "hl_miami"
 	self.uzi.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.uzi.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.uzi.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.uzi.use_data = {selection_index = 1}
+	self.uzi.use_data = {selection_index = SELECTION.SECONDARY}
 	self.uzi.DAMAGE = 1
 	self.uzi.CLIP_AMMO_MAX = 40
 	self.uzi.NR_CLIPS_MAX = 5
 	self.uzi.AMMO_MAX = self.uzi.CLIP_AMMO_MAX * self.uzi.NR_CLIPS_MAX
-	self.uzi.AMMO_PICKUP = self:_pickup_chance(self.uzi.AMMO_MAX, 3)
+	self.uzi.AMMO_PICKUP = self:_pickup_chance(self.uzi.AMMO_MAX, PICKUP.AR_MED_CAPACITY)
 	self.uzi.FIRE_MODE = "auto"
 	self.uzi.fire_mode_data = {fire_rate = 0.086}
 	self.uzi.CAN_TOGGLE_FIREMODE = true
@@ -8433,15 +8753,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.uzi.autohit = autohit_smg_default
-	self.uzi.aim_assist = aim_assist_smg_default
+	self.uzi.autohit = weapon_data.autohit_smg_default
+	self.uzi.aim_assist = weapon_data.aim_assist_smg_default
 	self.uzi.weapon_hold = "mp9"
 	self.uzi.animations = {
 		equip_id = "equip_mp9",
 		recoil_steelsight = true
 	}
-	self.uzi.global_value = "hl_miami"
-	self.uzi.texture_bundle_folder = "hl_miami"
 	self.uzi.panic_suppression_chance = 0.2
 	self.uzi.stats = {
 		zoom = 1,
@@ -8457,13 +8775,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 12,
 		concealment = 24
 	}
+end
+
+function WeaponTweakData:_init_jowi(weapon_data)
 	self.jowi = {
 		categories = {
 			"akimbo",
 			"pistol"
 		},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.jowi.sounds.fire = "g17_fire"
@@ -8483,12 +8804,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.jowi.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.jowi.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.jowi.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.jowi.use_data = {selection_index = 2}
+	self.jowi.use_data = {selection_index = SELECTION.PRIMARY}
 	self.jowi.DAMAGE = 1
 	self.jowi.CLIP_AMMO_MAX = 20
 	self.jowi.NR_CLIPS_MAX = 8
 	self.jowi.AMMO_MAX = self.jowi.CLIP_AMMO_MAX * self.jowi.NR_CLIPS_MAX
-	self.jowi.AMMO_PICKUP = self:_pickup_chance(self.jowi.AMMO_MAX, 1)
+	self.jowi.AMMO_PICKUP = self:_pickup_chance(self.jowi.AMMO_MAX, PICKUP.OTHER)
 	self.jowi.FIRE_MODE = "single"
 	self.jowi.fire_mode_data = {fire_rate = 0.09}
 	self.jowi.single = {fire_rate = 0.09}
@@ -8527,8 +8848,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.jowi.autohit = autohit_pistol_default
-	self.jowi.aim_assist = aim_assist_pistol_default
+	self.jowi.autohit = weapon_data.autohit_pistol_default
+	self.jowi.aim_assist = weapon_data.aim_assist_pistol_default
 	self.jowi.weapon_hold = "jowi_pistol"
 	self.jowi.animations = {
 		second_gun_versions = {
@@ -8554,13 +8875,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 15,
 		concealment = 30
 	}
+end
+
+function WeaponTweakData:_init_x_1911(weapon_data)
 	self.x_1911 = {
 		categories = {
 			"akimbo",
 			"pistol"
 		},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.x_1911.sounds.fire = "c45_fire"
@@ -8580,12 +8904,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_1911.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.x_1911.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.x_1911.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.x_1911.use_data = {selection_index = 2}
+	self.x_1911.use_data = {selection_index = SELECTION.PRIMARY}
 	self.x_1911.DAMAGE = 1
 	self.x_1911.CLIP_AMMO_MAX = 20
 	self.x_1911.NR_CLIPS_MAX = 5
 	self.x_1911.AMMO_MAX = self.x_1911.CLIP_AMMO_MAX * self.x_1911.NR_CLIPS_MAX
-	self.x_1911.AMMO_PICKUP = self:_pickup_chance(self.x_1911.AMMO_MAX, 1)
+	self.x_1911.AMMO_PICKUP = self:_pickup_chance(self.x_1911.AMMO_MAX, PICKUP.OTHER)
 	self.x_1911.FIRE_MODE = "single"
 	self.x_1911.fire_mode_data = {fire_rate = 0.166}
 	self.x_1911.single = {fire_rate = 0.166}
@@ -8624,8 +8948,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.x_1911.autohit = autohit_pistol_default
-	self.x_1911.aim_assist = aim_assist_pistol_default
+	self.x_1911.autohit = weapon_data.autohit_pistol_default
+	self.x_1911.aim_assist = weapon_data.aim_assist_pistol_default
 	self.x_1911.weapon_hold = "jowi_pistol"
 	self.x_1911.animations = {
 		second_gun_versions = {
@@ -8651,13 +8975,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 14,
 		concealment = 27
 	}
+end
+
+function WeaponTweakData:_init_x_b92fs(weapon_data)
 	self.x_b92fs = {
 		categories = {
 			"akimbo",
 			"pistol"
 		},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.x_b92fs.sounds.fire = "beretta_fire"
@@ -8677,12 +9004,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_b92fs.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.x_b92fs.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.x_b92fs.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.x_b92fs.use_data = {selection_index = 2}
+	self.x_b92fs.use_data = {selection_index = SELECTION.PRIMARY}
 	self.x_b92fs.DAMAGE = 1
 	self.x_b92fs.CLIP_AMMO_MAX = 28
 	self.x_b92fs.NR_CLIPS_MAX = 6
 	self.x_b92fs.AMMO_MAX = self.x_b92fs.CLIP_AMMO_MAX * self.x_b92fs.NR_CLIPS_MAX
-	self.x_b92fs.AMMO_PICKUP = self:_pickup_chance(self.x_b92fs.AMMO_MAX, 1)
+	self.x_b92fs.AMMO_PICKUP = self:_pickup_chance(self.x_b92fs.AMMO_MAX, PICKUP.OTHER)
 	self.x_b92fs.FIRE_MODE = "single"
 	self.x_b92fs.fire_mode_data = {fire_rate = 0.09}
 	self.x_b92fs.single = {fire_rate = 0.09}
@@ -8722,8 +9049,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.x_b92fs.autohit = autohit_pistol_default
-	self.x_b92fs.aim_assist = aim_assist_pistol_default
+	self.x_b92fs.autohit = weapon_data.autohit_pistol_default
+	self.x_b92fs.aim_assist = weapon_data.aim_assist_pistol_default
 	self.x_b92fs.weapon_hold = "jowi_pistol"
 	self.x_b92fs.animations = {
 		second_gun_versions = {
@@ -8749,13 +9076,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 17,
 		concealment = 28
 	}
+end
+
+function WeaponTweakData:_init_x_deagle(weapon_data)
 	self.x_deagle = {
 		categories = {
 			"akimbo",
 			"pistol"
 		},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.x_deagle.sounds.fire = "deagle_fire"
@@ -8775,12 +9105,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_deagle.muzzleflash = "effects/payday2/particles/weapons/556_auto_fps"
 	self.x_deagle.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.x_deagle.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.x_deagle.use_data = {selection_index = 2}
+	self.x_deagle.use_data = {selection_index = SELECTION.PRIMARY}
 	self.x_deagle.DAMAGE = 1
 	self.x_deagle.CLIP_AMMO_MAX = 20
 	self.x_deagle.NR_CLIPS_MAX = 3
 	self.x_deagle.AMMO_MAX = self.x_deagle.CLIP_AMMO_MAX * self.x_deagle.NR_CLIPS_MAX
-	self.x_deagle.AMMO_PICKUP = self:_pickup_chance(self.x_deagle.AMMO_MAX, 1)
+	self.x_deagle.AMMO_PICKUP = self:_pickup_chance(self.x_deagle.AMMO_MAX, PICKUP.OTHER)
 	self.x_deagle.FIRE_MODE = "single"
 	self.x_deagle.fire_mode_data = {fire_rate = 0.25}
 	self.x_deagle.single = {fire_rate = 0.25}
@@ -8819,8 +9149,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 2,
 		fire_steelsight_multiplier = -2
 	}
-	self.x_deagle.autohit = autohit_pistol_default
-	self.x_deagle.aim_assist = aim_assist_pistol_default
+	self.x_deagle.autohit = weapon_data.autohit_pistol_default
+	self.x_deagle.aim_assist = weapon_data.aim_assist_pistol_default
 	self.x_deagle.animations = {
 		second_gun_versions = {
 			reload_not_empty = "reload_not_empty_left",
@@ -8845,10 +9175,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 7,
 		concealment = 26
 	}
+end
+
+function WeaponTweakData:_init_g26(weapon_data)
 	self.g26 = {
 		categories = {"pistol"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.g26.sounds.fire = "g17_fire"
@@ -8865,15 +9198,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.g26.name_id = "bm_wp_pis_g26"
 	self.g26.desc_id = "bm_wp_pis_g26_desc"
 	self.g26.description_id = "des_g26"
+	self.g26.global_value = "pd2_clan"
 	self.g26.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.g26.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.g26.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.g26.use_data = {selection_index = 1}
+	self.g26.use_data = {selection_index = SELECTION.SECONDARY}
 	self.g26.DAMAGE = 1
 	self.g26.CLIP_AMMO_MAX = 10
 	self.g26.NR_CLIPS_MAX = 15
 	self.g26.AMMO_MAX = self.g26.CLIP_AMMO_MAX * self.g26.NR_CLIPS_MAX
-	self.g26.AMMO_PICKUP = self:_pickup_chance(self.g26.AMMO_MAX, 1)
+	self.g26.AMMO_PICKUP = self:_pickup_chance(self.g26.AMMO_MAX, PICKUP.OTHER)
 	self.g26.FIRE_MODE = "single"
 	self.g26.fire_mode_data = {fire_rate = 0.125}
 	self.g26.single = {fire_rate = 0.125}
@@ -8907,15 +9241,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.g26.autohit = autohit_pistol_default
-	self.g26.aim_assist = aim_assist_pistol_default
+	self.g26.autohit = weapon_data.autohit_pistol_default
+	self.g26.aim_assist = weapon_data.aim_assist_pistol_default
 	self.g26.weapon_hold = "glock"
 	self.g26.animations = {
 		equip_id = "equip_glock",
 		recoil_steelsight = true,
 		magazine_empty = "last_recoil"
 	}
-	self.g26.global_value = "pd2_clan"
 	self.g26.panic_suppression_chance = 0.2
 	self.g26.stats = {
 		zoom = 3,
@@ -8931,10 +9264,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 18,
 		concealment = 30
 	}
+end
+
+function WeaponTweakData:_init_spas12(weapon_data)
 	self.spas12 = {
 		categories = {"shotgun"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.spas12.sounds.fire = "spas_fire"
@@ -8949,10 +9285,11 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.spas12.name_id = "bm_w_spas12"
 	self.spas12.desc_id = "bm_w_spas12_desc"
 	self.spas12.description_id = "des_spas12"
+	self.spas12.global_value = "pd2_clan"
 	self.spas12.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.spas12.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug"
 	self.spas12.use_data = {
-		selection_index = 2,
+		selection_index = SELECTION.PRIMARY,
 		align_place = "right_hand"
 	}
 	self.spas12.DAMAGE = 6
@@ -8962,7 +9299,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.spas12.CLIP_AMMO_MAX = 6
 	self.spas12.NR_CLIPS_MAX = 11
 	self.spas12.AMMO_MAX = self.spas12.CLIP_AMMO_MAX * self.spas12.NR_CLIPS_MAX
-	self.spas12.AMMO_PICKUP = self:_pickup_chance(self.spas12.AMMO_MAX, 4)
+	self.spas12.AMMO_PICKUP = self:_pickup_chance(self.spas12.AMMO_MAX, PICKUP.SHOTGUN_HIGH_CAPACITY)
 	self.spas12.FIRE_MODE = "single"
 	self.spas12.fire_mode_data = {fire_rate = 0.2}
 	self.spas12.CAN_TOGGLE_FIREMODE = false
@@ -9002,13 +9339,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 2.4,
 		fire_steelsight_multiplier = 1.45
 	}
-	self.spas12.autohit = autohit_shotgun_default
-	self.spas12.aim_assist = aim_assist_shotgun_default
+	self.spas12.autohit = weapon_data.autohit_shotgun_default
+	self.spas12.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.spas12.animations = {
 		equip_id = "equip_r870_shotgun",
 		recoil_steelsight = true
 	}
-	self.spas12.global_value = "pd2_clan"
 	self.spas12.panic_suppression_chance = 0.2
 	self.spas12.stats = {
 		zoom = 3,
@@ -9024,10 +9360,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 5,
 		concealment = 14
 	}
+end
+
+function WeaponTweakData:_init_mg42(weapon_data)
 	self.mg42 = {
 		categories = {"lmg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.mg42.sounds.fire = "mg42_fire_single"
@@ -9051,14 +9390,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.mg42.name_id = "bm_w_mg42"
 	self.mg42.desc_id = "bm_w_mg42_desc"
 	self.mg42.description_id = "des_mg42"
+	self.mg42.global_value = "gage_pack_historical"
+	self.mg42.texture_bundle_folder = "gage_pack_historical"
 	self.mg42.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
 	self.mg42.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
-	self.mg42.use_data = {selection_index = 2}
+	self.mg42.use_data = {selection_index = SELECTION.PRIMARY}
 	self.mg42.DAMAGE = 1
 	self.mg42.CLIP_AMMO_MAX = 150
 	self.mg42.NR_CLIPS_MAX = 3
 	self.mg42.AMMO_MAX = self.mg42.CLIP_AMMO_MAX * self.mg42.NR_CLIPS_MAX
-	self.mg42.AMMO_PICKUP = self:_pickup_chance(self.mg42.AMMO_MAX, 1)
+	self.mg42.AMMO_PICKUP = self:_pickup_chance(self.mg42.AMMO_MAX, PICKUP.OTHER)
 	self.mg42.FIRE_MODE = "auto"
 	self.mg42.fire_mode_data = {fire_rate = 0.05}
 	self.mg42.CAN_TOGGLE_FIREMODE = false
@@ -9070,7 +9411,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		moving_standing = self.new_m4.spread.moving_standing,
 		moving_crouching = self.new_m4.spread.moving_crouching,
 		moving_steelsight = self.new_m4.spread.moving_steelsight,
-		bipod = default_bipod_spread
+		bipod = weapon_data.default_bipod_spread
 	}
 	self.mg42.kick = {standing = {
 		-0.2,
@@ -9099,8 +9440,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 0.5,
 		fire_steelsight_multiplier = -0.5
 	}
-	self.mg42.autohit = autohit_lmg_default
-	self.mg42.aim_assist = aim_assist_lmg_default
+	self.mg42.autohit = weapon_data.autohit_lmg_default
+	self.mg42.aim_assist = weapon_data.aim_assist_lmg_default
 	self.mg42.weapon_hold = "mg42"
 	self.mg42.animations = {
 		equip_id = "equip_mg42",
@@ -9112,8 +9453,6 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		bipod_recoil_loop = "bipod_recoil_loop",
 		bipod_recoil_exit = "bipod_recoil_exit"
 	}
-	self.mg42.global_value = "gage_pack_historical"
-	self.mg42.texture_bundle_folder = "gage_pack_historical"
 	self.mg42.panic_suppression_chance = 0.2
 	self.mg42.stats = {
 		zoom = 1,
@@ -9129,10 +9468,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 4,
 		concealment = 2
 	}
+end
+
+function WeaponTweakData:_init_c96(weapon_data)
 	self.c96 = {
 		categories = {"pistol"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.c96.sounds.fire = "c96_fire"
@@ -9149,15 +9491,17 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.c96.name_id = "bm_w_c96"
 	self.c96.desc_id = "bm_w_c96_desc"
 	self.c96.description_id = "des_c96"
+	self.c96.global_value = "gage_pack_historical"
+	self.c96.texture_bundle_folder = "gage_pack_historical"
 	self.c96.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.c96.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.c96.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.c96.use_data = {selection_index = 1}
+	self.c96.use_data = {selection_index = SELECTION.SECONDARY}
 	self.c96.DAMAGE = 1
 	self.c96.CLIP_AMMO_MAX = 10
 	self.c96.NR_CLIPS_MAX = 9
 	self.c96.AMMO_MAX = self.c96.CLIP_AMMO_MAX * self.c96.NR_CLIPS_MAX
-	self.c96.AMMO_PICKUP = self:_pickup_chance(self.c96.AMMO_MAX, 1)
+	self.c96.AMMO_PICKUP = self:_pickup_chance(self.c96.AMMO_MAX, PICKUP.OTHER)
 	self.c96.FIRE_MODE = "single"
 	self.c96.fire_mode_data = {fire_rate = 0.166}
 	self.c96.single = {fire_rate = 0.166}
@@ -9191,16 +9535,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.c96.autohit = autohit_pistol_default
-	self.c96.aim_assist = aim_assist_pistol_default
+	self.c96.autohit = weapon_data.autohit_pistol_default
+	self.c96.aim_assist = weapon_data.aim_assist_pistol_default
 	self.c96.weapon_hold = "glock"
 	self.c96.animations = {
 		equip_id = "equip_glock",
 		recoil_steelsight = true,
 		magazine_empty = "last_recoil"
 	}
-	self.c96.global_value = "gage_pack_historical"
-	self.c96.texture_bundle_folder = "gage_pack_historical"
 	self.c96.panic_suppression_chance = 0.2
 	self.c96.stats = {
 		zoom = 3,
@@ -9216,10 +9558,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 14,
 		concealment = 28
 	}
+end
+
+function WeaponTweakData:_init_sterling(weapon_data)
 	self.sterling = {
 		categories = {"smg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.sterling.sounds.fire = "sterling_fire_single"
@@ -9238,15 +9583,17 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.sterling.name_id = "bm_w_sterling"
 	self.sterling.desc_id = "bm_w_sterling_desc"
 	self.sterling.description_id = "des_sterling"
+	self.sterling.global_value = "gage_pack_historical"
+	self.sterling.texture_bundle_folder = "gage_pack_historical"
 	self.sterling.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.sterling.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.sterling.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.sterling.use_data = {selection_index = 1}
+	self.sterling.use_data = {selection_index = SELECTION.SECONDARY}
 	self.sterling.DAMAGE = 1
 	self.sterling.CLIP_AMMO_MAX = 20
 	self.sterling.NR_CLIPS_MAX = 11
 	self.sterling.AMMO_MAX = self.sterling.CLIP_AMMO_MAX * self.sterling.NR_CLIPS_MAX
-	self.sterling.AMMO_PICKUP = self:_pickup_chance(self.sterling.AMMO_MAX, 2)
+	self.sterling.AMMO_PICKUP = self:_pickup_chance(self.sterling.AMMO_MAX, PICKUP.AR_HIGH_CAPACITY)
 	self.sterling.FIRE_MODE = "auto"
 	self.sterling.fire_mode_data = {fire_rate = 0.11}
 	self.sterling.CAN_TOGGLE_FIREMODE = true
@@ -9281,15 +9628,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.sterling.autohit = autohit_smg_default
-	self.sterling.aim_assist = aim_assist_smg_default
+	self.sterling.autohit = weapon_data.autohit_smg_default
+	self.sterling.aim_assist = weapon_data.aim_assist_smg_default
 	self.sterling.weapon_hold = "sterling"
 	self.sterling.animations = {
 		equip_id = "equip_sterling",
 		recoil_steelsight = true
 	}
-	self.sterling.global_value = "gage_pack_historical"
-	self.sterling.texture_bundle_folder = "gage_pack_historical"
 	self.sterling.panic_suppression_chance = 0.2
 	self.sterling.stats = {
 		zoom = 1,
@@ -9305,11 +9650,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 12,
 		concealment = 20
 	}
+end
+
+function WeaponTweakData:_init_mosin(weapon_data)
 	self.mosin = {
 		categories = {"snp"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.mosin.sounds.fire = "nagant_fire"
@@ -9325,10 +9673,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.mosin.name_id = "bm_w_mosin"
 	self.mosin.desc_id = "bm_w_mosin_desc"
 	self.mosin.description_id = "des_mosin"
+	self.mosin.global_value = "gage_pack_historical"
+	self.mosin.texture_bundle_folder = "gage_pack_historical"
 	self.mosin.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
 	self.mosin.shell_ejection = "effects/payday2/particles/weapons/shells/shell_sniper"
 	self.mosin.use_data = {
-		selection_index = 2,
+		selection_index = SELECTION.PRIMARY,
 		align_place = "left_hand"
 	}
 	self.mosin.DAMAGE = 1
@@ -9378,15 +9728,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 3.5,
 		fire_steelsight_multiplier = -3.5
 	}
-	self.mosin.autohit = autohit_snp_default
-	self.mosin.aim_assist = aim_assist_snp_default
+	self.mosin.autohit = weapon_data.autohit_snp_default
+	self.mosin.aim_assist = weapon_data.aim_assist_snp_default
 	self.mosin.weapon_hold = "mosin"
 	self.mosin.animations = {
 		equip_id = "equip_mosin",
 		recoil_steelsight = true
 	}
-	self.mosin.global_value = "gage_pack_historical"
-	self.mosin.texture_bundle_folder = "gage_pack_historical"
 	self.mosin.can_shoot_through_enemy = true
 	self.mosin.can_shoot_through_shield = true
 	self.mosin.can_shoot_through_wall = true
@@ -9407,10 +9755,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.mosin.armor_piercing_chance = 1
 	self.mosin.stats_modifiers = {damage = 2}
+end
+
+function WeaponTweakData:_init_m1928(weapon_data)
 	self.m1928 = {
 		categories = {"smg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.m1928.sounds.fire = "m1928_fire_single"
@@ -9429,15 +9780,17 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.m1928.name_id = "bm_w_m1928"
 	self.m1928.desc_id = "bm_w_m1928_desc"
 	self.m1928.description_id = "des_m1928"
+	self.m1928.global_value = "pd2_clan"
+	self.m1928.texture_bundle_folder = "pines"
 	self.m1928.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.m1928.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.m1928.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.m1928.use_data = {selection_index = 1}
+	self.m1928.use_data = {selection_index = SELECTION.SECONDARY}
 	self.m1928.DAMAGE = 1
 	self.m1928.CLIP_AMMO_MAX = 50
 	self.m1928.NR_CLIPS_MAX = 3
 	self.m1928.AMMO_MAX = self.m1928.CLIP_AMMO_MAX * self.m1928.NR_CLIPS_MAX
-	self.m1928.AMMO_PICKUP = self:_pickup_chance(self.m1928.AMMO_MAX, 3)
+	self.m1928.AMMO_PICKUP = self:_pickup_chance(self.m1928.AMMO_MAX, PICKUP.AR_MED_CAPACITY)
 	self.m1928.FIRE_MODE = "auto"
 	self.m1928.fire_mode_data = {fire_rate = 0.083}
 	self.m1928.CAN_TOGGLE_FIREMODE = true
@@ -9477,15 +9830,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 0.4,
 		fire_steelsight_multiplier = -0.4
 	}
-	self.m1928.autohit = autohit_smg_default
-	self.m1928.aim_assist = aim_assist_smg_default
+	self.m1928.autohit = weapon_data.autohit_smg_default
+	self.m1928.aim_assist = weapon_data.aim_assist_smg_default
 	self.m1928.weapon_hold = "tommy"
 	self.m1928.animations = {
 		equip_id = "equip_m1928",
 		recoil_steelsight = true
 	}
-	self.m1928.global_value = "pd2_clan"
-	self.m1928.texture_bundle_folder = "pines"
 	self.m1928.panic_suppression_chance = 0.2
 	self.m1928.stats = {
 		zoom = 1,
@@ -9501,10 +9852,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 12,
 		concealment = 18
 	}
+end
+
+function WeaponTweakData:_init_l85a2(weapon_data)
 	self.l85a2 = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.l85a2.sounds.fire = "l85_fire_single"
@@ -9523,14 +9877,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.l85a2.name_id = "bm_w_l85a2"
 	self.l85a2.desc_id = "bm_w_l85a2_desc"
 	self.l85a2.description_id = "des_l85a2"
+	self.l85a2.global_value = "character_pack_clover"
+	self.l85a2.texture_bundle_folder = "character_pack_clover"
 	self.l85a2.muzzleflash = "effects/payday2/particles/weapons/556_auto_fps"
 	self.l85a2.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.l85a2.use_data = {selection_index = 2}
+	self.l85a2.use_data = {selection_index = SELECTION.PRIMARY}
 	self.l85a2.DAMAGE = 1
 	self.l85a2.CLIP_AMMO_MAX = 30
 	self.l85a2.NR_CLIPS_MAX = 5
 	self.l85a2.AMMO_MAX = self.l85a2.CLIP_AMMO_MAX * self.l85a2.NR_CLIPS_MAX
-	self.l85a2.AMMO_PICKUP = self:_pickup_chance(self.l85a2.AMMO_MAX, 3)
+	self.l85a2.AMMO_PICKUP = self:_pickup_chance(self.l85a2.AMMO_MAX, PICKUP.AR_MED_CAPACITY)
 	self.l85a2.FIRE_MODE = "auto"
 	self.l85a2.fire_mode_data = {fire_rate = 0.083}
 	self.l85a2.CAN_TOGGLE_FIREMODE = true
@@ -9570,15 +9926,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 0.4,
 		fire_steelsight_multiplier = -0.4
 	}
-	self.l85a2.autohit = autohit_rifle_default
-	self.l85a2.aim_assist = aim_assist_rifle_default
+	self.l85a2.autohit = weapon_data.autohit_rifle_default
+	self.l85a2.aim_assist = weapon_data.aim_assist_rifle_default
 	self.l85a2.weapon_hold = "l85a2"
 	self.l85a2.animations = {
 		equip_id = "equip_l85a2",
 		recoil_steelsight = true
 	}
-	self.l85a2.global_value = "character_pack_clover"
-	self.l85a2.texture_bundle_folder = "character_pack_clover"
 	self.l85a2.panic_suppression_chance = 0.2
 	self.l85a2.stats = {
 		zoom = 1,
@@ -9594,10 +9948,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 12,
 		concealment = 16
 	}
+end
+
+function WeaponTweakData:_init_vhs(weapon_data)
 	self.vhs = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.vhs.sounds.fire = "vhs_fire_single"
@@ -9616,14 +9973,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.vhs.name_id = "bm_w_vhs"
 	self.vhs.desc_id = "bm_w_vhs_desc"
 	self.vhs.description_id = "des_vhs"
+	self.vhs.global_value = "character_pack_dragan"
+	self.vhs.texture_bundle_folder = "character_pack_dragan"
 	self.vhs.muzzleflash = "effects/payday2/particles/weapons/556_auto_fps"
 	self.vhs.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.vhs.use_data = {selection_index = 2}
+	self.vhs.use_data = {selection_index = SELECTION.PRIMARY}
 	self.vhs.DAMAGE = 1
 	self.vhs.CLIP_AMMO_MAX = 30
 	self.vhs.NR_CLIPS_MAX = 5
 	self.vhs.AMMO_MAX = self.vhs.CLIP_AMMO_MAX * self.vhs.NR_CLIPS_MAX
-	self.vhs.AMMO_PICKUP = self:_pickup_chance(self.vhs.AMMO_MAX, 3)
+	self.vhs.AMMO_PICKUP = self:_pickup_chance(self.vhs.AMMO_MAX, PICKUP.AR_MED_CAPACITY)
 	self.vhs.FIRE_MODE = "auto"
 	self.vhs.fire_mode_data = {fire_rate = 0.07}
 	self.vhs.CAN_TOGGLE_FIREMODE = true
@@ -9663,15 +10022,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 0.3,
 		fire_steelsight_multiplier = -0.3
 	}
-	self.vhs.autohit = autohit_rifle_default
-	self.vhs.aim_assist = aim_assist_rifle_default
+	self.vhs.autohit = weapon_data.autohit_rifle_default
+	self.vhs.aim_assist = weapon_data.aim_assist_rifle_default
 	self.vhs.weapon_hold = "vhs"
 	self.vhs.animations = {
 		equip_id = "equip_vhs",
 		recoil_steelsight = true
 	}
-	self.vhs.global_value = "character_pack_dragan"
-	self.vhs.texture_bundle_folder = "character_pack_dragan"
 	self.vhs.panic_suppression_chance = 0.2
 	self.vhs.stats = {
 		zoom = 1,
@@ -9687,10 +10044,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 12,
 		concealment = 17
 	}
+end
+
+function WeaponTweakData:_init_hs2000(weapon_data)
 	self.hs2000 = {
 		categories = {"pistol"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.hs2000.sounds.fire = "p226r_fire"
@@ -9707,15 +10067,17 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.hs2000.name_id = "bm_w_hs2000"
 	self.hs2000.desc_id = "bm_w_hs2000_desc"
 	self.hs2000.description_id = "des_hs2000"
+	self.hs2000.global_value = "the_bomb"
+	self.hs2000.texture_bundle_folder = "the_bomb"
 	self.hs2000.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.hs2000.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.hs2000.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.hs2000.use_data = {selection_index = 1}
+	self.hs2000.use_data = {selection_index = SELECTION.SECONDARY}
 	self.hs2000.DAMAGE = 1
 	self.hs2000.CLIP_AMMO_MAX = 19
 	self.hs2000.NR_CLIPS_MAX = 5
 	self.hs2000.AMMO_MAX = self.hs2000.CLIP_AMMO_MAX * self.hs2000.NR_CLIPS_MAX
-	self.hs2000.AMMO_PICKUP = self:_pickup_chance(self.hs2000.AMMO_MAX, 1)
+	self.hs2000.AMMO_PICKUP = self:_pickup_chance(self.hs2000.AMMO_MAX, PICKUP.OTHER)
 	self.hs2000.FIRE_MODE = "single"
 	self.hs2000.fire_mode_data = {fire_rate = 0.166}
 	self.hs2000.single = {fire_rate = 0.166}
@@ -9749,16 +10111,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.hs2000.autohit = autohit_pistol_default
-	self.hs2000.aim_assist = aim_assist_pistol_default
+	self.hs2000.autohit = weapon_data.autohit_pistol_default
+	self.hs2000.aim_assist = weapon_data.aim_assist_pistol_default
 	self.hs2000.weapon_hold = "glock"
 	self.hs2000.animations = {
 		equip_id = "equip_glock",
 		recoil_steelsight = true,
 		magazine_empty = "last_recoil"
 	}
-	self.hs2000.global_value = "the_bomb"
-	self.hs2000.texture_bundle_folder = "the_bomb"
 	self.hs2000.panic_suppression_chance = 0.2
 	self.hs2000.stats = {
 		zoom = 3,
@@ -9774,11 +10134,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 15,
 		concealment = 29
 	}
+end
+
+function WeaponTweakData:_init_m134(weapon_data)
 	self.m134 = {
 		categories = {"minigun"},
 		has_description = false,
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.m134.sounds.fire = "minigun_fire_single"
@@ -9797,17 +10160,19 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.m134.name_id = "bm_w_m134"
 	self.m134.desc_id = "bm_w_m134_desc"
 	self.m134.description_id = "des_m134"
+	self.m134.global_value = "overkill_pack"
+	self.m134.texture_bundle_folder = "dlc_pack_overkill"
 	self.m134.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
 	self.m134.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
 	self.m134.use_data = {
-		selection_index = 2,
+		selection_index = SELECTION.PRIMARY,
 		align_place = "left_hand"
 	}
 	self.m134.DAMAGE = 1
 	self.m134.CLIP_AMMO_MAX = 750
 	self.m134.NR_CLIPS_MAX = 1
 	self.m134.AMMO_MAX = self.m134.CLIP_AMMO_MAX * self.m134.NR_CLIPS_MAX
-	self.m134.AMMO_PICKUP = self:_pickup_chance(90, 1)
+	self.m134.AMMO_PICKUP = self:_pickup_chance(90, PICKUP.OTHER)
 	self.m134.FIRE_MODE = "auto"
 	self.m134.fire_mode_data = {fire_rate = 0.02}
 	self.m134.CAN_TOGGLE_FIREMODE = false
@@ -9847,16 +10212,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 0.5,
 		fire_steelsight_multiplier = -0.5
 	}
-	self.m134.autohit = autohit_minigun_default
-	self.m134.aim_assist = aim_assist_lmg_default
+	self.m134.autohit = weapon_data.autohit_minigun_default
+	self.m134.aim_assist = weapon_data.aim_assist_lmg_default
 	self.m134.weapon_hold = "m134"
 	self.m134.animations = {
 		equip_id = "equip_m134",
 		recoil_steelsight = true,
 		thq_align_anim = "thq"
 	}
-	self.m134.global_value = "overkill_pack"
-	self.m134.texture_bundle_folder = "dlc_pack_overkill"
 	self.m134.panic_suppression_chance = 0.2
 	self.m134.stats = {
 		zoom = 1,
@@ -9872,13 +10235,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 4,
 		concealment = 5
 	}
+end
+
+function WeaponTweakData:_init_rpg7(weapon_data)
 	self.rpg7 = {
 		categories = {"grenade_launcher"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
 		has_description = true,
 		projectile_type_index = 3,
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.rpg7.sounds.fire = "rpg_fire"
@@ -9892,10 +10258,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.rpg7.name_id = "bm_w_rpg7"
 	self.rpg7.desc_id = "bm_w_rpg7_desc"
 	self.rpg7.description_id = "des_rpg7"
+	self.rpg7.global_value = "overkill_pack"
+	self.rpg7.texture_bundle_folder = "dlc_pack_overkill"
 	self.rpg7.muzzleflash = "effects/payday2/particles/weapons/50cal_auto_fps"
 	self.rpg7.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.rpg7.use_data = {
-		selection_index = 1,
+		selection_index = SELECTION.SECONDARY,
 		align_place = "right_hand"
 	}
 	self.rpg7.DAMAGE = 6
@@ -9905,7 +10273,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.rpg7.CLIP_AMMO_MAX = 1
 	self.rpg7.NR_CLIPS_MAX = 4
 	self.rpg7.AMMO_MAX = self.rpg7.CLIP_AMMO_MAX * self.rpg7.NR_CLIPS_MAX
-	self.rpg7.AMMO_PICKUP = self:_pickup_chance(0, 1)
+	self.rpg7.AMMO_PICKUP = self:_pickup_chance(0, PICKUP.OTHER)
 	self.rpg7.FIRE_MODE = "single"
 	self.rpg7.fire_mode_data = {fire_rate = 2}
 	self.rpg7.single = {fire_rate = 2}
@@ -9946,14 +10314,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 2,
 		fire_steelsight_multiplier = 2
 	}
-	self.rpg7.autohit = autohit_shotgun_default
-	self.rpg7.aim_assist = aim_assist_shotgun_default
+	self.rpg7.autohit = weapon_data.autohit_shotgun_default
+	self.rpg7.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.rpg7.animations = {
 		equip_id = "equip_rpg7",
 		recoil_steelsight = true
 	}
-	self.rpg7.global_value = "overkill_pack"
-	self.rpg7.texture_bundle_folder = "dlc_pack_overkill"
 	self.rpg7.panic_suppression_chance = 0.2
 	self.rpg7.ignore_damage_upgrades = true
 	self.rpg7.stats = {
@@ -9971,10 +10337,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		concealment = 5
 	}
 	self.rpg7.stats_modifiers = {damage = 100}
+end
+
+function WeaponTweakData:_init_cobray(weapon_data)
 	self.cobray = {
 		categories = {"smg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.cobray.sounds.fire = "cobray_fire_single"
@@ -9993,15 +10362,17 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.cobray.name_id = "bm_w_cobray"
 	self.cobray.desc_id = "bm_w_cobray_desc"
 	self.cobray.description_id = "des_cobray"
+	self.cobray.global_value = "hlm2_deluxe"
+	self.cobray.texture_bundle_folder = "hlm2"
 	self.cobray.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.cobray.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.cobray.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.cobray.use_data = {selection_index = 1}
+	self.cobray.use_data = {selection_index = SELECTION.SECONDARY}
 	self.cobray.DAMAGE = 1
 	self.cobray.CLIP_AMMO_MAX = 32
 	self.cobray.NR_CLIPS_MAX = 5
 	self.cobray.AMMO_MAX = self.cobray.CLIP_AMMO_MAX * self.cobray.NR_CLIPS_MAX
-	self.cobray.AMMO_PICKUP = self:_pickup_chance(self.cobray.AMMO_MAX, 3)
+	self.cobray.AMMO_PICKUP = self:_pickup_chance(self.cobray.AMMO_MAX, PICKUP.AR_MED_CAPACITY)
 	self.cobray.FIRE_MODE = "auto"
 	self.cobray.fire_mode_data = {fire_rate = 0.05}
 	self.cobray.CAN_TOGGLE_FIREMODE = true
@@ -10041,15 +10412,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.cobray.autohit = autohit_smg_default
-	self.cobray.aim_assist = aim_assist_smg_default
+	self.cobray.autohit = weapon_data.autohit_smg_default
+	self.cobray.aim_assist = weapon_data.aim_assist_smg_default
 	self.cobray.weapon_hold = "cobray"
 	self.cobray.animations = {
 		equip_id = "equip_cobray",
 		recoil_steelsight = true
 	}
-	self.cobray.global_value = "hlm2_deluxe"
-	self.cobray.texture_bundle_folder = "hlm2"
 	self.cobray.panic_suppression_chance = 0.2
 	self.cobray.stats = {
 		zoom = 3,
@@ -10065,11 +10434,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 14,
 		concealment = 25
 	}
+end
+
+function WeaponTweakData:_init_b682(weapon_data)
 	self.b682 = {
 		categories = {"shotgun"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.b682.sounds.fire = "b682_fire"
@@ -10085,10 +10457,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.b682.name_id = "bm_w_b682"
 	self.b682.desc_id = "bm_w_b682_desc"
 	self.b682.description_id = "des_b682"
+	self.b682.global_value = "pd2_clan"
+	self.b682.texture_bundle_folder = "character_pack_bonnie"
 	self.b682.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.b682.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.b682.use_data = {
-		selection_index = 2,
+		selection_index = SELECTION.PRIMARY,
 		align_place = "right_hand"
 	}
 	self.b682.DAMAGE = 6
@@ -10098,7 +10472,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.b682.CLIP_AMMO_MAX = 2
 	self.b682.NR_CLIPS_MAX = 14
 	self.b682.AMMO_MAX = self.b682.CLIP_AMMO_MAX * self.b682.NR_CLIPS_MAX
-	self.b682.AMMO_PICKUP = self:_pickup_chance(self.b682.AMMO_MAX, 1)
+	self.b682.AMMO_PICKUP = self:_pickup_chance(self.b682.AMMO_MAX, PICKUP.OTHER)
 	self.b682.FIRE_MODE = "single"
 	self.b682.fire_mode_data = {fire_rate = 0.12}
 	self.b682.single = {fire_rate = 0.12}
@@ -10139,15 +10513,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 2,
 		fire_steelsight_multiplier = 2
 	}
-	self.b682.autohit = autohit_shotgun_default
-	self.b682.aim_assist = aim_assist_shotgun_default
+	self.b682.autohit = weapon_data.autohit_shotgun_default
+	self.b682.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.b682.animations = {
 		equip_id = "equip_b682",
 		recoil_steelsight = true
 	}
 	self.b682.panic_suppression_chance = 0.2
-	self.b682.global_value = "pd2_clan"
-	self.b682.texture_bundle_folder = "character_pack_bonnie"
 	self.b682.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
@@ -10163,13 +10535,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		concealment = 5
 	}
 	self.b682.stats_modifiers = {damage = 1}
+end
+
+function WeaponTweakData:_init_x_g22c(weapon_data)
 	self.x_g22c = {
 		categories = {
 			"akimbo",
 			"pistol"
 		},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.x_g22c.sounds.fire = "g22_fire"
@@ -10186,15 +10561,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_g22c.name_id = "bm_w_x_g22c"
 	self.x_g22c.desc_id = "bm_w_x_g22c_desc"
 	self.x_g22c.description_id = "des_x_g22c"
+	self.x_g22c.texture_bundle_folder = "butcher_pack_mods"
 	self.x_g22c.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.x_g22c.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.x_g22c.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.x_g22c.use_data = {selection_index = 2}
+	self.x_g22c.use_data = {selection_index = SELECTION.PRIMARY}
 	self.x_g22c.DAMAGE = 1
 	self.x_g22c.CLIP_AMMO_MAX = 32
 	self.x_g22c.NR_CLIPS_MAX = 3
 	self.x_g22c.AMMO_MAX = self.x_g22c.CLIP_AMMO_MAX * self.x_g22c.NR_CLIPS_MAX
-	self.x_g22c.AMMO_PICKUP = self:_pickup_chance(self.x_g22c.AMMO_MAX, 1)
+	self.x_g22c.AMMO_PICKUP = self:_pickup_chance(self.x_g22c.AMMO_MAX, PICKUP.OTHER)
 	self.x_g22c.FIRE_MODE = "single"
 	self.x_g22c.fire_mode_data = {fire_rate = 0.166}
 	self.x_g22c.single = {fire_rate = 0.166}
@@ -10233,8 +10609,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.x_g22c.autohit = autohit_pistol_default
-	self.x_g22c.aim_assist = aim_assist_pistol_default
+	self.x_g22c.autohit = weapon_data.autohit_pistol_default
+	self.x_g22c.aim_assist = weapon_data.aim_assist_pistol_default
 	self.x_g22c.weapon_hold = "jowi_pistol"
 	self.x_g22c.animations = {
 		second_gun_versions = {
@@ -10246,7 +10622,6 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		magazine_empty = "last_recoil"
 	}
 	self.x_g22c.panic_suppression_chance = 0.2
-	self.x_g22c.texture_bundle_folder = "butcher_pack_mods"
 	self.x_g22c.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
@@ -10261,13 +10636,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 15,
 		concealment = 29
 	}
+end
+
+function WeaponTweakData:_init_x_g17(weapon_data)
 	self.x_g17 = {
 		categories = {
 			"akimbo",
 			"pistol"
 		},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.x_g17.sounds.fire = "g17_fire"
@@ -10284,15 +10662,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_g17.name_id = "bm_w_x_g17"
 	self.x_g17.desc_id = "bm_w_x_g17_desc"
 	self.x_g17.description_id = "des_x_g17"
+	self.x_g17.texture_bundle_folder = "butcher_pack_mods"
 	self.x_g17.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.x_g17.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.x_g17.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.x_g17.use_data = {selection_index = 2}
+	self.x_g17.use_data = {selection_index = SELECTION.PRIMARY}
 	self.x_g17.DAMAGE = 1
 	self.x_g17.CLIP_AMMO_MAX = 34
 	self.x_g17.NR_CLIPS_MAX = 5
 	self.x_g17.AMMO_MAX = self.x_g17.CLIP_AMMO_MAX * self.x_g17.NR_CLIPS_MAX
-	self.x_g17.AMMO_PICKUP = self:_pickup_chance(self.x_g17.AMMO_MAX, 1)
+	self.x_g17.AMMO_PICKUP = self:_pickup_chance(self.x_g17.AMMO_MAX, PICKUP.OTHER)
 	self.x_g17.FIRE_MODE = "single"
 	self.x_g17.fire_mode_data = {fire_rate = 0.125}
 	self.x_g17.single = {fire_rate = 0.125}
@@ -10331,8 +10710,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.x_g17.autohit = autohit_pistol_default
-	self.x_g17.aim_assist = aim_assist_pistol_default
+	self.x_g17.autohit = weapon_data.autohit_pistol_default
+	self.x_g17.aim_assist = weapon_data.aim_assist_pistol_default
 	self.x_g17.weapon_hold = "jowi_pistol"
 	self.x_g17.animations = {
 		second_gun_versions = {
@@ -10344,7 +10723,6 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		recoil_steelsight = true
 	}
 	self.x_g17.panic_suppression_chance = 0.2
-	self.x_g17.texture_bundle_folder = "butcher_pack_mods"
 	self.x_g17.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
@@ -10359,13 +10737,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 16,
 		concealment = 30
 	}
+end
+
+function WeaponTweakData:_init_x_usp(weapon_data)
 	self.x_usp = {
 		categories = {
 			"akimbo",
 			"pistol"
 		},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.x_usp.sounds.fire = "usp45_fire"
@@ -10382,15 +10763,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_usp.name_id = "bm_w_x_usp"
 	self.x_usp.desc_id = "bm_w_x_usp_desc"
 	self.x_usp.description_id = "des_x_usp"
+	self.x_usp.texture_bundle_folder = "butcher_pack_mods"
 	self.x_usp.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.x_usp.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.x_usp.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.x_usp.use_data = {selection_index = 2}
+	self.x_usp.use_data = {selection_index = SELECTION.PRIMARY}
 	self.x_usp.DAMAGE = 1
 	self.x_usp.CLIP_AMMO_MAX = 26
 	self.x_usp.NR_CLIPS_MAX = 4
 	self.x_usp.AMMO_MAX = self.x_usp.CLIP_AMMO_MAX * self.x_usp.NR_CLIPS_MAX
-	self.x_usp.AMMO_PICKUP = self:_pickup_chance(self.x_usp.AMMO_MAX, 1)
+	self.x_usp.AMMO_PICKUP = self:_pickup_chance(self.x_usp.AMMO_MAX, PICKUP.OTHER)
 	self.x_usp.FIRE_MODE = "single"
 	self.x_usp.fire_mode_data = {fire_rate = 0.166}
 	self.x_usp.single = {fire_rate = 0.166}
@@ -10429,8 +10811,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.x_usp.autohit = autohit_pistol_default
-	self.x_usp.aim_assist = aim_assist_pistol_default
+	self.x_usp.autohit = weapon_data.autohit_pistol_default
+	self.x_usp.aim_assist = weapon_data.aim_assist_pistol_default
 	self.x_usp.weapon_hold = "jowi_pistol"
 	self.x_usp.animations = {
 		second_gun_versions = {
@@ -10442,7 +10824,6 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		recoil_steelsight = true
 	}
 	self.x_usp.panic_suppression_chance = 0.2
-	self.x_usp.texture_bundle_folder = "butcher_pack_mods"
 	self.x_usp.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
@@ -10457,11 +10838,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 16,
 		concealment = 29
 	}
+end
+
+function WeaponTweakData:_init_flamethrower_mk2(weapon_data)
 	self.flamethrower_mk2 = {
 		categories = {"flamethrower"},
 		has_description = false,
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.flamethrower_mk2.sounds.fire = "flamethrower_fire"
@@ -10476,10 +10860,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.flamethrower_mk2.name_id = "bm_w_flamethrower_mk2"
 	self.flamethrower_mk2.desc_id = "bm_w_flamethrower_mk2_desc"
 	self.flamethrower_mk2.description_id = "des_flamethrower_mk2"
+	self.flamethrower_mk2.global_value = "bbq"
+	self.flamethrower_mk2.texture_bundle_folder = "bbq"
 	self.flamethrower_mk2.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.flamethrower_mk2.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.flamethrower_mk2.use_data = {
-		selection_index = 2,
+		selection_index = SELECTION.PRIMARY,
 		align_place = "right_hand"
 	}
 	self.flamethrower_mk2.DAMAGE = 1
@@ -10487,7 +10873,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.flamethrower_mk2.CLIP_AMMO_MAX = 300
 	self.flamethrower_mk2.NR_CLIPS_MAX = 2
 	self.flamethrower_mk2.AMMO_MAX = self.flamethrower_mk2.CLIP_AMMO_MAX * self.flamethrower_mk2.NR_CLIPS_MAX
-	self.flamethrower_mk2.AMMO_PICKUP = self:_pickup_chance(90, 1)
+	self.flamethrower_mk2.AMMO_PICKUP = self:_pickup_chance(90, PICKUP.OTHER)
 	self.flamethrower_mk2.FIRE_MODE = "auto"
 	self.flamethrower_mk2.fire_mode_data = {fire_rate = 0.03}
 	self.flamethrower_mk2.auto = {fire_rate = 0.05}
@@ -10528,8 +10914,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 0,
 		fire_steelsight_multiplier = 0
 	}
-	self.flamethrower_mk2.autohit = autohit_shotgun_default
-	self.flamethrower_mk2.aim_assist = aim_assist_shotgun_default
+	self.flamethrower_mk2.autohit = weapon_data.autohit_shotgun_default
+	self.flamethrower_mk2.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.flamethrower_mk2.animations = {
 		equip_id = "equip_flamethrower",
 		recoil_steelsight = false
@@ -10537,8 +10923,6 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.flamethrower_mk2.flame_max_range = 1000
 	self.flamethrower_mk2.single_flame_effect_duration = 1
 	self.flamethrower_mk2.panic_suppression_chance = 0.2
-	self.flamethrower_mk2.global_value = "bbq"
-	self.flamethrower_mk2.texture_bundle_folder = "bbq"
 	self.flamethrower_mk2.fire_dot_data = {
 		dot_trigger_chance = 35,
 		dot_damage = 10,
@@ -10560,13 +10944,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 2,
 		concealment = 7
 	}
+end
+
+function WeaponTweakData:_init_m32(weapon_data)
 	self.m32 = {
 		categories = {"grenade_launcher"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
 		projectile_type_index = 6,
 		projectile_type_indices = {launcher_incendiary = 26},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.m32.sounds.fire = "mgl_fire"
@@ -10585,10 +10972,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.m32.name_id = "bm_w_m32"
 	self.m32.desc_id = "bm_w_m32_desc"
 	self.m32.description_id = "des_m32"
+	self.m32.global_value = "bbq"
+	self.m32.texture_bundle_folder = "bbq"
 	self.m32.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.m32.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.m32.use_data = {
-		selection_index = 2,
+		selection_index = SELECTION.PRIMARY,
 		align_place = "right_hand"
 	}
 	self.m32.DAMAGE = 6
@@ -10642,14 +11031,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 2,
 		fire_steelsight_multiplier = 2
 	}
-	self.m32.autohit = autohit_shotgun_default
-	self.m32.aim_assist = aim_assist_shotgun_default
+	self.m32.autohit = weapon_data.autohit_shotgun_default
+	self.m32.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.m32.animations = {
 		equip_id = "equip_m32",
 		recoil_steelsight = true
 	}
-	self.m32.global_value = "bbq"
-	self.m32.texture_bundle_folder = "bbq"
 	self.m32.panic_suppression_chance = 0.2
 	self.m32.ignore_damage_upgrades = true
 	self.m32.stats = {
@@ -10667,11 +11054,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		concealment = 10
 	}
 	self.m32.stats_modifiers = {damage = 10}
+end
+
+function WeaponTweakData:_init_aa12(weapon_data)
 	self.aa12 = {
 		categories = {"shotgun"},
 		has_magazine = true,
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.aa12.sounds.fire = "aa12_fire"
@@ -10690,10 +11080,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.aa12.name_id = "bm_w_aa12"
 	self.aa12.desc_id = "bm_w_aa12_desc"
 	self.aa12.description_id = "des_aa12"
+	self.aa12.global_value = "bbq"
+	self.aa12.texture_bundle_folder = "bbq"
 	self.aa12.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.aa12.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug"
 	self.aa12.use_data = {
-		selection_index = 2,
+		selection_index = SELECTION.PRIMARY,
 		align_place = "right_hand"
 	}
 	self.aa12.DAMAGE = 6
@@ -10703,7 +11095,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.aa12.CLIP_AMMO_MAX = 8
 	self.aa12.NR_CLIPS_MAX = 9
 	self.aa12.AMMO_MAX = self.aa12.CLIP_AMMO_MAX * self.aa12.NR_CLIPS_MAX
-	self.aa12.AMMO_PICKUP = self:_pickup_chance(self.aa12.AMMO_MAX, 4)
+	self.aa12.AMMO_PICKUP = self:_pickup_chance(self.aa12.AMMO_MAX, PICKUP.SHOTGUN_HIGH_CAPACITY)
 	self.aa12.FIRE_MODE = "auto"
 	self.aa12.fire_mode_data = {fire_rate = 0.2}
 	self.aa12.CAN_TOGGLE_FIREMODE = true
@@ -10738,15 +11130,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 2,
 		fire_steelsight_multiplier = 1.25
 	}
-	self.aa12.autohit = autohit_shotgun_default
-	self.aa12.aim_assist = aim_assist_shotgun_default
+	self.aa12.autohit = weapon_data.autohit_shotgun_default
+	self.aa12.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.aa12.weapon_hold = "aa12"
 	self.aa12.animations = {
 		equip_id = "equip_r870_shotgun",
 		recoil_steelsight = true
 	}
-	self.aa12.global_value = "bbq"
-	self.aa12.texture_bundle_folder = "bbq"
 	self.aa12.panic_suppression_chance = 0.2
 	self.aa12.stats = {
 		zoom = 3,
@@ -10762,6 +11152,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 5,
 		concealment = 9
 	}
+end
+
+function WeaponTweakData:_init_peacemaker(weapon_data)
 	self.peacemaker = {
 		categories = {
 			"pistol",
@@ -10769,8 +11162,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
 		use_shotgun_reload = true,
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.peacemaker.sounds.fire = "pmkr45_fire"
@@ -10794,14 +11187,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.peacemaker.name_id = "bm_w_peacemaker"
 	self.peacemaker.desc_id = "bm_w_peacemaker_desc"
 	self.peacemaker.description_id = "des_peacemaker"
+	self.peacemaker.global_value = "west"
+	self.peacemaker.texture_bundle_folder = "west"
 	self.peacemaker.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.peacemaker.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
-	self.peacemaker.use_data = {selection_index = 1}
+	self.peacemaker.use_data = {selection_index = SELECTION.SECONDARY}
 	self.peacemaker.DAMAGE = 6
 	self.peacemaker.CLIP_AMMO_MAX = 6
 	self.peacemaker.NR_CLIPS_MAX = 9
 	self.peacemaker.AMMO_MAX = self.peacemaker.CLIP_AMMO_MAX * self.peacemaker.NR_CLIPS_MAX
-	self.peacemaker.AMMO_PICKUP = self:_pickup_chance(self.peacemaker.AMMO_MAX, 1)
+	self.peacemaker.AMMO_PICKUP = self:_pickup_chance(self.peacemaker.AMMO_MAX, PICKUP.OTHER)
 	self.peacemaker.spread = {
 		standing = self.new_m4.spread.standing,
 		crouching = self.new_m4.spread.crouching,
@@ -10837,14 +11232,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 2,
 		fire_steelsight_multiplier = 2
 	}
-	self.peacemaker.autohit = autohit_pistol_default
-	self.peacemaker.aim_assist = aim_assist_pistol_default
+	self.peacemaker.autohit = weapon_data.autohit_pistol_default
+	self.peacemaker.aim_assist = weapon_data.aim_assist_pistol_default
 	self.peacemaker.animations = {
 		equip_id = "equip_peacemaker",
 		recoil_steelsight = true
 	}
-	self.peacemaker.global_value = "west"
-	self.peacemaker.texture_bundle_folder = "west"
 	self.peacemaker.panic_suppression_chance = 0.2
 	self.peacemaker.stats = {
 		zoom = 5,
@@ -10861,12 +11254,15 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		concealment = 26
 	}
 	self.peacemaker.stats_modifiers = {damage = 1}
+end
+
+function WeaponTweakData:_init_winchester1874(weapon_data)
 	self.winchester1874 = {
 		categories = {"snp"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
 		use_shotgun_reload = true,
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.winchester1874.sounds.fire = "m1873_fire"
@@ -10885,17 +11281,19 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.winchester1874.name_id = "bm_w_winchester1874"
 	self.winchester1874.desc_id = "bm_w_winchester1874_desc"
 	self.winchester1874.description_id = "des_winchester1874"
+	self.winchester1874.global_value = "west"
+	self.winchester1874.texture_bundle_folder = "west"
 	self.winchester1874.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
 	self.winchester1874.shell_ejection = "effects/payday2/particles/weapons/shells/shell_sniper_9mm"
 	self.winchester1874.use_data = {
-		selection_index = 2,
+		selection_index = SELECTION.PRIMARY,
 		align_place = "left_hand"
 	}
 	self.winchester1874.DAMAGE = 1
 	self.winchester1874.CLIP_AMMO_MAX = 15
 	self.winchester1874.NR_CLIPS_MAX = 3
 	self.winchester1874.AMMO_MAX = self.winchester1874.CLIP_AMMO_MAX * self.winchester1874.NR_CLIPS_MAX
-	self.winchester1874.AMMO_PICKUP = self:_pickup_chance(self.winchester1874.AMMO_MAX, 5)
+	self.winchester1874.AMMO_PICKUP = self:_pickup_chance(self.winchester1874.AMMO_MAX, PICKUP.SNIPER_LOW_DAMAGE)
 	self.winchester1874.FIRE_MODE = "single"
 	self.winchester1874.fire_mode_data = {fire_rate = 0.7}
 	self.winchester1874.CAN_TOGGLE_FIREMODE = false
@@ -10935,14 +11333,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 2,
 		fire_steelsight_multiplier = -2
 	}
-	self.winchester1874.autohit = autohit_snp_default
-	self.winchester1874.aim_assist = aim_assist_snp_default
+	self.winchester1874.autohit = weapon_data.autohit_snp_default
+	self.winchester1874.aim_assist = weapon_data.aim_assist_snp_default
 	self.winchester1874.animations = {
 		equip_id = "equip_winchester1874",
 		recoil_steelsight = true
 	}
-	self.winchester1874.global_value = "west"
-	self.winchester1874.texture_bundle_folder = "west"
 	self.winchester1874.can_shoot_through_enemy = true
 	self.winchester1874.can_shoot_through_shield = true
 	self.winchester1874.can_shoot_through_wall = true
@@ -10963,13 +11359,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.winchester1874.armor_piercing_chance = 1
 	self.winchester1874.stats_modifiers = {damage = 1}
+end
+
+function WeaponTweakData:_init_plainsider(weapon_data)
 	self.plainsrider = {
 		categories = {"bow"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
 		projectile_type_index = 7,
 		not_allowed_in_bleedout = true,
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.plainsrider.sounds.charge_release = "bow_release"
@@ -10987,10 +11386,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.plainsrider.name_id = "bm_w_plainsrider"
 	self.plainsrider.desc_id = "bm_w_plainsrider_desc"
 	self.plainsrider.description_id = "des_plainsrider"
+	self.plainsrider.global_value = "west"
+	self.plainsrider.texture_bundle_folder = "west"
 	self.plainsrider.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.plainsrider.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.plainsrider.use_data = {
-		selection_index = 2,
+		selection_index = SELECTION.PRIMARY,
 		align_place = "left_hand"
 	}
 	self.plainsrider.DAMAGE = 6
@@ -11035,14 +11436,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 2,
 		fire_steelsight_multiplier = 2
 	}
-	self.plainsrider.autohit = autohit_shotgun_default
-	self.plainsrider.aim_assist = aim_assist_shotgun_default
+	self.plainsrider.autohit = weapon_data.autohit_shotgun_default
+	self.plainsrider.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.plainsrider.animations = {
 		equip_id = "equip_plainsrider",
 		recoil_steelsight = false
 	}
-	self.plainsrider.global_value = "west"
-	self.plainsrider.texture_bundle_folder = "west"
 	self.plainsrider.panic_suppression_chance = 0.2
 	self.plainsrider.ignore_damage_upgrades = true
 	self.plainsrider.stats = {
@@ -11060,14 +11459,17 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		concealment = 30
 	}
 	self.plainsrider.stats_modifiers = {damage = 10}
+end
+
+function WeaponTweakData:_init_mateba(weapon_data)
 	self.mateba = {
 		categories = {
 			"pistol",
 			"revolver"
 		},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.mateba.sounds.fire = "mateba_fire"
@@ -11086,14 +11488,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.mateba.name_id = "bm_w_mateba"
 	self.mateba.desc_id = "bm_w_mateba_desc"
 	self.mateba.description_id = "des_mateba"
+	self.mateba.global_value = "arena"
+	self.mateba.texture_bundle_folder = "dlc_arena"
 	self.mateba.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.mateba.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
-	self.mateba.use_data = {selection_index = 1}
+	self.mateba.use_data = {selection_index = SELECTION.SECONDARY}
 	self.mateba.DAMAGE = 2
 	self.mateba.CLIP_AMMO_MAX = 6
 	self.mateba.NR_CLIPS_MAX = 9
 	self.mateba.AMMO_MAX = self.mateba.CLIP_AMMO_MAX * self.mateba.NR_CLIPS_MAX
-	self.mateba.AMMO_PICKUP = self:_pickup_chance(self.mateba.AMMO_MAX, 1)
+	self.mateba.AMMO_PICKUP = self:_pickup_chance(self.mateba.AMMO_MAX, PICKUP.OTHER)
 	self.mateba.spread = {
 		standing = self.new_m4.spread.standing,
 		crouching = self.new_m4.spread.crouching,
@@ -11124,15 +11528,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.mateba.autohit = autohit_pistol_default
-	self.mateba.aim_assist = aim_assist_pistol_default
+	self.mateba.autohit = weapon_data.autohit_pistol_default
+	self.mateba.aim_assist = weapon_data.aim_assist_pistol_default
 	self.mateba.weapon_hold = "mateba"
 	self.mateba.animations = {
 		equip_id = "equip_raging_bull",
 		recoil_steelsight = true
 	}
-	self.mateba.global_value = "arena"
-	self.mateba.texture_bundle_folder = "dlc_arena"
 	self.mateba.panic_suppression_chance = 0.2
 	self.mateba.stats = {
 		zoom = 3,
@@ -11148,10 +11550,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 7,
 		concealment = 20
 	}
+end
+
+function WeaponTweakData:_init_asval(weapon_data)
 	self.asval = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.asval.sounds.fire = "val_fire"
@@ -11170,14 +11575,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.asval.name_id = "bm_w_asval"
 	self.asval.desc_id = "bm_w_asval_desc"
 	self.asval.description_id = "des_asval"
+	self.asval.global_value = "character_pack_sokol"
+	self.asval.texture_bundle_folder = "character_pack_sokol"
 	self.asval.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.asval.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.asval.use_data = {selection_index = 2}
+	self.asval.use_data = {selection_index = SELECTION.PRIMARY}
 	self.asval.DAMAGE = 1
 	self.asval.CLIP_AMMO_MAX = 20
 	self.asval.NR_CLIPS_MAX = 11
 	self.asval.AMMO_MAX = self.asval.CLIP_AMMO_MAX * self.asval.NR_CLIPS_MAX
-	self.asval.AMMO_PICKUP = self:_pickup_chance(self.asval.AMMO_MAX, 2)
+	self.asval.AMMO_PICKUP = self:_pickup_chance(self.asval.AMMO_MAX, PICKUP.AR_HIGH_CAPACITY)
 	self.asval.FIRE_MODE = "auto"
 	self.asval.fire_mode_data = {fire_rate = 0.067}
 	self.asval.CAN_TOGGLE_FIREMODE = true
@@ -11212,8 +11619,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.asval.autohit = autohit_rifle_default
-	self.asval.aim_assist = aim_assist_rifle_default
+	self.asval.autohit = weapon_data.autohit_rifle_default
+	self.asval.aim_assist = weapon_data.aim_assist_rifle_default
 	self.asval.weapon_hold = "asval"
 	self.asval.animations = {
 		equip_id = "asval_equip",
@@ -11223,8 +11630,6 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		group = "rifle",
 		weapon = "ak47"
 	}
-	self.asval.global_value = "character_pack_sokol"
-	self.asval.texture_bundle_folder = "character_pack_sokol"
 	self.asval.panic_suppression_chance = 0.2
 	self.asval.stats = {
 		zoom = 3,
@@ -11240,10 +11645,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 24,
 		concealment = 26
 	}
+end
+
+function WeaponTweakData:_init_sub2000(weapon_data)
 	self.sub2000 = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.sub2000.sounds.fire = "sub2k_fire"
@@ -11260,14 +11668,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.sub2000.name_id = "bm_w_sub2000"
 	self.sub2000.desc_id = "bm_w_sub2000_desc"
 	self.sub2000.description_id = "des_sub2000"
+	self.sub2000.global_value = "kenaz"
+	self.sub2000.texture_bundle_folder = "kenaz"
 	self.sub2000.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.sub2000.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.sub2000.use_data = {selection_index = 2}
+	self.sub2000.use_data = {selection_index = SELECTION.PRIMARY}
 	self.sub2000.DAMAGE = 2
 	self.sub2000.CLIP_AMMO_MAX = 33
 	self.sub2000.NR_CLIPS_MAX = 2
 	self.sub2000.AMMO_MAX = self.sub2000.CLIP_AMMO_MAX * self.sub2000.NR_CLIPS_MAX
-	self.sub2000.AMMO_PICKUP = self:_pickup_chance(self.sub2000.AMMO_MAX, 1)
+	self.sub2000.AMMO_PICKUP = self:_pickup_chance(self.sub2000.AMMO_MAX, PICKUP.OTHER)
 	self.sub2000.FIRE_MODE = "single"
 	self.sub2000.fire_mode_data = {fire_rate = 0.085}
 	self.sub2000.CAN_TOGGLE_FIREMODE = false
@@ -11302,16 +11712,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = 1
 	}
-	self.sub2000.autohit = autohit_rifle_default
-	self.sub2000.aim_assist = aim_assist_rifle_default
+	self.sub2000.autohit = weapon_data.autohit_rifle_default
+	self.sub2000.aim_assist = weapon_data.aim_assist_rifle_default
 	self.sub2000.panic_suppression_chance = 0.2
 	self.sub2000.weapon_hold = "sub2000"
 	self.sub2000.animations = {
 		equip_id = "sub2000_equip",
 		recoil_steelsight = true
 	}
-	self.sub2000.global_value = "kenaz"
-	self.sub2000.texture_bundle_folder = "kenaz"
 	self.sub2000.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
@@ -11326,11 +11734,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 4,
 		concealment = 27
 	}
+end
+
+function WeaponTweakData:_init_wa2000(weapon_data)
 	self.wa2000 = {
 		categories = {"snp"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.wa2000.sounds.fire = "lakner_fire"
@@ -11346,14 +11757,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.wa2000.name_id = "bm_w_wa2000"
 	self.wa2000.desc_id = "bm_w_wa2000_desc"
 	self.wa2000.description_id = "des_wa2000"
+	self.wa2000.global_value = "turtles"
+	self.wa2000.texture_bundle_folder = "turtles"
 	self.wa2000.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
 	self.wa2000.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.wa2000.use_data = {selection_index = 2}
+	self.wa2000.use_data = {selection_index = SELECTION.PRIMARY}
 	self.wa2000.DAMAGE = 1
 	self.wa2000.CLIP_AMMO_MAX = 10
 	self.wa2000.NR_CLIPS_MAX = 4
 	self.wa2000.AMMO_MAX = self.wa2000.CLIP_AMMO_MAX * self.wa2000.NR_CLIPS_MAX
-	self.wa2000.AMMO_PICKUP = self:_pickup_chance(self.wa2000.AMMO_MAX, 5)
+	self.wa2000.AMMO_PICKUP = self:_pickup_chance(self.wa2000.AMMO_MAX, PICKUP.SNIPER_LOW_DAMAGE)
 	self.wa2000.FIRE_MODE = "single"
 	self.wa2000.fire_mode_data = {fire_rate = 0.5}
 	self.wa2000.CAN_TOGGLE_FIREMODE = false
@@ -11393,16 +11806,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1.5,
 		fire_steelsight_multiplier = -1.5
 	}
-	self.wa2000.autohit = autohit_snp_default
-	self.wa2000.aim_assist = aim_assist_snp_default
+	self.wa2000.autohit = weapon_data.autohit_snp_default
+	self.wa2000.aim_assist = weapon_data.aim_assist_snp_default
 	self.wa2000.weapon_hold = "wa2000"
 	self.wa2000.animations = {
 		equip_id = "equip_wa2000",
 		recoil_steelsight = true
 	}
 	self.wa2000.panic_suppression_chance = 0.2
-	self.wa2000.global_value = "turtles"
-	self.wa2000.texture_bundle_folder = "turtles"
 	self.wa2000.can_shoot_through_enemy = true
 	self.wa2000.can_shoot_through_shield = true
 	self.wa2000.can_shoot_through_wall = true
@@ -11422,10 +11833,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.wa2000.armor_piercing_chance = 1
 	self.wa2000.stats_modifiers = {damage = 1}
+end
+
+function WeaponTweakData:_init_polymer(weapon_data)
 	self.polymer = {
 		categories = {"smg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.polymer.sounds.fire = "polymer_fire_single"
@@ -11444,15 +11858,17 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.polymer.name_id = "bm_w_polymer"
 	self.polymer.desc_id = "bm_w_polymer_desc"
 	self.polymer.description_id = "des_polymer"
+	self.polymer.global_value = "turtles"
+	self.polymer.texture_bundle_folder = "turtles"
 	self.polymer.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.polymer.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.polymer.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.polymer.use_data = {selection_index = 1}
+	self.polymer.use_data = {selection_index = SELECTION.SECONDARY}
 	self.polymer.DAMAGE = 1
 	self.polymer.CLIP_AMMO_MAX = 30
 	self.polymer.NR_CLIPS_MAX = 5
 	self.polymer.AMMO_MAX = self.polymer.CLIP_AMMO_MAX * self.polymer.NR_CLIPS_MAX
-	self.polymer.AMMO_PICKUP = self:_pickup_chance(self.polymer.AMMO_MAX, 3)
+	self.polymer.AMMO_PICKUP = self:_pickup_chance(self.polymer.AMMO_MAX, PICKUP.AR_MED_CAPACITY)
 	self.polymer.FIRE_MODE = "auto"
 	self.polymer.fire_mode_data = {fire_rate = 0.05}
 	self.polymer.CAN_TOGGLE_FIREMODE = true
@@ -11492,15 +11908,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.polymer.autohit = autohit_smg_default
-	self.polymer.aim_assist = aim_assist_smg_default
+	self.polymer.autohit = weapon_data.autohit_smg_default
+	self.polymer.aim_assist = weapon_data.aim_assist_smg_default
 	self.polymer.weapon_hold = "polymer"
 	self.polymer.animations = {
 		equip_id = "equip_polymer",
 		recoil_steelsight = true
 	}
-	self.polymer.global_value = "turtles"
-	self.polymer.texture_bundle_folder = "turtles"
 	self.polymer.panic_suppression_chance = 0.2
 	self.polymer.stats = {
 		zoom = 3,
@@ -11516,12 +11930,15 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 14,
 		concealment = 20
 	}
+end
+
+function WeaponTweakData:_init_hunter(weapon_data)
 	self.hunter = {
 		categories = {"crossbow"},
 		projectile_type_index = 11,
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.hunter.sounds.fire = "hunter_fire"
@@ -11539,14 +11956,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.hunter.name_id = "bm_w_hunter"
 	self.hunter.desc_id = "bm_w_hunter_desc"
 	self.hunter.description_id = "des_hunter"
+	self.hunter.global_value = "turtles"
+	self.hunter.texture_bundle_folder = "turtles"
 	self.hunter.muzzleflash = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.hunter.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
-	self.hunter.use_data = {selection_index = 1}
+	self.hunter.use_data = {selection_index = SELECTION.SECONDARY}
 	self.hunter.DAMAGE = 1
 	self.hunter.CLIP_AMMO_MAX = 1
 	self.hunter.NR_CLIPS_MAX = 25
 	self.hunter.AMMO_MAX = self.hunter.CLIP_AMMO_MAX * self.hunter.NR_CLIPS_MAX
-	self.hunter.AMMO_PICKUP = self:_pickup_chance(0, 1)
+	self.hunter.AMMO_PICKUP = self:_pickup_chance(0, PICKUP.OTHER)
 	self.hunter.FIRE_MODE = "single"
 	self.hunter.fire_mode_data = {fire_rate = 1.2}
 	self.hunter.CAN_TOGGLE_FIREMODE = false
@@ -11586,15 +12005,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.hunter.autohit = autohit_smg_default
-	self.hunter.aim_assist = aim_assist_smg_default
+	self.hunter.autohit = weapon_data.autohit_smg_default
+	self.hunter.aim_assist = weapon_data.aim_assist_smg_default
 	self.hunter.weapon_hold = "hunter"
 	self.hunter.animations = {
 		equip_id = "equip_hunter",
 		recoil_steelsight = true
 	}
-	self.hunter.global_value = "turtles"
-	self.hunter.texture_bundle_folder = "turtles"
 	self.hunter.panic_suppression_chance = 0.2
 	self.hunter.ignore_damage_upgrades = true
 	self.hunter.stats = {
@@ -11612,10 +12029,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		concealment = 26
 	}
 	self.hunter.stats_modifiers = {damage = 10}
+end
+
+function WeaponTweakData:_init_baka(weapon_data)
 	self.baka = {
 		categories = {"smg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.baka.sounds.fire = "baka_fire_single"
@@ -11634,15 +12054,17 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.baka.name_id = "bm_w_baka"
 	self.baka.desc_id = "bm_w_baka_desc"
 	self.baka.description_id = "des_baka"
+	self.baka.global_value = "dragon"
+	self.baka.texture_bundle_folder = "dragon"
 	self.baka.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.baka.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.baka.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.baka.use_data = {selection_index = 1}
+	self.baka.use_data = {selection_index = SELECTION.SECONDARY}
 	self.baka.DAMAGE = 1
 	self.baka.CLIP_AMMO_MAX = 32
 	self.baka.NR_CLIPS_MAX = 7
 	self.baka.AMMO_MAX = self.baka.CLIP_AMMO_MAX * self.baka.NR_CLIPS_MAX
-	self.baka.AMMO_PICKUP = self:_pickup_chance(self.baka.AMMO_MAX, 2)
+	self.baka.AMMO_PICKUP = self:_pickup_chance(self.baka.AMMO_MAX, PICKUP.AR_HIGH_CAPACITY)
 	self.baka.FIRE_MODE = "auto"
 	self.baka.fire_mode_data = {fire_rate = 0.05}
 	self.baka.CAN_TOGGLE_FIREMODE = true
@@ -11682,15 +12104,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1.1,
 		fire_steelsight_multiplier = -1.1
 	}
-	self.baka.autohit = autohit_smg_default
-	self.baka.aim_assist = aim_assist_smg_default
+	self.baka.autohit = weapon_data.autohit_smg_default
+	self.baka.aim_assist = weapon_data.aim_assist_smg_default
 	self.baka.weapon_hold = "baka"
 	self.baka.animations = {
 		equip_id = "equip_baka",
 		recoil_steelsight = true
 	}
-	self.baka.global_value = "dragon"
-	self.baka.texture_bundle_folder = "dragon"
 	self.baka.panic_suppression_chance = 0.2
 	self.baka.stats = {
 		zoom = 3,
@@ -11706,12 +12126,15 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 14,
 		concealment = 29
 	}
+end
+
+function WeaponTweakData:_init_arblast(weapon_data)
 	self.arblast = {
 		categories = {"crossbow"},
 		projectile_type_index = 17,
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.arblast.sounds.fire = "arblast_fire"
@@ -11729,14 +12152,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.arblast.name_id = "bm_w_arblast"
 	self.arblast.desc_id = "bm_w_arblast_desc"
 	self.arblast.description_id = "des_arblast"
+	self.arblast.global_value = "steel"
+	self.arblast.texture_bundle_folder = "steel"
 	self.arblast.muzzleflash = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.arblast.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
-	self.arblast.use_data = {selection_index = 2}
+	self.arblast.use_data = {selection_index = SELECTION.PRIMARY}
 	self.arblast.DAMAGE = 1
 	self.arblast.CLIP_AMMO_MAX = 1
 	self.arblast.NR_CLIPS_MAX = 35
 	self.arblast.AMMO_MAX = self.arblast.CLIP_AMMO_MAX * self.arblast.NR_CLIPS_MAX
-	self.arblast.AMMO_PICKUP = self:_pickup_chance(0, 1)
+	self.arblast.AMMO_PICKUP = self:_pickup_chance(0, PICKUP.OTHER)
 	self.arblast.FIRE_MODE = "single"
 	self.arblast.fire_mode_data = {fire_rate = 2.9}
 	self.arblast.CAN_TOGGLE_FIREMODE = false
@@ -11776,15 +12201,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.arblast.autohit = autohit_smg_default
-	self.arblast.aim_assist = aim_assist_smg_default
+	self.arblast.autohit = weapon_data.autohit_smg_default
+	self.arblast.aim_assist = weapon_data.aim_assist_smg_default
 	self.arblast.weapon_hold = "arblast"
 	self.arblast.animations = {
 		equip_id = "equip_arblast",
 		recoil_steelsight = true
 	}
-	self.arblast.global_value = "steel"
-	self.arblast.texture_bundle_folder = "steel"
 	self.arblast.panic_suppression_chance = 0.2
 	self.arblast.ignore_damage_upgrades = true
 	self.arblast.stats = {
@@ -11802,12 +12225,15 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		concealment = 28
 	}
 	self.arblast.stats_modifiers = {damage = 100}
+end
+
+function WeaponTweakData:_init_frankish(weapon_data)
 	self.frankish = {
 		categories = {"crossbow"},
 		projectile_type_index = 20,
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.frankish.sounds.fire = "frankish_fire"
@@ -11825,14 +12251,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.frankish.name_id = "bm_w_frankish"
 	self.frankish.desc_id = "bm_w_frankish_desc"
 	self.frankish.description_id = "des_frankish"
+	self.frankish.global_value = "steel"
+	self.frankish.texture_bundle_folder = "steel"
 	self.frankish.muzzleflash = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.frankish.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
-	self.frankish.use_data = {selection_index = 2}
+	self.frankish.use_data = {selection_index = SELECTION.PRIMARY}
 	self.frankish.DAMAGE = 1
 	self.frankish.CLIP_AMMO_MAX = 1
 	self.frankish.NR_CLIPS_MAX = 50
 	self.frankish.AMMO_MAX = self.frankish.CLIP_AMMO_MAX * self.frankish.NR_CLIPS_MAX
-	self.frankish.AMMO_PICKUP = self:_pickup_chance(0, 1)
+	self.frankish.AMMO_PICKUP = self:_pickup_chance(0, PICKUP.OTHER)
 	self.frankish.FIRE_MODE = "single"
 	self.frankish.fire_mode_data = {fire_rate = 1.5}
 	self.frankish.CAN_TOGGLE_FIREMODE = false
@@ -11872,15 +12300,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.frankish.autohit = autohit_smg_default
-	self.frankish.aim_assist = aim_assist_smg_default
+	self.frankish.autohit = weapon_data.autohit_smg_default
+	self.frankish.aim_assist = weapon_data.aim_assist_smg_default
 	self.frankish.weapon_hold = "frankish"
 	self.frankish.animations = {
 		equip_id = "equip_frankish",
 		recoil_steelsight = true
 	}
-	self.frankish.global_value = "steel"
-	self.frankish.texture_bundle_folder = "steel"
 	self.frankish.panic_suppression_chance = 0.2
 	self.frankish.ignore_damage_upgrades = true
 	self.frankish.stats = {
@@ -11898,13 +12324,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		concealment = 29
 	}
 	self.frankish.stats_modifiers = {damage = 10}
+end
+
+function WeaponTweakData:_init_long(weapon_data)
 	self.long = {
 		categories = {"bow"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
 		projectile_type_index = 23,
 		not_allowed_in_bleedout = true,
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.long.sounds.charge_release = "long_release"
@@ -11921,10 +12350,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.long.name_id = "bm_w_long"
 	self.long.desc_id = "bm_w_long_desc"
 	self.long.description_id = "des_long"
+	self.long.global_value = "steel"
+	self.long.texture_bundle_folder = "steel"
 	self.long.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.long.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.long.use_data = {
-		selection_index = 2,
+		selection_index = SELECTION.PRIMARY,
 		align_place = "left_hand"
 	}
 	self.long.DAMAGE = 6
@@ -11969,14 +12400,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 2,
 		fire_steelsight_multiplier = 2
 	}
-	self.long.autohit = autohit_shotgun_default
-	self.long.aim_assist = aim_assist_shotgun_default
+	self.long.autohit = weapon_data.autohit_shotgun_default
+	self.long.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.long.animations = {
 		equip_id = "equip_long",
 		recoil_steelsight = false
 	}
-	self.long.global_value = "steel"
-	self.long.texture_bundle_folder = "steel"
 	self.long.panic_suppression_chance = 0.2
 	self.long.ignore_damage_upgrades = true
 	self.long.stats = {
@@ -11994,10 +12423,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		concealment = 29
 	}
 	self.long.stats_modifiers = {damage = 100}
+end
+
+function WeaponTweakData:_init_par(weapon_data)
 	self.par = {
 		categories = {"lmg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.par.sounds.fire = "svinet_fire_single"
@@ -12021,14 +12453,15 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.par.name_id = "bm_w_par"
 	self.par.desc_id = "bm_w_par_desc"
 	self.par.description_id = "des_par"
+	self.par.texture_bundle_folder = "par"
 	self.par.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
 	self.par.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
-	self.par.use_data = {selection_index = 2}
+	self.par.use_data = {selection_index = SELECTION.PRIMARY}
 	self.par.DAMAGE = 1
 	self.par.CLIP_AMMO_MAX = 200
 	self.par.NR_CLIPS_MAX = 2
 	self.par.AMMO_MAX = self.par.CLIP_AMMO_MAX * self.par.NR_CLIPS_MAX
-	self.par.AMMO_PICKUP = self:_pickup_chance(self.par.AMMO_MAX, 1)
+	self.par.AMMO_PICKUP = self:_pickup_chance(self.par.AMMO_MAX, PICKUP.OTHER)
 	self.par.FIRE_MODE = "auto"
 	self.par.fire_mode_data = {fire_rate = 0.066}
 	self.par.CAN_TOGGLE_FIREMODE = false
@@ -12040,7 +12473,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		moving_standing = self.new_m4.spread.moving_standing,
 		moving_crouching = self.new_m4.spread.moving_crouching,
 		moving_steelsight = self.new_m4.spread.moving_steelsight,
-		bipod = default_bipod_spread
+		bipod = weapon_data.default_bipod_spread
 	}
 	self.par.kick = {standing = {
 		-0.2,
@@ -12069,8 +12502,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 0.5,
 		fire_steelsight_multiplier = -0.5
 	}
-	self.par.autohit = autohit_lmg_default
-	self.par.aim_assist = aim_assist_lmg_default
+	self.par.autohit = weapon_data.autohit_lmg_default
+	self.par.aim_assist = weapon_data.aim_assist_lmg_default
 	self.par.weapon_hold = "par"
 	self.par.animations = {
 		equip_id = "equip_par",
@@ -12082,7 +12515,6 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		bipod_recoil_loop = "bipod_recoil_loop",
 		bipod_recoil_exit = "bipod_recoil_exit"
 	}
-	self.par.texture_bundle_folder = "par"
 	self.par.panic_suppression_chance = 0.2
 	self.par.stats = {
 		zoom = 1,
@@ -12098,10 +12530,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 4,
 		concealment = 2
 	}
+end
+
+function WeaponTweakData:_init_sparrow(weapon_data)
 	self.sparrow = {
 		categories = {"pistol"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.sparrow.sounds.fire = "sparrow_fire"
@@ -12118,15 +12553,17 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.sparrow.name_id = "bm_w_sparrow"
 	self.sparrow.desc_id = "bm_w_sparrow_desc"
 	self.sparrow.description_id = "des_sparrow"
+	self.sparrow.global_value = "berry"
+	self.sparrow.texture_bundle_folder = "rip"
 	self.sparrow.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.sparrow.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.sparrow.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.sparrow.use_data = {selection_index = 1}
+	self.sparrow.use_data = {selection_index = SELECTION.SECONDARY}
 	self.sparrow.DAMAGE = 1
 	self.sparrow.CLIP_AMMO_MAX = 12
 	self.sparrow.NR_CLIPS_MAX = 5
 	self.sparrow.AMMO_MAX = self.sparrow.CLIP_AMMO_MAX * self.sparrow.NR_CLIPS_MAX
-	self.sparrow.AMMO_PICKUP = self:_pickup_chance(self.sparrow.AMMO_MAX, 1)
+	self.sparrow.AMMO_PICKUP = self:_pickup_chance(self.sparrow.AMMO_MAX, PICKUP.OTHER)
 	self.sparrow.FIRE_MODE = "single"
 	self.sparrow.fire_mode_data = {fire_rate = 0.25}
 	self.sparrow.single = {fire_rate = 0.25}
@@ -12160,16 +12597,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.sparrow.autohit = autohit_pistol_default
-	self.sparrow.aim_assist = aim_assist_pistol_default
+	self.sparrow.autohit = weapon_data.autohit_pistol_default
+	self.sparrow.aim_assist = weapon_data.aim_assist_pistol_default
 	self.sparrow.weapon_hold = "colt_1911"
 	self.sparrow.animations = {
 		equip_id = "equip_glock",
 		recoil_steelsight = true,
 		magazine_empty = "last_recoil"
 	}
-	self.sparrow.global_value = "berry"
-	self.sparrow.texture_bundle_folder = "rip"
 	self.sparrow.panic_suppression_chance = 0.2
 	self.sparrow.stats = {
 		zoom = 3,
@@ -12185,11 +12620,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 15,
 		concealment = 29
 	}
+end
+
+function WeaponTweakData:_init_model70(weapon_data)
 	self.model70 = {
 		categories = {"snp"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.model70.sounds.fire = "model70_fire"
@@ -12205,10 +12643,11 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.model70.name_id = "bm_w_model70"
 	self.model70.desc_id = "bm_w_model70_desc"
 	self.model70.description_id = "des_model70"
+	self.model70.texture_bundle_folder = "berry"
 	self.model70.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
 	self.model70.shell_ejection = "effects/payday2/particles/weapons/shells/shell_sniper"
 	self.model70.use_data = {
-		selection_index = 2,
+		selection_index = SELECTION.PRIMARY,
 		align_place = "right_hand"
 	}
 	self.model70.DAMAGE = 1
@@ -12258,14 +12697,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 3.5,
 		fire_steelsight_multiplier = -3.5
 	}
-	self.model70.autohit = autohit_snp_default
-	self.model70.aim_assist = aim_assist_snp_default
+	self.model70.autohit = weapon_data.autohit_snp_default
+	self.model70.aim_assist = weapon_data.aim_assist_snp_default
 	self.model70.weapon_hold = "model70"
 	self.model70.animations = {
 		equip_id = "equip_model70",
 		recoil_steelsight = true
 	}
-	self.model70.texture_bundle_folder = "berry"
 	self.model70.can_shoot_through_enemy = true
 	self.model70.can_shoot_through_shield = true
 	self.model70.can_shoot_through_wall = true
@@ -12286,10 +12724,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.model70.armor_piercing_chance = 1
 	self.model70.stats_modifiers = {damage = 2}
+end
+
+function WeaponTweakData:_init_m37(weapon_data)
 	self.m37 = {
 		categories = {"shotgun"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.m37.sounds.fire = "m37_fire"
@@ -12308,10 +12749,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.m37.name_id = "bm_w_m37"
 	self.m37.desc_id = "bm_w_m37_desc"
 	self.m37.description_id = "des_m37"
+	self.m37.texture_bundle_folder = "peta"
+	self.m37.global_value = "peta"
 	self.m37.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.m37.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug_semi"
 	self.m37.use_data = {
-		selection_index = 1,
+		selection_index = SELECTION.SECONDARY,
 		align_place = "right_hand"
 	}
 	self.m37.DAMAGE = 6
@@ -12321,7 +12764,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.m37.CLIP_AMMO_MAX = 7
 	self.m37.NR_CLIPS_MAX = 4
 	self.m37.AMMO_MAX = self.m37.CLIP_AMMO_MAX * self.m37.NR_CLIPS_MAX
-	self.m37.AMMO_PICKUP = self:_pickup_chance(self.m37.AMMO_MAX, 1)
+	self.m37.AMMO_PICKUP = self:_pickup_chance(self.m37.AMMO_MAX, PICKUP.OTHER)
 	self.m37.FIRE_MODE = "single"
 	self.m37.fire_mode_data = {fire_rate = 0.575}
 	self.m37.single = {fire_rate = 0.575}
@@ -12365,15 +12808,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.m37.autohit = autohit_shotgun_default
-	self.m37.aim_assist = aim_assist_shotgun_default
+	self.m37.autohit = weapon_data.autohit_shotgun_default
+	self.m37.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.m37.weapon_hold = "m37"
 	self.m37.animations = {
 		equip_id = "equip_r870_shotgun",
 		recoil_steelsight = true
 	}
-	self.m37.texture_bundle_folder = "peta"
-	self.m37.global_value = "peta"
 	self.m37.panic_suppression_chance = 0.2
 	self.m37.stats = {
 		zoom = 3,
@@ -12389,13 +12830,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 5,
 		concealment = 22
 	}
+end
+
+function WeaponTweakData:_init_china(weapon_data)
 	self.china = {
 		categories = {"grenade_launcher"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
 		projectile_type_index = 27,
 		projectile_type_indices = {launcher_incendiary = 28},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.china.sounds.fire = "china_fire"
@@ -12414,10 +12858,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.china.name_id = "bm_w_china"
 	self.china.desc_id = "bm_w_china_desc"
 	self.china.description_id = "des_china"
+	self.china.global_value = "pal"
+	self.china.texture_bundle_folder = "lupus"
 	self.china.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.china.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.china.use_data = {
-		selection_index = 1,
+		selection_index = SELECTION.SECONDARY,
 		align_place = "right_hand"
 	}
 	self.china.DAMAGE = 6
@@ -12471,14 +12917,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 2,
 		fire_steelsight_multiplier = 2
 	}
-	self.china.autohit = autohit_shotgun_default
-	self.china.aim_assist = aim_assist_shotgun_default
+	self.china.autohit = weapon_data.autohit_shotgun_default
+	self.china.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.china.animations = {
 		equip_id = "equip_china",
 		recoil_steelsight = true
 	}
-	self.china.global_value = "pal"
-	self.china.texture_bundle_folder = "lupus"
 	self.china.panic_suppression_chance = 0.2
 	self.china.ignore_damage_upgrades = true
 	self.china.stats = {
@@ -12496,10 +12940,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		concealment = 18
 	}
 	self.china.stats_modifiers = {damage = 10}
+end
+
+function WeaponTweakData:_init_sr2(weapon_data)
 	self.sr2 = {
 		categories = {"smg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.sr2.sounds.fire = "sr2_fire_single"
@@ -12518,15 +12965,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.sr2.name_id = "bm_w_sr2"
 	self.sr2.desc_id = "bm_w_sr2_desc"
 	self.sr2.description_id = "des_sr2"
+	self.sr2.texture_bundle_folder = "coco"
 	self.sr2.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.sr2.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.sr2.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.sr2.use_data = {selection_index = 1}
+	self.sr2.use_data = {selection_index = SELECTION.SECONDARY}
 	self.sr2.DAMAGE = 1
 	self.sr2.CLIP_AMMO_MAX = 32
 	self.sr2.NR_CLIPS_MAX = 5
 	self.sr2.AMMO_MAX = self.cobray.CLIP_AMMO_MAX * self.cobray.NR_CLIPS_MAX
-	self.sr2.AMMO_PICKUP = self:_pickup_chance(self.cobray.AMMO_MAX, 3)
+	self.sr2.AMMO_PICKUP = self:_pickup_chance(self.cobray.AMMO_MAX, PICKUP.AR_MED_CAPACITY)
 	self.sr2.FIRE_MODE = "auto"
 	self.sr2.fire_mode_data = {fire_rate = 0.08}
 	self.sr2.CAN_TOGGLE_FIREMODE = true
@@ -12568,13 +13016,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.sr2.autohit = autohit_smg_default
-	self.sr2.aim_assist = aim_assist_smg_default
+	self.sr2.autohit = weapon_data.autohit_smg_default
+	self.sr2.aim_assist = weapon_data.aim_assist_smg_default
 	self.sr2.animations = {
 		equip_id = "equip_cobray",
 		recoil_steelsight = true
 	}
-	self.sr2.texture_bundle_folder = "coco"
 	self.sr2.panic_suppression_chance = 0.2
 	self.sr2.stats = {
 		zoom = 3,
@@ -12590,13 +13037,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 14,
 		concealment = 25
 	}
+end
+
+function WeaponTweakData:_init_x_sr2(weapon_data)
 	self.x_sr2 = {
 		categories = {
 			"akimbo",
 			"smg"
 		},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.x_sr2.sounds.fire = "sr2_x_fire"
@@ -12615,15 +13065,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_sr2.name_id = "bm_w_x_sr2"
 	self.x_sr2.desc_id = "bm_w_x_sr2_desc"
 	self.x_sr2.description_id = "des_x_sr2"
+	self.x_sr2.texture_bundle_folder = "coco"
 	self.x_sr2.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.x_sr2.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.x_sr2.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.x_sr2.use_data = {selection_index = 2}
+	self.x_sr2.use_data = {selection_index = SELECTION.PRIMARY}
 	self.x_sr2.DAMAGE = 1
 	self.x_sr2.CLIP_AMMO_MAX = 64
 	self.x_sr2.NR_CLIPS_MAX = 3
 	self.x_sr2.AMMO_MAX = self.x_sr2.CLIP_AMMO_MAX * self.x_sr2.NR_CLIPS_MAX
-	self.x_sr2.AMMO_PICKUP = self:_pickup_chance(self.x_sr2.AMMO_MAX, 1)
+	self.x_sr2.AMMO_PICKUP = self:_pickup_chance(self.x_sr2.AMMO_MAX, PICKUP.OTHER)
 	self.x_sr2.FIRE_MODE = "auto"
 	self.x_sr2.fire_mode_data = {fire_rate = 0.08}
 	self.x_sr2.single = {fire_rate = 0.08}
@@ -12663,8 +13114,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.x_sr2.autohit = autohit_smg_default
-	self.x_sr2.aim_assist = aim_assist_smg_default
+	self.x_sr2.autohit = weapon_data.autohit_smg_default
+	self.x_sr2.aim_assist = weapon_data.aim_assist_smg_default
 	self.x_sr2.weapon_hold = "x_sr2"
 	self.x_sr2.animations = {
 		second_gun_versions = {
@@ -12675,7 +13126,6 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		recoil_steelsight = true
 	}
 	self.x_sr2.panic_suppression_chance = 0.2
-	self.x_sr2.texture_bundle_folder = "coco"
 	self.x_sr2.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
@@ -12690,10 +13140,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 15,
 		concealment = 25
 	}
+end
+
+function WeaponTweakData:_init_pl14(weapon_data)
 	self.pl14 = {
 		categories = {"pistol"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.pl14.sounds.fire = "pl14_fire"
@@ -12710,15 +13163,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.pl14.name_id = "bm_w_pl14"
 	self.pl14.desc_id = "bm_w_pl14_desc"
 	self.pl14.description_id = "des_pl14"
+	self.pl14.texture_bundle_folder = "mad"
 	self.pl14.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.pl14.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.pl14.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.pl14.use_data = {selection_index = 1}
+	self.pl14.use_data = {selection_index = SELECTION.SECONDARY}
 	self.pl14.DAMAGE = 1
 	self.pl14.CLIP_AMMO_MAX = 12
 	self.pl14.NR_CLIPS_MAX = 5
 	self.pl14.AMMO_MAX = self.pl14.CLIP_AMMO_MAX * self.pl14.NR_CLIPS_MAX
-	self.pl14.AMMO_PICKUP = self:_pickup_chance(self.pl14.AMMO_MAX, 1)
+	self.pl14.AMMO_PICKUP = self:_pickup_chance(self.pl14.AMMO_MAX, PICKUP.OTHER)
 	self.pl14.FIRE_MODE = "single"
 	self.pl14.fire_mode_data = {fire_rate = 0.25}
 	self.pl14.single = {fire_rate = 0.25}
@@ -12752,15 +13206,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.pl14.autohit = autohit_pistol_default
-	self.pl14.aim_assist = aim_assist_pistol_default
+	self.pl14.autohit = weapon_data.autohit_pistol_default
+	self.pl14.aim_assist = weapon_data.aim_assist_pistol_default
 	self.pl14.weapon_hold = "colt_1911"
 	self.pl14.animations = {
 		equip_id = "equip_glock",
 		recoil_steelsight = true,
 		magazine_empty = "last_recoil"
 	}
-	self.pl14.texture_bundle_folder = "mad"
 	self.pl14.panic_suppression_chance = 0.2
 	self.pl14.stats = {
 		zoom = 3,
@@ -12776,13 +13229,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 15,
 		concealment = 29
 	}
+end
+
+function WeaponTweakData:_init_x_mp5(weapon_data)
 	self.x_mp5 = {
 		categories = {
 			"akimbo",
 			"smg"
 		},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.x_mp5.sounds.fire = "mp5_x_fire"
@@ -12801,15 +13257,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_mp5.name_id = "bm_w_x_mp5"
 	self.x_mp5.desc_id = "bm_w_x_mp5_desc"
 	self.x_mp5.description_id = "des_x_mp5"
+	self.x_mp5.texture_bundle_folder = "dos"
 	self.x_mp5.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.x_mp5.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.x_mp5.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.x_mp5.use_data = {selection_index = 2}
+	self.x_mp5.use_data = {selection_index = SELECTION.PRIMARY}
 	self.x_mp5.DAMAGE = 1
 	self.x_mp5.CLIP_AMMO_MAX = 60
 	self.x_mp5.NR_CLIPS_MAX = 4
 	self.x_mp5.AMMO_MAX = self.x_mp5.CLIP_AMMO_MAX * self.x_mp5.NR_CLIPS_MAX
-	self.x_mp5.AMMO_PICKUP = self:_pickup_chance(self.x_mp5.AMMO_MAX, 1)
+	self.x_mp5.AMMO_PICKUP = self:_pickup_chance(self.x_mp5.AMMO_MAX, PICKUP.OTHER)
 	self.x_mp5.FIRE_MODE = "auto"
 	self.x_mp5.fire_mode_data = {fire_rate = 0.08}
 	self.x_mp5.single = {fire_rate = 0.08}
@@ -12849,15 +13306,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.x_mp5.autohit = autohit_smg_default
-	self.x_mp5.aim_assist = aim_assist_smg_default
+	self.x_mp5.autohit = weapon_data.autohit_smg_default
+	self.x_mp5.aim_assist = weapon_data.aim_assist_smg_default
 	self.x_mp5.weapon_hold = "x_akmsu"
 	self.x_mp5.animations = {
 		has_steelsight_stance = true,
 		recoil_steelsight = true
 	}
 	self.x_mp5.panic_suppression_chance = 0.2
-	self.x_mp5.texture_bundle_folder = "dos"
 	self.x_mp5.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
@@ -12872,13 +13328,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 17,
 		concealment = 23
 	}
+end
+
+function WeaponTweakData:_init_x_akmsu(weapon_data)
 	self.x_akmsu = {
 		categories = {
 			"akimbo",
 			"smg"
 		},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.x_akmsu.sounds.fire = "akmsu_x_fire"
@@ -12897,15 +13356,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_akmsu.name_id = "bm_w_x_akmsu"
 	self.x_akmsu.desc_id = "bm_w_x_akmsu_desc"
 	self.x_akmsu.description_id = "des_x_akmsu"
+	self.x_akmsu.texture_bundle_folder = "dos"
 	self.x_akmsu.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
 	self.x_akmsu.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.x_akmsu.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.x_akmsu.use_data = {selection_index = 2}
+	self.x_akmsu.use_data = {selection_index = SELECTION.PRIMARY}
 	self.x_akmsu.DAMAGE = 1
 	self.x_akmsu.CLIP_AMMO_MAX = 60
 	self.x_akmsu.NR_CLIPS_MAX = 2
 	self.x_akmsu.AMMO_MAX = self.x_akmsu.CLIP_AMMO_MAX * self.x_akmsu.NR_CLIPS_MAX
-	self.x_akmsu.AMMO_PICKUP = self:_pickup_chance(self.x_akmsu.AMMO_MAX, 1)
+	self.x_akmsu.AMMO_PICKUP = self:_pickup_chance(self.x_akmsu.AMMO_MAX, PICKUP.OTHER)
 	self.x_akmsu.FIRE_MODE = "auto"
 	self.x_akmsu.fire_mode_data = {fire_rate = 0.073}
 	self.x_akmsu.single = {fire_rate = 0.073}
@@ -12945,15 +13405,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.x_akmsu.autohit = autohit_smg_default
-	self.x_akmsu.aim_assist = aim_assist_smg_default
+	self.x_akmsu.autohit = weapon_data.autohit_smg_default
+	self.x_akmsu.aim_assist = weapon_data.aim_assist_smg_default
 	self.x_akmsu.weapon_hold = "x_akmsu"
 	self.x_akmsu.animations = {
 		has_steelsight_stance = true,
 		recoil_steelsight = true
 	}
 	self.x_akmsu.panic_suppression_chance = 0.2
-	self.x_akmsu.texture_bundle_folder = "dos"
 	self.x_akmsu.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
@@ -12968,10 +13427,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 8,
 		concealment = 21
 	}
+end
+
+function WeaponTweakData:_init_tecci(weapon_data)
 	self.tecci = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.tecci.sounds.fire = "tecci_fire_single"
@@ -12991,14 +13453,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.tecci.name_id = "bm_w_tecci"
 	self.tecci.desc_id = "bm_w_tecci_desc"
 	self.tecci.description_id = "des_tecci"
+	self.tecci.global_value = "opera"
+	self.tecci.texture_bundle_folder = "opera"
 	self.tecci.muzzleflash = "effects/payday2/particles/weapons/556_auto_fps"
 	self.tecci.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.tecci.use_data = {selection_index = 2}
+	self.tecci.use_data = {selection_index = SELECTION.PRIMARY}
 	self.tecci.DAMAGE = 1
 	self.tecci.CLIP_AMMO_MAX = 100
 	self.tecci.NR_CLIPS_MAX = 2
 	self.tecci.AMMO_MAX = self.tecci.CLIP_AMMO_MAX * self.tecci.NR_CLIPS_MAX
-	self.tecci.AMMO_PICKUP = self:_pickup_chance(self.tecci.AMMO_MAX, 2)
+	self.tecci.AMMO_PICKUP = self:_pickup_chance(self.tecci.AMMO_MAX, PICKUP.AR_HIGH_CAPACITY)
 	self.tecci.FIRE_MODE = "auto"
 	self.tecci.fire_mode_data = {fire_rate = 0.09}
 	self.tecci.CAN_TOGGLE_FIREMODE = true
@@ -13036,14 +13500,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 0.6,
 		fire_steelsight_multiplier = -0.6
 	}
-	self.tecci.autohit = autohit_rifle_default
-	self.tecci.aim_assist = aim_assist_rifle_default
+	self.tecci.autohit = weapon_data.autohit_rifle_default
+	self.tecci.aim_assist = weapon_data.aim_assist_rifle_default
 	self.tecci.weapon_hold = "tecci"
 	self.tecci.animations = {}
 	self.famas.animations.equip_id = "equip_tecci"
 	self.tecci.animations.recoil_steelsight = true
-	self.tecci.global_value = "opera"
-	self.tecci.texture_bundle_folder = "opera"
 	self.tecci.transition_duration = 0.02
 	self.tecci.panic_suppression_chance = 0.2
 	self.tecci.stats = {
@@ -13060,10 +13522,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 10,
 		concealment = 20
 	}
+end
+
+function WeaponTweakData:_init_hajk(weapon_data)
 	self.hajk = {
 		categories = {"smg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.hajk.sounds.fire = "hajk_fire_single"
@@ -13083,14 +13548,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.hajk.name_id = "bm_w_hajk"
 	self.hajk.desc_id = "bm_w_hajk_desc"
 	self.hajk.description_id = "des_hajk"
+	self.hajk.texture_bundle_folder = "born"
+	self.hajk.global_value = "born"
 	self.hajk.muzzleflash = "effects/payday2/particles/weapons/556_auto_fps"
 	self.hajk.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.hajk.use_data = {selection_index = 1}
+	self.hajk.use_data = {selection_index = SELECTION.SECONDARY}
 	self.hajk.DAMAGE = 1
 	self.hajk.CLIP_AMMO_MAX = 30
 	self.hajk.NR_CLIPS_MAX = 3
 	self.hajk.AMMO_MAX = self.hajk.CLIP_AMMO_MAX * self.hajk.NR_CLIPS_MAX
-	self.hajk.AMMO_PICKUP = self:_pickup_chance(self.hajk.AMMO_MAX, 1)
+	self.hajk.AMMO_PICKUP = self:_pickup_chance(self.hajk.AMMO_MAX, PICKUP.OTHER)
 	self.hajk.FIRE_MODE = "auto"
 	self.hajk.fire_mode_data = {fire_rate = 0.08}
 	self.hajk.CAN_TOGGLE_FIREMODE = true
@@ -13130,14 +13597,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.hajk.autohit = autohit_smg_default
-	self.hajk.aim_assist = aim_assist_smg_default
+	self.hajk.autohit = weapon_data.autohit_smg_default
+	self.hajk.aim_assist = weapon_data.aim_assist_smg_default
 	self.hajk.animations = {
 		equip_id = "equip_hajk",
 		recoil_steelsight = true
 	}
-	self.hajk.texture_bundle_folder = "born"
-	self.hajk.global_value = "born"
 	self.hajk.panic_suppression_chance = 0.2
 	self.hajk.stats = {
 		zoom = 3,
@@ -13153,10 +13618,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 14,
 		concealment = 18
 	}
+end
+
+function WeaponTweakData:_init_boot(weapon_data)
 	self.boot = {
 		categories = {"shotgun"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.boot.sounds.fire = "boot_fire"
@@ -13175,10 +13643,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.boot.name_id = "bm_w_boot"
 	self.boot.desc_id = "bm_w_boot_desc"
 	self.boot.description_id = "des_boot"
+	self.boot.texture_bundle_folder = "wild"
+	self.boot.global_value = "wild"
 	self.boot.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.boot.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.boot.use_data = {
-		selection_index = 2,
+		selection_index = SELECTION.PRIMARY,
 		align_place = "right_hand"
 	}
 	self.boot.DAMAGE = 6
@@ -13188,7 +13658,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.boot.CLIP_AMMO_MAX = 7
 	self.boot.NR_CLIPS_MAX = 3
 	self.boot.AMMO_MAX = self.boot.CLIP_AMMO_MAX * self.boot.NR_CLIPS_MAX
-	self.boot.AMMO_PICKUP = self:_pickup_chance(self.boot.AMMO_MAX, 1)
+	self.boot.AMMO_PICKUP = self:_pickup_chance(self.boot.AMMO_MAX, PICKUP.OTHER)
 	self.boot.FIRE_MODE = "single"
 	self.boot.fire_mode_data = {fire_rate = 0.75}
 	self.boot.single = {fire_rate = 0.75}
@@ -13232,15 +13702,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.boot.autohit = autohit_shotgun_default
-	self.boot.aim_assist = aim_assist_shotgun_default
+	self.boot.autohit = weapon_data.autohit_shotgun_default
+	self.boot.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.boot.weapon_hold = "boot"
 	self.boot.animations = {
 		equip_id = "equip_r870_shotgun",
 		recoil_steelsight = true
 	}
-	self.boot.texture_bundle_folder = "wild"
-	self.boot.global_value = "wild"
 	self.boot.panic_suppression_chance = 0.2
 	self.boot.stats = {
 		zoom = 3,
@@ -13256,10 +13724,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 5,
 		concealment = 20
 	}
+end
+
+function WeaponTweakData:_init_packrat(weapon_data)
 	self.packrat = {
 		categories = {"pistol"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.packrat.sounds.fire = "packrat_fire"
@@ -13276,15 +13747,17 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.packrat.name_id = "bm_w_packrat"
 	self.packrat.desc_id = "bm_w_packrat_desc"
 	self.packrat.description_id = "des_packrat"
+	self.packrat.global_value = "pim"
+	self.packrat.texture_bundle_folder = "pim"
 	self.packrat.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.packrat.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.packrat.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.packrat.use_data = {selection_index = 1}
+	self.packrat.use_data = {selection_index = SELECTION.SECONDARY}
 	self.packrat.DAMAGE = 1
 	self.packrat.CLIP_AMMO_MAX = 15
 	self.packrat.NR_CLIPS_MAX = 6
 	self.packrat.AMMO_MAX = self.packrat.CLIP_AMMO_MAX * self.packrat.NR_CLIPS_MAX
-	self.packrat.AMMO_PICKUP = self:_pickup_chance(self.packrat.AMMO_MAX, 1)
+	self.packrat.AMMO_PICKUP = self:_pickup_chance(self.packrat.AMMO_MAX, PICKUP.OTHER)
 	self.packrat.FIRE_MODE = "single"
 	self.packrat.fire_mode_data = {fire_rate = 0.166}
 	self.packrat.single = {fire_rate = 0.166}
@@ -13318,16 +13791,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.packrat.autohit = autohit_pistol_default
-	self.packrat.aim_assist = aim_assist_pistol_default
+	self.packrat.autohit = weapon_data.autohit_pistol_default
+	self.packrat.aim_assist = weapon_data.aim_assist_pistol_default
 	self.packrat.weapon_hold = "packrat"
 	self.packrat.animations = {
 		equip_id = "equip_packrat",
 		recoil_steelsight = true,
 		magazine_empty = "last_recoil"
 	}
-	self.packrat.global_value = "pim"
-	self.packrat.texture_bundle_folder = "pim"
 	self.packrat.panic_suppression_chance = 0.2
 	self.packrat.stats = {
 		zoom = 3,
@@ -13343,10 +13814,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 15,
 		concealment = 29
 	}
+end
+
+function WeaponTweakData:_init_schakal(weapon_data)
 	self.schakal = {
 		categories = {"smg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.schakal.sounds.fire = "schakal_fire_single"
@@ -13365,15 +13839,17 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.schakal.name_id = "bm_w_schakal"
 	self.schakal.desc_id = "bm_w_schakal_desc"
 	self.schakal.description_id = "des_schakal"
+	self.schakal.global_value = "pim"
+	self.schakal.texture_bundle_folder = "pim"
 	self.schakal.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.schakal.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.schakal.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.schakal.use_data = {selection_index = 1}
+	self.schakal.use_data = {selection_index = SELECTION.SECONDARY}
 	self.schakal.DAMAGE = 1
 	self.schakal.CLIP_AMMO_MAX = 30
 	self.schakal.NR_CLIPS_MAX = 3
 	self.schakal.AMMO_MAX = self.schakal.CLIP_AMMO_MAX * self.schakal.NR_CLIPS_MAX
-	self.schakal.AMMO_PICKUP = self:_pickup_chance(self.schakal.AMMO_MAX, 1)
+	self.schakal.AMMO_PICKUP = self:_pickup_chance(self.schakal.AMMO_MAX, PICKUP.OTHER)
 	self.schakal.FIRE_MODE = "auto"
 	self.schakal.fire_mode_data = {fire_rate = 0.092}
 	self.schakal.CAN_TOGGLE_FIREMODE = true
@@ -13413,15 +13889,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.schakal.autohit = autohit_smg_default
-	self.schakal.aim_assist = aim_assist_smg_default
+	self.schakal.autohit = weapon_data.autohit_smg_default
+	self.schakal.aim_assist = weapon_data.aim_assist_smg_default
 	self.schakal.weapon_hold = "schakal"
 	self.schakal.animations = {
 		equip_id = "equip_schakal",
 		recoil_steelsight = true
 	}
-	self.schakal.global_value = "pim"
-	self.schakal.texture_bundle_folder = "pim"
 	self.schakal.panic_suppression_chance = 0.2
 	self.schakal.stats = {
 		zoom = 3,
@@ -13437,11 +13911,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 14,
 		concealment = 24
 	}
+end
+
+function WeaponTweakData:_init_desertfox(weapon_data)
 	self.desertfox = {
 		categories = {"snp"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.desertfox.sounds.fire = "desertfox_fire"
@@ -13457,10 +13934,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.desertfox.name_id = "bm_w_desertfox"
 	self.desertfox.desc_id = "bm_w_desertfox_desc"
 	self.desertfox.description_id = "des_desertfox"
+	self.desertfox.global_value = "pim"
+	self.desertfox.texture_bundle_folder = "pim"
 	self.desertfox.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
 	self.desertfox.shell_ejection = "effects/payday2/particles/weapons/shells/shell_sniper"
 	self.desertfox.use_data = {
-		selection_index = 2,
+		selection_index = SELECTION.PRIMARY,
 		align_place = "right_hand"
 	}
 	self.desertfox.DAMAGE = 1
@@ -13510,15 +13989,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 3.5,
 		fire_steelsight_multiplier = -3.5
 	}
-	self.desertfox.autohit = autohit_snp_default
-	self.desertfox.aim_assist = aim_assist_snp_default
+	self.desertfox.autohit = weapon_data.autohit_snp_default
+	self.desertfox.aim_assist = weapon_data.aim_assist_snp_default
 	self.desertfox.weapon_hold = "desertfox"
 	self.desertfox.animations = {
 		equip_id = "equip_desertfox",
 		recoil_steelsight = true
 	}
-	self.desertfox.global_value = "pim"
-	self.desertfox.texture_bundle_folder = "pim"
 	self.desertfox.can_shoot_through_enemy = true
 	self.desertfox.can_shoot_through_shield = true
 	self.desertfox.can_shoot_through_wall = true
@@ -13539,13 +14016,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.desertfox.armor_piercing_chance = 1
 	self.desertfox.stats_modifiers = {damage = 2}
+end
+
+function WeaponTweakData:_init_x_packrat(weapon_data)
 	self.x_packrat = {
 		categories = {
 			"akimbo",
 			"pistol"
 		},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.x_packrat.sounds.fire = "packrat_fire"
@@ -13562,15 +14042,17 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_packrat.name_id = "bm_w_x_packrat"
 	self.x_packrat.desc_id = "bm_w_x_packrat_desc"
 	self.x_packrat.description_id = "des_x_packrat"
+	self.x_packrat.global_value = "pim"
+	self.x_packrat.texture_bundle_folder = "pim"
 	self.x_packrat.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.x_packrat.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.x_packrat.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.x_packrat.use_data = {selection_index = 2}
+	self.x_packrat.use_data = {selection_index = SELECTION.PRIMARY}
 	self.x_packrat.DAMAGE = 1
 	self.x_packrat.CLIP_AMMO_MAX = 30
 	self.x_packrat.NR_CLIPS_MAX = 3
 	self.x_packrat.AMMO_MAX = self.x_packrat.CLIP_AMMO_MAX * self.x_packrat.NR_CLIPS_MAX
-	self.x_packrat.AMMO_PICKUP = self:_pickup_chance(self.x_packrat.AMMO_MAX, 1)
+	self.x_packrat.AMMO_PICKUP = self:_pickup_chance(self.x_packrat.AMMO_MAX, PICKUP.OTHER)
 	self.x_packrat.FIRE_MODE = "single"
 	self.x_packrat.fire_mode_data = {fire_rate = 0.166}
 	self.x_packrat.single = {fire_rate = 0.166}
@@ -13609,8 +14091,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.x_packrat.autohit = autohit_pistol_default
-	self.x_packrat.aim_assist = aim_assist_pistol_default
+	self.x_packrat.autohit = weapon_data.autohit_pistol_default
+	self.x_packrat.aim_assist = weapon_data.aim_assist_pistol_default
 	self.x_packrat.weapon_hold = "jowi_pistol"
 	self.x_packrat.animations = {
 		second_gun_versions = {
@@ -13621,8 +14103,6 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		recoil_steelsight = true,
 		magazine_empty = "last_recoil"
 	}
-	self.x_packrat.global_value = "pim"
-	self.x_packrat.texture_bundle_folder = "pim"
 	self.x_packrat.panic_suppression_chance = 0.2
 	self.x_packrat.stats = {
 		zoom = 3,
@@ -13638,11 +14118,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 15,
 		concealment = 27
 	}
+end
+
+function WeaponTweakData:_init_rota(weapon_data)
 	self.rota = {
 		categories = {"shotgun"},
 		has_magazine = true,
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.rota.sounds.fire = "rota_fire"
@@ -13658,10 +14141,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.rota.name_id = "bm_w_rota"
 	self.rota.desc_id = "bm_w_rota_desc"
 	self.rota.description_id = "des_rota"
+	self.rota.texture_bundle_folder = "rota"
+	self.rota.global_value = "rota"
 	self.rota.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.rota.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.rota.use_data = {
-		selection_index = 1,
+		selection_index = SELECTION.SECONDARY,
 		align_place = "right_hand"
 	}
 	self.rota.DAMAGE = 6
@@ -13671,7 +14156,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.rota.CLIP_AMMO_MAX = 6
 	self.rota.NR_CLIPS_MAX = 9
 	self.rota.AMMO_MAX = self.rota.CLIP_AMMO_MAX * self.rota.NR_CLIPS_MAX
-	self.rota.AMMO_PICKUP = self:_pickup_chance(self.rota.AMMO_MAX, 4)
+	self.rota.AMMO_PICKUP = self:_pickup_chance(self.rota.AMMO_MAX, PICKUP.SHOTGUN_HIGH_CAPACITY)
 	self.rota.FIRE_MODE = "single"
 	self.rota.fire_mode_data = {fire_rate = 0.18}
 	self.rota.CAN_TOGGLE_FIREMODE = false
@@ -13706,15 +14191,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 2,
 		fire_steelsight_multiplier = 1.25
 	}
-	self.rota.autohit = autohit_shotgun_default
-	self.rota.aim_assist = aim_assist_shotgun_default
+	self.rota.autohit = weapon_data.autohit_shotgun_default
+	self.rota.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.rota.weapon_hold = "rota"
 	self.rota.animations = {
 		equip_id = "equip_rota",
 		recoil_steelsight = true
 	}
-	self.rota.texture_bundle_folder = "rota"
-	self.rota.global_value = "rota"
 	self.rota.panic_suppression_chance = 0.2
 	self.rota.stats = {
 		zoom = 3,
@@ -13730,12 +14213,15 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 5,
 		concealment = 13
 	}
+end
+
+function WeaponTweakData:_init_arbiter(weapon_data)
 	self.arbiter = {
 		categories = {"grenade_launcher"},
 		projectile_type_index = 33,
 		projectile_type_indices = {launcher_incendiary = 34},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.arbiter.sounds.fire = "arbiter_fire"
@@ -13751,10 +14237,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.arbiter.name_id = "bm_w_arbiter"
 	self.arbiter.desc_id = "bm_w_arbiter_desc"
 	self.arbiter.description_id = "des_arbiter"
+	self.arbiter.global_value = "tango"
+	self.arbiter.texture_bundle_folder = "tng"
 	self.arbiter.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.arbiter.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.arbiter.use_data = {
-		selection_index = 1,
+		selection_index = SELECTION.SECONDARY,
 		align_place = "right_hand"
 	}
 	self.arbiter.DAMAGE = 6
@@ -13808,14 +14296,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 2,
 		fire_steelsight_multiplier = 2
 	}
-	self.arbiter.autohit = autohit_shotgun_default
-	self.arbiter.aim_assist = aim_assist_shotgun_default
+	self.arbiter.autohit = weapon_data.autohit_shotgun_default
+	self.arbiter.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.arbiter.animations = {
 		equip_id = "equip_arbiter",
 		recoil_steelsight = true
 	}
-	self.arbiter.global_value = "tango"
-	self.arbiter.texture_bundle_folder = "tng"
 	self.arbiter.panic_suppression_chance = 0.2
 	self.arbiter.ignore_damage_upgrades = true
 	self.arbiter.stats = {
@@ -13834,10 +14320,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.arbiter.stats_modifiers = {damage = 10}
 	self.arbiter.unlock_func = "has_unlocked_arbiter"
+end
+
+function WeaponTweakData:_init_contraband(weapon_data)
 	self.contraband = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.contraband.sounds.fire = "contraband_fire_single"
@@ -13856,14 +14345,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.contraband.name_id = "bm_w_contraband"
 	self.contraband.desc_id = "bm_w_contraband_desc"
 	self.contraband.description_id = "des_contraband"
+	self.contraband.global_value = "chico"
+	self.contraband.texture_bundle_folder = "chico"
 	self.contraband.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.contraband.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.contraband.use_data = {selection_index = 2}
+	self.contraband.use_data = {selection_index = SELECTION.PRIMARY}
 	self.contraband.DAMAGE = 1
 	self.contraband.CLIP_AMMO_MAX = 20
 	self.contraband.NR_CLIPS_MAX = 2
 	self.contraband.AMMO_MAX = self.contraband.CLIP_AMMO_MAX * self.contraband.NR_CLIPS_MAX
-	self.contraband.AMMO_PICKUP = self:_pickup_chance(self.contraband.AMMO_MAX, 1)
+	self.contraband.AMMO_PICKUP = self:_pickup_chance(self.contraband.AMMO_MAX, PICKUP.OTHER)
 	self.contraband.FIRE_MODE = "single"
 	self.contraband.fire_mode_data = {fire_rate = 0.098}
 	self.contraband.CAN_TOGGLE_FIREMODE = true
@@ -13898,15 +14389,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.contraband.autohit = autohit_rifle_default
-	self.contraband.aim_assist = aim_assist_rifle_default
+	self.contraband.autohit = weapon_data.autohit_rifle_default
+	self.contraband.aim_assist = weapon_data.aim_assist_rifle_default
 	self.contraband.weapon_hold = "contraband"
 	self.contraband.animations = {
 		equip_id = "equip_contraband",
 		recoil_steelsight = true
 	}
-	self.contraband.global_value = "chico"
-	self.contraband.texture_bundle_folder = "chico"
 	self.contraband.panic_suppression_chance = 0.2
 	self.contraband.stats = {
 		zoom = 3,
@@ -13925,8 +14414,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.contraband_m203 = {
 		categories = {"grenade_launcher"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.contraband_m203.sounds.fire = "contrabandm203_fire"
@@ -13944,10 +14433,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.contraband_m203.name_id = "bm_w_contraband_m203"
 	self.contraband_m203.desc_id = "bm_w_contraband_m203_desc"
 	self.contraband_m203.description_id = "des_contraband_m203"
+	self.contraband_m203.global_value = "gage_pack_assault"
+	self.contraband_m203.texture_bundle_folder = "gage_pack_assault"
 	self.contraband_m203.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.contraband_m203.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.contraband_m203.use_data = {
-		selection_index = 3,
+		selection_index = SELECTION.UNDERBARREL,
 		align_place = "right_hand"
 	}
 	self.contraband_m203.DAMAGE = 6
@@ -13957,7 +14448,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.contraband_m203.CLIP_AMMO_MAX = 1
 	self.contraband_m203.NR_CLIPS_MAX = 3
 	self.contraband_m203.AMMO_MAX = self.contraband_m203.CLIP_AMMO_MAX * self.contraband_m203.NR_CLIPS_MAX
-	self.contraband_m203.AMMO_PICKUP = self:_pickup_chance(20, 1)
+	self.contraband_m203.AMMO_PICKUP = self:_pickup_chance(20, PICKUP.OTHER)
 	self.contraband_m203.FIRE_MODE = "single"
 	self.contraband_m203.fire_mode_data = {fire_rate = 0.75}
 	self.contraband_m203.single = {fire_rate = 0.75}
@@ -13998,14 +14489,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 2,
 		fire_steelsight_multiplier = 2
 	}
-	self.contraband_m203.autohit = autohit_shotgun_default
-	self.contraband_m203.aim_assist = aim_assist_shotgun_default
+	self.contraband_m203.autohit = weapon_data.autohit_shotgun_default
+	self.contraband_m203.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.contraband_m203.animations = {
 		equip_id = "equip_contraband_m203",
 		recoil_steelsight = true
 	}
-	self.contraband_m203.global_value = "gage_pack_assault"
-	self.contraband_m203.texture_bundle_folder = "gage_pack_assault"
 	self.contraband_m203.panic_suppression_chance = 0.2
 	self.contraband_m203.ignore_damage_upgrades = true
 	self.contraband_m203.stats = {
@@ -14023,13 +14512,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		concealment = 18
 	}
 	self.contraband_m203.stats_modifiers = {damage = 10}
+end
+
+function WeaponTweakData:_init_ray(weapon_data)
 	self.ray = {
 		categories = {"grenade_launcher"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
 		has_description = true,
 		projectile_type_index = 37,
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.ray.sounds.fire = "ray_fire"
@@ -14045,10 +14537,12 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.ray.name_id = "bm_w_ray"
 	self.ray.desc_id = "bm_w_ray_desc"
 	self.ray.description_id = "des_ray"
+	self.ray.global_value = "friend"
+	self.ray.texture_bundle_folder = "friend"
 	self.ray.muzzleflash = "effects/payday2/particles/weapons/50cal_auto_fps"
 	self.ray.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.ray.use_data = {
-		selection_index = 1,
+		selection_index = SELECTION.SECONDARY,
 		align_place = "right_hand"
 	}
 	self.ray.DAMAGE = 6
@@ -14058,7 +14552,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.ray.CLIP_AMMO_MAX = 4
 	self.ray.NR_CLIPS_MAX = 2
 	self.ray.AMMO_MAX = self.ray.CLIP_AMMO_MAX * self.ray.NR_CLIPS_MAX
-	self.ray.AMMO_PICKUP = self:_pickup_chance(0, 1)
+	self.ray.AMMO_PICKUP = self:_pickup_chance(0, PICKUP.OTHER)
 	self.ray.FIRE_MODE = "single"
 	self.ray.fire_mode_data = {fire_rate = 1}
 	self.ray.single = {fire_rate = 0.1}
@@ -14100,15 +14594,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_steelsight_multiplier = 2
 	}
 	self.ray.headbob = {multiplier = 0.3}
-	self.ray.autohit = autohit_shotgun_default
-	self.ray.aim_assist = aim_assist_shotgun_default
+	self.ray.autohit = weapon_data.autohit_shotgun_default
+	self.ray.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.ray.animations = {
 		equip_id = "equip_ray",
 		recoil_steelsight = true,
 		thq_align_anim = "thq"
 	}
-	self.ray.global_value = "friend"
-	self.ray.texture_bundle_folder = "friend"
 	self.ray.panic_suppression_chance = 0.2
 	self.ray.ignore_damage_upgrades = true
 	self.ray.stats = {
@@ -14126,11 +14618,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		concealment = 5
 	}
 	self.ray.stats_modifiers = {damage = 100}
+end
+
+function WeaponTweakData:_init_tti(weapon_data)
 	self.tti = {
 		categories = {"snp"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.tti.sounds.fire = "tti_fire"
@@ -14146,14 +14641,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.tti.name_id = "bm_w_tti"
 	self.tti.desc_id = "bm_w_tti_desc"
 	self.tti.description_id = "des_tti"
+	self.tti.global_value = "spa"
+	self.tti.texture_bundle_folder = "spa"
 	self.tti.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
 	self.tti.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.tti.use_data = {selection_index = 2}
+	self.tti.use_data = {selection_index = SELECTION.PRIMARY}
 	self.tti.DAMAGE = 1
 	self.tti.CLIP_AMMO_MAX = 20
 	self.tti.NR_CLIPS_MAX = 2
 	self.tti.AMMO_MAX = self.tti.CLIP_AMMO_MAX * self.tti.NR_CLIPS_MAX
-	self.tti.AMMO_PICKUP = self:_pickup_chance(self.tti.AMMO_MAX, 5)
+	self.tti.AMMO_PICKUP = self:_pickup_chance(self.tti.AMMO_MAX, PICKUP.SNIPER_LOW_DAMAGE)
 	self.tti.FIRE_MODE = "single"
 	self.tti.fire_mode_data = {fire_rate = 0.4}
 	self.tti.CAN_TOGGLE_FIREMODE = false
@@ -14193,16 +14690,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1.1,
 		fire_steelsight_multiplier = -1.1
 	}
-	self.tti.autohit = autohit_snp_default
-	self.tti.aim_assist = aim_assist_snp_default
+	self.tti.autohit = weapon_data.autohit_snp_default
+	self.tti.aim_assist = weapon_data.aim_assist_snp_default
 	self.tti.weapon_hold = "tti"
 	self.tti.animations = {
 		equip_id = "equip_tti",
 		recoil_steelsight = true
 	}
 	self.tti.panic_suppression_chance = 0.2
-	self.tti.global_value = "spa"
-	self.tti.texture_bundle_folder = "spa"
 	self.tti.can_shoot_through_enemy = true
 	self.tti.can_shoot_through_shield = true
 	self.tti.can_shoot_through_wall = true
@@ -14222,11 +14717,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.tti.armor_piercing_chance = 1
 	self.tti.stats_modifiers = {damage = 1}
+end
+
+function WeaponTweakData:_init_grv(weapon_data)
 	self.siltstone = {
 		categories = {"snp"},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.siltstone.sounds.fire = "siltstone_fire"
@@ -14242,9 +14740,11 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.siltstone.name_id = "bm_w_siltstone"
 	self.siltstone.desc_id = "bm_w_siltstone_desc"
 	self.siltstone.description_id = "des_siltstone"
+	self.siltstone.global_value = "grv"
+	self.siltstone.texture_bundle_folder = "grv"
 	self.siltstone.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
 	self.siltstone.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.siltstone.use_data = {selection_index = 2}
+	self.siltstone.use_data = {selection_index = SELECTION.PRIMARY}
 	self.siltstone.DAMAGE = 1
 	self.siltstone.CLIP_AMMO_MAX = 10
 	self.siltstone.NR_CLIPS_MAX = 3
@@ -14292,16 +14792,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1.1,
 		fire_steelsight_multiplier = -1.1
 	}
-	self.siltstone.autohit = autohit_snp_default
-	self.siltstone.aim_assist = aim_assist_snp_default
+	self.siltstone.autohit = weapon_data.autohit_snp_default
+	self.siltstone.aim_assist = weapon_data.aim_assist_snp_default
 	self.siltstone.weapon_hold = "siltstone"
 	self.siltstone.animations = {
 		equip_id = "equip_siltstone",
 		recoil_steelsight = true
 	}
 	self.siltstone.panic_suppression_chance = 0.2
-	self.siltstone.global_value = "grv"
-	self.siltstone.texture_bundle_folder = "grv"
 	self.siltstone.can_shoot_through_enemy = true
 	self.siltstone.can_shoot_through_shield = true
 	self.siltstone.can_shoot_through_wall = true
@@ -14321,10 +14819,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	}
 	self.siltstone.armor_piercing_chance = 1
 	self.siltstone.stats_modifiers = {damage = 2}
+end
+
+function WeaponTweakData:_init_flint(weapon_data)
 	self.flint = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.flint.sounds.fire = "flint_fire_single"
@@ -14343,14 +14844,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.flint.name_id = "bm_w_ak12"
 	self.flint.desc_id = "bm_w_ak12_desc"
 	self.flint.description_id = "des_ak47"
+	self.flint.global_value = "grv"
+	self.flint.texture_bundle_folder = "grv"
 	self.flint.muzzleflash = "effects/payday2/particles/weapons/556_auto_fps"
 	self.flint.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.flint.use_data = {selection_index = 2}
+	self.flint.use_data = {selection_index = SELECTION.PRIMARY}
 	self.flint.DAMAGE = 1
 	self.flint.CLIP_AMMO_MAX = 35
 	self.flint.NR_CLIPS_MAX = 3
 	self.flint.AMMO_MAX = self.flint.CLIP_AMMO_MAX * self.flint.NR_CLIPS_MAX
-	self.flint.AMMO_PICKUP = self:_pickup_chance(self.flint.AMMO_MAX, 1)
+	self.flint.AMMO_PICKUP = self:_pickup_chance(self.flint.AMMO_MAX, PICKUP.OTHER)
 	self.flint.FIRE_MODE = "auto"
 	self.flint.fire_mode_data = {fire_rate = 0.092}
 	self.flint.CAN_TOGGLE_FIREMODE = true
@@ -14387,16 +14890,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 0.7,
 		fire_steelsight_multiplier = -0.7
 	}
-	self.flint.autohit = autohit_rifle_default
-	self.flint.aim_assist = aim_assist_rifle_default
+	self.flint.autohit = weapon_data.autohit_rifle_default
+	self.flint.aim_assist = weapon_data.aim_assist_rifle_default
 	self.flint.weapon_hold = "flint"
 	self.flint.animations = {
 		equip_id = "equip_flint",
 		recoil_steelsight = true,
 		thq_align_anim = "thq"
 	}
-	self.flint.global_value = "grv"
-	self.flint.texture_bundle_folder = "grv"
 	self.flint.panic_suppression_chance = 0.2
 	self.flint.stats = {
 		zoom = 3,
@@ -14412,10 +14913,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 10,
 		concealment = 16
 	}
+end
+
+function WeaponTweakData:_init_coal(weapon_data)
 	self.coal = {
 		categories = {"smg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.coal.sounds.fire = "coal_fire_single"
@@ -14434,15 +14938,17 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.coal.name_id = "bm_w_coal"
 	self.coal.desc_id = "bm_w_coal_desc"
 	self.coal.description_id = "des_ak47"
+	self.coal.global_value = "grv"
+	self.coal.texture_bundle_folder = "grv"
 	self.coal.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.coal.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.coal.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.coal.use_data = {selection_index = 1}
+	self.coal.use_data = {selection_index = SELECTION.SECONDARY}
 	self.coal.DAMAGE = 1
 	self.coal.CLIP_AMMO_MAX = 64
 	self.coal.NR_CLIPS_MAX = 2
 	self.coal.AMMO_MAX = self.coal.CLIP_AMMO_MAX * self.coal.NR_CLIPS_MAX
-	self.coal.AMMO_PICKUP = self:_pickup_chance(self.coal.AMMO_MAX, 1)
+	self.coal.AMMO_PICKUP = self:_pickup_chance(self.coal.AMMO_MAX, PICKUP.OTHER)
 	self.coal.FIRE_MODE = "auto"
 	self.coal.fire_mode_data = {fire_rate = 0.092}
 	self.coal.CAN_TOGGLE_FIREMODE = true
@@ -14482,15 +14988,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 0.5,
 		fire_steelsight_multiplier = -0.5
 	}
-	self.coal.autohit = autohit_smg_default
-	self.coal.aim_assist = aim_assist_smg_default
+	self.coal.autohit = weapon_data.autohit_smg_default
+	self.coal.aim_assist = weapon_data.aim_assist_smg_default
 	self.coal.weapon_hold = "coal"
 	self.coal.animations = {
 		equip_id = "equip_coal",
 		recoil_steelsight = true
 	}
-	self.coal.global_value = "grv"
-	self.coal.texture_bundle_folder = "grv"
 	self.coal.panic_suppression_chance = 0.2
 	self.coal.stats = {
 		zoom = 3,
@@ -14506,10 +15010,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 14,
 		concealment = 24
 	}
+end
+
+function WeaponTweakData:_init_lemming(weapon_data)
 	self.lemming = {
 		categories = {"pistol"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.lemming.sounds.fire = "lemming_fire"
@@ -14526,15 +15033,17 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.lemming.name_id = "bm_w_lemming"
 	self.lemming.desc_id = "bm_w_lemming_desc"
 	self.lemming.description_id = "des_lemming"
+	self.lemming.global_value = "pd2_clan"
+	self.lemming.texture_bundle_folder = "fi7"
 	self.lemming.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.lemming.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.lemming.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.lemming.use_data = {selection_index = 1}
+	self.lemming.use_data = {selection_index = SELECTION.SECONDARY}
 	self.lemming.DAMAGE = 1
 	self.lemming.CLIP_AMMO_MAX = 15
 	self.lemming.NR_CLIPS_MAX = 3
 	self.lemming.AMMO_MAX = self.lemming.CLIP_AMMO_MAX * self.lemming.NR_CLIPS_MAX
-	self.lemming.AMMO_PICKUP = self:_pickup_chance(self.lemming.AMMO_MAX, 6)
+	self.lemming.AMMO_PICKUP = self:_pickup_chance(self.lemming.AMMO_MAX, PICKUP.SNIPER_HIGH_DAMAGE)
 	self.lemming.FIRE_MODE = "single"
 	self.lemming.fire_mode_data = {fire_rate = 0.1}
 	self.lemming.single = {fire_rate = 0.1}
@@ -14568,16 +15077,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.lemming.autohit = autohit_pistol_default
-	self.lemming.aim_assist = aim_assist_pistol_default
+	self.lemming.autohit = weapon_data.autohit_pistol_default
+	self.lemming.aim_assist = weapon_data.aim_assist_pistol_default
 	self.lemming.weapon_hold = "packrat"
 	self.lemming.animations = {
 		equip_id = "equip_packrat",
 		recoil_steelsight = true,
 		magazine_empty = "last_recoil"
 	}
-	self.lemming.global_value = "pd2_clan"
-	self.lemming.texture_bundle_folder = "fi7"
 	self.lemming.panic_suppression_chance = 0.2
 	self.lemming.can_shoot_through_enemy = true
 	self.lemming.can_shoot_through_shield = true
@@ -14597,14 +15104,17 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		concealment = 29
 	}
 	self.lemming.armor_piercing_chance = 1
+end
+
+function WeaponTweakData:_init_chinchilla(weapon_data)
 	self.chinchilla = {
 		categories = {
 			"pistol",
 			"revolver"
 		},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.chinchilla.sounds.fire = "chinchilla_fire"
@@ -14623,14 +15133,15 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.chinchilla.name_id = "bm_w_chinchilla"
 	self.chinchilla.desc_id = "bm_w_chinchilla_desc"
 	self.chinchilla.description_id = "des_chinchilla"
+	self.chinchilla.texture_bundle_folder = "max"
 	self.chinchilla.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.chinchilla.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
-	self.chinchilla.use_data = {selection_index = 1}
+	self.chinchilla.use_data = {selection_index = SELECTION.SECONDARY}
 	self.chinchilla.DAMAGE = 2
 	self.chinchilla.CLIP_AMMO_MAX = 6
 	self.chinchilla.NR_CLIPS_MAX = 9
 	self.chinchilla.AMMO_MAX = self.chinchilla.CLIP_AMMO_MAX * self.chinchilla.NR_CLIPS_MAX
-	self.chinchilla.AMMO_PICKUP = self:_pickup_chance(self.chinchilla.AMMO_MAX, 1)
+	self.chinchilla.AMMO_PICKUP = self:_pickup_chance(self.chinchilla.AMMO_MAX, PICKUP.OTHER)
 	self.chinchilla.spread = {
 		standing = self.new_m4.spread.standing,
 		crouching = self.new_m4.spread.crouching,
@@ -14661,14 +15172,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.chinchilla.autohit = autohit_pistol_default
-	self.chinchilla.aim_assist = aim_assist_pistol_default
+	self.chinchilla.autohit = weapon_data.autohit_pistol_default
+	self.chinchilla.aim_assist = weapon_data.aim_assist_pistol_default
 	self.chinchilla.weapon_hold = "raging_bull"
 	self.chinchilla.animations = {
 		equip_id = "equip_raging_bull",
 		recoil_steelsight = true
 	}
-	self.chinchilla.texture_bundle_folder = "max"
 	self.chinchilla.panic_suppression_chance = 0.2
 	self.chinchilla.stats = {
 		zoom = 3,
@@ -14684,6 +15194,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 7,
 		concealment = 28
 	}
+end
+
+function WeaponTweakData:_init_x_chinchilla(weapon_data)
 	self.x_chinchilla = {
 		categories = {
 			"akimbo",
@@ -14691,8 +15204,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 			"revolver"
 		},
 		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.x_chinchilla.sounds.fire = "chinchilla_x_fire"
@@ -14708,14 +15221,15 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_chinchilla.name_id = "bm_w_x_chinchilla"
 	self.x_chinchilla.desc_id = "bm_w_x_chinchilla_desc"
 	self.x_chinchilla.description_id = "des_x_chinchilla"
+	self.x_chinchilla.texture_bundle_folder = "max"
 	self.x_chinchilla.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.x_chinchilla.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
-	self.x_chinchilla.use_data = {selection_index = 2}
+	self.x_chinchilla.use_data = {selection_index = SELECTION.PRIMARY}
 	self.x_chinchilla.DAMAGE = 1
 	self.x_chinchilla.CLIP_AMMO_MAX = 12
 	self.x_chinchilla.NR_CLIPS_MAX = 6
 	self.x_chinchilla.AMMO_MAX = self.x_chinchilla.CLIP_AMMO_MAX * self.x_chinchilla.NR_CLIPS_MAX
-	self.x_chinchilla.AMMO_PICKUP = self:_pickup_chance(self.x_chinchilla.AMMO_MAX, 1)
+	self.x_chinchilla.AMMO_PICKUP = self:_pickup_chance(self.x_chinchilla.AMMO_MAX, PICKUP.OTHER)
 	self.x_chinchilla.FIRE_MODE = "single"
 	self.x_chinchilla.fire_mode_data = {fire_rate = 0.166}
 	self.x_chinchilla.single = {fire_rate = 0.166}
@@ -14754,8 +15268,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.x_chinchilla.autohit = autohit_pistol_default
-	self.x_chinchilla.aim_assist = aim_assist_pistol_default
+	self.x_chinchilla.autohit = weapon_data.autohit_pistol_default
+	self.x_chinchilla.aim_assist = weapon_data.aim_assist_pistol_default
 	self.x_chinchilla.weapon_hold = "x_chinchilla"
 	self.x_chinchilla.animations = {
 		second_gun_versions = {
@@ -14765,7 +15279,6 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		has_steelsight_stance = true,
 		recoil_steelsight = true
 	}
-	self.x_chinchilla.texture_bundle_folder = "max"
 	self.x_chinchilla.panic_suppression_chance = 0.2
 	self.x_chinchilla.stats = {
 		zoom = 3,
@@ -14781,10 +15294,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 7,
 		concealment = 28
 	}
+end
+
+function WeaponTweakData:_init_breech(weapon_data)
 	self.breech = {
 		categories = {"pistol"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.breech.sounds.fire = "breech_fire"
@@ -14801,15 +15317,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.breech.name_id = "bm_w_breech"
 	self.breech.desc_id = "bm_w_breech_desc"
 	self.breech.description_id = "des_breech"
+	self.breech.texture_bundle_folder = "old"
 	self.breech.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.breech.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.breech.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.breech.use_data = {selection_index = 1}
+	self.breech.use_data = {selection_index = SELECTION.SECONDARY}
 	self.breech.DAMAGE = 1
 	self.breech.CLIP_AMMO_MAX = 8
 	self.breech.NR_CLIPS_MAX = 7
 	self.breech.AMMO_MAX = self.breech.CLIP_AMMO_MAX * self.breech.NR_CLIPS_MAX
-	self.breech.AMMO_PICKUP = self:_pickup_chance(self.breech.AMMO_MAX, 1)
+	self.breech.AMMO_PICKUP = self:_pickup_chance(self.breech.AMMO_MAX, PICKUP.OTHER)
 	self.breech.FIRE_MODE = "single"
 	self.breech.fire_mode_data = {fire_rate = 0.166}
 	self.breech.single = {fire_rate = 0.166}
@@ -14843,15 +15360,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.breech.autohit = autohit_pistol_default
-	self.breech.aim_assist = aim_assist_pistol_default
+	self.breech.autohit = weapon_data.autohit_pistol_default
+	self.breech.aim_assist = weapon_data.aim_assist_pistol_default
 	self.breech.weapon_hold = "breech"
 	self.breech.animations = {
 		equip_id = "equip_breech",
 		magazine_empty = "last_recoil",
 		recoil_steelsight = true
 	}
-	self.breech.texture_bundle_folder = "old"
 	self.breech.panic_suppression_chance = 0.2
 	self.breech.stats = {
 		zoom = 3,
@@ -14868,10 +15384,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		concealment = 29
 	}
 	self.breech.unlock_func = "has_unlocked_breech"
+end
+
+function WeaponTweakData:_init_ching(weapon_data)
 	self.ching = {
 		categories = {"assault_rifle"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.ching.sounds.fire = "ching_fire"
@@ -14889,18 +15408,19 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.ching.name_id = "bm_w_ching"
 	self.ching.desc_id = "bm_w_ching_desc"
 	self.ching.description_id = "des_ching"
+	self.ching.texture_bundle_folder = "old"
 	self.ching.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
 	self.ching.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.ching.effects = {magazine_empty = {
 		parent = "a_shell",
 		effect = "effects/payday2/particles/weapons/magazine/ching_clip"
 	}}
-	self.ching.use_data = {selection_index = 2}
+	self.ching.use_data = {selection_index = SELECTION.PRIMARY}
 	self.ching.DAMAGE = 2
 	self.ching.CLIP_AMMO_MAX = 8
 	self.ching.NR_CLIPS_MAX = 9
 	self.ching.AMMO_MAX = self.ching.CLIP_AMMO_MAX * self.ching.NR_CLIPS_MAX
-	self.ching.AMMO_PICKUP = self:_pickup_chance(self.ching.AMMO_MAX, 1)
+	self.ching.AMMO_PICKUP = self:_pickup_chance(self.ching.AMMO_MAX, PICKUP.OTHER)
 	self.ching.FIRE_MODE = "single"
 	self.ching.fire_mode_data = {fire_rate = 0.1}
 	self.ching.CAN_TOGGLE_FIREMODE = false
@@ -14935,15 +15455,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = 1
 	}
-	self.ching.autohit = autohit_rifle_default
-	self.ching.aim_assist = aim_assist_rifle_default
+	self.ching.autohit = weapon_data.autohit_rifle_default
+	self.ching.aim_assist = weapon_data.aim_assist_rifle_default
 	self.ching.animations = {
 		fire = "recoil",
 		equip_id = "equip_ching",
 		magazine_empty = "last_recoil",
 		recoil_steelsight = true
 	}
-	self.ching.texture_bundle_folder = "old"
 	self.ching.panic_suppression_chance = 0.2
 	self.ching.stats = {
 		zoom = 3,
@@ -14960,10 +15479,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		concealment = 20
 	}
 	self.ching.unlock_func = "has_unlocked_ching"
+end
+
+function WeaponTweakData:_init_erma(weapon_data)
 	self.erma = {
 		categories = {"smg"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.erma.sounds.fire = "erma_fire_single"
@@ -14983,15 +15505,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.erma.name_id = "bm_w_erma"
 	self.erma.desc_id = "bm_w_erma_desc"
 	self.erma.description_id = "des_erma"
+	self.erma.texture_bundle_folder = "old"
 	self.erma.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.erma.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.erma.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.erma.use_data = {selection_index = 1}
+	self.erma.use_data = {selection_index = SELECTION.SECONDARY}
 	self.erma.DAMAGE = 1
 	self.erma.CLIP_AMMO_MAX = 40
 	self.erma.NR_CLIPS_MAX = 2
 	self.erma.AMMO_MAX = self.erma.CLIP_AMMO_MAX * self.erma.NR_CLIPS_MAX
-	self.erma.AMMO_PICKUP = self:_pickup_chance(self.erma.AMMO_MAX, 1)
+	self.erma.AMMO_PICKUP = self:_pickup_chance(self.erma.AMMO_MAX, PICKUP.OTHER)
 	self.erma.FIRE_MODE = "auto"
 	self.erma.fire_mode_data = {fire_rate = 0.1}
 	self.erma.auto = {fire_rate = 0.1}
@@ -15025,15 +15548,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.erma.autohit = autohit_smg_default
-	self.erma.aim_assist = aim_assist_smg_default
+	self.erma.autohit = weapon_data.autohit_smg_default
+	self.erma.aim_assist = weapon_data.aim_assist_smg_default
 	self.erma.weapon_hold = "erma"
 	self.erma.animations = {
 		equip_id = "equip_erma",
 		magazine_empty = "last_recoil",
 		recoil_steelsight = true
 	}
-	self.erma.texture_bundle_folder = "old"
 	self.erma.panic_suppression_chance = 0.2
 	self.erma.stats = {
 		zoom = 1,
@@ -15050,10 +15572,13 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		concealment = 24
 	}
 	self.erma.unlock_func = "has_unlocked_erma"
+end
+
+function WeaponTweakData:_init_shrew(weapon_data)
 	self.shrew = {
 		categories = {"pistol"},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.shrew.sounds.fire = "shrew_fire"
@@ -15076,7 +15601,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.shrew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.shrew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.shrew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.shrew.use_data = {selection_index = 1}
+	self.shrew.use_data = {selection_index = SELECTION.SECONDARY}
 	self.shrew.DAMAGE = 1
 	self.shrew.CLIP_AMMO_MAX = 17
 	self.shrew.NR_CLIPS_MAX = 9
@@ -15117,8 +15642,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = 1
 	}
-	self.shrew.autohit = autohit_pistol_default
-	self.shrew.aim_assist = aim_assist_pistol_default
+	self.shrew.autohit = weapon_data.autohit_pistol_default
+	self.shrew.aim_assist = weapon_data.aim_assist_pistol_default
 	self.shrew.weapon_hold = "glock"
 	self.shrew.animations = {
 		equip_id = "equip_glock",
@@ -15142,13 +15667,16 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 16,
 		concealment = 30
 	}
+end
+
+function WeaponTweakData:_init_x_shrew(weapon_data)
 	self.x_shrew = {
 		categories = {
 			"akimbo",
 			"pistol"
 		},
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.x_shrew.sounds.fire = "shrew_fire"
@@ -15168,7 +15696,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_shrew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.x_shrew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.x_shrew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
-	self.x_shrew.use_data = {selection_index = 2}
+	self.x_shrew.use_data = {selection_index = SELECTION.PRIMARY}
 	self.x_shrew.DAMAGE = 1
 	self.x_shrew.CLIP_AMMO_MAX = 34
 	self.x_shrew.NR_CLIPS_MAX = 5
@@ -15212,8 +15740,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.x_shrew.autohit = autohit_pistol_default
-	self.x_shrew.aim_assist = aim_assist_pistol_default
+	self.x_shrew.autohit = weapon_data.autohit_pistol_default
+	self.x_shrew.aim_assist = weapon_data.aim_assist_pistol_default
 	self.x_shrew.weapon_hold = "jowi_pistol"
 	self.x_shrew.animations = {
 		second_gun_versions = {
@@ -15240,11 +15768,14 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 16,
 		concealment = 30
 	}
+end
+
+function WeaponTweakData:_init_basset(weapon_data)
 	self.basset = {
 		categories = {"shotgun"},
 		has_magazine = true,
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.basset.sounds.fire = "basset_fire"
@@ -15265,7 +15796,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.basset.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.basset.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug"
 	self.basset.use_data = {
-		selection_index = 1,
+		selection_index = SELECTION.SECONDARY,
 		align_place = "right_hand"
 	}
 	self.basset.DAMAGE = 6
@@ -15310,8 +15841,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = 1.25
 	}
-	self.basset.autohit = autohit_shotgun_default
-	self.basset.aim_assist = aim_assist_shotgun_default
+	self.basset.autohit = weapon_data.autohit_shotgun_default
+	self.basset.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.basset.weapon_hold = "basset"
 	self.basset.animations = {
 		equip_id = "equip_basset",
@@ -15333,6 +15864,9 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 5,
 		concealment = 21
 	}
+end
+
+function WeaponTweakData:_init_x_basset(weapon_data)
 	self.x_basset = {
 		categories = {
 			"akimbo",
@@ -15340,8 +15874,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		},
 		has_magazine = true,
 		allow_akimbo_autofire = true,
-		damage_melee = damage_melee_default,
-		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
 		sounds = {}
 	}
 	self.x_basset.sounds.fire = "basset_x_fire"
@@ -15363,7 +15897,7 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.x_basset.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
 	self.x_basset.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.x_basset.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug"
-	self.x_basset.use_data = {selection_index = 2}
+	self.x_basset.use_data = {selection_index = SELECTION.PRIMARY}
 	self.x_basset.DAMAGE = 4
 	self.x_basset.damage_near = 2000
 	self.x_basset.damage_far = 3000
@@ -15412,8 +15946,8 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		fire_multiplier = 1,
 		fire_steelsight_multiplier = -1
 	}
-	self.x_basset.autohit = autohit_smg_default
-	self.x_basset.aim_assist = aim_assist_smg_default
+	self.x_basset.autohit = weapon_data.autohit_smg_default
+	self.x_basset.aim_assist = weapon_data.aim_assist_smg_default
 	self.x_basset.weapon_hold = "x_akmsu"
 	self.x_basset.animations = {
 		has_steelsight_stance = true,
@@ -15435,99 +15969,6 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		suppression = 5,
 		concealment = 21
 	}
-end
-
-function WeaponTweakData:_init_data_offhand_weapons()
-	self.b92fs_primary = deep_clone(self.b92fs)
-	self.b92fs_primary.parent_weapon_id = "b92fs"
-	self.b92fs_primary.use_data.selection_index = 2
-	self.b92fs_primary.animations.reload_name_id = "b92fs"
-	self.b92fs_primary.use_stance = "b92fs"
-	self.b92fs_primary.texture_name = "b92fs"
-	self.b92fs_primary.AMMO_MAX = math.round(self.b92fs_primary.AMMO_MAX * 0.75)
-	self.glock_18c_primary = deep_clone(self.glock_18c)
-	self.glock_18c_primary.parent_weapon_id = "glock_18c"
-	self.glock_18c_primary.use_data.selection_index = 2
-	self.glock_18c_primary.animations.reload_name_id = "glock_18c"
-	self.glock_18c_primary.use_stance = "glock_18c"
-	self.glock_18c_primary.texture_name = "glock_18c"
-	self.glock_18c_primary.AMMO_MAX = math.round(self.glock_18c_primary.AMMO_MAX * 0.75)
-	self.olympic_primary = deep_clone(self.olympic)
-	self.olympic_primary.parent_weapon_id = "olympic"
-	self.olympic_primary.use_data.selection_index = 2
-	self.olympic_primary.animations.reload_name_id = "olympic"
-	self.olympic_primary.use_stance = "olympic"
-	self.olympic_primary.texture_name = "olympic"
-	self.olympic_primary.AMMO_MAX = math.round(self.olympic_primary.AMMO_MAX * 0.75)
-	self.akmsu_primary = deep_clone(self.akmsu)
-	self.akmsu_primary.parent_weapon_id = "akmsu"
-	self.akmsu_primary.use_data.selection_index = 2
-	self.akmsu_primary.animations.reload_name_id = "akmsu"
-	self.akmsu_primary.use_stance = "akmsu"
-	self.akmsu_primary.texture_name = "akmsu"
-	self.akmsu_primary.AMMO_MAX = math.round(self.akmsu_primary.AMMO_MAX * 0.75)
-	self.deagle_primary = deep_clone(self.deagle)
-	self.deagle_primary.parent_weapon_id = "deagle"
-	self.deagle_primary.use_data.selection_index = 2
-	self.deagle_primary.animations.reload_name_id = "deagle"
-	self.deagle_primary.use_stance = "deagle"
-	self.deagle_primary.texture_name = "deagle"
-	self.deagle_primary.weapon_hold = "deagle"
-	self.deagle_primary.AMMO_MAX = math.round(self.deagle_primary.AMMO_MAX * 0.75)
-	self.colt_1911_primary = deep_clone(self.colt_1911)
-	self.colt_1911_primary.parent_weapon_id = "colt_1911"
-	self.colt_1911_primary.use_data.selection_index = 2
-	self.colt_1911_primary.animations.reload_name_id = "colt_1911"
-	self.colt_1911_primary.use_stance = "colt_1911"
-	self.colt_1911_primary.texture_name = "colt_1911"
-	self.colt_1911_primary.weapon_hold = "colt_1911"
-	self.colt_1911_primary.AMMO_MAX = math.round(self.colt_1911_primary.AMMO_MAX * 0.75)
-	self.raging_bull_primary = deep_clone(self.new_raging_bull)
-	self.raging_bull_primary.parent_weapon_id = "new_raging_bull"
-	self.raging_bull_primary.use_data.selection_index = 2
-	self.raging_bull_primary.animations.reload_name_id = "new_raging_bull"
-	self.raging_bull_primary.use_stance = "new_raging_bull"
-	self.raging_bull_primary.texture_name = "new_raging_bull"
-	self.raging_bull_primary.AMMO_MAX = math.round(self.raging_bull_primary.AMMO_MAX * 0.75)
-	self.ak74_secondary = deep_clone(self.ak74)
-	self.ak74_secondary.parent_weapon_id = "ak74"
-	self.ak74_secondary.use_data.selection_index = 1
-	self.ak74_secondary.animations.reload_name_id = "ak74"
-	self.ak74_secondary.use_stance = "ak74"
-	self.ak74_secondary.texture_name = "ak74"
-	self.ak74_secondary.AMMO_MAX = math.round(self.ak74_secondary.AMMO_MAX * 0.75)
-	self.aug_secondary = deep_clone(self.aug)
-	self.aug_secondary.parent_weapon_id = "aug"
-	self.aug_secondary.use_data.selection_index = 1
-	self.aug_secondary.animations.reload_name_id = "aug"
-	self.aug_secondary.use_stance = "aug"
-	self.aug_secondary.texture_name = "aug"
-	self.aug_secondary.weapon_hold = "aug"
-	self.aug_secondary.AMMO_MAX = math.round(self.aug_secondary.AMMO_MAX * 0.75)
-	self.saw_secondary = deep_clone(self.saw)
-	self.saw_secondary.parent_weapon_id = "saw"
-	self.saw_secondary.use_data.selection_index = 1
-	self.saw_secondary.animations.reload_name_id = "saw"
-	self.saw_secondary.use_stance = "saw"
-	self.saw_secondary.texture_name = "saw"
-	self.saw_secondary.weapon_hold = "saw"
-	self.saw_secondary.AMMO_MAX = math.round(self.saw_secondary.AMMO_MAX * 0.75)
-	self.s552_secondary = deep_clone(self.s552)
-	self.s552_secondary.parent_weapon_id = "s552"
-	self.s552_secondary.use_data.selection_index = 1
-	self.s552_secondary.animations.reload_name_id = "s552"
-	self.s552_secondary.use_stance = "s552"
-	self.s552_secondary.texture_name = "s552"
-	self.s552_secondary.weapon_hold = "s552"
-	self.s552_secondary.AMMO_MAX = math.round(self.s552_secondary.AMMO_MAX * 0.75)
-	self.m4_secondary = deep_clone(self.new_m4)
-	self.m4_secondary.parent_weapon_id = "new_m4"
-	self.m4_secondary.use_data.selection_index = 1
-	self.m4_secondary.animations.reload_name_id = "new_m4"
-	self.m4_secondary.use_stance = "new_m4"
-	self.m4_secondary.texture_name = "new_m4"
-	self.m4_secondary.weapon_hold = "new_m4"
-	self.m4_secondary.AMMO_MAX = math.round(self.m4_secondary.AMMO_MAX * 0.75)
 end
 
 function WeaponTweakData:_create_table_structure()
@@ -16491,7 +16932,5 @@ function WeaponTweakData:_precalculate_values()
 			v.AMMO_MAX = v.CLIP_AMMO_MAX * v.NR_CLIPS_MAX
 		end
 	end
-
-	self.g26_crew.AMMO_MAX = 150
 end
 

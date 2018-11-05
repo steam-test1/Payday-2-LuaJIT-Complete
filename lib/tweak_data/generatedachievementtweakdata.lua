@@ -1174,7 +1174,7 @@ function init_auto_generated_achievement_data(tags)
 		bigbank_10 = {
 			need_unlock_icons = true,
 			icon_id = "C_Dentist_H_BigBank_FundingFather",
-			sort_name = "C_Dentist_H_BigBank_FundingFather",
+			sort_name = "Other_H_BigBank_FundingFather",
 			additional_id = true,
 			unlock_id = true,
 			tags = {
@@ -1183,8 +1183,7 @@ function init_auto_generated_achievement_data(tags)
 				tags.tactics.loud,
 				tags.tactics.stealth,
 				tags.inventory.mask,
-				tags.teamwork.players_4,
-				tags.contracts.the_dentist
+				tags.teamwork.players_4
 			}
 		},
 		bigbank_2 = {
@@ -6855,6 +6854,7 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		voff_1 = {
+			additional_id = true,
 			sort_name = "C_Bain_H_BankAny_SaintFrancis_D3",
 			icon_id = "C_Bain_H_BankAny_SaintFrancis_D3",
 			tags = {

@@ -17,7 +17,9 @@ local function set_defaults(target, source)
 	target = target or {}
 
 	for k, v in pairs(source) do
-		target[k] = target[k] or v
+		if target[k] == nil then
+			target[k] = v
+		end
 	end
 
 	return target
@@ -99,11 +101,7 @@ function ScrollGrowPanel:clear()
 end
 
 function ScrollGrowPanel:_set_ensure_size(w, h)
-	if h < self._scroll:canvas_scroll_height() then
-		self:set_size(w, h)
-	else
-		self._scroll:set_canvas_size(w, h)
-	end
+	self._scroll:set_canvas_size(w, h)
 end
 local ScrollablePanelExt = ScrollablePanelExt or class(ScrollablePanel)
 
@@ -259,19 +257,30 @@ end
 function ScrollableList:scroll_to_show(top_or_item, bottom)
 	local top = nil
 
-	if top_or_item.top and top_or_item.bottom then
+	if type(top_or_item) == "table" and top_or_item.top and top_or_item.bottom then
 		top = top_or_item:top()
 		bottom = top_or_item:bottom()
+	else
+		top = top_or_item
+		bottom = top_or_item
 	end
 
 	bottom = bottom - self:h()
 	local cur = -self._canvas:y()
 
+	print("scroll", cur, top)
+
 	if top < cur then
+		print("scroll", top)
 		self._scroll:scroll_to(top)
 	elseif cur < bottom then
 		self._scroll:scroll_to(bottom)
+		print("scroll", bottom)
 	end
+end
+
+function ScrollableList:scroll_to_show_item_at_world(item, world_y)
+	self._scroll:perform_scroll(world_y - item:world_y(), 1)
 end
 
 function ScrollableList:add_lines_and_static_down_indicator()
@@ -314,18 +323,24 @@ function ScrollItemList:init(parent, scroll_config, canvas_config)
 	ScrollItemList.super.init(self, parent, scroll_config, canvas_config)
 
 	self._input_focus = scroll_config.input_focus
-	self._items = {}
+	self._all_items = {}
+	self._current_items = {}
 end
 
 function ScrollItemList:clear()
-	self._items = {}
+	self._all_items = {}
+	self._current_items = {}
 	self._selected_item = nil
 
 	ScrollItemList.super.clear(self)
 end
 
+function ScrollItemList:all_items()
+	return self._all_items
+end
+
 function ScrollItemList:items()
-	return self._items
+	return self._current_items
 end
 
 function ScrollItemList:set_input_focus(state)
@@ -341,7 +356,7 @@ function ScrollItemList:mouse_moved(button, x, y)
 		return
 	end
 
-	for k, v in pairs(self._items) do
+	for k, v in pairs(self._current_items) do
 		if v:inside(x, y) then
 			if self._selected_item ~= v then
 				self:select_item(v)
@@ -369,15 +384,16 @@ function ScrollItemList:selected_item()
 end
 
 function ScrollItemList:select_index(index)
-	self:select_item(self._items[index])
+	self:select_item(self._current_items[index])
 end
 
 function ScrollItemList:move_selection(move)
 	if not self._selected_item then
 		self:select_index(1)
 	else
-		local new_index = self._selected_item:index() + move
-		new_index = math.clamp(new_index, 1, #self._items)
+		local index = table.index_of(self._current_items, self._selected_item)
+		local new_index = index + move
+		new_index = math.clamp(new_index, 1, #self._current_items)
 
 		self:select_index(new_index)
 	end
@@ -407,10 +423,17 @@ function ScrollItemList:select_item(item)
 	self:_on_selected_changed(item)
 end
 
-function ScrollItemList:add_item(item)
-	self._canvas:placer():add_row(item)
-	table.insert(self._items, item)
-	item:set_index(#self._items)
+function ScrollItemList:add_item(item, force_visible)
+	if force_visible ~= nil then
+		item:set_visible(force_visible)
+	end
+
+	if item:visible() then
+		self._canvas:placer():add_row(item)
+		table.insert(self._current_items, item)
+	end
+
+	table.insert(self._all_items, item)
 
 	return item
 end
@@ -434,6 +457,61 @@ function ScrollItemList:move_down()
 
 	return true
 end
+
+function ScrollItemList:sort_items(sort_function, mod_placer, keep_selection)
+	table.sort(self._current_items, sort_function)
+	table.sort(self._all_items, sort_function)
+
+	local placer = self._canvas:placer()
+
+	placer:clear()
+
+	if mod_placer then
+		mod_placer(placer)
+	end
+
+	local w_y = self._selected_item and self._selected_item:world_y()
+
+	for _, item in ipairs(self._current_items) do
+		placer:add_row(item)
+	end
+
+	if not keep_selection and self._selected_item then
+		self:select_index(1)
+	elseif self._selected_item and w_y then
+		self:scroll_to_show_item_at_world(self._selected_item, w_y)
+	end
+end
+
+function ScrollItemList:filter_items(filter_function, mod_start, keep_selection)
+	local placer = self._canvas:placer()
+
+	placer:clear()
+	self._canvas:set_size(0, 0)
+
+	if mod_start then
+		mod_start(placer, self._canvas)
+	end
+
+	local w_y = self._selected_item and self._selected_item:world_y()
+	self._current_items = {}
+
+	for _, item in ipairs(self._all_items) do
+		if filter_function(item) then
+			item:set_visible(true)
+			placer:add_row(item)
+			table.insert(self._current_items, item)
+		else
+			item:set_visible(false)
+		end
+	end
+
+	if self._selected_item and not self._selected_item:visible() or not keep_selection then
+		self:select_index(1)
+	elseif self._selected_item and w_y then
+		self:scroll_to_show_item_at_world(self._selected_item, w_y)
+	end
+end
 ListItem = ListItem or class(ExtendedPanel)
 
 function ListItem:init(...)
@@ -456,14 +534,6 @@ function ListItem:set_selected(state)
 	self:_selected_changed(state)
 
 	local _ = state and managers.menu_component:post_event("highlight")
-end
-
-function ListItem:set_index(index)
-	self._index = index
-end
-
-function ListItem:index()
-	return self._index
 end
 BaseButton = BaseButton or class(ExtendedPanel)
 
@@ -599,6 +669,10 @@ function IconButton:_set_color(col)
 	end
 end
 
+function IconButton:icon()
+	return self._button
+end
+
 function IconButton:_hover_changed(hover)
 	self:_set_color(hover and self._hover_color or self._normal_color)
 end
@@ -731,10 +805,12 @@ ButtonLegendsBar.PADDING = 10
 function ButtonLegendsBar:init(panel, config, panel_config)
 	panel_config = set_defaults(panel_config, {
 		border = 0,
+		padding_y = 0,
 		input = true,
-		fixed_w = panel:w(),
+		w = panel:w(),
 		padding = self.PADDING
 	})
+	panel_config = set_defaults(panel_config, {fixed_w = panel_config.w})
 
 	ButtonLegendsBar.super.init(self, panel, panel_config)
 
@@ -742,6 +818,7 @@ function ButtonLegendsBar:init(panel, config, panel_config)
 		font = small_font,
 		font_size = small_font_size
 	})
+	self._wrap = panel_config.wrap
 	self._legends_only = self._text_config.no_buttons or not panel_config.input or not managers.menu:is_pc_controller()
 	self._items = {}
 	self._lookup = {}
@@ -786,7 +863,8 @@ function ButtonLegendsBar:_create_btn(data, text)
 	local item = {
 		button = true,
 		item = button,
-		enabled = data.enabled ~= false
+		enabled = data.enabled ~= false,
+		force_break = data.force_break
 	}
 
 	return item
@@ -803,7 +881,8 @@ function ButtonLegendsBar:_create_legend(data, text)
 	local item = {
 		text = true,
 		item = text,
-		enabled = data.enabled ~= false
+		enabled = data.enabled ~= false,
+		force_break = data.force_break
 	}
 
 	if data.binding and data.func then
@@ -836,14 +915,23 @@ function ButtonLegendsBar:_update_items()
 	local placer = self:placer()
 
 	placer:clear()
-	placer:set_at(self:w(), 0)
+	placer:set_start(self:w(), 0)
 	self:set_size(0, 0)
 
 	for _, v in pairs(self._items) do
 		v.item:set_visible(v.enabled)
 
+		if v.force_break and not placer:is_first_in_row() then
+			placer:new_row()
+		end
+
 		if v.enabled then
 			placer:add_left(v.item)
+
+			if self._wrap and v.item:left() < 0 and not placer:is_first_in_row() then
+				placer:new_row()
+				placer:add_left(v.item)
+			end
 		end
 
 		if v.listener then
@@ -863,9 +951,7 @@ function TextLegendsBar:init(panel, config, panel_config)
 		keep_w = true
 	})
 	self._seperator = self._text_config.seperator or TextLegendsBar.SEPERATOR
-	self._text_item = self:fine_text(self._text_config)
-
-	self:set_h(self._text_item:h())
+	self._lines = {}
 end
 
 function TextLegendsBar:_create_btn(data, text)
@@ -876,7 +962,8 @@ function TextLegendsBar:_create_legend(data, text)
 	data = data or {}
 	local item = {
 		item = text,
-		enabled = data.enabled ~= false
+		enabled = data.enabled ~= false,
+		force_break = data.force_break
 	}
 
 	if data.binding and data.func then
@@ -887,11 +974,53 @@ function TextLegendsBar:_create_legend(data, text)
 end
 
 function TextLegendsBar:_update_items()
-	local str = nil
+	for _, v in pairs(self._lines) do
+		self:remove(v)
+	end
+
+	self._lines = {}
+	local placer = self:placer()
+
+	placer:clear()
+	placer:set_start(self:w(), 0)
+	self:set_size(self:w(), 0)
+
+	local function complete_line(text_item)
+		self.make_fine_text(text_item, true)
+		placer:add_left(text_item)
+		placer:new_row()
+		self:set_h(text_item:bottom())
+		table.insert(self._lines, text_item)
+	end
+
+	local text_item = nil
 
 	for _, v in pairs(self._items) do
+		if v.force_break then
+			text_item = nil
+		end
+
 		if v.enabled then
-			str = str and v.item .. self._seperator .. str or v.item
+			if text_item then
+				local str = text_item:text()
+
+				text_item:set_text(v.item .. self._seperator .. str)
+
+				local _, _, w, _ = text_item:text_rect()
+
+				if self._wrap and self:w() < w then
+					text_item:set_text(str)
+					complete_line(text_item)
+
+					text_item = nil
+				end
+			end
+
+			if not text_item then
+				text_item = self:text(self._text_config)
+
+				text_item:set_text(v.item)
+			end
 		end
 
 		if v.listener then
@@ -899,6 +1028,8 @@ function TextLegendsBar:_update_items()
 		end
 	end
 
-	self._text_item:set_text(str or "")
+	if text_item then
+		complete_line(text_item)
+	end
 end
 

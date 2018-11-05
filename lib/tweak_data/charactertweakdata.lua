@@ -2958,7 +2958,7 @@ function CharacterTweakData:_init_old_hoxton_mission(presets)
 		6,
 		10
 	}
-	self.old_hoxton_mission.suppression = presets.suppression.hard_def
+	self.old_hoxton_mission.suppression = presets.suppression.no_supress
 	self.old_hoxton_mission.surrender = false
 	self.old_hoxton_mission.weapon_voice = "1"
 	self.old_hoxton_mission.experience.cable_tie = "tie_swat"

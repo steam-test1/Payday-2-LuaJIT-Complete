@@ -142,7 +142,48 @@ function CopLogicTrade.on_trade(data, pos, rotation, free_criminal)
 		managers.groupai:state():remove_minion(data.key, nil)
 	end
 
-	local flee_pos = managers.groupai:state():flee_point(data.unit:movement():nav_tracker():nav_segment())
+	local ignore_segments = {}
+	local flee_pos = managers.groupai:state():flee_point(data.unit:movement():nav_tracker():nav_segment(), ignore_segments)
+
+	if not flee_pos then
+		data.unit:set_slot(0)
+
+		return
+	end
+
+	local iterations = 1
+	local coarse_path = nil
+	local my_data = data.internal_data
+	local search_params = {
+		from_tracker = data.unit:movement():nav_tracker(),
+		id = "CopLogicTrade._get_coarse_flee_path" .. tostring(data.key),
+		access_pos = data.char_tweak.access
+	}
+	local max_attempts = 8
+
+	while iterations < max_attempts do
+		local nav_seg = managers.navigation:get_nav_seg_from_pos(flee_pos)
+		search_params.to_seg = nav_seg
+		coarse_path = managers.navigation:search_coarse(search_params)
+
+		if not coarse_path then
+			coarse_path = nil
+
+			table.insert(ignore_segments, nav_seg)
+		else
+			break
+		end
+
+		iterations = iterations + 1
+
+		if iterations < max_attempts then
+			flee_pos = managers.groupai:state():flee_point(data.unit:movement():nav_tracker():nav_segment(), ignore_segments)
+
+			if not flee_pos then
+				break
+			end
+		end
+	end
 
 	if flee_pos then
 		data.internal_data.fleeing = true

@@ -5285,7 +5285,7 @@ function DLCTweakData:init(tweak_data)
 		amount = 1
 	}}
 	self.howl = {
-		free = false,
+		free = true,
 		content = {}
 	}
 	self.howl.content.loot_global_value = "halloween"
@@ -5871,7 +5871,7 @@ function DLCTweakData:init(tweak_data)
 	self.pn2_bundle.content.loot_global_value = "pn2"
 	self.pn2_bundle.content.loot_drops = {}
 	self.mp2_bundle = {
-		free = false,
+		free = true,
 		content = {}
 	}
 	self.mp2_bundle.content.loot_global_value = "normal"
@@ -5898,7 +5898,7 @@ function DLCTweakData:init(tweak_data)
 		}
 	}
 	self.amp_bundle = {
-		free = false,
+		free = true,
 		content = {}
 	}
 	self.amp_bundle.content.loot_global_value = "normal"

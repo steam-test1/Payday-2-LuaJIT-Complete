@@ -80,6 +80,24 @@ function CivilianDamage:no_intimidation_by_dmg()
 	return true
 end
 
+function CivilianDamage:is_friendly_fire(unit)
+	if not unit then
+		return false
+	end
+
+	if unit:movement():team() == self._unit:movement():team() then
+		return true
+	end
+
+	local is_player = unit == managers.player:player_unit()
+
+	if not is_player then
+		return true
+	end
+
+	return false
+end
+
 function CivilianDamage:damage_bullet(attack_data)
 	if managers.player:has_category_upgrade("player", "civ_harmless_bullets") and self.no_intimidation_by_dmg and not self:no_intimidation_by_dmg() and (not self._survive_shot_t or self._survive_shot_t < TimerManager:game():time()) then
 		self._survive_shot_t = TimerManager:game():time() + 2.5

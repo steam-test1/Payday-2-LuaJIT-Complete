@@ -67,6 +67,14 @@ function LeftRightText:set_right(text)
 	self._right:set_text(text)
 end
 
+function LeftRightText:left_item()
+	return self._left
+end
+
+function LeftRightText:right_item()
+	return self._right
+end
+
 function LeftRightText:set_texts(left, right)
 	if left then
 		self:set_left(left)
@@ -173,17 +181,21 @@ AchievementListItem.ND_COLOR = Color(255, 95, 95, 95) / 255
 AchievementListItem.NT_SD_COLOR = tweak_data.screen_colors.achievement_grey
 AchievementListItem.ST_COLOR = Color.white
 
-function AchievementListItem:init(parent, id, visual, info, owner)
+function AchievementListItem:init(parent, data, owner)
 	AchievementListItem.super.init(self, parent, {
 		input = true,
 		h = self.HEIGHT,
 		w = parent:row_w()
 	})
 
+	local id = data.key
+	local visual = data.data
+	local info = data.info
 	self._owner = owner
 	self._id = id
 	self._visual = visual
 	self._info = info or {}
+	self._data = data
 	self._select_panel = self._panel:panel({layer = self:layer() - 1})
 
 	BoxGuiObject:new(self._select_panel, {sides = {
@@ -704,14 +716,20 @@ function AchievementListGui:init(ws, fullscreen_ws, node)
 	self._main_panel = ToggleInputPanel:new(self, {input = true})
 
 	if not managers.menu:is_pc_controller() then
-		self._legends = TextLegendsBar:new(self)
+		self._legends = TextLegendsBar:new(self._main_panel, nil, {
+			w = 800,
+			wrap = true
+		})
 
 		self._legends:add_items({
 			"menu_legend_back",
 			"menu_legend_scroll_left_right"
 		})
 	else
-		self._legends = ButtonLegendsBar:new(self)
+		self._legends = ButtonLegendsBar:new(self._main_panel, nil, {
+			w = 800,
+			wrap = true
+		})
 	end
 
 	self._legends:add_items({
@@ -735,6 +753,19 @@ function AchievementListGui:init(ws, fullscreen_ws, node)
 			binding = "menu_unlocked_achievement",
 			text_id = "menu_legend_toggle_unlocked",
 			func = callback(self, self, "_on_toggle_unlocked")
+		},
+		{
+			id = "show_tracked",
+			binding = "menu_toggle_show_tracked",
+			text_id = "menu_legend_achievements_track_btn",
+			func = callback(self, self, "_show_tracked")
+		},
+		{
+			enabled = false,
+			text_id = "menu_legend_achievements_all_btn",
+			id = "show_all",
+			binding = "menu_toggle_show_tracked",
+			func = callback(self, self, "_show_all")
 		}
 	})
 	self._legends:set_righttop(self:righttop())
@@ -763,7 +794,7 @@ function AchievementListGui:init(ws, fullscreen_ws, node)
 
 	self._scroll:add_lines_and_static_down_indicator()
 
-	self._sort_item = AchievementSortPicker:new(self, callback(self, self, "filter_and_sort"))
+	self._sort_item = AchievementSortPicker:new(self, callback(self, self, "clear_and_start_adding"))
 
 	self._sort_item:set_bottom(self._scroll:top())
 	self._sort_item:set_right(self._scroll:right() - 26)
@@ -840,22 +871,6 @@ function AchievementListGui:init(ws, fullscreen_ws, node)
 		back_btn:set_righttop(self._filter_panel:right(), self._forced_text:top())
 	end
 
-	self._legends:add_items({
-		{
-			id = "show_tracked",
-			binding = "menu_toggle_show_tracked",
-			text_id = "menu_legend_achievements_track_btn",
-			func = callback(self, self, "_show_tracked")
-		},
-		{
-			enabled = false,
-			text_id = "menu_legend_achievements_all_btn",
-			id = "show_all",
-			binding = "menu_toggle_show_tracked",
-			func = callback(self, self, "_show_all")
-		}
-	})
-
 	self._all_achievements = {}
 
 	for k, data in pairs(tweak_data.achievement.visual) do
@@ -865,13 +880,13 @@ function AchievementListGui:init(ws, fullscreen_ws, node)
 			key = k,
 			data = data,
 			info = info,
-			title = managers.localization:text(data.name_id)
+			title = string.lower(managers.localization:text(data.name_id))
 		})
 	end
 
 	table.sort(self._all_achievements, self.default_order)
 	self._scroll:set_selected_callback(callback(self, self, "update_detail"))
-	self:filter_and_sort()
+	self:clear_and_start_adding()
 	WalletGuiObject.set_wallet(self)
 
 	local recent_list = managers.achievment:get_recent_achievements()
@@ -904,7 +919,7 @@ end
 function AchievementListGui:_show_tracked()
 	self._view_tracked = true
 
-	self:filter_and_sort()
+	self:clear_and_start_adding()
 	self:generate_side_panel()
 
 	if self._track_btn then
@@ -919,7 +934,7 @@ end
 function AchievementListGui:_show_all()
 	self._view_tracked = false
 
-	self:filter_and_sort()
+	self:clear_and_start_adding()
 	self:generate_side_panel()
 
 	if self._track_btn then
@@ -1147,15 +1162,24 @@ function AchievementListGui:update(...)
 end
 
 function AchievementListGui:filter(list)
+	local func = self:_filter_func()
+
+	if not func then
+		return list, false
+	end
+
+	return table.filter_list(list, func), true
+end
+
+function AchievementListGui:_filter_func()
 	local data = Global.achievements_filters or {}
 	data.tags = data.tags or {}
-	local filtered = false
+	local filters = {}
 
 	if data.hide_unlocked then
-		list = table.filter_list(list, function (v)
+		table.insert(filters, function (v)
 			return not v.info or not v.info.awarded
 		end)
-		filtered = true
 	end
 
 	if data.hide_ladder then
@@ -1179,80 +1203,93 @@ function AchievementListGui:filter(list)
 			lowest_locked[ladder] = list[1]
 		end
 
-		list = table.filter_list(list, function (v)
+		table.insert(filters, function (v)
 			if not v.info.awarded then
 				return not v.data.ladder or lowest_locked[v.data.ladder] == v
 			else
 				return true
 			end
 		end)
-		filtered = true
 	end
 
 	if data.only_tracked or self._view_tracked then
-		list = table.filter_list(list, function (v)
+		table.insert(filters, function (v)
 			return v.info and v.info.tracked
 		end)
-		filtered = true
 	end
 
 	for category, tag in pairs(data.tags) do
-		filtered = true
-		list = tag == false and table.filter_list(list, function (v)
-			return table.true_for_all(v.data.tags, function (t)
-				return not string.begins(t, category)
+		if tag == false then
+			table.insert(filters, function (v)
+				return table.true_for_all(v.data.tags, function (t)
+					return not string.begins(t, category)
+				end)
 			end)
-		end) or tag == true and table.filter_list(list, function (v)
-			return not table.true_for_all(v.data.tags, function (t)
-				return not string.begins(t, category)
+		elseif tag == true then
+			table.insert(filters, function (v)
+				return not table.true_for_all(v.data.tags, function (t)
+					return not string.begins(t, category)
+				end)
 			end)
-		end) or table.filter_list(list, function (v)
-			return table.contains(v.data.tags, tag)
-		end)
+		else
+			table.insert(filters, function (v)
+				return table.contains(v.data.tags, tag)
+			end)
+		end
 	end
 
-	return list, filtered
+	if #filters > 0 then
+		return function (v)
+			for _, f in ipairs(filters) do
+				if not f(v) then
+					return false
+				end
+			end
+
+			return true
+		end
+	else
+		return
+	end
 end
 
-function AchievementListGui:sort(list, order_setting)
-	local data = Global.achievements_filters or {}
+function AchievementListGui:_get_sort_func(sort_order)
+	sort_order = sort_order or Global.achievements_filters and Global.achievements_filters.sort_order
 	local sorters = {
 		default = self.default_order,
 		alphabetical = self.alphabetical_order,
 		chronological = self.chronological_order,
 		progress = self.progress_order
 	}
-	local sort = sorters[data.sort_order] or self.default_order
+	local rtn = sorters[sort_order] or self.default_order
 
 	if self._view_tracked then
-		sort = self.create_tracked_then_other_order(sort)
+		rtn = self.create_tracked_then_other_order(rtn)
 	end
+
+	return rtn
+end
+
+function AchievementListGui:sort(list, order_setting)
+	local data = Global.achievements_filters or {}
+	local sort = self:_get_sort_func(data.sort_order)
 
 	table.sort(list, sort)
 end
 
-function AchievementListGui:filter_and_sort()
+function AchievementListGui:clear_and_start_adding()
 	local data = Global.achievements_filters or {}
 	data.tags = data.tags or {}
 	self._filtered = false
-	local list = self._all_achievements
-	list, self._filtered = self:filter(list)
+	local list = table.list_copy(self._all_achievements)
 
 	self:sort(list)
-	self:set_list(list)
-end
 
-function AchievementListGui:set_list(list)
-	local iter, array, at = ipairs(list)
-	self._adding_to_data = {
-		iter = iter,
-		array = array,
-		at = at
-	}
+	self._adding_to_data = table.list_reverse(list)
 
 	self._scroll:clear()
 
-	self._current_list = list
+	self._current_list, self._filtered = self:filter(list)
 
 	self:keep_filling_list()
 	self:generate_side_panel()
@@ -1266,13 +1303,14 @@ function AchievementListGui:keep_filling_list()
 	local d = self._adding_to_data
 	local canvas = self._scroll:canvas()
 	local limit = 0
+	local filter = self:_filter_func()
 
-	for at, v in d.iter, d.array, d.at do
-		self._scroll:add_item(AchievementListItem:new(canvas, v.key, v.data, v.info, self))
+	while self._adding_to_data[1] do
+		local v = table.remove(self._adding_to_data)
+
+		self._scroll:add_item(AchievementListItem:new(canvas, v, self), filter and filter(v))
 
 		if self.ADD_PER_UPDATE <= limit then
-			d.at = at
-
 			return
 		end
 
@@ -1369,7 +1407,7 @@ function AchievementListGui:_on_toggle_unlocked()
 	local data = Global.achievements_filters
 	data.hide_unlocked = not data.hide_unlocked
 
-	self:filter_and_sort()
+	self:clear_and_start_adding()
 end
 
 function AchievementListGui:_do_popup(gui)
@@ -1399,7 +1437,7 @@ end
 
 function AchievementListGui:_on_filters_done()
 	self:remove_blur()
-	self:filter_and_sort()
+	self:clear_and_start_adding()
 
 	if self._sort_item then
 		self._sort_item:refresh()
@@ -1422,7 +1460,7 @@ function AchievementListGui:_clear_filters()
 	data.hide_ladder = nil
 	data.tags = {}
 
-	self:filter_and_sort()
+	self:clear_and_start_adding()
 end
 
 function AchievementListGui.default_order(lhs, rhs)
@@ -1504,9 +1542,5 @@ end
 
 function AchievementListGui:input_focus()
 	return self:allow_input() and (self._popup and true or 1)
-end
-
-function AchievementListGui:back_pressed()
-	return AchievementListGui.super.back_pressed(self)
 end
 

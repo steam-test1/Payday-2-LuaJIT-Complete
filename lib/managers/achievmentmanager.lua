@@ -136,7 +136,7 @@ function AchievmentManager:load(data, version)
 		self:force_track(v, true)
 	end
 
-	for _, k in pairs(data.achievement.tracked) do
+	for _, k in pairs(data.achievement.tracked or {}) do
 		local v = self.achievments[k]
 
 		if v then

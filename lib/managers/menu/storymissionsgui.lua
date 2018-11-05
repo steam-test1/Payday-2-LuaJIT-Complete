@@ -621,7 +621,9 @@ local function set_defaults(target, source)
 	target = target or {}
 
 	for k, v in pairs(source) do
-		target[k] = target[k] or v
+		if target[k] == nil then
+			target[k] = v
+		end
 	end
 
 	return target

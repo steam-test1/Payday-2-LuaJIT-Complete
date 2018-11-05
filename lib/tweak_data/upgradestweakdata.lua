@@ -2951,7 +2951,10 @@ function UpgradesTweakData:_init_pd2_values()
 			"5%",
 			"20%"
 		},
-		{tostring(heal_percentage) .. "%"}
+		{
+			tostring(heal_percentage) .. "%",
+			"10%"
+		}
 	})
 
 	self.specialization_descs = {}

@@ -820,18 +820,10 @@ function SkinEditor:get_excluded_weapons()
 	return {
 		"akm_gold",
 		"arblast",
-		"c96",
 		"cobray",
-		"desertfox",
 		"hajk",
-		"hk21",
 		"packrat",
-		"pl14",
-		"rota",
-		"schakal",
-		"sr2",
-		"tecci",
-		"x_sr2"
+		"pl14"
 	}
 end
 

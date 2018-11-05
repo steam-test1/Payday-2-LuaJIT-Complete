@@ -3414,7 +3414,7 @@ function PlayerTweakData:_init_packrat()
 	local pivot_head_rotation = Rotation(0, 0, 0)
 	self.stances.packrat.standard.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
 	self.stances.packrat.standard.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
-	self.stances.packrat.standard.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -20, 0)
+	self.stances.packrat.standard.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -60, 0)
 	self.stances.packrat.steelsight.vel_overshot.pitch_neg = -17
 	self.stances.packrat.steelsight.vel_overshot.pitch_pos = 17
 	local pivot_head_translation = Vector3(0, 29, 0)
@@ -3422,7 +3422,7 @@ function PlayerTweakData:_init_packrat()
 	self.stances.packrat.steelsight.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
 	self.stances.packrat.steelsight.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
 	self.stances.packrat.steelsight.FOV = self.stances.packrat.standard.FOV
-	self.stances.packrat.steelsight.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -7, 0)
+	self.stances.packrat.steelsight.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -20, 0)
 	self.stances.packrat.steelsight.vel_overshot.yaw_neg = 1
 	self.stances.packrat.steelsight.vel_overshot.yaw_pos = -1
 	self.stances.packrat.steelsight.vel_overshot.pitch_neg = -5

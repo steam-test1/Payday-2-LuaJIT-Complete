@@ -2079,6 +2079,8 @@ function HUDManager:safe_house_challenge_popup(id, c_type)
 		return
 	end
 
-	HudChallangeNotification.queue(managers.localization:to_upper_text(title_id), managers.localization:to_upper_text(d.name_id))
+	if not d.hidden_in_list then
+		HudChallangeNotification.queue(managers.localization:to_upper_text(title_id), managers.localization:to_upper_text(d.name_id))
+	end
 end
 

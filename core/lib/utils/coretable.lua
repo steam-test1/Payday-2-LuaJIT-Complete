@@ -451,6 +451,17 @@ function table.range(s, e)
 	return range
 end
 
+function table.list_reverse(list)
+	local copy = {}
+	local size = #list
+
+	for k, v in ipairs(list) do
+		copy[size - k + 1] = v
+	end
+
+	return copy
+end
+
 function table.reverse_ipairs(t)
 	local i = #t + 1
 

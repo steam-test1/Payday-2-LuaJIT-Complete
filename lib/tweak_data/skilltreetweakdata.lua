@@ -4025,7 +4025,10 @@ function SkillTreeTweakData:init()
 				texture_bundle_folder = "myh",
 				desc_id = "menu_deck19_9_desc",
 				name_id = "menu_deck19_9",
-				upgrades = {"player_damage_control_healing"},
+				upgrades = {
+					"player_passive_loot_drop_multiplier",
+					"player_damage_control_healing"
+				},
 				icon_xy = {
 					0,
 					1

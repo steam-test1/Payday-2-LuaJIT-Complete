@@ -638,6 +638,10 @@ function InteractionTweakData:init(tweak_data)
 	}
 	self.hack_suburbia_jammed_y = deep_clone(self.hack_suburbia_jammed)
 	self.hack_suburbia_jammed_y.axis = "y"
+	self.hack_suburbia_jammed_axis = deep_clone(self.hack_suburbia_jammed)
+	self.hack_suburbia_jammed_axis.axis = "y"
+	self.hack_suburbia_axis = deep_clone(self.hack_suburbia)
+	self.hack_suburbia_axis.axis = "y"
 	self.security_station = {
 		icon = "equipment_hack_ipad",
 		text_id = "debug_interact_security_station",
@@ -1164,6 +1168,8 @@ function InteractionTweakData:init(tweak_data)
 		text_id = "hud_int_invisible_interaction_open",
 		timer = 0.5
 	}
+	self.invisible_interaction_open_axis = deep_clone(self.invisible_interaction_open)
+	self.invisible_interaction_open_axis.axis = "y"
 	self.fork_lift_sound = deep_clone(self.invisible_interaction_open)
 	self.fork_lift_sound.text_id = "hud_int_fork_lift_sound"
 	self.money_briefcase = deep_clone(self.invisible_interaction_open)

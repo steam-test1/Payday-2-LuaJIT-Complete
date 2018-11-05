@@ -2088,7 +2088,7 @@ function GroupAIStateBesiege:remove_flee_point(id)
 	end
 end
 
-function GroupAIStateBesiege:flee_point(start_nav_seg)
+function GroupAIStateBesiege:flee_point(start_nav_seg, ignore_segs)
 	local start_area = self:get_area_from_nav_seg_id(start_nav_seg)
 	local to_search_areas = {start_area}
 	local found_areas = {[start_area] = true}
@@ -2099,7 +2099,9 @@ function GroupAIStateBesiege:flee_point(start_nav_seg)
 		if search_area.flee_points and next(search_area.flee_points) then
 			local flee_point_id, flee_point = next(search_area.flee_points)
 
-			return flee_point.pos
+			if not ignore_segs or not table.contains(ignore_segs, flee_point.nav_seg) then
+				return flee_point.pos
+			end
 		else
 			for other_area_id, other_area in pairs(search_area.neighbours) do
 				if not found_areas[other_area] then

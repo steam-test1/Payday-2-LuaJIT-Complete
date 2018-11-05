@@ -108,6 +108,8 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 		self._id = achievement_data_or_id
 	end
 
+	print(self._id)
+
 	if not managers.menu:is_pc_controller() then
 		self._legends = TextLegendsBar:new(parent, nil, {layer = self:layer()})
 
