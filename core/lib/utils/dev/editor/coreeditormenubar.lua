@@ -868,7 +868,15 @@ function CoreEditor:on_reload_unit(quick)
 		end
 	end
 
-	self:reload_units(names, quick)
+	if quick == true then
+		self:reload_units(names, quick)
+	else
+		local choice = EWS:message_box(Global.frame_panel, "Sure you want to reload all units?", "Confirm", "YES_NO,YES_DEFAULT,ICON_EXCLAMATION", Vector3(-1, -1, 0))
+
+		if choice == "YES" then
+			self:reload_units(names, quick)
+		end
+	end
 end
 
 function CoreEditor:on_profiler_main(custom_data, event_object)

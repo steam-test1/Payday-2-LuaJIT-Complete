@@ -127,7 +127,7 @@ function ManageSpawnedUnits:spawn_run_sequence(unit_id, sequence_name)
 		end
 	end
 
-	if Network:is_server() then
+	if Network:is_server() and not self.local_only then
 		managers.network:session():send_to_peers_synched("run_spawn_unit_sequence", self._unit, "spawn_manager", unit_id, sequence_name)
 	end
 

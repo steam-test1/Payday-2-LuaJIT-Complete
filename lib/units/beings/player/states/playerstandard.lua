@@ -3869,8 +3869,6 @@ function PlayerStandard:_update_omniscience(t, dt)
 
 		for _, unit in ipairs(sensed_targets) do
 			if alive(unit) and not unit:base():char_tweak().is_escort then
-				print("[Lua] ", "IS ESCORT: ", unit:base():char_tweak().is_escort)
-
 				self._state_data.omniscience_units_detected = self._state_data.omniscience_units_detected or {}
 
 				if not self._state_data.omniscience_units_detected[unit:key()] or self._state_data.omniscience_units_detected[unit:key()] <= t then

@@ -10167,6 +10167,7 @@ function CharacterTweakData:_create_table_structure()
 		"c45",
 		"raging_bull",
 		"m4",
+		"m4_yellow",
 		"ak47",
 		"r870",
 		"mossberg",
@@ -10198,6 +10199,7 @@ function CharacterTweakData:_create_table_structure()
 		Idstring("units/payday2/weapons/wpn_npc_c45/wpn_npc_c45"),
 		Idstring("units/payday2/weapons/wpn_npc_raging_bull/wpn_npc_raging_bull"),
 		Idstring("units/payday2/weapons/wpn_npc_m4/wpn_npc_m4"),
+		Idstring("units/payday2/weapons/wpn_npc_m4_yellow/wpn_npc_m4_yellow"),
 		Idstring("units/payday2/weapons/wpn_npc_ak47/wpn_npc_ak47"),
 		Idstring("units/payday2/weapons/wpn_npc_r870/wpn_npc_r870"),
 		Idstring("units/payday2/weapons/wpn_npc_sawnoff_shotgun/wpn_npc_sawnoff_shotgun"),
@@ -16170,7 +16172,8 @@ function CharacterTweakData:character_map()
 				"ene_zeal_cloaker",
 				"ene_zeal_swat",
 				"ene_zeal_swat_heavy",
-				"ene_zeal_swat_shield"
+				"ene_zeal_swat_shield",
+				"ene_zeal_tazer"
 			}
 		},
 		help = {

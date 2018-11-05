@@ -3203,6 +3203,18 @@ function GroupAIStateBase:set_whisper_mode(enabled)
 	end
 end
 
+function GroupAIStateBase:set_stealth_hud_disabled(disabled)
+	self._stealth_hud_disabled = disabled
+
+	if disabled then
+		self:_clear_criminal_suspicion_data()
+	end
+end
+
+function GroupAIStateBase:stealth_hud_disabled()
+	return self._stealth_hud_disabled
+end
+
 function GroupAIStateBase:set_blackscreen_variant(variant)
 	self._blackscreen_variant = variant
 end
@@ -5438,7 +5450,7 @@ function GroupAIStateBase._create_hud_suspicion_icon(obs_key, u_observer, icon_n
 end
 
 function GroupAIStateBase:on_criminal_suspicion_progress(u_suspect, u_observer, status)
-	if not self._ai_enabled or not self._whisper_mode then
+	if not self._ai_enabled or not self._whisper_mode or self._stealth_hud_disabled then
 		return
 	end
 

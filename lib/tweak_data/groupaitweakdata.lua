@@ -268,7 +268,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 		self.unit_categories.spooc = {
 			special_type = "spooc",
 			unit_types = {
-				america = {Idstring("units/payday2/characters/ene_spook_1/ene_spook_1")},
+				america = {Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_cloaker/ene_zeal_cloaker")},
 				russia = {Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_spooc_asval_smg/ene_akan_fbi_spooc_asval_smg")},
 				zombie = {Idstring("units/pd2_dlc_hvh/characters/ene_spook_hvh_1/ene_spook_hvh_1")}
 			},
@@ -399,15 +399,27 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 		}
 	end
 
-	self.unit_categories.CS_tazer = {
-		special_type = "taser",
-		unit_types = {
-			america = {Idstring("units/payday2/characters/ene_tazer_1/ene_tazer_1")},
-			russia = {Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_tazer_ak47_ass/ene_akan_cs_tazer_ak47_ass")},
-			zombie = {Idstring("units/pd2_dlc_hvh/characters/ene_tazer_hvh_1/ene_tazer_hvh_1")}
-		},
-		access = access_type_all
-	}
+	if difficulty_index == 8 then
+		self.unit_categories.CS_tazer = {
+			special_type = "taser",
+			unit_types = {
+				america = {Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_tazer/ene_zeal_tazer")},
+				russia = {Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_tazer_ak47_ass/ene_akan_cs_tazer_ak47_ass")},
+				zombie = {Idstring("units/pd2_dlc_hvh/characters/ene_tazer_hvh_1/ene_tazer_hvh_1")}
+			},
+			access = access_type_all
+		}
+	else
+		self.unit_categories.CS_tazer = {
+			special_type = "taser",
+			unit_types = {
+				america = {Idstring("units/payday2/characters/ene_tazer_1/ene_tazer_1")},
+				russia = {Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_tazer_ak47_ass/ene_akan_cs_tazer_ak47_ass")},
+				zombie = {Idstring("units/pd2_dlc_hvh/characters/ene_tazer_hvh_1/ene_tazer_hvh_1")}
+			},
+			access = access_type_all
+		}
+	end
 
 	if difficulty_index == 8 then
 		self.unit_categories.CS_shield = {

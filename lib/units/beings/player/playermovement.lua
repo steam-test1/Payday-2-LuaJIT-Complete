@@ -606,7 +606,7 @@ function PlayerMovement:on_suspicion(observer_unit, status)
 			status = status
 		}
 		local visible_status = nil
-		visible_status = managers.groupai:state():whisper_mode() and status or false
+		visible_status = managers.groupai:state():whisper_mode() and not managers.groupai:state():stealth_hud_disabled() and status or false
 		self._suspicion = self._suspicion or {}
 
 		if visible_status == false or visible_status == true then

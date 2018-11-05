@@ -20,6 +20,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_npc_melee()
 	self:_init_data_player_weapons(tweak_data)
 	self:_init_data_m4_npc()
+	self:_init_data_m4_yellow_npc()
 	self:_init_data_m14_npc()
 	self:_init_data_m14_sniper_npc()
 	self:_init_data_c45_npc()
@@ -221,6 +222,7 @@ function WeaponTweakData:_set_normal()
 	self.mp5_npc.DAMAGE = 0.3
 	self.r870_npc.DAMAGE = 0.4
 	self.m4_npc.DAMAGE = 0.4
+	self.m4_yellow_npc.DAMAGE = 0.4
 	self.c45_npc.DAMAGE = 0.1
 	self.raging_bull_npc.DAMAGE = 0.6
 	self.ump_npc.DAMAGE = 0.3
@@ -241,6 +243,7 @@ function WeaponTweakData:_set_hard()
 	self.swat_van_turret_module.DAMAGE = 0.5
 	self.ak47_ass_npc.DAMAGE = 0.4
 	self.m4_npc.DAMAGE = 0.4
+	self.m4_yellow_npc.DAMAGE = 0.4
 	self.g36_npc.DAMAGE = 0.6
 	self.r870_npc.DAMAGE = 1
 	self.ceiling_turret_module.HEALTH_INIT = 875
@@ -312,6 +315,7 @@ end
 function WeaponTweakData:_set_sm_wish()
 	self.ak47_ass_npc.DAMAGE = 3
 	self.m4_npc.DAMAGE = 3
+	self.m4_yellow_npc.DAMAGE = 3
 	self.g36_npc.DAMAGE = 5
 	self.r870_npc.DAMAGE = 7
 	self.swat_van_turret_module.HEALTH_INIT = 40000
@@ -461,6 +465,22 @@ function WeaponTweakData:_init_data_m4_npc()
 	self.m4_npc.suppression = 1
 	self.m4_npc.FIRE_MODE = "auto"
 	self.ak47_ass_npc = deep_clone(self.m4_npc)
+end
+
+function WeaponTweakData:_init_data_m4_yellow_npc()
+	self.m4_yellow_npc.categories = clone(self.new_m4.categories)
+	self.m4_yellow_npc.sounds.prefix = "m4_npc"
+	self.m4_yellow_npc.use_data.selection_index = SELECTION.PRIMARY
+	self.m4_yellow_npc.DAMAGE = 1
+	self.m4_yellow_npc.muzzleflash = "effects/payday2/particles/weapons/556_auto"
+	self.m4_yellow_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
+	self.m4_yellow_npc.CLIP_AMMO_MAX = 30
+	self.m4_yellow_npc.NR_CLIPS_MAX = 5
+	self.m4_yellow_npc.auto.fire_rate = 0.175
+	self.m4_yellow_npc.hold = "rifle"
+	self.m4_yellow_npc.alert_size = 5000
+	self.m4_yellow_npc.suppression = 1
+	self.m4_yellow_npc.FIRE_MODE = "auto"
 end
 
 function WeaponTweakData:_init_data_ak47_npc()
@@ -20515,6 +20535,12 @@ function WeaponTweakData:_create_table_structure()
 		use_data = {}
 	}
 	self.m4_npc = {
+		usage = "is_rifle",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.m4_yellow_npc = {
 		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
