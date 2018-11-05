@@ -412,6 +412,7 @@ function CopDamage:damage_bullet(attack_data)
 			managers.hud:on_crit_confirmed()
 
 			damage = crit_damage
+			attack_data.critical_hit = true
 		else
 			managers.hud:on_hit_confirmed()
 		end
@@ -628,6 +629,7 @@ function CopDamage:_check_damage_achievements(attack_data, head)
 	local unit_anim = self._unit.anim_data and self._unit:anim_data()
 	local achievements = tweak_data.achievement.enemy_kill_achievements or {}
 	local current_mask_id = managers.blackmarket:equipped_mask().mask_id
+	local attack_weapon_type = attack_weapon:base()._type
 	local weapons_pass, weapon_pass, fire_mode_pass, ammo_pass, enemy_pass, enemy_weapon_pass, mask_pass, hiding_pass, head_pass, steelsight_pass, distance_pass, zipline_pass, rope_pass, one_shot_pass, weapon_type_pass, level_pass, part_pass, parts_pass, timer_pass, cop_pass, gangster_pass, civilian_pass, count_no_reload_pass, count_pass, count_in_row_pass, diff_pass, complete_count_pass, all_pass, memory = nil
 	local kill_count_no_reload = managers.job:get_memory("kill_count_no_reload_" .. tostring(attack_weapon:base()._name_id), true)
 	kill_count_no_reload = (kill_count_no_reload or 0) + 1
@@ -1662,7 +1664,7 @@ function CopDamage:damage_melee(attack_data)
 				local enemy_type = self._unit:base()._tweak_table
 				local unit_weapon = self._unit:base()._default_weapon_id
 				local health_ratio = managers.player:player_unit():character_damage():health_ratio() * 100
-				local melee_pass, melee_weapons_pass, type_pass, enemy_pass, enemy_weapon_pass, diff_pass, health_pass, level_pass, job_pass, jobs_pass, enemy_count_pass, all_pass, cop_pass, gangster_pass, civilian_pass, stealth_pass, on_fire_pass, behind_pass = nil
+				local melee_pass, melee_weapons_pass, type_pass, enemy_pass, enemy_weapon_pass, diff_pass, health_pass, level_pass, job_pass, jobs_pass, enemy_count_pass, all_pass, cop_pass, gangster_pass, civilian_pass, stealth_pass, on_fire_pass, behind_pass, mutators_pass = nil
 
 				for achievement, achievement_data in pairs(achievements) do
 					melee_pass = not achievement_data.melee_id or achievement_data.melee_id == attack_data.name_id
@@ -1695,7 +1697,8 @@ function CopDamage:damage_melee(attack_data)
 						end
 					end
 
-					all_pass = melee_pass and melee_weapons_pass and type_pass and enemy_pass and enemy_weapon_pass and behind_pass and diff_pass and health_pass and level_pass and job_pass and jobs_pass and cop_pass and gangster_pass and civilian_pass and stealth_pass and on_fire_pass and enemy_count_pass
+					mutators_pass = managers.mutators:check_achievements(achievement_data)
+					all_pass = melee_pass and melee_weapons_pass and type_pass and enemy_pass and enemy_weapon_pass and behind_pass and diff_pass and health_pass and level_pass and job_pass and jobs_pass and cop_pass and gangster_pass and civilian_pass and stealth_pass and on_fire_pass and enemy_count_pass and mutators_pass
 
 					if all_pass then
 						if achievement_data.stat then

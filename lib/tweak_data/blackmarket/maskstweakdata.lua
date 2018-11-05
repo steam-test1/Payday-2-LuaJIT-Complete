@@ -4526,6 +4526,50 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		sort_number = 50,
 		global_value = "pd2_clan"
 	}
+	self.masks.eng_01 = {
+		unit = "units/pd2_dlc_eng/masks/eng_01/msk_eng_01",
+		name_id = "bm_msk_eng_01",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "eng",
+		sort_number = 51,
+		type = "helmet",
+		global_value = "eng"
+	}
+	self.masks.eng_02 = {
+		unit = "units/pd2_dlc_eng/masks/eng_02/msk_eng_02",
+		name_id = "bm_msk_eng_02",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "eng",
+		sort_number = 51,
+		type = "helmet",
+		global_value = "eng"
+	}
+	self.masks.eng_03 = {
+		unit = "units/pd2_dlc_eng/masks/eng_03/msk_eng_03",
+		name_id = "bm_msk_eng_03",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "eng",
+		sort_number = 51,
+		type = "helmet",
+		global_value = "eng"
+	}
+	self.masks.eng_04 = {
+		unit = "units/pd2_dlc_eng/masks/eng_04/msk_eng_04",
+		name_id = "bm_msk_eng_04",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "eng",
+		sort_number = 51,
+		type = "helmet",
+		global_value = "eng",
+		offsets = {sydney = {
+			Vector3(0, 0.435252, 0),
+			Rotation(-0, -0, -0)
+		}}
+	}
 	self.masks.wmp_01 = {
 		unit = "units/pd2_dlc_wmp/masks/wmp_01/msk_wmp_01",
 		name_id = "bm_msk_wmp_01",

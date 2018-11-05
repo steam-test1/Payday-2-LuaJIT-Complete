@@ -710,3 +710,49 @@ function MutatorsManager:on_lobby_left()
 	Global.mutators._peers_ready = nil
 end
 
+function MutatorsManager:check_achievements(achievement_data)
+	if not achievement_data.mutators then
+		return not self:are_achievements_disabled()
+	end
+
+	if achievement_data.mutators == true then
+		return managers.mutators:are_mutators_active()
+	elseif type(achievement_data.mutators) == "number" then
+		return achievement_data.mutators <= table.size(managers.mutators:active_mutators())
+	elseif #achievement_data.mutators == table.size(managers.mutators:active_mutators()) then
+		local required_mutators = deep_clone(achievement_data.mutators)
+
+		for _, active_mutator in pairs(managers.mutators:active_mutators()) do
+			if table.contains(required_mutators, active_mutator.mutator:id()) then
+				table.delete(required_mutators, active_mutator.mutator:id())
+			end
+		end
+
+		for i = #required_mutators, 1, -1 do
+			local mutator_data = required_mutators[i]
+
+			for _, active_mutator in pairs(managers.mutators:active_mutators()) do
+				if mutator_data.id == active_mutator.mutator:id() then
+					local all_values = true
+
+					for key, value in pairs(mutator_data) do
+						if key ~= "id" and active_mutator.mutator:value(key) ~= value then
+							all_values = false
+
+							break
+						end
+					end
+
+					if all_values then
+						table.remove(required_mutators, i)
+					end
+
+					break
+				end
+			end
+		end
+
+		return #required_mutators == 0
+	end
+end
+

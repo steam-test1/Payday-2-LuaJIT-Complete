@@ -55,6 +55,7 @@ function PlayerManager:init()
 	self._last_id = 1
 	self._viewport_configs = {}
 	self._num_kills = 0
+	self._timers = {}
 	self._player_list = {}
 	self._viewport_configs[1] = {{dimensions = {
 		w = 1,
@@ -536,6 +537,7 @@ end
 
 function PlayerManager:update(t, dt)
 	self._message_system:update()
+	self:_update_timers(t)
 
 	if self._need_to_send_player_status then
 		self._need_to_send_player_status = nil
@@ -1600,6 +1602,13 @@ function PlayerManager:upgrade_value(category, upgrade, default)
 	return value or value ~= false and (default or 0) or false
 end
 
+function PlayerManager:upgrade_value_nil(category, upgrade)
+	local level = self._global.upgrades[category] and self._global.upgrades[category][upgrade]
+	local value = level and tweak_data.upgrades.values[category][upgrade][level]
+
+	return value
+end
+
 function PlayerManager:crew_ability_upgrade_value(upgrade, default)
 	if not self._global.upgrades.team or not self._global.upgrades.team[upgrade] then
 		return default or 0
@@ -1615,15 +1624,15 @@ function PlayerManager:crew_ability_upgrade_value(upgrade, default)
 end
 
 function PlayerManager:start_custom_cooldown(category, upgrade, cooldown)
-	self["_cooldown_" .. category .. "_" .. upgrade] = Application:time() + cooldown
+	self:start_ability_timer(category .. "_" .. upgrade, cooldown)
 end
 
 function PlayerManager:is_custom_cooldown_not_active(category, upgrade)
-	return self:has_category_upgrade(category, upgrade) and not self:has_active_ability_cooldown(category .. "_" .. upgrade)
+	return self:has_category_upgrade(category, upgrade) and not self:has_active_ability_timer(category .. "_" .. upgrade)
 end
 
 function PlayerManager:get_custom_cooldown_left(category, upgrade)
-	return self:get_ability_cooldown_left(category .. "_" .. upgrade)
+	return self:get_ability_time_left(category .. "_" .. upgrade)
 end
 
 function PlayerManager:consumable_upgrade_value(upgrade, default)
@@ -1914,6 +1923,10 @@ function PlayerManager:upgrade_level(category, upgrade, default)
 	local level = self._global.upgrades[category][upgrade]
 
 	return level
+end
+
+function PlayerManager:upgrade_level_nil(category, upgrade)
+	return self._global.upgrades[category] and self._global.upgrades[category][upgrade]
 end
 
 function PlayerManager:upgrade_value_by_level(category, upgrade, level, default)
@@ -4263,7 +4276,7 @@ function PlayerManager:can_throw_grenade()
 	local equipped_grenade = managers.blackmarket:equipped_grenade()
 
 	if tweak_data.blackmarket.projectiles[equipped_grenade].base_cooldown then
-		return not self:has_active_ability_cooldown(equipped_grenade)
+		return not self:has_active_ability_timer(equipped_grenade)
 	end
 
 	local peer_id = managers.network:session():local_peer():id()
@@ -4304,12 +4317,12 @@ function PlayerManager:on_throw_grenade()
 	local td = tweak_data.blackmarket.projectiles[equipped_grenade]
 
 	if td.base_cooldown then
-		self:start_ability_cooldown(equipped_grenade, TimerManager:game():time() + td.base_cooldown)
+		self:start_ability_timer(equipped_grenade, TimerManager:game():time() + td.base_cooldown)
 
 		should_decrement = false
 
 		local function speed_up_on_kill()
-			managers.player:speed_up_ability_cooldown(equipped_grenade, td.kill_speedup or 1)
+			managers.player:speed_up_ability_timer(equipped_grenade, td.kill_speedup or 1)
 		end
 
 		self:register_message(Message.OnEnemyKilled, "speed_up_" .. equipped_grenade, speed_up_on_kill)
@@ -5154,85 +5167,101 @@ function PlayerManager:on_hallowSPOOCed()
 	end
 end
 
-function PlayerManager:activate_ability(ability)
-	if not self:player_unit() or not self:has_inactivate_temporary_upgrade("temporary", ability) then
+function PlayerManager:attempt_ability(ability)
+	if not self:player_unit() or self:has_activate_temporary_upgrade("temporary", ability) then
 		return
 	end
 
-	self:activate_temporary_upgrade("temporary", ability)
-
-	local t = TimerManager:game():time()
-	local tweak = tweak_data.blackmarket.projectiles[ability]
-
-	self:start_ability_cooldown(ability, t + tweak.base_cooldown)
-
-	if self["_on_activate_" .. ability] then
-		self["_on_activate_" .. ability](self)
+	if self["_attempt_" .. ability] and not self["_attempt_" .. ability](self) then
+		return
 	end
 
-	if tweak.sounds and tweak.sounds.activate then
+	local tweak = tweak_data.blackmarket.projectiles[ability]
+
+	if tweak and tweak.sounds and tweak.sounds.activate then
 		self:player_unit():sound():play(tweak.sounds.activate)
 	end
 
 	managers.network:session():send_to_peers("sync_ability_hud", self:temporary_upgrade_index("temporary", ability), self:upgrade_value("temporary", ability)[2])
 end
 
-function PlayerManager:_on_activate_chico_injector()
+function PlayerManager:_attempt_chico_injector()
+	self:activate_temporary_upgrade("temporary", "chico_injector")
 
 	local function speed_up_on_kill()
-		managers.player:speed_up_ability_cooldown("chico_injector", 1)
+		managers.player:speed_up_ability_timer("chico_injector", 1)
 	end
 
 	self:register_message(Message.OnEnemyKilled, "speed_up_chico_injector", speed_up_on_kill)
+
+	return true
 end
 
-function PlayerManager:start_ability_cooldown(ability, time)
-	self["_cooldown_" .. ability] = time
+function PlayerManager:_update_timers(t)
+	local cd = table.map_copy(self._timers)
+
+	for k, d in pairs(cd) do
+		if not d.t or d.t <= t then
+			self._timers[k] = nil
+
+			if d.func then
+				d.func(k, d.t)
+			end
+		end
+	end
 end
 
-function PlayerManager:has_active_ability_cooldown(ability)
-	return self:get_ability_cooldown(ability) and true or false
+function PlayerManager:start_ability_timer(ability, time, func)
+	self._timers[ability] = {
+		t = time,
+		func = func
+	}
 end
 
-function PlayerManager:get_ability_cooldown(ability)
+function PlayerManager:stop_ability_timer(ability, call_func)
+	if call_func then
+		local d = self._timers[ability] or {}
+
+		if d.func then
+			d.func(ability, d.t)
+		end
+	end
+
+	self._timers[ability] = nil
+end
+
+function PlayerManager:has_active_ability_timer(ability)
+	return self:get_ability_timer(ability) and true or false
+end
+
+function PlayerManager:get_ability_timer(ability)
 	if not ability then
 		return
 	end
 
-	if self["_cooldown_" .. ability] then
-		local t = TimerManager:game():time()
+	local d = self._timers[ability]
 
-		if self["_cooldown_" .. ability] <= t then
-			self["_cooldown_" .. ability] = nil
-		end
-	end
-
-	return self["_cooldown_" .. ability]
+	return d and TimerManager:game():time() < d.t and d.t or nil
 end
 
-function PlayerManager:speed_up_ability_cooldown(ability, time)
-	if not self:has_active_ability_cooldown(ability) then
+function PlayerManager:speed_up_ability_timer(ability, time)
+	local d = self._timers[ability] or {t = 0}
+	d.t = d.t - time
+end
+
+function PlayerManager:get_ability_time_left(ability)
+	if not self:has_active_ability_timer(ability) then
 		return
 	end
 
-	self["_cooldown_" .. ability] = self["_cooldown_" .. ability] - time
-end
-
-function PlayerManager:get_ability_cooldown_left(ability)
-	if not self:has_active_ability_cooldown(ability) then
-		return
-	end
-
-	local t = TimerManager:game():time()
-
-	return self:get_ability_cooldown(ability) - t
+	return self:get_ability_timer(ability) - TimerManager:game():time()
 end
 local last_synced_cooldown = nil
 
 function PlayerManager:update_ability_hud(ability)
 	local tweak = tweak_data.blackmarket.projectiles[ability]
 
-	if not self:has_active_ability_cooldown(ability) then
+	if not self:has_active_ability_timer(ability) then
 		if self._should_reset_ability_hud then
 			self:reset_ability_hud()
 
@@ -5245,7 +5274,7 @@ function PlayerManager:update_ability_hud(ability)
 	end
 
 	local base_cooldown = tweak.base_cooldown
-	local cooldown = self:get_ability_cooldown_left(ability)
+	local cooldown = self:get_ability_time_left(ability)
 
 	managers.hud:set_player_ability_cooldown({cooldown = cooldown})
 

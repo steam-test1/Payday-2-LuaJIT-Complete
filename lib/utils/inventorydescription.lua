@@ -234,7 +234,7 @@ function InventoryDescription.create_description_item(item, tweak, colors, ingam
 		end
 
 		collection_string = func_color_text(collection_string, color_collection, ingame_format)
-		desc = desc .. func_add_lb(ingame_format) .. func_add_lb(ingame_format) .. collection_string
+		desc = item.category == "armor_skins" and desc .. func_add_lb(ingame_format) .. collection_string or desc .. func_add_lb(ingame_format) .. func_add_lb(ingame_format) .. collection_string
 	end
 
 	if tweak.weapon_id then

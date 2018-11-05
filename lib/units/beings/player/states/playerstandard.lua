@@ -11,6 +11,7 @@ local mvec3_norm = mvector3.normalize
 PlayerStandard = PlayerStandard or class(PlayerMovementState)
 PlayerStandard.MOVER_STAND = Idstring("stand")
 PlayerStandard.MOVER_DUCK = Idstring("duck")
+PlayerStandard.MOVEMENT_DEADZONE = 0.1
 PlayerStandard.ANIM_STATES = {
 	standard = {
 		equip = Idstring("equip"),
@@ -644,7 +645,7 @@ function PlayerStandard:_determine_move_direction()
 		return
 	end
 
-	if mvector3.length(self._stick_move) < 0.1 or self:_interacting() or self:_does_deploying_limit_movement() then
+	if mvector3.length(self._stick_move) < PlayerStandard.MOVEMENT_DEADZONE or self:_interacting() or self:_does_deploying_limit_movement() then
 		self._move_dir = nil
 		self._normal_move_dir = nil
 	else
@@ -891,7 +892,17 @@ end
 
 function PlayerStandard:_update_network_position(t, dt, cur_pos, pos_new)
 	if not self._last_sent_pos_t or 1 / tweak_data.network.player_tick_rate < t - self._last_sent_pos_t then
-		self._ext_network:send("action_walk_nav_point", cur_pos)
+		local move_speed = math.clamp(mvector3.length(self._stick_move), 0, 1)
+
+		if move_speed < PlayerStandard.MOVEMENT_DEADZONE then
+			move_speed = 1
+		end
+
+		if managers.menu:is_pc_controller() then
+			move_speed = 1
+		end
+
+		self._ext_network:send("player_action_walk_nav_point", cur_pos, move_speed)
 
 		self._last_sent_pos_t = t
 
@@ -1708,15 +1719,9 @@ function PlayerStandard:_check_action_use_ability(t, input)
 
 	local equipped_ability = managers.blackmarket:equipped_grenade()
 
-	if managers.player:has_activate_temporary_upgrade("temporary", equipped_ability) then
+	if not managers.player:attempt_ability(equipped_ability) then
 		return
 	end
-
-	if managers.player:has_active_ability_cooldown(equipped_ability) and t < managers.player:get_ability_cooldown(equipped_ability) then
-		return
-	end
-
-	managers.player:activate_ability(equipped_ability)
 
 	return action_wanted
 end

@@ -51,10 +51,10 @@ function CarryTweakData:init(tweak_data)
 		throw_distance_multiplier = 1
 	}
 	self.types.coke_light = {
-		move_speed_modifier = self.types.light.move_speed_modifier,
-		jump_modifier = self.types.light.jump_modifier,
-		can_run = self.types.light.can_run,
-		throw_distance_multiplier = self.types.light.throw_distance_multiplier
+		move_speed_modifier = 1,
+		jump_modifier = 1,
+		can_run = true,
+		throw_distance_multiplier = 1
 	}
 	self.types.explosives = deep_clone(self.types.medium)
 	self.types.explosives.can_explode = true

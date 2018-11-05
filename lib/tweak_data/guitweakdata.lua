@@ -4859,6 +4859,11 @@ function GuiTweakData:init()
 	self.new_heists = {limit = 5}
 
 	table.insert(self.new_heists, {
+		name_id = "menu_nh_enter_the_gungeon_collab",
+		texture_path = "guis/textures/pd2/new_heists/enter_the_gungeon_collab",
+		url = "http://steamcommunity.com/games/218620/announcements/detail/1462966036244751362"
+	})
+	table.insert(self.new_heists, {
 		name_id = "menu_nh_community_safe_5",
 		texture_path = "guis/textures/pd2/new_heists/community_safe_5",
 		url = "http://www.overkillsoftware.com/games/communitysafe5/"
@@ -4874,14 +4879,14 @@ function GuiTweakData:init()
 		url = "http://steamcommunity.com/games/218620/announcements/detail/1444947199697735668"
 	})
 	table.insert(self.new_heists, {
-		name_id = "menu_nh_community_safe_4",
-		texture_path = "guis/textures/pd2/new_heists/community_safe_4",
-		url = "http://www.overkillsoftware.com/games/communitysafe4/"
-	})
-	table.insert(self.new_heists, {
 		name_id = "menu_nh_ultimate_edition",
 		texture_path = "guis/textures/pd2/new_heists/ultimate_edition",
 		url = "http://store.steampowered.com/app/218620"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_community_safe_4",
+		texture_path = "guis/textures/pd2/new_heists/community_safe_4",
+		url = "http://www.overkillsoftware.com/games/communitysafe4/"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_crime_spree_update",

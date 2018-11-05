@@ -1223,7 +1223,7 @@ function PlayerDamage:_check_chico_heal(attack_data)
 			local upg_values = managers.player:upgrade_value("player", "chico_injector_health_to_speed")
 			local times = math.floor(self._injector_overflow / upg_values[1])
 
-			managers.player:speed_up_ability_cooldown("chico_injector", upg_values[2] * times)
+			managers.player:speed_up_ability_timer("chico_injector", upg_values[2] * times)
 
 			self._injector_overflow = self._injector_overflow - upg_values[1] * times
 		else

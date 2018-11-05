@@ -1414,6 +1414,22 @@ function LootDropTweakData:init(tweak_data)
 		category = "collaboration",
 		ignore_ulti = true
 	}
+	self.global_values.eng = {
+		name_id = "bm_global_value_eng",
+		desc_id = "menu_l_global_value_eng",
+		unlock_id = "bm_global_value_eng_unlock",
+		color = dlc_color,
+		dlc = true,
+		chance = 1,
+		value_multiplier = tweak_data:get_value("money_manager", "global_value_multipliers", "eng"),
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 306,
+		unique_lock_icon = "guis/textures/pd2/blackmarket/money_lock",
+		category = "collaboration",
+		ignore_ulti = true
+	}
 	self.global_values.pn2 = {
 		name_id = "bm_global_value_pn2",
 		desc_id = "menu_l_global_value_pn2",
@@ -1571,7 +1587,8 @@ function LootDropTweakData:init(tweak_data)
 		"pn2",
 		"max",
 		"dgm",
-		"fdm"
+		"fdm",
+		"eng"
 	}
 
 	self:_create_global_value_list_map()

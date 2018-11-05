@@ -111,7 +111,21 @@ function HuskPlayerBase:has_activate_temporary_upgrade(category, upgrade)
 end
 
 function HuskPlayerBase:upgrade_value(category, upgrade)
-	return self._upgrades[category] and self._upgrades[category][upgrade]
+	local val = self._upgrades[category] and self._upgrades[category][upgrade]
+
+	if not val then
+		local i = self._temporary_upgrades_map[category] and self._temporary_upgrades_map[category][upgrade]
+		local t = i and self._temporary_upgrades[i]
+
+		if t then
+			val = {
+				t.value,
+				t.time
+			}
+		end
+	end
+
+	return val
 end
 
 function HuskPlayerBase:upgrade_level(category, upgrade)

@@ -264,7 +264,8 @@ function MoneyTweakData:init(tweak_data)
 		max = 1,
 		dgm = 1,
 		raidww2_clan = 1,
-		fdm = 0
+		fdm = 0,
+		eng = 1
 	}
 	self.global_value_bonus_multiplier = {
 		normal = 0,
@@ -354,7 +355,8 @@ function MoneyTweakData:init(tweak_data)
 		max = 1,
 		dgm = 1,
 		raidww2_clan = 1,
-		fdm = 1
+		fdm = 1,
+		eng = 1
 	}
 	local smallest_cashout = (self.stage_completion[1] + self.job_completion[1]) * self.offshore_rate
 	local biggest_mask_cost = self.biggest_cashout * 40

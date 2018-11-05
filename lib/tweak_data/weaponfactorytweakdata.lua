@@ -9167,10 +9167,11 @@ function WeaponFactoryTweakData:_init_ppk()
 		stats = {value = 1}
 	}
 	self.parts.wpn_fps_pis_ppk_g_laser = {
-		type = "grip",
+		a_obj = "a_g",
 		texture_bundle_folder = "dlc1",
 		dlc = "armored_transport",
-		a_obj = "a_g",
+		type = "grip",
+		sub_type = "laser",
 		name_id = "bm_wp_pis_ppk_g_laser",
 		unit = "units/pd2_dlc1/weapons/wpn_fps_pis_ppk_pts/wpn_fps_pis_ppk_g_laser",
 		pcs = {
@@ -14541,11 +14542,12 @@ function WeaponFactoryTweakData:_init_g26()
 		}
 	}
 	self.parts.wpn_fps_pis_g26_g_laser = {
-		unit = "units/pd2_crimefest_2014/oct22/weapons/wpn_fps_pis_g26_pts/wpn_fps_pis_g26_g_laser",
-		dlc = "pd2_clan",
 		type = "grip",
-		name_id = "bm_wp_pis_g_laser",
 		a_obj = "a_g",
+		sub_type = "laser",
+		dlc = "pd2_clan",
+		name_id = "bm_wp_pis_g_laser",
+		unit = "units/pd2_crimefest_2014/oct22/weapons/wpn_fps_pis_g26_pts/wpn_fps_pis_g26_g_laser",
 		pcs = {
 			10,
 			20,
@@ -25719,6 +25721,7 @@ function WeaponFactoryTweakData:_init_schakal()
 		dlc = "pim",
 		a_obj = "a_vg",
 		type = "vertical_grip",
+		sub_type = "flashlight",
 		name_id = "bm_wp_schakal_vg_surefire",
 		unit = "units/pd2_dlc_pim/weapons/wpn_fps_smg_schakal_pts/wpn_fps_smg_schakal_vg_surefire",
 		pcs = {},

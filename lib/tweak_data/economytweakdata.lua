@@ -861,7 +861,7 @@ function EconomyTweakData:init()
 	}
 	self.bundles.skf_01 = {
 		def_id = 30004,
-		dlc_id = "627400",
+		dlc_id = "729560",
 		quality = "mint",
 		bonus = false,
 		contains = {weapon_skins = {

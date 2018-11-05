@@ -59,6 +59,7 @@ CopActionAct._act_redirects.enemy_spawn = {
 	"e_sp_down_12m",
 	"e_sp_down_16m",
 	"e_sp_kick_enter",
+	"e_sp_down_train_roof_hatch",
 	"e_sp_kick",
 	"e_sp_kicked",
 	"e_sp_fight_winner",

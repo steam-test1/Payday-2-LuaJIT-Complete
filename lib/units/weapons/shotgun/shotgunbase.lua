@@ -14,7 +14,12 @@ function ShotgunBase:setup_default()
 	self._damage_far = tweak_data.weapon[self._name_id].damage_far
 	self._rays = tweak_data.weapon[self._name_id].rays or self._ammo_data.rays or 6
 	self._range = self._damage_far
-	self._use_shotgun_reload = self._use_shotgun_reload or self._use_shotgun_reload == nil
+
+	if tweak_data.weapon[self._name_id].use_shotgun_reload == nil then
+		self._use_shotgun_reload = self._use_shotgun_reload or self._use_shotgun_reload == nil
+	else
+		self._use_shotgun_reload = tweak_data.weapon[self._name_id].use_shotgun_reload
+	end
 
 	if not self:weapon_tweak_data().has_magazine then
 		self._hip_fire_rate_inc = managers.player:upgrade_value("shotgun", "hip_rate_of_fire", 0)

@@ -5961,6 +5961,55 @@ function DLCTweakData:init(tweak_data)
 			amount = 1
 		}
 	}
+	self.eng = {
+		free = true,
+		content = {}
+	}
+	self.eng.content.loot_drops = {}
+	self.ach_eng_1 = {
+		dlc = "has_achievement",
+		achievement_id = "eng_1",
+		content = {}
+	}
+	self.ach_eng_1.content.loot_global_value = "eng"
+	self.ach_eng_1.content.loot_drops = {{
+		type_items = "masks",
+		item_entry = "eng_01",
+		amount = 1
+	}}
+	self.ach_eng_2 = {
+		dlc = "has_achievement",
+		achievement_id = "eng_2",
+		content = {}
+	}
+	self.ach_eng_2.content.loot_global_value = "eng"
+	self.ach_eng_2.content.loot_drops = {{
+		type_items = "masks",
+		item_entry = "eng_02",
+		amount = 1
+	}}
+	self.ach_eng_3 = {
+		dlc = "has_achievement",
+		achievement_id = "eng_4",
+		content = {}
+	}
+	self.ach_eng_3.content.loot_global_value = "eng"
+	self.ach_eng_3.content.loot_drops = {{
+		type_items = "masks",
+		item_entry = "eng_03",
+		amount = 1
+	}}
+	self.ach_eng_4 = {
+		dlc = "has_achievement",
+		achievement_id = "eng_3",
+		content = {}
+	}
+	self.ach_eng_4.content.loot_global_value = "eng"
+	self.ach_eng_4.content.loot_drops = {{
+		type_items = "masks",
+		item_entry = "eng_04",
+		amount = 1
+	}}
 	self.fdm_bundle = {
 		dlc = "has_fdm",
 		content = {}

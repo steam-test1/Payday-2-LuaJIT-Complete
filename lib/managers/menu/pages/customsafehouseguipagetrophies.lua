@@ -501,7 +501,12 @@ function CustomSafehouseGuiPageTrophies:set_trophy_info(trophy, update_size)
 
 	if data.show_progress then
 		progress_header:set_visible(true)
-		progress_header:set_top(reward_text:bottom() + PANEL_PADDING)
+
+		if data.gives_reward ~= false then
+			progress_header:set_top(reward_text:bottom() + PANEL_PADDING)
+		else
+			progress_header:set_top(objective_text:bottom() + PANEL_PADDING)
+		end
 
 		self._progress_items = {}
 

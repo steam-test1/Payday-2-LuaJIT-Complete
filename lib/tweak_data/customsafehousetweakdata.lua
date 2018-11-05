@@ -1150,6 +1150,46 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		desc_id = "trophy_aru_4_desc",
 		objectives = {self:_progress("sidejob_aru_4", 1)}
 	})
+	table.insert(self.trophies, {
+		name_id = "trophy_eng_1",
+		image_id = "safehouse_trophies_preview_bullet",
+		objective_id = "trophy_eng_1_completion_objective",
+		id = "trophy_eng_1",
+		gives_reward = false,
+		desc_id = "trophy_eng_1_desc",
+		show_progress = true,
+		objectives = {self:_progress("eng_1_stats", 5, {name_id = "trophy_eng_progress"})}
+	})
+	table.insert(self.trophies, {
+		name_id = "trophy_eng_2",
+		image_id = "safehouse_trophies_preview_the_robot",
+		objective_id = "trophy_eng_2_completion_objective",
+		id = "trophy_eng_2",
+		gives_reward = false,
+		desc_id = "trophy_eng_2_desc",
+		show_progress = true,
+		objectives = {self:_progress("eng_2_stats", 5, {name_id = "trophy_eng_progress"})}
+	})
+	table.insert(self.trophies, {
+		name_id = "trophy_eng_3",
+		image_id = "safehouse_trophies_preview_the_marine",
+		objective_id = "trophy_eng_3_completion_objective",
+		id = "trophy_eng_3",
+		gives_reward = false,
+		desc_id = "trophy_eng_3_desc",
+		show_progress = true,
+		objectives = {self:_progress("eng_3_stats", 5, {name_id = "trophy_eng_progress"})}
+	})
+	table.insert(self.trophies, {
+		name_id = "trophy_eng_4",
+		image_id = "safehouse_trophies_preview_the_cultist",
+		objective_id = "trophy_eng_4_completion_objective",
+		id = "trophy_eng_4",
+		gives_reward = false,
+		desc_id = "trophy_eng_4_desc",
+		show_progress = true,
+		objectives = {self:_progress("eng_4_stats", 5, {name_id = "trophy_eng_progress"})}
+	})
 end
 
 function CustomSafehouseTweakData:get_trophy_data(id)

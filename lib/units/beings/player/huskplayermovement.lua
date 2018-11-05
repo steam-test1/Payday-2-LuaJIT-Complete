@@ -1858,7 +1858,7 @@ function HuskPlayerMovement:_update_position(t, dt)
 		local final_pos = Vector3()
 		local i = 1
 		local remove_at = 1
-		local move_speed = self:_get_max_move_speed(self._running) * dt
+		local move_speed = self:_get_max_move_speed(self._running) * dt * (self._movement_path[1] and self._movement_path[1].speed or 1)
 		local remaining_move_speed = move_speed
 
 		while remaining_move_speed > 0 do
@@ -2287,7 +2287,8 @@ function HuskPlayerMovement:clear_movement_path()
 	self._movement_history = {}
 end
 
-function HuskPlayerMovement:sync_action_walk_nav_point(pos, action, params)
+function HuskPlayerMovement:sync_action_walk_nav_point(pos, speed, action, params)
+	speed = speed or 1
 	params = params or {}
 	self._movement_path = self._movement_path or {}
 	self._movement_history = self._movement_history or {}
@@ -2346,6 +2347,7 @@ function HuskPlayerMovement:sync_action_walk_nav_point(pos, action, params)
 
 		local node = {
 			pos = pos,
+			speed = speed,
 			type = type,
 			action = {action}
 		}
@@ -3711,7 +3713,7 @@ end
 
 function HuskPlayerMovement:_sync_movement_state_standard(event_descriptor)
 	if self:need_revive() then
-		self:sync_action_walk_nav_point(nil, "exit_bleedout", sync_action_force_and_execute)
+		self:sync_action_walk_nav_point(nil, nil, "exit_bleedout", sync_action_force_and_execute)
 	end
 
 	self:set_need_revive(false)
@@ -3830,7 +3832,7 @@ function HuskPlayerMovement:_sync_movement_state_bleed_out(event_descriptor)
 		self._atention_on = false
 	end
 
-	self:sync_action_walk_nav_point(nil, "enter_bleedout", sync_action_force_and_execute)
+	self:sync_action_walk_nav_point(nil, nil, "enter_bleedout", sync_action_force_and_execute)
 	self:set_attention_updator(self._upd_attention_bleedout)
 end
 
@@ -3899,7 +3901,7 @@ function HuskPlayerMovement:_sync_movement_state_arrested(event_descriptor)
 		self._atention_on = false
 	end
 
-	self:sync_action_walk_nav_point(nil, "enter_arrested", sync_action_force_and_execute)
+	self:sync_action_walk_nav_point(nil, nil, "enter_arrested", sync_action_force_and_execute)
 end
 
 function HuskPlayerMovement:_sync_movement_state_driving(event_descriptor)
@@ -4407,7 +4409,7 @@ function HuskPlayerMovement:_get_max_move_speed(run)
 		if carry_tweak then
 			local type_tweak = tweak_data.carry.types[carry_tweak.type]
 
-			if type_tweak and type_tweak.move_speed_modifier then
+			if type_tweak and type_tweak.move_speed_modifier and type_tweak.move_speed_modifier < 1 then
 				move_speed = move_speed * type_tweak.move_speed_modifier * (1 + type_tweak.move_speed_modifier)
 			end
 		end
@@ -4496,7 +4498,7 @@ function HuskPlayerMovement:on_exit_zipline()
 	local pos = self._zipline.zipline_unit:zipline():end_pos()
 	local action = HuskPlayerMovement.action_prerequisites.zipline_end.target_action
 
-	self:sync_action_walk_nav_point(pos, action, sync_action_force)
+	self:sync_action_walk_nav_point(pos, nil, action, sync_action_force)
 
 	self._zipline.enabled = false
 end
@@ -4538,7 +4540,7 @@ end
 
 function HuskPlayerMovement:sync_action_jump(pos, jump_vec)
 	self:_override_last_node_action("land", true)
-	self:sync_action_walk_nav_point(pos, "jump", sync_action_force)
+	self:sync_action_walk_nav_point(pos, nil, "jump", sync_action_force)
 end
 
 function HuskPlayerMovement:_cleanup_previous_state(previous_state)

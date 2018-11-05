@@ -959,24 +959,7 @@ function MissionEndState:chk_complete_heist_achievements()
 					end
 				end
 
-				mutators_pass = not achievement_data.mutators
-
-				if achievement_data.mutators then
-					if achievement_data.mutators == true then
-						mutators_pass = managers.mutators:are_mutators_active()
-					elseif #achievement_data.mutators == table.size(managers.mutators:active_mutators()) then
-						local required_mutators = deep_clone(achievement_data.mutators)
-
-						for _, active_mutator in pairs(managers.mutators:active_mutators()) do
-							if table.contains(required_mutators, active_mutator.mutator:id()) then
-								table.delete(required_mutators, active_mutator.mutator:id())
-							end
-						end
-
-						mutators_pass = #required_mutators == 0
-					end
-				end
-
+				mutators_pass = managers.mutators:check_achievements(achievement_data)
 				used_weapon_category_pass = true
 
 				if achievement_data.used_weapon_category then
