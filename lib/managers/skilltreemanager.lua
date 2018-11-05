@@ -257,6 +257,16 @@ function SkillTreeManager:points_spent_in_skilltree(tree_name, switch_data)
 	return points
 end
 
+function SkillTreeManager:total_points_spent(switch_data)
+	local points = 0
+
+	for tree, data in pairs(tweak_data.skilltree.trees) do
+		points = points + self:points_spent(tree, switch_data)
+	end
+
+	return points
+end
+
 function SkillTreeManager:_set_points_spent(tree, value)
 	self._global.trees[tree].points_spent = Application:digest_value(value, true)
 
@@ -1635,6 +1645,17 @@ function SkillTreeManager:get_specialization_value(...)
 	return self:digest_value(value, false) or 0
 end
 
+function SkillTreeManager:current_specialization_tier()
+	local idx = self:digest_value(self._global.specializations.current_specialization, false)
+	local current = idx and self._global.specializations[idx]
+
+	if not current or not current.tiers then
+		return 0
+	end
+
+	return self:digest_value(current.tiers.current_tier)
+end
+
 function SkillTreeManager:specialization_points()
 	return self._global.specializations.points and self:digest_value(self._global.specializations.points, false) or 0
 end
@@ -1929,6 +1950,10 @@ function SkillTreeManager:debug_print_specialization_data(data, times)
 		if type(d) == "string" then
 			print(i, self:digest_value(d, false))
 		end
+	end
+
+	for i, d in ipairs(data) do
+		print(i, self:digest_value(d.tiers.current_tier, false))
 	end
 end
 

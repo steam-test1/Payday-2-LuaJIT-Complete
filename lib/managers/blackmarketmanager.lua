@@ -824,7 +824,7 @@ function BlackMarketManager:equip_deployable(data, loading)
 		return
 	end
 
-	Global.player_manager.kit.equipment_slots[slot] = deployable_id
+	managers.player:set_equipment_in_slot(deployable_id, slot)
 
 	if managers.menu_scene then
 		managers.menu_scene:set_character_deployable(deployable_id, false, 0)

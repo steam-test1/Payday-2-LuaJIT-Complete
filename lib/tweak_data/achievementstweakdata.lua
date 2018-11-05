@@ -45,12 +45,6 @@ function AchievementsTweakData:init(tweak_data)
 	self.iron_man = "level_7"
 	self.going_places = 1000000
 	self.spend_money_to_make_money = 1000000
-	self.you_gotta_start_somewhere = 5
-	self.guilty_of_crime = 10
-	self.gone_in_30_seconds = 25
-	self.armed_and_dangerous = 50
-	self.big_shot = 75
-	self.most_wanted = 100
 	self.fully_loaded = 9
 	self.weapon_collector = 18
 	self.arms_dealer = 72
@@ -90,6 +84,32 @@ function AchievementsTweakData:init(tweak_data)
 			"frag_com",
 			"concussion",
 			"dada_com"
+		}
+	}
+	self.level_achievements = {
+		you_gotta_start_somewhere = {
+			award = "you_gotta_start_somewhere",
+			level = 5
+		},
+		guilty_of_crime = {
+			award = "guilty_of_crime",
+			level = 10
+		},
+		gone_in_30_seconds = {
+			award = "gone_in_30_seconds",
+			level = 25
+		},
+		armed_and_dangerous = {
+			award = "armed_and_dangerous",
+			level = 50
+		},
+		big_shot = {
+			award = "big_shot",
+			level = 75
+		},
+		most_wanted = {
+			award = "most_wanted",
+			level = 100
 		}
 	}
 	self.tango_4 = {

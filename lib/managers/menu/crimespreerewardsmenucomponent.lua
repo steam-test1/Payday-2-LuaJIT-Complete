@@ -170,7 +170,8 @@ function CrimeSpreeRewardsMenuComponent:mouse_pressed(o, button, x, y)
 end
 
 function CrimeSpreeRewardsMenuComponent:_close_rewards()
-	managers.menu:back(true)
+	managers.menu:close_menu("menu_main")
+	managers.menu:open_menu("menu_main")
 end
 
 function CrimeSpreeRewardsMenuComponent:create_card(panel, icon, size)

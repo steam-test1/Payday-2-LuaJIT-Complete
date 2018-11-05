@@ -891,7 +891,7 @@ function CrimeNetManager:_find_online_games_win32(friends_only)
 			local attributes_numbers = attribute_list[i].numbers
 			local attributes_mutators = attribute_list[i].mutators
 
-			if managers.network.matchmake:is_server_ok(friends_only, room.owner_id, attributes_numbers, nil, attributes_mutators) then
+			if managers.network.matchmake:is_server_ok(friends_only, room.owner_id, attribute_list[i], nil) then
 				dead_list[room.room_id] = nil
 				local host_name = name_str
 				local level_id = tweak_data.levels:get_level_name_from_index(attributes_numbers[1] % 1000)
@@ -931,6 +931,7 @@ function CrimeNetManager:_find_online_games_win32(friends_only)
 
 							managers.menu_component:add_crimenet_server_job({
 								room_id = room.room_id,
+								host_id = room.owner_id,
 								id = room.room_id,
 								level_id = level_id,
 								difficulty = difficulty,
@@ -956,6 +957,7 @@ function CrimeNetManager:_find_online_games_win32(friends_only)
 					else
 						managers.menu_component:update_crimenet_server_job({
 							room_id = room.room_id,
+							host_id = room.owner_id,
 							id = room.room_id,
 							level_id = level_id,
 							difficulty = difficulty,
@@ -1075,7 +1077,7 @@ function CrimeNetManager:join_quick_play_game()
 				skip_level = true
 			end
 
-			if not skip_level and managers.network.matchmake:is_server_ok(false, room.owner_id, attributes_numbers) then
+			if not skip_level and managers.network.matchmake:is_server_ok(false, room.owner_id, attribute_list[i]) then
 				local owner_level = room.owner_level and tonumber(room.owner_level)
 
 				if owner_level and min_level <= owner_level and owner_level <= max_level then
@@ -3305,6 +3307,7 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		room_id = data.room_id,
 		info = data.info,
 		job_id = data.job_id,
+		host_id = data.host_id,
 		level_id = level_id,
 		level_data = level_data,
 		marker_panel = marker_panel,
@@ -3883,6 +3886,7 @@ function CrimeNetGui:check_job_pressed(x, y)
 				num_plrs = job.num_plrs or 0,
 				state = job.state,
 				host_name = job.host_name,
+				host_id = job.host_id,
 				special_node = job.special_node,
 				dlc = job.dlc,
 				contract_visuals = job_data and job_data.contract_visuals,

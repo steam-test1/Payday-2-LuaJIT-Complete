@@ -262,28 +262,12 @@ function ExperienceManager:_level_up()
 end
 
 function ExperienceManager:_check_achievements()
-	if tweak_data.achievement.you_gotta_start_somewhere <= self:current_level() then
-		managers.achievment:award("you_gotta_start_somewhere")
-	end
+	local level = self:current_level()
 
-	if tweak_data.achievement.guilty_of_crime <= self:current_level() then
-		managers.achievment:award("guilty_of_crime")
-	end
-
-	if tweak_data.achievement.gone_in_30_seconds <= self:current_level() then
-		managers.achievment:award("gone_in_30_seconds")
-	end
-
-	if tweak_data.achievement.armed_and_dangerous <= self:current_level() then
-		managers.achievment:award("armed_and_dangerous")
-	end
-
-	if tweak_data.achievement.big_shot <= self:current_level() then
-		managers.achievment:award("big_shot")
-	end
-
-	if tweak_data.achievement.most_wanted <= self:current_level() then
-		managers.achievment:award("most_wanted")
+	for _, d in pairs(tweak_data.achievement.level_achievements) do
+		if d.level and d.level <= level then
+			managers.achievment:award(d.award)
+		end
 	end
 
 	if self._global.rank then

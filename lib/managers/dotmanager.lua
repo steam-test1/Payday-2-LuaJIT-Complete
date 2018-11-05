@@ -98,20 +98,8 @@ function DOTManager:check_achievemnts(unit, t)
 		variant_count_pass = not achievement_data.count or achievement_data.variant and dotted_enemies_by_variant[achievement_data.variant] and achievement_data.count <= #dotted_enemies_by_variant[achievement_data.variant]
 		all_pass = variant_count_pass
 
-		if all_pass then
-			if achievement_data.stat then
-				managers.achievment:award_progress(achievement_data.stat)
-			elseif achievement_data.award then
-				managers.achievment:award(achievement_data.award)
-			elseif achievement_data.challenge_stat then
-				managers.challenge:award_progress(achievement_data.challenge_stat)
-			elseif achievement_data.trophy_stat then
-				managers.custom_safehouse:award(achievement_data.trophy_stat)
-			elseif achievement_data.challenge_award then
-				managers.challenge:award(achievement_data.challenge_award)
-			else
-				Application:debug("[MissionEndState] complete_heist_achievements:", achievement)
-			end
+		if all_pass and not managers.achievment:award_data(achievement_data) then
+			Application:debug("[DOTManager] dot_achievements:", achievement)
 		end
 	end
 end

@@ -13301,8 +13301,8 @@ function BlackMarketGui:open_weapon_buy_menu(data, check_allowed_item_func)
 	for category, items in pairs(item_categories) do
 		table.insert(sorted_categories, category)
 		table.sort(items, function (x, y)
-			x_unlocked = x.unlocked
-			y_unlocked = y.unlocked
+			x_unlocked = managers.blackmarket:weapon_unlocked(x.weapon_id)
+			y_unlocked = managers.blackmarket:weapon_unlocked(y.weapon_id)
 
 			if x_unlocked ~= y_unlocked then
 				return x_unlocked
@@ -13376,14 +13376,11 @@ function BlackMarketGui:choose_weapon_buy_callback2(data)
 	local items = managers.blackmarket:get_weapon_category(data.category) or {}
 	local new_node_data = {}
 	local weapon_tweak = tweak_data.weapon
-	local x_id, y_id, x_level, y_level, x_unlocked, y_unlocked, x_skill, y_skill, x_gv, y_gv, x_sn, y_sn = nil
+	local x_id, y_id, x_level, y_level, x_skill, y_skill, x_gv, y_gv, x_sn, y_sn = nil
 
 	table.sort(items, function (x, y)
-		x_unlocked = x.unlocked
-		y_unlocked = y.unlocked
-
-		if x_unlocked ~= y_unlocked then
-			return x_unlocked
+		if x.unlocked ~= y.unlocked then
+			return x.unlocked
 		end
 
 		x_id = x.weapon_id

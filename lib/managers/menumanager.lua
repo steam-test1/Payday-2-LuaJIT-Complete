@@ -2582,10 +2582,13 @@ function MenuCallbackHandler:change_resolution(item)
 
 	managers.viewport:set_resolution(item:parameters().resolution)
 	managers.viewport:set_aspect_ratio(item:parameters().resolution.x / item:parameters().resolution.y)
-	managers.menu:show_accept_gfx_settings_dialog(function ()
+
+	local function on_decline()
 		managers.viewport:set_resolution(old_resolution)
 		managers.viewport:set_aspect_ratio(old_resolution.x / old_resolution.y)
-	end)
+	end
+
+	managers.menu:show_accept_gfx_settings_dialog(on_decline)
 end
 
 function MenuCallbackHandler:toggle_throwable_contour(item)
@@ -4256,6 +4259,14 @@ function MenuCallbackHandler:set_default_video_options()
 		text = managers.localization:text("dialog_default_video_options_message"),
 		callback = function ()
 			managers.user:reset_video_setting_map()
+			managers.viewport:reset_viewport_settings()
+			Application:reset_render_settings({
+				"anti_aliasing",
+				"max_anisotropy",
+				"shadow_quality",
+				"shadow_quality_default",
+				"texture_quality_default"
+			})
 			self:refresh_node()
 		end
 	}

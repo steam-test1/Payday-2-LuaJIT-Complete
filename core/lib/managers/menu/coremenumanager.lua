@@ -74,10 +74,6 @@ function Manager:open_menu(menu_name, position, ...)
 
 		local current_open_menu = self._open_menus[#self._open_menus]
 
-		if self._open_menus[#self._open_menus] then
-			
-		end
-
 		if position then
 			table.insert(self._open_menus, position, menu)
 		else

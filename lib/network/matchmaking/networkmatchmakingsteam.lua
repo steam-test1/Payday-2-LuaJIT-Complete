@@ -1,6 +1,6 @@
 NetworkMatchMakingSTEAM = NetworkMatchMakingSTEAM or class()
 NetworkMatchMakingSTEAM.OPEN_SLOTS = tweak_data.max_players
-NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "payday2_v1.76.327"
+NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "payday2_v1.76.329"
 
 function NetworkMatchMakingSTEAM:init()
 	cat_print("lobby", "matchmake = NetworkMatchMakingSTEAM")
@@ -474,7 +474,9 @@ function NetworkMatchMakingSTEAM:game_owner_name()
 	return managers.network.matchmake.lobby_handler:get_lobby_data("owner_name")
 end
 
-function NetworkMatchMakingSTEAM:is_server_ok(friends_only, room, attributes_numbers, is_invite, attributes_mutators)
+function NetworkMatchMakingSTEAM:is_server_ok(friends_only, room, attributes_list, is_invite)
+	local attributes_numbers = attributes_list.numbers
+	local attributes_mutators = attributes_list.mutators
 	local permission = tweak_data:index_to_permission(attributes_numbers[3])
 	local level_index, job_index = self:_split_attribute_number(attributes_numbers[1], 1000)
 	local level_name = tweak_data.levels:get_level_name_from_index(level_index)
@@ -550,7 +552,7 @@ function NetworkMatchMakingSTEAM:join_server_with_check(room_id, is_invite)
 			end
 		end
 
-		local server_ok, ok_error = self:is_server_ok(nil, room_id, attributes, is_invite)
+		local server_ok, ok_error = self:is_server_ok(nil, room_id, {numbers = attributes}, is_invite)
 
 		if server_ok then
 			self:join_server(room_id, true)

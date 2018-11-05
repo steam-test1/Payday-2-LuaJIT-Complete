@@ -535,21 +535,8 @@ function MissionEndState:on_statistics_result(best_kills_peer_id, best_kills_sco
 
 		all_pass = diff_pass and num_players_pass and level_pass and levels_pass and total_kill_pass and total_accuracy_pass and total_downed_pass and is_dropin_pass and total_headshots_pass and managers.challenge:check_equipped(achievement_data) and managers.challenge:check_equipped_team(achievement_data) and success_pass
 
-		if all_pass then
-			if achievement_data.stat then
-				managers.achievment:award_progress(achievement_data.stat)
-			elseif achievement_data.award then
-				managers.achievment:award(achievement_data.award)
-				managers.generic_side_jobs:award(achievement_data.award)
-			elseif achievement_data.challenge_stat then
-				managers.challenge:award_progress(achievement_data.challenge_stat)
-			elseif achievement_data.trophy_stat then
-				managers.custom_safehouse:award(achievement_data.trophy_stat)
-			elseif achievement_data.challenge_award then
-				managers.challenge:award(achievement_data.challenge_award)
-			else
-				Application:debug("[MissionEndState] complete_heist_achievements:", achievement)
-			end
+		if all_pass and not managers.achievment:award_data(achievement_data) then
+			Application:debug("[MissionEndState] complete_heist_achievements:", achievement)
 		end
 	end
 end
@@ -1404,17 +1391,7 @@ function MissionEndState:chk_complete_heist_achievements()
 				all_masks_valid = all_masks_valid and valid_mask_count == 4
 
 				if all_masks_valid then
-					if achievement_data.stat then
-						managers.achievment:award_progress(achievement_data.stat)
-					elseif achievement_data.award then
-						managers.achievment:award(achievement_data.award)
-					elseif achievement_data.challenge_stat then
-						managers.challenge:award_progress(achievement_data.challenge_stat)
-					elseif achievement_data.trophy_stat then
-						managers.custom_safehouse:award(achievement_data.trophy_stat)
-					elseif achievement_data.challenge_award then
-						managers.challenge:award(achievement_data.challenge_award)
-					end
+					managers.achievment:award_data(achievement_data)
 				end
 			end
 		end

@@ -247,6 +247,10 @@ function AchievmentManager:heist_success_awards()
 	return self._mission_end_achievements
 end
 
+function AchievmentManager:award_data(t, name)
+	return self:_award_achievement(t, name)
+end
+
 function AchievmentManager:award(id)
 	if not self:exists(id) then
 		Application:error("[AchievmentManager:award] Awarding non-existing achievement", "id", id)
@@ -529,21 +533,26 @@ function AchievmentManager:_check_autounlock_infamy()
 	managers.experience:_check_achievements()
 end
 
-function AchievmentManager:_award_achievement(achievement_data, achievement_name)
-	if achievement_name then
-		print("[AchievmentManager] awarding: ", achievement_name)
+function AchievmentManager:_award_achievement(t, name)
+	if name then
+		print("[AchievmentManager] awarding: ", name)
 	end
 
-	if achievement_data.stat then
-		managers.achievment:award_progress(achievement_data.stat)
-	elseif achievement_data.award then
-		managers.achievment:award(achievement_data.award)
-	elseif achievement_data.challenge_stat then
-		managers.challenge:award_progress(achievement_data.challenge_stat)
-	elseif achievement_data.trophy_stat then
-		managers.custom_safehouse:award(achievement_data.trophy_stat)
-	elseif achievement_data.challenge_award then
-		managers.challenge:award(achievement_data.challenge_award)
+	if t.stat then
+		managers.achievment:award_progress(t.stat)
+	elseif t.award then
+		managers.achievment:award(t.award)
+		managers.generic_side_jobs:award(t.award)
+	elseif t.challenge_stat then
+		managers.challenge:award_progress(t.challenge_stat)
+	elseif t.challenge_award then
+		managers.challenge:award(t.challenge_award)
+	elseif t.trophy_stat then
+		managers.custom_safehouse:award(t.trophy_stat)
+	else
+		return false
 	end
+
+	return true
 end
 

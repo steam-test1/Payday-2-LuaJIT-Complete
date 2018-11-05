@@ -69,6 +69,10 @@ function CivilianDamage:_unregister_from_enemy_manager(damage_info)
 end
 
 function CivilianDamage:no_intimidation_by_dmg()
+	if self._ignore_intimidation_by_damage then
+		return true
+	end
+
 	if self._unit and self._unit:anim_data() then
 		return self._unit:anim_data().no_intimidation_by_dmg
 	end

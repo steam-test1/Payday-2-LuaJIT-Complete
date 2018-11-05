@@ -47,6 +47,8 @@ function ButlerSound:_mirroring_sound_callback()
 	local rnd_idx = math.random(1, count)
 
 	self._unit:play_redirect(_butler_idle_anims[rnd_idx])
+	self._unit:set_extension_update_enabled(Idstring("sound"), true)
+	self:_randomize_speech_time()
 end
 
 function ButlerSound:_sound_start_mirroring()
@@ -54,6 +56,9 @@ function ButlerSound:_sound_start_mirroring()
 
 	if snd_event then
 		self:say(snd_event, false, true)
+	else
+		self._unit:set_extension_update_enabled(Idstring("sound"), true)
+		self:_randomize_speech_time()
 	end
 end
 

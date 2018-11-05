@@ -370,6 +370,20 @@ function ViewportManager:set_adapter_index(adapter_index)
 	end
 end
 
+function ViewportManager:reset_viewport_settings()
+	Application:reset_render_settings({
+		"adapter_index",
+		"aspect_ratio",
+		"fullscreen",
+		"resolution",
+		"v_sync"
+	})
+
+	self._render_settings_change_map = nil
+
+	self:resolution_changed()
+end
+
 function ViewportManager:aspect_ratio()
 	return self._aspect_ratio
 end

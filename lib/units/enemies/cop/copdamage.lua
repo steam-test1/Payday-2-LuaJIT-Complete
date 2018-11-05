@@ -750,18 +750,8 @@ function CopDamage:_check_damage_achievements(attack_data, head)
 
 		all_pass = all_pass and count_in_row_pass
 
-		if all_pass then
-			if achievement_data.stat then
-				managers.achievment:award_progress(achievement_data.stat)
-			elseif achievement_data.award then
-				managers.achievment:award(achievement_data.award)
-			elseif achievement_data.challenge_stat then
-				managers.challenge:award_progress(achievement_data.challenge_stat)
-			elseif achievement_data.trophy_stat then
-				managers.custom_safehouse:award(achievement_data.trophy_stat)
-			elseif achievement_data.challenge_award then
-				managers.challenge:award(achievement_data.challenge_award)
-			end
+		if all_pass and not managers.achievment:award_data(achievement_data) then
+			Application:debug("[CopDamage] enemy_kill_achievements:", achievement)
 		end
 	end
 

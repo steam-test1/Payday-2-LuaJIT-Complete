@@ -1051,7 +1051,7 @@ function EconomyTweakData:init()
 		name_id = "bm_menu_safe_ast_01",
 		unit_name = "units/payday2_cash/safes/ast/safe/eco_safe_ast",
 		texture_bundle_folder = "cash/safes/ast",
-		market_link = "https://steamcommunity.com/market/listings/218620/Armor%20Safe%202"
+		market_link = "https://steamcommunity.com/market/listings/218620/Armor%20Safe%202%3A%20WW2"
 	}
 	self.safes.wwt_01 = {
 		free = true,
@@ -1060,7 +1060,7 @@ function EconomyTweakData:init()
 		name_id = "bm_menu_safe_wwt_01",
 		unit_name = "units/payday2_cash/safes/wwt/safe/eco_safe_wwt",
 		texture_bundle_folder = "cash/safes/wwt",
-		market_link = "https://steamcommunity.com/market/listings/218620/Armor%20Safe%202"
+		market_link = "https://steamcommunity.com/market/listings/218620/Aldstone%27s%20Heritage%20Safe"
 	}
 	self.drills.overkill_01 = {
 		safe = "overkill_01",

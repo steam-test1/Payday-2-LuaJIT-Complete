@@ -14802,7 +14802,6 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 	self.breech.unlock_func = "has_unlocked_breech"
 	self.ching = {
 		categories = {"assault_rifle"},
-		upgrade_blocks = {weapon = {"clip_ammo_increase"}},
 		damage_melee = damage_melee_default,
 		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
 		sounds = {}
@@ -15992,7 +15991,8 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.ching_crew = {
-		usage = "is_rifle",
+		usage = "is_sniper",
+		anim_usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}
