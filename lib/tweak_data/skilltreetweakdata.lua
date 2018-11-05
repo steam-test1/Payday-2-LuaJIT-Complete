@@ -3214,6 +3214,20 @@ function SkillTreeTweakData:init()
 		{
 			{
 				cost = 200,
+				desc_id = "menu_deck8_7_desc",
+				name_id = "menu_deck8_7",
+				upgrades = {
+					"player_damage_dampener_outnumbered_strong",
+					"melee_stacking_hit_damage_multiplier_1"
+				},
+				icon_xy = {
+					6,
+					4
+				}
+			},
+			deck2,
+			{
+				cost = 400,
 				desc_id = "menu_deck8_1_desc",
 				name_id = "menu_deck8_1",
 				upgrades = {"player_damage_dampener_close_contact_1"},
@@ -3222,43 +3236,29 @@ function SkillTreeTweakData:init()
 					4
 				}
 			},
-			deck2,
-			{
-				cost = 400,
-				desc_id = "menu_deck8_3_desc",
-				name_id = "menu_deck8_3",
-				upgrades = {"player_damage_dampener_close_contact_2"},
-				icon_xy = {
-					4,
-					4
-				}
-			},
 			deck4,
 			{
 				cost = 1000,
-				desc_id = "menu_deck8_5_desc",
-				name_id = "menu_deck8_5",
+				desc_id = "menu_deck8_3_desc",
+				name_id = "menu_deck8_3",
 				upgrades = {
-					"player_damage_dampener_close_contact_3",
+					"player_damage_dampener_close_contact_2",
 					"melee_stacking_hit_expire_t",
 					"melee_stacking_hit_damage_multiplier_1"
 				},
 				icon_xy = {
-					5,
+					4,
 					4
 				}
 			},
 			deck6,
 			{
 				cost = 2400,
-				desc_id = "menu_deck8_7_desc",
-				name_id = "menu_deck8_7",
-				upgrades = {
-					"player_damage_dampener_outnumbered_strong",
-					"melee_stacking_hit_damage_multiplier_2"
-				},
+				desc_id = "menu_deck8_3_desc",
+				name_id = "menu_deck8_5",
+				upgrades = {"player_damage_dampener_close_contact_3"},
 				icon_xy = {
-					6,
+					5,
 					4
 				}
 			},
@@ -3285,9 +3285,12 @@ function SkillTreeTweakData:init()
 				cost = 200,
 				desc_id = "menu_deck9_1_desc",
 				name_id = "menu_deck9_1",
-				upgrades = {"player_damage_dampener_close_contact_1"},
+				upgrades = {
+					"player_damage_dampener_outnumbered_strong",
+					"melee_stacking_hit_damage_multiplier_1"
+				},
 				icon_xy = {
-					3,
+					6,
 					4
 				}
 			},
@@ -3296,7 +3299,11 @@ function SkillTreeTweakData:init()
 				cost = 400,
 				desc_id = "menu_deck9_3_desc",
 				name_id = "menu_deck9_3",
-				upgrades = {"player_killshot_regen_armor_bonus"},
+				upgrades = {
+					"player_killshot_regen_armor_bonus",
+					"player_tier_armor_multiplier_1",
+					"player_tier_armor_multiplier_2"
+				},
 				icon_xy = {
 					0,
 					5
@@ -3307,7 +3314,10 @@ function SkillTreeTweakData:init()
 				cost = 1000,
 				desc_id = "menu_deck9_5_desc",
 				name_id = "menu_deck9_5",
-				upgrades = {"player_melee_kill_life_leech"},
+				upgrades = {
+					"player_melee_kill_life_leech",
+					"player_damage_dampener_close_contact_1"
+				},
 				icon_xy = {
 					1,
 					5
@@ -3318,7 +3328,10 @@ function SkillTreeTweakData:init()
 				cost = 2400,
 				desc_id = "menu_deck9_7_desc",
 				name_id = "menu_deck9_7",
-				upgrades = {"player_killshot_close_regen_armor_bonus"},
+				upgrades = {
+					"player_killshot_close_regen_armor_bonus",
+					"player_tier_armor_multiplier_3"
+				},
 				icon_xy = {
 					2,
 					5
@@ -3361,7 +3374,11 @@ function SkillTreeTweakData:init()
 				cost = 400,
 				desc_id = "menu_deck10_3_desc",
 				name_id = "menu_deck10_3",
-				upgrades = {"temporary_loose_ammo_give_team"},
+				upgrades = {
+					"temporary_loose_ammo_give_team",
+					"player_passive_health_multiplier_1",
+					"player_passive_health_multiplier_2"
+				},
 				icon_xy = {
 					5,
 					5
@@ -3372,7 +3389,10 @@ function SkillTreeTweakData:init()
 				cost = 1000,
 				desc_id = "menu_deck10_5_desc",
 				name_id = "menu_deck10_5",
-				upgrades = {"player_loose_ammo_restore_health_give_team"},
+				upgrades = {
+					"player_loose_ammo_restore_health_give_team",
+					"player_passive_health_multiplier_3"
+				},
 				icon_xy = {
 					6,
 					5

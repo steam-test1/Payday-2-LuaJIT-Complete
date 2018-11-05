@@ -541,7 +541,7 @@ function PrePlanningTweakData:init(tweak_data)
 		icon = 54,
 		total = 1,
 		cost = tweak_data:get_value("money_manager", "preplaning_asset_cost_escapebig"),
-		budget_cost = 6,
+		budget_cost = 3,
 		post_event = "gus_preplan_17",
 		prio = 2
 	}
@@ -554,7 +554,7 @@ function PrePlanningTweakData:init(tweak_data)
 		icon = 54,
 		total = 1,
 		cost = tweak_data:get_value("money_manager", "preplaning_asset_cost_escapebig"),
-		budget_cost = 6,
+		budget_cost = 3,
 		post_event = "gus_preplan_17",
 		prio = 3
 	}
@@ -654,7 +654,7 @@ function PrePlanningTweakData:init(tweak_data)
 		icon = 51,
 		total = 1,
 		cost = tweak_data:get_value("money_manager", "preplaning_asset_cost_thermite"),
-		budget_cost = 8,
+		budget_cost = 5,
 		post_event = "gus_preplan_02",
 		prio = 1
 	}

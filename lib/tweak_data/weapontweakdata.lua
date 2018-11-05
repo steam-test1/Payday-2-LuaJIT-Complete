@@ -3866,7 +3866,8 @@ function WeaponTweakData:_init_new_m4(weapon_data)
 		reload = "reload",
 		reload_not_empty = "reload_not_empty",
 		equip_id = "equip_m4",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.new_m4.transition_duration = 0.02
 	self.new_m4.panic_suppression_chance = 0.2
@@ -4346,7 +4347,8 @@ function WeaponTweakData:_init_amcar(weapon_data)
 		reload = "reload",
 		reload_not_empty = "reload_not_empty",
 		equip_id = "equip_m4",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.amcar.panic_suppression_chance = 0.2
 	self.amcar.stats = {
@@ -4438,7 +4440,8 @@ function WeaponTweakData:_init_m16(weapon_data)
 		reload = "reload",
 		reload_not_empty = "reload_not_empty",
 		equip_id = "equip_m4",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.m16.panic_suppression_chance = 0.2
 	self.m16.stats = {
@@ -4530,7 +4533,8 @@ function WeaponTweakData:_init_olympic(weapon_data)
 		reload = "reload",
 		reload_not_empty = "reload_not_empty",
 		equip_id = "equip_mp5",
-		recoil_steelsight = true
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
 	}
 	self.olympic.panic_suppression_chance = 0.2
 	self.olympic.stats = {
@@ -6525,9 +6529,9 @@ function WeaponTweakData:_init_judge(weapon_data)
 	self.judge.damage_far = 3000
 	self.judge.rays = 12
 	self.judge.CLIP_AMMO_MAX = 5
-	self.judge.NR_CLIPS_MAX = 5
+	self.judge.NR_CLIPS_MAX = 8
 	self.judge.AMMO_MAX = self.judge.CLIP_AMMO_MAX * self.judge.NR_CLIPS_MAX
-	self.judge.AMMO_PICKUP = self:_pickup_chance(self.judge.AMMO_MAX, PICKUP.OTHER)
+	self.judge.AMMO_PICKUP = self:_pickup_chance(self.judge.AMMO_MAX, PICKUP.SNIPER_HIGH_DAMAGE)
 	self.judge.spread = {
 		standing = self.r870.spread.standing,
 		crouching = self.r870.spread.crouching,
@@ -10892,7 +10896,7 @@ function WeaponTweakData:_init_flamethrower_mk2(weapon_data)
 	self.flamethrower_mk2.CLIP_AMMO_MAX = 300
 	self.flamethrower_mk2.NR_CLIPS_MAX = 2
 	self.flamethrower_mk2.AMMO_MAX = self.flamethrower_mk2.CLIP_AMMO_MAX * self.flamethrower_mk2.NR_CLIPS_MAX
-	self.flamethrower_mk2.AMMO_PICKUP = self:_pickup_chance(90, PICKUP.OTHER)
+	self.flamethrower_mk2.AMMO_PICKUP = self:_pickup_chance(self.flamethrower_mk2.CLIP_AMMO_MAX, PICKUP.OTHER)
 	self.flamethrower_mk2.FIRE_MODE = "auto"
 	self.flamethrower_mk2.fire_mode_data = {fire_rate = 0.03}
 	self.flamethrower_mk2.auto = {fire_rate = 0.05}
@@ -10943,9 +10947,9 @@ function WeaponTweakData:_init_flamethrower_mk2(weapon_data)
 	self.flamethrower_mk2.single_flame_effect_duration = 1
 	self.flamethrower_mk2.panic_suppression_chance = 0.2
 	self.flamethrower_mk2.fire_dot_data = {
-		dot_trigger_chance = 35,
-		dot_damage = 10,
-		dot_length = 6.1,
+		dot_trigger_chance = 75,
+		dot_damage = 30,
+		dot_length = 1.6,
 		dot_trigger_max_distance = 3000,
 		dot_tick_period = 0.5
 	}
@@ -13008,10 +13012,10 @@ function WeaponTweakData:_init_sr2(weapon_data)
 	}
 	self.sr2.kick = {
 		standing = {
-			-0.6,
-			1.2,
-			-1,
-			1
+			-0.3,
+			0.6,
+			-0.5,
+			0.5
 		},
 		crouching = self.cobray.kick.standing,
 		steelsight = self.cobray.kick.standing
@@ -13049,12 +13053,12 @@ function WeaponTweakData:_init_sr2(weapon_data)
 		alert_size = 7,
 		spread = 14,
 		spread_moving = 14,
-		recoil = 12,
+		recoil = 14,
 		value = 1,
 		extra_ammo = 6,
 		reload = 11,
 		suppression = 14,
-		concealment = 25
+		concealment = 28
 	}
 end
 
@@ -13152,12 +13156,12 @@ function WeaponTweakData:_init_x_sr2(weapon_data)
 		alert_size = 7,
 		spread = 14,
 		spread_moving = 14,
-		recoil = 12,
+		recoil = 14,
 		value = 1,
 		extra_ammo = 6,
 		reload = 11,
 		suppression = 15,
-		concealment = 25
+		concealment = 28
 	}
 end
 
@@ -15113,9 +15117,9 @@ function WeaponTweakData:_init_lemming(weapon_data)
 		total_ammo_mod = 21,
 		damage = 120,
 		alert_size = 7,
-		spread = 17,
+		spread = 13,
 		spread_moving = 18,
-		recoil = 12,
+		recoil = 10,
 		value = 4,
 		extra_ammo = 6,
 		reload = 11,
@@ -15687,7 +15691,7 @@ function WeaponTweakData:_init_ecp(weapon_data)
 		extra_ammo = 6,
 		reload = 11,
 		suppression = 14,
-		concealment = 28
+		concealment = 5
 	}
 	self.ecp.stats_modifiers = {damage = 10}
 end

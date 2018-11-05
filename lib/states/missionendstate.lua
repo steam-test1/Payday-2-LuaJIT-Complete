@@ -311,7 +311,11 @@ function MissionEndState:play_finishing_sound(success)
 	if not success and managers.groupai:state():bain_state() then
 		local level_data = Global.level_data.level_id and tweak_data.levels[Global.level_data.level_id]
 
-		managers.dialog:queue_dialog(level_data and level_data.failure_event or "Play_ban_g01x", {})
+		if level_data and level_data.failure_event then
+			managers.dialog:queue_dialog(level_data.failure_event, {})
+		else
+			managers.dialog:queue_dialog("Play_ban_g01x", {})
+		end
 	end
 end
 

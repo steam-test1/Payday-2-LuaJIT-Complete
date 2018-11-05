@@ -883,6 +883,20 @@ function EconomyTweakData:init()
 			"mac10_skf"
 		}}
 	}
+	self.contents.cas_01 = {
+		def_id = 10049,
+		contains = {
+			armor_skins = {
+				"cas_m90",
+				"cas_police",
+				"cas_miami",
+				"cas_slayer",
+				"cas_trash",
+				"cas_gensec"
+			},
+			contents = {}
+		}
+	}
 	self.safes.overkill_01 = {
 		def_id = 50000,
 		promo = true,
@@ -1124,6 +1138,15 @@ function EconomyTweakData:init()
 		texture_bundle_folder = "cash/safes/skf",
 		market_link = "https://steamcommunity.com/market/listings/218620/Community%20Safe%205"
 	}
+	self.safes.cas_01 = {
+		free = true,
+		drill = "cas_01",
+		content = "cas_01",
+		name_id = "bm_menu_safe_cas_01",
+		unit_name = "units/payday2_cash/safes/cas/safe/eco_safe_cas",
+		texture_bundle_folder = "cash/safes/cas",
+		market_link = "https://steamcommunity.com/market/listings/218620/Armor%20Safe%202%3A%20cas"
+	}
 	self.drills.overkill_01 = {
 		safe = "overkill_01",
 		def_id = 70000,
@@ -1292,6 +1315,10 @@ function EconomyTweakData:init()
 	self.drills.skf_01 = {
 		safe = "skf_01",
 		unit_name = "units/payday2_cash/safes/skf/drill/eco_drill_skf"
+	}
+	self.drills.cas_01 = {
+		safe = "cas_01",
+		unit_name = "units/payday2_cash/safes/cas/drill/eco_drill_cas"
 	}
 	self.bonuses = {concealment_p1 = {}}
 	self.bonuses.concealment_p1.name_id = "bm_menu_bonus_concealment"

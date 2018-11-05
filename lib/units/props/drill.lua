@@ -243,8 +243,6 @@ function Drill:_drill_remind_clbk()
 		if reminder then
 			managers.groupai:state():teammate_comment(nil, reminder, nil, false, nil, false)
 		end
-	elseif managers.groupai:state():bain_state() then
-		
 	end
 
 	managers.enemy:add_delayed_clbk(Drill._drill_remind_clbk_id, Drill._drll_remind_clbk, Application:time() + 45)

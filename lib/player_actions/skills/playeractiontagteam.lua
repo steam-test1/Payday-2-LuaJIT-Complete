@@ -55,10 +55,10 @@ PlayerAction.TagTeam.Function = function (tagged, owner)
 		coroutine.yield()
 	end
 
-	tagged = nil
-
 	CopDamage.unregister_listener(on_damage_key)
 	managers.network:session():send_to_peers("end_tag_team", tagged, owner)
+
+	tagged = nil
 
 	while not managers.player:got_max_grenades() do
 		coroutine.yield()

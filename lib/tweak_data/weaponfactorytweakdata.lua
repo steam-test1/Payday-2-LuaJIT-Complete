@@ -2256,10 +2256,10 @@ function WeaponFactoryTweakData:_init_m4()
 		stats = {value = 1}
 	}
 	self.parts.wpn_fps_m4_upper_reciever_edge = {
-		unit = "units/payday2/weapons/wpn_fps_ass_m4_pts/wpn_fps_m4_upper_reciever_edge",
 		a_obj = "a_body",
 		type = "upper_reciever",
 		name_id = "bm_wp_m4_upper_reciever_edge",
+		unit = "units/payday2/weapons/wpn_fps_ass_m4_pts/wpn_fps_m4_upper_reciever_edge",
 		pcs = {
 			10,
 			20,
@@ -2271,7 +2271,8 @@ function WeaponFactoryTweakData:_init_m4()
 			recoil = 1,
 			damage = 1
 		},
-		animations = {reload = "reload"}
+		animations = {},
+		override = {wpn_fps_amcar_bolt_standard = {unit = "units/payday2/weapons/wpn_fps_ass_m4_pts/wpn_fps_m4_bolt_edge"}}
 	}
 	self.parts.wpn_fps_m4_upper_reciever_round = {
 		a_obj = "a_body",
@@ -2279,7 +2280,7 @@ function WeaponFactoryTweakData:_init_m4()
 		name_id = "bm_wp_m4_upper_reciever_round",
 		unit = "units/payday2/weapons/wpn_fps_ass_m4_pts/wpn_fps_m4_upper_reciever_round",
 		stats = {value = 1},
-		animations = {reload = "reload"}
+		override = {wpn_fps_amcar_bolt_standard = {unit = "units/payday2/weapons/wpn_fps_ass_m4_pts/wpn_fps_m4_bolt_round"}}
 	}
 	self.parts.wpn_fps_m4_uupg_b_long = {
 		unit = "units/payday2/weapons/wpn_fps_ass_m4_pts/wpn_fps_m4_uupg_b_long",
@@ -2665,6 +2666,13 @@ function WeaponFactoryTweakData:_init_m4()
 		},
 		unit = "units/payday2/weapons/wpn_fps_ass_m4/wpn_fps_ass_m4",
 		stock_adapter = "wpn_fps_upg_m4_s_adapter",
+		animations = {
+			reload = "reload",
+			fire = "recoil",
+			fire_steelsight = "recoil",
+			reload_not_empty = "reload_not_empty",
+			magazine_empty = "last_recoil"
+		},
 		default_blueprint = {
 			"wpn_fps_upg_m4_g_standard_vanilla",
 			"wpn_fps_m4_lower_reciever",
@@ -2674,7 +2682,8 @@ function WeaponFactoryTweakData:_init_m4()
 			"wpn_fps_m4_uupg_m_std_vanilla",
 			"wpn_fps_upg_m4_s_standard_vanilla",
 			"wpn_fps_m4_uupg_draghandle",
-			"wpn_fps_m4_uupg_o_flipup"
+			"wpn_fps_m4_uupg_o_flipup",
+			"wpn_fps_amcar_bolt_standard"
 		},
 		override = {wpn_fps_upg_ass_m4_b_beowulf = {a_obj = "a_b_beowulf"}},
 		uses_parts = {
@@ -2750,6 +2759,7 @@ function WeaponFactoryTweakData:_init_m4()
 			"wpn_fps_upg_ass_m4_fg_lvoa",
 			"wpn_fps_upg_ass_ns_battle",
 			"wpn_fps_upg_fl_ass_utg",
+			"wpn_fps_amcar_bolt_standard",
 			"wpn_fps_upg_o_45rds",
 			"wpn_fps_upg_o_spot",
 			"wpn_fps_m4_upg_m_quick",
@@ -2954,6 +2964,11 @@ function WeaponFactoryTweakData:_init_amcar()
 		type = "sight",
 		name_id = "bm_wp_g18c_m_mag_17rnd",
 		unit = "units/payday2/weapons/wpn_fps_ass_amcar_pts/wpn_fps_amcar_uupg_body_upperreciever",
+		animations = {
+			fire = "recoil",
+			reload = "reload",
+			magazine_empty = "last_recoil"
+		},
 		adds = {"wpn_fps_ass_m16_os_frontsight"},
 		forbids = {
 			"wpn_fps_m4_upper_reciever_round_vanilla",
@@ -2969,11 +2984,25 @@ function WeaponFactoryTweakData:_init_amcar()
 		unit = "units/payday2/weapons/wpn_fps_ass_amcar_pts/wpn_fps_amcar_uupg_fg_amcar",
 		type = "foregrip"
 	}
+	self.parts.wpn_fps_amcar_bolt_standard = {
+		a_obj = "a_bolt",
+		unit = "units/payday2/weapons/wpn_fps_ass_amcar_pts/wpn_fps_amcar_bolt_standard",
+		type = "bolt"
+	}
 	self.parts.wpn_fps_amcar_uupg_body_upperreciever.third_unit = "units/payday2/weapons/wpn_third_ass_amcar_pts/wpn_third_amcar_uupg_body_upperreciever"
 	self.parts.wpn_fps_amcar_uupg_fg_amcar.third_unit = "units/payday2/weapons/wpn_third_ass_amcar_pts/wpn_third_amcar_uupg_fg_amcar"
+	self.parts.wpn_fps_amcar_bolt_standard.third_unit = "units/payday2/weapons/wpn_third_ass_amcar_pts/wpn_third_amcar_bolt_standard"
 	self.wpn_fps_ass_amcar = {
 		unit = "units/payday2/weapons/wpn_fps_ass_amcar/wpn_fps_ass_amcar",
 		stock_adapter = "wpn_fps_upg_m4_s_adapter",
+		animations = {
+			reload = "reload",
+			fire = "recoil",
+			fire_steelsight = "recoil",
+			reload_not_empty = "reload_not_empty",
+			magazine_empty = "last_recoil"
+		},
+		override = {wpn_fps_m4_uupg_b_medium_vanilla = {unit = "units/payday2/weapons/wpn_fps_ass_m4_pts/wpn_fps_para_b_medium"}},
 		adds = {
 			wpn_fps_upg_o_specter = {
 				"wpn_fps_m4_upper_reciever_round_vanilla",
@@ -3053,7 +3082,8 @@ function WeaponFactoryTweakData:_init_amcar()
 			"wpn_fps_amcar_uupg_fg_amcar",
 			"wpn_fps_upg_m4_m_straight_vanilla",
 			"wpn_fps_upg_m4_s_standard_vanilla",
-			"wpn_fps_upg_m4_g_standard_vanilla"
+			"wpn_fps_upg_m4_g_standard_vanilla",
+			"wpn_fps_amcar_bolt_standard"
 		},
 		uses_parts = {
 			"wpn_fps_m4_uupg_b_medium_vanilla",
@@ -3100,6 +3130,7 @@ function WeaponFactoryTweakData:_init_amcar()
 			"wpn_fps_upg_m4_m_l5",
 			"wpn_fps_upg_ass_ns_battle",
 			"wpn_fps_upg_fl_ass_utg",
+			"wpn_fps_amcar_bolt_standard",
 			"wpn_fps_upg_o_45rds",
 			"wpn_fps_upg_o_spot",
 			"wpn_fps_m4_upg_m_quick",
@@ -3201,6 +3232,13 @@ function WeaponFactoryTweakData:_init_m16()
 			"gadget",
 			"vertical_grip"
 		},
+		animations = {
+			reload = "reload",
+			fire = "recoil",
+			fire_steelsight = "recoil",
+			reload_not_empty = "reload_not_empty",
+			magazine_empty = "last_recoil"
+		},
 		override = {wpn_fps_upg_ass_m4_b_beowulf = {
 			stats = {
 				spread = 4,
@@ -3224,7 +3262,8 @@ function WeaponFactoryTweakData:_init_m16()
 			"wpn_fps_m16_fg_standard",
 			"wpn_fps_m4_uupg_b_medium_vanilla",
 			"wpn_fps_ass_m16_o_handle_sight",
-			"wpn_fps_m16_s_solid_vanilla"
+			"wpn_fps_m16_s_solid_vanilla",
+			"wpn_fps_amcar_bolt_standard"
 		},
 		uses_parts = {
 			"wpn_fps_m16_fg_railed",
@@ -3293,6 +3332,7 @@ function WeaponFactoryTweakData:_init_m16()
 			"wpn_fps_upg_ass_m16_fg_stag",
 			"wpn_fps_upg_ass_ns_battle",
 			"wpn_fps_upg_fl_ass_utg",
+			"wpn_fps_amcar_bolt_standard",
 			"wpn_fps_ass_m16_b_legend",
 			"wpn_fps_ass_m16_fg_legend",
 			"wpn_fps_ass_m16_s_legend",
@@ -3370,7 +3410,18 @@ function WeaponFactoryTweakData:_init_olympic()
 			"gadget",
 			"vertical_grip"
 		},
+		animations = {
+			reload = "reload",
+			fire = "recoil",
+			fire_steelsight = "recoil",
+			reload_not_empty = "reload_not_empty",
+			magazine_empty = "last_recoil"
+		},
 		stock_adapter = "wpn_fps_upg_m4_s_adapter",
+		override = {
+			wpn_fps_m4_uupg_b_short_vanilla = {unit = "units/payday2/weapons/wpn_fps_ass_m4_pts/wpn_fps_para_b_short"},
+			wpn_fps_m4_uupg_b_medium = {unit = "units/payday2/weapons/wpn_fps_ass_m4_pts/wpn_fps_para_b_medium"}
+		},
 		default_blueprint = {
 			"wpn_fps_smg_olympic_s_adjust",
 			"wpn_fps_m4_uupg_draghandle",
@@ -3380,7 +3431,8 @@ function WeaponFactoryTweakData:_init_olympic()
 			"wpn_fps_m4_upper_reciever_round",
 			"wpn_fps_m4_lower_reciever",
 			"wpn_fps_smg_olympic_fg_olympic",
-			"wpn_fps_ass_m16_o_handle_sight"
+			"wpn_fps_ass_m16_o_handle_sight",
+			"wpn_fps_amcar_bolt_standard"
 		},
 		uses_parts = {
 			"wpn_fps_m4_lower_reciever",
@@ -3450,6 +3502,7 @@ function WeaponFactoryTweakData:_init_olympic()
 			"wpn_fps_upg_smg_olympic_fg_lr300",
 			"wpn_fps_upg_ass_ns_battle",
 			"wpn_fps_upg_fl_ass_utg",
+			"wpn_fps_amcar_bolt_standard",
 			"wpn_fps_upg_o_spot",
 			"wpn_fps_m4_upg_m_quick",
 			"wpn_fps_snp_tti_s_vltor",
@@ -18274,7 +18327,10 @@ function WeaponFactoryTweakData:_init_modpack_m4_ak()
 			recoil = 2,
 			value = 1
 		},
-		override = {wpn_fps_m4_uupg_draghandle = {unit = "units/pd2_dlc_akm4_modpack/weapons/wpn_fps_m4_uupg_draghandle_ballos/wpn_fps_m4_uupg_draghandle_ballos"}}
+		override = {
+			wpn_fps_m4_uupg_draghandle = {unit = "units/pd2_dlc_akm4_modpack/weapons/wpn_fps_m4_uupg_draghandle_ballos/wpn_fps_m4_uupg_draghandle_ballos"},
+			wpn_fps_amcar_bolt_standard = {unit = "units/pd2_dlc_akm4_modpack/weapons/wpn_fps_upg_ass_m4_bolt_ballos/wpn_fps_upg_ass_m4_bolt_ballos"}
+		}
 	}
 	self.parts.wpn_fps_upg_ass_m4_upper_reciever_core = {
 		is_a_unlockable = true,
@@ -18290,7 +18346,10 @@ function WeaponFactoryTweakData:_init_modpack_m4_ak()
 			value = 1,
 			damage = 2
 		},
-		override = {wpn_fps_m4_uupg_draghandle = {unit = "units/pd2_dlc_akm4_modpack/weapons/wpn_fps_m4_uupg_draghandle_core/wpn_fps_m4_uupg_draghandle_core"}}
+		override = {
+			wpn_fps_m4_uupg_draghandle = {unit = "units/pd2_dlc_akm4_modpack/weapons/wpn_fps_m4_uupg_draghandle_core/wpn_fps_m4_uupg_draghandle_core"},
+			wpn_fps_amcar_bolt_standard = {unit = "units/pd2_dlc_akm4_modpack/weapons/wpn_fps_upg_ass_m4_bolt_core/wpn_fps_upg_ass_m4_bolt_core"}
+		}
 	}
 	self.parts.wpn_fps_m4_uupg_draghandle_ballos = {
 		a_obj = "a_dh",

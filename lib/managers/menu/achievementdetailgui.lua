@@ -161,13 +161,6 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 			font_size = small_font_size,
 			color = grey_color
 		}), 5)
-	elseif self._info.forced then
-		placer:add_bottom(self:fine_text({
-			text = "TRACKED",
-			font = small_font,
-			font_size = small_font_size,
-			color = grey_color
-		}), 5)
 	end
 
 	placer:pop()

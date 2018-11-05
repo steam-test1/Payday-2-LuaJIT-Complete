@@ -842,7 +842,10 @@ function CopActionHurt:_pseudorandom(a, b)
 
 	if not is_host then
 		self._host_peer = self._host_peer or managers.network:session():peer(1)
-		ht = ht + Network:qos(self._host_peer:rpc()).ping / 1000
+
+		if self._host_peer then
+			ht = ht + Network:qos(self._host_peer:rpc()).ping / 1000
+		end
 	end
 
 	local t = math.floor(ht * mult + 0.5) / mult

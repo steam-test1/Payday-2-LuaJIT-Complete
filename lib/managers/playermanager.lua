@@ -4019,7 +4019,6 @@ function PlayerManager:add_special(params)
 
 	local icon = equipment.icon
 	local action_message = equipment.action_message
-	local dialog = equipment.dialog_id
 
 	if not params.silent then
 		local text = managers.localization:text(equipment.text_id)
@@ -4031,10 +4030,6 @@ function PlayerManager:add_special(params)
 			title = title,
 			icon = icon
 		})
-
-		if dialog then
-			managers.dialog:queue_dialog(dialog, {})
-		end
 
 		if action_message and alive(unit) then
 			managers.network:session():send_to_peers_synched("sync_show_action_message", unit, action_message)

@@ -4947,6 +4947,11 @@ function GuiTweakData:init()
 	self.new_heists = {limit = 4}
 
 	table.insert(self.new_heists, {
+		name_id = "menu_nh_cas",
+		texture_path = "guis/textures/pd2/new_heists/community_armor_safe",
+		url = "http://www.overkillsoftware.com/games/communityarmorsafe/"
+	})
+	table.insert(self.new_heists, {
 		name_id = "menu_nh_h3h3_characters",
 		texture_path = "guis/textures/pd2/new_heists/h3h3_characters",
 		url = "http://www.overkillsoftware.com/games/h3h3/"
