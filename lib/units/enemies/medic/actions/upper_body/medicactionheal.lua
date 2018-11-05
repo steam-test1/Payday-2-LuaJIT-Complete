@@ -16,6 +16,8 @@ function MedicActionHeal:init(action_desc, common_data)
 
 	self._done = false
 
+	self:check_achievements()
+
 	return true
 end
 
@@ -69,6 +71,28 @@ function MedicActionHeal:save(save_data)
 	for i, k in pairs(self._action_desc) do
 		if type_name(k) ~= "Unit" or alive(k) then
 			save_data[i] = k
+		end
+	end
+end
+
+function MedicActionHeal:check_achievements()
+	local total_healed = (managers.job:get_memory("medic_heal_total", true) or 0) + 1
+
+	managers.job:set_memory("medic_heal_total", total_healed, true)
+
+	local all_pass, total_pass = nil
+
+	for achievement, achievement_data in pairs(tweak_data.achievement.medic_heal_achievements or {}) do
+		total_pass = not achievement_data.total
+
+		if achievement_data.total then
+			total_pass = achievement_data.total <= total_healed
+		end
+
+		all_pass = total_pass
+
+		if all_pass then
+			managers.achievment:award_data(achievement_data)
 		end
 	end
 end

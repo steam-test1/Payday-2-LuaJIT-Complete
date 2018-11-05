@@ -3148,7 +3148,9 @@ function UpgradesTweakData:init(tweak_data)
 				"famas",
 				"g26",
 				"twins",
-				"pitchfork"
+				"pitchfork",
+				"basset",
+				"x_basset"
 			}
 		},
 		[28] = {
@@ -3646,6 +3648,8 @@ function UpgradesTweakData:init(tweak_data)
 	self:_breech_weapon_definitions()
 	self:_ching_weapon_definitions()
 	self:_erma_weapon_definitions()
+	self:_basset_weapon_definitions()
+	self:_x_basset_weapon_definitions()
 	self:_melee_weapon_definitions()
 	self:_grenades_definitions()
 	self:_carry_definitions()
@@ -12788,6 +12792,22 @@ function UpgradesTweakData:_erma_weapon_definitions()
 	self.definitions.erma = {
 		factory_id = "wpn_fps_smg_erma",
 		weapon_id = "erma",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_basset_weapon_definitions()
+	self.definitions.basset = {
+		factory_id = "wpn_fps_sho_basset",
+		weapon_id = "basset",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_basset_weapon_definitions()
+	self.definitions.x_basset = {
+		factory_id = "wpn_fps_sho_x_basset",
+		weapon_id = "x_basset",
 		category = "weapon"
 	}
 end

@@ -964,6 +964,10 @@ function BlackMarketGuiTabItem:select_slot(slot, instant)
 				end
 			end
 		end
+
+		for idx, slot in ipairs(self._slots) do
+			slot:set_visible(math.ceil(idx / num_per_page) == math.ceil(self._slot_selected / num_per_page))
+		end
 	end
 
 	return selected_slot
@@ -1303,6 +1307,58 @@ function BlackMarketGuiSlotItem:init(main_panel, data, x, y, w, h)
 			bl_down:set_leftbottom(self._mini_panel:w() - 54, self._mini_panel:h() - 8)
 			br_side:set_rightbottom(self._mini_panel:w() - 8, self._mini_panel:h() - 8)
 			br_down:set_rightbottom(self._mini_panel:w() - 8, self._mini_panel:h() - 8)
+		end
+	end
+
+	if data.mini_colors then
+		local panel_size = 32
+		local padding = data.mini_icons and data.mini_icons.borders and 14 or 5
+		local color_panel = self._mini_panel:panel({
+			layer = 1,
+			w = panel_size,
+			h = panel_size
+		})
+
+		color_panel:set_right(self._mini_panel:w() - padding)
+		color_panel:set_bottom(self._mini_panel:h() - padding)
+		BoxGuiObject:new(color_panel, {sides = {
+			1,
+			1,
+			1,
+			1
+		}})
+
+		if #data.mini_colors == 1 then
+			color_panel:rect({
+				color = data.mini_colors[1].color or Color.red,
+				alpha = data.mini_colors[1].alpha or 1,
+				blend_mode = data.mini_colors[1].blend
+			})
+		elseif #data.mini_colors == 2 then
+			color_panel:polygon({
+				triangles = {
+					Vector3(0, 0, 0),
+					Vector3(0, panel_size, 0),
+					Vector3(panel_size, 0, 0)
+				},
+				color = data.mini_colors[1].color or Color.red,
+				alpha = data.mini_colors[1].alpha or 1,
+				blend_mode = data.mini_colors[1].blend,
+				w = panel_size,
+				h = panel_size
+			})
+			color_panel:polygon({
+				triangles = {
+					Vector3(0, panel_size, 0),
+					Vector3(panel_size, 0, 0),
+					Vector3(panel_size, panel_size, 0)
+				},
+				color = data.mini_colors[2].color or Color.red,
+				alpha = data.mini_colors[2].alpha or 1,
+				blend_mode = data.mini_colors[2].blend,
+				w = panel_size,
+				h = panel_size
+			})
 		end
 	end
 
@@ -2945,6 +3001,12 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 				prio = 3,
 				pc_btn = "menu_preview_item_alt",
 				callback = callback(self, self, "clear_weapon_mod_preview_callback")
+			},
+			wm_customize_gadget = {
+				btn = "BTN_A",
+				prio = 1,
+				name = "bm_menu_btn_customize_gadget",
+				callback = callback(self, self, "open_customize_gadget_menu")
 			},
 			wcc_equip = {
 				btn = "BTN_A",
@@ -11442,6 +11504,48 @@ function BlackMarketGui:populate_mods(data)
 			end
 		end
 
+		local mod_td = tweak_data.weapon.factory.parts[data[equipped].name]
+
+		if (data.name == "gadget" or table.contains(mod_td.perks or {}, "gadget")) and (mod_td.sub_type == "laser" or mod_td.sub_type == "flashlight") then
+			if not crafted.customize_locked then
+				table.insert(data[equipped], "wm_customize_gadget")
+			end
+
+			local secondary_sub_type = false
+
+			if mod_td.adds then
+				for _, part_id in ipairs(mod_td.adds) do
+					local sub_type = tweak_data.weapon.factory.parts[part_id].sub_type
+
+					if sub_type == "laser" or sub_type == "flashlight" then
+						secondary_sub_type = sub_type
+
+						break
+					end
+				end
+			end
+
+			local colors = managers.blackmarket:get_part_custom_colors(data[equipped].category, data[equipped].slot, data[equipped].name)
+
+			if colors then
+				data[equipped].mini_colors = {}
+
+				table.insert(data[equipped].mini_colors, {
+					alpha = 0.8,
+					blend = "add",
+					color = colors[mod_td.sub_type] or Color(1, 0, 1)
+				})
+
+				if secondary_sub_type then
+					table.insert(data[equipped].mini_colors, {
+						alpha = 0.8,
+						blend = "add",
+						color = colors[secondary_sub_type] or Color(1, 0, 1)
+					})
+				end
+			end
+		end
+
 		if not data[equipped].conflict and false then
 			if data[equipped].default_mod then
 				data[equipped].comparision_data = managers.blackmarket:get_weapon_stats_with_mod(data[equipped].category, data[equipped].slot, data[equipped].default_mod)
@@ -13225,6 +13329,10 @@ end
 
 function BlackMarketGui:open_reticle_switch_menu(data)
 	managers.menu:open_node("blackmarket_reticle_switch", {data})
+end
+
+function BlackMarketGui:open_customize_gadget_menu(data)
+	managers.menu:open_node("blackmarket_customize_gadget", {data})
 end
 
 function BlackMarketGui:sell_weapon_mods_callback(data)

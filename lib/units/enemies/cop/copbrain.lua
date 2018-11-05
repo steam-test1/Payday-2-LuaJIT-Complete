@@ -63,6 +63,7 @@ logic_variants.drug_lord_boss_stealth = security_variant
 logic_variants.spa_vip = security_variant
 logic_variants.cop_scared = security_variant
 logic_variants.security_undominatable = security_variant
+logic_variants.captain = security_variant
 
 for _, tweak_table_name in pairs({
 	"shield",

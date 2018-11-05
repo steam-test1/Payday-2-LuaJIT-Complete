@@ -235,6 +235,34 @@ function GameSetup:load_packages()
 		end
 	end
 
+	local job_tweak_contact_data, job_tweak_package_data = nil
+
+	if Global.job_manager and Global.job_manager.current_job and Global.job_manager.current_job.job_id then
+		job_tweak_contact_data = tweak_data.narrative:job_data(Global.job_manager.current_job.job_id)
+		job_tweak_package_data = tweak_data.narrative:job_data(Global.job_manager.current_job.job_id, true)
+	end
+
+	self._loaded_diff_packages = {}
+
+	local function load_difficulty_package(package_name)
+		if PackageManager:package_exists(package_name) and not PackageManager:loaded(package_name) then
+			table.insert(self._loaded_diff_packages, package_name)
+			PackageManager:load(package_name)
+		end
+	end
+
+	if job_tweak_package_data and job_tweak_package_data.load_all_difficulty_packages then
+		for i, difficulty in ipairs(tweak_data.difficulties) do
+			local diff_package = "packages/" .. (difficulty or "normal")
+
+			load_difficulty_package(diff_package)
+		end
+	else
+		local diff_package = "packages/" .. (Global.game_settings and Global.game_settings.difficulty or "normal")
+
+		load_difficulty_package(diff_package)
+	end
+
 	local level_package = nil
 
 	if not Global.level_data or not Global.level_data.level_id then
@@ -260,13 +288,6 @@ function GameSetup:load_packages()
 
 			PackageManager:load(level_package)
 		end
-	end
-
-	local job_tweak_contact_data, job_tweak_package_data = nil
-
-	if Global.job_manager and Global.job_manager.current_job and Global.job_manager.current_job.job_id then
-		job_tweak_contact_data = tweak_data.narrative:job_data(Global.job_manager.current_job.job_id)
-		job_tweak_package_data = tweak_data.narrative:job_data(Global.job_manager.current_job.job_id, true)
 	end
 
 	local contact = nil
@@ -316,27 +337,6 @@ function GameSetup:load_packages()
 		for _, package in ipairs(self._loaded_job_packages) do
 			PackageManager:load(package)
 		end
-	end
-
-	self._loaded_diff_packages = {}
-
-	local function load_difficulty_package(package_name)
-		if PackageManager:package_exists(package_name) and not PackageManager:loaded(package_name) then
-			table.insert(self._loaded_diff_packages, package_name)
-			PackageManager:load(package_name)
-		end
-	end
-
-	if job_tweak_package_data and job_tweak_package_data.load_all_difficulty_packages then
-		for i, difficulty in ipairs(tweak_data.difficulties) do
-			local diff_package = "packages/" .. (difficulty or "normal")
-
-			load_difficulty_package(diff_package)
-		end
-	else
-		local diff_package = "packages/" .. (Global.game_settings and Global.game_settings.difficulty or "normal")
-
-		load_difficulty_package(diff_package)
 	end
 
 	if Global.mutators and Global.mutators.active_on_load and table.size(Global.mutators.active_on_load) > 0 and PackageManager:package_exists(MutatorsManager.package) and not PackageManager:loaded(MutatorsManager.package) then

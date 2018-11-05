@@ -10700,4 +10700,269 @@ function MenuCallbackHandler:roll_challenge_give_weapon_mod(weapon_id, global_va
 		return entry
 	end
 end
+MenuCustomizeGadgetInitiator = MenuCustomizeGadgetInitiator or class(MenuCrimeNetSpecialInitiator)
+
+function MenuCustomizeGadgetInitiator:modify_node(original_node, data)
+	local node = original_node
+
+	return self:setup_node(node, data)
+end
+
+function MenuCustomizeGadgetInitiator:setup_node(node, data)
+	node:clean_items()
+
+	data = data or node:parameters().menu_component_data
+	local part_id = data.name
+	local slot = data.slot
+	local category = data.category
+	local mod_td = tweak_data.weapon.factory.parts[part_id]
+	local show_laser = mod_td.sub_type == "laser"
+	local show_flashlight = mod_td.sub_type == "flashlight"
+
+	if mod_td.adds then
+		for _, part_id in ipairs(mod_td.adds) do
+			local sub_type = tweak_data.weapon.factory.parts[part_id].sub_type
+			show_laser = sub_type == "laser" or false
+			show_flashlight = sub_type == "flashlight" or false
+		end
+	end
+
+	if not node:item("divider_end") then
+		if show_laser then
+			self:create_slider(node, {
+				max = 360,
+				name = "laser_hue",
+				min = 0,
+				callback = "set_gadget_laser_hue",
+				step = 5,
+				text_id = "bm_menu_laser_hue",
+				show_value = true
+			})
+			self:create_slider(node, {
+				min = 0,
+				name = "laser_sat",
+				max = 1,
+				callback = "set_gadget_laser_sat",
+				step = 0.02,
+				text_id = "bm_menu_laser_sat",
+				default_value = 1,
+				show_value = true
+			})
+			self:create_slider(node, {
+				name = "laser_val",
+				max = 1,
+				callback = "set_gadget_laser_val",
+				step = 0.02,
+				text_id = "bm_menu_laser_val",
+				default_value = 1,
+				show_value = true,
+				min = tweak_data.custom_colors.defaults.laser_alpha
+			})
+			self:create_divider(node, "laser_divider", nil, 64)
+		end
+
+		if show_flashlight then
+			self:create_slider(node, {
+				max = 360,
+				name = "flashlight_hue",
+				min = 0,
+				callback = "set_gadget_flashlight_hue",
+				step = 5,
+				text_id = "bm_menu_flashlight_hue",
+				show_value = true
+			})
+			self:create_slider(node, {
+				min = 0,
+				name = "flashlight_sat",
+				max = 1,
+				callback = "set_gadget_flashlight_sat",
+				step = 0.02,
+				text_id = "bm_menu_flashlight_sat",
+				default_value = 1,
+				show_value = true
+			})
+			self:create_slider(node, {
+				min = 0,
+				name = "flashlight_val",
+				max = 1,
+				callback = "set_gadget_flashlight_val",
+				step = 0.02,
+				text_id = "bm_menu_flashlight_val",
+				default_value = 1,
+				show_value = true
+			})
+			self:create_divider(node, "flashlight_divider", nil, 64)
+		end
+	end
+
+	local enabled = false
+	local params = {
+		callback = "set_gadget_customize_params",
+		name = "confirm",
+		text_id = "dialog_apply",
+		align = "right",
+		enabled = enabled,
+		disabled_color = tweak_data.screen_colors.important_1
+	}
+	local data_node = {}
+	local new_item = node:create_item(data_node, params)
+
+	node:add_item(new_item)
+
+	local params = {
+		last_item = "true",
+		name = "back",
+		text_id = "dialog_cancel",
+		align = "right",
+		previous_node = "true"
+	}
+	local data_node = {}
+	local new_item = node:create_item(data_node, params)
+
+	node:add_item(new_item)
+
+	if show_laser then
+		node:set_default_item_name("laser_hue")
+		node:select_item("laser_hue")
+	elseif show_flashlight then
+		node:set_default_item_name("flashlight_hue")
+		node:select_item("flashlight_hue")
+	end
+
+	node:parameters().menu_component_data = data
+	node:parameters().set_blackmarket_enabled = false
+	local l_hue = node:item("laser_hue")
+	local l_sat = node:item("laser_sat")
+	local l_val = node:item("laser_val")
+	local f_hue = node:item("flashlight_hue")
+	local f_sat = node:item("flashlight_sat")
+	local f_val = node:item("flashlight_val")
+	local part_id = data.name
+	local colors = managers.blackmarket:get_part_custom_colors(data.category, data.slot, data.name)
+
+	if colors and colors.laser and l_hue and l_sat and l_val then
+		local h, s, v = rgb_to_hsv(colors.laser.r, colors.laser.g, colors.laser.b)
+
+		l_hue:set_value(h)
+		l_sat:set_value(s)
+		l_val:set_value(v)
+	end
+
+	if colors and colors.flashlight and f_hue and f_sat and f_val then
+		local h, s, v = rgb_to_hsv(colors.flashlight.r, colors.flashlight.g, colors.flashlight.b)
+
+		f_hue:set_value(h)
+		f_sat:set_value(s)
+		f_val:set_value(v)
+	end
+
+	return node
+end
+
+function MenuCustomizeGadgetInitiator:refresh_node(node, data)
+	local confirm = node:item("confirm")
+	local active_node_gui = managers.menu:active_menu().renderer:active_node_gui()
+
+	if active_node_gui and active_node_gui.update_item_dlc_locks then
+		local enabled = active_node_gui:update_item_dlc_locks()
+
+		confirm:set_enabled(enabled)
+	end
+end
+
+function MenuCustomizeGadgetInitiator:create_slider(node, params)
+	local data_node = {
+		type = "CoreMenuItemSlider.ItemSlider",
+		show_value = params.show_value,
+		min = params.min,
+		max = params.max,
+		step = params.step,
+		show_value = params.show_value
+	}
+	local new_item = node:create_item(data_node, params)
+
+	node:add_item(new_item)
+
+	if params.default_value ~= nil then
+		new_item:set_value(params.default_value)
+	end
+
+	return new_item
+end
+
+function MenuCallbackHandler:set_gadget_laser_hue()
+	self:update_gadget_customization()
+end
+
+function MenuCallbackHandler:set_gadget_laser_sat()
+	self:update_gadget_customization()
+end
+
+function MenuCallbackHandler:set_gadget_laser_val()
+	self:update_gadget_customization()
+end
+
+function MenuCallbackHandler:set_gadget_flashlight_hue()
+	self:update_gadget_customization()
+end
+
+function MenuCallbackHandler:set_gadget_flashlight_sat()
+	self:update_gadget_customization()
+end
+
+function MenuCallbackHandler:set_gadget_flashlight_val()
+	self:update_gadget_customization()
+end
+
+function MenuCallbackHandler:update_gadget_customization(item)
+	if not managers.menu:active_menu() then
+		return false
+	end
+
+	if not managers.menu:active_menu().logic then
+		return false
+	end
+
+	if not managers.menu:active_menu().logic:selected_node() then
+		return false
+	end
+
+	local node = managers.menu:active_menu().logic:selected_node()
+	local data = node:parameters().menu_component_data
+	local part_id = data.name
+	local active_node_gui = managers.menu:active_menu().renderer:active_node_gui()
+
+	if active_node_gui and active_node_gui.update_node_colors then
+		active_node_gui:update_node_colors()
+	end
+end
+
+function MenuCallbackHandler:set_gadget_customize_params()
+	if not managers.menu:active_menu() then
+		return false
+	end
+
+	if not managers.menu:active_menu().logic then
+		return false
+	end
+
+	if not managers.menu:active_menu().logic:selected_node() then
+		return false
+	end
+
+	local node = managers.menu:active_menu().logic:selected_node()
+	local data = node:parameters().menu_component_data
+	local part_id = data.name
+	local slot = data.slot
+	local category = data.category
+	local colors = {}
+	local active_node_gui = managers.menu:active_menu().renderer:active_node_gui()
+
+	if active_node_gui and active_node_gui.update_node_colors then
+		colors = active_node_gui:update_node_colors()
+	end
+
+	managers.blackmarket:set_part_custom_colors(category, slot, part_id, colors)
+	managers.menu:back()
+end
 

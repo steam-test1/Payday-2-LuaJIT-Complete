@@ -525,6 +525,12 @@ function PlayerInventory:save(data)
 		data.mask_visibility = self._mask_visibility
 		data.blueprint_string = self:equipped_unit():base().blueprint_to_string and self:equipped_unit():base():blueprint_to_string() or nil
 		data.gadget_on = self:equipped_unit():base().gadget_on and self:equipped_unit():base()._gadget_on
+		local gadget = self:equipped_unit():base().get_active_gadget and self:equipped_unit():base():get_active_gadget()
+
+		if gadget and gadget.color then
+			data.gadget_color = gadget:color()
+		end
+
 		local cosmetics_string = ""
 		local cosmetics_id = self:equipped_unit():base().get_cosmetics_id and self:equipped_unit():base():get_cosmetics_id() or nil
 
@@ -565,7 +571,8 @@ function PlayerInventory:load(data)
 			equipped_weapon_index = data.equipped_weapon_index,
 			blueprint_string = data.blueprint_string,
 			cosmetics_string = data.cosmetics_string,
-			gadget_on = data.gadget_on
+			gadget_on = data.gadget_on,
+			gadget_color = data.gadget_color
 		}
 
 		managers.enemy:add_delayed_clbk(self._weapon_add_clbk, callback(self, self, "_clbk_weapon_add", delayed_data), Application:time() + 1)
@@ -590,6 +597,10 @@ function PlayerInventory:_clbk_weapon_add(data)
 
 		self:add_unit_by_factory_name(eq_weap_name, true, true, data.blueprint_string, self:cosmetics_string_from_peer(managers.network:session():peer_by_unit(self._unit), eq_weap_name) or data.cosmetics_string)
 		self:synch_weapon_gadget_state(data.gadget_on)
+
+		if data.gadget_color then
+			self:sync_weapon_gadget_color(data.gadget_color)
+		end
 	else
 		self._unit:inventory():add_unit_by_name(eq_weap_name, true, true)
 	end

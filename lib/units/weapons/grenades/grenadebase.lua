@@ -98,7 +98,7 @@ function GrenadeBase:_check_achievements(unit, is_dead, damage_percent, hit_coun
 	local is_civilian = unit:character_damage().is_civilian(unit_type)
 	local weapon_id = tweak_data.blackmarket.projectiles[self:projectile_entry()].weapon_id
 	local is_crouching = alive(managers.player:player_unit()) and managers.player:player_unit():movement() and managers.player:player_unit():movement():crouching()
-	local count_pass, grenade_type_pass, kill_pass, distance_pass, enemy_pass, enemies_pass, flying_strike_pass, timer_pass, difficulty_pass, job_pass, crouching_pass, session_kill_pass, is_civilian_pass, all_pass, memory = nil
+	local count_pass, grenade_type_pass, kill_pass, distance_pass, enemy_pass, enemies_pass, flying_strike_pass, timer_pass, difficulty_pass, job_pass, crouching_pass, session_kill_pass, is_civilian_pass, explosive_pass, all_pass, memory = nil
 
 	for achievement, achievement_data in pairs(tweak_data.achievement.grenade_achievements) do
 		count_pass = not achievement_data.count or achievement_data.count <= (achievement_data.kill and kill_count or hit_count)
@@ -155,7 +155,13 @@ function GrenadeBase:_check_achievements(unit, is_dead, damage_percent, hit_coun
 			end
 		end
 
-		all_pass = count_pass and grenade_type_pass and kill_pass and distance_pass and enemy_pass and enemies_pass and flying_strike_pass and timer_pass and difficulty_pass and job_pass and crouching_pass and session_kill_pass and is_civilian_pass
+		explosive_pass = achievement_data.explosive == nil
+
+		if achievement_data.explosive ~= nil then
+			explosive_pass = tweak_data.blackmarket.projectiles[self:projectile_entry()].is_explosive == achievement_data.explosive
+		end
+
+		all_pass = count_pass and grenade_type_pass and kill_pass and distance_pass and enemy_pass and enemies_pass and flying_strike_pass and timer_pass and difficulty_pass and job_pass and crouching_pass and session_kill_pass and is_civilian_pass and explosive_pass
 
 		if all_pass then
 			if achievement_data.success then

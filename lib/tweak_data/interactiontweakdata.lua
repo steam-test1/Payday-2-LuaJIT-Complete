@@ -4794,6 +4794,91 @@ function InteractionTweakData:init(tweak_data)
 		timer = 1,
 		interact_distance = 150
 	}
+	self.hold_generator_start = {
+		text_id = "hud_generator_start",
+		action_text_id = "hud_action_generator_start",
+		start_active = false,
+		timer = 3,
+		interact_distance = 300,
+		sound_start = "bar_water_pump",
+		sound_cancel = "bar_water_pump_cancel",
+		sound_done = "bar_water_pump_finish"
+	}
+	self.hold_remove_rope = {
+		text_id = "hud_int_remove_rope",
+		action_text_id = "hud_action_remove_rope",
+		start_active = true,
+		timer = 3,
+		interact_distance = 150,
+		sound_start = "bar_remove_rope_start",
+		sound_cancel = "bar_remove_rope_cancel",
+		sound_done = "bar_remove_rope_finish"
+	}
+	self.hold_move_gangplank = {
+		text_id = "hud_int_move_gangplank",
+		action_text_id = "hud_action_moving_gangplank",
+		start_active = true,
+		timer = 3,
+		interact_distance = 300
+	}
+	self.hold_wwh_untie = {
+		text_id = "hud_int_hold_born_untie",
+		timer = 4,
+		interact_distance = 150,
+		start_active = false,
+		sound_start = "bar_untie_hostage_start_02",
+		sound_interupt = "bar_untie_hostage_cancel_02",
+		sound_done = "bar_untie_hostage_finish_02"
+	}
+	self.connect_hose_wwh = {
+		icon = "develop",
+		text_id = "hud_int_hold_connect_hose",
+		action_text_id = "hud_action_connect_hose",
+		start_active = false,
+		timer = 4,
+		interact_distance = 200,
+		sound_start = "bar_hose_drag_out",
+		sound_interupt = "bar_hose_drag_out_cancel",
+		sound_done = "bar_hose_drag_out_finish"
+	}
+	self.connect_hose_ship_wwh = {
+		icon = "develop",
+		text_id = "hud_int_hold_connect_hose",
+		action_text_id = "hud_action_connect_hose",
+		start_active = false,
+		timer = 4,
+		interact_distance = 200,
+		sound_start = "bar_hose_attach_to_ship",
+		sound_interupt = "bar_hose_attach_to_ship_cancel",
+		sound_done = "bar_hose_attach_to_ship_finish"
+	}
+	self.connect_hose_pump_wwh = {
+		icon = "develop",
+		text_id = "hud_int_hold_connect_hose",
+		action_text_id = "hud_action_connect_hose",
+		start_active = false,
+		timer = 4,
+		interact_distance = 200,
+		sound_start = "bar_hose_attach_to_water_pump",
+		sound_interupt = "bar_hose_attach_to_water_pump_cancel",
+		sound_done = "bar_hose_attach_to_water_pump_finish"
+	}
+	self.detach_hose_wwh = {
+		icon = "develop",
+		text_id = "hud_int_hold_detach_hose",
+		action_text_id = "hud_action_detach_hose",
+		start_active = false,
+		timer = 4,
+		interact_distance = 200,
+		sound_start = "bar_hose_ground_connect",
+		sound_interupt = "bar_hose_ground_connect_cancel",
+		sound_done = "bar_hose_ground_connect_finished"
+	}
+	self.open_lid_wwh = {
+		text_id = "hud_int_invisible_interaction_open",
+		start_active = true,
+		interact_distance = 150
+	}
 	self.take_confidential_folder_icc = {
 		text_id = "hud_int_take_confidential_folder_icc",
 		start_active = false,

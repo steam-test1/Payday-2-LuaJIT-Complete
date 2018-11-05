@@ -665,7 +665,7 @@ function ContractBrokerGui:perform_filter_tactic(value)
 			if self._current_filter == 1 then
 				allow = allow or level_data.ghost_bonus == nil
 			elseif self._current_filter == 2 then
-				allow = allow or level_data.ghost_required
+				allow = allow or level_data.ghost_required or level_data.ghost_required_visual
 			elseif self._current_filter == 3 then
 				allow = allow or level_data.ghost_bonus ~= nil
 			end
@@ -684,7 +684,7 @@ function ContractBrokerGui:perform_filter_search(job_tweak)
 		local search_text = string.lower(self._search.text:text())
 
 		if #search_text > 0 then
-			local job_name = string.lower(managers.localization:text(job_tweak.name_id))
+			local job_name = string.lower(managers.localization:text(job_tweak.name_id or "no name_id"))
 
 			if string.find(job_name, search_text) then
 				return true
@@ -693,7 +693,7 @@ function ContractBrokerGui:perform_filter_search(job_tweak)
 			local contact_tweak = tweak_data.narrative.contacts[job_tweak.contact]
 
 			if contact_tweak then
-				local contact_name = string.lower(managers.localization:text(contact_tweak.name_id))
+				local contact_name = string.lower(managers.localization:text(contact_tweak.name_id or "no name_id"))
 
 				if string.find(contact_name, search_text) then
 					return true
@@ -796,6 +796,12 @@ function ContractBrokerGui:_setup_jobs()
 
 	for index, job_id in ipairs(tweak_data.narrative:get_jobs_index()) do
 		local job_tweak = tweak_data.narrative:job_data(job_id)
+		local wrapped_tweak = nil
+
+		if job_tweak.job_wrapper then
+			wrapped_tweak = tweak_data.narrative.jobs[job_tweak.job_wrapper[1]]
+		end
+
 		local filter_pass = true
 		local contact_pass = true
 		local contact = job_tweak.contact
@@ -819,7 +825,7 @@ function ContractBrokerGui:_setup_jobs()
 						break
 					end
 				elseif key == "job" then
-					if not pass_func(self, job_tweak) then
+					if not pass_func(self, job_tweak, wrapped_tweak) then
 						filter_pass = false
 
 						break

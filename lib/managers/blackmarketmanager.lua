@@ -5279,6 +5279,69 @@ function BlackMarketManager:get_weapon_texture_switches(category, slot, weapon)
 	return weapon.texture_switches
 end
 
+function BlackMarketManager:set_part_custom_colors(category, slot, part_id, colors)
+	local part_data = tweak_data.weapon.factory.parts[part_id]
+
+	if not part_data then
+		Applicaton:error("[BlackMarketManager:set_part_custom_colors] Part do not exist", "category", category, "slot", slot, "part_id", part_id, "texture_id", texture_id)
+
+		return
+	end
+
+	local crafted_category = self._global.crafted_items[category]
+	local crafted_item = crafted_category and crafted_category[slot]
+
+	if not crafted_item then
+		Application:error("[BlackMarketManager:set_part_custom_colors] crafted_item do not exist", "category", category, "slot", slot, "part_id", part_id, "texture_id", texture_id)
+
+		return
+	end
+
+	local data_string = ""
+	local i = 1
+
+	for key, color in pairs(colors) do
+		local str = string.format("%s %f %f %f", key, color.r, color.g, color.b)
+		data_string = data_string .. (i > 1 and "; " or "") .. str
+		i = i + 1
+	end
+
+	crafted_item.custom_colors = crafted_item.custom_colors or {}
+	crafted_item.custom_colors[part_id] = data_string
+end
+
+function BlackMarketManager:get_part_custom_colors(category, slot, part_id, require_existing)
+	if require_existing == nil then
+		require_existing = false
+	end
+
+	local crafted_category = self._global.crafted_items[category]
+	local crafted_item = crafted_category and crafted_category[slot]
+	local custom_colors = crafted_item and crafted_item.custom_colors
+
+	if custom_colors and custom_colors[part_id] then
+		return self:get_custom_colors_from_string(custom_colors and custom_colors[part_id])
+	elseif not require_existing then
+		return {
+			laser = tweak_data.custom_colors.defaults.laser,
+			flashlight = tweak_data.custom_colors.defaults.flashlight
+		}
+	end
+end
+
+function BlackMarketManager:get_custom_colors_from_string(data_string)
+	local color_strs = string.split(data_string, ";")
+	local colors = {}
+
+	for i, str in ipairs(color_strs) do
+		str = string.trim(str)
+		local type, r, g, b = unpack(string.split(str, " "))
+		colors[type] = Color(r, g, b)
+	end
+
+	return colors
+end
+
 function BlackMarketManager:aquire_default_masks()
 	print("BlackMarketManager:aquire_default_masks()", self._global.crafted_items.masks)
 

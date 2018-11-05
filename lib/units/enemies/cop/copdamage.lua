@@ -630,7 +630,7 @@ function CopDamage:_check_damage_achievements(attack_data, head)
 	local achievements = tweak_data.achievement.enemy_kill_achievements or {}
 	local current_mask_id = managers.blackmarket:equipped_mask().mask_id
 	local attack_weapon_type = attack_weapon:base()._type
-	local weapons_pass, weapon_pass, fire_mode_pass, ammo_pass, enemy_pass, enemy_weapon_pass, mask_pass, hiding_pass, head_pass, steelsight_pass, distance_pass, zipline_pass, rope_pass, one_shot_pass, weapon_type_pass, level_pass, part_pass, parts_pass, timer_pass, cop_pass, gangster_pass, civilian_pass, count_no_reload_pass, count_pass, count_in_row_pass, diff_pass, complete_count_pass, all_pass, memory = nil
+	local weapons_pass, weapon_pass, fire_mode_pass, ammo_pass, enemy_pass, enemy_weapon_pass, mask_pass, hiding_pass, head_pass, steelsight_pass, distance_pass, zipline_pass, rope_pass, one_shot_pass, weapon_type_pass, level_pass, part_pass, parts_pass, timer_pass, cop_pass, gangster_pass, civilian_pass, count_no_reload_pass, count_pass, count_in_row_pass, diff_pass, complete_count_pass, critical_pass, variant_pass, attack_weapon_type_pass, vip_pass, all_pass, memory = nil
 	local kill_count_no_reload = managers.job:get_memory("kill_count_no_reload_" .. tostring(attack_weapon:base()._name_id), true)
 	kill_count_no_reload = (kill_count_no_reload or 0) + 1
 
@@ -708,7 +708,26 @@ function CopDamage:_check_damage_achievements(attack_data, head)
 			end
 		end
 
-		all_pass = weapon_type_pass and weapons_pass and weapon_pass and fire_mode_pass and ammo_pass and one_shot_pass and enemy_pass and enemy_weapon_pass and mask_pass and hiding_pass and head_pass and distance_pass and zipline_pass and rope_pass and level_pass and part_pass and parts_pass and steelsight_pass and cop_pass and count_no_reload_pass and count_pass and diff_pass and complete_count_pass
+		critical_pass = not achievement_data.critical
+
+		if achievement_data.critical then
+			critical_pass = attack_data.critical_hit
+		end
+
+		variant_pass = not achievement_data.variant
+
+		if achievement_data.variant then
+			variant_pass = type(achievement_data.variant) == "table" and table.contains(achievement_data.variant, attack_data.variant) or attack_data.variant == achievement_data.variant
+		end
+
+		attack_weapon_type_pass = not achievement_data.attack_weapon_type
+
+		if achievement_data.attack_weapon_type then
+			attack_weapon_type_pass = type(achievement_data.attack_weapon_type) == "table" and table.contains(achievement_data.attack_weapon_type, attack_weapon_type) or achievement_data.attack_weapon_type == attack_weapon_type
+		end
+
+		vip_pass = not achievement_data.is_vip
+		all_pass = weapon_type_pass and weapons_pass and weapon_pass and fire_mode_pass and ammo_pass and one_shot_pass and enemy_pass and enemy_weapon_pass and mask_pass and hiding_pass and head_pass and distance_pass and zipline_pass and rope_pass and level_pass and part_pass and parts_pass and steelsight_pass and cop_pass and count_no_reload_pass and count_pass and diff_pass and complete_count_pass and critical_pass and variant_pass and attack_weapon_type_pass and vip_pass
 		timer_pass = not achievement_data.timer
 
 		if all_pass and achievement_data.timer then
@@ -777,7 +796,7 @@ function CopDamage.is_civilian(type)
 end
 
 function CopDamage.is_gangster(type)
-	return type == "gangster" or type == "biker_escape" or type == "mobster" or type == "mobster_boss" or type == "biker" or type == "biker_boss" or type == "bolivian" or type == "drug_lord_boss" or type == "drug_lord_boss_stealth"
+	return type == "gangster" or type == "biker_escape" or type == "mobster" or type == "mobster_boss" or type == "biker" or type == "biker_boss" or type == "bolivian" or type == "drug_lord_boss" or type == "drug_lord_boss_stealth" or type == "captain"
 end
 
 function CopDamage.is_cop(type)
@@ -1665,7 +1684,7 @@ function CopDamage:damage_melee(attack_data)
 				local enemy_type = self._unit:base()._tweak_table
 				local unit_weapon = self._unit:base()._default_weapon_id
 				local health_ratio = managers.player:player_unit():character_damage():health_ratio() * 100
-				local melee_pass, melee_weapons_pass, type_pass, enemy_pass, enemy_weapon_pass, diff_pass, health_pass, level_pass, job_pass, jobs_pass, enemy_count_pass, all_pass, cop_pass, gangster_pass, civilian_pass, stealth_pass, on_fire_pass, behind_pass, mutators_pass = nil
+				local melee_pass, melee_weapons_pass, type_pass, enemy_pass, enemy_weapon_pass, diff_pass, health_pass, level_pass, job_pass, jobs_pass, enemy_count_pass, all_pass, cop_pass, gangster_pass, civilian_pass, stealth_pass, on_fire_pass, behind_pass, mutators_pass, critical_pass = nil
 
 				for achievement, achievement_data in pairs(achievements) do
 					melee_pass = not achievement_data.melee_id or achievement_data.melee_id == attack_data.name_id
@@ -1699,7 +1718,13 @@ function CopDamage:damage_melee(attack_data)
 					end
 
 					mutators_pass = managers.mutators:check_achievements(achievement_data)
-					all_pass = melee_pass and melee_weapons_pass and type_pass and enemy_pass and enemy_weapon_pass and behind_pass and diff_pass and health_pass and level_pass and job_pass and jobs_pass and cop_pass and gangster_pass and civilian_pass and stealth_pass and on_fire_pass and enemy_count_pass and mutators_pass
+					critical_pass = not achievement_data.critical
+
+					if achievement_data.critical then
+						critical_pass = attack_data.critical_hit
+					end
+
+					all_pass = melee_pass and melee_weapons_pass and type_pass and enemy_pass and enemy_weapon_pass and behind_pass and diff_pass and health_pass and level_pass and job_pass and jobs_pass and cop_pass and gangster_pass and civilian_pass and stealth_pass and on_fire_pass and enemy_count_pass and mutators_pass and critical_pass
 
 					if all_pass then
 						if achievement_data.stat then
@@ -2028,6 +2053,20 @@ function CopDamage:drop_pickup(extra)
 		if extra then
 			mvector3.set_static(mvec_2, math.random(20, 50) * (math.random(1, 2) * 2 - 3), math.random(20, 50) * (math.random(1, 2) * 2 - 3), 0)
 			mvector3.add(mvec_1, mvec_2)
+		end
+
+		local level_data = tweak_data.levels[managers.job:current_level_id()]
+
+		if level_data and level_data.drop_pickups_to_ground then
+			mvector3.set(mvec_2, math.UP)
+			mvector3.multiply(mvec_2, -200)
+			mvector3.add(mvec_2, mvec_1)
+
+			local ray = self._unit:raycast("ray", mvec_1, mvec_2, "slot_mask", managers.slot:get_mask("bullet_impact_targets"))
+
+			if ray then
+				mvector3.set(mvec_1, ray.hit_position)
+			end
 		end
 
 		managers.game_play_central:spawn_pickup({

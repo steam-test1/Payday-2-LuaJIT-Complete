@@ -140,6 +140,7 @@ function ChallengeManager:_load_challenges_from_xml()
 						name_id = data.name_id,
 						name_s = data.name_s,
 						desc_id = data.desc_id,
+						display = data.display,
 						desc_s = data.desc_s,
 						progress_id = data.progress_id,
 						max_progress = data.progress_id and data.max_progress or 1,

@@ -984,6 +984,11 @@ function BlackMarketTweakData:_init_weapon_skins()
 				uv_scale = Vector3(1.59757, 1.1685, 1),
 				uv_offset_rot = Vector3(0.0348201, 0.883854, 0.033)
 			}},
+			wpn_fps_pis_deagle_b_modern = {[Idstring("mtr_barrel_custom"):key()] = {
+				uv_offset_rot = Vector3(0.141757, 0.855696, 0),
+				sticker = Idstring("units/payday2_cash/safes/cop/sticker/sticker_boom_df"),
+				uv_scale = Vector3(1.27252, 1.02547, 1)
+			}},
 			wpn_fps_pis_deagle_body_standard = {[Idstring("base"):key()] = {
 				sticker = Idstring("units/payday2_cash/safes/cop/sticker/sticker_boom_df"),
 				uv_offset_rot = Vector3(0.218075, 0.928013, 0),

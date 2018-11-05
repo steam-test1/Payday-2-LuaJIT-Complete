@@ -238,6 +238,12 @@ function CrimeNetSidebarGui:confirm_pressed()
 	end
 end
 
+function CrimeNetSidebarGui:back_pressed()
+	managers.menu:force_back(false, true)
+
+	return true
+end
+
 function CrimeNetSidebarGui:update(t, dt)
 	for _, btn in ipairs(self._buttons) do
 		btn:update(t, dt)

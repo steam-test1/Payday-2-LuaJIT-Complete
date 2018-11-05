@@ -692,6 +692,10 @@ function TweakData:init()
 		revive_distance_autopickup = 300,
 		death_distance_teleport = 300
 	}
+	self.custom_colors = {defaults = {}}
+	self.custom_colors.defaults.laser = Color(0, 0.4, 0)
+	self.custom_colors.defaults.flashlight = Color(1, 1, 1)
+	self.custom_colors.defaults.laser_alpha = 0.2
 	self.EFFECT_QUALITY = 0.5
 
 	if SystemInfo:platform() == Idstring("X360") then
@@ -1555,6 +1559,7 @@ Play the full version soon to get your full PAYDAY!]],
 		},
 		{track = "track_52"},
 		{track = "track_53"},
+		{track = "track_54"},
 		{track = "track_32_lcv"},
 		{track = "track_33_lcv"},
 		{track = "track_34_lcv"},

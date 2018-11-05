@@ -166,6 +166,11 @@ function WeaponLaser:theme_type()
 end
 
 function WeaponLaser:set_color(color)
+	if not color then
+		return
+	end
+
+	self._color = color
 	self._light_color = Vector3(color.r * 10, color.g * 10, color.b * 10)
 
 	self._light:set_color(self._light_color)
@@ -174,6 +179,10 @@ function WeaponLaser:set_color(color)
 
 	self._light_glow:set_color(self._light_glow_color)
 	self._brush:set_color(color)
+end
+
+function WeaponLaser:color()
+	return self._color or tweak_data.custom_colors.defaults.laser
 end
 
 function WeaponLaser:set_max_distace(dis)

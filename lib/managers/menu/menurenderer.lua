@@ -18,6 +18,7 @@ require("lib/managers/menu/renderers/MenuNodeWeaponCosmeticsGui")
 require("lib/managers/menu/renderers/MenuNodeDoubleColumnGui")
 require("lib/managers/menu/renderers/MenuNodeMutatorOptionsGui")
 require("lib/managers/menu/renderers/MenuNodeLobbyCountdownGui")
+require("lib/managers/menu/renderers/MenuNodeCustomizeGadgetGui")
 require("lib/managers/menu/renderers/MenuNodeAchievementFilterGui")
 
 MenuRenderer = MenuRenderer or class(CoreMenuRenderer.Renderer)

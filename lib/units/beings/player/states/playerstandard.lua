@@ -1907,6 +1907,14 @@ function PlayerStandard:_check_action_weapon_gadget(t, input)
 	if input.btn_weapon_gadget_press and self._equipped_unit:base().toggle_gadget and self._equipped_unit:base():has_gadget() and self._equipped_unit:base():toggle_gadget(self) then
 		self._unit:network():send("set_weapon_gadget_state", self._equipped_unit:base()._gadget_on)
 
+		local gadget = self._equipped_unit:base():get_active_gadget()
+
+		if gadget and gadget.color then
+			local col = gadget:color()
+
+			self._unit:network():send("set_weapon_gadget_color", col.r * 255, col.g * 255, col.b * 255)
+		end
+
 		if alive(self._equipped_unit) then
 			managers.hud:set_ammo_amount(self._equipped_unit:base():selection_index(), self._equipped_unit:base():ammo_info())
 		end

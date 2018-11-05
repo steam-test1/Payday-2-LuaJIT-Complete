@@ -347,6 +347,11 @@ end
 function ContractBrokerHeistItem:is_stealthable()
 	local job_tweak = tweak_data.narrative:job_data(self._job_data.job_id)
 
+	if job_tweak.job_wrapper then
+		local wrapped_tweak = tweak_data.narrative.jobs[job_tweak.job_wrapper[1]]
+		job_tweak = wrapped_tweak or job_tweak
+	end
+
 	for _, data in ipairs(job_tweak.chain) do
 		local level_data = tweak_data.levels[data.level_id] or {}
 
@@ -361,7 +366,13 @@ end
 function ContractBrokerHeistItem:_job_num_days()
 	local job_tweak = tweak_data.narrative:job_data(self._job_data.job_id)
 
-	return table.size(job_tweak.chain)
+	if job_tweak.job_wrapper then
+		job_tweak = tweak_data.narrative.jobs[job_tweak.job_wrapper[1]]
+
+		return job_tweak and job_tweak.chain and table.size(job_tweak.chain) or 1
+	else
+		return table.size(job_tweak.chain)
+	end
 end
 
 function ContractBrokerHeistItem:get_heist_day_text()
@@ -464,6 +475,12 @@ function ContractBrokerHeistItem:mouse_clicked(o, button, x, y)
 end
 
 function ContractBrokerHeistItem:trigger()
+	if self._job_data and not self._job_data.enabled then
+		managers.menu:post_event("menu_error")
+
+		return
+	end
+
 	managers.menu_component:contract_broker_gui():save_temporary_data(self._job_data.job_id)
 
 	local job_tweak = tweak_data.narrative:job_data(self._job_data.job_id)

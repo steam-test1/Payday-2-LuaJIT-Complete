@@ -4594,6 +4594,71 @@ function NarrativeTweakData:init(tweak_data)
 	}
 	self.jobs.crime_spree.ignore_heat = true
 	self.jobs.crime_spree.hidden = true
+	self.stages.wwh = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "wwh"
+	}
+	self.jobs.wwh = {
+		name_id = "heist_wwh",
+		briefing_id = "heist_wwh_crimenet",
+		contact = "locke",
+		region = "street",
+		jc = 30,
+		chain = {self.stages.wwh},
+		briefing_event = "Play_loc_wwh_cbf_01",
+		debrief_event = nil,
+		crimenet_callouts = {"Play_loc_wwh_cnc_01"},
+		crimenet_videos = {
+			"cn_jewel1",
+			"cn_jewel2",
+			"cn_jewel3"
+		},
+		payout = {
+			60000,
+			150000,
+			300000,
+			600000,
+			750000,
+			750000,
+			750000
+		},
+		contract_cost = {
+			24000,
+			48000,
+			120000,
+			240000,
+			300000,
+			300000,
+			300000
+		},
+		contract_visuals = {}
+	}
+	self.jobs.wwh.contract_visuals.min_mission_xp = {
+		14000,
+		14000,
+		14000,
+		14000,
+		14000,
+		14000,
+		14000
+	}
+	self.jobs.wwh.contract_visuals.max_mission_xp = {
+		18000,
+		18000,
+		18000,
+		18000,
+		18000,
+		18000,
+		18000
+	}
+	self.jobs.wwh.contract_visuals.preview_image = {id = "lockeload"}
+	self.jobs.wwh.load_screen = "guis/dlcs/pic/textures/loading/job_lockeload"
+	self.jobs.wwh.date_added = {
+		2017,
+		10,
+		23
+	}
 	self.jobs.arm_cro.contract_visuals.preview_image = {id = "armor_crossroads"}
 	self.jobs.arm_fac.contract_visuals.preview_image = {id = "armor_harbor"}
 	self.jobs.arm_for.contract_visuals.preview_image = {id = "armor_train"}
@@ -4720,7 +4785,8 @@ function NarrativeTweakData:init(tweak_data)
 		"moon",
 		"run",
 		"glace",
-		"crime_spree"
+		"crime_spree",
+		"wwh"
 	}
 
 	if SystemInfo:distribution() == Idstring("STEAM") then

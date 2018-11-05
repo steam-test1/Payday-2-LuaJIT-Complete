@@ -1127,3 +1127,13 @@ function ConnectionNetworkHandler:sync_player_installed_mod(peer_id, mod_id, mod
 	peer:register_mod(mod_id, mod_friendly_name)
 end
 
+function ConnectionNetworkHandler:sync_phalanx_vip_achievement_unlocked(achievement_id, sender)
+	local peer = self._verify_sender(sender)
+
+	if not peer then
+		return
+	end
+
+	managers.achievment:award_enemy_kill_achievement(achievement_id)
+end
+

@@ -189,6 +189,30 @@ function NewRaycastWeaponBase:clbk_assembly_complete(clbk, parts, blueprint)
 		self._second_sight_data.unit = self._parts[self._second_sight_data.part_id].unit
 	end
 
+	local category = tweak_data.weapon[self._name_id].use_data.selection_index == 2 and "primaries" or "secondaries"
+	local slot = managers.blackmarket:equipped_weapon_slot(category)
+
+	for part_id, part_data in pairs(parts) do
+		local colors = managers.blackmarket:get_part_custom_colors(category, slot, part_id, true)
+
+		if colors then
+			local mod_td = tweak_data.weapon.factory.parts[part_id]
+			local alpha = part_data.unit:base().GADGET_TYPE == "laser" and tweak_data.custom_colors.defaults.laser_alpha or 1
+
+			part_data.unit:base():set_color(colors[mod_td.sub_type]:with_alpha(alpha))
+
+			if mod_td.adds then
+				for _, add_part_id in ipairs(mod_td.adds) do
+					if self._parts[add_part_id] and self._parts[add_part_id].unit:base() then
+						local sub_type = tweak_data.weapon.factory.parts[add_part_id].sub_type
+
+						self._parts[add_part_id].unit:base():set_color(colors[sub_type])
+					end
+				end
+			end
+		end
+	end
+
 	clbk()
 end
 
@@ -665,6 +689,10 @@ function NewRaycastWeaponBase:calculate_ammo_max_per_clip()
 
 	if self:is_category("shotgun") and tweak_data.weapon[self._name_id].has_magazine then
 		added = managers.player:upgrade_value("shotgun", "magazine_capacity_inc", 0)
+
+		if self:is_category("akimbo") then
+			added = added * 2
+		end
 	elseif self:is_category("pistol") and not self:is_category("revolver") and managers.player:has_category_upgrade("pistol", "magazine_capacity_inc") then
 		added = managers.player:upgrade_value("pistol", "magazine_capacity_inc", 0)
 
@@ -1066,6 +1094,14 @@ function NewRaycastWeaponBase:on_equip(user_unit)
 		if gadgets then
 			self:set_gadget_on(self._last_gadget_idx, false, gadgets)
 			user_unit:network():send("set_weapon_gadget_state", self._gadget_on)
+
+			local gadget = self:get_active_gadget()
+
+			if gadget and gadget.color then
+				local col = gadget:color()
+
+				user_unit:network():send("set_weapon_gadget_color", col.r * 255, col.g * 255, col.b * 255)
+			end
 		end
 	end
 end
@@ -1132,6 +1168,90 @@ function NewRaycastWeaponBase:set_gadget_on(gadget_on, ignore_enable, gadgets, c
 
 			if gadget then
 				gadget.unit:base():set_state(self._gadget_on == i, self._sound_fire, current_state)
+			end
+		end
+	end
+end
+
+function NewRaycastWeaponBase:set_gadget_on_by_part_id(part_id, gadgets)
+	if not self._assembly_complete or not self._enabled then
+		return
+	end
+
+	gadgets = gadgets or managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
+
+	if gadgets then
+		local xd, yd = nil
+		local part_factory = tweak_data.weapon.factory.parts
+
+		table.sort(gadgets, function (x, y)
+			xd = self._parts[x]
+			yd = self._parts[y]
+
+			if not xd then
+				return false
+			end
+
+			if not yd then
+				return true
+			end
+
+			return yd.unit:base().GADGET_TYPE < xd.unit:base().GADGET_TYPE
+		end)
+
+		local gadget = nil
+
+		for i, id in ipairs(gadgets) do
+			gadget = self._parts[id]
+
+			if gadget and id == part_id then
+				self:set_gadget_on(i, nil, gadgets, nil)
+			end
+		end
+	end
+end
+
+function NewRaycastWeaponBase:get_active_gadget()
+	if not self._assembly_complete then
+		return nil
+	end
+
+	local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
+
+	if gadgets then
+		local gadget = nil
+
+		for i, id in ipairs(gadgets) do
+			gadget = self._parts[id]
+
+			if gadget and gadget.unit:base():is_on() then
+				return gadget.unit:base(), id
+			end
+		end
+	end
+end
+
+function NewRaycastWeaponBase:set_gadget_color(color)
+	if not self._enabled then
+		return
+	end
+
+	if not self._assembly_complete then
+		return
+	end
+
+	local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
+
+	if gadgets then
+		local gadget = nil
+
+		for i, id in ipairs(gadgets) do
+			gadget = self._parts[id]
+
+			if gadget and gadget.unit:base() and gadget.unit:base().set_color then
+				local alpha = gadget.unit:base().GADGET_TYPE == "laser" and tweak_data.custom_colors.defaults.laser_alpha or 1
+
+				gadget.unit:base():set_color(color:with_alpha(alpha))
 			end
 		end
 	end

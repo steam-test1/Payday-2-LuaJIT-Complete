@@ -880,7 +880,7 @@ function AchievementListGui:init(ws, fullscreen_ws, node)
 		self:_do_popup(AchievementRecentListGui:new(self, recent_list, callback(self, self, "_on_popup_done")))
 	end
 
-	if managers.achievment.handler.friends_achievements_cache then
+	if managers.achievment.handler.friends_achievements_cache and managers.network.account:signin_state() == "signed in" then
 		managers.achievment.handler:friends_achievements_cache(function (ok)
 			print("[Ach]", "cache result", ok)
 

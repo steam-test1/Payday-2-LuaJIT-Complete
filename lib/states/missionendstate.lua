@@ -895,7 +895,7 @@ function MissionEndState:chk_complete_heist_achievements()
 				end
 			end
 
-			local mask_pass, diff_pass, no_shots_pass, contract_pass, job_pass, jobs_pass, level_pass, levels_pass, stealth_pass, loud_pass, equipped_pass, job_value_pass, phalanx_vip_alive_pass, used_weapon_category_pass, equipped_team_pass, timer_pass, num_players_pass, pass_skills, killed_by_weapons_pass, killed_by_melee_pass, killed_by_grenade_pass, civilians_killed_pass, complete_job_pass, memory_pass, is_host_pass, character_pass, converted_cops_pass, total_accuracy_pass, weapons_used_pass, everyone_killed_by_weapons_pass, everyone_killed_by_melee_pass, everyone_killed_by_grenade_pass, everyone_weapons_used_pass, enemy_killed_pass, everyone_used_weapon_category_pass, everyone_killed_by_weapon_category_pass, everyone_killed_by_projectile_pass, killed_pass, shots_by_weapon_pass, killed_by_blueprint_pass, mutators_pass, all_pass, weapon_data, memory, level_id, stage, num_skills = nil
+			local mask_pass, diff_pass, no_shots_pass, contract_pass, job_pass, jobs_pass, level_pass, levels_pass, stealth_pass, loud_pass, equipped_pass, job_value_pass, phalanx_vip_alive_pass, used_weapon_category_pass, equipped_team_pass, timer_pass, num_players_pass, pass_skills, killed_by_weapons_pass, killed_by_melee_pass, killed_by_grenade_pass, civilians_killed_pass, complete_job_pass, memory_pass, is_host_pass, character_pass, converted_cops_pass, total_accuracy_pass, weapons_used_pass, everyone_killed_by_weapons_pass, everyone_killed_by_melee_pass, everyone_killed_by_grenade_pass, everyone_weapons_used_pass, enemy_killed_pass, everyone_used_weapon_category_pass, everyone_killed_by_weapon_category_pass, everyone_killed_by_projectile_pass, killed_pass, shots_by_weapon_pass, killed_by_blueprint_pass, mutators_pass, secured_pass, crime_spree_pass, all_pass, weapon_data, memory, level_id, stage, num_skills = nil
 			local phalanx_vip_alive = false
 
 			for _, enemy in pairs(managers.enemy:all_enemies() or {}) do
@@ -1099,6 +1099,32 @@ function MissionEndState:chk_complete_heist_achievements()
 					shots_by_weapon_pass = not managers.statistics:session_anyone_used_weapon_except(achievement_data.shots_by_weapon)
 				end
 
+				secured_pass = not achievement_data.secured
+
+				if achievement_data.secured then
+					if achievement_data.secured[1] ~= nil then
+						for i, secured_data in ipairs(achievement_data.secured) do
+							secured_pass = managers.loot:_check_secured(achievement, secured_data)
+
+							if not secured_pass then
+								break
+							end
+						end
+					else
+						secured_pass = managers.loot:_check_secured(achievement, achievement_data.secured)
+					end
+				end
+
+				crime_spree_pass = not achievement_data.crime_spree
+
+				if achievement_data.crime_spree then
+					if type(achievement_data.crime_spree) == "number" then
+						crime_spree_pass = managers.crime_spree:is_active() and achievement_data.crime_spree <= managers.crime_spree:spree_level()
+					else
+						crime_spree_pass = managers.crime_spree:is_active()
+					end
+				end
+
 				pass_skills = not achievement_data.num_skills
 
 				if not pass_skills then
@@ -1270,7 +1296,7 @@ function MissionEndState:chk_complete_heist_achievements()
 				end
 
 				equipped_team_pass = managers.challenge:check_equipped(achievement_data) and managers.challenge:check_equipped_team(achievement_data)
-				all_pass = job_pass and jobs_pass and level_pass and levels_pass and contract_pass and diff_pass and mask_pass and no_shots_pass and stealth_pass and loud_pass and equipped_pass and equipped_team_pass and num_players_pass and pass_skills and timer_pass and killed_by_weapons_pass and killed_by_melee_pass and killed_by_grenade_pass and complete_job_pass and job_value_pass and memory_pass and phalanx_vip_alive_pass and used_weapon_category_pass and is_host_pass and character_pass and converted_cops_pass and total_accuracy_pass and weapons_used_pass and everyone_killed_by_weapons_pass and everyone_killed_by_melee_pass and everyone_killed_by_grenade_pass and everyone_weapons_used_pass and everyone_used_weapon_category_pass and enemy_killed_pass and everyone_killed_by_weapon_category_pass and everyone_killed_by_projectile_pass and killed_pass and shots_by_weapon_pass and killed_by_blueprint_pass and mutators_pass
+				all_pass = job_pass and jobs_pass and level_pass and levels_pass and contract_pass and diff_pass and mask_pass and no_shots_pass and stealth_pass and loud_pass and equipped_pass and equipped_team_pass and num_players_pass and pass_skills and timer_pass and killed_by_weapons_pass and killed_by_melee_pass and killed_by_grenade_pass and complete_job_pass and job_value_pass and memory_pass and phalanx_vip_alive_pass and used_weapon_category_pass and is_host_pass and character_pass and converted_cops_pass and total_accuracy_pass and weapons_used_pass and everyone_killed_by_weapons_pass and everyone_killed_by_melee_pass and everyone_killed_by_grenade_pass and everyone_weapons_used_pass and everyone_used_weapon_category_pass and enemy_killed_pass and everyone_killed_by_weapon_category_pass and everyone_killed_by_projectile_pass and killed_pass and shots_by_weapon_pass and killed_by_blueprint_pass and mutators_pass and secured_pass and crime_spree_pass
 
 				if all_pass and achievement_data.need_full_job and managers.job:has_active_job() then
 					memory = managers.job:get_memory(achievement)

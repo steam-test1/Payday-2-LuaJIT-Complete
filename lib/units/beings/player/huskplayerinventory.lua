@@ -158,6 +158,12 @@ function HuskPlayerInventory:synch_weapon_gadget_state(state)
 	end
 end
 
+function HuskPlayerInventory:sync_weapon_gadget_color(color)
+	if self:equipped_unit():base().set_gadget_color then
+		self:equipped_unit():base():set_gadget_color(color)
+	end
+end
+
 function HuskPlayerInventory:on_melee_item_shown()
 	local selection = self._available_selections[self._equipped_selection]
 

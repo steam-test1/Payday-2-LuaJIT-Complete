@@ -567,6 +567,14 @@ function CustomSafehouseGuiPageDaily:_setup_challenge(id)
 				end
 			end
 
+			local objective_str = managers.localization:text(daily_info.objective_id or daily_info.objectives[i].desc_id, macros)
+
+			print("daily_info.objectives[i].display: ", daily_info.objectives[i].display)
+
+			if daily_info.objectives[i].display == false then
+				objective_str = ""
+			end
+
 			local objective_text = scroll:canvas():text({
 				name = "ObjectiveText",
 				blend_mode = "add",
@@ -580,7 +588,7 @@ function CustomSafehouseGuiPageDaily:_setup_challenge(id)
 				font_size = small_font_size,
 				font = small_font,
 				color = tweak_data.screen_colors.title,
-				text = managers.localization:text(daily_info.objective_id or daily_info.objectives[i].desc_id, macros),
+				text = objective_str,
 				w = scroll:canvas():w()
 			})
 

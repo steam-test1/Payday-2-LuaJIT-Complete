@@ -10,7 +10,7 @@ function DLCTweakData:init(tweak_data)
 			fir = true,
 			dlc_pack_overkill = true,
 			mom = true,
-			the_bomb = true,
+			dsg = true,
 			grv = true,
 			fez1 = true,
 			gage_pack_shotgun = true,
@@ -32,18 +32,20 @@ function DLCTweakData:init(tweak_data)
 			dnm = true,
 			gage_pack_lmg = true,
 			dos = true,
-			pic = true,
+			wwh = true,
 			paydaycon2016 = 1,
+			pic = true,
+			the_bomb = true,
+			mdm = 1,
 			steel = true,
 			hlm2 = true,
-			mdm = 1,
-			speedrunners = 1,
-			alienware_alpha = true,
 			fdm = true,
 			hoxton_revenge = 1,
-			humble_summer_2015 = 1,
+			speedrunners = 1,
 			hl_miami = true,
+			alienware_alpha = true,
 			pn2 = true,
+			humble_summer_2015 = 1,
 			pim = true,
 			cash = true,
 			bbq = true,
@@ -6008,6 +6010,11 @@ function DLCTweakData:init(tweak_data)
 		item_entry = "dnm",
 		amount = 1
 	}}
+	self.wwh = {
+		free = true,
+		content = {}
+	}
+	self.wwh.content.loot_drops = {}
 	self.eng = {
 		free = true,
 		content = {}

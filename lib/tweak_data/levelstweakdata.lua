@@ -967,6 +967,7 @@ function LevelsTweakData:init()
 		cube = "cube_apply_heist_bank",
 		max_bags = 6,
 		ghost_bonus = 0,
+		ghost_required_visual = true,
 		ai_group_type = america
 	}
 	self.hox_3 = {
@@ -1527,6 +1528,21 @@ function LevelsTweakData:init()
 		equipment = {"saw"},
 		player_sequence = "spawn_prop_raincoat"
 	}
+	self.wwh = {
+		name_id = "heist_wwh_hl",
+		briefing_id = "heist_wwh_briefing",
+		package = "packages/lvl_wwh",
+		briefing_dialog = "Play_pln_wwh_brf",
+		world_name = "narratives/locke/wwh",
+		intro_event = "Play_loc_wwh_intro",
+		outro_event = "Play_pln_wwh_end",
+		music = "heist",
+		cube = "cube_apply_heist_bank",
+		environment_effects = {"snow"},
+		max_bags = 12,
+		ai_group_type = america,
+		drop_pickups_to_ground = true
+	}
 	self._level_index = {
 		"welcome_to_the_jungle_1",
 		"welcome_to_the_jungle_1_night",
@@ -1621,7 +1637,8 @@ function LevelsTweakData:init()
 		"spa",
 		"fish",
 		"run",
-		"glace"
+		"glace",
+		"wwh"
 	}
 
 	if SystemInfo:distribution() == Idstring("STEAM") then

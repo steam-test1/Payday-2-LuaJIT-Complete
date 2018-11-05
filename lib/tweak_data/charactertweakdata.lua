@@ -132,6 +132,7 @@ function CharacterTweakData:init(tweak_data)
 	self:_init_old_hoxton_mission(presets)
 	self:_init_spa_vip(presets)
 	self:_init_spa_vip_hurt(presets)
+	self:_init_captain(presets)
 
 	self._prefix_data = nil
 	self._prefix_data_p1 = nil
@@ -16068,6 +16069,16 @@ function CharacterTweakData:character_map()
 				"ene_bulldozer_medic",
 				"ene_bulldozer_minigun",
 				"ene_zeal_swat_heavy_sniper"
+			}
+		},
+		wwh = {
+			path = "units/pd2_dlc_wwh/characters/",
+			list = {
+				"ene_female_crew",
+				"ene_male_crew_01",
+				"ene_male_crew_02",
+				"ene_captain",
+				"ene_locke"
 			}
 		}
 	}

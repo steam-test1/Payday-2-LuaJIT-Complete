@@ -155,6 +155,8 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_breech_crew()
 	self:_init_data_ching_crew()
 	self:_init_data_erma_crew()
+	self:_init_data_basset_crew()
+	self:_init_data_x_basset_crew()
 	self:_precalculate_values()
 end
 
@@ -2919,6 +2921,37 @@ function WeaponTweakData:_init_data_erma_crew()
 	self.erma_crew.hold = "rifle"
 	self.erma_crew.alert_size = 2800
 	self.erma_crew.suppression = 1
+end
+
+function WeaponTweakData:_init_data_basset_crew()
+	self.basset_crew.sounds.prefix = "basset_npc"
+	self.basset_crew.use_data.selection_index = 1
+	self.basset_crew.DAMAGE = 3
+	self.basset_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
+	self.basset_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug"
+	self.basset_crew.auto.fire_rate = 0.2
+	self.basset_crew.CLIP_AMMO_MAX = 8
+	self.basset_crew.NR_CLIPS_MAX = 4
+	self.basset_crew.pull_magazine_during_reload = "large_plastic"
+	self.basset_crew.hold = "bullpup"
+	self.basset_crew.alert_size = 4500
+	self.basset_crew.suppression = 1.8
+	self.basset_crew.is_shotgun = true
+end
+
+function WeaponTweakData:_init_data_x_basset_crew()
+	self.x_basset_crew.sounds.prefix = "basset_x_npc"
+	self.x_basset_crew.use_data.selection_index = 2
+	self.x_basset_crew.DAMAGE = 1.25
+	self.x_basset_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
+	self.x_basset_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.x_basset_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
+	self.x_basset_crew.rays = 12
+	self.x_basset_crew.CLIP_AMMO_MAX = 60
+	self.x_basset_crew.NR_CLIPS_MAX = 5
+	self.x_basset_crew.hold = "akimbo_pistol"
+	self.x_basset_crew.alert_size = 1800
+	self.x_basset_crew.suppression = 2
 end
 
 function WeaponTweakData:_init_data_player_weapons(tweak_data)
@@ -14986,6 +15019,201 @@ function WeaponTweakData:_init_new_weapons(autohit_rifle_default, autohit_pistol
 		concealment = 24
 	}
 	self.erma.unlock_func = "has_unlocked_erma"
+	self.basset = {
+		categories = {"shotgun"},
+		has_magazine = true,
+		damage_melee = damage_melee_default,
+		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.basset.sounds.fire = "basset_fire"
+	self.basset.sounds.dryfire = "shotgun_dryfire"
+	self.basset.sounds.stop_fire = "basset_stop"
+	self.basset.sounds.enter_steelsight = "primary_steel_sight_enter"
+	self.basset.sounds.leave_steelsight = "primary_steel_sight_exit"
+	self.basset.timers = {
+		reload_not_empty = 2.16,
+		reload_empty = 2.9,
+		unequip = 0.55,
+		equip = 0.55
+	}
+	self.basset.name_id = "bm_w_basset"
+	self.basset.desc_id = "bm_w_basset_desc"
+	self.basset.description_id = "des_basset"
+	self.basset.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
+	self.basset.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
+	self.basset.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug"
+	self.basset.use_data = {
+		selection_index = 1,
+		align_place = "right_hand"
+	}
+	self.basset.DAMAGE = 6
+	self.basset.damage_near = 2000
+	self.basset.damage_far = 3000
+	self.basset.rays = 12
+	self.basset.CLIP_AMMO_MAX = 8
+	self.basset.NR_CLIPS_MAX = 13
+	self.basset.AMMO_MAX = self.basset.CLIP_AMMO_MAX * self.basset.NR_CLIPS_MAX
+	self.basset.AMMO_PICKUP = self:_pickup_chance(self.basset.AMMO_MAX, 4)
+	self.basset.FIRE_MODE = "auto"
+	self.basset.fire_mode_data = {fire_rate = 0.2}
+	self.basset.CAN_TOGGLE_FIREMODE = true
+	self.basset.auto = {fire_rate = 0.2}
+	self.basset.spread = {
+		standing = self.r870.spread.standing,
+		crouching = self.r870.spread.crouching,
+		steelsight = self.r870.spread.steelsight,
+		moving_standing = self.r870.spread.moving_standing,
+		moving_crouching = self.r870.spread.moving_crouching,
+		moving_steelsight = self.r870.spread.moving_steelsight
+	}
+	self.basset.kick = {standing = self.r870.kick.standing}
+	self.basset.kick.crouching = self.basset.kick.standing
+	self.basset.kick.steelsight = self.r870.kick.steelsight
+	self.basset.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.basset.crosshair.standing.offset = 0.7
+	self.basset.crosshair.standing.moving_offset = 0.7
+	self.basset.crosshair.standing.kick_offset = 0.8
+	self.basset.crosshair.crouching.offset = 0.65
+	self.basset.crosshair.crouching.moving_offset = 0.65
+	self.basset.crosshair.crouching.kick_offset = 0.75
+	self.basset.crosshair.steelsight.hidden = true
+	self.basset.crosshair.steelsight.offset = 0
+	self.basset.crosshair.steelsight.moving_offset = 0
+	self.basset.crosshair.steelsight.kick_offset = 0
+	self.basset.shake = {
+		fire_multiplier = 1,
+		fire_steelsight_multiplier = 1.25
+	}
+	self.basset.autohit = autohit_shotgun_default
+	self.basset.aim_assist = aim_assist_shotgun_default
+	self.basset.weapon_hold = "basset"
+	self.basset.animations = {
+		equip_id = "equip_basset",
+		recoil_steelsight = true
+	}
+	self.basset.texture_bundle_folder = "dsg"
+	self.basset.panic_suppression_chance = 0.2
+	self.basset.stats = {
+		zoom = 3,
+		total_ammo_mod = 21,
+		damage = 18,
+		alert_size = 7,
+		spread = 4,
+		spread_moving = 8,
+		recoil = 13,
+		value = 1,
+		extra_ammo = 6,
+		reload = 11,
+		suppression = 5,
+		concealment = 21
+	}
+	self.x_basset = {
+		categories = {
+			"akimbo",
+			"shotgun"
+		},
+		has_magazine = true,
+		allow_akimbo_autofire = true,
+		damage_melee = damage_melee_default,
+		damage_melee_effect_mul = damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.x_basset.sounds.fire = "basset_x_fire"
+	self.x_basset.sounds.fire_single = "basset_x_fire_single"
+	self.x_basset.sounds.fire_auto = "basset_x_fire"
+	self.x_basset.sounds.stop_fire = "basset_x_stop"
+	self.x_basset.sounds.enter_steelsight = "pistol_steel_sight_enter"
+	self.x_basset.sounds.leave_steelsight = "pistol_steel_sight_exit"
+	self.x_basset.sounds.dryfire = "secondary_dryfire"
+	self.x_basset.timers = {
+		reload_not_empty = 3,
+		reload_empty = 3.5,
+		unequip = 0.5,
+		equip = 0.5
+	}
+	self.x_basset.name_id = "bm_w_x_basset"
+	self.x_basset.desc_id = "bm_w_x_basset_desc"
+	self.x_basset.description_id = "des_x_basset"
+	self.x_basset.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
+	self.x_basset.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
+	self.x_basset.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug"
+	self.x_basset.use_data = {selection_index = 2}
+	self.x_basset.DAMAGE = 4
+	self.x_basset.damage_near = 2000
+	self.x_basset.damage_far = 3000
+	self.x_basset.rays = 12
+	self.x_basset.use_shotgun_reload = false
+	self.x_basset.CLIP_AMMO_MAX = 16
+	self.x_basset.NR_CLIPS_MAX = 6
+	self.x_basset.AMMO_MAX = self.x_basset.CLIP_AMMO_MAX * self.x_basset.NR_CLIPS_MAX
+	self.x_basset.AMMO_PICKUP = self:_pickup_chance(self.x_basset.AMMO_MAX, 1)
+	self.x_basset.FIRE_MODE = "auto"
+	self.x_basset.fire_mode_data = {fire_rate = 0.18}
+	self.x_basset.single = {fire_rate = 0.18}
+	self.x_basset.CAN_TOGGLE_FIREMODE = true
+	self.x_basset.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight
+	}
+	self.x_basset.kick = {standing = {
+		1.4,
+		1.2,
+		-0.5,
+		0.5
+	}}
+	self.x_basset.kick.crouching = self.x_basset.kick.standing
+	self.x_basset.kick.steelsight = self.x_basset.kick.standing
+	self.x_basset.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.x_basset.crosshair.standing.offset = 0.2
+	self.x_basset.crosshair.standing.moving_offset = 0.6
+	self.x_basset.crosshair.standing.kick_offset = 0.4
+	self.x_basset.crosshair.crouching.offset = 0.1
+	self.x_basset.crosshair.crouching.moving_offset = 0.6
+	self.x_basset.crosshair.crouching.kick_offset = 0.3
+	self.x_basset.crosshair.steelsight.hidden = true
+	self.x_basset.crosshair.steelsight.offset = 0
+	self.x_basset.crosshair.steelsight.moving_offset = 0
+	self.x_basset.crosshair.steelsight.kick_offset = 0.1
+	self.x_basset.shake = {
+		fire_multiplier = 1,
+		fire_steelsight_multiplier = -1
+	}
+	self.x_basset.autohit = autohit_smg_default
+	self.x_basset.aim_assist = aim_assist_smg_default
+	self.x_basset.weapon_hold = "x_akmsu"
+	self.x_basset.animations = {
+		has_steelsight_stance = true,
+		recoil_steelsight = true
+	}
+	self.x_basset.texture_bundle_folder = "dsg"
+	self.x_basset.panic_suppression_chance = 0.2
+	self.x_basset.stats = {
+		zoom = 3,
+		total_ammo_mod = 21,
+		damage = 18,
+		alert_size = 7,
+		spread = 4,
+		spread_moving = 8,
+		recoil = 13,
+		value = 1,
+		extra_ammo = 6,
+		reload = 11,
+		suppression = 5,
+		concealment = 21
+	}
 end
 
 function WeaponTweakData:_init_data_offhand_weapons()
@@ -16003,6 +16231,18 @@ function WeaponTweakData:_create_table_structure()
 	}
 	self.erma_crew = {
 		usage = "is_bullpup",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.basset_crew = {
+		usage = "is_bullpup",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.x_basset_crew = {
+		usage = "akimbo_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}

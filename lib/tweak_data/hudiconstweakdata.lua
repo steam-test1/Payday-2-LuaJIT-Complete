@@ -10819,6 +10819,96 @@ function HudIconsTweakData:init()
 	self.sidebar_crimespree = self:create_next_icon(sidebar_atlas)
 	self.sidebar_filters = self:create_next_icon(sidebar_atlas)
 	self.sidebar_question = self:create_next_icon(sidebar_atlas)
+	self.C_Locke_H_AlsDeal_AllDiffs_D0 = {
+		texture = "guis/dlcs/wwh/textures/pd2/wwh_achievements_atlas",
+		texture_rect = {
+			87,
+			0,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_AlsDeal_AllDiffs_D1 = {
+		texture = "guis/dlcs/wwh/textures/pd2/wwh_achievements_atlas",
+		texture_rect = {
+			174,
+			87,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_AlsDeal_AllDiffs_D2 = {
+		texture = "guis/dlcs/wwh/textures/pd2/wwh_achievements_atlas",
+		texture_rect = {
+			174,
+			0,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_AlsDeal_AllDiffs_D3 = {
+		texture = "guis/dlcs/wwh/textures/pd2/wwh_achievements_atlas",
+		texture_rect = {
+			261,
+			87,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_AlsDeal_AllDiffs_D4 = {
+		texture = "guis/dlcs/wwh/textures/pd2/wwh_achievements_atlas",
+		texture_rect = {
+			261,
+			0,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_AlsDeal_AllDiffs_D5 = {
+		texture = "guis/dlcs/wwh/textures/pd2/wwh_achievements_atlas",
+		texture_rect = {
+			348,
+			87,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_AlsDeal_AllDiffs_D6 = {
+		texture = "guis/dlcs/wwh/textures/pd2/wwh_achievements_atlas",
+		texture_rect = {
+			348,
+			0,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_AlsDeal_HeadlessSnow_D0 = {
+		texture = "guis/dlcs/wwh/textures/pd2/wwh_achievements_atlas",
+		texture_rect = {
+			87,
+			87,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_AlsDeal_TheFuelMust_D3 = {
+		texture = "guis/dlcs/wwh/textures/pd2/wwh_achievements_atlas",
+		texture_rect = {
+			0,
+			87,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_AlsDeal_ThereWasRoom_D0 = {
+		texture = "guis/dlcs/wwh/textures/pd2/wwh_achievements_atlas",
+		texture_rect = {
+			0,
+			0,
+			85,
+			85
+		}
+	}
 
 	TextureCorrectionTweakData:new(self)
 end

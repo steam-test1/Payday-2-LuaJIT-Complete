@@ -21,7 +21,7 @@ function WeaponFlashLight:init(unit)
 	self._light:set_rotation(Rotation(self._a_flashlight_obj:rotation():z(), -self._a_flashlight_obj:rotation():x(), -self._a_flashlight_obj:rotation():y()))
 	self._light:set_enable(false)
 
-	local effect_path = is_haunted and "effects/particles/weapons/flashlight_spooky/fp_flashlight" or "effects/particles/weapons/flashlight/fp_flashlight"
+	local effect_path = is_haunted and "effects/particles/weapons/flashlight_spooky/fp_flashlight" or "effects/particles/weapons/flashlight/fp_flashlight_multicolor"
 	self._light_effect = World:effect_manager():spawn({
 		force_synch = true,
 		effect = Idstring(effect_path),
@@ -45,7 +45,7 @@ function WeaponFlashLight:set_npc()
 
 	local obj = self._unit:get_object(Idstring("a_flashlight"))
 	local is_haunted = self:is_haunted()
-	local effect_path = is_haunted and "effects/particles/weapons/flashlight_spooky/flashlight" or "effects/particles/weapons/flashlight/flashlight"
+	local effect_path = is_haunted and "effects/particles/weapons/flashlight_spooky/flashlight" or "effects/particles/weapons/flashlight/flashlight_multicolor"
 	self._light_effect = World:effect_manager():spawn({
 		effect = Idstring(effect_path),
 		parent = obj
@@ -227,5 +227,46 @@ function WeaponFlashLight:update_frozen(t, dt)
 
 		self._frozen_t = nil
 	end
+end
+WeaponFlashLight.EFFECT_OPACITY_MAX = 16
+WeaponFlashLight.NPC_GLOW_OPACITY_MAX = 100
+WeaponFlashLight.NPC_CONE_OPACITY_MAX = 8
+
+function WeaponFlashLight:set_color(color)
+	if self:is_haunted() then
+		return
+	end
+
+	if not color then
+		return
+	end
+
+	local opacity_ids = Idstring("opacity")
+	local col_vec = Vector3(color.r, color.g, color.b)
+
+	self._light:set_color(col_vec)
+
+	if self._is_npc then
+		World:effect_manager():set_simulator_var_float(self._light_effect, Idstring("glow base camera r"), opacity_ids, opacity_ids, color.r * WeaponFlashLight.NPC_GLOW_OPACITY_MAX)
+		World:effect_manager():set_simulator_var_float(self._light_effect, Idstring("glow base camera g"), opacity_ids, opacity_ids, color.g * WeaponFlashLight.NPC_GLOW_OPACITY_MAX)
+		World:effect_manager():set_simulator_var_float(self._light_effect, Idstring("glow base camera b"), opacity_ids, opacity_ids, color.b * WeaponFlashLight.NPC_GLOW_OPACITY_MAX)
+		World:effect_manager():set_simulator_var_float(self._light_effect, Idstring("lightcone r"), opacity_ids, opacity_ids, color.r * WeaponFlashLight.NPC_CONE_OPACITY_MAX)
+		World:effect_manager():set_simulator_var_float(self._light_effect, Idstring("lightcone g"), opacity_ids, opacity_ids, color.g * WeaponFlashLight.NPC_CONE_OPACITY_MAX)
+		World:effect_manager():set_simulator_var_float(self._light_effect, Idstring("lightcone b"), opacity_ids, opacity_ids, color.b * WeaponFlashLight.NPC_CONE_OPACITY_MAX)
+	else
+		local r_ids = Idstring("red")
+		local g_ids = Idstring("green")
+		local b_ids = Idstring("blue")
+
+		World:effect_manager():set_simulator_var_float(self._light_effect, r_ids, r_ids, opacity_ids, color.r * WeaponFlashLight.EFFECT_OPACITY_MAX)
+		World:effect_manager():set_simulator_var_float(self._light_effect, g_ids, g_ids, opacity_ids, color.g * WeaponFlashLight.EFFECT_OPACITY_MAX)
+		World:effect_manager():set_simulator_var_float(self._light_effect, b_ids, b_ids, opacity_ids, color.b * WeaponFlashLight.EFFECT_OPACITY_MAX)
+	end
+end
+
+function WeaponFlashLight:color()
+	local col = self._light:color()
+
+	return Color(col.x, col.y, col.z)
 end
 

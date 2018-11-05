@@ -356,6 +356,7 @@ function MusicManager:jukebox_default_tracks()
 		heist_arm_und = "all",
 		heist_spa = "all",
 		heist_glace = "track_53",
+		heist_wwh = "track_54",
 		heist_jewelry_store = "track_01",
 		heist_born1 = "all",
 		heist_pines = "track_23",

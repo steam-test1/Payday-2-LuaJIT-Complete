@@ -248,7 +248,6 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 		y = 10,
 		x = canvas:row_w() - 10
 	})
-	local total_friends = Steam:friends()
 
 	self._num_friend_text:set_text(managers.localization:text("menu_achievement_fetching_data"))
 
@@ -299,55 +298,58 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 		title:set_w(title:w() - title:right() + friend_circle:left())
 	end
 
-	local unlocked_friends = {}
+	if managers.network.account:signin_state() == "signed in" then
+		local total_friends = Steam:friends()
+		local unlocked_friends = {}
 
-	managers.achievment:get_friends_with_achievement(self._id, function (friend)
-		print("[Ach]", "GET FRIEND WITH ACHIEVEMENT", friend)
+		managers.achievment:get_friends_with_achievement(self._id, function (friend)
+			print("[Ach]", "GET FRIEND WITH ACHIEVEMENT", friend)
 
-		if not alive(friend_list) or not alive(self._panel) then
-			print("[Ach]", "\tQuit!")
+			if not alive(friend_list) or not alive(self._panel) then
+				print("[Ach]", "\tQuit!")
 
-			return
-		end
-
-		if friend == true then
-			print("[Ach]", "\tDONE!")
-			self._num_friend_text:set_text(managers.localization:text("menu_achievement_friends_unlocked", {COUNT = #unlocked_friends}))
-
-			return
-		elseif friend == false then
-			print("[Ach]", "\tFAILED!")
-			self._num_friend_text:set_text("ERROR")
-
-			return
-		end
-
-		table.insert(unlocked_friends, friend)
-
-		local friend_p = #unlocked_friends / #total_friends
-
-		friend_circle:set_progress(friend_p)
-		friend_p_text:set_text(managers.localization:text("menu_achievement_friends_unlocked_percent", {COUNT = string.format("%.1f", friend_p * 100)}))
-		self.make_fine_text(friend_p_text)
-		Steam:friend_avatar(Steam.SMALL_AVATAR, friend:id(), function (texture)
-			if alive(friend_list) then
-				local avatar = f_placer:add_left(canvas:fit_bitmap({
-					w = 32,
-					h = 32,
-					texture = texture
-				}), 10)
-				local name = f_placer:add_left(canvas:fine_text({
-					text = friend:name(),
-					font = small_font,
-					font_size = small_font_size,
-					color = grey_color
-				}))
-
-				name:set_center_y(avatar:center_y())
-				f_placer:new_row()
+				return
 			end
+
+			if friend == true then
+				print("[Ach]", "\tDONE!")
+				self._num_friend_text:set_text(managers.localization:text("menu_achievement_friends_unlocked", {COUNT = #unlocked_friends}))
+
+				return
+			elseif friend == false then
+				print("[Ach]", "\tFAILED!")
+				self._num_friend_text:set_text("ERROR")
+
+				return
+			end
+
+			table.insert(unlocked_friends, friend)
+
+			local friend_p = #unlocked_friends / #total_friends
+
+			friend_circle:set_progress(friend_p)
+			friend_p_text:set_text(managers.localization:text("menu_achievement_friends_unlocked_percent", {COUNT = string.format("%.1f", friend_p * 100)}))
+			self.make_fine_text(friend_p_text)
+			Steam:friend_avatar(Steam.SMALL_AVATAR, friend:id(), function (texture)
+				if alive(friend_list) then
+					local avatar = f_placer:add_left(canvas:fit_bitmap({
+						w = 32,
+						h = 32,
+						texture = texture
+					}), 10)
+					local name = f_placer:add_left(canvas:fine_text({
+						text = friend:name(),
+						font = small_font,
+						font_size = small_font_size,
+						color = grey_color
+					}))
+
+					name:set_center_y(avatar:center_y())
+					f_placer:new_row()
+				end
+			end)
 		end)
-	end)
+	end
 
 	local back_panel = self:panel({layer = -1})
 
