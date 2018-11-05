@@ -3252,7 +3252,8 @@ function UpgradesTweakData:init(tweak_data)
 			"molotov",
 			"wpn_dallas_mask",
 			"corgi",
-			"clean"
+			"clean",
+			"aziz"
 		}},
 		{
 			name_id = "body_armor",
@@ -10100,6 +10101,10 @@ function UpgradesTweakData:_melee_weapon_definitions()
 	self.definitions.clean = {category = "melee_weapon"}
 	self.definitions.meter = {
 		dlc = "ecp",
+		category = "melee_weapon"
+	}
+	self.definitions.aziz = {
+		dlc = "flm",
 		category = "melee_weapon"
 	}
 end

@@ -260,8 +260,14 @@ function CrimeSpreeMissionsMenuComponent.get_height()
 end
 
 function CrimeSpreeMissionsMenuComponent:update(t, dt)
+	local randomizing = self:is_randomizing()
+
 	for idx, btn in ipairs(self._buttons) do
 		btn:update(t, dt)
+	end
+
+	if not managers.menu:is_pc_controller() and randomizing and not self:is_randomizing() then
+		self:_select_mission(1)
 	end
 end
 

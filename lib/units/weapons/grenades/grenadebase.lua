@@ -96,7 +96,6 @@ function GrenadeBase:_check_achievements(unit, is_dead, damage_percent, hit_coun
 	local is_gangster = unit:character_damage().is_gangster(unit_type)
 	local is_cop = unit:character_damage().is_cop(unit_type)
 	local is_civilian = unit:character_damage().is_civilian(unit_type)
-	local weapon_id = tweak_data.blackmarket.projectiles[self:projectile_entry()].weapon_id
 	local is_crouching = alive(managers.player:player_unit()) and managers.player:player_unit():movement() and managers.player:player_unit():movement():crouching()
 	local count_pass, grenade_type_pass, kill_pass, distance_pass, enemy_pass, enemies_pass, flying_strike_pass, timer_pass, difficulty_pass, job_pass, crouching_pass, session_kill_pass, is_civilian_pass, explosive_pass, all_pass, memory = nil
 

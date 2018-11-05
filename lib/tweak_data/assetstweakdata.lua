@@ -227,7 +227,8 @@ function AssetsTweakData:_init_assets(tweak_data)
 			"dark",
 			"friend",
 			"fish",
-			"dah"
+			"dah",
+			"tag"
 		},
 		visible_if_locked = true,
 		unlock_desc_id = "menu_asset_bodybags_bag_desc",

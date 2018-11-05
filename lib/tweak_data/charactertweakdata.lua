@@ -197,6 +197,18 @@ function CharacterTweakData:_init_security(presets)
 	self.security_undominatable.surrender = nil
 
 	table.insert(self._enemy_list, "security_undominatable")
+
+	self.mute_security_undominatable = deep_clone(self.security)
+	self.mute_security_undominatable.suppression = nil
+	self.mute_security_undominatable.surrender = nil
+	self.mute_security_undominatable.has_alarm_pager = false
+	self.mute_security_undominatable.chatter = presets.enemy_chatter.no_chatter
+	self.mute_security_undominatable.weapon_voice = "3"
+	self.mute_security_undominatable.speech_prefix_p1 = "bb"
+	self.mute_security_undominatable.speech_prefix_p2 = "n"
+	self.mute_security_undominatable.speech_prefix_count = 1
+
+	table.insert(self._enemy_list, "mute_security_undominatable")
 end
 
 function CharacterTweakData:_init_gensec(presets)
@@ -2800,9 +2812,9 @@ end
 
 function CharacterTweakData:_init_civilian(presets)
 	self.civilian = {
-		experience = {},
 		detection = presets.detection.civilian,
 		tags = {"civilian"},
+		experience = {},
 		HEALTH_INIT = 0.9,
 		headshot_dmg_mul = 1,
 		move_speed = presets.move_speed.civ_fast,
@@ -2868,6 +2880,7 @@ function CharacterTweakData:_init_bank_manager(presets)
 		experience = {},
 		escort = {},
 		detection = presets.detection.civilian,
+		tags = {"civilian"},
 		HEALTH_INIT = self.civilian.HEALTH_INIT,
 		headshot_dmg_mul = self.civilian.headshot_dmg_mul,
 		move_speed = presets.move_speed.normal,
@@ -16266,6 +16279,10 @@ function CharacterTweakData:character_map()
 				"ene_captain",
 				"ene_locke"
 			}
+		},
+		tag = {
+			path = "units/pd2_dlc_tag/characters/",
+			list = {"ene_male_commissioner"}
 		}
 	}
 

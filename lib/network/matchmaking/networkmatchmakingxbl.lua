@@ -406,6 +406,10 @@ function NetworkMatchMakingXBL:set_difficulty_filter(filter)
 	self._difficulty_filter = filter
 end
 
+function NetworkMatchMakingXBL:get_lobby_data()
+	return {}
+end
+
 function NetworkMatchMakingXBL:get_lobby_return_count()
 end
 

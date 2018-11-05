@@ -38,6 +38,14 @@ function KillzoneManager:update(t, dt)
 
 					self:_deal_fire_damage(data.unit)
 				end
+			elseif data.type == "laser" and not data.killed then
+				data.timer = data.timer + dt
+
+				if data.next_fire < data.timer then
+					self:_kill_unit(data.unit)
+
+					data.killed = true
+				end
 			end
 		end
 	end
@@ -49,6 +57,14 @@ function KillzoneManager:set_unit(unit, type)
 	else
 		self:_add_unit(unit, type)
 	end
+end
+
+function KillzoneManager:_kill_unit(unit)
+	if unit:character_damage():need_revive() then
+		return
+	end
+
+	unit:character_damage():damage_killzone({instant_death = true})
 end
 
 function KillzoneManager:_warning_shot(unit)
@@ -120,6 +136,14 @@ function KillzoneManager:_add_unit(unit, type)
 		}
 	elseif type == "fire" then
 		local next_fire = math.rand(1)
+		self._units[unit:key()] = {
+			timer = 0,
+			type = type,
+			next_fire = next_fire,
+			unit = unit
+		}
+	elseif type == "laser" then
+		local next_fire = math.rand(0.2)
 		self._units[unit:key()] = {
 			timer = 0,
 			type = type,

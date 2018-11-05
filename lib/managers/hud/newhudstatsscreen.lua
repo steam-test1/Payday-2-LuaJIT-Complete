@@ -68,7 +68,7 @@ function HudTrackedAchievement:init(parent, id, black_bg)
 			w = 300,
 			h = 10,
 			back_color = Color(255, 60, 60, 65) / 255,
-			max = self._progress.max
+			max = type(self._progress.max) == "function" and self._progress:max() or self._progress.max
 		}, {
 			font_size = 12,
 			font = tiny_font
@@ -86,7 +86,9 @@ end
 function HudTrackedAchievement:update_progress()
 	if self._bar then
 		if self._info.awarded then
-			self._bar:set_progress(self._progress.max)
+			local max = type(self._progress.max) == "function" and self._progress:max() or self._progress.max
+
+			self._bar:set_progress(max)
 		else
 			self._bar:set_progress(self._progress:get())
 		end

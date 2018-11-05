@@ -53,9 +53,12 @@ function MissionBriefingTabItem:init(panel, text, i)
 	self:deselect()
 end
 
-function MissionBriefingTabItem:reduce_to_small_font()
+function MissionBriefingTabItem:reduce_to_small_font(iteration)
+	iteration = iteration or 0
+	local font_size = tweak_data.menu.pd2_small_font_size - iteration
+
 	self._tab_text:set_font(tweak_data.menu.pd2_small_font_id)
-	self._tab_text:set_font_size(tweak_data.menu.pd2_small_font_size)
+	self._tab_text:set_font_size(font_size)
 
 	local prev_item_title_text = self._main_panel:child("tab_text_" .. tostring(self._index - 1))
 	local offset = prev_item_title_text and prev_item_title_text:right() or 0
@@ -66,7 +69,7 @@ function MissionBriefingTabItem:reduce_to_small_font()
 	self._tab_select_rect:set_shape(self._tab_text:shape())
 	self._panel:set_top(self._tab_text:bottom() - 3)
 	self._panel:set_h(self._main_panel:h())
-	self._panel:grow(0, -(self._panel:top() + 70 + tweak_data.menu.pd2_small_font_size * 4 + 25))
+	self._panel:grow(0, -(self._panel:top() + 70 + font_size * 4 + 25))
 end
 
 function MissionBriefingTabItem:update_tab_position()
@@ -373,8 +376,8 @@ function DescriptionItem:init(panel, text, i, saved_descriptions)
 	self:_chk_add_scrolling()
 end
 
-function DescriptionItem:reduce_to_small_font()
-	DescriptionItem.super.reduce_to_small_font(self)
+function DescriptionItem:reduce_to_small_font(iteration)
+	DescriptionItem.super.reduce_to_small_font(self, iteration)
 
 	if not alive(self._scroll_panel) then
 		return
@@ -1948,8 +1951,8 @@ function TeamLoadoutItem:init(panel, text, i)
 	end
 end
 
-function TeamLoadoutItem:reduce_to_small_font()
-	TeamLoadoutItem.super.reduce_to_small_font(self)
+function TeamLoadoutItem:reduce_to_small_font(iteration)
+	TeamLoadoutItem.super.reduce_to_small_font(self, iteration)
 
 	for i = 1, tweak_data.max_players, 1 do
 		if self._player_slots[i].box then
@@ -3518,15 +3521,19 @@ function MissionBriefingGui:init(saferect_ws, fullrect_ws, node)
 	self:flash_ready()
 end
 
-function MissionBriefingGui:chk_reduce_to_small_font()
+function MissionBriefingGui:chk_reduce_to_small_font(iteration)
 	local max_x = alive(self._next_page) and self._next_page:left() - 5 or self._panel:w()
 
-	if self._reduced_to_small_font or self._items[#self._items] and alive(self._items[#self._items]._tab_text) and max_x < self._items[#self._items]._tab_text:right() then
+	if self._reduced_to_small_font and not iteration or self._items[#self._items] and alive(self._items[#self._items]._tab_text) and max_x < self._items[#self._items]._tab_text:right() then
+		iteration = iteration or 0
+
 		for i, tab in ipairs(self._items) do
-			tab:reduce_to_small_font()
+			tab:reduce_to_small_font(iteration)
 		end
 
 		self._reduced_to_small_font = true
+
+		self:chk_reduce_to_small_font(iteration + 1)
 	end
 end
 

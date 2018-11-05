@@ -195,6 +195,7 @@ function StatisticsTweakData:statistics_table()
 		"cop_female",
 		"security_undominatable",
 		"medic",
+		"mute_security_undominatable",
 		"escort_chinese_prisoner",
 		"bolivian",
 		"bolivian_indoors",

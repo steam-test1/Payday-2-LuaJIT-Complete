@@ -961,8 +961,10 @@ function CrimeSpreeManager:can_start_spree(starting_level)
 	end
 
 	local cost = self:get_start_cost(starting_level)
+	local coins = 0
+	coins = managers.custom_safehouse:coins()
 
-	if managers.custom_safehouse:coins() < cost then
+	if coins < cost then
 		Application:error("Can not start a Crime Spree if you can not pay the cost! Cost: ", cost)
 
 		return false
@@ -1022,8 +1024,10 @@ function CrimeSpreeManager:can_continue_spree()
 	end
 
 	local cost = self:get_continue_cost(self:spree_level())
+	local coins = 0
+	coins = managers.custom_safehouse:coins()
 
-	if managers.custom_safehouse:coins() < cost then
+	if coins < cost then
 		Application:error("Can not continue a Crime Spree if you can not pay the cost! Cost: ", cost)
 
 		return false
@@ -1401,7 +1405,7 @@ function CrimeSpreeManager:on_entered_lobby()
 	end
 
 	if not self:_is_host() then
-		local lobby_data = managers.network.matchmake.lobby_handler and managers.network.matchmake.lobby_handler:get_lobby_data()
+		local lobby_data = managers.network.matchmake:get_lobby_data()
 
 		if lobby_data then
 			local spree_level = tonumber(lobby_data.crime_spree)

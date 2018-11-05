@@ -171,7 +171,7 @@ function GenericDLCManager:give_dlc_package()
 				for _, loot_drop in ipairs(data.content.loot_drops or {}) do
 					local loot_drop = #loot_drop > 0 and loot_drop[math.random(#loot_drop)] or loot_drop
 
-					for i = 1, loot_drop.amount, 1 do
+					for i = 1, loot_drop.amount or 1, 1 do
 						local entry = tweak_data.blackmarket[loot_drop.type_items][loot_drop.item_entry]
 						local global_value = loot_drop.global_value or data.content.loot_global_value or package_id
 
@@ -215,7 +215,7 @@ function GenericDLCManager:give_missing_package()
 					global_value = loot_drop.global_value or data.content.loot_global_value or package_id
 					passed = false
 
-					if loot_drop.type_items == "weapon_mods" and entry.is_a_unlockable then
+					if (loot_drop.type_items == "weapon_mods" or loot_drop.type_items == "weapon_skins") and entry.is_a_unlockable then
 						has_item = managers.blackmarket:get_item_amount(global_value, loot_drop.type_items, loot_drop.item_entry, true) > 0
 						passed = not has_item
 					elseif loot_drop.type_items ~= "weapon_mods" and entry.value == 0 then
@@ -251,7 +251,7 @@ function GenericDLCManager:give_missing_package()
 					if passed then
 						print("[GenericDLCManager:give_missing_package] Found missing Item!", loot_drop.amount, global_value, loot_drop.type_items, loot_drop.item_entry)
 
-						for i = 1, loot_drop.amount, 1 do
+						for i = 1, loot_drop.amount or 1, 1 do
 							managers.blackmarket:add_to_inventory(global_value, loot_drop.type_items, loot_drop.item_entry)
 						end
 					end
@@ -337,11 +337,15 @@ function GenericDLCManager:is_dlc_unlocked(dlc)
 end
 
 function GenericDLCManager:has_dlc(dlc)
-	if tweak_data.dlc[dlc] and tweak_data.dlc[dlc].dlc then
-		if self[tweak_data.dlc[dlc].dlc] then
-			return self[tweak_data.dlc[dlc].dlc](self, tweak_data.dlc[dlc])
+	local dlc_tweak = tweak_data.dlc[dlc]
+
+	if dlc_tweak and dlc_tweak.dlc then
+		local unlocked_check_function = self[dlc_tweak.dlc]
+
+		if unlocked_check_function then
+			return unlocked_check_function(self, dlc_tweak)
 		else
-			Application:error("Didn't have dlc has function for", dlc, "has_dlc()", tweak_data.dlc[dlc].dlc)
+			Application:error("Didn't have dlc has function for", dlc, "has_dlc()", dlc_tweak.dlc)
 			Application:stack_dump()
 		end
 	end

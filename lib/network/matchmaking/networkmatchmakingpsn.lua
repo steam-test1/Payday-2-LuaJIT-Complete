@@ -67,17 +67,21 @@ function NetworkMatchMakingPSN:_trigger_time_out_check()
 	if self._room_id then
 		self._next_time_out_check_t = Application:time() + 4
 		self._testing_connection = true
+		local strings = {1}
 
-		PSN:get_session_attributes({self._room_id}, {numbers = {
-			1,
-			2,
-			3,
-			4,
-			5,
-			6,
-			7,
-			8
-		}})
+		PSN:get_session_attributes({self._room_id}, {
+			numbers = {
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8
+			},
+			strings = strings
+		})
 	else
 		self._next_time_out_check_t = nil
 	end
@@ -504,6 +508,7 @@ function NetworkMatchMakingPSN:_load_globals()
 		self._players = Global.psn.match._players
 		self._server_rpc = Global.psn.match._server_ip and Network:handshake(Global.psn.match._server_ip, nil, "TCP_IP")
 		self._attributes_numbers = Global.psn.match._attributes_numbers
+		self._attributes_strings = Global.psn.match._attributes_strings
 		self._connection_info = Global.psn.match._connection_info
 		self._hidden = Global.psn.match._hidden
 		self._num_players = Global.psn.match._num_players
@@ -534,6 +539,7 @@ function NetworkMatchMakingPSN:_save_globals()
 	Global.psn.match._players = self._players
 	Global.psn.match._server_ip = self._server_rpc and self._server_rpc:ip_at_index(0)
 	Global.psn.match._attributes_numbers = self._attributes_numbers
+	Global.psn.match._attributes_strings = self._attributes_strings
 	Global.psn.match._connection_info = self._connection_info
 	Global.psn.match._hidden = self._hidden
 	Global.psn.match._num_players = self._num_players
@@ -677,6 +683,38 @@ function NetworkMatchMakingPSN:_is_client(set)
 	end
 end
 
+function NetworkMatchMakingPSN:_payday2psn(numbers)
+	local coded_numbers = {
+		numbers[1],
+		numbers[2] + 10 * numbers[4] + 100 * numbers[6],
+		numbers[3],
+		numbers[9] or -1,
+		numbers[5],
+		numbers[10] or 0,
+		numbers[7],
+		numbers[8]
+	}
+
+	return coded_numbers
+end
+
+function NetworkMatchMakingPSN:_psn2payday(numbers)
+	local decoded_numbers = {
+		numbers[1],
+		numbers[2] % 10,
+		numbers[3],
+		math.floor(numbers[2] / 10) % 10,
+		numbers[5],
+		math.floor(numbers[2] / 100),
+		numbers[7],
+		numbers[8],
+		numbers[4] or -1,
+		numbers[6] or 0
+	}
+
+	return decoded_numbers
+end
+
 function NetworkMatchMakingPSN:_game_version()
 	return PSN:game_version()
 end
@@ -710,8 +748,21 @@ function NetworkMatchMakingPSN:create_lobby(settings)
 	numbers[4] = 1
 	numbers[5] = self:_game_version()
 	numbers[8] = 1
-	local table_description = {numbers = numbers}
+	local strings = {}
+	local mutators_data = managers.mutators:matchmake_pack_string(1)
+	strings[1] = mutators_data[1]
+	local crimespree_data = {}
+
+	managers.crime_spree:apply_matchmake_attributes(crimespree_data)
+
+	numbers[9] = crimespree_data.crime_spree
+	numbers[10] = crimespree_data.crime_spree_mission
+	local table_description = {
+		numbers = self:_payday2psn(numbers),
+		strings = strings
+	}
 	self._attributes_numbers = numbers
+	self._attributes_strings = strings
 	local dialog_data = {
 		title = managers.localization:text("dialog_creating_lobby_title"),
 		text = managers.localization:text("dialog_wait"),
@@ -774,6 +825,45 @@ function NetworkMatchMakingPSN:set_difficulty_filter(filter)
 	self._difficulty_filter = filter
 end
 
+function NetworkMatchMakingPSN:get_lobby_data()
+	local lobby_data = {
+		owner_name = managers.network.account:username_id(),
+		owner_id = managers.network.account:player_id()
+	}
+
+	if self._attributes_numbers then
+		local numbers = self._attributes_numbers
+		lobby_data.level = numbers[1] % 1000
+		lobby_data.difficulty = numbers[2]
+		lobby_data.permission = numbers[3] or 1
+		lobby_data.state = numbers[4] or 1
+		lobby_data.min_level = numbers[7] or 0
+		lobby_data.num_players = numbers[8] or 1
+		lobby_data.drop_in = numbers[6] or 1
+		lobby_data.job_id = math.floor(numbers[1] / 1000)
+	end
+
+	if self._attributes_strings then
+		local strings = self._attributes_strings
+		local mutators = managers.mutators:matchmake_partial_unpack_string(strings[1])
+
+		for k, v in pairs(mutators) do
+			lobby_data[k] = v
+		end
+	end
+
+	if self._attributes_numbers then
+		local numbers = self._attributes_numbers
+		lobby_data.crime_spree = numbers[9] or -1
+
+		if lobby_data.crime_spree ~= -1 then
+			lobby_data.crime_spree_mission = numbers[10] or 0
+		end
+	end
+
+	return lobby_data
+end
+
 function NetworkMatchMakingPSN:get_lobby_return_count()
 end
 
@@ -802,6 +892,11 @@ function NetworkMatchMakingPSN:start_search_lobbys(friends_only)
 	if not self._friends_only then
 
 		local function f(info)
+			for i = 1, #info.attribute_list, 1 do
+				local numbers = self:_psn2payday(info.attribute_list[i].numbers)
+				info.attribute_list[i].numbers = numbers
+			end
+
 			table.insert(self._lobbys_info_list, info)
 
 			if self._search_lobbys_index >= 1 then
@@ -857,6 +952,7 @@ function NetworkMatchMakingPSN:start_search_lobbys(friends_only)
 						local owner_id = room_info.owner
 						local room_id = room_info.room_id
 						local friend_id = reverse_lookup[tostring(room_id)]
+						attributes.numbers = self:_psn2payday(attributes.numbers)
 
 						if not full and not closed and attributes.numbers[5] == self:_game_version() then
 							table.insert(info.attribute_list, attributes)
@@ -876,16 +972,20 @@ function NetworkMatchMakingPSN:start_search_lobbys(friends_only)
 				self:_end_time_out_check()
 				PSN:set_matchmaking_callback("fetch_session_attributes", f2)
 
-				local wanted_attributes = {numbers = {
-					1,
-					2,
-					3,
-					4,
-					5,
-					6,
-					7,
-					8
-				}}
+				local strings = {1}
+				local wanted_attributes = {
+					numbers = {
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8
+					},
+					strings = strings
+				}
 
 				PSN:get_session_attributes(room_ids, wanted_attributes)
 			else
@@ -914,7 +1014,11 @@ function NetworkMatchMakingPSN:search_lobby(settings)
 		7,
 		8
 	}
-	local table_description = {numbers = numbers}
+	local strings = {1}
+	local table_description = {
+		numbers = numbers,
+		strings = strings
+	}
 	local filter = {
 		full = false,
 		numbers = {
@@ -979,9 +1083,14 @@ function NetworkMatchMakingPSN:_set_attributes(settings)
 	end
 
 	self._attributes_numbers = settings and settings.numbers or self._attributes_numbers
+	self._attributes_strings = settings and settings.strings or self._attributes_strings
 	local numbers = self._attributes_numbers
 	numbers[8] = self._num_players or 1
-	local attributes = {numbers = numbers}
+	local strings = self._attributes_strings
+	local attributes = {
+		numbers = self:_payday2psn(numbers),
+		strings = strings
+	}
 
 	PSN:set_session_attributes(self._room_id, attributes)
 end
@@ -996,8 +1105,13 @@ function NetworkMatchMakingPSN:set_server_attributes(settings)
 	self._attributes_numbers[3] = settings.numbers[3]
 	self._attributes_numbers[6] = settings.numbers[6]
 	self._attributes_numbers[7] = settings.numbers[7]
+	local mutators_data = managers.mutators:matchmake_pack_string(1)
+	self._attributes_strings[1] = mutators_data[1]
 
-	self:_set_attributes({numbers = self._attributes_numbers})
+	self:_set_attributes({
+		numbers = self._attributes_numbers,
+		strings = self._attributes_strings
+	})
 end
 
 function NetworkMatchMakingPSN:set_server_state(state)
@@ -1007,8 +1121,13 @@ function NetworkMatchMakingPSN:set_server_state(state)
 
 	local state_id = tweak_data:server_state_to_index(state)
 	self._attributes_numbers[4] = state_id
+	local mutators_data = managers.mutators:matchmake_pack_string(1)
+	self._attributes_strings[1] = mutators_data[1]
 
-	self:_set_attributes({numbers = self._attributes_numbers})
+	self:_set_attributes({
+		numbers = self._attributes_numbers,
+		strings = self._attributes_strings
+	})
 end
 
 function NetworkMatchMakingPSN:server_state_name()
@@ -1275,9 +1394,13 @@ function NetworkMatchMakingPSN:join_server_with_check(room_id, skip_permission_c
 		local room_info = results.rooms[1]
 		local attributes = room_info.attributes
 		local owner_id = room_info.owner
+		attributes.numbers = self:_psn2payday(attributes.numbers)
 		local server_ok, ok_error = self:is_server_ok(nil, owner_id, attributes.numbers, skip_permission_check)
 
 		if server_ok then
+			self._attributes_numbers = attributes.numbers
+			self._attributes_strings = attributes.strings
+
 			self:join_server(room_id)
 		else
 			self:_joining_lobby_done()
@@ -1299,16 +1422,20 @@ function NetworkMatchMakingPSN:join_server_with_check(room_id, skip_permission_c
 	self:_end_time_out_check()
 	PSN:set_matchmaking_callback("fetch_session_attributes", f)
 
-	local wanted_attributes = {numbers = {
-		1,
-		2,
-		3,
-		4,
-		5,
-		6,
-		7,
-		8
-	}}
+	local strings = {1}
+	local wanted_attributes = {
+		numbers = {
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8
+		},
+		strings = strings
+	}
 
 	PSN:get_session_attributes({room_id}, wanted_attributes)
 end
@@ -1331,16 +1458,20 @@ function NetworkMatchMakingPSN:update_session_attributes(rooms, cb_func)
 	self:_end_time_out_check()
 	PSN:set_matchmaking_callback("fetch_session_attributes", callback(self, self, "_update_session_attributes_result"))
 
-	local wanted_attributes = {numbers = {
-		1,
-		2,
-		3,
-		4,
-		5,
-		6,
-		7,
-		8
-	}}
+	local strings = {1}
+	local wanted_attributes = {
+		numbers = {
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8
+		},
+		strings = strings
+	}
 
 	PSN:get_session_attributes(rooms, wanted_attributes)
 end

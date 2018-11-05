@@ -573,6 +573,12 @@ function PlayerStandardVR:_update_movement(t, dt)
 			mvector3.set_z(pos_new, self._pos.z)
 		end
 
+		local ground_z = self:_chk_floor_moving_pos()
+
+		if ground_z then
+			mvector3.set_z(pos_new, ground_z)
+		end
+
 		local hmd_delta = mvec_hmd_delta
 
 		if not self._state_data._block_input then

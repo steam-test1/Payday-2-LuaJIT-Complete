@@ -627,6 +627,18 @@ function EquipmentsTweakData:init()
 		transfer_quantity = 1,
 		text_id = "hud_int_equipment_medallion"
 	}
+	self.specials.chimichanga = {
+		sync_possession = true,
+		icon = "equipment_chimichanga",
+		transfer_quantity = 4,
+		text_id = "hud_int_equipment_chimichanga"
+	}
+	self.specials.stapler = {
+		sync_possession = true,
+		icon = "equipment_stapler",
+		transfer_quantity = 4,
+		text_id = "hud_int_equipment_stapler"
+	}
 	self.specials.briefcase = {
 		sync_possession = true,
 		icon = "equipment_briefcase",

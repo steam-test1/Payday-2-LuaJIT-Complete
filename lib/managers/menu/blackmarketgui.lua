@@ -11033,54 +11033,99 @@ function BlackMarketGui:populate_weapon_cosmetics(data)
 	local owned_cosmetics = {}
 	local index_i = 1
 
+	local function make_cosmetic_data(cosmetic_id, unlocked, quality, bonus, equipped)
+		local my_cd = cosmetics_data[cosmetic_id]
+		local new_data = {
+			name = cosmetic_id,
+			name_localized = my_cd and my_cd.name_id and managers.localization:text(my_cd.name_id) or managers.localization:text("bm_menu_no_mod"),
+			desc_id = my_cd and my_cd.desc_id,
+			category = data.category or data.prev_node_data and data.prev_node_data.category,
+			default_blueprint = my_cd and my_cd.default_blueprint,
+			locked_cosmetics = my_cd and my_cd.locked
+		}
+		bitmap_texture, bg_texture = managers.blackmarket:get_weapon_icon_path(data.prev_node_data.name, {id = cosmetic_id})
+		new_data.bitmap_texture = bitmap_texture
+		new_data.bg_texture = bg_texture
+
+		if not unlocked then
+			new_data.bitmap_locked_blend_mode = "normal"
+			new_data.bg_alpha = 0.4
+		end
+
+		new_data.slot = data.slot or data.prev_node_data and data.prev_node_data.slot
+		new_data.global_value = my_cd and my_cd.global_value or "normal"
+		new_data.cosmetic_id = cosmetic_id
+		new_data.cosmetic_quality = quality
+		new_data.cosmetic_rarity = my_cd and my_cd.rarity or "common"
+		new_data.cosmetic_bonus = bonus
+		new_data.unlocked = unlocked
+		new_data.equipped = equipped
+		new_data.stream = true
+		new_data.lock_texture = not new_data.unlocked
+
+		if new_data.default_blueprint then
+			new_data.comparision_data = managers.blackmarket:get_weapon_stats(new_data.category, new_data.slot, new_data.default_blueprint)
+		end
+
+		if new_data.unlocked then
+			if managers.blackmarket:last_previewed_cosmetic() == cosmetic_id then
+				table.insert(new_data, "wcc_cancel_preview")
+			else
+				table.insert(new_data, "wcc_preview")
+			end
+
+			if new_data.equipped then
+				table.insert(new_data, "wcc_remove")
+			elseif not crafted.previewing then
+				table.insert(new_data, "wcc_equip")
+			end
+
+			if managers.blackmarket:is_previewing_any_mod() then
+				table.insert(new_data, "wm_clear_mod_preview")
+			end
+		else
+			if managers.blackmarket:last_previewed_cosmetic() == cosmetic_id then
+				table.insert(new_data, "wcc_cancel_preview")
+			else
+				table.insert(new_data, "wcc_preview")
+			end
+
+			if not crafted.previewing and managers.menu:is_pc_controller() then
+				table.insert(new_data, "wcc_market")
+			end
+
+			if managers.blackmarket:is_previewing_any_mod() then
+				table.insert(new_data, "wm_clear_mod_preview")
+			end
+
+			new_data.mini_icons = new_data.mini_icons or {}
+
+			table.insert(new_data.mini_icons, {
+				stream = true,
+				layer = 2,
+				h = 30,
+				texture = "guis/textures/pd2/lock_dlc",
+				w = 30,
+				blend_mode = "normal",
+				bottom = 1,
+				right = 1,
+				color = tweak_data.screen_colors.important_1
+			})
+		end
+
+		return new_data
+	end
+
 	for _, instance_id in ipairs(cosmetics_instances) do
 		if inventory_tradable[instance_id] then
 			cosmetic_id = inventory_tradable[instance_id].entry
 			my_cd = cosmetics_data[cosmetic_id]
-			local new_data = {
-				name = instance_id,
-				name_localized = my_cd and my_cd.name_id and managers.localization:text(my_cd.name_id) or managers.localization:text("bm_menu_no_mod"),
-				desc_id = my_cd and my_cd.desc_id,
-				category = data.category or data.prev_node_data and data.prev_node_data.category,
-				default_blueprint = my_cd and my_cd.default_blueprint,
-				locked_cosmetics = my_cd and my_cd.locked
-			}
-			bitmap_texture, bg_texture = managers.blackmarket:get_weapon_icon_path(data.prev_node_data.name, {id = cosmetic_id})
-			new_data.bitmap_texture = bitmap_texture
-			new_data.bg_texture = bg_texture
-			new_data.slot = data.slot or data.prev_node_data and data.prev_node_data.slot
-			new_data.global_value = my_cd and my_cd.global_value or "normal"
-			new_data.cosmetic_id = cosmetic_id
-			new_data.cosmetic_quality = inventory_tradable[instance_id].quality
-			new_data.cosmetic_rarity = my_cd and my_cd.rarity or "common"
-			new_data.cosmetic_bonus = inventory_tradable[instance_id].bonus
-			new_data.unlocked = true
-			new_data.equipped = crafted and crafted.cosmetics and crafted.cosmetics.instance_id == instance_id
-			new_data.stream = true
+			local quality = inventory_tradable[instance_id].quality
+			local bonus = inventory_tradable[instance_id].bonus
+			local equipped = crafted and crafted.cosmetics and crafted.cosmetics.instance_id == instance_id
+			new_data = make_cosmetic_data(cosmetic_id, true, quality, bonus, equipped)
+			new_data.name = instance_id
 			owned_cosmetics[cosmetic_id] = owned_cosmetics[cosmetic_id] or new_data.cosmetic_quality == "mint"
-			new_data.lock_texture = not new_data.unlocked
-
-			if new_data.default_blueprint then
-				new_data.comparision_data = managers.blackmarket:get_weapon_stats(new_data.category, new_data.slot, new_data.default_blueprint)
-			end
-
-			if new_data.unlocked then
-				if managers.blackmarket:last_previewed_cosmetic() == cosmetic_id then
-					table.insert(new_data, "wcc_cancel_preview")
-				else
-					table.insert(new_data, "wcc_preview")
-				end
-
-				if new_data.equipped then
-					table.insert(new_data, "wcc_remove")
-				elseif not crafted.previewing then
-					table.insert(new_data, "wcc_equip")
-				end
-
-				if managers.blackmarket:is_previewing_any_mod() then
-					table.insert(new_data, "wm_clear_mod_preview")
-				end
-			end
 
 			if new_data.cosmetic_bonus then
 				local bonuses = tweak_data.economy:get_bonus_icons(my_cd.bonus)
@@ -11118,63 +11163,9 @@ function BlackMarketGui:populate_weapon_cosmetics(data)
 		my_cd = cosmetics_data[cosmetic_id]
 
 		if not my_cd.is_template and not owned_cosmetics[cosmetic_id] then
-			local new_data = {
-				name = cosmetic_id,
-				name_localized = my_cd and my_cd.name_id and managers.localization:text(my_cd.name_id) or managers.localization:text("bm_menu_no_mod"),
-				desc_id = my_cd and my_cd.desc_id,
-				category = data.category or data.prev_node_data and data.prev_node_data.category,
-				default_blueprint = my_cd and my_cd.default_blueprint,
-				locked_cosmetics = my_cd and my_cd.locked
-			}
-			bitmap_texture, bg_texture = managers.blackmarket:get_weapon_icon_path(data.prev_node_data.name, {id = cosmetic_id})
-			new_data.bitmap_texture = bitmap_texture
-			new_data.bitmap_locked_blend_mode = "normal"
-			new_data.bg_texture = bg_texture
-			new_data.bg_alpha = 0.4
-			new_data.slot = data.slot or data.prev_node_data and data.prev_node_data.slot
-			new_data.global_value = my_cd and my_cd.global_value or "normal"
-			new_data.cosmetic_id = cosmetic_id
-			new_data.cosmetic_quality = "mint"
-			new_data.cosmetic_rarity = my_cd and my_cd.rarity or "common"
-			new_data.cosmetic_bonus = nil
-			new_data.unlocked = false
-			new_data.equipped = false
-			new_data.stream = true
-			new_data.lock_texture = not new_data.unlocked
-
-			if new_data.default_blueprint then
-				new_data.comparision_data = managers.blackmarket:get_weapon_stats(new_data.category, new_data.slot, new_data.default_blueprint)
-			end
-
-			new_data.mini_icons = new_data.mini_icons or {}
-
-			table.insert(new_data.mini_icons, {
-				stream = true,
-				layer = 2,
-				h = 30,
-				texture = "guis/textures/pd2/lock_dlc",
-				w = 30,
-				blend_mode = "normal",
-				bottom = 1,
-				right = 1,
-				color = tweak_data.screen_colors.important_1
-			})
-			print("last previewed:", managers.blackmarket:last_previewed_cosmetic(), "\ncurrent:", cosmetic_id)
-
-			if managers.blackmarket:last_previewed_cosmetic() == cosmetic_id then
-				table.insert(new_data, "wcc_cancel_preview")
-			else
-				table.insert(new_data, "wcc_preview")
-			end
-
-			if not crafted.previewing and managers.menu:is_pc_controller() then
-				table.insert(new_data, "wcc_market")
-			end
-
-			if managers.blackmarket:is_previewing_any_mod() then
-				table.insert(new_data, "wm_clear_mod_preview")
-			end
-
+			local unlocked = false
+			local equipped = false
+			new_data = make_cosmetic_data(cosmetic_id, unlocked, "mint", nil, equipped)
 			data[index_i] = new_data
 			index_i = index_i + 1
 		end
@@ -12606,9 +12597,9 @@ function BlackMarketGui:choose_weapon_mods_callback(data)
 	new_node_data.use_bgs = true
 
 	if type(new_node_data.selected_tab) == "string" then
-		for _, data in ipairs(new_node_data) do
+		for i, data in ipairs(new_node_data) do
 			if data.name == new_node_data.selected_tab then
-				new_node_data.selected_tab = _
+				new_node_data.selected_tab = i
 
 				break
 			end
@@ -13426,7 +13417,10 @@ function BlackMarketGui:purchase_weapon_mod_callback(data)
 		return
 	end
 
-	if managers.custom_safehouse:coins() < data.cc_cost then
+	local coins = 0
+	coins = managers.custom_safehouse:coins()
+
+	if coins < data.cc_cost then
 		local dialog_data = {
 			title = managers.localization:text("dialog_bm_purchase_mod_cant_afford_title"),
 			text = managers.localization:text("dialog_bm_purchase_mod_cant_afford", params)
@@ -15163,8 +15157,10 @@ function BlackMarketGui:buy_crew_item_callback(data)
 		item = data.name_localized,
 		cost = cost
 	}
+	local coins = 0
+	coins = managers.custom_safehouse:coins()
 
-	if cost <= managers.custom_safehouse:coins() then
+	if cost <= coins then
 		local dialog_data = {}
 
 		if data.category == "ability" then

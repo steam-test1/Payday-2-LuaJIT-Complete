@@ -70,7 +70,7 @@ function WeaponLaser:init(unit)
 	self._light_glow:set_rotation(Rotation(obj:rotation():z(), -obj:rotation():x(), -obj:rotation():y()))
 
 	self._slotmask = managers.slot:get_mask("bullet_impact_targets")
-	self._brush = Draw:brush(self._themes[self._theme_type].brush)
+	self._brush = Draw:brush(self._themes[self._theme_type].brush, "VertexColor")
 
 	self._brush:set_blend_mode("opacity_add")
 end

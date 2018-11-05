@@ -1372,25 +1372,41 @@ function PlayerDamage:damage_killzone(attack_data)
 	end
 
 	self._unit:sound():play("player_hit")
-	self:_hit_direction(attack_data.col_ray.origin)
 
-	if self._bleed_out then
-		return
+	if attack_data.instant_death then
+		self:set_armor(0)
+		self:set_health(0)
+		self:_send_set_armor()
+		self:_send_set_health()
+		managers.hud:set_player_health({
+			current = self:get_real_health(),
+			total = self:_max_health(),
+			revives = Application:digest_value(self._revives, false)
+		})
+		self:_set_health_effect()
+		self:_damage_screen()
+		self:_check_bleed_out(nil)
+	else
+		self:_hit_direction(attack_data.col_ray.origin)
+
+		if self._bleed_out then
+			return
+		end
+
+		attack_data.damage = managers.player:modify_value("damage_taken", attack_data.damage, attack_data)
+
+		self:_check_chico_heal(attack_data)
+
+		local armor_reduction_multiplier = 0
+
+		if self:get_real_armor() <= 0 then
+			armor_reduction_multiplier = 1
+		end
+
+		local health_subtracted = self:_calc_armor_damage(attack_data)
+		attack_data.damage = attack_data.damage * armor_reduction_multiplier
+		health_subtracted = health_subtracted + self:_calc_health_damage(attack_data)
 	end
-
-	attack_data.damage = managers.player:modify_value("damage_taken", attack_data.damage, attack_data)
-
-	self:_check_chico_heal(attack_data)
-
-	local armor_reduction_multiplier = 0
-
-	if self:get_real_armor() <= 0 then
-		armor_reduction_multiplier = 1
-	end
-
-	local health_subtracted = self:_calc_armor_damage(attack_data)
-	attack_data.damage = attack_data.damage * armor_reduction_multiplier
-	health_subtracted = health_subtracted + self:_calc_health_damage(attack_data)
 
 	self:_call_listeners(damage_info)
 end

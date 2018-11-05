@@ -61,13 +61,15 @@ function WalletGuiObject.set_wallet(panel, layer)
 	skillpoint_text:set_center_y(skillpoint_icon:center_y())
 	skillpoint_text:set_y(math.round(skillpoint_text:y()))
 
+	local coins = 0
+	coins = managers.custom_safehouse:coins()
 	local coins_icon = Global.wallet_panel:bitmap({
 		texture = "guis/dlcs/chill/textures/pd2/safehouse/continental_coins_symbol",
 		name = "wallet_coins_icon"
 	})
 	local coins_text = Global.wallet_panel:text({
 		name = "wallet_coins_text",
-		text = managers.experience:cash_string(math.floor(managers.custom_safehouse:coins()), ""),
+		text = managers.experience:cash_string(math.floor(coins), ""),
 		font_size = tweak_data.menu.pd2_small_font_size,
 		font = tweak_data.menu.pd2_small_font,
 		color = tweak_data.screen_colors.text
@@ -80,6 +82,8 @@ function WalletGuiObject.set_wallet(panel, layer)
 	coins_text:set_center_y(coins_icon:center_y())
 	coins_text:set_y(math.round(coins_text:y()))
 
+	local coins = 0
+	coins = managers.custom_safehouse:coins()
 	local max_w = coins_text:right()
 	local bg_blur = Global.wallet_panel:bitmap({
 		texture = "guis/textures/test_blur_df",
@@ -129,11 +133,16 @@ function WalletGuiObject.refresh()
 		WalletGuiObject.set_object_visible("wallet_skillpoint_icon", managers.skilltree:points() > 0)
 		WalletGuiObject.set_object_visible("wallet_skillpoint_text", managers.skilltree:points() > 0)
 
-		if managers.custom_safehouse:unlocked() then
+		local unlocked = false
+		local coins = 0
+		unlocked = managers.custom_safehouse:unlocked()
+		coins = managers.custom_safehouse:coins()
+
+		if unlocked then
 			local coins_icon = Global.wallet_panel:child("wallet_coins_icon")
 			local coins_text = Global.wallet_panel:child("wallet_coins_text")
 
-			coins_text:set_text(managers.experience:cash_string(math.floor(managers.custom_safehouse:coins()), ""))
+			coins_text:set_text(managers.experience:cash_string(math.floor(coins), ""))
 			WalletGuiObject.make_fine_text(coins_text)
 
 			local align = managers.skilltree:points() > 0 and skillpoint_text or level_text

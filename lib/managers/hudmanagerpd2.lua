@@ -965,8 +965,6 @@ function HUDManager:_additional_layout()
 end
 
 function HUDManager:_setup_stats_screen()
-	print("HUDManager:_setup_stats_screen")
-
 	if not self:alive(self.STATS_SCREEN_FULLSCREEN) then
 		return
 	end
@@ -991,6 +989,10 @@ function HUDManager:show_stats_screen()
 end
 
 function HUDManager:update_stat_screen()
+	if not self._hud_statsscreen then
+		return
+	end
+
 	self._hud_statsscreen:update()
 end
 

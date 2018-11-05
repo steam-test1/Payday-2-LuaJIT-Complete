@@ -87,7 +87,8 @@ CopMovement._gadgets = {
 	beer = {Idstring("units/pd2_dlc_max/props/max_prop_dos_calveras/max_sicario_beer_a")},
 	tequila = {Idstring("units/pd2_dlc_max/props/max_prop_tequila_bottle/max_prop_tequila_bottle")},
 	barrista_cup = {Idstring("units/pd2_dlc_rvd/characters/civ_acc_barista_cup_medium/civ_acc_barista_cup_medium")},
-	blood_splatter = {Idstring("units/pd2_dlc_rvd/characters/civ_acc_blood_splatter/civ_acc_blood_splatter")}
+	blood_splatter = {Idstring("units/pd2_dlc_rvd/characters/civ_acc_blood_splatter/civ_acc_blood_splatter")},
+	chimichanga = {Idstring("units/pd2_dlc_tag/characters/ene_acc_chimichanga/ene_acc_chimichanga")}
 }
 local action_variants = {security = {
 	idle = CopActionIdle,
@@ -148,6 +149,7 @@ action_variants.drug_lord_boss_stealth = security_variant
 action_variants.spa_vip = security_variant
 action_variants.cop_scared = security_variant
 action_variants.security_undominatable = security_variant
+action_variants.mute_security_undominatable = security_variant
 action_variants.tank_medic = clone(action_variants.tank)
 action_variants.tank_medic.heal = action_variants.medic.heal
 action_variants.tank_mini = action_variants.tank
@@ -2246,6 +2248,12 @@ end
 
 function CopMovement:sync_action_walk_nav_point(pos, explicit)
 	local walk_action, is_queued = self:_get_latest_walk_action(explicit)
+
+	if is_queued and self._unit:base():has_tag("civilian") then
+		self:_cancel_latest_action("walk")
+
+		walk_action, is_queued = self:_get_latest_walk_action(explicit)
+	end
 
 	if is_queued then
 		table.insert(walk_action.nav_path, pos)

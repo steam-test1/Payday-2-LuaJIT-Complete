@@ -922,6 +922,7 @@ function GlobalSelectUnit:init(...)
 
 	self._units:clear_all()
 	self._units:append_column("Name")
+	self._units:autosize_column(0)
 	list_sizer:add(self._units, 1, 0, "EXPAND")
 	self._units:connect("EVT_COMMAND_LIST_ITEM_SELECTED", callback(self, self, "on_select_unit_dialog"), self._units)
 	self._units:connect("EVT_KEY_DOWN", callback(self, self, "key_down"), "")
@@ -930,6 +931,7 @@ function GlobalSelectUnit:init(...)
 	self._short_name:connect("EVT_COMMAND_CHECKBOX_CLICKED", callback(self, self, "update_list"), nil)
 	self._filter:connect("EVT_COMMAND_TEXT_UPDATED", callback(self, self, "update_list"), nil)
 	self._filter:connect("EVT_KEY_DOWN", callback(self, self, "key_cancel"), "")
+	self._filter:connect("EVT_UPDATE_UI", callback(self, self, "update"), nil)
 
 	self._layer_cbs = {}
 	local layers = managers.editor:layers()
@@ -1189,11 +1191,11 @@ function GlobalSelectUnit:on_select_unit_dialog(units)
 end
 
 function GlobalSelectUnit:update_list(current)
-	self._units:freeze()
-
 	local filter = self._filter:get_value()
 
 	self._units:delete_all_items()
+
+	self._units_to_append = {}
 
 	if self._only_list_used_units then
 		current = current or self:_current_unit_names()
@@ -1205,9 +1207,10 @@ function GlobalSelectUnit:update_list(current)
 				local stripped_name = self._short_name:get_value() and self:_stripped_unit_name(name) or name
 
 				if string.find(stripped_name, filter, 1, true) then
-					local i = self._units:append_item(stripped_name)
-
-					self._units:set_item_data(i, name)
+					table.insert(self._units_to_append, {
+						stripped_name = stripped_name,
+						name = name
+					})
 				end
 			end
 		end
@@ -1219,16 +1222,44 @@ function GlobalSelectUnit:update_list(current)
 				local stripped_name = self._short_name:get_value() and self:_stripped_unit_name(name) or name
 
 				if string.find(stripped_name, filter, 1, true) then
-					local i = self._units:append_item(stripped_name)
-
-					self._units:set_item_data(i, name)
+					table.insert(self._units_to_append, {
+						stripped_name = stripped_name,
+						name = name
+					})
 				end
 			end
 		end
 	end
 
-	self._units:thaw()
-	self._units:autosize_column(0)
+	table.sort(self._units_to_append, function (a, b)
+		return a.stripped_name < b.stripped_name
+	end)
+end
+
+function GlobalSelectUnit:update()
+	if not self._units_to_append then
+		return
+	end
+
+	local append_count = 100
+
+	while append_count > 0 do
+		if #self._units_to_append == 0 then
+			break
+		end
+
+		append_count = append_count - 1
+		local data = table.remove(self._units_to_append, 1)
+		local i = self._units:append_item(data.stripped_name)
+
+		self._units:set_item_data(i, data.name)
+	end
+
+	if #self._units_to_append == 0 then
+		self._units_to_append = nil
+
+		self._units:autosize_column(0)
+	end
 end
 
 function GlobalSelectUnit:spawned_unit(unit)

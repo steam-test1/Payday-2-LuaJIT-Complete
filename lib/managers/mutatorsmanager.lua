@@ -179,6 +179,10 @@ function MutatorsManager:mutators()
 	return self._mutators
 end
 
+function MutatorsManager:num_mutators()
+	return #self._mutators
+end
+
 function MutatorsManager:active_mutators()
 	return self._active_mutators
 end
@@ -484,6 +488,86 @@ function MutatorsManager:apply_matchmake_attributes(lobby_attributes)
 	lobby_attributes.mutators = count
 end
 
+function MutatorsManager:matchmake_pack_string(num_strings)
+	local ret = {}
+
+	for i = 1, num_strings, 1 do
+		ret[i] = ""
+	end
+
+	local k = 0
+
+	for j, mutator in ipairs(self:mutators()) do
+		if mutator:is_enabled() then
+			local index = k % num_strings + 1
+			ret[index] = ret[index] .. mutator:build_compressed_data(j)
+			k = k + 1
+		end
+	end
+
+	return ret
+end
+
+function MutatorsManager:matchmake_unpack_string(str_dat)
+	local mutators_list = {}
+	local limit = 0
+
+	while #str_dat > 0 and limit < 50 do
+		local mutator_index = string.byte(str_dat, 1) - string.byte("a")
+		local mutator = self:mutators()[mutator_index]
+		str_dat = #str_dat > 1 and string.sub(str_dat, -(#str_dat - 1)) or ""
+
+		if mutator then
+			local mutator_data, new_str_dat = mutator:uncompress_data(str_dat)
+
+			if mutator_data == nil then
+				return mutators_list
+			end
+
+			mutators_list[mutator:id()] = mutator_data
+			str_dat = new_str_dat
+		else
+			return mutators_list
+		end
+
+		limit = limit + 1
+	end
+
+	return mutators_list
+end
+
+function MutatorsManager:matchmake_partial_unpack_string(str_dat)
+	local mutators = {}
+	local count = 0
+
+	while #str_dat > 0 and count < 50 do
+		local mutator_index = string.byte(str_dat, 1) - string.byte("a")
+		local mutator = self:mutators()[mutator_index]
+		str_dat = #str_dat > 1 and string.sub(str_dat, -(#str_dat - 1)) or ""
+
+		if mutator then
+			local mutator_data, new_str_dat = mutator:partial_uncompress_data(str_dat)
+
+			if mutator_data == nil then
+				return mutators
+			end
+
+			mutators["mutator_" .. tostring(count + 1)] = mutator_data
+			str_dat = new_str_dat
+		else
+			return mutators
+		end
+
+		count = count + 1
+	end
+
+	if count > 0 then
+		mutators.mutators = count
+	end
+
+	return mutators
+end
+
 function MutatorsManager:send_mutators_notification_to_clients(countdown)
 	for i, peer in pairs(managers.network:session():peers()) do
 		if not self:has_peer_been_notified(peer:id()) then
@@ -494,11 +578,11 @@ function MutatorsManager:send_mutators_notification_to_clients(countdown)
 end
 
 function MutatorsManager:get_mutators_from_lobby_data()
-	if not managers.network or not managers.network.matchmake or not managers.network.matchmake.lobby_handler then
+	if not managers.network or not managers.network.matchmake then
 		return false
 	end
 
-	local lobby_data = managers.network.matchmake.lobby_handler:get_lobby_data()
+	local lobby_data = managers.network.matchmake:get_lobby_data()
 
 	if not lobby_data then
 		return false
@@ -535,7 +619,7 @@ function MutatorsManager:_get_mutators_data(get_data_func)
 	local num_mutators = 0
 	local mutators_kv = get_data_func("mutators")
 
-	if mutators_kv ~= "value_missing" and mutators_kv ~= "value_pending" then
+	if mutators_kv ~= nil and mutators_kv ~= "value_missing" and mutators_kv ~= "value_pending" then
 		num_mutators = tonumber(mutators_kv)
 	end
 

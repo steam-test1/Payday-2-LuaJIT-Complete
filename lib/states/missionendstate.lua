@@ -624,7 +624,9 @@ function MissionEndState:generate_safehouse_statistics()
 		end
 	end
 
-	local coins_total = managers.experience:cash_string(math.floor(managers.custom_safehouse:coins()), "")
+	local coins = 0
+	coins = managers.custom_safehouse:coins()
+	local coins_total = managers.experience:cash_string(math.floor(coins), "")
 	stage_safehouse_summary_string = stage_safehouse_summary_string .. "\n" .. managers.localization:text("menu_es_safehouse_total_coins", {amount = coins_total})
 
 	if managers.custom_safehouse:can_afford_any_upgrade() then

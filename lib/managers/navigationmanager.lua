@@ -27,7 +27,8 @@ local temp_vec2 = Vector3()
 NavigationManager = NavigationManager or class()
 NavigationManager.nav_states = {
 	"allow_access",
-	"forbid_access"
+	"forbid_access",
+	"forbid_custom"
 }
 NavigationManager.COVER_RESERVED = 4
 NavigationManager.COVER_RESERVATION = 5
@@ -127,8 +128,12 @@ function NavigationManager:_init_draw_data()
 		coarse_graph = Draw:brush(Color(0.2, 0.9, 0.9, 0.2)),
 		vis_graph_rooms = Draw:brush(Color(0.6, 0.5, 0.2, 0.9), duration),
 		vis_graph_node = Draw:brush(Color(1, 0.6, 0, 0.9), duration),
-		vis_graph_links = Draw:brush(Color(0.2, 0.8, 0.1, 0.6), duration)
+		vis_graph_links = Draw:brush(Color(0.2, 0.8, 0.1, 0.6), duration),
+		blocked = Draw:brush(Color(1, 1, 1, 1))
 	}
+
+	brush.blocked:set_font(Idstring("fonts/font_medium"), 30)
+
 	data.brush = brush
 	local offsets = {
 		Vector3(-1, -1),
@@ -597,13 +602,26 @@ function NavigationManager:_refresh_data_from_builder()
 	self._nav_segments = self._builder._nav_segments
 end
 
-function NavigationManager:set_nav_segment_state(id, state)
+function NavigationManager:set_nav_segment_state(id, state, filter_group)
 	if not self._nav_segments[id] then
 		debug_pause("[NavigationManager:set_nav_segment_state] inexistent nav_segment", id)
 
 		return
 	end
 
+	if state == "forbid_custom" then
+		local access_filter = self:convert_SO_AI_group_to_access(filter_group)
+
+		self._quad_field:set_nav_segment_blocked_filter(id, access_filter)
+
+		self._nav_segments[id].blocked_group = filter_group
+
+		return
+	end
+
+	self._quad_field:set_nav_segment_blocked_filter(id, 0)
+
+	self._nav_segments[id].blocked_group = nil
 	local wanted_state = state == "allow_access" and true or false
 	local cur_state = self._quad_field:is_nav_segment_enabled(id)
 	local seg_disabled_state = nil
@@ -1162,9 +1180,30 @@ function NavigationManager:_draw_coarse_graph()
 
 		for neigh_i_seg, door_list in pairs(neighbours) do
 			local pos = all_nav_segments[neigh_i_seg].pos
+			local color = {
+				1,
+				1,
+				0
+			}
 
-			Application:draw_cone(pos, seg_data.pos, 12, 1, 1, 0)
-			Application:draw_cone(pos, pos + cone_height, 40, 1, 1, 0)
+			if all_nav_segments[neigh_i_seg].disabled then
+				color = {
+					1,
+					0,
+					0
+				}
+			elseif seg_data.blocked_group or all_nav_segments[neigh_i_seg].blocked_group then
+				color = {
+					1,
+					0.5,
+					0
+				}
+
+				self._draw_data.brush.blocked:center_text(pos + cone_height * 2, all_nav_segments[neigh_i_seg].blocked_group)
+			end
+
+			Application:draw_cone(pos, seg_data.pos, 12, unpack(color))
+			Application:draw_cone(pos, pos + cone_height, 40, unpack(color))
 		end
 	end
 end
@@ -1720,6 +1759,14 @@ function NavigationManager:_execute_coarce_search(search_data)
 		local new_segments = self:_sort_nav_segs_after_pos(to_pos, next_search_i_seg, search_data.discovered_seg, search_data.verify_clbk, search_data.access_pos, search_data.access_neg)
 
 		if new_segments then
+			if search_data.access_pos then
+				for i_seg, data in pairs(new_segments) do
+					if self._quad_field:is_nav_segment_blocked(i_seg, search_data.access_pos) then
+						new_segments[i_seg] = nil
+					end
+				end
+			end
+
 			local to_search = search_data.seg_to_search
 
 			for i_seg, seg_data in pairs(new_segments) do
@@ -1853,6 +1900,10 @@ function NavigationManager._is_pos_in_room_xy(pos, borders)
 end
 
 function NavigationManager:search_pos_to_pos(params)
+	if params.access_pos then
+		params.blocked_nav_segs = params.access_pos
+	end
+
 	self._quad_field:detailed_search(params)
 end
 

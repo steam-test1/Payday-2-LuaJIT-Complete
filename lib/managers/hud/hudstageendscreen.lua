@@ -1779,7 +1779,11 @@ function HUDStageEndScreen:safehouse_currency_init(t, dt)
 	self._coins_backpanel:child("bg_progress_circle"):set_alpha(0)
 	self._coins_text:set_alpha(0)
 
-	local total_income = managers.custom_safehouse:coins() - managers.custom_safehouse:previous_coins()
+	local coins = 0
+	local previous_coins = 0
+	coins = managers.custom_safehouse:coins()
+	previous_coins = managers.custom_safehouse:previous_coins()
+	local total_income = coins - previous_coins
 	local exp_income = total_income
 	local trophies = {}
 
@@ -1820,10 +1824,12 @@ function HUDStageEndScreen:safehouse_currency_init(t, dt)
 		exp_income = exp_income - tweak_data.safehouse.rewards.raid
 	end
 
+	local coins = 0
+	coins = managers.custom_safehouse:coins()
 	self._safehouse_data = {
 		income = exp_income,
 		remaining_income = exp_income,
-		current = managers.custom_safehouse:coins() - total_income,
+		current = coins - total_income,
 		trophies = trophies
 	}
 

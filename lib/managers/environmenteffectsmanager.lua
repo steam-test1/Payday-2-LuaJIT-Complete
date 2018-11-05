@@ -5,15 +5,16 @@ EnvironmentEffectsManager = EnvironmentEffectsManager or class(CoreEnvironmentEf
 
 function EnvironmentEffectsManager:init()
 	EnvironmentEffectsManager.super.init(self)
-	self:add_effect("rain", RainEffect:new())
-	self:add_effect("snow", SnowEffect:new())
-	self:add_effect("snow_slow", SnowEffectSlow:new())
+	self:add_effect("rain", RainEffect:new(tweak_data.env_effect.rain))
+	self:add_effect("snow", RainEffect:new(tweak_data.env_effect.snow))
+	self:add_effect("snow_slow", RainEffect:new(tweak_data.env_effect.snow_slow))
 
 	if not _G.IS_VR then
 		self:add_effect("raindrop_screen", RainDropScreenEffect:new())
 	end
 
-	self:add_effect("lightning", LightningEffect:new())
+	self:add_effect("lightning", LightningEffect:new(tweak_data.env_effect.lightning))
+	self:add_effect("lightning_tag", LightningEffect:new(tweak_data.env_effect.lightning_tag))
 
 	self._camera_position = Vector3()
 	self._camera_rotation = Rotation()
@@ -72,10 +73,12 @@ local ids_rain_post_processor = Idstring("rain_post_processor")
 local ids_rain_ripples = Idstring("rain_ripples")
 local ids_rain_off = Idstring("rain_off")
 
-function RainEffect:init()
+function RainEffect:init(effect_data)
 	EnvironmentEffect.init(self)
 
-	self._effect_name = Idstring("effects/particles/rain/rain_01_a")
+	self._effect_data = effect_data or {}
+	self._effect_name = self._effect_data.effect_name or Idstring("effects/particles/rain/rain_01_a")
+	self._ripples = self._effect_data.ripples
 end
 
 function RainEffect:load_effects()
@@ -85,16 +88,18 @@ function RainEffect:load_effects()
 end
 
 function RainEffect:update(t, dt)
-	local vp = managers.viewport:first_active_viewport()
+	if self._ripples then
+		local vp = managers.viewport:first_active_viewport()
 
-	if vp and self._vp ~= vp then
-		vp:vp():set_post_processor_effect("World", ids_rain_post_processor, ids_rain_ripples)
+		if vp and self._vp ~= vp then
+			vp:vp():set_post_processor_effect("World", ids_rain_post_processor, ids_rain_ripples)
 
-		if alive(self._vp) then
-			self._vp:vp():set_post_processor_effect("World", ids_rain_post_processor, ids_rain_off)
+			if alive(self._vp) then
+				self._vp:vp():set_post_processor_effect("World", ids_rain_post_processor, ids_rain_off)
+			end
+
+			self._vp = vp
 		end
-
-		self._vp = vp
 	end
 
 	local c_rot = managers.environment_effects:camera_rotation()
@@ -125,144 +130,18 @@ function RainEffect:stop()
 
 	self._effect = nil
 
-	if alive(self._vp) then
+	if self._ripples and alive(self._vp) then
 		self._vp:vp():set_post_processor_effect("World", ids_rain_post_processor, ids_rain_off)
-
-		self._vp = nil
-	end
-end
-SnowEffect = SnowEffect or class(EnvironmentEffect)
-local ids_snow_post_processor = Idstring("snow_post_processor")
-local ids_snow_ripples = Idstring("snow_ripples")
-local ids_snow_off = Idstring("snow_off")
-
-function SnowEffect:init()
-	EnvironmentEffect.init(self)
-
-	self._effect_name = Idstring("effects/particles/snow/snow_01")
-end
-
-function SnowEffect:load_effects()
-	if is_editor then
-		CoreEngineAccess._editor_load(Idstring("effect"), self._effect_name)
-	end
-end
-
-function SnowEffect:update(t, dt)
-	local vp = managers.viewport:first_active_viewport()
-
-	if vp and self._vp ~= vp then
-		vp:vp():set_post_processor_effect("World", ids_snow_post_processor, ids_snow_ripples)
-
-		if alive(self._vp) then
-			self._vp:vp():set_post_processor_effect("World", ids_snow_post_processor, ids_snow_off)
-		end
-
-		self._vp = vp
-	end
-
-	local c_rot = managers.environment_effects:camera_rotation()
-
-	if not c_rot then
-		return
-	end
-
-	local c_pos = managers.environment_effects:camera_position()
-
-	if not c_pos then
-		return
-	end
-
-	World:effect_manager():move_rotate(self._effect, c_pos, c_rot)
-end
-
-function SnowEffect:start()
-	self._effect = World:effect_manager():spawn({
-		effect = self._effect_name,
-		position = Vector3(),
-		rotation = Rotation()
-	})
-end
-
-function SnowEffect:stop()
-	World:effect_manager():kill(self._effect)
-
-	self._effect = nil
-
-	if alive(self._vp) then
-		self._vp:vp():set_post_processor_effect("World", ids_snow_post_processor, ids_snow_off)
-
-		self._vp = nil
-	end
-end
-SnowEffectSlow = SnowEffectSlow or class(EnvironmentEffect)
-local ids_snow_slow_post_processor = Idstring("snow_post_processor")
-local ids_snow_slow_ripples = Idstring("snow_ripples")
-local ids_snow_slow_off = Idstring("snow_off")
-
-function SnowEffectSlow:init()
-	EnvironmentEffect.init(self)
-
-	self._effect_name = Idstring("effects/particles/snow/snow_slow")
-end
-
-function SnowEffectSlow:load_effects()
-	if is_editor then
-		CoreEngineAccess._editor_load(Idstring("effect"), self._effect_name)
-	end
-end
-
-function SnowEffectSlow:update(t, dt)
-	local vp = managers.viewport:first_active_viewport()
-
-	if vp and self._vp ~= vp then
-		vp:vp():set_post_processor_effect("World", ids_snow_slow_post_processor, ids_snow_slow_ripples)
-
-		if alive(self._vp) then
-			self._vp:vp():set_post_processor_effect("World", ids_snow_slow_post_processor, ids_snow_slow_off)
-		end
-
-		self._vp = vp
-	end
-
-	local c_rot = managers.environment_effects:camera_rotation()
-
-	if not c_rot then
-		return
-	end
-
-	local c_pos = managers.environment_effects:camera_position()
-
-	if not c_pos then
-		return
-	end
-
-	World:effect_manager():move_rotate(self._effect, c_pos, c_rot)
-end
-
-function SnowEffectSlow:start()
-	self._effect = World:effect_manager():spawn({
-		effect = self._effect_name,
-		position = Vector3(),
-		rotation = Rotation()
-	})
-end
-
-function SnowEffectSlow:stop()
-	World:effect_manager():kill(self._effect)
-
-	self._effect = nil
-
-	if alive(self._vp) then
-		self._vp:vp():set_post_processor_effect("World", ids_snow_post_processor, ids_snow_off)
 
 		self._vp = nil
 	end
 end
 LightningEffect = LightningEffect or class(EnvironmentEffect)
 
-function LightningEffect:init()
+function LightningEffect:init(effect_data)
 	EnvironmentEffect.init(self)
+
+	self._effect_data = effect_data or {}
 end
 
 function LightningEffect:load_effects()
@@ -324,8 +203,8 @@ function LightningEffect:start()
 	self._original_color0 = self._sky_material:get_variable(Idstring("color0"))
 	self._original_light_color = Global._global_light:color()
 	self._original_sun_horizontal = Underlay:time(Idstring("sun_horizontal"))
-	self._min_interval = tweak_data.env_effect.lightning.min_interval
-	self._rnd_interval = tweak_data.env_effect.lightning.rnd_interval
+	self._min_interval = self._effect_data.min_interval or 2
+	self._rnd_interval = self._effect_data.rnd_interval or 10
 	self._sound_source = SoundDevice:create_source("thunder")
 
 	self:_set_next_timer()
@@ -397,10 +276,16 @@ function LightningEffect:_make_lightning()
 
 	Global._global_light:set_color(self._intensity_value)
 	Underlay:set_time(Idstring("sun_horizontal"), self._flash_anim_time)
-	self._sound_source:post_event(tweak_data.env_effect.lightning.event_name)
+
+	if self._effect_data.event_name then
+		self._sound_source:post_event(self._effect_data.event_name)
+	end
 end
 
 function LightningEffect:_set_lightning_values()
+	self._original_color0 = self._sky_material:get_variable(Idstring("color0"))
+	self._original_light_color = Global._global_light:color()
+	self._original_sun_horizontal = Underlay:time(Idstring("sun_horizontal"))
 	self._first_flash_time = 0.1
 	self._pause_flash_time = 0.1
 	self._second_flash_time = 0.3

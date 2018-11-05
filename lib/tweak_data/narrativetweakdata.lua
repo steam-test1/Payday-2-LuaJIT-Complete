@@ -5038,6 +5038,69 @@ function NarrativeTweakData:init(tweak_data)
 	self.jobs.pal.contract_visuals.preview_image = {id = "counterfeit"}
 	self.jobs.man.contract_visuals.preview_image = {id = "undercover"}
 	self.jobs.haunted.contract_visuals = {preview_image = {id = "safehouse_old"}}
+	self.stages.tag = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "tag"
+	}
+	self.jobs.tag = {
+		name_id = "heist_tag",
+		briefing_id = "heist_tag_crimenet",
+		contact = "locke",
+		region = "street",
+		jc = 30,
+		chain = {self.stages.tag},
+		briefing_event = "Play_loc_tag_cbf_01",
+		debrief_event = nil,
+		crimenet_callouts = {"Play_loc_tag_cnc_01"},
+		crimenet_videos = {"contact_locke1"},
+		payout = {
+			20000,
+			30000,
+			40000,
+			70000,
+			80000,
+			80000,
+			80000
+		},
+		contract_cost = {
+			16000,
+			32000,
+			80000,
+			160000,
+			200000,
+			200000,
+			200000
+		},
+		contract_visuals = {}
+	}
+	self.jobs.tag.contract_visuals.min_mission_xp = {
+		11000,
+		11000,
+		11000,
+		11000,
+		11000,
+		11000,
+		11000
+	}
+	self.jobs.tag.contract_visuals.max_mission_xp = {
+		23000,
+		23000,
+		23000,
+		23000,
+		23000,
+		23000,
+		23000
+	}
+	self.jobs.tag.contract_visuals.preview_image = {
+		id = "tag",
+		folder = "tag"
+	}
+	self.jobs.tag.date_added = {
+		2018,
+		4,
+		23
+	}
 	self.stages.lbe_lobby_end = {
 		type = "d",
 		type_id = "heist_type_assault",
@@ -5235,7 +5298,8 @@ function NarrativeTweakData:init(tweak_data)
 		"crime_spree",
 		"hvh",
 		"wwh",
-		"brb"
+		"brb",
+		"tag"
 	}
 	self.forced_jobs = {
 		firestarter = true,

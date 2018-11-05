@@ -514,7 +514,13 @@ function ElementSpecialObjective:get_objective(instigator)
 			objective.nav_seg = managers.navigation:get_nav_seg_from_pos(self._values.position)
 
 			if path_style == "destination" then
-				local path_data = managers.ai_data:destination_path(self._values.position, Rotation(self._values.rotation or 0, 0, 0))
+				local rotation = self._values.rotation
+
+				if not rotation and alive(instigator) and mvector3.distance_sq(instigator:movement():m_pos(), self._values.position) < 2500 then
+					objective.rot = instigator:rotation()
+				end
+
+				local path_data = managers.ai_data:destination_path(self._values.position, Rotation(rotation or 0, 0, 0))
 				objective.path_data = path_data
 			else
 				local path_name = self._values.patrol_path

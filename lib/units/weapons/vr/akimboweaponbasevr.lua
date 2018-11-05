@@ -50,6 +50,15 @@ function AkimboWeaponBaseVR:update_reload_finish(...)
 
 	__update_reload_finish(self, ...)
 end
+local __tweak_data_anim_play = AkimboWeaponBase.tweak_data_anim_play
+
+function AkimboWeaponBaseVR:tweak_data_anim_play(anim, ...)
+	if alive(self.parent_weapon) and anim == "magazine_empty" then
+		AkimboWeaponBase.super.tweak_data_anim_play(self.parent_weapon:base(), anim, ...)
+	end
+
+	return __tweak_data_anim_play(self, anim, ...)
+end
 
 function AkimboWeaponBaseVR:on_enabled(...)
 	if alive(self.parent_weapon) then

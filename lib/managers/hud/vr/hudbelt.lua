@@ -8,24 +8,32 @@ local function make_fine_text(text)
 end
 
 local function get_icon(icon_type)
-	if icon_type == "primary" then
-		local texture = "guis/textures/pd2/blackmarket/icons/weapons/outline/" .. managers.blackmarket:equipped_primary().weapon_id
+	if icon_type == "primary" or icon_type == "secondary" then
+		local prefix = "guis"
+		local w_id = icon_type == "secondary" and managers.blackmarket:equipped_secondary().weapon_id or managers.blackmarket:equipped_primary().weapon_id
+		local texture = "/textures/pd2/blackmarket/icons/weapons/outline/" .. w_id
 
-		if not DB:has(Idstring("texture"), Idstring(texture)) then
-			texture = "guis/textures/pd2/blackmarket/icons/weapons/outline/amcar"
+		if not DB:has(Idstring("texture"), Idstring(prefix .. texture)) then
+			if tweak_data.weapon[w_id] and tweak_data.weapon[w_id].texture_bundle_folder then
+				prefix = "guis/dlcs/" .. tweak_data.weapon[w_id].texture_bundle_folder
+			end
+
+			if not DB:has(Idstring("texture"), Idstring(prefix .. texture)) then
+				return "guis/textures/pd2/blackmarket/icons/weapons/outline/" .. (icon_type == "secondary" and "g26" or "amcar")
+			end
 		end
 
-		return texture
-	elseif icon_type == "secondary" then
-		local texture = "guis/textures/pd2/blackmarket/icons/weapons/outline/" .. managers.blackmarket:equipped_secondary().weapon_id
-
-		if not DB:has(Idstring("texture"), Idstring(texture)) then
-			texture = "guis/textures/pd2/blackmarket/icons/weapons/outline/g26"
-		end
-
-		return texture
+		return prefix .. texture
 	elseif icon_type == "melee" then
-		return "guis/textures/pd2/blackmarket/icons/melee_weapons/outline/" .. managers.blackmarket:equipped_melee_weapon()
+		local w_id = managers.blackmarket:equipped_melee_weapon()
+		local prefix = "guis"
+		local texture = "/textures/pd2/blackmarket/icons/melee_weapons/outline/" .. w_id
+
+		if not DB:has(Idstring("texture"), Idstring(prefix .. texture)) then
+			prefix = "guis/dlcs/" .. tweak_data.blackmarket.melee_weapons[w_id].texture_bundle_folder
+		end
+
+		return prefix .. texture
 	elseif icon_type == "deployable" or icon_type == "deployable_secondary" then
 		local id = managers.player:equipment_in_slot(icon_type == "deployable" and 1 or 2)
 

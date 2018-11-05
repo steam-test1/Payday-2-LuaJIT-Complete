@@ -39,17 +39,20 @@ ContourExt._types = {
 	mark_unit = {
 		priority = 4,
 		fadeout = 4.5,
+		trigger_marked_event = true,
 		color = tweak_data.contour.character.dangerous_color
 	},
 	mark_unit_dangerous = {
 		priority = 4,
 		fadeout = 9,
+		trigger_marked_event = true,
 		color = tweak_data.contour.character.dangerous_color
 	},
 	mark_unit_dangerous_damage_bonus = {
 		priority = 4,
-		fadeout = 9,
 		damage_bonus = true,
+		fadeout = 9,
+		trigger_marked_event = true,
 		color = tweak_data.contour.character.dangerous_color
 	},
 	mark_unit_dangerous_damage_bonus_distance = {
@@ -57,6 +60,7 @@ ContourExt._types = {
 		damage_bonus = true,
 		fadeout = 9,
 		damage_bonus_distance = 1,
+		trigger_marked_event = true,
 		color = tweak_data.contour.character.dangerous_color
 	},
 	mark_unit_friendly = {
@@ -68,6 +72,7 @@ ContourExt._types = {
 		priority = 5,
 		material_swap_required = true,
 		fadeout_silent = 13.5,
+		trigger_marked_event = true,
 		color = tweak_data.contour.character.dangerous_color
 	},
 	mark_enemy_damage_bonus = {
@@ -76,6 +81,7 @@ ContourExt._types = {
 		material_swap_required = true,
 		damage_bonus = true,
 		fadeout_silent = 13.5,
+		trigger_marked_event = true,
 		color = tweak_data.contour.character.more_dangerous_color
 	},
 	mark_enemy_damage_bonus_distance = {
@@ -85,6 +91,7 @@ ContourExt._types = {
 		damage_bonus = true,
 		damage_bonus_distance = 1,
 		fadeout_silent = 13.5,
+		trigger_marked_event = true,
 		color = tweak_data.contour.character.more_dangerous_color
 	},
 	highlight = {
@@ -208,6 +215,8 @@ function ContourExt:add(type, sync, multiplier)
 		managers.network:session():send_to_peers_synched("sync_contour_state", self._unit, u_id, table.index_of(ContourExt.indexed_types, type), true, multiplier or 1)
 	end
 
+	local should_trigger_marked_event = data.trigger_marked_event
+
 	for _, setup in ipairs(self._contour_list) do
 		if setup.type == type then
 			if fadeout then
@@ -217,6 +226,10 @@ function ContourExt:add(type, sync, multiplier)
 			end
 
 			return setup
+		end
+
+		if self._types[setup.type].trigger_marked_event then
+			should_trigger_marked_event = false
 		end
 	end
 
@@ -244,6 +257,10 @@ function ContourExt:add(type, sync, multiplier)
 	end
 
 	self:apply_to_linked("add", type, sync, multiplier)
+
+	if should_trigger_marked_event and self._unit:unit_data().mission_element then
+		self._unit:unit_data().mission_element:event("marked", self._unit)
+	end
 
 	return setup
 end
@@ -408,6 +425,22 @@ function ContourExt:_remove(index, sync)
 		end
 
 		managers.network:session():send_to_peers_synched("sync_contour_state", self._unit, u_id, table.index_of(ContourExt.indexed_types, contour_type), false, 1)
+	end
+
+	if data.trigger_marked_event then
+		local should_trigger_unmarked_event = true
+
+		for _, setup in ipairs(self._contour_list or {}) do
+			if self._types[setup.type].trigger_marked_event then
+				should_trigger_unmarked_event = false
+
+				break
+			end
+		end
+
+		if should_trigger_unmarked_event and self._unit:unit_data().mission_element then
+			self._unit:unit_data().mission_element:event("unmarked", self._unit)
+		end
 	end
 end
 

@@ -1,5 +1,7 @@
 require("lib/input/BipodDeployControllerInput")
 require("lib/input/SecondDeployableControllerInput")
+core:import("CoreEnvironmentFeeder")
+require("lib/input/HoldButtonMetaInput")
 
 local mvec3_dis_sq = mvector3.distance_sq
 local mvec3_set = mvector3.set
@@ -128,6 +130,10 @@ function PlayerStandard:init(unit)
 			table.insert(self._input, SecondDeployableControllerInput:new())
 		end
 	end
+
+	self._input = self._input or {}
+
+	table.insert(self._input, HoldButtonMetaInput:new("night_vision", "weapon_firemode", nil, 0.5))
 
 	self._menu_closed_fire_cooldown = 0
 
@@ -512,6 +518,22 @@ function PlayerStandard:_update_ground_ray()
 	self._gnd_ray_chk = true
 end
 
+function PlayerStandard:_chk_floor_moving_pos(pos)
+	local hips_pos = tmp_ground_from_vec
+	local down_pos = tmp_ground_to_vec
+
+	mvector3.set(hips_pos, self._pos)
+	mvector3.add(hips_pos, up_offset_vec)
+	mvector3.set(down_pos, hips_pos)
+	mvector3.add(down_pos, down_offset_vec)
+
+	local ground_ray = World:raycast("ray", hips_pos, down_pos, "slot_mask", self._slotmask_gnd_ray, "ray_type", "body mover", "sphere_cast_radius", 29)
+
+	if ground_ray and ground_ray.body and math.abs(ground_ray.body:velocity().z) > 0 then
+		return ground_ray.body:position().z
+	end
+end
+
 function PlayerStandard:_update_fwd_ray()
 	local from = self._unit:movement():m_head_pos()
 	local range = alive(self._equipped_unit) and self._equipped_unit:base():has_range_distance_scope() and 20000 or 4000
@@ -775,6 +797,7 @@ function PlayerStandard:_update_check_actions(t, dt, paused)
 	self:_check_action_change_equipment(t, input)
 	self:_check_action_duck(t, input)
 	self:_check_action_steelsight(t, input)
+	self:_check_action_night_vision(t, input)
 	self:_find_pickups(t)
 end
 local mvec_pos_new = Vector3()
@@ -890,6 +913,18 @@ function PlayerStandard:_update_movement(t, dt)
 		self._headbob = math.step(self._headbob, self._target_headbob, dt / ratio)
 
 		self._ext_camera:set_shaker_parameter("headbob", "amplitude", self._headbob)
+	end
+
+	local ground_z = self:_chk_floor_moving_pos()
+
+	if ground_z and not self._is_jumping then
+		if not pos_new then
+			pos_new = mvec_pos_new
+
+			mvector3.set(pos_new, self._pos)
+		end
+
+		mvector3.set_z(pos_new, ground_z)
 	end
 
 	if pos_new then
@@ -1937,7 +1972,11 @@ function PlayerStandard:_check_action_weapon_firemode(t, input)
 end
 
 function PlayerStandard:_toggle_gadget(weap_base)
+	local gadget_index = 0
+
 	if weap_base.toggle_gadget and weap_base:has_gadget() and weap_base:toggle_gadget(self) then
+		gadget_index = weap_base:current_gadget_index()
+
 		self._unit:network():send("set_weapon_gadget_state", weap_base._gadget_on)
 
 		local gadget = weap_base:get_active_gadget()
@@ -3645,7 +3684,7 @@ function PlayerStandard:_check_action_deploy_bipod(t, input)
 	local action_forbidden = false
 
 	if not input.btn_deploy_bipod then
-		return new_action
+		return
 	end
 
 	action_forbidden = self:in_steelsight() or self:_on_zipline() or self:_is_throwing_projectile() or self:_is_meleeing() or self:is_equipping() or self:_changing_weapon()
@@ -4694,6 +4733,54 @@ function PlayerStandard:inventory_clbk_listener(unit, event)
 	end
 end
 
+function PlayerStandard:_check_action_night_vision(t, input)
+	if not input.btn_night_vision_press then
+		return
+	end
+
+	local action_forbidden = self:_is_throwing_projectile() or self:_is_meleeing() or self:is_equipping() or self:_changing_weapon() or self:shooting() or self:_is_reloading() or self:is_switching_stances() or self:_interacting()
+
+	if action_forbidden then
+		return
+	end
+
+	self:set_night_vision_state(not self._state_data.night_vision_active)
+end
+
+function PlayerStandard:set_night_vision_state(state)
+	local mask_id = managers.blackmarket:equipped_mask().mask_id
+	local mask_tweak = tweak_data.blackmarket.masks[mask_id]
+	local night_vision = mask_tweak.night_vision
+
+	if not night_vision or not not self._state_data.night_vision_active == state then
+		return
+	end
+
+	local ambient_color_key = CoreEnvironmentFeeder.PostAmbientColorFeeder.DATA_PATH_KEY
+	local default_color_grading = EnvironmentControllerManager._GAME_DEFAULT_COLOR_GRADING
+	local effect = state and night_vision.effect or default_color_grading
+
+	if state then
+
+		local function light_modifier(handler, feeder)
+			local base_light = feeder._target and mvector3.copy(feeder._target) or Vector3()
+			local light = night_vision.light
+
+			return base_light + Vector3(light, light, light)
+		end
+
+		managers.viewport:create_global_environment_modifier(ambient_color_key, true, light_modifier)
+	else
+		managers.viewport:destroy_global_environment_modifier(ambient_color_key)
+	end
+
+	self._unit:sound():play(state and "night_vision_on" or "night_vision_off", nil, false)
+	managers.environment_controller:set_default_color_grading(effect, state)
+	managers.environment_controller:refresh_render_settings()
+
+	self._state_data.night_vision_active = state
+end
+
 function PlayerStandard:weapon_recharge_clbk_listener()
 	for id, weapon in pairs(self._ext_inventory:available_selections()) do
 		managers.hud:set_ammo_amount(id, weapon.unit:base():ammo_info())
@@ -4726,6 +4813,8 @@ function PlayerStandard:pre_destroy()
 
 		self._pos_reservation_slow = nil
 	end
+
+	self:set_night_vision_state(false)
 end
 
 function PlayerStandard:tweak_data_clbk_reload()

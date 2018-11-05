@@ -1,6 +1,6 @@
 NetworkMatchMakingSTEAM = NetworkMatchMakingSTEAM or class()
 NetworkMatchMakingSTEAM.OPEN_SLOTS = tweak_data.max_players
-NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "payday2_v1.89.554"
+NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "payday2_v1.89.567"
 
 function NetworkMatchMakingSTEAM:init()
 	cat_print("lobby", "matchmake = NetworkMatchMakingSTEAM")
@@ -309,6 +309,10 @@ end
 
 function NetworkMatchMakingSTEAM:set_distance_filter(filter)
 	self._distance_filter = filter
+end
+
+function NetworkMatchMakingSTEAM:get_lobby_data()
+	return self.lobby_handler and self.lobby_handler:get_lobby_data()
 end
 
 function NetworkMatchMakingSTEAM:get_lobby_return_count()

@@ -6,6 +6,17 @@ function EnvEffectTweakData:init()
 		min_interval = 10,
 		rnd_interval = 10
 	}
+	self.lightning_tag = {
+		event_name = "thunder_struck_muffled",
+		min_interval = 30,
+		rnd_interval = 40
+	}
+	self.rain = {
+		effect_name = Idstring("effects/particles/rain/rain_01_a"),
+		ripples = true
+	}
+	self.snow = {effect_name = Idstring("effects/particles/snow/snow_01")}
+	self.snow_slow = {effect_name = Idstring("effects/particles/snow/snow_slow")}
 end
 
 function EnvEffectTweakData:molotov_fire()

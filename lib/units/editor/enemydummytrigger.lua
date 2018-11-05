@@ -99,6 +99,8 @@ function EnemyDummyTriggerUnitElement:_build_panel(panel, panel_sizer)
 		"panic",
 		"weapons_hot",
 		"tied",
+		"marked",
+		"unmarked",
 		"anim_act_01",
 		"anim_act_02",
 		"anim_act_03",

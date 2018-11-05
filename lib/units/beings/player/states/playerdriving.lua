@@ -265,19 +265,26 @@ function PlayerDriving:_update_hud(t, dt)
 end
 
 function PlayerDriving:_update_check_actions_driver(t, dt, input)
+	self:_update_equip_weapon_timers(t, input)
+
 	if input.btn_stats_screen_press then
 		self._unit:base():set_stats_screen_visible(true)
 	elseif input.btn_stats_screen_release then
 		self._unit:base():set_stats_screen_visible(false)
 	end
+
+	self:_check_action_night_vision(t, input)
 end
 
 function PlayerDriving:_update_check_actions_passenger(t, dt, input)
 	self:_update_check_actions(t, dt)
 	self:_check_action_shooting_stance(t, input)
+	self:_check_action_night_vision(t, input)
 end
 
 function PlayerDriving:_update_check_actions_passenger_no_shoot(t, dt, input)
+	self:_update_equip_weapon_timers(t, input)
+
 	if input.btn_stats_screen_press then
 		self._unit:base():set_stats_screen_visible(true)
 	elseif input.btn_stats_screen_release then
@@ -286,6 +293,7 @@ function PlayerDriving:_update_check_actions_passenger_no_shoot(t, dt, input)
 
 	self:_check_action_shooting_stance(t, input)
 	self:_check_action_deploy_underbarrel(t, input)
+	self:_check_action_night_vision(t, input)
 end
 
 function PlayerDriving:_check_action_jump(t, input)
@@ -475,9 +483,6 @@ end
 function PlayerDriving:_check_action_run(...)
 end
 
-function PlayerDriving:pre_destroy(unit)
-end
-
 function PlayerDriving:stance()
 	return self._stance
 end
@@ -520,9 +525,6 @@ function PlayerDriving:_postion_player_on_seat(seat)
 	self._unit:camera():set_position(pos)
 	self._unit:camera():camera_unit():base():set_spin(90)
 	self._unit:camera():camera_unit():base():set_pitch(0)
-end
-
-function PlayerDriving:destroy()
 end
 
 function PlayerDriving:_get_vehicle()

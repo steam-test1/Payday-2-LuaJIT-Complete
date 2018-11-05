@@ -2950,7 +2950,11 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		value = 0,
 		type = "helmet",
 		texture_bundle_folder = "mad",
-		sort_number = 17
+		sort_number = 17,
+		night_vision = {
+			effect = "color_night_vision_blue",
+			light = not _G.IS_VR and 0.3 or 0.1
+		}
 	}
 	self.masks.mad_mask = {
 		unit = "units/pd2_dlc_mad/masks/mad_mask/msk_mad_mask",
@@ -3456,7 +3460,11 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		type = "helmet",
 		texture_bundle_folder = "tng",
 		sort_number = 35,
-		dlc = "tango"
+		dlc = "tango",
+		night_vision = {
+			effect = "color_night_vision",
+			light = not _G.IS_VR and 0.3 or 0.1
+		}
 	}
 	self.masks.tng_zeal_swat_mask = {
 		unit = "units/pd2_dlc_tng/masks/tng_zeal_swat_mask/msk_tng_zeal_swat_mask",
@@ -5684,6 +5692,121 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		infamous = true,
 		texture_bundle_folder = "ggac",
 		sort_number = 36
+	}
+	self.masks.flm_01 = {
+		unit = "units/pd2_dlc_flm/masks/flm/msk_flm_01",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true,
+		offsets = {
+			dragon = {
+				Vector3(0, 0.077513, 0.673745),
+				Rotation(0, -5.45192, 0)
+			},
+			wolf = {
+				Vector3(0, -0.757211, 1.38922),
+				Rotation(0, -3.73477, 0)
+			},
+			old_hoxton = {
+				Vector3(0, -0.757211, 0.077513),
+				Rotation(0, -3.73477, 0)
+			},
+			chico = {
+				Vector3(0, -0.757211, 1.50847),
+				Rotation(0, -6.3105, 0)
+			},
+			jowi = {
+				Vector3(0, -0.757211, 1.03148),
+				Rotation(0, -1.15905, 0)
+			},
+			jimmy = {
+				Vector3(0, 0.554498, 0.316006),
+				Rotation(0, -0.30048, 0)
+			},
+			bonnie = {
+				Vector3(0, -0.280226, 1.26998),
+				Rotation(0, -2.8762, 0)
+			}
+		}
+	}
+	self.masks.flm_clover = {
+		unit = "units/pd2_dlc_flm/masks/flm/msk_flm_clover",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true
+	}
+	self.masks.flm_jacket = {
+		unit = "units/pd2_dlc_flm/masks/flm/msk_flm_jacket",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true,
+		offsets = {jacket = {
+			Vector3(0, 0, 0),
+			Rotation(0, -0.30048, 0)
+		}}
+	}
+	self.masks.flm_sydney = {
+		unit = "units/pd2_dlc_flm/masks/flm/msk_flm_sydney",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true,
+		offsets = {sydney = {
+			Vector3(0, -0.0417333, 0.435252),
+			Rotation(0, 0.558094, 0)
+		}}
+	}
+	self.masks.flm_sokol = {
+		unit = "units/pd2_dlc_flm/masks/flm/msk_flm_sokol",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true
+	}
+	self.masks.flm_ethan = {
+		unit = "units/pd2_dlc_flm/masks/flm/msk_flm_ethan",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true,
+		offsets = {ecp_male = {
+			Vector3(0, -3.02289, 1.38922),
+			Rotation(0, -12.3205, 0)
+		}}
+	}
+	self.masks.flm = {
+		name_id = "bm_msk_flm",
+		value = 0,
+		pcs = {},
+		type = "helmet",
+		texture_bundle_folder = "flm",
+		sort_number = 68,
+		dlc = "flm",
+		global_value = "flm",
+		night_vision = {
+			effect = "color_night_vision",
+			light = not _G.IS_VR and 0.3 or 0.1
+		},
+		characters = {
+			dragan = "flm_01",
+			wild = "flm_01",
+			myh = "flm_01",
+			chico = "flm_01",
+			dragon = "flm_01",
+			ecp_male = "flm_ethan",
+			ecp_female = "flm_01",
+			jowi = "flm_01",
+			old_hoxton = "flm_01",
+			bonnie = "flm_01",
+			max = "flm_01",
+			dallas = "flm_01",
+			jacket = "flm_jacket",
+			jimmy = "flm_01",
+			bodhi = "flm_01",
+			wolf = "flm_01",
+			sokol = "flm_sokol",
+			hoxton = "flm_01",
+			female_1 = "flm_clover",
+			chains = "flm_01",
+			sydney = "flm_sydney"
+		}
 	}
 	self.masks.toon_01 = {
 		unit = "units/pd2_dlc_toon/masks/toon_01/msk_toon_01",

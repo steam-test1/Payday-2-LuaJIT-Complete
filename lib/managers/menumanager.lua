@@ -903,24 +903,6 @@ end
 
 function MenuManager:check_vr_dlc()
 	local result = managers.dlc:chk_vr_dlc()
-
-	if result == true then
-		local dialog_data = {}
-		local ok_button = {text = managers.localization:text("dialog_ok")}
-		dialog_data.button_list = {ok_button}
-		dialog_data.title = managers.localization:text("dialog_vr_dlc_installed_title")
-		dialog_data.text = managers.localization:text("dialog_vr_dlc_installed")
-
-		managers.system_menu:show(dialog_data)
-	elseif result == false then
-		local dialog_data = {}
-		local ok_button = {text = managers.localization:text("dialog_ok")}
-		dialog_data.button_list = {ok_button}
-		dialog_data.title = managers.localization:text("dialog_vr_dlc_uninstalled_title")
-		dialog_data.text = managers.localization:text("dialog_vr_dlc_uninstalled")
-
-		managers.system_menu:show(dialog_data)
-	end
 end
 
 function MenuManager:open_sign_in_menu(cb)
@@ -1789,7 +1771,6 @@ function MenuCallbackHandler:is_dlc_latest_locked(check_dlc)
 		"gage_pack",
 		"armored_transport"
 	}
-	local dlc_tweak_data = tweak_data.dlc
 	local has_dlc = nil
 
 	for _, dlc in ipairs(dlcs) do

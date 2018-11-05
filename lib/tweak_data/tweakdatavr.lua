@@ -71,6 +71,11 @@ function TweakDataVR:init(tweak_data)
 			brass_knuckles = {
 				rotation = Rotation(0, -110, 0),
 				position = Vector3(0, 1.5, 0)
+			},
+			aziz = {
+				rotation = Rotation(0, -90, 0),
+				position = Vector3(0, 0, 0),
+				hit_point = Vector3(0, 0, 0)
 			}
 		},
 		bayonets = {wpn_fps_snp_mosin_ns_bayonet = {hit_point = Vector3(0, 30, -3)}},
@@ -6337,11 +6342,13 @@ function TweakDataVR:init_skills(tweak_data)
 	}
 	self.steelsight_stamina_regen = 0.02
 
-	table.insert(tweak_data.skilltree.skills.rifleman[1].upgrades, "player_stamina_ammo_refill_single")
-	table.insert(tweak_data.skilltree.skills.shock_and_awe[1].upgrades, "player_stamina_ammo_refill_auto")
-	table.insert(tweak_data.skilltree.skills.close_by[1].upgrades, "player_post_warp_suppression")
-	table.insert(tweak_data.skilltree.skills.awareness[1].upgrades, "player_post_warp_reload_speed")
-	table.insert(tweak_data.skilltree.skills.sprinter[2].upgrades, "player_run_dodge_chance_vr")
+	if _G.IS_VR then
+		table.insert(tweak_data.skilltree.skills.rifleman[1].upgrades, "player_stamina_ammo_refill_single")
+		table.insert(tweak_data.skilltree.skills.shock_and_awe[1].upgrades, "player_stamina_ammo_refill_auto")
+		table.insert(tweak_data.skilltree.skills.close_by[1].upgrades, "player_post_warp_suppression")
+		table.insert(tweak_data.skilltree.skills.awareness[1].upgrades, "player_post_warp_reload_speed")
+		table.insert(tweak_data.skilltree.skills.sprinter[2].upgrades, "player_run_dodge_chance_vr")
+	end
 
 	local stamina_regen_macro = tostring(self.steelsight_stamina_regen * 100) .. "%"
 	self.skill_descs_addons = {

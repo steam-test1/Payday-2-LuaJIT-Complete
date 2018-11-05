@@ -22,7 +22,7 @@ function NewRaycastWeaponBase:init(unit)
 	NewRaycastWeaponBase.super.init(self, unit)
 
 	self._property_mgr = PropertyManager:new()
-	self._has_gadget = false
+	self._gadgets = nil
 	self._armor_piercing_chance = self:weapon_tweak_data().armor_piercing_chance or 0
 	self._use_shotgun_reload = self:weapon_tweak_data().use_shotgun_reload
 	self._movement_penalty = tweak_data.upgrades.weapon_movement_penalty[self:weapon_tweak_data().categories[1]] or 1
@@ -136,6 +136,32 @@ function NewRaycastWeaponBase:assemble_from_blueprint(factory_id, blueprint, clb
 	self:_update_stats_values()
 end
 
+function NewRaycastWeaponBase:_refresh_gadget_list()
+	self._gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
+
+	if not self._gadgets or #self._gadgets == 0 then
+		return
+	end
+
+	local part_a, part_b = nil
+	local part_factory = tweak_data.weapon.factory.parts
+
+	table.sort(self._gadgets, function (a, b)
+		part_a = self._parts[a]
+		part_b = self._parts[b]
+
+		if not part_a then
+			return false
+		end
+
+		if not part_b then
+			return true
+		end
+
+		return part_b.unit:base().GADGET_TYPE < part_a.unit:base().GADGET_TYPE
+	end)
+end
+
 function NewRaycastWeaponBase:clbk_assembly_complete(clbk, parts, blueprint)
 	self._assembly_complete = true
 	self._parts = parts
@@ -143,6 +169,7 @@ function NewRaycastWeaponBase:clbk_assembly_complete(clbk, parts, blueprint)
 
 	self:_update_fire_object()
 	self:_update_stats_values()
+	self:_refresh_gadget_list()
 
 	if self._setup and self._setup.timer then
 		self:set_timer(self._setup.timer)
@@ -584,7 +611,6 @@ function NewRaycastWeaponBase:_update_stats_values(disallow_replenish)
 	self._total_ammo_mod = self._current_stats.total_ammo_mod or self._total_ammo_mod
 	self._reload = self._current_stats.reload or self._reload
 	self._spread_multiplier = self._current_stats.spread_multi or self._spread_multiplier
-	self._has_gadget = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
 	self._scopes = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("scope", self._factory_id, self._blueprint)
 	self._can_highlight_with_perk = managers.weapon_factory:has_perk("highlight", self._factory_id, self._blueprint)
 	self._can_highlight_with_skill = managers.player:has_category_upgrade("weapon", "steelsight_highlight_specials")
@@ -627,10 +653,10 @@ end
 function NewRaycastWeaponBase:_check_second_sight()
 	self._second_sight_data = nil
 
-	if self._has_gadget then
+	if self:has_gadget() then
 		local factory = tweak_data.weapon.factory
 
-		for _, part_id in ipairs(self._has_gadget) do
+		for _, part_id in ipairs(self._gadgets) do
 			if factory.parts[part_id].sub_type == "second_sight" then
 				self._second_sight_data = {
 					part_id = part_id,
@@ -1147,19 +1173,15 @@ function NewRaycastWeaponBase:on_equip(user_unit)
 	NewRaycastWeaponBase.super.on_equip(self, user_unit)
 
 	if self:was_gadget_on() then
-		local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
+		self:set_gadget_on(self._last_gadget_idx, false, nil)
+		user_unit:network():send("set_weapon_gadget_state", self._gadget_on)
 
-		if gadgets then
-			self:set_gadget_on(self._last_gadget_idx, false, gadgets)
-			user_unit:network():send("set_weapon_gadget_state", self._gadget_on)
+		local gadget = self:get_active_gadget()
 
-			local gadget = self:get_active_gadget()
+		if gadget and gadget.color then
+			local col = gadget:color()
 
-			if gadget and gadget.color then
-				local col = gadget:color()
-
-				user_unit:network():send("set_weapon_gadget_color", col.r * 255, col.g * 255, col.b * 255)
-			end
+			user_unit:network():send("set_weapon_gadget_color", col.r * 255, col.g * 255, col.b * 255)
 		end
 	end
 end
@@ -1169,11 +1191,15 @@ function NewRaycastWeaponBase:on_unequip(user_unit)
 end
 
 function NewRaycastWeaponBase:has_gadget()
-	return self._has_gadget
+	return self._gadgets and #self._gadgets > 0
 end
 
 function NewRaycastWeaponBase:is_gadget_on()
 	return self._gadget_on and self._gadget_on > 0
+end
+
+function NewRaycastWeaponBase:current_gadget_index()
+	return self._gadget_on
 end
 
 function NewRaycastWeaponBase:gadget_on()
@@ -1198,75 +1224,21 @@ function NewRaycastWeaponBase:set_gadget_on(gadget_on, ignore_enable, gadgets, c
 	end
 
 	self._gadget_on = gadget_on or self._gadget_on
-	gadgets = gadgets or managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
+	local gadget = nil
 
-	if gadgets then
-		local xd, yd = nil
-		local part_factory = tweak_data.weapon.factory.parts
+	for i, id in ipairs(gadgets or self._gadgets) do
+		gadget = self._parts[id]
 
-		table.sort(gadgets, function (x, y)
-			xd = self._parts[x]
-			yd = self._parts[y]
-
-			if not xd then
-				return false
-			end
-
-			if not yd then
-				return true
-			end
-
-			return yd.unit:base().GADGET_TYPE < xd.unit:base().GADGET_TYPE
-		end)
-
-		local gadget = nil
-
-		for i, id in ipairs(gadgets) do
-			gadget = self._parts[id]
-
-			if gadget and alive(gadget.unit) then
-				gadget.unit:base():set_state(self._gadget_on == i, self._sound_fire, current_state)
-			end
+		if gadget and alive(gadget.unit) then
+			gadget.unit:base():set_state(self._gadget_on == i, self._sound_fire, current_state)
 		end
 	end
 end
 
 function NewRaycastWeaponBase:set_gadget_on_by_part_id(part_id, gadgets)
-	if not self._assembly_complete or not self._enabled then
-		return
-	end
+	local gadget_index = table.index_of(gadgets or self._gadgets, part_id)
 
-	gadgets = gadgets or managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
-
-	if gadgets then
-		local xd, yd = nil
-		local part_factory = tweak_data.weapon.factory.parts
-
-		table.sort(gadgets, function (x, y)
-			xd = self._parts[x]
-			yd = self._parts[y]
-
-			if not xd then
-				return false
-			end
-
-			if not yd then
-				return true
-			end
-
-			return yd.unit:base().GADGET_TYPE < xd.unit:base().GADGET_TYPE
-		end)
-
-		local gadget = nil
-
-		for i, id in ipairs(gadgets) do
-			gadget = self._parts[id]
-
-			if gadget and id == part_id then
-				self:set_gadget_on(i, nil, gadgets, nil)
-			end
-		end
-	end
+	self:set_gadget_on(gadget_index, nil, gadgets, nil)
 end
 
 function NewRaycastWeaponBase:get_active_gadget()
@@ -1298,7 +1270,7 @@ function NewRaycastWeaponBase:set_gadget_color(color)
 		return
 	end
 
-	local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
+	local gadgets = self._gadgets
 
 	if gadgets then
 		local gadget = nil
@@ -1368,7 +1340,7 @@ function NewRaycastWeaponBase:toggle_gadget(current_state)
 	end
 
 	local gadget_on = self._gadget_on or 0
-	local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
+	local gadgets = self._gadgets
 
 	if gadgets then
 		gadget_on = (gadget_on + 1) % (#gadgets + 1)
@@ -1406,11 +1378,11 @@ function NewRaycastWeaponBase:gadget_toggle_requires_stance_update()
 		return false
 	end
 
-	if not self._has_gadget then
+	if not self:has_gadget() then
 		return false
 	end
 
-	for _, part_id in ipairs(self._has_gadget) do
+	for _, part_id in ipairs(self._gadgets) do
 		if self._parts[part_id].unit:base():toggle_requires_stance_update() then
 			return true
 		end
@@ -1737,38 +1709,14 @@ function NewRaycastWeaponBase:reload_speed_multiplier()
 end
 
 function NewRaycastWeaponBase:_debug_bipod()
-	local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
+	for i, id in ipairs(self._gadgets) do
+		gadget = self._parts[id]
 
-	if gadgets then
-		local xd, yd = nil
-		local part_factory = tweak_data.weapon.factory.parts
+		if gadget then
+			local is_bipod = gadget.unit:base():is_bipod()
 
-		table.sort(gadgets, function (x, y)
-			xd = self._parts[x]
-			yd = self._parts[y]
-
-			if not xd then
-				return false
-			end
-
-			if not yd then
-				return true
-			end
-
-			return yd.unit:base().GADGET_TYPE < xd.unit:base().GADGET_TYPE
-		end)
-
-		local gadget = nil
-
-		for i, id in ipairs(gadgets) do
-			gadget = self._parts[id]
-
-			if gadget then
-				local is_bipod = gadget.unit:base():is_bipod()
-
-				if is_bipod then
-					gadget.unit:base():_shoot_bipod_rays(true)
-				end
+			if is_bipod then
+				gadget.unit:base():_shoot_bipod_rays(true)
 			end
 		end
 	end

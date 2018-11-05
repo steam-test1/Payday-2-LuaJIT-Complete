@@ -593,5 +593,16 @@ function MissionDoorTweakData:init()
 		can_jam = false,
 		unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
 	}}
+	self.drill_and_ecm = {devices = {}}
+	self.drill_and_ecm.devices.drill = {{
+		align = "a_drill",
+		timer = 60,
+		can_jam = true,
+		unit = Idstring("units/payday2/equipment/item_door_drill_small/item_door_drill_small")
+	}}
+	self.drill_and_ecm.devices.ecm = {{
+		align = "a_ecm_hack",
+		unit = Idstring("units/payday2/equipment/gen_interactable_door_keycard/gen_interactable_door_keycard_jammer")
+	}}
 end
 

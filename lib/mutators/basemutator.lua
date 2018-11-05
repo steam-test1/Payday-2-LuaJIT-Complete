@@ -297,6 +297,88 @@ function BaseMutator:build_matchmaking_key()
 	return matchmaking_key
 end
 
+function BaseMutator:build_compressed_data(id)
+	local matchmaking_key = string.format("%c", string.byte("a") + id)
+
+	for key, data in pairs(self:values()) do
+		local value = data.current
+
+		if type(value) == "number" then
+			matchmaking_key = matchmaking_key .. string.format("%.2f ", value)
+		elseif type(value) == "boolean" then
+			matchmaking_key = matchmaking_key .. string.format("%d ", value and 1 or 0)
+		else
+			matchmaking_key = matchmaking_key .. string.format("%s ", tostring(value))
+		end
+	end
+
+	return matchmaking_key
+end
+
+function BaseMutator:uncompress_data(str_dat)
+	local ret = {}
+
+	for key, data in pairs(self:values()) do
+		local default = data.default
+		local idx = string.find(str_dat, " ", 1, true)
+
+		if idx == nil then
+			return nil, ""
+		end
+
+		local new_value = string.sub(str_dat, 1, idx)
+		str_dat = string.sub(str_dat, idx + 1)
+
+		if type(default) == "number" then
+			local number = tonumber(new_value)
+
+			if number == nil then
+				ret[key] = default
+			else
+				ret[key] = number
+			end
+		elseif type(default) == "boolean" then
+			ret[key] = tonumber(new_value) == 1
+		else
+			ret[key] = new_value
+		end
+	end
+
+	return ret, str_dat
+end
+
+function BaseMutator:partial_uncompress_data(str_dat)
+	local ret = string.format("%s ", self:id())
+
+	for key, data in pairs(self:values()) do
+		local default = data.default
+		local idx = string.find(str_dat, " ", 1, true)
+
+		if idx == nil then
+			return nil, ""
+		end
+
+		local new_value = string.sub(str_dat, 1, idx)
+		str_dat = string.sub(str_dat, idx + 1)
+
+		if type(default) == "number" then
+			local number = tonumber(new_value)
+
+			if number == nil then
+				ret = ret .. string.format("%s %.4f ", data.network_key, default)
+			else
+				ret = ret .. string.format("%s %.4f ", data.network_key, number)
+			end
+		elseif type(default) == "boolean" then
+			ret = ret .. string.format("%s %s ", data.network_key, tostring(tonumber(new_value) == 1))
+		else
+			ret = ret .. string.format("%s %s ", data.network_key, tostring(new_value))
+		end
+	end
+
+	return ret, str_dat
+end
+
 function BaseMutator:get_data_from_attribute_string(string_table)
 	if #string_table > 0 and #string_table % 2 ~= 0 then
 		Application:error("Warning! Mismatched attribute string table, should have an even amount of elements!", self:id())

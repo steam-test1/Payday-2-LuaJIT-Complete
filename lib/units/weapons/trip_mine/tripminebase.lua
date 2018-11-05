@@ -41,7 +41,7 @@ function TripMineBase:init(unit)
 	if self._use_draw_laser then
 		self._laser_color = Color(0.15, 1, 0, 0)
 		self._laser_sensor_color = Color(0.15, 0.1, 0.1, 1)
-		self._laser_brush = Draw:brush(self._laser_color)
+		self._laser_brush = Draw:brush(self._laser_color, "VertexColor")
 
 		self._laser_brush:set_blend_mode("opacity_add")
 	end

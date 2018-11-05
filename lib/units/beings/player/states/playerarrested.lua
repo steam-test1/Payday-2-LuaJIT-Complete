@@ -240,6 +240,7 @@ function PlayerArrested:clbk_entry_speech()
 end
 
 function PlayerArrested:pre_destroy(unit)
+	PlayerArrested.super.pre_destroy(self, unit)
 	PlayerBleedOut._unregister_revive_SO(self)
 
 	if self._entry_speech_clbk then

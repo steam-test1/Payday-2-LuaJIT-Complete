@@ -22,7 +22,7 @@ ElementLaserTrigger.COLORS = {
 function ElementLaserTrigger:init(...)
 	ElementLaserTrigger.super.init(self, ...)
 
-	self._brush = Draw:brush(Color(0.15, unpack(self.COLORS[self._values.color])))
+	self._brush = Draw:brush(Color(0.15, unpack(self.COLORS[self._values.color])), "VertexColor")
 
 	self._brush:set_blend_mode("opacity_add")
 

@@ -85,6 +85,7 @@ function MoneyTweakData:init(tweak_data)
 		safe = 4600,
 		prototype = 10000,
 		counterfeit_money = 1100,
+		box_unknown = 10000,
 		masterpiece_painting = 10000,
 		master_server = 10000,
 		lost_artifact = 10000,

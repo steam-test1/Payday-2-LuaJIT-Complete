@@ -156,6 +156,7 @@ function PlayerCarry:_update_check_actions(t, dt)
 	self:_update_use_item_timers(t, input)
 	self:_check_action_change_equipment(t, input)
 	self:_find_pickups(t)
+	self:_check_action_night_vision(t, input)
 end
 
 function PlayerCarry:_check_action_run(...)

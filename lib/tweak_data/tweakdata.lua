@@ -718,7 +718,6 @@ function TweakData:init()
 	self.infamy = InfamyTweakData:new(self)
 	self.gage_assignment = GageAssignmentTweakData:new(self)
 	self.preplanning = PrePlanningTweakData:new(self)
-	self.achievement = AchievementsTweakData:new(self)
 	self.safehouse = CustomSafehouseTweakData:new(self)
 	self.interaction = InteractionTweakData:new(self)
 	self.vehicle = VehicleTweakData:new(self)
@@ -726,6 +725,7 @@ function TweakData:init()
 
 	self._init_wip_economy(self.economy, self)
 
+	self.achievement = AchievementsTweakData:new(self)
 	self.van = VanSkinsTweakData:new(self)
 	self.env_effect = EnvEffectTweakData:new()
 	self.tango = TangoTweakData:new(self)
@@ -1792,7 +1792,8 @@ Play the full version soon to get your full PAYDAY!]],
 			track = "xmas13_deck_the_safe_house_instrumental",
 			lock = "xmas"
 		},
-		{track = "its_payday"}
+		{track = "its_payday"},
+		{track = "music_tag"}
 	}
 	self.music.soundbank_list = {
 		"soundbanks/music",

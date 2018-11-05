@@ -387,13 +387,11 @@ function MissionManager:stop_simulation(...)
 	managers.loot:reset()
 end
 
-function MissionManager:debug_execute_mission_element_by_name(name)
+function MissionManager:get_mission_element_by_name(name)
 	for _, data in pairs(self._scripts) do
 		for id, element in pairs(data:elements()) do
 			if element:editor_name() == name then
-				element:on_executed()
-
-				return
+				return element
 			end
 		end
 	end

@@ -66,6 +66,8 @@ end
 function AkimboWeaponBase:toggle_firemode(skip_post_event)
 	if AkimboWeaponBase.super.toggle_firemode(self, skip_post_event) then
 		if alive(self._second_gun) then
+			self._fire_callbacks = {}
+
 			return self._second_gun:base():toggle_firemode(true)
 		else
 			return true

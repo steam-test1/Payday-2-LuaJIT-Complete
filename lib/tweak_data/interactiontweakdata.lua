@@ -689,6 +689,17 @@ function InteractionTweakData:init(tweak_data)
 		sound_interupt = "bar_keyboard_cancel",
 		sound_done = "bar_keyboard_finished"
 	}
+	self.big_computer_hackable_axis = {
+		icon = "interaction_keyboard",
+		text_id = "hud_int_big_computer_hackable",
+		timer = 6,
+		axis = "z",
+		start_active = false,
+		interact_distance = 200,
+		sound_start = "bar_keyboard",
+		sound_interupt = "bar_keyboard_cancel",
+		sound_done = "bar_keyboard_finished"
+	}
 	self.big_computer_not_hackable = {
 		icon = "interaction_keyboard",
 		text_id = "hud_int_big_computer_hackable",
@@ -4175,6 +4186,7 @@ function InteractionTweakData:init(tweak_data)
 	self.hold_open_door = deep_clone(self.hold_open)
 	self.hold_open_door.action_text_id = "hud_action_opening"
 	self.hold_open_door.timer = 1
+	self.hold_open_door.interact_distance = 250
 	self.hold_open_door_no_axis = {
 		text_id = "hud_int_invisible_interaction_open",
 		action_text_id = "hud_action_opening",
@@ -5123,6 +5135,89 @@ function InteractionTweakData:init(tweak_data)
 		interact_distance = 200,
 		timer = 2,
 		equipment_consume = true
+	}
+	self.tag_take_unknown = {
+		text_id = "hud_int_hold_take_box",
+		action_text_id = "hud_action_taking_box",
+		timer = 2,
+		interact_distance = 200,
+		start_active = false
+	}
+	self.press_take_chimichanga = {
+		text_id = "hud_int_press_take_chimichanga",
+		interact_distance = 150,
+		special_equipment_block = "chimichanga",
+		start_active = false
+	}
+	self.press_place_chimichanga = {
+		text_id = "hud_int_press_place_chimichanga",
+		special_equipment = "chimichanga",
+		equipment_text_id = "hud_int_need_chimichanga",
+		equipment_consume = true,
+		interact_distance = 150,
+		start_active = false
+	}
+	self.hacking_barrier = {
+		text_id = "hud_int_hold_hack_barrier",
+		action_text_id = "hud_action_hack_barrier",
+		timer = 4,
+		interact_distance = 150,
+		start_active = false,
+		sound_start = "bar_pick_lock",
+		sound_interupt = "bar_pick_lock_cancel",
+		sound_done = "bar_pick_lock_finished"
+	}
+	self.hold_disable_alarm = {
+		text_id = "hud_int_hold_disable_alarm",
+		action_text_id = "hud_action_disabling_alarm",
+		interact_distance = 150,
+		timer = 2,
+		start_active = false
+	}
+	self.hold_open_the_safe = {
+		text_id = "hud_int_hold_open_safe",
+		action_text_id = "hud_action_opening_safe",
+		interact_distance = 150,
+		timer = 1,
+		start_active = false
+	}
+	self.hold_turn_off_light = {
+		text_id = "hud_int_hold_turn_off_light",
+		action_text_id = "hud_action_turning_off_light",
+		interact_distance = 150,
+		timer = 1,
+		start_active = false
+	}
+	self.hold_relay_locke = {
+		text_id = "hud_int_hold_relay_locke",
+		action_text_id = "hud_action_relaying_locke",
+		interact_distance = 150,
+		timer = 3,
+		start_active = false,
+		axis = "y"
+	}
+	self.press_knock_on_door = {
+		text_id = "hud_int_press_knock_on_door",
+		interact_distance = 150,
+		start_active = false
+	}
+	self.press_take_elevator = {
+		text_id = "hud_int_press_take_elevator",
+		interact_distance = 150,
+		start_active = false
+	}
+	self.tag_take_stapler = {
+		text_id = "hud_take_stapler",
+		interact_distance = 100,
+		start_active = true
+	}
+	self.press_place_stapler = {
+		text_id = "hud_int_press_place_stapler",
+		equipment_text_id = "hud_hint_no_stapler",
+		special_equipment = "stapler",
+		equipment_consume = true,
+		interact_distance = 150,
+		start_active = false
 	}
 	self.hold_choose_hand_left = {
 		text_id = "hud_int_hold_choose_hand_left",

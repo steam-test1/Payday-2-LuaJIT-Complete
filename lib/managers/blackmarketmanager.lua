@@ -1460,8 +1460,9 @@ function BlackMarketManager:buy_crew_item(item)
 	end
 
 	local cost = is_boost and tweak_data.safehouse.prices.crew_boost or tweak_data.safehouse.prices.crew_ability
+	local coins = managers.custom_safehouse:coins()
 
-	if cost <= managers.custom_safehouse:coins() then
+	if cost <= coins then
 		managers.blackmarket:_unlock_crew_item(item)
 		managers.custom_safehouse:deduct_coins(cost)
 	end
@@ -1475,7 +1476,10 @@ function BlackMarketManager:crew_item_cost(item)
 end
 
 function BlackMarketManager:can_afford_crew_item(item)
-	return self:crew_item_cost(item) <= managers.custom_safehouse:coins()
+	local coins = 0
+	coins = managers.custom_safehouse:coins()
+
+	return self:crew_item_cost(item) <= coins
 end
 
 function BlackMarketManager:_unlock_crew_item(item)

@@ -161,11 +161,13 @@ function CrimeSpreeContractMenuComponent:_setup_new_crime_spree(text_w, text_h)
 
 	self._coins_panel:set_bottom(self._contract_panel:h() - padding)
 
+	local coins = 0
+	coins = managers.custom_safehouse:coins()
 	self._cost_text = self._coins_panel:text({
 		y = 0,
 		x = 0,
 		layer = 1,
-		text = managers.experience:cash_string(math.floor(managers.custom_safehouse:coins()), managers.localization:get_default_macro("BTN_CONTINENTAL_COINS")),
+		text = managers.experience:cash_string(math.floor(coins), managers.localization:get_default_macro("BTN_CONTINENTAL_COINS")),
 		color = Color.white,
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size
@@ -256,9 +258,11 @@ function CrimeSpreeContractMenuComponent:_setup_new_crime_spree(text_w, text_h)
 		btn:set_callback(callback(self, self, "set_active_starting_level", btn))
 		btn._cost_text:set_center_y(btn._panel:h() * 0.5)
 
+		local coins = 0
+		coins = managers.custom_safehouse:coins()
 		local insert_pos = 1
 
-		if tweak_data.crime_spree.initial_cost <= managers.custom_safehouse:coins() then
+		if tweak_data.crime_spree.initial_cost <= coins then
 			insert_pos = #self._buttons
 		end
 
@@ -672,7 +676,10 @@ function CrimeSpreeStartingLevelItem:init(parent, data)
 		})
 	end
 
-	if managers.custom_safehouse:coins() < self._start_cost then
+	local coins = 0
+	coins = managers.custom_safehouse:coins()
+
+	if coins < self._start_cost then
 		self._highlight:set_color(tweak_data.screen_colors.important_1)
 		self._active_bg:set_color(tweak_data.screen_colors.important_1)
 		self._cost_text:set_color(tweak_data.screen_colors.important_1)
@@ -695,7 +702,10 @@ function CrimeSpreeStartingLevelItem:refresh()
 	self._active_bg:set_visible(self:is_active())
 	self._outline_panel:set_visible(self:is_active())
 
-	if managers.custom_safehouse:coins() < self._start_cost then
+	local coins = 0
+	coins = managers.custom_safehouse:coins()
+
+	if coins < self._start_cost then
 		self._level_bg:set_color(tweak_data.screen_colors.important_1)
 		self._highlight:set_alpha(self:is_selected() and 0.6 or 0.2)
 	else

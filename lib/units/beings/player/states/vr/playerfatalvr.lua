@@ -42,6 +42,12 @@ function PlayerFatalVR:set_belt_and_hands_enabled(enabled)
 				self._unit:hand():set_default_state(akimbo_id, "idle")
 			end
 
+			local bow_hand_id = self._unit:hand():get_active_hand_id("bow")
+
+			if bow_hand_id then
+				self._unit:hand():set_default_state(bow_hand_id, "idle")
+			end
+
 			self._unit:hand():_set_hand_state(self._weapon_hand_id, "idle")
 			self._unit:hand():_change_hand_to_default(PlayerHand.other_hand_id(self._weapon_hand_id))
 		end

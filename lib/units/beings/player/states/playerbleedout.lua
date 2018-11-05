@@ -165,6 +165,7 @@ function PlayerBleedOut:_update_check_actions(t, dt)
 	new_action = new_action or self:_check_action_steelsight(t, input)
 	new_action = new_action or self:_check_action_deploy_underbarrel(t, input)
 
+	self:_check_action_night_vision(t, input)
 	self:_check_use_item(t, input)
 end
 
@@ -578,6 +579,8 @@ function PlayerBleedOut:clbk_deathguard_administered(unit)
 end
 
 function PlayerBleedOut:pre_destroy(unit)
+	PlayerBleedOut.super.pre_destroy(self, unit)
+
 	if Network:is_server() then
 		self:_unregister_revive_SO()
 	end

@@ -58,8 +58,10 @@ function RecentMilestoneItem:init(parent, data, black_bg)
 			}))
 		end
 
+		local reward_text = managers.localization:text(data.name_id)
+
 		placer:add_right_center(self:fine_text({
-			text_id = data.name_id,
+			text = reward_text,
 			font = small_font,
 			font_size = small_font_size,
 			color = color

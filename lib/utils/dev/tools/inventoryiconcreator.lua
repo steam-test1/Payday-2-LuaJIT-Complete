@@ -118,6 +118,59 @@ function InventoryIconCreator:start_jobs(jobs)
 	managers.editor:add_tool_updator("InventoryIconCreator", callback(self, self, "_update"))
 end
 
+function InventoryIconCreator:start_all_weapons_skin(test)
+	local filter = self._filter:get_value()
+
+	if not filter or #filter == 0 then
+		EWS:message_box(Global.frame_panel, "Search filter empty!", "Error", "OK,ICON_ERROR", Vector3(-1, -1, 0))
+
+		return
+	end
+
+	local weapons = {}
+	weapons = test and {
+		"wpn_fps_rpg7",
+		"wpn_fps_snp_r93",
+		"wpn_fps_pis_x_g17",
+		"wpn_fps_ass_74"
+	} or self:_get_all_weapons()
+	local jobs = {}
+	local search_string = "_" .. filter .. "$"
+
+	for _, factory_id in ipairs(weapons) do
+		local blueprint = managers.weapon_factory:get_default_blueprint_by_factory_id(factory_id)
+		local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(factory_id)
+
+		for name, item_data in pairs(tweak_data.blackmarket.weapon_skins) do
+			local match_weapon_id = item_data.weapon_id or item_data.weapons[1]
+
+			if match_weapon_id == weapon_id and string.find(name, search_string) then
+				local bp = name and tweak_data.blackmarket.weapon_skins[name].default_blueprint or blueprint
+
+				table.insert(jobs, {
+					factory_id = factory_id,
+					blueprint = bp,
+					weapon_skin = name
+				})
+			end
+		end
+	end
+
+	if #jobs == 0 then
+		EWS:message_box(Global.frame_panel, "No weapons found matching speficied skin filter '" .. filter .. "'", "Error", "OK,ICON_ERROR", Vector3(-1, -1, 0))
+
+		return
+	end
+
+	local confirm = EWS:message_box(Global.frame_panel, "Really, all of them (" .. tostring(#jobs) .. ")?", "Icon creator", "YES_NO,ICON_QUESTION", Vector3(-1, -1, 0))
+
+	if confirm == "NO" then
+		return
+	end
+
+	self:start_jobs(jobs)
+end
+
 function InventoryIconCreator:start_all_weapons(test)
 	local confirm = EWS:message_box(Global.frame_panel, "Really, all of them?", "Icon creator", "YES_NO,ICON_QUESTION", Vector3(-1, -1, 0))
 
@@ -895,6 +948,11 @@ function InventoryIconCreator:_create_weapons_page(notebook)
 	btn_sizer:add(all_weapons_btn, 0, 5, "RIGHT,TOP,BOTTOM")
 	all_weapons_btn:connect("EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "start_all_weapons"), false)
 
+	local all_weapons_skin_btn = EWS:Button(panel, "All (filter)", "", "BU_EXACTFIT,NO_BORDER")
+
+	btn_sizer:add(all_weapons_skin_btn, 0, 5, "RIGHT,TOP,BOTTOM")
+	all_weapons_skin_btn:connect("EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "start_all_weapons_skin"), false)
+
 	local one_weapon_btn = EWS:Button(panel, "Selected", "", "BU_EXACTFIT,NO_BORDER")
 
 	btn_sizer:add(one_weapon_btn, 0, 5, "RIGHT,TOP,BOTTOM")
@@ -909,6 +967,14 @@ function InventoryIconCreator:_create_weapons_page(notebook)
 
 	btn_sizer:add(_btn, 0, 5, "RIGHT,TOP,BOTTOM")
 	_btn:connect("EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "start_all_weapon_skins"), true)
+
+	local filtertext = EWS:StaticText(panel, "Filter:", 0, "ALIGN_LEFT")
+
+	btn_sizer:add(filtertext, 0, 0, "ALIGN_CENTER")
+
+	self._filter = EWS:TextCtrl(panel, "", "", "TE_LEFT")
+
+	btn_sizer:add(self._filter, 10, 10, "ALIGN_CENTER")
 
 	local comboboxes_sizer = EWS:StaticBoxSizer(panel, "VERTICAL", "")
 

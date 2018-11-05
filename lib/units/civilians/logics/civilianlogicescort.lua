@@ -184,7 +184,10 @@ function CivilianLogicEscort._upd_pathing(data, my_data)
 			my_data.processing_coarse_path = nil
 
 			if path ~= "failed" then
-				my_data.coarse_path = path
+				my_data.coarse_path = {
+					path[1],
+					path[#path]
+				}
 				my_data.coarse_path_index = 1
 			else
 				managers.groupai:state():on_civilian_objective_failed(data.unit, data.objective)

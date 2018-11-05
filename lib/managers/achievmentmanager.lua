@@ -540,9 +540,12 @@ function AchievmentManager:get_tracked_fill(max)
 	end
 
 	local list = table.list_copy(self._forced)
+	local added_ids = {}
 
 	for _, id in pairs(self._recent_progress) do
 		table.insert(list, id)
+
+		added_ids[id] = true
 
 		if #list == max then
 			return list
@@ -550,7 +553,7 @@ function AchievmentManager:get_tracked_fill(max)
 	end
 
 	for id, info in pairs(self.achievments) do
-		if info.tracked then
+		if info.tracked and not added_ids[id] then
 			table.insert(list, id)
 
 			if #list == max then

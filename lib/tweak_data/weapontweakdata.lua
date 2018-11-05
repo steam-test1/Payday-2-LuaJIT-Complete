@@ -842,6 +842,10 @@ function WeaponTweakData:_init_data_ceiling_turret_module_npc()
 	self.ceiling_turret_module.suppression = 0.8
 	self.ceiling_turret_module_no_idle = deep_clone(self.ceiling_turret_module)
 	self.ceiling_turret_module_no_idle.CAN_GO_IDLE = false
+	self.ceiling_turret_module_longer_range = deep_clone(self.ceiling_turret_module)
+	self.ceiling_turret_module_longer_range.CAN_GO_IDLE = false
+	self.ceiling_turret_module_longer_range.FIRE_RANGE = 30000
+	self.ceiling_turret_module_longer_range.DETECTION_RANGE = self.ceiling_turret_module_longer_range.FIRE_RANGE
 end
 
 function WeaponTweakData:_init_data_s552_npc()

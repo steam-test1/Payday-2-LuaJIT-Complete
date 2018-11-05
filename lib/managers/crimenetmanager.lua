@@ -843,6 +843,21 @@ function CrimeNetManager:_find_online_games_ps4(friends_only)
 				if managers.network.matchmake:is_server_ok(friends_only, room.owner_id, attributes_numbers) then
 					local host_name = name_str
 					local level_id, name_id, level_name, difficulty_id, difficulty, job_id, state_string_id, state_name, state, num_plrs = self:_server_properties(attributes_numbers)
+					local mutators_data = attribute_list[i].strings[1]
+					local mutators = managers.mutators:matchmake_unpack_string(mutators_data)
+
+					if next(mutators) == nil then
+						mutators = false
+					end
+
+					local is_crime_spree = attributes_numbers[9] and attributes_numbers[9] >= 0
+					local crime_spree = attributes_numbers[9]
+					local crime_spree_mission = attributes_numbers[10]
+
+					if not is_crime_spree then
+						crime_spree_mission = nil
+					end
+
 					local is_friend = friend_names[host_name] and true or false
 
 					if name_id and not self._active_server_jobs[name_str] and table.size(self._active_jobs) + table.size(self._active_server_jobs) < tweak_data.gui.crime_net.job_vars.total_active_jobs then
@@ -863,6 +878,10 @@ function CrimeNetManager:_find_online_games_ps4(friends_only)
 							state_name = state_name,
 							state = state,
 							level_name = level_name,
+							mutators = mutators,
+							is_crime_spree = is_crime_spree,
+							crime_spree = crime_spree,
+							crime_spree_mission = crime_spree_mission,
 							job_id = job_id,
 							is_friend = is_friend
 						})
@@ -4608,6 +4627,30 @@ function CrimeNetGui:mouse_moved(o, x, y)
 		return
 	end
 
+	if not managers.menu:is_pc_controller() then
+		local to_left = x
+		local to_right = (self._panel:w() - x) - 19
+		local to_top = y
+		local to_bottom = (self._panel:h() - y) - 23
+		local panel_border = self._pan_panel_border
+		to_left = 1 - math.clamp(to_left / panel_border, 0, 1)
+		to_right = 1 - math.clamp(to_right / panel_border, 0, 1)
+		to_top = 1 - math.clamp(to_top / panel_border, 0, 1)
+		to_bottom = 1 - math.clamp(to_bottom / panel_border, 0, 1)
+		local mouse_pointer_move_x = managers.mouse_pointer:mouse_move_x()
+		local mouse_pointer_move_y = managers.mouse_pointer:mouse_move_y()
+		local mp_left = -math.min(0, mouse_pointer_move_x)
+		local mp_right = -math.max(0, mouse_pointer_move_x)
+		local mp_top = -math.min(0, mouse_pointer_move_y)
+		local mp_bottom = -math.max(0, mouse_pointer_move_y)
+		local push_x = mp_left * to_left + mp_right * to_right
+		local push_y = mp_top * to_top + mp_bottom * to_bottom
+
+		if push_x ~= 0 or push_y ~= 0 then
+			self:_set_map_position(push_x, push_y)
+		end
+	end
+
 	if not self:input_focus() then
 		return
 	end
@@ -4739,30 +4782,6 @@ function CrimeNetGui:mouse_moved(o, x, y)
 		local inside = job == closest_job and 1 or inside_any_job and 2 or 3
 
 		self:update_job_gui(job, inside)
-	end
-
-	if not managers.menu:is_pc_controller() then
-		local to_left = x
-		local to_right = (self._panel:w() - x) - 19
-		local to_top = y
-		local to_bottom = (self._panel:h() - y) - 23
-		local panel_border = self._pan_panel_border
-		to_left = 1 - math.clamp(to_left / panel_border, 0, 1)
-		to_right = 1 - math.clamp(to_right / panel_border, 0, 1)
-		to_top = 1 - math.clamp(to_top / panel_border, 0, 1)
-		to_bottom = 1 - math.clamp(to_bottom / panel_border, 0, 1)
-		local mouse_pointer_move_x = managers.mouse_pointer:mouse_move_x()
-		local mouse_pointer_move_y = managers.mouse_pointer:mouse_move_y()
-		local mp_left = -math.min(0, mouse_pointer_move_x)
-		local mp_right = -math.max(0, mouse_pointer_move_x)
-		local mp_top = -math.min(0, mouse_pointer_move_y)
-		local mp_bottom = -math.max(0, mouse_pointer_move_y)
-		local push_x = mp_left * to_left + mp_right * to_right
-		local push_y = mp_top * to_top + mp_bottom * to_bottom
-
-		if push_x ~= 0 or push_y ~= 0 then
-			self:_set_map_position(push_x, push_y)
-		end
 	end
 
 	if not used and inside_any_job then

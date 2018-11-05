@@ -162,6 +162,7 @@ function PlayerIncapacitated:_end_action_incapacitated(t)
 end
 
 function PlayerIncapacitated:pre_destroy(unit)
+	PlayerIncapacitated.super.pre_destroy(self, unit)
 	PlayerBleedOut._unregister_revive_SO(self)
 end
 

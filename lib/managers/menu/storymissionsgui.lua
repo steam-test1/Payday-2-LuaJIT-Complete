@@ -47,7 +47,7 @@ function StoryMissionsGui:init(ws, fullscreen_ws, node)
 
 		self._legends:add_items({
 			"menu_legend_back",
-			"menu_legend_scroll_left_right",
+			"menu_legend_scroll",
 			{
 				id = "select",
 				enabled = false,
@@ -215,6 +215,8 @@ function StoryMissionsGui:_update_info(mission)
 	self:_change_legend("start_mission", false)
 
 	self._select_btn = nil
+	self._level_btns = {}
+	self._selected_level_btn = nil
 
 	if self._voice then
 		managers.briefing:stop_event()
@@ -352,14 +354,25 @@ function StoryMissionsGui:_update_info(mission)
 
 						locked = true
 					else
-						placer:add_right(TextButton:new(canvas, {
+						local btn = TextButton:new(canvas, {
 							text_id = "menu_sm_start_level",
 							font = small_font,
 							font_size = small_font_size
 						}, function ()
 							managers.story:start_mission(mission, objective.progress_id)
-						end), 10)
+						end)
+
+						placer:add_right(btn, 10)
+						table.insert(self._level_btns, btn)
 						self:_change_legend("start_mission", true)
+
+						if not self._selected_level_btn then
+							self._selected_level_btn = btn
+
+							if not managers.menu:is_pc_controller() then
+								btn:_hover_changed(true)
+							end
+						end
 					end
 				end
 
@@ -549,15 +562,49 @@ function StoryMissionsGui:update()
 		local axis_x, axis_y = managers.menu_component:get_right_controller_axis()
 
 		if axis_y ~= 0 then
+			self._side_scroll:perform_scroll(axis_y)
 			self._info_scroll:perform_scroll(axis_y)
 		end
 
-		local axis_x, axis_y = managers.menu_component:get_left_controller_axis()
+		local menu_input = managers.menu:active_menu().input
+		local up = menu_input:menu_up_input_bool()
+		local down = menu_input:menu_down_input_bool()
 
-		if axis_y ~= 0 then
-			self._side_scroll:perform_scroll(axis_y)
+		if up or down then
+			self:_change_selected_level(up and 1 or -1)
+		else
+			self:_enable_selected_level_btns()
 		end
 	end
+end
+
+function StoryMissionsGui:_change_selected_level(axis)
+	if self._change_level_btn_disabled then
+		return
+	end
+
+	if self._level_btns and self._selected_level_btn then
+		local index = table.get_vector_index(self._level_btns, self._selected_level_btn) - 1
+
+		if not index then
+			return
+		end
+
+		index = axis < 0 and index - 1 or index + 1
+		index = index % #self._level_btns + 1
+
+		self._selected_level_btn:_hover_changed(false)
+
+		self._selected_level_btn = self._level_btns[index]
+
+		self._selected_level_btn:_hover_changed(true)
+
+		self._change_level_btn_disabled = true
+	end
+end
+
+function StoryMissionsGui:_enable_selected_level_btns()
+	self._change_level_btn_disabled = nil
 end
 
 function StoryMissionsGui:confirm_pressed()
@@ -567,6 +614,12 @@ function StoryMissionsGui:confirm_pressed()
 end
 
 function StoryMissionsGui:_start_mission_general()
+	if self._selected_level_btn then
+		self._selected_level_btn:_trigger()
+
+		return
+	end
+
 	managers.story:start_current()
 end
 

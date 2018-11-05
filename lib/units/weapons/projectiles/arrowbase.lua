@@ -133,6 +133,7 @@ function ArrowBase:add_damage_result(unit, is_dead, damage_percent)
 
 	GrenadeBase._check_achievements(self, unit, true, 1, 1, 1)
 end
+local tmp_vel = Vector3()
 
 function ArrowBase:update(unit, t, dt)
 	if self._drop_in_sync_data then
@@ -153,6 +154,21 @@ function ArrowBase:update(unit, t, dt)
 		end
 	end
 
+	if _G.IS_VR and not self._is_pickup then
+		local autohit_dir = self:_calculate_autohit_direction()
+
+		if autohit_dir then
+			local body = self._unit:body(0)
+
+			mvector3.set(tmp_vel, body:velocity())
+
+			local speed = mvector3.normalize(tmp_vel)
+
+			mvector3.step(tmp_vel, tmp_vel, autohit_dir, dt * 0.15)
+			body:set_velocity(tmp_vel * speed)
+		end
+	end
+
 	ArrowBase.super.update(self, unit, t, dt)
 
 	if self._draw_debug_cone then
@@ -160,6 +176,41 @@ function ArrowBase:update(unit, t, dt)
 		local base = tip + unit:rotation():y() * -35
 
 		Application:draw_cone(tip, base, 3, 0, 0, 1)
+	end
+end
+local tmp_vec1 = Vector3()
+
+function ArrowBase:_calculate_autohit_direction()
+	local enemies = managers.enemy:all_enemies()
+	local pos = self._unit:position()
+	local dir = self._unit:rotation():y()
+	local closest_dis, closest_pos = nil
+
+	for u_key, enemy_data in pairs(enemies) do
+		local enemy = enemy_data.unit
+
+		if enemy:base():lod_stage() == 1 and not enemy:in_slot(16) then
+			local com = enemy:movement():m_head_pos()
+
+			mvector3.direction(tmp_vec1, pos, com)
+
+			local angle = mvector3.angle(dir, tmp_vec1)
+
+			if angle < 30 then
+				local dis = mvector3.distance_sq(pos, com)
+
+				if not closest_dis or dis < closest_dis then
+					closest_dis = dis
+					closest_pos = com
+				end
+			end
+		end
+	end
+
+	if closest_pos then
+		mvector3.direction(tmp_vec1, pos, closest_pos)
+
+		return tmp_vec1
 	end
 end
 

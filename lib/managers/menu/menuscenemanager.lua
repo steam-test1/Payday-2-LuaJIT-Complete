@@ -2799,7 +2799,7 @@ function MenuSceneManager:spawn_item_weapon(factory_id, blueprint, cosmetics, te
 	local second_unit = nil
 
 	if new_unit:base().AKIMBO then
-		second_unit = spawn_weapon(self._item_pos + self._item_rot:x() * -10 + self._item_rot:z() * -1, self._item_rot * Rotation(0, 12, -10))
+		second_unit = spawn_weapon(self._item_pos + self._item_rot:x() * -10 + self._item_rot:z() * -7 + self._item_rot:y() * -5, self._item_rot * Rotation(0, 8, -10))
 
 		new_unit:link(new_unit:orientation_object():name(), second_unit)
 		second_unit:base():tweak_data_anim_stop("unequip")

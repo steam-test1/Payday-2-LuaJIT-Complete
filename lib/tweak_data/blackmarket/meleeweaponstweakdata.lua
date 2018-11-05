@@ -2549,6 +2549,32 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.meter.repeat_expire_t = 1.1
 	self.melee_weapons.meter.expire_t = 1.5
 	self.melee_weapons.meter.melee_damage_delay = 0.6
+	self.melee_weapons.aziz = deep_clone(self.melee_weapons.kabar)
+	self.melee_weapons.aziz.name_id = "bm_melee_aziz"
+	self.melee_weapons.aziz.dlc = "flm"
+	self.melee_weapons.aziz.texture_bundle_folder = "flm"
+	self.melee_weapons.aziz.anim_global_param = "melee_psycho"
+	self.melee_weapons.aziz.type = "blunt"
+	self.melee_weapons.aziz.align_objects = {"a_weapon_right"}
+	self.melee_weapons.aziz.unit = "units/pd2_dlc_flm/weapons/wpn_fps_mel_aziz/wpn_fps_mel_aziz"
+	self.melee_weapons.aziz.third_unit = "units/pd2_dlc_flm/weapons/wpn_fps_mel_aziz/wpn_third_mel_aziz"
+	self.melee_weapons.aziz.stats.weapon_type = "blunt"
+	self.melee_weapons.aziz.stats.min_damage = 3
+	self.melee_weapons.aziz.stats.max_damage = 8
+	self.melee_weapons.aziz.stats.min_damage_effect = 1
+	self.melee_weapons.aziz.stats.max_damage_effect = 1
+	self.melee_weapons.aziz.stats.charge_time = 2
+	self.melee_weapons.aziz.stats.range = 150
+	self.melee_weapons.aziz.melee_charge_shaker = "player_melee_charge_wing"
+	self.melee_weapons.aziz.sounds = {
+		equip = "aziz_equip",
+		hit_air = "aziz_hit_air",
+		hit_gen = "aziz_hit_gen",
+		hit_body = "aziz_hit_body",
+		charge = "aziz_charge"
+	}
+	self.melee_weapons.aziz.repeat_expire_t = 0.36
+	self.melee_weapons.aziz.stats.concealment = 29
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.melee_weapons) do

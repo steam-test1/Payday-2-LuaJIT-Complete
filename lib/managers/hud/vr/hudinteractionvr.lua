@@ -44,8 +44,7 @@ function HUDInteractionVR:init(hud, child_name)
 		font = tweak_data.menu.pd2_large_font,
 		font_size = tweak_data.menu.pd2_large_font_size,
 		h = self._circle_radius * 2,
-		w = interact_text_bg:w() - self._circle_radius * 4,
-		x = self._circle_radius * 2
+		w = interact_text_bg:w()
 	})
 	local invalid_text = self._hud_panel:text({
 		vertical = "center",
@@ -59,8 +58,7 @@ function HUDInteractionVR:init(hud, child_name)
 		font = tweak_data.menu.pd2_large_font,
 		font_size = tweak_data.menu.pd2_large_font_size,
 		h = self._circle_radius * 2,
-		w = interact_text_bg:w() - self._circle_radius * 4,
-		x = self._circle_radius * 2
+		w = interact_text_bg:w()
 	})
 	self._interaction_panel = managers.hud:interaction_panel()
 

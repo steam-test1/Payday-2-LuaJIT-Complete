@@ -19,7 +19,7 @@ function ElementAIGraph:on_executed(instigator)
 	end
 
 	for _, id in ipairs(self._values.graph_ids) do
-		managers.navigation:set_nav_segment_state(id, self._values.operation)
+		managers.navigation:set_nav_segment_state(id, self._values.operation, self._values.filter_group)
 	end
 
 	ElementAIGraph.super.on_executed(self, instigator)

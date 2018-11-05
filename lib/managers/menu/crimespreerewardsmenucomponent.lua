@@ -472,13 +472,15 @@ function CrimeSpreeRewardsMenuComponent:_create_coins_reward(idx, panel_w)
 	coins_title:set_center_x(self._coins_panel:w() * 0.5)
 	coins_title:set_top(card:bottom() + padding)
 
+	local coins = 0
+	coins = managers.custom_safehouse:coins()
 	local coins_text = self._coins_panel:text({
 		vertical = "center",
 		name = "coins_text",
 		alpha = 0,
 		align = "center",
 		layer = 1,
-		text = managers.experience:cash_string(math.floor(managers.custom_safehouse:coins() - self:get_reward("continental_coins")), ""),
+		text = managers.experience:cash_string(math.floor(coins - self:get_reward("continental_coins")), ""),
 		font_size = tweak_data.menu.pd2_medium_font_size,
 		font = tweak_data.menu.pd2_medium_font,
 		h = tweak_data.menu.pd2_medium_font_size,
@@ -751,6 +753,12 @@ function CrimeSpreeRewardsMenuComponent:update(t, dt)
 		self:next_state()
 
 		return
+	end
+
+	local cx, cy = managers.menu_component:get_right_controller_axis()
+
+	if cy ~= 0 and self._list_scroll then
+		self._list_scroll:perform_scroll(math.abs(cy * 500 * dt), math.sign(cy))
 	end
 
 	if not CrimeSpreeRewardsMenuComponent.states[self._current_state] then
@@ -1080,8 +1088,10 @@ function CrimeSpreeRewardsMenuComponent:_update_coins(t, dt)
 	coins_gained:animate(callback(self, self, "fade_in"), fade_in_t, t)
 
 	t = t + 1
-	local start_coins = math.floor(managers.custom_safehouse:coins() - self:get_reward("continental_coins"))
-	local current_coins = math.floor(managers.custom_safehouse:coins())
+	local start_coins = 0
+	local current_coins = 0
+	start_coins = math.floor(managers.custom_safehouse:coins() - self:get_reward("continental_coins"))
+	current_coins = math.floor(managers.custom_safehouse:coins())
 
 	coins_gained:animate(callback(self, self, "count_text"), "+", self:get_reward("continental_coins"), 0, count_t, t)
 	coins_text:animate(callback(self, self, "count_text"), "", start_coins, current_coins, count_t, t)
@@ -1534,6 +1544,10 @@ function CrimeSpreeRewardsMenuComponent:_update_rewards_list()
 
 	btn:set_text(managers.localization:to_upper_text("dialog_ok"))
 	btn:set_callback(callback(self, self, "_close_rewards"))
+	btn:set_selected(true)
+
+	self._selected_item = btn
+
 	table.insert(self._buttons, btn)
 	self:next_state(0)
 end

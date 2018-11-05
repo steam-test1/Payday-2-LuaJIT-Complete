@@ -393,8 +393,10 @@ function GageAssetsItem:select_asset(i, instant)
 	if self._assets_list[i].locked then
 		local can_unlock, reason = managers.crime_spree:can_unlock_asset()
 		extra_string = managers.localization:text("bm_cs_continental_coin_cost", {cost = managers.experience:cash_string(self._assets_list[i].data.cost, "")})
+		local coins = 0
+		coins = managers.custom_safehouse:coins()
 
-		if managers.custom_safehouse:coins() < self._assets_list[i].data.cost then
+		if coins < self._assets_list[i].data.cost then
 			extra_string = extra_string .. "\n" .. managers.localization:text("bm_cs_not_enough_coins")
 			extra_color = tweak_data.screen_colors.important_1
 		end
@@ -673,7 +675,9 @@ function GageAssetsItem:_return_asset_info(i)
 
 	if self._assets_list[i].locked then
 		local cost = self._assets_list[i].data.cost
-		asset_cost = cost <= managers.custom_safehouse:coins() and cost or true
+		local coins = 0
+		coins = managers.custom_safehouse:coins()
+		asset_cost = cost <= coins and cost or true
 	end
 
 	return i, asset_cost

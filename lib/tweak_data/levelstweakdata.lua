@@ -1639,6 +1639,25 @@ function LevelsTweakData:init()
 		narrator = "locke",
 		load_screen = "guis/dlcs/brb/textures/loading/job_brb_df"
 	}
+	self.tag = {
+		name_id = "heist_tag_hl",
+		briefing_id = "heist_tag_briefing",
+		package = "packages/job_tag",
+		briefing_dialog = "Play_loc_tag_brf",
+		world_name = "narratives/locke/tag",
+		intro_event = "Play_loc_tag_intro",
+		outro_event = "Play_loc_tag_end",
+		music = "no_music",
+		cube = "cube_apply_heist_bank",
+		music_ext = "music_tag",
+		music_ext_start = "suspense_1",
+		max_bags = 20,
+		ghost_bonus = 0.1,
+		ai_group_type = america,
+		narrator = "locke",
+		ghost_required = true,
+		load_screen = "guis/dlcs/tag/textures/loading/job_tag_df"
+	}
 	self._level_index = {
 		"welcome_to_the_jungle_1",
 		"welcome_to_the_jungle_1_night",
@@ -1739,7 +1758,8 @@ function LevelsTweakData:init()
 		"rvd2",
 		"hvh",
 		"wwh",
-		"brb"
+		"brb",
+		"tag"
 	}
 
 	if SystemInfo:distribution() == Idstring("STEAM") then

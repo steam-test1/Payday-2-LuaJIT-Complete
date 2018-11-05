@@ -1,8 +1,9 @@
 require("lib/tweak_data/GeneratedAchievementTweakData")
 
 local function get_texture_path(tweak_data, category, id)
-	local td = tweak_data:get_raw_value("blackmarket", category, id)
+	local td = nil
 	local rtn = {}
+	td = tweak_data:get_raw_value("blackmarket", category, id)
 
 	if category == "textures" then
 		rtn.texture = td.texture
@@ -4192,6 +4193,47 @@ function AchievementsTweakData:init(tweak_data)
 			job = "haunted",
 			difficulty = sm_wish_and_above
 		},
+		tag_1 = {
+			award = "tag_1",
+			job = "tag",
+			difficulty = normal_and_above
+		},
+		tag_2 = {
+			award = "tag_2",
+			job = "tag",
+			difficulty = hard_and_above
+		},
+		tag_3 = {
+			award = "tag_3",
+			job = "tag",
+			difficulty = veryhard_and_above
+		},
+		tag_4 = {
+			award = "tag_4",
+			job = "tag",
+			difficulty = overkill_and_above
+		},
+		tag_5 = {
+			award = "tag_5",
+			job = "tag",
+			difficulty = easywish_and_above
+		},
+		tag_6 = {
+			award = "tag_6",
+			job = "tag",
+			difficulty = deathwish_and_above
+		},
+		tag_7 = {
+			award = "tag_7",
+			job = "tag",
+			difficulty = sm_wish_and_above
+		},
+		tag_8 = {
+			award = "tag_8",
+			one_down = true,
+			job = "tag",
+			difficulty = sm_wish_and_above
+		},
 		bain_jobs = {
 			complete_job = true,
 			contract = "bain",
@@ -6599,11 +6641,15 @@ function AchievementsTweakData:init(tweak_data)
 			local data = tweak_data.dlc[v.id]
 
 			for _, loot in ipairs(data.content.loot_drops) do
-				local td = tweak_data:get_raw_value("blackmarket", loot.type_items, loot.item_entry)
-				local data = get_texture_path(tweak_data, loot.type_items, loot.item_entry)
-				data.name_id = td.name_id
+				local td, data = nil
+				td = tweak_data:get_raw_value("blackmarket", loot.type_items, loot.item_entry)
 
-				table.insert(v.rewards, data)
+				if td then
+					data = get_texture_path(tweak_data, loot.type_items, loot.item_entry)
+					data.name_id = td.name_id
+
+					table.insert(v.rewards, data)
+				end
 			end
 		end
 

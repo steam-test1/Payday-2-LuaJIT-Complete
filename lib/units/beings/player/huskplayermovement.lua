@@ -1916,6 +1916,12 @@ function HuskPlayerMovement:_update_position(t, dt)
 			end
 		end
 	end
+
+	local ground_z = self:_chk_floor_moving_pos()
+
+	if ground_z then
+		self._unit:set_position(self._m_pos:with_z(ground_z))
+	end
 end
 
 function HuskPlayerMovement:_perform_movement_action(idx)
@@ -2368,6 +2374,14 @@ function HuskPlayerMovement:sync_action_walk_nav_point(pos, speed, action, param
 
 		if type == "ground" and prev_node and self:action_is(prev_node.action, "jump") then
 			type = "air"
+		end
+
+		if type == "ground" then
+			local ground_z = self:_chk_floor_moving_pos()
+
+			if ground_z then
+				mvector3.set_z(pos, ground_z)
+			end
 		end
 
 		local node = {
@@ -4445,7 +4459,7 @@ function HuskPlayerMovement:_get_max_move_speed(run)
 	return move_speed
 end
 
-function HuskPlayerMovement:_chk_ground_ray(check_pos)
+function HuskPlayerMovement:_chk_ground_ray(check_pos, return_ray)
 	local mover_radius = 60
 	local up_pos = tmp_vec1
 
@@ -4459,7 +4473,19 @@ function HuskPlayerMovement:_chk_ground_ray(check_pos)
 	mvec3_mul(down_pos, -20 + mover_radius * 0.95)
 	mvec3_add(down_pos, check_pos or self._m_pos)
 
-	return World:raycast("ray", up_pos, down_pos, "slot_mask", self._slotmask_gnd_ray, "sphere_cast_radius", mover_radius, "ray_type", "walk", "report")
+	if return_ray then
+		return World:raycast("ray", up_pos, down_pos, "slot_mask", self._slotmask_gnd_ray, "sphere_cast_radius", mover_radius, "ray_type", "walk")
+	else
+		return World:raycast("ray", up_pos, down_pos, "slot_mask", self._slotmask_gnd_ray, "sphere_cast_radius", mover_radius, "ray_type", "walk", "report")
+	end
+end
+
+function HuskPlayerMovement:_chk_floor_moving_pos(pos)
+	local ground_ray = self:_chk_ground_ray(pos, true)
+
+	if ground_ray and ground_ray.body and math.abs(ground_ray.body:velocity().z) > 0 then
+		return ground_ray.body:position().z
+	end
 end
 
 function HuskPlayerMovement:sync_attention_setting(setting_name, state)

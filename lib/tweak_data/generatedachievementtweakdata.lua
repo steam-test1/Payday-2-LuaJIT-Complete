@@ -8161,6 +8161,180 @@ function init_auto_generated_achievement_data(tags)
 				tags.contracts.the_butcher
 			}
 		},
+		eng_1 = {
+			need_unlock_icons = true,
+			icon_id = "Other_H_Any_TheOnlyOne",
+			progress = true,
+			sort_name = "Other_H_Any_TheOnlyOne",
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.unlock.mask,
+				tags.tactics.loud,
+				tags.tactics.stealth
+			}
+		},
+		eng_2 = {
+			need_unlock_icons = true,
+			icon_id = "Other_H_Any_TheOneThatHad",
+			progress = true,
+			sort_name = "Other_H_Any_TheOneThatHad",
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.unlock.mask,
+				tags.tactics.loud,
+				tags.tactics.stealth
+			}
+		},
+		eng_3 = {
+			need_unlock_icons = true,
+			icon_id = "Other_H_Any_TheOneThatSur",
+			progress = true,
+			sort_name = "Other_H_Any_TheOneThatSur",
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.unlock.mask,
+				tags.tactics.loud,
+				tags.tactics.stealth
+			}
+		},
+		eng_4 = {
+			need_unlock_icons = true,
+			icon_id = "Other_H_Any_TheOneWho",
+			progress = true,
+			sort_name = "Other_H_Any_TheOneWho",
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.unlock.mask,
+				tags.tactics.loud,
+				tags.tactics.stealth
+			}
+		},
+		tag_1 = {
+			additional_id = true,
+			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_D0",
+			icon_id = "C_Locke_H_BreakinFeds_AllDiffs_D0",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.normal,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		tag_10 = {
+			sort_name = "C_Locke_H_BreakinFeds_Salker",
+			icon_id = "C_Locke_H_BreakinFeds_Salker",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		tag_11 = {
+			sort_name = "C_Locke_H_BreakinFeds_Staple",
+			icon_id = "C_Locke_H_BreakinFeds_Staple",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		tag_2 = {
+			additional_id = true,
+			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_D1",
+			icon_id = "C_Locke_H_BreakinFeds_AllDiffs_D1",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.hard,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		tag_3 = {
+			additional_id = true,
+			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_D2",
+			icon_id = "C_Locke_H_BreakinFeds_AllDiffs_D2",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.very_hard,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		tag_4 = {
+			additional_id = true,
+			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_D3",
+			icon_id = "C_Locke_H_BreakinFeds_AllDiffs_D3",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.overkill,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		tag_5 = {
+			additional_id = true,
+			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_D4",
+			icon_id = "C_Locke_H_BreakinFeds_AllDiffs_D4",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.mayhem,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		tag_6 = {
+			additional_id = true,
+			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_D5",
+			icon_id = "C_Locke_H_BreakinFeds_AllDiffs_D5",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_wish,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		tag_7 = {
+			additional_id = true,
+			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_D6",
+			icon_id = "C_Locke_H_BreakinFeds_AllDiffs_D6",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_sentence,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		tag_8 = {
+			additional_id = true,
+			sort_name = "C_Locke_H_BreakinFeds_AllDiffs_OD_D6",
+			icon_id = "C_Locke_H_BreakinFeds_AllDiffs_OD_D6",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_sentence,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		tag_9 = {
+			sort_name = "C_Locke_H_BreakinFeds_AMoment",
+			icon_id = "C_Locke_H_BreakinFeds_AMoment",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
 		nbm_1 = {
 			icon_id = "C_Event_H_SafeHouseNightmare_AllDiffs_D0",
 			ladder = "H_SafeHouseNightmare",
@@ -8291,148 +8465,6 @@ function init_auto_generated_achievement_data(tags)
 				tags.difficulty.death_sentence,
 				tags.tactics.stealth,
 				tags.contracts.events
-			}
-		},
-		rvd_1 = {
-			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_D0",
-			ladder = "H_Reservoir",
-			sort_name = "C_Bain_H_ReservoirDogs_AllDiffs_D0",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.normal,
-				tags.tactics.loud,
-				tags.contracts.bain
-			}
-		},
-		rvd_10 = {
-			additional_id = true,
-			sort_name = "C_Bain_H_ReservoirDogs_Pinky",
-			icon_id = "C_Bain_H_ReservoirDogs_Pinky",
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.death_wish,
-				tags.tactics.loud,
-				tags.contracts.bain
-			}
-		},
-		rvd_11 = {
-			sort_name = "C_Bain_H_ReservoirDogs_WasteNot",
-			icon_id = "C_Bain_H_ReservoirDogs_WasteNot",
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.overkill,
-				tags.tactics.loud,
-				tags.contracts.bain
-			}
-		},
-		rvd_12 = {
-			sort_name = "C_Bain_H_ReservoirDogs_CloseShave",
-			icon_id = "C_Bain_H_ReservoirDogs_CloseShave",
-			progress = true,
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.overkill,
-				tags.tactics.loud,
-				tags.tactics.killer,
-				tags.inventory.weapon,
-				tags.contracts.bain
-			}
-		},
-		rvd_2 = {
-			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_D1",
-			ladder = "H_Reservoir",
-			sort_name = "C_Bain_H_ReservoirDogs_AllDiffs_D1",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.hard,
-				tags.tactics.loud,
-				tags.contracts.bain
-			}
-		},
-		rvd_3 = {
-			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_D2",
-			ladder = "H_Reservoir",
-			sort_name = "C_Bain_H_ReservoirDogs_AllDiffs_D2",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.very_hard,
-				tags.tactics.loud,
-				tags.contracts.bain
-			}
-		},
-		rvd_4 = {
-			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_D3",
-			ladder = "H_Reservoir",
-			sort_name = "C_Bain_H_ReservoirDogs_AllDiffs_D3",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.overkill,
-				tags.tactics.loud,
-				tags.contracts.bain
-			}
-		},
-		rvd_5 = {
-			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_D4",
-			ladder = "H_Reservoir",
-			sort_name = "C_Bain_H_ReservoirDogs_AllDiffs_D4",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.mayhem,
-				tags.tactics.loud,
-				tags.contracts.bain
-			}
-		},
-		rvd_6 = {
-			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_D5",
-			ladder = "H_Reservoir",
-			sort_name = "C_Bain_H_ReservoirDogs_AllDiffs_D5",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.death_wish,
-				tags.tactics.loud,
-				tags.contracts.bain
-			}
-		},
-		rvd_7 = {
-			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_OD_D6",
-			ladder = "H_Reservoir",
-			sort_name = "C_Bain_H_ReservoirDogs_AllDiffs_OD_D6",
-			additional_id = true,
-			tags = {
-				tags.progress.completion,
-				tags.difficulty.death_sentence,
-				tags.tactics.loud,
-				tags.contracts.bain
-			}
-		},
-		rvd_8 = {
-			additional_id = true,
-			sort_name = "C_Bain_H_ReservoirDogs_United",
-			icon_id = "C_Bain_H_ReservoirDogs_United",
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.overkill,
-				tags.tactics.loud,
-				tags.tactics.killer,
-				tags.inventory.weapon,
-				tags.contracts.bain
-			}
-		},
-		rvd_9 = {
-			additional_id = true,
-			sort_name = "C_Bain_H_ReservoirDogs_GetOffMy",
-			icon_id = "C_Bain_H_ReservoirDogs_GetOffMy",
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.normal,
-				tags.tactics.loud,
-				tags.contracts.bain
 			}
 		},
 		brb_1 = {
@@ -8706,6 +8738,7 @@ function init_auto_generated_achievement_data(tags)
 				tags.progress.heisting,
 				tags.difficulty.normal,
 				tags.tactics.loud,
+				tags.tactics.killer,
 				tags.contracts.locke
 			}
 		},
@@ -8801,60 +8834,146 @@ function init_auto_generated_achievement_data(tags)
 				tags.contracts.locke
 			}
 		},
-		eng_1 = {
-			need_unlock_icons = true,
-			icon_id = "Other_H_Any_TheOnlyOne",
-			progress = true,
-			sort_name = "Other_H_Any_TheOnlyOne",
-			unlock_id = true,
+		rvd_1 = {
+			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_D0",
+			ladder = "H_Reservoir",
+			sort_name = "C_Bain_H_ReservoirDogs_AllDiffs_D0",
+			additional_id = true,
 			tags = {
-				tags.progress.heisting,
+				tags.progress.completion,
 				tags.difficulty.normal,
-				tags.unlock.mask,
 				tags.tactics.loud,
-				tags.tactics.stealth
+				tags.contracts.bain
 			}
 		},
-		eng_2 = {
-			need_unlock_icons = true,
-			icon_id = "Other_H_Any_TheOneThatHad",
-			progress = true,
-			sort_name = "Other_H_Any_TheOneThatHad",
-			unlock_id = true,
+		rvd_10 = {
+			additional_id = true,
+			sort_name = "C_Bain_H_ReservoirDogs_Pinky",
+			icon_id = "C_Bain_H_ReservoirDogs_Pinky",
 			tags = {
 				tags.progress.heisting,
-				tags.difficulty.normal,
-				tags.unlock.mask,
+				tags.difficulty.death_wish,
 				tags.tactics.loud,
-				tags.tactics.stealth
+				tags.contracts.bain
 			}
 		},
-		eng_3 = {
-			need_unlock_icons = true,
-			icon_id = "Other_H_Any_TheOneThatSur",
-			progress = true,
-			sort_name = "Other_H_Any_TheOneThatSur",
-			unlock_id = true,
+		rvd_11 = {
+			sort_name = "C_Bain_H_ReservoirDogs_WasteNot",
+			icon_id = "C_Bain_H_ReservoirDogs_WasteNot",
 			tags = {
 				tags.progress.heisting,
-				tags.difficulty.normal,
-				tags.unlock.mask,
+				tags.difficulty.overkill,
 				tags.tactics.loud,
-				tags.tactics.stealth
+				tags.contracts.bain
 			}
 		},
-		eng_4 = {
-			need_unlock_icons = true,
-			icon_id = "Other_H_Any_TheOneWho",
+		rvd_12 = {
+			sort_name = "C_Bain_H_ReservoirDogs_CloseShave",
+			icon_id = "C_Bain_H_ReservoirDogs_CloseShave",
 			progress = true,
-			sort_name = "Other_H_Any_TheOneWho",
-			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.tactics.killer,
+				tags.inventory.weapon,
+				tags.contracts.bain
+			}
+		},
+		rvd_2 = {
+			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_D1",
+			ladder = "H_Reservoir",
+			sort_name = "C_Bain_H_ReservoirDogs_AllDiffs_D1",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.hard,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		rvd_3 = {
+			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_D2",
+			ladder = "H_Reservoir",
+			sort_name = "C_Bain_H_ReservoirDogs_AllDiffs_D2",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.very_hard,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		rvd_4 = {
+			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_D3",
+			ladder = "H_Reservoir",
+			sort_name = "C_Bain_H_ReservoirDogs_AllDiffs_D3",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		rvd_5 = {
+			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_D4",
+			ladder = "H_Reservoir",
+			sort_name = "C_Bain_H_ReservoirDogs_AllDiffs_D4",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.mayhem,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		rvd_6 = {
+			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_D5",
+			ladder = "H_Reservoir",
+			sort_name = "C_Bain_H_ReservoirDogs_AllDiffs_D5",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_wish,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		rvd_7 = {
+			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_OD_D6",
+			ladder = "H_Reservoir",
+			sort_name = "C_Bain_H_ReservoirDogs_AllDiffs_OD_D6",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_sentence,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		rvd_8 = {
+			additional_id = true,
+			sort_name = "C_Bain_H_ReservoirDogs_United",
+			icon_id = "C_Bain_H_ReservoirDogs_United",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.tactics.killer,
+				tags.inventory.weapon,
+				tags.contracts.bain
+			}
+		},
+		rvd_9 = {
+			additional_id = true,
+			sort_name = "C_Bain_H_ReservoirDogs_GetOffMy",
+			icon_id = "C_Bain_H_ReservoirDogs_GetOffMy",
 			tags = {
 				tags.progress.heisting,
 				tags.difficulty.normal,
-				tags.unlock.mask,
 				tags.tactics.loud,
-				tags.tactics.stealth
+				tags.contracts.bain
 			}
 		},
 		glace_1 = {

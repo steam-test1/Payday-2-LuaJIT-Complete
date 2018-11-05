@@ -159,7 +159,7 @@ function NewNPCRaycastWeaponBase:check_npc()
 		return
 	end
 
-	local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
+	local gadgets = self._gadgets
 
 	if gadgets then
 		local gadget = nil

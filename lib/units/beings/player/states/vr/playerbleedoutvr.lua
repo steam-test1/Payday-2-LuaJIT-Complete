@@ -119,7 +119,7 @@ function PlayerBleedOutVR:set_belt_and_hands_enabled(enabled)
 			end
 		end
 	else
-		if self._bow_hand_id then
+		if self._bow_hand_id and self._unit:hand() then
 			self._unit:hand():set_default_state(self._bow_hand_id, "bow")
 		end
 

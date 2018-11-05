@@ -4935,6 +4935,16 @@ function GuiTweakData:init()
 	self.new_heists = {limit = 5}
 
 	table.insert(self.new_heists, {
+		name_id = "menu_nh_sb_2018_thesecretisreallyreal",
+		texture_path = "guis/textures/pd2/new_heists/sb_2018_thesecretisreallyreal",
+		url = "https://www.thesecretisreallyreal.com/"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_sb_2018_sale",
+		texture_path = "guis/textures/pd2/new_heists/sb_2018_sale",
+		url = "http://store.steampowered.com/app/218620/PAYDAY_2/"
+	})
+	table.insert(self.new_heists, {
 		name_id = "menu_nh_pd2vr_launch",
 		texture_path = "guis/textures/pd2/new_heists/pd2vr_launch",
 		url = "http://steamcommunity.com/games/218620/announcements/detail/1669019670888919416"

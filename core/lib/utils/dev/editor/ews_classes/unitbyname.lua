@@ -22,11 +22,13 @@ function UnitByName:init(name, unit_filter_function, ...)
 	list_sizer:add(self._filter, 0, 0, "EXPAND")
 	self._filter:connect("EVT_COMMAND_TEXT_UPDATED", callback(self, self, "update_filter"), nil)
 	self._filter:connect("EVT_KEY_DOWN", callback(self, self, "key_cancel"), "")
+	self._filter:connect("EVT_UPDATE_UI", callback(self, self, "update"), nil)
 
 	self._list = EWS:ListCtrl(panel, "", self.STYLE or "LC_REPORT,LC_NO_HEADER,LC_SORT_ASCENDING")
 
 	self._list:clear_all()
 	self._list:append_column("Name")
+	self._list:autosize_column(0)
 	list_sizer:add(self._list, 1, 0, "EXPAND")
 	horizontal_ctrlr_sizer:add(list_sizer, 3, 0, "EXPAND")
 
@@ -318,12 +320,38 @@ function UnitByName:unit_name_changed(unit)
 	end
 end
 
+function UnitByName:update()
+	if not self._units_to_append then
+		return
+	end
+
+	local append_count = 100
+
+	while append_count > 0 do
+		if #self._units_to_append == 0 then
+			break
+		end
+
+		append_count = append_count - 1
+		local data = table.remove(self._units_to_append, 1)
+		local i = self._list:append_item(data.name)
+
+		self._list:set_item_data(i, data.id)
+		self._list:set_item_text_colour(i, data.colour)
+	end
+
+	if #self._units_to_append == 0 then
+		self._units_to_append = nil
+
+		self._list:autosize_column(0)
+	end
+end
+
 function UnitByName:update_filter()
 	self:fill_unit_list()
 end
 
 function UnitByName:fill_unit_list()
-	self._list:freeze()
 	self._list:delete_all_items()
 
 	local layers = managers.editor:layers()
@@ -331,19 +359,20 @@ function UnitByName:fill_unit_list()
 	local filter = self._filter:get_value()
 	filter = utf8.to_lower(utf8.from_latin1(filter))
 	self._units = {}
+	self._units_to_append = {}
 
 	for name, layer in pairs(layers) do
 		if self._layer_cbs[name]:get_value() then
 			for _, unit in ipairs(layer:created_units()) do
 				if string.find(utf8.to_lower(utf8.from_latin1(self:_get_filter_string(unit))), filter, 1, true) and self:_unit_condition(unit) then
-					local i = self._list:append_item(unit:unit_data().name_id)
 					self._units[j] = unit
-
-					self._list:set_item_data(i, j)
-
 					local colour = self:_continent_locked(unit) and Vector3(0.75, 0.75, 0.75) or Vector3(0, 0, 0)
 
-					self._list:set_item_text_colour(i, colour)
+					table.insert(self._units_to_append, {
+						name = unit:unit_data().name_id,
+						id = j,
+						colour = colour
+					})
 
 					j = j + 1
 				end
@@ -351,8 +380,9 @@ function UnitByName:fill_unit_list()
 		end
 	end
 
-	self._list:thaw()
-	self._list:autosize_column(0)
+	table.sort(self._units_to_append, function (a, b)
+		return a.name < b.name
+	end)
 end
 
 function UnitByName:_get_filter_string(unit)

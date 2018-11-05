@@ -358,8 +358,10 @@ function MenuCallbackHandler:crime_spree_continue()
 		level = managers.crime_spree:spree_level(),
 		cost = cost
 	}
+	local coins = 0
+	coins = managers.custom_safehouse:coins()
 
-	if managers.custom_safehouse:coins() < cost then
+	if coins < cost then
 		local dialog_data = {
 			title = managers.localization:text("dialog_cant_continue_cs_title"),
 			text = managers.localization:text("dialog_cant_continue_cs_text", params),
@@ -471,7 +473,8 @@ function MenuCallbackHandler:crime_spree_reroll()
 		return
 	end
 
-	local can_afford = managers.crime_spree:randomization_cost() <= managers.custom_safehouse:coins()
+	local can_afford = false
+	can_afford = managers.crime_spree:randomization_cost() <= managers.custom_safehouse:coins()
 	local dialog_data = {
 		title = managers.localization:text("menu_cs_reroll_title"),
 		id = "reroll_crime_spree"

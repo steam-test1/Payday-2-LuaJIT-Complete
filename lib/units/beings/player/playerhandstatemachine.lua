@@ -149,10 +149,20 @@ function PlayerHandStateMachine:on_default_weapon_hand_changed(setting, old, new
 		return
 	end
 
+	local other_hand_skip_states = {
+		"akimbo",
+		"bow"
+	}
 	local old_hand_id = PlayerHand.hand_id(old)
 
 	if old_hand_id == self:hand_id() and self:default_state_name() == "weapon" then
-		self:queue_default_state_switch(self:other_hand():default_state_name(), self:default_state_name())
+		local other_state_name = self:other_hand():default_state_name()
+
+		if table.contains(other_hand_skip_states, other_state_name) then
+			other_state_name = "idle"
+		end
+
+		self:queue_default_state_switch(other_state_name, self:default_state_name())
 	end
 end
 

@@ -338,7 +338,7 @@ function AchievementListItem:init(parent, data, owner)
 			w = 300,
 			h = 12,
 			back_color = Color(255, 60, 60, 65) / 255,
-			max = progress.max
+			max = type(progress.max) == "function" and progress:max() or progress.max
 		}, {
 			font = tiny_font,
 			font_size = tiny_font_size

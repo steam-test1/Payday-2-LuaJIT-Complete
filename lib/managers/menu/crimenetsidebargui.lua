@@ -63,6 +63,9 @@ function CrimeNetSidebarGui:_setup()
 		h = self._bg_panel:h()
 	})
 
+	local next_position = padding
+	local item_margin = 4
+
 	for i, item in ipairs(tweak_data.gui.crime_net.sidebar) do
 		local visible = true
 
@@ -84,13 +87,14 @@ function CrimeNetSidebarGui:_setup()
 			end
 
 			local btn = item_class:new(self, self._panel, {
-				index = #self._buttons + 1,
+				position = next_position,
 				name_id = item.name_id,
 				btn_macro = item.btn_macro,
 				show_name_while_collapsed = item.show_name_while_collapsed,
 				icon = item.icon,
 				callback = item.callback and callback(self, self, item.callback)
 			})
+			next_position = next_position + btn:panel():height() + item_margin
 
 			table.insert(self._buttons, btn)
 
@@ -197,13 +201,15 @@ function CrimeNetSidebarGui:mouse_moved(o, x, y)
 	local used, pointer = nil
 
 	for _, btn in ipairs(self._buttons) do
-		if not used and btn:inside(x, y) then
-			btn:set_highlight(true)
+		if btn:accepts_interaction() then
+			if not used and btn:inside(x, y) then
+				btn:set_highlight(true)
 
-			pointer = "link"
-			used = true
-		else
-			btn:set_highlight(false)
+				pointer = "link"
+				used = true
+			else
+				btn:set_highlight(false)
+			end
 		end
 	end
 
@@ -218,7 +224,7 @@ end
 
 function CrimeNetSidebarGui:mouse_pressed(button, x, y)
 	for _, btn in ipairs(self._buttons) do
-		if btn:inside(x, y) and btn:callback() then
+		if btn:accepts_interaction() and btn:inside(x, y) and btn:callback() then
 			btn:callback()()
 
 			return true
@@ -230,7 +236,7 @@ function CrimeNetSidebarGui:confirm_pressed()
 	local x, y = managers.mouse_pointer:modified_mouse_pos()
 
 	for _, btn in ipairs(self._buttons) do
-		if btn:inside(x, y) and btn:callback() then
+		if btn:accepts_interaction() and btn:inside(x, y) and btn:callback() then
 			btn:callback()()
 
 			return true
@@ -258,14 +264,16 @@ function CrimeNetSidebarGui:update(t, dt)
 
 		if (self:collapsed() and self._icons_panel or self._panel):inside(mx, my) then
 			for _, btn in ipairs(self._buttons) do
-				local btn_y = btn:panel():center_y()
-				local y = btn_y - my
-				local dist = y * y
+				if btn:accepts_interaction() then
+					local btn_y = btn:panel():center_y()
+					local y = btn_y - my
+					local dist = y * y
 
-				if dist < closest_dist then
-					closest_btn = btn
-					closest_dist = dist
-					closest_y = btn_y
+					if dist < closest_dist then
+						closest_btn = btn
+						closest_dist = dist
+						closest_y = btn_y
+					end
 				end
 			end
 
@@ -321,6 +329,10 @@ function CrimeNetSidebarGui:clbk_contract_broker()
 	managers.menu:open_node("contract_broker")
 end
 
+function CrimeNetSidebarGui:clbk_side_jobs()
+	managers.menu:open_node("side_jobs")
+end
+
 function CrimeNetSidebarGui:clbk_contact_database()
 	managers.menu:open_node("crimenet_contact_info")
 end
@@ -372,7 +384,7 @@ function CrimeNetSidebarItem:init(sidebar, panel, parameters)
 		w = panel:w() - padding * 2,
 		h = panel_size,
 		x = padding,
-		y = math.ceil(padding + (panel_size + 4) * (parameters.index - 1))
+		y = parameters.position
 	})
 	local texture, rect = tweak_data.hud_icons:get_icon_data(parameters.icon)
 	self._icon = self._panel:bitmap({
@@ -417,6 +429,10 @@ function CrimeNetSidebarItem:init(sidebar, panel, parameters)
 	})
 
 	self:set_highlight(false, true)
+end
+
+function CrimeNetSidebarItem:accepts_interaction()
+	return true
 end
 
 function CrimeNetSidebarItem:inside(x, y)
@@ -576,63 +592,53 @@ function CrimeNetSidebarItem:update(t, dt)
 		self._icon:set_color(col)
 	end
 end
-CrimeNetSidebarTutorialHeistsItem = CrimeNetSidebarTutorialHeistsItem or class(CrimeNetSidebarItem)
+CrimeNetSidebarAttentionItem = CrimeNetSidebarAttentionItem or class(CrimeNetSidebarItem)
+
+function CrimeNetSidebarAttentionItem:init(sidebar, panel, parameters)
+	CrimeNetSidebarAttentionItem.super.init(self, sidebar, panel, parameters)
+
+	local glow_color = parameters.attention_color or tweak_data.screen_colors.heat_warm_color
+
+	if parameters.calling_attention then
+		self._unplayed_pulse = self:create_glow(sidebar._fullscreen_panel, glow_color, 0.85)
+
+		self._unplayed_pulse:set_center((self._icon:right() + self._icon:w() + 14) - 2, (self._panel:bottom() + self._panel:h() * 0.5) - 2)
+
+		self._pulse_offset = math.random()
+	end
+end
+
+function CrimeNetSidebarAttentionItem:update(t, dt)
+	CrimeNetSidebarAttentionItem.super.update(self, t, dt)
+
+	local target_alpha = self._highlight and 0 or 0.2
+
+	if alive(self._unplayed_pulse) then
+		local _t = math.abs(math.sin((t + self._pulse_offset) * 100))
+
+		self._unplayed_pulse:set_alpha(0.3 + _t * target_alpha)
+	end
+end
+CrimeNetSidebarTutorialHeistsItem = CrimeNetSidebarTutorialHeistsItem or class(CrimeNetSidebarAttentionItem)
 
 function CrimeNetSidebarTutorialHeistsItem:init(sidebar, panel, parameters)
-	CrimeNetSidebarTutorialHeistsItem.super.init(self, sidebar, panel, parameters)
-
 	local tutorial_completions = 0
 
 	for _, data in ipairs(tweak_data.narrative.tutorials) do
 		tutorial_completions = tutorial_completions + managers.statistics:completed_job(data.job or "short", "normal")
 	end
 
-	if tutorial_completions == 0 then
-		self._unplayed_pulse = self:create_glow(sidebar._fullscreen_panel, tweak_data.screen_colors.heat_warm_color, 0.85)
+	parameters.calling_attention = tutorial_completions == 0
 
-		self._unplayed_pulse:set_center((self._icon:right() + self._icon:w() + 14) - 2, (self._panel:bottom() + self._panel:h() * 0.5) - 2)
-
-		self._pulse_offset = math.random()
-	end
+	CrimeNetSidebarTutorialHeistsItem.super.init(self, sidebar, panel, parameters)
 end
-
-function CrimeNetSidebarTutorialHeistsItem:update(t, dt)
-	CrimeNetSidebarTutorialHeistsItem.super.update(self, t, dt)
-
-	local target_alpha = self._highlight and 0 or 0.2
-
-	if alive(self._unplayed_pulse) then
-		local _t = math.abs(math.sin((t + self._pulse_offset) * 100))
-
-		self._unplayed_pulse:set_alpha(0.3 + _t * target_alpha)
-	end
-end
-CrimeNetSidebarStoryMissionItem = CrimeNetSidebarStoryMissionItem or class(CrimeNetSidebarItem)
+CrimeNetSidebarStoryMissionItem = CrimeNetSidebarStoryMissionItem or class(CrimeNetSidebarAttentionItem)
 
 function CrimeNetSidebarStoryMissionItem:init(sidebar, panel, parameters)
-	CrimeNetSidebarStoryMissionItem.super.init(self, sidebar, panel, parameters)
-
 	local current = managers.story:current_mission()
+	parameters.calling_attention = current and current.completed and not current.rewarded
 
-	if current and current.completed and not current.rewarded then
-		self._unplayed_pulse = self:create_glow(sidebar._fullscreen_panel, tweak_data.screen_colors.heat_warm_color, 0.85)
-
-		self._unplayed_pulse:set_center((self._icon:right() + self._icon:w() + 14) - 2, (self._panel:bottom() + self._panel:h() * 0.5) - 2)
-
-		self._pulse_offset = math.random()
-	end
-end
-
-function CrimeNetSidebarStoryMissionItem:update(t, dt)
-	CrimeNetSidebarStoryMissionItem.super.update(self, t, dt)
-
-	local target_alpha = self._highlight and 0 or 0.2
-
-	if alive(self._unplayed_pulse) then
-		local _t = math.abs(math.sin((t + self._pulse_offset) * 100))
-
-		self._unplayed_pulse:set_alpha(0.3 + _t * target_alpha)
-	end
+	CrimeNetSidebarStoryMissionItem.super.init(self, sidebar, panel, parameters)
 end
 CrimeNetSidebarSafehouseItem = CrimeNetSidebarSafehouseItem or class(CrimeNetSidebarItem)
 

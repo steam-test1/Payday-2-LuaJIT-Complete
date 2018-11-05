@@ -59,6 +59,7 @@ function PlayerHandStateWeapon:at_enter(prev_state)
 		self._weapon_id = alive(weapon_unit) and weapon_unit:base().name_id
 
 		self:_link_weapon(weapon_unit)
+		managers.player:player_unit():inventory():add_listener("PlayerHandStateWeapon_" .. tostring(self:hsm():hand_id()), nil, callback(self, self, "inventory_changed"))
 	end
 
 	managers.hud:link_ammo_hud(self._hand_unit, self:hsm():hand_id())
@@ -110,6 +111,8 @@ function PlayerHandStateWeapon:inventory_changed(unit, event)
 end
 
 function PlayerHandStateWeapon:at_exit(next_state)
+	managers.player:player_unit():inventory():remove_listener("PlayerHandStateWeapon_" .. tostring(self:hsm():hand_id()))
+
 	if self:hsm():other_hand():current_state_name() == "weapon_assist" then
 		self:hsm():other_hand():change_to_default()
 	end

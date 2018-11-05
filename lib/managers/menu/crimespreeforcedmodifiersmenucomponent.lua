@@ -165,6 +165,12 @@ end
 
 function CrimeSpreeForcedModifiersMenuComponent:update(t, dt)
 	self._back_btn:update(t, dt)
+
+	local cx, cy = managers.menu_component:get_right_controller_axis()
+
+	if cy ~= 0 and self._modifiers_scroll then
+		self._modifiers_scroll:perform_scroll(math.abs(cy * 500 * dt), math.sign(cy))
+	end
 end
 
 function CrimeSpreeForcedModifiersMenuComponent:confirm_pressed()

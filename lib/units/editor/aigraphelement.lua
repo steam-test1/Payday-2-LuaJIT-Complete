@@ -6,9 +6,11 @@ function AIGraphUnitElement:init(unit)
 
 	self._hed.graph_ids = {}
 	self._hed.operation = NavigationManager.nav_states[1]
+	self._hed.filter_group = "none"
 
 	table.insert(self._save_values, "graph_ids")
 	table.insert(self._save_values, "operation")
+	table.insert(self._save_values, "filter_group")
 end
 
 function AIGraphUnitElement:draw_links(t, dt, selected_unit, all_units)
@@ -90,6 +92,14 @@ function AIGraphUnitElement:add_triggers(vc)
 	vc:add_trigger(Idstring("lmb"), callback(self, self, "_add_element"))
 end
 
+function AIGraphUnitElement:set_element_data(data)
+	AIGraphUnitElement.super.set_element_data(self, data)
+
+	if self._filter_group_element and data.value == "operation" then
+		self._filter_group_element:set_enabled(data.ctrlr:get_value() == "forbid_custom")
+	end
+end
+
 function AIGraphUnitElement:_build_panel(panel, panel_sizer)
 	self:_create_panel()
 
@@ -120,8 +130,12 @@ function AIGraphUnitElement:_build_panel(panel, panel_sizer)
 		ctrlr = operations
 	})
 
+	self._filter_group_element = self:_build_value_combobox(panel, panel_sizer, "filter_group", table.list_add({"none"}, clone(ElementSpecialObjective._AI_GROUPS)), "Select a custom filter group.")
+
+	self._filter_group_element:set_enabled(self._hed.operation == "forbid_custom")
+
 	local help = {
-		text = "The operation defines what to do with the selected graphs",
+		text = "The operation defines what to do with the selected graphs. \"Forbid Custom\" marks the selected graphs as disabled for that specific type of units.",
 		panel = panel,
 		sizer = panel_sizer
 	}
