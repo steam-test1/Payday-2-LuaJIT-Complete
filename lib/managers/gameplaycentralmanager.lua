@@ -1,5 +1,7 @@
 local tmp_vec1 = Vector3()
 local tmp_vec2 = Vector3()
+local tmp_vec3 = Vector3()
+local tmp_vec4 = Vector3()
 local empty_idstr = Idstring("")
 local idstr_concrete = Idstring("concrete")
 local idstr_blood_spatter = Idstring("blood_spatter")
@@ -8,6 +10,15 @@ local idstr_bullet_hit_blood = Idstring("effects/payday2/particles/impacts/blood
 local idstr_fallback = Idstring("effects/payday2/particles/impacts/fallback_impact_pd2")
 local idstr_no_material = Idstring("no_material")
 local idstr_bullet_hit = Idstring("bullet_hit")
+local mvec3_set = mvector3.set
+local mvec3_mul = mvector3.multiply
+local mvec3_add = mvector3.add
+local mvec3_neg = mvector3.negate
+local mvec3_lerp = mvector3.lerp
+local mvec3_spread = mvector3.spread
+local mvec3_dist_sq = mvector3.distance_sq
+local mvec3_dist = mvector3.distance
+local mvec3_dot = mvector3.dot
 GamePlayCentralManager = GamePlayCentralManager or class()
 
 function GamePlayCentralManager:init()
@@ -213,12 +224,16 @@ function GamePlayCentralManager:end_update(t, dt)
 end
 
 function GamePlayCentralManager:play_impact_sound_and_effects(params)
-	table.insert(self._bullet_hits, params)
+	if params.immediate then
+		self:_play_bullet_hit(params)
+	else
+		table.insert(self._bullet_hits, params)
+	end
 end
 
 function GamePlayCentralManager:request_play_footstep(unit, m_pos)
 	if self._camera_pos then
-		local dis = mvector3.distance_sq(self._camera_pos, m_pos)
+		local dis = mvec3_dist_sq(self._camera_pos, m_pos)
 
 		if dis < 2000000 and #self._footsteps < 3 then
 			table.insert(self._footsteps, {
@@ -246,7 +261,7 @@ function GamePlayCentralManager:physics_push(col_ray, push_multiplier)
 				local test_body = unit:body(i_body)
 
 				if test_body:enabled() and test_body:dynamic() then
-					local test_dis_sq = mvector3.distance_sq(test_body:center_of_mass(), original_body_com)
+					local test_dis_sq = mvec3_dist_sq(test_body:center_of_mass(), original_body_com)
 
 					if not closest_body_dis_sq or test_dis_sq < closest_body_dis_sq then
 						closest_body_dis_sq = test_dis_sq
@@ -259,19 +274,19 @@ function GamePlayCentralManager:physics_push(col_ray, push_multiplier)
 		end
 
 		local body_mass = math.min(50, body:mass()) * push_multiplier
-		local len = mvector3.distance(col_ray.position, body:center_of_mass())
+		local len = mvec3_dist(col_ray.position, body:center_of_mass())
 		local body_vel = body:velocity()
 
-		mvector3.set(tmp_vec1, col_ray.ray)
+		mvec3_set(tmp_vec1, col_ray.ray)
 
-		local vel_dot = mvector3.dot(body_vel, tmp_vec1)
+		local vel_dot = mvec3_dot(body_vel, tmp_vec1)
 		local max_vel = 600
 
 		if vel_dot < max_vel then
 			local push_vel = max_vel - math.max(vel_dot, 0)
 			push_vel = math.lerp(push_vel * 0.7, push_vel, math.random()) * push_multiplier
 
-			mvector3.multiply(tmp_vec1, push_vel)
+			mvec3_mul(tmp_vec1, push_vel)
 			body:push_at(body_mass, tmp_vec1, col_ray.position)
 		end
 	end
@@ -291,7 +306,7 @@ function GamePlayCentralManager:play_impact_flesh(params)
 			end
 		end
 
-		if managers.player:player_unit() and mvector3.distance_sq(col_ray.position, managers.player:player_unit():movement():m_head_pos()) < 40000 then
+		if managers.player:player_unit() and mvec3_dist_sq(col_ray.position, managers.player:player_unit():movement():m_head_pos()) < 40000 then
 			self._effect_manager:spawn({
 				effect = idstr_blood_screen,
 				position = Vector3(),
@@ -316,7 +331,7 @@ function GamePlayCentralManager:sync_play_impact_flesh(from, dir)
 		normal = dir
 	})
 
-	if managers.player:player_unit() and mvector3.distance_sq(splatter_from, managers.player:player_unit():movement():m_head_pos()) < 40000 then
+	if managers.player:player_unit() and mvec3_dist_sq(splatter_from, managers.player:player_unit():movement():m_head_pos()) < 40000 then
 		self._effect_manager:spawn({
 			effect = idstr_blood_screen,
 			position = Vector3(),
@@ -397,12 +412,20 @@ function GamePlayCentralManager:_play_bullet_hit(params)
 	local decal_ray_from = tmp_vec1
 	local decal_ray_to = tmp_vec2
 
-	mvector3.set(decal_ray_from, col_ray.ray)
-	mvector3.set(decal_ray_to, hit_pos)
-	mvector3.multiply(decal_ray_from, 25)
-	mvector3.add(decal_ray_to, decal_ray_from)
-	mvector3.negate(decal_ray_from)
-	mvector3.add(decal_ray_from, hit_pos)
+	mvec3_set(decal_ray_from, col_ray.ray)
+	mvec3_set(decal_ray_to, hit_pos)
+	mvec3_mul(decal_ray_from, 25)
+	mvec3_add(decal_ray_to, decal_ray_from)
+	mvec3_neg(decal_ray_from)
+	mvec3_add(decal_ray_from, hit_pos)
+	mvec3_set(tmp_vec4, col_ray.ray)
+	mvec3_neg(tmp_vec4)
+
+	local effect_normal = tmp_vec3
+
+	mvec3_set(effect_normal, col_ray.normal)
+	mvec3_lerp(effect_normal, col_ray.normal, tmp_vec4, math.random())
+	mvec3_spread(effect_normal, 10)
 
 	local material_name, pos, norm = World:pick_decal_material(col_ray.unit, decal_ray_from, decal_ray_to, slot_mask)
 	material_name = material_name ~= empty_idstr and false
@@ -426,7 +449,7 @@ function GamePlayCentralManager:_play_bullet_hit(params)
 			effect = {
 				effect = effect or redir_name,
 				position = hit_pos + offset,
-				normal = col_ray.normal
+				normal = effect_normal
 			}
 		end
 
@@ -437,7 +460,7 @@ function GamePlayCentralManager:_play_bullet_hit(params)
 			effect = {
 				effect = generic_effect,
 				position = hit_pos,
-				normal = col_ray.normal
+				normal = effect_normal
 			}
 		end
 
@@ -477,10 +500,10 @@ function GamePlayCentralManager:_flush_footsteps()
 			local decal_ray_from = tmp_vec1
 			local decal_ray_to = tmp_vec2
 
-			mvector3.set(decal_ray_from, ext_movement:m_head_pos())
-			mvector3.set(decal_ray_to, math.UP)
-			mvector3.multiply(decal_ray_to, -250)
-			mvector3.add(decal_ray_to, decal_ray_from)
+			mvec3_set(decal_ray_from, ext_movement:m_head_pos())
+			mvec3_set(decal_ray_to, math.UP)
+			mvec3_mul(decal_ray_to, -250)
+			mvec3_add(decal_ray_to, decal_ray_from)
 
 			local material_name, pos, norm = nil
 			local ground_ray = ext_movement:ground_ray()
@@ -745,7 +768,7 @@ function GamePlayCentralManager:_do_shotgun_push(unit, hit_pos, dir, distance, a
 	end
 
 	local scale = math.clamp(1 - distance / self:get_shotgun_push_range(), 0.5, 1)
-	local height = mvector3.distance(hit_pos, unit:position()) - 100
+	local height = mvec3_dist(hit_pos, unit:position()) - 100
 	local twist_dir = math.random(2) == 1 and 1 or -1
 	local rot_acc = (dir:cross(math.UP) + math.UP * 0.5 * twist_dir) * -1000 * math.sign(height)
 	local rot_time = 1 + math.rand(2)

@@ -602,6 +602,22 @@ function CharacterTweakData:_init_biker(presets)
 	table.insert(self._enemy_list, "biker")
 end
 
+function CharacterTweakData:_init_captain(presets)
+	self.captain = deep_clone(self.gangster)
+	self.captain.calls_in = true
+	self.captain.immune_to_knock_down = true
+	self.captain.immune_to_concussion = true
+	self.captain.no_retreat = true
+	self.captain.no_arrest = true
+	self.captain.surrender = nil
+	self.captain.damage.hurt_severity = presets.hurt_severities.no_hurts
+	self.captain.flammable = false
+	self.captain.can_be_tased = false
+	self.captain.suppression = nil
+
+	table.insert(self._enemy_list, "biker")
+end
+
 function CharacterTweakData:_init_biker_escape(presets)
 	self.biker_escape = deep_clone(self.gangster)
 	self.biker_escape.melee_weapon = "knife_1"
@@ -3677,7 +3693,7 @@ function CharacterTweakData:_presets(tweak_data)
 		miss_dis = 30,
 		RELOAD_SPEED = 0.9,
 		melee_speed = 1,
-		melee_dmg = 8,
+		melee_dmg = 2,
 		melee_retry_delay = {
 			1,
 			2
@@ -3791,7 +3807,7 @@ function CharacterTweakData:_presets(tweak_data)
 		miss_dis = 50,
 		RELOAD_SPEED = 0.9,
 		melee_speed = 1,
-		melee_dmg = 8,
+		melee_dmg = 2,
 		melee_retry_delay = {
 			1,
 			2
@@ -3905,7 +3921,7 @@ function CharacterTweakData:_presets(tweak_data)
 		miss_dis = 40,
 		RELOAD_SPEED = 0.9,
 		melee_speed = 1,
-		melee_dmg = 8,
+		melee_dmg = 2,
 		melee_retry_delay = {
 			1,
 			2
@@ -4024,7 +4040,7 @@ function CharacterTweakData:_presets(tweak_data)
 		miss_dis = 20,
 		RELOAD_SPEED = 0.9,
 		melee_speed = 1,
-		melee_dmg = 8,
+		melee_dmg = 2,
 		melee_retry_delay = {
 			1,
 			2
@@ -4139,7 +4155,7 @@ function CharacterTweakData:_presets(tweak_data)
 		miss_dis = 20,
 		RELOAD_SPEED = 0.9,
 		melee_speed = 1,
-		melee_dmg = 8,
+		melee_dmg = 2,
 		melee_retry_delay = {
 			1,
 			2
@@ -4257,7 +4273,7 @@ function CharacterTweakData:_presets(tweak_data)
 		miss_dis = 50,
 		RELOAD_SPEED = 0.9,
 		melee_speed = 1,
-		melee_dmg = 8,
+		melee_dmg = 2,
 		melee_retry_delay = {
 			1,
 			2
@@ -4489,7 +4505,7 @@ function CharacterTweakData:_presets(tweak_data)
 		miss_dis = 40,
 		RELOAD_SPEED = 0.6,
 		melee_speed = 1,
-		melee_dmg = 8,
+		melee_dmg = 2,
 		melee_retry_delay = {
 			1,
 			2
@@ -10135,6 +10151,11 @@ end
 function CharacterTweakData:_set_normal()
 	self:_multiply_all_hp(1, 1)
 	self:_multiply_all_speeds(1.05, 1.1)
+
+	self.shield.melee_weapon_dmg_multiplier = 0.1
+	self.swat.melee_weapon_dmg_multiplier = 0.1
+	self.cop.melee_weapon_dmg_multiplier = 0.1
+
 	self:_multiply_weapon_delay(self.presets.weapon.normal, 0)
 	self:_multiply_weapon_delay(self.presets.weapon.good, 0)
 	self:_multiply_weapon_delay(self.presets.weapon.expert, 0)
@@ -11054,6 +11075,11 @@ end
 function CharacterTweakData:_set_hard()
 	self:_multiply_all_hp(1, 1)
 	self:_multiply_all_speeds(2.05, 2.1)
+
+	self.shield.melee_weapon_dmg_multiplier = 0.1
+	self.swat.melee_weapon_dmg_multiplier = 0.1
+	self.cop.melee_weapon_dmg_multiplier = 0.1
+
 	self:_multiply_weapon_delay(self.presets.weapon.normal, 0)
 	self:_multiply_weapon_delay(self.presets.weapon.good, 0)
 	self:_multiply_weapon_delay(self.presets.weapon.expert, 0)

@@ -549,6 +549,8 @@ function AchievmentManager:_award_achievement(t, name)
 		managers.challenge:award(t.challenge_award)
 	elseif t.trophy_stat then
 		managers.custom_safehouse:award(t.trophy_stat)
+	elseif t.story then
+		managers.story:award(t.story)
 	else
 		return false
 	end

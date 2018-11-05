@@ -1373,6 +1373,7 @@ function MenuManager:do_clear_progress()
 	managers.custom_safehouse:reset()
 	managers.tango:reset()
 	managers.generic_side_jobs:reset()
+	managers.story:reset_all()
 
 	if Global.game_settings.difficulty == "overkill_145" then
 		Global.game_settings.difficulty = "overkill"
@@ -2706,6 +2707,7 @@ function MenuCallbackHandler:choice_difficulty_filter(item)
 	managers.network.matchmake:add_lobby_filter("difficulty", diff_filter, "equal")
 	managers.network.matchmake:search_lobby(managers.network.matchmake:search_friends_only())
 	managers.user:set_setting("crimenet_filter_difficulty", diff_filter)
+	managers.crimenet:update_difficulty_filter()
 end
 
 function MenuCallbackHandler:choice_job_id_filter(item)

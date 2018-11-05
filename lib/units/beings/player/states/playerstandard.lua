@@ -4035,7 +4035,7 @@ function PlayerStandard:_check_action_primary_attack(t, input)
 								if fire_mode == "auto" then
 									self._unit:camera():play_redirect(self:get_animation("recoil_enter"))
 
-									if not weap_base.akimbo and (not weap_base.third_person_important or weap_base.third_person_important and not weap_base:third_person_important()) then
+									if (not weap_base.akimbo or weap_base:weapon_tweak_data().allow_akimbo_autofire) and (not weap_base.third_person_important or weap_base.third_person_important and not weap_base:third_person_important()) then
 										self._ext_network:send("sync_start_auto_fire_sound")
 									end
 								end
@@ -4170,7 +4170,7 @@ function PlayerStandard:_check_action_primary_attack(t, input)
 
 						if weap_base.third_person_important and weap_base:third_person_important() then
 							self._ext_network:send("shot_blank_reliable", impact)
-						elseif fire_mode == "single" or weap_base.akimbo then
+						elseif weap_base.akimbo and not weap_base:weapon_tweak_data().allow_akimbo_autofire or fire_mode == "single" then
 							self._ext_network:send("shot_blank", impact)
 						end
 					elseif fire_mode == "single" then
@@ -4197,7 +4197,7 @@ function PlayerStandard:_check_stop_shooting()
 
 		local weap_base = self._equipped_unit:base()
 
-		if not weap_base.akimbo then
+		if not weap_base.akimbo or weap_base:weapon_tweak_data().allow_akimbo_autofire then
 			self._ext_network:send("sync_stop_auto_fire_sound")
 		end
 

@@ -258,6 +258,10 @@ function BaseNetworkSession:add_peer(name, rpc, in_lobby, loading, synched, id, 
 		self:on_peer_sync_complete(peer, id)
 	end
 
+	if managers.platform then
+		managers.platform:update_discord_party_size()
+	end
+
 	if rpc then
 		self:remove_connection_from_trash(rpc)
 		self:remove_connection_from_soft_remove_peers(rpc)
@@ -290,6 +294,10 @@ function BaseNetworkSession:remove_peer(peer, peer_id, reason)
 	self._connection_established_results[peer:name()] = nil
 
 	self:_on_peer_removed(peer, peer_id, reason)
+
+	if managers.platform then
+		managers.platform:update_discord_party_size()
+	end
 
 	if peer:rpc() then
 		self:_soft_remove_peer(peer)

@@ -110,6 +110,18 @@ function AchievementsTweakData:init(tweak_data)
 		most_wanted = {
 			award = "most_wanted",
 			level = 100
+		},
+		story_basics_lvl10 = {
+			story = "story_basics_lvl10",
+			level = 10
+		},
+		story_chill_level = {
+			story = "story_chill_level",
+			level = 25
+		},
+		story_half_lvl = {
+			story = "story_half_lvl",
+			level = 50
 		}
 	}
 	self.tango_4 = {
@@ -1917,6 +1929,11 @@ function AchievementsTweakData:init(tweak_data)
 			difficulty = normal_and_above,
 			jobs = {"crojob1"}
 		},
+		melt_2 = {
+			award = "melt_2",
+			job = "shoutout_raid",
+			difficulty = normal_and_above
+		},
 		farm_1 = {
 			phalanx_vip_alive = true,
 			award = "farm_1",
@@ -2691,6 +2708,177 @@ function AchievementsTweakData:init(tweak_data)
 				category = "pistol",
 				blueprint_part_data = {sub_type = "silencer"}
 			}}
+		},
+		story_basics_stealth = {
+			job = "short1",
+			story = "story_basics_stealth"
+		},
+		story_basics_loud = {
+			job = "short2",
+			story = "story_basics_loud"
+		},
+		story_jewelry_store = {
+			job = "jewelry_store",
+			story = "story_jewelry_store"
+		},
+		story_bank_heist = {
+			story = "story_bank_heist",
+			jobs = {
+				"branchbank_prof",
+				"branchbank_gold_prof",
+				"branchbank_cash",
+				"branchbank_deposit"
+			}
+		},
+		story_go_bank = {
+			job = "roberts",
+			story = "story_go_bank"
+		},
+		story_diamond_store = {
+			job = "family",
+			story = "story_diamond_store"
+		},
+		story_transport_mult = {
+			story = "story_transport_mult",
+			jobs = {
+				"arm_cro",
+				"arm_hcm",
+				"arm_fac",
+				"arm_par",
+				"arm_und",
+				"arm_for"
+			}
+		},
+		story_train_heist = {
+			job = "arm_for",
+			story = "story_train_heist"
+		},
+		story_hard_mallcrasher = {
+			job = "mallcrasher",
+			story = "story_hard_mallcrasher",
+			difficulty = hard_and_above
+		},
+		story_hard_four_store = {
+			job = "four_stores",
+			story = "story_hard_four_store",
+			difficulty = hard_and_above
+		},
+		story_hard_white_xmas = {
+			job = "pines",
+			story = "story_hard_white_xmas",
+			difficulty = hard_and_above
+		},
+		story_hard_ukrainian_job = {
+			job = "ukrainian_job_prof",
+			story = "story_hard_ukrainian_job",
+			difficulty = hard_and_above
+		},
+		story_hard_meltdown = {
+			job = "shoutout_raid",
+			story = "story_hard_meltdown",
+			difficulty = hard_and_above
+		},
+		story_hard_aftershock = {
+			job = "jolly",
+			story = "story_hard_aftershock",
+			difficulty = hard_and_above
+		},
+		story_hard_stealing_xmas = {
+			job = "moon",
+			story = "story_hard_stealing_xmas",
+			difficulty = hard_and_above
+		},
+		story_hard_nightclub = {
+			job = "nightclub",
+			story = "story_hard_nightclub",
+			difficulty = hard_and_above
+		},
+		story_very_hard_watchdog = {
+			story = "story_very_hard_watchdog",
+			jobs = {
+				"watchdogs_wrapper",
+				"watchdogs_night",
+				"watchdogs"
+			},
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_firestarter = {
+			job = "firestarter",
+			story = "story_very_hard_firestarter",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_rats = {
+			job = "alex",
+			story = "story_very_hard_rats",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_big_oil = {
+			story = "story_very_hard_big_oil",
+			jobs = {
+				"welcome_to_the_jungle_wrapper_prof",
+				"welcome_to_the_jungle_night_prof",
+				"welcome_to_the_jungle_prof"
+			},
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_framing_frames = {
+			job = "framing_frame",
+			story = "story_very_hard_framing_frames",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_election_day = {
+			job = "election_day",
+			story = "story_very_hard_election_day",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_big_bank = {
+			job = "big",
+			story = "story_very_hard_big_bank",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_hotline_miami = {
+			job = "mia",
+			story = "story_very_hard_hotline_miami",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_hoxton_breakout = {
+			job = "hox",
+			story = "story_very_hard_hoxton_breakout",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_hoxton_revenge = {
+			job = "hox_3",
+			story = "story_very_hard_hoxton_revenge",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_diamond = {
+			job = "mus",
+			story = "story_very_hard_diamond",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_golden_grin = {
+			job = "kenaz",
+			story = "story_very_hard_golden_grin",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_bomb_dockyard = {
+			job = "crojob1",
+			story = "story_very_hard_bomb_dockyard",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_bomb_forest = {
+			story = "story_very_hard_bomb_forest",
+			jobs = {
+				"crojob_wrapper",
+				"crojob2",
+				"crojob2_night"
+			},
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_scarface = {
+			job = "friend",
+			story = "story_very_hard_scarface",
+			difficulty = veryhard_and_above
 		}
 	}
 	self.check_equipment_memory_on_leave = {
@@ -2842,6 +3030,11 @@ function AchievementsTweakData:init(tweak_data)
 				amount = 1,
 				carry_id = {"yayo"}
 			}}
+		},
+		story_shadow_raid_bags = {
+			amount = 1,
+			story = "story_shadow_raid_bags",
+			jobs = {"kosugi"}
 		}
 	}
 	self.job_list = {
@@ -3192,6 +3385,10 @@ function AchievementsTweakData:init(tweak_data)
 		cee_3 = {
 			award = "cee_3",
 			level = 250
+		},
+		story_crime_spree = {
+			story = "story_crime_spree",
+			level = 20
 		}
 	}
 	local gage_5_1_achievement = {

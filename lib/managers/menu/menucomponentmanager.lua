@@ -48,6 +48,8 @@ require("lib/managers/menu/IngameContractGuiCrimeSpree")
 require("lib/managers/menu/CrimeSpreeContractBoxGui")
 require("lib/managers/menu/LobbyCharacterData")
 require("lib/managers/menu/CrewManagementGui")
+require("lib/managers/menu/StoryMissionsGui")
+require("lib/managers/menu/CrimeNetSidebarGui")
 require("lib/managers/menu/PromotionalMenuGui")
 require("lib/managers/menu/PromotionalWeaponPreviewGui")
 require("lib/managers/menu/RaidMenuGui")
@@ -260,6 +262,14 @@ function MenuComponentManager:init()
 		crew_management = {
 			create = callback(self, self, "create_crew_management_gui"),
 			close = callback(self, self, "close_crew_management_gui")
+		},
+		story_missions = {
+			create = callback(self, self, "create_story_missions_gui"),
+			close = callback(self, self, "close_story_missions_gui")
+		},
+		crimenet_sidebar = {
+			create = callback(self, self, "create_crimenet_sidebar_gui"),
+			close = callback(self, self, "close_crimenet_sidebar_gui")
 		},
 		raid_menu = {
 			create = callback(self, self, "create_raid_menu_gui"),
@@ -730,7 +740,7 @@ function MenuComponentManager:input_focus()
 		return self._lootdrop_gui:input_focus()
 	end
 
-	if self._crimenet_gui then
+	if self._crimenet_gui and self._crimenet_gui:enabled() and self._crimenet_gui:input_focus() then
 		return self._crimenet_gui:input_focus()
 	end
 
@@ -4953,6 +4963,50 @@ function MenuComponentManager:close_crew_management_gui()
 
 		self:unregister_component("crew_management")
 	end
+end
+
+function MenuComponentManager:create_story_missions_gui(node)
+	self:close_story_missions_gui()
+
+	self._story_missions_gui = StoryMissionsGui:new(self._ws, self._fullscreen_ws, node)
+
+	self:register_component("story_missions", self._story_missions_gui)
+end
+
+function MenuComponentManager:close_story_missions_gui()
+	if self._story_missions_gui then
+		self._story_missions_gui:close()
+
+		self._story_missions_gui = nil
+
+		self:unregister_component("story_missions")
+	end
+end
+
+function MenuComponentManager:story_missions_gui()
+	return self._story_missions_gui
+end
+
+function MenuComponentManager:create_crimenet_sidebar_gui(node)
+	self:close_crimenet_sidebar_gui()
+
+	self._crimenet_sidebar_gui = CrimeNetSidebarGui:new(self._ws, self._fullscreen_ws, node)
+
+	self:register_component("crimenet_sidebar", self._crimenet_sidebar_gui)
+end
+
+function MenuComponentManager:close_crimenet_sidebar_gui()
+	if self._crimenet_sidebar_gui then
+		self._crimenet_sidebar_gui:close()
+
+		self._crimenet_sidebar_gui = nil
+
+		self:unregister_component("crimenet_sidebar")
+	end
+end
+
+function MenuComponentManager:crimenet_sidebar_gui()
+	return self._crimenet_sidebar_gui
 end
 
 function MenuComponentManager:create_raid_menu_gui(node)

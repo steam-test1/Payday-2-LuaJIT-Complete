@@ -159,9 +159,24 @@ function ContourExt:init(unit)
 	self._unit:set_extension_update_enabled(idstr_contour, false)
 
 	ContourExt._slotmask_world_geometry = ContourExt._slotmask_world_geometry or managers.slot:get_mask("world_geometry")
+	self._contour_list = self._contour_list or {}
 
 	if self.init_contour then
 		self:add(self.init_contour, nil, nil)
+	end
+end
+
+function ContourExt:apply_to_linked(func_name, ...)
+	if self._unit.spawn_manager and self._unit:spawn_manager() and self._unit:spawn_manager():linked_units() then
+		for unit_id, _ in pairs(self._unit:spawn_manager():linked_units()) do
+			local unit_entry = self._unit:spawn_manager():spawned_units()[unit_id]
+
+			if unit_entry and alive(unit_entry.unit) and unit_entry.unit:contour() then
+				local contour_ext = unit_entry.unit:contour()
+
+				contour_ext[func_name](contour_ext, ...)
+			end
+		end
 	end
 end
 
@@ -228,6 +243,8 @@ function ContourExt:add(type, sync, multiplier)
 		self:_chk_update_state()
 	end
 
+	self:apply_to_linked("add", type, sync, multiplier)
+
 	return setup
 end
 
@@ -245,6 +262,8 @@ function ContourExt:change_color(type, color)
 			break
 		end
 	end
+
+	self:apply_to_linked("change_color", type, color)
 end
 
 function ContourExt:flash(type_or_id, frequency)
@@ -263,6 +282,8 @@ function ContourExt:flash(type_or_id, frequency)
 			break
 		end
 	end
+
+	self:apply_to_linked("flash", type_or_id, frequency)
 end
 
 function ContourExt:is_flashing()
@@ -292,9 +313,11 @@ function ContourExt:remove(type, sync)
 				self:_chk_update_state()
 			end
 
-			return
+			break
 		end
 	end
+
+	self:apply_to_linked("remove", type, sync)
 end
 
 function ContourExt:remove_by_id(id, sync)
@@ -310,9 +333,11 @@ function ContourExt:remove_by_id(id, sync)
 				self:_chk_update_state()
 			end
 
-			return
+			break
 		end
 	end
+
+	self:apply_to_linked("remove_by_id", id, sync)
 end
 
 function ContourExt:has_id(id)
@@ -377,6 +402,8 @@ function ContourExt:_remove(index, sync)
 
 		managers.network:session():send_to_peers_synched("sync_contour_state", self._unit, u_id, table.index_of(ContourExt.indexed_types, contour_type), false, 1)
 	end
+
+	self:apply_to_linked("_remove", index, sync)
 end
 
 function ContourExt:update(unit, t, dt)
@@ -387,7 +414,7 @@ function ContourExt:update(unit, t, dt)
 		local data = self._types[setup.type]
 		local is_current = index == 1
 
-		if data.ray_check then
+		if data.ray_check and unit:movement() then
 			local turn_on = nil
 
 			if is_current then
@@ -397,18 +424,18 @@ function ContourExt:update(unit, t, dt)
 					turn_on = mvector3.distance_sq(cam_pos, unit:movement():m_com()) > 16000000
 					turn_on = turn_on or unit:raycast("ray", unit:movement():m_com(), cam_pos, "slot_mask", self._slotmask_world_geometry, "report")
 				end
-			end
 
-			if turn_on then
-				self:_upd_opacity(1)
+				if turn_on then
+					self:_upd_opacity(1)
 
-				setup.last_turned_on_t = t
-			elseif not setup.last_turned_on_t or data.persistence < t - setup.last_turned_on_t then
-				if is_current then
-					self:_upd_opacity(0)
+					setup.last_turned_on_t = t
+				elseif not setup.last_turned_on_t or data.persistence < t - setup.last_turned_on_t then
+					if is_current then
+						self:_upd_opacity(0)
+					end
+
+					setup.last_turned_on_t = nil
 				end
-
-				setup.last_turned_on_t = nil
 			end
 		end
 
@@ -453,6 +480,8 @@ function ContourExt:_upd_opacity(opacity, is_retry)
 
 		material:set_variable(idstr_contour_opacity, opacity)
 	end
+
+	self:apply_to_linked("_upd_opacity", opacity, is_retry)
 end
 
 function ContourExt:_upd_color(is_retry)
@@ -472,11 +501,13 @@ function ContourExt:_upd_color(is_retry)
 				self:_upd_color(true)
 			end
 
-			return
+			break
 		end
 
 		material:set_variable(idstr_contour_color, color)
 	end
+
+	self:apply_to_linked("_upd_color", is_retry)
 end
 
 function ContourExt:_apply_top_preset()

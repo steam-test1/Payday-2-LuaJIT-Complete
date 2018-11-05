@@ -44,6 +44,10 @@ function ManageSpawnedUnits:spawn_unit(unit_id, align_obj_name, unit)
 	end
 end
 
+function ManageSpawnedUnits:spawned_units()
+	return self._spawned_units
+end
+
 function ManageSpawnedUnits:spawn_and_link_unit(joint_table, unit_id, unit)
 	if self._spawned_units[unit_id] then
 		return
@@ -98,6 +102,10 @@ function ManageSpawnedUnits:spawn_and_link_unit(joint_table, unit_id, unit)
 	if Network:is_server() and not self.local_only then
 		managers.network:session():send_to_peers_synched("sync_link_spawned_unit", self._unit, unit_id, joint_table, "spawn_manager")
 	end
+end
+
+function ManageSpawnedUnits:linked_units()
+	return self._sync_spawn_and_link
 end
 
 function ManageSpawnedUnits:spawn_run_sequence(unit_id, sequence_name)

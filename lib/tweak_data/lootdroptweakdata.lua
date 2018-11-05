@@ -1505,6 +1505,20 @@ function LootDropTweakData:init(tweak_data)
 		category = "global_event",
 		ignore_ulti = true
 	}
+	self.global_values.cmo = {
+		name_id = "bm_global_value_cmo",
+		desc_id = "menu_l_global_value_cmo",
+		unlock_id = "bm_global_value_cmo_unlock",
+		color = dlc_color,
+		dlc = true,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 300,
+		category = "dlc"
+	}
 
 	if SystemInfo:platform() == Idstring("PS3") then
 		self.global_values.sweettooth = {
@@ -1588,6 +1602,7 @@ function LootDropTweakData:init(tweak_data)
 		"max",
 		"dgm",
 		"fdm",
+		"cmo",
 		"eng"
 	}
 

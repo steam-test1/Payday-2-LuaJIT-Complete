@@ -139,6 +139,11 @@ function MenuCallbackHandler:start_job(job_data)
 	Global.game_settings.mission = managers.job:current_mission()
 	Global.game_settings.world_setting = managers.job:current_world_setting()
 	Global.game_settings.difficulty = job_data.difficulty
+
+	if managers.platform then
+		managers.platform:update_discord_heist()
+	end
+
 	local matchmake_attributes = self:get_matchmake_attributes()
 
 	if Network:is_server() then
@@ -181,6 +186,10 @@ function MenuCallbackHandler:start_single_player_job(job_data)
 	Global.game_settings.mission = managers.job:current_mission()
 	Global.game_settings.difficulty = job_data.difficulty
 	Global.game_settings.world_setting = managers.job:current_world_setting()
+
+	if managers.platform then
+		managers.platform:update_discord_heist()
+	end
 
 	MenuCallbackHandler:start_the_game()
 end
@@ -241,6 +250,18 @@ end
 
 function MenuCallbackHandler:got_new_lootdrop()
 	return managers.blackmarket and managers.blackmarket:got_any_new_drop()
+end
+
+function MenuCallbackHandler:not_completed_all_story_assignments()
+	local current = managers.story:current_mission() or {}
+
+	return not current.last_mission or not current.rewarded
+end
+
+function MenuCallbackHandler:got_completed_story_mission()
+	local current = managers.story:current_mission() or {}
+
+	return current.completed and not current.rewarded
 end
 
 function MenuCallbackHandler:show_custom_safehouse_menu_icon()

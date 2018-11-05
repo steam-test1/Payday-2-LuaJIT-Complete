@@ -1139,6 +1139,10 @@ function JobManager:activate_job(job_id, current_stage)
 	self._global.memory = {}
 	self._global.shortterm_memory = {}
 
+	if managers.platform then
+		managers.platform:update_discord_heist()
+	end
+
 	return true
 end
 
@@ -1159,6 +1163,10 @@ function JobManager:activate_temporary_job(job_id, level_id)
 
 	self._global.memory = {}
 	self._global.shortterm_memory = {}
+
+	if managers.platform then
+		managers.platform:update_discord_heist()
+	end
 
 	return true
 end

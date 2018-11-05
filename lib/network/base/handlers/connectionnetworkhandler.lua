@@ -314,6 +314,10 @@ function ConnectionNetworkHandler:sync_game_settings(job_index, level_id_index, 
 	Global.game_settings.world_setting = managers.job:current_world_setting()
 	Global.game_settings.difficulty = difficulty
 
+	if managers.platform then
+		managers.platform:update_discord_heist()
+	end
+
 	peer:verify_job(job_id)
 
 	if managers.menu_component then

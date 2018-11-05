@@ -973,7 +973,28 @@ function CustomSafehouseGuiPageDaily:move_button(dir)
 		next_button = #self._side_panel_buttons
 	end
 
-	self._side_panel_buttons[next_button]:set_selected(true)
+	local to_select = self._side_panel_buttons[next_button]
+
+	to_select:set_selected(true)
+	self:_scroll_to_show(to_select._panel)
+end
+
+function CustomSafehouseGuiPageDaily:_scroll_to_show(top_or_item, bottom)
+	local top = nil
+
+	if top_or_item.top and top_or_item.bottom then
+		top = top_or_item:top() - 24
+		bottom = top_or_item:bottom()
+	end
+
+	bottom = bottom - self._side_panel:scroll_panel():h()
+	local cur = -self._side_panel:canvas():y()
+
+	if top < cur then
+		self._side_panel:scroll_to(top)
+	elseif cur < bottom then
+		self._side_panel:scroll_to(bottom)
+	end
 end
 
 function CustomSafehouseGuiPageDaily:move_reward_button(dir)
@@ -1389,6 +1410,7 @@ function CustomSafehouseGuiRewardItem:init(daily_page, panel, order, reward_data
 	local is_pattern = false
 	local is_material = false
 	local is_weapon = false
+	local is_weapon_mod = false
 
 	if reward_data[1] == "safehouse_coins" then
 		texture_path = "guis/dlcs/chill/textures/pd2/safehouse/continental_coins_drop"
@@ -1427,6 +1449,7 @@ function CustomSafehouseGuiRewardItem:init(daily_page, panel, order, reward_data
 			else
 				if category == "weapon_mods" or category == "weapon_bonus" then
 					category = "mods"
+					is_weapon_mod = true
 				end
 
 				if category == "weapon" then
@@ -1457,11 +1480,13 @@ function CustomSafehouseGuiRewardItem:init(daily_page, panel, order, reward_data
 
 	self._text = self._panel:text({
 		name = "text",
-		blend_mode = "add",
-		align = "left",
+		wrap = true,
+		align = "center",
 		vertical = "bottom",
 		valign = "scale",
+		blend_mode = "add",
 		halign = "scale",
+		word_wrap = true,
 		layer = 1,
 		font_size = small_font_size,
 		font = small_font,
@@ -1506,7 +1531,7 @@ function CustomSafehouseGuiRewardItem:init(daily_page, panel, order, reward_data
 		self._image:set_h(panel:h() * 0.7 * ratio_h)
 	end
 
-	if is_weapon then
+	if is_weapon or is_weapon_mod then
 		self._image:set_center_y(self._panel:h() * 0.5)
 	end
 

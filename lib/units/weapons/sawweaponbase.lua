@@ -262,7 +262,7 @@ function SawHit:on_collision(col_ray, weapon_unit, user_unit, damage)
 	return result
 end
 
-function SawHit:play_impact_sound_and_effects(col_ray)
+function SawHit:play_impact_sound_and_effects(weapon_unit, col_ray)
 	managers.game_play_central:play_impact_sound_and_effects({
 		decal = "saw",
 		no_sound = true,

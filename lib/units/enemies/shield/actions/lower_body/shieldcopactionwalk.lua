@@ -1,22 +1,22 @@
 ShieldCopActionWalk = ShieldCopActionWalk or class(CopActionWalk)
 ShieldCopActionWalk._walk_anim_velocities = {stand = {cbt = {
 	walk = {
-		bwd = 187.5,
-		l = 186.589,
-		fwd = 194.2,
-		r = 191.379
+		bwd = 208,
+		l = 227.5,
+		fwd = 242.75,
+		r = 208.75
 	},
 	run = {
-		bwd = 333.33,
-		l = 333.33,
-		fwd = 348.3,
-		r = 340.62
+		bwd = 281.88,
+		l = 364.29,
+		fwd = 342.5,
+		r = 361.25
 	},
 	sprint = {
-		bwd = 434.1,
-		l = 368.116,
-		fwd = 546,
-		r = 470.636
+		bwd = 451,
+		l = 582.86,
+		fwd = 548,
+		r = 578
 	}
 }}}
 ShieldCopActionWalk._walk_anim_velocities.stand.ntl = ShieldCopActionWalk._walk_anim_velocities.stand.cbt
@@ -25,22 +25,22 @@ ShieldCopActionWalk._walk_anim_velocities.stand.wnd = ShieldCopActionWalk._walk_
 ShieldCopActionWalk._walk_anim_velocities.crouch = ShieldCopActionWalk._walk_anim_velocities.stand
 ShieldCopActionWalk._walk_anim_lengths = {stand = {cbt = {
 	walk = {
-		bwd = 27,
-		l = 29,
-		fwd = 29,
-		r = 29
+		bwd = 24,
+		l = 26,
+		fwd = 28,
+		r = 26
 	},
 	run = {
-		bwd = 18,
-		l = 18,
-		fwd = 22,
-		r = 20
+		bwd = 16,
+		l = 21,
+		fwd = 18,
+		r = 21
 	},
 	sprint = {
-		bwd = 15,
-		l = 18,
+		bwd = 16,
+		l = 21,
 		fwd = 18,
-		r = 19
+		r = 21
 	},
 	run_start = {
 		bwd = 26,

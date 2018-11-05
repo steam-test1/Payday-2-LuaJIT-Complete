@@ -404,6 +404,7 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 	self.projectiles.chico_injector = {
 		name_id = "bm_ability_chico_injector",
 		desc_id = "bm_ability_chico_injector_desc",
+		skip_statistics = true,
 		icon = "chico_injector",
 		ability = "chico_injector",
 		texture_bundle_folder = "chico",

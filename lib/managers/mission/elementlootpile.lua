@@ -253,7 +253,7 @@ function ElementLootPile:clbk_pickup_SO_verification(loot_index, candidate_unit)
 end
 
 function ElementLootPile:on_pickup_SO_administered(loot_index, thief)
-	if not self._steal_SO_data[loot_index].thief then
+	if loot_index and self._steal_SO_data[loot_index] and not self._steal_SO_data[loot_index].thief then
 		self._steal_SO_data[loot_index].SO_registered = false
 	end
 end

@@ -510,6 +510,7 @@ function LevelsTweakData:init()
 	self.driving_escapes_industry_day = {
 		name_id = "heist_driving_escapes_industry_hl",
 		briefing_id = "heist_driving_escapes_industry_briefing",
+		ignore_statistics = true,
 		briefing_dialog = "nothing",
 		world_name = "wip/driving_escapes_industry",
 		intro_event = "Play_dr1_a01",
@@ -522,6 +523,7 @@ function LevelsTweakData:init()
 	self.driving_escapes_city_day = {
 		name_id = "heist_driving_escapes_city_hl",
 		briefing_id = "heist_driving_escapes_city_briefing",
+		ignore_statistics = true,
 		briefing_dialog = "nothing",
 		world_name = "wip/driving_escapes_city",
 		intro_event = "Play_dr1_a01",

@@ -18,6 +18,11 @@ function CrimeNetManager:init()
 	end
 
 	self._global = Global.crimenet
+
+	if Global.crimenet.sidebar == nil then
+		Global.crimenet.sidebar = {collapsed = false}
+		self._global = Global.crimenet
+	end
 end
 
 function CrimeNetManager:_setup_vars()
@@ -167,6 +172,12 @@ function CrimeNetManager:_setup()
 				local job_tweak = tweak_data.narrative:job_data(job_data.job_id)
 				local chance_multiplier = job_tweak and job_tweak.spawn_chance_multiplier or 1
 				job_data.chance = chance * chance_multiplier
+				local difficulty_filter_index = managers.user:get_setting("crimenet_filter_difficulty")
+
+				if difficulty_filter_index > 0 then
+					job_data.difficulty = tweak_data:index_to_difficulty(difficulty_filter_index)
+					job_data.difficulty_id = difficulty_filter_index
+				end
 
 				table.insert(self._presets, job_data)
 
@@ -192,6 +203,25 @@ function CrimeNetManager:_setup()
 
 	while #old_presets > 0 do
 		table.insert(self._presets, table.remove(old_presets, math.random(#old_presets)))
+	end
+end
+
+function CrimeNetManager:update_difficulty_filter()
+	if self._presets then
+		local difficulty_filter_index = managers.user:get_setting("crimenet_filter_difficulty")
+
+		if difficulty_filter_index > 0 then
+			local difficulty_name = tweak_data:index_to_difficulty(difficulty_filter_index)
+
+			for _, job_data in ipairs(self._presets) do
+				job_data.difficulty = difficulty_name
+				job_data.difficulty_id = difficulty_filter_index
+			end
+		else
+			self._presets = nil
+
+			self:_setup()
+		end
 	end
 end
 
@@ -1011,6 +1041,10 @@ end
 function CrimeNetManager:load(data)
 	Global.crimenet = data.crimenet or Global.crimenet
 	self._global = Global.crimenet
+
+	if not self._global.sidebar then
+		self._global.sidebar = {collapsed = false}
+	end
 end
 
 function CrimeNetManager:join_quick_play_game()
@@ -1138,6 +1172,14 @@ function CrimeNetManager:join_quick_play_game()
 
 	managers.network.matchmake:register_callback("search_lobby", f)
 	managers.network.matchmake:search_lobby(nil, true)
+end
+
+function CrimeNetManager:set_sidebar_collapsed(collapsed)
+	self._global.sidebar.collapsed = collapsed
+end
+
+function CrimeNetManager:sidebar_collapsed()
+	return self._global.sidebar.collapsed
 end
 CrimeNetGui = CrimeNetGui or class()
 
@@ -1375,8 +1417,9 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 	})
 
 	self:make_fine_text(legends_button)
-	legends_button:set_left(num_players_text:left())
-	legends_button:set_top(num_players_text:bottom())
+	legends_button:set_right(self._panel:w() - 10)
+	legends_button:set_top(10)
+	legends_button:set_align("right")
 
 	local blur_object = self._panel:bitmap({
 		texture = "guis/textures/test_blur_df",
@@ -1620,6 +1663,7 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 		w = legend_panel:w(),
 		h = legend_panel:h()
 	})
+	legend_panel:set_right(self._panel:w() - 10)
 
 	local w, h = nil
 	local mw = 0
@@ -1755,66 +1799,6 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 
 	if not no_servers and not is_xb1 then
 		local id = is_x360 and "menu_cn_friends" or "menu_cn_filter"
-		local filter_button = self._panel:text({
-			name = "filter_button",
-			blend_mode = "add",
-			layer = 40,
-			text = managers.localization:to_upper_text(id, {BTN_Y = managers.localization:btn_macro("menu_toggle_filters")}),
-			font_size = tweak_data.menu.pd2_small_font_size,
-			font = tweak_data.menu.pd2_small_font,
-			color = tweak_data.screen_colors.text
-		})
-
-		self:make_fine_text(filter_button)
-		filter_button:set_right(self._panel:w() - 10)
-		filter_button:set_top(10)
-
-		local blur_object = self._panel:bitmap({
-			texture = "guis/textures/test_blur_df",
-			name = "filter_button_blur",
-			render_template = "VertexColorTexturedBlur3D",
-			layer = filter_button:layer() - 1
-		})
-
-		blur_object:set_shape(filter_button:shape())
-
-		if managers.menu:is_pc_controller() then
-			filter_button:set_color(tweak_data.screen_colors.button_stage_3)
-		end
-
-		if is_ps3 or is_ps4 then
-			local invites_button = self._panel:text({
-				name = "invites_button",
-				blend_mode = "add",
-				layer = 40,
-				text = managers.localization:get_default_macro("BTN_BACK") .. " " .. managers.localization:to_upper_text("menu_view_invites"),
-				font_size = tweak_data.menu.pd2_medium_font_size,
-				font = tweak_data.menu.pd2_medium_font,
-				color = tweak_data.screen_colors.text
-			})
-
-			self:make_fine_text(invites_button)
-			invites_button:set_right(filter_button:right())
-			invites_button:set_top(filter_button:bottom())
-
-			local blur_object = self._panel:bitmap({
-				texture = "guis/textures/test_blur_df",
-				name = "invites_button_blur",
-				render_template = "VertexColorTexturedBlur3D",
-				layer = filter_button:layer() - 1
-			})
-
-			blur_object:set_shape(invites_button:shape())
-
-			if not self._ps3_invites_controller then
-				local invites_cb = callback(self, self, "ps3_invites_callback")
-				self._ps3_invites_controller = managers.controller:create_controller("ps3_invites_controller", managers.controller:get_default_wrapper_index(), false)
-
-				self._ps3_invites_controller:add_trigger("back", invites_cb)
-			end
-
-			self._ps3_invites_controller:set_enabled(true)
-		end
 	elseif not no_servers and is_xb1 then
 		local id = "menu_cn_smart_matchmaking"
 		local smart_matchmaking_button = self._panel:text({
@@ -2210,6 +2194,52 @@ function CrimeNetGui:set_players_online(players)
 	self._panel:child("num_players_blur"):set_shape(num_players_text:shape())
 end
 
+function CrimeNetGui:move_players_online(x, y)
+	local num_players_text = self._panel:child("num_players_text")
+
+	num_players_text:move(x or 0, y or 0)
+	self._panel:child("num_players_blur"):set_shape(num_players_text:shape())
+end
+
+function CrimeNetGui:set_players_online_pos(x, y)
+	local num_players_text = self._panel:child("num_players_text")
+
+	if x then
+		num_players_text:set_x(x)
+	end
+
+	if y then
+		num_players_text:set_y(y)
+	end
+
+	self._panel:child("num_players_blur"):set_shape(num_players_text:shape())
+end
+
+function CrimeNetGui:move_legend(x, y)
+	local legend = self._panel:child("legends_button")
+
+	legend:move(x or 0, y or 0)
+
+	local legend_panel = self._panel:child("legend_panel")
+
+	legend_panel:move(x or 0, y or 0)
+end
+
+function CrimeNetGui:set_legend_pos(x, y)
+	local legend = self._panel:child("legends_button")
+	local legend_panel = self._panel:child("legend_panel")
+
+	if x then
+		legend:set_x(x)
+		legend_panel:set_x(x)
+	end
+
+	if y then
+		legend:set_y(y)
+		legend_panel:set_y(y)
+	end
+end
+
 function CrimeNetGui:_create_locations()
 	self._locations = deep_clone(self._tweak_data.locations) or {}
 
@@ -2446,6 +2476,8 @@ function CrimeNetGui:set_getting_hacked(hacked)
 end
 
 function CrimeNetGui:add_special_contracts(no_casino, no_quickplay)
+	return
+
 	for index, special_contract in ipairs(tweak_data.gui.crime_net.special_contracts) do
 		local skip = false
 
@@ -3706,6 +3738,7 @@ function CrimeNetGui:update(t, dt)
 	end
 
 	local update_controller_snap = true
+	update_controller_snap = self:input_focus()
 
 	if update_controller_snap and not managers.menu:is_pc_controller() and managers.mouse_pointer:mouse_move_x() == 0 and managers.mouse_pointer:mouse_move_y() == 0 then
 		local closest_job = nil
@@ -3770,8 +3803,6 @@ function CrimeNetGui:toggle_legend()
 	managers.menu_component:post_event("menu_enter")
 	self._panel:child("legend_panel"):set_visible(not self._panel:child("legend_panel"):visible())
 	self._panel:child("legends_button"):set_text(managers.localization:to_upper_text(self._panel:child("legend_panel"):visible() and "menu_cn_legend_hide" or "menu_cn_legend_show", {BTN_X = managers.localization:btn_macro("menu_toggle_legends")}))
-	self:make_fine_text(self._panel:child("legends_button"))
-	self._panel:child("legends_button_blur"):set_shape(self._panel:child("legends_button"):shape())
 end
 
 function CrimeNetGui:mouse_button_click(button)
@@ -3813,23 +3844,18 @@ function CrimeNetGui:special_btn_pressed(button)
 		return true
 	end
 
-	if self._panel:child("filter_button") then
-		if button == Idstring("menu_toggle_filters") then
-			managers.menu_component:post_event("menu_enter")
-
-			if is_x360 then
-				XboxLive:show_friends_ui(managers.user:get_platform_id())
-			elseif is_xb1 then
-				
-			else
-				managers.menu:open_node("crimenet_filters", {})
-			end
-
-			return true
-		end
-	elseif self._panel:child("smart_matchmaking_button") and button == Idstring("menu_toggle_filters") then
+	if button == Idstring("menu_toggle_filters") then
 		managers.menu_component:post_event("menu_enter")
-		managers.menu:open_node("crimenet_contract_smart_matchmaking", {})
+
+		if is_x360 then
+			XboxLive:show_friends_ui(managers.user:get_platform_id())
+		elseif is_xb1 then
+			
+		else
+			managers.menu:open_node("crimenet_filters", {})
+		end
+
+		return true
 	end
 
 	return false
@@ -3864,6 +3890,10 @@ function CrimeNetGui:next_page()
 end
 
 function CrimeNetGui:input_focus()
+	if managers.menu_component and managers.menu_component:crimenet_sidebar_gui() and managers.menu_component:crimenet_sidebar_gui():input_focus() then
+		return false
+	end
+
 	return self._crimenet_enabled and 1
 end
 
@@ -3933,6 +3963,10 @@ function CrimeNetGui:mouse_pressed(o, button, x, y)
 	end
 
 	if self._getting_hacked then
+		return
+	end
+
+	if not self:input_focus() then
 		return
 	end
 
@@ -4430,6 +4464,10 @@ function CrimeNetGui:mouse_moved(o, x, y)
 	end
 
 	if self._getting_hacked then
+		return
+	end
+
+	if not self:input_focus() then
 		return
 	end
 

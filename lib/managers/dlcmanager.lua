@@ -1763,6 +1763,10 @@ function WINDLCManager:init()
 			fdm = {
 				app_id = "707620",
 				no_install = true
+			},
+			cmo = {
+				app_id = "218620",
+				no_install = true
 			}
 		}
 

@@ -123,6 +123,7 @@ function NewNPCRaycastWeaponBase:setup(setup_data)
 	self._character_slotmask = managers.slot:get_mask("raycastable_characters")
 	self._hit_player = setup_data.hit_player and true or false
 	self._setup = setup_data
+	self._part_stats = managers.weapon_factory:get_stats(self._factory_id, self._blueprint)
 end
 
 function NewNPCRaycastWeaponBase:assemble(factory_id)
@@ -237,6 +238,8 @@ function NewNPCRaycastWeaponBase:auto_fire_blank(direction, impact)
 	self._unit:m_position(mfrom)
 
 	local rays = {}
+	local right = direction:cross(math.UP):normalized()
+	local up = direction:cross(right):normalized()
 
 	if impact and (self._use_trails == nil or self._use_trails == true) then
 		local num_rays = (tweak_data.weapon[self:non_npc_name_id()] or {}).rays or 1
@@ -246,8 +249,14 @@ function NewNPCRaycastWeaponBase:auto_fire_blank(direction, impact)
 		end
 
 		for i = 1, num_rays, 1 do
+			local spread_x, spread_y = self:_get_spread(user_unit)
+			local theta = math.random() * 360
+			local ax = math.sin(theta) * math.random() * spread_x
+			local ay = math.cos(theta) * math.random() * (spread_y or spread_x)
+
 			mvector3.set(mspread, direction)
-			mvector3.spread(mspread, self:_get_spread())
+			mvector3.add(mspread, right * math.rad(ax))
+			mvector3.add(mspread, up * math.rad(ay))
 			mvector3.set(mto, mspread)
 			mvector3.multiply(mto, 20000)
 			mvector3.add(mto, mfrom)
@@ -302,6 +311,8 @@ function NewNPCRaycastWeaponBase:fire_blank(direction, impact)
 	self._unit:m_position(mfrom)
 
 	local rays = {}
+	local right = direction:cross(math.UP):normalized()
+	local up = direction:cross(right):normalized()
 
 	if impact and (self._use_trails == nil or self._use_trails == true) then
 		local num_rays = (tweak_data.weapon[self:non_npc_name_id()] or {}).rays or 1
@@ -311,8 +322,14 @@ function NewNPCRaycastWeaponBase:fire_blank(direction, impact)
 		end
 
 		for i = 1, num_rays, 1 do
+			local spread_x, spread_y = self:_get_spread(user_unit)
+			local theta = math.random() * 360
+			local ax = math.sin(theta) * math.random() * spread_x
+			local ay = math.cos(theta) * math.random() * (spread_y or spread_x)
+
 			mvector3.set(mspread, direction)
-			mvector3.spread(mspread, self:_get_spread())
+			mvector3.add(mspread, right * math.rad(ax))
+			mvector3.add(mspread, up * math.rad(ay))
 			mvector3.set(mto, mspread)
 			mvector3.multiply(mto, 20000)
 			mvector3.add(mto, mfrom)
@@ -387,14 +404,25 @@ function NewNPCRaycastWeaponBase:_get_spread(user_unit)
 		return 3
 	end
 
-	local pose = "standing"
-	local spread_index = spread_values[pose]
+	local pose = user_unit:movement()._moving and "moving_standing" or "standing"
+	local spread_stat_value = weapon_tweak.stats.spread + (self._part_stats and self._part_stats.spread or 0)
+	local spread_pose_value = spread_values[pose]
+	local spread_x, spread_y = nil
 
-	if type(spread_index) == "table" then
-		return tweak_data.weapon.stats.spread[spread_index[1]]
+	if type(spread_pose_value) == "table" then
+		spread_x = spread_pose_value[1] * tweak_data.weapon.stats.spread[spread_stat_value]
+		spread_y = spread_pose_value[2] * tweak_data.weapon.stats.spread[spread_stat_value]
 	else
-		return tweak_data.weapon.stats.spread[spread_index]
+		spread_x = spread_pose_value * tweak_data.weapon.stats.spread[spread_stat_value]
+		spread_y = spread_x
 	end
+
+	if self._part_stats and self._part_stats.spread_multi then
+		spread_x = spread_x * (self._part_stats.spread_multi[1] or 0)
+		spread_y = spread_y * (self._part_stats.spread_multi[2] or 0)
+	end
+
+	return spread_x, spread_y
 end
 
 function NewNPCRaycastWeaponBase:_sound_autofire_start(nr_shots)
@@ -475,6 +503,9 @@ function NewNPCRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, d
 		end
 	end
 
+	local right = direction:cross(math.UP):normalized()
+	local up = direction:cross(right):normalized()
+
 	if col_ray then
 		if col_ray.unit:in_slot(self._character_slotmask) then
 			hit_unit = InstantBulletBase:on_collision(col_ray, self._unit, user_unit, damage)
@@ -499,7 +530,13 @@ function NewNPCRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, d
 			mvector3.set(mvec_spread, direction)
 
 			if i > 1 then
-				mvector3.spread(mvec_spread, self:_get_spread())
+				local spread_x, spread_y = self:_get_spread(user_unit)
+				local theta = math.random() * 360
+				local ax = math.sin(theta) * math.random() * spread_x
+				local ay = math.cos(theta) * math.random() * (spread_y or spread_x)
+
+				mvector3.add(mvec_spread, right * math.rad(ax))
+				mvector3.add(mvec_spread, up * math.rad(ay))
 			end
 
 			self:_spawn_trail_effect(mvec_spread, col_ray)

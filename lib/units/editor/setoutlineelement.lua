@@ -7,10 +7,12 @@ function SetOutlineElement:init(unit)
 	self._hed.elements = {}
 	self._hed.set_outline = true
 	self._hed.use_instigator = false
+	self._hed.clear_previous = false
 
 	table.insert(self._save_values, "elements")
 	table.insert(self._save_values, "set_outline")
 	table.insert(self._save_values, "use_instigator")
+	table.insert(self._save_values, "clear_previous")
 end
 
 function SetOutlineElement:_build_panel(panel, panel_sizer)
@@ -34,6 +36,7 @@ function SetOutlineElement:_build_panel(panel, panel_sizer)
 	})
 	panel_sizer:add(set_outline, 0, 0, "EXPAND")
 	self:_build_value_checkbox(panel, panel_sizer, "use_instigator", "Sets outline on the instigator")
+	self:_build_value_checkbox(panel, panel_sizer, "clear_previous", "Clears any previously set outlines (fixes issue with escorts)")
 end
 
 function SetOutlineElement:draw_links(t, dt, selected_unit, all_units)

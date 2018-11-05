@@ -128,7 +128,6 @@ function ElementAreaTrigger:project_instigators()
 			local carry_list = {
 				"gold",
 				"money",
-				"diamonds",
 				"coke",
 				"coke_pure",
 				"sandwich",

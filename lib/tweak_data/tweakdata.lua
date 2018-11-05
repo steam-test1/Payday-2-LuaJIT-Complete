@@ -41,9 +41,11 @@ require("lib/tweak_data/CrimeSpreeTweakData")
 require("lib/tweak_data/FireTweakData")
 require("lib/tweak_data/NetworkTweakData")
 require("lib/tweak_data/AnimationTweakData")
+require("lib/tweak_data/StoryMissionsTweakData")
 require("lib/tweak_data/PromotionalMenusTweakData")
 require("lib/tweak_data/PromoUnlocksTweakData")
 require("lib/tweak_data/RaidJobsTweakData")
+require("lib/tweak_data/Crimefest2017JobsTweakData")
 
 TweakData = TweakData or class()
 
@@ -680,8 +682,10 @@ function TweakData:init()
 	self.fire = FireTweakData:new(self)
 	self.network = NetworkTweakData:new(self)
 	self.animation = AnimationTweakData:new(self)
+	self.story = StoryMissionsTweakData:new(self)
 	self.promo_unlocks = PromoUnlocksTweakData:new(self)
 	self.raid_jobs = RaidJobsTweakData:new(self)
+	self.crimefest_2017_jobs = Crimefest2017JobsTweakData:new(self)
 	self.ai_carry = {
 		throw_distance = 500,
 		throw_force = 100,

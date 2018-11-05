@@ -267,6 +267,22 @@ function CrimeSpreeManager:update(t, dt)
 			clbk()
 		end
 	end
+
+	if managers.menu_component:crimenet_sidebar_gui() then
+		local button = managers.menu_component:crimenet_sidebar_gui():get_button("crime_spree")
+
+		if button then
+			if self:in_progress() then
+				button:set_text(managers.localization:text("cn_crime_spree_level", {level = managers.experience:cash_string(self:spree_level(), "")}))
+				button:set_color(tweak_data.screen_colors.crime_spree_risk * 0.8)
+				button:set_highlight_color(tweak_data.screen_colors.crime_spree_risk)
+			else
+				button:set_text(managers.localization:text("cn_crime_spree"))
+				button:set_color(nil)
+				button:set_highlight_color(nil)
+			end
+		end
+	end
 end
 
 function CrimeSpreeManager:reset_crime_spree()

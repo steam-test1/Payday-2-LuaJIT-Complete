@@ -183,10 +183,14 @@ function ExperienceManager:mission_xp_clear()
 	self._global.mission_xp_current = nil
 end
 
-function ExperienceManager:on_loot_drop_xp(value_id)
+function ExperienceManager:on_loot_drop_xp(value_id, force)
 	local amount = tweak_data:get_value("experience_manager", "loot_drop_value", value_id) or 0
 
-	self:add_points(amount, false)
+	if force then
+		self:give_experience(amount, force)
+	else
+		self:add_points(amount, false)
+	end
 end
 
 function ExperienceManager:add_points(points, present_xp, debug)
@@ -266,7 +270,7 @@ function ExperienceManager:_check_achievements()
 
 	for _, d in pairs(tweak_data.achievement.level_achievements) do
 		if d.level and d.level <= level then
-			managers.achievment:award(d.award)
+			managers.achievment:award_data(d)
 		end
 	end
 

@@ -2819,6 +2819,21 @@ function HudIconsTweakData:init()
 	self.skill_6 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_skills")
 	self.skill_7 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_skills")
 	self.skill_8 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_skills")
+	local sidebar_atlas = "guis/dlcs/new/textures/pd2/crimenet/crimenet_sidebar_icons"
+
+	self:create_grid_atlas(sidebar_atlas, 256, 256, 64, 64)
+
+	self.sidebar_mutators = self:create_next_icon(sidebar_atlas)
+	self.sidebar_codex = self:create_next_icon(sidebar_atlas)
+	self.sidebar_broker = self:create_next_icon(sidebar_atlas)
+	self.sidebar_gage = self:create_next_icon(sidebar_atlas)
+	self.sidebar_expand = self:create_next_icon(sidebar_atlas)
+	self.sidebar_casino = self:create_next_icon(sidebar_atlas)
+	self.sidebar_safehouse = self:create_next_icon(sidebar_atlas)
+	self.sidebar_basics = self:create_next_icon(sidebar_atlas)
+	self.sidebar_crimespree = self:create_next_icon(sidebar_atlas)
+	self.sidebar_filters = self:create_next_icon(sidebar_atlas)
+	self.sidebar_question = self:create_next_icon(sidebar_atlas)
 end
 local atlas_data = nil
 

@@ -1842,7 +1842,7 @@ function CopActionWalk:_adjust_move_anim(side, speed)
 
 	local redirect_name = speed .. "_" .. side
 	local enter_t = nil
-	local move_side = anim_data.move_side
+	local move_side = anim_data.move_side or side
 
 	if move_side and (side == move_side or self._matching_walk_anims[side][move_side]) then
 		local seg_rel_t = self._machine:segment_relative_time(idstr_base)

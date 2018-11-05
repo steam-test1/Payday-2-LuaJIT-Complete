@@ -451,6 +451,20 @@ function table.range(s, e)
 	return range
 end
 
+function table.reverse_ipairs(t)
+	local i = #t + 1
+
+	return function ()
+		i = i - 1
+
+		if i == 0 then
+			return
+		end
+
+		return i, t[i]
+	end
+end
+
 function table.unpack_sparse(sparse_list)
 	table.__unpack_sparse_implementations = table.__unpack_sparse_implementations or {}
 	local count = 0

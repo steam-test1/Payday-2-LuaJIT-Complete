@@ -1035,7 +1035,7 @@ function RaycastWeaponBase:_get_tweak_data_weapon_animation(anim)
 end
 
 function RaycastWeaponBase:_get_anim_start_offset(anim)
-	if anim == "reload" and self:ammo_base():get_ammo_remaining_in_clip() <= (self.AKIMBO and 1 or 0) then
+	if anim == "reload" and self:ammo_base():get_ammo_remaining_in_clip() <= (self.AKIMBO and 1 or 0) and self:weapon_tweak_data().animations.magazine_empty then
 		return 0.033
 	end
 
@@ -1940,7 +1940,7 @@ function InstantBulletBase:on_collision(col_ray, weapon_unit, user_unit, damage,
 			col_ray = col_ray,
 			no_sound = no_sound
 		})
-		self:play_impact_sound_and_effects(col_ray, no_sound)
+		self:play_impact_sound_and_effects(weapon_unit, col_ray, no_sound)
 	end
 
 	return result
@@ -1955,7 +1955,7 @@ function InstantBulletBase:on_collision_effects(col_ray, weapon_unit, user_unit,
 			col_ray = col_ray,
 			no_sound = no_sound
 		})
-		self:play_impact_sound_and_effects(col_ray, no_sound)
+		self:play_impact_sound_and_effects(weapon_unit, col_ray, no_sound)
 	end
 end
 
@@ -1982,20 +1982,21 @@ function InstantBulletBase:blank_slotmask()
 	return managers.slot:get_mask("bullet_blank_impact_targets")
 end
 
-function InstantBulletBase:_get_sound_and_effects_params(col_ray, no_sound)
+function InstantBulletBase:_get_sound_and_effects_params(weapon_unit, col_ray, no_sound)
 	local bullet_tweak = self.id and (tweak_data.blackmarket.bullets[self.id] or {}) or {}
 	local params = {
 		col_ray = col_ray,
 		no_sound = no_sound,
 		effect = bullet_tweak.effect,
-		sound_switch_name = bullet_tweak.sound_switch_name
+		sound_switch_name = bullet_tweak.sound_switch_name,
+		immediate = alive(weapon_unit) and weapon_unit:base().weapon_tweak_data and weapon_unit:base():weapon_tweak_data() and weapon_unit:base():weapon_tweak_data().rays ~= nil
 	}
 
 	return params
 end
 
-function InstantBulletBase:play_impact_sound_and_effects(col_ray, no_sound)
-	managers.game_play_central:play_impact_sound_and_effects(self:_get_sound_and_effects_params(col_ray, no_sound))
+function InstantBulletBase:play_impact_sound_and_effects(weapon_unit, col_ray, no_sound)
+	managers.game_play_central:play_impact_sound_and_effects(self:_get_sound_and_effects_params(weapon_unit, col_ray, no_sound))
 end
 
 function InstantBulletBase:give_impact_damage(col_ray, weapon_unit, user_unit, damage, armor_piercing, shield_knock, knock_down, stagger, variant)
@@ -2052,15 +2053,15 @@ function InstantExplosiveBulletBase:blank_slotmask()
 	return managers.slot:get_mask("bullet_blank_impact_targets")
 end
 
-function InstantExplosiveBulletBase:play_impact_sound_and_effects(col_ray)
-	managers.game_play_central:play_impact_sound_and_effects(self:_get_sound_and_effects_params(col_ray, false))
+function InstantExplosiveBulletBase:play_impact_sound_and_effects(weapon_unit, col_ray)
+	managers.game_play_central:play_impact_sound_and_effects(self:_get_sound_and_effects_params(weapon_unit, col_ray, false))
 end
 
 function InstantExplosiveBulletBase:on_collision(col_ray, weapon_unit, user_unit, damage, blank)
 	local hit_unit = col_ray.unit
 
 	if not hit_unit:character_damage() or not hit_unit:character_damage()._no_blood then
-		self:play_impact_sound_and_effects(col_ray)
+		self:play_impact_sound_and_effects(weapon_unit, col_ray)
 	end
 
 	if blank then
@@ -2245,7 +2246,7 @@ function FlameBulletBase:on_collision(col_ray, weapon_unit, user_unit, damage, b
 		})
 	end
 
-	self:play_impact_sound_and_effects(col_ray)
+	self:play_impact_sound_and_effects(weapon_unit, col_ray)
 
 	return result
 end
@@ -2296,7 +2297,7 @@ function FlameBulletBase:give_fire_damage_dot(col_ray, weapon_unit, attacker_uni
 	return defense_data
 end
 
-function FlameBulletBase:play_impact_sound_and_effects(col_ray, no_sound)
+function FlameBulletBase:play_impact_sound_and_effects(weapon_unit, col_ray, no_sound)
 end
 DragonBreathBulletBase = DragonBreathBulletBase or class(InstantBulletBase)
 DragonBreathBulletBase.id = "dragons_breath"
@@ -2345,7 +2346,7 @@ function DragonBreathBulletBase:on_collision(col_ray, weapon_unit, user_unit, da
 
 	if play_impact_flesh then
 		managers.game_play_central:play_impact_flesh({col_ray = col_ray})
-		self:play_impact_sound_and_effects(col_ray)
+		self:play_impact_sound_and_effects(weapon_unit, col_ray)
 	end
 
 	return result

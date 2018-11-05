@@ -1267,7 +1267,7 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.team.crew_faster_reload = {1.5}
 	self.values.team.crew_faster_swap = {1.5}
 	self.values.team.crew_throwable_regen = {35}
-	self.values.team.crew_health_regen = {2}
+	self.values.team.crew_health_regen = {0.5}
 	self.values.team.crew_active = {
 		1,
 		2,

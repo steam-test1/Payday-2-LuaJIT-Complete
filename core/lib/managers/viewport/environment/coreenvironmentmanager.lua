@@ -356,7 +356,19 @@ end
 
 function EnvironmentManager:_load(path)
 	local raw_data = nil
-	raw_data = Application:editor() and PackageManager:editor_load_script_data(ids_extension, path:id()) or PackageManager:script_data(ids_extension, path:id())
+
+	if Application:editor() then
+		if DB:has(ids_extension, path:id()) then
+			raw_data = PackageManager:editor_load_script_data(ids_extension, path:id())
+		else
+			managers.editor:output_error("Environment " .. path .. " is not in the database, probably removed. Using default instead.")
+
+			raw_data = PackageManager:editor_load_script_data(ids_extension, self._default_environment_path:id())
+		end
+	else
+		raw_data = PackageManager:script_data(ids_extension, path:id())
+	end
+
 	local env_data = {}
 
 	self:_load_env_data(nil, env_data, raw_data.data)

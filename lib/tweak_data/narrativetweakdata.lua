@@ -3316,52 +3316,54 @@ function NarrativeTweakData:init(tweak_data)
 		region = "street",
 		dlc = "pal",
 		jc = 30,
-		chain = {self.stages.pal},
-		briefing_event = "pln_pal_cbf_01",
-		debrief_event = nil,
-		crimenet_callouts = {"pln_pal_cnc_01"},
-		crimenet_videos = {
-			"cn_branchbank1",
-			"cn_branchbank2",
-			"cn_branchbank3"
-		},
-		payout = {
-			115000,
-			230000,
-			575000,
-			1150000,
-			1500000,
-			1500000,
-			1500000
-		},
-		contract_cost = {
-			31000,
-			62000,
-			155000,
-			310000,
-			400000,
-			400000,
-			400000
-		},
-		contract_visuals = {}
+		chain = {self.stages.pal}
 	}
-	self.jobs.pal.contract_visuals.min_mission_xp = {
-		21000,
-		21000,
-		21000,
-		21000,
-		21000,
-		21000,
-		21000
+	self.jobs.branchbank.contract_visuals.preview_image = {icon = "branchbank"}
+	self.jobs.pal.briefing_event = "pln_pal_cbf_01"
+	self.jobs.pal.debrief_event = nil
+	self.jobs.pal.crimenet_callouts = {"pln_pal_cnc_01"}
+	self.jobs.pal.crimenet_videos = {
+		"cn_branchbank1",
+		"cn_branchbank2",
+		"cn_branchbank3"
 	}
-	self.jobs.pal.contract_visuals.max_mission_xp = {
-		3621000,
-		3621000,
-		3621000,
-		3621000,
-		3621000,
-		3621000,
-		3621000
+	self.jobs.pal.payout = {
+		115000,
+		230000,
+		575000,
+		1150000,
+		1500000,
+		1500000,
+		1500000
+	}
+	self.jobs.pal.contract_cost = {
+		31000,
+		62000,
+		155000,
+		310000,
+		400000,
+		400000,
+		400000
+	}
+	self.jobs.pal.contract_visuals = {
+		min_mission_xp = {
+			21000,
+			21000,
+			21000,
+			21000,
+			21000,
+			21000,
+			21000
+		},
+		max_mission_xp = {
+			3621000,
+			3621000,
+			3621000,
+			3621000,
+			3621000,
+			3621000,
+			3621000
+		}
 	}
 	self.stages.cane = {
 		type = "d",

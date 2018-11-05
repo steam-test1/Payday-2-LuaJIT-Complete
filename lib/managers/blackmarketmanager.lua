@@ -5079,6 +5079,10 @@ function BlackMarketManager:_update_preferred_character(update_character)
 	if SystemInfo:distribution() == Idstring("STEAM") then
 		managers.statistics:publish_equipped_to_steam()
 	end
+
+	if managers.platform then
+		managers.platform:update_discord_character()
+	end
 end
 
 function BlackMarketManager:swap_preferred_character(first_index, second_index)

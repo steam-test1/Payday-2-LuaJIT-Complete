@@ -300,7 +300,7 @@ function NPCRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_
 			mvector3.set(mvec_spread, direction)
 
 			if i > 1 then
-				mvector3.spread(mvec_spread, self:_get_spread())
+				mvector3.spread(mvec_spread, self:_get_spread(user_unit))
 			end
 
 			self:_spawn_trail_effect(mvec_spread, col_ray)

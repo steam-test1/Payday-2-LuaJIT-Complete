@@ -769,7 +769,12 @@ function MenuInput:_give_special_buttons()
 			"menu_change_profile_left",
 			"drop_in_accept",
 			"drop_in_return",
-			"drop_in_kick"
+			"drop_in_kick",
+			"menu_clear",
+			"cancel",
+			"next_page",
+			"previous_page",
+			"menu_update"
 		}
 
 		for _, button in ipairs(special_btns) do

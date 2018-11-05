@@ -13246,20 +13246,41 @@ function BlackMarketGui:_sell_weapon_mod_callback(data)
 	self:reload()
 end
 
+function BlackMarketGui:get_weapon_mod_coin_cost(mod_id)
+	local weapon_mod_tweak = tweak_data.weapon.factory.parts[mod_id]
+
+	if weapon_mod_tweak and weapon_mod_tweak.is_event_mod then
+		return tweak_data.safehouse.prices.event_weapon_mod
+	end
+
+	return tweak_data.safehouse.prices.weapon_mod
+end
+
 function BlackMarketGui:purchase_weapon_mod_callback(data)
+	data.cc_cost = self:get_weapon_mod_coin_cost(data.name)
 	local params = {
 		name = data.name_localized or data.name,
 		category = data.category,
 		slot = data.slot,
-		money = managers.experience:cash_string(tweak_data.safehouse.prices.weapon_mod, "")
+		money = managers.experience:cash_string(data.cc_cost, "")
 	}
+	local weapon_mod_tweak = tweak_data.weapon.factory.parts[data.name]
 
-	if tweak_data.safehouse.prices.weapon_mod <= managers.custom_safehouse:coins() then
-		params.yes_func = callback(self, self, "_dialog_yes", callback(self, self, "_confirm_purchase_weapon_mod_callback", data))
-		params.no_func = callback(self, self, "_dialog_no")
+	if weapon_mod_tweak and weapon_mod_tweak.is_event_mod and (not data.unlocked or data.unlocked < 1) then
+		params.unlock_text = managers.localization:text(weapon_mod_tweak.is_event_mod)
+		local dialog_data = {
+			title = managers.localization:text("dialog_bm_purchase_mod_locked_title"),
+			text = managers.localization:text("dialog_bm_purchase_mod_locked", params)
+		}
+		local ok_button = {text = managers.localization:text("dialog_ok")}
+		dialog_data.button_list = {ok_button}
 
-		managers.menu:show_confirm_blackmarket_weapon_mod_purchase(params)
-	else
+		managers.system_menu:show(dialog_data)
+
+		return
+	end
+
+	if managers.custom_safehouse:coins() < data.cc_cost then
 		local dialog_data = {
 			title = managers.localization:text("dialog_bm_purchase_mod_cant_afford_title"),
 			text = managers.localization:text("dialog_bm_purchase_mod_cant_afford", params)
@@ -13268,13 +13289,20 @@ function BlackMarketGui:purchase_weapon_mod_callback(data)
 		dialog_data.button_list = {ok_button}
 
 		managers.system_menu:show(dialog_data)
+
+		return
 	end
+
+	params.yes_func = callback(self, self, "_dialog_yes", callback(self, self, "_confirm_purchase_weapon_mod_callback", data))
+	params.no_func = callback(self, self, "_dialog_no")
+
+	managers.menu:show_confirm_blackmarket_weapon_mod_purchase(params)
 end
 
 function BlackMarketGui:_confirm_purchase_weapon_mod_callback(data)
 	managers.menu_component:post_event("item_sell")
 	managers.blackmarket:add_to_inventory(data.global_value, "weapon_mods", data.name, true)
-	managers.custom_safehouse:deduct_coins(tweak_data.safehouse.prices.weapon_mod)
+	managers.custom_safehouse:deduct_coins(data.cc_cost or tweak_data.safehouse.prices.weapon_mod)
 	self:reload()
 end
 

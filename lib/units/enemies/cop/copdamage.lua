@@ -568,7 +568,7 @@ function CopDamage:damage_bullet(attack_data)
 	local weapon_unit = attack_data.weapon_unit
 
 	if alive(weapon_unit) and weapon_unit:base() and weapon_unit:base().add_damage_result then
-		weapon_unit:base():add_damage_result(self._unit, attacker, result.type == "death", damage_percent)
+		weapon_unit:base():add_damage_result(self._unit, result.type == "death", attacker, damage_percent)
 	end
 
 	local variant = nil
@@ -1248,7 +1248,7 @@ function CopDamage:damage_explosion(attack_data)
 	local weapon_unit = attack_data.weapon_unit
 
 	if alive(weapon_unit) and weapon_unit:base() and weapon_unit:base().add_damage_result then
-		weapon_unit:base():add_damage_result(self._unit, attacker, result.type == "death", damage_percent)
+		weapon_unit:base():add_damage_result(self._unit, result.type == "death", attacker, damage_percent)
 	end
 
 	if not self._no_blood then
@@ -1557,6 +1557,7 @@ function CopDamage:damage_melee(attack_data)
 			managers.hud:on_crit_confirmed()
 
 			damage = crit_damage
+			attack_data.critical_hit = true
 		else
 			managers.hud:on_hit_confirmed()
 		end

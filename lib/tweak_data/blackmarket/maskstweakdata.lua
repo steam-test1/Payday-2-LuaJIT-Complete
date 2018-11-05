@@ -3703,7 +3703,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 	}
 	self.masks.grv_01_bodhi = {
 		unit = "units/pd2_dlc_grv/masks/grv_01/grv_01_bodhi/msk_grv_01_bodhi",
-		name_id = "bm_msk_cheat_error2",
+		name_id = "bm_msk_cheat_error",
 		type = "helmet",
 		inaccessible = true,
 		offsets = {
@@ -3759,7 +3759,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 	}
 	self.masks.grv_01_bonnie = {
 		unit = "units/pd2_dlc_grv/masks/grv_01/grv_01_bonnie/msk_grv_01_bonnie",
-		name_id = "bm_msk_cheat_error2",
+		name_id = "bm_msk_cheat_error",
 		type = "helmet",
 		inaccessible = true,
 		offsets = {
@@ -4010,7 +4010,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 	}
 	self.masks.bny_01_bonnie = {
 		unit = "units/pd2_dlc_bny/masks/bny_01/msk_bny_01_bonnie",
-		name_id = "bm_msk_bny_01a",
+		name_id = "bm_msk_cheat_error",
 		type = "helmet",
 		inaccessible = true,
 		offsets = {
@@ -4038,7 +4038,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 	}
 	self.masks.bny_01_bodhi = {
 		unit = "units/pd2_dlc_bny/masks/bny_01/msk_bny_01_bodhi",
-		name_id = "bm_msk_bny_01b",
+		name_id = "bm_msk_cheat_error",
 		type = "helmet",
 		inaccessible = true,
 		offsets = {
@@ -4086,7 +4086,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 	}
 	self.masks.bny_01_clover = {
 		unit = "units/pd2_dlc_bny/masks/bny_01/msk_bny_01_clover",
-		name_id = "bm_msk_bny_01c",
+		name_id = "bm_msk_cheat_error",
 		type = "helmet",
 		inaccessible = true,
 		offsets = {
@@ -4106,7 +4106,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 	}
 	self.masks.bny_01_clover_b = {
 		unit = "units/pd2_dlc_bny/masks/bny_01/msk_bny_01_clover_b",
-		name_id = "bm_msk_bny_01d",
+		name_id = "bm_msk_cheat_error",
 		type = "helmet",
 		inaccessible = true
 	}
@@ -4140,7 +4140,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 	}
 	self.masks.bny_02_bonnie = {
 		unit = "units/pd2_dlc_bny/masks/bny_02/msk_bny_02_bonnie",
-		name_id = "bm_msk_bny_02a",
+		name_id = "bm_msk_cheat_error",
 		type = "helmet",
 		inaccessible = true,
 		offsets = {
@@ -4192,7 +4192,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 	}
 	self.masks.bny_02_bodhi = {
 		unit = "units/pd2_dlc_bny/masks/bny_02/msk_bny_02_bodhi",
-		name_id = "bm_msk_bny_02b",
+		name_id = "bm_msk_cheat_error",
 		type = "helmet",
 		inaccessible = true,
 		offsets = {
@@ -4224,7 +4224,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 	}
 	self.masks.bny_02_clover = {
 		unit = "units/pd2_dlc_bny/masks/bny_02/msk_bny_02_clover",
-		name_id = "bm_msk_bny_02c",
+		name_id = "bm_msk_cheat_error",
 		type = "helmet",
 		inaccessible = true,
 		offsets = {female_1 = {
@@ -4262,7 +4262,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 	}
 	self.masks.bny_03_clover = {
 		unit = "units/pd2_dlc_bny/masks/bny_03/msk_bny_03_clover",
-		name_id = "bm_msk_bny_03a",
+		name_id = "bm_msk_cheat_error",
 		type = "helmet",
 		inaccessible = true,
 		offsets = {
@@ -4282,7 +4282,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 	}
 	self.masks.bny_03_bodhi = {
 		unit = "units/pd2_dlc_bny/masks/bny_03/msk_bny_03_bodhi",
-		name_id = "bm_msk_bny_03b",
+		name_id = "bm_msk_cheat_error",
 		type = "helmet",
 		inaccessible = true,
 		offsets = {
@@ -4912,6 +4912,38 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 				Rotation(-0, -0, 5.70955)
 			}
 		}
+	}
+	self.masks.cmo_01 = {
+		unit = "units/pd2_dlc_cmo/masks/cmo_01/msk_cmo_01",
+		name_id = "bm_msk_cmo_01",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "cmo",
+		sort_number = 56
+	}
+	self.masks.cmo_02 = {
+		unit = "units/pd2_dlc_cmo/masks/cmo_02/msk_cmo_02",
+		name_id = "bm_msk_cmo_02",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "cmo",
+		sort_number = 56
+	}
+	self.masks.cmo_03 = {
+		unit = "units/pd2_dlc_cmo/masks/cmo_03/msk_cmo_03",
+		name_id = "bm_msk_cmo_03",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "cmo",
+		sort_number = 56
+	}
+	self.masks.cmo_04 = {
+		unit = "units/pd2_dlc_cmo/masks/cmo_04/msk_cmo_04",
+		name_id = "bm_msk_cmo_04",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "cmo",
+		sort_number = 56
 	}
 	local free_dlcs = tweak_data:free_dlc_list()
 

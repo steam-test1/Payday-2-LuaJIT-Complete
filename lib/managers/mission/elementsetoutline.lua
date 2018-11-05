@@ -16,6 +16,10 @@ function ElementSetOutline:on_executed(instigator)
 
 	local function f(unit)
 		if unit:contour() then
+			if self._values.clear_previous then
+				unit:contour():remove("highlight", true)
+			end
+
 			if self._values.set_outline then
 				unit:contour():add("highlight_character", true)
 			else

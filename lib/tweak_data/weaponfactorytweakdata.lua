@@ -233,6 +233,7 @@ function WeaponFactoryTweakData:init()
 	self:_init_breech()
 	self:_init_ching()
 	self:_init_erma()
+	self:_init_icc()
 	self:create_ammunition()
 	self:_init_cc_material_config()
 	self:_init_bipods()
@@ -5278,7 +5279,8 @@ function WeaponFactoryTweakData:_init_p90()
 			"wpn_fps_upg_fl_ass_utg",
 			"wpn_fps_smg_p90_b_legend",
 			"wpn_fps_upg_o_spot",
-			"wpn_fps_smg_p90_m_strap"
+			"wpn_fps_smg_p90_m_strap",
+			"wpn_fps_smg_p90_body_boxy"
 		}
 	}
 	self.wpn_fps_smg_p90_npc = deep_clone(self.wpn_fps_smg_p90)
@@ -29383,5 +29385,23 @@ function WeaponFactoryTweakData:_init_erma()
 	}
 	self.wpn_fps_smg_erma_npc = deep_clone(self.wpn_fps_smg_erma)
 	self.wpn_fps_smg_erma_npc.unit = "units/pd2_dlc_old/weapons/wpn_fps_smg_erma/wpn_fps_smg_erma_npc"
+end
+
+function WeaponFactoryTweakData:_init_icc()
+	self.parts.wpn_fps_smg_p90_body_boxy = {
+		texture_bundle_folder = "icc",
+		a_obj = "a_body",
+		type = "lower_reciever",
+		is_event_mod = "bm_wp_90_body_boxy_locked",
+		name_id = "bm_wp_90_body_boxy",
+		unit = "units/pd2_dlc_icc/weapons/wpn_fps_smg_p90_body_boxy/wpn_fps_smg_p90_body_boxy",
+		pcs = {},
+		stats = {value = 1},
+		animations = {
+			reload_not_empty = "reload_not_empty",
+			reload = "reload"
+		},
+		third_unit = "units/pd2_dlc_icc/weapons/wpn_fps_smg_p90_body_boxy/wpn_third_smg_p90_body_boxy"
+	}
 end
 

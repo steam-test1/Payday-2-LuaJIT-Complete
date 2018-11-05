@@ -8,6 +8,7 @@ function CustomSafehouseTweakData:init(tweak_data)
 			24
 		},
 		weapon_mod = 6,
+		event_weapon_mod = 18,
 		crew_boost = 2,
 		crew_ability = 6
 	}

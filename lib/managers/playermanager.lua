@@ -1624,7 +1624,7 @@ function PlayerManager:crew_ability_upgrade_value(upgrade, default)
 end
 
 function PlayerManager:start_custom_cooldown(category, upgrade, cooldown)
-	self:start_ability_timer(category .. "_" .. upgrade, cooldown)
+	self:start_ability_timer(category .. "_" .. upgrade, TimerManager:game():time() + cooldown)
 end
 
 function PlayerManager:is_custom_cooldown_not_active(category, upgrade)
@@ -2567,6 +2567,10 @@ end
 
 function PlayerManager:set_equipment_in_slot(item, slot)
 	self._global.kit.equipment_slots[slot or 1] = item
+
+	if item then
+		managers.story:award("story_inv_deployable")
+	end
 end
 
 function PlayerManager:equipment_slots()

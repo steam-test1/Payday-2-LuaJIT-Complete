@@ -82,13 +82,17 @@ function AkimboWeaponBase:start_shooting()
 	self._fire_second_sound = not self._fire_second_gun_next and self:fire_mode() ~= "auto"
 end
 
+function AkimboWeaponBase:get_fire_time()
+	return 0.025 + math.rand(0.075)
+end
+
 function AkimboWeaponBase:fire(...)
 	if not self._manual_fire_second_gun then
 		local result = AkimboWeaponBase.super.fire(self, ...)
 
 		if alive(self._second_gun) then
 			table.insert(self._fire_callbacks, {
-				t = 0.025 + math.rand(0.075),
+				t = self:get_fire_time(),
 				callback = callback(self, self, "_fire_second", {...})
 			})
 		end
@@ -254,11 +258,31 @@ function NPCAkimboWeaponBase:init(...)
 	NPCAkimboWeaponBase.super.init(self, ...)
 
 	self._manual_fire_second_gun = self:weapon_tweak_data().manual_fire_second_gun
+
+	self._unit:set_extension_update_enabled(Idstring("base"), true)
+
+	self._fire_callbacks = {}
+end
+
+function NPCAkimboWeaponBase:update(unit, t, dt)
+	for i = #self._fire_callbacks, 1, -1 do
+		local data = self._fire_callbacks[i]
+		data.t = data.t - dt
+
+		if data.t <= 0 then
+			data.callback(self)
+			table.remove(self._fire_callbacks, i)
+		end
+	end
 end
 
 function NPCAkimboWeaponBase:create_second_gun(create_second_gun)
 	AkimboWeaponBase._create_second_gun(self, create_second_gun)
 	self._setup.user_unit:link(Idstring("a_weapon_left_front"), self._second_gun, self._second_gun:orientation_object():name())
+end
+
+function NPCAkimboWeaponBase:get_fire_time()
+	return AkimboWeaponBase.get_fire_time(self)
 end
 
 function NPCAkimboWeaponBase:fire_blank(...)
@@ -270,7 +294,7 @@ function NPCAkimboWeaponBase:fire_blank(...)
 				return
 			end
 
-			managers.enemy:add_delayed_clbk("NPCAkimboWeaponBase", callback(self, self, "_fire_blank_second", {...}), TimerManager:game():time() + 0.025 + math.rand(0.075))
+			managers.enemy:add_delayed_clbk("NPCAkimboWeaponBase", callback(self, self, "_fire_blank_second", {...}), TimerManager:game():time() + self:get_fire_time())
 		end
 	elseif self._fire_second_gun_next then
 		if alive(self._second_gun) and alive(self._setup.user_unit) then
@@ -288,6 +312,62 @@ end
 function NPCAkimboWeaponBase:_fire_blank_second(params)
 	if alive(self._second_gun) and alive(self._setup.user_unit) then
 		self._second_gun:base():fire_blank(unpack(params))
+	end
+end
+
+function NPCAkimboWeaponBase:auto_fire_blank(direction, impact)
+	NPCAkimboWeaponBase.super.auto_fire_blank(self, direction, impact)
+
+	if alive(self._second_gun) and impact then
+		table.insert(self._fire_callbacks, {
+			t = self:get_fire_time(),
+			callback = callback(self, self, "_auto_fire_blank_second", {
+				direction,
+				impact
+			})
+		})
+	end
+
+	return true
+end
+
+function NPCAkimboWeaponBase:_auto_fire_blank_second(params)
+	if alive(self._second_gun) and alive(self._setup.user_unit) then
+		self._second_gun:base():auto_fire_blank(unpack(params))
+	end
+end
+
+function NPCAkimboWeaponBase:start_autofire(nr_shots)
+	NPCAkimboWeaponBase.super.start_autofire(self, nr_shots)
+
+	if alive(self._second_gun) then
+		table.insert(self._fire_callbacks, {
+			t = self:get_fire_time(),
+			callback = callback(self, self, "_start_autofire_second", nr_shots or false)
+		})
+	end
+end
+
+function NPCAkimboWeaponBase:_start_autofire_second(nr_shots)
+	if alive(self._second_gun) and alive(self._setup.user_unit) then
+		self._second_gun:base():start_autofire(nr_shots or nil)
+	end
+end
+
+function NPCAkimboWeaponBase:stop_autofire()
+	NPCAkimboWeaponBase.super.stop_autofire(self)
+
+	if alive(self._second_gun) then
+		table.insert(self._fire_callbacks, {
+			t = self:get_fire_time(),
+			callback = callback(self, self, "_stop_autofire_second")
+		})
+	end
+end
+
+function NPCAkimboWeaponBase:_stop_autofire_second()
+	if alive(self._second_gun) and alive(self._setup.user_unit) then
+		self._second_gun:base():stop_autofire()
 	end
 end
 
