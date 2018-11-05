@@ -39,8 +39,7 @@ function NetworkVoiceChatPSN:init_voice()
 		PSNVoice:assign_callback(function (...)
 			self:_callback(...)
 		end)
-		PSNVoice:init(4, 4, 50, 8000)
-		self:set_volume(managers.user:get_setting("voice_volume"))
+		PSNVoice:init(4, 4, 50, 16000)
 
 		self._started = true
 	end
@@ -82,6 +81,8 @@ function NetworkVoiceChatPSN:num_peers()
 end
 
 function NetworkVoiceChatPSN:open_session(roomid)
+	print("[VOICECHAT] NetworkVoiceChatPSN:open_session( ", roomid, " ) self._room_id: ", self._room_id, "self._restart_session: ", self._restart_session)
+
 	if self._room_id and self._room_id == roomid then
 		print("Voice: same_room")
 
@@ -111,10 +112,6 @@ function NetworkVoiceChatPSN:open_session(roomid)
 	if self._room_id then
 		print("Voice: restart room")
 
-		self._restart_session = roomid
-
-		self:close_session()
-
 		return
 	end
 
@@ -125,6 +122,8 @@ function NetworkVoiceChatPSN:open_session(roomid)
 end
 
 function NetworkVoiceChatPSN:close_session()
+	print("[VOICECHAT] NetworkVoiceChatPSN:close_session() see following stack dump")
+
 	if self._joining then
 		self._close = true
 
@@ -146,11 +145,11 @@ function NetworkVoiceChatPSN:close_session()
 end
 
 function NetworkVoiceChatPSN:open_channel_to(player_info, context)
-	print("NetworkVoiceChatPSN:open_channel_to")
+	print("[VOICECHAT] NetworkVoiceChatPSN:open_channel_to")
 end
 
 function NetworkVoiceChatPSN:close_channel_to(player_info)
-	print("NetworkVoiceChatPSN:close_channel_to")
+	print("[VOICECHAT] NetworkVoiceChatPSN:close_channel_to")
 	PSNVoice:stop_sending_to(player_info._name)
 end
 
@@ -158,6 +157,8 @@ function NetworkVoiceChatPSN:lost_peer(peer)
 end
 
 function NetworkVoiceChatPSN:close_all()
+	print("[VOICECHAT] NetworkVoiceChatPSN:close_all() see following stack dump")
+
 	if self._room_id then
 		self:close_session()
 	end
@@ -254,6 +255,94 @@ function NetworkVoiceChatPSN:_save_globals(disable_voice)
 	end
 end
 
+function NetworkVoiceChatPSN:enabled()
+	return managers.user:get_setting("voice_chat")
+end
+
+function NetworkVoiceChatPSN:update_settings()
+	self._push_to_talk = managers.user:get_setting("push_to_talk")
+	self._enabled = managers.user:get_setting("voice_chat")
+
+	if self._enabled then
+		PSNVoice:start_recording()
+	else
+		PSNVoice:stop_recording()
+	end
+
+	if self._enabled and self._push_to_talk then
+		PSNVoice:stop_recording()
+	end
+end
+
+function NetworkVoiceChatPSN:set_recording(button_pushed_to_talk)
+	self:update_settings()
+
+	if not self._enabled then
+		PSNVoice:stop_recording()
+
+		return
+	end
+
+	if not self._push_to_talk then
+		if self._enabled then
+			PSNVoice:start_recording()
+		else
+			PSNVoice:stop_recording()
+		end
+	elseif button_pushed_to_talk then
+		PSNVoice:start_recording()
+	else
+		PSNVoice:stop_recording()
+	end
+end
+
+function NetworkVoiceChatPSN:enabled()
+	return managers.user:get_setting("voice_chat")
+end
+
+function NetworkVoiceChatPSN:update_settings()
+	self._push_to_talk = false
+	self._enabled = managers.user:get_setting("voice_chat")
+
+	print("GN: Update settings")
+
+	if self._enabled then
+		PSNVoice:start_recording()
+		PSNVoice:set_enable(true)
+		print("GN: Voice chat set to true 1")
+	else
+		PSNVoice:stop_recording()
+		PSNVoice:set_enable(false)
+		print("GN: Voice chat set to false 1")
+	end
+
+	if self._enabled and self._push_to_talk then
+		PSNVoice:stop_recording()
+	end
+end
+
+function NetworkVoiceChatPSN:set_recording(button_pushed_to_talk)
+	self:update_settings()
+
+	if not self._enabled then
+		PSNVoice:stop_recording()
+
+		return
+	end
+
+	if not self._push_to_talk then
+		if self._enabled then
+			PSNVoice:start_recording()
+		else
+			PSNVoice:stop_recording()
+		end
+	elseif button_pushed_to_talk then
+		PSNVoice:start_recording()
+	else
+		PSNVoice:stop_recording()
+	end
+end
+
 function NetworkVoiceChatPSN:_callback(info)
 	if info and PSN:get_local_userid() then
 		if info.load_succeeded ~= nil then
@@ -323,7 +412,15 @@ function NetworkVoiceChatPSN:update()
 	end
 end
 
+function NetworkVoiceChatPSN:voice_ui_update_callback(user_info)
+	Application:trace("
+	Application:trace(inspect(user_info))
+	Application:trace("
+end
+
 function NetworkVoiceChatPSN:psn_session_destroyed(roomid)
+	print("[VOICECHAT] NetworkVoiceChatPSN:psn_session_destroyed() see following stack dump")
+
 	if self._room_id and self._room_id == roomid then
 		self._room_id = nil
 		self._closing = nil
@@ -343,6 +440,16 @@ function NetworkVoiceChatPSN:_get_peer_user_id(peer)
 			return member.user_id
 		end
 	end
+end
+
+function NetworkVoiceChatPSN:on_member_added(peer, mute)
+	if peer:rpc() then
+		PSNVoice:on_member_added(peer:name(), peer:rpc(), mute)
+	end
+end
+
+function NetworkVoiceChatPSN:on_member_removed(peer)
+	PSNVoice:on_member_removed(peer:name())
 end
 
 function NetworkVoiceChatPSN:mute_player(mute, peer)

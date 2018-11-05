@@ -4701,10 +4701,6 @@ function NarrativeTweakData:init(tweak_data)
 		},
 		contract_visuals = {}
 	}
-	self.jobs.rvd.contract_visuals.preview_image = {
-		id = "rvd",
-		folder = "rvd"
-	}
 	self.jobs.rvd.contract_visuals.min_mission_xp = {
 		29500,
 		29500,
@@ -4722,6 +4718,78 @@ function NarrativeTweakData:init(tweak_data)
 		47500,
 		47500,
 		47500
+	}
+	self.jobs.rvd.contract_visuals.preview_image = {
+		id = "rvd",
+		folder = "rvd"
+	}
+	self.jobs.rvd.date_added = {
+		2017,
+		12,
+		14
+	}
+	self.stages.brb = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "brb"
+	}
+	self.jobs.brb = {
+		name_id = "heist_brb",
+		briefing_id = "heist_brb_crimenet",
+		contact = "locke",
+		region = "street",
+		jc = 10,
+		chain = {self.stages.brb},
+		briefing_event = "Play_loc_brb_cbf_01",
+		debrief_event = nil,
+		crimenet_callouts = {"Play_loc_brb_cnc_01"},
+		crimenet_videos = {"contact_locke1"},
+		payout = {
+			8000,
+			16000,
+			40000,
+			80000,
+			100000,
+			100000,
+			100000
+		},
+		contract_cost = {
+			62000,
+			124000,
+			310000,
+			620000,
+			800000,
+			800000,
+			800000
+		},
+		contract_visuals = {}
+	}
+	self.jobs.brb.contract_visuals.min_mission_xp = {
+		16400,
+		16400,
+		16400,
+		16400,
+		16400,
+		16400,
+		16400
+	}
+	self.jobs.brb.contract_visuals.max_mission_xp = {
+		25600,
+		25600,
+		25600,
+		25600,
+		25600,
+		25600,
+		25600
+	}
+	self.jobs.brb.contract_visuals.preview_image = {
+		id = "brb",
+		folder = "brb"
+	}
+	self.jobs.brb.date_added = {
+		2017,
+		12,
+		21
 	}
 	self.jobs.crime_spree = {
 		name_id = "heist_crime_spree",
@@ -5042,7 +5110,8 @@ function NarrativeTweakData:init(tweak_data)
 		"rvd",
 		"crime_spree",
 		"hvh",
-		"wwh"
+		"wwh",
+		"brb"
 	}
 
 	if SystemInfo:distribution() == Idstring("STEAM") then

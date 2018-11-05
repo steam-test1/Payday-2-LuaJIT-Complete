@@ -1413,6 +1413,15 @@ function HudIconsTweakData:init()
 			32
 		}
 	}
+	self.equipment_medallion = {
+		texture = "guis/textures/pd2/hud_pickups",
+		texture_rect = {
+			128,
+			128,
+			32,
+			32
+		}
+	}
 	self.interaction_free = {
 		texture = "guis/textures/hud_icons",
 		texture_rect = {
@@ -11112,6 +11121,96 @@ function HudIconsTweakData:init()
 		texture_rect = {
 			89,
 			350,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_BrooklynBank_AllDiffs_D0 = {
+		texture = "guis/dlcs/brb/textures/pd2/achievements_atlas_brb",
+		texture_rect = {
+			350,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_BrooklynBank_AllDiffs_D1 = {
+		texture = "guis/dlcs/brb/textures/pd2/achievements_atlas_brb",
+		texture_rect = {
+			2,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_BrooklynBank_AllDiffs_D2 = {
+		texture = "guis/dlcs/brb/textures/pd2/achievements_atlas_brb",
+		texture_rect = {
+			2,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_BrooklynBank_AllDiffs_D3 = {
+		texture = "guis/dlcs/brb/textures/pd2/achievements_atlas_brb",
+		texture_rect = {
+			89,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_BrooklynBank_AllDiffs_D4 = {
+		texture = "guis/dlcs/brb/textures/pd2/achievements_atlas_brb",
+		texture_rect = {
+			89,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_BrooklynBank_AllDiffs_D5 = {
+		texture = "guis/dlcs/brb/textures/pd2/achievements_atlas_brb",
+		texture_rect = {
+			176,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_BrooklynBank_AllDiffs_D6 = {
+		texture = "guis/dlcs/brb/textures/pd2/achievements_atlas_brb",
+		texture_rect = {
+			176,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_BrooklynBank_AlltheGold_D2 = {
+		texture = "guis/dlcs/brb/textures/pd2/achievements_atlas_brb",
+		texture_rect = {
+			263,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_BrooklynBank_AnimalKingdom_D3 = {
+		texture = "guis/dlcs/brb/textures/pd2/achievements_atlas_brb",
+		texture_rect = {
+			350,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_BrooklynBank_Obsessive_D3 = {
+		texture = "guis/dlcs/brb/textures/pd2/achievements_atlas_brb",
+		texture_rect = {
+			263,
+			2,
 			85,
 			85
 		}

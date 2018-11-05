@@ -4947,14 +4947,14 @@ function GuiTweakData:init()
 	self.new_heists = {limit = 4}
 
 	table.insert(self.new_heists, {
+		name_id = "menu_nh_brooklynbank_heist",
+		texture_path = "guis/textures/pd2/new_heists/brooklynbank_heist",
+		url = "http://www.overkillsoftware.com/games/brookyn-bank-heist/"
+	})
+	table.insert(self.new_heists, {
 		name_id = "menu_nh_reservoirdogs_heist",
 		texture_path = "guis/textures/pd2/new_heists/reservoirdogs_heist",
 		url = "http://www.overkillsoftware.com/games/reservoirdogs/"
-	})
-	table.insert(self.new_heists, {
-		name_id = "menu_nh_cas",
-		texture_path = "guis/textures/pd2/new_heists/community_armor_safe",
-		url = "http://www.overkillsoftware.com/games/communityarmorsafe/"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_h3h3_characters",
@@ -4970,6 +4970,11 @@ function GuiTweakData:init()
 		name_id = "menu_nh_halloween_2017_heist",
 		texture_path = "guis/textures/pd2/new_heists/halloween_2017_heist",
 		url = "http://steamcommunity.com/games/218620/announcements/detail/1453961083959105742"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_cas",
+		texture_path = "guis/textures/pd2/new_heists/community_armor_safe",
+		url = "http://www.overkillsoftware.com/games/communityarmorsafe/"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_locke_and_load_event",

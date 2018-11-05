@@ -3649,6 +3649,41 @@ function AchievementsTweakData:init(tweak_data)
 			weapons_used = {"corgi"},
 			equipped = {primaries = {weapon_id = "corgi"}}
 		},
+		brb_1 = {
+			award = "brb_1",
+			job = "brb",
+			difficulty = normal_and_above
+		},
+		brb_2 = {
+			award = "brb_2",
+			job = "brb",
+			difficulty = hard_and_above
+		},
+		brb_3 = {
+			award = "brb_3",
+			job = "brb",
+			difficulty = veryhard_and_above
+		},
+		brb_4 = {
+			award = "brb_4",
+			job = "brb",
+			difficulty = overkill_and_above
+		},
+		brb_5 = {
+			award = "brb_5",
+			job = "brb",
+			difficulty = easywish_and_above
+		},
+		brb_6 = {
+			award = "brb_6",
+			job = "brb",
+			difficulty = deathwish_and_above
+		},
+		brb_7 = {
+			award = "brb_7",
+			job = "brb",
+			difficulty = sm_wish_and_above
+		},
 		bain_jobs = {
 			complete_job = true,
 			contract = "bain",
@@ -4646,7 +4681,8 @@ function AchievementsTweakData:init(tweak_data)
 		locke = {
 			"pbr",
 			"pbr2",
-			"wwh"
+			"wwh",
+			"brb"
 		},
 		jimmy = {
 			"mad",
@@ -5486,6 +5522,17 @@ function AchievementsTweakData:init(tweak_data)
 				"anubis",
 				"pazuzu",
 				"cursed_crown"
+			}
+		},
+		brb_10 = {
+			award = "brb_10",
+			job = "brb",
+			difficulties = overkill_and_above,
+			masks = {
+				"cmt_01",
+				"cmt_02",
+				"cmt_03",
+				"cmt_04"
 			}
 		}
 	}

@@ -14561,7 +14561,8 @@ function WeaponFactoryTweakData:create_ammunition()
 	local weapons = {
 		"wpn_fps_gre_m79",
 		"wpn_fps_gre_m32",
-		"wpn_fps_gre_china"
+		"wpn_fps_gre_china",
+		"wpn_fps_gre_slap"
 	}
 
 	for _, factory_id in ipairs(weapons) do

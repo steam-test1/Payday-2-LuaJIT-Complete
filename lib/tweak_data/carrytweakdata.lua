@@ -407,6 +407,20 @@ function CarryTweakData:init(tweak_data)
 		unit = "units/payday2/pickups/gen_pku_toolbag_large/gen_pku_toolbag_large",
 		visual_unit_name = "units/payday2/characters/npc_acc_tools_bag_large_1/npc_acc_tools_bag_large_1"
 	}
+	self.winch_part_2 = {
+		type = "heavy",
+		name_id = "hud_carry_winch_bag",
+		skip_exit_secure = true,
+		unit = "units/payday2/pickups/gen_pku_toolbag_large/gen_pku_toolbag_large_2",
+		visual_unit_name = "units/payday2/characters/npc_acc_tools_bag_large_1/npc_acc_tools_bag_large_1"
+	}
+	self.winch_part_3 = {
+		type = "heavy",
+		name_id = "hud_carry_winch_bag",
+		skip_exit_secure = true,
+		unit = "units/payday2/pickups/gen_pku_toolbag_large/gen_pku_toolbag_large_3",
+		visual_unit_name = "units/payday2/characters/npc_acc_tools_bag_large_1/npc_acc_tools_bag_large_1"
+	}
 	self.fireworks = {
 		type = "light",
 		name_id = "hud_carry_fireworks_bag",

@@ -390,7 +390,7 @@ function EquipmentsTweakData:init()
 		},
 		circle_cutter = {
 			quantity = 1,
-			transfer_quantity = 3,
+			transfer_quantity = 4,
 			sync_possession = true,
 			text_id = "hud_equipment_circle_cutter",
 			max_quantity = 3,
@@ -620,6 +620,12 @@ function EquipmentsTweakData:init()
 		icon = "equipment_liquid_nitrogen_canister",
 		transfer_quantity = 4,
 		text_id = "hud_int_equipment_liquid_nitrogen"
+	}
+	self.specials.medallion = {
+		sync_possession = true,
+		icon = "equipment_medallion",
+		transfer_quantity = 1,
+		text_id = "hud_int_equipment_medallion"
 	}
 	self.specials.briefcase = {
 		sync_possession = true,

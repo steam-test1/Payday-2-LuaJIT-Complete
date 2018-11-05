@@ -305,7 +305,8 @@ function AssetsTweakData:_init_assets(tweak_data)
 			"rvd2",
 			"dah",
 			"wwh",
-			"hvh"
+			"hvh",
+			"brb"
 		},
 		visible_if_locked = true,
 		unlock_desc_id = "menu_asset_grenade_crate_desc",
@@ -354,7 +355,8 @@ function AssetsTweakData:_init_assets(tweak_data)
 			"rvd2",
 			"dah",
 			"wwh",
-			"hvh"
+			"hvh",
+			"brb"
 		},
 		visible_if_locked = true,
 		unlock_desc_id = "menu_asset_ammo_desc",
@@ -400,7 +402,8 @@ function AssetsTweakData:_init_assets(tweak_data)
 			"rvd2",
 			"dah",
 			"wwh",
-			"hvh"
+			"hvh",
+			"brb"
 		},
 		visible_if_locked = true,
 		unlock_desc_id = "menu_asset_health_desc",

@@ -1796,6 +1796,10 @@ function WINDLCManager:init()
 				app_id = "218620",
 				no_install = true
 			},
+			cmt = {
+				app_id = "218620",
+				no_install = true
+			},
 			pbm = {
 				app_id = "735630",
 				no_install = true

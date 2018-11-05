@@ -26,6 +26,8 @@ function InteractionTweakData:init(tweak_data)
 		interact_distance = 300,
 		timer = 3
 	}
+	self.thermite_not_consume = deep_clone(self.thermite)
+	self.thermite_not_consume.equipment_consume = false
 	self.gasoline = {
 		icon = "equipment_thermite",
 		text_id = "debug_interact_gas",
@@ -5066,6 +5068,59 @@ function InteractionTweakData:init(tweak_data)
 		timer = 1,
 		axis = "z",
 		interact_distance = 200
+	}
+	self.hold_search_toilet = {
+		text_id = "hud_int_hold_search_toilet",
+		action_text_id = "hud_action_searching_toilet",
+		timer = 1,
+		interact_distance = 200,
+		start_active = false
+	}
+	self.hold_search_dumpster = {
+		text_id = "hud_int_hold_search_dumpster",
+		action_text_id = "hud_action_searching_dumpster",
+		timer = 1,
+		interact_distance = 200,
+		start_active = false
+	}
+	self.hold_cut_tarp = {
+		text_id = "hud_int_hold_cut_tarp",
+		action_text_id = "hud_action_cutting_tarp",
+		sound_start = "bar_cut_tarp_loop",
+		sound_interupt = "bar_cut_tarp_cancel",
+		sound_done = "bar_cut_tarp_finish",
+		timer = 3,
+		interact_distance = 200,
+		start_active = true
+	}
+	self.hold_new_hack = {
+		text_id = "hud_int_hold_start_new_hack",
+		action_text_id = "hud_action_starting_new_hack",
+		start_active = false,
+		timer = 3,
+		sound_start = "bar_keyboard",
+		sound_interupt = "bar_keyboard_cancel",
+		sound_done = "bar_keyboard_finished"
+	}
+	self.hold_take_medallion = {
+		text_id = "hud_int_hold_take_medallion",
+		action_text_id = "hud_action_taking_medallion",
+		timer = 2,
+		start_active = false,
+		special_equipment_block = "medallion"
+	}
+	self.apply_thermite_paste_no_consume = deep_clone(self.apply_thermite_paste)
+	self.apply_thermite_paste_no_consume.equipment_consume = false
+	self.apply_thermite_paste_no_consume.special_equipment = "thermite"
+	self.brb_connect_winch_hook = {
+		text_id = "hud_connect_which_hook_brb",
+		action_text_id = "hud_action_connecting_which_hook_brb",
+		equipment_text_id = "hint_no_winch_hook",
+		special_equipment = "cas_winch_hook",
+		start_active = false,
+		interact_distance = 200,
+		timer = 2,
+		equipment_consume = true
 	}
 end
 

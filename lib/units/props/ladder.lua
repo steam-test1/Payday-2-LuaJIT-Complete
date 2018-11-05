@@ -60,13 +60,13 @@ function Ladder:set_config(check_ground_clipping)
 		local up_ray = self._unit:raycast("ray", middle_pos + self._normal * self.MOVER_NORMAL_OFFSET, top + self._normal * self.MOVER_NORMAL_OFFSET, "slot_mask", 1)
 
 		if up_ray then
-			top = (up_ray.position - self._normal * self.MOVER_NORMAL_OFFSET) - self._up * 10
+			top = (up_ray.position - self._normal * self.MOVER_NORMAL_OFFSET) - self._up * 15
 		end
 
 		local bottom_ray = self._unit:raycast("ray", middle_pos + self._normal * self.MOVER_NORMAL_OFFSET, position + self._normal * self.MOVER_NORMAL_OFFSET, "slot_mask", 1)
 
 		if bottom_ray then
-			position = bottom_ray.position - self._normal * self.MOVER_NORMAL_OFFSET + self._up * 10
+			position = bottom_ray.position - self._normal * self.MOVER_NORMAL_OFFSET + self._up * 15
 		end
 
 		self._height = mvector3.distance(top, position)

@@ -4477,11 +4477,14 @@ function PlayerManager:drop_carry(zipline_unit)
 	local has_dye_pack = carry_data.has_dye_pack
 	local dye_value_multiplier = carry_data.dye_value_multiplier
 	local throw_distance_multiplier_upgrade_level = managers.player:upgrade_level("carry", "throw_distance_multiplier", 0)
+	local position = camera_ext:position()
+	local rotation = camera_ext:rotation()
+	local forward = player:camera():forward()
 
 	if Network:is_client() then
-		managers.network:session():send_to_host("server_drop_carry", carry_data.carry_id, carry_data.multiplier, dye_initiated, has_dye_pack, dye_value_multiplier, camera_ext:position(), camera_ext:rotation(), player:camera():forward(), throw_distance_multiplier_upgrade_level, zipline_unit)
+		managers.network:session():send_to_host("server_drop_carry", carry_data.carry_id, carry_data.multiplier, dye_initiated, has_dye_pack, dye_value_multiplier, position, rotation, forward, throw_distance_multiplier_upgrade_level, zipline_unit)
 	else
-		self:server_drop_carry(carry_data.carry_id, carry_data.multiplier, dye_initiated, has_dye_pack, dye_value_multiplier, camera_ext:position(), camera_ext:rotation(), player:camera():forward(), throw_distance_multiplier_upgrade_level, zipline_unit, managers.network:session():local_peer())
+		self:server_drop_carry(carry_data.carry_id, carry_data.multiplier, dye_initiated, has_dye_pack, dye_value_multiplier, position, rotation, forward, throw_distance_multiplier_upgrade_level, zipline_unit, managers.network:session():local_peer())
 	end
 
 	managers.hud:remove_teammate_carry_info(HUDManager.PLAYER_PANEL)

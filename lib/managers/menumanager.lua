@@ -1165,7 +1165,7 @@ function MenuManager:ps3_disconnect(connected)
 	end
 
 	if managers.menu_component then
-		managers.menu_component:refresh_player_profile_gui()
+		
 	end
 end
 
@@ -9465,6 +9465,10 @@ function MenuOptionInitiator:modify_video(node)
 		option_value = managers.user:get_setting("brightness")
 
 		br_item:set_value(option_value)
+	end
+
+	if node:item("fov_multiplier") then
+		node:item("fov_multiplier"):set_value(managers.user:get_setting("fov_multiplier"))
 	end
 
 	local effect_quality_item = node:item("effect_quality")

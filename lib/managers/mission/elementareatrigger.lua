@@ -223,7 +223,9 @@ function ElementAreaTrigger:project_instigators()
 				"rubies",
 				"red_diamond",
 				"diamonds_dah",
-				"old_wine"
+				"old_wine",
+				"winch_part_2",
+				"winch_part_3"
 			}
 
 			if table.contains(carry_list, carry_id) then

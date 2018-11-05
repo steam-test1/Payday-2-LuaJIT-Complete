@@ -1621,9 +1621,24 @@ function LevelsTweakData:init()
 		music = "heist",
 		cube = "cube_apply_heist_bank",
 		environment_effects = {"snow"},
+		player_sequence = "spawn_prop_winter_suit",
 		max_bags = 12,
 		ai_group_type = america,
 		drop_pickups_to_ground = true
+	}
+	self.brb = {
+		name_id = "heist_brb_hl",
+		briefing_id = "heist_brb_briefing",
+		briefing_dialog = "Play_loc_brb_brf",
+		world_name = "narratives/locke/brb",
+		intro_event = "Play_loc_brb_intro",
+		outro_event = "Play_loc_brb_end",
+		music = "heist",
+		package = "packages/lvl_brb",
+		cube = "cube_apply_heist_bank",
+		max_bags = 26,
+		narrator = "locke",
+		load_screen = "guis/dlcs/brb/textures/loading/job_brb_df"
 	}
 	self._level_index = {
 		"welcome_to_the_jungle_1",
@@ -1725,7 +1740,8 @@ function LevelsTweakData:init()
 		"rvd1",
 		"rvd2",
 		"hvh",
-		"wwh"
+		"wwh",
+		"brb"
 	}
 
 	if SystemInfo:distribution() == Idstring("STEAM") then

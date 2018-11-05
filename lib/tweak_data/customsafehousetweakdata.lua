@@ -1220,6 +1220,15 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		show_progress = true,
 		objectives = {self:_progress("eng_4_stats", 5, {name_id = "trophy_eng_progress"})}
 	})
+	table.insert(self.trophies, {
+		name_id = "trophy_brb_1",
+		image_id = "safehouse_trophies_preview_medallion",
+		objective_id = "trophy_brb_1_completion_objective",
+		id = "trophy_brb_1",
+		gives_reward = false,
+		desc_id = "trophy_brb_1_desc",
+		objectives = {self:_achievement("brb_4")}
+	})
 end
 
 function CustomSafehouseTweakData:get_trophy_data(id)

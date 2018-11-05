@@ -7,6 +7,7 @@ function EnvironmentEffectsManager:init()
 	EnvironmentEffectsManager.super.init(self)
 	self:add_effect("rain", RainEffect:new())
 	self:add_effect("snow", SnowEffect:new())
+	self:add_effect("snow_slow", SnowEffectSlow:new())
 	self:add_effect("raindrop_screen", RainDropScreenEffect:new())
 	self:add_effect("lightning", LightningEffect:new())
 
@@ -180,6 +181,70 @@ function SnowEffect:start()
 end
 
 function SnowEffect:stop()
+	World:effect_manager():kill(self._effect)
+
+	self._effect = nil
+
+	if alive(self._vp) then
+		self._vp:vp():set_post_processor_effect("World", ids_snow_post_processor, ids_snow_off)
+
+		self._vp = nil
+	end
+end
+SnowEffectSlow = SnowEffectSlow or class(EnvironmentEffect)
+local ids_snow_slow_post_processor = Idstring("snow_post_processor")
+local ids_snow_slow_ripples = Idstring("snow_ripples")
+local ids_snow_slow_off = Idstring("snow_off")
+
+function SnowEffectSlow:init()
+	EnvironmentEffect.init(self)
+
+	self._effect_name = Idstring("effects/particles/snow/snow_slow")
+end
+
+function SnowEffectSlow:load_effects()
+	if is_editor then
+		CoreEngineAccess._editor_load(Idstring("effect"), self._effect_name)
+	end
+end
+
+function SnowEffectSlow:update(t, dt)
+	local vp = managers.viewport:first_active_viewport()
+
+	if vp and self._vp ~= vp then
+		vp:vp():set_post_processor_effect("World", ids_snow_slow_post_processor, ids_snow_slow_ripples)
+
+		if alive(self._vp) then
+			self._vp:vp():set_post_processor_effect("World", ids_snow_slow_post_processor, ids_snow_slow_off)
+		end
+
+		self._vp = vp
+	end
+
+	local c_rot = managers.environment_effects:camera_rotation()
+
+	if not c_rot then
+		return
+	end
+
+	local c_pos = managers.environment_effects:camera_position()
+
+	if not c_pos then
+		return
+	end
+
+	World:effect_manager():move_rotate(self._effect, c_pos, c_rot)
+end
+
+function SnowEffectSlow:start()
+	self._effect = World:effect_manager():spawn({
+		effect = self._effect_name,
+		position = Vector3(),
+		rotation = Rotation()
+	})
+end
+
+function SnowEffectSlow:stop()
 	World:effect_manager():kill(self._effect)
 
 	self._effect = nil

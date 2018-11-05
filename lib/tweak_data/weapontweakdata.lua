@@ -7256,12 +7256,12 @@ function WeaponTweakData:_init_hk21(weapon_data)
 		alert_size = 8,
 		spread = 10,
 		spread_moving = 10,
-		recoil = 5,
+		recoil = 3,
 		value = 9,
 		extra_ammo = 6,
 		reload = 11,
 		suppression = 2,
-		concealment = 2
+		concealment = 1
 	}
 end
 
@@ -7364,12 +7364,12 @@ function WeaponTweakData:_init_m249(weapon_data)
 		alert_size = 8,
 		spread = 13,
 		spread_moving = 8,
-		recoil = 10,
+		recoil = 8,
 		value = 9,
 		extra_ammo = 6,
 		reload = 11,
 		suppression = 4,
-		concealment = 2
+		concealment = 1
 	}
 end
 
@@ -7472,12 +7472,12 @@ function WeaponTweakData:_init_rpk(weapon_data)
 		alert_size = 7,
 		spread = 8,
 		spread_moving = 6,
-		recoil = 5,
+		recoil = 3,
 		value = 9,
 		extra_ammo = 6,
 		reload = 11,
 		suppression = 8,
-		concealment = 5
+		concealment = 1
 	}
 end
 
@@ -8259,7 +8259,7 @@ function WeaponTweakData:_init_gre_m79(weapon_data)
 	self.gre_m79.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 96,
+		damage = 130,
 		alert_size = 7,
 		spread = 25,
 		spread_moving = 6,
@@ -9505,12 +9505,12 @@ function WeaponTweakData:_init_mg42(weapon_data)
 		alert_size = 8,
 		spread = 13,
 		spread_moving = 8,
-		recoil = 10,
+		recoil = 8,
 		value = 9,
 		extra_ammo = 6,
 		reload = 11,
 		suppression = 4,
-		concealment = 2
+		concealment = 1
 	}
 end
 
@@ -11086,7 +11086,7 @@ function WeaponTweakData:_init_m32(weapon_data)
 	self.m32.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 96,
+		damage = 130,
 		alert_size = 7,
 		spread = 25,
 		spread_moving = 25,
@@ -12567,12 +12567,12 @@ function WeaponTweakData:_init_par(weapon_data)
 		alert_size = 8,
 		spread = 14,
 		spread_moving = 8,
-		recoil = 10,
+		recoil = 8,
 		value = 9,
 		extra_ammo = 6,
 		reload = 11,
 		suppression = 4,
-		concealment = 2
+		concealment = 1
 	}
 end
 

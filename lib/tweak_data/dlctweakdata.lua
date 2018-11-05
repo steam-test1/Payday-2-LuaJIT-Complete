@@ -29,28 +29,29 @@ function DLCTweakData:init(tweak_data)
 			howl = 1,
 			rip = true,
 			lxy = true,
-			dnm = true,
+			cmt = true,
 			gage_pack_lmg = true,
 			dos = true,
-			wwh = true,
+			dnm = true,
 			paydaycon2016 = 1,
+			wwh = true,
 			pic = true,
-			myh = true,
 			mdm = 1,
+			myh = true,
 			the_bomb = true,
-			steel = true,
 			fdm = true,
 			hoxton_revenge = 1,
 			ecp = true,
 			hl_miami = true,
-			hlm2 = true,
+			steel = true,
 			pn2 = true,
+			hlm2 = true,
 			speedrunners = 1,
-			alienware_alpha = true,
 			pim = true,
 			cash = true,
 			humble_summer_2015 = 1,
 			bbq = true,
+			alienware_alpha = true,
 			jigg = 1,
 			season_pass = true,
 			gage_pack_snp = true,
@@ -6078,6 +6079,11 @@ function DLCTweakData:init(tweak_data)
 			amount = 1
 		}
 	}
+	self.cmt = {
+		free = true,
+		content = {}
+	}
+	self.cmt.content.loot_drops = {}
 	self.pbm_bundle = {
 		dlc = "has_pbm",
 		content = {}
@@ -6248,6 +6254,42 @@ function DLCTweakData:init(tweak_data)
 		{
 			type_items = "masks",
 			item_entry = "rvd_03",
+			amount = 1
+		}
+	}
+	self.ach_brb_8 = {
+		dlc = "has_achievement",
+		achievement_id = "brb_8",
+		content = {}
+	}
+	self.ach_brb_8.content.loot_global_value = "cmt"
+	self.ach_brb_8.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "cmt_01",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "cmt_02",
+			amount = 1
+		}
+	}
+	self.ach_brb_9 = {
+		dlc = "has_achievement",
+		achievement_id = "brb_9",
+		content = {}
+	}
+	self.ach_brb_9.content.loot_global_value = "cmt"
+	self.ach_brb_9.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "cmt_03",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "cmt_04",
 			amount = 1
 		}
 	}

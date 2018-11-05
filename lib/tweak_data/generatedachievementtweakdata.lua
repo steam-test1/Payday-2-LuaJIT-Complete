@@ -2769,6 +2769,7 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		flat_3 = {
+			additional_id = true,
 			sort_name = "C_Classics_H_PanicRoom_TheDentist",
 			icon_id = "C_Classics_H_PanicRoom_TheDentist",
 			tags = {
@@ -6778,6 +6779,7 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		the_first_line = {
+			additional_id = true,
 			sort_name = "C_Hector_H_Firestarter_TheFirst",
 			icon_id = "C_Hector_H_Firestarter_TheFirst",
 			tags = {
@@ -6894,6 +6896,7 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		voff_4 = {
+			additional_id = true,
 			sort_name = "C_Locke_H_BirthOfSky_Mellon",
 			icon_id = "C_Locke_H_BirthOfSky_Mellon",
 			tags = {
@@ -6903,6 +6906,7 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		voff_5 = {
+			additional_id = true,
 			sort_name = "C_Bain_H_CookOff_KissTheChef_D3",
 			icon_id = "C_Bain_H_CookOff_KissTheChef_D3",
 			tags = {
@@ -7156,6 +7160,133 @@ function init_auto_generated_achievement_data(tags)
 				tags.unlock.mask,
 				tags.tactics.loud,
 				tags.tactics.stealth
+			}
+		},
+		brb_1 = {
+			icon_id = "C_Locke_H_BrooklynBank_AllDiffs_D0",
+			ladder = "H_BrooklynBank",
+			sort_name = "C_Locke_H_BrooklynBank_AllDiffs_D0",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		brb_10 = {
+			additional_id = true,
+			sort_name = "C_Locke_H_BrooklynBank_AnimalKingdom_D3",
+			icon_id = "C_Locke_H_BrooklynBank_AnimalKingdom_D3",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.inventory.mask,
+				tags.teamwork.players_4,
+				tags.contracts.locke
+			}
+		},
+		brb_2 = {
+			icon_id = "C_Locke_H_BrooklynBank_AllDiffs_D1",
+			ladder = "H_BrooklynBank",
+			sort_name = "C_Locke_H_BrooklynBank_AllDiffs_D1",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.hard,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		brb_3 = {
+			icon_id = "C_Locke_H_BrooklynBank_AllDiffs_D2",
+			ladder = "H_BrooklynBank",
+			sort_name = "C_Locke_H_BrooklynBank_AllDiffs_D2",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.very_hard,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		brb_4 = {
+			icon_id = "C_Locke_H_BrooklynBank_AllDiffs_D3",
+			ladder = "H_BrooklynBank",
+			sort_name = "C_Locke_H_BrooklynBank_AllDiffs_D3",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		brb_5 = {
+			icon_id = "C_Locke_H_BrooklynBank_AllDiffs_D4",
+			ladder = "H_BrooklynBank",
+			sort_name = "C_Locke_H_BrooklynBank_AllDiffs_D4",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.mayhem,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		brb_6 = {
+			icon_id = "C_Locke_H_BrooklynBank_AllDiffs_D5",
+			ladder = "H_BrooklynBank",
+			sort_name = "C_Locke_H_BrooklynBank_AllDiffs_D5",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_wish,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		brb_7 = {
+			icon_id = "C_Locke_H_BrooklynBank_AllDiffs_D6",
+			ladder = "H_BrooklynBank",
+			sort_name = "C_Locke_H_BrooklynBank_AllDiffs_D6",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.one_down,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		brb_8 = {
+			need_unlock_icons = true,
+			icon_id = "C_Locke_H_BrooklynBank_AlltheGold_D2",
+			sort_name = "C_Locke_H_BrooklynBank_AlltheGold_D2",
+			additional_id = true,
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.very_hard,
+				tags.unlock.mask,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		brb_9 = {
+			need_unlock_icons = true,
+			icon_id = "C_Locke_H_BrooklynBank_Obsessive_D3",
+			sort_name = "C_Locke_H_BrooklynBank_Obsessive_D3",
+			additional_id = true,
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.unlock.mask,
+				tags.tactics.loud,
+				tags.inventory.weapon,
+				tags.inventory.equipment,
+				tags.contracts.locke
 			}
 		},
 		dah_1 = {
