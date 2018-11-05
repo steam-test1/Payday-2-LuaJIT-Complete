@@ -260,7 +260,7 @@ function WeaponTweakData:_set_overkill()
 	self.ceiling_turret_module.DAMAGE = 1.3
 	self.aa_turret_module.HEALTH_INIT = 13500
 	self.aa_turret_module.SHIELD_HEALTH_INIT = 300
-	self.aa_turret_module.DAMAGE = 0.2
+	self.aa_turret_module.DAMAGE = 1.3
 end
 
 function WeaponTweakData:_set_overkill_145()
@@ -271,9 +271,9 @@ function WeaponTweakData:_set_overkill_145()
 	self.ceiling_turret_module.HEALTH_INIT = 12500
 	self.ceiling_turret_module.SHIELD_HEALTH_INIT = 250
 	self.ceiling_turret_module.DAMAGE = 2
-	self.aa_turret_module.HEALTH_INIT = 2600
+	self.aa_turret_module.HEALTH_INIT = 26000
 	self.aa_turret_module.SHIELD_HEALTH_INIT = 500
-	self.aa_turret_module.DAMAGE = 0.2
+	self.aa_turret_module.DAMAGE = 2
 end
 
 function WeaponTweakData:_set_easy_wish()
@@ -289,7 +289,8 @@ function WeaponTweakData:_set_easy_wish()
 	self.ceiling_turret_module.CLIP_SIZE = 800
 	self.aa_turret_module.HEALTH_INIT = 40100
 	self.aa_turret_module.SHIELD_HEALTH_INIT = 700
-	self.aa_turret_module.DAMAGE = 0.2
+	self.aa_turret_module.DAMAGE = 3.5
+	self.aa_turret_module.CLIP_SIZE = 800
 end
 
 function WeaponTweakData:_set_overkill_290()
@@ -304,7 +305,8 @@ function WeaponTweakData:_set_overkill_290()
 	self.ceiling_turret_module.CLIP_SIZE = 800
 	self.aa_turret_module.HEALTH_INIT = 40100
 	self.aa_turret_module.SHIELD_HEALTH_INIT = 700
-	self.aa_turret_module.DAMAGE = 0.2
+	self.aa_turret_module.DAMAGE = 3.5
+	self.aa_turret_module.CLIP_SIZE = 800
 end
 
 function WeaponTweakData:_set_sm_wish()
@@ -322,7 +324,8 @@ function WeaponTweakData:_set_sm_wish()
 	self.ceiling_turret_module.CLIP_SIZE = 800
 	self.aa_turret_module.HEALTH_INIT = 40100
 	self.aa_turret_module.SHIELD_HEALTH_INIT = 700
-	self.aa_turret_module.DAMAGE = 0.2
+	self.aa_turret_module.DAMAGE = 3.5
+	self.aa_turret_module.CLIP_SIZE = 800
 end
 
 function WeaponTweakData:_init_data_npc_melee()
@@ -828,11 +831,12 @@ function WeaponTweakData:_init_data_aa_turret_module_npc()
 	}
 	self.aa_turret_module.SUPPRESSION = 1
 	self.aa_turret_module.SPREAD = 0.5
-	self.aa_turret_module.FIRE_RANGE = 10000
+	self.aa_turret_module.FIRE_RANGE = 30000
+	self.aa_turret_module.DETECTION_RANGE = self.aa_turret_module.FIRE_RANGE
 	self.aa_turret_module.CLIP_SIZE = 400
 	self.aa_turret_module.AUTO_RELOAD = true
 	self.aa_turret_module.AUTO_RELOAD_DURATION = 8
-	self.aa_turret_module.CAN_GO_IDLE = true
+	self.aa_turret_module.CAN_GO_IDLE = false
 	self.aa_turret_module.IDLE_WAIT_TIME = 5
 	self.aa_turret_module.AUTO_REPAIR = true
 	self.aa_turret_module.AUTO_REPAIR_MAX_COUNT = math.huge
