@@ -235,6 +235,10 @@ function SideJobGenericDLCManager:completed_challenge(challenge_or_id)
 	if challenge and not challenge.completed then
 		challenge.completed = true
 		self._has_completed_mission = true
+
+		if managers.hud then
+			managers.hud:challenge_popup(challenge)
+		end
 	end
 end
 

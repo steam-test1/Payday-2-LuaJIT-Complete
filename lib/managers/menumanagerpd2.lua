@@ -917,6 +917,230 @@ end
 function FbiFilesInitiator:refresh_node(node)
 	return self:modify_node(node)
 end
+PlayerListInitiator = PlayerListInitiator or class(MenuInitiatorBase)
+
+function PlayerListInitiator:get_peer_name(peer)
+	if not peer then
+		return "No peer"
+	end
+
+	if peer == managers.network:session():local_peer() then
+		return peer:name() .. " (" .. (managers.experience:current_rank() > 0 and managers.experience:rank_string(managers.experience:current_rank()) .. "-" or "") .. (managers.experience:current_level() or "") .. ")"
+	else
+		return peer:name() .. " (" .. (peer:rank() > 0 and managers.experience:rank_string(peer:rank()) .. "-" or "") .. (peer:level() or "") .. ")"
+	end
+end
+
+function PlayerListInitiator:add_peer_item(node, peer)
+	local params = {
+		localize_help = false,
+		localize = false,
+		to_upper = false,
+		callback = "on_player_list_inspect_peer",
+		name = peer:user_id(),
+		text_id = self:get_peer_name(peer),
+		rpc = peer:rpc(),
+		peer = peer
+	}
+	local new_item = node:create_item(nil, params)
+
+	node:add_item(new_item)
+end
+
+function PlayerListInitiator:modify_node(node, up)
+	node:clean_items()
+
+	local params = {
+		callback = "on_visit_fbi_files",
+		name = "on_visit_fbi_files",
+		help_id = "menu_visit_fbi_files_help",
+		text_id = "menu_visit_fbi_files"
+	}
+	local new_item = node:create_item(nil, params)
+
+	node:add_item(new_item)
+	self:create_divider(node, "fbi_spacer")
+
+	if managers.network:session() then
+		self:add_peer_item(node, managers.network:session():local_peer())
+
+		for _, peer in pairs(managers.network:session():peers()) do
+			self:add_peer_item(node, peer)
+		end
+	end
+
+	managers.menu:add_back_button(node)
+
+	return node
+end
+
+function PlayerListInitiator:refresh_node(node)
+	return self:modify_node(node)
+end
+
+function MenuCallbackHandler:on_player_list_inspect_peer(item, node)
+	if item then
+		managers.menu:open_node("inspect_player", {item:parameters().peer})
+	end
+end
+InspectPlayerInitiator = InspectPlayerInitiator or class(MenuInitiatorBase)
+
+function InspectPlayerInitiator:modify_node(node, inspect_peer)
+	node:clean_items()
+
+	if not inspect_peer then
+		Application:error("Can not open inpsect player without a specified peer!")
+		managers.menu:back()
+	end
+
+	local is_local_peer = inspect_peer == managers.network:session():local_peer()
+	local params = {
+		name = "peer_name",
+		localize = false,
+		no_text = false,
+		text_id = PlayerListInitiator.get_peer_name(self, inspect_peer),
+		color = tweak_data.screen_colors.text
+	}
+	local data_node = {type = "MenuItemDivider"}
+	local new_item = node:create_item(data_node, params)
+
+	node:add_item(new_item)
+
+	local params = {
+		callback = "on_visit_fbi_files_suspect",
+		help_id = "menu_visit_fbi_files_help",
+		text_id = "menu_visit_fbi_files",
+		name = inspect_peer:user_id()
+	}
+	local new_item = node:create_item(nil, params)
+
+	node:add_item(new_item)
+	self:create_divider(node, "fbi_spacer")
+
+	if not is_local_peer and Network:is_server() then
+		if MenuCallbackHandler:kick_player_visible() or MenuCallbackHandler:kick_vote_visible() then
+			local params = {
+				callback = "kick_player",
+				name = "kick_player",
+				text_id = MenuCallbackHandler:kick_player_visible() and "menu_kick_player" or "menu_kick_vote",
+				rpc = inspect_peer:rpc(),
+				peer = inspect_peer
+			}
+			local new_item = node:create_item(nil, params)
+
+			node:add_item(new_item)
+		end
+
+		local function get_identifier(peer)
+			return SystemInfo:platform() == Idstring("WIN32") and peer:user_id() or peer:name()
+		end
+
+		local params = {
+			callback = "kick_ban_player",
+			text_id = "menu_players_list_ban",
+			name = inspect_peer:name(),
+			identifier = get_identifier(inspect_peer),
+			rpc = inspect_peer:rpc(),
+			peer = inspect_peer
+		}
+		local new_item = node:create_item(nil, params)
+
+		node:add_item(new_item)
+	end
+
+	if not is_local_peer then
+		local toggle_mute = self:create_toggle(node, {
+			localize = true,
+			name = "toggle_mute",
+			enabled = true,
+			text_id = "menu_players_list_mute",
+			callback = "mute_player",
+			rpc = inspect_peer:rpc(),
+			peer = inspect_peer
+		})
+
+		toggle_mute:set_value(inspect_peer:is_muted() and "on" or "off")
+	end
+
+	self:create_divider(node, "admin_spacer")
+
+	local user = Steam:user(inspect_peer:ip())
+
+	if user and user:rich_presence("is_modded") == "1" or inspect_peer:is_modded() then
+		local params = {
+			text_id = "menu_players_list_mods",
+			name = "peer_mods",
+			no_text = false,
+			size = 8,
+			color = tweak_data.screen_colors.text
+		}
+		local data_node = {type = "MenuItemDivider"}
+		local new_item = node:create_item(data_node, params)
+
+		node:add_item(new_item)
+
+		for i, mod in ipairs(inspect_peer:synced_mods()) do
+			local params = {
+				callback = "inspect_mod",
+				localize = false,
+				name = "mod_" .. tostring(i),
+				text_id = mod.name,
+				mod_id = mod.id
+			}
+			local new_item = node:create_item(nil, params)
+
+			node:add_item(new_item)
+		end
+	end
+
+	managers.menu:add_back_button(node)
+	node:set_default_item_name("back")
+
+	return node
+end
+
+function InspectPlayerInitiator:refresh_node(node)
+	return self:modify_node(node)
+end
+
+function MenuCallbackHandler:inspect_mod(item)
+	Steam:overlay_activate("url", "http://paydaymods.com/mods/" .. item:parameters().mod_id or "")
+end
+
+function MenuCallbackHandler:kick_ban_player(item)
+	local dialog_data = {
+		title = managers.localization:text("dialog_sure_to_ban_title"),
+		text = managers.localization:text("dialog_sure_to_kick_ban_body", {USER = item:parameters().name})
+	}
+	local yes_button = {
+		text = managers.localization:text("dialog_yes"),
+		callback_func = callback(self, self, "_kick_ban_player_confirm", item)
+	}
+	local no_button = {
+		text = managers.localization:text("dialog_no"),
+		cancel_button = true
+	}
+	dialog_data.button_list = {
+		yes_button,
+		no_button
+	}
+
+	managers.system_menu:show(dialog_data)
+end
+
+function MenuCallbackHandler:_kick_ban_player_confirm(item)
+	local peer = item:parameters().peer
+
+	if peer then
+		managers.ban_list:ban(item:parameters().identifier, item:parameters().name)
+
+		local message_id = 0
+		message_id = 6
+
+		managers.network:session():send_to_peers("kick_peer", peer:id(), message_id)
+		managers.network:session():on_peer_kicked(peer, peer:id(), message_id)
+	end
+end
 MenuChooseWeaponCosmeticInitiator = MenuChooseWeaponCosmeticInitiator or class(MenuInitiatorBase)
 
 function MenuChooseWeaponCosmeticInitiator:modify_node(original_node, data)

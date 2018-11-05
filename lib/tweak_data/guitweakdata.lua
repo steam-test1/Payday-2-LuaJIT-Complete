@@ -1701,7 +1701,7 @@ function GuiTweakData:init()
 		},
 		{
 			name_id = "menu_cn_premium_buy",
-			menu_node = "crimenet_contract_special",
+			menu_node = "contract_broker",
 			x = 420,
 			y = 846,
 			id = "premium_buy",
@@ -4931,7 +4931,7 @@ function GuiTweakData:init()
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_locke_and_load_ultimate_discount",
 		texture_path = "guis/textures/pd2/new_heists/locke_and_load_discount",
-		url = "http://store.steampowered.com/app/218620/PAYDAY_2/"
+		url = "http://store.steampowered.com/bundle/3756/PAYDAY_2_Ultimate_Edition/"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_locke_and_load_f2p",

@@ -742,6 +742,7 @@ function MenuCrimeNetCrimeSpreeContractInitiator:modify_node(original_node, data
 		node:item("lobby_drop_in_option"):set_value(Global.game_settings.drop_in_option)
 		node:item("toggle_ai"):set_value(Global.game_settings.team_ai and Global.game_settings.team_ai_option or 0)
 		node:item("toggle_auto_kick"):set_value(Global.game_settings.auto_kick and "on" or "off")
+		node:item("toggle_allow_modded_players"):set_value(Global.game_settings.allow_modded_players and "on" or "off")
 
 		if tweak_data.quickplay.stealth_levels[data.job_id] then
 			local job_plan_item = node:item("lobby_job_plan")

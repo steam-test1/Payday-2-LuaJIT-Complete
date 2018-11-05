@@ -844,6 +844,7 @@ function TweakData:init()
 		mutators_color = Color(255, 211, 133, 255) / 255,
 		mutators_color_text = Color(255, 211, 133, 255) / 255,
 		crime_spree_risk = Color(255, 255, 255, 0) / 255,
+		achievement_grey = Color(255, 145, 145, 145) / 255,
 		heat_cold_color = Color(255, 255, 51, 51) / 255,
 		heat_warm_color = Color("ff7f00"),
 		heat_standard_color = Color(255, 255, 255, 255) / 255

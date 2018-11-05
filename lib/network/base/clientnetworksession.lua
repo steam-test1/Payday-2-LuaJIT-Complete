@@ -185,6 +185,9 @@ function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_charac
 	elseif reply == 9 then
 		self:remove_peer(self._server_peer, 1)
 		cb("BANNED")
+	elseif reply == 10 then
+		self:remove_peer(self._server_peer, 1)
+		cb("MODS_DISALLOWED")
 	end
 end
 

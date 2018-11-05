@@ -293,6 +293,7 @@ function ChallengeManager:_check_challenge_completed(id, key)
 
 			if managers.hud then
 				managers.hud:post_event("Achievement_challenge")
+				managers.hud:challenge_popup(active_challenge)
 			end
 
 			return true

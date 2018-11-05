@@ -83,6 +83,14 @@ function HUDManager:init()
 	self._controller:enable()
 
 	self._waiting_index = {}
+
+	call_on_next_update(function ()
+		managers.custom_safehouse:register_trophy_unlocked_callback(function (...)
+			if managers.hud then
+				managers.hud:safe_house_challenge_popup(...)
+			end
+		end, "hud")
+	end, "hud_add_challange_callback")
 end
 
 function HUDManager:destroy()

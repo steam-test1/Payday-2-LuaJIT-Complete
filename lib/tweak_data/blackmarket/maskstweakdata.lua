@@ -4945,6 +4945,16 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		texture_bundle_folder = "cmo",
 		sort_number = 56
 	}
+	self.masks.dnm = {
+		unit = "units/pd2_dlc_dnm/masks/msk_dnm",
+		name_id = "bm_msk_dnm",
+		pcs = {},
+		value = 0,
+		qlvl = 0,
+		infamous = true,
+		sort_number = 29,
+		texture_bundle_folder = "dnm"
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.masks) do

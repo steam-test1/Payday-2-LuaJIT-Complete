@@ -23,5 +23,21 @@ function Crimefest2017JobsTweakData:_init_challenges(tweak_data)
 			amount = 1
 		}}
 	})
+	table.insert(self.challenges, {
+		reward_id = "menu_cf2017_job_2_reward",
+		name_id = "menu_cf2017_job_2",
+		id = "cf2017_2",
+		desc_id = "menu_cf2017_job_2_desc",
+		show_progress = false,
+		objectives = {tweak_data.safehouse:_progress("cf2017_2", 1, {
+			name_id = "menu_cf2017_job_2_obj",
+			desc_id = "menu_cf2017_job_2_obj_desc"
+		})},
+		rewards = {{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_smg_mac10_body_modern",
+			amount = 1
+		}}
+	})
 end
 

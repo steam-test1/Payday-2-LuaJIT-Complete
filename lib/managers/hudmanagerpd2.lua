@@ -2,7 +2,8 @@ core:import("CoreEvent")
 require("lib/managers/HUDManagerAnimatePD2")
 require("lib/managers/hud/HUDTeammate")
 require("lib/managers/hud/HUDInteraction")
-require("lib/managers/hud/HUDStatsScreen")
+require("lib/managers/hud/NewHudStatsScreen")
+require("lib/managers/hud/HudChallangeNotification")
 require("lib/managers/hud/HUDObjectives")
 require("lib/managers/hud/HUDPresenter")
 require("lib/managers/hud/HUDAssaultCorner")
@@ -965,6 +966,12 @@ function HUDManager:show_stats_screen()
 	self._hud_statsscreen:show()
 
 	self._showing_stats_screen = true
+
+	self:add_updator("_hud_statsscreen", callback(self._hud_statsscreen, self._hud_statsscreen, "update"))
+end
+
+function HUDManager:update_stat_screen()
+	self._hud_statsscreen:update()
 end
 
 function HUDManager:hide_stats_screen()
@@ -973,6 +980,8 @@ function HUDManager:hide_stats_screen()
 	if self._hud_statsscreen then
 		self._hud_statsscreen:hide()
 	end
+
+	self:remove_updator("_hud_statsscreen")
 end
 
 function HUDManager:showing_stats_screen()
@@ -2011,5 +2020,43 @@ function HUDManager:set_ai_stopped(ai_id, stopped)
 			label.panel:remove(label.panel:child("stopped"))
 		end
 	end
+end
+
+function HUDManager:achievement_popup(id)
+	local d = tweak_data.achievement.visual[id]
+
+	HudChallangeNotification.queue(managers.localization:to_upper_text("hud_achieved_popup"), managers.localization:to_upper_text(d.name_id), d.icon_id)
+end
+
+function HUDManager:challenge_popup(d)
+	HudChallangeNotification.queue(managers.localization:to_upper_text("hud_challenge_popup"), managers.localization:to_upper_text(d.name_id))
+end
+
+function HUDManager:custom_ingame_popup(title_id, text_id, icon_id)
+	HudChallangeNotification.queue(managers.localization:to_upper_text(title_id), managers.localization:to_upper_text(text_id), icon_id)
+end
+
+function HUDManager:custom_ingame_popup_text(title, text, icon_id)
+	HudChallangeNotification.queue(title, text, icon_id)
+end
+
+function HUDManager:safe_house_challenge_popup(id, c_type)
+	local d = nil
+	local title_id = "hud_trophy_popup"
+
+	if c_type == "daily" then
+		title_id = "hud_challenge_popup"
+		d = managers.custom_safehouse:get_daily(id)
+	else
+		d = managers.custom_safehouse:get_trophy(id)
+	end
+
+	if not d then
+		Application:error("Failed to get data about side job with id '" .. id .. "' and type '" .. (c_type or "nil") .. "'!")
+
+		return
+	end
+
+	HudChallangeNotification.queue(managers.localization:to_upper_text(title_id), managers.localization:to_upper_text(d.name_id))
 end
 

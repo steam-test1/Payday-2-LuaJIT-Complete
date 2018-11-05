@@ -312,7 +312,7 @@ function CrimeNetSidebarGui:clbk_safehouse()
 end
 
 function CrimeNetSidebarGui:clbk_contract_broker()
-	managers.menu:open_node("crimenet_contract_special")
+	managers.menu:open_node("contract_broker")
 end
 
 function CrimeNetSidebarGui:clbk_contact_database()

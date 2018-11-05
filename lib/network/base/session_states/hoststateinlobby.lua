@@ -15,15 +15,16 @@ function HostStateInLobby:on_join_request_received(data, peer_name, client_prefe
 
 	local my_user_id = data.local_peer:user_id() or ""
 
-	if self:_is_kicked(data, peer_name, sender) then
-		print("YOU ARE IN MY KICKED LIST", peer_name)
-		self:_send_request_denied(sender, 2, my_user_id)
+	if self:_is_banned(peer_name, sender) then
+		self:_send_request_denied(sender, 9, my_user_id)
 
 		return
 	end
 
-	if self:_is_banned(peer_name, sender) then
-		self:_send_request_denied(sender, 9, my_user_id)
+	local user = Steam:user(sender:ip_at_index(0))
+
+	if not MenuCallbackHandler:is_modded_client() and not Global.game_settings.allow_modded_players and user and user:rich_presence("is_modded") == "1" then
+		self:_send_request_denied(sender, 10, my_user_id)
 
 		return
 	end

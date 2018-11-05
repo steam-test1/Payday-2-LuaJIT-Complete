@@ -1,6 +1,6 @@
 NetworkMatchMakingSTEAM = NetworkMatchMakingSTEAM or class()
 NetworkMatchMakingSTEAM.OPEN_SLOTS = tweak_data.max_players
-NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "payday2_v1.79.379"
+NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "payday2_v1.79.387"
 
 function NetworkMatchMakingSTEAM:init()
 	cat_print("lobby", "matchmake = NetworkMatchMakingSTEAM")
@@ -119,6 +119,7 @@ function NetworkMatchMakingSTEAM:reset_filters()
 	usr:set_setting("crimenet_filter_mutators", usr:get_default_setting("crimenet_filter_mutators"))
 	usr:set_setting("crimenet_gamemode_filter", usr:get_default_setting("crimenet_gamemode_filter"))
 	usr:set_setting("crime_spree_lobby_diff", usr:get_default_setting("crime_spree_lobby_diff"))
+	usr:set_setting("crimenet_filter_modded", usr:get_default_setting("crimenet_filter_modded"))
 	usr:set_setting("crimenet_filter_new_servers_only", usr:get_default_setting("crimenet_filter_new_servers_only"))
 	usr:set_setting("crimenet_filter_in_lobby", usr:get_default_setting("crimenet_filter_in_lobby"))
 	usr:set_setting("crimenet_filter_max_servers", usr:get_default_setting("crimenet_filter_max_servers"))
@@ -241,6 +242,12 @@ function NetworkMatchMakingSTEAM:get_friends_lobbies()
 						if is_key_valid(crime_spree_key) then
 							attributes_data.crime_spree = tonumber(crime_spree_key)
 							attributes_data.crime_spree_mission = lobby:key_value("crime_spree_mission")
+						end
+
+						local mods_key = lobby:key_value("mods")
+
+						if is_key_valid(mods_key) then
+							attributes_data.mods = mods_key
 						end
 
 						table.insert(info.attribute_list, attributes_data)
@@ -378,6 +385,12 @@ function NetworkMatchMakingSTEAM:search_lobby(friends_only, no_filters)
 							attributes_data.crime_spree_mission = lobby:key_value("crime_spree_mission")
 						end
 
+						local mods_key = lobby:key_value("mods")
+
+						if is_key_valid(mods_key) then
+							attributes_data.mods = mods_key
+						end
+
 						table.insert(info.attribute_list, attributes_data)
 					end
 				end
@@ -400,7 +413,8 @@ function NetworkMatchMakingSTEAM:search_lobby(friends_only, no_filters)
 			"min_level",
 			"kick_option",
 			"job_class_min",
-			"job_class_max"
+			"job_class_max",
+			"allow_mods"
 		}
 
 		if self._BUILD_SEARCH_INTEREST_KEY then
@@ -417,6 +431,14 @@ function NetworkMatchMakingSTEAM:search_lobby(friends_only, no_filters)
 		end
 
 		self.browser:set_lobby_filter(self._BUILD_SEARCH_INTEREST_KEY, "true", "equal")
+
+		local filter_value, filter_type = self:get_modded_lobby_filter()
+
+		self.browser:set_lobby_filter("mods", filter_value, filter_type)
+
+		local filter_value, filter_type = self:get_allow_mods_filter()
+
+		self.browser:set_lobby_filter("allow_mods", filter_value, filter_type)
 
 		if use_filters then
 			self.browser:set_lobby_filter("min_level", managers.experience:current_level(), "equalto_less_than")
@@ -515,6 +537,12 @@ function NetworkMatchMakingSTEAM:is_server_ok(friends_only, room, attributes_lis
 
 	if not is_invite and level_tweak and level_tweak.is_safehouse and not Global.game_settings.allow_search_safehouses then
 		Application:debug("NetworkMatchMakingSTEAM:is_server_ok() server rejected. HIDE ALL SAFEHOUSES")
+
+		return false
+	end
+
+	if not MenuCallbackHandler:is_modded_client() and not is_invite and attributes_list.mods and attributes_list.mods ~= "1" and not Global.game_settings.search_modded_lobbies then
+		Application:debug("NetworkMatchMakingSTEAM:is_server_ok() server rejected. MODDED GAME")
 
 		return false
 	end
@@ -751,6 +779,11 @@ function NetworkMatchMakingSTEAM:join_server(room_id, skip_showing_dialog)
 					managers.network.voice_chat:destroy_voice()
 					managers.network:queue_stop_network()
 					managers.menu:show_peer_banned_dialog()
+				elseif res == "MODS_DISALLOWED" then
+					managers.network.matchmake:leave_game()
+					managers.network.voice_chat:destroy_voice()
+					managers.network:queue_stop_network()
+					managers.menu:show_mods_disallowed_dialog()
 				else
 					Application:error("[NetworkMatchMakingSTEAM:join_server] FAILED TO START MULTIPLAYER!", res)
 				end
@@ -861,6 +894,49 @@ function NetworkMatchMakingSTEAM:server_state_name()
 	return tweak_data:index_to_server_state(self._lobby_attributes.state)
 end
 
+function NetworkMatchMakingSTEAM:build_mods_list()
+	if MenuCallbackHandler:is_modded_client() then
+		local mods = nil
+		mods = MenuCallbackHandler:build_mods_list()
+		local mods_str = ""
+
+		for _, data in ipairs(mods) do
+			mods_str = mods_str .. string.format("%s|%s|", unpack(data))
+		end
+
+		return mods_str
+	else
+		return 1
+	end
+end
+
+function NetworkMatchMakingSTEAM:get_modded_lobby_filter()
+	if MenuCallbackHandler:is_modded_client() then
+		return 0, "equalto_or_greater_than"
+	else
+		local value = not Global.game_settings.search_modded_lobbies and 1 or 0
+		local filter = "equalto_or_greater_than"
+
+		return value, filter
+	end
+end
+
+function NetworkMatchMakingSTEAM:get_allow_mods_setting()
+	if MenuCallbackHandler:is_modded_client() then
+		return 1
+	else
+		return Global.game_settings.allow_modded_players and 1 or 0
+	end
+end
+
+function NetworkMatchMakingSTEAM:get_allow_mods_filter()
+	if MenuCallbackHandler:is_modded_client() then
+		return 1, "equal"
+	else
+		return 0, "equalto_or_greater_than"
+	end
+end
+
 function NetworkMatchMakingSTEAM:set_attributes(settings)
 	if not self.lobby_handler then
 		return
@@ -887,7 +963,9 @@ function NetworkMatchMakingSTEAM:set_attributes(settings)
 		kick_option = settings.numbers[8] or 0,
 		job_class_min = settings.numbers[9] or 10,
 		job_class_max = settings.numbers[9] or 10,
-		job_plan = settings.numbers[10]
+		job_plan = settings.numbers[10],
+		mods = self:build_mods_list(),
+		allow_mods = self:get_allow_mods_setting()
 	}
 
 	if self._BUILD_SEARCH_INTEREST_KEY then

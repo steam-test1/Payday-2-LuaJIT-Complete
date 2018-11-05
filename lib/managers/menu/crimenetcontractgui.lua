@@ -768,6 +768,80 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 		add_line("menu_toggle_drop_in", drop_in[server_data.drop_in])
 	end
 
+	if job_data.mods then
+		local mods_presence = job_data.mods
+
+		if mods_presence and mods_presence ~= "" and mods_presence ~= "1" then
+			local content_panel = add_tab("menu_cn_game_mods")
+			self._mods_tab = self._tabs[#self._tabs]
+			self._mods_scroll = ScrollablePanel:new(content_panel, "mods_scroll", {padding = 0})
+			self._mod_items = {}
+			local _y = 7
+			local add_back = true
+
+			local function add_line(id, text, ignore_back)
+				local canvas = self._mods_scroll:canvas()
+
+				if add_back and not ignore_back then
+					canvas:rect({
+						x = 8,
+						layer = -1,
+						y = _y,
+						h = tweak_data.menu.pd2_small_font_size,
+						w = canvas:w() - 18,
+						color = Color.black:with_alpha(0.7)
+					})
+				end
+
+				add_back = not add_back
+				text = string.upper(text)
+				local left_text = canvas:text({
+					align = "left",
+					x = 10,
+					name = id,
+					font = tweak_data.menu.pd2_small_font,
+					font_size = tweak_data.menu.pd2_small_font_size,
+					text = text,
+					y = _y,
+					h = tweak_data.menu.pd2_small_font_size,
+					w = canvas:w() - 20,
+					color = Color(0.8, 0.8, 0.8)
+				})
+				local highlight_text = canvas:text({
+					blend_mode = "add",
+					align = "left",
+					visible = false,
+					x = 10,
+					name = id,
+					font = tweak_data.menu.pd2_small_font,
+					font_size = tweak_data.menu.pd2_small_font_size,
+					text = text,
+					y = _y,
+					h = tweak_data.menu.pd2_small_font_size,
+					w = canvas:w() - 20,
+					color = tweak_data.screen_colors.button_stage_2
+				})
+				_y = left_text:bottom() + 2
+
+				return left_text, highlight_text
+			end
+
+			local splits = string.split(mods_presence, "|")
+
+			for i = 1, #splits, 2 do
+				local text, highlight = add_line(splits[i + 1] or "", splits[i] or "")
+
+				table.insert(self._mod_items, {
+					text,
+					highlight
+				})
+			end
+
+			add_line("spacer", "", true)
+			self._mods_scroll:update_canvas_size()
+		end
+	end
+
 	local days_multiplier = 0
 
 	for i = 1, #narrative_chains, 1 do
@@ -1804,6 +1878,27 @@ function CrimeNetContractGui:mouse_moved(o, x, y)
 		end
 	end
 
+	local used, pointer = nil
+
+	if self._mod_items and self._mods_tab and self._mods_tab:is_active() then
+		for _, item in ipairs(self._mod_items) do
+			if item[1]:inside(x, y) and not used then
+				pointer = "link"
+				used = true
+
+				item[1]:set_visible(false)
+				item[2]:set_visible(true)
+			else
+				item[1]:set_visible(true)
+				item[2]:set_visible(false)
+			end
+		end
+	end
+
+	if used then
+		return used, pointer
+	end
+
 	if self._active_page then
 		for k, tab_item in pairs(self._tabs) do
 			if not tab_item:is_active() and tab_item:inside(x, y) then
@@ -1835,17 +1930,35 @@ function CrimeNetContractGui:mouse_pressed(o, button, x, y)
 			end
 		end
 	end
+
+	if self._mod_items and self._mods_tab and self._mods_tab:is_active() and button == Idstring("0") then
+		for _, item in ipairs(self._mod_items) do
+			if item[1]:inside(x, y) then
+				Steam:overlay_activate("url", "http://paydaymods.com/mods/" .. item[1]:name())
+
+				break
+			end
+		end
+	end
 end
 
 function CrimeNetContractGui:mouse_wheel_up(x, y)
 	if self._mutators_scroll then
 		self._mutators_scroll:scroll(x, y, 1)
 	end
+
+	if self._mods_scroll then
+		self._mods_scroll:scroll(x, y, 1)
+	end
 end
 
 function CrimeNetContractGui:mouse_wheel_down(x, y)
 	if self._mutators_scroll then
 		self._mutators_scroll:scroll(x, y, -1)
+	end
+
+	if self._mods_scroll then
+		self._mods_scroll:scroll(x, y, -1)
 	end
 end
 

@@ -48,11 +48,13 @@ require("lib/managers/menu/IngameContractGuiCrimeSpree")
 require("lib/managers/menu/CrimeSpreeContractBoxGui")
 require("lib/managers/menu/LobbyCharacterData")
 require("lib/managers/menu/CrewManagementGui")
+require("lib/managers/menu/AchievementListGui")
 require("lib/managers/menu/StoryMissionsGui")
 require("lib/managers/menu/CrimeNetSidebarGui")
 require("lib/managers/menu/PromotionalMenuGui")
 require("lib/managers/menu/PromotionalWeaponPreviewGui")
 require("lib/managers/menu/RaidMenuGui")
+require("lib/managers/menu/ContractBrokerGui")
 
 MenuComponentManager = MenuComponentManager or class()
 
@@ -263,6 +265,7 @@ function MenuComponentManager:init()
 			create = callback(self, self, "create_crew_management_gui"),
 			close = callback(self, self, "close_crew_management_gui")
 		},
+		achievement_list = self:create_component_callback("AchievementListGui", "achievement_list"),
 		story_missions = {
 			create = callback(self, self, "create_story_missions_gui"),
 			close = callback(self, self, "close_story_missions_gui")
@@ -290,6 +293,10 @@ function MenuComponentManager:init()
 		raid_weapon_preview = {
 			create = callback(self, self, "create_raid_weapon_preview_gui"),
 			close = callback(self, self, "close_raid_weapon_preview_gui")
+		},
+		contract_broker = {
+			create = callback(self, self, "create_contract_broker_gui"),
+			close = callback(self, self, "close_contract_broker_gui")
 		}
 	}
 	self._alive_components = {}
@@ -5117,5 +5124,27 @@ end
 
 function MenuComponentManager:raid_weapon_preview_gui()
 	return self._raid_weapon_preview_gui
+end
+
+function MenuComponentManager:create_contract_broker_gui(node)
+	self:close_contract_broker_gui()
+
+	self._contract_broker_gui = ContractBrokerGui:new(self._ws, self._fullscreen_ws, node)
+
+	self:register_component("contract_broker", self._contract_broker_gui)
+end
+
+function MenuComponentManager:close_contract_broker_gui()
+	if self._contract_broker_gui then
+		self._contract_broker_gui:close()
+
+		self._contract_broker_gui = nil
+
+		self:unregister_component("contract_broker")
+	end
+end
+
+function MenuComponentManager:contract_broker_gui()
+	return self._contract_broker_gui
 end
 

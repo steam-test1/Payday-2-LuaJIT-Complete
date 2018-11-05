@@ -279,21 +279,29 @@ end
 function ButlerMirroringManager:_on_achievement(id)
 	local l = {
 		the_wire = "Play_btl_ach_08",
-		deer_7 = "Play_btl_ach_04",
+		trk_c_0 = "Play_btl_contract_continental_all",
 		ignominy_25 = "Play_btl_inf_lvl_25",
 		gage_8 = "Play_btl_ach_02",
 		kosugi_4 = "Play_btl_ach_09",
 		frog_1 = "Play_btl_ach_10",
+		trk_b_0 = "Play_btl_contract_bain_all",
+		deer_7 = "Play_btl_ach_04",
 		short_fuse = "Play_btl_ach_13",
+		trk_cb_0 = "Play_btl_contract_butcher_all",
+		trk_d_0 = "Play_btl_contract_dentist_all",
 		gage3_9 = "Play_btl_ach_05",
+		trk_e_0 = "Play_btl_contract_elephant_all",
+		trk_l_0 = "Play_btl_contract_locke_all",
 		death_29 = "Play_btl_ach_11",
 		death_30 = "Play_btl_ach_14",
 		sinus_1 = "Play_btl_ach_15",
 		halloween_nightmare_5 = "Play_btl_ach_12",
+		trk_v_0 = "Play_btl_contract_vlad_all",
 		gage2_8 = "Play_btl_ach_06",
 		farm_6 = "Play_btl_ach_01",
 		gorilla_1 = "Play_btl_ach_03",
 		gage2_10 = "Play_btl_ach_07",
+		trk_h_0 = "Play_btl_contract_hector_all",
 		ignominy_10 = "Play_btl_inf_lvl_10"
 	}
 	local remark_at = {

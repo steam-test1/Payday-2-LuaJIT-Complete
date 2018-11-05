@@ -90,6 +90,7 @@ function NetworkPeer:init(name, rpc, id, loading, synced, in_lobby, character, u
 		texture = {}
 	}
 	self._outfit_version = 0
+	self._mods = {}
 end
 
 function NetworkPeer:set_rpc(rpc)
@@ -764,6 +765,12 @@ function NetworkPeer:set_ip_verified(state)
 	self._ip_verified = state
 
 	self:_chk_flush_msg_queues()
+
+	local user = Steam:user(self:ip())
+
+	if user and user:rich_presence("is_modded") == "1" or self:is_modded() then
+		managers.chat:feed_system_message(ChatManager.GAME, managers.localization:text("menu_chat_peer_added_modded", {name = self:name()}))
+	end
 end
 
 function NetworkPeer:set_loading(state)
@@ -838,6 +845,7 @@ function NetworkPeer:set_in_lobby(state)
 		self._default_timeout_check_reset = TimerManager:wall():time() + NetworkPeer.PRE_HANDSHAKE_CHK_TIME
 	end
 
+	self:sync_mods()
 	self:_chk_flush_msg_queues()
 end
 
@@ -1715,6 +1723,8 @@ function NetworkPeer:sync_lobby_data(peer)
 		peer:send_after_load("lobby_sync_update_level_id", tweak_data.levels:get_index_from_level_id(Global.game_settings.level_id))
 		peer:send_after_load("lobby_sync_update_difficulty", Global.game_settings.difficulty)
 	end
+
+	self:sync_mods(peer)
 end
 
 function NetworkPeer:sync_data(peer)
@@ -1734,6 +1744,7 @@ function NetworkPeer:sync_data(peer)
 	managers.player:update_team_upgrades_to_peer(peer)
 	managers.player:update_husk_bipod_to_peer(peer)
 	managers.player:update_cocaine_stacks_to_peer(peer)
+	self:sync_mods(peer)
 
 	if Network:is_server() then
 		managers.vehicle:update_vehicles_data_to_peer(peer)
@@ -2041,5 +2052,41 @@ end
 
 function NetworkPeer:is_dropin()
 	return self._is_dropin
+end
+
+function NetworkPeer:register_mod(id, friendly)
+	for _, mod in ipairs(self._mods) do
+		if mod.id == id then
+			mod.name = friendly
+
+			return
+		end
+	end
+
+	table.insert(self._mods, {
+		id = id,
+		name = friendly
+	})
+end
+
+function NetworkPeer:is_modded()
+	return #self._mods > 0
+end
+
+function NetworkPeer:synced_mods()
+	return self._mods
+end
+
+function NetworkPeer:sync_mods(to_peer)
+	local mods = nil
+	mods = MenuCallbackHandler:build_mods_list()
+
+	for _, data in ipairs(mods) do
+		if to_peer then
+			to_peer:send_queued_sync("sync_player_installed_mod", self:id(), data[2], data[1])
+		else
+			managers.network:session():send_to_peers_loaded("sync_player_installed_mod", self:id(), data[2], data[1])
+		end
+	end
 end
 

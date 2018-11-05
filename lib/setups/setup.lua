@@ -30,6 +30,7 @@ require("lib/utils/CoroutineManager")
 require("lib/utils/EventListenerHolder")
 require("lib/utils/Quickhull")
 require("lib/utils/Easing")
+require("lib/utils/DateTime")
 require("lib/managers/UpgradesManager")
 require("lib/managers/ExperienceManager")
 require("lib/managers/PlayerManager")
@@ -217,6 +218,8 @@ function Setup:init_managers(managers)
 		permission = "public",
 		is_playing = false,
 		reputation_permission = 0,
+		allow_modded_players = true,
+		search_modded_lobbies = true,
 		job_plan = -1,
 		difficulty = "normal",
 		team_ai_option = 1,
@@ -390,6 +393,8 @@ function Setup:_start_loading_screen()
 		local safe_rect = managers.viewport:get_safe_rect()
 		local aspect_ratio = managers.viewport:aspect_ratio()
 		local res = RenderSettings.resolution
+		local job_data = managers.job:current_job_data() or {}
+		local bg_texture = load_level_data.level_tweak_data.load_screen or job_data.load_screen or load_data and load_data.image
 		load_level_data.gui_data = {
 			safe_rect_pixels = safe_rect_pixels,
 			safe_rect = safe_rect,
@@ -407,7 +412,7 @@ function Setup:_start_loading_screen()
 				w = safe_rect.width,
 				h = safe_rect.height
 			},
-			bg_texture = load_data and load_data.image or "guis/textures/loading/loading_bg"
+			bg_texture = bg_texture or "guis/textures/loading/loading_bg"
 		}
 	else
 		setup = not Global.boot_loading_environment_done and "lib/setups/LightLoadingSetup" or "lib/setups/HeavyLoadingSetup"

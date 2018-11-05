@@ -60,6 +60,12 @@ end
 
 function NetworkAccountSTEAM:_set_presences()
 	Steam:set_rich_presence("level", managers.experience:current_level())
+
+	if MenuCallbackHandler:is_modded_client() then
+		Steam:set_rich_presence("is_modded", 1)
+	else
+		Steam:set_rich_presence("is_modded", 0)
+	end
 end
 
 function NetworkAccountSTEAM:set_presences_peer_id(peer_id)
@@ -220,6 +226,16 @@ end
 
 function NetworkAccountSTEAM:get_stat(key)
 	return Steam:sa_handler():get_stat(key)
+end
+
+function NetworkAccountSTEAM:has_stat(key)
+	return Steam:sa_handler():has_stat(key)
+end
+
+function NetworkAccountSTEAM:achievement_unlock_time(key)
+	local res = Steam:sa_handler():achievement_unlock_time(key)
+
+	return res ~= -1 and res or nil
 end
 
 function NetworkAccountSTEAM:get_lifetime_stat(key)

@@ -542,7 +542,7 @@ end
 
 function BaseNetworkSession:on_peer_kicked(peer, peer_id, message_id)
 	if peer ~= self._local_peer then
-		if message_id == 0 then
+		if message_id == 0 or message_id == 6 then
 			local ident = self._ids_WIN32 == SystemInfo:platform() and peer:user_id() or peer:name()
 			self._kicked_list[ident] = true
 		end
@@ -571,6 +571,8 @@ function BaseNetworkSession:on_peer_kicked(peer, peer_id, message_id)
 			Global.on_remove_peer_message = "dialog_authentication_host_fail"
 		elseif message_id == 4 then
 			Global.on_remove_peer_message = "dialog_cheated_host"
+		elseif message_id == 6 then
+			Global.on_remove_peer_message = "dialog_kick_banned"
 		end
 
 		print("IVE BEEN KICKED!")

@@ -1,3 +1,5 @@
+require("lib/tweak_data/GeneratedAchievementTweakData")
+
 AchievementsTweakData = AchievementsTweakData or class()
 
 function AchievementsTweakData:init(tweak_data)
@@ -2283,6 +2285,1185 @@ function AchievementsTweakData:init(tweak_data)
 			job = "run",
 			difficulty = overkill_and_above
 		},
+		trk_af_0 = {
+			award = "trk_af_0",
+			job = "jolly",
+			difficulty = normal_and_above
+		},
+		trk_af_1 = {
+			award = "trk_af_1",
+			job = "jolly",
+			difficulty = hard_and_above
+		},
+		trk_af_2 = {
+			award = "trk_af_2",
+			job = "jolly",
+			difficulty = veryhard_and_above
+		},
+		trk_af_3 = {
+			award = "trk_af_3",
+			job = "jolly",
+			difficulty = overkill_and_above
+		},
+		trk_ag_0 = {
+			award = "trk_ag_0",
+			job = "gallery",
+			difficulty = normal_and_above
+		},
+		trk_ag_1 = {
+			award = "trk_ag_1",
+			job = "gallery",
+			difficulty = hard_and_above
+		},
+		trk_ag_2 = {
+			award = "trk_ag_2",
+			job = "gallery",
+			difficulty = veryhard_and_above
+		},
+		trk_ag_3 = {
+			award = "trk_ag_3",
+			job = "gallery",
+			difficulty = overkill_and_above
+		},
+		trk_al_0 = {
+			award = "trk_al_0",
+			job = "arena",
+			difficulty = normal_and_above
+		},
+		trk_al_1 = {
+			award = "trk_al_1",
+			job = "arena",
+			difficulty = hard_and_above
+		},
+		trk_al_2 = {
+			award = "trk_al_2",
+			job = "arena",
+			difficulty = veryhard_and_above
+		},
+		trk_al_3 = {
+			award = "trk_al_3",
+			job = "arena",
+			difficulty = overkill_and_above
+		},
+		trk_bb_0 = {
+			award = "trk_bb_0",
+			job = "big",
+			difficulty = normal_and_above
+		},
+		trk_bb_1 = {
+			award = "trk_bb_1",
+			job = "big",
+			difficulty = hard_and_above
+		},
+		trk_bb_2 = {
+			award = "trk_bb_2",
+			job = "big",
+			difficulty = veryhard_and_above
+		},
+		trk_bb_3 = {
+			award = "trk_bb_3",
+			job = "big",
+			difficulty = overkill_and_above
+		},
+		trk_bc_0 = {
+			award = "trk_bc_0",
+			job = "branchbank_cash",
+			difficulty = normal_and_above
+		},
+		trk_bc_1 = {
+			award = "trk_bc_1",
+			job = "branchbank_cash",
+			difficulty = hard_and_above
+		},
+		trk_bc_2 = {
+			award = "trk_bc_2",
+			job = "branchbank_cash",
+			difficulty = veryhard_and_above
+		},
+		trk_bc_3 = {
+			award = "trk_bc_3",
+			job = "branchbank_cash",
+			difficulty = overkill_and_above
+		},
+		trk_bd_0 = {
+			award = "trk_bd_0",
+			job = "branchbank_deposit",
+			difficulty = normal_and_above
+		},
+		trk_bd_1 = {
+			award = "trk_bd_1",
+			job = "branchbank_deposit",
+			difficulty = hard_and_above
+		},
+		trk_bd_2 = {
+			award = "trk_bd_2",
+			job = "branchbank_deposit",
+			difficulty = veryhard_and_above
+		},
+		trk_bd_3 = {
+			award = "trk_bd_3",
+			job = "branchbank_deposit",
+			difficulty = overkill_and_above
+		},
+		trk_bg_0 = {
+			award = "trk_bg_0",
+			job = "branchbank_gold_prof",
+			difficulty = normal_and_above
+		},
+		trk_bg_1 = {
+			award = "trk_bg_1",
+			job = "branchbank_gold_prof",
+			difficulty = hard_and_above
+		},
+		trk_bg_2 = {
+			award = "trk_bg_2",
+			job = "branchbank_gold_prof",
+			difficulty = veryhard_and_above
+		},
+		trk_bg_3 = {
+			award = "trk_bg_3",
+			job = "branchbank_gold_prof",
+			difficulty = overkill_and_above
+		},
+		trk_bi_0 = {
+			award = "trk_bi_0",
+			job = "born",
+			difficulty = normal_and_above
+		},
+		trk_bi_1 = {
+			award = "trk_bi_1",
+			job = "born",
+			difficulty = hard_and_above
+		},
+		trk_bi_2 = {
+			award = "trk_bi_2",
+			job = "born",
+			difficulty = veryhard_and_above
+		},
+		trk_bi_3 = {
+			award = "trk_bi_3",
+			job = "born",
+			difficulty = overkill_and_above
+		},
+		trk_bm_0 = {
+			award = "trk_bm_0",
+			job = "pbr",
+			difficulty = normal_and_above
+		},
+		trk_bm_1 = {
+			award = "trk_bm_1",
+			job = "pbr",
+			difficulty = hard_and_above
+		},
+		trk_bm_2 = {
+			award = "trk_bm_2",
+			job = "pbr",
+			difficulty = veryhard_and_above
+		},
+		trk_bm_3 = {
+			award = "trk_bm_3",
+			job = "pbr",
+			difficulty = overkill_and_above
+		},
+		trk_bo_0 = {
+			award = "trk_bo_0",
+			difficulty = normal_and_above,
+			jobs = {
+				"welcome_to_the_jungle_wrapper_prof",
+				"welcome_to_the_jungle_night_prof",
+				"welcome_to_the_jungle_prof"
+			}
+		},
+		trk_bo_1 = {
+			award = "trk_bo_1",
+			difficulty = hard_and_above,
+			jobs = {
+				"welcome_to_the_jungle_wrapper_prof",
+				"welcome_to_the_jungle_night_prof",
+				"welcome_to_the_jungle_prof"
+			}
+		},
+		trk_bo_2 = {
+			award = "trk_bo_2",
+			difficulty = veryhard_and_above,
+			jobs = {
+				"welcome_to_the_jungle_wrapper_prof",
+				"welcome_to_the_jungle_night_prof",
+				"welcome_to_the_jungle_prof"
+			}
+		},
+		trk_bo_3 = {
+			award = "trk_bo_3",
+			difficulty = overkill_and_above,
+			jobs = {
+				"welcome_to_the_jungle_wrapper_prof",
+				"welcome_to_the_jungle_night_prof",
+				"welcome_to_the_jungle_prof"
+			}
+		},
+		trk_bod_1 = {
+			award = "trk_bod_1",
+			job = "crojob1",
+			difficulty = hard_and_above
+		},
+		trk_bod_2 = {
+			award = "trk_bod_2",
+			job = "crojob1",
+			difficulty = veryhard_and_above
+		},
+		trk_bod_3 = {
+			award = "trk_bod_3",
+			job = "crojob1",
+			difficulty = overkill_and_above
+		},
+		trk_bof_1 = {
+			award = "trk_bof_1",
+			difficulty = hard_and_above,
+			jobs = {
+				"crojob_wrapper",
+				"crojob2",
+				"crojob2_night"
+			}
+		},
+		trk_bof_2 = {
+			award = "trk_bof_2",
+			difficulty = veryhard_and_above,
+			jobs = {
+				"crojob_wrapper",
+				"crojob2",
+				"crojob2_night"
+			}
+		},
+		trk_bof_3 = {
+			award = "trk_bof_3",
+			difficulty = overkill_and_above,
+			jobs = {
+				"crojob_wrapper",
+				"crojob2",
+				"crojob2_night"
+			}
+		},
+		trk_bp_0 = {
+			award = "trk_bp_0",
+			job = "mad",
+			difficulty = normal_and_above
+		},
+		trk_bp_1 = {
+			award = "trk_bp_1",
+			job = "mad",
+			difficulty = hard_and_above
+		},
+		trk_bp_2 = {
+			award = "trk_bp_2",
+			job = "mad",
+			difficulty = veryhard_and_above
+		},
+		trk_bp_3 = {
+			award = "trk_bp_3",
+			job = "mad",
+			difficulty = overkill_and_above
+		},
+		trk_br_0 = {
+			award = "trk_br_0",
+			job = "branchbank_prof",
+			difficulty = normal_and_above
+		},
+		trk_br_1 = {
+			award = "trk_br_1",
+			job = "branchbank_prof",
+			difficulty = hard_and_above
+		},
+		trk_br_2 = {
+			award = "trk_br_2",
+			job = "branchbank_prof",
+			difficulty = veryhard_and_above
+		},
+		trk_br_3 = {
+			award = "trk_br_3",
+			job = "branchbank_prof",
+			difficulty = overkill_and_above
+		},
+		trk_bs_0 = {
+			award = "trk_bs_0",
+			job = "pbr2",
+			difficulty = normal_and_above
+		},
+		trk_bs_1 = {
+			award = "trk_bs_1",
+			job = "pbr2",
+			difficulty = hard_and_above
+		},
+		trk_bs_2 = {
+			award = "trk_bs_2",
+			job = "pbr2",
+			difficulty = veryhard_and_above
+		},
+		trk_bs_3 = {
+			award = "trk_bs_3",
+			job = "pbr2",
+			difficulty = overkill_and_above
+		},
+		trk_bt_0 = {
+			award = "trk_bt_0",
+			job = "spa",
+			difficulty = normal_and_above
+		},
+		trk_bt_1 = {
+			award = "trk_bt_1",
+			job = "spa",
+			difficulty = hard_and_above
+		},
+		trk_bt_2 = {
+			award = "trk_bt_2",
+			job = "spa",
+			difficulty = veryhard_and_above
+		},
+		trk_bt_3 = {
+			award = "trk_bt_3",
+			job = "spa",
+			difficulty = overkill_and_above
+		},
+		trk_co_0 = {
+			award = "trk_co_0",
+			job = "rat",
+			difficulty = normal_and_above
+		},
+		trk_co_1 = {
+			award = "trk_co_1",
+			job = "rat",
+			difficulty = hard_and_above
+		},
+		trk_co_2 = {
+			award = "trk_co_2",
+			job = "rat",
+			difficulty = veryhard_and_above
+		},
+		trk_co_3 = {
+			award = "trk_co_3",
+			job = "rat",
+			difficulty = overkill_and_above
+		},
+		trk_cou_0 = {
+			award = "trk_cou_0",
+			job = "pal",
+			difficulty = normal_and_above
+		},
+		trk_cou_1 = {
+			award = "trk_cou_1",
+			job = "pal",
+			difficulty = hard_and_above
+		},
+		trk_cou_2 = {
+			award = "trk_cou_2",
+			job = "pal",
+			difficulty = veryhard_and_above
+		},
+		trk_cou_3 = {
+			award = "trk_cou_3",
+			job = "pal",
+			difficulty = overkill_and_above
+		},
+		trk_cs_0 = {
+			award = "trk_cs_0",
+			job = "cage",
+			difficulty = normal_and_above
+		},
+		trk_cs_1 = {
+			award = "trk_cs_1",
+			job = "cage",
+			difficulty = hard_and_above
+		},
+		trk_cs_2 = {
+			award = "trk_cs_2",
+			job = "cage",
+			difficulty = veryhard_and_above
+		},
+		trk_cs_3 = {
+			award = "trk_cs_3",
+			job = "cage",
+			difficulty = overkill_and_above
+		},
+		trk_dm_0 = {
+			award = "trk_dm_0",
+			job = "mus",
+			difficulty = normal_and_above
+		},
+		trk_dm_1 = {
+			award = "trk_dm_1",
+			job = "mus",
+			difficulty = hard_and_above
+		},
+		trk_dm_2 = {
+			award = "trk_dm_2",
+			job = "mus",
+			difficulty = veryhard_and_above
+		},
+		trk_dm_3 = {
+			award = "trk_dm_3",
+			job = "mus",
+			difficulty = overkill_and_above
+		},
+		trk_ds_0 = {
+			award = "trk_ds_0",
+			job = "family",
+			difficulty = normal_and_above
+		},
+		trk_ds_1 = {
+			award = "trk_ds_1",
+			job = "family",
+			difficulty = hard_and_above
+		},
+		trk_ds_2 = {
+			award = "trk_ds_2",
+			job = "family",
+			difficulty = veryhard_and_above
+		},
+		trk_ds_3 = {
+			award = "trk_ds_3",
+			job = "family",
+			difficulty = overkill_and_above
+		},
+		trk_ed_0 = {
+			award = "trk_ed_0",
+			job = "election_day",
+			difficulty = normal_and_above
+		},
+		trk_ed_1 = {
+			award = "trk_ed_1",
+			job = "election_day",
+			difficulty = hard_and_above
+		},
+		trk_ed_2 = {
+			award = "trk_ed_2",
+			job = "election_day",
+			difficulty = veryhard_and_above
+		},
+		trk_ed_3 = {
+			award = "trk_ed_3",
+			job = "election_day",
+			difficulty = overkill_and_above
+		},
+		trk_ff_0 = {
+			award = "trk_ff_0",
+			job = "framing_frame",
+			difficulty = normal_and_above
+		},
+		trk_ff_1 = {
+			award = "trk_ff_1",
+			job = "framing_frame",
+			difficulty = hard_and_above
+		},
+		trk_ff_2 = {
+			award = "trk_ff_2",
+			job = "framing_frame",
+			difficulty = veryhard_and_above
+		},
+		trk_ff_3 = {
+			award = "trk_ff_3",
+			job = "framing_frame",
+			difficulty = overkill_and_above
+		},
+		trk_fir_0 = {
+			award = "trk_fir_0",
+			job = "firestarter",
+			difficulty = normal_and_above
+		},
+		trk_fir_1 = {
+			award = "trk_fir_1",
+			job = "firestarter",
+			difficulty = hard_and_above
+		},
+		trk_fir_2 = {
+			award = "trk_fir_2",
+			job = "firestarter",
+			difficulty = veryhard_and_above
+		},
+		trk_fir_3 = {
+			award = "trk_fir_3",
+			job = "firestarter",
+			difficulty = overkill_and_above
+		},
+		trk_fs_0 = {
+			award = "trk_fs_0",
+			job = "four_stores",
+			difficulty = normal_and_above
+		},
+		trk_fs_1 = {
+			award = "trk_fs_1",
+			job = "four_stores",
+			difficulty = hard_and_above
+		},
+		trk_fs_2 = {
+			award = "trk_fs_2",
+			job = "four_stores",
+			difficulty = veryhard_and_above
+		},
+		trk_fs_3 = {
+			award = "trk_fs_3",
+			job = "four_stores",
+			difficulty = overkill_and_above
+		},
+		trk_fw_0 = {
+			award = "trk_fw_0",
+			job = "red2",
+			difficulty = normal_and_above
+		},
+		trk_fw_1 = {
+			award = "trk_fw_1",
+			job = "red2",
+			difficulty = hard_and_above
+		},
+		trk_fw_2 = {
+			award = "trk_fw_2",
+			job = "red2",
+			difficulty = veryhard_and_above
+		},
+		trk_fw_3 = {
+			award = "trk_fw_3",
+			job = "red2",
+			difficulty = overkill_and_above
+		},
+		trk_gb_0 = {
+			award = "trk_gb_0",
+			job = "roberts",
+			difficulty = normal_and_above
+		},
+		trk_gb_1 = {
+			award = "trk_gb_1",
+			job = "roberts",
+			difficulty = hard_and_above
+		},
+		trk_gb_2 = {
+			award = "trk_gb_2",
+			job = "roberts",
+			difficulty = veryhard_and_above
+		},
+		trk_gb_3 = {
+			award = "trk_gb_3",
+			job = "roberts",
+			difficulty = overkill_and_above
+		},
+		trk_gg_0 = {
+			award = "trk_gg_0",
+			job = "kenaz",
+			difficulty = normal_and_above
+		},
+		trk_gg_1 = {
+			award = "trk_gg_1",
+			job = "kenaz",
+			difficulty = hard_and_above
+		},
+		trk_gg_2 = {
+			award = "trk_gg_2",
+			job = "kenaz",
+			difficulty = veryhard_and_above
+		},
+		trk_gg_3 = {
+			award = "trk_gg_3",
+			job = "kenaz",
+			difficulty = overkill_and_above
+		},
+		trk_gs_0 = {
+			award = "trk_gs_0",
+			job = "peta",
+			difficulty = normal_and_above
+		},
+		trk_gs_1 = {
+			award = "trk_gs_1",
+			job = "peta",
+			difficulty = hard_and_above
+		},
+		trk_gs_2 = {
+			award = "trk_gs_2",
+			job = "peta",
+			difficulty = veryhard_and_above
+		},
+		trk_gs_3 = {
+			award = "trk_gs_3",
+			job = "peta",
+			difficulty = overkill_and_above
+		},
+		trk_hb_1 = {
+			award = "trk_hb_1",
+			job = "hox",
+			difficulty = hard_and_above
+		},
+		trk_hb_2 = {
+			award = "trk_hb_2",
+			job = "hox",
+			difficulty = veryhard_and_above
+		},
+		trk_hb_3 = {
+			award = "trk_hb_3",
+			job = "hox",
+			difficulty = overkill_and_above
+		},
+		trk_hm_0 = {
+			award = "trk_hm_0",
+			job = "mia",
+			difficulty = normal_and_above
+		},
+		trk_hm_1 = {
+			award = "trk_hm_1",
+			job = "mia",
+			difficulty = hard_and_above
+		},
+		trk_hm_2 = {
+			award = "trk_hm_2",
+			job = "mia",
+			difficulty = veryhard_and_above
+		},
+		trk_hm_3 = {
+			award = "trk_hm_3",
+			job = "mia",
+			difficulty = overkill_and_above
+		},
+		trk_hr_0 = {
+			award = "trk_hr_0",
+			job = "hox_3",
+			difficulty = normal_and_above
+		},
+		trk_hr_1 = {
+			award = "trk_hr_1",
+			job = "hox_3",
+			difficulty = hard_and_above
+		},
+		trk_hr_2 = {
+			award = "trk_hr_2",
+			job = "hox_3",
+			difficulty = veryhard_and_above
+		},
+		trk_hr_3 = {
+			award = "trk_hr_3",
+			job = "hox_3",
+			difficulty = overkill_and_above
+		},
+		trk_js_0 = {
+			award = "trk_js_0",
+			job = "jewelry_store",
+			difficulty = normal_and_above
+		},
+		trk_js_1 = {
+			award = "trk_js_1",
+			job = "jewelry_store",
+			difficulty = hard_and_above
+		},
+		trk_js_2 = {
+			award = "trk_js_2",
+			job = "jewelry_store",
+			difficulty = veryhard_and_above
+		},
+		trk_js_3 = {
+			award = "trk_js_3",
+			job = "jewelry_store",
+			difficulty = overkill_and_above
+		},
+		trk_lr_0 = {
+			award = "trk_lr_0",
+			job = "nail",
+			difficulty = normal_and_above
+		},
+		trk_lr_1 = {
+			award = "trk_lr_1",
+			job = "nail",
+			difficulty = hard_and_above
+		},
+		trk_lr_2 = {
+			award = "trk_lr_2",
+			job = "nail",
+			difficulty = veryhard_and_above
+		},
+		trk_lr_3 = {
+			award = "trk_lr_3",
+			job = "nail",
+			difficulty = overkill_and_above
+		},
+		trk_mc_0 = {
+			award = "trk_mc_0",
+			job = "mallcrasher",
+			difficulty = normal_and_above
+		},
+		trk_mc_1 = {
+			award = "trk_mc_1",
+			job = "mallcrasher",
+			difficulty = hard_and_above
+		},
+		trk_mc_2 = {
+			award = "trk_mc_2",
+			job = "mallcrasher",
+			difficulty = veryhard_and_above
+		},
+		trk_mc_3 = {
+			award = "trk_mc_3",
+			job = "mallcrasher",
+			difficulty = overkill_and_above
+		},
+		trk_md_1 = {
+			award = "trk_md_1",
+			job = "shoutout_raid",
+			difficulty = hard_and_above
+		},
+		trk_md_2 = {
+			award = "trk_md_2",
+			job = "shoutout_raid",
+			difficulty = veryhard_and_above
+		},
+		trk_md_3 = {
+			award = "trk_md_3",
+			job = "shoutout_raid",
+			difficulty = overkill_and_above
+		},
+		trk_ms_0 = {
+			award = "trk_ms_0",
+			job = "dark",
+			difficulty = normal_and_above
+		},
+		trk_ms_1 = {
+			award = "trk_ms_1",
+			job = "dark",
+			difficulty = hard_and_above
+		},
+		trk_ms_2 = {
+			award = "trk_ms_2",
+			job = "dark",
+			difficulty = veryhard_and_above
+		},
+		trk_ms_3 = {
+			award = "trk_ms_3",
+			job = "dark",
+			difficulty = overkill_and_above
+		},
+		trk_nc_0 = {
+			award = "trk_nc_0",
+			job = "nightclub",
+			difficulty = normal_and_above
+		},
+		trk_nc_1 = {
+			award = "trk_nc_1",
+			job = "nightclub",
+			difficulty = hard_and_above
+		},
+		trk_nc_2 = {
+			award = "trk_nc_2",
+			job = "nightclub",
+			difficulty = veryhard_and_above
+		},
+		trk_nc_3 = {
+			award = "trk_nc_3",
+			job = "nightclub",
+			difficulty = overkill_and_above
+		},
+		trk_pn_0 = {
+			award = "trk_pn_0",
+			job = "help",
+			difficulty = normal_and_above
+		},
+		trk_pn_1 = {
+			award = "trk_pn_1",
+			job = "help",
+			difficulty = hard_and_above
+		},
+		trk_pn_2 = {
+			award = "trk_pn_2",
+			job = "help",
+			difficulty = veryhard_and_above
+		},
+		trk_pn_3 = {
+			award = "trk_pn_3",
+			job = "help",
+			difficulty = overkill_and_above
+		},
+		trk_pr_0 = {
+			award = "trk_pr_0",
+			job = "flat",
+			difficulty = normal_and_above
+		},
+		trk_pr_1 = {
+			award = "trk_pr_1",
+			job = "flat",
+			difficulty = hard_and_above
+		},
+		trk_pr_2 = {
+			award = "trk_pr_2",
+			job = "flat",
+			difficulty = veryhard_and_above
+		},
+		trk_pr_3 = {
+			award = "trk_pr_3",
+			job = "flat",
+			difficulty = overkill_and_above
+		},
+		trk_ra_0 = {
+			award = "trk_ra_0",
+			job = "alex",
+			difficulty = normal_and_above
+		},
+		trk_ra_1 = {
+			award = "trk_ra_1",
+			job = "alex",
+			difficulty = hard_and_above
+		},
+		trk_ra_2 = {
+			award = "trk_ra_2",
+			job = "alex",
+			difficulty = veryhard_and_above
+		},
+		trk_ra_3 = {
+			award = "trk_ra_3",
+			job = "alex",
+			difficulty = overkill_and_above
+		},
+		trk_sa_0 = {
+			award = "trk_sa_0",
+			job = "chill_combat",
+			difficulty = normal_and_above
+		},
+		trk_sa_1 = {
+			award = "trk_sa_1",
+			job = "chill_combat",
+			difficulty = hard_and_above
+		},
+		trk_sa_2 = {
+			award = "trk_sa_2",
+			job = "chill_combat",
+			difficulty = veryhard_and_above
+		},
+		trk_sa_3 = {
+			award = "trk_sa_3",
+			job = "chill_combat",
+			difficulty = overkill_and_above
+		},
+		trk_sa_4 = {
+			award = "trk_sa_4",
+			job = "chill_combat",
+			difficulty = easywish_and_above
+		},
+		trk_sa_5 = {
+			award = "trk_sa_5",
+			job = "chill_combat",
+			difficulty = deathwish_and_above
+		},
+		trk_sa_6 = {
+			award = "trk_sa_6",
+			job = "chill_combat",
+			difficulty = sm_wish_and_above
+		},
+		trk_sf_0 = {
+			award = "trk_sf_0",
+			job = "friend",
+			difficulty = normal_and_above
+		},
+		trk_sf_1 = {
+			award = "trk_sf_1",
+			job = "friend",
+			difficulty = hard_and_above
+		},
+		trk_sf_2 = {
+			award = "trk_sf_2",
+			job = "friend",
+			difficulty = veryhard_and_above
+		},
+		trk_sf_3 = {
+			award = "trk_sf_3",
+			job = "friend",
+			difficulty = overkill_and_above
+		},
+		trk_sh_0 = {
+			award = "trk_sh_0",
+			job = "dinner",
+			difficulty = normal_and_above
+		},
+		trk_sh_1 = {
+			award = "trk_sh_1",
+			job = "dinner",
+			difficulty = hard_and_above
+		},
+		trk_sh_2 = {
+			award = "trk_sh_2",
+			job = "dinner",
+			difficulty = veryhard_and_above
+		},
+		trk_sh_3 = {
+			award = "trk_sh_3",
+			job = "dinner",
+			difficulty = overkill_and_above
+		},
+		trk_sr_0 = {
+			award = "trk_sr_0",
+			job = "kosugi",
+			difficulty = normal_and_above
+		},
+		trk_sr_1 = {
+			award = "trk_sr_1",
+			job = "kosugi",
+			difficulty = hard_and_above
+		},
+		trk_sr_2 = {
+			award = "trk_sr_2",
+			job = "kosugi",
+			difficulty = veryhard_and_above
+		},
+		trk_sr_3 = {
+			award = "trk_sr_3",
+			job = "kosugi",
+			difficulty = overkill_and_above
+		},
+		trk_sw_0 = {
+			award = "trk_sw_0",
+			job = "cane",
+			difficulty = normal_and_above
+		},
+		trk_sw_1 = {
+			award = "trk_sw_1",
+			job = "cane",
+			difficulty = hard_and_above
+		},
+		trk_sw_2 = {
+			award = "trk_sw_2",
+			job = "cane",
+			difficulty = veryhard_and_above
+		},
+		trk_sw_3 = {
+			award = "trk_sw_3",
+			job = "cane",
+			difficulty = overkill_and_above
+		},
+		trk_sx_0 = {
+			award = "trk_sx_0",
+			job = "moon",
+			difficulty = normal_and_above
+		},
+		trk_sx_1 = {
+			award = "trk_sx_1",
+			job = "moon",
+			difficulty = hard_and_above
+		},
+		trk_sx_2 = {
+			award = "trk_sx_2",
+			job = "moon",
+			difficulty = veryhard_and_above
+		},
+		trk_sx_3 = {
+			award = "trk_sx_3",
+			job = "moon",
+			difficulty = overkill_and_above
+		},
+		trk_tc_0 = {
+			award = "trk_tc_0",
+			job = "arm_cro",
+			difficulty = normal_and_above
+		},
+		trk_tc_1 = {
+			award = "trk_tc_1",
+			job = "arm_cro",
+			difficulty = hard_and_above
+		},
+		trk_tc_2 = {
+			award = "trk_tc_2",
+			job = "arm_cro",
+			difficulty = veryhard_and_above
+		},
+		trk_tc_3 = {
+			award = "trk_tc_3",
+			job = "arm_cro",
+			difficulty = overkill_and_above
+		},
+		trk_td_0 = {
+			award = "trk_td_0",
+			job = "arm_hcm",
+			difficulty = normal_and_above
+		},
+		trk_td_1 = {
+			award = "trk_td_1",
+			job = "arm_hcm",
+			difficulty = hard_and_above
+		},
+		trk_td_2 = {
+			award = "trk_td_2",
+			job = "arm_hcm",
+			difficulty = veryhard_and_above
+		},
+		trk_td_3 = {
+			award = "trk_td_3",
+			job = "arm_hcm",
+			difficulty = overkill_and_above
+		},
+		trk_th_0 = {
+			award = "trk_th_0",
+			job = "arm_fac",
+			difficulty = normal_and_above
+		},
+		trk_th_1 = {
+			award = "trk_th_1",
+			job = "arm_fac",
+			difficulty = hard_and_above
+		},
+		trk_th_2 = {
+			award = "trk_th_2",
+			job = "arm_fac",
+			difficulty = veryhard_and_above
+		},
+		trk_th_3 = {
+			award = "trk_th_3",
+			job = "arm_fac",
+			difficulty = overkill_and_above
+		},
+		trk_tp_0 = {
+			award = "trk_tp_0",
+			job = "arm_par",
+			difficulty = normal_and_above
+		},
+		trk_tp_1 = {
+			award = "trk_tp_1",
+			job = "arm_par",
+			difficulty = hard_and_above
+		},
+		trk_tp_2 = {
+			award = "trk_tp_2",
+			job = "arm_par",
+			difficulty = veryhard_and_above
+		},
+		trk_tp_3 = {
+			award = "trk_tp_3",
+			job = "arm_par",
+			difficulty = overkill_and_above
+		},
+		trk_tt_0 = {
+			award = "trk_tt_0",
+			job = "arm_for",
+			difficulty = normal_and_above
+		},
+		trk_tt_1 = {
+			award = "trk_tt_1",
+			job = "arm_for",
+			difficulty = hard_and_above
+		},
+		trk_tt_2 = {
+			award = "trk_tt_2",
+			job = "arm_for",
+			difficulty = veryhard_and_above
+		},
+		trk_tt_3 = {
+			award = "trk_tt_3",
+			job = "arm_for",
+			difficulty = overkill_and_above
+		},
+		trk_tu_0 = {
+			award = "trk_tu_0",
+			job = "arm_und",
+			difficulty = normal_and_above
+		},
+		trk_tu_1 = {
+			award = "trk_tu_1",
+			job = "arm_und",
+			difficulty = hard_and_above
+		},
+		trk_tu_2 = {
+			award = "trk_tu_2",
+			job = "arm_und",
+			difficulty = veryhard_and_above
+		},
+		trk_tu_3 = {
+			award = "trk_tu_3",
+			job = "arm_und",
+			difficulty = overkill_and_above
+		},
+		trk_uc_0 = {
+			award = "trk_uc_0",
+			job = "man",
+			difficulty = normal_and_above
+		},
+		trk_uc_1 = {
+			award = "trk_uc_1",
+			job = "man",
+			difficulty = hard_and_above
+		},
+		trk_uc_2 = {
+			award = "trk_uc_2",
+			job = "man",
+			difficulty = veryhard_and_above
+		},
+		trk_uc_3 = {
+			award = "trk_uc_3",
+			job = "man",
+			difficulty = overkill_and_above
+		},
+		trk_uj_0 = {
+			award = "trk_uj_0",
+			job = "ukrainian_job_prof",
+			difficulty = normal_and_above
+		},
+		trk_uj_1 = {
+			award = "trk_uj_1",
+			job = "ukrainian_job_prof",
+			difficulty = hard_and_above
+		},
+		trk_uj_2 = {
+			award = "trk_uj_2",
+			job = "ukrainian_job_prof",
+			difficulty = veryhard_and_above
+		},
+		trk_uj_3 = {
+			award = "trk_uj_3",
+			job = "ukrainian_job_prof",
+			difficulty = overkill_and_above
+		},
+		trk_wd_0 = {
+			award = "trk_wd_0",
+			difficulty = normal_and_above,
+			jobs = {
+				"watchdogs_wrapper",
+				"watchdogs_night",
+				"watchdogs"
+			}
+		},
+		trk_wd_1 = {
+			award = "trk_wd_1",
+			difficulty = hard_and_above,
+			jobs = {
+				"watchdogs_wrapper",
+				"watchdogs_night",
+				"watchdogs"
+			}
+		},
+		trk_wd_2 = {
+			award = "trk_wd_2",
+			difficulty = veryhard_and_above,
+			jobs = {
+				"watchdogs_wrapper",
+				"watchdogs_night",
+				"watchdogs"
+			}
+		},
+		trk_wd_3 = {
+			award = "trk_wd_3",
+			difficulty = overkill_and_above,
+			jobs = {
+				"watchdogs_wrapper",
+				"watchdogs_night",
+				"watchdogs"
+			}
+		},
+		trk_yh_0 = {
+			award = "trk_yh_0",
+			job = "fish",
+			difficulty = normal_and_above
+		},
+		trk_yh_1 = {
+			award = "trk_yh_1",
+			job = "fish",
+			difficulty = hard_and_above
+		},
+		trk_yh_2 = {
+			award = "trk_yh_2",
+			job = "fish",
+			difficulty = veryhard_and_above
+		},
+		trk_yh_3 = {
+			award = "trk_yh_3",
+			job = "fish",
+			difficulty = overkill_and_above
+		},
 		bain_jobs = {
 			complete_job = true,
 			contract = "bain",
@@ -3120,6 +4301,268 @@ function AchievementsTweakData:init(tweak_data)
 			"fish"
 		}
 	}
+	self.persistent_stat_unlocks = {
+		gage_9_stats = {{
+			award = "gage_9",
+			at = 100
+		}},
+		halloween_4_stats = {{
+			award = "halloween_4",
+			at = 50
+		}},
+		halloween_5_stats = {{
+			award = "halloween_5",
+			at = 25
+		}},
+		halloween_6_stats = {{
+			award = "halloween_6",
+			at = 666
+		}},
+		halloween_7_stats = {{
+			award = "halloween_7",
+			at = 50
+		}},
+		armored_8_stat = {{
+			award = "armored_8",
+			at = 7
+		}},
+		armored_10_stat = {{
+			award = "armored_10",
+			at = 61
+		}},
+		gage2_3_stats = {{
+			award = "gage2_3",
+			at = 50
+		}},
+		scorpion_1_stats = {{
+			award = "scorpion_1",
+			at = 100
+		}},
+		gage_10_stats = {{
+			award = "gage_10",
+			at = 100
+		}},
+		halloween_8_stats = {{
+			award = "halloween_8",
+			at = 666
+		}},
+		armored_5_stat = {{
+			award = "armored_5",
+			at = 378
+		}},
+		armored_7_stat = {{
+			award = "armored_7",
+			at = 69
+		}},
+		armored_9_stat = {{
+			award = "armored_9",
+			at = 95
+		}},
+		gage_1_stats = {{
+			award = "gage_1",
+			at = 100
+		}},
+		gage_2_stats = {{
+			award = "gage_2",
+			at = 100
+		}},
+		gage_3_stats = {{
+			award = "gage_3",
+			at = 100
+		}},
+		gage_4_stats = {{
+			award = "gage_4",
+			at = 100
+		}},
+		gage_5_stats = {{
+			award = "gage_5",
+			at = 100
+		}},
+		gage_6_stats = {{
+			award = "gage_6",
+			at = 100
+		}},
+		gage_7_stats = {{
+			award = "gage_7",
+			at = 100
+		}},
+		gage3_12_stats = {{
+			award = "gage3_12",
+			at = 10
+		}},
+		gage3_2_stats = {{
+			award = "gage3_2",
+			at = 6
+		}},
+		gage3_3_stats = {{
+			award = "gage3_3",
+			at = 50
+		}},
+		gage3_4_stats = {{
+			award = "gage3_4",
+			at = 100
+		}},
+		gage3_5_stats = {{
+			award = "gage3_5",
+			at = 250
+		}},
+		gage3_6_stats = {{
+			award = "gage3_6",
+			at = 500
+		}},
+		gage3_7_stats = {{
+			award = "gage3_7",
+			at = 25
+		}},
+		gage3_11_stats = {{
+			award = "gage3_11",
+			at = 10
+		}},
+		gage3_13_stats = {{
+			award = "gage3_13",
+			at = 10
+		}},
+		gage3_14_stats = {{
+			award = "gage3_14",
+			at = 25
+		}},
+		gage3_17_stats = {{
+			award = "gage3_17",
+			at = 250
+		}},
+		gage4_6_stats = {{
+			award = "gage4_6",
+			at = 50
+		}},
+		gage4_8_stats = {{
+			award = "gage4_8",
+			at = 10
+		}},
+		gage4_10_stats = {{
+			award = "gage4_10",
+			at = 10
+		}},
+		gage5_1_stats = {{
+			award = "gage5_1",
+			at = 25
+		}},
+		gage5_9_stats = {{
+			award = "gage5_9",
+			at = 10
+		}},
+		gage5_10_stats = {{
+			award = "gage5_10",
+			at = 200
+		}},
+		eagle_1_stats = {{
+			award = "eagle_1",
+			at = 25
+		}},
+		ameno_08_stats = {{
+			award = "ameno_8",
+			at = 100
+		}},
+		pim_1_stats = {{
+			award = "pim_1",
+			at = 30
+		}},
+		pim_3_stats = {{
+			award = "pim_3",
+			at = 45
+		}},
+		grv_3_stats = {{
+			award = "grv_3",
+			at = 300
+		}},
+		gmod_1_stats = {{
+			award = "gmod_1",
+			at = 5
+		}},
+		gmod_2_stats = {{
+			award = "gmod_2",
+			at = 10
+		}},
+		gmod_3_stats = {{
+			award = "gmod_3",
+			at = 15
+		}},
+		gmod_4_stats = {{
+			award = "gmod_4",
+			at = 20
+		}},
+		gmod_5_stats = {{
+			award = "gmod_5",
+			at = 25
+		}},
+		gage5_5_stats = {{
+			award = "gage5_5",
+			at = 25
+		}},
+		pim_2_stats = {{
+			award = "pim_2",
+			at = 8
+		}},
+		tango_2_stats = {{
+			award = "tango_achieve_2",
+			at = 50
+		}},
+		gage2_9_stats = {{
+			award = "gage2_9",
+			at = 15
+		}},
+		gage4_7_stats = {{
+			award = "gage4_7",
+			at = 25
+		}},
+		gage5_8_stats = {{
+			award = "gage5_8",
+			at = 25
+		}},
+		pig_3_stats = {{
+			award = "pig_3",
+			at = 30
+		}},
+		eagle_2_stats = {{
+			award = "eagle_2",
+			at = 25
+		}},
+		halloween_10_stats = {{
+			award = "halloween_10",
+			at = 25
+		}},
+		armored_4_stat = {{
+			award = "armored_4",
+			at = 15
+		}},
+		gage3_10_stats = {{
+			award = "gage3_10",
+			at = 10
+		}},
+		gage3_15_stats = {{
+			award = "gage3_15",
+			at = 25
+		}},
+		gage3_16_stats = {{
+			award = "gage3_16",
+			at = 25
+		}},
+		eng_1_stats = {{
+			award = "eng_1",
+			at = 5
+		}},
+		eng_2_stats = {{
+			award = "eng_2",
+			at = 5
+		}},
+		eng_3_stats = {{
+			award = "eng_3",
+			at = 5
+		}},
+		eng_4_stats = {{
+			award = "eng_4",
+			at = 5
+		}}
+	}
 	local jobs = {}
 	local job_data = nil
 	local available_jobs = {}
@@ -3241,6 +4684,336 @@ function AchievementsTweakData:init(tweak_data)
 			award = "axe_66",
 			contact = "all",
 			difficulty = sm_wish_and_above
+		},
+		trk_a_0 = {
+			award = "trk_a_0",
+			contact = "all",
+			difficulty = normal_and_above
+		},
+		trk_b_0 = {
+			award = "trk_b_0",
+			contact = "bain",
+			difficulty = normal_and_above
+		},
+		trk_b_1 = {
+			award = "trk_b_1",
+			contact = "bain",
+			difficulty = hard_and_above
+		},
+		trk_b_2 = {
+			award = "trk_b_2",
+			contact = "bain",
+			difficulty = veryhard_and_above
+		},
+		trk_b_3 = {
+			award = "trk_b_3",
+			contact = "bain",
+			difficulty = overkill_and_above
+		},
+		trk_c_0 = {
+			award = "trk_c_0",
+			contact = "the_continental",
+			difficulty = normal_and_above
+		},
+		trk_c_1 = {
+			award = "trk_c_1",
+			contact = "the_continental",
+			difficulty = hard_and_above
+		},
+		trk_c_2 = {
+			award = "trk_c_2",
+			contact = "the_continental",
+			difficulty = veryhard_and_above
+		},
+		trk_c_3 = {
+			award = "trk_c_3",
+			contact = "the_continental",
+			difficulty = overkill_and_above
+		},
+		trk_c_4 = {
+			award = "trk_c_4",
+			contact = "the_continental",
+			difficulty = easywish_and_above
+		},
+		trk_c_5 = {
+			award = "trk_c_5",
+			contact = "the_continental",
+			difficulty = deathwish_and_above
+		},
+		trk_c_6 = {
+			award = "trk_c_6",
+			contact = "the_continental",
+			difficulty = sm_wish_and_above
+		},
+		trk_cb_0 = {
+			award = "trk_cb_0",
+			contact = "the_butcher",
+			difficulty = normal_and_above
+		},
+		trk_cb_1 = {
+			award = "trk_cb_1",
+			contact = "the_butcher",
+			difficulty = hard_and_above
+		},
+		trk_cb_2 = {
+			award = "trk_cb_2",
+			contact = "the_butcher",
+			difficulty = veryhard_and_above
+		},
+		trk_cb_3 = {
+			award = "trk_cb_3",
+			contact = "the_butcher",
+			difficulty = overkill_and_above
+		},
+		trk_cb_4 = {
+			award = "trk_cb_4",
+			contact = "the_butcher",
+			difficulty = easywish_and_above
+		},
+		trk_cb_5 = {
+			award = "trk_cb_5",
+			contact = "the_butcher",
+			difficulty = deathwish_and_above
+		},
+		trk_cb_6 = {
+			award = "trk_cb_6",
+			contact = "the_butcher",
+			difficulty = sm_wish_and_above
+		},
+		trk_cc_0 = {
+			award = "trk_cc_0",
+			contact = "classic",
+			difficulty = normal_and_above
+		},
+		trk_cc_1 = {
+			award = "trk_cc_1",
+			contact = "classic",
+			difficulty = hard_and_above
+		},
+		trk_cc_2 = {
+			award = "trk_cc_2",
+			contact = "classic",
+			difficulty = veryhard_and_above
+		},
+		trk_cc_3 = {
+			award = "trk_cc_3",
+			contact = "classic",
+			difficulty = overkill_and_above
+		},
+		trk_cc_4 = {
+			award = "trk_cc_4",
+			contact = "classic",
+			difficulty = easywish_and_above
+		},
+		trk_cc_5 = {
+			award = "trk_cc_5",
+			contact = "classic",
+			difficulty = deathwish_and_above
+		},
+		trk_cc_6 = {
+			award = "trk_cc_6",
+			contact = "classic",
+			difficulty = sm_wish_and_above
+		},
+		trk_d_0 = {
+			award = "trk_d_0",
+			contact = "the_dentist",
+			difficulty = normal_and_above
+		},
+		trk_d_1 = {
+			award = "trk_d_1",
+			contact = "the_dentist",
+			difficulty = hard_and_above
+		},
+		trk_d_2 = {
+			award = "trk_d_2",
+			contact = "the_dentist",
+			difficulty = veryhard_and_above
+		},
+		trk_d_3 = {
+			award = "trk_d_3",
+			contact = "the_dentist",
+			difficulty = overkill_and_above
+		},
+		trk_d_4 = {
+			award = "trk_d_4",
+			contact = "the_dentist",
+			difficulty = easywish_and_above
+		},
+		trk_d_5 = {
+			award = "trk_d_5",
+			contact = "the_dentist",
+			difficulty = deathwish_and_above
+		},
+		trk_d_6 = {
+			award = "trk_d_6",
+			contact = "the_dentist",
+			difficulty = sm_wish_and_above
+		},
+		trk_e_0 = {
+			award = "trk_e_0",
+			contact = "the_elephant",
+			difficulty = normal_and_above
+		},
+		trk_e_1 = {
+			award = "trk_e_1",
+			contact = "the_elephant",
+			difficulty = hard_and_above
+		},
+		trk_e_2 = {
+			award = "trk_e_2",
+			contact = "the_elephant",
+			difficulty = veryhard_and_above
+		},
+		trk_e_3 = {
+			award = "trk_e_3",
+			contact = "the_elephant",
+			difficulty = overkill_and_above
+		},
+		trk_ev_0 = {
+			award = "trk_ev_0",
+			contact = "events",
+			difficulty = normal_and_above
+		},
+		trk_ev_1 = {
+			award = "trk_ev_1",
+			contact = "events",
+			difficulty = hard_and_above
+		},
+		trk_ev_2 = {
+			award = "trk_ev_2",
+			contact = "events",
+			difficulty = veryhard_and_above
+		},
+		trk_ev_3 = {
+			award = "trk_ev_3",
+			contact = "events",
+			difficulty = overkill_and_above
+		},
+		trk_ev_4 = {
+			award = "trk_ev_4",
+			contact = "events",
+			difficulty = easywish_and_above
+		},
+		trk_ev_5 = {
+			award = "trk_ev_5",
+			contact = "events",
+			difficulty = deathwish_and_above
+		},
+		trk_ev_6 = {
+			award = "trk_ev_6",
+			contact = "events",
+			difficulty = sm_wish_and_above
+		},
+		trk_h_0 = {
+			award = "trk_h_0",
+			contact = "hector",
+			difficulty = normal_and_above
+		},
+		trk_h_1 = {
+			award = "trk_h_1",
+			contact = "hector",
+			difficulty = hard_and_above
+		},
+		trk_h_2 = {
+			award = "trk_h_2",
+			contact = "hector",
+			difficulty = veryhard_and_above
+		},
+		trk_h_3 = {
+			award = "trk_h_3",
+			contact = "hector",
+			difficulty = overkill_and_above
+		},
+		trk_j_0 = {
+			award = "trk_j_0",
+			contact = "jimmy",
+			difficulty = normal_and_above
+		},
+		trk_j_1 = {
+			award = "trk_j_1",
+			contact = "jimmy",
+			difficulty = hard_and_above
+		},
+		trk_j_2 = {
+			award = "trk_j_2",
+			contact = "jimmy",
+			difficulty = veryhard_and_above
+		},
+		trk_j_3 = {
+			award = "trk_j_3",
+			contact = "jimmy",
+			difficulty = overkill_and_above
+		},
+		trk_j_4 = {
+			award = "trk_j_4",
+			contact = "jimmy",
+			difficulty = easywish_and_above
+		},
+		trk_j_5 = {
+			award = "trk_j_5",
+			contact = "jimmy",
+			difficulty = deathwish_and_above
+		},
+		trk_j_6 = {
+			award = "trk_j_6",
+			contact = "jimmy",
+			difficulty = sm_wish_and_above
+		},
+		trk_l_0 = {
+			award = "trk_l_0",
+			contact = "locke",
+			difficulty = normal_and_above
+		},
+		trk_l_1 = {
+			award = "trk_l_1",
+			contact = "locke",
+			difficulty = hard_and_above
+		},
+		trk_l_2 = {
+			award = "trk_l_2",
+			contact = "locke",
+			difficulty = veryhard_and_above
+		},
+		trk_l_3 = {
+			award = "trk_l_3",
+			contact = "locke",
+			difficulty = overkill_and_above
+		},
+		trk_l_4 = {
+			award = "trk_l_4",
+			contact = "locke",
+			difficulty = easywish_and_above
+		},
+		trk_l_5 = {
+			award = "trk_l_5",
+			contact = "locke",
+			difficulty = deathwish_and_above
+		},
+		trk_l_6 = {
+			award = "trk_l_6",
+			contact = "locke",
+			difficulty = sm_wish_and_above
+		},
+		trk_v_0 = {
+			award = "trk_v_0",
+			contact = "vlad",
+			difficulty = normal_and_above
+		},
+		trk_v_1 = {
+			award = "trk_v_1",
+			contact = "vlad",
+			difficulty = hard_and_above
+		},
+		trk_v_2 = {
+			award = "trk_v_2",
+			contact = "vlad",
+			difficulty = veryhard_and_above
+		},
+		trk_v_3 = {
+			award = "trk_v_3",
+			contact = "vlad",
+			difficulty = overkill_and_above
 		},
 		trophy_smwish = {
 			contact = "all",
@@ -3726,5 +5499,474 @@ function AchievementsTweakData:init(tweak_data)
 	if SystemInfo:platform() == Idstring("PS4") or SystemInfo:platform() == Idstring("XB1") then
 		self.weapon_part_tracker = {}
 	end
+
+	self:_init_visual(tweak_data)
+end
+
+local function get_texture_path(tweak_data, category, id)
+	local td = tweak_data:get_raw_value("blackmarket", category, id)
+	local rtn = {}
+
+	if category == "textures" then
+		rtn.texture = td.texture
+		rtn.render_template = "VertexColorTexturedPatterns"
+	else
+		local guis_catalog = "guis/"
+		local bundle_folder = td.texture_bundle_folder
+
+		if bundle_folder then
+			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
+		end
+
+		rtn.texture = guis_catalog .. "textures/pd2/blackmarket/icons/" .. (category == "weapon_mods" and "mods" or category) .. "/" .. id
+	end
+
+	if not DB:has(Idstring("texture"), Idstring(rtn.texture)) then
+		debug_pause("[Track]", "ERROR TEXTURE PATH", category, id)
+	end
+
+	return rtn
+end
+
+local tracking = {
+	second = "second",
+	realtime = "realtime",
+	rarely = "rarely"
+}
+
+local function from_complete_heist_stats_item(self, item)
+	local heists = nil
+
+	if item.contact == "all" then
+		local lists = table.map_values(self.job_list)
+		heists = table.list_union(unpack(lists))
+	else
+		heists = table.list_copy(self.job_list[item.contact])
+	end
+
+	local function get_todo()
+		local res = table.list_to_set(heists)
+
+		for _, job in pairs(heists) do
+			for _, difficulty in ipairs(item.difficulty) do
+				if managers.statistics:completed_job(job, difficulty) > 0 then
+					res[job] = nil
+
+					break
+				end
+			end
+		end
+
+		return table.map_keys(res)
+	end
+
+	return {
+		persistent = true,
+		is_list = true,
+		get_todo_list = get_todo,
+		get = function ()
+			return #heists - #get_todo()
+		end,
+		checklist = heists,
+		max = #heists,
+		update = tracking.rarely
+	}
+end
+
+local function from_crimespree_item(item)
+	return {
+		get = function ()
+			local rtn = managers.crime_spree:spree_level()
+
+			return rtn == -1 and 0 or rtn
+		end,
+		max = item.level,
+		update = tracking.realtime
+	}
+end
+
+local function from_level(level)
+	if not level then
+		error()
+	end
+
+	return {
+		persistent = true,
+		get = function ()
+			return managers.experience:current_level()
+		end,
+		max = level,
+		update = tracking.realtime
+	}
+end
+
+local function from_owned_weapons(num)
+	if not num then
+		error()
+	end
+
+	return {
+		persistent = true,
+		get = function ()
+			return table.size(managers.blackmarket:get_crafted_category("primaries")) + table.size(managers.blackmarket:get_crafted_category("secondaries"))
+		end,
+		max = num,
+		update = tracking.rarely
+	}
+end
+
+local function from_timed_memory(item, memory_name, count_name)
+	count_name = count_name or "count"
+
+	if not memory_name or not item or not item[count_name] then
+		error()
+	end
+
+	return {
+		get = function ()
+			local mem = managers.job:get_memory(memory_name, true) or {}
+			local t = Application:time()
+
+			return table.count(mem, function (time)
+				return t - time < item.timer
+			end)
+		end,
+		max = item[count_name],
+		update = tracking.realtime
+	}
+end
+
+function AchievementsTweakData:_init_visual(tweak_data)
+	self.tags = {
+		progress = {
+			"leveling",
+			"beginner",
+			"completion",
+			"heisting",
+			"generic"
+		},
+		contracts = {"all"},
+		difficulty = {
+			"normal",
+			"hard",
+			"very_hard",
+			"overkill",
+			"mayhem",
+			"death_wish",
+			"one_down"
+		},
+		unlock = {
+			"mask",
+			"weapon",
+			"skill_slot",
+			"character"
+		},
+		tactics = {
+			"loud",
+			"stealth",
+			"killer",
+			"timed"
+		},
+		inventory = {
+			"mask",
+			"weapon",
+			"armor",
+			"skill",
+			"equipment"
+		},
+		teamwork = {
+			"players_1_to_4",
+			"players_4"
+		}
+	}
+	local contacts = {}
+
+	for _, job_id in ipairs(tweak_data.narrative:get_jobs_index()) do
+		local contact = tweak_data.narrative:job_data(job_id).contact
+
+		if contact ~= "wip" and contact ~= "tests" and not table.contains(self.tags.contracts, contact) then
+			table.insert(self.tags.contracts, contact)
+		end
+	end
+
+	for cat_name, cat in pairs(self.tags) do
+		local converted = {}
+
+		for _, tag in pairs(cat) do
+			converted[tag] = cat_name .. "_" .. tag
+		end
+
+		self.tags[cat_name] = converted
+	end
+
+	self.visual = init_auto_generated_achievement_data(self.tags)
+
+	self:_init_non_auto_generated(tweak_data)
+
+	for stat, unlocks in pairs(self.persistent_stat_unlocks) do
+		for _, v in pairs(unlocks) do
+			local data = self.visual[v.award]
+
+			if not data then
+				Application:error("Achievement visual data for '" .. v.award .. "' doesn't exists! (achievement was found in 'persistent_stat_unlocks')")
+			elseif type(data.progress) ~= "table" then
+				data.progress = {
+					persistent = true,
+					get = function ()
+						return managers.achievment:get_stat(stat)
+					end,
+					max = v.at,
+					update = tracking.second
+				}
+			end
+		end
+	end
+
+	for name, data in pairs(tweak_data.dlc) do
+		local visual = data.achievement_id and self.visual[data.achievement_id]
+
+		if visual then
+			if visual.need_unlock_icons == false then
+				visual.need_unlock_icons = nil
+			else
+				visual.need_unlock_icons = nil
+				visual.unlock_icons = visual.unlock_icons or {}
+				visual.unlock_id = visual.unlock_id or true
+
+				for _, loot in pairs(data.content.loot_drops) do
+					local tex_data = get_texture_path(tweak_data, loot.type_items, loot.item_entry)
+
+					if not table.contains(visual.unlock_icons, tex_data) then
+						tex_data.type_items = loot.type_items
+						tex_data.original_order = #visual.unlock_icons + 1
+
+						table.insert(visual.unlock_icons, tex_data)
+					end
+				end
+
+				local sort_order = {
+					"characters",
+					"weapon_mods",
+					"masks",
+					"melee_weapons",
+					"materials",
+					"textures"
+				}
+
+				table.sort(visual.unlock_icons, function (lhs, rhs)
+					local l = table.index_of(sort_order, lhs.type_items)
+					local r = table.index_of(sort_order, rhs.type_items)
+
+					if l == r then
+						return lhs.original_order < rhs.original_order
+					elseif not l or not r then
+						return l
+					end
+
+					return l < r
+				end)
+			end
+		elseif data.achievement_id then
+			for _, loot in pairs(data.content.loot_drops) do
+				get_texture_path(tweak_data, loot.type_items, loot.item_entry)
+			end
+		end
+	end
+
+	for name, data in pairs(self.visual) do
+		data.name_id = data.name_id or "achievement_" .. name
+		data.desc_id = data.desc_id or "achievement_" .. name .. "_desc"
+		data.additional_id = data.additional_id == true and "achievement_" .. name .. "_additional" or data.additional_id
+		data.unlock_id = data.unlock_id == true and "achievement_" .. name .. "_unlock" or data.unlock_id
+		data.icon_id = data.icon_id or data.sort_name
+	end
+end
+
+function AchievementsTweakData:_init_non_auto_generated(tweak_data)
+	self.visual.bulldog_1.unlock_icons = {
+		{
+			type_items = "characters",
+			type_index = -1,
+			original_order = -1,
+			texture = "guis/dlcs/trk/textures/pd2/old_hoxton_unlock_icon"
+		},
+		table.map_append({
+			type_items = "melee_weapons",
+			type_index = 99,
+			original_order = 0
+		}, get_texture_path(tweak_data, "melee_weapons", "toothbrush"))
+	}
+	self.visual.frog_1.unlock_icons = {{
+		type_items = "kill_slot",
+		texture = "guis/dlcs/trk/textures/pd2/skills_slot_unlock_icon"
+	}}
+	self.visual.armored_2.need_unlock_icons = false
+
+	for k, v in pairs(self.complete_heist_stats_achievements) do
+		if v.award then
+			self.visual[v.award].progress = from_complete_heist_stats_item(self, v)
+		end
+	end
+
+	self.visual.armed_and_dangerous.progress = from_level(self.level_achievements.armed_and_dangerous.level)
+	self.visual.big_shot.progress = from_level(self.level_achievements.big_shot.level)
+	self.visual.gone_in_30_seconds.progress = from_level(self.level_achievements.gone_in_30_seconds.level)
+	self.visual.guilty_of_crime.progress = from_level(self.level_achievements.guilty_of_crime.level)
+	self.visual.most_wanted.progress = from_level(self.level_achievements.most_wanted.level)
+	self.visual.you_gotta_start_somewhere.progress = from_level(self.level_achievements.you_gotta_start_somewhere.level)
+
+	for id, v in pairs(self.crime_spree) do
+		if v.award then
+			self.visual[id].progress = from_crimespree_item(v)
+		end
+	end
+
+	for i, v in pairs(self.infamous) do
+		self.visual[v].progress = {
+			get = function ()
+				return managers.experience:current_rank() or 0
+			end,
+			max = i
+		}
+	end
+
+	self.visual.fully_loaded.progress = from_owned_weapons(self.fully_loaded)
+	self.visual.gage_8.progress = from_owned_weapons(self.arms_dealer)
+	self.visual.weapon_collector.progress = from_owned_weapons(self.weapon_collector)
+	self.visual.grill_3.progress = from_timed_memory(self.grenade_achievements.not_invited, "gre_ach_not_invited", "kill_count")
+	self.visual.gage4_4.progress = from_timed_memory(self.enemy_kill_achievements.seven_eleven, "seven_eleven")
+	self.visual.eagle_5.progress = from_timed_memory(self.enemy_kill_achievements.bullet_hell, "bullet_hell")
+	self.visual.scorpion_4.progress = from_timed_memory(self.enemy_kill_achievements.scorpion_4, "scorpion_4")
+	self.visual.brooklyn_1.progress = {
+		max = 1,
+		get = function ()
+			return 0
+		end,
+		update = tracking.realtime
+	}
+	self.visual.berry_5.progress = {
+		get = function ()
+			return managers.job:get_memory("berry_5", true) or 0
+		end,
+		max = self.enemy_kill_achievements.berry_5.count_in_row,
+		update = tracking.realtime
+	}
+	self.visual.turtles_1.progress = {
+		get = function ()
+			return managers.job:get_memory("kill_count_no_reload_wa2000", true) or 0
+		end,
+		max = self.enemy_kill_achievements.turtles_1.count_no_reload,
+		update = tracking.realtime
+	}
+	self.visual.grv_2.progress = {
+		get = function ()
+			return managers.job:get_memory("kill_count_no_reload_coal", true) or 0
+		end,
+		max = self.enemy_kill_achievements.grv_2.count_no_reload,
+		update = tracking.realtime
+	}
+	local cane_5 = self.loot_cash_achievements.cane_5
+	self.visual.cane_5.progress = {
+		get = function ()
+			local total, _, _ = managers.loot:_count_achievement_secured("cane_5", cane_5.secured)
+
+			return total or 0
+		end,
+		max = cane_5.secured.total_amount,
+		update = tracking.second
+	}
+	self.visual.gage2_5.progress = {
+		get = function ()
+			return managers.statistics:session_killed_by_weapon_category(self.first_blood.weapon_type)
+		end,
+		max = self.first_blood.count,
+		update = tracking.realtime
+	}
+	self.visual.going_places.progress = {
+		get = function ()
+			return managers.money:total()
+		end,
+		max = self.going_places,
+		update = tracking.realtime
+	}
+	local pal_2 = self.loot_cash_achievements.pal_2
+	self.visual.pal_2.progress = {
+		get = function ()
+			local _, _, value = managers.loot:_count_achievement_secured("pal_2", pal_2.secured)
+
+			return value or 0
+		end,
+		max = pal_2.secured.value,
+		update = tracking.second
+	}
+	local steel_2 = self.enemy_melee_kill_achievements.steel_2
+	self.visual.steel_2.progress = {
+		get = function ()
+			if table.contains(steel_2.melee_weapons, managers.blackmarket:equipped_melee_weapon()) then
+				return managers.statistics:session_enemy_killed_by_type(achievement_data.enemy_kills.enemy, "melee")
+			end
+
+			return 0
+		end,
+		max = steel_2.enemy_kills.count,
+		update = tracking.second
+	}
+	local tango_3 = self.complete_heist_achievements.tango_3
+	self.visual.tango_achieve_3.progress = {
+		get = function ()
+			if not table.contains(tango_3.difficulty, Global.game_settings.difficulty) then
+				return 0
+			end
+
+			local rtn = 0
+			local weapons_to_check = {
+				managers.blackmarket:equipped_primary(),
+				managers.blackmarket:equipped_secondary()
+			}
+
+			for _, weapon_data in ipairs(weapons_to_check) do
+				if table.contains(weapon_data.blueprint or {}, tango_3.killed_by_blueprint.blueprint) then
+					rtn = rtn + (managers.statistics:session_killed_by_weapon(weapon_data.weapon_id) or 0)
+				end
+			end
+
+			return rtn
+		end,
+		max = tango_3.killed_by_blueprint.amount,
+		update = tracking.realtime
+	}
+	self.visual.tango_achieve_4.progress = {
+		get = function ()
+			local unit = managers.player:equipped_weapon_unit()
+
+			if not unit or not unit:base() then
+				return 0
+			end
+
+			local data = unit:base()._tango_4_data
+
+			return data and data.count or 0
+		end,
+		max = self.tango_4.count
+	}
+	local turtles_2 = self.enemy_kill_achievements.turtles_2
+	self.visual.turtles_2.progress = {
+		get = function ()
+			return managers.statistics:session_killed_by_weapon(turtles_2.weapon) or 0
+		end,
+		max = turtles_2.kill_count
+	}
+	self.visual.gage4_3.progress = {
+		get = function ()
+			return managers.statistics:session_total_killed()[self.close_and_personal.kill_type] or 0
+		end,
+		max = self.close_and_personal.count
+	}
+	self.visual.spend_money_to_make_money.progress = {
+		get = function ()
+			return managers.money:total_spent()
+		end,
+		max = self.spend_money_to_make_money
+	}
 end
 

@@ -2030,16 +2030,6 @@ function CopDamage:drop_pickup(extra)
 			mvector3.add(mvec_1, mvec_2)
 		end
 
-		mvector3.set(mvec_2, math.UP)
-		mvector3.multiply(mvec_2, -200)
-		mvector3.add(mvec_2, mvec_1)
-
-		local ray = self._unit:raycast("ray", mvec_1, mvec_2, "slot_mask", managers.slot:get_mask("bullet_impact_targets"))
-
-		if ray then
-			mvector3.set(mvec_1, ray.hit_position)
-		end
-
 		managers.game_play_central:spawn_pickup({
 			name = self._pickup,
 			position = mvec_1,

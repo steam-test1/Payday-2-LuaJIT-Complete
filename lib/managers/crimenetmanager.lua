@@ -23,6 +23,72 @@ function CrimeNetManager:init()
 		Global.crimenet.sidebar = {collapsed = false}
 		self._global = Global.crimenet
 	end
+
+	self:_create_crimenet_broker_global()
+end
+
+function CrimeNetManager:_create_crimenet_broker_global()
+	if Global.crimenet.broker == nil then
+		Global.crimenet.broker = {
+			favourites = {},
+			stats = {}
+		}
+		self._global = Global.crimenet
+	end
+end
+
+function CrimeNetManager:is_job_favourite(job_id)
+	return self._global.broker.favourites[job_id]
+end
+
+function CrimeNetManager:set_job_favourite(job_id, is_fav)
+	self._global.broker.favourites[job_id] = is_fav
+end
+
+function CrimeNetManager:get_favourite_jobs()
+	local job_ids = {}
+
+	for id, is_fav in pairs(self._global.broker.favourites) do
+		if is_fav then
+			job_ids[id] = true
+		end
+	end
+
+	return job_ids
+end
+
+function CrimeNetManager:get_last_played_job(job_id)
+	if job_id then
+		self._global.broker.stats[job_id] = self._global.broker.stats[job_id] or {}
+
+		return self._global.broker.stats[job_id].last_played_date
+	else
+		Application:error("Can not get job last played without a job id!")
+
+		return 0
+	end
+end
+
+function CrimeNetManager:get_job_times_played(job_id)
+	if job_id then
+		self._global.broker.stats[job_id] = self._global.broker.stats[job_id] or {}
+
+		return self._global.broker.stats[job_id].plays or 0
+	else
+		Application:error("Can not get job played without a job id!")
+
+		return 0
+	end
+end
+
+function CrimeNetManager:set_job_played_today(job_id)
+	if job_id then
+		self._global.broker.stats[job_id] = self._global.broker.stats[job_id] or {}
+		self._global.broker.stats[job_id].last_played_date = DateTime:new("today")
+		self._global.broker.stats[job_id].plays = (self._global.broker.stats[job_id].plays or 0) + 1
+	else
+		Application:error("Can not set job played without a job id!")
+	end
 end
 
 function CrimeNetManager:_setup_vars()
@@ -981,7 +1047,8 @@ function CrimeNetManager:_find_online_games_win32(friends_only)
 								crime_spree_mission = attribute_list[i].crime_spree_mission,
 								drop_in = drop_in,
 								permission = permission,
-								min_level = min_level
+								min_level = min_level,
+								mods = attribute_list[i].mods
 							})
 						end
 					else
@@ -1007,7 +1074,8 @@ function CrimeNetManager:_find_online_games_win32(friends_only)
 							crime_spree_mission = attribute_list[i].crime_spree_mission,
 							drop_in = drop_in,
 							permission = permission,
-							min_level = min_level
+							min_level = min_level,
+							mods = attribute_list[i].mods
 						})
 					end
 				end
@@ -1045,6 +1113,8 @@ function CrimeNetManager:load(data)
 	if not self._global.sidebar then
 		self._global.sidebar = {collapsed = false}
 	end
+
+	self:_create_crimenet_broker_global()
 end
 
 function CrimeNetManager:join_quick_play_game()
@@ -3370,7 +3440,8 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		crime_spree = data.crime_spree,
 		crime_spree_mission = data.crime_spree_mission,
 		color_lerp = data.color_lerp,
-		server_data = data
+		server_data = data,
+		mods = data.mods
 	}
 
 	if is_crime_spree or data.is_crime_spree then
@@ -3560,6 +3631,7 @@ function CrimeNetGui:update_server_job(data, i)
 	local recreate_job = updated_room or updated_job or updated_level_id or updated_level_data or updated_difficulty or updated_difficulty_id or updated_state or updated_friend or updated_job_plan
 	job.server_data = data
 	job.mutators = data.mutators
+	job.mods = data.mods
 
 	self:_update_job_variable(job_index, "state_name", data.state_name)
 
@@ -3925,7 +3997,8 @@ function CrimeNetGui:check_job_pressed(x, y)
 				is_crime_spree = job.crime_spree and job.crime_spree >= 0,
 				crime_spree = job.crime_spree,
 				crime_spree_mission = job.crime_spree_mission,
-				server_data = job.server_data
+				server_data = job.server_data,
+				mods = job.mods
 			}
 
 			managers.menu_component:post_event("menu_enter")

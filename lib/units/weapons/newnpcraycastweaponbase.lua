@@ -405,8 +405,8 @@ function NewNPCRaycastWeaponBase:_get_spread(user_unit)
 	end
 
 	local pose = user_unit:movement()._moving and "moving_standing" or "standing"
-	local spread_stat_value = weapon_tweak.stats.spread + (self._part_stats and self._part_stats.spread or 0)
-	local spread_pose_value = spread_values[pose]
+	local spread_stat_value = math.clamp(weapon_tweak.stats.spread + (self._part_stats and self._part_stats.spread or 0), 1, #tweak_data.weapon.stats.spread)
+	local spread_pose_value = spread_values[pose] or 3
 	local spread_x, spread_y = nil
 
 	if type(spread_pose_value) == "table" then

@@ -1755,6 +1755,10 @@ function WINDLCManager:init()
 				app_id = "218620",
 				no_install = true
 			},
+			trk = {
+				app_id = "218620",
+				no_install = true
+			},
 			dgm = {
 				app_id = "218620",
 				no_install = true
@@ -1765,6 +1769,10 @@ function WINDLCManager:init()
 				no_install = true
 			},
 			cmo = {
+				app_id = "218620",
+				no_install = true
+			},
+			dnm = {
 				app_id = "218620",
 				no_install = true
 			}

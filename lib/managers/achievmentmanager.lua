@@ -1,6 +1,7 @@
 AchievmentManager = AchievmentManager or class()
 AchievmentManager.PATH = "gamedata/achievments"
 AchievmentManager.FILE_EXTENSION = "achievment"
+AchievmentManager.MAX_TRACKED = 4
 
 function AchievmentManager:init()
 	self.exp_awards = {
@@ -81,7 +82,67 @@ function AchievmentManager:init()
 		Application:error("[AchievmentManager:init] Unsupported platform")
 	end
 
+	self._forced = Global.achievment_manager.forced or {}
+	Global.achievment_manager.forced = self._forced
+	self._recent_data = Global.achievment_manager.recent_time or {time = os.time() - 1}
+	Global.achievment_manager.recent_time = self._recent_data
+	self._with_progress = {}
+	self._recent_progress = {}
+
+	for id, data in pairs(self.achievments) do
+		local v = tweak_data.achievement.visual[id]
+
+		if v and v.progress then
+			self._with_progress[id] = {
+				info = data,
+				visual = v,
+				id = id
+			}
+		end
+	end
+
 	self._mission_end_achievements = {}
+end
+
+function AchievmentManager:save(data)
+	local save = {
+		forced = table.list_copy(self._forced),
+		tracked = {}
+	}
+
+	for k, v in pairs(self.achievments) do
+		if v.tracked then
+			table.insert(save.tracked, k)
+		end
+	end
+
+	data.achievement = save
+end
+
+function AchievmentManager:load(data, version)
+	if not data.achievement then
+		return
+	end
+
+	if self._forced then
+		local cur = table.list_copy(self._forced)
+
+		for _, v in pairs(cur) do
+			self:force_track(v, false)
+		end
+	end
+
+	for k, v in pairs(data.achievement.forced or {}) do
+		self:force_track(v, true)
+	end
+
+	for _, k in pairs(data.achievement.tracked) do
+		local v = self.achievments[k]
+
+		if v then
+			v.tracked = true
+		end
+	end
 end
 
 function AchievmentManager:init_finalize()
@@ -120,6 +181,10 @@ function AchievmentManager.fetch_achievments(error_str)
 		for id, ach in pairs(managers.achievment.achievments) do
 			if managers.achievment.handler:has_achievement(ach.id) then
 				ach.awarded = true
+
+				managers.achievment:track(id, false)
+
+				ach.unlock_time = managers.achievment.handler:achievement_unlock_time(ach.id)
 			end
 		end
 	end
@@ -179,13 +244,15 @@ function AchievmentManager:_parse_achievments(platform)
 		if ach._meta == "achievment" then
 			for _, reward in ipairs(ach) do
 				if reward._meta == "reward" and (Application:editor() or not platform or platform == reward.platform) then
-					self.achievments[ach.id] = {
+					local data = {
 						awarded = false,
+						tracked = false,
 						id = reward.id,
 						name = ach.name,
 						exp = self.exp_awards[ach.awards_exp],
 						dlc_loot = reward.dlc_loot or false
 					}
+					self.achievments[ach.id] = data
 				end
 			end
 		end
@@ -270,6 +337,10 @@ function AchievmentManager:award(id)
 		return
 	end
 
+	if managers.hud then
+		managers.hud:achievement_popup(id)
+	end
+
 	if id == "christmas_present" then
 		managers.network.account._masks.santa = true
 	elseif id == "golden_boy" then
@@ -280,11 +351,174 @@ function AchievmentManager:award(id)
 	managers.mission:call_global_event(Message.OnAchievement, id)
 end
 
+function AchievmentManager:update()
+	local cur = nil
+	self._progress_iter, cur = next(self._with_progress, self._with_progress[self._progress_iter] and self._progress_iter)
+	local i = 1
+
+	while true do
+		if not cur then
+			break
+		end
+
+		if cur.info.awarded then
+			self._with_progress[cur.id] = nil
+		end
+
+		if cur.info.tracked then
+			i = i + 1
+			local new = cur.visual.progress.get()
+			cur.last = cur.last or new
+
+			if cur.last ~= new then
+				local old_idx = table.index_of(self._recent_progress, cur.id)
+
+				if old_idx then
+					table.remove(self._recent_progress, old_idx)
+				end
+
+				table.insert(self._recent_progress, 1, cur.id)
+
+				self._recent_progress[self.MAX_TRACKED] = nil
+				cur.last = new
+			end
+
+			if i > 10 then
+				break
+			end
+		end
+
+		self._progress_iter, cur = next(self._with_progress, self._progress_iter)
+	end
+end
+
+function AchievmentManager:force_track(id, state)
+	local data = self:get_info(id)
+
+	if not data then
+		Application:error("Failed to find achievement '" .. id .. "' to track!")
+
+		return false
+	end
+
+	if state and not data.awarded then
+		if self.MAX_TRACKED <= #self._forced then
+			return data.forced
+		end
+
+		if not table.contains(self._forced, id) then
+			table.insert(self._forced, id)
+		end
+
+		data.forced = true
+		data.tracked = true
+	else
+		table.delete(self._forced, id)
+
+		data.forced = false
+	end
+
+	return data.forced
+end
+
+function AchievmentManager:get_force_tracked()
+	return self._forced
+end
+
+function AchievmentManager:get_tracked_fill(max)
+	max = max or self.MAX_TRACKED
+
+	if #self._forced == max then
+		return self._forced
+	end
+
+	local list = table.list_copy(self._forced)
+
+	for _, id in pairs(self._recent_progress) do
+		table.insert(list, id)
+
+		if #list == max then
+			return list
+		end
+	end
+
+	for id, info in pairs(self.achievments) do
+		if info.tracked then
+			table.insert(list, id)
+
+			if #list == max then
+				return list
+			end
+		end
+	end
+
+	return list
+end
+
+function AchievmentManager:track(id, state)
+	local data = self:get_info(id)
+
+	if not data then
+		Application:error("Failed to find achievement '" .. id .. "' to track!")
+
+		return false
+	end
+
+	if state and not data.awarded then
+		data.tracked = true
+	else
+		data.tracked = false
+
+		self:force_track(id, false)
+	end
+
+	return data.tracked
+end
+
+function AchievmentManager:get_friends_with_achievement(id, callback)
+	return self.handler:friends_with_achievement(id, callback)
+end
+
+function AchievmentManager:get_global_achieved_percent(id)
+	return self.handler:achievement_achieved_percent(id)
+end
+
+function AchievmentManager:set_recent_time(time)
+	time = time or os.time()
+	self._recent_data = self._recent_data or {}
+	self._recent_data.time = time >= 0 and time or os.time() + time
+end
+
+function AchievmentManager:get_recent_achievements(params)
+	params = params or {}
+	local recent = params.from or self._recent_data.time
+	local rtn = {}
+
+	for _, v in pairs(self.achievments) do
+		if v.unlock_time and recent <= v.unlock_time then
+			table.insert(rtn, v)
+		end
+	end
+
+	if (params.keep_recent_time or params.from) and not params.set_time then
+		return rtn
+	end
+
+	self._recent_data.time = params.set_time or os.time()
+
+	return rtn
+end
+
 function AchievmentManager:_give_reward(id, skip_exp)
 	print("[AchievmentManager:_give_reward] ", id)
 
 	local data = self:get_info(id)
 	data.awarded = true
+	self._with_progress[id] = nil
+
+	self:force_track(id, false)
+
+	data.unlock_time = self.handler:achievement_unlock_time(id)
 
 	if data.dlc_loot then
 		managers.dlc:on_achievement_award_loot()
@@ -310,12 +544,31 @@ function AchievmentManager:award_progress(stat, value)
 		self.handler:achievement_store_callback(AchievmentManager.steam_unlock_result)
 	end
 
+	local unlocks = tweak_data.achievement.persistent_stat_unlocks[stat] or {}
+	local old_value = managers.network.account:get_stat(stat)
+	local unlock_check = table.filter_list(unlocks, function (v)
+		local info = self:get_info(v.award)
+
+		if info and info.awarded then
+			return false
+		end
+
+		return old_value <= v.at
+	end)
 	local stats = {[stat] = {
 		type = "int",
 		value = value or 1
 	}}
 
 	managers.network.account:publish_statistics(stats, true)
+
+	local new_value = managers.network.account:get_stat(stat)
+
+	for _, d in pairs(unlock_check) do
+		if d.at <= new_value then
+			self:award(d.award)
+		end
+	end
 end
 
 function AchievmentManager:get_stat(stat)

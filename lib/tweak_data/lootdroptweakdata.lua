@@ -1519,6 +1519,20 @@ function LootDropTweakData:init(tweak_data)
 		sort_number = 300,
 		category = "dlc"
 	}
+	self.global_values.dnm = {
+		name_id = "bm_global_value_dnm",
+		desc_id = "menu_l_global_value_dnm",
+		unlock_id = "bm_global_value_dnm_unlock",
+		color = dlc_color,
+		dlc = true,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 300,
+		category = "dlc"
+	}
 
 	if SystemInfo:platform() == Idstring("PS3") then
 		self.global_values.sweettooth = {

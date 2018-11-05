@@ -1115,3 +1115,15 @@ function ConnectionNetworkHandler:sync_crime_spree_gage_asset_event(event_id, as
 	managers.crime_spree:on_gage_asset_event(event_id, asset_id, peer)
 end
 
+function ConnectionNetworkHandler:sync_player_installed_mod(peer_id, mod_id, mod_friendly_name, sender)
+	print("[ConnectionNetworkHandler] sync_player_installed_mod", peer_id, mod_id, mod_friendly_name)
+
+	local peer = self._verify_sender(sender)
+
+	if not peer then
+		return
+	end
+
+	peer:register_mod(mod_id, mod_friendly_name)
+end
+

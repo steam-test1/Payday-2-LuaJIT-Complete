@@ -29,17 +29,19 @@ function DLCTweakData:init(tweak_data)
 			howl = 1,
 			rip = true,
 			lxy = true,
-			steel = true,
+			dnm = true,
 			gage_pack_lmg = true,
 			dos = true,
-			hlm2 = true,
+			pic = true,
 			paydaycon2016 = 1,
+			steel = true,
+			hlm2 = true,
+			mdm = 1,
 			speedrunners = 1,
 			alienware_alpha = true,
-			mdm = 1,
-			humble_summer_2015 = 1,
 			fdm = true,
 			hoxton_revenge = 1,
+			humble_summer_2015 = 1,
 			hl_miami = true,
 			pn2 = true,
 			pim = true,
@@ -54,6 +56,7 @@ function DLCTweakData:init(tweak_data)
 			infamous = 1,
 			pines = true,
 			born = true,
+			trk = true,
 			wmp = true,
 			opera = true,
 			pd2_goty = 1,
@@ -5989,6 +5992,22 @@ function DLCTweakData:init(tweak_data)
 			amount = 1
 		}
 	}
+	self.dnm = {
+		free = true,
+		content = {}
+	}
+	self.dnm.content.loot_drops = {}
+	self.ach_trk_a_0 = {
+		dlc = "has_achievement",
+		achievement_id = "trk_a_0",
+		content = {}
+	}
+	self.ach_trk_a_0.content.loot_global_value = "infamous"
+	self.ach_trk_a_0.content.loot_drops = {{
+		type_items = "masks",
+		item_entry = "dnm",
+		amount = 1
+	}}
 	self.eng = {
 		free = true,
 		content = {}
