@@ -15,7 +15,7 @@ function ElementSpawnGrenade:on_executed(instigator)
 	end
 
 	if self._values.grenade_type == "frag" then
-		ProjectileBase.throw_projectile(1, self._values.position, self._values.spawn_dir * self._values.strength)
+		ProjectileBase.throw_projectile(self._values.grenade_type, self._values.position, self._values.spawn_dir * self._values.strength)
 	end
 
 	ElementSpawnGrenade.super.on_executed(self, instigator)

@@ -229,7 +229,9 @@ function StatisticsTweakData:statistics_table()
 		"wild",
 		"chico",
 		"max",
-		"myh"
+		"myh",
+		"ecp_female",
+		"ecp_male"
 	}
 	local deployable_list = {
 		"ammo_bag",

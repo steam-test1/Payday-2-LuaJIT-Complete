@@ -112,11 +112,9 @@ function ArrowBase:clbk_body_activation(tag, unit, body, activated)
 end
 
 function ArrowBase:sync_throw_projectile(dir, projectile_type)
-	local projectile_entry = tweak_data.blackmarket:get_projectile_name_from_index(projectile_type)
-
 	self:throw({
 		dir = dir,
-		projectile_entry = projectile_entry
+		projectile_entry = projectile_type
 	})
 	self._unit:damage():add_body_collision_callback(callback(self._unit:base(), self._unit:base(), "clbk_impact"))
 end

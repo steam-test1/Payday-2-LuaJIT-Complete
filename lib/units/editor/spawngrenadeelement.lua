@@ -14,7 +14,7 @@ end
 
 function SpawnGrenadeUnitElement:test_element()
 	if self._hed.grenade_type == "frag" then
-		ProjectileBase.throw_projectile(1, self._unit:position(), self._hed.spawn_dir * self._hed.strength)
+		ProjectileBase.throw_projectile(self._hed.grenade_type, self._unit:position(), self._hed.spawn_dir * self._hed.strength)
 	end
 end
 
