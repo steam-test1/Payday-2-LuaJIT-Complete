@@ -1791,7 +1791,8 @@ Play the full version soon to get your full PAYDAY!]],
 		{
 			track = "xmas13_deck_the_safe_house_instrumental",
 			lock = "xmas"
-		}
+		},
+		{track = "its_payday"}
 	}
 	self.music.soundbank_list = {
 		"soundbanks/music",

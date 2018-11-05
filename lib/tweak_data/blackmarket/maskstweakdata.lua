@@ -5685,6 +5685,56 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		texture_bundle_folder = "ggac",
 		sort_number = 36
 	}
+	self.masks.toon_01 = {
+		unit = "units/pd2_dlc_toon/masks/toon_01/msk_toon_01",
+		name_id = "bm_msk_toon_01",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "toon",
+		sort_number = 69,
+		dlc = "toon",
+		global_value = "toon"
+	}
+	self.masks.toon_02 = {
+		unit = "units/pd2_dlc_toon/masks/toon_02/msk_toon_02",
+		name_id = "bm_msk_toon_02",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "toon",
+		sort_number = 69,
+		dlc = "toon",
+		global_value = "toon"
+	}
+	self.masks.toon_03 = {
+		unit = "units/pd2_dlc_toon/masks/toon_03/msk_toon_03",
+		name_id = "bm_msk_toon_03",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "toon",
+		sort_number = 69,
+		dlc = "toon",
+		global_value = "toon",
+		offsets = {
+			wild = {
+				Vector3(0, -0.399472, -0.280226),
+				Rotation(0, 3.99239, 0)
+			},
+			sydney = {
+				Vector3(0, -0.876458, -0.995704),
+				Rotation(0, 9.14383, 0)
+			}
+		}
+	}
+	self.masks.toon_04 = {
+		unit = "units/pd2_dlc_toon/masks/toon_04/msk_toon_04",
+		name_id = "bm_msk_toon_04",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "toon",
+		sort_number = 69,
+		dlc = "toon",
+		global_value = "toon"
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.masks) do
