@@ -4263,7 +4263,12 @@ function WeaponTweakData:_init_glock_18c(weapon_data)
 		moving_crouching = self.new_m4.spread.moving_crouching,
 		moving_steelsight = self.new_m4.spread.moving_steelsight
 	}
-	self.glock_18c.kick = {standing = self.glock_17.kick.standing}
+	self.glock_18c.kick = {standing = {
+		0.3,
+		0.4,
+		-0.3,
+		0.3
+	}}
 	self.glock_18c.kick.crouching = self.glock_18c.kick.standing
 	self.glock_18c.kick.steelsight = self.glock_18c.kick.standing
 	self.glock_18c.crosshair = {
@@ -4282,8 +4287,8 @@ function WeaponTweakData:_init_glock_18c(weapon_data)
 	self.glock_18c.crosshair.steelsight.moving_offset = 0.2
 	self.glock_18c.crosshair.steelsight.kick_offset = 0.3
 	self.glock_18c.shake = {
-		fire_multiplier = 1,
-		fire_steelsight_multiplier = 1
+		fire_multiplier = 0.65,
+		fire_steelsight_multiplier = 0.2
 	}
 	self.glock_18c.autohit = weapon_data.autohit_pistol_default
 	self.glock_18c.aim_assist = weapon_data.aim_assist_pistol_default
@@ -4309,11 +4314,11 @@ function WeaponTweakData:_init_glock_18c(weapon_data)
 		alert_size = 7,
 		spread = 14,
 		spread_moving = 14,
-		recoil = 16,
+		recoil = 15,
 		value = 1,
 		extra_ammo = 6,
 		reload = 11,
-		suppression = 16,
+		suppression = 14,
 		concealment = 29
 	}
 end
@@ -5451,7 +5456,7 @@ function WeaponTweakData:_init_new_m14(weapon_data)
 	self.new_m14.CLIP_AMMO_MAX = 10
 	self.new_m14.NR_CLIPS_MAX = 7
 	self.new_m14.AMMO_MAX = self.new_m14.CLIP_AMMO_MAX * self.new_m14.NR_CLIPS_MAX
-	self.new_m14.AMMO_PICKUP = self:_pickup_chance(self.new_m14.AMMO_MAX, PICKUP.OTHER)
+	self.new_m14.AMMO_PICKUP = self:_pickup_chance(self.new_m14.AMMO_MAX, PICKUP.SNIPER_HIGH_DAMAGE)
 	self.new_m14.FIRE_MODE = "single"
 	self.new_m14.fire_mode_data = {fire_rate = 0.085}
 	self.new_m14.CAN_TOGGLE_FIREMODE = true
@@ -6573,7 +6578,7 @@ function WeaponTweakData:_init_judge(weapon_data)
 	self.judge.damage_far = 3000
 	self.judge.rays = 12
 	self.judge.CLIP_AMMO_MAX = 5
-	self.judge.NR_CLIPS_MAX = 8
+	self.judge.NR_CLIPS_MAX = 7
 	self.judge.AMMO_MAX = self.judge.CLIP_AMMO_MAX * self.judge.NR_CLIPS_MAX
 	self.judge.AMMO_PICKUP = self:_pickup_chance(self.judge.AMMO_MAX, PICKUP.SNIPER_HIGH_DAMAGE)
 	self.judge.spread = {
@@ -7590,7 +7595,7 @@ function WeaponTweakData:_init_m95(weapon_data)
 	self.m95.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 145,
+		damage = 100,
 		alert_size = 9,
 		spread = 24,
 		spread_moving = 24,
@@ -7602,7 +7607,7 @@ function WeaponTweakData:_init_m95(weapon_data)
 		concealment = 1
 	}
 	self.m95.armor_piercing_chance = 1
-	self.m95.stats_modifiers = {damage = 20}
+	self.m95.stats_modifiers = {damage = 35}
 end
 
 function WeaponTweakData:_init_msr(weapon_data)
@@ -10392,7 +10397,7 @@ function WeaponTweakData:_init_rpg7(weapon_data)
 	self.rpg7.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 100,
+		damage = 125,
 		alert_size = 7,
 		spread = 25,
 		spread_moving = 25,
@@ -11744,7 +11749,7 @@ function WeaponTweakData:_init_sub2000(weapon_data)
 	self.sub2000.CLIP_AMMO_MAX = 33
 	self.sub2000.NR_CLIPS_MAX = 2
 	self.sub2000.AMMO_MAX = self.sub2000.CLIP_AMMO_MAX * self.sub2000.NR_CLIPS_MAX
-	self.sub2000.AMMO_PICKUP = self:_pickup_chance(self.sub2000.AMMO_MAX, PICKUP.OTHER)
+	self.sub2000.AMMO_PICKUP = self:_pickup_chance(self.sub2000.AMMO_MAX, PICKUP.SNIPER_HIGH_DAMAGE)
 	self.sub2000.FIRE_MODE = "single"
 	self.sub2000.fire_mode_data = {fire_rate = 0.085}
 	self.sub2000.CAN_TOGGLE_FIREMODE = false
@@ -14421,7 +14426,7 @@ function WeaponTweakData:_init_contraband(weapon_data)
 	self.contraband.CLIP_AMMO_MAX = 20
 	self.contraband.NR_CLIPS_MAX = 2
 	self.contraband.AMMO_MAX = self.contraband.CLIP_AMMO_MAX * self.contraband.NR_CLIPS_MAX
-	self.contraband.AMMO_PICKUP = self:_pickup_chance(self.contraband.AMMO_MAX, PICKUP.OTHER)
+	self.contraband.AMMO_PICKUP = self:_pickup_chance(self.contraband.AMMO_MAX, PICKUP.SNIPER_HIGH_DAMAGE)
 	self.contraband.FIRE_MODE = "single"
 	self.contraband.fire_mode_data = {fire_rate = 0.098}
 	self.contraband.CAN_TOGGLE_FIREMODE = true
@@ -14673,7 +14678,7 @@ function WeaponTweakData:_init_ray(weapon_data)
 	self.ray.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 50,
+		damage = 62,
 		alert_size = 7,
 		spread = 25,
 		spread_moving = 25,
@@ -15487,7 +15492,7 @@ function WeaponTweakData:_init_ching(weapon_data)
 	self.ching.CLIP_AMMO_MAX = 8
 	self.ching.NR_CLIPS_MAX = 9
 	self.ching.AMMO_MAX = self.ching.CLIP_AMMO_MAX * self.ching.NR_CLIPS_MAX
-	self.ching.AMMO_PICKUP = self:_pickup_chance(self.ching.AMMO_MAX, PICKUP.OTHER)
+	self.ching.AMMO_PICKUP = self:_pickup_chance(self.ching.AMMO_MAX, PICKUP.SNIPER_HIGH_DAMAGE)
 	self.ching.FIRE_MODE = "single"
 	self.ching.fire_mode_data = {fire_rate = 0.1}
 	self.ching.CAN_TOGGLE_FIREMODE = false

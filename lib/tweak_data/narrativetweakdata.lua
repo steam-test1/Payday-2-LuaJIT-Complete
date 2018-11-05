@@ -831,7 +831,7 @@ function NarrativeTweakData:init(tweak_data)
 		jc = 10,
 		chain = {self.stages.jewelry_store},
 		load_screen = "guis/dlcs/pic/textures/loading/job_jewelry_store",
-		briefing_event = "pln_jewelrystore_stage1_brf_speak",
+		briefing_event = "pln_jewelerystore_stage1_brief",
 		debrief_event = nil,
 		crimenet_callouts = {"pln_jewelrystore_stage1_cnc_01"},
 		crimenet_videos = {

@@ -146,6 +146,7 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 	self.projectiles.launcher_incendiary_m32.weapon_id = "m32"
 	self.projectiles.launcher_frag_china = deep_clone(self.projectiles.launcher_frag)
 	self.projectiles.launcher_frag_china.weapon_id = "china"
+	self.projectiles.launcher_frag_china.unit = "units/pd2_dlc_lupus/weapons/wpn_launcher_frag_grenade_china/wpn_launcher_frag_grenade_china"
 	self.projectiles.launcher_incendiary_china = deep_clone(self.projectiles.launcher_incendiary)
 	self.projectiles.launcher_incendiary_china.weapon_id = "china"
 	self.projectiles.launcher_frag_arbiter = {

@@ -207,6 +207,7 @@ function CopMovement:init(unit)
 	self._nav_tracker_id = self._unit:key()
 	self._nav_tracker = nil
 	self._root_blend_ref = 0
+	self._spawneditems = {}
 	self._m_pos = unit:position()
 	self._m_stand_pos = mvector3.copy(self._m_pos)
 
@@ -1777,6 +1778,15 @@ function CopMovement:_equip_item(item_type, align_place, droppable)
 	end
 
 	local item_name = available_items[math.random(available_items)]
+
+	if self._spawneditems[item_type] ~= nil then
+		return
+	end
+
+	self._spawneditems[item_type] = true
+
+	print("[CopMovement]Spawning: " .. item_type)
+
 	local item_unit = World:spawn_unit(item_name, align_obj:position(), align_obj:rotation())
 
 	self._unit:link(align_name, item_unit, item_unit:orientation_object():name())

@@ -48,7 +48,7 @@ require("lib/modifiers/boosts/GageModifierMeleeInvincibility")
 require("lib/modifiers/boosts/GageModifierLifeSteal")
 
 CrimeSpreeManager = CrimeSpreeManager or class()
-CrimeSpreeManager.CS_VERSION = 2
+CrimeSpreeManager.CS_VERSION = 3
 
 function CrimeSpreeManager:init()
 	self:_setup()

@@ -530,6 +530,11 @@ function PlayerStandard:_update_fwd_ray()
 	end
 end
 
+function PlayerStandard:force_input(inputs, release_inputs)
+	self._forced_inputs = inputs
+	self._forced_release_inputs = release_inputs
+end
+
 function PlayerStandard:_create_on_controller_disabled_input()
 	local release_interact = Global.game_settings.single_player or not managers.menu:get_controller():get_input_bool("interact")
 	local input = {
@@ -571,7 +576,7 @@ function PlayerStandard:_get_input(t, dt, paused)
 		self._input_paused = false
 	end
 
-	if not pressed and not released and not downed or self._input_paused then
+	if not pressed and not released and not downed and not self._forced_inputs or self._input_paused then
 		return {}
 	end
 
@@ -632,6 +637,19 @@ function PlayerStandard:_get_input(t, dt, paused)
 	if self._input then
 		for i = 1, #self._input, 1 do
 			self._input[i]:update(t, dt, self._controller, input, self._ext_movement:current_state_name())
+		end
+	end
+
+	if self._forced_inputs then
+		for key, value in pairs(self._forced_inputs) do
+			input[key] = value
+		end
+
+		if self._forced_release_inputs then
+			self._forced_inputs = self._forced_release_inputs
+			self._forced_release_inputs = nil
+		else
+			self._forced_inputs = nil
 		end
 	end
 
@@ -2721,6 +2739,7 @@ function PlayerStandard:_update_equip_weapon_timers(t, input)
 		end
 
 		TestAPIHelper.on_event("load_weapon")
+		TestAPIHelper.on_event("mask_up")
 	end
 end
 

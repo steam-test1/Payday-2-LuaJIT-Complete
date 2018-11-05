@@ -157,7 +157,7 @@ function PlayerMaskOff:_start_action_interact(t, input, timer, interact_object)
 	self:_interupt_action_steelsight(t)
 	self:_interupt_action_running(t)
 
-	self._interact_expire_t = t + timer
+	self._interact_expire_t = timer
 	self._interact_params = {
 		object = interact_object,
 		timer = timer,

@@ -90,6 +90,10 @@ function FeatureManager:can_announce(feature_id)
 end
 
 function FeatureManager:announce_feature(feature_id)
+	if Global.skip_menu_dialogs then
+		return
+	end
+
 	local announcement = self._global.announcements[feature_id]
 
 	if not announcement then

@@ -826,7 +826,11 @@ function WeaponFactoryTweakData:_init_sights()
 		texture_switch = {
 			material = "sight",
 			channel = "diffuse_texture"
-		}
+		},
+		material_parameters = {gfx_reddot = {{
+			id = Idstring("holo_reticle_scale"),
+			value = Vector3(0.2, 1.5, 40)
+		}}}
 	}
 	self.parts.wpn_fps_upg_o_aimpoint = {
 		type = "sight",
@@ -855,7 +859,8 @@ function WeaponFactoryTweakData:_init_sights()
 		texture_switch = {
 			material = "sight",
 			channel = "diffuse_texture"
-		}
+		},
+		material_parameters = deep_clone(self.parts.wpn_fps_upg_o_specter.material_parameters)
 	}
 	self.parts.wpn_fps_upg_o_aimpoint_2 = {
 		type = "sight",
@@ -887,7 +892,8 @@ function WeaponFactoryTweakData:_init_sights()
 		texture_switch = {
 			material = "sight",
 			channel = "diffuse_texture"
-		}
+		},
+		material_parameters = deep_clone(self.parts.wpn_fps_upg_o_specter.material_parameters)
 	}
 	self.parts.wpn_fps_upg_o_docter = {
 		type = "sight",
@@ -916,7 +922,8 @@ function WeaponFactoryTweakData:_init_sights()
 		texture_switch = {
 			material = "sight",
 			channel = "diffuse_texture"
-		}
+		},
+		material_parameters = deep_clone(self.parts.wpn_fps_upg_o_specter.material_parameters)
 	}
 	self.parts.wpn_fps_upg_o_eotech = {
 		type = "sight",
@@ -946,7 +953,8 @@ function WeaponFactoryTweakData:_init_sights()
 		texture_switch = {
 			material = "gfx_reddot",
 			channel = "diffuse_texture"
-		}
+		},
+		material_parameters = deep_clone(self.parts.wpn_fps_upg_o_specter.material_parameters)
 	}
 	self.parts.wpn_fps_upg_o_t1micro = {
 		type = "sight",
@@ -976,7 +984,8 @@ function WeaponFactoryTweakData:_init_sights()
 		texture_switch = {
 			material = "sight",
 			channel = "diffuse_texture"
-		}
+		},
+		material_parameters = deep_clone(self.parts.wpn_fps_upg_o_specter.material_parameters)
 	}
 	self.parts.wpn_upg_o_marksmansight_rear = {
 		type = "sight",
@@ -1227,6 +1236,7 @@ function WeaponFactoryTweakData:_init_content_dlc1()
 			material = "gfx_reddot",
 			channel = "diffuse_texture"
 		},
+		material_parameters = deep_clone(self.parts.wpn_fps_upg_o_specter.material_parameters),
 		third_unit = "units/pd2_dlc1/weapons/wpn_third_upg_o_cmore/wpn_third_upg_o_cmore"
 	}
 end
@@ -2046,7 +2056,8 @@ function WeaponFactoryTweakData:_init_content_jobs()
 		texture_switch = {
 			material = "gfx_reddot",
 			channel = "diffuse_texture"
-		}
+		},
+		material_parameters = deep_clone(self.parts.wpn_fps_upg_o_specter.material_parameters)
 	}
 	self.parts.wpn_fps_upg_o_eotech_xps = {
 		type = "sight",
@@ -2073,7 +2084,8 @@ function WeaponFactoryTweakData:_init_content_jobs()
 		texture_switch = {
 			material = "gfx_reddot",
 			channel = "diffuse_texture"
-		}
+		},
+		material_parameters = deep_clone(self.parts.wpn_fps_upg_o_specter.material_parameters)
 	}
 	self.parts.wpn_fps_upg_o_reflex = {
 		type = "sight",
@@ -2100,7 +2112,8 @@ function WeaponFactoryTweakData:_init_content_jobs()
 		texture_switch = {
 			material = "gfx_reddot",
 			channel = "diffuse_texture"
-		}
+		},
+		material_parameters = deep_clone(self.parts.wpn_fps_upg_o_specter.material_parameters)
 	}
 	self.parts.wpn_fps_upg_o_rx01 = {
 		type = "sight",
@@ -2127,7 +2140,8 @@ function WeaponFactoryTweakData:_init_content_jobs()
 		texture_switch = {
 			material = "gfx_reddot",
 			channel = "diffuse_texture"
-		}
+		},
+		material_parameters = deep_clone(self.parts.wpn_fps_upg_o_specter.material_parameters)
 	}
 	self.parts.wpn_fps_upg_o_rx30 = {
 		type = "sight",
@@ -2154,7 +2168,8 @@ function WeaponFactoryTweakData:_init_content_jobs()
 		texture_switch = {
 			material = "gfx_reddot",
 			channel = "diffuse_texture"
-		}
+		},
+		material_parameters = deep_clone(self.parts.wpn_fps_upg_o_specter.material_parameters)
 	}
 	self.parts.wpn_fps_upg_o_cs = {
 		type = "sight",
@@ -3267,8 +3282,8 @@ function WeaponFactoryTweakData:_init_m16()
 				recoil = -4
 			},
 			custom_stats = {
-				ammo_pickup_max_mul = 0.8,
-				ammo_pickup_min_mul = 0.8
+				ammo_pickup_max_mul = 0.5,
+				ammo_pickup_min_mul = 0.5
 			}
 		}},
 		default_blueprint = {
@@ -3900,8 +3915,8 @@ function WeaponFactoryTweakData:_init_ak74()
 				recoil = -9
 			},
 			custom_stats = {
-				ammo_pickup_max_mul = 0.5,
-				ammo_pickup_min_mul = 0.5
+				ammo_pickup_max_mul = 0.15,
+				ammo_pickup_min_mul = 0.2
 			}
 		}},
 		optional_types = {
@@ -15775,6 +15790,10 @@ function WeaponFactoryTweakData:_init_c96()
 			spread = -2,
 			recoil = 2
 		},
+		custom_stats = {
+			ammo_pickup_max_mul = 0.5,
+			ammo_pickup_min_mul = 1
+		},
 		animations = {
 			reload_not_empty = "reload_not_empty",
 			fire = "recoil",
@@ -17584,7 +17603,7 @@ function WeaponFactoryTweakData:_init_modpack_m4_ak()
 		},
 		custom_stats = {
 			ammo_pickup_max_mul = 0.5,
-			ammo_pickup_min_mul = 0.5
+			ammo_pickup_min_mul = 1
 		},
 		sound_switch = {suppressed = "regular_b"}
 	}
@@ -18453,8 +18472,8 @@ function WeaponFactoryTweakData:_init_modpack_m4_ak()
 			recoil = -10
 		},
 		custom_stats = {
-			ammo_pickup_max_mul = 0.5,
-			ammo_pickup_min_mul = 0.5
+			ammo_pickup_max_mul = 0.15,
+			ammo_pickup_min_mul = 0.2
 		},
 		forbids = {"wpn_fps_ammo_type"},
 		sound_switch = {suppressed = "regular_b"}
@@ -26518,6 +26537,7 @@ function WeaponFactoryTweakData:_init_tng()
 			material = "gfx_reddot1",
 			channel = "diffuse_texture"
 		},
+		material_parameters = deep_clone(self.parts.wpn_fps_upg_o_specter.material_parameters),
 		stance_mod = {
 			wpn_fps_ass_m4 = {
 				translation = Vector3(-2.75, 0, -11.15),
@@ -28569,7 +28589,8 @@ function WeaponFactoryTweakData:_init_varmods()
 		texture_switch = {
 			material = "gfx_reddot1",
 			channel = "diffuse_texture"
-		}
+		},
+		material_parameters = deep_clone(self.parts.wpn_fps_upg_o_specter.material_parameters)
 	}
 	self.parts.wpn_fps_upg_o_xpsg33_magnifier.third_unit = "units/pd2_dlc_flip/weapons/wpn_fps_upg_o_xpsg33/wpn_third_upg_o_xpsg33_magnifier"
 	self.parts.wpn_fps_upg_o_45rds_v2.third_unit = "units/pd2_dlc_flip/weapons/wpn_fps_upg_o_45rds_v2/wpn_third_upg_o_45rds_v2"

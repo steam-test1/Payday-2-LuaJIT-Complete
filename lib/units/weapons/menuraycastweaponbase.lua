@@ -109,11 +109,42 @@ function NewRaycastWeaponBase:_assemble_completed(clbk, parts, blueprint)
 	self:_apply_cosmetics(clbk or function ()
 	end)
 	self:apply_texture_switches()
+	self:apply_material_parameters()
 	self:_update_fire_object()
 	self:_update_stats_values()
 
 	if clbk then
 		clbk()
+	end
+end
+local material_type_ids = Idstring("material")
+
+function NewRaycastWeaponBase:apply_material_parameters()
+	local parts_tweak = tweak_data.weapon.factory.parts
+
+	for part_id, part in pairs(self._parts) do
+		local material_parameters = parts_tweak[part_id] and parts_tweak[part_id].material_parameters
+
+		if material_parameters then
+			local unit = part.unit
+			local material_config = unit:get_objects_by_type(material_type_ids)
+
+			for material_name, parameters in pairs(material_parameters) do
+				local material_ids = Idstring(material_name)
+
+				for _, material in ipairs(material_config) do
+					if material:name() == material_ids then
+						for _, parameter in ipairs(parameters) do
+							if not parameter.condition or parameter.condition() then
+								local value = type(parameter.value) == "function" and parameter.value() or parameter.value
+
+								material:set_variable(parameter.id, value)
+							end
+						end
+					end
+				end
+			end
+		end
 	end
 end
 

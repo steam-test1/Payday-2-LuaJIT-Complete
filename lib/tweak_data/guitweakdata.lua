@@ -1774,18 +1774,6 @@ function GuiTweakData:init()
 		})
 	end
 
-	if SystemInfo:platform() == Idstring("WIN32") then
-		table.insert(self.crime_net.special_contracts, {
-			name_id = "menu_cn_challenge",
-			menu_node = "crimenet_contract_challenge",
-			x = 362,
-			y = 696,
-			id = "challenge",
-			icon = "guis/textures/pd2/crimenet_challenge",
-			desc_id = "menu_cn_challenge_desc"
-		})
-	end
-
 	self.crime_net.sidebar = {
 		{
 			name_id = "menu_cn_shortcuts",

@@ -409,4 +409,23 @@ TestAPIHelper.register_API_function("exit_to_menu", "ingame", "", function ()
 	managers.groupai:state():set_AI_enabled(false)
 	setup:load_start_menu()
 end, "Ends the current game and returns to menu.", true)
+TestAPIHelper.register_API_function("mask_up", "ingame", "", function ()
+	if managers.player:current_state() ~= "mask_off" then
+		TestAPIHelper.on_event("mask_up")
+
+		return
+	end
+
+	managers.player:set_player_state("standard")
+end, "Puts on the mask if the player is in the mask off state.", true)
+TestAPIHelper.register_API_function("fire", "ingame", "", function ()
+	local state = alive(managers.player:player_unit()) and managers.player:player_unit():movement():current_state()
+
+	if state then
+		state:force_input({
+			btn_primary_attack_state = true,
+			btn_primary_attack_press = true
+		}, {btn_primary_attack_release = true})
+	end
+end, "Fires the equipped weapon once.")
 

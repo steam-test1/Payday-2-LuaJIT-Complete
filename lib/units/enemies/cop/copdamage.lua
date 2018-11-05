@@ -3224,7 +3224,12 @@ function CopDamage:load(data)
 		self._unit:base():set_slot(self._unit, 17)
 		self._unit:inventory():drop_shield()
 		self:set_mover_collision_state(false)
-		managers.enemy:on_enemy_died(self._unit, {})
+
+		if self._unit:base():has_tag("civilian") then
+			managers.enemy:on_civilian_died(self._unit, {})
+		else
+			managers.enemy:on_enemy_died(self._unit, {})
+		end
 	end
 end
 

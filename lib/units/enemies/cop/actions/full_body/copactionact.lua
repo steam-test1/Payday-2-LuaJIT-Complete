@@ -841,6 +841,7 @@ CopActionAct._act_redirects.SO = {
 	"cf_so_hurt_exit_var1",
 	"cf_so_hurt_exit_var2",
 	"cf_so_hurt_exit_var3",
+	"cm_so_vendingmachine",
 	"cm_drink_idle1_var1",
 	"cm_drink_idle1_var2",
 	"cm_drink_idle2_var2",

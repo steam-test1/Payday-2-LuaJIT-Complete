@@ -2658,6 +2658,51 @@ function HudIconsTweakData:init()
 			csm_h
 		}
 	}
+	self.csm_wwh = {
+		texture = "guis/textures/pd2/crime_spree/missions_atlas_02",
+		texture_rect = {
+			csm_w * 0,
+			csm_h * 0,
+			csm_w,
+			csm_h
+		}
+	}
+	self.csm_rvd_2 = {
+		texture = "guis/textures/pd2/crime_spree/missions_atlas_02",
+		texture_rect = {
+			csm_w * 1,
+			csm_h * 0,
+			csm_w,
+			csm_h
+		}
+	}
+	self.csm_rvd_1 = {
+		texture = "guis/textures/pd2/crime_spree/missions_atlas_02",
+		texture_rect = {
+			csm_w * 2,
+			csm_h * 0,
+			csm_w,
+			csm_h
+		}
+	}
+	self.csm_brb = {
+		texture = "guis/textures/pd2/crime_spree/missions_atlas_02",
+		texture_rect = {
+			csm_w * 3,
+			csm_h * 0,
+			csm_w,
+			csm_h
+		}
+	}
+	self.csm_dah = {
+		texture = "guis/textures/pd2/crime_spree/missions_atlas_02",
+		texture_rect = {
+			csm_w * 4,
+			csm_h * 0,
+			csm_w,
+			csm_h
+		}
+	}
 	local csb_size = 128
 	self.csb_reload = {
 		texture = "guis/dlcs/cee/textures/pd2/crime_spree/boosts_atlas",

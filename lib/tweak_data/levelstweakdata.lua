@@ -364,7 +364,7 @@ function LevelsTweakData:init()
 	self.jewelry_store = {
 		name_id = "heist_jewelry_store_hl",
 		briefing_id = "heist_jewelry_store_briefing",
-		briefing_dialog = "pln_jewelerystore_stage1_brief",
+		briefing_dialog = "pln_jewelrystore_stage1_brf_speak",
 		world_name = "narratives/vlad/jewelry_store",
 		intro_event = {
 			"pln_jewelrystore_stage1_intro_01",

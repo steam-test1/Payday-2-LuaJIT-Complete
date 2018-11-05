@@ -2030,7 +2030,7 @@ Play the full version soon to get your full PAYDAY!]],
 		name_id = "bm_launcher_frag"
 	}
 	self.projectiles.launcher_rocket = {
-		damage = 1000,
+		damage = 1250,
 		launch_speed = 2500,
 		curve_pow = 0.1,
 		player_damage = 40,
@@ -2125,7 +2125,6 @@ Play the full version soon to get your full PAYDAY!]],
 		burn_tick_period = 0.5
 	}
 	self.projectiles.launcher_frag_slap = deep_clone(self.projectiles.launcher_frag)
-	self.projectiles.launcher_frag_arbiter.damage = 130
 	self.projectiles.launcher_incendiary_slap = deep_clone(self.projectiles.launcher_incendiary)
 	self.projectiles.fir_com = {
 		damage = 3,
@@ -2309,7 +2308,7 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.launcher_m203 = deep_clone(self.projectiles.launcher_frag)
 	self.projectiles.launcher_m203.projectile_trail = true
 	self.projectiles.rocket_ray_frag = deep_clone(self.projectiles.launcher_rocket)
-	self.projectiles.rocket_ray_frag.damage = 500
+	self.projectiles.rocket_ray_frag.damage = 620
 	self.projectiles.rocket_ray_frag.projectile_trail = true
 	self.projectiles.rocket_ray_frag.adjust_z = 0
 	self.projectiles.rocket_ray_frag.push_at_body_index = 0

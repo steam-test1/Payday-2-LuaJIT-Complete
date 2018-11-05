@@ -734,7 +734,7 @@ function UpgradesTweakData:_init_pd2_values()
 		},
 		{
 			1,
-			9
+			6
 		}
 	}
 	self.values.player.berserker_no_ammo_cost = {true}
@@ -2224,7 +2224,7 @@ function UpgradesTweakData:_init_pd2_values()
 				"3",
 				"60%"
 			},
-			{"6"}
+			{"3"}
 		},
 		jail_workout = {
 			{
