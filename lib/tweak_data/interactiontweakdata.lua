@@ -4912,6 +4912,18 @@ function InteractionTweakData:init(tweak_data)
 			category = "player"
 		}
 	}
+	self.diamonds_pickup_full = {
+		icon = "interaction_diamond",
+		text_id = "hud_int_take_diamonds_dah",
+		action_text_id = "hud_action_taking_diamonds_dah",
+		sound_event = "money_grab",
+		start_active = false,
+		timer = 3,
+		requires_mask_off_upgrade = {
+			upgrade = "mask_off_pickup",
+			category = "player"
+		}
+	}
 	self.red_diamond_pickup = {
 		icon = "interaction_diamond",
 		text_id = "hud_int_take_red_diamond",
