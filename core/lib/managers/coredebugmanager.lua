@@ -1518,7 +1518,12 @@ function HijackDebug:set_hijack_ray_obj(obj, enabled)
 	if not obj.alive or alive(obj) then
 		local meta_table = getmetatable(obj)
 
-		if enabled and (self._old_func_list[obj:key()] or callback(self, self, "hijacked_ray")) or self._old_func_list[obj:key()] then
+		if enabled then
+			if not self._old_func_list[obj:key()] then
+				self._old_func_list[obj:key()] = meta_table.raycast
+				meta_table.raycast = callback(self, self, "hijacked_ray")
+			end
+		elseif self._old_func_list[obj:key()] then
 			meta_table.raycast = self._old_func_list[obj:key()]
 			self._old_func_list[obj:key()] = nil
 		end
@@ -3059,7 +3064,11 @@ end
 function MemoryDebug:find_instance_callback(print_path, path, key, value, populate_map, info_map, seen_map, find_value, is_meta_data, find_all)
 	local found = nil
 
-	if is_meta_data and (getmetatable(value) ~= find_value and getmetatable(key) ~= find_value or true) or value == find_value or key == find_value then
+	if is_meta_data then
+		if getmetatable(value) == find_value or getmetatable(key) == find_value then
+			found = true
+		end
+	elseif value == find_value or key == find_value then
 		found = true
 	end
 
@@ -3749,8 +3758,25 @@ function MenuDebug:confirm_button_pressed()
 	if self._current_menu_data then
 		local next_menu_data = self._current_menu_data[self._current_menu_index or 1]
 
-		if next_menu_data and next_menu_data.callback_func then
-			next_menu_data:callback_func()
+		if next_menu_data then
+			if #next_menu_data > 0 then
+				self._prev_menu_data_list = self._prev_menu_data_list or {}
+
+				table.insert(self._prev_menu_data_list, self._current_menu_data)
+
+				self._prev_menu_index_list = self._prev_menu_index_list or {}
+
+				table.insert(self._prev_menu_index_list, self._current_menu_index or 1)
+
+				self._current_menu_data = next_menu_data
+				self._current_menu_index = nil
+
+				self:setup_menu()
+			end
+
+			if next_menu_data.callback_func then
+				next_menu_data:callback_func()
+			end
 		end
 	end
 end

@@ -50,9 +50,15 @@ end
 function GroupAIStateBesiege:update(t, dt)
 	GroupAIStateBesiege.super.update(self, t, dt)
 
-	if Network:is_server() and managers.navigation:is_data_ready() and self._draw_enabled then
-		self:_draw_enemy_activity(t)
-		self:_draw_spawn_points()
+	if Network:is_server() then
+		if not self._police_upd_task_queued then
+			self:_queue_police_upd_task()
+		end
+
+		if managers.navigation:is_data_ready() and self._draw_enabled then
+			self:_draw_enemy_activity(t)
+			self:_draw_spawn_points()
+		end
 	end
 end
 
@@ -532,8 +538,16 @@ function GroupAIStateBesiege:_upd_assault_task()
 		if not self._hunt_mode then
 			local min_enemies_left = 7
 
-			if (enemies_left < min_enemies_left or task_data.phase_end_t + 350 < t) and (task_data.phase_end_t - 8 >= t or task_data.said_retreat or self._drama_data.amount < tweak_data.drama.assault_fade_end) and task_data.phase_end_t < t and self._drama_data.amount < tweak_data.drama.assault_fade_end and self:_count_criminals_engaged_force(4) <= 3 then
-				end_assault = true
+			if enemies_left < min_enemies_left or task_data.phase_end_t + 350 < t then
+				if task_data.phase_end_t - 8 < t and not task_data.said_retreat then
+					if self._drama_data.amount < tweak_data.drama.assault_fade_end then
+						task_data.said_retreat = true
+
+						self:_police_announce_retreat()
+					end
+				elseif task_data.phase_end_t < t and self._drama_data.amount < tweak_data.drama.assault_fade_end and self:_count_criminals_engaged_force(4) <= 3 then
+					end_assault = true
+				end
 			end
 
 			if task_data.force_end or end_assault then
@@ -1210,7 +1224,11 @@ function GroupAIStateBesiege:_spawn_in_group(spawn_group, spawn_group_type, grp_
 	while i <= #valid_unit_types do
 		local spawn_entry = valid_unit_types[i]
 
-		if i > #valid_unit_types or wanted_nr_units <= 0 or not spawn_entry.amount_min or spawn_entry.amount_min <= 0 or spawn_entry.amount_max and spawn_entry.amount_max <= 0 or not _add_unit_type_to_spawn_task(i, spawn_entry) and i + 1 then
+		if i <= #valid_unit_types and wanted_nr_units > 0 and spawn_entry.amount_min and spawn_entry.amount_min > 0 and (not spawn_entry.amount_max or spawn_entry.amount_max > 0) then
+			if not _add_unit_type_to_spawn_task(i, spawn_entry) then
+				i = i + 1
+			end
+		else
 			i = i + 1
 		end
 	end
@@ -2777,7 +2795,15 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 
 	local objective_area = nil
 
-	if not obstructed_area or current_objective.moving_out and (current_objective.open_fire or true) or (not current_objective.pushed or charge and not current_objective.charge) and true then
+	if obstructed_area then
+		if current_objective.moving_out then
+			if not current_objective.open_fire then
+				open_fire = true
+			end
+		elseif not current_objective.pushed or charge and not current_objective.charge then
+			push = true
+		end
+	else
 		local obstructed_path_index = self:_chk_coarse_path_obstructed(group)
 
 		if obstructed_path_index then
@@ -2942,7 +2968,22 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 			end
 
 			if not push or used_grenade then
-				
+				local grp_objective = {
+					type = "assault_area",
+					stance = "hos",
+					area = assault_area,
+					coarse_path = assault_path,
+					pose = push and "crouch" or "stand",
+					attitude = push and "engage" or "avoid",
+					moving_in = push and true or nil,
+					open_fire = push or nil,
+					pushed = push or nil,
+					charge = charge,
+					interrupt_dis = charge and 0 or nil
+				}
+				group.is_chasing = group.is_chasing or push
+
+				self:_set_objective_to_enemy_group(group, grp_objective)
 			end
 		end
 	elseif pull_back then

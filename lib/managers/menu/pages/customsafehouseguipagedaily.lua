@@ -705,7 +705,11 @@ function CustomSafehouseGuiPageDaily:_setup_challenge(id)
 			local reward_macros = {}
 
 			for _, reward_data in ipairs(daily_challenge.rewards) do
-				if reward_data.tango_mask and (not tweak_data.blackmarket.masks[reward_data.tango_mask] or managers.localization:text(tweak_data.blackmarket.masks[reward_data.tango_mask].name_id)) or reward_data.item_entry then
+				if reward_data.tango_mask then
+					if tweak_data.blackmarket.masks[reward_data.tango_mask] then
+						reward_macros.mask = managers.localization:text(tweak_data.blackmarket.masks[reward_data.tango_mask].name_id)
+					end
+				elseif reward_data.item_entry then
 					local entry = tweak_data:get_raw_value("blackmarket", reward_data.type_items, reward_data.item_entry)
 
 					if entry then

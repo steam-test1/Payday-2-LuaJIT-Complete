@@ -317,7 +317,13 @@ function SpoocLogicAttack._chk_exit_attack_logic(data, new_reaction)
 end
 
 function SpoocLogicAttack._upd_aim(data, my_data)
-	if not my_data.spooc_attack or my_data.attention_unit ~= my_data.spooc_attack.target_u_data.u_key and my_data.spooc_attack.target_u_data.u_key then
+	if my_data.spooc_attack then
+		if my_data.attention_unit ~= my_data.spooc_attack.target_u_data.u_key then
+			CopLogicBase._set_attention(data, my_data.spooc_attack.target_u_data)
+
+			my_data.attention_unit = my_data.spooc_attack.target_u_data.u_key
+		end
+	else
 		CopLogicAttack._upd_aim(data, my_data)
 	end
 end

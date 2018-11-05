@@ -399,9 +399,16 @@ function WorldDefinition:create(layer, offset)
 		end
 	end
 
-	if (layer == "ai" or layer == "all") and self._definition.ai_mop_graphs then
-		self:_load_ai_mop_graphs(self._definition.ai_mop_graphs, offset)
-		Application:cleanup_thread_garbage()
+	if layer == "ai" or layer == "all" then
+		if self._definition.ai_nav_graphs then
+			self:_load_ai_nav_graphs(self._definition.ai_nav_graphs, offset)
+			Application:cleanup_thread_garbage()
+		end
+
+		if self._definition.ai_mop_graphs then
+			self:_load_ai_mop_graphs(self._definition.ai_mop_graphs, offset)
+			Application:cleanup_thread_garbage()
+		end
 	end
 
 	Application:check_termination()

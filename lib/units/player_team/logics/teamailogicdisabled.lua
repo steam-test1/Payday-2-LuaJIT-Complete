@@ -140,8 +140,12 @@ function TeamAILogicDisabled._upd_aim(data, my_data)
 
 	if my_data.stay_cool then
 		
-	elseif focus_enemy and (not focus_enemy.verified or (focus_enemy.verified_dis < 2000 or my_data.alert_t and data.t - my_data.alert_t < 7) and true) then
-		if focus_enemy.verified_t and data.t - focus_enemy.verified_t < 10 then
+	elseif focus_enemy then
+		if focus_enemy.verified then
+			if focus_enemy.verified_dis < 2000 or my_data.alert_t and data.t - my_data.alert_t < 7 then
+				shoot = true
+			end
+		elseif focus_enemy.verified_t and data.t - focus_enemy.verified_t < 10 then
 			aim = true
 
 			if my_data.shooting and data.t - focus_enemy.verified_t < 3 then
@@ -152,7 +156,19 @@ function TeamAILogicDisabled._upd_aim(data, my_data)
 		end
 	end
 
-	if not aim and not shoot or focus_enemy.verified and (my_data.attention_unit == focus_enemy.u_key or focus_enemy.u_key) or my_data.attention_unit ~= focus_enemy.verified_pos and mvector3.copy(focus_enemy.verified_pos) then
+	if aim or shoot then
+		if focus_enemy.verified then
+			if my_data.attention_unit ~= focus_enemy.u_key then
+				CopLogicBase._set_attention(data, focus_enemy)
+
+				my_data.attention_unit = focus_enemy.u_key
+			end
+		elseif my_data.attention_unit ~= focus_enemy.verified_pos then
+			CopLogicBase._set_attention_on_pos(data, mvector3.copy(focus_enemy.verified_pos))
+
+			my_data.attention_unit = mvector3.copy(focus_enemy.verified_pos)
+		end
+	else
 		if my_data.shooting then
 			local new_action = nil
 			new_action = data.unit:anim_data().reload and {
@@ -173,7 +189,13 @@ function TeamAILogicDisabled._upd_aim(data, my_data)
 		end
 	end
 
-	if shoot and (my_data.firing or true) or my_data.firing then
+	if shoot then
+		if not my_data.firing then
+			data.unit:movement():set_allow_fire(true)
+
+			my_data.firing = true
+		end
+	elseif my_data.firing then
 		data.unit:movement():set_allow_fire(false)
 
 		my_data.firing = nil

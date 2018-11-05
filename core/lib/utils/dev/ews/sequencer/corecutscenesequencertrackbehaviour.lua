@@ -85,7 +85,11 @@ function EditableTrackBehaviour:on_mouse_left_down(sender, track, event)
 		local item_below_cursor = sender:clip_at_event(event)
 
 		if item_below_cursor then
-			if not item_below_cursor:selected() or event:control_down() then
+			if item_below_cursor:selected() then
+				if event:control_down() then
+					self:_set_item_selected(item_below_cursor, false)
+				end
+			else
 				if not event:control_down() then
 					self:_invoke_on_delegate("deselect_all_items")
 				end

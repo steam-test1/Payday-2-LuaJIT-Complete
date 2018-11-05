@@ -20,12 +20,14 @@ function ElementPlaySound:on_executed(instigator)
 		self._source:stop()
 	end
 
-	if not self._values.use_instigator or Network:is_server() and alive(instigator) and instigator:id() ~= -1 then
-		if not self._values.elements or #self._values.elements == 0 then
-			self:_play_sound()
-		elseif Network:is_server() then
-			self:_play_sound_on_elements()
+	if self._values.use_instigator then
+		if Network:is_server() and alive(instigator) and instigator:id() ~= -1 then
+			instigator:sound():say(self._values.sound_event, true, not self._values.append_prefix, true)
 		end
+	elseif not self._values.elements or #self._values.elements == 0 then
+		self:_play_sound()
+	elseif Network:is_server() then
+		self:_play_sound_on_elements()
 	end
 
 	ElementPlaySound.super.on_executed(self, instigator)

@@ -25,7 +25,14 @@ function FlamethrowerEffectExtension:update(unit, t, dt)
 		for _, effect_entry in pairs(self._flamethrower_effect_collection) do
 			local do_continue = true
 
-			if (World:effect_manager():alive(effect_entry.id) ~= false or effect_entry.been_alive == true and false) and effect_entry.been_alive == false then
+			if World:effect_manager():alive(effect_entry.id) == false then
+				if effect_entry.been_alive == true then
+					World:effect_manager():kill(effect_entry.id)
+					table.remove(self._flamethrower_effect_collection, _)
+
+					do_continue = false
+				end
+			elseif effect_entry.been_alive == false then
 				effect_entry.been_alive = true
 			end
 

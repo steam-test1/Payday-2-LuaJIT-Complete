@@ -172,7 +172,11 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit)
 							local interact_axis = unit:interaction():interact_axis()
 
 							if (not interact_axis or mvector3.dot(mvec1, interact_axis) < 0) and self:_raycheck_ok(unit, camera_pos, locator) then
-								if not closest_locator or not player_unit or mvector3.distance(player_unit:position(), locator:position()) < mvector3.distance(player_unit:position(), closest_locator:position()) and locator then
+								if closest_locator and player_unit then
+									if mvector3.distance(player_unit:position(), locator:position()) < mvector3.distance(player_unit:position(), closest_locator:position()) then
+										closest_locator = locator
+									end
+								else
 									closest_locator = locator
 								end
 
@@ -203,21 +207,27 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit)
 			end
 		end
 
-		if not active_unit or self._active_unit == active_unit or not active_unit:interaction():selected(player_unit, self._active_locator) and nil then
-			if self._active_locator and self._active_locator ~= last_active_locator then
+		if active_unit and self._active_unit ~= active_unit then
+			if alive(self._active_unit) then
 				self._active_unit:interaction():unselect()
+			end
 
-				if not self._active_unit:interaction():selected(player_unit, self._active_locator) then
-					active_unit = nil
-					self._active_locator = nil
-				end
-			elseif alive(self._active_unit) and self._active_unit:interaction():dirty() then
-				self._active_unit:interaction():set_dirty(false)
-				self._active_unit:interaction():unselect()
+			if not active_unit:interaction():selected(player_unit, self._active_locator) then
+				active_unit = nil
+			end
+		elseif self._active_locator and self._active_locator ~= last_active_locator then
+			self._active_unit:interaction():unselect()
 
-				if not self._active_unit:interaction():selected(player_unit, self._active_locator) then
-					active_unit = nil
-				end
+			if not self._active_unit:interaction():selected(player_unit, self._active_locator) then
+				active_unit = nil
+				self._active_locator = nil
+			end
+		elseif alive(self._active_unit) and self._active_unit:interaction():dirty() then
+			self._active_unit:interaction():set_dirty(false)
+			self._active_unit:interaction():unselect()
+
+			if not self._active_unit:interaction():selected(player_unit, self._active_locator) then
+				active_unit = nil
 			end
 		end
 

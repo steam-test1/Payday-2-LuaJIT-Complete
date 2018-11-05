@@ -1108,7 +1108,28 @@ function ChatGui:mouse_pressed(button, x, y)
 		return true
 	end
 
-	if (not self._panel:child("output_panel"):inside(x, y) or (button ~= Idstring("mouse wheel down") or self:mouse_wheel_down(x, y)) and (button ~= Idstring("mouse wheel up") or self:mouse_wheel_up(x, y)) and button == Idstring("0") and self:check_grab_scroll_panel(x, y)) and button == Idstring("0") and self:check_grab_scroll_bar(x, y) then
+	if self._panel:child("output_panel"):inside(x, y) then
+		if button == Idstring("mouse wheel down") then
+			if self:mouse_wheel_down(x, y) then
+				self:set_scroll_indicators()
+				self:_on_focus()
+
+				return true
+			end
+		elseif button == Idstring("mouse wheel up") then
+			if self:mouse_wheel_up(x, y) then
+				self:set_scroll_indicators()
+				self:_on_focus()
+
+				return true
+			end
+		elseif button == Idstring("0") and self:check_grab_scroll_panel(x, y) then
+			self:set_scroll_indicators()
+			self:_on_focus()
+
+			return true
+		end
+	elseif button == Idstring("0") and self:check_grab_scroll_bar(x, y) then
 		self:set_scroll_indicators()
 		self:_on_focus()
 
@@ -1553,7 +1574,11 @@ function ChatGui:key_press(o, k)
 		text:set_selection(n, n)
 	elseif self._key_pressed == Idstring("home") then
 		text:set_selection(0, 0)
-	elseif (k ~= Idstring("enter") or type(self._enter_callback) ~= "number") and k == Idstring("esc") and type(self._esc_callback) ~= "number" then
+	elseif k == Idstring("enter") then
+		if type(self._enter_callback) ~= "number" then
+			self._enter_callback()
+		end
+	elseif k == Idstring("esc") and type(self._esc_callback) ~= "number" then
 		text:set_text("")
 		text:set_selection(0, 0)
 		self._esc_callback()

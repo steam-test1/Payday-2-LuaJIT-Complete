@@ -99,8 +99,14 @@ function ColorPickerDraggables:_create_panel(parent_frame, enable_alpha, enable_
 end
 
 function ColorPickerDraggables:_update_ui_except(sender)
-	if self._value_slider ~= nil and sender ~= self._value_slider then
-		self._value_slider:set_top_color(self._spectrum:unscaled_color())
+	if self._value_slider ~= nil then
+		if sender ~= self._spectrum then
+			self._spectrum:set_value(self._value_slider:value())
+		end
+
+		if sender ~= self._value_slider then
+			self._value_slider:set_top_color(self._spectrum:unscaled_color())
+		end
 	end
 
 	if sender ~= self._alpha_slider and self._alpha_slider ~= nil then

@@ -393,8 +393,18 @@ function BaseNetworkSession:_on_peer_removed(peer, peer_id, reason)
 		self:check_start_game_intro()
 	end
 
-	if Network:multiplayer() and (not Network:is_client() or player_left) then
-		if Network:is_server() then
+	if Network:multiplayer() then
+		if SystemInfo:platform() == Idstring("X360") or SystemInfo:platform() == Idstring("XB1") or SystemInfo:platform() == Idstring("PS4") then
+			managers.network.matchmake:on_peer_removed(peer)
+		end
+
+		if Network:is_client() then
+			if player_left then
+				managers.criminals:on_peer_left(peer_id)
+				managers.criminals:remove_character_by_peer_id(peer_id)
+				managers.trade:replace_player_with_ai(player_character, player_character)
+			end
+		elseif Network:is_server() then
 			managers.network.matchmake:set_num_players(self:amount_of_players())
 			Network:remove_client(peer:rpc())
 
@@ -1319,10 +1329,17 @@ end
 function BaseNetworkSession:on_peer_loading(peer, state)
 	cat_print("multiplayer_base", "[BaseNetworkSession:on_peer_loading]", inspect(peer), state)
 
-	if Network:is_server() and not state and not NetworkManager.DROPIN_ENABLED then
-		peer:on_sync_start()
-		peer:chk_enable_queue()
-		Network:drop_in(peer:rpc())
+	if Network:is_server() and not state then
+		if not self:_has_client(peer) then
+			Network:remove_co_client(peer:rpc())
+			Network:add_client(peer:rpc())
+		end
+
+		if not NetworkManager.DROPIN_ENABLED then
+			peer:on_sync_start()
+			peer:chk_enable_queue()
+			Network:drop_in(peer:rpc())
+		end
 	end
 
 	if state and peer == self._server_peer then

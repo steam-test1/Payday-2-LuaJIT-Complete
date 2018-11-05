@@ -274,7 +274,11 @@ function TeamAILogicAssault.action_complete_clbk(data, action)
 
 			my_data._primary_intimidation_target = nil
 		end
-	elseif (action_type ~= "hurt" or action:expired()) and action_type == "dodge" then
+	elseif action_type == "hurt" then
+		if action:expired() then
+			CopLogicAttack._upd_aim(data, my_data)
+		end
+	elseif action_type == "dodge" then
 		CopLogicAttack._upd_aim(data, my_data)
 	end
 end

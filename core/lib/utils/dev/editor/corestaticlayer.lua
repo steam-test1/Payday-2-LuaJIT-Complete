@@ -363,8 +363,20 @@ function StaticLayer:update(t, dt)
 			end
 		end
 
-		if self._current_rot and self._grab and self:use_snappoints() then
-			self:set_unit_rotations(self._current_rot)
+		if self._current_rot then
+			if self._ctrl:down(Idstring("assign_suface_normal")) then
+				self:set_unit_rotations(self._current_rot)
+			end
+
+			if self._grab then
+				if self._ctrl:down(Idstring("surface_move_align_normal")) then
+					self:set_unit_rotations(self._current_rot)
+				end
+
+				if self:use_snappoints() then
+					self:set_unit_rotations(self._current_rot)
+				end
+			end
 		end
 
 		self:draw_marker(t, dt)

@@ -1981,7 +1981,11 @@ function CopMovement:save(save_data)
 		my_save_data.stance_code = self._stance.code
 	end
 
-	if self._stance.transition and (self._stance.transition.end_values[4] == 0 or true) or self._stance.values[4] ~= 0 then
+	if self._stance.transition then
+		if self._stance.transition.end_values[4] ~= 0 then
+			my_save_data.stance_wnd = true
+		end
+	elseif self._stance.values[4] ~= 0 then
 		my_save_data.stance_wnd = true
 	end
 

@@ -491,7 +491,11 @@ function CoreDatabaseBrowser:on_commit_btn()
 		while not commit_ret do
 			commit_ret = self._active_database:commit_changes("[CoreDatabaseBrowser] " .. comment, new_entrys)
 
-			if (commit_ret ~= "LOCKED" or EWS:message_box(self._main_frame, "The index is locked by another user... Do you want to retry?", "Retry", "YES_NO,ICON_QUESTION", Vector3(-1, -1, -1)) == "YES" and nil) and commit_ret == "FATAL" then
+			if commit_ret == "LOCKED" then
+				if EWS:message_box(self._main_frame, "The index is locked by another user... Do you want to retry?", "Retry", "YES_NO,ICON_QUESTION", Vector3(-1, -1, -1)) == "YES" then
+					commit_ret = nil
+				end
+			elseif commit_ret == "FATAL" then
 				EWS:message_box(self._main_frame, "A fatal error during commit occurred. (This could be caused by a connection problem.) Contact technical support!", "Fatal Error", "OK,ICON_ERROR", Vector3(-1, -1, -1))
 			end
 		end
@@ -913,22 +917,24 @@ function CoreDatabaseBrowser:update_preview(entry)
 			if not flag then
 				self._preview_panel:set_visible(true)
 			end
-		elseif entry:type() ~= "object" or not preview_model_xml(self, node, valid_node) then
-			if entry:type() == "model" then
-				local preview = self._active_database:lookup("preview_texture", entry:name())
+		elseif entry:type() == "object" then
+			if not preview_model_xml(self, node, valid_node) then
+				self._preview_panel:set_visible(true)
+			end
+		elseif entry:type() == "model" then
+			local preview = self._active_database:lookup("preview_texture", entry:name())
 
-				if preview:valid() then
-					self._preview_image:set_label_bitmap(Application:base_path() .. self._active_database:root() .. "/" .. preview:path())
-					self._preview_image:set_visible(true)
-				else
-					self._preview_panel:set_visible(true)
-				end
-			elseif valid_node(node) then
-				self._preview_text_ctrl:set_value(node:to_xml())
-				self._preview_text_ctrl:text_ctrl():set_visible(true)
+			if preview:valid() then
+				self._preview_image:set_label_bitmap(Application:base_path() .. self._active_database:root() .. "/" .. preview:path())
+				self._preview_image:set_visible(true)
 			else
 				self._preview_panel:set_visible(true)
 			end
+		elseif valid_node(node) then
+			self._preview_text_ctrl:set_value(node:to_xml())
+			self._preview_text_ctrl:text_ctrl():set_visible(true)
+		else
+			self._preview_panel:set_visible(true)
 		end
 	else
 		self._preview_panel:set_visible(true)

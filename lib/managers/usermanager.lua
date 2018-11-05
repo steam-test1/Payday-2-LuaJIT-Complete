@@ -624,7 +624,11 @@ function GenericUserManager:_get_user_data(user_index)
 end
 
 function GenericUserManager:check_user(callback_func, show_select_user_question_dialog)
-	if self.CAN_SELECT_USER and not self:is_signed_in(nil) or callback_func then
+	if not self.CAN_SELECT_USER or self:is_signed_in(nil) then
+		if callback_func then
+			callback_func(true)
+		end
+	else
 		local confirm_callback = callback(self, self, "confirm_select_user_callback", callback_func)
 
 		if show_select_user_question_dialog then
@@ -691,7 +695,11 @@ function GenericUserManager:select_user_callback(callback_func)
 end
 
 function GenericUserManager:check_storage(callback_func, auto_select)
-	if self.CAN_SELECT_STORAGE and not self:get_storage_id(nil) or callback_func then
+	if not self.CAN_SELECT_STORAGE or self:get_storage_id(nil) then
+		if callback_func then
+			callback_func(true)
+		end
+	else
 
 		local function wrapped_callback_func(success, result, ...)
 			if success then

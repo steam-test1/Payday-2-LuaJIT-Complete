@@ -1365,8 +1365,14 @@ function EconomyTweakData:get_bonus_icons(entry)
 	local bonus_data = self.bonuses[entry]
 	local bonuses = {}
 
-	if bonus_data and (bonus_data.exp_multiplier or bonus_data.money_multiplier) then
-		table.insert(bonuses, "guis/dlcs/cash/textures/pd2/safe_raffle/teamboost_icon")
+	if bonus_data then
+		if bonus_data.stats then
+			table.insert(bonuses, "guis/dlcs/cash/textures/pd2/safe_raffle/statboost_icon")
+		end
+
+		if bonus_data.exp_multiplier or bonus_data.money_multiplier then
+			table.insert(bonuses, "guis/dlcs/cash/textures/pd2/safe_raffle/teamboost_icon")
+		end
 	end
 
 	return bonuses

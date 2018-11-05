@@ -288,7 +288,13 @@ function MissionLayer:set_enabled(enabled)
 	self._layer_enabled = enabled
 
 	for _, unit in ipairs(self._created_units) do
-		if not enabled or unit:mission_element_data().script == self:current_script() then
+		if enabled then
+			if unit:mission_element_data().script == self:current_script() then
+				unit:mission_element():set_enabled()
+				unit:set_enabled(true)
+				unit:anim_play()
+			end
+		else
 			unit:mission_element():set_disabled()
 			unit:set_enabled(false)
 		end
@@ -381,8 +387,14 @@ function MissionLayer:update(time, rel_time)
 			if selected_unit then
 				unit:mission_element():draw_links_selected(time, rel_time, self._only_draw_selected_connections and self._selected_unit)
 
-				if self._editing_mission_element and unit:mission_element().update_editing then
-					unit:mission_element():update_editing(time, rel_time, self._current_pos)
+				if self._editing_mission_element then
+					if unit:mission_element().base_update_editing then
+						unit:mission_element():base_update_editing(time, rel_time, self._current_pos)
+					end
+
+					if unit:mission_element().update_editing then
+						unit:mission_element():update_editing(time, rel_time, self._current_pos)
+					end
 				end
 			end
 

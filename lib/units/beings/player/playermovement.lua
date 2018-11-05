@@ -536,11 +536,21 @@ function PlayerMovement:set_attention_settings(settings_list)
 
 	self._attention_handler:set_settings_set(all_attentions)
 
-	if Network:is_client() and changes.removed then
-		for _, id in ipairs(changes.removed) do
-			local index = tweak_data.attention:get_attention_index(id)
+	if Network:is_client() then
+		if changes.added then
+			for _, id in ipairs(changes.added) do
+				local index = tweak_data.attention:get_attention_index(id)
 
-			self._unit:network():send_to_host("set_attention_enabled", index, false)
+				self._unit:network():send_to_host("set_attention_enabled", index, true)
+			end
+		end
+
+		if changes.removed then
+			for _, id in ipairs(changes.removed) do
+				local index = tweak_data.attention:get_attention_index(id)
+
+				self._unit:network():send_to_host("set_attention_enabled", index, false)
+			end
 		end
 	end
 end

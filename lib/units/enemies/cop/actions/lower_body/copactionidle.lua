@@ -29,19 +29,21 @@ function CopActionIdle:init(action_desc, common_data)
 
 	local res = nil
 
-	if self._body_part ~= 3 or self._ext_anim.upper_body_active and not self._ext_anim.upper_body_empty and self._ext_movement:play_redirect("up_idle") then
-		if action_desc.anim then
-			local state_name = self._machine:index_to_state_name(action_desc.anim)
-			local redir_res = self._ext_movement:play_state_idstr(state_name)
-
-			if not redir_res then
-				print("[CopActionIdle:init] state", state_name, "failed in", self._machine:segment_state(Idstring("base")), common_data.unit)
-			end
-		elseif not self._ext_anim.idle then
-			res = self._common_data.stance.code == 1 and self._ext_movement:play_redirect("exit") or self._ext_movement:play_redirect("idle")
-
-			self._ext_movement:enable_update()
+	if self._body_part == 3 then
+		if self._ext_anim.upper_body_active and not self._ext_anim.upper_body_empty then
+			res = self._ext_movement:play_redirect("up_idle")
 		end
+	elseif action_desc.anim then
+		local state_name = self._machine:index_to_state_name(action_desc.anim)
+		local redir_res = self._ext_movement:play_state_idstr(state_name)
+
+		if not redir_res then
+			print("[CopActionIdle:init] state", state_name, "failed in", self._machine:segment_state(Idstring("base")), common_data.unit)
+		end
+	elseif not self._ext_anim.idle then
+		res = self._common_data.stance.code == 1 and self._ext_movement:play_redirect("exit") or self._ext_movement:play_redirect("idle")
+
+		self._ext_movement:enable_update()
 	end
 
 	if res == false then

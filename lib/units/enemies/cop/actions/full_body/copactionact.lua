@@ -1253,7 +1253,13 @@ function CopActionAct:_ik_update_func(t)
 
 		local fwd_dot = mvector3.dot(self._common_data.fwd, tmp_vec1)
 
-		if (fwd_dot >= 0.25 and not disable_ik or self._modifier_on) and not self._modifier_on then
+		if fwd_dot < 0.25 or disable_ik then
+			if self._modifier_on then
+				self._modifier_on = nil
+
+				self._machine:forbid_modifier(self._modifier_name)
+			end
+		elseif not self._modifier_on then
 			self._modifier_on = true
 
 			self._machine:force_modifier(self._modifier_name)
@@ -1366,7 +1372,20 @@ function CopActionAct:_upd_wait_for_full_blend()
 end
 
 function CopActionAct:_clamping_update(t)
-	if not self._ext_anim.act or not self._unit:parent() then
+	if self._ext_anim.act then
+		if not self._unit:parent() then
+			local dt = TimerManager:game():delta_time()
+			self._last_pos = CopActionHurt._get_pos_clamped_to_graph(self)
+
+			CopActionWalk._set_new_pos(self, dt)
+
+			local new_rot = self._unit:get_animation_delta_rotation()
+			new_rot = self._common_data.rot * new_rot
+
+			mrotation.set_yaw_pitch_roll(new_rot, new_rot:yaw(), 0, 0)
+			self._ext_movement:set_rotation(new_rot)
+		end
+	else
 		self._expired = true
 	end
 

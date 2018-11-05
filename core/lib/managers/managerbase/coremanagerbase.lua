@@ -87,7 +87,15 @@ function ManagerBase:_prioritize_and_activate()
 	end
 
 	for ao, prio in pairs(self.__ao2prio) do
-		if (prio >= req_prio or ao:really_active()) and (prio ~= req_prio or not ao:active_requested() and ao:really_active()) and ao:really_active() then
+		if prio < req_prio then
+			if ao:really_active() then
+				ao:_really_deactivate()
+			end
+		elseif prio == req_prio then
+			if not ao:active_requested() and ao:really_active() then
+				ao:_really_deactivate()
+			end
+		elseif ao:really_active() then
 			ao:_really_deactivate()
 		end
 	end

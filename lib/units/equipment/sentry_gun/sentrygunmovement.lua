@@ -186,15 +186,33 @@ end
 function SentryGunMovement:set_active(state)
 	self._unit:set_extension_update_enabled(Idstring("movement"), state)
 
-	if not state and self._rearm_event then
-		self._rearm_event:stop()
+	if not state then
+		if self._motor_sound then
+			self._motor_sound:stop()
 
-		self._rearm_event = false
+			self._motor_sound = false
+		end
+
+		if self._rearm_event then
+			self._rearm_event:stop()
+
+			self._rearm_event = false
+		end
 	end
 end
 
 function SentryGunMovement:set_idle(state)
-	if (state or self._unit:damage() and self._unit:damage():has_sequence("deactivate") and self._activation_anim_group_name) and self._unit:damage() and self._unit:damage():has_sequence("activate") and self._activation_anim_group_name then
+	if not state then
+		if self._unit:damage() and self._unit:damage():has_sequence("deactivate") and self._activation_anim_group_name then
+			self._activation_anim_group_name_ids = Idstring(self._activation_anim_group_name)
+
+			self._unit:damage():run_sequence_simple("deactivate")
+
+			self._inactivating = true
+
+			self:_set_updator("_update_inactivating")
+		end
+	elseif self._unit:damage() and self._unit:damage():has_sequence("activate") and self._activation_anim_group_name then
 		self._activation_anim_group_name_ids = Idstring(self._activation_anim_group_name)
 
 		self._unit:damage():run_sequence_simple("activate")
@@ -300,14 +318,23 @@ function SentryGunMovement:synch_attention(attention)
 		return
 	end
 
-	if attention and attention.unit and (not attention.handler or self._m_last_attention_pos and TimerManager:game():time() - 0.1) then
-		local attention_unit = attention.unit
+	if attention and attention.unit then
+		if attention.handler then
+			if self._m_last_attention_pos then
+				mvector3.set(self._m_last_attention_pos, attention.handler:get_attention_m_pos())
+				mvector3.set_zero(self._m_last_attention_vel)
 
-		if self._m_last_attention_pos then
-			attention_unit:character_damage():shoot_pos_mid(self._m_last_attention_pos)
-			mvector3.set_zero(self._m_last_attention_vel)
+				self._last_attention_snapshot_t = TimerManager:game():time() - 0.1
+			end
+		else
+			local attention_unit = attention.unit
 
-			self._last_attention_snapshot_t = TimerManager:game():time() - 0.1
+			if self._m_last_attention_pos then
+				attention_unit:character_damage():shoot_pos_mid(self._m_last_attention_pos)
+				mvector3.set_zero(self._m_last_attention_vel)
+
+				self._last_attention_snapshot_t = TimerManager:game():time() - 0.1
+			end
 		end
 	end
 
@@ -422,7 +449,11 @@ function SentryGunMovement:_upd_movement(dt)
 	local new_vel_abs = math.abs(new_vel)
 	local vel_ratio = math.clamp((1.5 * (new_vel_abs - self._tweak.MIN_VEL_SPIN)) / (self._tweak.MAX_VEL_SPIN - self._tweak.MIN_VEL_SPIN), 0, 1)
 
-	if vel_ratio > 0.5 and (self._motor_sound or self._sound_source:post_event(self._spin_start_snd_event)) or vel_ratio == 0 and self._motor_sound then
+	if vel_ratio > 0.5 then
+		if not self._motor_sound then
+			self._motor_sound = self._sound_source:post_event(self._spin_start_snd_event)
+		end
+	elseif vel_ratio == 0 and self._motor_sound then
 		self._sound_source:post_event(self._spin_stop_snd_event)
 		self._motor_sound:stop()
 

@@ -41,7 +41,11 @@ function ElementVehicleOperator:on_executed(instigator)
 		return
 	end
 
-	if not self._values.use_instigator or instigator then
+	if self._values.use_instigator then
+		if instigator then
+			self:_apply_opreator(instigator)
+		end
+	else
 		for _, id in ipairs(self._values.elements) do
 			local unit = self:_get_unit(id)
 

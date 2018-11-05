@@ -36,7 +36,11 @@ end
 function VoiceBriefingManager:_sound_callback(instance, sound_source, event_type, cookie, label, identifier, position)
 	if event_type == "end_of_event" then
 		self:_end_of_event(cookie)
-	elseif (event_type ~= "marker" or label) and event_type == "duration" then
+	elseif event_type == "marker" then
+		if label then
+			self:_play_subtitle(label, cookie)
+		end
+	elseif event_type == "duration" then
 		self:_set_duration(label, cookie)
 	end
 end

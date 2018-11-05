@@ -344,8 +344,12 @@ function MutatorMediDozer:modify_unit_categories(group_ai_tweak, difficulty_inde
 	}
 
 	for group, units_data in pairs(group_ai_tweak.unit_categories) do
-		if not table.contains(ignored_groups, group) and (not units_data.special_type or units_data.special_type ~= "tank" and units_data.special_type ~= "medic" and group_ai_tweak.unit_categories.FBI_tank) then
-			if string.find(group, "r870") then
+		if not table.contains(ignored_groups, group) then
+			if units_data.special_type then
+				if units_data.special_type ~= "tank" and units_data.special_type ~= "medic" then
+					group_ai_tweak.unit_categories[group] = group_ai_tweak.unit_categories.FBI_tank
+				end
+			elseif string.find(group, "r870") then
 				group_ai_tweak.unit_categories[group] = group_ai_tweak.unit_categories.medic_R870
 			else
 				group_ai_tweak.unit_categories[group] = group_ai_tweak.unit_categories.medic_M4

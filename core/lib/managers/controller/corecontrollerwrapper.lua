@@ -716,7 +716,13 @@ function ControllerWrapper:remove_release_trigger(connection_name, func)
 		if func then
 			trigger = trigger_sub_map[func]
 
-			if not trigger or trigger.id and nil then
+			if trigger then
+				if trigger.id then
+					self._virtual_controller:remove_trigger(trigger.id)
+
+					trigger.id = nil
+				end
+			else
 				Application:error(self:to_string() .. " Unable to remove non-existing release trigger for function \"" .. tostring(func) .. "\" on connection \"" .. tostring(connection_name) .. "\".")
 			end
 
@@ -1022,7 +1028,11 @@ function ControllerWrapper:set_connection_enabled(connection_name, enabled)
 
 			if trigger_sub_map then
 				for _, trigger in pairs(trigger_sub_map) do
-					if enabled and (trigger.id or self._virtual_controller:add_trigger(Idstring(connection_name), trigger.func)) or trigger.id then
+					if enabled then
+						if not trigger.id then
+							trigger.id = self._virtual_controller:add_trigger(Idstring(connection_name), trigger.func)
+						end
+					elseif trigger.id then
 						self._virtual_controller:remove_trigger(trigger.id)
 
 						trigger.id = nil
@@ -1034,7 +1044,11 @@ function ControllerWrapper:set_connection_enabled(connection_name, enabled)
 
 			if trigger_sub_map then
 				for _, trigger in pairs(trigger_sub_map) do
-					if enabled and (trigger.id or self._virtual_controller:add_release_trigger(Idstring(connection_name), trigger.func)) or trigger.id then
+					if enabled then
+						if not trigger.id then
+							trigger.id = self._virtual_controller:add_release_trigger(Idstring(connection_name), trigger.func)
+						end
+					elseif trigger.id then
 						self._virtual_controller:remove_trigger(trigger.id)
 
 						trigger.id = nil

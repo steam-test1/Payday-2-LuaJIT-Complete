@@ -13,10 +13,18 @@ function CopLogicArrest.enter(data, new_logic_name, enter_params)
 	my_data.detection = data.char_tweak.detection.guard
 	my_data.arrest_targets = {}
 
-	if old_internal_data and old_internal_data.nearest_cover then
-		my_data.nearest_cover = old_internal_data.nearest_cover
+	if old_internal_data then
+		if old_internal_data.best_cover then
+			my_data.best_cover = old_internal_data.best_cover
 
-		managers.navigation:reserve_cover(my_data.nearest_cover[1], data.pos_rsrv_id)
+			managers.navigation:reserve_cover(my_data.best_cover[1], data.pos_rsrv_id)
+		end
+
+		if old_internal_data.nearest_cover then
+			my_data.nearest_cover = old_internal_data.nearest_cover
+
+			managers.navigation:reserve_cover(my_data.nearest_cover[1], data.pos_rsrv_id)
+		end
 	end
 
 	local key_str = tostring(data.key)
@@ -180,7 +188,35 @@ end
 function CopLogicArrest._upd_advance(data, my_data, attention_obj, arrest_data)
 	local action_taken = my_data.turning or data.unit:movement():chk_action_forbidden("walk")
 
-	if (not arrest_data or not my_data.should_arrest or (attention_obj.dis >= 180 or not action_taken and data.unit:anim_data().idle_full_blend) and not arrest_data.approach_snd and attention_obj.dis < 600 and attention_obj.dis > 500 and not data.unit:sound():speaking(data.t)) and my_data.should_arrest and attention_obj.dis < 300 and not data.unit:sound():speaking(data.t) then
+	if arrest_data and my_data.should_arrest then
+		if attention_obj.dis < 180 then
+			if not action_taken then
+				if not data.unit:anim_data().idle_full_blend then
+					if attention_obj.dis < 150 and not data.unit:anim_data().idle then
+						local action_data = {
+							body_part = 1,
+							type = "idle"
+						}
+
+						data.unit:brain():action_request(action_data)
+					end
+				elseif not data.unit:anim_data().crouch then
+					CopLogicAttack._chk_request_action_crouch(data)
+				end
+
+				if data.unit:anim_data().idle_full_blend then
+					attention_obj.unit:movement():on_cuffed()
+					data.unit:sound():say("i03", true, false)
+
+					return
+				end
+			end
+		elseif not arrest_data.approach_snd and attention_obj.dis < 600 and attention_obj.dis > 500 and not data.unit:sound():speaking(data.t) then
+			arrest_data.approach_snd = true
+
+			data.unit:sound():say("i02", true)
+		end
+	elseif my_data.should_arrest and attention_obj.dis < 300 and not data.unit:sound():speaking(data.t) then
 		CopLogicArrest._chk_say_approach(data, my_data, attention_obj)
 	end
 
@@ -547,7 +583,16 @@ function CopLogicArrest._get_priority_attention(data, attention_objects, reactio
 
 		if not attention_data.identified then
 			
-		elseif (not attention_data.pause_expire_t or attention_data.pause_expire_t < data.t and nil) and (not attention_data.stare_expire_t or attention_data.stare_expire_t >= data.t or attention_data.settings.pause and data.t + math.lerp(attention_data.settings.pause[1], attention_data.settings.pause[2], math.random())) then
+		elseif attention_data.pause_expire_t then
+			if attention_data.pause_expire_t < data.t then
+				attention_data.pause_expire_t = nil
+			end
+		elseif attention_data.stare_expire_t and attention_data.stare_expire_t < data.t then
+			if attention_data.settings.pause then
+				attention_data.stare_expire_t = nil
+				attention_data.pause_expire_t = data.t + math.lerp(attention_data.settings.pause[1], attention_data.settings.pause[2], math.random())
+			end
+		else
 			local distance = mvector3.distance(data.m_pos, attention_data.m_pos)
 			local reaction = reaction_func(data, attention_data, not CopLogicAttack._can_move(data))
 			local reaction_too_mild = nil

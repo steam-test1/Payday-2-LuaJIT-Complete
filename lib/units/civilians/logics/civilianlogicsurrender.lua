@@ -428,7 +428,11 @@ function CivilianLogicSurrender.on_alert(data, alert_data)
 		if aggressor and aggressor:base() then
 			local is_intimidation = nil
 
-			if aggressor:base().is_local_player and (not managers.player:has_category_upgrade("player", "civ_calming_alerts") or true) or aggressor:base().is_husk_player and aggressor:base():upgrade_value("player", "civ_calming_alerts") then
+			if aggressor:base().is_local_player then
+				if managers.player:has_category_upgrade("player", "civ_calming_alerts") then
+					is_intimidation = true
+				end
+			elseif aggressor:base().is_husk_player and aggressor:base():upgrade_value("player", "civ_calming_alerts") then
 				is_intimidation = true
 			end
 
@@ -458,12 +462,18 @@ function CivilianLogicSurrender.on_alert(data, alert_data)
 	if my_data.scare_meter == my_data.scare_max and data.t - my_data.state_enter_t > 5 then
 		data.unit:sound():say("a01x_any", true)
 
-		if (data.is_tied or not my_data.inside_intimidate_aura) and (not data.is_tied or anim_data.stand) then
-			data.unit:brain():set_objective({
-				is_default = true,
-				type = "free",
-				alert_data = clone(alert_data)
-			})
+		if data.is_tied or not my_data.inside_intimidate_aura then
+			if data.is_tied then
+				if anim_data.stand then
+					data.unit:brain():on_hostage_move_interaction(alert_data[5], "stay")
+				end
+			else
+				data.unit:brain():set_objective({
+					is_default = true,
+					type = "free",
+					alert_data = clone(alert_data)
+				})
+			end
 		end
 	elseif not data.unit:sound():speaking(TimerManager:game():time()) then
 		local rand = math.random()
@@ -516,7 +526,11 @@ function CivilianLogicSurrender._update_enemy_detection(data, my_data)
 			local dis = mvector3.direction(my_vec, enemy_pos, my_pos)
 			local inside_aura = nil
 
-			if u_data.unit:base().is_local_player and (not managers.player:has_category_upgrade("player", "intimidate_aura") or dis >= managers.player:upgrade_value("player", "intimidate_aura", 0) or true) or u_data.unit:base().is_husk_player and u_data.unit:base():upgrade_value("player", "intimidate_aura") and dis < u_data.unit:base():upgrade_value("player", "intimidate_aura") then
+			if u_data.unit:base().is_local_player then
+				if managers.player:has_category_upgrade("player", "intimidate_aura") and dis < managers.player:upgrade_value("player", "intimidate_aura", 0) then
+					inside_aura = true
+				end
+			elseif u_data.unit:base().is_husk_player and u_data.unit:base():upgrade_value("player", "intimidate_aura") and dis < u_data.unit:base():upgrade_value("player", "intimidate_aura") then
 				inside_aura = true
 			end
 
@@ -540,7 +554,11 @@ function CivilianLogicSurrender._update_enemy_detection(data, my_data)
 	local attention = data.unit:movement():attention()
 	local attention_unit = attention and attention.unit or nil
 
-	if (attention_unit or closest_enemy and closest_dis < 700 and data.unit:anim_data().ik_type) and (mvector3.distance(my_pos, attention_unit:movement():m_head_pos()) > 900 or not data.unit:anim_data().ik_type) then
+	if not attention_unit then
+		if closest_enemy and closest_dis < 700 and data.unit:anim_data().ik_type then
+			CopLogicBase._set_attention_on_unit(data, closest_enemy)
+		end
+	elseif mvector3.distance(my_pos, attention_unit:movement():m_head_pos()) > 900 or not data.unit:anim_data().ik_type then
 		CopLogicBase._reset_attention(data)
 	end
 
@@ -552,7 +570,11 @@ function CivilianLogicSurrender._update_enemy_detection(data, my_data)
 		my_data.submission_meter = math.max(0, my_data.submission_meter - delta_t)
 	end
 
-	if (not managers.groupai:state():rescue_state() or not managers.groupai:state():is_nav_seg_safe(data.unit:movement():nav_tracker():nav_segment()) or not my_data.rescue_active) and my_data.rescue_active then
+	if managers.groupai:state():rescue_state() and managers.groupai:state():is_nav_seg_safe(data.unit:movement():nav_tracker():nav_segment()) then
+		if not my_data.rescue_active then
+			CivilianLogicFlee._add_delayed_rescue_SO(data, my_data)
+		end
+	elseif my_data.rescue_active then
 		CivilianLogicFlee._unregister_rescue_SO(data, my_data)
 	end
 

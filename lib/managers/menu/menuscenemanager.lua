@@ -1907,10 +1907,18 @@ function MenuSceneManager:_chk_character_visibility(char_unit)
 
 			return
 		end
-	elseif scene_template and (not self:_is_henchmen_character(char_unit) or not scene_template.henchmen_characters_visible) and not scene_template.lobby_characters_visible then
-		self:_set_character_and_outfit_visibility(char_unit, false)
+	elseif scene_template then
+		if self:_is_henchmen_character(char_unit) then
+			if not scene_template.henchmen_characters_visible then
+				self:_set_character_and_outfit_visibility(char_unit, false)
 
-		return
+				return
+			end
+		elseif not scene_template.lobby_characters_visible then
+			self:_set_character_and_outfit_visibility(char_unit, false)
+
+			return
+		end
 	end
 
 	self:_set_character_and_outfit_visibility(char_unit, true)
@@ -3272,7 +3280,15 @@ function MenuSceneManager:mouse_pressed(o, button, x, y)
 		return
 	end
 
-	if (button ~= Idstring("0") or self._item_grab:inside(x, y)) and self._can_move_item and button == Idstring("1") and self._item_grab:inside(x, y) then
+	if button == Idstring("0") then
+		if self._item_grab:inside(x, y) then
+			self._item_grabbed = true
+			self._item_grabbed_current_x = x
+			self._item_grabbed_current_y = y
+
+			return false
+		end
+	elseif self._can_move_item and button == Idstring("1") and self._item_grab:inside(x, y) then
 		self._item_move_grabbed = true
 		self._item_move_grabbed_current_x = x
 		self._item_move_grabbed_current_y = y

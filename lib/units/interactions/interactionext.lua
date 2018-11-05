@@ -244,7 +244,11 @@ function BaseInteractionExt:selected(player)
 		end
 	end
 
-	if not self._tweak_data.contour_preset and not self._tweak_data.contour_preset_selected or not self._selected_contour_id and self._tweak_data.contour_preset_selected and self._tweak_data.contour_preset ~= self._tweak_data.contour_preset_selected and self._unit:contour():add(self._tweak_data.contour_preset_selected) then
+	if self._tweak_data.contour_preset or self._tweak_data.contour_preset_selected then
+		if not self._selected_contour_id and self._tweak_data.contour_preset_selected and self._tweak_data.contour_preset ~= self._tweak_data.contour_preset_selected then
+			self._selected_contour_id = self._unit:contour():add(self._tweak_data.contour_preset_selected)
+		end
+	else
 		self:set_contour("selected_color")
 	end
 
@@ -575,7 +579,11 @@ function BaseInteractionExt:set_active(active, sync)
 	elseif active and not self._active then
 		managers.interaction:add_unit(self._unit)
 
-		if self._tweak_data.contour_preset and (self._contour_id or self._unit:contour():add(self._tweak_data.contour_preset)) or not self._tweak_data.no_contour then
+		if self._tweak_data.contour_preset then
+			if not self._contour_id then
+				self._contour_id = self._unit:contour():add(self._tweak_data.contour_preset)
+			end
+		elseif not self._tweak_data.no_contour then
 			managers.occlusion:remove_occlusion(self._unit)
 		end
 	end
@@ -1431,8 +1439,14 @@ end
 function MultipleEquipmentBagInteractionExt:sync_interacted(peer, player, amount_wanted)
 	local instigator = player or peer:unit()
 
-	if Network:is_server() and self._global_event then
-		managers.mission:call_global_event(self._global_event, instigator)
+	if Network:is_server() then
+		if self._unit:damage():has_sequence("load") then
+			self._unit:damage():run_sequence_simple("load")
+		end
+
+		if self._global_event then
+			managers.mission:call_global_event(self._global_event, instigator)
+		end
 	end
 
 	local equipment_name = self._special_equipment or "c4"
@@ -1730,7 +1744,23 @@ function IntimitateInteractionExt:interact(player)
 		else
 			managers.network:session():send_to_host("sync_interacted", self._unit, self._unit:id(), self.tweak_data, 1)
 		end
-	elseif (self.tweak_data ~= "hostage_move" or not Network:is_server() or self._unit:brain():on_hostage_move_interaction(player, "move")) and (self.tweak_data ~= "hostage_stay" or not Network:is_server() or self._unit:brain():on_hostage_move_interaction(player, "stay")) then
+	elseif self.tweak_data == "hostage_move" then
+		if Network:is_server() then
+			if self._unit:brain():on_hostage_move_interaction(player, "move") then
+				self:remove_interact()
+			end
+		else
+			managers.network:session():send_to_host("sync_interacted", self._unit, self._unit:id(), self.tweak_data, 1)
+		end
+	elseif self.tweak_data == "hostage_stay" then
+		if Network:is_server() then
+			if self._unit:brain():on_hostage_move_interaction(player, "stay") then
+				self:remove_interact()
+			end
+		else
+			managers.network:session():send_to_host("sync_interacted", self._unit, self._unit:id(), self.tweak_data, 1)
+		end
+	else
 		self:remove_interact()
 		self:set_active(false)
 		player:sound():play("cable_tie_apply")
@@ -1928,7 +1958,11 @@ function IntimitateInteractionExt:sync_interacted(peer, player, status, skip_ali
 		self:remove_interact()
 		self:set_active(false, true)
 		managers.groupai:state():convert_hostage_to_criminal(self._unit, _get_unit())
-	elseif (self.tweak_data ~= "hostage_move" or Network:is_server() and self._unit:brain():on_hostage_move_interaction(_get_unit(), "move")) and self.tweak_data == "hostage_stay" and Network:is_server() and self._unit:brain():on_hostage_move_interaction(_get_unit(), "stay") then
+	elseif self.tweak_data == "hostage_move" then
+		if Network:is_server() and self._unit:brain():on_hostage_move_interaction(_get_unit(), "move") then
+			self:remove_interact()
+		end
+	elseif self.tweak_data == "hostage_stay" and Network:is_server() and self._unit:brain():on_hostage_move_interaction(_get_unit(), "stay") then
 		self:remove_interact()
 	end
 end
@@ -2348,11 +2382,21 @@ function MissionDoorDeviceInteractionExt:server_place_mission_door_device(player
 end
 
 function MissionDoorDeviceInteractionExt:result_place_mission_door_device(placed)
-	if placed and self._tweak_data.deployable_consume and self._tweak_data.required_deployable then
-		local equipment = managers.player:selected_equipment()
+	if placed then
+		if self._tweak_data.equipment_consume then
+			managers.player:remove_special(self._tweak_data.special_equipment)
+		end
 
-		if not equipment then
-			managers.player:switch_equipment()
+		if self._tweak_data.deployable_consume then
+			managers.player:remove_equipment(self._tweak_data.required_deployable, self._tweak_data.slot or 1)
+		end
+
+		if self._tweak_data.deployable_consume and self._tweak_data.required_deployable then
+			local equipment = managers.player:selected_equipment()
+
+			if not equipment then
+				managers.player:switch_equipment()
+			end
 		end
 	end
 end
@@ -2460,7 +2504,11 @@ end
 function MissionElementInteractionExt:sync_net_event(event_id, peer)
 	local player = peer:unit()
 
-	if (event_id ~= BaseInteractionExt.EVENT_IDS.at_interact_start or Network:is_server()) and event_id == BaseInteractionExt.EVENT_IDS.at_interact_interupt and Network:is_server() then
+	if event_id == BaseInteractionExt.EVENT_IDS.at_interact_start then
+		if Network:is_server() then
+			self._mission_element:on_interact_start(player)
+		end
+	elseif event_id == BaseInteractionExt.EVENT_IDS.at_interact_interupt and Network:is_server() then
 		self._mission_element:on_interact_interupt(player)
 	end
 end

@@ -297,7 +297,13 @@ function CrimeNetManager:update(t, dt)
 
 	managers.menu_component:update_crimenet_gui(t, dt)
 
-	if (self._skip_servers or self._refresh_server_t < Application:time()) and self._refresh_server_t < Application:time() then
+	if not self._skip_servers then
+		if self._refresh_server_t < Application:time() then
+			self._refresh_server_t = Application:time() + self._REFRESH_SERVERS_TIME
+
+			self:find_online_games(Global.game_settings.search_friends_only)
+		end
+	elseif self._refresh_server_t < Application:time() then
 		self._refresh_server_t = Application:time() + self._REFRESH_SERVERS_TIME
 	end
 
@@ -439,22 +445,47 @@ function CrimeNetManager:_find_online_games_xbox360(friends_only)
 				local num_plrs = attributes_numbers[5]
 				local is_friend = friends[host_name] and true or false
 
-				if name_id and (self._active_server_jobs[room.room_id] or table.size(self._active_jobs) + table.size(self._active_server_jobs) < tweak_data.gui.crime_net.job_vars.total_active_jobs) then
-					managers.menu_component:update_crimenet_server_job({
-						room_id = room.room_id,
-						info = room.info,
-						id = room.room_id,
-						level_id = level_id,
-						difficulty = difficulty,
-						difficulty_id = difficulty_id,
-						num_plrs = num_plrs,
-						host_name = host_name,
-						state_name = state_name,
-						state = state,
-						level_name = level_name,
-						job_id = job_id,
-						is_friend = is_friend
-					})
+				if name_id then
+					if not self._active_server_jobs[room.room_id] then
+						if table.size(self._active_jobs) + table.size(self._active_server_jobs) < tweak_data.gui.crime_net.job_vars.total_active_jobs then
+							self._active_server_jobs[room.room_id] = {
+								added = false,
+								alive_time = 0
+							}
+
+							managers.menu_component:add_crimenet_server_job({
+								room_id = room.room_id,
+								info = room.info,
+								id = room.room_id,
+								level_id = level_id,
+								difficulty = difficulty,
+								difficulty_id = difficulty_id,
+								num_plrs = num_plrs,
+								host_name = host_name,
+								state_name = state_name,
+								state = state,
+								level_name = level_name,
+								job_id = job_id,
+								is_friend = is_friend
+							})
+						end
+					else
+						managers.menu_component:update_crimenet_server_job({
+							room_id = room.room_id,
+							info = room.info,
+							id = room.room_id,
+							level_id = level_id,
+							difficulty = difficulty,
+							difficulty_id = difficulty_id,
+							num_plrs = num_plrs,
+							host_name = host_name,
+							state_name = state_name,
+							state = state,
+							level_name = level_name,
+							job_id = job_id,
+							is_friend = is_friend
+						})
+					end
 				end
 			end
 		end
@@ -509,22 +540,47 @@ function CrimeNetManager:_find_online_games_xb1(friends_only)
 				dead_list[room.room_id] = nil
 			end
 
-			if name_id and is_ok and (self._active_server_jobs[room.room_id] or table.size(self._active_jobs) + table.size(self._active_server_jobs) < tweak_data.gui.crime_net.job_vars.total_active_jobs) then
-				managers.menu_component:update_crimenet_server_job({
-					room_id = room.room_id,
-					info = room.info,
-					id = room.room_id,
-					level_id = level_id,
-					difficulty = difficulty,
-					difficulty_id = difficulty_id,
-					num_plrs = num_plrs,
-					host_name = host_name,
-					state_name = state_name,
-					state = state,
-					level_name = level_name,
-					job_id = job_id,
-					is_friend = is_friend
-				})
+			if name_id and is_ok then
+				if not self._active_server_jobs[room.room_id] then
+					if table.size(self._active_jobs) + table.size(self._active_server_jobs) < tweak_data.gui.crime_net.job_vars.total_active_jobs then
+						self._active_server_jobs[room.room_id] = {
+							added = false,
+							alive_time = 0
+						}
+
+						managers.menu_component:add_crimenet_server_job({
+							room_id = room.room_id,
+							info = room.info,
+							id = room.room_id,
+							level_id = level_id,
+							difficulty = difficulty,
+							difficulty_id = difficulty_id,
+							num_plrs = num_plrs,
+							host_name = host_name,
+							state_name = state_name,
+							state = state,
+							level_name = level_name,
+							job_id = job_id,
+							is_friend = is_friend
+						})
+					end
+				else
+					managers.menu_component:update_crimenet_server_job({
+						room_id = room.room_id,
+						info = room.info,
+						id = room.room_id,
+						level_id = level_id,
+						difficulty = difficulty,
+						difficulty_id = difficulty_id,
+						num_plrs = num_plrs,
+						host_name = host_name,
+						state_name = state_name,
+						state = state,
+						level_name = level_name,
+						job_id = job_id,
+						is_friend = is_friend
+					})
+				end
 			end
 		end
 
@@ -3876,28 +3932,54 @@ function CrimeNetGui:mouse_pressed(o, button, x, y)
 		return
 	end
 
-	if not self:mouse_button_click(button) or self._panel:inside(x, y) and {
-		x = x,
-		y = y,
-		dirs = {}
-	} then
-		if self:button_wheel_scroll_down(button) then
-			if self._one_scroll_out_delay then
-				self._one_scroll_out_delay = nil
-			end
+	if self:mouse_button_click(button) then
+		if self._panel:child("back_button"):inside(x, y) then
+			managers.menu:back()
 
-			self:_set_zoom("out", x, y)
+			return
+		end
 
-			return true
-		elseif self:button_wheel_scroll_up(button) then
-			if self._one_scroll_in_delay then
-				self._one_scroll_in_delay = nil
-			end
+		if self._panel:child("legends_button"):inside(x, y) then
+			self:toggle_legend()
 
-			self:_set_zoom("in", x, y)
+			return
+		end
 
+		if self._panel:child("filter_button") and self._panel:child("filter_button"):inside(x, y) then
+			managers.menu_component:post_event("menu_enter")
+			managers.menu:open_node("crimenet_filters", {})
+
+			return
+		end
+
+		if self:check_job_pressed(x, y) then
 			return true
 		end
+
+		if self._panel:inside(x, y) then
+			self._released_map = nil
+			self._grabbed_map = {
+				x = x,
+				y = y,
+				dirs = {}
+			}
+		end
+	elseif self:button_wheel_scroll_down(button) then
+		if self._one_scroll_out_delay then
+			self._one_scroll_out_delay = nil
+		end
+
+		self:_set_zoom("out", x, y)
+
+		return true
+	elseif self:button_wheel_scroll_up(button) then
+		if self._one_scroll_in_delay then
+			self._one_scroll_in_delay = nil
+		end
+
+		self:_set_zoom("in", x, y)
+
+		return true
 	end
 
 	return true

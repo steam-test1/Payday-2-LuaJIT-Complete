@@ -737,13 +737,19 @@ function HostNetworkSession:on_load_complete(simulation)
 
 		if NetworkManager.DROPIN_ENABLED then
 			for peer_id, peer in pairs(self._peers) do
-				if peer:loaded() and not peer:synched() then
-					peer:set_expecting_pause_sequence(true)
+				if peer:loaded() then
+					if not self:_has_client(peer) then
+						Network:add_client(peer:rpc())
+					end
 
-					local dropin_pause_ok = self:chk_initiate_dropin_pause(peer)
+					if not peer:synched() then
+						peer:set_expecting_pause_sequence(true)
 
-					if dropin_pause_ok then
-						self:chk_drop_in_peer(peer)
+						local dropin_pause_ok = self:chk_initiate_dropin_pause(peer)
+
+						if dropin_pause_ok then
+							self:chk_drop_in_peer(peer)
+						end
 					end
 				end
 			end
@@ -765,10 +771,18 @@ function HostNetworkSession:chk_peer_handshakes_complete(peer)
 	local peer_handshakes = peer:handshakes()
 
 	for other_peer_id, other_peer in pairs(self._peers) do
-		if other_peer_id ~= peer_id and other_peer:loaded() and other_peer:handshakes()[peer_id] ~= true then
-			print("[HostNetworkSession:chk_peer_handshakes_complete]", peer_id, "is not known by", other_peer_id)
+		if other_peer_id ~= peer_id and other_peer:loaded() then
+			if peer_handshakes[other_peer_id] ~= true then
+				print("[HostNetworkSession:chk_peer_handshakes_complete]", peer_id, "is missing handshake for", other_peer_id)
 
-			return false
+				return false
+			end
+
+			if other_peer:handshakes()[peer_id] ~= true then
+				print("[HostNetworkSession:chk_peer_handshakes_complete]", peer_id, "is not known by", other_peer_id)
+
+				return false
+			end
 		end
 	end
 

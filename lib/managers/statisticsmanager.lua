@@ -1071,10 +1071,14 @@ function StatisticsManager:publish_to_steam(session, success, completion)
 				type = "int"
 			}
 		end
-	elseif completion == "win_dropin" and (Network:is_server() or {
-		value = 1,
-		type = "int"
-	}) or completion == "fail" then
+	elseif completion == "win_dropin" then
+		if not Network:is_server() then
+			stats.info_playing_win_client_dropin = {
+				value = 1,
+				type = "int"
+			}
+		end
+	elseif completion == "fail" then
 		if Network:is_server() then
 			stats.info_playing_fail_host = {
 				value = 1,
@@ -1107,15 +1111,24 @@ function StatisticsManager:publish_to_steam(session, success, completion)
 	}
 	local level_id = managers.job:current_level_id()
 
-	if completion and level_id == "election_day_2" then
-		local stealth = managers.groupai and managers.groupai:state():whisper_mode()
+	if completion then
+		if table.contains(level_list, level_id) then
+			stats["level_" .. level_id] = {
+				value = 1,
+				type = "int"
+			}
+		end
 
-		print("[StatisticsManager]: Election Day 2 Voting: " .. (stealth and "Swing Vote" or "Delayed Vote"))
+		if level_id == "election_day_2" then
+			local stealth = managers.groupai and managers.groupai:state():whisper_mode()
 
-		stats["stats_election_day_" .. (stealth and "s" or "n")] = {
-			value = 1,
-			type = "int"
-		}
+			print("[StatisticsManager]: Election Day 2 Voting: " .. (stealth and "Swing Vote" or "Delayed Vote"))
+
+			stats["stats_election_day_" .. (stealth and "s" or "n")] = {
+				value = 1,
+				type = "int"
+			}
+		end
 	end
 
 	local job_id = managers.job:current_job_id()

@@ -162,10 +162,19 @@ function MissionBriefingTabItem:deselect()
 end
 
 function MissionBriefingTabItem:mouse_moved(x, y)
-	if not self._selected and (not self._tab_text:inside(x, y) or not self._highlighted) and self._highlighted then
-		self._tab_text:set_color(tweak_data.screen_colors.button_stage_3)
+	if not self._selected then
+		if self._tab_text:inside(x, y) then
+			if not self._highlighted then
+				self._highlighted = true
 
-		self._highlighted = false
+				self._tab_text:set_color(tweak_data.screen_colors.button_stage_2)
+				managers.menu_component:post_event("highlight")
+			end
+		elseif self._highlighted then
+			self._tab_text:set_color(tweak_data.screen_colors.button_stage_3)
+
+			self._highlighted = false
+		end
 	end
 
 	return self._selected, self._highlighted
@@ -1234,10 +1243,18 @@ function AssetsItem:mouse_pressed(button, x, y)
 		return false
 	end
 
-	if alive(self._move_left_rect) and alive(self._move_right_rect) and self._move_right_rect:visible() and self._move_right_rect:inside(x, y) then
-		self:move_assets_right()
+	if alive(self._move_left_rect) and alive(self._move_right_rect) then
+		if self._move_left_rect:visible() and self._move_left_rect:inside(x, y) then
+			self:move_assets_left()
 
-		return
+			return
+		end
+
+		if self._move_right_rect:visible() and self._move_right_rect:inside(x, y) then
+			self:move_assets_right()
+
+			return
+		end
 	end
 
 	local preplanning = self._preplanning_ready and self._panel:child("preplanning")
@@ -2251,7 +2268,9 @@ function TeamLoadoutItem:set_slot_outfit(slot, criminal_name, outfit)
 		melee_weapon_bitmap:set_w(melee_weapon_bitmap:h() * aspect)
 		melee_weapon_bitmap:set_center_x(x)
 		melee_weapon_bitmap:set_center_y(y * 9)
+	end
 
+	if outfit.grenade and false then
 		local guis_catalog = "guis/"
 		local bundle_folder = tweak_data.blackmarket.projectiles[outfit.grenade] and tweak_data.blackmarket.projectiles[outfit.grenade].texture_bundle_folder
 
@@ -2692,7 +2711,14 @@ function NewLoadoutTab:mouse_moved(x, y)
 		end
 	end
 
-	if (not mouse_over or self._item_selected ~= mouse_over) and self._item_selected then
+	if mouse_over then
+		if self._item_selected ~= mouse_over then
+			self._item_selected = mouse_over
+			self._my_menu_component_data.selected = mouse_over
+
+			managers.menu_component:post_event("highlight")
+		end
+	elseif self._item_selected then
 		self._item_selected = false
 		self._my_menu_component_data.selected = false
 	end
@@ -4242,12 +4268,14 @@ function MissionBriefingGui:special_btn_pressed(button)
 		self:on_ready_pressed()
 
 		return true
-	elseif button ~= Idstring("menu_toggle_pp_breakdown") or managers.preplanning:has_current_level_preplanning() and self._assets_item and self._items[self._selected_item] == self._assets_item then
-		if button == Idstring("menu_change_profile_right") and managers.multi_profile:has_next() then
-			managers.multi_profile:next_profile()
-		elseif button == Idstring("menu_change_profile_left") and managers.multi_profile:has_previous() then
-			managers.multi_profile:previous_profile()
+	elseif button == Idstring("menu_toggle_pp_breakdown") then
+		if managers.preplanning:has_current_level_preplanning() and self._assets_item and self._items[self._selected_item] == self._assets_item then
+			self._assets_item:open_preplanning()
 		end
+	elseif button == Idstring("menu_change_profile_right") and managers.multi_profile:has_next() then
+		managers.multi_profile:next_profile()
+	elseif button == Idstring("menu_change_profile_left") and managers.multi_profile:has_previous() then
+		managers.multi_profile:previous_profile()
 	end
 
 	return false

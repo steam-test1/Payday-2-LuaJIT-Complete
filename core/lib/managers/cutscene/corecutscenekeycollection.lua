@@ -21,8 +21,14 @@ function CoreCutsceneKeyCollection:keys_between(start_time, end_time, element_na
 				index = index + 1
 				local key = keys[index]
 
-				if key and start_time < key:time() and (key:time() > end_time or element_name == nil or element_name == key.ELEMENT_NAME) then
-					break
+				if key and start_time < key:time() then
+					if key:time() <= end_time then
+						if element_name == nil or element_name == key.ELEMENT_NAME then
+							return key
+						end
+					else
+						break
+					end
 				end
 			end
 		end
@@ -34,8 +40,14 @@ function CoreCutsceneKeyCollection:keys_between(start_time, end_time, element_na
 				index = index - 1
 				local key = keys[index]
 
-				if key and key:time() <= start_time and (end_time >= key:time() or element_name == nil or element_name == key.ELEMENT_NAME) then
-					break
+				if key and key:time() <= start_time then
+					if end_time < key:time() then
+						if element_name == nil or element_name == key.ELEMENT_NAME then
+							return key
+						end
+					else
+						break
+					end
 				end
 			end
 		end

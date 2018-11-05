@@ -32,7 +32,13 @@ function WeaponFactoryManager:use_thq_weapon_parts()
 end
 
 function WeaponFactoryManager:update(t, dt)
-	if (not self._active_task or self:_update_task(self._active_task)) and next(self._tasks) then
+	if self._active_task then
+		if self:_update_task(self._active_task) then
+			self._active_task = nil
+
+			self:_check_task()
+		end
+	elseif next(self._tasks) then
 		self:_check_task()
 	end
 end
@@ -671,7 +677,11 @@ function WeaponFactoryManager:_add_part(p_unit, factory_id, part_id, forbidden, 
 
 	local link_to_unit = p_unit
 
-	if (not async_task_data or part.parent and nil) and part.parent then
+	if async_task_data then
+		if part.parent then
+			link_to_unit = nil
+		end
+	elseif part.parent then
 		local parent_part = self:get_part_from_weapon_by_type(part.parent, parts)
 
 		if parent_part then

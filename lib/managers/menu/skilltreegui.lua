@@ -2017,20 +2017,26 @@ function SkillTreeGui:update_spec_descriptions(item)
 end
 
 function SkillTreeGui:set_hover_spec_item(item, no_sound)
-	if self._hover_spec_item ~= item and item then
-		if item.tree then
-			no_sound = no_sound and self._active_spec_tree == item:tree()
+	if self._hover_spec_item ~= item then
+		if self._hover_spec_item then
+			self._hover_spec_item:deselect()
 		end
 
-		if item.tier then
-			self._selected_spec_tier = item:tier()
+		if item then
+			if item.tree then
+				no_sound = no_sound and self._active_spec_tree == item:tree()
+			end
+
+			if item.tier then
+				self._selected_spec_tier = item:tier()
+			end
+
+			item:select(no_sound)
+
+			self._hover_spec_item = item
+
+			self:update_spec_descriptions(item)
 		end
-
-		item:select(no_sound)
-
-		self._hover_spec_item = item
-
-		self:update_spec_descriptions(item)
 	end
 end
 
@@ -2045,14 +2051,20 @@ function SkillTreeGui:_set_selected_spec_item(item, no_sound)
 end
 
 function SkillTreeGui:_set_selected_skill_item(item, no_sound)
-	if self._selected_item ~= item and item then
-		if item.tree then
-			no_sound = no_sound and self._active_tree == item:tree()
+	if self._selected_item ~= item then
+		if self._selected_item then
+			self._selected_item:deselect()
 		end
 
-		item:select(no_sound)
+		if item then
+			if item.tree then
+				no_sound = no_sound and self._active_tree == item:tree()
+			end
 
-		self._selected_item = item
+			item:select(no_sound)
+
+			self._selected_item = item
+		end
 	end
 
 	local text = ""
@@ -2292,7 +2304,14 @@ function SkillTreeGui:check_respec_button(x, y, force_text_update)
 
 		self._respec_highlight = false
 		prefix = ""
-	elseif not x or not y or not self._skill_tree_panel:child("respec_tree_button"):inside(x, y) or not self._respec_highlight then
+	elseif x and y and self._skill_tree_panel:child("respec_tree_button"):inside(x, y) then
+		if not self._respec_highlight then
+			self._respec_highlight = true
+
+			self._skill_tree_panel:child("respec_tree_button"):set_color(tweak_data.screen_colors.button_stage_2)
+			managers.menu_component:post_event("highlight")
+		end
+	else
 		self._respec_highlight = false
 
 		if not managers.menu:is_pc_controller() or managers.menu:is_steam_controller() then
@@ -2546,7 +2565,13 @@ function SkillTreeGui:mouse_pressed(button, x, y)
 		local skilltree_text = self._panel:child("skilltree_text")
 		local title_bg = self._fullscreen_panel:child("title_bg")
 
-		if (not self._is_skilltree_page_active or not self._use_specialization or specialization_text:inside(x, y)) and not self._is_skilltree_page_active and self._use_skilltree and skilltree_text:inside(x, y) then
+		if self._is_skilltree_page_active and self._use_specialization then
+			if specialization_text:inside(x, y) then
+				self:set_skilltree_page_active(false)
+
+				return
+			end
+		elseif not self._is_skilltree_page_active and self._use_skilltree and skilltree_text:inside(x, y) then
 			self:set_skilltree_page_active(true)
 
 			return
@@ -2776,7 +2801,11 @@ function SkillTreeGui:next_page(play_sound)
 		return
 	end
 
-	if (not self._is_skilltree_page_active or not self._use_skilltree or self:activate_next_tree_panel(play_sound)) and not self._is_skilltree_page_active and self._use_specialization and self:activate_next_spec_panel(play_sound) then
+	if self._is_skilltree_page_active and self._use_skilltree then
+		if self:activate_next_tree_panel(play_sound) then
+			self:set_selected_item(self._active_page:item(), true)
+		end
+	elseif not self._is_skilltree_page_active and self._use_specialization and self:activate_next_spec_panel(play_sound) then
 		self:set_selected_item(self._spec_tab_items[self._active_spec_tree], true)
 	end
 end
@@ -2790,7 +2819,11 @@ function SkillTreeGui:previous_page(play_sound)
 		return
 	end
 
-	if (not self._is_skilltree_page_active or not self._use_skilltree or self:activate_prev_tree_panel(play_sound)) and not self._is_skilltree_page_active and self._use_specialization and self:activate_prev_spec_panel(play_sound) then
+	if self._is_skilltree_page_active and self._use_skilltree then
+		if self:activate_prev_tree_panel(play_sound) then
+			self:set_selected_item(self._active_page:item(), true)
+		end
+	elseif not self._is_skilltree_page_active and self._use_specialization and self:activate_prev_spec_panel(play_sound) then
 		self:set_selected_item(self._spec_tab_items[self._active_spec_tree], true)
 	end
 end
@@ -2953,7 +2986,21 @@ function SkillTreeGui:place_point(item)
 		return
 	end
 
-	if tier and (not managers.skilltree:tier_unlocked(tree, tier) or "dialog_allocate_skillpoint") or points <= managers.skilltree:points() then
+	if tier then
+		if managers.skilltree:points() < points then
+			self:flash_item(item)
+
+			return
+		end
+
+		if managers.skilltree:tier_unlocked(tree, tier) then
+			params.skill_name_localized = item._skill_name
+			params.points = points
+			params.cost = point_cost
+			params.remaining_points = managers.skilltree:points()
+			params.text_string = "dialog_allocate_skillpoint"
+		end
+	elseif points <= managers.skilltree:points() then
 		params.skill_name_localized = item._skill_name
 		params.points = points
 		params.cost = point_cost

@@ -2663,21 +2663,23 @@ function PlayerInventoryGui:_update_info_weapon_mod(box)
 			self._stats_texts[stat.name].equip:set_color(tweak_data.screen_colors.text)
 		end
 
-		if not stat.percent or math.round(total_value) >= 100 then
-			if stat.index then
-				
-			elseif tweak_stats[stat.name] then
-				local without_skill = math.round(total_base_stats[stat.name].value + total_mods_stats[stat.name].value)
-				local max_stat = math.max(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
+		if stat.percent then
+			if math.round(total_value) >= 100 then
+				self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.stat_maxed)
+			end
+		elseif stat.index then
+			
+		elseif tweak_stats[stat.name] then
+			local without_skill = math.round(total_base_stats[stat.name].value + total_mods_stats[stat.name].value)
+			local max_stat = math.max(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
 
-				if stat.offset then
-					local offset = math.min(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
-					max_stat = max_stat - offset
-				end
+			if stat.offset then
+				local offset = math.min(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
+				max_stat = max_stat - offset
+			end
 
-				if max_stat <= without_skill then
-					self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.stat_maxed)
-				end
+			if max_stat <= without_skill then
+				self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.stat_maxed)
 			end
 		end
 	end
@@ -2719,21 +2721,23 @@ function PlayerInventoryGui:_update_info_weapon(name)
 			self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.text)
 		end
 
-		if not stat.percent or math.round(value) >= 100 then
-			if stat.index then
-				
-			elseif tweak_stats[stat.name] then
-				local without_skill = math.round(base_stats[stat.name].value + mods_stats[stat.name].value)
-				local max_stat = math.max(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
+		if stat.percent then
+			if math.round(value) >= 100 then
+				self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.stat_maxed)
+			end
+		elseif stat.index then
+			
+		elseif tweak_stats[stat.name] then
+			local without_skill = math.round(base_stats[stat.name].value + mods_stats[stat.name].value)
+			local max_stat = math.max(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
 
-				if stat.offset then
-					local offset = math.min(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
-					max_stat = max_stat - offset
-				end
+			if stat.offset then
+				local offset = math.min(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
+				max_stat = max_stat - offset
+			end
 
-				if max_stat <= without_skill then
-					self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.stat_maxed)
-				end
+			if max_stat <= without_skill then
+				self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.stat_maxed)
 			end
 		end
 	end
@@ -2792,21 +2796,23 @@ function PlayerInventoryGui:_update_info_weapon_cosmetics(name, cosmetics)
 				self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.text)
 			end
 
-			if not stat.percent or math.round(value) >= 100 then
-				if stat.index then
-					
-				elseif tweak_stats[stat.name] then
-					local without_skill = math.round(base_stats[stat.name].value + mods_stats[stat.name].value)
-					local max_stat = math.max(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
+			if stat.percent then
+				if math.round(value) >= 100 then
+					self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.stat_maxed)
+				end
+			elseif stat.index then
+				
+			elseif tweak_stats[stat.name] then
+				local without_skill = math.round(base_stats[stat.name].value + mods_stats[stat.name].value)
+				local max_stat = math.max(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
 
-					if stat.offset then
-						local offset = math.min(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
-						max_stat = max_stat - offset
-					end
+				if stat.offset then
+					local offset = math.min(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
+					max_stat = max_stat - offset
+				end
 
-					if max_stat <= without_skill then
-						self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.stat_maxed)
-					end
+				if max_stat <= without_skill then
+					self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.stat_maxed)
 				end
 			end
 		end
@@ -2869,8 +2875,18 @@ function PlayerInventoryGui:_update_info_melee(name)
 		local skill_min_text = skill_min and format_round(skill_min, true)
 		local skill_max_text = skill_max and format_round(skill_max, true)
 
-		if stat.range and skill_min ~= skill_max then
-			skill_text = skill_min_text .. " (" .. skill_max_text .. ")"
+		if stat.range then
+			if base_min ~= base_max then
+				base_text = base_min_text .. " (" .. base_max_text .. ")"
+			end
+
+			if value_min ~= value_max then
+				equip_text = value_min_text .. " (" .. value_max_text .. ")"
+			end
+
+			if skill_min ~= skill_max then
+				skill_text = skill_min_text .. " (" .. skill_max_text .. ")"
+			end
 		end
 
 		if stat.suffix then
@@ -5280,9 +5296,21 @@ function PlayerInventoryGui:_get_melee_weapon_stats(name)
 	end
 
 	for i, stat in ipairs(self._stats_shown) do
-		if not stat.index and skill_stats[stat.name].max_value and base_stats[stat.name].max_value then
-			skill_stats[stat.name].max_value = base_stats[stat.name].max_value * skill_stats[stat.name].max_value
-			base_stats[stat.name].max_value = base_stats[stat.name].max_value
+		if not stat.index then
+			if skill_stats[stat.name].value and base_stats[stat.name].value then
+				skill_stats[stat.name].value = base_stats[stat.name].value * skill_stats[stat.name].value
+				base_stats[stat.name].value = base_stats[stat.name].value
+			end
+
+			if skill_stats[stat.name].min_value and base_stats[stat.name].min_value then
+				skill_stats[stat.name].min_value = base_stats[stat.name].min_value * skill_stats[stat.name].min_value
+				base_stats[stat.name].min_value = base_stats[stat.name].min_value
+			end
+
+			if skill_stats[stat.name].max_value and base_stats[stat.name].max_value then
+				skill_stats[stat.name].max_value = base_stats[stat.name].max_value * skill_stats[stat.name].max_value
+				base_stats[stat.name].max_value = base_stats[stat.name].max_value
+			end
 		end
 	end
 

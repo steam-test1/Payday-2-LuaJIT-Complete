@@ -101,7 +101,15 @@ function BodyBagsBagBase:_check_body()
 		return
 	end
 
-	if (self._attached_data.index ~= 1 or not self._attached_data.body:enabled()) and (self._attached_data.index ~= 2 or not mrotation.equal(self._attached_data.rotation, self._attached_data.body:rotation())) and self._attached_data.index == 3 and mvector3.not_equal(self._attached_data.position, self._attached_data.body:position()) then
+	if self._attached_data.index == 1 then
+		if not self._attached_data.body:enabled() then
+			self:server_set_dynamic()
+		end
+	elseif self._attached_data.index == 2 then
+		if not mrotation.equal(self._attached_data.rotation, self._attached_data.body:rotation()) then
+			self:server_set_dynamic()
+		end
+	elseif self._attached_data.index == 3 and mvector3.not_equal(self._attached_data.position, self._attached_data.body:position()) then
 		self:server_set_dynamic()
 	end
 

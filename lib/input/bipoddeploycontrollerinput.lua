@@ -11,7 +11,13 @@ function BipodDeployControllerInput:update(t, dt, controller, input)
 	if input.any_input_pressed and controller:get_input_pressed("weapon_gadget") then
 		self._deploy_bipod_t = t
 		self._deploy_bipod_waiting = true
-	elseif (not input.any_input_downed or not controller:get_input_bool("weapon_gadget") or self._deploy_bipod_waiting and t - self._deploy_bipod_t > 0.5 and false) and input.any_input_released and controller:get_input_released("weapon_gadget") then
+	elseif input.any_input_downed and controller:get_input_bool("weapon_gadget") then
+		if self._deploy_bipod_waiting and t - self._deploy_bipod_t > 0.5 then
+			input.btn_deploy_bipod = true
+			self._deploy_bipod_t = 0
+			self._deploy_bipod_waiting = false
+		end
+	elseif input.any_input_released and controller:get_input_released("weapon_gadget") then
 		self._deploy_bipod_t = 0
 
 		if self._deploy_bipod_waiting then

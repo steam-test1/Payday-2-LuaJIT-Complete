@@ -992,7 +992,11 @@ function CoreEditor:on_hide_helper_units(data)
 		for _, unit in ipairs(layer:created_units()) do
 			local u_key = unit:name():s()
 
-			if not cache[u_key] or not cache[u_key].skip then
+			if cache[u_key] then
+				if not cache[u_key].skip then
+					self:set_unit_visible(unit, cache[u_key].vis_state)
+				end
+			else
 				local vis_state, affected = nil
 
 				if unit:unit_data().only_visible_in_editor or unit:unit_data().only_exists_in_editor or unit:has_material_assigned(leveltools_ids) then

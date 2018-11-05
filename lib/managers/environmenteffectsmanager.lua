@@ -15,7 +15,12 @@ end
 
 function EnvironmentEffectsManager:set_active_effects(effects)
 	for effect_name, effect in pairs(self._effects) do
-		if table.contains(effects, effect_name) or table.contains(self._current_effects, effect) then
+		if not table.contains(effects, effect_name) then
+			if table.contains(self._current_effects, effect) then
+				effect:stop()
+				table.delete(self._current_effects, effect)
+			end
+		else
 			self:use(effect_name)
 		end
 	end

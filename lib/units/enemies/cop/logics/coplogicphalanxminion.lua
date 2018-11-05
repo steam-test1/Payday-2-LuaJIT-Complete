@@ -247,8 +247,14 @@ function CopLogicPhalanxMinion.action_complete_clbk(data, action)
 	elseif action_type == "act" then
 		local my_data = data.internal_data
 
-		if my_data.action_started == action and (not action:expired() or not my_data.action_timeout_clbk_id) and not my_data.action_expired then
-			data.objective_failed_clbk(data.unit, data.objective)
+		if my_data.action_started == action then
+			if action:expired() then
+				if not my_data.action_timeout_clbk_id then
+					data.objective_complete_clbk(data.unit, data.objective)
+				end
+			elseif not my_data.action_expired then
+				data.objective_failed_clbk(data.unit, data.objective)
+			end
 		end
 	end
 end
@@ -281,7 +287,11 @@ function CopLogicPhalanxMinion._i_am_nth_neighbour(diffs_to_fixed_angle, my_diff
 	local negative = my_diff < 0
 
 	for diff, unit in pairs(diffs_to_fixed_angle) do
-		if negative and (diff > 0 or my_diff >= diff or result - 1) or diff >= 0 and diff < my_diff then
+		if negative then
+			if diff <= 0 and my_diff < diff then
+				result = result - 1
+			end
+		elseif diff >= 0 and diff < my_diff then
 			result = result + 1
 		end
 	end

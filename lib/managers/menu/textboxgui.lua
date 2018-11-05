@@ -1141,8 +1141,14 @@ function TextBoxGui:scroll_up(y)
 	local scroll_panel = info_area:child("scroll_panel")
 	local scroll_text = scroll_panel:child("text")
 
-	if scroll_text:top() < 0 and scroll_text:top() > 0 then
-		scroll_text:set_top(0)
+	if scroll_text:top() < 0 then
+		if scroll_text:top() < 0 then
+			scroll_text:set_y(scroll_text:y() + (y or TimerManager:main():delta_time() * 200))
+		end
+
+		if scroll_text:top() > 0 then
+			scroll_text:set_top(0)
+		end
 	end
 
 	self:_check_scroll_indicator_states()
@@ -1157,8 +1163,14 @@ function TextBoxGui:scroll_down(y)
 	local scroll_panel = info_area:child("scroll_panel")
 	local scroll_text = scroll_panel:child("text")
 
-	if scroll_panel:h() < scroll_text:bottom() and scroll_text:bottom() < scroll_panel:h() then
-		scroll_text:set_bottom(scroll_panel:h())
+	if scroll_panel:h() < scroll_text:bottom() then
+		if scroll_panel:h() < scroll_text:bottom() then
+			scroll_text:set_y(scroll_text:y() - (y or TimerManager:main():delta_time() * 200))
+		end
+
+		if scroll_text:bottom() < scroll_panel:h() then
+			scroll_text:set_bottom(scroll_panel:h())
+		end
 	end
 
 	self:_check_scroll_indicator_states()

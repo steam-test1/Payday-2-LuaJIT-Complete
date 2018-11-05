@@ -209,8 +209,14 @@ function DynamicResourceManager:change_material_config(name, unit)
 end
 
 function DynamicResourceManager:on_material_applied(unit)
-	if alive(unit) and unit:contour() then
-		unit:contour():update_materials()
+	if alive(unit) then
+		if unit:interaction() then
+			unit:interaction():refresh_material()
+		end
+
+		if unit:contour() then
+			unit:contour():update_materials()
+		end
 	end
 end
 

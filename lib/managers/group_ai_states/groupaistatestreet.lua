@@ -449,19 +449,27 @@ function GroupAIStateStreet:_upd_assault_tasks()
 	else
 		local enemies_left = self:_count_police_force("assault")
 
-		if (enemies_left < 7 or assault_data.phase_end_t + 350 < t) and (assault_data.phase_end_t - 8 >= t or assault_data.said_retreat or self._drama_data.amount < tweak_data.drama.assault_fade_end) and assault_data.phase_end_t < t and self._drama_data.amount < tweak_data.drama.assault_fade_end and self:_count_criminals_engaged_force(4) <= 3 then
-			assault_data.active = nil
-			assault_data.phase = nil
-			assault_data.said_retreat = nil
+		if enemies_left < 7 or assault_data.phase_end_t + 350 < t then
+			if assault_data.phase_end_t - 8 < t and not assault_data.said_retreat then
+				if self._drama_data.amount < tweak_data.drama.assault_fade_end then
+					assault_data.said_retreat = true
 
-			if self._draw_drama then
-				self._draw_drama.assault_hist[#self._draw_drama.assault_hist][2] = t
+					self:_police_announce_retreat()
+				end
+			elseif assault_data.phase_end_t < t and self._drama_data.amount < tweak_data.drama.assault_fade_end and self:_count_criminals_engaged_force(4) <= 3 then
+				assault_data.active = nil
+				assault_data.phase = nil
+				assault_data.said_retreat = nil
+
+				if self._draw_drama then
+					self._draw_drama.assault_hist[#self._draw_drama.assault_hist][2] = t
+				end
+
+				managers.mission:call_global_event("end_assault")
+				self:_begin_regroup_task()
+
+				return
 			end
-
-			managers.mission:call_global_event("end_assault")
-			self:_begin_regroup_task()
-
-			return
 		end
 	end
 
@@ -513,7 +521,11 @@ function GroupAIStateStreet:_upd_assault_tasks()
 		local target_area_id = reenforce_task.target_area.id
 		local assault_task = assault_tasks[target_area_id]
 
-		if not assault_task or not assault_task.target_criminals[criminal_u_key] and self._criminals[criminal_u_key] then
+		if assault_task then
+			if not assault_task.target_criminals[criminal_u_key] then
+				assault_task.target_criminals[criminal_u_key] = self._criminals[criminal_u_key]
+			end
+		else
 			assault_task = {
 				target_area = self._area_data[target_area_id],
 				target_criminals = {[criminal_u_key] = self._criminals[criminal_u_key]},

@@ -312,32 +312,38 @@ function CopActionHurt:init(action_desc, common_data)
 		local use_animation_on_fire_damage = nil
 		use_animation_on_fire_damage = char_tweak.use_animation_on_fire_damage == nil and true or char_tweak.use_animation_on_fire_damage
 
-		if start_dot_dance_antimation and self._unit:character_damage() ~= nil and self._unit:character_damage().get_last_time_unit_got_fire_damage ~= nil then
-			local last_fire_recieved = self._unit:character_damage():get_last_time_unit_got_fire_damage()
+		if start_dot_dance_antimation then
+			if ignite_character == "dragonsbreath" then
+				self:_dragons_breath_sparks()
+			end
 
-			if last_fire_recieved == nil or t - last_fire_recieved > 1 then
-				if use_animation_on_fire_damage then
-					redir_res = self._ext_movement:play_redirect("fire_hurt")
-					local dir_str = nil
-					local fwd_dot = action_desc.direction_vec:dot(common_data.fwd)
+			if self._unit:character_damage() ~= nil and self._unit:character_damage().get_last_time_unit_got_fire_damage ~= nil then
+				local last_fire_recieved = self._unit:character_damage():get_last_time_unit_got_fire_damage()
 
-					if fwd_dot < 0 then
-						local hit_pos = action_desc.hit_pos
-						local hit_vec = hit_pos - common_data.pos:with_z(0):normalized()
+				if last_fire_recieved == nil or t - last_fire_recieved > 1 then
+					if use_animation_on_fire_damage then
+						redir_res = self._ext_movement:play_redirect("fire_hurt")
+						local dir_str = nil
+						local fwd_dot = action_desc.direction_vec:dot(common_data.fwd)
 
-						if mvector3.dot(hit_vec, common_data.right) > 0 then
-							dir_str = "r"
+						if fwd_dot < 0 then
+							local hit_pos = action_desc.hit_pos
+							local hit_vec = hit_pos - common_data.pos:with_z(0):normalized()
+
+							if mvector3.dot(hit_vec, common_data.right) > 0 then
+								dir_str = "r"
+							else
+								dir_str = "l"
+							end
 						else
-							dir_str = "l"
+							dir_str = "bwd"
 						end
-					else
-						dir_str = "bwd"
+
+						self._machine:set_parameter(redir_res, dir_str, 1)
 					end
 
-					self._machine:set_parameter(redir_res, dir_str, 1)
+					self._unit:character_damage():set_last_time_unit_got_fire_damage(t)
 				end
-
-				self._unit:character_damage():set_last_time_unit_got_fire_damage(t)
 			end
 		end
 	elseif action_type == "taser_tased" then
@@ -1102,8 +1108,14 @@ function CopActionHurt:on_exit()
 		CopActionWalk._chk_correct_pose(self)
 	end
 
-	if not self._expired and Network:is_server() and (self._hurt_type == "bleedout" or self._hurt_type == "fatal") then
-		self._ext_inventory:equip_selection(2, true)
+	if not self._expired and Network:is_server() then
+		if self._hurt_type == "bleedout" or self._hurt_type == "fatal" or self._variant == "tase" then
+			self._unit:network():send("action_hurt_end")
+		end
+
+		if self._hurt_type == "bleedout" or self._hurt_type == "fatal" then
+			self._ext_inventory:equip_selection(2, true)
+		end
 	end
 
 	if self._hurt_type == "fatal" or self._variant == "tase" then
@@ -1466,7 +1478,15 @@ function CopActionHurt:on_death_drop(unit, stage)
 		self._delayed_shooting_hurt_clbk_id = nil
 	end
 
-	if (not self._shooting_hurt or stage == 2 and false) and self._ext_inventory then
+	if self._shooting_hurt then
+		if stage == 2 then
+			self._weapon_unit:base():stop_autofire()
+			self._ext_inventory:drop_weapon()
+
+			self._weapon_dropped = true
+			self._shooting_hurt = false
+		end
+	elseif self._ext_inventory then
 		self._ext_inventory:drop_weapon()
 
 		self._weapon_dropped = true

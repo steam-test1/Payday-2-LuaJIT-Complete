@@ -36,7 +36,13 @@ function AnimatedVehicleBase:update(unit, t, dt)
 end
 
 function AnimatedVehicleBase:_set_anim_lod(dis)
-	if (dis <= 9000 or self._lod_high) and dis < 8000 and not self._lod_high then
+	if dis > 9000 then
+		if self._lod_high then
+			self._lod_high = false
+
+			self._unit:set_animation_lod(2, 0, 0, 0)
+		end
+	elseif dis < 8000 and not self._lod_high then
 		self._lod_high = true
 
 		self._unit:set_animation_lod(1, 1000000, 1000000, 1000000)
@@ -129,7 +135,13 @@ function AnimatedVehicleBase:spawn_module(module_unit_name, align_obj_name, modu
 	local align_obj = self._unit:get_object(Idstring(align_obj_name))
 	local module_unit = nil
 
-	if type_name(module_unit_name) ~= "string" or Network:is_server() and World:spawn_unit(Idstring(module_unit_name), spawn_pos, spawn_rot) then
+	if type_name(module_unit_name) == "string" then
+		if Network:is_server() then
+			local spawn_pos = align_obj:position()
+			local spawn_rot = align_obj:rotation()
+			module_unit = World:spawn_unit(Idstring(module_unit_name), spawn_pos, spawn_rot)
+		end
+	else
 		module_unit = module_unit_name
 	end
 

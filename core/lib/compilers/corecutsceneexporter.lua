@@ -99,8 +99,14 @@ function CoreCutsceneExporter:_problem_map()
 			previous_clip = clip
 		end
 
-		if table.empty(problem_map) and self:contains_optimized_footage() and not table.empty(self.__animation_patches or {}) then
-			add_problem("Cannot apply animation patches to optimized clips.")
+		if table.empty(problem_map) and self:contains_optimized_footage() then
+			if self:contains_unoptimized_footage() then
+				add_problem("The scene features both optimized and un-optimized clips.")
+			end
+
+			if not table.empty(self.__animation_patches or {}) then
+				add_problem("Cannot apply animation patches to optimized clips.")
+			end
 		end
 	end
 

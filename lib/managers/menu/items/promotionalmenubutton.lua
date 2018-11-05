@@ -125,58 +125,78 @@ function PromotionalMenuButton:_setup_titles(parent_gui, panel, params, theme)
 end
 
 function PromotionalMenuButton:_setup_background(parent_gui, panel, params, theme)
-	if params.background and params.background.image then
-		self._bg_image = self._panel:bitmap({
-			layer = -1,
-			texture = params.background.image,
-			color = params.background.image_color,
-			blend_mode = params.background.image_blend_mode or "normal"
-		})
-		local panel_size = math.max(self._panel:w(), self._panel:h())
-		local ratio = math.max(self._panel:w() / self._bg_image:w(), self._panel:h() / self._bg_image:h())
+	if params.background then
+		if params.background.color then
+			self._bg = self._panel:rect({
+				layer = -2,
+				color = tweak_data.screen_colors.button_stage_3,
+				blend_mode = params.background.blend_mode or "add"
+			})
+		end
 
-		self._bg_image:set_w(self._bg_image:w() * ratio)
-		self._bg_image:set_h(self._bg_image:h() * ratio)
+		if params.background.image then
+			self._bg_image = self._panel:bitmap({
+				layer = -1,
+				texture = params.background.image,
+				color = params.background.image_color,
+				blend_mode = params.background.image_blend_mode or "normal"
+			})
+			local panel_size = math.max(self._panel:w(), self._panel:h())
+			local ratio = math.max(self._panel:w() / self._bg_image:w(), self._panel:h() / self._bg_image:h())
 
-		self._bg_image_size = {
-			self._bg_image:w(),
-			self._bg_image:h()
-		}
+			self._bg_image:set_w(self._bg_image:w() * ratio)
+			self._bg_image:set_h(self._bg_image:h() * ratio)
 
-		self._bg_image:set_center(self._panel:w() * 0.5, self._panel:h() * 0.5)
+			self._bg_image_size = {
+				self._bg_image:w(),
+				self._bg_image:h()
+			}
+
+			self._bg_image:set_center(self._panel:w() * 0.5, self._panel:h() * 0.5)
+		end
 	end
 end
 
 function PromotionalMenuButton:_setup_overlay(parent_gui, panel, params, theme)
-	if params.overlay and params.overlay.image then
-		local overlay_image = self._panel:bitmap({
-			layer = 50,
-			texture = params.overlay.image,
-			color = params.overlay.image_color,
-			blend_mode = params.overlay.image_blend_mode or "normal"
-		})
-
-		if params.overlay.w then
-			overlay_image:set_w(params.overlay.w)
+	if params.overlay then
+		if params.overlay.color then
+			self._overlay = self._panel:rect({
+				layer = 50,
+				color = tweak_data.screen_colors.button_stage_3,
+				blend_mode = params.overlay.blend_mode or "add"
+			})
 		end
 
-		if params.overlay.h then
-			overlay_image:set_h(params.overlay.h)
-		end
+		if params.overlay.image then
+			local overlay_image = self._panel:bitmap({
+				layer = 50,
+				texture = params.overlay.image,
+				color = params.overlay.image_color,
+				blend_mode = params.overlay.image_blend_mode or "normal"
+			})
 
-		if params.overlay.center then
-			overlay_image:set_center(self._panel:w() * (params.overlay.center[1] or 0.5), self._panel:h() * (params.overlay.center[2] or 0.5))
-		elseif params.overlay.align then
-			if params.overlay.align[1] == "left" then
-				overlay_image:set_left(0)
-			else
-				overlay_image:set_right(self._panel:w())
+			if params.overlay.w then
+				overlay_image:set_w(params.overlay.w)
 			end
 
-			if params.overlay.align[2] == "top" then
-				overlay_image:set_top(0)
-			else
-				overlay_image:set_bottom(self._panel:h())
+			if params.overlay.h then
+				overlay_image:set_h(params.overlay.h)
+			end
+
+			if params.overlay.center then
+				overlay_image:set_center(self._panel:w() * (params.overlay.center[1] or 0.5), self._panel:h() * (params.overlay.center[2] or 0.5))
+			elseif params.overlay.align then
+				if params.overlay.align[1] == "left" then
+					overlay_image:set_left(0)
+				else
+					overlay_image:set_right(self._panel:w())
+				end
+
+				if params.overlay.align[2] == "top" then
+					overlay_image:set_top(0)
+				else
+					overlay_image:set_bottom(self._panel:h())
+				end
 			end
 		end
 	end

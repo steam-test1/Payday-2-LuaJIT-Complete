@@ -256,18 +256,36 @@ function UGCItem:_prepare_item_info(item)
 
 	local info = self._info
 
-	if info and info.tags then
-		local tags = {}
-		local i = 1
-
-		for tag, enabled in pairs(info.tags) do
-			if enabled then
-				tags[i] = tag
-				i = i + 1
-			end
+	if info then
+		if info.title then
+			item:set_title(info.title)
 		end
 
-		item:set_tags(tags)
+		if info.description then
+			item:set_description(info.description)
+		end
+
+		if info.metadata then
+			item:set_metadata(info.metadata)
+		end
+
+		if info.visibility then
+			item:set_visibility(info.visibility)
+		end
+
+		if info.tags then
+			local tags = {}
+			local i = 1
+
+			for tag, enabled in pairs(info.tags) do
+				if enabled then
+					tags[i] = tag
+					i = i + 1
+				end
+			end
+
+			item:set_tags(tags)
+		end
 	end
 end
 

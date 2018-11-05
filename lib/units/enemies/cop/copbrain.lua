@@ -660,7 +660,15 @@ function CopBrain:_chk_use_cover_grenade(unit)
 
 	local grenade_was_used = nil
 
-	if (self._logic_data.attention_obj.dis > 1000 or not self._logic_data.char_tweak.dodge_with_grenade.flash) and (not self._logic_data.char_tweak.dodge_with_grenade.smoke or managers.groupai:state():is_smoke_grenade_active() or true) or self._logic_data.char_tweak.dodge_with_grenade.flash then
+	if self._logic_data.attention_obj.dis > 1000 or not self._logic_data.char_tweak.dodge_with_grenade.flash then
+		if self._logic_data.char_tweak.dodge_with_grenade.smoke and not managers.groupai:state():is_smoke_grenade_active() then
+			local duration = self._logic_data.char_tweak.dodge_with_grenade.smoke.duration
+
+			managers.groupai:state():detonate_smoke_grenade(self._logic_data.m_pos + math.UP * 10, self._unit:movement():m_head_pos(), math.lerp(duration[1], duration[2], math.random()), false)
+
+			grenade_was_used = true
+		end
+	elseif self._logic_data.char_tweak.dodge_with_grenade.flash then
 		local duration = self._logic_data.char_tweak.dodge_with_grenade.flash.duration
 
 		managers.groupai:state():detonate_smoke_grenade(self._logic_data.m_pos + math.UP * 10, self._unit:movement():m_head_pos(), math.lerp(duration[1], duration[2], math.random()), true)
@@ -1136,6 +1144,10 @@ function CopBrain:on_alarm_pager_interaction(status, player)
 				self._unit:sound():corpse_play(self:_get_radio_id("dsp_radio_fooled_" .. tostring(cue_index)), nil, true)
 			else
 				self._unit:sound():play(self:_get_radio_id("dsp_radio_fooled_" .. tostring(cue_index)), nil, true)
+			end
+
+			if is_last then
+				
 			end
 		else
 			managers.groupai:state():on_police_called("alarm_pager_bluff_failed")

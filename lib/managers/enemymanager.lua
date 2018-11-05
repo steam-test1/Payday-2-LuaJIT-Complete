@@ -863,19 +863,36 @@ function EnemyManager:_upd_corpse_disposal()
 		end
 	end
 
-	if #to_dispose < disposals_needed and nr_found < disposals_needed then
-		local oldest_u_key, oldest_t = nil
+	if #to_dispose < disposals_needed then
+		if cam_pos then
+			for u_key, u_data in pairs(corpses) do
+				local u_pos = u_data.m_pos
 
-		for u_key, u_data in pairs(corpses) do
-			if (not oldest_t or u_data.death_t < oldest_t) and not to_dispose[u_key] then
-				oldest_u_key = u_key
-				oldest_t = u_data.death_t
+				if not to_dispose[u_key] and mvec3_dis(cam_pos, u_pos) > 300 and mvector3.dot(cam_fwd, u_pos - cam_pos) < 0 then
+					to_dispose[u_key] = true
+					nr_found = nr_found + 1
+
+					if nr_found == disposals_needed then
+						break
+					end
+				end
 			end
 		end
 
-		if oldest_u_key then
-			to_dispose[oldest_u_key] = true
-			nr_found = nr_found + 1
+		if nr_found < disposals_needed then
+			local oldest_u_key, oldest_t = nil
+
+			for u_key, u_data in pairs(corpses) do
+				if (not oldest_t or u_data.death_t < oldest_t) and not to_dispose[u_key] then
+					oldest_u_key = u_key
+					oldest_t = u_data.death_t
+				end
+			end
+
+			if oldest_u_key then
+				to_dispose[oldest_u_key] = true
+				nr_found = nr_found + 1
+			end
 		end
 	end
 
@@ -918,19 +935,46 @@ function EnemyManager:_upd_shield_disposal()
 	local to_dispose = {}
 	local nr_found = 0
 
-	if #to_dispose < disposals_needed and nr_found < disposals_needed then
-		local oldest_u_key, oldest_t = nil
+	if #to_dispose < disposals_needed then
+		if cam_pos then
+			for u_key, u_data in pairs(shields) do
+				local dispose = false
 
-		for u_key, u_data in pairs(shields) do
-			if (not oldest_t or u_data.death_t < oldest_t) and not to_dispose[u_key] then
-				oldest_u_key = u_key
-				oldest_t = u_data.death_t
+				if alive(u_data.unit) then
+					local u_pos = u_data.unit:position()
+
+					if not to_dispose[u_key] and mvec3_dis(cam_pos, u_pos) > 300 and mvector3.dot(cam_fwd, u_pos - cam_pos) < 0 and u_data.death_t + self._shield_disposal_lifetime < t then
+						dispose = true
+					end
+				else
+					dispose = true
+				end
+
+				if dispose then
+					to_dispose[u_key] = true
+					nr_found = nr_found + 1
+
+					if nr_found == disposals_needed then
+						break
+					end
+				end
 			end
 		end
 
-		if oldest_u_key then
-			to_dispose[oldest_u_key] = true
-			nr_found = nr_found + 1
+		if nr_found < disposals_needed then
+			local oldest_u_key, oldest_t = nil
+
+			for u_key, u_data in pairs(shields) do
+				if (not oldest_t or u_data.death_t < oldest_t) and not to_dispose[u_key] then
+					oldest_u_key = u_key
+					oldest_t = u_data.death_t
+				end
+			end
+
+			if oldest_u_key then
+				to_dispose[oldest_u_key] = true
+				nr_found = nr_found + 1
+			end
 		end
 	end
 

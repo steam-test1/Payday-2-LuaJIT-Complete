@@ -1939,8 +1939,16 @@ function BlackMarketManager:add_to_inventory(global_value, category, id, not_new
 	self._global.inventory[global_value][category] = self._global.inventory[global_value][category] or {}
 	self._global.inventory[global_value][category][id] = (self._global.inventory[global_value][category][id] or 0) + 1
 
-	if category ~= "cash" and category ~= "xp" and self._global.new_item_type_unlocked[category] == nil then
-		self._global.new_item_type_unlocked[category] = id
+	if category ~= "cash" and category ~= "xp" then
+		if not not_new and self._global.inventory[global_value][category][id] > 0 then
+			self._global.new_drops[global_value] = self._global.new_drops[global_value] or {}
+			self._global.new_drops[global_value][category] = self._global.new_drops[global_value][category] or {}
+			self._global.new_drops[global_value][category][id] = true
+		end
+
+		if self._global.new_item_type_unlocked[category] == nil then
+			self._global.new_item_type_unlocked[category] = id
+		end
 	end
 
 	self:alter_global_value_item(global_value, category, nil, id, INV_ADD)
@@ -2133,49 +2141,79 @@ function BlackMarketManager:got_new_drop(global_value, category, id)
 				end
 			end
 		end
-	elseif category_ids ~= Idstring("weapon_mods") or self:check_new_drop(global_value, "weapon_mods", id) then
-		if category_ids == Idstring("weapon_tabs") then
-			local uses_parts = managers.weapon_factory:get_parts_from_factory_id(id)
-			local tab_parts = uses_parts and uses_parts[global_value] or {}
-
-			for type, part in ipairs(tab_parts) do
-				if self:check_new_drop("normal", "weapon_mods", part) then
-					return true
-				end
-
-				if self:check_new_drop("infamous", "weapon_mods", part) then
-					return true
-				end
-			end
-		elseif category_ids == Idstring("mask_mods") then
-			local textures = managers.blackmarket:get_inventory_category("textures")
-			local colors = managers.blackmarket:get_inventory_category("colors")
-			local got_table = {}
-
-			for _, mmod in ipairs({
-				"colors",
-				"materials",
-				"textures"
-			}) do
-				if self:check_new_drop_category("normal", mmod) then
-					got_table[mmod] = true
-				elseif self:check_new_drop_category("infamous", mmod) then
-					got_table[mmod] = true
-				end
-			end
-
-			if got_table.textures then
-				return #colors > 0
-			end
-
-			if got_table.colors then
-				return #textures > 0
-			end
-
-			return table.size(got_table) > 0
-		elseif (category_ids ~= Idstring("mask_buy") or self:check_new_drop_category("infamous", "masks")) and (category_ids ~= Idstring("weapon_buy") or self:check_new_drop("normal", global_value, id)) and (category_ids ~= Idstring("weapon_buy_empty") or self:check_new_drop_category("normal", global_value)) and (id or global_value or self:check_new_drop_category("infamous", category)) then
-			return self:check_new_drop(global_value, category, id)
+	elseif category_ids == Idstring("weapon_mods") then
+		if self:check_new_drop(global_value, "weapon_mods", id) then
+			return true
 		end
+	elseif category_ids == Idstring("weapon_tabs") then
+		local uses_parts = managers.weapon_factory:get_parts_from_factory_id(id)
+		local tab_parts = uses_parts and uses_parts[global_value] or {}
+
+		for type, part in ipairs(tab_parts) do
+			if self:check_new_drop("normal", "weapon_mods", part) then
+				return true
+			end
+
+			if self:check_new_drop("infamous", "weapon_mods", part) then
+				return true
+			end
+		end
+	elseif category_ids == Idstring("mask_mods") then
+		local textures = managers.blackmarket:get_inventory_category("textures")
+		local colors = managers.blackmarket:get_inventory_category("colors")
+		local got_table = {}
+
+		for _, mmod in ipairs({
+			"colors",
+			"materials",
+			"textures"
+		}) do
+			if self:check_new_drop_category("normal", mmod) then
+				got_table[mmod] = true
+			elseif self:check_new_drop_category("infamous", mmod) then
+				got_table[mmod] = true
+			end
+		end
+
+		if got_table.textures then
+			return #colors > 0
+		end
+
+		if got_table.colors then
+			return #textures > 0
+		end
+
+		return table.size(got_table) > 0
+	elseif category_ids == Idstring("mask_buy") then
+		if self:check_new_drop_category("normal", "masks") then
+			return true
+		end
+
+		if self:check_new_drop_category("infamous", "masks") then
+			return true
+		end
+	elseif category_ids == Idstring("weapon_buy") then
+		if self:check_new_drop("normal", global_value, id) then
+			return true
+		end
+	elseif category_ids == Idstring("weapon_buy_empty") then
+		if self:check_new_drop_category("normal", global_value) then
+			return true
+		end
+	elseif not id then
+		if not global_value then
+			if self:check_new_drop_category("normal", category) then
+				return true
+			end
+
+			if self:check_new_drop_category("infamous", category) then
+				return true
+			end
+		else
+			return self:check_new_drop_category(global_value, category)
+		end
+	else
+		return self:check_new_drop(global_value, category, id)
 	end
 
 	return false
@@ -2969,14 +3007,20 @@ function BlackMarketManager:get_crafted_item_amount(category, id)
 	local item_amount = 0
 
 	for _, item in pairs(crafted_category) do
-		if (category == "primaries" or category == "secondaries") and (item.weapon_id ~= id or item_amount + 1) or category ~= "masks" or item.mask_id == id and item_amount + 1 then
-			if category == "character" then
-				
-			elseif category == "armors" then
-				
-			else
-				break
+		if category == "primaries" or category == "secondaries" then
+			if item.weapon_id == id then
+				item_amount = item_amount + 1
 			end
+		elseif category == "masks" then
+			if item.mask_id == id then
+				item_amount = item_amount + 1
+			end
+		elseif category == "character" then
+			
+		elseif category == "armors" then
+			
+		else
+			break
 		end
 	end
 
@@ -4362,8 +4406,14 @@ function BlackMarketManager:get_weapon_icon_path(weapon_id, cosmetics)
 	local id = use_cosmetics and cosmetics.id or weapon_id
 	local path = use_cosmetics and "weapon_skins/" or "textures/pd2/blackmarket/icons/weapons/"
 
-	if use_cosmetics and data[id] and (not data[id].weapon_ids or not table.contains(data[id].weapon_ids, weapon_id)) and data[id].weapon_id ~= weapon_id then
-		return self:get_weapon_icon_path(weapon_id, nil)
+	if use_cosmetics and data[id] then
+		if data[id].weapon_ids then
+			if not table.contains(data[id].weapon_ids, weapon_id) then
+				return self:get_weapon_icon_path(weapon_id, nil)
+			end
+		elseif data[id].weapon_id ~= weapon_id then
+			return self:get_weapon_icon_path(weapon_id, nil)
+		end
 	end
 
 	local texture_path, rarity_path = nil
@@ -6302,8 +6352,14 @@ function BlackMarketManager:get_cosmetics_instances_by_weapon_id(weapon_id)
 	local items = {}
 
 	for instance_id, data in pairs(self._global.inventory_tradable) do
-		if data.category == "weapon_skins" and cosmetic_tweak[data.entry] and (not cosmetic_tweak[data.entry].weapon_ids or table.contains(cosmetic_tweak[data.entry].weapon_ids, weapon_id)) and cosmetic_tweak[data.entry].weapon_id == weapon_id then
-			table.insert(items, instance_id)
+		if data.category == "weapon_skins" and cosmetic_tweak[data.entry] then
+			if cosmetic_tweak[data.entry].weapon_ids then
+				if table.contains(cosmetic_tweak[data.entry].weapon_ids, weapon_id) then
+					table.insert(items, instance_id)
+				end
+			elseif cosmetic_tweak[data.entry].weapon_id == weapon_id then
+				table.insert(items, instance_id)
+			end
 		end
 	end
 
@@ -6948,33 +7004,37 @@ function BlackMarketManager:load(data)
 		end
 
 		for category, id in pairs(self._global.new_item_type_unlocked) do
-			if category ~= "announcements" or type(id) ~= "table" and {} then
-				if id and tweak_data.blackmarket[category] and not tweak_data.blackmarket[category][id] then
-					debug_pause("[BlackMarketManager:load] 'New item type unlocked' no longer exists!", "category", category, "id", id)
+			if category == "announcements" then
+				if type(id) ~= "table" then
+					Application:error("[BlackMarketManager:load] 'New item type unlocked' announcements was not a table", "announcements", id)
 
-					self._global.new_item_type_unlocked[category] = false
-				elseif category == "primaries" or category == "secondaries" then
-					local test_factory_id = id
+					self._global.new_item_type_unlocked[category] = {}
+				end
+			elseif id and tweak_data.blackmarket[category] and not tweak_data.blackmarket[category][id] then
+				debug_pause("[BlackMarketManager:load] 'New item type unlocked' no longer exists!", "category", category, "id", id)
 
-					if test_factory_id ~= false and test_factory_id ~= true and not managers.weapon_factory:get_weapon_id_by_factory_id(test_factory_id) then
-						local fixed = nil
+				self._global.new_item_type_unlocked[category] = false
+			elseif category == "primaries" or category == "secondaries" then
+				local test_factory_id = id
 
-						for weapon_id, weapon_data in pairs(self._global.weapons) do
-							if test_factory_id == managers.weapon_factory:get_weapon_name_by_factory_id(weapon_data.factory_id) then
-								self._global.new_item_type_unlocked[category] = weapon_data.factory_id
-								fixed = true
+				if test_factory_id ~= false and test_factory_id ~= true and not managers.weapon_factory:get_weapon_id_by_factory_id(test_factory_id) then
+					local fixed = nil
 
-								Application:debug("[BlackMarketManager:load] Found weapon from string for 'new item type unlocked'", "test_name", test_factory_id, "weapon_id", weapon_id, "category", category)
+					for weapon_id, weapon_data in pairs(self._global.weapons) do
+						if test_factory_id == managers.weapon_factory:get_weapon_name_by_factory_id(weapon_data.factory_id) then
+							self._global.new_item_type_unlocked[category] = weapon_data.factory_id
+							fixed = true
 
-								break
-							end
+							Application:debug("[BlackMarketManager:load] Found weapon from string for 'new item type unlocked'", "test_name", test_factory_id, "weapon_id", weapon_id, "category", category)
+
+							break
 						end
+					end
 
-						if not fixed then
-							debug_pause("[BlackMarketManager:load] Unknown weapon in 'new item type unlocked'", self._global.new_item_type_unlocked[category], "category", category)
+					if not fixed then
+						debug_pause("[BlackMarketManager:load] Unknown weapon in 'new item type unlocked'", self._global.new_item_type_unlocked[category], "category", category)
 
-							self._global.new_item_type_unlocked[category] = false
-						end
+						self._global.new_item_type_unlocked[category] = false
 					end
 				end
 			end

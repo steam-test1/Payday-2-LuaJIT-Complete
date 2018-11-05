@@ -28,7 +28,11 @@ function ElementCharacterTeam:on_executed(instigator)
 		managers.groupai:state():set_char_team(unit, self._values.team)
 	end
 
-	if (not self._values.use_instigator or self._values.team and not instigator:character_damage():dead()) and self._values.elements then
+	if self._values.use_instigator then
+		if self._values.team and not instigator:character_damage():dead() then
+			_set_unit_team_f(instigator)
+		end
+	elseif self._values.elements then
 		for _, element_id in pairs(self._values.elements) do
 			local element = managers.mission:get_element_by_id(element_id)
 

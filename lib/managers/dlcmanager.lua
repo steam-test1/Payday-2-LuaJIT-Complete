@@ -1771,8 +1771,18 @@ function WINDLCManager:init()
 end
 
 function WINDLCManager:_check_dlc_data(dlc_data)
-	if SystemInfo:distribution() == Idstring("STEAM") and (not dlc_data.app_id or (not dlc_data.no_install or Steam:is_product_owned(dlc_data.app_id)) and Steam:is_product_installed(dlc_data.app_id)) and dlc_data.source_id and Steam:is_user_in_source(Steam:userid(), dlc_data.source_id) then
-		return true
+	if SystemInfo:distribution() == Idstring("STEAM") then
+		if dlc_data.app_id then
+			if dlc_data.no_install then
+				if Steam:is_product_owned(dlc_data.app_id) then
+					return true
+				end
+			elseif Steam:is_product_installed(dlc_data.app_id) then
+				return true
+			end
+		elseif dlc_data.source_id and Steam:is_user_in_source(Steam:userid(), dlc_data.source_id) then
+			return true
+		end
 	end
 end
 

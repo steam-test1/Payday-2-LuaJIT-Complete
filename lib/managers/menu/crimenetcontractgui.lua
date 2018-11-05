@@ -1743,7 +1743,11 @@ function CrimeNetContractGui:set_active_page(index)
 end
 
 function CrimeNetContractGui:update(t, dt)
-	if not self._wait_t or self._wait_t < t and nil then
+	if self._wait_t then
+		if self._wait_t < t then
+			self._wait_t = nil
+		end
+	else
 		local current_step = self._steps[self._step]
 
 		if current_step then

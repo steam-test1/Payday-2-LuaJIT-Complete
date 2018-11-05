@@ -567,10 +567,18 @@ function GageAssetsItem:mouse_pressed(button, x, y)
 		return false
 	end
 
-	if alive(self._move_left_rect) and alive(self._move_right_rect) and self._move_right_rect:visible() and self._move_right_rect:inside(x, y) then
-		self:move_assets_right()
+	if alive(self._move_left_rect) and alive(self._move_right_rect) then
+		if self._move_left_rect:visible() and self._move_left_rect:inside(x, y) then
+			self:move_assets_left()
 
-		return
+			return
+		end
+
+		if self._move_right_rect:visible() and self._move_right_rect:inside(x, y) then
+			self:move_assets_right()
+
+			return
+		end
 	end
 
 	if self._asset_selected and alive(self._panel:child("bg_rect_" .. tostring(self._asset_selected))) and self._panel:child("bg_rect_" .. tostring(self._asset_selected)):inside(x, y) then

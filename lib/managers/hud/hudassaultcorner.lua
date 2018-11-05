@@ -435,7 +435,13 @@ function HUDAssaultCorner:_animate_text(text_panel, bg_box, color, color_functio
 		local dt = coroutine.yield()
 		local last_text = texts[text_index]
 
-		if not last_text or not last_text.text or last_text.x + last_text.text:w() * 0.5 + padding < text_panel:w() then
+		if last_text and last_text.text then
+			if last_text.x + last_text.text:w() * 0.5 + padding < text_panel:w() then
+				text_index = text_index % #text_list + 1
+
+				create_new_text(text_panel, text_list, text_index, texts)
+			end
+		else
 			text_index = text_index % #text_list + 1
 
 			create_new_text(text_panel, text_list, text_index, texts)

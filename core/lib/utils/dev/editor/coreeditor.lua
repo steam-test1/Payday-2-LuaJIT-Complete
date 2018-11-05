@@ -1307,7 +1307,12 @@ function CoreEditor:set_unit_visible(unit, visible)
 
 	unit:set_visible(visible)
 
-	if unit:visible() or not table.contains(self._hidden_units, unit) then
+	if not unit:visible() then
+		if not table.contains(self._hidden_units, unit) then
+			self:unselect_unit(unit)
+			self:insert_hidden_unit(unit)
+		end
+	else
 		self:delete_hidden_unit(unit)
 
 		if self._dialogs.hide_by_name then
@@ -2167,7 +2172,11 @@ function CoreEditor:sound_check_object_active(active)
 end
 
 function CoreEditor:set_listener_active(active)
-	if active and (self._listener_activation_id or managers.listener:activate_set("main", "editor")) or self._listener_activation_id then
+	if active then
+		if not self._listener_activation_id then
+			self._listener_activation_id = managers.listener:activate_set("main", "editor")
+		end
+	elseif self._listener_activation_id then
 		managers.listener:deactivate_set(self._listener_activation_id)
 
 		self._listener_activation_id = nil
@@ -2424,8 +2433,20 @@ function CoreEditor:_should_draw_body(body)
 end
 
 function CoreEditor:_body_color(body)
-	if (body:has_ray_type(Idstring("editor")) or not body:has_ray_type(Idstring("body"))) and body:has_ray_type(Idstring("mover")) then
-		return Color(1, 1, 1, 0.25)
+	if body:has_ray_type(Idstring("editor")) or not body:has_ray_type(Idstring("body")) then
+		if body:has_ray_type(Idstring("walk")) and not body:has_ray_type(Idstring("body")) then
+			if body:has_ray_type(Idstring("mover")) then
+				return Color(1, 1, 0.25, 1)
+			end
+
+			if not body:has_ray_type(Idstring("mover")) then
+				return Color(1, 0.25, 1, 1)
+			end
+		end
+
+		if body:has_ray_type(Idstring("mover")) then
+			return Color(1, 1, 1, 0.25)
+		end
 	end
 
 	return Color(1, 0.5, 0.5, 0.85)
@@ -2574,12 +2595,24 @@ function CoreEditor:update(time, rel_time)
 				end
 			end
 
-			if not ctrl() and not alt() and not shift() and self._ctrl:down(Idstring("increase_view_distance")) then
-				camera:set_far_range(camera:far_range() + 5000 * rel_time)
+			if not ctrl() and not alt() and not shift() then
+				if self._ctrl:down(Idstring("decrease_view_distance")) then
+					camera:set_far_range(camera:far_range() - 5000 * rel_time)
+				end
+
+				if self._ctrl:down(Idstring("increase_view_distance")) then
+					camera:set_far_range(camera:far_range() + 5000 * rel_time)
+				end
 			end
 
-			if shift() and self._ctrl:pressed(Idstring("decrease_grid_altitude")) then
-				self:set_grid_altitude(self:grid_altitude() - self:grid_size())
+			if shift() then
+				if self._ctrl:pressed(Idstring("increase_grid_altitude")) then
+					self:set_grid_altitude(self:grid_altitude() + self:grid_size())
+				end
+
+				if self._ctrl:pressed(Idstring("decrease_grid_altitude")) then
+					self:set_grid_altitude(self:grid_altitude() - self:grid_size())
+				end
 			end
 
 			if self._show_center then
@@ -2877,7 +2910,11 @@ function CoreEditor:unit_by_raycast(data)
 
 	if rays then
 		for _, ray in ipairs(rays) do
-			if (not data.sample or self:sample_unit_ok_conditions(ray.unit)) and self:select_unit_ok_conditions(ray.unit, nil, data.skip_instance_check) then
+			if data.sample then
+				if self:sample_unit_ok_conditions(ray.unit) then
+					return ray
+				end
+			elseif self:select_unit_ok_conditions(ray.unit, nil, data.skip_instance_check) then
 				return ray
 			end
 		end

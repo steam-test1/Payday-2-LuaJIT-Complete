@@ -590,7 +590,11 @@ function ConnectionNetworkHandler:set_member_ready(peer_id, ready, mode, outfit_
 	elseif mode == 2 then
 		peer:set_streaming_status(ready)
 		managers.network:session():on_streaming_progress_received(peer, ready)
-	elseif (mode ~= 3 or Network:is_server()) and mode == 4 and Network:is_client() and peer == managers.network:session():server_peer() then
+	elseif mode == 3 then
+		if Network:is_server() then
+			managers.network:session():on_peer_finished_loading_outfit(peer, ready, outfit_versions_str)
+		end
+	elseif mode == 4 and Network:is_client() and peer == managers.network:session():server_peer() then
 		managers.network:session():notify_host_when_outfits_loaded(ready, outfit_versions_str)
 	end
 end
@@ -766,7 +770,8 @@ function ConnectionNetworkHandler:sync_explode_bullet(position, normal, damage, 
 		if alive(user_unit) then
 			local weapon_unit = user_unit:inventory():unit_by_selection(peer_id_or_selection_index)
 
-			if alive(weapon_unit) and false then
+			if alive(weapon_unit) then
+				InstantExplosiveBulletBase:on_collision_server(position, normal, damage / 163.84, user_unit, weapon_unit, peer:id(), peer_id_or_selection_index)
 				InstantExplosiveBulletBase:on_collision_client(position, normal, damage / 163.84, managers.criminals and managers.criminals:character_unit_by_peer_id(peer_id_or_selection_index))
 			end
 		end

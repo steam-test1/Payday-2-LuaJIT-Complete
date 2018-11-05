@@ -1282,20 +1282,113 @@ function MenuComponentManager:mouse_pressed(o, button, x, y)
 		return true
 	end
 
-	if self._profile_gui and (button ~= Idstring("0") or self._profile_gui:check_grab_scroll_bar(x, y)) and (button ~= Idstring("mouse wheel down") or self._profile_gui:mouse_wheel_down(x, y)) and button == Idstring("mouse wheel up") and self._profile_gui:mouse_wheel_up(x, y) then
-		return true
+	if self._profile_gui then
+		if self._profile_gui:mouse_pressed(button, x, y) then
+			return true
+		end
+
+		if button == Idstring("0") then
+			if self._profile_gui:check_minimize(x, y) then
+				local minimized_data = {
+					text = "PROFILE",
+					help_text = "MAXIMIZE PROFILE WINDOW"
+				}
+
+				self._profile_gui:set_minimized(true, minimized_data)
+
+				return true
+			end
+
+			if self._profile_gui:check_grab_scroll_bar(x, y) then
+				return true
+			end
+		elseif button == Idstring("mouse wheel down") then
+			if self._profile_gui:mouse_wheel_down(x, y) then
+				return true
+			end
+		elseif button == Idstring("mouse wheel up") and self._profile_gui:mouse_wheel_up(x, y) then
+			return true
+		end
 	end
 
-	if self._contract_gui and (button ~= Idstring("0") or self._contract_gui:check_grab_scroll_bar(x, y)) and (button ~= Idstring("mouse wheel down") or self._contract_gui:mouse_wheel_down(x, y)) and button == Idstring("mouse wheel up") and self._contract_gui:mouse_wheel_up(x, y) then
-		return true
+	if self._contract_gui then
+		if self._contract_gui:mouse_pressed(button, x, y) then
+			return true
+		end
+
+		if button == Idstring("0") then
+			if self._contract_gui:check_minimize(x, y) then
+				local minimized_data = {
+					text = "CONTRACT",
+					help_text = "MAXIMIZE CONTRACT WINDOW"
+				}
+
+				self._contract_gui:set_minimized(true, minimized_data)
+
+				return true
+			end
+
+			if self._contract_gui:check_grab_scroll_bar(x, y) then
+				return true
+			end
+		elseif button == Idstring("mouse wheel down") then
+			if self._contract_gui:mouse_wheel_down(x, y) then
+				return true
+			end
+		elseif button == Idstring("mouse wheel up") and self._contract_gui:mouse_wheel_up(x, y) then
+			return true
+		end
 	end
 
-	if self._server_info_gui and (button ~= Idstring("0") or self._server_info_gui:check_grab_scroll_bar(x, y)) and (button ~= Idstring("mouse wheel down") or self._server_info_gui:mouse_wheel_down(x, y)) and button == Idstring("mouse wheel up") and self._server_info_gui:mouse_wheel_up(x, y) then
-		return true
+	if self._server_info_gui then
+		if self._server_info_gui:mouse_pressed(button, x, y) then
+			return true
+		end
+
+		if button == Idstring("0") then
+			if self._server_info_gui:check_minimize(x, y) then
+				local minimized_data = {
+					text = "SERVER INFO",
+					help_text = "MAXIMIZE SERVER INFO WINDOW"
+				}
+
+				self._server_info_gui:set_minimized(true, minimized_data)
+
+				return true
+			end
+
+			if self._server_info_gui:check_grab_scroll_bar(x, y) then
+				return true
+			end
+		elseif button == Idstring("mouse wheel down") then
+			if self._server_info_gui:mouse_wheel_down(x, y) then
+				return true
+			end
+		elseif button == Idstring("mouse wheel up") and self._server_info_gui:mouse_wheel_up(x, y) then
+			return true
+		end
 	end
 
-	if self._lobby_profile_gui and (button ~= Idstring("0") or self._lobby_profile_gui:check_grab_scroll_bar(x, y)) and (button ~= Idstring("mouse wheel down") or self._lobby_profile_gui:mouse_wheel_down(x, y)) and button == Idstring("mouse wheel up") and self._lobby_profile_gui:mouse_wheel_up(x, y) then
-		return true
+	if self._lobby_profile_gui then
+		if self._lobby_profile_gui:mouse_pressed(button, x, y) then
+			return true
+		end
+
+		if button == Idstring("0") then
+			if self._lobby_profile_gui:check_minimize(x, y) then
+				return true
+			end
+
+			if self._lobby_profile_gui:check_grab_scroll_bar(x, y) then
+				return true
+			end
+		elseif button == Idstring("mouse wheel down") then
+			if self._lobby_profile_gui:mouse_wheel_down(x, y) then
+				return true
+			end
+		elseif button == Idstring("mouse wheel up") and self._lobby_profile_gui:mouse_wheel_up(x, y) then
+			return true
+		end
 	end
 
 	if self._mission_briefing_gui and self._mission_briefing_gui:mouse_pressed(button, x, y) then
@@ -1318,12 +1411,44 @@ function MenuComponentManager:mouse_pressed(o, button, x, y)
 		return true
 	end
 
-	if self._view_character_profile_gui and (button ~= Idstring("0") or self._view_character_profile_gui:check_grab_scroll_bar(x, y)) and (button ~= Idstring("mouse wheel down") or self._view_character_profile_gui:mouse_wheel_down(x, y)) and button == Idstring("mouse wheel up") and self._view_character_profile_gui:mouse_wheel_up(x, y) then
-		return true
+	if self._view_character_profile_gui then
+		if self._view_character_profile_gui:mouse_pressed(button, x, y) then
+			return true
+		end
+
+		if button == Idstring("0") then
+			if self._view_character_profile_gui:check_minimize(x, y) then
+				return true
+			end
+
+			if self._view_character_profile_gui:check_grab_scroll_bar(x, y) then
+				return true
+			end
+		elseif button == Idstring("mouse wheel down") then
+			if self._view_character_profile_gui:mouse_wheel_down(x, y) then
+				return true
+			end
+		elseif button == Idstring("mouse wheel up") and self._view_character_profile_gui:mouse_wheel_up(x, y) then
+			return true
+		end
 	end
 
-	if self._test_profile1 and self._test_profile4:check_grab_scroll_bar(x, y) then
-		return true
+	if self._test_profile1 then
+		if self._test_profile1:check_grab_scroll_bar(x, y) then
+			return true
+		end
+
+		if self._test_profile2:check_grab_scroll_bar(x, y) then
+			return true
+		end
+
+		if self._test_profile3:check_grab_scroll_bar(x, y) then
+			return true
+		end
+
+		if self._test_profile4:check_grab_scroll_bar(x, y) then
+			return true
+		end
 	end
 
 	if self._crimenet_contract_gui and self._crimenet_contract_gui:mouse_pressed(o, button, x, y) then
@@ -1344,24 +1469,85 @@ function MenuComponentManager:mouse_pressed(o, button, x, y)
 		end
 	end
 
-	if self._friends_book and (button ~= Idstring("0") or self._friends_book:check_grab_scroll_bar(x, y)) and (button ~= Idstring("mouse wheel down") or self._friends_book:mouse_wheel_down(x, y)) and button == Idstring("mouse wheel up") and self._friends_book:mouse_wheel_up(x, y) then
-		return true
+	if self._friends_book then
+		if self._friends_book:mouse_pressed(button, x, y) then
+			return true
+		end
+
+		if button == Idstring("0") then
+			if self._friends_book:check_grab_scroll_bar(x, y) then
+				return true
+			end
+		elseif button == Idstring("mouse wheel down") then
+			if self._friends_book:mouse_wheel_down(x, y) then
+				return true
+			end
+		elseif button == Idstring("mouse wheel up") and self._friends_book:mouse_wheel_up(x, y) then
+			return true
+		end
 	end
 
-	if self._debug_strings_book and (button ~= Idstring("0") or self._debug_strings_book:check_grab_scroll_bar(x, y)) and (button ~= Idstring("mouse wheel down") or self._debug_strings_book:mouse_wheel_down(x, y)) and button == Idstring("mouse wheel up") and self._debug_strings_book:mouse_wheel_up(x, y) then
-		return true
+	if self._debug_strings_book then
+		if self._debug_strings_book:mouse_pressed(button, x, y) then
+			return true
+		end
+
+		if button == Idstring("0") then
+			if self._debug_strings_book:check_grab_scroll_bar(x, y) then
+				return true
+			end
+		elseif button == Idstring("mouse wheel down") then
+			if self._debug_strings_book:mouse_wheel_down(x, y) then
+				return true
+			end
+		elseif button == Idstring("mouse wheel up") and self._debug_strings_book:mouse_wheel_up(x, y) then
+			return true
+		end
 	end
 
-	if self._weapon_text_box and (button ~= Idstring("0") or self._weapon_text_box:check_grab_scroll_bar(x, y)) and (button ~= Idstring("mouse wheel down") or self._weapon_text_box:mouse_wheel_down(x, y)) and button == Idstring("mouse wheel up") and self._weapon_text_box:mouse_wheel_up(x, y) then
-		return true
+	if self._weapon_text_box then
+		if button == Idstring("0") then
+			if self._weapon_text_box:check_close(x, y) then
+				self:close_weapon_box()
+
+				return true
+			end
+
+			if self._weapon_text_box:check_minimize(x, y) then
+				self._weapon_text_box:set_visible(false)
+
+				self._weapon_text_minimized_id = self:add_minimized({
+					text = "WEAPON",
+					callback = callback(self, self, "_maximize_weapon_box")
+				})
+
+				return true
+			end
+
+			if self._weapon_text_box:check_grab_scroll_bar(x, y) then
+				return true
+			end
+		elseif button == Idstring("mouse wheel down") then
+			if self._weapon_text_box:mouse_wheel_down(x, y) then
+				return true
+			end
+		elseif button == Idstring("mouse wheel up") and self._weapon_text_box:mouse_wheel_up(x, y) then
+			return true
+		end
 	end
 
 	if self._player_inventory_gui and self._player_inventory_gui:mouse_pressed(button, x, y) then
 		return true
 	end
 
-	if self._crimenet_contract_gui and (button ~= Idstring("mouse wheel down") or self._crimenet_contract_gui:mouse_wheel_down(x, y)) and button == Idstring("mouse wheel up") and self._crimenet_contract_gui:mouse_wheel_up(x, y) then
-		return true
+	if self._crimenet_contract_gui then
+		if button == Idstring("mouse wheel down") then
+			if self._crimenet_contract_gui:mouse_wheel_down(x, y) then
+				return true
+			end
+		elseif button == Idstring("mouse wheel up") and self._crimenet_contract_gui:mouse_wheel_up(x, y) then
+			return true
+		end
 	end
 
 	local used, values = nil
@@ -1472,8 +1658,22 @@ function MenuComponentManager:mouse_released(o, button, x, y)
 		return true
 	end
 
-	if self._test_profile1 and self._test_profile4:release_scroll_bar() then
-		return true
+	if self._test_profile1 then
+		if self._test_profile1:release_scroll_bar() then
+			return true
+		end
+
+		if self._test_profile2:release_scroll_bar() then
+			return true
+		end
+
+		if self._test_profile3:release_scroll_bar() then
+			return true
+		end
+
+		if self._test_profile4:release_scroll_bar() then
+			return true
+		end
 	end
 
 	if self._weapon_text_box and self._weapon_text_box:release_scroll_bar() then

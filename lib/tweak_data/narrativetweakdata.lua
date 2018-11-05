@@ -4694,7 +4694,11 @@ function NarrativeTweakData:create_job_name(job_id, skip_professional)
 	if job_tweak.dlc and (not tweak_data.dlc[job_tweak.dlc] or not tweak_data.dlc[job_tweak.dlc].free) then
 		local pro_text = "  "
 
-		if job_tweak.dlc ~= "pd2_clan" or SystemInfo:distribution() == Idstring("STEAM") and pro_text .. managers.localization:to_upper_text("cn_menu_community") then
+		if job_tweak.dlc == "pd2_clan" then
+			if SystemInfo:distribution() == Idstring("STEAM") then
+				pro_text = pro_text .. managers.localization:to_upper_text("cn_menu_community")
+			end
+		else
 			pro_text = pro_text .. managers.localization:to_upper_text("menu_ultimate_edition_short")
 		end
 

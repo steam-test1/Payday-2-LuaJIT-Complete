@@ -822,7 +822,11 @@ function PrePlanningPoint:select_mouse_over()
 	if not self._active_node.current_type then
 		if self._active_node.current_plan then
 			
-		elseif (not self._active_node.current_category or self._reserved_data) and not self._active_node.current_viewing and not self._active_node.current_custom then
+		elseif self._active_node.current_category then
+			if self._reserved_data then
+				MenuCallbackHandler:select_preplanning_item_by_id(self._reserved_data.pack[1])
+			end
+		elseif not self._active_node.current_viewing and not self._active_node.current_custom then
 			local id = nil
 
 			if self._reserved_data then
@@ -1283,7 +1287,13 @@ function PrePlanningLocation:stop_custom_talk(id)
 end
 
 function PrePlanningLocation:get_point_map_position(id)
-	if (not self._active_node.current_custom or self._custom_points[id]) and self._points[id] then
+	if self._active_node.current_custom then
+		if self._custom_points[id] then
+			local x, y = self._custom_points[id]:map_position()
+
+			return x + self._panel:x(), y + self._panel:y(), self._group
+		end
+	elseif self._points[id] then
 		local x, y = self._points[id]:map_position()
 
 		return x + self._panel:x(), y + self._panel:y(), self._group

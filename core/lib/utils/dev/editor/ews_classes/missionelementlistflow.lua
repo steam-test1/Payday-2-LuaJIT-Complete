@@ -108,10 +108,16 @@ function MissionElementListFlow:on_unit_selected(unit)
 	end)
 
 	if unit then
-		if not self._skip_history and (not self._unit_history[self._unit_history_index] or self._unit_history[self._unit_history_index] ~= unit) then
-			table.insert(self._unit_history, unit)
+		if not self._skip_history then
+			if self._unit_history_index < #self._unit_history then
+				table.crop(self._unit_history, self._unit_history_index)
+			end
 
-			self._unit_history_index = #self._unit_history
+			if not self._unit_history[self._unit_history_index] or self._unit_history[self._unit_history_index] ~= unit then
+				table.insert(self._unit_history, unit)
+
+				self._unit_history_index = #self._unit_history
+			end
 		end
 
 		self._skip_history = nil

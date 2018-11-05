@@ -176,7 +176,11 @@ function CivilianLogicIdle.on_alert(data, alert_data)
 			if aggressor and aggressor:base() then
 				local is_intimidation = nil
 
-				if aggressor:base().is_local_player and (not managers.player:has_category_upgrade("player", "civ_calming_alerts") or true) or aggressor:base().is_husk_player and aggressor:base():upgrade_value("player", "civ_calming_alerts") then
+				if aggressor:base().is_local_player then
+					if managers.player:has_category_upgrade("player", "civ_calming_alerts") then
+						is_intimidation = true
+					end
+				elseif aggressor:base().is_husk_player and aggressor:base():upgrade_value("player", "civ_calming_alerts") then
 					is_intimidation = true
 				end
 
@@ -337,7 +341,11 @@ function CivilianLogicIdle.action_complete_clbk(data, action)
 	elseif action:type() == "act" and my_data.acting == action then
 		my_data.acting = nil
 
-		if not action:expired() or not my_data.action_timeout_clbk_id then
+		if action:expired() then
+			if not my_data.action_timeout_clbk_id then
+				data.objective_complete_clbk(data.unit, data.objective)
+			end
+		else
 			data.objective_failed_clbk(data.unit, data.objective)
 		end
 	end
@@ -475,7 +483,15 @@ function CivilianLogicIdle._get_priority_attention(data, attention_objects)
 
 		if not attention_data.identified then
 			
-		elseif (not attention_data.pause_expire_t or attention_data.pause_expire_t < data.t and (not attention_data.settings.attract_chance or math.random() < attention_data.settings.attract_chance) and nil) and (not attention_data.stare_expire_t or attention_data.stare_expire_t >= data.t or attention_data.settings.pause and nil) then
+		elseif attention_data.pause_expire_t then
+			if attention_data.pause_expire_t < data.t and (not attention_data.settings.attract_chance or math.random() < attention_data.settings.attract_chance) then
+				attention_data.pause_expire_t = nil
+			end
+		elseif attention_data.stare_expire_t and attention_data.stare_expire_t < data.t then
+			if attention_data.settings.pause then
+				attention_data.stare_expire_t = nil
+			end
+		else
 			local distance = attention_data.dis
 			local reaction = attention_data.settings.reaction
 			local reaction_too_mild = nil
@@ -517,7 +533,11 @@ function CivilianLogicIdle._set_attention_obj(data, new_att_obj, new_reaction)
 		if old_att_obj and old_att_obj.u_key == new_att_obj.u_key then
 			is_same_obj = true
 
-			if (not new_att_obj.stare_expire_t or new_att_obj.stare_expire_t >= data.t or new_att_obj.settings.pause and nil) and new_att_obj.pause_expire_t and new_att_obj.pause_expire_t < data.t then
+			if new_att_obj.stare_expire_t and new_att_obj.stare_expire_t < data.t then
+				if new_att_obj.settings.pause then
+					new_att_obj.stare_expire_t = nil
+				end
+			elseif new_att_obj.pause_expire_t and new_att_obj.pause_expire_t < data.t then
 				if not new_att_obj.settings.attract_chance or math.random() < new_att_obj.settings.attract_chance then
 					new_att_obj.pause_expire_t = nil
 				else

@@ -68,7 +68,18 @@ function CoreAreaTriggerUnitElement:draw_links(t, dt, selected_unit, all_units)
 		for _, id in ipairs(self._hed.unit_ids) do
 			local unit = managers.editor:layer("Statics"):created_units_pairs()[id]
 
-			if not alive(unit) or self:_should_draw_link(selected_unit, unit) then
+			if alive(unit) then
+				if self:_should_draw_link(selected_unit, unit) then
+					self:_draw_link({
+						g = 0.5,
+						b = 0.75,
+						r = 0,
+						from_unit = unit,
+						to_unit = self._unit
+					})
+					Application:draw(unit, 0, 0.5, 0.75)
+				end
+			else
 				self:_remove_unit_id(id)
 			end
 		end

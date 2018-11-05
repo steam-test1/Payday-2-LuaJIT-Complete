@@ -391,18 +391,25 @@ function MenuManager:toggle_menu_state()
 		return
 	end
 
-	if (not Application:editor() or Global.running_simulation) and not managers.system_menu:is_active() and (not self:is_open("menu_pause") or not self:is_pc_controller() or self:is_in_root("menu_pause")) and (not self:active_menu() or #self:active_menu().logic._node_stack == 1 or not managers.menu:active_menu().logic:selected_node() or managers.menu:active_menu().logic:selected_node():parameters().allow_pause_menu) and managers.menu_component:input_focus() ~= 1 then
-		self:open_menu("menu_pause")
+	if (not Application:editor() or Global.running_simulation) and not managers.system_menu:is_active() then
+		if self:is_open("menu_pause") then
+			if not self:is_pc_controller() or self:is_in_root("menu_pause") then
+				self:close_menu("menu_pause")
+				managers.savefile:save_setting(true)
+			end
+		elseif (not self:active_menu() or #self:active_menu().logic._node_stack == 1 or not managers.menu:active_menu().logic:selected_node() or managers.menu:active_menu().logic:selected_node():parameters().allow_pause_menu) and managers.menu_component:input_focus() ~= 1 then
+			self:open_menu("menu_pause")
 
-		if Global.game_settings.single_player then
-			Application:set_pause(true)
-			self:post_event("game_pause_in_game_menu")
-			SoundDevice:set_rtpc("ingame_sound", 0)
+			if Global.game_settings.single_player then
+				Application:set_pause(true)
+				self:post_event("game_pause_in_game_menu")
+				SoundDevice:set_rtpc("ingame_sound", 0)
 
-			local player_unit = managers.player:player_unit()
+				local player_unit = managers.player:player_unit()
 
-			if alive(player_unit) and player_unit:movement():current_state().update_check_actions_paused then
-				player_unit:movement():current_state():update_check_actions_paused()
+				if alive(player_unit) and player_unit:movement():current_state().update_check_actions_paused then
+					player_unit:movement():current_state():update_check_actions_paused()
+				end
 			end
 		end
 	end
@@ -472,8 +479,14 @@ function MenuManager:safefile_manager_active_changed(active)
 		end
 	end
 
-	if not active and self._save_game_callback then
-		self._save_game_callback()
+	if not active then
+		if self._delayed_open_savefile_menu_callback then
+			self._delayed_open_savefile_menu_callback()
+		end
+
+		if self._save_game_callback then
+			self._save_game_callback()
+		end
 	end
 end
 
@@ -7347,28 +7360,32 @@ function MenuCallbackHandler:open_preplanning_to_type(category, type, item_name)
 
 	if node_name == "preplanning" then
 		in_main = true
-	elseif node_name ~= "preplanning_category" or logic:selected_node():parameters().current_category ~= category and true then
-		if node_name == "preplanning_type" then
-			if logic:selected_node():parameters().current_type ~= type then
-				local current_category = tweak_data:get_raw_value("preplanning", "types", logic:selected_node():parameters().current_type, "category")
-
-				if current_category ~= category then
-					managers.menu:back(false)
-
-					in_main = true
-				end
-
-				managers.menu:back(false)
-			end
-		elseif node_name == "preplanning_plan" then
-			managers.menu:back(false)
-
-			in_main = true
-		elseif node_name == "preplanning_custom" then
+	elseif node_name == "preplanning_category" then
+		if logic:selected_node():parameters().current_category ~= category then
 			managers.menu:back(false)
 
 			in_main = true
 		end
+	elseif node_name == "preplanning_type" then
+		if logic:selected_node():parameters().current_type ~= type then
+			local current_category = tweak_data:get_raw_value("preplanning", "types", logic:selected_node():parameters().current_type, "category")
+
+			if current_category ~= category then
+				managers.menu:back(false)
+
+				in_main = true
+			end
+
+			managers.menu:back(false)
+		end
+	elseif node_name == "preplanning_plan" then
+		managers.menu:back(false)
+
+		in_main = true
+	elseif node_name == "preplanning_custom" then
+		managers.menu:back(false)
+
+		in_main = true
 	end
 
 	if in_main then
@@ -7395,7 +7412,11 @@ function MenuCallbackHandler:open_preplanning_to_plan(plan, item_name)
 	elseif node_name == "preplanning_type" then
 		managers.menu:back(false)
 		managers.menu:back(false)
-	elseif (node_name ~= "preplanning_plan" or logic:selected_node():parameters().current_plan ~= plan) and node_name == "preplanning_custom" then
+	elseif node_name == "preplanning_plan" then
+		if logic:selected_node():parameters().current_plan ~= plan then
+			managers.menu:back(false)
+		end
+	elseif node_name == "preplanning_custom" then
 		managers.menu:back(false)
 	end
 
@@ -7547,8 +7568,14 @@ end
 function MenuCallbackHandler:select_preplanning_item_by_id(id)
 	local logic = managers.menu:active_menu().logic
 
-	if logic and (not logic:selected_node():selected_item() or logic:selected_node():selected_item():name() ~= id) then
-		logic:select_item(id, true)
+	if logic then
+		if not logic:selected_node() then
+			return false
+		end
+
+		if not logic:selected_node():selected_item() or logic:selected_node():selected_item():name() ~= id then
+			logic:select_item(id, true)
+		end
 	end
 end
 
@@ -8119,8 +8146,8 @@ function MenuCrimeNetSpecialInitiator:create_job(node, contract)
 
 				if dlc and not managers.dlc:is_dlc_unlocked(dlc) then
 					
-				elseif achievement and managers.achievment:get_info(achievement) and not managers.achievment:get_info(achievement).awarded and text_id .. "  " .. managers.localization:to_upper_text("menu_bm_achievement_locked_" .. tostring(achievement)) then
-					
+				elseif achievement and managers.achievment:get_info(achievement) and not managers.achievment:get_info(achievement).awarded then
+					text_id = text_id .. "  " .. managers.localization:to_upper_text("menu_bm_achievement_locked_" .. tostring(achievement))
 				end
 			end
 		elseif not pass_level then

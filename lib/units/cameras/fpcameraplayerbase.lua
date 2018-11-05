@@ -368,11 +368,19 @@ function FPCameraPlayerBase:_update_rot(axis, unscaled_axis)
 	local look_polar_pitch = math.clamp(data.pitch + stick_input_y, -85, 85)
 	local player_state = managers.player:current_state()
 
-	if self._limits and self._limits.pitch then
-		local d = math.abs((look_polar_pitch - self._limits.pitch.mid) / self._limits.pitch.offset)
-		d = math.clamp(d, -1, 1)
-		look_polar_pitch = data.pitch + math.lerp(stick_input_y, 0, math.abs(d))
-		look_polar_pitch = math.clamp(look_polar_pitch, -85, 85)
+	if self._limits then
+		if self._limits.spin then
+			local d = (look_polar_spin - self._limits.spin.mid) / self._limits.spin.offset
+			d = math.clamp(d, -1, 1)
+			look_polar_spin = data.spin - math.lerp(stick_input_x, 0, math.abs(d))
+		end
+
+		if self._limits.pitch then
+			local d = math.abs((look_polar_pitch - self._limits.pitch.mid) / self._limits.pitch.offset)
+			d = math.clamp(d, -1, 1)
+			look_polar_pitch = data.pitch + math.lerp(stick_input_y, 0, math.abs(d))
+			look_polar_pitch = math.clamp(look_polar_pitch, -85, 85)
+		end
 	end
 
 	if not self._limits or not self._limits.spin then

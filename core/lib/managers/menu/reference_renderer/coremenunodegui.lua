@@ -533,7 +533,14 @@ end
 function NodeGui:update(t, dt)
 	local scrolled = self:scroll_update(dt)
 
-	if (not self._item_panel_y or scrolled or self._item_panel_y.target and self.item_panel:center_y() ~= self._item_panel_y.target) and scrolled then
+	if self._item_panel_y and not scrolled then
+		if self._item_panel_y.target and self.item_panel:center_y() ~= self._item_panel_y.target then
+			self._item_panel_y.current = math.lerp(self.item_panel:center_y(), self._item_panel_y.target, dt * 10)
+
+			self.item_panel:set_center_y(self._item_panel_y.current)
+			self:_set_topic_position()
+		end
+	elseif scrolled then
 		if self._item_panel_y and self._item_panel_y.target and self.item_panel:center_y() ~= self._item_panel_y.target then
 			self._item_panel_y.current = math.lerp(self.item_panel:center_y(), self._item_panel_y.target, dt * 10)
 		end

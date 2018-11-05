@@ -1021,7 +1021,11 @@ function MenuNodeGui:_key_press(o, key, input_id, item, no_add)
 	if self._skip_first_activate_key then
 		self._skip_first_activate_key = false
 
-		if (input_id ~= "mouse" or key == Idstring("0")) and input_id == "keyboard" and key == Idstring("enter") then
+		if input_id == "mouse" then
+			if key == Idstring("0") then
+				return
+			end
+		elseif input_id == "keyboard" and key == Idstring("enter") then
 			return
 		end
 	end
@@ -1508,7 +1512,11 @@ function MenuNodeGui:_align_marker(row_item)
 	elseif row_item.type == "nothing" then
 		if row_item.type == "slider" then
 			self._marker_data.marker:set_left(self:_left_align() - row_item.gui_slider:width())
-		elseif (row_item.type ~= "kitslot" and row_item.type ~= "multi_choice" or row_item.choice_panel) and row_item.type == "toggle" then
+		elseif row_item.type == "kitslot" or row_item.type == "multi_choice" then
+			if row_item.choice_panel then
+				self._marker_data.marker:set_left(row_item.arrow_left:left() - self._align_line_padding + row_item.gui_panel:x())
+			end
+		elseif row_item.type == "toggle" then
 			if row_item.gui_option then
 				local x, y, w, h = row_item.gui_option:text_rect()
 

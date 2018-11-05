@@ -866,12 +866,14 @@ function CoreParticleEditorPanel:close()
 
 			local ret = EWS:message_box(self._panel, "Effect " .. n .. " was modified since last saved, save before exiting?", "Save?", "YES,NO,CANCEL", Vector3(-1, -1, 0))
 
-			if ret ~= "YES" or self:on_save() and false then
-				if ret == "NO" then
+			if ret == "YES" then
+				if self:on_save() then
 					continue_asking = false
-				elseif ret == "CANCEL" then
-					return false
 				end
+			elseif ret == "NO" then
+				continue_asking = false
+			elseif ret == "CANCEL" then
+				return false
 			end
 		end
 	end

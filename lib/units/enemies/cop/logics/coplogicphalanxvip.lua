@@ -234,8 +234,14 @@ function CopLogicPhalanxVip.action_complete_clbk(data, action)
 	elseif action_type == "act" then
 		local my_data = data.internal_data
 
-		if my_data.action_started == action and (not action:expired() or not my_data.action_timeout_clbk_id) and not my_data.action_expired then
-			data.objective_failed_clbk(data.unit, data.objective)
+		if my_data.action_started == action then
+			if action:expired() then
+				if not my_data.action_timeout_clbk_id then
+					data.objective_complete_clbk(data.unit, data.objective)
+				end
+			elseif not my_data.action_expired then
+				data.objective_failed_clbk(data.unit, data.objective)
+			end
 		end
 	end
 end

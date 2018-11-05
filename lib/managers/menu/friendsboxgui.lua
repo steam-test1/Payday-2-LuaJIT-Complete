@@ -144,8 +144,10 @@ function FriendsBoxGui:update_friends()
 		if user:lobby() then
 			local numbers = managers.network.matchmake:_lobby_to_numbers(user:lobby())
 
-			if #numbers > 0 and sub_state .. (payday1 and " - PAYDAY 1" or "") then
-				
+			if #numbers > 0 then
+				local level_id = tweak_data.levels:get_level_name_from_index(numbers[1])
+				sub_state = managers.localization:text(tweak_data.levels[level_id] and tweak_data.levels[level_id].name_id or "SECRET LEVEL")
+				sub_state = sub_state .. (payday1 and " - PAYDAY 1" or "")
 			end
 		elseif rich_presence_status == "" then
 			if main_state == "ingame" then

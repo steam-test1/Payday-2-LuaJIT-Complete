@@ -561,21 +561,27 @@ function HuskPlayerMovement:update(unit, t, dt)
 		end
 	end
 
-	if self._ext_anim and self._ext_anim.reload and alive(self._left_hand_obj) then
-		if self._left_hand_pos then
-			self._left_hand_direction = self._left_hand_direction or Vector3()
-
-			mvec3_set(self._left_hand_direction, self._left_hand_pos)
-			mvec3_sub(self._left_hand_direction, self._left_hand_obj:position())
-
-			self._left_hand_velocity = mvec3_len(self._left_hand_direction)
-
-			mvec3_norm(self._left_hand_direction)
+	if self._ext_anim and self._ext_anim.reload then
+		if not alive(self._left_hand_obj) then
+			self._left_hand_obj = self._unit:get_object(Idstring("LeftHandMiddle1"))
 		end
 
-		self._left_hand_pos = self._left_hand_pos or Vector3()
+		if alive(self._left_hand_obj) then
+			if self._left_hand_pos then
+				self._left_hand_direction = self._left_hand_direction or Vector3()
 
-		mvec3_set(self._left_hand_pos, self._left_hand_obj:position())
+				mvec3_set(self._left_hand_direction, self._left_hand_pos)
+				mvec3_sub(self._left_hand_direction, self._left_hand_obj:position())
+
+				self._left_hand_velocity = mvec3_len(self._left_hand_direction)
+
+				mvec3_norm(self._left_hand_direction)
+			end
+
+			self._left_hand_pos = self._left_hand_pos or Vector3()
+
+			mvec3_set(self._left_hand_pos, self._left_hand_obj:position())
+		end
 	end
 
 	if self._delayed_redirects then
@@ -1164,19 +1170,27 @@ function HuskPlayerMovement:_upd_attention_bleedout(t, dt)
 	if self._sync_look_dir then
 		local fwd = self._m_rot:y()
 
-		if not self._atention_on or self._ext_anim.reload then
-			if self._ext_anim.bleedout_falling or self._ext_anim.reload then
-				if self._sync_look_dir ~= self._look_dir then
-					self._look_dir = mvector3.copy(self._sync_look_dir)
-				end
+		if self._atention_on then
+			if self._ext_anim.reload then
+				self._atention_on = false
+				local blend_out_t = 0.15
 
-				return
-			else
-				self._atention_on = true
-
-				self._machine:force_modifier(self._head_modifier_name)
-				self._machine:force_modifier(self._arm_modifier_name)
+				self._machine:set_modifier_blend(self._head_modifier_name, blend_out_t)
+				self._machine:set_modifier_blend(self._arm_modifier_name, blend_out_t)
+				self._machine:forbid_modifier(self._head_modifier_name)
+				self._machine:forbid_modifier(self._arm_modifier_name)
 			end
+		elseif self._ext_anim.bleedout_falling or self._ext_anim.reload then
+			if self._sync_look_dir ~= self._look_dir then
+				self._look_dir = mvector3.copy(self._sync_look_dir)
+			end
+
+			return
+		else
+			self._atention_on = true
+
+			self._machine:force_modifier(self._head_modifier_name)
+			self._machine:force_modifier(self._arm_modifier_name)
 		end
 
 		local error_angle = self._sync_look_dir:angle(self._look_dir)
@@ -1226,19 +1240,27 @@ end
 
 function HuskPlayerMovement:_upd_attention_zipline(t, dt)
 	if self._sync_look_dir then
-		if not self._atention_on or self._ext_anim.reload then
+		if self._atention_on then
 			if self._ext_anim.reload then
-				if self._sync_look_dir ~= self._look_dir then
-					self._look_dir = mvector3.copy(self._sync_look_dir)
-				end
+				self._atention_on = false
+				local blend_out_t = 0.15
 
-				return
-			else
-				self._atention_on = true
-
-				self._machine:force_modifier(self._head_modifier_name)
-				self._machine:force_modifier(self._arm_modifier_name)
+				self._machine:set_modifier_blend(self._head_modifier_name, blend_out_t)
+				self._machine:set_modifier_blend(self._arm_modifier_name, blend_out_t)
+				self._machine:forbid_modifier(self._head_modifier_name)
+				self._machine:forbid_modifier(self._arm_modifier_name)
 			end
+		elseif self._ext_anim.reload then
+			if self._sync_look_dir ~= self._look_dir then
+				self._look_dir = mvector3.copy(self._sync_look_dir)
+			end
+
+			return
+		else
+			self._atention_on = true
+
+			self._machine:force_modifier(self._head_modifier_name)
+			self._machine:force_modifier(self._arm_modifier_name)
 		end
 
 		local max_yaw_from_rp = 90
@@ -1477,24 +1499,56 @@ function HuskPlayerMovement:_upd_sequenced_events(t, dt)
 		next_event.commencing = true
 
 		self:_start_movement(next_event.path)
-	elseif (event_type ~= "bleedout" or self:_start_bleedout(next_event)) and (event_type ~= "fatal" or self:_start_fatal(next_event)) and (event_type ~= "incapacitated" or self:_start_incapacitated(next_event)) and (event_type ~= "tased" or self:_start_tased(next_event)) and (event_type ~= "standard" or self:_start_standard(next_event)) and (event_type ~= "dead" or self:_start_dead(next_event)) and (event_type ~= "arrested" or self:_start_arrested(next_event)) then
-		if event_type == "zipline" then
-			next_event.commencing = true
-
-			self:_start_zipline(next_event)
-		elseif event_type ~= "driving" or self:_start_driving(next_event) then
-			if event_type == "jump" then
-				self:_start_jumping(next_event)
-			elseif event_type == "pose" then
-				self:_change_pose(next_event.code)
-				table.remove(sequenced_events, 1)
-			end
+	elseif event_type == "bleedout" then
+		if self:_start_bleedout(next_event) then
+			table.remove(sequenced_events, 1)
 		end
+	elseif event_type == "fatal" then
+		if self:_start_fatal(next_event) then
+			table.remove(sequenced_events, 1)
+		end
+	elseif event_type == "incapacitated" then
+		if self:_start_incapacitated(next_event) then
+			table.remove(sequenced_events, 1)
+		end
+	elseif event_type == "tased" then
+		if self:_start_tased(next_event) then
+			table.remove(sequenced_events, 1)
+		end
+	elseif event_type == "standard" then
+		if self:_start_standard(next_event) then
+			table.remove(sequenced_events, 1)
+		end
+	elseif event_type == "dead" then
+		if self:_start_dead(next_event) then
+			table.remove(sequenced_events, 1)
+		end
+	elseif event_type == "arrested" then
+		if self:_start_arrested(next_event) then
+			table.remove(sequenced_events, 1)
+		end
+	elseif event_type == "zipline" then
+		next_event.commencing = true
+
+		self:_start_zipline(next_event)
+	elseif event_type == "driving" then
+		if self:_start_driving(next_event) then
+			table.remove(sequenced_events, 1)
+		end
+	elseif event_type == "jump" then
+		self:_start_jumping(next_event)
+	elseif event_type == "pose" then
+		self:_change_pose(next_event.code)
+		table.remove(sequenced_events, 1)
 	end
 
 	local event_type = next_event and not next_event.commencing and next_event.type
 
-	if (event_type ~= "jerry1" or self:_start_freefall(next_event)) and event_type == "jerry2" and self:_start_parachute(next_event) then
+	if event_type == "jerry1" then
+		if self:_start_freefall(next_event) then
+			table.remove(sequenced_events, 1)
+		end
+	elseif event_type == "jerry2" and self:_start_parachute(next_event) then
 		table.remove(sequenced_events, 1)
 	end
 end
@@ -1972,8 +2026,18 @@ function HuskPlayerMovement:_update_rotation_standard(t, dt)
 	local abs_waist_twist = math.abs(waist_twist)
 	local update_pose_forbidden = self._bleedout
 
-	if not update_pose_forbidden and (self._pose_code ~= 1 or not self._ext_anim.stand) and (self._pose_code ~= 3 or not self._ext_anim.prone) and not self._ext_anim.crouch then
-		self:play_redirect("crouch")
+	if not update_pose_forbidden then
+		if self._pose_code == 1 then
+			if not self._ext_anim.stand then
+				self:play_redirect("stand")
+			end
+		elseif self._pose_code == 3 then
+			if not self._ext_anim.prone then
+				self:play_redirect("prone")
+			end
+		elseif not self._ext_anim.crouch then
+			self:play_redirect("crouch")
+		end
 	end
 
 	if self._turning then
@@ -2425,7 +2489,15 @@ function HuskPlayerMovement:_upd_move_bipod(t, dt)
 		return
 	end
 
-	if (self._pose_code ~= 1 or not self._ext_anim.stand) and (self._pose_code ~= 3 or not self._ext_anim.prone) and not self._ext_anim.crouch then
+	if self._pose_code == 1 then
+		if not self._ext_anim.stand then
+			self:play_redirect("stand")
+		end
+	elseif self._pose_code == 3 then
+		if not self._ext_anim.prone then
+			self:play_redirect("prone")
+		end
+	elseif not self._ext_anim.crouch then
 		self:play_redirect("crouch")
 	end
 

@@ -752,7 +752,11 @@ function HUDManager:_update_name_labels(t, dt)
 
 			local dot = mvector3.dot(nl_cam_forward, nl_dir_normalized)
 
-			if dot >= 0 and not panel:outside(mvector3.x(nl_pos), mvector3.y(nl_pos)) or label_panel:visible() then
+			if dot < 0 or panel:outside(mvector3.x(nl_pos), mvector3.y(nl_pos)) then
+				if label_panel:visible() then
+					label_panel:set_visible(false)
+				end
+			else
 				label_panel:set_alpha(in_steelsight and math.clamp((1 - dot) * 100, 0, 1) or 1)
 				label_panel:set_visible(true)
 

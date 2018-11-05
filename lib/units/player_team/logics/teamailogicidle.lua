@@ -67,7 +67,19 @@ function TeamAILogicIdle.enter(data, new_logic_name, enter_params)
 			local success = nil
 			local revive_unit = objective.follow_unit
 
-			if revive_unit:interaction() and (not revive_unit:interaction():active() or not data.unit:brain():action_request(objective.action) or true) or revive_unit:character_damage():arrested() and (not data.unit:brain():action_request(objective.action) or true) or revive_unit:character_damage():need_revive() and data.unit:brain():action_request(objective.action) then
+			if revive_unit:interaction() then
+				if revive_unit:interaction():active() and data.unit:brain():action_request(objective.action) then
+					revive_unit:interaction():interact_start(data.unit)
+
+					success = true
+				end
+			elseif revive_unit:character_damage():arrested() then
+				if data.unit:brain():action_request(objective.action) then
+					revive_unit:character_damage():pause_arrested_timer()
+
+					success = true
+				end
+			elseif revive_unit:character_damage():need_revive() and data.unit:brain():action_request(objective.action) then
 				revive_unit:character_damage():pause_downed_timer()
 
 				success = true
@@ -196,7 +208,21 @@ function TeamAILogicIdle.update(data)
 
 	local objective = data.objective
 
-	if (not objective or not my_data.acting and (objective.type ~= "follow" or TeamAILogicIdle._check_should_relocate(data, my_data, objective) and not data.unit:movement():chk_action_forbidden("walk")) and objective.type == "revive") and (not data.path_fail_t or data.t - data.path_fail_t > 6) then
+	if objective then
+		if not my_data.acting then
+			if objective.type == "follow" then
+				if TeamAILogicIdle._check_should_relocate(data, my_data, objective) and not data.unit:movement():chk_action_forbidden("walk") then
+					objective.in_place = nil
+
+					TeamAILogicBase._exit(data.unit, "travel")
+				end
+			elseif objective.type == "revive" then
+				objective.in_place = nil
+
+				TeamAILogicBase._exit(data.unit, "travel")
+			end
+		end
+	elseif not data.path_fail_t or data.t - data.path_fail_t > 6 then
 		managers.groupai:state():on_criminal_jobless(data.unit)
 	end
 end
@@ -338,8 +364,14 @@ function TeamAILogicIdle.on_long_dis_interacted(data, other_unit, secondary)
 			local dist = data.unit:position() - other_unit:position()
 			local throw_bag = mvector3.dot(dist, dist) < throw_distance * throw_distance
 
-			if throw_bag and (other_unit ~= managers.player:player_unit() or other_unit:movement():current_state_name() == "carry" and false) and other_unit:movement():carry_id() ~= nil then
-				throw_bag = false
+			if throw_bag then
+				if other_unit == managers.player:player_unit() then
+					if other_unit:movement():current_state_name() == "carry" then
+						throw_bag = false
+					end
+				elseif other_unit:movement():carry_id() ~= nil then
+					throw_bag = false
+				end
 			end
 
 			if throw_bag then
@@ -718,18 +750,24 @@ function TeamAILogicIdle.action_complete_clbk(data, action)
 				my_data.revive_complete_clbk_id = nil
 				local revive_unit = my_data.reviving
 
-				if not revive_unit:interaction() or revive_unit:interaction():active() then
-					if revive_unit:character_damage():arrested() then
-						revive_unit:character_damage():unpause_arrested_timer()
-					elseif revive_unit:character_damage():need_revive() then
-						revive_unit:character_damage():unpause_downed_timer()
+				if revive_unit:interaction() then
+					if revive_unit:interaction():active() then
+						revive_unit:interaction():interact_interupt(data.unit)
 					end
+				elseif revive_unit:character_damage():arrested() then
+					revive_unit:character_damage():unpause_arrested_timer()
+				elseif revive_unit:character_damage():need_revive() then
+					revive_unit:character_damage():unpause_downed_timer()
 				end
 
 				my_data.reviving = nil
 
 				data.objective_failed_clbk(data.unit, data.objective)
-			elseif not action:expired() or not my_data.action_timeout_clbk_id then
+			elseif action:expired() then
+				if not my_data.action_timeout_clbk_id then
+					data.objective_complete_clbk(data.unit, old_objective)
+				end
+			else
 				data.objective_failed_clbk(data.unit, old_objective)
 			end
 		end
@@ -903,7 +941,16 @@ function TeamAILogicIdle._get_priority_attention(data, attention_objects, reacti
 
 		if not attention_data.identified then
 			
-		elseif (not attention_data.pause_expire_t or attention_data.pause_expire_t < data.t and nil) and (not attention_data.stare_expire_t or attention_data.stare_expire_t >= data.t or attention_data.settings.pause and data.t + math.lerp(attention_data.settings.pause[1], attention_data.settings.pause[2], math.random())) then
+		elseif attention_data.pause_expire_t then
+			if attention_data.pause_expire_t < data.t then
+				attention_data.pause_expire_t = nil
+			end
+		elseif attention_data.stare_expire_t and attention_data.stare_expire_t < data.t then
+			if attention_data.settings.pause then
+				attention_data.stare_expire_t = nil
+				attention_data.pause_expire_t = data.t + math.lerp(attention_data.settings.pause[1], attention_data.settings.pause[2], math.random())
+			end
+		else
 			local distance = mvector3.distance(data.m_pos, attention_data.m_pos)
 			local reaction = reaction_func(data, attention_data, not CopLogicAttack._can_move(data))
 			local aimed_at = TeamAILogicIdle.chk_am_i_aimed_at(data, attention_data, attention_data.aimed_at and 0.95 or 0.985)

@@ -5,7 +5,11 @@ function CivilianBase:post_init()
 	self._ext_anim = self._unit:anim_data()
 	local spawn_state = nil
 
-	if not self._spawn_state or self._spawn_state ~= "" and self._spawn_state then
+	if self._spawn_state then
+		if self._spawn_state ~= "" then
+			spawn_state = self._spawn_state
+		end
+	else
 		spawn_state = "civilian/spawn/loop"
 	end
 

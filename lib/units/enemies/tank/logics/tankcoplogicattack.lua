@@ -103,8 +103,23 @@ function TankCopLogicAttack.update(data)
 	local chase = nil
 	local z_dist = math.abs(data.m_pos.z - focus_enemy.m_pos.z)
 
-	if AIAttentionObject.REACT_COMBAT <= focus_enemy.reaction and (not enemy_visible or focus_enemy.verified_dis < 800 and unit:anim_data().run) and (z_dist < 300 or focus_enemy.verified_dis > 2000 or engage and (not focus_enemy.verified_t or t - focus_enemy.verified_t > 5 or focus_enemy.verified_dis > 700)) then
-		chase = true
+	if AIAttentionObject.REACT_COMBAT <= focus_enemy.reaction then
+		if enemy_visible then
+			if z_dist < 300 or focus_enemy.verified_dis > 2000 or engage and focus_enemy.verified_dis > 500 then
+				chase = true
+			end
+
+			if focus_enemy.verified_dis < 800 and unit:anim_data().run then
+				local new_action = {
+					body_part = 2,
+					type = "idle"
+				}
+
+				data.unit:brain():action_request(new_action)
+			end
+		elseif z_dist < 300 or focus_enemy.verified_dis > 2000 or engage and (not focus_enemy.verified_t or t - focus_enemy.verified_t > 5 or focus_enemy.verified_dis > 700) then
+			chase = true
+		end
 	end
 
 	if chase then

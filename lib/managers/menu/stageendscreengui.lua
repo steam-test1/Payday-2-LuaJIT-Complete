@@ -429,7 +429,14 @@ end
 function StatsTabItem:mouse_moved(x, y, mouse_over_scroll)
 	if self._selected then
 		self._tab_text:set_color(tweak_data.screen_colors.button_stage_1)
-	elseif (not mouse_over_scroll or not self._tab_text:inside(x, y) or not self._highlighted) and self._highlighted then
+	elseif mouse_over_scroll and self._tab_text:inside(x, y) then
+		if not self._highlighted then
+			self._highlighted = true
+
+			managers.menu_component:post_event("highlight")
+			self._tab_text:set_color(tweak_data.screen_colors.button_stage_2)
+		end
+	elseif self._highlighted then
 		self._highlighted = false
 
 		self._tab_text:set_color(tweak_data.screen_colors.button_stage_3)

@@ -1058,11 +1058,19 @@ function InfamyTreeGui:mouse_moved(o, x, y)
 end
 
 function InfamyTreeGui:mouse_pressed(button, x, y)
-	if button == Idstring("0") and self._selected_item then
-		local infamy_item = self._tree_items[self._selected_item]
+	if button == Idstring("0") then
+		if self._panel:child("back_button"):inside(x, y) then
+			managers.menu:back()
 
-		if infamy_item and infamy_item.panel:inside(x, y) then
-			self:_unlock_item(self._selected_item)
+			return
+		end
+
+		if self._selected_item then
+			local infamy_item = self._tree_items[self._selected_item]
+
+			if infamy_item and infamy_item.panel:inside(x, y) then
+				self:_unlock_item(self._selected_item)
+			end
 		end
 	end
 end

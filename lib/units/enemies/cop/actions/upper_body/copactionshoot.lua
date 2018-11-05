@@ -608,7 +608,15 @@ function CopActionShoot:on_death_drop()
 		return
 	end
 
-	if (not self._shooting_hurt or stage == 2 and false) and self._ext_inventory then
+	if self._shooting_hurt then
+		if stage == 2 then
+			self._weapon_base:stop_autofire()
+			self._ext_inventory:drop_weapon()
+
+			self._weapon_dropped = true
+			self._shooting_hurt = false
+		end
+	elseif self._ext_inventory then
 		self._ext_inventory:drop_weapon()
 
 		self._weapon_dropped = true

@@ -323,7 +323,15 @@ function ECMJammerBase:_check_body()
 		return
 	end
 
-	if (self._attached_data.index ~= 1 or not alive(self._attached_data.body) or not self._attached_data.body:enabled()) and (self._attached_data.index ~= 2 or not alive(self._attached_data.body) or not mrotation.equal(self._attached_data.rotation, self._attached_data.body:rotation())) and self._attached_data.index == 3 and (not alive(self._attached_data.body) or mvector3.not_equal(self._attached_data.position, self._attached_data.body:position())) then
+	if self._attached_data.index == 1 then
+		if not alive(self._attached_data.body) or not self._attached_data.body:enabled() then
+			self:_force_remove()
+		end
+	elseif self._attached_data.index == 2 then
+		if not alive(self._attached_data.body) or not mrotation.equal(self._attached_data.rotation, self._attached_data.body:rotation()) then
+			self:_force_remove()
+		end
+	elseif self._attached_data.index == 3 and (not alive(self._attached_data.body) or mvector3.not_equal(self._attached_data.position, self._attached_data.body:position())) then
 		self:_force_remove()
 	end
 

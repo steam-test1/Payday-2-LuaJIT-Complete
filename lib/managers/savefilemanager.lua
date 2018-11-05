@@ -1258,7 +1258,11 @@ function SavefileManager:clbk_result_space_required(task_data, result_data)
 		return
 	end
 
-	if type_name(result_data) ~= "table" or (SystemInfo:platform() == Idstring("PS3") or SystemInfo:platform() == Idstring("PS4")) and ((2 - table.size(result_data)) * self.RESERVED_BYTES) / 1024 then
+	if type_name(result_data) == "table" then
+		if SystemInfo:platform() == Idstring("PS3") or SystemInfo:platform() == Idstring("PS4") then
+			self._savegame_hdd_space_required = ((2 - table.size(result_data)) * self.RESERVED_BYTES) / 1024
+		end
+	else
 		Application:error("[SavefileManager:clbk_result_space_required] error:", result_data)
 	end
 end

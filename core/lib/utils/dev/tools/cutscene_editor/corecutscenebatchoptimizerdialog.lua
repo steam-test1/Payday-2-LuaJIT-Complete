@@ -291,7 +291,11 @@ function CoreCutsceneBatchOptimizerDialog:_verify_user_intent(operation)
 
 	local choice = EWS:MessageDialog(self.__window, "Do you want to save the current job list before " .. operation .. "?", "Save Changes?", "YES_NO,CANCEL,YES_DEFAULT,ICON_EXCLAMATION"):show_modal()
 
-	if (choice ~= "ID_YES" or not self:_on_save_job_list()) and choice == "ID_CANCEL" then
+	if choice == "ID_YES" then
+		if not self:_on_save_job_list() then
+			return false
+		end
+	elseif choice == "ID_CANCEL" then
 		return false
 	end
 

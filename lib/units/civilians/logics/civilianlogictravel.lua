@@ -193,21 +193,25 @@ function CivilianLogicTravel._on_destination_reached(data)
 	local objective = data.objective
 	objective.in_place = true
 
-	if objective.type ~= "free" or not objective.action_duration then
-		if objective.type == "flee" then
+	if objective.type == "free" then
+		if not objective.action_duration then
+			data.objective_complete_clbk(data.unit, objective)
+
+			return
+		end
+	elseif objective.type == "flee" then
+		data.unit:brain():set_active(false)
+		data.unit:base():set_slot(data.unit, 0)
+
+		return
+	elseif objective.type == "defend_area" then
+		if objective.grp_objective and objective.grp_objective.type == "retire" then
 			data.unit:brain():set_active(false)
 			data.unit:base():set_slot(data.unit, 0)
 
 			return
-		elseif objective.type == "defend_area" then
-			if objective.grp_objective and objective.grp_objective.type == "retire" then
-				data.unit:brain():set_active(false)
-				data.unit:base():set_slot(data.unit, 0)
-
-				return
-			else
-				managers.groupai:state():on_defend_travel_end(data.unit, objective)
-			end
+		else
+			managers.groupai:state():on_defend_travel_end(data.unit, objective)
 		end
 	end
 

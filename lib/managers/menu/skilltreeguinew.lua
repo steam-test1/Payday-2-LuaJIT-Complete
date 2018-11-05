@@ -682,8 +682,44 @@ function NewSkillTreeGui:_update_legends(item)
 		end
 	})
 
-	if (not managers.menu:is_pc_controller() or can_invest) and can_invest then
-		table.insert(legends, {string_id = "menu_controller_invest"})
+	if managers.menu:is_pc_controller() then
+		if can_refund then
+			table.insert(legends, {
+				texture = "guis/textures/pd2/mouse_buttons",
+				h = 23,
+				string_id = "menu_mouse_refund",
+				w = 17,
+				texture_rect = {
+					18,
+					1,
+					17,
+					23
+				}
+			})
+		end
+
+		if can_invest then
+			table.insert(legends, {
+				texture = "guis/textures/pd2/mouse_buttons",
+				h = 23,
+				string_id = "menu_mouse_invest",
+				w = 17,
+				texture_rect = {
+					1,
+					1,
+					17,
+					23
+				}
+			})
+		end
+	else
+		if can_refund then
+			table.insert(legends, {string_id = "menu_controller_refund"})
+		end
+
+		if can_invest then
+			table.insert(legends, {string_id = "menu_controller_invest"})
+		end
 	end
 
 	legend_panel:clear()

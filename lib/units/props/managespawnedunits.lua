@@ -16,7 +16,14 @@ function ManageSpawnedUnits:spawn_unit(unit_id, align_obj_name, unit)
 	local align_obj = self._unit:get_object(Idstring(align_obj_name))
 	local spawn_unit = nil
 
-	if type_name(unit) ~= "string" or (Network:is_server() or self.allow_client_spawn) and self._unit then
+	if type_name(unit) == "string" then
+		if Network:is_server() or self.allow_client_spawn then
+			local spawn_pos = align_obj:position()
+			local spawn_rot = align_obj:rotation()
+			spawn_unit = safe_spawn_unit(Idstring(unit), spawn_pos, spawn_rot)
+			spawn_unit:unit_data().parent_unit = self._unit
+		end
+	else
 		spawn_unit = unit
 	end
 
@@ -96,8 +103,14 @@ end
 function ManageSpawnedUnits:spawn_run_sequence(unit_id, sequence_name)
 	local entry = self._spawned_units[unit_id]
 
-	if unit_id ~= "self" and not alive(entry.unit) then
-		return
+	if unit_id ~= "self" then
+		if not entry then
+			return
+		end
+
+		if not alive(entry.unit) then
+			return
+		end
 	end
 
 	if Network:is_server() then
@@ -224,8 +237,14 @@ end
 function ManageSpawnedUnits:_spawn_run_sequence(unit_id, sequence_name)
 	local entry = self._spawned_units[unit_id]
 
-	if unit_id ~= "self" and not alive(entry.unit) then
-		return
+	if unit_id ~= "self" then
+		if not entry then
+			return
+		end
+
+		if not alive(entry.unit) then
+			return
+		end
 	end
 
 	if not sequence_name then

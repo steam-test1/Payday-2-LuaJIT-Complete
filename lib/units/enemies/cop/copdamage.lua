@@ -293,8 +293,14 @@ function CopDamage:_check_special_death_conditions(variant, body, attacker_unit,
 
 		local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(factory_id)
 
-		if body_data.weapon_id == weapon_id and body_data.special_comment and attacker_unit == managers.player:player_unit() then
-			return body_data.special_comment
+		if body_data.weapon_id == weapon_id then
+			if self._unit:damage():has_sequence(body_data.sequence) then
+				self._unit:damage():run_sequence_simple(body_data.sequence)
+			end
+
+			if body_data.special_comment and attacker_unit == managers.player:player_unit() then
+				return body_data.special_comment
+			end
 		end
 	end
 end
@@ -762,8 +768,14 @@ function CopDamage:_check_damage_achievements(attack_data, head)
 	if unit_type == "spooc" then
 		local spooc_action = self._unit:movement()._active_actions[1]
 
-		if spooc_action and spooc_action:type() == "spooc" and (not spooc_action:is_flying_strike() or attack_weapon:base().is_category and attack_weapon:base():is_category(tweak_data.achievement.in_town_you_are_law.weapon_type)) and not spooc_action:has_striken() and attack_weapon:base().name_id == tweak_data.achievement.dont_push_it.weapon then
-			managers.achievment:award(tweak_data.achievement.dont_push_it.award)
+		if spooc_action and spooc_action:type() == "spooc" then
+			if spooc_action:is_flying_strike() then
+				if attack_weapon:base().is_category and attack_weapon:base():is_category(tweak_data.achievement.in_town_you_are_law.weapon_type) then
+					managers.achievment:award(tweak_data.achievement.in_town_you_are_law.award)
+				end
+			elseif not spooc_action:has_striken() and attack_weapon:base().name_id == tweak_data.achievement.dont_push_it.weapon then
+				managers.achievment:award(tweak_data.achievement.dont_push_it.award)
+			end
 		end
 	end
 end
@@ -2320,7 +2332,11 @@ function CopDamage:sync_damage_fire(attacker_unit, damage_percent, start_dot_dan
 
 		if weapon_type == CopDamage.WEAPON_TYPE_GRANADE then
 			fire_dot = tweak_data.projectiles[weapon_id].fire_dot_data
-		elseif weapon_type == CopDamage.WEAPON_TYPE_BULLET and (not tweak_data.weapon.factory.parts[weapon_id].custom_stats or tweak_data.weapon.factory.parts[weapon_id].custom_stats.fire_dot_data) or weapon_type == CopDamage.WEAPON_TYPE_FLAMER and tweak_data.weapon[weapon_id].fire_dot_data then
+		elseif weapon_type == CopDamage.WEAPON_TYPE_BULLET then
+			if tweak_data.weapon.factory.parts[weapon_id].custom_stats then
+				fire_dot = tweak_data.weapon.factory.parts[weapon_id].custom_stats.fire_dot_data
+			end
+		elseif weapon_type == CopDamage.WEAPON_TYPE_FLAMER and tweak_data.weapon[weapon_id].fire_dot_data then
 			fire_dot = tweak_data.weapon[weapon_id].fire_dot_data
 		end
 

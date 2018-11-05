@@ -663,7 +663,19 @@ function BlackMarketGuiTabItem:mouse_moved(x, y)
 		for _, child in ipairs(self._tab_pages_panel:children()) do
 			if tonumber(child:name()) == math.ceil(self._slot_selected / num_per_page) then
 				child:set_color(tweak_data.screen_colors.button_stage_2)
-			elseif child:inside(x, y) and (used or "link") or self._tab_pages_highlighted[_] then
+			elseif child:inside(x, y) then
+				if not self._tab_pages_highlighted[_] then
+					self._tab_pages_highlighted[_] = true
+
+					child:set_color(tweak_data.screen_colors.button_stage_2)
+					managers.menu_component:post_event("highlight")
+				end
+
+				if not used then
+					used = true
+					pointer = "link"
+				end
+			elseif self._tab_pages_highlighted[_] then
 				self._tab_pages_highlighted[_] = false
 
 				child:set_color(tweak_data.screen_colors.button_stage_3)
@@ -1414,8 +1426,14 @@ function BlackMarketGuiSlotItem:init(main_panel, data, x, y, w, h)
 		end
 	end
 
-	if data.mid_text and self._loading_texture then
-		self._post_load_alpha = 0.4
+	if data.mid_text then
+		if self._bitmap then
+			self._bitmap:set_color(self._bitmap:color():with_alpha(0.6))
+		end
+
+		if self._loading_texture then
+			self._post_load_alpha = 0.4
+		end
 	end
 
 	if red_box then
@@ -4604,9 +4622,21 @@ function BlackMarketGui:_get_melee_weapon_stats(name)
 	end
 
 	for i, stat in ipairs(self._mweapon_stats_shown) do
-		if not stat.index and skill_stats[stat.name].max_value and base_stats[stat.name].max_value then
-			skill_stats[stat.name].max_value = base_stats[stat.name].max_value * skill_stats[stat.name].max_value
-			base_stats[stat.name].max_value = base_stats[stat.name].max_value
+		if not stat.index then
+			if skill_stats[stat.name].value and base_stats[stat.name].value then
+				skill_stats[stat.name].value = base_stats[stat.name].value * skill_stats[stat.name].value
+				base_stats[stat.name].value = base_stats[stat.name].value
+			end
+
+			if skill_stats[stat.name].min_value and base_stats[stat.name].min_value then
+				skill_stats[stat.name].min_value = base_stats[stat.name].min_value * skill_stats[stat.name].min_value
+				base_stats[stat.name].min_value = base_stats[stat.name].min_value
+			end
+
+			if skill_stats[stat.name].max_value and base_stats[stat.name].max_value then
+				skill_stats[stat.name].max_value = base_stats[stat.name].max_value * skill_stats[stat.name].max_value
+				base_stats[stat.name].max_value = base_stats[stat.name].max_value
+			end
 		end
 	end
 
@@ -4969,21 +4999,23 @@ function BlackMarketGui:show_stats()
 			self._stats_texts[stat.name].skill:set_color(tweak_data.screen_colors.resource)
 			self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.text)
 
-			if not stat.percent or math.round(value) >= 100 then
-				if stat.index then
-					
-				elseif tweak_stats[stat.name] then
-					local without_skill = math.round(base_stats[stat.name].value + mods_stats[stat.name].value)
-					local max_stat = math.max(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
+			if stat.percent then
+				if math.round(value) >= 100 then
+					self._stats_texts[stat.name].equip:set_color(tweak_data.screen_colors.stat_maxed)
+				end
+			elseif stat.index then
+				
+			elseif tweak_stats[stat.name] then
+				local without_skill = math.round(base_stats[stat.name].value + mods_stats[stat.name].value)
+				local max_stat = math.max(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
 
-					if stat.offset then
-						local offset = math.min(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
-						max_stat = max_stat - offset
-					end
+				if stat.offset then
+					local offset = math.min(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
+					max_stat = max_stat - offset
+				end
 
-					if max_stat <= without_skill then
-						self._stats_texts[stat.name].equip:set_color(tweak_data.screen_colors.stat_maxed)
-					end
+				if max_stat <= without_skill then
+					self._stats_texts[stat.name].equip:set_color(tweak_data.screen_colors.stat_maxed)
 				end
 			end
 		end
@@ -5079,21 +5111,23 @@ function BlackMarketGui:show_stats()
 				self._stats_texts[stat.name].skill:set_color(tweak_data.screen_colors.resource)
 				self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.text)
 
-				if not stat.percent or math.round(value) >= 100 then
-					if stat.index then
-						
-					elseif tweak_stats[stat.name] then
-						local without_skill = math.round(base_stats[stat.name].value + mods_stats[stat.name].value)
-						local max_stat = math.max(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
+				if stat.percent then
+					if math.round(value) >= 100 then
+						self._stats_texts[stat.name].equip:set_color(tweak_data.screen_colors.stat_maxed)
+					end
+				elseif stat.index then
+					
+				elseif tweak_stats[stat.name] then
+					local without_skill = math.round(base_stats[stat.name].value + mods_stats[stat.name].value)
+					local max_stat = math.max(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
 
-						if stat.offset then
-							local offset = math.min(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
-							max_stat = max_stat - offset
-						end
+					if stat.offset then
+						local offset = math.min(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
+						max_stat = max_stat - offset
+					end
 
-						if max_stat <= without_skill then
-							self._stats_texts[stat.name].equip:set_color(tweak_data.screen_colors.stat_maxed)
-						end
+					if max_stat <= without_skill then
+						self._stats_texts[stat.name].equip:set_color(tweak_data.screen_colors.stat_maxed)
 					end
 				end
 			else
@@ -5117,21 +5151,23 @@ function BlackMarketGui:show_stats()
 				self._stats_texts[stat.name].skill:set_color(tweak_data.screen_colors.resource)
 				self._stats_texts[stat.name].equip:set_color(tweak_data.screen_colors.text)
 
-				if not stat.percent or math.round(value) >= 100 then
-					if stat.index then
-						
-					elseif tweak_stats[stat.name] then
-						local without_skill = math.round(base_stats[stat.name].value + mods_stats[stat.name].value)
-						local max_stat = math.max(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
+				if stat.percent then
+					if math.round(value) >= 100 then
+						self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.stat_maxed)
+					end
+				elseif stat.index then
+					
+				elseif tweak_stats[stat.name] then
+					local without_skill = math.round(base_stats[stat.name].value + mods_stats[stat.name].value)
+					local max_stat = math.max(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
 
-						if stat.offset then
-							local offset = math.min(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
-							max_stat = max_stat - offset
-						end
+					if stat.offset then
+						local offset = math.min(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
+						max_stat = max_stat - offset
+					end
 
-						if max_stat <= without_skill then
-							self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.stat_maxed)
-						end
+					if max_stat <= without_skill then
+						self._stats_texts[stat.name].total:set_color(tweak_data.screen_colors.stat_maxed)
 					end
 				end
 			end
@@ -5330,8 +5366,18 @@ function BlackMarketGui:show_stats()
 				local skill_min_text = skill_min and format_round(skill_min, true)
 				local skill_max_text = skill_max and format_round(skill_max, true)
 
-				if stat.range and skill_min ~= skill_max then
-					skill_text = skill_min_text .. " (" .. skill_max_text .. ")"
+				if stat.range then
+					if base_min ~= base_max then
+						base_text = base_min_text .. " (" .. base_max_text .. ")"
+					end
+
+					if value_min ~= value_max then
+						equip_text = value_min_text .. " (" .. value_max_text .. ")"
+					end
+
+					if skill_min ~= skill_max then
+						skill_text = skill_min_text .. " (" .. skill_max_text .. ")"
+					end
 				end
 
 				if stat.suffix then
@@ -5395,8 +5441,14 @@ function BlackMarketGui:show_stats()
 				local total_max_text = value_max and format_round(value_max, true)
 				local color_ranges = {}
 
-				if stat.range and value_min ~= value_max then
-					total_text = total_min_text .. " (" .. total_max_text .. ")"
+				if stat.range then
+					if equip_min ~= equip_max then
+						equip_text = equip_min_text .. " (" .. equip_max_text .. ")"
+					end
+
+					if value_min ~= value_max then
+						total_text = total_min_text .. " (" .. total_max_text .. ")"
+					end
 				end
 
 				if stat.suffix then
@@ -5610,21 +5662,23 @@ function BlackMarketGui:show_stats()
 				self._stats_texts[stat.name].equip:set_color(tweak_data.screen_colors.text)
 			end
 
-			if not stat.percent or math.round(total_value) >= 100 then
-				if stat.index then
-					
-				elseif tweak_stats[stat.name] then
-					local without_skill = math.round(total_base_stats[stat.name].value + total_mods_stats[stat.name].value)
-					local max_stat = math.max(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
+			if stat.percent then
+				if math.round(total_value) >= 100 then
+					self._stats_texts[stat.name].equip:set_color(tweak_data.screen_colors.stat_maxed)
+				end
+			elseif stat.index then
+				
+			elseif tweak_stats[stat.name] then
+				local without_skill = math.round(total_base_stats[stat.name].value + total_mods_stats[stat.name].value)
+				local max_stat = math.max(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
 
-					if stat.offset then
-						local offset = math.min(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
-						max_stat = max_stat - offset
-					end
+				if stat.offset then
+					local offset = math.min(tweak_stats[stat.name][1], tweak_stats[stat.name][#tweak_stats[stat.name]]) * tweak_data.gui.stats_present_multiplier * (modifier_stats and modifier_stats[stat.name] or 1)
+					max_stat = max_stat - offset
+				end
 
-					if max_stat <= without_skill then
-						self._stats_texts[stat.name].equip:set_color(tweak_data.screen_colors.stat_maxed)
-					end
+				if max_stat <= without_skill then
+					self._stats_texts[stat.name].equip:set_color(tweak_data.screen_colors.stat_maxed)
 				end
 			end
 
@@ -6765,7 +6819,11 @@ function BlackMarketGui:update_info_text()
 				updated_texts[2].text = managers.localization:text(slot_data.desc_id)
 			end
 		end
-	elseif (identifier ~= self.identifiers.custom or self._data.custom_update_text_info) and Application:production_build() then
+	elseif identifier == self.identifiers.custom then
+		if self._data.custom_update_text_info then
+			self._data.custom_update_text_info(slot_data, updated_texts, self)
+		end
+	elseif Application:production_build() then
 		updated_texts[1].text = identifier:s()
 	end
 
@@ -7279,16 +7337,44 @@ function BlackMarketGui:mouse_moved(o, x, y)
 			end
 		end
 
-		if self._market_bundles.arrow_left and (self._market_bundles.arrow_left:inside(x, y) and (used or "link") or self._market_bundles.arrow_left_highlighted) then
-			self._market_bundles.arrow_left_highlighted = false
+		if self._market_bundles.arrow_left then
+			if self._market_bundles.arrow_left:inside(x, y) then
+				if not self._market_bundles.arrow_left_highlighted then
+					self._market_bundles.arrow_left_highlighted = true
 
-			self._market_bundles.arrow_left:set_color(tweak_data.screen_colors.button_stage_3)
+					managers.menu_component:post_event("highlight")
+					self._market_bundles.arrow_left:set_color(tweak_data.screen_colors.button_stage_2)
+				end
+
+				if not used then
+					used = true
+					pointer = "link"
+				end
+			elseif self._market_bundles.arrow_left_highlighted then
+				self._market_bundles.arrow_left_highlighted = false
+
+				self._market_bundles.arrow_left:set_color(tweak_data.screen_colors.button_stage_3)
+			end
 		end
 
-		if self._market_bundles.arrow_right and (self._market_bundles.arrow_right:inside(x, y) and (used or "link") or self._market_bundles.arrow_right_highlighted) then
-			self._market_bundles.arrow_right_highlighted = false
+		if self._market_bundles.arrow_right then
+			if self._market_bundles.arrow_right:inside(x, y) then
+				if not self._market_bundles.arrow_right_highlighted then
+					self._market_bundles.arrow_right_highlighted = true
 
-			self._market_bundles.arrow_right:set_color(tweak_data.screen_colors.button_stage_3)
+					managers.menu_component:post_event("highlight")
+					self._market_bundles.arrow_right:set_color(tweak_data.screen_colors.button_stage_2)
+				end
+
+				if not used then
+					used = true
+					pointer = "link"
+				end
+			elseif self._market_bundles.arrow_right_highlighted then
+				self._market_bundles.arrow_right_highlighted = false
+
+				self._market_bundles.arrow_right:set_color(tweak_data.screen_colors.button_stage_3)
+			end
 		end
 	end
 
@@ -7565,11 +7651,32 @@ function BlackMarketGui:mouse_pressed(button, x, y)
 	if self._market_bundles then
 		local active_bundle = self._market_bundles[self._data.active_market_bundle]
 
-		if active_bundle and (active_bundle.drill.text and active_bundle.drill.text:inside(x, y) or active_bundle.drill.image and active_bundle.drill.image:inside(x, y)) then
-			MenuCallbackHandler:steam_buy_drill(nil, {drill = active_bundle.drill.entry})
-			managers.menu_component:post_event("menu_enter")
+		if active_bundle then
+			if active_bundle.show_content.text:inside(x, y) then
+				managers.menu:open_node("inventory_tradable_container_show", {{container = {
+					show_only = true,
+					content = active_bundle.show_content.entry,
+					drill = active_bundle.drill.entry,
+					safe = active_bundle.safe.entry
+				}}})
+				managers.menu_component:post_event("menu_enter")
 
-			return
+				return
+			end
+
+			if active_bundle.safe.text:inside(x, y) or active_bundle.safe.image:inside(x, y) then
+				MenuCallbackHandler:steam_buy_safe_from_community(nil, {safe = active_bundle.safe.entry})
+				managers.menu_component:post_event("menu_enter")
+
+				return
+			end
+
+			if active_bundle.drill.text and active_bundle.drill.text:inside(x, y) or active_bundle.drill.image and active_bundle.drill.image:inside(x, y) then
+				MenuCallbackHandler:steam_buy_drill(nil, {drill = active_bundle.drill.entry})
+				managers.menu_component:post_event("menu_enter")
+
+				return
+			end
 		end
 
 		if self._market_bundles.arrow_left and self._market_bundles.arrow_left:inside(x, y) then
@@ -8201,7 +8308,16 @@ function BlackMarketGui:press_button(button)
 
 	local btn = self._controllers_mapping and self._controllers_mapping[button:key()]
 
-	if (not btn or not btn._data or not btn._data.callback or not self._button_press_delay or self._button_press_delay < TimerManager:main():time()) and self._select_rect_box then
+	if btn and btn._data and btn._data.callback then
+		if not self._button_press_delay or self._button_press_delay < TimerManager:main():time() then
+			managers.menu_component:post_event("menu_enter")
+			btn._data.callback(self._slot_data, self._data.topic_params)
+
+			self._button_press_delay = TimerManager:main():time() + 0.2
+
+			return true
+		end
+	elseif self._select_rect_box then
 		self:flash()
 	end
 
@@ -9088,8 +9204,14 @@ function BlackMarketGui:populate_grenades(data)
 
 		local active = true
 
-		if active and new_data.unlocked and data.allow_preview and m_tweak_data.unit then
-			table.insert(new_data, "lo_g_preview")
+		if active then
+			if new_data.unlocked and not new_data.equipped then
+				table.insert(new_data, "lo_g_equip")
+			end
+
+			if new_data.unlocked and data.allow_preview and m_tweak_data.unit then
+				table.insert(new_data, "lo_g_preview")
+			end
 		end
 
 		data[i] = new_data
@@ -9326,8 +9448,14 @@ function BlackMarketGui:populate_deployables(data)
 		new_data.slot = slot
 		new_data.equipped = slot ~= 0
 
-		if new_data.equipped and second_deployable and new_data.unlocked and slot == 2 then
-			new_data.equipped_text = managers.localization:to_upper_text("bm_menu_secondaries")
+		if new_data.equipped and second_deployable and new_data.unlocked then
+			if slot == 1 then
+				new_data.equipped_text = managers.localization:to_upper_text("bm_menu_primaries")
+			end
+
+			if slot == 2 then
+				new_data.equipped_text = managers.localization:to_upper_text("bm_menu_secondaries")
+			end
 		end
 
 		if not new_data.unlocked then
@@ -10728,8 +10856,14 @@ function BlackMarketGui:populate_melee_weapons_new(data)
 		local active = true
 		new_data.comparision_data = managers.blackmarket:get_melee_weapon_stats(melee_weapon_id)
 
-		if active and data.allow_preview and m_tweak_data.unit and not m_tweak_data.no_inventory_preview then
-			table.insert(new_data, "lo_mw_preview")
+		if active then
+			if new_data.unlocked and not new_data.equipped then
+				table.insert(new_data, "lo_mw_equip")
+			end
+
+			if data.allow_preview and m_tweak_data.unit and not m_tweak_data.no_inventory_preview then
+				table.insert(new_data, "lo_mw_preview")
+			end
 		end
 
 		data[i] = new_data
@@ -11289,11 +11423,26 @@ function BlackMarketGui:populate_mods(data)
 			local reticle_texture = managers.blackmarket:get_part_texture_switch(data[equipped].category, data[equipped].slot, data[equipped].name)
 
 			if reticle_texture and reticle_texture ~= "" then
-				if data[equipped].default_mod then
-					data[equipped].comparision_data = managers.blackmarket:get_weapon_stats_with_mod(data[equipped].category, data[equipped].slot, data[equipped].default_mod)
-				else
-					data[equipped].comparision_data = managers.blackmarket:get_weapon_stats_without_mod(data[equipped].category, data[equipped].slot, data[equipped].name)
-				end
+				data[equipped].mini_icons = data[equipped].mini_icons or {}
+
+				table.insert(data[equipped].mini_icons, {
+					layer = 2,
+					h = 30,
+					stream = true,
+					w = 30,
+					blend_mode = "add",
+					bottom = 1,
+					right = 1,
+					texture = reticle_texture
+				})
+			end
+		end
+
+		if not data[equipped].conflict and false then
+			if data[equipped].default_mod then
+				data[equipped].comparision_data = managers.blackmarket:get_weapon_stats_with_mod(data[equipped].category, data[equipped].slot, data[equipped].default_mod)
+			else
+				data[equipped].comparision_data = managers.blackmarket:get_weapon_stats_without_mod(data[equipped].category, data[equipped].slot, data[equipped].name)
 			end
 		end
 	end
@@ -11354,7 +11503,11 @@ function BlackMarketGui:populate_buy_weapon(data)
 
 		local active = true
 
-		if (not new_data.unlocked or new_data.can_afford and active) and Global.dlc_manager.all_dlc_data[new_data.global_value] and Global.dlc_manager.all_dlc_data[new_data.global_value].app_id and not Global.dlc_manager.all_dlc_data[new_data.global_value].external and not managers.dlc:is_dlc_unlocked(new_data.global_value) then
+		if new_data.unlocked then
+			if new_data.can_afford and active then
+				table.insert(new_data, "bw_buy")
+			end
+		elseif Global.dlc_manager.all_dlc_data[new_data.global_value] and Global.dlc_manager.all_dlc_data[new_data.global_value].app_id and not Global.dlc_manager.all_dlc_data[new_data.global_value].external and not managers.dlc:is_dlc_unlocked(new_data.global_value) then
 			table.insert(new_data, "bw_buy_dlc")
 		end
 
@@ -11507,7 +11660,16 @@ function BlackMarketGui:populate_buy_mask(data)
 
 		local active = true
 
-		if not new_data.unlocked or new_data.unlocked <= 0 or managers.money:get_mask_sell_value(new_data.name, new_data.global_value) > 0 then
+		if new_data.unlocked and new_data.unlocked > 0 then
+			if active then
+				table.insert(new_data, "bm_buy")
+				table.insert(new_data, "bm_preview")
+			end
+
+			if managers.money:get_mask_sell_value(new_data.name, new_data.global_value) > 0 then
+				table.insert(new_data, "bm_sell")
+			end
+		else
 			if active then
 				table.insert(new_data, "bm_preview")
 			end
@@ -12401,7 +12563,13 @@ function BlackMarketGui:extra_option_key_press(panel, s)
 
 		local reload = false
 
-		if not index or index ~= slot and slot ~= self._extra_options_data.num_panels and true then
+		if index then
+			if index ~= slot and slot ~= self._extra_options_data.num_panels then
+				managers.blackmarket:swap_preferred_character(index, slot)
+
+				reload = true
+			end
+		else
 			managers.blackmarket:set_preferred_character(character, slot)
 
 			reload = true
@@ -13559,12 +13727,18 @@ function BlackMarketGui:mask_mods_callback(data)
 		local default = mask_default_blueprint[category]
 		local mods = {}
 
-		if default and default.id ~= "nothing" and default.id ~= "no_color_no_material" then
-			table.insert(mods, default)
+		if default then
+			if default.id == "no_color_no_material" then
+				default = managers.blackmarket:customize_mask_category_default(category)
+			end
 
-			mods[#mods].pcs = {0}
-			mods[#mods].default = true
-			listed_items[default.id] = true
+			if default.id ~= "nothing" and default.id ~= "no_color_no_material" then
+				table.insert(mods, default)
+
+				mods[#mods].pcs = {0}
+				mods[#mods].default = true
+				listed_items[default.id] = true
+			end
 		end
 
 		if category == "materials" and not listed_items.plastic then

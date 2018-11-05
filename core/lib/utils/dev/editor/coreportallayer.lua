@@ -150,8 +150,16 @@ function PortalLayer:get_portal_shapes()
 end
 
 function PortalLayer:update(time, rel_time)
-	if not self._dont_draw and self._current_group then
-		self._current_group:draw(time, rel_time, 1, self._dont_draw_boxes, self._dont_draw_units)
+	if not self._dont_draw then
+		if not self._only_draw_selected then
+			for name, group in pairs(managers.portal:unit_groups()) do
+				group:draw(time, rel_time, 0.6, self._dont_draw_boxes, self._dont_draw_units)
+			end
+		end
+
+		if self._current_group then
+			self._current_group:draw(time, rel_time, 1, self._dont_draw_boxes, self._dont_draw_units)
+		end
 	end
 
 	if self._draw_units_in_no_portal_state then

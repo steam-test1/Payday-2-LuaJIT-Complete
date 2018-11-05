@@ -225,7 +225,11 @@ function ElementAreaTrigger:update_area()
 	else
 		local instigators = self:instigators()
 
-		if #instigators ~= 0 or not Network:is_server() or self:_should_trigger(nil) then
+		if #instigators == 0 and Network:is_server() then
+			if self:_should_trigger(nil) then
+				self:_check_amount(nil)
+			end
+		else
 			for _, unit in ipairs(instigators) do
 				if alive(unit) then
 					if Network:is_client() then
@@ -416,8 +420,18 @@ function ElementAreaOperator:on_executed(instigator)
 	for _, id in ipairs(self._values.elements) do
 		local element = self:get_mission_element(id)
 
-		if element and self._values.operation == "clear_inside" then
-			element:operation_clear_inside()
+		if element then
+			if self._values.apply_on_interval then
+				element:operation_set_interval(self._values.interval)
+			end
+
+			if self._values.apply_on_use_disabled_shapes then
+				element:operation_set_use_disabled_shapes(self._values.use_disabled_shapes)
+			end
+
+			if self._values.operation == "clear_inside" then
+				element:operation_clear_inside()
+			end
 		end
 	end
 
@@ -567,13 +581,24 @@ function ElementAreaReportTrigger:_client_check_state(unit)
 	local rule_ok = self:_check_instigator_rules(unit)
 	local inside = self:_is_inside(unit:position())
 
-	if (not table.contains(self._inside, unit) or not inside or not rule_ok) and inside and rule_ok then
+	if table.contains(self._inside, unit) then
+		if not inside or not rule_ok then
+			table.delete(self._inside, unit)
+			managers.network:session():send_to_host("to_server_area_event", 2, self._id, unit)
+		end
+	elseif inside and rule_ok then
 		table.insert(self._inside, unit)
 		managers.network:session():send_to_host("to_server_area_event", 1, self._id, unit)
 	end
 
-	if inside and (not rule_ok or self:_has_on_executed_alternative("while_inside")) and self:_has_on_executed_alternative("rule_failed") then
-		managers.network:session():send_to_host("to_server_area_event", 4, self._id, unit)
+	if inside then
+		if rule_ok then
+			if self:_has_on_executed_alternative("while_inside") then
+				managers.network:session():send_to_host("to_server_area_event", 3, self._id, unit)
+			end
+		elseif self:_has_on_executed_alternative("rule_failed") then
+			managers.network:session():send_to_host("to_server_area_event", 4, self._id, unit)
+		end
 	end
 end
 

@@ -3500,8 +3500,38 @@ function MenuNodeCrimenetChallengeGui:set_contact_info(id, name, files, override
 			y = reward_text:bottom()
 		end
 
-		if not challenge.rewarded and expire_text then
-			
+		if not challenge.rewarded then
+			local timestamp = challenge.timestamp
+			local interval = challenge.interval
+			local expire_timestamp = interval + timestamp
+			local current_timestamp = managers.challenge:get_timestamp()
+			local expire_time = expire_timestamp - current_timestamp
+			local expire_string = self:_create_timestamp_string_extended(expire_time)
+			local expire_text = self._info_panel:text({
+				name = "expire_text",
+				alpha = 1,
+				blend_mode = "add",
+				text = utf8.to_upper(expire_string),
+				font = tweak_data.menu.pd2_small_font,
+				font_size = tweak_data.menu.pd2_small_font_size,
+				color = expire_time <= 4 and tweak_data.screen_colors.important_1 or tweak_data.screen_colors.important_2
+			})
+
+			make_fine_text(expire_text)
+			expire_text:set_bottom((alive(rewards_panel) and rewards_panel:top() or self._info_panel:h()) - self.PADDING)
+			expire_text:set_width(self._info_panel:w())
+			expire_text:set_align("center")
+
+			local expire_bg = self._info_panel:rect({
+				name = "expire_bg",
+				blend_mode = "add",
+				color = tweak_data.screen_colors.important_2,
+				alpha = expire_time == 0 and 0.6 or expire_time <= 4 and 0.5 or 0.3
+			})
+
+			expire_bg:set_shape(expire_text:shape())
+
+			self._expire_text = expire_text
 		end
 	elseif ids == Idstring("_introduction") then
 		local introduction_text = self._info_panel:text({
@@ -3898,8 +3928,14 @@ function MenuNodeCrimenetChallengeGui:refresh_gui(node)
 			row_item.icon:set_left(0)
 		end
 
-		if alive(row_item.menu_unselected) and old_menu_unslected_tops[_] then
-			row_item.menu_unselected:set_top(old_menu_unslected_tops[_])
+		if alive(row_item.menu_unselected) then
+			if old_menu_unslected_lefts[_] then
+				row_item.menu_unselected:set_left(old_menu_unslected_lefts[_])
+			end
+
+			if old_menu_unslected_tops[_] then
+				row_item.menu_unselected:set_top(old_menu_unslected_tops[_])
+			end
 		end
 
 		if alive(row_item.gui_panel) then

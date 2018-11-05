@@ -240,8 +240,14 @@ function ZipLine:on_interacted(unit)
 		return
 	end
 
-	if self:is_usage_type_person() and (not Network:is_server() or not alive(self._user_unit)) then
-		self:_client_request_access(unit)
+	if self:is_usage_type_person() then
+		if Network:is_server() then
+			if not alive(self._user_unit) then
+				self:set_user(unit)
+			end
+		else
+			self:_client_request_access(unit)
+		end
 	end
 end
 

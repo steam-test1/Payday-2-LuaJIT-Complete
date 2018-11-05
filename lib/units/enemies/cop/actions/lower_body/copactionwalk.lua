@@ -2102,7 +2102,11 @@ function CopActionWalk:stop()
 		s_path[#s_path] = self._nav_point_pos(s_path[#s_path])
 	end
 
-	if not next(s_path) or not s_path[#s_path].x then
+	if next(s_path) then
+		if not s_path[#s_path].x then
+			table.insert(s_path, self._nav_point_pos(s_path[#s_path]))
+		end
+	else
 		table.insert(s_path, mvector3.copy(self._common_data.pos))
 	end
 

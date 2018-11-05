@@ -225,8 +225,38 @@ function CopLogicSniper._upd_aim(data, my_data)
 
 		if action_taken then
 			
-		elseif my_data.attitude == "engage" and not data.is_suppressed and (focus_enemy and (CopLogicAttack._chk_request_action_turn_to_enemy(data, my_data, data.m_pos, focus_enemy.verified_pos or focus_enemy.m_head_pos) or focus_enemy.verified or anim_data.reload or anim_data.crouch and (data.char_tweak.allowed_poses and not data.char_tweak.allowed_poses.stand or CopLogicSniper._chk_stand_visibility(data.m_pos, focus_enemy.m_head_pos, data.visibility_slotmask)) or data.char_tweak.allowed_poses and not data.char_tweak.allowed_poses.crouch or CopLogicSniper._chk_crouch_visibility(data.m_pos, focus_enemy.m_head_pos, data.visibility_slotmask)) or not my_data.wanted_pose or anim_data.reload or my_data.wanted_pose == "crouch" and (anim_data.crouch or data.char_tweak.allowed_poses and not data.char_tweak.allowed_poses.crouch or CopLogicAttack._chk_request_action_crouch(data)) or anim_data.stand or data.char_tweak.allowed_poses and not data.char_tweak.allowed_poses.stand or CopLogicAttack._chk_request_action_stand(data)) or (not focus_enemy or not CopLogicAttack._chk_request_action_turn_to_enemy(data, my_data, data.m_pos, focus_enemy.verified_pos or focus_enemy.m_head_pos) and focus_enemy.verified and anim_data.stand and (not data.char_tweak.allowed_poses or data.char_tweak.allowed_poses.crouch) and CopLogicSniper._chk_crouch_visibility(data.m_pos, focus_enemy.m_head_pos, data.visibility_slotmask)) and my_data.wanted_pose and not anim_data.reload and (my_data.wanted_pose == "crouch" and (anim_data.crouch or data.char_tweak.allowed_poses and not data.char_tweak.allowed_poses.crouch or CopLogicAttack._chk_request_action_crouch(data)) or not anim_data.stand and (not data.char_tweak.allowed_poses or data.char_tweak.allowed_poses.stand)) then
-			action_taken = CopLogicAttack._chk_request_action_stand(data)
+		elseif my_data.attitude == "engage" and not data.is_suppressed then
+			if focus_enemy then
+				if not CopLogicAttack._chk_request_action_turn_to_enemy(data, my_data, data.m_pos, focus_enemy.verified_pos or focus_enemy.m_head_pos) and not focus_enemy.verified and not anim_data.reload then
+					if anim_data.crouch then
+						if (not data.char_tweak.allowed_poses or data.char_tweak.allowed_poses.stand) and not CopLogicSniper._chk_stand_visibility(data.m_pos, focus_enemy.m_head_pos, data.visibility_slotmask) then
+							CopLogicAttack._chk_request_action_stand(data)
+						end
+					elseif (not data.char_tweak.allowed_poses or data.char_tweak.allowed_poses.crouch) and not CopLogicSniper._chk_crouch_visibility(data.m_pos, focus_enemy.m_head_pos, data.visibility_slotmask) then
+						CopLogicAttack._chk_request_action_crouch(data)
+					end
+				end
+			elseif my_data.wanted_pose and not anim_data.reload then
+				if my_data.wanted_pose == "crouch" then
+					if not anim_data.crouch and (not data.char_tweak.allowed_poses or data.char_tweak.allowed_poses.crouch) then
+						action_taken = CopLogicAttack._chk_request_action_crouch(data)
+					end
+				elseif not anim_data.stand and (not data.char_tweak.allowed_poses or data.char_tweak.allowed_poses.stand) then
+					action_taken = CopLogicAttack._chk_request_action_stand(data)
+				end
+			end
+		elseif focus_enemy then
+			if not CopLogicAttack._chk_request_action_turn_to_enemy(data, my_data, data.m_pos, focus_enemy.verified_pos or focus_enemy.m_head_pos) and focus_enemy.verified and anim_data.stand and (not data.char_tweak.allowed_poses or data.char_tweak.allowed_poses.crouch) and CopLogicSniper._chk_crouch_visibility(data.m_pos, focus_enemy.m_head_pos, data.visibility_slotmask) then
+				CopLogicAttack._chk_request_action_crouch(data)
+			end
+		elseif my_data.wanted_pose and not anim_data.reload then
+			if my_data.wanted_pose == "crouch" then
+				if not anim_data.crouch and (not data.char_tweak.allowed_poses or data.char_tweak.allowed_poses.crouch) then
+					action_taken = CopLogicAttack._chk_request_action_crouch(data)
+				end
+			elseif not anim_data.stand and (not data.char_tweak.allowed_poses or data.char_tweak.allowed_poses.stand) then
+				action_taken = CopLogicAttack._chk_request_action_stand(data)
+			end
 		end
 	end
 
@@ -243,7 +273,13 @@ function CopLogicSniper._upd_aim(data, my_data)
 	end
 
 	if aim or shoot then
-		if focus_enemy.verified and (my_data.attention_unit == focus_enemy.unit:key() or focus_enemy.unit:key()) or my_data.attention_unit ~= focus_enemy.verified_pos then
+		if focus_enemy.verified then
+			if my_data.attention_unit ~= focus_enemy.unit:key() then
+				CopLogicBase._set_attention(data, focus_enemy)
+
+				my_data.attention_unit = focus_enemy.unit:key()
+			end
+		elseif my_data.attention_unit ~= focus_enemy.verified_pos then
 			CopLogicBase._set_attention_on_pos(data, mvector3.copy(focus_enemy.verified_pos))
 
 			my_data.attention_unit = mvector3.copy(focus_enemy.verified_pos)

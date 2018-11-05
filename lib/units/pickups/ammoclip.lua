@@ -169,7 +169,13 @@ function AmmoClip:sync_net_event(event, peer)
 				end
 			end
 		end
-	elseif event == AmmoClip.EVENT_IDS.register_grenade and (not peer or self._grenade_registered or true) or AmmoClip.EVENT_IDS.bonnie_share_ammo < event then
+	elseif event == AmmoClip.EVENT_IDS.register_grenade then
+		if peer and not self._grenade_registered then
+			managers.player:register_grenade(peer:id())
+
+			self._grenade_registered = true
+		end
+	elseif AmmoClip.EVENT_IDS.bonnie_share_ammo < event then
 		local damage_ext = player:character_damage()
 
 		if not damage_ext:need_revive() and not damage_ext:dead() and not damage_ext:is_berserker() then

@@ -1109,7 +1109,14 @@ function CoreCutsceneEditor:refresh_player()
 end
 
 function CoreCutsceneEditor:update(time, delta_time)
-	if not self._modal_window or self._modal_window:update(time, delta_time) then
+	if self._modal_window then
+		if self._modal_window:update(time, delta_time) then
+			self._modal_window = nil
+
+			self._window:set_enabled(true)
+			self._window:set_focus()
+		end
+	else
 		self:_process_debug_key_commands(time, delta_time)
 		self:_process_enqueued_update_actions()
 		self._sequencer:update()
@@ -1149,7 +1156,11 @@ function CoreCutsceneEditor:update(time, delta_time)
 end
 
 function CoreCutsceneEditor:end_update(time, delta_time)
-	if not self._modal_window or self._modal_window.end_update then
+	if self._modal_window then
+		if self._modal_window.end_update then
+			self._modal_window:end_update(time, delta_time)
+		end
+	else
 		if self._view_menu:is_checked(commands:id("CAST_FINDER_TOGGLE")) and (self._player == nil or not self._player:is_viewport_enabled()) then
 			self:_draw_cast_finder()
 		end
@@ -1240,7 +1251,11 @@ end
 function CoreCutsceneEditor:_on_exit()
 	local choice = EWS:MessageDialog(self._window, "Do you want to save the current project before closing?", "Save Changes?", "YES_NO,CANCEL,YES_DEFAULT,ICON_EXCLAMATION"):show_modal()
 
-	if (choice ~= "ID_YES" or not self:_on_save_project()) and choice == "ID_CANCEL" then
+	if choice == "ID_YES" then
+		if not self:_on_save_project() then
+			return false
+		end
+	elseif choice == "ID_CANCEL" then
 		return false
 	end
 
@@ -1250,8 +1265,15 @@ function CoreCutsceneEditor:_on_exit()
 end
 
 function CoreCutsceneEditor:_on_activate(data, event)
-	if event:get_active() and managers.editor then
-		managers.editor:change_layer_notebook("Cutscene")
+	if event:get_active() then
+		if managers.subtitle then
+			managers.subtitle:set_enabled(true)
+			managers.subtitle:set_visible(true)
+		end
+
+		if managers.editor then
+			managers.editor:change_layer_notebook("Cutscene")
+		end
 	end
 
 	event:skip()

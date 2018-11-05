@@ -358,7 +358,13 @@ end
 function MenuCallbackHandler:clicked_customize_character_category(item)
 	local name = item:name()
 
-	if (name ~= "masks" or item:expanded()) and name == "armor" and item:expanded() then
+	if name == "masks" then
+		if item:expanded() then
+			managers.menu_scene:clicked_masks()
+
+			return
+		end
+	elseif name == "armor" and item:expanded() then
 		managers.menu_scene:clicked_armor()
 
 		return

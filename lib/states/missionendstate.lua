@@ -62,8 +62,14 @@ function MissionEndState:at_enter(old_state, params)
 			for _, team_ai in pairs(managers.groupai:state():all_AI_criminals()) do
 				local carry_data = team_ai and team_ai.unit and team_ai.unit:movement() and team_ai.unit:movement():carry_data()
 
-				if carry_data and carry_data:carry_id() == "sandwich" then
-					managers.mission:call_global_event("equipment_sandwich")
+				if carry_data then
+					if not tweak_data.carry[carry_data:carry_id()].skip_exit_secure then
+						managers.loot:secure(carry_data:carry_id(), carry_data:multiplier())
+					end
+
+					if carry_data:carry_id() == "sandwich" then
+						managers.mission:call_global_event("equipment_sandwich")
+					end
 				end
 			end
 		end
@@ -1255,7 +1261,11 @@ function MissionEndState:chk_complete_heist_achievements()
 								local missing_parts = false
 								local weapon_blueprint = weapon_data.blueprint or {}
 
-								if type(blueprint) ~= "string" or not table.contains(weapon_blueprint, blueprint) and true then
+								if type(blueprint) == "string" then
+									if not table.contains(weapon_blueprint, blueprint) then
+										missing_parts = true
+									end
+								else
 									for _, part in ipairs(blueprint) do
 										if type(part) == "string" then
 											if not table.contains(weapon_blueprint, part) then

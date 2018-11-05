@@ -54,18 +54,22 @@ function CopLogicTrade.hostage_trade(unit, enable, trade_success, skip_hint)
 		if Network:is_server() and not unit:anim_data().hands_tied and not unit:anim_data().tied then
 			local action_data = nil
 
-			if not managers.enemy:all_civilians()[unit:key()] or not unit:brain():is_tied() and {
-				clamp_to_graph = true,
-				type = "act",
-				body_part = 1,
-				variant = "tied",
-				blocks = {
-					light_hurt = -1,
-					hurt = -1,
-					heavy_hurt = -1,
-					walk = -1
-				}
-			} then
+			if managers.enemy:all_civilians()[unit:key()] then
+				if not unit:brain():is_tied() then
+					action_data = {
+						clamp_to_graph = true,
+						type = "act",
+						body_part = 1,
+						variant = "tied",
+						blocks = {
+							light_hurt = -1,
+							hurt = -1,
+							heavy_hurt = -1,
+							walk = -1
+						}
+					}
+				end
+			else
 				action_data = {
 					clamp_to_graph = true,
 					type = "act",
@@ -180,7 +184,11 @@ function CopLogicTrade.update(data)
 
 	if my_data.pathing_to_flee_pos then
 		
-	elseif (not my_data.flee_path or not data.unit:movement():chk_action_forbidden("walk") and data.unit:anim_data().idle_full_blend) and my_data.flee_pos then
+	elseif my_data.flee_path then
+		if not data.unit:movement():chk_action_forbidden("walk") and data.unit:anim_data().idle_full_blend then
+			data.unit:brain()._current_logic._chk_request_action_walk_to_flee_pos(data, my_data)
+		end
+	elseif my_data.flee_pos then
 		local to_pos = my_data.flee_pos
 		my_data.flee_pos = nil
 		my_data.pathing_to_flee_pos = true

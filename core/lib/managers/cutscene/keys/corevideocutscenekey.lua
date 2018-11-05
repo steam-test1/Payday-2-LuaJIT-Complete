@@ -25,7 +25,17 @@ function CoreVideoCutsceneKey:play(player, undo, fast_forward)
 	if undo then
 		self:_stop()
 	else
-		if (not alive(self._video_object) or self:loop() < self._video_object:loop_count()) and self:video() ~= "" then
+		if alive(self._video_object) then
+			if was_paused then
+				self:_play_video(video_ws)
+			end
+
+			if self:loop() < self._video_object:loop_count() then
+				self:_stop()
+				managers.cutscene:_cleanup(true)
+				managers.overlay_effect:play_effect(tweak_data.player.overlay.cutscene_fade_out)
+			end
+		elseif self:video() ~= "" then
 			self:_play_video(video_ws)
 		end
 

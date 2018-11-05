@@ -540,7 +540,11 @@ function CopLogicTravel._get_pos_accross_door(guard_door, nav_seg)
 	local accross_vec = guard_door.high_pos - guard_door.low_pos
 	local rot_angle = 90
 
-	if room_1_seg == nav_seg and (guard_door.low_pos.y ~= guard_door.high_pos.y or rot_angle * -1) or guard_door.low_pos.x == guard_door.high_pos.x then
+	if room_1_seg == nav_seg then
+		if guard_door.low_pos.y == guard_door.high_pos.y then
+			rot_angle = rot_angle * -1
+		end
+	elseif guard_door.low_pos.x == guard_door.high_pos.x then
 		rot_angle = rot_angle * -1
 	end
 
@@ -563,7 +567,28 @@ function CopLogicTravel._get_pos_accross_door(guard_door, nav_seg)
 			local too_much_error = error_dis / optimal_dis > 0.3
 			local is_hit = accross_pos[2]
 
-			if (not best_is_hit or is_hit and (error_dis >= best_error_dis or too_much_error) or best_has_too_much_error and nil) and (not best_is_miss or not too_much_error and true) then
+			if best_is_hit then
+				if is_hit then
+					if error_dis < best_error_dis then
+						best_pos = accross_pos[1]
+						best_error_dis = error_dis
+						best_has_too_much_error = too_much_error
+					end
+				elseif best_has_too_much_error then
+					best_pos = accross_pos[1]
+					best_error_dis = error_dis
+					best_is_miss = true
+					best_is_hit = nil
+				end
+			elseif best_is_miss then
+				if not too_much_error then
+					best_pos = accross_pos[1]
+					best_error_dis = error_dis
+					best_has_too_much_error = nil
+					best_is_miss = nil
+					best_is_hit = true
+				end
+			else
 				best_pos = accross_pos[1]
 				best_is_hit = is_hit
 				best_is_miss = not is_hit
@@ -930,8 +955,10 @@ function CopLogicTravel._get_pos_on_wall(from_pos, max_dist, step_offset, is_rec
 			rsrv_desc.position = ray_params.trace[1]
 			local is_free = nav_manager:is_pos_free(rsrv_desc)
 
-			if is_free and false then
-				
+			if is_free then
+				managers.navigation:destroy_nav_tracker(from_tracker)
+
+				return ray_params.trace[1]
 			end
 		elseif not fail_position then
 			rsrv_desc.position = ray_params.trace[1]
@@ -1384,21 +1411,25 @@ function CopLogicTravel._on_destination_reached(data)
 	local objective = data.objective
 	objective.in_place = true
 
-	if objective.type ~= "free" or not objective.action_duration then
-		if objective.type == "flee" then
+	if objective.type == "free" then
+		if not objective.action_duration then
+			data.objective_complete_clbk(data.unit, objective)
+
+			return
+		end
+	elseif objective.type == "flee" then
+		data.unit:brain():set_active(false)
+		data.unit:base():set_slot(data.unit, 0)
+
+		return
+	elseif objective.type == "defend_area" then
+		if objective.grp_objective and objective.grp_objective.type == "retire" then
 			data.unit:brain():set_active(false)
 			data.unit:base():set_slot(data.unit, 0)
 
 			return
-		elseif objective.type == "defend_area" then
-			if objective.grp_objective and objective.grp_objective.type == "retire" then
-				data.unit:brain():set_active(false)
-				data.unit:base():set_slot(data.unit, 0)
-
-				return
-			else
-				managers.groupai:state():on_defend_travel_end(data.unit, objective)
-			end
+		else
+			managers.groupai:state():on_defend_travel_end(data.unit, objective)
 		end
 	end
 

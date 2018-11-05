@@ -125,7 +125,11 @@ function VoteManager:_request_vote(vote_type, vote_network, peer_id)
 	self._peer_to_exclude = peer_id
 	self._cooldown = TimerManager:wall():time() + tweak_data.voting.cooldown
 
-	if (not Network:is_server() or self:_host_start(vote_type, managers.network:session():local_peer():id(), peer_id)) and managers.network:session() then
+	if Network:is_server() then
+		if self:_host_start(vote_type, managers.network:session():local_peer():id(), peer_id) then
+			self:_host_register(managers.network:session():local_peer():id(), self.VOTES.yes)
+		end
+	elseif managers.network:session() then
 		managers.network:session():send_to_host("voting_data", vote_network, peer_id or 0, 0)
 	end
 
@@ -353,32 +357,48 @@ function VoteManager:help_text()
 end
 
 function VoteManager:network_package(type, value, result, peer_id)
-	if not Network:is_server() or (type ~= self.VOTE_EVENT.request_kick or self:_host_start("kick", peer_id, value)) and (type ~= self.VOTE_EVENT.request_restart or self:_host_start("restart", peer_id)) and type == self.VOTE_EVENT.respond then
-		if type == self.VOTE_EVENT.process_kick then
-			self:_start("kick", value)
-		elseif type == self.VOTE_EVENT.process_restart then
-			self:_start("restart")
-		elseif type == self.VOTE_EVENT.stopped then
-			local vote_type = self._type
-
-			self:_stop()
-
-			if (vote_type ~= "kick" or value ~= 0 and not managers.network:session():peer(value)) and vote_type == "restart" and value == 1 then
-				self:_restart_counter()
+	if Network:is_server() then
+		if type == self.VOTE_EVENT.request_kick then
+			if self:_host_start("kick", peer_id, value) then
+				self:_host_register(peer_id, self.VOTES.yes)
+				self:message_vote()
 			end
-		elseif type == self.VOTE_EVENT.reports then
-			self:_message(result, value, self._peer_to_exclude)
-		elseif type == self.VOTE_EVENT.instant_kick then
-			local peer = managers.network:session():peer(value)
-
-			if peer and result ~= 0 then
-				managers.chat:feed_system_message(ChatManager.GAME, managers.localization:text(self:kick_reason_to_string(result), {name = peer:name()}))
+		elseif type == self.VOTE_EVENT.request_restart then
+			if self:_host_start("restart", peer_id) then
+				self:_host_register(peer_id, self.VOTES.yes)
+				self:message_vote()
 			end
-		elseif type == self.VOTE_EVENT.instant_restart then
-			self:_restart_counter()
-		elseif type == self.VOTE_EVENT.server_kick_option then
-			Global.game_settings.kick_option_synced = value
+		elseif type == self.VOTE_EVENT.respond then
+			self:_host_register(peer_id, value)
 		end
+	elseif type == self.VOTE_EVENT.process_kick then
+		self:_start("kick", value)
+	elseif type == self.VOTE_EVENT.process_restart then
+		self:_start("restart")
+	elseif type == self.VOTE_EVENT.stopped then
+		local vote_type = self._type
+
+		self:_stop()
+
+		if vote_type == "kick" then
+			if value ~= 0 and not managers.network:session():peer(value) then
+				managers.chat:feed_system_message(ChatManager.GAME, managers.localization:text("menu_chat_peer_kicked_unknown"))
+			end
+		elseif vote_type == "restart" and value == 1 then
+			self:_restart_counter()
+		end
+	elseif type == self.VOTE_EVENT.reports then
+		self:_message(result, value, self._peer_to_exclude)
+	elseif type == self.VOTE_EVENT.instant_kick then
+		local peer = managers.network:session():peer(value)
+
+		if peer and result ~= 0 then
+			managers.chat:feed_system_message(ChatManager.GAME, managers.localization:text(self:kick_reason_to_string(result), {name = peer:name()}))
+		end
+	elseif type == self.VOTE_EVENT.instant_restart then
+		self:_restart_counter()
+	elseif type == self.VOTE_EVENT.server_kick_option then
+		Global.game_settings.kick_option_synced = value
 	end
 end
 
@@ -462,7 +482,15 @@ function VoteManager:message_vote()
 		return
 	end
 
-	if (game_state_machine:current_state_name() ~= "menu_main" or not managers.menu:active_menu() or not managers.menu:active_menu().logic:selected_node() or managers.menu:active_menu().logic:selected_node():parameters().name ~= "lobby") and (game_state_machine:current_state_name() ~= "ingame_waiting_for_players" or not managers.menu:active_menu() or not managers.menu:active_menu().logic:selected_node() or managers.menu:active_menu().logic:selected_node():parameters().name ~= "kit") and (not managers.menu:active_menu() or not managers.menu:active_menu().logic:selected_node() or managers.menu:active_menu().logic:selected_node():parameters().name ~= "pause") then
+	if game_state_machine:current_state_name() == "menu_main" then
+		if not managers.menu:active_menu() or not managers.menu:active_menu().logic:selected_node() or managers.menu:active_menu().logic:selected_node():parameters().name ~= "lobby" then
+			return
+		end
+	elseif game_state_machine:current_state_name() == "ingame_waiting_for_players" then
+		if not managers.menu:active_menu() or not managers.menu:active_menu().logic:selected_node() or managers.menu:active_menu().logic:selected_node():parameters().name ~= "kit" then
+			return
+		end
+	elseif not managers.menu:active_menu() or not managers.menu:active_menu().logic:selected_node() or managers.menu:active_menu().logic:selected_node():parameters().name ~= "pause" then
 		return
 	end
 

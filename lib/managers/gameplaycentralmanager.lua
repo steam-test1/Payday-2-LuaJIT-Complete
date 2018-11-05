@@ -158,7 +158,23 @@ function GamePlayCentralManager:update(t, dt)
 
 		if not alive then
 			table.remove(self._dropped_weapons.units, self._dropped_weapons.index)
-		elseif data.state == "wait" and (data.t <= 4 or 0) or data.state == "off" and (data.t <= 0.2 or 0) or data.state == "on" and data.t > 0.1 then
+		elseif data.state == "wait" then
+			if data.t > 4 then
+				data.flashlight_data.light:set_enable(false)
+				data.flashlight_data.effect:kill_effect()
+
+				data.state = "off"
+				data.t = 0
+			end
+		elseif data.state == "off" then
+			if data.t > 0.2 then
+				data.flashlight_data.light:set_enable(true)
+				data.flashlight_data.effect:activate()
+
+				data.state = "on"
+				data.t = 0
+			end
+		elseif data.state == "on" and data.t > 0.1 then
 			data.flashlight_data.light:set_enable(false)
 			data.flashlight_data.effect:kill_effect()
 			table.remove(self._dropped_weapons.units, self._dropped_weapons.index)

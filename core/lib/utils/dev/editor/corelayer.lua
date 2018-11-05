@@ -254,10 +254,18 @@ function Layer:_update_widget_affect_object(t, dt)
 				end
 			end
 
-			if not self._using_widget and (self._move_widget:enabled() or self._rotate_widget:enabled()) and self._rotate_widget:enabled() and self._last_rot ~= nil then
-				self:use_widget_rotation(self._last_rot)
+			if not self._using_widget and (self._move_widget:enabled() or self._rotate_widget:enabled()) then
+				if self._move_widget:enabled() and self._last_pos ~= nil then
+					self:use_widget_position(self._last_pos)
 
-				self._last_rot = nil
+					self._last_pos = nil
+				end
+
+				if self._rotate_widget:enabled() and self._last_rot ~= nil then
+					self:use_widget_rotation(self._last_rot)
+
+					self._last_rot = nil
+				end
 			end
 
 			if self._move_widget:enabled() then
@@ -1170,28 +1178,36 @@ function Layer:set_select_group(unit)
 		if group then
 			local reference = group:reference()
 
-			if not CoreInput.alt() or current_group and current_group == group then
-				if CoreInput.shift() then
-					group:set_reference(unit)
-				elseif CoreInput.ctrl() then
-					if current_group then
-						if self:current_group() == group then
-							current_group:remove_unit(unit)
-							self:remove_select_unit(unit)
-						else
-							current_group:add_unit(unit)
-							self:add_select_unit(unit)
-						end
-					end
-				else
-					self:select_group(group)
+			if CoreInput.alt() then
+				if current_group and current_group == group then
+					current_group:remove_unit(unit)
+					self:remove_select_unit(unit)
 				end
+			elseif CoreInput.shift() then
+				group:set_reference(unit)
+			elseif CoreInput.ctrl() then
+				if current_group then
+					if self:current_group() == group then
+						current_group:remove_unit(unit)
+						self:remove_select_unit(unit)
+					else
+						current_group:add_unit(unit)
+						self:add_select_unit(unit)
+					end
+				end
+			else
+				self:select_group(group)
 			end
 
 			if reference ~= group:reference() then
 				self:select_group(group)
 			end
-		elseif (not CoreInput.ctrl() or current_group) and not self._selecting_many_units then
+		elseif CoreInput.ctrl() then
+			if current_group then
+				current_group:add_unit(unit)
+				self:add_select_unit(unit)
+			end
+		elseif not self._selecting_many_units then
 			self:clear_selected_units()
 		end
 
@@ -1264,7 +1280,12 @@ function Layer:remove_select_unit(unit)
 end
 
 function Layer:check_referens_exists()
-	if #self._selected_units <= 0 or not table.contains(self._selected_units, self._selected_unit) then
+	if #self._selected_units > 0 then
+		if not table.contains(self._selected_units, self._selected_unit) then
+			self:set_reference_unit(self._selected_units[1])
+			self:recalc_all_locals()
+		end
+	else
 		self:set_reference_unit(nil)
 	end
 end

@@ -473,7 +473,11 @@ function MenuItemInput:key_release(row_item, o, k)
 		self._key_pressed = false
 	end
 
-	if (k ~= Idstring("esc") or type(self._esc_released_callback) ~= "number") and k == Idstring("enter") and self._should_disable then
+	if k == Idstring("esc") then
+		if type(self._esc_released_callback) ~= "number" then
+			self._esc_released_callback()
+		end
+	elseif k == Idstring("enter") and self._should_disable then
 		self._should_disable = false
 
 		self:trigger()

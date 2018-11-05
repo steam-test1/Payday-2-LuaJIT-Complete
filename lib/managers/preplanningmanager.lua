@@ -789,8 +789,14 @@ function PrePlanningManager:_check_spawn_unit(type, element)
 	mrotation.set_zero(mrot)
 	mrotation.multiply(mrot, rot)
 
-	if params and params.rotation then
-		mrotation.multiply(mrot, params.rotation)
+	if params then
+		if params.position then
+			mvector3.add(mvec, params.position)
+		end
+
+		if params.rotation then
+			mrotation.multiply(mrot, params.rotation)
+		end
 	end
 
 	local unit = World:spawn_unit(Idstring(unit_name), mvec, mrot)

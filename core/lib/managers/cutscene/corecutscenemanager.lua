@@ -238,11 +238,23 @@ function CoreCutsceneManager:update()
 		self._stop_playback = nil
 		self._disable_events = nil
 	else
-		if self._player and self._player:is_presentable() and not self._player:is_viewport_enabled() then
-			self._player:set_viewport_enabled(true)
-			self:set_gui_visible(true)
-			self:_on_playback_started(self._player:cutscene_name())
-			self:_send_event("EVT_PLAYBACK_STARTED", self._player:cutscene_name())
+		if self._player then
+			if not self._player:is_primed() then
+				self._player:prime()
+			end
+
+			if self._start_playback and not self:is_paused() then
+				self._player:play()
+
+				self._start_playback = nil
+			end
+
+			if self._player:is_presentable() and not self._player:is_viewport_enabled() then
+				self._player:set_viewport_enabled(true)
+				self:set_gui_visible(true)
+				self:_on_playback_started(self._player:cutscene_name())
+				self:_send_event("EVT_PLAYBACK_STARTED", self._player:cutscene_name())
+			end
 		end
 
 		local just_finished_playing_in_game_cutscene = self._player and self._player:update(time, delta_time) == false and self:_video() == nil

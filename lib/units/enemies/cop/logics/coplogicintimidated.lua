@@ -596,7 +596,11 @@ function CopLogicIntimidated.on_rescue_SO_completed(ignore_this, data, good_pig)
 end
 
 function CopLogicIntimidated.on_rescue_allowed_state(data, state)
-	if not state or not data.unit:anim_data().move then
+	if state then
+		if not data.unit:anim_data().move then
+			CopLogicIntimidated._add_delayed_rescue_SO(data, data.internal_data)
+		end
+	else
 		CopLogicIntimidated._unregister_rescue_SO(data, data.internal_data)
 	end
 end

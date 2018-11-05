@@ -237,7 +237,11 @@ function GameSetup:load_packages()
 
 	local level_package = nil
 
-	if Global.level_data and Global.level_data.level_id or not Application:editor() and "packages/production/level_debug" then
+	if not Global.level_data or not Global.level_data.level_id then
+		if not Application:editor() then
+			level_package = "packages/production/level_debug"
+		end
+	else
 		local lvl_tweak_data = Global.level_data and Global.level_data.level_id and tweak_data.levels[Global.level_data.level_id]
 		level_package = lvl_tweak_data and lvl_tweak_data.package
 	end

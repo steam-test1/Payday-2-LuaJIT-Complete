@@ -40,7 +40,23 @@ function BlinkExt:update(unit, t, dt)
 
 				self._effect_list[self._current_effect]:set_enabled(true)
 			end
-		elseif self._state ~= "rand_cycle" or self._current_effect then
+		elseif self._state == "rand_cycle" then
+			if self._current_object then
+				self._object_list[self._current_object]:set_visibility(false)
+
+				self._current_object = math.random(#self._object_list)
+
+				self._object_list[self._current_object]:set_visibility(true)
+			end
+
+			if self._current_effect then
+				self._effect_list[self._current_effect]:set_enabled(false)
+
+				self._current_effect = math.random(#self._effect_list)
+
+				self._effect_list[self._current_effect]:set_enabled(true)
+			end
+		else
 			for _, object in ipairs(self._object_list) do
 				object:set_visibility(not object:visibility())
 			end

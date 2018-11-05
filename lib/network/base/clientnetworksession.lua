@@ -547,10 +547,23 @@ function ClientNetworkSession:_get_join_attempt_identifier()
 end
 
 function ClientNetworkSession:_upd_request_join_resend(wall_time)
-	if self._last_join_request_t and self._last_join_request_t and ClientNetworkSession.HOST_REQUEST_JOIN_INTERVAL < wall_time - self._last_join_request_t then
-		self._join_request_params.host_rpc:request_join(unpack(self._join_request_params.params))
+	if self._last_join_request_t then
+		if ClientNetworkSession.JOIN_REQUEST_TIMEOUT < wall_time - self._first_join_request_t and self._server_peer and self._cb_find_game then
+			self._last_join_request_t = nil
+			local cb = self._cb_find_game
+			self._cb_find_game = nil
 
-		self._last_join_request_t = wall_time
+			self:remove_peer(self._server_peer, 1)
+			cb("FAILED_CONNECT")
+
+			return
+		end
+
+		if self._last_join_request_t and ClientNetworkSession.HOST_REQUEST_JOIN_INTERVAL < wall_time - self._last_join_request_t then
+			self._join_request_params.host_rpc:request_join(unpack(self._join_request_params.params))
+
+			self._last_join_request_t = wall_time
+		end
 	end
 end
 

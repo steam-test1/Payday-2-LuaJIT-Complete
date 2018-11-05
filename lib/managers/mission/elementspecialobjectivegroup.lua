@@ -45,7 +45,19 @@ function ElementSpecialObjectiveGroup:on_executed(instigator)
 				self:_execute_random_SO(chosen_unit)
 			end
 		end
-	elseif not self._values.use_instigator or (not alive(instigator) or not instigator:brain() or not instigator:character_damage() or not instigator:character_damage():dead()) and not instigator then
+	elseif self._values.use_instigator then
+		if alive(instigator) then
+			if instigator:brain() then
+				if not instigator:character_damage() or not instigator:character_damage():dead() then
+					self:_execute_random_SO(instigator)
+				end
+			else
+				Application:error("[ElementSpecialObjectiveGroup:on_executed] Special Objective instigator is not an AI unit. Possibly improper \"use instigator\" flag use. Element id:", self._id)
+			end
+		elseif not instigator then
+			Application:error("[ElementSpecialObjectiveGroup:on_executed] Special Objective missing instigator. Possibly improper \"use instigator\" flag use. Element id:", self._id)
+		end
+	else
 		self:_execute_random_SO(nil)
 	end
 

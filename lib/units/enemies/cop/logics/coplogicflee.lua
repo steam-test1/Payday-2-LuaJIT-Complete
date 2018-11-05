@@ -10,10 +10,18 @@ function CopLogicFlee.enter(data, new_logic_name, enter_params)
 		detection = data.char_tweak.detection.combat
 	}
 
-	if old_internal_data and old_internal_data.best_cover then
-		my_data.best_cover = old_internal_data.best_cover
+	if old_internal_data then
+		if old_internal_data.nearest_cover then
+			my_data.nearest_cover = old_internal_data.nearest_cover
 
-		managers.navigation:reserve_cover(my_data.best_cover[1], data.pos_rsrv_id)
+			managers.navigation:reserve_cover(my_data.nearest_cover[1], data.pos_rsrv_id)
+		end
+
+		if old_internal_data.best_cover then
+			my_data.best_cover = old_internal_data.best_cover
+
+			managers.navigation:reserve_cover(my_data.best_cover[1], data.pos_rsrv_id)
+		end
 	end
 
 	data.internal_data = my_data
@@ -120,104 +128,106 @@ function CopLogicFlee.update(data)
 	else
 		CopLogicFlee._cancel_cover_pathing(data, my_data)
 
-		if not my_data.advancing or not unit:anim_data().crouch then
-			if my_data.processing_flee_path or my_data.processing_coarse_path then
-				CopLogicFlee._update_pathing(data, my_data)
-			elseif my_data.cover_leave_t then
-				if not my_data.turning and not unit:movement():chk_action_forbidden("walk") then
-					if my_data.cover_leave_t < t then
-						my_data.cover_leave_t = nil
-					elseif my_data.best_cover and not CopLogicTravel._chk_request_action_turn_to_cover(data, my_data) and not unit:anim_data().crouch then
-						CopLogicAttack._chk_request_action_crouch(data)
+		if my_data.advancing then
+			if not unit:anim_data().crouch then
+				CopLogicAttack._chk_request_action_crouch(data)
+			end
+		elseif my_data.processing_flee_path or my_data.processing_coarse_path then
+			CopLogicFlee._update_pathing(data, my_data)
+		elseif my_data.cover_leave_t then
+			if not my_data.turning and not unit:movement():chk_action_forbidden("walk") then
+				if my_data.cover_leave_t < t then
+					my_data.cover_leave_t = nil
+				elseif my_data.best_cover and not CopLogicTravel._chk_request_action_turn_to_cover(data, my_data) and not unit:anim_data().crouch then
+					CopLogicAttack._chk_request_action_crouch(data)
+				end
+			end
+		elseif my_data.flee_path then
+			if my_data.path_blocked == false and not unit:movement():chk_action_forbidden("walk") then
+				local new_action_data = {
+					body_part = 2,
+					type = "walk",
+					path_simplified = true,
+					variant = "run",
+					nav_path = my_data.flee_path
+				}
+				my_data.flee_path = nil
+				my_data.advancing = unit:brain():action_request(new_action_data)
+
+				if my_data.advancing then
+					my_data.in_cover = nil
+
+					if my_data.cover_pathing then
+						managers.navigation:cancel_pathing_search(my_data.cover_path_search_id)
+
+						my_data.cover_pathing = nil
 					end
 				end
-			elseif my_data.flee_path then
-				if my_data.path_blocked == false and not unit:movement():chk_action_forbidden("walk") then
-					local new_action_data = {
-						body_part = 2,
-						type = "walk",
-						path_simplified = true,
-						variant = "run",
-						nav_path = my_data.flee_path
-					}
-					my_data.flee_path = nil
-					my_data.advancing = unit:brain():action_request(new_action_data)
+			end
+		elseif my_data.flee_target then
+			if my_data.coarse_path then
+				local coarse_path = my_data.coarse_path
+				local cur_index = my_data.coarse_path_index
+				local total_nav_points = #coarse_path
 
-					if my_data.advancing then
-						my_data.in_cover = nil
+				if cur_index == total_nav_points then
+					data.unit:base():set_slot(unit, 0)
+				elseif not my_data.processing_flee_path then
+					local to_pos = nil
 
-						if my_data.cover_pathing then
-							managers.navigation:cancel_pathing_search(my_data.cover_path_search_id)
+					if cur_index == total_nav_points - 1 then
+						to_pos = my_data.flee_target.pos
+					else
+						local end_pos = coarse_path[cur_index + 1][2]
+						local my_pos = data.m_pos
+						local walk_dir = end_pos - my_pos
+						local walk_dis = mvector3.normalize(walk_dir)
+						local cover_range = math.min(700, math.max(0, walk_dis - 100))
+						local cover = managers.navigation:find_cover_near_pos_1(end_pos, end_pos + walk_dir * 700, cover_range, cover_range)
 
-							my_data.cover_pathing = nil
-						end
-					end
-				end
-			elseif my_data.flee_target then
-				if my_data.coarse_path then
-					local coarse_path = my_data.coarse_path
-					local cur_index = my_data.coarse_path_index
-					local total_nav_points = #coarse_path
-
-					if cur_index == total_nav_points then
-						data.unit:base():set_slot(unit, 0)
-					elseif not my_data.processing_flee_path then
-						local to_pos = nil
-
-						if cur_index == total_nav_points - 1 then
-							to_pos = my_data.flee_target.pos
-						else
-							local end_pos = coarse_path[cur_index + 1][2]
-							local my_pos = data.m_pos
-							local walk_dir = end_pos - my_pos
-							local walk_dis = mvector3.normalize(walk_dir)
-							local cover_range = math.min(700, math.max(0, walk_dis - 100))
-							local cover = managers.navigation:find_cover_near_pos_1(end_pos, end_pos + walk_dir * 700, cover_range, cover_range)
-
-							if cover then
-								if my_data.best_cover then
-									managers.navigation:release_cover(my_data.best_cover[1])
-								end
-
-								managers.navigation:reserve_cover(cover, data.pos_rsrv_id)
-
-								my_data.moving_to_cover = {cover}
-								my_data.best_cover = my_data.moving_to_cover
-								to_pos = cover[1]
-							else
-								to_pos = end_pos
+						if cover then
+							if my_data.best_cover then
+								managers.navigation:release_cover(my_data.best_cover[1])
 							end
+
+							managers.navigation:reserve_cover(cover, data.pos_rsrv_id)
+
+							my_data.moving_to_cover = {cover}
+							my_data.best_cover = my_data.moving_to_cover
+							to_pos = cover[1]
+						else
+							to_pos = end_pos
 						end
-
-						my_data.flee_path_search_id = tostring(unit:key()) .. "flee"
-						my_data.processing_flee_path = true
-						my_data.path_blocked = nil
-
-						unit:brain():search_for_path(my_data.flee_path_search_id, to_pos)
-					end
-				else
-					local search_id = tostring(unit:key()) .. "coarseflee"
-					local verify_clbk = nil
-
-					if not my_data.coarse_search_failed then
-						verify_clbk = callback(CopLogicFlee, CopLogicFlee, "_flee_coarse_path_verify_clbk")
 					end
 
-					if unit:brain():search_for_coarse_path(search_id, my_data.flee_target.nav_seg, verify_clbk) then
-						my_data.coarse_path_search_id = search_id
-						my_data.processing_coarse_path = true
-					end
+					my_data.flee_path_search_id = tostring(unit:key()) .. "flee"
+					my_data.processing_flee_path = true
+					my_data.path_blocked = nil
+
+					unit:brain():search_for_path(my_data.flee_path_search_id, to_pos)
 				end
 			else
-				local flee_pos = managers.groupai:state():flee_point(data.unit:movement():nav_tracker():nav_segment())
+				local search_id = tostring(unit:key()) .. "coarseflee"
+				local verify_clbk = nil
 
-				if flee_pos then
-					local nav_seg = managers.navigation:get_nav_seg_from_pos(flee_pos)
-					my_data.flee_target = {
-						nav_seg = nav_seg,
-						pos = flee_pos
-					}
+				if not my_data.coarse_search_failed then
+					verify_clbk = callback(CopLogicFlee, CopLogicFlee, "_flee_coarse_path_verify_clbk")
 				end
+
+				if unit:brain():search_for_coarse_path(search_id, my_data.flee_target.nav_seg, verify_clbk) then
+					my_data.coarse_path_search_id = search_id
+					my_data.processing_coarse_path = true
+				end
+			end
+		else
+			local flee_pos = managers.groupai:state():flee_point(data.unit:movement():nav_tracker():nav_segment())
+
+			if flee_pos then
+				local nav_seg = managers.navigation:get_nav_seg_from_pos(flee_pos)
+				my_data.flee_target = {
+					nav_seg = nav_seg,
+					pos = flee_pos
+				}
 			end
 		end
 	end
@@ -381,7 +391,11 @@ function CopLogicFlee._chk_reaction_to_attention_object(data, attention_data, st
 	local att_unit = attention_data.unit
 	local assault_mode = managers.groupai:state():get_assault_mode()
 
-	if (record.status ~= "disabled" or (not record.assault_t or record.assault_t - record.disabled_t > 0.6) and (record.engaged_force < 5 or attention_data.is_human_player and CopLogicIdle._am_i_important_to_player(record, data.key))) and not record.being_arrested then
+	if record.status == "disabled" then
+		if (not record.assault_t or record.assault_t - record.disabled_t > 0.6) and (record.engaged_force < 5 or attention_data.is_human_player and CopLogicIdle._am_i_important_to_player(record, data.key)) then
+			return math.min(attention_data.reaction, AIAttentionObject.REACT_COMBAT)
+		end
+	elseif not record.being_arrested then
 		local my_vec = data.m_pos - attention_data.m_pos
 		local dis = mvector3.normalize(my_vec)
 

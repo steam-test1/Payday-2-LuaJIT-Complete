@@ -30,7 +30,11 @@ function TeamAILogicBase._get_logic_state_from_reaction(data, reaction)
 end
 
 function TeamAILogicBase.actually_revive(data, revive_unit, show_hint_locally)
-	if (not revive_unit:interaction() or revive_unit:interaction():active()) and revive_unit:character_damage() and (revive_unit:character_damage():need_revive() or revive_unit:character_damage():arrested()) then
+	if revive_unit:interaction() then
+		if revive_unit:interaction():active() then
+			revive_unit:interaction():interact(data.unit)
+		end
+	elseif revive_unit:character_damage() and (revive_unit:character_damage():need_revive() or revive_unit:character_damage():arrested()) then
 		local hint = revive_unit:character_damage():need_revive() and 2 or 3
 
 		managers.network:session():send_to_peers_synched("sync_teammate_helped_hint", hint, revive_unit, data.unit)
@@ -50,7 +54,19 @@ function TeamAILogicBase._set_attention_obj(data, new_att_obj, new_reaction)
 		new_att_obj.reaction = new_reaction or new_att_obj.settings.reaction
 	end
 
-	if old_att_obj and new_att_obj and old_att_obj.u_key == new_att_obj.u_key and (new_att_obj.stare_expire_t and new_att_obj.stare_expire_t < data.t and not new_att_obj.settings.pause or not new_att_obj.pause_expire_t or new_att_obj.pause_expire_t >= data.t or data.t + math.lerp(new_att_obj.settings.duration[1], new_att_obj.settings.duration[2], math.random())) or new_att_obj and new_att_obj.settings.duration then
+	if old_att_obj and new_att_obj and old_att_obj.u_key == new_att_obj.u_key then
+		if new_att_obj.stare_expire_t and new_att_obj.stare_expire_t < data.t then
+			if new_att_obj.settings.pause then
+				new_att_obj.stare_expire_t = nil
+				new_att_obj.pause_expire_t = data.t + math.lerp(new_att_obj.settings.pause[1], new_att_obj.settings.pause[2], math.random())
+
+				print("[TeamAILogicBase._chk_focus_on_attention_object] pausing for", current_attention.pause_expire_t - data.t, "sec")
+			end
+		elseif new_att_obj.pause_expire_t and new_att_obj.pause_expire_t < data.t then
+			new_att_obj.pause_expire_t = nil
+			new_att_obj.stare_expire_t = data.t + math.lerp(new_att_obj.settings.duration[1], new_att_obj.settings.duration[2], math.random())
+		end
+	elseif new_att_obj and new_att_obj.settings.duration then
 		new_att_obj.stare_expire_t = data.t + math.lerp(new_att_obj.settings.duration[1], new_att_obj.settings.duration[2], math.random())
 		new_att_obj.pause_expire_t = nil
 	end

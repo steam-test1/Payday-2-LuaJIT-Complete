@@ -1295,7 +1295,13 @@ function VehicleDrivingExt:_play_sound_events(t, dt)
 		going_reverse = true
 	end
 
-	if slip and self._slip_sound and (self._playing_slip_sound_dt ~= 0 or self._playing_slip_sound_dt + dt) or self._playing_slip_sound_dt > 0.1 then
+	if slip and self._slip_sound then
+		if self._playing_slip_sound_dt == 0 then
+			self._slip_soundsource:post_event(self._slip_sound)
+
+			self._playing_slip_sound_dt = self._playing_slip_sound_dt + dt
+		end
+	elseif self._playing_slip_sound_dt > 0.1 then
 		self._slip_soundsource:post_event(self._slip_sound_stop)
 
 		self._playing_slip_sound_dt = 0
@@ -1305,7 +1311,13 @@ function VehicleDrivingExt:_play_sound_events(t, dt)
 		self._playing_slip_sound_dt = self._playing_slip_sound_dt + dt
 	end
 
-	if going_reverse and self._reverse_sound and (self._playing_reverse_sound_dt ~= 0 or self._playing_reverse_sound_dt + dt) or self._playing_reverse_sound_dt > 0.1 then
+	if going_reverse and self._reverse_sound then
+		if self._playing_reverse_sound_dt == 0 then
+			self._door_soundsource:post_event(self._reverse_sound)
+
+			self._playing_reverse_sound_dt = self._playing_reverse_sound_dt + dt
+		end
+	elseif self._playing_reverse_sound_dt > 0.1 then
 		self._door_soundsource:post_event(self._reverse_sound_stop)
 
 		self._playing_reverse_sound_dt = 0

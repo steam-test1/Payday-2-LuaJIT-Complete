@@ -184,8 +184,22 @@ end
 
 function MenuTitlescreenState:get_start_pressed_controller_index()
 	for index, controller in ipairs(self._controller_list) do
-		if (not is_ps4 and not is_xb1 or controller:get_input_pressed("confirm")) and (not is_ps3 and not is_x360 or controller:get_input_pressed("start")) and controller._default_controller_id == "keyboard" and (#Input:keyboard():pressed_list() > 0 or #Input:mouse():pressed_list() > 0) then
-			return index
+		if is_ps4 or is_xb1 then
+			if controller:get_input_pressed("confirm") then
+				return index
+			end
+		elseif is_ps3 or is_x360 then
+			if controller:get_input_pressed("start") then
+				return index
+			end
+		else
+			if controller:get_any_input_pressed() then
+				return index
+			end
+
+			if controller._default_controller_id == "keyboard" and (#Input:keyboard():pressed_list() > 0 or #Input:mouse():pressed_list() > 0) then
+				return index
+			end
 		end
 	end
 

@@ -141,7 +141,12 @@ function NetworkPeer:on_verify_ticket(result, reason)
 	if not result then
 		print("[NetworkPeer:on_verify_ticket] Steam ID Authentication failed for peer '" .. tostring(self._name) .. "' (ID: " .. tostring(self._id) .. ") because '" .. tostring(reason) .. "'.")
 
-		if not Network:is_server() or not self._begin_ticket_session_called then
+		if Network:is_server() then
+			if not self._begin_ticket_session_called then
+				managers.network:session():send_to_peers("kick_peer", self._id, 2)
+				managers.network:session():on_peer_kicked(self, self._id, 2)
+			end
+		else
 			managers.network:session():on_peer_kicked(managers.network:session():local_peer(), managers.network:session():local_peer():id(), 3)
 		end
 	else
@@ -374,7 +379,13 @@ function NetworkPeer:verify_grenade(value)
 end
 
 function NetworkPeer:verify_bag(carry_id, pickup)
-	if (not pickup or not self._carry_id) and self._carry_id == carry_id then
+	if pickup then
+		if not self._carry_id then
+			self._carry_id = carry_id
+
+			return true
+		end
+	elseif self._carry_id == carry_id then
 		self._carry_id = nil
 
 		return true
@@ -1051,9 +1062,15 @@ function NetworkPeer:chk_timeout(timeout)
 	if self._rpc then
 		local silent_time = Network:receive_silent_time(self._rpc)
 
-		if timeout < silent_time and timeout < silent_time then
-			print("PINGED OUT", self._ip, silent_time, timeout)
-			self:_ping_timedout()
+		if timeout < silent_time then
+			if self._steam_rpc then
+				silent_time = math.min(silent_time, Network:receive_silent_time(self._steam_rpc))
+			end
+
+			if timeout < silent_time then
+				print("PINGED OUT", self._ip, silent_time, timeout)
+				self:_ping_timedout()
+			end
 		end
 	else
 		self:_ping_timedout()

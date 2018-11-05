@@ -580,7 +580,11 @@ function CoreCutscenePlayer:_set_visible(visible)
 end
 
 function CoreCutscenePlayer:_set_listener_enabled(enabled)
-	if not enabled or not self._listener_activation_id and managers.listener:activate_set("main", "cutscene") then
+	if enabled then
+		if not self._listener_activation_id then
+			self._listener_activation_id = managers.listener:activate_set("main", "cutscene")
+		end
+	else
 		if self._listener_activation_id then
 			managers.listener:deactivate_set(self._listener_activation_id)
 		end

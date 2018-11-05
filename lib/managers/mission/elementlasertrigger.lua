@@ -288,7 +288,11 @@ function ElementLaserTrigger:_check_state(unit)
 			end
 		end
 
-		if (not table.contains(self._inside, unit) or not inside or not rule_ok) and inside and rule_ok then
+		if table.contains(self._inside, unit) then
+			if not inside or not rule_ok then
+				self:_remove_inside(unit)
+			end
+		elseif inside and rule_ok then
 			self:_add_inside(unit)
 		end
 
@@ -380,7 +384,12 @@ function ElementLaserTrigger:_client_check_state(unit)
 		end
 	end
 
-	if (not table.contains(self._inside, unit) or not inside or not rule_ok) and inside and rule_ok then
+	if table.contains(self._inside, unit) then
+		if not inside or not rule_ok then
+			table.delete(self._inside, unit)
+			managers.network:session():send_to_host("to_server_area_event", 2, self._id, unit)
+		end
+	elseif inside and rule_ok then
 		table.insert(self._inside, unit)
 		managers.network:session():send_to_host("to_server_area_event", 1, self._id, unit)
 	end

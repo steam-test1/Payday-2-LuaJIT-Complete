@@ -960,12 +960,14 @@ function CustomSafehouseManager:tick_safehouse_spawn()
 
 	self:spawn_safehouse_contract()
 
-	if self._global._spawn_cooldown or self._global._has_entered_safehouse and 1 then
-		if self._global._spawn_cooldown == 0 then
-			self:_set_safehouse_cooldown()
-		elseif self:is_being_raided() then
-			self:spawn_safehouse_combat_contract()
+	if not self._global._spawn_cooldown then
+		if self._global._has_entered_safehouse then
+			self._global._spawn_cooldown = 1
 		end
+	elseif self._global._spawn_cooldown == 0 then
+		self:_set_safehouse_cooldown()
+	elseif self:is_being_raided() then
+		self:spawn_safehouse_combat_contract()
 	end
 end
 

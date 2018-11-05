@@ -169,8 +169,14 @@ function ControllerManager:get_menu_mode_enabled()
 end
 
 function ControllerManager:set_ingame_mode(mode)
-	if SystemInfo:platform() == Idstring("WIN32") and not self:get_menu_mode_enabled() then
-		self:_change_mode(self._ingame_mode)
+	if SystemInfo:platform() == Idstring("WIN32") then
+		if mode then
+			self._ingame_mode = mode
+		end
+
+		if not self:get_menu_mode_enabled() then
+			self:_change_mode(self._ingame_mode)
+		end
 	end
 end
 

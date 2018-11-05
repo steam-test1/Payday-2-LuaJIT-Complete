@@ -127,7 +127,11 @@ function ControllerWrapperGamepad:virtual_connect_axis2(controller_id, controlle
 end
 
 function ControllerWrapperGamepad:virtual_connect2(controller_id, controller, input_name, connection_name, connection)
-	if connection:get_connect_src_type() ~= "axis" or not controller:has_axis(Idstring(input_name)) and self:get_fallback_axis(controller_id, controller, input_name, connection_name, connection) then
+	if connection:get_connect_src_type() == "axis" then
+		if not controller:has_axis(Idstring(input_name)) then
+			controller_id, controller, input_name, connection_name, connection = self:get_fallback_axis(controller_id, controller, input_name, connection_name, connection)
+		end
+	else
 		local button_index = tonumber(input_name)
 
 		if not button_index or not controller:has_button(button_index) then

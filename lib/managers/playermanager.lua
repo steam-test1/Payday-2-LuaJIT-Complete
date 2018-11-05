@@ -3314,7 +3314,11 @@ function PlayerManager:transfer_special_equipment(peer_id, include_custody)
 		if local_peer_id ~= peer_id then
 			if not local_peer:waiting_for_player_ready() then
 				table.insert(peers_loadout, local_peer)
-			elseif not managers.trade:is_peer_in_custody(local_peer:id()) or include_custody then
+			elseif managers.trade:is_peer_in_custody(local_peer:id()) then
+				if include_custody then
+					table.insert(peers_custody, local_peer)
+				end
+			else
 				table.insert(peers, local_peer)
 			end
 		end
@@ -3323,12 +3327,14 @@ function PlayerManager:transfer_special_equipment(peer_id, include_custody)
 			if peer:id() ~= peer_id then
 				if not peer:waiting_for_player_ready() then
 					table.insert(peers_loadout, peer)
-				elseif not managers.trade:is_peer_in_custody(peer:id()) or include_custody then
-					if peer:is_host() then
-						table.insert(peers, 1, peer)
-					else
-						table.insert(peers, peer)
+				elseif managers.trade:is_peer_in_custody(peer:id()) then
+					if include_custody then
+						table.insert(peers_custody, peer)
 					end
+				elseif peer:is_host() then
+					table.insert(peers, 1, peer)
+				else
+					table.insert(peers, peer)
 				end
 			end
 		end
@@ -4332,7 +4338,8 @@ function PlayerManager:set_carry(carry_id, carry_multiplier, dye_initiated, has_
 	if not dye_initiated then
 		dye_initiated = true
 
-		if carry_data.dye and tweak_data.carry.dye.chance * managers.player:upgrade_value("player", "dye_pack_chance_multiplier", 1) then
+		if carry_data.dye then
+			local chance = tweak_data.carry.dye.chance * managers.player:upgrade_value("player", "dye_pack_chance_multiplier", 1)
 			has_dye_pack = true
 			dye_value_multiplier = math.round(tweak_data.carry.dye.value_multiplier * managers.player:upgrade_value("player", "dye_pack_cash_loss_multiplier", 1))
 		end

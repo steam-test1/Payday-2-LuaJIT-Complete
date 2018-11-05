@@ -106,10 +106,18 @@ function bezier5_roots(write, x1, y1, x2, y2, x3, y3, x4, y4, x5, y5, x6, y6, de
 
 	if switch == 0 then
 		return {}
-	elseif switch == 1 and bezier5_flat_enough(x1, y1, x2, y2, x3, y3, x4, y4, x5, y5, x6, y6) then
-		write(bezier5_xintercept(x1, y1, x6, y6))
+	elseif switch == 1 then
+		if curve_recursion_limit <= depth then
+			write((x1 + x6) / 2)
 
-		return
+			return
+		end
+
+		if bezier5_flat_enough(x1, y1, x2, y2, x3, y3, x4, y4, x5, y5, x6, y6) then
+			write(bezier5_xintercept(x1, y1, x6, y6))
+
+			return
+		end
 	end
 
 	local x1, y1, x12, y12, x123, y123, x1234, y1234, x12345, y12345, x123456, y123456, x123456, y123456, x23456, y23456, x3456, y3456, x456, y456, x56, y56, x6, y6 = bezier5_split_in_half(x1, y1, x2, y2, x3, y3, x4, y4, x5, y5, x6, y6)

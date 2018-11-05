@@ -35,7 +35,11 @@ function GTextureManager:set_texture(variable_name, texture_name, texture_type)
 end
 
 function GTextureManager:preload(textures, texture_type)
-	if type(textures) ~= "string" or not self._preloaded[textures] and TextureCache:retrieve(textures, texture_type) then
+	if type(textures) == "string" then
+		if not self._preloaded[textures] then
+			self._preloaded[textures] = TextureCache:retrieve(textures, texture_type)
+		end
+	else
 		for _, v in ipairs(textures) do
 			if not self._preloaded[v.name] then
 				self._preloaded[v.name] = TextureCache:retrieve(v.name, v.type)

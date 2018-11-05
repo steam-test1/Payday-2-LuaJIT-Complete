@@ -49,7 +49,11 @@ function TeamAIDamage:init(unit)
 end
 
 function TeamAIDamage:update(unit, t, dt)
-	if (not self._regenerate_t or self._regenerate_t < t) and self._arrested_timer and self._arrested_paused_counter == 0 then
+	if self._regenerate_t then
+		if self._regenerate_t < t then
+			self:_regenerated()
+		end
+	elseif self._arrested_timer and self._arrested_paused_counter == 0 then
 		self._arrested_timer = self._arrested_timer - dt
 
 		if self._arrested_timer <= 0 then
@@ -320,10 +324,16 @@ function TeamAIDamage:damage_tase(attack_data)
 
 	self._tase_effect = World:effect_manager():spawn(self._tase_effect_table)
 
-	if Network:is_server() and not self._to_incapacitated_clbk_id then
-		self._to_incapacitated_clbk_id = "TeamAIDamage_to_incapacitated" .. tostring(self._unit:key())
+	if Network:is_server() then
+		if math.random() < 0.25 then
+			self._unit:sound():say("s07x_sin", true)
+		end
 
-		managers.enemy:add_delayed_clbk(self._to_incapacitated_clbk_id, callback(self, self, "clbk_exit_to_incapacitated"), TimerManager:game():time() + self._char_dmg_tweak.TASED_TIME)
+		if not self._to_incapacitated_clbk_id then
+			self._to_incapacitated_clbk_id = "TeamAIDamage_to_incapacitated" .. tostring(self._unit:key())
+
+			managers.enemy:add_delayed_clbk(self._to_incapacitated_clbk_id, callback(self, self, "clbk_exit_to_incapacitated"), TimerManager:game():time() + self._char_dmg_tweak.TASED_TIME)
+		end
 	end
 
 	self:_call_listeners(damage_info)

@@ -158,7 +158,13 @@ function recursive_bezier(write, x1, y1, x2, y2, x3, y3, x4, y4, level, m_distan
 			d3 = d3 <= 0 and distance2(x3, y3, x1, y1) or d3 >= 1 and distance2(x3, y3, x4, y4) or distance2(x3, y3, x1 + d3 * dx, y1 + d3 * dy)
 		end
 
-		if (d3 >= d2 or d2 < m_distance_tolerance2) and d3 < m_distance_tolerance2 then
+		if d3 < d2 then
+			if d2 < m_distance_tolerance2 then
+				write("line", x2, y2)
+
+				return
+			end
+		elseif d3 < m_distance_tolerance2 then
 			write("line", x3, y3)
 
 			return
@@ -242,10 +248,18 @@ function recursive_bezier(write, x1, y1, x2, y2, x3, y3, x4, y4, level, m_distan
 			return
 		end
 
-		if m_cusp_limit ~= 0 and m_cusp_limit < da2 then
-			write("line", x3, y3)
+		if m_cusp_limit ~= 0 then
+			if m_cusp_limit < da1 then
+				write("line", x2, y2)
 
-			return
+				return
+			end
+
+			if m_cusp_limit < da2 then
+				write("line", x3, y3)
+
+				return
+			end
 		end
 	end
 

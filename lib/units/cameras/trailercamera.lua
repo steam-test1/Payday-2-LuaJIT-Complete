@@ -222,7 +222,11 @@ function TrailerCamera:update(unit, t, dt)
 		self._camera:set_near_range(self._ref_camera:near_range())
 		self._camera:set_far_range(self._locked_far_range or self._ref_camera:far_range())
 
-		if (not self._wait_t or self._wait_t < t and nil) and not self._unit:anim_is_playing(self._anim_name) then
+		if self._wait_t then
+			if self._wait_t < t then
+				self._wait_t = nil
+			end
+		elseif not self._unit:anim_is_playing(self._anim_name) then
 			self._wait_t = t + 4
 		end
 	end

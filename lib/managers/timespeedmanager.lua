@@ -52,7 +52,22 @@ function TimeSpeedManager:_update_playing_effects()
 
 		local game_speed_rtpc_changed = false
 
-		if slowest_speed and (slowest_speed < 0.5 and (self._game_speed_rtpc == 0 or true) or slowest_speed > 1.5 and (self._game_speed_rtpc == 2 or true) or self._game_speed_rtpc == 1 or true) or self._game_speed_rtpc ~= 1 then
+		if slowest_speed then
+			if slowest_speed < 0.5 then
+				if self._game_speed_rtpc ~= 0 then
+					self._game_speed_rtpc = 0
+					game_speed_rtpc_changed = true
+				end
+			elseif slowest_speed > 1.5 then
+				if self._game_speed_rtpc ~= 2 then
+					self._game_speed_rtpc = 2
+					game_speed_rtpc_changed = true
+				end
+			elseif self._game_speed_rtpc ~= 1 then
+				self._game_speed_rtpc = 1
+				game_speed_rtpc_changed = true
+			end
+		elseif self._game_speed_rtpc ~= 1 then
 			self._game_speed_rtpc = 1
 			game_speed_rtpc_changed = true
 		end

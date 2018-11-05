@@ -57,12 +57,21 @@ function LootDropManager:_setup_items()
 				has_dlc = has_dlc or managers.dlc:is_dlc_unlocked(dlc)
 			end
 
-			if has_dlc and item_data.pcs then
-				for _, pc in ipairs(item_data.pcs) do
-					pc_items[pc] = pc_items[pc] or {}
-					pc_items[pc][type] = pc_items[pc][type] or {}
+			if has_dlc then
+				if item_data.pc then
+					pc_items[item_data.pc] = pc_items[item_data.pc] or {}
+					pc_items[item_data.pc][type] = pc_items[item_data.pc][type] or {}
 
-					table.insert(pc_items[pc][type], id)
+					table.insert(pc_items[item_data.pc][type], id)
+				end
+
+				if item_data.pcs then
+					for _, pc in ipairs(item_data.pcs) do
+						pc_items[pc] = pc_items[pc] or {}
+						pc_items[pc][type] = pc_items[pc][type] or {}
+
+						table.insert(pc_items[pc][type], id)
+					end
 				end
 			end
 		end
@@ -657,7 +666,15 @@ function LootDropManager:_make_drop(debug, add_to_inventory, debug_stars, return
 				end
 			end
 
-			if (not block_item or not debug) and (not tweak_data.blackmarket[type_items][item_entry].max_in_inventory or tweak_data.blackmarket[type_items][item_entry].max_in_inventory > managers.blackmarket:get_item_amount(global_value, type_items, item_entry, true) or not debug) and (not tweak_data.blackmarket[type_items][item_entry].infamous or global_value == "infamous") then
+			if block_item then
+				if not debug then
+					print("Item drop got blocked!", "type_items", type_items, "item_entry", item_entry, "global_value", global_value)
+				end
+			elseif tweak_data.blackmarket[type_items][item_entry].max_in_inventory and tweak_data.blackmarket[type_items][item_entry].max_in_inventory <= managers.blackmarket:get_item_amount(global_value, type_items, item_entry, true) then
+				if not debug then
+					print("Already got max of this item", item_entry)
+				end
+			elseif not tweak_data.blackmarket[type_items][item_entry].infamous or global_value == "infamous" then
 				has_result = true
 
 				if not debug then

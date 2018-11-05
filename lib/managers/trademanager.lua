@@ -60,7 +60,14 @@ function TradeManager:load(load_data)
 		self._criminals_to_add = {}
 
 		for _, crim in ipairs(self._criminals_to_respawn) do
-			if crim.ai or managers.network:session():peer(crim.peer_id) or crim.peer_id and outfit then
+			if not crim.ai and not managers.network:session():peer(crim.peer_id) then
+				if crim.peer_id then
+					self._criminals_to_add[crim.peer_id] = crim
+					local peer = managers.network:session():peer(crim.peer_id)
+					local outfit = my_load_data.outfits[crim.peer_id]
+					crim.outfit = outfit
+				end
+			else
 				if crim.peer_id then
 					local peer = managers.network:session():peer(crim.peer_id)
 					local outfit = my_load_data.outfits[crim.peer_id]
@@ -588,7 +595,11 @@ function TradeManager:_send_finish_trade(criminal, respawn_delay, hostages_kille
 
 	local peer_id = managers.criminals:character_peer_id_by_name(criminal.id)
 
-	if peer_id ~= 1 or game_state_machine:current_state_name() == "ingame_waiting_for_respawn" then
+	if peer_id == 1 then
+		if game_state_machine:current_state_name() == "ingame_waiting_for_respawn" then
+			game_state_machine:current_state():finish_trade()
+		end
+	else
 		local peer = managers.network:session():peer(peer_id)
 
 		if peer then
@@ -604,7 +615,11 @@ function TradeManager:_send_begin_trade(criminal)
 
 	local peer_id = managers.criminals:character_peer_id_by_name(criminal.id)
 
-	if peer_id ~= 1 or game_state_machine:current_state_name() == "ingame_waiting_for_respawn" then
+	if peer_id == 1 then
+		if game_state_machine:current_state_name() == "ingame_waiting_for_respawn" then
+			game_state_machine:current_state():begin_trade()
+		end
+	else
 		local peer = managers.network:session():peer(peer_id)
 
 		if peer then
@@ -620,7 +635,11 @@ function TradeManager:_send_cancel_trade(criminal)
 
 	local peer_id = managers.criminals:character_peer_id_by_name(criminal.id)
 
-	if peer_id ~= managers.network:session():local_peer():id() or game_state_machine:current_state_name() == "ingame_waiting_for_respawn" then
+	if peer_id == managers.network:session():local_peer():id() then
+		if game_state_machine:current_state_name() == "ingame_waiting_for_respawn" then
+			game_state_machine:current_state():cancel_trade()
+		end
+	else
 		local peer = managers.network:session():peer(peer_id)
 
 		if peer then

@@ -262,7 +262,12 @@ function NavFieldBuilder:delete_segment(id)
 	while i_room > 0 do
 		local room = all_rooms[i_room]
 
-		if (not room.segment or room.segment == id) and all_vis_groups[room.vis_group].seg == id then
+		if room.segment then
+			if room.segment == id then
+				self:_trash_room(i_room)
+				self:_destroy_room(i_room)
+			end
+		elseif all_vis_groups[room.vis_group].seg == id then
 			self:_trash_room(i_room)
 			self:_destroy_room(i_room)
 		end
@@ -2398,7 +2403,17 @@ function NavFieldBuilder:_expansion_check_obstacles(dir_str, dir_vec, exp_space,
 			obstacle_found = obstacle_found or "spaces"
 		end
 
-		if not measuring[obstacle_found] or i_grid == seg_size_grid - 1 then
+		if measuring[obstacle_found] then
+			if i_grid == seg_size_grid - 1 then
+				local meas_obs_type = next(measuring)
+				local measured_seg = measuring[meas_obs_type]
+				measured_seg[2] = pos_along_border + along_vec
+				local ground_ray = self:_sphere_ray(pos_along_border + self._up_vec, pos_along_border + self._down_vec, gnd_ray_rad)
+
+				mvector3.set_z(measured_seg[2], ground_ray.position.z)
+				table.insert(res_expansion[obstacle_found], measured_seg)
+			end
+		else
 			local meas_obs_type = next(measuring)
 
 			if meas_obs_type then

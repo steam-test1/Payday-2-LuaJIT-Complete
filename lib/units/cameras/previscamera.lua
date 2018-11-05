@@ -48,8 +48,16 @@ function PrevisCamera:stop()
 end
 
 function PrevisCamera:update(unit, t, dt)
-	if self._playing and (not self._wait_t or self._wait_t < t) and not self._unit:anim_is_playing(Idstring("camera_animation")) then
-		self._wait_t = t + 4
+	if self._playing then
+		if self._wait_t then
+			if self._wait_t < t then
+				self._wait_t = nil
+
+				self:stop()
+			end
+		elseif not self._unit:anim_is_playing(Idstring("camera_animation")) then
+			self._wait_t = t + 4
+		end
 	end
 end
 

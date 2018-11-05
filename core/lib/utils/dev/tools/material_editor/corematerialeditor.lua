@@ -246,7 +246,12 @@ function CoreMaterialEditor:_on_parent_combo_box_change()
 end
 
 function CoreMaterialEditor:_on_compile_btn()
-	if (not self._remote_compile_checkbox:get_value() or EWS:message_box(self._main_frame, "Do you want to send this shader config to the remote compiler?", "Remote Compile", "YES_NO", Vector3(-1, -1, -1)) == "YES") and EWS:message_box(self._main_frame, "All unsaved data in this material config will be saved before compiling!", "Compile", "OK,CANCEL,ICON_INFORMATION", Vector3(-1, -1, -1)) == "OK" then
+	if self._remote_compile_checkbox:get_value() then
+		if EWS:message_box(self._main_frame, "Do you want to send this shader config to the remote compiler?", "Remote Compile", "YES_NO", Vector3(-1, -1, -1)) == "YES" then
+			self:_remot_compile()
+			EWS:message_box(self._main_frame, "The request has been sent to the server. It might take up to a minute before it is commited in to the project repository.", "Remote Compile", "OK", Vector3(-1, -1, -1))
+		end
+	elseif EWS:message_box(self._main_frame, "All unsaved data in this material config will be saved before compiling!", "Compile", "OK,CANCEL,ICON_INFORMATION", Vector3(-1, -1, -1)) == "OK" then
 		local make_params, temp_params = self:_create_make_file()
 
 		if self:_run_compiler() then

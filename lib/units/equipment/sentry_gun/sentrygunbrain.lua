@@ -459,45 +459,55 @@ function SentryGunBrain:_upd_fire(t)
 
 	local attention = self._ext_movement:attention()
 
-	if not self._unit:weapon():out_of_ammo() or (not self._unit:weapon():can_auto_reload() or not self._ext_movement:rearming()) and not self._unit:base():waiting_for_refill() then
-		if self._ext_movement:rearming() then
-			self._ext_movement:complete_rearming()
-		elseif attention and attention.reaction and AIAttentionObject.REACT_SHOOT <= attention.reaction and not self._ext_movement:warming_up(t) and not self:_ignore_shield({self._unit}, self._ext_movement:m_head_pos(), self._attention_obj) then
-			local expend_ammo = Network:is_server()
-			local damage_player = attention.unit:base() and attention.unit:base().is_local_player
-			local my_pos = self._ext_movement:m_head_pos()
-			local target_pos = self:get_target_base_pos(attention)
-
-			if not target_pos then
-				self:stop_autofire()
-
-				return
-			end
-
-			if not self:is_target_on_sight(my_pos, target_pos) then
-				self:stop_autofire()
-
-				return
-			end
-
+	if self._unit:weapon():out_of_ammo() then
+		if self._unit:weapon():can_auto_reload() then
 			if self._firing then
-				self._unit:weapon():trigger_held(false, expend_ammo, damage_player, attention.unit)
-			else
-				mvec3_dir(tmp_vec1, my_pos, target_pos)
-
-				local max_dot = self._tweak_data.KEEP_FIRE_ANGLE
-				max_dot = math.min(0.99, 1 - (1 - max_dot) * (self._shaprness_mul or 1))
-
-				if max_dot < mvec3_dot(tmp_vec1, self._ext_movement:m_head_fwd()) then
-					self._unit:weapon():start_autofire()
-					self._unit:weapon():trigger_held(false, expend_ammo, damage_player, attention.unit)
-
-					self._firing = true
-				end
+				self:stop_autofire()
 			end
-		elseif self._firing then
-			self:stop_autofire()
+
+			if not self._ext_movement:rearming() then
+				self._ext_movement:rearm()
+			end
+		elseif not self._unit:base():waiting_for_refill() then
+			self:switch_off()
 		end
+	elseif self._ext_movement:rearming() then
+		self._ext_movement:complete_rearming()
+	elseif attention and attention.reaction and AIAttentionObject.REACT_SHOOT <= attention.reaction and not self._ext_movement:warming_up(t) and not self:_ignore_shield({self._unit}, self._ext_movement:m_head_pos(), self._attention_obj) then
+		local expend_ammo = Network:is_server()
+		local damage_player = attention.unit:base() and attention.unit:base().is_local_player
+		local my_pos = self._ext_movement:m_head_pos()
+		local target_pos = self:get_target_base_pos(attention)
+
+		if not target_pos then
+			self:stop_autofire()
+
+			return
+		end
+
+		if not self:is_target_on_sight(my_pos, target_pos) then
+			self:stop_autofire()
+
+			return
+		end
+
+		if self._firing then
+			self._unit:weapon():trigger_held(false, expend_ammo, damage_player, attention.unit)
+		else
+			mvec3_dir(tmp_vec1, my_pos, target_pos)
+
+			local max_dot = self._tweak_data.KEEP_FIRE_ANGLE
+			max_dot = math.min(0.99, 1 - (1 - max_dot) * (self._shaprness_mul or 1))
+
+			if max_dot < mvec3_dot(tmp_vec1, self._ext_movement:m_head_fwd()) then
+				self._unit:weapon():start_autofire()
+				self._unit:weapon():trigger_held(false, expend_ammo, damage_player, attention.unit)
+
+				self._firing = true
+			end
+		end
+	elseif self._firing then
+		self:stop_autofire()
 	end
 end
 
@@ -629,8 +639,22 @@ function SentryGunBrain:_upd_go_idle(t)
 		self._has_seen_assault_mode = true
 	end
 
-	if self._tweak_data.AUTO_REPAIR and self._unit:character_damage():needs_repair() and self._idle and self._ext_movement:is_inactivated() and not self._ext_movement:repairing() then
-		self._ext_movement:repair()
+	if self._tweak_data.AUTO_REPAIR and self._unit:character_damage():needs_repair() then
+		if not self._idle and not self._ext_movement:is_inactivating() then
+			if not self._auto_repair_counter then
+				self._auto_repair_counter = 0
+			end
+
+			if self._auto_repair_counter < self._tweak_data.AUTO_REPAIR_MAX_COUNT then
+				self._auto_repair_counter = self._auto_repair_counter + 1
+
+				self:set_idle(true)
+			end
+		end
+
+		if self._idle and self._ext_movement:is_inactivated() and not self._ext_movement:repairing() then
+			self._ext_movement:repair()
+		end
 	end
 
 	if not self._ext_movement:is_inactivating() and not self._ext_movement:repairing() then

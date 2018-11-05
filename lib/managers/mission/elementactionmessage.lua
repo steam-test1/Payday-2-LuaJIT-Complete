@@ -15,7 +15,11 @@ function ElementActionMessage:on_executed(instigator)
 		return
 	end
 
-	if (self._values.message_id == "none" or instigator ~= managers.player:player_unit()) and Application:editor() then
+	if self._values.message_id ~= "none" then
+		if instigator ~= managers.player:player_unit() then
+			managers.action_messaging:show_message(self._values.message_id, instigator)
+		end
+	elseif Application:editor() then
 		managers.editor:output_error("Cant show message " .. self._values.message_id .. " in element " .. self._editor_name .. ".")
 	end
 

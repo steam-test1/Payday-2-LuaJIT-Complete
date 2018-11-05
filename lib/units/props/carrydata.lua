@@ -832,7 +832,17 @@ function CarryData:clbk_body_active_state(tag, unit, body, activated)
 		return
 	end
 
-	if not activated or not self._register_out_of_world_clbk_id then
+	if activated then
+		if not self._steal_SO_data or not self._steal_SO_data.picked_up then
+			self:_unregister_steal_SO()
+		end
+
+		if not self._register_out_of_world_clbk_id then
+			self._register_out_of_world_clbk_id = "BagOutOfWorld" .. tostring(self._unit:key())
+
+			managers.enemy:add_delayed_clbk(self._register_out_of_world_clbk_id, callback(self, self, "clbk_out_of_world"), TimerManager:game():time() + 2)
+		end
+	else
 		self:_chk_register_steal_SO()
 
 		if self._register_out_of_world_clbk_id then

@@ -50,8 +50,22 @@ function CoreCutsceneFrameExporter:_enable_visual_aids()
 		self.__cutscene_editor:set_cutscene_camera_enabled(self.__cutscene_editor_camera_was_enabled)
 	end
 
-	if managers.editor and self.__editor_show_center_was_enabled ~= nil then
-		managers.editor._show_center = self.__editor_show_center_was_enabled
+	if managers.editor then
+		if self.__editor_show_camera_info_was_enabled ~= nil then
+			managers.editor:set_show_camera_info(self.__editor_show_camera_info_was_enabled)
+		end
+
+		if self.__editor_draw_grid_was_enabled ~= nil then
+			managers.editor._layer_draw_grid = self.__editor_draw_grid_was_enabled
+		end
+
+		if self.__editor_show_marker_was_enabled ~= nil then
+			managers.editor._layer_draw_marker = self.__editor_show_marker_was_enabled
+		end
+
+		if self.__editor_show_center_was_enabled ~= nil then
+			managers.editor._show_center = self.__editor_show_center_was_enabled
+		end
 	end
 end
 

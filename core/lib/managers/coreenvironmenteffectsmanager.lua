@@ -41,7 +41,13 @@ function EnvironmentEffectsManager:effects_names()
 end
 
 function EnvironmentEffectsManager:use(effect)
-	if not self._effects[effect] or not table.contains(self._current_effects, self._effects[effect]) then
+	if self._effects[effect] then
+		if not table.contains(self._current_effects, self._effects[effect]) then
+			self._effects[effect]:load_effects()
+			self._effects[effect]:start()
+			table.insert(self._current_effects, self._effects[effect])
+		end
+	else
 		Application:error("No effect named, " .. effect .. " availible to use")
 	end
 end

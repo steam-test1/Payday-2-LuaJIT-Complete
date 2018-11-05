@@ -214,8 +214,14 @@ function ElementStopwatchOperator:on_executed(instigator)
 
 				local saved_time = Global.mission_manager.saved_job_values[self:value("save_key")]
 
-				if saved_time ~= nil and saved_time ~= nil then
-					element:stopwatch_operation_set_time(saved_time)
+				if saved_time ~= nil then
+					if type(saved_time) ~= "number" then
+						saved_time = tonumber(saved_time)
+					end
+
+					if saved_time ~= nil then
+						element:stopwatch_operation_set_time(saved_time)
+					end
 				end
 			end
 		end

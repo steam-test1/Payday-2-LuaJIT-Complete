@@ -151,8 +151,14 @@ end
 
 function XB1PlatformManager:set_playing(is_playing)
 	if not Global.game_settings.is_playing ~= not is_playing then
-		if not Global.game_settings.single_player and not is_playing then
-			XboxLive:set_mp_end()
+		if not Global.game_settings.single_player then
+			if managers.network.matchmake._session and is_playing then
+				XboxLive:set_mp_begin(managers.network.matchmake._session)
+			end
+
+			if not is_playing then
+				XboxLive:set_mp_end()
+			end
 		end
 
 		XB1PlatformManager.super.set_playing(self, is_playing)

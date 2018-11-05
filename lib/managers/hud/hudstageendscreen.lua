@@ -1700,8 +1700,15 @@ function HUDStageEndScreen:perform_income_count(t, dt, parent_panel, stage_table
 					text_object:set_text(display_func(self, math.abs(self._money_counting_amount)))
 					managers.hud:make_fine_text(text_object)
 
-					if self._money_counting_amount == income_specific[2] and false then
-						
+					if self._money_counting_amount == income_specific[2] then
+						self._counting_money = false
+						self._income_index = self._income_index + 1
+						self._money_text_y = text_object:bottom()
+						self._wait_t = 0.45
+
+						managers.menu_component:post_event("count_1_finished")
+						text_object:set_color(income_specific[3] or tweak_data.screen_colors.text)
+						dir_object:set_color(income_specific[3] or tweak_data.screen_colors.text)
 					end
 				elseif not income_specific[2] or income_specific[2] == 0 then
 					self._income_index = self._income_index + 1

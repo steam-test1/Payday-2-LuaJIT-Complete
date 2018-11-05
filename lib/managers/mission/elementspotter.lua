@@ -65,7 +65,11 @@ function ElementSpotter:update_spotter()
 			return
 		end
 
-		if (not managers.groupai:state():whisper_mode() or not tweak_data.character[unit:base()._tweak_table].silent_priority_shout and not tweak_data.character[unit:base()._tweak_table].priority_shout) and not tweak_data.character[unit:base()._tweak_table].priority_shout then
+		if managers.groupai:state():whisper_mode() then
+			if not tweak_data.character[unit:base()._tweak_table].silent_priority_shout and not tweak_data.character[unit:base()._tweak_table].priority_shout then
+				return
+			end
+		elseif not tweak_data.character[unit:base()._tweak_table].priority_shout then
 			return
 		end
 

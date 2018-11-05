@@ -535,7 +535,11 @@ function HUDChat:key_press(o, k)
 		text:set_selection(n, n)
 	elseif self._key_pressed == Idstring("home") then
 		text:set_selection(0, 0)
-	elseif (k ~= Idstring("enter") or type(self._enter_callback) ~= "number") and k == Idstring("esc") and type(self._esc_callback) ~= "number" then
+	elseif k == Idstring("enter") then
+		if type(self._enter_callback) ~= "number" then
+			self._enter_callback()
+		end
+	elseif k == Idstring("esc") and type(self._esc_callback) ~= "number" then
 		text:set_text("")
 		text:set_selection(0, 0)
 		self._esc_callback()

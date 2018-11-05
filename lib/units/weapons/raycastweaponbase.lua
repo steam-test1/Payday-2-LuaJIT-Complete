@@ -268,7 +268,13 @@ function RaycastWeaponBase:_fire_sound()
 		local ammo = self:ammo_base():get_ammo_remaining_in_clip() - 1
 
 		for _, data in ipairs(fire_ammo) do
-			if (type(data[1]) ~= "table" or data[1][1] <= ammo and ammo <= data[1][2]) and data[1] == ammo then
+			if type(data[1]) == "table" then
+				if data[1][1] <= ammo and ammo <= data[1][2] then
+					self:play_sound(data[2])
+
+					return
+				end
+			elseif data[1] == ammo then
 				self:play_sound(data[2])
 
 				return

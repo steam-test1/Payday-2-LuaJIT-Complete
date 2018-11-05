@@ -465,8 +465,14 @@ function TimerGui:_set_jammed(jammed)
 	self._jammed = jammed
 
 	if self._jammed then
-		if self._unit:damage() and self._unit:damage():has_sequence("jammed_trigger") then
-			self._unit:damage():run_sequence_simple("jammed_trigger")
+		if self._unit:damage() then
+			if self._unit:damage():has_sequence("set_is_jammed") then
+				self._unit:damage():run_sequence_simple("set_is_jammed")
+			end
+
+			if self._unit:damage():has_sequence("jammed_trigger") then
+				self._unit:damage():run_sequence_simple("jammed_trigger")
+			end
 		end
 
 		for _, child in ipairs(self._gui_script.panel:children()) do

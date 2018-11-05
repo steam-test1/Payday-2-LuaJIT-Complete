@@ -2270,9 +2270,16 @@ function UnitElement:get_startup_sequence_map(unit, damage_ext)
 	for name, sequence in pairs(self._sequence_elements) do
 		local startup = sequence._startup
 
-		if startup and sequence:run_parsed_func(env, startup) then
-			map = map or {}
-			map[name] = true
+		if startup then
+			if not env then
+				env = SequenceEnvironment:new("startup", unit, unit, nil, math.UP, Vector3(), math.DOWN, 0, Vector3(), nil, self, damage_ext)
+				SequenceEnvironment.self = env
+			end
+
+			if sequence:run_parsed_func(env, startup) then
+				map = map or {}
+				map[name] = true
+			end
 		end
 	end
 
@@ -2285,9 +2292,16 @@ function UnitElement:get_editor_startup_sequence_map(unit, damage_ext)
 	for name, sequence in pairs(self._sequence_elements) do
 		local editor_startup = sequence._editor_startup
 
-		if editor_startup and sequence:run_parsed_func(env, editor_startup) then
-			map = map or {}
-			map[name] = true
+		if editor_startup then
+			if not env then
+				env = SequenceEnvironment:new("editor_startup", unit, unit, nil, math.UP, Vector3(), math.DOWN, 0, Vector3(), nil, self, damage_ext)
+				SequenceEnvironment.self = env
+			end
+
+			if sequence:run_parsed_func(env, editor_startup) then
+				map = map or {}
+				map[name] = true
+			end
 		end
 	end
 
@@ -3600,7 +3614,11 @@ function AreaDamageElement:activate_callback(env)
 				local ignore_mask = self:run_parsed_func(env, self._ignore_mask)
 				ignore_mask = ignore_mask and managers.slot:get_mask(ignore_mask)
 
-				if #self._key_list ~= 0 or falloff == "keys" and nil then
+				if #self._key_list == 0 then
+					if falloff == "keys" then
+						falloff, damage_callback_func_name = nil
+					end
+				else
 					damage_callback_func_name = damage_callback_func_name or self._falloff_func_map.keys
 				end
 
@@ -4706,7 +4724,7 @@ function MaterialElement:activate_callback(env)
 			local alpha = self:run_parsed_func(env, self._diffuse_color_alpha)
 
 			if color or alpha then
-				
+				material:set_diffuse_color(color or material:diffuse_color(), alpha or material:diffuse_color_alpha())
 			end
 		else
 			self:print_error("Invalid material name \"" .. tostring(name) .. "\".", true, env)
@@ -6002,11 +6020,17 @@ function SpawnUnitElement:activate_callback(env)
 
 			unit = CoreUnit.safe_spawn_unit(name, position, rotation)
 
-			if unit and alive(env.src_unit) and env.dest_unit ~= env.src_unit then
-				local src_damage_ext = env.src_unit:damage()
+			if unit then
+				if dest_damage_ext.external_spawn_unit_callback then
+					dest_damage_ext:external_spawn_unit_callback(unit, env)
+				end
 
-				if src_damage_ext and src_damage_ext.external_spawn_unit_callback then
-					src_damage_ext:external_spawn_unit_callback(unit, env)
+				if alive(env.src_unit) and env.dest_unit ~= env.src_unit then
+					local src_damage_ext = env.src_unit:damage()
+
+					if src_damage_ext and src_damage_ext.external_spawn_unit_callback then
+						src_damage_ext:external_spawn_unit_callback(unit, env)
+					end
 				end
 			end
 		end

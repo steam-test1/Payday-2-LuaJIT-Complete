@@ -1754,12 +1754,26 @@ function NavigationManager:_sort_nav_segs_after_pos(to_pos, i_seg, ignore_seg, v
 					local door_pos = door.center
 					local weight = mvec3_dis(door_pos, to_pos)
 
-					if not found_segs or found_segs[neighbour_seg_id] and (weight >= found_segs[neighbour_seg_id].weight or {
-						weight = weight,
-						from = i_seg,
-						i_seg = neighbour_seg_id,
-						pos = door_pos
-					}) or true then
+					if found_segs then
+						if found_segs[neighbour_seg_id] then
+							if weight < found_segs[neighbour_seg_id].weight then
+								found_segs[neighbour_seg_id] = {
+									weight = weight,
+									from = i_seg,
+									i_seg = neighbour_seg_id,
+									pos = door_pos
+								}
+							end
+						else
+							found_segs[neighbour_seg_id] = {
+								weight = weight,
+								from = i_seg,
+								i_seg = neighbour_seg_id,
+								pos = door_pos
+							}
+							ignore_seg[neighbour_seg_id] = true
+						end
+					else
 						local found_segs = {[neighbour_seg_id] = {
 							weight = weight,
 							from = i_seg,
@@ -1774,12 +1788,26 @@ function NavigationManager:_sort_nav_segs_after_pos(to_pos, i_seg, ignore_seg, v
 					local end_pos = i_door:script_data().element:nav_link_end_pos()
 					local my_weight = mvec3_dis(end_pos, to_pos)
 
-					if not found_segs or found_segs[neighbour_seg_id] and (my_weight >= found_segs[neighbour_seg_id].weight or {
-						weight = my_weight,
-						from = i_seg,
-						i_seg = neighbour_seg_id,
-						pos = end_pos
-					}) or true then
+					if found_segs then
+						if found_segs[neighbour_seg_id] then
+							if my_weight < found_segs[neighbour_seg_id].weight then
+								found_segs[neighbour_seg_id] = {
+									weight = my_weight,
+									from = i_seg,
+									i_seg = neighbour_seg_id,
+									pos = end_pos
+								}
+							end
+						else
+							found_segs[neighbour_seg_id] = {
+								weight = my_weight,
+								from = i_seg,
+								i_seg = neighbour_seg_id,
+								pos = end_pos
+							}
+							ignore_seg[neighbour_seg_id] = true
+						end
+					else
 						local found_segs = {[neighbour_seg_id] = {
 							weight = my_weight,
 							from = i_seg,

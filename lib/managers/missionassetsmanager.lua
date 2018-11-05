@@ -278,7 +278,14 @@ function MissionAssetsManager:unlock_asset(asset_id, is_show_chat_message)
 		return
 	end
 
-	if (not Network:is_server() or not self:get_asset_triggered_by_id(asset_id)) and self.ALLOW_CLIENTS_UNLOCK and not self:get_asset_unlocked_by_id(asset_id) then
+	if Network:is_server() then
+		if not self:get_asset_triggered_by_id(asset_id) then
+			self._money_spent = self._money_spent + managers.money:on_buy_mission_asset(asset_id)
+
+			self:server_unlock_asset(asset_id, is_show_chat_message)
+			self:_on_asset_unlocked(asset_id)
+		end
+	elseif self.ALLOW_CLIENTS_UNLOCK and not self:get_asset_unlocked_by_id(asset_id) then
 		self._money_spent = self._money_spent + managers.money:on_buy_mission_asset(asset_id)
 
 		managers.network:session():send_to_host("server_unlock_asset", asset_id, is_show_chat_message)

@@ -203,7 +203,12 @@ function MenuInput:mouse_moved(o, x, y, mouse_ws)
 		local inside_item_panel_parent = node_gui:item_panel_parent():inside(x, y)
 
 		for _, row_item in pairs(node_gui.row_items) do
-			if row_item.item:parameters().pd2_corner and (not row_item.gui_text:inside(x, y) or self._logic:get_item(row_item.name).no_mouse_select or row_item) or inside_item_panel_parent and row_item.gui_panel:inside(x, y) then
+			if row_item.item:parameters().pd2_corner then
+				if row_item.gui_text:inside(x, y) and not self._logic:get_item(row_item.name).no_mouse_select then
+					select_item = row_item.name
+					select_row_item = row_item
+				end
+			elseif inside_item_panel_parent and row_item.gui_panel:inside(x, y) then
 				local item = self._logic:get_item(row_item.name)
 
 				if item and not item.no_mouse_select then
@@ -475,22 +480,44 @@ function MenuInput:mouse_pressed(o, button, x, y)
 					elseif row_item.type == "multi_choice" then
 						local item = row_item.item
 
-						if (not row_item.arrow_right:inside(x, y) or item:next()) and (not row_item.arrow_left:inside(x, y) or item:previous()) and (not row_item.gui_text:inside(x, y) or (row_item.align ~= "left" or item:previous()) and item:next()) and row_item.choice_panel:inside(x, y) and item:enabled() then
+						if row_item.arrow_right:inside(x, y) then
+							if item:next() then
+								self:post_event("selection_next")
+								self._logic:trigger_item(true, item)
+							end
+						elseif row_item.arrow_left:inside(x, y) then
+							if item:previous() then
+								self:post_event("selection_previous")
+								self._logic:trigger_item(true, item)
+							end
+						elseif row_item.gui_text:inside(x, y) then
+							if row_item.align == "left" then
+								if item:previous() then
+									self:post_event("selection_previous")
+									self._logic:trigger_item(true, item)
+								end
+							elseif item:next() then
+								self:post_event("selection_next")
+								self._logic:trigger_item(true, item)
+							end
+						elseif row_item.choice_panel:inside(x, y) and item:enabled() then
 							item:popup_choice(row_item)
 							self:post_event("selection_next")
 							self._logic:trigger_item(true, item)
 						end
-					elseif row_item.type ~= "chat" or row_item.chat_input:inside(x, y) then
-						if row_item.type == "divider" then
-							
-						else
-							local item = self._logic:selected_item()
+					elseif row_item.type == "chat" then
+						if row_item.chat_input:inside(x, y) then
+							row_item.chat_input:script().set_focus(true)
+						end
+					elseif row_item.type == "divider" then
+						
+					else
+						local item = self._logic:selected_item()
 
-							if item then
-								self._item_input_action_map[item.TYPE](item, self._controller, true)
+						if item then
+							self._item_input_action_map[item.TYPE](item, self._controller, true)
 
-								return node_gui.mouse_pressed and node_gui:mouse_pressed(button, x, y)
-							end
+							return node_gui.mouse_pressed and node_gui:mouse_pressed(button, x, y)
 						end
 					end
 				end

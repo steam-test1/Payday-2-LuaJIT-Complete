@@ -223,7 +223,11 @@ function CoreEffectProperty:validate()
 
 		local function contains(l, v)
 			for _, value in ipairs(l) do
-				if ((type(value) ~= "userdata" or type(v) ~= "string") and (type(value) ~= "string" or type(v) ~= "userdata") or value:s() == v:s()) and value == v then
+				if type(value) == "userdata" and type(v) == "string" or type(value) == "string" and type(v) == "userdata" then
+					if value:s() == v:s() then
+						return true
+					end
+				elseif value == v then
 					return true
 				end
 			end
@@ -255,95 +259,128 @@ function CoreEffectProperty:validate()
 				return ret
 			end
 		end
-	elseif (self._type ~= "int" or not tonumber(self._value)) and (self._type ~= "vector3" or not math.string_is_good_vector(self._value)) then
-		if self._type == "percentage" then
-			local v = tonumber(self._value)
+	elseif self._type == "int" then
+		if not tonumber(self._value) then
+			ret.valid = false
+			ret.message = self._value .. " is not a valid integer"
 
-			if not v or v < 0 or v > 1 then
+			return ret
+		end
+	elseif self._type == "vector3" then
+		if not math.string_is_good_vector(self._value) then
+			ret.valid = false
+			ret.message = self._value .. " is not a valid vector3"
+
+			return ret
+		end
+	elseif self._type == "percentage" then
+		local v = tonumber(self._value)
+
+		if not v or v < 0 or v > 1 then
+			ret.valid = false
+			ret.message = self._value .. " is not a valid number in [0,1]"
+
+			return ret
+		end
+	elseif self._type == "color" then
+		local c = nil
+
+		if math.string_is_good_vector(self._value) then
+			c = math.string_to_vector(self._value)
+		end
+
+		if not c or c.x < 0 or c.x > 255 or c.y < 0 or c.y > 255 or c.z < 0 or c.z > 255 then
+			ret.valid = false
+			ret.message = self._value .. " is not a valid color"
+
+			return ret
+		end
+	elseif self._type == "opacity" then
+		local c = tonumber(self._value)
+
+		if not c or c < 0 or c > 255 then
+			ret.valid = false
+			ret.message = self._value .. " is not a valid opacity"
+
+			return ret
+		end
+	elseif self._type == "time" then
+		local t = tonumber(self._value)
+
+		if not t or not self._can_be_infinite and t < 0 then
+			ret.valid = false
+			ret.message = self._value .. " is not a valid time"
+
+			return ret
+		end
+	elseif self._type == "angle" then
+		local a = tonumber(self._value)
+
+		if not a then
+			ret.valid = false
+			ret.message = self._value .. " is not a valid angle"
+		end
+	elseif self._type == "float" then
+		local a = tonumber(self._value)
+
+		if not a then
+			ret.valid = false
+			ret.message = self._value .. " is not a valid float"
+		elseif self._min_range and self._max_range and (a < self._min_range or self._max_range < a) then
+			ret.valid = false
+			ret.message = self._value .. " is out of range (" .. self._min_range .. ", " .. self._max_range .. ")"
+		end
+	elseif self._type == "texture" then
+		if not DB:has("texture", self._value) then
+			ret.valid = false
+			ret.message = "texture " .. self._value .. " does not exist"
+
+			return ret
+		end
+	elseif self._type == "unit" then
+		if not DB:has("unit", self._value) then
+			ret.valid = false
+			ret.message = "unit " .. self._value .. " does not exist"
+
+			return ret
+		end
+	elseif self._type == "effect" then
+		if not DB:has("effect", self._value) or self._value == "" then
+			ret.valid = false
+			ret.message = "effect " .. self._value .. " does not exist"
+
+			return ret
+		end
+	elseif self._type == "keys" then
+		if #self._keys < self._min_keys then
+			ret.valid = false
+			ret.message = "Too few keys"
+
+			return ret
+		end
+
+		if self._max_keys < #self._keys then
+			ret.valid = false
+			ret.message = "Too many keys"
+
+			return ret
+		end
+
+		for _, k in ipairs(self._keys) do
+			if not tonumber(k.t) then
 				ret.valid = false
-				ret.message = self._value .. " is not a valid number in [0,1]"
+				ret.message = "time value invalid"
 
 				return ret
 			end
-		elseif self._type == "color" then
-			local c = nil
 
-			if math.string_is_good_vector(self._value) then
-				c = math.string_to_vector(self._value)
-			end
+			local temp = CoreEffectProperty:new("", self._key_type, k.v, "")
+			ret = temp:validate()
 
-			if not c or c.x < 0 or c.x > 255 or c.y < 0 or c.y > 255 or c.z < 0 or c.z > 255 then
-				ret.valid = false
-				ret.message = self._value .. " is not a valid color"
+			if not ret.valid then
+				ret.message = "Invalid key - " .. ret.message
 
 				return ret
-			end
-		elseif self._type == "opacity" then
-			local c = tonumber(self._value)
-
-			if not c or c < 0 or c > 255 then
-				ret.valid = false
-				ret.message = self._value .. " is not a valid opacity"
-
-				return ret
-			end
-		elseif self._type == "time" then
-			local t = tonumber(self._value)
-
-			if not t or not self._can_be_infinite and t < 0 then
-				ret.valid = false
-				ret.message = self._value .. " is not a valid time"
-
-				return ret
-			end
-		elseif self._type == "angle" then
-			local a = tonumber(self._value)
-
-			if not a then
-				ret.valid = false
-				ret.message = self._value .. " is not a valid angle"
-			end
-		elseif self._type == "float" then
-			local a = tonumber(self._value)
-
-			if not a then
-				ret.valid = false
-				ret.message = self._value .. " is not a valid float"
-			elseif self._min_range and self._max_range and (a < self._min_range or self._max_range < a) then
-				ret.valid = false
-				ret.message = self._value .. " is out of range (" .. self._min_range .. ", " .. self._max_range .. ")"
-			end
-		elseif (self._type ~= "texture" or not DB:has("texture", self._value)) and (self._type ~= "unit" or not DB:has("unit", self._value)) and (self._type ~= "effect" or not DB:has("effect", self._value) or self._value == "") and self._type == "keys" then
-			if #self._keys < self._min_keys then
-				ret.valid = false
-				ret.message = "Too few keys"
-
-				return ret
-			end
-
-			if self._max_keys < #self._keys then
-				ret.valid = false
-				ret.message = "Too many keys"
-
-				return ret
-			end
-
-			for _, k in ipairs(self._keys) do
-				if not tonumber(k.t) then
-					ret.valid = false
-					ret.message = "time value invalid"
-
-					return ret
-				end
-
-				local temp = CoreEffectProperty:new("", self._key_type, k.v, "")
-				ret = temp:validate()
-
-				if not ret.valid then
-					ret.message = "Invalid key - " .. ret.message
-
-					return ret
-				end
 			end
 		end
 	end
@@ -955,36 +992,39 @@ function CoreEffectProperty:save(node)
 		n = self._save_to_child and node:make_child(self._compound_container:name()) or node
 
 		self._compound_container:save_properties(n)
-	elseif self._type ~= "box" or not self._silent then
-		if self._type == "list_objects" then
-			for _, p in ipairs(self._list_members) do
-				local n = node:make_child(p:name())
+	elseif self._type == "box" then
+		if not self._silent then
+			node:set_parameter(self._min_name, self._min)
+			node:set_parameter(self._max_name, self._max)
+		end
+	elseif self._type == "list_objects" then
+		for _, p in ipairs(self._list_members) do
+			local n = node:make_child(p:name())
 
-				p:save(n)
+			p:save(n)
+		end
+	else
+		if not self._silent then
+			node:set_parameter(self._name, self._value)
+		end
+
+		if self._type == "variant" then
+			self._variants[self._value]:save(node)
+		elseif self._type == "keys" then
+			local n = node:make_child(self._name)
+			local ls = "false"
+
+			if self._looping then
+				ls = "true"
 			end
-		else
-			if not self._silent then
-				node:set_parameter(self._name, self._value)
-			end
 
-			if self._type == "variant" then
-				self._variants[self._value]:save(node)
-			elseif self._type == "keys" then
-				local n = node:make_child(self._name)
-				local ls = "false"
+			n:set_parameter("loop", ls)
 
-				if self._looping then
-					ls = "true"
-				end
+			for _, k in ipairs(self._keys) do
+				local kn = n:make_child("key")
 
-				n:set_parameter("loop", ls)
-
-				for _, k in ipairs(self._keys) do
-					local kn = n:make_child("key")
-
-					kn:set_parameter("t", k.t)
-					kn:set_parameter("v", k.v)
-				end
+				kn:set_parameter("t", k.t)
+				kn:set_parameter("v", k.v)
 			end
 		end
 	end
@@ -1005,60 +1045,67 @@ function CoreEffectProperty:load(node)
 		else
 			self._compound_container:load_properties(node)
 		end
-	elseif self._type ~= "box" or not self._silent and node:has_parameter(self._min_name) and node:parameter(self._max_name) then
-		if self._type == "list_objects" then
-			for c in node:children() do
-				local m = self._list_objects[c:name()]
+	elseif self._type == "box" then
+		if not self._silent and node:has_parameter(self._min_name) then
+			self._min = node:parameter(self._min_name)
+			self._max = node:parameter(self._max_name)
+		end
+	elseif self._type == "list_objects" then
+		for c in node:children() do
+			local m = self._list_objects[c:name()]
 
-				if m then
-					m = deep_clone(m)
+			if m then
+				m = deep_clone(m)
 
-					m:load(c)
-					table.insert(self._list_members, m)
-				end
+				m:load(c)
+				table.insert(self._list_members, m)
 			end
-		else
-			if not self._silent and node:has_parameter(self._name) then
-				self._value = node:parameter(self._name)
-			end
+		end
+	else
+		if not self._silent and node:has_parameter(self._name) then
+			self._value = node:parameter(self._name)
+		end
 
-			if self._type == "variant" then
-				self._variants[self._value]:load(node)
-			elseif self._type == "value_list" then
+		if self._type == "variant" then
+			self._variants[self._value]:load(node)
+		elseif self._type == "value_list" then
 
-				local function contains(l, v)
-					for _, value in ipairs(l) do
-						if ((type(value) ~= "userdata" or type(v) ~= "string") and (type(value) ~= "string" or type(v) ~= "userdata") or value:s() == v:s()) and value == v then
+			local function contains(l, v)
+				for _, value in ipairs(l) do
+					if type(value) == "userdata" and type(v) == "string" or type(value) == "string" and type(v) == "userdata" then
+						if value:s() == v:s() then
 							return true
 						end
+					elseif value == v then
+						return true
+					end
+				end
+
+				return false
+			end
+
+			if not contains(self._values, self._value) then
+				table.insert(self._values, self._value)
+			end
+		elseif self._type == "keys" then
+			self._keys = {}
+
+			for c in node:children() do
+				if c:name() == self._name then
+					if c:has_parameter("loop") then
+						self._looping = c:parameter("loop") == "true"
+					else
+						self._looping = false
 					end
 
-					return false
-				end
+					for kn in c:children() do
+						local t = kn:parameter("t")
+						local v = kn:parameter("v")
 
-				if not contains(self._values, self._value) then
-					table.insert(self._values, self._value)
-				end
-			elseif self._type == "keys" then
-				self._keys = {}
-
-				for c in node:children() do
-					if c:name() == self._name then
-						if c:has_parameter("loop") then
-							self._looping = c:parameter("loop") == "true"
-						else
-							self._looping = false
-						end
-
-						for kn in c:children() do
-							local t = kn:parameter("t")
-							local v = kn:parameter("v")
-
-							self:add_key({
-								t = t,
-								v = v
-							})
-						end
+						self:add_key({
+							t = t,
+							v = v
+						})
 					end
 				end
 			end

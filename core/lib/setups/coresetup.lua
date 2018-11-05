@@ -393,7 +393,11 @@ function CoreSetup:__end_frame(t, dt)
 	self:end_frame(t, dt)
 	managers.viewport:end_frame(t, dt)
 
-	if (not self.__quit or not self:block_quit()) and self.__exec and not self:block_exec() then
+	if self.__quit then
+		if not self:block_quit() then
+			CoreEngineAccess._quit()
+		end
+	elseif self.__exec and not self:block_exec() then
 		if managers.network and managers.network:session() then
 			managers.network:save()
 		end

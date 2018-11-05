@@ -449,8 +449,14 @@ function StopwatchFilterUnitElement:draw_links(t, dt, selected_unit, all_units)
 		if alive(unit) then
 			local draw = not selected_unit or unit == selected_unit or self._unit == selected_unit
 
-			if draw and false then
-				
+			if draw then
+				self:_draw_link({
+					from_unit = unit,
+					to_unit = self._unit,
+					r = r or 0.85,
+					g = g or 0.85,
+					b = b or 0.25
+				})
 			end
 		else
 			self:remove_link_element(element_name, id)

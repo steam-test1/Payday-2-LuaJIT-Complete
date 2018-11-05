@@ -358,16 +358,18 @@ function CoreWorldInstanceManager:prepare_mission_data(instance)
 
 			if element.class == "ElementSpecialObjective" then
 				element.values.search_position = instance.position + element.values.search_position:rotate_with(instance.rotation)
-			elseif element.class ~= "ElementLootBag" or element.values.spawn_dir and element.values.spawn_dir:rotate_with(instance.rotation) then
-				if element.class == "ElementSpawnGrenade" then
+			elseif element.class == "ElementLootBag" then
+				if element.values.spawn_dir then
 					element.values.spawn_dir = element.values.spawn_dir:rotate_with(instance.rotation)
-				elseif element.class == "ElementSpawnUnit" then
-					element.values.unit_spawn_dir = element.values.unit_spawn_dir:rotate_with(instance.rotation)
-				elseif element.class == "ElementLaserTrigger" then
-					for _, point in pairs(element.values.points) do
-						point.rot = instance.rotation * point.rot
-						point.pos = instance.position + point.pos:rotate_with(instance.rotation)
-					end
+				end
+			elseif element.class == "ElementSpawnGrenade" then
+				element.values.spawn_dir = element.values.spawn_dir:rotate_with(instance.rotation)
+			elseif element.class == "ElementSpawnUnit" then
+				element.values.unit_spawn_dir = element.values.unit_spawn_dir:rotate_with(instance.rotation)
+			elseif element.class == "ElementLaserTrigger" then
+				for _, point in pairs(element.values.points) do
+					point.rot = instance.rotation * point.rot
+					point.pos = instance.position + point.pos:rotate_with(instance.rotation)
 				end
 			end
 		end

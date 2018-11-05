@@ -653,7 +653,11 @@ function CoreSoundEnvironmentManager:_fallback_on_camera()
 
 	local fallback = self._check_objects[self._fallback_id]
 
-	if fallback and (fallback.object == camera or camera) or not next(self._check_objects) then
+	if fallback then
+		if fallback.object ~= camera then
+			fallback.object = camera
+		end
+	elseif not next(self._check_objects) then
 		self._fallback_id = self:add_check_object({
 			primary = true,
 			active = true,
@@ -853,9 +857,16 @@ function SoundEnvironmentArea:init(params)
 end
 
 function SoundEnvironmentArea:_init_event()
-	if Application:editor() and self._occasional_event and not table.contains(managers.sound_environment:occasional_events(), self._occasional_event) then
-		managers.editor:output_error("Occasional event " .. self._occasional_event .. " no longer exits. Falls back on default.")
-		self:set_environment_occasional(managers.sound_environment:game_default_occasional())
+	if Application:editor() then
+		if not table.contains(managers.sound_environment:ambience_events(), self._ambience_event) then
+			managers.editor:output_error("Ambience event " .. self._ambience_event .. " no longer exits. Falls back on default.")
+			self:set_environment_ambience(managers.sound_environment:game_default_ambience())
+		end
+
+		if self._occasional_event and not table.contains(managers.sound_environment:occasional_events(), self._occasional_event) then
+			managers.editor:output_error("Occasional event " .. self._occasional_event .. " no longer exits. Falls back on default.")
+			self:set_environment_occasional(managers.sound_environment:game_default_occasional())
+		end
 	end
 end
 

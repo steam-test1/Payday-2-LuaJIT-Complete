@@ -180,7 +180,14 @@ function CopBase:on_death_exit()
 end
 
 function CopBase:chk_freeze_anims()
-	if (self._lod_stage and self._lod_stage <= 1 or not self._ext_anim.can_freeze or not self._ext_anim.upper_body_empty or not self._anims_frozen) and self._anims_frozen then
+	if (not self._lod_stage or self._lod_stage > 1) and self._ext_anim.can_freeze and self._ext_anim.upper_body_empty then
+		if not self._anims_frozen then
+			self._anims_frozen = true
+
+			self._unit:set_animations_enabled(false)
+			self._ext_movement:on_anim_freeze(true)
+		end
+	elseif self._anims_frozen then
 		self._anims_frozen = nil
 
 		self._unit:set_animations_enabled(true)

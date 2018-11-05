@@ -169,11 +169,20 @@ function CoreEffectStack:validate(channels)
 				if a.component == "POSITION" then
 					position_written = true
 				end
-			elseif (a.access == "READ" or a.access == "READ_WRITE" or a.access == "READ_WRITE_SOME") and a.access == "READ_WRITE" then
-				channels[a.component] = true
+			elseif a.access == "READ" or a.access == "READ_WRITE" or a.access == "READ_WRITE_SOME" then
+				if not channels[a.component] then
+					ret.valid = false
+					ret.message = m:name() .. " in " .. self._type .. "stack reads from " .. a.component .. " before it has beeen written"
 
-				if a.component == "POSITION" then
-					position_written = true
+					return ret
+				end
+
+				if a.access == "READ_WRITE" then
+					channels[a.component] = true
+
+					if a.component == "POSITION" then
+						position_written = true
+					end
 				end
 			end
 		end

@@ -49,8 +49,14 @@ function HuskCopMovement:chk_action_forbidden(action_desc)
 	local block_type = action_desc.block_type or action_desc.type
 
 	for i_action, action in ipairs(self._active_actions) do
-		if action and (not action.chk_block_client or action:chk_block_client(action_desc, block_type, t)) and action.chk_block and action:chk_block(block_type, t) then
-			return true
+		if action then
+			if action.chk_block_client then
+				if action:chk_block_client(action_desc, block_type, t) then
+					return true
+				end
+			elseif action.chk_block and action:chk_block(block_type, t) then
+				return true
+			end
 		end
 	end
 end

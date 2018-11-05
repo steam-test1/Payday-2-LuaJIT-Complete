@@ -108,7 +108,11 @@ function WeaponFlashLight:sync_net_event(event_id)
 		self._light:set_local_rotation(self._light:rotation())
 		self._light:set_local_position(self._light:position())
 		self._light:unlink()
-	elseif (event_id ~= self.HALLOWEEN_SPOOC or not self._is_npc) and event_id == self.HALLOWEEN_WARP then
+	elseif event_id == self.HALLOWEEN_SPOOC then
+		if not self._is_npc then
+			managers.player:on_hallowSPOOCed()
+		end
+	elseif event_id == self.HALLOWEEN_WARP then
 		self._light_speed = math.random(30) + 15
 	end
 end

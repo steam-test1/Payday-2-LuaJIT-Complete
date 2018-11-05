@@ -1384,8 +1384,14 @@ function CoreUnitDamage:get_collision_velocity(position, body, other_body, other
 	local damage_ext = other_unit:damage()
 	local is_other_mover = not alive(other_body)
 
-	if damage_ext and (is_other_mover and (damage_ext:give_mover_collision_velocity() or Vector3()) or not damage_ext:give_body_collision_velocity()) then
-		other_velocity = Vector3()
+	if damage_ext then
+		if is_other_mover then
+			if not damage_ext:give_mover_collision_velocity() then
+				other_velocity = Vector3()
+			end
+		elseif not damage_ext:give_body_collision_velocity() then
+			other_velocity = Vector3()
+		end
 	end
 
 	if is_mover then

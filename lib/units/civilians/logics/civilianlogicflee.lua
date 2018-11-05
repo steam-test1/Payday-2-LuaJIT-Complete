@@ -136,78 +136,80 @@ function CivilianLogicFlee.update(data)
 		
 	elseif my_data.flee_path_search_id or my_data.coarse_path_search_id then
 		CivilianLogicFlee._update_pathing(data, my_data)
-	elseif not my_data.flee_path or not unit:movement():chk_action_forbidden("walk") then
-		if my_data.coarse_path then
-			if not my_data.advancing and my_data.next_action_t < data.t then
-				local coarse_path = my_data.coarse_path
-				local cur_index = my_data.coarse_path_index
-				local total_nav_points = #coarse_path
+	elseif my_data.flee_path then
+		if not unit:movement():chk_action_forbidden("walk") then
+			CivilianLogicFlee._start_moving_to_cover(data, my_data)
+		end
+	elseif my_data.coarse_path then
+		if not my_data.advancing and my_data.next_action_t < data.t then
+			local coarse_path = my_data.coarse_path
+			local cur_index = my_data.coarse_path_index
+			local total_nav_points = #coarse_path
 
-				if cur_index == total_nav_points then
-					if data.unit:unit_data().mission_element then
-						data.unit:unit_data().mission_element:event("fled", data.unit)
-					end
+			if cur_index == total_nav_points then
+				if data.unit:unit_data().mission_element then
+					data.unit:unit_data().mission_element:event("fled", data.unit)
+				end
 
-					data.unit:base():set_slot(unit, 0)
+				data.unit:base():set_slot(unit, 0)
+			else
+				local to_pos, to_cover = nil
+
+				if cur_index == total_nav_points - 1 then
+					to_pos = my_data.flee_target.pos
 				else
-					local to_pos, to_cover = nil
+					local next_area = managers.groupai:state():get_area_from_nav_seg_id(coarse_path[cur_index + 1][1])
+					local cover = managers.navigation:find_cover_in_nav_seg_1(next_area.nav_segs)
 
-					if cur_index == total_nav_points - 1 then
-						to_pos = my_data.flee_target.pos
+					if cover then
+						CopLogicAttack._set_best_cover(data, my_data, {cover})
+
+						to_cover = my_data.best_cover
 					else
-						local next_area = managers.groupai:state():get_area_from_nav_seg_id(coarse_path[cur_index + 1][1])
-						local cover = managers.navigation:find_cover_in_nav_seg_1(next_area.nav_segs)
-
-						if cover then
-							CopLogicAttack._set_best_cover(data, my_data, {cover})
-
-							to_cover = my_data.best_cover
-						else
-							to_pos = CopLogicTravel._get_pos_on_wall(coarse_path[cur_index + 1][2], 700)
-						end
+						to_pos = CopLogicTravel._get_pos_on_wall(coarse_path[cur_index + 1][2], 700)
 					end
+				end
 
-					my_data.flee_path_search_id = "civ_flee" .. tostring(data.key)
+				my_data.flee_path_search_id = "civ_flee" .. tostring(data.key)
 
-					if to_cover then
-						my_data.pathing_to_cover = to_cover
+				if to_cover then
+					my_data.pathing_to_cover = to_cover
 
-						unit:brain():search_for_path_to_cover(my_data.flee_path_search_id, to_cover[1], nil, nil)
-					else
-						data.brain:add_pos_rsrv("path", {
-							radius = 30,
-							position = to_pos
-						})
-						unit:brain():search_for_path(my_data.flee_path_search_id, to_pos)
-					end
+					unit:brain():search_for_path_to_cover(my_data.flee_path_search_id, to_cover[1], nil, nil)
+				else
+					data.brain:add_pos_rsrv("path", {
+						radius = 30,
+						position = to_pos
+					})
+					unit:brain():search_for_path(my_data.flee_path_search_id, to_pos)
 				end
 			end
-		elseif my_data.best_cover then
-			local best_cover = my_data.best_cover
+		end
+	elseif my_data.best_cover then
+		local best_cover = my_data.best_cover
 
-			if not my_data.moving_to_cover or my_data.moving_to_cover ~= best_cover then
-				if my_data.in_cover and my_data.in_cover == best_cover then
-					
-				else
-					if not unit:anim_data().panic then
-						local action_data = {
-							clamp_to_graph = true,
-							variant = "panic",
-							body_part = 1,
-							type = "act"
-						}
+		if not my_data.moving_to_cover or my_data.moving_to_cover ~= best_cover then
+			if my_data.in_cover and my_data.in_cover == best_cover then
+				
+			else
+				if not unit:anim_data().panic then
+					local action_data = {
+						clamp_to_graph = true,
+						variant = "panic",
+						body_part = 1,
+						type = "act"
+					}
 
-						data.unit:brain():action_request(action_data)
-						data.unit:brain():set_update_enabled_state(true)
-						CopLogicBase._reset_attention(data)
-					end
-
-					my_data.pathing_to_cover = my_data.best_cover
-					local search_id = "civ_cover" .. tostring(data.key)
-					my_data.flee_path_search_id = search_id
-
-					data.unit:brain():search_for_path_to_cover(search_id, my_data.best_cover[1])
+					data.unit:brain():action_request(action_data)
+					data.unit:brain():set_update_enabled_state(true)
+					CopLogicBase._reset_attention(data)
 				end
+
+				my_data.pathing_to_cover = my_data.best_cover
+				local search_id = "civ_cover" .. tostring(data.key)
+				my_data.flee_path_search_id = search_id
+
+				data.unit:brain():search_for_path_to_cover(search_id, my_data.best_cover[1])
 			end
 		end
 	end
@@ -273,8 +275,19 @@ function CivilianLogicFlee.action_complete_clbk(data, action)
 	if action:type() == "walk" then
 		my_data.next_action_t = TimerManager:game():time() + math.lerp(2, 8, math.random())
 
-		if action:expired() and my_data.coarse_path_index then
-			my_data.coarse_path_index = my_data.coarse_path_index + 1
+		if action:expired() then
+			if my_data.moving_to_cover then
+				data.unit:sound():say("a03x_any", true)
+
+				my_data.in_cover = my_data.moving_to_cover
+
+				CopLogicAttack._set_nearest_cover(my_data, my_data.in_cover)
+				CivilianLogicFlee._chk_add_delayed_rescue_SO(data, my_data)
+			end
+
+			if my_data.coarse_path_index then
+				my_data.coarse_path_index = my_data.coarse_path_index + 1
+			end
 		end
 
 		my_data.moving_to_cover = nil
@@ -305,7 +318,11 @@ function CivilianLogicFlee.on_alert(data, alert_data)
 		if aggressor and aggressor:base() then
 			local is_intimidation = nil
 
-			if aggressor:base().is_local_player and (not managers.player:has_category_upgrade("player", "civ_calming_alerts") or true) or aggressor:base().is_husk_player and aggressor:base():upgrade_value("player", "civ_calming_alerts") then
+			if aggressor:base().is_local_player then
+				if managers.player:has_category_upgrade("player", "civ_calming_alerts") then
+					is_intimidation = true
+				end
+			elseif aggressor:base().is_husk_player and aggressor:base():upgrade_value("player", "civ_calming_alerts") then
 				is_intimidation = true
 			end
 
@@ -955,7 +972,11 @@ function CivilianLogicFlee.reset_actions(data)
 end
 
 function CivilianLogicFlee._chk_add_delayed_rescue_SO(data, my_data)
-	if (my_data.exiting or data.unit:anim_data().move or not managers.groupai:state():rescue_state() or data.unit:brain()._dont_rescue or not my_data.rescue_active) and my_data.rescue_active then
+	if not my_data.exiting and not data.unit:anim_data().move and managers.groupai:state():rescue_state() and not data.unit:brain()._dont_rescue then
+		if not my_data.rescue_active then
+			CivilianLogicFlee._add_delayed_rescue_SO(data, my_data)
+		end
+	elseif my_data.rescue_active then
 		CivilianLogicFlee._unregister_rescue_SO(data, my_data)
 	end
 end

@@ -273,8 +273,16 @@ function ObjectivesManager:activate_objective_countdown(id, load_data, data)
 end
 
 function ObjectivesManager:remove_objective(id, load_data)
-	if not load_data and not self._active_objectives[id] then
-		return
+	if not load_data then
+		if not id or not self._objectives[id] then
+			Application:stack_dump_error("Bad id to remove objective, " .. tostring(id) .. ".")
+
+			return
+		end
+
+		if not self._active_objectives[id] then
+			return
+		end
 	end
 
 	local objective = self._objectives[id]
@@ -294,16 +302,24 @@ function ObjectivesManager:remove_objective(id, load_data)
 end
 
 function ObjectivesManager:complete_objective(id, load_data)
-	if not load_data and not self._active_objectives[id] then
-		if not self._completed_objectives[id] then
-			self._completed_objectives[id] = self._objectives[id]
+	if not load_data then
+		if not id or not self._objectives[id] then
+			Application:stack_dump_error("Bad id to complete objective, " .. tostring(id) .. ".")
 
-			table.insert(self._completed_objectives_ordered, 1, id)
+			return
 		end
 
-		Application:error("Tried to complete objective " .. tostring(id) .. ". This objective has never been given to the player.")
+		if not self._active_objectives[id] then
+			if not self._completed_objectives[id] then
+				self._completed_objectives[id] = self._objectives[id]
 
-		return
+				table.insert(self._completed_objectives_ordered, 1, id)
+			end
+
+			Application:error("Tried to complete objective " .. tostring(id) .. ". This objective has never been given to the player.")
+
+			return
+		end
 	end
 
 	local objective = self._objectives[id]
@@ -347,16 +363,24 @@ function ObjectivesManager:complete_objective(id, load_data)
 end
 
 function ObjectivesManager:complete_sub_objective(id, sub_id, load_data)
-	if not load_data and not self._active_objectives[id] then
-		if not self._completed_objectives[id] then
-			self._completed_objectives[id] = self._objectives[id]
+	if not load_data then
+		if not id or not self._objectives[id] then
+			Application:stack_dump_error("Bad id to complete objective, " .. tostring(id) .. ".")
 
-			table.insert(self._completed_objectives_ordered, 1, id)
+			return
 		end
 
-		Application:error("Tried to complete objective " .. tostring(id) .. ". This objective has never been given to the player.")
+		if not self._active_objectives[id] then
+			if not self._completed_objectives[id] then
+				self._completed_objectives[id] = self._objectives[id]
 
-		return
+				table.insert(self._completed_objectives_ordered, 1, id)
+			end
+
+			Application:error("Tried to complete objective " .. tostring(id) .. ". This objective has never been given to the player.")
+
+			return
+		end
 	end
 
 	local objective = self._objectives[id]
@@ -391,16 +415,24 @@ function ObjectivesManager:complete_sub_objective(id, sub_id, load_data)
 end
 
 function ObjectivesManager:complete_objective_countdown(id, load_data)
-	if not load_data and not self._active_objectives[id] then
-		if not self._completed_objectives[id] then
-			self._completed_objectives[id] = self._objectives[id]
+	if not load_data then
+		if not id or not self._objectives[id] then
+			Application:stack_dump_error("Bad id to complete objective, " .. tostring(id) .. ".")
 
-			table.insert(self._completed_objectives_ordered, 1, id)
+			return
 		end
 
-		Application:error("Tried to complete objective " .. tostring(id) .. ". This objective has never been given to the player.")
+		if not self._active_objectives[id] then
+			if not self._completed_objectives[id] then
+				self._completed_objectives[id] = self._objectives[id]
 
-		return
+				table.insert(self._completed_objectives_ordered, 1, id)
+			end
+
+			Application:error("Tried to complete objective " .. tostring(id) .. ". This objective has never been given to the player.")
+
+			return
+		end
 	end
 
 	local objective = self._objectives[id]

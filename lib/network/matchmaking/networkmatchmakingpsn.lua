@@ -155,7 +155,13 @@ function NetworkMatchMakingPSN:_session_destroyed_cb(room_id, ...)
 
 		self._room_id = nil
 
-		if (not Network:is_client() or not managers.network:session() or not managers.network:session():server_peer() or game_state_machine:current_state().on_server_left) and self._joining_lobby then
+		if Network:is_client() and managers.network:session() and managers.network:session():server_peer() then
+			if game_state_machine:current_state().on_server_left then
+				Global.on_server_left_message = "dialog_connection_to_host_lost"
+
+				game_state_machine:current_state():on_server_left()
+			end
+		elseif self._joining_lobby then
 			self:_error_cb({error = "80022b13"})
 		end
 	end
@@ -211,9 +217,7 @@ function NetworkMatchMakingPSN:cancel_find()
 end
 
 function NetworkMatchMakingPSN:remove_ping_watch()
-	if self:_is_client() then
-		
-	else
+	if not self:_is_client() or self._server_rpc then
 		for k, v in pairs(self._players) do
 			if v.rpc then
 				
@@ -230,7 +234,15 @@ function NetworkMatchMakingPSN:leave_game()
 
 	self._no_longer_in_session = nil
 
-	if not self:_is_client() or managers.network.group:_is_client() then
+	if self:_is_client() then
+		if self._server_rpc then
+			sent = true
+		end
+
+		if managers.network.group:_is_client() then
+			self:_call_callback("group_leader_left_match")
+		end
+	else
 		for k, v in pairs(self._players) do
 			if v.rpc then
 				sent = true
@@ -367,7 +379,13 @@ function NetworkMatchMakingPSN:update(time)
 
 	if self._no_longer_in_session then
 		if self._no_longer_in_session == 0 then
-			if (not Network:is_client() or not managers.network:session() or not managers.network:session():server_peer() or game_state_machine:current_state().on_server_left) and Network:is_server() and managers.network:session() and game_state_machine:current_state().on_disconnected then
+			if Network:is_client() and managers.network:session() and managers.network:session():server_peer() then
+				if game_state_machine:current_state().on_server_left then
+					Global.on_server_left_message = "dialog_connection_to_host_lost"
+
+					game_state_machine:current_state():on_server_left()
+				end
+			elseif Network:is_server() and managers.network:session() and game_state_machine:current_state().on_disconnected then
 				game_state_machine:current_state():on_disconnected()
 			end
 
@@ -405,7 +423,12 @@ function NetworkMatchMakingPSN:update(time)
 			self:_error_cb({error = "8002231d"})
 		end
 
-		if (not self._room_id or not is_server) and not self._last_settings then
+		if self._room_id then
+			if not is_server then
+				print(" LEAVE SESSION BECAUSE OF TIME OUT", self._room_id)
+				self:leave_game()
+			end
+		elseif not self._last_settings then
 			self:_call_callback("cancel_done")
 		end
 	end

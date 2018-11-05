@@ -347,10 +347,18 @@ function CopLogicBase.on_objective_unit_destroyed(data, unit)
 end
 
 function CopLogicBase.on_new_objective(data, old_objective)
-	if old_objective and old_objective.follow_unit and old_objective.death_clbk_key then
-		old_objective.follow_unit:character_damage():remove_listener(old_objective.death_clbk_key)
+	if old_objective and old_objective.follow_unit then
+		if old_objective.destroy_clbk_key then
+			old_objective.follow_unit:base():remove_destroy_listener(old_objective.destroy_clbk_key)
 
-		old_objective.death_clbk_key = nil
+			old_objective.destroy_clbk_key = nil
+		end
+
+		if old_objective.death_clbk_key then
+			old_objective.follow_unit:character_damage():remove_listener(old_objective.death_clbk_key)
+
+			old_objective.death_clbk_key = nil
+		end
 	end
 
 	local new_objective = data.objective
@@ -546,7 +554,11 @@ function CopLogicBase._upd_attention_obj_detection(data, min_reaction, max_react
 	end
 
 	for u_key, attention_info in pairs(detected_obj) do
-		if t >= attention_info.next_verify_t or AIAttentionObject.REACT_SUSPICIOUS <= attention_info.reaction and math.min(attention_info.next_verify_t - t, delay) then
+		if t < attention_info.next_verify_t then
+			if AIAttentionObject.REACT_SUSPICIOUS <= attention_info.reaction then
+				delay = math.min(attention_info.next_verify_t - t, delay)
+			end
+		else
 			attention_info.next_verify_t = t + (attention_info.identified and attention_info.verified and attention_info.settings.verification_interval or attention_info.settings.notice_interval or attention_info.settings.verification_interval)
 			delay = math.min(delay, attention_info.settings.verification_interval)
 
@@ -904,7 +916,12 @@ function CopLogicBase._set_attention_obj(data, new_att_obj, new_reaction)
 				is_same_obj = true
 				contact_chatter_time_ok = new_crim_rec and data.t - new_crim_rec.det_t > 2
 
-				if new_att_obj.stare_expire_t and new_att_obj.stare_expire_t < data.t and (not new_att_obj.settings.pause or data.t + math.lerp(new_att_obj.settings.pause[1], new_att_obj.settings.pause[2], math.random())) or new_att_obj.pause_expire_t and new_att_obj.pause_expire_t < data.t then
+				if new_att_obj.stare_expire_t and new_att_obj.stare_expire_t < data.t then
+					if new_att_obj.settings.pause then
+						new_att_obj.stare_expire_t = nil
+						new_att_obj.pause_expire_t = data.t + math.lerp(new_att_obj.settings.pause[1], new_att_obj.settings.pause[2], math.random())
+					end
+				elseif new_att_obj.pause_expire_t and new_att_obj.pause_expire_t < data.t then
 					if not new_att_obj.settings.attract_chance or math.random() < new_att_obj.settings.attract_chance then
 						new_att_obj.pause_expire_t = nil
 						new_att_obj.stare_expire_t = data.t + math.lerp(new_att_obj.settings.duration[1], new_att_obj.settings.duration[2], math.random())
@@ -1169,8 +1186,14 @@ function CopLogicBase._chk_call_the_police(data)
 
 	local allow_trans, obj_failed = CopLogicBase.is_obstructed(data, data.objective, nil, nil)
 
-	if allow_trans and data.logic.is_available_for_assignment(data) and not data.is_converted and not data.unit:movement():cool() and not managers.groupai:state():is_police_called() and (not data.attention_obj or not data.attention_obj.verified_t or data.t - data.attention_obj.verified_t > 6 or data.attention_obj.reaction <= AIAttentionObject.REACT_ARREST) and (not data.objective or data.objective.is_default) and not managers.groupai:state():chk_enemy_calling_in_area(managers.groupai:state():get_area_from_nav_seg_id(data.unit:movement():nav_tracker():nav_segment()), data.key) then
-		CopLogicBase._exit(data.unit, "arrest")
+	if allow_trans and data.logic.is_available_for_assignment(data) and not data.is_converted and not data.unit:movement():cool() and not managers.groupai:state():is_police_called() and (not data.attention_obj or not data.attention_obj.verified_t or data.t - data.attention_obj.verified_t > 6 or data.attention_obj.reaction <= AIAttentionObject.REACT_ARREST) then
+		if obj_failed then
+			data.objective_failed_clbk(data.unit, data.objective)
+		end
+
+		if (not data.objective or data.objective.is_default) and not managers.groupai:state():chk_enemy_calling_in_area(managers.groupai:state():get_area_from_nav_seg_id(data.unit:movement():nav_tracker():nav_segment()), data.key) then
+			CopLogicBase._exit(data.unit, "arrest")
+		end
 	end
 end
 

@@ -510,7 +510,11 @@ function CoreWorldCameraManager:_reset_old_viewports()
 end
 
 function CoreWorldCameraManager:_set_listener_enabled(enabled)
-	if enabled and (self._listener_activation_id or managers.listener:activate_set("main", "world_camera")) or self._listener_activation_id then
+	if enabled then
+		if not self._listener_activation_id then
+			self._listener_activation_id = managers.listener:activate_set("main", "world_camera")
+		end
+	elseif self._listener_activation_id then
 		managers.listener:deactivate_set(self._listener_activation_id)
 
 		self._listener_activation_id = nil
@@ -1554,7 +1558,11 @@ function CoreWorldCamera:prev_key(time, step)
 	local index = 1
 
 	for i, key in ipairs(self._keys) do
-		if step and (key.time >= time or i) or key.time <= time then
+		if step then
+			if key.time < time then
+				index = i
+			end
+		elseif key.time <= time then
 			index = i
 		end
 	end

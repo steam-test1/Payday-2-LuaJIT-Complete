@@ -618,7 +618,13 @@ function Drill:set_autorepair(state)
 
 	self._autorepair = state
 
-	if (not state or self._jammed and not self._autorepair_clbk_id) and self._autorepair_clbk_id then
+	if state then
+		if self._jammed and not self._autorepair_clbk_id then
+			self._autorepair_clbk_id = "Drill_autorepair" .. tostring(self._unit:key())
+
+			managers.enemy:add_delayed_clbk(self._autorepair_clbk_id, callback(self, self, "clbk_autorepair"), TimerManager:game():time() + 5 + 15 * math.random())
+		end
+	elseif self._autorepair_clbk_id then
 		managers.enemy:remove_delayed_clbk(self._autorepair_clbk_id)
 
 		self._autorepair_clbk_id = nil

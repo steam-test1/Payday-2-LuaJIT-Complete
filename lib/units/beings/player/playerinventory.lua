@@ -714,7 +714,11 @@ end
 function PlayerInventory:set_melee_weapon(melee_weapon_id, is_npc)
 	self._melee_weapon_data = managers.blackmarket:get_melee_weapon_data(melee_weapon_id)
 
-	if is_npc and (not self._melee_weapon_data.third_unit or Idstring(self._melee_weapon_data.third_unit)) or self._melee_weapon_data.unit then
+	if is_npc then
+		if self._melee_weapon_data.third_unit then
+			self._melee_weapon_unit_name = Idstring(self._melee_weapon_data.third_unit)
+		end
+	elseif self._melee_weapon_data.unit then
 		self._melee_weapon_unit_name = Idstring(self._melee_weapon_data.unit)
 	end
 

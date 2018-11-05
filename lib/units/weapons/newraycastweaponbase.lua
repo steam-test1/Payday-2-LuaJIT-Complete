@@ -389,13 +389,43 @@ function NewRaycastWeaponBase:_update_stats_values(disallow_replenish)
 			self._movement_penalty = self._movement_penalty * stats.movement_speed
 		end
 
-		if tweak_data.weapon.factory.parts[part_id].type ~= "ammo" and stats.ammo_pickup_max_mul then
-			self._ammo_data.ammo_pickup_max_mul = self._ammo_data.ammo_pickup_max_mul and self._ammo_data.ammo_pickup_max_mul * stats.ammo_pickup_max_mul or stats.ammo_pickup_max_mul
+		if tweak_data.weapon.factory.parts[part_id].type ~= "ammo" then
+			if stats.ammo_pickup_min_mul then
+				self._ammo_data.ammo_pickup_min_mul = self._ammo_data.ammo_pickup_min_mul and self._ammo_data.ammo_pickup_min_mul * stats.ammo_pickup_min_mul or stats.ammo_pickup_min_mul
+			end
+
+			if stats.ammo_pickup_max_mul then
+				self._ammo_data.ammo_pickup_max_mul = self._ammo_data.ammo_pickup_max_mul and self._ammo_data.ammo_pickup_max_mul * stats.ammo_pickup_max_mul or stats.ammo_pickup_max_mul
+			end
 		end
 	end
 
-	if self._ammo_data and self._ammo_data.armor_piercing_mul ~= nil then
-		self._armor_piercing_chance = math.clamp(self._armor_piercing_chance * self._ammo_data.armor_piercing_mul, 0, 1)
+	if self._ammo_data then
+		if self._ammo_data.can_shoot_through_shield ~= nil then
+			self._can_shoot_through_shield = self._ammo_data.can_shoot_through_shield
+		end
+
+		if self._ammo_data.can_shoot_through_enemy ~= nil then
+			self._can_shoot_through_enemy = self._ammo_data.can_shoot_through_enemy
+		end
+
+		if self._ammo_data.can_shoot_through_wall ~= nil then
+			self._can_shoot_through_wall = self._ammo_data.can_shoot_through_wall
+		end
+
+		if self._ammo_data.bullet_class ~= nil then
+			self._bullet_class = CoreSerialize.string_to_classtable(self._ammo_data.bullet_class)
+			self._bullet_slotmask = self._bullet_class:bullet_slotmask()
+			self._blank_slotmask = self._bullet_class:blank_slotmask()
+		end
+
+		if self._ammo_data.armor_piercing_add ~= nil then
+			self._armor_piercing_chance = math.clamp(self._armor_piercing_chance + self._ammo_data.armor_piercing_add, 0, 1)
+		end
+
+		if self._ammo_data.armor_piercing_mul ~= nil then
+			self._armor_piercing_chance = math.clamp(self._armor_piercing_chance * self._ammo_data.armor_piercing_mul, 0, 1)
+		end
 	end
 
 	if self._silencer then

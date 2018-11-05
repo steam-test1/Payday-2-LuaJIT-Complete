@@ -153,7 +153,11 @@ function TaserLogicAttack._upd_enemy_detection(data)
 	local tased_u_key = tasing and tasing.target_u_key
 	local tase_in_effect = tasing and tasing.target_u_data.unit:movement():tased()
 
-	if not tase_in_effect and (not tasing or data.t - tasing.start_t >= math.max(1, data.char_tweak.weapon.is_rifle.aim_delay_tase[2] * 1.5)) or under_multiple_fire and true then
+	if tase_in_effect or tasing and data.t - tasing.start_t < math.max(1, data.char_tweak.weapon.is_rifle.aim_delay_tase[2] * 1.5) then
+		if under_multiple_fire then
+			find_new_focus_enemy = true
+		end
+	else
 		find_new_focus_enemy = true
 	end
 
@@ -247,7 +251,13 @@ function TaserLogicAttack._upd_aim(data, my_data, reaction)
 	end
 
 	if aim or shoot then
-		if focus_enemy.verified and (my_data.attention_unit == focus_enemy.u_key or focus_enemy.u_key) or my_data.attention_unit ~= focus_enemy.verified_pos then
+		if focus_enemy.verified then
+			if my_data.attention_unit ~= focus_enemy.u_key then
+				CopLogicBase._set_attention(data, focus_enemy)
+
+				my_data.attention_unit = focus_enemy.u_key
+			end
+		elseif my_data.attention_unit ~= focus_enemy.verified_pos then
 			CopLogicBase._set_attention_on_pos(data, mvector3.copy(focus_enemy.verified_pos))
 
 			my_data.attention_unit = mvector3.copy(focus_enemy.verified_pos)
@@ -378,7 +388,12 @@ end
 function TaserLogicAttack.on_criminal_neutralized(data, criminal_key)
 	local my_data = data.internal_data
 
-	if not my_data.tasing or criminal_key ~= my_data.tasing.target_u_data.u_key or not my_data.tasing.target_u_data.unit:movement():tased() then
+	if my_data.tasing and criminal_key == my_data.tasing.target_u_data.u_key then
+		if not my_data.tasing.target_u_data.unit:movement():tased() then
+			CopLogicAttack.on_criminal_neutralized(data, criminal_key)
+			TaserLogicAttack._cancel_tase_attempt(data, my_data)
+		end
+	else
 		CopLogicAttack.on_criminal_neutralized(data, criminal_key)
 	end
 end

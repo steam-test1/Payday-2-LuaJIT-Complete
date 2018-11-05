@@ -212,8 +212,14 @@ function CopLogicIdle._upd_enemy_detection(data)
 			wanted_state = CopLogicBase._get_logic_state_from_reaction(data)
 		end
 
-		if wanted_state and wanted_state ~= data.name and my_data == data.internal_data then
-			CopLogicBase._exit(data.unit, wanted_state)
+		if wanted_state and wanted_state ~= data.name then
+			if obj_failed then
+				data.objective_failed_clbk(data.unit, data.objective)
+			end
+
+			if my_data == data.internal_data then
+				CopLogicBase._exit(data.unit, wanted_state)
+			end
 		end
 	end
 
@@ -887,8 +893,18 @@ function CopLogicIdle.action_complete_clbk(data, action)
 	elseif action_type == "act" then
 		local my_data = data.internal_data
 
-		if my_data.action_started == action and (not action:expired() or not my_data.action_timeout_clbk_id) and not my_data.action_expired then
-			data.objective_failed_clbk(data.unit, data.objective)
+		if my_data.action_started == action then
+			if my_data.scan and not my_data.exiting and (not my_data.queued_tasks or not my_data.queued_tasks[my_data.wall_stare_task_key]) and not my_data.stare_path_pos then
+				CopLogicBase.queue_task(my_data, my_data.wall_stare_task_key, CopLogicIdle._chk_stare_into_wall_1, data, data.t)
+			end
+
+			if action:expired() then
+				if not my_data.action_timeout_clbk_id then
+					data.objective_complete_clbk(data.unit, data.objective)
+				end
+			elseif not my_data.action_expired then
+				data.objective_failed_clbk(data.unit, data.objective)
+			end
 		end
 	elseif action_type == "hurt" and data.important and action:expired() then
 		CopLogicBase.chk_start_action_dodge(data, "hit")
@@ -902,8 +918,14 @@ function CopLogicIdle.is_available_for_assignment(data, objective)
 
 	local my_data = data.internal_data
 
-	if data.objective and data.objective.action and (not my_data.action_started or not data.unit:anim_data().act_idle) then
-		return
+	if data.objective and data.objective.action then
+		if my_data.action_started then
+			if not data.unit:anim_data().act_idle then
+				return
+			end
+		else
+			return
+		end
 	end
 
 	if my_data.exiting or data.path_fail_t and data.t < data.path_fail_t + 6 then
@@ -1067,8 +1089,14 @@ function CopLogicIdle._chk_focus_on_attention_object(data, my_data)
 			local err_to_correct_abs = math.abs(turn_angle)
 			local angle_str = nil
 
-			if err_to_correct_abs > 40 and my_data.rubberband_rotation then
-				my_data.fwd_offset = true
+			if err_to_correct_abs > 40 then
+				if not CopLogicIdle._turn_by_spin(data, my_data, turn_angle) then
+					return
+				end
+
+				if my_data.rubberband_rotation then
+					my_data.fwd_offset = true
+				end
 			end
 		end
 	end
@@ -1151,7 +1179,12 @@ function CopLogicIdle._get_priority_attention(data, attention_objects, reaction_
 					attention_data.pause_expire_t = data.t + math.lerp(attention_data.settings.pause[1], attention_data.settings.pause[2], math.random())
 				end
 			end
-		elseif not attention_data.stare_expire_t or attention_data.stare_expire_t >= data.t or attention_data.settings.pause and data.t + math.lerp(attention_data.settings.pause[1], attention_data.settings.pause[2], math.random()) then
+		elseif attention_data.stare_expire_t and attention_data.stare_expire_t < data.t then
+			if attention_data.settings.pause then
+				attention_data.stare_expire_t = nil
+				attention_data.pause_expire_t = data.t + math.lerp(attention_data.settings.pause[1], attention_data.settings.pause[2], math.random())
+			end
+		else
 			local distance = attention_data.dis
 			local reaction = reaction_func(data, attention_data, not CopLogicAttack._can_move(data))
 
@@ -1190,8 +1223,14 @@ function CopLogicIdle._get_priority_attention(data, attention_objects, reaction_
 					if managers.player:has_activate_temporary_upgrade("temporary", "chico_injector") and managers.player:upgrade_value("player", "chico_preferred_target", false) then
 						weight_mul = (weight_mul or 1) * 1000
 					end
-				elseif att_unit:base() and att_unit:base().upgrade_value and att_unit:base().has_activate_temporary_upgrade and att_unit:base():has_activate_temporary_upgrade("temporary", "chico_injector") and att_unit:base():upgrade_value("player", "chico_preferred_target") then
-					weight_mul = (weight_mul or 1) * 1000
+				elseif att_unit:base() and att_unit:base().upgrade_value then
+					if att_unit:movement() and not att_unit:movement()._move_data and att_unit:movement()._pose_code and att_unit:movement()._pose_code == 2 then
+						weight_mul = (weight_mul or 1) * (att_unit:base():upgrade_value("player", "stand_still_crouch_camouflage_bonus") or 1)
+					end
+
+					if att_unit:base().has_activate_temporary_upgrade and att_unit:base():has_activate_temporary_upgrade("temporary", "chico_injector") and att_unit:base():upgrade_value("player", "chico_preferred_target") then
+						weight_mul = (weight_mul or 1) * 1000
+					end
 				end
 
 				if weight_mul and weight_mul ~= 1 then
@@ -1433,16 +1472,22 @@ end
 
 function CopLogicIdle._upd_stop_old_action(data, my_data, objective)
 	if not my_data.action_started and objective and objective.action and not data.unit:anim_data().to_idle then
-		if not my_data.advancing or not data.unit:movement():chk_action_forbidden("idle") then
-			if not data.unit:movement():chk_action_forbidden("idle") and data.unit:anim_data().needs_idle then
-				CopLogicIdle._start_idle_action_from_act(data)
-			elseif data.unit:anim_data().act_idle then
+		if my_data.advancing then
+			if not data.unit:movement():chk_action_forbidden("idle") then
 				data.unit:brain():action_request({
 					sync = true,
 					body_part = 2,
 					type = "idle"
 				})
 			end
+		elseif not data.unit:movement():chk_action_forbidden("idle") and data.unit:anim_data().needs_idle then
+			CopLogicIdle._start_idle_action_from_act(data)
+		elseif data.unit:anim_data().act_idle then
+			data.unit:brain():action_request({
+				sync = true,
+				body_part = 2,
+				type = "idle"
+			})
 		end
 
 		CopLogicIdle._chk_has_old_action(data, my_data)

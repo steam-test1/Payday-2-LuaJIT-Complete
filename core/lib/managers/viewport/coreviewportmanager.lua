@@ -233,8 +233,14 @@ function ViewportManager:_prioritize_and_activate()
 
 	local first_vp = self:first_active_viewport()
 
-	if old_first_vp ~= first_vp and first_vp then
-		first_vp:set_first_viewport(true)
+	if old_first_vp ~= first_vp then
+		if old_first_vp then
+			old_first_vp:set_first_viewport(false)
+		end
+
+		if first_vp then
+			first_vp:set_first_viewport(true)
+		end
 	end
 end
 

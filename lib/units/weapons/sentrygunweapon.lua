@@ -477,7 +477,13 @@ function SentryGunWeapon:set_laser_enabled(mode, blink)
 			self._laser_unit:base():set_color_by_theme(mode)
 		end
 
-		if not blink or not self._blink_start_t then
+		if blink then
+			if not self._blink_start_t then
+				self._blink_start_t = TimerManager:game():time()
+
+				self._unit:set_extension_update_enabled(Idstring("weapon"), true)
+			end
+		else
 			self._laser_unit:base():set_on()
 
 			self._blink_start_t = nil
@@ -496,7 +502,20 @@ function SentryGunWeapon:set_laser_enabled(mode, blink)
 end
 
 function SentryGunWeapon:_set_laser_state(state)
-	if (not state or not alive(self._laser_unit)) and alive(self._laser_unit) then
+	if state then
+		if not alive(self._laser_unit) then
+			local spawn_rot = self._laser_align:rotation()
+			local spawn_pos = self._laser_align:position()
+			self._laser_unit = World:spawn_unit(Idstring("units/payday2/weapons/wpn_npc_upg_fl_ass_smg_sho_peqbox/wpn_npc_upg_fl_ass_smg_sho_peqbox"), spawn_pos, spawn_rot)
+
+			self._unit:link(self._laser_align:name(), self._laser_unit)
+			self._laser_unit:base():set_npc()
+			self._laser_unit:base():set_on()
+			self._laser_unit:base():set_max_distace(10000)
+			self._laser_unit:base():add_ray_ignore_unit(self._unit)
+			self._laser_unit:set_visible(false)
+		end
+	elseif alive(self._laser_unit) then
 		self._laser_unit:base():set_off()
 		self._laser_unit:set_slot(0)
 
