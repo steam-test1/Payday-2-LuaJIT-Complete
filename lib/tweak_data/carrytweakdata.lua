@@ -739,6 +739,13 @@ function CarryTweakData:init(tweak_data)
 		visual_unit_name = "units/payday2/characters/npc_acc_loot_bag_1/npc_acc_loot_bag_1",
 		AI_carry = {SO_category = "enemies"}
 	}
+	self.old_wine = {
+		type = "slightly_heavy",
+		name_id = "hud_carry_old_wine",
+		bag_value = "old_wine",
+		visual_unit_name = "units/payday2/characters/npc_acc_loot_bag_1/npc_acc_loot_bag_1",
+		AI_carry = {SO_category = "enemies"}
+	}
 end
 
 function CarryTweakData:get_carry_ids()

@@ -205,7 +205,9 @@ function MissionManager:init(...)
 		"pku_expensive_wine",
 		"pku_tin_boy_toy",
 		"pku_high_heels",
-		"pku_vr_headset"
+		"pku_vr_headset",
+		"pku_german_folder",
+		"pku_old_wine"
 	})
 
 	self._mission_filter = {}

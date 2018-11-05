@@ -106,7 +106,8 @@ function MoneyTweakData:init(tweak_data)
 		women_shoes = 2875,
 		expensive_vine = 2875,
 		ordinary_wine = 2875,
-		robot_toy = 2875
+		robot_toy = 2875,
+		old_wine = 2000
 	}
 	self.bag_value_multiplier = self._create_value_table(((self.cut_lootbag_bonus / 5) / self.offshore_rate) / self.bag_values.default, (self.cut_lootbag_bonus / self.offshore_rate) / self.bag_values.default, 7, true, 0.85)
 	self.stage_completion = self._create_value_table((self.cut_stage_complete / 7) / self.offshore_rate, self.cut_stage_complete / self.offshore_rate, 7, true, 1)

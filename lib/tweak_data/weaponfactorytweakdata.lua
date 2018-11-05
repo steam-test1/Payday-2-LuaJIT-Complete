@@ -29046,7 +29046,11 @@ function WeaponFactoryTweakData:_init_ching()
 			30,
 			40
 		},
-		stats = {value = 1},
+		stats = {
+			value = 1,
+			recoil = 1,
+			concealment = -1
+		},
 		forbids = {"wpn_fps_ak_extra_ris"}
 	}
 	self.parts.wpn_fps_ass_ching_fg_standard = {

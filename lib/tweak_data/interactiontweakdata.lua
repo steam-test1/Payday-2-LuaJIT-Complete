@@ -4734,6 +4734,25 @@ function InteractionTweakData:init(tweak_data)
 		sound_start = "bar_elevator_crowbar_open",
 		sound_interupt = "bar_elevator_crowbar_cancel"
 	}
+	self.press_take_folder = {
+		text_id = "hud_int_german_folder",
+		interact_distance = 200,
+		start_active = true
+	}
+	self.hold_take_old_wine = {
+		text_id = "hud_int_old_wine",
+		action_text_id = "hud_action_old_wine",
+		start_active = true,
+		timer = 3,
+		interact_distance = 150
+	}
+	self.take_jfr_briefcase = {
+		text_id = "hud_take_briefcase",
+		action_text_id = "hud_action_taking_briefcase",
+		special_equipment_block = "briefcase",
+		start_active = true,
+		timer = 1
+	}
 	self.hold_take_missing_animal_poster = {
 		text_id = "hud_int_take_missing_animal_poster",
 		action_text_id = "hud_action_taking_missing_animal_poster",

@@ -4663,6 +4663,131 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		sort_number = 53,
 		global_value = "pd2_clan"
 	}
+	self.masks.jfr_01 = {
+		unit = "units/pd2_dlc_jfr/masks/jfr_01/msk_jfr_01",
+		name_id = "bm_msk_jfr_01",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "jfr",
+		sort_number = 54,
+		type = "helmet",
+		offsets = {sydney = {
+			Vector3(0, 1.26998, 0),
+			Rotation(0, 3.13382, 0)
+		}}
+	}
+	self.masks.jfr_02 = {
+		unit = "units/pd2_dlc_jfr/masks/jfr_02/msk_jfr_02",
+		name_id = "bm_msk_jfr_02",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "jfr",
+		sort_number = 54,
+		type = "helmet",
+		offsets = {
+			female_1 = {
+				Vector3(0, 0.673745, -0.518719),
+				Rotation(0, 0, -0)
+			},
+			sydney = {
+				Vector3(0, 1.03148, 0),
+				Rotation(0, 0, -0)
+			}
+		}
+	}
+	self.masks.jfr_03 = {
+		unit = "units/pd2_dlc_jfr/masks/jfr_03/msk_jfr_03",
+		name_id = "bm_msk_jfr_03",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "jfr",
+		sort_number = 54,
+		type = "helmet"
+	}
+	self.masks.jfr_04 = {
+		unit = "units/pd2_dlc_jfr/masks/jfr_04/msk_jfr_04",
+		name_id = "bm_msk_jfr_04",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "jfr",
+		sort_number = 54,
+		type = "beard",
+		skip_mask_on_sequence = true,
+		offsets = {
+			sydney = {
+				Vector3(0, -1.11495, 0.196759),
+				Rotation(0, 0, -0)
+			},
+			chains = {
+				Vector3(0, 0, -0.876458),
+				Rotation(0, 0, -0)
+			},
+			female_1 = {
+				Vector3(0, 0.435252, -0.995704),
+				Rotation(0, 3.99239, 0)
+			},
+			hoxton = {
+				Vector3(0, 0, -0.637965),
+				Rotation(0, 0, -0)
+			},
+			sokol = {
+				Vector3(-0.280226, 0.792991, -1.11495),
+				Rotation(0, 6.56811, 0)
+			},
+			wolf = {
+				Vector3(0, -0.757211, -0.16098),
+				Rotation(0, 0, -0)
+			},
+			bodhi = {
+				Vector3(0, 0, -0.757211),
+				Rotation(0, 0, -0)
+			},
+			jimmy = {
+				Vector3(0, 1.98545, -1.11495),
+				Rotation(0, 4.85096, 0)
+			},
+			jacket = {
+				Vector3(0, -0.16098, 0.077513),
+				Rotation(0, -2.01763, 0)
+			},
+			dallas = {
+				Vector3(0, 0.077513, -0.399472),
+				Rotation(0, 1.41667, 0)
+			},
+			old_hoxton = {
+				Vector3(0, 2.70093, -2.7844),
+				Rotation(0, 15.1538, 0)
+			},
+			dragan = {
+				Vector3(0, -0.995704, -0.399472),
+				Rotation(0, 0, -0)
+			},
+			max = {
+				Vector3(0, 0.673745, -0.876458),
+				Rotation(0, 4.85096, 0)
+			},
+			wild = {
+				Vector3(0, 0, -1.2342),
+				Rotation(0, 0, -0)
+			},
+			chico = {
+				Vector3(0, -0.876458, -0.637965),
+				Rotation(0, 0, -0)
+			},
+			jowi = {
+				Vector3(0, -0.995704, -0.876458),
+				Rotation(0, 0, -0)
+			},
+			dragon = {
+				Vector3(0, 1.38922, -1.2342),
+				Rotation(0, 5.70954, 0)
+			},
+			bonnie = {
+				Vector3(0, 0, -0.518719),
+				Rotation(0, 0.558094, 0)
+			}
+		}
+	}
 	self.masks.fdm = {
 		unit = "units/pd2_dlc_fdm/masks/msk_fdm",
 		name_id = "bm_msk_fdm",

@@ -1101,6 +1101,20 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objectives = {self:_progress("trophy_glace_completion", 1)}
 	})
 	table.insert(self.trophies, {
+		name_id = "trophy_jfr_1",
+		image_id = "safehouse_trophies_preview_hat",
+		objective_id = "trophy_jfr_1_completion_objective",
+		id = "trophy_jfr_1",
+		gives_reward = false,
+		desc_id = "trophy_jfr_1_desc",
+		objectives = {
+			self:_progress("sidejob_jfr_1", 1),
+			self:_progress("sidejob_jfr_2", 1),
+			self:_progress("sidejob_jfr_3", 1),
+			self:_progress("sidejob_jfr_4", 1)
+		}
+	})
+	table.insert(self.trophies, {
 		name_id = "trophy_aru_1",
 		image_id = "safehouse_trophies_preview_push_dagger",
 		objective_id = "trophy_aru_1_completion_objective",
