@@ -379,6 +379,10 @@ function MenuRenderer:accept_input(accept)
 end
 
 function MenuRenderer:input_focus()
+	if self:active_node_gui() and (self:active_node_gui().name == "crimenet_contract_crime_spree_join" or self:active_node_gui().name == "crimenet_crime_spree_contract_host" or self:active_node_gui().name == "crimenet_crime_spree_contract_singleplayer") then
+		return false
+	end
+
 	if self:active_node_gui() and self:active_node_gui().input_focus then
 		local input_focus = self:active_node_gui():input_focus()
 

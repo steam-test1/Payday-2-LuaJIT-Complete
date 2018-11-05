@@ -1398,12 +1398,20 @@ function CustomSafehouseGuiPageMap:_change_zoom(zoom, x, y)
 end
 
 function CustomSafehouseGuiPageMap:zoom_out(x, y)
+	if self:is_being_raided() then
+		return
+	end
+
 	if self:_change_zoom(-0.05, x, y) then
 		managers.menu_component:post_event("zoom_out")
 	end
 end
 
 function CustomSafehouseGuiPageMap:zoom_in(x, y)
+	if self:is_being_raided() then
+		return
+	end
+
 	if self:_change_zoom(0.05, x, y) then
 		managers.menu_component:post_event("zoom_in")
 	end

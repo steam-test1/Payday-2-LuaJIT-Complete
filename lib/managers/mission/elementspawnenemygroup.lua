@@ -75,6 +75,16 @@ function ElementSpawnEnemyGroup:on_executed(instigator)
 			local spawn_group_data = managers.groupai:state():create_spawn_group(self._id, self, self._spawn_points)
 
 			managers.groupai:state():force_spawn_group(spawn_group_data, self._values.preferred_spawn_groups)
+		elseif self._group_data.spawn_type == "group_guaranteed" then
+			local spawn_group_data = managers.groupai:state():create_spawn_group(self._id, self, self._spawn_points)
+
+			managers.groupai:state():force_spawn_group(spawn_group_data, self._values.preferred_spawn_groups, true)
+
+			local spawn_task = managers.groupai:state()._spawning_groups[1]
+
+			if spawn_task then
+				managers.groupai:state():_perform_group_spawning(spawn_task, true)
+			end
 		else
 			for i = 1, self:get_random_table_value(self._group_data.amount), 1 do
 				local element = self._spawn_points[self:_get_spawn_point(i)]

@@ -1072,12 +1072,12 @@ function GroupAIStateBesiege:_choose_best_group(best_groups, total_weight)
 	return best_grp, best_grp_type
 end
 
-function GroupAIStateBesiege:force_spawn_group(group, group_types)
+function GroupAIStateBesiege:force_spawn_group(group, group_types, guarantee)
 	local best_groups = {}
 	local total_weight = self:_choose_best_groups(best_groups, group, group_types, self._tweak_data[self._task_data.assault.active and "assault" or "recon"].groups, 1)
 
-	if total_weight > 0 then
-		local spawn_group, spawn_group_type = self:_choose_best_group(best_groups, total_weight)
+	if total_weight > 0 or guarantee then
+		local spawn_group, spawn_group_type = self:_choose_best_group(best_groups, total_weight or 1)
 
 		if spawn_group then
 			local grp_objective = {
@@ -1095,6 +1095,21 @@ function GroupAIStateBesiege:force_spawn_group(group, group_types)
 			self:_spawn_in_group(spawn_group, spawn_group_type, grp_objective)
 		end
 	end
+end
+
+function GroupAIStateBesiege:get_force_spawn_group(group, group_types)
+	local best_groups = {}
+	local total_weight = self:_choose_best_groups(best_groups, group, group_types, self._tweak_data[self._task_data.assault.active and "assault" or "recon"].groups, 1)
+
+	if total_weight > 0 then
+		local spawn_group, spawn_group_type = self:_choose_best_group(best_groups, total_weight)
+
+		if spawn_group then
+			return spawn_group, spawn_group_type
+		end
+	end
+
+	return nil
 end
 
 function GroupAIStateBesiege:_spawn_in_individual_groups(grp_objective, spawn_points, task)
@@ -1285,6 +1300,10 @@ function GroupAIStateBesiege:_upd_group_spawning()
 		return
 	end
 
+	self:_perform_group_spawning(spawn_task)
+end
+
+function GroupAIStateBesiege:_perform_group_spawning(spawn_task, force)
 	local nr_units_spawned = 0
 	local produce_data = {
 		name = true,
@@ -1294,7 +1313,7 @@ function GroupAIStateBesiege:_upd_group_spawning()
 	local spawn_points = spawn_task.spawn_group.spawn_pts
 
 	local function _try_spawn_unit(u_type_name, spawn_entry)
-		if GroupAIStateBesiege._MAX_SIMULTANEOUS_SPAWNS <= nr_units_spawned then
+		if GroupAIStateBesiege._MAX_SIMULTANEOUS_SPAWNS <= nr_units_spawned and not force then
 			return
 		end
 

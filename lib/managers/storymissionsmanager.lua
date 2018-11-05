@@ -20,6 +20,17 @@ function StoryMissionsManager:init()
 			for _, t in pairs(m.objectives) do
 				for _, o in pairs(t) do
 					m.objectives_flat[o.progress_id] = o
+					local dlc = nil
+
+					for _, id in pairs(o.levels or {}) do
+						local found = tweak_data.narrative.jobs[id].dlc
+
+						if found and dlc and dlc ~= found then
+							Application:error("Found multiple DLC's for a single objecitive!", o.progress_id)
+						end
+
+						o.dlc = found
+					end
 				end
 			end
 		end

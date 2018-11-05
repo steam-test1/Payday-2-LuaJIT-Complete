@@ -311,6 +311,8 @@ function StoryMissionsGui:_update_info(mission)
 		color = text_col
 	}), nil, 0)
 
+	local locked = false
+
 	if not mission.hide_progress then
 		placer:add_row(canvas:fine_text({
 			text = managers.localization:to_upper_text("menu_unlock_progress"),
@@ -334,14 +336,31 @@ function StoryMissionsGui:_update_info(mission)
 				}), obj_padd_x, 0)
 
 				if not mission.completed and not objective.completed and objective.levels and (not objective.basic or not Network:is_server()) and not Network:is_client() then
-					placer:add_right(TextButton:new(canvas, {
-						text_id = "menu_sm_start_level",
-						font = small_font,
-						font_size = small_font_size
-					}, function ()
-						managers.story:start_mission(mission, objective.progress_id)
-					end), 10)
-					self:_change_legend("start_mission", true)
+					if objective.dlc and not managers.dlc:is_dlc_unlocked(objective.dlc) and not Global.game_settings.single_player then
+						placer:add_right(canvas:fine_text({
+							text = managers.localization:to_upper_text("menu_ultimate_edition_short"),
+							font = small_font,
+							font_size = small_font_size,
+							color = tweak_data.screen_colors.dlc_color
+						}), 5)
+						placer:add_right(canvas:fine_text({
+							text_id = "menu_sm_dlc_locked",
+							font = small_font,
+							font_size = small_font_size,
+							color = tweak_data.screen_colors.important_1
+						}), 5)
+
+						locked = true
+					else
+						placer:add_right(TextButton:new(canvas, {
+							text_id = "menu_sm_start_level",
+							font = small_font,
+							font_size = small_font_size
+						}, function ()
+							managers.story:start_mission(mission, objective.progress_id)
+						end), 10)
+						self:_change_legend("start_mission", true)
+					end
 				end
 
 				if objective.max_progress > 1 then
@@ -387,6 +406,17 @@ function StoryMissionsGui:_update_info(mission)
 				}), nil, 0)
 			end
 		end
+	end
+
+	if locked then
+		placer:add_row(canvas:fine_text({
+			wrap = true,
+			text_id = "menu_sm_dlc_locked_help_text",
+			word_wrap = true,
+			font = small_font,
+			font_size = small_font_size,
+			color = text_col
+		}), nil, nil)
 	end
 
 	if mission.reward_id then

@@ -587,7 +587,7 @@ function UnitList:append_item(name, t)
 	self._list:set_item(i, 13, t.model_filename)
 	self._list:set_item(i, 14, t.diesel_filename)
 	self._list:set_item(i, 15, t.material_filename)
-	self._list:set_item(i, 16, t.last_exported_from)
+	self._list:set_item(i, 16, utf8.to_lower(utf8.from_latin1(t.last_exported_from)))
 
 	local new_t = clone(t)
 	new_t.name = name

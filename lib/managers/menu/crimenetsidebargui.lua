@@ -336,7 +336,15 @@ function CrimeNetSidebarGui:clbk_crime_spree()
 end
 
 function CrimeNetSidebarGui:clbk_visible_not_in_lobby()
-	return not managers.network:session()
+	return not managers.network:session() or Global.game_settings.single_player
+end
+
+function CrimeNetSidebarGui:clbk_visible_multiplayer()
+	return not managers.network:session() and not Global.game_settings.single_player
+end
+
+function CrimeNetSidebarGui:clbk_visible_singleplayer()
+	return Global.game_settings.single_player
 end
 
 function CrimeNetSidebarGui:clbk_open_story_missions()
@@ -737,7 +745,7 @@ function CrimeNetSidebarCrimeSpreeItem:init(...)
 
 	if managers.crime_spree:in_progress() then
 		self:set_text(managers.localization:text("cn_crime_spree_level", {level = managers.experience:cash_string(managers.crime_spree:spree_level(), "")}))
-		self:set_color(tweak_data.screen_colors.crime_spree_risk * 0.8)
+		self:set_color(tweak_data.screen_colors.crime_spree_risk)
 		self:set_highlight_color(tweak_data.screen_colors.crime_spree_risk)
 	end
 end

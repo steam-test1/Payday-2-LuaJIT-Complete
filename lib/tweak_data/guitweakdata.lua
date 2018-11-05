@@ -1794,7 +1794,7 @@ function GuiTweakData:init()
 			callback = "clbk_toggle_sidebar"
 		},
 		{
-			visible_callback = "clbk_visible_not_in_lobby",
+			visible_callback = "clbk_visible_multiplayer",
 			btn_macro = "menu_toggle_filters",
 			callback = "clbk_crimenet_filters",
 			name_id = "menu_cn_filters_sidebar",
@@ -4926,11 +4926,21 @@ function GuiTweakData:init()
 		"category",
 		"bonus"
 	}
-	self.new_heists = {limit = 5}
+	self.new_heists = {limit = 3}
 
 	table.insert(self.new_heists, {
-		name_id = "menu_nh_locke_and_load",
-		texture_path = "guis/textures/pd2/new_heists/locke_and_load",
+		name_id = "menu_nh_locke_and_load_ultimate_discount",
+		texture_path = "guis/textures/pd2/new_heists/locke_and_load_discount",
+		url = "http://store.steampowered.com/app/218620/PAYDAY_2/"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_locke_and_load_f2p",
+		texture_path = "guis/textures/pd2/new_heists/locke_and_load_f2p",
+		url = "http://store.steampowered.com/app/218620/PAYDAY_2/"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_locke_and_load_event",
+		texture_path = "guis/textures/pd2/new_heists/locke_and_load_event",
 		url = "http://www.overkillsoftware.com/games/lockeandload/"
 	})
 	table.insert(self.new_heists, {

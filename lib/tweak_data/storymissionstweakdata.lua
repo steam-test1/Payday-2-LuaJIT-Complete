@@ -37,7 +37,8 @@ function StoryMissionsTweakData:_level_progress(progress_id, ...)
 		return data
 	end
 
-	data.levels = ach.job and {ach.job} or ach.jobs
+	local had_levels = data.levels
+	data.levels = data.levels or ach.job and {ach.job} or ach.jobs
 	data.difficulty = ach.difficulty and ach.difficulty[1]
 
 	print("difficulty", data.difficulty, ach.difficulty and ach.difficulty[1])
@@ -180,7 +181,7 @@ function StoryMissionsTweakData:_init_missions(tweak_data)
 		self:_mission("sm_4", {
 			reward_id = "menu_sm_4_reward",
 			voice_line = "Play_pln_stq_04",
-			objectives = {{self:_progress("story_shadow_raid_bags", 9, {
+			objectives = {{self:_progress("story_shadow_raid_bags", 4, {
 				name_id = "menu_sm_shadow_raid_bags",
 				levels = {"kosugi"}
 			})}},
@@ -212,7 +213,16 @@ function StoryMissionsTweakData:_init_missions(tweak_data)
 			reward_id = "menu_sm_pre_coin_reward",
 			voice_line = "Play_pln_stq_06",
 			objectives = {{
-				self:_level_progress("story_transport_mult", 3, {name_id = "menu_sm_transport_mult"}),
+				self:_level_progress("story_transport_mult", 3, {
+					name_id = "menu_sm_transport_mult",
+					levels = {
+						"arm_cro",
+						"arm_hcm",
+						"arm_fac",
+						"arm_par",
+						"arm_und"
+					}
+				}),
 				self:_level_progress("story_train_heist", 1, {name_id = "menu_sm_train_heist"})
 			}},
 			rewards = self:_default_pre_coins()

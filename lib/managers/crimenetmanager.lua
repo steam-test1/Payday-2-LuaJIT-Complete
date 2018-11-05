@@ -3844,7 +3844,7 @@ function CrimeNetGui:special_btn_pressed(button)
 		return true
 	end
 
-	if button == Idstring("menu_toggle_filters") then
+	if not managers.network:session() and not Global.game_settings.single_player and button == Idstring("menu_toggle_filters") then
 		managers.menu_component:post_event("menu_enter")
 
 		if is_x360 then

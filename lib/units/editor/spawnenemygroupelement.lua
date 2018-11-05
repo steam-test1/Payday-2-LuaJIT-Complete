@@ -111,7 +111,8 @@ function SpawnEnemyGroupUnitElement:_build_panel(panel, panel_sizer)
 	self:_build_add_remove_unit_from_list(panel, panel_sizer, self._hed.elements, names)
 	self:_build_value_combobox(panel, panel_sizer, "spawn_type", table.list_add({"ordered"}, {
 		"random",
-		"group"
+		"group",
+		"group_guaranteed"
 	}), "Specify how the enemy will be spawned.")
 	self:_build_value_checkbox(panel, panel_sizer, "ignore_disabled", "Select if disabled spawn points should be ignored or not")
 	self:_build_value_random_number(panel, panel_sizer, "amount", {

@@ -577,7 +577,7 @@ end
 IconButton = IconButton or class(BaseButton)
 
 function IconButton:init(parent, icon_config, func)
-	IconButton.super.init(self, parent, {}, func)
+	IconButton.super.init(self, parent, {binding = icon_config.binding}, func)
 
 	self._select_panel = ExtendedPanel:new(self)
 	self._normal_color = icon_config.normal_color or icon_config.color
