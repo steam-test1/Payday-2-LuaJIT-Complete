@@ -9,7 +9,7 @@ function ContractBoxGui:init(ws, fullscreen_ws)
 		vertical = "top",
 		name = "crewpage_text",
 		align = "left",
-		text = managers.localization:to_upper_text("menu_crewpage"),
+		text = self:_crewpage_text(),
 		font_size = tweak_data.menu.pd2_large_font_size,
 		font = tweak_data.menu.pd2_large_font,
 		color = tweak_data.screen_colors.text
@@ -70,7 +70,7 @@ function ContractBoxGui:init(ws, fullscreen_ws)
 				alpha = 0.4,
 				align = "left",
 				layer = 1,
-				text = managers.localization:to_upper_text("menu_crewpage"),
+				text = self:_crewpage_text(),
 				font_size = tweak_data.menu.pd2_massive_font_size,
 				font = tweak_data.menu.pd2_massive_font,
 				color = tweak_data.screen_colors.button_stage_3
@@ -125,6 +125,10 @@ function ContractBoxGui:init(ws, fullscreen_ws)
 	local mutators_active = managers.mutators:are_mutators_enabled() and managers.mutators:allow_mutators_in_level(job_chain and job_chain[1] and job_chain[1].level_id)
 
 	self._lobby_mutators_text:set_visible(mutators_active)
+end
+
+function ContractBoxGui:_crewpage_text()
+	return managers.localization:to_upper_text("menu_crewpage")
 end
 
 function ContractBoxGui:create_contract_box()

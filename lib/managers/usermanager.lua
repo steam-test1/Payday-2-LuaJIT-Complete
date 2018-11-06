@@ -136,6 +136,8 @@ function GenericUserManager:setup_setting_map()
 	self:setup_setting(86, "crimenet_filter_modded", true)
 	self:setup_setting(87, "show_vr_descs", false)
 	self:setup_setting(88, "crimenet_filter_one_down", false)
+	self:setup_setting(89, "crimenet_filter_weekly_skirmish", false)
+	self:setup_setting(90, "crimenet_filter_skirmish_wave", 99)
 	self:setup_setting(300, "adaptive_quality", true)
 	self:setup_setting(301, "window_zoom", true)
 end

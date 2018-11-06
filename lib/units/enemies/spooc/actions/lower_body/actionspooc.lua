@@ -1017,7 +1017,7 @@ function ActionSpooc:anim_act_clbk(anim_act)
 			end
 
 			managers.mutators:_run_func("OnPlayerCloakerKicked", self._unit)
-			managers.crime_spree:run_func("OnPlayerCloakerKicked", self._unit)
+			managers.modifiers:run_func("OnPlayerCloakerKicked", self._unit)
 
 			return
 		end
@@ -1079,7 +1079,7 @@ function ActionSpooc:anim_act_clbk(anim_act)
 		end
 
 		managers.mutators:_run_func("OnPlayerCloakerKicked", self._unit)
-		managers.crime_spree:run_func("OnPlayerCloakerKicked", self._unit)
+		managers.modifiers:run_func("OnPlayerCloakerKicked", self._unit)
 
 		if spooc_res == "countered" then
 			if not Network:is_server() then

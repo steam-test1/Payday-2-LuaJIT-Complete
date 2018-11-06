@@ -604,6 +604,7 @@ function GameSetup:update(t, dt)
 	managers.motion_path:update(t, dt)
 	managers.wait:update(t, dt)
 	managers.achievment:update(t, dt)
+	managers.skirmish:update(t, dt)
 
 	if script_data.level_script and script_data.level_script.update then
 		script_data.level_script:update(t, dt)
@@ -663,6 +664,7 @@ function GameSetup:save(data)
 	managers.world_instance:sync_save(data)
 	managers.motion_path:save(data)
 	managers.crime_spree:sync_save(data)
+	managers.skirmish:sync_save(data)
 end
 
 function GameSetup:load(data)
@@ -688,6 +690,7 @@ function GameSetup:load(data)
 	managers.world_instance:sync_load(data)
 	managers.motion_path:load(data)
 	managers.crime_spree:sync_load(data)
+	managers.skirmish:sync_load(data)
 end
 
 function GameSetup:_update_debug_input()

@@ -22,13 +22,14 @@ function BoxGuiObject:create_sides(panel, config)
 		self._panel = nil
 	end
 
+	config = config or {}
 	self._panel = panel:panel({
-		layer = 1,
 		halign = "scale",
 		valign = "scale",
 		name = config.name,
 		w = config.w,
-		h = config.h
+		h = config.h,
+		layer = config.layer or 1
 	})
 	self._color = config.color or self._color or Color.white
 	local left_side = config.sides and config.sides[1] or config.left or 0

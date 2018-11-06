@@ -1009,8 +1009,10 @@ function CopLogicBase.is_obstructed(data, objective, strictness, attention)
 
 	if objective.interrupt_health then
 		local health_ratio = data.unit:character_damage():health_ratio()
+		local too_much_damage = health_ratio < 1 and health_ratio * (1 - strictness) < objective.interrupt_health
+		local is_dead = data.unit:character_damage():dead()
 
-		if health_ratio < 1 and health_ratio * (1 - strictness) < objective.interrupt_health then
+		if too_much_damage or is_dead then
 			return true, true
 		end
 	end

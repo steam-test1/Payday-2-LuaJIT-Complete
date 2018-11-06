@@ -575,8 +575,10 @@ function SpecialObjectiveUnitElement:_build_panel(panel, panel_sizer)
 	}, "Used to specify the distance to use when searching for an AI")
 
 	local options = table.list_add({"none"}, clone(CopActionAct._act_redirects.SO))
+	options = table.list_add(options, self._AI_SO_types)
 
-	self:_build_value_combobox(panel, panel_sizer, "so_action", table.list_add(options, self._AI_SO_types), "Select a action that the unit should start with.")
+	table.sort(options)
+	self:_build_value_combobox(panel, panel_sizer, "so_action", options, "Select a action that the unit should start with.")
 
 	local ctrlr, params = self:_build_value_combobox(panel, panel_sizer, "patrol_path", table.list_add({"none"}, managers.ai_data:patrol_path_names()), "Select a patrol path to use from the spawn point. Different objectives and behaviors will interpet the path different.")
 	self._patrol_path_params = params

@@ -1411,8 +1411,7 @@ function LevelsTweakData:init()
 	self.chill_combat.team_ai_off = false
 	self.chill_combat.group_ai_state = "safehouse"
 	self.chill_combat.ai_group_type = america
-	self.chill_combat.is_safehouse = false
-	self.chill_combat.is_safehouse_combat = true
+	self.chill_combat.wave_count = 3
 	self.chill_combat.disable_mutators = true
 	self.friend = {
 		name_id = "heist_friend_hl",
@@ -1693,6 +1692,78 @@ function LevelsTweakData:init()
 		narrator = "locke",
 		player_sequence = "spawn_prop_tux"
 	}
+	self.skm_mus = {
+		name_id = "heist_skm_mus_h1",
+		briefing_id = "heist_skm_mus_briefing",
+		package = "packages/dlcs/skm/job_skm",
+		briefing_dialog = "Play_loc_skm_brf",
+		world_name = "narratives/skm/skm_mus",
+		intro_event = "Play_loc_skm_intro",
+		outro_event = {
+			"Play_loc_skm_end_win",
+			"Play_loc_skm_end_fail"
+		},
+		cube = "cube_apply_heist_bank",
+		music_ext = "heist",
+		ai_group_type = america,
+		group_ai_state = "skirmish",
+		wave_count = 9,
+		narrator = "locke"
+	}
+	self.skm_red2 = {
+		name_id = "heist_skm_red2_h1",
+		briefing_id = "heist_skm_red2_briefing",
+		briefing_dialog = "Play_loc_skm_brf",
+		world_name = "narratives/skm/skm_red2",
+		intro_event = "Play_loc_skm_intro",
+		outro_event = {
+			"Play_loc_skm_end_win",
+			"Play_loc_skm_end_fail"
+		},
+		music = "heist",
+		package = "packages/dlcs/skm/job_skm",
+		cube = "cube_apply_heist_bank",
+		ai_group_type = america,
+		group_ai_state = "skirmish",
+		wave_count = 9,
+		narrator = "locke"
+	}
+	self.skm_run = {
+		name_id = "heist_skm_run_h1",
+		briefing_id = "heist_skm_run_briefing",
+		briefing_dialog = "Play_loc_skm_brf",
+		world_name = "narratives/skm/skm_run",
+		intro_event = "Play_loc_skm_intro",
+		outro_event = {
+			"Play_loc_skm_end_win",
+			"Play_loc_skm_end_fail"
+		},
+		music = "heist",
+		package = "packages/dlcs/skm/job_skm",
+		cube = "cube_apply_heist_bank",
+		ai_group_type = america,
+		group_ai_state = "skirmish",
+		wave_count = 9,
+		narrator = "locke"
+	}
+	self.skm_watchdogs_stage2 = {
+		name_id = "heist_skm_watchdogs_stage2_h1",
+		briefing_id = "heist_skm_watchdogs_stage2_briefing",
+		briefing_dialog = "Play_loc_skm_brf",
+		world_name = "narratives/skm/skm_watchdogs_stage2",
+		intro_event = "Play_loc_skm_intro",
+		outro_event = {
+			"Play_loc_skm_end_win",
+			"Play_loc_skm_end_fail"
+		},
+		music = "heist",
+		package = "packages/dlcs/skm/job_skm",
+		cube = "cube_apply_heist_bank",
+		ai_group_type = america,
+		group_ai_state = "skirmish",
+		wave_count = 9,
+		narrator = "locke"
+	}
 	self._level_index = {
 		"welcome_to_the_jungle_1",
 		"welcome_to_the_jungle_1_night",
@@ -1796,7 +1867,11 @@ function LevelsTweakData:init()
 		"brb",
 		"tag",
 		"des",
-		"sah"
+		"sah",
+		"skm_mus",
+		"skm_red2",
+		"skm_run",
+		"skm_watchdogs_stage2"
 	}
 
 	if SystemInfo:distribution() == Idstring("STEAM") then

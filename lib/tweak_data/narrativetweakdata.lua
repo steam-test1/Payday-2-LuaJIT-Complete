@@ -233,6 +233,14 @@ function NarrativeTweakData:init(tweak_data)
 		package = "packages/contact_continental",
 		assets_gui = Idstring("guis/mission_briefing/preload_contact_continental")
 	}
+	self.contacts.skirmish = {
+		name_id = "heist_contact_skirmish",
+		description_id = "heist_contact_bain_description",
+		package = "packages/contact_bain",
+		assets_gui = Idstring("guis/mission_briefing/preload_contact_bain"),
+		hide_stream = true,
+		hidden = true
+	}
 	self.jobs = {}
 	self.stages = {
 		firestarter_1 = {
@@ -5352,6 +5360,182 @@ function NarrativeTweakData:init(tweak_data)
 		8,
 		15
 	}
+	local skirmish_payout = {
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0
+	}
+	local skirmish_exp = {
+		max = 135900,
+		min = 8000
+	}
+	self.stages.skm_mus = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "skm_mus"
+	}
+	self.jobs.skm_mus = {
+		name_id = "heist_skm_mus",
+		briefing_id = "heist_skm_mus_crimenet",
+		contact = "skirmish",
+		region = "street",
+		jc = 50,
+		chain = {self.stages.skm_mus},
+		briefing_event = "dentist_hd1_cbf_01",
+		debrief_event = {
+			"dentist_hd1_debrief_01",
+			"dentist_hd1_debrief_02"
+		},
+		crimenet_callouts = {"Play_loc_tag_cnc_01"},
+		crimenet_videos = {"contact_locke1"},
+		payout = skirmish_payout,
+		contract_cost = {
+			16000,
+			32000,
+			80000,
+			160000,
+			200000,
+			200000,
+			200000
+		},
+		contract_visuals = {}
+	}
+	self.jobs.skm_mus.contract_visuals.min_mission_xp = skirmish_exp.min
+	self.jobs.skm_mus.contract_visuals.max_mission_xp = skirmish_exp.max
+	self.jobs.skm_mus.contract_visuals.preview_image = {
+		id = "tag",
+		folder = "tag"
+	}
+	self.jobs.skm_mus.contract_visuals.weekly_skirmish_image = "guis/textures/pd2/skirmish/menu_landing_mus"
+	self.jobs.skm_mus.date_added = {
+		2018,
+		4,
+		23
+	}
+	self.stages.skm_red2 = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "skm_red2"
+	}
+	self.jobs.skm_red2 = {
+		name_id = "heist_skm_red2",
+		briefing_id = "heist_skm_red2_crimenet",
+		contact = "skirmish",
+		region = "street",
+		jc = 60,
+		chain = {self.stages.skm_red2},
+		briefing_event = "pln_fwb_cbf_01",
+		debrief_event = "pln_fwb_34",
+		crimenet_callouts = {"Play_loc_tag_cnc_01"},
+		crimenet_videos = {"contact_locke1"},
+		payout = skirmish_payout,
+		contract_cost = {
+			16000,
+			32000,
+			80000,
+			160000,
+			200000,
+			200000,
+			200000
+		},
+		contract_visuals = {}
+	}
+	self.jobs.skm_red2.contract_visuals.min_mission_xp = skirmish_exp.min
+	self.jobs.skm_red2.contract_visuals.max_mission_xp = skirmish_exp.max
+	self.jobs.skm_red2.contract_visuals.preview_image = {
+		id = "tag",
+		folder = "tag"
+	}
+	self.jobs.skm_red2.contract_visuals.weekly_skirmish_image = "guis/textures/pd2/skirmish/menu_landing_red2"
+	self.jobs.skm_red2.date_added = {
+		2018,
+		4,
+		23
+	}
+	self.stages.skm_run = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "skm_run"
+	}
+	self.jobs.skm_run = {
+		name_id = "heist_skm_run",
+		briefing_id = "heist_skm_run_crimenet",
+		contact = "skirmish",
+		region = "street",
+		jc = 60,
+		chain = {self.stages.skm_run},
+		briefing_event = "pln_fwb_cbf_01",
+		debrief_event = "pln_fwb_34",
+		crimenet_callouts = {"Play_loc_tag_cnc_01"},
+		crimenet_videos = {"contact_locke1"},
+		payout = skirmish_payout,
+		contract_cost = {
+			16000,
+			32000,
+			80000,
+			160000,
+			200000,
+			200000,
+			200000
+		},
+		contract_visuals = {}
+	}
+	self.jobs.skm_run.contract_visuals.min_mission_xp = skirmish_exp.min
+	self.jobs.skm_run.contract_visuals.max_mission_xp = skirmish_exp.max
+	self.jobs.skm_run.contract_visuals.preview_image = {
+		id = "tag",
+		folder = "tag"
+	}
+	self.jobs.skm_run.contract_visuals.weekly_skirmish_image = "guis/textures/pd2/skirmish/menu_landing_run"
+	self.jobs.skm_run.date_added = {
+		2018,
+		4,
+		23
+	}
+	self.stages.skm_watchdogs_stage2 = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "skm_watchdogs_stage2"
+	}
+	self.jobs.skm_watchdogs_stage2 = {
+		name_id = "heist_skm_watchdogs_stage2",
+		briefing_id = "heist_skm_watchdogs_stage2_crimenet",
+		contact = "skirmish",
+		region = "street",
+		jc = 60,
+		chain = {self.stages.skm_watchdogs_stage2},
+		briefing_event = "pln_fwb_cbf_01",
+		debrief_event = "pln_fwb_34",
+		crimenet_callouts = {"Play_loc_tag_cnc_01"},
+		crimenet_videos = {"contact_locke1"},
+		payout = skirmish_payout,
+		contract_cost = {
+			16000,
+			32000,
+			80000,
+			160000,
+			200000,
+			200000,
+			200000
+		},
+		contract_visuals = {}
+	}
+	self.jobs.skm_watchdogs_stage2.contract_visuals.min_mission_xp = skirmish_exp.min
+	self.jobs.skm_watchdogs_stage2.contract_visuals.max_mission_xp = skirmish_exp.max
+	self.jobs.skm_watchdogs_stage2.contract_visuals.preview_image = {
+		id = "tag",
+		folder = "tag"
+	}
+	self.jobs.skm_watchdogs_stage2.contract_visuals.weekly_skirmish_image = "guis/textures/pd2/skirmish/menu_landing_watchdogs"
+	self.jobs.skm_watchdogs_stage2.date_added = {
+		2018,
+		4,
+		23
+	}
 	self._jobs_index = {
 		"jewelry_store",
 		"four_stores",
@@ -5428,7 +5612,11 @@ function NarrativeTweakData:init(tweak_data)
 		"brb",
 		"tag",
 		"des",
-		"sah"
+		"sah",
+		"skm_mus",
+		"skm_red2",
+		"skm_run",
+		"skm_watchdogs_stage2"
 	}
 	self.forced_jobs = {
 		firestarter = true,

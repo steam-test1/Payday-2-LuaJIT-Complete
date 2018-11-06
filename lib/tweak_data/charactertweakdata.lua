@@ -16338,6 +16338,15 @@ function CharacterTweakData:character_map()
 				"civ_male_shacklethorn_waiter_02",
 				"civ_male_maintenance_01"
 			}
+		},
+		skm = {
+			path = "units/pd2_skirmish/characters/",
+			list = {
+				"civ_male_bank_manager_hostage",
+				"civ_female_museum_curator_hostage",
+				"civ_female_drug_lord_hostage",
+				"civ_male_prisoner_hostage"
+			}
 		}
 	}
 

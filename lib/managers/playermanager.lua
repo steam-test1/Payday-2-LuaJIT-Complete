@@ -281,7 +281,7 @@ function PlayerManager:damage_absorption()
 	end
 
 	total = total + self:get_best_cocaine_damage_absorption()
-	total = managers.crime_spree:modify_value("PlayerManager:GetDamageAbsorption", total)
+	total = managers.modifiers:modify_value("PlayerManager:GetDamageAbsorption", total)
 
 	return total
 end
@@ -695,7 +695,7 @@ function PlayerManager:_internal_load()
 		amount = self:get_grenade_amount(peer_id) or amount
 	end
 
-	amount = managers.crime_spree:modify_value("PlayerManager:GetThrowablesMaxAmount", amount)
+	amount = managers.modifiers:modify_value("PlayerManager:GetThrowablesMaxAmount", amount)
 
 	self:_set_grenade({
 		grenade = grenade,
@@ -1171,7 +1171,7 @@ function PlayerManager:on_killshot(killed_unit, variant, headshot, weapon_id)
 		managers.custom_safehouse:award("daily_honorable")
 	end
 
-	managers.crime_spree:run_func("OnPlayerManagerKillshot", player_unit, killed_unit:base()._tweak_table, variant)
+	managers.modifiers:run_func("OnPlayerManagerKillshot", player_unit, killed_unit:base()._tweak_table, variant)
 
 	local equipped_unit = self:get_current_state()._equipped_unit
 	self._num_kills = self._num_kills + 1
@@ -1237,7 +1237,7 @@ function PlayerManager:on_killshot(killed_unit, variant, headshot, weapon_id)
 	if dist_sq <= close_combat_sq then
 		regen_armor_bonus = regen_armor_bonus + self:upgrade_value("player", "killshot_close_regen_armor_bonus", 0)
 		local panic_chance = self:upgrade_value("player", "killshot_close_panic_chance", 0)
-		panic_chance = managers.crime_spree:modify_value("PlayerManager:GetKillshotPanicChance", panic_chance)
+		panic_chance = managers.modifiers:modify_value("PlayerManager:GetKillshotPanicChance", panic_chance)
 
 		if panic_chance > 0 or panic_chance == -1 then
 			local slotmask = managers.slot:get_mask("enemies")
@@ -2358,7 +2358,7 @@ function PlayerManager:stamina_multiplier()
 	multiplier = (multiplier + self:team_upgrade_value("stamina", "multiplier", 1)) - 1
 	multiplier = (multiplier + self:team_upgrade_value("stamina", "passive_multiplier", 1)) - 1
 	multiplier = (multiplier + self:get_hostage_bonus_multiplier("stamina")) - 1
-	multiplier = managers.crime_spree:modify_value("PlayerManager:GetStaminaMultiplier", multiplier)
+	multiplier = managers.modifiers:modify_value("PlayerManager:GetStaminaMultiplier", multiplier)
 
 	return multiplier
 end
@@ -3560,7 +3560,7 @@ function PlayerManager:_add_equipment(params)
 		end
 
 		local amt = (quantity[i] or 0) + self:equiptment_upgrade_value(equipment_name, "quantity")
-		amt = managers.crime_spree:modify_value("PlayerManager:GetEquipmentMaxAmount", amt, params)
+		amt = managers.modifiers:modify_value("PlayerManager:GetEquipmentMaxAmount", amt, params)
 
 		table.insert(amount, amt)
 		table.insert(amount_digest, Application:digest_value(0, true))
@@ -3922,7 +3922,7 @@ function PlayerManager:verify_equipment(peer_id, equipment_id)
 		local id = "asset_" .. tostring(equipment_id)
 		self._asset_equipment = self._asset_equipment or {}
 		local max_amount = tweak_data.equipments.max_amount[id]
-		max_amount = managers.crime_spree:modify_value("PlayerManager:GetEquipmentMaxAmount", max_amount)
+		max_amount = managers.modifiers:modify_value("PlayerManager:GetEquipmentMaxAmount", max_amount)
 
 		if not max_amount or self._asset_equipment[id] and max_amount < self._asset_equipment[id] + 1 then
 			local peer = managers.network:session():server_peer()
@@ -4433,7 +4433,7 @@ end
 function PlayerManager:get_max_grenades(grenade_id)
 	grenade_id = grenade_id or managers.blackmarket:equipped_grenade()
 	local max_amount = tweak_data:get_raw_value("blackmarket", "projectiles", grenade_id, "max_amount") or 0
-	max_amount = managers.crime_spree:modify_value("PlayerManager:GetThrowablesMaxAmount", max_amount)
+	max_amount = managers.modifiers:modify_value("PlayerManager:GetThrowablesMaxAmount", max_amount)
 
 	return max_amount
 end
@@ -4812,7 +4812,7 @@ end
 
 function PlayerManager:total_body_bags()
 	local bags = self:upgrade_value("player", "corpse_dispose_amount", 0)
-	bags = managers.crime_spree:modify_value("PlayerManager:GetTotalBodyBags", bags)
+	bags = managers.modifiers:modify_value("PlayerManager:GetTotalBodyBags", bags)
 
 	return bags
 end

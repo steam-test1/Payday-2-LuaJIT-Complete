@@ -66,30 +66,16 @@ function ElementSpawnEnemyDummy:produce(params)
 		return
 	end
 
+	local unit = nil
+
 	if params and params.name then
-		local unit = safe_spawn_unit(params.name, self:get_orientation())
-
-		unit:base():add_destroy_listener(self._unit_destroy_clbk_key, callback(self, self, "clbk_unit_destroyed"))
-
-		unit:unit_data().mission_element = self
+		unit = safe_spawn_unit(params.name, self:get_orientation())
 		local spawn_ai = self:_create_spawn_AI_parametric(params.stance, params.objective, self._values)
 
 		unit:brain():set_spawn_ai(spawn_ai)
-		table.insert(self._units, unit)
-		self:event("spawn", unit)
-
-		if self._values.force_pickup and self._values.force_pickup ~= "none" then
-			local pickup_name = self._values.force_pickup ~= "no_pickup" and self._values.force_pickup or nil
-
-			unit:character_damage():set_pickup(pickup_name)
-		end
 	else
 		local enemy_name = self:value("enemy") or self._enemy_name
-		local unit = safe_spawn_unit(enemy_name, self:get_orientation())
-
-		unit:base():add_destroy_listener(self._unit_destroy_clbk_key, callback(self, self, "clbk_unit_destroyed"))
-
-		unit:unit_data().mission_element = self
+		unit = safe_spawn_unit(enemy_name, self:get_orientation())
 		local objective = nil
 		local action = self._create_action_data(CopActionAct._act_redirects.enemy_spawn[self._values.spawn_action])
 		local stance = managers.groupai:state():enemy_weapons_hot() and "cbt" or "ntl"
@@ -120,18 +106,22 @@ function ElementSpawnEnemyDummy:produce(params)
 		if self._values.voice then
 			unit:sound():set_voice_prefix(self._values.voice)
 		end
-
-		table.insert(self._units, unit)
-		self:event("spawn", unit)
-
-		if self._values.force_pickup and self._values.force_pickup ~= "none" then
-			local pickup_name = self._values.force_pickup ~= "no_pickup" and self._values.force_pickup or nil
-
-			unit:character_damage():set_pickup(pickup_name)
-		end
 	end
 
-	return self._units[#self._units]
+	unit:base():add_destroy_listener(self._unit_destroy_clbk_key, callback(self, self, "clbk_unit_destroyed"))
+
+	unit:unit_data().mission_element = self
+
+	table.insert(self._units, unit)
+	self:event("spawn", unit)
+
+	if self._values.force_pickup and self._values.force_pickup ~= "none" then
+		local pickup_name = self._values.force_pickup ~= "no_pickup" and self._values.force_pickup or nil
+
+		unit:character_damage():set_pickup(pickup_name)
+	end
+
+	return unit
 end
 
 function ElementSpawnEnemyDummy:clbk_unit_destroyed(unit)

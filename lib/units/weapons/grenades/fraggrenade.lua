@@ -29,7 +29,7 @@ end
 
 function FragGrenade:clbk_impact(tag, unit, body, other_unit, other_body, position, normal, collision_velocity, velocity, other_velocity, new_velocity, direction, damage, ...)
 	local reflect = other_unit and other_unit:vehicle() and other_unit:vehicle():is_active()
-	reflect = managers.crime_spree:modify_value("FragGrenade:ShouldReflect", reflect, other_unit, self._unit)
+	reflect = managers.modifiers:modify_value("FragGrenade:ShouldReflect", reflect, other_unit, self._unit)
 
 	if reflect then
 		return
@@ -40,7 +40,7 @@ end
 
 function FragGrenade:_on_collision(col_ray)
 	local reflect = col_ray and col_ray.unit:vehicle() and col_ray.unit:vehicle():is_active()
-	reflect = managers.crime_spree:modify_value("FragGrenade:ShouldReflect", reflect, col_ray and col_ray.unit, self._unit)
+	reflect = managers.modifiers:modify_value("FragGrenade:ShouldReflect", reflect, col_ray and col_ray.unit, self._unit)
 
 	if reflect then
 		return

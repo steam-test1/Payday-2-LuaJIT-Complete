@@ -10954,6 +10954,15 @@ function HudIconsTweakData:init()
 	self.sidebar_crimespree = self:create_next_icon(sidebar_atlas)
 	self.sidebar_filters = self:create_next_icon(sidebar_atlas)
 	self.sidebar_question = self:create_next_icon(sidebar_atlas)
+	self.sidebar_skirmish = {
+		texture = "guis/dlcs/skm/textures/pd2/crimenet/crimenet_sidebar_icon_skm",
+		texture_rect = {
+			0,
+			0,
+			64,
+			64
+		}
+	}
 	self.sidebar_side_jobs = {
 		texture = "guis/dlcs/sju/textures/pd2/crimenet_sidebar_sidejobs",
 		texture_rect = {

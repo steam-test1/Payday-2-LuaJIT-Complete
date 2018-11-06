@@ -1,3 +1,6 @@
+require("lib/utils/gui/GUIObjectWrapper")
+require("lib/utils/gui/FineText")
+require("lib/utils/gui/BlurSheet")
 require("lib/managers/menu/MenuGuiComponent")
 require("lib/managers/menu/MenuGuiComponentGeneric")
 require("lib/managers/menu/SkillTreeGui")
@@ -38,8 +41,6 @@ require("lib/managers/menu/CrimeSpreeRewardsMenuComponent")
 require("lib/managers/menu/CrimeSpreeModifierDetailsPage")
 require("lib/managers/menu/CrimeSpreeRewardsDetailsPage")
 require("lib/managers/menu/CrimeSpreeModifiersMenuComponent")
-require("lib/utils/gui/GUIObjectWrapper")
-require("lib/utils/gui/FineText")
 require("lib/managers/menu/CrimeSpreeForcedModifiersMenuComponent")
 require("lib/managers/menu/CrimeSpreeGageAssetsItem")
 require("lib/managers/menu/CrimeSpreeMissionEndOptions")
@@ -56,6 +57,12 @@ require("lib/managers/menu/PromotionalWeaponPreviewGui")
 require("lib/managers/menu/RaidMenuGui")
 require("lib/managers/menu/ContractBrokerGui")
 require("lib/managers/menu/SideJobsGui")
+require("lib/managers/menu/SkirmishModifierList")
+require("lib/managers/menu/SkirmishLandingMenuComponent")
+require("lib/managers/menu/SkirmishContractMenuComponent")
+require("lib/managers/menu/SkirmishWeeklyContractMenuComponent")
+require("lib/managers/menu/SkirmishContractBoxGui")
+require("lib/managers/menu/IngameContractGuiSkirmish")
 
 MenuComponentManager = MenuComponentManager or class()
 
@@ -302,7 +309,15 @@ function MenuComponentManager:init()
 		side_jobs = {
 			create = callback(self, self, "create_side_jobs_gui"),
 			close = callback(self, self, "close_side_jobs_gui")
-		}
+		},
+		skirmish_landing = self:create_component_callback("SkirmishLandingMenuComponent", "skirmish_landing"),
+		skirmish_contract = self:create_component_callback("SkirmishContractMenuComponent", "skirmish_contract"),
+		skirmish_weekly_contract = self:create_component_callback("SkirmishWeeklyContractMenuComponent", "skirmish_weekly_contract"),
+		skirmish_contract_join = {
+			create = callback(self, self, "create_skirmish_contract_join_gui"),
+			close = callback(self, self, "close_skirmish_contract_join_gui")
+		},
+		weekly_skirmish_rewards = self:create_component_callback("SkirmishWeeklyRewardsMenuComponent", "weekly_skirmish_rewards")
 	}
 	self._alive_components = {}
 
@@ -2552,8 +2567,10 @@ end
 function MenuComponentManager:_contract_gui_class()
 	if managers.crime_spree:is_active() then
 		return CrimeSpreeContractBoxGui
-	else
-		return ContractBoxGui
+	end
+
+	if managers.skirmish:is_skirmish() then
+		return SkirmishContractBoxGui
 	end
 
 	return ContractBoxGui
@@ -3358,14 +3375,19 @@ end
 function MenuComponentManager:create_ingame_contract_gui()
 	self:close_ingame_contract_gui()
 
-	if managers.crime_spree:is_active() then
-		self._ingame_contract_gui = IngameContractGuiCrimeSpree:new(self._ws)
+	local gui_class = IngameContractGui
 
-		self:register_component("ingame_contract", self._ingame_contract_gui)
-	else
-		self._ingame_contract_gui = IngameContractGui:new(self._ws)
+	if managers.crime_spree:is_active() then
+		gui_class = IngameContractGuiCrimeSpree
 	end
 
+	if managers.skirmish:is_skirmish() then
+		gui_class = IngameContractGuiSkirmish
+	end
+
+	self._ingame_contract_gui = gui_class:new(self._ws)
+
+	self:register_component("ingame_contract", self._ingame_contract_gui)
 	self._ingame_contract_gui:set_layer(tweak_data.gui.MENU_COMPONENT_LAYER)
 end
 
@@ -5199,5 +5221,38 @@ end
 
 function MenuComponentManager:side_jobs_gui()
 	return self._side_jobs_gui
+end
+
+function MenuComponentManager:create_skirmish_contract_join_gui(node)
+	self:close_skirmish_contract_join_gui()
+
+	local job_data = node:parameters().menu_component_data
+	local component_class = nil
+
+	if job_data.skirmish == SkirmishManager.LOBBY_NORMAL then
+		component_class = SkirmishContractMenuComponent
+	elseif job_data.skirmish == SkirmishManager.LOBBY_WEEKLY then
+		component_class = SkirmishWeeklyContractMenuComponent
+	end
+
+	self._skirmish_contract_join_gui = component_class:new(self._ws, self._fullscreen_ws, node)
+
+	self:register_component("skirmish_contract_join", self._skirmish_contract_join_gui)
+	self:disable_crimenet()
+end
+
+function MenuComponentManager:close_skirmish_contract_join_gui()
+	if self._skirmish_contract_join_gui then
+		self._skirmish_contract_join_gui:close()
+
+		self._skirmish_contract_join_gui = nil
+
+		self:unregister_component("skirmish_contract_join")
+		self:enable_crimenet()
+	end
+end
+
+function MenuComponentManager:skirmish_contract_join_gui()
+	return self._skirmish_contract_join_gui
 end
 

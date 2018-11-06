@@ -308,6 +308,12 @@ function DescriptionItem:init(panel, text, i, saved_descriptions)
 	local level_data = managers.job:current_level_data()
 	local name_id = stage_data.name_id or level_data.name_id
 	local briefing_id = managers.job:current_briefing_id()
+
+	if managers.skirmish:is_skirmish() and not managers.skirmish:is_weekly_skirmish() then
+		name_id = "heist_skm_random_h1"
+		briefing_id = "heist_skm_random_briefing"
+	end
+
 	local title_text = self._panel:text({
 		name = "title_text",
 		y = 10,
@@ -346,7 +352,7 @@ function DescriptionItem:init(panel, text, i, saved_descriptions)
 
 	self._scroll_panel:grow(-self._scroll_panel:x() - 10, -self._scroll_panel:y())
 
-	local desc_string = managers.localization:text(briefing_id)
+	local desc_string = briefing_id and managers.localization:text(briefing_id) or ""
 	local is_level_ghostable = managers.job:is_level_ghostable(managers.job:current_level_id()) and managers.groupai and managers.groupai:state():whisper_mode()
 
 	if is_level_ghostable and Network:is_server() then
@@ -374,6 +380,12 @@ function DescriptionItem:init(panel, text, i, saved_descriptions)
 	end
 
 	self:_chk_add_scrolling()
+
+	if managers.skirmish:is_weekly_skirmish() then
+		managers.network:add_event_listener({}, "on_set_dropin", function ()
+			self:add_description_text("\n##" .. managers.localization:text("menu_weekly_skirmish_dropin_warning") .. "##")
+		end)
+	end
 end
 
 function DescriptionItem:reduce_to_small_font(iteration)
@@ -474,6 +486,10 @@ function DescriptionItem:on_whisper_mode_changed()
 			desc_string = managers.job:is_level_ghostable_required(managers.job:current_level_id()) and desc_string .. "\n\n" .. managers.localization:text("menu_ghostable_stage_required") or desc_string .. "\n\n" .. managers.localization:text("menu_ghostable_stage")
 		end
 
+		if managers.skirmish:is_weekly_skirmish() and not Global.statistics_manager.playing_from_start then
+			desc_string = desc_string .. "\n\n##" .. managers.localization:text("menu_weekly_skirmish_dropin_warning" .. "##")
+		end
+
 		self:set_description_text(desc_string)
 	end
 end
@@ -483,12 +499,14 @@ function DescriptionItem:set_title_text(text)
 end
 
 function DescriptionItem:add_description_text(text)
-	self._scroll_panel:child("description_text"):set_text(self._scroll_panel:child("description_text"):text() .. "\n" .. text)
-	self:_chk_add_scrolling()
+	self:set_description_text(self._scroll_panel:child("description_text"):text() .. "\n" .. text)
 end
 
 function DescriptionItem:set_description_text(text)
-	self._scroll_panel:child("description_text"):set_text(text)
+	local desc_text = self._scroll_panel:child("description_text")
+
+	desc_text:set_text(text)
+	managers.menu_component:make_color_text(desc_text, tweak_data.screen_colors.important_1)
 	self:_chk_add_scrolling()
 end
 
@@ -3383,11 +3401,14 @@ function MissionBriefingGui:init(saferect_ws, fullrect_ws, node)
 	table.insert(self._items, self._description_item)
 
 	index = index + 1
-	self._assets_item = AssetsItem:new(self._panel, managers.preplanning:has_current_level_preplanning() and managers.localization:to_upper_text("menu_preplanning") or utf8.to_upper(managers.localization:text("menu_assets")), index, {}, nil, asset_data)
 
-	table.insert(self._items, self._assets_item)
+	if not managers.skirmish:is_skirmish() then
+		self._assets_item = AssetsItem:new(self._panel, managers.preplanning:has_current_level_preplanning() and managers.localization:to_upper_text("menu_preplanning") or utf8.to_upper(managers.localization:text("menu_assets")), index, {}, nil, asset_data)
 
-	index = index + 1
+		table.insert(self._items, self._assets_item)
+
+		index = index + 1
+	end
 
 	if managers.crime_spree:is_active() then
 		local gage_assets_data = {}
@@ -3647,6 +3668,10 @@ function MissionBriefingGui:unlock_asset(asset_id)
 end
 
 function MissionBriefingGui:create_asset_tab()
+	if managers.skirmish:is_skirmish() then
+		return
+	end
+
 	local asset_ids = managers.assets:get_all_asset_ids(true)
 	local assets_names = {}
 	self._fullscreen_asset_background_h = self._fullscreen_panel:gradient({

@@ -2909,6 +2909,358 @@ function BlackMarketTweakData:_init_textures(tweak_data)
 		texture = "units/pd2_dlc_pmp/masks/patterns/pattern_pizzaface_df",
 		value = 0
 	}
+	self.textures.predator_billy = {
+		name_id = "bm_txt_predator_billy",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_predator_billy_df",
+		value = 0
+	}
+	self.textures.predator_blain = {
+		name_id = "bm_txt_predator_blain",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_predator_blain_df",
+		value = 0
+	}
+	self.textures.predator_dillan = {
+		name_id = "bm_txt_predator_dillan",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_predator_dillan_df",
+		value = 0
+	}
+	self.textures.predator_dutch = {
+		name_id = "bm_txt_predator_dutch",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_predator_dutch_df",
+		value = 0
+	}
+	self.textures.predator_hawkins = {
+		name_id = "bm_txt_predator_hawkins",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_predator_hawkins_df",
+		value = 0
+	}
+	self.textures.predator_mac = {
+		name_id = "bm_txt_predator_mac",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_predator_mac_df",
+		value = 0
+	}
+	self.textures.predator_poncho = {
+		name_id = "bm_txt_predator_poncho",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_predator_poncho_df",
+		value = 0
+	}
+	self.textures.ransom_1mdollars = {
+		name_id = "bm_txt_ransom_1mdollars",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_ransom_1mdollars_df",
+		value = 0
+	}
+	self.textures.ransom_bangbang = {
+		name_id = "bm_txt_ransom_bangbang",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_ransom_bangbang_df",
+		value = 0
+	}
+	self.textures.ransom_cashking = {
+		name_id = "bm_txt_ransom_cashking",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_ransom_cashking_df",
+		value = 0
+	}
+	self.textures.ransom_diepig = {
+		name_id = "bm_txt_ransom_diepig",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_ransom_diepig_df",
+		value = 0
+	}
+	self.textures.ransom_gameover = {
+		name_id = "bm_txt_ransom_gameover",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_ransom_gameover_df",
+		value = 0
+	}
+	self.textures.ransom_pledge = {
+		name_id = "bm_txt_ransom_pledge",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_ransom_pledge_df",
+		value = 0
+	}
+	self.textures.shades_3d = {
+		name_id = "bm_txt_shades_3d",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_shades_3d_df",
+		value = 0
+	}
+	self.textures.shades_80s = {
+		name_id = "bm_txt_shades_80s",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_shades_80s_df",
+		value = 0
+	}
+	self.textures.shades_band = {
+		name_id = "bm_txt_shades_band",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_shades_band_df",
+		value = 0
+	}
+	self.textures.shades_punk = {
+		name_id = "bm_txt_shades_punk",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_shades_punk_df",
+		value = 0
+	}
+	self.textures.shades_shutter = {
+		name_id = "bm_txt_shades_shutter",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_shades_shutter_df",
+		value = 0
+	}
+	self.textures.shades_sport = {
+		name_id = "bm_txt_shades_sport",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_shades_sport_df",
+		value = 0
+	}
+	self.textures.wavewarning = {
+		name_id = "bm_txt_wavewarning",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_wavewarning_df",
+		value = 0
+	}
+	self.textures.barbedwire = {
+		name_id = "bm_txt_barbedwire",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_barbedwire_df",
+		value = 0
+	}
+	self.textures.bloodhand = {
+		name_id = "bm_txt_bloodhand",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_bloodhand_df",
+		value = 0
+	}
+	self.textures.catface = {
+		name_id = "bm_txt_catface",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_catface_df",
+		value = 0
+	}
+	self.textures.clutter = {
+		name_id = "bm_txt_clutter",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_clutter_df",
+		value = 0
+	}
+	self.textures.facecollage = {
+		name_id = "bm_txt_facecollage",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_facecollage_df",
+		value = 0
+	}
+	self.textures.facename = {
+		name_id = "bm_txt_facename",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_facename_df",
+		value = 0
+	}
+	self.textures.frankenstein = {
+		name_id = "bm_txt_frankenstein",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_frankenstein_df",
+		value = 0
+	}
+	self.textures.hostage = {
+		name_id = "bm_txt_hostage",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_hostage_df",
+		value = 0
+	}
+	self.textures.knife = {
+		name_id = "bm_txt_knife",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_knife_df",
+		value = 0
+	}
+	self.textures.lovehate = {
+		name_id = "bm_txt_lovehate",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_lovehate_df",
+		value = 0
+	}
+	self.textures.skullshape = {
+		name_id = "bm_txt_skullshape",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_skullshape_df",
+		value = 0
+	}
+	self.textures.splat = {
+		name_id = "bm_txt_splat",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		texture = "units/pd2_dlc_skm/masks/patterns/pattern_splat_df",
+		value = 0
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.textures) do

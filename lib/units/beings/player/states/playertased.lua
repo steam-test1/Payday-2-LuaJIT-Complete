@@ -18,7 +18,7 @@ function PlayerTased:enter(state_data, enter_data)
 	else
 		self._fatal_delayed_clbk = "PlayerTased_fatal_delayed_clbk"
 		local tased_time = tweak_data.player.damage.TASED_TIME
-		tased_time = managers.crime_spree:modify_value("PlayerTased:TasedTime", tased_time)
+		tased_time = managers.modifiers:modify_value("PlayerTased:TasedTime", tased_time)
 
 		managers.enemy:add_delayed_clbk(self._fatal_delayed_clbk, callback(self, self, "clbk_exit_to_fatal"), TimerManager:game():time() + tased_time)
 	end

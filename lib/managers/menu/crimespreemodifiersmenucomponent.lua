@@ -404,7 +404,7 @@ function CrimeSpreeModifierButton:set_modifier(data)
 
 	self._modifier_image:set_image(texture)
 	self._modifier_image:set_texture_rect(unpack(rect))
-	self._desc:set_text(modifier_class:get_description(self._data.id))
+	self._desc:set_text(managers.crime_spree:make_modifier_description(self._data.id))
 end
 
 function CrimeSpreeModifierButton:refresh()

@@ -140,6 +140,10 @@ function MutatorsManager:can_mutators_be_active()
 		return false
 	end
 
+	if managers.skirmish:is_skirmish() then
+		return false
+	end
+
 	return true
 end
 

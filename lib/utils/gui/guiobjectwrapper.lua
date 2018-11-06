@@ -272,6 +272,22 @@ function GUIObjectWrapper:set_y(...)
 	self._gui_obj:set_y(...)
 end
 
+function GUIObjectWrapper:set_visible(...)
+	self._gui_obj:set_visible(...)
+end
+
+function GUIObjectWrapper:move(...)
+	self._gui_obj:move(...)
+end
+
+function GUIObjectWrapper:grow(...)
+	self._gui_obj:grow(...)
+end
+
+function GUIObjectWrapper:animate(...)
+	return self._gui_obj:animate(...)
+end
+
 function GUIObjectWrapper:layer(...)
 	return self._gui_obj:layer(...)
 end
@@ -294,5 +310,9 @@ end
 
 function GUIObjectWrapper:outside(...)
 	return self._gui_obj:outside(...)
+end
+
+function GUIObjectWrapper:alive(...)
+	return self._gui_obj:alive(...)
 end
 

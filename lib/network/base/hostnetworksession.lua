@@ -172,6 +172,7 @@ function HostNetworkSession:set_game_started(state)
 
 	if state then
 		self:set_state("in_game")
+		managers.network.matchmake:set_server_state("in_game")
 	end
 end
 
@@ -730,7 +731,7 @@ function HostNetworkSession:on_load_complete(simulation)
 
 			return
 		else
-			managers.network.matchmake:set_server_state("in_game")
+			managers.network.matchmake:set_server_state("briefing")
 		end
 
 		self:chk_server_joinable_state()

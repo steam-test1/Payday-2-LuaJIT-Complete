@@ -694,6 +694,40 @@ function ProgressBar:init(parent, config, progress)
 		w = 0,
 		color = self._progress_color
 	})
+
+	if config.edges then
+		local h = self:h() * 1.6
+		local y = -(h - self:h()) / 2
+
+		if config.edges ~= "both" then
+			h = self:h() * 1.3
+		end
+
+		if config.edges == "down" then
+			y = 0
+		end
+
+		self._edges = {left = self:rect({
+			w = 3,
+			rotation = 360,
+			color = self._back_color,
+			h = h,
+			y = y
+		})}
+
+		self._edges.left:set_right(0)
+
+		self._edges.right = self:rect({
+			w = 3,
+			rotation = 360,
+			color = self._back_color,
+			h = h,
+			y = y
+		})
+
+		self._edges.right:set_x(self:w())
+	end
+
 	self._at = 0
 
 	if progress then
@@ -709,6 +743,11 @@ function ProgressBar:set_progress(v)
 	self._at = math.clamp(v, 0, self._max)
 
 	self._progress:set_w((self._back:w() * self._at) / self._max)
+
+	if self._edges then
+		self._edges.left:set_color(self._at > 0 and self._progress_color or self._back_color)
+		self._edges.right:set_color(self._max <= self._at and self._progress_color or self._back_color)
+	end
 
 	return self._at
 end

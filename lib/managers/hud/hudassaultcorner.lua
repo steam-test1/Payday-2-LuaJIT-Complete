@@ -33,6 +33,10 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 		self._vip_assault_color = Color(255, 255, 133, 225) / 255
 	end
 
+	if managers.skirmish:is_skirmish() then
+		self._assault_color = tweak_data.screen_colors.skirmish_color
+	end
+
 	self._assault_survived_color = Color(1, 0.12549019607843137, 0.9019607843137255, 0.12549019607843137)
 	self._current_assault_color = self._assault_color
 	local icon_assaultbox = assault_panel:bitmap({
@@ -135,73 +139,7 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 		hostages_panel:hide()
 	end
 
-	if self._hud_panel:child("wave_panel") then
-		self._hud_panel:remove(self._hud_panel:child("wave_panel"))
-	end
-
-	self._max_waves = tweak_data.safehouse.combat.waves[Global.game_settings.difficulty or "normal"]
-	self._wave_number = 0
-
-	if self:is_safehouse_raid() then
-		self._wave_panel_size = {
-			145,
-			38
-		}
-		local wave_w = 38
-		local wave_h = 38
-		local wave_panel = self._hud_panel:panel({
-			name = "wave_panel",
-			w = self._wave_panel_size[1],
-			h = self._wave_panel_size[2]
-		})
-
-		wave_panel:set_top(0)
-		wave_panel:set_right(hostages_panel:left() - 3)
-
-		local waves_icon = wave_panel:bitmap({
-			texture = "guis/textures/pd2/specialization/icons_atlas",
-			name = "hostages_icon",
-			layer = 1,
-			valign = "top",
-			y = 0,
-			x = 0,
-			texture_rect = {
-				192,
-				64,
-				64,
-				64
-			},
-			w = wave_w,
-			h = wave_h
-		})
-		self._wave_bg_box = HUDBGBox_create(wave_panel, {
-			w = 100,
-			x = 0,
-			y = 0,
-			h = wave_h
-		}, {blend_mode = "add"})
-
-		waves_icon:set_right(wave_panel:w())
-		waves_icon:set_center_y(self._wave_bg_box:h() * 0.5)
-		self._wave_bg_box:set_right(waves_icon:left())
-
-		local num_waves = self._wave_bg_box:text({
-			vertical = "center",
-			name = "num_waves",
-			layer = 1,
-			align = "center",
-			y = 0,
-			halign = "right",
-			x = 0,
-			valign = "center",
-			text = self:get_completed_waves_string(),
-			w = self._wave_bg_box:w(),
-			h = self._wave_bg_box:h(),
-			color = Color.white,
-			font = tweak_data.hud_corner.assault_font,
-			font_size = tweak_data.hud_corner.numhostages_size
-		})
-	end
+	self:setup_wave_display(0, hostages_panel:left() - 3)
 
 	if self._hud_panel:child("point_of_no_return_panel") then
 		self._hud_panel:remove(self._hud_panel:child("point_of_no_return_panel"))
@@ -377,8 +315,79 @@ function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
 	vip_icon:set_center(self._vip_bg_box:w() / 2, self._vip_bg_box:h() / 2)
 end
 
-function HUDAssaultCorner:is_safehouse_raid()
-	return managers.job:current_level_id() == "chill_combat"
+function HUDAssaultCorner:setup_wave_display(top, right)
+	if self._hud_panel:child("wave_panel") then
+		self._hud_panel:remove(self._hud_panel:child("wave_panel"))
+	end
+
+	self._max_waves = 0
+	self._wave_number = 0
+	self._max_waves = managers.job:current_level_wave_count()
+
+	if self:should_display_waves() then
+		self._wave_panel_size = {
+			145,
+			38
+		}
+		local wave_w = 38
+		local wave_h = 38
+		local wave_panel = self._hud_panel:panel({
+			name = "wave_panel",
+			w = self._wave_panel_size[1],
+			h = self._wave_panel_size[2]
+		})
+
+		wave_panel:set_top(top)
+		wave_panel:set_right(right)
+
+		local waves_icon = wave_panel:bitmap({
+			texture = "guis/textures/pd2/specialization/icons_atlas",
+			name = "waves_icon",
+			layer = 1,
+			valign = "top",
+			y = 0,
+			x = 0,
+			texture_rect = {
+				192,
+				64,
+				64,
+				64
+			},
+			w = wave_w,
+			h = wave_h
+		})
+		self._wave_bg_box = HUDBGBox_create(wave_panel, {
+			w = 100,
+			x = 0,
+			y = 0,
+			h = wave_h
+		}, {blend_mode = "add"})
+
+		waves_icon:set_right(wave_panel:w())
+		waves_icon:set_center_y(self._wave_bg_box:h() * 0.5)
+		self._wave_bg_box:set_right(waves_icon:left())
+
+		local num_waves = self._wave_bg_box:text({
+			vertical = "center",
+			name = "num_waves",
+			layer = 1,
+			align = "center",
+			y = 0,
+			halign = "right",
+			x = 0,
+			valign = "center",
+			text = self:get_completed_waves_string(),
+			w = self._wave_bg_box:w(),
+			h = self._wave_bg_box:h(),
+			color = Color.white,
+			font = tweak_data.hud_corner.assault_font,
+			font_size = tweak_data.hud_corner.numhostages_size
+		})
+	end
+end
+
+function HUDAssaultCorner:should_display_waves()
+	return self._max_waves < math.huge
 end
 
 function HUDAssaultCorner:_animate_text(text_panel, bg_box, color, color_function)
@@ -683,6 +692,7 @@ function HUDAssaultCorner:_start_assault(text_list)
 
 	self:_set_text_list(text_list)
 
+	local started_now = not self._assault
 	self._assault = true
 
 	if self._bg_box:child("text_panel") then
@@ -720,6 +730,10 @@ function HUDAssaultCorner:_start_assault(text_list)
 		self._wave_bg_box:stop()
 		self._wave_bg_box:animate(callback(self, self, "_animate_wave_started"), self)
 	end
+
+	if managers.skirmish:is_skirmish() and started_now then
+		self:_popup_wave_started()
+	end
 end
 
 function HUDAssaultCorner:assault_attention_color_function()
@@ -747,7 +761,7 @@ function HUDAssaultCorner:_end_assault()
 
 	icon_assaultbox:stop()
 
-	if self:is_safehouse_raid() then
+	if self:should_display_waves() then
 		self:_update_assault_hud_color(self._assault_survived_color)
 		self:_set_text_list(self:_get_survived_assault_strings())
 		box_text_panel:animate(callback(self, self, "_animate_text"), nil, nil, callback(self, self, "assault_attention_color_function"))
@@ -755,6 +769,10 @@ function HUDAssaultCorner:_end_assault()
 		icon_assaultbox:animate(callback(self, self, "_show_icon_assaultbox"))
 		self._wave_bg_box:stop()
 		self._wave_bg_box:animate(callback(self, self, "_animate_wave_completed"), self)
+
+		if managers.skirmish:is_skirmish() then
+			self:_popup_wave_finished()
+		end
 	else
 		self:_close_assault_box()
 	end
@@ -1186,6 +1204,85 @@ function HUDAssaultCorner:get_completed_waves_string()
 	}
 
 	return managers.localization:to_upper_text("hud_assault_waves", macro)
+end
+
+function HUDAssaultCorner:wave_popup_string_start()
+	local macro = {current = managers.network:session():is_host() and managers.groupai:state():get_assault_number() or self._wave_number}
+
+	return managers.localization:to_upper_text("hud_skirmish_wave_start", macro)
+end
+
+function HUDAssaultCorner:wave_popup_string_end()
+	local macro = {current = managers.network:session():is_host() and managers.groupai:state():get_assault_number() or self._wave_number}
+
+	return managers.localization:to_upper_text("hud_skirmish_wave_end", macro)
+end
+
+function HUDAssaultCorner:_popup_wave_started()
+	self:_popup_wave(self:wave_popup_string_start(), self._assault_color)
+end
+
+function HUDAssaultCorner:_popup_wave_finished()
+	self:_popup_wave(self:wave_popup_string_end(), self._assault_survived_color)
+end
+
+function HUDAssaultCorner:_popup_wave(text, color)
+	local popup_panel = self._hud_panel:panel({
+		w = 250,
+		name = "wave_popup",
+		h = tweak_data.hud_corner.assault_size + 10
+	})
+
+	popup_panel:set_center_x(self._hud_panel:w() / 2)
+	popup_panel:set_center_y(self._hud_panel:h() / 3.5)
+
+	local box = BoxGuiObject:new(popup_panel, {sides = {
+		1,
+		1,
+		1,
+		1
+	}})
+
+	box:set_color(color)
+	popup_panel:rect({
+		name = "bg",
+		color = color:with_alpha(0.3)
+	})
+	popup_panel:text({
+		name = "text",
+		vertical = "center",
+		align = "center",
+		text = text,
+		font = tweak_data.hud_corner.assault_font,
+		font_size = tweak_data.hud_corner.assault_size,
+		color = color
+	})
+
+	local function animate_popup(panel)
+		local cx = panel:center_x()
+
+		over(0.25, function (p)
+			if alive(panel) then
+				panel:set_w(p * 250)
+				panel:set_center_x(cx)
+				panel:child("text"):set_center_x(panel:w() / 2)
+			end
+		end)
+		wait(2.5)
+		over(0.25, function (p)
+			if alive(panel) then
+				panel:set_w((1 - p) * 250)
+				panel:set_center_x(cx)
+				panel:child("text"):set_center_x(panel:w() / 2)
+			end
+		end)
+
+		if alive(panel) then
+			panel:parent():remove(panel)
+		end
+	end
+
+	popup_panel:animate(animate_popup)
 end
 
 if _G.IS_VR then

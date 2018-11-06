@@ -1,4 +1,5 @@
 require("lib/managers/menu/MenuBackdropGUI")
+require("lib/managers/menu/SkirmishBriefingProgress")
 
 HUDMissionBriefing = HUDMissionBriefing or class()
 
@@ -315,6 +316,30 @@ function HUDMissionBriefing:init(hud, workspace)
 		one_down_text:set_righttop(pg_text:left() - 10, pg_text:top())
 	end
 
+	if managers.skirmish:is_skirmish() then
+		self._paygrade_panel:set_visible(false)
+		pg_text:set_visible(false)
+
+		local min, max = managers.skirmish:wave_range()
+		local wave_range_text = self._foreground_layer_one:text({
+			name = "wave_range",
+			vertical = "center",
+			h = 32,
+			align = "right",
+			text = managers.localization:to_upper_text("menu_skirmish_wave_range", {
+				min = min,
+				max = max
+			}),
+			y = padding_y,
+			font_size = content_font_size,
+			font = content_font,
+			color = tweak_data.screen_colors.skirmish_color
+		})
+
+		managers.hud:make_fine_text(wave_range_text)
+		wave_range_text:set_right(self._background_layer_one:w())
+	end
+
 	self._job_schedule_panel = self._background_layer_one:panel({
 		h = 70,
 		w = self._background_layer_one:w() / 2
@@ -503,6 +528,10 @@ function HUDMissionBriefing:init(hud, workspace)
 		text_align = "right"
 	end
 
+	if managers.skirmish:is_skirmish() then
+		text = managers.skirmish:is_weekly_skirmish() and managers.localization:to_upper_text("menu_weekly_skirmish") or managers.localization:to_upper_text("menu_skirmish")
+	end
+
 	local job_text = self._foreground_layer_one:text({
 		vertical = "top",
 		name = "job_text",
@@ -566,6 +595,17 @@ function HUDMissionBriefing:init(hud, workspace)
 		self._job_schedule_panel:set_visible(false)
 		self._paygrade_text:set_visible(false)
 		self._job_overview_text:set_visible(false)
+	end
+
+	if managers.skirmish:is_skirmish() then
+		self._job_schedule_panel:set_visible(false)
+
+		self._skirmish_progress = SkirmishBriefingProgress:new(self._background_layer_one, {
+			x = self._job_schedule_panel:x(),
+			y = self._job_schedule_panel:y(),
+			w = self._job_schedule_panel:width(),
+			h = self._job_schedule_panel:height()
+		})
 	end
 end
 

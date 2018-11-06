@@ -7,6 +7,20 @@ GroupAIManager = GroupAIManager or class()
 
 function GroupAIManager:init()
 	self:set_state("empty")
+
+	self._event_listener_holder = EventListenerHolder:new()
+end
+
+function GroupAIManager:add_event_listener(...)
+	self._event_listener_holder:add(...)
+end
+
+function GroupAIManager:remove_event_listener(...)
+	self._event_listener_holder:remove(...)
+end
+
+function GroupAIManager:dispatch_event(...)
+	self._event_listener_holder:call(...)
 end
 
 function GroupAIManager:update(t, dt)
@@ -23,7 +37,7 @@ function GroupAIManager:set_state(name)
 	elseif name == "street" then
 		self._state = GroupAIStateStreet:new()
 	elseif name == "besiege" or name == "airport" or name == "zombie_apocalypse" then
-		local level_tweak = tweak_data.levels[managers.job:current_level_id()]
+		local level_tweak = managers.job:current_level_data()
 		self._state = GroupAIStateBesiege:new(level_tweak and level_tweak.group_ai_state or "besiege")
 	else
 		Application:error("[GroupAIManager:set_state] inexistent state name", name)
@@ -53,7 +67,7 @@ function GroupAIManager:state_names()
 end
 
 function GroupAIManager:on_simulation_started()
-	self._state:on_simulation_started()
+	self:set_state(self:state_name())
 end
 
 function GroupAIManager:on_simulation_ended()

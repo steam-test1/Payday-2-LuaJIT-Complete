@@ -245,7 +245,7 @@ function CrimeSpreeModifierDetailsPage:add_modifiers_panel(parent, modifiers, is
 				y = 5,
 				word_wrap = true,
 				valign = "top",
-				text = modifier_class:get_description(modifier_data.id, modifiers_count[modifier.class]),
+				text = managers.crime_spree:make_modifier_description(modifier_data.id, modifiers_count[modifier.class] == 1),
 				x = padding * 1.5 + level_w,
 				font = tweak_data.menu.pd2_small_font,
 				font_size = tweak_data.menu.pd2_small_font_size,

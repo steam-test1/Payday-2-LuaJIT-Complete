@@ -1877,6 +1877,14 @@ function GuiTweakData:init()
 			id = "crime_spree",
 			icon = "sidebar_crimespree",
 			item_class = "CrimeNetSidebarCrimeSpreeItem"
+		},
+		{
+			visible_callback = "clbk_visible_skirmish",
+			name_id = "menu_cn_skirmish",
+			callback = "clbk_skirmish",
+			id = "skirmish",
+			icon = "sidebar_skirmish",
+			item_class = "CrimeNetSidebarSkirmishItem"
 		}
 	}
 	self.crime_net.codex = {

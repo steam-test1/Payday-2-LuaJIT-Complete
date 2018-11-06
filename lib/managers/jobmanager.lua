@@ -1396,6 +1396,34 @@ function JobManager:current_level_id()
 	return self:current_stage_data().level_id
 end
 
+function JobManager:current_level_data()
+	return tweak_data.levels[self:current_level_id()]
+end
+
+function JobManager:current_level_wave_count()
+	local level_tweak = self:current_level_data()
+
+	return level_tweak and level_tweak.wave_count or math.huge
+end
+
+function JobManager:current_spawn_limit(special_type)
+	if not special_type then
+		return math.huge
+	end
+
+	local is_skirmish = self:current_level_data().group_ai_state == "skirmish"
+
+	if is_skirmish then
+		local limits_table = tweak_data.skirmish.special_unit_spawn_limits
+		local wave_number = managers.groupai:state():get_assault_number()
+		local limit_index = math.clamp(wave_number, 1, #limits_table)
+
+		return limits_table[limit_index][special_type] or math.huge
+	end
+
+	return tweak_data.group_ai.special_unit_spawn_limits[special_type] or math.huge
+end
+
 function JobManager:current_mission()
 	if not self._global.current_job then
 		return

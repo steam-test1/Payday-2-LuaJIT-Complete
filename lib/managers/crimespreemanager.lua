@@ -1,52 +1,3 @@
-require("lib/modifiers/BaseModifier")
-require("lib/modifiers/ModifierCivilianAlarm")
-require("lib/modifiers/ModifierCloakerKick")
-require("lib/modifiers/ModifierEnemyDamage")
-require("lib/modifiers/ModifierEnemyHealth")
-require("lib/modifiers/ModifierEnemyHealthAndDamage")
-require("lib/modifiers/ModifierExplosionImmunity")
-require("lib/modifiers/ModifierHeavies")
-require("lib/modifiers/ModifierLessConcealment")
-require("lib/modifiers/ModifierLessPagers")
-require("lib/modifiers/ModifierMoreSpecials")
-require("lib/modifiers/ModifierMoreDozers")
-require("lib/modifiers/ModifierNoHurtAnims")
-require("lib/modifiers/ModifierShieldReflect")
-require("lib/modifiers/ModifierSkulldozers")
-require("lib/modifiers/ModifierHealSpeed")
-require("lib/modifiers/ModifierMoreMedics")
-require("lib/modifiers/ModifierAssaultExtender")
-require("lib/modifiers/ModifierCloakerArrest")
-require("lib/modifiers/ModifierCloakerTearGas")
-require("lib/modifiers/ModifierDozerMedic")
-require("lib/modifiers/ModifierDozerMinigun")
-require("lib/modifiers/ModifierDozerRage")
-require("lib/modifiers/ModifierHeavySniper")
-require("lib/modifiers/ModifierMedicAdrenaline")
-require("lib/modifiers/ModifierMedicDeathwish")
-require("lib/modifiers/ModifierMedicRage")
-require("lib/modifiers/ModifierShieldPhalanx")
-require("lib/modifiers/ModifierTaserOvercharge")
-require("lib/modifiers/boosts/GageModifier")
-require("lib/modifiers/boosts/GageModifierMaxHealth")
-require("lib/modifiers/boosts/GageModifierMaxArmor")
-require("lib/modifiers/boosts/GageModifierMaxStamina")
-require("lib/modifiers/boosts/GageModifierMaxAmmo")
-require("lib/modifiers/boosts/GageModifierMaxLives")
-require("lib/modifiers/boosts/GageModifierMaxBodyBags")
-require("lib/modifiers/boosts/GageModifierMaxDeployables")
-require("lib/modifiers/boosts/GageModifierMaxThrowables")
-require("lib/modifiers/boosts/GageModifierQuickReload")
-require("lib/modifiers/boosts/GageModifierQuickSwitch")
-require("lib/modifiers/boosts/GageModifierQuickPagers")
-require("lib/modifiers/boosts/GageModifierQuickLocks")
-require("lib/modifiers/boosts/GageModifierFastCrouching")
-require("lib/modifiers/boosts/GageModifierDamageAbsorption")
-require("lib/modifiers/boosts/GageModifierExplosionImmunity")
-require("lib/modifiers/boosts/GageModifierPassivePanic")
-require("lib/modifiers/boosts/GageModifierMeleeInvincibility")
-require("lib/modifiers/boosts/GageModifierLifeSteal")
-
 CrimeSpreeManager = CrimeSpreeManager or class()
 CrimeSpreeManager.CS_VERSION = 3
 
@@ -117,7 +68,7 @@ function CrimeSpreeManager:_setup_modifiers()
 		local mod_class = _G[class]
 
 		if mod_class then
-			table.insert(self._modifiers, mod_class:new(data))
+			managers.modifiers:add_modifier(mod_class:new(data), "crime_spree")
 		else
 			Application:error("Can not activate modifier as it does not exist!", class)
 		end
@@ -152,6 +103,16 @@ function CrimeSpreeManager:get_modifier_stack_data(modifier_type)
 	end
 
 	return stack_data
+end
+
+function CrimeSpreeManager:has_active_modifier_of_type(modifier_type)
+	for _, mod in ipairs(self:active_modifier_classes()) do
+		if mod._type == modifier_type then
+			return true
+		end
+	end
+
+	return false
 end
 
 function CrimeSpreeManager:clear()
@@ -704,6 +665,34 @@ function CrimeSpreeManager:get_modifier(modifier_id)
 	end
 end
 
+function CrimeSpreeManager:make_modifier_description(modifier_id, with_total)
+	local data = managers.crime_spree:get_modifier(modifier_id) or {}
+	local modifier_class = _G[data.class]
+	local params = {}
+
+	for key, dat in pairs(data.data) do
+		params[key] = dat[1]
+	end
+
+	local desc = managers.localization:text(modifier_class.desc_id, params)
+
+	if with_total and modifier_class.total_localization ~= nil then
+		local data = managers.crime_spree:get_modifier_stack_data(modifier_class._type)
+		local params = {}
+
+		for key, value in pairs(data) do
+			if type(value) == "number" then
+				params[key] = managers.experience:cash_string(value or 0, "")
+			end
+		end
+
+		params.value = params.value or params[modifier_class.default_value]
+		desc = desc .. " " .. managers.localization:text(modifier_class.total_localization, params)
+	end
+
+	return desc
+end
+
 function CrimeSpreeManager:is_repeating_modifier(modifier_id)
 	for id, mod_table in pairs(tweak_data.crime_spree.repeating_modifiers) do
 		for _, mod_data in pairs(mod_table) do
@@ -726,39 +715,6 @@ function CrimeSpreeManager:flush_reward_amount(reward_id)
 	if self._global.unshown_rewards[reward_id] then
 		self._global.unshown_rewards[reward_id] = self._global.unshown_rewards[reward_id] - math.floor(self._global.unshown_rewards[reward_id])
 	end
-end
-
-function CrimeSpreeManager:_get_modifier_tables()
-	return {
-		self:active_modifier_classes(),
-		self:active_gage_assets()
-	}
-end
-
-function CrimeSpreeManager:run_func(func_name, ...)
-	for _, modifiers_table in ipairs(self:_get_modifier_tables()) do
-		for i, modifier in pairs(modifiers_table) do
-			if modifier and modifier[func_name] then
-				modifier[func_name](modifier, ...)
-			end
-		end
-	end
-end
-
-function CrimeSpreeManager:modify_value(id, value, ...)
-	for _, modifiers_table in ipairs(self:_get_modifier_tables()) do
-		for i, modifier in pairs(modifiers_table) do
-			if modifier and modifier.modify_value then
-				local new_value, override = modifier:modify_value(id, value, ...)
-
-				if new_value ~= nil or override then
-					value = new_value
-				end
-			end
-		end
-	end
-
-	return value
 end
 
 function CrimeSpreeManager:start_crime_spree(starting_level)
@@ -1157,7 +1113,7 @@ function CrimeSpreeManager:_on_asset_unlocked(asset_id, peer, forced)
 	if mod_class then
 		self._active_assets = self._active_assets or {}
 
-		table.insert(self._active_assets, mod_class:new(asset_tweak_data))
+		managers.modifiers:add_modifier(mod_class:new(asset_tweak_data), "crime_spree_asset")
 	else
 		Application:error("Can not activate gage asset as it's modifier class does not exist!", class)
 	end

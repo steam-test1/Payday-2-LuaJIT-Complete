@@ -118,6 +118,8 @@ require("lib/managers/PromoUnlockManager")
 require("lib/managers/GenericSideJobsManager")
 require("lib/managers/SideJobGenericDLCManager")
 require("lib/managers/RaidJobsManager")
+require("lib/managers/ModifiersManager")
+require("lib/managers/SkirmishManager")
 require("lib/utils/StatisticsGenerator")
 require("lib/utils/Bitwise")
 require("lib/utils/WeightedSelector")
@@ -280,6 +282,7 @@ function Setup:init_managers(managers)
 	managers.vehicle = VehicleManager:new()
 	managers.fire = FireManager:new()
 	managers.sync = SyncManager:new()
+	managers.modifiers = ModifiersManager:new()
 	managers.multi_profile = MultiProfileManager:new()
 	managers.workshop = WorkshopManager:new()
 
@@ -287,6 +290,7 @@ function Setup:init_managers(managers)
 
 	managers.custom_safehouse = CustomSafehouseManager:new()
 	managers.ban_list = BanListManager:new()
+	managers.skirmish = SkirmishManager:new()
 	managers.mutators = MutatorsManager:new()
 	managers.butler_mirroring = ButlerMirroringManager:new()
 	managers.generic_side_jobs = GenericSideJobsManager:new()
@@ -535,6 +539,8 @@ function Setup:init_finalize()
 	if _G.IS_VR then
 		managers.vr:init_finalize()
 	end
+
+	managers.skirmish:init_finalize()
 end
 
 function Setup:update(t, dt)

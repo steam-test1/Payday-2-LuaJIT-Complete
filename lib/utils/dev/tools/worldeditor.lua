@@ -209,9 +209,11 @@ function WorldEditor:_project_init_slot_masks()
 end
 
 function WorldEditor:project_prestart_up(with_mission)
+	managers.job:on_simulation_started()
 	managers.navigation:on_simulation_started()
 	managers.groupai:on_simulation_started()
 	managers.enemy:on_simulation_started()
+	managers.hud:on_simulation_started()
 end
 
 function WorldEditor:project_run_simulation(with_mission)

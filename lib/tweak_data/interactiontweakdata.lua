@@ -913,6 +913,12 @@ function InteractionTweakData:init(tweak_data)
 		sound_done = "bar_rescue_finished",
 		action_text_id = "hud_action_freeing"
 	}
+	self.hostage_skm = {
+		icon = "interaction_trade",
+		text_id = "debug_interact_trade_hostage_skm",
+		timer = 5,
+		action_text_id = "hud_action_trading_hostage_skm"
+	}
 	self.hostage_trade = {
 		icon = "interaction_trade",
 		text_id = "debug_interact_trade",

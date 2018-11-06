@@ -20,16 +20,6 @@ function CustomSafehouseTweakData:init(tweak_data)
 		experience_ratio = 1000000
 	}
 	self.level_limit = 25
-	self.combat = {waves = {
-		hard = 3,
-		overkill = 3,
-		overkill_145 = 3,
-		normal = 3,
-		easy_wish = 3,
-		overkill_290 = 3,
-		sm_wish = 3,
-		easy = 3
-	}}
 
 	self:_init_heisters(tweak_data)
 	self:_init_safehouse_contractors(tweak_data)

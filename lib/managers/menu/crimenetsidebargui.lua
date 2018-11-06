@@ -368,6 +368,14 @@ end
 function CrimeNetSidebarGui:clbk_open_story_missions()
 	managers.menu:open_node("story_missions")
 end
+
+function CrimeNetSidebarGui:clbk_skirmish()
+	SkirmishLandingMenuComponent:open_node()
+end
+
+function CrimeNetSidebarGui:clbk_visible_skirmish()
+	return managers.skirmish:is_unlocked()
+end
 CrimeNetSidebarSeparator = CrimeNetSidebarSeparator or class()
 
 function CrimeNetSidebarSeparator:init(sidebar, parent_panel, parameters)
@@ -666,6 +674,13 @@ function CrimeNetSidebarTutorialHeistsItem:init(sidebar, panel, parameters)
 	parameters.calling_attention = tutorial_completions == 0
 
 	CrimeNetSidebarTutorialHeistsItem.super.init(self, sidebar, panel, parameters)
+end
+CrimeNetSidebarSkirmishItem = CrimeNetSidebarSkirmishItem or class(CrimeNetSidebarAttentionItem)
+
+function CrimeNetSidebarSkirmishItem:init(sidebar, panel, parameters)
+	parameters.calling_attention = #managers.skirmish:unclaimed_rewards() > 0
+
+	CrimeNetSidebarSkirmishItem.super.init(self, sidebar, panel, parameters)
 end
 CrimeNetSidebarStoryMissionItem = CrimeNetSidebarStoryMissionItem or class(CrimeNetSidebarAttentionItem)
 

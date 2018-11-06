@@ -1153,7 +1153,7 @@ function PlayerStandard:_get_max_walk_speed(t, force_run)
 		speed_state = "run"
 	end
 
-	movement_speed = managers.crime_spree:modify_value("PlayerStandard:GetMaxWalkSpeed", movement_speed, self._state_data, speed_tweak)
+	movement_speed = managers.modifiers:modify_value("PlayerStandard:GetMaxWalkSpeed", movement_speed, self._state_data, speed_tweak)
 	local morale_boost_bonus = self._ext_movement:morale_boost()
 	local multiplier = managers.player:movement_speed_multiplier(speed_state, speed_state and morale_boost_bonus and morale_boost_bonus.move_speed_bonus, nil, self._ext_damage:health_ratio())
 	multiplier = multiplier * (self._tweak_data.movement.multiplier[speed_state] or 1)
@@ -1890,7 +1890,7 @@ function PlayerStandard:_start_action_interact(t, input, timer, interact_object)
 	self:_interupt_action_charging_weapon(t)
 
 	local final_timer = timer
-	final_timer = managers.crime_spree:modify_value("PlayerStandard:OnStartInteraction", final_timer, interact_object)
+	final_timer = managers.modifiers:modify_value("PlayerStandard:OnStartInteraction", final_timer, interact_object)
 	self._interact_expire_t = final_timer
 	local start_timer = 0
 	self._interact_params = {
@@ -3223,7 +3223,7 @@ function PlayerStandard:_start_action_intimidate(t, secondary)
 				sound_name = tweak_data.character[prime_target.unit:base()._tweak_table].silent_priority_shout .. "_any"
 			else
 				sound_name = tweak_data.character[prime_target.unit:base()._tweak_table].priority_shout .. "x_any"
-				sound_name = managers.crime_spree:modify_value("PlayerStandart:_start_action_intimidate", sound_name, prime_target.unit)
+				sound_name = managers.modifiers:modify_value("PlayerStandart:_start_action_intimidate", sound_name, prime_target.unit)
 			end
 
 			if managers.player:has_category_upgrade("player", "special_enemy_highlight") then
@@ -4508,7 +4508,7 @@ function PlayerStandard:_get_swap_speed_multiplier()
 		multiplier = multiplier * managers.player:temporary_upgrade_value("temporary", "swap_weapon_faster", 1)
 	end
 
-	multiplier = managers.crime_spree:modify_value("PlayerStandard:GetSwapSpeedMultiplier", multiplier)
+	multiplier = managers.modifiers:modify_value("PlayerStandard:GetSwapSpeedMultiplier", multiplier)
 
 	return multiplier
 end

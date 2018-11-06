@@ -6055,10 +6055,16 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		name_id = "bm_msk_cheat_error",
 		type = "helmet",
 		inaccessible = true,
-		offsets = {jacket = {
-			Vector3(0, 0, 0),
-			Rotation(0, -0.30048, 0)
-		}}
+		offsets = {
+			jacket = {
+				Vector3(0, 0, 0),
+				Rotation(0, -0.30048, 0)
+			},
+			joy = {
+				Vector3(0, 0.673745, 0),
+				Rotation(-0, -0, -0)
+			}
+		}
 	}
 	self.masks.flm_sydney = {
 		unit = "units/pd2_dlc_flm/masks/flm/msk_flm_sydney",
@@ -6111,6 +6117,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 			old_hoxton = "flm_01",
 			bonnie = "flm_01",
 			max = "flm_01",
+			joy = "flm_jacket",
 			dallas = "flm_01",
 			jacket = "flm_jacket",
 			jimmy = "flm_01",
@@ -6181,6 +6188,460 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		texture_bundle_folder = "tam",
 		sort_number = 70,
 		global_value = "tam"
+	}
+	self.masks.skm_07 = {
+		global_value = "infamous",
+		unit = "units/pd2_dlc_skm/masks/skm_07/msk_skm_07",
+		name_id = "bm_msk_skm_07",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		texture_bundle_folder = "skm",
+		sort_number = 71
+	}
+	self.masks.skm_08 = {
+		global_value = "infamous",
+		unit = "units/pd2_dlc_skm/masks/skm_08/msk_skm_08",
+		name_id = "bm_msk_skm_08",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		texture_bundle_folder = "skm",
+		sort_number = 71
+	}
+	self.masks.skm_common_01 = {
+		unit = "units/pd2_dlc_skm/masks/skm_01/msk_skm_01",
+		name_id = "bm_msk_cheat_error",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "skm",
+		sort_number = 71,
+		type = "helmet",
+		inaccessible = true,
+		offsets = {
+			sydney = {
+				Vector3(0.554498, 3.29716, -0.399472),
+				Rotation(0, 4.85096, 0)
+			},
+			chains = {
+				Vector3(0, 0, 0.196759),
+				Rotation(-0, -0, -0)
+			},
+			female_1 = {
+				Vector3(0, 3.17792, -1.11495),
+				Rotation(0, 9.14383, 0)
+			},
+			hoxton = {
+				Vector3(0.316006, 0, 0),
+				Rotation(-0, -0, -0)
+			},
+			sokol = {
+				Vector3(0.316006, 1.86621, 0.077513),
+				Rotation(0, 3.99239, 0)
+			},
+			wolf = {
+				Vector3(0.435252, 1.50847, 0.554498),
+				Rotation(-0, -0, -0)
+			},
+			bodhi = {
+				Vector3(0, 0.196759, 0.554498),
+				Rotation(-0, -0, -0)
+			},
+			jimmy = {
+				Vector3(0.077513, 2.70093, -2.42666),
+				Rotation(0, 11.7196, 0)
+			},
+			max = {
+				Vector3(0.196759, 1.03148, 0),
+				Rotation(-0, -0, -0)
+			},
+			dallas = {
+				Vector3(0, -0.16098, 0),
+				Rotation(-0, -0, -0)
+			},
+			joy = {
+				Vector3(0.316006, 2.93943, -1.2342),
+				Rotation(0, 6.56811, 0)
+			},
+			bonnie = {
+				Vector3(0.316006, 1.98545, 0.792991),
+				Rotation(-0, -0, -0)
+			},
+			old_hoxton = {
+				Vector3(0, 0.316006, 0),
+				Rotation(-0, -0, -0)
+			},
+			dragon = {
+				Vector3(0.196759, -0.16098, 0.435252),
+				Rotation(-0, -0, -0)
+			},
+			wild = {
+				Vector3(0.316006, 0, 0),
+				Rotation(-0, -0, -0)
+			},
+			ecp_male = {
+				Vector3(0.316006, 1.98545, -1.47269),
+				Rotation(0, 8.28526, 0)
+			},
+			jacket = {
+				Vector3(0.316006, 1.26998, -0.0417333),
+				Rotation(0, 3.13382, 0)
+			},
+			chico = {
+				Vector3(0.554498, 1.15073, 0.792991),
+				Rotation(-0, -0, -0)
+			},
+			myh = {
+				Vector3(0.077513, 0.196759, 0.316006),
+				Rotation(-0, -0, -0)
+			},
+			jowi = {
+				Vector3(0.316006, 0.316006, 1.03148),
+				Rotation(-0, -0, -0)
+			},
+			dragan = {
+				Vector3(0.196759, 1.50847, -0.757211),
+				Rotation(0, 6.56811, 0)
+			}
+		}
+	}
+	self.masks.skm_hila_01 = {
+		unit = "units/pd2_dlc_skm/masks/skm_01/msk_skm_hila_01",
+		name_id = "bm_msk_cheat_error",
+		type = "glasses",
+		skip_mask_on_sequence = true,
+		inaccessible = true,
+		offsets = {ecp_female = {
+			Vector3(0, 0.196759, -1.47269),
+			Rotation(0, 10.0024, 0)
+		}}
+	}
+	self.masks.skm_01 = {
+		global_value = "infamous",
+		name_id = "bm_msk_skm_01",
+		value = 0,
+		pcs = {},
+		type = "helmet",
+		texture_bundle_folder = "skm",
+		sort_number = 71,
+		characters = {
+			dragan = "skm_common_01",
+			dragon = "skm_common_01",
+			myh = "skm_common_01",
+			chico = "skm_common_01",
+			sokol = "skm_common_01",
+			ecp_male = "skm_common_01",
+			ecp_female = "skm_hila_01",
+			jowi = "skm_common_01",
+			old_hoxton = "skm_common_01",
+			bonnie = "skm_common_01",
+			max = "skm_common_01",
+			joy = "skm_common_01",
+			dallas = "skm_common_01",
+			jacket = "skm_common_01",
+			jimmy = "skm_common_01",
+			bodhi = "skm_common_01",
+			wolf = "skm_common_01",
+			wild = "skm_common_01",
+			hoxton = "skm_common_01",
+			female_1 = "skm_common_01",
+			chains = "skm_common_01",
+			sydney = "skm_common_01"
+		}
+	}
+	self.masks.skm_02 = {
+		global_value = "infamous",
+		unit = "units/pd2_dlc_skm/masks/skm_02/msk_skm_02",
+		name_id = "bm_msk_skm_02",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "skm",
+		sort_number = 71,
+		type = "glasses",
+		skip_mask_on_sequence = true,
+		offsets = {
+			sydney = {
+				Vector3(0, -0.399472, 0),
+				Rotation(-0, -0, -0)
+			},
+			dragon = {
+				Vector3(0, 5.20511, -2.30741),
+				Rotation(0, 20.3053, 0)
+			},
+			hoxton = {
+				Vector3(-0.16098, 0.196759, 0.077513),
+				Rotation(-0, -0, -0)
+			},
+			wild = {
+				Vector3(-0.280226, -0.16098, 0.435252),
+				Rotation(-2.8762, 0, 0)
+			},
+			ecp_female = {
+				Vector3(-0.0417333, -0.399472, 0),
+				Rotation(-0, -0, -0)
+			},
+			ecp_male = {
+				Vector3(-0.0417333, -0.399472, 0.196759),
+				Rotation(-0, -0, -0)
+			},
+			old_hoxton = {
+				Vector3(0, 2.46244, -0.399472),
+				Rotation(0, 12.5781, 0)
+			},
+			chico = {
+				Vector3(0, 4.01264, -1.94967),
+				Rotation(0, 21.1639, 0)
+			},
+			jowi = {
+				Vector3(0, 4.01264, -1.94967),
+				Rotation(0, 21.1639, 0)
+			},
+			bonnie = {
+				Vector3(0, 5.32435, -1.71118),
+				Rotation(0, 20.3053, 0)
+			},
+			dragan = {
+				Vector3(0, 3.41641, -1.35344),
+				Rotation(0, 15.1538, 0)
+			}
+		}
+	}
+	self.masks.skm_03 = {
+		global_value = "infamous",
+		unit = "units/pd2_dlc_skm/masks/skm_03/msk_skm_03",
+		name_id = "bm_msk_skm_03",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "skm",
+		sort_number = 71,
+		type = "helmet",
+		skip_mask_on_sequence = true,
+		offsets = {
+			sydney = {
+				Vector3(0, -0.995704, 0),
+				Rotation(0, 0, -0)
+			},
+			chains = {
+				Vector3(0, -0.280226, 0),
+				Rotation(0, 0, -0)
+			},
+			female_1 = {
+				Vector3(0, -0.876458, -0.280226),
+				Rotation(0, 0, -0)
+			},
+			hoxton = {
+				Vector3(0, 0.554498, -1.83043),
+				Rotation(0, 6.56811, 0)
+			},
+			sokol = {
+				Vector3(0, -0.757211, -0.16098),
+				Rotation(0, -2.01763, 0)
+			},
+			wolf = {
+				Vector3(0, -0.399472, 0),
+				Rotation(0, 0, -0)
+			},
+			jowi = {
+				Vector3(0, -0.399472, 0),
+				Rotation(0, 0, -0)
+			},
+			max = {
+				Vector3(0, 0.077513, -1.47269),
+				Rotation(3.33607e-09, 3.13382, 1.41667)
+			},
+			dallas = {
+				Vector3(0, 0.196759, -1.47269),
+				Rotation(0, 5.70954, 0)
+			},
+			joy = {
+				Vector3(0, -0.876458, 0),
+				Rotation(0, 0, -0)
+			},
+			old_hoxton = {
+				Vector3(0, 0.077513, -1.59194),
+				Rotation(0, 6.56811, 0)
+			},
+			ecp_female = {
+				Vector3(0, -0.757211, -0.0417333),
+				Rotation(0, 0, -0)
+			},
+			ecp_male = {
+				Vector3(0, -0.0417333, -1.83043),
+				Rotation(0, 5.70954, 0)
+			},
+			dragon = {
+				Vector3(0, -0.16098, -0.637965),
+				Rotation(0, -2.8762, 0)
+			},
+			chico = {
+				Vector3(0, -0.16098, -0.757211),
+				Rotation(0, 0, -0)
+			},
+			myh = {
+				Vector3(0, -0.518719, -0.995704),
+				Rotation(0, 1.41667, 0)
+			},
+			jimmy = {
+				Vector3(0.077513, 0.554498, -0.399472),
+				Rotation(0, 0, -0)
+			},
+			dragan = {
+				Vector3(0, -0.280226, -1.2342),
+				Rotation(0, 3.13382, 0)
+			}
+		}
+	}
+	self.masks.skm_04_common = {
+		unit = "units/pd2_dlc_skm/masks/skm_04/msk_skm_04",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true,
+		offsets = {
+			chains = {
+				Vector3(0, 0.196759, -0.518719),
+				Rotation(-0, -0, -0)
+			},
+			dallas = {
+				Vector3(0, 0, -0.995704),
+				Rotation(-0, -0, -0)
+			},
+			chains = {
+				Vector3(0, 0.316006, -0.637965),
+				Rotation(-0, -0, -0)
+			},
+			dragan = {
+				Vector3(-0.280226, 1.38922, -0.876458),
+				Rotation(0, 5.70954, 0)
+			},
+			ecp_female = {
+				Vector3(0, -0.518719, -0.637965),
+				Rotation(-0, -0, -0)
+			},
+			bonnie = {
+				Vector3(-0.518719, 2.1047, -0.518719),
+				Rotation(-2.01763, 4.85096, 1.41667)
+			}
+		}
+	}
+	self.masks.skm_john_wick_04 = {
+		unit = "units/pd2_dlc_skm/masks/skm_04/msk_skm_john_wick_04",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true
+	}
+	self.masks.skm_jiro_04 = {
+		unit = "units/pd2_dlc_skm/masks/skm_04/msk_skm_jiro_04",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true,
+		offsets = {dragon = {
+			Vector3(0, 0.792991, -0.637965),
+			Rotation(-0, -0, -0)
+		}}
+	}
+	self.masks.skm_jimmy_04 = {
+		unit = "units/pd2_dlc_skm/masks/skm_04/msk_skm_jimmy_04",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true,
+		offsets = {
+			sokol = {
+				Vector3(0, 0, 0),
+				Rotation(10.861, 0, 0)
+			},
+			female_1 = {
+				Vector3(0, 0.673745, -0.637965),
+				Rotation(0, 3.13382, 0)
+			},
+			sydney = {
+				Vector3(0, 0.554498, 0.077513),
+				Rotation(0, 3.13382, 0)
+			}
+		}
+	}
+	self.masks.skm_rust_04 = {
+		unit = "units/pd2_dlc_skm/masks/skm_04/msk_skm_rust_04",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true,
+		offsets = {
+			max = {
+				Vector3(0, 0, 0.316006),
+				Rotation(-0, -0, -0)
+			},
+			myh = {
+				Vector3(0, 0.196759, -0.280226),
+				Rotation(-2.01763, 3.13382, -6.67011e-09)
+			},
+			ecp_male = {
+				Vector3(0, 1.38922, -0.518719),
+				Rotation(0.558094, 8.28526, -3.33505e-09)
+			},
+			old_hoxton = {
+				Vector3(0, 1.15073, -0.757211),
+				Rotation(0, 5.70954, 0)
+			},
+			sokol = {
+				Vector3(0, -0.876458, 0.912237),
+				Rotation(0, -4.59335, 0)
+			},
+			bodhi = {
+				Vector3(0, 1.86621, -0.876458),
+				Rotation(0, 8.28526, 0)
+			}
+		}
+	}
+	self.masks.skm_04 = {
+		global_value = "infamous",
+		name_id = "bm_msk_skm_04",
+		value = 0,
+		pcs = {},
+		type = "helmet",
+		texture_bundle_folder = "skm",
+		sort_number = 71,
+		characters = {
+			dragan = "skm_04_common",
+			dragon = "skm_jiro_04",
+			myh = "skm_rust_04",
+			chico = "skm_rust_04",
+			sokol = "skm_rust_04",
+			ecp_male = "skm_rust_04",
+			ecp_female = "skm_jimmy_04",
+			jowi = "skm_john_wick_04",
+			old_hoxton = "skm_rust_04",
+			bonnie = "skm_04_common",
+			max = "skm_rust_04",
+			joy = "skm_jimmy_04",
+			dallas = "skm_jimmy_04",
+			jacket = "skm_jimmy_04",
+			jimmy = "skm_jimmy_04",
+			bodhi = "skm_rust_04",
+			wolf = "skm_jimmy_04",
+			wild = "skm_rust_04",
+			hoxton = "skm_jimmy_04",
+			female_1 = "skm_jimmy_04",
+			chains = "skm_04_common",
+			sydney = "skm_jimmy_04"
+		}
+	}
+	self.masks.skm_05 = {
+		global_value = "infamous",
+		unit = "units/pd2_dlc_skm/masks/skm_05/msk_skm_05",
+		name_id = "bm_msk_skm_05",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "skm",
+		sort_number = 71
+	}
+	self.masks.skm_06 = {
+		global_value = "infamous",
+		unit = "units/pd2_dlc_skm/masks/skm_06/msk_skm_06",
+		name_id = "bm_msk_skm_06",
+		type = "helmet",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "skm",
+		sort_number = 71
 	}
 	local free_dlcs = tweak_data:free_dlc_list()
 

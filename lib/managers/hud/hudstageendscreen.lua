@@ -46,6 +46,15 @@ function HUDPackageUnlockedItem:init(panel, row, params, hud_stage_end_screen)
 		bitmap_texture = "guis/textures/pd2/endscreen/announcement"
 		text_string = managers.localization:to_upper_text("menu_es_announcement") .. "\n" .. managers.localization:to_upper_text(announcement)
 		blend_mode = "add"
+	elseif params.skirmish_wave then
+		bitmap_texture = "guis/dlcs/skm/textures/pd2/endscreen/announcement_skm"
+		local text_id = nil
+		text_id = params.success and (params.skirmish_wave == select(2, managers.skirmish:wave_range()) and "menu_skirmish_success_all_end_screen" or "menu_skirmish_success_end_screen") or "menu_skirmish_fail_end_screen"
+		text_string = managers.localization:to_upper_text(text_id, {wave = params.skirmish_wave})
+
+		if managers.skirmish:is_weekly_skirmish() and #managers.skirmish:unclaimed_rewards() > 0 then
+			text_string = text_string .. " " .. managers.localization:to_upper_text("menu_skirmish_weekly_reward_end_screen")
+		end
 	elseif upgrade then
 		local upgrade_def = tweak_data.upgrades.definitions[upgrade]
 
@@ -181,7 +190,7 @@ function HUDPackageUnlockedItem:init(panel, row, params, hud_stage_end_screen)
 		end
 
 		text:set_position(math.round(text:x()), math.round(text:y()))
-		managers.menu_component:make_color_text(text, tweak_data.screen_colors.ghost_color)
+		managers.menu_component:make_color_text(text, params.color or tweak_data.screen_colors.ghost_color)
 	end
 
 	self._panel:animate(callback(self, self, "create_animation", {
@@ -401,7 +410,32 @@ function HUDStageEndScreen:init(hud, workspace)
 	pg_text:set_center_y(self._paygrade_panel:center_y())
 	pg_text:set_y(math.round(pg_text:y()))
 
+	if managers.skirmish:is_skirmish() then
+		self._paygrade_panel:set_visible(false)
+		pg_text:set_visible(false)
+
+		local min, max = managers.skirmish:wave_range()
+		local wave_range_text = self._foreground_layer_safe:text({
+			name = "wave_range",
+			vertical = "center",
+			h = 32,
+			align = "right",
+			text = managers.localization:to_upper_text("menu_skirmish_wave_range", {
+				min = min,
+				max = max
+			}),
+			y = padding_y,
+			font_size = content_font_size,
+			font = content_font,
+			color = tweak_data.screen_colors.skirmish_color
+		})
+
+		managers.hud:make_fine_text(wave_range_text)
+		wave_range_text:set_right(self._background_layer_safe:w())
+	end
+
 	self._stage_name = managers.job:current_level_id() and managers.localization:to_upper_text(tweak_data.levels[managers.job:current_level_id()].name_id) or ""
+	self._stage_name = managers.skirmish:is_skirmish() and (managers.skirmish:is_weekly_skirmish() and managers.localization:to_upper_text("menu_weekly_skirmish") or managers.localization:to_upper_text("menu_skirmish"))
 
 	self._foreground_layer_safe:text({
 		name = "stage_text",
@@ -1307,6 +1341,26 @@ function HUDStageEndScreen:clear_stage()
 	WalletGuiObject.set_object_visible("wallet_coins_text", false)
 end
 
+function HUDStageEndScreen:_update_skirmish_wave()
+	if not managers.skirmish:is_skirmish() then
+		return
+	end
+
+	local wave = managers.skirmish:current_wave_number()
+	local wave_item = HUDPackageUnlockedItem:new(self._package_forepanel, 1, {
+		unlocks = 1,
+		skirmish_wave = wave,
+		color = tweak_data.screen_colors.skirmish_color,
+		success = self._success
+	}, self)
+
+	for _, item in pairs(self._package_items) do
+		item:close()
+	end
+
+	self._package_items = {wave_item}
+end
+
 function HUDStageEndScreen:_check_special_packages()
 	local ghost_bonus_mul = self._ghost_bonus
 	local ghost_string = nil
@@ -1456,6 +1510,7 @@ function HUDStageEndScreen:stage_money_counter_init(t, dt)
 	local is_success = game_state_machine:current_state().is_success and game_state_machine:current_state():is_success()
 
 	self:_check_special_packages()
+	self:_update_skirmish_wave()
 
 	self._is_fail_video = not is_success
 
@@ -1504,6 +1559,7 @@ function HUDStageEndScreen:stage_money_counter_init(t, dt)
 	local vehicle_payout = payouts.vehicle_payout
 	local small_loot_payout = payouts.small_loot_payout
 	local crew_payout = payouts.crew_payout
+	local skirmish_payout = payouts.skirmish_payout
 	local mutators_reduction = -payouts.mutators_reduction
 
 	local function check_if_clear(data)
@@ -1540,6 +1596,10 @@ function HUDStageEndScreen:stage_money_counter_init(t, dt)
 		{
 			"hud_instant_cash",
 			math.round(small_loot_payout or 0)
+		},
+		{
+			"menu_es_skirmish_cash",
+			math.round(skirmish_payout or 0)
 		},
 		{
 			"menu_mutators_reduction_cash",

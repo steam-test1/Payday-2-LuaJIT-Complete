@@ -428,7 +428,6 @@ function MissionEndState:on_statistics_result(best_kills_peer_id, best_kills_sco
 			local loose_cash = small_loot_payout or 0
 			local cleaner_cost = 0
 			local assets_cost = 0
-			local current_total_money = managers.money:total()
 
 			if job_payout > 0 then
 				local job_string = managers.localization:text("victory_stage_cash_summary_name_job", {
@@ -439,6 +438,14 @@ function MissionEndState:on_statistics_result(best_kills_peer_id, best_kills_sco
 			else
 				local stage_string = managers.localization:text("victory_stage_cash_summary_name", {stage_cash = managers.experience:cash_string(stage_payout)})
 				stage_cash_summary_string = stage_string
+			end
+
+			if managers.skirmish:is_skirmish() then
+				local skirmish_payout = payouts.skirmish_payout
+				stage_cash_summary_string = managers.localization:text("victory_stage_cash_summary_name_skirmish", {
+					wave = managers.skirmish:current_wave_number(),
+					skirmish_cash = managers.experience:cash_string(skirmish_payout)
+				})
 			end
 
 			if bonus_bags > 0 and bag_cash > 0 then

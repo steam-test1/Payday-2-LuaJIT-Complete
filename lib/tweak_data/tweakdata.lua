@@ -46,6 +46,7 @@ require("lib/tweak_data/PromotionalMenusTweakData")
 require("lib/tweak_data/PromoUnlocksTweakData")
 require("lib/tweak_data/RaidJobsTweakData")
 require("lib/tweak_data/TweakDataVR")
+require("lib/tweak_data/SkirmishTweakData")
 
 TweakData = TweakData or class()
 
@@ -381,6 +382,7 @@ function TweakData:init()
 	self.server_states = {
 		"in_lobby",
 		"loading",
+		"briefing",
 		"in_game"
 	}
 	self.menu_sync_states = {
@@ -2370,6 +2372,9 @@ Play the full version soon to get your full PAYDAY!]],
 
 	self:_init_wip_tweak_data()
 	self:set_difficulty()
+
+	self.skirmish = SkirmishTweakData:new(self)
+
 	self:set_mode()
 	self:digest_tweak_data()
 end
@@ -2405,6 +2410,7 @@ function TweakData:init_screen_colors()
 		mutators_color_text = Color(255, 211, 133, 255) / 255,
 		crime_spree_risk = Color(255, 255, 255, 0) / 255,
 		achievement_grey = Color(255, 145, 145, 145) / 255,
+		skirmish_color = Color(255, 255, 85, 30) / 255,
 		heat_cold_color = Color(255, 255, 51, 51) / 255,
 		heat_warm_color = Color("ff7f00"),
 		heat_standard_color = Color(255, 255, 255, 255) / 255

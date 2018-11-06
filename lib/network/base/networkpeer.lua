@@ -360,7 +360,7 @@ function NetworkPeer:verify_grenade(value)
 	end
 
 	local max_amount = tweak_entry and tweak_entry.max_amount or tweak_data.equipments.max_amount.grenades
-	max_amount = managers.crime_spree:modify_value("PlayerManager:GetThrowablesMaxAmount", max_amount)
+	max_amount = managers.modifiers:modify_value("PlayerManager:GetThrowablesMaxAmount", max_amount)
 
 	if self._grenades and max_amount < self._grenades + value then
 		if Network:is_server() then
@@ -413,7 +413,7 @@ function NetworkPeer:verify_deployable(id)
 	local max_amount = tweak_data.equipments.max_amount[id]
 
 	if max_amount then
-		max_amount = managers.crime_spree:modify_value("PlayerManager:GetEquipmentMaxAmount", max_amount)
+		max_amount = managers.modifiers:modify_value("PlayerManager:GetEquipmentMaxAmount", max_amount)
 
 		if max_amount < 0 then
 			return true

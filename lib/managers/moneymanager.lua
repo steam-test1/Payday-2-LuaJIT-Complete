@@ -362,6 +362,11 @@ function MoneyManager:get_money_by_params(params)
 			job_risk = math.max(0, math.round(risk_static_value / offshore_rate))
 			job_value = math.max(0, math.round(static_value / offshore_rate) - job_risk)
 		end
+
+		if managers.skirmish:is_skirmish() then
+			local skirmish_payout = managers.skirmish:current_ransom_amount()
+			total_payout = math.max(0, math.round(total_payout + skirmish_payout))
+		end
 	else
 		stage_value = self:get_stage_payout_by_stars(total_stars) or 0
 		local mandatory_bag_value = 0
@@ -1399,7 +1404,8 @@ function MoneyManager:get_payouts()
 		vehicle_payout = self._vehicle_payout,
 		small_loot_payout = self._small_loot_payout,
 		crew_payout = self._crew_payout,
-		mutators_reduction = self._mutators_reduction or 0
+		mutators_reduction = self._mutators_reduction or 0,
+		skirmish_payout = managers.skirmish:current_ransom_amount()
 	}
 end
 

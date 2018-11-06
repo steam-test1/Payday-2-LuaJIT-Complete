@@ -322,7 +322,7 @@ function CrimeSpreeDetailsMenuComponent:show_new_modifier(modifier_id)
 		word_wrap = true,
 		wrap = true,
 		layer = 10,
-		text = modifier_class:get_description(modifier_id),
+		text = managers.crime_spree:make_modifier_description(modifier_id),
 		font_size = tweak_data.menu.pd2_small_font_size,
 		font = tweak_data.menu.pd2_small_font,
 		color = tweak_data.screen_colors.text,

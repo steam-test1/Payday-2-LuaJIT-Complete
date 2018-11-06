@@ -81,7 +81,7 @@ function HUDPresenter:_present_information(params)
 	local title = self._bg_box:child("title")
 	local text = self._bg_box:child("text")
 
-	title:set_text(utf8.to_upper(params.title or "ERROR"))
+	title:set_text(utf8.to_upper(params.title or ""))
 	text:set_text(utf8.to_upper(params.text))
 	title:set_visible(false)
 	text:set_visible(false)
@@ -107,11 +107,14 @@ function HUDPresenter:_present_information(params)
 		managers.hud._sound_source:post_event(params.event)
 	end
 
-	present_panel:animate(callback(self, self, "_animate_present_information"), {
-		done_cb = callback(self, self, "_present_done"),
+	local callback_params = {
+		has_title = params.title ~= nil,
 		seconds = params.time or 4,
-		use_icon = params.icon
-	})
+		use_icon = params.icon,
+		done_cb = callback(self, self, "_present_done")
+	}
+
+	present_panel:animate(callback(self, self, "_animate_present_information"), callback_params)
 
 	self._presenting = true
 end
@@ -136,8 +139,16 @@ function HUDPresenter:_animate_present_information(present_panel, params)
 	local title = self._bg_box:child("title")
 	local text = self._bg_box:child("text")
 
+	if params.has_title then
+		self._bg_box:set_height(68)
+		text:set_top(math.ceil(self._bg_box:height() / 2) - 2)
+	else
+		self._bg_box:set_height(34)
+		text:set_center_y(math.ceil(self._bg_box:height() / 2))
+	end
+
 	local function open_done()
-		title:set_visible(true)
+		title:set_visible(params.has_title)
 		text:set_visible(true)
 		title:animate(callback(self, self, "_animate_show_text"), text)
 		wait(params.seconds)

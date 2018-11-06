@@ -134,6 +134,7 @@ function MenuCallbackHandler:start_job(job_data)
 	Global.game_settings.world_setting = managers.job:current_world_setting()
 	Global.game_settings.difficulty = job_data.difficulty
 	Global.game_settings.one_down = job_data.one_down
+	Global.game_settings.weekly_skirmish = job_data.weekly_skirmish
 
 	if managers.platform then
 		managers.platform:update_discord_heist()
@@ -180,9 +181,10 @@ function MenuCallbackHandler:start_single_player_job(job_data)
 
 	Global.game_settings.level_id = managers.job:current_level_id()
 	Global.game_settings.mission = managers.job:current_mission()
+	Global.game_settings.world_setting = managers.job:current_world_setting()
 	Global.game_settings.difficulty = job_data.difficulty
 	Global.game_settings.one_down = job_data.one_down
-	Global.game_settings.world_setting = managers.job:current_world_setting()
+	Global.game_settings.weekly_skirmish = job_data.weekly_skirmish
 
 	if managers.platform then
 		managers.platform:update_discord_heist()

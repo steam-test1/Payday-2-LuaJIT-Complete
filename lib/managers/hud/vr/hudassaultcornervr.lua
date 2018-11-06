@@ -8,7 +8,7 @@ function HUDAssaultCornerVR:init(hud, full_hud, tweak_hud)
 	self:old_init(hud, full_hud, tweak_hud)
 	self._hud_panel:child("hostages_panel"):set_x(0)
 
-	if self:is_safehouse_raid() then
+	if self:should_display_waves() then
 		self._hud_panel:child("wave_panel"):set_x(self._hud_panel:child("hostages_panel"):right())
 	end
 

@@ -186,6 +186,8 @@ function ConnectionNetworkHandler:set_dropin()
 	end
 
 	Global.statistics_manager.playing_from_start = nil
+
+	managers.network:dispatch_event("on_set_dropin")
 end
 
 function ConnectionNetworkHandler:set_waiting(...)
@@ -1159,5 +1161,19 @@ function ConnectionNetworkHandler:get_virus_achievement(sender)
 	end
 
 	managers.achievment:award("cac_28")
+end
+
+function ConnectionNetworkHandler:sync_end_assault_skirmish(sender)
+	local peer = self._verify_sender(sender)
+
+	if not peer then
+		return
+	end
+
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame_playing) then
+		return
+	end
+
+	managers.skirmish:on_end_assault()
 end
 

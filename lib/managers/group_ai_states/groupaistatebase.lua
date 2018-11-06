@@ -915,7 +915,7 @@ function GroupAIStateBase:on_hostage_state(state, key, police, skip_announcement
 	self._hostage_headcount = self._hostage_headcount + d
 
 	self:sync_hostage_headcount()
-	managers.crime_spree:run_func("OnHostageCountChanged")
+	managers.modifiers:run_func("OnHostageCountChanged")
 
 	if Network:is_server() and state then
 		managers.player:captured_hostage()
@@ -1720,6 +1720,8 @@ function GroupAIStateBase:check_gameover_conditions()
 	elseif plrs_disabled and ai_disabled then
 		gameover = true
 	end
+
+	gameover = gameover or managers.skirmish:check_gameover_conditions()
 
 	if gameover then
 		if not self._gameover_clbk then
@@ -4671,7 +4673,7 @@ function GroupAIStateBase:convert_hostage_to_criminal(unit, peer_unit)
 		managers.player:count_up_player_minions()
 	end
 
-	managers.crime_spree:run_func("OnMinionAdded")
+	managers.modifiers:run_func("OnMinionAdded")
 end
 
 function GroupAIStateBase:clbk_minion_destroyed(player_key, minion_unit)
@@ -4773,7 +4775,7 @@ function GroupAIStateBase:remove_minion(minion_key, player_key)
 		end
 	end
 
-	managers.crime_spree:run_func("OnMinionRemoved")
+	managers.modifiers:run_func("OnMinionRemoved")
 end
 
 function GroupAIStateBase:_set_converted_police(u_key, unit, owner_unit)

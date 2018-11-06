@@ -9,7 +9,7 @@ PlayerDamage._UPPERS_COOLDOWN = 20
 function PlayerDamage:init(unit)
 	self._lives_init = tweak_data.player.damage.LIVES_INIT
 	self._lives_init = Global.game_settings.one_down and 2
-	self._lives_init = managers.crime_spree:modify_value("PlayerDamage:GetMaximumLives", self._lives_init)
+	self._lives_init = managers.modifiers:modify_value("PlayerDamage:GetMaximumLives", self._lives_init)
 	self._unit = unit
 	self._max_health_reduction = managers.player:upgrade_value("player", "max_health_reduction", 1)
 	self._healing_reduction = managers.player:upgrade_value("player", "healing_reduction", 1)
@@ -858,7 +858,7 @@ end
 function PlayerDamage:_raw_max_health()
 	local base_max_health = self._HEALTH_INIT + managers.player:health_skill_addend()
 	local mul = managers.player:health_skill_multiplier()
-	mul = managers.crime_spree:modify_value("PlayerDamage:GetMaxHealth", mul)
+	mul = managers.modifiers:modify_value("PlayerDamage:GetMaxHealth", mul)
 
 	return base_max_health * mul
 end
@@ -878,7 +878,7 @@ end
 function PlayerDamage:_raw_max_armor()
 	local base_max_armor = self._ARMOR_INIT + managers.player:body_armor_value("armor") + managers.player:body_armor_skill_addend()
 	local mul = managers.player:body_armor_skill_multiplier()
-	mul = managers.crime_spree:modify_value("PlayerDamage:GetMaxArmor", mul)
+	mul = managers.modifiers:modify_value("PlayerDamage:GetMaxArmor", mul)
 
 	return base_max_armor * mul
 end
@@ -1066,7 +1066,7 @@ function PlayerDamage:damage_bullet(attack_data)
 	local dmg_mul = pm:damage_reduction_skill_multiplier("bullet")
 	attack_data.damage = attack_data.damage * dmg_mul
 	attack_data.damage = managers.mutators:modify_value("PlayerDamage:TakeDamageBullet", attack_data.damage)
-	attack_data.damage = managers.crime_spree:modify_value("PlayerDamage:TakeDamageBullet", attack_data.damage)
+	attack_data.damage = managers.modifiers:modify_value("PlayerDamage:TakeDamageBullet", attack_data.damage)
 
 	if _G.IS_VR then
 		local distance = mvector3.distance(self._unit:position(), attack_data.attacker_unit:position())
@@ -1538,7 +1538,7 @@ function PlayerDamage:damage_explosion(attack_data)
 
 	local dmg_mul = managers.player:damage_reduction_skill_multiplier("explosion")
 	attack_data.damage = damage * dmg_mul
-	attack_data.damage = managers.crime_spree:modify_value("PlayerDamage:OnTakeExplosionDamage", attack_data.damage)
+	attack_data.damage = managers.modifiers:modify_value("PlayerDamage:OnTakeExplosionDamage", attack_data.damage)
 	attack_data.damage = managers.player:modify_value("damage_taken", attack_data.damage, attack_data)
 
 	self:_check_chico_heal(attack_data)
@@ -2473,7 +2473,7 @@ function PlayerDamage:_chk_can_take_dmg()
 	end
 
 	local can_take_damage = self._can_take_dmg_timer <= 0
-	can_take_damage = managers.crime_spree:modify_value("PlayerDamage:CheckCanTakeDamage", can_take_damage)
+	can_take_damage = managers.modifiers:modify_value("PlayerDamage:CheckCanTakeDamage", can_take_damage)
 
 	return can_take_damage
 end

@@ -91,6 +91,7 @@ function CopDamage:init(unit)
 	local char_tweak = tweak_data.character[unit:base()._tweak_table]
 	self._immune_to_knockback = char_tweak.damage.immune_to_knockback
 	self._HEALTH_INIT = char_tweak.HEALTH_INIT
+	self._HEALTH_INIT = managers.modifiers:modify_value("CopDamage:InitialHealth", self._HEALTH_INIT, unit:base()._tweak_table)
 	self._health = self._HEALTH_INIT
 	self._health_ratio = 1
 	self._HEALTH_INIT_PRECENT = self._HEALTH_INIT / self._HEALTH_GRANULARITY
@@ -1142,7 +1143,7 @@ function CopDamage:damage_explosion(attack_data)
 	local is_civilian = CopDamage.is_civilian(self._unit:base()._tweak_table)
 	local result = nil
 	local damage = attack_data.damage
-	damage = managers.crime_spree:modify_value("CopDamage:DamageExplosion", damage, self._unit:base()._tweak_table)
+	damage = managers.modifiers:modify_value("CopDamage:DamageExplosion", damage, self._unit:base()._tweak_table)
 
 	if self._unit:base():char_tweak().DAMAGE_CLAMP_EXPLOSION then
 		damage = math.min(damage, self._unit:base():char_tweak().DAMAGE_CLAMP_EXPLOSION)
@@ -3358,7 +3359,7 @@ function CopDamage:save(data)
 	local save_health = self._health ~= self._HEALTH_INIT
 
 	if managers.crime_spree:is_active() then
-		save_health = ModifierEnemyHealthAndDamage:is_active() or save_health
+		save_health = save_health or managers.crime_spree:has_active_modifier_of_type("ModifierEnemyHealthAndDamage")
 	end
 
 	if save_health then

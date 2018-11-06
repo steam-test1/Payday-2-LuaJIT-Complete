@@ -24,6 +24,7 @@ require("lib/managers/hud/HUDPlayerDowned")
 require("lib/managers/hud/HUDPlayerCustody")
 require("lib/managers/hud/HUDWaitingLegend")
 require("lib/managers/hud/HUDStageEndCrimeSpreeScreen")
+require("lib/managers/hud/HUDStatsScreenSkirmish")
 
 HUDManager.disabled = {}
 HUDManager.disabled[Idstring("guis/player_hud"):key()] = true
@@ -969,7 +970,13 @@ function HUDManager:_setup_stats_screen()
 		return
 	end
 
-	self._hud_statsscreen = HUDStatsScreen:new()
+	local stats_screen_class = HUDStatsScreen
+
+	if managers.skirmish:is_skirmish() then
+		stats_screen_class = HUDStatsScreenSkirmish
+	end
+
+	self._hud_statsscreen = stats_screen_class:new()
 end
 
 function HUDManager:show_stats_screen()

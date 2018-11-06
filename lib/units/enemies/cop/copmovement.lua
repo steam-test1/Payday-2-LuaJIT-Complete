@@ -90,7 +90,8 @@ CopMovement._gadgets = {
 	blood_splatter = {Idstring("units/pd2_dlc_rvd/characters/civ_acc_blood_splatter/civ_acc_blood_splatter")},
 	chimichanga = {Idstring("units/pd2_dlc_tag/characters/ene_acc_chimichanga/ene_acc_chimichanga")},
 	umbrella = {Idstring("units/pd2_dlc_sah/props/sah_prop_umbrella/sah_prop_umbrella")},
-	umbrella_female = {Idstring("units/pd2_dlc_sah/props/sah_prop_umbrella/sah_prop_umbrella_female")}
+	umbrella_female = {Idstring("units/pd2_dlc_sah/props/sah_prop_umbrella/sah_prop_umbrella_female")},
+	knife = {Idstring("units/payday2/characters/ene_acc_knife_1/ene_acc_knife_1")}
 }
 local action_variants = {security = {
 	idle = CopActionIdle,
@@ -1445,7 +1446,7 @@ function CopMovement:damage_clbk(my_unit, damage_info)
 		hurt_type = "heavy_hurt"
 	end
 
-	hurt_type = managers.crime_spree:modify_value("CopMovement:HurtType", hurt_type)
+	hurt_type = managers.modifiers:modify_value("CopMovement:HurtType", hurt_type)
 	local block_type = hurt_type
 
 	if hurt_type == "knock_down" or hurt_type == "expl_hurt" or hurt_type == "fire_hurt" or hurt_type == "poison_hurt" or hurt_type == "taser_tased" then

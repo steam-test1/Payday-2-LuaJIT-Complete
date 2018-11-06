@@ -2705,6 +2705,7 @@ function UnitNetworkHandler:sync_start_assault(assault_number)
 	end
 
 	managers.hud:sync_start_assault(assault_number)
+	managers.skirmish:sync_start_assault(assault_number)
 end
 
 function UnitNetworkHandler:sync_end_assault(result)

@@ -449,7 +449,7 @@ function GroupAIStateBesiege:assault_phase_end_time()
 	local end_t = task_data and task_data.phase_end_t
 
 	if end_t and task_data.phase == "sustain" then
-		end_t = managers.crime_spree:modify_value("GroupAIStateBesiege:SustainEndTime", end_t)
+		end_t = managers.modifiers:modify_value("GroupAIStateBesiege:SustainEndTime", end_t)
 	end
 
 	return end_t
@@ -480,6 +480,7 @@ function GroupAIStateBesiege:_upd_assault_task()
 
 			managers.mission:call_global_event("start_assault")
 			managers.hud:start_assault(self._assault_number)
+			managers.groupai:dispatch_event("start_assault", self._assault_number)
 			self:_set_rescue_state(false)
 
 			task_data.phase = "build"
@@ -519,14 +520,14 @@ function GroupAIStateBesiege:_upd_assault_task()
 		elseif task_data.phase_end_t < t or self._drama_data.zone == "high" then
 			local sustain_duration = math.lerp(self:_get_difficulty_dependent_value(self._tweak_data.assault.sustain_duration_min), self:_get_difficulty_dependent_value(self._tweak_data.assault.sustain_duration_max), math.random()) * self:_get_balancing_multiplier(self._tweak_data.assault.sustain_duration_balance_mul)
 
-			managers.crime_spree:run_func("OnEnterSustainPhase", sustain_duration)
+			managers.modifiers:run_func("OnEnterSustainPhase", sustain_duration)
 
 			task_data.phase = "sustain"
 			task_data.phase_end_t = t + sustain_duration
 		end
 	elseif task_data.phase == "sustain" then
 		local end_t = self:assault_phase_end_time()
-		task_spawn_allowance = managers.crime_spree:modify_value("GroupAIStateBesiege:SustainSpawnAllowance", task_spawn_allowance, force_pool)
+		task_spawn_allowance = managers.modifiers:modify_value("GroupAIStateBesiege:SustainSpawnAllowance", task_spawn_allowance, force_pool)
 
 		if task_spawn_allowance <= 0 then
 			task_data.phase = "fade"
@@ -540,15 +541,31 @@ function GroupAIStateBesiege:_upd_assault_task()
 		local enemies_left = self:_count_police_force("assault")
 
 		if not self._hunt_mode then
-			local min_enemies_left = 50
+			local enemies_defeated_time_limit = 30
+			local drama_engagement_time_limit = 60
 
-			if enemies_left < min_enemies_left or task_data.phase_end_t + 30 < t then
+			if managers.skirmish:is_skirmish() then
+				enemies_defeated_time_limit = 0
+				drama_engagement_time_limit = 0
+			end
+
+			local min_enemies_left = 50
+			local enemies_defeated = enemies_left < min_enemies_left
+			local taking_too_long = task_data.phase_end_t + enemies_defeated_time_limit < t
+
+			if enemies_defeated or taking_too_long then
 				if not task_data.said_retreat then
 					task_data.said_retreat = true
 
 					self:_police_announce_retreat()
-				elseif task_data.phase_end_t < t and (self._drama_data.amount < tweak_data.drama.assault_fade_end and self:_count_criminals_engaged_force(11) <= 10 or task_data.phase_end_t + 60 < t) then
-					end_assault = true
+				elseif task_data.phase_end_t < t then
+					local drama_pass = self._drama_data.amount < tweak_data.drama.assault_fade_end
+					local engagement_pass = self:_count_criminals_engaged_force(11) <= 10
+					local taking_too_long = task_data.phase_end_t + drama_engagement_time_limit < t
+
+					if drama_pass and engagement_pass or taking_too_long then
+						end_assault = true
+					end
 				end
 			end
 
@@ -741,6 +758,8 @@ function GroupAIStateBesiege:_end_regroup_task()
 		local limits = tweak_data.group_ai.bain_assault_praise_limits
 		local result = dmg < limits[1] and 0 or dmg < limits[2] and 1 or 2
 
+		managers.mission:call_global_event("end_assault_late")
+		managers.groupai:dispatch_event("end_assault_late", self._assault_number)
 		managers.hud:end_assault(result)
 		self:_mark_hostage_areas_as_unsafe()
 		self:_set_rescue_state(true)
@@ -1235,6 +1254,14 @@ function GroupAIStateBesiege._extract_group_desc_structure(spawn_entry_outer, va
 	end
 end
 
+function GroupAIStateBesiege:_get_special_unit_type_count(special_type)
+	if not self._special_units[special_type] then
+		return 0
+	end
+
+	return table.size(self._special_units[special_type])
+end
+
 function GroupAIStateBesiege:_spawn_in_group(spawn_group, spawn_group_type, grp_objective, ai_task)
 	local spawn_group_desc = tweak_data.group_ai.enemy_spawn_groups[spawn_group_type]
 	local wanted_nr_units = nil
@@ -1242,14 +1269,6 @@ function GroupAIStateBesiege:_spawn_in_group(spawn_group, spawn_group_type, grp_
 	local valid_unit_types = {}
 
 	self._extract_group_desc_structure(spawn_group_desc.spawn, valid_unit_types)
-
-	local function _get_special_unit_type_count(special_type)
-		if not self._special_units[special_type] then
-			return 0
-		end
-
-		return table.size(self._special_units[special_type])
-	end
 
 	local unit_categories = tweak_data.group_ai.unit_categories
 	local total_wgt = 0
@@ -1263,7 +1282,11 @@ function GroupAIStateBesiege:_spawn_in_group(spawn_group, spawn_group_type, grp_
 			debug_pause("[GroupAIStateBesiege:_spawn_in_group] unit category doesn't exist:", spawn_entry.unit)
 
 			return
-		elseif cat_data.special_type and not cat_data.is_captain and tweak_data.group_ai.special_unit_spawn_limits[cat_data.special_type] and tweak_data.group_ai.special_unit_spawn_limits[cat_data.special_type] < _get_special_unit_type_count(cat_data.special_type) + (spawn_entry.amount_min or 0) then
+		end
+
+		local spawn_limit = managers.job:current_spawn_limit(cat_data.special_type)
+
+		if cat_data.special_type and not cat_data.is_captain and spawn_limit < self:_get_special_unit_type_count(cat_data.special_type) + (spawn_entry.amount_min or 0) then
 			spawn_group.delay_t = self._t + 10
 
 			return
@@ -1343,8 +1366,9 @@ function GroupAIStateBesiege:_spawn_in_group(spawn_group, spawn_group_type, grp_
 		end
 
 		local cat_data = unit_categories[rand_entry.unit]
+		local spawn_limit = managers.job:current_spawn_limit(cat_data.special_type)
 
-		if cat_data.special_type and not cat_data.is_captain and tweak_data.group_ai.special_unit_spawn_limits[cat_data.special_type] and tweak_data.group_ai.special_unit_spawn_limits[cat_data.special_type] <= _get_special_unit_type_count(cat_data.special_type) then
+		if cat_data.special_type and not cat_data.is_captain and spawn_limit <= self:_get_special_unit_type_count(cat_data.special_type) then
 			table.remove(valid_unit_types, rand_i)
 
 			total_wgt = total_wgt - rand_entry.freq
@@ -1407,7 +1431,7 @@ function GroupAIStateBesiege:_perform_group_spawning(spawn_task, force, use_last
 				if sp_data.delay_t < self._t then
 					local units = category.unit_types[current_unit_type]
 					produce_data.name = units[math.random(#units)]
-					produce_data.name = managers.crime_spree:modify_value("GroupAIStateBesiege:SpawningUnit", produce_data.name)
+					produce_data.name = managers.modifiers:modify_value("GroupAIStateBesiege:SpawningUnit", produce_data.name)
 					local spawned_unit = sp_data.mission_element:produce(produce_data)
 					local u_key = spawned_unit:key()
 					local objective = nil

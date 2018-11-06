@@ -2627,7 +2627,7 @@ function BlackMarketManager:_get_concealment(primary, secondary, armor, melee_we
 	local modifier = modifier or 0
 	modifier = modifier - self:team_visibility_modifiers()
 	local total_visibility = math.clamp(primary_visibility + secondary_visibility + armor_visibility + melee_weapon_visibility + modifier, 1, #stats_tweak_data.concealment)
-	total_visibility = managers.crime_spree:modify_value("BlackMarketManager:GetConcealment", total_visibility)
+	total_visibility = managers.modifiers:modify_value("BlackMarketManager:GetConcealment", total_visibility)
 	local total_concealment = math.clamp(#stats_tweak_data.concealment - total_visibility, 1, #stats_tweak_data.concealment)
 
 	return stats_tweak_data.concealment[total_concealment], total_concealment

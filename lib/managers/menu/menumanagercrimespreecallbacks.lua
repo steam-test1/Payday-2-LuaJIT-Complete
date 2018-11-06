@@ -602,14 +602,6 @@ function MenuManager:show_gage_asset_desc(params)
 	managers.system_menu:show(dialog_data)
 end
 
-function MenuCallbackHandler:choice_gamemode_filter(item)
-	Global.game_settings.gamemode_filter = item:value()
-
-	managers.user:set_setting("crimenet_gamemode_filter", item:value())
-	managers.menu:back()
-	managers.menu:open_node("crimenet_filters", {})
-end
-
 function MenuCallbackHandler:choice_spree_difference_filter(item)
 	Global.game_settings.crime_spree_max_lobby_diff = item:value()
 

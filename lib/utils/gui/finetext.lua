@@ -27,7 +27,23 @@ function FineText:set_text(...)
 	self:shrink_wrap()
 end
 
+function FineText:set_color(...)
+	self._gui_obj:set_color(...)
+end
+
+function FineText:set_range_color(...)
+	self._gui_obj:set_range_color(...)
+end
+
+function FineText:clear_range_color(...)
+	self._gui_obj:clear_range_color(...)
+end
+
 function FineText:text()
-	self._gui_obj:text()
+	return self._gui_obj:text()
+end
+
+function FineText:color()
+	return self._gui_obj:color()
 end
 

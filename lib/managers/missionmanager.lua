@@ -161,6 +161,7 @@ function MissionManager:init(...)
 		"keycard",
 		"start_assault",
 		"end_assault",
+		"end_assault_late",
 		"police_called",
 		"police_weapons_hot",
 		"civilian_killed",

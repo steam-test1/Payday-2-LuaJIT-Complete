@@ -1,6 +1,6 @@
 NetworkMatchMakingSTEAM = NetworkMatchMakingSTEAM or class()
 NetworkMatchMakingSTEAM.OPEN_SLOTS = tweak_data.max_players
-NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "payday2_v1.92.670"
+NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "payday2_v1.92.675"
 
 function NetworkMatchMakingSTEAM:init()
 	cat_print("lobby", "matchmake = NetworkMatchMakingSTEAM")
@@ -93,6 +93,8 @@ function NetworkMatchMakingSTEAM:load_user_filters()
 	Global.game_settings.search_one_down_lobbies = managers.user:get_setting("crimenet_filter_one_down")
 	Global.game_settings.gamemode_filter = managers.user:get_setting("crimenet_gamemode_filter")
 	Global.game_settings.crime_spree_max_lobby_diff = managers.user:get_setting("crime_spree_lobby_diff")
+	Global.game_settings.search_only_weekly_skirmish = managers.user:get_setting("crimenet_filter_weekly_skirmish")
+	Global.game_settings.skirmish_wave_filter = managers.user:get_setting("crimenet_filter_skirmish_wave")
 	local new_servers = managers.user:get_setting("crimenet_filter_new_servers_only")
 	local in_lobby = managers.user:get_setting("crimenet_filter_in_lobby")
 	local max_servers = managers.user:get_setting("crimenet_filter_max_servers")
@@ -122,6 +124,8 @@ function NetworkMatchMakingSTEAM:reset_filters()
 	usr:set_setting("crimenet_gamemode_filter", usr:get_default_setting("crimenet_gamemode_filter"))
 	usr:set_setting("crime_spree_lobby_diff", usr:get_default_setting("crime_spree_lobby_diff"))
 	usr:set_setting("crimenet_filter_modded", usr:get_default_setting("crimenet_filter_modded"))
+	usr:set_setting("crimenet_filter_weekly_skirmish", usr:get_default_setting("crimenet_filter_weekly_skirmish"))
+	usr:set_setting("crimenet_filter_skirmish_wave", usr:get_default_setting("crimenet_filter_skirmish_wave"))
 	usr:set_setting("crimenet_filter_one_down", usr:get_default_setting("crimenet_filter_one_down"))
 	usr:set_setting("crimenet_filter_new_servers_only", usr:get_default_setting("crimenet_filter_new_servers_only"))
 	usr:set_setting("crimenet_filter_in_lobby", usr:get_default_setting("crimenet_filter_in_lobby"))
@@ -257,6 +261,13 @@ function NetworkMatchMakingSTEAM:get_friends_lobbies()
 
 						if is_key_valid(lobby_one_down) then
 							attributes_data.one_down = tonumber(lobby_one_down)
+						end
+
+						local skirmish_key = lobby:key_value("skirmish")
+
+						if is_key_valid(skirmish_key) then
+							attributes_data.skirmish = tonumber(skirmish_key)
+							attributes_data.skirmish_wave = lobby:key_value("skirmish_wave")
 						end
 
 						table.insert(info.attribute_list, attributes_data)
@@ -410,6 +421,13 @@ function NetworkMatchMakingSTEAM:search_lobby(friends_only, no_filters)
 							attributes_data.one_down = tonumber(lobby_one_down)
 						end
 
+						local skirmish_key = lobby:key_value("skirmish")
+
+						if is_key_valid(skirmish_key) then
+							attributes_data.skirmish = tonumber(skirmish_key)
+							attributes_data.skirmish_wave = lobby:key_value("skirmish_wave")
+						end
+
 						table.insert(info.attribute_list, attributes_data)
 					end
 				end
@@ -445,7 +463,7 @@ function NetworkMatchMakingSTEAM:search_lobby(friends_only, no_filters)
 
 		local use_filters = not no_filters
 
-		if Global.game_settings.gamemode_filter == GamemodeCrimeSpree.id then
+		if Global.game_settings.gamemode_filter ~= GamemodeStandard.id then
 			use_filters = false
 		end
 
@@ -473,6 +491,10 @@ function NetworkMatchMakingSTEAM:search_lobby(friends_only, no_filters)
 		end
 
 		if not no_filters then
+			if false then
+				
+			end
+
 			if Global.game_settings.gamemode_filter == GamemodeCrimeSpree.id then
 				local min_level = 0
 
@@ -482,8 +504,18 @@ function NetworkMatchMakingSTEAM:search_lobby(friends_only, no_filters)
 				end
 
 				self.browser:set_lobby_filter("crime_spree", min_level, "equalto_or_greater_than")
+			elseif Global.game_settings.gamemode_filter == "skirmish" then
+				local min = SkirmishManager.LOBBY_NORMAL
+
+				if Global.game_settings.search_only_weekly_skirmish then
+					min = SkirmishManager.LOBBY_WEEKLY
+				end
+
+				self.browser:set_lobby_filter("skirmish", min, "equalto_or_greater_than")
+				self.browser:set_lobby_filter("skirmish_wave", Global.game_settings.skirmish_wave_filter or 99, "equalto_less_than")
 			elseif Global.game_settings.gamemode_filter == GamemodeStandard.id then
 				self.browser:set_lobby_filter("crime_spree", -1, "equalto_less_than")
+				self.browser:set_lobby_filter("skirmish", 0, "equalto_less_than")
 			end
 		end
 
@@ -735,6 +767,8 @@ function NetworkMatchMakingSTEAM:join_server(room_id, skip_showing_dialog)
 					end
 				end
 			end
+
+			managers.skirmish:on_joined_server(lobby_data, self.lobby_handler:get_lobby_data())
 
 			local function joined_game(res, level_index, difficulty_index, state_index)
 				if res ~= "JOINED_LOBBY" and res ~= "JOINED_GAME" then
@@ -1005,6 +1039,7 @@ function NetworkMatchMakingSTEAM:set_attributes(settings)
 
 	managers.mutators:apply_matchmake_attributes(lobby_attributes)
 	managers.crime_spree:apply_matchmake_attributes(lobby_attributes)
+	managers.skirmish:apply_matchmake_attributes(lobby_attributes)
 
 	self._lobby_attributes = lobby_attributes
 

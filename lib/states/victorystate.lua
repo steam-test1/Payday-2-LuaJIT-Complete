@@ -22,6 +22,10 @@ function VictoryState:at_enter(...)
 			self._safehouse_raid_rewarded = true
 		end
 	end
+
+	if managers.skirmish:is_weekly_skirmish() then
+		managers.skirmish:on_weekly_completed()
+	end
 end
 
 function VictoryState:at_exit(...)

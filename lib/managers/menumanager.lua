@@ -1293,6 +1293,7 @@ function MenuManager:on_leave_lobby()
 	managers.job:deactivate_current_job()
 	managers.gage_assignment:deactivate_assignments()
 	managers.crime_spree:on_left_lobby()
+	managers.skirmish:on_left_lobby()
 end
 
 function MenuManager:show_global_success(node)
@@ -2307,6 +2308,10 @@ function MenuCallbackHandler:is_custom_safehouse_unlocked()
 	return managers.custom_safehouse:unlocked()
 end
 
+function MenuCallbackHandler:is_skirmish_unlocked()
+	return managers.skirmish:is_unlocked()
+end
+
 function MenuCallbackHandler:lobby_exist()
 	return managers.network.matchmake.lobby_handler
 end
@@ -2867,6 +2872,21 @@ function MenuCallbackHandler:chocie_one_down_filter(item)
 	Global.game_settings.search_one_down_lobbies = allow_one_down
 
 	managers.user:set_setting("crimenet_filter_one_down", allow_one_down)
+end
+
+function MenuCallbackHandler:choice_weekly_skirmish_filter(item)
+	local only_weekly = item:value() == "on" and true or false
+	Global.game_settings.search_only_weekly_skirmish = only_weekly
+
+	managers.user:set_setting("crimenet_filter_weekly_skirmish", only_weekly)
+	managers.network.matchmake:search_lobby(managers.network.matchmake:search_friends_only())
+end
+
+function MenuCallbackHandler:choice_skirmish_wave_filter(item)
+	Global.game_settings.skirmish_wave_filter = item:value()
+
+	managers.user:set_setting("crimenet_filter_skirmish_wave", item:value())
+	managers.network.matchmake:search_lobby(managers.network.matchmake:search_friends_only())
 end
 
 function MenuCallbackHandler:choice_server_state_lobby(item)
@@ -5791,6 +5811,8 @@ function LobbyOptionInitiator:modify_node(node)
 			item_lobby_job_plan:clear_options()
 			item_lobby_job_plan:add_option(stealth_option)
 		end
+
+		item_lobby_job_plan:set_visible(not managers.skirmish:is_skirmish())
 	end
 
 	return node
@@ -6194,6 +6216,66 @@ function MenuCrimeNetContractInitiator:modify_node(original_node, data)
 	node:parameters().menu_component_data = data
 
 	return node
+end
+MenuSkirmishContractInitiator = MenuSkirmishContractInitiator or class()
+
+function MenuSkirmishContractInitiator:modify_node(original_node, data)
+	local node = deep_clone(original_node)
+	data = data or {}
+
+	if Global.game_settings.single_player then
+		node:item("toggle_ai"):set_value(Global.game_settings.team_ai and Global.game_settings.team_ai_option or 0)
+	elseif not data.server then
+		node:item("lobby_kicking_option"):set_value(Global.game_settings.kick_option)
+		node:item("lobby_permission"):set_value(Global.game_settings.permission)
+		node:item("lobby_reputation_permission"):set_value(Global.game_settings.reputation_permission)
+		node:item("lobby_drop_in_option"):set_value(Global.game_settings.drop_in_option)
+		node:item("toggle_ai"):set_value(Global.game_settings.team_ai and Global.game_settings.team_ai_option or 0)
+		node:item("toggle_auto_kick"):set_value(Global.game_settings.auto_kick and "on" or "off")
+		node:item("toggle_allow_modded_players"):set_value(Global.game_settings.allow_modded_players and "on" or "off")
+	end
+
+	if data and data.back_callback then
+		table.insert(node:parameters().back_callback, data.back_callback)
+	end
+
+	node:parameters().menu_component_data = data
+
+	return node
+end
+
+function MenuCallbackHandler:accept_skirmish_contract(item, node)
+	managers.menu:active_menu().logic:navigate_back(true)
+	managers.menu:active_menu().logic:navigate_back(true)
+
+	local job_data = {
+		difficulty = "overkill_145",
+		job_id = managers.skirmish:random_skirmish_job_id()
+	}
+
+	if Global.game_settings.single_player then
+		MenuCallbackHandler:start_single_player_job(job_data)
+	else
+		MenuCallbackHandler:start_job(job_data)
+	end
+end
+
+function MenuCallbackHandler:accept_skirmish_weekly_contract(item, node)
+	managers.menu:active_menu().logic:navigate_back(true)
+	managers.menu:active_menu().logic:navigate_back(true)
+
+	local weekly_skirmish = managers.skirmish:active_weekly()
+	local job_data = {
+		difficulty = "overkill_145",
+		weekly_skirmish = true,
+		job_id = weekly_skirmish.id
+	}
+
+	if Global.game_settings.single_player then
+		MenuCallbackHandler:start_single_player_job(job_data)
+	else
+		MenuCallbackHandler:start_job(job_data)
+	end
 end
 
 function MenuCallbackHandler:set_contact_info(item)
@@ -8945,6 +9027,8 @@ function MenuCrimeNetFiltersInitiator:modify_node(original_node, data)
 		node:item("job_plan_filter"):set_value(matchmake_filters.job_plan and matchmake_filters.job_plan.value or -1)
 		node:item("gamemode_filter"):set_value(Global.game_settings.gamemode_filter or GamemodeStandard.id)
 		node:item("max_spree_difference_filter"):set_value(Global.game_settings.crime_spree_max_lobby_diff or -1)
+		node:item("toggle_weekly_skirmish_filter"):set_value(Global.game_settings.search_only_weekly_skirmish and "on" or "off")
+		node:item("skirmish_wave_filter"):set_value(Global.game_settings.skirmish_wave_filter or 99)
 
 		local job_id_filter = node:item("job_id_filter")
 
@@ -8995,6 +9079,9 @@ function MenuCrimeNetFiltersInitiator:update_node(node)
 		node:item("difficulty_filter"):set_visible(self:is_standard())
 		node:item("job_id_filter"):set_visible(self:is_standard())
 		node:item("max_spree_difference_filter"):set_visible(self:is_crime_spree())
+		node:item("toggle_weekly_skirmish_filter"):set_visible(self:is_skirmish())
+		node:item("skirmish_wave_filter"):set_visible(self:is_skirmish())
+		node:item("job_plan_filter"):set_visible(not self:is_skirmish())
 	elseif MenuCallbackHandler:is_xb1() then
 		if Global.game_settings.search_friends_only then
 			node:item("toggle_mutated_lobby"):set_enabled(false)
@@ -9013,8 +9100,20 @@ function MenuCrimeNetFiltersInitiator:update_node(node)
 	end
 end
 
+function MenuCallbackHandler:choice_gamemode_filter(item)
+	Global.game_settings.gamemode_filter = item:value()
+
+	managers.user:set_setting("crimenet_gamemode_filter", item:value())
+	managers.menu:back()
+	managers.menu:open_node("crimenet_filters", {})
+end
+
 function MenuCrimeNetFiltersInitiator:is_standard()
 	return not Global.game_settings or not Global.game_settings.gamemode_filter or Global.game_settings.gamemode_filter == GamemodeStandard.id
+end
+
+function MenuCrimeNetFiltersInitiator:is_skirmish()
+	return Global.game_settings.gamemode_filter == "skirmish"
 end
 
 function MenuCrimeNetFiltersInitiator:is_crime_spree()

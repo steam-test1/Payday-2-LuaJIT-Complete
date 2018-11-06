@@ -450,6 +450,13 @@ function CrimeNetManager:activate()
 	self._active = true
 	self._refresh_server_t = 0
 end
+local disabled_contacts = {
+	"wip",
+	"tests",
+	"escape",
+	"hoxton",
+	"skirmish"
+}
 
 function CrimeNetManager:activate_job()
 	local i = math.random(#self._presets)
@@ -461,7 +468,7 @@ function CrimeNetManager:activate_job()
 		if roll <= chance then
 			local contact = tweak_data.narrative.jobs[self._presets[i].job_id].contact
 
-			if not self._active_jobs[i] and i ~= 0 and contact ~= "wip" and contact ~= "tests" and contact ~= "escape" and contact ~= "hoxton" then
+			if not self._active_jobs[i] and i ~= 0 and not table.contains(disabled_contacts, contact) then
 				print("
 
 				self._active_jobs[i] = {
@@ -1079,7 +1086,10 @@ function CrimeNetManager:_find_online_games_win32(friends_only)
 								permission = permission,
 								min_level = min_level,
 								mods = attribute_list[i].mods,
-								one_down = attribute_list[i].one_down
+								one_down = attribute_list[i].one_down,
+								is_skirmish = attribute_list[i].skirmish and attribute_list[i].skirmish > 0,
+								skirmish = attribute_list[i].skirmish,
+								skirmish_wave = attribute_list[i].skirmish_wave
 							})
 						end
 					else
@@ -1107,7 +1117,10 @@ function CrimeNetManager:_find_online_games_win32(friends_only)
 							permission = permission,
 							min_level = min_level,
 							mods = attribute_list[i].mods,
-							one_down = attribute_list[i].one_down
+							one_down = attribute_list[i].one_down,
+							is_skirmish = attribute_list[i].skirmish and attribute_list[i].skirmish > 0,
+							skirmish = attribute_list[i].skirmish,
+							skirmish_wave = attribute_list[i].skirmish_wave
 						})
 					end
 				end
@@ -1668,6 +1681,23 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 	})
 	mw = math.max(mw, self:make_fine_text(spree_text))
 	next_y = spree_text:bottom()
+	local skirmish_icon = legend_panel:bitmap({
+		texture = "guis/textures/pd2/crimenet_legend_join",
+		x = 10,
+		y = next_y,
+		color = tweak_data.screen_colors.skirmish_color
+	})
+	local skirmish_text = legend_panel:text({
+		blend_mode = "add",
+		font = tweak_data.menu.pd2_small_font,
+		font_size = tweak_data.menu.pd2_small_font_size,
+		x = host_text:left(),
+		y = next_y,
+		text = managers.localization:to_upper_text("menu_cn_skirmish"),
+		color = tweak_data.screen_colors.skirmish_color
+	})
+	mw = math.max(mw, self:make_fine_text(skirmish_text))
+	next_y = skirmish_text:bottom()
 	local kick_none_icon = legend_panel:bitmap({
 		texture = "guis/textures/pd2/cn_kick_marker",
 		x = 10,
@@ -3026,6 +3056,10 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		end
 	end
 
+	if data.is_skirmish then
+		job_name:set_color(tweak_data.screen_colors.skirmish_color)
+	end
+
 	stars_panel:set_w(star_size * math.min(11, #stars_panel:children()))
 	stars_panel:set_h(star_size)
 
@@ -3114,6 +3148,28 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		else
 			text = managers.localization:text("menu_lobby_server_state_in_lobby")
 		end
+
+		job_name:set_text(utf8.to_upper(text))
+
+		local _, _, w, h = job_name:text_rect()
+
+		job_name:set_size(w, h)
+		job_name:set_position(0, host_name:bottom())
+		contact_name:set_text(" ")
+		contact_name:set_w(0, 0)
+		contact_name:set_position(0, host_name:bottom())
+		info_name:set_text(" ")
+		info_name:set_size(0, 0)
+		info_name:set_position(0, host_name:bottom())
+		difficulty_name:set_text(" ")
+		difficulty_name:set_w(0, 0)
+		difficulty_name:set_position(0, host_name:bottom())
+		heat_name:set_text(" ")
+		heat_name:set_w(0, 0)
+		heat_name:set_position(0, host_name:bottom())
+	elseif data.is_skirmish then
+		local is_weekly = data.skirmish == SkirmishManager.LOBBY_WEEKLY
+		local text = managers.localization:text(is_weekly and "menu_weekly_skirmish" or "menu_skirmish")
 
 		job_name:set_text(utf8.to_upper(text))
 
@@ -3257,6 +3313,10 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		marker_dot:set_color(tweak_data.screen_colors.crime_spree_risk)
 	end
 
+	if data.is_skirmish then
+		marker_dot:set_color(tweak_data.screen_colors.skirmish_color)
+	end
+
 	local timer_rect, peers_panel = nil
 	local icon_panel = self._pan_panel:panel({
 		alpha = 1,
@@ -3335,6 +3395,10 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 
 			if data.is_crime_spree then
 				player_marker:set_color(tweak_data.screen_colors.crime_spree_risk)
+			end
+
+			if data.is_skirmish then
+				player_marker:set_color(tweak_data.screen_colors.skirmish_color)
 			end
 		end
 
@@ -3520,7 +3584,10 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		crime_spree_mission = data.crime_spree_mission,
 		color_lerp = data.color_lerp,
 		server_data = data,
-		mods = data.mods
+		mods = data.mods,
+		is_skirmish = data.skirmish and data.skirmish > 0,
+		skirmish = data.skirmish,
+		skirmish_wave = data.skirmish_wave
 	}
 
 	if is_crime_spree or data.is_crime_spree then
@@ -3552,6 +3619,35 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 				font_size = tweak_data.menu.pd2_small_font_size
 			})
 		end
+	end
+
+	if data.is_skirmish then
+		stars_panel:set_visible(false)
+
+		local skirmish_panel = side_panel:panel({
+			visible = true,
+			name = "skirmish_panel",
+			layer = -1,
+			h = tweak_data.menu.pd2_small_font_size
+		})
+
+		skirmish_panel:set_bottom(side_panel:h())
+
+		local wave = data.skirmish_wave
+		local text = nil
+		text = data.state == tweak_data:server_state_to_index("in_game") and managers.localization:to_upper_text("menu_skirmish_wave_number", {wave = wave}) or managers.localization:to_upper_text("menu_lobby_server_state_" .. tweak_data:index_to_server_state(data.state))
+		local skirmish_wave = skirmish_panel:text({
+			layer = 1,
+			vertical = "center",
+			blend_mode = "add",
+			align = "left",
+			halign = "left",
+			valign = "center",
+			text = text,
+			color = tweak_data.screen_colors.skirmish_color,
+			font = tweak_data.menu.pd2_small_font,
+			font_size = tweak_data.menu.pd2_small_font_size
+		})
 	end
 
 	self:update_job_gui(job, 3)
@@ -3738,6 +3834,14 @@ function CrimeNetGui:update_server_job(data, i)
 
 	if data.is_crime_spree then
 		new_text_color = tweak_data.screen_colors.crime_spree_risk or new_text_color
+	end
+
+	if data.is_skirmish then
+		new_color = tweak_data.screen_colors.skirmish_color or new_color
+	end
+
+	if data.is_skirmish then
+		new_text_color = tweak_data.screen_colors.skirmish_color or new_text_color
 	end
 
 	if job.peers_panel then
@@ -4079,14 +4183,32 @@ function CrimeNetGui:check_job_pressed(x, y)
 				crime_spree = job.crime_spree,
 				crime_spree_mission = job.crime_spree_mission,
 				server_data = job.server_data,
-				mods = job.mods
+				mods = job.mods,
+				skirmish = job.skirmish
 			}
 
 			managers.menu_component:post_event("menu_enter")
 
 			if not data.dlc or managers.dlc:is_dlc_unlocked(data.dlc) then
 				local node = job.special_node
-				node = node or Global.game_settings.single_player and "crimenet_contract_singleplayer" or job.server and (job.is_crime_spree and "crimenet_contract_crime_spree_join" or "crimenet_contract_join") or "crimenet_contract_host"
+
+				if not node then
+					if Global.game_settings.single_player then
+						node = "crimenet_contract_singleplayer"
+					elseif job.server then
+						node = "crimenet_contract_join"
+
+						if job.is_crime_spree then
+							node = "crimenet_contract_crime_spree_join"
+						end
+
+						if job.is_skirmish then
+							node = "skirmish_contract_join"
+						end
+					else
+						node = "crimenet_contract_host"
+					end
+				end
 
 				managers.menu:open_node(node, {data})
 			elseif is_win32 then
