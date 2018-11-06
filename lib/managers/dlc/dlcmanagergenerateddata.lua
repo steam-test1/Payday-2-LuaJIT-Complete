@@ -30,6 +30,10 @@ function GenericDLCManager:has_tam()
 	return self:is_dlc_unlocked("tam")
 end
 
+function GenericDLCManager:has_tar()
+	return self:is_dlc_unlocked("tar")
+end
+
 function GenericDLCManager:has_tjp()
 	return self:is_dlc_unlocked("tjp")
 end
@@ -68,6 +72,10 @@ function WINDLCManager:init_generated()
 		no_install = true
 	}
 	Global.dlc_manager.all_dlc_data.tam = {
+		app_id = "218620",
+		no_install = true
+	}
+	Global.dlc_manager.all_dlc_data.tar = {
 		app_id = "218620",
 		no_install = true
 	}

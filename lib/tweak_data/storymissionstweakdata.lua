@@ -833,30 +833,6 @@ function StoryMissionsTweakData:_init_missions(tweak_data)
 				}
 			},
 			rewards = self:_default_reward()
-		}),
-		self:_mission("sm_50", {
-			reward_id = "menu_sm_default_reward",
-			voice_line = "Play_loc_stq_04",
-			objectives = {
-				{
-					self:_level_progress("story_very_hard_sah", 1, {
-						name_id = "menu_sm_very_hard_sah"
-					})
-				}
-			},
-			rewards = self:_default_reward()
-		}),
-		self:_mission("sm_51", {
-			reward_id = "menu_sm_default_reward",
-			voice_line = "Play_loc_stq_05",
-			objectives = {
-				{
-					self:_level_progress("story_very_hard_bph", 1, {
-						name_id = "menu_sm_very_hard_bph"
-					})
-				}
-			},
-			rewards = self:_default_reward()
 		})
 	}
 end

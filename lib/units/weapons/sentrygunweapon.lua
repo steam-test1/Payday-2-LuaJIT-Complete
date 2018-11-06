@@ -151,6 +151,10 @@ function SentryGunWeapon:setup(setup_data)
 end
 
 function SentryGunWeapon:update(unit, t, dt)
+	if not alive(self._laser_unit) then
+		self._blink_start_t = nil
+	end
+
 	if self._blink_start_t then
 		local period = 0.55
 		local phase = (t - self._blink_start_t) % period / period

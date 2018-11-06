@@ -121,6 +121,9 @@ function TweakDataVR:init(tweak_data)
 			},
 			long = {
 				hit_point = Vector3(0, -15, 80)
+			},
+			elastic = {
+				hit_point = Vector3(0, -15, 80)
 			}
 		}
 	}
@@ -346,6 +349,10 @@ function TweakDataVR:init(tweak_data)
 			x_rota = {
 				position = Vector3(-0.1, 2, 1.2)
 			},
+			coach = {
+				grip = "weapon_2_grip",
+				position = Vector3(-0.8, 3, -3)
+			},
 			mosin = {
 				position = Vector3(0, -6, 2)
 			},
@@ -447,6 +454,9 @@ function TweakDataVR:init(tweak_data)
 			},
 			long = {
 				grip = "grip_wpn"
+			},
+			elastic = {
+				grip = "grip_wpn"
 			}
 		}
 	}
@@ -462,6 +472,13 @@ function TweakDataVR:init(tweak_data)
 			}
 		},
 		long = {
+			position = Vector3(0, -5, 0),
+			string_distance = {
+				10,
+				60
+			}
+		},
+		elastic = {
 			position = Vector3(0, -5, 0),
 			string_distance = {
 				10,
@@ -650,6 +667,10 @@ function TweakDataVR:init(tweak_data)
 		x_rota = {
 			position = Vector3(3, 0, 1),
 			rotation = Rotation(-1, 55, -4)
+		},
+		coach = {
+			position = Vector3(3, 0, 0),
+			rotation = Rotation(-223, -129, 70)
 		},
 		olympic = {
 			position = Vector3(0, 3, 2),
@@ -896,6 +917,10 @@ function TweakDataVR:init(tweak_data)
 			position = Vector3(0, 3, 2),
 			rotation = Rotation(0, -25, 0)
 		},
+		komodo = {
+			position = Vector3(0, 3, 2),
+			rotation = Rotation(0, -25, 0)
+		},
 		m95 = {
 			position = Vector3(5, 0, 0),
 			rotation = Rotation(33, 35, 50)
@@ -995,11 +1020,13 @@ function TweakDataVR:init(tweak_data)
 	}
 	self.locked = {
 		melee_weapons = {
+			road = true,
 			weapon = true,
-			road = true
+			elastic = true
 		},
 		weapons = {
 			contraband = true,
+			elastic = true,
 			frankish = true,
 			long = true,
 			hunter = true,
@@ -1099,6 +1126,10 @@ function TweakDataVR:init(tweak_data)
 			boot = {
 				grip = "idle_wpn",
 				position = Vector3(-2, 28, 2)
+			},
+			coach = {
+				grip = "idle_wpn",
+				position = Vector3(-2, 25, 2)
 			},
 			hk21 = {
 				points = {
@@ -1367,6 +1398,9 @@ function TweakDataVR:init(tweak_data)
 				position = Vector3(-2, 28, 2)
 			},
 			corgi = {
+				position = Vector3(0, 22, -3)
+			},
+			komodo = {
 				position = Vector3(0, 22, -3)
 			},
 			rpg7 = {
@@ -4736,6 +4770,42 @@ function TweakDataVR:init(tweak_data)
 				}
 			}
 		},
+		komodo = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_komodo_mag_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 5, -20),
+					rot = Rotation(0, 30, 0)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_komodo_mag_in",
+					visible = true,
+					pos = Vector3(0, 0, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, 0, -4.5)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, 0, -4)
+				},
+				{
+					time = 0.6,
+					sound = "wp_komodo_release_lever",
+					pos = Vector3()
+				}
+			}
+		},
 		jowi = {
 			start = {
 				{
@@ -6932,6 +7002,65 @@ function TweakDataVR:init(tweak_data)
 				}
 			}
 		},
+		coach = {
+			custom_mag_unit = "units/pd2_dlc_vr/units/wpn_vr_m_slug/wpn_vr_m_slug_2",
+			start = {
+				{
+					time = 0,
+					sound = "wp_huntsman_barrel_open",
+					anims = {
+						{
+							anim_group = "reload",
+							to = 0.5,
+							from = 0
+						}
+					}
+				},
+				{
+					time = 0.02,
+					sound = "wp_huntsman_shell_out"
+				},
+				{
+					time = 0.03,
+					visible = {
+						visible = false,
+						parts = {
+							stock = true
+						}
+					},
+					effect = {
+						object = "a_right_slug",
+						name = "effects/payday2/particles/weapons/shells/shell_slug_2x"
+					}
+				}
+			},
+			finish = {
+				{
+					sound = "wp_huntsman_shell_insert",
+					time = 0,
+					visible = {
+						visible = true,
+						parts = {
+							stock = true
+						}
+					}
+				},
+				{
+					time = 0.4,
+					sound = "wp_huntsman_barrel_close",
+					anims = {
+						{
+							anim_group = "reload",
+							from = 0.7
+						}
+					}
+				},
+				{
+					time = 0.5,
+					sound = "wp_huntsman_lock_click"
+				}
+			}
+		},
 		hk21 = {
 			start = {
 				{
@@ -7975,6 +8104,30 @@ function TweakDataVR:init(tweak_data)
 				{
 					time = 0.9,
 					sound = "wp_minigun_belt_in",
+					pos = Vector3()
+				}
+			}
+		},
+		elastic = {
+			start = {
+				{
+					time = 0
+				},
+				{
+					time = 0.03,
+					visible = false,
+					pos = Vector3(0, 0, 0)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					visible = true,
+					pos = Vector3(0, 0, 0)
+				},
+				{
+					time = 0.5,
+					sound = "wp_bow_new_arrow",
 					pos = Vector3()
 				}
 			}

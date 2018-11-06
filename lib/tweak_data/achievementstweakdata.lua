@@ -5562,16 +5562,6 @@ function AchievementsTweakData:init(tweak_data)
 			story = "story_very_hard_henrys_rock",
 			difficulty = veryhard_and_above
 		},
-		story_very_hard_sah = {
-			job = "sah",
-			story = "story_very_hard_sah",
-			difficulty = veryhard_and_above
-		},
-		story_very_hard_bph = {
-			job = "bph",
-			story = "story_very_hard_bph",
-			difficulty = veryhard_and_above
-		},
 		challenge_srtd = {
 			everyone_killed_by_melee = 0,
 			everyone_killed_by_grenade = 0,

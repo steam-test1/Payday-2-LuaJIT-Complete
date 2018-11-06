@@ -86,6 +86,12 @@ function DLCTweakData:init_generated()
 	}
 	self.tam_bundle.content.loot_global_value = "tam"
 	self.tam_bundle.content.loot_drops = {}
+	self.tar_bundle = {
+		free = true,
+		content = {}
+	}
+	self.tar_bundle.content.loot_global_value = "tar"
+	self.tar_bundle.content.loot_drops = {}
 	self.tjp_bundle = {
 		dlc = "has_tjp",
 		content = {}

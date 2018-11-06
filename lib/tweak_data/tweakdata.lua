@@ -2493,6 +2493,20 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.ecp_arrow_exp.damage = 55
 	self.projectiles.ecp_arrow_exp.bullet_class = "InstantExplosiveBulletBase"
 	self.projectiles.ecp_arrow_exp.remove_on_impact = true
+	self.projectiles.elastic_arrow = {
+		damage = 200,
+		launch_speed = 3500,
+		adjust_z = -130,
+		mass_look_up_modifier = 1,
+		push_at_body_index = 0
+	}
+	self.projectiles.elastic_arrow_poison = deep_clone(self.projectiles.elastic_arrow)
+	self.projectiles.elastic_arrow_poison.damage = 30
+	self.projectiles.elastic_arrow_poison.bullet_class = "PoisonBulletBase"
+	self.projectiles.elastic_arrow_exp = deep_clone(self.projectiles.elastic_arrow)
+	self.projectiles.elastic_arrow_exp.damage = 140
+	self.projectiles.elastic_arrow_exp.bullet_class = "InstantExplosiveBulletBase"
+	self.projectiles.elastic_arrow_exp.remove_on_impact = true
 	self.voting = {
 		timeout = 30,
 		cooldown = 50,

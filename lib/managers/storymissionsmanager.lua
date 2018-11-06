@@ -302,8 +302,11 @@ function StoryMissionsManager:load(cache, version)
 
 	for id, c in pairs(state.completed_missions or {}) do
 		local m = self:get_mission(id)
-		m.completed = true
-		m.rewarded = c.rewarded
+
+		if m then
+			m.completed = true
+			m.rewarded = c.rewarded
+		end
 	end
 
 	local curr = state.current_mission

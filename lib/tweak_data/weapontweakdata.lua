@@ -212,8 +212,11 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_x_rota_crew()
 	self:_init_data_shuno_crew()
 	self:_init_data_system_crew()
+	self:_init_data_komodo_crew()
+	self:_init_data_elastic_crew()
 	self:_init_data_legacy_crew()
 	self:_init_data_x_legacy_crew()
+	self:_init_data_coach_crew()
 	self:_precalculate_values()
 end
 
@@ -508,8 +511,8 @@ function WeaponTweakData:_init_data_m4_yellow_npc()
 	self.m4_yellow_npc.sounds.prefix = "m4_npc"
 	self.m4_yellow_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.m4_yellow_npc.DAMAGE = 1
-	self.m4_yellow_npc.muzzleflash = "effects/payday2/particles/smoke_trail/dark_smoke_small"
-	self.m4_yellow_npc.shell_ejection = "effects/payday2/particles/smoke_trail/dark_smoke_small"
+	self.m4_yellow_npc.muzzleflash = "effects/payday2/particles/weapons/556_auto"
+	self.m4_yellow_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.m4_yellow_npc.CLIP_AMMO_MAX = 30
 	self.m4_yellow_npc.NR_CLIPS_MAX = 5
 	self.m4_yellow_npc.auto.fire_rate = 0.175
@@ -4264,6 +4267,47 @@ function WeaponTweakData:_init_data_system_crew()
 	self.system_crew.FIRE_MODE = "auto"
 end
 
+function WeaponTweakData:_init_data_komodo_crew()
+	self.komodo_crew.categories = clone(self.komodo.categories)
+	self.komodo_crew.sounds.prefix = "komodo_npc"
+	self.komodo_crew.use_data.selection_index = 2
+	self.komodo_crew.DAMAGE = 1.05
+	self.komodo_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.komodo_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.komodo_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.komodo_crew.CLIP_AMMO_MAX = 30
+	self.komodo_crew.NR_CLIPS_MAX = 5
+	self.komodo_crew.pull_magazine_during_reload = "rifle"
+	self.komodo_crew.auto.fire_rate = 0.07
+	self.komodo_crew.hold = {
+		"bullpup",
+		"rifle"
+	}
+	self.komodo_crew.alert_size = 5000
+	self.komodo_crew.suppression = 1
+	self.komodo_crew.FIRE_MODE = "auto"
+end
+
+function WeaponTweakData:_init_data_elastic_crew()
+	self.elastic_crew.categories = clone(self.elastic.categories)
+	self.elastic_crew.sounds.prefix = "elastic_npc"
+	self.elastic_crew.use_data.selection_index = SELECTION.PRIMARY
+	self.elastic_crew.use_data.align_place = "left_hand"
+	self.elastic_crew.DAMAGE = 2
+	self.elastic_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.elastic_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.elastic_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.elastic_crew.no_trail = true
+	self.elastic_crew.CLIP_AMMO_MAX = 1
+	self.elastic_crew.NR_CLIPS_MAX = 4
+	self.elastic_crew.auto.fire_rate = 0.1
+	self.elastic_crew.hold = "bow"
+	self.elastic_crew.has_fire_animation = true
+	self.elastic_crew.alert_size = 2800
+	self.elastic_crew.suppression = 1
+	self.elastic_crew.FIRE_MODE = "single"
+end
+
 function WeaponTweakData:_init_data_legacy_crew()
 	self.legacy_crew.categories = clone(self.legacy.categories)
 	self.legacy_crew.sounds.prefix = "legacy_npc"
@@ -4295,6 +4339,22 @@ function WeaponTweakData:_init_data_x_legacy_crew()
 	self.x_legacy_crew.alert_size = 2500
 	self.x_legacy_crew.suppression = 1
 	self.x_legacy_crew.FIRE_MODE = "single"
+end
+
+function WeaponTweakData:_init_data_coach_crew()
+	self.coach_crew.categories = clone(self.coach.categories)
+	self.coach_crew.sounds.prefix = "coach_npc"
+	self.coach_crew.use_data.selection_index = SELECTION.SECONDARY
+	self.coach_crew.DAMAGE = 16
+	self.coach_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
+	self.coach_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	self.coach_crew.CLIP_AMMO_MAX = 2
+	self.coach_crew.NR_CLIPS_MAX = 4
+	self.coach_crew.hold = "rifle"
+	self.coach_crew.alert_size = 4500
+	self.coach_crew.suppression = 1.8
+	self.coach_crew.FIRE_MODE = "single"
+	self.coach_crew.is_shotgun = true
 end
 
 function WeaponTweakData:_init_data_player_weapons(tweak_data)
@@ -5141,8 +5201,11 @@ function WeaponTweakData:_init_new_weapons(weapon_data)
 	self:_init_x_rota(weapon_data)
 	self:_init_shuno(weapon_data)
 	self:_init_system(weapon_data)
+	self:_init_komodo(weapon_data)
+	self:_init_elastic(weapon_data)
 	self:_init_legacy(weapon_data)
 	self:_init_x_legacy(weapon_data)
+	self:_init_coach(weapon_data)
 end
 
 function WeaponTweakData:_init_new_m4(weapon_data)
@@ -22755,6 +22818,225 @@ function WeaponTweakData:_init_system(weapon_data)
 	}
 end
 
+function WeaponTweakData:_init_komodo(weapon_data)
+	self.komodo = {
+		categories = {
+			"assault_rifle"
+		},
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.komodo.sounds.fire = "komodo_fire_fire_single"
+	self.komodo.sounds.fire_single = "komodo_fire_fire_single"
+	self.komodo.sounds.fire_auto = "komodo_fire"
+	self.komodo.sounds.stop_fire = "komodo_stop"
+	self.komodo.sounds.dryfire = "primary_dryfire"
+	self.komodo.sounds.enter_steelsight = "primary_steel_sight_enter"
+	self.komodo.sounds.leave_steelsight = "primary_steel_sight_exit"
+	self.komodo.timers = {
+		reload_not_empty = 2.35,
+		reload_empty = 3.35,
+		unequip = 0.65,
+		equip = 0.6
+	}
+	self.komodo.name_id = "bm_w_komodo"
+	self.komodo.desc_id = "bm_w_komodo_desc"
+	self.komodo.description_id = "des_komodo"
+	self.komodo.muzzleflash = "effects/payday2/particles/weapons/556_auto_fps"
+	self.komodo.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
+	self.komodo.use_data = {
+		selection_index = SELECTION.PRIMARY
+	}
+	self.komodo.DAMAGE = 1
+	self.komodo.CLIP_AMMO_MAX = 30
+	self.komodo.NR_CLIPS_MAX = 5
+	self.komodo.AMMO_MAX = self.corgi.CLIP_AMMO_MAX * self.corgi.NR_CLIPS_MAX
+	self.komodo.AMMO_PICKUP = self:_pickup_chance(self.corgi.AMMO_MAX, 3)
+	self.komodo.FIRE_MODE = "auto"
+	self.komodo.fire_mode_data = {
+		fire_rate = 0.075
+	}
+	self.komodo.CAN_TOGGLE_FIREMODE = true
+	self.komodo.auto = {
+		fire_rate = 0.075
+	}
+	self.komodo.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight
+	}
+	self.komodo.kick = {
+		standing = self.new_m4.kick.standing,
+		crouching = self.corgi.kick.standing,
+		steelsight = self.corgi.kick.standing
+	}
+	self.komodo.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.komodo.crosshair.standing.offset = 0.16
+	self.komodo.crosshair.standing.moving_offset = 1
+	self.komodo.crosshair.standing.kick_offset = 0.8
+	self.komodo.crosshair.crouching.offset = 0.1
+	self.komodo.crosshair.crouching.moving_offset = 0.6
+	self.komodo.crosshair.crouching.kick_offset = 0.4
+	self.komodo.crosshair.steelsight.hidden = true
+	self.komodo.crosshair.steelsight.offset = 0
+	self.komodo.crosshair.steelsight.moving_offset = 0
+	self.komodo.crosshair.steelsight.kick_offset = 0.14
+	self.komodo.shake = {
+		fire_multiplier = 0.3,
+		fire_steelsight_multiplier = -0.3
+	}
+	self.komodo.autohit = weapon_data.autohit_rifle_default
+	self.komodo.aim_assist = weapon_data.aim_assist_rifle_default
+	self.komodo.weapon_hold = "komodo"
+	self.komodo.animations = {
+		equip_id = "equip_komodo",
+		recoil_steelsight = true
+	}
+	self.komodo.global_value = "normal"
+	self.komodo.texture_bundle_folder = "tar"
+	self.komodo.panic_suppression_chance = 0.2
+	self.komodo.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 58,
+		alert_size = 8,
+		spread = 16,
+		spread_moving = 15,
+		recoil = 14,
+		value = 9,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 12,
+		concealment = 26
+	}
+end
+
+function WeaponTweakData:_init_elastic(weapon_data)
+	self.elastic = {
+		categories = {
+			"bow"
+		},
+		upgrade_blocks = {
+			weapon = {
+				"clip_ammo_increase"
+			}
+		},
+		projectile_type = "elastic_arrow",
+		not_allowed_in_bleedout = true,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.elastic.sounds.charge_release = "elastic_release"
+	self.elastic.sounds.charge_release_fail = "elastic_release_fail"
+	self.elastic.sounds.charge = "elastic_charge"
+	self.elastic.sounds.charge_cancel = "elastic_charge_cancel"
+	self.elastic.sounds.enter_steelsight = "secondary_steel_sight_enter"
+	self.elastic.sounds.leave_steelsight = "secondary_steel_sight_exit"
+	self.elastic.timers = {
+		reload_not_empty = 1.3
+	}
+	self.elastic.timers.reload_empty = self.elastic.timers.reload_not_empty
+	self.elastic.timers.unequip = 0.85
+	self.elastic.timers.equip = 0.85
+	self.elastic.charge_data = {
+		max_t = 1.5
+	}
+	self.elastic.name_id = "bm_w_elastic"
+	self.elastic.desc_id = "bm_w_elastic_desc"
+	self.elastic.description_id = "des_elastic"
+	self.elastic.global_value = "normal"
+	self.elastic.texture_bundle_folder = "ram"
+	self.elastic.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
+	self.elastic.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	self.elastic.use_data = {
+		selection_index = SELECTION.PRIMARY,
+		align_place = "left_hand"
+	}
+	self.elastic.DAMAGE = 6
+	self.elastic.CLIP_AMMO_MAX = 1
+	self.elastic.NR_CLIPS_MAX = 30
+	self.elastic.AMMO_MAX = self.elastic.CLIP_AMMO_MAX * self.elastic.NR_CLIPS_MAX
+	self.elastic.AMMO_PICKUP = self:_pickup_chance(0, self.elastic.use_data.selection_index)
+	self.elastic.FIRE_MODE = "single"
+	self.elastic.fire_mode_data = {
+		fire_rate = 0.2
+	}
+	self.elastic.single = {
+		fire_rate = 0.2
+	}
+	self.elastic.spread = {
+		standing = self.r870.spread.standing,
+		crouching = self.r870.spread.crouching,
+		steelsight = self.r870.spread.steelsight,
+		moving_standing = self.r870.spread.moving_standing,
+		moving_crouching = self.r870.spread.moving_crouching,
+		moving_steelsight = self.r870.spread.moving_steelsight
+	}
+	self.elastic.kick = {
+		standing = {
+			1.8,
+			2,
+			-0.2,
+			0.2
+		}
+	}
+	self.elastic.kick.crouching = self.elastic.kick.standing
+	self.elastic.kick.steelsight = self.elastic.kick.standing
+	self.elastic.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.elastic.crosshair.standing.offset = 0.16
+	self.elastic.crosshair.standing.moving_offset = 0.7
+	self.elastic.crosshair.crouching.offset = 0.07
+	self.elastic.crosshair.crouching.moving_offset = 0.7
+	self.elastic.crosshair.crouching.kick_offset = 0.3
+	self.elastic.crosshair.steelsight.hidden = true
+	self.elastic.crosshair.steelsight.offset = 0
+	self.elastic.crosshair.steelsight.moving_offset = 0
+	self.elastic.crosshair.steelsight.kick_offset = 0.1
+	self.elastic.shake = {
+		fire_multiplier = 2,
+		fire_steelsight_multiplier = 2
+	}
+	self.elastic.autohit = weapon_data.autohit_shotgun_default
+	self.elastic.aim_assist = weapon_data.aim_assist_shotgun_default
+	self.elastic.animations = {
+		equip_id = "equip_elastic"
+	}
+	self.elastic.weapon_hold = "elastic"
+	self.elastic.animations.recoil_steelsight = false
+	self.elastic.panic_suppression_chance = 0.2
+	self.elastic.ignore_damage_upgrades = true
+	self.elastic.stats = {
+		zoom = 5,
+		total_ammo_mod = 21,
+		damage = 20,
+		alert_size = 7,
+		spread = 25,
+		spread_moving = 25,
+		recoil = 25,
+		value = 1,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 2,
+		concealment = 27
+	}
+	self.elastic.stats_modifiers = {
+		damage = 100
+	}
+end
+
 function WeaponTweakData:_init_legacy(weapon_data)
 	self.legacy = {
 		categories = {
@@ -22790,7 +23072,7 @@ function WeaponTweakData:_init_legacy(weapon_data)
 	self.legacy.CLIP_AMMO_MAX = 13
 	self.legacy.NR_CLIPS_MAX = 12
 	self.legacy.AMMO_MAX = self.legacy.CLIP_AMMO_MAX * self.legacy.NR_CLIPS_MAX
-	self.legacy.AMMO_PICKUP = self:_pickup_chance(self.legacy.AMMO_MAX, PICKUP.SNIPER_HIGH_DAMAGE)
+	self.legacy.AMMO_PICKUP = self:_pickup_chance(self.legacy.AMMO_MAX, PICKUP.OTHER)
 	self.legacy.FIRE_MODE = "single"
 	self.legacy.fire_mode_data = {
 		fire_rate = 0.11
@@ -22962,6 +23244,124 @@ function WeaponTweakData:_init_x_legacy(weapon_data)
 		reload = 11,
 		suppression = 15,
 		concealment = 30
+	}
+end
+
+function WeaponTweakData:_init_coach(weapon_data)
+	self.coach = {
+		categories = {
+			"shotgun"
+		},
+		upgrade_blocks = {
+			weapon = {
+				"clip_ammo_increase"
+			}
+		},
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.coach.sounds.fire = "coach_fire"
+	self.coach.sounds.dryfire = "shotgun_dryfire"
+	self.coach.sounds.enter_steelsight = "primary_steel_sight_enter"
+	self.coach.sounds.leave_steelsight = "primary_steel_sight_exit"
+	self.coach.timers = {
+		reload_not_empty = 2.2
+	}
+	self.coach.timers.reload_empty = self.coach.timers.reload_not_empty
+	self.coach.timers.unequip = 0.6
+	self.coach.timers.equip = 0.4
+	self.coach.name_id = "bm_w_coach"
+	self.coach.desc_id = "bm_w_coach_desc"
+	self.coach.description_id = "des_coach"
+	self.coach.texture_bundle_folder = "sdb"
+	self.coach.global_value = "normal"
+	self.coach.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
+	self.coach.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	self.coach.use_data = {
+		selection_index = SELECTION.SECONDARY,
+		align_place = "right_hand"
+	}
+	self.coach.DAMAGE = 4
+	self.coach.damage_near = 2000
+	self.coach.damage_far = 3000
+	self.coach.rays = 12
+	self.coach.CLIP_AMMO_MAX = 2
+	self.coach.NR_CLIPS_MAX = 22
+	self.coach.AMMO_MAX = self.coach.CLIP_AMMO_MAX * self.coach.NR_CLIPS_MAX
+	self.coach.AMMO_PICKUP = self:_pickup_chance(self.coach.AMMO_MAX, PICKUP.SNIPER_HIGH_DAMAGE)
+	self.coach.FIRE_MODE = "single"
+	self.coach.fire_mode_data = {
+		fire_rate = 0.12
+	}
+	self.coach.single = {
+		fire_rate = 0.12
+	}
+	self.coach.CAN_TOGGLE_FIREMODE = false
+	self.coach.spread = {
+		standing = self.r870.spread.standing,
+		crouching = self.r870.spread.crouching,
+		steelsight = self.r870.spread.steelsight,
+		moving_standing = self.r870.spread.moving_standing,
+		moving_crouching = self.r870.spread.moving_crouching,
+		moving_steelsight = self.r870.spread.moving_steelsight
+	}
+	self.coach.kick = {
+		standing = {
+			1.7,
+			1.8,
+			-0.4,
+			0.3
+		}
+	}
+	self.coach.kick.crouching = self.coach.kick.standing
+	self.coach.kick.steelsight = {
+		1.4,
+		1.5,
+		-0.2,
+		0.2
+	}
+	self.coach.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.coach.crosshair.standing.offset = 0.7
+	self.coach.crosshair.standing.moving_offset = 0.7
+	self.coach.crosshair.standing.kick_offset = 0.8
+	self.coach.crosshair.crouching.offset = 0.65
+	self.coach.crosshair.crouching.moving_offset = 0.65
+	self.coach.crosshair.crouching.kick_offset = 0.75
+	self.coach.crosshair.steelsight.hidden = true
+	self.coach.crosshair.steelsight.offset = 0
+	self.coach.crosshair.steelsight.moving_offset = 0
+	self.coach.crosshair.steelsight.kick_offset = 0
+	self.coach.shake = {
+		fire_multiplier = 1,
+		fire_steelsight_multiplier = -1
+	}
+	self.coach.autohit = weapon_data.autohit_shotgun_default
+	self.coach.aim_assist = weapon_data.aim_assist_shotgun_default
+	self.coach.weapon_hold = "coach"
+	self.coach.animations = {
+		equip_id = "equip_coach",
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
+	}
+	self.coach.panic_suppression_chance = 0.2
+	self.coach.stats = {
+		zoom = 3,
+		total_ammo_mod = 21,
+		damage = 155,
+		alert_size = 7,
+		spread = 15,
+		spread_moving = 12,
+		recoil = 12,
+		value = 3,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 5,
+		concealment = 10
 	}
 end
 
@@ -24151,6 +24551,18 @@ function WeaponTweakData:_create_table_structure()
 		use_data = {},
 		auto = {}
 	}
+	self.komodo_crew = {
+		usage = "is_rifle",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.elastic_crew = {
+		usage = "bow",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
 	self.legacy_crew = {
 		usage = "is_pistol",
 		sounds = {},
@@ -24159,6 +24571,12 @@ function WeaponTweakData:_create_table_structure()
 	}
 	self.x_legacy_crew = {
 		usage = "akimbo_pistol",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.coach_crew = {
+		usage = "is_shotgun_pump",
 		sounds = {},
 		use_data = {},
 		auto = {}

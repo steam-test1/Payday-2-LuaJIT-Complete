@@ -51,26 +51,28 @@ function DLCTweakData:init(tweak_data)
 			sft = true,
 			pim = true,
 			cash = true,
-			khp = true,
+			sdb = true,
 			bbq = true,
-			ghm = true,
+			ram = true,
 			jigg = 1,
 			season_pass = true,
 			gage_pack_snp = true,
 			dlc1 = true,
+			ghm = true,
+			steel = true,
 			hlm2 = true,
-			speedrunners = 1,
-			alienware_alpha = true,
 			pd2_million = true,
-			humble_summer_2015 = 1,
+			speedrunners = 1,
 			mmh = true,
 			fgl = true,
 			pd2_hw_boxing = true,
-			steel = true,
+			alienware_alpha = true,
 			infamous = 1,
 			pines = true,
-			apa = true,
+			humble_summer_2015 = 1,
 			born = true,
+			khp = true,
+			apa = true,
 			trk = true,
 			pmp = true,
 			wmp = true,
@@ -7687,6 +7689,55 @@ function DLCTweakData:init(tweak_data)
 		{
 			type_items = "weapon_mods",
 			item_entry = "wpn_fps_pis_legacy_g_wood",
+			amount = 1
+		}
+	}
+	self.sdb_bundle = {
+		free = true,
+		content = {}
+	}
+	self.sdb_bundle.content.loot_global_value = "normal"
+	self.sdb_bundle.content.loot_drops = {
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_sho_coach_b_short",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_sho_coach_s_short",
+			amount = 1
+		}
+	}
+	self.ram_bundle = {
+		free = true,
+		content = {}
+	}
+	self.ram_bundle.content.loot_global_value = "normal"
+	self.ram_bundle.content.loot_drops = {
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_bow_elastic_m_explosive",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_bow_elastic_m_poison",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_bow_elastic_body_tactic",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_bow_elastic_g_2",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_bow_elastic_g_3",
 			amount = 1
 		}
 	}
