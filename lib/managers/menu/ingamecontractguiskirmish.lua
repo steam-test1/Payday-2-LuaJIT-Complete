@@ -103,7 +103,7 @@ function IngameContractGuiSkirmish:init(ws, node)
 			y = briefing_description:bottom() + padding
 		})
 		self._modifier_list = SkirmishModifierList:new(text_panel, {
-			modifiers = managers.skirmish:active_weekly().modifiers,
+			modifiers = managers.skirmish:weekly_modifiers(),
 			y = modifiers_title:bottom(),
 			w = self._panel:width() - padding * 2,
 			h = (ransom_text:top() - modifiers_title:bottom()) - padding

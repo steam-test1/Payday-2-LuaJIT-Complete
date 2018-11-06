@@ -204,7 +204,8 @@ function SkirmishWeeklyContractMenuComponent:init(ws, fullscreen_ws, node)
 		h = (height - (reward_panel:bottom() + 10)) - 16
 	})
 	local show_progress_warning = job_data.state == tweak_data:server_state_to_index("in_game")
-	self._details_page = SkirmishWeeklyContractDetails:new(details_panel, show_progress_warning)
+	local modifiers = job_data.skirmish_weekly_modifiers and string.split(job_data.skirmish_weekly_modifiers, ";") or managers.skirmish:weekly_modifiers()
+	self._details_page = SkirmishWeeklyContractDetails:new(details_panel, show_progress_warning, modifiers)
 
 	managers.menu_component:disable_crimenet()
 	managers.menu:active_menu().input:deactivate_controller_mouse()
@@ -255,11 +256,12 @@ redirect_to_member(SkirmishWeeklyContractMenuComponent, "_details_page", {
 
 SkirmishWeeklyContractDetails = SkirmishWeeklyContractDetails or class(MenuGuiComponentGeneric)
 
-function SkirmishWeeklyContractDetails:init(panel, show_progress_warning)
+function SkirmishWeeklyContractDetails:init(panel, show_progress_warning, modifiers)
 	self._init_layer = panel:layer()
 	self.make_fine_text = BlackMarketGui.make_fine_text
 	self._rec_round_object = NewSkillTreeGui._rec_round_object
 	self._show_progress_warning = show_progress_warning
+	self._modifier_list = modifiers
 	self._panel = panel
 	self._tabs = {}
 	self._tabs_data = {}
@@ -452,7 +454,7 @@ function SkirmishWeeklyContractModifiersPage:init(page_id, page_panel, fullscree
 	self._gui = gui
 	self._modifier_list = SkirmishModifierList:new(page_panel, {
 		visible = false,
-		modifiers = managers.skirmish:active_weekly().modifiers
+		modifiers = gui._modifier_list
 	})
 
 	if not managers.menu:is_pc_controller() then

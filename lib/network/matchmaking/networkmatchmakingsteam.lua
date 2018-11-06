@@ -1,6 +1,6 @@
 NetworkMatchMakingSTEAM = NetworkMatchMakingSTEAM or class()
 NetworkMatchMakingSTEAM.OPEN_SLOTS = tweak_data.max_players
-NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "payday2_v1.92.677"
+NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "payday2_v1.92.679"
 
 function NetworkMatchMakingSTEAM:init()
 	cat_print("lobby", "matchmake = NetworkMatchMakingSTEAM")
@@ -369,8 +369,14 @@ function NetworkMatchMakingSTEAM:search_lobby(friends_only, no_filters)
 		return
 	end
 
-	local function is_key_valid(key)
-		return key ~= "value_missing" and key ~= "value_pending"
+	local function validated_value(lobby, key)
+		local value = lobby:key_value(key)
+
+		if value ~= "value_missing" and value ~= "value_pending" then
+			return value
+		end
+
+		return nil
 	end
 
 	if friends_only then
@@ -400,33 +406,15 @@ function NetworkMatchMakingSTEAM:search_lobby(friends_only, no_filters)
 
 						local attributes_data = {
 							numbers = self:_lobby_to_numbers(lobby),
-							mutators = self:_get_mutators_from_lobby(lobby)
+							mutators = self:_get_mutators_from_lobby(lobby),
+							crime_spree = tonumber(validated_value(lobby, "crime_spree")),
+							crime_spree_mission = validated_value(lobby, "crime_spree_mission"),
+							mods = tonumber(validated_value(lobby, "mods")),
+							one_down = tonumber(validated_value(lobby, "one_down")),
+							skirmish = tonumber(validated_value(lobby, "skirmish")),
+							skirmish_wave = tonumber(validated_value(lobby, "skirmish_wave")),
+							skirmish_weekly_modifiers = validated_value(lobby, "skirmish_weekly_modifiers")
 						}
-						local crime_spree_key = lobby:key_value("crime_spree")
-
-						if is_key_valid(crime_spree_key) then
-							attributes_data.crime_spree = tonumber(crime_spree_key)
-							attributes_data.crime_spree_mission = lobby:key_value("crime_spree_mission")
-						end
-
-						local mods_key = lobby:key_value("mods")
-
-						if is_key_valid(mods_key) then
-							attributes_data.mods = mods_key
-						end
-
-						local lobby_one_down = lobby:key_value("one_down")
-
-						if is_key_valid(lobby_one_down) then
-							attributes_data.one_down = tonumber(lobby_one_down)
-						end
-
-						local skirmish_key = lobby:key_value("skirmish")
-
-						if is_key_valid(skirmish_key) then
-							attributes_data.skirmish = tonumber(skirmish_key)
-							attributes_data.skirmish_wave = lobby:key_value("skirmish_wave")
-						end
 
 						table.insert(info.attribute_list, attributes_data)
 					end

@@ -186,6 +186,10 @@ function SkirmishManager:apply_matchmake_attributes(lobby_attributes)
 	if self:is_skirmish() then
 		lobby_attributes.skirmish = self:is_weekly_skirmish() and SkirmishManager.LOBBY_WEEKLY or SkirmishManager.LOBBY_NORMAL
 		lobby_attributes.skirmish_wave = math.max(self:current_wave_number() or 0, 1)
+
+		if self:is_weekly_skirmish() then
+			lobby_attributes.skirmish_weekly_modifiers = string.join(";", self._global.active_weekly.modifiers)
+		end
 	end
 end
 
@@ -281,6 +285,16 @@ end
 
 function SkirmishManager:active_weekly()
 	return self._global.active_weekly
+end
+
+function SkirmishManager:weekly_modifiers()
+	if self:is_weekly_skirmish() and Network:is_client() then
+		local modifiers_string = managers.network.matchmake.lobby_handler:get_lobby_data("skirmish_weekly_modifiers")
+
+		return string.split(modifiers_string, ";")
+	end
+
+	return self._global.active_weekly.modifiers
 end
 
 function SkirmishManager:weekly_time_left_params()

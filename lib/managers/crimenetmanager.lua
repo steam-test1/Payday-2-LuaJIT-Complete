@@ -1089,7 +1089,8 @@ function CrimeNetManager:_find_online_games_win32(friends_only)
 								one_down = attribute_list[i].one_down,
 								is_skirmish = attribute_list[i].skirmish and attribute_list[i].skirmish > 0,
 								skirmish = attribute_list[i].skirmish,
-								skirmish_wave = attribute_list[i].skirmish_wave
+								skirmish_wave = attribute_list[i].skirmish_wave,
+								skirmish_weekly_modifiers = attribute_list[i].skirmish_weekly_modifiers
 							})
 						end
 					else
@@ -1120,7 +1121,8 @@ function CrimeNetManager:_find_online_games_win32(friends_only)
 							one_down = attribute_list[i].one_down,
 							is_skirmish = attribute_list[i].skirmish and attribute_list[i].skirmish > 0,
 							skirmish = attribute_list[i].skirmish,
-							skirmish_wave = attribute_list[i].skirmish_wave
+							skirmish_wave = attribute_list[i].skirmish_wave,
+							skirmish_weekly_modifiers = attribute_list[i].skirmish_weekly_modifiers
 						})
 					end
 				end
@@ -3587,7 +3589,8 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		mods = data.mods,
 		is_skirmish = data.skirmish and data.skirmish > 0,
 		skirmish = data.skirmish,
-		skirmish_wave = data.skirmish_wave
+		skirmish_wave = data.skirmish_wave,
+		skirmish_weekly_modifiers = data.skirmish_weekly_modifiers
 	}
 
 	if is_crime_spree or data.is_crime_spree then
@@ -4184,7 +4187,8 @@ function CrimeNetGui:check_job_pressed(x, y)
 				crime_spree_mission = job.crime_spree_mission,
 				server_data = job.server_data,
 				mods = job.mods,
-				skirmish = job.skirmish
+				skirmish = job.skirmish,
+				skirmish_weekly_modifiers = job.skirmish_weekly_modifiers
 			}
 
 			managers.menu_component:post_event("menu_enter")

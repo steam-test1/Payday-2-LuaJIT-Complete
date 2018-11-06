@@ -675,10 +675,7 @@ function SkirmishTweakData:_init_weekly_modifiers()
 		wsm06 = {
 			icon = "crime_spree_more_dozers",
 			class = "ModifierMoreDozers",
-			data = {inc = {
-				4,
-				"add"
-			}}
+			data = {inc = 4}
 		},
 		wsm07 = {
 			icon = "crime_spree_shield_phalanx",

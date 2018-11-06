@@ -9150,7 +9150,8 @@ function MenuCrimeNetFiltersInitiator:add_filters(node)
 		local job_tweak = tweak_data.narrative.jobs[job_id]
 		local contact = job_tweak.contact
 		local contact_tweak = tweak_data.narrative.contacts[contact]
-		local allow = not job_tweak.wrapped_to_job and contact ~= "tests" and (not job_tweak or not job_tweak.hidden)
+		local is_hidden = job_tweak.hidden or contact_tweak and contact_tweak.hidden
+		local allow = not job_tweak.wrapped_to_job and not is_hidden
 
 		if allow then
 			local text_id, color_data = tweak_data.narrative:create_job_name(job_id)
@@ -9392,7 +9393,11 @@ function MenuCrimeNetSmartmatchmakeInitiator:add_filters(node)
 	}
 
 	for index, job_id in ipairs(tweak_data.narrative:get_jobs_index()) do
-		if not tweak_data.narrative.jobs[job_id].wrapped_to_job and tweak_data.narrative.jobs[job_id].contact ~= "wip" then
+		local job_tweak = tweak_data.narrative.jobs[job_id]
+		local contact_tweak = tweak_data.narrative.contacts[job_tweak.contact]
+		local is_hidden = job_tweak.hidden or contact_tweak and contact_tweak.hidden
+
+		if not job_tweak.wrapped_to_job and not is_hidden then
 			local text_id, color_data = tweak_data.narrative:create_job_name(job_id)
 			local params = {
 				localize = false,
