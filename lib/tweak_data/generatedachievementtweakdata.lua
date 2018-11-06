@@ -9353,6 +9353,132 @@ function init_auto_generated_achievement_data(tags)
 				tags.contracts.locke
 			}
 		},
+		nmh_1 = {
+			icon_id = "C_Bain_H_NoMercy_AllDiffs_D0",
+			ladder = "H_NoMercy",
+			sort_name = "C_Bain_H_NoMercy_AllDiffs_D0",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		nmh_10 = {
+			sort_name = "C_Bain_H_NoMercy_KeepingTheCool",
+			icon_id = "C_Bain_H_NoMercy_KeepingTheCool",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.hard,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		nmh_11 = {
+			sort_name = "C_Bain_H_NoMercy_Nyctophobia",
+			icon_id = "C_Bain_H_NoMercy_Nyctophobia",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.hard,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		nmh_2 = {
+			icon_id = "C_Bain_H_NoMercy_AllDiffs_D1",
+			ladder = "H_NoMercy",
+			sort_name = "C_Bain_H_NoMercy_AllDiffs_D1",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.hard,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		nmh_3 = {
+			icon_id = "C_Bain_H_NoMercy_AllDiffs_D2",
+			ladder = "H_NoMercy",
+			sort_name = "C_Bain_H_NoMercy_AllDiffs_D2",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.very_hard,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		nmh_4 = {
+			icon_id = "C_Bain_H_NoMercy_AllDiffs_D3",
+			ladder = "H_NoMercy",
+			sort_name = "C_Bain_H_NoMercy_AllDiffs_D3",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		nmh_5 = {
+			icon_id = "C_Bain_H_NoMercy_AllDiffs_D4",
+			ladder = "H_NoMercy",
+			sort_name = "C_Bain_H_NoMercy_AllDiffs_D4",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.mayhem,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		nmh_6 = {
+			icon_id = "C_Bain_H_NoMercy_AllDiffs_D5",
+			ladder = "H_NoMercy",
+			sort_name = "C_Bain_H_NoMercy_AllDiffs_D5",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_wish,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		nmh_7 = {
+			icon_id = "C_Bain_H_NoMercy_AllDiffs_D6",
+			ladder = "H_NoMercy",
+			sort_name = "C_Bain_H_NoMercy_AllDiffs_D6",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_sentence,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		nmh_8 = {
+			icon_id = "C_Bain_H_NoMercy_AllDiffs_OD_D6",
+			ladder = "H_NoMercy",
+			sort_name = "C_Bain_H_NoMercy_AllDiffs_OD_D6",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_sentence,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		nmh_9 = {
+			sort_name = "C_Bain_H_NoMercy_OrWasIt",
+			icon_id = "C_Bain_H_NoMercy_OrWasIt",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
 		dah_1 = {
 			icon_id = "C_Classics_H_DiamondHesit_AllDiffs_D0",
 			ladder = "H_DiamondHeist",

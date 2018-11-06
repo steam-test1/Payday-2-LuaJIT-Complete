@@ -4588,6 +4588,47 @@ function AchievementsTweakData:init(tweak_data)
 			job = "sah",
 			difficulty = sm_wish_and_above
 		},
+		nmh_1 = {
+			award = "nmh_1",
+			job = "nmh",
+			difficulty = normal_and_above
+		},
+		nmh_2 = {
+			award = "nmh_2",
+			job = "nmh",
+			difficulty = hard_and_above
+		},
+		nmh_3 = {
+			award = "nmh_3",
+			job = "nmh",
+			difficulty = veryhard_and_above
+		},
+		nmh_4 = {
+			award = "nmh_4",
+			job = "nmh",
+			difficulty = overkill_and_above
+		},
+		nmh_5 = {
+			award = "nmh_5",
+			job = "nmh",
+			difficulty = easywish_and_above
+		},
+		nmh_6 = {
+			award = "nmh_6",
+			job = "nmh",
+			difficulty = deathwish_and_above
+		},
+		nmh_7 = {
+			award = "nmh_7",
+			job = "nmh",
+			difficulty = sm_wish_and_above
+		},
+		nmh_8 = {
+			award = "nmh_8",
+			one_down = true,
+			job = "nmh",
+			difficulty = sm_wish_and_above
+		},
 		bph_1 = {
 			award = "bph_1",
 			job = "bph",

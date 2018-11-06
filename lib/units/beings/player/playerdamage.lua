@@ -1828,7 +1828,19 @@ function PlayerDamage:_drop_blood_sample()
 		self._unit:sound():say("g29", false)
 
 		if managers.groupai:state():bain_state() then
-			managers.dialog:queue_dialog("hos_ban_139", {})
+			local params = {}
+
+			if not self._blood_sample_reminder_given then
+				function params.done_cbk()
+					managers.dialog:queue_dialog("Play_pln_nmh_73", {
+						delay = 3
+					})
+				end
+
+				self._blood_sample_reminder_given = true
+			end
+
+			managers.dialog:queue_dialog("Play_pln_nmh_72", params)
 		end
 
 		local splatter_from = self._unit:position() + math.UP * 5

@@ -1241,13 +1241,29 @@ function CopActionWalk:update(t)
 			end
 		end
 
-		self:_adjust_move_anim(wanted_walk_dir, variant)
-
-		if not self._walk_anim_velocities[pose] or not self._walk_anim_velocities[pose][self._stance.name] or not self._walk_anim_velocities[pose][self._stance.name][variant] or not self._walk_anim_velocities[pose][self._stance.name][variant][wanted_walk_dir] then
+		if not safe_get_value(self._walk_anim_velocities, pose, self._stance.name, variant, wanted_walk_dir) then
 			debug_pause("Boom...", self._common_data.unit, "pose", pose, "stance", self._stance.name, "variant", variant, "wanted_walk_dir", wanted_walk_dir, self._machine:segment_state(Idstring("base")))
 
-			return
+			if not safe_get_value(self._walk_anim_velocities, pose, self._stance.name) and self._stance.name == "ntl" then
+				self._stance.name = "cbt"
+			end
+
+			while not safe_get_value(self._walk_anim_velocities, pose, self._stance.name, variant) do
+				if variant == "sprint" then
+					variant = "run"
+				end
+
+				if variant == "run" then
+					variant = "walk"
+				end
+			end
+
+			if not safe_get_value(self._walk_anim_velocities, pose, self._stance.name, variant, wanted_walk_dir) then
+				return
+			end
 		end
+
+		self:_adjust_move_anim(wanted_walk_dir, variant)
 
 		local anim_walk_speed = self._walk_anim_velocities[pose][self._stance.name][variant][wanted_walk_dir]
 		local wanted_walk_anim_speed = real_velocity / anim_walk_speed

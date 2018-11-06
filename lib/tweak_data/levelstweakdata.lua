@@ -1774,6 +1774,22 @@ function LevelsTweakData:init()
 		narrator = "locke",
 		load_screen = "guis/dlcs/des/textures/loading/job_des_df"
 	}
+	self.nmh = {
+		name_id = "heist_nmh_hl",
+		briefing_id = "heist_nmh_briefing",
+		package = "packages/dlcs/nmh/job_nmh",
+		briefing_dialog = "Play_pln_nmh_brf",
+		world_name = "narratives/classics/nmh",
+		intro_event = "Play_pln_nmh_intro",
+		outro_event = "Play_pln_nmh_end_win",
+		cube = "cube_apply_heist_bank",
+		failure_event = "Play_pln_nmh_end_fail",
+		max_bags = 0,
+		ghost_bonus = 0.1,
+		ai_group_type = america,
+		narrator = "bain",
+		load_screen = "guis/dlcs/nmh/textures/loading/job_nmh_df"
+	}
 	self.sah = {
 		name_id = "heist_sah_hl",
 		briefing_id = "heist_sah_briefing",
@@ -1986,6 +2002,7 @@ function LevelsTweakData:init()
 		"brb",
 		"tag",
 		"des",
+		"nmh",
 		"sah",
 		"skm_mus",
 		"skm_red2",

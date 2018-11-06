@@ -2791,7 +2791,7 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 			"a_weapon_right"
 		},
 		unit = "units/pd2_dlc_ktm/weapons/wpn_fps_mel_hauteur/wpn_fps_mel_hauteur",
-		third_unit = "units/pd2_dlc_ktm/weapons/wpn_fps_mel_hauteur/wpn_fps_mel_hauteur",
+		third_unit = "units/pd2_dlc_ktm/weapons/wpn_fps_mel_hauteur/wpn_third_mel_hauteur",
 		sounds = {}
 	}
 	self.melee_weapons.hauteur.sounds.equip = "hauteur_equip"
@@ -2850,6 +2850,65 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	}
 	self.melee_weapons.shock.repeat_expire_t = 0.8
 	self.melee_weapons.shock.stats.concealment = 28
+	self.melee_weapons.fear = {
+		name_id = "bm_melee_fear",
+		hit_pre_calculation = true,
+		anim_attack_vars = {
+			"var1",
+			"var2"
+		},
+		anim_global_param = "melee_fear",
+		dlc = nil,
+		texture_bundle_folder = "ssm",
+		type = "knife",
+		align_objects = {
+			"a_weapon_right"
+		},
+		unit = "units/pd2_dlc_ssm/weapons/wpn_fps_mel_fear/wpn_fps_mel_fear",
+		third_unit = "units/pd2_dlc_ssm/weapons/wpn_fps_mel_fear/wpn_third_mel_fear",
+		sounds = {}
+	}
+	self.melee_weapons.fear.sounds.equip = "cqc_equip"
+	self.melee_weapons.fear.sounds.hit_air = "cqc_hit_air"
+	self.melee_weapons.fear.sounds.hit_gen = "cqc_hit_gen"
+	self.melee_weapons.fear.sounds.hit_body = "cqc_hit_body"
+	self.melee_weapons.fear.sounds.charge = "cqc_charge"
+	self.melee_weapons.fear.melee_charge_shaker = "player_melee_charge_wing"
+	self.melee_weapons.fear.dot_data = {
+		type = "poison",
+		custom_data = {
+			dot_length = 1,
+			hurt_animation_chance = 0.7
+		}
+	}
+	self.melee_weapons.fear.stats = {
+		weapon_type = "sharp",
+		min_damage = 3,
+		max_damage = 8,
+		min_damage_effect = 1,
+		max_damage_effect = 1,
+		charge_time = 1.5,
+		range = 150,
+		concealment = 30,
+		remove_weapon_movement_penalty = true
+	}
+	self.melee_weapons.fear.repeat_expire_t = 0.65
+	self.melee_weapons.fear.expire_t = 1.2
+	self.melee_weapons.fear.melee_damage_delay = 0.29
+	self.melee_weapons.fear.anims = {
+		var1_attack = {
+			anim = "var1"
+		},
+		var2_attack = {
+			anim = "var2"
+		},
+		charge = {
+			loop = false,
+			anim = "charge"
+		}
+	}
+	self.melee_weapons.fear.anims.var1_attack_hit = self.melee_weapons.fear.anims.var1_attack
+	self.melee_weapons.fear.anims.var2_attack_hit = self.melee_weapons.fear.anims.var2_attack
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.melee_weapons) do

@@ -5203,6 +5203,83 @@ function InteractionTweakData:init(tweak_data)
 		timer = 2,
 		equipment_consume = true
 	}
+	self.press_insert_sample = {
+		text_id = "hud_int_insert_blood_sample",
+		equipment_text_id = "hint_no_blood_sample",
+		special_equipment = "blood_sample",
+		interact_distance = 150,
+		start_active = false,
+		equipment_consume = true
+	}
+	self.press_take_sample = {
+		text_id = "hud_int_take_blood_sample",
+		special_equipment_block = "blood_sample",
+		interact_distance = 150,
+		start_active = false
+	}
+	self.press_touch_book = {
+		text_id = "hud_int_touch_book",
+		interact_distance = 150,
+		start_active = false
+	}
+	self.hold_take_sample = {
+		text_id = "hud_int_hold_take_blood_sample",
+		action_text_id = "hud_action_taking_blood_sample",
+		special_equipment_block = "blood_sample",
+		interact_distance = 150,
+		start_active = false,
+		timer = 3
+	}
+	self.hold_take_sample_valid = {
+		text_id = "hud_int_hold_take_blood_valid_sample",
+		action_text_id = "hud_action_taking_blood_valid_sample",
+		special_equipment_block = "blood_sample_verified",
+		interact_distance = 150,
+		start_active = false
+	}
+	self.hold_stash_vial = {
+		text_id = "hud_int_hold_stash_vial",
+		action_text_id = "hud_action_stashing_vial",
+		equipment_text_id = "hint_no_blood_sample",
+		special_equipment = "blood_sample_verified",
+		timer = 3,
+		interact_distance = 150,
+		start_active = false,
+		equipment_consume = true
+	}
+	self.press_call_elevator = {
+		text_id = "hud_int_call_elevator",
+		interact_distance = 150,
+		start_active = false
+	}
+	self.hold_check_file = {
+		text_id = "hud_int_hold_check_file",
+		action_text_id = "hud_action_checking_file",
+		timer = 3,
+		interact_distance = 150,
+		start_active = false,
+		sound_start = "bar_shuffle_papers",
+		sound_interupt = "bar_shuffle_papers_cancel",
+		sound_done = "bar_shuffle_papers_finished"
+	}
+	self.breach_crowbar = {
+		text_id = "hud_int_hold_breach",
+		action_text_id = "hud_action_breach",
+		equipment_text_id = "debug_interact_equipment_crowbar",
+		special_equipment = "crowbar",
+		start_active = false,
+		timer = 8,
+		sound_start = "bar_pry_open_elevator_door",
+		sound_interupt = "bar_pry_open_elevator_door_cancel",
+		sound_done = "bar_pry_open_elevator_door_finished"
+	}
+	self.hold_place_sentry = {
+		text_id = "hud_int_set_up_sentry",
+		action_text_id = "hud_action_set_up_sentry",
+		timer = 3,
+		interact_distance = 150,
+		start_active = false
+	}
 	self.tag_laptop = {
 		text_id = "hud_int_hack_laptop",
 		action_text_id = "hud_action_hack_laptop",

@@ -1431,6 +1431,24 @@ function HudIconsTweakData:init()
 			32
 		}
 	}
+	self.equipment_bloodvial = {
+		texture = "guis/dlcs/nmh/textures/pd2/hud_pickups_bloodvial",
+		texture_rect = {
+			0,
+			0,
+			32,
+			32
+		}
+	}
+	self.equipment_bloodvialok = {
+		texture = "guis/dlcs/nmh/textures/pd2/hud_pickups_bloodvial",
+		texture_rect = {
+			32,
+			0,
+			32,
+			32
+		}
+	}
 	self.equipment_chimichanga = {
 		texture = "guis/dlcs/tag/textures/pd2/hud_pickups_tag",
 		texture_rect = {
@@ -12794,6 +12812,105 @@ function HudIconsTweakData:init()
 		texture = "guis/dlcs/trk/atlases/achievement_atlas_sah",
 		texture_rect = {
 			263,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_NoMercy_AllDiffs_D0 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_nmh",
+		texture_rect = {
+			89,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_NoMercy_AllDiffs_D1 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_nmh",
+		texture_rect = {
+			176,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_NoMercy_AllDiffs_D2 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_nmh",
+		texture_rect = {
+			2,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_NoMercy_AllDiffs_D3 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_nmh",
+		texture_rect = {
+			89,
+			176,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_NoMercy_AllDiffs_D4 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_nmh",
+		texture_rect = {
+			176,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_NoMercy_AllDiffs_D5 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_nmh",
+		texture_rect = {
+			263,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_NoMercy_AllDiffs_D6 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_nmh",
+		texture_rect = {
+			2,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_NoMercy_AllDiffs_OD_D6 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_nmh",
+		texture_rect = {
+			89,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_NoMercy_KeepingTheCool = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_nmh",
+		texture_rect = {
+			2,
+			176,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_NoMercy_Nyctophobia = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_nmh",
+		texture_rect = {
+			2,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_NoMercy_OrWasIt = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_nmh",
+		texture_rect = {
+			2,
 			350,
 			85,
 			85

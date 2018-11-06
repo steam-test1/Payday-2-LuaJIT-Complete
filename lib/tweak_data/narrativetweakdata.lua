@@ -5873,6 +5873,76 @@ function NarrativeTweakData:init(tweak_data)
 		12000,
 		12000
 	}
+	self.stages.nmh = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "nmh"
+	}
+	self.jobs.nmh = {
+		name_id = "heist_nmh",
+		briefing_id = "heist_nmh_crimenet",
+		contact = "classic",
+		region = "street",
+		jc = 30,
+		chain = {
+			self.stages.nmh
+		},
+		briefing_event = "Play_rb1_nmh_cbf_01",
+		debrief_event = nil,
+		crimenet_callouts = {
+			"Play_pln_nmh_cnc_01"
+		},
+		crimenet_videos = {
+			"cn_branchbank1",
+			"cn_branchbank3"
+		},
+		payout = {
+			60000,
+			74000,
+			125000,
+			185000,
+			260000,
+			260000,
+			260000
+		},
+		contract_cost = {
+			31000,
+			62000,
+			155000,
+			310000,
+			400000,
+			400000,
+			400000
+		},
+		contract_visuals = {}
+	}
+	self.jobs.nmh.contract_visuals.min_mission_xp = {
+		22400,
+		22400,
+		22400,
+		22400,
+		22400,
+		22400,
+		22400
+	}
+	self.jobs.nmh.contract_visuals.max_mission_xp = {
+		32000,
+		32000,
+		32000,
+		32000,
+		32000,
+		32000,
+		32000
+	}
+	self.jobs.nmh.contract_visuals.preview_image = {
+		id = "nmh",
+		folder = "nmh"
+	}
+	self.jobs.nmh.date_added = {
+		2018,
+		10,
+		30
+	}
 	self.stages.sah = {
 		type = "d",
 		type_id = "heist_type_assault",
@@ -6219,6 +6289,7 @@ function NarrativeTweakData:init(tweak_data)
 		"brb",
 		"tag",
 		"des",
+		"nmh",
 		"sah",
 		"skm_mus",
 		"skm_red2",

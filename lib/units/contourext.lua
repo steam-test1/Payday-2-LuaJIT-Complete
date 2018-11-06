@@ -177,6 +177,10 @@ function ContourExt:init(unit)
 	end
 end
 
+function ContourExt:contour_list()
+	return self._contour_list
+end
+
 function ContourExt:apply_to_linked(func_name, ...)
 	if self._unit.spawn_manager and self._unit:spawn_manager() and self._unit:spawn_manager():linked_units() then
 		for unit_id, _ in pairs(self._unit:spawn_manager():linked_units()) do

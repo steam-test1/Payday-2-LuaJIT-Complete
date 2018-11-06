@@ -123,6 +123,7 @@ require("lib/units/editor/VehicleTriggerUnitElement")
 require("lib/units/editor/VehicleOperatorUnitElement")
 require("lib/units/editor/SpawnVehicleElement")
 require("lib/units/editor/EnvironmentOperatorElement")
+require("lib/units/editor/AreaDespawnElement")
 require("lib/utils/dev/tools/InventoryIconCreator")
 
 WorldEditor = WorldEditor or class(CoreEditor)

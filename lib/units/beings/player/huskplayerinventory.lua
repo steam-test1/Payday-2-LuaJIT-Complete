@@ -222,3 +222,14 @@ function HuskPlayerInventory:set_weapon_underbarrel(selection_index, underbarrel
 
 	selection.unit:base():set_underbarrel(underbarrel_id, is_on)
 end
+
+function HuskPlayerInventory:set_visibility_state(state)
+	local state_name = self._unit:movement():current_state_name()
+	local is_clean = HuskPlayerMovement.clean_states[state_name]
+
+	if state and is_clean then
+		return
+	end
+
+	HuskPlayerInventory.super.set_visibility_state(self, state)
+end

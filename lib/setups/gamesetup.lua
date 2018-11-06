@@ -586,6 +586,7 @@ end
 function GameSetup:update(t, dt)
 	Setup.update(self, t, dt)
 	managers.interaction:update(t, dt)
+	managers.dialog:update(t, dt)
 	managers.enemy:update(t, dt)
 	managers.groupai:update(t, dt)
 	managers.spawn:update(t, dt)

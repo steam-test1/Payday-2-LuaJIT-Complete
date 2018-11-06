@@ -4746,6 +4746,7 @@ function UpgradesTweakData:init(tweak_data)
 				"meter",
 				"hauteur",
 				"shock",
+				"fear",
 				"x_scorpion"
 			}
 		},
@@ -11693,6 +11694,9 @@ function UpgradesTweakData:_melee_weapon_definitions()
 		category = "melee_weapon"
 	}
 	self.definitions.shock = {
+		category = "melee_weapon"
+	}
+	self.definitions.fear = {
 		category = "melee_weapon"
 	}
 end

@@ -3897,8 +3897,9 @@ function HuskPlayerMovement:_sync_movement_state_standard(event_descriptor)
 	managers.groupai:state():on_criminal_recovered(self._unit)
 
 	local previous_state = event_descriptor.previous_state
+	local is_clean = self.clean_states[self._state]
 
-	if self.clean_states[previous_state] and not self.clean_states[self._state] then
+	if self.clean_states[previous_state] and not is_clean then
 		local redir_res = self:play_redirect("equip")
 
 		if redir_res then
@@ -3921,6 +3922,8 @@ function HuskPlayerMovement:_sync_movement_state_standard(event_descriptor)
 			end
 		end
 	end
+
+	self._unit:inventory():set_visibility_state(not is_clean)
 
 	if not self._ext_anim.stand then
 		local redir_res = self:play_redirect("stand")

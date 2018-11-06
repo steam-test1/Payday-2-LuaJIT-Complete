@@ -16623,6 +16623,24 @@ function CharacterTweakData:character_map()
 				"ene_male_commissioner"
 			}
 		},
+		nmh = {
+			path = "units/pd2_dlc_nmh/characters/",
+			list = {
+				"civ_male_doctor_01",
+				"civ_male_doctor_02",
+				"civ_male_doctor_03",
+				"civ_male_scrubs_01",
+				"civ_male_scrubs_02",
+				"civ_male_scrubs_03",
+				"civ_male_scrubs_04",
+				"civ_female_scrubs_01",
+				"civ_female_scrubs_02",
+				"civ_female_scrubs_03",
+				"civ_female_scrubs_04",
+				"civ_female_doctor_01",
+				"civ_female_hotpants"
+			}
+		},
 		sah = {
 			path = "units/pd2_dlc_sah/characters/",
 			list = {

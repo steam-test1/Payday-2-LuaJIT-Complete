@@ -33,6 +33,16 @@ function ManageSpawnedUnits:spawn_unit(unit_id, align_obj_name, unit)
 
 	self._unit:link(Idstring(align_obj_name), spawn_unit, spawn_unit:orientation_object():name())
 
+	local contour_ext = self._unit:contour()
+	local spawned_contour_ext = spawn_unit:contour()
+
+	if contour_ext and spawned_contour_ext then
+		for _, contour in ipairs(contour_ext:contour_list()) do
+			spawned_contour_ext:add(contour.type)
+			spawned_contour_ext:change_color(contour.type, contour.color)
+		end
+	end
+
 	local unit_entry = {
 		align_obj_name = align_obj_name,
 		unit = spawn_unit

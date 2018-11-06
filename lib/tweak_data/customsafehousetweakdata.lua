@@ -1483,6 +1483,16 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 			self:_achievement("trk_dm_0")
 		}
 	})
+	table.insert(self.trophies, {
+		name_id = "trophy_bains_book",
+		image_id = "safehouse_trophies_preview_bains_book",
+		objective_id = "trophy_bains_book_completion_objective",
+		id = "trophy_bains_book",
+		desc_id = "trophy_bains_book_desc",
+		objectives = {
+			self:_achievement("nmh_1")
+		}
+	})
 end
 
 function CustomSafehouseTweakData:get_trophy_data(id)
