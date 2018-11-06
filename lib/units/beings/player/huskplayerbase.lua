@@ -185,4 +185,3 @@ end
 
 function HuskPlayerBase:chk_freeze_anims()
 end
-

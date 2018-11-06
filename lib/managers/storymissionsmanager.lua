@@ -47,7 +47,9 @@ function StoryMissionsManager:init()
 		local id = managers.job:current_job_id()
 
 		if id and game_state_machine:current_state_name() ~= "menu_main" then
-			local rewards = {safehouse = "story_first_safehouse"}
+			local rewards = {
+				safehouse = "story_first_safehouse"
+			}
 			local r = rewards[id]
 
 			if r then
@@ -335,7 +337,9 @@ end
 
 function StoryMissionsManager:start_mission(mission, objective_id)
 	if not self:_get_or_current(mission) then
-		local m = {objectives_flat = {}}
+		local m = {
+			objectives_flat = {}
+		}
 	end
 
 	local o = nil
@@ -389,11 +393,12 @@ function StoryMissionsManager:start_mission(mission, objective_id)
 		contract_visuals = job_data and job_data.contract_visuals
 	}
 
-	managers.menu:open_node(Global.game_settings.single_player and "crimenet_contract_singleplayer" or "crimenet_contract_host", {data})
+	managers.menu:open_node(Global.game_settings.single_player and "crimenet_contract_singleplayer" or "crimenet_contract_host", {
+		data
+	})
 end
 
 function StoryMissionsManager:reset_all()
-
 	local function reset(m)
 		if not m then
 			return
@@ -414,4 +419,3 @@ function StoryMissionsManager:reset_all()
 
 	self:_find_next_mission()
 end
-

@@ -144,7 +144,7 @@ function PlayerFreefall:_update_check_actions(t, dt)
 	local new_action = nil
 
 	if not new_action then
-		
+		-- Nothing
 	end
 
 	if not new_action and self._state_data.ducking then
@@ -189,4 +189,3 @@ end
 
 function PlayerFreefall:tweak_data_clbk_reload()
 end
-

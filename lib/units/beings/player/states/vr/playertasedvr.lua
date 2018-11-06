@@ -41,6 +41,7 @@ function PlayerTasedVR:destroy()
 
 	__destroy(self)
 end
+
 local mvec_pos_new = Vector3()
 local mvec_hmd_delta = Vector3()
 local mvec_hmd_pos = Vector3()
@@ -168,7 +169,7 @@ function PlayerTasedVR:_check_fire_per_weapon(t, pressed, held, released, weap_b
 			weap_base:dryfire()
 		end
 	elseif self._num_shocks > 1 and weap_base.can_refire_while_tased and not weap_base:can_refire_while_tased() then
-		
+		-- Nothing
 	elseif self._running then
 		self:_interupt_action_running(t)
 	else
@@ -315,4 +316,3 @@ function PlayerTasedVR:set_belt_and_hands_enabled(enabled)
 		end
 	end
 end
-

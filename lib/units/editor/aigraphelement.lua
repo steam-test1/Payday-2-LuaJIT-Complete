@@ -1,5 +1,7 @@
 AIGraphUnitElement = AIGraphUnitElement or class(MissionElement)
-AIGraphUnitElement.LINK_ELEMENTS = {"elements"}
+AIGraphUnitElement.LINK_ELEMENTS = {
+	"elements"
+}
 
 function AIGraphUnitElement:init(unit)
 	EnemyPreferedRemoveUnitElement.super.init(self, unit)
@@ -76,7 +78,6 @@ function AIGraphUnitElement:_add_or_remove_graph(id)
 end
 
 function AIGraphUnitElement:add_unit_list_btn()
-
 	local function f(unit)
 		return unit:type() == Idstring("ai")
 	end
@@ -131,7 +132,9 @@ function AIGraphUnitElement:_build_panel(panel, panel_sizer)
 		ctrlr = operations
 	})
 
-	self._filter_group_element = self:_build_value_combobox(panel, panel_sizer, "filter_group", table.list_add({"none"}, clone(ElementSpecialObjective._AI_GROUPS)), "Select a custom filter group.")
+	self._filter_group_element = self:_build_value_combobox(panel, panel_sizer, "filter_group", table.list_add({
+		"none"
+	}, clone(ElementSpecialObjective._AI_GROUPS)), "Select a custom filter group.")
 
 	self._filter_group_element:set_enabled(self._hed.operation == "forbid_custom")
 
@@ -143,4 +146,3 @@ function AIGraphUnitElement:_build_panel(panel, panel_sizer)
 
 	self:add_help_text(help)
 end
-

@@ -104,7 +104,7 @@ function ServerStatusBoxGui:mouse_pressed(button, x, y)
 	end
 
 	if button == Idstring("0") and self._panel:child("info_area"):inside(x, y) then
-		
+		-- Nothing
 	end
 end
 
@@ -137,4 +137,3 @@ function ServerStatusBoxGui:set_server_info_state(state)
 
 	self._scroll_panel:child("server_panel"):child("server_state_text"):set_text(string.upper(s))
 end
-

@@ -50,7 +50,7 @@ function TemporaryPropertyManager:has_active_property(prop)
 	local time = Application:time()
 
 	if self._properties[prop] then
-		
+		-- Nothing
 	end
 
 	if self._properties[prop] and time <= self._properties[prop][2] then
@@ -67,4 +67,3 @@ function TemporaryPropertyManager:remove_property(prop)
 		self._properties[prop] = nil
 	end
 end
-

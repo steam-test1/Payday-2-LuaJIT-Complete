@@ -9,6 +9,7 @@ function MenuTitlescreenState:init(game_state_machine, setup)
 		self:setup()
 	end
 end
+
 local is_ps3 = SystemInfo:platform() == Idstring("PS3")
 local is_ps4 = SystemInfo:platform() == Idstring("PS4")
 local is_xb1 = SystemInfo:platform() == Idstring("XB1")
@@ -365,7 +366,7 @@ function MenuTitlescreenState:reset_attract_video()
 end
 
 function MenuTitlescreenState:is_attract_video_delay_done()
-	return self._attract_video_time + _G.tweak_data.states.title.ATTRACT_VIDEO_DELAY < TimerManager:main():time()
+	return TimerManager:main():time() > self._attract_video_time + _G.tweak_data.states.title.ATTRACT_VIDEO_DELAY
 end
 
 function MenuTitlescreenState:play_attract_video()
@@ -376,12 +377,12 @@ function MenuTitlescreenState:play_attract_video()
 	local src_height = 720
 	local dest_width, dest_height = nil
 
-	if res.x / res.y < src_width / src_height then
+	if src_width / src_height > res.x / res.y then
 		dest_width = res.x
-		dest_height = (src_height * dest_width) / src_width
+		dest_height = src_height * dest_width / src_width
 	else
 		dest_height = res.y
-		dest_width = (src_width * dest_height) / src_height
+		dest_width = src_width * dest_height / src_height
 	end
 
 	local x = (res.x - dest_width) / 2
@@ -444,4 +445,3 @@ function MenuTitlescreenState:on_storage_changed(old_user_data, user_data)
 		self._waiting_for_loaded_savegames = nil
 	end
 end
-

@@ -3,8 +3,12 @@ HandStateMachine = HandStateMachine or class()
 function HandStateMachine:init(states, default_l, default_r)
 	self._states = states
 	self._hands = {
-		{default_l},
-		{default_r}
+		{
+			default_l
+		},
+		{
+			default_r
+		}
 	}
 	self._modified_connection_list = {}
 
@@ -173,7 +177,7 @@ function HandStateMachine:_apply_bindings()
 	end
 
 	if HandStateMachine.DEBUG then
-		print("[HandStateMachine] 
+		print("[HandStateMachine] ----------------- Connection map ----------------- ")
 
 		for connection_name, key_list in pairs(connection_map) do
 			print(connection_name)
@@ -203,4 +207,3 @@ function HandStateMachine:_apply_bindings()
 		controller:rebind_connections()
 	end
 end
-

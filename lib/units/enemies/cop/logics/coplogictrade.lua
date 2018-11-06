@@ -6,7 +6,9 @@ function CopLogicTrade.enter(data, new_logic_name, enter_params)
 	data.unit:brain():cancel_all_pathing_searches()
 
 	local old_internal_data = data.internal_data
-	local my_data = {unit = data.unit}
+	local my_data = {
+		unit = data.unit
+	}
 	data.internal_data = my_data
 
 	data.unit:movement():set_allow_fire(false)
@@ -18,7 +20,9 @@ function CopLogicTrade.enter(data, new_logic_name, enter_params)
 	data.unit:network():send("hostage_trade", true, false, skip_hint)
 	CopLogicTrade.hostage_trade(data.unit, true, false, skip_hint)
 	data.unit:brain():set_update_enabled_state(true)
-	data.unit:brain():set_attention_settings({peaceful = true})
+	data.unit:brain():set_attention_settings({
+		peaceful = true
+	})
 end
 
 function CopLogicTrade.hostage_trade(unit, enable, trade_success, skip_hint)
@@ -172,7 +176,7 @@ function CopLogicTrade.on_trade(data, pos, rotation, free_criminal)
 
 		iterations = iterations + 1
 
-		if iterations < max_attempts then
+		if max_attempts > iterations then
 			flee_pos = managers.groupai:state():flee_point(data.unit:movement():nav_tracker():nav_segment(), ignore_segments)
 
 			if not flee_pos then
@@ -220,7 +224,7 @@ function CopLogicTrade.update(data)
 	CopLogicTrade._process_pathing_results(data, my_data)
 
 	if my_data.pathing_to_flee_pos then
-		
+		-- Nothing
 	elseif my_data.flee_path then
 		if not data.unit:movement():chk_action_forbidden("walk") and data.unit:anim_data().idle_full_blend then
 			data.unit:brain()._current_logic._chk_request_action_walk_to_flee_pos(data, my_data)
@@ -286,7 +290,9 @@ function CopLogicTrade.is_available_for_assignment(data)
 end
 
 function CopLogicTrade._get_all_paths(data)
-	return {flee_path = data.internal_data.flee_path}
+	return {
+		flee_path = data.internal_data.flee_path
+	}
 end
 
 function CopLogicTrade._set_verified_paths(data, verified_paths)
@@ -296,4 +302,3 @@ end
 function CopLogicTrade.pre_destroy(data)
 	managers.trade:change_hostage()
 end
-

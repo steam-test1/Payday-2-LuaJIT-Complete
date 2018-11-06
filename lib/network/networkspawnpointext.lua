@@ -2,7 +2,7 @@ NetworkSpawnPointExt = NetworkSpawnPointExt or class()
 
 function NetworkSpawnPointExt:init(unit)
 	if managers.network then
-		
+		-- Nothing
 	end
 end
 
@@ -15,4 +15,3 @@ end
 
 function NetworkSpawnPointExt:destroy(unit)
 end
-

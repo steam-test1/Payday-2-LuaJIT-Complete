@@ -133,7 +133,7 @@ function PlayerParachuting:_update_check_actions(t, dt)
 	new_action = new_action or self:_check_action_weapon_firemode(t, input)
 
 	if not new_action then
-		
+		-- Nothing
 	end
 
 	new_action = new_action or self:_check_action_reload(t, input)
@@ -175,6 +175,7 @@ function PlayerParachuting:_check_action_interact(t, input)
 
 	return new_action
 end
+
 local tmp_ground_from_vec = Vector3()
 local tmp_ground_to_vec = Vector3()
 local up_offset_vec = math.UP * 30
@@ -211,4 +212,3 @@ function PlayerParachuting:_pitch_up()
 
 	self._camera_unit:base():animate_pitch(t, nil, self._tweak_data.camera.target_pitch, 1.7)
 end
-

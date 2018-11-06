@@ -290,16 +290,17 @@ end
 
 function NetworkMatchMakingXBL:_save_globals()
 	Global.xbl = Global.xbl or {}
-	Global.xbl.match = {}
-	Global.xbl.match.session = self._session
-	Global.xbl.match.server_rpc = self._server_rpc
-	Global.xbl.match.game_owner_name = self._game_owner_name
-	Global.xbl.match.num_players = self._num_players
-	Global.xbl.match.is_server = self._is_server_var
-	Global.xbl.match.is_client = self._is_client_var
-	Global.xbl.match.players = self._players
-	Global.xbl.match.hopper_variables = self._hopper_variables
-	Global.xbl.match._host_session_attributes = self._host_session_attributes
+	Global.xbl.match = {
+		session = self._session,
+		server_rpc = self._server_rpc,
+		game_owner_name = self._game_owner_name,
+		num_players = self._num_players,
+		is_server = self._is_server_var,
+		is_client = self._is_client_var,
+		players = self._players,
+		hopper_variables = self._hopper_variables,
+		_host_session_attributes = self._host_session_attributes
+	}
 end
 
 function NetworkMatchMakingXBL:load_user_filters()
@@ -336,7 +337,12 @@ function NetworkMatchMakingXBL:_chk_advertise_session_for_smartmatch()
 			print("\n**************SEARCHING**************\n")
 
 			local hopper_used = nil
-			hopper_used = self._hopper_variables.GameMode == 1 and "hopper_mode_crimespree_v2" or "hopper_mode_normal_v2"
+
+			if self._hopper_variables.GameMode == 1 then
+				hopper_used = "hopper_mode_crimespree_v2"
+			else
+				hopper_used = "hopper_mode_normal_v2"
+			end
 
 			print("[NetworkMatchMakingXBL:_chk_advertise_session_for_smartmatch] using hopper: ", hopper_used)
 
@@ -352,7 +358,7 @@ function NetworkMatchMakingXBL:_chk_advertise_session_for_smartmatch()
 
 			self:_begin_smartmatch(smartmatch_params, progress_callback)
 		else
-			print("countdown to new smartmatch", (self.SMARTMATCH_RE_ADVERTISE_PAUSE_T + self._smartmatch_idle_start_t) - TimerManager:wall_running():time())
+			print("countdown to new smartmatch", self.SMARTMATCH_RE_ADVERTISE_PAUSE_T + self._smartmatch_idle_start_t - TimerManager:wall_running():time())
 		end
 	else
 		self._smartmatch_idle_start_t = nil
@@ -464,7 +470,9 @@ function NetworkMatchMakingXBL:_find_server_callback(cancel_id, servers, mode)
 			room_id = server.info:id(),
 			info = server.info
 		})
-		table.insert(info.attribute_list, {numbers = self:_server_to_numbers(server)})
+		table.insert(info.attribute_list, {
+			numbers = self:_server_to_numbers(server)
+		})
 	end
 
 	self:_call_callback("search_lobby", info)
@@ -574,11 +582,13 @@ function NetworkMatchMakingXBL:join_server_with_check(session_id, skip_permissio
 	end
 
 	if data and data.info then
-		f({{
-			open_private_slots = 0,
-			info = data.info,
-			host_name = data.host_name
-		}})
+		f({
+			{
+				open_private_slots = 0,
+				info = data.info,
+				host_name = data.host_name
+			}
+		})
 	else
 		debug_pause("[NetworkMatchMakingXBL:join_server_with_check] Missing data.", inspect(data))
 		f({})
@@ -604,7 +614,7 @@ function NetworkMatchMakingXBL:_update_queued_join_by_smartmatch()
 	end
 
 	if self._last_join_smartmatch_cancel_t and TimerManager:wall():time() - self._last_join_smartmatch_cancel_t < self.CANCEL_JOIN_SMARTMATCH_DELAY_T then
-		print("timing out smartmatch join request", (self._last_join_smartmatch_cancel_t + self.CANCEL_JOIN_SMARTMATCH_DELAY_T) - TimerManager:wall():time())
+		print("timing out smartmatch join request", self._last_join_smartmatch_cancel_t + self.CANCEL_JOIN_SMARTMATCH_DELAY_T - TimerManager:wall():time())
 
 		return
 	end
@@ -642,7 +652,7 @@ function NetworkMatchMakingXBL:_join_by_smartmatch(mode_filter, job_id_filter, d
 	XboxLive:set_context("game_mode", "ONLINE")
 
 	local mission, difficulty = nil
-	mission = mode_filter == 1 and tweak_data.crime_spree:get_id_from_index(job_id_filter) or tostring(job_id_filter == -1 and job_id_filter or tweak_data.narrative:get_index_from_job_id(job_id_filter))
+	mission = (mode_filter ~= 1 or tweak_data.crime_spree:get_id_from_index(job_id_filter)) and tostring(job_id_filter == -1 and job_id_filter or tweak_data.narrative:get_index_from_job_id(job_id_filter))
 	self._hopper_variables = {
 		NrHosts = 0,
 		NrClients = 1,
@@ -655,7 +665,9 @@ function NetworkMatchMakingXBL:_join_by_smartmatch(mode_filter, job_id_filter, d
 
 	print("_hopper_variables = ", inspect(self._hopper_variables))
 
-	local clbk_params = {cancel_id = self:add_cancelable_callback()}
+	local clbk_params = {
+		cancel_id = self:add_cancelable_callback()
+	}
 	local progress_clbk = callback(self, self, "clbk_create_client_lobby", clbk_params)
 	local status = XboxLive:create_session("smartmatch_host_game_v1", false, progress_clbk)
 
@@ -678,7 +690,9 @@ function NetworkMatchMakingXBL:join_by_smartmatch(mode_filter, job_id_filter, di
 	end
 
 	if not self._queued_join_by_smartmatch then
-		local dialog_params = {cancel_func = callback(self, self, "clbk_btn_cancel_match")}
+		local dialog_params = {
+			cancel_func = callback(self, self, "clbk_btn_cancel_match")
+		}
 
 		managers.menu:show_searching_match_dialog(dialog_params)
 	end
@@ -720,7 +734,12 @@ function NetworkMatchMakingXBL:clbk_create_client_lobby(params, session)
 
 	self._session = session
 	local hopper_used = nil
-	hopper_used = self._hopper_variables.GameMode == 1 and "hopper_mode_crimespree_v2" or "hopper_mode_normal_v2"
+
+	if self._hopper_variables.GameMode == 1 then
+		hopper_used = "hopper_mode_crimespree_v2"
+	else
+		hopper_used = "hopper_mode_normal_v2"
+	end
 
 	print("[NetworkMatchMakingXBL:clbk_create_client_lobby] using hopper: ", hopper_used)
 
@@ -790,9 +809,11 @@ function NetworkMatchMakingXBL:clbk_join_session_result(status)
 	self:_is_client(true)
 	managers.network.voice_chat:open_session()
 	managers.network:start_client()
-	managers.menu:show_waiting_for_server_response({cancel_func = function ()
-		managers.network:session():on_join_request_cancelled()
-	end})
+	managers.menu:show_waiting_for_server_response({
+		cancel_func = function ()
+			managers.network:session():on_join_request_cancelled()
+		end
+	})
 
 	if self._session then
 		print("GN: Session is legal here")
@@ -1026,7 +1047,11 @@ function NetworkMatchMakingXBL:_create_lobby_failed()
 	local dialog_data = {
 		title = title,
 		text = managers.localization:text("dialog_err_failed_creating_lobby"),
-		button_list = {{text = managers.localization:text("dialog_ok")}}
+		button_list = {
+			{
+				text = managers.localization:text("dialog_ok")
+			}
+		}
 	}
 
 	managers.system_menu:show(dialog_data)
@@ -1174,7 +1199,7 @@ function NetworkMatchMakingXBL:clbk_smartmatch_client(params, session, smartmatc
 			local is_inexact_match = nil
 
 			if pref_mission == "-1" then
-				
+				-- Nothing
 			elseif not is_inexact_match then
 				if pref_mission ~= found_session_mission then
 					is_inexact_match = true
@@ -1220,7 +1245,7 @@ function NetworkMatchMakingXBL:clbk_smartmatch_client(params, session, smartmatc
 			local is_inexact_match = nil
 
 			if pref_mission == "-1" then
-				
+				-- Nothing
 			elseif not is_inexact_match and pref_mission ~= found_crimespree_mission then
 				is_inexact_match = true
 
@@ -1262,7 +1287,12 @@ function NetworkMatchMakingXBL:clbk_smartmatch_client(params, session, smartmatc
 
 			self._smartmatch_search_inexact = true
 			local hopper_used = nil
-			hopper_used = self._hopper_variables.GameMode == 1 and "hopper_mode_crimespree_v2" or "hopper_mode_normal_v2"
+
+			if self._hopper_variables.GameMode == 1 then
+				hopper_used = "hopper_mode_crimespree_v2"
+			else
+				hopper_used = "hopper_mode_normal_v2"
+			end
 
 			print("[NetworkMatchMakingXBL:clbk_smartmatch_client] using hopper: ", hopper_used)
 
@@ -1559,4 +1589,3 @@ function NetworkMatchMakingXBL:_is_client(set)
 		return self._is_client_var
 	end
 end
-

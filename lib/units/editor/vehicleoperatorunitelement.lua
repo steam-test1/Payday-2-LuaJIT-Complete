@@ -131,7 +131,6 @@ function VehicleOperatorUnitElement:add_unit_list_btn()
 end
 
 function VehicleOperatorUnitElement:remove_unit_list_btn()
-
 	local function f(unit)
 		return table.contains(self._hed.elements, unit:unit_data().unit_id)
 	end
@@ -168,4 +167,3 @@ function VehicleOperatorUnitElement:_build_panel(panel, panel_sizer)
 	self:_build_value_checkbox(panel, panel_sizer, "use_instigator")
 	self:_add_help_text("Choose an operation to perform on the selected elements. An element might not have the selected operation implemented and will then generate error when executed.")
 end
-

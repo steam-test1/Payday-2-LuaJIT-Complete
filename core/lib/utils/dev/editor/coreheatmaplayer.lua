@@ -156,17 +156,17 @@ function HeatmapLayer:_add_data()
 				elseif e_type == "reloaded" then
 					color = Vector3(0.5, 0.5, 0.5)
 				elseif e_type == "tiedown" then
-					
+					-- Nothing
 				elseif e_type == "deploy_trip" then
-					
+					-- Nothing
 				elseif e_type == "deploy_ammo" then
 					color = Vector3(0, 0.5, 0)
 				elseif e_type == "deploy_medic" then
 					color = Vector3(1, 0.5, 0.5)
 				elseif e_type == "in_custody" then
-					
+					-- Nothing
 				elseif e_type == "trade" then
-					
+					-- Nothing
 				elseif e_type == "cash" then
 					color = Vector3(0, 1, 0)
 				end
@@ -214,4 +214,3 @@ function HeatmapLayer:clear()
 	HeatmapLayer.super.clear(self)
 	self:_clr_data()
 end
-

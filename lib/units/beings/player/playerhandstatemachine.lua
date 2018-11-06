@@ -263,4 +263,3 @@ end
 function PlayerHandStateMachine:rotation()
 	return self._rotation or self:hand_unit():rotation()
 end
-

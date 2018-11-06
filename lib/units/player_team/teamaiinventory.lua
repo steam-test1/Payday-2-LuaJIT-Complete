@@ -105,4 +105,3 @@ function TeamAIInventory:pre_destroy(unit)
 	TeamAIInventory.super.pre_destroy(self, unit)
 	self:_unload_mask()
 end
-

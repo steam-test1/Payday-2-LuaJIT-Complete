@@ -232,8 +232,10 @@ function CoreSetup:__init()
 		if aspect_ratio == 0 then
 			aspect_ratio = RenderSettings.resolution.x / RenderSettings.resolution.y
 		end
+	elseif SystemInfo:platform() == Idstring("X360") or SystemInfo:platform() == Idstring("PS3") and SystemInfo:widescreen() then
+		aspect_ratio = RenderSettings.resolution.x / RenderSettings.resolution.y
 	else
-		aspect_ratio = (SystemInfo:platform() == Idstring("X360") or SystemInfo:platform() == Idstring("PS3") and SystemInfo:widescreen()) and RenderSettings.resolution.x / RenderSettings.resolution.y or RenderSettings.resolution.x / RenderSettings.resolution.y
+		aspect_ratio = RenderSettings.resolution.x / RenderSettings.resolution.y
 	end
 
 	if Application:ews_enabled() then
@@ -297,7 +299,7 @@ function CoreSetup:__init()
 	self._smoketest:post_init()
 
 	if not Application:editor() then
-		
+		-- Nothing
 	end
 
 	self:init_finalize()
@@ -531,4 +533,3 @@ function CoreSetup:make_entrypoint()
 	rawset(_G, "save", callback(self, self, "__save"))
 	rawset(_G, "load", callback(self, self, "__load"))
 end
-

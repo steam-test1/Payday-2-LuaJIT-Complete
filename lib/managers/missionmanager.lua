@@ -232,11 +232,12 @@ function MissionManager:init(...)
 	self._mission_filter = {}
 
 	if not Global.mission_manager then
-		Global.mission_manager = {}
-		Global.mission_manager.stage_job_values = {}
-		Global.mission_manager.job_values = {}
-		Global.mission_manager.saved_job_values = {}
-		Global.mission_manager.has_played_tutorial = false
+		Global.mission_manager = {
+			stage_job_values = {},
+			job_values = {},
+			saved_job_values = {},
+			has_played_tutorial = false
+		}
 	end
 end
 
@@ -419,10 +420,9 @@ function MissionScript:activate(...)
 
 	for _, element in pairs(self._elements) do
 		if element:value("execute_on_startup") then
-			
+			-- Nothing
 		end
 	end
 end
 
 CoreClass.override_class(CoreMissionManager.MissionScript, MissionScript)
-

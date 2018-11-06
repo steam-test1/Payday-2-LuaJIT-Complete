@@ -77,4 +77,3 @@ function SniperGrazeDamage:on_weapon_fired(weapon_unit, result)
 		})
 	end
 end
-

@@ -730,7 +730,7 @@ function VehicleDrivingExt:_evacuate_seat(seat)
 	seat.occupant:movement().seat = nil
 
 	if seat.occupant:character_damage():dead() then
-		
+		-- Nothing
 	elseif Network:is_server() then
 		seat.occupant:movement():action_request({
 			sync = true,
@@ -1049,7 +1049,7 @@ function VehicleDrivingExt:_detect_npc_collisions()
 		local unit_is_criminal = unit:in_slot(managers.slot:get_mask("all_criminals"))
 
 		if unit_is_criminal then
-			
+			-- Nothing
 		elseif unit:character_damage() and not unit:character_damage():dead() then
 			self._hit_soundsource:set_position(unit:position())
 			self._hit_soundsource:set_rtpc("car_hit_vel", math.clamp(vel:length() / 100 * 2, 0, 100))
@@ -1074,7 +1074,7 @@ function VehicleDrivingExt:_detect_npc_collisions()
 			local nr_u_bodies = unit:num_bodies()
 			local i_u_body = 0
 
-			while i_u_body < nr_u_bodies do
+			while nr_u_bodies > i_u_body do
 				local u_body = unit:body(i_u_body)
 
 				if u_body:enabled() and u_body:dynamic() then
@@ -1094,7 +1094,7 @@ function VehicleDrivingExt:_detect_collisions(t, dt)
 
 	if dt ~= 0 and self._vehicle:is_active() then
 		local dv = self._old_speed - current_speed
-		local gforce = math.abs((dv:length() / 100) / dt) / 9.81
+		local gforce = math.abs(dv:length() / 100 / dt) / 9.81
 
 		if gforce > 15 then
 			local ray_from = self._seats.driver.object:position() + Vector3(0, 0, 100)
@@ -1199,7 +1199,7 @@ function VehicleDrivingExt:respawn_vehicle(auto_respawn)
 	self.respawn_available = false
 
 	if auto_respawn then
-		
+		-- Nothing
 	end
 
 	print("Respawning vehicle on last valid position")
@@ -1212,7 +1212,11 @@ function VehicleDrivingExt:respawn_vehicle(auto_respawn)
 	local counter = self._position_counter - 4
 
 	if counter < 0 then
-		counter = self._position_counter_turnover and 20 + counter or 0
+		if self._position_counter_turnover then
+			counter = 20 + counter
+		else
+			counter = 0
+		end
 	end
 
 	self._position_counter = self._position_counter - 1
@@ -1524,7 +1528,7 @@ function VehicleDrivingExt:on_drive_SO_started(seat, unit)
 	local pos = seat.third_object:position()
 
 	if managers.network:session() then
-		
+		-- Nothing
 	end
 end
 
@@ -1542,7 +1546,7 @@ function VehicleDrivingExt:on_drive_SO_completed(seat, unit)
 	self._unit:link(Idstring(VehicleDrivingExt.THIRD_PREFIX .. seat.name), unit)
 
 	if managers.network:session() then
-		
+		-- Nothing
 	end
 
 	unit:brain():set_active(false)
@@ -1586,7 +1590,9 @@ end
 
 function VehicleDrivingExt:collision_callback(tag, unit, body, other_unit, other_body, position, normal, velocity, ...)
 	if other_unit and other_unit:npc_vehicle_driving() then
-		local attack_data = {damage = 1}
+		local attack_data = {
+			damage = 1
+		}
 
 		other_unit:character_damage():damage_collision(attack_data)
 	elseif other_unit and other_unit:damage() and other_body and other_body:extension() then
@@ -1678,4 +1684,3 @@ end
 function VehicleDrivingExt:destroy()
 	managers.hud:_remove_name_label(self._unit:unit_data().name_label_id)
 end
-

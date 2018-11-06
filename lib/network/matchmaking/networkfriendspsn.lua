@@ -128,7 +128,7 @@ function NetworkFriendsPSN:get_friends()
 				elseif managers.network.group:find(v.friend) then
 					online_status = "in_group"
 				elseif v.status == 0 then
-					
+					-- Nothing
 				elseif v.status == 1 then
 					online_status = "signed_in"
 				elseif v.status == 2 then
@@ -279,4 +279,3 @@ function NetworkFriendsPSN:_count_online(friends)
 
 	return true
 end
-

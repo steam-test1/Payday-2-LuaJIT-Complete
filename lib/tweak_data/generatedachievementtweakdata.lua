@@ -1,4 +1,3 @@
-
 function init_auto_generated_achievement_data(tags)
 	return {
 		ameno_1 = {
@@ -129,7 +128,9 @@ function init_auto_generated_achievement_data(tags)
 			progress = true,
 			ladder = "Level",
 			sort_name = "Other_H_All_AllLevel050",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		armed_to_the_teeth = {
 			sort_name = "Other_H_None_WouldYouLike",
@@ -1172,7 +1173,9 @@ function init_auto_generated_achievement_data(tags)
 			progress = true,
 			ladder = "Level",
 			sort_name = "Other_H_All_AllLevel075",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		bigbank_1 = {
 			need_unlock_icons = true,
@@ -4043,14 +4046,18 @@ function init_auto_generated_achievement_data(tags)
 			sort_name = "Other_H_None_GoingPlaces",
 			icon_id = "Other_H_None_GoingPlaces",
 			progress = true,
-			tags = {tags.progress.generic}
+			tags = {
+				tags.progress.generic
+			}
 		},
 		gone_in_30_seconds = {
 			icon_id = "Other_H_All_AllLevel025",
 			progress = true,
 			ladder = "Level",
 			sort_name = "Other_H_All_AllLevel025",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		gorilla_1 = {
 			need_unlock_icons = true,
@@ -4274,7 +4281,9 @@ function init_auto_generated_achievement_data(tags)
 			progress = true,
 			ladder = "Level",
 			sort_name = "Other_H_All_AllLevel010",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		halloween_1 = {
 			sort_name = "C_Hector_H_Rats_IAmTheOne",
@@ -4498,151 +4507,201 @@ function init_auto_generated_achievement_data(tags)
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_01",
 			icon_id = "Other_H_All_Infamy_01",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_10 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_10",
 			icon_id = "Other_H_All_Infamy_10",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_11 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_11",
 			icon_id = "Other_H_All_Infamy_11",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_12 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_12",
 			icon_id = "Other_H_All_Infamy_12",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_13 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_13",
 			icon_id = "Other_H_All_Infamy_13",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_14 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_14",
 			icon_id = "Other_H_All_Infamy_14",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_15 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_15",
 			icon_id = "Other_H_All_Infamy_15",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_16 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_16",
 			icon_id = "Other_H_All_Infamy_16",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_17 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_17",
 			icon_id = "Other_H_All_Infamy_17",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_18 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_18",
 			icon_id = "Other_H_All_Infamy_18",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_19 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_19",
 			icon_id = "Other_H_All_Infamy_19",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_2 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_02",
 			icon_id = "Other_H_All_Infamy_02",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_20 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_20",
 			icon_id = "Other_H_All_Infamy_20",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_21 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_21",
 			icon_id = "Other_H_All_Infamy_21",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_22 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_22",
 			icon_id = "Other_H_All_Infamy_22",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_23 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_23",
 			icon_id = "Other_H_All_Infamy_23",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_24 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_24",
 			icon_id = "Other_H_All_Infamy_24",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_25 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_25",
 			icon_id = "Other_H_All_Infamy_25",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_3 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_03",
 			icon_id = "Other_H_All_Infamy_03",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_4 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_04",
 			icon_id = "Other_H_All_Infamy_04",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_5 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_05",
 			icon_id = "Other_H_All_Infamy_05",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_6 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_06",
 			icon_id = "Other_H_All_Infamy_06",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_7 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_07",
 			icon_id = "Other_H_All_Infamy_07",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_8 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_08",
 			icon_id = "Other_H_All_Infamy_08",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		ignominy_9 = {
 			ladder = "Infamy",
 			sort_name = "Other_H_All_Infamy_09",
 			icon_id = "Other_H_All_Infamy_09",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		im_a_healer_tank_damage_dealer = {
 			sort_name = "Other_H_None_ImAHealerTank",
@@ -5269,7 +5328,9 @@ function init_auto_generated_achievement_data(tags)
 			progress = true,
 			ladder = "Level",
 			sort_name = "Other_H_All_AllLevel100",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		murphys_laws = {
 			sort_name = "Other_H_Any_IGotIt",
@@ -6857,7 +6918,9 @@ function init_auto_generated_achievement_data(tags)
 			sort_name = "Other_H_None_SpendMoney",
 			icon_id = "Other_H_None_SpendMoney",
 			progress = true,
-			tags = {tags.progress.generic}
+			tags = {
+				tags.progress.generic
+			}
 		},
 		squek = {
 			icon_id = "C_Bain_H_ArtGallery_AllDiffs_D5",
@@ -7177,7 +7240,9 @@ function init_auto_generated_achievement_data(tags)
 			progress = true,
 			ladder = "Level",
 			sort_name = "Other_H_All_AllLevel005",
-			tags = {tags.progress.leveling}
+			tags = {
+				tags.progress.leveling
+			}
 		},
 		you_shall_not_pass = {
 			sort_name = "C_Escape_H_Overpass_YouShallNot",
@@ -9133,7 +9198,9 @@ function init_auto_generated_achievement_data(tags)
 			additional_id = true,
 			sort_name = "Other_H_NONE_GoldenGrin",
 			icon_id = "Other_H_NONE_GoldenGrin",
-			tags = {tags.progress.heisting}
+			tags = {
+				tags.progress.heisting
+			}
 		},
 		cac_8 = {
 			additional_id = true,
@@ -13478,4 +13545,3 @@ function init_auto_generated_achievement_data(tags)
 		}
 	}
 end
-

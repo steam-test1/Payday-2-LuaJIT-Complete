@@ -12803,6 +12803,7 @@ function HudIconsTweakData:init()
 		}
 	}
 end
+
 local atlas_data = nil
 
 function HudIconsTweakData:create_grid_atlas(image_name, tex_w, tex_h, grid_w, grid_h)
@@ -12874,4 +12875,3 @@ function HudIconsTweakData:get_texture(texture_path)
 
 	return icon_data.texture, icon_data.texture_rect
 end
-

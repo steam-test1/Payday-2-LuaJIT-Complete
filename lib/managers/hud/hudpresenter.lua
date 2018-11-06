@@ -100,7 +100,7 @@ function HUDPresenter:_present_information(params)
 	self._bg_box:set_left(math.round(self._bg_box:parent():w() / 2 - self._bg_box:w() / 2))
 
 	if params.icon then
-		
+		-- Nothing
 	end
 
 	if params.event then
@@ -206,4 +206,3 @@ end
 if _G.IS_VR then
 	require("lib/managers/hud/vr/HUDPresenterVR")
 end
-

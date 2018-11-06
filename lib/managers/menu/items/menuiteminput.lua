@@ -353,7 +353,14 @@ function MenuItemInput:_update_caret(row_item)
 	local x, y, w, h = text:selection_rect()
 
 	if s == 0 and e == 0 then
-		x = text:align() == "center" and text:world_x() + text:w() / 2 or row_item.align == "right" and text:world_right() or text:world_left()
+		if text:align() == "center" then
+			x = text:world_x() + text:w() / 2
+		elseif row_item.align == "right" then
+			x = text:world_right()
+		else
+			x = text:world_left()
+		end
+
 		y = text:world_y()
 	end
 
@@ -417,7 +424,7 @@ function MenuItemInput:update_key_down(row_item, o, k)
 			text:replace_text("")
 
 			if utf8.len(text:text()) < 1 and type(self._esc_released_callback) ~= "number" then
-				
+				-- Nothing
 			end
 		elseif self._key_pressed == Idstring("delete") then
 			if s == e and s < n then
@@ -427,7 +434,7 @@ function MenuItemInput:update_key_down(row_item, o, k)
 			text:replace_text("")
 
 			if utf8.len(text:text()) < 1 and type(self._esc_released_callback) ~= "number" then
-				
+				-- Nothing
 			end
 		elseif self._key_pressed == Idstring("insert") then
 			local clipboard = Application:get_clipboard() or ""
@@ -506,7 +513,7 @@ function MenuItemInput:key_press(row_item, o, k)
 		text:replace_text("")
 
 		if utf8.len(text:text()) < 1 and type(self._esc_released_callback) ~= "number" then
-			
+			-- Nothing
 		end
 	elseif k == Idstring("delete") then
 		if s == e and s < n then
@@ -516,7 +523,7 @@ function MenuItemInput:key_press(row_item, o, k)
 		text:replace_text("")
 
 		if utf8.len(text:text()) < 1 and type(self._esc_released_callback) ~= "number" then
-			
+			-- Nothing
 		end
 	elseif k == Idstring("insert") then
 		local clipboard = Application:get_clipboard() or ""
@@ -554,4 +561,3 @@ function MenuItemInput:key_press(row_item, o, k)
 
 	self:_layout(row_item)
 end
-

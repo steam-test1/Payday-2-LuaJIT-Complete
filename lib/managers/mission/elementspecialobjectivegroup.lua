@@ -34,7 +34,7 @@ function ElementSpecialObjectiveGroup:on_executed(instigator)
 	end
 
 	if not managers.groupai:state():is_AI_enabled() and not Application:editor() then
-		
+		-- Nothing
 	elseif self._values.mode == "forced_spawn" or self._values.mode == "recurring_cloaker_spawn" or self._values.mode == "recurring_spawn_1" then
 		self:_register_to_group_AI()
 	elseif self._values.spawn_instigator_ids and next(self._values.spawn_instigator_ids) then
@@ -127,7 +127,9 @@ function ElementSpecialObjectiveGroup:get_as_followup(unit, skip_element_ids)
 end
 
 function ElementSpecialObjectiveGroup:_execute_random_SO(instigator)
-	local random_SO = ElementSpecialObjective.choose_followup_SO(self, instigator, {[self._id] = true})
+	local random_SO = ElementSpecialObjective.choose_followup_SO(self, instigator, {
+		[self._id] = true
+	})
 
 	if random_SO then
 		random_SO:on_executed(instigator)
@@ -137,7 +139,9 @@ function ElementSpecialObjectiveGroup:_execute_random_SO(instigator)
 end
 
 function ElementSpecialObjectiveGroup:get_random_SO(receiver_unit)
-	local random_SO_element = ElementSpecialObjective.choose_followup_SO(self, receiver_unit, {[self._id] = true})
+	local random_SO_element = ElementSpecialObjective.choose_followup_SO(self, receiver_unit, {
+		[self._id] = true
+	})
 
 	if not random_SO_element then
 		return
@@ -176,4 +180,3 @@ function ElementSpecialObjectiveGroup:clbk_objective_failed(group)
 
 	self:event("fail", group)
 end
-

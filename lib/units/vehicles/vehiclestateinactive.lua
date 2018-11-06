@@ -53,4 +53,3 @@ function VehicleStateInactive:exit()
 		self._unit:unit_data().name_label_id = id
 	end
 end
-

@@ -45,7 +45,9 @@ function MenuSceneGui:update(t, dt)
 				vertical = "top",
 				align = "center",
 				layer = 1,
-				text = managers.localization:to_upper_text(current_rank == 0 and "menu_infamy_rank_reached" or "menu_infamy_rank_increased", {infamy_rank = tostring(current_rank + 1)}),
+				text = managers.localization:to_upper_text(current_rank == 0 and "menu_infamy_rank_reached" or "menu_infamy_rank_increased", {
+					infamy_rank = tostring(current_rank + 1)
+				}),
 				font = tweak_data.menu.pd2_large_font,
 				font_size = tweak_data.menu.pd2_large_font_size
 			})
@@ -57,7 +59,7 @@ function MenuSceneGui:update(t, dt)
 	end
 
 	if alive(self._infamy_increased_text) then
-		
+		-- Nothing
 	end
 
 	if managers.menu:is_pc_controller() then
@@ -98,4 +100,3 @@ function MenuSceneGui:close()
 		self._fullscreen_panel = nil
 	end
 end
-

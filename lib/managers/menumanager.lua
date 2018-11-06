@@ -228,7 +228,7 @@ function MenuManager:_cb_matchmake_player_joined(player_info)
 	print("_cb_matchmake_player_joined")
 
 	if managers.network.group:is_group_leader() then
-		
+		-- Nothing
 	end
 end
 
@@ -601,7 +601,7 @@ function MenuManager:set_mouse_sensitivity(zoomed)
 
 		if alive(state._equipped_unit) then
 			local fov = managers.user:get_setting("fov_multiplier")
-			local scale = (((state._equipped_unit:base():zoom() or 65) * (fov + 1)) / 2) / (65 * fov)
+			local scale = (state._equipped_unit:base():zoom() or 65) * (fov + 1) / 2 / (65 * fov)
 			sense_x = sense_x * scale
 			sense_y = sense_y * scale
 		end
@@ -688,7 +688,12 @@ function MenuManager:invert_camera_x_changed(name, old_value, new_value)
 	local setup = self._controller:get_setup()
 	local look_connection = setup:get_connection("look")
 	local look_inversion = look_connection:get_inversion_unmodified()
-	look_inversion = new_value and look_inversion:with_x(-1) or look_inversion:with_x(1)
+
+	if new_value then
+		look_inversion = look_inversion:with_x(-1)
+	else
+		look_inversion = look_inversion:with_x(1)
+	end
 
 	look_connection:set_inversion(look_inversion)
 	managers.controller:rebind_connections()
@@ -698,7 +703,12 @@ function MenuManager:invert_camera_y_changed(name, old_value, new_value)
 	local setup = self._controller:get_setup()
 	local look_connection = setup:get_connection("look")
 	local look_inversion = look_connection:get_inversion_unmodified()
-	look_inversion = new_value and look_inversion:with_y(-1) or look_inversion:with_y(1)
+
+	if new_value then
+		look_inversion = look_inversion:with_y(-1)
+	else
+		look_inversion = look_inversion:with_y(1)
+	end
 
 	look_connection:set_inversion(look_inversion)
 	managers.controller:rebind_connections()
@@ -716,11 +726,19 @@ function MenuManager:southpaw_changed(name, old_value, new_value)
 	local move_input_name_list = move_connection:get_input_name_list()
 
 	if new_value then
-		move_connection:set_input_name_list({"right"})
-		look_connection:set_input_name_list({"left"})
+		move_connection:set_input_name_list({
+			"right"
+		})
+		look_connection:set_input_name_list({
+			"left"
+		})
 	else
-		move_connection:set_input_name_list({"left"})
-		look_connection:set_input_name_list({"right"})
+		move_connection:set_input_name_list({
+			"left"
+		})
+		look_connection:set_input_name_list({
+			"right"
+		})
 	end
 
 	managers.controller:rebind_connections()
@@ -882,7 +900,9 @@ function MenuManager:progress_resetted()
 		text = "Doh!",
 		callback_func = callback(self, self, "_dialog_progress_resetted_ok")
 	}
-	dialog_data.button_list = {no_button}
+	dialog_data.button_list = {
+		no_button
+	}
 
 	managers.system_menu:show(dialog_data)
 end
@@ -928,9 +948,11 @@ function MenuManager:open_sign_in_menu(cb)
 		managers.network.matchmake:register_callback("player_joined", callback(self, self, "_cb_matchmake_player_joined"))
 
 		if PSN:is_fetching_status() then
-			self:show_fetching_status_dialog({cancel_func = function ()
-				PSN:fetch_cancel()
-			end})
+			self:show_fetching_status_dialog({
+				cancel_func = function ()
+					PSN:fetch_cancel()
+				end
+			})
 
 			local function f()
 				self:open_ps4_sign_in_menu(cb)
@@ -954,9 +976,11 @@ function MenuManager:open_sign_in_menu(cb)
 
 		if managers.network.account:signin_state() == "signed in" then
 			if managers.user:check_privilege(nil, "multiplayer_sessions", callback(self, self, "_check_privilege_callback")) then
-				self:show_fetching_status_dialog({cancel_func = function ()
-					self._queued_privilege_check_cb = nil
-				end})
+				self:show_fetching_status_dialog({
+					cancel_func = function ()
+						self._queued_privilege_check_cb = nil
+					end
+				})
 
 				self._queued_privilege_check_cb = cb
 			else
@@ -1188,7 +1212,7 @@ function MenuManager:ps3_disconnect(connected)
 	end
 
 	if managers.menu_component then
-		
+		-- Nothing
 	end
 end
 
@@ -1205,9 +1229,11 @@ function MenuManager:show_disconnect_message(requires_signin)
 
 	self._showing_disconnect_message = true
 
-	self:show_mp_disconnected_internet_dialog({ok_func = function ()
-		self._showing_disconnect_message = nil
-	end})
+	self:show_mp_disconnected_internet_dialog({
+		ok_func = function ()
+			self._showing_disconnect_message = nil
+		end
+	})
 end
 
 function MenuManager:created_lobby()
@@ -1238,7 +1264,7 @@ function MenuManager:exit_online_menues()
 	self:open_menu("menu_main")
 
 	if not managers.menu:is_pc_controller() then
-		
+		-- Nothing
 	end
 
 	if must_show_controller_disconnect then
@@ -1330,7 +1356,13 @@ function MenuManager:show_global_success(node)
 
 	rate = rate * 100
 	local rate_str = nil
-	rate_str = rate >= 10 and string.format("%.0f", rate) or string.format("%.1f", rate)
+
+	if rate >= 10 then
+		rate_str = string.format("%.0f", rate)
+	else
+		rate_str = string.format("%.1f", rate)
+	end
+
 	local diff_str = string.upper(managers.localization:text("menu_difficulty_" .. Global.game_settings.difficulty))
 	local heist_str = string.upper(managers.localization:text(tweak_data.levels[Global.game_settings.level_id].name_id))
 	rate_str = managers.localization:text("menu_global_success", {
@@ -2424,7 +2456,6 @@ function MenuCallbackHandler:on_account_picker()
 	print("MenuCallbackHandler:on_account_picker()")
 
 	local function confirm_cb()
-
 		local function f(...)
 			print("result", ...)
 		end
@@ -2435,7 +2466,9 @@ function MenuCallbackHandler:on_account_picker()
 		})
 	end
 
-	managers.menu:show_account_picker_dialog({yes_func = confirm_cb})
+	managers.menu:show_account_picker_dialog({
+		yes_func = confirm_cb
+	})
 end
 
 function MenuCallbackHandler:on_menu_option_help()
@@ -2925,15 +2958,17 @@ function MenuCallbackHandler:open_contract_node(item)
 	local is_competitive = job_tweak and job_tweak.competitive or false
 	self._temp_job_data = job_tweak
 
-	managers.menu:open_node(Global.game_settings.single_player and "crimenet_contract_singleplayer" or "crimenet_contract_host", {{
-		customize_contract = true,
-		job_id = item:parameters().id,
-		difficulty = is_professional and "hard" or "normal",
-		difficulty_id = is_professional and 3 or 2,
-		professional = is_professional,
-		competitive = is_competitive,
-		contract_visuals = job_tweak.contract_visuals
-	}})
+	managers.menu:open_node(Global.game_settings.single_player and "crimenet_contract_singleplayer" or "crimenet_contract_host", {
+		{
+			customize_contract = true,
+			job_id = item:parameters().id,
+			difficulty = is_professional and "hard" or "normal",
+			difficulty_id = is_professional and 3 or 2,
+			professional = is_professional,
+			competitive = is_competitive,
+			contract_visuals = job_tweak.contract_visuals
+		}
+	})
 end
 
 function MenuCallbackHandler:is_contract_difficulty_allowed(item)
@@ -2964,7 +2999,7 @@ function MenuCallbackHandler:is_contract_difficulty_allowed(item)
 	end
 
 	if not job_data.professional and item:value() > 5 then
-		
+		-- Nothing
 	end
 
 	local job_jc = tweak_data.narrative:job_data(job_data.job_id).jc
@@ -3310,13 +3345,15 @@ function MenuCallbackHandler:get_matchmake_attributes()
 	local min_lvl = Global.game_settings.reputation_permission or 0
 	local drop_in = Global.game_settings.drop_in_option
 	local job_id = tweak_data.narrative:get_index_from_job_id(managers.job:current_real_job_id())
-	local attributes = {numbers = {
-		level_id + 1000 * job_id,
-		difficulty_id,
-		permission_id,
-		[6] = drop_in,
-		[7] = min_lvl
-	}}
+	local attributes = {
+		numbers = {
+			level_id + 1000 * job_id,
+			difficulty_id,
+			permission_id,
+			[6] = drop_in,
+			[7] = min_lvl
+		}
+	}
 
 	if self:is_win32() then
 		local kick_option = Global.game_settings.kick_option
@@ -3359,7 +3396,6 @@ function MenuCallbackHandler:play_online_game()
 end
 
 function MenuCallbackHandler:play_safehouse(params)
-
 	local function yes_func()
 		self:play_single_player()
 
@@ -3377,7 +3413,9 @@ function MenuCallbackHandler:play_safehouse(params)
 		return
 	end
 
-	managers.menu:show_play_safehouse_question({yes_func = yes_func})
+	managers.menu:show_play_safehouse_question({
+		yes_func = yes_func
+	})
 end
 
 function MenuCallbackHandler:play_short_heist(item)
@@ -3394,7 +3432,7 @@ end
 function MenuCallbackHandler:_increase_infamous(yes_clbk)
 	managers.menu_scene:destroy_infamy_card()
 
-	if managers.experience:current_level() < 100 or #tweak_data.infamy.ranks <= managers.experience:current_rank() then
+	if managers.experience:current_level() < 100 or managers.experience:current_rank() >= #tweak_data.infamy.ranks then
 		return
 	end
 
@@ -3451,11 +3489,14 @@ function MenuCallbackHandler:become_infamous(params)
 	}
 
 	if infamous_cost <= managers.money:offshore() and managers.experience:current_level() >= 100 then
-
 		function params.yes_func()
 			local rank = managers.experience:current_rank() + 1
 
-			managers.menu:open_node("blackmarket_preview_node", {{back_callback = callback(MenuCallbackHandler, MenuCallbackHandler, "_increase_infamous", yes_clbk)}})
+			managers.menu:open_node("blackmarket_preview_node", {
+				{
+					back_callback = callback(MenuCallbackHandler, MenuCallbackHandler, "_increase_infamous", yes_clbk)
+				}
+			})
 			managers.menu:post_event("infamous_stinger_level_" .. (rank < 10 and "0" or "") .. tostring(rank))
 			managers.menu_scene:spawn_infamy_card(rank)
 		end
@@ -3483,7 +3524,6 @@ function MenuCallbackHandler:choice_choose_video_adapter(item)
 end
 
 function MenuCallbackHandler:apply_and_save_render_settings()
-
 	local function func()
 		Application:apply_render_settings()
 		Application:save_render_settings()
@@ -3492,9 +3532,13 @@ function MenuCallbackHandler:apply_and_save_render_settings()
 	local fullscreen_ws = managers.menu_component and managers.menu_component._fullscreen_ws
 
 	if false and alive(fullscreen_ws) then
-		local black_overlay = fullscreen_ws:panel():panel({layer = tweak_data.gui.MOUSE_LAYER - 1})
+		local black_overlay = fullscreen_ws:panel():panel({
+			layer = tweak_data.gui.MOUSE_LAYER - 1
+		})
 
-		black_overlay:rect({color = Color.black})
+		black_overlay:rect({
+			color = Color.black
+		})
 		black_overlay:text({
 			vertical = "center",
 			halign = "center",
@@ -3513,9 +3557,11 @@ function MenuCallbackHandler:apply_and_save_render_settings()
 			end)
 			fullscreen_ws:panel():remove(black_overlay)
 		end)
-	else
-		func()
+
+		return
 	end
+
+	func()
 end
 
 function MenuCallbackHandler:choice_choose_texture_quality(item)
@@ -3732,7 +3778,6 @@ function MenuCallbackHandler:_dialog_leave_lobby_no()
 end
 
 function MenuCallbackHandler:connect_to_host_rpc(item)
-
 	local function f(res)
 		if res == "JOINED_LOBBY" then
 			self:on_enter_lobby()
@@ -3765,7 +3810,6 @@ function MenuCallbackHandler:host_multiplayer(item)
 end
 
 function MenuCallbackHandler:join_multiplayer()
-
 	local function f(new_host_rpc)
 		if new_host_rpc then
 			managers.menu:active_menu().logic:refresh_node("select_host")
@@ -3777,7 +3821,6 @@ end
 
 function MenuCallbackHandler:find_lan_games()
 	if self:is_win32() then
-
 		local function f(new_host_rpc)
 			if new_host_rpc then
 				managers.menu:active_menu().logic:refresh_node("play_lan")
@@ -3798,7 +3841,6 @@ end
 
 function MenuCallbackHandler:_find_online_games(friends_only)
 	if self:is_win32() then
-
 		local function f(info)
 			print("info in function")
 			print(inspect(info))
@@ -3817,7 +3859,9 @@ function MenuCallbackHandler:_find_online_games(friends_only)
 				local node_gui = stack[#stack]
 
 				if node_gui.set_mini_info then
-					node_gui:set_mini_info(managers.localization:text("menu_players_online", {COUNT = amount}))
+					node_gui:set_mini_info(managers.localization:text("menu_players_online", {
+						COUNT = amount
+					}))
 				end
 			end
 		end
@@ -4067,15 +4111,17 @@ function MenuCallbackHandler:cancel_start_the_game_countdown()
 end
 
 function MenuCallbackHandler:restart_game(item)
-	managers.menu:show_restart_game_dialog({yes_func = function ()
-		if managers.job:stage_success() then
-			print("No restart after stage success")
+	managers.menu:show_restart_game_dialog({
+		yes_func = function ()
+			if managers.job:stage_success() then
+				print("No restart after stage success")
 
-			return
+				return
+			end
+
+			managers.game_play_central:restart_the_game()
 		end
-
-		managers.game_play_central:restart_the_game()
-	end})
+	})
 end
 
 function MenuCallbackHandler:set_music_volume(item)
@@ -4287,7 +4333,9 @@ end
 function MenuCallbackHandler:_dialog_end_game_yes()
 	managers.platform:set_playing(false)
 	managers.job:clear_saved_ghost_bonus()
-	managers.statistics:stop_session({quit = true})
+	managers.statistics:stop_session({
+		quit = true
+	})
 	managers.savefile:save_progress()
 	managers.job:deactivate_current_job()
 	managers.gage_assignment:deactivate_assignments()
@@ -4309,14 +4357,15 @@ function MenuCallbackHandler:_dialog_end_game_yes()
 end
 
 function MenuCallbackHandler:leave_safehouse()
-
 	local function yes_func()
 		Global.load_crime_net = true
 
 		self:_dialog_end_game_yes()
 	end
 
-	managers.menu:show_leave_safehouse_dialog({yes_func = yes_func})
+	managers.menu:show_leave_safehouse_dialog({
+		yes_func = yes_func
+	})
 end
 
 function MenuCallbackHandler:leave_mission()
@@ -4340,7 +4389,9 @@ function MenuCallbackHandler:abort_mission()
 		end
 	end
 
-	managers.menu:show_abort_mission_dialog({yes_func = yes_func})
+	managers.menu:show_abort_mission_dialog({
+		yes_func = yes_func
+	})
 end
 
 function MenuCallbackHandler:load_start_menu_lobby()
@@ -4368,7 +4419,7 @@ function MenuCallbackHandler:show_steam_controller_binding_panel()
 
 	if controller then
 		if controller:show_binding_panel() then
-			
+			-- Nothing
 		elseif MenuCallbackHandler:is_overlay_enabled() then
 			managers.menu:show_requires_big_picture()
 		else
@@ -4497,7 +4548,9 @@ function MenuCallbackHandler:open_savefile_menu(item)
 
 	local parameter_map = item:parameters()
 
-	managers.menu:open_node(parameter_map.delayed_node, {parameter_map})
+	managers.menu:open_node(parameter_map.delayed_node, {
+		parameter_map
+	})
 end
 
 function MenuCallbackHandler:hide_huds()
@@ -4596,7 +4649,9 @@ function MenuCallbackHandler:debug_goto_custody()
 	end
 
 	managers.player:force_drop_carry()
-	managers.statistics:downed({death = true})
+	managers.statistics:downed({
+		death = true
+	})
 	IngameFatalState.on_local_player_dead()
 	game_state_machine:change_state_by_name("ingame_waiting_for_respawn")
 	player:character_damage():set_invulnerable(true)
@@ -4604,6 +4659,7 @@ function MenuCallbackHandler:debug_goto_custody()
 	player:base():_unregister()
 	player:base():set_slot(player, 0)
 end
+
 MenuUpgrades = MenuUpgrades or class()
 
 function MenuUpgrades:modify_node(node, up, ...)
@@ -4631,15 +4687,21 @@ function MenuUpgrades:modify_node(node, up, ...)
 		if managers.upgrades:is_locked(i) and first_locked then
 			first_locked = false
 
-			new_node:add_item(new_node:create_item({type = "MenuItemUpgrade"}, {
+			new_node:add_item(new_node:create_item({
+				type = "MenuItemUpgrade"
+			}, {
 				upgrade_lock = true,
 				name = "upgrade_lock",
 				localize = "false",
-				text_id = managers.localization:text("menu_upgrades_locked", {LEVEL = managers.upgrades:get_level_from_step(i)})
+				text_id = managers.localization:text("menu_upgrades_locked", {
+					LEVEL = managers.upgrades:get_level_from_step(i)
+				})
 			}))
 		end
 
-		local new_item = new_node:create_item({type = "MenuItemUpgrade"}, params)
+		local new_item = new_node:create_item({
+			type = "MenuItemUpgrade"
+		}, params)
 
 		new_node:add_item(new_item)
 	end
@@ -4661,6 +4723,7 @@ function MenuCallbackHandler:toggle_visual_upgrade(item)
 
 	print("Toggled", item:parameters().upgrade_id)
 end
+
 InviteFriendsPSN = InviteFriendsPSN or class()
 
 function InviteFriendsPSN:modify_node(node, up)
@@ -4694,7 +4757,9 @@ function InviteFriendsPSN:refresh_node(node, friends)
 					text_id = utf8.to_upper(friend._name),
 					signin_status = signin_status
 				}
-				local new_item = node:create_item({type = "MenuItemFriend"}, params)
+				local new_item = node:create_item({
+					type = "MenuItemFriend"
+				}, params)
 
 				node:add_item(new_item)
 			elseif item:parameters().signin_status ~= signin_status then
@@ -4715,6 +4780,7 @@ function InviteFriendsPSN:update_node(node)
 
 	managers.network.friends:get_friends()
 end
+
 InviteFriendsSTEAM = InviteFriendsSTEAM or class()
 
 function InviteFriendsSTEAM:modify_node(node, up)
@@ -4727,6 +4793,7 @@ end
 
 function InviteFriendsSTEAM:update_node(node)
 end
+
 PauseMenu = PauseMenu or class()
 
 function PauseMenu:modify_node(node)
@@ -4751,6 +4818,7 @@ end
 function PauseMenu:refresh_node(node)
 	return self:modify_node(node)
 end
+
 KickPlayer = KickPlayer or class()
 
 function KickPlayer:modify_node(node, up)
@@ -4787,6 +4855,7 @@ end
 function KickPlayer:refresh_node(node)
 	return self:modify_node(node)
 end
+
 MutePlayer = MutePlayer or class()
 
 function MutePlayer:modify_node(node, up)
@@ -4845,6 +4914,7 @@ function MutePlayer:modify_node(node, up)
 
 	return new_node
 end
+
 MutePlayerX360 = MutePlayerX360 or class()
 
 function MutePlayerX360:modify_node(node, up)
@@ -4904,6 +4974,7 @@ function MutePlayerX360:modify_node(node, up)
 
 	return new_node
 end
+
 MutePlayerXB1 = MutePlayerXB1 or class()
 
 function MutePlayerXB1:modify_node(node, up)
@@ -4963,6 +5034,7 @@ function MutePlayerXB1:modify_node(node, up)
 
 	return new_node
 end
+
 MutePlayerPS4 = MutePlayerPS4 or class()
 
 function MutePlayerPS4:modify_node(node, up)
@@ -5021,6 +5093,7 @@ function MutePlayerPS4:modify_node(node, up)
 
 	return new_node
 end
+
 ViewGamerCard = ViewGamerCard or class()
 
 function ViewGamerCard:modify_node(node, up)
@@ -5046,6 +5119,7 @@ function ViewGamerCard:modify_node(node, up)
 
 	return new_node
 end
+
 MenuPSNHostBrowser = MenuPSNHostBrowser or class()
 
 function MenuPSNHostBrowser:modify_node(node, up)
@@ -5181,7 +5255,9 @@ function MenuPSNHostBrowser:refresh_node(node, info_list, friends_only)
 						state = state,
 						num_plrs = num_plrs
 					}
-					local new_item = new_node:create_item({type = "ItemServerColumn"}, params)
+					local new_item = new_node:create_item({
+						type = "ItemServerColumn"
+					}, params)
 
 					new_node:add_item(new_item)
 				else
@@ -5221,6 +5297,7 @@ function MenuPSNHostBrowser:refresh_node(node, info_list, friends_only)
 
 	return new_node
 end
+
 MenuSTEAMHostBrowser = MenuSTEAMHostBrowser or class()
 
 function MenuSTEAMHostBrowser:modify_node(node, up)
@@ -5390,7 +5467,9 @@ function MenuSTEAMHostBrowser:refresh_node(node, info, friends_only)
 					state = state,
 					num_plrs = num_plrs
 				}
-				local new_item = new_node:create_item({type = "ItemServerColumn"}, params)
+				local new_item = new_node:create_item({
+					type = "ItemServerColumn"
+				}, params)
 
 				new_node:add_item(new_item)
 			else
@@ -5431,6 +5510,7 @@ function MenuSTEAMHostBrowser:refresh_node(node, info, friends_only)
 
 	return new_node
 end
+
 MenuLANHostBrowser = MenuLANHostBrowser or class()
 
 function MenuLANHostBrowser:modify_node(node, up)
@@ -5472,7 +5552,9 @@ function MenuLANHostBrowser:refresh_node(node)
 				host_name = host_data.host_name,
 				state = host_data.state
 			}
-			local new_item = new_node:create_item({type = "ItemServerColumn"}, params)
+			local new_item = new_node:create_item({
+				type = "ItemServerColumn"
+			}, params)
 
 			new_node:add_item(new_item)
 		else
@@ -5497,6 +5579,7 @@ function MenuLANHostBrowser:refresh_node(node)
 
 	return new_node
 end
+
 MenuMPHostBrowser = MenuMPHostBrowser or class()
 
 function MenuMPHostBrowser:modify_node(node, up)
@@ -5541,7 +5624,9 @@ function MenuMPHostBrowser:refresh_node(node)
 				host_name = host_data.host_name,
 				state = host_data.state
 			}
-			local new_item = new_node:create_item({type = "ItemServerColumn"}, params)
+			local new_item = new_node:create_item({
+				type = "ItemServerColumn"
+			}, params)
 
 			new_node:add_item(new_item)
 		else
@@ -5570,6 +5655,7 @@ function MenuMPHostBrowser:refresh_node(node)
 
 	return new_node
 end
+
 MenuResolutionCreator = MenuResolutionCreator or class()
 
 function MenuResolutionCreator:modify_node(node)
@@ -5601,6 +5687,7 @@ function MenuResolutionCreator:modify_node(node)
 
 	return new_node
 end
+
 MenuSoundCreator = MenuSoundCreator or class()
 
 function MenuSoundCreator:modify_node(node)
@@ -5678,7 +5765,7 @@ function MenuManager.refresh_level_select(node, verify_dlc_owned)
 			if level_id == Global.game_settings.level_id then
 				min_difficulty = tonumber(item:parameter("difficulty"))
 			elseif item:visible() then
-				
+				-- Nothing
 			end
 		end
 	end
@@ -5706,7 +5793,9 @@ function MenuManager.refresh_level_select(node, verify_dlc_owned)
 			localize = "false",
 			text_id = "menu_choose_mission"
 		}
-		local data_node = {type = "MenuItemMultiChoice"}
+		local data_node = {
+			type = "MenuItemMultiChoice"
+		}
 
 		if mission_data then
 			for _, data in ipairs(mission_data) do
@@ -5733,6 +5822,7 @@ function MenuManager.refresh_level_select(node, verify_dlc_owned)
 
 	Global.game_settings.mission = mission_data and mission_data[1] and mission_data[1].mission or "none"
 end
+
 MenuPSNPlayerProfileInitiator = MenuPSNPlayerProfileInitiator or class()
 
 function MenuPSNPlayerProfileInitiator:modify_node(node)
@@ -5742,6 +5832,7 @@ function MenuPSNPlayerProfileInitiator:modify_node(node)
 
 	return node
 end
+
 GlobalSuccessRateInitiator = GlobalSuccessRateInitiator or class()
 
 function GlobalSuccessRateInitiator:modify_node(node)
@@ -5749,6 +5840,7 @@ function GlobalSuccessRateInitiator:modify_node(node)
 
 	return node
 end
+
 LobbyOptionInitiator = LobbyOptionInitiator or class()
 
 function LobbyOptionInitiator:modify_node(node)
@@ -5823,6 +5915,7 @@ function LobbyOptionInitiator:modify_node(node)
 
 	return node
 end
+
 VerifyLevelOptionInitiator = VerifyLevelOptionInitiator or class()
 
 function VerifyLevelOptionInitiator:modify_node(node)
@@ -5830,6 +5923,7 @@ function VerifyLevelOptionInitiator:modify_node(node)
 
 	return node
 end
+
 MenuCustomizeControllerCreator = MenuCustomizeControllerCreator or class()
 MenuCustomizeControllerCreator.CONTROLS = {
 	"move",
@@ -5879,171 +5973,174 @@ MenuCustomizeControllerCreator.AXIS_ORDERED = {
 		"turn_right"
 	}
 }
-MenuCustomizeControllerCreator.CONTROLS_INFO = {}
-MenuCustomizeControllerCreator.CONTROLS_INFO.move = {
-	hidden = true,
-	category = "normal"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.up = {
-	category = "normal",
-	text_id = "menu_button_move_forward"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.down = {
-	category = "normal",
-	text_id = "menu_button_move_back"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.left = {
-	category = "normal",
-	text_id = "menu_button_move_left"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.right = {
-	category = "normal",
-	text_id = "menu_button_move_right"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.primary_attack = {
-	category = "normal",
-	text_id = "menu_button_fire_weapon"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.secondary_attack = {
-	category = "normal",
-	text_id = "menu_button_aim_down_sight"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.primary_choice1 = {
-	category = "normal",
-	text_id = "menu_button_weapon_slot1"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.primary_choice2 = {
-	category = "normal",
-	text_id = "menu_button_weapon_slot2"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.switch_weapon = {
-	category = "normal",
-	text_id = "menu_button_switch_weapon"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.reload = {
-	category = "normal",
-	text_id = "menu_button_reload"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.weapon_gadget = {
-	category = "normal",
-	text_id = "menu_button_weapon_gadget"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.run = {
-	category = "normal",
-	text_id = "menu_button_sprint"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.jump = {
-	category = "normal",
-	text_id = "menu_button_jump"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.duck = {
-	category = "normal",
-	text_id = "menu_button_crouch"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.melee = {
-	category = "normal",
-	text_id = "menu_button_melee"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.interact = {
-	category = "normal",
-	text_id = "menu_button_shout"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.interact_secondary = {
-	category = "normal",
-	text_id = "menu_button_shout_secondary"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.use_item = {
-	category = "normal",
-	text_id = "menu_button_deploy"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.toggle_chat = {
-	category = "normal",
-	text_id = "menu_button_chat_message"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.push_to_talk = {
-	category = "normal",
-	text_id = "menu_button_push_to_talk"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.continue = {
-	category = "normal",
-	text_id = "menu_button_continue"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.throw_grenade = {
-	category = "normal",
-	text_id = "menu_button_throwable"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.weapon_firemode = {
-	category = "normal",
-	text_id = "menu_button_weapon_firemode"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.cash_inspect = {
-	category = "normal",
-	text_id = "menu_button_cash_inspect"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.deploy_bipod = {
-	category = "normal",
-	text_id = "menu_button_deploy_bipod"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.change_equipment = {
-	category = "normal",
-	text_id = "menu_button_change_equipment"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.toggle_hud = {
-	category = "normal",
-	text_id = "menu_button_toggle_hud"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.drive = {
-	hidden = true,
-	category = "vehicle"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.accelerate = {
-	category = "vehicle",
-	text_id = "menu_button_accelerate"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.brake = {
-	category = "vehicle",
-	text_id = "menu_button_brake"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.turn_left = {
-	category = "vehicle",
-	text_id = "menu_button_turn_left"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.turn_right = {
-	category = "vehicle",
-	text_id = "menu_button_turn_right"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.hand_brake = {
-	category = "vehicle",
-	text_id = "menu_button_handbrake"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.vehicle_change_camera = {
-	category = "vehicle",
-	text_id = "menu_button_vehicle_change_camera"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.vehicle_rear_camera = {
-	category = "vehicle",
-	text_id = "menu_button_vehicle_rear_camera"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.vehicle_shooting_stance = {
-	category = "vehicle",
-	text_id = "menu_button_vehicle_shooting_stance",
-	block = {"normal"}
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.vehicle_exit = {
-	category = "vehicle",
-	text_id = "menu_button_vehicle_exit"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.drop_in_accept = {
-	category = "normal",
-	text_id = "menu_button_drop_in_accept"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.drop_in_return = {
-	category = "normal",
-	text_id = "menu_button_drop_in_return"
-}
-MenuCustomizeControllerCreator.CONTROLS_INFO.drop_in_kick = {
-	category = "normal",
-	text_id = "menu_button_drop_in_kick"
+MenuCustomizeControllerCreator.CONTROLS_INFO = {
+	move = {
+		hidden = true,
+		category = "normal"
+	},
+	up = {
+		category = "normal",
+		text_id = "menu_button_move_forward"
+	},
+	down = {
+		category = "normal",
+		text_id = "menu_button_move_back"
+	},
+	left = {
+		category = "normal",
+		text_id = "menu_button_move_left"
+	},
+	right = {
+		category = "normal",
+		text_id = "menu_button_move_right"
+	},
+	primary_attack = {
+		category = "normal",
+		text_id = "menu_button_fire_weapon"
+	},
+	secondary_attack = {
+		category = "normal",
+		text_id = "menu_button_aim_down_sight"
+	},
+	primary_choice1 = {
+		category = "normal",
+		text_id = "menu_button_weapon_slot1"
+	},
+	primary_choice2 = {
+		category = "normal",
+		text_id = "menu_button_weapon_slot2"
+	},
+	switch_weapon = {
+		category = "normal",
+		text_id = "menu_button_switch_weapon"
+	},
+	reload = {
+		category = "normal",
+		text_id = "menu_button_reload"
+	},
+	weapon_gadget = {
+		category = "normal",
+		text_id = "menu_button_weapon_gadget"
+	},
+	run = {
+		category = "normal",
+		text_id = "menu_button_sprint"
+	},
+	jump = {
+		category = "normal",
+		text_id = "menu_button_jump"
+	},
+	duck = {
+		category = "normal",
+		text_id = "menu_button_crouch"
+	},
+	melee = {
+		category = "normal",
+		text_id = "menu_button_melee"
+	},
+	interact = {
+		category = "normal",
+		text_id = "menu_button_shout"
+	},
+	interact_secondary = {
+		category = "normal",
+		text_id = "menu_button_shout_secondary"
+	},
+	use_item = {
+		category = "normal",
+		text_id = "menu_button_deploy"
+	},
+	toggle_chat = {
+		category = "normal",
+		text_id = "menu_button_chat_message"
+	},
+	push_to_talk = {
+		category = "normal",
+		text_id = "menu_button_push_to_talk"
+	},
+	continue = {
+		category = "normal",
+		text_id = "menu_button_continue"
+	},
+	throw_grenade = {
+		category = "normal",
+		text_id = "menu_button_throwable"
+	},
+	weapon_firemode = {
+		category = "normal",
+		text_id = "menu_button_weapon_firemode"
+	},
+	cash_inspect = {
+		category = "normal",
+		text_id = "menu_button_cash_inspect"
+	},
+	deploy_bipod = {
+		category = "normal",
+		text_id = "menu_button_deploy_bipod"
+	},
+	change_equipment = {
+		category = "normal",
+		text_id = "menu_button_change_equipment"
+	},
+	toggle_hud = {
+		category = "normal",
+		text_id = "menu_button_toggle_hud"
+	},
+	drive = {
+		hidden = true,
+		category = "vehicle"
+	},
+	accelerate = {
+		category = "vehicle",
+		text_id = "menu_button_accelerate"
+	},
+	brake = {
+		category = "vehicle",
+		text_id = "menu_button_brake"
+	},
+	turn_left = {
+		category = "vehicle",
+		text_id = "menu_button_turn_left"
+	},
+	turn_right = {
+		category = "vehicle",
+		text_id = "menu_button_turn_right"
+	},
+	hand_brake = {
+		category = "vehicle",
+		text_id = "menu_button_handbrake"
+	},
+	vehicle_change_camera = {
+		category = "vehicle",
+		text_id = "menu_button_vehicle_change_camera"
+	},
+	vehicle_rear_camera = {
+		category = "vehicle",
+		text_id = "menu_button_vehicle_rear_camera"
+	},
+	vehicle_shooting_stance = {
+		category = "vehicle",
+		text_id = "menu_button_vehicle_shooting_stance",
+		block = {
+			"normal"
+		}
+	},
+	vehicle_exit = {
+		category = "vehicle",
+		text_id = "menu_button_vehicle_exit"
+	},
+	drop_in_accept = {
+		category = "normal",
+		text_id = "menu_button_drop_in_accept"
+	},
+	drop_in_return = {
+		category = "normal",
+		text_id = "menu_button_drop_in_return"
+	},
+	drop_in_kick = {
+		category = "normal",
+		text_id = "menu_button_drop_in_kick"
+	}
 }
 
 function MenuCustomizeControllerCreator.controls_info_by_category(category)
@@ -6081,7 +6178,9 @@ function MenuCustomizeControllerCreator:setup_node(node)
 		name = "controller_type",
 		text_id = "menu_controller_type"
 	}
-	local data_node = {type = "MenuItemMultiChoice"}
+	local data_node = {
+		type = "MenuItemMultiChoice"
+	}
 
 	table.insert(data_node, {
 		value = "normal",
@@ -6122,7 +6221,9 @@ function MenuCustomizeControllerCreator:setup_node(node)
 						axis = connection._name,
 						button = btn_name
 					}
-					local new_item = new_node:create_item({type = "MenuItemCustomizeController"}, params)
+					local new_item = new_node:create_item({
+						type = "MenuItemCustomizeController"
+					}, params)
 
 					new_node:add_item(new_item)
 				end
@@ -6136,7 +6237,9 @@ function MenuCustomizeControllerCreator:setup_node(node)
 				binding = connection:get_input_name_list()[1],
 				button = name
 			}
-			local new_item = new_node:create_item({type = "MenuItemCustomizeController"}, params)
+			local new_item = new_node:create_item({
+				type = "MenuItemCustomizeController"
+			}, params)
 
 			new_node:add_item(new_item)
 		end
@@ -6155,6 +6258,7 @@ function MenuCustomizeControllerCreator:setup_node(node)
 
 	return new_node
 end
+
 MenuCrimeNetContractInitiator = MenuCrimeNetContractInitiator or class()
 
 function MenuCrimeNetContractInitiator:modify_node(original_node, data)
@@ -6163,7 +6267,7 @@ function MenuCrimeNetContractInitiator:modify_node(original_node, data)
 	if Global.game_settings.single_player then
 		node:item("toggle_ai"):set_value(Global.game_settings.team_ai and Global.game_settings.team_ai_option or 0)
 	elseif data.smart_matchmaking then
-		
+		-- Nothing
 	elseif not data.server then
 		node:item("lobby_job_plan"):set_value(Global.game_settings.job_plan)
 		node:item("lobby_kicking_option"):set_value(Global.game_settings.kick_option)
@@ -6223,6 +6327,7 @@ function MenuCrimeNetContractInitiator:modify_node(original_node, data)
 
 	return node
 end
+
 MenuSkirmishContractInitiator = MenuSkirmishContractInitiator or class()
 
 function MenuSkirmishContractInitiator:modify_node(original_node, data)
@@ -6312,6 +6417,7 @@ function MenuCallbackHandler:is_current_contact_info(item)
 
 	return false
 end
+
 MenuCrimeNetContactInfoInitiator = MenuCrimeNetContactInfoInitiator or class()
 MenuCrimeNetContactInfoInitiator.TWEAK_DATA = tweak_data.gui.crime_net.codex
 MenuCrimeNetContactInfoInitiator.COUNT_ITEMS = true
@@ -6414,7 +6520,9 @@ function MenuCrimeNetContactInfoInitiator:create_divider(node, id, text_id, size
 		size = size or 8,
 		color = color
 	}
-	local data_node = {type = "MenuItemDivider"}
+	local data_node = {
+		type = "MenuItemDivider"
+	}
 	local new_item = node:create_item(data_node, params)
 
 	node:add_item(new_item)
@@ -6447,6 +6555,7 @@ function MenuCrimeNetContactInfoInitiator:create_item(node, contact)
 
 	node:add_item(new_item)
 end
+
 MenuCrimeNetContactShortInitiator = MenuCrimeNetContactShortInitiator or class()
 
 function MenuCrimeNetContactShortInitiator:modify_node(original_node, data)
@@ -6461,6 +6570,11 @@ function MenuCrimeNetContactShortInitiator:modify_node(original_node, data)
 			text = managers.localization:to_upper_text(heist_tweak.name_id),
 			enabled = true
 		}
+
+		if job_data.complete_job then
+			local completed = managers.statistics:sessions_jobs()
+			info_data.enabled = completed and completed[job_data.complete_job .. "_normal_completed"]
+		end
 
 		self:create_item(node, info_data)
 	end
@@ -6498,7 +6612,9 @@ function MenuCrimeNetContactShortInitiator:create_divider(node, id, text_id, siz
 		size = size or 8,
 		color = color
 	}
-	local data_node = {type = "MenuItemDivider"}
+	local data_node = {
+		type = "MenuItemDivider"
+	}
 	local new_item = node:create_item(data_node, params)
 
 	node:add_item(new_item)
@@ -6553,6 +6669,7 @@ end
 function MenuCallbackHandler:_on_chill_change_one_down(item)
 	item:parameters().gui_node:set_one_down(item:value() == "on")
 end
+
 MenuCrimeNetContactChillInitiator = MenuCrimeNetContactChillInitiator or class()
 
 function MenuCrimeNetContactChillInitiator:modify_node(original_node, data)
@@ -6703,12 +6820,15 @@ end
 
 function MenuCrimeNetContactChillInitiator:create_item(node, data)
 end
+
 MenuJukeboxInitiator = MenuJukeboxInitiator or class()
 
 function MenuJukeboxInitiator:modify_node(node, data)
 	if not node:item("choose_jukebox_your_choice") then
 		local track_list, track_locked = managers.music:jukebox_music_tracks()
-		local option_data = {type = "MenuItemMultiChoiceWithIcon"}
+		local option_data = {
+			type = "MenuItemMultiChoiceWithIcon"
+		}
 
 		for _, track_name in ipairs(track_list) do
 			if not track_locked[track_name] then
@@ -6737,7 +6857,14 @@ function MenuJukeboxInitiator:modify_node(node, data)
 
 	if job_data then
 		local track = managers.music:jukebox_heist_specific()
-		track_name = track == "all" and track_name .. " (" .. managers.localization:text("menu_jukebox_playlist_all") .. ")" or track == "playlist" and track_name .. " (" .. managers.localization:text("menu_jukebox_random_heist_playlist") .. ")" or track_name .. " (" .. managers.localization:text("menu_jukebox_" .. track) .. ")"
+
+		if track == "all" then
+			track_name = track_name .. " (" .. managers.localization:text("menu_jukebox_playlist_all") .. ")"
+		elseif track == "playlist" then
+			track_name = track_name .. " (" .. managers.localization:text("menu_jukebox_random_heist_playlist") .. ")"
+		else
+			track_name = track_name .. " (" .. managers.localization:text("menu_jukebox_" .. track) .. ")"
+		end
 	end
 
 	node:item("toggle_jukebox_playlist_heist"):set_parameter("localize", "false")
@@ -6770,6 +6897,7 @@ function MenuJukeboxInitiator:modify_node(node, data)
 
 	return node
 end
+
 MenuJukeboxHeistPlaylist = MenuJukeboxHeistPlaylist or class()
 
 function MenuJukeboxHeistPlaylist:modify_node(node, data)
@@ -6836,6 +6964,7 @@ function MenuJukeboxHeistPlaylist:modify_node(node, data)
 
 	return node
 end
+
 MenuJukeboxHeistTracks = MenuJukeboxHeistTracks or class()
 
 function MenuJukeboxHeistTracks:modify_node(node, data)
@@ -6843,7 +6972,9 @@ function MenuJukeboxHeistTracks:modify_node(node, data)
 	node:clean_items()
 
 	local track_list, track_locked = managers.music:jukebox_music_tracks()
-	local option_data = {type = "MenuItemMultiChoiceWithIcon"}
+	local option_data = {
+		type = "MenuItemMultiChoiceWithIcon"
+	}
 
 	table.insert(option_data, {
 		value = "all",
@@ -6885,7 +7016,9 @@ function MenuJukeboxHeistTracks:modify_node(node, data)
 						name_id = job_tweak.name_id,
 						day = i,
 						sort_id = text_id,
-						text_id = text_id .. " - " .. managers.localization:text("menu_jukebox_heist_day", {day = i}),
+						text_id = text_id .. " - " .. managers.localization:text("menu_jukebox_heist_day", {
+							day = i
+						}),
 						color_ranges = color_ranges
 					})
 				end
@@ -6960,6 +7093,7 @@ function MenuJukeboxHeistTracks:_have_music(job_id)
 
 	return false
 end
+
 MenuJukeboxMenuPlaylist = MenuJukeboxMenuPlaylist or class()
 
 function MenuJukeboxMenuPlaylist:modify_node(node, data)
@@ -7026,6 +7160,7 @@ function MenuJukeboxMenuPlaylist:modify_node(node, data)
 
 	return node
 end
+
 MenuJukeboxMenuTracks = MenuJukeboxMenuTracks or class()
 
 function MenuJukeboxMenuTracks:modify_node(node, data)
@@ -7033,7 +7168,9 @@ function MenuJukeboxMenuTracks:modify_node(node, data)
 	node:clean_items()
 
 	local track_list, track_locked = managers.music:jukebox_menu_tracks()
-	local option_data = {type = "MenuItemMultiChoiceWithIcon"}
+	local option_data = {
+		type = "MenuItemMultiChoiceWithIcon"
+	}
 
 	table.insert(option_data, {
 		value = "all",
@@ -7084,6 +7221,7 @@ function MenuJukeboxMenuTracks:modify_node(node, data)
 
 	return node
 end
+
 MenuPrePlanningInitiator = MenuPrePlanningInitiator or class(MenuCrimeNetContactInfoInitiator)
 
 function MenuPrePlanningInitiator:modify_node(node, item_name, selected_item)
@@ -7149,7 +7287,9 @@ function MenuPrePlanningInitiator:modifiy_node_view_only(node, item_name, select
 	node:parameters().current_viewing = true
 	local params = {
 		localize = "false",
-		tooltip = {texture = tweak_data.preplanning.gui.type_icons_path}
+		tooltip = {
+			texture = tweak_data.preplanning.gui.type_icons_path
+		}
 	}
 	local finished_preplan = managers.preplanning:get_finished_preplan()
 	local type_data, location_data, data = nil
@@ -7229,7 +7369,9 @@ function MenuPrePlanningInitiator:modifiy_node_preplanning(node, item_name, sele
 
 	local params = {
 		localize = "false",
-		tooltip = {texture = tweak_data.preplanning.gui.type_icons_path}
+		tooltip = {
+			texture = tweak_data.preplanning.gui.type_icons_path
+		}
 	}
 	local type_data, first_type, category_data = nil
 
@@ -7288,7 +7430,9 @@ function MenuPrePlanningInitiator:modifiy_node_preplanning_category(node, item_n
 		enabled = true,
 		localize = "false",
 		callback = "open_preplanning_type_item",
-		tooltip = {texture = tweak_data.preplanning.gui.type_icons_path}
+		tooltip = {
+			texture = tweak_data.preplanning.gui.type_icons_path
+		}
 	}
 	local type_data, can_place, error_num, enabled = nil
 	local peer_id = managers.network:session():local_peer():id()
@@ -7372,7 +7516,9 @@ function MenuPrePlanningInitiator:modifiy_node_preplanning_type(node, item_name,
 				params.index = data.index
 				type_data = tweak_data:get_raw_value("preplanning", "types", current_type) or {}
 				params.tooltip = {
-					name = managers.localization:text("menu_pp_reserve_type", {type = managers.preplanning:get_type_name(current_type)}),
+					name = managers.localization:text("menu_pp_reserve_type", {
+						type = managers.preplanning:get_type_name(current_type)
+					}),
 					desc = managers.preplanning:get_type_desc(current_type),
 					texture = tweak_data.preplanning.gui.type_icons_path,
 					texture_rect = tweak_data.preplanning:get_type_texture_rect(type_data.icon),
@@ -7437,7 +7583,9 @@ function MenuPrePlanningInitiator:modifiy_node_preplanning_type(node, item_name,
 					params.tooltip.menu_color = tweak_data.chat_colors[reserved.peer_id] or tweak_data.chat_colors[#tweak_data.chat_colors]
 
 					if enabled and (reserved.peer_id == peer_id or Network:is_server() and managers.preplanning.server_master_planner) then
-						params.tooltip.name = managers.localization:text("menu_pp_unreserve_type", {type = managers.preplanning:get_type_name(reserved_type)})
+						params.tooltip.name = managers.localization:text("menu_pp_unreserve_type", {
+							type = managers.preplanning:get_type_name(reserved_type)
+						})
 					else
 						params.tooltip.name = managers.preplanning:get_type_name(reserved_type)
 						params.enabled = false
@@ -7491,7 +7639,9 @@ function MenuPrePlanningInitiator:modifiy_node_preplanning_plan(node, item_name,
 		enabled = false,
 		localize = "false",
 		callback = "vote_preplanning_mission_element_by_item",
-		tooltip = {texture = tweak_data.preplanning.gui.type_icons_path}
+		tooltip = {
+			texture = tweak_data.preplanning.gui.type_icons_path
+		}
 	}
 	local type_data = nil
 
@@ -7525,7 +7675,7 @@ function MenuPrePlanningInitiator:modifiy_node_preplanning_plan(node, item_name,
 				enabled = false
 			end
 		elseif not managers.money:can_afford_preplanning_type(type) then
-			
+			-- Nothing
 		end
 
 		params.enabled = enabled
@@ -7626,19 +7776,27 @@ function MenuPrePlanningInitiator:create_item(node, params)
 end
 
 function MenuCallbackHandler:open_preplanning_plan_item(item)
-	managers.menu:open_node("preplanning_plan", {item:name()})
+	managers.menu:open_node("preplanning_plan", {
+		item:name()
+	})
 end
 
 function MenuCallbackHandler:open_preplanning_category_item(item)
-	managers.menu:open_node("preplanning_category", {item:name()})
+	managers.menu:open_node("preplanning_category", {
+		item:name()
+	})
 end
 
 function MenuCallbackHandler:open_preplanning_custom_item(item)
-	managers.menu:open_node("preplanning_custom", {item:name()})
+	managers.menu:open_node("preplanning_custom", {
+		item:name()
+	})
 end
 
 function MenuCallbackHandler:open_preplanning_type_item(item)
-	managers.menu:open_node("preplanning_type", {item:name()})
+	managers.menu:open_node("preplanning_type", {
+		item:name()
+	})
 end
 
 function MenuCallbackHandler:open_preplanning_to_type(category, type, item_name)
@@ -7694,7 +7852,7 @@ function MenuCallbackHandler:open_preplanning_to_plan(plan, item_name)
 	local node_name = logic and logic:selected_node() and logic:selected_node():parameters().name
 
 	if node_name == "preplanning" then
-		
+		-- Nothing
 	elseif node_name == "preplanning_category" then
 		managers.menu:back(false)
 	elseif node_name == "preplanning_type" then
@@ -8119,6 +8277,7 @@ function MenuCallbackHandler:jukebox_option_back(item)
 	managers.music:post_event(managers.music:jukebox_menu_track("mainmenu"))
 	managers.menu_component:show_contract_character(true)
 end
+
 MenuCrimeNetGageAssignmentInitiator = MenuCrimeNetGageAssignmentInitiator or class(MenuCrimeNetContactInfoInitiator)
 
 function MenuCrimeNetGageAssignmentInitiator:modify_node(original_node, data)
@@ -8193,6 +8352,7 @@ function MenuCrimeNetGageAssignmentInitiator:modify_node(original_node, data)
 
 	return node
 end
+
 MenuCrimeNetSpecialInitiator = MenuCrimeNetSpecialInitiator or class()
 MenuCrimeNetSpecialInitiator.job_callback = nil
 MenuCrimeNetSpecialInitiator.choose_any_job = nil
@@ -8261,7 +8421,7 @@ function MenuCrimeNetSpecialInitiator:setup_node(node)
 				if not tweak_data.narrative:is_wrapped_to_job(job_id) then
 					table.insert(jobs[contact], {
 						id = job_id,
-						enabled = self.choose_any_job or dlc and (job_tweak.jc or 0) + (job_tweak.professional and 10 or 0) <= max_jc
+						enabled = self.choose_any_job or dlc and max_jc >= (job_tweak.jc or 0) + (job_tweak.professional and 10 or 0)
 					})
 				end
 			end
@@ -8302,7 +8462,9 @@ function MenuCrimeNetSpecialInitiator:setup_node(node)
 			filter = true,
 			text_id = "menu_contact_filter"
 		}
-		local data_node = {type = "MenuItemMultiChoice"}
+		local data_node = {
+			type = "MenuItemMultiChoice"
+		}
 		local num_contact = 0
 
 		for index, contact in ipairs(contacts) do
@@ -8385,7 +8547,9 @@ function MenuCrimeNetSpecialInitiator:create_divider(node, id, text_id, size, co
 		size = size or 8,
 		color = color
 	}
-	local data_node = {type = "MenuItemDivider"}
+	local data_node = {
+		type = "MenuItemDivider"
+	}
 	local new_item = node:create_item(data_node, params)
 
 	node:add_item(new_item)
@@ -8433,13 +8597,16 @@ function MenuCrimeNetSpecialInitiator:create_job(node, contract)
 				local level = locks.level
 
 				if dlc and not managers.dlc:is_dlc_unlocked(dlc) then
-					
+					-- Nothing
 				elseif achievement and managers.achievment:get_info(achievement) and not managers.achievment:get_info(achievement).awarded then
 					text_id = text_id .. "  " .. managers.localization:to_upper_text("menu_bm_achievement_locked_" .. tostring(achievement))
+
+					if text_id .. "  " .. managers.localization.to_upper_text("menu_bm_achievement_locked_" .. tostring(achievement)) then
+					end
 				end
 			end
 		elseif not pass_level then
-			
+			-- Nothing
 		end
 	end
 
@@ -8459,6 +8626,7 @@ function MenuCrimeNetSpecialInitiator:create_job(node, contract)
 	new_item:set_enabled(enabled)
 	node:add_item(new_item)
 end
+
 MenuReticleSwitchInitiator = MenuReticleSwitchInitiator or class(MenuCrimeNetSpecialInitiator)
 
 function MenuReticleSwitchInitiator:modify_node(original_node, data)
@@ -8483,7 +8651,9 @@ function MenuReticleSwitchInitiator:setup_node(node, data)
 			filter = true,
 			text_id = "menu_reticle_type"
 		}
-		local data_node = {type = "MenuItemMultiChoice"}
+		local data_node = {
+			type = "MenuItemMultiChoice"
+		}
 		local pass_dlc = nil
 
 		for index, reticle_data in ipairs(tweak_data.gui.weapon_texture_switches.types.sight) do
@@ -8508,7 +8678,9 @@ function MenuReticleSwitchInitiator:setup_node(node, data)
 			filter = true,
 			text_id = "menu_reticle_color"
 		}
-		local data_node = {type = "MenuItemMultiChoice"}
+		local data_node = {
+			type = "MenuItemMultiChoice"
+		}
 
 		for index, color_data in ipairs(tweak_data:get_raw_value("gui", "weapon_texture_switches", "color_indexes") or {}) do
 			pass_dlc = not color_data.dlc or managers.dlc:is_dlc_unlocked(color_data.dlc)
@@ -8652,6 +8824,7 @@ function MenuCallbackHandler:set_weapon_texture_switch(item)
 	managers.blackmarket:set_part_texture_switch(category, slot, part_id, data_string)
 	managers.menu:back()
 end
+
 MenuCrimeNetCasinoInitiator = MenuCrimeNetCasinoInitiator or class()
 
 function MenuCrimeNetCasinoInitiator:modify_node(original_node, data)
@@ -8841,7 +9014,9 @@ function MenuCrimeNetCasinoInitiator:_create_items(node, options)
 
 	if managers.experience:current_level() < tweak_data:get_value("casino", "secure_card_level", 1) then
 		card1_params.disabled_color = Color(1, 0.6, 0.2, 0.2)
-		card1_params.text_id = managers.localization:to_upper_text("menu_casino_option_safecard1") .. " - " .. managers.localization:to_upper_text("menu_casino_option_safecard_lock", {level = tweak_data:get_value("casino", "secure_card_level", 1)})
+		card1_params.text_id = managers.localization:to_upper_text("menu_casino_option_safecard1") .. " - " .. managers.localization:to_upper_text("menu_casino_option_safecard_lock", {
+			level = tweak_data:get_value("casino", "secure_card_level", 1)
+		})
 		card1_params.localize = "false"
 	end
 
@@ -8899,7 +9074,9 @@ function MenuCrimeNetCasinoInitiator:_create_items(node, options)
 
 	if managers.experience:current_level() < tweak_data:get_value("casino", "secure_card_level", 2) then
 		card2_params.disabled_color = Color(1, 0.6, 0.2, 0.2)
-		card2_params.text_id = managers.localization:to_upper_text("menu_casino_option_safecard2") .. " - " .. managers.localization:to_upper_text("menu_casino_option_safecard_lock", {level = tweak_data:get_value("casino", "secure_card_level", 2)})
+		card2_params.text_id = managers.localization:to_upper_text("menu_casino_option_safecard2") .. " - " .. managers.localization:to_upper_text("menu_casino_option_safecard_lock", {
+			level = tweak_data:get_value("casino", "secure_card_level", 2)
+		})
 		card2_params.localize = "false"
 	end
 
@@ -8957,7 +9134,9 @@ function MenuCrimeNetCasinoInitiator:_create_items(node, options)
 
 	if managers.experience:current_level() < tweak_data:get_value("casino", "secure_card_level", 3) then
 		card3_params.disabled_color = Color(1, 0.6, 0.2, 0.2)
-		card3_params.text_id = managers.localization:to_upper_text("menu_casino_option_safecard3") .. " - " .. managers.localization:to_upper_text("menu_casino_option_safecard_lock", {level = tweak_data:get_value("casino", "secure_card_level", 3)})
+		card3_params.text_id = managers.localization:to_upper_text("menu_casino_option_safecard3") .. " - " .. managers.localization:to_upper_text("menu_casino_option_safecard_lock", {
+			level = tweak_data:get_value("casino", "secure_card_level", 3)
+		})
 		card3_params.localize = "false"
 	end
 
@@ -8992,11 +9171,14 @@ function MenuCrimeNetCasinoInitiator:create_divider(node, id, text_id, size, col
 		size = size or 8,
 		color = color
 	}
-	local data_node = {type = "MenuItemDivider"}
+	local data_node = {
+		type = "MenuItemDivider"
+	}
 	local new_item = node:create_item(data_node, params)
 
 	node:add_item(new_item)
 end
+
 MenuCrimeNetCasinoLootdropInitiator = MenuCrimeNetCasinoLootdropInitiator or class()
 
 function MenuCrimeNetCasinoLootdropInitiator:modify_node(original_node, data)
@@ -9010,6 +9192,7 @@ function MenuCrimeNetCasinoLootdropInitiator:modify_node(original_node, data)
 
 	return node
 end
+
 MenuCrimeNetFiltersInitiator = MenuCrimeNetFiltersInitiator or class()
 
 function MenuCrimeNetFiltersInitiator:modify_node(original_node, data)
@@ -9237,7 +9420,9 @@ function MenuCrimeNetFiltersInitiator:add_filters(node)
 		name = "divider_end",
 		no_text = true
 	}
-	local data_node = {type = "MenuItemDivider"}
+	local data_node = {
+		type = "MenuItemDivider"
+	}
 	local new_item = node:create_item(data_node, params)
 
 	node:add_item(new_item)
@@ -9262,6 +9447,7 @@ function MenuCallbackHandler:_reset_filters(item)
 		self:refresh_node(item)
 	end
 end
+
 MenuMutatorOptionsInitiator = MenuMutatorOptionsInitiator or class(MenuCrimeNetSpecialInitiator)
 
 function MenuMutatorOptionsInitiator:modify_node(original_node, data)
@@ -9338,6 +9524,7 @@ function MenuCallbackHandler:_update_mutators_info()
 		managers.mutators:update_lobby_info()
 	end
 end
+
 MenuLobbyCountdownInitiator = MenuLobbyCountdownInitiator or class(MenuCrimeNetSpecialInitiator)
 
 function MenuLobbyCountdownInitiator:modify_node(original_node, data)
@@ -9368,6 +9555,7 @@ end
 
 function MenuLobbyCountdownInitiator:refresh_node(node, data)
 end
+
 MenuCrimeNetSmartmatchmakeInitiator = MenuCrimeNetSmartmatchmakeInitiator or class()
 
 function MenuCrimeNetSmartmatchmakeInitiator:modify_node(original_node, data)
@@ -9437,7 +9625,9 @@ function MenuCrimeNetSmartmatchmakeInitiator:add_filters(node)
 		name = "divider_end",
 		no_text = true
 	}
-	local data_node = {type = "MenuItemDivider"}
+	local data_node = {
+		type = "MenuItemDivider"
+	}
 	local new_item = node:create_item(data_node, params)
 
 	node:add_item(new_item)
@@ -9480,14 +9670,17 @@ function MenuCallbackHandler:open_contract_smart_matchmaking_node(item)
 	local job_tweak = tweak_data.narrative:job_data(item:parameters().id)
 	local is_professional = job_tweak and job_tweak.professional or false
 
-	managers.menu:open_node("crimenet_join_smart_matchmaking", {{
-		smart_matchmaking = true,
-		job_id = item:parameters().id,
-		difficulty = is_professional and "hard" or "normal",
-		difficulty_id = is_professional and 3 or 2,
-		professional = is_professional
-	}})
+	managers.menu:open_node("crimenet_join_smart_matchmaking", {
+		{
+			smart_matchmaking = true,
+			job_id = item:parameters().id,
+			difficulty = is_professional and "hard" or "normal",
+			difficulty_id = is_professional and 3 or 2,
+			professional = is_professional
+		}
+	})
 end
+
 MenuCrimeNetSmartMatchmakingInitiator = MenuCrimeNetSmartMatchmakingInitiator or class(MenuCrimeNetSpecialInitiator)
 MenuCrimeNetSmartMatchmakingInitiator.job_callback = "open_contract_smart_matchmaking_node"
 MenuCrimeNetSmartMatchmakingInitiator.choose_any_job = true
@@ -9505,6 +9698,7 @@ function MenuCrimeNetSmartMatchmakingInitiator:pre_create_clbk(node)
 	node:add_item(new_item)
 	self:create_divider(node, "smart")
 end
+
 MenuOptionInitiator = MenuOptionInitiator or class()
 
 function MenuOptionInitiator:modify_node(node)
@@ -10028,6 +10222,7 @@ function MenuOptionInitiator:modify_network_options(node)
 
 	return node
 end
+
 SkillSwitchInitiator = SkillSwitchInitiator or class()
 
 function SkillSwitchInitiator:modify_node(node, data)
@@ -10107,7 +10302,9 @@ function SkillSwitchInitiator:create_divider(node, id, text_id, size, color)
 		size = size or 8,
 		color = color
 	}
-	local data_node = {type = "MenuItemDivider"}
+	local data_node = {
+		type = "MenuItemDivider"
+	}
 	local new_item = node:create_item(data_node, params)
 
 	node:add_item(new_item)
@@ -10131,13 +10328,31 @@ end
 function MenuCallbackHandler:unlock_skill_switch(item)
 	local spending_cost = managers.money:get_unlock_skill_switch_spending_cost(item:parameters().name)
 	local offshore_cost = managers.money:get_unlock_skill_switch_offshore_cost(item:parameters().name)
-	local dialog_data = {title = managers.localization:text("dialog_unlock_skill_switch_title")}
+	local dialog_data = {
+		title = managers.localization:text("dialog_unlock_skill_switch_title")
+	}
 	local cost_text = ""
-	cost_text = spending_cost ~= 0 and offshore_cost ~= 0 and managers.localization:text("dialog_unlock_skill_switch_spending_offshore", {
-		spending = managers.experience:cash_string(spending_cost),
-		offshore = managers.experience:cash_string(offshore_cost)
-	}) or spending_cost ~= 0 and managers.localization:text("dialog_unlock_skill_switch_spending", {spending = managers.experience:cash_string(spending_cost)}) or offshore_cost ~= 0 and managers.localization:text("dialog_unlock_skill_switch_offshore", {offshore = managers.experience:cash_string(offshore_cost)}) or managers.localization:text("dialog_unlock_skill_switch_free")
-	dialog_data.text = managers.localization:text("dialog_unlock_skill_switch", {cost_text = cost_text})
+
+	if spending_cost ~= 0 and offshore_cost ~= 0 then
+		cost_text = managers.localization:text("dialog_unlock_skill_switch_spending_offshore", {
+			spending = managers.experience:cash_string(spending_cost),
+			offshore = managers.experience:cash_string(offshore_cost)
+		})
+	elseif spending_cost ~= 0 then
+		cost_text = managers.localization:text("dialog_unlock_skill_switch_spending", {
+			spending = managers.experience:cash_string(spending_cost)
+		})
+	elseif offshore_cost ~= 0 then
+		cost_text = managers.localization:text("dialog_unlock_skill_switch_offshore", {
+			offshore = managers.experience:cash_string(offshore_cost)
+		})
+	else
+		cost_text = managers.localization:text("dialog_unlock_skill_switch_free")
+	end
+
+	dialog_data.text = managers.localization:text("dialog_unlock_skill_switch", {
+		cost_text = cost_text
+	})
 	local yes_button = {
 		text = managers.localization:text("dialog_yes"),
 		callback_func = function ()
@@ -10168,6 +10383,7 @@ end
 function MenuCallbackHandler:has_installed_mods()
 	return not self:is_console() and table.size(DB:mods()) > 0
 end
+
 ModMenuCreator = ModMenuCreator or class()
 
 function ModMenuCreator:modify_node(original_node, data)
@@ -10252,7 +10468,9 @@ function ModMenuCreator:create_divider(node, id, text_id, size, color)
 		size = size or 8,
 		color = color
 	}
-	local data_node = {type = "MenuItemDivider"}
+	local data_node = {
+		type = "MenuItemDivider"
+	}
 	local new_item = node:create_item(data_node, params)
 
 	node:add_item(new_item)
@@ -10331,6 +10549,7 @@ function MenuCallbackHandler:mod_option_toggle_enabled(item)
 
 	DB:set_mod_enabled(item:name(), enabled)
 end
+
 MenuCrimeNetChallengeInitiator = MenuCrimeNetChallengeInitiator or class(MenuCrimeNetGageAssignmentInitiator)
 
 function MenuCrimeNetChallengeInitiator:modify_node(original_node, data)
@@ -10430,8 +10649,27 @@ function MenuCrimeNetChallengeInitiator:setup_node(node)
 				hightlight_color = challenge.rewarded and tweak_data.screen_colors.text:with_alpha(0.5) or challenge.completed and tweak_data.screen_colors.challenge_completed_color
 				row_item_color = challenge.rewarded and tweak_data.screen_colors.text:with_alpha(0.5) or challenge.completed and tweak_data.screen_colors.challenge_completed_color
 				marker_color = challenge.rewarded and tweak_data.screen_colors.text:with_alpha(0.5) or challenge.completed and tweak_data.screen_colors.challenge_completed_color:with_alpha(0.15)
-				icon = selected_item ~= challenge.id and (challenge.rewarded and "guis/textures/menu_singletick" or challenge.completed and "guis/textures/pd2/icon_reward") or nil
-				icon_rotation = selected_item ~= challenge.id and (challenge.rewarded and 360 or challenge.completed and 360) or nil
+
+				if selected_item ~= challenge.id then
+					if challenge.rewarded then
+						icon = "guis/textures/menu_singletick"
+					elseif challenge.completed then
+						icon = "guis/textures/pd2/icon_reward"
+					end
+				else
+					icon = nil
+				end
+
+				if selected_item ~= challenge.id then
+					if challenge.rewarded then
+						icon_rotation = 360
+					elseif challenge.completed then
+						icon_rotation = 360
+					end
+				else
+					icon_rotation = nil
+				end
+
 				icon_visible_callback = "is_current_challenge"
 
 				table.insert(node_data, {
@@ -10532,6 +10770,7 @@ function MenuCallbackHandler:give_challenge_reward(item)
 		end
 	end
 end
+
 MenuChooseWeaponRewardInitiator = MenuChooseWeaponRewardInitiator or class()
 
 function MenuChooseWeaponRewardInitiator:modify_node(original_node, data)
@@ -10687,7 +10926,9 @@ function MenuChooseWeaponRewardInitiator:setup_node(node)
 			text_offset = 75,
 			filter = true
 		}
-		local data_node = {type = "MenuItemMultiChoice"}
+		local data_node = {
+			type = "MenuItemMultiChoice"
+		}
 
 		table.insert(data_node, {
 			text_id = "",
@@ -10729,7 +10970,9 @@ function MenuChooseWeaponRewardInitiator:setup_node(node)
 			text_offset = 75,
 			filter = true
 		}
-		local data_node = {type = "MenuItemMultiChoice"}
+		local data_node = {
+			type = "MenuItemMultiChoice"
+		}
 
 		table.insert(data_node, {
 			text_id = "",
@@ -10801,7 +11044,9 @@ function MenuChooseWeaponRewardInitiator:setup_node(node)
 			text_offset = 75,
 			filter = true
 		}
-		local data_node = {type = "MenuItemMultiChoice"}
+		local data_node = {
+			type = "MenuItemMultiChoice"
+		}
 
 		if #global_values > 1 then
 			table.insert(data_node, {
@@ -10876,7 +11121,9 @@ function MenuChooseWeaponRewardInitiator:create_divider(node, id, text_id, size,
 		halign = align,
 		align = align
 	}
-	local data_node = {type = "MenuItemDivider"}
+	local data_node = {
+		type = "MenuItemDivider"
+	}
 	local new_item = node:create_item(data_node, params)
 
 	node:add_item(new_item)
@@ -11013,6 +11260,7 @@ function MenuCallbackHandler:roll_challenge_give_weapon_mod(weapon_id, global_va
 		return entry
 	end
 end
+
 MenuCustomizeGadgetInitiator = MenuCustomizeGadgetInitiator or class(MenuCrimeNetSpecialInitiator)
 
 function MenuCustomizeGadgetInitiator:modify_node(original_node, data)
@@ -11035,8 +11283,22 @@ function MenuCustomizeGadgetInitiator:setup_node(node, data)
 	if mod_td.adds then
 		for _, part_id in ipairs(mod_td.adds) do
 			local sub_type = tweak_data.weapon.factory.parts[part_id].sub_type
-			show_laser = sub_type == "laser" or false
-			show_flashlight = sub_type == "flashlight" or false
+
+			if sub_type ~= "laser" then
+				if false then
+					show_laser = false
+				end
+			else
+				show_laser = true
+			end
+
+			if sub_type ~= "flashlight" then
+				if false then
+					show_flashlight = false
+				end
+			else
+				show_flashlight = true
+			end
 		end
 	end
 
@@ -11282,4 +11544,3 @@ end
 if _G.IS_VR then
 	require("lib/managers/MenuManagerVR")
 end
-

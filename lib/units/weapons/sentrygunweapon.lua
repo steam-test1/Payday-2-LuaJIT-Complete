@@ -213,10 +213,6 @@ function SentryGunWeapon:start_autofire()
 end
 
 function SentryGunWeapon:stop_autofire()
-	if self._unit:damage() and self._unit:damage():has_sequence("anim_fire_stop_seq") then
-		self._unit:damage():run_sequence_simple("anim_fire_stop_seq")
-	end
-
 	if not self._shooting then
 		return
 	end
@@ -292,6 +288,7 @@ function SentryGunWeapon:fire(blanks, expend_ammo, shoot_player, target_unit)
 
 	return ray_res
 end
+
 local mvec_to = Vector3()
 
 function SentryGunWeapon:_fire_raycast(from_pos, direction, shoot_player, target_unit)
@@ -348,7 +345,9 @@ function SentryGunWeapon:_fire_raycast(from_pos, direction, shoot_player, target
 	result.hit_enemy = hit_unit
 
 	if self._alert_events then
-		result.rays = {col_ray}
+		result.rays = {
+			col_ray
+		}
 	end
 
 	return result
@@ -543,7 +542,7 @@ function SentryGunWeapon:update_laser()
 	local laser_mode, blink = nil
 
 	if self._unit:character_damage():dead() then
-		
+		-- Nothing
 	elseif self._unit:movement():is_activating() then
 		laser_mode = "turret_module_active"
 	elseif self._unit:movement():is_inactivating() then
@@ -554,8 +553,10 @@ function SentryGunWeapon:update_laser()
 	elseif self._unit:movement():rearming() then
 		laser_mode = "turret_module_rearming"
 		blink = true
+	elseif self._unit:movement():team().foes[tweak_data.levels:get_default_team_ID("player")] then
+		laser_mode = "turret_module_active"
 	else
-		laser_mode = self._unit:movement():team().foes[tweak_data.levels:get_default_team_ID("player")] and "turret_module_active" or "turret_module_mad"
+		laser_mode = "turret_module_mad"
 	end
 
 	self:set_laser_enabled(laser_mode, blink)
@@ -589,7 +590,11 @@ function SentryGunWeapon:load(save_data)
 
 	self:_set_fire_mode(my_save_data.use_armor_piercing)
 
-	self._setup = {ignore_units = {self._unit}}
+	self._setup = {
+		ignore_units = {
+			self._unit
+		}
+	}
 
 	if not my_save_data.alert then
 		self._alert_events = nil
@@ -615,8 +620,12 @@ function SentryGunWeapon:setup_virtual_ammo(mul)
 	self._virtual_ammo = ammo_amount
 	local event_listener = self._unit:event_listener()
 
-	event_listener:add("virtual_ammo_on_fire", {"on_fire"}, callback(self, self, "_on_fire_virtual_shoot"))
-	event_listener:add("virtual_ammo_on_sync", {"on_sync_ammo"}, callback(self, self, "_sync_virtual_ammo"))
+	event_listener:add("virtual_ammo_on_fire", {
+		"on_fire"
+	}, callback(self, self, "_on_fire_virtual_shoot"))
+	event_listener:add("virtual_ammo_on_sync", {
+		"on_sync_ammo"
+	}, callback(self, self, "_sync_virtual_ammo"))
 end
 
 function SentryGunWeapon:get_virtual_ammo_ratio()
@@ -638,4 +647,3 @@ function SentryGunWeapon:_sync_virtual_ammo()
 		self._virtual_ammo = self._virtual_max_ammo * self:ammo_ratio()
 	end
 end
-

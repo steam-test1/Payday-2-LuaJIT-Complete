@@ -19,12 +19,13 @@ function ElementHeat:on_executed(instigator)
 		if self._values.level ~= 0 then
 			managers.groupai:state():force_up_heat_level(self._values.level)
 		elseif self._values.points ~= 0 then
-			
+			-- Nothing
 		end
 	end
 
 	ElementHeat.super.on_executed(self, instigator)
 end
+
 ElementHeatTrigger = ElementHeatTrigger or class(CoreMissionScriptElement.MissionScriptElement)
 
 function ElementHeatTrigger:init(...)
@@ -60,4 +61,3 @@ function ElementHeatTrigger:on_executed(instigator)
 		self:remove_callback()
 	end
 end
-

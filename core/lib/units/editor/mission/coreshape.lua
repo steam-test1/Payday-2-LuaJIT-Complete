@@ -214,7 +214,7 @@ function CoreShapeUnitElement:scale_slider(panel, sizer, number_ctrlr_params, va
 end
 
 function CoreShapeUnitElement:set_size(params)
-	local value = (self._hed[params.value] * params.ctrlr:get_value()) / 100
+	local value = self._hed[params.value] * params.ctrlr:get_value() / 100
 
 	self._shape:set_property(params.value, value)
 	self._cylinder_shape:set_property(params.value, value)
@@ -226,4 +226,3 @@ function CoreShapeUnitElement:size_release(params)
 
 	params.ctrlr:set_value(100)
 end
-

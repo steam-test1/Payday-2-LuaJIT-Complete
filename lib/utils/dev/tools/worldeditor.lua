@@ -220,7 +220,9 @@ function WorldEditor:project_run_simulation(with_mission)
 	Global.game_settings.difficulty = self._mission_difficulty
 
 	managers.network:host_game()
-	managers.statistics:start_session({from_beginning = true})
+	managers.statistics:start_session({
+		from_beginning = true
+	})
 	managers.player:on_simulation_started()
 	managers.vehicle:on_simulation_started()
 	managers.gage_assignment:on_simulation_started()
@@ -323,4 +325,3 @@ function WorldEditor:on_enable_revision_number(changed, value)
 		managers.menu_component:set_rev_visible(value)
 	end
 end
-

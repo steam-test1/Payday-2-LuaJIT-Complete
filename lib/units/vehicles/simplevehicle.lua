@@ -33,7 +33,7 @@ function SimpleVehicle:update(unit, t, dt)
 			self._anim_time_speed_params.transition_time = math.min(1, self._anim_time_speed_params.transition_time + dt / self._anim_time_speed_params.transition_total_time)
 
 			if self._anim_time_speed_params.transition_time == 1 then
-				
+				-- Nothing
 			end
 
 			self._anim_time_speed_params.current = math.lerp(self._anim_time_speed_params.start, self._anim_time_speed_params.target, self._anim_time_speed_params.transition_time)
@@ -101,7 +101,7 @@ end
 
 function SimpleVehicle:_check_reached_target_anim_time()
 	if self._target_anim_time <= self._unit:anim_time(self.ANIM_GROUP) then
-		
+		-- Nothing
 	end
 end
 
@@ -205,4 +205,3 @@ end
 
 function SimpleVehicle:destroy()
 end
-

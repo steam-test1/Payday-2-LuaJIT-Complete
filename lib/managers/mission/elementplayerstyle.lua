@@ -41,4 +41,3 @@ function ElementPlayerStyle:_trigger_sequence()
 
 	managers.criminals:set_active_player_sequence(sequence)
 end
-

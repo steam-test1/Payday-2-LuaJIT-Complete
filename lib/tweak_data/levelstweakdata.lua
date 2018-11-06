@@ -1,8 +1,9 @@
 LevelsTweakData = LevelsTweakData or class()
-LevelsTweakData.LevelType = {}
-LevelsTweakData.LevelType.America = "america"
-LevelsTweakData.LevelType.Russia = "russia"
-LevelsTweakData.LevelType.Zombie = "zombie"
+LevelsTweakData.LevelType = {
+	America = "america",
+	Russia = "russia",
+	Zombie = "zombie"
+}
 
 function LevelsTweakData:init()
 	local america = LevelsTweakData.LevelType.America
@@ -25,7 +26,9 @@ function LevelsTweakData:init()
 			"Play_pln_framing_stage1_end_b"
 		},
 		music = "heist",
-		package = {"packages/narr_framing_1"},
+		package = {
+			"packages/narr_framing_1"
+		},
 		cube = "cube_apply_heist_bank",
 		ghost_bonus = 0.075,
 		max_bags = 13,
@@ -43,7 +46,9 @@ function LevelsTweakData:init()
 			"Play_pln_framing_stage2_end_b"
 		},
 		music = "heist",
-		package = {"packages/narr_framing_2"},
+		package = {
+			"packages/narr_framing_2"
+		},
 		cube = "cube_apply_heist_bank",
 		ghost_bonus = 0.025,
 		max_bags = 13,
@@ -82,7 +87,9 @@ function LevelsTweakData:init()
 			"Play_pln_ed1_end_c"
 		},
 		music = "heist",
-		package = {"packages/narr_election1"},
+		package = {
+			"packages/narr_election1"
+		},
 		cube = "cube_apply_heist_bank",
 		ghost_bonus = 0.05,
 		max_bags = 0,
@@ -100,7 +107,9 @@ function LevelsTweakData:init()
 			"Play_pln_ed2_end_b"
 		},
 		music = "heist",
-		package = {"packages/narr_election2"},
+		package = {
+			"packages/narr_election2"
+		},
 		cube = "cube_apply_heist_bank",
 		ghost_bonus = 0.15,
 		max_bags = 21,
@@ -196,15 +205,21 @@ function LevelsTweakData:init()
 			"Play_pln_watchdogs_new_stage1_end_b"
 		},
 		music = "heist",
-		package = {"packages/narr_watchdogs1"},
+		package = {
+			"packages/narr_watchdogs1"
+		},
 		cube = "cube_apply_heist_bank",
 		max_bags = 16,
 		ai_group_type = america,
 		load_screen = "guis/dlcs/pic/textures/loading/job_watchdogs_01"
 	}
 	self.watchdogs_1_night = deep_clone(self.watchdogs_1)
-	self.watchdogs_1_night.env_params = {environment = "environments/pd2_env_night/pd2_env_night"}
-	self.watchdogs_1_night.package = {"packages/narr_watchdogs1_night"}
+	self.watchdogs_1_night.env_params = {
+		environment = "environments/pd2_env_night/pd2_env_night"
+	}
+	self.watchdogs_1_night.package = {
+		"packages/narr_watchdogs1_night"
+	}
 	self.watchdogs_2 = {
 		name_id = "heist_watchdogs_2_hl",
 		briefing_id = "heist_watchdogs_2_briefing",
@@ -220,7 +235,9 @@ function LevelsTweakData:init()
 			"Play_pln_watchdogs_new_stage2_end_b"
 		},
 		music = "heist",
-		package = {"packages/narr_watchdogs2"},
+		package = {
+			"packages/narr_watchdogs2"
+		},
 		cube = "cube_apply_heist_bank",
 		max_bags = 16,
 		repossess_bags = true,
@@ -228,8 +245,12 @@ function LevelsTweakData:init()
 		load_screen = "guis/dlcs/pic/textures/loading/job_watchdogs_02"
 	}
 	self.watchdogs_2_day = deep_clone(self.watchdogs_2)
-	self.watchdogs_2_day.env_params = {environment = "environments/pd2_env_wd2_evening/pd2_env_wd2_evening"}
-	self.watchdogs_2_day.package = {"packages/narr_watchdogs2_day"}
+	self.watchdogs_2_day.env_params = {
+		environment = "environments/pd2_env_wd2_evening/pd2_env_wd2_evening"
+	}
+	self.watchdogs_2_day.package = {
+		"packages/narr_watchdogs2_day"
+	}
 	self.firestarter_1 = {
 		name_id = "heist_firestarter_1_hl",
 		briefing_id = "heist_firestarter_1_briefing",
@@ -278,7 +299,11 @@ function LevelsTweakData:init()
 		music = "heist",
 		package = "packages/narr_firestarter3",
 		cube = "cube_apply_heist_bank",
-		mission_data = {{mission = "default"}},
+		mission_data = {
+			{
+				mission = "default"
+			}
+		},
 		ghost_bonus = 0.05,
 		max_bags = 54,
 		ai_group_type = america,
@@ -296,7 +321,9 @@ function LevelsTweakData:init()
 			"Play_pln_bigoil_stage1_end_b"
 		},
 		music = "heist",
-		package = {"packages/narr_jungle1"},
+		package = {
+			"packages/narr_jungle1"
+		},
 		cube = "cube_apply_heist_bank",
 		ghost_bonus = 0.15,
 		max_bags = 14,
@@ -304,8 +331,12 @@ function LevelsTweakData:init()
 		load_screen = "guis/dlcs/pic/textures/loading/job_bigoil_01"
 	}
 	self.welcome_to_the_jungle_1_night = deep_clone(self.welcome_to_the_jungle_1)
-	self.welcome_to_the_jungle_1_night.env_params = {environment = "environments/pd2_env_night/pd2_env_night"}
-	self.welcome_to_the_jungle_1_night.package = {"packages/narr_jungle1_night"}
+	self.welcome_to_the_jungle_1_night.env_params = {
+		environment = "environments/pd2_env_night/pd2_env_night"
+	}
+	self.welcome_to_the_jungle_1_night.package = {
+		"packages/narr_jungle1_night"
+	}
 	self.welcome_to_the_jungle_2 = {
 		name_id = "heist_welcome_to_the_jungle_2_hl",
 		briefing_id = "heist_welcome_to_the_jungle_2_briefing",
@@ -318,7 +349,9 @@ function LevelsTweakData:init()
 			"Play_pln_bigoil_stage2_end_b"
 		},
 		music = "heist",
-		package = {"packages/narr_jungle2"},
+		package = {
+			"packages/narr_jungle2"
+		},
 		cube = "cube_apply_heist_bank",
 		max_bags = 15,
 		ai_group_type = america,
@@ -337,7 +370,9 @@ function LevelsTweakData:init()
 			"Play_pln_ukranian_stage1_end_c"
 		},
 		music = "heist",
-		package = {"packages/ukrainian_job"},
+		package = {
+			"packages/ukrainian_job"
+		},
 		cube = "cube_apply_heist_bank",
 		group_ai_preset = "small_urban",
 		ghost_bonus = 0.05,
@@ -433,7 +468,11 @@ function LevelsTweakData:init()
 		music = "heist",
 		package = "packages/narr_firestarter3",
 		cube = "cube_apply_heist_bank",
-		mission_data = {{mission = "standalone"}}
+		mission_data = {
+			{
+				mission = "standalone"
+			}
+		}
 	}
 	self.escape_cafe_day = {
 		name_id = "heist_escape_cafe_hl",
@@ -583,7 +622,9 @@ function LevelsTweakData:init()
 			"butcher_cr1_debrief_02"
 		},
 		music = "heist",
-		package = {"packages/dlcs/the_bomb/crojob_stage_2"},
+		package = {
+			"packages/dlcs/the_bomb/crojob_stage_2"
+		},
 		cube = "cube_apply_heist_bank",
 		ghost_bonus = 0.2,
 		max_bags = 21,
@@ -597,14 +638,20 @@ function LevelsTweakData:init()
 		intro_event = "Play_pln_cr3_intro_01",
 		outro_event = "lol",
 		music = "heist",
-		package = {"packages/dlcs/the_bomb/crojob_stage_3"},
+		package = {
+			"packages/dlcs/the_bomb/crojob_stage_3"
+		},
 		cube = "cube_apply_heist_bank",
 		max_bags = 16,
 		ai_group_type = america
 	}
 	self.crojob3_night = deep_clone(self.crojob3)
-	self.crojob3_night.env_params = {environment = "environments/pd2_env_cro_night/pd2_env_cro_night"}
-	self.crojob3_night.package = {"packages/dlcs/the_bomb/crojob_stage_3_night"}
+	self.crojob3_night.env_params = {
+		environment = "environments/pd2_env_cro_night/pd2_env_cro_night"
+	}
+	self.crojob3_night.package = {
+		"packages/dlcs/the_bomb/crojob_stage_3_night"
+	}
 	self.arm_cro = {
 		name_id = "heist_arm_cro_hl",
 		briefing_id = "heist_arm_cro_briefing",
@@ -801,7 +848,9 @@ function LevelsTweakData:init()
 		briefing_dialog = "Play_pln_hm2_brf_01",
 		world_name = "narratives/dentist/mia/stage2",
 		intro_event = "Play_pln_hm2_intro_01",
-		outro_event = {"dentist_hm1_debrief"},
+		outro_event = {
+			"dentist_hm1_debrief"
+		},
 		music = "heist",
 		package = "packages/narr_mia_2",
 		cube = "cube_apply_heist_bank",
@@ -815,7 +864,9 @@ function LevelsTweakData:init()
 					law1 = true,
 					mobster1 = true
 				},
-				friends = {converted_enemy = true}
+				friends = {
+					converted_enemy = true
+				}
 			},
 			law1 = {
 				foes = {
@@ -846,7 +897,9 @@ function LevelsTweakData:init()
 					law1 = true,
 					mobster1 = true
 				},
-				friends = {criminal1 = true}
+				friends = {
+					criminal1 = true
+				}
 			},
 			neutral1 = {
 				foes = {},
@@ -883,7 +936,9 @@ function LevelsTweakData:init()
 		briefing_dialog = "Play_pln_ko1_brf_01",
 		world_name = "narratives/bain/shadow_raid",
 		intro_event = "Play_pln_ko1_intro_01",
-		outro_event = {"Play_pln_ko1_end_01"},
+		outro_event = {
+			"Play_pln_ko1_end_01"
+		},
 		music = "no_music",
 		music_ext = "kosugi_music",
 		music_ext_start = "suspense_1",
@@ -898,7 +953,9 @@ function LevelsTweakData:init()
 	self.gallery.name_id = "heist_gallery_hl"
 	self.gallery.briefing_id = "heist_gallery_briefing"
 	self.gallery.intro_event = "Play_pln_art_intro"
-	self.gallery.outro_event = {"Play_pln_art_end"}
+	self.gallery.outro_event = {
+		"Play_pln_art_end"
+	}
 	self.gallery.briefing_dialog = "Play_pln_art_brf"
 	self.gallery.load_screen = "guis/dlcs/pic/textures/loading/job_gallery"
 	self.hox_1 = {
@@ -907,11 +964,15 @@ function LevelsTweakData:init()
 		briefing_dialog = "Play_pln_hb1_brf_01",
 		world_name = "narratives/dentist/hox/stage_1",
 		intro_event = "Play_pln_hb1_intro_01",
-		outro_event = {"Play_pln_hb1_end_01"},
+		outro_event = {
+			"Play_pln_hb1_end_01"
+		},
 		music = "heist",
 		package = "packages/narr_hox_1",
 		cube = "cube_apply_heist_bank",
-		block_AIs = {old_hoxton = true},
+		block_AIs = {
+			old_hoxton = true
+		},
 		ai_group_type = america
 	}
 	self.hox_2 = {
@@ -920,11 +981,15 @@ function LevelsTweakData:init()
 		briefing_dialog = "Play_rb5_hb2_brf_01",
 		world_name = "narratives/dentist/hox/stage_2",
 		intro_event = "Play_rb5_hb2_intro_01",
-		outro_event = {"Play_rb5_hb2_end_01"},
+		outro_event = {
+			"Play_rb5_hb2_end_01"
+		},
 		music = "heist",
 		package = "packages/narr_hox_2",
 		cube = "cube_apply_heist_bank",
-		block_AIs = {old_hoxton = true},
+		block_AIs = {
+			old_hoxton = true
+		},
 		ai_group_type = america,
 		load_screen = "guis/dlcs/pic/textures/loading/job_breakout_02"
 	}
@@ -1052,7 +1117,9 @@ function LevelsTweakData:init()
 			"dentist_ca1_debrief_02"
 		},
 		music = "heist",
-		package = {"packages/kenaz"},
+		package = {
+			"packages/kenaz"
+		},
 		cube = "cube_apply_heist_bank",
 		ghost_bonus = 0.1,
 		max_bags = 40,
@@ -1085,7 +1152,9 @@ function LevelsTweakData:init()
 			"Play_pln_fwb_65"
 		},
 		music = "heist",
-		package = {"packages/narr_red2"},
+		package = {
+			"packages/narr_red2"
+		},
 		cube = "cube_apply_heist_bank",
 		max_bags = 84,
 		ghost_bonus = 0.15,
@@ -1097,9 +1166,13 @@ function LevelsTweakData:init()
 		briefing_dialog = "Play_pln_dn1_brf_01",
 		world_name = "narratives/classics/dinner",
 		intro_event = "Play_pln_dn1_intro_01",
-		outro_event = {"Play_pln_dn1_31"},
+		outro_event = {
+			"Play_pln_dn1_31"
+		},
 		music = "heist",
-		package = {"packages/narr_dinner"},
+		package = {
+			"packages/narr_dinner"
+		},
 		cube = "cube_apply_heist_bank",
 		max_bags = 20,
 		ai_group_type = america
@@ -1112,7 +1185,9 @@ function LevelsTweakData:init()
 		intro_event = "Play_mer_jr1_intro_01",
 		outro_event = "Play_pln_jr1_09",
 		music = "heist",
-		package = {"packages/narr_jerry1"},
+		package = {
+			"packages/narr_jerry1"
+		},
 		cube = "cube_apply_heist_bank",
 		max_bags = 20
 	}
@@ -1124,7 +1199,9 @@ function LevelsTweakData:init()
 		intro_event = "Play_pln_jr2_intro_01",
 		outro_event = "Play_loc_jr2_44",
 		music = "heist",
-		package = {"packages/narr_jerry2"},
+		package = {
+			"packages/narr_jerry2"
+		},
 		cube = "cube_apply_heist_bank"
 	}
 	self.pbr.max_bags = 20
@@ -1154,7 +1231,9 @@ function LevelsTweakData:init()
 			"Play_pln_nai_20"
 		},
 		music = "heist",
-		package = {"packages/job_nail"},
+		package = {
+			"packages/job_nail"
+		},
 		cube = "cube_apply_heist_bank",
 		max_bags = 1000,
 		ai_group_type = america
@@ -1194,7 +1273,9 @@ function LevelsTweakData:init()
 		intro_event = "Play_pln_pal_intro",
 		outro_event = "Play_pln_pal_81",
 		music = "heist",
-		package = {"packages/narr_pal"},
+		package = {
+			"packages/narr_pal"
+		},
 		cube = "cube_apply_heist_bank",
 		max_bags = 1200
 	}
@@ -1246,7 +1327,9 @@ function LevelsTweakData:init()
 		briefing_id = "heist_biker_train_briefing",
 		world_name = "wip/biker_train_test",
 		intro_event = "Play_pln_jr2_intro_01",
-		outro_event = {"Play_loc_jr2_44"},
+		outro_event = {
+			"Play_loc_jr2_44"
+		},
 		music = "heist",
 		cube = "cube_apply_heist_bank"
 	}
@@ -1298,8 +1381,12 @@ function LevelsTweakData:init()
 			armor = "level_1",
 			deployable = "none",
 			primary = "wpn_fps_ass_amcar",
-			primary_mods = {"wpn_fps_upg_ns_ass_smg_small"},
-			secondary_mods = {"wpn_fps_upg_ns_pis_medium"}
+			primary_mods = {
+				"wpn_fps_upg_ns_ass_smg_small"
+			},
+			secondary_mods = {
+				"wpn_fps_upg_ns_pis_medium"
+			}
 		},
 		disable_mutators = true,
 		load_screen = "guis/dlcs/pic/textures/loading/job_basics_stealth1"
@@ -1322,8 +1409,12 @@ function LevelsTweakData:init()
 			armor = "level_1",
 			deployable = "ecm_jammer",
 			primary = "wpn_fps_ass_amcar",
-			primary_mods = {"wpn_fps_upg_ns_ass_smg_small"},
-			secondary_mods = {"wpn_fps_upg_ns_pis_medium"}
+			primary_mods = {
+				"wpn_fps_upg_ns_ass_smg_small"
+			},
+			secondary_mods = {
+				"wpn_fps_upg_ns_pis_medium"
+			}
 		},
 		disable_mutators = true,
 		load_screen = "guis/dlcs/pic/textures/loading/job_basics_stealth2"
@@ -1386,9 +1477,11 @@ function LevelsTweakData:init()
 		cube = "cube_apply_heist_bank",
 		max_bags = 28,
 		team_ai_off = true,
-		on_enter_clbks = {function ()
-			managers.mission:call_global_event(Message.OnEnterSafeHouse)
-		end},
+		on_enter_clbks = {
+			function ()
+				managers.mission:call_global_event(Message.OnEnterSafeHouse)
+			end
+		},
 		hud = {
 			no_timer = true,
 			no_hostages = true
@@ -1439,7 +1532,9 @@ function LevelsTweakData:init()
 		package = "packages/narr_flat",
 		cube = "cube_apply_heist_bank",
 		max_bags = 11,
-		music_overrides = {track_47_gen = "track_47_flat"},
+		music_overrides = {
+			track_47_gen = "track_47_flat"
+		},
 		ai_group_type = america
 	}
 	self.help = {
@@ -1540,7 +1635,9 @@ function LevelsTweakData:init()
 			"raindrop_screen",
 			"lightning"
 		},
-		equipment = {"saw"},
+		equipment = {
+			"saw"
+		},
 		player_sequence = "spawn_prop_raincoat"
 	}
 	self.dah = {
@@ -1618,7 +1715,9 @@ function LevelsTweakData:init()
 		outro_event = "Play_pln_wwh_end",
 		music = "heist",
 		cube = "cube_apply_heist_bank",
-		environment_effects = {"snow"},
+		environment_effects = {
+			"snow"
+		},
 		player_sequence = "spawn_prop_winter_suit",
 		max_bags = 12,
 		ai_group_type = america,
@@ -2062,7 +2161,7 @@ end
 
 function LevelsTweakData:get_team_setup()
 	local lvl_tweak = nil
-	lvl_tweak = Application:editor() and managers.editor and self[managers.editor:layer("Level Settings"):get_setting("simulation_level_id")] or Global.level_data and Global.level_data.level_id and self[Global.level_data.level_id]
+	lvl_tweak = (not Application:editor() or not managers.editor or self[managers.editor:layer("Level Settings"):get_setting("simulation_level_id")]) and Global.level_data and Global.level_data.level_id and self[Global.level_data.level_id]
 	local teams = lvl_tweak and lvl_tweak.teams
 
 	if teams then
@@ -2074,7 +2173,9 @@ function LevelsTweakData:get_team_setup()
 					law1 = true,
 					mobster1 = true
 				},
-				friends = {converted_enemy = true}
+				friends = {
+					converted_enemy = true
+				}
 			},
 			law1 = {
 				foes = {
@@ -2097,7 +2198,9 @@ function LevelsTweakData:get_team_setup()
 					law1 = true,
 					mobster1 = true
 				},
-				friends = {criminal1 = true}
+				friends = {
+					criminal1 = true
+				}
 			},
 			neutral1 = {
 				foes = {},
@@ -2122,7 +2225,7 @@ end
 
 function LevelsTweakData:get_default_team_IDs()
 	local lvl_tweak = nil
-	lvl_tweak = Application:editor() and managers.editor and self[managers.editor:layer("Level Settings"):get_setting("simulation_level_id")] or Global.level_data and Global.level_data.level_id and self[Global.level_data.level_id]
+	lvl_tweak = (not Application:editor() or not managers.editor or self[managers.editor:layer("Level Settings"):get_setting("simulation_level_id")]) and Global.level_data and Global.level_data.level_id and self[Global.level_data.level_id]
 	local default_team_IDs = lvl_tweak and lvl_tweak.default_teams
 	default_team_IDs = default_team_IDs or {
 		player = self:get_default_team_ID("player"),
@@ -2178,4 +2281,3 @@ function LevelsTweakData:get_ai_group_type()
 
 	return self.ai_groups.default
 end
-

@@ -346,8 +346,12 @@ function StatisticsManager:_setup(reset)
 		npc_count = 0,
 		player_count = 0
 	}
-	self._defaults.cameras = {count = 0}
-	self._defaults.objectives = {count = 0}
+	self._defaults.cameras = {
+		count = 0
+	}
+	self._defaults.objectives = {
+		count = 0
+	}
 	self._defaults.shots_fired = {
 		total = 0,
 		hits = 0
@@ -358,11 +362,17 @@ function StatisticsManager:_setup(reset)
 		incapacitated = 0,
 		fatal = 0
 	}
-	self._defaults.reloads = {count = 0}
-	self._defaults.health = {amount_lost = 0}
+	self._defaults.reloads = {
+		count = 0
+	}
+	self._defaults.health = {
+		amount_lost = 0
+	}
 	self._defaults.experience = {}
 	self._defaults.misc = {}
-	self._defaults.play_time = {minutes = 0}
+	self._defaults.play_time = {
+		minutes = 0
+	}
 	self._defaults.sessions.job_stats_version = StatisticsManager.JOB_STATS_VERSION
 
 	if not Global.statistics_manager or reset then
@@ -486,7 +496,7 @@ function StatisticsManager:_check_days_in_row()
 	else
 		local days = (current - d.first) / SEC_IN_DAY
 
-		if d.count + 1 < days then
+		if days > d.count + 1 then
 			local count = math.floor(days)
 			d.count = count
 
@@ -608,7 +618,12 @@ function StatisticsManager:stop_session(data)
 			if managers.job:on_last_stage() then
 				stat_name = stat_name .. (dropped_in and "_completed_dropin" or "_completed")
 				job_stats[stat_name] = (job_stats[stat_name] or 0) + 1
-				completion = dropped_in and "win_dropin" or "win_begin"
+
+				if dropped_in then
+					completion = "win_dropin"
+				else
+					completion = "win_begin"
+				end
 			else
 				completion = "done"
 			end
@@ -1222,7 +1237,11 @@ function StatisticsManager:publish_custom_stat_to_steam(name, value)
 		return
 	end
 
-	local stats = {[name] = {type = "int"}}
+	local stats = {
+		[name] = {
+			type = "int"
+		}
+	}
 
 	if value then
 		stats[name].value = value
@@ -1589,7 +1608,10 @@ function StatisticsManager:killed_by_anyone(data)
 		end
 	elseif by_melee then
 		local name_id = data.name_id or data.name or "unknown"
-		kills_table.killed_by_melee[name_id] = name_id and (kills_table.killed_by_melee[name_id] or 0) + 1
+
+		if name_id then
+			kills_table.killed_by_melee[name_id] = (kills_table.killed_by_melee[name_id] or 0) + 1
+		end
 	elseif by_explosion then
 		local name_id, throwable_id = self:_get_name_id_and_throwable_id(data.weapon_unit)
 
@@ -1709,6 +1731,15 @@ function StatisticsManager:_add_to_killed_by_weapon(kills_table, name_id, data, 
 	}
 	kills_table.killed_by_weapon[name_id].count = kills_table.killed_by_weapon[name_id].count + 1
 	kills_table.killed_by_weapon[name_id].headshots = kills_table.killed_by_weapon[name_id].headshots + (data.head_shot and 1 or 0)
+
+	if add_global then
+		self._global.killed_by_weapon[name_id] = self._global.killed_by_weapon[name_id] or {
+			count = 0,
+			headshots = 0
+		}
+		self._global.killed_by_weapon[name_id].count = self._global.killed_by_weapon[name_id].count + 1
+		self._global.killed_by_weapon[name_id].headshots = (self._global.killed_by_weapon[name_id].headshots or 0) + (data.head_shot and 1 or 0)
+	end
 end
 
 function StatisticsManager:_get_name_id_and_throwable_id(weapon_unit)
@@ -2193,7 +2224,9 @@ end
 
 function StatisticsManager:session_time_played()
 	local time = math.round(self._global.session.sessions.time)
-	local time_text = self:_time_text(time, {no_days = true})
+	local time_text = self:_time_text(time, {
+		no_days = true
+	})
 
 	return time_text, time
 end
@@ -2566,4 +2599,3 @@ function StatisticsManager:load(data)
 		self:_calculate_average()
 	end
 end
-

@@ -96,7 +96,7 @@ function MenuInput:deactivate_controller_mouse()
 	Application:debug("MenuInput:deactivate_controller_mouse()", self._controller_mouse_active_counter)
 
 	if self._controller_mouse_active_counter < 0 then
-		
+		-- Nothing
 	end
 
 	if self._controller_mouse_active_counter == 0 and managers.mouse_pointer:change_controller_to_mouse() then
@@ -341,7 +341,7 @@ end
 
 function MenuInput:input_chat(item, controller, mouse_click)
 	if not controller:get_input_pressed("confirm") and mouse_click then
-		
+		-- Nothing
 	end
 end
 
@@ -430,7 +430,7 @@ function MenuInput:mouse_pressed(o, button, x, y)
 					end
 				elseif row_item.gui_panel:inside(x, y) and node_gui._item_panel_parent:inside(x, y) then
 					if row_item.no_mouse_select then
-						
+						-- Nothing
 					elseif row_item.type == "slider" then
 						self:post_event("slider_grab")
 
@@ -510,7 +510,7 @@ function MenuInput:mouse_pressed(o, button, x, y)
 							row_item.chat_input:script().set_focus(true)
 						end
 					elseif row_item.type == "divider" then
-						
+						-- Nothing
 					else
 						local item = self._logic:selected_item()
 
@@ -615,6 +615,7 @@ function MenuInput:mouse_double_click(o, button, x, y)
 
 	return managers.menu:active_menu().renderer:mouse_double_click(o, button, x, y)
 end
+
 local print_timers = {}
 
 local function upd_print(id, t, ...)
@@ -988,4 +989,3 @@ function MenuInput:input_crime_spree_item(item, controller, mouse_click)
 		end
 	end
 end
-

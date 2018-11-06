@@ -118,7 +118,9 @@ function SkirmishManager:set_ransom_amount(amount)
 	managers.hud:loot_value_updated()
 	managers.hud:present_mid_text({
 		time = 2,
-		text = managers.localization:to_upper_text("hud_skirmish_ransom_popup", {money = managers.experience:cash_string(math.round(amount))})
+		text = managers.localization:to_upper_text("hud_skirmish_ransom_popup", {
+			money = managers.experience:cash_string(math.round(amount))
+		})
 	})
 end
 
@@ -170,7 +172,9 @@ function SkirmishManager:update()
 end
 
 function SkirmishManager:sync_save(data)
-	local state = {wave_number = self:current_wave_number()}
+	local state = {
+		wave_number = self:current_wave_number()
+	}
 	data.SkirmishManager = state
 end
 
@@ -391,4 +395,3 @@ end
 function SkirmishManager:claimed_reward_by_id(id)
 	return self._global.weekly_rewards and self._global.weekly_rewards[id]
 end
-

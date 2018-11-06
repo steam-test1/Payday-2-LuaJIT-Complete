@@ -8,7 +8,9 @@ function CopLogicArrest.enter(data, new_logic_name, enter_params)
 	data.unit:brain():cancel_all_pathing_searches()
 
 	local old_internal_data = data.internal_data
-	local my_data = {unit = data.unit}
+	local my_data = {
+		unit = data.unit
+	}
 	data.internal_data = my_data
 	my_data.detection = data.char_tweak.detection.guard
 	my_data.arrest_targets = {}
@@ -52,7 +54,9 @@ function CopLogicArrest.enter(data, new_logic_name, enter_params)
 	end
 
 	CopLogicIdle._chk_has_old_action(data, my_data)
-	data.unit:brain():set_attention_settings({cbt = true})
+	data.unit:brain():set_attention_settings({
+		cbt = true
+	})
 
 	my_data.next_action_delay_t = data.t + math.lerp(2, 2.5, math.random())
 	my_data.weapon_range = data.char_tweak.weapon[data.unit:inventory():equipped_unit():base():weapon_tweak_data().usage].range
@@ -225,7 +229,7 @@ function CopLogicArrest._upd_advance(data, my_data, attention_obj, arrest_data)
 	end
 
 	if my_data.advancing then
-		
+		-- Nothing
 	elseif my_data.advance_path then
 		if my_data.next_action_delay_t < data.t and not data.unit:movement():chk_action_forbidden("walk") then
 			if (not data.char_tweak.allowed_poses or data.char_tweak.allowed_poses.stand) and my_data.should_stand_close and not data.unit:anim_data().stand then
@@ -326,7 +330,9 @@ function CopLogicArrest._upd_enemy_detection(data)
 	end
 
 	if should_arrest and not my_data.arrest_targets[new_attention.u_key] then
-		my_data.arrest_targets[new_attention.u_key] = {attention_obj = new_attention}
+		my_data.arrest_targets[new_attention.u_key] = {
+			attention_obj = new_attention
+		}
 
 		managers.groupai:state():on_arrest_start(data.key, new_attention.u_key)
 	end
@@ -440,11 +446,11 @@ function CopLogicArrest._verify_arrest_targets(data, my_data)
 		local record = group_ai:criminal_record(u_key)
 
 		if not record then
-			
+			-- Nothing
 		elseif arrest_data.intro_pos and mvector3.distance_sq(arrest_data.attention_obj.m_pos, arrest_data.intro_pos) > 28900 then
 			drop = true
 			penalty = true
-		elseif arrest_data.intro_t and record.assault_t and arrest_data.intro_t + 0.6 < record.assault_t then
+		elseif arrest_data.intro_t and record.assault_t and record.assault_t > arrest_data.intro_t + 0.6 then
 			drop = true
 			penalty = true
 		elseif record.status or data.t < record.arrest_timeout then
@@ -582,7 +588,7 @@ function CopLogicArrest._get_priority_attention(data, attention_objects, reactio
 		local crim_record = attention_data.criminal_record
 
 		if not attention_data.identified then
-			
+			-- Nothing
 		elseif attention_data.pause_expire_t then
 			if attention_data.pause_expire_t < data.t then
 				attention_data.pause_expire_t = nil
@@ -762,7 +768,7 @@ function CopLogicArrest._get_att_obj_close_pos(data, my_data)
 	local my_dis = mvector3.distance(data.m_pos, att_obj_pos)
 	local optimal_dis = 150 + math.random() * 150
 
-	if optimal_dis * 0.8 < my_dis and my_dis < optimal_dis * 1.2 then
+	if my_dis > optimal_dis * 0.8 and my_dis < optimal_dis * 1.2 then
 		if destroy_att_nav_tracker then
 			nav_manager:destroy_nav_tracker(att_nav_tracker)
 		end
@@ -875,4 +881,3 @@ function CopLogicArrest._say_call_the_police(data, my_data)
 
 	data.unit:sound():say(blame_list[my_data.call_in_event] or "a23", true)
 end
-

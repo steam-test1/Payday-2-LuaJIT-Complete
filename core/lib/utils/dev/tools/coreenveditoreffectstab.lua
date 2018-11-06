@@ -56,11 +56,11 @@ function CoreEnvEditor:create_effects_tab()
 	environment_effect_list_sizer:add(self._effect_list, 0, 0, "EXPAND")
 	popuplate_list(self._effect_list, all_effects)
 
-	local effect_add = EWS:Button(panel, "<
+	local effect_add = EWS:Button(panel, "<--", "", "BU_EXACTFIT,NO_BORDER")
 
 	environment_effect_control_sizer:add(effect_add, 0, 0, "EXPAND")
 
-	local effect_remove = EWS:Button(panel, "
+	local effect_remove = EWS:Button(panel, "-->", "", "BU_EXACTFIT,NO_BORDER")
 
 	environment_effect_control_sizer:add(effect_remove, 0, 0, "EXPAND")
 	effect_add:connect("EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "add_effect"))
@@ -132,4 +132,3 @@ end
 function CoreEnvEditor:remove_effect()
 	self:_move_selected_items(self._active_effect_list, self._effect_list, managers.environment_effects:effects_names())
 end
-

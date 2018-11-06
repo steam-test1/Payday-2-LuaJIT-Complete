@@ -5,7 +5,9 @@ function FeatureManager:init()
 end
 
 function FeatureManager:_setup()
-	self._default = {announcements = {}}
+	self._default = {
+		announcements = {}
+	}
 	self._default.announcements.crimenet_heat = 3
 	self._default.announcements.election_changes = 1
 	self._default.announcements.crimenet_welcome = 0
@@ -23,8 +25,9 @@ function FeatureManager:_setup()
 	self._default.announcements.tango_weapon_unlocked = 1
 
 	if not Global.feature_manager then
-		Global.feature_manager = {}
-		Global.feature_manager.announcements = {}
+		Global.feature_manager = {
+			announcements = {}
+		}
 
 		for id, _ in pairs(self._default.announcements) do
 			Global.feature_manager.announcements[id] = 0
@@ -45,7 +48,9 @@ end
 function FeatureManager:save(data)
 	Application:debug("[FeatureManager:save]")
 
-	local save_data = {announcements = deep_clone(self._global.announcements)}
+	local save_data = {
+		announcements = deep_clone(self._global.announcements)
+	}
 	data.feature_manager = save_data
 end
 
@@ -268,7 +273,9 @@ function FeatureManager:thq_feature()
 		text = managers.localization:text("dialog_yes"),
 		callback_func = yes_function
 	}
-	local no_button = {text = managers.localization:text("dialog_no")}
+	local no_button = {
+		text = managers.localization:text("dialog_no")
+	}
 	button_list = {
 		yes_button,
 		no_button
@@ -342,4 +349,3 @@ function FeatureManager:tango_weapon_unlocked()
 
 	return true
 end
-

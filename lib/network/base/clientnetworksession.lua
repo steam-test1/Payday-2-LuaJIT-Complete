@@ -126,7 +126,7 @@ function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_charac
 		self._server_peer:set_synched_soft(state_index ~= 1)
 
 		if SystemInfo:platform() == Idstring("PS3") then
-			
+			-- Nothing
 		end
 
 		self:_chk_send_proactive_outfit_loaded()
@@ -321,7 +321,7 @@ function ClientNetworkSession:peer_handshake(name, peer_id, peer_user_id, in_lob
 	end
 
 	if SystemInfo:platform() == self._ids_WIN32 then
-		
+		-- Nothing
 	else
 		peer_user_id = false
 	end
@@ -630,4 +630,3 @@ function ClientNetworkSession:set_peer_loading_state(peer, state, load_counter)
 	peer:set_loading(state)
 	ClientNetworkSession.super.set_peer_loading_state(self, peer, state, load_counter)
 end
-

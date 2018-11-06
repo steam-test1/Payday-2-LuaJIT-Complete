@@ -33,7 +33,9 @@ function PlayerTweakData:_set_easy_wish()
 	self.damage.BLEED_OT_TIME = 10
 	self.damage.LIVES_INIT = 4
 	self.damage.MIN_DAMAGE_INTERVAL = 0.35
-	self.damage.REVIVE_HEALTH_STEPS = {0.1}
+	self.damage.REVIVE_HEALTH_STEPS = {
+		0.1
+	}
 end
 
 function PlayerTweakData:_set_overkill_290()
@@ -45,7 +47,9 @@ function PlayerTweakData:_set_overkill_290()
 	self.damage.BLEED_OT_TIME = 10
 	self.damage.LIVES_INIT = 4
 	self.damage.MIN_DAMAGE_INTERVAL = 0.35
-	self.damage.REVIVE_HEALTH_STEPS = {0.1}
+	self.damage.REVIVE_HEALTH_STEPS = {
+		0.1
+	}
 end
 
 function PlayerTweakData:_set_sm_wish()
@@ -57,7 +61,9 @@ function PlayerTweakData:_set_sm_wish()
 	self.damage.BLEED_OT_TIME = 10
 	self.damage.LIVES_INIT = 4
 	self.damage.MIN_DAMAGE_INTERVAL = 0.35
-	self.damage.REVIVE_HEALTH_STEPS = {0.1}
+	self.damage.REVIVE_HEALTH_STEPS = {
+		0.1
+	}
 end
 
 function PlayerTweakData:_set_singleplayer()
@@ -117,7 +123,9 @@ function PlayerTweakData:init()
 		self.damage.REGENERATE_TIME = 3
 	end
 
-	self.damage.REVIVE_HEALTH_STEPS = {0.4}
+	self.damage.REVIVE_HEALTH_STEPS = {
+		0.4
+	}
 	self.damage.BLEED_OT_TIME = 40
 	self.damage.TASED_TIME = 10
 	self.damage.TASED_RECOVER_TIME = 1
@@ -191,29 +199,37 @@ function PlayerTweakData:init()
 	}
 	self.max_nr_following_hostages = 1
 	self.TRANSITION_DURATION = 0.23
-	self.stances = {default = {
-		standard = {
-			head = {},
-			shoulders = {},
-			vel_overshot = {}
-		},
-		crouched = {
-			head = {},
-			shoulders = {},
-			vel_overshot = {}
-		},
-		steelsight = {
-			shoulders = {},
-			vel_overshot = {}
+	self.stances = {
+		default = {
+			standard = {
+				head = {},
+				shoulders = {},
+				vel_overshot = {}
+			},
+			crouched = {
+				head = {},
+				shoulders = {},
+				vel_overshot = {}
+			},
+			steelsight = {
+				shoulders = {},
+				vel_overshot = {}
+			}
 		}
-	}}
+	}
 	self.stances.default.standard.head.translation = Vector3(0, 0, 145)
 	self.stances.default.standard.head.rotation = Rotation()
-	self.stances.default.standard.shakers = {breathing = {}}
+	self.stances.default.standard.shakers = {
+		breathing = {}
+	}
 	self.stances.default.standard.shakers.breathing.amplitude = 0.3
-	self.stances.default.crouched.shakers = {breathing = {}}
+	self.stances.default.crouched.shakers = {
+		breathing = {}
+	}
 	self.stances.default.crouched.shakers.breathing.amplitude = 0.25
-	self.stances.default.steelsight.shakers = {breathing = {}}
+	self.stances.default.steelsight.shakers = {
+		breathing = {}
+	}
 	self.stances.default.steelsight.shakers.breathing.amplitude = 0.025
 	self.stances.default.mask_off = deep_clone(self.stances.default.standard)
 	self.stances.default.mask_off.head.translation = Vector3(0, 0, 160)
@@ -280,10 +296,14 @@ function PlayerTweakData:init()
 
 	self:_init_new_stances()
 
-	self.movement_state = {standard = {}}
+	self.movement_state = {
+		standard = {}
+	}
 	self.movement_state.standard.movement = {
 		speed = {},
-		jump_velocity = {xy = {}},
+		jump_velocity = {
+			xy = {}
+		},
 		multiplier = {}
 	}
 	self.movement_state.standard.movement.speed.STANDARD_MAX = 350
@@ -1807,7 +1827,9 @@ function PlayerTweakData:_init_hk21()
 	self.stances.hk21.bipod.vel_overshot.pitch_neg = 0
 	self.stances.hk21.bipod.vel_overshot.pitch_pos = 0
 	self.stances.hk21.bipod.FOV = 50
-	self.stances.hk21.bipod.shakers = {breathing = {}}
+	self.stances.hk21.bipod.shakers = {
+		breathing = {}
+	}
 	self.stances.hk21.bipod.shakers.breathing.amplitude = 0
 end
 
@@ -1852,7 +1874,9 @@ function PlayerTweakData:_init_m249()
 	self.stances.m249.bipod.vel_overshot.pitch_neg = 0
 	self.stances.m249.bipod.vel_overshot.pitch_pos = 0
 	self.stances.m249.bipod.FOV = 50
-	self.stances.m249.bipod.shakers = {breathing = {}}
+	self.stances.m249.bipod.shakers = {
+		breathing = {}
+	}
 	self.stances.m249.bipod.shakers.breathing.amplitude = 0
 end
 
@@ -3132,7 +3156,9 @@ function PlayerTweakData:_init_par()
 	self.stances.par.bipod.vel_overshot.pitch_neg = 0
 	self.stances.par.bipod.vel_overshot.pitch_pos = 0
 	self.stances.par.bipod.FOV = 50
-	self.stances.par.bipod.shakers = {breathing = {}}
+	self.stances.par.bipod.shakers = {
+		breathing = {}
+	}
 	self.stances.par.bipod.shakers.breathing.amplitude = 0
 end
 
@@ -5220,4 +5246,3 @@ function PlayerTweakData:_init_elastic()
 	self.stances.elastic.crouched.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
 	self.stances.elastic.crouched.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -50, 0)
 end
-

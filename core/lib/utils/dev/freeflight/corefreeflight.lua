@@ -579,7 +579,7 @@ function FreeFlight:_update_controller(t, dt)
 		local ply_controller = managers.player:player_unit():base():controller()
 
 		if ply_controller then
-			
+			-- Nothing
 		end
 	end
 end
@@ -718,4 +718,3 @@ function FreeFlight:destroy()
 
 	self._vp = nil
 end
-

@@ -1759,7 +1759,9 @@ function InteractionTweakData:init(tweak_data)
 		timer = 0.5,
 		special_equipment_block = "gas"
 	}
-	self.gen_ladyjustice_statue = {text_id = "hud_int_ladyjustice_statue"}
+	self.gen_ladyjustice_statue = {
+		text_id = "hud_int_ladyjustice_statue"
+	}
 	self.hold_place_gps_tracker = {
 		text_id = "hud_int_hold_place_gps_tracker",
 		action_text_id = "hud_action_placing_gps_tracker",
@@ -2025,7 +2027,9 @@ function InteractionTweakData:init(tweak_data)
 		sound_interupt = "bar_close_crate_cancel",
 		sound_done = "bar_close_crate_finished"
 	}
-	self.halloween_trick = {text_id = "hud_int_trick_treat"}
+	self.halloween_trick = {
+		text_id = "hud_int_trick_treat"
+	}
 	self.disassemble_turret = {
 		text_id = "hud_int_hold_disassemble_turret",
 		action_text_id = "hud_action_disassemble_turret",
@@ -2140,8 +2144,12 @@ function InteractionTweakData:init(tweak_data)
 		sound_interupt = "bar_c4_apply_cancel",
 		sound_done = "bar_c4_apply_finished"
 	}
-	self.player_zipline = {text_id = "hud_int_use_zipline"}
-	self.bag_zipline = {text_id = "hud_int_bag_zipline"}
+	self.player_zipline = {
+		text_id = "hud_int_use_zipline"
+	}
+	self.bag_zipline = {
+		text_id = "hud_int_bag_zipline"
+	}
 	self.huge_lance = {
 		text_id = "hud_int_equipment_huge_lance",
 		action_text_id = "hud_action_placing_huge_lance",
@@ -2260,7 +2268,9 @@ function InteractionTweakData:init(tweak_data)
 		sound_interupt = "bar_keyboard_cancel",
 		sound_done = "bar_keyboard_finished"
 	}
-	self.take_keys = {text_id = "hud_int_take_keys"}
+	self.take_keys = {
+		text_id = "hud_int_take_keys"
+	}
 	self.push_button = {
 		text_id = "hud_int_push_button",
 		axis = "z"
@@ -2928,7 +2938,9 @@ function InteractionTweakData:init(tweak_data)
 		action_text_id = "hud_action_open_display",
 		timer = 1
 	}
-	self.mus_take_diamond = {text_id = "debug_interact_diamond"}
+	self.mus_take_diamond = {
+		text_id = "debug_interact_diamond"
+	}
 	self.rewire_electric_box = {
 		text_id = "hud_int_rewire_box",
 		action_text_id = "hud_action_rewire_box",
@@ -3185,7 +3197,9 @@ function InteractionTweakData:init(tweak_data)
 		sound_interupt = "bar_scan_documents_cancel",
 		sound_done = "bar_scan_documents_finished"
 	}
-	self.send_blueprints = {text_id = "hud_int_send_blueprints"}
+	self.send_blueprints = {
+		text_id = "hud_int_send_blueprints"
+	}
 	self.cas_customer_database = {
 		text_id = "hud_check_customer_database",
 		action_text_id = "hud_action_cas_checking_customer_database",
@@ -5531,4 +5545,3 @@ function InteractionTweakData:init(tweak_data)
 		sound_interupt = "bar_restaurant_kitchen_cancel"
 	}
 end
-

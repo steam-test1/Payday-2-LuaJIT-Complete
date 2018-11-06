@@ -69,7 +69,9 @@ function ExplosionManager:detect_and_stun(params)
 		alert_unit
 	})
 
-	local splinters = {mvector3.copy(hit_pos)}
+	local splinters = {
+		mvector3.copy(hit_pos)
+	}
 	local dirs = {
 		Vector3(range, 0, 0),
 		Vector3(-range, 0, 0),
@@ -85,7 +87,13 @@ function ExplosionManager:detect_and_stun(params)
 		mvector3.add(pos, hit_pos)
 
 		local splinter_ray = nil
-		splinter_ray = ignore_unit and World:raycast("ray", hit_pos, pos, "ignore_unit", ignore_unit, "slot_mask", slotmask) or World:raycast("ray", hit_pos, pos, "slot_mask", slotmask)
+
+		if ignore_unit then
+			splinter_ray = World:raycast("ray", hit_pos, pos, "ignore_unit", ignore_unit, "slot_mask", slotmask)
+		else
+			splinter_ray = World:raycast("ray", hit_pos, pos, "slot_mask", slotmask)
+		end
+
 		pos = (splinter_ray and splinter_ray.position or pos) - dir:normalized() * math.min(splinter_ray and splinter_ray.distance or 0, 10)
 		local near_splinter = false
 
@@ -111,7 +119,9 @@ function ExplosionManager:detect_and_stun(params)
 	local characters_hit = {}
 	local units_to_push = {}
 	local hit_units = {}
-	local ignore_units = {ignore_unit}
+	local ignore_units = {
+		ignore_unit
+	}
 	local type = nil
 
 	if not params.no_raycast_check_characters then
@@ -157,7 +167,7 @@ function ExplosionManager:detect_and_stun(params)
 						count_gangsters = count_gangsters + 1
 					elseif type ~= "russian" and type ~= "german" and type ~= "spanish" and type ~= "american" and type ~= "jowi" then
 						if type == "hoxton" then
-							
+							-- Nothing
 						else
 							count_cops = count_cops + 1
 						end
@@ -203,7 +213,7 @@ function ExplosionManager:detect_and_stun(params)
 						count_gangster_kills = count_gangster_kills + 1
 					elseif type ~= "russian" and type ~= "german" and type ~= "spanish" then
 						if type == "american" then
-							
+							-- Nothing
 						else
 							count_cop_kills = count_cop_kills + 1
 						end
@@ -274,7 +284,9 @@ function ExplosionManager:detect_and_give_dmg(params)
 		alert_unit
 	})
 
-	local splinters = {mvector3.copy(hit_pos)}
+	local splinters = {
+		mvector3.copy(hit_pos)
+	}
 	local dirs = {
 		Vector3(range, 0, 0),
 		Vector3(-range, 0, 0),
@@ -290,7 +302,13 @@ function ExplosionManager:detect_and_give_dmg(params)
 		mvector3.add(pos, hit_pos)
 
 		local splinter_ray = nil
-		splinter_ray = ignore_unit and World:raycast("ray", hit_pos, pos, "ignore_unit", ignore_unit, "slot_mask", slotmask) or World:raycast("ray", hit_pos, pos, "slot_mask", slotmask)
+
+		if ignore_unit then
+			splinter_ray = World:raycast("ray", hit_pos, pos, "ignore_unit", ignore_unit, "slot_mask", slotmask)
+		else
+			splinter_ray = World:raycast("ray", hit_pos, pos, "slot_mask", slotmask)
+		end
+
 		pos = (splinter_ray and splinter_ray.position or pos) - dir:normalized() * math.min(splinter_ray and splinter_ray.distance or 0, 10)
 		local near_splinter = false
 
@@ -316,7 +334,9 @@ function ExplosionManager:detect_and_give_dmg(params)
 	local characters_hit = {}
 	local units_to_push = {}
 	local hit_units = {}
-	local ignore_units = {ignore_unit}
+	local ignore_units = {
+		ignore_unit
+	}
 	local type = nil
 
 	if not params.no_raycast_check_characters then
@@ -365,7 +385,7 @@ function ExplosionManager:detect_and_give_dmg(params)
 						count_gangsters = count_gangsters + 1
 					elseif type ~= "russian" and type ~= "german" and type ~= "spanish" and type ~= "american" and type ~= "jowi" then
 						if type == "hoxton" then
-							
+							-- Nothing
 						else
 							count_cops = count_cops + 1
 						end
@@ -422,7 +442,7 @@ function ExplosionManager:detect_and_give_dmg(params)
 							count_gangster_kills = count_gangster_kills + 1
 						elseif type ~= "russian" and type ~= "german" and type ~= "spanish" then
 							if type == "american" then
-								
+								-- Nothing
 							else
 								count_cop_kills = count_cop_kills + 1
 							end
@@ -463,7 +483,7 @@ function ExplosionManager:units_to_push(units_to_push, hit_pos, range)
 				local rot_acc = Vector3(1 - math.rand(2), 1 - math.rand(2), 1 - math.rand(2)) * 10
 				local i_u_body = 0
 
-				while i_u_body < nr_u_bodies do
+				while nr_u_bodies > i_u_body do
 					local u_body = unit:body(i_u_body)
 
 					if u_body:enabled() and u_body:dynamic() then
@@ -509,7 +529,7 @@ function ExplosionManager:_apply_body_damage(is_server, hit_body, user_unit, dir
 	end
 
 	if prop_damage == 0 then
-		
+		-- Nothing
 	end
 
 	if prop_damage > 0 then
@@ -625,6 +645,7 @@ function ExplosionManager:player_feedback(position, normal, range, custom_params
 		end
 	end
 end
+
 local decal_ray_from = Vector3()
 local decal_ray_to = Vector3()
 
@@ -695,7 +716,9 @@ function ExplosionManager:spawn_sound_and_effects(position, normal, range, effec
 			end
 
 			sound_source:post_event(sound_event)
-			managers.enemy:add_delayed_clbk("ExplosionManager", callback(ProjectileBase, ProjectileBase, "_dispose_of_sound", {sound_source = sound_source}), TimerManager:game():time() + 4)
+			managers.enemy:add_delayed_clbk("ExplosionManager", callback(ProjectileBase, ProjectileBase, "_dispose_of_sound", {
+				sound_source = sound_source
+			}), TimerManager:game():time() + 4)
 		end
 	end
 
@@ -753,4 +776,3 @@ function ExplosionManager:project_decal(ray, from, to, on_unit, idstr_decal, ids
 		end
 	end
 end
-

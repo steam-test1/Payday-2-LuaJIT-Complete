@@ -67,7 +67,9 @@ function CopLogicSniper.enter(data, new_logic_name, enter_params)
 		return
 	end
 
-	data.unit:brain():set_attention_settings({cbt = true})
+	data.unit:brain():set_attention_settings({
+		cbt = true
+	})
 
 	my_data.weapon_range = data.char_tweak.weapon[data.unit:inventory():equipped_unit():base():weapon_tweak_data().usage].range
 
@@ -148,7 +150,11 @@ function CopLogicSniper._upd_enemy_detection(data)
 
 	CopLogicSniper._upd_aim(data, my_data)
 
-	delay = data.important and 0 or 0.5 + delay * 1.5
+	if data.important then
+		delay = 0
+	else
+		delay = 0.5 + delay * 1.5
+	end
 
 	CopLogicBase.queue_task(my_data, my_data.detection_task_key, CopLogicSniper._upd_enemy_detection, data, data.t + delay)
 	CopLogicBase._report_detections(data.detected_attention_objects)
@@ -224,7 +230,7 @@ function CopLogicSniper._upd_aim(data, my_data)
 		end
 
 		if action_taken then
-			
+			-- Nothing
 		elseif my_data.attitude == "engage" and not data.is_suppressed then
 			if focus_enemy then
 				if not CopLogicAttack._chk_request_action_turn_to_enemy(data, my_data, data.m_pos, focus_enemy.verified_pos or focus_enemy.m_head_pos) and not focus_enemy.verified and not anim_data.reload then
@@ -298,13 +304,18 @@ function CopLogicSniper._upd_aim(data, my_data)
 	else
 		if my_data.shooting then
 			local new_action = nil
-			new_action = data.unit:anim_data().reload and {
-				body_part = 3,
-				type = "reload"
-			} or {
-				body_part = 3,
-				type = "idle"
-			}
+
+			if data.unit:anim_data().reload then
+				new_action = {
+					body_part = 3,
+					type = "reload"
+				}
+			else
+				new_action = {
+					body_part = 3,
+					type = "idle"
+				}
+			end
 
 			data.unit:brain():action_request(new_action)
 		end
@@ -349,4 +360,3 @@ end
 function CopLogicSniper.should_duck_on_alert(data, alert_data)
 	return data.internal_data.attitude == "avoid" and CopLogicBase.should_duck_on_alert(data, alert_data)
 end
-

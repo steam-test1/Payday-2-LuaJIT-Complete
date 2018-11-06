@@ -11,7 +11,11 @@ function GameStateMachine:init(start_state)
 	self._transitions[init:name()] = self._transitions[init:name()] or {}
 	self._transitions[init:name()][start_state:name()] = init.default_transition
 	self._current_state = init
-	self._queued_transitions = {{start_state}}
+	self._queued_transitions = {
+		{
+			start_state
+		}
+	}
 
 	self:_do_state_change()
 end
@@ -49,12 +53,12 @@ function GameStateMachine:change_state(state, params)
 		Application:stack_dump()
 	end
 
-	local transition_debug_string = string.format("'%s' 
+	local transition_debug_string = string.format("'%s' --> '%s'", tostring(self:last_queued_state_name()), tostring(state:name()))
 
 	cat_print("game_state_machine", "[GameStateMachine] Requested state change " .. transition_debug_string)
 
 	if not self:can_change_state(state) then
-		
+		-- Nothing
 	else
 		self._queued_transitions = self._queued_transitions or {}
 
@@ -112,7 +116,7 @@ function GameStateMachine:_do_state_change()
 		local old_state = self._current_state
 		local trans_func = self._transitions[old_state:name()][new_state:name()]
 
-		cat_print("game_state_machine", "[GameStateMachine] Executing state change '" .. tostring(old_state:name()) .. "' 
+		cat_print("game_state_machine", "[GameStateMachine] Executing state change '" .. tostring(old_state:name()) .. "' --> '" .. tostring(new_state:name()) .. "'")
 
 		self._current_state = new_state
 
@@ -130,4 +134,3 @@ function GameStateMachine:last_queued_state_name()
 		return self:current_state_name()
 	end
 end
-

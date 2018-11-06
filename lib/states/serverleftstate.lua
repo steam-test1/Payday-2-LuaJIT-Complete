@@ -46,4 +46,3 @@ function ServerLeftState:on_server_left_ok_pressed()
 
 	self:_set_continue_button_text()
 end
-

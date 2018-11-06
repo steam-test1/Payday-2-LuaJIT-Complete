@@ -203,7 +203,7 @@ function MissionDoor:_check_completed_counter(type)
 		local sequence_name = "open_door"
 
 		if type == "drill" then
-			
+			-- Nothing
 		elseif type == "c4" then
 			sequence_name = "explode_door"
 
@@ -308,6 +308,7 @@ function MissionDoor:destroy()
 		end
 	end
 end
+
 MissionDoorDevice = MissionDoorDevice or class()
 
 function MissionDoorDevice:init(unit)
@@ -383,4 +384,3 @@ end
 
 function MissionDoorDevice:destroy()
 end
-

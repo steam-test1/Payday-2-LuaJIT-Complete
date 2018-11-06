@@ -79,7 +79,6 @@ function MenuSetup:load_packages()
 			Global._game_base_package_loaded = true
 		end
 	elseif not PackageManager:loaded("packages/game_base_init") then
-
 		local function _load_wip_func()
 			Global._game_base_package_loaded = true
 		end
@@ -100,7 +99,7 @@ function MenuSetup:gather_packages_to_unload()
 
 	if not Global.load_start_menu then
 		if PackageManager:loaded("packages/start_menu") then
-			
+			-- Nothing
 		end
 
 		local prefix = "packages/dlcs/"

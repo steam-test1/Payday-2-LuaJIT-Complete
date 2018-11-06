@@ -138,7 +138,7 @@ function InteractionEditorSystem:add_node(node_type, skip_stack)
 	self:set_node_colors(node, id)
 
 	if not skip_stack then
-		
+		-- Nothing
 	end
 end
 
@@ -150,7 +150,7 @@ function InteractionEditorSystem:remove_node(node, skip_stack)
 	self._node_id_map[id] = nil
 
 	if not skip_stack then
-		
+		-- Nothing
 	end
 end
 
@@ -275,4 +275,3 @@ function InteractionEditorSystem:_load_patterns(desc, pattern_data, cfg_node)
 		self:add_pattern_data(node, pat, ptype, name, full_name)
 	end
 end
-

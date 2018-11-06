@@ -159,15 +159,21 @@ function MusicManager:load_settings(data)
 	end
 
 	if managers.network and not self._added_overlay_listeners then
-		managers.network.account:add_overlay_listener("steam_music_manager_open", {"overlay_open"}, callback(self, self, "on_steam_overlay_open"))
-		managers.network.account:add_overlay_listener("steam_music_manager_close", {"overlay_close"}, callback(self, self, "on_steam_overlay_close"))
+		managers.network.account:add_overlay_listener("steam_music_manager_open", {
+			"overlay_open"
+		}, callback(self, self, "on_steam_overlay_open"))
+		managers.network.account:add_overlay_listener("steam_music_manager_close", {
+			"overlay_close"
+		}, callback(self, self, "on_steam_overlay_close"))
 
 		self._added_overlay_listeners = true
 	end
 end
 
 function MusicManager:save_profile(data)
-	local state = {loadout_selection = Global.music_manager.loadout_selection}
+	local state = {
+		loadout_selection = Global.music_manager.loadout_selection
+	}
 	data.MusicManager = state
 end
 
@@ -541,4 +547,3 @@ end
 function MusicManager:music_tracks()
 	return tweak_data.music.soundbank_list
 end
-

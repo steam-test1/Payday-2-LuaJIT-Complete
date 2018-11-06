@@ -35,20 +35,26 @@ function CustomSafehouseTweakData:init(tweak_data)
 end
 
 function CustomSafehouseTweakData:_init_heisters(tweak_data)
-	self.heisters = {base = {}}
+	self.heisters = {
+		base = {}
+	}
 	self.heisters.base.idle_line_dist = 500
 	self.heisters.base.idle_line_time = {
 		15,
 		20
 	}
-	self.heisters.base.answer_lines = {{
-		sound_event = "Play_{voice}_answering",
-		priority = 0
-	}}
-	self.heisters.base.idle_lines = {{
-		sound_event = "Play_{voice}_idle",
-		priority = 0
-	}}
+	self.heisters.base.answer_lines = {
+		{
+			sound_event = "Play_{voice}_answering",
+			priority = 0
+		}
+	}
+	self.heisters.base.idle_lines = {
+		{
+			sound_event = "Play_{voice}_idle",
+			priority = 0
+		}
+	}
 	self.heisters.dallas = clone(self.heisters.base)
 	self.heisters.dallas.character_material = "var_mtr_dallas"
 	self.heisters.dallas.voice = self:get_voice(tweak_data, "russian")
@@ -67,8 +73,12 @@ function CustomSafehouseTweakData:_init_heisters(tweak_data)
 			sound_event = "Play_{voice}_answering_longfellow",
 			priority = 10,
 			requirements = {
-				tiers = {3},
-				trophies = {"trophy_longfellow"}
+				tiers = {
+					3
+				},
+				trophies = {
+					"trophy_longfellow"
+				}
 			}
 		}
 	}
@@ -87,15 +97,19 @@ function CustomSafehouseTweakData:_init_heisters(tweak_data)
 	self.heisters.dragan = clone(self.heisters.base)
 	self.heisters.dragan.character_material = "var_mtr_dragan"
 	self.heisters.dragan.voice = self:get_voice(tweak_data, "dragan")
-	self.heisters.dragan.anim_lines = {{
-		sound_event = "Play_{voice}_idle_phone",
-		line_type = "idle",
-		anim_value = "talking_on_phone"
-	}}
-	self.heisters.dragan.anim_blocks = {{
-		block = "answering",
-		anim_value = "talking_on_phone"
-	}}
+	self.heisters.dragan.anim_lines = {
+		{
+			sound_event = "Play_{voice}_idle_phone",
+			line_type = "idle",
+			anim_value = "talking_on_phone"
+		}
+	}
+	self.heisters.dragan.anim_blocks = {
+		{
+			block = "answering",
+			anim_value = "talking_on_phone"
+		}
+	}
 	self.heisters.dragan.idle_limit = 1
 	self.heisters.jacket = clone(self.heisters.base)
 	self.heisters.jacket.character_material = "var_mtr_jacket"
@@ -117,7 +131,11 @@ function CustomSafehouseTweakData:_init_heisters(tweak_data)
 		{
 			sound_event = "Play_{voice}_answering_glace",
 			priority = 100,
-			requirements = {trophies = {"trophy_glace_completion"}}
+			requirements = {
+				trophies = {
+					"trophy_glace_completion"
+				}
+			}
 		}
 	}
 	self.heisters.dragon.idle_lines = {
@@ -128,7 +146,11 @@ function CustomSafehouseTweakData:_init_heisters(tweak_data)
 		{
 			sound_event = "Play_{voice}_idle_glace",
 			priority = 100,
-			requirements = {trophies = {"trophy_glace_completion"}}
+			requirements = {
+				trophies = {
+					"trophy_glace_completion"
+				}
+			}
 		}
 	}
 	self.heisters.bodhi = clone(self.heisters.base)
@@ -696,7 +718,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_falcogini_objective",
 		id = "trophy_falcogini",
 		desc_id = "trophy_falcogini_desc",
-		objectives = {self:_progress("trophy_car_shop", 1)}
+		objectives = {
+			self:_progress("trophy_car_shop", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_dartboard",
@@ -705,7 +729,11 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		id = "trophy_dartboard",
 		desc_id = "trophy_dartboard_desc",
 		show_progress = true,
-		objectives = {self:_progress("trophy_headshots", 500, {name_id = "trophy_dartboard_progress"})}
+		objectives = {
+			self:_progress("trophy_headshots", 500, {
+				name_id = "trophy_dartboard_progress"
+			})
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_hockey_team",
@@ -713,7 +741,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_hockey_team_objective",
 		id = "trophy_hockey_team",
 		desc_id = "trophy_hockey_team_desc",
-		objectives = {self:_achievement("the_first_line")}
+		objectives = {
+			self:_achievement("the_first_line")
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_escape_van",
@@ -722,7 +752,11 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		id = "trophy_escape_van",
 		desc_id = "trophy_escape_van_desc",
 		show_progress = true,
-		objectives = {self:_progress("trophy_escapes", 10, {name_id = "trophy_escape_van_progress"})}
+		objectives = {
+			self:_progress("trophy_escapes", 10, {
+				name_id = "trophy_escape_van_progress"
+			})
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_meth_cookbook",
@@ -730,7 +764,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_meth_cookbook_objective",
 		id = "trophy_meth_cookbook",
 		desc_id = "trophy_meth_cookbook_desc",
-		objectives = {self:_achievement("voff_5")}
+		objectives = {
+			self:_achievement("voff_5")
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_diamonds",
@@ -738,7 +774,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_diamonds_objective",
 		id = "trophy_diamonds",
 		desc_id = "trophy_diamonds_desc",
-		objectives = {self:_progress("trophy_diamond_store_heist", 1)}
+		objectives = {
+			self:_progress("trophy_diamond_store_heist", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_stealth",
@@ -747,11 +785,15 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		id = "trophy_stealth",
 		desc_id = "trophy_stealth_desc",
 		show_progress = true,
-		objectives = {self:_progress("trophy_stealth", 15, {
-			verify = "_verify_unique_heist",
-			name_id = "trophy_stealth_progress",
-			save_values = {"completed_heists"}
-		})}
+		objectives = {
+			self:_progress("trophy_stealth", 15, {
+				verify = "_verify_unique_heist",
+				name_id = "trophy_stealth_progress",
+				save_values = {
+					"completed_heists"
+				}
+			})
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_tiara",
@@ -759,7 +801,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_tiara_objective",
 		id = "trophy_tiara",
 		desc_id = "trophy_tiara_desc",
-		objectives = {self:_progress("trophy_tiara", 1)}
+		objectives = {
+			self:_progress("trophy_tiara", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_hobo_knife",
@@ -767,7 +811,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_hobo_knife_objective",
 		id = "trophy_hobo_knife",
 		desc_id = "trophy_hobo_knife_desc",
-		objectives = {self:_achievement("sinus_1")}
+		objectives = {
+			self:_achievement("sinus_1")
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_transports",
@@ -777,12 +823,24 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		desc_id = "trophy_transports_desc",
 		show_progress = true,
 		objectives = {
-			self:_progress("trophy_transport_crossroads", 1, {name_id = "heist_arm_cro"}),
-			self:_progress("trophy_transport_downtown", 1, {name_id = "heist_arm_hcm"}),
-			self:_progress("trophy_transport_harbor", 1, {name_id = "heist_arm_fac"}),
-			self:_progress("trophy_transport_park", 1, {name_id = "heist_arm_par"}),
-			self:_progress("trophy_transport_underpass", 1, {name_id = "heist_arm_und"}),
-			self:_progress("trophy_transport_train", 1, {name_id = "heist_arm_for"})
+			self:_progress("trophy_transport_crossroads", 1, {
+				name_id = "heist_arm_cro"
+			}),
+			self:_progress("trophy_transport_downtown", 1, {
+				name_id = "heist_arm_hcm"
+			}),
+			self:_progress("trophy_transport_harbor", 1, {
+				name_id = "heist_arm_fac"
+			}),
+			self:_progress("trophy_transport_park", 1, {
+				name_id = "heist_arm_par"
+			}),
+			self:_progress("trophy_transport_underpass", 1, {
+				name_id = "heist_arm_und"
+			}),
+			self:_progress("trophy_transport_train", 1, {
+				name_id = "heist_arm_for"
+			})
 		}
 	})
 	table.insert(self.trophies, {
@@ -791,7 +849,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_golden_grin_objective",
 		id = "trophy_golden_grin",
 		desc_id = "trophy_golden_grin_desc",
-		objectives = {self:_progress("trophy_golden_grin", 1)}
+		objectives = {
+			self:_progress("trophy_golden_grin", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_pacifier",
@@ -801,8 +861,12 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		desc_id = "trophy_pacifier_desc",
 		show_progress = true,
 		objectives = {
-			self:_progress("trophy_basics_stealth", 1, {name_id = "heist_short1"}),
-			self:_progress("trophy_basics_loud", 1, {name_id = "heist_short2"})
+			self:_progress("trophy_basics_stealth", 1, {
+				name_id = "heist_short1"
+			}),
+			self:_progress("trophy_basics_loud", 1, {
+				name_id = "heist_short2"
+			})
 		}
 	})
 	table.insert(self.trophies, {
@@ -811,7 +875,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_discoball_objective",
 		id = "trophy_discoball",
 		desc_id = "trophy_discoball_desc",
-		objectives = {self:_progress("trophy_nightclub_dw", 1)}
+		objectives = {
+			self:_progress("trophy_nightclub_dw", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_boxing_gloves",
@@ -820,7 +886,11 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		id = "trophy_boxing_gloves",
 		desc_id = "trophy_boxing_gloves_desc",
 		show_progress = true,
-		objectives = {self:_progress("trophy_knockouts", 5, {name_id = "trophy_boxing_gloves_progress"})}
+		objectives = {
+			self:_progress("trophy_knockouts", 5, {
+				name_id = "trophy_boxing_gloves_progress"
+			})
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_ring",
@@ -828,7 +898,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_ring_objective",
 		id = "trophy_ring",
 		desc_id = "trophy_ring_desc",
-		objectives = {self:_achievement("voff_4")}
+		objectives = {
+			self:_achievement("voff_4")
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_dozer_helmet",
@@ -837,7 +909,11 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		id = "trophy_dozer_helmet",
 		desc_id = "trophy_dozer_helmet_desc",
 		show_progress = true,
-		objectives = {self:_progress("trophy_special_kills", 100, {name_id = "trophy_dozer_helmet_progress"})}
+		objectives = {
+			self:_progress("trophy_special_kills", 100, {
+				name_id = "trophy_dozer_helmet_progress"
+			})
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_goat",
@@ -846,7 +922,11 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		id = "trophy_goat",
 		desc_id = "trophy_goat_desc",
 		show_progress = true,
-		objectives = {self:_progress("trophy_goats_extracted", 25, {name_id = "trophy_goat_progress"})}
+		objectives = {
+			self:_progress("trophy_goats_extracted", 25, {
+				name_id = "trophy_goat_progress"
+			})
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_tfturret",
@@ -854,7 +934,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_tfturret_objective",
 		id = "trophy_tfturret",
 		desc_id = "trophy_tfturret_desc",
-		objectives = {self:_progress("trophy_tfturret", 1)}
+		objectives = {
+			self:_progress("trophy_tfturret", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_train_bomb",
@@ -862,7 +944,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_train_bomb_objective",
 		id = "trophy_train_bomb",
 		desc_id = "trophy_train_bomb_desc",
-		objectives = {self:_achievement("trophy_train_bomb")}
+		objectives = {
+			self:_achievement("trophy_train_bomb")
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_computer",
@@ -870,7 +954,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_computer_objective",
 		id = "trophy_computer",
 		desc_id = "trophy_computer_desc",
-		objectives = {self:_progress("trophy_ed_computer_full_hack", 1)}
+		objectives = {
+			self:_progress("trophy_ed_computer_full_hack", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_longfellow",
@@ -878,7 +964,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_longfellow_objective",
 		id = "trophy_longfellow",
 		desc_id = "trophy_longfellow_desc",
-		objectives = {self:_progress("trophy_shoutout", 1)}
+		objectives = {
+			self:_progress("trophy_shoutout", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_bank_heists",
@@ -886,7 +974,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_bank_heists_objective",
 		id = "trophy_bank_heists",
 		desc_id = "trophy_bank_heists_desc",
-		objectives = {self:_progress("trophy_bank_heists", 1)}
+		objectives = {
+			self:_progress("trophy_bank_heists", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_carshop_stealth",
@@ -894,7 +984,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_carshop_stealth_objective",
 		id = "trophy_carshop_stealth",
 		desc_id = "trophy_carshop_stealth_desc",
-		objectives = {self:_progress("trophy_carshop_stealth", 1)}
+		objectives = {
+			self:_progress("trophy_carshop_stealth", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_ace",
@@ -903,7 +995,11 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		id = "trophy_ace",
 		desc_id = "trophy_ace_desc",
 		show_progress = true,
-		objectives = {self:_progress("trophy_ace", 100, {name_id = "trophy_ace_progress"})}
+		objectives = {
+			self:_progress("trophy_ace", 100, {
+				name_id = "trophy_ace_progress"
+			})
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_washington",
@@ -912,7 +1008,11 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		id = "trophy_washington",
 		desc_id = "trophy_washington_desc",
 		show_progress = true,
-		objectives = {self:_progress("trophy_washington", 658893, {name_id = "trophy_ace_progress"})}
+		objectives = {
+			self:_progress("trophy_washington", 658893, {
+				name_id = "trophy_ace_progress"
+			})
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_watchout",
@@ -920,7 +1020,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_watchout_objective",
 		id = "trophy_watchout",
 		desc_id = "trophy_watchout_desc",
-		objectives = {self:_progress("trophy_watchout", 1)}
+		objectives = {
+			self:_progress("trophy_watchout", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_piggy_bank",
@@ -928,7 +1030,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_piggy_bank_objective",
 		id = "trophy_piggy_bank",
 		desc_id = "trophy_piggy_bank_desc",
-		objectives = {self:_progress("trophy_piggy_bank", 1)}
+		objectives = {
+			self:_progress("trophy_piggy_bank", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_dance",
@@ -936,7 +1040,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_dance_objective",
 		id = "trophy_dance",
 		desc_id = "trophy_dance_desc",
-		objectives = {self:_progress("trophy_dance", 1)}
+		objectives = {
+			self:_progress("trophy_dance", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_fbi",
@@ -944,7 +1050,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_fbi_objective",
 		id = "trophy_fbi",
 		desc_id = "trophy_fbi_desc",
-		objectives = {self:_progress("trophy_fbi", 1)}
+		objectives = {
+			self:_progress("trophy_fbi", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_jfk",
@@ -952,7 +1060,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_jfk_objective",
 		id = "trophy_jfk",
 		desc_id = "trophy_jfk_desc",
-		objectives = {self:_progress("trophy_jfk", 1)}
+		objectives = {
+			self:_progress("trophy_jfk", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_smg",
@@ -960,7 +1070,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_smg_objective",
 		id = "trophy_smg",
 		desc_id = "trophy_smg_desc",
-		objectives = {self:_progress("trophy_smg", 1)}
+		objectives = {
+			self:_progress("trophy_smg", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_host",
@@ -969,7 +1081,11 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		id = "trophy_host",
 		desc_id = "trophy_host_desc",
 		show_progress = true,
-		objectives = {self:_progress("trophy_host", 10, {name_id = "trophy_host_progress"})}
+		objectives = {
+			self:_progress("trophy_host", 10, {
+				name_id = "trophy_host_progress"
+			})
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_framing_frame",
@@ -977,7 +1093,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_framing_frame_objective",
 		id = "trophy_framing_frame",
 		desc_id = "trophy_framing_frame_desc",
-		objectives = {self:_progress("trophy_framing_frame", 1)}
+		objectives = {
+			self:_progress("trophy_framing_frame", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_sandwich",
@@ -985,7 +1103,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_sandwich_objective",
 		id = "trophy_sandwich",
 		desc_id = "trophy_sandwich_desc",
-		objectives = {self:_progress("trophy_sandwich", 1)}
+		objectives = {
+			self:_progress("trophy_sandwich", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_planmaker",
@@ -993,7 +1113,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_planmaker_objective",
 		id = "trophy_planmaker",
 		desc_id = "trophy_planmaker_desc",
-		objectives = {self:_progress("trophy_planmaker", 1)}
+		objectives = {
+			self:_progress("trophy_planmaker", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_bonfire",
@@ -1002,7 +1124,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		id = "trophy_bonfire",
 		image_id = "safehouse_trophies_preview_bonfire",
 		desc_id = "trophy_bonfire_desc",
-		objectives = {self:_progress("trophy_bonfire", 1)}
+		objectives = {
+			self:_progress("trophy_bonfire", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_smwish",
@@ -1010,7 +1134,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_smwish_objective",
 		id = "trophy_smwish",
 		desc_id = "trophy_smwish_desc",
-		objectives = {self:_progress("trophy_smwish", 1)}
+		objectives = {
+			self:_progress("trophy_smwish", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_medic",
@@ -1019,7 +1145,11 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		id = "trophy_medic",
 		desc_id = "trophy_medic_desc",
 		show_progress = true,
-		objectives = {self:_progress("trophy_medic", 100, {name_id = "trophy_medic_progress"})}
+		objectives = {
+			self:_progress("trophy_medic", 100, {
+				name_id = "trophy_medic_progress"
+			})
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_courtesy",
@@ -1027,7 +1157,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_courtesy_objective",
 		id = "trophy_courtesy",
 		desc_id = "trophy_courtesy_desc",
-		objectives = {self:_progress("trophy_courtesy", 1)}
+		objectives = {
+			self:_progress("trophy_courtesy", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_evolution",
@@ -1035,7 +1167,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_evolution_objective",
 		id = "trophy_evolution",
 		desc_id = "trophy_evolution_desc",
-		objectives = {self:_progress("trophy_evolution", 1)}
+		objectives = {
+			self:_progress("trophy_evolution", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_flawless",
@@ -1043,7 +1177,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_flawless_objective",
 		id = "trophy_flawless",
 		desc_id = "trophy_flawless_desc",
-		objectives = {self:_progress("trophy_flawless", 1)}
+		objectives = {
+			self:_progress("trophy_flawless", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_defender",
@@ -1051,7 +1187,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_defender_objective",
 		id = "trophy_defender",
 		desc_id = "trophy_defender_desc",
-		objectives = {self:_progress("trophy_defender", 1)}
+		objectives = {
+			self:_progress("trophy_defender", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_tooth",
@@ -1059,7 +1197,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_tooth_objective",
 		id = "trophy_tooth",
 		desc_id = "trophy_tooth_desc",
-		objectives = {self:_achievement("flat_3")}
+		objectives = {
+			self:_achievement("flat_3")
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_spooky",
@@ -1067,7 +1207,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_spooky_objective",
 		id = "trophy_spooky",
 		desc_id = "trophy_spooky_desc",
-		objectives = {self:_progress("trophy_spooky", 1)}
+		objectives = {
+			self:_progress("trophy_spooky", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_flamingo",
@@ -1076,7 +1218,11 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		id = "trophy_flamingo",
 		desc_id = "trophy_flamingo_desc",
 		show_progress = true,
-		objectives = {self:_progress("trophy_flamingo", 20, {name_id = "trophy_flamingo_progress"})}
+		objectives = {
+			self:_progress("trophy_flamingo", 20, {
+				name_id = "trophy_flamingo_progress"
+			})
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_coke",
@@ -1085,7 +1231,11 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		id = "trophy_coke",
 		desc_id = "trophy_coke_desc",
 		show_progress = true,
-		objectives = {self:_progress("trophy_coke", 24, {name_id = "trophy_coke_progress"})}
+		objectives = {
+			self:_progress("trophy_coke", 24, {
+				name_id = "trophy_coke_progress"
+			})
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_friendly_car",
@@ -1093,7 +1243,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_friendly_car_objective",
 		id = "trophy_friendly_car",
 		desc_id = "trophy_friendly_car_desc",
-		objectives = {self:_progress("trophy_friendly_car", 1)}
+		objectives = {
+			self:_progress("trophy_friendly_car", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_fish_trophy",
@@ -1101,7 +1253,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_fish_trophy_objective",
 		id = "trophy_fish_trophy",
 		desc_id = "trophy_fish_trophy_desc",
-		objectives = {self:_progress("trophy_fish_trophy", 1)}
+		objectives = {
+			self:_progress("trophy_fish_trophy", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_run_matt",
@@ -1111,7 +1265,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		gives_reward = false,
 		desc_id = "trophy_run_matt_desc",
 		image_id = "safehouse_trophies_preview_yacht",
-		objectives = {self:_progress("trophy_run_matt", 1)}
+		objectives = {
+			self:_progress("trophy_run_matt", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_run_turtle",
@@ -1119,7 +1275,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_run_turtle_objective",
 		id = "trophy_run_turtle",
 		desc_id = "trophy_run_turtle_desc",
-		objectives = {self:_progress("trophy_run_turtle", 1)}
+		objectives = {
+			self:_progress("trophy_run_turtle", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_glace_cuffs",
@@ -1127,7 +1285,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_glace_cuffs_objective",
 		id = "trophy_glace_cuffs",
 		desc_id = "trophy_glace_cuffs_desc",
-		objectives = {self:_progress("trophy_glace_cuffs", 1)}
+		objectives = {
+			self:_progress("trophy_glace_cuffs", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_glace_completion",
@@ -1137,7 +1297,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		gives_reward = false,
 		desc_id = "trophy_glace_completion_desc",
 		image_id = "safehouse_trophies_preview_yacht",
-		objectives = {self:_progress("trophy_glace_completion", 1)}
+		objectives = {
+			self:_progress("trophy_glace_completion", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_jfr_1",
@@ -1160,7 +1322,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		id = "trophy_aru_1",
 		gives_reward = false,
 		desc_id = "trophy_aru_1_desc",
-		objectives = {self:_progress("sidejob_aru_1", 1)}
+		objectives = {
+			self:_progress("sidejob_aru_1", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_aru_2",
@@ -1169,7 +1333,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		id = "trophy_aru_2",
 		gives_reward = false,
 		desc_id = "trophy_aru_2_desc",
-		objectives = {self:_progress("sidejob_aru_2", 1)}
+		objectives = {
+			self:_progress("sidejob_aru_2", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_aru_3",
@@ -1178,7 +1344,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		id = "trophy_aru_3",
 		gives_reward = false,
 		desc_id = "trophy_aru_3_desc",
-		objectives = {self:_progress("sidejob_aru_3", 1)}
+		objectives = {
+			self:_progress("sidejob_aru_3", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_aru_4",
@@ -1187,7 +1355,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		id = "trophy_aru_4",
 		gives_reward = false,
 		desc_id = "trophy_aru_4_desc",
-		objectives = {self:_progress("sidejob_aru_4", 1)}
+		objectives = {
+			self:_progress("sidejob_aru_4", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_eng_1",
@@ -1196,7 +1366,11 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		id = "trophy_eng_1",
 		desc_id = "trophy_eng_1_desc",
 		show_progress = true,
-		objectives = {self:_progress("eng_1_stats", 5, {name_id = "trophy_eng_progress"})}
+		objectives = {
+			self:_progress("eng_1_stats", 5, {
+				name_id = "trophy_eng_progress"
+			})
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_eng_2",
@@ -1205,7 +1379,11 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		id = "trophy_eng_2",
 		desc_id = "trophy_eng_2_desc",
 		show_progress = true,
-		objectives = {self:_progress("eng_2_stats", 5, {name_id = "trophy_eng_progress"})}
+		objectives = {
+			self:_progress("eng_2_stats", 5, {
+				name_id = "trophy_eng_progress"
+			})
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_eng_3",
@@ -1214,7 +1392,11 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		id = "trophy_eng_3",
 		desc_id = "trophy_eng_3_desc",
 		show_progress = true,
-		objectives = {self:_progress("eng_3_stats", 5, {name_id = "trophy_eng_progress"})}
+		objectives = {
+			self:_progress("eng_3_stats", 5, {
+				name_id = "trophy_eng_progress"
+			})
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_eng_4",
@@ -1223,7 +1405,11 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		id = "trophy_eng_4",
 		desc_id = "trophy_eng_4_desc",
 		show_progress = true,
-		objectives = {self:_progress("eng_4_stats", 5, {name_id = "trophy_eng_progress"})}
+		objectives = {
+			self:_progress("eng_4_stats", 5, {
+				name_id = "trophy_eng_progress"
+			})
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_brb_1",
@@ -1232,7 +1418,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		id = "trophy_brb_1",
 		gives_reward = false,
 		desc_id = "trophy_brb_1_desc",
-		objectives = {self:_achievement("brb_4")}
+		objectives = {
+			self:_achievement("brb_4")
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_box_1",
@@ -1251,7 +1439,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_box_2_completion_objective",
 		id = "trophy_box_2",
 		desc_id = "trophy_box_2_desc",
-		objectives = {self:_achievement("tag_1")}
+		objectives = {
+			self:_achievement("tag_1")
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_box_3",
@@ -1259,7 +1449,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_box_3_completion_objective",
 		id = "trophy_box_3",
 		desc_id = "trophy_box_3_desc",
-		objectives = {self:_achievement("des_1")}
+		objectives = {
+			self:_achievement("des_1")
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_device_parts",
@@ -1268,7 +1460,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		id = "trophy_device_parts",
 		gives_reward = false,
 		desc_id = "trophy_device_parts_desc",
-		objectives = {self:_progress("trophy_device_parts", 1)}
+		objectives = {
+			self:_progress("trophy_device_parts", 1)
+		}
 	})
 	table.insert(self.trophies, {
 		name_id = "trophy_black_plate",
@@ -1276,7 +1470,9 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		objective_id = "trophy_black_plate_completion_objective",
 		id = "trophy_black_plate",
 		desc_id = "trophy_black_plate_desc",
-		objectives = {self:_achievement("sah_1")}
+		objectives = {
+			self:_achievement("sah_1")
+		}
 	})
 end
 
@@ -1312,11 +1508,15 @@ function CustomSafehouseTweakData:_init_dailies(tweak_data)
 		id = "daily_classics",
 		desc_id = "daily_classics_desc",
 		show_progress = true,
-		objectives = {self:_progress("daily_classics", 2, {
-			verify = "_verify_unique_heist",
-			name_id = "daily_classics_progress",
-			save_values = {"completed_heists"}
-		})}
+		objectives = {
+			self:_progress("daily_classics", 2, {
+				verify = "_verify_unique_heist",
+				name_id = "daily_classics_progress",
+				save_values = {
+					"completed_heists"
+				}
+			})
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_discord",
@@ -1324,21 +1524,29 @@ function CustomSafehouseTweakData:_init_dailies(tweak_data)
 		id = "daily_discord",
 		desc_id = "daily_discord_desc",
 		show_progress = true,
-		objectives = {self:_progress("daily_discord", 3, {name_id = "daily_discord_progress"})}
+		objectives = {
+			self:_progress("daily_discord", 3, {
+				name_id = "daily_discord_progress"
+			})
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_fwtd",
 		objective_id = "daily_fwtd_objective",
 		id = "daily_fwtd",
 		desc_id = "daily_fwtd_desc",
-		objectives = {self:_progress("daily_fwtd", 1)}
+		objectives = {
+			self:_progress("daily_fwtd", 1)
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_gears",
 		objective_id = "daily_gears_objective",
 		id = "daily_gears",
 		desc_id = "daily_gears_desc",
-		objectives = {self:_progress("daily_gears", 1)}
+		objectives = {
+			self:_progress("daily_gears", 1)
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_grenades",
@@ -1346,98 +1554,128 @@ function CustomSafehouseTweakData:_init_dailies(tweak_data)
 		id = "daily_grenades",
 		desc_id = "daily_grenades_desc",
 		show_progress = true,
-		objectives = {self:_progress("daily_grenades", 25, {name_id = "daily_grenades_progress"})}
+		objectives = {
+			self:_progress("daily_grenades", 25, {
+				name_id = "daily_grenades_progress"
+			})
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_phobia",
 		objective_id = "daily_phobia_objective",
 		id = "daily_phobia",
 		desc_id = "daily_phobia_desc",
-		objectives = {self:_progress("daily_phobia", 1)}
+		objectives = {
+			self:_progress("daily_phobia", 1)
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_mortage",
 		objective_id = "daily_mortage_objective",
 		id = "daily_mortage",
 		desc_id = "daily_mortage_desc",
-		objectives = {self:_progress("daily_mortage", 1)}
+		objectives = {
+			self:_progress("daily_mortage", 1)
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_art",
 		objective_id = "daily_art_objective",
 		id = "daily_art",
 		desc_id = "daily_art_desc",
-		objectives = {self:_progress("daily_art", 1)}
+		objectives = {
+			self:_progress("daily_art", 1)
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_akimbo",
 		objective_id = "daily_akimbo_objective",
 		id = "daily_akimbo",
 		desc_id = "daily_akimbo_desc",
-		objectives = {self:_progress("daily_akimbo", 1)}
+		objectives = {
+			self:_progress("daily_akimbo", 1)
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_professional",
 		objective_id = "daily_professional_objective",
 		id = "daily_professional",
 		desc_id = "daily_professional_desc",
-		objectives = {self:_progress("daily_professional", 1)}
+		objectives = {
+			self:_progress("daily_professional", 1)
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_spacetime",
 		objective_id = "daily_spacetime_objective",
 		id = "daily_spacetime",
 		desc_id = "daily_spacetime_desc",
-		objectives = {self:_progress("daily_spacetime", 1)}
+		objectives = {
+			self:_progress("daily_spacetime", 1)
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_tapes",
 		objective_id = "daily_tapes_objective",
 		id = "daily_tapes",
 		desc_id = "daily_tapes_desc",
-		objectives = {self:_progress("daily_tapes", 1)}
+		objectives = {
+			self:_progress("daily_tapes", 1)
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_toast",
 		objective_id = "daily_toast_objective",
 		id = "daily_toast",
 		desc_id = "daily_toast_desc",
-		objectives = {self:_progress("daily_toast", 1)}
+		objectives = {
+			self:_progress("daily_toast", 1)
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_heirloom",
 		objective_id = "daily_heirloom_objective",
 		id = "daily_heirloom",
 		desc_id = "daily_heirloom_desc",
-		objectives = {self:_progress("daily_heirloom", 1)}
+		objectives = {
+			self:_progress("daily_heirloom", 1)
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_helicopter",
 		objective_id = "daily_helicopter_objective",
 		id = "daily_helicopter",
 		desc_id = "daily_helicopter_desc",
-		objectives = {self:_progress("daily_helicopter", 1)}
+		objectives = {
+			self:_progress("daily_helicopter", 1)
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_sewers",
 		objective_id = "daily_sewers_objective",
 		id = "daily_sewers",
 		desc_id = "daily_sewers_desc",
-		objectives = {self:_progress("daily_sewers", 1)}
+		objectives = {
+			self:_progress("daily_sewers", 1)
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_night_out",
 		objective_id = "daily_night_out_objective",
 		id = "daily_night_out",
 		desc_id = "daily_night_out_desc",
-		objectives = {self:_progress("daily_night_out", 1)}
+		objectives = {
+			self:_progress("daily_night_out", 1)
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_secret_identity",
 		objective_id = "daily_secret_identity_objective",
 		id = "daily_secret_identity",
 		desc_id = "daily_secret_identity_desc",
-		objectives = {self:_progress("daily_secret_identity", 1)}
+		objectives = {
+			self:_progress("daily_secret_identity", 1)
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_lodsofemone",
@@ -1445,7 +1683,11 @@ function CustomSafehouseTweakData:_init_dailies(tweak_data)
 		id = "daily_lodsofemone",
 		desc_id = "daily_lodsofemone_desc",
 		show_progress = true,
-		objectives = {self:_progress("daily_lodsofemone", 20, {name_id = "daily_lodsofemone_progress"})}
+		objectives = {
+			self:_progress("daily_lodsofemone", 20, {
+				name_id = "daily_lodsofemone_progress"
+			})
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_hangover",
@@ -1453,21 +1695,29 @@ function CustomSafehouseTweakData:_init_dailies(tweak_data)
 		id = "daily_hangover",
 		desc_id = "daily_hangover_desc",
 		show_progress = true,
-		objectives = {self:_progress("daily_hangover", 25, {name_id = "daily_hangover_progress"})}
+		objectives = {
+			self:_progress("daily_hangover", 25, {
+				name_id = "daily_hangover_progress"
+			})
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_rush",
 		objective_id = "daily_rush_objective",
 		id = "daily_rush",
 		desc_id = "daily_rush_desc",
-		objectives = {self:_progress("daily_rush", 1)}
+		objectives = {
+			self:_progress("daily_rush", 1)
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_naked",
 		objective_id = "daily_naked_objective",
 		id = "daily_naked",
 		desc_id = "daily_naked_desc",
-		objectives = {self:_progress("daily_naked", 1)}
+		objectives = {
+			self:_progress("daily_naked", 1)
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_honorable",
@@ -1475,21 +1725,29 @@ function CustomSafehouseTweakData:_init_dailies(tweak_data)
 		id = "daily_honorable",
 		desc_id = "daily_honorable_desc",
 		show_progress = true,
-		objectives = {self:_progress("daily_honorable", 10, {name_id = "daily_honorable_progress"})}
+		objectives = {
+			self:_progress("daily_honorable", 10, {
+				name_id = "daily_honorable_progress"
+			})
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_ninja",
 		objective_id = "daily_ninja_objective",
 		id = "daily_ninja",
 		desc_id = "daily_ninja_desc",
-		objectives = {self:_progress("daily_ninja", 1)}
+		objectives = {
+			self:_progress("daily_ninja", 1)
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_cake",
 		objective_id = "daily_cake_objective",
 		id = "daily_cake",
 		desc_id = "daily_cake_desc",
-		objectives = {self:_progress("daily_cake", 1)}
+		objectives = {
+			self:_progress("daily_cake", 1)
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_my_bodhi_is_ready",
@@ -1497,7 +1755,11 @@ function CustomSafehouseTweakData:_init_dailies(tweak_data)
 		id = "daily_my_bodhi_is_ready",
 		desc_id = "daily_my_bodhi_is_ready_desc",
 		show_progress = true,
-		objectives = {self:_progress("corpse_dispose", 10, {name_id = "daily_my_bodhi_is_ready_progress"})}
+		objectives = {
+			self:_progress("corpse_dispose", 10, {
+				name_id = "daily_my_bodhi_is_ready_progress"
+			})
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_tasty",
@@ -1505,7 +1767,11 @@ function CustomSafehouseTweakData:_init_dailies(tweak_data)
 		id = "daily_tasty",
 		desc_id = "daily_tasty_desc",
 		show_progress = true,
-		objectives = {self:_progress("daily_tasty", 20, {name_id = "daily_tasty_progress"})}
+		objectives = {
+			self:_progress("daily_tasty", 20, {
+				name_id = "daily_tasty_progress"
+			})
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_candy",
@@ -1513,14 +1779,20 @@ function CustomSafehouseTweakData:_init_dailies(tweak_data)
 		id = "daily_candy",
 		desc_id = "daily_candy_desc",
 		show_progress = true,
-		objectives = {self:_progress("daily_candy", 10, {name_id = "daily_candy_progress"})}
+		objectives = {
+			self:_progress("daily_candy", 10, {
+				name_id = "daily_candy_progress"
+			})
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_dosh",
 		objective_id = "daily_dosh_objective",
 		id = "daily_dosh",
 		desc_id = "daily_dosh_desc",
-		objectives = {self:_achievement("pal_2")}
+		objectives = {
+			self:_achievement("pal_2")
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_snake",
@@ -1528,21 +1800,29 @@ function CustomSafehouseTweakData:_init_dailies(tweak_data)
 		id = "daily_snake",
 		desc_id = "daily_snake_desc",
 		show_progress = true,
-		objectives = {self:_progress("gmod_5_stats", 10, {name_id = "daily_snake_progress"})}
+		objectives = {
+			self:_progress("gmod_5_stats", 10, {
+				name_id = "daily_snake_progress"
+			})
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_coke_run",
 		objective_id = "daily_coke_run_objective",
 		id = "daily_coke_run",
 		desc_id = "daily_coke_run_desc",
-		objectives = {self:_progress("daily_coke_run", 1)}
+		objectives = {
+			self:_progress("daily_coke_run", 1)
+		}
 	})
 	table.insert(self.dailies, {
 		name_id = "daily_whats_stealth",
 		objective_id = "daily_whats_stealth_objective",
 		id = "daily_whats_stealth",
 		desc_id = "daily_whats_stealth_desc",
-		objectives = {self:_progress("daily_whats_stealth", 1)}
+		objectives = {
+			self:_progress("daily_whats_stealth", 1)
+		}
 	})
 end
 
@@ -1777,4 +2057,3 @@ function CustomSafehouseTweakData:_init_map(tweak_data)
 		y = 830
 	}
 end
-

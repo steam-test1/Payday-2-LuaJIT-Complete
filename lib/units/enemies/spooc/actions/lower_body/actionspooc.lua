@@ -33,7 +33,9 @@ function ActionSpooc:init(action_desc, common_data)
 	end
 
 	self._action_desc = action_desc
-	self._nav_path = action_desc.nav_path or {mvector3.copy(common_data.pos)}
+	self._nav_path = action_desc.nav_path or {
+		mvector3.copy(common_data.pos)
+	}
 
 	self._ext_movement:enable_update()
 
@@ -324,7 +326,9 @@ function ActionSpooc:_upd_strike_first_frame(t)
 			mvector3.subtract(enemy_vec, self._target_unit:movement():m_pos())
 			mvector3.set_z(enemy_vec, 0)
 			mvector3.normalize(enemy_vec)
-			self._target_unit:camera():camera_unit():base():clbk_aim_assist({ray = enemy_vec})
+			self._target_unit:camera():camera_unit():base():clbk_aim_assist({
+				ray = enemy_vec
+			})
 		end
 	end
 
@@ -428,7 +432,17 @@ function ActionSpooc:_upd_sprint(t)
 
 	if self._move_dir then
 		local attention = self._attention
-		face_fwd = attention and (attention.unit and attention.unit:movement():m_pos() - self._common_data.pos or attention.pos - self._common_data.pos) or self._move_dir
+
+		if attention then
+			if attention.unit then
+				face_fwd = attention.unit:movement():m_pos() - self._common_data.pos
+			else
+				face_fwd = attention.pos - self._common_data.pos
+			end
+		else
+			face_fwd = self._move_dir
+		end
+
 		local move_dir_norm = self._move_dir:normalized()
 
 		mvector3.set_z(face_fwd, 0)
@@ -443,9 +457,19 @@ function ActionSpooc:_upd_sprint(t)
 		local wanted_walk_dir = nil
 
 		if math.abs(right_dot) < math.abs(fwd_dot) then
-			wanted_walk_dir = (anim_data.move_l and right_dot < 0 or anim_data.move_r and right_dot > 0) and math.abs(fwd_dot) < 0.73 and anim_data.move_side or fwd_dot > 0 and "fwd" or "bwd"
+			if (anim_data.move_l and right_dot < 0 or anim_data.move_r and right_dot > 0) and math.abs(fwd_dot) < 0.73 then
+				wanted_walk_dir = anim_data.move_side
+			elseif fwd_dot > 0 then
+				wanted_walk_dir = "fwd"
+			else
+				wanted_walk_dir = "bwd"
+			end
+		elseif (anim_data.move_fwd and fwd_dot > 0 or anim_data.move_bwd and fwd_dot < 0) and math.abs(right_dot) < 0.73 then
+			wanted_walk_dir = anim_data.move_side
+		elseif right_dot > 0 then
+			wanted_walk_dir = "r"
 		else
-			wanted_walk_dir = (anim_data.move_fwd and fwd_dot > 0 or anim_data.move_bwd and fwd_dot < 0) and math.abs(right_dot) < 0.73 and anim_data.move_side or right_dot > 0 and "r" or "l"
+			wanted_walk_dir = "l"
 		end
 
 		local wanted_u_fwd = self._move_dir:rotate_with(self._walk_side_rot[wanted_walk_dir])
@@ -456,7 +480,30 @@ function ActionSpooc:_upd_sprint(t)
 		local pose = self._stance.values[4] > 0 and "wounded" or self._ext_anim.pose or "stand"
 		local real_velocity = self._cur_vel
 		local variant = nil
-		variant = self._ext_anim.sprint and (real_velocity > 480 and self._ext_anim.pose == "stand" and "sprint" or real_velocity > 250 and "run" or "walk") or self._ext_anim.run and (real_velocity > 530 and self._walk_anim_velocities[pose][self._stance.name].sprint and self._ext_anim.pose == "stand" and "sprint" or real_velocity > 250 and "run" or "walk") or real_velocity > 530 and self._walk_anim_velocities[pose][self._stance.name].sprint and self._ext_anim.pose == "stand" and "sprint" or real_velocity > 300 and "run" or "walk"
+
+		if self._ext_anim.sprint then
+			if real_velocity > 480 and self._ext_anim.pose == "stand" then
+				variant = "sprint"
+			elseif real_velocity > 250 then
+				variant = "run"
+			else
+				variant = "walk"
+			end
+		elseif self._ext_anim.run then
+			if real_velocity > 530 and self._walk_anim_velocities[pose][self._stance.name].sprint and self._ext_anim.pose == "stand" then
+				variant = "sprint"
+			elseif real_velocity > 250 then
+				variant = "run"
+			else
+				variant = "walk"
+			end
+		elseif real_velocity > 530 and self._walk_anim_velocities[pose][self._stance.name].sprint and self._ext_anim.pose == "stand" then
+			variant = "sprint"
+		elseif real_velocity > 300 then
+			variant = "run"
+		else
+			variant = "walk"
+		end
 
 		self:_adjust_move_anim(wanted_walk_dir, variant)
 
@@ -1107,7 +1154,7 @@ function ActionSpooc:anim_act_clbk(anim_act)
 			if spooc_res and self._strike_unit:character_damage():is_downed() then
 				self._beating_end_t = self._stroke_t + math.lerp(self._common_data.char_tweak.spooc_attack_beating_time[1], self._common_data.char_tweak.spooc_attack_beating_time[2], math.random())
 			elseif Network:is_server() then
-				
+				-- Nothing
 			else
 				self._ext_network:send_to_host("action_spooc_stop", self._ext_movement:m_pos(), 1, self._action_id)
 			end
@@ -1294,7 +1341,9 @@ function ActionSpooc:_upd_flying_strike_first_frame(t)
 		mvector3.subtract(enemy_vec, self._target_unit:movement():m_pos())
 		mvector3.set_z(enemy_vec, 0)
 		mvector3.normalize(enemy_vec)
-		self._target_unit:camera():camera_unit():base():clbk_aim_assist({ray = enemy_vec})
+		self._target_unit:camera():camera_unit():base():clbk_aim_assist({
+			ray = enemy_vec
+		})
 	end
 
 	self:_set_updator("_upd_flying_strike")
@@ -1399,4 +1448,3 @@ function ActionSpooc:_use_christmas_sounds()
 
 	return tweak and tweak.is_christmas_heist
 end
-

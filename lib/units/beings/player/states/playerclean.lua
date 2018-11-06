@@ -33,7 +33,9 @@ function PlayerClean:_enter(enter_data)
 	if not managers.groupai:state():enemy_weapons_hot() then
 		self._enemy_weapons_hot_listen_id = "PlayerClean" .. tostring(self._unit:key())
 
-		managers.groupai:state():add_listener(self._enemy_weapons_hot_listen_id, {"enemy_weapons_hot"}, callback(self, self, "clbk_enemy_weapons_hot"))
+		managers.groupai:state():add_listener(self._enemy_weapons_hot_listen_id, {
+			"enemy_weapons_hot"
+		}, callback(self, self, "clbk_enemy_weapons_hot"))
 	end
 
 	self._ext_network:send("set_stance", 1, false, false)
@@ -103,7 +105,7 @@ function PlayerClean:_update_check_actions(t, dt)
 	local new_action = nil
 
 	if not new_action then
-		
+		-- Nothing
 	end
 
 	if not new_action and self._state_data.ducking then
@@ -141,4 +143,3 @@ function PlayerClean:clbk_enemy_weapons_hot()
 
 	managers.player:set_player_state("standard")
 end
-

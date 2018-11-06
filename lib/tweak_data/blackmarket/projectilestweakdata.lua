@@ -1,10 +1,11 @@
-
 function BlackMarketTweakData:_init_bullets(tweak_data)
 	self.bullets = {}
 end
 
 function BlackMarketTweakData:_init_projectiles(tweak_data)
-	self.projectiles = {frag = {}}
+	self.projectiles = {
+		frag = {}
+	}
 	self.projectiles.frag.name_id = "bm_grenade_frag"
 	self.projectiles.frag.unit = "units/payday2/weapons/wpn_frag_grenade/wpn_frag_grenade"
 	self.projectiles.frag.unit_dummy = "units/payday2/weapons/wpn_frag_grenade/wpn_frag_grenade_husk"
@@ -452,7 +453,9 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 		ability = true,
 		base_cooldown = 100,
 		max_amount = 2,
-		sounds = {cooldown = "perkdeck_cooldown_over"}
+		sounds = {
+			cooldown = "perkdeck_cooldown_over"
+		}
 	}
 	self.projectiles.dada_com = {
 		name_id = "bm_grenade_dada_com",
@@ -518,7 +521,9 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 		texture_bundle_folder = "myh",
 		max_amount = 1,
 		base_cooldown = 10,
-		sounds = {cooldown = "perkdeck_cooldown_over"}
+		sounds = {
+			cooldown = "perkdeck_cooldown_over"
+		}
 	}
 	self._projectiles_index = {
 		"frag",
@@ -597,4 +602,3 @@ end
 function BlackMarketTweakData:get_projectile_name_from_index(index)
 	return self._projectiles_index[index]
 end
-

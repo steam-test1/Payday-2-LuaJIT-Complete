@@ -38,15 +38,19 @@ function CrimeNetSidebarGui:_setup()
 	})
 	self._ws_panel = self._ws:panel():panel({
 		layer = 100,
-		w = (self._ws:panel():w() - self._panel:w()) - padding,
+		w = self._ws:panel():w() - self._panel:w() - padding,
 		x = self._panel:w() + padding
 	})
 	self._fullscreen_panel = self._fullscreen_ws:panel():panel({
 		layer = 100,
 		name = "fullscreen"
 	})
-	self._icons_panel = self._panel:panel({w = padding + 24 + 5})
-	self._bg_panel = self._panel:panel({layer = -1})
+	self._icons_panel = self._panel:panel({
+		w = padding + 24 + 5
+	})
+	self._bg_panel = self._panel:panel({
+		layer = -1
+	})
 
 	self._bg_panel:rect({
 		alpha = 0.4,
@@ -106,32 +110,48 @@ function CrimeNetSidebarGui:_setup()
 
 	self._box_guis = {
 		collapsed = {
-			BoxGuiObject:new(self._panel:panel({layer = 100}), {sides = {
-				1,
-				0,
-				3,
-				3
-			}}),
-			BoxGuiObject:new(self._ws_panel:panel({layer = 100}), {sides = {
-				0,
-				1,
-				4,
-				4
-			}})
+			BoxGuiObject:new(self._panel:panel({
+				layer = 100
+			}), {
+				sides = {
+					1,
+					0,
+					3,
+					3
+				}
+			}),
+			BoxGuiObject:new(self._ws_panel:panel({
+				layer = 100
+			}), {
+				sides = {
+					0,
+					1,
+					4,
+					4
+				}
+			})
 		},
 		expanded = {
-			BoxGuiObject:new(self._panel:panel({layer = 100}), {sides = {
-				1,
-				1,
-				1,
-				1
-			}}),
-			BoxGuiObject:new(self._ws_panel:panel({layer = 100}), {sides = {
-				1,
-				1,
-				1,
-				1
-			}})
+			BoxGuiObject:new(self._panel:panel({
+				layer = 100
+			}), {
+				sides = {
+					1,
+					1,
+					1,
+					1
+				}
+			}),
+			BoxGuiObject:new(self._ws_panel:panel({
+				layer = 100
+			}), {
+				sides = {
+					1,
+					1,
+					1,
+					1
+				}
+			})
 		}
 	}
 
@@ -262,14 +282,14 @@ function CrimeNetSidebarGui:update(t, dt)
 		local closest_y = 0
 		local mx, my = managers.mouse_pointer:modified_mouse_pos()
 
-		if (self:collapsed() and self._icons_panel or self._panel):inside(mx, my) then
+		if self:collapsed() and self._icons_panel or self._panel:inside(mx, my) then
 			for _, btn in ipairs(self._buttons) do
 				if btn:accepts_interaction() then
 					local btn_y = btn:panel():center_y()
 					local y = btn_y - my
 					local dist = y * y
 
-					if dist < closest_dist then
+					if closest_dist > dist then
 						closest_btn = btn
 						closest_dist = dist
 						closest_y = btn_y
@@ -376,6 +396,7 @@ end
 function CrimeNetSidebarGui:clbk_visible_skirmish()
 	return managers.skirmish:is_unlocked()
 end
+
 CrimeNetSidebarSeparator = CrimeNetSidebarSeparator or class()
 
 function CrimeNetSidebarSeparator:init(sidebar, parent_panel, parameters)
@@ -411,6 +432,7 @@ end
 
 function CrimeNetSidebarSeparator:update(t, dt)
 end
+
 CrimeNetSidebarItem = CrimeNetSidebarItem or class()
 
 function CrimeNetSidebarItem:init(sidebar, panel, parameters)
@@ -635,6 +657,7 @@ function CrimeNetSidebarItem:update(t, dt)
 		self._icon:set_color(col)
 	end
 end
+
 CrimeNetSidebarAttentionItem = CrimeNetSidebarAttentionItem or class(CrimeNetSidebarItem)
 
 function CrimeNetSidebarAttentionItem:init(sidebar, panel, parameters)
@@ -645,8 +668,8 @@ function CrimeNetSidebarAttentionItem:init(sidebar, panel, parameters)
 	if parameters.calling_attention then
 		self._unplayed_pulse = self:create_glow(sidebar._fullscreen_panel, glow_color, 0.85)
 		local center_x, center_y = nil
-		center_x = (self._icon:right() + self._icon:w() + 14) - 2
-		center_y = (self._panel:bottom() + self._panel:h() * 0.5) - 2
+		center_x = self._icon:right() + self._icon:w() + 14 - 2
+		center_y = self._panel:bottom() + self._panel:h() * 0.5 - 2
 
 		self._unplayed_pulse:set_center(center_x, center_y)
 
@@ -665,6 +688,7 @@ function CrimeNetSidebarAttentionItem:update(t, dt)
 		self._unplayed_pulse:set_alpha(0.3 + _t * target_alpha)
 	end
 end
+
 CrimeNetSidebarTutorialHeistsItem = CrimeNetSidebarTutorialHeistsItem or class(CrimeNetSidebarAttentionItem)
 
 function CrimeNetSidebarTutorialHeistsItem:init(sidebar, panel, parameters)
@@ -678,6 +702,7 @@ function CrimeNetSidebarTutorialHeistsItem:init(sidebar, panel, parameters)
 
 	CrimeNetSidebarTutorialHeistsItem.super.init(self, sidebar, panel, parameters)
 end
+
 CrimeNetSidebarSkirmishItem = CrimeNetSidebarSkirmishItem or class(CrimeNetSidebarAttentionItem)
 
 function CrimeNetSidebarSkirmishItem:init(sidebar, panel, parameters)
@@ -685,6 +710,7 @@ function CrimeNetSidebarSkirmishItem:init(sidebar, panel, parameters)
 
 	CrimeNetSidebarSkirmishItem.super.init(self, sidebar, panel, parameters)
 end
+
 CrimeNetSidebarStoryMissionItem = CrimeNetSidebarStoryMissionItem or class(CrimeNetSidebarAttentionItem)
 
 function CrimeNetSidebarStoryMissionItem:init(sidebar, panel, parameters)
@@ -693,6 +719,7 @@ function CrimeNetSidebarStoryMissionItem:init(sidebar, panel, parameters)
 
 	CrimeNetSidebarStoryMissionItem.super.init(self, sidebar, panel, parameters)
 end
+
 CrimeNetSidebarSafehouseItem = CrimeNetSidebarSafehouseItem or class(CrimeNetSidebarItem)
 
 function CrimeNetSidebarSafehouseItem:init(sidebar, panel, parameters)
@@ -701,7 +728,7 @@ function CrimeNetSidebarSafehouseItem:init(sidebar, panel, parameters)
 	if managers.custom_safehouse:unlocked() and not managers.custom_safehouse:has_entered_safehouse() then
 		self._unplayed_pulse = self:create_glow(sidebar._fullscreen_panel, tweak_data.screen_colors.heat_warm_color, 0.85)
 
-		self._unplayed_pulse:set_center((self._icon:right() + self._icon:w() + 14) - 2, (self._panel:bottom() + self._panel:h() * 0.5) - 2)
+		self._unplayed_pulse:set_center(self._icon:right() + self._icon:w() + 14 - 2, self._panel:bottom() + self._panel:h() * 0.5 - 2)
 
 		self._pulse_offset = math.random()
 		self._unplayed = true
@@ -713,11 +740,11 @@ function CrimeNetSidebarSafehouseItem:init(sidebar, panel, parameters)
 
 		self._siren_red = self:create_glow(sidebar._fullscreen_panel, Color(255, 255, 0, 0) / 255, 0.85)
 
-		self._siren_red:set_center((self._icon:right() + self._icon:w() + 14) - 2, (self._panel:bottom() + self._panel:h() * 0.5) - 2)
+		self._siren_red:set_center(self._icon:right() + self._icon:w() + 14 - 2, self._panel:bottom() + self._panel:h() * 0.5 - 2)
 
 		self._siren_blue = self:create_glow(sidebar._fullscreen_panel, Color(255, 0, 180, 255) / 255, 1)
 
-		self._siren_blue:set_center(self._icon:right() + self._icon:w() + 14 + 2, (self._panel:bottom() + self._panel:h() * 0.5) - 2)
+		self._siren_blue:set_center(self._icon:right() + self._icon:w() + 14 + 2, self._panel:bottom() + self._panel:h() * 0.5 - 2)
 
 		self._raid_active = true
 	end
@@ -775,6 +802,7 @@ function CrimeNetSidebarSafehouseItem:set_highlight(enabled, no_sound, force_upd
 		self._played_event = true
 	end
 end
+
 CrimeNetSidebarMutatorsItem = CrimeNetSidebarMutatorsItem or class(CrimeNetSidebarItem)
 
 function CrimeNetSidebarMutatorsItem:init(sidebar, panel, parameters)
@@ -783,7 +811,7 @@ function CrimeNetSidebarMutatorsItem:init(sidebar, panel, parameters)
 	if managers.mutators:are_mutators_enabled() then
 		self._glow_panel = self:create_glow(sidebar._fullscreen_panel, Color(1, 0, 1) * 0.8, 0.85)
 
-		self._glow_panel:set_center((self._icon:right() + self._icon:w() + 14) - 2, (self._panel:bottom() + self._panel:h() * 0.5) - 2)
+		self._glow_panel:set_center(self._icon:right() + self._icon:w() + 14 - 2, self._panel:bottom() + self._panel:h() * 0.5 - 2)
 		self._glow_panel:set_alpha(0.4)
 
 		self._pulse_offset = math.random()
@@ -803,15 +831,17 @@ function CrimeNetSidebarMutatorsItem:update(t, dt)
 		self._glow_panel:set_alpha(0.3 + _t * target_alpha)
 	end
 end
+
 CrimeNetSidebarCrimeSpreeItem = CrimeNetSidebarCrimeSpreeItem or class(CrimeNetSidebarItem)
 
 function CrimeNetSidebarCrimeSpreeItem:init(...)
 	CrimeNetSidebarCrimeSpreeItem.super.init(self, ...)
 
 	if managers.crime_spree:in_progress() then
-		self:set_text(managers.localization:text("cn_crime_spree_level", {level = managers.experience:cash_string(managers.crime_spree:spree_level(), "")}))
+		self:set_text(managers.localization:text("cn_crime_spree_level", {
+			level = managers.experience:cash_string(managers.crime_spree:spree_level(), "")
+		}))
 		self:set_color(tweak_data.screen_colors.crime_spree_risk)
 		self:set_highlight_color(tweak_data.screen_colors.crime_spree_risk)
 	end
 end
-

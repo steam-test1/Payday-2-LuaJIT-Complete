@@ -23,7 +23,9 @@ ElementSpecialObjective._ATTITUDES = {
 	"avoid",
 	"engage"
 }
-ElementSpecialObjective._TRIGGER_ON = {"interact"}
+ElementSpecialObjective._TRIGGER_ON = {
+	"interact"
+}
 ElementSpecialObjective._INTERACTION_VOICES = {
 	"default",
 	"cuff_cop",
@@ -295,7 +297,7 @@ function ElementSpecialObjective:on_executed(instigator)
 	end
 
 	if not managers.groupai:state():is_AI_enabled() and not Application:editor() then
-		
+		-- Nothing
 	elseif self._values.spawn_instigator_ids then
 		local chosen_units, objectives = self:_select_units_from_spawners()
 
@@ -732,7 +734,13 @@ function ElementSpecialObjective:choose_followup_SO(unit, skip_element_ids)
 	end
 
 	if skip_element_ids == nil then
-		skip_element_ids = self._values.allow_followup_self and self:enabled() and {} or {[self._id] = true}
+		if self._values.allow_followup_self and self:enabled() then
+			skip_element_ids = {}
+		else
+			skip_element_ids = {
+				[self._id] = true
+			}
+		end
 	end
 
 	if self._values.SO_access and unit and not managers.navigation:check_access(self._values.SO_access, unit:brain():SO_access(), 0) then
@@ -800,6 +808,7 @@ end
 function ElementSpecialObjective:_get_default_value_if_nil(name_in)
 	return self._values[name_in] or self._DEFAULT_VALUES[name_in]
 end
+
 ElementSpecialObjective._stealth_idles = {
 	"e_so_ntl_idle_kickpebble",
 	"e_so_ntl_idle_look",
@@ -834,4 +843,3 @@ function ElementSpecialObjective:_check_new_stealth_idle()
 
 	return self._values.so_action
 end
-

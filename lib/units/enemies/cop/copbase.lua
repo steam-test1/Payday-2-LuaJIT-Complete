@@ -225,7 +225,9 @@ function CopBase:save(data)
 	data.buffs = {}
 
 	for name, buff_list in pairs(self._buffs) do
-		data.buffs[name] = {_total = buff_list._total}
+		data.buffs[name] = {
+			_total = buff_list._total
+		}
 	end
 end
 
@@ -376,4 +378,3 @@ function CopBase:get_total_buff(name)
 
 	return 0
 end
-

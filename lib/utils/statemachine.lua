@@ -27,6 +27,7 @@ function InitState:default_transition(next_state)
 	self:at_exit(next_state)
 	next_state:at_enter(self)
 end
+
 StateMachineTransitionQueue = StateMachineTransitionQueue or class()
 
 function StateMachineTransitionQueue:init()
@@ -59,13 +60,13 @@ function StateMachineTransitionQueue:do_state_change()
 		local trans_func, condition = unpack(state_machine._transitions[old_state][new_state])
 
 		if not condition or condition(old_state, new_state) then
-			cat_print("state_machine", "[StateMachine] Executing state change '" .. tostring(old_state:name()) .. "' 
+			cat_print("state_machine", "[StateMachine] Executing state change '" .. tostring(old_state:name()) .. "' --> '" .. tostring(new_state:name()) .. "'")
 
 			state_machine._current_state = new_state
 
 			trans_func(old_state, new_state, params)
 		else
-			cat_print("state_machine", "[StateMachine] Condition failed, blocking state change '" .. tostring(old_state:name()) .. "' 
+			cat_print("state_machine", "[StateMachine] Condition failed, blocking state change '" .. tostring(old_state:name()) .. "' --> '" .. tostring(new_state:name()) .. "'")
 
 			self._queued_transitions = nil
 
@@ -112,7 +113,9 @@ function StateMachine:init(start_state, shared_queue)
 	local init = InitState:new(self)
 	self._states[init:name()] = init
 	self._transitions[init] = self._transitions[init] or {}
-	self._transitions[init][start_state] = {init.default_transition}
+	self._transitions[init][start_state] = {
+		init.default_transition
+	}
 	self._current_state = init
 	self._transition_queue = shared_queue or StateMachineTransitionQueue:new()
 
@@ -151,12 +154,12 @@ function StateMachine:can_change_state(state)
 end
 
 function StateMachine:change_state(state, params)
-	local transition_debug_string = string.format("'%s' 
+	local transition_debug_string = string.format("'%s' --> '%s'", tostring(self:last_queued_state_name()), tostring(state:name()))
 
 	cat_print("state_machine", "[StateMachine] Requested state change " .. transition_debug_string)
 
 	if not self:can_change_state(state) then
-		
+		-- Nothing
 	else
 		self._transition_queue:queue_transition(state, params, self)
 	end
@@ -197,4 +200,3 @@ end
 function StateMachine:last_queued_state_name()
 	return self._transition_queue:last_queued_state_name(self) or self:current_state_name()
 end
-

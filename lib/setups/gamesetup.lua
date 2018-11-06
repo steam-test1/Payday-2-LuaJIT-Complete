@@ -71,6 +71,7 @@ else
 
 	function PlayerHand:destroy()
 	end
+
 	PlayerWarp = PlayerWarp or class()
 
 	function PlayerWarp:init(unit)
@@ -78,6 +79,7 @@ else
 
 	function PlayerWarp:destroy()
 	end
+
 	HandMelee = HandMelee or class()
 
 	function HandMelee:init(unit)

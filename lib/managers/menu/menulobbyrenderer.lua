@@ -30,6 +30,7 @@ function MenuLobbyRenderer:show_node(node)
 
 	MenuLobbyRenderer.super.show_node(self, node, parameters)
 end
+
 local mugshots = {
 	undecided = "mugshot_unassigned",
 	russian = 3,
@@ -381,10 +382,10 @@ function MenuLobbyRenderer:trigger_item(item)
 			local percentage = item:percentage()
 
 			if percentage > 0 and percentage < 100 then
-				
+				-- Nothing
 			end
 		elseif item_type == "multi_choice" then
-			
+			-- Nothing
 		end
 	end
 end
@@ -688,4 +689,3 @@ end
 function MenuLobbyRenderer:mouse_double_click(...)
 	return MenuRenderer.mouse_double_click(self, ...)
 end
-

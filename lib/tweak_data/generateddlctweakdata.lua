@@ -1,25 +1,40 @@
-
 function DLCTweakData:init_generated()
 	self.flm_bundle = {
 		free = true,
 		content = {}
 	}
 	self.flm_bundle.content.loot_global_value = "flm"
-	self.flm_bundle.content.loot_drops = {{
-		type_items = "masks",
-		item_entry = "flm",
-		amount = 1
-	}}
+	self.flm_bundle.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "flm",
+			amount = 1
+		}
+	}
+	self.ghx_bundle = {
+		free = true,
+		content = {}
+	}
+	self.ghx_bundle.content.loot_global_value = "pd2_clan"
+	self.ghx_bundle.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "ghx",
+			amount = 1
+		}
+	}
 	self.mmh_bundle = {
 		free = true,
 		content = {}
 	}
 	self.mmh_bundle.content.loot_global_value = "mmh"
-	self.mmh_bundle.content.loot_drops = {{
-		type_items = "masks",
-		item_entry = "mmh",
-		amount = 1
-	}}
+	self.mmh_bundle.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "mmh",
+			amount = 1
+		}
+	}
 	self.sdm_bundle = {
 		free = true,
 		content = {}
@@ -105,4 +120,3 @@ function DLCTweakData:init_generated()
 		}
 	}
 end
-

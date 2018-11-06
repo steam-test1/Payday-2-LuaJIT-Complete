@@ -49,7 +49,9 @@ function PlayerDriving:_enter(enter_data)
 	self._wheel_idle = false
 
 	self:_postion_player_on_seat(self._seat)
-	self._unit:inventory():add_listener("PlayerDriving", {"equip"}, callback(self, self, "on_inventory_event"))
+	self._unit:inventory():add_listener("PlayerDriving", {
+		"equip"
+	}, callback(self, self, "on_inventory_event"))
 
 	self._current_weapon = self._unit:inventory():equipped_unit()
 
@@ -148,7 +150,9 @@ function PlayerDriving:exit(state_data, new_state_name)
 	self._dye_risk = nil
 	self._state_data.in_air = false
 	self._stance = PlayerDriving.STANCE_NORMAL
-	local exit_data = {skip_equip = true}
+	local exit_data = {
+		skip_equip = true
+	}
 	local velocity = self._unit:mover():velocity()
 
 	self:_activate_mover(PlayerStandard.MOVER_STAND, velocity)
@@ -409,7 +413,9 @@ function PlayerDriving:_start_action_exit_vehicle(t)
 
 	local text = managers.localization:text("hud_action_exit_vehicle")
 
-	managers.hud:show_progress_timer({text = text})
+	managers.hud:show_progress_timer({
+		text = text
+	})
 end
 
 function PlayerDriving:_interacting()
@@ -721,4 +727,3 @@ function PlayerDriving:smoothstep(a, b, step, n)
 
 	return x
 end
-

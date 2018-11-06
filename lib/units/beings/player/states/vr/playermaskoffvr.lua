@@ -40,9 +40,9 @@ function PlayerMaskOffVR:_enter(enter_data)
 		if material:name() == glass_id_string then
 			material:set_render_template(Idstring("opacity:CUBE_ENVIRONMENT_MAPPING:CUBE_FRESNEL:DIFFUSE_TEXTURE:FPS"))
 		elseif material:name() == mtr_hair_solid_id_string then
-			
+			-- Nothing
 		elseif material:name() == mtr_hair_effect_id_string then
-			
+			-- Nothing
 		elseif material:name() == mtr_bloom_glow_id_string then
 			material:set_render_template(Idstring("generic:DEPTH_SCALING:DIFFUSE_TEXTURE:SELF_ILLUMINATION:SELF_ILLUMINATION_BLOOM"))
 		elseif glow_id_strings[material:name():key()] then
@@ -131,6 +131,7 @@ function PlayerMaskOffVR:_check_use_item(t, input)
 
 	return __check_use_item_default(self, t, input)
 end
+
 local __start_action_state_standard = PlayerMaskOff._start_action_state_standard
 
 function PlayerMaskOffVR:_start_action_state_standard(...)
@@ -149,4 +150,3 @@ end
 function PlayerMaskOffVR:_can_duck()
 	return false
 end
-

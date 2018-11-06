@@ -211,7 +211,7 @@ function CriminalsManager:add_character(name, unit, peer_id, ai, ai_loadout)
 			if data.taken then
 				Application:error("[CriminalsManager:set_character] Error: Trying to take a unit slot that has already been taken!")
 				Application:stack_dump()
-				Application:error("[CriminalsManager:set_character] 
+				Application:error("[CriminalsManager:set_character] -----")
 				self:_remove(id)
 			end
 
@@ -839,4 +839,3 @@ function CriminalsManager:get_loadout_for(char_name)
 
 	return managers.blackmarket:henchman_loadout(index, true)
 end
-

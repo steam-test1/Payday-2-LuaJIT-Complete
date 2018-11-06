@@ -214,7 +214,9 @@ function ManageSpawnedUnits:save(data)
 		return
 	end
 
-	data.managed_spawned_units = {linked_joints = self._sync_spawn_and_link}
+	data.managed_spawned_units = {
+		linked_joints = self._sync_spawn_and_link
+	}
 
 	for sync_id, unit_entry in pairs(self._spawned_units) do
 		if alive(unit_entry.unit) and sync_id ~= -1 then
@@ -298,4 +300,3 @@ function ManageSpawnedUnits:get_unit(unit_id)
 
 	return entry.unit
 end
-
