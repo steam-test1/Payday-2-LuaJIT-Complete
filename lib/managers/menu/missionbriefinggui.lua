@@ -487,7 +487,7 @@ function DescriptionItem:on_whisper_mode_changed()
 		end
 
 		if managers.skirmish:is_weekly_skirmish() and not Global.statistics_manager.playing_from_start then
-			desc_string = desc_string .. "\n\n##" .. managers.localization:text("menu_weekly_skirmish_dropin_warning" .. "##")
+			desc_string = desc_string .. "\n\n##" .. managers.localization:text("menu_weekly_skirmish_dropin_warning") .. "##"
 		end
 
 		self:set_description_text(desc_string)

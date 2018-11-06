@@ -199,9 +199,9 @@ function SkirmishWeeklyContractMenuComponent:init(ws, fullscreen_ws, node)
 
 	local details_panel = contract_panel:panel({
 		name = "details",
+		y = reward_panel:bottom() + 10,
 		w = width / 2,
-		h = height / 2,
-		y = reward_panel:bottom() + 10
+		h = (height - (reward_panel:bottom() + 10)) - 16
 	})
 	local show_progress_warning = job_data.state == tweak_data:server_state_to_index("in_game")
 	self._details_page = SkirmishWeeklyContractDetails:new(details_panel, show_progress_warning)
@@ -431,10 +431,11 @@ function SkirmishWeeklyContractDescriptionPage:init(page_id, page_panel, fullscr
 	self._desc = FineText:new(page_panel, {
 		name = "description",
 		wrap = true,
-		y = 10,
 		word_wrap = true,
+		y = 10,
 		x = 10,
 		text = desc_text,
+		w = page_panel:width() - 20,
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size
 	})
