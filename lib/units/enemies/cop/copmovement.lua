@@ -1412,7 +1412,7 @@ function CopMovement:on_suppressed(state)
 					self:action_request(action_desc)
 				end
 			end
-		elseif self._ext_anim.idle and (not self._active_actions[2] or self._active_actions[2]:type() == "idle") then
+		elseif self._ext_anim.idle and (not self._active_actions[2] or self._active_actions[2]:type() == "idle") and not self:chk_action_forbidden("act") then
 			local action_desc = {
 				clamp_to_graph = true,
 				type = "act",
@@ -1422,7 +1422,7 @@ function CopMovement:on_suppressed(state)
 			}
 
 			self:action_request(action_desc)
-		elseif not self._ext_anim.crouch and self._tweak_data.crouch_move and (not self._tweak_data.allowed_poses or self._tweak_data.allowed_poses.crouch) then
+		elseif not self._ext_anim.crouch and self._tweak_data.crouch_move and (not self._tweak_data.allowed_poses or self._tweak_data.allowed_poses.crouch) and not self:chk_action_forbidden("crouch") then
 			local action_desc = {
 				body_part = 4,
 				type = "crouch"

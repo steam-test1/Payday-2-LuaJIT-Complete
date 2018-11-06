@@ -500,6 +500,8 @@ function ElementSpecialObjective:get_objective(instigator)
 					hurt = -1,
 					action = -1,
 					heavy_hurt = -1,
+					act = -1,
+					crouch = -1,
 					walk = -1
 				}
 			}

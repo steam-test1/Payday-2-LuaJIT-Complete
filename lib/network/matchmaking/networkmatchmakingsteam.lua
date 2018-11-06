@@ -1,6 +1,6 @@
 NetworkMatchMakingSTEAM = NetworkMatchMakingSTEAM or class()
 NetworkMatchMakingSTEAM.OPEN_SLOTS = tweak_data.max_players
-NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "payday2_v1.92.679"
+NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "payday2_v1.92.682"
 
 function NetworkMatchMakingSTEAM:init()
 	cat_print("lobby", "matchmake = NetworkMatchMakingSTEAM")
@@ -409,7 +409,7 @@ function NetworkMatchMakingSTEAM:search_lobby(friends_only, no_filters)
 							mutators = self:_get_mutators_from_lobby(lobby),
 							crime_spree = tonumber(validated_value(lobby, "crime_spree")),
 							crime_spree_mission = validated_value(lobby, "crime_spree_mission"),
-							mods = tonumber(validated_value(lobby, "mods")),
+							mods = validated_value(lobby, "mods"),
 							one_down = tonumber(validated_value(lobby, "one_down")),
 							skirmish = tonumber(validated_value(lobby, "skirmish")),
 							skirmish_wave = tonumber(validated_value(lobby, "skirmish_wave")),
