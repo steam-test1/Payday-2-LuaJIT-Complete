@@ -1704,6 +1704,9 @@ Play the full version soon to get your full PAYDAY!]],
 			track = "track_61"
 		},
 		{
+			track = "track_62_lcv"
+		},
+		{
 			track = "track_32_lcv"
 		},
 		{

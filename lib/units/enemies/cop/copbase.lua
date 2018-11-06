@@ -35,6 +35,14 @@ for _, data in pairs(char_map) do
 end
 
 function CopBase:init(unit)
+	if unit:name() == Idstring("units/pd2_dlc_bph/characters/civ_male_locke_escort/civ_male_locke_escort_husk") then
+		local spawn_position = unit:position()
+
+		managers.enemy:add_delayed_clbk("LockePrisonPositionHack", function ()
+			unit:movement():set_position(spawn_position)
+		end, TimerManager:game():time() + 1)
+	end
+
 	UnitBase.init(self, unit, false)
 
 	self._char_tweak = tweak_data.character[self._tweak_table]

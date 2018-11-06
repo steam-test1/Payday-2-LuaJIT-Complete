@@ -1155,6 +1155,13 @@ function AchievementsTweakData:init(tweak_data)
 				"taser",
 				"zeus"
 			}
+		},
+		bph_9 = {
+			melee_id = "toothbrush",
+			result = "death",
+			stat = "bph_9_stat",
+			is_dropin = false,
+			difficulty = overkill_and_above
 		}
 	}
 	self.complete_heist_achievements = {
@@ -4581,6 +4588,47 @@ function AchievementsTweakData:init(tweak_data)
 			job = "sah",
 			difficulty = sm_wish_and_above
 		},
+		bph_1 = {
+			award = "bph_1",
+			job = "bph",
+			difficulty = normal_and_above
+		},
+		bph_2 = {
+			award = "bph_2",
+			job = "bph",
+			difficulty = hard_and_above
+		},
+		bph_3 = {
+			award = "bph_3",
+			job = "bph",
+			difficulty = veryhard_and_above
+		},
+		bph_4 = {
+			award = "bph_4",
+			job = "bph",
+			difficulty = overkill_and_above
+		},
+		bph_5 = {
+			award = "bph_5",
+			job = "bph",
+			difficulty = easywish_and_above
+		},
+		bph_6 = {
+			award = "bph_6",
+			job = "bph",
+			difficulty = deathwish_and_above
+		},
+		bph_7 = {
+			award = "bph_7",
+			job = "bph",
+			difficulty = sm_wish_and_above
+		},
+		bph_8 = {
+			award = "bph_8",
+			one_down = true,
+			job = "bph",
+			difficulty = sm_wish_and_above
+		},
 		bain_jobs = {
 			complete_job = true,
 			contract = "bain",
@@ -5514,6 +5562,16 @@ function AchievementsTweakData:init(tweak_data)
 			story = "story_very_hard_henrys_rock",
 			difficulty = veryhard_and_above
 		},
+		story_very_hard_sah = {
+			job = "sah",
+			story = "story_very_hard_sah",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_bph = {
+			job = "bph",
+			story = "story_very_hard_bph",
+			difficulty = veryhard_and_above
+		},
 		challenge_srtd = {
 			everyone_killed_by_melee = 0,
 			everyone_killed_by_grenade = 0,
@@ -6234,6 +6292,12 @@ function AchievementsTweakData:init(tweak_data)
 			{
 				award = "cac_35",
 				at = 10
+			}
+		},
+		bph_9_stat = {
+			{
+				award = "bph_9",
+				at = 13
 			}
 		}
 	}

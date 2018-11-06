@@ -9,6 +9,12 @@ function CustomSafehouseManager:init()
 	self:_setup()
 end
 
+function CustomSafehouseManager:init_finalize()
+	if Network:is_server() and managers.job:current_job_id() == "chill" then
+		self:send_room_tiers()
+	end
+end
+
 function CustomSafehouseManager:_setup()
 	self._server_tick = 0
 	self._highest_tier = #tweak_data.safehouse.prices.rooms

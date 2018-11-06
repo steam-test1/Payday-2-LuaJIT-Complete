@@ -446,9 +446,9 @@ function InteractionTweakData:init(tweak_data)
 		timer = 5,
 		action_text_id = "hud_action_try_keys",
 		interact_distance = 100,
-		sound_start = "bar_pick_lock",
-		sound_interupt = "bar_pick_lock_cancel",
-		sound_done = "bar_pick_lock_finished",
+		sound_start = "bar_unlock_grate_door",
+		sound_interupt = "bar_unlock_grate_door_cancel",
+		sound_done = "bar_unlock_grate_door_finished",
 		special_equipment = "keychain",
 		equipment_text_id = "hud_action_try_keys_no_key",
 		is_lockpicking = true
@@ -479,6 +479,27 @@ function InteractionTweakData:init(tweak_data)
 	}
 	self.hospital_security_cable = {
 		text_id = "debug_interact_hospital_security_cable",
+		icon = "interaction_wirecutter",
+		start_active = false,
+		timer = 5,
+		interact_distance = 75
+	}
+	self.hospital_security_cable_red = {
+		text_id = "hud_int_hold_cut_wire_red",
+		icon = "interaction_wirecutter",
+		start_active = false,
+		timer = 5,
+		interact_distance = 75
+	}
+	self.hospital_security_cable_blue = {
+		text_id = "hud_int_hold_cut_wire_blue",
+		icon = "interaction_wirecutter",
+		start_active = false,
+		timer = 5,
+		interact_distance = 75
+	}
+	self.hospital_security_cable_green = {
+		text_id = "hud_int_hold_cut_wire_green",
 		icon = "interaction_wirecutter",
 		start_active = false,
 		timer = 5,
@@ -5504,6 +5525,19 @@ function InteractionTweakData:init(tweak_data)
 	self.invisible_interaction_open_axis_sah.sound_interupt = "bar_train_panel_hacking_cancel"
 	self.invisible_interaction_open_axis_sah.sound_done = "bar_train_panel_hacking_finished"
 	self.invisible_interaction_open_axis_sah.timer = 4
+	self.hold_extend_bridge = {
+		axis = "y",
+		text_id = "hud_int_press_extend_bridge",
+		interact_distance = 150,
+		start_active = false
+	}
+	self.hold_pull_switch_distance = {
+		text_id = "hud_int_hold_pull_switch",
+		action_text_id = "hud_action_pulling_switch",
+		timer = 1,
+		interact_distance = 90,
+		start_active = false
+	}
 	self.hold_remove_parts = {
 		text_id = "hud_int_hold_remove_parts",
 		action_text_id = "hud_action_remove_parts",

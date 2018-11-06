@@ -153,6 +153,10 @@ function CharacterTweakData:_init_region_zombie()
 	self._speech_prefix_p2 = "n"
 end
 
+function CharacterTweakData:_init_region_murkywater()
+	self:_init_region_america()
+end
+
 function CharacterTweakData:_init_security(presets)
 	self.security = deep_clone(presets.base)
 	self.security.tags = {
@@ -2362,6 +2366,10 @@ function CharacterTweakData:_init_spooc(presets)
 	self.spooc.steal_loot = nil
 	self.spooc.spawn_sound_event = "cloaker_presence_loop"
 	self.spooc.die_sound_event = "cloaker_presence_stop"
+	self.spooc.spooc_sound_events = {
+		detect_stop = "cloaker_detect_stop",
+		detect = "cloaker_detect_mono"
+	}
 
 	table.insert(self._enemy_list, "spooc")
 end
@@ -16638,6 +16646,29 @@ function CharacterTweakData:character_map()
 				"civ_female_museum_curator_hostage",
 				"civ_female_drug_lord_hostage",
 				"civ_male_prisoner_hostage"
+			}
+		},
+		bph = {
+			path = "units/pd2_dlc_bph/characters/",
+			list = {
+				"civ_male_locke_escort",
+				"civ_male_bain",
+				"ene_male_bain",
+				"ene_murkywater_medic",
+				"ene_murkywater_medic_r870",
+				"ene_murkywater_tazer",
+				"ene_murkywater_cloaker",
+				"ene_murkywater_bulldozer_1",
+				"ene_murkywater_bulldozer_2",
+				"ene_murkywater_bulldozer_3",
+				"ene_murkywater_bulldozer_4",
+				"ene_murkywater_bulldozer_medic",
+				"ene_murkywater_shield",
+				"ene_murkywater_sniper",
+				"ene_murkywater_heavy",
+				"ene_murkywater_light",
+				"ene_murkywater_heavy_shotgun",
+				"ene_murkywater_heavy_g36"
 			}
 		}
 	}

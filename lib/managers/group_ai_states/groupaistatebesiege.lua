@@ -4,7 +4,7 @@ GroupAIStateBesiege._MAX_SIMULTANEOUS_SPAWNS = 3
 function GroupAIStateBesiege:init(group_ai_state)
 	GroupAIStateBesiege.super.init(self)
 
-	if Network:is_server() and not self._police_upd_task_queued and managers.navigation:is_data_ready() then
+	if Network:is_server() and managers.navigation:is_data_ready() then
 		self:_queue_police_upd_task()
 	end
 
@@ -53,9 +53,7 @@ function GroupAIStateBesiege:update(t, dt)
 	GroupAIStateBesiege.super.update(self, t, dt)
 
 	if Network:is_server() then
-		if not self._police_upd_task_queued then
-			self:_queue_police_upd_task()
-		end
+		self:_queue_police_upd_task()
 
 		if managers.navigation:is_data_ready() and self._draw_enabled then
 			self:_draw_enemy_activity(t)
@@ -74,9 +72,11 @@ function GroupAIStateBesiege:paused_update(t, dt)
 end
 
 function GroupAIStateBesiege:_queue_police_upd_task()
-	self._police_upd_task_queued = true
+	if not self._police_upd_task_queued then
+		self._police_upd_task_queued = true
 
-	managers.enemy:queue_task("GroupAIStateBesiege._upd_police_activity", self._upd_police_activity, self, self._t + (next(self._spawning_groups) and 0.4 or 2))
+		managers.enemy:queue_task("GroupAIStateBesiege._upd_police_activity", self._upd_police_activity, self, self._t + (next(self._spawning_groups) and 0.4 or 2))
+	end
 end
 
 function GroupAIStateBesiege:assign_enemy_to_group_ai(unit, team_id)
@@ -2625,9 +2625,7 @@ function GroupAIStateBesiege:on_simulation_started()
 		}
 	end
 
-	if not self._police_upd_task_queued then
-		self:_queue_police_upd_task()
-	end
+	self:_queue_police_upd_task()
 end
 
 function GroupAIStateBesiege:on_enemy_weapons_hot(is_delayed_callback)

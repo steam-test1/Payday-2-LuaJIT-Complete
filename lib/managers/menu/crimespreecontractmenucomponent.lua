@@ -773,8 +773,6 @@ MenuCrimeNetCrimeSpreeContractInitiator = MenuCrimeNetCrimeSpreeContractInitiato
 function MenuCrimeNetCrimeSpreeContractInitiator:modify_node(original_node, data)
 	local node = deep_clone(original_node)
 
-	print("MenuCrimeNetCrimeSpreeContractInitiator:modify_node", original_node, data)
-
 	if Global.game_settings.single_player then
 		node:item("toggle_ai"):set_value(Global.game_settings.team_ai and Global.game_settings.team_ai_option or 0)
 	elseif data.smart_matchmaking then
@@ -804,6 +802,8 @@ function MenuCrimeNetCrimeSpreeContractInitiator:modify_node(original_node, data
 			job_plan_item:add_option(stealth_option)
 		end
 	end
+
+	node:item("accept_contract"):set_enabled(managers.crime_spree:unlocked())
 
 	if data and data.back_callback then
 		table.insert(node:parameters().back_callback, data.back_callback)

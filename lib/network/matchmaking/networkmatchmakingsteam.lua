@@ -1,6 +1,6 @@
 NetworkMatchMakingSTEAM = NetworkMatchMakingSTEAM or class()
 NetworkMatchMakingSTEAM.OPEN_SLOTS = tweak_data.max_players
-NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "payday2_v1.92.703"
+NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "payday2_v1.92.713"
 
 function NetworkMatchMakingSTEAM:init()
 	cat_print("lobby", "matchmake = NetworkMatchMakingSTEAM")
@@ -593,6 +593,13 @@ function NetworkMatchMakingSTEAM:is_server_ok(friends_only, room, attributes_lis
 		return false, 5
 	end
 
+	local lobby = Steam:lobby(room)
+	local lobby_crime_spree = tonumber(lobby:key_value("crime_spree"))
+
+	if lobby_crime_spree and lobby_crime_spree > 0 and not managers.crime_spree:unlocked() then
+		return false, 6
+	end
+
 	if permission == "public" then
 		return true
 	end
@@ -645,6 +652,8 @@ function NetworkMatchMakingSTEAM:join_server_with_check(room_id, is_invite)
 				managers.menu:show_does_not_own_heist()
 			elseif ok_error == 5 then
 				managers.menu:show_heist_is_locked_dialog()
+			elseif ok_error == 6 then
+				managers.menu:show_crime_spree_locked_dialog()
 			end
 
 			self:search_lobby(self:search_friends_only())

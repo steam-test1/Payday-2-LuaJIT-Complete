@@ -580,10 +580,7 @@ function GameSetup:init_finalize()
 	self._keyboard = Input:keyboard()
 
 	managers.network.account:set_playing(true)
-
-	if Network:is_server() and managers.job:current_job_id() == "chill" then
-		managers.custom_safehouse:send_room_tiers()
-	end
+	managers.custom_safehouse:init_finalize()
 end
 
 function GameSetup:update(t, dt)

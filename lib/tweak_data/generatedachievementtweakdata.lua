@@ -13542,6 +13542,134 @@ function init_auto_generated_achievement_data(tags)
 				tags.tactics.stealth,
 				tags.contracts.the_continental
 			}
+		},
+		bph_1 = {
+			icon_id = "C_Locke_H_BainPrisonHeist_AllDiffs_D0",
+			ladder = "H_BainPrisonHeist",
+			sort_name = "C_Locke_H_BainPrisonHeist_AllDiffs_D0",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		bph_10 = {
+			sort_name = "C_Locke_H_BainPrisonHeist_Another",
+			icon_id = "C_Locke_H_BainPrisonHeist_Another",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		bph_11 = {
+			sort_name = "C_Locke_H_BainPrisonHeist_Beacon",
+			icon_id = "C_Locke_H_BainPrisonHeist_Beacon",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		bph_2 = {
+			icon_id = "C_Locke_H_BainPrisonHeist_AllDiffs_D1",
+			ladder = "H_BainPrisonHeist",
+			sort_name = "C_Locke_H_BainPrisonHeist_AllDiffs_D1",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.hard,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		bph_3 = {
+			icon_id = "C_Locke_H_BainPrisonHeist_AllDiffs_D2",
+			ladder = "H_BainPrisonHeist",
+			sort_name = "C_Locke_H_BainPrisonHeist_AllDiffs_D2",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.very_hard,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		bph_4 = {
+			icon_id = "C_Locke_H_BainPrisonHeist_AllDiffs_D3",
+			ladder = "H_BainPrisonHeist",
+			sort_name = "C_Locke_H_BainPrisonHeist_AllDiffs_D3",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		bph_5 = {
+			icon_id = "C_Locke_H_BainPrisonHeist_AllDiffs_D4",
+			ladder = "H_BainPrisonHeist",
+			sort_name = "C_Locke_H_BainPrisonHeist_AllDiffs_D4",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.mayhem,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		bph_6 = {
+			icon_id = "C_Locke_H_BainPrisonHeist_AllDiffs_D5",
+			ladder = "H_BainPrisonHeist",
+			sort_name = "C_Locke_H_BainPrisonHeist_AllDiffs_D5",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_wish,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		bph_7 = {
+			icon_id = "C_Locke_H_BainPrisonHeist_AllDiffs_D6",
+			ladder = "H_BainPrisonHeist",
+			sort_name = "C_Locke_H_BainPrisonHeist_AllDiffs_D6",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_sentence,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		bph_8 = {
+			icon_id = "C_Locke_H_BainPrisonHeist_AllDiffs_OD_D6",
+			ladder = "H_BainPrisonHeist",
+			sort_name = "C_Locke_H_BainPrisonHeist_AllDiffs_OD_D6",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_sentence,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		bph_9 = {
+			sort_name = "C_Locke_H_BainPrisonHeist_PrisonRules",
+			icon_id = "C_Locke_H_BainPrisonHeist_PrisonRules",
+			progress = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.inventory.weapon,
+				tags.contracts.locke
+			}
 		}
 	}
 end

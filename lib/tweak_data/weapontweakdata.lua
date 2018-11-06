@@ -39,6 +39,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_sentry_gun_npc()
 	self:_init_data_swat_van_turret_module_npc()
 	self:_init_data_aa_turret_module_npc()
+	self:_init_data_crate_turret_module_npc()
 	self:_init_data_ceiling_turret_module_npc()
 	self:_init_data_s552_npc()
 	self:_init_data_scar_npc()
@@ -211,6 +212,8 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_x_rota_crew()
 	self:_init_data_shuno_crew()
 	self:_init_data_system_crew()
+	self:_init_data_legacy_crew()
+	self:_init_data_x_legacy_crew()
 	self:_precalculate_values()
 end
 
@@ -238,6 +241,9 @@ function WeaponTweakData:_set_normal()
 	self.aa_turret_module.HEALTH_INIT = 4500
 	self.aa_turret_module.SHIELD_HEALTH_INIT = 70
 	self.aa_turret_module.DAMAGE = 0.2
+	self.crate_turret_module.HEALTH_INIT = 875
+	self.crate_turret_module.SHIELD_HEALTH_INIT = 2
+	self.crate_turret_module.DAMAGE = 0.2
 end
 
 function WeaponTweakData:_set_hard()
@@ -255,6 +261,9 @@ function WeaponTweakData:_set_hard()
 	self.aa_turret_module.HEALTH_INIT = 4500
 	self.aa_turret_module.SHIELD_HEALTH_INIT = 70
 	self.aa_turret_module.DAMAGE = 0.2
+	self.crate_turret_module.HEALTH_INIT = 875
+	self.crate_turret_module.SHIELD_HEALTH_INIT = 70
+	self.crate_turret_module.DAMAGE = 0.2
 end
 
 function WeaponTweakData:_set_overkill()
@@ -267,6 +276,9 @@ function WeaponTweakData:_set_overkill()
 	self.aa_turret_module.HEALTH_INIT = 13500
 	self.aa_turret_module.SHIELD_HEALTH_INIT = 300
 	self.aa_turret_module.DAMAGE = 1.3
+	self.crate_turret_module.HEALTH_INIT = 6250
+	self.crate_turret_module.SHIELD_HEALTH_INIT = 150
+	self.crate_turret_module.DAMAGE = 1.3
 end
 
 function WeaponTweakData:_set_overkill_145()
@@ -280,6 +292,9 @@ function WeaponTweakData:_set_overkill_145()
 	self.aa_turret_module.HEALTH_INIT = 26000
 	self.aa_turret_module.SHIELD_HEALTH_INIT = 500
 	self.aa_turret_module.DAMAGE = 2
+	self.crate_turret_module.HEALTH_INIT = 12500
+	self.crate_turret_module.SHIELD_HEALTH_INIT = 500
+	self.crate_turret_module.DAMAGE = 2
 end
 
 function WeaponTweakData:_set_easy_wish()
@@ -297,6 +312,10 @@ function WeaponTweakData:_set_easy_wish()
 	self.aa_turret_module.SHIELD_HEALTH_INIT = 700
 	self.aa_turret_module.DAMAGE = 3.5
 	self.aa_turret_module.CLIP_SIZE = 800
+	self.crate_turret_module.HEALTH_INIT = 20000
+	self.crate_turret_module.SHIELD_HEALTH_INIT = 700
+	self.crate_turret_module.DAMAGE = 3.5
+	self.crate_turret_module.CLIP_SIZE = 800
 end
 
 function WeaponTweakData:_set_overkill_290()
@@ -313,6 +332,10 @@ function WeaponTweakData:_set_overkill_290()
 	self.aa_turret_module.SHIELD_HEALTH_INIT = 700
 	self.aa_turret_module.DAMAGE = 3.5
 	self.aa_turret_module.CLIP_SIZE = 800
+	self.crate_turret_module.HEALTH_INIT = 20000
+	self.crate_turret_module.SHIELD_HEALTH_INIT = 700
+	self.crate_turret_module.DAMAGE = 3.5
+	self.crate_turret_module.CLIP_SIZE = 800
 end
 
 function WeaponTweakData:_set_sm_wish()
@@ -333,6 +356,10 @@ function WeaponTweakData:_set_sm_wish()
 	self.aa_turret_module.SHIELD_HEALTH_INIT = 700
 	self.aa_turret_module.DAMAGE = 3.5
 	self.aa_turret_module.CLIP_SIZE = 800
+	self.crate_turret_module.HEALTH_INIT = 20000
+	self.crate_turret_module.SHIELD_HEALTH_INIT = 350
+	self.crate_turret_module.DAMAGE = 3.5
+	self.crate_turret_module.CLIP_SIZE = 800
 end
 
 function WeaponTweakData:_init_data_npc_melee()
@@ -481,8 +508,8 @@ function WeaponTweakData:_init_data_m4_yellow_npc()
 	self.m4_yellow_npc.sounds.prefix = "m4_npc"
 	self.m4_yellow_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.m4_yellow_npc.DAMAGE = 1
-	self.m4_yellow_npc.muzzleflash = "effects/payday2/particles/weapons/556_auto"
-	self.m4_yellow_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
+	self.m4_yellow_npc.muzzleflash = "effects/payday2/particles/smoke_trail/dark_smoke_small"
+	self.m4_yellow_npc.shell_ejection = "effects/payday2/particles/smoke_trail/dark_smoke_small"
 	self.m4_yellow_npc.CLIP_AMMO_MAX = 30
 	self.m4_yellow_npc.NR_CLIPS_MAX = 5
 	self.m4_yellow_npc.auto.fire_rate = 0.175
@@ -940,6 +967,99 @@ function WeaponTweakData:_init_data_aa_turret_module_npc()
 		weapon = "sentry_gun"
 	}
 	self.aa_turret_module.suppression = 0.8
+end
+
+function WeaponTweakData:_init_data_crate_turret_module_npc()
+	self.crate_turret_module.name_id = "debug_sentry_gun"
+	self.crate_turret_module.DAMAGE = 3
+	self.crate_turret_module.DAMAGE_MUL_RANGE = {
+		{
+			800,
+			4
+		},
+		{
+			1000,
+			1.1
+		},
+		{
+			1500,
+			1
+		}
+	}
+	self.crate_turret_module.SUPPRESSION = 1
+	self.crate_turret_module.SPREAD = 0.5
+	self.crate_turret_module.FIRE_RANGE = 30000
+	self.crate_turret_module.DETECTION_RANGE = self.crate_turret_module.FIRE_RANGE
+	self.crate_turret_module.CLIP_SIZE = 400
+	self.crate_turret_module.AUTO_RELOAD = true
+	self.crate_turret_module.AUTO_RELOAD_DURATION = 8
+	self.crate_turret_module.CAN_GO_IDLE = false
+	self.crate_turret_module.IDLE_WAIT_TIME = 5
+	self.crate_turret_module.AUTO_REPAIR = true
+	self.crate_turret_module.AUTO_REPAIR_MAX_COUNT = math.huge
+	self.crate_turret_module.AUTO_REPAIR_DURATION = 30
+	self.crate_turret_module.ECM_HACKABLE = true
+	self.crate_turret_module.HACKABLE_WITH_ECM = true
+	self.crate_turret_module.VELOCITY_COMPENSATION = {
+		OVERCOMPENSATION = 50,
+		SNAPSHOT_INTERVAL = 0.3
+	}
+	self.crate_turret_module.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
+	self.crate_turret_module.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
+	self.crate_turret_module.auto.fire_rate = 0.06
+	self.crate_turret_module.alert_size = 2500
+	self.crate_turret_module.headshot_dmg_mul = 4
+	self.crate_turret_module.EXPLOSION_DMG_MUL = 7
+	self.crate_turret_module.FIRE_DMG_MUL = 0.1
+	self.crate_turret_module.BAG_DMG_MUL = 100
+	self.crate_turret_module.SHIELD_DMG_MUL = 1
+	self.crate_turret_module.HEALTH_INIT = 5000
+	self.crate_turret_module.SHIELD_HEALTH_INIT = 1000
+	self.crate_turret_module.SHIELD_DAMAGE_CLAMP = 350
+	self.crate_turret_module.BODY_DAMAGE_CLAMP = 4200
+	self.crate_turret_module.DEATH_VERIFICATION = {
+		0.4,
+		0.75
+	}
+	self.crate_turret_module.DETECTION_RANGE = 8000
+	self.crate_turret_module.DETECTION_DELAY = {
+		{
+			900,
+			0.3
+		},
+		{
+			3500,
+			1.5
+		}
+	}
+	self.crate_turret_module.KEEP_FIRE_ANGLE = 0.9
+	self.crate_turret_module.MAX_VEL_SPIN = 72
+	self.crate_turret_module.MIN_VEL_SPIN = self.crate_turret_module.MAX_VEL_SPIN * 0.05
+	self.crate_turret_module.SLOWDOWN_ANGLE_SPIN = 30
+	self.crate_turret_module.ACC_SPIN = self.crate_turret_module.MAX_VEL_SPIN * 5
+	self.crate_turret_module.MAX_VEL_PITCH = 60
+	self.crate_turret_module.MIN_VEL_PITCH = self.crate_turret_module.MAX_VEL_PITCH * 0.05
+	self.crate_turret_module.SLOWDOWN_ANGLE_PITCH = 20
+	self.crate_turret_module.ACC_PITCH = self.crate_turret_module.MAX_VEL_PITCH * 5
+	self.crate_turret_module.recoil = {
+		horizontal = {
+			1,
+			1.5,
+			1,
+			1
+		},
+		vertical = {
+			1,
+			1.5,
+			1,
+			1
+		}
+	}
+	self.crate_turret_module.challenges = {
+		group = "sentry_gun",
+		weapon = "sentry_gun"
+	}
+	self.crate_turret_module.suppression = 0.8
 end
 
 function WeaponTweakData:_init_data_ceiling_turret_module_npc()
@@ -4144,6 +4264,39 @@ function WeaponTweakData:_init_data_system_crew()
 	self.system_crew.FIRE_MODE = "auto"
 end
 
+function WeaponTweakData:_init_data_legacy_crew()
+	self.legacy_crew.categories = clone(self.legacy.categories)
+	self.legacy_crew.sounds.prefix = "legacy_npc"
+	self.legacy_crew.use_data.selection_index = SELECTION.SECONDARY
+	self.legacy_crew.DAMAGE = 1
+	self.legacy_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.legacy_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.legacy_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.legacy_crew.CLIP_AMMO_MAX = 10
+	self.legacy_crew.NR_CLIPS_MAX = 5
+	self.legacy_crew.pull_magazine_during_reload = "pistol"
+	self.legacy_crew.hold = "pistol"
+	self.legacy_crew.alert_size = 2500
+	self.legacy_crew.suppression = 1
+	self.legacy_crew.FIRE_MODE = "single"
+end
+
+function WeaponTweakData:_init_data_x_legacy_crew()
+	self.x_legacy_crew.categories = clone(self.x_legacy.categories)
+	self.x_legacy_crew.sounds.prefix = "legacy_npc"
+	self.x_legacy_crew.use_data.selection_index = SELECTION.PRIMARY
+	self.x_legacy_crew.DAMAGE = 1
+	self.x_legacy_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.x_legacy_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.x_legacy_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.x_legacy_crew.CLIP_AMMO_MAX = 10
+	self.x_legacy_crew.NR_CLIPS_MAX = 5
+	self.x_legacy_crew.hold = "akimbo_pistol"
+	self.x_legacy_crew.alert_size = 2500
+	self.x_legacy_crew.suppression = 1
+	self.x_legacy_crew.FIRE_MODE = "single"
+end
+
 function WeaponTweakData:_init_data_player_weapons(tweak_data)
 	local autohit_rifle_default, autohit_pistol_default, autohit_shotgun_default, autohit_lmg_default, autohit_snp_default, autohit_smg_default, autohit_minigun_default, aim_assist_rifle_default, aim_assist_pistol_default, aim_assist_shotgun_default, aim_assist_lmg_default, aim_assist_snp_default, aim_assist_smg_default, aim_assist_minigun_default = nil
 
@@ -4988,6 +5141,8 @@ function WeaponTweakData:_init_new_weapons(weapon_data)
 	self:_init_x_rota(weapon_data)
 	self:_init_shuno(weapon_data)
 	self:_init_system(weapon_data)
+	self:_init_legacy(weapon_data)
+	self:_init_x_legacy(weapon_data)
 end
 
 function WeaponTweakData:_init_new_m4(weapon_data)
@@ -22600,6 +22755,216 @@ function WeaponTweakData:_init_system(weapon_data)
 	}
 end
 
+function WeaponTweakData:_init_legacy(weapon_data)
+	self.legacy = {
+		categories = {
+			"pistol"
+		},
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.legacy.sounds.fire = "legacy_fire"
+	self.legacy.sounds.enter_steelsight = "pistol_steel_sight_enter"
+	self.legacy.sounds.leave_steelsight = "pistol_steel_sight_exit"
+	self.legacy.sounds.dryfire = "secondary_dryfire"
+	self.legacy.sounds.magazine_empty = "wp_pistol_slide_lock"
+	self.legacy.timers = {
+		reload_not_empty = 1.5,
+		reload_empty = 2.15,
+		unequip = 0.5,
+		equip = 0.35
+	}
+	self.legacy.name_id = "bm_w_legacy"
+	self.legacy.desc_id = "bm_w_legacy_desc"
+	self.legacy.description_id = "des_legacy"
+	self.legacy.global_value = "normal"
+	self.legacy.texture_bundle_folder = "khp"
+	self.legacy.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
+	self.legacy.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
+	self.legacy.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.legacy.use_data = {
+		selection_index = SELECTION.SECONDARY
+	}
+	self.legacy.DAMAGE = 1
+	self.legacy.CLIP_AMMO_MAX = 13
+	self.legacy.NR_CLIPS_MAX = 12
+	self.legacy.AMMO_MAX = self.legacy.CLIP_AMMO_MAX * self.legacy.NR_CLIPS_MAX
+	self.legacy.AMMO_PICKUP = self:_pickup_chance(self.legacy.AMMO_MAX, PICKUP.SNIPER_HIGH_DAMAGE)
+	self.legacy.FIRE_MODE = "single"
+	self.legacy.fire_mode_data = {
+		fire_rate = 0.11
+	}
+	self.legacy.single = {
+		fire_rate = 0.11
+	}
+	self.legacy.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight
+	}
+	self.legacy.kick = {
+		standing = self.glock_17.kick.standing
+	}
+	self.legacy.kick.crouching = self.legacy.kick.standing
+	self.legacy.kick.steelsight = self.legacy.kick.standing
+	self.legacy.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.legacy.crosshair.standing.offset = 0.2
+	self.legacy.crosshair.standing.moving_offset = 0.4
+	self.legacy.crosshair.standing.kick_offset = 0.3
+	self.legacy.crosshair.crouching.offset = 0.1
+	self.legacy.crosshair.crouching.moving_offset = 0.5
+	self.legacy.crosshair.crouching.kick_offset = 0.2
+	self.legacy.crosshair.steelsight.hidden = true
+	self.legacy.crosshair.steelsight.offset = 0
+	self.legacy.crosshair.steelsight.moving_offset = 0
+	self.legacy.crosshair.steelsight.kick_offset = 0.1
+	self.legacy.shake = {
+		fire_multiplier = 1,
+		fire_steelsight_multiplier = -1
+	}
+	self.legacy.autohit = weapon_data.autohit_pistol_default
+	self.legacy.aim_assist = weapon_data.aim_assist_pistol_default
+	self.legacy.weapon_hold = "packrat"
+	self.legacy.animations = {
+		equip_id = "equip_packrat",
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
+	}
+	self.legacy.panic_suppression_chance = 0.2
+	self.legacy.stats = {
+		zoom = 3,
+		total_ammo_mod = 21,
+		damage = 37,
+		alert_size = 7,
+		spread = 12,
+		spread_moving = 12,
+		recoil = 13,
+		value = 4,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 15,
+		concealment = 30
+	}
+end
+
+function WeaponTweakData:_init_x_legacy(weapon_data)
+	self.x_legacy = {
+		categories = {
+			"akimbo",
+			"pistol"
+		},
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.x_legacy.sounds.fire = "legacy_fire"
+	self.x_legacy.sounds.enter_steelsight = "pistol_steel_sight_enter"
+	self.x_legacy.sounds.leave_steelsight = "pistol_steel_sight_exit"
+	self.x_legacy.sounds.dryfire = "secondary_dryfire"
+	self.x_legacy.sounds.magazine_empty = "wp_akimbo_pistol_slide_lock"
+	self.x_legacy.timers = {
+		reload_not_empty = 3.17,
+		reload_empty = 4,
+		unequip = 0.5,
+		equip = 0.5
+	}
+	self.x_legacy.name_id = "bm_w_x_legacy"
+	self.x_legacy.desc_id = "bm_w_x_legacy_desc"
+	self.x_legacy.description_id = "des_x_legacy"
+	self.x_legacy.global_value = "normal"
+	self.x_legacy.texture_bundle_folder = "khp"
+	self.x_legacy.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
+	self.x_legacy.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
+	self.x_legacy.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.x_legacy.use_data = {
+		selection_index = SELECTION.PRIMARY
+	}
+	self.x_legacy.DAMAGE = 1
+	self.x_legacy.CLIP_AMMO_MAX = 26
+	self.x_legacy.NR_CLIPS_MAX = 6
+	self.x_legacy.AMMO_MAX = self.x_legacy.CLIP_AMMO_MAX * self.x_legacy.NR_CLIPS_MAX
+	self.x_legacy.AMMO_PICKUP = self:_pickup_chance(self.x_legacy.AMMO_MAX, PICKUP.OTHER)
+	self.x_legacy.FIRE_MODE = "single"
+	self.x_legacy.fire_mode_data = {
+		fire_rate = 0.11
+	}
+	self.x_legacy.single = {
+		fire_rate = 0.11
+	}
+	self.x_legacy.spread = {
+		standing = self.colt_1911.spread.standing,
+		crouching = self.colt_1911.spread.crouching,
+		steelsight = self.colt_1911.spread.steelsight,
+		moving_standing = self.colt_1911.spread.moving_standing,
+		moving_crouching = self.colt_1911.spread.moving_crouching,
+		moving_steelsight = self.colt_1911.spread.moving_steelsight
+	}
+	self.x_legacy.kick = {
+		standing = {
+			1.6,
+			1.3,
+			-0.3,
+			0.3
+		}
+	}
+	self.x_legacy.kick.crouching = self.x_legacy.kick.standing
+	self.x_legacy.kick.steelsight = self.x_legacy.kick.standing
+	self.x_legacy.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.x_legacy.crosshair.standing.offset = 0.2
+	self.x_legacy.crosshair.standing.moving_offset = 0.6
+	self.x_legacy.crosshair.standing.kick_offset = 0.4
+	self.x_legacy.crosshair.crouching.offset = 0.1
+	self.x_legacy.crosshair.crouching.moving_offset = 0.6
+	self.x_legacy.crosshair.crouching.kick_offset = 0.3
+	self.x_legacy.crosshair.steelsight.hidden = true
+	self.x_legacy.crosshair.steelsight.offset = 0
+	self.x_legacy.crosshair.steelsight.moving_offset = 0
+	self.x_legacy.crosshair.steelsight.kick_offset = 0.1
+	self.x_legacy.shake = {
+		fire_multiplier = 1,
+		fire_steelsight_multiplier = -1
+	}
+	self.x_legacy.autohit = weapon_data.autohit_pistol_default
+	self.x_legacy.aim_assist = weapon_data.aim_assist_pistol_default
+	self.x_legacy.weapon_hold = "jowi_pistol"
+	self.x_legacy.animations = {
+		second_gun_versions = {
+			reload_not_empty = "reload_not_empty_left",
+			reload = "reload_left"
+		},
+		has_steelsight_stance = true,
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
+	}
+	self.x_legacy.panic_suppression_chance = 0.2
+	self.x_legacy.stats = {
+		zoom = 3,
+		total_ammo_mod = 21,
+		damage = 37,
+		alert_size = 7,
+		spread = 12,
+		spread_moving = 12,
+		recoil = 13,
+		value = 4,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 15,
+		concealment = 30
+	}
+end
+
 function WeaponTweakData:_create_table_structure()
 	self.c45_npc = {
 		usage = "is_pistol",
@@ -22716,6 +23081,10 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.aa_turret_module = {
+		sounds = {},
+		auto = {}
+	}
+	self.crate_turret_module = {
 		sounds = {},
 		auto = {}
 	}
@@ -23778,6 +24147,18 @@ function WeaponTweakData:_create_table_structure()
 	}
 	self.system_crew = {
 		usage = "is_rifle",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.legacy_crew = {
+		usage = "is_pistol",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.x_legacy_crew = {
+		usage = "akimbo_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}

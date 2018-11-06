@@ -241,7 +241,7 @@ function EquipmentsTweakData:init()
 		},
 		keychain = {
 			sync_possession = true,
-			icon = "equipment_generic_key",
+			icon = "equipment_key_chain",
 			text_id = "hud_int_equipment_pickup_keychain"
 		},
 		chavez_key = {

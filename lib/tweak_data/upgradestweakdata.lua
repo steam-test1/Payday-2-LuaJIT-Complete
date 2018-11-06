@@ -4708,7 +4708,9 @@ function UpgradesTweakData:init(tweak_data)
 				"benelli",
 				"plainsrider",
 				"sub2000",
-				"road"
+				"road",
+				"legacy",
+				"x_legacy"
 			}
 		},
 		[16] = {
@@ -4742,6 +4744,7 @@ function UpgradesTweakData:init(tweak_data)
 				"oldbaton",
 				"hockey",
 				"meter",
+				"hauteur",
 				"shock",
 				"x_scorpion"
 			}
@@ -5466,6 +5469,8 @@ function UpgradesTweakData:init(tweak_data)
 	self:_x_rota_weapon_definitions()
 	self:_shuno_weapon_definitions()
 	self:_system_weapon_definitions()
+	self:_legacy_weapon_definitions()
+	self:_x_legacy_weapon_definitions()
 	self:_melee_weapon_definitions()
 	self:_grenades_definitions()
 	self:_carry_definitions()
@@ -11678,6 +11683,9 @@ function UpgradesTweakData:_melee_weapon_definitions()
 		dlc = "flm",
 		category = "melee_weapon"
 	}
+	self.definitions.hauteur = {
+		category = "melee_weapon"
+	}
 	self.definitions.shock = {
 		category = "melee_weapon"
 	}
@@ -15377,6 +15385,22 @@ function UpgradesTweakData:_system_weapon_definitions()
 	self.definitions.system = {
 		factory_id = "wpn_fps_fla_system",
 		weapon_id = "system",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_legacy_weapon_definitions()
+	self.definitions.legacy = {
+		factory_id = "wpn_fps_pis_legacy",
+		weapon_id = "legacy",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_legacy_weapon_definitions()
+	self.definitions.x_legacy = {
+		factory_id = "wpn_fps_pis_x_legacy",
+		weapon_id = "x_legacy",
 		category = "weapon"
 	}
 end

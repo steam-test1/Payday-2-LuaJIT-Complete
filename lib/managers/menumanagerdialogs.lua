@@ -2703,3 +2703,20 @@ function MenuManager:show_heist_is_locked_dialog()
 
 	managers.system_menu:show(dialog_data)
 end
+
+function MenuManager:show_crime_spree_locked_dialog()
+	local dialog_data = {
+		title = managers.localization:text("dialog_crime_spree_locked_title"),
+		text = managers.localization:text("dialog_crime_spree_locked_text", {
+			level_lock = tweak_data.crime_spree.unlock_level
+		})
+	}
+	local ok_button = {
+		text = managers.localization:text("dialog_ok")
+	}
+	dialog_data.button_list = {
+		ok_button
+	}
+
+	managers.system_menu:show(dialog_data)
+end

@@ -5670,6 +5670,75 @@ function NarrativeTweakData:init(tweak_data)
 		4,
 		29
 	}
+	self.stages.bph = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "bph"
+	}
+	self.jobs.bph = {
+		name_id = "heist_bph",
+		briefing_id = "heist_bph_crimenet",
+		contact = "locke",
+		region = "street",
+		jc = 30,
+		chain = {
+			self.stages.bph
+		},
+		briefing_event = "Play_loc_bph_cbf_01",
+		debrief_event = nil,
+		crimenet_callouts = {
+			"Play_loc_bph_cnc_01"
+		},
+		crimenet_videos = {
+			"contact_locke1"
+		},
+		payout = {
+			60000,
+			150000,
+			300000,
+			600000,
+			750000,
+			750000,
+			750000
+		},
+		contract_cost = {
+			24000,
+			48000,
+			120000,
+			240000,
+			300000,
+			300000,
+			300000
+		},
+		contract_visuals = {}
+	}
+	self.jobs.bph.contract_visuals.min_mission_xp = {
+		14200,
+		14200,
+		14200,
+		14200,
+		14200,
+		14200,
+		14200
+	}
+	self.jobs.bph.contract_visuals.max_mission_xp = {
+		23200,
+		23200,
+		23200,
+		23200,
+		23200,
+		23200,
+		23200
+	}
+	self.jobs.bph.contract_visuals.preview_image = {
+		id = "bph",
+		folder = "bph"
+	}
+	self.jobs.bph.date_added = {
+		2018,
+		10,
+		26
+	}
 	self.stages.lbe_lobby_end = {
 		type = "d",
 		type_id = "heist_type_assault",
@@ -6154,7 +6223,8 @@ function NarrativeTweakData:init(tweak_data)
 		"skm_mus",
 		"skm_red2",
 		"skm_run",
-		"skm_watchdogs_stage2"
+		"skm_watchdogs_stage2",
+		"bph"
 	}
 	self.forced_jobs = {
 		firestarter = true,

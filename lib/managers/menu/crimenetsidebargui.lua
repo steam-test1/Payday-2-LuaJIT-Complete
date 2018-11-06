@@ -377,6 +377,10 @@ function CrimeNetSidebarGui:clbk_visible_not_in_lobby()
 	return not managers.network:session() or Global.game_settings.single_player
 end
 
+function CrimeNetSidebarGui:clbk_visible_crime_spree()
+	return self:clbk_visible_not_in_lobby() and managers.crime_spree:unlocked()
+end
+
 function CrimeNetSidebarGui:clbk_visible_multiplayer()
 	return not managers.network:session() and not Global.game_settings.single_player
 end

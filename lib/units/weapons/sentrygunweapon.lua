@@ -201,6 +201,10 @@ function SentryGunWeapon:set_spread_mul(spread_mul)
 end
 
 function SentryGunWeapon:start_autofire()
+	if self._unit:damage() and self._unit:damage():has_sequence("anim_fire_seq") then
+		self._unit:damage():run_sequence_simple("anim_fire_seq")
+	end
+
 	if self._shooting then
 		return
 	end
@@ -213,6 +217,10 @@ function SentryGunWeapon:start_autofire()
 end
 
 function SentryGunWeapon:stop_autofire()
+	if self._unit:damage() and self._unit:damage():has_sequence("anim_fire_stop_seq") then
+		self._unit:damage():run_sequence_simple("anim_fire_stop_seq")
+	end
+
 	if not self._shooting then
 		return
 	end

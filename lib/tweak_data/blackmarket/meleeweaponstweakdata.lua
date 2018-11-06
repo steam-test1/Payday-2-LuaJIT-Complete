@@ -2778,6 +2778,48 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	}
 	self.melee_weapons.aziz.repeat_expire_t = 0.36
 	self.melee_weapons.aziz.stats.concealment = 29
+	self.melee_weapons.hauteur = {
+		name_id = "bm_melee_hauteur",
+		animation = nil,
+		anim_attack_vars = {
+			"var1"
+		},
+		anim_global_param = "melee_hauteur",
+		texture_bundle_folder = "ktm",
+		type = "knife",
+		align_objects = {
+			"a_weapon_right"
+		},
+		unit = "units/pd2_dlc_ktm/weapons/wpn_fps_mel_hauteur/wpn_fps_mel_hauteur",
+		third_unit = "units/pd2_dlc_ktm/weapons/wpn_fps_mel_hauteur/wpn_fps_mel_hauteur",
+		sounds = {}
+	}
+	self.melee_weapons.hauteur.sounds.equip = "hauteur_equip"
+	self.melee_weapons.hauteur.sounds.hit_air = "hauteur_hit_air"
+	self.melee_weapons.hauteur.sounds.hit_gen = "hauteur_hit_gen"
+	self.melee_weapons.hauteur.sounds.hit_body = "hauteur_hit_body"
+	self.melee_weapons.hauteur.sounds.charge = "hauteur_charge"
+	self.melee_weapons.hauteur.melee_charge_shaker = "player_melee_charge_wing"
+	self.melee_weapons.hauteur.stats = {
+		weapon_type = "sharp",
+		min_damage = 7,
+		max_damage = 45,
+		min_damage_effect = 1,
+		max_damage_effect = 1,
+		charge_time = 3.5,
+		range = 150,
+		concealment = 30,
+		remove_weapon_movement_penalty = true
+	}
+	self.melee_weapons.hauteur.repeat_expire_t = 0.6
+	self.melee_weapons.hauteur.expire_t = 1.1
+	self.melee_weapons.hauteur.melee_damage_delay = 0.13
+	self.melee_weapons.hauteur.menu_scene_anim = "menu"
+	self.melee_weapons.hauteur.anims = {
+		var1_attack = {
+			anim = "var1"
+		}
+	}
 	self.melee_weapons.shock = deep_clone(self.melee_weapons.kabar)
 	self.melee_weapons.shock.name_id = "bm_melee_shock"
 	self.melee_weapons.shock.dlc = nil

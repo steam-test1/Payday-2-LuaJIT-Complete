@@ -149,12 +149,7 @@ function ActionSpooc:init(action_desc, common_data)
 		self:_wait()
 	end
 
-	if self:_use_christmas_sounds() then
-		self._unit:sound():play("cloaker_detect_christmas_mono", nil, nil)
-	else
-		self._unit:sound():play("cloaker_detect_mono", nil, nil)
-	end
-
+	self._unit:sound():play(self:get_sound_event("detect"))
 	self._unit:damage():run_sequence_simple("turn_on_spook_lights")
 
 	local r = LevelsTweakData.LevelType.Russia
@@ -172,13 +167,9 @@ end
 
 function ActionSpooc:on_exit()
 	if self._unit:character_damage():dead() then
-		if self:_use_christmas_sounds() then
-			self._unit:sound():play("cloaker_detect_christmas_stop", nil, nil)
-		else
-			self._unit:sound():play("cloaker_detect_stop", nil, nil)
-		end
+		self._unit:sound():play(self:get_sound_event("detect_stop"))
 	else
-		self._unit:sound():play("cloaker_presence_loop", nil, nil)
+		self._unit:sound():play(self._unit:base():char_tweak().spawn_sound_event)
 
 		if self._is_local and self._taunt_at_beating_played and not self._unit:sound():speaking(TimerManager:game():time()) then
 			self._unit:sound():say(self._taunt_after_assault, true, true)
@@ -1048,11 +1039,7 @@ function ActionSpooc:anim_act_clbk(anim_act)
 
 		self._stroke_t = TimerManager:game():time()
 
-		if Global.level_data.level_id == "pines" or Global.level_data.level_id == "cane" then
-			self._unit:sound():play("cloaker_detect_christmas_stop", nil, nil)
-		else
-			self._unit:sound():play("cloaker_detect_stop", nil, nil)
-		end
+		self._unit:sound():play(self:get_sound_event("detect_stop"))
 
 		if not self._is_local then
 			self._unit:sound():say(sound_string, true, true)
@@ -1447,4 +1434,19 @@ function ActionSpooc:_use_christmas_sounds()
 	local tweak = tweak_data.narrative.jobs[managers.job:current_real_job_id()]
 
 	return tweak and tweak.is_christmas_heist
+end
+
+function ActionSpooc:get_sound_event(sound)
+	local sound_events = self._unit:base():char_tweak().spooc_sound_events
+	local event = sound_events[sound]
+
+	if self:_use_christmas_sounds() then
+		local christmas_events = {
+			detect_stop = "cloaker_detect_christmas_stop",
+			detect = "cloaker_detect_christmas_mono"
+		}
+		event = christmas_events[sound] or event
+	end
+
+	return event
 end

@@ -2,18 +2,21 @@ LevelsTweakData = LevelsTweakData or class()
 LevelsTweakData.LevelType = {
 	America = "america",
 	Russia = "russia",
-	Zombie = "zombie"
+	Zombie = "zombie",
+	Murkywater = "murkywater"
 }
 
 function LevelsTweakData:init()
 	local america = LevelsTweakData.LevelType.America
 	local russia = LevelsTweakData.LevelType.Russia
 	local zombie = LevelsTweakData.LevelType.Zombie
+	local murkywater = LevelsTweakData.LevelType.Murkywater
 	self.ai_groups = {
 		default = america,
 		america = america,
 		russia = russia,
-		zombie = zombie
+		zombie = zombie,
+		murkywater = murkywater
 	}
 	self.framing_frame_1 = {
 		name_id = "heist_framing_frame_1_hl",
@@ -1791,6 +1794,23 @@ function LevelsTweakData:init()
 		narrator = "locke",
 		player_sequence = "spawn_prop_tux"
 	}
+	self.bph = {
+		name_id = "heist_bph_hl",
+		briefing_id = "heist_bph_briefing",
+		package = "packages/dlcs/bph/job_bph",
+		briefing_dialog = "Play_loc_bph_brf",
+		world_name = "narratives/locke/bph",
+		intro_event = "Play_loc_bph_intro",
+		outro_event = "Play_loc_bph_end_win",
+		failure_event = "Play_loc_bph_end_fail",
+		music = "heist",
+		cube = "cube_apply_heist_bank",
+		max_bags = 20,
+		ai_group_type = murkywater,
+		player_sequence = "spawn_prop_sneak_suit",
+		narrator = "locke",
+		load_screen = "guis/dlcs/bph/textures/loading/job_bph_df"
+	}
 	self.skm_mus = {
 		name_id = "heist_skm_mus_h1",
 		briefing_id = "heist_skm_mus_briefing",
@@ -1970,7 +1990,8 @@ function LevelsTweakData:init()
 		"skm_mus",
 		"skm_red2",
 		"skm_run",
-		"skm_watchdogs_stage2"
+		"skm_watchdogs_stage2",
+		"bph"
 	}
 
 	if SystemInfo:distribution() == Idstring("STEAM") then

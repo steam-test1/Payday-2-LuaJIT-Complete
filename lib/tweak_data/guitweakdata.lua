@@ -1905,7 +1905,7 @@ function GuiTweakData:init()
 			item_class = "CrimeNetSidebarMutatorsItem"
 		},
 		{
-			visible_callback = "clbk_visible_not_in_lobby",
+			visible_callback = "clbk_visible_crime_spree",
 			name_id = "cn_crime_spree",
 			callback = "clbk_crime_spree",
 			id = "crime_spree",
@@ -5063,9 +5063,14 @@ function GuiTweakData:init()
 	}
 
 	table.insert(self.new_heists, {
-		name_id = "menu_nh_rum",
-		texture_path = "guis/textures/pd2/new_heists/rum",
-		url = "https://steamcommunity.com/games/218620/announcements/detail/1703940960408401455"
+		name_id = "menu_nh_crimefest_2018",
+		texture_path = "guis/textures/pd2/new_heists/crimefest_2018",
+		url = "https://www.overkillsoftware.com/games/breakingnews/"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_crimefest_2018_sale",
+		texture_path = "guis/textures/pd2/new_heists/crimefest_2018_sale",
+		url = "https://store.steampowered.com/bundle/3756/PAYDAY_2_Ultimate_Edition/ "
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_icebreaker",

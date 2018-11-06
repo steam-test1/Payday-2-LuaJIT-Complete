@@ -1359,6 +1359,15 @@ function HudIconsTweakData:init()
 			32
 		}
 	}
+	self.equipment_key_chain = {
+		texture = "guis/textures/pd2/hud_pickups",
+		texture_rect = {
+			128,
+			160,
+			32,
+			32
+		}
+	}
 	self.equipment_hand = {
 		texture = "guis/textures/pd2/hud_pickups",
 		texture_rect = {
@@ -12786,6 +12795,105 @@ function HudIconsTweakData:init()
 		texture_rect = {
 			263,
 			350,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_BainPrisonHeist_AllDiffs_D0 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_bph",
+		texture_rect = {
+			2,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_BainPrisonHeist_AllDiffs_D1 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_bph",
+		texture_rect = {
+			2,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_BainPrisonHeist_AllDiffs_D2 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_bph",
+		texture_rect = {
+			89,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_BainPrisonHeist_AllDiffs_D3 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_bph",
+		texture_rect = {
+			2,
+			176,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_BainPrisonHeist_AllDiffs_D4 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_bph",
+		texture_rect = {
+			89,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_BainPrisonHeist_AllDiffs_D5 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_bph",
+		texture_rect = {
+			176,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_BainPrisonHeist_AllDiffs_D6 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_bph",
+		texture_rect = {
+			2,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_BainPrisonHeist_AllDiffs_OD_D6 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_bph",
+		texture_rect = {
+			176,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_BainPrisonHeist_Another = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_bph",
+		texture_rect = {
+			263,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_BainPrisonHeist_Beacon = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_bph",
+		texture_rect = {
+			89,
+			176,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_BainPrisonHeist_PrisonRules = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_bph",
+		texture_rect = {
+			2,
+			2,
 			85,
 			85
 		}
