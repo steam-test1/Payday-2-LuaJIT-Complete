@@ -250,6 +250,7 @@ action_variants.tank_medic.heal = action_variants.medic.heal
 action_variants.tank_mini = action_variants.tank
 action_variants.heavy_swat_sniper = action_variants.heavy_swat
 action_variants.captain = security_variant
+action_variants.shadow_spooc = security_variant
 action_variants.civilian = {
 	idle = CopActionIdle,
 	act = CopActionAct,

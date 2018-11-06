@@ -2,6 +2,7 @@ MusicManager = MusicManager or class(CoreMusicManager)
 
 function MusicManager:init()
 	MusicManager.super.init(self)
+	self:post_event("music_uno_fade_reset")
 end
 
 function MusicManager:init_globals(...)
@@ -25,6 +26,10 @@ function MusicManager:on_steam_overlay_close()
 	if SystemInfo:platform() ~= Idstring("X360") then
 		self:clbk_game_has_music_control(true)
 	end
+end
+
+function MusicManager:on_mission_end()
+	self:post_event("music_uno_fade_reset")
 end
 
 function MusicManager:track_listen_start(event, track)

@@ -28,7 +28,8 @@ function PlayerStyleElement:_build_panel(panel, panel_sizer)
 		panel = panel,
 		sizer = style_sizer,
 		options = {
-			"scrub"
+			"scrub",
+			"none"
 		},
 		value = self._hed.style
 	}

@@ -15,7 +15,7 @@ function UnoPianoBase:note_played(note)
 	end
 
 	local new_index = math.min(#self._notes_played + 1, self.SEQUENCE_LENGTH)
-	self._notes_played[new_index] = note:key()
+	self._notes_played[new_index] = note
 
 	if self:validate_sequence(self._notes_played) then
 		self._unit:damage():run_sequence_simple("puzzle_done")
@@ -27,13 +27,7 @@ function UnoPianoBase:validate_sequence(sequence)
 		return false
 	end
 
-	local correct_sequence = tweak_data.safehouse.uno_notes
+	local sequence_key = string.join(":", sequence):key()
 
-	for i, note in ipairs(sequence) do
-		if note ~= correct_sequence[i] then
-			return false
-		end
-	end
-
-	return true
+	return sequence_key == tweak_data.safehouse.uno_notes
 end

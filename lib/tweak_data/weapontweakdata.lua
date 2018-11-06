@@ -46,6 +46,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_hk21_npc()
 	self:_init_data_m249_npc()
 	self:_init_data_contraband_npc()
+	self:_init_data_smoke_npc()
 	self:_init_data_mini_npc()
 	self:_init_data_m4_crew()
 	self:_init_data_m14_crew()
@@ -267,6 +268,7 @@ function WeaponTweakData:_set_hard()
 	self.crate_turret_module.HEALTH_INIT = 875
 	self.crate_turret_module.SHIELD_HEALTH_INIT = 70
 	self.crate_turret_module.DAMAGE = 0.2
+	self.smoke_npc.DAMAGE = 0.6
 end
 
 function WeaponTweakData:_set_overkill()
@@ -319,6 +321,7 @@ function WeaponTweakData:_set_easy_wish()
 	self.crate_turret_module.SHIELD_HEALTH_INIT = 700
 	self.crate_turret_module.DAMAGE = 3.5
 	self.crate_turret_module.CLIP_SIZE = 800
+	self.smoke_npc.DAMAGE = 1
 end
 
 function WeaponTweakData:_set_overkill_290()
@@ -363,6 +366,7 @@ function WeaponTweakData:_set_sm_wish()
 	self.crate_turret_module.SHIELD_HEALTH_INIT = 350
 	self.crate_turret_module.DAMAGE = 3.5
 	self.crate_turret_module.CLIP_SIZE = 800
+	self.smoke_npc.DAMAGE = 5
 end
 
 function WeaponTweakData:_init_data_npc_melee()
@@ -677,6 +681,22 @@ function WeaponTweakData:_init_data_g36_npc()
 	self.g36_npc.alert_size = 5000
 	self.g36_npc.suppression = 1
 	self.g36_npc.FIRE_MODE = "auto"
+end
+
+function WeaponTweakData:_init_data_smoke_npc()
+	self.smoke_npc.categories = clone(self.g36.categories)
+	self.smoke_npc.sounds.prefix = "g36_npc"
+	self.smoke_npc.use_data.selection_index = SELECTION.PRIMARY
+	self.smoke_npc.DAMAGE = 3
+	self.smoke_npc.muzzleflash = "effects/payday2/particles/weapons/heat/flash"
+	self.smoke_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
+	self.smoke_npc.CLIP_AMMO_MAX = 30
+	self.smoke_npc.NR_CLIPS_MAX = 5
+	self.smoke_npc.auto.fire_rate = 0.15
+	self.smoke_npc.hold = "rifle"
+	self.smoke_npc.alert_size = 5000
+	self.smoke_npc.suppression = 1
+	self.smoke_npc.FIRE_MODE = "auto"
 end
 
 function WeaponTweakData:_init_data_mp9_npc()
@@ -23486,6 +23506,12 @@ function WeaponTweakData:_create_table_structure()
 	}
 	self.crate_turret_module = {
 		sounds = {},
+		auto = {}
+	}
+	self.smoke_npc = {
+		usage = "is_rifle",
+		sounds = {},
+		use_data = {},
 		auto = {}
 	}
 	self.ceiling_turret_module = {

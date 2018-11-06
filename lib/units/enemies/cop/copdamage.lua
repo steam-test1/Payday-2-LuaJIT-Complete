@@ -101,7 +101,11 @@ function CopDamage:init(unit)
 	self._autotarget_data = {
 		fast = unit:get_object(Idstring("Spine1"))
 	}
-	self._pickup = "ammo"
+
+	if not char_tweak.do_not_drop_ammo then
+		self._pickup = "ammo"
+	end
+
 	self._listener_holder = EventListenerHolder:new()
 
 	if char_tweak.permanently_invulnerable or self.immortal then

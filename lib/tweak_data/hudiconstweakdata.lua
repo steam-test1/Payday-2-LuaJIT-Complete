@@ -1512,6 +1512,15 @@ function HudIconsTweakData:init()
 			32
 		}
 	}
+	self.equipment_mayan_gold = {
+		texture = "guis/dlcs/uno/textures/pd2/hud_pickups_uno",
+		texture_rect = {
+			0,
+			0,
+			32,
+			32
+		}
+	}
 	self.interaction_free = {
 		texture = "guis/textures/hud_icons",
 		texture_rect = {
@@ -13015,15 +13024,6 @@ function HudIconsTweakData:init()
 			85
 		}
 	}
-	self.C_Locke_H_WhiteHouse_AHeist = {
-		texture = "guis/dlcs/trk/atlases/achievement_atlas_vit",
-		texture_rect = {
-			176,
-			263,
-			85,
-			85
-		}
-	}
 	self.C_Locke_H_WhiteHouse_AllDiffs_D0 = {
 		texture = "guis/dlcs/trk/atlases/achievement_atlas_vit",
 		texture_rect = {
@@ -13101,6 +13101,15 @@ function HudIconsTweakData:init()
 		texture_rect = {
 			263,
 			350,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_WhiteHouse_HeistToRemember = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_vit",
+		texture_rect = {
+			176,
+			263,
 			85,
 			85
 		}
@@ -13191,6 +13200,15 @@ function HudIconsTweakData:init()
 		texture_rect = {
 			89,
 			89,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_WhiteHouse_Finale = {
+		texture = "guis/dlcs/trk/atlases/fin_1",
+		texture_rect = {
+			0,
+			0,
 			85,
 			85
 		}

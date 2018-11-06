@@ -627,6 +627,14 @@ function CarryTweakData:init(tweak_data)
 			SO_category = "enemies"
 		}
 	}
+	self.uno_gold = {
+		type = "heavy",
+		name_id = "hud_carry_mayan_gold",
+		visual_unit_name = "units/payday2/characters/npc_acc_loot_bag_1/npc_acc_loot_bag_1",
+		AI_carry = {
+			SO_category = "enemies"
+		}
+	}
 	self.goat = {
 		type = "medium",
 		name_id = "hud_carry_goat",

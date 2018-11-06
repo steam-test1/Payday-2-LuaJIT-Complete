@@ -7742,6 +7742,62 @@ function DLCTweakData:init(tweak_data)
 			amount = 1
 		}
 	}
+	self.sms_bundle_1 = {
+		dlc = "has_stat",
+		stat_id = "tester",
+		content = {}
+	}
+	self.sms_bundle_1.content.loot_global_value = "infamous"
+	self.sms_bundle_1.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "sms_01",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "sms_02",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "sms_03",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "sms_04",
+			amount = 1
+		}
+	}
+	self.sms_bundle_2 = {
+		dlc = "has_achievement",
+		achievement_id = "fin_1",
+		content = {}
+	}
+	self.sms_bundle_2.content.loot_global_value = "infamous"
+	self.sms_bundle_2.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "sms_05",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "sms_06",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "sms_07",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "sms_08",
+			amount = 1
+		}
+	}
 
 	self:init_generated()
 end

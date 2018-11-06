@@ -8226,6 +8226,18 @@ function init_auto_generated_achievement_data(tags)
 				tags.contracts.the_butcher
 			}
 		},
+		fin_1 = {
+			need_unlock_icons = false,
+			sort_name = "C_Locke_H_WhiteHouse_Finale",
+			icon_id = "C_Locke_H_WhiteHouse_Finale",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
 		rvd_1 = {
 			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_D0",
 			ladder = "H_Reservoir",
@@ -8495,6 +8507,99 @@ function init_auto_generated_achievement_data(tags)
 				tags.contracts.locke
 			}
 		},
+		uno_1 = {
+			sort_name = "C_Bain_H_BankAny_AGoodHaul",
+			icon_id = "C_Bain_H_BankAny_AGoodHaul",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.bain
+			}
+		},
+		uno_2 = {
+			sort_name = "C_Bain_H_DiamondStore_Hostage",
+			icon_id = "C_Bain_H_DiamondStore_Hostage",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		uno_3 = {
+			additional_id = true,
+			sort_name = "C_Bain_H_Mallcrasher_SelfCheck",
+			icon_id = "C_Bain_H_Mallcrasher_SelfCheck",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		uno_4 = {
+			sort_name = "C_Classics_H_GreenBridge_Attacked",
+			icon_id = "C_Classics_H_GreenBridge_Attacked",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.contracts.classic
+			}
+		},
+		uno_5 = {
+			sort_name = "C_Locke_H_HenrysRock_Hack",
+			icon_id = "C_Locke_H_HenrysRock_Hack",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		uno_6 = {
+			sort_name = "C_Vlad_H_Nightclub_LetThem",
+			icon_id = "C_Vlad_H_Nightclub_LetThem",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.stealth,
+				tags.contracts.vlad
+			}
+		},
+		uno_7 = {
+			additional_id = true,
+			sort_name = "C_Butcher_H_Scarface_Setting",
+			icon_id = "C_Butcher_H_Scarface_Setting",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.contracts.the_butcher
+			}
+		},
+		uno_8 = {
+			sort_name = "C_Hector_H_Watchdogs_OutOf",
+			icon_id = "C_Hector_H_Watchdogs_OutOf",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.contracts.hector
+			}
+		},
+		uno_9 = {
+			sort_name = "C_Vlad_H_XMas_Whats",
+			icon_id = "C_Vlad_H_XMas_Whats",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.contracts.vlad
+			}
+		},
 		vit_1 = {
 			icon_id = "C_Locke_H_WhiteHouse_AllDiffs_D0",
 			ladder = "H_WhiteHouse",
@@ -8624,8 +8729,8 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		vit_9 = {
-			sort_name = "C_Locke_H_WhiteHouse_AHeist",
-			icon_id = "C_Locke_H_WhiteHouse_AHeist",
+			sort_name = "C_Locke_H_WhiteHouse_HeistToRemember",
+			icon_id = "C_Locke_H_WhiteHouse_HeistToRemember",
 			tags = {
 				tags.progress.heisting,
 				tags.difficulty.normal,
@@ -13808,100 +13913,6 @@ function init_auto_generated_achievement_data(tags)
 				tags.contracts.the_continental
 			}
 		},
-		uno_1 = {
-			sort_name = "C_Bain_H_BankAny_AGoodHaul",
-			icon_id = "C_Bain_H_BankAny_AGoodHaul",
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.normal,
-				tags.tactics.loud,
-				tags.tactics.stealth,
-				tags.contracts.bain
-			}
-		},
-		uno_2 = {
-			sort_name = "C_Bain_H_DiamondStore_Hostage",
-			icon_id = "C_Bain_H_DiamondStore_Hostage",
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.overkill,
-				tags.tactics.loud,
-				tags.tactics.stealth,
-				tags.contracts.bain
-			}
-		},
-		uno_3 = {
-			additional_id = true,
-			sort_name = "C_Bain_H_Mallcrasher_SelfCheck",
-			icon_id = "C_Bain_H_Mallcrasher_SelfCheck",
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.normal,
-				tags.tactics.loud,
-				tags.contracts.bain
-			}
-		},
-		uno_4 = {
-			sort_name = "C_Classics_H_GreenBridge_Attacked",
-			icon_id = "C_Classics_H_GreenBridge_Attacked",
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.overkill,
-				tags.tactics.loud,
-				tags.contracts.classic
-			}
-		},
-		uno_5 = {
-			sort_name = "C_Locke_H_HenrysRock_Hack",
-			icon_id = "C_Locke_H_HenrysRock_Hack",
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.overkill,
-				tags.tactics.loud,
-				tags.contracts.locke
-			}
-		},
-		uno_6 = {
-			sort_name = "C_Vlad_H_Nightclub_LetThem",
-			icon_id = "C_Vlad_H_Nightclub_LetThem",
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.overkill,
-				tags.tactics.stealth,
-				tags.contracts.vlad
-			}
-		},
-		uno_7 = {
-			additional_id = true,
-			sort_name = "C_Butcher_H_Scarface_Setting",
-			icon_id = "C_Butcher_H_Scarface_Setting",
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.overkill,
-				tags.tactics.loud,
-				tags.contracts.the_butcher
-			}
-		},
-		uno_8 = {
-			sort_name = "C_Hector_H_Watchdogs_OutOf",
-			icon_id = "C_Hector_H_Watchdogs_OutOf",
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.overkill,
-				tags.tactics.loud,
-				tags.contracts.hector
-			}
-		},
-		uno_9 = {
-			sort_name = "C_Vlad_H_XMas_Whats",
-			icon_id = "C_Vlad_H_XMas_Whats",
-			tags = {
-				tags.progress.heisting,
-				tags.difficulty.overkill,
-				tags.tactics.loud,
-				tags.contracts.vlad
-			}
-		},
 		bph_1 = {
 			icon_id = "C_Locke_H_HellsIsland_AllDiffs_D0",
 			ladder = "H_HellsIsland",
@@ -13919,7 +13930,7 @@ function init_auto_generated_achievement_data(tags)
 			icon_id = "C_Locke_H_HellsIsland_Another",
 			tags = {
 				tags.progress.heisting,
-				tags.difficulty.normal,
+				tags.difficulty.overkill,
 				tags.tactics.loud,
 				tags.contracts.locke
 			}

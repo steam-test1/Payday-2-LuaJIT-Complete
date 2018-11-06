@@ -1040,6 +1040,41 @@ function TweakData:init()
 			color = Color(1, 0, 0, 0),
 			timer = TimerManager:main()
 		},
+		white_fade_in = {
+			blend_mode = "add",
+			sustain = 0,
+			play_paused = true,
+			fade_in = 0,
+			fade_out = 3,
+			color = Color(1, 1, 1, 1),
+			timer = TimerManager:main()
+		},
+		white_fade_out = {
+			blend_mode = "add",
+			sustain = 30,
+			play_paused = true,
+			fade_in = 3,
+			fade_out = 0,
+			color = Color(1, 1, 1, 1),
+			timer = TimerManager:main()
+		},
+		white_fade_out_permanent = {
+			blend_mode = "add",
+			fade_out = 0,
+			play_paused = true,
+			fade_in = 1,
+			color = Color(1, 1, 1, 1),
+			timer = TimerManager:main()
+		},
+		white_fade_out_in = {
+			blend_mode = "add",
+			sustain = 1,
+			play_paused = true,
+			fade_in = 1,
+			fade_out = 1,
+			color = Color(1, 1, 1, 1),
+			timer = TimerManager:main()
+		},
 		element_fade_in = {
 			blend_mode = "normal",
 			sustain = 0,

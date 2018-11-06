@@ -235,7 +235,8 @@ function ElementAreaTrigger:project_instigators()
 					"box_unknown_tag",
 					"battery",
 					"box_unknown",
-					"black_tablet"
+					"black_tablet",
+					"uno_gold"
 				}
 
 				if table.contains(carry_list, carry_id) then

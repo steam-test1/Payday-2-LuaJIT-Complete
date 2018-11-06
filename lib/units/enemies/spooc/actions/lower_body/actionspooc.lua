@@ -162,6 +162,10 @@ function ActionSpooc:init(action_desc, common_data)
 		self._taunt_after_assault = "rcloaker_taunt_after_assault"
 	end
 
+	local spooc_sound_events = self._common_data.char_tweak.spooc_sound_events or {}
+	self._taunt_during_assault = spooc_sound_events.taunt_during_assault or self._taunt_during_assault
+	self._taunt_after_assault = spooc_sound_events.taunt_after_assault or self._taunt_after_assault
+
 	return true
 end
 

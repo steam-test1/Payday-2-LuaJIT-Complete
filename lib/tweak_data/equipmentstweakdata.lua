@@ -234,6 +234,13 @@ function EquipmentsTweakData:init()
 			text_id = "hud_int_equipment_pickup_presidential_keycard",
 			icon = "equipment_bank_manager_key"
 		},
+		mayan_gold_bar = {
+			sync_possession = true,
+			action_message = "mayan_gold",
+			transfer_quantity = 4,
+			text_id = "hud_int_equipment_mayan_gold_bar",
+			icon = "equipment_mayan_gold"
+		},
 		help_keycard = {
 			sync_possession = true,
 			action_message = "bank_manager_key_obtained",

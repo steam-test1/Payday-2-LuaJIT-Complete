@@ -2154,15 +2154,20 @@ function CustomSafehouseTweakData:_init_uno()
 		"uno_9",
 		"wwh_9"
 	}
-	self.uno_notes = {
-		"26c470e6125f7011",
-		"f6341f24fdee897e",
-		"7246dea0602ee2bc",
-		"4bae9a1ce071f5ac",
-		"88ceb778cad2166a",
-		"88ceb778cad2166a",
-		"4bae9a1ce071f5ac",
-		"7246dea0602ee2bc",
-		"f6341f24fdee897e"
+	self.uno_notes = "07729e9e9633c57e"
+	self.uno_door_riddles = {
+		"74650960625584b5",
+		"fb5c57e8ac77053c",
+		"7ace1515c20c617f",
+		"14a99f4af0044252",
+		"999dce46997b9b8b",
+		"7e386d403e2af3b0",
+		"7a8274cf00687c19",
+		"4287ec39bce6ba9c",
+		"2ea0f239dec3d4d2",
+		"a52531d7c3a90a88",
+		"b4381b950c7d4e0f",
+		"c89511e5a2305e79",
+		"2b77295d9511fa5f"
 	}
 end

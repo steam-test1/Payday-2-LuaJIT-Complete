@@ -111,6 +111,22 @@ function LootDropTweakData:init_generated(tweak_data)
 		category = "infamous",
 		ignore_ulti = true
 	}
+	self.global_values.sms = {
+		name_id = "bm_global_value_sms",
+		desc_id = "menu_l_global_value_sms",
+		unlock_id = "bm_global_value_sms_unlock",
+		color = tweak_data.screen_colors.infamous_color,
+		dlc = true,
+		free = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 499,
+		category = "infamous",
+		ignore_ulti = true
+	}
 	self.global_values.tam = {
 		name_id = "bm_global_value_tam",
 		desc_id = "menu_l_global_value_infamous",

@@ -72,7 +72,8 @@ for _, tweak_table_name in pairs({
 	"shield",
 	"tank",
 	"spooc",
-	"taser"
+	"taser",
+	"shadow_spooc"
 }) do
 	logic_variants[tweak_table_name] = clone(security_variant)
 end
@@ -87,6 +88,8 @@ logic_variants.tank.attack = TankCopLogicAttack
 logic_variants.tank_hw = logic_variants.tank
 logic_variants.spooc.idle = SpoocLogicIdle
 logic_variants.spooc.attack = SpoocLogicAttack
+logic_variants.shadow_spooc.idle = SpoocLogicIdle
+logic_variants.shadow_spooc.attack = SpoocLogicAttack
 logic_variants.taser.attack = TaserLogicAttack
 logic_variants.tank_medic = logic_variants.tank
 logic_variants.tank_mini = logic_variants.tank

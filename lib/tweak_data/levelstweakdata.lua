@@ -1906,7 +1906,10 @@ function LevelsTweakData:init()
 		briefing_dialog = "Play_loc_vit_brf",
 		world_name = "narratives/locke/vit",
 		intro_event = "Play_loc_vit_intro",
-		outro_event = "Play_loc_vit_end_win",
+		outro_event = {
+			"Play_loc_vit_end_win",
+			"Play_pln_uno_end_win"
+		},
 		failure_event = "Play_loc_vit_end_fail",
 		music = "heist",
 		cube = "cube_apply_heist_bank",

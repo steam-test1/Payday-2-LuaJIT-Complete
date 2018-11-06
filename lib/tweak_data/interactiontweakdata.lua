@@ -5719,6 +5719,49 @@ function InteractionTweakData:init(tweak_data)
 		interact_distance = 200,
 		start_active = false
 	}
+	self.uno_pull_lever = {
+		text_id = "hud_int_hold_pull_lever",
+		action_text_id = "hud_action_pulling_lever",
+		interact_distance = 200,
+		start_active = false,
+		timer = 1
+	}
+	self.uno_open_door = {
+		text_id = "hud_int_hold_open_door",
+		action_text_id = "hud_action_opening_door",
+		interact_distance = 200,
+		start_active = false,
+		timer = 1,
+		can_interact_only_in_civilian = true
+	}
+	self.uno_hold_pku_gold = {
+		text_id = "hud_int_hold_pku_uno_gold",
+		action_text_id = "hud_action_taking_uno_gold",
+		timer = 1,
+		interact_distance = 200,
+		start_active = false
+	}
+	self.uno_hold_pku_gold_bar = {
+		text_id = "hud_int_take_mayan_gold_bar"
+	}
+	self.uno_hold_pku_gold.action_text_id = "hud_action_taking_mayan_gold_bar"
+	self.uno_hold_pku_gold_bar.timer = 1
+	self.uno_hold_pku_gold_bar.interact_distance = 200
+	self.uno_hold_pku_gold_bar.start_active = false
+	self.uno_press_activate = {
+		text_id = "hud_int_press_activate",
+		timer = 1,
+		interact_distance = 150,
+		start_active = false
+	}
+	self.uno_mayan_gold_bar = {
+		text_id = "hud_int_place_mayan_gold_bar",
+		action_text_id = "hud_action_placing_mayan_gold_bar",
+		equipment_text_id = "hud_int_equipment_no_mayan_gold",
+		special_equipment = "mayan_gold_bar",
+		equipment_consume = true,
+		start_active = true
+	}
 	self.hold_remove_parts = {
 		text_id = "hud_int_hold_remove_parts",
 		action_text_id = "hud_action_remove_parts",

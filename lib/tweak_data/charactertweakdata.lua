@@ -63,6 +63,7 @@ function CharacterTweakData:init(tweak_data)
 	self:_init_hector_boss_no_armor(presets)
 	self:_init_tank(presets)
 	self:_init_medic(presets)
+	self:_init_shadow_spooc(presets)
 	self:_init_spooc(presets)
 	self:_init_shield(presets)
 	self:_init_phalanx_minion(presets)
@@ -2372,6 +2373,62 @@ function CharacterTweakData:_init_spooc(presets)
 	}
 
 	table.insert(self._enemy_list, "spooc")
+end
+
+function CharacterTweakData:_init_shadow_spooc(presets)
+	self.shadow_spooc = deep_clone(presets.base)
+	self.shadow_spooc.tags = {
+		"law"
+	}
+	self.shadow_spooc.experience = {}
+	self.shadow_spooc.weapon = deep_clone(presets.weapon.good)
+	self.shadow_spooc.detection = presets.detection.normal
+	self.shadow_spooc.HEALTH_INIT = 100
+	self.shadow_spooc.headshot_dmg_mul = 6
+	self.shadow_spooc.move_speed = presets.move_speed.lightning
+	self.shadow_spooc.no_retreat = true
+	self.shadow_spooc.no_arrest = true
+	self.shadow_spooc.damage.hurt_severity = presets.hurt_severities.only_fire_and_poison_hurts
+	self.shadow_spooc.surrender_break_time = {
+		4,
+		6
+	}
+	self.shadow_spooc.suppression = nil
+	self.shadow_spooc.surrender = nil
+	self.shadow_spooc.silent_priority_shout = "f37"
+	self.shadow_spooc.priority_shout_max_dis = 700
+	self.shadow_spooc.rescue_hostages = false
+	self.shadow_spooc.spooc_attack_timeout = {
+		10,
+		10
+	}
+	self.shadow_spooc.spooc_attack_beating_time = {
+		3,
+		3
+	}
+	self.shadow_spooc.spooc_attack_use_smoke_chance = 0
+	self.shadow_spooc.weapon_voice = "3"
+	self.shadow_spooc.experience.cable_tie = "tie_swat"
+	self.shadow_spooc.speech_prefix_p1 = "uno_clk"
+	self.shadow_spooc.speech_prefix_count = nil
+	self.shadow_spooc.access = "spooc"
+	self.shadow_spooc.use_radio = nil
+	self.shadow_spooc.use_animation_on_fire_damage = false
+	self.shadow_spooc.flammable = false
+	self.shadow_spooc.dodge = presets.dodge.ninja
+	self.shadow_spooc.chatter = presets.enemy_chatter.no_chatter
+	self.shadow_spooc.do_not_drop_ammo = true
+	self.shadow_spooc.steal_loot = nil
+	self.shadow_spooc.spawn_sound_event = "uno_cloaker_presence_loop"
+	self.shadow_spooc.die_sound_event = "uno_cloaker_presence_stop"
+	self.shadow_spooc.spooc_sound_events = {
+		detect_stop = "uno_cloaker_detect_stop",
+		taunt_during_assault = "",
+		taunt_after_assault = "",
+		detect = "uno_cloaker_detect"
+	}
+
+	table.insert(self._enemy_list, "shadow_spooc")
 end
 
 function CharacterTweakData:_init_shield(presets)
@@ -10497,7 +10554,8 @@ function CharacterTweakData:_create_table_structure()
 		"sg417",
 		"svdsil_snp",
 		"mini",
-		"heavy_zeal_sniper"
+		"heavy_zeal_sniper",
+		"smoke"
 	}
 	self.weap_unit_names = {
 		Idstring("units/payday2/weapons/wpn_npc_beretta92/wpn_npc_beretta92"),
@@ -10529,7 +10587,8 @@ function CharacterTweakData:_create_table_structure()
 		Idstring("units/pd2_dlc_chico/weapons/wpn_npc_sg417/wpn_npc_sg417"),
 		Idstring("units/pd2_dlc_spa/weapons/wpn_npc_svd_silenced/wpn_npc_svd_silenced"),
 		Idstring("units/pd2_dlc_drm/weapons/wpn_npc_mini/wpn_npc_mini"),
-		Idstring("units/pd2_dlc_drm/weapons/wpn_npc_heavy_zeal_sniper/wpn_npc_heavy_zeal_sniper")
+		Idstring("units/pd2_dlc_drm/weapons/wpn_npc_heavy_zeal_sniper/wpn_npc_heavy_zeal_sniper"),
+		Idstring("units/pd2_dlc_uno/weapons/wpn_npc_smoke/wpn_npc_smoke")
 	}
 end
 
@@ -12060,6 +12119,10 @@ function CharacterTweakData:_set_hard()
 	self.presets.weapon.gang_member.is_shotgun_mag = deep_clone(self.presets.weapon.gang_member.is_shotgun_pump)
 	self.flashbang_multiplier = 1.25
 	self.concussion_multiplier = 1
+	self.shadow_spooc.shadow_spooc_attack_timeout = {
+		8,
+		10
+	}
 	self.spooc.spooc_attack_timeout = {
 		8,
 		10
@@ -12675,6 +12738,10 @@ function CharacterTweakData:_set_overkill()
 
 	self:_set_characters_weapon_preset("good")
 
+	self.shadow_spooc.shadow_spooc_attack_timeout = {
+		6,
+		8
+	}
 	self.spooc.spooc_attack_timeout = {
 		6,
 		8
@@ -12864,6 +12931,10 @@ function CharacterTweakData:_set_overkill_145()
 
 	self:_set_characters_weapon_preset("expert")
 
+	self.shadow_spooc.shadow_spooc_attack_timeout = {
+		3.5,
+		5
+	}
 	self.spooc.spooc_attack_timeout = {
 		3.5,
 		5
@@ -13389,6 +13460,10 @@ function CharacterTweakData:_set_easy_wish()
 
 	self:_set_characters_weapon_preset("expert")
 
+	self.shadow_spooc.shadow_spooc_attack_timeout = {
+		3,
+		4
+	}
 	self.spooc.spooc_attack_timeout = {
 		3,
 		4
@@ -14036,6 +14111,10 @@ function CharacterTweakData:_set_overkill_290()
 
 	self:_set_characters_weapon_preset("deathwish")
 
+	self.shadow_spooc.shadow_spooc_attack_timeout = {
+		3,
+		4
+	}
 	self.spooc.spooc_attack_timeout = {
 		3,
 		4
@@ -15251,6 +15330,10 @@ function CharacterTweakData:_set_sm_wish()
 		3,
 		4
 	}
+	self.shadow_spooc.shadow_spooc_attack_timeout = {
+		3,
+		4
+	}
 	self.sniper.weapon.is_rifle.FALLOFF = {
 		{
 			dmg_mul = 12,
@@ -15929,6 +16012,7 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 	self.tank_mini.HEALTH_INIT = self.tank_mini.HEALTH_INIT * hp_mul
 	self.tank_medic.HEALTH_INIT = self.tank_medic.HEALTH_INIT * hp_mul
 	self.spooc.HEALTH_INIT = self.spooc.HEALTH_INIT * hp_mul
+	self.shadow_spooc.HEALTH_INIT = self.shadow_spooc.HEALTH_INIT * hp_mul
 	self.shield.HEALTH_INIT = self.shield.HEALTH_INIT * hp_mul
 	self.phalanx_minion.HEALTH_INIT = self.phalanx_minion.HEALTH_INIT * hp_mul
 	self.phalanx_vip.HEALTH_INIT = self.phalanx_vip.HEALTH_INIT * hp_mul
@@ -15981,6 +16065,10 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 
 	if self.tank.headshot_dmg_mul then
 		self.tank.headshot_dmg_mul = self.tank.headshot_dmg_mul * hs_mul
+	end
+
+	if self.shadow_spooc.headshot_dmg_mul then
+		self.shadow_spooc.headshot_dmg_mul = self.shadow_spooc.headshot_dmg_mul * hs_mul
 	end
 
 	if self.spooc.headshot_dmg_mul then
@@ -16058,7 +16146,8 @@ function CharacterTweakData:_multiply_all_speeds(walk_mul, run_mul)
 		"shield",
 		"taser",
 		"city_swat",
-		"fbi_swat"
+		"fbi_swat",
+		"shadow_spooc"
 	}
 
 	table.insert(all_units, "bolivian")
@@ -16081,6 +16170,7 @@ function CharacterTweakData:_multiply_all_speeds(walk_mul, run_mul)
 	self.biker.SPEED_RUN = self.biker.SPEED_RUN * run_mul
 	self.tank.SPEED_RUN = self.tank.SPEED_RUN * run_mul
 	self.spooc.SPEED_RUN = self.spooc.SPEED_RUN * run_mul
+	self.shadow_spooc.SPEED_RUN = self.spooc.SPEED_RUN * run_mul
 	self.shield.SPEED_RUN = self.shield.SPEED_RUN * run_mul
 	self.taser.SPEED_RUN = self.taser.SPEED_RUN * run_mul
 	self.city_swat.SPEED_RUN = self.city_swat.SPEED_RUN * run_mul
@@ -16698,6 +16788,13 @@ function CharacterTweakData:character_map()
 			path = "units/pd2_dlc_vit/characters/",
 			list = {
 				"ene_murkywater_secret_service"
+			}
+		},
+		uno = {
+			path = "units/pd2_dlc_uno/characters/",
+			list = {
+				"ene_shadow_cloaker_1",
+				"ene_shadow_cloaker_2"
 			}
 		}
 	}

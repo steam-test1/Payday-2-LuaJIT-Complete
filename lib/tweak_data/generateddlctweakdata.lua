@@ -80,6 +80,12 @@ function DLCTweakData:init_generated()
 	}
 	self.smo_bundle.content.loot_global_value = "smo"
 	self.smo_bundle.content.loot_drops = {}
+	self.sms_bundle = {
+		dlc = "has_sms",
+		content = {}
+	}
+	self.sms_bundle.content.loot_global_value = "sms"
+	self.sms_bundle.content.loot_drops = {}
 	self.tam_bundle = {
 		free = true,
 		content = {}
