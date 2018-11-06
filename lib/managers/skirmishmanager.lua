@@ -84,6 +84,10 @@ function SkirmishManager:current_wave_number()
 end
 
 function SkirmishManager:sync_start_assault(wave_number)
+	if not self:is_skirmish() then
+		return
+	end
+
 	for i = (self._synced_wave_number or 0) + 1, wave_number, 1 do
 		self:_apply_modifiers_for_wave(i)
 	end
