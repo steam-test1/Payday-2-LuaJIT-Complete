@@ -6188,6 +6188,21 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		dlc = "toon",
 		global_value = "toon"
 	}
+	self.masks.ghx = {
+		unit = "units/pd2_dlc_ghx/masks/msk_ghx_reborn/msk_ghx_reborn",
+		name_id = "bm_msk_ghx",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "ghx",
+		sort_number = 65,
+		global_value = "pd2_clan",
+		offsets = {
+			joy = {
+				Vector3(-0.399472, 0.435252, 0),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
 	self.masks.tam = {
 		unit = "units/pd2_dlc_tam/masks/tam/msk_tam",
 		name_id = "bm_msk_tam",
