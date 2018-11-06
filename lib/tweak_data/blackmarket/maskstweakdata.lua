@@ -6257,6 +6257,15 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 			}
 		}
 	}
+	self.masks.ghm = {
+		unit = "units/pd2_dlc_ghm/masks/msk_ghm/msk_ghm",
+		name_id = "bm_msk_ghm",
+		pcs = {},
+		value = 0,
+		texture_bundle_folder = "ghm",
+		sort_number = 65,
+		global_value = "pd2_clan"
+	}
 	self.masks.tam = {
 		unit = "units/pd2_dlc_tam/masks/tam/msk_tam",
 		name_id = "bm_msk_tam",

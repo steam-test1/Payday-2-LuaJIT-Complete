@@ -51,21 +51,22 @@ function DLCTweakData:init(tweak_data)
 			sft = true,
 			pim = true,
 			cash = true,
-			steel = true,
+			ghm = true,
 			bbq = true,
-			hlm2 = true,
+			steel = true,
 			jigg = 1,
 			season_pass = true,
 			gage_pack_snp = true,
 			dlc1 = true,
+			speedrunners = 1,
 			alienware_alpha = true,
 			humble_summer_2015 = 1,
-			speedrunners = 1,
 			pd2_million = true,
-			apa = true,
+			hlm2 = true,
 			mmh = true,
 			fgl = true,
 			pd2_hw_boxing = true,
+			apa = true,
 			infamous = 1,
 			pines = true,
 			born = true,
@@ -7655,6 +7656,18 @@ function DLCTweakData:init(tweak_data)
 		{
 			type_items = "masks",
 			item_entry = "joy",
+			amount = 1
+		}
+	}
+	self.ghm_bundle = {
+		dlc = "has_ghm",
+		content = {}
+	}
+	self.ghm_bundle.content.loot_global_value = "pd2_clan"
+	self.ghm_bundle.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "ghm",
 			amount = 1
 		}
 	}

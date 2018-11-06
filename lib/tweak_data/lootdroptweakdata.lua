@@ -1698,6 +1698,22 @@ function LootDropTweakData:init(tweak_data)
 		category = "dlc",
 		ignore_ulti = true
 	}
+	self.global_values.ghm = {
+		name_id = "bm_global_value_ghm",
+		desc_id = "menu_l_global_value_ghm",
+		unlock_id = "bm_global_value_ghm_unlock",
+		color = dlc_color,
+		dlc = true,
+		free = true,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 300,
+		category = "dlc",
+		ignore_ulti = true
+	}
 	self.global_values.ztm = {
 		name_id = "bm_global_value_ztm",
 		desc_id = "menu_l_global_value_ztm",
@@ -1804,7 +1820,8 @@ function LootDropTweakData:init(tweak_data)
 		"cmt",
 		"pbm",
 		"eng",
-		"fgl"
+		"fgl",
+		"ghm"
 	}
 
 	self:init_generated(tweak_data)

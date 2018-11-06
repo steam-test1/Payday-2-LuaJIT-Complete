@@ -1474,6 +1474,15 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 			self:_achievement("sah_1")
 		}
 	})
+	table.insert(self.trophies, {
+		id = "trophy_vlads_cupcake",
+		gives_reward = false,
+		hidden_in_list = true,
+		objectives = {
+			self:_achievement("trk_gg_0"),
+			self:_achievement("trk_dm_0")
+		}
+	})
 end
 
 function CustomSafehouseTweakData:get_trophy_data(id)

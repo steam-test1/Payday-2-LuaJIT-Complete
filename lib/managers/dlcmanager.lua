@@ -580,6 +580,10 @@ function GenericDLCManager:has_pmp()
 	return self:is_dlc_unlocked("pmp")
 end
 
+function GenericDLCManager:has_ghm()
+	return self:is_dlc_unlocked("ghm")
+end
+
 function GenericDLCManager:has_goty_all_dlc_bundle_2014()
 	return self:has_goty_weapon_bundle_2014() and self:has_goty_heist_bundle_2014() and self:is_dlcs_unlocked({
 		"character_pack_clover"
@@ -1938,6 +1942,10 @@ function WINDLCManager:init()
 					no_install = true
 				},
 				pmp = {
+					app_id = "218620",
+					no_install = true
+				},
+				ghm = {
 					app_id = "218620",
 					no_install = true
 				}
