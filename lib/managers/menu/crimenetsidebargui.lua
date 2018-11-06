@@ -644,8 +644,11 @@ function CrimeNetSidebarAttentionItem:init(sidebar, panel, parameters)
 
 	if parameters.calling_attention then
 		self._unplayed_pulse = self:create_glow(sidebar._fullscreen_panel, glow_color, 0.85)
+		local center_x, center_y = nil
+		center_x = (self._icon:right() + self._icon:w() + 14) - 2
+		center_y = (self._panel:bottom() + self._panel:h() * 0.5) - 2
 
-		self._unplayed_pulse:set_center((self._icon:right() + self._icon:w() + 14) - 2, (self._panel:bottom() + self._panel:h() * 0.5) - 2)
+		self._unplayed_pulse:set_center(center_x, center_y)
 
 		self._pulse_offset = math.random()
 	end

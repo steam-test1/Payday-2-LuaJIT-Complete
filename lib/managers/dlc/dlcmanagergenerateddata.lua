@@ -15,6 +15,14 @@ function GenericDLCManager:has_sft()
 	return self:is_dlc_unlocked("sft")
 end
 
+function GenericDLCManager:has_skm()
+	return self:is_dlc_unlocked("skm")
+end
+
+function GenericDLCManager:has_smo()
+	return self:is_dlc_unlocked("smo")
+end
+
 function GenericDLCManager:has_tam()
 	return self:is_dlc_unlocked("tam")
 end
@@ -40,6 +48,12 @@ function WINDLCManager:init_generated()
 	Global.dlc_manager.all_dlc_data.sft = {}
 	Global.dlc_manager.all_dlc_data.sft.app_id = "218620"
 	Global.dlc_manager.all_dlc_data.sft.no_install = true
+	Global.dlc_manager.all_dlc_data.skm = {}
+	Global.dlc_manager.all_dlc_data.skm.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.skm.no_install = true
+	Global.dlc_manager.all_dlc_data.smo = {}
+	Global.dlc_manager.all_dlc_data.smo.app_id = "218620"
+	Global.dlc_manager.all_dlc_data.smo.no_install = true
 	Global.dlc_manager.all_dlc_data.tam = {}
 	Global.dlc_manager.all_dlc_data.tam.app_id = "218620"
 	Global.dlc_manager.all_dlc_data.tam.no_install = true

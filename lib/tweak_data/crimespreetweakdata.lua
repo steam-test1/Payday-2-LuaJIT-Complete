@@ -1030,3 +1030,33 @@ function CrimeSpreeTweakData:init_gui(tweak_data)
 	}
 end
 
+function CrimeSpreeTweakData:get_index_from_id(level_id)
+	if level_id then
+		for i = 1, 3, 1 do
+			for index, mission in ipairs(self.missions[i]) do
+				if mission.id == level_id then
+					local merged_index = i * 100 + index
+
+					return merged_index
+				end
+			end
+		end
+	else
+		return -1
+	end
+end
+
+function CrimeSpreeTweakData:get_id_from_index(merged_index)
+	local index_has_data = merged_index > 100
+
+	if index_has_data then
+		local mission_type = math.floor(merged_index / 100)
+		local mission_index = merged_index % 100
+		local mission_id = self.missions[mission_type][mission_index].id
+
+		return mission_id
+	else
+		return -1
+	end
+end
+

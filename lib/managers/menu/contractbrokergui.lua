@@ -106,7 +106,9 @@ function ContractBrokerGui:setup()
 	self:_setup_filters()
 	self:_setup_jobs()
 
-	if managers.menu:is_pc_controller() then
+	local default_to_search = managers.menu:is_pc_controller()
+
+	if default_to_search then
 		self:connect_search_input()
 	else
 		self:_set_selection(1)

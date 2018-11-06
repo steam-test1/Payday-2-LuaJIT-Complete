@@ -915,12 +915,9 @@ function HuskPlayerMovement:_register_revive_SO()
 	}
 	local objective = {
 		type = "revive",
-		interrupt_suppression = true,
 		called = true,
-		interrupt_health = 0.25,
 		scan = true,
 		destroy_clbk_key = false,
-		interrupt_dis = 300,
 		follow_unit = self._unit,
 		nav_seg = self._unit:movement():nav_tracker():nav_segment(),
 		fail_clbk = callback(self, self, "on_revive_SO_failed"),

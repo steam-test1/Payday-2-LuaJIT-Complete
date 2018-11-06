@@ -53,6 +53,18 @@ function DLCTweakData:init_generated()
 	}
 	self.sft_bundle.content.loot_global_value = "sft"
 	self.sft_bundle.content.loot_drops = {}
+	self.skm_bundle = {
+		free = true,
+		content = {}
+	}
+	self.skm_bundle.content.loot_global_value = "skm"
+	self.skm_bundle.content.loot_drops = {}
+	self.smo_bundle = {
+		free = true,
+		content = {}
+	}
+	self.smo_bundle.content.loot_global_value = "smo"
+	self.smo_bundle.content.loot_drops = {}
 	self.tam_bundle = {
 		free = true,
 		content = {}
@@ -92,11 +104,5 @@ function DLCTweakData:init_generated()
 			amount = 1
 		}
 	}
-	self.skm_bundle = {
-		free = true,
-		content = {}
-	}
-	self.skm_bundle.content.loot_global_value = "skm"
-	self.skm_bundle.content.loot_drops = {}
 end
 

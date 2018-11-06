@@ -30,6 +30,10 @@ NavigationManager.nav_states = {
 	"forbid_access",
 	"forbid_custom"
 }
+NavigationManager.nav_meta_operations = {
+	"force_civ_submission",
+	"relieve_forced_civ_submission"
+}
 NavigationManager.COVER_RESERVED = 4
 NavigationManager.COVER_RESERVATION = 5
 NavigationManager.ACCESS_FLAGS_VERSION = 1
@@ -637,6 +641,16 @@ function NavigationManager:set_nav_segment_state(id, state, filter_group)
 	if wanted_state ~= cur_state then
 		self._quad_field:set_nav_segment_enabled(id, wanted_state)
 		managers.groupai:state():on_nav_segment_state_change(id, wanted_state)
+	end
+end
+
+function NavigationManager:perform_nav_segment_meta_operation(id, operation)
+	local nav_segment = self._nav_segments[id]
+
+	if operation == "force_civ_submission" then
+		nav_segment.force_civ_submission = true
+	elseif operation == "relieve_forced_civ_submission" then
+		nav_segment.force_civ_submission = nil
 	end
 end
 

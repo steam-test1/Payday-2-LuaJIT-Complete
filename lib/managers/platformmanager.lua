@@ -294,9 +294,11 @@ function WinPlatformManager:set_rich_presence(name)
 
 		if name == "Idle" then
 			Steam:set_rich_presence("status", "")
+			Steam:set_rich_presence("steam_display", "")
 		else
 			if Global.game_settings.permission == "private" then
 				Steam:set_rich_presence("status", "")
+				Steam:set_rich_presence("steam_display", "")
 
 				return
 			end
@@ -341,6 +343,7 @@ function WinPlatformManager:set_rich_presence(name)
 			end
 
 			Steam:set_rich_presence("status", presence)
+			Steam:set_rich_presence("steam_display", "#raw_status")
 		end
 	end
 

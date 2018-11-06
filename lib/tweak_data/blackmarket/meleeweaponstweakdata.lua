@@ -2081,6 +2081,10 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 			anim = "charge"
 		}
 	}
+	self.melee_weapons.wing.anims.var1_attack_hit = self.melee_weapons.wing.anims.var1_attack
+	self.melee_weapons.wing.anims.var2_attack_hit = self.melee_weapons.wing.anims.var2_attack
+	self.melee_weapons.wing.anims.var3_attack_hit = self.melee_weapons.wing.anims.var3_attack
+	self.melee_weapons.wing.anims.var4_attack_hit = self.melee_weapons.wing.anims.var4_attack
 	self.melee_weapons.road = {
 		name_id = "bm_melee_road",
 		animation = nil,
@@ -2385,12 +2389,7 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 		remove_weapon_movement_penalty = true,
 		weapon_type = "blunt"
 	}
-	self.melee_weapons.happy.anim_attack_vars = {
-		"var1",
-		"var2",
-		"var3",
-		"var4"
-	}
+	self.melee_weapons.happy.anim_attack_vars = {"var1"}
 	self.melee_weapons.happy.repeat_expire_t = 0.6
 	self.melee_weapons.happy.expire_t = 0.7
 	self.melee_weapons.happy.melee_damage_delay = 0.1
@@ -2402,7 +2401,10 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 		charge = "baton_charge"
 	}
 	self.melee_weapons.happy.stats.concealment = 30
-	self.melee_weapons.happy.anims = {charge = {anim = "charge"}}
+	self.melee_weapons.happy.anims = {
+		var1_attack = {anim = "var1"},
+		charge = {anim = "charge"}
+	}
 	self.melee_weapons.push = deep_clone(self.melee_weapons.fists)
 	self.melee_weapons.push.name_id = "bm_melee_push"
 	self.melee_weapons.push.free = nil

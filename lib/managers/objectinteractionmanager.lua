@@ -127,24 +127,27 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 	end
 
 	local mvec3_dis = mvector3.distance
+	local k = #close_units_list
 
-	if #close_units_list > 0 then
-		for k, unit in pairs(close_units_list) do
-			if alive(unit) and unit:interaction():active() then
-				local distance = mvec3_dis(player_pos, unit:interaction():interact_position())
-				local should_remove = unit:interaction():interact_distance() < distance or distance < unit:interaction():max_interact_distance()
+	while k > 0 do
+		local unit = close_units_list[k]
 
-				if _G.IS_VR then
-					should_remove = should_remove or hand_unit:raycast("ray", hand_unit:position(), player_unit:movement():m_head_pos(), "slot_mask", 1)
-				end
+		if alive(unit) and unit:interaction():active() then
+			local distance = mvec3_dis(player_pos, unit:interaction():interact_position())
+			local should_remove = unit:interaction():interact_distance() < distance or distance < unit:interaction():max_interact_distance()
 
-				if should_remove then
-					table.remove(close_units_list, k)
-				end
-			else
+			if _G.IS_VR then
+				should_remove = should_remove or hand_unit:raycast("ray", hand_unit:position(), player_unit:movement():m_head_pos(), "slot_mask", 1)
+			end
+
+			if should_remove then
 				table.remove(close_units_list, k)
 			end
+		else
+			table.remove(close_units_list, k)
 		end
+
+		k = k - 1
 	end
 
 	for i = 1, self._close_freq, 1 do

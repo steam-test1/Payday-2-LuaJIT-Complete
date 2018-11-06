@@ -2047,7 +2047,7 @@ function NetworkPeer:_update_equipped_armor()
 		self._equipped_armor_id = new_armor_id
 		local armor_sequence = tweak_data.blackmarket.armors[new_armor_id].sequence
 
-		if managers.job and managers.job:current_level_id() == "glace" then
+		if managers.job and managers.job:current_level_id() == "glace" or managers.job:current_level_id() == "dah" or managers.job:current_level_id() == "wwh" or managers.job:current_level_id() == "sah" then
 			armor_sequence = nil
 		end
 

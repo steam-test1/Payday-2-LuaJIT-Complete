@@ -557,7 +557,7 @@ function FPCameraPlayerBase:_set_camera_position_in_vehicle()
 	local stance = managers.player:local_player():movement():current_state():stance()
 
 	if stance == PlayerDriving.STANCE_SHOOTING then
-		mvector3.add(obj_pos, seat.shooting_pos:rotate_with(vehicle:rotation()))
+		mvector3.add(obj_pos, seat.shooting_pos:rotate_with(obj_rot))
 	end
 
 	local camera_rot = mrot3
@@ -578,8 +578,8 @@ function FPCameraPlayerBase:_set_camera_position_in_vehicle()
 		target_camera = target_camera + vehicle_ext._tweak_data.driver_camera_offset
 	end
 
-	mvector3.rotate_with(target, vehicle:rotation())
-	mvector3.rotate_with(target_camera, vehicle:rotation())
+	mvector3.rotate_with(target, obj_rot)
+	mvector3.rotate_with(target_camera, obj_rot)
 
 	local pos = obj_pos + target
 	local camera_pos = obj_pos + target_camera
@@ -594,6 +594,17 @@ function FPCameraPlayerBase:_set_camera_position_in_vehicle()
 		mrotation.multiply(camera_rot, self._output_data.rotation)
 		mvector3.set(self._output_data.mover_position, mvec1 + target)
 		self._unit:parent():set_position(seat.object:position())
+
+		local new_head_pos = mvec1
+		local hmd_position = mvec2
+
+		self._parent_unit:m_position(new_head_pos)
+		mvector3.set(hmd_position, self._parent_movement_ext:hmd_position())
+		mvector3.set_x(hmd_position, 0)
+		mvector3.set_y(hmd_position, 0)
+		mvector3.rotate_with(hmd_position, obj_rot)
+		mvector3.add(new_head_pos, hmd_position)
+		mvector3.set(self._output_data.position, new_head_pos)
 	end
 
 	if _G.IS_VR or seat.driving then
@@ -1438,20 +1449,20 @@ function FPCameraPlayerBase:play_anim_melee_item(tweak_name)
 		return
 	end
 
-	if self._melee_item_anim then
-		for _, unit in ipairs(self._melee_item_units) do
-			unit:anim_stop(self._melee_item_anim)
-		end
-
-		self._melee_item_anim = nil
-	end
-
 	local melee_entry = managers.blackmarket:equipped_melee_weapon()
 	local anims = tweak_data.blackmarket.melee_weapons[melee_entry].anims
 	local anim_data = anims and anims[tweak_name]
 
 	if not anim_data then
 		return
+	end
+
+	if self._melee_item_anim then
+		for _, unit in ipairs(self._melee_item_units) do
+			unit:anim_stop(self._melee_item_anim)
+		end
+
+		self._melee_item_anim = nil
 	end
 
 	local ids = anim_data.anim and Idstring(anim_data.anim)
@@ -1489,6 +1500,7 @@ function FPCameraPlayerBase:spawn_melee_item()
 			local align_obj = self._unit:get_object(align_obj_name)
 			local unit = World:spawn_unit(Idstring(unit_name), align_obj:position(), align_obj:rotation())
 
+			unit:anim_stop()
 			self._unit:link(align_obj:name(), unit, unit:orientation_object():name())
 
 			for a_object, g_object in pairs(graphic_objects) do

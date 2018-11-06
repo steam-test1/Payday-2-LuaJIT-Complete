@@ -684,18 +684,20 @@ function NetworkMatchMakingPSN:_is_client(set)
 end
 
 function NetworkMatchMakingPSN:_payday2psn(numbers)
-	local coded_numbers = {
+	local psn_attributes = {
 		numbers[1],
 		numbers[2] + 10 * numbers[4] + 100 * numbers[6],
 		numbers[3],
 		numbers[9] or -1,
-		numbers[5],
-		numbers[10] or 0,
-		numbers[7],
-		numbers[8]
+		numbers[5]
 	}
+	local crime_spree_mission_index = nil
+	crime_spree_mission_index = tweak_data.crime_spree:get_index_from_id(numbers[10])
+	psn_attributes[6] = crime_spree_mission_index or 0
+	psn_attributes[7] = numbers[7]
+	psn_attributes[8] = numbers[8]
 
-	return coded_numbers
+	return psn_attributes
 end
 
 function NetworkMatchMakingPSN:_psn2payday(numbers)
@@ -703,14 +705,16 @@ function NetworkMatchMakingPSN:_psn2payday(numbers)
 		numbers[1],
 		numbers[2] % 10,
 		numbers[3],
-		math.floor(numbers[2] / 10) % 10,
-		numbers[5],
-		math.floor(numbers[2] / 100),
-		numbers[7],
-		numbers[8],
-		numbers[4] or -1,
-		numbers[6] or 0
+		math.floor(numbers[2] % 100 / 10),
+		numbers[5]
 	}
+	local crime_spree_mission = nil
+	crime_spree_mission = tweak_data.crime_spree:get_id_from_index(numbers[6])
+	decoded_numbers[6] = math.floor(numbers[2] / 100)
+	decoded_numbers[7] = numbers[7]
+	decoded_numbers[8] = numbers[8]
+	decoded_numbers[9] = numbers[4] or -1
+	decoded_numbers[10] = crime_spree_mission or 0
 
 	return decoded_numbers
 end
@@ -720,7 +724,7 @@ function NetworkMatchMakingPSN:_game_version()
 end
 
 function NetworkMatchMakingPSN:create_lobby(settings)
-	print("NetworkMatchMakingPSN:create_group_lobby()", inspect(settings))
+	print("NetworkMatchMakingPSN:create_lobby()", inspect(settings))
 
 	self._server_joinable = true
 	self._num_players = nil
@@ -893,7 +897,7 @@ function NetworkMatchMakingPSN:start_search_lobbys(friends_only)
 
 		local function f(info)
 			for i = 1, #info.attribute_list, 1 do
-				local numbers = self:_psn2payday(info.attribute_list[i].numbers)
+				local numbers = info.attribute_list[i].numbers
 				info.attribute_list[i].numbers = numbers
 			end
 
@@ -952,7 +956,6 @@ function NetworkMatchMakingPSN:start_search_lobbys(friends_only)
 						local owner_id = room_info.owner
 						local room_id = room_info.room_id
 						local friend_id = reverse_lookup[tostring(room_id)]
-						attributes.numbers = self:_psn2payday(attributes.numbers)
 
 						if not full and not closed and attributes.numbers[5] == self:_game_version() then
 							table.insert(info.attribute_list, attributes)
@@ -1087,8 +1090,9 @@ function NetworkMatchMakingPSN:_set_attributes(settings)
 	local numbers = self._attributes_numbers
 	numbers[8] = self._num_players or 1
 	local strings = self._attributes_strings
+	local final_attributes = self:_payday2psn(numbers)
 	local attributes = {
-		numbers = self:_payday2psn(numbers),
+		numbers = final_attributes,
 		strings = strings
 	}
 
@@ -1100,11 +1104,17 @@ function NetworkMatchMakingPSN:set_server_attributes(settings)
 		return
 	end
 
+	local crimespree_data = {}
+
+	managers.crime_spree:apply_matchmake_attributes(crimespree_data)
+
 	self._attributes_numbers[1] = settings.numbers[1]
 	self._attributes_numbers[2] = settings.numbers[2]
 	self._attributes_numbers[3] = settings.numbers[3]
 	self._attributes_numbers[6] = settings.numbers[6]
 	self._attributes_numbers[7] = settings.numbers[7]
+	self._attributes_numbers[9] = crimespree_data.crime_spree
+	self._attributes_numbers[10] = crimespree_data.crime_spree_mission
 	local mutators_data = managers.mutators:matchmake_pack_string(1)
 	self._attributes_strings[1] = mutators_data[1]
 
@@ -1328,7 +1338,7 @@ end
 function NetworkMatchMakingPSN:is_server_ok(friends_only, owner_id, attributes_numbers, skip_permission_check)
 	local permission = attributes_numbers and tweak_data:index_to_permission(attributes_numbers[3]) or "public"
 
-	if (attributes_numbers[6] ~= 1 or not NetworkManager.DROPIN_ENABLED) and attributes_numbers[4] ~= 1 then
+	if (not NetworkManager.DROPIN_ENABLED or attributes_numbers[6] == 0) and attributes_numbers[4] ~= 1 then
 		print("[NetworkMatchMakingPSN:is_server_ok] Discard server due to drop in state")
 
 		return false, 1
@@ -1338,10 +1348,6 @@ function NetworkMatchMakingPSN:is_server_ok(friends_only, owner_id, attributes_n
 		print("[NetworkMatchMakingPSN:is_server_ok] Discard server due to reputation level limit")
 
 		return false, 3
-	end
-
-	if friends_only then
-		
 	end
 
 	if skip_permission_check or permission == "public" then
@@ -1394,7 +1400,6 @@ function NetworkMatchMakingPSN:join_server_with_check(room_id, skip_permission_c
 		local room_info = results.rooms[1]
 		local attributes = room_info.attributes
 		local owner_id = room_info.owner
-		attributes.numbers = self:_psn2payday(attributes.numbers)
 		local server_ok, ok_error = self:is_server_ok(nil, owner_id, attributes.numbers, skip_permission_check)
 
 		if server_ok then

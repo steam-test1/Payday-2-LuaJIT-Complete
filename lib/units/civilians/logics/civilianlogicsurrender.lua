@@ -562,7 +562,9 @@ function CivilianLogicSurrender._update_enemy_detection(data, my_data)
 		CopLogicBase._reset_attention(data)
 	end
 
-	if my_data.inside_intimidate_aura then
+	if managers.navigation:get_nav_seg_metadata(my_tracker:nav_segment()).force_civ_submission then
+		my_data.submission_meter = my_data.submission_max
+	elseif my_data.inside_intimidate_aura then
 		my_data.submission_meter = my_data.submission_max
 	elseif visible then
 		my_data.submission_meter = math.min(my_data.submission_max, my_data.submission_meter + delta_t)

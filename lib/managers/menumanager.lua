@@ -2222,7 +2222,7 @@ function MenuCallbackHandler:is_modded_client()
 end
 
 function MenuCallbackHandler:is_not_modded_client()
-	return rawget(_G, "BLT") == nil
+	return not MenuCallbackHandler:is_modded_client()
 end
 
 function MenuCallbackHandler:build_mods_list()
@@ -2797,6 +2797,12 @@ function MenuCallbackHandler:choice_difficulty_filter(item)
 	managers.network.matchmake:search_lobby(managers.network.matchmake:search_friends_only())
 	managers.user:set_setting("crimenet_filter_difficulty", diff_filter)
 	managers.crimenet:update_difficulty_filter()
+end
+
+function MenuCallbackHandler:choice_difficulty_filter_xb1(item)
+	local diff_filter = item:value()
+
+	managers.network.matchmake:set_difficulty_filter(diff_filter)
 end
 
 function MenuCallbackHandler:choice_job_id_filter(item)
@@ -9044,8 +9050,10 @@ function MenuCrimeNetFiltersInitiator:modify_node(original_node, data)
 
 		self:add_filters(node)
 	elseif MenuCallbackHandler:is_xb1() then
+		node:item("difficulty_filter"):set_value(managers.network.matchmake:difficulty_filter() and "on" or "off")
 		node:item("toggle_mutated_lobby"):set_value(Global.game_settings.search_mutated_lobbies and "on" or "off")
 		node:item("toggle_crimespree_lobby"):set_value(Global.game_settings.search_crimespree_lobbies and "on" or "off")
+		node:item("max_spree_difference_filter"):set_value(Global.game_settings.crime_spree_max_lobby_diff or -1)
 	end
 
 	self:update_node(node)
@@ -9083,17 +9091,21 @@ function MenuCrimeNetFiltersInitiator:update_node(node)
 		node:item("skirmish_wave_filter"):set_visible(self:is_skirmish())
 		node:item("job_plan_filter"):set_visible(not self:is_skirmish())
 	elseif MenuCallbackHandler:is_xb1() then
-		if Global.game_settings.search_friends_only then
-			node:item("toggle_mutated_lobby"):set_enabled(false)
-			node:item("toggle_crimespree_lobby"):set_enabled(false)
-		elseif Global.game_settings.search_mutated_lobbies then
-			node:item("toggle_friends_only"):set_enabled(false)
-			node:item("toggle_crimespree_lobby"):set_enabled(false)
-		elseif Global.game_settings.search_crimespree_lobbies then
-			node:item("toggle_friends_only"):set_enabled(false)
-			node:item("toggle_mutated_lobby"):set_enabled(false)
+		if Global.game_settings.search_crimespree_lobbies then
+			print("GN: CS lobby set to true")
+			node:item("difficulty_filter"):set_enabled(false)
+			node:item("max_spree_difference_filter"):set_enabled(true)
 		else
-			node:item("toggle_friends_only"):set_enabled(true)
+			print("GN: CS lobby set to false")
+			node:item("difficulty_filter"):set_enabled(true)
+			node:item("max_spree_difference_filter"):set_enabled(false)
+		end
+
+		if Global.game_settings.search_crimespree_lobbies then
+			node:item("toggle_mutated_lobby"):set_enabled(false)
+		elseif Global.game_settings.search_mutated_lobbies then
+			node:item("toggle_crimespree_lobby"):set_enabled(false)
+		else
 			node:item("toggle_mutated_lobby"):set_enabled(true)
 			node:item("toggle_crimespree_lobby"):set_enabled(true)
 		end
@@ -9432,22 +9444,36 @@ function MenuCrimeNetSmartmatchmakeInitiator:add_filters(node)
 end
 
 function MenuCallbackHandler:start_smart_matchmaking(item)
+	print("crimenet_filter_crimespree = ", managers.user:get_setting("crimenet_filter_crimespree"))
+
+	local smart_mode, smart_job_id, smart_difficulty = nil
+
 	if item:name() == "quick_join" then
 		local jobs = managers.crimenet:get_jobs_by_player_stars()
-		local random_job = jobs[math.random(#jobs)]
 
-		print("[MenuCallbackHandler:start_smart_matchmaking] QUICK JOIN", "difficulty_filter", random_job.difficulty_id, "job_id_filter", random_job.job_id)
-		managers.network.matchmake:join_by_smartmatch(-1, random_job.difficulty_id)
+		if managers.user:get_setting("crimenet_filter_crimespree") == false then
+			smart_mode = 0
+			smart_job_id = jobs[math.random(#jobs)]
+			smart_difficulty = managers.network.matchmake:difficulty_filter()
+		elseif managers.user:get_setting("crimenet_filter_crimespree") == true then
+			smart_mode = 1
+			smart_job_id = -1
+			smart_difficulty = managers.user:get_setting("crime_spree_lobby_diff")
+		end
+
+		print("[MenuCallbackHandler:start_smart_matchmaking] QUICK JOIN", "smart_mode", smart_mode, "smart_job_id", smart_job_id, "smart_difficulty", smart_difficulty)
 	else
 		managers.menu:active_menu().logic:navigate_back(true)
 
 		local job_data = item:parameters().gui_node.node:parameters().menu_component_data
-		local difficulty_filter = job_data.difficulty_id
-		local job_id_filter = job_data.job_id
+		smart_mode = 0
+		smart_job_id = job_data.job_id
+		smart_difficulty = job_data.difficulty_id
 
-		print("[MenuCallbackHandler:start_smart_matchmaking] SEARCH", "difficulty_filter", difficulty_filter, "job_id_filter", job_id_filter)
-		managers.network.matchmake:join_by_smartmatch(job_id_filter, difficulty_filter)
+		print("[MenuCallbackHandler:start_smart_matchmaking] SELECTIVE JOIN ", "smart_mode", smart_mode, "smart_job_id", smart_job_id, "smart_difficulty", smart_difficulty)
 	end
+
+	managers.network.matchmake:join_by_smartmatch(smart_mode, smart_job_id, smart_difficulty)
 end
 
 function MenuCallbackHandler:open_contract_smart_matchmaking_node(item)

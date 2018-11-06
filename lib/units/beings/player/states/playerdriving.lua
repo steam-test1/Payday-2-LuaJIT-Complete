@@ -21,7 +21,6 @@ function PlayerDriving:init(unit)
 end
 
 function PlayerDriving:enter(state_data, enter_data)
-	print("PlayerDriving:enter( enter_data )")
 	PlayerDriving.super.enter(self, state_data, enter_data)
 
 	for _, ai in pairs(managers.groupai:state():all_AI_criminals()) do
@@ -541,18 +540,14 @@ function PlayerDriving:_get_vehicle()
 end
 
 function PlayerDriving:cb_leave()
-	local exit_position = self._vehicle_ext:find_exit_position(self._unit)
+	local cant_exit = self._vehicle_ext:find_exit_position(self._unit) == nil
 
-	if exit_position == nil then
+	if cant_exit then
 		print("[DRIVING] PlayerDriving: Could not found valid exit position, aborting exit.")
 		managers.hint:show_hint("cant_exit_vehicle", 3)
 
 		return
 	end
-
-	local vehicle_state = self._vehicle:get_state()
-	local speed = vehicle_state:get_speed() * 3.6
-	local player = managers.player:player_unit()
 
 	self._unit:camera():play_redirect(self:get_animation("idle"))
 	managers.player:set_player_state("standard")
@@ -673,10 +668,6 @@ function PlayerDriving:_update_input(dt)
 			self._max_steer = math.abs(steer)
 		else
 			self._max_steer = 0
-		end
-
-		if math.abs(self._move_x) < math.abs(move_d.x) then
-			
 		end
 
 		if self._dt > 0 and self._dt < self._max_steer then

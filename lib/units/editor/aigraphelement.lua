@@ -112,6 +112,7 @@ function AIGraphUnitElement:_build_panel(panel, panel_sizer)
 	self._btn_toolbar:realize()
 	panel_sizer:add(self._btn_toolbar, 0, 1, "EXPAND,LEFT")
 
+	local operation_options = table.list_add(NavigationManager.nav_states, NavigationManager.nav_meta_operations)
 	local operations_params = {
 		name = "Operation:",
 		name_proportions = 1,
@@ -120,7 +121,7 @@ function AIGraphUnitElement:_build_panel(panel, panel_sizer)
 		ctrlr_proportions = 2,
 		panel = panel,
 		sizer = panel_sizer,
-		options = NavigationManager.nav_states,
+		options = operation_options,
 		value = self._hed.operation
 	}
 	local operations = CoreEWS.combobox(operations_params)

@@ -743,14 +743,26 @@ function SkirmishTweakData:_init_weekly_rewards()
 				"skm_01",
 				"skm_02",
 				"skm_03",
-				"skm_04"
+				"skm_04",
+				"smo_01",
+				"smo_02",
+				"smo_03",
+				"smo_04",
+				"smo_05",
+				"smo_06"
 			}
 		},
 		{masks = {
 			"skm_05",
 			"skm_06",
 			"skm_07",
-			"skm_08"
+			"skm_08",
+			"smo_07",
+			"smo_08",
+			"smo_09",
+			"smo_10",
+			"smo_11",
+			"smo_12"
 		}}
 	}
 end

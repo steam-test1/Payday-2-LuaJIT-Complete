@@ -607,11 +607,15 @@ function CrimeNetManager:_find_online_games_xbox360(friends_only)
 end
 
 function CrimeNetManager:_find_online_games_xb1(friends_only)
+	print("[CrimeNetManager:_find_online_games_xb1]")
+
 	if managers.network.matchmake:searching_lobbys() then
 		self._refresh_server_t = Application:time() + 5
 
 		return
 	end
+
+	print("GN: useless?")
 
 	local function f(info)
 		managers.network.matchmake:search_lobby_done()
@@ -625,8 +629,13 @@ function CrimeNetManager:_find_online_games_xb1(friends_only)
 		end
 
 		for i, room in ipairs(room_list) do
+			print("GN: useless? 2")
+
 			local name_str = tostring(room.owner_name)
 			local attributes_numbers = attribute_list[i].numbers
+
+			print("GN: useless? 3")
+
 			local host_name = name_str
 			local level_id = tweak_data.levels:get_level_name_from_index(attributes_numbers[1] % 1000)
 			local name_id = level_id and tweak_data.levels[level_id] and tweak_data.levels[level_id].name_id
@@ -644,6 +653,17 @@ function CrimeNetManager:_find_online_games_xb1(friends_only)
 			if next(mutators) == nil then
 				mutators = false
 			end
+
+			local is_crime_spree = attributes_numbers[9] and attributes_numbers[9] >= 0
+			local crime_spree = attributes_numbers[9]
+			local crime_spree_mission = tweak_data.crime_spree:get_index_from_id(attributes_numbers[10])
+
+			if not is_crime_spree then
+				crime_spree_mission = nil
+			end
+
+			print("GN: crime_spree = ", crime_spree)
+			print("GN: crime_spree_mission = ", crime_spree_mission)
 
 			local is_friend = XboxLive:is_friend(room.xuid)
 			local is_ok = (not friends_only or is_friend) and managers.network.matchmake:is_server_ok(friends_only, room.owner_id, attributes_numbers)
@@ -673,6 +693,9 @@ function CrimeNetManager:_find_online_games_xb1(friends_only)
 							state = state,
 							level_name = level_name,
 							mutators = mutators,
+							is_crime_spree = is_crime_spree,
+							crime_spree = crime_spree,
+							crime_spree_mission = crime_spree_mission,
 							job_id = job_id,
 							is_friend = is_friend
 						})
@@ -691,6 +714,9 @@ function CrimeNetManager:_find_online_games_xb1(friends_only)
 						state = state,
 						level_name = level_name,
 						mutators = mutators,
+						is_crime_spree = is_crime_spree,
+						crime_spree = crime_spree,
+						crime_spree_mission = crime_spree_mission,
 						job_id = job_id,
 						is_friend = is_friend
 					})
@@ -723,7 +749,7 @@ function CrimeNetManager:_find_online_games_ps3(friends_only)
 			for i, room in ipairs(room_list) do
 				local name_str = tostring(room.owner_id)
 				local friend_str = room.friend_id and tostring(room.friend_id)
-				local attributes_numbers = attribute_list[i].numbers
+				local attributes_numbers = managers.network.matchmake:_psn2payday(info.attribute_list[i].numbers)
 
 				if managers.network.matchmake:is_server_ok(friends_only, room.owner_id, attributes_numbers) then
 					local host_name = name_str
@@ -854,7 +880,7 @@ function CrimeNetManager:_find_online_games_ps4(friends_only)
 			for i, room in ipairs(room_list) do
 				local name_str = tostring(room.owner_id)
 				local friend_str = room.friend_id and tostring(room.friend_id)
-				local attributes_numbers = attribute_list[i].numbers
+				local attributes_numbers = managers.network.matchmake:_psn2payday(info.attribute_list[i].numbers)
 
 				if managers.network.matchmake:is_server_ok(friends_only, room.owner_id, attributes_numbers) then
 					local host_name = name_str
@@ -3138,7 +3164,7 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 	elseif data.is_crime_spree then
 		local text = ""
 
-		if data.state == 2 or data.state == 3 then
+		if tweak_data:server_state_to_index("in_lobby") < data.state then
 			local mission_data = managers.crime_spree:get_mission(data.crime_spree_mission)
 
 			if mission_data then

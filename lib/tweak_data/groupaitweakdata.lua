@@ -742,7 +742,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 		special_type = "medic",
 		unit_types = {
 			america = {Idstring("units/payday2/characters/ene_medic_m4/ene_medic_m4")},
-			russia = {Idstring("units/payday2/characters/ene_medic_m4/ene_medic_m4")},
+			russia = {Idstring("units/pd2_dlc_mad/characters/ene_akan_medic_ak47_ass/ene_akan_medic_ak47_ass")},
 			zombie = {Idstring("units/pd2_dlc_hvh/characters/ene_medic_hvh_m4/ene_medic_hvh_m4")}
 		},
 		access = access_type_all
@@ -751,7 +751,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 		special_type = "medic",
 		unit_types = {
 			america = {Idstring("units/payday2/characters/ene_medic_r870/ene_medic_r870")},
-			russia = {Idstring("units/payday2/characters/ene_medic_r870/ene_medic_r870")},
+			russia = {Idstring("units/pd2_dlc_mad/characters/ene_akan_medic_r870/ene_akan_medic_r870")},
 			zombie = {Idstring("units/pd2_dlc_hvh/characters/ene_medic_hvh_r870/ene_medic_hvh_r870")}
 		},
 		access = access_type_all

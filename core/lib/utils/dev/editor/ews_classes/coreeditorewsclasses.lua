@@ -1440,18 +1440,11 @@ end
 
 function GlobalSelectUnit:update_list(current)
 	local filter = self._filter:get_value()
-	local filter_pattern = filter
+	local sub_filters = {}
 
 	if string.len(string.gsub(filter, "%s", "")) > 0 then
-		filter_pattern = ".*"
-		local sub_filters = {}
-
 		for sub_filter in filter:gmatch("%w+") do
 			sub_filters[#sub_filters + 1] = sub_filter
-		end
-
-		for key, value in ipairs(sub_filters) do
-			filter_pattern = filter_pattern .. value .. ".*"
 		end
 	end
 
@@ -1467,8 +1460,15 @@ function GlobalSelectUnit:update_list(current)
 
 			if self._layer_cbs[type]:get_value() then
 				local stripped_name = self._short_name:get_value() and self:_stripped_unit_name(name) or name
+				local isMatching = true
 
-				if string.find(stripped_name, filter_pattern, 1) then
+				for key, value in ipairs(sub_filters) do
+					if not string.find(stripped_name, value) then
+						isMatching = false
+					end
+				end
+
+				if isMatching then
 					table.insert(self._units_to_append, {
 						stripped_name = stripped_name,
 						name = name
@@ -1482,8 +1482,15 @@ function GlobalSelectUnit:update_list(current)
 
 			if self._layer_cbs[type]:get_value() then
 				local stripped_name = self._short_name:get_value() and self:_stripped_unit_name(name) or name
+				local isMatching = true
 
-				if string.find(stripped_name, filter_pattern, 1) then
+				for key, value in ipairs(sub_filters) do
+					if not string.find(stripped_name, value) then
+						isMatching = false
+					end
+				end
+
+				if isMatching then
 					table.insert(self._units_to_append, {
 						stripped_name = stripped_name,
 						name = name

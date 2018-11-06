@@ -18,8 +18,12 @@ function ElementAIGraph:on_executed(instigator)
 		return
 	end
 
+	local handler_func = nil
+	local is_meta_operation = table.contains(NavigationManager.nav_meta_operations, self._values.operation)
+	handler_func = is_meta_operation and NavigationManager.perform_nav_segment_meta_operation or NavigationManager.set_nav_segment_state
+
 	for _, id in ipairs(self._values.graph_ids) do
-		managers.navigation:set_nav_segment_state(id, self._values.operation, self._values.filter_group)
+		handler_func(managers.navigation, id, self._values.operation, self._values.filter_group)
 	end
 
 	ElementAIGraph.super.on_executed(self, instigator)

@@ -16138,7 +16138,9 @@ function CharacterTweakData:character_map()
 				"ene_akan_cs_swat_ak47_ass",
 				"ene_akan_cs_swat_r870",
 				"ene_akan_cs_swat_sniper_svd_snp",
-				"ene_akan_cs_tazer_ak47_ass"
+				"ene_akan_cs_tazer_ak47_ass",
+				"ene_akan_medic_ak47_ass",
+				"ene_akan_medic_r870"
 			}
 		},
 		born = {

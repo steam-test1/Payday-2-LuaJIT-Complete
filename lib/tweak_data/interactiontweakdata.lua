@@ -1981,6 +1981,11 @@ function InteractionTweakData:init(tweak_data)
 		contour = "deployable",
 		sound_done = "pick_up_thermite"
 	}
+	self.gen_pku_thermite_paste_not_deployable = {
+		text_id = "hud_int_take_thermite_paste",
+		special_equipment_block = "thermite_paste",
+		sound_done = "pick_up_thermite"
+	}
 	self.button_infopad = {
 		text_id = "hud_int_press_for_info",
 		start_active = false,

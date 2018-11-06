@@ -4731,36 +4731,8 @@ function AchievementsTweakData:init(tweak_data)
 		trophy_stealth = {
 			stealth = true,
 			trophy_stat = "trophy_stealth",
-			difficulty = overkill_and_above,
-			jobs = {
-				"gallery",
-				"nightclub",
-				"ukrainian_job_prof",
-				"four_stores",
-				"jewelry_store",
-				"family",
-				"roberts",
-				"branchbank_prof",
-				"branchbank_gold_prof",
-				"branchbank_cash",
-				"branchbank_deposit",
-				"arm_for",
-				"election_day",
-				"kosugi",
-				"big",
-				"hox_3",
-				"arena",
-				"red2",
-				"crojob1",
-				"firestarter",
-				"kenaz",
-				"mus",
-				"framing_frame",
-				"dark",
-				"friend",
-				"fish",
-				"tag"
-			}
+			complete_job = true,
+			difficulty = overkill_and_above
 		},
 		trophy_bank_heists = {
 			trophy_stat = "trophy_bank_heists",

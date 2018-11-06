@@ -4987,6 +4987,11 @@ function GuiTweakData:init()
 	self.new_heists = {limit = 5}
 
 	table.insert(self.new_heists, {
+		name_id = "menu_nh_rum",
+		texture_path = "guis/textures/pd2/new_heists/rum",
+		url = "https://steamcommunity.com/games/218620/announcements/detail/1703940960408401455"
+	})
+	table.insert(self.new_heists, {
 		name_id = "menu_nh_icebreaker",
 		texture_path = "guis/textures/pd2/new_heists/icebreaker",
 		url = "https://www.overkillsoftware.com/games/icebreaker/"

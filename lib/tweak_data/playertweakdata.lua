@@ -1146,6 +1146,7 @@ function PlayerTweakData:_init_new_stances()
 	self:_init_x_judge()
 	self:_init_x_rota()
 	self:_init_shuno()
+	self:_init_system()
 end
 
 function PlayerTweakData:_init_hs2000()
@@ -5168,14 +5169,14 @@ end
 
 function PlayerTweakData:_init_komodo()
 	self.stances.komodo = deep_clone(self.stances.default)
-	local pivot_shoulder_translation = Vector3(10.6271, 38.5934, -4.29795)
-	local pivot_shoulder_rotation = Rotation(0.106337, -0.0838597, 0.628026)
-	local pivot_head_translation = Vector3(5, 25, -3)
+	local pivot_shoulder_translation = Vector3(11.0171, 45.8087, -7.90422)
+	local pivot_shoulder_rotation = Rotation(4.43918e-05, 0.000569029, -0.000337914)
+	local pivot_head_translation = Vector3(10, 40, -3)
 	local pivot_head_rotation = Rotation(0, 0, 0)
 	self.stances.komodo.standard.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
 	self.stances.komodo.standard.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
 	self.stances.komodo.standard.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -30, 0)
-	local pivot_head_translation = Vector3(0, 18, 0)
+	local pivot_head_translation = Vector3(0, 35, -3.5)
 	local pivot_head_rotation = Rotation(0, 0, 0)
 	self.stances.komodo.steelsight.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
 	self.stances.komodo.steelsight.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
@@ -5184,7 +5185,7 @@ function PlayerTweakData:_init_komodo()
 	self.stances.komodo.steelsight.vel_overshot.yaw_pos = -12
 	self.stances.komodo.steelsight.vel_overshot.pitch_neg = -12
 	self.stances.komodo.steelsight.vel_overshot.pitch_pos = 12
-	local pivot_head_translation = Vector3(8, 12, -2)
+	local pivot_head_translation = Vector3(8, 28, -2)
 	local pivot_head_rotation = Rotation(0, 0, 0)
 	self.stances.komodo.crouched.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
 	self.stances.komodo.crouched.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()

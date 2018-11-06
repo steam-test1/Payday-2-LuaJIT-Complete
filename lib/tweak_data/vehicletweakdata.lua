@@ -460,7 +460,7 @@ function VehicleTweakData:_init_data_blackhawk_1()
 			loot_left = {name = "loot_left"},
 			loot_right = {name = "loot_right"}
 		},
-		damage = {max_health = 9e+27},
+		damage = {max_health = math.huge},
 		max_speed = 160,
 		max_rpm = 8000,
 		loot_drop_point = "v_repair_engine",

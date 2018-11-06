@@ -597,10 +597,20 @@ function MenuComponentManager:make_color_text(text_object, color)
 	end
 end
 
-function MenuComponentManager:on_job_updated()
+function MenuComponentManager:_update_contract_box_gui()
 	if self._contract_gui then
-		self._contract_gui:refresh()
+		local current_class = getmetatable(self._contract_gui)
+
+		if current_class == self:_contract_gui_class() then
+			self._contract_gui:refresh()
+		else
+			self:create_contract_gui()
+		end
 	end
+end
+
+function MenuComponentManager:on_job_updated()
+	self:_update_contract_box_gui()
 end
 
 function MenuComponentManager:update(t, dt)
