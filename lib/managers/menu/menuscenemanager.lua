@@ -861,6 +861,14 @@ function MenuSceneManager:_set_up_templates()
 			})
 		}
 	}
+	self._scene_templates.movie_theater = {
+		use_character_grab = false,
+		camera_pos = offset:rotate_with(Rotation(90)),
+		target_pos = target_pos,
+		character_visible = false,
+		lobby_characters_visible = false,
+		fov = 40
+	}
 end
 
 function MenuSceneManager:_set_up_environments()

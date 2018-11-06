@@ -127,6 +127,7 @@ require("lib/managers/mission/ElementMotionpathMarker")
 require("lib/managers/mission/ElementVehicleTrigger")
 require("lib/managers/mission/ElementVehicleOperator")
 require("lib/managers/mission/ElementVehicleSpawner")
+require("lib/managers/mission/ElementVehicleBoarding")
 require("lib/managers/mission/ElementEnvironmentOperator")
 require("lib/managers/mission/ElementAreaDespawn")
 

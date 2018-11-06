@@ -13015,6 +13015,186 @@ function HudIconsTweakData:init()
 			85
 		}
 	}
+	self.C_Locke_H_WhiteHouse_AHeist = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_vit",
+		texture_rect = {
+			176,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_WhiteHouse_AllDiffs_D0 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_vit",
+		texture_rect = {
+			2,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_WhiteHouse_AllDiffs_D1 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_vit",
+		texture_rect = {
+			2,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_WhiteHouse_AllDiffs_D2 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_vit",
+		texture_rect = {
+			89,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_WhiteHouse_AllDiffs_D3 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_vit",
+		texture_rect = {
+			2,
+			176,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_WhiteHouse_AllDiffs_D4 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_vit",
+		texture_rect = {
+			89,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_WhiteHouse_AllDiffs_D5 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_vit",
+		texture_rect = {
+			176,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_WhiteHouse_AllDiffs_D6 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_vit",
+		texture_rect = {
+			2,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_WhiteHouse_AllDiffs_OD_D6 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_vit",
+		texture_rect = {
+			89,
+			176,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_WhiteHouse_BigBrother = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_vit",
+		texture_rect = {
+			263,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_WhiteHouse_President = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_vit",
+		texture_rect = {
+			2,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_BankAny_AGoodHaul = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_uno",
+		texture_rect = {
+			263,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_DiamondStore_Hostage = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_uno",
+		texture_rect = {
+			350,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Bain_H_Mallcrasher_SelfCheck = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_uno",
+		texture_rect = {
+			2,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_Butcher_H_Scarface_Setting = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_uno",
+		texture_rect = {
+			263,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_Classics_H_GreenBridge_Attacked = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_uno",
+		texture_rect = {
+			176,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_Hector_H_Watchdogs_OutOf = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_uno",
+		texture_rect = {
+			176,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_HenrysRock_Hack = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_uno",
+		texture_rect = {
+			89,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_Vlad_H_Nightclub_LetThem = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_uno",
+		texture_rect = {
+			2,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Vlad_H_XMas_Whats = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_uno",
+		texture_rect = {
+			89,
+			89,
+			85,
+			85
+		}
+	}
 
 	TextureCorrectionTweakData:new(self)
 

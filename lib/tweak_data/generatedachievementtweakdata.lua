@@ -8495,6 +8495,145 @@ function init_auto_generated_achievement_data(tags)
 				tags.contracts.locke
 			}
 		},
+		vit_1 = {
+			icon_id = "C_Locke_H_WhiteHouse_AllDiffs_D0",
+			ladder = "H_WhiteHouse",
+			sort_name = "C_Locke_H_WhiteHouse_AllDiffs_D0",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		vit_10 = {
+			sort_name = "C_Locke_H_WhiteHouse_BigBrother",
+			icon_id = "C_Locke_H_WhiteHouse_BigBrother",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		vit_11 = {
+			additional_id = true,
+			sort_name = "C_Locke_H_WhiteHouse_President",
+			icon_id = "C_Locke_H_WhiteHouse_President",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.inventory.mask,
+				tags.contracts.locke
+			}
+		},
+		vit_2 = {
+			icon_id = "C_Locke_H_WhiteHouse_AllDiffs_D1",
+			ladder = "H_WhiteHouse",
+			sort_name = "C_Locke_H_WhiteHouse_AllDiffs_D1",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.hard,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		vit_3 = {
+			icon_id = "C_Locke_H_WhiteHouse_AllDiffs_D2",
+			ladder = "H_WhiteHouse",
+			sort_name = "C_Locke_H_WhiteHouse_AllDiffs_D2",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.very_hard,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		vit_4 = {
+			icon_id = "C_Locke_H_WhiteHouse_AllDiffs_D3",
+			ladder = "H_WhiteHouse",
+			sort_name = "C_Locke_H_WhiteHouse_AllDiffs_D3",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		vit_5 = {
+			icon_id = "C_Locke_H_WhiteHouse_AllDiffs_D4",
+			ladder = "H_WhiteHouse",
+			sort_name = "C_Locke_H_WhiteHouse_AllDiffs_D4",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.mayhem,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		vit_6 = {
+			icon_id = "C_Locke_H_WhiteHouse_AllDiffs_D5",
+			ladder = "H_WhiteHouse",
+			sort_name = "C_Locke_H_WhiteHouse_AllDiffs_D5",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_wish,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		vit_7 = {
+			icon_id = "C_Locke_H_WhiteHouse_AllDiffs_D6",
+			ladder = "H_WhiteHouse",
+			sort_name = "C_Locke_H_WhiteHouse_AllDiffs_D6",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_sentence,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		vit_8 = {
+			icon_id = "C_Locke_H_WhiteHouse_AllDiffs_OD_D6",
+			ladder = "H_WhiteHouse",
+			sort_name = "C_Locke_H_WhiteHouse_AllDiffs_OD_D6",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_sentence,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		vit_9 = {
+			sort_name = "C_Locke_H_WhiteHouse_AHeist",
+			icon_id = "C_Locke_H_WhiteHouse_AHeist",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
 		nbm_1 = {
 			icon_id = "C_Event_H_SafeHouseNightmare_AllDiffs_D0",
 			ladder = "H_SafeHouseNightmare",
@@ -13667,6 +13806,100 @@ function init_auto_generated_achievement_data(tags)
 				tags.difficulty.overkill,
 				tags.tactics.stealth,
 				tags.contracts.the_continental
+			}
+		},
+		uno_1 = {
+			sort_name = "C_Bain_H_BankAny_AGoodHaul",
+			icon_id = "C_Bain_H_BankAny_AGoodHaul",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.bain
+			}
+		},
+		uno_2 = {
+			sort_name = "C_Bain_H_DiamondStore_Hostage",
+			icon_id = "C_Bain_H_DiamondStore_Hostage",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.bain
+			}
+		},
+		uno_3 = {
+			additional_id = true,
+			sort_name = "C_Bain_H_Mallcrasher_SelfCheck",
+			icon_id = "C_Bain_H_Mallcrasher_SelfCheck",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.contracts.bain
+			}
+		},
+		uno_4 = {
+			sort_name = "C_Classics_H_GreenBridge_Attacked",
+			icon_id = "C_Classics_H_GreenBridge_Attacked",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.contracts.classic
+			}
+		},
+		uno_5 = {
+			sort_name = "C_Locke_H_HenrysRock_Hack",
+			icon_id = "C_Locke_H_HenrysRock_Hack",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.contracts.locke
+			}
+		},
+		uno_6 = {
+			sort_name = "C_Vlad_H_Nightclub_LetThem",
+			icon_id = "C_Vlad_H_Nightclub_LetThem",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.stealth,
+				tags.contracts.vlad
+			}
+		},
+		uno_7 = {
+			additional_id = true,
+			sort_name = "C_Butcher_H_Scarface_Setting",
+			icon_id = "C_Butcher_H_Scarface_Setting",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.contracts.the_butcher
+			}
+		},
+		uno_8 = {
+			sort_name = "C_Hector_H_Watchdogs_OutOf",
+			icon_id = "C_Hector_H_Watchdogs_OutOf",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.contracts.hector
+			}
+		},
+		uno_9 = {
+			sort_name = "C_Vlad_H_XMas_Whats",
+			icon_id = "C_Vlad_H_XMas_Whats",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.contracts.vlad
 			}
 		},
 		bph_1 = {

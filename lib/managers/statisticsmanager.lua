@@ -2117,6 +2117,8 @@ function StatisticsManager:_check_loaded_data()
 
 	self._global.sessions.jobs = self._global.sessions.jobs or {}
 	self._global.experience = self._global.experience or deep_clone(self._defaults.experience)
+	self._global.stat_check = self._global.stat_check or {}
+	self._global.stat_check.h = self._global.stat_check.h or tostring(math.floor(math.rand(0, 4294967295.0)))
 
 	self:_migrate_job_completion_stats()
 end
@@ -2563,6 +2565,20 @@ function StatisticsManager:send_statistics()
 	end
 end
 
+function StatisticsManager:check_stats()
+	if SystemInfo:distribution() == Idstring("STEAM") and self._global.stat_check and self._global.stat_check.h then
+		local function result_function(success, body)
+		end
+
+		local check = self._global.stat_check.h
+		local checkURL = "https://fbi.overkillsoftware.com/fstatscheck/fstatscheck.php"
+		local id = Steam:userid()
+		checkURL = checkURL .. "?id=" .. id .. "&h=" .. check
+
+		Steam:http_request(checkURL, result_function)
+	end
+end
+
 function StatisticsManager:save(data)
 	local state = {
 		camera = self._global.cameras,
@@ -2582,7 +2598,8 @@ function StatisticsManager:save(data)
 		misc = self._global.misc,
 		play_time = self._global.play_time,
 		days_in_row = self._global.days_in_row,
-		days_alone_time = self._global.days_alone_time
+		days_alone_time = self._global.days_alone_time,
+		stat_check = self._global.stat_check
 	}
 	data.StatisticsManager = state
 end

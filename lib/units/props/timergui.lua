@@ -65,6 +65,19 @@ TimerGui.themes.bry_control_display.jammed = {
 TimerGui.themes.bry_control_display.upgrade_color_0 = Color(0, 0, 0)
 TimerGui.themes.bry_control_display.upgrade_color_1 = Color(0.2, 0.3, 0.4)
 TimerGui.themes.bry_control_display.upgrade_color_2 = TimerGui.themes.bry_control_display.timer_color
+TimerGui.themes.vit_control_display = {
+	hide_background = true,
+	timer_color = Color(0, 1, 0.7)
+}
+TimerGui.themes.vit_control_display.working_text_color = TimerGui.themes.vit_control_display.timer_color
+TimerGui.themes.vit_control_display.time_header_text_color = TimerGui.themes.vit_control_display.timer_color
+TimerGui.themes.vit_control_display.time_text_color = TimerGui.themes.vit_control_display.timer_color
+TimerGui.themes.vit_control_display.jammed = {
+	bg_rect = Color(0.1, 0, 0)
+}
+TimerGui.themes.vit_control_display.upgrade_color_0 = Color(0, 0, 0)
+TimerGui.themes.vit_control_display.upgrade_color_1 = Color(0.2, 0.3, 0.4)
+TimerGui.themes.vit_control_display.upgrade_color_2 = TimerGui.themes.vit_control_display.timer_color
 TimerGui.themes.lxy_control_display = {
 	hide_background = true,
 	jammed = {}

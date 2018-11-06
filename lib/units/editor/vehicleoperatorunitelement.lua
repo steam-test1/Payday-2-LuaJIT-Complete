@@ -12,6 +12,11 @@ VehicleOperatorUnitElement.ACTIONS = {
 	"block"
 }
 
+table.list_append(VehicleOperatorUnitElement.ACTIONS, {
+	"enable_player_exit",
+	"disable_player_exit"
+})
+
 function VehicleOperatorUnitElement:init(unit)
 	VehicleOperatorUnitElement.super.init(self, unit)
 

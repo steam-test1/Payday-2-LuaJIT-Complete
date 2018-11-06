@@ -174,6 +174,8 @@ function MenuMainState:at_enter(old_state)
 			difficulty = Global.exe_argument_difficulty
 		})
 	end
+
+	managers.statistics:check_stats()
 end
 
 function MenuMainState:at_exit(new_state)

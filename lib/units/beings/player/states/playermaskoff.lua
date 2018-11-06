@@ -20,6 +20,13 @@ function PlayerMaskOff:enter(state_data, enter_data)
 end
 
 function PlayerMaskOff:_enter(enter_data)
+	local equipped_weapon = self._unit:inventory():equipped_unit()
+
+	if equipped_weapon then
+		equipped_weapon:base():set_gadget_on(0, false)
+		self._unit:network():send("set_weapon_gadget_state", 0)
+	end
+
 	local equipped_selection = self._unit:inventory():equipped_selection()
 
 	if equipped_selection ~= 1 then
@@ -70,6 +77,10 @@ function PlayerMaskOff:exit(state_data, new_state_name)
 	end
 
 	self:_interupt_action_start_standard()
+
+	return {
+		was_unarmed = true
+	}
 end
 
 function PlayerMaskOff:update(t, dt)

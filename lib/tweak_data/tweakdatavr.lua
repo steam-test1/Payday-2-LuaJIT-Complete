@@ -8446,6 +8446,7 @@ function TweakDataVR:init(tweak_data)
 			}
 		}
 	}
+	self.driving.blackhawk_2 = deep_clone(self.driving.blackhawk_1)
 	self.overlay_effects = {
 		fade_in_rotate_player = {
 			blend_mode = "normal",

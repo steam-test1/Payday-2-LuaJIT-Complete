@@ -27,6 +27,7 @@ function CustomSafehouseTweakData:init(tweak_data)
 	self:_init_trophies(tweak_data)
 	self:_init_dailies(tweak_data)
 	self:_init_map(tweak_data)
+	self:_init_uno()
 
 	self.daily_redirects = {
 		daily_sewers = "daily_helicopter",
@@ -1475,6 +1476,22 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		}
 	})
 	table.insert(self.trophies, {
+		id = "trophy_device_assembled",
+		gives_reward = false,
+		hidden_in_list = true,
+		objectives = {
+			self:_progress("trophy_device_assembled", 1)
+		}
+	})
+	table.insert(self.trophies, {
+		id = "trophy_device_opened",
+		gives_reward = false,
+		hidden_in_list = true,
+		objectives = {
+			self:_progress("trophy_device_opened", 1)
+		}
+	})
+	table.insert(self.trophies, {
 		id = "trophy_vlads_cupcake",
 		gives_reward = false,
 		hidden_in_list = true,
@@ -2074,5 +2091,78 @@ function CustomSafehouseTweakData:_init_map(tweak_data)
 		icon = "safehouse_character_icon_ecp",
 		x = 1140,
 		y = 830
+	}
+end
+
+function CustomSafehouseTweakData:_init_uno()
+	self.uno_achievements_pool = {
+		"armored_1",
+		"armored_2",
+		"bat_2",
+		"berry_2",
+		"bigbank_5",
+		"bob_3",
+		"born_5",
+		"bph_11",
+		"brb_8",
+		"cac_13",
+		"cac_26",
+		"cac_9",
+		"cane_2",
+		"charliesierra_5",
+		"cow_10",
+		"cow_4",
+		"dah_9",
+		"dark_3",
+		"diamonds_are_forever",
+		"doctor_fantastic",
+		"fish_5",
+		"fort_4",
+		"green_6",
+		"halloween_2",
+		"i_wasnt_even_there",
+		"jerry_4",
+		"kenaz_4",
+		"kosugi_2",
+		"lets_do_this",
+		"live_2",
+		"lord_of_war",
+		"man_2",
+		"melt_3",
+		"moon_5",
+		"nmh_10",
+		"pal_2",
+		"payback_2",
+		"peta_3",
+		"pig_2",
+		"run_10",
+		"rvd_11",
+		"sah_10",
+		"spa_5",
+		"tag_10",
+		"trk_af_3",
+		"trk_fs_3",
+		"trk_sh_3",
+		"uno_1",
+		"uno_2",
+		"uno_3",
+		"uno_4",
+		"uno_5",
+		"uno_6",
+		"uno_7",
+		"uno_8",
+		"uno_9",
+		"wwh_9"
+	}
+	self.uno_notes = {
+		"26c470e6125f7011",
+		"f6341f24fdee897e",
+		"7246dea0602ee2bc",
+		"4bae9a1ce071f5ac",
+		"88ceb778cad2166a",
+		"88ceb778cad2166a",
+		"4bae9a1ce071f5ac",
+		"7246dea0602ee2bc",
+		"f6341f24fdee897e"
 	}
 end

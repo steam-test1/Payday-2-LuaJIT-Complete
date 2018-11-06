@@ -193,6 +193,8 @@ function MenuSetup:init_game()
 		else
 			game_state_machine:change_state_by_name("bootup")
 		end
+
+		tweak_data:load_movie_list()
 	end
 
 	return gsm

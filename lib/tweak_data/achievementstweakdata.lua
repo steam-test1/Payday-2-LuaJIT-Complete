@@ -4670,6 +4670,74 @@ function AchievementsTweakData:init(tweak_data)
 			job = "bph",
 			difficulty = sm_wish_and_above
 		},
+		vit_1 = {
+			award = "vit_1",
+			job = "vit",
+			difficulty = normal_and_above
+		},
+		vit_2 = {
+			award = "vit_2",
+			job = "vit",
+			difficulty = hard_and_above
+		},
+		vit_3 = {
+			award = "vit_3",
+			job = "vit",
+			difficulty = veryhard_and_above
+		},
+		vit_4 = {
+			award = "vit_4",
+			job = "vit",
+			difficulty = overkill_and_above
+		},
+		vit_5 = {
+			award = "vit_5",
+			job = "vit",
+			difficulty = easywish_and_above
+		},
+		vit_6 = {
+			award = "vit_6",
+			job = "vit",
+			difficulty = deathwish_and_above
+		},
+		vit_7 = {
+			award = "vit_7",
+			job = "vit",
+			difficulty = sm_wish_and_above
+		},
+		vit_8 = {
+			award = "vit_8",
+			one_down = true,
+			job = "vit",
+			difficulty = sm_wish_and_above
+		},
+		vit_11 = {
+			award = "vit_11",
+			job = "vit",
+			masks = {
+				"bush",
+				"clinton",
+				"franklin",
+				"grant",
+				"lincoln",
+				"nixon",
+				"obama",
+				"washington",
+				"win_donald",
+				"win_donald_mega"
+			},
+			difficulty = overkill_and_above
+		},
+		uno_1 = {
+			award = "uno_1",
+			bag_loot_value = 400000,
+			jobs = {
+				"branchbank_prof",
+				"branchbank_gold_prof",
+				"branchbank_cash",
+				"branchbank_deposit"
+			}
+		},
 		bain_jobs = {
 			complete_job = true,
 			contract = "bain",
@@ -5601,6 +5669,26 @@ function AchievementsTweakData:init(tweak_data)
 		story_very_hard_henrys_rock = {
 			job = "des",
 			story = "story_very_hard_henrys_rock",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_sah = {
+			job = "sah",
+			story = "story_very_hard_sah",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_bph = {
+			job = "bph",
+			story = "story_very_hard_bph",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_nmh = {
+			job = "nmh",
+			story = "story_very_hard_nmh",
+			difficulty = veryhard_and_above
+		},
+		story_very_hard_vit = {
+			job = "vit",
+			story = "story_very_hard_vit",
 			difficulty = veryhard_and_above
 		},
 		challenge_srtd = {

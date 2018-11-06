@@ -2720,3 +2720,18 @@ function MenuManager:show_crime_spree_locked_dialog()
 
 	managers.system_menu:show(dialog_data)
 end
+
+function MenuManager:show_movie_theater_unlocked_dialog()
+	local dialog_data = {
+		title = managers.localization:text("dialog_ending_unlocked_title"),
+		text = managers.localization:text("dialog_ending_unlocked_text")
+	}
+	local ok_button = {
+		text = managers.localization:text("dialog_ok")
+	}
+	dialog_data.button_list = {
+		ok_button
+	}
+
+	managers.system_menu:show(dialog_data)
+end

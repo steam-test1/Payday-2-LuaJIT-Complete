@@ -23,6 +23,7 @@ function FeatureManager:_setup()
 	self._default.announcements.short_heists_available = 1
 	self._default.announcements.safehouse_dailies = 1
 	self._default.announcements.tango_weapon_unlocked = 1
+	self._default.announcements.movie_theater_unlocked = 1
 
 	if not Global.feature_manager then
 		Global.feature_manager = {
@@ -346,6 +347,12 @@ end
 function FeatureManager:tango_weapon_unlocked()
 	print("FeatureManager:tango_weapon_unlocked()")
 	managers.tango:announce_tango_weapon()
+
+	return true
+end
+
+function FeatureManager:movie_theater_unlocked()
+	managers.menu:show_movie_theater_unlocked_dialog()
 
 	return true
 end

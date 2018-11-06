@@ -68,9 +68,8 @@ function ElementVehicleBoarding:on_executed(instigator)
 				so_data.unit = heister.unit
 				so_data.ride_objective.action.align_sync = true
 
-				if Network:is_server() then
-					brain_ext:set_objective(so_data.ride_objective)
-				end
+				brain_ext:set_objective(so_data.ride_objective)
+				managers.network:session():send_to_peers("sync_ai_vehicle_action", "enter", vehicle, seat.name, heister.unit)
 
 				movement_ext.vehicle_unit = vehicle
 				movement_ext.vehicle_seat = seat

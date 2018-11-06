@@ -5615,6 +5615,110 @@ function InteractionTweakData:init(tweak_data)
 		interact_distance = 90,
 		start_active = false
 	}
+	self.take_pardons = {
+		text_id = "hud_int_hold_take_pardons",
+		action_text_id = "hud_action_taking_pardons",
+		interact_distance = 150,
+		start_active = false,
+		timer = 1,
+		axis = "y"
+	}
+	self.vit_take_usb_key = {
+		text_id = "hud_int_hold_search_usb_key",
+		special_equipment_block = "cas_usb_key",
+		interact_distance = 150,
+		start_active = false,
+		timer = 3
+	}
+	self.vit_search = {
+		text_id = "hud_int_hold_search_books",
+		action_text_id = "hud_action_search_books",
+		interact_distance = 150,
+		start_active = false,
+		timer = 1
+	}
+	self.vit_search_clues = {
+		text_id = "hud_int_hold_search_clues",
+		action_text_id = "hud_action_searching_clues",
+		interact_distance = 150,
+		start_active = false,
+		timer = 3,
+		timer = 3,
+		sound_start = "bar_keyboard",
+		sound_interupt = "bar_keyboard_cancel",
+		sound_done = "bar_keyboard_finished"
+	}
+	self.vit_remove_painting = {
+		text_id = "hud_int_hold_remove_painting",
+		action_text_id = "hud_action_removing_painting",
+		interact_distance = 150,
+		start_active = false,
+		timer = 3,
+		sound_start = "bar_steal_painting",
+		sound_interupt = "bar_steal_painting_cancel",
+		sound_done = "bar_steal_painting_finished"
+	}
+	self.vit_insert_usb = {
+		text_id = "hud_int_hold_insert_usb",
+		action_text_id = "hud_action_inserting_usb",
+		special_equipment = "cas_usb_key",
+		equipment_text_id = "hint_no_usb_key",
+		equipment_consume = true,
+		interact_distance = 150,
+		start_active = false,
+		timer = 3
+	}
+	self.gen_pku_thermite_timer_3sec = deep_clone(self.gen_pku_thermite)
+	self.gen_pku_thermite_timer_3sec.timer = 3
+	self.gen_pku_thermite_timer_3sec.start_active = false
+	self.vit_keycard_use = {
+		text_id = "hud_int_equipment_keycard",
+		equipment_text_id = "hud_int_equipment_no_keycard",
+		special_equipment = "president_key",
+		equipment_consume = true,
+		start_active = true,
+		axis = "y"
+	}
+	self.start_hacking = {
+		text_id = "hud_int_hold_start_hack",
+		action_text_id = "hud_action_starting_hack",
+		interact_distance = 150,
+		start_active = false,
+		timer = 3
+	}
+	self.postpone_update = {
+		text_id = "hud_int_hold_postpone_update",
+		action_text_id = "hud_action_postponing_update",
+		interact_distance = 150,
+		start_active = false,
+		timer = 1
+	}
+	self.reboot_computer = {
+		text_id = "hud_int_hold_reboot",
+		action_text_id = "hud_action_reboot",
+		interact_distance = 150,
+		start_active = false,
+		timer = 3
+	}
+	self.bypass_the_firewall = {
+		text_id = "hud_int_hold_bypass_firewall",
+		action_text_id = "hud_action_bypassing_the_firewall",
+		interact_distance = 150,
+		start_active = false,
+		timer = 3
+	}
+	self.uno_use_device = {
+		text_id = "hud_int_use_device",
+		interact_distance = 150,
+		start_active = false
+	}
+	self.uno_assemble_device = {
+		text_id = "hud_int_assemble_device",
+		action_text_id = "hud_action_assemble_device",
+		timer = 7,
+		interact_distance = 200,
+		start_active = false
+	}
 	self.hold_remove_parts = {
 		text_id = "hud_int_hold_remove_parts",
 		action_text_id = "hud_action_remove_parts",

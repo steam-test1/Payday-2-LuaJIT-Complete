@@ -372,21 +372,22 @@ end
 function MenuTitlescreenState:play_attract_video()
 	self:reset_attract_video()
 
-	local res = RenderSettings.resolution
+	local screen_width = self._full_workspace:width()
+	local screen_height = self._full_workspace:height()
 	local src_width = 1280
 	local src_height = 720
 	local dest_width, dest_height = nil
 
-	if src_width / src_height > res.x / res.y then
-		dest_width = res.x
+	if src_width / src_height > screen_width / screen_height then
+		dest_width = screen_width
 		dest_height = src_height * dest_width / src_width
 	else
-		dest_height = res.y
+		dest_height = screen_height
 		dest_width = src_width * dest_height / src_height
 	end
 
-	local x = (res.x - dest_width) / 2
-	local y = (res.y - dest_height) / 2
+	local x = (screen_width - dest_width) / 2
+	local y = (screen_height - dest_height) / 2
 	self._attract_video_gui = self._full_workspace:panel():video({
 		video = "movies/attract",
 		x = x,

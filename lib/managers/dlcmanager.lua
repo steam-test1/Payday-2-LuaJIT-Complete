@@ -630,6 +630,12 @@ function GenericDLCManager:has_achievement_milestone(data)
 	return milestone.awarded
 end
 
+function GenericDLCManager:has_stat(data)
+	local sa_handler = Steam:sa_handler()
+
+	return sa_handler:get_stat(data.stat_id) >= (data.stat_value or 1)
+end
+
 function GenericDLCManager:has_dlc_or_soundtrack_or_cce(dlc)
 	return managers.dlc:is_dlc_unlocked(dlc) or managers.dlc:has_soundtrack_or_cce()
 end

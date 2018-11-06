@@ -1899,6 +1899,23 @@ function LevelsTweakData:init()
 		wave_count = 9,
 		narrator = "locke"
 	}
+	self.vit = {
+		name_id = "heist_vit_hl",
+		briefing_id = "heist_vit_briefing",
+		package = "packages/dlcs/vit/job_vit",
+		briefing_dialog = "Play_loc_vit_brf",
+		world_name = "narratives/locke/vit",
+		intro_event = "Play_loc_vit_intro",
+		outro_event = "Play_loc_vit_end_win",
+		failure_event = "Play_loc_vit_end_fail",
+		music = "heist",
+		cube = "cube_apply_heist_bank",
+		max_bags = 20,
+		ai_group_type = murkywater,
+		narrator = "locke",
+		player_sequence = "spawn_prop_murky_suit",
+		load_screen = "guis/dlcs/vit/textures/loading/job_vit_df"
+	}
 	self._level_index = {
 		"welcome_to_the_jungle_1",
 		"welcome_to_the_jungle_1_night",
@@ -2008,6 +2025,7 @@ function LevelsTweakData:init()
 		"skm_red2",
 		"skm_run",
 		"skm_watchdogs_stage2",
+		"vit",
 		"bph"
 	}
 

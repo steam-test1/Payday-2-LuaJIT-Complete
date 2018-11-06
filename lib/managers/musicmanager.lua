@@ -376,6 +376,7 @@ function MusicManager:jukebox_default_tracks()
 		heist_crojob1 = "all",
 		heist_bph = "track_62_lcv",
 		heist_nmh = "track_63",
+		heist_vit = "track_64_lcv",
 		heist_sah = "track_61",
 		heist_firestarter3 = "track_02",
 		heist_alex1 = "track_08",

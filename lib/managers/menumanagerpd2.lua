@@ -3105,6 +3105,26 @@ function MenuCallbackHandler:toggle_vr_descs(item)
 	managers.user:set_setting("show_vr_descs", item:value() == "on")
 end
 
+function MenuCallbackHandler:enable_movie_theater()
+	return managers.achievment:get_info("vit_1").awarded
+end
+
+function MenuCallbackHandler:only_one_movie()
+	if tweak_data.movies then
+		return #tweak_data.movies == 1
+	end
+
+	return false
+end
+
+function MenuCallbackHandler:more_than_one_movie()
+	if tweak_data.movies then
+		return #tweak_data.movies > 1
+	end
+
+	return false
+end
+
 MenuArmorSkinEditorInitiator = MenuArmorSkinEditorInitiator or class(MenuInitiatorBase)
 
 function MenuArmorSkinEditorInitiator:modify_node(node, data)

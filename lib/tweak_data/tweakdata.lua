@@ -1710,6 +1710,9 @@ Play the full version soon to get your full PAYDAY!]],
 			track = "track_63"
 		},
 		{
+			track = "track_64_lcv"
+		},
+		{
 			track = "track_32_lcv"
 		},
 		{
@@ -2593,6 +2596,23 @@ Play the full version soon to get your full PAYDAY!]],
 	self:digest_tweak_data()
 end
 
+function TweakData:load_movie_list()
+	local CONFIG_PATH = "gamedata/movie_theater"
+	local FILE_EXTENSION = "movie_theater"
+	self.movies = {}
+	local movie_data = PackageManager:xml_data(FILE_EXTENSION:id(), CONFIG_PATH:id())
+
+	if movie_data then
+		for i = 0, movie_data:num_children() - 1, 1 do
+			local item = movie_data:child(i):parameter_map()
+
+			if item.file and DB:has(Idstring("movie"), item.file) then
+				table.insert(self.movies, item)
+			end
+		end
+	end
+end
+
 function TweakData:init_screen_colors()
 	self.screen_colors = {
 		text = Color(255, 255, 255, 255) / 255,
@@ -2962,6 +2982,12 @@ function TweakData:set_menu_scale()
 	self.menu.pd2_tiny_font = "fonts/font_small_mf"
 	self.menu.pd2_tiny_font_id = Idstring(self.menu.pd2_tiny_font)
 	self.menu.pd2_tiny_font_size = 16
+	self.menu.uno_vessel_font = "fonts/font_vessel"
+	self.menu.uno_vessel_font_id = Idstring(self.menu.uno_vessel_font)
+	self.menu.uno_vessel_font_size = 20
+	self.menu.uno_vessel_ext_font = "fonts/font_vessel_ext"
+	self.menu.uno_vessel_ext_font_id = Idstring(self.menu.uno_vessel_ext_font)
+	self.menu.uno_vessel_ext_font_size = 20
 	self.menu.default_font_size = 24 * scale_multiplier
 	self.menu.default_font_row_item_color = Color.white
 	self.menu.default_hightlight_row_item_color = Color(1, 0, 0, 0)

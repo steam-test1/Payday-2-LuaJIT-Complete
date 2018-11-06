@@ -227,6 +227,13 @@ function EquipmentsTweakData:init()
 			text_id = "hud_int_equipment_pickup_keycard",
 			icon = "equipment_bank_manager_key"
 		},
+		president_key = {
+			sync_possession = true,
+			action_message = "bank_manager_key_obtained",
+			transfer_quantity = 4,
+			text_id = "hud_int_equipment_pickup_presidential_keycard",
+			icon = "equipment_bank_manager_key"
+		},
 		help_keycard = {
 			sync_possession = true,
 			action_message = "bank_manager_key_obtained",

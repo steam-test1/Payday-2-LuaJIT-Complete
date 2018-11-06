@@ -229,7 +229,8 @@ function AssetsTweakData:_init_assets(tweak_data)
 			"fish",
 			"dah",
 			"tag",
-			"sah"
+			"sah",
+			"vit"
 		},
 		visible_if_locked = true,
 		unlock_desc_id = "menu_asset_bodybags_bag_desc",
@@ -312,6 +313,7 @@ function AssetsTweakData:_init_assets(tweak_data)
 			"des",
 			"sah",
 			"bph",
+			"vit",
 			"nmh"
 		},
 		visible_if_locked = true,
@@ -366,6 +368,7 @@ function AssetsTweakData:_init_assets(tweak_data)
 			"des",
 			"sah",
 			"bph",
+			"vit",
 			"nmh"
 		},
 		visible_if_locked = true,
@@ -417,6 +420,7 @@ function AssetsTweakData:_init_assets(tweak_data)
 			"des",
 			"sah",
 			"bph",
+			"vit",
 			"nmh"
 		},
 		visible_if_locked = true,

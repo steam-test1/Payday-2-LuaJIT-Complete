@@ -63,6 +63,7 @@ require("lib/managers/menu/SkirmishContractMenuComponent")
 require("lib/managers/menu/SkirmishWeeklyContractMenuComponent")
 require("lib/managers/menu/SkirmishContractBoxGui")
 require("lib/managers/menu/IngameContractGuiSkirmish")
+require("lib/managers/menu/MovieTheaterGui")
 
 MenuComponentManager = MenuComponentManager or class()
 
@@ -319,7 +320,11 @@ function MenuComponentManager:init()
 			create = callback(self, self, "create_skirmish_contract_join_gui"),
 			close = callback(self, self, "close_skirmish_contract_join_gui")
 		},
-		weekly_skirmish_rewards = self:create_component_callback("SkirmishWeeklyRewardsMenuComponent", "weekly_skirmish_rewards")
+		weekly_skirmish_rewards = self:create_component_callback("SkirmishWeeklyRewardsMenuComponent", "weekly_skirmish_rewards"),
+		movie_theater = {
+			create = callback(self, self, "create_movie_theater_gui"),
+			close = callback(self, self, "close_movie_theater_gui")
+		}
 	}
 	self._alive_components = {}
 
@@ -5303,4 +5308,30 @@ end
 
 function MenuComponentManager:skirmish_contract_join_gui()
 	return self._skirmish_contract_join_gui
+end
+
+function MenuComponentManager:create_movie_theater_gui(node)
+	if not node then
+		return
+	end
+
+	self:close_movie_theater_gui()
+
+	self._movie_theater_gui = MovieTheaterGui:new(self._ws, self._fullscreen_ws, node)
+
+	self:register_component("movie_theater_gui", self._movie_theater_gui)
+end
+
+function MenuComponentManager:close_movie_theater_gui()
+	if self._movie_theater_gui then
+		self._movie_theater_gui:close()
+
+		self._movie_theater_gui = nil
+
+		self:unregister_component("movie_theater_gui")
+	end
+end
+
+function MenuComponentManager:movie_theater_gui()
+	return self._movie_theater_gui
 end

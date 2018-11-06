@@ -16693,6 +16693,12 @@ function CharacterTweakData:character_map()
 				"ene_murkywater_light",
 				"ene_murkywater_light_r870"
 			}
+		},
+		vit = {
+			path = "units/pd2_dlc_vit/characters/",
+			list = {
+				"ene_murkywater_secret_service"
+			}
 		}
 	}
 
