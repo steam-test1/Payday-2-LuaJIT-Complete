@@ -1249,7 +1249,6 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		image_id = "safehouse_trophies_preview_box1_healer",
 		objective_id = "trophy_box_1_completion_objective",
 		id = "trophy_box_1",
-		gives_reward = false,
 		desc_id = "trophy_box_1_desc",
 		objectives = {
 			self:_achievement("trk_gg_0"),
@@ -1261,7 +1260,6 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		image_id = "safehouse_trophies_preview_box2_elephant",
 		objective_id = "trophy_box_2_completion_objective",
 		id = "trophy_box_2",
-		gives_reward = false,
 		desc_id = "trophy_box_2_desc",
 		objectives = {self:_achievement("tag_1")}
 	})
@@ -1270,7 +1268,6 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		image_id = "safehouse_trophies_preview_box3_scribe",
 		objective_id = "trophy_box_3_completion_objective",
 		id = "trophy_box_3",
-		gives_reward = false,
 		desc_id = "trophy_box_3_desc",
 		objectives = {self:_achievement("des_1")}
 	})
@@ -1282,6 +1279,14 @@ function CustomSafehouseTweakData:_init_trophies(tweak_data)
 		gives_reward = false,
 		desc_id = "trophy_device_parts_desc",
 		objectives = {self:_progress("trophy_device_parts", 1)}
+	})
+	table.insert(self.trophies, {
+		name_id = "trophy_black_plate",
+		image_id = "safehouse_trophies_preview_blackplate",
+		objective_id = "trophy_black_plate_completion_objective",
+		id = "trophy_black_plate",
+		desc_id = "trophy_black_plate_desc",
+		objectives = {self:_achievement("sah_1")}
 	})
 end
 

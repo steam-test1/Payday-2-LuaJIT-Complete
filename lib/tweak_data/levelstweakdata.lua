@@ -1673,6 +1673,26 @@ function LevelsTweakData:init()
 		narrator = "locke",
 		load_screen = "guis/dlcs/des/textures/loading/job_des_df"
 	}
+	self.sah = {
+		name_id = "heist_sah_hl",
+		briefing_id = "heist_sah_briefing",
+		package = "packages/dlcs/sah/job_sah",
+		briefing_dialog = "Play_loc_sah_brf",
+		world_name = "narratives/locke/sah",
+		intro_event = "Play_loc_sah_intro",
+		outro_event = {
+			"Play_loc_sah_end_stealth",
+			"Play_loc_sah_end_loud"
+		},
+		cube = "cube_apply_heist_bank",
+		music_ext = "music_tag",
+		music_ext_start = "suspense_1",
+		max_bags = 40,
+		ghost_bonus = 0.1,
+		ai_group_type = america,
+		narrator = "locke",
+		player_sequence = "spawn_prop_tux"
+	}
 	self._level_index = {
 		"welcome_to_the_jungle_1",
 		"welcome_to_the_jungle_1_night",
@@ -1775,7 +1795,8 @@ function LevelsTweakData:init()
 		"wwh",
 		"brb",
 		"tag",
-		"des"
+		"des",
+		"sah"
 	}
 
 	if SystemInfo:distribution() == Idstring("STEAM") then

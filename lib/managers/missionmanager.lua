@@ -223,6 +223,7 @@ function MissionManager:init(...)
 		"pku_diamond_dah",
 		"pku_blue_diamond",
 		"pku_jewelry_instant",
+		"pku_black_tablet",
 		"pku_german_folder",
 		"pku_old_wine"
 	})

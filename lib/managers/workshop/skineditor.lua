@@ -822,7 +822,6 @@ function SkinEditor:get_excluded_weapons()
 		"arblast",
 		"cobray",
 		"hajk",
-		"packrat",
 		"pl14"
 	}
 end

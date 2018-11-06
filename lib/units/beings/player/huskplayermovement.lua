@@ -246,18 +246,6 @@ HuskPlayerMovement._matching_walk_anims = {
 	l = {r = true},
 	r = {l = true}
 }
-HuskPlayerMovement._char_name_to_index = {
-	spanish = 4,
-	russian = 1,
-	german = 2,
-	american = 3
-}
-HuskPlayerMovement._char_model_names = {
-	spanish = "g_spaniard",
-	russian = "g_russian",
-	german = "g_body",
-	american = "g_american"
-}
 HuskPlayerMovement._stance_names = {
 	"ntl",
 	"hos",
@@ -370,16 +358,6 @@ function HuskPlayerMovement:set_character_anim_variables()
 
 	if not char_name then
 		return
-	end
-
-	local mesh_name = (self._char_model_names[char_name] or "") .. (managers.player._player_mesh_suffix or "")
-	local mesh_obj = self._unit:get_object(Idstring(mesh_name))
-
-	if mesh_obj then
-		self._unit:get_object(Idstring(self._plr_mesh_name or self._char_model_names.german)):set_visibility(false)
-		mesh_obj:set_visibility(true)
-
-		self._plr_mesh_name = mesh_name
 	end
 
 	local char_index = 1

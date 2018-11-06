@@ -3446,6 +3446,7 @@ function UpgradesTweakData:init(tweak_data)
 				"oldbaton",
 				"hockey",
 				"meter",
+				"shock",
 				"x_scorpion"
 			}
 		},
@@ -10267,6 +10268,7 @@ function UpgradesTweakData:_melee_weapon_definitions()
 		dlc = "flm",
 		category = "melee_weapon"
 	}
+	self.definitions.shock = {category = "melee_weapon"}
 end
 
 function UpgradesTweakData:_grenades_definitions()

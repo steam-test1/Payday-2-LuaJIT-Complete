@@ -9526,6 +9526,147 @@ function init_auto_generated_achievement_data(tags)
 				tags.contracts.locke
 			}
 		},
+		sah_1 = {
+			icon_id = "C_Locke_H_Shacklethorne_AllDiffs_D0",
+			ladder = "H_Shacklethorne",
+			sort_name = "C_Locke_H_Shacklethorne_AllDiffs_D0",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		sah_10 = {
+			additional_id = true,
+			sort_name = "C_Locke_H_Shacklethorne_PressF",
+			icon_id = "C_Locke_H_Shacklethorne_PressF",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		sah_11 = {
+			need_unlock_icons = true,
+			icon_id = "C_Locke_H_Shacklethorne_HeavyMetal",
+			sort_name = "C_Locke_H_Shacklethorne_HeavyMetal",
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.unlock.weapon,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		sah_2 = {
+			icon_id = "C_Locke_H_Shacklethorne_AllDiffs_D1",
+			ladder = "H_Shacklethorne",
+			sort_name = "C_Locke_H_Shacklethorne_AllDiffs_D1",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.hard,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		sah_3 = {
+			icon_id = "C_Locke_H_Shacklethorne_AllDiffs_D2",
+			ladder = "H_Shacklethorne",
+			sort_name = "C_Locke_H_Shacklethorne_AllDiffs_D2",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.very_hard,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		sah_4 = {
+			icon_id = "C_Locke_H_Shacklethorne_AllDiffs_D3",
+			ladder = "H_Shacklethorne",
+			sort_name = "C_Locke_H_Shacklethorne_AllDiffs_D3",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		sah_5 = {
+			icon_id = "C_Locke_H_Shacklethorne_AllDiffs_D4",
+			ladder = "H_Shacklethorne",
+			sort_name = "C_Locke_H_Shacklethorne_AllDiffs_D4",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.mayhem,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		sah_6 = {
+			icon_id = "C_Locke_H_Shacklethorne_AllDiffs_D5",
+			ladder = "H_Shacklethorne",
+			sort_name = "C_Locke_H_Shacklethorne_AllDiffs_D5",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_wish,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		sah_7 = {
+			icon_id = "C_Locke_H_Shacklethorne_AllDiffs_D6",
+			ladder = "H_Shacklethorne",
+			sort_name = "C_Locke_H_Shacklethorne_AllDiffs_D6",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_sentence,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		sah_8 = {
+			icon_id = "C_Locke_H_Shacklethorne_AllDiffs_OD_D6",
+			ladder = "H_Shacklethorne",
+			sort_name = "C_Locke_H_Shacklethorne_AllDiffs_OD_D6",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_sentence,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.locke
+			}
+		},
+		sah_9 = {
+			sort_name = "C_Locke_H_Shacklethorne_AuctionCry",
+			icon_id = "C_Locke_H_Shacklethorne_AuctionCry",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.stealth,
+				tags.tactics.timed,
+				tags.contracts.locke
+			}
+		},
 		glace_1 = {
 			icon_id = "C_Classics_H_GreenBridge_AllDiffs_D0",
 			ladder = "H_GreenBridge",

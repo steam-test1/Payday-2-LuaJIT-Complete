@@ -368,6 +368,7 @@ function MusicManager:jukebox_default_tracks()
 		credits = "criminals_ambition",
 		heist_run = "track_52",
 		heist_crojob1 = "all",
+		heist_sah = "track_61",
 		heist_firestarter3 = "track_02",
 		heist_alex1 = "track_08",
 		heist_kenaz_full = "all",

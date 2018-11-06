@@ -16322,6 +16322,22 @@ function CharacterTweakData:character_map()
 		tag = {
 			path = "units/pd2_dlc_tag/characters/",
 			list = {"ene_male_commissioner"}
+		},
+		sah = {
+			path = "units/pd2_dlc_sah/characters/",
+			list = {
+				"civ_male_gala_guest_03",
+				"civ_male_gala_guest_04",
+				"civ_male_gala_guest_05",
+				"civ_male_gala_guest_06",
+				"civ_male_auctioneer",
+				"civ_female_gala_guest_04",
+				"civ_female_gala_guest_05",
+				"civ_female_gala_guest_06",
+				"civ_male_shacklethorn_waiter_01",
+				"civ_male_shacklethorn_waiter_02",
+				"civ_male_maintenance_01"
+			}
 		}
 	}
 

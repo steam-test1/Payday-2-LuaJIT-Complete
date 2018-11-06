@@ -5288,6 +5288,70 @@ function NarrativeTweakData:init(tweak_data)
 		12000,
 		12000
 	}
+	self.stages.sah = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "sah"
+	}
+	self.jobs.sah = {
+		name_id = "heist_sah",
+		briefing_id = "heist_sah_crimenet",
+		contact = "locke",
+		region = "street",
+		jc = 30,
+		chain = {self.stages.sah},
+		load_screen = "guis/dlcs/sah/textures/loading/job_sah_df",
+		briefing_event = "Play_rb22_sah_cbf_01",
+		debrief_event = nil,
+		crimenet_callouts = {"Play_loc_sah_cnc_01"},
+		crimenet_videos = {"contact_locke1"},
+		payout = {
+			100000,
+			0,
+			0,
+			0,
+			0,
+			0,
+			0
+		},
+		contract_cost = {
+			70000,
+			150000,
+			350307,
+			700000,
+			900000,
+			900000,
+			900000
+		},
+		contract_visuals = {}
+	}
+	self.jobs.sah.contract_visuals.min_mission_xp = {
+		11000,
+		11000,
+		11000,
+		11000,
+		11000,
+		11000,
+		11000
+	}
+	self.jobs.sah.contract_visuals.max_mission_xp = {
+		23000,
+		23000,
+		23000,
+		23000,
+		23000,
+		23000,
+		23000
+	}
+	self.jobs.sah.contract_visuals.preview_image = {
+		id = "sah",
+		folder = "sah"
+	}
+	self.jobs.sah.date_added = {
+		2018,
+		8,
+		15
+	}
 	self._jobs_index = {
 		"jewelry_store",
 		"four_stores",
@@ -5363,7 +5427,8 @@ function NarrativeTweakData:init(tweak_data)
 		"wwh",
 		"brb",
 		"tag",
-		"des"
+		"des",
+		"sah"
 	}
 	self.forced_jobs = {
 		firestarter = true,

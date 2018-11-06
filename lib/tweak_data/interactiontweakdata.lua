@@ -5141,7 +5141,8 @@ function InteractionTweakData:init(tweak_data)
 		action_text_id = "hud_action_taking_medallion",
 		timer = 2,
 		start_active = false,
-		special_equipment_block = "medallion"
+		special_equipment_block = "medallion",
+		sound_done = "liquid_nitrogen_pick_up"
 	}
 	self.apply_thermite_paste_no_consume = deep_clone(self.apply_thermite_paste)
 	self.apply_thermite_paste_no_consume.equipment_consume = false
@@ -5443,12 +5444,49 @@ function InteractionTweakData:init(tweak_data)
 		start_active = false,
 		sound_done = "bar_laser_weapon_button_push_finished"
 	}
+	self.press_pay_respects = {
+		text_id = "hud_int_press_pay_respects",
+		interact_distance = 150,
+		start_active = false
+	}
+	self.hold_place_device = {
+		text_id = "hud_int_hold_to_place_device",
+		action_text_id = "hud_action_placing_device",
+		start_active = true,
+		timer = 3,
+		interact_distance = 150,
+		sound_start = "bar_plant_breaching_detonator",
+		sound_interupt = "bar_plant_breaching_detonator_cancel",
+		sound_done = "bar_plant_breaching_detonator_finished"
+	}
+	self.hold_take_tablet = {
+		text_id = "hud_int_hold_to_take_tablet",
+		action_text_id = "hud_action_taking_tablet",
+		start_active = true,
+		timer = 3,
+		interact_distance = 150
+	}
+	self.hold_take_wrench = {
+		text_id = "hud_int_hold_take_wrench",
+		action_text_id = "hud_action_taking_wrench",
+		start_active = false,
+		timer = 1,
+		interact_distance = 150
+	}
+	self.invisible_interaction_open_axis_sah = deep_clone(self.invisible_interaction_open)
+	self.invisible_interaction_open_axis_sah.axis = "y"
+	self.invisible_interaction_open_axis_sah.sound_start = "bar_train_panel_hacking"
+	self.invisible_interaction_open_axis_sah.sound_interupt = "bar_train_panel_hacking_cancel"
+	self.invisible_interaction_open_axis_sah.sound_done = "bar_train_panel_hacking_finished"
+	self.invisible_interaction_open_axis_sah.timer = 4
 	self.hold_remove_parts = {
 		text_id = "hud_int_hold_remove_parts",
 		action_text_id = "hud_action_remove_parts",
 		start_active = true,
 		timer = 3,
-		interact_distance = 150
+		interact_distance = 150,
+		sound_start = "bar_bag_generic",
+		sound_interupt = "bar_bag_generic_cancel"
 	}
 	self.press_use_medallion = {
 		text_id = "hud_int_press_use_medallion",

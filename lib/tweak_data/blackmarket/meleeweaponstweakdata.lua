@@ -2613,6 +2613,32 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	}
 	self.melee_weapons.aziz.repeat_expire_t = 0.36
 	self.melee_weapons.aziz.stats.concealment = 29
+	self.melee_weapons.shock = deep_clone(self.melee_weapons.kabar)
+	self.melee_weapons.shock.name_id = "bm_melee_shock"
+	self.melee_weapons.shock.dlc = nil
+	self.melee_weapons.shock.locks = {func = "has_unlocked_shock"}
+	self.melee_weapons.shock.texture_bundle_folder = "apa"
+	self.melee_weapons.shock.anim_global_param = "melee_axe"
+	self.melee_weapons.shock.type = "blunt"
+	self.melee_weapons.shock.align_objects = {"a_weapon_right"}
+	self.melee_weapons.shock.unit = "units/pd2_dlc_apa/weapons/wpn_fps_mel_shock/wpn_fps_mel_shock"
+	self.melee_weapons.shock.third_unit = "units/pd2_dlc_apa/weapons/wpn_fps_mel_shock/wpn_third_mel_shock"
+	self.melee_weapons.shock.stats.weapon_type = "blunt"
+	self.melee_weapons.shock.stats.min_damage = 3
+	self.melee_weapons.shock.stats.max_damage = 9
+	self.melee_weapons.shock.stats.min_damage_effect = 5
+	self.melee_weapons.shock.stats.max_damage_effect = 3
+	self.melee_weapons.shock.stats.charge_time = 3
+	self.melee_weapons.shock.stats.range = 185
+	self.melee_weapons.shock.sounds = {
+		equip = "shock_equip",
+		hit_air = "shock_hit_air",
+		hit_gen = "shock_hit_gen",
+		hit_body = "shock_hit_body",
+		charge = "shock_charge"
+	}
+	self.melee_weapons.shock.repeat_expire_t = 0.8
+	self.melee_weapons.shock.stats.concealment = 28
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.melee_weapons) do

@@ -88,7 +88,9 @@ CopMovement._gadgets = {
 	tequila = {Idstring("units/pd2_dlc_max/props/max_prop_tequila_bottle/max_prop_tequila_bottle")},
 	barrista_cup = {Idstring("units/pd2_dlc_rvd/characters/civ_acc_barista_cup_medium/civ_acc_barista_cup_medium")},
 	blood_splatter = {Idstring("units/pd2_dlc_rvd/characters/civ_acc_blood_splatter/civ_acc_blood_splatter")},
-	chimichanga = {Idstring("units/pd2_dlc_tag/characters/ene_acc_chimichanga/ene_acc_chimichanga")}
+	chimichanga = {Idstring("units/pd2_dlc_tag/characters/ene_acc_chimichanga/ene_acc_chimichanga")},
+	umbrella = {Idstring("units/pd2_dlc_sah/props/sah_prop_umbrella/sah_prop_umbrella")},
+	umbrella_female = {Idstring("units/pd2_dlc_sah/props/sah_prop_umbrella/sah_prop_umbrella_female")}
 }
 local action_variants = {security = {
 	idle = CopActionIdle,

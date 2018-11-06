@@ -228,7 +228,8 @@ function AssetsTweakData:_init_assets(tweak_data)
 			"friend",
 			"fish",
 			"dah",
-			"tag"
+			"tag",
+			"sah"
 		},
 		visible_if_locked = true,
 		unlock_desc_id = "menu_asset_bodybags_bag_desc",
@@ -308,7 +309,8 @@ function AssetsTweakData:_init_assets(tweak_data)
 			"wwh",
 			"hvh",
 			"brb",
-			"des"
+			"des",
+			"sah"
 		},
 		visible_if_locked = true,
 		unlock_desc_id = "menu_asset_grenade_crate_desc",
@@ -359,7 +361,8 @@ function AssetsTweakData:_init_assets(tweak_data)
 			"wwh",
 			"hvh",
 			"brb",
-			"des"
+			"des",
+			"sah"
 		},
 		visible_if_locked = true,
 		unlock_desc_id = "menu_asset_ammo_desc",
@@ -407,7 +410,8 @@ function AssetsTweakData:_init_assets(tweak_data)
 			"wwh",
 			"hvh",
 			"brb",
-			"des"
+			"des",
+			"sah"
 		},
 		visible_if_locked = true,
 		unlock_desc_id = "menu_asset_health_desc",
@@ -1197,6 +1201,24 @@ function AssetsTweakData:_init_assets(tweak_data)
 		texture = "guis/dlcs/glace/textures/pd2/mission_briefing/assets/prison_transport_trucks",
 		stages = {"glace"},
 		no_mystery = true
+	}
+	self.asset_sah_ladder = {
+		name_id = "menu_asset_sah_ladder",
+		texture = "guis/dlcs/sah/textures/pd2/mission_briefing/assets/asset_sah_ladder_df",
+		stages = {"sah"},
+		visible_if_locked = true,
+		unlock_desc_id = "menu_asset_sah_ladder_desc",
+		no_mystery = true,
+		money_lock = tweak_data:get_value("money_manager", "mission_asset_cost_small", 3)
+	}
+	self.sah_cutter = {
+		name_id = "menu_asset_sah_cutter",
+		texture = "guis/dlcs/dlc_arena/textures/pd2/mission_briefing/assets/asset_arena_metal_cutter",
+		stages = {"sah"},
+		visible_if_locked = true,
+		no_mystery = true,
+		unlock_desc_id = "menu_asset_sah_cutter_desc",
+		money_lock = tweak_data:get_value("money_manager", "mission_asset_cost_medium", 3)
 	}
 end
 

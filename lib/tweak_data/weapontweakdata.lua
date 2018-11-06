@@ -1693,7 +1693,10 @@ function WeaponTweakData:_init_data_saw_crew()
 	self.saw_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
 	self.saw_crew.CLIP_AMMO_MAX = 2
 	self.saw_crew.NR_CLIPS_MAX = 4
-	self.saw_crew.hold = "bullpup"
+	self.saw_crew.hold = {
+		"bullpup",
+		"rifle"
+	}
 	self.saw_crew.alert_size = 4500
 	self.saw_crew.suppression = 1.8
 	self.saw_crew.FIRE_MODE = "auto"
@@ -3465,7 +3468,10 @@ function WeaponTweakData:_init_data_ecp_crew()
 	self.ecp_crew.reload = "looped"
 	self.ecp_crew.pull_magazine_during_reload = "smg"
 	self.ecp_crew.auto.fire_rate = 20
-	self.ecp_crew.hold = "bullpup"
+	self.ecp_crew.hold = {
+		"bullpup",
+		"rifle"
+	}
 	self.ecp_crew.alert_size = 5000
 	self.ecp_crew.suppression = 1
 	self.ecp_crew.FIRE_MODE = "single"
@@ -3515,7 +3521,10 @@ function WeaponTweakData:_init_data_basset_crew()
 	self.basset_crew.CLIP_AMMO_MAX = 8
 	self.basset_crew.NR_CLIPS_MAX = 4
 	self.basset_crew.pull_magazine_during_reload = "large_plastic"
-	self.basset_crew.hold = "bullpup"
+	self.basset_crew.hold = {
+		"bullpup",
+		"rifle"
+	}
 	self.basset_crew.alert_size = 4500
 	self.basset_crew.suppression = 1.8
 	self.basset_crew.FIRE_MODE = "auto"
@@ -4095,7 +4104,10 @@ function WeaponTweakData:_init_data_system_crew()
 	self.system_crew.CLIP_AMMO_MAX = 300
 	self.system_crew.NR_CLIPS_MAX = 4
 	self.system_crew.pull_magazine_during_reload = "large_metal"
-	self.system_crew.hold = "bullpup"
+	self.system_crew.hold = {
+		"bullpup",
+		"rifle"
+	}
 	self.system_crew.reload = "rifle"
 	self.system_crew.auto.fire_rate = 0.05
 	self.system_crew.hud_icon = "rifle"

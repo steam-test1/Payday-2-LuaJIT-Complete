@@ -1,6 +1,4 @@
 TeamAIMovement = TeamAIMovement or class(CopMovement)
-TeamAIMovement._char_name_to_index = HuskPlayerMovement._char_name_to_index
-TeamAIMovement._char_model_names = HuskPlayerMovement._char_model_names
 local mvec3_set = mvector3.set
 local mvec3_sub = mvector3.subtract
 local mvec3_norm = mvector3.normalize
@@ -179,6 +177,10 @@ end
 
 function TeamAIMovement:_switch_to_not_cool(instant)
 	if not Network:is_server() then
+		if instant then
+			self._unit:inventory():set_visibility_state(true)
+		end
+
 		self._cool = false
 
 		return

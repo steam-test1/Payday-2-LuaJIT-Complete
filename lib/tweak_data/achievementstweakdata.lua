@@ -4379,6 +4379,47 @@ function AchievementsTweakData:init(tweak_data)
 			no_bots = true,
 			difficulty = overkill_and_above
 		},
+		sah_1 = {
+			award = "sah_1",
+			job = "sah",
+			difficulty = normal_and_above
+		},
+		sah_2 = {
+			award = "sah_2",
+			job = "sah",
+			difficulty = hard_and_above
+		},
+		sah_3 = {
+			award = "sah_3",
+			job = "sah",
+			difficulty = veryhard_and_above
+		},
+		sah_4 = {
+			award = "sah_4",
+			job = "sah",
+			difficulty = overkill_and_above
+		},
+		sah_5 = {
+			award = "sah_5",
+			job = "sah",
+			difficulty = easywish_and_above
+		},
+		sah_6 = {
+			award = "sah_6",
+			job = "sah",
+			difficulty = deathwish_and_above
+		},
+		sah_7 = {
+			award = "sah_7",
+			job = "sah",
+			difficulty = sm_wish_and_above
+		},
+		sah_8 = {
+			award = "sah_8",
+			one_down = true,
+			job = "sah",
+			difficulty = sm_wish_and_above
+		},
 		bain_jobs = {
 			complete_job = true,
 			contract = "bain",

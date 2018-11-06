@@ -168,47 +168,6 @@ end
 
 function PlayerMovement:set_character_anim_variables()
 	local char_name = managers.criminals:character_name_by_unit(self._unit)
-	local mesh_names = nil
-	local lvl_tweak_data = Global.level_data and Global.level_data.level_id and tweak_data.levels[Global.level_data.level_id]
-	local unit_suit = lvl_tweak_data and lvl_tweak_data.unit_suit or "suit"
-	mesh_names = not lvl_tweak_data and {
-		spanish = "",
-		russian = "",
-		german = "",
-		american = ""
-	} or unit_suit == "cat_suit" and {
-		spanish = "_chains",
-		russian = "",
-		german = "",
-		american = ""
-	} or managers.player._player_mesh_suffix == "_scrubs" and {
-		spanish = "_chains",
-		russian = "",
-		german = "",
-		american = ""
-	} or {
-		spanish = "_chains",
-		russian = "_dallas",
-		german = "",
-		american = "_hoxton"
-	}
-	local mesh_name = Idstring("g_fps_hand" .. (mesh_names[char_name] or "") .. managers.player._player_mesh_suffix)
-	local mesh_obj = self._unit:camera():camera_unit():get_object(mesh_name)
-
-	if mesh_obj then
-		if self._plr_mesh_name then
-			local old_mesh_obj = self._unit:camera():camera_unit():get_object(self._plr_mesh_name)
-
-			if old_mesh_obj then
-				old_mesh_obj:set_visibility(false)
-			end
-		end
-
-		self._plr_mesh_name = mesh_name
-
-		mesh_obj:set_visibility(true)
-	end
-
 	local camera_unit = self._unit:camera():camera_unit()
 
 	if camera_unit:damage() then
