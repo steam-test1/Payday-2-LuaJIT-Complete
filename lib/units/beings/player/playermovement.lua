@@ -1141,6 +1141,8 @@ function PlayerMovement:_post_init_vr()
 	self._ghost_position = mvector3.copy(self._m_pos)
 	self._hmd_pos = VRManager:hmd_position()
 	self._hmd_delta = Vector3()
+
+	self._unit:hand():post_init()
 end
 
 function PlayerMovement:hmd_delta()
@@ -1275,4 +1277,7 @@ end
 
 function PlayerMovement:has_teleport_data(key)
 	return self._teleport_data and not not self._teleport_data[key]
+end
+
+function PlayerMovement:on_weapon_add()
 end

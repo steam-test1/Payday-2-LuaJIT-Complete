@@ -72,6 +72,10 @@ function RaycastWeaponBase:init(unit)
 	self._magazine_empty_objects = {}
 end
 
+function RaycastWeaponBase:shooting()
+	return self._shooting
+end
+
 function RaycastWeaponBase:change_fire_object(new_obj)
 	self._obj_fire = new_obj
 	self._muzzle_effect_table.parent = new_obj
@@ -1874,6 +1878,18 @@ end
 
 function RaycastWeaponBase:weapon_range()
 	return self._weapon_range or 20000
+end
+
+function RaycastWeaponBase:apply_grip(apply)
+	if apply then
+		local weapon_tweak = self:weapon_tweak_data()
+
+		if weapon_tweak.vr and weapon_tweak.vr.grip_offset then
+			self._unit:set_local_position(weapon_tweak.vr.grip_offset)
+		end
+	else
+		self._unit:set_local_position(Vector3(0, 0, 0))
+	end
 end
 
 InstantBulletBase = InstantBulletBase or class()
