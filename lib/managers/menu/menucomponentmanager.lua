@@ -583,9 +583,7 @@ function MenuComponentManager:make_color_text(text_object, color)
 		end
 	end
 
-	if #start_ci ~= #end_ci then
-		-- Nothing
-	else
+	if #start_ci == #end_ci then
 		for i = 1, #start_ci, 1 do
 			start_ci[i] = start_ci[i] - ((i - 1) * 4 + 1)
 			end_ci[i] = end_ci[i] - (i * 4 - 1)
@@ -3611,14 +3609,7 @@ function MenuComponentManager:get_texture_from_mod_type(type, sub_type, gadget, 
 			local part_id = mods[1][1]
 			type = weapon_factory_tweak_data[part_id].type
 			sub_type = weapon_factory_tweak_data[part_id].sub_type
-			slot13 = "guis/textures/pd2/blackmarket/inv_mod_"
-			slot14 = tostring
-
-			if not sub_type then
-				slot15 = type
-			end
-
-			texture = slot13 .. slot14(slot15)
+			texture = "guis/textures/pd2/blackmarket/inv_mod_" .. tostring(sub_type or type)
 		end
 
 		texture = "guis/textures/pd2/blackmarket/inv_mod_" .. tostring(sub_type or type)
@@ -3731,10 +3722,6 @@ function MenuComponentManager:create_weapon_mod_icon_list(weapon, category, fact
 						end
 
 						silencer = false
-
-						if false then
-							silencer = true
-						end
 
 						break
 					end
@@ -4504,9 +4491,7 @@ function MenuComponentManager:add_colors_to_text_object(text_object, ...)
 		end
 	end
 
-	if #start_ci ~= #end_ci then
-		-- Nothing
-	else
+	if #start_ci == #end_ci then
 		for i = 1, #start_ci, 1 do
 			start_ci[i] = start_ci[i] - ((i - 1) * 4 + 1)
 			end_ci[i] = end_ci[i] - (i * 4 - 1)

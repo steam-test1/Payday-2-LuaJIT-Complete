@@ -171,7 +171,7 @@ function DebugManager.draw_point(index, count, old_point, point, skip_lines)
 	end
 
 	if not skip_lines and old_point then
-		local dir = point._pos - old_point._pos:normalized()
+		local dir = (point._pos - old_point._pos):normalized()
 
 		Application:draw_line_unpaused(old_point._pos, point._pos, unpack(color))
 		Application:draw_cone(point._pos, point._pos - dir * point._radius * 2, point._radius, unpack(color))
@@ -350,7 +350,7 @@ function DebugRaycast:set_from(from)
 	self._from = from
 
 	if self._to then
-		self._dir = self._to - self._from:normalized()
+		self._dir = (self._to - self._from):normalized()
 	end
 end
 
@@ -366,8 +366,8 @@ end
 
 function DebugRaycast:update_from_to_vars()
 	if self._from and self._to then
-		self._dir = self._to - self._from:normalized()
-		self._distance = self._to - self._from:length()
+		self._dir = (self._to - self._from):normalized()
+		self._distance = (self._to - self._from):length()
 
 		if self._distance < self.MAX_ARROW_SIZE then
 			self._arrow_size = self._distance
@@ -1630,10 +1630,8 @@ function HijackDebug:default_hijacked_ray_func(obj, old_func, ...)
 			elseif param == "slot_mask" then
 				i = i + 1
 
-				if i < #param_list then
-					while i < #param_list and type(param_list[i + 1]) ~= "string" do
-						i = i + 1
-					end
+				while i < #param_list and type(param_list[i + 1]) ~= "string" do
+					i = i + 1
 				end
 			elseif param == "bundle" then
 				ray_wrapper:set_bundle(param_list[i + 1])
@@ -1664,7 +1662,7 @@ function HijackDebug:default_hijacked_ray_func(obj, old_func, ...)
 			elseif param == "points" then
 				point_list = param_list[i + 1]
 				i = i + 1
-			elseif i < #param_list then
+			else
 				while i < #param_list and type(param_list[i + 1]) ~= "string" do
 					i = i + 1
 				end
@@ -2825,10 +2823,6 @@ function MacroDebug:check_dangerous_network_slot(slot_list)
 					network_sync = sync_type
 				else
 					network_sync = false
-
-					if false then
-						network_sync = true
-					end
 				end
 			elseif child_node_name == "object" then
 				object_file = child_node:parameter("file")
@@ -3588,26 +3582,24 @@ function ConsoleDebug:invalidate()
 		local remainder_scroll = self._scroll - floored_scroll
 		local scroll_first = remainder_scroll > 0
 
-		if index > 0 then
-			while index > 0 and y > 0 do
-				local text_data = self._text_list[index]
-				config.color = text_data.color or Color.white
-				config.text = string.format("[%.2f] %s", text_data.time, text_data.text)
-				local text_gui = self._panel:text(config)
-				local height = text_gui:line_height() * text_gui:number_of_lines()
+		while index > 0 and y > 0 do
+			local text_data = self._text_list[index]
+			config.color = text_data.color or Color.white
+			config.text = string.format("[%.2f] %s", text_data.time, text_data.text)
+			local text_gui = self._panel:text(config)
+			local height = text_gui:line_height() * text_gui:number_of_lines()
 
-				if scroll_first then
-					y = y + remainder_scroll * height
-					scroll_first = false
-				end
-
-				y = y - height
-
-				text_gui:set_height(height)
-				text_gui:set_y(y)
-
-				index = index - 1
+			if scroll_first then
+				y = y + remainder_scroll * height
+				scroll_first = false
 			end
+
+			y = y - height
+
+			text_gui:set_height(height)
+			text_gui:set_y(y)
+
+			index = index - 1
 		end
 	end
 end

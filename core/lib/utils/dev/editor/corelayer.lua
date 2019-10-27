@@ -304,7 +304,7 @@ function Layer:_update_drag_select(t, dt)
 		})
 	end
 
-	local len = self._drag_start_pos - end_pos:length()
+	local len = (self._drag_start_pos - end_pos):length()
 
 	if len > 0.05 then
 		local top_left = self._drag_start_pos
@@ -908,7 +908,7 @@ function Layer:recreate_units(name, data)
 	self._continent_locked_picked = true
 
 	for _, params in ipairs(data) do
-		local unit_name = name or params.name:id()
+		local unit_name = (name or params.name):id()
 		local continent = params.continent
 		local pos = params.position
 		local rot = params.rotation
@@ -1342,7 +1342,7 @@ end
 function Layer:recalc_locals(unit, reference)
 	local pos = reference:position()
 	local rot = reference:rotation()
-	unit:unit_data().local_pos = unit:unit_data().world_pos - pos:rotate_with(rot:inverse())
+	unit:unit_data().local_pos = (unit:unit_data().world_pos - pos):rotate_with(rot:inverse())
 	unit:unit_data().local_rot = rot:inverse() * unit:rotation()
 end
 
@@ -1363,11 +1363,9 @@ function Layer:verify_selected_units()
 
 	local i = 1
 
-	if not alive(self._selected_unit) then
-		while not alive(self._selected_unit) and i < #self._selected_units do
-			self._selected_unit = self._selected_units[i]
-			i = i + 1
-		end
+	while not alive(self._selected_unit) and i < #self._selected_units do
+		self._selected_unit = self._selected_units[i]
+		i = i + 1
 	end
 
 	return alive(self._selected_unit)
@@ -1550,18 +1548,7 @@ function Layer:clone_edited_values(unit, source)
 
 		if projection_texture then
 			local is_projection = CoreEditorUtils.is_projection_light(source, light, "projection")
-
-			if string.match(light:properties(), "omni") then
-				if false then
-					slot12 = true
-				else
-					slot12 = false
-
-					if false then
-						local is_spot = true
-					end
-				end
-			end
+			local is_spot = (not string.match(light:properties(), "omni") or false) and true
 
 			if is_projection and is_spot then
 				new_light:set_projection_texture(Idstring(projection_texture), false, false)
@@ -1817,7 +1804,8 @@ function Layer:test_spawn(type)
 			if math.mod(i, prow) == 0 then
 				c_rad = max_rad * 1
 
-				for slot21, slot22 in ipairs(row_units) do
+				for _, unit in ipairs(row_units) do
+					-- Nothing
 				end
 
 				max_rad = 0

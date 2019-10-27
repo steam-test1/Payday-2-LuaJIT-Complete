@@ -584,41 +584,45 @@ function HuskPlayerMovement:update(unit, t, dt)
 		end
 	end
 
-	if self._ext_anim and self._ext_anim.reload and not alive(self._left_hand_obj) then
-		self._left_hand_obj = self._unit:get_object(Idstring("LeftHandMiddle1"))
+	if self._ext_anim and self._ext_anim.reload then
+		if not alive(self._left_hand_obj) then
+			self._left_hand_obj = self._unit:get_object(Idstring("LeftHandMiddle1"))
+		end
 
-		if alive(self._left_hand_obj) and self._left_hand_pos then
-			self._left_hand_direction = self._left_hand_direction or Vector3()
+		if alive(self._left_hand_obj) then
+			if self._left_hand_pos then
+				self._left_hand_direction = self._left_hand_direction or Vector3()
 
-			mvec3_set(self._left_hand_direction, self._left_hand_pos)
-			mvec3_sub(self._left_hand_direction, self._left_hand_obj:position())
+				mvec3_set(self._left_hand_direction, self._left_hand_pos)
+				mvec3_sub(self._left_hand_direction, self._left_hand_obj:position())
 
-			self._left_hand_velocity = mvec3_len(self._left_hand_direction)
+				self._left_hand_velocity = mvec3_len(self._left_hand_direction)
 
-			mvec3_norm(self._left_hand_direction)
+				mvec3_norm(self._left_hand_direction)
+			end
 
 			self._left_hand_pos = self._left_hand_pos or Vector3()
 
 			mvec3_set(self._left_hand_pos, self._left_hand_obj:position())
+		end
+	end
 
-			if self._delayed_redirects then
-				for i, redirect in ipairs(self._delayed_redirects) do
-					redirect.t = redirect.t - dt
+	if self._delayed_redirects then
+		for i, redirect in ipairs(self._delayed_redirects) do
+			redirect.t = redirect.t - dt
 
-					if redirect.t <= 0 then
-						self:play_redirect(unpack(redirect.args))
-						table.remove(self._delayed_redirects, i)
-					end
-				end
+			if redirect.t <= 0 then
+				self:play_redirect(unpack(redirect.args))
+				table.remove(self._delayed_redirects, i)
 			end
+		end
+	end
 
-			if self._retry_sync_movement_state_driving then
-				self._retry_sync_movement_state_driving = nil
+	if self._retry_sync_movement_state_driving then
+		self._retry_sync_movement_state_driving = nil
 
-				if self._state == "driving" then
-					self:_sync_movement_state_driving()
-				end
-			end
+		if self._state == "driving" then
+			self:_sync_movement_state_driving()
 		end
 	end
 end
@@ -744,16 +748,7 @@ end
 
 function HuskPlayerMovement:play_redirect(redirect_name, at_time)
 	local result = self._unit:play_redirect(Idstring(redirect_name), at_time)
-
-	if result ~= Idstring("") then
-		-- Nothing
-	else
-		result = false
-
-		if false then
-			result = true
-		end
-	end
+	result = result ~= Idstring("") and result
 
 	if result then
 		return result
@@ -781,16 +776,7 @@ end
 
 function HuskPlayerMovement:play_redirect_idstr(redirect_name, at_time)
 	local result = self._unit:play_redirect(redirect_name, at_time)
-
-	if result ~= Idstring("") then
-		-- Nothing
-	else
-		result = false
-
-		if false then
-			result = true
-		end
-	end
+	result = result ~= Idstring("") and result
 
 	if result then
 		return result
@@ -802,16 +788,7 @@ end
 
 function HuskPlayerMovement:play_state(state_name, at_time)
 	local result = self._unit:play_state(Idstring(state_name), at_time)
-
-	if result ~= Idstring("") then
-		-- Nothing
-	else
-		result = false
-
-		if false then
-			result = true
-		end
-	end
+	result = result ~= Idstring("") and result
 
 	if result then
 		return result
@@ -823,16 +800,7 @@ end
 
 function HuskPlayerMovement:play_state_idstr(state_name, at_time)
 	local result = self._unit:play_state(state_name, at_time)
-
-	if result ~= Idstring("") then
-		-- Nothing
-	else
-		result = false
-
-		if false then
-			result = true
-		end
-	end
+	result = result ~= Idstring("") and result
 
 	if result then
 		return result
@@ -1809,8 +1777,8 @@ function HuskPlayerMovement:_update_zipline_sled(t, dt)
 
 		if zipline then
 			local closest_pos = math.point_on_line(zipline:start_pos(), zipline:end_pos(), self:m_pos())
-			local distance = zipline:start_pos() - closest_pos:length()
-			local length = zipline:start_pos() - zipline:end_pos():length()
+			local distance = (zipline:start_pos() - closest_pos):length()
+			local length = (zipline:start_pos() - zipline:end_pos()):length()
 			local t = distance / length
 
 			zipline:update_and_get_pos_at_time_linear(math.clamp(t, 0, 1))
@@ -2187,9 +2155,6 @@ function HuskPlayerMovement:_update_rotation_standard(t, dt)
 
 				self._unit:set_driving("animation")
 				self._machine:set_root_blending(false)
-
-				if "ljd_decompile_error_something_goes_here_fadklsdfajsdlkjf" then
-				end
 			end
 		end
 	else
@@ -2696,7 +2661,7 @@ function HuskPlayerMovement:_upd_move_bipod(t, dt)
 
 	local husk_original_look_direction = Vector3(self._look_dir.x, self._look_dir.y, 0)
 	local target_angle = self._sync_look_dir:angle(self._look_dir)
-	local rotate_direction = math.sign(self._sync_look_dir - self._look_dir:to_polar_with_reference(self._look_dir, math.UP).spin)
+	local rotate_direction = math.sign((self._sync_look_dir - self._look_dir):to_polar_with_reference(self._look_dir, math.UP).spin)
 	local rotate_angle = target_angle * rotate_direction
 	rotate_angle = math.lerp(self._bipod_last_angle, rotate_angle, dt * 2)
 
@@ -3370,11 +3335,7 @@ function HuskPlayerMovement:_material_config_name(part_id, unit_name, use_cc_mat
 	end
 
 	local cc_string = use_cc_material_config and "_cc" or ""
-	slot6 = "_thq"
-
-	if "_thq" then
-		local thq_string = ""
-	end
+	local thq_string = "_thq" or ""
 
 	return Idstring(unit_name .. cc_string .. thq_string)
 end
@@ -4538,7 +4499,14 @@ end
 function HuskPlayerMovement:_get_max_move_speed(run)
 	local my_tweak = tweak_data.player.movement_state.standard
 	local move_speed = nil
-	move_speed = self._pose_code == 2 and my_tweak.movement.speed.CROUCHING_MAX * (self._unit:base():upgrade_value("player", "crouch_speed_multiplier") or 1) or run and my_tweak.movement.speed.RUNNING_MAX * (self._unit:base():upgrade_value("player", "run_speed_multiplier") or 1) or my_tweak.movement.speed.STANDARD_MAX * (self._unit:base():upgrade_value("player", "walk_speed_multiplier") or 1)
+
+	if self._pose_code == 2 then
+		move_speed = my_tweak.movement.speed.CROUCHING_MAX * (self._unit:base():upgrade_value("player", "crouch_speed_multiplier") or 1)
+	elseif run then
+		move_speed = my_tweak.movement.speed.RUNNING_MAX * (self._unit:base():upgrade_value("player", "run_speed_multiplier") or 1)
+	else
+		move_speed = my_tweak.movement.speed.STANDARD_MAX * (self._unit:base():upgrade_value("player", "walk_speed_multiplier") or 1)
+	end
 
 	if self._synced_max_speed then
 		move_speed = self._synced_max_speed

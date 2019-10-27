@@ -24,7 +24,9 @@ CopLogicIdle.allowed_transitional_actions = {
 function CopLogicIdle.enter(data, new_logic_name, enter_params)
 	CopLogicBase.enter(data, new_logic_name, enter_params)
 
-	local my_data = {unit = data.unit}
+	local my_data = {
+		unit = data.unit
+	}
 	local is_cool = data.unit:movement():cool()
 
 	if is_cool then
@@ -102,9 +104,13 @@ function CopLogicIdle.enter(data, new_logic_name, enter_params)
 	end
 
 	if is_cool then
-		data.unit:brain():set_attention_settings({peaceful = true})
+		data.unit:brain():set_attention_settings({
+			peaceful = true
+		})
 	else
-		data.unit:brain():set_attention_settings({cbt = true})
+		data.unit:brain():set_attention_settings({
+			cbt = true
+		})
 	end
 
 	local usage = data.unit:inventory():equipped_unit():base():weapon_tweak_data().usage
@@ -486,7 +492,7 @@ function CopLogicIdle.on_new_objective(data, old_objective)
 		elseif objective_type == "surrender" then
 			CopLogicBase._exit(data.unit, "intimidated", new_objective.params)
 		elseif objective_type == "free" and my_data.exiting then
-			
+			-- Nothing
 		elseif new_objective.action or not data.attention_obj or AIAttentionObject.REACT_AIM > data.attention_obj.reaction then
 			CopLogicBase._exit(data.unit, "idle")
 		else
@@ -555,7 +561,7 @@ function CopLogicIdle._chk_reaction_to_attention_object(data, attention_data, st
 		end
 
 		if under_threat then
-			
+			-- Nothing
 		elseif attention_data.dis < 2000 and visible then
 			return math.min(attention_data.settings.reaction, AIAttentionObject.REACT_ARREST)
 		else
@@ -596,10 +602,10 @@ function CopLogicIdle.on_intimidated(data, amount, aggressor_unit)
 			local hold_chance = CopLogicBase._evaluate_reason_to_surrender(data, my_data, aggressor_unit)
 
 			if hold_chance then
-				hold_chance = hold_chance ^ aggressor_intimidation_mul
+				hold_chance = hold_chance^aggressor_intimidation_mul
 
 				if hold_chance >= 1 then
-					
+					-- Nothing
 				else
 					local rand_nr = math.random()
 
@@ -643,8 +649,12 @@ function CopLogicIdle._chk_stare_into_wall_1(data)
 	local my_nav_seg = my_tracker:nav_segment()
 	local my_area = groupai_state:get_area_from_nav_seg_id(my_nav_seg)
 	local is_enemy = data.unit:in_slot(managers.slot:get_mask("enemies"))
-	local found_areas = {[my_area] = true}
-	local areas_to_search = {my_area}
+	local found_areas = {
+		[my_area] = true
+	}
+	local areas_to_search = {
+		my_area
+	}
 	local dangerous_far_areas = {}
 
 	while next(areas_to_search) do
@@ -705,7 +715,9 @@ function CopLogicIdle._chk_stare_into_wall_1(data)
 	local nav_manager = managers.navigation
 	local all_nav_segs = nav_manager._nav_segments
 	local my_tracker = data.unit:movement():nav_tracker()
-	local walk_params = {tracker_from = my_tracker}
+	local walk_params = {
+		tracker_from = my_tracker
+	}
 	local slotmask = data.visibility_slotmask
 	local mvec3_set = mvector3.set
 	local mvec3_set_z = mvector3.set_z
@@ -1019,8 +1031,12 @@ function CopLogicIdle._chk_relocate(data)
 		local area = data.objective.area
 
 		if area and not next(area.criminal.units) then
-			local found_areas = {[area] = true}
-			local areas_to_search = {area}
+			local found_areas = {
+				[area] = true
+			}
+			local areas_to_search = {
+				area
+			}
 			local target_area = nil
 
 			while next(areas_to_search) do
@@ -1044,7 +1060,11 @@ function CopLogicIdle._chk_relocate(data)
 			if target_area then
 				data.objective.in_place = nil
 				data.objective.nav_seg = next(target_area.nav_segs)
-				data.objective.path_data = {{data.objective.nav_seg}}
+				data.objective.path_data = {
+					{
+						data.objective.nav_seg
+					}
+				}
 
 				data.logic._exit(data.unit, "travel")
 
@@ -1081,7 +1101,9 @@ function CopLogicIdle._chk_exit_non_walkable_area(data)
 end
 
 function CopLogicIdle._get_all_paths(data)
-	return {stare_path = data.internal_data.stare_path}
+	return {
+		stare_path = data.internal_data.stare_path
+	}
 end
 
 function CopLogicIdle._set_verified_paths(data, verified_paths)
@@ -1204,7 +1226,7 @@ function CopLogicIdle._get_priority_attention(data, attention_objects, reaction_
 		local crim_record = attention_data.criminal_record
 
 		if not attention_data.identified then
-			
+			-- Nothing
 		elseif attention_data.pause_expire_t then
 			if attention_data.pause_expire_t < data.t then
 				if not attention_data.settings.attract_chance or math.random() < attention_data.settings.attract_chance then
@@ -1261,7 +1283,7 @@ function CopLogicIdle._get_priority_attention(data, attention_objects, reaction_
 					end
 
 					if _G.IS_VR and tweak_data.vr.long_range_damage_reduction_distance[1] < distance then
-						local mul = math.clamp((distance / tweak_data.vr.long_range_damage_reduction_distance[2]) / 2, 0, 1) + 1
+						local mul = math.clamp(distance / tweak_data.vr.long_range_damage_reduction_distance[2] / 2, 0, 1) + 1
 						weight_mul = (weight_mul or 1) * mul
 					end
 				elseif att_unit:base() and att_unit:base().upgrade_value then
@@ -1274,7 +1296,7 @@ function CopLogicIdle._get_priority_attention(data, attention_objects, reaction_
 					end
 
 					if att_unit:movement().is_vr and att_unit:movement():is_vr() and tweak_data.vr.long_range_damage_reduction_distance[1] < distance then
-						local mul = math.clamp((distance / tweak_data.vr.long_range_damage_reduction_distance[2]) / 2, 0, 1) + 1
+						local mul = math.clamp(distance / tweak_data.vr.long_range_damage_reduction_distance[2] / 2, 0, 1) + 1
 						weight_mul = (weight_mul or 1) * mul
 					end
 				end
@@ -1309,7 +1331,13 @@ function CopLogicIdle._get_priority_attention(data, attention_objects, reaction_
 				local target_priority_slot = 0
 
 				if visible and not reviving then
-					target_priority_slot = distance < 500 and 2 or distance < 1500 and 4 or 6
+					if distance < 500 then
+						target_priority_slot = 2
+					elseif distance < 1500 then
+						target_priority_slot = 4
+					else
+						target_priority_slot = 6
+					end
 
 					if has_damaged then
 						target_priority_slot = target_priority_slot - 2
@@ -1572,4 +1600,3 @@ function CopLogicIdle._start_idle_action_from_act(data)
 		}
 	})
 end
-

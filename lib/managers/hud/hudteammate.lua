@@ -110,7 +110,7 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		blend_mode = "normal",
 		texture = tabs_texture,
 		texture_rect = cs_rect,
-		color = tweak_data.chat_colors[i] or tweak_data.chat_colors[#tweak_data.chat_colors]:with_alpha(1),
+		color = (tweak_data.chat_colors[i] or tweak_data.chat_colors[#tweak_data.chat_colors]):with_alpha(1),
 		x = name:x() - name:h(),
 		y = name:y() + 1,
 		w = name:h() - 2,
@@ -414,7 +414,7 @@ function HUDTeammate:_create_radial_health(radial_health_panel)
 			w = radial_health_panel:w(),
 			h = radial_health_panel:h()
 		})
-		slot15 = radial_health_panel:bitmap({
+		local radial_rip_bg = radial_health_panel:bitmap({
 			texture = "guis/textures/pd2/hud_rip_bg",
 			name = "radial_rip_bg",
 			layer = 1,
@@ -1604,7 +1604,7 @@ function HUDTeammate:set_callsign(id)
 	local callsign = teammate_panel:child("callsign")
 	local alpha = callsign:color().a
 
-	callsign:set_color(tweak_data.chat_colors[id] or tweak_data.chat_colors[#tweak_data.chat_colors]:with_alpha(alpha))
+	callsign:set_color((tweak_data.chat_colors[id] or tweak_data.chat_colors[#tweak_data.chat_colors]):with_alpha(alpha))
 end
 
 function HUDTeammate:set_cable_tie(data)
@@ -2214,30 +2214,9 @@ function HUDTeammate:_animate_timer_flash()
 	while t < 0.5 do
 		t = t + coroutine.yield()
 		local n = 1 - math.sin(t * 180)
-		slot4 = math.lerp
-		slot5 = 1
-
-		if 1 then
-			slot5 = self._point_of_no_return_color.r
-		end
-
-		local r = slot4(slot5, 1, n)
-		slot5 = math.lerp
-		slot6 = 0
-
-		if 0 then
-			slot6 = self._point_of_no_return_color.g
-		end
-
-		local g = slot5(slot6, 0.8, n)
-		slot6 = math.lerp
-		slot7 = 0
-
-		if 0 then
-			slot7 = self._point_of_no_return_color.b
-		end
-
-		local b = slot6(slot7, 0.2, n)
+		local r = math.lerp(1 or self._point_of_no_return_color.r, 1, n)
+		local g = math.lerp(0 or self._point_of_no_return_color.g, 0.8, n)
+		local b = math.lerp(0 or self._point_of_no_return_color.b, 0.2, n)
 
 		condition_timer:set_color(Color(r, g, b))
 		condition_timer:set_font_size(math.lerp(tweak_data.hud_players.timer_size, tweak_data.hud_players.timer_flash_size, n))

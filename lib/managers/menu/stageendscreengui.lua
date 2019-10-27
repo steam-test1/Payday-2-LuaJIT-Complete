@@ -391,9 +391,7 @@ function StatsTabItem:feed_statistics(stats_data)
 					end
 				end
 
-				if #start_ci ~= #end_ci then
-					-- Nothing
-				else
+				if #start_ci == #end_ci then
 					for i = 1, #start_ci, 1 do
 						start_ci[i] = start_ci[i] - ((i - 1) * 4 + 1)
 						end_ci[i] = end_ci[i] - (i * 4 - 1)

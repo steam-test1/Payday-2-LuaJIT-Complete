@@ -73,12 +73,14 @@ local Outline = Outline or class()
 
 function Outline:init(panel)
 	self._panel = panel
-	self._box_gui = BoxGuiObject:new(panel, {sides = {
-		1,
-		1,
-		1,
-		1
-	}})
+	self._box_gui = BoxGuiObject:new(panel, {
+		sides = {
+			1,
+			1,
+			1,
+			1
+		}
+	})
 
 	self._box_gui:set_layer(2)
 end
@@ -100,20 +102,25 @@ end
 function Outline:recreate()
 	local s = self._selected and 2 or 1
 
-	self._box_gui:create_sides(self._panel, {sides = {
-		s,
-		s,
-		s,
-		s
-	}})
+	self._box_gui:create_sides(self._panel, {
+		sides = {
+			s,
+			s,
+			s,
+			s
+		}
+	})
 end
+
 HUDBeltInteraction.size = 160
 
 function HUDBeltInteraction:init(ws, id, custom_icon_id)
 	self._ws = ws
 	self._id = id
 	self._custom_icon_id = custom_icon_id
-	self._panel = ws:panel():panel({name = "belt_" .. id})
+	self._panel = ws:panel():panel({
+		name = "belt_" .. id
+	})
 	local custom_state = nil
 	self._texture, custom_state = get_icon(custom_icon_id or id)
 	self._icon = self._panel:bitmap({
@@ -246,12 +253,13 @@ function HUDBeltInteraction:set_alpha(alpha)
 		self._amount_text:set_color(self._amount_text:color():with_alpha(alpha + self._alpha_diff))
 	end
 
-	self._bg:set_color(self._bg:color():with_alpha(math.min((alpha + self._alpha_diff) - 0.1, 0.6)))
+	self._bg:set_color(self._bg:color():with_alpha(math.min(alpha + self._alpha_diff - 0.1, 0.6)))
 	self._bg_tint:set_color(self._bg_tint:color():with_alpha((alpha + self._alpha_diff) * 2))
 	self._outline:set_alpha(alpha * 2)
 
 	self._alpha = alpha
 end
+
 local anim_speed = 1
 
 function HUDBeltInteraction:_animate_size_alpha(o, size_ratio, alpha)
@@ -461,7 +469,12 @@ end
 
 function HUDBeltInteraction:set_edit_mode(enabled)
 	local align = nil
-	align = enabled and "center" or "scale"
+
+	if enabled then
+		align = "center"
+	else
+		align = "scale"
+	end
 
 	self._icon:set_halign(align)
 	self._icon:set_valign(align)
@@ -563,6 +576,7 @@ end
 function HUDBeltInteraction:ws()
 	return self._ws
 end
+
 HUDBeltInteractionReload = HUDBeltInteractionReload or class(HUDBeltInteraction)
 
 function HUDBeltInteractionReload:init(ws, id)
@@ -632,6 +646,7 @@ function HUDBeltInteractionReload:trigger_reload()
 	self._ammo_text:hide()
 	self:stop_timer()
 end
+
 HUDBelt = HUDBelt or class()
 HUDBelt.LEFT = 1
 HUDBelt.RIGHT = 2
@@ -1247,4 +1262,3 @@ function HUDBelt:interacting(id, world_pos)
 		return true
 	end
 end
-

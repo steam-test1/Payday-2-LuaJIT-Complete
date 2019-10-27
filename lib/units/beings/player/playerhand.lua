@@ -208,6 +208,7 @@ end
 function PlayerHand:set_custom_belt_height_ratio(height)
 	self._custom_belt_height_ratio = height
 end
+
 local pen = Draw:pen()
 local prints = 20
 
@@ -260,7 +261,7 @@ function PlayerHand:_update_controllers(t, dt)
 				end
 
 				if deg < 2 then
-					local t_slerp = math.min((math.lerp(2, 5, self._precision_mode_length) * 20 * dt) / deg, 1)
+					local t_slerp = math.min(math.lerp(2, 5, self._precision_mode_length) * 20 * dt / deg, 1)
 
 					mrotation.slerp(rot, controller.prev_rotation, rot, t_slerp)
 				end
@@ -379,6 +380,7 @@ function PlayerHand:_update_controllers(t, dt)
 		self:set_belt_active(found, i)
 	end
 end
+
 local tablet_normal = Vector3(-1, 0, 0)
 local rotated_tablet_normal = Vector3(0, 0, 0)
 
@@ -512,7 +514,9 @@ function PlayerHand:link_mask(mask_unit)
 		unit = mask_unit,
 		prompt = {
 			text_id = "hud_instruct_mask_on",
-			macros = {BTN_USE_ITEM = managers.localization:btn_macro("use_item")}
+			macros = {
+				BTN_USE_ITEM = managers.localization:btn_macro("use_item")
+			}
 		}
 	})
 	self:_set_hand_state(self.other_hand_id(self:mask_hand_id()), "idle")
@@ -533,7 +537,9 @@ function PlayerHand:set_point_at_tablet(point)
 	local non_tablet_hand_id = self.other_hand_id(managers.vr:get_setting("default_tablet_hand") or "left")
 
 	if point then
-		self:_set_hand_state(non_tablet_hand_id, "swipe", {flick_callback = callback(managers.hud, managers.hud, "on_flick")})
+		self:_set_hand_state(non_tablet_hand_id, "swipe", {
+			flick_callback = callback(managers.hud, managers.hud, "on_flick")
+		})
 	else
 		local current = self:current_hand_state(non_tablet_hand_id)
 
@@ -589,7 +595,9 @@ function PlayerHand:interaction_ids()
 		if other_hand_state == "point" or other_hand_state == "weapon_assist" then
 			return {}
 		else
-			return {self.other_hand_id(weapon_hand_id)}
+			return {
+				self.other_hand_id(weapon_hand_id)
+			}
 		end
 	else
 		return {
@@ -661,7 +669,9 @@ function PlayerHand:set_carry(carry, skip_hand)
 				offset = Vector3(0, 15, 0),
 				prompt = {
 					text_id = "hud_instruct_throw_bag",
-					btn_macros = {BTN_USE_ITEM = "use_item_vr"}
+					btn_macros = {
+						BTN_USE_ITEM = "use_item_vr"
+					}
 				}
 			})
 		end
@@ -764,35 +774,47 @@ function PlayerHand:check_hand_through_wall(hand, custom_obj)
 	local custom_pos = alive(custom_obj) and custom_obj:position()
 	local ray = nil
 	local raycasts = {
-		{ray = {
-			custom_pos or hand_pos,
-			head_pos
-		}},
-		{points = {
-			custom_pos or hand_pos,
-			hand_pos - hand_unit:rotation():y() * 50,
-			head_pos
-		}},
-		{points = {
-			custom_pos or hand_pos,
-			hand_pos - hand_unit:rotation():y() * 30 + hand_unit:rotation():x() * 30,
-			head_pos
-		}},
-		{points = {
-			custom_pos or hand_pos,
-			(hand_pos - hand_unit:rotation():y() * 30) - hand_unit:rotation():x() * 30,
-			head_pos
-		}},
-		{points = {
-			custom_pos or hand_pos,
-			hand_pos - hand_unit:rotation():y() * 30 + hand_unit:rotation():z() * 30,
-			head_pos
-		}},
-		{points = {
-			custom_pos or hand_pos,
-			(hand_pos - hand_unit:rotation():y() * 30) - hand_unit:rotation():z() * 30,
-			head_pos
-		}}
+		{
+			ray = {
+				custom_pos or hand_pos,
+				head_pos
+			}
+		},
+		{
+			points = {
+				custom_pos or hand_pos,
+				hand_pos - hand_unit:rotation():y() * 50,
+				head_pos
+			}
+		},
+		{
+			points = {
+				custom_pos or hand_pos,
+				hand_pos - hand_unit:rotation():y() * 30 + hand_unit:rotation():x() * 30,
+				head_pos
+			}
+		},
+		{
+			points = {
+				custom_pos or hand_pos,
+				hand_pos - hand_unit:rotation():y() * 30 - hand_unit:rotation():x() * 30,
+				head_pos
+			}
+		},
+		{
+			points = {
+				custom_pos or hand_pos,
+				hand_pos - hand_unit:rotation():y() * 30 + hand_unit:rotation():z() * 30,
+				head_pos
+			}
+		},
+		{
+			points = {
+				custom_pos or hand_pos,
+				hand_pos - hand_unit:rotation():y() * 30 - hand_unit:rotation():z() * 30,
+				head_pos
+			}
+		}
 	}
 
 	for _, cast in ipairs(raycasts) do
@@ -829,4 +851,3 @@ function PlayerHand:warp_hand()
 
 	return hand_index == PlayerHand.RIGHT and "right" or "left"
 end
-

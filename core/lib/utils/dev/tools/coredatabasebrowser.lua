@@ -38,6 +38,7 @@ function CoreDBDialog:destroy()
 		self._window:close()
 	end
 end
+
 CoreDatabaseBrowser = CoreDatabaseBrowser or class()
 CoreDatabaseBrowser.LC_BUGFIX = true
 
@@ -309,13 +310,22 @@ end
 
 function CoreDatabaseBrowser:check_news(new_only)
 	local news = nil
-	news = new_only and managers.news:get_news("database_browser", self._main_frame) or managers.news:get_old_news("database_browser", self._main_frame)
+
+	if new_only then
+		news = managers.news:get_news("database_browser", self._main_frame)
+	else
+		news = managers.news:get_old_news("database_browser", self._main_frame)
+	end
 
 	if news then
 		local str = nil
 
 		for _, n in ipairs(news) do
-			str = not str and n or str .. "\n" .. n
+			if not str then
+				str = n
+			else
+				str = str .. "\n" .. n
+			end
 		end
 
 		EWS:MessageDialog(self._main_frame, str, "New Features!", "OK,ICON_INFORMATION"):show_modal()
@@ -868,7 +878,6 @@ function CoreDatabaseBrowser:find_node(node, name, key, value)
 end
 
 function CoreDatabaseBrowser:update_preview(entry)
-
 	local function valid_node(node)
 		return node and node:to_xml() ~= "</>\n"
 	end
@@ -1337,7 +1346,12 @@ function CoreDatabaseBrowser:convert_to_ps3(entry)
 
 		prop.platform = "ps3"
 		local str = "imageexportertool -d \"" .. Application:base_path() .. "db\" -sn " .. raw_texture:name() .. self:unpack_prop(raw_texture:properties(), "sp") .. "-qpf A8L8"
-		str = Application:system(str, true, true) == 0 and "imageexportertool -d \"" .. Application:base_path() .. "db\" -sn " .. raw_texture:name() .. self:unpack_prop(raw_texture:properties(), "sp") .. "-dn " .. raw_texture:name() .. self:unpack_prop(prop, "dp") .. "-f gtf -p DXT5_NM" or "imageexportertool -d \"" .. Application:base_path() .. "db\" -sn " .. raw_texture:name() .. self:unpack_prop(raw_texture:properties(), "sp") .. "-dn " .. raw_texture:name() .. self:unpack_prop(prop, "dp") .. "-f gtf"
+
+		if Application:system(str, true, true) == 0 then
+			str = "imageexportertool -d \"" .. Application:base_path() .. "db\" -sn " .. raw_texture:name() .. self:unpack_prop(raw_texture:properties(), "sp") .. "-dn " .. raw_texture:name() .. self:unpack_prop(prop, "dp") .. "-f gtf -p DXT5_NM"
+		else
+			str = "imageexportertool -d \"" .. Application:base_path() .. "db\" -sn " .. raw_texture:name() .. self:unpack_prop(raw_texture:properties(), "sp") .. "-dn " .. raw_texture:name() .. self:unpack_prop(prop, "dp") .. "-f gtf"
+		end
 
 		cat_print("debug", "[CoreDatabaseBrowser] " .. str)
 		Application:system(str, true, true)
@@ -1346,6 +1360,7 @@ function CoreDatabaseBrowser:convert_to_ps3(entry)
 		return self._active_database:lookup("texture", raw_texture:name(), prop)
 	end
 end
+
 CoreDatabaseBrowserMoveDialog = CoreDatabaseBrowserMoveDialog or class()
 
 function CoreDatabaseBrowserMoveDialog:init(editor, p)
@@ -1403,6 +1418,7 @@ end
 function CoreDatabaseBrowserMoveDialog:get_value()
 	return self._resault
 end
+
 CoreDatabaseBrowserImportDialog = CoreDatabaseBrowserImportDialog or class()
 
 function CoreDatabaseBrowserImportDialog:init(editor, p)
@@ -1470,6 +1486,7 @@ end
 function CoreDatabaseBrowserImportDialog:get_value()
 	return self._type, self._name
 end
+
 CoreDatabaseBrowserMetadataDialog = CoreDatabaseBrowserMetadataDialog or class()
 
 function CoreDatabaseBrowserMetadataDialog:init(p)
@@ -1537,6 +1554,7 @@ end
 function CoreDatabaseBrowserMetadataDialog:get_value()
 	return self._key, self._value
 end
+
 CoreDatabaseBrowserInputDialog = CoreDatabaseBrowserInputDialog or class()
 
 function CoreDatabaseBrowserInputDialog:init(p)
@@ -1596,6 +1614,7 @@ end
 function CoreDatabaseBrowserInputDialog:get_value()
 	return self._key
 end
+
 CoreDatabaseBrowserRenameDialog = CoreDatabaseBrowserRenameDialog or class()
 
 function CoreDatabaseBrowserRenameDialog:init(p)
@@ -1657,4 +1676,3 @@ end
 function CoreDatabaseBrowserRenameDialog:set_value(str)
 	self._key_text_ctrl:set_value(str)
 end
-

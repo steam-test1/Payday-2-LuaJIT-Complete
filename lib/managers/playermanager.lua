@@ -718,9 +718,7 @@ function PlayerManager:_internal_load()
 	})
 	self:_set_body_bags_amount(self._local_player_body_bags or self:total_body_bags())
 
-	if self._respawn then
-		-- Nothing
-	else
+	if not self._respawn then
 		self:_add_level_equipment(player)
 
 		for i, name in ipairs(self._global.default_kit.special_equipment_slots) do
@@ -899,7 +897,8 @@ function PlayerManager:setup_viewports()
 	local configs = self._viewport_configs[self._last_id]
 
 	if configs then
-		for slot5, slot6 in ipairs(self._players) do
+		for k, player in ipairs(self._players) do
+			-- Nothing
 		end
 	else
 		Application:error("Unsupported number of players: " .. tostring(self._last_id))
@@ -1312,10 +1311,8 @@ function PlayerManager:chk_wild_kill_counter(killed_unit, variant)
 		self._wild_kill_triggers = self._wild_kill_triggers or {}
 		local t = Application:time()
 
-		if self._wild_kill_triggers[1] then
-			while self._wild_kill_triggers[1] and self._wild_kill_triggers[1] <= t do
-				table.remove(self._wild_kill_triggers, 1)
-			end
+		while self._wild_kill_triggers[1] and self._wild_kill_triggers[1] <= t do
+			table.remove(self._wild_kill_triggers, 1)
 		end
 
 		if tweak_data.upgrades.wild_max_triggers_per_time <= #self._wild_kill_triggers then
@@ -1358,10 +1355,8 @@ function PlayerManager:chk_wild_kill_counter(killed_unit, variant)
 		local trigger_time = t + math.max(trigger_cooldown, 0)
 		local insert_index = #self._wild_kill_triggers
 
-		if insert_index > 0 then
-			while insert_index > 0 and trigger_time < self._wild_kill_triggers[insert_index] do
-				insert_index = insert_index - 1
-			end
+		while insert_index > 0 and trigger_time < self._wild_kill_triggers[insert_index] do
+			insert_index = insert_index - 1
 		end
 
 		table.insert(self._wild_kill_triggers, insert_index + 1, trigger_time)
@@ -3085,6 +3080,7 @@ function PlayerManager:get_contour_for_marked_enemy(enemy_type)
 			contour_type = "mark_unit_dangerous_damage_bonus_distance"
 
 			if "mark_unit_dangerous_damage_bonus_distance" then
+				-- Nothing
 			end
 		end
 	else
@@ -4100,7 +4096,7 @@ function PlayerManager:add_special(params)
 	if special_equipment then
 		if equipment.max_quantity or equipment.quantity or params.transfer and equipment.transfer_quantity then
 			local dedigested_amount = special_equipment.amount and Application:digest_value(special_equipment.amount, false) or 1
-			local new_amount = self:has_category_upgrade(name, "quantity_unlimited") and -1 or slot10(slot11, slot12 + extra)
+			local new_amount = self:has_category_upgrade(name, "quantity_unlimited") and -1 or math.min(dedigested_amount + amount, (params.transfer and equipment.transfer_quantity or equipment.max_quantity or equipment.quantity) + extra)
 			special_equipment.amount = Application:digest_value(new_amount, true)
 
 			if special_equipment.is_cable_tie then

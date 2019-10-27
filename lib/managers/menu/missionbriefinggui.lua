@@ -241,7 +241,7 @@ function MissionBriefingTabItem.animate_select(o, center_helper, instant)
 	local center_x, center_y = o:center()
 
 	if alive(center_helper) then
-		slot6, slot7 = center_helper:center()
+		local center_x, center_y = center_helper:center()
 	end
 
 	local aspect = o:texture_width() / math.max(1, o:texture_height())
@@ -279,7 +279,7 @@ function MissionBriefingTabItem.animate_deselect(o, center_helper)
 	local center_x, center_y = o:center()
 
 	if alive(center_helper) then
-		slot5, slot6 = center_helper:center()
+		local center_x, center_y = center_helper:center()
 	end
 
 	local aspect = o:texture_width() / math.max(1, o:texture_height())
@@ -775,7 +775,7 @@ function AssetsItem:chk_preplanning_textures_done()
 		text:set_visible(managers.menu:is_pc_controller())
 
 		local level_id = managers.job:current_level_id()
-		slot4 = preplanning_panel:bitmap({
+		local button = preplanning_panel:bitmap({
 			name = "button",
 			alpha = 0.8,
 			blend_mode = "add",
@@ -1639,15 +1639,15 @@ function LoadoutItem:populate_category(category, data)
 			name_localized = managers.weapon_factory:get_weapon_name_by_factory_id(crafted.factory_id),
 			category = category,
 			slot = i,
-			unlocked = managers.blackmarket:weapon_unlocked(crafted.weapon_id),
-			lock_texture = not new_data.unlocked and "guis/textures/pd2/lock_level",
-			equipped = crafted.equipped,
-			can_afford = true,
-			skill_based = weapon_data[crafted.weapon_id].skill_based,
-			skill_name = new_data.skill_based and "bm_menu_skill_locked_" .. new_data.name,
-			func_based = weapon_data[crafted.weapon_id].func_based,
-			level = managers.blackmarket:weapon_level(crafted.weapon_id)
+			unlocked = managers.blackmarket:weapon_unlocked(crafted.weapon_id)
 		}
+		new_data.lock_texture = not new_data.unlocked and "guis/textures/pd2/lock_level"
+		new_data.equipped = crafted.equipped
+		new_data.can_afford = true
+		new_data.skill_based = weapon_data[crafted.weapon_id].skill_based
+		new_data.skill_name = new_data.skill_based and "bm_menu_skill_locked_" .. new_data.name
+		new_data.func_based = weapon_data[crafted.weapon_id].func_based
+		new_data.level = managers.blackmarket:weapon_level(crafted.weapon_id)
 		local texture_name = tweak_data.weapon[crafted.weapon_id].texture_name or tostring(crafted.weapon_id)
 		new_data.bitmap_texture = guis_catalog .. "textures/pd2/blackmarket/icons/weapons/" .. texture_name
 		new_data.comparision_data = new_data.unlocked and managers.blackmarket:get_weapon_stats(category, i)
@@ -1687,15 +1687,15 @@ function LoadoutItem:populate_category(category, data)
 		if not data[i] then
 			new_data = {
 				name = "empty_slot",
-				name_localized = managers.localization:text("bm_menu_empty_weapon_slot"),
-				name_localized_selected = new_data.name_localized,
-				is_loadout = true,
-				category = category,
-				empty_slot = true,
-				slot = i,
-				unlocked = true,
-				equipped = false
+				name_localized = managers.localization:text("bm_menu_empty_weapon_slot")
 			}
+			new_data.name_localized_selected = new_data.name_localized
+			new_data.is_loadout = true
+			new_data.category = category
+			new_data.empty_slot = true
+			new_data.slot = i
+			new_data.unlocked = true
+			new_data.equipped = false
 			data[i] = new_data
 		end
 	end
@@ -1729,11 +1729,11 @@ function LoadoutItem:populate_armors(data)
 				name = tweak_data.blackmarket.armors[armor_id].name_id,
 				category = "armors",
 				slot = index,
-				unlocked = bm_data.unlocked,
-				lock_texture = not new_data.unlocked and "guis/textures/pd2/lock_level",
-				equipped = bm_data.equipped,
-				bitmap_texture = guis_catalog .. "textures/pd2/blackmarket/icons/armors/" .. armor_id
+				unlocked = bm_data.unlocked
 			}
+			new_data.lock_texture = not new_data.unlocked and "guis/textures/pd2/lock_level"
+			new_data.equipped = bm_data.equipped
+			new_data.bitmap_texture = guis_catalog .. "textures/pd2/blackmarket/icons/armors/" .. armor_id
 
 			if not new_data.equipped then
 				table.insert(new_data, "a_equip")
@@ -2165,12 +2165,7 @@ function TeamLoadoutItem:set_slot_outfit(slot, criminal_name, outfit)
 		for _, part_id in ipairs(parts) do
 			stats = factory[part_id] and factory[part_id].stats or false
 			custom_stats = factory[part_id] and factory[part_id].custom_stats or false
-
-			if stats and table.size(stats) > 1 then
-				has_stat = true
-			else
-				has_stat = false
-			end
+			has_stat = stats and table.size(stats) > 1 and true or false
 
 			if custom_stats and (custom_stats.exp_multiplier or custom_stats.money_multiplier) then
 				has_team = true
@@ -2189,18 +2184,8 @@ function TeamLoadoutItem:set_slot_outfit(slot, criminal_name, outfit)
 
 		if #textures == 0 and outfit.primary.cosmetics and outfit.primary.cosmetics.bonus and not managers.job:is_current_job_competitive() then
 			local bonus_data = tweak_data.economy.bonuses[tweak_data.blackmarket.weapon_skins[outfit.primary.cosmetics.id].bonus]
-
-			if bonus_data and bonus_data.stats then
-				has_stat = true
-			else
-				has_stat = false
-			end
-
-			if bonus_data and (bonus_data.exp_multiplier or bonus_data.money_multiplier) then
-				has_team = true
-			else
-				has_team = false
-			end
+			has_stat = bonus_data and bonus_data.stats and true or false
+			has_team = bonus_data and (bonus_data.exp_multiplier or bonus_data.money_multiplier) and true or false
 
 			if has_stat then
 				table.insert(textures, "guis/textures/pd2/blackmarket/inv_mod_bonus_stats")
@@ -2310,12 +2295,7 @@ function TeamLoadoutItem:set_slot_outfit(slot, criminal_name, outfit)
 		for _, part_id in ipairs(parts) do
 			stats = factory[part_id] and factory[part_id].stats or false
 			custom_stats = factory[part_id] and factory[part_id].custom_stats or false
-
-			if stats and table.size(stats) > 1 then
-				has_stat = true
-			else
-				has_stat = false
-			end
+			has_stat = stats and table.size(stats) > 1 and true or false
 
 			if custom_stats and (custom_stats.exp_multiplier or custom_stats.money_multiplier) then
 				has_team = true
@@ -2334,18 +2314,8 @@ function TeamLoadoutItem:set_slot_outfit(slot, criminal_name, outfit)
 
 		if #textures == 0 and outfit.secondary.cosmetics and outfit.secondary.cosmetics.bonus and not managers.job:is_current_job_competitive() then
 			local bonus_data = tweak_data.economy.bonuses[tweak_data.blackmarket.weapon_skins[outfit.secondary.cosmetics.id].bonus]
-
-			if bonus_data and bonus_data.stats then
-				has_stat = true
-			else
-				has_stat = false
-			end
-
-			if bonus_data and (bonus_data.exp_multiplier or bonus_data.money_multiplier) then
-				has_team = true
-			else
-				has_team = false
-			end
+			has_stat = bonus_data and bonus_data.stats and true or false
+			has_team = bonus_data and (bonus_data.exp_multiplier or bonus_data.money_multiplier) and true or false
 
 			if has_stat then
 				table.insert(textures, "guis/textures/pd2/blackmarket/inv_mod_bonus_stats")
@@ -2961,15 +2931,15 @@ function NewLoadoutTab:populate_category(data)
 				category = category,
 				custom_name_text = managers.blackmarket:get_crafted_custom_name(category, index, true),
 				slot = index,
-				unlocked = managers.blackmarket:weapon_unlocked(crafted.weapon_id),
-				lock_texture = not new_data.unlocked and "guis/textures/pd2/lock_level",
-				equipped = crafted.equipped,
-				can_afford = true,
-				skill_based = weapon_data[crafted.weapon_id].skill_based,
-				skill_name = new_data.skill_based and "bm_menu_skill_locked_" .. new_data.name,
-				func_based = weapon_data[crafted.weapon_id].func_based,
-				level = managers.blackmarket:weapon_level(crafted.weapon_id)
+				unlocked = managers.blackmarket:weapon_unlocked(crafted.weapon_id)
 			}
+			new_data.lock_texture = not new_data.unlocked and "guis/textures/pd2/lock_level"
+			new_data.equipped = crafted.equipped
+			new_data.can_afford = true
+			new_data.skill_based = weapon_data[crafted.weapon_id].skill_based
+			new_data.skill_name = new_data.skill_based and "bm_menu_skill_locked_" .. new_data.name
+			new_data.func_based = weapon_data[crafted.weapon_id].func_based
+			new_data.level = managers.blackmarket:weapon_level(crafted.weapon_id)
 			local texture_name, bg_texture = managers.blackmarket:get_weapon_icon_path(crafted.weapon_id, crafted.cosmetics)
 			new_data.bitmap_texture = texture_name
 			new_data.bg_texture = bg_texture
@@ -3011,18 +2981,19 @@ function NewLoadoutTab:populate_category(data)
 		if not data[i] then
 			new_data = {
 				name = "empty_slot",
-				name_localized = managers.localization:text("bm_menu_empty_weapon_slot"),
-				name_localized_selected = new_data.name_localized,
-				is_loadout = true,
-				category = category,
-				empty_slot = true,
-				slot = i,
-				unlocked = true,
-				equipped = false,
-				mid_text = {}
+				name_localized = managers.localization:text("bm_menu_empty_weapon_slot")
 			}
-			new_data.mid_text.noselected_text = new_data.name_localized
-			new_data.mid_text.noselected_color = tweak_data.screen_colors.button_stage_3
+			new_data.name_localized_selected = new_data.name_localized
+			new_data.is_loadout = true
+			new_data.category = category
+			new_data.empty_slot = true
+			new_data.slot = i
+			new_data.unlocked = true
+			new_data.equipped = false
+			new_data.mid_text = {
+				noselected_text = new_data.name_localized,
+				noselected_color = tweak_data.screen_colors.button_stage_3
+			}
 			new_data.mid_text.selected_text = new_data.mid_text.noselected_text
 			new_data.mid_text.selected_color = new_data.mid_text.noselected_color
 			new_data.mid_text.is_lock_same_color = true
@@ -3059,11 +3030,11 @@ function NewLoadoutTab:populate_armors(data)
 				name = tweak_data.blackmarket.armors[armor_id].name_id,
 				category = "armors",
 				slot = index,
-				unlocked = bm_data.unlocked,
-				lock_texture = not new_data.unlocked and "guis/textures/pd2/lock_level",
-				equipped = bm_data.equipped,
-				bitmap_texture = guis_catalog .. "textures/pd2/blackmarket/icons/armors/" .. armor_id
+				unlocked = bm_data.unlocked
 			}
+			new_data.lock_texture = not new_data.unlocked and "guis/textures/pd2/lock_level"
+			new_data.equipped = bm_data.equipped
+			new_data.bitmap_texture = guis_catalog .. "textures/pd2/blackmarket/icons/armors/" .. armor_id
 
 			if not new_data.equipped then
 				table.insert(new_data, "a_equip")

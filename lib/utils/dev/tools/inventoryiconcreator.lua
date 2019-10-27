@@ -218,15 +218,7 @@ function InventoryIconCreator:start_all_weapon_skins()
 	local jobs = {}
 
 	for _, weapon_skin in ipairs(self:_get_weapon_skins()) do
-		if weapon_skin ~= "none" then
-			-- Nothing
-		else
-			weapon_skin = false
-
-			if false then
-				weapon_skin = true
-			end
-		end
+		weapon_skin = weapon_skin ~= "none" and weapon_skin
 
 		if weapon_skin then
 			blueprint = tweak_data.blackmarket.weapon_skins[weapon_skin].default_blueprint or blueprint
@@ -245,17 +237,7 @@ end
 function InventoryIconCreator:start_one_weapon()
 	local factory_id = self._ctrlrs.weapon.factory_id:get_value()
 	local weapon_skin = self._ctrlrs.weapon.weapon_skin:get_value()
-
-	if weapon_skin ~= "none" then
-		-- Nothing
-	else
-		weapon_skin = false
-
-		if false then
-			weapon_skin = true
-		end
-	end
-
+	weapon_skin = weapon_skin ~= "none" and weapon_skin
 	local blueprint = weapon_skin and tweak_data.blackmarket.weapon_skins[weapon_skin].default_blueprint
 	blueprint = blueprint or self:_get_blueprint_from_ui()
 
@@ -271,17 +253,7 @@ end
 function InventoryIconCreator:preview_one_weapon()
 	local factory_id = self._ctrlrs.weapon.factory_id:get_value()
 	local weapon_skin = self._ctrlrs.weapon.weapon_skin:get_value()
-
-	if weapon_skin ~= "none" then
-		-- Nothing
-	else
-		weapon_skin = false
-
-		if false then
-			weapon_skin = true
-		end
-	end
-
+	weapon_skin = weapon_skin ~= "none" and weapon_skin
 	local blueprint = weapon_skin and tweak_data.blackmarket.weapon_skins[weapon_skin].default_blueprint
 	blueprint = blueprint or self:_get_blueprint_from_ui()
 
@@ -638,7 +610,7 @@ function InventoryIconCreator:_setup_camera()
 	end
 
 	if not self._custom_ctrlrs.use_camera_setting:get_value() then
-		local oobb = self._weapon_unit or self._mask_unit or self._melee_unit or self._throwable_unit:oobb()
+		local oobb = (self._weapon_unit or self._mask_unit or self._melee_unit or self._throwable_unit):oobb()
 		local center = oobb:center()
 
 		managers.editor:set_camera(Vector3(job_setting.pos.x, center.y, center.z), job_setting.rot)

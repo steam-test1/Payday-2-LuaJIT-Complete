@@ -728,9 +728,6 @@ function GroupAIStateBase:_hostage_hint_clbk()
 			self._first_hostage_hint = nil
 
 			managers.enemy:add_delayed_clbk("_hostage_hint_clbk", self._hstg_hint_clbk, Application:time() + 120)
-
-			if "ljd_decompile_error_something_goes_here_fadklsdfajsdlkjf" then
-			end
 		end
 	else
 		self._hstg_hint_clbk = nil
@@ -1944,10 +1941,8 @@ function GroupAIStateBase:_debug_draw_drama(t)
 		end
 	end
 
-	if drama_hist[2] then
-		while drama_hist[2] and t_span < t - drama_hist[2][2] do
-			table.remove(drama_hist, 1)
-		end
+	while drama_hist[2] and t_span < t - drama_hist[2][2] do
+		table.remove(drama_hist, 1)
 	end
 
 	local mvec3_set_st = mvector3.set_static
@@ -1990,10 +1985,8 @@ function GroupAIStateBase:_debug_draw_drama(t)
 		end
 	end
 
-	if pop_hist[2] then
-		while pop_hist[2] and t_span < t - pop_hist[2][2] do
-			table.remove(pop_hist, 1)
-		end
+	while pop_hist[2] and t_span < t - pop_hist[2][2] do
+		table.remove(pop_hist, 1)
 	end
 
 	local max_force = 25
@@ -2019,10 +2012,8 @@ function GroupAIStateBase:_debug_draw_drama(t)
 	local bottom_r = Vector3(0, draw_data.bg_bottom_l.y, 90)
 
 	local function _draw_events(event_brush, event_list)
-		if event_list[1] and event_list[1][2] then
-			while event_list[1] and event_list[1][2] and t_span < t - event_list[1][2] do
-				table.remove(event_list, 1)
-			end
+		while event_list[1] and event_list[1][2] and t_span < t - event_list[1][2] do
+			table.remove(event_list, 1)
 		end
 
 		for i, entry in ipairs(event_list) do
@@ -2274,7 +2265,7 @@ function GroupAIStateBase:add_special_objective(id, objective_data)
 
 	if objective_data.objective and objective_data.objective.nav_seg then
 		local nav_seg = objective_data.objective.nav_seg
-		slot6 = self:get_area_from_nav_seg_id(nav_seg)
+		local area_data = self:get_area_from_nav_seg_id(nav_seg)
 	end
 end
 
@@ -2915,14 +2906,12 @@ function GroupAIStateBase:fill_criminal_team_with_AI(is_drop_in)
 	if managers.navigation:is_data_ready() and self._ai_enabled and managers.groupai:state():team_ai_enabled() then
 		local index = 1
 
-		if managers.criminals:nr_taken_criminals() < CriminalsManager.MAX_NR_CRIMINALS then
-			while managers.criminals.nr_taken_criminals() < CriminalsManager.MAX_NR_CRIMINALS and managers.criminals:nr_AI_criminals() < managers.criminals.MAX_NR_TEAM_AI do
-				local char_name = managers.criminals:get_team_ai_character(index)
-				index = index + 1
+		while managers.criminals:nr_taken_criminals() < CriminalsManager.MAX_NR_CRIMINALS and managers.criminals:nr_AI_criminals() < managers.criminals.MAX_NR_TEAM_AI do
+			local char_name = managers.criminals:get_team_ai_character(index)
+			index = index + 1
 
-				if not self:spawn_one_teamAI(is_drop_in or not not char_name, char_name, nil, nil, true) then
-					break
-				end
+			if not self:spawn_one_teamAI(is_drop_in or not not char_name, char_name, nil, nil, true) then
+				break
 			end
 		end
 	end
@@ -3076,7 +3065,7 @@ old_GroupAIStateBase_determine_objective_for_criminal_AI = old_GroupAIStateBase_
 
 function GroupAIStateBase:_determine_objective_for_criminal_AI(unit)
 	local objective, closest_dis, closest_record = nil
-	local ai_pos = self._ai_criminals[unit:key()] or self._police[unit:key()].m_pos
+	local ai_pos = (self._ai_criminals[unit:key()] or self._police[unit:key()]).m_pos
 
 	for pl_key, pl_record in pairs(self._player_criminals) do
 		if pl_record.status ~= "dead" then
@@ -3098,7 +3087,7 @@ function GroupAIStateBase:_determine_objective_for_criminal_AI(unit)
 		}
 	end
 
-	local ai_pos = self._ai_criminals[unit:key()] or self._police[unit:key()].m_pos
+	local ai_pos = (self._ai_criminals[unit:key()] or self._police[unit:key()]).m_pos
 	local skip_hostage_trade_time_reset = nil
 
 	if not objective and self:is_ai_trade_possible() then
@@ -3224,11 +3213,7 @@ function GroupAIStateBase:set_ambience_flag()
 end
 
 function GroupAIStateBase:set_whisper_mode(enabled)
-	if enabled then
-		enabled = true
-	else
-		enabled = false
-	end
+	enabled = enabled and true or false
 
 	if enabled == self._whisper_mode then
 		return
@@ -5809,21 +5794,19 @@ function GroupAIStateBase:trim_coarse_path_to_areas(coarse_path)
 	local all_areas = self._area_data
 	local i = 1
 
-	if #coarse_path >= 3 then
-		while #coarse_path >= 3 and i < #coarse_path do
-			local node = coarse_path[i]
-			local nav_seg = node[1]
-			local area = self:get_area_from_nav_seg_id(nav_seg)
-			local next_node = coarse_path[i + 1]
-			local next_nav_seg = next_node[1]
+	while #coarse_path >= 3 and i < #coarse_path do
+		local node = coarse_path[i]
+		local nav_seg = node[1]
+		local area = self:get_area_from_nav_seg_id(nav_seg)
+		local next_node = coarse_path[i + 1]
+		local next_nav_seg = next_node[1]
 
-			if area.nav_segs[next_nav_seg] then
-				table.remove(coarse_path, i + 1)
-			elseif i == #coarse_path - 1 then
-				break
-			else
-				i = i + 1
-			end
+		if area.nav_segs[next_nav_seg] then
+			table.remove(coarse_path, i + 1)
+		elseif i == #coarse_path - 1 then
+			break
+		else
+			i = i + 1
 		end
 	end
 end

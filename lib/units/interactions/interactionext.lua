@@ -2418,7 +2418,7 @@ function MissionDoorDeviceInteractionExt:interact(player)
 	if Network:is_client() then
 		managers.network:session():send_to_host("server_place_mission_door_device", self._unit, player)
 	else
-		slot2 = self:server_place_mission_door_device(player)
+		local result = self:server_place_mission_door_device(player)
 	end
 end
 
@@ -3154,7 +3154,7 @@ function CivilianHeisterInteractionExt:update(unit, t, dt)
 
 	for id, data in pairs(managers.criminals:characters()) do
 		if data.taken and alive(data.unit) and data.unit:id() ~= -1 then
-			local dist = data.unit:position() - unit:position():length()
+			local dist = (data.unit:position() - unit:position()):length()
 
 			if dist < self.heister_data.idle_line_dist then
 				can_play_idle_line = true

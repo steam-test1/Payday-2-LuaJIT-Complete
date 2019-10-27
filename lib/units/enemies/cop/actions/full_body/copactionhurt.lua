@@ -339,7 +339,7 @@ function CopActionHurt:init(action_desc, common_data)
 
 						if fwd_dot < 0 then
 							local hit_pos = action_desc.hit_pos
-							local hit_vec = hit_pos - common_data.pos:with_z(0):normalized()
+							local hit_vec = (hit_pos - common_data.pos):with_z(0):normalized()
 
 							if mvector3.dot(hit_vec, common_data.right) > 0 then
 								dir_str = "r"
@@ -394,7 +394,7 @@ function CopActionHurt:init(action_desc, common_data)
 
 			if fwd_dot < 0 then
 				local hit_pos = action_desc.hit_pos
-				local hit_vec = hit_pos - common_data.pos:with_z(0):normalized()
+				local hit_vec = (hit_pos - common_data.pos):with_z(0):normalized()
 
 				if mvector3.dot(hit_vec, common_data.right) > 0 then
 					dir_str = "r"
@@ -594,9 +594,7 @@ function CopActionHurt:init(action_desc, common_data)
 			return
 		end
 
-		if action_desc.variant == "bleeding" then
-			-- Nothing
-		else
+		if action_desc.variant ~= "bleeding" then
 			local nr_variants = self._ext_anim.base_nr_variants
 			local death_type = nil
 
@@ -622,12 +620,7 @@ function CopActionHurt:init(action_desc, common_data)
 				self._machine:set_parameter(redir_res, dir_str, 1)
 
 				local hit_z = action_desc.hit_pos.z
-
-				if self._ext_movement:m_com().z < hit_z then
-					height = "high"
-				else
-					height = "low"
-				end
+				height = self._ext_movement:m_com().z < hit_z and "high" or "low"
 
 				if action_type == "death" then
 					if is_civilian then
@@ -636,7 +629,11 @@ function CopActionHurt:init(action_desc, common_data)
 						death_type = action_desc.death_type
 					end
 
-					variant = (not is_female or self.death_anim_fe_variants[death_type][crouching and "crouching" or "not_crouching"][dir_str][height]) and self.death_anim_variants[death_type][crouching and "crouching" or "not_crouching"][dir_str][height]
+					if is_female then
+						variant = self.death_anim_fe_variants[death_type][crouching and "crouching" or "not_crouching"][dir_str][height]
+					else
+						variant = self.death_anim_variants[death_type][crouching and "crouching" or "not_crouching"][dir_str][height]
+					end
 
 					if variant > 1 then
 						variant = self:_pseudorandom(variant)

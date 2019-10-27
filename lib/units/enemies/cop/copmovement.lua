@@ -1137,11 +1137,7 @@ function CopMovement:_chk_play_equip_weapon()
 end
 
 function CopMovement:set_cool(state, giveaway)
-	if state then
-		state = true
-	else
-		state = false
-	end
+	state = state and true or false
 
 	if not state and not managers.groupai:state():enemy_weapons_hot() then
 		self._coolness_giveaway = managers.groupai:state():fetch_highest_giveaway(self._coolness_giveaway, giveaway)
@@ -1800,11 +1796,7 @@ function CopMovement:anim_clbk_melee_strike(unit)
 end
 
 function CopMovement:anim_clbk_set_visibility(unit, state)
-	if state == true then
-		state = true
-	else
-		state = false
-	end
+	state = state == true and true or false
 
 	self._unit:set_visible(state)
 end
@@ -2643,7 +2635,7 @@ function CopMovement:sync_action_hurt_end()
 					walk = -1
 				}
 			}
-			slot4 = CopMovement.action_request(self, action_data)
+			local res = CopMovement.action_request(self, action_data)
 		else
 			self:_chk_start_queued_action()
 			self._ext_brain:action_complete_clbk(action)
@@ -2866,11 +2858,7 @@ function CopMovement:_material_config_name(part_id, unit_name, use_cc_material_c
 	end
 
 	local cc_string = use_cc_material_config and "_cc" or ""
-	slot6 = "_thq"
-
-	if "_thq" then
-		local thq_string = ""
-	end
+	local thq_string = "_thq" or ""
 
 	return Idstring(unit_name .. cc_string .. thq_string)
 end

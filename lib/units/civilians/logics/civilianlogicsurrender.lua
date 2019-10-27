@@ -111,7 +111,7 @@ function CivilianLogicSurrender.enter(data, new_logic_name, enter_params)
 				body_part = 1,
 				type = "act"
 			}
-			slot11 = data.unit:brain():action_request(action_data)
+			local action_res = data.unit:brain():action_request(action_data)
 		end
 	end
 end
@@ -517,7 +517,8 @@ function CivilianLogicSurrender._update_enemy_detection(data, my_data)
 	local delta_t = t - my_data.last_upd_t
 	local my_pos = data.unit:movement():m_head_pos()
 	local enemies = managers.groupai:state():all_criminals()
-	visible, closest_dis, closest_enemy, my_data.inside_intimidate_aura = nil
+	local visible, closest_dis, closest_enemy = nil
+	my_data.inside_intimidate_aura = nil
 	local my_tracker = data.unit:movement():nav_tracker()
 	local chk_vis_func = my_tracker.check_visibility
 

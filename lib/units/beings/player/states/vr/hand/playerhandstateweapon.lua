@@ -194,6 +194,7 @@ function PlayerHandStateWeapon:unlink_arrow_unit()
 
 	self._hand_unit:melee():set_custom_unit()
 end
+
 local hand_to_hand = Vector3()
 local other_hand = Vector3()
 local weapon_pos = Vector3()
@@ -265,7 +266,16 @@ function PlayerHandStateWeapon:update(t, dt)
 
 			local interact_btn = self:hsm():hand_id() == PlayerHand.LEFT and "interact_right" or "interact_left"
 			local wants_assist = nil
-			wants_assist = self._grip_toggle_setting and self._grip_toggle or controller:get_input_bool(interact_btn)
+
+			if self._grip_toggle_setting then
+				if controller:get_input_pressed(interact_btn) then
+					self._grip_toggle = not self._grip_toggle
+				end
+
+				wants_assist = self._grip_toggle
+			else
+				wants_assist = controller:get_input_bool(interact_btn)
+			end
 
 			if wants_assist then
 				mvector3.set(other_hand, self:hsm():other_hand():position())
@@ -330,7 +340,7 @@ function PlayerHandStateWeapon:update(t, dt)
 
 				local max_dis = math.max(self._pistol_grip and tweak_data.vr.weapon_assist.limits.pistol_max or tweak_data.vr.weapon_assist.limits.max, self._weapon_length)
 
-				if (tweak_data.vr.weapon_assist.limits.min < other_hand_dis or self._pistol_grip) and other_hand_dis < max_dis and (self._pistol_grip or (is_assisting and 0.35 or 0.9) < mvector3.dot(hand_to_hand, self:hsm():rotation():y())) then
+				if (tweak_data.vr.weapon_assist.limits.min < other_hand_dis or self._pistol_grip) and other_hand_dis < max_dis and (self._pistol_grip or mvector3.dot(hand_to_hand, self:hsm():rotation():y()) > (is_assisting and 0.35 or 0.9)) then
 					if not is_assisting and self:hsm():other_hand():can_change_state_by_name("weapon_assist") then
 						self:hsm():other_hand():change_state_by_name("weapon_assist")
 					end
@@ -394,4 +404,3 @@ end
 function PlayerHandStateWeapon:set_warping(warping)
 	self._warping = warping
 end
-

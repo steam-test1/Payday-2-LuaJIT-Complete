@@ -2,7 +2,9 @@ DebugDrawFonts = DebugDrawFonts or class()
 
 function DebugDrawFonts:init(ws)
 	self._ws = ws
-	self._panel = ws:panel():panel({layer = 1000})
+	self._panel = ws:panel():panel({
+		layer = 1000
+	})
 	self._toggle = false
 	local massive_font = tweak_data.menu.pd2_massive_font
 	local large_font = tweak_data.menu.pd2_large_font
@@ -141,4 +143,3 @@ end
 function DebugDrawFonts:close()
 	self._panel:parent():remove(self._panel)
 end
-

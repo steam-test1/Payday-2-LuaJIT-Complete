@@ -141,4 +141,3 @@ function InteractionEditor:redo(sys)
 		system:redo()
 	end
 end
-

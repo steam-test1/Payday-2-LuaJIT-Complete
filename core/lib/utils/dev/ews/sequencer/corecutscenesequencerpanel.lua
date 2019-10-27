@@ -116,9 +116,11 @@ function CoreCutsceneSequencerPanel:set_active_film_track(active_track)
 		track:set_background_colour(self:_track_background_colour(track == self._active_film_track):unpack())
 	end
 
-	self:_send_event("EVT_EVALUATE_FRAME_AT_PLAYHEAD", {position = function ()
-		return position
-	end})
+	self:_send_event("EVT_EVALUATE_FRAME_AT_PLAYHEAD", {
+		position = function ()
+			return position
+		end
+	})
 end
 
 function CoreCutsceneSequencerPanel:film_clips()
@@ -188,9 +190,11 @@ function CoreCutsceneSequencerPanel:remove_items(clip_list)
 	end
 
 	self:thaw()
-	self:_send_event("EVT_EVALUATE_FRAME_AT_PLAYHEAD", {position = function ()
-		return position
-	end})
+	self:_send_event("EVT_EVALUATE_FRAME_AT_PLAYHEAD", {
+		position = function ()
+			return position
+		end
+	})
 
 	return removed_count
 end
@@ -218,9 +222,11 @@ function CoreCutsceneSequencerPanel:remove_all_items()
 		track:remove_all_clips()
 	end
 
-	self:_send_event("EVT_EVALUATE_FRAME_AT_PLAYHEAD", {position = function ()
-		return position
-	end})
+	self:_send_event("EVT_EVALUATE_FRAME_AT_PLAYHEAD", {
+		position = function ()
+			return position
+		end
+	})
 	self:thaw()
 end
 
@@ -271,9 +277,11 @@ function CoreCutsceneSequencerPanel:set_playhead_position(position)
 end
 
 function CoreCutsceneSequencerPanel:_evaluate_frame_at_playhead()
-	self:_send_event("EVT_EVALUATE_FRAME_AT_PLAYHEAD", {position = function ()
-		return self:playhead_position()
-	end})
+	self:_send_event("EVT_EVALUATE_FRAME_AT_PLAYHEAD", {
+		position = function ()
+			return self:playhead_position()
+		end
+	})
 end
 
 function CoreCutsceneSequencerPanel:_signal_drag(dragged_clip, drag_mode)
@@ -526,4 +534,3 @@ end
 function CoreCutsceneSequencerPanel:change_track_behaviour(new_behaviour)
 	self._track_behaviour = new_behaviour
 end
-

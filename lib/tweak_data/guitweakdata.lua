@@ -5349,8 +5349,14 @@ function GuiTweakData:serializeTable(val, name, skipnewlines, depth)
 		end
 
 		tmp = tmp .. "}" .. (depth <= 1 and ", \n" or "")
+	elseif type(val) == "number" then
+		tmp = tmp .. tostring(val)
+	elseif type(val) == "string" then
+		tmp = tmp .. string.format("%q", val)
+	elseif type(val) == "boolean" then
+		tmp = tmp .. (val and "true" or "false")
 	else
-		tmp = type(val) == "number" and tmp .. tostring(val) or type(val) == "string" and tmp .. string.format("%q", val) or type(val) == "boolean" and tmp .. (val and "true" or "false") or tmp .. "\"[inserializeable datatype:" .. type(val) .. "]\""
+		tmp = tmp .. "\"[inserializeable datatype:" .. type(val) .. "]\""
 	end
 
 	return tmp
@@ -5373,8 +5379,8 @@ function GuiTweakData:tradable_inventory_sort_func(index)
 		return function (x, y)
 			x_item = inventory_tradable[x]
 			y_item = inventory_tradable[y]
-			x_td = tweak_data.economy[x_item.category] or tweak_data.blackmarket[x_item.category][x_item.entry]
-			y_td = tweak_data.economy[y_item.category] or tweak_data.blackmarket[y_item.category][y_item.entry]
+			x_td = (tweak_data.economy[x_item.category] or tweak_data.blackmarket[x_item.category])[x_item.entry]
+			y_td = (tweak_data.economy[y_item.category] or tweak_data.blackmarket[y_item.category])[y_item.entry]
 
 			if x_td.name_id ~= y_td.name_id then
 				localization_cache[x_td.name_id] = localization_cache[x_td.name_id] or managers.localization:to_upper_text(x_td.name_id)
@@ -5422,8 +5428,8 @@ function GuiTweakData:tradable_inventory_sort_func(index)
 		return function (x, y)
 			x_item = inventory_tradable[x]
 			y_item = inventory_tradable[y]
-			x_td = tweak_data.economy[x_item.category] or tweak_data.blackmarket[x_item.category][x_item.entry]
-			y_td = tweak_data.economy[y_item.category] or tweak_data.blackmarket[y_item.category][y_item.entry]
+			x_td = (tweak_data.economy[x_item.category] or tweak_data.blackmarket[x_item.category])[x_item.entry]
+			y_td = (tweak_data.economy[y_item.category] or tweak_data.blackmarket[y_item.category])[y_item.entry]
 			x_rarity = tweak_data.economy.rarities[x_td.rarity or "common"]
 			y_rarity = tweak_data.economy.rarities[y_td.rarity or "common"]
 

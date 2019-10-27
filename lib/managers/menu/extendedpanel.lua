@@ -1,7 +1,5 @@
-
 local function redirect_to_member(class, member_name, functions)
 	for _, name in pairs(functions) do
-
 		class[name] = function (self, ...)
 			local member = self[member_name]
 
@@ -18,7 +16,6 @@ local function redirect_to_panel(class, blacklist)
 	function class.__index(table, key)
 		for k, func in pairs(Panel) do
 			if not blacklist[k] and not rawget(class, k) then
-
 				class[k] = function (self, ...)
 					return func(self._panel, ...)
 				end
@@ -465,4 +462,3 @@ function ExtendedPanel:back_pressed()
 
 	return call_return_b_on_all_exists(self._input_components_set, "back_pressed")
 end
-

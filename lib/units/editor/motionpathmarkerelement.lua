@@ -478,11 +478,9 @@ function MotionpathMarkerUnitElement:_recreate_motion_path(selected_unit, force_
 	local current_marker_unit = selected_unit
 	local parent_marker_unit = self:_get_unit(selected_unit:mission_element_data().markers.parent)
 
-	if parent_marker_unit then
-		while parent_marker_unit and alive(parent_marker_unit) do
-			current_marker_unit = parent_marker_unit
-			parent_marker_unit = self:_get_unit(parent_marker_unit:mission_element_data().markers.parent)
-		end
+	while parent_marker_unit and alive(parent_marker_unit) do
+		current_marker_unit = parent_marker_unit
+		parent_marker_unit = self:_get_unit(parent_marker_unit:mission_element_data().markers.parent)
 	end
 
 	MotionpathMarkerUnitElement._linked_markers = {}
@@ -494,16 +492,14 @@ function MotionpathMarkerUnitElement:_recreate_motion_path(selected_unit, force_
 	local child_marker_unit = self:_get_unit(current_marker_unit:mission_element_data().markers.child)
 	local last_child = current_marker_unit
 
-	if child_marker_unit then
-		while child_marker_unit and alive(child_marker_unit) do
-			local distance = mvector3.distance(last_child:position(), child_marker_unit:position())
-			path_length = path_length + distance
+	while child_marker_unit and alive(child_marker_unit) do
+		local distance = mvector3.distance(last_child:position(), child_marker_unit:position())
+		path_length = path_length + distance
 
-			table.insert(linked_markers, 1, child_marker_unit)
+		table.insert(linked_markers, 1, child_marker_unit)
 
-			last_child = child_marker_unit
-			child_marker_unit = self:_get_unit(child_marker_unit:mission_element_data().markers.child)
-		end
+		last_child = child_marker_unit
+		child_marker_unit = self:_get_unit(child_marker_unit:mission_element_data().markers.child)
 	end
 
 	local bline = {}
@@ -567,12 +563,7 @@ function MotionpathMarkerUnitElement:_recreate_motion_path(selected_unit, force_
 
 			for _, point in ipairs(self._bezier_points) do
 				current_z = current_z + z_step
-
-				if current_speed == -1 then
-					final_speed = -1
-				else
-					final_speed = (current_speed + speed_step) * 27.77
-				end
+				final_speed = current_speed == -1 and -1 or (current_speed + speed_step) * 27.77
 
 				table.insert(entire_path_points, {
 					point = point:with_z(current_z),

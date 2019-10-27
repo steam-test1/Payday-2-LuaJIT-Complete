@@ -184,7 +184,7 @@ function CoreWorldCameraManager:load(param)
 		end
 
 		for name, camera_data in pairs(param.worldcameras) do
-			self._world_cameras[name] = rawget(_G, "WorldCamera") or rawget(_G, "CoreWorldCamera"):new(name)
+			self._world_cameras[name] = (rawget(_G, "WorldCamera") or rawget(_G, "CoreWorldCamera")):new(name)
 
 			self._world_cameras[name]:load(camera_data)
 		end
@@ -208,7 +208,7 @@ function CoreWorldCameraManager:_old_load(path)
 	for child in node:children() do
 		if child:name() == "world_camera" then
 			local world_camera_name = child:parameter("name")
-			self._world_cameras[world_camera_name] = rawget(_G, "WorldCamera") or rawget(_G, "CoreWorldCamera"):new(world_camera_name)
+			self._world_cameras[world_camera_name] = (rawget(_G, "WorldCamera") or rawget(_G, "CoreWorldCamera")):new(world_camera_name)
 
 			self._world_cameras[world_camera_name]:old_load(child)
 		else
@@ -279,7 +279,7 @@ function CoreWorldCameraManager:remove_sequence_camera_clip_callback(sequence_na
 end
 
 function CoreWorldCameraManager:create_world_camera(world_camera_name)
-	self._world_cameras[world_camera_name] = rawget(_G, "WorldCamera") or rawget(_G, "CoreWorldCamera"):new(world_camera_name)
+	self._world_cameras[world_camera_name] = (rawget(_G, "WorldCamera") or rawget(_G, "CoreWorldCamera")):new(world_camera_name)
 
 	return self._world_cameras[world_camera_name]
 end
@@ -892,7 +892,7 @@ function CoreWorldCamera:update(t, dt)
 
 		self:update_dof_values(near_dof, far_dof, self._dof_padding, self._dof_clamp)
 
-		local rot = Rotation(t_pos - pos:normalized(), self:value_at_time(self._timer, "roll"))
+		local rot = Rotation((t_pos - pos):normalized(), self:value_at_time(self._timer, "roll"))
 
 		managers.worldcamera:camera_controller():set_default_up(rot:z())
 	elseif self._delay > 0 and self._delay_timer < 1 then
@@ -1009,9 +1009,6 @@ function CoreWorldCamera:play_to_time_sine(s_t)
 		local wanted_dis = math.clamp(s_t * metadata.spline_length, 0, metadata.spline_length)
 		local adv_seg = nil
 
-		if runtime_data.seg_i ~= 0 then
-		end
-
 		while runtime_data.seg_i == 0 or runtime_data.seg_dis < wanted_dis do
 			runtime_data.seg_i = runtime_data.seg_i + 1
 			runtime_data.seg_dis = metadata.segment_lengths[runtime_data.seg_i]
@@ -1033,15 +1030,13 @@ function CoreWorldCamera:play_to_time_sine(s_t)
 		local seg_p1 = metadata.ctrl_points[runtime_data.seg_i + 1].p1
 		local seg_p2 = metadata.ctrl_points[runtime_data.seg_i].p2
 
-		if not runtime_data.subseg_pos or runtime_data.subseg_dis < wanted_dis_in_seg then
-			while (not runtime_data.subseg_pos or runtime_data.subseg_dis < wanted_dis_in_seg) and runtime_data.subseg_i < metadata.nr_subseg_per_seg do
-				runtime_data.subseg_i = runtime_data.subseg_i + 1
-				local new_subseg_pos = self:position_at_time_on_segment(runtime_data.subseg_i / metadata.nr_subseg_per_seg, seg_pos, next_seg_pos, seg_p1, seg_p2)
-				runtime_data.subseg_len = mvector3.distance(runtime_data.subseg_pos or runtime_data.subseg_prev_pos, new_subseg_pos)
-				runtime_data.subseg_dis = runtime_data.subseg_dis + runtime_data.subseg_len
-				runtime_data.subseg_prev_pos = runtime_data.subseg_pos or runtime_data.subseg_prev_pos
-				runtime_data.subseg_pos = new_subseg_pos
-			end
+		while (not runtime_data.subseg_pos or runtime_data.subseg_dis < wanted_dis_in_seg) and runtime_data.subseg_i < metadata.nr_subseg_per_seg do
+			runtime_data.subseg_i = runtime_data.subseg_i + 1
+			local new_subseg_pos = self:position_at_time_on_segment(runtime_data.subseg_i / metadata.nr_subseg_per_seg, seg_pos, next_seg_pos, seg_p1, seg_p2)
+			runtime_data.subseg_len = mvector3.distance(runtime_data.subseg_pos or runtime_data.subseg_prev_pos, new_subseg_pos)
+			runtime_data.subseg_dis = runtime_data.subseg_dis + runtime_data.subseg_len
+			runtime_data.subseg_prev_pos = runtime_data.subseg_pos or runtime_data.subseg_prev_pos
+			runtime_data.subseg_pos = new_subseg_pos
 		end
 
 		local percentage_in_subseg = 1 - (runtime_data.subseg_dis - wanted_dis_in_seg) / runtime_data.subseg_len
@@ -1079,15 +1074,13 @@ function CoreWorldCamera:cam_look_vec_on_segment(perc_in_seg, seg_i)
 	local seg_p1 = metadata.tar_ctrl_points[seg_i + 1].p1
 	local seg_p2 = metadata.tar_ctrl_points[seg_i].p2
 
-	if not runtime_data.subseg_pos or runtime_data.subseg_dis < wanted_dis_in_seg then
-		while (not runtime_data.subseg_pos or runtime_data.subseg_dis < wanted_dis_in_seg) and runtime_data.subseg_i < metadata.nr_subseg_per_seg do
-			runtime_data.subseg_i = runtime_data.subseg_i + 1
-			local new_subseg_pos = self:position_at_time_on_segment(runtime_data.subseg_i / metadata.nr_subseg_per_seg, seg_pos, next_seg_pos, seg_p1, seg_p2)
-			runtime_data.subseg_len = mvector3.distance(runtime_data.subseg_pos or runtime_data.subseg_prev_pos, new_subseg_pos)
-			runtime_data.subseg_dis = runtime_data.subseg_dis + runtime_data.subseg_len
-			runtime_data.subseg_prev_pos = runtime_data.subseg_pos or runtime_data.subseg_prev_pos
-			runtime_data.subseg_pos = new_subseg_pos
-		end
+	while (not runtime_data.subseg_pos or runtime_data.subseg_dis < wanted_dis_in_seg) and runtime_data.subseg_i < metadata.nr_subseg_per_seg do
+		runtime_data.subseg_i = runtime_data.subseg_i + 1
+		local new_subseg_pos = self:position_at_time_on_segment(runtime_data.subseg_i / metadata.nr_subseg_per_seg, seg_pos, next_seg_pos, seg_p1, seg_p2)
+		runtime_data.subseg_len = mvector3.distance(runtime_data.subseg_pos or runtime_data.subseg_prev_pos, new_subseg_pos)
+		runtime_data.subseg_dis = runtime_data.subseg_dis + runtime_data.subseg_len
+		runtime_data.subseg_prev_pos = runtime_data.subseg_pos or runtime_data.subseg_prev_pos
+		runtime_data.subseg_pos = new_subseg_pos
 	end
 
 	local percentage_in_subseg = 1 - (runtime_data.subseg_dis - wanted_dis_in_seg) / runtime_data.subseg_len
@@ -1318,7 +1311,7 @@ function CoreWorldCamera:debug_draw_editor()
 
 			local t_pos = target_positions[i]
 
-			Application:draw_line(pos, pos + t_pos - pos:normalized() * 500, 1, 1, 0)
+			Application:draw_line(pos, pos + (t_pos - pos):normalized() * 500, 1, 1, 0)
 		end
 	end
 end

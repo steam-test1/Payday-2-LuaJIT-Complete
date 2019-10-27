@@ -593,7 +593,7 @@ function VRSubMenu:add_desc(desc_data)
 
 	make_fine_text(desc)
 
-	slot6 = desc_data.image and self._desc_panel:bitmap({
+	local desc_image = desc_data.image and self._desc_panel:bitmap({
 		texture = desc_data.image,
 		y = desc:bottom() + PADDING,
 		layer = OBJECT_LAYER
@@ -1628,7 +1628,7 @@ function VRBeltCustomization:init(is_start_menu)
 	self._distance = managers.vr:get_setting("belt_distance")
 
 	self._belt_unit:set_position(player:position():with_z(self._height) - Vector3(20, 0, 0))
-	self._belt_unit:set_rotation(Rotation(VRManager:hmd_rotation() * player:base_rotation():yaw()))
+	self._belt_unit:set_rotation(Rotation((VRManager:hmd_rotation() * player:base_rotation()):yaw()))
 
 	self._belt_alpha = 0.4
 
@@ -1662,7 +1662,7 @@ function VRBeltCustomization:init(is_start_menu)
 			up = math.Y,
 			update_func = function (pos)
 				local min, max = managers.vr:setting_limits("belt_distance")
-				local relative_pos = pos - managers.menu:player():position():rotate_with(self._belt_unit:rotation():inverse())
+				local relative_pos = (pos - managers.menu:player():position()):rotate_with(self._belt_unit:rotation():inverse())
 				local y = relative_pos.y
 
 				if min and max then
@@ -1684,7 +1684,7 @@ function VRBeltCustomization:init(is_start_menu)
 			update_func = function (pos)
 				local size = managers.vr:get_setting("belt_size")
 				local min, max = managers.vr:setting_limits("belt_size")
-				local x = pos - self._grip_pos:rotate_with(self._belt_unit:rotation():inverse()).x
+				local x = (pos - self._grip_pos):rotate_with(self._belt_unit:rotation():inverse()).x
 				size = size + x
 
 				if min and max then

@@ -186,11 +186,7 @@ function EnemyManager:_update_gfx_lod()
 									t_ins(imp_wgt_list, i_wgt, my_wgt)
 									t_ins(imp_i_list, i_wgt, i)
 
-									if i_wgt <= nr_lod_1 then
-										lod_stage = 1
-									else
-										lod_stage = 2
-									end
+									lod_stage = i_wgt <= nr_lod_1 and 1 or 2
 								else
 									lod_stage = 3
 
@@ -555,10 +551,8 @@ function EnemyManager:add_delayed_clbk(id, clbk, execute_t)
 	local all_clbks = self._delayed_clbks
 	local i = #all_clbks
 
-	if i > 0 then
-		while i > 0 and execute_t < all_clbks[i][2] do
-			i = i - 1
-		end
+	while i > 0 and execute_t < all_clbks[i][2] do
+		i = i - 1
 	end
 
 	table.insert(all_clbks, i + 1, clbk_data)
@@ -608,10 +602,8 @@ function EnemyManager:reschedule_delayed_clbk(id, execute_t)
 		clbk_data[2] = execute_t
 		local i = #all_clbks
 
-		if i > 0 then
-			while i > 0 and execute_t < all_clbks[i][2] do
-				i = i - 1
-			end
+		while i > 0 and execute_t < all_clbks[i][2] do
+			i = i - 1
 		end
 
 		table.insert(all_clbks, i + 1, clbk_data)

@@ -585,10 +585,8 @@ function NetworkMatchMakingPSN:psn_member_joined(info)
 			managers.network.voice_chat:open_session(self._room_id)
 		end
 
-		if info.user_id == managers.network.account:player_id() then
-			-- Nothing
-		else
-			slot2 = 10
+		if info.user_id ~= managers.network.account:player_id() then
+			local time_left = 10
 		end
 	end
 

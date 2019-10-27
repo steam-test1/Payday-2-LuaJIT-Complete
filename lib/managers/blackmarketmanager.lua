@@ -1760,29 +1760,31 @@ function BlackMarketManager:create_preload_ws()
 	panel:set_layer(tweak_data.gui.DIALOG_LAYER)
 
 	local new_script = {
-		progress = 1,
-		step_progress = function ()
-			new_script.set_progress(new_script.progress + 1)
-		end,
-		set_progress = function (progress)
-			new_script.progress = progress
-			local square_panel = panel:child("square_panel")
-			local progress_rect = panel:child("progress")
+		progress = 1
+	}
 
-			if progress == 0 then
-				progress_rect:hide()
-			end
+	function new_script.step_progress()
+		new_script.set_progress(new_script.progress + 1)
+	end
 
-			for i, child in ipairs(square_panel:children()) do
-				child:set_color(i < progress and Color.white or Color(0.3, 0.3, 0.3))
+	function new_script.set_progress(progress)
+		new_script.progress = progress
+		local square_panel = panel:child("square_panel")
+		local progress_rect = panel:child("progress")
 
-				if i == progress then
-					progress_rect:set_world_center(child:world_center())
-					progress_rect:show()
-				end
+		if progress == 0 then
+			progress_rect:hide()
+		end
+
+		for i, child in ipairs(square_panel:children()) do
+			child:set_color(i < progress and Color.white or Color(0.3, 0.3, 0.3))
+
+			if i == progress then
+				progress_rect:set_world_center(child:world_center())
+				progress_rect:show()
 			end
 		end
-	}
+	end
 
 	panel:set_script(new_script)
 
@@ -3115,9 +3117,7 @@ function BlackMarketManager:get_crafted_item_amount(category, id)
 			end
 		elseif category == "character" then
 			-- Nothing
-		elseif category == "armors" then
-			-- Nothing
-		else
+		elseif category ~= "armors" then
 			break
 		end
 	end
@@ -5627,11 +5627,11 @@ function BlackMarketManager:get_mask_default_blueprint(mask_id)
 		material = {
 			id = "plastic",
 			global_value = "normal"
-		},
-		colors = default_blueprint.color,
-		textures = default_blueprint.pattern,
-		materials = default_blueprint.material
+		}
 	}
+	default_blueprint.colors = default_blueprint.color
+	default_blueprint.textures = default_blueprint.pattern
+	default_blueprint.materials = default_blueprint.material
 
 	if not mask_tweak_data then
 		return default_blueprint
@@ -8606,12 +8606,7 @@ function BlackMarketManager:check_frog_1()
 						pass_primary = outfit.primary.factory_id == "wpn_fps_ass_akm_gold"
 						pass_secondary = outfit.secondary.factory_id == "wpn_fps_smg_thompson"
 						pass_armor = outfit.armor == "level_1"
-
-						if pass_skills and pass_primary and pass_secondary and pass_armor then
-							all_passed = true
-						else
-							all_passed = false
-						end
+						all_passed = pass_skills and pass_primary and pass_secondary and pass_armor and true or false
 					else
 						all_passed = false
 					end

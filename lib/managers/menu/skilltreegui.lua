@@ -379,9 +379,7 @@ function SkillTreeSkillItem:refresh(locked)
 	end
 
 	if unlocked then
-		if step == 2 then
-			-- Nothing
-		else
+		if step ~= 2 then
 			self._skill_panel:child("state_indicator"):set_alpha(0)
 		end
 	elseif selected then
@@ -1919,7 +1917,7 @@ function SkillTreeGui:_set_active_skill_page(tree_panel_name, play_sound)
 				self._selected_item = nil
 			end
 
-			slot8 = page:activate()
+			local item = page:activate()
 		else
 			page:deactivate()
 		end
@@ -2039,9 +2037,7 @@ function SkillTreeGui:update_spec_descriptions(item)
 		end
 	end
 
-	if #start_ci ~= #end_ci then
-		-- Nothing
-	else
+	if #start_ci == #end_ci then
 		for i = 1, #start_ci, 1 do
 			start_ci[i] = start_ci[i] - ((i - 1) * 4 + 1)
 			end_ci[i] = end_ci[i] - (i * 4 - 1)
@@ -2303,9 +2299,7 @@ function SkillTreeGui:_set_selected_skill_item(item, no_sound)
 		end
 	end
 
-	if #start_ci ~= #end_ci then
-		-- Nothing
-	else
+	if #start_ci == #end_ci then
 		for i = 1, #start_ci, 1 do
 			start_ci[i] = start_ci[i] - ((i - 1) * 4 + 1)
 			end_ci[i] = end_ci[i] - (i * 4 - 1)
@@ -2496,12 +2490,7 @@ function SkillTreeGui:mouse_moved(o, x, y)
 				self:set_selected_item(tab_item, true)
 
 				inside = true
-
-				if same_tab_item then
-					pointer = "arrow"
-				else
-					pointer = "link"
-				end
+				pointer = same_tab_item and "arrow" or "link"
 			end
 		end
 	elseif not self._is_skilltree_page_active and self._use_specialization then
@@ -2519,12 +2508,7 @@ function SkillTreeGui:mouse_moved(o, x, y)
 					self:set_selected_item(tab_item, true)
 
 					inside = true
-
-					if same_tab_item then
-						pointer = "arrow"
-					else
-						pointer = "link"
-					end
+					pointer = same_tab_item and "arrow" or "link"
 				end
 			end
 		end
@@ -2989,10 +2973,10 @@ function SkillTreeGui:set_skilltree_page_active(active)
 
 		skilltree_text:set_color(active and tweak_data.screen_colors.text or tweak_data.screen_colors.button_stage_3)
 		specialization_text:set_color(active and tweak_data.screen_colors.button_stage_3 or tweak_data.screen_colors.text)
-		title_bg:set_text(active and skilltree_text or specialization_text:text())
+		title_bg:set_text((active and skilltree_text or specialization_text):text())
 
-		local wx = active and skilltree_text or specialization_text:world_x()
-		local wy = active and skilltree_text or specialization_text:world_center_y()
+		local wx = (active and skilltree_text or specialization_text):world_x()
+		local wy = (active and skilltree_text or specialization_text):world_center_y()
 		local x, y = managers.gui_data:safe_to_full_16_9(wx, wy)
 
 		title_bg:set_world_left(x)
@@ -3710,12 +3694,10 @@ function SkillTreeGui:max_specialization(tree, tier)
 		local points_to_spend = managers.skilltree:get_specialization_value("points")
 		local afford_tier = current_tier
 
-		if points_to_spend >= total_cost + next_cost then
-			while points_to_spend >= total_cost + next_cost and afford_tier < max_tier do
-				total_cost = total_cost + next_cost
-				afford_tier = afford_tier + 1
-				next_cost = max_tier > afford_tier and tweak_data.skilltree.specializations[tree][afford_tier + 1].cost or 0
-			end
+		while points_to_spend >= total_cost + next_cost and afford_tier < max_tier do
+			total_cost = total_cost + next_cost
+			afford_tier = afford_tier + 1
+			next_cost = max_tier > afford_tier and tweak_data.skilltree.specializations[tree][afford_tier + 1].cost or 0
 		end
 
 		local deck_name = managers.localization:text(tweak_data.skilltree.specializations[tree].name_id)

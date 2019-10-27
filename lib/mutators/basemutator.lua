@@ -68,10 +68,8 @@ function BaseMutator:longdesc()
 end
 
 function BaseMutator:icon()
-	local x = self.icon_coords
-	x = x[1]
-	local y = self.icon_coords
-	y = y[2]
+	local x = self.icon_coords[1]
+	local y = self.icon_coords[2]
 	local size = MutatorsManager._icon_size
 
 	return MutatorsManager._atlas_file, {
@@ -290,7 +288,12 @@ function BaseMutator:build_matchmaking_key()
 	if table.size(self:values()) > 0 then
 		for key, data in pairs(self:values()) do
 			local value = data.current
-			matchmaking_key = type(value) == "number" and matchmaking_key .. string.format("%s %.4f ", data.network_key, value) or matchmaking_key .. string.format("%s %s ", data.network_key, tostring(value))
+
+			if type(value) == "number" then
+				matchmaking_key = matchmaking_key .. string.format("%s %.4f ", data.network_key, value)
+			else
+				matchmaking_key = matchmaking_key .. string.format("%s %s ", data.network_key, tostring(value))
+			end
 		end
 	end
 
@@ -426,4 +429,3 @@ end
 function BaseMutator:modify_value(id, value)
 	return value
 end
-

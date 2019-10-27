@@ -1493,7 +1493,7 @@ function PlayerInventoryGui:_update_legends(name)
 				self._legends.select:set_right(x)
 
 				if show_select then
-					slot7 = self._legends.select:left() - 5 or x
+					x = self._legends.select:left() - 5 or x
 				end
 			end
 		else
@@ -1627,16 +1627,14 @@ function PlayerInventoryGui:set_info_text(text, color_ranges, recursive)
 	if self._info_panel:parent():h() < self._info_text:bottom() then
 		local font_size = self._info_text:font_size()
 
-		if self._info_panel:parent():h() < self._info_text:bottom() then
-			while self._info_panel.parent().h() < self._info_text.bottom() and min_font_size < font_size do
-				self._info_text:set_font_size(font_size)
+		while self._info_panel:parent():h() < self._info_text:bottom() and min_font_size < font_size do
+			self._info_text:set_font_size(font_size)
 
-				local _, _, _, h = self._info_text:text_rect()
+			local _, _, _, h = self._info_text:text_rect()
 
-				self._info_text:set_h(h)
+			self._info_text:set_h(h)
 
-				font_size = font_size - 1
-			end
+			font_size = font_size - 1
 		end
 
 		if not recursive and self._info_panel:parent():h() < self._info_text:bottom() then
@@ -1648,9 +1646,6 @@ function PlayerInventoryGui:set_info_text(text, color_ranges, recursive)
 			local text = self._info_text:text()
 			text = utf8.sub(text, 1, index)
 			local last = utf8.sub(text, -1)
-
-			if last ~= " " then
-			end
 
 			while last == " " or last == "\n" do
 				last = utf8.sub(text, -2, -1)

@@ -26,14 +26,17 @@ require("lib/managers/hud/HUDWaitingLegend")
 require("lib/managers/hud/HUDStageEndCrimeSpreeScreen")
 require("lib/managers/hud/HUDStatsScreenSkirmish")
 
-HUDManager.disabled = {}
-HUDManager.disabled[Idstring("guis/player_hud"):key()] = true
-HUDManager.disabled[Idstring("guis/experience_hud"):key()] = true
+HUDManager.disabled = {
+	[Idstring("guis/player_hud"):key()] = true,
+	[Idstring("guis/experience_hud"):key()] = true
+}
 HUDManager.PLAYER_PANEL = 4
 
 function HUDManager:controller_mod_changed()
 	if self:alive("guis/mask_off_hud") then
-		self:script("guis/mask_off_hud").mask_on_text:set_text(utf8.to_upper(managers.localization:text("hud_instruct_mask_on", {BTN_USE_ITEM = managers.localization:btn_macro("use_item")})))
+		self:script("guis/mask_off_hud").mask_on_text:set_text(utf8.to_upper(managers.localization:text("hud_instruct_mask_on", {
+			BTN_USE_ITEM = managers.localization:btn_macro("use_item")
+		})))
 	end
 
 	if self._hud_temp then
@@ -258,7 +261,7 @@ function HUDManager:set_ammo_amount(selection_index, max_clip, current_clip, cur
 		local panel = hud.panel:child("ammo_test")
 		local ammo_rect = panel:child("ammo_test_rect")
 
-		ammo_rect:set_w((panel:w() * current_clip) / max_clip)
+		ammo_rect:set_w(panel:w() * current_clip / max_clip)
 		ammo_rect:set_center_x(panel:w() / 2)
 		panel:stop()
 		panel:animate(callback(self, self, "_animate_ammo_test"))
@@ -426,7 +429,9 @@ function HUDManager:set_deployable_equipment_from_string(i, data)
 end
 
 function HUDManager:set_item_amount(index, amount)
-	self:set_teammate_deployable_equipment_amount(HUDManager.PLAYER_PANEL, index, {amount = amount})
+	self:set_teammate_deployable_equipment_amount(HUDManager.PLAYER_PANEL, index, {
+		amount = amount
+	})
 end
 
 function HUDManager:set_item_amount_from_string(index, amount_str, amount)
@@ -630,7 +635,6 @@ function HUDManager:mark_cheater(peer_id)
 end
 
 function HUDManager:add_teammate_panel(character_name, player_name, ai, peer_id)
-
 	local function add_panel(i)
 		self._teammate_panels[i]:add_panel()
 		self._teammate_panels[i]:set_peer_id(peer_id)
@@ -812,7 +816,7 @@ function HUDManager:_create_teammates_panel(hud)
 	})
 	local teammate_w = 204
 	local player_gap = 240
-	local small_gap = ((teammates_panel:w() - player_gap) - teammate_w * 4) / 3
+	local small_gap = (teammates_panel:w() - player_gap - teammate_w * 4) / 3
 
 	for i = 1, 4, 1 do
 		local is_player = i == HUDManager.PLAYER_PANEL
@@ -1291,7 +1295,9 @@ function HUDManager:_add_name_label(data)
 		end
 	end
 
-	local panel = hud.panel:panel({name = "name_label" .. id})
+	local panel = hud.panel:panel({
+		name = "name_label" .. id
+	})
 	local radius = 24
 	local interact = CircleBitmapGuiObject:new(panel, {
 		blend_mode = "add",
@@ -1395,7 +1401,9 @@ function HUDManager:add_vehicle_name_label(data)
 	local last_id = self._hud.name_labels[#self._hud.name_labels] and self._hud.name_labels[#self._hud.name_labels].id or 0
 	local id = last_id + 1
 	local vehicle_name = data.name
-	local panel = hud.panel:panel({name = "name_label" .. id})
+	local panel = hud.panel:panel({
+		name = "name_label" .. id
+	})
 	local radius = 24
 	local interact = CircleBitmapGuiObject:new(panel, {
 		blend_mode = "add",
@@ -1578,7 +1586,9 @@ function HUDManager:teammate_progress(peer_id, type_index, enabled, tweak_data_i
 			if enabled then
 				local equipment_name = managers.localization:text(tweak_data.equipments[tweak_data_id].text_id)
 				local deploying_text = tweak_data.equipments[tweak_data_id].deploying_text_id and managers.localization:text(tweak_data.equipments[tweak_data_id].deploying_text_id) or false
-				action_text = deploying_text or managers.localization:text("hud_deploying_equipment", {EQUIPMENT = equipment_name})
+				action_text = deploying_text or managers.localization:text("hud_deploying_equipment", {
+					EQUIPMENT = equipment_name
+				})
 			end
 		elseif type_index == 3 then
 			action_text = managers.localization:text("hud_starting_heist")
@@ -1627,7 +1637,7 @@ end
 function HUDManager:_animate_label_interact(panel, interact, timer)
 	local t = 0
 
-	while t <= timer do
+	while timer >= t do
 		local dt = coroutine.yield()
 		t = t + dt
 
@@ -2074,8 +2084,11 @@ function HUDManager:achievement_popup(id)
 	end
 
 	local d = tweak_data.achievement.visual[id]
+	local title = managers.localization:to_upper_text("hud_achieved_popup")
+	local text = d and managers.localization:to_upper_text(d.name_id) or id
+	local icon = d and d.icon_id or "placeholder_circle"
 
-	HudChallengeNotification.queue(managers.localization:to_upper_text("hud_achieved_popup"), managers.localization:to_upper_text(d.name_id), d.icon_id)
+	HudChallengeNotification.queue(title, text, icon)
 end
 
 function HUDManager:challenge_popup(d)
@@ -2115,7 +2128,9 @@ end
 function HUDManager:achievement_milestone_popup(id)
 	local milestone = managers.achievment:get_milestone(id)
 	local title = managers.localization:to_upper_text("hud_achievement_milestone_popup")
-	local description = managers.localization:to_upper_text("menu_milestone_item_title", {AT = milestone.at})
+	local description = managers.localization:to_upper_text("menu_milestone_item_title", {
+		AT = milestone.at
+	})
 
 	HudChallengeNotification.queue(title, description, "milestone_trophy", milestone.rewards)
 end
@@ -2136,3 +2151,25 @@ function HUDManager:ingame_workspace(name)
 	return self._ingame_workspaces and self._ingame_workspaces[name]
 end
 
+function HUDManager:hide_panels(...)
+	local function fade_out(o)
+		for t, p, dt in seconds(1) do
+			o:set_alpha(1 - p)
+		end
+
+		o:set_visible(false)
+	end
+
+	local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
+	local panels = {
+		...
+	}
+
+	for _, panel_name in ipairs(panels) do
+		local panel = hud.panel:child(panel_name)
+
+		if panel then
+			panel:animate(fade_out)
+		end
+	end
+end

@@ -208,7 +208,7 @@ function CivilianLogicIdle.on_alert(data, alert_data)
 	end
 
 	if alert_data[5] then
-		slot7, slot8 = CopLogicBase.identify_attention_obj_instant(data, alert_data[5]:key())
+		local att_obj_data, is_new = CopLogicBase.identify_attention_obj_instant(data, alert_data[5]:key())
 	end
 
 	if my_data == data.internal_data and not data.char_tweak.ignores_aggression then
@@ -495,9 +495,6 @@ function CivilianLogicIdle._get_priority_attention(data, attention_objects)
 		elseif attention_data.pause_expire_t then
 			if attention_data.pause_expire_t < data.t and (not attention_data.settings.attract_chance or math.random() < attention_data.settings.attract_chance) then
 				attention_data.pause_expire_t = nil
-
-				if nil then
-				end
 			end
 		elseif attention_data.stare_expire_t and attention_data.stare_expire_t < data.t then
 			if attention_data.settings.pause then

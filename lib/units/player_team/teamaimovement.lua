@@ -9,7 +9,9 @@ function TeamAIMovement:_post_init()
 		if not self._heat_listener_clbk and Network:is_server() then
 			self._heat_listener_clbk = "TeamAIMovement" .. tostring(self._unit:key())
 
-			managers.groupai:state():add_listener(self._heat_listener_clbk, {"whisper_mode"}, callback(self, self, "heat_clbk"))
+			managers.groupai:state():add_listener(self._heat_listener_clbk, {
+				"whisper_mode"
+			}, callback(self, self, "heat_clbk"))
 		end
 
 		self._unit:base():set_slot(self._unit, 24)
@@ -152,7 +154,9 @@ function TeamAIMovement:set_cool(state)
 		if not self._heat_listener_clbk and Network:is_server() then
 			self._heat_listener_clbk = "TeamAIMovement" .. tostring(self._unit:key())
 
-			managers.groupai:state():add_listener(self._heat_listener_clbk, {"whisper_mode"}, callback(self, self, "heat_clbk"))
+			managers.groupai:state():add_listener(self._heat_listener_clbk, {
+				"whisper_mode"
+			}, callback(self, self, "heat_clbk"))
 		end
 
 		self._unit:base():set_slot(self._unit, 24)
@@ -162,6 +166,7 @@ function TeamAIMovement:set_cool(state)
 		end
 
 		self:set_stance_by_code(1)
+		self._unit:inventory():set_visibility_state(false)
 	else
 		self._not_cool_t = TimerManager:game():time()
 
@@ -423,4 +428,3 @@ function TeamAIMovement:update(...)
 		end
 	end
 end
-

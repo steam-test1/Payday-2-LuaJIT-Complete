@@ -7,8 +7,8 @@ MenuBackdropGUI.BASE_RES = {
 function MenuBackdropGUI:init(ws, gui_data_manager, fixed_dt)
 	self._fixed_dt = fixed_dt
 	self._gui_data_manager = gui_data_manager
-	self._gui_data_scene_gui = self._gui_data_manager or managers.gui_data:get_scene_gui()
-	self._workspace = ws or self._gui_data_manager or managers.gui_data:create_fullscreen_16_9_workspace()
+	self._gui_data_scene_gui = (self._gui_data_manager or managers.gui_data):get_scene_gui()
+	self._workspace = ws or (self._gui_data_manager or managers.gui_data):create_fullscreen_16_9_workspace()
 
 	if not ws then
 		self._black_bg_ws = self._gui_data_scene_gui:create_screen_workspace()
@@ -90,7 +90,7 @@ end
 
 function MenuBackdropGUI:setup_saferect_shape()
 	local saferect_shape = {}
-	local safe_scaled_size = self._gui_data_manager or managers.gui_data:safe_scaled_size()
+	local safe_scaled_size = (self._gui_data_manager or managers.gui_data):safe_scaled_size()
 	local temp_saferect_panel = self._panel:panel({
 		name = "temp_saferect_panel",
 		w = safe_scaled_size.w,
@@ -100,14 +100,14 @@ function MenuBackdropGUI:setup_saferect_shape()
 	temp_saferect_panel:set_center(self._panel:w() * 0.5, self._panel:h() * 0.5)
 
 	saferect_shape = {
-		x = saferect_shape[1],
-		y = saferect_shape[2],
-		w = saferect_shape[3],
-		h = saferect_shape[4],
-		width = saferect_shape.w,
-		height = saferect_shape.h,
 		temp_saferect_panel:shape()
 	}
+	saferect_shape.x = saferect_shape[1]
+	saferect_shape.y = saferect_shape[2]
+	saferect_shape.w = saferect_shape[3]
+	saferect_shape.h = saferect_shape[4]
+	saferect_shape.width = saferect_shape.w
+	saferect_shape.height = saferect_shape.h
 
 	self._panel:remove(temp_saferect_panel)
 
@@ -351,13 +351,7 @@ function MenuBackdropGUI:set_pattern(bitmap_texture, alpha, blend_mode)
 
 			move_on_x_axis = not move_on_x_axis
 			diff = move_on_x_axis and wanted_x - start_x or wanted_y - start_y
-
-			if diff == 0 then
-				dir = 0
-			else
-				dir = diff / math.abs(diff)
-			end
-
+			dir = diff == 0 and 0 or diff / math.abs(diff)
 			overshoot = move_on_x_axis and math.random(bg_layer:w() * 0.008) or math.random(bg_layer:h() * 0.008) * dir
 		end
 	end
