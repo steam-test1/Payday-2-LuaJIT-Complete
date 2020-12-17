@@ -336,42 +336,46 @@ function ExperienceManager:rank_string(rank, use_roman_numerals)
 
 	local numbers = {
 		1,
+		4,
 		5,
+		9,
 		10,
+		40,
 		50,
+		90,
 		100,
+		400,
 		500,
+		900,
 		1000
 	}
 	local chars = {
 		"I",
+		"IV",
 		"V",
+		"IX",
 		"X",
+		"XL",
 		"L",
+		"XC",
 		"C",
+		"CD",
 		"D",
+		"CM",
 		"M"
 	}
 	local roman = ""
+	local index = #chars
 
-	for i = #numbers, 1, -1 do
-		local num = numbers[i]
+	while rank > 0 do
+		local div = rank / numbers[index]
+		rank = rank % numbers[index]
 
-		while rank - num >= 0 and rank > 0 do
-			roman = roman .. chars[i]
-			rank = rank - num
+		for i = 1, div, 1 do
+			roman = roman .. chars[index]
 		end
 
-		for j = 1, i - 1, 1 do
-			local num2 = numbers[j]
-
-			if rank - (num - num2) >= 0 and rank < num and rank > 0 and num - num2 ~= num2 then
-				roman = roman .. chars[j] .. chars[i]
-				rank = rank - (num - num2)
-
-				break
-			end
-		end
+		index = index - 1
 	end
 
 	return roman
@@ -758,9 +762,6 @@ function ExperienceManager:get_xp_by_params(params)
 	bonus_xp = managers.player:get_infamy_exp_multiplier()
 	infamy_dissect = math.round(total_contract_xp * bonus_xp - total_contract_xp)
 	total_xp = total_xp + infamy_dissect
-	bonus_xp = tweak_data:get_value("experience_manager", "limited_bonus_multiplier") or 1
-	extra_bonus_dissect = math.round(total_contract_xp * bonus_xp - total_contract_xp)
-	total_xp = total_xp + extra_bonus_dissect
 
 	if success then
 		local num_players_bonus = num_winners and tweak_data:get_value("experience_manager", "alive_humans_multiplier", num_winners) or 1
@@ -776,6 +777,9 @@ function ExperienceManager:get_xp_by_params(params)
 	local heat_xp_mul = ignore_heat and 1 or math.max(managers.job:get_job_heat_multipliers(job_id), 0)
 	job_heat_dissect = math.round(total_xp * heat_xp_mul - total_xp)
 	total_xp = total_xp + job_heat_dissect
+	bonus_xp = managers.player:get_limited_exp_multiplier(job_id, level_id)
+	extra_bonus_dissect = math.round(total_xp * bonus_xp - total_xp)
+	total_xp = total_xp + extra_bonus_dissect
 	local bonus_mutators_dissect = total_xp * managers.mutators:get_experience_reduction() * -1
 	total_xp = total_xp + bonus_mutators_dissect
 	local dissection_table = {

@@ -13916,6 +13916,12 @@ function BlackMarketGui:choose_weapon_mods_callback(data)
 	local cosmetic_instances = managers.blackmarket:get_cosmetics_instances_by_weapon_id(data.name)
 	local all_cosmetics = managers.blackmarket:get_cosmetics_by_weapon_id(data.name)
 
+	for id, data in pairs(all_cosmetics) do
+		if managers.blackmarket:is_weapon_skin_tam(id) then
+			all_cosmetics[id] = nil
+		end
+	end
+
 	if table.size(all_cosmetics) > 0 then
 		local inventory_tradable = managers.blackmarket:get_inventory_tradable()
 		local td = tweak_data.blackmarket.weapon_skins
@@ -16906,10 +16912,12 @@ end
 function BlackMarketGui:get_safe_for_economy_item(id)
 	local function find_safe_name(id)
 		for safe_id, safe_data in pairs(tweak_data.economy.contents) do
-			for category, tbl in pairs(safe_data.contains) do
-				for _, item_id in ipairs(tbl) do
-					if id == item_id then
-						return safe_id
+			if safe_data and not safe_data.rarity then
+				for category, tbl in pairs(safe_data.contains) do
+					for _, item_id in ipairs(tbl) do
+						if id == item_id then
+							return safe_id
+						end
 					end
 				end
 			end

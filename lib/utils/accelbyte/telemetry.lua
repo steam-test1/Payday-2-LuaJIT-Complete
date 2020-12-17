@@ -498,7 +498,7 @@ function Telemetry:send_on_player_logged_in()
 		TotalPlayTime = total_playtime_hours,
 		TitleID = Global.dlc_manager.all_dlc_data.full_game.app_id,
 		Location = self._global._geolocation,
-		["Oldest Achievement"] = self._global._oldest_achievement_date,
+		OldestAchievement = self._global._oldest_achievement_date,
 		PlayerLevel = managers.experience:current_level(),
 		InfamyLevel = managers.experience:current_rank()
 	}
@@ -589,7 +589,7 @@ function Telemetry:on_start_heist()
 	self._map_name = "invalid map name"
 
 	if managers.job:current_level_data() then
-		self._heist_name = managers.job:current_level_data().name_id
+		self._heist_name = managers.job:current_job_variant() or managers.job:current_level_data().name_id
 		self._map_name = managers.job:current_level_data().world_name
 	end
 

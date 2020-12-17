@@ -241,11 +241,21 @@ function MenuCustomizeWeaponColorInitiator:refresh_node(node)
 	local color_quality = quality_item:value()
 	local color_tweak_data = tweak_data.blackmarket.weapon_skins[color_id]
 	cosmetic_data.id = color_id
+	cosmetic_data.instance_id = color_id
 	cosmetic_data.color_index = color_index
 	cosmetic_data.quality = color_quality
-	local cosmetic_pattern_scale_item = node:item("pattern_scale")
-	local color_pattern_scale = cosmetic_pattern_scale_item:value()
-	cosmetic_data.pattern_scale = color_tweak_data.color_skin_data and color_tweak_data.color_skin_data.pattern_default and color_pattern_scale or nil
+	local pattern_scale = color_tweak_data.pattern_scale
+
+	if pattern_scale then
+		cosmetic_data.pattern_scale = tonumber(pattern_scale) > 0 and pattern_scale or nil
+	elseif MenuCallbackHandler:should_show_pattern_scale() then
+		local cosmetic_pattern_scale_item = node:item("pattern_scale")
+		local color_pattern_scale = cosmetic_pattern_scale_item:value()
+		cosmetic_data.pattern_scale = color_tweak_data.color_skin_data and color_tweak_data.color_skin_data.pattern_default and color_pattern_scale or nil
+	else
+		cosmetic_data.pattern_scale = nil
+	end
+
 	local weapon_unit_data = managers.menu_scene and managers.menu_scene:get_item_unit_data()
 	local weapon_unit = weapon_unit_data and weapon_unit_data.unit
 
@@ -786,6 +796,7 @@ function MenuNodeCustomizeWeaponColorGui:update_color_info(node)
 	local name_id = color_tweak.name_id
 	local desc_id = color_tweak.desc_id
 	local unlock_id = nil
+	local unlock_macros = {}
 	local dlc = color_tweak.dlc or managers.dlc:global_value_to_dlc(color_tweak.global_value)
 	local global_value = color_tweak.global_value or managers.dlc:dlc_to_global_value(dlc)
 	local gvalue_tweak = tweak_data.lootdrop.global_values[global_value]
@@ -798,12 +809,23 @@ function MenuNodeCustomizeWeaponColorGui:update_color_info(node)
 		unlock_id = gvalue_tweak and gvalue_tweak.unlock_id or "bm_menu_dlc_locked"
 	elseif not have_color then
 		local achievement_locked_content = managers.dlc:weapon_color_achievement_locked_content(color_id)
+		local milestone_locked_content = managers.dlc:weapon_color_achievement_milestone_locked_content(color_id)
 		local dlc_tweak = tweak_data.dlc[achievement_locked_content]
+		local achievement = dlc_tweak and dlc_tweak.achievement_id
 		local achievement = dlc_tweak and dlc_tweak.achievement_id
 
 		if achievement and managers.achievment:get_info(achievement) then
 			local achievement_visual = tweak_data.achievement.visual[achievement]
 			unlock_id = achievement_visual and achievement_visual.desc_id or "achievement_" .. tostring(achievement) .. "_desc" or "bm_menu_dlc_locked"
+		elseif milestone_locked_content then
+			for _, data in ipairs(tweak_data.achievement.milestones) do
+				if data.id == milestone_locked_content then
+					unlock_id = "bm_menu_milestone_reward_unlock"
+					unlock_macros.NUM = tostring(data.at)
+
+					break
+				end
+			end
 		elseif managers.dlc:is_content_skirmish_locked("weapon_skins", color_id) then
 			unlock_id = "bm_menu_skirmish_content_reward"
 		elseif managers.dlc:is_content_crimespree_locked("weapon_skins", color_id) then
@@ -824,7 +846,7 @@ function MenuNodeCustomizeWeaponColorGui:update_color_info(node)
 	end
 
 	if unlock_id then
-		_add_string(managers.localization:to_upper_text(unlock_id), tweak_data.screen_colors.important_1, "\n")
+		_add_string(managers.localization:to_upper_text(unlock_id, unlock_macros), tweak_data.screen_colors.important_1, "\n")
 	end
 
 	self:set_mini_info_with_color_range(info_string, color_range)

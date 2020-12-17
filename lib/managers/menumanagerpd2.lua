@@ -1198,7 +1198,13 @@ function InspectPlayerInitiator:refresh_node(node)
 end
 
 function MenuCallbackHandler:inspect_mod(item)
-	Steam:overlay_activate("url", "http://paydaymods.com/mods/" .. item:parameters().mod_id or "")
+	local mod_name = item:parameters().mod_id
+
+	if mod_name then
+		Steam:overlay_activate("url", "https://modworkshop.net/find/mod?q=" .. mod_name .. "&tags=&gid=1")
+	else
+		Steam:overlay_activate("url", "https://modworkshop.net")
+	end
 end
 
 function MenuCallbackHandler:kick_ban_player(item)
@@ -3291,7 +3297,7 @@ function MenuCallbackHandler:should_show_weapon_color_buy(item)
 	return false
 end
 
-function MenuCallbackHandler:should_show_pattern_scale(item)
+function MenuCallbackHandler:should_show_pattern_scale()
 	local weapon_color_data = get_weapon_color_data()
 
 	if not weapon_color_data then
@@ -3302,7 +3308,7 @@ function MenuCallbackHandler:should_show_pattern_scale(item)
 	local color_tweak = tweak_data.blackmarket.weapon_skins[cosmetic_data.id]
 	local color_skin_data = color_tweak.color_skin_data
 
-	return not not color_skin_data.pattern_default
+	return color_tweak.pattern_scale == nil and color_skin_data.pattern_default and true or false
 end
 
 function MenuCallbackHandler:should_show_pattern_divider(item)

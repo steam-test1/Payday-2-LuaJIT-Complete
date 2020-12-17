@@ -2006,7 +2006,7 @@ function InteractionTweakData:init(tweak_data)
 		}
 	}
 	self.gen_pku_thermite = {
-		text_id = "hud_int_take_thermite",
+		text_id = "hud_int_take_thermite_paste",
 		special_equipment_block = "thermite"
 	}
 	self.gen_pku_thermite_paste = {
@@ -6584,6 +6584,12 @@ function InteractionTweakData:init(tweak_data)
 	self.fex_pickup_harddrive = {
 		text_id = "hud_int_take_fex_harddrive",
 		action_text_id = "hud_action_take_fex_harddrive",
+		timer = 1,
+		interact_distance = 200
+	}
+	self.xm20_int_mask = {
+		text_id = "hud_int_hold_xm20_mask",
+		action_text_id = "hud_action_xm20_mask",
 		timer = 1,
 		interact_distance = 200
 	}
