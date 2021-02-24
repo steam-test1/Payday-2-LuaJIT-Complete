@@ -22,7 +22,7 @@ function InfamyManager:_setup(reset)
 		self._global.selected_join_stinger = 0
 		self._global.join_stingers = {}
 
-		for index = 0, tweak_data.infamy.join_stingers, 1 do
+		for index = 0, tweak_data.infamy.join_stingers do
 			self._global.join_stingers[index] = {
 				index = index,
 				unlocked = table.contains(tweak_data.infamy.free_join_stingers, index)
@@ -152,7 +152,7 @@ function InfamyManager:get_unlocked_join_stingers()
 	local unlocked_stingers = {}
 	local stinger_data = nil
 
-	for index = 0, tweak_data.infamy.join_stingers, 1 do
+	for index = 0, tweak_data.infamy.join_stingers do
 		stinger_data = self._global.join_stingers[index]
 
 		if stinger_data.unlocked then
@@ -167,7 +167,7 @@ function InfamyManager:get_all_join_stingers()
 	local all_stingers = {}
 	local join_stinger_data = nil
 
-	for index = 0, tweak_data.infamy.join_stingers, 1 do
+	for index = 0, tweak_data.infamy.join_stingers do
 		join_stinger_data = self._global.join_stingers[index]
 
 		table.insert(all_stingers, {
@@ -179,7 +179,7 @@ function InfamyManager:get_all_join_stingers()
 	return all_stingers
 end
 
-function InfamyManager:get_join_stinger_name_id(stinger_index)
+function InfamyManager:get_join_stinger_name_id(stinger_name)
 	local item_id = string.format("infamy_stinger_%03d", stinger_name)
 	local item_tweak = tweak_data.infamy.items[item_id]
 

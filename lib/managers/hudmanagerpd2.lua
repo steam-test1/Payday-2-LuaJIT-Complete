@@ -821,7 +821,7 @@ function HUDManager:_create_teammates_panel(hud)
 	local player_gap = 240
 	local small_gap = (teammates_panel:w() - player_gap - teammate_w * 4) / 3
 
-	for i = 1, 4, 1 do
+	for i = 1, 4 do
 		local is_player = i == HUDManager.PLAYER_PANEL
 		self._hud.teammate_panels_data[i] = {
 			taken = false and is_player,
@@ -1155,28 +1155,28 @@ function HUDManager:_create_hit_confirm(hud)
 	self._hud_hit_confirm = HUDHitConfirm:new(hud)
 end
 
-function HUDManager:on_hit_confirmed()
+function HUDManager:on_hit_confirmed(damage_scale)
 	if not managers.user:get_setting("hit_indicator") then
 		return
 	end
 
-	self._hud_hit_confirm:on_hit_confirmed()
+	self._hud_hit_confirm:on_hit_confirmed(damage_scale)
 end
 
-function HUDManager:on_headshot_confirmed()
+function HUDManager:on_headshot_confirmed(damage_scale)
 	if not managers.user:get_setting("hit_indicator") then
 		return
 	end
 
-	self._hud_hit_confirm:on_headshot_confirmed()
+	self._hud_hit_confirm:on_headshot_confirmed(damage_scale)
 end
 
-function HUDManager:on_crit_confirmed()
+function HUDManager:on_crit_confirmed(damage_scale)
 	if not managers.user:get_setting("hit_indicator") then
 		return
 	end
 
-	self._hud_hit_confirm:on_crit_confirmed()
+	self._hud_hit_confirm:on_crit_confirmed(damage_scale)
 end
 
 function HUDManager:_create_hit_direction(hud)

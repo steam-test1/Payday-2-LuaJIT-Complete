@@ -276,7 +276,7 @@ function ExperienceManager:_check_achievements()
 	end
 
 	if self._global.rank then
-		for i = 1, Application:digest_value(self._global.rank, false), 1 do
+		for i = 1, Application:digest_value(self._global.rank, false) do
 			if tweak_data.achievement.infamous[i] then
 				managers.achievment:award(tweak_data.achievement.infamous[i])
 			end
@@ -371,7 +371,7 @@ function ExperienceManager:rank_string(rank, use_roman_numerals)
 		local div = rank / numbers[index]
 		rank = rank % numbers[index]
 
-		for i = 1, div, 1 do
+		for i = 1, div do
 			roman = roman .. chars[index]
 		end
 
@@ -455,7 +455,7 @@ function ExperienceManager:cash_string(cash, cash_sign)
 	local reverse = string.reverse(total)
 	local s = ""
 
-	for i = 1, string.len(reverse), 1 do
+	for i = 1, string.len(reverse) do
 		s = s .. string.sub(reverse, i, i) .. (math.mod(i, 3) == 0 and i ~= string.len(reverse) and self._cash_tousand_separator or "")
 	end
 
@@ -469,7 +469,7 @@ function ExperienceManager:experience_string(xp)
 	local reverse = string.reverse(total)
 	local s = ""
 
-	for i = 1, string.len(reverse), 1 do
+	for i = 1, string.len(reverse) do
 		s = s .. string.sub(reverse, i, i) .. (math.mod(i, 3) == 0 and i ~= string.len(reverse) and self._cash_tousand_separator or "")
 	end
 
@@ -610,7 +610,7 @@ function ExperienceManager:get_contract_xp_by_stars(job_id, job_stars, risk_star
 
 	local risk_ratio, base_exp, risk_exp, skill_base, skill_risk, heat_base, heat_risk, ghost_base, ghost_risk, infamy_base, infamy_risk, extra_base, extra_risk = nil
 
-	for i = 1, job_days, 1 do
+	for i = 1, job_days do
 		params.current_stage = i
 		params.on_last_stage = i == job_days
 		params.level_id = job_tweak_chains and job_tweak_chains[i] and job_tweak_chains[i].level_id
@@ -872,7 +872,7 @@ function ExperienceManager:load(data)
 
 		self:_set_current_level(math.min(self:current_level(), self:level_cap()))
 
-		for level = 0, self:current_level(), 1 do
+		for level = 0, self:current_level() do
 			managers.upgrades:aquire_from_level_tree(level, true)
 		end
 
@@ -894,7 +894,7 @@ function ExperienceManager:reset()
 	self:_setup()
 	self:update_progress()
 
-	for level = 0, self:current_level(), 1 do
+	for level = 0, self:current_level() do
 		managers.upgrades:aquire_from_level_tree(level, true)
 	end
 end

@@ -415,15 +415,16 @@ function CopDamage:damage_bullet(attack_data)
 	local headshot_multiplier = 1
 
 	if attack_data.attacker_unit == managers.player:player_unit() then
+		local damage_scale = nil
 		local critical_hit, crit_damage = self:roll_critical_hit(attack_data)
 
 		if critical_hit then
-			managers.hud:on_crit_confirmed()
+			managers.hud:on_crit_confirmed(damage_scale)
 
 			damage = crit_damage
 			attack_data.critical_hit = true
 		else
-			managers.hud:on_hit_confirmed()
+			managers.hud:on_hit_confirmed(damage_scale)
 		end
 
 		headshot_multiplier = managers.player:upgrade_value("weapon", "passive_headshot_damage_multiplier", 1)
@@ -2098,7 +2099,7 @@ function CopDamage:_spawn_head_gadget(params)
 
 	if self._head_gear_object then
 		if self._nr_head_gear_objects then
-			for i = 1, self._nr_head_gear_objects, 1 do
+			for i = 1, self._nr_head_gear_objects do
 				local head_gear_obj_name = self._head_gear_object .. tostring(i)
 
 				self._unit:get_object(Idstring(head_gear_obj_name)):set_visibility(false)

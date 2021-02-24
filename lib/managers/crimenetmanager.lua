@@ -121,7 +121,7 @@ function CrimeNetManager:get_jobs_by_player_stars(span)
 			local start_difficulty = job_data.professional and 1 or 0
 			local num_difficulties = Global.SKIP_OVERKILL_290 and 5 or job_data.professional and 6 or 6
 
-			for i = start_difficulty, num_difficulties, 1 do
+			for i = start_difficulty, num_difficulties do
 				local job_jc = math.clamp(job_data.jc + i * 10, 0, 100)
 				local difficulty_id = 2 + i
 				local difficulty = tweak_data:index_to_difficulty(difficulty_id)
@@ -163,7 +163,7 @@ function CrimeNetManager:_get_jobs_by_jc()
 			local start_difficulty = job_data.professional and 1 or 0
 			local num_difficulties = Global.SKIP_OVERKILL_290 and 5 or job_data.professional and 6 or 6
 
-			for i = start_difficulty, num_difficulties, 1 do
+			for i = start_difficulty, num_difficulties do
 				local job_jc = math.clamp(job_data.jc + i * 10, 0, 100)
 				local difficulty_id = 2 + i
 				local difficulty = tweak_data:index_to_difficulty(difficulty_id)
@@ -212,7 +212,8 @@ function CrimeNetManager:_setup()
 	local player_stars = math.clamp(math.ceil((plvl + 1) / 10), 1, 10)
 	local stars = player_stars
 	local jc = math.lerp(0, 100, stars / 10)
-	local jcs = tweak_data.narrative.STARS[stars].jcs
+	local prank = managers.experience:current_rank()
+	local jcs = tweak_data.narrative:get_jcs_from_stars(stars, prank > 0)
 	local no_jcs = #jcs
 	local chance_curve = tweak_data.narrative.STARS_CURVES[player_stars]
 	local start_chance = tweak_data.narrative.JC_CHANCE
@@ -222,7 +223,7 @@ function CrimeNetManager:_setup()
 	local tests = 0
 
 	while j < no_picks do
-		for i = 1, no_jcs, 1 do
+		for i = 1, no_jcs do
 			local chance = nil
 
 			if no_jcs - 1 == 0 then
@@ -307,7 +308,7 @@ end
 function CrimeNetManager:spawn_job(name, difficulty, time_limit)
 	local count = #self._presets
 
-	for i = 1, count, 1 do
+	for i = 1, count do
 		if self._presets[i].job_id == name then
 			if difficulty then
 				if self._presets[i].difficulty == difficulty then
@@ -2243,7 +2244,7 @@ function CrimeNetGui:make_color_text(text_object, color)
 	end
 
 	if #start_ci == #end_ci then
-		for i = 1, #start_ci, 1 do
+		for i = 1, #start_ci do
 			start_ci[i] = start_ci[i] - ((i - 1) * 4 + 1)
 			end_ci[i] = end_ci[i] - (i * 4 - 1)
 		end
@@ -2257,7 +2258,7 @@ function CrimeNetGui:make_color_text(text_object, color)
 	if #start_ci ~= #end_ci then
 		Application:error("CrimeNetGui:make_color_text: Not even amount of ##'s in text", #start_ci, #end_ci)
 	else
-		for i = 1, #start_ci, 1 do
+		for i = 1, #start_ci do
 			text_object:set_range_color(start_ci[i], end_ci[i], color or tweak_data.screen_colors.resource)
 		end
 	end
@@ -2304,7 +2305,7 @@ function CrimeNetGui:_create_polylines()
 			color = tweak_data.screen_colors.crimenet_lines
 		})
 
-		for i = 1, num, 1 do
+		for i = 1, num do
 			table.insert(vectors, Vector3(xs[i] / tw * self._map_size_w * self._zoom, ys[i] / th * self._map_size_h * self._zoom, 0))
 		end
 
@@ -2322,7 +2323,7 @@ function CrimeNetGui:_create_polylines()
 			color = tweak_data.screen_colors.crimenet_lines
 		})
 
-		for i = 1, num, 1 do
+		for i = 1, num do
 			table.insert(vectors, Vector3(xs[i] / tw * self._map_size_w * self._zoom, ys[i] / th * self._map_size_h * self._zoom, 0))
 		end
 
@@ -2957,7 +2958,7 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		local start_difficulty = 1
 		local num_difficulties = Global.SKIP_OVERKILL_290 and 5 or 6
 
-		for i = start_difficulty, num_difficulties, 1 do
+		for i = start_difficulty, num_difficulties do
 			stars_panel:bitmap({
 				texture = "guis/textures/pd2/cn_miniskull",
 				h = 16,
@@ -3458,7 +3459,7 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		local cx = 0
 		local cy = 0
 
-		for i = 1, 4, 1 do
+		for i = 1, 4 do
 			cx = 3 + 6 * (i - 1)
 			cy = 8
 			local player_marker = peers_panel:bitmap({
@@ -3501,7 +3502,7 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		})
 		local y = 0
 
-		for i = 1, #icon_panel:children() - 1, 1 do
+		for i = 1, #icon_panel:children() - 1 do
 			y = math.max(y, icon_panel:children()[i]:bottom())
 		end
 
@@ -3571,7 +3572,7 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 			8
 		}
 
-		for i = 1, math.abs(diff_containers), 1 do
+		for i = 1, math.abs(diff_containers) do
 			container_panel:bitmap({
 				texture = texture,
 				texture_rect = texture_rect,

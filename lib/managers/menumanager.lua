@@ -25,6 +25,7 @@ require("lib/managers/menu/nodes/MenuNodeTable")
 require("lib/managers/menu/nodes/MenuNodeServerList")
 require("lib/managers/menu/items/MenuItemCrimeSpreeItem")
 require("lib/utils/accelbyte/TelemetryConst")
+require("lib/utils/accelbyte/Telemetry")
 core:import("CoreEvent")
 
 MenuManager = MenuManager or class(CoreMenuManager.Manager)
@@ -211,10 +212,12 @@ function MenuManager:init_finalize()
 		managers.dlc:check_pdth(function (pdth, tester)
 			if pdth then
 				managers.statistics:publish_custom_stat_to_steam("pdth")
+				Telemetry:set_steam_stats_pdth_true()
 			end
 
 			if tester then
 				managers.statistics:publish_custom_stat_to_steam("tester")
+				Telemetry:set_steam_stats_overdrill_true()
 			end
 		end)
 	end
@@ -6614,7 +6617,7 @@ function MenuJukeboxHeistTracks:modify_node(node, data)
 			table.insert(unique_jobs, job_tweak.name_id)
 
 			if days > 1 then
-				for i = 1, days, 1 do
+				for i = 1, days do
 					table.insert(track_list, {
 						job_id = job_id,
 						name_id = job_tweak.name_id,
@@ -7015,7 +7018,7 @@ function MenuJukeboxGhostTracks:modify_node(node, data)
 			table.insert(unique_jobs, job_tweak.name_id)
 
 			if days > 1 then
-				for i = 1, days, 1 do
+				for i = 1, days do
 					table.insert(track_list, {
 						job_id = job_id,
 						name_id = job_tweak.name_id,
@@ -7313,13 +7316,13 @@ function MenuPrePlanningInitiator:modifiy_node_view_only(node, item_name, select
 	local finished_preplan = managers.preplanning:get_finished_preplan()
 	local type_data, location_data, data = nil
 
-	for i = 1, #tweak_data.preplanning.location_groups, 1 do
+	for i = 1, #tweak_data.preplanning.location_groups do
 		data = finished_preplan[i]
 
 		if data then
 			self:create_divider(node, "sub_" .. tostring(i), managers.localization:text(data.name_id), nil, tweak_data.screen_colors.text)
 
-			for index = 1, #tweak_data.preplanning.location_groups, 1 do
+			for index = 1, #tweak_data.preplanning.location_groups do
 				if data[index] then
 					location_data = data[index]
 
@@ -7515,7 +7518,7 @@ function MenuPrePlanningInitiator:modifiy_node_preplanning_type(node, item_name,
 	local can_place, error_num = managers.preplanning:can_reserve_mission_element(current_type, peer_id)
 	local reserved, reserved_type, type_data, enabled, dlc_lock, upgrade_lock, last_location_index = nil
 
-	for index = 1, #tweak_data.preplanning.location_groups, 1 do
+	for index = 1, #tweak_data.preplanning.location_groups do
 		if locations[index] then
 			last_location_index = index
 		end
@@ -7523,7 +7526,7 @@ function MenuPrePlanningInitiator:modifiy_node_preplanning_type(node, item_name,
 
 	last_location_index = last_location_index or 1
 
-	for index = 1, #tweak_data.preplanning.location_groups, 1 do
+	for index = 1, #tweak_data.preplanning.location_groups do
 		local elements = locations[index]
 
 		if elements then
@@ -7745,7 +7748,7 @@ function MenuPrePlanningInitiator:modifiy_node_preplanning_custom(node, item_nam
 	local current_custom_points = managers.preplanning:get_current_custom_points()
 	local last_custom_point_index = nil
 
-	for index = 1, #tweak_data.preplanning.location_groups, 1 do
+	for index = 1, #tweak_data.preplanning.location_groups do
 		if current_custom_points[index] then
 			last_custom_point_index = index
 		end
@@ -7753,7 +7756,7 @@ function MenuPrePlanningInitiator:modifiy_node_preplanning_custom(node, item_nam
 
 	last_custom_point_index = last_custom_point_index or 1
 
-	for index = 1, #tweak_data.preplanning.location_groups, 1 do
+	for index = 1, #tweak_data.preplanning.location_groups do
 		local custom_points = current_custom_points[index]
 
 		if custom_points then
@@ -8595,9 +8598,10 @@ function MenuCrimeNetSpecialInitiator:create_job(node, contract)
 		local max_jc = managers.job:get_max_jc_for_player()
 		local job_tweak = tweak_data.narrative:job_data(id)
 		local jc_lock = math.clamp(job_tweak.jc, 0, 100)
-		local min_stars = #tweak_data.narrative.STARS
+		local stars_tweak = managers.experience:current_rank() > 0 and tweak_data.narrative.INFAMY_STARS or tweak_data.narrative.STARS
+		local min_stars = #stars_tweak
 
-		for i, d in ipairs(tweak_data.narrative.STARS) do
+		for i, d in ipairs(stars_tweak) do
 			if jc_lock <= d.jcs[1] then
 				min_stars = i
 
@@ -9888,7 +9892,7 @@ function MenuOptionInitiator:modify_video(node)
 	if adapter_item and adapter_item:visible() then
 		adapter_item:clear_options()
 
-		for i = 0, RenderSettings.adapter_count - 1, 1 do
+		for i = 0, RenderSettings.adapter_count - 1 do
 			local option = CoreMenuItemOption.ItemOption:new({
 				localize = false,
 				_meta = "option",

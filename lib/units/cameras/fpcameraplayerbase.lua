@@ -1595,13 +1595,13 @@ function FPCameraPlayerBase:spawn_mask()
 		local mtr_feathers = Idstring("mtr_feathers")
 		local glow_id_strings = {}
 
-		for i = 1, 5, 1 do
+		for i = 1, 5 do
 			glow_id_strings[Idstring("glow" .. tostring(i)):key()] = true
 		end
 
 		local sweep_id_strings = {}
 
-		for i = 1, 5, 1 do
+		for i = 1, 5 do
 			sweep_id_strings[Idstring("sweep" .. tostring(i)):key()] = true
 		end
 

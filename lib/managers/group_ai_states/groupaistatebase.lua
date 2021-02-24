@@ -2666,6 +2666,24 @@ function GroupAIStateBase:set_point_of_no_return_timer(time, point_of_no_return_
 	managers.hud:add_updator("point_of_no_return", callback(self, self, "_update_point_of_no_return"))
 end
 
+function GroupAIStateBase:remove_point_of_no_return_timer(point_of_no_return_id)
+	if setup:has_queued_exec() then
+		return
+	end
+
+	if self._point_of_no_return_id == point_of_no_return_id then
+		managers.hud:hide_point_of_no_return_timer()
+		managers.hud:remove_updator("point_of_no_return")
+
+		self._point_of_no_return_timer = nil
+		self._point_of_no_return_id = nil
+		self._point_of_no_return_areas = nil
+		self._peers_inside_point_of_no_return = nil
+	else
+		Application:error("[GroupAIStateBase:remove_point_of_no_return_timer] Missmatch ids!", "current", self._point_of_no_return_id, "id", point_of_no_return_id)
+	end
+end
+
 function GroupAIStateBase:set_is_inside_point_of_no_return(peer_id, is_inside)
 	self._peers_inside_point_of_no_return[peer_id] = is_inside
 end
@@ -3655,7 +3673,7 @@ function GroupAIStateBase:on_criminal_team_AI_enabled_state_changed()
 	if managers.groupai:state():team_ai_enabled() then
 		self:fill_criminal_team_with_AI()
 	else
-		for i = 1, tweak_data.max_players - 1, 1 do
+		for i = 1, tweak_data.max_players - 1 do
 			self:remove_one_teamAI()
 		end
 	end

@@ -1014,7 +1014,7 @@ function HUDManager:add_waypoint(id, data)
 		end
 	end
 
-	for i = 1, 10, 1 do
+	for i = 1, 10 do
 		if not t[i] then
 			self._hud.waypoints[id].slot = i
 
@@ -1224,6 +1224,8 @@ end
 function HUDManager:remove_hud_info_by_unit(unit)
 	if unit:unit_data().name_label_id then
 		self:_remove_name_label(unit:unit_data().name_label_id)
+
+		unit:unit_data().name_label_id = nil
 	end
 end
 

@@ -121,7 +121,7 @@ local parse = nil
 local function create_set(...)
 	local res = {}
 
-	for i = 1, select("#", ...), 1 do
+	for i = 1, select("#", ...) do
 		res[select(i, ...)] = true
 	end
 
@@ -138,7 +138,7 @@ local literal_map = {
 }
 
 local function next_char(str, idx, set, negate)
-	for i = idx, #str, 1 do
+	for i = idx, #str do
 		if set[str:sub(i, i)] ~= negate then
 			return i
 		end
@@ -151,7 +151,7 @@ local function decode_error(str, idx, msg)
 	local line_count = 1
 	local col_count = 1
 
-	for i = 1, idx - 1, 1 do
+	for i = 1, idx - 1 do
 		col_count = col_count + 1
 
 		if str:sub(i, i) == "\n" then
@@ -196,7 +196,7 @@ local function parse_string(str, i)
 	local has_escape = false
 	local last = nil
 
-	for j = i + 1, #str, 1 do
+	for j = i + 1, #str do
 		local x = str:byte(j)
 
 		if x < 32 then

@@ -35,7 +35,7 @@ function MultiProfileManager:save_current()
 	profile.henchmen_loadout = {}
 	profile.preferred_henchmen = {}
 
-	for i = 1, CriminalsManager.MAX_NR_TEAM_AI, 1 do
+	for i = 1, CriminalsManager.MAX_NR_TEAM_AI do
 		profile.henchmen_loadout[i] = deep_clone(managers.blackmarket:henchman_loadout(i))
 		profile.preferred_henchmen[i] = blm:preferred_henchmen(i)
 	end
@@ -75,7 +75,7 @@ function MultiProfileManager:load_current()
 	blm:set_equipped_glove_id(profile.glove_id or blm:get_default_glove_id())
 	blm:equip_mask(profile.mask)
 
-	for i = 1, CriminalsManager.MAX_NR_TEAM_AI, 1 do
+	for i = 1, CriminalsManager.MAX_NR_TEAM_AI do
 		if profile.henchmen_loadout and profile.henchmen_loadout[i] then
 			blm:set_henchman_loadout(i, profile.henchmen_loadout[i])
 		end

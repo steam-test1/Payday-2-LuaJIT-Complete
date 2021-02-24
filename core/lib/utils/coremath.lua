@@ -250,6 +250,14 @@ function math.inverse_lerp(a, b, v)
 	return (v - a) / (b - a)
 end
 
+function math.map_range(v, a, b, c, d)
+	return math.lerp(c, d, math.inverse_lerp(a, b, v))
+end
+
+function math.map_range_clamped(v, a, b, c, d)
+	return math.lerp(c, d, math.clamp(math.inverse_lerp(a, b, v), 0, 1))
+end
+
 function math.string_to_rotation(v)
 	local r = math.string_to_vector(v)
 
@@ -274,7 +282,7 @@ function math.spline_len(points, n)
 	local len = 0
 	local old_p = points[1]
 
-	for i = 1, n, 1 do
+	for i = 1, n do
 		local p = math.spline(points, i / n)
 		len = len + (p - old_p):length()
 		old_p = p
@@ -317,7 +325,7 @@ function math.bezier_len(points, n)
 	local len = 0
 	local old_p = points[1]
 
-	for i = 1, n, 1 do
+	for i = 1, n do
 		local p = math.bezier(points, i / n)
 		len = len + (p - old_p):length()
 		old_p = p

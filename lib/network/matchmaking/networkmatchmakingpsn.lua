@@ -911,7 +911,7 @@ function NetworkMatchMakingPSN:start_search_lobbys(friends_only)
 
 	if not self._friends_only then
 		local function f(info)
-			for i = 1, #info.attribute_list, 1 do
+			for i = 1, #info.attribute_list do
 				local numbers = info.attribute_list[i].numbers
 				info.attribute_list[i].numbers = numbers
 			end
@@ -1896,7 +1896,7 @@ function NetworkMatchMakingPSN:send_join_invite(friend)
 	local body = managers.localization:text("dialog_mp_invite_message")
 	local len = string.len(body)
 
-	for i = 1, 512 - len, 1 do
+	for i = 1, 512 - len do
 		body = body .. " "
 	end
 

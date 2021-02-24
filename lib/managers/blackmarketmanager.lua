@@ -328,7 +328,7 @@ function BlackMarketManager:_setup_unlocked_mask_slots()
 	local unlocked_mask_slots = {}
 	Global.blackmarket_manager.unlocked_mask_slots = unlocked_mask_slots
 
-	for i = 1, 9, 1 do
+	for i = 1, 9 do
 		unlocked_mask_slots[i] = true
 	end
 end
@@ -339,7 +339,7 @@ function BlackMarketManager:_setup_unlocked_weapon_slots()
 	unlocked_weapon_slots.primaries = unlocked_weapon_slots.primaries or {}
 	unlocked_weapon_slots.secondaries = unlocked_weapon_slots.secondaries or {}
 
-	for i = 1, 9, 1 do
+	for i = 1, 9 do
 		unlocked_weapon_slots.primaries[i] = true
 		unlocked_weapon_slots.secondaries[i] = true
 	end
@@ -2009,7 +2009,7 @@ function BlackMarketManager:create_preload_ws()
 	local max_w = 0
 	local max_h = 0
 
-	for i = 1, num_squares, 1 do
+	for i = 1, num_squares do
 		row_index = row_index + 1
 		last_rect = square_panel:rect({
 			blend_mode = "add",
@@ -3533,7 +3533,7 @@ function BlackMarketManager:check_will_have_free_slot(category)
 
 	local max_items = tweak_data.gui.MAX_WEAPON_SLOTS or 72
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		if self:is_weapon_slot_unlocked(category, i) then
 			if not self._global.crafted_items[category][i] then
 				return i
@@ -3562,7 +3562,7 @@ function BlackMarketManager:_get_free_weapon_slot(category)
 
 	local max_items = tweak_data.gui.MAX_WEAPON_SLOTS or 72
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		if self:is_weapon_slot_unlocked(category, i) and not self._global.crafted_items[category][i] then
 			return i
 		end
@@ -3876,13 +3876,13 @@ function BlackMarketManager:equip_next_weapon(category)
 	local equipped_slot = self:equipped_weapon_slot(category)
 	local max_slots = tweak_data.gui.MAX_WEAPON_SLOTS or 72
 
-	for slot = equipped_slot + 1, max_slots, 1 do
+	for slot = equipped_slot + 1, max_slots do
 		if self:weapon_unlocked_by_crafted(category, slot) then
 			return self:equip_weapon(category, slot)
 		end
 	end
 
-	for slot = 1, equipped_slot - 1, 1 do
+	for slot = 1, equipped_slot - 1 do
 		if self:weapon_unlocked_by_crafted(category, slot) then
 			return self:equip_weapon(category, slot)
 		end
@@ -3987,7 +3987,7 @@ function BlackMarketManager:get_sorted_melee_weapons(hide_locked, id_list_only)
 		table.insert(item_categories[category], item)
 	end
 
-	for i = 1, #item_categories, 1 do
+	for i = 1, #item_categories do
 		table.insert(sorted_categories, i)
 	end
 
@@ -4282,7 +4282,7 @@ function BlackMarketManager:equip_next_mask()
 	local max_slots = tweak_data.gui.MAX_MASK_SLOTS or 72
 	local crafted = nil
 
-	for slot = equipped_slot + 1, max_slots, 1 do
+	for slot = equipped_slot + 1, max_slots do
 		crafted = self._global.crafted_items[category][slot]
 
 		if crafted and self:crafted_mask_unlocked(slot) then
@@ -4290,7 +4290,7 @@ function BlackMarketManager:equip_next_mask()
 		end
 	end
 
-	for slot = 1, equipped_slot - 1, 1 do
+	for slot = 1, equipped_slot - 1 do
 		crafted = self._global.crafted_items[category][slot]
 
 		if crafted and self:crafted_mask_unlocked(slot) then
@@ -4302,7 +4302,7 @@ end
 function BlackMarketManager:get_sorted_characters(hide_locked)
 	local sort_data = {}
 
-	for i = 1, CriminalsManager.get_num_characters(), 1 do
+	for i = 1, CriminalsManager.get_num_characters() do
 		local character = CriminalsManager.character_names()[i]
 		local character_name = CriminalsManager.convert_old_to_new_character_workname(character)
 		local character_table = tweak_data.blackmarket.characters[character] or tweak_data.blackmarket.characters.locked[character_name]
@@ -5907,7 +5907,7 @@ function BlackMarketManager:_verify_preferred_characters()
 	local preferred_characters = {}
 	local character, new_name, char_tweak = nil
 
-	for i = 1, CriminalsManager.MAX_NR_CRIMINALS, 1 do
+	for i = 1, CriminalsManager.MAX_NR_CRIMINALS do
 		character = self._global._preferred_characters[i]
 
 		if not character or used_characters[character] then
@@ -7152,7 +7152,7 @@ end
 function BlackMarketManager:test_character_material_by_character_name(character)
 	local times = {}
 
-	for i = 0, 32767, 1 do
+	for i = 0, 32767 do
 		math.randomseed(i)
 
 		local material = self:character_material_by_character_name(character)
@@ -8369,8 +8369,8 @@ function BlackMarketManager:verify_dlc_items()
 end
 
 function BlackMarketManager:_cleanup_blackmarket()
-	Application:error("[BlackMarketManager:_cleanup_blackmarket] STARTING BLACKMARKET CLEANUP")
-	Application:error("----------------------------------------------------------------------")
+	print("[BlackMarketManager:_cleanup_blackmarket] STARTING BLACKMARKET CLEANUP")
+	print("----------------------------------------------------------------------")
 
 	local crafted_items = self._global.crafted_items
 
@@ -8790,8 +8790,8 @@ function BlackMarketManager:_cleanup_blackmarket()
 		end
 	end
 
-	Application:error("----------------------------------------------------------------------")
-	Application:error("[BlackMarketManager:_cleanup_blackmarket] BLACKMARKET CLEANUP DONE")
+	print("----------------------------------------------------------------------")
+	print("[BlackMarketManager:_cleanup_blackmarket] BLACKMARKET CLEANUP DONE")
 end
 
 function BlackMarketManager:test_clean()
@@ -9904,7 +9904,7 @@ function BlackMarketManager:get_reload_animation_time(weapon_id)
 				local total_time = anim_set:animation_total_duration(reload_enter_anim_id)
 				local loop_time = anim_set:animation_total_duration(reload_loop_anim_id)
 
-				for i = 1, tweak.CLIP_AMMO_MAX, 1 do
+				for i = 1, tweak.CLIP_AMMO_MAX do
 					total_time = total_time + loop_time
 				end
 

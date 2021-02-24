@@ -251,7 +251,7 @@ function BlackMarketGuiTabItem:init(main_panel, data, node, size_data, hide_sele
 		local tab_string, tab_text = nil
 		local tab_page_strings = self._data.tab_page_strings or {}
 
-		for i = 1, tab_pages, 1 do
+		for i = 1, tab_pages do
 			tab_string = tab_page_strings[i] or tostring(i)
 			tab_text = self._tab_pages_panel:text({
 				blend_mode = "add",
@@ -2676,7 +2676,7 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 				self._extra_options_data.selected = selected
 				local num_panels = 0
 
-				for i = 1, #self._extra_options_data, 1 do
+				for i = 1, #self._extra_options_data do
 					if self._extra_options_data[i].panel then
 						num_panels = num_panels + 1
 					end
@@ -7375,7 +7375,7 @@ function BlackMarketGui:update_info_text()
 			end
 
 			if #missed_mods > 1 then
-				for i = 1, #missed_mods, 1 do
+				for i = 1, #missed_mods do
 					list_of_mods = list_of_mods .. missed_mods[i]
 
 					if i < #missed_mods - 1 then
@@ -7688,7 +7688,7 @@ function BlackMarketGui:update_info_text()
 
 	local below_y = nil
 
-	for i = 2, #self._info_texts, 1 do
+	for i = 2, #self._info_texts do
 		local info_text = self._info_texts[i]
 
 		info_text:set_font_size(small_font_size)
@@ -7893,7 +7893,7 @@ function BlackMarketGui:set_info_text(id, new_string, resource_color)
 		end
 
 		if #start_ci == #end_ci then
-			for i = 1, #start_ci, 1 do
+			for i = 1, #start_ci do
 				start_ci[i] = start_ci[i] - ((i - 1) * 4 + 1)
 				end_ci[i] = end_ci[i] - (i * 4 - 1)
 			end
@@ -7911,7 +7911,7 @@ function BlackMarketGui:set_info_text(id, new_string, resource_color)
 		if #start_ci ~= #end_ci then
 			Application:error("BlackMarketGui: Missing ##'s in :set_info_text() string!", id, new_string, #start_ci, #end_ci)
 		else
-			for i = 1, #start_ci, 1 do
+			for i = 1, #start_ci do
 				info_text:set_range_color(start_ci[i], end_ci[i], type(resource_color) == "table" and resource_color[i] or resource_color)
 			end
 		end
@@ -8025,7 +8025,7 @@ function BlackMarketGui:mouse_moved(o, x, y)
 		self._extra_options_data.selected = self._extra_options_data.selected or 1
 		local selected_slot = nil
 
-		for i = 1, self._extra_options_data.num_panels, 1 do
+		for i = 1, self._extra_options_data.num_panels do
 			local option = self._extra_options_data[i]
 			local panel = option.panel
 			local image = option.image
@@ -8387,7 +8387,7 @@ function BlackMarketGui:mouse_pressed(button, x, y)
 		if button == Idstring("0") or button == Idstring("1") then
 			self._extra_options_data.selected = self._extra_options_data.selected or 1
 
-			for i = 1, self._extra_options_data.num_panels, 1 do
+			for i = 1, self._extra_options_data.num_panels do
 				local option = self._extra_options_data[i]
 				local panel = option.panel
 
@@ -8402,7 +8402,7 @@ function BlackMarketGui:mouse_pressed(button, x, y)
 		if selected_slot then
 			self._extra_options_data.selected = selected_slot
 
-			for i = 1, self._extra_options_data.num_panels, 1 do
+			for i = 1, self._extra_options_data.num_panels do
 				local option = self._extra_options_data[i]
 				local box = option.box
 				local image = option.image
@@ -9317,7 +9317,7 @@ function BlackMarketGui:special_btn_pressed(button)
 			self._extra_options_data.selected = math.min(self._extra_options_data.selected + 1, self._extra_options_data.num_panels)
 		end
 
-		for i = 1, self._extra_options_data.num_panels, 1 do
+		for i = 1, self._extra_options_data.num_panels do
 			local option = self._extra_options_data[i]
 			local box = option.box
 			local image = option.image
@@ -9583,7 +9583,7 @@ function BlackMarketGui:populate_weapon_category(category, data)
 	local max_rows = tweak_data.gui.MAX_WEAPON_ROWS or 3
 	max_items = max_rows * (data.override_slots and data.override_slots[2] or 3)
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		data[i] = nil
 	end
 
@@ -9717,7 +9717,7 @@ function BlackMarketGui:populate_weapon_category(category, data)
 		index = i
 	end
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		if not data[i] then
 			local can_buy_weapon = managers.blackmarket:is_weapon_slot_unlocked(category, i)
 			new_data = {}
@@ -9824,14 +9824,14 @@ function BlackMarketGui:populate_characters(data)
 	local new_data = {}
 	local max_items = math.ceil(CriminalsManager.get_num_characters() / (data.override_slots[1] or 3)) * (data.override_slots[1] or 3)
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		data[i] = nil
 	end
 
 	local equipped_index = nil
 	local index = 1
 
-	for i = 1, CriminalsManager.get_num_characters(), 1 do
+	for i = 1, CriminalsManager.get_num_characters() do
 		local character = CriminalsManager.character_names()[i]
 		local character_name = CriminalsManager.convert_old_to_new_character_workname(character)
 		local character_table = tweak_data.blackmarket.characters[character] or tweak_data.blackmarket.characters.locked[character_name]
@@ -9901,7 +9901,7 @@ function BlackMarketGui:populate_characters(data)
 		end
 	end
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		if not data[i] then
 			new_data = {
 				name = "empty",
@@ -9937,7 +9937,7 @@ function BlackMarketGui:populate_preferred_character_options(panel)
 
 	local added_random = false
 
-	for i = 1, CriminalsManager.MAX_NR_CRIMINALS, 1 do
+	for i = 1, CriminalsManager.MAX_NR_CRIMINALS do
 		local character = list[i]
 		local char_panel = panel:panel({
 			w = 1 / CriminalsManager.MAX_NR_CRIMINALS * panel:w()
@@ -10107,7 +10107,7 @@ function BlackMarketGui:populate_grenades(data)
 	local sort_data = managers.blackmarket:get_sorted_grenades()
 	local max_items = self:calc_max_items(#sort_data, data.override_slots)
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		data[i] = nil
 	end
 
@@ -10198,7 +10198,7 @@ function BlackMarketGui:populate_grenades(data)
 		index = i
 	end
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		if not data[i] then
 			new_data = {
 				name = "empty",
@@ -10274,7 +10274,7 @@ function BlackMarketGui:populate_melee_weapons(data)
 
 	local max_items = math.ceil(#sort_data / (data.override_slots[1] or 3)) * (data.override_slots[1] or 3)
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		data[i] = nil
 	end
 
@@ -10368,7 +10368,7 @@ function BlackMarketGui:populate_melee_weapons(data)
 		index = i
 	end
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		if not data[i] then
 			new_data = {
 				name = "empty",
@@ -10388,7 +10388,7 @@ function BlackMarketGui:populate_deployables(data)
 	local sort_data = managers.blackmarket:get_sorted_deployables()
 	local max_items = math.ceil(#sort_data / (data.override_slots[1] or 3)) * (data.override_slots[1] or 3)
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		data[i] = nil
 	end
 
@@ -10423,7 +10423,7 @@ function BlackMarketGui:populate_deployables(data)
 			count = 2
 		end
 
-		for i = 1, count, 1 do
+		for i = 1, count do
 			if managers.player:equipment_in_slot(i) == new_data.name then
 				slot = i
 
@@ -10496,7 +10496,7 @@ function BlackMarketGui:populate_deployables(data)
 		index = i
 	end
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		if not data[i] then
 			new_data = {
 				name = "empty",
@@ -10522,7 +10522,7 @@ function BlackMarketGui:populate_masks(data)
 	local max_rows = tweak_data.gui.MAX_MASK_ROWS or 3
 	max_items = max_rows * (data.override_slots and data.override_slots[2] or 3)
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		data[i] = nil
 	end
 
@@ -10778,7 +10778,7 @@ function BlackMarketGui:populate_masks(data)
 
 	local can_buy_masks = true
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		if not data[i] then
 			index = i + start_crafted_item - 1
 			can_buy_masks = managers.blackmarket:is_mask_slot_unlocked(i)
@@ -10947,7 +10947,7 @@ function BlackMarketGui:populate_armors(data)
 
 	local max_armors = data.override_slots[1] * data.override_slots[2]
 
-	for i = 1, max_armors, 1 do
+	for i = 1, max_armors do
 		if not data[i] then
 			new_data = {
 				name = "empty",
@@ -11069,7 +11069,7 @@ function BlackMarketGui:populate_armor_skins(data)
 
 	local max_armors = self:calc_max_items(#sort_data, data.override_slots)
 
-	for i = 1, max_armors, 1 do
+	for i = 1, max_armors do
 		if not data[i] then
 			new_data = {
 				name = "empty",
@@ -11086,7 +11086,7 @@ function BlackMarketGui:populate_armor_skins(data)
 end
 
 function BlackMarketGui:populate_player_styles(data)
-	for i = 1, #data, 1 do
+	for i = 1, #data do
 		data[i] = nil
 	end
 
@@ -11109,7 +11109,7 @@ function BlackMarketGui:populate_player_styles(data)
 	local equipped_player_style = data.equipped_player_style or managers.blackmarket:equipped_player_style()
 	local max_items = self:calc_max_items(#sort_data, data.override_slots)
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		new_data = {
 			comparision_data = nil,
 			category = "player_styles",
@@ -11216,7 +11216,7 @@ function BlackMarketGui:populate_player_styles(data)
 end
 
 function BlackMarketGui:populate_suit_variations(data)
-	for i = 1, #data, 1 do
+	for i = 1, #data do
 		data[i] = nil
 	end
 
@@ -11229,7 +11229,7 @@ function BlackMarketGui:populate_suit_variations(data)
 	local sort_data = managers.blackmarket:get_all_suit_variations(player_style)
 	local max_items = self:calc_max_items(#sort_data, data.override_slots)
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		new_data = {
 			comparision_data = nil,
 			category = "suit_variation",
@@ -11374,7 +11374,7 @@ function BlackMarketGui:preview_suit_variation_callback(data)
 end
 
 function BlackMarketGui:populate_gloves(data)
-	for i = 1, #data, 1 do
+	for i = 1, #data do
 		data[i] = nil
 	end
 
@@ -11397,7 +11397,7 @@ function BlackMarketGui:populate_gloves(data)
 	local equipped_glove_id = data.equipped_glove_id or managers.blackmarket:equipped_glove_id()
 	local max_items = self:calc_max_items(#sort_data, data.override_slots)
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		new_data = {
 			comparision_data = nil,
 			category = "gloves",
@@ -11495,7 +11495,7 @@ function BlackMarketGui:populate_masks_new(data)
 	local max_rows = tweak_data.gui.MASK_ROWS_PER_PAGE or 3
 	max_items = max_rows * (data.override_slots and data.override_slots[1] or 3)
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		data[i] = nil
 	end
 
@@ -11777,7 +11777,7 @@ function BlackMarketGui:populate_masks_new(data)
 
 	local can_buy_masks = true
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		if not data[i] then
 			can_buy_masks = managers.blackmarket:is_mask_slot_unlocked(data.on_create_data[i])
 			new_data = {}
@@ -11906,7 +11906,7 @@ function BlackMarketGui:populate_weapon_category_new(data)
 	local max_rows = tweak_data.gui.WEAPON_ROWS_PER_PAGE or 3
 	max_items = max_rows * (data.override_slots and data.override_slots[1] or 3)
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		data[i] = nil
 	end
 
@@ -12095,7 +12095,7 @@ function BlackMarketGui:populate_weapon_category_new(data)
 		end
 	end
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		if not data[i] then
 			new_data = {}
 
@@ -12225,7 +12225,7 @@ function BlackMarketGui:populate_melee_weapons_new(data)
 	local max_items = math.ceil(#data.on_create_data / (data.override_slots[1] or 3)) * (data.override_slots[1] or 3)
 	local new_data = {}
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		data[i] = nil
 	end
 
@@ -12335,7 +12335,7 @@ function BlackMarketGui:populate_melee_weapons_new(data)
 		index = i
 	end
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		if not data[i] then
 			new_data = {
 				name = "empty",
@@ -12373,7 +12373,7 @@ function BlackMarketGui:populate_mod_types(data)
 		index = index + 1
 	end
 
-	for i = 1, 9, 1 do
+	for i = 1, 9 do
 		if not data[i] then
 			new_data = {
 				name = "empty",
@@ -12616,7 +12616,7 @@ function BlackMarketGui:populate_weapon_cosmetics(data)
 	local new_data = nil
 	local max_items = self:calc_max_items(total_cosmetics, data.override_slots or WEAPON_MODS_SLOTS)
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		if not data[i] then
 			new_data = {
 				name = "empty",
@@ -12853,7 +12853,7 @@ function BlackMarketGui:populate_mods(data)
 		data[index] = new_data
 	end
 
-	for i = 1, math.max(math.ceil(num_steps / WEAPON_MODS_SLOTS[1]), WEAPON_MODS_SLOTS[2]) * WEAPON_MODS_SLOTS[1], 1 do
+	for i = 1, math.max(math.ceil(num_steps / WEAPON_MODS_SLOTS[1]), WEAPON_MODS_SLOTS[2]) * WEAPON_MODS_SLOTS[1] do
 		if not data[i] then
 			new_data = {
 				name = "empty",
@@ -12878,7 +12878,7 @@ function BlackMarketGui:populate_mods(data)
 			data[equipped].lock_texture = crafted.customize_locked and data[equipped].lock_texture or nil
 			data[equipped].corner_text = crafted.customize_locked and data[equipped].corner_text or nil
 
-			for i = 1, #data[equipped], 1 do
+			for i = 1, #data[equipped] do
 				table.remove(data[equipped], 1)
 			end
 
@@ -13022,7 +13022,7 @@ function BlackMarketGui:populate_buy_weapon(data)
 	local new_data = {}
 	local guis_catalog = "guis/"
 
-	for i = 1, #data.on_create_data, 1 do
+	for i = 1, #data.on_create_data do
 		local weapon_data = data.on_create_data[i]
 		new_data = {
 			name = weapon_data.weapon_id,
@@ -13117,7 +13117,7 @@ function BlackMarketGui:populate_buy_weapon(data)
 
 	local max_items = self:calc_max_items(#data, data.override_slots)
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		if not data[i] then
 			new_data = {
 				name = "empty",
@@ -13141,7 +13141,7 @@ function BlackMarketGui:populate_mask_global_value(data)
 
 	local guis_catalog = "guis/"
 
-	for i = 1, #data.on_create_data, 1 do
+	for i = 1, #data.on_create_data do
 		new_data = {
 			name = data.on_create_data[i],
 			name_localized = data.on_create_data[i],
@@ -13161,7 +13161,7 @@ function BlackMarketGui:populate_mask_global_value(data)
 		data[i] = new_data
 	end
 
-	for i = 1, 9, 1 do
+	for i = 1, 9 do
 		if not data[i] then
 			new_data = {
 				name = "empty",
@@ -13181,11 +13181,11 @@ function BlackMarketGui:populate_buy_mask(data)
 	local guis_catalog = "guis/"
 	local max_masks = #data.on_create_data
 
-	for i = 1, max_masks, 1 do
+	for i = 1, max_masks do
 		data[i] = nil
 	end
 
-	for i = 1, #data.on_create_data, 1 do
+	for i = 1, #data.on_create_data do
 		local guis_mask_id = data.on_create_data[i].mask_id
 
 		if tweak_data.blackmarket.masks[guis_mask_id].guis_id then
@@ -13290,7 +13290,7 @@ function BlackMarketGui:populate_buy_mask(data)
 
 	local max_items = self:calc_max_items(max_masks, data.override_slots)
 
-	for i = 1, max_items, 1 do
+	for i = 1, max_items do
 		if not data[i] then
 			new_data = {
 				name = "empty",
@@ -13309,7 +13309,7 @@ function BlackMarketGui:populate_mask_mod_types(data)
 	local new_data = {}
 	local max_page = data.override_slots[1] * data.override_slots[2]
 
-	for i = 1, max_page, 1 do
+	for i = 1, max_page do
 		data[i] = nil
 	end
 
@@ -13443,7 +13443,7 @@ function BlackMarketGui:populate_mask_mod_types(data)
 		return name_values[x.name] < name_values[y.name]
 	end)
 
-	for i = 1, max_page, 1 do
+	for i = 1, max_page do
 		if not data[i] then
 			new_data = {
 				name = "empty",
@@ -13471,7 +13471,7 @@ function BlackMarketGui:populate_choose_mask_mod(data)
 
 	local num_data = #data
 
-	for i = 1, num_data, 1 do
+	for i = 1, num_data do
 		data[i] = nil
 	end
 
@@ -13588,7 +13588,7 @@ function BlackMarketGui:populate_choose_mask_mod(data)
 
 	local max_mask_mods = #data.on_create_data
 
-	for i = 1, math.ceil(max_mask_mods / data.override_slots[1]) * data.override_slots[1], 1 do
+	for i = 1, math.ceil(max_mask_mods / data.override_slots[1]) * data.override_slots[1] do
 		if not data[i] then
 			new_data = {
 				name = "empty",
@@ -13770,7 +13770,7 @@ function BlackMarketGui:populate_inventory_tradable(data)
 
 	local num_items = #data
 
-	for i = 1, num_items, 1 do
+	for i = 1, num_items do
 		data[i] = nil
 	end
 
@@ -13892,7 +13892,7 @@ function BlackMarketGui:populate_inventory_tradable(data)
 
 	local new_data = nil
 
-	for i = 1, math.ceil(math.max(#data.on_create_data / 5, 3)) * 5, 1 do
+	for i = 1, math.ceil(math.max(#data.on_create_data / 5, 3)) * 5 do
 		if not data[i] then
 			new_data = {
 				name = "empty",
@@ -14054,7 +14054,7 @@ function BlackMarketGui:choose_weapon_mods_callback(data)
 
 		local mod_data = {}
 
-		for a = 1, #my_mods, 1 do
+		for a = 1, #my_mods do
 			table.insert(mod_data, {
 				my_mods[a][1],
 				false,
@@ -14132,10 +14132,10 @@ function BlackMarketGui:choose_mod_type_callback(data)
 
 	local mod_data = {}
 
-	for i = 1, math.max(1, math.ceil(#mods_list / 9)), 1 do
+	for i = 1, math.max(1, math.ceil(#mods_list / 9)) do
 		mod_data = {}
 
-		for id = (i - 1) * 9 + 1, math.min(i * 9, #mods_list), 1 do
+		for id = (i - 1) * 9 + 1, math.min(i * 9, #mods_list) do
 			mod_data[mods_list[id]] = mods[mods_list[id]]
 		end
 
@@ -14411,7 +14411,7 @@ function BlackMarketGui:_character_preview_textures_retrieved(assets)
 	local num_units = table.size(assets.unit)
 	local num_textures = table.size(assets.texture)
 
-	for i = 1, num_units + num_textures, 1 do
+	for i = 1, num_units + num_textures do
 		table.insert(self._preloading_list, i)
 	end
 end
@@ -14562,12 +14562,12 @@ function BlackMarketGui:choose_equip_weapon_cosmetics_callback(data)
 	local items_per_page = rows * columns
 	local item_data, selected_tab = nil
 
-	for page = 1, max_pages, 1 do
+	for page = 1, max_pages do
 		local index = 1
 		local start_i = 1 + items_per_page * (page - 1)
 		item_data = {}
 
-		for i = start_i, items_per_page * page, 1 do
+		for i = start_i, items_per_page * page do
 			item_data[index] = i
 			index = index + 1
 
@@ -15080,7 +15080,7 @@ function BlackMarketGui:open_weapon_buy_menu(data, check_allowed_item_func)
 	local sorted_categories = {}
 	local gui_categories = tweak_data.gui.buy_weapon_categories[data.category]
 
-	for i = 1, #gui_categories, 1 do
+	for i = 1, #gui_categories do
 		table.insert(item_categories, {})
 	end
 
@@ -15236,10 +15236,10 @@ function BlackMarketGui:choose_weapon_buy_callback2(data)
 
 	local item_data = {}
 
-	for i = 1, math.ceil(#items / 9), 1 do
+	for i = 1, math.ceil(#items / 9) do
 		item_data = {}
 
-		for id = (i - 1) * 9 + 1, math.min(i * 9, #items), 1 do
+		for id = (i - 1) * 9 + 1, math.min(i * 9, #items) do
 			table.insert(item_data, items[id])
 		end
 
@@ -15300,10 +15300,10 @@ function BlackMarketGui:choose_mask_global_value_callback(data)
 
 	local item_data = {}
 
-	for i = 1, math.ceil(#items / 9), 1 do
+	for i = 1, math.ceil(#items / 9) do
 		item_data = {}
 
-		for id = (i - 1) * 9 + 1, math.min(i * 9, #items), 1 do
+		for id = (i - 1) * 9 + 1, math.min(i * 9, #items) do
 			table.insert(item_data, items[id])
 		end
 
@@ -15584,7 +15584,7 @@ function BlackMarketGui:mask_mods_callback(data)
 
 		local td = nil
 
-		for i = 1, #items, 1 do
+		for i = 1, #items do
 			td = tweak_data.blackmarket[category][items[i].id]
 
 			if not listed_items[items[i].id] and td.texture or td.colors or td.color then
@@ -15740,10 +15740,10 @@ function BlackMarketGui:mask_mods_callback2(data)
 	local max_y = 1
 	local mod_data = {}
 
-	for i = 1, math.max(1, math.ceil(#mods_list / (max_x * max_y))), 1 do
+	for i = 1, math.max(1, math.ceil(#mods_list / (max_x * max_y))) do
 		mod_data = {}
 
-		for id = (i - 1) * max_x * max_y + 1, math.min(i * max_x * max_y, #mods_list), 1 do
+		for id = (i - 1) * max_x * max_y + 1, math.min(i * max_x * max_y, #mods_list) do
 			mod_data[mods_list[id]] = mods[mods_list[id]]
 		end
 
@@ -15813,7 +15813,7 @@ function BlackMarketGui:choose_mask_type_callback(data, prev_node_params, type_c
 
 	local td = nil
 
-	for i = 1, #items, 1 do
+	for i = 1, #items do
 		td = tweak_data.blackmarket[category][items[i].id]
 
 		if td.texture or td.colors then
@@ -15829,7 +15829,7 @@ function BlackMarketGui:choose_mask_type_callback(data, prev_node_params, type_c
 
 	table.sort(mods, function (x, y)
 		if x.colors and y.colors then
-			for i = 1, 2, 1 do
+			for i = 1, 2 do
 				local x_color = x.colors[i]
 				local x_max = math.max(x_color.r, x_color.g, x_color.b)
 				local x_min = math.min(x_color.r, x_color.g, x_color.b)
@@ -15880,10 +15880,10 @@ function BlackMarketGui:choose_mask_type_callback(data, prev_node_params, type_c
 	local max_y = 3
 	local mod_data = {}
 
-	for i = 1, math.ceil(#mods / (max_x * max_y)), 1 do
+	for i = 1, math.ceil(#mods / (max_x * max_y)) do
 		mod_data = {}
 
-		for id = (i - 1) * max_x * max_y + 1, math.min(i * max_x * max_y, #mods), 1 do
+		for id = (i - 1) * max_x * max_y + 1, math.min(i * max_x * max_y, #mods) do
 			table.insert(mod_data, mods[id])
 		end
 
@@ -16231,7 +16231,7 @@ function BlackMarketGui:show_available_mask_mods_callback(data)
 
 		local td = nil
 
-		for i = 1, #items, 1 do
+		for i = 1, #items do
 			td = tweak_data.blackmarket[category][items[i].id]
 
 			if td.texture or td.colors then
@@ -16451,10 +16451,10 @@ function BlackMarketGui:choose_mod_callback(data, prev_node_params)
 	local factory_id = managers.blackmarket:get_crafted_category(data.category)[data.slot].factory_id
 	local mod_data = {}
 
-	for i = 1, math.ceil(#mods / 9), 1 do
+	for i = 1, math.ceil(#mods / 9) do
 		mod_data = {}
 
-		for id = (i - 1) * 9 + 1, math.min(i * 9, #mods), 1 do
+		for id = (i - 1) * 9 + 1, math.min(i * 9, #mods) do
 			table.insert(mod_data, {
 				mods[id],
 				false
@@ -17000,7 +17000,7 @@ function BlackMarketGui:create_preload_ws()
 	local max_w = 0
 	local max_h = 0
 
-	for i = 1, num_squares, 1 do
+	for i = 1, num_squares do
 		row_index = row_index + 1
 		last_rect = square_panel:rect({
 			blend_mode = "add",
