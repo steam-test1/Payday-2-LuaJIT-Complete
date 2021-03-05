@@ -11466,6 +11466,10 @@ function UpgradesTweakData:_melee_weapon_definitions()
 		dlc = "gage_pack_assault",
 		category = "melee_weapon"
 	}
+	self.definitions.spoon = {
+		dlc = "apfo",
+		category = "melee_weapon"
+	}
 	self.definitions.bayonet = {
 		dlc = "gage_pack_assault",
 		category = "melee_weapon"

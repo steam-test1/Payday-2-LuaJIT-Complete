@@ -300,6 +300,12 @@ function DLCTweakData:init_generated()
 			amount = 1
 		}
 	}
+	self.fall_bundle = {
+		free = true,
+		content = {}
+	}
+	self.fall_bundle.content.loot_global_value = "fall"
+	self.fall_bundle.content.loot_drops = {}
 	self.fawp_bundle = {
 		dlc = "has_fawp",
 		content = {}

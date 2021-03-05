@@ -5070,8 +5070,8 @@ function WeaponFactoryTweakData:_init_ak74()
 					recoil = -9
 				},
 				custom_stats = {
-					ammo_pickup_max_mul = 0.15,
-					ammo_pickup_min_mul = 0.2
+					ammo_pickup_max_mul = 0.4,
+					ammo_pickup_min_mul = 0.45
 				}
 			}
 		},
@@ -15482,8 +15482,8 @@ function WeaponFactoryTweakData:_init_g3()
 			value = 1
 		},
 		custom_stats = {
-			ammo_pickup_max_mul = 0.5,
-			ammo_pickup_min_mul = 0.5
+			ammo_pickup_max_mul = 0.7,
+			ammo_pickup_min_mul = 0.8
 		}
 	}
 	self.parts.wpn_fps_ass_g3_b_short = {
@@ -23913,8 +23913,8 @@ function WeaponFactoryTweakData:_init_modpack_m4_ak()
 			recoil = -10
 		},
 		custom_stats = {
-			ammo_pickup_max_mul = 0.15,
-			ammo_pickup_min_mul = 0.2
+			ammo_pickup_max_mul = 0.4,
+			ammo_pickup_min_mul = 0.45
 		},
 		forbids = {
 			"wpn_fps_ammo_type"
@@ -32308,7 +32308,8 @@ function WeaponFactoryTweakData:_init_m590()
 			"wpn_fps_upg_ns_sho_salvo_large",
 			"wpn_fps_upg_shot_ns_king",
 			"wpn_fps_upg_ns_shot_thick",
-			"wpn_fps_upg_ns_shot_shark"
+			"wpn_fps_upg_ns_shot_shark",
+			"wpn_fps_upg_a_dragons_breath"
 		}
 	}
 	self.parts.wpn_fps_sho_m590_b_long = {

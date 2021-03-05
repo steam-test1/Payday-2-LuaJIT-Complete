@@ -20,6 +20,9 @@ function TweakDataVR:init(tweak_data)
 			dingdong = {
 				position = Vector3(0, 4, 13)
 			},
+			spoon = {
+				position = Vector3(0, 4, 13)
+			},
 			fists = {
 				hit_point = Vector3(0, 3, 0)
 			},
@@ -162,6 +165,10 @@ function TweakDataVR:init(tweak_data)
 				position = Vector3(0, -3, 0)
 			},
 			dingdong = {
+				position = Vector3(0, -15, 0),
+				rotation = Rotation(0, 0, 90)
+			},
+			spoon = {
 				position = Vector3(0, -15, 0),
 				rotation = Rotation(0, 0, 90)
 			},

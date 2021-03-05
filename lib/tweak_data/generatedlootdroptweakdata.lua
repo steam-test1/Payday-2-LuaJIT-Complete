@@ -95,6 +95,22 @@ function LootDropTweakData:init_generated(tweak_data)
 		sort_number = 505,
 		category = "dlc"
 	}
+	self.global_values.fall = {
+		name_id = "bm_global_value_fall",
+		desc_id = "menu_l_global_value_fall",
+		unlock_id = "bm_global_value_fall_unlock",
+		color = tweak_data.screen_colors.dlc_color,
+		dlc = true,
+		free = true,
+		hide_unavailable = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 505,
+		category = "normal"
+	}
 	self.global_values.fawp = {
 		name_id = "bm_global_value_fawp",
 		desc_id = "menu_l_global_value_fawp",

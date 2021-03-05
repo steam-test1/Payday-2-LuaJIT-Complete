@@ -22,6 +22,10 @@ function GenericDLCManager:has_faco()
 	return self:is_dlc_unlocked("faco")
 end
 
+function GenericDLCManager:has_fall()
+	return self:is_dlc_unlocked("fall")
+end
+
 function GenericDLCManager:has_fawp()
 	return self:is_dlc_unlocked("fawp")
 end
@@ -200,6 +204,10 @@ function WINDLCManager:init_generated()
 	}
 	Global.dlc_manager.all_dlc_data.faco = {
 		app_id = "1555050",
+		no_install = true
+	}
+	Global.dlc_manager.all_dlc_data.fall = {
+		app_id = "218620",
 		no_install = true
 	}
 	Global.dlc_manager.all_dlc_data.fawp = {
