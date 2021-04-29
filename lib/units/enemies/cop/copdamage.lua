@@ -1610,12 +1610,7 @@ function CopDamage:damage_tase(attack_data)
 		self:chk_killshot(attack_data.attacker_unit, "tase")
 	else
 		attack_data.damage = damage
-		local type = "taser_tased"
-
-		if not self._char_tweak.damage.hurt_severity.tase then
-			type = "none"
-		end
-
+		local type = (self._char_tweak.can_be_tased == nil or self._char_tweak.can_be_tased) and "taser_tased" or "none"
 		result = {
 			type = type,
 			variant = attack_data.variant
@@ -2965,12 +2960,7 @@ function CopDamage:sync_damage_tase(attacker_unit, damage_percent, variant, deat
 
 		managers.statistics:killed_by_anyone(data)
 	else
-		local type = "taser_tased"
-
-		if not self._char_tweak.damage.hurt_severity.tase then
-			type = "none"
-		end
-
+		local type = (self._char_tweak.can_be_tased == nil or self._char_tweak.can_be_tased) and "taser_tased" or "none"
 		result = {
 			type = type,
 			variant = variant

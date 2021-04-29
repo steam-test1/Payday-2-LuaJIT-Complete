@@ -3566,6 +3566,8 @@ function MenuSceneManager:on_setup_infamy_menu()
 			self._outfit_state = self._character_unit:play_redirect(Idstring("idle_menu"))
 		end
 
+		self:remove_item()
+
 		self.infamy_menu_ready = true
 	end)
 end
@@ -3575,8 +3577,6 @@ function MenuSceneManager:on_close_infamy_menu()
 		self:set_character_player_style(managers.blackmarket:equipped_player_style(), managers.blackmarket:get_suit_variation(), self._character_unit)
 		self:set_character_gloves(managers.blackmarket:equipped_glove_id(), self._character_unit)
 	end
-
-	self:remove_item()
 
 	self.infamy_menu_ready = false
 end
