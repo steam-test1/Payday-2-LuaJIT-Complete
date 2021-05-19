@@ -2773,6 +2773,7 @@ function CharacterTweakData:_init_phalanx_minion(presets)
 	self.phalanx_minion.DAMAGE_CLAMP_EXPLOSION = self.phalanx_minion.DAMAGE_CLAMP_BULLET
 	self.phalanx_minion.damage.explosion_damage_mul = 6
 	self.phalanx_minion.damage.hurt_severity = presets.hurt_severities.no_hurts
+	self.phalanx_minion.can_be_tased = false
 	self.phalanx_minion.damage.shield_knocked = false
 	self.phalanx_minion.damage.immune_to_knockback = true
 	self.phalanx_minion.immune_to_knock_down = true
@@ -3249,6 +3250,23 @@ function CharacterTweakData:_init_escort_criminal(presets)
 	self.escort_criminal.calls_in = nil
 	self.escort_criminal.ignores_aggression = true
 	self.escort_criminal.ignores_attention_focus = true
+end
+
+function CharacterTweakData:_init_escort_sand(presets)
+	self.escort_sand = deep_clone(self.civilian)
+	self.escort_sand.move_speed = presets.move_speed.slow
+	self.escort_sand.no_run_start = true
+	self.escort_sand.no_run_stop = true
+	self.escort_sand.flee_type = "hide"
+	self.escort_sand.intimidateable = nil
+	self.escort_sand.calls_in = nil
+	self.escort_sand.is_escort = true
+	self.escort_sand.access = "civ_male"
+	self.escort_sand.ignores_aggression = true
+	self.escort_sand.ignores_attention_focus = true
+	self.escort_sand.challenges = {
+		type = "civilians"
+	}
 end
 
 function CharacterTweakData:_init_old_hoxton_mission(presets)
@@ -17000,6 +17018,12 @@ function CharacterTweakData:character_map()
 				"civ_female_asian_casual_1",
 				"civ_female_asian_storekeeper",
 				"civ_male_auctioneer_2"
+			}
+		},
+		sand = {
+			path = "units/pd2_dlc_sand/characters/",
+			list = {
+				"civ_male_vlad"
 			}
 		}
 	}
