@@ -3893,6 +3893,12 @@ function MenuComponentManager:create_inventory_gui(node)
 	self:_create_inventory_gui(node)
 end
 
+function MenuComponentManager:reload_inventory_gui()
+	if self._player_inventory_gui then
+		self:_create_inventory_gui(self._player_inventory_gui._node)
+	end
+end
+
 function MenuComponentManager:_create_inventory_gui(node)
 	self:close_inventory_gui()
 

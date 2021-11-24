@@ -8213,10 +8213,11 @@ function WeaponFactoryTweakData:_init_mp5()
 			40
 		},
 		stats = {
-			value = 5,
 			spread_moving = -2,
-			recoil = 2,
-			concealment = -3
+			value = 5,
+			concealment = -3,
+			spread = 3,
+			recoil = 1
 		},
 		adds = {
 			"wpn_fps_smg_mp5_b_mp5a5"
@@ -8241,8 +8242,8 @@ function WeaponFactoryTweakData:_init_mp5()
 		},
 		stats = {
 			alert_size = 12,
-			recoil = 3,
-			damage = -4,
+			spread = 1,
+			recoil = 1,
 			suppression = 12,
 			value = 10,
 			spread_moving = 1,
@@ -18814,6 +18815,62 @@ function WeaponFactoryTweakData:create_charms(tweak_data)
 				value = 1
 			}
 		},
+		wpn_fps_upg_charm_pyramid = {
+			is_a_unlockable = true,
+			texture_bundle_folder = "in33",
+			third_unit = "units/pd2_dlc_inf3/weapons/wpn_fps_upg_charms_infamy/wpn_third_upg_charm_pyramid",
+			a_obj = "a_charm",
+			type = "charm",
+			dlc = "in33",
+			name_id = "bm_wp_upg_charm_pyramid",
+			unit = "units/pd2_dlc_inf3/weapons/wpn_fps_upg_charms_infamy/wpn_fps_upg_charm_pyramid",
+			pcs = {},
+			stats = {
+				value = 1
+			}
+		},
+		wpn_fps_upg_charm_toast = {
+			is_a_unlockable = true,
+			texture_bundle_folder = "in33",
+			third_unit = "units/pd2_dlc_inf3/weapons/wpn_fps_upg_charms_infamy/wpn_third_upg_charm_toast",
+			a_obj = "a_charm",
+			type = "charm",
+			dlc = "in33",
+			name_id = "bm_wp_upg_charm_toast",
+			unit = "units/pd2_dlc_inf3/weapons/wpn_fps_upg_charms_infamy/wpn_fps_upg_charm_toast",
+			pcs = {},
+			stats = {
+				value = 1
+			}
+		},
+		wpn_fps_upg_charm_diamond = {
+			is_a_unlockable = true,
+			texture_bundle_folder = "in33",
+			third_unit = "units/pd2_dlc_inf3/weapons/wpn_fps_upg_charms_infamy/wpn_third_upg_charm_diamond",
+			a_obj = "a_charm",
+			type = "charm",
+			dlc = "in33",
+			name_id = "bm_wp_upg_charm_diamond",
+			unit = "units/pd2_dlc_inf3/weapons/wpn_fps_upg_charms_infamy/wpn_fps_upg_charm_diamond",
+			pcs = {},
+			stats = {
+				value = 1
+			}
+		},
+		wpn_fps_upg_charm_musket = {
+			is_a_unlockable = true,
+			texture_bundle_folder = "in33",
+			third_unit = "units/pd2_dlc_inf3/weapons/wpn_fps_upg_charms_infamy/wpn_third_upg_charm_musket",
+			a_obj = "a_charm",
+			type = "charm",
+			dlc = "in33",
+			name_id = "bm_wp_upg_charm_musket",
+			unit = "units/pd2_dlc_inf3/weapons/wpn_fps_upg_charms_infamy/wpn_fps_upg_charm_musket",
+			pcs = {},
+			stats = {
+				value = 1
+			}
+		},
 		wpn_fps_upg_charm_pumpkin = {
 			is_a_unlockable = true,
 			texture_bundle_folder = "trik",
@@ -18825,6 +18882,20 @@ function WeaponFactoryTweakData:create_charms(tweak_data)
 			name_id = "bm_wp_upg_charm_pumpkin",
 			unit = "units/pd2_dlc_trik/weapons/wpn_fps_upg_charm_pumpkin/wpn_fps_upg_charm_pumpkin",
 			has_description = true,
+			pcs = {},
+			stats = {
+				value = 1
+			}
+		},
+		wpn_fps_upg_charm_skullz = {
+			is_a_unlockable = true,
+			texture_bundle_folder = "sbzac2",
+			third_unit = "units/pd2_dlc_sbzac2/weapons/wpn_fps_upg_charm_skullz/wpn_third_upg_charm_skullz",
+			a_obj = "a_charm",
+			type = "charm",
+			dlc = "sbzac_wpn_fps_upg_charm_skullz",
+			name_id = "bm_wp_upg_charm_skullz",
+			unit = "units/pd2_dlc_sbzac2/weapons/wpn_fps_upg_charm_skullz/wpn_fps_upg_charm_skullz",
 			pcs = {},
 			stats = {
 				value = 1
@@ -25664,8 +25735,9 @@ function WeaponFactoryTweakData:_init_butchermodpack()
 		},
 		stats = {
 			value = 1,
-			recoil = 2,
-			concealment = -1
+			recoil = -5,
+			damage = 10,
+			concealment = -2
 		}
 	}
 	self.parts.wpn_fps_smg_mp9_b_suppressed = {
@@ -29069,9 +29141,9 @@ function WeaponFactoryTweakData:_init_polymer()
 		},
 		stats = {
 			value = 1,
-			spread = 2,
+			spread = 4,
 			damage = 2,
-			concealment = -4,
+			concealment = -3,
 			recoil = -3
 		}
 	}
@@ -38077,8 +38149,8 @@ function WeaponFactoryTweakData:_init_tng()
 		unit = "units/pd2_dlc_tng/weapons/wpn_fps_smg_mp5_fg_flash/wpn_fps_smg_mp5_fg_flash",
 		pcs = {},
 		stats = {
-			spread = 1,
-			recoil = 1,
+			spread = 2,
+			recoil = 2,
 			concealment = -2,
 			value = 1
 		},
@@ -39363,7 +39435,7 @@ function WeaponFactoryTweakData:_init_siltstone()
 		stats = {
 			value = 1,
 			recoil = -2,
-			concealment = 2
+			concealment = 3
 		}
 	}
 	self.parts.wpn_fps_snp_siltstone_s_wood = {
@@ -48839,6 +48911,9 @@ function WeaponFactoryTweakData:_init_mwm()
 			},
 			wpn_fps_pis_holt = {
 				translation = Vector3(0, 5, -1.18)
+			},
+			wpn_fps_pis_maxim9 = {
+				translation = Vector3(0, -1, -1.18)
 			}
 		},
 		texture_switch = {

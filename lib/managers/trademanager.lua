@@ -322,9 +322,13 @@ function TradeManager:_announce_spawn(criminal_name)
 		return
 	end
 
-	local character_code = managers.criminals:character_static_data_by_name(criminal_name).ssuffix
+	local character_static_data = managers.criminals:character_static_data_by_name(criminal_name)
 
-	managers.dialog:queue_narrator_dialog("q02" .. character_code, {})
+	if character_static_data then
+		local character_code = character_static_data.ssuffix
+
+		managers.dialog:queue_narrator_dialog("q02" .. character_code, {})
+	end
 end
 
 function TradeManager:sync_set_trade_spawn(criminal_name)

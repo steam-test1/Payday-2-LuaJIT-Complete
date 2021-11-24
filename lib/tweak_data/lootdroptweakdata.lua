@@ -1824,6 +1824,11 @@ function LootDropTweakData:init(tweak_data)
 		self.global_values.srtr.unique_lock_icon = "guis/textures/pd2/blackmarket/money_lock"
 	end
 
+	self.global_values.sbzac_elegantteeth = self.global_values.sbzac2
+	self.global_values.sbzac_wpn_fps_upg_charm_skullz = self.global_values.sbzac2
+	self.global_values.sbzac_elegantscarf = self.global_values.sbzac2
+	self.global_values.sbzac_color_sbzac2_01 = self.global_values.sbzac2
+
 	self:_create_global_value_list_map()
 end
 

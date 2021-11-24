@@ -78,6 +78,10 @@ function GenericDLCManager:has_in32()
 	return self:is_dlc_unlocked("in32")
 end
 
+function GenericDLCManager:has_in33()
+	return self:is_dlc_unlocked("in33")
+end
+
 function GenericDLCManager:has_inf()
 	return self:is_dlc_unlocked("inf")
 end
@@ -148,6 +152,10 @@ end
 
 function GenericDLCManager:has_sawp()
 	return self:is_dlc_unlocked("sawp")
+end
+
+function GenericDLCManager:has_sbzac2()
+	return self:is_dlc_unlocked("sbzac2")
 end
 
 function GenericDLCManager:has_scm()
@@ -339,6 +347,10 @@ function WINDLCManager:init_generated()
 		app_id = "218620",
 		no_install = true
 	}
+	Global.dlc_manager.all_dlc_data.in33 = {
+		app_id = "218620",
+		no_install = true
+	}
 	Global.dlc_manager.all_dlc_data.inf = {
 		app_id = "218620",
 		no_install = true
@@ -419,6 +431,11 @@ function WINDLCManager:init_generated()
 		app_id = "1619070",
 		no_install = true,
 		webpage = "https://ovk.af/SmugglerPack2YBS"
+	}
+	Global.dlc_manager.all_dlc_data.sbzac2 = {
+		app_id = "218620",
+		no_install = true,
+		external = true
 	}
 	Global.dlc_manager.all_dlc_data.scm = {
 		app_id = "218620",

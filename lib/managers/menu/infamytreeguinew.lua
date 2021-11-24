@@ -520,7 +520,6 @@ function InfamyTreeGui:_setup()
 		item:set_backlight(i % 2 == 0)
 	end
 
-	self.scroll:add_item(ComingSoonItem:new(self.scroll:canvas()))
 	self.scroll:set_input_focus(true)
 
 	self.detail_panel = self._panel:panel({
@@ -852,7 +851,7 @@ function InfamyTreeGui:update_detail_panels()
 		for _, upgrade in ipairs(infamy_tweak.upgrades) do
 			local category = upgrade[2]
 
-			if category == "colors" or category == "textures" or category == "materials" or category == "masks" or category == "weapon_skins" or category == "gloves" or category == "player_styles" then
+			if category == "colors" or category == "textures" or category == "materials" or category == "masks" or category == "weapon_skins" or category == "gloves" or category == "player_styles" or category == "weapon_mods" then
 				item_amount = item_amount + 1
 			end
 		end
@@ -957,7 +956,13 @@ function InfamyTreeGui:update_detail_panels()
 						})
 					end
 				else
-					local icon_texture = guis_catalog .. "textures/pd2/blackmarket/icons/" .. category .. "/" .. item_id
+					local gui_category = category
+
+					if gui_category == "weapon_mods" then
+						gui_category = "mods"
+					end
+
+					local icon_texture = guis_catalog .. "textures/pd2/blackmarket/icons/" .. gui_category .. "/" .. item_id
 
 					if DB:has(Idstring("texture"), icon_texture) then
 						if category == "materials" then

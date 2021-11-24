@@ -2921,6 +2921,51 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		sequence = "set_ehtan"
 	}
 	self.player_styles.clown_2.characters.ecp_male = clown_2_characters_male_fat
+	self.player_styles.overkillpunk = {
+		name_id = "bm_suit_overkillpunk",
+		desc_id = "bm_suit_overkillpunk_desc",
+		texture_bundle_folder = "in33",
+		global_value = "in33",
+		body_replacement = body_replacement_standard,
+		third_body_replacement = body_replacement_standard,
+		unit = "units/pd2_dlc_in33/characters/in33_acc_overkillpunk/in33_acc_fps_overkillpunk_male/in33_acc_fps_overkillpunk_male",
+		material_variations = {}
+	}
+	self.player_styles.overkillpunk.material_variations.default = {
+		name_id = "bm_suit_var_overkillpunk_default",
+		global_value = "in33",
+		desc_id = "bm_suit_var_overkillpunk_default_desc"
+	}
+	self.player_styles.overkillpunk.characters = {}
+	local overkillpunk_characters_male = {
+		third_unit = "units/pd2_dlc_in33/characters/in33_acc_overkillpunk/in33_acc_overkillpunk_male_average/in33_acc_overkillpunk_male_average"
+	}
+
+	set_characters_data("overkillpunk", characters_male, overkillpunk_characters_male)
+
+	local overkillpunk_characters_male_big = {
+		third_unit = "units/pd2_dlc_in33/characters/in33_acc_overkillpunk/in33_acc_overkillpunk_male_big/in33_acc_overkillpunk_male_big"
+	}
+
+	set_characters_data("overkillpunk", characters_male_big, overkillpunk_characters_male_big)
+
+	local overkillpunk_characters_female = {
+		third_unit = "units/pd2_dlc_in33/characters/in33_acc_overkillpunk/in33_acc_overkillpunk_female_average/in33_acc_overkillpunk_female_average"
+	}
+
+	set_characters_data("overkillpunk", characters_female, overkillpunk_characters_female)
+
+	local overkillpunk_characters_female_big = {
+		third_unit = "units/pd2_dlc_in33/characters/in33_acc_overkillpunk/in33_acc_overkillpunk_female_fat/in33_acc_overkillpunk_female_fat"
+	}
+
+	set_characters_data("overkillpunk", characters_female_big, overkillpunk_characters_female_big)
+
+	local overkillpunk_characters_male_fat = {
+		third_unit = "units/pd2_dlc_in33/characters/in33_acc_overkillpunk/in33_acc_overkillpunk_male_fat/in33_acc_overkillpunk_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.overkillpunk.characters.ecp_male = overkillpunk_characters_male_fat
 	self.player_styles.classyske = {
 		name_id = "bm_suit_classyske",
 		desc_id = "bm_suit_classyske_desc",
@@ -2982,6 +3027,51 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		sequence = "set_ehtan"
 	}
 	self.player_styles.classyske.characters.ecp_male = classyske_characters_male_fat
+	self.player_styles.elegantscarf = {
+		name_id = "bm_suit_elegantscarf",
+		desc_id = "bm_suit_elegantscarf_desc",
+		texture_bundle_folder = "sbzac2",
+		global_value = "sbzac_elegantscarf",
+		material_variations = {}
+	}
+	self.player_styles.elegantscarf.material_variations.default = {
+		name_id = "bm_suit_var_elegantscarf_default",
+		global_value = "sbzac_elegantscarf",
+		desc_id = "bm_suit_var_elegantscarf_default_desc"
+	}
+	self.player_styles.elegantscarf.body_replacement = body_replacement_standard
+	self.player_styles.elegantscarf.third_body_replacement = body_replacement_standard
+	self.player_styles.elegantscarf.unit = "units/pd2_dlc_sbzac2/characters/sbzac2_acc_elegantscarf/sbzac2_acc_fps_elegantscarf_male/sbzac2_acc_fps_elegantscarf_male"
+	self.player_styles.elegantscarf.characters = {}
+	local elegantscarf_characters_male = {
+		third_unit = "units/pd2_dlc_sbzac2/characters/sbzac2_acc_elegantscarf/sbzac2_acc_elegantscarf_male_average/sbzac2_acc_elegantscarf_male_average"
+	}
+
+	set_characters_data("elegantscarf", characters_male, elegantscarf_characters_male)
+
+	local elegantscarf_characters_male_big = {
+		third_unit = "units/pd2_dlc_sbzac2/characters/sbzac2_acc_elegantscarf/sbzac2_acc_elegantscarf_male_big/sbzac2_acc_elegantscarf_male_big"
+	}
+
+	set_characters_data("elegantscarf", characters_male_big, elegantscarf_characters_male_big)
+
+	local elegantscarf_characters_female = {
+		third_unit = "units/pd2_dlc_sbzac2/characters/sbzac2_acc_elegantscarf/sbzac2_acc_elegantscarf_female_average/sbzac2_acc_elegantscarf_female_average"
+	}
+
+	set_characters_data("elegantscarf", characters_female, elegantscarf_characters_female)
+
+	local elegantscarf_characters_female_big = {
+		third_unit = "units/pd2_dlc_sbzac2/characters/sbzac2_acc_elegantscarf/sbzac2_acc_elegantscarf_female_fat/sbzac2_acc_elegantscarf_female_fat"
+	}
+
+	set_characters_data("elegantscarf", characters_female_big, elegantscarf_characters_female_big)
+
+	local elegantscarf_characters_male_fat = {
+		third_unit = "units/pd2_dlc_sbzac2/characters/sbzac2_acc_elegantscarf/sbzac2_acc_elegantscarf_male_fat/sbzac2_acc_elegantscarf_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.elegantscarf.characters.ecp_male = elegantscarf_characters_male_fat
 end
 
 function BlackMarketTweakData:get_player_style_value(player_style, character_name, key)

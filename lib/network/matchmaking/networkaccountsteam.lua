@@ -167,6 +167,7 @@ function NetworkAccountSTEAM:_on_close_overlay()
 	self:_call_listeners("overlay_close")
 	game_state_machine:_set_controller_enabled(true)
 	managers.dlc:chk_content_updated()
+	Entitlement:CheckAndVerifyUserEntitlement()
 end
 
 function NetworkAccountSTEAM:_on_gamepad_text_submitted(submitted, submitted_text)

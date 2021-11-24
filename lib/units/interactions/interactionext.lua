@@ -1543,8 +1543,12 @@ function MultipleEquipmentBagInteractionExt:sync_interacted(peer, player, amount
 		self._current_quantity = self._current_quantity - amount_to_give
 
 		if self._current_quantity <= 0 then
-			self._unit:set_slot(0)
-			managers.network:session():send_to_peers("remove_unit", self._unit)
+			if Network:is_server() then
+				self._unit:set_slot(0)
+				managers.network:session():send_to_peers("remove_unit", self._unit)
+			elseif self._unit:id() == -1 then
+				self._unit:set_slot(0)
+			end
 		end
 	end
 end
@@ -2053,7 +2057,10 @@ function IntimitateInteractionExt:sync_interacted(peer, player, status, skip_ali
 
 		local u_id = managers.enemy:get_corpse_unit_data_from_key(self._unit:key()).u_id
 
-		self._unit:set_slot(0)
+		if Network:is_server() or self._unit:id() == -1 then
+			self._unit:set_slot(0)
+		end
+
 		managers.network:session():send_to_peers_synched("remove_corpse_by_id", u_id, true, peer:id())
 
 		if Network:is_server() and peer then
@@ -2583,7 +2590,7 @@ function SpecialEquipmentInteractionExt:sync_interacted(peer, player, status, sk
 		managers.mission:call_global_event(self._global_event, player)
 	end
 
-	if self._remove_on_interact then
+	if self._remove_on_interact and (Network:is_server() or self._unit:id() == -1) then
 		self._unit:set_slot(0)
 	end
 end

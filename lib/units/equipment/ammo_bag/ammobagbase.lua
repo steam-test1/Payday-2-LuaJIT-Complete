@@ -218,13 +218,20 @@ end
 function AmmoBagBase:_set_empty()
 	self._ammo_amount = 0
 	self._empty = true
+	local unit = self._unit
 
-	if Network:is_server() then
-		self._unit:set_slot(0)
+	if Network:is_server() or unit:id() == -1 then
+		unit:set_slot(0)
 	else
-		self._unit:set_enabled(false)
-		self._unit:set_visible(false)
-		self._unit:interaction():set_active(false)
+		unit:set_visible(false)
+
+		local int_ext = unit:interaction()
+
+		if int_ext then
+			int_ext:set_active(false)
+		end
+
+		unit:set_enabled(false)
 	end
 end
 

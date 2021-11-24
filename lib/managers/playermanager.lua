@@ -5623,7 +5623,7 @@ function PlayerManager:spawn_smoke_screen(position, normal, grenade_unit, has_do
 
 	table.insert(self._smoke_screen_effects, SmokeScreenEffect:new(position, normal, time, has_dodge_bonus, grenade_unit))
 
-	if alive(self._smoke_grenade) then
+	if alive(self._smoke_grenade) and Network:is_server() then
 		self._smoke_grenade:set_slot(0)
 	end
 

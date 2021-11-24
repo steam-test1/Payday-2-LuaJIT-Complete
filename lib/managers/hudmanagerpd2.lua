@@ -414,6 +414,10 @@ function HUDManager:set_absorb_active(i, absorb_amount)
 	self._teammate_panels[i or HUDManager.PLAYER_PANEL]:set_absorb_active(absorb_amount)
 end
 
+function HUDManager:set_copr_indicator(enabled, static_damage_ratio)
+	self._teammate_panels[HUDManager.PLAYER_PANEL]:set_copr_indicator(enabled, static_damage_ratio)
+end
+
 function HUDManager:add_item(data)
 	self:set_deployable_equipment(HUDManager.PLAYER_PANEL, data)
 end

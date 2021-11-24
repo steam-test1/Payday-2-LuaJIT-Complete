@@ -104,13 +104,19 @@ function CopInventory:drop_weapon()
 end
 
 function CopInventory:drop_shield()
-	if alive(self._shield_unit) then
-		self._shield_unit:unlink()
+	local shield_unit = self._shield_unit
+	self._shield_unit = nil
 
-		if self._shield_unit:damage() then
-			self._shield_unit:damage():run_sequence_simple("enable_body")
-			managers.enemy:register_shield(self._shield_unit)
+	if alive(shield_unit) then
+		shield_unit:unlink()
+
+		local u_dmg = shield_unit:damage()
+
+		if u_dmg and u_dmg:has_sequence("enable_body") then
+			u_dmg:run_sequence_simple("enable_body")
 		end
+
+		managers.enemy:register_shield(shield_unit)
 	end
 end
 

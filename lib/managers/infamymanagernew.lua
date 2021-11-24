@@ -76,6 +76,61 @@ function InfamyManager:reward_item(global_value, category, item_id)
 	managers.blackmarket:add_to_inventory(global_value, category, item_id)
 end
 
+function InfamyManager:missing_item(global_value, category, item_id)
+	local item_tweak = tweak_data.blackmarket[category][item_id]
+	global_value = global_value or item_tweak.global_value or managers.dlc:dlc_to_global_value(item_tweak.dlc) or "normal"
+	local has_item = managers.blackmarket:get_item_amount(global_value, category, item_id, true) > 0
+
+	if not has_item then
+		if category == "masks" then
+			for slot, crafted in pairs(Global.blackmarket_manager.crafted_items.masks) do
+				if slot ~= 1 and crafted.mask_id == item_id and crafted.global_value == global_value then
+					has_item = true
+
+					break
+				end
+			end
+		elseif category == "materials" or category == "textures" or category == "colors" then
+			local name_converter = {
+				colors = "color",
+				materials = "material",
+				textures = "pattern"
+			}
+			local name = nil
+
+			for slot, crafted in pairs(Global.blackmarket_manager.crafted_items.masks) do
+				if slot ~= 1 then
+					name = name_converter[category]
+
+					if crafted.blueprint[name].id == item_id and crafted.blueprint[name].global_value == global_value then
+						has_item = true
+
+						break
+					end
+				end
+			end
+		end
+	end
+
+	return not has_item
+end
+
+function InfamyManager:missing_player_styles(global_value, category, player_style, suit_variation)
+	if suit_variation and suit_variation ~= "default" then
+		return not managers.blackmarket:suit_variation_unlocked(player_style, suit_variation)
+	end
+
+	return not managers.blackmarket:player_style_unlocked(player_style)
+end
+
+function InfamyManager:missing_suit_variations(global_value, category, player_style, suit_variation)
+	return not managers.blackmarket:suit_variation_unlocked(player_style, suit_variation)
+end
+
+function InfamyManager:missing_gloves(global_value, category, glove_id)
+	return not managers.blackmarket:glove_id_unlocked(glove_id)
+end
+
 function InfamyManager:unlock_item(item)
 	local infamy_item = tweak_data.infamy.items[item]
 
@@ -247,14 +302,25 @@ function InfamyManager:load(data, version)
 
 		for item_id, unlocked in pairs(state.unlocks) do
 			self._global.unlocks[item_id] = unlocked
-			infamy_item = tweak_data.infamy.items[item_id]
 
-			if unlocked and infamy_item and infamy_item.upgrades.join_stingers then
-				for _, join_stinger in ipairs(infamy_item.upgrades.join_stingers) do
-					self:unlock_join_stinger(join_stinger)
+			if unlocked then
+				infamy_item = tweak_data.infamy.items[item_id]
 
-					if not self._global.selected_join_stinger then
-						self._global.selected_join_stinger = join_stinger
+				if infamy_item then
+					for bonus, entry in ipairs(infamy_item.upgrades) do
+						local missing_func = self["missing_" .. tostring(entry[2])] or self.missing_item
+
+						if missing_func(self, unpack(entry)) then
+							local reward_func = self["reward_" .. tostring(entry[2])] or self.reward_item
+
+							reward_func(self, unpack(entry))
+						end
+					end
+
+					if infamy_item.upgrades.join_stingers then
+						for _, stinger_id in ipairs(infamy_item.upgrades.join_stingers) do
+							self:unlock_join_stinger(stinger_id)
+						end
 					end
 				end
 			end

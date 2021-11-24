@@ -11,5 +11,9 @@ function IncendiaryGrenadeArbiter:_spawn_environment_fire(normal)
 	local data = tweak_data.env_effect:incendiary_fire_arbiter()
 
 	EnvironmentFire.spawn(position, rotation, data, normal, self._thrower_unit, 0, 1)
-	self._unit:set_slot(0)
+	self._unit:set_visible(false)
+
+	if Network:is_server() then
+		self.burn_stop_time = TimerManager:game():time() + data.burn_duration + data.fire_dot_data.dot_length + 1
+	end
 end

@@ -13059,6 +13059,9 @@ function BlackMarketGui:populate_mods(data)
 				new_data.lock_texture = "guis/textures/pd2/skilltree/padlock"
 			elseif managers.dlc:is_content_crimespree_locked("weapon_mods", new_data.name) then
 				new_data.lock_texture = "guis/textures/pd2/skilltree/padlock"
+			elseif managers.dlc:is_content_infamy_locked("weapon_mods", new_data.name) then
+				new_data.lock_texture = "guis/textures/pd2/lock_infamy"
+				new_data.dlc_locked = "menu_infamy_lock_info"
 			else
 				local selected_text = managers.localization:text("bm_menu_no_items")
 				new_data.corner_text = {

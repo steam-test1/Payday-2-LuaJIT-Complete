@@ -82,11 +82,15 @@ end
 function ContinentPanel:create_continent_dialog()
 	local name = EWS:get_text_from_user(Global.frame_panel, "Enter name for new continent:", "Create new continent", "", Vector3(-1, -1, 0), true)
 
-	if name and name ~= "" then
-		if managers.editor:continent(name) then
-			self:create_continent_dialog()
-		else
-			managers.editor:create_continent(name, {})
+	if name then
+		name = name:lower():gsub(" ", "_"):gsub("/", ""):gsub("\\", "")
+
+		if name ~= "" then
+			if managers.editor:continent(name) then
+				self:create_continent_dialog()
+			else
+				managers.editor:create_continent(name, {})
+			end
 		end
 	end
 end

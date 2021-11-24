@@ -34,7 +34,22 @@ function Pickup:set_active(active)
 end
 
 function Pickup:delete_unit()
-	World:delete_unit(self._unit)
+	local unit = self._unit
+
+	if Network:is_server() or unit:id() == -1 then
+		World:delete_unit(unit)
+	else
+		unit:set_visible(false)
+		self:set_active(false)
+
+		local int_ext = unit:interaction()
+
+		if int_ext then
+			int_ext:set_active(false)
+		end
+
+		unit:set_enabled(false)
+	end
 end
 
 function Pickup:save(data)

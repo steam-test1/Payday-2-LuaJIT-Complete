@@ -154,7 +154,8 @@ function InfamyTweakData:init()
 		"in32_suitpack_general_default_blue",
 		"in32_weapon_color_stinger_08",
 		"in32_suitglovepack_general_postmoto",
-		"in32_weapon_color_stinger_09"
+		"in32_weapon_color_stinger_09",
+		"in33_one_hundred"
 	}
 	self.cost = {
 		root = digest(0),
@@ -1152,6 +1153,100 @@ function InfamyTweakData:init()
 		table.insert(self.items[item_id].upgrades.join_stingers, join_stinger)
 	end
 
+	self.items.infamy_stinger_009.upgrades = self.items.infamy_stinger_009.upgrades or {}
+	self.items.infamy_stinger_013.upgrades = self.items.infamy_stinger_013.upgrades or {}
+	self.items.infamy_stinger_017.upgrades = self.items.infamy_stinger_017.upgrades or {}
+
+	table.insert(self.items.infamy_stinger_009.upgrades, {
+		nil,
+		"weapon_mods",
+		"wpn_fps_upg_charm_musket"
+	})
+	table.insert(self.items.infamy_stinger_013.upgrades, {
+		nil,
+		"weapon_mods",
+		"wpn_fps_upg_charm_toast"
+	})
+	table.insert(self.items.infamy_stinger_017.upgrades, {
+		nil,
+		"weapon_mods",
+		"wpn_fps_upg_charm_pyramid"
+	})
+
+	self.items.infamy_stinger_009.name_id = "menu_in33_name_stinger_009_charm_musket"
+	self.items.infamy_stinger_013.name_id = "menu_in33_name_stinger_013_charm_toast"
+	self.items.infamy_stinger_017.name_id = "menu_in33_name_stinger_017_charm_pyramid"
+	self.items.infamy_stinger_009.desc_id = "menu_in33_desc_stinger_009_charm_musket"
+	self.items.infamy_stinger_013.desc_id = "menu_in33_desc_stinger_013_charm_toast"
+	self.items.infamy_stinger_017.desc_id = "menu_in33_desc_stinger_017_charm_pyramid"
+	self.items.infamy_color_inf_04.upgrades = self.items.infamy_color_inf_04.upgrades or {}
+	self.items.infamy_color_inf_08.upgrades = self.items.infamy_color_inf_08.upgrades or {}
+	self.items.infamy_color_inf_12.upgrades = self.items.infamy_color_inf_12.upgrades or {}
+	self.items.infamy_color_inf_16.upgrades = self.items.infamy_color_inf_16.upgrades or {}
+
+	table.insert(self.items.infamy_color_inf_04.upgrades, {
+		nil,
+		"weapon_skins",
+		"color_in33_01"
+	})
+	table.insert(self.items.infamy_color_inf_08.upgrades, {
+		nil,
+		"weapon_skins",
+		"color_in33_02"
+	})
+	table.insert(self.items.infamy_color_inf_12.upgrades, {
+		nil,
+		"weapon_skins",
+		"color_in33_03"
+	})
+	table.insert(self.items.infamy_color_inf_16.upgrades, {
+		nil,
+		"weapon_skins",
+		"color_in33_04"
+	})
+
+	self.items.infamy_color_inf_04.name_id = "menu_in33_name_color_inf_04_in33_01"
+	self.items.infamy_color_inf_08.name_id = "menu_in33_name_color_inf_08_in33_02"
+	self.items.infamy_color_inf_12.name_id = "menu_in33_name_color_inf_12_in33_03"
+	self.items.infamy_color_inf_16.name_id = "menu_in33_name_color_inf_16_in33_04"
+	self.items.infamy_color_inf_04.desc_id = "menu_in33_desc_weapon_color_multiple"
+	self.items.infamy_color_inf_08.desc_id = "menu_in33_desc_weapon_color_multiple"
+	self.items.infamy_color_inf_12.desc_id = "menu_in33_desc_weapon_color_multiple"
+	self.items.infamy_color_inf_16.desc_id = "menu_in33_desc_weapon_color_multiple"
+	self.items.in32_suitpack_general_default_blue.desc_id = "menu_in33_desc_suitpack_general_default_blue"
+	self.items.in32_suitglovepack_general_postmoto.desc_id = "menu_in33_desc_suitglovepack_general_postmoto"
+	self.items.in33_one_hundred = {
+		name_id = "menu_in33_one_hundred",
+		desc_id = "menu_in33_one_hundred_desc",
+		cost = self.cost.tier1,
+		upgrades = {
+			{
+				nil,
+				"weapon_mods",
+				"wpn_fps_upg_charm_diamond"
+			},
+			{
+				nil,
+				"weapon_skins",
+				"color_in33_05"
+			},
+			{
+				nil,
+				"masks",
+				"overkillpunk"
+			},
+			{
+				nil,
+				"gloves",
+				"overkillpunk"
+			},
+			{
+				nil,
+				"player_styles",
+				"overkillpunk"
+			}
+		}
+	}
 	self.items.infamy_secret_9 = {
 		icon_xy = {
 			1,

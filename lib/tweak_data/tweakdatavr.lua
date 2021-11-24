@@ -3961,6 +3961,56 @@ function TweakDataVR:init(tweak_data)
 				}
 			}
 		},
+		fmg9 = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_fmg9_mag_out_back"
+				},
+				{
+					time = 0.001,
+					pos = Vector3(0, 0, 0),
+					rot = Rotation(0, 5, 0)
+				},
+				{
+					time = 0.025,
+					pos = Vector3(0, 0, 0),
+					rot = Rotation(0, 6, 0)
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 0, -12),
+					rot = Rotation(0, 40, 0)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_fmg9_mag_in_back",
+					visible = true,
+					pos = Vector3(0, 0, -12),
+					rot = Rotation(0, 40, 0)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, 0, 0),
+					rot = Rotation(0, 6, 0)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, 0, 0),
+					rot = Rotation(0, 5, 0)
+				},
+				{
+					time = 0.6,
+					sound = "wp_fmg9_release_lever",
+					pos = Vector3(),
+					rot = Rotation()
+				}
+			}
+		},
 		erma = {
 			start = {
 				{
@@ -5802,7 +5852,7 @@ function TweakDataVR:init(tweak_data)
 			start = {
 				{
 					time = 0,
-					sound = "corgi_clip_out"
+					sound = "shak12_clip_out"
 				},
 				{
 					drop_mag = true,
@@ -5815,7 +5865,7 @@ function TweakDataVR:init(tweak_data)
 			finish = {
 				{
 					time = 0,
-					sound = "corgi_clip_in",
+					sound = "shak12_clip_in",
 					visible = true,
 					pos = Vector3(0, 0, -20)
 				},
@@ -5829,7 +5879,7 @@ function TweakDataVR:init(tweak_data)
 				},
 				{
 					time = 0.6,
-					sound = "corgi_lever_release",
+					sound = "shak12_lever_release",
 					pos = Vector3()
 				}
 			}

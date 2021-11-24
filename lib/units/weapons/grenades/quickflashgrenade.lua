@@ -281,7 +281,12 @@ function QuickFlashGrenade:preemptive_kill()
 end
 
 function QuickFlashGrenade:destroy_unit()
-	self._unit:set_slot(0)
+	if Network:is_server() then
+		self._unit:set_slot(0)
+	else
+		self._unit:set_visible(false)
+		self._unit:set_enabled(false)
+	end
 end
 
 function QuickFlashGrenade:remove_light()
@@ -297,6 +302,10 @@ function QuickFlashGrenade:destroy()
 end
 
 function QuickFlashGrenade:on_flashbang_destroyed(prevent_network)
+	if self._destroyed then
+		return
+	end
+
 	if not prevent_network then
 		managers.network:session():send_to_peers_synched("sync_flashbang_event", self._unit, QuickFlashGrenade.Events.DestroyedByPlayer)
 	end

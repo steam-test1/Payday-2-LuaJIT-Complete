@@ -181,7 +181,7 @@ function InventoryDescription.create_description_item(item, tweak, colors, ingam
 
 	if item.bonus then
 		local bonus_string = ""
-		local bonus_data = tweak_data.economy.bonuses[tweak.bonus]
+		local bonus_data = tweak_data.economy.bonuses[tweak.bonus] or {}
 
 		if bonus_data.stats then
 			local stats = WeaponDescription.get_bonus_stats(item.entry, tweak.weapon_id, bonus_data.stats)

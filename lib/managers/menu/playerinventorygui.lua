@@ -3052,7 +3052,7 @@ function PlayerInventoryGui:_update_info_weapon(name)
 	local equipped_item = managers.blackmarket:equipped_item(category)
 	local equipped_slot = managers.blackmarket:equipped_weapon_slot(category)
 	local base_stats, mods_stats, skill_stats = WeaponDescription._get_stats(equipped_item.weapon_id, category, equipped_slot)
-	local text_string = string.format("##%s##  %s", player_loadout_data[name].info_text, managers.experience:cash_string(managers.money:get_weapon_slot_sell_value(category, equipped_slot)))
+	local text_string = player_loadout_data[name].info_text
 
 	self:set_info_text(text_string, {
 		player_loadout_data[name].info_text_color or tweak_data.screen_colors.text,

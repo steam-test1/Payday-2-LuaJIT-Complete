@@ -239,23 +239,25 @@ function ECMJammerBase:update(unit, t, dt)
 		self:check_battery()
 	end
 
-	if Network:is_server() and not self._feedback_active and self._chk_feedback_retrigger_t then
-		self._chk_feedback_retrigger_t = self._chk_feedback_retrigger_t - dt
+	if Network:is_server() then
+		if not self._feedback_active and self._chk_feedback_retrigger_t then
+			self._chk_feedback_retrigger_t = self._chk_feedback_retrigger_t - dt
 
-		if self._chk_feedback_retrigger_t <= 0 then
-			if math.random() < (tweak_data.upgrades.ecm_feedback_retrigger_chance or 0) then
-				self:_send_net_event(self._NET_EVENTS.feedback_restart)
-				self._unit:sound_source():post_event("ecm_jammer_ready")
-				self._unit:interaction():set_active(true, true)
+			if self._chk_feedback_retrigger_t <= 0 then
+				if math.random() < (tweak_data.upgrades.ecm_feedback_retrigger_chance or 0) then
+					self:_send_net_event(self._NET_EVENTS.feedback_restart)
+					self._unit:sound_source():post_event("ecm_jammer_ready")
+					self._unit:interaction():set_active(true, true)
 
-				self._chk_feedback_retrigger_t = nil
-			else
-				self._chk_feedback_retrigger_t = tweak_data.upgrades.ecm_feedback_retrigger_interval or 60
+					self._chk_feedback_retrigger_t = nil
+				else
+					self._chk_feedback_retrigger_t = tweak_data.upgrades.ecm_feedback_retrigger_interval or 60
+				end
 			end
 		end
-	end
 
-	self:_check_body()
+		self:_check_body()
+	end
 end
 
 function ECMJammerBase:check_battery()

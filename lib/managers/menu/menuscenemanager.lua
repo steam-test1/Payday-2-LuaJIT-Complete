@@ -362,19 +362,19 @@ function MenuSceneManager:_set_up_templates()
 	self._scene_templates.standard.lights = {
 		self:_create_light({
 			far_range = 400,
-			color = Vector3(0.86, 0.37, 0.21) * 4,
+			color = Vector3(8.5, 2.45, 1.2),
 			position = Vector3(80, 33, 20)
 		}),
 		self:_create_light({
 			far_range = 180,
 			specular_multiplier = 8,
-			color = Vector3(0.3, 0.5, 0.8) * 6,
+			color = Vector3(2.25, 3.75, 6),
 			position = Vector3(-120, -6, 32)
 		}),
 		self:_create_light({
 			far_range = 800,
 			specular_multiplier = 0,
-			color = Vector3(1, 1, 1) * 0.35,
+			color = Vector3(0.7, 0.7, 0.7),
 			position = Vector3(160, -250, -40)
 		})
 	}

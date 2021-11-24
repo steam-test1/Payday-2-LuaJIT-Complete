@@ -35,8 +35,6 @@ function NewRaycastWeaponBase:_chk_charm_upd_state()
 	local data = self._charm_data
 
 	if not data then
-		print("[MenuRaycastWeaponBase:_chk_charm_upd_state] No charm data")
-
 		return
 	end
 

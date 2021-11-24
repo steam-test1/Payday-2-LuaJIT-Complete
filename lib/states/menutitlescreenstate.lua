@@ -1,7 +1,10 @@
 require("lib/states/GameState")
 require("lib/utils/gui/Blackborders")
 require("lib/utils/accelbyte/Telemetry")
+require("lib/utils/accelbyte/LoginEntitlement")
 
+local base64 = require("lib/utils/base64")
+local json = require("lib/utils/accelbyte/json")
 MenuTitlescreenState = MenuTitlescreenState or class(GameState)
 
 function MenuTitlescreenState:init(game_state_machine, setup)
@@ -149,6 +152,7 @@ function MenuTitlescreenState:update(t, dt)
 			self:_load_savegames_done()
 			Telemetry:on_login()
 			Telemetry:on_login_screen_passed()
+			Entitlement:CheckAndVerifyUserEntitlement()
 		end
 
 		return

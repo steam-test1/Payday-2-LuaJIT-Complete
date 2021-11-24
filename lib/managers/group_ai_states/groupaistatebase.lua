@@ -2972,10 +2972,10 @@ function GroupAIStateBase:set_unit_teamAI(unit, character_name, team_id, visual_
 		glove_id = glove_id,
 		mask_id = character.data.mask_id
 	}
+	local crim_data = character.data
 
 	self:remove_suit_teamAI(character_name)
 
-	local crim_data = character.data
 	crim_data.current_player_style = visual_state.player_style
 	crim_data.current_suit_variation = visual_state.suit_variation
 	crim_data.player_style_ready = true
@@ -2998,7 +2998,6 @@ function GroupAIStateBase:set_unit_teamAI(unit, character_name, team_id, visual_
 
 	self:remove_gloves_teamAI(character_name)
 
-	local crim_data = character.data
 	crim_data.current_glove_id = visual_state.glove_id
 	crim_data.gloves_ready = true
 	local new_unit = tweak_data.blackmarket:get_glove_value(visual_state.glove_id, character_name, "unit", player_style, suit_variation)

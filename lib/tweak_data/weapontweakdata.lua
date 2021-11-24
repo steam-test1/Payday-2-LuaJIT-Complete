@@ -14268,7 +14268,7 @@ function WeaponTweakData:_init_peacemaker(weapon_data)
 	self.peacemaker.DAMAGE = 6
 	self.peacemaker.damage_falloff = FALLOFF_TEMPLATE.PISTOL_FALL_VERYHIGH
 	self.peacemaker.CLIP_AMMO_MAX = 6
-	self.peacemaker.NR_CLIPS_MAX = 9
+	self.peacemaker.NR_CLIPS_MAX = 6
 	self.peacemaker.AMMO_MAX = self.peacemaker.CLIP_AMMO_MAX * self.peacemaker.NR_CLIPS_MAX
 	self.peacemaker.AMMO_PICKUP = self:_pickup_chance(self.peacemaker.AMMO_MAX, PICKUP.PISTOL_LOW_CAPACITY)
 	self.peacemaker.spread = {
@@ -14318,7 +14318,7 @@ function WeaponTweakData:_init_peacemaker(weapon_data)
 	self.peacemaker.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 180,
+		damage = 115,
 		alert_size = 7,
 		spread = 22,
 		spread_moving = 22,
@@ -14330,7 +14330,7 @@ function WeaponTweakData:_init_peacemaker(weapon_data)
 		concealment = 26
 	}
 	self.peacemaker.stats_modifiers = {
-		damage = 1
+		damage = 2
 	}
 end
 

@@ -39,7 +39,11 @@ function MolotovGrenade:_spawn_environment_fire(normal)
 	local data = tweak_data.env_effect:molotov_fire()
 
 	EnvironmentFire.spawn(position, rotation, data, normal, self._thrower_unit, 0, 1)
-	self._unit:set_slot(0)
+	self._unit:set_visible(false)
+
+	if Network:is_server() then
+		self.burn_stop_time = TimerManager:game():time() + data.burn_duration + data.fire_dot_data.dot_length + 1
+	end
 end
 
 function MolotovGrenade:bullet_hit()
@@ -66,5 +70,15 @@ function MolotovGrenade:add_damage_result(unit, is_dead, damage_percent)
 
 	if is_dead then
 		self:_check_achievements(unit, is_dead, damage_percent, 1, 1)
+	end
+end
+
+function MolotovGrenade:update(unit, t, dt)
+	MolotovGrenade.super.update(self, unit, t, dt)
+
+	local is_burn_finish = self.burn_stop_time and self.burn_stop_time < t
+
+	if is_burn_finish then
+		self._unit:set_slot(0)
 	end
 end

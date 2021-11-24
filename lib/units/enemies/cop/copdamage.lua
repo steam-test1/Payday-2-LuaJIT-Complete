@@ -153,6 +153,8 @@ function CopDamage:init(unit)
 	managers.player:register_message(Message.ResetStagger, self, clbk)
 
 	self._accuracy_multiplier = 1
+
+	unit:set_extension_update_enabled(Idstring("character_damage"), false)
 end
 
 function CopDamage:is_immune_to_shield_knockback()
@@ -1034,8 +1036,9 @@ function CopDamage:damage_fire(attack_data)
 		weapon_unit:base():add_damage_result(self._unit, result.type == "death", damage_percent)
 	end
 
-	if not attack_data.is_fire_dot_damage then
-		local fire_dot_data = attack_data.fire_dot_data
+	local fire_dot_data = not attack_data.is_fire_dot_damage and attack_data.fire_dot_data
+
+	if fire_dot_data then
 		local flammable = nil
 		local char_tweak = tweak_data.character[self._unit:base()._tweak_table]
 		flammable = char_tweak.flammable == nil and true or char_tweak.flammable
@@ -1046,27 +1049,18 @@ function CopDamage:damage_fire(attack_data)
 			distance = mvector3.distance(hit_loc, attacker_unit:position())
 		end
 
-		local fire_dot_max_distance = 3000
-		local fire_dot_trigger_chance = 30
-
-		if fire_dot_data then
-			fire_dot_max_distance = tonumber(fire_dot_data.dot_trigger_max_distance)
-			fire_dot_trigger_chance = tonumber(fire_dot_data.dot_trigger_chance)
-		end
-
+		local fire_dot_max_distance = tonumber(fire_dot_data.dot_trigger_max_distance)
+		local fire_dot_trigger_chance = tonumber(fire_dot_data.dot_trigger_chance)
 		local start_dot_damage_roll = math.random(1, 100)
 		local start_dot_dance_antimation = false
 
-		if flammable and not attack_data.is_fire_dot_damage and distance < fire_dot_max_distance and start_dot_damage_roll <= fire_dot_trigger_chance then
+		if flammable and distance < fire_dot_max_distance and start_dot_damage_roll <= fire_dot_trigger_chance then
 			managers.fire:add_doted_enemy(self._unit, TimerManager:game():time(), attack_data.weapon_unit, fire_dot_data.dot_length, fire_dot_data.dot_damage, attack_data.attacker_unit, attack_data.is_molotov)
 
 			start_dot_dance_antimation = true
 		end
 
-		if fire_dot_data then
-			fire_dot_data.start_dot_dance_antimation = start_dot_dance_antimation
-			attack_data.fire_dot_data = fire_dot_data
-		end
+		fire_dot_data.start_dot_dance_antimation = start_dot_dance_antimation
 	end
 
 	self:_send_fire_attack_result(attack_data, attacker, damage_percent, attack_data.is_fire_dot_damage, attack_data.col_ray.ray, attack_data.result.type == "healed")

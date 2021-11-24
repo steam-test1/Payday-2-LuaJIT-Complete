@@ -44,7 +44,9 @@ function IncendiaryGrenade:_spawn_environment_fire(normal)
 	EnvironmentFire.spawn(position, rotation, data, normal, self._thrower_unit, 0, 1)
 	self._unit:set_visible(false)
 
-	self.burn_stop_time = TimerManager:game():time() + data.fire_dot_data.dot_length + 1
+	if Network:is_server() then
+		self.burn_stop_time = TimerManager:game():time() + data.burn_duration + data.fire_dot_data.dot_length + 1
+	end
 end
 
 function IncendiaryGrenade:bullet_hit()

@@ -261,7 +261,7 @@ end
 function GrenadeCrateSync:_clbk_validate()
 	self._validate_clbk_id = nil
 
-	if not self._was_dropin then
+	if not self._was_dropin and managers.network:session() then
 		local peer = managers.network:session():server_peer()
 
 		peer:mark_cheater(VoteManager.REASON.many_assets)

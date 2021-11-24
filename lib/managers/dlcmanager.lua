@@ -277,6 +277,9 @@ end
 
 function GenericDLCManager:give_dlc_and_verify_blackmarket()
 	self:give_dlc_package()
+
+	Global.dlc_manager.verify_entitlements = nil
+
 	managers.event_jobs:aquire_claimed_upgrades()
 
 	if managers.blackmarket then
@@ -526,7 +529,7 @@ function GenericDLCManager:dlc_to_global_value(dlc)
 		return dlc
 	end
 
-	local dlc_data = Global.dlc_manager.all_dlc_data[dlc]
+	local dlc_data = tweak_data.dlc[dlc]
 
 	return dlc_data and dlc_data.content and dlc_data.content.loot_global_value or nil
 end
@@ -2190,8 +2193,29 @@ function WINDLCManager:init()
 				a10mask = {
 					app_id = "1788140",
 					no_install = true
+				},
+				sbzac_elegantteeth = {
+					no_install = true,
+					entitlement_id = "3b33555360c749249cf37923af3121a4",
+					external = true
+				},
+				sbzac_wpn_fps_upg_charm_skullz = {
+					no_install = true,
+					entitlement_id = "af17b1ef651345d1a8a48ea6ff67fe36",
+					external = true
+				},
+				sbzac_elegantscarf = {
+					no_install = true,
+					entitlement_id = "10e2783cc2244fcfbf40a316ac84bc55",
+					external = true
+				},
+				sbzac_color_sbzac2_01 = {
+					no_install = true,
+					entitlement_id = "29bb159f7efb4a8f98103d0648788a51",
+					external = true
 				}
-			}
+			},
+			entitlements = {}
 		}
 
 		self:init_generated()
@@ -2268,6 +2292,63 @@ function WINDLCManager:get_promoted_dlc_list()
 	return self._promoted_dlc_list
 end
 
+function WINDLCManager:set_entitlements(entitlements)
+	print("WINDLCManager:set_entitlements", inspect(entitlements))
+
+	Global.dlc_manager.entitlements = entitlements or {}
+	Global.dlc_manager.received_entitlements = true
+	local entitlement_updated = false
+	local has_entitlement = nil
+
+	for dlc_name, dlc_data in pairs(Global.dlc_manager.all_dlc_data) do
+		if dlc_data.entitlement_id then
+			has_entitlement = self:has_entitlement(dlc_data.entitlement_id)
+			entitlement_updated = entitlement_updated or has_entitlement ~= dlc_data.verified
+			dlc_data.verified = has_entitlement
+		end
+	end
+
+	if entitlement_updated then
+		if (game_state_machine and game_state_machine:current_state_name()) == "menu_main" then
+			self:give_dlc_and_verify_blackmarket()
+		else
+			Global.dlc_manager.verify_entitlements = true
+		end
+	end
+end
+
+function WINDLCManager:has_entitlement(entitlement_id)
+	return table.contains(Global.dlc_manager.entitlements, entitlement_id)
+end
+
+function WINDLCManager:save(data)
+	WINDLCManager.super.save(self, data)
+
+	data.dlc_entitlements = Global.dlc_manager.entitlements
+end
+
+function WINDLCManager:load(data)
+	WINDLCManager.super.load(self, data)
+
+	if data.dlc_entitlements and not Global.dlc_manager.received_entitlements then
+		Global.dlc_manager.entitlements = data.dlc_entitlements
+
+		for dlc_name, dlc_data in pairs(Global.dlc_manager.all_dlc_data) do
+			if dlc_data.entitlement_id then
+				dlc_data.verified = self:has_entitlement(dlc_data.entitlement_id)
+			end
+		end
+	end
+end
+
+function WINDLCManager:init_finalize()
+	WINDLCManager.super.init_finalize(self)
+
+	if Global.dlc_manager.verify_entitlements and (game_state_machine and game_state_machine:last_queued_state_name()) == "menu_main" then
+		self:give_dlc_and_verify_blackmarket()
+	end
+end
+
 function WINDLCManager:_check_dlc_data(dlc_data)
 	if SystemInfo:distribution() == Idstring("STEAM") then
 		if dlc_data.app_id then
@@ -2278,7 +2359,11 @@ function WINDLCManager:_check_dlc_data(dlc_data)
 			elseif Steam:is_product_installed(dlc_data.app_id) then
 				return true
 			end
-		elseif dlc_data.source_id and Steam:is_user_in_source(Steam:userid(), dlc_data.source_id) then
+		elseif dlc_data.source_id then
+			if Steam:is_user_in_source(Steam:userid(), dlc_data.source_id) then
+				return true
+			end
+		elseif dlc_data.entitlement_id and self:has_entitlement(dlc_data.entitlement_id) then
 			return true
 		end
 	end

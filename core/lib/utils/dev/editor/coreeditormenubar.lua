@@ -1046,7 +1046,6 @@ function CoreEditor:toggle_show_markers(data)
 end
 
 function CoreEditor:on_using_the_editor()
-	EWS:launch_url("https://confluence.starbreeze.com/display/PD2/Diesel+-+Tutorials+and+fundamentals")
 end
 
 function CoreEditor:on_video_tutorials()

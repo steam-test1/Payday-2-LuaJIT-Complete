@@ -307,7 +307,7 @@ function ProjectileBase.throw_projectile(projectile_type, pos, dir, owner_peer_i
 end
 
 function ProjectileBase:add_trail_effect()
-	managers.game_play_central:add_projectile_trail(self._unit, self._unit:orientation_object())
+	managers.game_play_central:add_projectile_trail(self._unit, self._unit:orientation_object(), self.trail_effect)
 
 	self._added_trail_effect = true
 end

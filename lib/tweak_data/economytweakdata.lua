@@ -755,6 +755,9 @@ function EconomyTweakData:init(tweak_data)
 				"mac10_sfs",
 				"galil_sfs"
 			},
+			contents = {}
+		},
+		removed_items = {
 			contents = {
 				"sfs_01_legendary"
 			}
@@ -763,11 +766,14 @@ function EconomyTweakData:init(tweak_data)
 	self.contents.sfs_01_legendary = {
 		def_id = 10034,
 		contains = {
+			weapon_skins = {}
+		},
+		rarity = "legendary",
+		removed_items = {
 			weapon_skins = {
 				"contraband_sfs"
 			}
-		},
-		rarity = "legendary"
+		}
 	}
 	self.contents.wac_01 = {
 		def_id = 10035,
@@ -892,13 +898,17 @@ function EconomyTweakData:init(tweak_data)
 				"par_mxs",
 				"lemming_mxs",
 				"jowi_mxs",
-				"contraband_mxs",
 				"chinchilla_mxs",
 				"china_mxs",
 				"akm_mxs"
 			},
 			contents = {
 				"mxs_01_legendary"
+			}
+		},
+		removed_items = {
+			weapon_skins = {
+				"contraband_mxs"
 			}
 		}
 	}
@@ -1107,7 +1117,6 @@ function EconomyTweakData:init(tweak_data)
 		contains = {
 			weapon_skins = {
 				"x_1911_css",
-				"contraband_css",
 				"par_css",
 				"breech_css",
 				"c96_css",
@@ -1124,6 +1133,11 @@ function EconomyTweakData:init(tweak_data)
 			},
 			contents = {
 				"css_01_legendary"
+			}
+		},
+		removed_items = {
+			weapon_skins = {
+				"contraband_css"
 			}
 		}
 	}

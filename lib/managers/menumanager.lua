@@ -1745,6 +1745,16 @@ function MenuCallbackHandler:has_dropin()
 	return NetworkManager.DROPIN_ENABLED
 end
 
+function MenuCallbackHandler:has_sbz_account()
+	local steam_id = Steam:userid()
+
+	return steam_id and Login.player_session.platform_user_id == steam_id or false
+end
+
+function MenuCallbackHandler:has_no_sbz_account()
+	return not self:has_sbz_account()
+end
+
 function MenuCallbackHandler:is_server()
 	return Network:is_server()
 end

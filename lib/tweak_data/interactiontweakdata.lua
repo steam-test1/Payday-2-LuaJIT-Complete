@@ -39,11 +39,13 @@ function InteractionTweakData:init(tweak_data)
 	self.gasoline_engine = {
 		icon = "equipment_thermite",
 		text_id = "debug_interact_gas",
-		equipment_text_id = "debug_interact_equipment_gas",
-		special_equipment = "gas",
-		equipment_consume = true,
 		interact_distance = 300,
-		timer = 20
+		timer = 20,
+		start_active = true,
+		special_equipment = "gas",
+		equipment_text_id = "debug_interact_equipment_gas",
+		equipment_consume = true,
+		dont_need_equipment = true
 	}
 	self.train_car = {
 		icon = "develop",
@@ -372,11 +374,16 @@ function InteractionTweakData:init(tweak_data)
 		is_lockpicking = true
 	}
 	self.pick_lock_easy_no_skill = {
-		contour = "interactable_icon",
 		icon = "equipment_bank_manager_key",
 		text_id = "hud_int_pick_lock",
-		start_active = true,
+		action_text_id = "hud_action_picking_lock",
+		interact_distance = 100,
 		timer = 7,
+		start_active = true,
+		sound_start = "bar_pick_lock",
+		sound_interupt = "bar_pick_lock_cancel",
+		sound_done = "bar_pick_lock_finished",
+		contour = "interactable_icon",
 		upgrade_timer_multipliers = {
 			{
 				upgrade = "pick_lock_easy_speed_multiplier",
@@ -387,11 +394,6 @@ function InteractionTweakData:init(tweak_data)
 				category = "player"
 			}
 		},
-		action_text_id = "hud_action_picking_lock",
-		interact_distance = 100,
-		sound_start = "bar_pick_lock",
-		sound_interupt = "bar_pick_lock_cancel",
-		sound_done = "bar_pick_lock_finished",
 		is_lockpicking = true
 	}
 	self.pick_lock_hard = {
@@ -1471,9 +1473,11 @@ function InteractionTweakData:init(tweak_data)
 	self.open_trunk = {
 		icon = "develop",
 		text_id = "debug_interact_open_trunk",
-		timer = 0.5,
-		axis = "x",
-		action_text_id = "hud_action_opening_trunk"
+		action_text_id = "hud_action_opening_trunk",
+		interact_distance = 100,
+		timer = 0,
+		start_active = true,
+		axis = "x"
 	}
 	self.open_door = {
 		icon = "interaction_open_door",

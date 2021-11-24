@@ -1638,6 +1638,46 @@ function WeaponFactoryManager:load(data)
 	self._global = data.weapon_factory
 end
 
+function WeaponFactoryManager:verify_weapon(weapon_id, factory_id)
+	if not weapon_id or not factory_id then
+		Application:error("[WeaponFactoryManager:verify_weapon] Missing weapon id or factory id", weapon_id, factory_id)
+
+		return false
+	else
+		local weap_tweak_data = tweak_data.weapon
+
+		if not weap_tweak_data[weapon_id] then
+			Application:error("[WeaponFactoryManager:verify_weapon] Found no tweak data for weapon id", weapon_id)
+
+			return false
+		end
+
+		if not weap_tweak_data.factory[factory_id] then
+			Application:error("[WeaponFactoryManager:verify_weapon] Found no factory tweak data for factory id", factory_id)
+
+			return false
+		end
+
+		local ret_weapon_id = self:get_weapon_id_by_factory_id(factory_id)
+
+		if weapon_id ~= ret_weapon_id then
+			Application:error("[WeaponFactoryManager:verify_weapon] Sent weapon id doesn't match with retrieved one", weapon_id, ret_weapon_id)
+
+			return false
+		end
+
+		local ret_factory_id = self:get_factory_id_by_weapon_id(weapon_id)
+
+		if factory_id ~= ret_factory_id then
+			Application:error("[WeaponFactoryManager:verify_weapon] Sent factory id doesn't match with retrieved one", factory_id, ret_factory_id)
+
+			return false
+		end
+	end
+
+	return true
+end
+
 function WeaponFactoryManager:debug_get_stats(factory_id, blueprint)
 	local factory = tweak_data.weapon.factory
 	local forbidden = self:_get_forbidden_parts(factory_id, blueprint)

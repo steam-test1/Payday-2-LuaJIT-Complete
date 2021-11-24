@@ -787,6 +787,16 @@ function BlackMarketManager:equipped_secondary()
 		self:aquire_default_weapons()
 	end
 
+	local weap_factory_manager = managers.weapon_factory
+	local weap_verify_f = weap_factory_manager.verify_weapon
+
+	for slot, data in pairs(Global.blackmarket_manager.crafted_items.secondaries) do
+		if not weap_verify_f(weap_factory_manager, data.weapon_id, data.factory_id) then
+			Application:error("[BlackMarketManager:equipped_secondary] Removing invalid secondary weapon | weapon id", data.weapon_id, "factory id", data.factory_id)
+			self:on_sell_weapon("secondaries", slot, not data.equipped)
+		end
+	end
+
 	for slot, data in pairs(Global.blackmarket_manager.crafted_items.secondaries) do
 		if data.equipped then
 			return data
@@ -813,6 +823,16 @@ function BlackMarketManager:equipped_primary()
 
 	if not Global.blackmarket_manager.crafted_items.primaries then
 		self:aquire_default_weapons()
+	end
+
+	local weap_factory_manager = managers.weapon_factory
+	local weap_verify_f = weap_factory_manager.verify_weapon
+
+	for slot, data in pairs(Global.blackmarket_manager.crafted_items.primaries) do
+		if not weap_verify_f(weap_factory_manager, data.weapon_id, data.factory_id) then
+			Application:error("[BlackMarketManager:equipped_primary] Removing invalid primary weapon | weapon id", data.weapon_id, "factory id", data.factory_id)
+			self:on_sell_weapon("primaries", slot, not data.equipped)
+		end
 	end
 
 	for slot, data in pairs(Global.blackmarket_manager.crafted_items.primaries) do
@@ -8413,6 +8433,7 @@ function BlackMarketManager:_load_done()
 
 	if managers.menu_component then
 		managers.menu_component:reload_blackmarket_gui()
+		managers.menu_component:reload_inventory_gui()
 	end
 end
 

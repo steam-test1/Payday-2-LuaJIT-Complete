@@ -489,7 +489,7 @@ function MenuCallbackHandler:_update_outfit_information()
 
 		local local_player = managers.player:local_player()
 
-		if alive(local_player) and local_player:character_damage() then
+		if alive(local_player) and local_player:character_damage() and local_player:character_damage().update_armor_stored_health then
 			local_player:character_damage():update_armor_stored_health()
 		end
 
