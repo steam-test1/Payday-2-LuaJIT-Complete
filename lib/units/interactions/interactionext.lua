@@ -1255,6 +1255,8 @@ function ReviveInteractionExt:interact(reviving_unit)
 	if event_listener then
 		event_listener:call("on_revive_interaction_success")
 	end
+
+	managers.player:set_property("copr_risen", false)
 end
 
 function ReviveInteractionExt:save(data)

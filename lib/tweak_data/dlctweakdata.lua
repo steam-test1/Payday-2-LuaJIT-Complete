@@ -8410,4 +8410,28 @@ function DLCTweakData:init(tweak_data)
 			amount = 1
 		}
 	}
+	self.ach_dec21_01 = {
+		content = {},
+		dlc = "has_achievement",
+		achievement_id = "dec21_01"
+	}
+	self.ach_dec21_01.content.loot_global_value = "xm21"
+	self.ach_dec21_01.content.loot_drops = {
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_upg_charm_lusse"
+		}
+	}
+	self.ach_dec21_02 = {
+		content = {},
+		dlc = "has_achievement",
+		achievement_id = "dec21_02"
+	}
+	self.ach_dec21_02.content.loot_global_value = "xm21"
+	self.ach_dec21_02.content.loot_drops = {
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_upg_charm_ball"
+		}
+	}
 end

@@ -943,7 +943,8 @@ function WeaponFactoryManager:get_parts_from_weapon_by_perk(perk, parts)
 	local type_parts = {}
 
 	for id, data in pairs(parts) do
-		local perks = factory.parts[id].perks
+		local part_data = factory.parts[id]
+		local perks = part_data and part_data.perks
 
 		if perks and table.contains(perks, perk) then
 			table.insert(type_parts, parts[id])
@@ -1492,10 +1493,15 @@ function WeaponFactoryManager:has_perk(perk_name, factory_id, blueprint)
 	local forbidden = self:_get_forbidden_parts(factory_id, blueprint)
 
 	for _, part_id in ipairs(blueprint) do
-		if not forbidden[part_id] and factory.parts[part_id].perks then
-			for _, perk in ipairs(factory.parts[part_id].perks) do
-				if perk == perk_name then
-					return true
+		if not forbidden[part_id] then
+			local part_data = factory.parts[part_id]
+			local perks = part_data and part_data.perks
+
+			if perks then
+				for _, perk in ipairs(perks) do
+					if perk == perk_name then
+						return true
+					end
 				end
 			end
 		end
@@ -1509,10 +1515,15 @@ function WeaponFactoryManager:get_perk_stats(perk_name, factory_id, blueprint)
 	local forbidden = self:_get_forbidden_parts(factory_id, blueprint)
 
 	for _, part_id in ipairs(blueprint) do
-		if not forbidden[part_id] and factory.parts[part_id].perks then
-			for _, perk in ipairs(factory.parts[part_id].perks) do
-				if perk == perk_name then
-					return factory.parts[part_id].stats
+		if not forbidden[part_id] then
+			local part_data = factory.parts[part_id]
+			local perks = part_data and part_data.perks
+
+			if perks then
+				for _, perk in ipairs(perks) do
+					if perk == perk_name then
+						return factory.parts[part_id].stats
+					end
 				end
 			end
 		end
@@ -1551,9 +1562,14 @@ function WeaponFactoryManager:get_perks(factory_id, blueprint)
 	local perks = {}
 
 	for _, part_id in ipairs(blueprint) do
-		if not forbidden[part_id] and factory.parts[part_id].perks then
-			for _, perk in ipairs(factory.parts[part_id].perks) do
-				perks[perk] = true
+		if not forbidden[part_id] then
+			local part_data = factory.parts[part_id]
+			local perks = part_data and part_data.perks
+
+			if perks then
+				for _, perk in ipairs(perks) do
+					perks[perk] = true
+				end
 			end
 		end
 	end

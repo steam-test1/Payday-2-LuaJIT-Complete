@@ -3754,6 +3754,7 @@ function WeaponFactoryTweakData:_init_m4()
 			"wpn_fps_upg_ns_ass_smg_medium",
 			"wpn_fps_upg_ns_ass_smg_small",
 			"wpn_fps_m4_uupg_fg_rail",
+			"wpn_fps_m4_uupg_fg_rail_ext",
 			"wpn_fps_m4_uupg_fg_lr300",
 			"wpn_fps_m4_uupg_m_std_vanilla",
 			"wpn_fps_upg_m4_m_drum",
@@ -4001,6 +4002,10 @@ function WeaponFactoryTweakData:_init_g18c()
 			},
 			wpn_fps_pis_g26_g_laser = {
 				a_obj = "a_g_2"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -7162,7 +7167,11 @@ function WeaponFactoryTweakData:_init_p90()
 				a_obj = "a_or"
 			},
 			wpn_upg_o_marksmansight_front = {
-				a_obj = "a_of"
+				a_obj = "a_of",
+				wpn_fps_upg_ns_pis_putnik = {
+					a_obj = "a_ns",
+					parent = "barrel"
+				}
 			}
 		},
 		default_blueprint = {
@@ -7552,6 +7561,10 @@ function WeaponFactoryTweakData:_init_mp9()
 				forbids = {
 					"wpn_fps_addon_ris"
 				}
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		uses_parts = {
@@ -8021,6 +8034,10 @@ function WeaponFactoryTweakData:_init_deagle()
 			},
 			wpn_fps_upg_o_poe = {
 				a_obj = "a_quite"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -8419,6 +8436,10 @@ function WeaponFactoryTweakData:_init_mp5()
 			},
 			wpn_fps_upg_o_poe = {
 				"wpn_fps_smg_mp5_body_rail"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -8766,6 +8787,10 @@ function WeaponFactoryTweakData:_init_colt_1911()
 			},
 			wpn_fps_upg_o_rikt = {
 				parent = "slide"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -9059,6 +9084,10 @@ function WeaponFactoryTweakData:_init_mac10()
 			},
 			wpn_fps_upg_o_poe = {
 				"wpn_fps_smg_mac10_body_ris_special"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -9917,6 +9946,10 @@ function WeaponFactoryTweakData:_init_g17()
 			},
 			wpn_fps_upg_o_rikt = {
 				parent = "slide"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -10940,6 +10973,10 @@ function WeaponFactoryTweakData:_init_usp()
 			},
 			wpn_fps_upg_o_rikt = {
 				parent = "slide"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -11065,6 +11102,10 @@ function WeaponFactoryTweakData:_init_g22c()
 			},
 			wpn_fps_pis_g26_g_laser = {
 				a_obj = "a_g_2"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -11621,6 +11662,10 @@ function WeaponFactoryTweakData:_init_m45()
 			},
 			wpn_fps_upg_o_poe = {
 				"wpn_fps_shot_r870_ris_special"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -12481,6 +12526,10 @@ function WeaponFactoryTweakData:_init_mp7()
 				forbids = {
 					"wpn_fps_addon_ris"
 				}
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		uses_parts = {
@@ -17703,6 +17752,10 @@ function WeaponFactoryTweakData:_init_scorpion()
 			},
 			wpn_fps_upg_o_poe = {
 				"wpn_fps_smg_scorpion_extra_rail"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -17968,6 +18021,10 @@ function WeaponFactoryTweakData:_init_tec9()
 			},
 			wpn_fps_upg_o_poe = {
 				"wpn_fps_shot_r870_ris_special"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -18312,6 +18369,10 @@ function WeaponFactoryTweakData:_init_uzi()
 			},
 			wpn_fps_upg_o_poe = {
 				"wpn_fps_shot_r870_ris_special"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -18896,6 +18957,90 @@ function WeaponFactoryTweakData:create_charms(tweak_data)
 			dlc = "sbzac_wpn_fps_upg_charm_skullz",
 			name_id = "bm_wp_upg_charm_skullz",
 			unit = "units/pd2_dlc_sbzac2/weapons/wpn_fps_upg_charm_skullz/wpn_fps_upg_charm_skullz",
+			pcs = {},
+			stats = {
+				value = 1
+			}
+		},
+		wpn_fps_upg_charm_choco = {
+			is_a_unlockable = true,
+			texture_bundle_folder = "snow",
+			third_unit = "units/pd2_dlc_xm21/weapons/wpn_fps_upg_charms_snow/wpn_third_upg_charm_choco",
+			a_obj = "a_charm",
+			type = "charm",
+			dlc = "snow",
+			name_id = "bm_wp_upg_charm_choco",
+			unit = "units/pd2_dlc_xm21/weapons/wpn_fps_upg_charms_snow/wpn_fps_upg_charm_choco",
+			pcs = {},
+			stats = {
+				value = 1
+			}
+		},
+		wpn_fps_upg_charm_flake = {
+			is_a_unlockable = true,
+			texture_bundle_folder = "snow",
+			third_unit = "units/pd2_dlc_xm21/weapons/wpn_fps_upg_charms_snow/wpn_third_upg_charm_flake",
+			a_obj = "a_charm",
+			type = "charm",
+			dlc = "snow",
+			name_id = "bm_wp_upg_charm_flake",
+			unit = "units/pd2_dlc_xm21/weapons/wpn_fps_upg_charms_snow/wpn_fps_upg_charm_flake",
+			pcs = {},
+			stats = {
+				value = 1
+			}
+		},
+		wpn_fps_upg_charm_igloo = {
+			is_a_unlockable = true,
+			texture_bundle_folder = "snow",
+			third_unit = "units/pd2_dlc_xm21/weapons/wpn_fps_upg_charms_snow/wpn_third_upg_charm_igloo",
+			a_obj = "a_charm",
+			type = "charm",
+			dlc = "snow",
+			name_id = "bm_wp_upg_charm_igloo",
+			unit = "units/pd2_dlc_xm21/weapons/wpn_fps_upg_charms_snow/wpn_fps_upg_charm_igloo",
+			pcs = {},
+			stats = {
+				value = 1
+			}
+		},
+		wpn_fps_upg_charm_snow = {
+			is_a_unlockable = true,
+			texture_bundle_folder = "snow",
+			third_unit = "units/pd2_dlc_xm21/weapons/wpn_fps_upg_charms_snow/wpn_third_upg_charm_snow",
+			a_obj = "a_charm",
+			type = "charm",
+			dlc = "snow",
+			name_id = "bm_wp_upg_charm_snow",
+			unit = "units/pd2_dlc_xm21/weapons/wpn_fps_upg_charms_snow/wpn_fps_upg_charm_snow",
+			pcs = {},
+			stats = {
+				value = 1
+			}
+		},
+		wpn_fps_upg_charm_ball = {
+			is_a_unlockable = true,
+			texture_bundle_folder = "xm21",
+			third_unit = "units/pd2_dlc_xm21/weapons/wpn_fps_upg_charms_snow/wpn_third_upg_charm_ball",
+			a_obj = "a_charm",
+			type = "charm",
+			dlc = "xm21",
+			name_id = "bm_wp_upg_charm_ball",
+			unit = "units/pd2_dlc_xm21/weapons/wpn_fps_upg_charms_snow/wpn_fps_upg_charm_ball",
+			pcs = {},
+			stats = {
+				value = 1
+			}
+		},
+		wpn_fps_upg_charm_lusse = {
+			is_a_unlockable = true,
+			texture_bundle_folder = "xm21",
+			third_unit = "units/pd2_dlc_xm21/weapons/wpn_fps_upg_charms_snow/wpn_third_upg_charm_lusse",
+			a_obj = "a_charm",
+			type = "charm",
+			dlc = "xm21",
+			name_id = "bm_wp_upg_charm_lusse",
+			unit = "units/pd2_dlc_xm21/weapons/wpn_fps_upg_charms_snow/wpn_fps_upg_charm_lusse",
 			pcs = {},
 			stats = {
 				value = 1
@@ -19742,6 +19887,10 @@ function WeaponFactoryTweakData:_init_g26()
 			},
 			wpn_fps_upg_o_rikt = {
 				parent = "slide"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -20110,6 +20259,10 @@ function WeaponFactoryTweakData:_init_x_b92fs()
 					reload = "reload_right",
 					magazine_empty = "last_recoil"
 				}
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -20233,6 +20386,10 @@ function WeaponFactoryTweakData:_init_x_deagle()
 					reload = "reload_right",
 					magazine_empty = "last_recoil"
 				}
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -20963,6 +21120,10 @@ function WeaponFactoryTweakData:_init_c96()
 			},
 			wpn_fps_upg_o_rikt = {
 				parent = "slide"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -22945,6 +23106,10 @@ function WeaponFactoryTweakData:_init_hs2000()
 				parent = "barrel"
 			},
 			wpn_fps_upg_ns_pis_meatgrinder = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
 				a_obj = "a_ns",
 				parent = "barrel"
 			}
@@ -26326,6 +26491,10 @@ function WeaponFactoryTweakData:_init_x_g22c()
 			},
 			wpn_fps_pis_g26_g_laser = {
 				a_obj = "a_g_2"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -30719,6 +30888,10 @@ function WeaponFactoryTweakData:_init_sparrow()
 			wpn_fps_upg_ns_pis_meatgrinder = {
 				a_obj = "a_ns",
 				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -32753,6 +32926,10 @@ function WeaponFactoryTweakData:_init_pl14()
 			wpn_fps_upg_ns_pis_meatgrinder = {
 				a_obj = "a_ns",
 				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -33029,6 +33206,10 @@ function WeaponFactoryTweakData:_init_m1911()
 			wpn_fps_upg_ns_pis_meatgrinder = {
 				a_obj = "a_ns",
 				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -33143,6 +33324,10 @@ function WeaponFactoryTweakData:_init_x_m1911()
 				parent = "barrel"
 			},
 			wpn_fps_upg_ns_pis_meatgrinder = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
 				a_obj = "a_ns",
 				parent = "barrel"
 			},
@@ -33864,6 +34049,11 @@ function WeaponFactoryTweakData:_init_vityaz()
 				}
 			},
 			wpn_fps_upg_ns_ass_smg_stubby = {
+				forbids = {
+					"wpn_fps_smg_vityaz_ns_standard"
+				}
+			},
+			wpn_fps_upg_ns_pis_putnik = {
 				forbids = {
 					"wpn_fps_smg_vityaz_ns_standard"
 				}
@@ -36708,6 +36898,10 @@ function WeaponFactoryTweakData:_init_packrat()
 			wpn_fps_upg_ns_pis_meatgrinder = {
 				a_obj = "a_ns",
 				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -37350,6 +37544,10 @@ function WeaponFactoryTweakData:_init_x_packrat()
 				parent = "barrel"
 			},
 			wpn_fps_upg_ns_pis_meatgrinder = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
 				a_obj = "a_ns",
 				parent = "barrel"
 			},
@@ -40863,6 +41061,10 @@ function WeaponFactoryTweakData:_init_type54()
 			wpn_fps_upg_ns_pis_meatgrinder = {
 				a_obj = "a_ns",
 				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -41006,6 +41208,10 @@ function WeaponFactoryTweakData:_init_x_type54()
 				parent = "barrel"
 			},
 			wpn_fps_upg_ns_pis_meatgrinder = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
 				a_obj = "a_ns",
 				parent = "barrel"
 			},
@@ -41206,6 +41412,10 @@ function WeaponFactoryTweakData:_init_rsh12()
 				parent = "barrel"
 			},
 			wpn_fps_upg_ns_pis_jungle = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
 				a_obj = "a_ns",
 				parent = "barrel"
 			},
@@ -42272,6 +42482,10 @@ function WeaponFactoryTweakData:_init_breech()
 				parent = "barrel"
 			},
 			wpn_fps_upg_ns_pis_meatgrinder = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
 				a_obj = "a_ns",
 				parent = "barrel"
 			}
@@ -43373,6 +43587,9 @@ function WeaponFactoryTweakData:_init_shrew()
 			},
 			wpn_fps_upg_ns_pis_medium_gem = {
 				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -43498,6 +43715,9 @@ function WeaponFactoryTweakData:_init_x_shrew()
 				parent = "barrel"
 			},
 			wpn_fps_upg_ns_pis_medium_gem = {
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
 				parent = "barrel"
 			},
 			wpn_fps_pis_shrew_m_extended = {
@@ -45360,6 +45580,9 @@ function WeaponFactoryTweakData:_init_x_scorpion()
 			wpn_fps_upg_fl_pis_tlr1 = {
 				"wpn_fps_smg_scorpion_extra_rail_gadget"
 			},
+			wpn_fps_upg_fl_ass_utg = {
+				"wpn_fps_smg_scorpion_extra_rail_gadget"
+			},
 			wpn_fps_upg_fl_pis_crimson = {
 				"wpn_fps_smg_scorpion_extra_rail_gadget"
 			},
@@ -45406,6 +45629,7 @@ function WeaponFactoryTweakData:_init_x_scorpion()
 			"wpn_fps_upg_ass_ns_battle",
 			"wpn_fps_upg_fl_pis_laser",
 			"wpn_fps_upg_fl_pis_tlr1",
+			"wpn_fps_upg_fl_ass_utg",
 			"wpn_fps_upg_fl_pis_crimson",
 			"wpn_fps_upg_fl_pis_x400v",
 			"wpn_fps_upg_fl_pis_m3x",
@@ -45768,6 +45992,10 @@ function WeaponFactoryTweakData:_init_x_breech()
 				a_obj = "a_ns",
 				parent = "barrel"
 			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
 			wpn_fps_pis_breech_dh = {
 				animations = {
 					fire = "recoil",
@@ -46035,6 +46263,10 @@ function WeaponFactoryTweakData:_init_x_hs2000()
 				a_obj = "a_ns",
 				parent = "barrel"
 			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
 			wpn_fps_pis_hs2000_m_extended = {
 				stats = {
 					extra_ammo = 8,
@@ -46160,6 +46392,10 @@ function WeaponFactoryTweakData:_init_x_p226()
 				a_obj = "a_ns",
 				parent = "barrel"
 			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
 			wpn_fps_pis_p226_m_extended = {
 				stats = {
 					extra_ammo = 8,
@@ -46280,6 +46516,10 @@ function WeaponFactoryTweakData:_init_x_pl14()
 				parent = "barrel"
 			},
 			wpn_fps_upg_ns_pis_meatgrinder = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
 				a_obj = "a_ns",
 				parent = "barrel"
 			},
@@ -46413,6 +46653,10 @@ function WeaponFactoryTweakData:_init_x_ppk()
 				parent = "barrel"
 			},
 			wpn_fps_upg_ns_pis_meatgrinder = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
 				a_obj = "a_ns",
 				parent = "barrel"
 			}
@@ -46588,6 +46832,10 @@ function WeaponFactoryTweakData:_init_x_sparrow()
 				parent = "barrel"
 			},
 			wpn_fps_upg_ns_pis_meatgrinder = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
 				a_obj = "a_ns",
 				parent = "barrel"
 			}
@@ -47897,6 +48145,10 @@ function WeaponFactoryTweakData:_init_legacy()
 			wpn_fps_upg_ns_pis_meatgrinder = {
 				a_obj = "a_ns",
 				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -48024,6 +48276,10 @@ function WeaponFactoryTweakData:_init_x_legacy()
 				parent = "barrel"
 			},
 			wpn_fps_upg_ns_pis_meatgrinder = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
 				a_obj = "a_ns",
 				parent = "barrel"
 			}
@@ -49382,6 +49638,10 @@ function WeaponFactoryTweakData:_init_beer()
 			wpn_fps_upg_ns_pis_meatgrinder = {
 				a_obj = "a_ns",
 				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -49502,6 +49762,10 @@ function WeaponFactoryTweakData:_init_x_beer()
 				a_obj = "a_ns",
 				parent = "barrel"
 			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
 			wpn_fps_pis_beer_m_extended = {
 				stats = {
 					extra_ammo = 6,
@@ -49576,7 +49840,8 @@ function WeaponFactoryTweakData:_init_czech()
 			"wpn_fps_upg_fl_pis_laser",
 			"wpn_fps_upg_fl_pis_crimson",
 			"wpn_fps_upg_fl_pis_x400v",
-			"wpn_fps_upg_fl_pis_m3x"
+			"wpn_fps_upg_fl_pis_m3x",
+			"wpn_fps_upg_fl_pis_perst"
 		}
 	}
 	self.parts.wpn_fps_pis_czech_b_long = {
@@ -49809,6 +50074,10 @@ function WeaponFactoryTweakData:_init_czech()
 			wpn_fps_upg_ns_pis_meatgrinder = {
 				a_obj = "a_ns",
 				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -49905,6 +50174,10 @@ function WeaponFactoryTweakData:_init_x_czech()
 				parent = "barrel"
 			},
 			wpn_fps_upg_ns_pis_meatgrinder = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
 				a_obj = "a_ns",
 				parent = "barrel"
 			},
@@ -50198,6 +50471,10 @@ function WeaponFactoryTweakData:_init_stech()
 			wpn_fps_upg_ns_pis_meatgrinder = {
 				a_obj = "a_ns",
 				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -50302,6 +50579,10 @@ function WeaponFactoryTweakData:_init_x_stech()
 				parent = "barrel"
 			},
 			wpn_fps_upg_ns_pis_meatgrinder = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
 				a_obj = "a_ns",
 				parent = "barrel"
 			},
@@ -50555,6 +50836,10 @@ function WeaponFactoryTweakData:_init_holt()
 			wpn_fps_upg_ns_pis_meatgrinder = {
 				a_obj = "a_ns",
 				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -50661,6 +50946,10 @@ function WeaponFactoryTweakData:_init_x_holt()
 				parent = "barrel"
 			},
 			wpn_fps_upg_ns_pis_meatgrinder = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			},
+			wpn_fps_upg_ns_pis_putnik = {
 				a_obj = "a_ns",
 				parent = "barrel"
 			},

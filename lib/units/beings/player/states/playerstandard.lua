@@ -66,9 +66,10 @@ PlayerStandard.ANIM_STATES = {
 }
 PlayerStandard.projectile_throw_delays = {
 	projectile_frag_com = 0.83062744140625,
+	projectile_snowball = 0.48867034912109,
+	projectile_frag = 0.52984619140625,
 	projectile_dynamite = 0.86656761169434,
-	projectile_molotov = 0.86867332458496,
-	projectile_frag = 0.52984619140625
+	projectile_molotov = 0.86867332458496
 }
 PlayerStandard.debug_bipod = nil
 
@@ -1169,6 +1170,14 @@ function PlayerStandard:_get_max_walk_speed(t, force_run)
 
 	if managers.player:has_activate_temporary_upgrade("temporary", "increased_movement_speed") then
 		multiplier = multiplier * managers.player:temporary_upgrade_value("temporary", "increased_movement_speed", 1)
+	end
+
+	if managers.player:has_activate_temporary_upgrade("temporary", "copr_ability") then
+		local out_of_health = self._unit:character_damage():health_ratio() + 0.01 < managers.player:upgrade_value("player", "copr_static_damage_ratio", 0)
+
+		if out_of_health then
+			multiplier = multiplier * managers.player:upgrade_value("player", "copr_out_of_health_move_slow", 1)
+		end
 	end
 
 	local final_speed = movement_speed * multiplier

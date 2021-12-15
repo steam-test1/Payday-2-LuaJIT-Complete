@@ -117,6 +117,36 @@ function CopInventory:drop_shield()
 		end
 
 		managers.enemy:register_shield(shield_unit)
+
+		local weapon_selections = self:available_selections()
+
+		if weapon_selections then
+			local t_delete = table.delete
+
+			local function remove_shield_from_ignore_units(setup_data)
+				local ignore_units = setup_data and setup_data.ignore_units
+
+				if ignore_units then
+					t_delete(ignore_units, shield_unit)
+				end
+			end
+
+			for i_sel, selection_data in pairs(weapon_selections) do
+				local weap_unit = selection_data.unit
+				local weap_base = weap_unit and weap_unit:base()
+
+				if weap_base then
+					remove_shield_from_ignore_units(weap_base._setup)
+
+					local second_weap = weap_base._second_gun
+					local second_weap_base = second_weap and second_weap:base()
+
+					if second_weap_base then
+						remove_shield_from_ignore_units(second_weap_base._setup)
+					end
+				end
+			end
+		end
 	end
 end
 
@@ -141,7 +171,6 @@ function CopInventory:destroy_all_items()
 	CopInventory.super.destroy_all_items(self)
 
 	if alive(self._shield_unit) then
-		managers.enemy:unregister_shield(self._shield_unit)
 		self._shield_unit:set_slot(0)
 
 		self._shield_unit = nil

@@ -706,6 +706,15 @@ function TweakData:_init_pd2()
 			32
 		}
 	}
+	self.hud_icons.copr_ability = {
+		texture = "guis/dlcs/copr/textures/pd2/hud_copr_ability",
+		texture_rect = {
+			0,
+			0,
+			32,
+			32
+		}
+	}
 	self.hud_icons.none_icon = {
 		texture = "guis/textures/pd2/equipment_02",
 		texture_rect = {

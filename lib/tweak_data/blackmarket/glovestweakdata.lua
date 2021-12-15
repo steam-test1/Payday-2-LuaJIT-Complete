@@ -141,6 +141,8 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		cybertrench = "heist_default",
 		xmas_tuxedo = "heist_default",
 		mariachi = "mariatchi",
+		rusbear = "heist_default",
+		lonorwa = "heist_default",
 		poolrepair = "heist_default",
 		traditional = "heist_default",
 		sneak_suit = "sneak",

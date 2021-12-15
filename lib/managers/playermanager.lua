@@ -1265,6 +1265,27 @@ function PlayerManager:on_killshot(killed_unit, variant, headshot, weapon_id)
 		end
 	end
 
+	if self:has_activate_temporary_upgrade("temporary", "copr_ability") then
+		local kill_life_leech = self:upgrade_value_nil("player", "copr_kill_life_leech")
+		local static_damage_ratio = self:upgrade_value_nil("player", "copr_static_damage_ratio")
+
+		if kill_life_leech and static_damage_ratio and damage_ext then
+			self._copr_kill_life_leech_num = (self._copr_kill_life_leech_num or 0) + 1
+
+			if kill_life_leech <= self._copr_kill_life_leech_num then
+				self._copr_kill_life_leech_num = 0
+				local current_health_ratio = damage_ext:health_ratio()
+				local wanted_health_ratio = math.floor((current_health_ratio + 0.01 + static_damage_ratio) / static_damage_ratio) * static_damage_ratio
+				local health_regen = wanted_health_ratio - current_health_ratio
+
+				if health_regen > 0 then
+					damage_ext:restore_health(health_regen)
+					damage_ext:on_copr_killshot()
+				end
+			end
+		end
+	end
+
 	if self._on_killshot_t and t < self._on_killshot_t then
 		return
 	end
@@ -2098,6 +2119,10 @@ function PlayerManager:get_limited_exp_multiplier(job_id, level_id)
 	local level_data = level_id and tweak_data.levels[level_id] or {}
 	local multiplier = tweak_data:get_value("experience_manager", "limited_bonus_multiplier") or 1
 
+	if level_data.is_christmas_heist then
+		multiplier = multiplier + (tweak_data:get_value("experience_manager", "limited_xmas_bonus_multiplier") or 1) - 1
+	end
+
 	return multiplier
 end
 
@@ -2441,8 +2466,12 @@ function PlayerManager:get_value_from_risk_upgrade(risk_upgrade, detection_risk)
 	local risk_value = 0
 
 	if not detection_risk then
-		detection_risk = managers.blackmarket:get_suspicion_offset_of_local(tweak_data.player.SUSPICION_OFFSET_LERP or 0.75)
-		detection_risk = math.round(detection_risk * 100)
+		if not self._cached_detection_risk then
+			self._cached_detection_risk = managers.blackmarket:get_suspicion_offset_of_local(tweak_data.player.SUSPICION_OFFSET_LERP or 0.75)
+			self._cached_detection_risk = math.round(self._cached_detection_risk * 100)
+		end
+
+		detection_risk = self._cached_detection_risk
 	end
 
 	if risk_upgrade and type(risk_upgrade) == "table" then
@@ -5421,6 +5450,7 @@ function PlayerManager:attempt_ability(ability)
 	local has_no_grenades = self:get_grenade_amount(local_peer_id) == 0
 	local is_downed = game_state_machine:verify_game_state(GameStateFilters.downed)
 	local swan_song_active = managers.player:has_activate_temporary_upgrade("temporary", "berserker_damage_multiplier")
+	is_downed = is_downed and not self:has_category_upgrade("player", "activate_ability_downed")
 
 	if has_no_grenades or is_downed or swan_song_active then
 		return false
@@ -5542,6 +5572,97 @@ end
 
 function PlayerManager:end_tag_team(tagged, owner)
 	self._listener_holder:call("tag_team_end", tagged, owner)
+end
+
+function PlayerManager:_attempt_copr_ability()
+	if self:has_activate_temporary_upgrade("temporary", "copr_ability") then
+		return false
+	end
+
+	local character_damage = self:local_player():character_damage()
+	local duration = self:upgrade_value("temporary", "copr_ability")[2]
+	local now = managers.game_play_central:get_heist_timer()
+
+	managers.network:session():send_to_peers("sync_ability_hud", now + duration, duration)
+
+	local is_downed = game_state_machine:verify_game_state(GameStateFilters.downed)
+
+	self:set_property("copr_risen", is_downed)
+
+	if is_downed then
+		character_damage:revive(true)
+	end
+
+	self:activate_temporary_upgrade("temporary", "copr_ability")
+
+	local expire_time = self:get_activate_temporary_expire_time("temporary", "copr_ability")
+
+	managers.enemy:add_delayed_clbk("copr_ability_active", callback(self, self, "clbk_copr_ability_ended"), expire_time)
+	managers.hud:activate_teammate_ability_radial(HUDManager.PLAYER_PANEL, duration)
+
+	local bonus_health = self:upgrade_value("player", "copr_activate_bonus_health_ratio", tweak_data.upgrades.values.player.copr_activate_bonus_health_ratio[1])
+
+	character_damage:restore_health(bonus_health)
+	character_damage:set_armor(0)
+	character_damage:send_set_status()
+
+	local speed_up_on_kill_time = self:upgrade_value("player", "copr_speed_up_on_kill", 0)
+
+	if speed_up_on_kill_time > 0 then
+		local function speed_up_on_kill_func()
+			managers.player:speed_up_grenade_cooldown(speed_up_on_kill_time)
+		end
+
+		self:register_message(Message.OnEnemyKilled, "speed_up_copr_ability", speed_up_on_kill_func)
+	end
+
+	character_damage:on_copr_ability_activated()
+
+	self._copr_kill_life_leech_num = 0
+	local static_damage_ratio = self:upgrade_value("player", "copr_static_damage_ratio", 0)
+
+	managers.hud:set_copr_indicator(true, static_damage_ratio)
+
+	return true
+end
+
+function PlayerManager:force_end_copr_ability()
+	if self:has_activate_temporary_upgrade("temporary", "copr_ability") then
+		self:deactivate_temporary_upgrade("temporary", "copr_ability")
+		managers.enemy:remove_delayed_clbk("copr_ability_active", true)
+		self:set_property("copr_risen", nil)
+		managers.hud:activate_teammate_ability_radial(HUDManager.PLAYER_PANEL, 0)
+
+		local player_unit = self:local_player()
+		local character_damage = alive(player_unit) and player_unit:character_damage()
+
+		if character_damage then
+			character_damage:on_copr_ability_deactivated()
+		end
+
+		managers.hud:set_copr_indicator(false)
+	end
+end
+
+function PlayerManager:clbk_copr_ability_ended()
+	self:deactivate_temporary_upgrade("temporary", "copr_ability")
+
+	local player_unit = self:local_player()
+	local character_damage = alive(player_unit) and player_unit:character_damage()
+
+	if character_damage then
+		local out_of_health = character_damage:health_ratio() < self:upgrade_value("player", "copr_static_damage_ratio", 0)
+		local risen_from_dead = self:get_property("copr_risen", false) == true
+
+		character_damage:on_copr_ability_deactivated()
+
+		if out_of_health or risen_from_dead then
+			character_damage:force_into_bleedout(false, risen_from_dead)
+		end
+	end
+
+	self:set_property("copr_risen", nil)
+	managers.hud:set_copr_indicator(false)
 end
 
 function PlayerManager:_update_timers(t)

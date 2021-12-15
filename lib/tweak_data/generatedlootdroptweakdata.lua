@@ -143,6 +143,22 @@ function LootDropTweakData:init_generated(tweak_data)
 		sort_number = 512,
 		category = "dlc"
 	}
+	self.global_values.copr = {
+		name_id = "bm_global_value_copr",
+		desc_id = "menu_l_global_value_copr",
+		unlock_id = "bm_global_value_copr_unlock",
+		color = tweak_data.screen_colors.dlc_color,
+		dlc = true,
+		free = true,
+		hide_unavailable = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 514,
+		category = "normal"
+	}
 	self.global_values.ess = {
 		name_id = "bm_global_value_ess",
 		desc_id = "menu_l_global_value_ess",
@@ -767,6 +783,22 @@ function LootDropTweakData:init_generated(tweak_data)
 		sort_number = 499,
 		category = "infamous"
 	}
+	self.global_values.snow = {
+		name_id = "bm_global_value_snow",
+		desc_id = "menu_l_global_value_snow",
+		unlock_id = "bm_global_value_snow_unlock",
+		color = tweak_data.screen_colors.dlc_color,
+		dlc = true,
+		free = true,
+		hide_unavailable = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 615,
+		category = "dlc"
+	}
 	self.global_values.srtr = {
 		name_id = "bm_global_value_srtr",
 		desc_id = "menu_l_global_value_srtr",
@@ -1036,6 +1068,22 @@ function LootDropTweakData:init_generated(tweak_data)
 		drops = true,
 		track = true,
 		sort_number = 260,
+		category = "normal"
+	}
+	self.global_values.xm21 = {
+		name_id = "bm_global_value_xm21",
+		desc_id = "menu_l_global_value_xm21",
+		unlock_id = "bm_global_value_xm21_unlock",
+		color = tweak_data.screen_colors.dlc_color,
+		dlc = true,
+		free = false,
+		hide_unavailable = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 270,
 		category = "normal"
 	}
 	self.global_values.xmn = {

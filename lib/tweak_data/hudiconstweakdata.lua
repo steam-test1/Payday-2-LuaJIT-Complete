@@ -14645,6 +14645,24 @@ function HudIconsTweakData:init()
 			85
 		}
 	}
+	self.C_All_H_All_Giftgiver = {
+		texture = "guis/dlcs/trk/atlases/xm21_achievement",
+		texture_rect = {
+			89,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_Locke_H_BreakinFeds_Bloody = {
+		texture = "guis/dlcs/trk/atlases/xm21_achievement",
+		texture_rect = {
+			2,
+			2,
+			85,
+			85
+		}
+	}
 	self.Other_H_All_ForAllYou = {
 		texture = "guis/dlcs/trk/atlases/apfo_achievement",
 		texture_rect = {

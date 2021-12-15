@@ -7535,6 +7535,48 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		global_value = "sbzac_elegantteeth",
 		texture_bundle_folder = "sbzac2"
 	}
+	self.masks.leshy = {
+		unit = "units/pd2_dlc_snow/masks/msk_leshy/msk_leshy",
+		name_id = "bm_msk_leshy",
+		pcs = {},
+		type = "helmet",
+		value = 0,
+		global_value = "snow",
+		texture_bundle_folder = "snow"
+	}
+	self.masks.iceskull = {
+		unit = "units/pd2_dlc_snow/masks/msk_iceskull/msk_iceskull",
+		name_id = "bm_msk_iceskull",
+		pcs = {},
+		type = "helmet",
+		value = 0,
+		global_value = "snow",
+		texture_bundle_folder = "snow",
+		offsets = {
+			jimmy = {
+				Vector3(0, 1.03148, 0),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.icedeer = {
+		unit = "units/pd2_dlc_snow/masks/msk_icedeer/msk_icedeer",
+		name_id = "bm_msk_icedeer",
+		pcs = {},
+		type = "helmet",
+		value = 0,
+		global_value = "snow",
+		texture_bundle_folder = "snow"
+	}
+	self.masks.foxfurhat = {
+		unit = "units/pd2_dlc_snow/masks/msk_foxfurhat/msk_foxfurhat",
+		name_id = "bm_msk_foxfurhat",
+		pcs = {},
+		type = "helmet",
+		value = 0,
+		global_value = "snow",
+		texture_bundle_folder = "snow"
+	}
 	self.masks.boss = {
 		unit = "units/pd2_dlc_srtr/masks/msk_boss/msk_boss",
 		name_id = "bm_msk_boss",

@@ -4178,7 +4178,9 @@ function SpecializationTierItem:init(tier_data, tree_panel, tree, tier, x, y, w,
 	self._tier = tier
 	local specialization_descs = tweak_data.upgrades.specialization_descs[tree]
 	specialization_descs = specialization_descs and specialization_descs[tier] or {}
-	local macroes = {}
+	local macroes = {
+		BTN_ABILITY = managers.localization:btn_macro("throw_grenade")
+	}
 
 	for i, d in pairs(specialization_descs) do
 		macroes[i] = d

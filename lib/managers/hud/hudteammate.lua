@@ -482,6 +482,14 @@ function HUDTeammate:_create_radial_health(radial_health_panel)
 		w = radial_health_panel:w(),
 		h = radial_health_panel:h()
 	})
+
+	local copr_overlay_panel = radial_health_panel:panel({
+		name = "copr_overlay_panel",
+		layer = 3,
+		w = radial_health_panel:w(),
+		h = radial_health_panel:h()
+	})
+
 	self:_create_condition(radial_health_panel)
 end
 
@@ -1504,6 +1512,22 @@ function HUDTeammate:set_health(data)
 	local radial_rip_bg = radial_health_panel:child("radial_rip_bg")
 	local red = data.current / data.total
 
+	if managers.player:has_activate_temporary_upgrade("temporary", "copr_ability") and self._id == HUDManager.PLAYER_PANEL then
+		local static_damage_ratio = managers.player:upgrade_value_nil("player", "copr_static_damage_ratio")
+
+		if static_damage_ratio then
+			red = math.floor((red + 0.01) / static_damage_ratio) * static_damage_ratio
+		end
+
+		local copr_overlay_panel = radial_health_panel:child("copr_overlay_panel")
+
+		if alive(copr_overlay_panel) then
+			for _, notch in ipairs(copr_overlay_panel:children()) do
+				notch:set_visible(notch:script().red <= red + 0.01)
+			end
+		end
+	end
+
 	radial_health:stop()
 
 	if red < radial_health:color().red then
@@ -1533,6 +1557,14 @@ function HUDTeammate:set_health(data)
 				end
 
 				self:update_delayed_damage()
+
+				local copr_overlay_panel = radial_health_panel:child("copr_overlay_panel")
+
+				if alive(copr_overlay_panel) then
+					for _, notch in ipairs(copr_overlay_panel:children()) do
+						notch:set_visible(notch:script().red <= health_ratio + 0.01)
+					end
+				end
 			end)
 		end)
 	end
@@ -2383,6 +2415,60 @@ function HUDTeammate:set_info_meter(data)
 			radial_info_meter:set_visible(c > 0)
 		end)
 	end)
+end
+
+function HUDTeammate:set_copr_indicator(enabled, static_damage_ratio)
+	local teammate_panel = self._panel:child("player")
+	local radial_health_panel = self._radial_health_panel
+	local copr_overlay_panel = radial_health_panel:child("copr_overlay_panel")
+	local radial_health = radial_health_panel:child("radial_health")
+	local red = radial_health:color().r
+
+	if alive(copr_overlay_panel) then
+		copr_overlay_panel:clear()
+		copr_overlay_panel:set_visible(enabled)
+
+		if enabled then
+			local num_notches = math.ceil(1 / static_damage_ratio)
+			local rotation = nil
+			local cx, cy = copr_overlay_panel:center()
+			local v1 = Vector3()
+			local v2 = Vector3()
+			local v3 = Vector3()
+			local mset = mvector3.set_static
+			local x, y = nil
+			local w = 5
+			local h = math.min(copr_overlay_panel:w(), copr_overlay_panel:h()) / 7
+
+			for i = 0, num_notches - 1 do
+				rotation = i / num_notches * 360
+				x = cx + math.sin(rotation) * 21.5
+				y = cy - math.cos(rotation) * 21.5
+
+				mset(v1, 0, h, 0)
+				mset(v2, w, h, 0)
+				mset(v3, w / 2, 0, 0)
+
+				local notch = copr_overlay_panel:polygon({
+					layer = 0,
+					name = tostring(i),
+					color = Color.black:with_alpha(0.6),
+					rotation = rotation,
+					triangles = {
+						v1,
+						v2,
+						v3
+					},
+					w = w,
+					h = h
+				})
+				notch:script().red = 1 - i / num_notches
+
+				notch:set_visible(notch:script().red <= red + 0.01)
+				notch:set_center(x, y)
+			end
+		end
+	end
 end
 
 if _G.IS_VR then

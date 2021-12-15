@@ -378,6 +378,7 @@ function MenuSceneManager:_set_up_templates()
 			position = Vector3(160, -250, -40)
 		})
 	}
+	self._scene_templates.standard.show_event_units = true
 	self._scene_templates.blackmarket = {
 		fov = 20,
 		use_item_grab = true,
@@ -732,6 +733,11 @@ function MenuSceneManager:_set_up_templates()
 			far_range = 400,
 			color = Vector3(1, 1, 1) * 0.8,
 			position = Vector3(1600, -1750, -25)
+		}),
+		self:_create_light({
+			far_range = 375,
+			color = Vector3(1.85, 1.82, 1.9),
+			position = Vector3(1710, -1500, -25)
 		})
 	}
 	self._scene_templates.blackmarket_armor_workshop = {
@@ -1153,8 +1159,97 @@ function MenuSceneManager:_setup_bg()
 	self._menu_logo = World:spawn_unit(Idstring("units/menu/menu_scene/menu_logo"), Vector3(0, 10, 0), Rotation(yaw, 0, 0))
 
 	self:set_character(managers.blackmarket:get_preferred_character())
+	self:_setup_event_units()
 	self:_setup_lobby_characters()
 	self:_setup_henchmen_characters()
+end
+
+function MenuSceneManager:_setup_event_units()
+	local active_event = false
+	active_event = true
+
+	if not active_event then
+		return
+	end
+
+	if self._event_units then
+		for _, unit in ipairs(self._event_units) do
+			unit:set_slot(0)
+		end
+	end
+
+	self._event_units = {}
+
+	self:_setup_event_presents()
+	self:_setup_event_xmas_decorations()
+
+	local e_money = self._bg_unit:effect_spawner(Idstring("e_money"))
+
+	if e_money then
+		e_money:set_enabled(false)
+	end
+end
+
+function MenuSceneManager:_setup_event_presents()
+	local positions = {
+		Vector3(100, 100, -75),
+		Vector3(100, 175, -75),
+		Vector3(25, 125, -75),
+		Vector3(125, 125, -125),
+		Vector3(75, 200, -125),
+		Vector3(50, 100, -125),
+		Vector3(0, 150, -125),
+		Vector3(-25, 75, -75),
+		Vector3(0, 50, -125),
+		Vector3(-50, 100, -125)
+	}
+	local unit_names = {
+		Idstring("units/pd2_dlc_a10th/props/a10th_gifts/a10th_gifts_diamonds"),
+		Idstring("units/pd2_dlc_a10th/props/a10th_gifts/a10th_gifts_diamonds"),
+		Idstring("units/pd2_dlc_a10th/props/a10th_gifts/a10th_gifts_polkal"),
+		Idstring("units/pd2_dlc_a10th/props/a10th_gifts/a10th_gifts_polkal"),
+		Idstring("units/pd2_dlc_a10th/props/a10th_gifts/a10th_gifts_polkas"),
+		Idstring("units/pd2_dlc_a10th/props/a10th_gifts/a10th_gifts_polkas"),
+		Idstring("units/pd2_dlc_a10th/props/a10th_gifts/a10th_gifts_stars"),
+		Idstring("units/pd2_dlc_a10th/props/a10th_gifts/a10th_gifts_stars"),
+		Idstring("units/pd2_dlc_a10th/props/a10th_gifts/a10th_gifts_stripes"),
+		Idstring("units/pd2_dlc_a10th/props/a10th_gifts/a10th_gifts_stripes"),
+		Idstring("units/pd2_dlc_a10th/props/a10th_gifts/a10th_gifts_zigzag"),
+		Idstring("units/pd2_dlc_a10th/props/a10th_gifts/a10th_gifts_zigzag")
+	}
+	local rotation, unit_index = nil
+
+	for i, position in ipairs(positions) do
+		rotation = Rotation((math.random(2) - 1) * 25, 0, 0)
+		unit_index = math.random(#unit_names)
+		self._event_units[i] = World:spawn_unit(unit_names[unit_index], position, rotation)
+
+		table.remove(unit_names, unit_index)
+	end
+end
+
+function MenuSceneManager:_setup_event_xmas_decorations()
+	local a = self._bg_unit:get_object(Idstring("a_reference"))
+
+	if self._snow_effect then
+		World:effect_manager():kill(self._snow_effect)
+
+		self._snow_effect = nil
+	end
+
+	if alive(self._xmas_tree) then
+		self._xmas_tree:set_slot(0)
+
+		self._xmas_tree = nil
+	end
+
+	self._xmas_tree = World:spawn_unit(Idstring("units/pd2_dlc2/props/com_props_christmas_tree/com_prop_christmas_tree"), a:position() + Vector3(-150, 250, -50), Rotation(-45 + (math.random(2) - 1) * 180, 0, 0))
+
+	if alive(self._snow_pile) then
+		self._snow_pile:set_slot(0)
+
+		self._snow_pile = nil
+	end
 end
 
 function MenuSceneManager:_set_player_character_unit(unit_name)
@@ -2827,6 +2922,10 @@ function MenuSceneManager:set_scene_template(template, data, custom_name, skip_t
 		if alive(self._menu_logo) then
 			self._menu_logo:set_visible(not template_data.hide_menu_logo)
 		end
+
+		for _, event_unit in ipairs(self._event_units or {}) do
+			event_unit:set_visible(template_data.show_event_units)
+		end
 	end
 
 	if template_data and template_data.upgrade_object then
@@ -2873,10 +2972,71 @@ function MenuSceneManager:set_scene_template(template, data, custom_name, skip_t
 	if template_data then
 		if template_data.use_workbench_room then
 			self:spawn_workbench_room(template_data.workbench_name)
+
+			if template == "blackmarket_armor" then
+				self:_change_workbench_room_lights()
+			else
+				self:_reset_workbench_room_lights()
+			end
 		else
 			self:delete_workbench_room()
 		end
 	end
+end
+
+function MenuSceneManager:_change_workbench_room_lights()
+	if not self._workbench_room then
+		return
+	end
+
+	self._scene_templates.blackmarket_armor.lights[1]:set_enable(false)
+	self._scene_templates.blackmarket_armor.lights[2]:set_enable(true)
+
+	local l_omni_01 = Idstring("l_omni_01")
+	local l_omni_05 = Idstring("l_omni_05")
+	local l_spot_01 = Idstring("l_spot_01")
+	local l_omni_13 = Idstring("l_omni_13")
+	local l_omni_09 = Idstring("l_omni_09")
+	local indexed_lights = {}
+	local loaded_lights = 0
+	loaded_lights = 0
+	indexed_lights = {}
+	local lights = self._workbench_room:get_objects_by_type(Idstring("light"))
+
+	while loaded_lights < 5 do
+		for i = 1, #lights do
+			local name = lights[i]:name()
+
+			if name == l_omni_01 or name == l_omni_05 or name == l_spot_01 or name == l_omni_13 or name == l_omni_09 then
+				indexed_lights[name:key()] = lights[i]
+				loaded_lights = loaded_lights + 1
+			end
+		end
+	end
+
+	for i = 1, 10 do
+		indexed_lights[l_omni_01:key()]:set_position(Vector3(1570, -1670, 30))
+		indexed_lights[l_omni_01:key()]:set_color(Vector3(1.75, 1.57, 1.66))
+		indexed_lights[l_omni_01:key()]:set_far_range(180)
+		indexed_lights[l_omni_05:key()]:set_position(Vector3(1290, -1520, 20))
+		indexed_lights[l_omni_05:key()]:set_color(Vector3(0.3, 0.375, 0.3375))
+		indexed_lights[l_omni_05:key()]:set_far_range(375)
+		indexed_lights[l_omni_09:key()]:set_position(Vector3(1490, -1670, -35))
+		indexed_lights[l_omni_09:key()]:set_color(Vector3(0.32, 0.42, 0.93))
+		indexed_lights[l_omni_09:key()]:set_far_range(195)
+		indexed_lights[l_omni_13:key()]:set_position(Vector3(1500, -1565, 13))
+		indexed_lights[l_omni_13:key()]:set_color(Vector3(32.7, 43.5, 48.9))
+		indexed_lights[l_omni_13:key()]:set_far_range(95)
+		indexed_lights[l_spot_01:key()]:set_position(Vector3(1415, -1510, 200.019))
+		indexed_lights[l_spot_01:key()]:set_rotation(Rotation(-25.5624, 11.491, -20.6401))
+		indexed_lights[l_spot_01:key()]:set_color(Vector3(0.65, 0.8, 0.8))
+		indexed_lights[l_spot_01:key()]:set_far_range(800)
+	end
+end
+
+function MenuSceneManager:_reset_workbench_room_lights()
+	self._scene_templates.blackmarket_armor.lights[1]:set_enable(true)
+	self._scene_templates.blackmarket_armor.lights[2]:set_enable(false)
 end
 
 function MenuSceneManager:dispatch_transition_done()
@@ -4108,18 +4268,18 @@ end
 function MenuSceneManager:pre_unload()
 	self._weapon_names = {}
 
-	for _, weapon_units in pairs(self._weapon_units) do
+	for _, weapon_units in pairs(self._weapon_units or {}) do
 		for _, weapon_data in pairs(weapon_units) do
 			table.insert(self._weapon_names, weapon_data.name)
 
-			if weapon_data.unit then
+			if alive(weapon_data.unit) then
 				World:delete_unit(weapon_data.unit)
 			end
 		end
 	end
 
-	for owner_key, mask_data in pairs(self._mask_units) do
-		if mask_data.mask_unit then
+	for owner_key, mask_data in pairs(self._mask_units or {}) do
+		if alive(mask_data.mask_unit) then
 			World:delete_unit(mask_data.mask_unit)
 
 			mask_data.mask_unit = nil

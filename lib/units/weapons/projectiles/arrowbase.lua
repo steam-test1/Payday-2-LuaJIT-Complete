@@ -51,7 +51,7 @@ function ArrowBase:_on_collision(col_ray)
 	local loose_shoot = self._weapon_charge_fail
 
 	if not loose_shoot and alive(col_ray.unit) then
-		local client_damage = self._damage_class_string == "InstantExplosiveBulletBase" or alive(col_ray.unit) and col_ray.unit:id() ~= -1
+		local client_damage = self._damage_class.is_explosive_bullet or alive(col_ray.unit) and col_ray.unit:id() ~= -1
 
 		if Network:is_server() or client_damage then
 			self._damage_class:on_collision(col_ray, self._weapon_unit or self._unit, self._thrower_unit, self._damage * damage_mult, false, false)
@@ -479,7 +479,7 @@ function ArrowBase:sync_attach_to_unit(instant_dynamic_pickup, parent_unit, pare
 			self._col_ray = col_ray
 			self._col_ray.velocity = dir
 
-			if not drop_in and self._damage_class_string ~= "InstantExplosiveBulletBase" and col_ray.unit:in_slot(managers.slot:get_mask("bullet_blank_impact_targets")) then
+			if not drop_in and not self._damage_class.is_explosive_bullet and col_ray.unit:in_slot(managers.slot:get_mask("bullet_blank_impact_targets")) then
 				self._damage_class:on_collision(col_ray, self:weapon_unit(), self:thrower_unit(), self._damage, true)
 			end
 		end

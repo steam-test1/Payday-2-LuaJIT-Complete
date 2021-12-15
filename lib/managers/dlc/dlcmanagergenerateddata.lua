@@ -34,6 +34,10 @@ function GenericDLCManager:has_chca()
 	return self:is_dlc_unlocked("chca")
 end
 
+function GenericDLCManager:has_copr()
+	return self:is_dlc_unlocked("copr")
+end
+
 function GenericDLCManager:has_ess()
 	return self:is_dlc_unlocked("ess")
 end
@@ -190,6 +194,10 @@ function GenericDLCManager:has_sms()
 	return self:is_dlc_unlocked("sms")
 end
 
+function GenericDLCManager:has_snow()
+	return self:is_dlc_unlocked("snow")
+end
+
 function GenericDLCManager:has_srtr()
 	return self:is_dlc_unlocked("srtr")
 end
@@ -258,6 +266,10 @@ function GenericDLCManager:has_xm20()
 	return self:is_dlc_unlocked("xm20")
 end
 
+function GenericDLCManager:has_xm21()
+	return self:is_dlc_unlocked("xm21")
+end
+
 function GenericDLCManager:has_xmn()
 	return self:is_dlc_unlocked("xmn")
 end
@@ -300,6 +312,10 @@ function WINDLCManager:init_generated()
 	}
 	Global.dlc_manager.all_dlc_data.chca = {
 		app_id = "1778790",
+		no_install = true
+	}
+	Global.dlc_manager.all_dlc_data.copr = {
+		app_id = "218620",
 		no_install = true
 	}
 	Global.dlc_manager.all_dlc_data.ess = {
@@ -470,6 +486,10 @@ function WINDLCManager:init_generated()
 		app_id = "218620",
 		no_install = true
 	}
+	Global.dlc_manager.all_dlc_data.snow = {
+		app_id = "1824880",
+		no_install = true
+	}
 	Global.dlc_manager.all_dlc_data.srtr = {
 		app_id = "978300",
 		no_install = true,
@@ -540,6 +560,10 @@ function WINDLCManager:init_generated()
 		webpage = "ovk.af/bexwcp1yb"
 	}
 	Global.dlc_manager.all_dlc_data.xm20 = {
+		app_id = "218620",
+		no_install = true
+	}
+	Global.dlc_manager.all_dlc_data.xm21 = {
 		app_id = "218620",
 		no_install = true
 	}

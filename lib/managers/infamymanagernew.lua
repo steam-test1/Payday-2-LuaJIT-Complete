@@ -242,9 +242,8 @@ end
 
 function InfamyManager:get_join_stinger_name_id(stinger_name)
 	local item_id = string.format("infamy_stinger_%03d", stinger_name)
-	local item_tweak = tweak_data.infamy.items[item_id]
 
-	return item_tweak and item_tweak.name_id or "menu_" .. item_id .. "_name"
+	return "menu_" .. item_id .. "_name"
 end
 
 function InfamyManager:get_infamy_card_id_and_rect()

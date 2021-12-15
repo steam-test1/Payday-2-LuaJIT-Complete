@@ -186,6 +186,46 @@ function PlayerDamage:init(unit)
 	self:clear_delayed_damage()
 end
 
+function PlayerDamage:on_copr_ability_activated()
+	self._current_state = nil
+	self._armor_change_blocked = true
+end
+
+function PlayerDamage:on_copr_ability_deactivated()
+	self._armor_change_blocked = false
+
+	self:set_regenerate_timer_to_max()
+	managers.hud:set_player_health({
+		current = self:get_real_health(),
+		total = self:_max_health(),
+		revives = Application:digest_value(self._revives, false)
+	})
+end
+
+function PlayerDamage:on_copr_heal_received(healer_unit, upgrade_level)
+	local max_health = self:_max_health()
+	local upgrade_value = managers.player:upgrade_value_by_level("player", "copr_teammate_heal", upgrade_level)
+
+	if upgrade_value and self:get_real_health() < max_health then
+		self:restore_health(upgrade_value, false, true)
+	end
+end
+
+function PlayerDamage:on_copr_killshot()
+	self._next_allowed_dmg_t = Application:digest_value(managers.player:player_timer():time() + 1, true)
+	self._last_received_dmg = self:_max_health()
+end
+
+function PlayerDamage:copr_update_attack_data(attack_data)
+	if managers.player:has_activate_temporary_upgrade("temporary", "copr_ability") then
+		local static_damage_ratio = managers.player:upgrade_value_nil("player", "copr_static_damage_ratio")
+
+		if static_damage_ratio and attack_data.damage > 0 then
+			attack_data.damage = self:_max_health() * static_damage_ratio
+		end
+	end
+end
+
 function PlayerDamage:_init_standard_listeners()
 	function self._on_damage_callback_func()
 		return callback(self, self, "_on_damage_event")
@@ -311,7 +351,7 @@ function PlayerDamage:send_set_status()
 	self:_send_set_health()
 end
 
-function PlayerDamage:force_into_bleedout(can_activate_berserker)
+function PlayerDamage:force_into_bleedout(can_activate_berserker, ignore_reduce_revive)
 	if self:incapacitated() or self:arrested() then
 		return
 	end
@@ -321,7 +361,7 @@ function PlayerDamage:force_into_bleedout(can_activate_berserker)
 	self:set_health(0)
 	self:_chk_cheat_death()
 	self:_damage_screen()
-	self:_check_bleed_out(can_activate_berserker)
+	self:_check_bleed_out(can_activate_berserker, nil, ignore_reduce_revive)
 	managers.hud:set_player_health({
 		current = self:get_real_health(),
 		total = self:_max_health(),
@@ -457,7 +497,7 @@ function PlayerDamage:update(unit, t, dt)
 		self._bleed_out_blocked_by_tased = nil
 	end
 
-	if self._current_state then
+	if not self._armor_change_blocked and self._current_state then
 		self:_current_state(t, dt)
 	end
 
@@ -605,6 +645,7 @@ function PlayerDamage:recover_health()
 		total = self:_max_health(),
 		revives = Application:digest_value(self._revives, false)
 	})
+	managers.player:set_property("copr_risen", false)
 end
 
 function PlayerDamage:replenish()
@@ -621,6 +662,7 @@ function PlayerDamage:replenish()
 	})
 	SoundDevice:set_rtpc("shield_status", 100)
 	SoundDevice:set_rtpc("downed_state_progression", 0)
+	managers.player:set_property("copr_risen", false)
 end
 
 function PlayerDamage:regenerate_armor(no_sound)
@@ -858,6 +900,10 @@ function PlayerDamage:change_armor(change)
 end
 
 function PlayerDamage:set_armor(armor)
+	if self._armor_change_blocked then
+		return
+	end
+
 	self:_check_update_max_armor()
 
 	armor = math.clamp(armor, 0, self:_max_armor())
@@ -1044,6 +1090,7 @@ function PlayerDamage:damage_melee(attack_data)
 	local dmg_mul = pm:damage_reduction_skill_multiplier("melee")
 	attack_data.damage = attack_data.damage * dmg_mul
 
+	self:copr_update_attack_data(attack_data)
 	self._unit:sound():play("melee_hit_body", nil, nil)
 
 	local result = self:damage_bullet(attack_data)
@@ -1142,6 +1189,8 @@ function PlayerDamage:damage_bullet(attack_data)
 	if damage_absorption > 0 then
 		attack_data.damage = math.max(0, attack_data.damage - damage_absorption)
 	end
+
+	self:copr_update_attack_data(attack_data)
 
 	if self._god_mode then
 		if attack_data.damage > 0 then
@@ -1332,6 +1381,15 @@ function PlayerDamage:_calc_health_damage(attack_data)
 	self:change_health(-attack_data.damage)
 
 	health_subtracted = health_subtracted - self:get_real_health()
+
+	if managers.player:has_activate_temporary_upgrade("temporary", "copr_ability") and health_subtracted > 0 then
+		local teammate_heal_level = managers.player:upgrade_level_nil("player", "copr_teammate_heal")
+
+		if teammate_heal_level and self:get_real_health() > 0 then
+			self._unit:network():send("copr_teammate_heal", teammate_heal_level)
+		end
+	end
+
 	local trigger_skills = table.contains({
 		"bullet",
 		"explosion",
@@ -1515,6 +1573,8 @@ function PlayerDamage:damage_fall(data)
 	local health_damage_multiplier = 0
 
 	if die then
+		managers.player:force_end_copr_ability()
+
 		self._check_berserker_done = false
 
 		self:set_health(0)
@@ -1607,6 +1667,7 @@ function PlayerDamage:damage_explosion(attack_data)
 	attack_data.damage = managers.modifiers:modify_value("PlayerDamage:OnTakeExplosionDamage", attack_data.damage)
 	attack_data.damage = managers.player:modify_value("damage_taken", attack_data.damage, attack_data)
 
+	self:copr_update_attack_data(attack_data)
 	self:_check_chico_heal(attack_data)
 
 	local armor_subtracted = self:_calc_armor_damage(attack_data)
@@ -1739,7 +1800,7 @@ function PlayerDamage:is_berserker()
 	return not not self._check_berserker_done
 end
 
-function PlayerDamage:_check_bleed_out(can_activate_berserker, ignore_movement_state)
+function PlayerDamage:_check_bleed_out(can_activate_berserker, ignore_movement_state, ignore_reduce_revive)
 	if self:get_real_health() == 0 and not self._check_berserker_done then
 		if self._unit:movement():zipline_unit() then
 			self._bleed_out_blocked_by_zipline = true
@@ -1753,9 +1814,13 @@ function PlayerDamage:_check_bleed_out(can_activate_berserker, ignore_movement_s
 			return
 		end
 
+		if managers.player:has_activate_temporary_upgrade("temporary", "copr_ability") and managers.player:has_category_upgrade("player", "copr_out_of_health_move_slow") then
+			return
+		end
+
 		local time = Application:time()
 
-		if not self._block_medkit_auto_revive and time > self._uppers_elapsed + self._UPPERS_COOLDOWN then
+		if not self._block_medkit_auto_revive and not ignore_reduce_revive and time > self._uppers_elapsed + self._UPPERS_COOLDOWN then
 			local auto_recovery_kit = FirstAidKitBase.GetFirstAidKit(self._unit:position())
 
 			if auto_recovery_kit then
@@ -1795,7 +1860,10 @@ function PlayerDamage:_check_bleed_out(can_activate_berserker, ignore_movement_s
 		SoundDevice:set_rtpc("downed_state_progression", 0)
 
 		if not self._check_berserker_done or not can_activate_berserker then
-			self._revives = Application:digest_value(Application:digest_value(self._revives, false) - 1, true)
+			if not ignore_reduce_revive then
+				self._revives = Application:digest_value(Application:digest_value(self._revives, false) - 1, true)
+			end
+
 			self._check_berserker_done = nil
 
 			managers.environment_controller:set_last_life(Application:digest_value(self._revives, false) <= 1)
@@ -1906,6 +1974,7 @@ function PlayerDamage:on_downed()
 	self:_stop_concussion()
 	self:clear_armor_stored_health()
 	self:clear_delayed_damage()
+	managers.player:force_end_copr_ability()
 	self:remove_listener("IngameAccessCamera")
 	self._listener_holder:call("on_enter_bleedout")
 end

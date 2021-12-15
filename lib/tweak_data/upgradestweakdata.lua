@@ -2114,6 +2114,41 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.damage_control_healing = {
 		50
 	}
+	self.copr_ability_cooldown = 30
+	self.values.temporary.copr_ability = {
+		{
+			true,
+			6
+		},
+		{
+			true,
+			10
+		}
+	}
+	self.values.player.copr_static_damage_ratio = {
+		0.2,
+		0.1
+	}
+	self.values.player.copr_kill_life_leech = {
+		2,
+		2
+	}
+	self.values.player.copr_activate_bonus_health_ratio = {
+		0.4
+	}
+	self.values.player.copr_out_of_health_move_slow = {
+		0.2
+	}
+	self.values.player.copr_speed_up_on_kill = {
+		1
+	}
+	self.values.player.copr_teammate_heal = {
+		0.05,
+		0.1
+	}
+	self.values.player.activate_ability_downed = {
+		true
+	}
 	self.values.player.warp_health = {
 		{
 			0,
@@ -3716,6 +3751,31 @@ function UpgradesTweakData:_init_pd2_values()
 		end
 	end
 
+	local editable_specialization_lootdrop_drop_multiplier = "10%"
+	local editable_specialization_template = {
+		{},
+		{
+			"25%"
+		},
+		{},
+		{
+			"+1",
+			"15%",
+			"45%"
+		},
+		{},
+		{
+			"135%"
+		},
+		{},
+		{
+			"5%",
+			"20%"
+		},
+		{
+			editable_specialization_lootdrop_drop_multiplier
+		}
+	}
 	local editable_specialization_descs = {
 		{
 			{
@@ -4577,6 +4637,49 @@ function UpgradesTweakData:_init_pd2_values()
 		}
 	})
 
+	local activation_health_restore = self.values.player.copr_activate_bonus_health_ratio[1] * 100
+	local ability_cooldown = self.copr_ability_cooldown
+	local duration_1 = self.values.temporary.copr_ability[1][2]
+	local duration_2 = self.values.temporary.copr_ability[2][2]
+	local out_of_health_movement_slow = (1 - self.values.player.copr_out_of_health_move_slow[1]) * 100
+	local speed_up_on_kill = self.values.player.copr_speed_up_on_kill[1]
+	local teammate_heal_1 = self.values.player.copr_teammate_heal[1] * 100
+	local teammate_heal_2 = self.values.player.copr_teammate_heal[2] * 100
+	local static_damage_1 = self.values.player.copr_static_damage_ratio[1] * 100
+	local static_damage_2 = self.values.player.copr_static_damage_ratio[2] * 100
+	local health_bonus_1 = (self.values.player.passive_health_multiplier[2] - 1) * 100
+	local health_bonus_2 = (self.values.player.passive_health_multiplier[3] - 1) * 100 - health_bonus_1
+	local health_bonus_3 = (self.values.player.passive_health_multiplier[4] - 1) * 100 - health_bonus_2
+	local kill_life_leech_1 = self.values.player.copr_kill_life_leech[1]
+	local copr_specialization = deep_clone(editable_specialization_template)
+	copr_specialization[1] = {
+		tostring(activation_health_restore) .. "%",
+		tostring(static_damage_1) .. "%",
+		tostring(kill_life_leech_1),
+		tostring(teammate_heal_1) .. "%",
+		tostring(duration_1),
+		tostring(ability_cooldown)
+	}
+	copr_specialization[3] = {
+		tostring(health_bonus_1) .. "%",
+		tostring(out_of_health_movement_slow) .. "%"
+	}
+	copr_specialization[5] = {
+		tostring(duration_2),
+		tostring(speed_up_on_kill),
+		tostring(teammate_heal_2) .. "%"
+	}
+	copr_specialization[7] = {
+		tostring(health_bonus_2) .. "%"
+	}
+	copr_specialization[9] = {
+		tostring(static_damage_2) .. "%",
+		tostring(health_bonus_3) .. "%"
+	}
+
+	table.insert(copr_specialization[9], editable_specialization_lootdrop_drop_multiplier)
+	table.insert(editable_specialization_descs, copr_specialization)
+
 	self.specialization_descs = {}
 
 	for tree, data in pairs(editable_specialization_descs) do
@@ -4603,7 +4706,8 @@ function UpgradesTweakData:init(tweak_data)
 				"msr",
 				"corgi",
 				"clean",
-				"aziz"
+				"aziz",
+				"xmas_snowball"
 			}
 		},
 		{
@@ -9600,6 +9704,116 @@ function UpgradesTweakData:_player_definitions()
 			category = "player"
 		}
 	}
+	self.definitions.temporary_copr_ability_1 = {
+		name_id = "menu_temporary_copr_ability_1",
+		category = "temporary",
+		upgrade = {
+			value = 1,
+			upgrade = "copr_ability",
+			synced = true,
+			category = "temporary"
+		}
+	}
+	self.definitions.temporary_copr_ability_2 = {
+		name_id = "menu_temporary_copr_ability_2",
+		category = "temporary",
+		upgrade = {
+			value = 2,
+			upgrade = "copr_ability",
+			synced = true,
+			category = "temporary"
+		}
+	}
+	self.definitions.player_copr_teammate_heal_1 = {
+		name_id = "menu_player_copr_teammate_heal",
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "copr_teammate_heal",
+			category = "player"
+		}
+	}
+	self.definitions.player_copr_teammate_heal_2 = {
+		name_id = "menu_player_copr_teammate_heal",
+		category = "feature",
+		upgrade = {
+			value = 2,
+			upgrade = "copr_teammate_heal",
+			category = "player"
+		}
+	}
+	self.definitions.player_activate_ability_downed = {
+		name_id = "menu_player_activate_ability_downed",
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "activate_ability_downed",
+			category = "player"
+		}
+	}
+	self.definitions.player_copr_activate_bonus_health_ratio_1 = {
+		name_id = "menu_player_copr_activate_bonus_health_ratio_1",
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "copr_activate_bonus_health_ratio",
+			category = "player"
+		}
+	}
+	self.definitions.player_copr_out_of_health_move_slow_1 = {
+		name_id = "menu_player_copr_out_of_health_move_slow_1",
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "copr_out_of_health_move_slow",
+			category = "player"
+		}
+	}
+	self.definitions.player_copr_speed_up_on_kill_1 = {
+		name_id = "menu_player_copr_speed_up_on_kill_1",
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "copr_speed_up_on_kill",
+			category = "player"
+		}
+	}
+	self.definitions.player_copr_static_damage_ratio_1 = {
+		name_id = "menu_player_copr_static_damage_ratio",
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "copr_static_damage_ratio",
+			category = "player"
+		}
+	}
+	self.definitions.player_copr_static_damage_ratio_2 = {
+		name_id = "menu_player_copr_static_damage_ratio",
+		category = "feature",
+		upgrade = {
+			value = 2,
+			upgrade = "copr_static_damage_ratio",
+			category = "player"
+		}
+	}
+	self.definitions.player_copr_kill_life_leech_1 = {
+		name_id = "menu_player_copr_kill_life_leech",
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "copr_kill_life_leech",
+			category = "player"
+		}
+	}
+	self.definitions.player_copr_kill_life_leech_2 = {
+		name_id = "menu_player_copr_kill_life_leech",
+		category = "feature",
+		upgrade = {
+			value = 2,
+			upgrade = "copr_kill_life_leech",
+			category = "player"
+		}
+	}
 	self.definitions.toolset = {
 		description_text_id = "toolset",
 		category = "equipment",
@@ -11851,6 +12065,13 @@ function UpgradesTweakData:_grenades_definitions()
 	}
 	self.definitions.wpn_gre_electric = {
 		dlc = "sawp_grenade",
+		category = "grenade"
+	}
+	self.definitions.copr_ability = {
+		dlc = "copr",
+		category = "grenade"
+	}
+	self.definitions.xmas_snowball = {
 		category = "grenade"
 	}
 end

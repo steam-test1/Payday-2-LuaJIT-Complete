@@ -532,6 +532,11 @@ function AchievementsTweakData:init(tweak_data)
 			enemy_tags_all = {
 				"law"
 			}
+		},
+		dec21_02 = {
+			kill = true,
+			stat = "dec21_02_stat",
+			explosive = false
 		}
 	}
 	self.shotgun_single_shot_kills = {
@@ -5131,6 +5136,36 @@ function AchievementsTweakData:init(tweak_data)
 				}
 			}
 		},
+		dec21_01 = {
+			stealth = true,
+			award = "dec21_01",
+			no_alarm_pager = true,
+			difficulty = easywish_and_above,
+			jobs = {
+				"tag",
+				"fex"
+			},
+			player_style = {
+				styles = {
+					"candycane",
+					"badsanta",
+					"xmas_tuxedo"
+				}
+			},
+			masks = {
+				"santa_happy",
+				"krampus",
+				"robo_santa",
+				"mrs_claus",
+				"strinch",
+				"greedy_the_elf",
+				"rudeolph",
+				"santa_mad",
+				"santa_surprise",
+				"santa_drunk",
+				"smo_08"
+			}
+		},
 		bain_jobs = {
 			complete_job = true,
 			contract = "bain",
@@ -6880,6 +6915,12 @@ function AchievementsTweakData:init(tweak_data)
 				award = "sawp_1",
 				at = 200
 			}
+		},
+		dec21_02_stats = {
+			{
+				award = "dec21_02",
+				at = 75
+			}
 		}
 	}
 	local jobs = {}
@@ -8256,6 +8297,7 @@ function AchievementsTweakData:_init_visual(tweak_data)
 		}
 	}
 
+	table.insert(self.tags.inventory, "outfit")
 	table.insert(self.tags.unlock, "outfit")
 	table.insert(self.tags.unlock, "weapon_color")
 	table.insert(self.tags.unlock, "gloves")

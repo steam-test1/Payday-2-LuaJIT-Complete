@@ -2312,6 +2312,15 @@ function MenuCallbackHandler:toggle_mute_heist_vo(item)
 	managers.user:set_setting("mute_heist_vo", item:value() == "on", nil)
 end
 
+function MenuCallbackHandler:toggle_event_music(item)
+	managers.user:set_setting("event_music", item:value() == "on", nil)
+	managers.music:post_event(managers.music:jukebox_menu_track("mainmenu"))
+end
+
+function MenuCallbackHandler:show_event_music_toggle(item)
+	return not table.empty(tweak_data.music.event_track_overrides or {})
+end
+
 function MenuCallbackHandler:choice_test(item)
 	local test = item:value()
 
@@ -5378,6 +5387,12 @@ function MenuSoundCreator:modify_node(node)
 
 	if mute_heist_vo then
 		mute_heist_vo:set_value(managers.user:get_setting("mute_heist_vo") and "on" or "off")
+	end
+
+	local event_music = node:item("toggle_event_music")
+
+	if event_music then
+		event_music:set_value(managers.user:get_setting("event_music") and "on" or "off")
 	end
 
 	return node

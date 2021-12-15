@@ -493,6 +493,10 @@ function MenuCallbackHandler:_update_outfit_information()
 			local_player:character_damage():update_armor_stored_health()
 		end
 
+		if managers.player then
+			managers.player._cached_detection_risk = nil
+		end
+
 		managers.network:session():check_send_outfit()
 	end
 end

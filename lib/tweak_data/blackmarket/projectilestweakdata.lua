@@ -457,6 +457,20 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 			cooldown = "perkdeck_cooldown_over"
 		}
 	}
+	self.projectiles.copr_ability = {
+		name_id = "bm_grenade_copr_ability",
+		desc_id = "bm_grenade_copr_ability_desc",
+		ignore_statistics = true,
+		icon = "guis/dlcs/copr/textures/pd2/hud_copr_ability",
+		texture_bundle_folder = "copr",
+		ability = true,
+		base_cooldown = tweak_data.upgrades.copr_ability_cooldown,
+		max_amount = 1,
+		sounds = {
+			activate = "perkdeck_activate",
+			cooldown = "perkdeck_cooldown_over"
+		}
+	}
 	self.projectiles.dada_com = {
 		name_id = "bm_grenade_dada_com",
 		desc_id = "bm_grenade_dada_com_desc",
@@ -600,6 +614,28 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 	self.projectiles.underbarrel_m203_groza.unit = "units/pd2_dlc_sawp/weapons/wpn_launcher_electric/wpn_underbarrel_m203_groza"
 	self.projectiles.underbarrel_m203_groza.weapon_id = "groza"
 	self.projectiles.underbarrel_m203_groza.dlc = "sawp"
+	self.projectiles.xmas_snowball = {
+		name_id = "bm_grenade_xmas_snowball",
+		unit = "units/pd2_dlc_xm21/weapons/wpn_xmas_snowball/wpn_xmas_snowball",
+		unit_dummy = "units/pd2_dlc_xm21/weapons/wpn_xmas_snowball/wpn_xmas_snowball_husk",
+		local_unit = "units/pd2_dlc_xm21/weapons/wpn_xmas_snowball/wpn_xmas_snowball_local",
+		icon = "guis/dlcs/xm21/textures/pd2/hud_snowball",
+		texture_bundle_folder = "xm21",
+		base_cooldown = 2,
+		no_shouting = true,
+		impact_detonation = true,
+		client_authoritative = true,
+		no_cheat_count = true,
+		add_trail_effect = true,
+		is_a_grenade = true,
+		throwable = true,
+		animation = "throw_snowball",
+		max_amount = 6,
+		anim_global_param = "projectile_snowball",
+		throw_allowed_expire_t = 0.15,
+		expire_t = 0.8,
+		repeat_expire_t = 0.15
+	}
 	self._projectiles_index = {
 		"frag",
 		"launcher_frag",
@@ -659,7 +695,9 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 		"launcher_electric_arbiter",
 		"underbarrel_electric",
 		"underbarrel_electric_groza",
-		"underbarrel_m203_groza"
+		"underbarrel_m203_groza",
+		"copr_ability",
+		"xmas_snowball"
 	}
 	local free_dlcs = tweak_data:free_dlc_list()
 

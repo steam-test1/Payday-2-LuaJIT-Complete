@@ -814,6 +814,14 @@ function EnemyManager:on_enemy_unregistered(unit)
 end
 
 function EnemyManager:register_shield(shield_unit)
+	local unit_data_ext = shield_unit:unit_data()
+
+	if unit_data_ext then
+		unit_data_ext:add_destroy_listener(self._unit_clbk_key, callback(self, self, "unregister_shield"))
+	else
+		print("[EnemyManager:register_shield] ERROR - unit_data extension not found on shield unit ", shield_unit)
+	end
+
 	local t = self._timer:time()
 	local enemy_data = self._enemy_data
 	enemy_data.shields[shield_unit:key()] = {

@@ -2149,6 +2149,7 @@ function InstantBulletBase._get_vector_sync_yaw_pitch(dir, yaw_resolution, pitch
 end
 
 InstantExplosiveBulletBase = InstantExplosiveBulletBase or class(InstantBulletBase)
+InstantExplosiveBulletBase.is_explosive_bullet = true
 InstantExplosiveBulletBase.id = "explosive"
 InstantExplosiveBulletBase.CURVE_POW = tweak_data.upgrades.explosive_bullet.curve_pow
 InstantExplosiveBulletBase.PLAYER_DMG_MUL = tweak_data.upgrades.explosive_bullet.player_dmg_mul
@@ -2244,6 +2245,7 @@ function InstantExplosiveBulletBase:on_collision_server(position, normal, damage
 		curve_pow = self.CURVE_POW,
 		damage = damage,
 		player_damage = damage * self.PLAYER_DMG_MUL,
+		alert_radius = self.ALERT_RADIUS,
 		ignore_unit = weapon_unit,
 		user = user_unit,
 		owner = weapon_unit
@@ -2595,3 +2597,20 @@ function ProjectilesPoisonBulletBase:on_collision(col_ray, weapon_unit, user_uni
 
 	return result
 end
+
+InstantSnowballBase = InstantSnowballBase or class(InstantExplosiveBulletBase)
+InstantSnowballBase.id = "xmas_snowball"
+InstantSnowballBase.CURVE_POW = tweak_data.projectiles.xmas_snowball.curve_pow
+InstantSnowballBase.PLAYER_DMG_MUL = tweak_data.projectiles.xmas_snowball.player_dmg_mul
+InstantSnowballBase.RANGE = tweak_data.projectiles.xmas_snowball.range
+InstantSnowballBase.ALERT_RADIUS = tweak_data.projectiles.xmas_snowball.alert_radius
+InstantSnowballBase.EFFECT_PARAMS = {
+	on_unit = true,
+	sound_muffle_effect = true,
+	effect = tweak_data.projectiles.xmas_snowball.effect_name,
+	sound_event = tweak_data.projectiles.xmas_snowball.sound_event,
+	feedback_range = tweak_data.projectiles.xmas_snowball.feedback_range,
+	camera_shake_max_mul = tweak_data.projectiles.xmas_snowball.camera_shake_max_mul,
+	idstr_decal = tweak_data.projectiles.xmas_snowball.idstr_decal,
+	idstr_effect = tweak_data.projectiles.xmas_snowball.idstr_effect
+}

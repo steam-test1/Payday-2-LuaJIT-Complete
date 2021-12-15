@@ -776,80 +776,84 @@ function BlackMarketManager:equipped_melee_weapon_damage_info(lerp_value)
 	return dmg, dmg_effect
 end
 
-function BlackMarketManager:equipped_secondary()
-	local forced_secondary = self:forced_secondary()
+function BlackMarketManager:equipped_primary()
+	local cached_data = self._equipped_primary_data_cache
 
-	if forced_secondary then
-		return forced_secondary
+	if cached_data and cached_data.equipped then
+		return cached_data
 	end
 
-	if not Global.blackmarket_manager.crafted_items.secondaries then
-		self:aquire_default_weapons()
-	end
-
-	local weap_factory_manager = managers.weapon_factory
-	local weap_verify_f = weap_factory_manager.verify_weapon
-
-	for slot, data in pairs(Global.blackmarket_manager.crafted_items.secondaries) do
-		if not weap_verify_f(weap_factory_manager, data.weapon_id, data.factory_id) then
-			Application:error("[BlackMarketManager:equipped_secondary] Removing invalid secondary weapon | weapon id", data.weapon_id, "factory id", data.factory_id)
-			self:on_sell_weapon("secondaries", slot, not data.equipped)
-		end
-	end
-
-	for slot, data in pairs(Global.blackmarket_manager.crafted_items.secondaries) do
-		if data.equipped then
-			return data
-		end
-	end
-
-	for slot, data in pairs(Global.blackmarket_manager.crafted_items.secondaries) do
-		data.equipped = true
-
-		return data
-	end
-
-	self:aquire_default_weapons()
-
-	return Global.blackmarket_manager.crafted_items.secondaries[1]
+	return self:equipped_weapon("primaries", "primary")
 end
 
-function BlackMarketManager:equipped_primary()
-	local forced_primary = self:forced_primary()
+function BlackMarketManager:equipped_secondary()
+	local cached_data = self._equipped_secondary_data_cache
 
-	if forced_primary then
-		return forced_primary
+	if cached_data and cached_data.equipped then
+		return cached_data
 	end
 
-	if not Global.blackmarket_manager.crafted_items.primaries then
+	return self:equipped_weapon("secondaries", "secondary")
+end
+
+function BlackMarketManager:equipped_weapon(category, weap_category)
+	local forced_weapon = self:forced_weapon(weap_category)
+
+	if forced_weapon then
+		self:set_weapon_equipped_cache(weap_category, forced_weapon)
+
+		return forced_weapon
+	end
+
+	if not Global.blackmarket_manager.crafted_items[category] then
 		self:aquire_default_weapons()
-	end
+	else
+		local weap_factory_manager = managers.weapon_factory
+		local weap_verify_f = weap_factory_manager.verify_weapon
+		local on_sell_weap_f = self.on_sell_weapon
+		local cur_equip_data = nil
 
-	local weap_factory_manager = managers.weapon_factory
-	local weap_verify_f = weap_factory_manager.verify_weapon
-
-	for slot, data in pairs(Global.blackmarket_manager.crafted_items.primaries) do
-		if not weap_verify_f(weap_factory_manager, data.weapon_id, data.factory_id) then
-			Application:error("[BlackMarketManager:equipped_primary] Removing invalid primary weapon | weapon id", data.weapon_id, "factory id", data.factory_id)
-			self:on_sell_weapon("primaries", slot, not data.equipped)
+		for s, data in pairs(Global.blackmarket_manager.crafted_items[category]) do
+			if not weap_verify_f(weap_factory_manager, data.weapon_id, data.factory_id) then
+				on_sell_weap_f(self, category, slot, not data.equipped)
+			end
 		end
 	end
 
-	for slot, data in pairs(Global.blackmarket_manager.crafted_items.primaries) do
+	for slot, data in pairs(Global.blackmarket_manager.crafted_items[category]) do
 		if data.equipped then
+			self:set_weapon_equipped_cache(weap_category, data)
+
 			return data
 		end
 	end
 
-	for slot, data in pairs(Global.blackmarket_manager.crafted_items.primaries) do
+	for slot, data in pairs(Global.blackmarket_manager.crafted_items[category]) do
 		data.equipped = true
+
+		self:set_weapon_equipped_cache(weap_category, data)
 
 		return data
 	end
 
 	self:aquire_default_weapons()
 
-	return Global.blackmarket_manager.crafted_items.primaries[1]
+	local data = Global.blackmarket_manager.crafted_items[category][1]
+
+	self:set_weapon_equipped_cache(weap_category, data)
+
+	return data
+end
+
+function BlackMarketManager:set_weapon_equipped_cache(weapon_category, data)
+	self["_equipped_" .. weapon_category .. "_data_cache"] = data
+end
+
+function BlackMarketManager:clean_weapon_equipped_cache()
+	self._equipped_primary_data_cache = nil
+	self._equipped_secondary_data_cache = nil
+	self._forced_primary_data_cache = nil
+	self._forced_secondary_data_cache = nil
 end
 
 function BlackMarketManager:equipped_weapon_slot(category)
@@ -1023,12 +1027,29 @@ function BlackMarketManager:equip_weapon(category, slot, skip_outfit)
 		return false
 	end
 
+	local weap_factory_manager = managers.weapon_factory
+	local weap_verify_f = weap_factory_manager.verify_weapon
+	local on_sell_weap_f = self.on_sell_weapon
+	local cache_data_override = nil
+
 	for s, data in pairs(Global.blackmarket_manager.crafted_items[category]) do
-		if self:weapon_unlocked_by_crafted(category, slot) then
-			data.equipped = s == slot
+		if not weap_verify_f(weap_factory_manager, data.weapon_id, data.factory_id) then
+			on_sell_weap_f(self, category, slot, not data.equipped)
+		elseif s == slot and self:weapon_unlocked_by_crafted(category, slot) then
+			data.equipped = true
+			cache_data_override = data
+		else
+			data.equipped = false
 		end
 	end
 
+	if not cache_data_override then
+		self:aquire_default_weapons()
+
+		cache_data_override = Global.blackmarket_manager.crafted_items[category][1]
+	end
+
+	self:set_weapon_equipped_cache(category == "primaries" and "primary" or "secondary", cache_data_override)
 	self:_check_achievements(category)
 
 	if managers.menu_scene then
@@ -1442,7 +1463,8 @@ function BlackMarketManager:get_silencer_concealment_modifiers(weapon)
 	local factory_id = weapon.factory_id
 	local blueprint = weapon.blueprint
 	local weapon_id = weapon.weapon_id or managers.weapon_factory:get_weapon_id_by_factory_id(factory_id)
-	local base_stats = tweak_data.weapon[weapon_id].stats
+	local weap_tweak = tweak_data.weapon[weapon_id]
+	local base_stats = weap_tweak and weap_tweak.stats
 	local bonus = 0
 
 	if not base_stats or not base_stats.concealment then
@@ -4590,10 +4612,10 @@ function BlackMarketManager:on_aquired_grenade(upgrade, id, loading)
 		self._global.new_drops.normal = self._global.new_drops.normal or {}
 		self._global.new_drops.normal.grenades = self._global.new_drops.normal.grenades or {}
 		self._global.new_drops.normal.grenades[id] = true
-	end
 
-	if self._global.grenades[id].ability then
-		self:equip_grenade(id)
+		if self._global.grenades[id].ability then
+			self:equip_grenade(id)
+		end
 	end
 end
 
@@ -4873,26 +4895,26 @@ function BlackMarketManager:can_modify_weapon(category, slot, part_id)
 	return managers.weapon_factory:can_add_part(craft_data.factory_id, part_id, craft_data.blueprint)
 end
 
-function BlackMarketManager:remove_weapon_part(category, slot, global_value, part_id)
+function BlackMarketManager:remove_weapon_part(category, slot, global_value, part_id, loading)
 	if not part_id or not self._global.crafted_items[category] or not self._global.crafted_items[category][slot] then
 		Application:error("[BlackMarketManager:remove_weapon_part] Trying to remove part", part_id, "from weapon that doesn't exist", category, slot)
 
 		return false
 	end
 
-	self:modify_weapon(category, slot, global_value, part_id, true)
+	self:modify_weapon(category, slot, global_value, part_id, true, loading)
 
 	return true
 end
 
-function BlackMarketManager:modify_weapon(category, slot, global_value, part_id, remove_part)
+function BlackMarketManager:modify_weapon(category, slot, global_value, part_id, remove_part, loading)
 	if not self._global.crafted_items[category] or not self._global.crafted_items[category][slot] then
 		Application:error("[BlackMarketManager:modify_weapon] Trying to modify weapon that doesn't exist", category, slot)
 
 		return
 	end
 
-	if self:is_previewing_legendary_skin() then
+	if self:is_previewing_legendary_skin() and not loading then
 		managers.blackmarket:view_weapon(category, slot, nil, nil, BlackMarketGui.get_crafting_custom_data())
 		managers.blackmarket:clear_preview_blueprint()
 	end
@@ -4952,17 +4974,19 @@ function BlackMarketManager:modify_weapon(category, slot, global_value, part_id,
 		end
 	end
 
-	self:_on_modified_weapon(category, slot)
+	if not loading then
+		self:_on_modified_weapon(category, slot)
+	end
 end
 
-function BlackMarketManager:buy_and_modify_weapon(category, slot, global_value, part_id, free_of_charge, no_consume)
+function BlackMarketManager:buy_and_modify_weapon(category, slot, global_value, part_id, free_of_charge, no_consume, loading)
 	if not self._global.crafted_items[category] or not self._global.crafted_items[category][slot] then
 		Application:error("[BlackMarketManager:modify_weapon] Trying to buy and modify weapon that doesn't exist", category, slot)
 
 		return
 	end
 
-	self:modify_weapon(category, slot, global_value, part_id)
+	self:modify_weapon(category, slot, global_value, part_id, loading)
 
 	if not free_of_charge then
 		managers.money:on_buy_weapon_modification(self._global.crafted_items[category][slot].weapon_id, part_id, global_value)
@@ -8385,6 +8409,7 @@ function BlackMarketManager:_load_done()
 	self:_verfify_equipped()
 	self:aquire_default_weapons()
 	self:aquire_default_masks()
+	self:clean_weapon_equipped_cache()
 	self:_convert_tam_to_weapon_color()
 
 	if managers.menu_scene then
@@ -8745,9 +8770,9 @@ function BlackMarketManager:_cleanup_blackmarket()
 				Application:error("BlackMarketManager:_cleanup_blackmarket() Removing invalid Weapon part", data.reason, "slot", data.slot, "part_id", data.part_id, "inspect", inspect(crafted_category[data.slot]), inspect(data))
 
 				if data.default_mod then
-					self:buy_and_modify_weapon(category, data.slot, data.global_value, data.default_mod, true, true)
+					self:buy_and_modify_weapon(category, data.slot, data.global_value, data.default_mod, true, true, true)
 				else
-					self:remove_weapon_part(category, data.slot, data.global_value, data.part_id)
+					self:remove_weapon_part(category, data.slot, data.global_value, data.part_id, true)
 				end
 
 				if data.refund ~= false then
@@ -9393,6 +9418,17 @@ function BlackMarketManager:_verfify_equipped_category(category)
 		return
 	end
 
+	local weap_factory_manager = managers.weapon_factory
+	local weap_verify_f = weap_factory_manager.verify_weapon
+	local on_sell_weap_f = self.on_sell_weapon
+	local cur_equip_data = nil
+
+	for slot, craft in pairs(self._global.crafted_items[category]) do
+		if not weap_verify_f(weap_factory_manager, craft.weapon_id, craft.factory_id) then
+			on_sell_weap_f(self, category, slot, not craft.equipped)
+		end
+	end
+
 	for slot, craft in pairs(self._global.crafted_items[category]) do
 		if craft.equipped then
 			if self:weapon_unlocked_by_crafted(category, slot) then
@@ -9408,6 +9444,8 @@ function BlackMarketManager:_verfify_equipped_category(category)
 			print("  Equip", category, slot)
 
 			craft.equipped = true
+
+			self:clean_weapon_equipped_cache()
 
 			return
 		end
@@ -9732,50 +9770,54 @@ function BlackMarketManager:forced_character()
 	end
 end
 
-function BlackMarketManager:forced_primary()
-	local level_data = tweak_data.levels[managers.job:current_level_id()]
+function BlackMarketManager:forced_weapon(category)
+	local lvl_id = managers.job:current_level_id()
+	local level_data = tweak_data.levels[lvl_id]
 	local items = level_data and level_data.force_equipment
+	local cat_item = items and items[category]
 
-	if items and items.primary then
-		local blueprint = deep_clone(managers.weapon_factory:get_default_blueprint_by_factory_id(items.primary))
+	if not cat_item then
+		self["_forced_" .. category .. "_data_cache"] = nil
 
-		if items.primary_mods then
-			for _, mod in pairs(items.primary_mods) do
-				table.insert(blueprint, mod)
-			end
-		end
-
-		return {
-			equipped = true,
-			factory_id = items.primary,
-			blueprint = blueprint,
-			weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(items.primary),
-			global_values = {}
-		}
+		return nil
 	end
+
+	local cached_data = self["_forced_" .. category .. "_data_cache"]
+
+	if cached_data and cached_data.lvl_id == lvl_id then
+		return cached_data.data
+	end
+
+	local blueprint = deep_clone(managers.weapon_factory:get_default_blueprint_by_factory_id(cat_item))
+	local cat_mods = items[category .. "_mods"]
+
+	if cat_mods then
+		for _, mod in pairs(cat_mods) do
+			table.insert(blueprint, mod)
+		end
+	end
+
+	local data = {
+		equipped = true,
+		factory_id = cat_item,
+		blueprint = blueprint,
+		weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(cat_item),
+		global_values = {}
+	}
+	self["_forced_" .. category .. "_data_cache"] = {
+		data = data,
+		lvl_id = lvl_id
+	}
+
+	return data
+end
+
+function BlackMarketManager:forced_primary()
+	return self:forced_weapon("primary")
 end
 
 function BlackMarketManager:forced_secondary()
-	local level_data = tweak_data.levels[managers.job:current_level_id()]
-	local items = level_data and level_data.force_equipment
-
-	if items and items.secondary then
-		local blueprint = deep_clone(managers.weapon_factory:get_default_blueprint_by_factory_id(items.secondary))
-
-		if items.secondary_mods then
-			for _, mod in pairs(items.secondary_mods) do
-				table.insert(blueprint, mod)
-			end
-		end
-
-		return {
-			equipped = true,
-			factory_id = items.secondary,
-			blueprint = blueprint,
-			weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(items.secondary),
-			global_values = {}
-		}
-	end
+	return self:forced_weapon("secondary")
 end
 
 function BlackMarketManager:forced_armor()

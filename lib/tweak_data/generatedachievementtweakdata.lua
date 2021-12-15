@@ -9510,7 +9510,8 @@ function init_auto_generated_achievement_data(tags)
 				tags.tactics.stealth,
 				tags.tactics.killer,
 				tags.inventory.weapon,
-				tags.inventory.equipment
+				tags.inventory.equipment,
+				tags.inventory.outfit
 			}
 		},
 		skm_1 = {
@@ -14268,6 +14269,42 @@ function init_auto_generated_achievement_data(tags)
 				tags.tactics.loud,
 				tags.tactics.stealth,
 				tags.contracts.vlad
+			}
+		},
+		dec21_01 = {
+			need_unlock_icons = true,
+			icon_id = "C_Locke_H_BreakinFeds_Bloody",
+			sort_name = "C_Locke_H_BreakinFeds_Bloody",
+			additional_id = true,
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.mayhem,
+				tags.unlock.weapon_charm,
+				tags.tactics.stealth,
+				tags.inventory.mask,
+				tags.inventory.outfit,
+				tags.teamwork.players_1_to_4,
+				tags.contracts.vlad,
+				tags.contracts.locke
+			}
+		},
+		dec21_02 = {
+			need_unlock_icons = true,
+			icon_id = "C_All_H_All_Giftgiver",
+			progress = true,
+			sort_name = "C_All_H_All_Giftgiver",
+			additional_id = true,
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.unlock.weapon_charm,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.tactics.killer,
+				tags.inventory.weapon,
+				tags.contracts.all
 			}
 		},
 		cac_1 = {

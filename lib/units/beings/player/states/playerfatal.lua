@@ -120,7 +120,16 @@ function PlayerFatal:_update_check_actions(t, dt)
 		self._unit:base():set_stats_screen_visible(false)
 	end
 
-	self:_check_action_interact(t, input)
+	new_action = new_action or self:_check_action_interact(t, input)
+
+	if not new_action then
+		local projectile_entry = managers.blackmarket:equipped_projectile()
+		local projectile_tweak = tweak_data.blackmarket.projectiles[projectile_entry]
+
+		if projectile_tweak.ability then
+			new_action = self:_check_action_use_ability(t, input)
+		end
+	end
 end
 
 function PlayerFatal:_check_action_interact(t, input)
@@ -134,6 +143,8 @@ function PlayerFatal:_check_action_interact(t, input)
 
 			if not PlayerArrested.call_teammate(self, "f11", t, true, true, true) then
 				PlayerBleedOut.call_civilian(self, "f11", t, false, true, self._revive_SO_data)
+
+				return true
 			end
 		end
 	end

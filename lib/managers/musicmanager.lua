@@ -517,6 +517,14 @@ function MusicManager:_set_default_values()
 end
 
 function MusicManager:jukebox_menu_track(name)
+	if managers.user:get_setting("event_music") then
+		local event_tracks = tweak_data.music.event_track_overrides
+
+		if event_tracks and event_tracks[name] then
+			return event_tracks[name]
+		end
+	end
+
 	local track = self:track_attachment(name)
 
 	if track == "all" then

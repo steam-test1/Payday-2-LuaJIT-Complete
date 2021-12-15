@@ -3072,6 +3072,144 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		sequence = "set_ehtan"
 	}
 	self.player_styles.elegantscarf.characters.ecp_male = elegantscarf_characters_male_fat
+	self.player_styles.rusbear = {
+		name_id = "bm_suit_rusbear",
+		desc_id = "bm_suit_rusbear_desc",
+		texture_bundle_folder = "snow",
+		global_value = "snow",
+		material_variations = {}
+	}
+	self.player_styles.rusbear.material_variations.default = {
+		name_id = "bm_suit_var_rusbear_default",
+		global_value = "snow",
+		desc_id = "bm_suit_var_rusbear_default_desc"
+	}
+	self.player_styles.rusbear.material_variations.arctic = {
+		desc_id = "bm_suit_var_rusbear_arctic_desc",
+		global_value = "snow",
+		auto_aquire = true,
+		name_id = "bm_suit_var_rusbear_arctic",
+		third_material = "units/pd2_dlc_snow/characters/snow_acc_rusbear/shared_materials/snow_acc_rusbear_arctic",
+		material = "units/pd2_dlc_snow/characters/snow_acc_rusbear/shared_materials/snow_acc_fps_rusbear_arctic"
+	}
+	self.player_styles.rusbear.material_variations.blacmor = {
+		desc_id = "bm_suit_var_rusbear_blacmor_desc",
+		global_value = "snow",
+		auto_aquire = true,
+		name_id = "bm_suit_var_rusbear_blacmor",
+		third_material = "units/pd2_dlc_snow/characters/snow_acc_rusbear/shared_materials/snow_acc_rusbear_blacmor",
+		material = "units/pd2_dlc_snow/characters/snow_acc_rusbear/shared_materials/snow_acc_fps_rusbear_blackmor"
+	}
+	self.player_styles.rusbear.material_variations.quilt = {
+		desc_id = "bm_suit_var_rusbear_quilt_desc",
+		global_value = "snow",
+		auto_aquire = true,
+		name_id = "bm_suit_var_rusbear_quilt",
+		third_material = "units/pd2_dlc_snow/characters/snow_acc_rusbear/shared_materials/snow_acc_rusbear_quilt",
+		material = "units/pd2_dlc_snow/characters/snow_acc_rusbear/shared_materials/snow_acc_fps_rusbear_quilt"
+	}
+	self.player_styles.rusbear.body_replacement = body_replacement_standard
+	self.player_styles.rusbear.third_body_replacement = body_replacement_standard
+	self.player_styles.rusbear.unit = "units/pd2_dlc_snow/characters/snow_acc_rusbear/snow_acc_fps_rusbear_male/snow_acc_fps_rusbear_male"
+	self.player_styles.rusbear.characters = {}
+	local rusbear_characters_male = {
+		third_unit = "units/pd2_dlc_snow/characters/snow_acc_rusbear/snow_acc_rusbear_male_average/snow_acc_rusbear_male_average"
+	}
+
+	set_characters_data("rusbear", characters_male, rusbear_characters_male)
+
+	local rusbear_characters_male_big = {
+		third_unit = "units/pd2_dlc_snow/characters/snow_acc_rusbear/snow_acc_rusbear_male_big/snow_acc_rusbear_male_big"
+	}
+
+	set_characters_data("rusbear", characters_male_big, rusbear_characters_male_big)
+
+	local rusbear_characters_female = {
+		third_unit = "units/pd2_dlc_snow/characters/snow_acc_rusbear/snow_acc_rusbear_female_average/snow_acc_rusbear_female_average"
+	}
+
+	set_characters_data("rusbear", characters_female, rusbear_characters_female)
+
+	local rusbear_characters_female_big = {
+		third_unit = "units/pd2_dlc_snow/characters/snow_acc_rusbear/snow_acc_rusbear_female_fat/snow_acc_rusbear_female_fat"
+	}
+
+	set_characters_data("rusbear", characters_female_big, rusbear_characters_female_big)
+
+	local rusbear_characters_male_fat = {
+		third_unit = "units/pd2_dlc_snow/characters/snow_acc_rusbear/snow_acc_rusbear_male_fat/snow_acc_rusbear_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.rusbear.characters.ecp_male = rusbear_characters_male_fat
+	self.player_styles.lonorwa = {
+		name_id = "bm_suit_lonorwa",
+		desc_id = "bm_suit_lonorwa_desc",
+		texture_bundle_folder = "snow",
+		global_value = "snow",
+		material_variations = {}
+	}
+	self.player_styles.lonorwa.material_variations.default = {
+		name_id = "bm_suit_var_lonorwa_default",
+		global_value = "snow",
+		desc_id = "bm_suit_var_lonorwa_default_desc"
+	}
+	self.player_styles.lonorwa.material_variations.blue = {
+		desc_id = "bm_suit_var_lonorwa_blue_desc",
+		global_value = "snow",
+		auto_aquire = true,
+		name_id = "bm_suit_var_lonorwa_blue",
+		third_material = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/shared_materials/snow_acc_lonorwa_blue",
+		material = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/shared_materials/snow_acc_fps_lonorwa_male_blue"
+	}
+	self.player_styles.lonorwa.material_variations.orange = {
+		desc_id = "bm_suit_var_lonorwa_orange_desc",
+		global_value = "snow",
+		auto_aquire = true,
+		name_id = "bm_suit_var_lonorwa_orange",
+		third_material = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/shared_materials/snow_acc_lonorwa_orange",
+		material = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/shared_materials/snow_acc_fps_lonorwa_male_orange"
+	}
+	self.player_styles.lonorwa.material_variations.white = {
+		desc_id = "bm_suit_var_lonorwa_white_desc",
+		global_value = "snow",
+		auto_aquire = true,
+		name_id = "bm_suit_var_lonorwa_white",
+		third_material = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/shared_materials/snow_acc_lonorwa_white",
+		material = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/shared_materials/snow_acc_fps_lonorwa_male_white"
+	}
+	self.player_styles.lonorwa.body_replacement = body_replacement_standard
+	self.player_styles.lonorwa.third_body_replacement = body_replacement_standard
+	self.player_styles.lonorwa.unit = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/snow_acc_fps_lonorwa_male/snow_acc_fps_lonorwa_male"
+	self.player_styles.lonorwa.characters = {}
+	local lonorwa_characters_male = {
+		third_unit = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/snow_acc_lonorwa_male_average/snow_acc_lonorwa_male_average"
+	}
+
+	set_characters_data("lonorwa", characters_male, lonorwa_characters_male)
+
+	local lonorwa_characters_male_big = {
+		third_unit = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/snow_acc_lonorwa_male_big/snow_acc_lonorwa_male_big"
+	}
+
+	set_characters_data("lonorwa", characters_male_big, lonorwa_characters_male_big)
+
+	local lonorwa_characters_female = {
+		third_unit = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/snow_acc_lonorwa_female_average/snow_acc_lonorwa_female_average"
+	}
+
+	set_characters_data("lonorwa", characters_female, lonorwa_characters_female)
+
+	local lonorwa_characters_female_big = {
+		third_unit = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/snow_acc_lonorwa_female_fat/snow_acc_lonorwa_female_fat"
+	}
+
+	set_characters_data("lonorwa", characters_female_big, lonorwa_characters_female_big)
+
+	local lonorwa_characters_male_fat = {
+		third_unit = "units/pd2_dlc_snow/characters/snow_acc_lonorwa/snow_acc_lonorwa_male_fat/snow_acc_lonorwa_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.lonorwa.characters.ecp_male = lonorwa_characters_male_fat
 end
 
 function BlackMarketTweakData:get_player_style_value(player_style, character_name, key)

@@ -4735,6 +4735,92 @@ function SkillTreeTweakData:init()
 			},
 			desc_id = "menu_st_spec_21_desc",
 			name_id = "menu_st_spec_21"
+		},
+		{
+			{
+				cost = 200,
+				texture_bundle_folder = "copr",
+				desc_id = "menu_deck22_1_desc",
+				name_id = "menu_deck22_1",
+				upgrades = {
+					"temporary_copr_ability_1",
+					"copr_ability",
+					"player_copr_static_damage_ratio_1",
+					"player_copr_kill_life_leech_1",
+					"player_copr_activate_bonus_health_ratio_1",
+					"player_copr_teammate_heal_1"
+				},
+				icon_xy = {
+					0,
+					0
+				}
+			},
+			deck2,
+			{
+				cost = 400,
+				texture_bundle_folder = "copr",
+				desc_id = "menu_deck22_3_desc",
+				name_id = "menu_deck22_3",
+				upgrades = {
+					"player_passive_health_multiplier_1",
+					"player_passive_health_multiplier_2",
+					"player_copr_out_of_health_move_slow_1"
+				},
+				icon_xy = {
+					1,
+					0
+				}
+			},
+			deck4,
+			{
+				cost = 1000,
+				texture_bundle_folder = "copr",
+				desc_id = "menu_deck22_5_desc",
+				name_id = "menu_deck22_5",
+				upgrades = {
+					"temporary_copr_ability_2",
+					"player_copr_teammate_heal_2",
+					"player_copr_speed_up_on_kill_1"
+				},
+				icon_xy = {
+					0,
+					1
+				}
+			},
+			deck6,
+			{
+				cost = 2400,
+				texture_bundle_folder = "copr",
+				desc_id = "menu_deck22_7_desc",
+				name_id = "menu_deck22_7",
+				upgrades = {
+					"player_passive_health_multiplier_3"
+				},
+				icon_xy = {
+					3,
+					0
+				}
+			},
+			deck8,
+			{
+				cost = 4000,
+				texture_bundle_folder = "copr",
+				desc_id = "menu_deck22_9_desc",
+				name_id = "menu_deck22_9",
+				upgrades = {
+					"player_activate_ability_downed",
+					"player_copr_static_damage_ratio_2",
+					"player_passive_loot_drop_multiplier",
+					"player_passive_health_multiplier_4",
+					"player_copr_kill_life_leech_2"
+				},
+				icon_xy = {
+					1,
+					1
+				}
+			},
+			desc_id = "menu_st_spec_22_desc",
+			name_id = "menu_st_spec_22"
 		}
 	}
 end

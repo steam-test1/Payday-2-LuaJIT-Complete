@@ -23,7 +23,7 @@ function TvGui:setup()
 		video = self._video
 	})
 
-	if not _G.IS_VR then
+	if not _G.IS_VR and SystemInfo:renderer() ~= Idstring("DX11") then
 		self._video_panel:set_render_template(Idstring("gui:DIFFUSE_TEXTURE:VERTEX_COLOR:VERTEX_COLOR_ALPHA"))
 	end
 

@@ -40202,7 +40202,7 @@ function BlackMarketTweakData:_setup_weapon_color_skins(tweak_data)
 	self:create_new_color_skin("color_sbzac2_01", {
 		texture_bundle_folder = "sbzac2",
 		dlc = "sbzac_color_sbzac2_01",
-		sort_number = 1,
+		sort_number = 1000,
 		color = Color("1e1e1e")
 	}, {
 		base_default = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_default"),
@@ -40214,5 +40214,69 @@ function BlackMarketTweakData:_setup_weapon_color_skins(tweak_data)
 		base_variation = Idstring("units/pd2_dlc_wcs/weapon_colors/base_gradient/wcs_black_df"),
 		pattern_default = Idstring("units/pd2_dlc_sbzac2/weapon_colors/pattern/pattern_sbzac2_01_df"),
 		gradient_default = Idstring("units/pd2_dlc_sbzac2/weapon_colors/pattern_gradient/gradient_sbzac2_01_df")
+	})
+	self:create_new_color_skin("color_snow_01", {
+		texture_bundle_folder = "snow",
+		dlc = "snow",
+		sort_number = 1,
+		color = Color("1e1e1e")
+	}, {
+		base_default = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_default"),
+		base_metal = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_metal"),
+		base_plastic = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_plastic"),
+		base_half = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half"),
+		base_half_02 = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half_02"),
+		base_detail = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_details"),
+		base_variation = Idstring("units/pd2_dlc_wcs/weapon_colors/base_gradient/wcs_black_df"),
+		pattern_default = Idstring("units/pd2_dlc_snow/weapon_colors/pattern/pattern_snow_01_df"),
+		gradient_default = Idstring("units/pd2_dlc_snow/weapon_colors/pattern_gradient/gradient_snow_01_df")
+	})
+	self:create_new_color_skin("color_snow_02", {
+		texture_bundle_folder = "snow",
+		dlc = "snow",
+		sort_number = 2,
+		color = Color("1e1e1e")
+	}, {
+		base_default = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_default"),
+		base_metal = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_metal"),
+		base_plastic = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_plastic"),
+		base_half = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half"),
+		base_half_02 = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half_02"),
+		base_detail = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_details"),
+		base_variation = Idstring("units/pd2_dlc_wcs/weapon_colors/base_gradient/wcs_black_df"),
+		pattern_default = Idstring("units/pd2_dlc_snow/weapon_colors/pattern/pattern_snow_02_df"),
+		gradient_default = Idstring("units/pd2_dlc_snow/weapon_colors/pattern_gradient/gradient_snow_02_df")
+	})
+	self:create_new_color_skin("color_snow_03", {
+		texture_bundle_folder = "snow",
+		dlc = "snow",
+		sort_number = 3,
+		color = Color("1e1e1e")
+	}, {
+		base_default = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_default"),
+		base_metal = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_metal"),
+		base_plastic = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_plastic"),
+		base_half = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half"),
+		base_half_02 = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half_02"),
+		base_detail = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_details"),
+		base_variation = Idstring("units/pd2_dlc_wcs/weapon_colors/base_gradient/wcs_black_df"),
+		pattern_default = Idstring("units/pd2_dlc_snow/weapon_colors/pattern/pattern_snow_03_df"),
+		gradient_default = Idstring("units/pd2_dlc_snow/weapon_colors/pattern_gradient/gradient_snow_03_df")
+	})
+	self:create_new_color_skin("color_snow_04", {
+		texture_bundle_folder = "snow",
+		dlc = "snow",
+		sort_number = 4,
+		color = Color("1e1e1e")
+	}, {
+		base_default = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_default"),
+		base_metal = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_metal"),
+		base_plastic = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_plastic"),
+		base_half = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half"),
+		base_half_02 = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half_02"),
+		base_detail = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_details"),
+		base_variation = Idstring("units/pd2_dlc_wcs/weapon_colors/base_gradient/wcs_black_df"),
+		pattern_default = Idstring("units/pd2_dlc_snow/weapon_colors/pattern/pattern_snow_04_df"),
+		gradient_default = Idstring("units/pd2_dlc_snow/weapon_colors/pattern_gradient/gradient_snow_04_df")
 	})
 end
