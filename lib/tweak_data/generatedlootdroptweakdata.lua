@@ -789,7 +789,7 @@ function LootDropTweakData:init_generated(tweak_data)
 		unlock_id = "bm_global_value_snow_unlock",
 		color = tweak_data.screen_colors.dlc_color,
 		dlc = true,
-		free = true,
+		free = false,
 		hide_unavailable = false,
 		chance = 1,
 		value_multiplier = 1,

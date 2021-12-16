@@ -2115,6 +2115,7 @@ function UpgradesTweakData:_init_pd2_values()
 		50
 	}
 	self.copr_ability_cooldown = 30
+	self.copr_risen_cooldown_add = 30
 	self.values.temporary.copr_ability = {
 		{
 			true,

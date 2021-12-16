@@ -1232,7 +1232,7 @@ function DLCTweakData:init_generated()
 	self.sms_bundle.content.loot_global_value = "sms"
 	self.sms_bundle.content.loot_drops = {}
 	self.snow_bundle = {
-		free = true,
+		dlc = "has_snow",
 		content = {}
 	}
 	self.snow_bundle.content.loot_global_value = "snow"

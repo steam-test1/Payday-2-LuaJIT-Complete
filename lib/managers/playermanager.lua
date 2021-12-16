@@ -5623,7 +5623,16 @@ function PlayerManager:_attempt_copr_ability()
 
 	managers.hud:set_copr_indicator(true, static_damage_ratio)
 
+	if is_downed then
+		self:register_message("ability_activated", "copr_ability_downed_cooldown_add", callback(self, self, "add_cooldown_copr"))
+	end
+
 	return true
+end
+
+function PlayerManager:add_cooldown_copr()
+	managers.player:speed_up_grenade_cooldown(-tweak_data.upgrades.copr_risen_cooldown_add)
+	self:unregister_message("ability_activated", "copr_ability_downed_cooldown_add")
 end
 
 function PlayerManager:force_end_copr_ability()

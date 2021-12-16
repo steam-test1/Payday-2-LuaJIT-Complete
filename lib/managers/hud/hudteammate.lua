@@ -1847,7 +1847,7 @@ function HUDTeammate:set_grenade_cooldown(data)
 		repeat
 			local now = managers.game_play_central:get_heist_timer()
 			local time_left = end_time - now
-			local progress = 1 - time_left / duration
+			local progress = math.clamp(1 - time_left / duration, 0, 1)
 
 			o:set_color(Color(0.5, progress, 1, 1))
 			coroutine.yield()

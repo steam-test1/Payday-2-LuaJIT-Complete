@@ -5136,13 +5136,40 @@ function AchievementsTweakData:init(tweak_data)
 				}
 			}
 		},
-		dec21_01 = {
+		dec21_01_tag = {
+			award = "dec21_01",
+			no_alarm_pager = true,
+			difficulty = easywish_and_above,
+			jobs = {
+				"tag"
+			},
+			player_style = {
+				styles = {
+					"candycane",
+					"badsanta",
+					"xmas_tuxedo"
+				}
+			},
+			masks = {
+				"santa_happy",
+				"krampus",
+				"robo_santa",
+				"mrs_claus",
+				"strinch",
+				"greedy_the_elf",
+				"rudeolph",
+				"santa_mad",
+				"santa_surprise",
+				"santa_drunk",
+				"smo_08"
+			}
+		},
+		dec21_01_fex = {
 			stealth = true,
 			award = "dec21_01",
 			no_alarm_pager = true,
 			difficulty = easywish_and_above,
 			jobs = {
-				"tag",
 				"fex"
 			},
 			player_style = {
@@ -6916,7 +6943,7 @@ function AchievementsTweakData:init(tweak_data)
 				at = 200
 			}
 		},
-		dec21_02_stats = {
+		dec21_02_stat = {
 			{
 				award = "dec21_02",
 				at = 75
