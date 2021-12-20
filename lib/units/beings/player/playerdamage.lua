@@ -646,6 +646,7 @@ function PlayerDamage:recover_health()
 		revives = Application:digest_value(self._revives, false)
 	})
 	managers.player:set_property("copr_risen", false)
+	managers.player:remove_copr_risen_cooldown()
 end
 
 function PlayerDamage:replenish()
@@ -663,6 +664,7 @@ function PlayerDamage:replenish()
 	SoundDevice:set_rtpc("shield_status", 100)
 	SoundDevice:set_rtpc("downed_state_progression", 0)
 	managers.player:set_property("copr_risen", false)
+	managers.player:remove_copr_risen_cooldown()
 end
 
 function PlayerDamage:regenerate_armor(no_sound)
@@ -2149,6 +2151,7 @@ function PlayerDamage:revive(silent)
 	local arrested = self:arrested()
 
 	managers.player:set_player_state("standard")
+	managers.player:remove_copr_risen_cooldown()
 
 	if not silent then
 		PlayerStandard.say_line(self, "s05x_sin")

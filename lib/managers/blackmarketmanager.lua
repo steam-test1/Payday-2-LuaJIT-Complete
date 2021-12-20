@@ -815,7 +815,7 @@ function BlackMarketManager:equipped_weapon(category, weap_category)
 
 		for s, data in pairs(Global.blackmarket_manager.crafted_items[category]) do
 			if not weap_verify_f(weap_factory_manager, data.weapon_id, data.factory_id) then
-				on_sell_weap_f(self, category, slot, not data.equipped)
+				on_sell_weap_f(self, category, s, not data.equipped)
 			end
 		end
 	end
@@ -1034,7 +1034,7 @@ function BlackMarketManager:equip_weapon(category, slot, skip_outfit)
 
 	for s, data in pairs(Global.blackmarket_manager.crafted_items[category]) do
 		if not weap_verify_f(weap_factory_manager, data.weapon_id, data.factory_id) then
-			on_sell_weap_f(self, category, slot, not data.equipped)
+			on_sell_weap_f(self, category, s, not data.equipped)
 		elseif s == slot and self:weapon_unlocked_by_crafted(category, slot) then
 			data.equipped = true
 			cache_data_override = data

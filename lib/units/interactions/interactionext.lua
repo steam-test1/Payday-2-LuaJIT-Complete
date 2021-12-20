@@ -1257,6 +1257,7 @@ function ReviveInteractionExt:interact(reviving_unit)
 	end
 
 	managers.player:set_property("copr_risen", false)
+	managers.player:remove_copr_risen_cooldown()
 end
 
 function ReviveInteractionExt:save(data)
