@@ -837,8 +837,7 @@ function LevelsTweakData:init()
 			cube = "cube_apply_heist_bank",
 			ghost_bonus = 0.1,
 			max_bags = 14,
-			ai_group_type = america,
-			is_christmas_heist = true
+			ai_group_type = america
 		}
 	end
 
@@ -985,13 +984,7 @@ function LevelsTweakData:init()
 		block_AIs = {
 			old_hoxton = true
 		},
-		ai_group_type = america,
-		world_name = "narratives/dentist/hox/stage_1_xmn",
-		load_screen = "guis/dlcs/xmn/textures/loading/job_hox_1_xmn_df",
-		music_overrides = {
-			track_20 = "track_66"
-		},
-		is_christmas_heist = true
+		ai_group_type = america
 	}
 	self.hox_2 = {
 		name_id = "heist_hox_2_hl",
@@ -1009,13 +1002,7 @@ function LevelsTweakData:init()
 			old_hoxton = true
 		},
 		ai_group_type = america,
-		load_screen = "guis/dlcs/pic/textures/loading/job_breakout_02",
-		world_name = "narratives/dentist/hox/stage_2_xmn",
-		load_screen = "guis/dlcs/xmn/textures/loading/job_hox_2_xmn_df",
-		music_overrides = {
-			track_21 = "track_67"
-		},
-		is_christmas_heist = true
+		load_screen = "guis/dlcs/pic/textures/loading/job_breakout_02"
 	}
 	self.pines = {
 		name_id = "heist_pines_hl",
@@ -1763,7 +1750,6 @@ function LevelsTweakData:init()
 		cube = "cube_apply_heist_bank",
 		max_bags = 26,
 		narrator = "locke",
-		is_christmas_heist = true,
 		load_screen = "guis/dlcs/brb/textures/loading/job_brb_df"
 	}
 	self.tag = {
@@ -1782,13 +1768,7 @@ function LevelsTweakData:init()
 		ai_group_type = america,
 		narrator = "locke",
 		ghost_required = true,
-		load_screen = "guis/dlcs/tag/textures/loading/job_tag_df",
-		world_name = "narratives/locke/tag_xmn",
-		music_overrides = {
-			music_tag = "music_xmn"
-		},
-		load_screen = "guis/dlcs/xmn/textures/loading/job_tag_xmn_df",
-		is_christmas_heist = true
+		load_screen = "guis/dlcs/tag/textures/loading/job_tag_df"
 	}
 	self.des = {
 		name_id = "heist_des_hl",
@@ -2244,10 +2224,7 @@ function LevelsTweakData:init()
 					criminal1 = true
 				}
 			}
-		},
-		world_name = "narratives/vlad/fex_xmas",
-		load_screen = "guis/dlcs/fex/textures/loading/job_fex_01_df",
-		is_christmas_heist = true
+		}
 	}
 	self.chas = {
 		name_id = "heist_chas_hl",

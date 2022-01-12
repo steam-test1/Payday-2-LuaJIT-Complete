@@ -339,7 +339,8 @@ function Telemetry:init()
 			_steam_achievement_list = {},
 			_has_pdth = false,
 			_has_overdrill = false,
-			_objective_id = nil
+			_objective_id = nil,
+			_has_account_checked = false
 		}
 
 		print(log_name, "Telemetry initiated")
@@ -360,6 +361,7 @@ function Telemetry:update(t, dt)
 		self._dt = 0
 
 		if not Global.telemetry._login_inprogress and managers.menu:is_open("menu_main") then
+			print(log_name, "initial login telemetry attempt, this shouldn't be called")
 			self:on_login()
 		end
 
@@ -488,7 +490,7 @@ function Telemetry:on_login()
 		return
 	end
 
-	if not Global.telemetry._logged_in and Global.telemetry._geolocation and Global.telemetry._total_playtime ~= nil and Global.telemetry._oldest_achievement_date ~= nil and Global.telemetry._login_retries < login_retry_limit then
+	if not Global.telemetry._logged_in and Global.telemetry._geolocation and Global.telemetry._total_playtime ~= nil and Global.telemetry._oldest_achievement_date ~= nil and Global.telemetry._login_retries < login_retry_limit and Global.telemetry._has_account_checked == true then
 		self:send_on_player_logged_in()
 	end
 end
@@ -524,7 +526,8 @@ function Telemetry:send_on_player_logged_in(reason)
 		OldestAchievement = self._global._oldest_achievement_date,
 		PlayerLevel = managers.experience:current_level(),
 		InfamyLevel = managers.experience:current_rank(),
-		Reason = Global.telemetry._times_logged_in == 0 and "startup" or "optin"
+		Reason = Global.telemetry._times_logged_in == 0 and "startup" or "optin",
+		PD2StarbreezeAccountID = Login.player_session.user_id
 	}
 	local installed_dlc_list = {}
 

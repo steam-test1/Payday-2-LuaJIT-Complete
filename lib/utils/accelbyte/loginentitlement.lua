@@ -60,6 +60,7 @@ local PlayerSession = {
 }
 Login = Login or class()
 Login = {
+	has_account = false,
 	player_session = PlayerSession,
 	SerializeJsonString = function (self, document)
 		self.player_session.access_token = document.access_token
@@ -580,6 +581,11 @@ function Entitlement:CheckAndVerifyUserEntitlement(callback)
 
 	local function login_callback(error_code, status_code, response_body)
 		print("[AccelByte] Callback login_callback ")
+
+		Global.telemetry._has_account_checked = true
+
+		Telemetry:on_login()
+		Telemetry:on_login_screen_passed()
 		Entitlement:QueryEntitlementAsString(0, 10, entitlement_callback)
 	end
 
@@ -587,6 +593,8 @@ function Entitlement:CheckAndVerifyUserEntitlement(callback)
 		print("[AccelByte] Callback Platform Check")
 
 		if success then
+			Login.has_account = true
+
 			print("[AccelByte] Linked Starbreeze User for this Platform ID is found")
 
 			local ticket = Utility:get_steamticket()
@@ -598,6 +606,11 @@ function Entitlement:CheckAndVerifyUserEntitlement(callback)
 				Login:LoginWithUsernamePassword("username@email.com", "password_sample")
 			end
 		else
+			Login.has_account = false
+			Global.telemetry._has_account_checked = true
+
+			Telemetry:on_login()
+			Telemetry:on_login_screen_passed()
 			print("[AccelByte] Linked Starbreeze User for this Platform ID is not found")
 			Entitlement:SetDLCEntitlements()
 		end
@@ -607,6 +620,12 @@ function Entitlement:CheckAndVerifyUserEntitlement(callback)
 		if success then
 			Login:CheckPlatformIdForExistingAccount(steam_id, check_platform_callback)
 		else
+			Login.has_account = false
+			Global.telemetry._has_account_checked = true
+
+			Telemetry:on_login()
+			Telemetry:on_login_screen_passed()
+			print("[AccelByte] Login:LoginWithClientCredentials failed")
 			Entitlement:SetDLCEntitlements()
 		end
 	end
