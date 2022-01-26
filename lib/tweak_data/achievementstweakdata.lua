@@ -183,6 +183,11 @@ function AchievementsTweakData:init(tweak_data)
 		count = 10,
 		difficulty = overkill_and_above
 	}
+	self.ja22_01 = {
+		weapon = "new_m4",
+		percentage_dmg = 0.05,
+		award = "ja22_01"
+	}
 	self.infamous = {
 		"ignominy_1",
 		"ignominy_2",

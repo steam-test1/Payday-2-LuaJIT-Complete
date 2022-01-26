@@ -7817,6 +7817,16 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		global_value = "trik",
 		texture_bundle_folder = "trik"
 	}
+	self.masks.trol = {
+		unit = "units/pd2_dlc_mts/masks/msk_trol/msk_trol",
+		name_id = "bm_msk_mts_trol",
+		pcs = {},
+		value = 0,
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "mts",
+		texture_bundle_folder = "mts"
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.masks) do

@@ -601,19 +601,30 @@ function Entitlement:CheckAndVerifyUserEntitlement(callback)
 			local loginusingsteam = true
 
 			if loginusingsteam then
-				Login:LoginWithSteamToken(ticket, login_callback)
+				local function login_with_steam_callback(success, reason)
+					if success then
+						print("[AccelByte] Successfully authenticated the Steam Ticket, now logging in with Steam to AB Backend , callback reason " .. reason)
+						Login:LoginWithSteamToken(ticket, login_callback)
+					else
+						print("[AccelByte] Failed to authenticate Steam Ticket, reason : " .. reason)
+					end
+				end
+
+				Steam:bind_steam_ticket_validate_callback(steam_id, login_with_steam_callback, ticket)
 			else
 				Login:LoginWithUsernamePassword("username@email.com", "password_sample")
 			end
-		else
-			Login.has_account = false
-			Global.telemetry._has_account_checked = true
 
-			Telemetry:on_login()
-			Telemetry:on_login_screen_passed()
-			print("[AccelByte] Linked Starbreeze User for this Platform ID is not found")
-			Entitlement:SetDLCEntitlements()
+			return
 		end
+
+		Login.has_account = false
+		Global.telemetry._has_account_checked = true
+
+		Telemetry:on_login()
+		Telemetry:on_login_screen_passed()
+		print("[AccelByte] Linked Starbreeze User for this Platform ID is not found")
+		Entitlement:SetDLCEntitlements()
 	end
 
 	local function get_client_token_callback(success)

@@ -8434,4 +8434,16 @@ function DLCTweakData:init(tweak_data)
 			item_entry = "wpn_fps_upg_charm_ball"
 		}
 	}
+	self.ach_ja22_01 = {
+		dlc = "has_achievement",
+		achievement_id = "ja22_01",
+		content = {}
+	}
+	self.ach_ja22_01.content.loot_global_value = "ja22"
+	self.ach_ja22_01.content.loot_drops = {
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_m4_upg_fg_mk12"
+		}
+	}
 end

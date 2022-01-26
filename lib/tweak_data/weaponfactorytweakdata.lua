@@ -3399,6 +3399,173 @@ function WeaponFactoryTweakData:_init_m4()
 			"wpn_fps_ass_shak12_ns_muzzle"
 		}
 	}
+	self.parts.wpn_fps_m4_upg_ns_mk12 = {
+		parent = "barrel",
+		a_obj = "a_ns",
+		type = "barrel_ext",
+		name_id = "bm_wp_m4_ns_mk12",
+		unit = "units/pd2_dlc_ja22/weapons/wpn_fps_m4_upg_mk12_pts/wpn_fps_m4_upg_ns_mk12",
+		stats = {
+			value = 1
+		}
+	}
+	self.parts.wpn_fps_m4_uupg_fg_rail_ext_mk12 = {
+		a_obj = "a_fg",
+		type = "foregrip_ext",
+		name_id = "bm_wp_m4_uupg_fg_rail_ext_mk12",
+		unit = "units/pd2_dlc_ja22/weapons/wpn_fps_m4_upg_mk12_pts/wpn_fps_m4_uupg_fg_rail_ext_mk12",
+		stats = {
+			value = 1
+		}
+	}
+	self.parts.wpn_fps_m4_upg_fg_mk12 = {
+		is_a_unlockable = true,
+		texture_bundle_folder = "ja22",
+		dlc = "ja22",
+		a_obj = "a_fg",
+		type = "exclusive_set",
+		name_id = "bm_wp_m4_upg_fg_mk12",
+		unit = "units/pd2_dlc_ja22/weapons/wpn_fps_m4_upg_mk12_pts/wpn_fps_m4_upg_fg_mk12",
+		pcs = {},
+		stats = {
+			value = 4,
+			spread = 3,
+			damage = 2,
+			suppression = 12,
+			concealment = -4,
+			recoil = 2,
+			alert_size = 12
+		},
+		perks = {
+			"fire_mode_auto",
+			"silencer"
+		},
+		sound_switch = {
+			suppressed = "suppressed_c"
+		},
+		stance_mod = {
+			wpn_fps_ass_m4 = {
+				translation = Vector3(0, 0, -1.7),
+				rotation = Rotation(0, -0, 0)
+			}
+		},
+		adds = {
+			"wpn_fps_m4_uupg_fg_rail_ext_mk12",
+			"wpn_fps_m4_upg_ns_mk12"
+		},
+		forbids = {
+			"wpn_fps_m4_uupg_b_sd",
+			"wpn_fps_m4_uupg_fg_rail_ext",
+			"wpn_fps_m4_uupg_b_short",
+			"wpn_fps_upg_ass_m4_b_beowulf",
+			"wpn_fps_m4_uupg_b_long",
+			"wpn_fps_upg_ns_ass_smg_large",
+			"wpn_fps_upg_ns_ass_smg_medium",
+			"wpn_fps_upg_ns_ass_smg_small",
+			"wpn_fps_upg_ns_ass_smg_firepig",
+			"wpn_fps_upg_ns_ass_smg_stubby",
+			"wpn_fps_upg_ns_ass_smg_tank",
+			"wpn_fps_upg_ass_ns_jprifles",
+			"wpn_fps_upg_ass_ns_linear",
+			"wpn_fps_upg_ass_ns_surefire",
+			"wpn_fps_upg_ass_ns_battle",
+			"wpn_fps_m4_uupg_fg_lr300",
+			"wpn_fps_upg_fg_jp",
+			"wpn_fps_upg_fg_smr",
+			"wpn_fps_upg_ass_m4_fg_moe",
+			"wpn_fps_upg_ass_m4_fg_lvoa",
+			"wpn_fps_upg_i_singlefire",
+			"wpn_fps_upg_i_autofire",
+			"wpn_fps_upg_ns_ass_smg_v6",
+			"wpn_fps_ass_shak12_ns_suppressor",
+			"wpn_fps_ass_shak12_ns_muzzle"
+		},
+		override = {
+			wpn_fps_m4_uupg_fg_rail = {
+				third_unit = "units/pd2_dlc_ja22/weapons/wpn_fps_m4_upg_mk12_pts/wpn_third_m4_upg_fg_mk12",
+				unit = "units/pd2_dlc_ja22/weapons/wpn_fps_m4_upg_mk12_pts/wpn_fps_m4_upg_fg_mk12"
+			},
+			wpn_fps_m4_uupg_b_medium_vanilla = {
+				third_unit = "units/payday2/weapons/wpn_third_ass_m4_pts/wpn_third_m4_uupg_b_long",
+				unit = "units/payday2/weapons/wpn_fps_ass_m4_pts/wpn_fps_m4_uupg_b_long"
+			},
+			wpn_fps_upg_o_specter = {
+				a_obj = "a_o_2"
+			},
+			wpn_fps_upg_o_aimpoint = {
+				a_obj = "a_o_2"
+			},
+			wpn_fps_upg_o_aimpoint_2 = {
+				a_obj = "a_o_2"
+			},
+			wpn_fps_upg_o_docter = {
+				a_obj = "a_o_2"
+			},
+			wpn_fps_upg_o_eotech = {
+				a_obj = "a_o_2"
+			},
+			wpn_fps_upg_o_t1micro = {
+				a_obj = "a_o_2"
+			},
+			wpn_fps_upg_o_cmore = {
+				a_obj = "a_o_2"
+			},
+			wpn_fps_upg_o_acog = {
+				a_obj = "a_o_2"
+			},
+			wpn_fps_upg_o_cs = {
+				a_obj = "a_o_2"
+			},
+			wpn_fps_upg_o_eotech_xps = {
+				a_obj = "a_o_2"
+			},
+			wpn_fps_upg_o_reflex = {
+				a_obj = "a_o_2"
+			},
+			wpn_fps_upg_o_rx01 = {
+				a_obj = "a_o_2"
+			},
+			wpn_fps_upg_o_rx30 = {
+				a_obj = "a_o_2"
+			},
+			wpn_fps_m4_uupg_o_flipup = {
+				a_obj = "a_o_2"
+			},
+			wpn_fps_upg_o_spot = {
+				a_obj = "a_o_2"
+			},
+			wpn_fps_upg_o_bmg = {
+				a_obj = "a_o_2"
+			},
+			wpn_fps_upg_o_fc1 = {
+				a_obj = "a_o_2"
+			},
+			wpn_fps_upg_o_uh = {
+				a_obj = "a_o_2"
+			},
+			wpn_fps_upg_o_tf90 = {
+				a_obj = "a_o_2"
+			},
+			wpn_fps_upg_o_poe = {
+				a_obj = "a_o_2"
+			},
+			wpn_fps_upg_fl_ass_smg_sho_peqbox = {
+				a_obj = "a_fl_2"
+			},
+			wpn_fps_upg_fl_ass_smg_sho_surefire = {
+				a_obj = "a_fl_2"
+			},
+			wpn_fps_upg_fl_ass_peq15 = {
+				a_obj = "a_fl_2"
+			},
+			wpn_fps_upg_fl_ass_laser = {
+				a_obj = "a_fl_2"
+			},
+			wpn_fps_upg_fl_ass_utg = {
+				a_obj = "a_fl_2"
+			}
+		}
+	}
 	self.parts.wpn_fps_m4_uupg_fg_lr300 = {
 		unit = "units/payday2/weapons/wpn_fps_ass_m4_pts/wpn_fps_m4_uupg_fg_lr300",
 		a_obj = "a_fg",
@@ -3686,6 +3853,8 @@ function WeaponFactoryTweakData:_init_m4()
 	self.parts.wpn_fps_upg_m4_s_adapter.third_unit = "units/payday2/weapons/wpn_third_upg_m4_reusable/wpn_third_upg_m4_s_adapter"
 	self.parts.wpn_fps_upg_m4_s_pts.third_unit = "units/payday2/weapons/wpn_third_upg_m4_reusable/wpn_third_upg_m4_s_pts"
 	self.parts.wpn_fps_upg_m4_s_standard.third_unit = "units/payday2/weapons/wpn_third_upg_m4_reusable/wpn_third_upg_m4_s_standard"
+	self.parts.wpn_fps_m4_upg_ns_mk12.third_unit = "units/pd2_dlc_ja22/weapons/wpn_fps_m4_upg_mk12_pts/wpn_third_m4_upg_ns_mk12"
+	self.parts.wpn_fps_m4_upg_fg_mk12.third_unit = "units/pd2_dlc_ja22/weapons/wpn_fps_m4_upg_mk12_pts/wpn_third_m4_upg_fg_mk12"
 	self.parts.wpn_fps_m4_upper_reciever_round_vanilla = deep_clone(self.parts.wpn_fps_m4_upper_reciever_round)
 	self.parts.wpn_fps_m4_upper_reciever_round_vanilla.stats = nil
 	self.parts.wpn_fps_m4_upper_reciever_round_vanilla.pcs = nil
@@ -3820,6 +3989,8 @@ function WeaponFactoryTweakData:_init_m4()
 			"wpn_fps_upg_o_45rds",
 			"wpn_fps_upg_o_spot",
 			"wpn_fps_m4_upg_m_quick",
+			"wpn_fps_m4_upg_ns_mk12",
+			"wpn_fps_m4_upg_fg_mk12",
 			"wpn_fps_snp_tti_s_vltor",
 			"wpn_fps_snp_tti_g_grippy",
 			"wpn_fps_upg_o_xpsg33_magnifier",
@@ -19041,6 +19212,20 @@ function WeaponFactoryTweakData:create_charms(tweak_data)
 			dlc = "xm21",
 			name_id = "bm_wp_upg_charm_lusse",
 			unit = "units/pd2_dlc_xm21/weapons/wpn_fps_upg_charms_snow/wpn_fps_upg_charm_lusse",
+			pcs = {},
+			stats = {
+				value = 1
+			}
+		},
+		wpn_fps_upg_charm_tiger = {
+			is_a_unlockable = true,
+			texture_bundle_folder = "ja22",
+			third_unit = "units/pd2_dlc_ja22/weapons/wpn_fps_upg_charms_ja22/wpn_third_upg_charm_tiger",
+			a_obj = "a_charm",
+			type = "charm",
+			dlc = "ja22",
+			name_id = "bm_wp_upg_charm_tiger",
+			unit = "units/pd2_dlc_ja22/weapons/wpn_fps_upg_charms_ja22/wpn_fps_upg_charm_tiger",
 			pcs = {},
 			stats = {
 				value = 1

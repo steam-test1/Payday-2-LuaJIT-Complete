@@ -1576,6 +1576,10 @@ function RaycastWeaponBase:reload_exit_expire_t()
 	return nil
 end
 
+function RaycastWeaponBase:use_shotgun_reload()
+	return false
+end
+
 function RaycastWeaponBase:update_reloading(t, dt, time_left)
 end
 

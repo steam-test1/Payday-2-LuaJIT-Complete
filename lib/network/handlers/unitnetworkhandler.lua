@@ -2801,6 +2801,31 @@ function UnitNetworkHandler:set_health(unit, percent, max_mul, sender)
 	end
 end
 
+function UnitNetworkHandler:set_revives(unit, revive_amount, is_max, sender)
+	if not alive(unit) or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local peer = self._verify_sender(sender)
+
+	if not peer then
+		return
+	end
+
+	local char_dmg_ext = unit:character_damage()
+
+	if char_dmg_ext and char_dmg_ext.sync_set_revives then
+		char_dmg_ext:sync_set_revives(revive_amount, is_max)
+	end
+
+	local peer_id = peer:id()
+	local character_data = managers.criminals:character_data_by_peer_id(peer_id)
+
+	if character_data and character_data.panel_id then
+		managers.hud:set_teammate_revives(character_data.panel_id, revive_amount)
+	end
+end
+
 function UnitNetworkHandler:sync_equipment_possession(peer_id, equipment, amount, sender)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
 		return

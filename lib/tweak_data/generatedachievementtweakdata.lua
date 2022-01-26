@@ -8560,6 +8560,21 @@ function init_auto_generated_achievement_data(tags)
 				tags.contracts.all
 			}
 		},
+		ja22_01 = {
+			need_unlock_icons = true,
+			icon_id = "C_All_H_All_Car",
+			sort_name = "C_All_H_All_Car",
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.unlock.exclusive_weapon_set,
+				tags.tactics.loud,
+				tags.tactics.killer,
+				tags.inventory.weapon,
+				tags.contracts.all
+			}
+		},
 		mex2_1 = {
 			icon_id = "C_Locke_H_BorderCrystals_AllDiffs_D0",
 			ladder = "H_BorderCrystals",

@@ -212,6 +212,13 @@ function math.round(n, precision)
 	return math.floor((n + precision / 2) / precision) * precision
 end
 
+function math.truncate(n, precision)
+	precision = precision or 0
+	local prec_mul = math.pow(10, precision)
+
+	return math.floor(n * prec_mul) / prec_mul
+end
+
 function math.min_max(a, b)
 	if a < b then
 		return a, b

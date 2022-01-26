@@ -1805,7 +1805,7 @@ function MenuManager:show_confirm_blackmarket_mod(params)
 		local mods = ""
 
 		for _, mod_name in ipairs(params.removes) do
-			if Application:production_build() and managers.weapon_factory:is_part_standard_issue(mod_name) then
+			if Application:production_build() and managers.weapon_factory:is_part_standard_issue(params.factory_id, mod_name) then
 				Application:error("[MenuManager:show_confirm_blackmarket_mod] Standard Issuse Part Detected!", inspect(params))
 			end
 

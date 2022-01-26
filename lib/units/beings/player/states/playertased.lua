@@ -162,13 +162,17 @@ function PlayerTased:_update_check_actions(t, dt)
 end
 
 function PlayerTased:_check_action_shock(t, input)
+	self._next_shock = self._next_shock or 0.5
+
 	if self._next_shock < t then
+		self._num_shocks = self._num_shocks or 0
 		self._num_shocks = self._num_shocks + 1
 		self._next_shock = t + 0.25 + math.rand(1)
 
 		self._unit:camera():play_shaker("player_taser_shock", 1, 10)
 		self._unit:camera():camera_unit():base():set_target_tilt((math.random(2) == 1 and -1 or 1) * math.random(10))
 
+		self._taser_value = self._taser_value or 1
 		self._taser_value = math.max(self._taser_value - 0.25, 0)
 
 		self._unit:sound():play("tasered_shock")

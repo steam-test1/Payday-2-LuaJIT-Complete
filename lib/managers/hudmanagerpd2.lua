@@ -511,6 +511,10 @@ function HUDManager:remove_teammate_carry_info(i)
 	self._teammate_panels[i]:remove_carry_info()
 end
 
+function HUDManager:set_teammate_revives(i, revive_amount)
+	self._teammate_panels[i]:set_revives_amount(revive_amount)
+end
+
 function HUDManager:start_teammate_timer(i, time)
 	if self._teammate_panels[i] then
 		self._teammate_panels[i]:start_timer(time)
@@ -562,6 +566,7 @@ function HUDManager:_setup_player_info_hud_pd2()
 	self:_create_hud_chat()
 	self:_create_assault_corner()
 	self:_create_waiting_legend(hud)
+	self:_create_accessibility(hud)
 end
 
 function HUDManager:_create_ammo_test()
@@ -1114,6 +1119,32 @@ end
 
 function HUDManager:modify_heist_time(time)
 	self._hud_heist_timer:modify_time(time)
+end
+
+function HUDManager:_create_accessibility(hud)
+	local dot_color = managers.user:get_setting("accessibility_dot")
+	local dot_size = managers.user:get_setting("accessibility_dot_size")
+	self._accessibility_dot_enabled = dot_color ~= "off"
+	self._accessibility_dot_visible = self._accessibility_dot_enabled
+	local accessibility_dot = hud.panel:bitmap({
+		texture = "guis/textures/pd2/crosshair_dot",
+		name = "accessibility_dot",
+		h = 8,
+		w = 8,
+		layer = 0
+	})
+
+	accessibility_dot:set_size(dot_size, dot_size)
+	accessibility_dot:set_center_x(hud.panel:w() / 2)
+	accessibility_dot:set_center_y(hud.panel:h() / 2)
+	accessibility_dot:set_color(self:get_dot_color(dot_color))
+	accessibility_dot:set_visible(self._accessibility_dot_enabled)
+	managers.user:add_setting_changed_callback("accessibility_dot", callback(self, self, "accessibility_dot_changed"), false)
+	managers.user:add_setting_changed_callback("accessibility_dot_size", callback(self, self, "accessibility_dot_size_changed"), false)
+end
+
+function HUDManager:get_dot_color(color_name)
+	return tweak_data.accessibility_colors[color_name] or Color.white
 end
 
 function HUDManager:_create_temp_hud(hud)
@@ -1799,6 +1830,16 @@ function HUDManager:hide_mission_briefing_hud()
 	end
 end
 
+function HUDManager:layout_player_hud()
+	local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
+	local accessibility_dot = self:script(PlayerBase.PLAYER_INFO_HUD_PD2).panel:child("accessibility_dot")
+
+	if accessibility_dot and hud then
+		accessibility_dot:set_center_x(hud.panel:w() / 2)
+		accessibility_dot:set_center_y(hud.panel:h() / 2)
+	end
+end
+
 function HUDManager:layout_mission_briefing_hud()
 	if self._hud_mission_briefing then
 		self._hud_mission_briefing:update_layout()
@@ -2184,6 +2225,39 @@ function HUDManager:achievement_milestone_popup(id)
 	})
 
 	HudChallengeNotification.queue(title, description, "milestone_trophy", milestone.rewards)
+end
+
+function HUDManager:set_accessibility_dot_visible(visible, color_name)
+	self._accessibility_dot_visible = visible
+	local dot_panel = self:script(PlayerBase.PLAYER_INFO_HUD_PD2).panel:child("accessibility_dot")
+
+	if dot_panel then
+		local visible = self._accessibility_dot_enabled and visible
+
+		dot_panel:set_visible(visible)
+
+		if color_name then
+			dot_panel:set_color(self:get_dot_color(color_name))
+		end
+	end
+end
+
+function HUDManager:accessibility_dot_changed(name, old_value, new_value)
+	self._accessibility_dot_enabled = new_value ~= "off"
+
+	if self._accessibility_dot_enabled then
+		self:set_accessibility_dot_visible(self._accessibility_dot_visible, new_value)
+	else
+		self:set_accessibility_dot_visible(false)
+	end
+end
+
+function HUDManager:accessibility_dot_size_changed(name, old_value, new_value)
+	local dot_panel = self:script(PlayerBase.PLAYER_INFO_HUD_PD2).panel:child("accessibility_dot")
+
+	if dot_panel then
+		dot_panel:set_size(new_value, new_value)
+	end
 end
 
 function HUDManager:register_ingame_workspace(name, obj)

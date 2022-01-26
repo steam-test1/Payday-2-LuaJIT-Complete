@@ -52,7 +52,7 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 	local _, _, name_w, _ = name:text_rect()
 
 	managers.hud:make_fine_text(name)
-	name:set_leftbottom(name:h(), teammate_panel:h() - 70)
+	name:set_leftbottom(name:h(), teammate_panel:h() - 70 - 2)
 
 	if not main_player then
 		name:set_x(48 + name:h() + 4)
@@ -116,6 +116,47 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		w = name:h() - 2,
 		h = name:h() - 2
 	})
+
+	local name_bg = teammate_panel:child("name_bg")
+
+	self._panel:child("callsign_bg"):set_visible(false)
+	self._panel:child("callsign"):set_visible(false)
+	name_bg:set_h(name:h() + 4)
+
+	local revive_panel = self._player_panel:panel({
+		name = "revive_panel",
+		w = name:h() - 1,
+		h = name_bg:h()
+	})
+
+	revive_panel:set_center_y(name_bg:y() + name_bg:h() / 2)
+	revive_panel:set_right(name_bg:x())
+	revive_panel:bitmap({
+		alpha = 0.8,
+		name = "revive_bg",
+		layer = 2
+	})
+	revive_panel:text({
+		text = "2x",
+		name = "revive_amount",
+		font_size = 16,
+		font = "fonts/font_medium_mf",
+		align = "center",
+		layer = 3,
+		color = Color.white
+	})
+
+	local arrow_size = 14
+	local arrow = revive_panel:bitmap({
+		texture = "guis/textures/pd2/arrow_downcounter",
+		name = "revive_arrow",
+		layer = 3,
+		y = revive_panel:h() - arrow_size + 1,
+		h = arrow_size,
+		w = arrow_size
+	})
+
+	arrow:set_center_x(revive_panel:w() / 2)
 
 	local box_ai_bg = teammate_panel:bitmap({
 		texture = "guis/textures/pd2/box_ai_bg",
@@ -1645,6 +1686,10 @@ function HUDTeammate:set_callsign(id)
 	local alpha = callsign:color().a
 
 	callsign:set_color((tweak_data.chat_colors[id] or tweak_data.chat_colors[#tweak_data.chat_colors]):with_alpha(alpha))
+
+	local name = teammate_panel:child("name")
+
+	name:set_color((tweak_data.chat_colors[id] or tweak_data.chat_colors[#tweak_data.chat_colors]):with_alpha(alpha))
 end
 
 function HUDTeammate:set_cable_tie(data)
@@ -2011,6 +2056,23 @@ function HUDTeammate:remove_carry_info()
 	local carry_panel = self._player_panel:child("carry_panel")
 
 	carry_panel:set_visible(false)
+end
+
+function HUDTeammate:set_revives_amount(revive_amount)
+	if revive_amount then
+		local teammate_panel = self._panel:child("player")
+		local revive_panel = teammate_panel:child("revive_panel")
+		local revive_amount_text = revive_panel:child("revive_amount")
+		local revive_bg = revive_panel:child("revive_bg")
+
+		if revive_amount_text then
+			revive_amount_text:set_text(tostring(math.max(revive_amount - 1, 0)) .. "x")
+		end
+
+		if revive_bg then
+			revive_bg:set_color(tweak_data.hud.revive_colors[revive_amount] or tweak_data.hud.revive_colors[4])
+		end
+	end
 end
 
 function HUDTeammate:add_special_equipment(data)

@@ -535,6 +535,18 @@ function DLCTweakData:init_generated()
 			amount = 1
 		}
 	}
+	self.ja22_bundle = {
+		free = true,
+		content = {}
+	}
+	self.ja22_bundle.content.loot_global_value = "ja22"
+	self.ja22_bundle.content.loot_drops = {
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_upg_charm_tiger",
+			amount = 1
+		}
+	}
 	self.jun21_bundle = {
 		free = true,
 		content = {}
@@ -632,6 +644,18 @@ function DLCTweakData:init_generated()
 		{
 			type_items = "masks",
 			item_entry = "mmh",
+			amount = 1
+		}
+	}
+	self.mts_bundle = {
+		dlc = "has_mts",
+		content = {}
+	}
+	self.mts_bundle.content.loot_global_value = "mts"
+	self.mts_bundle.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "trol",
 			amount = 1
 		}
 	}

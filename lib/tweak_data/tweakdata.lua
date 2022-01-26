@@ -669,6 +669,7 @@ function TweakData:init()
 	end
 
 	self:init_screen_colors()
+	self:init_accessibility_colors()
 
 	self.hud_icons = HudIconsTweakData:new()
 	self.weapon = WeaponTweakData:new(self)
@@ -2904,6 +2905,15 @@ function TweakData:init_screen_colors()
 	end
 end
 
+function TweakData:init_accessibility_colors()
+	self.accessibility_colors = {
+		dot_white = Color.white,
+		dot_yellow = Color(255, 255, 201, 7) / 255,
+		dot_blue = Color(255, 77, 198, 255) / 255,
+		dot_green = Color.green
+	}
+end
+
 function TweakData:free_dlc_list()
 	local free_dlcs = {}
 
@@ -3316,6 +3326,12 @@ function TweakData:set_hud_values()
 	self.hud.prime_color = Color(1, 1, 0.6588235294117647, 0)
 	self.hud.suspicion_color = Color(1, 0, 0.4666666666666667, 0.6980392156862745)
 	self.hud.detected_color = Color(1, 1, 0.2, 0)
+	self.hud.revive_colors = {
+		Color(255, 223, 15, 15) / 255,
+		Color(255, 98, 35, 35) / 255,
+		Color(255, 91, 87, 87) / 255,
+		Color(255, 91, 87, 87) / 255
+	}
 end
 
 function TweakData:resolution_changed()

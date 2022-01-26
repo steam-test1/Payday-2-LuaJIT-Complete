@@ -349,6 +349,7 @@ end
 function PlayerDamage:send_set_status()
 	self:_send_set_armor()
 	self:_send_set_health()
+	self:_send_set_revives(true)
 end
 
 function PlayerDamage:force_into_bleedout(can_activate_berserker, ignore_reduce_revive)
@@ -628,6 +629,9 @@ function PlayerDamage:band_aid_health()
 
 	if math.rand(1) < managers.player:upgrade_value("first_aid_kit", "downs_restore_chance", 0) then
 		self._revives = Application:digest_value(math.min(self._lives_init + managers.player:upgrade_value("player", "additional_lives", 0), Application:digest_value(self._revives, false) + 1), true)
+
+		self:_send_set_revives()
+
 		self._revive_health_i = math.max(self._revive_health_i - 1, 1)
 
 		managers.environment_controller:set_last_life(Application:digest_value(self._revives, false) <= 1)
@@ -802,6 +806,9 @@ function PlayerDamage:_regenerated(no_messiah)
 
 	self._said_hurt = false
 	self._revives = Application:digest_value(self._lives_init + managers.player:upgrade_value("player", "additional_lives", 0), true)
+
+	self:_send_set_revives(true)
+
 	self._revive_health_i = 1
 
 	managers.environment_controller:set_last_life(false)
@@ -1583,6 +1590,8 @@ function PlayerDamage:damage_fall(data)
 
 		if is_free_falling then
 			self._revives = Application:digest_value(1, true)
+
+			self:_send_set_revives()
 		end
 	else
 		health_damage_multiplier = managers.player:upgrade_value("player", "fall_damage_multiplier", 1) * managers.player:upgrade_value("player", "fall_health_damage_multiplier", 1)
@@ -1864,6 +1873,8 @@ function PlayerDamage:_check_bleed_out(can_activate_berserker, ignore_movement_s
 		if not self._check_berserker_done or not can_activate_berserker then
 			if not ignore_reduce_revive then
 				self._revives = Application:digest_value(Application:digest_value(self._revives, false) - 1, true)
+
+				self:_send_set_revives()
 			end
 
 			self._check_berserker_done = nil
@@ -2301,6 +2312,22 @@ function PlayerDamage:_set_health_effect()
 
 	math.clamp(hp, 0, 1)
 	managers.environment_controller:set_health_effect_value(hp)
+end
+
+function PlayerDamage:_send_set_revives(is_max)
+	local revives = Application:digest_value(self._revives, false)
+
+	managers.hud:set_teammate_revives(HUDManager.PLAYER_PANEL, revives)
+
+	local net_ext = self._unit:network()
+
+	if net_ext then
+		net_ext:send("set_revives", revives, is_max or false)
+	end
+end
+
+function PlayerDamage:get_revives_max()
+	return self._lives_init + managers.player:upgrade_value("player", "additional_lives", 0)
 end
 
 function PlayerDamage:_send_set_armor()

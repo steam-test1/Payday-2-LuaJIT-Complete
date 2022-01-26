@@ -2215,6 +2215,20 @@ function MenuCallbackHandler:toggle_sticky_aim(item)
 	managers.user:set_setting("sticky_aim", on)
 end
 
+function MenuCallbackHandler:accessibility_dot_choice(item)
+	managers.user:set_setting("accessibility_dot", item:value(), nil)
+end
+
+function MenuCallbackHandler:accessibility_dot_size(item)
+	managers.user:set_setting("accessibility_dot_size", item:value(), nil)
+end
+
+function MenuCallbackHandler:toggle_dot_hide_ads(item)
+	local state = item:value() == "on"
+
+	managers.user:set_setting("accessibility_dot_hide_ads", state, nil)
+end
+
 function MenuCallbackHandler:toggle_voicechat(item)
 	local vchat = item:value() == "on"
 
@@ -9811,6 +9825,8 @@ function MenuOptionInitiator:modify_node(node)
 		return self:modify_vr_options(node)
 	elseif node_name == "adv_options" then
 		return self:modify_adv_options(node)
+	elseif node_name == "accessibility_options" then
+		return self:modify_accessibility_options(node)
 	end
 end
 
@@ -9835,6 +9851,54 @@ function MenuOptionInitiator:modify_adv_options(node)
 
 	if node:item("toggle_telemetry") then
 		node:item("toggle_telemetry"):set_value(managers.user:get_setting("use_telemetry") and "on" or "off")
+	end
+
+	return node
+end
+
+function MenuOptionInitiator:modify_accessibility_options(node)
+	local option_value = nil
+	local accessibility_dot_item = node:item("accessibility_dot")
+
+	if accessibility_dot_item then
+		local setting = managers.user:get_setting("accessibility_dot")
+
+		if setting then
+			accessibility_dot_item:set_value(setting)
+		end
+	end
+
+	local option_value = "off"
+	local accessibility_dot_size_item = node:item("accessibility_dot_size")
+
+	if accessibility_dot_size_item then
+		local setting = managers.user:get_setting("accessibility_dot_size")
+
+		if setting then
+			accessibility_dot_size_item:set_value(setting)
+		end
+	end
+
+	option_value = "off"
+	local toggle_dot_hide_ads = node:item("toggle_dot_hide_ads")
+
+	if toggle_dot_hide_ads then
+		if managers.user:get_setting("accessibility_dot_hide_ads") then
+			option_value = "on"
+		end
+
+		toggle_dot_hide_ads:set_value(option_value)
+	end
+
+	option_value = "off"
+	local color_blind_hit_direction_item = node:item("toggle_color_blind_hit_direction")
+
+	if color_blind_hit_direction_item then
+		if managers.user:get_setting("color_blind_hit_direction") then
+			option_value = "on"
+		end
+
+		color_blind_hit_direction_item:set_value(option_value)
 	end
 
 	return node

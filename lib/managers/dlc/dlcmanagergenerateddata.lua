@@ -94,6 +94,10 @@ function GenericDLCManager:has_ja21()
 	return self:is_dlc_unlocked("ja21")
 end
 
+function GenericDLCManager:has_ja22()
+	return self:is_dlc_unlocked("ja22")
+end
+
 function GenericDLCManager:has_jun21()
 	return self:is_dlc_unlocked("jun21")
 end
@@ -116,6 +120,10 @@ end
 
 function GenericDLCManager:has_mmh()
 	return self:is_dlc_unlocked("mmh")
+end
+
+function GenericDLCManager:has_mts()
+	return self:is_dlc_unlocked("mts")
 end
 
 function GenericDLCManager:has_mwm()
@@ -375,6 +383,10 @@ function WINDLCManager:init_generated()
 		app_id = "218620",
 		no_install = true
 	}
+	Global.dlc_manager.all_dlc_data.ja22 = {
+		app_id = "218620",
+		no_install = true
+	}
 	Global.dlc_manager.all_dlc_data.jun21 = {
 		app_id = "218620",
 		no_install = true
@@ -399,6 +411,10 @@ function WINDLCManager:init_generated()
 	}
 	Global.dlc_manager.all_dlc_data.mmh = {
 		app_id = "218620",
+		no_install = true
+	}
+	Global.dlc_manager.all_dlc_data.mts = {
+		app_id = "1872590",
 		no_install = true
 	}
 	Global.dlc_manager.all_dlc_data.mwm = {

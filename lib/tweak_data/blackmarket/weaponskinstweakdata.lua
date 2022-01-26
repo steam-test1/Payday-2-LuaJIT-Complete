@@ -19970,6 +19970,14 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 					pattern_pos = Vector3(-0.423086, 0.158836, 0)
 				}
 			},
+			wpn_fps_m4_upg_fg_mk12 = {
+				[Idstring("mtr_mk20_fg"):key()] = {
+					pattern = "units/payday2_cash/safes/cs3/pattern/cs3_pattern_017_b_df",
+					pattern_gradient = "units/payday2_cash/safes/cs3/pattern_gradient/gradient_cs3_017_df",
+					base_gradient = "units/payday2_cash/safes/cs3/base_gradient/base_cs3_022_df",
+					pattern_pos = Vector3(-0.23229, 0.03482, 0)
+				}
+			},
 			wpn_fps_upg_o_aimpoint_2 = {
 				[Idstring("aimpoint"):key()] = {
 					base_gradient = "units/payday2_cash/safes/cs3/base_gradient/base_cs3_022_df"

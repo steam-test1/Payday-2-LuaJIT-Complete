@@ -16952,9 +16952,10 @@ function BlackMarketGui:buy_mod_callback(data)
 		name = data.name_localized or data.name,
 		category = data.category,
 		slot = data.slot,
-		weapon_name = managers.weapon_factory:get_weapon_name_by_factory_id(managers.blackmarket:get_crafted_category(data.category)[data.slot].factory_id),
-		add = true
+		factory_id = managers.blackmarket:get_crafted_category(data.category)[data.slot].factory_id
 	}
+	params.weapon_name = managers.weapon_factory:get_weapon_name_by_factory_id(params.factory_id)
+	params.add = true
 	local weapon_id = managers.blackmarket:get_crafted_category(data.category)[data.slot].weapon_id
 	local cost = managers.money:get_weapon_modify_price(weapon_id, data.name, data.global_value) or 0
 	params.money = cost > 0 and managers.experience:cash_string(cost)
@@ -16963,8 +16964,8 @@ function BlackMarketGui:buy_mod_callback(data)
 	params.removes = removes or {}
 
 	if data.default_mod then
-		table.delete(replaces, data.default_mod)
-		table.delete(removes, data.default_mod)
+		table.delete(params.replaces, data.default_mod)
+		table.delete(params.removes, data.default_mod)
 	end
 
 	params.yes_func = callback(self, self, "_dialog_yes", callback(self, self, "_buy_mod_callback", data))

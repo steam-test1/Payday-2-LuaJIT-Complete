@@ -68,6 +68,7 @@ function TeamAILogicIdle.enter(data, new_logic_name, enter_params)
 
 			local success = nil
 			local revive_unit = objective.follow_unit
+			local revive_char_dmg_ext = revive_unit:character_damage()
 
 			if revive_unit:interaction() then
 				if revive_unit:interaction():active() and data.unit:brain():action_request(objective.action) then
@@ -75,14 +76,14 @@ function TeamAILogicIdle.enter(data, new_logic_name, enter_params)
 
 					success = true
 				end
-			elseif revive_unit:character_damage():arrested() then
+			elseif revive_char_dmg_ext:arrested() then
 				if data.unit:brain():action_request(objective.action) then
-					revive_unit:character_damage():pause_arrested_timer()
+					revive_char_dmg_ext:pause_arrested_timer()
 
 					success = true
 				end
-			elseif revive_unit:character_damage():need_revive() and data.unit:brain():action_request(objective.action) then
-				revive_unit:character_damage():pause_downed_timer()
+			elseif revive_char_dmg_ext:need_revive() and data.unit:brain():action_request(objective.action) then
+				revive_char_dmg_ext:pause_downed_timer()
 
 				success = true
 			end
@@ -96,14 +97,23 @@ function TeamAILogicIdle.enter(data, new_logic_name, enter_params)
 
 				CopLogicBase.add_delayed_clbk(my_data, my_data.revive_complete_clbk_id, callback(TeamAILogicIdle, TeamAILogicIdle, "clbk_revive_complete", data), revive_t)
 
-				if not revive_unit:character_damage():arrested() then
+				if not revive_char_dmg_ext:arrested() then
 					local suffix = "a"
-					local downed_time = revive_unit:character_damage():down_time()
 
-					if downed_time <= tweak_data.player.damage.DOWNED_TIME_MIN then
-						suffix = "c"
-					elseif downed_time <= tweak_data.player.damage.DOWNED_TIME / 2 + tweak_data.player.damage.DOWNED_TIME_DEC then
-						suffix = "b"
+					if revive_char_dmg_ext.get_revives then
+						local amount_revives = revive_char_dmg_ext:get_revives()
+
+						if amount_revives == 1 then
+							suffix = "c"
+						elseif amount_revives == 2 then
+							suffix = "b"
+						else
+							local first_down_nr_chk = revive_char_dmg_ext:get_revives_max() - 1
+
+							if amount_revives < first_down_nr_chk then
+								suffix = "b"
+							end
+						end
 					end
 
 					data.unit:sound():say("s09" .. suffix, true)

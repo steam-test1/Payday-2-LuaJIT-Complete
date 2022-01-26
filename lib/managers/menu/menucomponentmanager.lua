@@ -3655,6 +3655,8 @@ function MenuComponentManager:get_texture_from_mod_type(type, sub_type, gadget, 
 		texture = "guis/textures/pd2/blackmarket/inv_mod_scope"
 	elseif type == "charm" then
 		texture = "guis/dlcs/tawp/textures/pd2/blackmarket/inv_mod_charm"
+	elseif type == "exclusive_set" then
+		texture = "guis/dlcs/ja22/textures/pd2/blackmarket/inv_mod_exclusive"
 	elseif type == "underbarrel" then
 		if equipped then
 			-- Nothing

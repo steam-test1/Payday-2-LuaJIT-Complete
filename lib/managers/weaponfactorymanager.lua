@@ -1085,14 +1085,14 @@ function WeaponFactoryManager:is_part_standard_issue(factory_id, part_id)
 	local weapon_factory_tweak_data = tweak_data.weapon.factory[factory_id]
 	local part_tweak_data = tweak_data.weapon.factory.parts[part_id]
 
-	if not part_tweak_data then
-		Application:error("[WeaponFactoryManager:is_part_standard_issue] Found no part with part id", part_id)
+	if not weapon_factory_tweak_data then
+		Application:stack_dump_error("[WeaponFactoryManager:is_part_standard_issue] Found no weapon with factory id", factory_id, "part_id", part_id)
 
 		return false
 	end
 
-	if not weapon_factory_tweak_data then
-		Application:error("[WeaponFactoryManager:is_part_standard_issue] Found no weapon with factory id", factory_id)
+	if not part_tweak_data then
+		Application:stack_dump_error("[WeaponFactoryManager:is_part_standard_issue] Found no part with part id", part_id, "factory_id", factory_id)
 
 		return false
 	end
@@ -1233,14 +1233,6 @@ function WeaponFactoryManager:change_part_blueprint_only(factory_id, part_id, bl
 
 	if remove_part then
 		table.delete(blueprint, part_id)
-
-		local forbidden = WeaponFactoryManager:_get_forbidden_parts(factory_id, blueprint) or {}
-
-		for _, rem_id in ipairs(blueprint) do
-			if forbidden[rem_id] then
-				table.delete(blueprint, rem_id)
-			end
-		end
 	elseif self._parts_by_weapon[factory_id][type] then
 		if table.contains(self._parts_by_weapon[factory_id][type], part_id) then
 			for _, rem_id in ipairs(blueprint) do
@@ -1252,24 +1244,45 @@ function WeaponFactoryManager:change_part_blueprint_only(factory_id, part_id, bl
 			end
 
 			table.insert(blueprint, part_id)
-
-			local forbidden = WeaponFactoryManager:_get_forbidden_parts(factory_id, blueprint) or {}
-
-			for _, rem_id in ipairs(blueprint) do
-				if forbidden[rem_id] then
-					table.delete(blueprint, rem_id)
-				end
-			end
-
-			return true
 		else
 			Application:error("WeaponFactoryManager:change_part Part", part_id, "not allowed for weapon", factory_id, "!")
+
+			return false
 		end
 	else
 		Application:error("WeaponFactoryManager:change_part Part", part_id, "not allowed for weapon", factory_id, "!")
+
+		return false
 	end
 
-	return false
+	local forbidden = WeaponFactoryManager:_get_forbidden_parts(factory_id, blueprint) or {}
+	local default_blueprint = WeaponFactoryManager:get_default_blueprint_by_factory_id(factory_id) or {}
+	local default_blueprint_by_type = {}
+
+	for _, def_id in ipairs(default_blueprint) do
+		if default_blueprint_by_type[factory.parts[def_id].type] then
+			Application:error("[WeaponFactoryManager:change_part] Two default parts of same type", type, def_id, default_blueprint_by_type[factory.parts[def_id].type])
+		end
+
+		default_blueprint_by_type[factory.parts[def_id].type] = def_id
+	end
+
+	local default_part_id = nil
+	local it_blueprint = clone(blueprint)
+
+	for _, rem_id in ipairs(it_blueprint) do
+		if forbidden[rem_id] then
+			table.delete(blueprint, rem_id)
+
+			default_part_id = default_blueprint_by_type[factory.parts[rem_id].type]
+
+			if default_part_id and not forbidden[default_part_id] and not table.contains(blueprint, default_part_id) then
+				table.insert(blueprint, default_part_id)
+			end
+		end
+	end
+
+	return true
 end
 
 function WeaponFactoryManager:get_replaces_parts(factory_id, part_id, blueprint, remove_part)

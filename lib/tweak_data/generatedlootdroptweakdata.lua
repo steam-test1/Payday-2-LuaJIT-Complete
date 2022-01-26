@@ -383,6 +383,22 @@ function LootDropTweakData:init_generated(tweak_data)
 		sort_number = 300,
 		category = "normal"
 	}
+	self.global_values.ja22 = {
+		name_id = "bm_global_value_ja22",
+		desc_id = "menu_l_global_value_ja22",
+		unlock_id = "bm_global_value_ja22_unlock",
+		color = tweak_data.screen_colors.dlc_color,
+		dlc = true,
+		free = true,
+		hide_unavailable = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 514,
+		category = "normal"
+	}
 	self.global_values.jun21 = {
 		name_id = "bm_global_value_jun21",
 		desc_id = "menu_l_global_value_jun21",
@@ -478,6 +494,22 @@ function LootDropTweakData:init_generated(tweak_data)
 		track = true,
 		sort_number = 30,
 		category = "infamous"
+	}
+	self.global_values.mts = {
+		name_id = "bm_global_value_mts",
+		desc_id = "menu_l_global_value_mts",
+		unlock_id = "bm_global_value_mts_unlock",
+		color = tweak_data.screen_colors.dlc_color,
+		dlc = true,
+		free = false,
+		hide_unavailable = true,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 700,
+		category = "collaboration"
 	}
 	self.global_values.mwm = {
 		name_id = "bm_global_value_mwm",

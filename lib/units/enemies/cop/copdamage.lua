@@ -91,6 +91,9 @@ local mvec_2 = Vector3()
 
 function CopDamage:init(unit)
 	self._unit = unit
+
+	unit:set_extension_update_enabled(Idstring("character_damage"), false)
+
 	local char_tweak = tweak_data.character[unit:base()._tweak_table]
 	self._immune_to_knockback = char_tweak.damage.immune_to_knockback
 	self._HEALTH_INIT = char_tweak.HEALTH_INIT
@@ -153,8 +156,6 @@ function CopDamage:init(unit)
 	managers.player:register_message(Message.ResetStagger, self, clbk)
 
 	self._accuracy_multiplier = 1
-
-	unit:set_extension_update_enabled(Idstring("character_damage"), false)
 end
 
 function CopDamage:is_immune_to_shield_knockback()
