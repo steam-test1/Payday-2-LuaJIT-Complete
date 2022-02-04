@@ -2114,8 +2114,19 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.damage_control_healing = {
 		50
 	}
+	self.copr_specialization_tree_id = 22
+	self.copr_teammate_heal_count_multipliers = {
+		1,
+		0.75,
+		0.5,
+		0.25
+	}
 	self.copr_ability_cooldown = 30
 	self.copr_risen_cooldown_add = 30
+	self.copr_high_damage_multiplier = {
+		20,
+		2
+	}
 	self.values.temporary.copr_ability = {
 		{
 			true,

@@ -5680,6 +5680,24 @@ function PlayerManager:clbk_copr_ability_ended()
 	managers.hud:set_copr_indicator(false)
 end
 
+function PlayerManager:count_copr_ability_players()
+	local count = 0
+
+	if managers.network:session() then
+		local skills = nil
+
+		for _, peer in pairs(managers.network:session():all_peers()) do
+			skills = peer:unpacked_skills()
+
+			if skills and skills.specializations and tonumber(skills.specializations[1]) == tweak_data.upgrades.copr_specialization_tree_id and tonumber(skills.specializations[2]) > 0 then
+				count = count + 1
+			end
+		end
+	end
+
+	return count
+end
+
 function PlayerManager:_update_timers(t)
 	local timers_copy = table.map_copy(self._timers)
 

@@ -366,14 +366,18 @@ function NewRaycastWeaponBase:clbk_assembly_complete(clbk, parts, blueprint)
 	local category = tweak_data.weapon[self._name_id].use_data.selection_index == 2 and "primaries" or "secondaries"
 	local slot = managers.blackmarket:equipped_weapon_slot(category)
 
-	for part_id, part_data in pairs(parts) do
+	for _, part_id in ipairs(blueprint) do
 		local colors = managers.blackmarket:get_part_custom_colors(category, slot, part_id, true)
 
 		if colors then
 			local mod_td = tweak_data.weapon.factory.parts[part_id]
-			local alpha = part_data.unit:base().GADGET_TYPE == "laser" and tweak_data.custom_colors.defaults.laser_alpha or 1
+			local part_data = parts[part_id]
 
-			part_data.unit:base():set_color(colors[mod_td.sub_type]:with_alpha(alpha))
+			if colors[mod_td.sub_type] then
+				local alpha = part_data.unit:base().GADGET_TYPE == "laser" and tweak_data.custom_colors.defaults.laser_alpha or 1
+
+				part_data.unit:base():set_color(colors[mod_td.sub_type]:with_alpha(alpha))
+			end
 
 			if mod_td.adds then
 				for _, add_part_id in ipairs(mod_td.adds) do

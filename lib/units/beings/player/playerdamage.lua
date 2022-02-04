@@ -203,11 +203,17 @@ function PlayerDamage:on_copr_ability_deactivated()
 end
 
 function PlayerDamage:on_copr_heal_received(healer_unit, upgrade_level)
-	local max_health = self:_max_health()
-	local upgrade_value = managers.player:upgrade_value_by_level("player", "copr_teammate_heal", upgrade_level)
+	local player_count = managers.player:count_copr_ability_players()
 
-	if upgrade_value and self:get_real_health() < max_health then
-		self:restore_health(upgrade_value, false, true)
+	if player_count > 0 then
+		local max_health = self:_max_health()
+		local copr_teammate_heal_count_multipliers = tweak_data.upgrades.copr_teammate_heal_count_multipliers or {}
+		local player_multiplier = copr_teammate_heal_count_multipliers[player_count] or copr_teammate_heal_count_multipliers[#copr_teammate_heal_count_multipliers] or 1
+		local upgrade_value = managers.player:upgrade_value_by_level("player", "copr_teammate_heal", upgrade_level)
+
+		if upgrade_value and self:get_real_health() < max_health then
+			self:restore_health(upgrade_value * player_multiplier, false, true)
+		end
 	end
 end
 
@@ -221,7 +227,9 @@ function PlayerDamage:copr_update_attack_data(attack_data)
 		local static_damage_ratio = managers.player:upgrade_value_nil("player", "copr_static_damage_ratio")
 
 		if static_damage_ratio and attack_data.damage > 0 then
-			attack_data.damage = self:_max_health() * static_damage_ratio
+			local high_damage_tweak = tweak_data.upgrades.copr_high_damage_multiplier
+			local damage_multiplier = high_damage_tweak[1] <= attack_data.damage and high_damage_tweak[2] or 1
+			attack_data.damage = self:_max_health() * static_damage_ratio * damage_multiplier
 		end
 	end
 end

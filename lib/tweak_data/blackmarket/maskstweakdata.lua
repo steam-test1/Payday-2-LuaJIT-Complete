@@ -7827,6 +7827,22 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		dlc = "mts",
 		texture_bundle_folder = "mts"
 	}
+	self.masks.hockeynermark = {
+		unit = "units/pd2_dlc_fcmsk/masks/msk_hockeynermark/msk_hockeynermark",
+		name_id = "bm_msk_hockeynermark",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		value = 5,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "fcmsk",
+		texture_bundle_folder = "fcmsk"
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.masks) do

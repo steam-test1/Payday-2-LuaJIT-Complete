@@ -1,5 +1,34 @@
 WeaponLaser = WeaponLaser or class(WeaponGadgetBase)
 WeaponLaser.GADGET_TYPE = "laser"
+WeaponLaser._themes = {
+	default = {
+		light = Vector3(0, 10, 0),
+		glow = Vector3(0, 0.2, 0),
+		brush = Color(0.05, 0, 1, 0)
+	},
+	cop_sniper = {
+		light = Vector3(10, 0, 0),
+		glow = Vector3(0.2, 0, 0),
+		brush = Color(0.15, 1, 0, 0)
+	},
+	turret_module_active = {
+		light = Vector3(10, 0, 0),
+		glow = Vector3(0.2, 0, 0),
+		brush = Color(0.15, 1, 0, 0)
+	},
+	turret_module_rearming = {
+		light = Vector3(10, 0, 0),
+		glow = Vector3(0.2, 0.2, 0),
+		brush = Color(0.11, 1, 1, 0)
+	},
+	turret_module_mad = {
+		light = Vector3(10, 0, 0),
+		glow = Vector3(0, 0.2, 0),
+		brush = Color(0.15, 0, 1, 0)
+	}
+}
+WeaponLaser._max_distance = 3000
+WeaponLaser._scale_distance = 1000
 
 function WeaponLaser:init(unit)
 	WeaponLaser.super.init(self, unit)
@@ -8,8 +37,6 @@ function WeaponLaser:init(unit)
 	self._off_event = "gadget_laser_aim_off"
 	local obj = self._unit:get_object(Idstring("a_laser"))
 	self._laser_obj = obj
-	self._max_distance = 3000
-	self._scale_distance = 1000
 	self._g_laser = self._unit:get_object(Idstring("g_laser"))
 	self._g_indicator = self._unit:get_object(Idstring("g_indicator"))
 	self._spot_angle_end = 0
@@ -21,33 +48,6 @@ function WeaponLaser:init(unit)
 	self._light:link(obj)
 	self._light:set_rotation(Rotation(obj:rotation():z(), -obj:rotation():x(), -obj:rotation():y()))
 
-	self._themes = {
-		default = {
-			light = Vector3(0, 10, 0),
-			glow = Vector3(0, 0.2, 0),
-			brush = Color(0.05, 0, 1, 0)
-		},
-		cop_sniper = {
-			light = Vector3(10, 0, 0),
-			glow = Vector3(0.2, 0, 0),
-			brush = Color(0.15, 1, 0, 0)
-		},
-		turret_module_active = {
-			light = Vector3(10, 0, 0),
-			glow = Vector3(0.2, 0, 0),
-			brush = Color(0.15, 1, 0, 0)
-		},
-		turret_module_rearming = {
-			light = Vector3(10, 0, 0),
-			glow = Vector3(0.2, 0.2, 0),
-			brush = Color(0.11, 1, 1, 0)
-		},
-		turret_module_mad = {
-			light = Vector3(10, 0, 0),
-			glow = Vector3(0, 0.2, 0),
-			brush = Color(0.15, 0, 1, 0)
-		}
-	}
 	self._theme_type = "default"
 	self._light_color = Vector3()
 

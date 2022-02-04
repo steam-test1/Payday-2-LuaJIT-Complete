@@ -3531,6 +3531,33 @@ function WeaponFactoryTweakData:_init_m4()
 			wpn_fps_m4_uupg_o_flipup = {
 				a_obj = "a_o_2"
 			},
+			wpn_fps_upg_o_45rds = {
+				a_obj = "a_o_2",
+				stance_mod = {
+					wpn_fps_ass_m4 = {
+						translation = Vector3(-5.2, -3, -1.5),
+						rotation = Rotation(-0, -0, -10)
+					}
+				}
+			},
+			wpn_fps_upg_o_45rds_v2 = {
+				a_obj = "a_o_2",
+				stance_mod = {
+					wpn_fps_ass_m4 = {
+						translation = Vector3(-5.35, -3, -1.8),
+						rotation = Rotation(-0, -0, -10)
+					}
+				}
+			},
+			wpn_fps_upg_o_45steel = {
+				a_obj = "a_o_2",
+				stance_mod = {
+					wpn_fps_ass_m4 = {
+						translation = Vector3(-5.35, -1, -1.8),
+						rotation = Rotation(-0, -0, -10)
+					}
+				}
+			},
 			wpn_fps_upg_o_spot = {
 				a_obj = "a_o_2"
 			},
@@ -49354,7 +49381,7 @@ function WeaponFactoryTweakData:_init_mwm()
 				translation = Vector3(0, 5, -1.18)
 			},
 			wpn_fps_pis_maxim9 = {
-				translation = Vector3(0, -1, -1.18)
+				translation = Vector3(0, -6, -1.5)
 			}
 		},
 		texture_switch = {

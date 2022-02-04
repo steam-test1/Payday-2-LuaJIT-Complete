@@ -54,6 +54,10 @@ function GenericDLCManager:has_fawp()
 	return self:is_dlc_unlocked("fawp")
 end
 
+function GenericDLCManager:has_fcmsk()
+	return self:is_dlc_unlocked("fcmsk")
+end
+
 function GenericDLCManager:has_fex()
 	return self:is_dlc_unlocked("fex")
 end
@@ -340,6 +344,10 @@ function WINDLCManager:init_generated()
 	}
 	Global.dlc_manager.all_dlc_data.fawp = {
 		app_id = "1555050",
+		no_install = true
+	}
+	Global.dlc_manager.all_dlc_data.fcmsk = {
+		app_id = "1889360",
 		no_install = true
 	}
 	Global.dlc_manager.all_dlc_data.fex = {

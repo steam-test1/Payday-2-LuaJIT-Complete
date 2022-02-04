@@ -6346,16 +6346,21 @@ function BlackMarketManager:get_part_custom_colors(category, slot, part_id, requ
 	local custom_colors = crafted_item and crafted_item.custom_colors
 
 	if custom_colors and custom_colors[part_id] then
-		local part_tweak = tweak_data.weapon.factory.parts[part_id]
+		local part_tweak = tweak_data.weapon.factory.parts[part_id] or {}
 		local colors = self:get_custom_colors_from_string(custom_colors and custom_colors[part_id])
-		local sub_types = {
-			[part_tweak.sub_type] = true
-		}
+		local sub_types = {}
+
+		if part_tweak.sub_type then
+			sub_types[part_tweak.sub_type] = true
+		end
 
 		if part_tweak.adds then
 			for _, added_part_id in pairs(part_tweak.adds) do
 				local added_part_tweak = tweak_data.weapon.factory.parts[part_id]
-				sub_types[added_part_tweak.sub_type] = true
+
+				if added_part_tweak.sub_type then
+					sub_types[added_part_tweak.sub_type] = true
+				end
 			end
 		end
 

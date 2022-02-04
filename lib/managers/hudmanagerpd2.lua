@@ -2253,10 +2253,13 @@ function HUDManager:accessibility_dot_changed(name, old_value, new_value)
 end
 
 function HUDManager:accessibility_dot_size_changed(name, old_value, new_value)
+	local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
 	local dot_panel = self:script(PlayerBase.PLAYER_INFO_HUD_PD2).panel:child("accessibility_dot")
 
 	if dot_panel then
 		dot_panel:set_size(new_value, new_value)
+		dot_panel:set_center_x(hud.panel:w() / 2)
+		dot_panel:set_center_y(hud.panel:h() / 2)
 	end
 end
 

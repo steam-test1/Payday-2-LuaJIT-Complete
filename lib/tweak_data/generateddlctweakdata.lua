@@ -451,6 +451,18 @@ function DLCTweakData:init_generated()
 			amount = 1
 		}
 	}
+	self.fcmsk_bundle = {
+		dlc = "has_fcmsk",
+		content = {}
+	}
+	self.fcmsk_bundle.content.loot_global_value = "fcmsk"
+	self.fcmsk_bundle.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "hockeynermark",
+			amount = 1
+		}
+	}
 	self.fex_bundle = {
 		dlc = "has_fex",
 		content = {}

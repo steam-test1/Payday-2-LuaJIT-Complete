@@ -1388,6 +1388,10 @@ function NetworkPeer:skills()
 	return data[managers.blackmarket:outfit_string_index("skills")]
 end
 
+function NetworkPeer:unpacked_skills()
+	return managers.skilltree:unpack_from_string(self:skills())
+end
+
 function NetworkPeer:armor_skin_id()
 	local outfit_string = self:profile("outfit_string")
 

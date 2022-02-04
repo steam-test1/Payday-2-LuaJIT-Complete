@@ -527,7 +527,7 @@ function Telemetry:send_on_player_logged_in(reason)
 		PlayerLevel = managers.experience:current_level(),
 		InfamyLevel = managers.experience:current_rank(),
 		Reason = Global.telemetry._times_logged_in == 0 and "startup" or "optin",
-		PD2StarbreezeAccountID = Login.player_session.user_id
+		PD2StarbreezeAccountID = Login.player_session.user_id and Login.player_session.user_id ~= "" and true or false
 	}
 	local installed_dlc_list = {}
 
