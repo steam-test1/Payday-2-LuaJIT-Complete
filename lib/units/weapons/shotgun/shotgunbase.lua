@@ -5,6 +5,7 @@ function ShotgunBase:init(...)
 	self:setup_default()
 
 	self._hip_fire_rate_inc = 0
+	self._do_shotgun_push = true
 end
 
 function ShotgunBase:setup_default()
@@ -254,8 +255,6 @@ function ShotgunBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoo
 			my_result = managers.mutators:modify_value("ShotgunBase:_fire_raycast", my_result)
 
 			if my_result and my_result.type == "death" then
-				managers.game_play_central:do_shotgun_push(col_ray.unit, col_ray.position, col_ray.ray, col_ray.distance, user_unit)
-
 				kill_data.kills = kill_data.kills + 1
 
 				if col_ray.body and col_ray.body:name() == Idstring("head") then

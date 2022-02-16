@@ -48,10 +48,12 @@ function Dialog:button_pressed(button_index)
 
 	local button_list = self._data.button_list
 
-	self:fade_out_close()
-
 	if button_list then
 		local button = button_list[button_index]
+
+		if not button.no_close then
+			self:fade_out_close()
+		end
 
 		if button and button.callback_func then
 			button.callback_func(button_index, button)

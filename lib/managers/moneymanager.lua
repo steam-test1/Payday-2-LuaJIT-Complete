@@ -800,7 +800,7 @@ end
 function MoneyManager:get_weapon_modify_price(weapon_id, part_id, global_value)
 	local star_value = nil
 	local pc_value = tweak_data.blackmarket.weapon_mods and tweak_data.blackmarket.weapon_mods[part_id] and tweak_data.blackmarket.weapon_mods[part_id].value or 1
-	local mod_price = self:get_tweak_value("money_manager", "modify_weapon_cost", pc_value)
+	local mod_price = pc_value > 0 and self:get_tweak_value("money_manager", "modify_weapon_cost", pc_value) or 0
 	local gv_tweak_data = tweak_data.lootdrop.global_values[global_value or "normal"]
 	local global_value_multiplier = gv_tweak_data and gv_tweak_data.value_multiplier or 1
 	local cost_multiplier = 1

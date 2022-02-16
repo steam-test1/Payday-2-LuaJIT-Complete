@@ -194,6 +194,28 @@ function DLCTweakData:init_generated()
 	}
 	self.bex_bundle.content.loot_global_value = "bex"
 	self.bex_bundle.content.loot_drops = {}
+	self.ccmt_bundle = {
+		free = true,
+		content = {}
+	}
+	self.ccmt_bundle.content.loot_global_value = "pd2_clan"
+	self.ccmt_bundle.content.loot_drops = {
+		{
+			type_items = "player_styles",
+			item_entry = "bunny",
+			amount = 1
+		},
+		{
+			type_items = "player_styles",
+			item_entry = "sparkle",
+			amount = 1
+		},
+		{
+			type_items = "player_styles",
+			item_entry = "waistcoat",
+			amount = 1
+		}
+	}
 	self.cctp_bundle = {
 		dlc = "has_cctp",
 		content = {}
@@ -565,6 +587,94 @@ function DLCTweakData:init_generated()
 	}
 	self.jun21_bundle.content.loot_global_value = "jun21"
 	self.jun21_bundle.content.loot_drops = {}
+	self.laco_bundle = {
+		dlc = "has_laco",
+		content = {}
+	}
+	self.laco_bundle.content.loot_global_value = "laco"
+	self.laco_bundle.content.loot_drops = {}
+	self.lawp_bundle = {
+		dlc = "has_lawp",
+		content = {}
+	}
+	self.lawp_bundle.content.loot_global_value = "lawp"
+	self.lawp_bundle.content.loot_drops = {
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_sho_ultima_ns_comp",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_sho_ultima_body_kit",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_sho_ultima_body_rack",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_sho_ultima_s_light",
+			amount = 1
+		},
+		{
+			type_items = "weapon_skins",
+			item_entry = "color_lawp_01",
+			amount = 1
+		},
+		{
+			type_items = "weapon_skins",
+			item_entry = "color_lawp_02",
+			amount = 1
+		},
+		{
+			type_items = "weapon_skins",
+			item_entry = "color_lawp_03",
+			amount = 1
+		},
+		{
+			type_items = "weapon_skins",
+			item_entry = "color_lawp_04",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_pis_maxim9_b_long",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_pis_maxim9_b_marksman",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_pis_maxim9_m_ext",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_smg_fmg9_grip_tape",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_smg_fmg9_stock_padded",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_smg_fmg9_m_speed",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_smg_fmg9_conversion",
+			amount = 1
+		}
+	}
 	self.mar21_bundle = {
 		free = true,
 		content = {}

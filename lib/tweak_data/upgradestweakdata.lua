@@ -4800,6 +4800,7 @@ function UpgradesTweakData:init(tweak_data)
 				"boxcutter",
 				"x_cobray",
 				"m590",
+				"maxim9",
 				"groza"
 			}
 		},
@@ -4833,7 +4834,8 @@ function UpgradesTweakData:init(tweak_data)
 				"sub2000",
 				"road",
 				"legacy",
-				"x_legacy"
+				"x_legacy",
+				"fmg9"
 			}
 		},
 		[16] = {
@@ -4886,7 +4888,8 @@ function UpgradesTweakData:init(tweak_data)
 				"ballistic",
 				"x_baka",
 				"x_olympic",
-				"x_mp9"
+				"x_mp9",
+				"maxim9"
 			}
 		},
 		[20] = {
@@ -4947,6 +4950,7 @@ function UpgradesTweakData:init(tweak_data)
 				"switchblade",
 				"x_m1911",
 				"x_vityaz",
+				"x_maxim9",
 				"type54",
 				"x_type54"
 			}
@@ -5075,6 +5079,7 @@ function UpgradesTweakData:init(tweak_data)
 				"desertfox",
 				"wpn_prj_target",
 				"tti",
+				"ultima",
 				"x_2006m"
 			}
 		},
@@ -5590,6 +5595,10 @@ function UpgradesTweakData:init(tweak_data)
 	self:_x_vityaz_weapon_definitions()
 	self:_m1911_weapon_definitions()
 	self:_x_m1911_weapon_definitions()
+	self:_ultima_weapon_definitions()
+	self:_fmg9_weapon_definitions()
+	self:_maxim9_weapon_definitions()
+	self:_x_maxim9_weapon_definitions()
 	self:_groza_weapon_definitions()
 	self:_pm9_weapon_definitions()
 	self:_x_pm9_weapon_definitions()
@@ -15422,6 +15431,42 @@ function UpgradesTweakData:_x_m1911_weapon_definitions()
 		dlc = "fawp",
 		factory_id = "wpn_fps_pis_x_m1911",
 		weapon_id = "x_m1911",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_ultima_weapon_definitions()
+	self.definitions.ultima = {
+		dlc = "lawp",
+		factory_id = "wpn_fps_sho_ultima",
+		weapon_id = "ultima",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_fmg9_weapon_definitions()
+	self.definitions.fmg9 = {
+		dlc = "lawp",
+		factory_id = "wpn_fps_smg_fmg9",
+		weapon_id = "fmg9",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_maxim9_weapon_definitions()
+	self.definitions.maxim9 = {
+		dlc = "lawp",
+		factory_id = "wpn_fps_pis_maxim9",
+		weapon_id = "maxim9",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_maxim9_weapon_definitions()
+	self.definitions.x_maxim9 = {
+		dlc = "lawp",
+		factory_id = "wpn_fps_pis_x_maxim9",
+		weapon_id = "x_maxim9",
 		category = "weapon"
 	}
 end

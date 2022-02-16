@@ -29,6 +29,7 @@ function RaycastWeaponBase:init(unit)
 	self._setup = {}
 	self._digest_values = SystemInfo:platform() == Idstring("WIN32")
 	self._ammo_data = false
+	self._do_shotgun_push = tweak_data.weapon[self._name_id].do_shotgun_push or false
 
 	self:replenish()
 
@@ -2050,6 +2051,10 @@ function InstantBulletBase:on_collision(col_ray, weapon_unit, user_unit, damage,
 			local push_multiplier = self:_get_character_push_multiplier(weapon_unit, is_alive and is_dead)
 
 			managers.game_play_central:physics_push(col_ray, push_multiplier)
+
+			if result and result.type == "death" and weapon_unit:base()._do_shotgun_push then
+				managers.game_play_central:do_shotgun_push(col_ray.unit, col_ray.position, col_ray.ray, col_ray.distance, user_unit)
+			end
 		else
 			play_impact_flesh = false
 		end
@@ -2082,7 +2087,7 @@ function InstantBulletBase:on_collision_effects(col_ray, weapon_unit, user_unit,
 end
 
 function InstantBulletBase:_get_character_push_multiplier(weapon_unit, died)
-	if alive(weapon_unit) and weapon_unit:base().is_category and weapon_unit:base():is_category("shotgun") then
+	if alive(weapon_unit) and weapon_unit:base()._do_shotgun_push then
 		return nil
 	end
 

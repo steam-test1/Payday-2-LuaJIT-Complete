@@ -40,7 +40,7 @@ function PlayerMaskOff:_enter(enter_data)
 	self._unit:network():send("set_weapon_gadget_state", 0)
 
 	if self._unit:camera():anim_data().equipped then
-		self._unit:camera():play_redirect(self:get_animation("unequip"))
+		self:_play_unequip_animation()
 	end
 
 	self._unit:base():set_slot(self._unit, 4)

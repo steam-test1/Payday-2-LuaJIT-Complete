@@ -350,6 +350,13 @@ function NewRaycastWeaponBase:clbk_assembly_complete(clbk, parts, blueprint)
 		end
 	end
 
+	self._ammo_objects = nil
+
+	if tweak_data.weapon[self._name_id].use_ammo_objects then
+		self._ammo_objects = self._bullet_objects
+		self._bullet_objects = nil
+	end
+
 	self:setup_underbarrel_data()
 	self:_apply_cosmetics(clbk or function ()
 	end)
@@ -1461,6 +1468,51 @@ function NewRaycastWeaponBase:_update_bullet_objects(ammo_func)
 	end
 end
 
+function NewRaycastWeaponBase:update_ammo_objects()
+	if self._ammo_objects then
+		local ammo_remaining_in_clip = self:get_ammo_remaining_in_clip()
+		local ammo_available = math.min(self:get_ammo_total() - ammo_remaining_in_clip, self:get_ammo_max_per_clip() - ammo_remaining_in_clip)
+		local shotgun_reload_tweak = self:_get_shotgun_reload_tweak_data(not self._started_reload_empty)
+
+		if shotgun_reload_tweak and shotgun_reload_tweak.reload_queue then
+			local queue_num = #shotgun_reload_tweak.reload_queue
+			local queue_index = self._shotgun_queue_index % queue_num + 1
+			local queue_data = shotgun_reload_tweak.reload_queue[queue_index]
+			local queue_shell_order = queue_data and queue_data.shell_order
+			local reload_num = nil
+			local ammo_to_reload = 0
+
+			repeat
+				reload_num = queue_data and queue_data.reload_num or 1
+				ammo_to_reload = ammo_to_reload + math.min(ammo_available, reload_num)
+				ammo_available = ammo_available - reload_num
+			until ammo_available <= 0 or queue_data and queue_data.stop_update_ammo
+
+			local is_visible, object_i = nil
+
+			for i, objects in pairs(self._ammo_objects) do
+				for _, object in ipairs(objects) do
+					if queue_shell_order then
+						object_i = table.get_vector_index(queue_shell_order, i)
+					else
+						object_i = i
+					end
+
+					object[1]:set_visibility(object_i and object_i <= ammo_to_reload)
+				end
+			end
+		else
+			local ammo_to_reload = math.min(ammo_available, shotgun_reload_tweak and shotgun_reload_tweak.reload_num or 1)
+
+			for i, objects in pairs(self._ammo_objects) do
+				for _, object in ipairs(objects) do
+					object[1]:set_visibility(i <= ammo_available)
+				end
+			end
+		end
+	end
+end
+
 function NewRaycastWeaponBase:has_part(part_id)
 	return self._blueprint and table.contains(self._blueprint, part_id)
 end
@@ -2023,51 +2075,99 @@ function RaycastWeaponBase:use_shotgun_reload()
 	return self._use_shotgun_reload
 end
 
-function NewRaycastWeaponBase:reload_expire_t()
+function NewRaycastWeaponBase:reload_expire_t(is_not_empty)
 	if self._use_shotgun_reload then
+		local ammo_total = self:get_ammo_total()
+		local ammo_max_per_clip = self:get_ammo_max_per_clip()
 		local ammo_remaining_in_clip = self:get_ammo_remaining_in_clip()
+		local ammo_to_reload = math.min(ammo_total - ammo_remaining_in_clip, ammo_max_per_clip - ammo_remaining_in_clip)
+		local shotgun_reload_tweak = self:_get_shotgun_reload_tweak_data(is_not_empty)
 
-		return math.min(self:get_ammo_total() - ammo_remaining_in_clip, self:get_ammo_max_per_clip() - ammo_remaining_in_clip) * self:reload_shell_expire_t()
+		if shotgun_reload_tweak and shotgun_reload_tweak.reload_queue then
+			local reload_expire_t = 0
+			local queue_index = 0
+			local queue_data = nil
+			local queue_num = #shotgun_reload_tweak.reload_queue
+
+			while ammo_to_reload > 0 do
+				if queue_index == queue_num then
+					reload_expire_t = reload_expire_t + (shotgun_reload_tweak.reload_queue_wrap or 0)
+				end
+
+				queue_index = queue_index % queue_num + 1
+				queue_data = shotgun_reload_tweak.reload_queue[queue_index]
+				reload_expire_t = reload_expire_t + queue_data.expire_t or 0.5666666666666667
+				ammo_to_reload = ammo_to_reload - (queue_data.reload_num or 1)
+			end
+
+			return reload_expire_t
+		end
+
+		local reload_shell_expire_t = self:reload_shell_expire_t(is_not_empty)
+		local reload_num = shotgun_reload_tweak and shotgun_reload_tweak.reload_num or 1
+
+		return math.ceil(ammo_to_reload / reload_num) * reload_shell_expire_t
 	end
 
 	return nil
 end
 
-function NewRaycastWeaponBase:reload_enter_expire_t()
+function NewRaycastWeaponBase:reload_enter_expire_t(is_not_empty)
 	if self._use_shotgun_reload then
-		return self:weapon_tweak_data().timers.shotgun_reload_enter or 0.3
+		local shotgun_reload_tweak = self:_get_shotgun_reload_tweak_data(is_not_empty)
+
+		return shotgun_reload_tweak and shotgun_reload_tweak.reload_enter or self:weapon_tweak_data().timers.shotgun_reload_enter or 0.3
 	end
 
 	return nil
 end
 
-function NewRaycastWeaponBase:reload_exit_expire_t()
+function NewRaycastWeaponBase:reload_exit_expire_t(is_not_empty)
 	if self._use_shotgun_reload then
+		local shotgun_reload_tweak = self:_get_shotgun_reload_tweak_data(is_not_empty)
+
+		if shotgun_reload_tweak then
+			return shotgun_reload_tweak.reload_exit
+		end
+
+		if is_not_empty then
+			return self:weapon_tweak_data().timers.shotgun_reload_exit_not_empty or 0.3
+		end
+
 		return self:weapon_tweak_data().timers.shotgun_reload_exit_empty or 0.7
 	end
 
 	return nil
 end
 
-function NewRaycastWeaponBase:reload_not_empty_exit_expire_t()
+function NewRaycastWeaponBase:reload_shell_expire_t(is_not_empty)
 	if self._use_shotgun_reload then
-		return self:weapon_tweak_data().timers.shotgun_reload_exit_not_empty or 0.3
+		print(is_not_empty)
+
+		local shotgun_reload_tweak = self:_get_shotgun_reload_tweak_data(is_not_empty)
+
+		return shotgun_reload_tweak and shotgun_reload_tweak.reload_shell or self:weapon_tweak_data().timers.shotgun_reload_shell or 0.5666666666666667
 	end
 
 	return nil
 end
 
-function NewRaycastWeaponBase:reload_shell_expire_t()
+function NewRaycastWeaponBase:_first_shell_reload_expire_t(is_not_empty)
 	if self._use_shotgun_reload then
-		return self:weapon_tweak_data().timers.shotgun_reload_shell or 0.5666666666666667
+		local shotgun_reload_tweak = self:_get_shotgun_reload_tweak_data(is_not_empty)
+		local first_shell_offset = shotgun_reload_tweak and shotgun_reload_tweak.reload_first_shell_offset or self:weapon_tweak_data().timers.shotgun_reload_first_shell_offset or 0.33
+
+		return self:reload_shell_expire_t(is_not_empty) - first_shell_offset
 	end
 
 	return nil
 end
 
-function NewRaycastWeaponBase:_first_shell_reload_expire_t()
-	if self._use_shotgun_reload then
-		return self:reload_shell_expire_t() - (self:weapon_tweak_data().timers.shotgun_reload_first_shell_offset or 0.33)
+function NewRaycastWeaponBase:_get_shotgun_reload_tweak_data(is_not_empty)
+	local weapon_tweak = self:weapon_tweak_data()
+
+	if weapon_tweak and weapon_tweak.timers and weapon_tweak.timers.shotgun_reload then
+		return is_not_empty and weapon_tweak.timers.shotgun_reload.not_empty or weapon_tweak.timers.shotgun_reload.empty
 	end
 
 	return nil
@@ -2079,7 +2179,23 @@ function NewRaycastWeaponBase:start_reload(...)
 	if self._use_shotgun_reload then
 		self._started_reload_empty = self:clip_empty()
 		local speed_multiplier = self:reload_speed_multiplier()
-		self._next_shell_reloded_t = managers.player:player_timer():time() + self:_first_shell_reload_expire_t() / speed_multiplier
+		local shotgun_reload_tweak = self:_get_shotgun_reload_tweak_data(not self._started_reload_empty)
+		local t = managers.player:player_timer():time()
+
+		if shotgun_reload_tweak and shotgun_reload_tweak.reload_queue then
+			self._shotgun_queue_index = 0
+			local next_queue_data = shotgun_reload_tweak.reload_queue[1]
+			self._next_shell_reloded_t = t + next_queue_data.expire_t / speed_multiplier
+
+			if not next_queue_data.skip_update_ammo then
+				self:update_ammo_objects()
+			end
+		else
+			self._next_shell_reloded_t = t + self:_first_shell_reload_expire_t(not self._started_reload_empty) / speed_multiplier
+
+			self:update_ammo_objects()
+		end
+
 		self._current_reload_speed_multiplier = speed_multiplier
 	end
 end
@@ -2095,10 +2211,32 @@ end
 function NewRaycastWeaponBase:update_reloading(t, dt, time_left)
 	if self._use_shotgun_reload and self._next_shell_reloded_t and self._next_shell_reloded_t < t then
 		local speed_multiplier = self:reload_speed_multiplier()
-		self._next_shell_reloded_t = self._next_shell_reloded_t + self:reload_shell_expire_t() / speed_multiplier
+		local shotgun_reload_tweak = self:_get_shotgun_reload_tweak_data(not self._started_reload_empty)
+		local ammo_to_reload = 1
+		local next_queue_data = nil
 
-		self:set_ammo_remaining_in_clip(math.min(self:get_ammo_max_per_clip(), self:get_ammo_remaining_in_clip() + 1))
+		if shotgun_reload_tweak and shotgun_reload_tweak.reload_queue then
+			self._shotgun_queue_index = self._shotgun_queue_index % #shotgun_reload_tweak.reload_queue + 1
+
+			if self._shotgun_queue_index == #shotgun_reload_tweak.reload_queue then
+				self._next_shell_reloded_t = self._next_shell_reloded_t + (shotgun_reload_tweak.reload_queue_wrap or 0)
+			end
+
+			local queue_data = shotgun_reload_tweak.reload_queue[self._shotgun_queue_index]
+			ammo_to_reload = queue_data and queue_data.reload_num or 1
+			next_queue_data = shotgun_reload_tweak.reload_queue[self._shotgun_queue_index + 1]
+			self._next_shell_reloded_t = self._next_shell_reloded_t + (next_queue_data and next_queue_data.expire_t or 0.5666666666666667) / speed_multiplier
+		else
+			self._next_shell_reloded_t = self._next_shell_reloded_t + self:reload_shell_expire_t(not self._started_reload_empty) / speed_multiplier
+			ammo_to_reload = shotgun_reload_tweak and shotgun_reload_tweak.reload_num or 1
+		end
+
+		self:set_ammo_remaining_in_clip(math.min(self:get_ammo_total(), self:get_ammo_max_per_clip(), self:get_ammo_remaining_in_clip() + ammo_to_reload))
 		managers.job:set_memory("kill_count_no_reload_" .. tostring(self._name_id), nil, true)
+
+		if not next_queue_data or not next_queue_data.skip_update_ammo then
+			self:update_ammo_objects()
+		end
 
 		return true
 	end
@@ -2123,7 +2261,18 @@ end
 function NewRaycastWeaponBase:shotgun_shell_data()
 	if self._use_shotgun_reload then
 		local reload_shell_data = self:weapon_tweak_data().animations.reload_shell_data
-		local unit_name = reload_shell_data and reload_shell_data.unit_name or "units/payday2/weapons/wpn_fps_shell/wpn_fps_shell"
+		local unit_name = "units/payday2/weapons/wpn_fps_shell/wpn_fps_shell"
+
+		if reload_shell_data then
+			if reload_shell_data.ammo_units then
+				local ammo_remaining_in_clip = self:get_ammo_remaining_in_clip()
+				local ammo_available = math.min(self:get_ammo_total() - ammo_remaining_in_clip, self:get_ammo_max_per_clip() - ammo_remaining_in_clip)
+				unit_name = reload_shell_data.ammo_units[math.clamp(ammo_available, 1, #reload_shell_data.ammo_units)]
+			elseif reload_shell_data.unit_name then
+				unit_name = reload_shell_data.unit_name
+			end
+		end
+
 		local align = reload_shell_data and reload_shell_data.align or nil
 
 		return {

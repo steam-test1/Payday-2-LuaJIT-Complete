@@ -408,14 +408,17 @@ function PlayerInventory:_place_selection(selection_index, is_equip)
 
 	if align_place then
 		if is_equip then
-			unit:set_enabled(true)
-			unit:base():on_enabled()
+			call_on_next_update(function ()
+				if alive(unit) then
+					unit:set_enabled(true)
+					unit:base():on_enabled()
+				end
+			end)
 		end
 
 		local res = self:_link_weapon(unit, align_place)
 	else
 		unit:unlink()
-		unit:base():set_visibility_state(false)
 		unit:set_enabled(false)
 		unit:base():on_disabled()
 
@@ -523,23 +526,27 @@ end
 function PlayerInventory:hide_equipped_unit()
 	local unit = self._equipped_selection and self._available_selections[self._equipped_selection].unit
 
-	if unit and unit:base():enabled() then
-		self._was_gadget_on = unit:base().is_gadget_on and unit:base()._gadget_on or false
+	if unit then
+		unit:base():set_visibility_state(false)
 
-		unit:set_visible(false)
-		unit:base():on_disabled()
+		local was_gadget_on = unit:base().is_gadget_on and unit:base()._gadget_on or false
+
+		if was_gadget_on then
+			unit:base()._last_gadget_idx = was_gadget_on
+
+			unit:base():set_gadget_on(0)
+		end
 	end
 end
 
 function PlayerInventory:show_equipped_unit()
-	if self._equipped_selection and self._available_selections[self._equipped_selection].unit then
-		self._available_selections[self._equipped_selection].unit:set_visible(true)
-		self._available_selections[self._equipped_selection].unit:base():on_enabled()
+	local unit = self._equipped_selection and self._available_selections[self._equipped_selection].unit
 
-		if self._was_gadget_on then
-			self._available_selections[self._equipped_selection].unit:base():set_gadget_on(self._was_gadget_on)
+	if unit then
+		unit:base():set_visibility_state(true)
 
-			self._was_gadget_on = nil
+		if unit:base()._last_gadget_idx and unit:base()._last_gadget_idx > 0 then
+			unit:base():set_gadget_on(unit:base()._last_gadget_idx)
 		end
 	end
 end

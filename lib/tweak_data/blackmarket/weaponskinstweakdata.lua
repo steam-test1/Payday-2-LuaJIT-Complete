@@ -40287,4 +40287,68 @@ function BlackMarketTweakData:_setup_weapon_color_skins(tweak_data)
 		pattern_default = Idstring("units/pd2_dlc_snow/weapon_colors/pattern/pattern_snow_04_df"),
 		gradient_default = Idstring("units/pd2_dlc_snow/weapon_colors/pattern_gradient/gradient_snow_04_df")
 	})
+	self:create_new_color_skin("color_lawp_01", {
+		texture_bundle_folder = "lawp",
+		dlc = "lawp",
+		sort_number = 1,
+		color = Color("1e1e1e")
+	}, {
+		base_default = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_default"),
+		base_metal = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_metal"),
+		base_plastic = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_plastic"),
+		base_half = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half"),
+		base_half_02 = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half_02"),
+		base_detail = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_details"),
+		base_variation = Idstring("units/pd2_dlc_wcs/weapon_colors/base_gradient/wcs_black_df"),
+		pattern_default = Idstring("units/pd2_dlc_lawp/weapon_colors/pattern/pattern_lawp_01_df"),
+		gradient_default = Idstring("units/pd2_dlc_lawp/weapon_colors/pattern_gradient/gradient_lawp_01_df")
+	})
+	self:create_new_color_skin("color_lawp_02", {
+		texture_bundle_folder = "lawp",
+		dlc = "lawp",
+		sort_number = 2,
+		color = Color("1e1e1e")
+	}, {
+		base_default = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_default"),
+		base_metal = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_metal"),
+		base_plastic = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_plastic"),
+		base_half = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half"),
+		base_half_02 = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half_02"),
+		base_detail = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_details"),
+		base_variation = Idstring("units/pd2_dlc_wcs/weapon_colors/base_gradient/wcs_black_df"),
+		pattern_default = Idstring("units/pd2_dlc_lawp/weapon_colors/pattern/pattern_lawp_02_df"),
+		gradient_default = Idstring("units/pd2_dlc_lawp/weapon_colors/pattern_gradient/gradient_lawp_02_df")
+	})
+	self:create_new_color_skin("color_lawp_03", {
+		texture_bundle_folder = "lawp",
+		dlc = "lawp",
+		sort_number = 3,
+		color = Color("1e1e1e")
+	}, {
+		base_default = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_default"),
+		base_metal = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_metal"),
+		base_plastic = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_plastic"),
+		base_half = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half"),
+		base_half_02 = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half_02"),
+		base_detail = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_details"),
+		base_variation = Idstring("units/pd2_dlc_wcs/weapon_colors/base_gradient/wcs_black_df"),
+		pattern_default = Idstring("units/pd2_dlc_lawp/weapon_colors/pattern/pattern_lawp_03_df"),
+		gradient_default = Idstring("units/pd2_dlc_lawp/weapon_colors/pattern_gradient/gradient_lawp_03_df")
+	})
+	self:create_new_color_skin("color_lawp_04", {
+		texture_bundle_folder = "lawp",
+		dlc = "lawp",
+		sort_number = 4,
+		color = Color("1e1e1e")
+	}, {
+		base_default = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_default"),
+		base_metal = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_metal"),
+		base_plastic = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_plastic"),
+		base_half = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half"),
+		base_half_02 = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half_02"),
+		base_detail = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_details"),
+		base_variation = Idstring("units/pd2_dlc_wcs/weapon_colors/base_gradient/wcs_black_df"),
+		pattern_default = Idstring("units/pd2_dlc_lawp/weapon_colors/pattern/pattern_lawp_04_df"),
+		gradient_default = Idstring("units/pd2_dlc_lawp/weapon_colors/pattern_gradient/gradient_lawp_04_df")
+	})
 end

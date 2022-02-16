@@ -117,7 +117,8 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		},
 		player_style_exclude_list = {
 			"none",
-			"slaughterhouse"
+			"slaughterhouse",
+			"waistcoat"
 		}
 	}
 	self.suit_default_gloves = {
@@ -139,13 +140,16 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		general = "heist_default",
 		highinttech = "heist_default",
 		cybertrench = "heist_default",
-		xmas_tuxedo = "heist_default",
+		bunny = "heist_default",
 		mariachi = "mariatchi",
 		rusbear = "heist_default",
 		lonorwa = "heist_default",
 		poolrepair = "heist_default",
 		traditional = "heist_default",
+		xmas_tuxedo = "heist_default",
+		sparkle = "heist_default",
 		sneak_suit = "sneak",
+		waistcoat = "heist_default",
 		classyske = "heist_default",
 		tux = "heist_default",
 		continental = "continental",

@@ -1457,15 +1457,11 @@ function PlayerStandardVR:_start_action_reload(t)
 		local reload_time = 0
 
 		if weapon:reload_enter_expire_t() then
-			reload_time = reload_time + weapon:reload_enter_expire_t() / speed_multiplier
+			reload_time = reload_time + weapon:reload_enter_expire_t(not weapon:started_reload_empty()) / speed_multiplier
 		end
 
 		if weapon:reload_exit_expire_t() then
-			if weapon:started_reload_empty() then
-				reload_time = reload_time + weapon:reload_exit_expire_t() / speed_multiplier
-			else
-				reload_time = reload_time + weapon:reload_not_empty_exit_expire_t() / speed_multiplier
-			end
+			reload_time = reload_time + weapon:reload_exit_expire_t(not weapon:started_reload_empty()) / speed_multiplier
 		end
 
 		local tweak = weapon:weapon_tweak_data()

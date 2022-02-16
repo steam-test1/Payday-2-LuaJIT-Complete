@@ -3304,6 +3304,13 @@ function CoreEditor:add_to_world_package(params)
 	end
 
 	local t = params.init and self._world_init_package_table or self._world_package_table
+
+	if name and category == "units" and continent and t == self._world_package_table then
+		t = self._continent_package_table
+		t.world = t.world or {}
+		t = t.world
+	end
+
 	t[category] = t[category] or {}
 
 	if not table.contains(t[category], name or path) then

@@ -95,6 +95,22 @@ function LootDropTweakData:init_generated(tweak_data)
 		sort_number = 300,
 		category = "dlc"
 	}
+	self.global_values.ccmt = {
+		name_id = "bm_global_value_ccmt",
+		desc_id = "menu_l_global_value_ccmt",
+		unlock_id = "bm_global_value_ccmt_unlock",
+		color = tweak_data.screen_colors.community_color,
+		dlc = true,
+		free = true,
+		hide_unavailable = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 10,
+		category = "pd2_clan"
+	}
 	self.global_values.cctp = {
 		name_id = "bm_global_value_cctp",
 		desc_id = "menu_l_global_value_cctp",
@@ -430,6 +446,38 @@ function LootDropTweakData:init_generated(tweak_data)
 		track = true,
 		sort_number = 262,
 		category = "normal"
+	}
+	self.global_values.laco = {
+		name_id = "bm_global_value_laco",
+		desc_id = "menu_l_global_value_laco",
+		unlock_id = "bm_global_value_laco_unlock",
+		color = tweak_data.screen_colors.dlc_color,
+		dlc = true,
+		free = false,
+		hide_unavailable = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 515,
+		category = "dlc"
+	}
+	self.global_values.lawp = {
+		name_id = "bm_global_value_lawp",
+		desc_id = "menu_l_global_value_lawp",
+		unlock_id = "bm_global_value_lawp_unlock",
+		color = tweak_data.screen_colors.dlc_color,
+		dlc = true,
+		free = false,
+		hide_unavailable = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 515,
+		category = "dlc"
 	}
 	self.global_values.mar21 = {
 		name_id = "bm_global_value_mar21",

@@ -643,6 +643,10 @@ function TweakDataVR:init(tweak_data)
 				grip = "weapon_2_grip",
 				position = Vector3(-0.5, 2, -1)
 			},
+			ultima = {
+				grip = "weapon_2_grip",
+				position = Vector3(-0.5, 2, -1)
+			},
 			m1897 = {
 				grip = "weapon_2_grip",
 				position = Vector3(-0.5, 2, -1)
@@ -997,6 +1001,10 @@ function TweakDataVR:init(tweak_data)
 			position = Vector3(3, 0, 0),
 			rotation = Rotation(-223, -129, 70)
 		},
+		ultima = {
+			position = Vector3(3, 0, 0),
+			rotation = Rotation(-223, -129, 70)
+		},
 		m1897 = {
 			position = Vector3(3, 0, 0),
 			rotation = Rotation(-223, -129, 70)
@@ -1105,6 +1113,11 @@ function TweakDataVR:init(tweak_data)
 		pm9 = {
 			position = Vector3(1, 0, -5),
 			rotation = Rotation(0, -15, 0)
+		},
+		fmg9 = {
+			grip = "idle_wpn",
+			position = Vector3(8, 2, 12),
+			rotation = Rotation(50, 86, 20)
 		},
 		sr2 = {
 			position = Vector3(1, 2, 5),
@@ -1522,6 +1535,10 @@ function TweakDataVR:init(tweak_data)
 				grip = "idle_wpn",
 				position = Vector3(-2, 40, 0)
 			},
+			ultima = {
+				grip = "idle_wpn",
+				position = Vector3(-2, 40, 0)
+			},
 			m1897 = {
 				grip = "idle_wpn",
 				position = Vector3(-2, 40, 0)
@@ -1716,6 +1733,10 @@ function TweakDataVR:init(tweak_data)
 				position = Vector3(0, 25, -1)
 			},
 			coal = {
+				grip = "idle_wpn",
+				position = Vector3(-2, 25, 0)
+			},
+			fmg9 = {
 				grip = "idle_wpn",
 				position = Vector3(-2, 25, 0)
 			},
@@ -3961,6 +3982,56 @@ function TweakDataVR:init(tweak_data)
 				}
 			}
 		},
+		fmg9 = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_fmg9_mag_out_back"
+				},
+				{
+					time = 0.001,
+					pos = Vector3(0, 0, 0),
+					rot = Rotation(0, 5, 0)
+				},
+				{
+					time = 0.025,
+					pos = Vector3(0, 0, 0),
+					rot = Rotation(0, 6, 0)
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 0, -12),
+					rot = Rotation(0, 40, 0)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_fmg9_mag_in_back",
+					visible = true,
+					pos = Vector3(0, 0, -12),
+					rot = Rotation(0, 40, 0)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, 0, 0),
+					rot = Rotation(0, 6, 0)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, 0, 0),
+					rot = Rotation(0, 5, 0)
+				},
+				{
+					time = 0.6,
+					sound = "wp_fmg9_release_lever",
+					pos = Vector3(),
+					rot = Rotation()
+				}
+			}
+		},
 		erma = {
 			start = {
 				{
@@ -4262,6 +4333,40 @@ function TweakDataVR:init(tweak_data)
 				{
 					time = 0.6,
 					sound = "wp_m37_reload_exit_push_handle"
+				}
+			}
+		},
+		ultima = {
+			reload_part_type = "lower_reciever",
+			custom_mag_unit = "units/pd2_dlc_vr/units/wpn_vr_m_slug/wpn_vr_m_slug_6",
+			start = {
+				{
+					time = 0,
+					sound = "wp_m37_reload_enter"
+				},
+				{
+					time = 0.03
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					anims = {
+						{
+							anim_group = "reload_exit",
+							to = 0.7,
+							from = 0.2,
+							part = "foregrip"
+						}
+					}
+				},
+				{
+					time = 0,
+					sound = "wp_ultima_insert_shell"
+				},
+				{
+					time = 0.6,
+					sound = "wp_ultima_reload_exit_push_handle"
 				}
 			}
 		},

@@ -7830,13 +7830,8 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 	self.masks.hockeynermark = {
 		unit = "units/pd2_dlc_fcmsk/masks/msk_hockeynermark/msk_hockeynermark",
 		name_id = "bm_msk_hockeynermark",
-		pcs = {
-			10,
-			20,
-			30,
-			40
-		},
-		value = 5,
+		pcs = {},
+		value = 0,
 		type = "helmet",
 		sort_number = 0,
 		preview_oobb_object = "g_mask",

@@ -273,21 +273,22 @@ function MissionManager:get_saved_job_value(key)
 end
 
 function MissionManager:on_set_saved_job_value(key, value)
-	local christmas_presents_values = {
-		present_bex = false,
-		present_pex = false,
-		present_mex = false,
-		present_fex = false
-	}
+	local achievements = tweak_data.achievement.collection_achievements
 
-	for name, state in pairs(christmas_presents_values) do
-		if Global.mission_manager.saved_job_values[name] ~= nil then
-			christmas_presents_values[name] = true
+	for _, collection_data in pairs(achievements) do
+		local award = true
+
+		for _, item in ipairs(collection_data.collection) do
+			if not Global.mission_manager.saved_job_values[item] then
+				award = false
+
+				break
+			end
 		end
-	end
 
-	if christmas_presents_values.present_mex and christmas_presents_values.present_bex and christmas_presents_values.present_pex and christmas_presents_values.present_fex then
-		managers.achievment:award("xm20_1")
+		if award then
+			managers.achievment:award(collection_data.award)
+		end
 	end
 end
 

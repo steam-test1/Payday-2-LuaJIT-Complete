@@ -40,7 +40,7 @@ function ElementAIRemove:on_executed(instigator)
 						backup_so = backup_so
 					})
 				end
-			else
+			elseif instigator:brain().set_active then
 				instigator:brain():set_active(false)
 				instigator:base():set_slot(instigator, 0)
 			end

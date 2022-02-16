@@ -1046,7 +1046,16 @@ function BlackMarketManager:equip_weapon(category, slot, skip_outfit)
 	if not cache_data_override then
 		self:aquire_default_weapons()
 
-		cache_data_override = Global.blackmarket_manager.crafted_items[category][1]
+		for s, data in pairs(Global.blackmarket_manager.crafted_items[category]) do
+			if self:weapon_unlocked_by_crafted(category, s) then
+				data.equipped = true
+				cache_data_override = data
+
+				break
+			end
+		end
+
+		cache_data_override = cache_data_override or Global.blackmarket_manager.crafted_items[category][1]
 	end
 
 	self:set_weapon_equipped_cache(category == "primaries" and "primary" or "secondary", cache_data_override)
@@ -10035,6 +10044,69 @@ function BlackMarketManager:get_reload_time(weapon_id)
 		tactical = tweak.timers.shotgun_reload_shell
 		tactical = tactical + tweak.timers.shotgun_reload_first_shell_offset + tweak.timers.shotgun_reload_enter
 		tactical = tactical + tweak.timers.shotgun_reload_exit_not_empty
+
+		return empty, tactical
+	elseif tweak.timers.shotgun_reload then
+		local empty = 0
+		local empty_tweak = tweak.timers.shotgun_reload.empty or {
+			reload_enter = tweak.timers.shotgun_reload_enter,
+			reload_first_shell_offset = tweak.timers.shotgun_reload_first_shell_offset,
+			reload_shell = tweak.timers.shotgun_reload_shell,
+			reload_exit = tweak.timers.shotgun_reload_exit_empty
+		}
+
+		if empty_tweak.reload_queue then
+			local ammo_to_reload = tweak.CLIP_AMMO_MAX
+			local queue_index = 0
+			local queue_data = nil
+			local queue_num = #empty_tweak.reload_queue
+
+			while ammo_to_reload > 0 do
+				if queue_index == queue_num then
+					empty = empty + (empty_tweak.reload_queue_wrap or 0)
+				end
+
+				queue_index = queue_index % queue_num + 1
+				queue_data = empty_tweak.reload_queue[queue_index]
+				empty = empty + queue_data.expire_t or 0.5666666666666667
+				ammo_to_reload = ammo_to_reload - (queue_data.reload_num or 1)
+			end
+		else
+			empty = empty_tweak.reload_shell * tweak.CLIP_AMMO_MAX
+		end
+
+		empty = empty + (empty_tweak.reload_first_shell_offset or 0) + (empty_tweak.reload_enter or 0)
+		empty = empty + (empty_tweak.reload_exit or 0)
+		local tactical = 0
+		local tactical_tweak = tweak.timers.shotgun_reload.not_empty or {
+			reload_enter = tweak.timers.shotgun_reload_enter,
+			reload_first_shell_offset = tweak.timers.shotgun_reload_first_shell_offset,
+			reload_shell = tweak.timers.shotgun_reload_shell,
+			reload_exit = tweak.timers.shotgun_reload_exit_not_empty
+		}
+
+		if tactical_tweak.reload_queue then
+			local ammo_to_reload = tweak.CLIP_AMMO_MAX
+			local queue_index = 0
+			local queue_data = nil
+			local queue_num = #tactical_tweak.reload_queue
+
+			while ammo_to_reload > 0 do
+				if queue_index == queue_num then
+					tactical = tactical + (tactical_tweak.reload_queue_wrap or 0)
+				end
+
+				queue_index = queue_index % queue_num + 1
+				queue_data = tactical_tweak.reload_queue[queue_index]
+				tactical = tactical + queue_data.expire_t or 0.5666666666666667
+				ammo_to_reload = ammo_to_reload - (queue_data.reload_num or 1)
+			end
+		else
+			tactical = tactical_tweak.reload_shell
+		end
+
+		tactical = tactical + (tactical_tweak.reload_first_shell_offset or 0) + (tactical_tweak.reload_enter or 0)
+		tactical = tactical + (tactical_tweak.reload_exit or 0)
 
 		return empty, tactical
 	else

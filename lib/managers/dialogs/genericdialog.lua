@@ -32,7 +32,15 @@ function GenericDialog:init(manager, data, is_title_outside)
 		use_text_formating = data.use_text_formating,
 		text_formating_color = data.text_formating_color,
 		text_formating_color_table = data.text_formating_color_table,
-		text_blend_mode = data.text_blend_mode
+		text_blend_mode = data.text_blend_mode,
+		x = data.x,
+		y = data.y,
+		w = data.w,
+		h = data.h,
+		left_marigin = data.left_marigin,
+		right_marigin = data.right_marigin,
+		top_marigin = data.top_marigin,
+		bottom_marigin = data.bottom_marigin
 	}
 	self._ws = self._data.ws or manager:_get_ws()
 	self._panel_script = _G[self.PANEL_SCRIPT_CLASS]:new(self._ws, self._data.title or "", self._data.text or "", self._data, text_config)
@@ -339,8 +347,35 @@ function GenericDialog:button_pressed_callback()
 		return
 	end
 
-	self:remove_mouse()
-	self:button_pressed(self._panel_script:get_focus_button())
+	local button_index = self._panel_script:get_focus_button()
+	local button_list = self._data.button_list
+
+	if button_list then
+		local button = button_list[button_index]
+
+		if not button or not button.no_close then
+			self:remove_mouse()
+		end
+	else
+		self:remove_mouse()
+	end
+
+	self:button_pressed(button_index)
+end
+
+function GenericDialog:button_pressed(button_index)
+	GenericDialog.super.button_pressed(self, button_index)
+
+	local toggle_state = self._panel_script:update_toggle(button_index, false)
+	local button_list = self._data.button_list
+
+	if button_list then
+		local button = button_list[button_index]
+
+		if button and button.toggle and button.toggle_callback_func then
+			button.toggle_callback_func(toggle_state)
+		end
+	end
 end
 
 function GenericDialog:remove_mouse()

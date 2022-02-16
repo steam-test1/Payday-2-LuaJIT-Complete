@@ -701,6 +701,7 @@ function PlayerManager:_internal_load()
 		player:inventory():add_unit_by_factory_name(primary.factory_id, default_weapon_selection == 2, false, primary.blueprint, primary.cosmetics, texture_switches)
 	end
 
+	player:inventory():hide_equipped_unit()
 	player:inventory():set_melee_weapon(managers.blackmarket:equipped_melee_weapon())
 
 	local peer_id = managers.network:session():local_peer():id()

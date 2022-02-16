@@ -13297,6 +13297,18 @@ function BlackMarketGui:populate_mods(data)
 			local gmod_td = tweak_data.weapon.factory.parts[gmod_name]
 			local has_customizable_gadget = (data.name == "gadget" or table.contains(gmod_td.perks or {}, "gadget")) and (gmod_td.sub_type == "laser" or gmod_td.sub_type == "flashlight")
 
+			if not has_customizable_gadget and gmod_td.adds then
+				for _, part_id in ipairs(gmod_td.adds) do
+					local sub_type = tweak_data.weapon.factory.parts[part_id].sub_type
+
+					if sub_type == "laser" or sub_type == "flashlight" then
+						has_customizable_gadget = true
+
+						break
+					end
+				end
+			end
+
 			if has_customizable_gadget then
 				if not crafted.customize_locked then
 					table.insert(data[equipped], "wm_customize_gadget")

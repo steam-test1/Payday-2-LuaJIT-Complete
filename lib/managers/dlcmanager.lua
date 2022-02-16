@@ -2227,6 +2227,7 @@ end
 
 function WINDLCManager:_init_promoted_dlc_list()
 	self._promoted_dlc_list = {
+		"lawp",
 		"snow",
 		"chca",
 		"cctp",

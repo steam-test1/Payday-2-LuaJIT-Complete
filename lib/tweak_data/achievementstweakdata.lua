@@ -8024,6 +8024,17 @@ function AchievementsTweakData:init(tweak_data)
 		wpn_fps_upg_ak_b_ak105 = ameno_8_achievement,
 		wpn_fps_upg_charm_cloaker = tawp_1_achievement
 	}
+	self.collection_achievements = {
+		xm20_1 = {
+			award = "xm20_1",
+			collection = {
+				"present_mex",
+				"present_bex",
+				"present_pex",
+				"present_fex"
+			}
+		}
+	}
 
 	if SystemInfo:platform() == Idstring("PS4") or SystemInfo:platform() == Idstring("XB1") then
 		self.weapon_part_tracker = {}

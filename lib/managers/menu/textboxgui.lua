@@ -143,6 +143,10 @@ function TextBoxGui:_create_text_box(ws, title, text, content_data, config)
 	local x = preset and preset.x or config and config.x or 0
 	local y = preset and preset.y or config and config.y or 0
 	local bottom = preset and preset.bottom or config and config.bottom
+	local left_marigin = preset and preset.left_marigin or config and config.left_marigin or 0
+	local right_marigin = preset and preset.right_marigin or config and config.right_marigin or 0
+	local top_marigin = preset and preset.top_marigin or config and config.top_marigin or 0
+	local bottom_marigin = preset and preset.bottom_marigin or config and config.bottom_marigin or 0
 	local forced_h = preset and preset.forced_h or config and config.forced_h or false
 	local title_font = preset and preset.title_font or config and config.title_font or tweak_data.menu.pd2_large_font
 	local title_font_size = preset and preset.title_font_size or config and config.title_font_size or 28
@@ -155,6 +159,16 @@ function TextBoxGui:_create_text_box(ws, title, text, content_data, config)
 	local text_blend_mode = preset and preset.text_blend_mode or config and config.text_blend_mode or "normal"
 	self._allow_moving = config and config.allow_moving or false
 	local preset_or_config_y = y ~= 0
+	self._toggle_button_list = {}
+
+	if button_list then
+		for index, button in ipairs(button_list) do
+			if button.toggle then
+				self._toggle_button_list[index] = button.initial_toggle_state
+			end
+		end
+	end
+
 	title = title and utf8.to_upper(title)
 
 	if text then
@@ -181,14 +195,14 @@ function TextBoxGui:_create_text_box(ws, title, text, content_data, config)
 		align = "left",
 		vertical = "top",
 		valign = "top",
-		y = 10,
 		rotation = 360,
-		x = 10,
 		layer = 1,
 		text = title or "none",
 		visible = title and true or false,
 		font = title_font,
-		font_size = title_font_size
+		font_size = title_font_size,
+		x = 10 + left_marigin,
+		y = 10 + top_marigin
 	})
 	local _, _, tw, th = title_text:text_rect()
 
@@ -263,11 +277,11 @@ function TextBoxGui:_create_text_box(ws, title, text, content_data, config)
 	local buttons_panel = self:_setup_buttons_panel(info_area, button_list, focus_button, only_buttons)
 	local scroll_panel = info_area:panel({
 		name = "scroll_panel",
-		x = 10,
 		layer = 1,
-		y = math.round(th + 5),
-		w = info_area:w() - 20,
-		h = info_area:h()
+		x = 10 + left_marigin,
+		y = math.round(th + 5) + top_marigin,
+		w = info_area:w() - 20 - (left_marigin + right_marigin),
+		h = info_area:h() - (top_marigin + bottom_marigin)
 	})
 	local has_stats = stats_list and #stats_list > 0
 	local stats_panel = self:_setup_stats_panel(scroll_panel, stats_list, stats_text)
@@ -753,6 +767,23 @@ function TextBoxGui:_setup_buttons_panel(info_area, button_list, focus_button, o
 				})
 				button_text_config.text = utf8.to_upper(button.text or "")
 				local text = button_panel:text(button_text_config)
+
+				if button.toggle then
+					local toggle = button_panel:bitmap({
+						texture = "guis/textures/menu_tickbox",
+						name = "toggle",
+						texture_rect = {
+							button.initial_toggle_state and 24 or 0,
+							0,
+							24,
+							24
+						},
+						color = tweak_data.screen_colors.button_stage_3
+					})
+
+					toggle:set_left(button_panel:x())
+				end
+
 				local _, _, w, h = text:text_rect()
 				max_w = math.max(max_w, w)
 				max_h = math.max(max_h, h)
@@ -812,19 +843,45 @@ function TextBoxGui:set_focus_button(focus_button)
 	end
 end
 
+function TextBoxGui:update_toggle(index)
+	local button_panel = self._text_box_buttons_panel:child(index - 1)
+
+	if button_panel and self._toggle_button_list[index] ~= nil then
+		local new_state = not self._toggle_button_list[index]
+		self._toggle_button_list[index] = new_state
+		local toggle = button_panel:child("toggle")
+
+		toggle:set_image("guis/textures/menu_tickbox", new_state and 24 or 0, 0, 24, 24)
+
+		return new_state
+	else
+		return nil
+	end
+end
+
 function TextBoxGui:_set_button_selected(index, is_selected)
 	local button_panel = self._text_box_buttons_panel:child(index - 1)
 
 	if button_panel then
 		local button_text = button_panel:child("button_text")
+		local toggle = button_panel:child("toggle")
 		local selected = self._text_box_buttons_panel:child("selected")
 
 		if is_selected then
 			button_text:set_color(tweak_data.screen_colors.button_stage_2)
+
+			if toggle then
+				toggle:set_color(tweak_data.screen_colors.button_stage_2)
+			end
+
 			selected:set_shape(button_panel:shape())
 			selected:move(2, -1)
 		else
 			button_text:set_color(tweak_data.screen_colors.button_stage_3)
+
+			if toggle then
+				toggle:set_color(tweak_data.screen_colors.button_stage_3)
+			end
 		end
 	end
 end

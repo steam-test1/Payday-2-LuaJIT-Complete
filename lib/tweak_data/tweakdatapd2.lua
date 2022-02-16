@@ -1003,6 +1003,10 @@ function TweakData:_setup_scene_poses()
 		ray = {
 			"husk_ray",
 			required_pose = true
+		},
+		ultima = {
+			"husk_generic1",
+			required_pose = true
 		}
 	}
 	self.scene_poses.infamy = {

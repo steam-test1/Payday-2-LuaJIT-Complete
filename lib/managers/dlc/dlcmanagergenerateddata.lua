@@ -22,6 +22,10 @@ function GenericDLCManager:has_bex()
 	return self:is_dlc_unlocked("bex")
 end
 
+function GenericDLCManager:has_ccmt()
+	return self:is_dlc_unlocked("ccmt")
+end
+
 function GenericDLCManager:has_cctp()
 	return self:is_dlc_unlocked("cctp")
 end
@@ -104,6 +108,14 @@ end
 
 function GenericDLCManager:has_jun21()
 	return self:is_dlc_unlocked("jun21")
+end
+
+function GenericDLCManager:has_laco()
+	return self:is_dlc_unlocked("laco")
+end
+
+function GenericDLCManager:has_lawp()
+	return self:is_dlc_unlocked("lawp")
 end
 
 function GenericDLCManager:has_mar21()
@@ -314,6 +326,10 @@ function WINDLCManager:init_generated()
 		no_install = true,
 		webpage = "ovk.af/bexheistyb"
 	}
+	Global.dlc_manager.all_dlc_data.ccmt = {
+		app_id = "218620",
+		no_install = true
+	}
 	Global.dlc_manager.all_dlc_data.cctp = {
 		app_id = "1778791",
 		no_install = true
@@ -397,6 +413,14 @@ function WINDLCManager:init_generated()
 	}
 	Global.dlc_manager.all_dlc_data.jun21 = {
 		app_id = "218620",
+		no_install = true
+	}
+	Global.dlc_manager.all_dlc_data.laco = {
+		app_id = "218620",
+		no_install = true
+	}
+	Global.dlc_manager.all_dlc_data.lawp = {
+		app_id = "1901420",
 		no_install = true
 	}
 	Global.dlc_manager.all_dlc_data.mar21 = {

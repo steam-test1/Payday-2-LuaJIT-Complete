@@ -219,6 +219,16 @@ function AkimboWeaponBase:on_disabled(...)
 
 	if alive(self._second_gun) then
 		self._second_gun:base():on_disabled(...)
+
+		self._second_gun:base()._last_gadget_idx = self._last_gadget_idx
+	end
+end
+
+function AkimboWeaponBase:set_visibility_state(...)
+	AkimboWeaponBase.super.set_visibility_state(self, ...)
+
+	if alive(self._second_gun) then
+		self._second_gun:base():set_visibility_state(...)
 	end
 end
 
@@ -538,6 +548,8 @@ function NPCAkimboWeaponBase:on_disabled(...)
 
 	if alive(self._second_gun) then
 		self._second_gun:base():on_disabled(...)
+
+		self._second_gun:base()._last_gadget_idx = self._last_gadget_idx
 	end
 end
 
@@ -574,6 +586,14 @@ function NPCAkimboWeaponBase:on_melee_item_hidden(use_primary)
 				self._second_gun:base():set_gadget_color(self._second_gun:base():gadget_color())
 			end
 		end
+	end
+end
+
+function NPCAkimboWeaponBase:set_visibility_state(...)
+	NPCAkimboWeaponBase.super.set_visibility_state(self, ...)
+
+	if alive(self._second_gun) then
+		self._second_gun:base():set_visibility_state(...)
 	end
 end
 
