@@ -2,6 +2,9 @@ AkimboShotgunBase = AkimboShotgunBase or class(AkimboWeaponBase)
 
 function AkimboShotgunBase:init(...)
 	AkimboShotgunBase.super.init(self, ...)
+
+	self._do_shotgun_push = true
+
 	self:setup_default()
 end
 

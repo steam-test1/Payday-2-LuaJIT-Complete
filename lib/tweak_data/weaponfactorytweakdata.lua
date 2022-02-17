@@ -41921,8 +41921,7 @@ function WeaponFactoryTweakData:_init_rsh12()
 			"wpn_fps_upg_o_uh",
 			"wpn_fps_upg_o_fc1",
 			"wpn_fps_upg_o_tf90",
-			"wpn_fps_upg_o_poe",
-			"wpn_fps_upg_ns_pis_putnik"
+			"wpn_fps_upg_o_poe"
 		}
 	}
 	self.wpn_fps_pis_rsh12_npc = deep_clone(self.wpn_fps_pis_rsh12)
@@ -42932,10 +42931,6 @@ function WeaponFactoryTweakData:_init_breech()
 			wpn_fps_upg_ns_pis_meatgrinder = {
 				a_obj = "a_ns",
 				parent = "barrel"
-			},
-			wpn_fps_upg_ns_pis_putnik = {
-				a_obj = "a_ns",
-				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -42956,8 +42951,7 @@ function WeaponFactoryTweakData:_init_breech()
 			"wpn_fps_pis_breech_mag",
 			"wpn_fps_upg_o_rmr",
 			"wpn_fps_upg_o_rms",
-			"wpn_fps_upg_o_rikt",
-			"wpn_fps_upg_ns_pis_putnik"
+			"wpn_fps_upg_o_rikt"
 		}
 	}
 	self.wpn_fps_pis_breech_npc = deep_clone(self.wpn_fps_pis_breech)
@@ -46528,10 +46522,6 @@ function WeaponFactoryTweakData:_init_x_breech()
 				a_obj = "a_ns",
 				parent = "barrel"
 			},
-			wpn_fps_upg_ns_pis_putnik = {
-				a_obj = "a_ns",
-				parent = "barrel"
-			},
 			wpn_fps_pis_breech_dh = {
 				animations = {
 					fire = "recoil",
@@ -46555,8 +46545,7 @@ function WeaponFactoryTweakData:_init_x_breech()
 			"wpn_fps_pis_breech_dh",
 			"wpn_fps_pis_breech_g_custom",
 			"wpn_fps_pis_breech_g_standard",
-			"wpn_fps_pis_breech_mag",
-			"wpn_fps_upg_ns_pis_putnik"
+			"wpn_fps_pis_breech_mag"
 		}
 	}
 	self.wpn_fps_pis_x_breech_npc = deep_clone(self.wpn_fps_pis_x_breech)
@@ -52756,7 +52745,7 @@ function WeaponFactoryTweakData:_init_fmg9()
 	}
 	self.parts.wpn_fps_smg_fmg9_conversion_display_dummy = {
 		a_obj = "a_upper",
-		type = "magazine",
+		type = "magazine_extra",
 		name_id = "bm_wp_fmg9_conversion_display_dummy",
 		unit = "units/pd2_dlc_lawp/weapons/wpn_fps_smg_fmg9_pts/wpn_fps_smg_fmg9_display_dummy",
 		bullet_objects = {

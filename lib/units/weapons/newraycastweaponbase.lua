@@ -321,7 +321,8 @@ function NewRaycastWeaponBase:clbk_assembly_complete(clbk, parts, blueprint)
 	local bullet_object_parts = {
 		"magazine",
 		"ammo",
-		"underbarrel"
+		"underbarrel",
+		"magazine_extra"
 	}
 	self._bullet_objects = {}
 

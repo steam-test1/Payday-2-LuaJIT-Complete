@@ -776,6 +776,10 @@ function CharmManager:simulate_ingame_standard(entry, mov_data, charm_data, dt)
 end
 
 function CharmManager:simulate_ingame_vr(entry, mov_data, charm_data, dt)
+	if not alive(entry.weapon_unit) or not entry.weapon_unit:parent() then
+		return
+	end
+
 	local cur_user_pos = mov_data.user_m_pos
 
 	mvec3_set(cur_user_pos, mov_data.ghost_m_pos)
