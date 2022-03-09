@@ -7838,6 +7838,110 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		dlc = "fcmsk",
 		texture_bundle_folder = "fcmsk"
 	}
+	self.masks.yufuhelmet = {
+		unit = "units/pd2_dlc_pent/characters/msk_yufuhelmet/msk_yufuhelmet",
+		name_id = "bm_msk_yufuhelmet",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		dlc = "dlc_achievement",
+		sort_number = 13,
+		preview_oobb_object = "g_mask",
+		global_value = "pent",
+		texture_bundle_folder = "pent",
+		offsets = {
+			sokol = {
+				Vector3(0, -0.280226, 0),
+				Rotation(-0, -0, -0)
+			},
+			wolf = {
+				Vector3(0, 0.435252, 0),
+				Rotation(-0, -0, -0)
+			},
+			ecp_male = {
+				Vector3(0, -0.637965, 0),
+				Rotation(-0, -0, -0)
+			},
+			chains = {
+				Vector3(0, 0.435252, 0),
+				Rotation(-0, -0, -0)
+			},
+			jimmy = {
+				Vector3(0, 1.03148, 0),
+				Rotation(-0, -0, -0)
+			},
+			dragon = {
+				Vector3(0, 0.912237, 0),
+				Rotation(-0, -0, -0)
+			},
+			bonnie = {
+				Vector3(0, 0.792991, 0),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.biker_helmet_red_led = {
+		unit = "units/pd2_dlc_gdtp/masks/msk_biker_helmet_red_led/msk_biker_helmet_red_led",
+		name_id = "bm_msk_biker_helmet_red_led",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "gdtp",
+		texture_bundle_folder = "gdtp"
+	}
+	self.masks.biker_helmet_yellow_led = {
+		unit = "units/pd2_dlc_gdtp/masks/msk_biker_helmet_yellow_led/msk_biker_helmet_yellow_led",
+		name_id = "bm_msk_biker_helmet_yellow_led",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "gdtp",
+		texture_bundle_folder = "gdtp"
+	}
+	self.masks.boss_gold = {
+		unit = "units/pd2_dlc_gdtp/masks/msk_boss_gold/msk_boss_gold",
+		name_id = "bm_msk_boss_gold",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "gdtp",
+		texture_bundle_folder = "gdtp",
+		offsets = {
+			joy = {
+				Vector3(0, 0, 0.988833),
+				Rotation(-0, -0, -0)
+			},
+			jimmy = {
+				Vector3(0, 0.907507, 0),
+				Rotation(-0, -0, -0)
+			},
+			jacket = {
+				Vector3(0, 0.418832, 0.0921568),
+				Rotation(-0, -0, -0)
+			},
+			sydney = {
+				Vector3(0, 0, 0.0943694),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.boss_silver = {
+		unit = "units/pd2_dlc_gdtp/masks/msk_boss_silver/msk_boss_silver",
+		name_id = "bm_msk_boss_silver",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "gdtp",
+		texture_bundle_folder = "gdtp"
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.masks) do

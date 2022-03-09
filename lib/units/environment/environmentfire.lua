@@ -47,8 +47,10 @@ function EnvironmentFire:on_spawn(data, normal, user_unit, added_time, range_mul
 	self._player_damage = data.player_damage
 	self._fire_dot_data = deep_clone(data.fire_dot_data)
 	self._fire_alert_radius = data.fire_alert_radius
+	self._no_fire_alert = data.no_fire_alert
 	self._is_molotov = data.is_molotov
 	self._hexes = data.hexes or 6
+	self._damage_slotmask = data.slotmask or managers.slot:get_mask("explosion_targets")
 	local detonated_position = self._unit:position()
 	local range = self._range
 	local single_effect_radius = range
@@ -205,7 +207,7 @@ function EnvironmentFire:_do_damage()
 	local pos = self._unit:position()
 	local normal = math.UP
 	local range = self._range
-	local slot_mask = managers.slot:get_mask("explosion_targets")
+	local slot_mask = self._damage_slotmask
 	local player_in_range = false
 	local player_in_range_count = 0
 
@@ -240,6 +242,8 @@ function EnvironmentFire:_do_damage()
 				end
 
 				if Network:is_server() then
+					local user = self._user_unit
+					user = alive(user) and user or nil
 					local hit_units, splinters = managers.fire:detect_and_give_dmg({
 						player_damage = 0,
 						push_units = false,
@@ -248,10 +252,11 @@ function EnvironmentFire:_do_damage()
 						collision_slotmask = slot_mask,
 						curve_pow = self._curve_pow,
 						damage = self._damage,
-						ignore_unit = self._unit,
-						user = self._user_unit,
+						ignore_unit = user or self._unit,
+						user = user,
 						owner = self._unit,
 						alert_radius = self._fire_alert_radius,
+						no_alert = self._no_fire_alert,
 						fire_dot_data = self._fire_dot_data,
 						is_molotov = self._is_molotov
 					})
@@ -286,6 +291,7 @@ function EnvironmentFire:save(data)
 		player_damage = self._player_damage,
 		fire_dot_data = self._fire_dot_data,
 		fire_alert_radius = self._fire_alert_radius,
+		no_fire_alert = self._no_fire_alert,
 		is_molotov = self._is_molotov,
 		hexes = self._hexes or 6,
 		data = self._data,
@@ -309,6 +315,7 @@ function EnvironmentFire:load(data)
 	self._player_damage = state.player_damage
 	self._fire_dot_data = state.fire_dot_data
 	self._fire_alert_radius = state.fire_alert_radius
+	self._no_fire_alert = state.no_fire_alert
 	self._is_molotov = state.is_molotov
 	self._hexes = state.hexes or 6
 	local data = state.data

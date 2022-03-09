@@ -2291,6 +2291,15 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 			name_id = "bm_suit_oct21_thug_red",
 			third_material = "units/pd2_dlc_oct21/characters/shared_materials/oct21_acc_thug_red",
 			material = "units/pd2_dlc_oct21/characters/shared_materials/oct21_acc_fps_thug_red"
+		},
+		white = {
+			desc_id = "bm_suit_mar22_thug_white_desc",
+			global_value = "mar22",
+			prio = 3,
+			auto_aquire = true,
+			name_id = "bm_suit_mar22_thug_white",
+			third_material = "units/pd2_dlc_mar22/characters/shared_materials/mar22_acc_thug_white",
+			material = "units/pd2_dlc_mar22/characters/shared_materials/mar22_acc_fps_thug_white"
 		}
 	}
 	local thug_characters_male = {
@@ -3381,6 +3390,224 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		sequence = "set_ehtan"
 	}
 	self.player_styles.waistcoat.characters.ecp_male = waistcoat_characters_male_fat
+	self.player_styles.kungfumaster = {
+		name_id = "bm_suit_kungfumaster",
+		desc_id = "bm_suit_kungfumaster_desc",
+		locks = {
+			achievement = "pent_11"
+		},
+		texture_bundle_folder = "pent",
+		material_variations = {}
+	}
+	self.player_styles.kungfumaster.material_variations.default = {
+		name_id = "bm_suit_var_kungfumaster_default",
+		global_value = "normal",
+		desc_id = "bm_suit_var_kungfumaster_default_desc"
+	}
+	self.player_styles.kungfumaster.material_variations.red = {
+		desc_id = "bm_suit_var_kungfumaster_red_desc",
+		global_value = "normal",
+		auto_aquire = true,
+		name_id = "bm_suit_var_kungfumaster_red",
+		third_material = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/shared_materials/pent_acc_kungfumaster_red",
+		material = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/shared_materials/pent_acc_fps_kungfumaster_male_red",
+		locks = {
+			achievement = "pent_11"
+		}
+	}
+	self.player_styles.kungfumaster.material_variations.black = {
+		desc_id = "bm_suit_var_kungfumaster_black_desc",
+		global_value = "normal",
+		auto_aquire = true,
+		name_id = "bm_suit_var_kungfumaster_black",
+		third_material = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/shared_materials/pent_acc_kungfumaster_black",
+		material = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/shared_materials/pent_acc_fps_kungfumaster_male_black",
+		locks = {
+			achievement = "pent_11"
+		}
+	}
+	self.player_styles.kungfumaster.material_variations.white = {
+		desc_id = "bm_suit_var_kungfumaster_white_desc",
+		global_value = "normal",
+		auto_aquire = true,
+		name_id = "bm_suit_var_kungfumaster_white",
+		third_material = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/shared_materials/pent_acc_kungfumaster_white",
+		material = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/shared_materials/pent_acc_fps_kungfumaster_male_white",
+		locks = {
+			achievement = "pent_11"
+		}
+	}
+	self.player_styles.kungfumaster.body_replacement = body_replacement_standard
+	self.player_styles.kungfumaster.third_body_replacement = body_replacement_standard
+	self.player_styles.kungfumaster.unit = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/pent_acc_fps_kungfumaster_male/pent_acc_fps_kungfumaster_male"
+	self.player_styles.kungfumaster.characters = {}
+	local kungfumaster_characters_male = {
+		third_unit = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/pent_acc_kungfumaster_male_average/pent_acc_kungfumaster_male_average"
+	}
+
+	set_characters_data("kungfumaster", characters_male, kungfumaster_characters_male)
+
+	local kungfumaster_characters_male_big = {
+		third_unit = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/pent_acc_kungfumaster_male_big/pent_acc_kungfumaster_male_big"
+	}
+
+	set_characters_data("kungfumaster", characters_male_big, kungfumaster_characters_male_big)
+
+	local kungfumaster_characters_female = {
+		third_unit = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/pent_acc_kungfumaster_female_average/pent_acc_kungfumaster_female_average"
+	}
+
+	set_characters_data("kungfumaster", characters_female, kungfumaster_characters_female)
+
+	local kungfumaster_characters_female_big = {
+		third_unit = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/pent_acc_kungfumaster_female_fat/pent_acc_kungfumaster_female_fat"
+	}
+
+	set_characters_data("kungfumaster", characters_female_big, kungfumaster_characters_female_big)
+
+	local kungfumaster_characters_male_fat = {
+		third_unit = "units/pd2_dlc_pent/characters/pent_acc_kungfumaster/pent_acc_kungfumaster_male_fat/pent_acc_kungfumaster_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.kungfumaster.characters.ecp_male = kungfumaster_characters_male_fat
+	self.player_styles.enforcer = {
+		name_id = "bm_suit_enforcer_suit",
+		desc_id = "bm_suit_enforcer_suit_desc",
+		texture_bundle_folder = "gdtp",
+		global_value = "gdtp",
+		material_variations = {}
+	}
+	self.player_styles.enforcer.material_variations.default = {
+		name_id = "bm_suit_var_enforcer_suit_default",
+		global_value = "gdtp",
+		desc_id = "bm_suit_var_enforcer_suit_default_desc"
+	}
+	self.player_styles.enforcer.material_variations.blood = {
+		desc_id = "bm_suit_var_enforcer_suit_blood_desc",
+		global_value = "gdtp",
+		auto_aquire = true,
+		name_id = "bm_suit_var_enforcer_suit_blood",
+		third_material = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/shared_materials/gdtp_acc_enforcer_white",
+		material = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/shared_materials/gdtp_acc_fps_enforcer_white"
+	}
+	self.player_styles.enforcer.material_variations.dragon = {
+		desc_id = "bm_suit_var_enforcer_suit_dragon_desc",
+		global_value = "gdtp",
+		auto_aquire = true,
+		name_id = "bm_suit_var_enforcer_suit_dragon",
+		third_material = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/shared_materials/gdtp_acc_enforcer_brown",
+		material = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/shared_materials/gdtp_acc_fps_enforcer_brown"
+	}
+	self.player_styles.enforcer.material_variations.red_dragon = {
+		desc_id = "bm_suit_var_enforcer_suit_red_dragon_desc",
+		global_value = "gdtp",
+		auto_aquire = true,
+		name_id = "bm_suit_var_enforcer_suit_red_dragon",
+		third_material = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/shared_materials/gdtp_acc_enforcer_purple",
+		material = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/shared_materials/gdtp_acc_fps_enforcer_purple"
+	}
+	self.player_styles.enforcer.body_replacement = body_replacement_standard
+	self.player_styles.enforcer.third_body_replacement = body_replacement_standard
+	self.player_styles.enforcer.unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/gdtp_acc_fps_enforcer_male/gdtp_acc_fps_enforcer_male"
+	self.player_styles.enforcer.characters = {}
+	local enforcer_characters_male = {
+		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/gdtp_acc_enforcer_male_average/gdtp_acc_enforcer_male_average"
+	}
+
+	set_characters_data("enforcer", characters_male, enforcer_characters_male)
+
+	local enforcer_characters_male_big = {
+		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/gdtp_acc_enforcer_male_big/gdtp_acc_enforcer_male_big"
+	}
+
+	set_characters_data("enforcer", characters_male_big, enforcer_characters_male_big)
+
+	local enforcer_characters_female = {
+		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/gdtp_acc_enforcer_female_average/gdtp_acc_enforcer_female_average"
+	}
+
+	set_characters_data("enforcer", characters_female, enforcer_characters_female)
+
+	local enforcer_characters_female_big = {
+		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/gdtp_acc_enforcer_female_fat/gdtp_acc_enforcer_female_fat"
+	}
+
+	set_characters_data("enforcer", characters_female_big, enforcer_characters_female_big)
+
+	local enforcer_characters_male_fat = {
+		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_enforcer/gdtp_acc_enforcer_male_fat/gdtp_acc_enforcer_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.enforcer.characters.ecp_male = enforcer_characters_male_fat
+	self.player_styles.boss = {
+		name_id = "bm_suit_boss_suit",
+		desc_id = "bm_suit_boss_suit_desc",
+		texture_bundle_folder = "gdtp",
+		global_value = "gdtp",
+		material_variations = {}
+	}
+	self.player_styles.boss.material_variations.default = {
+		name_id = "bm_suit_var_boss_suit_default",
+		global_value = "gdtp",
+		desc_id = "bm_suit_var_boss_suit_default_desc"
+	}
+	self.player_styles.boss.material_variations.green = {
+		desc_id = "bm_suit_var_boss_suit_green_desc",
+		global_value = "gdtp",
+		auto_aquire = true,
+		name_id = "bm_suit_var_boss_suit_green",
+		third_material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_boss_green",
+		material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_fps_boss_green"
+	}
+	self.player_styles.boss.material_variations.red = {
+		desc_id = "bm_suit_var_boss_suit_red_desc",
+		global_value = "gdtp",
+		auto_aquire = true,
+		name_id = "bm_suit_var_boss_suit_red",
+		third_material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_boss_red",
+		material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_fps_boss_red"
+	}
+	self.player_styles.boss.material_variations.yellow = {
+		desc_id = "bm_suit_var_boss_suit_yellow_desc",
+		global_value = "gdtp",
+		auto_aquire = true,
+		name_id = "bm_suit_var_boss_suit_yellow",
+		third_material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_boss_yellow",
+		material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_fps_boss_yellow"
+	}
+	self.player_styles.boss.body_replacement = body_replacement_standard
+	self.player_styles.boss.third_body_replacement = body_replacement_standard
+	self.player_styles.boss.unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_fps_boss_male/gdtp_acc_fps_boss_male"
+	self.player_styles.boss.characters = {}
+	local boss_characters_male = {
+		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_boss_male_average/gdtp_acc_boss_male_average"
+	}
+
+	set_characters_data("boss", characters_male, boss_characters_male)
+
+	local boss_characters_male_big = {
+		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_boss_male_big/gdtp_acc_boss_male_big"
+	}
+
+	set_characters_data("boss", characters_male_big, boss_characters_male_big)
+
+	local boss_characters_female = {
+		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_boss_female_average/gdtp_acc_boss_female_average"
+	}
+
+	set_characters_data("boss", characters_female, boss_characters_female)
+
+	local boss_characters_female_big = {
+		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_boss_female_fat/gdtp_acc_boss_female_fat"
+	}
+
+	set_characters_data("boss", characters_female_big, boss_characters_female_big)
+
+	local boss_characters_male_fat = {
+		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_boss_male_fat/gdtp_acc_boss_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.boss.characters.ecp_male = boss_characters_male_fat
 end
 
 function BlackMarketTweakData:get_player_style_value(player_style, character_name, key)

@@ -14,13 +14,20 @@ function HuskCopInventory:add_unit_by_name(new_unit_name, equip)
 	managers.mutators:modify_value("CopInventory:add_unit_by_name", self)
 	CopInventory._chk_spawn_shield(self, new_unit)
 
+	local ignore_units = {
+		self._unit,
+		new_unit
+	}
+
+	if self._ignore_units then
+		for idx, ig_unit in pairs(self._ignore_units) do
+			table.insert(ignore_units, ig_unit)
+		end
+	end
+
 	local setup_data = {
 		user_unit = self._unit,
-		ignore_units = {
-			self._unit,
-			new_unit,
-			self._shield_unit
-		},
+		ignore_units = ignore_units,
 		expend_ammo = false,
 		hit_slotmask = managers.slot:get_mask("bullet_impact_targets_no_AI"),
 		hit_player = true,

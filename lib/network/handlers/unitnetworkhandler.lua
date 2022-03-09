@@ -2552,11 +2552,32 @@ function UnitNetworkHandler:sync_throw_projectile(unit, pos, dir, projectile_typ
 	local thrower_unit = member and member:unit()
 
 	if alive(thrower_unit) then
-		unit:base():set_thrower_unit(thrower_unit)
+		unit:base():set_thrower_unit(thrower_unit, true)
 
 		if not tweak_entry.throwable and thrower_unit:movement() and thrower_unit:movement():current_state() then
 			unit:base():set_weapon_unit(thrower_unit:movement():current_state()._equipped_unit)
 		end
+	end
+
+	unit:base():sync_throw_projectile(dir, projectile_type)
+end
+
+function UnitNetworkHandler:sync_throw_projectile_npc(unit, pos, dir, projectile_type_index, thrower_unit, sender)
+	local peer = self._verify_sender(sender)
+
+	if not peer or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	if not alive(unit) then
+		return
+	end
+
+	local projectile_type = tweak_data.blackmarket:get_projectile_name_from_index(projectile_type_index)
+	local tweak_entry = tweak_data.blackmarket.projectiles[projectile_type]
+
+	if alive(thrower_unit) then
+		unit:base():set_thrower_unit(thrower_unit, true)
 	end
 
 	unit:base():sync_throw_projectile(dir, projectile_type)
@@ -2595,6 +2616,28 @@ function UnitNetworkHandler:sync_attach_projectile(unit, instant_dynamic_pickup,
 			dummy_unit:set_slot(0)
 		end
 	end
+end
+
+function UnitNetworkHandler:sync_aoe_preparing(unit, rpc)
+	local peer = self._verify_sender(rpc)
+
+	if not peer or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	if not self._verify_character(unit) then
+		return
+	end
+
+	local char_dmg_ext = unit:character_damage()
+
+	if not char_dmg_ext.sync_start_aoe_preparing then
+		return
+	end
+
+	local sync_t = TimerManager:game():time() - peer:qos().ping / 1000
+
+	char_dmg_ext:sync_start_aoe_preparing(sync_t)
 end
 
 function UnitNetworkHandler:sync_detonate_incendiary_grenade(unit, ext_name, event_id, normal, rpc)

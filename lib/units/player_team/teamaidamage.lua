@@ -246,6 +246,14 @@ end
 function TeamAIDamage:damage_fire(attack_data)
 	if self:_cannot_take_damage() then
 		return
+	elseif PlayerDamage._chk_dmg_too_soon(self, attack_data.damage) then
+		attack_data.result = {
+			variant = attack_data.variant
+		}
+
+		self:_call_listeners(attack_data)
+
+		return
 	end
 
 	local attacker_unit = attack_data.attacker_unit
@@ -268,6 +276,10 @@ function TeamAIDamage:damage_fire(attack_data)
 		variant = attack_data.variant
 	}
 	local damage_percent, health_subtracted = self:_apply_damage(attack_data, result)
+	local t = TimerManager:game():time()
+	self._next_allowed_dmg_t = t + self._dmg_interval
+	self._last_received_dmg_t = t
+	self._last_received_dmg = health_subtracted
 
 	if health_subtracted > 0 then
 		self:_send_damage_drama(attack_data, health_subtracted)

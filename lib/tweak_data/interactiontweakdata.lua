@@ -7145,4 +7145,276 @@ function InteractionTweakData:init(tweak_data)
 		start_active = true,
 		interact_distance = 150
 	}
+	self.pent_hold_start_brew = {
+		text_id = "hud_int_hold_start_brew",
+		action_text_id = "hud_action_start_brew",
+		interact_distance = 150,
+		start_active = false,
+		timer = 0,
+		sound_done = "coffee_machine_start",
+		axis = "x"
+	}
+	self.pent_press_signal_operator = {
+		text_id = "hud_int_press_signal_operator",
+		action_text_id = "hud_action_signal_operator",
+		interact_distance = 150,
+		start_active = false,
+		timer = 0
+	}
+	self.pent_press_place_intel = {
+		text_id = "hud_int_press_place_intel",
+		action_text_id = "hud_action_place_intel",
+		interact_distance = 150,
+		start_active = false,
+		timer = 0,
+		axis = "x"
+	}
+	self.pent_hold_start_fire_alarm = {
+		text_id = "hud_int_hold_start_fire_alarm",
+		action_text_id = "hud_action_start_fire_alarm",
+		interact_distance = 150,
+		start_active = false,
+		timer = 0,
+		sound_start = "pull_metal_lever",
+		axis = "x"
+	}
+	self.pent_hold_remove_elevator_hatch = {
+		text_id = "hud_int_hold_remove_elevator_hatch",
+		action_text_id = "hud_action_removing_elevator_hatch",
+		interact_distance = 350,
+		timer = 7,
+		equipment_consume = false,
+		sound_start = "bar_penthouse_elevator_remove_hatch",
+		sound_interupt = "bar_penthouse_elevator_remove_hatch_cancel",
+		sound_done = "bar_penthouse_elevator_remove_hatch_finished",
+		start_active = false
+	}
+	self.pent_hold_connect_wire_to_door = {
+		text_id = "hud_int_hold_connect_wire_to_door",
+		action_text_id = "hud_int_hold_connecting_wire_to_door",
+		interact_distance = 150,
+		start_active = false,
+		sound_start = "bar_penthouse_elevator_wire_door",
+		sound_interupt = "bar_penthouse_elevator_wire_door_cancel",
+		sound_done = "bar_penthouse_elevator_wire_door_finished",
+		timer = 3
+	}
+	self.pent_hold_connect_wire_to_elevator = {
+		text_id = "hud_int_hold_connect_wire_to_elevator",
+		action_text_id = "hud_int_hold_connecting_wire_to_elevator",
+		interact_distance = 350,
+		start_active = false,
+		timer = 3,
+		equipment_consume = true,
+		special_equipment = "cargo_strap",
+		sound_start = "bar_penthouse_elevator_connect_wire",
+		sound_interupt = "bar_penthouse_elevator_connect_wire_cancel",
+		sound_done = "bar_penthouse_elevator_connect_wire_finished",
+		equipment_text_id = "hud_hint_cargo_strap"
+	}
+	self.pent_hold_move_cover = {
+		text_id = "hud_int_hold_move_cover",
+		action_text_id = "hud_int_hold_moving_cover",
+		interact_distance = 150,
+		start_active = false,
+		timer = 3
+	}
+	self.pent_glass_cutting = {
+		text_id = "hud_int_cut_glass",
+		action_text_id = "hud_action_cutting_glass",
+		timer = 6,
+		start_active = true,
+		interact_distance = 200,
+		special_equipment = "mus_glass_cutter",
+		equipment_text_id = "hud_equipment_need_glass_cutter"
+	}
+	self.pent_motor_start = {
+		text_id = "hud_int_hold_start_motor",
+		action_text_id = "hud_action_startig_motor",
+		start_active = true,
+		force_update_position = false,
+		equipment_consume = true,
+		timer = 3,
+		interact_distance = 200,
+		sound_start = "bar_huge_lance_fix",
+		sound_interupt = "bar_huge_lance_fix_cancel",
+		sound_done = "bar_huge_lance_fix_finished",
+		special_equipment = "keychain",
+		equipment_text_id = "hud_equipment_pent_need_keys"
+	}
+	self.pent_hold_repair_cable = {
+		text_id = "hud_int_hold_repair_cable",
+		action_text_id = "hud_action_repairing_cable",
+		interact_distance = 150,
+		start_active = false,
+		sound_start = "bar_PENT_Cable_Repair",
+		sound_interupt = "bar_PENT_Cable_Repair_Cancel",
+		timer = 6
+	}
+	self.pick_lock_easy_no_skill_pent = deep_clone(self.pick_lock_easy_no_skill)
+	self.pick_lock_easy_no_skill_pent.axis = "x"
+	self.pick_lock_easy.sound_done = "security_box_open"
+	self.pick_lock_easy_no_skill_pent.timer = 10
+	self.pent_pull_lever = deep_clone(self.uno_pull_lever)
+	self.pent_pull_lever.interact_distance = 150
+	self.pent_pull_lever.sound_done = "security_box_lever_pull"
+	self.pent_pull_lever.axis = "x"
+	self.pent_press_take_car_jack = {
+		text_id = "hud_int_press_take_car_jack",
+		interact_distance = 150,
+		start_active = false,
+		sound_done = "PENT_Pickup_Jack",
+		axis = "x"
+	}
+	self.pent_press_take_gas_can = {
+		text_id = "hud_int_press_take_gas_can",
+		interact_distance = 150,
+		start_active = false,
+		sound_done = "PENT_Pickup_Gas_Can",
+		axis = "x"
+	}
+	self.pent_press_car_platform = {
+		text_id = "hud_int_press_car_platform",
+		interact_distance = 150,
+		start_active = false,
+		axis = "x"
+	}
+	self.pent_hold_lift_car = {
+		text_id = "hud_int_hold_lift_car",
+		action_text_id = "hud_int_action_lift_car",
+		special_equipment = "car_jack",
+		equipment_text_id = "hud_hint_need_car_jack",
+		equipment_consume = true,
+		interact_distance = 150,
+		timer = 3,
+		start_active = false,
+		sound_start = "PENT_Car_Place_Jack",
+		sound_interupt = "PENT_Car_Place_Jack_Cancel",
+		sound_done = "PENT_Car_Jack_Crank",
+		axis = "x"
+	}
+	self.pent_press_release_jack = {
+		text_id = "hud_int_press_release_car_jack",
+		interact_distance = 150,
+		start_active = false,
+		sound_done = "PENT_Release_Jack",
+		axis = "x"
+	}
+	self.pent_reboot_generator = {
+		text_id = "hud_int_hold_boot_generator",
+		action_text_id = "hud_action_booting_generator",
+		interact_distance = 150,
+		timer = 3,
+		start_active = false,
+		axis = "x",
+		sound_start = "bar_keyboard",
+		sound_interupt = "bar_keyboard_cancel",
+		sound_done = "bar_keyboard_finished"
+	}
+	self.pent_take_wire = {
+		text_id = "hud_int_press_take_wire",
+		interact_distance = 150,
+		sound_done = "PENT_Pickup_CargoStrap",
+		start_active = true
+	}
+	self.pent_refuel_car = {
+		icon = "equipment_thermite",
+		text_id = "debug_interact_long_pour_gas",
+		interact_distance = 300,
+		timer = 8,
+		start_active = true,
+		special_equipment = "gas",
+		equipment_text_id = "debug_interact_equipment_gas",
+		equipment_consume = true,
+		sound_start = "PENT_Car_Gas_Up",
+		sound_interupt = "PENT_Car_Gas_Up_Cancel",
+		dont_need_equipment = false
+	}
+	self.pent_window_cutting = {
+		icon = "equipment_cutter",
+		text_id = "hud_int_cut_glass",
+		action_text_id = "hud_action_cut_glass",
+		interact_distance = 150,
+		timer = 5,
+		start_active = true,
+		special_equipment = "mus_glas_cutter",
+		equipment_text_id = "hud_equipment_need_glass_cutter",
+		equipment_consume = false,
+		dont_need_equipment = false,
+		contour = "interactable_icon",
+		sound_start = "bar_glasscutter",
+		sound_interupt = "bar_glasscutter_cancel",
+		sound_done = "bar_glasscutter_finished"
+	}
+	self.pent_gnome_carry = deep_clone(self.money_wrap)
+	self.pent_gnome_carry.text_id = "hud_int_hold_take_gnome"
+	self.pent_gnome_carry.action_text_id = "hud_action_take_gnome"
+	self.pent_open_trunk = {
+		icon = "develop",
+		text_id = "debug_interact_press_open_trunk",
+		action_text_id = "hud_action_opening_trunk",
+		sound_done = "open_car_trunk",
+		interact_distance = 150,
+		start_active = true
+	}
+	self.pent_press_call_elevator = {
+		text_id = "debug_interact_elevator_door",
+		interact_distance = 150,
+		timer = 0,
+		start_active = false,
+		sound_start = "arbiter_push_button"
+	}
+	self.pent_generator_start = {
+		text_id = "hud_generator_start",
+		action_text_id = "hud_action_generator_start",
+		interact_distance = 300,
+		timer = 1,
+		start_active = false
+	}
+	self.pent_open_powerbox = {
+		text_id = "hud_cas_open_powerbox",
+		action_text_id = "hud_action_cas_opening_powerbox",
+		start_active = false,
+		interact_distance = 150,
+		timer = 2
+	}
+	self.pent_kitchen_elevator = {
+		text_id = "hud_int_invisible_interaction_open",
+		start_active = true,
+		interact_distance = 150,
+		sound_done = "kitchen_elevator_button_press"
+	}
+	self.hold_take_mask_pent = {
+		text_id = "hud_int_hold_take_mask",
+		action_text_id = "hud_action_taking_mask",
+		start_active = true,
+		interact_distance = 200,
+		timer = 1
+	}
+	self.pent_pick_lock = {
+		text_id = "hud_int_pick_lock",
+		action_text_id = "hud_action_picking_lock",
+		interact_distance = 160,
+		timer = 5,
+		start_active = true,
+		sound_start = "bar_pick_lock",
+		sound_interupt = "bar_pick_lock_cancel",
+		sound_done = "bar_pick_lock_finished"
+	}
+	self.pent_hold_close = {
+		text_id = "hud_int_invisible_interaction_close",
+		action_text_id = "hud_action_open_slash_close",
+		start_active = false,
+		axis = "y",
+		interact_distance = 200,
+		timer = 2.5
+	}
+	self.pent_hold_open = {
+		text_id = "hud_int_invisible_interaction_open",
+		action_text_id = "hud_action_open_slash_close",
+		start_active = false,
+		axis = "y",
+		interact_distance = 200,
+		timer = 2.5
+	}
 end

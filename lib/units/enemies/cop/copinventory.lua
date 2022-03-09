@@ -28,13 +28,20 @@ function CopInventory:add_unit_by_name(new_unit_name, equip)
 	managers.mutators:modify_value("CopInventory:add_unit_by_name", self)
 	self:_chk_spawn_shield(new_unit)
 
+	local ignore_units = {
+		self._unit,
+		new_unit
+	}
+
+	if self._ignore_units then
+		for idx, ig_unit in pairs(self._ignore_units) do
+			table.insert(ignore_units, ig_unit)
+		end
+	end
+
 	local setup_data = {
 		user_unit = self._unit,
-		ignore_units = {
-			self._unit,
-			new_unit,
-			self._shield_unit
-		},
+		ignore_units = ignore_units,
 		expend_ammo = false,
 		hit_slotmask = managers.slot:get_mask("bullet_impact_targets"),
 		hit_player = true,
@@ -60,6 +67,7 @@ function CopInventory:_chk_spawn_shield(weapon_unit)
 
 		self._unit:link(align_name, self._shield_unit, self._shield_unit:orientation_object():name())
 		self._shield_unit:set_enabled(false)
+		self:add_ignore_unit(self._shield_unit)
 	end
 end
 
@@ -117,36 +125,7 @@ function CopInventory:drop_shield()
 		end
 
 		managers.enemy:register_shield(shield_unit)
-
-		local weapon_selections = self:available_selections()
-
-		if weapon_selections then
-			local t_delete = table.delete
-
-			local function remove_shield_from_ignore_units(setup_data)
-				local ignore_units = setup_data and setup_data.ignore_units
-
-				if ignore_units then
-					t_delete(ignore_units, shield_unit)
-				end
-			end
-
-			for i_sel, selection_data in pairs(weapon_selections) do
-				local weap_unit = selection_data.unit
-				local weap_base = weap_unit and weap_unit:base()
-
-				if weap_base then
-					remove_shield_from_ignore_units(weap_base._setup)
-
-					local second_weap = weap_base._second_gun
-					local second_weap_base = second_weap and second_weap:base()
-
-					if second_weap_base then
-						remove_shield_from_ignore_units(second_weap_base._setup)
-					end
-				end
-			end
-		end
+		self:remove_ignore_unit(shield_unit)
 	end
 end
 

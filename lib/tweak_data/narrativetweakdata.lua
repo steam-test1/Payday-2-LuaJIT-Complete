@@ -403,6 +403,12 @@ function NarrativeTweakData:init(tweak_data)
 		package = "packages/contact_jiufeng",
 		assets_gui = Idstring("guis/dlcs/chas/guis/preload_contact_jiufeng")
 	}
+	self.contacts.shayu = {
+		name_id = "heist_contact_shayu",
+		description_id = "heist_contact_shayu_description",
+		package = "packages/contact_shayu",
+		assets_gui = Idstring("guis/dlcs/pent/guis/preload_contact_shayu")
+	}
 	self.contacts.skirmish = {
 		name_id = "heist_contact_skirmish",
 		description_id = "heist_contact_bain_description",
@@ -6544,6 +6550,79 @@ function NarrativeTweakData:init(tweak_data)
 		10,
 		13
 	}
+	self.stages.pent = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "pent",
+		mission_filter = {
+			1
+		}
+	}
+	self.jobs.pent = {
+		name_id = "heist_pent",
+		briefing_id = "heist_pent_crimenet",
+		contact = "shayu",
+		region = "street",
+		jc = 30,
+		dlc = "pent",
+		chain = {
+			self.stages.pent
+		},
+		briefing_event = "Play_sha_pent_cbf_01",
+		debrief_event = nil,
+		crimenet_callouts = {
+			"Play_sha_pent_cnc_01"
+		},
+		crimenet_videos = {
+			"codex/shayu1"
+		},
+		payout = {
+			50000,
+			125000,
+			250000,
+			550000,
+			700000,
+			700000,
+			700000
+		},
+		contract_cost = {
+			24000,
+			48000,
+			120000,
+			240000,
+			300000,
+			300000,
+			300000
+		},
+		contract_visuals = {}
+	}
+	self.jobs.pent.contract_visuals.min_mission_xp = {
+		14200,
+		14200,
+		14200,
+		14200,
+		14200,
+		14200,
+		14200
+	}
+	self.jobs.pent.contract_visuals.max_mission_xp = {
+		23200,
+		23200,
+		23200,
+		23200,
+		23200,
+		23200,
+		23200
+	}
+	self.jobs.pent.contract_visuals.preview_image = {
+		id = "pent",
+		folder = "pent"
+	}
+	self.jobs.pent.date_added = {
+		2022,
+		3,
+		9
+	}
 	self.stages.lbe_lobby_end = {
 		type = "d",
 		type_id = "heist_type_assault",
@@ -7339,7 +7418,8 @@ function NarrativeTweakData:init(tweak_data)
 		"fex",
 		"chas",
 		"sand",
-		"chca"
+		"chca",
+		"pent"
 	}
 	self.forced_jobs = {
 		firestarter = true,

@@ -52,6 +52,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_hk21_npc()
 	self:_init_data_m249_npc()
 	self:_init_data_contraband_npc()
+	self:_init_data_flamethrower_npc()
 	self:_init_data_smoke_npc()
 	self:_init_data_groza_npc()
 	self:_init_data_type54_npc()
@@ -1345,6 +1346,34 @@ function WeaponTweakData:_init_data_contraband_npc()
 	self.contraband_m203_npc.alert_size = 2800
 	self.contraband_m203_npc.suppression = 1
 	self.contraband_m203_npc.FIRE_MODE = "auto"
+end
+
+function WeaponTweakData:_init_data_flamethrower_npc()
+	self.flamethrower_npc.categories = {
+		"flamethrower"
+	}
+	self.flamethrower_npc.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.flamethrower_npc.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.flamethrower_npc.shell_ejection = "effects/payday2/particles/weapons/heat/overheat"
+	self.flamethrower_npc.single_flame_effect_duration = 0.75
+	self.flamethrower_npc.flame_effect = "effects/payday2/particles/explosions/flamethrower_cheap"
+	self.flamethrower_npc.bullet_class = "FlameBulletBase"
+	self.flamethrower_npc.flame_max_range = 1500
+	self.flamethrower_npc.sounds.prefix = "flamethrower_npc"
+	self.flamethrower_npc.sounds.fire = "flamethrower_npc_fire"
+	self.flamethrower_npc.sounds.stop_fire = "flamethrower_npc_fire_stop"
+	self.flamethrower_npc.use_data.selection_index = SELECTION.PRIMARY
+	self.flamethrower_npc.DAMAGE = 1
+	self.flamethrower_npc.CLIP_AMMO_MAX = 600
+	self.flamethrower_npc.NR_CLIPS_MAX = 4
+	self.flamethrower_npc.hold = {
+		"bullpup",
+		"rifle"
+	}
+	self.flamethrower_npc.auto.fire_rate = 0.05
+	self.flamethrower_npc.alert_size = 2500
+	self.flamethrower_npc.suppression = 0.45
+	self.flamethrower_npc.FIRE_MODE = "auto"
 end
 
 function WeaponTweakData:_init_data_c45_crew()
@@ -2764,6 +2793,9 @@ function WeaponTweakData:_init_data_flamethrower_mk2_crew()
 		"rifle"
 	}
 	self.flamethrower_mk2_crew.auto.fire_rate = 0.05
+	self.flamethrower_mk2_crew.flame_effect = self.flamethrower_mk2.flame_effect
+	self.flamethrower_mk2_crew.flame_max_range = self.flamethrower_mk2.flame_max_range
+	self.flamethrower_mk2_crew.single_flame_effect_duration = self.flamethrower_mk2.single_flame_effect_duration
 	self.flamethrower_mk2_crew.hud_icon = "rifle"
 	self.flamethrower_mk2_crew.alert_size = 2500
 	self.flamethrower_mk2_crew.suppression = 0.45
@@ -4765,6 +4797,9 @@ function WeaponTweakData:_init_data_system_crew()
 	}
 	self.system_crew.reload = "rifle"
 	self.system_crew.auto.fire_rate = 0.05
+	self.system_crew.flame_effect = self.system.flame_effect
+	self.system_crew.flame_max_range = self.system.flame_max_range
+	self.system_crew.single_flame_effect_duration = self.system.single_flame_effect_duration
 	self.system_crew.hud_icon = "rifle"
 	self.system_crew.alert_size = 2500
 	self.system_crew.suppression = 0.45
@@ -28407,6 +28442,13 @@ function WeaponTweakData:_create_table_structure()
 	}
 	self.contraband_m203_npc = {
 		usage = "is_shotgun_pump",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.flamethrower_npc = {
+		usage = "is_flamethrower",
+		anim_usage = "is_bullpup",
 		sounds = {},
 		use_data = {},
 		auto = {}

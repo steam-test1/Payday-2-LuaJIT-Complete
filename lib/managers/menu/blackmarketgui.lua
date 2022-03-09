@@ -6977,6 +6977,8 @@ function BlackMarketGui:update_info_text()
 			local achievement_lock_id = managers.dlc:is_mask_achievement_locked(mask_id)
 			local achievement_milestone_lock_id = managers.dlc:is_mask_achievement_milestone_locked(mask_id)
 
+			print("Simon1", mask_id, achievement_lock_id, inspect(slot_data), type(slot_data.unlocked) ~= "number", not slot_data.unlocked, slot_data.unlocked == 0)
+
 			if slot_data.dlc_locked then
 				updated_texts[3].text = managers.localization:to_upper_text(slot_data.dlc_locked)
 			elseif slot_data.infamy_lock then
@@ -7003,6 +7005,8 @@ function BlackMarketGui:update_info_text()
 					updated_texts[3].resource_color = tweak_data.screen_colors.button_stage_2
 				end
 			elseif achievement_lock_id and (type(slot_data.unlocked) ~= "number" and not slot_data.unlocked or slot_data.unlocked == 0) then
+				print("SimonACH", inspect(slot_data))
+
 				local dlc_tweak = tweak_data.dlc[achievement_lock_id]
 				local achievement = dlc_tweak and dlc_tweak.achievement_id
 				local achievement_visual = tweak_data.achievement.visual[achievement]

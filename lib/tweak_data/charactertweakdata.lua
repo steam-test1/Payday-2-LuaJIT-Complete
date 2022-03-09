@@ -109,6 +109,7 @@ function CharacterTweakData:init(tweak_data)
 	self:_init_captain(presets)
 	self:_init_civilian_mariachi(presets)
 	self:_init_triad(presets)
+	self:_init_triad_boss(presets)
 	self:_init_escort_sand(presets)
 	self:_init_civilian_no_penalty(presets)
 
@@ -742,6 +743,114 @@ function CharacterTweakData:_init_triad(presets)
 	self.triad.calls_in = true
 
 	table.insert(self._enemy_list, "triad")
+end
+
+function CharacterTweakData:_init_triad_boss(presets)
+	self.triad_boss = deep_clone(presets.base)
+	self.triad_boss.experience = {}
+	self.triad_boss.weapon = deep_clone(presets.weapon.good)
+	self.triad_boss.weapon.is_flamethrower.melee_speed = nil
+	self.triad_boss.weapon.is_flamethrower.melee_dmg = nil
+	self.triad_boss.weapon.is_flamethrower.melee_retry_delay = nil
+	self.triad_boss.detection = presets.detection.normal
+	self.triad_boss.HEALTH_INIT = 540
+	self.triad_boss.headshot_dmg_mul = 2
+	self.triad_boss.damage.hurt_severity = presets.hurt_severities.no_hurts
+	self.triad_boss.damage.explosion_damage_mul = 0.5
+	self.triad_boss.can_be_tased = false
+	self.triad_boss.suppression = nil
+	self.triad_boss.move_speed = presets.move_speed.slow
+	self.triad_boss.allowed_stances = {
+		cbt = true
+	}
+	self.triad_boss.allowed_poses = {
+		stand = true
+	}
+	self.triad_boss.crouch_move = false
+	self.triad_boss.no_run_start = true
+	self.triad_boss.no_run_stop = true
+	self.triad_boss.no_retreat = true
+	self.triad_boss.no_arrest = true
+	self.triad_boss.surrender = nil
+	self.triad_boss.ecm_vulnerability = 0
+	self.triad_boss.ecm_hurts = {
+		ears = {
+			max_duration = 0,
+			min_duration = 0
+		}
+	}
+	self.triad_boss.weapon_voice = "3"
+	self.triad_boss.experience.cable_tie = "tie_swat"
+	self.triad_boss.access = "gangster"
+	self.triad_boss.speech_prefix_p1 = "bb"
+	self.triad_boss.speech_prefix_p2 = "n"
+	self.triad_boss.speech_prefix_count = 1
+	self.triad_boss.die_sound_event = "Play_yuw_pent_death"
+	self.triad_boss.rescue_hostages = false
+	self.triad_boss.melee_weapon_dmg_multiplier = 2.5
+	self.triad_boss.steal_loot = nil
+	self.triad_boss.calls_in = nil
+	self.triad_boss.chatter = presets.enemy_chatter.no_chatter
+	self.triad_boss.use_radio = nil
+	self.triad_boss.use_animation_on_fire_damage = false
+	self.triad_boss.flammable = false
+	self.triad_boss.immune_to_knock_down = true
+	self.triad_boss.immune_to_concussion = true
+	self.triad_boss.can_reload_while_moving_tmp = true
+	self.triad_boss.no_headshot_add_mul = true
+	self.triad_boss.bullet_damage_only_from_front = true
+	self.triad_boss.player_health_scaling_mul = 1.5
+	self.triad_boss.throwable = "molotov"
+	self.triad_boss.aoe_damage_data = {
+		verification_delay = 0.3,
+		activation_range = 300,
+		activation_delay = 1,
+		env_tweak_name = "triad_boss_aoe_fire",
+		play_voiceline = true,
+		check_player = true,
+		check_npc_slotmask = {
+			"criminals",
+			-2,
+			-3
+		}
+	}
+	self.triad_boss.invulnerable_to_slotmask = {
+		"enemies",
+		17
+	}
+
+	table.insert(self._enemy_list, "triad_boss")
+
+	self.triad_boss_no_armor = deep_clone(self.gangster)
+	self.triad_boss_no_armor.suspicious = nil
+	self.triad_boss_no_armor.detection = presets.detection.normal
+	self.triad_boss_no_armor.damage.hurt_severity = presets.hurt_severities.no_hurts
+	self.triad_boss_no_armor.move_speed = presets.move_speed.very_fast
+	self.triad_boss_no_armor.dodge = presets.dodge.athletic
+	self.triad_boss_no_armor.crouch_move = nil
+	self.triad_boss_no_armor.suppression = nil
+	self.triad_boss_no_armor.can_be_tased = false
+	self.triad_boss_no_armor.no_retreat = true
+	self.triad_boss_no_armor.no_arrest = true
+	self.triad_boss_no_armor.surrender = nil
+	self.triad_boss_no_armor.ecm_vulnerability = 0
+	self.triad_boss_no_armor.ecm_hurts = {
+		ears = {
+			max_duration = 0,
+			min_duration = 0
+		}
+	}
+	self.triad_boss_no_armor.rescue_hostages = false
+	self.triad_boss_no_armor.steal_loot = nil
+	self.triad_boss_no_armor.calls_in = nil
+	self.triad_boss_no_armor.chatter = presets.enemy_chatter.no_chatter
+	self.triad_boss_no_armor.use_radio = nil
+	self.triad_boss_no_armor.radio_prefix = "fri_"
+	self.triad_boss_no_armor.use_animation_on_fire_damage = false
+	self.triad_boss_no_armor.immune_to_knock_down = true
+	self.triad_boss_no_armor.immune_to_concussion = true
+
+	table.insert(self._enemy_list, "triad_boss_no_armor")
 end
 
 function CharacterTweakData:_init_captain(presets)
@@ -2074,12 +2183,14 @@ function CharacterTweakData:_init_tank(presets)
 		contact = true
 	}
 	self.tank.announce_incomming = "incomming_tank"
+	self.tank.kill_taunt = "post_kill_taunt"
 	self.tank.steal_loot = nil
 	self.tank.calls_in = nil
 	self.tank.use_animation_on_fire_damage = false
 	self.tank.flammable = true
 	self.tank.immune_to_knock_down = true
 	self.tank.immune_to_concussion = true
+	self.tank.no_headshot_add_mul = true
 	self.tank_hw = deep_clone(self.tank)
 	self.tank_hw.move_speed = {
 		stand = {
@@ -5163,6 +5274,124 @@ function CharacterTweakData:_presets(tweak_data)
 			}
 		}
 	}
+	presets.weapon.normal.is_flamethrower = {
+		aim_delay = {
+			0.5,
+			0.5
+		},
+		focus_delay = 0,
+		focus_dis = 300,
+		spread = 0,
+		miss_dis = 40,
+		RELOAD_SPEED = 0.6,
+		melee_speed = 1,
+		melee_dmg = 2,
+		melee_retry_delay = {
+			1,
+			2
+		},
+		range = {
+			optimal = 400,
+			far = 1700,
+			close = 1400
+		},
+		autofire_rounds = {
+			20,
+			40
+		},
+		FALLOFF = {
+			{
+				dmg_mul = 6,
+				r = 100,
+				acc = {
+					1,
+					1
+				},
+				recoil = {
+					0.15,
+					0.25
+				},
+				mode = {
+					0,
+					0,
+					0,
+					1
+				}
+			},
+			{
+				dmg_mul = 5,
+				r = 500,
+				acc = {
+					1,
+					1
+				},
+				recoil = {
+					0.45,
+					0.65
+				},
+				mode = {
+					0,
+					0,
+					0,
+					1
+				}
+			},
+			{
+				dmg_mul = 4,
+				r = 1000,
+				acc = {
+					1,
+					1
+				},
+				recoil = {
+					0.75,
+					1
+				},
+				mode = {
+					0,
+					0,
+					0,
+					1
+				}
+			},
+			{
+				dmg_mul = 2,
+				r = 2000,
+				acc = {
+					1,
+					1
+				},
+				recoil = {
+					0.75,
+					1
+				},
+				mode = {
+					0,
+					0,
+					0,
+					1
+				}
+			},
+			{
+				dmg_mul = 1,
+				r = 3000,
+				acc = {
+					1,
+					1
+				},
+				recoil = {
+					0.75,
+					1
+				},
+				mode = {
+					0,
+					0,
+					0,
+					1
+				}
+			}
+		}
+	}
 	presets.weapon.good = {
 		is_pistol = {}
 	}
@@ -6075,6 +6304,7 @@ function CharacterTweakData:_presets(tweak_data)
 			}
 		}
 	}
+	presets.weapon.good.is_flamethrower = presets.weapon.normal.is_flamethrower
 	presets.weapon.expert = {
 		is_pistol = {}
 	}
@@ -7056,6 +7286,7 @@ function CharacterTweakData:_presets(tweak_data)
 			}
 		}
 	}
+	presets.weapon.expert.is_flamethrower = presets.weapon.normal.is_flamethrower
 	presets.weapon.sniper = {
 		is_rifle = {}
 	}
@@ -8008,6 +8239,7 @@ function CharacterTweakData:_presets(tweak_data)
 			}
 		}
 	}
+	presets.weapon.deathwish.is_flamethrower = presets.weapon.normal.is_flamethrower
 	presets.weapon.easywish = {
 		is_revolver = {}
 	}
@@ -8900,6 +9132,7 @@ function CharacterTweakData:_presets(tweak_data)
 			}
 		}
 	}
+	presets.weapon.easywish.is_flamethrower = presets.weapon.normal.is_flamethrower
 	presets.weapon.gang_member = {
 		is_pistol = {}
 	}
@@ -9443,6 +9676,7 @@ function CharacterTweakData:_presets(tweak_data)
 	presets.weapon.gang_member.rifle = deep_clone(presets.weapon.gang_member.is_rifle)
 	presets.weapon.gang_member.rifle.autofire_rounds = nil
 	presets.weapon.gang_member.akimbo_pistol = presets.weapon.gang_member.is_pistol
+	presets.weapon.gang_member.is_flamethrower = presets.weapon.normal.is_flamethrower
 	presets.detection = {
 		normal = {
 			idle = {},
@@ -10649,7 +10883,8 @@ function CharacterTweakData:_create_table_structure()
 		"svdsil_snp",
 		"mini",
 		"heavy_zeal_sniper",
-		"smoke"
+		"smoke",
+		"flamethrower"
 	}
 	self.weap_unit_names = {
 		Idstring("units/payday2/weapons/wpn_npc_beretta92/wpn_npc_beretta92"),
@@ -10682,7 +10917,8 @@ function CharacterTweakData:_create_table_structure()
 		Idstring("units/pd2_dlc_spa/weapons/wpn_npc_svd_silenced/wpn_npc_svd_silenced"),
 		Idstring("units/pd2_dlc_drm/weapons/wpn_npc_mini/wpn_npc_mini"),
 		Idstring("units/pd2_dlc_drm/weapons/wpn_npc_heavy_zeal_sniper/wpn_npc_heavy_zeal_sniper"),
-		Idstring("units/pd2_dlc_uno/weapons/wpn_npc_smoke/wpn_npc_smoke")
+		Idstring("units/pd2_dlc_uno/weapons/wpn_npc_smoke/wpn_npc_smoke"),
+		Idstring("units/pd2_dlc_pent/weapons/wpn_npc_flamethrower/wpn_npc_flamethrower")
 	}
 end
 
@@ -11213,6 +11449,12 @@ function CharacterTweakData:_set_normal()
 	self.mobster_boss.HEALTH_INIT = 50
 	self.biker_boss.HEALTH_INIT = 100
 	self.chavez_boss.HEALTH_INIT = 100
+	self.triad_boss.player_health_scaling_mul = nil
+	self.triad_boss.weapon.is_flamethrower.FALLOFF[1].dmg_mul = 0.6
+	self.triad_boss.weapon.is_flamethrower.FALLOFF[2].dmg_mul = 0.5
+	self.triad_boss.weapon.is_flamethrower.FALLOFF[3].dmg_mul = 0.4
+	self.triad_boss.weapon.is_flamethrower.FALLOFF[4].dmg_mul = 0.2
+	self.triad_boss.weapon.is_flamethrower.FALLOFF[5].dmg_mul = 0.1
 	self.presets.gang_member_damage.REGENERATE_TIME = 1.5
 	self.presets.gang_member_damage.REGENERATE_TIME_AWAY = 0.2
 	self.presets.gang_member_damage.HEALTH_INIT = 200
@@ -11769,6 +12011,11 @@ function CharacterTweakData:_set_hard()
 	self.mobster_boss.HEALTH_INIT = 100
 	self.biker_boss.HEALTH_INIT = 100
 	self.chavez_boss.HEALTH_INIT = 100
+	self.triad_boss.weapon.is_flamethrower.FALLOFF[1].dmg_mul = 1
+	self.triad_boss.weapon.is_flamethrower.FALLOFF[2].dmg_mul = 0.6
+	self.triad_boss.weapon.is_flamethrower.FALLOFF[3].dmg_mul = 0.4
+	self.triad_boss.weapon.is_flamethrower.FALLOFF[4].dmg_mul = 0.2
+	self.triad_boss.weapon.is_flamethrower.FALLOFF[5].dmg_mul = 0.1
 	self.presets.gang_member_damage.REGENERATE_TIME = 2
 	self.presets.gang_member_damage.REGENERATE_TIME_AWAY = 0.4
 
@@ -12384,6 +12631,11 @@ function CharacterTweakData:_set_overkill()
 	self.mobster_boss.HEALTH_INIT = 300
 	self.biker_boss.HEALTH_INIT = 300
 	self.chavez_boss.HEALTH_INIT = 300
+	self.triad_boss.weapon.is_flamethrower.FALLOFF[1].dmg_mul = 1.8
+	self.triad_boss.weapon.is_flamethrower.FALLOFF[2].dmg_mul = 1.6
+	self.triad_boss.weapon.is_flamethrower.FALLOFF[3].dmg_mul = 1.4
+	self.triad_boss.weapon.is_flamethrower.FALLOFF[4].dmg_mul = 1.2
+	self.triad_boss.weapon.is_flamethrower.FALLOFF[5].dmg_mul = 1.1
 	self.phalanx_minion.HEALTH_INIT = 150
 	self.phalanx_minion.DAMAGE_CLAMP_BULLET = 15
 	self.phalanx_minion.DAMAGE_CLAMP_EXPLOSION = self.phalanx_minion.DAMAGE_CLAMP_BULLET
@@ -16122,6 +16374,8 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 	self.bolivian_indoors_mex.HEALTH_INIT = self.bolivian_indoors_mex.HEALTH_INIT * hp_mul
 	self.drug_lord_boss.HEALTH_INIT = self.drug_lord_boss.HEALTH_INIT * hp_mul
 	self.drug_lord_boss_stealth.HEALTH_INIT = self.drug_lord_boss_stealth.HEALTH_INIT * hp_mul
+	self.triad_boss.HEALTH_INIT = self.triad_boss.HEALTH_INIT * hp_mul
+	self.triad_boss_no_armor.HEALTH_INIT = self.triad_boss_no_armor.HEALTH_INIT * hp_mul
 
 	if self.security.headshot_dmg_mul then
 		self.security.headshot_dmg_mul = self.security.headshot_dmg_mul * hs_mul
@@ -16241,6 +16495,10 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 
 	if self.tank_mini.headshot_dmg_mul then
 		self.tank_mini.headshot_dmg_mul = self.tank_mini.headshot_dmg_mul * hs_mul
+	end
+
+	if self.triad_boss_no_armor.headshot_dmg_mul then
+		self.triad_boss_no_armor.headshot_dmg_mul = self.triad_boss_no_armor.headshot_dmg_mul * hs_mul
 	end
 end
 
@@ -17058,6 +17316,25 @@ function CharacterTweakData:character_map()
 				"civ_male_bathhouse_3",
 				"civ_female_bathhouse_1",
 				"civ_female_bathhouse_2"
+			}
+		},
+		pent = {
+			path = "units/pd2_dlc_pent/characters/",
+			list = {
+				"ene_male_security_penthouse_1",
+				"ene_male_security_penthouse_2",
+				"ene_male_triad_penthouse_1",
+				"ene_male_triad_penthouse_2",
+				"ene_male_triad_penthouse_3",
+				"ene_male_triad_penthouse_4",
+				"npc_male_yufuwang",
+				"npc_male_yufuwang_armored",
+				"civ_male_guest_penthouse_1",
+				"civ_male_bkgrnd_news_anchor_1",
+				"civ_female_guest_penthouse_1",
+				"civ_female_guest_penthouse_2",
+				"civ_male_receptionist_penthouse",
+				"civ_male_guest_penthouse_2"
 			}
 		}
 	}

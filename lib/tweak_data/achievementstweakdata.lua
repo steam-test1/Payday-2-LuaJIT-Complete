@@ -5119,6 +5119,47 @@ function AchievementsTweakData:init(tweak_data)
 			shots_by_weapon = "",
 			difficulty = overkill_and_above
 		},
+		pent_1 = {
+			award = "pent_1",
+			job = "pent",
+			difficulty = normal_and_above
+		},
+		pent_2 = {
+			award = "pent_2",
+			job = "pent",
+			difficulty = hard_and_above
+		},
+		pent_3 = {
+			award = "pent_3",
+			job = "pent",
+			difficulty = veryhard_and_above
+		},
+		pent_4 = {
+			award = "pent_4",
+			job = "pent",
+			difficulty = overkill_and_above
+		},
+		pent_5 = {
+			award = "pent_5",
+			job = "pent",
+			difficulty = easywish_and_above
+		},
+		pent_6 = {
+			award = "pent_6",
+			job = "pent",
+			difficulty = deathwish_and_above
+		},
+		pent_7 = {
+			award = "pent_7",
+			job = "pent",
+			difficulty = sm_wish_and_above
+		},
+		pent_8 = {
+			award = "pent_8",
+			one_down = true,
+			job = "pent",
+			difficulty = sm_wish_and_above
+		},
 		uno_1 = {
 			award = "uno_1",
 			bag_loot_value = 400000,
@@ -8032,6 +8073,15 @@ function AchievementsTweakData:init(tweak_data)
 				"present_bex",
 				"present_pex",
 				"present_fex"
+			}
+		},
+		pent_11 = {
+			award = "pent_11",
+			collection = {
+				"tea_chas",
+				"tea_sand",
+				"tea_chca",
+				"tea_pent"
 			}
 		}
 	}

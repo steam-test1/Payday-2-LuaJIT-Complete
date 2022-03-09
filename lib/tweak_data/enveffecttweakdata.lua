@@ -131,3 +131,28 @@ function EnvEffectTweakData:incendiary_fire_arbiter()
 
 	return params
 end
+
+function EnvEffectTweakData:triad_boss_aoe_fire()
+	local params = {
+		sound_event = "PENT_Boss_Molotov_Drop",
+		range = 100,
+		curve_pow = 1,
+		no_fire_alert = true,
+		sound_event_burning = "no_sound",
+		damage = 4,
+		player_damage = 4,
+		sound_event_impact_duration = 1.5,
+		burn_tick_period = 0.2,
+		burn_duration = 1,
+		effect_name = "effects/payday2/particles/explosions/molotov_grenade_pent_boss",
+		fire_dot_data = {
+			dot_trigger_chance = 35,
+			dot_damage = 15,
+			dot_length = 6,
+			dot_trigger_max_distance = 3000,
+			dot_tick_period = 0.5
+		}
+	}
+
+	return params
+end

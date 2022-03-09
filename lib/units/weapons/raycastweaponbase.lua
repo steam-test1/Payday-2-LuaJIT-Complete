@@ -23,6 +23,7 @@ function RaycastWeaponBase:init(unit)
 	self._unit = unit
 	self._name_id = self.name_id or "amcar"
 	self.name_id = nil
+	self._visible = false
 
 	self:_create_use_setups()
 
@@ -1040,6 +1041,14 @@ function RaycastWeaponBase:damage_player(col_ray, from_pos, direction, params)
 
 	local cos_f = mvec3_dot(shoot_dir, head_dir)
 
+	if not col_ray then
+		local max_range = self._weapon_range or self._range or 20000
+
+		if head_dis > max_range then
+			return
+		end
+	end
+
 	if cos_f <= 0.1 then
 		return
 	end
@@ -1703,6 +1712,14 @@ function RaycastWeaponBase:add_ammo(ratio, add_amount_override)
 			local p, a = _add_ammo(gadget:ammo_base(), ratio, add_amount_override)
 			picked_up = p or picked_up
 			add_amount = add_amount + a
+
+			if self.AKIMBO then
+				local akimbo_rounding = gadget:ammo_base():get_ammo_total() % 2 + #self._fire_callbacks
+
+				if akimbo_rounding > 0 then
+					_add_ammo(gadget:ammo_base(), nil, akimbo_rounding)
+				end
+			end
 		end
 	end
 
@@ -1851,6 +1868,26 @@ function RaycastWeaponBase:_get_sound_event(event, alternative_event)
 	return event
 end
 
+function RaycastWeaponBase:add_ignore_unit(unit)
+	local ignore_units = self._setup.ignore_units
+
+	if not ignore_units or table.contains(ignore_units, unit) then
+		return
+	end
+
+	table.insert(ignore_units, unit)
+end
+
+function RaycastWeaponBase:remove_ignore_unit(unit)
+	local ignore_units = self._setup.ignore_units
+
+	if not ignore_units then
+		return
+	end
+
+	table.delete(ignore_units, unit)
+end
+
 function RaycastWeaponBase:destroy(unit)
 	RaycastWeaponBase.super.pre_destroy(self, unit)
 
@@ -1886,6 +1923,8 @@ end
 
 function RaycastWeaponBase:set_visibility_state(state)
 	self._unit:set_visible(state)
+
+	self._visible = state
 end
 
 function RaycastWeaponBase:update_visibility_state()
@@ -2439,6 +2478,21 @@ function FlameBulletBase:give_fire_damage_dot(col_ray, weapon_unit, attacker_uni
 end
 
 function FlameBulletBase:play_impact_sound_and_effects(weapon_unit, col_ray, no_sound)
+end
+
+function FlameBulletBase:on_hit_player(col_ray, weapon_unit, user_unit, damage)
+	col_ray.unit = managers.player:player_unit()
+	local action_data = {
+		is_hit = true,
+		variant = "fire",
+		damage = damage,
+		weapon_unit = weapon_unit,
+		attacker_unit = user_unit,
+		col_ray = col_ray
+	}
+	local defense_data = col_ray.unit:character_damage():damage_fire(action_data)
+
+	return defense_data
 end
 
 DragonBreathBulletBase = DragonBreathBulletBase or class(InstantBulletBase)

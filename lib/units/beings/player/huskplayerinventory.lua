@@ -98,12 +98,20 @@ function HuskPlayerInventory:add_unit_by_name(new_unit_name, equip, instant)
 	managers.dyn_resource:load(ids_unit, new_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
 
 	local new_unit = World:spawn_unit(new_unit_name, Vector3(), Rotation())
+	local ignore_units = {
+		self._unit,
+		new_unit
+	}
+
+	if self._ignore_units then
+		for idx, ig_unit in pairs(self._ignore_units) do
+			table.insert(ignore_units, ig_unit)
+		end
+	end
+
 	local setup_data = {
 		user_unit = self._unit,
-		ignore_units = {
-			self._unit,
-			new_unit
-		},
+		ignore_units = ignore_units,
 		expend_ammo = false,
 		autoaim = false,
 		alert_AI = false,
@@ -143,12 +151,20 @@ function HuskPlayerInventory:add_unit_by_factory_blueprint(factory_name, equip, 
 	new_unit:base():assemble_from_blueprint(factory_name, blueprint)
 	new_unit:base():check_npc()
 
+	local ignore_units = {
+		self._unit,
+		new_unit
+	}
+
+	if self._ignore_units then
+		for idx, ig_unit in pairs(self._ignore_units) do
+			table.insert(ignore_units, ig_unit)
+		end
+	end
+
 	local setup_data = {
 		user_unit = self._unit,
-		ignore_units = {
-			self._unit,
-			new_unit
-		},
+		ignore_units = ignore_units,
 		expend_ammo = false,
 		autoaim = false,
 		alert_AI = false,

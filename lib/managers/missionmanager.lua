@@ -162,6 +162,9 @@ function MissionManager:init(...)
 	self:add_area_instigator_categories("player2")
 	self:add_area_instigator_categories("player3")
 	self:add_area_instigator_categories("player4")
+	self:add_area_instigator_categories("enemy_corpses")
+	self:add_area_instigator_categories("civilian_corpses")
+	self:add_area_instigator_categories("all_corpses")
 	self:add_area_instigator_categories("vr_player")
 	self:set_default_area_instigator("player")
 	self:set_global_event_list({
@@ -246,7 +249,9 @@ function MissionManager:init(...)
 		"blue_loot_bag_dropped",
 		"pku_adrenaline_syringe",
 		"pku_business_card",
-		"pku_hand"
+		"pku_hand",
+		"pku_carkeys",
+		"pku_gnome"
 	})
 
 	self._mission_filter = {}

@@ -287,6 +287,22 @@ function LootDropTweakData:init_generated(tweak_data)
 		sort_number = 300,
 		category = "normal"
 	}
+	self.global_values.gdtp = {
+		name_id = "bm_global_value_gdtp",
+		desc_id = "menu_l_global_value_gdtp",
+		unlock_id = "bm_global_value_gdtp_unlock",
+		color = tweak_data.screen_colors.dlc_color,
+		dlc = true,
+		free = false,
+		hide_unavailable = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 516,
+		category = "dlc"
+	}
 	self.global_values.ghx = {
 		name_id = "bm_global_value_ghx",
 		desc_id = "menu_l_global_value_ghx",
@@ -495,6 +511,22 @@ function LootDropTweakData:init_generated(tweak_data)
 		sort_number = 261,
 		category = "normal"
 	}
+	self.global_values.mar22 = {
+		name_id = "bm_global_value_mar22",
+		desc_id = "menu_l_global_value_mar22",
+		unlock_id = "bm_global_value_mar22_unlock",
+		color = tweak_data.screen_colors.dlc_color,
+		dlc = true,
+		free = true,
+		hide_unavailable = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 264,
+		category = "normal"
+	}
 	self.global_values.maw = {
 		name_id = "bm_global_value_maw",
 		desc_id = "menu_l_global_value_infamous",
@@ -654,6 +686,22 @@ function LootDropTweakData:init_generated(tweak_data)
 		track = true,
 		sort_number = 510,
 		category = "global_event"
+	}
+	self.global_values.pent = {
+		name_id = "bm_global_value_pent",
+		desc_id = "menu_l_global_value_pent",
+		unlock_id = "bm_global_value_pent_unlock",
+		color = tweak_data.screen_colors.dlc_color,
+		dlc = true,
+		free = false,
+		hide_unavailable = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 516,
+		category = "dlc"
 	}
 	self.global_values.pex = {
 		name_id = "bm_global_value_pex",

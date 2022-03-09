@@ -317,7 +317,6 @@ function FireManager:detect_and_give_dmg(params)
 	local push_units = false
 	local fire_dot_data = params.fire_dot_data
 	local results = {}
-	local alert_radius = params.alert_radius or 3000
 	local is_molotov = params.is_molotov
 
 	if params.push_units ~= nil then
@@ -336,21 +335,8 @@ function FireManager:detect_and_give_dmg(params)
 		})
 	end
 
-	local bodies = World:find_bodies("intersect", "sphere", hit_pos, range, slotmask)
-	local alert_unit = user_unit
-
-	if alive(alert_unit) and alert_unit:base() and alert_unit:base().thrower_unit then
-		alert_unit = alert_unit:base():thrower_unit()
-	end
-
-	managers.groupai:state():propagate_alert({
-		"fire",
-		hit_pos,
-		alert_radius,
-		alert_filter,
-		alert_unit
-	})
-
+	local cast_c_class = alive(ignore_unit) and ignore_unit or World
+	local bodies = cast_c_class:find_bodies("intersect", "sphere", hit_pos, range, slotmask)
 	local splinters = {
 		mvector3.copy(hit_pos)
 	}
@@ -368,14 +354,7 @@ function FireManager:detect_and_give_dmg(params)
 		mvector3.set(pos, dir)
 		mvector3.add(pos, hit_pos)
 
-		local splinter_ray = nil
-
-		if ignore_unit then
-			splinter_ray = World:raycast("ray", hit_pos, pos, "ignore_unit", ignore_unit, "slot_mask", slotmask)
-		else
-			splinter_ray = World:raycast("ray", hit_pos, pos, "slot_mask", slotmask)
-		end
-
+		local splinter_ray = cast_c_class:raycast("ray", hit_pos, pos, "slot_mask", slotmask)
 		pos = (splinter_ray and splinter_ray.position or pos) - dir:normalized() * math.min(splinter_ray and splinter_ray.distance or 0, 10)
 		local near_splinter = false
 
@@ -402,6 +381,10 @@ function FireManager:detect_and_give_dmg(params)
 	local units_to_push = {}
 	local hit_units = {}
 	local ignore_units = {}
+
+	if alive(ignore_unit) then
+		table.insert(ignore_units, ignore_unit)
+	end
 
 	if not params.no_raycast_check_characters then
 		for _, hit_body in ipairs(bodies) do
@@ -506,6 +489,23 @@ function FireManager:detect_and_give_dmg(params)
 				end
 			end
 		end
+	end
+
+	if not params.no_alert then
+		local alert_radius = params.alert_radius or 3000
+		local alert_unit = user_unit
+
+		if alive(alert_unit) and alert_unit:base() and alert_unit:base().thrower_unit then
+			alert_unit = alert_unit:base():thrower_unit()
+		end
+
+		managers.groupai:state():propagate_alert({
+			"fire",
+			hit_pos,
+			alert_radius,
+			alert_filter,
+			alert_unit
+		})
 	end
 
 	if push_units and push_units == true then
@@ -651,24 +651,30 @@ function FireManager:spawn_sound_and_effects(position, normal, range, effect_nam
 		sound_switch_name = material_name ~= empty_idstr and material_name
 	end
 
-	if (effect_name == molotov_effect and molotov_damage_effect_table ~= nil and #molotov_damage_effect_table <= 1 or effect_name ~= molotov_effect) and sound_event ~= "no_sound" then
-		local sound_source = SoundDevice:create_source("MolotovImpact")
+	if effect_name == molotov_effect and molotov_damage_effect_table ~= nil and #molotov_damage_effect_table <= 1 or effect_name ~= molotov_effect then
+		if sound_event ~= "no_sound" then
+			local sound_source = SoundDevice:create_source("MolotovImpact")
 
-		sound_source:set_position(position)
+			sound_source:set_position(position)
 
-		if sound_switch_name then
-			sound_source:set_switch("materials", managers.game_play_central:material_name(sound_switch_name))
+			if sound_switch_name then
+				sound_source:set_switch("materials", managers.game_play_central:material_name(sound_switch_name))
+			end
+
+			sound_source:post_event(sound_event)
+			managers.enemy:add_delayed_clbk("MolotovImpact", callback(GrenadeBase, GrenadeBase, "_dispose_of_sound", {
+				sound_source = sound_source
+			}), TimerManager:game():time() + sound_event_impact_duration)
 		end
 
-		sound_source:post_event(sound_event)
-		managers.enemy:add_delayed_clbk("MolotovImpact", callback(FireManager, FireManager, "_dispose_of_impact_sound", {
-			position = position,
-			sound_event_duration = sound_event_duration,
-			sound_event_impact_duration = sound_event_impact_duration
-		}), TimerManager:game():time() + sound_event_impact_duration)
-		managers.enemy:add_delayed_clbk("MolotovImpact", callback(GrenadeBase, GrenadeBase, "_dispose_of_sound", {
-			sound_source = sound_source
-		}), TimerManager:game():time() + sound_event_impact_duration)
+		if sound_event_burning ~= "no_sound" then
+			managers.enemy:add_delayed_clbk("MolotovBurn", callback(FireManager, FireManager, "_dispose_of_impact_sound", {
+				position = position,
+				sound_event_duration = sound_event_duration,
+				sound_event_impact_duration = sound_event_impact_duration,
+				sound_event_burning = sound_event_burning
+			}), TimerManager:game():time() + sound_event_impact_duration)
+		end
 	end
 
 	self:project_decal(ray, decal_ray_from, decal_ray_to, on_unit and ray and ray.unit, idstr_decal, idstr_effect)
@@ -681,7 +687,7 @@ function FireManager:_dispose_of_impact_sound(custom_params)
 	local sound_source_burning_loop = SoundDevice:create_source("MolotovBurning")
 
 	sound_source_burning_loop:set_position(custom_params.position)
-	sound_source_burning_loop:post_event("burn_loop_gen")
+	sound_source_burning_loop:post_event(custom_params.sound_event_burning or "burn_loop_gen")
 
 	local molotov_tweak = tweak_data.env_effect:molotov_fire()
 	local t = custom_params.sound_event_duration or tonumber(molotov_tweak.burn_duration)

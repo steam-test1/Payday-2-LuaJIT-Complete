@@ -503,6 +503,63 @@ function DLCTweakData:init_generated()
 			amount = 1
 		}
 	}
+	self.gdtp_bundle = {
+		dlc = "has_gdtp",
+		content = {}
+	}
+	self.gdtp_bundle.content.loot_global_value = "gdtp"
+	self.gdtp_bundle.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "biker_helmet_red_led",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "biker_helmet_yellow_led",
+			amount = 1
+		},
+		{
+			type_items = "gloves",
+			item_entry = "biker_yellow_led",
+			amount = 1
+		},
+		{
+			type_items = "gloves",
+			item_entry = "biker_red_led",
+			amount = 1
+		},
+		{
+			type_items = "gloves",
+			item_entry = "dragonscale",
+			amount = 1
+		},
+		{
+			type_items = "gloves",
+			item_entry = "spikeknuckle",
+			amount = 1
+		},
+		{
+			type_items = "player_styles",
+			item_entry = "enforcer",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "boss_gold",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "boss_silver",
+			amount = 1
+		},
+		{
+			type_items = "player_styles",
+			item_entry = "boss",
+			amount = 1
+		}
+	}
 	self.ghx_bundle = {
 		free = true,
 		content = {}
@@ -692,6 +749,12 @@ function DLCTweakData:init_generated()
 			amount = 1
 		}
 	}
+	self.mar22_bundle = {
+		free = true,
+		content = {}
+	}
+	self.mar22_bundle.content.loot_global_value = "mar22"
+	self.mar22_bundle.content.loot_drops = {}
 	self.maw_bundle = {
 		free = true,
 		content = {}
@@ -1009,6 +1072,12 @@ function DLCTweakData:init_generated()
 	}
 	self.pda8_bundle.content.loot_global_value = "pda8"
 	self.pda8_bundle.content.loot_drops = {}
+	self.pent_bundle = {
+		dlc = "has_pent",
+		content = {}
+	}
+	self.pent_bundle.content.loot_global_value = "pent"
+	self.pent_bundle.content.loot_drops = {}
 	self.pex_bundle = {
 		dlc = "has_pex",
 		content = {}

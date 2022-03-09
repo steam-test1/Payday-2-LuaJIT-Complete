@@ -34,6 +34,10 @@ function ListenerHolder:call(...)
 end
 
 function ListenerHolder:_remove(key)
+	if not self._listeners then
+		return
+	end
+
 	self._listeners[key] = nil
 
 	if not next(self._listeners) then

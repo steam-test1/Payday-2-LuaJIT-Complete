@@ -1154,12 +1154,44 @@ function PlayerDamage:play_whizby(position)
 	end
 end
 
-function PlayerDamage:clbk_kill_taunt(attack_data)
-	if attack_data.attacker_unit and attack_data.attacker_unit:alive() then
-		self._kill_taunt_clbk_id = nil
+function PlayerDamage:chk_queue_taunt_line(attack_data)
+	local attacker = attack_data.attacker_unit
 
-		attack_data.attacker_unit:sound():say("post_kill_taunt")
+	if not alive(attacker) or not attacker:sound() or not attacker:character_damage() then
+		return
 	end
+
+	local base_ext = attacker:base()
+
+	if not base_ext then
+		return
+	end
+
+	local char_tweak = base_ext.char_tweak and base_ext:char_tweak()
+
+	if not char_tweak or not char_tweak.kill_taunt then
+		return
+	end
+
+	local clbk_id = "kill_taunt" .. tostring(attacker:key())
+	local taunt_data = {
+		attacker_unit = attacker,
+		taunt_line = char_tweak.kill_taunt
+	}
+	local downed_timespeed_tweak = tweak_data.timespeed.downed
+	local delay = TimerManager:game():time() + downed_timespeed_tweak.fade_in + downed_timespeed_tweak.sustain + downed_timespeed_tweak.fade_out
+
+	managers.enemy:add_delayed_clbk(clbk_id, callback(self, self, "clbk_kill_taunt", taunt_data), delay)
+end
+
+function PlayerDamage:clbk_kill_taunt(taunt_data)
+	local attacker = taunt_data.attacker_unit
+
+	if not alive(attacker) or attacker:character_damage():dead() then
+		return
+	end
+
+	attacker:sound():say(taunt_data.taunt_line, true)
 end
 
 function PlayerDamage:add_temporary_dodge(amount, time)
@@ -1333,10 +1365,8 @@ function PlayerDamage:damage_bullet(attack_data)
 
 	if not self._bleed_out and health_subtracted > 0 then
 		self:_send_damage_drama(attack_data, health_subtracted)
-	elseif self._bleed_out and attack_data.attacker_unit and attack_data.attacker_unit:alive() and attack_data.attacker_unit:base()._tweak_table == "tank" then
-		self._kill_taunt_clbk_id = "kill_taunt" .. tostring(self._unit:key())
-
-		managers.enemy:add_delayed_clbk(self._kill_taunt_clbk_id, callback(self, self, "clbk_kill_taunt", attack_data), TimerManager:game():time() + tweak_data.timespeed.downed.fade_in + tweak_data.timespeed.downed.sustain + tweak_data.timespeed.downed.fade_out)
+	elseif self._bleed_out then
+		self:chk_queue_taunt_line(attack_data)
 	end
 
 	pm:send_message(Message.OnPlayerDamage, nil, attack_data)
@@ -1698,6 +1728,10 @@ function PlayerDamage:damage_explosion(attack_data)
 end
 
 function PlayerDamage:damage_fire(attack_data)
+	if attack_data.is_hit then
+		return self:damage_fire_hit(attack_data)
+	end
+
 	if not self:_chk_can_take_dmg() then
 		return
 	end
@@ -1747,6 +1781,112 @@ function PlayerDamage:damage_fire(attack_data)
 	attack_data.damage = attack_data.damage - (armor_subtracted or 0)
 	local health_subtracted = self:_calc_health_damage(attack_data)
 
+	self:_call_listeners(damage_info)
+end
+
+function PlayerDamage:damage_fire_hit(attack_data)
+	if not self:_chk_can_take_dmg() then
+		return
+	end
+
+	local damage_info = {
+		result = {
+			variant = "fire",
+			type = "hurt"
+		},
+		attacker_unit = attack_data.attacker_unit
+	}
+	local pm = managers.player
+	local dmg_mul = pm:damage_reduction_skill_multiplier("bullet")
+	attack_data.damage = attack_data.damage * dmg_mul
+	attack_data.damage = managers.mutators:modify_value("PlayerDamage:TakeDamageBullet", attack_data.damage)
+	attack_data.damage = managers.modifiers:modify_value("PlayerDamage:TakeDamageBullet", attack_data.damage, attack_data.attacker_unit:base()._tweak_table)
+
+	if _G.IS_VR then
+		local distance = mvector3.distance(self._unit:position(), attack_data.attacker_unit:position())
+
+		if tweak_data.vr.long_range_damage_reduction_distance[1] < distance then
+			local step = math.clamp(distance / tweak_data.vr.long_range_damage_reduction_distance[2], 0, 1)
+			local mul = 1 - math.step(tweak_data.vr.long_range_damage_reduction[1], tweak_data.vr.long_range_damage_reduction[2], step)
+			attack_data.damage = attack_data.damage * mul
+		end
+	end
+
+	local damage_absorption = pm:damage_absorption()
+
+	if damage_absorption > 0 then
+		attack_data.damage = math.max(0, attack_data.damage - damage_absorption)
+	end
+
+	self:copr_update_attack_data(attack_data)
+
+	if self._god_mode then
+		if attack_data.damage > 0 then
+			self:_send_damage_drama(attack_data, attack_data.damage)
+		end
+
+		self:_call_listeners(damage_info)
+
+		return
+	elseif self._invulnerable or self._mission_damage_blockers.invulnerable then
+		self:_call_listeners(damage_info)
+
+		return
+	elseif self:incapacitated() then
+		return
+	elseif self:is_friendly_fire(attack_data.attacker_unit) then
+		return
+	elseif self:_chk_dmg_too_soon(attack_data.damage) then
+		return
+	elseif self._unit:movement():current_state().immortal then
+		return
+	end
+
+	self._last_received_dmg = attack_data.damage
+	self._next_allowed_dmg_t = Application:digest_value(pm:player_timer():time() + self._dmg_interval, true)
+
+	if self:get_real_armor() > 0 then
+		self._unit:sound():play("player_hit")
+	else
+		self._unit:sound():play("player_hit_permadamage")
+	end
+
+	self:_hit_direction(attack_data.attacker_unit:position())
+	pm:check_damage_carry(attack_data)
+
+	attack_data.damage = managers.player:modify_value("damage_taken", attack_data.damage, attack_data)
+
+	if self._bleed_out then
+		self:_bleed_out_damage(attack_data)
+
+		return
+	end
+
+	self:_check_chico_heal(attack_data)
+
+	local armor_reduction_multiplier = 0
+
+	if self:get_real_armor() <= 0 then
+		armor_reduction_multiplier = 1
+	end
+
+	local health_subtracted = self:_calc_armor_damage(attack_data)
+
+	if attack_data.armor_piercing then
+		attack_data.damage = attack_data.damage - health_subtracted
+	else
+		attack_data.damage = attack_data.damage * armor_reduction_multiplier
+	end
+
+	health_subtracted = health_subtracted + self:_calc_health_damage(attack_data)
+
+	if not self._bleed_out and health_subtracted > 0 then
+		self:_send_damage_drama(attack_data, health_subtracted)
+	elseif self._bleed_out then
+		self:chk_queue_taunt_line(attack_data)
+	end
+
+	pm:send_message(Message.OnPlayerDamage, nil, attack_data)
 	self:_call_listeners(damage_info)
 end
 

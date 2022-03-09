@@ -156,8 +156,14 @@ function CoreMaterialEditor:_create_make_file(rebuild)
 	return make_params, temp_params
 end
 
-function CoreMaterialEditor:_run_compiler()
-	local cmd = Application:nice_path(managers.database:root_path() .. "aux_assets\\engine\\bin\\shaderdev\\", true) .. "shaderdev -m \"" .. Application:nice_path(managers.database:base_path() .. self.TEMP_PATH .. "make.xml", false) .. "\" > \"" .. Application:nice_path(managers.database:base_path() .. self.TEMP_PATH .. "compile_log.txt", false) .. "\""
+function CoreMaterialEditor:_run_compiler(platform)
+	platform = platform or ""
+
+	if platform ~= "" then
+		platform = "-p " .. platform
+	end
+
+	local cmd = Application:nice_path(managers.database:root_path() .. "aux_assets\\engine\\bin\\shaderdev\\", true) .. "shaderdev -m \"" .. Application:nice_path(managers.database:base_path() .. self.TEMP_PATH .. "make.xml", false) .. "\" " .. platform .. " > \"" .. Application:nice_path(managers.database:base_path() .. self.TEMP_PATH .. "compile_log.txt", false) .. "\""
 	local ret = os.execute(cmd)
 	local file = SystemFS:open(managers.database:base_path() .. self.TEMP_PATH .. "compile_log.txt", "r")
 	local log = file:read()
@@ -178,13 +184,13 @@ function CoreMaterialEditor:_get_make_params()
 	make_params.working_directory = tmppath
 	make_params.render_templates = srcpath .. ".render_template_database"
 	make_params.win32d3d9 = tmppath .. managers.database:entry_name(shader._entry) .. ".d3d9.win32.shaders"
-	make_params.win32d3d10 = tmppath .. managers.database:entry_name(shader._entry) .. ".d3d10.win32.shaders"
+	make_params.win32d3d11 = tmppath .. managers.database:entry_name(shader._entry) .. ".d3d11.win32.shaders"
 	make_params.ps3 = tmppath .. managers.database:entry_name(shader._entry) .. ".ps3.shaders"
 	make_params.x360d3d9 = tmppath .. managers.database:entry_name(shader._entry) .. ".x360.shaders"
 	make_params.lrb = tmppath .. managers.database:entry_name(shader._entry) .. ".lrb.shaders"
 	temp_params.render_templates = tmppath .. managers.database:entry_name(shader._entry) .. ".render_template_database"
 	temp_params.win32d3d9 = tmppath .. managers.database:entry_name(shader._entry) .. ".d3d9.win32.shaders"
-	temp_params.win32d3d10 = tmppath .. managers.database:entry_name(shader._entry) .. ".d3d10.win32.shaders"
+	temp_params.win32d3d11 = tmppath .. managers.database:entry_name(shader._entry) .. ".d3d11.win32.shaders"
 	temp_params.ps3 = tmppath .. managers.database:entry_name(shader._entry) .. ".ps3.shaders"
 	temp_params.x360d3d9 = tmppath .. managers.database:entry_name(shader._entry) .. ".x360.shaders"
 	temp_params.lrb = tmppath .. managers.database:entry_name(shader._entry) .. ".lrb.shaders"

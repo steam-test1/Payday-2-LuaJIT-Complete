@@ -7,12 +7,20 @@ HuskTeamAIInventory.set_visibility_state = TeamAIInventory.set_visibility_state
 
 function HuskTeamAIInventory:add_unit_by_name(new_unit_name, equip)
 	local new_unit = World:spawn_unit(new_unit_name, Vector3(), Rotation())
+	local ignore_units = {
+		self._unit,
+		new_unit
+	}
+
+	if self._ignore_units then
+		for idx, ig_unit in pairs(self._ignore_units) do
+			table.insert(ignore_units, ig_unit)
+		end
+	end
+
 	local setup_data = {
 		user_unit = self._unit,
-		ignore_units = {
-			self._unit,
-			new_unit
-		},
+		ignore_units = ignore_units,
 		expend_ammo = false,
 		hit_slotmask = managers.slot:get_mask("bullet_impact_targets_no_AI"),
 		hit_player = false,

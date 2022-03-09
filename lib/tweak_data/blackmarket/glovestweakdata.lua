@@ -134,7 +134,7 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		winter_suit = "sneak",
 		hippie = "rainbow_mittens",
 		scrub = "heist_default",
-		desperado = "desperado",
+		enforcer = "heist_default",
 		miami = "heist_default",
 		candycane = "heist_default",
 		general = "heist_default",
@@ -146,13 +146,15 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		lonorwa = "heist_default",
 		poolrepair = "heist_default",
 		traditional = "heist_default",
-		xmas_tuxedo = "heist_default",
+		kungfumaster = "heist_default",
 		sparkle = "heist_default",
 		sneak_suit = "sneak",
 		waistcoat = "heist_default",
 		classyske = "heist_default",
 		tux = "heist_default",
 		continental = "continental",
+		xmas_tuxedo = "heist_default",
+		desperado = "desperado",
 		lowinttech = "heist_default",
 		boss = "heist_default",
 		peacoat = "saints",
@@ -607,5 +609,41 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		sort_number = 1,
 		unit = "units/pd2_dlc_cctp/characters/glv_vpr/glv_vpr",
 		third_material = "units/pd2_dlc_cctp/characters/glv_vpr/glv_vpr_third"
+	}
+	self.gloves.biker_yellow_led = {
+		name_id = "bm_gloves_bike_yellow_led",
+		desc_id = "bm_gloves_bike_yellow_led_desc",
+		texture_bundle_folder = "gdtp",
+		global_value = "gdtp",
+		sort_number = 1,
+		unit = "units/pd2_dlc_gdtp/characters/glv_biker_yellow_led/glv_biker_yellow_led",
+		third_material = "units/pd2_dlc_gdtp/characters/glv_biker_yellow_led/glv_biker_yellow_led_third"
+	}
+	self.gloves.biker_red_led = {
+		name_id = "bm_gloves_bike_red_led",
+		desc_id = "bm_gloves_bike_red_led_desc",
+		texture_bundle_folder = "gdtp",
+		global_value = "gdtp",
+		sort_number = 1,
+		unit = "units/pd2_dlc_gdtp/characters/glv_biker_red_led/glv_biker_red_led",
+		third_material = "units/pd2_dlc_gdtp/characters/glv_biker_red_led/glv_biker_red_led_third"
+	}
+	self.gloves.spikeknuckle = {
+		name_id = "bm_gloves_spikeknuckle",
+		desc_id = "bm_gloves_spikeknuckle_desc",
+		texture_bundle_folder = "gdtp",
+		global_value = "gdtp",
+		sort_number = 1,
+		unit = "units/pd2_dlc_gdtp/characters/glv_spikeknuckle/glv_spikeknuckle",
+		third_material = "units/pd2_dlc_gdtp/characters/glv_spikeknuckle/glv_spikeknuckle_third"
+	}
+	self.gloves.dragonscale = {
+		name_id = "bm_gloves_dragonscale",
+		desc_id = "bm_gloves_dragonscale_desc",
+		texture_bundle_folder = "gdtp",
+		global_value = "gdtp",
+		sort_number = 1,
+		unit = "units/pd2_dlc_gdtp/characters/glv_dragonscale/glv_dragonscale",
+		third_material = "units/pd2_dlc_gdtp/characters/glv_dragonscale/glv_dragonscale_third"
 	}
 end

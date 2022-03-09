@@ -2060,6 +2060,17 @@ function GuiTweakData:init(tweak_data)
 				name_id = "heist_contact_jiufeng",
 				id = "jiufeng"
 			},
+			{
+				{
+					desc_id = "heist_contact_shayu_description",
+					post_event = "sha_quote_set_a",
+					videos = {
+						"shayu1"
+					}
+				},
+				name_id = "heist_contact_shayu",
+				id = "shayu"
+			},
 			name_id = "menu_contacts",
 			id = "contacts"
 		},
@@ -5089,6 +5100,16 @@ function GuiTweakData:init(tweak_data)
 		limit = 5
 	}
 
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_pent_01",
+		texture_path = "guis/dlcs/pent/textures/pd2/new_heists/pent_01",
+		url = "https://pd2.link/MountainMasterSLS"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_gdtp_01",
+		texture_path = "guis/dlcs/gdtp/textures/pd2/new_heists/gdtp_01",
+		url = "https://pd2.link/MountainMasterSLS2"
+	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_lawp_01",
 		texture_path = "guis/dlcs/lawp/textures/pd2/new_heists/lawp_01",

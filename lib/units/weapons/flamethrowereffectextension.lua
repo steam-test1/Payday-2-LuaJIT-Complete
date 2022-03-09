@@ -1,9 +1,9 @@
-FlamethrowerEffectExtension = FlamethrowerEffectExtension or class(NewRaycastWeaponBase)
+FlamethrowerEffectExtension = FlamethrowerEffectExtension or class()
 
-function FlamethrowerEffectExtension:init(...)
-	FlamethrowerEffectExtension.super.init(self, ...)
-	self:setup_default()
-	self._unit:set_extension_update_enabled(Idstring("flamethrower_effect_extension"), true)
+function FlamethrowerEffectExtension:init(unit)
+	self._unit = unit
+
+	unit:set_extension_update_enabled(Idstring("flamethrower_effect_extension"), false)
 end
 
 function FlamethrowerEffectExtension:setup_default()

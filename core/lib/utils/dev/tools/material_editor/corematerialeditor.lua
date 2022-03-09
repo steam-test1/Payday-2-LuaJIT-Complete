@@ -266,11 +266,63 @@ function CoreMaterialEditor:_on_compile_btn()
 		end
 	elseif EWS:message_box(self._main_frame, "All unsaved data in this material config will be saved before compiling!", "Compile", "OK,CANCEL,ICON_INFORMATION", Vector3(-1, -1, -1)) == "OK" then
 		local make_params, temp_params = self:_create_make_file()
+		local to_file_path = ""
+		local renderer = ""
+		local platform = ""
 
-		if self:_run_compiler() then
-			self:_insert_libs_in_database(temp_params, make_params)
+		if SystemInfo:renderer() == Idstring("DX11") then
+			renderer = "d3d11"
+			platform = "PCD3D11"
+			to_file_path = temp_params.win32d3d11
+		elseif SystemInfo:renderer() == Idstring("DX9") then
+			renderer = "d3d9"
+			platform = "PCD3D9"
+			to_file_path = temp_params.win32d3d9
+		elseif SystemInfo:renderer() == Idstring("DX10") then
+			renderer = "d3d10"
+			platform = "PCD3D10"
+			to_file_path = temp_params.win32d3d10
+		end
+
+		local properties = {
+			renderer
+		}
+		local to_file = SystemFS:open(to_file_path, "w")
+		local from_file = DB:open_with_properties("shaders", "core/temp/base", properties)
+		local path = from_file:path()
+		local bin_str = from_file:read("*a")
+
+		to_file:write(bin_str)
+		to_file:close()
+		from_file:close()
+
+		if self:_run_compiler(platform) then
+			print("opening writable " .. path)
+
+			local new_to_file = SystemFS:open(path, "w")
+			local new_from_file = SystemFS:open(to_file_path, "r")
+			local new_bin_str = new_from_file:read("*a")
+
+			new_to_file:write(new_bin_str)
+			new_to_file:close()
+			new_from_file:close()
+
+			local rtd_to_file = DB:open("render_template_database", "shaders/base")
+			local rtd_to_file_path = rtd_to_file:path()
+
+			rtd_to_file:close()
+
+			local new_rtd_to_file = SystemFS:open(rtd_to_file_path, "w")
+			local new_rtd_from_file = SystemFS:open(temp_params.render_templates, "r")
+			local new_rtd_str = new_rtd_from_file:read("*a")
+
+			new_rtd_to_file:write(new_rtd_str)
+			new_rtd_to_file:close()
+			new_rtd_from_file:close()
 			self:_load_shaders()
 		end
+
+		self:_cleanup_temp_files(temp_params)
 	end
 end
 

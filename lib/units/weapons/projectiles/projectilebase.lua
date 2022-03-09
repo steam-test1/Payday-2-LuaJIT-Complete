@@ -34,13 +34,102 @@ function ProjectileBase:set_thrower_unit_by_peer_id(peer_id)
 		local thrower_unit = peer and peer:unit()
 
 		if alive(thrower_unit) then
-			self:set_thrower_unit(thrower_unit)
+			self:set_thrower_unit(thrower_unit, true)
 		end
 	end
 end
 
-function ProjectileBase:set_thrower_unit(unit)
+function ProjectileBase:set_thrower_unit(unit, set_ignore)
+	if self._thrower_unit then
+		return
+	end
+
+	local has_destroy_listener = nil
+	local listener_class = unit:base()
+
+	if listener_class and listener_class.add_destroy_listener then
+		has_destroy_listener = true
+	else
+		listener_class = unit:unit_data()
+
+		if listener_class and listener_class.add_destroy_listener then
+			has_destroy_listener = true
+		end
+	end
+
+	if not has_destroy_listener then
+		print("[ProjectileBase:set_thrower_unit] Cannot set thrower unit as it lacks a destroy listener.", unit)
+
+		return
+	end
+
+	self._ignore_destroy_listener_key = self._ignore_destroy_listener_key or "ProjectileBase" .. tostring(self._unit:key())
+
+	listener_class:add_destroy_listener(self._ignore_destroy_listener_key, callback(self, self, "_clbk_thrower_unit_destroyed"))
+
 	self._thrower_unit = unit
+
+	if not set_ignore then
+		return
+	end
+
+	self._ignore_units = self._ignore_units or {}
+
+	table.insert(self._ignore_units, unit)
+
+	local inv_ext = unit:inventory()
+
+	if not inv_ext then
+		return
+	end
+
+	local shield_unit = inv_ext._shield_unit
+
+	if alive(shield_unit) then
+		has_destroy_listener = false
+		listener_class = shield_unit:base()
+
+		if listener_class and listener_class.add_destroy_listener then
+			has_destroy_listener = true
+		else
+			listener_class = shield_unit:unit_data()
+
+			if listener_class and listener_class.add_destroy_listener then
+				has_destroy_listener = true
+			end
+		end
+
+		if has_destroy_listener then
+			listener_class:add_destroy_listener(self._ignore_destroy_listener_key, callback(self, self, "_clbk_ignore_unit_destroyed"))
+			table.insert(self._ignore_units, shield_unit)
+		else
+			print("[ProjectileBase:set_thrower_unit] Cannot set shield unit belonging to the thrower for ignoring as it lacks a destroy listener.", shield_unit)
+		end
+	end
+
+	if inv_ext.add_ignore_unit then
+		inv_ext:add_ignore_unit(self._unit)
+	end
+end
+
+function ProjectileBase:_clbk_thrower_unit_destroyed(unit)
+	self._thrower_unit = nil
+
+	if self._ignore_units then
+		table.delete(self._ignore_units, unit)
+
+		if not next(self._ignore_units) then
+			self._ignore_units = nil
+		end
+	end
+end
+
+function ProjectileBase:_clbk_ignore_unit_destroyed(unit)
+	table.delete(self._ignore_units, unit)
+
+	if not next(self._ignore_units) then
+		self._ignore_units = nil
+	end
 end
 
 function ProjectileBase:thrower_unit()
@@ -184,7 +273,8 @@ function ProjectileBase:update(unit, t, dt)
 	if self._sweep_data and not self._collided then
 		self._unit:m_position(self._sweep_data.current_pos)
 
-		local col_ray = World:raycast("ray", self._sweep_data.last_pos, self._sweep_data.current_pos, "slot_mask", self._sweep_data.slot_mask)
+		local ig_units = self._ignore_units
+		local col_ray = World:raycast("ray", self._sweep_data.last_pos, self._sweep_data.current_pos, "slot_mask", self._sweep_data.slot_mask, ig_units and "ignore_unit" or nil, ig_units or nil)
 
 		if self._draw_debug_trail then
 			Draw:brush(Color(1, 0, 0, 1), nil, 3):line(self._sweep_data.last_pos, self._sweep_data.current_pos)
@@ -218,7 +308,8 @@ function ProjectileBase:clbk_impact(tag, unit, body, other_unit, other_body, pos
 		mvector3.multiply(mvec2, 2)
 		mvector3.add(mvec2, self._sweep_data.last_pos)
 
-		local col_ray = World:raycast("ray", self._sweep_data.last_pos, mvec2, "slot_mask", self._sweep_data.slot_mask)
+		local ig_units = self._ignore_units
+		local col_ray = World:raycast("ray", self._sweep_data.last_pos, mvec2, "slot_mask", self._sweep_data.slot_mask, ig_units and "ignore_unit" or nil, ig_units or nil)
 
 		if col_ray and col_ray.unit then
 			if self._draw_debug_impact then
@@ -259,7 +350,55 @@ function ProjectileBase:load(data)
 	self._timer = state.timer
 end
 
-function ProjectileBase:destroy()
+function ProjectileBase:destroy(...)
+	ProjectileBase.super.destroy(self, ...)
+
+	if self._ignore_units then
+		local destroy_key = self._ignore_destroy_listener_key
+
+		for _, ig_unit in pairs(self._ignore_units) do
+			if alive(ig_unit) then
+				local has_destroy_listener = nil
+				local listener_class = ig_unit:base()
+
+				if listener_class and listener_class.add_destroy_listener then
+					has_destroy_listener = true
+				else
+					listener_class = ig_unit:unit_data()
+
+					if listener_class and listener_class.add_destroy_listener then
+						has_destroy_listener = true
+					end
+				end
+
+				if has_destroy_listener then
+					listener_class:remove_destroy_listener(destroy_key)
+				end
+			end
+		end
+
+		self._ignore_units = nil
+	elseif alive(self._thrower_unit) then
+		local has_destroy_listener = nil
+		local listener_class = self._thrower_unit:base()
+
+		if listener_class and listener_class.add_destroy_listener then
+			has_destroy_listener = true
+		else
+			listener_class = self._thrower_unit:unit_data()
+
+			if listener_class and listener_class.add_destroy_listener then
+				has_destroy_listener = true
+			end
+		end
+
+		if has_destroy_listener then
+			listener_class:remove_destroy_listener(self._ignore_destroy_listener_key)
+		end
+
+		self._thrower_unit = nil
+	end
+
 	self:remove_trail_effect()
 end
 
@@ -277,7 +416,7 @@ function ProjectileBase.throw_projectile(projectile_type, pos, dir, owner_peer_i
 		local thrower_unit = peer and peer:unit()
 
 		if alive(thrower_unit) then
-			unit:base():set_thrower_unit(thrower_unit)
+			unit:base():set_thrower_unit(thrower_unit, true)
 
 			if not tweak_entry.throwable and thrower_unit:movement() and thrower_unit:movement():current_state() then
 				unit:base():set_weapon_unit(thrower_unit:movement():current_state()._equipped_unit)
@@ -297,6 +436,35 @@ function ProjectileBase.throw_projectile(projectile_type, pos, dir, owner_peer_i
 	local projectile_type_index = tweak_data.blackmarket:get_index_from_projectile_id(projectile_type)
 
 	managers.network:session():send_to_peers_synched("sync_throw_projectile", unit:id() ~= -1 and unit or nil, pos, dir, projectile_type_index, owner_peer_id or 0)
+
+	if tweak_data.blackmarket.projectiles[projectile_type].impact_detonation then
+		unit:damage():add_body_collision_callback(callback(unit:base(), unit:base(), "clbk_impact"))
+		unit:base():create_sweep_data()
+	end
+
+	return unit
+end
+
+function ProjectileBase.throw_projectile_npc(projectile_type, pos, dir, thrower_unit)
+	local tweak_entry = tweak_data.blackmarket.projectiles[projectile_type]
+	local unit_name = Idstring(not Network:is_server() and tweak_entry.local_unit or tweak_entry.unit)
+	local unit = World:spawn_unit(unit_name, pos, Rotation(dir, math.UP))
+	local sync_thrower_unit = nil
+
+	if alive(thrower_unit) then
+		unit:base():set_thrower_unit(thrower_unit, true)
+
+		sync_thrower_unit = thrower_unit:id() ~= -1 and thrower_unit
+	end
+
+	unit:base():throw({
+		dir = dir,
+		projectile_entry = projectile_type
+	})
+
+	local projectile_type_index = tweak_data.blackmarket:get_index_from_projectile_id(projectile_type)
+
+	managers.network:session():send_to_peers_synched("sync_throw_projectile_npc", unit:id() ~= -1 and unit or nil, pos, dir, projectile_type_index, sync_thrower_unit or nil)
 
 	if tweak_data.blackmarket.projectiles[projectile_type].impact_detonation then
 		unit:damage():add_body_collision_callback(callback(unit:base(), unit:base(), "clbk_impact"))

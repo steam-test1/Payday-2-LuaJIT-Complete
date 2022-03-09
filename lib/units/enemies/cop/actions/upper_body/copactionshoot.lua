@@ -61,6 +61,7 @@ function CopActionShoot:init(action_desc, common_data)
 		return false
 	end
 
+	self._can_reload_while_moving_tmp = common_data.char_tweak.can_reload_while_moving_tmp
 	local weap_tweak = weapon_unit:base():weapon_tweak_data()
 	local weapon_usage_tweak = common_data.char_tweak.weapon[weap_tweak.usage]
 	self._weapon_unit = weapon_unit
@@ -309,7 +310,7 @@ function CopActionShoot:update(t)
 				self._autoshots_fired = nil
 			end
 
-			if not self._ext_anim.base_no_reload then
+			if self._can_reload_while_moving_tmp or not self._ext_anim.base_no_reload then
 				local res = CopActionReload._play_reload(self)
 
 				if res then

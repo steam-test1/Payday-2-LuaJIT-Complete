@@ -809,4 +809,5 @@ function MoneyTweakData:init(tweak_data)
 		max_kills_per_session = 100,
 		kill_to_offshore_multiplier = 1000
 	}
+	self.bag_values.garden_gnome = 9.99
 end

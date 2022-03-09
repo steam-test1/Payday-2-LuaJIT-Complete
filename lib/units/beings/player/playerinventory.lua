@@ -50,6 +50,33 @@ function PlayerInventory:pre_destroy(unit)
 	self:destroy_all_items()
 	self:stop_jammer_effect()
 	self:stop_feedback_effect()
+
+	if self._ignore_units then
+		local destroy_key = self._ignore_destroy_listener_key
+
+		for _, ig_unit in pairs(self._ignore_units) do
+			if alive(ig_unit) then
+				local has_destroy_listener = nil
+				local listener_class = ig_unit:base()
+
+				if listener_class and listener_class.add_destroy_listener then
+					has_destroy_listener = true
+				else
+					listener_class = ig_unit:unit_data()
+
+					if listener_class and listener_class.add_destroy_listener then
+						has_destroy_listener = true
+					end
+				end
+
+				if has_destroy_listener then
+					listener_class:remove_destroy_listener(destroy_key)
+				end
+			end
+		end
+
+		self._ignore_units = nil
+	end
 end
 
 function PlayerInventory:destroy_all_items()
@@ -84,6 +111,96 @@ function PlayerInventory:destroy_all_items()
 		managers.dyn_resource:unload(Idstring("unit"), self._melee_weapon_unit_name, DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 
 		self._melee_weapon_unit_name = nil
+	end
+end
+
+function PlayerInventory:add_ignore_unit(unit)
+	local has_destroy_listener = nil
+	local listener_class = unit:base()
+
+	if listener_class and listener_class.add_destroy_listener then
+		has_destroy_listener = true
+	else
+		listener_class = unit:unit_data()
+
+		if listener_class and listener_class.add_destroy_listener then
+			has_destroy_listener = true
+		end
+	end
+
+	if not has_destroy_listener then
+		print("[PlayerInventory:add_ignore_unit] Cannot set unit for ignoring as it lacks a destroy listener.", unit)
+
+		return
+	end
+
+	self._ignore_destroy_listener_key = self._ignore_destroy_listener_key or "PlayerInventory" .. tostring(unit:key())
+
+	listener_class:add_destroy_listener(self._ignore_destroy_listener_key, callback(self, self, "clbk_remove_ignore_unit"))
+
+	self._ignore_units = self._ignore_units or {}
+
+	table.insert(self._ignore_units, unit)
+
+	local weapon_selections = self:available_selections()
+
+	if weapon_selections then
+		for i_sel, selection_data in pairs(weapon_selections) do
+			local weap_unit = selection_data.unit
+			local weap_base = weap_unit and weap_unit:base()
+
+			if weap_base and weap_base.add_ignore_unit then
+				weap_base:add_ignore_unit(unit)
+			end
+		end
+	end
+end
+
+function PlayerInventory:clbk_remove_ignore_unit(unit)
+	self:remove_ignore_unit(unit, true)
+end
+
+function PlayerInventory:remove_ignore_unit(unit, is_callback)
+	if not self._ignore_units then
+		return
+	end
+
+	table.delete(self._ignore_units, unit)
+
+	local weapon_selections = self:available_selections()
+
+	if weapon_selections then
+		for i_sel, selection_data in pairs(weapon_selections) do
+			local weap_unit = selection_data.unit
+			local weap_base = weap_unit and weap_unit:base()
+
+			if weap_base and weap_base.remove_ignore_unit then
+				weap_base:remove_ignore_unit(unit)
+			end
+		end
+	end
+
+	if not next(self._ignore_units) then
+		self._ignore_units = nil
+	end
+
+	if not is_callback and alive(unit) then
+		local has_destroy_listener = nil
+		local listener_class = unit:base()
+
+		if listener_class and listener_class.add_destroy_listener then
+			has_destroy_listener = true
+		else
+			listener_class = unit:unit_data()
+
+			if listener_class and listener_class.add_destroy_listener then
+				has_destroy_listener = true
+			end
+		end
+
+		if has_destroy_listener then
+			listener_class:remove_destroy_listener(self._ignore_destroy_listener_key)
+		end
 	end
 end
 
@@ -181,12 +298,20 @@ function PlayerInventory:add_unit_by_name(new_unit_name, equip, instant)
 	managers.dyn_resource:load(ids_unit, new_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
 
 	local new_unit = World:spawn_unit(new_unit_name, Vector3(), Rotation())
+	local ignore_units = {
+		self._unit,
+		new_unit
+	}
+
+	if self._ignore_units then
+		for idx, ig_unit in pairs(self._ignore_units) do
+			table.insert(ignore_units, ig_unit)
+		end
+	end
+
 	local setup_data = {
 		user_unit = self._unit,
-		ignore_units = {
-			self._unit,
-			new_unit
-		},
+		ignore_units = ignore_units,
 		expend_ammo = true,
 		autoaim = true,
 		alert_AI = true,
@@ -215,12 +340,20 @@ function PlayerInventory:add_unit_by_factory_name(factory_name, equip, instant, 
 		new_unit:base():assemble(factory_name)
 	end
 
+	local ignore_units = {
+		self._unit,
+		new_unit
+	}
+
+	if self._ignore_units then
+		for idx, ig_unit in pairs(self._ignore_units) do
+			table.insert(ignore_units, ig_unit)
+		end
+	end
+
 	local setup_data = {
 		user_unit = self._unit,
-		ignore_units = {
-			self._unit,
-			new_unit
-		},
+		ignore_units = ignore_units,
 		expend_ammo = true,
 		autoaim = true,
 		alert_AI = true,

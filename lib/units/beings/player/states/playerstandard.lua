@@ -1049,9 +1049,9 @@ function PlayerStandard:_update_crosshair_offset(t)
 	local name_id = self._equipped_unit:base():get_name_id()
 
 	if self._state_data.in_steelsight and managers.user:get_setting("accessibility_dot_hide_ads") then
-		managers.hud:set_accessibility_dot_visible(not tweak_data.weapon[name_id].crosshair.steelsight.hidden)
+		managers.hud:set_accessibility_dot_visible(false)
 	else
-		managers.hud:set_accessibility_dot_visible(not tweak_data.weapon[name_id].crosshair[self._state_data.ducking and "crouching" or "standing"].hidden)
+		managers.hud:set_accessibility_dot_visible(true)
 	end
 
 	return

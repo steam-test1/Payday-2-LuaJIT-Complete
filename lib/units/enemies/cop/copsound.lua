@@ -111,6 +111,10 @@ function CopSound:stop(source_name)
 end
 
 function CopSound:say(sound_name, sync, skip_prefix, important, callback)
+	if self._unit:character_damage():dead() then
+		return
+	end
+
 	if self._last_speech then
 		self._last_speech:stop()
 	end

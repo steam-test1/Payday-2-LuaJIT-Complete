@@ -219,7 +219,9 @@ function StatisticsTweakData:statistics_table()
 		"civilian_mariachi",
 		"civilian_no_penalty",
 		"security_mex_no_pager",
-		"swat_turret"
+		"swat_turret",
+		"triad_boss",
+		"triad_boss_no_armor"
 	}
 	local armor_list = {
 		"level_1",

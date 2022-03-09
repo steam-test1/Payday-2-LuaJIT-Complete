@@ -834,4 +834,14 @@ function EquipmentsTweakData:init()
 		icon = "equipment_businesscard",
 		text_id = "hud_equipment_business_card"
 	}
+	self.specials.car_jack = {
+		sync_possession = true,
+		icon = "equipment_car_jack",
+		text_id = "hud_equipment_car_jack"
+	}
+	self.specials.cargo_strap = {
+		sync_possession = true,
+		icon = "equipment_cargo_strap",
+		text_id = "hud_equipment_cargo_strap"
+	}
 end

@@ -44,7 +44,7 @@ function CoreShaderLibCompiler:compile(file, dest, force_recompile, force_skip)
 
 	cat_print("debug", "[CoreShaderLibCompiler] Compiling: " .. file.path)
 
-	local params = self:create_make_file()
+	local params = self:create_make_file(file.generate_debug_info, file.debug_info_dir, file.preprocess_debug_info)
 
 	self:run_compiler()
 
@@ -136,12 +136,27 @@ function CoreShaderLibCompiler:copy_file(from, to, properties, dest)
 	end
 end
 
-function CoreShaderLibCompiler:create_make_file()
+function CoreShaderLibCompiler:create_make_file(generate_debug_info, debug_info_dir, preprocess)
 	local make_params = self:get_make_params()
 	local file = assert(io.open(self:base_path() .. self.TEMP_PATH .. "make.xml", "w+"))
 
 	file:write("<make>\n")
 	file:write("\t<silent_fail/>\n")
+
+	if generate_debug_info then
+		file:write("\t<debug")
+
+		if debug_info_dir and debug_info_dir ~= "" then
+			file:write(" debug_info_dir=\"" .. debug_info_dir .. "\"")
+		end
+
+		if preprocess then
+			file:write(" preprocess=\"true\"")
+		end
+
+		file:write("/>\n")
+	end
+
 	file:write("\t<rebuild/>\n")
 	file:write("\t<file_io\n")
 

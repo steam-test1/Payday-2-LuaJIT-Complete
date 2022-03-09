@@ -1786,6 +1786,90 @@ function PrePlanningTweakData:init(tweak_data)
 		post_event = "",
 		prio = 3
 	}
+	self.types.pent_parked_car = {
+		name_id = "menu_pp_asset_pent_van_hint",
+		desc_id = "menu_pp_asset_pent_van_hint_desc",
+		category = "insider_help",
+		upgrade_lock = {
+			upgrade = "additional_assets",
+			category = "player"
+		},
+		pos_not_important = false,
+		icon = 115,
+		total = 1,
+		post_event = "preplan_16",
+		prio = 3,
+		cost = tweak_data:get_value("money_manager", "preplanning_asset_cost_pex_parked_car"),
+		budget_cost = 2
+	}
+	self.types.pent_thermite = {
+		name_id = "menu_pp_pent_thermite",
+		desc_id = "menu_pp_pent_thermite_desc",
+		pos_not_important = false,
+		category = "mission_equipment",
+		icon = 51,
+		total = 1,
+		cost = tweak_data:get_value("money_manager", "preplaning_asset_cost_thermite"),
+		budget_cost = 6,
+		post_event = "preplan_02",
+		prio = 2
+	}
+	self.types.pent_carkeys = {
+		name_id = "menu_pp_asset_pent_carkeys",
+		desc_id = "menu_pp_asset_pent_carkeys_desc",
+		category = "mission_equipment",
+		pos_not_important = false,
+		icon = 43,
+		total = 1,
+		post_event = "preplan_16",
+		prio = 1,
+		cost = tweak_data:get_value("money_manager", "preplaning_asset_cost_mex_keys"),
+		budget_cost = 4
+	}
+	self.types.pent_unlocked_door = {
+		name_id = "menu_pp_asset_pent_unlocked_door",
+		desc_id = "menu_pp_asset_pent_unlocked_door_desc",
+		category = "insider_help",
+		pos_not_important = false,
+		upgrade_lock = {
+			upgrade = "additional_assets",
+			category = "player"
+		},
+		icon = 41,
+		total = 4,
+		post_event = "preplan_07",
+		cost = tweak_data:get_value("money_manager", "preplaning_asset_cost_unlocked_door"),
+		budget_cost = 1,
+		prio = 3
+	}
+	self.types.pent_marked_bookcase = {
+		name_id = "menu_pp_asset_pent_marked_bookcase",
+		desc_id = "menu_pp_asset_pent_marked_bookcase_desc",
+		pos_not_important = true,
+		category = "insider_help",
+		upgrade_lock = {
+			upgrade = "additional_assets",
+			category = "player"
+		},
+		icon = 121,
+		total = 1,
+		cost = tweak_data:get_value("money_manager", "preplanning_asset_cost_kenaz_guitar_case_position"),
+		budget_cost = 2,
+		post_event = "",
+		prio = 3
+	}
+	self.types.pent_lower_hacktime = {
+		name_id = "menu_pp_asset_pent_lower_hacktime",
+		desc_id = "menu_pp_asset_pent_lower_hacktime_desc",
+		icon = 15,
+		pos_not_important = true,
+		category = "data_hacking",
+		total = 1,
+		cost = tweak_data:get_value("money_manager", "preplaning_thebomb_cost_hacker"),
+		budget_cost = 3,
+		post_event = "preplan_10",
+		prio = 3
+	}
 end
 
 function PrePlanningTweakData:_create_locations(tweak_data)
@@ -3568,6 +3652,70 @@ function PrePlanningTweakData:_create_locations(tweak_data)
 		default_plans = {
 			entry_plan_generic = "chca_entry_as_guest"
 		},
+		start_location = {
+			group = "a",
+			zoom = 1,
+			x = 512,
+			y = 512
+		}
+	}
+	self.locations.pent = {
+		{
+			texture = "guis/dlcs/pent/textures/pd2/pre_planning/pent_03",
+			rotation = 0,
+			map_size = 1,
+			map_x = -0.55,
+			map_y = 0,
+			name_id = "menu_pp_pent_bpr_loc_a",
+			y2 = 8000,
+			y1 = -8000,
+			x1 = -0 - 8000,
+			x2 = -0 + 8000,
+			custom_points = {}
+		},
+		{
+			texture = "guis/dlcs/pent/textures/pd2/pre_planning/pent_02",
+			rotation = 0,
+			map_size = 1,
+			map_x = 0.55,
+			map_y = 0,
+			name_id = "menu_pp_pent_bpr_loc_b",
+			y2 = 8000,
+			y1 = -8000,
+			x1 = -0 - 8000,
+			x2 = -0 + 8000,
+			custom_points = {}
+		},
+		{
+			texture = "guis/dlcs/pent/textures/pd2/pre_planning/pent_01",
+			rotation = 0,
+			map_size = 1,
+			map_x = 1.65,
+			map_y = 0,
+			name_id = "menu_pp_pent_bpr_loc_c",
+			y2 = 8000,
+			y1 = -8000,
+			x1 = -0 - 8000,
+			x2 = -0 + 8000,
+			custom_points = {}
+		},
+		{
+			texture = "guis/dlcs/pent/textures/pd2/pre_planning/pent_04",
+			rotation = 0,
+			map_size = 1,
+			map_x = 2.75,
+			map_y = 0,
+			name_id = "menu_pp_pent_bpr_loc_d",
+			y2 = 8000,
+			y1 = -8000,
+			x1 = -0 - 8000,
+			x2 = -0 + 8000,
+			custom_points = {}
+		},
+		mission_briefing_texture = "guis/dlcs/pent/textures/pd2/pre_planning/pent_preview",
+		post_event_prefix = "loc",
+		total_budget = 10,
+		default_plans = {},
 		start_location = {
 			group = "a",
 			zoom = 1,

@@ -8940,6 +8940,166 @@ function init_auto_generated_achievement_data(tags)
 				tags.contracts.classic
 			}
 		},
+		pent_1 = {
+			icon_id = "C_Shayu_H_MountainMaster_AllDiffs_D0",
+			ladder = "H_MountianMaster",
+			sort_name = "C_Shayu_H_MountainMaster_AllDiffs_D0",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.shayu
+			}
+		},
+		pent_10 = {
+			sort_name = "C_Shayu_H_MountainMaster_DidYou",
+			icon_id = "C_Shayu_H_MountainMaster_DidYou",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.stealth,
+				tags.tactics.timed,
+				tags.contracts.shayu
+			}
+		},
+		pent_11 = {
+			need_unlock_icons = true,
+			icon_id = "C_JiuFeng_H_CityofGold_ForTheMad",
+			sort_name = "C_JiuFeng_H_CityofGold_ForTheMad",
+			additional_id = true,
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.unlock.outfit,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.vlad,
+				tags.contracts.shayu,
+				tags.contracts.jiufeng
+			}
+		},
+		pent_12 = {
+			additional_id = true,
+			sort_name = "C_Shayu_H_MountainMaster_NoGnome",
+			icon_id = "C_Shayu_H_MountainMaster_NoGnome",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.very_hard,
+				tags.tactics.loud,
+				tags.contracts.shayu
+			}
+		},
+		pent_2 = {
+			icon_id = "C_Shayu_H_MountainMaster_AllDiffs_D1",
+			ladder = "H_MountianMaster",
+			sort_name = "C_Shayu_H_MountainMaster_AllDiffs_D1",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.hard,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.shayu
+			}
+		},
+		pent_3 = {
+			icon_id = "C_Shayu_H_MountainMaster_AllDiffs_D2",
+			ladder = "H_MountianMaster",
+			sort_name = "C_Shayu_H_MountainMaster_AllDiffs_D2",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.very_hard,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.shayu
+			}
+		},
+		pent_4 = {
+			icon_id = "C_Shayu_H_MountainMaster_AllDiffs_D3",
+			ladder = "H_MountianMaster",
+			sort_name = "C_Shayu_H_MountainMaster_AllDiffs_D3",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.shayu
+			}
+		},
+		pent_5 = {
+			icon_id = "C_Shayu_H_MountainMaster_AllDiffs_D4",
+			ladder = "H_MountianMaster",
+			sort_name = "C_Shayu_H_MountainMaster_AllDiffs_D4",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.mayhem,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.shayu
+			}
+		},
+		pent_6 = {
+			icon_id = "C_Shayu_H_MountainMaster_AllDiffs_D5",
+			ladder = "H_MountianMaster",
+			sort_name = "C_Shayu_H_MountainMaster_AllDiffs_D5",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_wish,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.shayu
+			}
+		},
+		pent_7 = {
+			icon_id = "C_Shayu_H_MountainMaster_AllDiffs_D6",
+			ladder = "H_MountianMaster",
+			sort_name = "C_Shayu_H_MountainMaster_AllDiffs_D6",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_sentence,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.shayu
+			}
+		},
+		pent_8 = {
+			icon_id = "C_Shayu_H_MountainMaster_AllDiffs_OD_D6",
+			ladder = "H_MountianMaster",
+			sort_name = "C_Shayu_H_MountainMaster_AllDiffs_OD_D6",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_sentence,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.shayu
+			}
+		},
+		pent_9 = {
+			need_unlock_icons = true,
+			icon_id = "C_Shayu_H_MountainMaster_CrouchingBomber",
+			sort_name = "C_Shayu_H_MountainMaster_CrouchingBomber",
+			additional_id = true,
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.unlock.mask,
+				tags.tactics.loud,
+				tags.tactics.killer,
+				tags.inventory.weapon,
+				tags.teamwork.players_1_to_4,
+				tags.contracts.shayu
+			}
+		},
 		pex_1 = {
 			icon_id = "C_Locke_H_BreakfastInTijuana_AllDiffs_D0",
 			ladder = "H_Breakfast",

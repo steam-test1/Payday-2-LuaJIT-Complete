@@ -786,8 +786,9 @@ function FPCameraPlayerBase:_gamepad_look_function_ctl(stick_input, stick_input_
 	local aim_assist_y = 0
 	local cs = managers.player:current_state()
 	local aim_assist = false
+	local in_aim_assist_state = cs == "standard" or cs == "carry" or cs == "bipod"
 
-	if (cs == "standard" or cs == "carry" or cs == "bipod") and managers.controller:get_default_wrapper_type() ~= "pc" and managers.user:get_setting("sticky_aim") then
+	if in_aim_assist_state and managers.controller:get_default_wrapper_type() ~= "pc" and managers.user:get_setting("sticky_aim") then
 		aim_assist = true
 	end
 

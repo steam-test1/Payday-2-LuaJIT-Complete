@@ -105,7 +105,7 @@ function SentryGunDamage:damage_bullet(attack_data)
 
 	if attack_data.attacker_unit == managers.player:player_unit() then
 		self._char_tweak = tweak_data.weapon[self._unit:base():get_name_id()]
-		local critical_hit, damage = CopDamage.roll_critical_hit(self, attack_data)
+		local critical_hit, damage = CopDamage.roll_critical_hit(self, attack_data, dmg_adjusted)
 		dmg_adjusted = damage
 
 		if critical_hit then
@@ -199,7 +199,7 @@ function SentryGunDamage:damage_tase(attack_data)
 end
 
 function SentryGunDamage:damage_fire(attack_data)
-	if self._dead or self._invulnerable or Network:is_client() and self._ignore_client_damage or attack_data.variant == "stun" or not tweak_data.weapon[self._unit:base():get_name_id()].FIRE_DMG_MUL then
+	if self._dead or self._invulnerable or Network:is_client() and self._ignore_client_damage or attack_data.variant == "stun" then
 		return
 	end
 
@@ -209,11 +209,11 @@ function SentryGunDamage:damage_fire(attack_data)
 		attacker_unit = attacker_unit:base():thrower_unit()
 	end
 
-	if attacker_unit and PlayerDamage.is_friendly_fire(self, attacker_unit) then
+	if attacker_unit and not alive(attacker_unit) or PlayerDamage.is_friendly_fire(self, attacker_unit) then
 		return
 	end
 
-	local damage = attack_data.damage * tweak_data.weapon[self._unit:base():get_name_id()].FIRE_DMG_MUL
+	local damage = attack_data.damage * (tweak_data.weapon[self._unit:base():get_name_id()].FIRE_DMG_MUL or 1)
 	damage = damage * (self._marked_dmg_mul or 1)
 	damage = damage + self._sync_dmg_leftover
 	local damage_sync = self:_apply_damage(damage, true, true, true, attacker_unit, "fire")
@@ -273,7 +273,7 @@ function SentryGunDamage:damage_explosion(attack_data)
 
 	if attacker_unit and attacker_unit == managers.player:player_unit() then
 		self._char_tweak = tweak_data.weapon[self._unit:base():get_name_id()]
-		local critical_hit, crit_damage = CopDamage.roll_critical_hit(self, attack_data)
+		local critical_hit, crit_damage = CopDamage.roll_critical_hit(self, attack_data, damage)
 		damage = crit_damage
 
 		if critical_hit then

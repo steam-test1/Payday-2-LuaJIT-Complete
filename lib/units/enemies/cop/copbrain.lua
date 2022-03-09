@@ -16,6 +16,7 @@ require("lib/units/enemies/shield/logics/ShieldLogicAttack")
 require("lib/units/enemies/spooc/logics/SpoocLogicIdle")
 require("lib/units/enemies/spooc/logics/SpoocLogicAttack")
 require("lib/units/enemies/taser/logics/TaserLogicAttack")
+require("lib/units/enemies/boss/logics/BossLogicAttack")
 
 CopBrain = CopBrain or class()
 local logic_variants = {
@@ -57,6 +58,9 @@ logic_variants.old_hoxton_mission = security_variant
 logic_variants.inside_man = security_variant
 logic_variants.medic = security_variant
 logic_variants.triad = security_variant
+logic_variants.triad_boss_no_armor = security_variant
+logic_variants.triad_boss = clone(security_variant)
+logic_variants.triad_boss.attack = BossLogicAttack
 logic_variants.biker_boss = security_variant
 logic_variants.chavez_boss = security_variant
 logic_variants.bolivian = security_variant
