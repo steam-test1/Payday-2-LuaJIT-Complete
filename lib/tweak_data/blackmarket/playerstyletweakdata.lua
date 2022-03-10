@@ -3539,19 +3539,19 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		sequence = "set_ehtan"
 	}
 	self.player_styles.enforcer.characters.ecp_male = enforcer_characters_male_fat
-	self.player_styles.boss = {
+	self.player_styles.boss_gdtp = {
 		name_id = "bm_suit_boss_suit",
 		desc_id = "bm_suit_boss_suit_desc",
 		texture_bundle_folder = "gdtp",
 		global_value = "gdtp",
 		material_variations = {}
 	}
-	self.player_styles.boss.material_variations.default = {
+	self.player_styles.boss_gdtp.material_variations.default = {
 		name_id = "bm_suit_var_boss_suit_default",
 		global_value = "gdtp",
 		desc_id = "bm_suit_var_boss_suit_default_desc"
 	}
-	self.player_styles.boss.material_variations.green = {
+	self.player_styles.boss_gdtp.material_variations.green = {
 		desc_id = "bm_suit_var_boss_suit_green_desc",
 		global_value = "gdtp",
 		auto_aquire = true,
@@ -3559,7 +3559,7 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		third_material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_boss_green",
 		material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_fps_boss_green"
 	}
-	self.player_styles.boss.material_variations.red = {
+	self.player_styles.boss_gdtp.material_variations.red = {
 		desc_id = "bm_suit_var_boss_suit_red_desc",
 		global_value = "gdtp",
 		auto_aquire = true,
@@ -3567,7 +3567,7 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		third_material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_boss_red",
 		material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_fps_boss_red"
 	}
-	self.player_styles.boss.material_variations.yellow = {
+	self.player_styles.boss_gdtp.material_variations.yellow = {
 		desc_id = "bm_suit_var_boss_suit_yellow_desc",
 		global_value = "gdtp",
 		auto_aquire = true,
@@ -3575,39 +3575,39 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		third_material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_boss_yellow",
 		material = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/shared_materials/gdtp_acc_fps_boss_yellow"
 	}
-	self.player_styles.boss.body_replacement = body_replacement_standard
-	self.player_styles.boss.third_body_replacement = body_replacement_standard
-	self.player_styles.boss.unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_fps_boss_male/gdtp_acc_fps_boss_male"
-	self.player_styles.boss.characters = {}
-	local boss_characters_male = {
+	self.player_styles.boss_gdtp.body_replacement = body_replacement_standard
+	self.player_styles.boss_gdtp.third_body_replacement = body_replacement_standard
+	self.player_styles.boss_gdtp.unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_fps_boss_male/gdtp_acc_fps_boss_male"
+	self.player_styles.boss_gdtp.characters = {}
+	local boss_gdtp_characters_male = {
 		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_boss_male_average/gdtp_acc_boss_male_average"
 	}
 
-	set_characters_data("boss", characters_male, boss_characters_male)
+	set_characters_data("boss_gdtp", characters_male, boss_gdtp_characters_male)
 
-	local boss_characters_male_big = {
+	local boss_gdtp_characters_male_big = {
 		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_boss_male_big/gdtp_acc_boss_male_big"
 	}
 
-	set_characters_data("boss", characters_male_big, boss_characters_male_big)
+	set_characters_data("boss_gdtp", characters_male_big, boss_gdtp_characters_male_big)
 
-	local boss_characters_female = {
+	local boss_gdtp_characters_female = {
 		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_boss_female_average/gdtp_acc_boss_female_average"
 	}
 
-	set_characters_data("boss", characters_female, boss_characters_female)
+	set_characters_data("boss_gdtp", characters_female, boss_gdtp_characters_female)
 
-	local boss_characters_female_big = {
+	local boss_gdtp_characters_female_big = {
 		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_boss_female_fat/gdtp_acc_boss_female_fat"
 	}
 
-	set_characters_data("boss", characters_female_big, boss_characters_female_big)
+	set_characters_data("boss_gdtp", characters_female_big, boss_gdtp_characters_female_big)
 
-	local boss_characters_male_fat = {
+	local boss_gdtp_characters_male_fat = {
 		third_unit = "units/pd2_dlc_gdtp/characters/gdtp_acc_boss/gdtp_acc_boss_male_fat/gdtp_acc_boss_male_fat",
 		sequence = "set_ehtan"
 	}
-	self.player_styles.boss.characters.ecp_male = boss_characters_male_fat
+	self.player_styles.boss_gdtp.characters.ecp_male = boss_gdtp_characters_male_fat
 end
 
 function BlackMarketTweakData:get_player_style_value(player_style, character_name, key)
