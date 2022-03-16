@@ -160,6 +160,7 @@ function CoreEditor:init(game_state_machine, session_state)
 	self:_init_title_messages()
 
 	self._message_system = EditorMessageSystem:new()
+	self._gather_duplicates = false
 end
 
 function CoreEditor:_load_packages()
@@ -3309,6 +3310,8 @@ function CoreEditor:add_to_world_package(params)
 		t = self._continent_package_table
 		t.world = t.world or {}
 		t = t.world
+
+		print("Moving " .. category .. " from " .. continent:name() .. " : " .. (name or path))
 	end
 
 	t[category] = t[category] or {}
@@ -3376,6 +3379,10 @@ function CoreEditor:_save_packages(dir)
 end
 
 function CoreEditor:_check_package_duplicity(params)
+	if not self._gather_duplicates then
+		return false
+	end
+
 	local name = params.name
 	local path = params.path
 	local category = params.category
@@ -3384,6 +3391,10 @@ function CoreEditor:_check_package_duplicity(params)
 	local continent_package_table = params.init and self._continent_init_package_table or self._continent_package_table
 
 	if world_package_table[category] and table.contains(world_package_table[category], name) then
+		return true
+	end
+
+	if category == "units" and continent_package_table.world and continent_package_table.world.units and table.contains(continent_package_table.world.units, name) then
 		return true
 	end
 

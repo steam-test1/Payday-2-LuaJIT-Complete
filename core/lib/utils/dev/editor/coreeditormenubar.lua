@@ -861,6 +861,20 @@ function CoreEditor:on_expert_mode(data)
 	Global.frame_panel:layout()
 end
 
+function CoreEditor:on_gather_duplicates()
+	local confirm = EWS:message_box(Global.frame_panel, "Gather duplicates and save level?", "Optimization", "YES_NO,CANCEL,ICON_QUESTION", Vector3(-1, -1, 0))
+
+	if confirm == "YES" then
+		self._gather_duplicates = true
+
+		self:on_save()
+
+		self._gather_duplicates = false
+
+		EWS:message_box(Global.frame_panel, "WARNING: It is recommended to close the editor after this optimization has been performed!", "Optimization", "OK", Vector3(-1, -1, 0))
+	end
+end
+
 function CoreEditor:on_reload_unit(quick)
 	local names = {}
 

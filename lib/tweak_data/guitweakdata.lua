@@ -707,6 +707,8 @@ function GuiTweakData:init(tweak_data)
 	self.fbi_files_webpage = "https://fbi.paydaythegame.com/"
 	self.crimefest_challenges_webpage = "http://www.overkillsoftware.com/games/roadtocrimefest/"
 	self.sbz_account_webpage = "https://www.paydaythegame.com/account/register/"
+	self.privacy_webpage = "https://pd2.link/PrivacyPolicy"
+	self.license_webpage = "https://pd2.link/TermsOfService"
 	self.crime_net = {
 		controller = {}
 	}
@@ -5101,6 +5103,11 @@ function GuiTweakData:init(tweak_data)
 	}
 
 	table.insert(self.new_heists, {
+		name_id = "menu_nh_in33_02",
+		texture_path = "guis/dlcs/in33/textures/pd2/new_heists/in33_02",
+		url = "https://ovk.af/Infamy33SLW3"
+	})
+	table.insert(self.new_heists, {
 		name_id = "menu_nh_pent_01",
 		texture_path = "guis/dlcs/pent/textures/pd2/new_heists/pent_01",
 		url = "https://pd2.link/MountainMasterSLS"
@@ -5129,11 +5136,6 @@ function GuiTweakData:init(tweak_data)
 		name_id = "menu_nh_xm21_01",
 		texture_path = "guis/dlcs/xm21/textures/pd2/new_heists/xm21_01",
 		url = "https://ovk.af/Xmas2021SLA"
-	})
-	table.insert(self.new_heists, {
-		name_id = "menu_nh_in33_02",
-		texture_path = "guis/dlcs/in33/textures/pd2/new_heists/in33_02",
-		url = "https://ovk.af/Infamy33SLW3"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_in33_01",

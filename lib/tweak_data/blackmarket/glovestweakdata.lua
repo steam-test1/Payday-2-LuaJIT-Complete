@@ -117,8 +117,7 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		},
 		player_style_exclude_list = {
 			"none",
-			"slaughterhouse",
-			"waistcoat"
+			"slaughterhouse"
 		}
 	}
 	self.suit_default_gloves = {
@@ -149,11 +148,10 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		kungfumaster = "heist_default",
 		sparkle = "heist_default",
 		sneak_suit = "sneak",
-		waistcoat = "heist_default",
+		xmas_tuxedo = "heist_default",
 		classyske = "heist_default",
 		tux = "heist_default",
 		continental = "continental",
-		xmas_tuxedo = "heist_default",
 		desperado = "desperado",
 		lowinttech = "heist_default",
 		boss = "heist_default",

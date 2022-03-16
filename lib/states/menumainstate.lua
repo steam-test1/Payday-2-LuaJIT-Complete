@@ -72,23 +72,38 @@ function MenuMainState:at_enter(old_state)
 		managers.menu:check_vr_dlc()
 	end
 
-	if SystemInfo:platform() == Idstring("WIN32") and not Global.use_telemetry_decided then
-		local function yes_func()
-			managers.user:set_setting("use_telemetry", true, true)
-			MenuCallbackHandler:save_settings()
+	if SystemInfo:platform() == Idstring("WIN32") and not Global.use_telemetry_gamesight_decided then
+		local telemetry_state = true
+		local gamesight_state = true
+
+		local function telemetry_toggle_func(state)
+			managers.user:set_setting("use_telemetry", state, true)
+			_G.MenuCallbackHandler:save_settings()
+
+			telemetry_state = state
 		end
 
-		local function no_func()
-			managers.user:set_setting("use_telemetry", false, true)
-			MenuCallbackHandler:save_settings()
+		local function gamesight_toggle_func(state)
+			managers.user:set_setting("use_gamesight", state, true)
+			_G.MenuCallbackHandler:save_settings()
+
+			gamesight_state = state
 		end
 
-		Global.use_telemetry_decided = true
+		local function accept_func()
+			managers.user:set_setting("use_telemetry", telemetry_state, true)
+			managers.user:set_setting("use_gamesight", gamesight_state, true)
+			_G.MenuCallbackHandler:save_settings()
+			Telemetry:send_on_game_launch()
+		end
+
+		Global.use_telemetry_gamesight_decided = true
 
 		managers.savefile:setting_changed()
-		managers.menu:show_accept_telemetry({
-			yes_func = yes_func,
-			no_func = no_func
+		managers.menu:show_accept_gamesight_telemetry({
+			telemetry_func = telemetry_toggle_func,
+			gamesight_func = gamesight_toggle_func,
+			accept_func = accept_func
 		})
 	end
 

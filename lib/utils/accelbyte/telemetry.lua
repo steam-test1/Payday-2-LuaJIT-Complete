@@ -325,6 +325,7 @@ function Telemetry:init()
 			_telemetries_to_send_arr = {},
 			_session_uuid = nil,
 			_enabled = false,
+			_gamesight_enabled = false,
 			_start_time = os.time(),
 			_mission_payout = 0,
 			_last_quickplay_room_id = 0,
@@ -410,6 +411,14 @@ function Telemetry:enable(is_enable)
 	end
 end
 
+function Telemetry:gamesight_enable(is_enable)
+	if get_platform_name() ~= "WIN32" then
+		return
+	end
+
+	self._global._gamesight_enabled = is_enable
+end
+
 function Telemetry:set_mission_payout(payout)
 	if get_platform_name() ~= "WIN32" or not self._global._logged_in then
 		return
@@ -459,6 +468,32 @@ function Telemetry:send_telemetry_immediately(event_name, payload, event_namespa
 
 	payload.clientTimestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
 	payload.EntityID = Steam:userid()
+	local telemetry_body = build_payload(event_name, payload, event_namespace)
+	local telemetry_json = json.encode(telemetry_body)
+	local payload_size = string.len(telemetry_json)
+
+	if telemetry_json then
+		print(log_name, telemetry_json)
+
+		local headers = {}
+		Global.telemetry._bearer_token = Global.telemetry._bearer_token or Utility:generate_token()
+		headers.Authorization = "Bearer " .. Global.telemetry._bearer_token
+
+		Steam:http_request_post(base_url .. telemetry_endpoint, callback, payload_content_type, telemetry_json, payload_size, headers)
+	else
+		error("error on JSON encoding, cannot send telemetry")
+	end
+end
+
+function Telemetry:send_gamesight_telemetry_immediately(event_name, payload, event_namespace, callback)
+	if get_platform_name() ~= "WIN32" or not self._global._gamesight_enabled then
+		return
+	end
+
+	callback = callback or telemetry_callback
+
+	self:init()
+
 	local telemetry_body = build_payload(event_name, payload, event_namespace)
 	local telemetry_json = json.encode(telemetry_body)
 	local payload_size = string.len(telemetry_json)
@@ -985,6 +1020,66 @@ function Telemetry:on_end_objective(id)
 
 	Global.telemetry._objective_id = nil
 	Global.telemetry._objective_start_time = nil
+end
+
+function Telemetry:send_on_game_launch()
+	if get_platform_name() ~= "WIN32" or not self._global._gamesight_enabled then
+		return
+	end
+
+	print("[Telemetry] Sending on game launch event")
+
+	local event_name = "game_launch"
+
+	local function telemetry_callback(error_code, status_code, response_body)
+		if error_code == connection_errors.no_conn_error then
+			if status_code == 204 or status_code == 200 then
+				print("[Telemetry] Gamesight payload successfully sent")
+			else
+				print(log_name, "problem on sending gamesight telemetry, http status: " .. status_code)
+			end
+		elseif error_code == connection_errors.request_timeout then
+			print(log_name, "problem on login, Request Timed Out")
+		else
+			print(log_name, "fatal error on sending gamesight telemetry, http status: " .. status_code)
+		end
+	end
+
+	local gamesight_identifiers = {}
+	local resolution = RenderSettings.resolution.x .. "x" .. RenderSettings.resolution.y
+	gamesight_identifiers.resolution = resolution
+	local os_name = Utility:get_os_name()
+
+	if os_name == "error" then
+		print(log_name, "problem on getting OS Name.")
+
+		os_name = ""
+	end
+
+	gamesight_identifiers.os = os_name
+	local os_language = Utility:get_current_language()
+
+	if string.len(os_language) > 6 then
+		print(log_name, os_language)
+
+		os_language = ""
+	end
+
+	gamesight_identifiers.language = os_language
+	local os_timezone = Utility:get_current_timezone()
+
+	if os_timezone == -1 then
+		print(log_name, "Unable to get the timezone properly")
+	end
+
+	gamesight_identifiers.timezone = os_timezone
+	local telemetry_payload = {
+		user_id = Steam:userid(),
+		type = event_name,
+		identifiers = gamesight_identifiers or {}
+	}
+
+	self:send_gamesight_telemetry_immediately(event_name, telemetry_payload, nil, telemetry_callback)
 end
 
 function Telemetry:send_on_player_heist_objective_start()

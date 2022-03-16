@@ -19128,6 +19128,21 @@ function WeaponFactoryTweakData:create_charms(tweak_data)
 				value = 1
 			}
 		},
+		wpn_fps_upg_charm_belt = {
+			is_a_unlockable = true,
+			texture_bundle_folder = "tawp",
+			type = "charm",
+			a_obj = "a_belt",
+			third_unit = "units/pd2_dlc_awp/weapons/wpn_fps_upg_charms/wpn_third_upg_charm_piggy",
+			parent = "magazine",
+			dlc = "tawp",
+			name_id = "bm_wp_upg_charm_belt",
+			unit = "units/pd2_dlc_lawp/weapons/wpn_fps_upg_belt/wpn_fps_bullet_belt",
+			pcs = {},
+			stats = {
+				value = 1
+			}
+		},
 		wpn_fps_upg_charm_cloaker = {
 			is_a_unlockable = true,
 			texture_bundle_folder = "tawp",

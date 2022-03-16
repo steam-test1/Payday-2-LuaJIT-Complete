@@ -148,6 +148,7 @@ function GenericUserManager:setup_setting_map()
 	self:setup_setting(96, "accessibility_dot_size", 5)
 	self:setup_setting(97, "accessibility_dot_hide_ads", true)
 	self:setup_setting(200, "use_telemetry", false)
+	self:setup_setting(201, "use_gamesight", false)
 	self:setup_setting(300, "adaptive_quality", true)
 	self:setup_setting(301, "window_zoom", true)
 	self:setup_setting(302, "arm_animation", true)
@@ -777,7 +778,7 @@ function GenericUserManager:save(data)
 		data.debug_post_effects_enabled = Global.debug_post_effects_enabled
 	end
 
-	data.use_telemetry_decided = Global.use_telemetry_decided
+	data.use_telemetry_gamesight_decided = Global.use_telemetry_gamesight_decided
 end
 
 function GenericUserManager:load(data, cache_version)
@@ -802,7 +803,7 @@ function GenericUserManager:load(data, cache_version)
 		Global.debug_post_effects_enabled = true
 	end
 
-	Global.use_telemetry_decided = data.use_telemetry_decided
+	Global.use_telemetry_gamesight_decided = data.use_telemetry_gamesight_decided
 
 	self:sanitize_settings()
 end

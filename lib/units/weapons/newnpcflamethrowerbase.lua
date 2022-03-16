@@ -12,7 +12,7 @@ local mvec3_cross = mvector3.cross
 local mvec3_neg = mvector3.negate
 local mvec3_norm = mvector3.normalize
 local mvec3_lerp = mvector3.lerp
-local m_rot_y = mrotation.y
+local mrot_y = mrotation.y
 local math_up = math.UP
 
 function NewNPCFlamethrowerBase:init(...)
@@ -161,49 +161,41 @@ function NewNPCFlamethrowerBase:fire_blank(direction, impact, sub_id, override_d
 		chk_shoot_expired.check_t = self._timer:time() + 0.3
 	end
 
+	local m_ray_from = nil
 	local weap_unit = self._unit
 	local setup_data = self._setup
 	local user_unit = setup_data and setup_data.user_unit
+	local fire_obj = self:fire_object() or weap_unit
+
+	fire_obj:m_position(mvec_from)
 
 	if override_direction then
-		local fire_obj = self:fire_object() or weap_unit
-
-		fire_obj:m_position(mvec_from)
 		fire_obj:m_rotation(mrot_fire)
-		mrot_y(mvec_fire_local_override, mrot_fire)
+		mrot_y(mrot_fire, mvec_fire_local_override)
 
 		direction = mvec_fire_local_override
-	else
-		local m_from = nil
+	elseif user_unit then
+		local mov_ext = alive(user_unit) and user_unit:movement()
 
-		if user_unit then
-			local mov_ext = alive(user_unit) and user_unit:movement()
-
-			if mov_ext then
-				m_from = mov_ext.detect_m_pos and mov_ext:detect_m_pos() or mov_ext.m_head_pos and mov_ext:m_head_pos()
-			end
-		end
-
-		if m_from then
-			mvec3_set(mvec_from, m_from)
-		else
-			local fire_obj = self:fire_object() or weap_unit
-
-			fire_obj:m_position(mvec_from)
+		if mov_ext then
+			m_ray_from = mov_ext.detect_m_pos and mov_ext:detect_m_pos() or mov_ext.m_head_pos and mov_ext:m_head_pos()
 		end
 	end
 
-	local range = self._flame_max_range or self._range
+	local range = self._flame_max_range or self._range or 1000
 
 	mvec3_set(mvec_to, direction)
 	mvec3_mul(mvec_to, range)
-	mvec3_add(mvec_to, mvec_from)
+	mvec3_add(mvec_to, m_ray_from or mvec_from)
+
+	local hit_something = nil
 
 	if impact then
 		local ignore_units = setup_data and setup_data.ignore_units
-		local col_ray = World:raycast("ray", mvec_from, mvec_to, "slot_mask", self._blank_slotmask, ignore_units and "ignore_unit" or nil, ignore_units or nil)
+		local col_ray = World:raycast("ray", m_ray_from or mvec_from, mvec_to, "slot_mask", self._blank_slotmask, ignore_units and "ignore_unit" or nil, ignore_units or nil)
 
 		if col_ray then
+			hit_something = true
 			local col_dis = col_ray.distance
 
 			if col_dis < range then
@@ -214,9 +206,12 @@ function NewNPCFlamethrowerBase:fire_blank(direction, impact, sub_id, override_d
 		end
 	end
 
-	mvec3_set(mvec_to, direction)
-	mvec3_mul(mvec_to, range)
-	mvec3_add(mvec_to, mvec_from)
+	if m_ray_from or hit_something then
+		mvec3_set(mvec_to, direction)
+		mvec3_mul(mvec_to, range)
+		mvec3_add(mvec_to, mvec_from)
+	end
+
 	self:_spawn_flame_effect(mvec_to, direction)
 end
 

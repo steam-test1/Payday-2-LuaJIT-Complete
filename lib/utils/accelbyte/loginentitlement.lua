@@ -1,17 +1,3 @@
-if _G.IS_VR then
-	Entitlement = Entitlement or class()
-
-	function Entitlement:CheckAndVerifyUserEntitlement(callback)
-	end
-
-	Login = Login or class()
-	Login.player_session = {
-		platform_user_id = ""
-	}
-
-	return
-end
-
 local base64 = require("lib/utils/base64")
 local json = require("lib/utils/accelbyte/json")
 local ClientId = Utility:get_current_client_id()
@@ -574,6 +560,8 @@ end
 function Entitlement:CheckAndVerifyUserEntitlement(callback)
 	Entitlement.result.data = {}
 	local steam_id = Steam:userid()
+
+	Telemetry:send_on_game_launch()
 
 	local function entitlement_callback(success)
 		Entitlement:SetDLCEntitlements()

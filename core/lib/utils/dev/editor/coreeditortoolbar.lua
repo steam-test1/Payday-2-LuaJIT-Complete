@@ -138,6 +138,9 @@ function CoreEditor:build_toolbar()
 
 	self._toolbar:add_tool("TB_HELP", "Burt Reynolds guide to using the editor", icons_path .. "burt.bmp", s)
 	self._toolbar:connect("TB_HELP", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_using_the_editor"), "")
+	self._toolbar:add_separator()
+	self._toolbar:add_tool("TB_GATHER_DUPLICATES", "Gather Duplicates", icons_path .. "duplicates.bmp", "")
+	self._toolbar:connect("TB_GATHER_DUPLICATES", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_gather_duplicates"), "")
 	self._toolbar:realize()
 end
 

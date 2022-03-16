@@ -209,11 +209,6 @@ function DLCTweakData:init_generated()
 			type_items = "player_styles",
 			item_entry = "sparkle",
 			amount = 1
-		},
-		{
-			type_items = "player_styles",
-			item_entry = "waistcoat",
-			amount = 1
 		}
 	}
 	self.cctp_bundle = {
