@@ -3638,8 +3638,8 @@ function InteractionTweakData:init(tweak_data)
 	self.cas_unpack_turret = {
 		text_id = "hud_unpack_turret",
 		action_text_id = "hud_action_unpacking_turret",
-		timer = 2,
 		interact_distance = 150,
+		timer = 2,
 		start_active = false
 	}
 	self.cas_open_guitar_case = {
@@ -7262,9 +7262,10 @@ function InteractionTweakData:init(tweak_data)
 	self.pent_press_take_car_jack = {
 		text_id = "hud_int_press_take_car_jack",
 		interact_distance = 150,
+		timer = 3,
 		start_active = false,
-		sound_done = "PENT_Pickup_Jack",
-		axis = "x"
+		axis = "x",
+		sound_done = "PENT_Pickup_Jack"
 	}
 	self.pent_press_take_gas_can = {
 		text_id = "hud_int_press_take_gas_can",

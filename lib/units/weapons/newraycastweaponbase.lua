@@ -333,9 +333,10 @@ function NewRaycastWeaponBase:clbk_assembly_complete(clbk, parts, blueprint)
 			local bullet_objects = managers.weapon_factory:get_part_data_type_from_weapon_by_type(type, "bullet_objects", self._parts)
 
 			if bullet_objects then
+				local offset = bullet_objects.offset or 0
 				local prefix = bullet_objects.prefix
 
-				for i = 1, bullet_objects.amount do
+				for i = 1 + offset, bullet_objects.amount + offset do
 					local object = type_part.unit:get_object(Idstring(prefix .. i))
 
 					if object then
@@ -2143,8 +2144,6 @@ end
 
 function NewRaycastWeaponBase:reload_shell_expire_t(is_not_empty)
 	if self._use_shotgun_reload then
-		print(is_not_empty)
-
 		local shotgun_reload_tweak = self:_get_shotgun_reload_tweak_data(is_not_empty)
 
 		return shotgun_reload_tweak and shotgun_reload_tweak.reload_shell or self:weapon_tweak_data().timers.shotgun_reload_shell or 0.5666666666666667

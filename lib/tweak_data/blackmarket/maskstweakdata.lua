@@ -7942,6 +7942,189 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		dlc = "gdtp",
 		texture_bundle_folder = "gdtp"
 	}
+	self.masks.saloonshade = {
+		unit = "units/pd2_dlc_txt1/masks/msk_saloonshade/msk_saloonshade",
+		name_id = "bm_msk_saloonshade",
+		pcs = {},
+		value = 0,
+		type = "cowboyhat",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "txt1",
+		texture_bundle_folder = "txt1",
+		offsets = {
+			ecp_male = {
+				Vector3(0.196759, -0.518719, -0.399472),
+				Rotation(0, 0, -0)
+			},
+			sydney = {
+				Vector3(0, 0.316006, 0),
+				Rotation(0, 0, -0)
+			},
+			joy = {
+				Vector3(0, 0, -0.518719),
+				Rotation(0, 0, -0)
+			},
+			jimmy = {
+				Vector3(-0.280226, 0.435252, -1.11495),
+				Rotation(0, 0, -0)
+			},
+			female_1 = {
+				Vector3(0, 0.912237, -0.280226),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.saloonstar = {
+		unit = "units/pd2_dlc_txt1/masks/msk_saloonstar/msk_saloonstar",
+		name_id = "bm_msk_saloonstar",
+		pcs = {},
+		value = 0,
+		type = "cowboyhat",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "txt1",
+		texture_bundle_folder = "txt1",
+		offsets = {
+			ecp_male = {
+				Vector3(0.196759, -0.518719, -0.399472),
+				Rotation(0, 0, -0)
+			},
+			sydney = {
+				Vector3(0, 0.316006, 0),
+				Rotation(0, 0, -0)
+			},
+			joy = {
+				Vector3(0, 0, -0.518719),
+				Rotation(0, 0, -0)
+			},
+			jimmy = {
+				Vector3(-0.280226, 0.435252, -1.11495),
+				Rotation(0, 0, -0)
+			},
+			female_1 = {
+				Vector3(0, 0.912237, -0.280226),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.saloonlightlea = {
+		unit = "units/pd2_dlc_txt1/masks/msk_saloonlightlea/msk_saloonlightlea",
+		name_id = "bm_msk_saloonlightlea",
+		pcs = {},
+		value = 0,
+		type = "cowboyhat",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "txt1",
+		texture_bundle_folder = "txt1",
+		offsets = {
+			ecp_male = {
+				Vector3(0.196759, -0.518719, -0.399472),
+				Rotation(0, 0, -0)
+			},
+			sydney = {
+				Vector3(0, 0.316006, 0),
+				Rotation(0, 0, -0)
+			},
+			joy = {
+				Vector3(0, 0, -0.518719),
+				Rotation(0, 0, -0)
+			},
+			jimmy = {
+				Vector3(-0.280226, 0.435252, -1.11495),
+				Rotation(0, 0, -0)
+			},
+			female_1 = {
+				Vector3(0, 0.912237, -0.280226),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.saloondarklea = {
+		unit = "units/pd2_dlc_txt1/masks/msk_saloondarklea/msk_saloondarklea",
+		name_id = "bm_msk_saloondarklea",
+		pcs = {},
+		value = 0,
+		type = "cowboyhat",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "txt1",
+		texture_bundle_folder = "txt1",
+		offsets = {
+			ecp_male = {
+				Vector3(0.196759, -0.518719, -0.399472),
+				Rotation(0, 0, -0)
+			},
+			sydney = {
+				Vector3(0, 0.316006, 0),
+				Rotation(0, 0, -0)
+			},
+			joy = {
+				Vector3(0, 0, -0.518719),
+				Rotation(0, 0, -0)
+			},
+			jimmy = {
+				Vector3(-0.280226, 0.435252, -1.11495),
+				Rotation(0, 0, -0)
+			},
+			female_1 = {
+				Vector3(0, 0.912237, -0.280226),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.ranchcap_emblem = {
+		unit = "units/pd2_dlc_txt1/masks/msk_ranchcap_emblem/msk_ranchcap_emblem",
+		name_id = "bm_msk_ranchcap_emblem",
+		pcs = {},
+		value = 0,
+		type = "cowboyhat",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "txt1",
+		texture_bundle_folder = "txt1",
+		offsets = {
+			jimmy = {
+				Vector3(-0.16098, 0.316006, 0),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.ranchcap_plain = {
+		unit = "units/pd2_dlc_txt1/masks/msk_ranchcap_plain/msk_ranchcap_plain",
+		name_id = "bm_msk_ranchcap_plain",
+		pcs = {},
+		value = 0,
+		type = "cowboyhat",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "txt1",
+		texture_bundle_folder = "txt1",
+		offsets = {
+			jimmy = {
+				Vector3(-0.16098, 0.316006, 0),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.ranchcap_texas = {
+		unit = "units/pd2_dlc_txt1/masks/msk_ranchcap_texas/msk_ranchcap_texas",
+		name_id = "bm_msk_ranchcap_texas",
+		pcs = {},
+		value = 0,
+		type = "cowboyhat",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "txt1",
+		texture_bundle_folder = "txt1",
+		offsets = {
+			jimmy = {
+				Vector3(-0.16098, 0.316006, 0),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.masks) do

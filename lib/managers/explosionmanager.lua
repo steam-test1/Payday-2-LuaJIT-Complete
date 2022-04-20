@@ -142,6 +142,7 @@ function ExplosionManager:client_damage_and_push(position, normal, user_unit, dm
 			dir = hit_body:center_of_mass()
 			len = mvector3.direction(dir, position, dir)
 			damage = dmg * math.pow(math.clamp(1 - len / range, 0, 1), curve_pow)
+			damage = math.max(damage, math.min(dmg, 1))
 
 			self:_apply_body_damage(false, hit_body, user_unit, dir, damage)
 		end
@@ -590,10 +591,7 @@ function ExplosionManager:_damage_bodies(detect_results, params)
 				local dir = hit_body:center_of_mass()
 				local len = mvector3.direction(dir, hit_pos, dir)
 				local prop_damage = damage * math.pow(math.clamp(1 - len / range, 0, 1), curve_pow)
-
-				if 1 - len / range < -5 then
-					prop_damage = math.max(prop_damage, 1)
-				end
+				prop_damage = math.max(prop_damage, math.min(damage, 1))
 
 				self:_apply_body_damage(true, hit_body, user_unit, dir, prop_damage)
 			end

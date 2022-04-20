@@ -1577,10 +1577,10 @@ function WeaponFactoryManager:get_perks(factory_id, blueprint)
 	for _, part_id in ipairs(blueprint) do
 		if not forbidden[part_id] then
 			local part_data = factory.parts[part_id]
-			local perks = part_data and part_data.perks
+			local part_perks = part_data and part_data.perks
 
-			if perks then
-				for _, perk in ipairs(perks) do
+			if part_perks then
+				for _, perk in ipairs(part_perks) do
 					perks[perk] = true
 				end
 			end

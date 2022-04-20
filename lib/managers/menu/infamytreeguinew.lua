@@ -1154,7 +1154,11 @@ function InfamyTreeGui:mouse_pressed(button, x, y)
 
 		if self._can_go_infamous and self.infamous_panel:child("go_infamous_button"):inside(x, y) and MenuCallbackHandler:can_become_infamous() and managers.money:get_infamous_cost(managers.experience:current_rank() + 1) <= managers.money:offshore() then
 			self.scroll:set_input_focus(false)
-			MenuCallbackHandler:become_infamous()
+			MenuCallbackHandler:become_infamous({
+				no_clbk = function ()
+					self.scroll:set_input_focus(true)
+				end
+			})
 
 			return
 		end

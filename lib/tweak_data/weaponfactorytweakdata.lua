@@ -4749,8 +4749,7 @@ function WeaponFactoryTweakData:_init_olympic()
 		stats = {
 			value = 4,
 			spread_moving = -1,
-			recoil = 1,
-			concealment = -1
+			spread = 1
 		},
 		forbids = {
 			"wpn_fps_addon_ris"
@@ -11647,6 +11646,7 @@ function WeaponFactoryTweakData:_init_m45()
 		},
 		stats = {
 			concealment = -2,
+			recoil = 2,
 			value = 4,
 			extra_ammo = 6
 		},
@@ -11680,6 +11680,7 @@ function WeaponFactoryTweakData:_init_m45()
 		},
 		stats = {
 			spread = 1,
+			recoil = 2,
 			value = 3,
 			concealment = -1
 		}
@@ -18127,7 +18128,7 @@ function WeaponFactoryTweakData:_init_tec9()
 			spread = -1,
 			damage = 0,
 			concealment = 3,
-			recoil = 1
+			recoil = -1
 		},
 		animations = {
 			fire = "recoil",
@@ -18147,9 +18148,9 @@ function WeaponFactoryTweakData:_init_tec9()
 		stats = {
 			value = 5,
 			spread = 1,
-			damage = 0,
+			damage = 4,
 			concealment = -3,
-			recoil = -2
+			recoil = 2
 		},
 		animations = {
 			fire = "recoil",
@@ -21497,10 +21498,10 @@ function WeaponFactoryTweakData:_init_sterling()
 		pcs = {},
 		stats = {
 			value = 1,
-			concealment = -2,
-			damage = 1,
+			concealment = -3,
+			damage = 5,
 			spread = 1,
-			recoil = -1
+			recoil = 1
 		},
 		animations = {
 			fire = "recoil",
@@ -21520,10 +21521,9 @@ function WeaponFactoryTweakData:_init_sterling()
 		pcs = {},
 		stats = {
 			spread = -1,
-			concealment = 1,
-			damage = 2,
+			recoil = -1,
 			value = 1,
-			recoil = 1
+			concealment = 2
 		},
 		animations = {
 			fire = "recoil",
@@ -21559,7 +21559,7 @@ function WeaponFactoryTweakData:_init_sterling()
 		pcs = {},
 		stats = {
 			alert_size = 12,
-			spread = -1,
+			spread = 1,
 			damage = 0,
 			suppression = 12,
 			value = 4,
@@ -21606,12 +21606,11 @@ function WeaponFactoryTweakData:_init_sterling()
 		pcs = {},
 		stats = {
 			alert_size = 12,
-			spread = -1,
+			spread_moving = 0,
 			damage = 0,
 			suppression = 12,
 			value = 4,
 			recoil = 1,
-			spread_moving = 0,
 			concealment = -1
 		},
 		perks = {
@@ -22278,8 +22277,9 @@ function WeaponFactoryTweakData:_init_m1928()
 			40
 		},
 		stats = {
-			spread = 1,
+			spread = 2,
 			value = 4,
+			damage = 10,
 			concealment = -3
 		}
 	}
@@ -26244,7 +26244,7 @@ function WeaponFactoryTweakData:_init_butchermodpack()
 		stats = {
 			value = 1,
 			recoil = -5,
-			damage = 10,
+			damage = 15,
 			concealment = -2
 		}
 	}
@@ -37374,7 +37374,8 @@ function WeaponFactoryTweakData:_init_schakal()
 		stats = {
 			spread = 1,
 			value = 1,
-			concealment = -1
+			damage = 6,
+			concealment = -3
 		}
 	}
 	self.parts.wpn_fps_smg_schakal_b_standard = {
@@ -37442,7 +37443,7 @@ function WeaponFactoryTweakData:_init_schakal()
 		stats = {
 			extra_ammo = -5,
 			value = 1,
-			concealment = 2
+			concealment = 3
 		}
 	}
 	self.parts.wpn_fps_smg_schakal_m_standard = {
@@ -45397,8 +45398,9 @@ function WeaponFactoryTweakData:_init_x_m45()
 			wpn_fps_smg_m45_m_extended = {
 				stats = {
 					concealment = -2,
-					value = 4,
-					extra_ammo = 12
+					recoil = 2,
+					extra_ammo = 12,
+					value = 4
 				}
 			},
 			wpn_fps_upg_ns_pis_putnik = {
@@ -45999,7 +46001,7 @@ function WeaponFactoryTweakData:_init_x_schakal()
 				stats = {
 					extra_ammo = -10,
 					value = 1,
-					concealment = 2
+					concealment = 3
 				}
 			},
 			wpn_fps_smg_schakal_m_long = {

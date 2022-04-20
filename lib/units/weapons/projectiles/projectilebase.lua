@@ -34,7 +34,7 @@ function ProjectileBase:set_thrower_unit_by_peer_id(peer_id)
 		local thrower_unit = peer and peer:unit()
 
 		if alive(thrower_unit) then
-			self:set_thrower_unit(thrower_unit, true)
+			self:set_thrower_unit(thrower_unit)
 		end
 	end
 end
@@ -416,7 +416,7 @@ function ProjectileBase.throw_projectile(projectile_type, pos, dir, owner_peer_i
 		local thrower_unit = peer and peer:unit()
 
 		if alive(thrower_unit) then
-			unit:base():set_thrower_unit(thrower_unit, true)
+			unit:base():set_thrower_unit(thrower_unit)
 
 			if not tweak_entry.throwable and thrower_unit:movement() and thrower_unit:movement():current_state() then
 				unit:base():set_weapon_unit(thrower_unit:movement():current_state()._equipped_unit)

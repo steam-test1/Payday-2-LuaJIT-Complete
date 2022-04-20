@@ -462,9 +462,6 @@ function SecurityCameraUnitElement:_align_camera_unit()
 		local new_pitch_rot = Rotation(self._camera_u_data.original_rot_pitch:yaw(), self._hed.pitch, self._camera_u_data.original_rot_pitch:roll())
 
 		obj_pitch:set_local_rotation(new_pitch_rot)
-	else
-		self._camera_u_data.unit:get_object(Idstring("CameraYaw")):set_local_rotation(self._camera_u_data.original_rot_yaw)
-		self._camera_u_data.unit:get_object(Idstring("CameraPitch")):set_local_rotation(self._camera_u_data.original_rot_pitch)
 	end
 
 	self._camera_u_data.unit:set_moving()

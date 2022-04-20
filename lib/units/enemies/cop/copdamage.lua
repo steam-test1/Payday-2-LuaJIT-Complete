@@ -1756,7 +1756,13 @@ function CopDamage:damage_dot(attack_data)
 				managers.money:civilian_killed()
 			end
 
-			self:_check_damage_achievements(attack_data, false)
+			if attack_data and attack_data.weapon_id and not attack_data.weapon_unit then
+				attack_data.name_id = attack_data.weapon_id
+
+				self:_check_melee_achievements(attack_data)
+			else
+				self:_check_damage_achievements(attack_data, false)
+			end
 		end
 	end
 
@@ -2485,7 +2491,42 @@ function CopDamage:damage_melee(attack_data)
 		end
 	end
 
+	self:_check_melee_achievements(attack_data)
+
+	local hit_offset_height = math.clamp(attack_data.col_ray.position.z - self._unit:movement():m_pos().z, 0, 300)
+	local variant = nil
+
+	if result.type == "shield_knock" then
+		variant = 1
+	elseif result.type == "counter_tased" then
+		variant = 2
+	elseif result.type == "expl_hurt" then
+		variant = 4
+	elseif snatch_pager then
+		variant = 3
+	elseif result.type == "taser_tased" then
+		variant = 5
+	elseif dismember_victim then
+		variant = 6
+	elseif result.type == "healed" then
+		variant = 7
+	else
+		variant = 0
+	end
+
+	local body_index = self._unit:get_body_index(attack_data.col_ray.body:name())
+
+	self:_send_melee_attack_result(attack_data, damage_percent, damage_effect_percent, hit_offset_height, variant, body_index)
+	self:_on_damage_received(attack_data)
+
+	return result
+end
+
+function CopDamage:_check_melee_achievements(attack_data)
 	if tweak_data.blackmarket.melee_weapons[attack_data.name_id] then
+		local is_civlian = CopDamage.is_civilian(self._unit:base()._tweak_table)
+		local is_gangster = CopDamage.is_gangster(self._unit:base()._tweak_table)
+		local is_cop = not is_civlian and not is_gangster
 		local achievements = tweak_data.achievement.enemy_melee_hit_achievements or {}
 		local melee_type = tweak_data.blackmarket.melee_weapons[attack_data.name_id].type
 		local enemy_base = self._unit:base()
@@ -2563,34 +2604,6 @@ function CopDamage:damage_melee(attack_data)
 			end
 		end
 	end
-
-	local hit_offset_height = math.clamp(attack_data.col_ray.position.z - self._unit:movement():m_pos().z, 0, 300)
-	local variant = nil
-
-	if result.type == "shield_knock" then
-		variant = 1
-	elseif result.type == "counter_tased" then
-		variant = 2
-	elseif result.type == "expl_hurt" then
-		variant = 4
-	elseif snatch_pager then
-		variant = 3
-	elseif result.type == "taser_tased" then
-		variant = 5
-	elseif dismember_victim then
-		variant = 6
-	elseif result.type == "healed" then
-		variant = 7
-	else
-		variant = 0
-	end
-
-	local body_index = self._unit:get_body_index(attack_data.col_ray.body:name())
-
-	self:_send_melee_attack_result(attack_data, damage_percent, damage_effect_percent, hit_offset_height, variant, body_index)
-	self:_on_damage_received(attack_data)
-
-	return result
 end
 
 function CopDamage:damage_mission(attack_data)

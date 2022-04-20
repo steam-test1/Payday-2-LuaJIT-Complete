@@ -232,9 +232,7 @@ function ToolHub:buildmenu()
 end
 
 function ToolHub:change_visualization(viz)
-	for _, vp in ipairs(managers.viewport:viewports()) do
-		vp:set_visualization_mode(viz)
-	end
+	CoreDebug.change_visualization(viz)
 end
 
 function ToolHub:toggle_fullscreen()

@@ -53,6 +53,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_m249_npc()
 	self:_init_data_contraband_npc()
 	self:_init_data_flamethrower_npc()
+	self:_init_data_heavy_snp_npc()
 	self:_init_data_smoke_npc()
 	self:_init_data_groza_npc()
 	self:_init_data_type54_npc()
@@ -1276,7 +1277,7 @@ function WeaponTweakData:_init_data_hk21_npc()
 	self.hk21_npc.DAMAGE = 2
 	self.hk21_npc.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
 	self.hk21_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
-	self.hk21_npc.CLIP_AMMO_MAX = 150
+	self.hk21_npc.CLIP_AMMO_MAX = 60
 	self.hk21_npc.NR_CLIPS_MAX = 5
 	self.hk21_npc.auto.fire_rate = 0.15
 	self.hk21_npc.hold = "rifle"
@@ -1374,6 +1375,23 @@ function WeaponTweakData:_init_data_flamethrower_npc()
 	self.flamethrower_npc.alert_size = 2500
 	self.flamethrower_npc.suppression = 0.45
 	self.flamethrower_npc.FIRE_MODE = "auto"
+end
+
+function WeaponTweakData:_init_data_heavy_snp_npc()
+	self.heavy_snp_npc.categories = {
+		"snp"
+	}
+	self.heavy_snp_npc.sounds.prefix = "zsniper_npc"
+	self.heavy_snp_npc.use_data.selection_index = SELECTION.PRIMARY
+	self.heavy_snp_npc.DAMAGE = 1
+	self.heavy_snp_npc.muzzleflash = "effects/payday2/particles/weapons/762_auto"
+	self.heavy_snp_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
+	self.heavy_snp_npc.CLIP_AMMO_MAX = 6
+	self.heavy_snp_npc.NR_CLIPS_MAX = 8
+	self.heavy_snp_npc.hold = "rifle"
+	self.heavy_snp_npc.alert_size = 5000
+	self.heavy_snp_npc.suppression = 1
+	self.heavy_snp_npc.FIRE_MODE = "single"
 end
 
 function WeaponTweakData:_init_data_c45_crew()
@@ -6368,7 +6386,7 @@ function WeaponTweakData:_init_mp9(weapon_data)
 	self.mp9.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 44,
+		damage = 50,
 		alert_size = 7,
 		spread = 8,
 		spread_moving = 8,
@@ -6909,7 +6927,7 @@ function WeaponTweakData:_init_olympic(weapon_data)
 	self.olympic.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 55,
+		damage = 65,
 		alert_size = 7,
 		spread = 12,
 		spread_moving = 11,
@@ -9552,7 +9570,7 @@ function WeaponTweakData:_init_mp7(weapon_data)
 	self.mp7.DAMAGE = 1
 	self.mp7.damage_falloff = FALLOFF_TEMPLATE.SMG_FALL_MEDIUM
 	self.mp7.CLIP_AMMO_MAX = 20
-	self.mp7.NR_CLIPS_MAX = 8
+	self.mp7.NR_CLIPS_MAX = 7
 	self.mp7.AMMO_MAX = self.mp7.CLIP_AMMO_MAX * self.mp7.NR_CLIPS_MAX
 	self.mp7.AMMO_PICKUP = self:_pickup_chance(self.mp7.AMMO_MAX, PICKUP.AR_MED_CAPACITY)
 	self.mp7.FIRE_MODE = "auto"
@@ -9607,7 +9625,7 @@ function WeaponTweakData:_init_mp7(weapon_data)
 	self.mp7.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 58,
+		damage = 70,
 		alert_size = 7,
 		spread = 17,
 		spread_moving = 17,
@@ -11626,7 +11644,7 @@ function WeaponTweakData:_init_uzi(weapon_data)
 	self.uzi.DAMAGE = 1
 	self.uzi.damage_falloff = FALLOFF_TEMPLATE.SMG_FALL_LOW
 	self.uzi.CLIP_AMMO_MAX = 40
-	self.uzi.NR_CLIPS_MAX = 5
+	self.uzi.NR_CLIPS_MAX = 3
 	self.uzi.AMMO_MAX = self.uzi.CLIP_AMMO_MAX * self.uzi.NR_CLIPS_MAX
 	self.uzi.AMMO_PICKUP = self:_pickup_chance(self.uzi.AMMO_MAX, PICKUP.AR_HIGH_CAPACITY)
 	self.uzi.FIRE_MODE = "auto"
@@ -11680,7 +11698,7 @@ function WeaponTweakData:_init_uzi(weapon_data)
 	self.uzi.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 44,
+		damage = 90,
 		alert_size = 7,
 		spread = 14,
 		spread_moving = 14,
@@ -13445,7 +13463,7 @@ function WeaponTweakData:_init_cobray(weapon_data)
 	self.cobray.sounds.leave_steelsight = "secondary_steel_sight_exit"
 	self.cobray.timers = {
 		reload_not_empty = 2.05,
-		reload_empty = 4.35,
+		reload_empty = 3,
 		unequip = 0.55,
 		equip = 0.5
 	}
@@ -17274,7 +17292,7 @@ function WeaponTweakData:_init_sr2(weapon_data)
 		alert_size = 7,
 		spread = 14,
 		spread_moving = 14,
-		recoil = 14,
+		recoil = 18,
 		value = 1,
 		extra_ammo = 51,
 		reload = 11,
@@ -17387,10 +17405,10 @@ function WeaponTweakData:_init_x_sr2(weapon_data)
 		alert_size = 7,
 		spread = 14,
 		spread_moving = 14,
-		recoil = 14,
+		recoil = 18,
 		value = 1,
 		extra_ammo = 51,
-		reload = 11,
+		reload = 13,
 		suppression = 15,
 		concealment = 28
 	}
@@ -20049,10 +20067,10 @@ function WeaponTweakData:_init_coal(weapon_data)
 		alert_size = 7,
 		spread = 14,
 		spread_moving = 14,
-		recoil = 14,
+		recoil = 16,
 		value = 1,
 		extra_ammo = 51,
-		reload = 11,
+		reload = 14,
 		suppression = 14,
 		concealment = 24
 	}
@@ -21319,10 +21337,10 @@ function WeaponTweakData:_init_shepheard(weapon_data)
 	}
 	self.shepheard.kick = {
 		standing = {
-			-0.2,
-			0.4,
-			-1,
-			1
+			0.9,
+			0.7,
+			-0.4,
+			0.4
 		}
 	}
 	self.shepheard.kick.crouching = self.shepheard.kick.standing
@@ -21357,9 +21375,9 @@ function WeaponTweakData:_init_shepheard(weapon_data)
 	self.shepheard.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 44,
+		damage = 58,
 		alert_size = 7,
-		spread = 12,
+		spread = 17,
 		spread_moving = 14,
 		recoil = 12,
 		value = 1,
@@ -21428,8 +21446,8 @@ function WeaponTweakData:_init_x_shepheard(weapon_data)
 	}
 	self.x_shepheard.kick = {
 		standing = {
-			1,
-			0.8,
+			0.6,
+			0.4,
 			-0.5,
 			0.5
 		}
@@ -21466,9 +21484,9 @@ function WeaponTweakData:_init_x_shepheard(weapon_data)
 	self.x_shepheard.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 44,
+		damage = 58,
 		alert_size = 7,
-		spread = 12,
+		spread = 17,
 		spread_moving = 14,
 		recoil = 12,
 		value = 1,
@@ -22604,7 +22622,7 @@ function WeaponTweakData:_init_x_coal(weapon_data)
 	self.x_coal.DAMAGE = 1
 	self.x_coal.damage_falloff = FALLOFF_TEMPLATE.AKI_SMG_FALL_HIGH
 	self.x_coal.CLIP_AMMO_MAX = 128
-	self.x_coal.NR_CLIPS_MAX = 1.25
+	self.x_coal.NR_CLIPS_MAX = 1.41
 	self.x_coal.AMMO_MAX = self.x_coal.CLIP_AMMO_MAX * self.x_coal.NR_CLIPS_MAX
 	self.x_coal.AMMO_PICKUP = self:_pickup_chance(self.x_coal.AMMO_MAX, PICKUP.OTHER)
 	self.x_coal.FIRE_MODE = "auto"
@@ -22667,10 +22685,10 @@ function WeaponTweakData:_init_x_coal(weapon_data)
 		alert_size = 7,
 		spread = 14,
 		spread_moving = 14,
-		recoil = 14,
+		recoil = 16,
 		value = 1,
 		extra_ammo = 51,
-		reload = 11,
+		reload = 13,
 		suppression = 14,
 		concealment = 24
 	}
@@ -22889,7 +22907,7 @@ function WeaponTweakData:_init_x_cobray(weapon_data)
 		recoil = 18,
 		value = 1,
 		extra_ammo = 51,
-		reload = 11,
+		reload = 13,
 		suppression = 14,
 		concealment = 25
 	}
@@ -23478,7 +23496,7 @@ function WeaponTweakData:_init_x_mp7(weapon_data)
 	self.x_mp7.DAMAGE = 1
 	self.x_mp7.damage_falloff = FALLOFF_TEMPLATE.AKI_SMG_FALL_MEDIUM
 	self.x_mp7.CLIP_AMMO_MAX = 40
-	self.x_mp7.NR_CLIPS_MAX = 6
+	self.x_mp7.NR_CLIPS_MAX = 5
 	self.x_mp7.AMMO_MAX = self.x_mp7.CLIP_AMMO_MAX * self.x_mp7.NR_CLIPS_MAX
 	self.x_mp7.AMMO_PICKUP = self:_pickup_chance(self.x_mp7.AMMO_MAX, PICKUP.OTHER)
 	self.x_mp7.FIRE_MODE = "auto"
@@ -23538,7 +23556,7 @@ function WeaponTweakData:_init_x_mp7(weapon_data)
 	self.x_mp7.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 58,
+		damage = 70,
 		alert_size = 7,
 		spread = 17,
 		spread_moving = 17,
@@ -23588,7 +23606,7 @@ function WeaponTweakData:_init_x_mp9(weapon_data)
 	self.x_mp9.DAMAGE = 1
 	self.x_mp9.damage_falloff = FALLOFF_TEMPLATE.AKI_SMG_FALL_LOW
 	self.x_mp9.CLIP_AMMO_MAX = 60
-	self.x_mp9.NR_CLIPS_MAX = 5
+	self.x_mp9.NR_CLIPS_MAX = 4.5
 	self.x_mp9.AMMO_MAX = self.x_mp9.CLIP_AMMO_MAX * self.x_mp9.NR_CLIPS_MAX
 	self.x_mp9.AMMO_PICKUP = self:_pickup_chance(self.x_mp9.AMMO_MAX, PICKUP.OTHER)
 	self.x_mp9.FIRE_MODE = "auto"
@@ -23648,14 +23666,14 @@ function WeaponTweakData:_init_x_mp9(weapon_data)
 	self.x_mp9.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 44,
+		damage = 50,
 		alert_size = 7,
 		spread = 8,
 		spread_moving = 8,
 		recoil = 20,
 		value = 1,
 		extra_ammo = 51,
-		reload = 11,
+		reload = 16,
 		suppression = 16,
 		concealment = 26
 	}
@@ -23758,7 +23776,7 @@ function WeaponTweakData:_init_x_olympic(weapon_data)
 	self.x_olympic.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 55,
+		damage = 65,
 		alert_size = 7,
 		spread = 12,
 		spread_moving = 11,
@@ -23901,8 +23919,8 @@ function WeaponTweakData:_init_x_polymer(weapon_data)
 	self.x_polymer.timers = {
 		reload_not_empty = 3,
 		reload_empty = 3,
-		unequip = 0.5,
-		equip = 0.5
+		unequip = 0.3,
+		equip = 0.3
 	}
 	self.x_polymer.name_id = "bm_w_x_polymer"
 	self.x_polymer.desc_id = "bm_w_x_polymer_desc"
@@ -23983,7 +24001,7 @@ function WeaponTweakData:_init_x_polymer(weapon_data)
 		recoil = 20,
 		value = 1,
 		extra_ammo = 51,
-		reload = 11,
+		reload = 13,
 		suppression = 14,
 		concealment = 20
 	}
@@ -24202,7 +24220,7 @@ function WeaponTweakData:_init_x_scorpion(weapon_data)
 		recoil = 18,
 		value = 7,
 		extra_ammo = 51,
-		reload = 11,
+		reload = 16,
 		suppression = 17,
 		concealment = 28
 	}
@@ -24464,7 +24482,7 @@ function WeaponTweakData:_init_x_uzi(weapon_data)
 	self.x_uzi.DAMAGE = 1
 	self.x_uzi.damage_falloff = FALLOFF_TEMPLATE.AKI_SMG_FALL_LOW
 	self.x_uzi.CLIP_AMMO_MAX = 80
-	self.x_uzi.NR_CLIPS_MAX = 3.5
+	self.x_uzi.NR_CLIPS_MAX = 2
 	self.x_uzi.AMMO_MAX = self.x_uzi.CLIP_AMMO_MAX * self.x_uzi.NR_CLIPS_MAX
 	self.x_uzi.AMMO_PICKUP = self:_pickup_chance(self.x_uzi.AMMO_MAX, PICKUP.OTHER)
 	self.x_uzi.FIRE_MODE = "auto"
@@ -24523,7 +24541,7 @@ function WeaponTweakData:_init_x_uzi(weapon_data)
 	self.x_uzi.stats = {
 		zoom = 3,
 		total_ammo_mod = 21,
-		damage = 44,
+		damage = 90,
 		alert_size = 7,
 		spread = 14,
 		spread_moving = 14,
@@ -28452,6 +28470,11 @@ function WeaponTweakData:_create_table_structure()
 		sounds = {},
 		use_data = {},
 		auto = {}
+	}
+	self.heavy_snp_npc = {
+		usage = "is_rifle",
+		sounds = {},
+		use_data = {}
 	}
 	self.groza_npc = {
 		usage = "is_rifle",

@@ -340,7 +340,7 @@ function NetworkPeer:_verify_content(item_type, item_id)
 		return false
 	end
 
-	if item_data.unlocked or item_data.is_a_unlockable or item_data.is_an_unlockable then
+	if item_data.unlocked or item_data.is_a_unlockable or item_data.is_an_unlockable or item_data.skip_cheat_verification then
 		return true
 	end
 

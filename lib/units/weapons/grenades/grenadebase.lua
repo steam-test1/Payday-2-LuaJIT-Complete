@@ -93,18 +93,19 @@ function GrenadeBase:add_damage_result(unit, is_dead, damage_percent)
 	self:_check_achievements(unit, is_dead, damage_percent, hit_count, kill_count)
 end
 
-function GrenadeBase:_check_achievements(unit, is_dead, damage_percent, hit_count, kill_count)
+function GrenadeBase:_check_achievements(unit, is_dead, damage_percent, hit_count, kill_count, damage_variant)
 	local enemy_base = unit:base()
 	local unit_type = enemy_base._tweak_table
 	local is_gangster = unit:character_damage().is_gangster(unit_type)
 	local is_cop = unit:character_damage().is_cop(unit_type)
 	local is_civilian = unit:character_damage().is_civilian(unit_type)
 	local is_crouching = alive(managers.player:player_unit()) and managers.player:player_unit():movement() and managers.player:player_unit():movement():crouching()
-	local count_pass, grenade_type_pass, kill_pass, distance_pass, enemy_pass, enemies_pass, flying_strike_pass, timer_pass, difficulty_pass, job_pass, crouching_pass, session_kill_pass, is_civilian_pass, explosive_pass, tags_all_pass, tags_any_pass, player_state_pass, all_pass, memory, grenade_is_explosive = nil
+	local count_pass, grenade_type_pass, grenade_types_pass, kill_pass, distance_pass, enemy_pass, enemies_pass, flying_strike_pass, timer_pass, difficulty_pass, job_pass, crouching_pass, session_kill_pass, is_civilian_pass, explosive_pass, tags_all_pass, tags_any_pass, player_state_pass, all_pass, memory, grenade_is_explosive = nil
 
 	for achievement, achievement_data in pairs(tweak_data.achievement.grenade_achievements) do
 		count_pass = not achievement_data.count or achievement_data.count <= (achievement_data.kill and kill_count or hit_count)
 		grenade_type_pass = not achievement_data.grenade_type or achievement_data.grenade_type == self:projectile_entry()
+		grenade_types_pass = not achievement_data.grenade_types or table.contains(achievement_data.grenade_types, self:projectile_entry())
 		kill_pass = not achievement_data.kill or is_dead
 		enemy_pass = not achievement_data.enemy or unit_type == achievement_data.enemy
 		enemies_pass = not achievement_data.enemies or table.contains(achievement_data.enemies, unit_type)
@@ -169,7 +170,7 @@ function GrenadeBase:_check_achievements(unit, is_dead, damage_percent, hit_coun
 			explosive_pass = grenade_is_explosive == achievement_data.explosive
 		end
 
-		all_pass = count_pass and grenade_type_pass and kill_pass and distance_pass and enemy_pass and enemies_pass and flying_strike_pass and timer_pass and difficulty_pass and job_pass and crouching_pass and session_kill_pass and is_civilian_pass and explosive_pass and tags_all_pass and tags_any_pass and player_state_pass
+		all_pass = count_pass and grenade_type_pass and grenade_types_pass and kill_pass and distance_pass and enemy_pass and enemies_pass and flying_strike_pass and timer_pass and difficulty_pass and job_pass and crouching_pass and session_kill_pass and is_civilian_pass and explosive_pass and tags_all_pass and tags_any_pass and player_state_pass
 
 		if all_pass then
 			if achievement_data.success then

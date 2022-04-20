@@ -480,7 +480,7 @@ function ArrowBase:sync_attach_to_unit(instant_dynamic_pickup, parent_unit, pare
 			self._col_ray.velocity = dir
 
 			if not drop_in and not self._damage_class.is_explosive_bullet and col_ray.unit:in_slot(managers.slot:get_mask("bullet_blank_impact_targets")) then
-				self._damage_class:on_collision(col_ray, self:weapon_unit(), self:thrower_unit(), self._damage, true)
+				self._damage_class:on_collision(col_ray, self:weapon_unit() or self._unit, self:thrower_unit(), self._damage, true)
 			end
 		end
 	end

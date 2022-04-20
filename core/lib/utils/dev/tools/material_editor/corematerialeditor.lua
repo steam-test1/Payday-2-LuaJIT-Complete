@@ -322,6 +322,7 @@ function CoreMaterialEditor:_on_compile_btn()
 			self:_load_shaders()
 		end
 
+		assert(SystemFS:copy_file(temp_params.render_templates, make_params.render_templates), string.format("Could not copy %s -> %s", temp_params.render_templates, make_params.render_templates))
 		self:_cleanup_temp_files(temp_params)
 	end
 end

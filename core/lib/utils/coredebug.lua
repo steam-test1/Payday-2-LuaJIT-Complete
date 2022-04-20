@@ -392,3 +392,9 @@ function get_n_value(t, n)
 		end
 	end
 end
+
+function change_visualization(viz)
+	for _, vp in ipairs(managers.viewport:viewports()) do
+		vp:set_visualization_mode(viz)
+	end
+end

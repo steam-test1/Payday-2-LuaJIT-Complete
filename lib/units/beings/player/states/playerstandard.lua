@@ -4391,12 +4391,13 @@ function PlayerStandard:_check_stop_shooting()
 
 		local weap_base = self._equipped_unit:base()
 		local fire_mode = weap_base:fire_mode()
+		local is_auto_fire_mode = fire_mode == "auto"
 
-		if fire_mode == "auto" and (not weap_base.akimbo or weap_base:weapon_tweak_data().allow_akimbo_autofire) then
+		if is_auto_fire_mode and (not weap_base.akimbo or weap_base:weapon_tweak_data().allow_akimbo_autofire) then
 			self._ext_network:send("sync_stop_auto_fire_sound", 0)
 		end
 
-		if fire_mode == "auto" and not self:_is_reloading() and not self:_is_meleeing() then
+		if is_auto_fire_mode and not self:_is_reloading() and not self:_is_meleeing() then
 			self._unit:camera():play_redirect(self:get_animation("recoil_exit"))
 		end
 

@@ -122,6 +122,10 @@ function GenericDLCManager:has_lawp()
 	return self:is_dlc_unlocked("lawp")
 end
 
+function GenericDLCManager:has_m422()
+	return self:is_dlc_unlocked("m422")
+end
+
 function GenericDLCManager:has_mar21()
 	return self:is_dlc_unlocked("mar21")
 end
@@ -282,6 +286,10 @@ function GenericDLCManager:has_tstp()
 	return self:is_dlc_unlocked("tstp")
 end
 
+function GenericDLCManager:has_txt1()
+	return self:is_dlc_unlocked("txt1")
+end
+
 function GenericDLCManager:has_wcc()
 	return self:is_dlc_unlocked("wcc")
 end
@@ -389,7 +397,8 @@ function WINDLCManager:init_generated()
 	}
 	Global.dlc_manager.all_dlc_data.gdtp = {
 		app_id = "1907080",
-		no_install = true
+		no_install = true,
+		webpage = "https://pd2.link/MountainMasterYBS2"
 	}
 	Global.dlc_manager.all_dlc_data.ghx = {
 		app_id = "218620",
@@ -437,6 +446,10 @@ function WINDLCManager:init_generated()
 	}
 	Global.dlc_manager.all_dlc_data.lawp = {
 		app_id = "1901420",
+		no_install = true
+	}
+	Global.dlc_manager.all_dlc_data.m422 = {
+		app_id = "218620",
 		no_install = true
 	}
 	Global.dlc_manager.all_dlc_data.mar21 = {
@@ -494,7 +507,8 @@ function WINDLCManager:init_generated()
 	}
 	Global.dlc_manager.all_dlc_data.pent = {
 		app_id = "1906240",
-		no_install = true
+		no_install = true,
+		webpage = "https://pd2.link/MountainMasterYBS"
 	}
 	Global.dlc_manager.all_dlc_data.pex = {
 		app_id = "1347750",
@@ -611,6 +625,11 @@ function WINDLCManager:init_generated()
 	Global.dlc_manager.all_dlc_data.tstp = {
 		app_id = "1555040",
 		no_install = true
+	}
+	Global.dlc_manager.all_dlc_data.txt1 = {
+		app_id = "1945680",
+		no_install = true,
+		webpage = "https://pd2.link/SouthboundTailorPackYBS"
 	}
 	Global.dlc_manager.all_dlc_data.wcc = {
 		app_id = "1347751",

@@ -40,6 +40,8 @@ CharmManager.pitch_angle = 55
 CharmManager.yaw_angle = 25
 CharmManager.left_roll_angle = 25
 CharmManager.right_roll_angle = 7
+CharmManager.menu_left_roll_angle = -90
+CharmManager.menu_right_roll_angle = 0
 CharmManager.velocity_epsilon = 0.1
 CharmManager.friction = 0.85
 CharmManager.weapon_velocity_factor = 400
@@ -240,6 +242,8 @@ function CharmManager:get_charm_data(charm_data_table, charm_unit, custom_body_o
 	end
 
 	charm_data_table[u_key] = charm_entry
+
+	return charm_entry
 end
 
 function CharmManager:add_weapon(weapon_unit, parts, user_unit, is_menu, custom_params)
@@ -572,7 +576,7 @@ function CharmManager:_orient_charm(prev_rot, cur_rot)
 		charm_roll = prev_roll * beta + cur_roll * (1 - beta)
 	end
 
-	mrot_set(prev_rot, 0, math_clamp(charm_pitch, -self.pitch_angle, self.pitch_angle), math_clamp(charm_roll, -90, 0))
+	mrot_set(prev_rot, 0, math_clamp(charm_pitch, -self.pitch_angle, self.pitch_angle), math_clamp(charm_roll, self.menu_left_roll_angle, self.menu_right_roll_angle))
 end
 
 function CharmManager:GetMappedRangeValueClamped(input_range_first, input_range_second, output_range_first, output_range_second, value)
@@ -732,7 +736,7 @@ function CharmManager:simulate_menu_vr(...)
 	self:simulate_menu_no_character(...)
 end
 
-function CharmManager:simulate_ingame_standard(entry, mov_data, charm_data, dt)
+function CharmManager:_get_ingame_rotation(entry, mov_data, dt)
 	local weap_unit = entry.weapon_unit
 	local weap_rot = tmp_rot1
 
@@ -765,9 +769,15 @@ function CharmManager:simulate_ingame_standard(entry, mov_data, charm_data, dt)
 	local curr_pitch = get_range_value_f(self, -max_speed, max_speed, -pitch_angle, pitch_angle, fwd_dot) + mrot_pitch(old_to_new_prev_rot)
 	local curr_roll = get_range_value_f(self, -max_speed, max_speed, left_roll_angle, -left_roll_angle, right_dot) + mrot_roll(old_to_new_prev_rot)
 	curr_roll = curr_roll + get_range_value_f(self, -max_speed, 0, -left_roll_angle * self.falling_factor, 0, up_dot)
-	local new_rot = tmp_rot2
+	local new_rot = Rotation()
 
 	mrot_set(new_rot, math_clamp(curr_yaw, -yaw_angle, yaw_angle), math_clamp(curr_pitch, -pitch_angle, pitch_angle), math_clamp(curr_roll, -left_roll_angle, self.right_roll_angle))
+
+	return new_rot
+end
+
+function CharmManager:simulate_ingame_standard(entry, mov_data, charm_data, dt)
+	local new_rot = self:_get_ingame_rotation(entry, mov_data, dt)
 
 	for _, c_data in pairs(charm_data) do
 		c_data.ring:set_local_rotation(new_rot)

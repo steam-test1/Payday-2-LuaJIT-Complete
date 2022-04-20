@@ -6977,13 +6977,11 @@ function BlackMarketGui:update_info_text()
 			local achievement_lock_id = managers.dlc:is_mask_achievement_locked(mask_id)
 			local achievement_milestone_lock_id = managers.dlc:is_mask_achievement_milestone_locked(mask_id)
 
-			print("Simon1", mask_id, achievement_lock_id, inspect(slot_data), type(slot_data.unlocked) ~= "number", not slot_data.unlocked, slot_data.unlocked == 0)
-
 			if slot_data.dlc_locked then
 				updated_texts[3].text = managers.localization:to_upper_text(slot_data.dlc_locked)
 			elseif slot_data.infamy_lock then
 				updated_texts[3].text = managers.localization:to_upper_text("menu_infamy_lock_info")
-			elseif mask_id and achievement_tracker[mask_id] and (type(slot_data.unlocked) ~= "number" and not slot_data.unlocked or slot_data.unlocked == 0) then
+			elseif mask_id and achievement_tracker[mask_id] and (not slot_data.unlocked or type(slot_data.unlocked) == "number" and slot_data.unlocked <= 0) then
 				local achievement_data = achievement_tracker[mask_id]
 				local max_progress = achievement_data.max_progress
 				local text_id = achievement_data.text_id
@@ -7004,9 +7002,7 @@ function BlackMarketGui:update_info_text()
 					updated_texts[3].text = "##" .. managers.localization:text(achievement_data.text_id) .. "##"
 					updated_texts[3].resource_color = tweak_data.screen_colors.button_stage_2
 				end
-			elseif achievement_lock_id and (type(slot_data.unlocked) ~= "number" and not slot_data.unlocked or slot_data.unlocked == 0) then
-				print("SimonACH", inspect(slot_data))
-
+			elseif achievement_lock_id and (not slot_data.unlocked or type(slot_data.unlocked) == "number" and slot_data.unlocked <= 0) then
 				local dlc_tweak = tweak_data.dlc[achievement_lock_id]
 				local achievement = dlc_tweak and dlc_tweak.achievement_id
 				local achievement_visual = tweak_data.achievement.visual[achievement]
@@ -7018,7 +7014,7 @@ function BlackMarketGui:update_info_text()
 						updated_texts[3].text = updated_texts[3].text .. " (" .. tostring(achievement_visual.progress.get()) .. "/" .. tostring(achievement_visual.progress.max) .. ")"
 					end
 				end
-			elseif achievement_milestone_lock_id and (type(slot_data.unlocked) ~= "number" and not slot_data.unlocked or slot_data.unlocked == 0) then
+			elseif achievement_milestone_lock_id and (not slot_data.unlocked or type(slot_data.unlocked) == "number" and slot_data.unlocked <= 0) then
 				for _, data in ipairs(tweak_data.achievement.milestones) do
 					if data.id == achievement_milestone_lock_id then
 						updated_texts[3].text = managers.localization:to_upper_text("bm_menu_milestone_reward_unlock", {
@@ -7028,9 +7024,9 @@ function BlackMarketGui:update_info_text()
 						break
 					end
 				end
-			elseif managers.dlc:is_content_skirmish_locked("masks", mask_id) and (type(slot_data.unlocked) ~= "number" and not slot_data.unlocked or slot_data.unlocked == 0) then
+			elseif managers.dlc:is_content_skirmish_locked("masks", mask_id) and (not slot_data.unlocked or type(slot_data.unlocked) == "number" and slot_data.unlocked <= 0) then
 				updated_texts[3].text = managers.localization:to_upper_text("bm_menu_skirmish_content_reward")
-			elseif managers.dlc:is_content_crimespree_locked("masks", mask_id) and (type(slot_data.unlocked) ~= "number" and not slot_data.unlocked or slot_data.unlocked == 0) then
+			elseif managers.dlc:is_content_crimespree_locked("masks", mask_id) and (not slot_data.unlocked or type(slot_data.unlocked) == "number" and slot_data.unlocked <= 0) then
 				updated_texts[3].text = managers.localization:to_upper_text("bm_menu_crimespree_content_reward")
 			end
 
@@ -11321,11 +11317,12 @@ function BlackMarketGui:populate_player_styles(data)
 		local unlocked = managers.blackmarket:player_style_unlocked(player_style)
 		local global_value = tweak.global_value
 		local dlc = tweak.dlc or global_value and managers.dlc:global_value_to_dlc(global_value)
+		local is_dlc_unlocked = not dlc or managers.dlc:is_dlc_unlocked(dlc)
 		local achievement_locked = managers.dlc:is_content_achievement_locked("player_style", player_style) or managers.dlc:is_content_achievement_milestone_locked("player_style", player_style)
 		local infamy_locked = managers.dlc:is_content_infamy_locked("player_style", player_style)
 		sort_table[player_style] = {
-			unlocked = unlocked,
-			locked_sort = tweak_data.gui:get_locked_sort_number(dlc, achievement_locked, infamy_locked),
+			unlocked = unlocked and is_dlc_unlocked and true or false,
+			locked_sort = sort_number + tweak_data.gui:get_locked_sort_number(dlc, achievement_locked, infamy_locked),
 			sort_number = sort_number
 		}
 	end
@@ -11682,11 +11679,12 @@ function BlackMarketGui:populate_gloves(data)
 		local unlocked = managers.blackmarket:glove_id_unlocked(glove_id)
 		local global_value = tweak.global_value
 		local dlc = tweak.dlc or global_value and managers.dlc:global_value_to_dlc(global_value)
+		local is_dlc_unlocked = not dlc or managers.dlc:is_dlc_unlocked(dlc)
 		local achievement_locked = managers.dlc:is_content_achievement_locked("gloves", glove_id) or managers.dlc:is_content_achievement_milestone_locked("gloves", glove_id)
 		local infamy_locked = managers.dlc:is_content_infamy_locked("gloves", glove_id)
 		sort_table[glove_id] = {
-			unlocked = unlocked,
-			locked_sort = tweak_data.gui:get_locked_sort_number(dlc, achievement_locked, infamy_locked),
+			unlocked = unlocked and is_dlc_unlocked and true or false,
+			locked_sort = sort_number + tweak_data.gui:get_locked_sort_number(dlc, achievement_locked, infamy_locked),
 			sort_number = sort_number
 		}
 	end
@@ -15542,7 +15540,7 @@ function BlackMarketGui:open_weapon_buy_menu(data, check_allowed_item_func)
 			local func = item.func_based or false
 			sort_table[id] = {
 				unlocked = unlocked,
-				locked_sort = tweak_data.gui:get_locked_sort_number(dlc, func, skill),
+				locked_sort = sn + tweak_data.gui:get_locked_sort_number(dlc, func, skill),
 				level = level,
 				sort_number = sn,
 				skill = skill
@@ -15889,18 +15887,25 @@ function BlackMarketGui:choose_mask_buy_callback(data)
 		local dlc = td.dlc or global_value and managers.dlc:global_value_to_dlc(global_value)
 		local item_amount = managers.blackmarket:get_item_amount(global_value, "masks", mask_id, true) or 0
 		local dlc_locked = dlc and not managers.dlc:is_dlc_unlocked(dlc)
-		local unlocked = item_amount > 0 and not dlc_locked
 		local sort_number = tweak_data.lootdrop.global_values[global_value] and tweak_data.lootdrop.global_values[global_value].sort_number or 0
 		local value = td.value
 		local achievement_locked = managers.dlc:is_content_achievement_locked("masks", mask_id) or managers.dlc:is_content_achievement_milestone_locked("masks", mask_id)
 		local skirmish_locked = managers.dlc:is_content_skirmish_locked("masks", mask_id)
 		local crimespree_locked = managers.dlc:is_content_crimespree_locked("masks", mask_id)
 		local infamy_locked = managers.dlc:is_content_infamy_locked("masks", mask_id)
+		local unlocked = not dlc_locked
+
+		if achievement_locked or skirmish_locked or crimespree_locked or infamy_locked then
+			unlocked = unlocked and not achievement_locked and item_amount > 0
+		end
+
+		sort_number = sort_number + (td.sort_number or 0)
 		sort_cached_mask_data[mask_id] = {
 			loc = loc_man:to_upper_text(td.name_id),
+			has_amount = item_amount > 0,
 			unlocked = unlocked,
-			locked_sort = tweak_data.gui:get_locked_sort_number(dlc_locked and dlc, achievement_locked, infamy_locked, skirmish_locked, crimespree_locked),
-			sort_number = sort_number + (td.sort_number or 0),
+			locked_sort = sort_number * tweak_data.gui:get_locked_sort_number(dlc_locked and dlc, achievement_locked, infamy_locked, skirmish_locked, crimespree_locked),
+			sort_number = sort_number,
 			iso = table.get_key(iso, mask_id) or 0,
 			value = value,
 			dlc = dlc
@@ -15919,6 +15924,10 @@ function BlackMarketGui:choose_mask_buy_callback(data)
 
 		if not x_data.unlocked and x_data.locked_sort ~= y_data.locked_sort then
 			return x_data.locked_sort < y_data.locked_sort
+		end
+
+		if x_data.has_amount ~= y_data.has_amount then
+			return x_data.has_amount
 		end
 
 		if x_data.dlc ~= y_data.dlc then

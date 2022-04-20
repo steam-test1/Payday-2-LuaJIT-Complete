@@ -2248,30 +2248,6 @@ function InstantExplosiveBulletBase:on_collision(col_ray, weapon_unit, user_unit
 			self:on_collision_server(tmp_vec1, col_ray.normal, damage, user_unit, weapon_unit, managers.network:session():local_peer():id())
 		end
 
-		if hit_unit:damage() and col_ray.body:extension() and col_ray.body:extension().damage then
-			local sync_damage = not blank and hit_unit:id() ~= -1
-
-			if sync_damage then
-				local normal_vec_yaw, normal_vec_pitch = self._get_vector_sync_yaw_pitch(col_ray.normal, 128, 64)
-				local dir_vec_yaw, dir_vec_pitch = self._get_vector_sync_yaw_pitch(col_ray.ray, 128, 64)
-
-				managers.network:session():send_to_peers_synched("sync_body_damage_bullet", col_ray.body, user_unit:id() ~= -1 and user_unit or nil, normal_vec_yaw, normal_vec_pitch, col_ray.position, dir_vec_yaw, dir_vec_pitch, math.min(16384, network_damage))
-			end
-
-			local local_damage = not blank or hit_unit:id() == -1
-
-			if local_damage then
-				col_ray.body:extension().damage:damage_bullet(user_unit, col_ray.normal, col_ray.position, col_ray.ray, 1)
-				col_ray.body:extension().damage:damage_damage(user_unit, col_ray.normal, col_ray.position, col_ray.ray, damage)
-
-				if alive(weapon_unit) and weapon_unit:base().categories and weapon_unit:base():categories() then
-					for _, category in ipairs(weapon_unit:base():categories()) do
-						col_ray.body:extension().damage:damage_bullet_type(category, user_unit, col_ray.normal, col_ray.position, col_ray.ray, 1)
-					end
-				end
-			end
-		end
-
 		return {
 			variant = "explosion",
 			col_ray = col_ray
@@ -2652,7 +2628,7 @@ function ProjectilesPoisonBulletBase:on_collision(col_ray, weapon_unit, user_uni
 			return
 		end
 
-		result = self:start_dot_damage(col_ray, nil, {
+		result = self:start_dot_damage(col_ray, weapon_unit, {
 			dot_damage = dot_type_data.dot_damage,
 			dot_length = dot_data.custom_length or dot_type_data.dot_length
 		})

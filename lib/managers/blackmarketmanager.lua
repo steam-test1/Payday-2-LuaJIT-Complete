@@ -5756,9 +5756,16 @@ function BlackMarketManager:on_aquired_player_style(player_style)
 		return
 	end
 
+	local player_style_tweak = tweak_data.blackmarket.player_styles[player_style]
+	local dlc = player_style_tweak.dlc or managers.dlc:global_value_to_dlc(player_style_tweak.global_value)
+
+	if dlc and not managers.dlc:is_dlc_unlocked(dlc) then
+		return
+	end
+
 	self._global.player_styles[player_style].unlocked = true
 
-	for id, data in pairs(tweak_data.blackmarket.player_styles[player_style].material_variations or {}) do
+	for id, data in pairs(player_style_tweak.material_variations or {}) do
 		if data.auto_aquire then
 			self:on_aquired_suit_variation(player_style, id)
 		end
@@ -5785,6 +5792,14 @@ function BlackMarketManager:on_aquired_suit_variation(player_style, material_var
 	end
 
 	if not self:_is_suit_variation_valid(player_style, material_variation) then
+		return
+	end
+
+	local player_style_tweak = tweak_data.blackmarket.player_styles[player_style]
+	local suit_variation_tweak = player_style_tweak and player_style_tweak.material_variations and player_style_tweak.material_variations[material_variation]
+	local dlc = suit_variation_tweak.dlc or managers.dlc:global_value_to_dlc(suit_variation_tweak.global_value) or player_style_tweak.dlc or managers.dlc:global_value_to_dlc(player_style_tweak.global_value)
+
+	if dlc and not managers.dlc:is_dlc_unlocked(dlc) then
 		return
 	end
 
@@ -5977,6 +5992,13 @@ end
 
 function BlackMarketManager:on_aquired_glove_id(glove_id)
 	if not self:_is_glove_id_valid(glove_id) then
+		return
+	end
+
+	local gloves_tweak = tweak_data.blackmarket.gloves[glove_id]
+	local dlc = gloves_tweak.dlc or managers.dlc:global_value_to_dlc(gloves_tweak.global_value)
+
+	if dlc and not managers.dlc:is_dlc_unlocked(dlc) then
 		return
 	end
 
@@ -9576,7 +9598,7 @@ end
 function BlackMarketManager:accuracy_addend(name, categories, spread_index, silencer, current_state, fire_mode, blueprint, is_moving, is_single_shot)
 	local addend = 0
 
-	if spread_index and spread_index >= 1 and spread_index <= (current_state and current_state._moving and #tweak_data.weapon.stats.spread_moving or #tweak_data.weapon.stats.spread) then
+	if spread_index then
 		local index = spread_index
 		index = index + managers.player:upgrade_value("player", "weapon_accuracy_increase", 0)
 
@@ -9602,10 +9624,12 @@ function BlackMarketManager:accuracy_addend(name, categories, spread_index, sile
 			index = index + managers.player:upgrade_value("weapon", "auto_spread_index_addend", 0)
 		end
 
-		index = math.clamp(index, 1, #tweak_data.weapon.stats.spread)
+		local spread_tweak = tweak_data.weapon.stats.spread
+		index = math.clamp(index, 1, #spread_tweak)
+		spread_index = math.clamp(spread_index, 1, #spread_tweak)
 
 		if index ~= spread_index then
-			local diff = tweak_data.weapon.stats.spread[index] - tweak_data.weapon.stats.spread[spread_index]
+			local diff = spread_tweak[index] - spread_tweak[spread_index]
 			addend = addend + diff
 		end
 	end
@@ -9663,7 +9687,7 @@ end
 function BlackMarketManager:recoil_addend(name, categories, recoil_index, silencer, blueprint, current_state, is_single_shot)
 	local addend = 0
 
-	if recoil_index and recoil_index >= 1 and recoil_index <= #tweak_data.weapon.stats.recoil then
+	if recoil_index then
 		local index = recoil_index
 		index = index + managers.player:upgrade_value("weapon", "recoil_index_addend", 0)
 		index = index + managers.player:upgrade_value("player", "stability_increase_bonus_1", 0)
@@ -9708,10 +9732,12 @@ function BlackMarketManager:recoil_addend(name, categories, recoil_index, silenc
 			index = index + managers.player:upgrade_value("weapon", "modded_recoil_index_addend", 0)
 		end
 
-		index = math.clamp(index, 1, #tweak_data.weapon.stats.recoil)
+		local recoil_tweak = tweak_data.weapon.stats.recoil
+		index = math.clamp(index, 1, #recoil_tweak)
+		recoil_index = math.clamp(recoil_index, 1, #recoil_tweak)
 
 		if index ~= recoil_index then
-			local diff = tweak_data.weapon.stats.recoil[index] - tweak_data.weapon.stats.recoil[recoil_index]
+			local diff = recoil_tweak[index] - recoil_tweak[recoil_index]
 			addend = addend + diff
 		end
 	end

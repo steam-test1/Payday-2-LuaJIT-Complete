@@ -3527,6 +3527,379 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		sequence = "set_ehtan"
 	}
 	self.player_styles.boss_gdtp.characters.ecp_male = boss_gdtp_characters_male_fat
+	self.player_styles.bullranch = {
+		name_id = "bm_suit_bullranch_suit",
+		desc_id = "bm_suit_bullranch_suit_desc",
+		texture_bundle_folder = "txt1",
+		global_value = "txt1",
+		material_variations = {}
+	}
+	self.player_styles.bullranch.material_variations.default = {
+		name_id = "bm_suit_var_bullranch_suit_default",
+		global_value = "txt1",
+		desc_id = "bm_suit_var_bullranch_suit_default_desc"
+	}
+	self.player_styles.bullranch.material_variations.black = {
+		desc_id = "bm_suit_var_bullranch_suit_black_desc",
+		global_value = "txt1",
+		auto_aquire = true,
+		name_id = "bm_suit_var_bullranch_suit_black",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/shared_materials/txt1_acc_bullranch_black",
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/shared_materials/txt1_acc_fps_bullranch_black"
+	}
+	self.player_styles.bullranch.material_variations.blue = {
+		desc_id = "bm_suit_var_bullranch_suit_blue_desc",
+		global_value = "txt1",
+		auto_aquire = true,
+		name_id = "bm_suit_var_bullranch_suit_blue",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/shared_materials/txt1_acc_bullranch_blue",
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/shared_materials/txt1_acc_fps_bullranch_blue"
+	}
+	self.player_styles.bullranch.material_variations.brown = {
+		desc_id = "bm_suit_var_bullranch_suit_brown_desc",
+		global_value = "txt1",
+		auto_aquire = true,
+		name_id = "bm_suit_var_bullranch_suit_brown",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/shared_materials/txt1_acc_bullranch_brown",
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/shared_materials/txt1_acc_fps_bullranch_brown"
+	}
+	self.player_styles.bullranch.body_replacement = body_replacement_standard
+	self.player_styles.bullranch.third_body_replacement = body_replacement_standard
+	self.player_styles.bullranch.unit = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/txt1_acc_fps_bullranch_male/txt1_acc_fps_bullranch_male"
+	self.player_styles.bullranch.characters = {}
+	local bullranch_characters_male = {
+		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/txt1_acc_bullranch_male_average/txt1_acc_bullranch_male_average"
+	}
+
+	set_characters_data("bullranch", characters_male, bullranch_characters_male)
+
+	local bullranch_characters_male_big = {
+		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/txt1_acc_bullranch_male_big/txt1_acc_bullranch_male_big"
+	}
+
+	set_characters_data("bullranch", characters_male_big, bullranch_characters_male_big)
+
+	local bullranch_characters_female = {
+		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/txt1_acc_bullranch_female_average/txt1_acc_bullranch_female_average"
+	}
+
+	set_characters_data("bullranch", characters_female, bullranch_characters_female)
+
+	local bullranch_characters_female_big = {
+		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/txt1_acc_bullranch_female_fat/txt1_acc_bullranch_female_fat"
+	}
+
+	set_characters_data("bullranch", characters_female_big, bullranch_characters_female_big)
+
+	local bullranch_characters_male_fat = {
+		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_bullranch/txt1_acc_bullranch_male_fat/txt1_acc_bullranch_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.bullranch.characters.ecp_male = bullranch_characters_male_fat
+	self.player_styles.texvest = {
+		name_id = "bm_suit_texvest",
+		desc_id = "bm_suit_texvest_desc",
+		texture_bundle_folder = "txt1",
+		global_value = "txt1",
+		material_variations = {}
+	}
+	self.player_styles.texvest.material_variations.default = {
+		name_id = "bm_suit_var_texvest_default",
+		global_value = "txt1",
+		desc_id = "bm_suit_var_texvest_default_desc"
+	}
+	self.player_styles.texvest.material_variations.black = {
+		desc_id = "bm_suit_texvest_black_desc",
+		global_value = "txt1",
+		auto_aquire = true,
+		name_id = "bm_suit_texvest_black",
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_black"
+	}
+	self.player_styles.texvest.material_variations.blue = {
+		desc_id = "bm_suit_texvest_blue_desc",
+		global_value = "txt1",
+		auto_aquire = true,
+		name_id = "bm_suit_texvest_blue",
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_blue"
+	}
+	self.player_styles.texvest.material_variations.green = {
+		desc_id = "bm_suit_texvest_green_desc",
+		global_value = "txt1",
+		auto_aquire = true,
+		name_id = "bm_suit_texvest_green",
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_green"
+	}
+	self.player_styles.texvest.body_replacement = body_replacement_standard
+	self.player_styles.texvest.third_body_replacement = body_replacement_standard
+	self.player_styles.texvest.unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest"
+	self.player_styles.texvest.characters = {}
+	local texvest_characters_male = {
+		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average/txt1_acc_texvest_male_average",
+		material_variations = {}
+	}
+	texvest_characters_male.material_variations.black = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_black",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average/txt1_acc_texvest_male_average_black"
+	}
+	texvest_characters_male.material_variations.blue = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_blue",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average/txt1_acc_texvest_male_average_blue"
+	}
+	texvest_characters_male.material_variations.green = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_green",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average/txt1_acc_texvest_male_average_green"
+	}
+
+	set_characters_data("texvest", characters_male, texvest_characters_male)
+
+	local texvest_characters_dragon = {
+		unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_02",
+		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_02/txt1_acc_texvest_male_average_02",
+		material_variations = {}
+	}
+	texvest_characters_dragon.material_variations.black = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_02_black",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_02/txt1_acc_texvest_male_average_02_black"
+	}
+	texvest_characters_dragon.material_variations.blue = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_02_blue",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_02/txt1_acc_texvest_male_average_02_blue"
+	}
+	texvest_characters_dragon.material_variations.green = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_02_green",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_02/txt1_acc_texvest_male_average_02_green"
+	}
+	self.player_styles.texvest.characters.dragon = texvest_characters_dragon
+	local texvest_characters_bodhi = {
+		unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_bodhi",
+		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_bodhi/txt1_acc_texvest_male_average_bodhi",
+		material_variations = {}
+	}
+	texvest_characters_bodhi.material_variations.black = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_bodhi_black",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_bodhi/txt1_acc_texvest_male_average_bodhi_black"
+	}
+	texvest_characters_bodhi.material_variations.blue = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_bodhi_blue",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_bodhi/txt1_acc_texvest_male_average_bodhi_blue"
+	}
+	texvest_characters_bodhi.material_variations.green = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_bodhi_green",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_bodhi/txt1_acc_texvest_male_average_bodhi_green"
+	}
+	self.player_styles.texvest.characters.bodhi = texvest_characters_bodhi
+	local texvest_characters_scarface = {
+		unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_02",
+		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_02/txt1_acc_texvest_male_average_02",
+		material_variations = {}
+	}
+	texvest_characters_scarface.material_variations.black = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_02_black",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_02/txt1_acc_texvest_male_average_02_black"
+	}
+	texvest_characters_scarface.material_variations.blue = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_02_blue",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_02/txt1_acc_texvest_male_average_02_blue"
+	}
+	texvest_characters_scarface.material_variations.green = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_02_green",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_02/txt1_acc_texvest_male_average_02_green"
+	}
+	self.player_styles.texvest.characters.chico = texvest_characters_scarface
+	local texvest_characters_chains = {
+		unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_chains",
+		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_chains/txt1_acc_texvest_male_average_chains",
+		material_variations = {}
+	}
+	texvest_characters_chains.material_variations.black = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_chains_black",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_chains/txt1_acc_texvest_male_average_chains_black"
+	}
+	texvest_characters_chains.material_variations.blue = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_chains_blue",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_chains/txt1_acc_texvest_male_average_chains_blue"
+	}
+	texvest_characters_chains.material_variations.green = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_chains_green",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_average_chains/txt1_acc_texvest_male_average_chains_green"
+	}
+	self.player_styles.texvest.characters.chains = texvest_characters_chains
+	local texvest_characters_male_big = {
+		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_big/txt1_acc_texvest_male_big",
+		material_variations = {}
+	}
+	texvest_characters_male_big.material_variations.black = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_black",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_big/txt1_acc_texvest_male_big_black"
+	}
+	texvest_characters_male_big.material_variations.blue = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_blue",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_big/txt1_acc_texvest_male_big_blue"
+	}
+	texvest_characters_male_big.material_variations.green = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_green",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_big/txt1_acc_texvest_male_big_green"
+	}
+
+	set_characters_data("texvest", characters_male_big, texvest_characters_male_big)
+
+	local texvest_characters_sangres = {
+		unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_sangres",
+		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_big_sangres/txt1_acc_texvest_male_big_sangres",
+		material_variations = {}
+	}
+	texvest_characters_sangres.material_variations.black = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_sangres_black",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_big_sangres/txt1_acc_texvest_male_big_sangres_black"
+	}
+	texvest_characters_sangres.material_variations.blue = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_sangres_blue",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_big_sangres/txt1_acc_texvest_male_big_sangres_blue"
+	}
+	texvest_characters_sangres.material_variations.green = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_sangres_green",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_big_sangres/txt1_acc_texvest_male_big_sangres_green"
+	}
+	self.player_styles.texvest.characters.max = texvest_characters_sangres
+	local texvest_characters_female = {
+		unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female",
+		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_average/txt1_acc_texvest_female_average",
+		material_variations = {}
+	}
+	texvest_characters_female.material_variations.black = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_black",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_average/txt1_acc_texvest_female_average_black"
+	}
+	texvest_characters_female.material_variations.blue = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_blue",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_average/txt1_acc_texvest_female_average_blue"
+	}
+	texvest_characters_female.material_variations.green = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_green",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_average/txt1_acc_texvest_female_average_green"
+	}
+
+	set_characters_data("texvest", characters_female, texvest_characters_female)
+
+	local texvest_characters_sydney = {
+		unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_sydney",
+		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_average_sydney/txt1_acc_texvest_female_average_sydney",
+		material_variations = {}
+	}
+	texvest_characters_sydney.material_variations.black = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_sydney_black",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_average_sydney/txt1_acc_texvest_female_average_sydney_black"
+	}
+	texvest_characters_sydney.material_variations.blue = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_sydney_blue",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_average_sydney/txt1_acc_texvest_female_average_sydney_blue"
+	}
+	texvest_characters_sydney.material_variations.green = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_sydney_green",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_average_sydney/txt1_acc_texvest_female_average_sydney_green"
+	}
+	self.player_styles.texvest.characters.sydney = texvest_characters_sydney
+	local texvest_characters_joy = {
+		unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_joy",
+		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_average_joy/txt1_acc_texvest_female_average_joy",
+		material_variations = {}
+	}
+	texvest_characters_joy.material_variations.black = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_joy_black",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_average_joy/txt1_acc_texvest_female_average_joy_black"
+	}
+	texvest_characters_joy.material_variations.blue = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_joy_blue",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_average_joy/txt1_acc_texvest_female_average_joy_blue"
+	}
+	texvest_characters_joy.material_variations.green = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_joy_green",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_average_joy/txt1_acc_texvest_female_average_joy_green"
+	}
+	self.player_styles.texvest.characters.joy = texvest_characters_joy
+	local texvest_characters_female_big = {}
+	texvest_characters_female.unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female"
+	texvest_characters_female_big.third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_fat/txt1_acc_texvest_female_fat"
+	texvest_characters_female_big.material_variations = {
+		black = {
+			material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_black",
+			third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_fat/txt1_acc_texvest_female_fat_black"
+		},
+		blue = {
+			material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_blue",
+			third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_fat/txt1_acc_texvest_female_fat_blue"
+		},
+		green = {
+			material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_female_green",
+			third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_female_fat/txt1_acc_texvest_female_fat_green"
+		}
+	}
+
+	set_characters_data("texvest", characters_female_big, texvest_characters_female_big)
+
+	local texvest_characters_male_fat = {
+		third_unit = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_fat/txt1_acc_texvest_male_fat",
+		material_variations = {}
+	}
+	texvest_characters_male_fat.material_variations.black = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_black",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_fat/txt1_acc_texvest_male_fat_black"
+	}
+	texvest_characters_male_fat.material_variations.blue = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_blue",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_fat/txt1_acc_texvest_male_fat_blue"
+	}
+	texvest_characters_male_fat.material_variations.green = {
+		material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_fps_texvest/txt1_acc_fps_texvest_green",
+		third_material = "units/pd2_dlc_txt1/characters/txt1_acc_texvest/txt1_acc_texvest_male_fat/txt1_acc_texvest_male_fat_green"
+	}
+	texvest_characters_male_fat.sequence = "set_ehtan"
+	self.player_styles.texvest.characters.ecp_male = texvest_characters_male_fat
+	self.player_styles.fighterpilot = {
+		name_id = "bm_suit_fighterpilot",
+		desc_id = "bm_suit_fighterpilot_desc",
+		texture_bundle_folder = "m422",
+		global_value = "pd2_clan",
+		material_variations = {}
+	}
+	self.player_styles.fighterpilot.material_variations.default = {
+		name_id = "bm_suit_var_fighterpilot_suit_default",
+		global_value = "pd2_clan",
+		desc_id = "bm_suit_var_fighterpilot_suit_default_desc"
+	}
+	self.player_styles.fighterpilot.body_replacement = body_replacement_standard
+	self.player_styles.fighterpilot.third_body_replacement = body_replacement_standard
+	self.player_styles.fighterpilot.unit = "units/pd2_dlc_m422/characters/m422_acc_fighterpilot/m422_acc_fps_fighterpilot_male/m422_acc_fps_fighterpilot_male"
+	self.player_styles.fighterpilot.characters = {}
+	local fighterpilot_characters_male = {
+		third_unit = "units/pd2_dlc_m422/characters/m422_acc_fighterpilot/m422_acc_fighterpilot_male_average/m422_acc_fighterpilot_male_average"
+	}
+
+	set_characters_data("fighterpilot", characters_male, fighterpilot_characters_male)
+
+	local fighterpilot_characters_male_big = {
+		third_unit = "units/pd2_dlc_m422/characters/m422_acc_fighterpilot/m422_acc_fighterpilot_male_big/m422_acc_fighterpilot_male_big"
+	}
+
+	set_characters_data("fighterpilot", characters_male_big, fighterpilot_characters_male_big)
+
+	local fighterpilot_characters_female = {
+		third_unit = "units/pd2_dlc_m422/characters/m422_acc_fighterpilot/m422_acc_fighterpilot_female_average/m422_acc_fighterpilot_female_average"
+	}
+
+	set_characters_data("fighterpilot", characters_female, fighterpilot_characters_female)
+
+	local fighterpilot_characters_female_big = {
+		third_unit = "units/pd2_dlc_m422/characters/m422_acc_fighterpilot/m422_acc_fighterpilot_female_fat/m422_acc_fighterpilot_female_fat"
+	}
+
+	set_characters_data("fighterpilot", characters_female_big, fighterpilot_characters_female_big)
+
+	local fighterpilot_characters_male_fat = {
+		third_unit = "units/pd2_dlc_m422/characters/m422_acc_fighterpilot/m422_acc_fighterpilot_male_fat/m422_acc_fighterpilot_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.fighterpilot.characters.ecp_male = fighterpilot_characters_male_fat
 end
 
 function BlackMarketTweakData:get_player_style_value(player_style, character_name, key)

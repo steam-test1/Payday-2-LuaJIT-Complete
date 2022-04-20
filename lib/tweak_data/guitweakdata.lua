@@ -5103,6 +5103,16 @@ function GuiTweakData:init(tweak_data)
 	}
 
 	table.insert(self.new_heists, {
+		name_id = "menu_nh_txt1_01",
+		texture_path = "guis/dlcs/txt1/textures/pd2/new_heists/txt1_01",
+		url = "https://pd2.link/SouthboundTailorPackSLS"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_txt1_02",
+		texture_path = "guis/dlcs/txt1/textures/pd2/new_heists/txt1_02",
+		url = "https://pd2.link/MidlandBundleSLS"
+	})
+	table.insert(self.new_heists, {
 		name_id = "menu_nh_in33_02",
 		texture_path = "guis/dlcs/in33/textures/pd2/new_heists/in33_02",
 		url = "https://ovk.af/Infamy33SLW3"
