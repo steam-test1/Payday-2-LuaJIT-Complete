@@ -725,6 +725,9 @@ function TweakDataVR:init(tweak_data)
 			arbiter = {
 				position = Vector3(-0.5, 1, 1.6)
 			},
+			ms3gl = {
+				position = Vector3(-0.5, 1, 1.6)
+			},
 			ray = {
 				position = Vector3(-0.5, 0, 4)
 			},
@@ -739,6 +742,9 @@ function TweakDataVR:init(tweak_data)
 				position = Vector3(-0.8, 0, 0)
 			},
 			hk21 = {
+				position = Vector3(-0.5, 1, 2.8)
+			},
+			hk51b = {
 				position = Vector3(-0.5, 1, 2.8)
 			},
 			m249 = {
@@ -1369,7 +1375,14 @@ function TweakDataVR:init(tweak_data)
 			position = Vector3(0, 3, 5),
 			rotation = Rotation(88, 100, 28)
 		},
+		scout = {
+			position = Vector3(0, 3, 5),
+			rotation = Rotation(88, 100, 28)
+		},
 		hk21 = {
+			position = Vector3(12, 0, 0)
+		},
+		hk51b = {
 			position = Vector3(12, 0, 0)
 		},
 		m249 = {
@@ -1406,6 +1419,10 @@ function TweakDataVR:init(tweak_data)
 			rotation = Rotation(0, 82, 0)
 		},
 		arbiter = {
+			position = Vector3(0, 2, -4),
+			rotation = Rotation(20, -15, 1)
+		},
+		ms3gl = {
 			position = Vector3(0, 2, -4),
 			rotation = Rotation(20, -15, 1)
 		},
@@ -1584,6 +1601,16 @@ function TweakDataVR:init(tweak_data)
 					}
 				}
 			},
+			hk51b = {
+				points = {
+					{
+						position = Vector3(-4.5, 39, 3.2)
+					},
+					{
+						position = Vector3(-9.5, 17, -3.8)
+					}
+				}
+			},
 			rpk = {
 				points = {
 					{
@@ -1674,6 +1701,10 @@ function TweakDataVR:init(tweak_data)
 				position = Vector3(-1, 30, 2)
 			},
 			model70 = {
+				grip = "idle_wpn",
+				position = Vector3(-1, 35, 0)
+			},
+			scout = {
 				grip = "idle_wpn",
 				position = Vector3(-1, 35, 0)
 			},
@@ -1943,6 +1974,10 @@ function TweakDataVR:init(tweak_data)
 				position = Vector3(-2, 32, 0)
 			},
 			arbiter = {
+				grip = "idle_wpn",
+				position = Vector3(-2, 20, 4)
+			},
+			ms3gl = {
 				grip = "idle_wpn",
 				position = Vector3(-2, 20, 4)
 			},
@@ -4666,6 +4701,42 @@ function TweakDataVR:init(tweak_data)
 				{
 					time = 0.6,
 					sound = "arbiter_release_lever",
+					pos = Vector3()
+				}
+			}
+		},
+		ms3gl = {
+			start = {
+				{
+					time = 0,
+					sound = "ms3gl_mag_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 5, -20),
+					rot = Rotation(0, 30, 0)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "ms3gl_mag_in",
+					visible = true,
+					pos = Vector3(0, 0, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, 0, -4.5)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, 0, -4)
+				},
+				{
+					time = 0.6,
+					sound = "ms3gl_release_lever",
 					pos = Vector3()
 				}
 			}
@@ -8586,6 +8657,49 @@ function TweakDataVR:init(tweak_data)
 				}
 			}
 		},
+		hk51b = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_hk51b_box_out"
+				},
+				{
+					time = 0.01,
+					pos = Vector3(-5, 0, -1)
+				},
+				{
+					time = 0.03,
+					pos = Vector3(-5, 0, -1)
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 0, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_hk51b_box_in",
+					visible = true,
+					pos = Vector3(0, 0, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(-5, 0, -1)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(-5, 0, -1)
+				},
+				{
+					time = 0.6,
+					sound = "wp_hk51b_lever_release",
+					pos = Vector3()
+				}
+			}
+		},
 		m249 = {
 			start = {
 				{
@@ -9064,6 +9178,42 @@ function TweakDataVR:init(tweak_data)
 				{
 					time = 0.6,
 					sound = "wp_m70_pull_lever_01",
+					pos = Vector3()
+				}
+			}
+		},
+		scout = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_scout_mag_out_01"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 5, -20),
+					rot = Rotation(0, 30, 0)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_scout_mag_in_01",
+					visible = true,
+					pos = Vector3(0, 0, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, 0, -4.5)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, 0, -4)
+				},
+				{
+					time = 0.6,
+					sound = "wp_scout_pull_lever_01",
 					pos = Vector3()
 				}
 			}

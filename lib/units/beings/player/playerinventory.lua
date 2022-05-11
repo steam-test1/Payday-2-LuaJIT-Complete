@@ -87,6 +87,7 @@ function PlayerInventory:destroy_all_items()
 
 			if selection_data.unit:base():charm_data() then
 				managers.charm:remove_weapon(selection_data.unit)
+				managers.belt:remove_weapon(selection_data.unit)
 			end
 		else
 			debug_pause_unit(self._unit, "[PlayerInventory:destroy_all_items] broken inventory unit", selection_data.unit, selection_data.unit:base())

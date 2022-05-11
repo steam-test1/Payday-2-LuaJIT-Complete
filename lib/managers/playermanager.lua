@@ -1,5 +1,6 @@
 require("lib/player_actions/PlayerActionManager")
 require("lib/managers/player/SmokeScreenEffect")
+require("lib/managers/player/PoisonGasEffect")
 require("lib/utils/ValueModifier")
 require("lib/managers/player/SniperGrazeDamage")
 
@@ -649,6 +650,7 @@ function PlayerManager:update(t, dt)
 	end
 
 	self:update_smoke_screens(t, dt)
+	self:update_poison_gas(t, dt)
 end
 
 function PlayerManager:add_listener(key, events, clbk)
@@ -2937,10 +2939,22 @@ function PlayerManager:set_synced_ammo_info(peer_id, selection_index, max_clip, 
 		current_left,
 		max
 	}
-	local character_data = managers.criminals:character_data_by_peer_id(peer_id)
+	local character = managers.criminals:character_by_peer_id(peer_id)
 
-	if character_data and character_data.panel_id then
-		managers.hud:set_teammate_ammo_amount(character_data.panel_id, selection_index, max_clip, current_clip, current_left, max)
+	if character and character.taken then
+		if peer_id ~= managers.network:session():local_peer():id() then
+			local weapon_unit = alive(character.unit) and character.unit:inventory() and character.unit:inventory().unit_by_selection and character.unit:inventory():unit_by_selection(selection_index)
+
+			if alive(weapon_unit) and weapon_unit:base() and weapon_unit:base().set_ammo_info then
+				weapon_unit:base():set_ammo_info(max_clip, current_clip, current_left, max)
+			end
+		end
+
+		local character_data = character.data
+
+		if character_data and character_data.panel_id then
+			managers.hud:set_teammate_ammo_amount(character_data.panel_id, selection_index, max_clip, current_clip, current_left, max)
+		end
 	end
 end
 
@@ -5795,6 +5809,25 @@ end
 
 function PlayerManager:_dodge_replenish_armor()
 	self:player_unit():character_damage():_regenerate_armor()
+end
+
+function PlayerManager:spawn_poison_gas(position, normal, projectile_tweak, grenade_unit)
+	self._poison_gas_effects = self._poison_gas_effects or {}
+
+	table.insert(self._poison_gas_effects, PoisonGasEffect:new(position, normal, projectile_tweak, grenade_unit))
+end
+
+function PlayerManager:update_poison_gas(t, dt)
+	if self._poison_gas_effects and #self._poison_gas_effects > 0 then
+		for i, poison_gas_effect in dpairs(self._poison_gas_effects) do
+			if alive(poison_gas_effect) then
+				poison_gas_effect:update(t, dt)
+			else
+				poison_gas_effect:destroy()
+				table.remove(self._poison_gas_effects, i)
+			end
+		end
+	end
 end
 
 function PlayerManager:crew_add_concealment(new_value)

@@ -241,7 +241,7 @@ function BaseInteractionExt:selected(player, locator, hand_id)
 
 	self:_add_string_macros(string_macros)
 
-	local text_id = self._tweak_data.text_id or alive(self._unit) and self._unit:base().interaction_text_id and self._unit:base():interaction_text_id()
+	local text_id = self:get_text_id(player, locator)
 	local text = managers.localization:text(text_id, string_macros)
 	local icon = self._tweak_data.icon
 
@@ -278,6 +278,10 @@ function BaseInteractionExt:selected(player, locator, hand_id)
 	})
 
 	return true
+end
+
+function BaseInteractionExt:get_text_id(player, locator)
+	return self._tweak_data.text_id or alive(self._unit) and self._unit:base().interaction_text_id and self._unit:base():interaction_text_id(player, locator)
 end
 
 function BaseInteractionExt:_add_string_macros(macros)

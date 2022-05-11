@@ -2323,6 +2323,48 @@ Play the full version soon to get your full PAYDAY!]],
 		underbarrel_m203_groza = {
 			explosion = false,
 			tase = false
+		},
+		poison_gas_grenade = {
+			explosion = false
+		},
+		launcher_poison = {
+			explosion = false
+		},
+		launcher_poison_ms3gl_conversion = {
+			explosion = false
+		},
+		launcher_poison_gre_m79 = {
+			explosion = false
+		},
+		launcher_poison_m32 = {
+			explosion = false
+		},
+		launcher_poison_groza = {
+			explosion = false
+		},
+		launcher_poison_china = {
+			explosion = false
+		},
+		launcher_poison_arbiter = {
+			explosion = false
+		},
+		launcher_poison_slap = {
+			explosion = false
+		},
+		launcher_poison_contraband = {
+			explosion = false
+		},
+		launcher_frag_ms3gl = {
+			explosion = false,
+			fire = false
+		},
+		launcher_incendiary_ms3gl = {
+			explosion = false,
+			fire = false
+		},
+		launcher_electric_ms3gl = {
+			explosion = false,
+			tase = false
 		}
 	}
 	self.projectiles = {
@@ -2717,6 +2759,77 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.underbarrel_electric_groza = deep_clone(self.projectiles.underbarrel_electric)
 	self.projectiles.underbarrel_electric_groza.sound_event = "gl_electric_explode"
 	self.projectiles.underbarrel_m203_groza = deep_clone(self.projectiles.launcher_m203)
+	self.projectiles.poison_gas_grenade = {
+		damage = 100,
+		player_damage = 0,
+		curve_pow = 0.1,
+		range = 200,
+		name_id = "bm_poison_gas_grenade",
+		poison_gas_range = 800,
+		poison_gas_duration = 20,
+		poison_gas_fade_time = 2,
+		poison_gas_tick_time = 0.3,
+		poison_gas_dot_data = {
+			hurt_animation_chance = 1,
+			dot_damage = 2,
+			dot_length = 30,
+			dot_tick_period = 0.5
+		}
+	}
+	self.projectiles.launcher_poison = deep_clone(self.projectiles.launcher_frag)
+	self.projectiles.launcher_poison.launch_speed = 1250
+	self.projectiles.launcher_poison.projectile_trail = true
+	self.projectiles.launcher_poison.damage = 36
+	self.projectiles.launcher_poison.player_damage = 0
+	self.projectiles.launcher_poison.curve_pow = 2.5
+	self.projectiles.launcher_poison.range = 300
+	self.projectiles.launcher_poison.sound_event = "gl_electric_explode"
+	self.projectiles.launcher_poison.poison_gas_range = 600
+	self.projectiles.launcher_poison.poison_gas_duration = 15
+	self.projectiles.launcher_poison.poison_gas_fade_time = 2
+	self.projectiles.launcher_poison.poison_gas_tick_time = 0.3
+	self.projectiles.launcher_poison.poison_gas_dot_data = {
+		hurt_animation_chance = 1,
+		dot_damage = 1,
+		dot_length = 30,
+		dot_tick_period = 0.5
+	}
+	self.projectiles.launcher_poison.poison_gas_effect = "effects/particles/explosions/poison_gas"
+	self.projectiles.launcher_poison_ms3gl_conversion = deep_clone(self.projectiles.launcher_poison)
+	self.projectiles.launcher_poison_ms3gl_conversion.damage = 48
+	self.projectiles.launcher_poison_ms3gl_conversion.poison_gas_range = 800
+	self.projectiles.launcher_poison_gre_m79 = deep_clone(self.projectiles.launcher_poison)
+	self.projectiles.launcher_poison_gre_m79.damage = 120
+	self.projectiles.launcher_poison_gre_m79.range = 600
+	self.projectiles.launcher_poison_m32 = deep_clone(self.projectiles.launcher_poison)
+	self.projectiles.launcher_poison_m32.damage = 120
+	self.projectiles.launcher_poison_m32.range = 600
+	self.projectiles.launcher_poison_groza = deep_clone(self.projectiles.launcher_poison)
+	self.projectiles.launcher_poison_groza.damage = 86
+	self.projectiles.launcher_poison_china = deep_clone(self.projectiles.launcher_poison)
+	self.projectiles.launcher_poison_china.damage = 86
+	self.projectiles.launcher_poison_arbiter = deep_clone(self.projectiles.launcher_poison)
+	self.projectiles.launcher_poison_arbiter.damage = 38
+	self.projectiles.launcher_poison_arbiter.range = 300
+	self.projectiles.launcher_poison_arbiter.poison_gas_range = 400
+	self.projectiles.launcher_poison_arbiter.poison_gas_dot_data = {
+		hurt_animation_chance = 1,
+		dot_damage = 0.8,
+		dot_length = 10,
+		dot_tick_period = 0.5
+	}
+	self.projectiles.launcher_poison_slap = deep_clone(self.projectiles.launcher_poison)
+	self.projectiles.launcher_poison_slap.damage = 120
+	self.projectiles.launcher_poison_slap.range = 600
+	self.projectiles.launcher_poison_contraband = deep_clone(self.projectiles.launcher_poison)
+	self.projectiles.launcher_poison_contraband.damage = 86
+	self.projectiles.launcher_frag_ms3gl = deep_clone(self.projectiles.launcher_frag)
+	self.projectiles.launcher_frag_ms3gl.damage = 32
+	self.projectiles.launcher_incendiary_ms3gl = deep_clone(self.projectiles.launcher_incendiary)
+	self.projectiles.launcher_incendiary_ms3gl.damage = 1
+	self.projectiles.launcher_electric_ms3gl = deep_clone(self.projectiles.launcher_electric)
+	self.projectiles.launcher_electric_ms3gl.damage = 14
+	self.projectiles.launcher_electric_ms3gl.sound_event = "gl_electric_explode"
 	self.voting = {
 		timeout = 30,
 		cooldown = 50,

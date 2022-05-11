@@ -4,6 +4,8 @@ ExplodingProp.EXTENSION = "base"
 
 function ExplodingProp:init(unit)
 	self._unit = unit
+
+	unit:set_extension_update_enabled(Idstring("base"), false)
 end
 
 function ExplodingProp:detonate(pos, range, damage, player_damage)

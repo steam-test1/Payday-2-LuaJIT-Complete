@@ -14,6 +14,12 @@ local tmp_vec1 = Vector3()
 local tmp_vec2 = Vector3()
 local ids_single = Idstring("single")
 local ids_auto = Idstring("auto")
+local ids_burst = Idstring("burst")
+local FIRE_MODE_IDS = {
+	single = ids_single,
+	auto = ids_auto,
+	burst = ids_burst
+}
 NewRaycastWeaponBase = NewRaycastWeaponBase or class(RaycastWeaponBase)
 
 require("lib/units/weapons/CosmeticsWeaponBase")
@@ -36,6 +42,7 @@ function NewRaycastWeaponBase:init(unit)
 	self._knock_down = managers.player:upgrade_value("weapon", "knock_down", nil)
 	self._stagger = false
 	self._fire_mode_category = self:weapon_tweak_data().FIRE_MODE
+	self._burst_count = self:weapon_tweak_data().BURST_COUNT or 3
 
 	if managers.player:has_category_upgrade("player", "armor_depleted_stagger_shot") then
 		local function clbk(value)
@@ -51,6 +58,7 @@ function NewRaycastWeaponBase:init(unit)
 
 	self._bloodthist_value_during_reload = 0
 	self._reload_objects = {}
+	self._active_animation_effects = {}
 
 	self:_default_damage_falloff()
 end
@@ -64,9 +72,11 @@ function NewRaycastWeaponBase:_chk_has_charms(parts, setup)
 		print("[NewRaycastWeaponBase:_chk_has_charms] Wiping existing charm data")
 		Application:stack_dump()
 		managers.charm:remove_weapon(self._unit)
+		managers.belt:remove_weapon(self._unit)
 	end
 
 	managers.charm:add_weapon(self._unit, parts, setup and setup.user_unit, false, self._custom_units)
+	managers.belt:add_weapon(self._unit, parts, setup and setup.user_unit, false, self._custom_units)
 end
 
 function NewRaycastWeaponBase:charm_data()
@@ -132,6 +142,7 @@ function NewRaycastWeaponBase:_chk_charm_upd_state()
 		if not next(data) then
 			print("[NewRaycastWeaponBase:_chk_charm_upd_state] All charm units are dead, wiping charm data. Possibly due to part swapping")
 			managers.charm:remove_weapon(self._unit)
+			managers.belt:remove_weapon(self._unit)
 
 			return
 		end
@@ -142,11 +153,13 @@ function NewRaycastWeaponBase:_chk_charm_upd_state()
 			self._charm_upd_state = true
 
 			managers.charm:enable_charm_upd(self._unit)
+			managers.belt:enable_charm_upd(self._unit)
 		end
 	elseif self._charm_upd_state then
 		self._charm_upd_state = false
 
 		managers.charm:disable_charm_upd(self._unit)
+		managers.belt:disable_charm_upd(self._unit)
 	end
 end
 
@@ -322,7 +335,10 @@ function NewRaycastWeaponBase:clbk_assembly_complete(clbk, parts, blueprint)
 		"magazine",
 		"ammo",
 		"underbarrel",
-		"magazine_extra"
+		"magazine_extra",
+		"magazine_extra_2",
+		"magazine_extra_3",
+		"magazine_extra_4"
 	}
 	self._bullet_objects = {}
 
@@ -346,6 +362,49 @@ function NewRaycastWeaponBase:clbk_assembly_complete(clbk, parts, blueprint)
 							object,
 							type_part.unit
 						})
+					end
+				end
+			end
+
+			local bullet_belt = managers.weapon_factory:get_part_data_type_from_weapon_by_type(type, "bullet_belt", self._parts)
+
+			if bullet_belt then
+				local parent_id = managers.weapon_factory:get_part_id_from_weapon_by_type(type, self._blueprint)
+				self._custom_units = self._custom_units or {}
+				self._custom_units.bullet_belt = {
+					parent = parent_id,
+					parts = bullet_belt
+				}
+				local parts_tweak = tweak_data.weapon.factory.parts
+				local bullet_index = bullet_objects and 1 + bullet_objects.amount + (bullet_objects.offset or 0) or 1
+
+				for _, belt_part_id in ipairs(bullet_belt) do
+					local unit = self._parts[belt_part_id].unit
+					local belt_data = parts_tweak[belt_part_id]
+					local belt_bullet_objects = belt_data.bullet_objects
+
+					if belt_bullet_objects then
+						local offset = belt_bullet_objects.offset or 0
+						local prefix = belt_bullet_objects.prefix
+
+						for i = 1 + offset, belt_bullet_objects.amount + offset do
+							local object = unit:get_object(Idstring(prefix .. i))
+
+							if object then
+								print("bullet", bullet_index, i, unit, object)
+
+								self._bullet_objects[bullet_index] = self._bullet_objects[bullet_index] or {}
+
+								table.insert(self._bullet_objects[bullet_index], {
+									object,
+									unit
+								})
+							else
+								Application:error("[NewRaycastWeaponBase:clbk_assembly_complete] Bullet object not found.", bullet_index, i, unit, object)
+							end
+
+							bullet_index = bullet_index + 1
+						end
 					end
 				end
 			end
@@ -658,7 +717,18 @@ function NewRaycastWeaponBase:_update_stats_values(disallow_replenish, ammo_data
 	self:_check_sound_switch()
 
 	self._silencer = managers.weapon_factory:has_perk("silencer", self._factory_id, self._blueprint)
-	self._locked_fire_mode = managers.weapon_factory:has_perk("fire_mode_auto", self._factory_id, self._blueprint) and ids_auto or managers.weapon_factory:has_perk("fire_mode_single", self._factory_id, self._blueprint) and ids_single
+	local weapon_perks = managers.weapon_factory:get_perks(self._factory_id, self._blueprint) or {}
+
+	if weapon_perks.fire_mode_auto then
+		self._locked_fire_mode = ids_auto
+	elseif weapon_perks.fire_mode_single then
+		self._locked_fire_mode = ids_single
+	elseif weapon_perks.fire_mode_burst then
+		self._locked_fire_mode = ids_burst
+	else
+		self._locked_fire_mode = nil
+	end
+
 	self._fire_mode = self._locked_fire_mode or self:get_recorded_fire_mode(self:_weapon_tweak_data_id()) or Idstring(self:weapon_tweak_data().FIRE_MODE or "single")
 	self._ammo_data = ammo_data or managers.weapon_factory:get_ammo_data_from_weapon(self._factory_id, self._blueprint) or {}
 	self._can_shoot_through_shield = tweak_data.weapon[self._name_id].can_shoot_through_shield
@@ -667,6 +737,7 @@ function NewRaycastWeaponBase:_update_stats_values(disallow_replenish, ammo_data
 	self._armor_piercing_chance = self:weapon_tweak_data().armor_piercing_chance or 0
 	local primary_category = self:weapon_tweak_data().categories and self:weapon_tweak_data().categories[1]
 	self._movement_penalty = tweak_data.upgrades.weapon_movement_penalty[primary_category] or 1
+	self._burst_count = self:weapon_tweak_data().BURST_COUNT or 3
 	local custom_stats = managers.weapon_factory:get_custom_stats_from_weapon(self._factory_id, self._blueprint)
 
 	for part_id, stats in pairs(custom_stats) do
@@ -682,6 +753,18 @@ function NewRaycastWeaponBase:_update_stats_values(disallow_replenish, ammo_data
 			if stats.ammo_pickup_max_mul then
 				self._ammo_data.ammo_pickup_max_mul = self._ammo_data.ammo_pickup_max_mul and self._ammo_data.ammo_pickup_max_mul * stats.ammo_pickup_max_mul or stats.ammo_pickup_max_mul
 			end
+		end
+
+		if stats.burst_count then
+			self._burst_count = stats.burst_count
+		end
+
+		if stats.ammo_offset then
+			self._ammo_data.ammo_offset = (self._ammo_data.ammo_offset or 0) + stats.ammo_offset
+		end
+
+		if stats.fire_rate_multiplier then
+			self._ammo_data.fire_rate_multiplier = (self._ammo_data.fire_rate_multiplier or 0) + stats.fire_rate_multiplier - 1
 		end
 	end
 
@@ -814,6 +897,11 @@ function NewRaycastWeaponBase:_update_stats_values(disallow_replenish, ammo_data
 	self._spread_moving = self._current_stats.spread_moving or self._spread_moving
 	self._extra_ammo = self._current_stats.extra_ammo or self._extra_ammo
 	self._total_ammo_mod = self._current_stats.total_ammo_mod or self._total_ammo_mod
+
+	if self._ammo_data.ammo_offset then
+		self._extra_ammo = self._extra_ammo + self._ammo_data.ammo_offset
+	end
+
 	self._reload = self._current_stats.reload or self._reload
 	self._spread_multiplier = self._current_stats.spread_multi or self._spread_multiplier
 	self._scopes = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("scope", self._factory_id, self._blueprint)
@@ -831,6 +919,10 @@ function NewRaycastWeaponBase:_update_stats_values(disallow_replenish, ammo_data
 	local user_unit = self._setup and self._setup.user_unit
 	local current_state = alive(user_unit) and user_unit:movement() and user_unit:movement()._current_state
 	self._fire_rate_multiplier = managers.blackmarket:fire_rate_multiplier(self._name_id, self:weapon_tweak_data().categories, self._silencer, nil, current_state, self._blueprint)
+
+	if self._ammo_data.fire_rate_multiplier then
+		self._fire_rate_multiplier = self._fire_rate_multiplier + self._ammo_data.fire_rate_multiplier
+	end
 end
 
 function NewRaycastWeaponBase:get_damage_falloff(damage, col_ray, user_unit)
@@ -1132,6 +1224,15 @@ end
 function NewRaycastWeaponBase:tweak_data_anim_play(anim, speed_multiplier)
 	local orig_anim = anim
 	local unit_anim = self:_get_tweak_data_weapon_animation(orig_anim)
+	local effect_manager = World:effect_manager()
+
+	if self._active_animation_effects[anim] then
+		for _, effect in ipairs(self._active_animation_effects[anim]) do
+			World:effect_manager():kill(effect)
+		end
+	end
+
+	self._active_animation_effects[anim] = {}
 	local data = tweak_data.weapon.factory[self._factory_id]
 
 	if data.animations and data.animations[unit_anim] then
@@ -1150,6 +1251,18 @@ function NewRaycastWeaponBase:tweak_data_anim_play(anim, speed_multiplier)
 		end
 	end
 
+	if data.animation_effects and data.animation_effects[unit_anim] then
+		local effect_table = data.animation_effects[unit_anim]
+
+		if effect_table then
+			effect_table = clone(effect_table)
+			effect_table.parent = effect_table.parent and self._unit:get_object(effect_table.parent)
+			local effect = effect_manager:spawn(effect_table)
+
+			table.insert(self._active_animation_effects[anim], effect)
+		end
+	end
+
 	for part_id, data in pairs(self._parts) do
 		if data.unit and data.animations and data.animations[unit_anim] then
 			local anim_name = data.animations[unit_anim]
@@ -1164,6 +1277,18 @@ function NewRaycastWeaponBase:tweak_data_anim_play(anim, speed_multiplier)
 
 			if offset then
 				data.unit:anim_set_time(ids_anim_name, offset)
+			end
+		end
+
+		if data.unit and data.animation_effects and data.animation_effects[unit_anim] then
+			local effect_table = data.animation_effects[unit_anim]
+
+			if effect_table then
+				effect_table = clone(effect_table)
+				effect_table.parent = effect_table.parent and data.unit:get_object(effect_table.parent)
+				local effect = effect_manager:spawn(effect_table)
+
+				table.insert(self._active_animation_effects[anim], effect)
 			end
 		end
 	end
@@ -1228,6 +1353,15 @@ function NewRaycastWeaponBase:tweak_data_anim_stop(anim)
 	end
 
 	self:set_reload_objects_visible(false, anim)
+
+	if self._active_animation_effects[anim] then
+		for _, effect in ipairs(self._active_animation_effects[anim]) do
+			World:effect_manager():kill(effect)
+		end
+
+		self._active_animation_effects[anim] = nil
+	end
+
 	NewRaycastWeaponBase.super.tweak_data_anim_stop(self, orig_anim)
 end
 
@@ -1323,7 +1457,8 @@ end
 
 function NewRaycastWeaponBase:_set_parts_visible(visible)
 	if self._parts then
-		local is_visible = nil
+		local empty_s = Idstring("")
+		local anim_groups, is_visible = nil
 		local is_player = self._setup.user_unit == managers.player:player_unit()
 		local steelsight_swap_state = false
 
@@ -1344,6 +1479,25 @@ function NewRaycastWeaponBase:_set_parts_visible(visible)
 				end
 
 				unit:set_visible(is_visible)
+
+				if not visible then
+					anim_groups = unit:anim_groups()
+
+					for _, anim in ipairs(anim_groups) do
+						if anim ~= empty_s then
+							unit:anim_play_to(anim, 0)
+							unit:anim_stop()
+						end
+					end
+				end
+
+				if unit:digital_gui() then
+					unit:digital_gui():set_visible(visible)
+				end
+
+				if unit:digital_gui_upper() then
+					unit:digital_gui_upper():set_visible(visible)
+				end
 			end
 		end
 	end
@@ -1381,7 +1535,7 @@ function NewRaycastWeaponBase:fire_mode()
 
 	self._fire_mode = self._locked_fire_mode or self._fire_mode or Idstring(tweak_data.weapon[self._name_id].FIRE_MODE or "single")
 
-	return self._fire_mode == ids_single and "single" or "auto"
+	return table.get_key(FIRE_MODE_IDS, self._fire_mode) or "single"
 end
 
 function NewRaycastWeaponBase:record_fire_mode()
@@ -1408,6 +1562,59 @@ function NewRaycastWeaponBase:recoil_wait()
 	local multiplier = tweak_is_auto == weapon_is_auto and 1 or 2
 
 	return self:weapon_tweak_data().fire_mode_data.fire_rate * multiplier
+end
+
+function NewRaycastWeaponBase:start_shooting()
+	NewRaycastWeaponBase.super.start_shooting(self)
+
+	if self._fire_mode == ids_burst then
+		self._shooting_count = self._burst_count or 3
+	end
+end
+
+function NewRaycastWeaponBase:stop_shooting()
+	NewRaycastWeaponBase.super.stop_shooting(self)
+
+	if self._fire_mode == ids_burst then
+		local fire_mode_data = tweak_data.weapon[self._name_id].fire_mode_data or {}
+		local next_fire = (fire_mode_data.burst_cooldown or fire_mode_data.fire_rate or 0) / self:fire_rate_multiplier()
+		self._next_fire_allowed = math.max(self._next_fire_allowed, self._unit:timer():time() + next_fire)
+		self._shooting_count = 0
+	end
+end
+
+function NewRaycastWeaponBase:trigger_held(...)
+	if self._fire_mode == ids_burst and (not self._shooting_count or self._shooting_count == 0) then
+		return false
+	end
+
+	local fired = NewRaycastWeaponBase.super.trigger_held(self, ...)
+
+	if self._fire_mode == ids_burst then
+		local base = self:ammo_base()
+
+		if base:get_ammo_remaining_in_clip() == 0 then
+			self._shooting_count = 0
+		elseif fired then
+			self._shooting_count = self._shooting_count - 1
+		end
+	end
+
+	return fired
+end
+
+function NewRaycastWeaponBase:fire(...)
+	local ray_res = NewRaycastWeaponBase.super.fire(self, ...)
+
+	if self._fire_mode == ids_burst and self._bullets_fired > 1 and not self:weapon_tweak_data().sounds.fire_single then
+		self:_fire_sound()
+	end
+
+	return ray_res
+end
+
+function NewRaycastWeaponBase:shooting_count()
+	return self._shooting_count or 0
 end
 
 function NewRaycastWeaponBase:can_toggle_firemode()
@@ -1461,10 +1668,12 @@ function NewRaycastWeaponBase:_update_bullet_objects(ammo_func)
 	if self._bullet_objects then
 		for i, objects in pairs(self._bullet_objects) do
 			for _, object in ipairs(objects) do
-				local ammo_base = self:ammo_base()
-				local ammo = ammo_base[ammo_func](ammo_base)
+				if object[1] then
+					local ammo_base = self:ammo_base()
+					local ammo = ammo_base[ammo_func](ammo_base)
 
-				object[1]:set_visibility(i <= ammo)
+					object[1]:set_visibility(i <= ammo)
+				end
 			end
 		end
 	end
@@ -2348,6 +2557,7 @@ function NewRaycastWeaponBase:destroy(unit)
 
 	if self._charm_data then
 		managers.charm:remove_weapon(unit)
+		managers.belt:remove_weapon(unit)
 	end
 
 	managers.weapon_factory:disassemble(self._parts)

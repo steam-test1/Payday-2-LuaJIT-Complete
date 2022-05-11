@@ -2,6 +2,8 @@ MaterialControl = MaterialControl or class()
 
 function MaterialControl:init(unit)
 	self._unit = unit
+
+	unit:set_extension_update_enabled(Idstring("material_control"), false)
 end
 
 function MaterialControl:save(save_data)

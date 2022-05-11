@@ -9990,7 +9990,7 @@ function BlackMarketManager:equip_weapon_in_game(category, slot, force_equip, do
 		return
 	end
 
-	if not slot or slot > #self._global.crafted_items[category] then
+	if not slot or not self._global.crafted_items[category][slot] then
 		Application:error("[BlackMarketManager:equip_weapon_in_game] invalid slot", slot)
 
 		return

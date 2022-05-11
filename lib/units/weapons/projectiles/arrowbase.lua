@@ -72,9 +72,15 @@ function ArrowBase:_on_collision(col_ray)
 end
 
 function ArrowBase:clbk_impact(tag, unit, body, other_unit, other_body, position, normal, collision_velocity, velocity, other_velocity, new_velocity, direction, damage, ...)
+	if self._collided then
+		return
+	end
+
 	ArrowBase.super.clbk_impact(self, tag, unit, body, other_unit, other_body, position, normal, collision_velocity, velocity, other_velocity, new_velocity, direction, damage, ...)
 
 	if not self._is_pickup and not self._sweep_data then
+		self._collided = true
+
 		self._unit:set_enabled(false)
 		self:_check_stop_flyby_sound()
 		self:_kill_trail()
@@ -132,6 +138,10 @@ function ArrowBase:add_damage_result(unit, is_dead, damage_percent)
 	end
 
 	GrenadeBase._check_achievements(self, unit, true, 1, 1, 1)
+end
+
+function ArrowBase:_check_achievements(...)
+	GrenadeBase._check_achievements(self, ...)
 end
 
 local tmp_vel = Vector3()

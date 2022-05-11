@@ -542,6 +542,20 @@ function AchievementsTweakData:init(tweak_data)
 			kill = true,
 			stat = "dec21_02_stat",
 			explosive = false
+		},
+		pxp1_1 = {
+			kill = true,
+			stat = "pxp1_1_stats",
+			difficulties = overkill_and_above,
+			grenade_types = {
+				"wpn_prj_four",
+				"launcher_poison",
+				"launcher_poison_ms3gl_conversion"
+			},
+			player_style = {
+				variation = "default",
+				style = "scrub"
+			}
 		}
 	}
 	self.shotgun_single_shot_kills = {
@@ -923,6 +937,23 @@ function AchievementsTweakData:init(tweak_data)
 			enemy_tags_all = {
 				"law"
 			}
+		},
+		pxp1_1 = {
+			stat = "pxp1_1_stats",
+			difficulty = overkill_and_above,
+			player_style = {
+				variation = "default",
+				style = "scrub"
+			},
+			parts = {
+				"wpn_fps_upg_a_bow_poison",
+				"wpn_fps_upg_a_crossbow_poison",
+				"wpn_fps_bow_arblast_m_poison",
+				"wpn_fps_bow_frankish_m_poison",
+				"wpn_fps_bow_long_m_poison",
+				"wpn_fps_bow_ecp_m_arrows_poison",
+				"wpn_fps_bow_elastic_m_poison"
+			}
 		}
 	}
 	self.enemy_melee_hit_achievements = {
@@ -1216,6 +1247,20 @@ function AchievementsTweakData:init(tweak_data)
 			melee_id = "chac",
 			enemy = "civilian_mariachi",
 			job = "bex"
+		},
+		pxp1_1 = {
+			is_not_civilian = true,
+			result = "death",
+			stat = "pxp1_1_stats",
+			difficulty = overkill_and_above,
+			melee_weapons = {
+				"cqc",
+				"fear"
+			},
+			player_style = {
+				variation = "default",
+				style = "scrub"
+			}
 		}
 	}
 	self.complete_heist_achievements = {
@@ -6993,6 +7038,12 @@ function AchievementsTweakData:init(tweak_data)
 			{
 				award = "dec21_02",
 				at = 75
+			}
+		},
+		pxp1_1_stats = {
+			{
+				award = "pxp1_1",
+				at = 200
 			}
 		}
 	}

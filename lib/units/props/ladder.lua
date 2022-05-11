@@ -14,6 +14,17 @@ end
 Ladder.EXIT_OFFSET_TOP = 50
 Ladder.ON_LADDER_NORMAL_OFFSET = 60
 Ladder.DEBUG = false
+
+function Ladder.set_debug(state)
+	state = state or false
+	Ladder.DEBUG = state
+	local ext_ids = Idstring("ladder")
+
+	for i, ladder_unit in ipairs(Ladder.ladders) do
+		ladder_unit:set_extension_update_enabled(ext_ids, state)
+	end
+end
+
 Ladder.EVENT_IDS = {}
 
 function Ladder.current_ladder()
@@ -32,6 +43,11 @@ end
 
 function Ladder:init(unit)
 	self._unit = unit
+
+	unit:set_extension_update_enabled(Idstring("ladder"), Ladder.DEBUG)
+
+	Ladder.debug_brush_1 = Ladder.debug_brush_1 or Draw:brush(Color.white:with_alpha(0.5))
+	Ladder.debug_brush_2 = Ladder.debug_brush_2 or Draw:brush(Color.red)
 	self.normal_axis = self.normal_axis or "y"
 	self.up_axis = self.up_axis or "z"
 	self._offset = self._offset or 0
@@ -134,10 +150,8 @@ function Ladder:check_ground_clipping()
 	end
 end
 
-function Ladder:update(t, dt)
-	if Ladder.DEBUG then
-		self:debug_draw()
-	end
+function Ladder:update(unit, t, dt)
+	self:debug_draw()
 end
 
 local mvec1 = Vector3()
@@ -148,9 +162,7 @@ function Ladder:can_access(pos, move_dir)
 	end
 
 	if Ladder.DEBUG then
-		local brush = Draw:brush(Color.red)
-
-		brush:cylinder(self._bottom, self._top, 5)
+		Ladder.debug_brush_2:cylinder(self._bottom, self._top, 5)
 	end
 
 	if _G.IS_VR then
@@ -405,6 +417,9 @@ function Ladder:set_enabled(enabled)
 	end
 end
 
+function Ladder:set_upd_state(enabled)
+end
+
 function Ladder:enabled()
 	if self._pc_disabled and not _G.IS_VR or self._vr_disabled and _G.IS_VR then
 		return false
@@ -419,17 +434,16 @@ function Ladder:destroy(unit)
 end
 
 function Ladder:debug_draw()
-	local brush = Draw:brush(Color.white:with_alpha(0.5))
+	local corners = self._corners
+	local brush = Ladder.debug_brush_1
 
-	brush:quad(self._corners[1], self._corners[2], self._corners[3], self._corners[4])
+	brush:quad(corners[1], corners[2], corners[3], corners[4])
 
 	for i = 1, 4 do
-		brush:line(self._corners[i], self._corners[i] + self._normal * (50 + i * 25))
+		brush:line(corners[i], corners[i] + self._normal * (50 + i * 25))
 	end
 
-	local brush = Draw:brush(Color.red)
-
-	brush:sphere(self._corners[1], 5)
+	Ladder.debug_brush_2:sphere(corners[1], 5)
 end
 
 function Ladder:save(data)

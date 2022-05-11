@@ -3068,10 +3068,14 @@ function CopMovement:anim_clbk_spawn_dropped_magazine()
 			return
 		end
 
+		self:anim_clbk_show_magazine_in_hand()
+
+		if not self._magazine_data or not alive(self._magazine_data.unit) then
+			return
+		end
+
 		local attach_bone = Idstring("LeftHandMiddle2")
 		local bone_hand = self._unit:get_object(attach_bone)
-
-		self:anim_clbk_show_magazine_in_hand()
 
 		if bone_hand then
 			mvec3_set(temp_vec1, self._magazine_data.unit:position())

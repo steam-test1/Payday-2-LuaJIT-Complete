@@ -91,9 +91,6 @@ function MoneyWrapBase:_set_empty()
 	end
 end
 
-function MoneyWrapBase:update(unit, t, dt)
-end
-
 function MoneyWrapBase:save(data)
 	MoneyWrapBase.super.save(self, data)
 
@@ -110,5 +107,6 @@ function MoneyWrapBase:load(data)
 	self._money_amount = state.money_amount
 end
 
-function MoneyWrapBase:destroy()
+function MoneyWrapBase:destroy(...)
+	MoneyWrapBase.super.destroy(self, ...)
 end

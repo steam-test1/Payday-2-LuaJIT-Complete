@@ -2,6 +2,9 @@ VanSkinExt = VanSkinExt or class()
 
 function VanSkinExt:init(unit)
 	self._unit = unit
+
+	unit:set_extension_update_enabled(Idstring("van_skin"), false)
+
 	local skin_id = managers.blackmarket:equipped_van_skin()
 
 	if Network:is_server() and skin_id then

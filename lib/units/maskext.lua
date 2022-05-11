@@ -7,6 +7,8 @@ local mvec2 = Vector3()
 function MaskExt:init(unit)
 	self._unit = unit
 	self._textures = {}
+
+	unit:set_extension_update_enabled(Idstring("base"), false)
 end
 
 function MaskExt:apply_blueprint(blueprint, async_clbk)

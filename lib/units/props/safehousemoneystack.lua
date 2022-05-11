@@ -91,5 +91,6 @@ function SafehouseMoneyStack:update()
 	end
 end
 
-function SafehouseMoneyStack:destroy()
+function SafehouseMoneyStack:destroy(...)
+	SafehouseMoneyStack.super.destroy(self, ...)
 end

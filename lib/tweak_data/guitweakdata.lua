@@ -785,6 +785,9 @@ function GuiTweakData:init(tweak_data)
 			},
 			{
 				"shotgun"
+			},
+			{
+				"snp"
 			}
 		}
 	}
@@ -5102,6 +5105,11 @@ function GuiTweakData:init(tweak_data)
 		limit = 5
 	}
 
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_pxp1_01",
+		texture_path = "guis/dlcs/pxp1/textures/pd2/new_heists/pxp1_01",
+		url = "https://pd2.link/McShayWeaponPackSLS"
+	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_txt1_01",
 		texture_path = "guis/dlcs/txt1/textures/pd2/new_heists/txt1_01",

@@ -9,7 +9,7 @@ function PlayerProfileGuiObject:init(ws)
 	local font = tweak_data.menu.pd2_small_font
 	local font_size = tweak_data.menu.pd2_small_font_size
 	local bg_ring = panel:bitmap({
-		texture = "guis/textures/pd2/level_ring_small",
+		texture = "guis/textures/pd2/endscreen/exp_ring",
 		y = 25,
 		alpha = 0.4,
 		x = 10,
@@ -18,7 +18,7 @@ function PlayerProfileGuiObject:init(ws)
 		color = Color.black
 	})
 	local exp_ring = panel:bitmap({
-		texture = "guis/textures/pd2/level_ring_small",
+		texture = "guis/textures/pd2/endscreen/exp_ring",
 		render_template = "VertexColorTexturedRadial",
 		blend_mode = "add",
 		y = 25,

@@ -3647,7 +3647,7 @@ function MenuComponentManager:get_texture_from_mod_type(type, sub_type, gadget, 
 		texture = "guis/textures/pd2/blackmarket/inv_mod_silencer"
 	elseif type == "gadget" then
 		texture = "guis/textures/pd2/blackmarket/inv_mod_" .. (gadget or "flashlight")
-	elseif type == "upper_reciever" or type == "lower_reciever" then
+	elseif type == "upper_reciever" or type == "lower_reciever" or type == "reciever" then
 		texture = "guis/textures/pd2/blackmarket/inv_mod_custom"
 	elseif type == "custom" then
 		texture = "guis/textures/pd2/blackmarket/inv_mod_" .. (sub_type or is_auto and "autofire" or "singlefire")

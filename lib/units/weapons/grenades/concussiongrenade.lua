@@ -38,6 +38,11 @@ function ConcussionGrenade:_on_collision(col_ray)
 end
 
 function ConcussionGrenade:_detonate(tag, unit, body, other_unit, other_body, position, normal, collision_velocity, velocity, other_velocity, new_velocity, direction, damage, ...)
+	if self._detonated then
+		return
+	end
+
+	self._detonated = true
 	local pos = self._unit:position()
 	local normal = math.UP
 	local range = self._range
@@ -84,6 +89,11 @@ function ConcussionGrenade:_can_stun_unit(unit)
 end
 
 function ConcussionGrenade:_detonate_on_client()
+	if self._detonated then
+		return
+	end
+
+	self._detonated = true
 	local pos = self._unit:position()
 	local range = self._range
 

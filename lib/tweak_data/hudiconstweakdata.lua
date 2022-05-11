@@ -14825,6 +14825,15 @@ function HudIconsTweakData:init()
 			85
 		}
 	}
+	self.C_All_H_Any_Plague = {
+		texture = "guis/dlcs/trk/atlases/pxp1_achievement",
+		texture_rect = {
+			2,
+			2,
+			85,
+			85
+		}
+	}
 
 	TextureCorrectionTweakData:new(self)
 

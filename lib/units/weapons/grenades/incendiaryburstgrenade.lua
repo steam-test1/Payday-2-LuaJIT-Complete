@@ -6,6 +6,11 @@ function IncendiaryBurstGrenade:_setup_from_tweak_data()
 end
 
 function IncendiaryBurstGrenade:_detonate(tag, unit, body, other_unit, other_body, position, normal, collision_velocity, velocity, other_velocity, new_velocity, direction, damage, ...)
+	if self._detonated then
+		return
+	end
+
+	self._detonated = true
 	local pos = self._unit:position()
 	local normal = math.UP
 	local range = self._range
@@ -39,6 +44,11 @@ function IncendiaryBurstGrenade:_detonate(tag, unit, body, other_unit, other_bod
 end
 
 function IncendiaryBurstGrenade:_detonate_on_client()
+	if self._detonated then
+		return
+	end
+
+	self._detonated = true
 	local pos = self._unit:position()
 	local range = self._range
 

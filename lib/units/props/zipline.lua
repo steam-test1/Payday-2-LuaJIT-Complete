@@ -1,5 +1,4 @@
 ZipLine = ZipLine or class()
-ZipLine.DEBUG = false
 ZipLine.TYPES = {
 	"person",
 	"bag"
@@ -14,15 +13,30 @@ ZipLine.NET_EVENTS = {
 	attach_bag_denied = 7,
 	attach_bag_granted = 8
 }
+ZipLine.DEBUG = false
+ZipLine.ziplines = ZipLine.ziplines or {}
+
+function ZipLine.set_debug(state)
+	state = state or false
+	ZipLine.DEBUG = state
+
+	for i, zipline_unit in ipairs(ZipLine.ziplines) do
+		zipline_unit:zipline():set_debug_state(state)
+	end
+end
+
 local ids_rope_obj = Idstring("rope")
 
 function ZipLine:init(unit)
 	self._unit = unit
 	self._rope_obj = unit:get_object(ids_rope_obj)
+	self._debug = ZipLine.DEBUG
+	ZipLine.debug_brush_1 = ZipLine.debug_brush_1 or Draw:brush(Color.white:with_alpha(0.5))
+	ZipLine.debug_brush_2 = ZipLine.debug_brush_2 or Draw:brush(Color.green:with_alpha(0.5))
 
 	self:set_usage_type(self._usage_type or "person")
 
-	self._wire_brush = Draw:brush(Color.black:with_alpha(1))
+	ZipLine._wire_brush = ZipLine._wire_brush or Draw:brush(Color.black:with_alpha(1))
 	self._current_time = 0
 	self._dirty = true
 	self._start_pos = self._unit:position()
@@ -49,17 +63,14 @@ function ZipLine:init(unit)
 	self._sound_source:link(self._sled_data.object)
 	self:_update_pos_data()
 	self:set_enabled(true)
+	table.insert(ZipLine.ziplines, unit)
 end
 
 function ZipLine:update(unit, t, dt)
-	if not self._enabled then
-		return
-	end
-
 	self:_update_sled(t, dt)
 	self:_update_sounds(t, dt)
 
-	if ZipLine.DEBUG then
+	if self._debug then
 		self:debug_draw(t, dt)
 	end
 end
@@ -121,10 +132,11 @@ function ZipLine:_update_sled(t, dt)
 	self:_check_dirty()
 
 	if self._synced_user and alive(self._user_unit) and self._sled_data.object then
+		local brush = ZipLine._wire_brush
 		local pos = self._sled_data.object:position() + self._sled_data.object:rotation():z() * -22
 
-		self._wire_brush:cylinder(pos, pos + math.UP * -100, 1)
-		self._wire_brush:sphere(pos, 2)
+		brush:cylinder(pos, pos + math.UP * -100, 1)
+		brush:sphere(pos, 2)
 	end
 end
 
@@ -430,12 +442,15 @@ function ZipLine:_update_pos_data()
 end
 
 function ZipLine:set_enabled(enabled)
-	self._enabled = enabled
+	enabled = enabled or false
 
-	if self._enabled then
-		-- Nothing
+	if self._enabled == enabled then
+		return
 	end
 
+	self._enabled = enabled
+
+	self._unit:set_extension_update_enabled(Idstring("zipline"), enabled)
 	self:_check_interaction_active_state()
 end
 
@@ -658,6 +673,11 @@ function ZipLine:run_sequence(sequence_name, user_unit)
 end
 
 function ZipLine:destroy(unit)
+	table.delete(ZipLine.ziplines, self._unit)
+end
+
+function ZipLine:set_debug_state(state)
+	self._debug = state
 end
 
 function ZipLine:debug_draw(t, dt)
@@ -665,14 +685,14 @@ function ZipLine:debug_draw(t, dt)
 		return
 	end
 
-	local brush = Draw:brush(Color.white:with_alpha(0.5))
+	local brush = ZipLine.debug_brush_1
 
 	for i = 0, 1, 0.005 do
 		brush:sphere(self:pos_at_time(i), 2)
 	end
 
 	local offset = Vector3(0, 0, 200)
-	local brush = Draw:brush(Color.green:with_alpha(0.5))
+	local brush = ZipLine.debug_brush_2
 	local pos = self:pos_at_time((1 + math.sin(t * 50)) / 2)
 
 	brush:cylinder(self._start_pos + offset, pos + offset, 1)
@@ -696,10 +716,7 @@ end
 function ZipLine:load(data)
 	local state = data.ZipLine
 
-	if state.enabled ~= self._enabled then
-		self:set_enabled(state.enabled)
-	end
-
+	self:set_enabled(state.enabled)
 	self:set_end_pos(state.end_pos)
 	self:set_speed(state.speed)
 	self:set_slack(state.slack)

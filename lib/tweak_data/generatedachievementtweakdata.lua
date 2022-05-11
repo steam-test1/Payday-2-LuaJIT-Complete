@@ -7134,7 +7134,6 @@ function init_auto_generated_achievement_data(tags)
 			need_unlock_icons = true,
 			icon_id = "Other_H_Any_Fugu",
 			sort_name = "Other_H_Any_Fugu",
-			additional_id = true,
 			unlock_id = true,
 			tags = {
 				tags.progress.generic,
@@ -9243,6 +9242,23 @@ function init_auto_generated_achievement_data(tags)
 				tags.unlock.weapon_color,
 				tags.tactics.stealth,
 				tags.contracts.locke
+			}
+		},
+		pxp1_1 = {
+			need_unlock_icons = true,
+			icon_id = "C_All_H_Any_Plague",
+			progress = true,
+			sort_name = "C_All_H_Any_Plague",
+			additional_id = true,
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.unlock.weapon,
+				tags.tactics.loud,
+				tags.tactics.killer,
+				tags.inventory.weapon,
+				tags.contracts.all
 			}
 		},
 		rvd_1 = {

@@ -333,6 +333,10 @@ function TextGui:_sequence_trigger(sequence_name)
 end
 
 function TextGui:set_visible(visible)
+	local upd_state = visible and true or false
+
+	self._unit:set_extension_update_enabled(Idstring("text_gui"), upd_state)
+
 	self._visible = visible
 
 	if visible then

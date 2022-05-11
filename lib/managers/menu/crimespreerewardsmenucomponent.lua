@@ -988,7 +988,7 @@ function CrimeSpreeRewardsMenuComponent:_update_experience()
 		level_text:animate(callback(self, self, "count_text"), "", self._exp_data.current_level, managers.experience:current_level(), count_t, t)
 		level_circle:animate(callback(self, self, "fill_circle"), 0, fill_percent, count_t, t)
 	else
-		level_circle:animate(callback(self, self, "fill_circle"), 0, 1, count_t, t)
+		level_circle:set_color(Color.white)
 	end
 
 	t = t + count_t + 0.25

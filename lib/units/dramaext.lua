@@ -5,6 +5,8 @@ DramaExt = DramaExt or class()
 function DramaExt:init(unit)
 	self._unit = unit
 	self._cue = nil
+
+	unit:set_extension_update_enabled(Idstring("drama"), false)
 end
 
 function DramaExt:name()

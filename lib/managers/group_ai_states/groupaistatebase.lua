@@ -446,6 +446,8 @@ function GroupAIStateBase:propagate_alert(alert_data)
 		return
 	end
 
+	print("[GroupAIStateBase:propagate_alert]", inspect(alert_data))
+
 	local nav_manager = managers.navigation
 	local access_func = nav_manager.check_access
 	local alert_type = alert_data[1]

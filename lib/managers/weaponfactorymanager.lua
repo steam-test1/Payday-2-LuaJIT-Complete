@@ -745,7 +745,8 @@ function WeaponFactoryManager:_add_part(p_unit, factory_id, part_id, forbidden, 
 			parent = part.parent,
 			reload_objects = part.reload_objects,
 			steelsight_visible = part.steelsight_visible,
-			steelsight_swap_progress_trigger = part.steelsight_swap_progress_trigger
+			steelsight_swap_progress_trigger = part.steelsight_swap_progress_trigger,
+			animation_effects = part.animation_effects
 		}
 
 		managers.dyn_resource:load(ids_unit, ids_unit_name, "packages/dyn_resources", callback(self, self, "clbk_part_unit_loaded", async_task_data))
@@ -767,6 +768,7 @@ function WeaponFactoryManager:_add_part(p_unit, factory_id, part_id, forbidden, 
 
 		parts[part_id].steelsight_visible = part.steelsight_visible
 		parts[part_id].steelsight_swap_progress_trigger = part.steelsight_swap_progress_trigger
+		parts[part_id].animation_effects = part.animation_effects
 	end
 end
 

@@ -2,6 +2,8 @@ SyncMaterials = SyncMaterials or class()
 
 function SyncMaterials:init(unit)
 	self._unit = unit
+
+	unit:set_extension_update_enabled(Idstring("sync_materials"), false)
 end
 
 function SyncMaterials:save(data)

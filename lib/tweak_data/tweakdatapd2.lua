@@ -715,6 +715,15 @@ function TweakData:_init_pd2()
 			32
 		}
 	}
+	self.hud_icons.poison_gas_grenade = {
+		texture = "guis/dlcs/pxp1/textures/pd2/hud_poison_gas_grenade",
+		texture_rect = {
+			64,
+			0,
+			128,
+			128
+		}
+	}
 	self.hud_icons.none_icon = {
 		texture = "guis/textures/pd2/equipment_02",
 		texture_rect = {
@@ -854,6 +863,10 @@ function TweakData:_setup_scene_pose_items()
 			"infamy"
 		},
 		husk_ray = {
+			nil,
+			"secondary"
+		},
+		husk_rifle4 = {
 			nil,
 			"secondary"
 		},
@@ -1006,6 +1019,14 @@ function TweakData:_setup_scene_poses()
 		},
 		ultima = {
 			"husk_generic1",
+			required_pose = true
+		},
+		scout = {
+			"husk_rifle4",
+			required_pose = true
+		},
+		hk51b = {
+			"husk_rifle3",
 			required_pose = true
 		}
 	}

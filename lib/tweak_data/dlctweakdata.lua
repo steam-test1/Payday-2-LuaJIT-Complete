@@ -8383,6 +8383,39 @@ function DLCTweakData:init(tweak_data)
 			amount = 1
 		}
 	}
+	self.ach_pxp1_01 = {
+		dlc = "has_achievement",
+		achievement_id = "pxp1_1",
+		content = {}
+	}
+	self.ach_pxp1_01.content.loot_drops = {}
+	self.ach_pxp1_01.content.upgrades = {
+		"poison_gas_grenade"
+	}
+	self.pxp1_bbq = {
+		dlc = "has_bbq",
+		content = {}
+	}
+	self.pxp1_bbq.content.loot_global_value = "bbq"
+	self.pxp1_bbq.content.loot_drops = {
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_upg_a_grenade_launcher_incendiary_ms3gl",
+			amount = 1
+		}
+	}
+	self.pxp1_sawp = {
+		dlc = "has_sawp",
+		content = {}
+	}
+	self.pxp1_sawp.content.loot_global_value = "sawp"
+	self.pxp1_sawp.content.loot_drops = {
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_upg_a_grenade_launcher_electric_ms3gl",
+			amount = 1
+		}
+	}
 	self.sbzac_elegantteeth = {
 		content = {}
 	}

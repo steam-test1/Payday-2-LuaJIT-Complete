@@ -1109,6 +1109,7 @@ function HUDTeammate:_create_primary_weapon_firemode()
 		local can_toggle_firemode = weapon_tweak_data.CAN_TOGGLE_FIREMODE
 		local locked_to_auto = managers.weapon_factory:has_perk("fire_mode_auto", equipped_primary.factory_id, equipped_primary.blueprint)
 		local locked_to_single = managers.weapon_factory:has_perk("fire_mode_single", equipped_primary.factory_id, equipped_primary.blueprint)
+		locked_to_auto = managers.weapon_factory:has_perk("fire_mode_burst", equipped_primary.factory_id, equipped_primary.blueprint)
 		local single_id = "firemode_single" .. ((not can_toggle_firemode or locked_to_single) and "_locked" or "")
 		local texture, texture_rect = tweak_data.hud_icons:get_icon_data(single_id)
 		local firemode_single = weapon_selection_panel:bitmap({

@@ -1162,6 +1162,7 @@ function PlayerStandard:_get_max_walk_speed(t, force_run)
 
 	if alive(self._equipped_unit) and apply_weapon_penalty then
 		multiplier = multiplier * self._equipped_unit:base():movement_penalty()
+		multiplier = multiplier * managers.player:upgrade_value(self._equipped_unit:base():get_name_id(), "increased_movement_speed", 1)
 	end
 
 	if managers.player:has_activate_temporary_upgrade("temporary", "increased_movement_speed") then
@@ -1976,11 +1977,19 @@ function PlayerStandard:_update_interaction_timers(t)
 end
 
 function PlayerStandard:_check_action_weapon_firemode(t, input)
-	if input.btn_weapon_firemode_press and self._equipped_unit:base().toggle_firemode then
-		self:_check_stop_shooting()
+	if input.btn_weapon_firemode_press then
+		local action_forbidden = self:is_shooting_count()
 
-		if self._equipped_unit:base():toggle_firemode() then
-			managers.hud:set_teammate_weapon_firemode(HUDManager.PLAYER_PANEL, self._unit:inventory():equipped_selection(), self._equipped_unit:base():fire_mode())
+		if action_forbidden then
+			return
+		end
+
+		if self._equipped_unit:base().toggle_firemode then
+			self:_check_stop_shooting()
+
+			if self._equipped_unit:base():toggle_firemode() then
+				managers.hud:set_teammate_weapon_firemode(HUDManager.PLAYER_PANEL, self._unit:inventory():equipped_selection(), self._equipped_unit:base():fire_mode())
+			end
 		end
 	end
 end
@@ -2044,7 +2053,7 @@ function PlayerStandard:_check_action_melee(t, input)
 		return
 	end
 
-	local action_forbidden = not self:_melee_repeat_allowed() or self._use_item_expire_t or self:_changing_weapon() or self:_interacting() or self:_is_throwing_projectile() or self:_is_using_bipod()
+	local action_forbidden = not self:_melee_repeat_allowed() or self._use_item_expire_t or self:_changing_weapon() or self:_interacting() or self:_is_throwing_projectile() or self:_is_using_bipod() or self:is_shooting_count()
 
 	if action_forbidden then
 		return
@@ -2608,6 +2617,7 @@ function PlayerStandard:_check_action_reload(t, input)
 
 	if action_wanted then
 		local action_forbidden = self:_is_reloading() or self:_changing_weapon() or self:_is_meleeing() or self._use_item_expire_t or self:_interacting() or self:_is_throwing_projectile()
+		action_forbidden = action_forbidden or self:is_shooting_count()
 
 		if not action_forbidden and self._equipped_unit and not self._equipped_unit:base():clip_full() then
 			self:_start_action_reload_enter(t)
@@ -2811,6 +2821,7 @@ function PlayerStandard:_check_change_weapon(t, input)
 		local action_forbidden = self:_changing_weapon()
 		action_forbidden = action_forbidden or self:_is_meleeing() or self._use_item_expire_t or self._change_item_expire_t
 		action_forbidden = action_forbidden or self._unit:inventory():num_selections() == 1 or self:_interacting() or self:_is_throwing_projectile() or self:_is_deploying_bipod()
+		action_forbidden = action_forbidden or self:is_shooting_count()
 
 		if not action_forbidden then
 			local data = {
@@ -4142,6 +4153,10 @@ function PlayerStandard:shooting()
 	return self._shooting
 end
 
+function PlayerStandard:is_shooting_count()
+	return self._shooting and (self._equipped_unit and self._equipped_unit:base():shooting_count()) > 0
+end
+
 function PlayerStandard:running()
 	return self._running
 end
@@ -4165,6 +4180,7 @@ end
 function PlayerStandard:_check_action_primary_attack(t, input)
 	local new_action = nil
 	local action_wanted = input.btn_primary_attack_state or input.btn_primary_attack_release
+	action_wanted = action_wanted or self:is_shooting_count()
 
 	if action_wanted then
 		local action_forbidden = self:_is_reloading() or self:_changing_weapon() or self:_is_meleeing() or self._use_item_expire_t or self:_interacting() or self:_is_throwing_projectile() or self:_is_deploying_bipod() or self._menu_closed_fire_cooldown > 0 or self:is_switching_stances()
@@ -4206,7 +4222,8 @@ function PlayerStandard:_check_action_primary_attack(t, input)
 					if not self._shooting then
 						if weap_base:start_shooting_allowed() then
 							local start = fire_mode == "single" and input.btn_primary_attack_press
-							start = start or fire_mode ~= "single" and input.btn_primary_attack_state
+							start = start or fire_mode == "auto" and input.btn_primary_attack_state
+							start = start or fire_mode == "burst" and input.btn_primary_attack_press
 							start = start and not fire_on_release
 							start = start or fire_on_release and input.btn_primary_attack_release
 
@@ -4273,7 +4290,11 @@ function PlayerStandard:_check_action_primary_attack(t, input)
 								weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
 							end
 						end
-					elseif input.btn_primary_attack_state then
+					elseif fire_mode == "auto" then
+						if input.btn_primary_attack_state then
+							fired = weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
+						end
+					elseif fire_mode == "burst" then
 						fired = weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
 					end
 
@@ -4310,7 +4331,7 @@ function PlayerStandard:_check_action_primary_attack(t, input)
 							weap_base:tweak_data_anim_play("fire", weap_base:fire_rate_multiplier())
 						end
 
-						if fire_mode == "single" and weap_base:get_name_id() ~= "saw" then
+						if (fire_mode == "single" or fire_mode == "burst") and weap_base:get_name_id() ~= "saw" then
 							if not self._state_data.in_steelsight then
 								self._ext_camera:play_redirect(self:get_animation("recoil"), weap_base:fire_rate_multiplier())
 							elseif weap_tweak_data.animations.recoil_steelsight then
@@ -4364,10 +4385,12 @@ function PlayerStandard:_check_action_primary_attack(t, input)
 
 						if weap_base.third_person_important and weap_base:third_person_important() then
 							self._ext_network:send("shot_blank_reliable", impact, 0)
-						elseif weap_base.akimbo and not weap_base:weapon_tweak_data().allow_akimbo_autofire or fire_mode == "single" then
+						elseif weap_base.akimbo and not weap_base:weapon_tweak_data().allow_akimbo_autofire or fire_mode == "single" or fire_mode == "burst" then
 							self._ext_network:send("shot_blank", impact, 0)
 						end
 					elseif fire_mode == "single" then
+						new_action = false
+					elseif fire_mode == "burst" and weap_base:shooting_count() == 0 then
 						new_action = false
 					end
 				end

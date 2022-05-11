@@ -6712,13 +6712,11 @@ function BlackMarketGui:update_info_text()
 
 				local skill_text_id = skill_based and (slot_data.skill_name or "bm_menu_skilltree_locked") or false
 				local level_text_id = level_based and "bm_menu_level_req" or false
-				local dlc_text_id = dlc_based and slot_data.dlc_locked or false
+				local dlc_text_id = slot_data.dlc_locked or false
 				local text = ""
 
 				if slot_data.install_lock then
 					text = text .. managers.localization:to_upper_text(slot_data.install_lock, {}) .. "\n"
-				elseif dlc_text_id then
-					text = text .. managers.localization:to_upper_text(dlc_text_id, {}) .. "\n"
 				elseif skill_text_id then
 					text = text .. managers.localization:to_upper_text(skill_text_id, {
 						slot_data.name_localized
@@ -6727,6 +6725,8 @@ function BlackMarketGui:update_info_text()
 					text = text .. managers.localization:to_upper_text(level_text_id, {
 						level = slot_data.level
 					}) .. "\n"
+				elseif dlc_text_id then
+					text = text .. managers.localization:to_upper_text(dlc_text_id, {}) .. "\n"
 				end
 
 				updated_texts[3].text = text
@@ -10345,7 +10345,9 @@ function BlackMarketGui:populate_grenades(data)
 			new_data.lock_texture = self:get_lock_icon(new_data, "guis/textures/pd2/lock_community")
 
 			if achievement and managers.achievment:get_info(achievement) and not managers.achievment:get_info(achievement).awarded then
-				new_data.dlc_locked = "menu_bm_achievement_locked_" .. tostring(achievement)
+				new_data.lock_texture = "guis/textures/pd2/lock_achievement"
+				local achievement_visual = tweak_data.achievement.visual[achievement]
+				new_data.dlc_locked = achievement_visual and achievement_visual.desc_id or "menu_bm_achievement_locked_" .. tostring(achievement)
 			elseif dlc and not managers.dlc:is_dlc_unlocked(dlc) then
 				new_data.dlc_locked = tweak_data.lootdrop.global_values[dlc] and tweak_data.lootdrop.global_values[dlc].unlock_id or "bm_menu_dlc_locked"
 			else

@@ -1,4 +1,9 @@
 ScriptUnitData = ScriptUnitData or class()
+
+function ScriptUnitData:init(unit)
+	unit:set_extension_update_enabled(Idstring("unit_data"), false)
+end
+
 UnitBase = UnitBase or class()
 
 function UnitBase:init(unit, update_enabled)

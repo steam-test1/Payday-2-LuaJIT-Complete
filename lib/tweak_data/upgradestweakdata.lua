@@ -4889,7 +4889,8 @@ function UpgradesTweakData:init(tweak_data)
 				"x_baka",
 				"x_olympic",
 				"x_mp9",
-				"maxim9"
+				"maxim9",
+				"scout"
 			}
 		},
 		[20] = {
@@ -5117,7 +5118,8 @@ function UpgradesTweakData:init(tweak_data)
 				"rpg7",
 				"arblast",
 				"scoutknife",
-				"komodo"
+				"komodo",
+				"hk51b"
 			}
 		},
 		[39] = {
@@ -5194,6 +5196,7 @@ function UpgradesTweakData:init(tweak_data)
 				"freedom",
 				"whiskey",
 				"arbiter",
+				"ms3gl",
 				"system"
 			}
 		},
@@ -5497,6 +5500,7 @@ function UpgradesTweakData:init(tweak_data)
 	self:_scar_definitions()
 	self:_p226_definitions()
 	self:_hk21_definitions()
+	self:_hk51b_definitions()
 	self:_m249_definitions()
 	self:_rpk_definitions()
 	self:_m95_definitions()
@@ -5556,6 +5560,7 @@ function UpgradesTweakData:init(tweak_data)
 	self:_par_weapon_definitions()
 	self:_sparrow_weapon_definitions()
 	self:_model70_weapon_definitions()
+	self:_scout_weapon_definitions()
 	self:_m37_weapon_definitions()
 	self:_china_weapon_definitions()
 	self:_sr2_weapon_definitions()
@@ -5572,6 +5577,7 @@ function UpgradesTweakData:init(tweak_data)
 	self:_x_packrat_weapon_definitions()
 	self:_rota_weapon_definitions()
 	self:_arbiter_weapon_definitions()
+	self:_ms3gl_weapon_definitions()
 	self:_contraband_weapon_definitions()
 	self:_ray_weapon_definitions()
 	self:_tti_weapon_definitions()
@@ -11400,6 +11406,15 @@ function UpgradesTweakData:_hk21_definitions()
 	}
 end
 
+function UpgradesTweakData:_hk51b_definitions()
+	self.definitions.hk51b = {
+		dlc = "pxp1",
+		factory_id = "wpn_fps_lmg_hk51b",
+		weapon_id = "hk51b",
+		category = "weapon"
+	}
+end
+
 function UpgradesTweakData:_m249_definitions()
 	self.definitions.m249 = {
 		dlc = "gage_pack_lmg",
@@ -12089,6 +12104,9 @@ function UpgradesTweakData:_grenades_definitions()
 	}
 	self.definitions.copr_ability = {
 		dlc = "copr",
+		category = "grenade"
+	}
+	self.definitions.poison_gas_grenade = {
 		category = "grenade"
 	}
 end
@@ -15125,6 +15143,15 @@ function UpgradesTweakData:_model70_weapon_definitions()
 	}
 end
 
+function UpgradesTweakData:_scout_weapon_definitions()
+	self.definitions.scout = {
+		dlc = "pxp1",
+		factory_id = "wpn_fps_snp_scout",
+		weapon_id = "scout",
+		category = "weapon"
+	}
+end
+
 function UpgradesTweakData:_m37_weapon_definitions()
 	self.definitions.m37 = {
 		dlc = "peta",
@@ -15260,6 +15287,15 @@ function UpgradesTweakData:_arbiter_weapon_definitions()
 		dlc = "tango",
 		factory_id = "wpn_fps_gre_arbiter",
 		weapon_id = "arbiter",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_ms3gl_weapon_definitions()
+	self.definitions.ms3gl = {
+		dlc = "pxp1",
+		factory_id = "wpn_fps_gre_ms3gl",
+		weapon_id = "ms3gl",
 		category = "weapon"
 	}
 end

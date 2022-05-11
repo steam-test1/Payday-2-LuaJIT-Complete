@@ -2,6 +2,9 @@ WaypointExt = WaypointExt or class()
 
 function WaypointExt:init(unit)
 	self._unit = unit
+
+	unit:set_extension_update_enabled(Idstring("waypoint"), false)
+
 	WaypointExt.debug_ext = self
 	self._is_active = false
 end

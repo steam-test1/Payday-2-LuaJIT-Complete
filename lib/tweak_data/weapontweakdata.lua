@@ -99,6 +99,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_scar_crew()
 	self:_init_data_p226_crew()
 	self:_init_data_hk21_crew()
+	self:_init_data_hk51b_crew()
 	self:_init_data_m249_crew()
 	self:_init_data_rpk_crew()
 	self:_init_data_m95_crew()
@@ -155,6 +156,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_par_crew()
 	self:_init_data_sparrow_crew()
 	self:_init_data_model70_crew()
+	self:_init_data_scout_crew()
 	self:_init_data_m37_crew()
 	self:_init_data_china_crew()
 	self:_init_data_sr2_crew()
@@ -180,6 +182,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_x_packrat_crew()
 	self:_init_data_rota_crew()
 	self:_init_data_arbiter_crew()
+	self:_init_data_ms3gl_crew()
 	self:_init_data_contraband_crew()
 	self:_init_data_ray_crew()
 	self:_init_data_tti_crew()
@@ -2134,6 +2137,22 @@ function WeaponTweakData:_init_data_hk21_crew()
 	self.hk21_crew.FIRE_MODE = "auto"
 end
 
+function WeaponTweakData:_init_data_hk51b_crew()
+	self.hk51b_crew.categories = clone(self.hk51b.categories)
+	self.hk51b_crew.sounds.prefix = "hk51b_npc"
+	self.hk51b_crew.use_data.selection_index = SELECTION.PRIMARY
+	self.hk51b_crew.DAMAGE = 1.25
+	self.hk51b_crew.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
+	self.hk51b_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
+	self.hk51b_crew.CLIP_AMMO_MAX = 150
+	self.hk51b_crew.NR_CLIPS_MAX = 5
+	self.hk51b_crew.auto.fire_rate = 0.083
+	self.hk51b_crew.hold = "rifle"
+	self.hk51b_crew.alert_size = 5000
+	self.hk51b_crew.suppression = 1
+	self.hk51b_crew.FIRE_MODE = "auto"
+end
+
 function WeaponTweakData:_init_data_m249_crew()
 	self.m249_crew.categories = clone(self.m249.categories)
 	self.m249_crew.sounds.prefix = "m249_npc"
@@ -3232,6 +3251,24 @@ function WeaponTweakData:_init_data_model70_crew()
 	self.model70_secondary_crew.use_data.selection_index = SELECTION.SECONDARY
 end
 
+function WeaponTweakData:_init_data_scout_crew()
+	self.scout_crew.categories = clone(self.scout.categories)
+	self.scout_crew.sounds.prefix = "steyr_scout_npc"
+	self.scout_crew.use_data.selection_index = SELECTION.PRIMARY
+	self.scout_crew.DAMAGE = 15
+	self.scout_crew.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
+	self.scout_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_sniper"
+	self.scout_crew.CLIP_AMMO_MAX = 5
+	self.scout_crew.NR_CLIPS_MAX = 8
+	self.scout_crew.auto.fire_rate = 1
+	self.scout_crew.hold = "rifle"
+	self.scout_crew.alert_size = 5000
+	self.scout_crew.suppression = 1
+	self.scout_crew.FIRE_MODE = "single"
+	self.scout_secondary_crew = deep_clone(self.scout_crew)
+	self.scout_secondary_crew.use_data.selection_index = SELECTION.SECONDARY
+end
+
 function WeaponTweakData:_init_data_m37_crew()
 	self.m37_crew.categories = clone(self.m37.categories)
 	self.m37_crew.sounds.prefix = "m37_npc"
@@ -3626,6 +3663,28 @@ function WeaponTweakData:_init_data_arbiter_crew()
 	self.arbiter_crew.alert_size = 2800
 	self.arbiter_crew.suppression = 1
 	self.arbiter_crew.FIRE_MODE = "auto"
+end
+
+function WeaponTweakData:_init_data_ms3gl_crew()
+	self.ms3gl_crew.categories = clone(self.ms3gl.categories)
+	self.ms3gl_crew.sounds.prefix = "gl3_npc"
+	self.ms3gl_crew.use_data.selection_index = SELECTION.SECONDARY
+	self.ms3gl_crew.DAMAGE = 2
+	self.ms3gl_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.ms3gl_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.ms3gl_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.ms3gl_crew.no_trail = true
+	self.ms3gl_crew.CLIP_AMMO_MAX = 3
+	self.ms3gl_crew.NR_CLIPS_MAX = 2
+	self.ms3gl_crew.looped_reload_speed = 0.3333333333333333
+	self.ms3gl_crew.auto.fire_rate = 0.1
+	self.ms3gl_crew.hold = {
+		"bullpup",
+		"rifle"
+	}
+	self.ms3gl_crew.alert_size = 2800
+	self.ms3gl_crew.suppression = 1
+	self.ms3gl_crew.FIRE_MODE = "auto"
 end
 
 function WeaponTweakData:_init_data_contraband_crew()
@@ -5971,6 +6030,7 @@ function WeaponTweakData:_init_new_weapons(weapon_data)
 	self:_init_par(weapon_data)
 	self:_init_sparrow(weapon_data)
 	self:_init_model70(weapon_data)
+	self:_init_scout(weapon_data)
 	self:_init_qbu88(weapon_data)
 	self:_init_groza(weapon_data)
 	self:_init_pm9(weapon_data)
@@ -5986,6 +6046,7 @@ function WeaponTweakData:_init_new_weapons(weapon_data)
 	self:_init_x_m1911(weapon_data)
 	self:_init_vityaz(weapon_data)
 	self:_init_x_vityaz(weapon_data)
+	self:_init_hk51b(weapon_data)
 	self:_init_ultima(weapon_data)
 	self:_init_maxim9(weapon_data)
 	self:_init_x_maxim9(weapon_data)
@@ -6001,6 +6062,7 @@ function WeaponTweakData:_init_new_weapons(weapon_data)
 	self:_init_desertfox(weapon_data)
 	self:_init_rota(weapon_data)
 	self:_init_arbiter(weapon_data)
+	self:_init_ms3gl(weapon_data)
 	self:_init_contraband(weapon_data)
 	self:_init_ray(weapon_data)
 	self:_init_tti(weapon_data)
@@ -9960,6 +10022,130 @@ function WeaponTweakData:_init_hk21(weapon_data)
 	}
 end
 
+function WeaponTweakData:_init_hk51b(weapon_data)
+	self.hk51b = {
+		categories = {
+			"lmg"
+		},
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.hk51b.sounds.fire = "hk51b_fire"
+	self.hk51b.sounds.fire_single = "hk51b_fire_single"
+	self.hk51b.sounds.fire_auto = "hk51b_fire"
+	self.hk51b.sounds.stop_fire = "hk51b_stop"
+	self.hk51b.sounds.dryfire = "primary_dryfire"
+	self.hk51b.sounds.enter_steelsight = "lmg_steelsight_enter"
+	self.hk51b.sounds.leave_steelsight = "lmg_steelsight_exit"
+	self.hk51b.timers = {
+		reload_not_empty = 3.1,
+		reload_empty = 3.65,
+		unequip = 0.6,
+		equip = 0.55,
+		deploy_bipod = 1
+	}
+	self.hk51b.bipod_camera_spin_limit = 40
+	self.hk51b.bipod_camera_pitch_limit = 15
+	self.hk51b.bipod_weapon_translation = Vector3(-8.5, 10, 0)
+	self.hk51b.bipod_deploy_multiplier = 1
+	self.hk51b.name_id = "bm_w_hk51b"
+	self.hk51b.desc_id = "bm_w_hk51b_desc"
+	self.hk51b.description_id = "des_hk51b"
+	self.hk51b.global_value = "pxp1"
+	self.hk51b.texture_bundle_folder = "pxp1"
+	self.hk51b.muzzleflash = "effects/payday2/particles/weapons/big_51b_auto_fps"
+	self.hk51b.shell_ejection = "effects/payday2/particles/weapons/shells/shell_762_lmg"
+	self.hk51b.use_data = {
+		selection_index = SELECTION.PRIMARY
+	}
+	self.hk51b.DAMAGE = 1
+	self.hk51b.damage_falloff = FALLOFF_TEMPLATE.LMG_FALL_HIGH
+	self.hk51b.CLIP_AMMO_MAX = 60
+	self.hk51b.NR_CLIPS_MAX = 3
+	self.hk51b.AMMO_MAX = self.hk51b.CLIP_AMMO_MAX * self.hk51b.NR_CLIPS_MAX
+	self.hk51b.AMMO_PICKUP = self:_pickup_chance(self.hk51b.AMMO_MAX, PICKUP.LMG_HIGH_CAPACITY)
+	self.hk51b.FIRE_MODE = "auto"
+	self.hk51b.fire_mode_data = {
+		fire_rate = 0.09
+	}
+	self.hk51b.CAN_TOGGLE_FIREMODE = false
+	self.hk51b.auto = {
+		fire_rate = 0.09
+	}
+	self.hk51b.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight,
+		bipod = weapon_data.default_bipod_spread
+	}
+	self.hk51b.kick = {
+		standing = {
+			1,
+			0.8,
+			-1,
+			0.6
+		}
+	}
+	self.hk51b.kick.crouching = self.hk51b.kick.standing
+	self.hk51b.kick.steelsight = {
+		0.44,
+		0.34,
+		-0.44,
+		0.34
+	}
+	self.hk51b.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.hk51b.crosshair.standing.offset = 0.14
+	self.hk51b.crosshair.standing.moving_offset = 0.8
+	self.hk51b.crosshair.standing.kick_offset = 0.6
+	self.hk51b.crosshair.crouching.offset = 0.1
+	self.hk51b.crosshair.crouching.moving_offset = 0.6
+	self.hk51b.crosshair.crouching.kick_offset = 0.4
+	self.hk51b.crosshair.steelsight.hidden = true
+	self.hk51b.crosshair.steelsight.offset = 0
+	self.hk51b.crosshair.steelsight.moving_offset = 0
+	self.hk51b.crosshair.steelsight.kick_offset = 0.14
+	self.hk51b.shake = {
+		fire_multiplier = 0.6,
+		fire_steelsight_multiplier = -0.6
+	}
+	self.hk51b.autohit = weapon_data.autohit_lmg_default
+	self.hk51b.aim_assist = weapon_data.aim_assist_lmg_default
+	self.hk51b.weapon_hold = "hk51b"
+	self.hk51b.animations = {
+		equip_id = "equip_hk51b",
+		recoil_steelsight = true,
+		bipod_enter = "bipod_enter",
+		bipod_exit = "bipod_exit",
+		bipod_recoil = "bipod_recoil",
+		bipod_recoil_enter = "bipod_recoil",
+		bipod_recoil_loop = "bipod_recoil_loop",
+		bipod_recoil_exit = "bipod_recoil_exit"
+	}
+	self.hk51b.panic_suppression_chance = 0.2
+	self.hk51b.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 110,
+		alert_size = 8,
+		spread = 11,
+		spread_moving = 10,
+		recoil = 2,
+		value = 9,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 2,
+		concealment = 19
+	}
+end
+
 function WeaponTweakData:_init_m249(weapon_data)
 	self.m249 = {
 		categories = {
@@ -10987,15 +11173,18 @@ function WeaponTweakData:_init_gre_m79(weapon_data)
 				"clip_ammo_increase"
 			}
 		},
-		ammo_default_sub_type = "ammo_explosive",
-		damage_melee = weapon_data.damage_melee_default,
-		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
-		sounds = {}
+		projectile_types = {}
 	}
-	self.gre_m79.sounds.fire = "gl40_fire"
-	self.gre_m79.sounds.dryfire = "shotgun_dryfire"
-	self.gre_m79.sounds.enter_steelsight = "secondary_steel_sight_enter"
-	self.gre_m79.sounds.leave_steelsight = "secondary_steel_sight_exit"
+	self.gre_m79.projectile_types.launcher_poison = "launcher_poison_gre_m79"
+	self.gre_m79.ammo_default_sub_type = "ammo_explosive"
+	self.gre_m79.damage_melee = weapon_data.damage_melee_default
+	self.gre_m79.damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default
+	self.gre_m79.sounds = {
+		fire = "gl40_fire",
+		dryfire = "shotgun_dryfire",
+		enter_steelsight = "secondary_steel_sight_enter",
+		leave_steelsight = "secondary_steel_sight_exit"
+	}
 	self.gre_m79.timers = {
 		reload_not_empty = 3.1
 	}
@@ -14131,16 +14320,18 @@ function WeaponTweakData:_init_m32(weapon_data)
 		projectile_types = {
 			launcher_electric = "launcher_electric_m32",
 			launcher_incendiary = "launcher_incendiary_m32"
-		},
-		ammo_default_sub_type = "ammo_explosive",
-		damage_melee = weapon_data.damage_melee_default,
-		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
-		sounds = {}
+		}
 	}
-	self.m32.sounds.fire = "mgl_fire"
-	self.m32.sounds.dryfire = "shotgun_dryfire"
-	self.m32.sounds.enter_steelsight = "secondary_steel_sight_enter"
-	self.m32.sounds.leave_steelsight = "secondary_steel_sight_exit"
+	self.m32.projectile_types.launcher_poison = "launcher_poison_m32"
+	self.m32.ammo_default_sub_type = "ammo_explosive"
+	self.m32.damage_melee = weapon_data.damage_melee_default
+	self.m32.damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default
+	self.m32.sounds = {
+		fire = "mgl_fire",
+		dryfire = "shotgun_dryfire",
+		enter_steelsight = "secondary_steel_sight_enter",
+		leave_steelsight = "secondary_steel_sight_exit"
+	}
 	self.m32.timers = {
 		shotgun_reload_enter = 1.96,
 		shotgun_reload_exit_empty = 1.33,
@@ -15926,15 +16117,17 @@ function WeaponTweakData:_init_groza(weapon_data)
 		projectile_types = {
 			underbarrel_electric = "underbarrel_electric_groza",
 			launcher_m203 = "underbarrel_m203_groza"
-		},
-		damage_melee = weapon_data.damage_melee_default,
-		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
-		sounds = {}
+		}
 	}
-	self.groza_underbarrel.sounds.fire = "grozagl_fire"
-	self.groza_underbarrel.sounds.dryfire = "shotgun_dryfire"
-	self.groza_underbarrel.sounds.enter_steelsight = "secondary_steel_sight_enter"
-	self.groza_underbarrel.sounds.leave_steelsight = "secondary_steel_sight_exit"
+	self.groza_underbarrel.projectile_types.launcher_poison = "launcher_poison_groza"
+	self.groza_underbarrel.damage_melee = weapon_data.damage_melee_default
+	self.groza_underbarrel.damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default
+	self.groza_underbarrel.sounds = {
+		fire = "grozagl_fire",
+		dryfire = "shotgun_dryfire",
+		enter_steelsight = "secondary_steel_sight_enter",
+		leave_steelsight = "secondary_steel_sight_exit"
+	}
 	self.groza_underbarrel.timers = {
 		reload_not_empty = 1.78,
 		reload_empty = 1.78,
@@ -16952,6 +17145,127 @@ function WeaponTweakData:_init_model70(weapon_data)
 	}
 end
 
+function WeaponTweakData:_init_scout(weapon_data)
+	self.scout = {
+		categories = {
+			"snp"
+		},
+		upgrade_blocks = {
+			weapon = {
+				"clip_ammo_increase"
+			}
+		},
+		has_description = true,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.scout.sounds.fire = "steyr_scout_fire"
+	self.scout.sounds.dryfire = "primary_dryfire"
+	self.scout.sounds.enter_steelsight = "lmg_steelsight_enter"
+	self.scout.sounds.leave_steelsight = "lmg_steelsight_exit"
+	self.scout.timers = {
+		reload_not_empty = 3.4,
+		reload_empty = 5.3,
+		unequip = 0.4,
+		equip = 0.45
+	}
+	self.scout.name_id = "bm_w_scout"
+	self.scout.desc_id = "bm_w_scout_desc"
+	self.scout.description_id = "des_scout"
+	self.scout.global_value = "pxp1"
+	self.scout.texture_bundle_folder = "pxp1"
+	self.scout.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
+	self.scout.shell_ejection = "effects/payday2/particles/weapons/shells/shell_sniper"
+	self.scout.use_data = {
+		selection_index = SELECTION.SECONDARY,
+		align_place = "right_hand"
+	}
+	self.scout.DAMAGE = 1
+	self.scout.damage_falloff = FALLOFF_TEMPLATE.SNIPER_FALL_LOW
+	self.scout.CLIP_AMMO_MAX = 5
+	self.scout.NR_CLIPS_MAX = 4
+	self.scout.AMMO_MAX = self.scout.CLIP_AMMO_MAX * self.scout.NR_CLIPS_MAX
+	self.scout.AMMO_PICKUP = {
+		0.7,
+		1
+	}
+	self.scout.FIRE_MODE = "single"
+	self.scout.fire_mode_data = {
+		fire_rate = 1
+	}
+	self.scout.CAN_TOGGLE_FIREMODE = false
+	self.scout.single = {
+		fire_rate = 1
+	}
+	self.scout.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight
+	}
+	self.scout.kick = {
+		standing = {
+			3,
+			4.8,
+			-0.3,
+			0.3
+		}
+	}
+	self.scout.kick.crouching = self.scout.kick.standing
+	self.scout.kick.steelsight = self.scout.kick.standing
+	self.scout.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.scout.crosshair.standing.offset = 1.14
+	self.scout.crosshair.standing.moving_offset = 1.8
+	self.scout.crosshair.standing.kick_offset = 1.6
+	self.scout.crosshair.crouching.offset = 1.1
+	self.scout.crosshair.crouching.moving_offset = 1.6
+	self.scout.crosshair.crouching.kick_offset = 1.4
+	self.scout.crosshair.steelsight.hidden = true
+	self.scout.crosshair.steelsight.offset = 1
+	self.scout.crosshair.steelsight.moving_offset = 1
+	self.scout.crosshair.steelsight.kick_offset = 1.14
+	self.scout.shake = {
+		fire_multiplier = 3.5,
+		fire_steelsight_multiplier = -3.5
+	}
+	self.scout.autohit = weapon_data.autohit_snp_default
+	self.scout.aim_assist = weapon_data.aim_assist_snp_default
+	self.scout.weapon_hold = "scout"
+	self.scout.animations = {
+		equip_id = "equip_scout",
+		recoil_steelsight = true
+	}
+	self.scout.can_shoot_through_enemy = true
+	self.scout.can_shoot_through_shield = true
+	self.scout.can_shoot_through_wall = true
+	self.scout.panic_suppression_chance = 0.2
+	self.scout.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 123,
+		alert_size = 7,
+		spread = 19,
+		spread_moving = 24,
+		recoil = 4,
+		value = 9,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 5,
+		concealment = 18
+	}
+	self.scout.armor_piercing_chance = 1
+	self.scout.stats_modifiers = {
+		damage = 2
+	}
+end
+
 function WeaponTweakData:_init_m37(weapon_data)
 	self.m37 = {
 		categories = {
@@ -17081,16 +17395,18 @@ function WeaponTweakData:_init_china(weapon_data)
 		projectile_types = {
 			launcher_electric = "launcher_electric_china",
 			launcher_incendiary = "launcher_incendiary_china"
-		},
-		ammo_default_sub_type = "ammo_explosive",
-		damage_melee = weapon_data.damage_melee_default,
-		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
-		sounds = {}
+		}
 	}
-	self.china.sounds.fire = "china_fire"
-	self.china.sounds.dryfire = "shotgun_dryfire"
-	self.china.sounds.enter_steelsight = "secondary_steel_sight_enter"
-	self.china.sounds.leave_steelsight = "secondary_steel_sight_exit"
+	self.china.projectile_types.launcher_poison = "launcher_poison_china"
+	self.china.ammo_default_sub_type = "ammo_explosive"
+	self.china.damage_melee = weapon_data.damage_melee_default
+	self.china.damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default
+	self.china.sounds = {
+		fire = "china_fire",
+		dryfire = "shotgun_dryfire",
+		enter_steelsight = "secondary_steel_sight_enter",
+		leave_steelsight = "secondary_steel_sight_exit"
+	}
 	self.china.timers = {
 		shotgun_reload_enter = 0.83,
 		shotgun_reload_exit_empty = 2,
@@ -19176,16 +19492,18 @@ function WeaponTweakData:_init_arbiter(weapon_data)
 		projectile_types = {
 			launcher_electric = "launcher_electric_arbiter",
 			launcher_incendiary = "launcher_incendiary_arbiter"
-		},
-		ammo_default_sub_type = "ammo_explosive",
-		damage_melee = weapon_data.damage_melee_default,
-		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
-		sounds = {}
+		}
 	}
-	self.arbiter.sounds.fire = "arbiter_fire"
-	self.arbiter.sounds.dryfire = "shotgun_dryfire"
-	self.arbiter.sounds.enter_steelsight = "secondary_steel_sight_enter"
-	self.arbiter.sounds.leave_steelsight = "secondary_steel_sight_exit"
+	self.arbiter.projectile_types.launcher_poison = "launcher_poison_arbiter"
+	self.arbiter.ammo_default_sub_type = "ammo_explosive"
+	self.arbiter.damage_melee = weapon_data.damage_melee_default
+	self.arbiter.damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default
+	self.arbiter.sounds = {
+		fire = "arbiter_fire",
+		dryfire = "shotgun_dryfire",
+		enter_steelsight = "secondary_steel_sight_enter",
+		leave_steelsight = "secondary_steel_sight_exit"
+	}
 	self.arbiter.timers = {
 		reload_not_empty = 3.34,
 		reload_empty = 4.5,
@@ -19286,6 +19604,136 @@ function WeaponTweakData:_init_arbiter(weapon_data)
 		damage = 10
 	}
 	self.arbiter.unlock_func = "has_unlocked_arbiter"
+end
+
+function WeaponTweakData:_init_ms3gl(weapon_data)
+	self.ms3gl = {
+		categories = {
+			"grenade_launcher"
+		},
+		upgrade_blocks = {
+			weapon = {
+				"clip_ammo_increase"
+			}
+		},
+		projectile_type = "launcher_frag_ms3gl",
+		projectile_types = {
+			launcher_electric = "launcher_electric_ms3gl",
+			launcher_incendiary = "launcher_incendiary_ms3gl"
+		},
+		ammo_default_sub_type = "ammo_explosive",
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.ms3gl.sounds.fire = "gl3_fire"
+	self.ms3gl.sounds.dryfire = "shotgun_dryfire"
+	self.ms3gl.sounds.enter_steelsight = "secondary_steel_sight_enter"
+	self.ms3gl.sounds.leave_steelsight = "secondary_steel_sight_exit"
+	self.ms3gl.timers = {
+		shotgun_reload_enter = 1,
+		shotgun_reload_exit_empty = 1.33,
+		shotgun_reload_exit_not_empty = 1.33,
+		shotgun_reload_shell = 1,
+		shotgun_reload_first_shell_offset = 0,
+		unequip = 0.6,
+		equip = 1
+	}
+	self.ms3gl.name_id = "bm_w_ms3gl"
+	self.ms3gl.desc_id = "bm_w_ms3gl_desc"
+	self.ms3gl.description_id = "des_ms3gl"
+	self.ms3gl.global_value = "pxp1"
+	self.ms3gl.texture_bundle_folder = "pxp1"
+	self.ms3gl.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
+	self.ms3gl.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	self.ms3gl.use_data = {
+		selection_index = SELECTION.SECONDARY,
+		align_place = "right_hand"
+	}
+	self.ms3gl.DAMAGE = 6
+	self.ms3gl.damage_near = 2000
+	self.ms3gl.damage_far = 3000
+	self.ms3gl.rays = 6
+	self.ms3gl.CLIP_AMMO_MAX = 3
+	self.ms3gl.NR_CLIPS_MAX = 3
+	self.ms3gl.AMMO_MAX = self.ms3gl.CLIP_AMMO_MAX * self.ms3gl.NR_CLIPS_MAX
+	self.ms3gl.AMMO_PICKUP = {
+		0.55,
+		0.65
+	}
+	self.ms3gl.FIRE_MODE = "burst"
+	self.ms3gl.BURST_COUNT = 3
+	self.ms3gl.fire_mode_data = {
+		fire_rate = 0.33,
+		burst_cooldown = 1
+	}
+	self.ms3gl.burst = {
+		fire_rate = 1
+	}
+	self.ms3gl.spread = {
+		standing = self.r870.spread.standing,
+		crouching = self.r870.spread.crouching,
+		steelsight = self.r870.spread.steelsight,
+		moving_standing = self.r870.spread.moving_standing,
+		moving_crouching = self.r870.spread.moving_crouching,
+		moving_steelsight = self.r870.spread.moving_steelsight
+	}
+	self.ms3gl.kick = {
+		standing = {
+			2.9,
+			3,
+			-0.5,
+			0.5
+		}
+	}
+	self.ms3gl.kick.crouching = self.ms3gl.kick.standing
+	self.ms3gl.kick.steelsight = self.ms3gl.kick.standing
+	self.ms3gl.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.ms3gl.crosshair.standing.offset = 0.16
+	self.ms3gl.crosshair.standing.moving_offset = 0.8
+	self.ms3gl.crosshair.standing.kick_offset = 0.6
+	self.ms3gl.crosshair.standing.hidden = true
+	self.ms3gl.crosshair.crouching.offset = 0.08
+	self.ms3gl.crosshair.crouching.moving_offset = 0.7
+	self.ms3gl.crosshair.crouching.kick_offset = 0.4
+	self.ms3gl.crosshair.crouching.hidden = true
+	self.ms3gl.crosshair.steelsight.hidden = true
+	self.ms3gl.crosshair.steelsight.offset = 0
+	self.ms3gl.crosshair.steelsight.moving_offset = 0
+	self.ms3gl.crosshair.steelsight.kick_offset = 0.1
+	self.ms3gl.shake = {
+		fire_multiplier = 2,
+		fire_steelsight_multiplier = 2
+	}
+	self.ms3gl.autohit = weapon_data.autohit_shotgun_default
+	self.ms3gl.aim_assist = weapon_data.aim_assist_shotgun_default
+	self.ms3gl.animations = {
+		equip_id = "equip_china",
+		recoil_steelsight = true
+	}
+	self.ms3gl.panic_suppression_chance = 0.2
+	self.ms3gl.ignore_damage_upgrades = true
+	self.ms3gl.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 32,
+		alert_size = 7,
+		spread = 10,
+		spread_moving = 6,
+		recoil = 20,
+		value = 1,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 2,
+		concealment = 21
+	}
+	self.ms3gl.stats_modifiers = {
+		damage = 10
+	}
 end
 
 function WeaponTweakData:_init_contraband(weapon_data)
@@ -19397,6 +19845,9 @@ function WeaponTweakData:_init_contraband(weapon_data)
 			weapon = {
 				"clip_ammo_increase"
 			}
+		},
+		projectile_types = {
+			launcher_poison = "launcher_poison_contraband"
 		},
 		damage_melee = weapon_data.damage_melee_default,
 		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
@@ -22475,16 +22926,18 @@ function WeaponTweakData:_init_slap(weapon_data)
 		projectile_types = {
 			launcher_electric = "launcher_electric_slap",
 			launcher_incendiary = "launcher_incendiary_slap"
-		},
-		ammo_default_sub_type = "ammo_explosive",
-		damage_melee = weapon_data.damage_melee_default,
-		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
-		sounds = {}
+		}
 	}
-	self.slap.sounds.fire = "slap_fire"
-	self.slap.sounds.dryfire = "shotgun_dryfire"
-	self.slap.sounds.enter_steelsight = "secondary_steel_sight_enter"
-	self.slap.sounds.leave_steelsight = "secondary_steel_sight_exit"
+	self.slap.projectile_types.launcher_poison = "launcher_poison_slap"
+	self.slap.ammo_default_sub_type = "ammo_explosive"
+	self.slap.damage_melee = weapon_data.damage_melee_default
+	self.slap.damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default
+	self.slap.sounds = {
+		fire = "slap_fire",
+		dryfire = "shotgun_dryfire",
+		enter_steelsight = "secondary_steel_sight_enter",
+		leave_steelsight = "secondary_steel_sight_exit"
+	}
 	self.slap.timers = {
 		reload_not_empty = 2.5
 	}
@@ -28750,6 +29203,12 @@ function WeaponTweakData:_create_table_structure()
 		use_data = {},
 		auto = {}
 	}
+	self.hk51b_crew = {
+		usage = "is_lmg",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
 	self.m249_crew = {
 		usage = "is_lmg",
 		sounds = {},
@@ -29093,6 +29552,13 @@ function WeaponTweakData:_create_table_structure()
 		use_data = {},
 		auto = {}
 	}
+	self.scout_crew = {
+		usage = "is_sniper",
+		anim_usage = "is_rifle",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
 	self.qbu88_crew = {
 		usage = "is_sniper",
 		anim_usage = "is_rifle",
@@ -29246,6 +29712,12 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.arbiter_crew = {
+		usage = "is_bullpup",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.ms3gl_crew = {
 		usage = "is_bullpup",
 		sounds = {},
 		use_data = {},

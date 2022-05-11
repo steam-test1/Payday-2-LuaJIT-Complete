@@ -326,7 +326,9 @@ function MissionDoor:_destroy_devices()
 	self._devices = {}
 end
 
-function MissionDoor:destroy()
+function MissionDoor:destroy(...)
+	MissionDoor.super.destroy(self, ...)
+
 	for _, device in pairs(self._devices) do
 		for _, unit_data in ipairs(device.units) do
 			if alive(unit_data.unit) then
@@ -340,6 +342,8 @@ MissionDoorDevice = MissionDoorDevice or class()
 
 function MissionDoorDevice:init(unit)
 	self._unit = unit
+
+	unit:set_extension_update_enabled(Idstring("mission_door_device"), false)
 end
 
 function MissionDoorDevice:set_parent_data(door_unit, device_type)

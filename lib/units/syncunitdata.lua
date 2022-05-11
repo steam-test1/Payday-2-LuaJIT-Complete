@@ -2,6 +2,8 @@ SyncUnitData = SyncUnitData or class()
 
 function SyncUnitData:init(unit)
 	self._unit = unit
+
+	unit:set_extension_update_enabled(Idstring("sync_unit_data"), false)
 end
 
 function SyncUnitData:save(data)

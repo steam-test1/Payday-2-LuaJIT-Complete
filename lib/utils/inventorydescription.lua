@@ -538,6 +538,12 @@ function WeaponDescription._get_skill_stats(name, category, slot, base_stats, mo
 						end
 					end
 				elseif stat.name == "fire_rate" then
+					base_value = math.max(base_stats[stat.name].value, 0)
+
+					if base_stats[stat.name].index then
+						base_index = base_stats[stat.name].index
+					end
+
 					multiplier = managers.blackmarket:fire_rate_multiplier(name, weapon_tweak.categories, silencer, detection_risk, nil, blueprint)
 				end
 
@@ -617,6 +623,10 @@ function WeaponDescription._get_mods_stats(name, base_stats, equipped_mods, bonu
 							local ammo = part_data.stats.extra_ammo
 							ammo = ammo and ammo + (tweak_data.weapon[name].stats.extra_ammo or 0)
 							mods_stats[stat.name].value = mods_stats[stat.name].value + (ammo and tweak_data.weapon.stats.extra_ammo[ammo] or 0)
+
+							if part_data.custom_stats and part_data.custom_stats.ammo_offset then
+								mods_stats[stat.name].value = mods_stats[stat.name].value + part_data.custom_stats.ammo_offset
+							end
 						elseif stat.name == "totalammo" then
 							local ammo = part_data.stats.total_ammo_mod
 							mods_stats[stat.name].index = mods_stats[stat.name].index + (ammo or 0)
@@ -626,6 +636,10 @@ function WeaponDescription._get_mods_stats(name, base_stats, equipped_mods, bonu
 							end
 
 							mods_stats[stat.name].index = mods_stats[stat.name].index + (part_data.stats[stat.name] or 0)
+						elseif stat.name == "fire_rate" then
+							if part_data.custom_stats and part_data.custom_stats.fire_rate_multiplier then
+								mods_stats[stat.name].value = mods_stats[stat.name].value + part_data.custom_stats.fire_rate_multiplier - 1
+							end
 						else
 							mods_stats[stat.name].index = mods_stats[stat.name].index + (part_data.stats[stat.name] or 0)
 						end
@@ -713,6 +727,8 @@ function WeaponDescription._get_mods_stats(name, base_stats, equipped_mods, bonu
 
 					mods_stats[stat.name].value = mods_stats[stat.name].value - base_stats[stat.name].value
 				end
+			elseif stat.name == "fire_rate" then
+				mods_stats[stat.name].value = base_stats[stat.name].value * mods_stats[stat.name].value
 			end
 		end
 	end
@@ -925,6 +941,10 @@ function WeaponDescription._get_weapon_mod_stats(mod_name, weapon_name, base_sta
 					local ammo = part_data.stats.extra_ammo
 					ammo = ammo and ammo + (tweak_data.weapon[weapon_name].stats.extra_ammo or 0)
 					mod[stat.name] = ammo and tweak_data.weapon.stats.extra_ammo[ammo] or 0
+
+					if part_data.custom_stats and part_data.custom_stats.ammo_offset then
+						mod[stat.name] = mod[stat.name] + part_data.custom_stats.ammo_offset
+					end
 				elseif stat.name == "totalammo" then
 					local chosen_index = part_data.stats.total_ammo_mod or 0
 					chosen_index = math.clamp(base_stats[stat.name].index + chosen_index, 1, #tweak_stats.total_ammo_mod)
@@ -936,6 +956,10 @@ function WeaponDescription._get_weapon_mod_stats(mod_name, weapon_name, base_sta
 					local mult = 1 / tweak_data.weapon.stats[stat.name][chosen_index]
 					local mod_value = reload_time * mult
 					mod[stat.name] = mod_value - base_stats[stat.name].value
+				elseif stat.name == "fire_rate" then
+					if part_data.custom_stats and part_data.custom_stats.fire_rate_multiplier then
+						mod[stat.name] = base_stats[stat.name].value * (part_data.custom_stats.fire_rate_multiplier - 1)
+					end
 				else
 					local chosen_index = part_data.stats[stat.name] or 0
 

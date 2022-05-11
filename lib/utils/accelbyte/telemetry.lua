@@ -290,7 +290,7 @@ local function gather_player_skill_information()
 end
 
 local function gather_or_convert_loadout_data(loadout)
-	local _, _, mask_list, weapon_list, melee_list, grenade_list, _, armor_list, character_list, deployable_list, suit_list, _ = tweak_data.statistics:statistics_table()
+	local _, _, mask_list, weapon_list, melee_list, grenade_list, _, armor_list, character_list, deployable_list, suit_list, weapon_color_list, glove_list, charm_list = tweak_data.statistics:statistics_table()
 	local loadout_data = loadout
 	loadout_data = loadout_data or managers.statistics:gather_equipment_data()
 
@@ -308,6 +308,7 @@ local function gather_or_convert_loadout_data(loadout)
 	converted_loadout.equipped_suit = suit_list[converted_loadout.equipped_suit]
 	converted_loadout.equipped_armor = armor_list[converted_loadout.equipped_armor]
 	converted_loadout.equipped_deployable = deployable_list[converted_loadout.equipped_deployable]
+	converted_loadout.equipped_glove_id = glove_list[converted_loadout.equipped_glove_id]
 
 	return converted_loadout
 end

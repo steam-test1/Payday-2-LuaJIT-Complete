@@ -1042,6 +1042,7 @@ function PlayerTweakData:_init_new_stances()
 	self:_init_scar()
 	self:_init_p226()
 	self:_init_hk21()
+	self:_init_hk51b()
 	self:_init_m249()
 	self:_init_rpk()
 	self:_init_m95()
@@ -1098,6 +1099,7 @@ function PlayerTweakData:_init_new_stances()
 	self:_init_par()
 	self:_init_sparrow()
 	self:_init_model70()
+	self:_init_scout()
 	self:_init_m37()
 	self:_init_china()
 	self:_init_sr2()
@@ -1114,6 +1116,7 @@ function PlayerTweakData:_init_new_stances()
 	self:_init_x_packrat()
 	self:_init_rota()
 	self:_init_arbiter()
+	self:_init_ms3gl()
 	self:_init_contraband()
 	self:_init_ray()
 	self:_init_tti()
@@ -1827,7 +1830,7 @@ function PlayerTweakData:_init_hk21()
 	self.stances.hk21 = deep_clone(self.stances.default)
 	local pivot_shoulder_translation = Vector3(8.545, 11.3934, -3.33201)
 	local pivot_shoulder_rotation = Rotation(4.78916e-05, 0.00548037, -0.00110991)
-	local pivot_head_translation = Vector3(8, 28, -2)
+	local pivot_head_translation = Vector3(8, 6, -4)
 	local pivot_head_rotation = Rotation(0, 0, 0)
 	self.stances.hk21.standard.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
 	self.stances.hk21.standard.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
@@ -1868,6 +1871,53 @@ function PlayerTweakData:_init_hk21()
 		breathing = {}
 	}
 	self.stances.hk21.bipod.shakers.breathing.amplitude = 0
+end
+
+function PlayerTweakData:_init_hk51b()
+	self.stances.hk51b = deep_clone(self.stances.default)
+	local pivot_shoulder_translation = Vector3(8.545, 11.3934, -3.33201)
+	local pivot_shoulder_rotation = Rotation(4.78916e-05, 0.00548037, -0.00110991)
+	local pivot_head_translation = Vector3(6, 12, -5)
+	local pivot_head_rotation = Rotation(2, 0, -2)
+	self.stances.hk51b.standard.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
+	self.stances.hk51b.standard.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
+	self.stances.hk51b.standard.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -5, 0)
+	self.stances.hk51b.standard.vel_overshot.yaw_neg = 15
+	self.stances.hk51b.standard.vel_overshot.yaw_pos = -15
+	self.stances.hk51b.standard.vel_overshot.pitch_neg = -15
+	self.stances.hk51b.standard.vel_overshot.pitch_pos = 15
+	local pivot_head_translation = Vector3(-2.2, 7, -0.32)
+	local pivot_head_rotation = Rotation(-0.1, 1, 0)
+	self.stances.hk51b.steelsight.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
+	self.stances.hk51b.steelsight.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
+	self.stances.hk51b.steelsight.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -5, 0)
+	self.stances.hk51b.steelsight.vel_overshot.yaw_neg = 5
+	self.stances.hk51b.steelsight.vel_overshot.yaw_pos = -5
+	self.stances.hk51b.steelsight.vel_overshot.pitch_neg = -5
+	self.stances.hk51b.steelsight.vel_overshot.pitch_pos = 5
+	local pivot_head_translation = Vector3(7, 8, -5)
+	local pivot_head_rotation = Rotation(2, 0, -7)
+	self.stances.hk51b.crouched.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
+	self.stances.hk51b.crouched.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
+	self.stances.hk51b.crouched.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -30, 0)
+	self.stances.hk51b.bipod = {
+		shoulders = {},
+		vel_overshot = {}
+	}
+	local pivot_head_translation = Vector3(0, 0, 0)
+	local pivot_head_rotation = Rotation(0, 0, 0)
+	self.stances.hk51b.bipod.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
+	self.stances.hk51b.bipod.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
+	self.stances.hk51b.bipod.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -0, 0)
+	self.stances.hk51b.bipod.vel_overshot.yaw_neg = 0
+	self.stances.hk51b.bipod.vel_overshot.yaw_pos = 0
+	self.stances.hk51b.bipod.vel_overshot.pitch_neg = 0
+	self.stances.hk51b.bipod.vel_overshot.pitch_pos = 0
+	self.stances.hk51b.bipod.FOV = 50
+	self.stances.hk51b.bipod.shakers = {
+		breathing = {}
+	}
+	self.stances.hk51b.bipod.shakers.breathing.amplitude = 0
 end
 
 function PlayerTweakData:_init_m249()
@@ -3283,6 +3333,35 @@ function PlayerTweakData:_init_model70()
 	self.stances.model70.crouched.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -30, 0)
 end
 
+function PlayerTweakData:_init_scout()
+	self.stances.scout = deep_clone(self.stances.default)
+	local pivot_shoulder_translation = Vector3(7.96526, 39.0739, -3.92198)
+	local pivot_shoulder_rotation = Rotation(4.36208e-05, 0.000603618, -0.000330838)
+	local pivot_head_translation = Vector3(10, 42, -5)
+	local pivot_head_rotation = Rotation(0, 0, 0)
+	self.stances.scout.standard.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
+	self.stances.scout.standard.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
+	self.stances.scout.standard.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -24, 0)
+	self.stances.scout.standard.vel_overshot.yaw_neg = 12
+	self.stances.scout.standard.vel_overshot.yaw_pos = -12
+	self.stances.scout.standard.vel_overshot.pitch_neg = -12
+	self.stances.scout.standard.vel_overshot.pitch_pos = 12
+	local pivot_head_translation = Vector3(0, 47, -3.4)
+	local pivot_head_rotation = Rotation(0, 0, 0)
+	self.stances.scout.steelsight.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
+	self.stances.scout.steelsight.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
+	self.stances.scout.steelsight.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -15, 0)
+	self.stances.scout.steelsight.vel_overshot.yaw_neg = 2
+	self.stances.scout.steelsight.vel_overshot.yaw_pos = -2
+	self.stances.scout.steelsight.vel_overshot.pitch_neg = -2
+	self.stances.scout.steelsight.vel_overshot.pitch_pos = 2
+	local pivot_head_translation = Vector3(9, 41, -6)
+	local pivot_head_rotation = Rotation(0, 0, 0)
+	self.stances.scout.crouched.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
+	self.stances.scout.crouched.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
+	self.stances.scout.crouched.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -30, 0)
+end
+
 function PlayerTweakData:_init_m37()
 	self.stances.m37 = deep_clone(self.stances.default)
 	local pivot_shoulder_translation = Vector3(9.27651, 19.3937, -6.03765)
@@ -4044,6 +4123,35 @@ function PlayerTweakData:_init_arbiter()
 	self.stances.arbiter.crouched.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
 	self.stances.arbiter.crouched.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
 	self.stances.arbiter.crouched.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -30, 0)
+end
+
+function PlayerTweakData:_init_ms3gl()
+	self.stances.ms3gl = deep_clone(self.stances.default)
+	local pivot_shoulder_translation = Vector3(12.6007, 11.9289, 1.92507)
+	local pivot_shoulder_rotation = Rotation(7.38981e-05, -0.000869142, -0.0013114)
+	local pivot_head_translation = Vector3(10, 18, 1.5)
+	local pivot_head_rotation = Rotation(0, 0, 0)
+	self.stances.ms3gl.standard.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
+	self.stances.ms3gl.standard.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
+	self.stances.ms3gl.standard.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -30, 0)
+	self.stances.ms3gl.standard.vel_overshot.yaw_neg = 15
+	self.stances.ms3gl.standard.vel_overshot.yaw_pos = -15
+	self.stances.ms3gl.standard.vel_overshot.pitch_neg = -15
+	self.stances.ms3gl.standard.vel_overshot.pitch_pos = 15
+	local pivot_head_translation = Vector3(0, 17, 1.9)
+	local pivot_head_rotation = Rotation(0, 6, 0)
+	self.stances.ms3gl.steelsight.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
+	self.stances.ms3gl.steelsight.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
+	self.stances.ms3gl.steelsight.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -50, 0)
+	self.stances.ms3gl.steelsight.vel_overshot.yaw_neg = 0
+	self.stances.ms3gl.steelsight.vel_overshot.yaw_pos = -0
+	self.stances.ms3gl.steelsight.vel_overshot.pitch_neg = -0
+	self.stances.ms3gl.steelsight.vel_overshot.pitch_pos = 0
+	local pivot_head_translation = Vector3(10, 19, -1.5)
+	local pivot_head_rotation = Rotation(0, 0, 0)
+	self.stances.ms3gl.crouched.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
+	self.stances.ms3gl.crouched.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
+	self.stances.ms3gl.crouched.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -30, 0)
 end
 
 function PlayerTweakData:_init_contraband()

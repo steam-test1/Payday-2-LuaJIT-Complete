@@ -28,7 +28,10 @@ local material_variables = {
 function ArmorSkinExt:init(unit, update_enabled)
 	self._unit = unit
 
-	unit:set_extension_update_enabled(Idstring("armor_skin"), true)
+	if not self._request_update then
+		unit:set_extension_update_enabled(Idstring("armor_skin"), false)
+	end
+
 	self:set_armor_id("level_1")
 end
 
@@ -37,6 +40,8 @@ function ArmorSkinExt:update(unit, t, dt)
 		self:_apply_cosmetics()
 
 		self._request_update = nil
+
+		self._unit:set_extension_update_enabled(Idstring("armor_skin"), false)
 	end
 end
 
@@ -66,7 +71,12 @@ function ArmorSkinExt:set_cosmetics_data(cosmetics_id, request_update)
 		self._cosmetics_quality = nil
 		self._cosmetics_bonus = nil
 		self._cosmetics_data = nil
-		self._request_update = false
+
+		if self._request_update then
+			self._request_update = nil
+
+			self._unit:set_extension_update_enabled(Idstring("armor_skin"), false)
+		end
 
 		return
 	end
@@ -75,7 +85,18 @@ function ArmorSkinExt:set_cosmetics_data(cosmetics_id, request_update)
 	self._cosmetics_data = self._cosmetics_id and tweak_data.economy.armor_skins[self._cosmetics_id]
 	self._cosmetics_quality = self._cosmetics_data and self._cosmetics_data.quality
 	self._cosmetics_bonus = self._cosmetics_data and self._cosmetics_data.bonus
-	self._request_update = request_update
+
+	if request_update then
+		if not self._request_update then
+			self._request_update = true
+
+			self._unit:set_extension_update_enabled(Idstring("armor_skin"), true)
+		end
+	elseif self._request_update then
+		self._request_update = nil
+
+		self._unit:set_extension_update_enabled(Idstring("armor_skin"), false)
+	end
 end
 
 function ArmorSkinExt:get_cosmetics_bonus()

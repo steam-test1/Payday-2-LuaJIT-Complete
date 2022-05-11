@@ -1,6 +1,7 @@
 PunchingBagDamage = PunchingBagDamage or class()
 
 function PunchingBagDamage:init(unit)
+	unit:set_extension_update_enabled(Idstring("damage"), false)
 end
 
 function PunchingBagDamage:damage_melee(unit)

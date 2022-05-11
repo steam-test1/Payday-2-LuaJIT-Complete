@@ -186,6 +186,10 @@ function GenericDLCManager:has_pgo()
 	return self:is_dlc_unlocked("pgo")
 end
 
+function GenericDLCManager:has_pxp1()
+	return self:is_dlc_unlocked("pxp1")
+end
+
 function GenericDLCManager:has_saco()
 	return self:is_dlc_unlocked("saco")
 end
@@ -519,6 +523,10 @@ function WINDLCManager:init_generated()
 		app_id = "1449440",
 		no_install = true,
 		webpage = "https://ovk.af/FEXTP3YB"
+	}
+	Global.dlc_manager.all_dlc_data.pxp1 = {
+		app_id = "1945682",
+		no_install = true
 	}
 	Global.dlc_manager.all_dlc_data.saco = {
 		app_id = "1619070",

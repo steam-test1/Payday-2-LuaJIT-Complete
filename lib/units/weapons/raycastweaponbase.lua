@@ -74,6 +74,10 @@ function RaycastWeaponBase:init(unit)
 	self._magazine_empty_objects = {}
 end
 
+function RaycastWeaponBase:shooting_count()
+	return 0
+end
+
 function RaycastWeaponBase:shooting()
 	return self._shooting
 end
@@ -1525,6 +1529,13 @@ function RaycastWeaponBase:ammo_info()
 	return self:ammo_base():get_ammo_max_per_clip(), self:ammo_base():get_ammo_remaining_in_clip(), self:ammo_base():get_ammo_total(), self:ammo_base():get_ammo_max()
 end
 
+function RaycastWeaponBase:set_ammo_info(max_clip, current_clip, current_left, max)
+	self:set_ammo_max_per_clip(max_clip)
+	self:set_ammo_max(max)
+	self:set_ammo_total(current_left)
+	self:set_ammo_remaining_in_clip(current_clip)
+end
+
 function RaycastWeaponBase:set_ammo(ammo)
 	local ammo_num = math.floor(ammo * self:ammo_base():get_ammo_max())
 
@@ -1568,6 +1579,10 @@ end
 
 function RaycastWeaponBase:remaining_full_clips()
 	return math.max(math.floor((self:ammo_base():get_ammo_total() - self:ammo_base():get_ammo_remaining_in_clip()) / self:ammo_base():get_ammo_max_per_clip()), 0)
+end
+
+function RaycastWeaponBase:set_remaining_full_clips(full_clips)
+	self:set_ammo_total(full_clips * self:ammo_base():get_ammo_max_per_clip() + self:ammo_base():get_ammo_remaining_in_clip())
 end
 
 function RaycastWeaponBase:zoom()

@@ -614,6 +614,66 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 	self.projectiles.underbarrel_m203_groza.unit = "units/pd2_dlc_sawp/weapons/wpn_launcher_electric/wpn_underbarrel_m203_groza"
 	self.projectiles.underbarrel_m203_groza.weapon_id = "groza"
 	self.projectiles.underbarrel_m203_groza.dlc = "sawp"
+	self.projectiles.poison_gas_grenade = {
+		name_id = "bm_grenade_poison_gas_grenade",
+		desc_id = "bm_grenade_poison_gas_grenade_desc",
+		unit = "units/pd2_dlc_pxp1/weapons/wpn_fps_poison_gas_grenade/wpn_third_poison_gas_grenade",
+		unit_dummy = "units/pd2_dlc_pxp1/weapons/wpn_fps_poison_gas_grenade/wpn_fps_poison_gas_grenade_husk",
+		sprint_unit = "units/pd2_dlc_pxp1/weapons/wpn_fps_poison_gas_grenade/wpn_third_poison_gas_grenade_sprint",
+		icon = "poison_gas_grenade",
+		texture_bundle_folder = "pxp1",
+		add_trail_effect = true,
+		max_amount = 2,
+		is_a_grenade = true,
+		throwable = true,
+		animation = "throw_grenade_com",
+		anim_global_param = "projectile_frag_com",
+		no_shouting = true,
+		locks = {
+			achievement = "pxp1_1"
+		}
+	}
+	self.projectiles.launcher_poison = deep_clone(self.projectiles.launcher_frag)
+	self.projectiles.launcher_poison.unit = "units/pd2_dlc_pxp1/weapons/wpn_launcher_poison/wpn_launcher_poison"
+	self.projectiles.launcher_poison.no_cheat_count = true
+	self.projectiles.launcher_poison.impact_detonation = true
+	self.projectiles.launcher_poison.add_trail_effect = true
+	self.projectiles.launcher_poison.is_explosive = true
+	self.projectiles.launcher_poison.texture_bundle_folder = "pxp1"
+	self.projectiles.launcher_poison.dlc = "pxp1"
+	self.projectiles.launcher_poison.weapon_id = "ms3gl"
+	self.projectiles.launcher_poison.time_cheat = 0.1
+	self.projectiles.launcher_poison_ms3gl_conversion = deep_clone(self.projectiles.launcher_poison)
+	self.projectiles.launcher_poison_ms3gl_conversion.unit = "units/pd2_dlc_pxp1/weapons/wpn_launcher_poison/wpn_launcher_poison_ms3gl_conversion"
+	self.projectiles.launcher_poison_gre_m79 = deep_clone(self.projectiles.launcher_poison)
+	self.projectiles.launcher_poison_gre_m79.weapon_id = "gre_m79"
+	self.projectiles.launcher_poison_m32 = deep_clone(self.projectiles.launcher_poison)
+	self.projectiles.launcher_poison_m32.weapon_id = "m32"
+	self.projectiles.launcher_poison_groza = deep_clone(self.projectiles.launcher_poison)
+	self.projectiles.launcher_poison_groza.weapon_id = "groza"
+	self.projectiles.launcher_poison_china = deep_clone(self.projectiles.launcher_poison)
+	self.projectiles.launcher_poison_china.weapon_id = "china"
+	self.projectiles.launcher_poison_arbiter = deep_clone(self.projectiles.launcher_poison)
+	self.projectiles.launcher_poison_arbiter.weapon_id = "arbiter"
+	self.projectiles.launcher_poison_slap = deep_clone(self.projectiles.launcher_poison)
+	self.projectiles.launcher_poison_slap.weapon_id = "slap"
+	self.projectiles.launcher_poison_contraband = deep_clone(self.projectiles.launcher_poison)
+	self.projectiles.launcher_poison_contraband.weapon_id = "contraband"
+	self.projectiles.launcher_frag_ms3gl = deep_clone(self.projectiles.launcher_frag)
+	self.projectiles.launcher_frag_ms3gl.unit = "units/pd2_dlc_pxp1/weapons/wpn_launcher_frag_grenade/wpn_launcher_frag_grenade_ms3gl"
+	self.projectiles.launcher_frag_ms3gl.no_cheat_count = true
+	self.projectiles.launcher_frag_ms3gl.time_cheat = nil
+	self.projectiles.launcher_frag_ms3gl.weapon_id = "ms3gl"
+	self.projectiles.launcher_incendiary_ms3gl = deep_clone(self.projectiles.launcher_incendiary)
+	self.projectiles.launcher_incendiary_ms3gl.unit = "units/pd2_dlc_pxp1/weapons/wpn_launcher_incendiary_grenade/wpn_launcher_incendiary_grenade_ms3gl"
+	self.projectiles.launcher_incendiary_ms3gl.no_cheat_count = true
+	self.projectiles.launcher_incendiary_ms3gl.time_cheat = nil
+	self.projectiles.launcher_incendiary_ms3gl.weapon_id = "ms3gl"
+	self.projectiles.launcher_electric_ms3gl = deep_clone(self.projectiles.launcher_electric)
+	self.projectiles.launcher_electric_ms3gl.unit = "units/pd2_dlc_pxp1/weapons/wpn_launcher_electric/wpn_launcher_electric_ms3gl"
+	self.projectiles.launcher_electric_ms3gl.no_cheat_count = true
+	self.projectiles.launcher_electric_ms3gl.time_cheat = nil
+	self.projectiles.launcher_electric_ms3gl.weapon_id = "ms3gl"
 	self._projectiles_index = {
 		"frag",
 		"launcher_frag",
@@ -674,7 +734,20 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 		"underbarrel_electric",
 		"underbarrel_electric_groza",
 		"underbarrel_m203_groza",
-		"copr_ability"
+		"copr_ability",
+		"poison_gas_grenade",
+		"launcher_poison",
+		"launcher_poison_ms3gl_conversion",
+		"launcher_poison_gre_m79",
+		"launcher_poison_m32",
+		"launcher_poison_groza",
+		"launcher_poison_china",
+		"launcher_poison_arbiter",
+		"launcher_poison_slap",
+		"launcher_poison_contraband",
+		"launcher_frag_ms3gl",
+		"launcher_incendiary_ms3gl",
+		"launcher_electric_ms3gl"
 	}
 	local free_dlcs = tweak_data:free_dlc_list()
 

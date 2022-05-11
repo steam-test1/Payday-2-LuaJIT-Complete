@@ -58,6 +58,7 @@ function NewNPCRaycastWeaponBase:init(unit)
 		position = Vector3(),
 		normal = Vector3()
 	}
+	self._active_animation_effects = {}
 	self._flashlight_light_lod_enabled = true
 
 	if self._multivoice then

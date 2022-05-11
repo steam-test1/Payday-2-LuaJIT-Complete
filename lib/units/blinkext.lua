@@ -1,6 +1,7 @@
 BlinkExt = BlinkExt or class()
 
 function BlinkExt:init(unit)
+	self._unit = unit
 	self._object_list = {}
 
 	if self._objects then
@@ -18,7 +19,13 @@ function BlinkExt:init(unit)
 	end
 
 	if self._state then
+		self._upd_state = true
+
 		self:set_state(self._state, self._delay or 1)
+	else
+		self._upd_state = false
+
+		unit:set_extension_update_enabled(Idstring("blink"), false)
 	end
 end
 
@@ -167,6 +174,14 @@ function BlinkExt:set_state(state, delay)
 
 		self._delay_current = nil
 	end
+
+	local upd_state = self._delay_current and true or false
+
+	if upd_state ~= self._upd_state then
+		self._upd_state = upd_state
+
+		self._unit:set_extension_update_enabled(Idstring("blink"), upd_state)
+	end
 end
 
 function BlinkExt:save(data)
@@ -177,7 +192,6 @@ function BlinkExt:save(data)
 end
 
 function BlinkExt:load(data)
-	local state = data.BlinkExt
 	self._state = data.BlinkExt.state
 	self._delay = data.BlinkExt.delay
 
