@@ -274,6 +274,13 @@ function NPCFlamethrowerBase:third_person_important()
 end
 
 NPCBossFlamethrowerBase = NPCBossFlamethrowerBase or class(NPCFlamethrowerBase)
+
+function NPCBossFlamethrowerBase:setup_default(...)
+	NPCBossFlamethrowerBase.super.setup_default(self, ...)
+
+	self._extra_capsule_offset = tweak_data.weapon[self._name_id].extra_flames_offset or self._extra_capsule_offset or 0.05
+end
+
 local mvec_to = Vector3()
 local mvec_dir = Vector3()
 local mvec_offset = Vector3()
@@ -285,6 +292,7 @@ function NPCBossFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, d
 	local slotmask = self._bullet_slotmask
 	local flame_radius = self._flame_radius
 	local damage = self._damage * (dmg_mul or 1)
+	local capsule_offset = self._extra_capsule_offset
 	local orig_damage_range = self._flame_max_range or self._range or 1000
 
 	local function find_bodies_and_adjust_vecs()
@@ -319,8 +327,8 @@ function NPCBossFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, d
 	mvec3_cross(mvec_offset, direction, math_up)
 	mvec3_norm(mvec_offset)
 	mvec3_set(mvec_offset2, mvec_offset)
-	mvec3_mul(mvec_offset, 0.05)
-	mvec3_mul(mvec_offset2, -0.05)
+	mvec3_mul(mvec_offset, capsule_offset)
+	mvec3_mul(mvec_offset2, -capsule_offset)
 	mvec3_set(mvec_dir, direction)
 	mvec3_add(mvec_dir, mvec_offset)
 

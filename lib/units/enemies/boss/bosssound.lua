@@ -15,10 +15,6 @@ function BossSound:init(unit)
 end
 
 function BossSound:say(sound_name, sync, skip_prefix, important, clbk)
-	if self._unit:character_damage():dead() then
-		return
-	end
-
 	local t = TimerManager:game():time()
 	local unique_event_data = self._events_map[sound_name]
 

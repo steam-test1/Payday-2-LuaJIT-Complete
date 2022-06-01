@@ -104,7 +104,7 @@ logic_variants.tank_mini = logic_variants.tank
 logic_variants.heavy_swat_sniper = logic_variants.heavy_swat
 security_variant = nil
 CopBrain._logic_variants = logic_variants
-logic_varaints = nil
+logic_variants = nil
 local reload = nil
 
 if CopBrain._reload_clbks then

@@ -11,7 +11,8 @@ function ExperienceManager:_setup()
 	if not Global.experience_manager then
 		Global.experience_manager = {
 			total = Application:digest_value(0, true),
-			level = Application:digest_value(0, true)
+			level = Application:digest_value(0, true),
+			prestige_xp_gained = self._global and self._global.prestige_xp_gained or Application:digest_value(0, true)
 		}
 	end
 
@@ -123,6 +124,7 @@ function ExperienceManager:give_experience(xp, force_or_debug)
 	self._experience_progress_data.start_t.current = self._global.next_level_data and self:next_level_data_current_points() or 0
 	self._experience_progress_data.start_t.total = self._global.next_level_data and self:next_level_data_points() or 1
 	self._experience_progress_data.start_t.xp = self:xp_gained()
+	self._experience_progress_data.start_prestige_xp = managers.experience:get_current_prestige_xp()
 
 	table.insert(self._experience_progress_data, {
 		level = self:current_level() + 1,
@@ -215,6 +217,10 @@ function ExperienceManager:add_points(points, present_xp, debug)
 	if self:level_cap() <= self:current_level() then
 		self:_set_total(self:total() + points)
 		managers.statistics:aquired_money(points)
+
+		if self:current_rank() > 0 then
+			self:set_current_prestige_xp(self:get_current_prestige_xp() + points)
+		end
 
 		return points
 	end
@@ -841,6 +847,22 @@ function ExperienceManager:get_xp_dissected(success, num_winners, personal_win)
 	})
 end
 
+function ExperienceManager:set_current_prestige_xp(value)
+	self._global.prestige_xp_gained = Application:digest_value(math.min(value, self:get_max_prestige_xp()), true)
+end
+
+function ExperienceManager:get_current_prestige_xp()
+	return self._global.prestige_xp_gained and Application:digest_value(self._global.prestige_xp_gained, false) or 0
+end
+
+function ExperienceManager:get_max_prestige_xp()
+	return Application:digest_value(tweak_data.experience_manager.prestige_xp_max, false) or 0
+end
+
+function ExperienceManager:get_prestige_xp_percentage_progress()
+	return math.inverse_lerp(0, self:get_max_prestige_xp(), self:get_current_prestige_xp())
+end
+
 function ExperienceManager:level_cap()
 	return Application:digest_value(self.LEVEL_CAP, false)
 end
@@ -855,7 +877,8 @@ function ExperienceManager:save(data)
 		xp_gained = self._global.xp_gained,
 		next_level_data = self._global.next_level_data,
 		level = self._global.level,
-		rank = self._global.rank
+		rank = self._global.rank,
+		prestige_xp_gained = self._global.prestige_xp_gained
 	}
 	data.ExperienceManager = state
 end
@@ -869,6 +892,7 @@ function ExperienceManager:load(data)
 		self._global.next_level_data = state.next_level_data
 		self._global.level = state.level or Application:digest_value(0, true)
 		self._global.rank = state.rank or Application:digest_value(0, true)
+		self._global.prestige_xp_gained = state.prestige_xp_gained or Application:digest_value(0, true)
 
 		self:_set_current_level(math.min(self:current_level(), self:level_cap()))
 

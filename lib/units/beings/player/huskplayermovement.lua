@@ -3764,9 +3764,10 @@ end
 
 function HuskPlayerMovement:_set_unit_bullet_objects_visible(unit, bullet_objects, visible)
 	if bullet_objects then
+		local offset = bullet_objects.offset or 0
 		local prefix = bullet_objects.prefix
 
-		for i = 1, bullet_objects.amount do
+		for i = 1 + offset, bullet_objects.amount + offset do
 			local object = unit:get_object(Idstring(prefix .. i))
 
 			if object then

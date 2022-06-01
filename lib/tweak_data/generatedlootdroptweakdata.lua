@@ -399,6 +399,22 @@ function LootDropTweakData:init_generated(tweak_data)
 		sort_number = 703,
 		category = "infamous"
 	}
+	self.global_values.in40 = {
+		name_id = "bm_global_value_in40",
+		desc_id = "menu_l_global_value_in40",
+		unlock_id = "bm_global_value_in40_unlock",
+		color = tweak_data.screen_colors.infamous_color,
+		dlc = true,
+		free = true,
+		hide_unavailable = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 705,
+		category = "infamous"
+	}
 	self.global_values.inf = {
 		name_id = "bm_global_value_inf",
 		desc_id = "menu_l_global_value_inf",

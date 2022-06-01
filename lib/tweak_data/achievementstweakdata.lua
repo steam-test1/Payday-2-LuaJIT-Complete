@@ -550,7 +550,14 @@ function AchievementsTweakData:init(tweak_data)
 			grenade_types = {
 				"wpn_prj_four",
 				"launcher_poison",
-				"launcher_poison_ms3gl_conversion"
+				"launcher_poison_ms3gl_conversion",
+				"launcher_poison_gre_m79",
+				"launcher_poison_m32",
+				"launcher_poison_groza",
+				"launcher_poison_china",
+				"launcher_poison_arbiter",
+				"launcher_poison_slap",
+				"launcher_poison_contraband"
 			},
 			player_style = {
 				variation = "default",
@@ -5203,6 +5210,47 @@ function AchievementsTweakData:init(tweak_data)
 			award = "pent_8",
 			one_down = true,
 			job = "pent",
+			difficulty = sm_wish_and_above
+		},
+		ranc_1 = {
+			award = "ranc_1",
+			job = "ranc",
+			difficulty = normal_and_above
+		},
+		ranc_2 = {
+			award = "ranc_2",
+			job = "ranc",
+			difficulty = hard_and_above
+		},
+		ranc_3 = {
+			award = "ranc_3",
+			job = "ranc",
+			difficulty = veryhard_and_above
+		},
+		ranc_4 = {
+			award = "ranc_4",
+			job = "ranc",
+			difficulty = overkill_and_above
+		},
+		ranc_5 = {
+			award = "ranc_5",
+			job = "ranc",
+			difficulty = easywish_and_above
+		},
+		ranc_6 = {
+			award = "ranc_6",
+			job = "ranc",
+			difficulty = deathwish_and_above
+		},
+		ranc_7 = {
+			award = "ranc_7",
+			job = "ranc",
+			difficulty = sm_wish_and_above
+		},
+		ranc_8 = {
+			award = "ranc_8",
+			one_down = true,
+			job = "ranc",
 			difficulty = sm_wish_and_above
 		},
 		uno_1 = {

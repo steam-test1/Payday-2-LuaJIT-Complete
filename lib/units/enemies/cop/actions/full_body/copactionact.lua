@@ -530,6 +530,7 @@ CopActionAct._act_redirects = {
 		"e_nl_hox_enter_car",
 		"e_nl_up_5m",
 		"e_nl_up_ladder_4m",
+		"e_nl_up_5m_ladder",
 		"e_nl_up_ladder_2_5m",
 		"e_nl_up_ladder_4m_left_exit",
 		"e_nl_jump_4m_long",

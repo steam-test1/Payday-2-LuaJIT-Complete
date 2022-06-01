@@ -44,7 +44,8 @@ function CrimeSpreeRewardsMenuComponent:_setup()
 		total = managers.experience:total(),
 		current_level = managers.experience:current_level(),
 		reached_cap = managers.experience:reached_level_cap(),
-		next_level_data = managers.experience:next_level_data()
+		next_level_data = managers.experience:next_level_data(),
+		prestige_total = managers.experience:get_current_prestige_xp()
 	}
 
 	print(inspect(self._exp_data))
@@ -290,6 +291,20 @@ function CrimeSpreeRewardsMenuComponent:_create_experience_reward(idx, panel_w)
 	level_circle:set_top(card:bottom() + padding)
 	level_circle:set_color(Color(0, 1, 1))
 
+	local prestige_circle = self._exp_panel:bitmap({
+		texture = "guis/textures/pd2/exp_ring_purple",
+		name = "prestige_circle",
+		rotation = 360,
+		render_template = "VertexColorTexturedRadial",
+		alpha = 0,
+		blend_mode = "add",
+		layer = 2,
+		x = level_circle:x() - 5,
+		y = level_circle:y() - 5,
+		w = card:w() + 10,
+		h = card:w() + 10,
+		color = Color(0, 1, 1)
+	})
 	local level_text = self._exp_panel:text({
 		name = "level_text",
 		vertical = "center",
@@ -701,6 +716,10 @@ CrimeSpreeRewardsMenuComponent.states = {
 		0.5
 	},
 	{
+		"_update_prestige",
+		0.5
+	},
+	{
 		"_update_cash",
 		0.5
 	},
@@ -980,8 +999,9 @@ function CrimeSpreeRewardsMenuComponent:_update_experience()
 	local fill_percent = managers.experience:next_level_data().current_points / managers.experience:next_level_data().points
 	local start_exp = self._exp_data.total
 	local current_exp = self._exp_data.total + self:get_reward("experience")
+	local leftover_exp = managers.experience:get_current_prestige_xp() - self._exp_data.prestige_total
 
-	experience_gained:animate(callback(self, self, "count_text"), "+", self:get_reward("experience"), 0, count_t, t)
+	experience_gained:animate(callback(self, self, "count_text"), "+", self:get_reward("experience"), leftover_exp, count_t, t)
 
 	if not self._exp_data.reached_cap then
 		experience_text:animate(callback(self, self, "count_text"), "", start_exp, current_exp, count_t, t)
@@ -990,6 +1010,32 @@ function CrimeSpreeRewardsMenuComponent:_update_experience()
 	else
 		level_circle:set_color(Color.white)
 	end
+
+	t = t + count_t + 0.25
+
+	self:next_state(t - 0.5)
+end
+
+function CrimeSpreeRewardsMenuComponent:_update_prestige()
+	local t = 0
+
+	local function wait(x)
+		t = t + x
+	end
+
+	local fade_in_t = 0.2
+	local count_t = 1.5
+	local panel = self._exp_panel
+	local prestige_circle = panel:child("prestige_circle")
+	local experience_gained = panel:child("experience_gained")
+	local fill_percent = managers.experience:get_prestige_xp_percentage_progress()
+
+	prestige_circle:animate(callback(self, self, "fade_in"), fade_in_t, t)
+
+	t = t + 0.25
+
+	prestige_circle:animate(callback(self, self, "fill_circle"), 0, fill_percent, count_t, t)
+	experience_gained:animate(callback(self, self, "count_text"), "+", managers.experience:get_current_prestige_xp() - self._exp_data.prestige_total, 0, count_t, t)
 
 	t = t + count_t + 0.25
 

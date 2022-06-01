@@ -370,7 +370,14 @@ function NewHeistsGui:mouse_pressed(button, x, y)
 	end
 
 	if self._internal_image_panel:inside(x, y) and self._contents[self._current_page]:inside(x, y) then
-		Steam:overlay_activate("url", tweak_data.gui.new_heists[self._current_page].url)
+		local heist_data = tweak_data.gui.new_heists[self._current_page]
+		local url = heist_data.url
+
+		if heist_data.append_steam_id and managers.user:get_setting("use_telemetry") then
+			url = url .. heist_data.append_steam_id .. Steam:userid()
+		end
+
+		Steam:overlay_activate("url", url)
 
 		return true
 	end

@@ -603,6 +603,12 @@ function DLCTweakData:init_generated()
 	}
 	self.in33_bundle.content.loot_global_value = "in33"
 	self.in33_bundle.content.loot_drops = {}
+	self.in40_bundle = {
+		free = true,
+		content = {}
+	}
+	self.in40_bundle.content.loot_global_value = "in40"
+	self.in40_bundle.content.loot_drops = {}
 	self.inf_bundle = {
 		free = true,
 		content = {}

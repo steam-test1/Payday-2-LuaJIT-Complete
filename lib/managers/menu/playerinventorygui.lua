@@ -716,27 +716,15 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 	player_level_panel:bitmap({
 		texture = "guis/textures/pd2/endscreen/exp_ring",
 		alpha = 0.4,
-		texture_rect = {
-			16,
-			16,
-			224,
-			224
-		},
 		w = size,
 		h = size,
 		color = Color.white
 	})
 	player_level_panel:bitmap({
 		texture = "guis/textures/pd2/endscreen/exp_ring",
-		layer = 1,
 		blend_mode = "add",
 		render_template = "VertexColorTexturedRadial",
-		texture_rect = {
-			16,
-			16,
-			224,
-			224
-		},
+		layer = 1,
 		color = Color((next_level_data.current_points or 1) / (next_level_data.points or 1), 1, 1),
 		w = size,
 		h = size
@@ -747,6 +735,17 @@ function PlayerInventoryGui:init(ws, fullscreen_ws, node)
 		text = tostring(player_level),
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size
+	})
+	player_level_panel:bitmap({
+		texture = "guis/textures/pd2/exp_ring_purple",
+		name = "bg_infamy_progress_circle",
+		alpha = 1,
+		blend_mode = "add",
+		render_template = "VertexColorTexturedRadial",
+		layer = 15,
+		h = size,
+		w = size,
+		color = Color(managers.experience:get_prestige_xp_percentage_progress(), 1, 1)
 	})
 
 	local detection_panel = player_panel:panel({

@@ -244,7 +244,7 @@ function CoreEditor:unit_output(unit)
 		text = text .. "Last export from:" .. t .. unit:last_export_source() .. n
 		local models_text = ""
 		models_text = models_text .. "Models:" .. t .. unit:nr_models() .. n
-		models_text = models_text .. "Name" .. t .. t .. t .. t .. t .. "Instanced" .. t .. "Vertecies" .. t .. "Triangles" .. t .. "Atoms" .. n
+		models_text = models_text .. "Name" .. t .. t .. t .. t .. t .. "Instanced" .. t .. "Vertecies" .. t .. "Triangles" .. t .. "Atoms" .. t .. "Lod Distance" .. n
 
 		for i = 0, unit:nr_models() - 1 do
 			if unit:is_visible(i) then
@@ -256,7 +256,7 @@ function CoreEditor:unit_output(unit)
 					tab = tab .. t
 				end
 
-				models_text = models_text .. unit:model_name(i):s() .. tab .. tostring(unit:is_model_instance(i)) .. t .. t .. unit:vertex_count(i) .. t .. t .. unit:triangle_count(i) .. t .. t .. unit:atom_count(i) .. n
+				models_text = models_text .. unit:model_name(i):s() .. tab .. tostring(unit:is_model_instance(i)) .. t .. t .. unit:vertex_count(i) .. t .. t .. unit:triangle_count(i) .. t .. t .. unit:atom_count(i) .. t .. unit:lod_dist(i) .. n
 			end
 		end
 

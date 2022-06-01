@@ -1459,6 +1459,7 @@ function MenuManager:do_clear_progress()
 	managers.generic_side_jobs:reset()
 	managers.event_jobs:reset()
 	managers.story:reset_all()
+	managers.features:reset()
 
 	if Global.game_settings.difficulty == "overkill_145" then
 		Global.game_settings.difficulty = "overkill"
@@ -3087,6 +3088,51 @@ function MenuCallbackHandler:_increase_infamous(yes_clbk)
 	end
 end
 
+function MenuCallbackHandler:_increase_infamous_with_prestige(yes_clbk)
+	managers.menu_scene:destroy_infamy_card()
+
+	local max_rank = tweak_data.infamy.ranks
+
+	if managers.experience:current_level() < 100 or max_rank <= managers.experience:current_rank() then
+		return
+	end
+
+	local rank = managers.experience:current_rank() + 1
+
+	managers.experience:set_current_rank(rank)
+	managers.experience:set_current_prestige_xp(0)
+
+	local offshore_cost = managers.money:get_infamous_cost(rank)
+
+	if offshore_cost > 0 then
+		managers.money:deduct_from_total(managers.money:total(), TelemetryConst.economy_origin.increase_infamous)
+		managers.money:deduct_from_offshore(offshore_cost)
+	end
+
+	if managers.menu_component then
+		managers.menu_component:refresh_player_profile_gui()
+	end
+
+	local logic = managers.menu:active_menu().logic
+
+	if logic then
+		logic:refresh_node()
+		logic:select_item("crimenet")
+	end
+
+	managers.savefile:save_progress()
+	managers.savefile:save_setting(true)
+	managers.menu:post_event("infamous_player_join_stinger")
+
+	if yes_clbk then
+		yes_clbk()
+	end
+
+	if SystemInfo:distribution() == Idstring("STEAM") then
+		managers.statistics:publish_level_to_steam()
+	end
+end
+
 function MenuCallbackHandler:become_infamous(params)
 	if not self:can_become_infamous() then
 		return
@@ -3106,6 +3152,42 @@ function MenuCallbackHandler:become_infamous(params)
 			managers.menu:open_node("blackmarket_preview_node", {
 				{
 					back_callback = callback(MenuCallbackHandler, MenuCallbackHandler, "_increase_infamous", yes_clbk)
+				}
+			})
+			managers.menu:post_event("infamous_stinger_generic")
+			managers.menu_scene:spawn_infamy_card(rank)
+		end
+	end
+
+	function params.no_func()
+		if no_clbk then
+			no_clbk()
+		end
+	end
+
+	managers.menu:show_confirm_become_infamous(params)
+end
+
+function MenuCallbackHandler:become_infamous_with_prestige(params)
+	if not self:can_become_infamous() then
+		return
+	end
+
+	local rank = managers.experience:current_rank() + 1
+	local infamous_cost = managers.money:get_infamous_cost(rank)
+	local yes_clbk = params and params.yes_clbk or false
+	local no_clbk = params and params.no_clbk
+	local params = {
+		cost = managers.experience:cash_string(infamous_cost),
+		free = infamous_cost == 0,
+		prestige = true
+	}
+
+	if infamous_cost <= managers.money:offshore() and managers.experience:current_level() >= 100 then
+		function params.yes_func()
+			managers.menu:open_node("blackmarket_preview_node", {
+				{
+					back_callback = callback(MenuCallbackHandler, MenuCallbackHandler, "_increase_infamous_with_prestige", yes_clbk)
 				}
 			})
 			managers.menu:post_event("infamous_stinger_generic")

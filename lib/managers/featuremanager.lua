@@ -27,22 +27,7 @@ function FeatureManager:_setup()
 	self._default.announcements.movie_theater_unlocked = 1
 
 	if not Global.feature_manager then
-		Global.feature_manager = {
-			announcements = {}
-		}
-
-		for id, _ in pairs(self._default.announcements) do
-			Global.feature_manager.announcements[id] = 0
-		end
-
-		Global.feature_manager.announcements.crimenet_welcome = 3
-		Global.feature_manager.announcements.dlc_gage_pack_jobs = 1
-		Global.feature_manager.announcements.join_pd2_clan = 50
-		Global.feature_manager.announcements.freed_old_hoxton = 1
-		Global.feature_manager.announcements.short_heist = 1
-		Global.feature_manager.announcements.short_heists_available = 1
-		Global.feature_manager.announcements.new_career = 1
-		Global.feature_manager.announced = {}
+		self:reset()
 	end
 
 	self._global = Global.feature_manager
@@ -71,6 +56,26 @@ function FeatureManager:load(data, version)
 			Global.feature_manager.announcements[announcement] = num
 		end
 	end
+end
+
+function FeatureManager:reset()
+	Global.feature_manager = {
+		announcements = {}
+	}
+
+	for id, _ in pairs(self._default.announcements) do
+		Global.feature_manager.announcements[id] = 0
+	end
+
+	Global.feature_manager.announcements.crimenet_welcome = 3
+	Global.feature_manager.announcements.dlc_gage_pack_jobs = 1
+	Global.feature_manager.announcements.join_pd2_clan = 50
+	Global.feature_manager.announcements.freed_old_hoxton = 1
+	Global.feature_manager.announcements.short_heist = 1
+	Global.feature_manager.announcements.short_heists_available = 1
+	Global.feature_manager.announcements.new_career = 1
+	Global.feature_manager.announced = {}
+	self._global = Global.feature_manager
 end
 
 function FeatureManager:can_announce(feature_id)

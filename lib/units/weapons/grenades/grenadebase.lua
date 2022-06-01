@@ -94,6 +94,10 @@ function GrenadeBase:add_damage_result(unit, is_dead, damage_percent)
 end
 
 function GrenadeBase:_check_achievements(unit, is_dead, damage_percent, hit_count, kill_count, damage_variant)
+	if not unit or not unit:base() then
+		return
+	end
+
 	local enemy_base = unit:base()
 	local unit_type = enemy_base._tweak_table
 	local is_gangster = unit:character_damage().is_gangster(unit_type)

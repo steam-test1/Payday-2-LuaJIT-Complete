@@ -1519,12 +1519,13 @@ function VehicleDrivingExt:_create_seat_SO(seat, dont_register)
 	}
 	local SO_descriptor = {
 		interval = 0,
-		chance_inc = 0,
 		base_chance = 1,
-		usage_amount = 1,
 		AI_group = "friendlies",
+		chance_inc = 0,
+		usage_amount = 1,
 		objective = ride_objective,
 		search_pos = ride_objective.pos,
+		verification_clbk = callback(self, self, "clbk_drive_SO_verification", seat),
 		admin_clbk = callback(self, self, "on_drive_SO_administered", seat)
 	}
 	local SO_id = "ride_" .. tostring(self._unit:key()) .. seat.name
@@ -1540,7 +1541,17 @@ function VehicleDrivingExt:_create_seat_SO(seat, dont_register)
 	end
 end
 
-function VehicleDrivingExt:clbk_drive_SO_verification(candidate_unit)
+function VehicleDrivingExt:clbk_drive_SO_verification(seat, candidate_unit)
+	if not seat.drive_SO_data or not seat.drive_SO_data.SO_id then
+		debug_pause_unit(self._unit, "[VehicleDrivingExt:clbk_drive_SO_verification] SO is not registered", self._unit, candidate_unit, inspect(seat.drive_SO_data))
+
+		return
+	end
+
+	if candidate_unit:movement():cool() then
+		return
+	end
+
 	return true
 end
 

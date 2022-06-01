@@ -192,7 +192,7 @@ function BaseInteractionExt:_btn_interact()
 	return managers.localization:btn_macro("interact", false)
 end
 
-function BaseInteractionExt:can_select(player)
+function BaseInteractionExt:can_select(player, locator)
 	if not self:_has_required_upgrade(alive(player) and player:movement() and player:movement().current_state_name and player:movement():current_state_name()) then
 		return false
 	end
@@ -231,7 +231,7 @@ function BaseInteractionExt:can_select(player)
 end
 
 function BaseInteractionExt:selected(player, locator, hand_id)
-	if not self:can_select(player) then
+	if not self:can_select(player, locator) then
 		return
 	end
 

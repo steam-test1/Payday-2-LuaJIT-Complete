@@ -746,6 +746,7 @@ function PortalLayer:select_portal()
 			self._current_portal = self._portal_shapes[name].portal
 			self._current_group = nil
 
+			self._ctrlrs.groups:deselect_index(self._ctrlrs.groups:selected_index())
 			self._ctrlrs.top_spin.spin:set_value(self._portal_shapes[name].top / 100)
 			self._ctrlrs.bottom_spin.spin:set_value(self._portal_shapes[name].bottom / 100)
 			self._ctrlrs.draw_base:set_value(self._portal_shapes[name].draw_base)

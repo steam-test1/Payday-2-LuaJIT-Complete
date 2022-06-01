@@ -205,6 +205,8 @@ function RaycastWeaponBase:setup(setup_data, damage_multiplier)
 		self._spread_moving = self._spread_moving or weapon_stats.spread_moving[stats.spread_moving]
 		self._concealment = self._concealment or weapon_stats.concealment[stats.concealment]
 		self._value = self._value or weapon_stats.value[stats.value]
+		self._total_ammo_mod = self._total_ammo_mod or weapon_stats.total_ammo_mod[stats.total_ammo_mod]
+		self._extra_ammo = self._extra_ammo or weapon_stats.extra_ammo[stats.extra_ammo]
 		self._reload = self._reload or weapon_stats.reload[stats.reload]
 
 		for i, _ in pairs(weapon_stats) do
@@ -611,6 +613,7 @@ function RaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul
 
 	local result = {}
 	local spread_x, spread_y = self:_get_spread(user_unit)
+	spread_y = spread_y or spread_x
 	local ray_distance = self:weapon_range()
 	local right = direction:cross(Vector3(0, 0, 1)):normalized()
 	local up = direction:cross(right):normalized()
@@ -1388,6 +1391,8 @@ function RaycastWeaponBase:calculate_ammo_max_per_clip()
 			ammo = ammo + managers.player:upgrade_value(category, "clip_ammo_increase", 0)
 		end
 	end
+
+	ammo = ammo + (self._extra_ammo or 0)
 
 	return ammo
 end

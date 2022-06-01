@@ -604,6 +604,18 @@ function HUDStageEndScreen:init(hud, workspace)
 		y = content_font_size,
 		color = Color.black
 	})
+	self._prestige_lp_circle = self._lp_backpanel:bitmap({
+		texture = "guis/textures/pd2/exp_ring_purple",
+		name = "bg_infamy_progress_circle",
+		blend_mode = "add",
+		render_template = "VertexColorTexturedRadial",
+		layer = -1,
+		x = lp_bg_circle:x(),
+		y = lp_bg_circle:y(),
+		h = lp_bg_circle:h(),
+		w = lp_bg_circle:w(),
+		color = Color(0, 1, 1)
+	})
 	self._lp_circle = self._lp_backpanel:bitmap({
 		texture = "guis/textures/pd2/endscreen/exp_ring",
 		name = "progress_circle",
@@ -784,6 +796,7 @@ function HUDStageEndScreen:init(hud, workspace)
 	if squeeze_more_pixels then
 		lp_bg_circle:move(-20, 0)
 		self._lp_circle:move(-20, 0)
+		self._prestige_lp_circle:move(-20, 0)
 		self._lp_text:move(-20, 0)
 		self._lp_curr_xp:move(-30, 0)
 		self._lp_xp_gained:move(-30, 0)
@@ -1351,6 +1364,7 @@ function HUDStageEndScreen:clear_stage()
 	self._coins_forepanel:child("coin_progress_text"):hide()
 	self._lp_text:hide()
 	self._lp_circle:hide()
+	self._prestige_lp_circle:hide()
 	self._lp_backpanel:child("bg_progress_circle"):hide()
 	self._lp_forepanel:child("level_progress_text"):hide()
 	self._lp_curr_xp:hide()
@@ -2347,6 +2361,7 @@ function HUDStageEndScreen:stage_experience_init(t, dt)
 
 	self._lp_text:show()
 	self._lp_circle:show()
+	self._prestige_lp_circle:show()
 	self._lp_backpanel:child("bg_progress_circle"):show()
 	self._lp_forepanel:child("level_progress_text"):show()
 
@@ -2360,6 +2375,7 @@ function HUDStageEndScreen:stage_experience_init(t, dt)
 	end
 
 	self._lp_circle:set_alpha(0)
+	self._prestige_lp_circle:set_alpha(0)
 	self._lp_backpanel:child("bg_progress_circle"):set_alpha(0)
 	self._lp_text:set_alpha(0)
 
@@ -2534,6 +2550,7 @@ function HUDStageEndScreen:stage_experience_init(t, dt)
 	self._sum_text = sum_text
 
 	self._lp_circle:set_color(Color(data.start_t.current / data.start_t.total, 1, 1))
+	self._prestige_lp_circle:set_color(Color(data.start_prestige_xp / managers.experience:get_max_prestige_xp(), 1, 1))
 
 	self._wait_t = 0.5
 	self._start_ramp_up_t = 1
@@ -2620,6 +2637,7 @@ function HUDStageEndScreen:stage_experience_count_exp(t, dt)
 		ratio = self._ramp_up_timer / self._start_ramp_up_t
 
 		self._lp_circle:set_alpha(ratio)
+		self._prestige_lp_circle:set_alpha(math.min(ratio, managers.experience:reached_level_cap() and 1 or 0.3))
 		self._lp_backpanel:child("bg_progress_circle"):set_alpha(ratio * 0.6)
 		self._lp_text:set_alpha(ratio)
 		self._experience_text_panel:set_alpha(ratio)
@@ -2664,6 +2682,7 @@ function HUDStageEndScreen:stage_experience_spin_up(t, dt)
 			self._current_xp = self._static_current_xp
 			self._gained_xp = self._static_gained_xp
 			self._next_level_xp = data.start_t.total - data.start_t.current
+			self._next_level_prestige_xp = data.start_prestige_xp
 			self._speed = 1
 			self._wait_t = 0.8
 			self._ramp_up_timer = nil
@@ -2671,6 +2690,7 @@ function HUDStageEndScreen:stage_experience_spin_up(t, dt)
 			ratio = 1
 
 			self._lp_circle:set_alpha(ratio)
+			self._prestige_lp_circle:set_alpha(math.min(ratio, managers.experience:reached_level_cap() and 1 or 0.3))
 			self._lp_backpanel:child("bg_progress_circle"):set_alpha(ratio * 0.6)
 			self._lp_text:set_alpha(ratio)
 			self._lp_text:stop()
@@ -2831,7 +2851,12 @@ function HUDStageEndScreen:stage_experience_spin_slowdown(t, dt)
 
 		self._next_level_xp = total_xp
 
-		if countdown_xp == 0 then
+		if self._next_level_prestige_xp < managers.experience:get_current_prestige_xp() then
+			self._next_level_prestige_xp = self._next_level_prestige_xp + xp_gained_frame
+			local ratio = self._next_level_prestige_xp / managers.experience:get_max_prestige_xp()
+
+			self._prestige_lp_circle:set_color(Color(ratio, 1, 1))
+		elseif countdown_xp == 0 then
 			WalletGuiObject.refresh()
 			self._lp_xp_gain:set_text(managers.money:add_decimal_marks_to_string(tostring(math.floor(self._experience_added))))
 			self:step_stage_up()

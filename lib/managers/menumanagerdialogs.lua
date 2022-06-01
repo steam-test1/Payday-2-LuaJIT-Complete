@@ -2704,10 +2704,23 @@ function MenuManager:show_confirm_become_infamous(params)
 			text = managers.localization:text("dialog_yes"),
 			callback_func = params.yes_func
 		}
-		dialog_data.text = managers.localization:text(managers.experience:current_rank() < 5 and "menu_dialog_become_infamous_3" or "menu_dialog_become_infamous_3_above_5", {
-			level = 100,
-			cash = params.cost
-		})
+
+		if params.prestige then
+			local prestige_text = ""
+
+			if managers.experience:current_rank() < 5 then
+				prestige_text = prestige_text .. managers.localization:text("menu_dialog_become_infamous_cost_prefix") .. "\n\n"
+			end
+
+			prestige_text = prestige_text .. managers.localization:text("menu_dialog_become_infamous_prestige")
+			dialog_data.text = prestige_text
+		else
+			dialog_data.text = managers.localization:text(managers.experience:current_rank() < 5 and "menu_dialog_become_infamous_3" or "menu_dialog_become_infamous_3_above_5", {
+				level = 100,
+				cash = params.cost
+			})
+		end
+
 		dialog_data.focus_button = 2
 		dialog_data.button_list = {
 			yes_button,
@@ -2717,7 +2730,7 @@ function MenuManager:show_confirm_become_infamous(params)
 		local got_usable_secondary_weapon = managers.blackmarket:check_will_have_free_slot("secondaries")
 		local add_weapon_replace_warning = not got_usable_primary_weapon or not got_usable_secondary_weapon
 
-		if add_weapon_replace_warning then
+		if add_weapon_replace_warning and not params.prestige then
 			local primary_weapon = managers.blackmarket:get_crafted_category_slot("primaries", 1)
 			local secondary_weapon = managers.blackmarket:get_crafted_category_slot("secondaries", 1)
 			local warning_text_id = "menu_dialog_warning_infamy_replace_pri_sec"

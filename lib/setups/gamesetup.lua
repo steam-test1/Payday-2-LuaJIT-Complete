@@ -552,6 +552,7 @@ function GameSetup:init_game()
 			}
 
 			assert(WorldHolder:new(t):create_world("world", "all", Vector3()), "Cant load the level!")
+			World:occlusion_manager():set_max_occluder_tests(50)
 
 			local mission_params = {
 				stage_name = "stage1",

@@ -561,86 +561,175 @@ function InfamyTreeGui:_setup()
 			1
 		}
 	})
-	self.infamous_panel:text({
+
+	local infamy_panel_top = self.infamous_panel:panel({
+		h = 200,
+		x = 5,
 		y = 5,
-		x = 15,
-		layer = 3,
-		text = managers.localization:text("menu_infamy_infamy_panel_infamy_level", {
-			infamy = managers.experience:current_rank()
-		}),
-		h = FONT_SIZE,
-		font = FONT,
-		font_size = FONT_SIZE,
-		color = TEXT_COLOR
+		w = self.infamous_panel:w() - 10
 	})
-	self.infamous_panel:text({
-		y = 50,
-		align = "center",
+	local infamy_top_panel_ratio = 0.72
+	local infamy_subpanel_top_left = infamy_panel_top:panel({
+		w = infamy_panel_top:w() * infamy_top_panel_ratio
+	})
+	local infamy_subpanel_top_right = infamy_panel_top:panel({
+		x = infamy_panel_top:w() * infamy_top_panel_ratio,
+		w = infamy_panel_top:w() * (1 - infamy_top_panel_ratio)
+	})
+	local infamy_panel_bottom = self.infamous_panel:panel({
+		name = "infamy_panel_bottom",
+		x = 5,
+		y = infamy_panel_top:bottom() + 5,
+		h = self.infamous_panel:h() - infamy_panel_top:bottom() - 10,
+		w = self.infamous_panel:w() - 10
+	})
+	local is_level_cap = managers.experience:reached_level_cap()
+	local reputation_progress_panel = infamy_subpanel_top_left:panel({
+		x = 5,
+		y = 5,
+		w = infamy_subpanel_top_left:w() - 10,
+		h = FONT_SIZE * 4
+	})
+	local margin = 5
+	local max_width = reputation_progress_panel:w() - margin * 2
+
+	reputation_progress_panel:text({
+		vertical = "center",
+		y = 0,
 		layer = 3,
 		text = managers.localization:text("menu_infamy_infamy_panel_reputation_level", {
-			reputation = managers.experience:current_level()
+			reputation = ""
 		}),
+		x = margin,
 		h = FONT_SIZE,
 		font = FONT,
 		font_size = FONT_SIZE,
 		color = TEXT_COLOR
 	})
-
-	local progress_bar_panel = self.infamous_panel:panel({
-		y = 70,
-		h = FONT_SIZE
+	reputation_progress_panel:text({
+		vertical = "center",
+		layer = 3,
+		text = managers.experience:current_level() .. "/100 LVL",
+		x = margin,
+		y = FONT_SIZE,
+		h = FONT_SIZE,
+		font = FONT,
+		font_size = FONT_SIZE,
+		color = TEXT_COLOR
 	})
-	local progress_y_pos = progress_bar_panel:h() / 2 - FONT_SIZE / 2
-	local progress_margin = 40
-	local max_width = progress_bar_panel:w() - progress_margin * 2
-
-	progress_bar_panel:rect({
-		x = progress_margin,
-		y = progress_y_pos + FONT_SIZE / 4,
+	reputation_progress_panel:rect({
+		x = margin,
+		y = FONT_SIZE * 2,
 		w = max_width,
 		h = FONT_SIZE / 2,
 		color = tweak_data.screen_color_grey
 	})
-	progress_bar_panel:rect({
-		x = progress_margin,
-		y = progress_y_pos + FONT_SIZE / 4,
+	reputation_progress_panel:rect({
+		x = margin,
+		y = FONT_SIZE * 2,
 		w = math.lerp(0, max_width, managers.experience:current_level() / 100),
 		h = FONT_SIZE / 2,
-		color = tweak_data.screen_color_light_grey
+		color = Color.white
 	})
-	progress_bar_panel:text({
+
+	local prestige_error_string = ""
+	local prestige_availible = true
+
+	if not is_level_cap then
+		prestige_error_string = managers.localization:to_upper_text("menu_infamy_prestige_error_paused")
+		prestige_availible = false
+	elseif managers.experience:current_rank() < 1 then
+		prestige_error_string = managers.localization:to_upper_text("menu_infamy_prestige_error_rank")
+		prestige_availible = false
+	end
+
+	local prestige_progress_panel = infamy_subpanel_top_left:panel({
+		x = 5,
+		w = infamy_subpanel_top_left:w() - 10,
+		y = reputation_progress_panel:bottom() + 5,
+		h = FONT_SIZE * 4,
+		alpha = prestige_availible and 1 or 0.5
+	})
+	local progress_margin = 5
+	local max_width = prestige_progress_panel:w() - progress_margin * 2
+
+	prestige_progress_panel:text({
 		vertical = "center",
-		text = "1",
+		y = 0,
 		layer = 3,
-		x = progress_margin - 15,
-		y = progress_y_pos,
+		text = managers.localization:text("menu_infamy_infamy_panel_prestige_level"),
+		x = margin,
 		h = FONT_SIZE,
 		font = FONT,
 		font_size = FONT_SIZE,
 		color = TEXT_COLOR
 	})
-	progress_bar_panel:text({
+	prestige_progress_panel:text({
 		vertical = "center",
-		text = "100",
 		layer = 3,
-		x = progress_margin + max_width + 5,
-		y = progress_y_pos,
+		text = managers.experience:get_current_prestige_xp() .. "/" .. managers.experience:get_max_prestige_xp(),
+		x = margin,
+		y = FONT_SIZE,
 		h = FONT_SIZE,
 		font = FONT,
 		font_size = FONT_SIZE,
+		color = TEXT_COLOR
+	})
+	prestige_progress_panel:rect({
+		x = progress_margin,
+		y = FONT_SIZE * 2,
+		w = max_width,
+		h = FONT_SIZE / 2,
+		color = tweak_data.screen_color_grey
+	})
+	prestige_progress_panel:rect({
+		x = progress_margin,
+		y = FONT_SIZE * 2,
+		w = math.lerp(0, max_width, managers.experience:get_prestige_xp_percentage_progress()),
+		h = FONT_SIZE / 2,
+		color = tweak_data.screen_colors.infamy_color,
+		alpha = is_level_cap and 1 or 0.3
+	})
+
+	local prestige_error_text = infamy_subpanel_top_left:text({
+		vertical = "center",
+		wrap = true,
+		layer = 3,
+		text = prestige_error_string,
+		x = prestige_progress_panel:x(),
+		y = prestige_progress_panel:bottom() - FONT_SIZE,
+		h = FONT_SIZE * 2,
+		w = prestige_progress_panel:w(),
+		font = FONT,
+		font_size = FONT_SIZE,
+		color = tweak_data.screen_colors.important_1,
+		visible = not prestige_availible
+	})
+
+	infamy_subpanel_top_right:text({
+		vertical = "center",
+		y = 0,
+		x = 0,
+		layer = 3,
+		text = managers.localization:text("menu_infamy_infamy_panel_infamy_level", {
+			infamy = ""
+		}),
+		h = FONT_SIZE,
+		font = FONT,
+		font_size = FONT_SIZE - 1,
 		color = TEXT_COLOR
 	})
 
 	local card_id, card_rect = managers.infamy:get_infamy_card_id_and_rect()
 	local card_proportion = card_rect[3] / card_rect[4]
-	local card_panel = self.infamous_panel:panel({
-		h = 150,
-		y = progress_bar_panel:bottom() + 10,
-		w = 150 * card_proportion
+	local snap_to_width = card_proportion > infamy_subpanel_top_right:w() / infamy_subpanel_top_right:h()
+	local card_w = snap_to_width and infamy_subpanel_top_right:w() or infamy_subpanel_top_right:h() * card_proportion
+	local card_h = snap_to_width and infamy_subpanel_top_right:w() / card_proportion or infamy_subpanel_top_right:h()
+	local card_panel = infamy_subpanel_top_right:panel({
+		y = FONT_SIZE,
+		w = card_w,
+		h = card_h
 	})
-
-	card_panel:set_center_x(self.infamous_panel:w() / 2)
-
 	local card_bitmap = card_panel:bitmap({
 		layer = 2,
 		w = card_panel:w(),
@@ -659,48 +748,123 @@ function InfamyTreeGui:_setup()
 		color = Color.black
 	})
 
-	local error_string = nil
+	local error_string = ""
+	local error_string_prestige = ""
 
 	if managers.experience:current_level() < 100 then
 		self._can_go_infamous = false
-		error_string = managers.localization:text("menu_infamy_go_infamous_error_level")
+		error_string = managers.localization:to_upper_text("menu_infamy_go_infamous_error_level")
 	elseif managers.crime_spree:in_progress() then
 		self._can_go_infamous = false
-		error_string = managers.localization:text("menu_infamy_go_infamous_error_crime_spree")
+		error_string = managers.localization:to_upper_text("menu_infamy_go_infamous_error_crime_spree")
 	elseif managers.money:offshore() < managers.money:get_infamous_cost(managers.experience:current_rank() + 1) then
 		self._can_go_infamous = false
-		error_string = managers.localization:text("menu_infamy_go_infamous_error_money")
+		error_string = managers.localization:to_upper_text("menu_infamy_go_infamous_error_money")
 	else
 		self._can_go_infamous = true
 	end
 
-	local go_inf_button = self.infamous_panel:panel({
-		name = "go_infamous_button",
-		h = 50,
-		y = card_panel:bottom() + 20
+	if not self._can_go_infamous then
+		self._can_go_infamous_prestige = false
+		error_string_prestige = error_string
+	elseif managers.experience:get_current_prestige_xp() < managers.experience:get_max_prestige_xp() then
+		self._can_go_infamous_prestige = false
+		error_string_prestige = managers.localization:to_upper_text("menu_infamy_go_infamous_error_prestige_xp")
+	else
+		self._can_go_infamous_prestige = true
+	end
+
+	local go_inf_panel_main = infamy_panel_bottom:panel({
+		y = 0,
+		name = "go_infamous_button"
 	})
-	local go_inf_text = go_inf_button:text({
-		name = "go_infamous_text",
+	local go_inf_text_main = go_inf_panel_main:text({
+		text = "Go Infamous:",
 		align = "center",
 		layer = 3,
-		text = utf8.to_upper(managers.localization:text("menu_infamy_button_go_infamous")),
-		h = FONT_LARGE,
-		font = FONT_LARGE,
-		font_size = FONT_SIZE_LARGE,
-		color = self._can_go_infamous and BUTTON_COLOR or tweak_data.screen_colors.item_stage_3
+		h = FONT_SIZE,
+		font = FONT,
+		font_size = FONT_SIZE
 	})
-	local error_text = self._can_go_infamous or self.infamous_panel:text({
-		wrap = true,
-		align = "center",
-		x = 40,
+
+	ExtendedPanel.make_fine_text(go_inf_text_main)
+	go_inf_text_main:set_righttop(go_inf_panel_main:w() - 5, 0)
+
+	local go_inf_panel_rep = go_inf_panel_main:panel({
+		name = "go_infamous_rep_panel",
+		y = FONT_SIZE * 2,
+		h = FONT_SIZE
+	})
+
+	go_inf_panel_rep:rect({
+		name = "go_infamous_rep_highlight",
+		visible = false,
+		alpha = 0.4,
+		layer = 1,
+		color = BUTTON_COLOR
+	})
+
+	local go_inf_text_rep = go_inf_panel_rep:text({
+		name = "go_infamous_rep_text",
+		align = "right",
 		layer = 3,
-		text = error_string,
-		y = go_inf_button:bottom(),
-		w = self.infamous_panel:w() - 80,
+		text = managers.localization:to_upper_text("menu_infamy_go_inf_rep") .. " [Y]",
+		h = FONT_SIZE,
 		font = FONT,
 		font_size = FONT_SIZE,
-		color = Color.red
+		color = self._can_go_infamous and BUTTON_COLOR or tweak_data.screen_color_grey
 	})
+	local error_text_rep = infamy_panel_bottom:text({
+		wrap = true,
+		align = "center",
+		layer = 3,
+		text = error_string,
+		font = FONT,
+		font_size = FONT_SIZE,
+		color = tweak_data.screen_colors.important_1
+	})
+
+	ExtendedPanel.make_fine_text(error_text_rep)
+	error_text_rep:set_righttop(go_inf_panel_main:w() - 5, go_inf_panel_rep:bottom())
+
+	local go_inf_panel_prestige = go_inf_panel_main:panel({
+		name = "go_infamous_prestige_panel",
+		y = FONT_SIZE * 5,
+		h = FONT_SIZE,
+		alpha = prestige_availible and 1 or 0.5
+	})
+
+	go_inf_panel_prestige:rect({
+		name = "go_infamous_prestige_highlight",
+		visible = false,
+		alpha = 0.4,
+		layer = 1,
+		color = BUTTON_COLOR
+	})
+
+	local go_inf_text_prestige = go_inf_panel_prestige:text({
+		name = "go_infamous_prestige_text",
+		align = "right",
+		layer = 3,
+		text = managers.localization:to_upper_text("menu_infamy_go_inf_prestige") .. " [X]",
+		h = FONT_SIZE,
+		font = FONT,
+		font_size = FONT_SIZE,
+		color = self._can_go_infamous_prestige and BUTTON_COLOR or tweak_data.screen_color_grey
+	})
+	local error_text_prestige = infamy_panel_bottom:text({
+		wrap = true,
+		align = "center",
+		layer = 3,
+		text = error_string_prestige,
+		font = FONT,
+		font_size = FONT_SIZE,
+		color = tweak_data.screen_colors.important_1,
+		visible = prestige_availible
+	})
+
+	ExtendedPanel.make_fine_text(error_text_prestige)
+	error_text_prestige:set_righttop(go_inf_panel_main:w() - 5, go_inf_panel_prestige:bottom())
 
 	if managers.menu:is_pc_controller() then
 		local back_button = self._panel:text({
@@ -1101,19 +1265,39 @@ function InfamyTreeGui:mouse_moved(o, x, y)
 	local pointer = "arrow"
 
 	if self._can_go_infamous then
-		local inf_button = self.infamous_panel:child("go_infamous_button")
+		local inf_button = self.infamous_panel:child("infamy_panel_bottom"):child("go_infamous_button"):child("go_infamous_rep_panel")
 
 		if not self._infamous_highlight and inf_button:inside(x, y) then
 			used = true
 			pointer = "link"
 			self._infamous_highlight = true
 
-			inf_button:child("go_infamous_text"):set_color(MOUSEOVER_COLOR)
+			inf_button:child("go_infamous_rep_text"):set_color(MOUSEOVER_COLOR)
+			inf_button:child("go_infamous_rep_highlight"):set_visible(true)
 			managers.menu_component:post_event("highlight")
 		elseif self._infamous_highlight and not inf_button:inside(x, y) then
 			self._infamous_highlight = false
 
-			inf_button:child("go_infamous_text"):set_color(BUTTON_COLOR)
+			inf_button:child("go_infamous_rep_text"):set_color(BUTTON_COLOR)
+			inf_button:child("go_infamous_rep_highlight"):set_visible(false)
+		end
+	end
+
+	if self._can_go_infamous_prestige then
+		local inf_button_2 = self.infamous_panel:child("infamy_panel_bottom"):child("go_infamous_button"):child("go_infamous_prestige_panel")
+
+		if not self._infamous_highlight_free and inf_button_2:inside(x, y) then
+			used = true
+			pointer = "link"
+			self._infamous_highlight_free = true
+
+			inf_button_2:child("go_infamous_prestige_text"):set_color(MOUSEOVER_COLOR)
+			inf_button_2:child("go_infamous_prestige_highlight"):set_visible(true)
+		elseif self._infamous_highlight_free and not inf_button_2:inside(x, y) then
+			self._infamous_highlight_free = false
+
+			inf_button_2:child("go_infamous_prestige_text"):set_color(BUTTON_COLOR)
+			inf_button_2:child("go_infamous_prestige_highlight"):set_visible(false)
 		end
 	end
 
@@ -1152,9 +1336,20 @@ function InfamyTreeGui:mouse_pressed(button, x, y)
 			return
 		end
 
-		if self._can_go_infamous and self.infamous_panel:child("go_infamous_button"):inside(x, y) and MenuCallbackHandler:can_become_infamous() and managers.money:get_infamous_cost(managers.experience:current_rank() + 1) <= managers.money:offshore() then
+		if self._can_go_infamous and self.infamous_panel:child("infamy_panel_bottom"):child("go_infamous_button"):child("go_infamous_rep_panel"):inside(x, y) and MenuCallbackHandler:can_become_infamous() and managers.money:get_infamous_cost(managers.experience:current_rank() + 1) <= managers.money:offshore() then
 			self.scroll:set_input_focus(false)
 			MenuCallbackHandler:become_infamous({
+				no_clbk = function ()
+					self.scroll:set_input_focus(true)
+				end
+			})
+
+			return
+		end
+
+		if self._can_go_infamous_prestige and self.infamous_panel:child("infamy_panel_bottom"):child("go_infamous_button"):child("go_infamous_prestige_panel"):inside(x, y) and MenuCallbackHandler:can_become_infamous() and managers.money:get_infamous_cost(managers.experience:current_rank() + 1) <= managers.money:offshore() then
+			self.scroll:set_input_focus(false)
+			MenuCallbackHandler:become_infamous_with_prestige({
 				no_clbk = function ()
 					self.scroll:set_input_focus(true)
 				end

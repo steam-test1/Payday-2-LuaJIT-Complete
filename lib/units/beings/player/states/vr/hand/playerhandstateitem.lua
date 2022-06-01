@@ -330,6 +330,11 @@ function PlayerHandStateItem:update(t, dt)
 	elseif self._item_type == "magazine" then
 		local player = managers.player:player_unit()
 		local weapon = player:inventory():equipped_unit()
+
+		if not weapon then
+			return
+		end
+
 		local mag_locator = weapon:get_object(Idstring("a_m"))
 		local offset = tweak_data.vr:get_offset_by_id("magazine", weapon:base().name_id)
 		local mag_pos = nil

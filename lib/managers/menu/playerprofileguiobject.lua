@@ -28,6 +28,19 @@ function PlayerProfileGuiObject:init(ws)
 		h = (font_size + 1) * 4,
 		color = Color((next_level_data.current_points or 1) / (next_level_data.points or 1), 1, 1)
 	})
+	self._prestige_lp_circle = panel:bitmap({
+		texture = "guis/textures/pd2/exp_ring_purple",
+		name = "bg_infamy_progress_circle",
+		render_template = "VertexColorTexturedRadial",
+		blend_mode = "add",
+		layer = 15,
+		x = bg_ring:x() - 5,
+		y = bg_ring:y(),
+		h = bg_ring:h(),
+		w = bg_ring:w(),
+		color = Color(managers.experience:get_prestige_xp_percentage_progress(), 1, 1),
+		alpha = managers.experience:reached_level_cap() and 1 or 0.3
+	})
 	local player_text = panel:text({
 		y = 10,
 		font = font,

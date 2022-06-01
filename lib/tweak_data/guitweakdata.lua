@@ -2076,6 +2076,17 @@ function GuiTweakData:init(tweak_data)
 				name_id = "heist_contact_shayu",
 				id = "shayu"
 			},
+			{
+				{
+					desc_id = "heist_contact_mcshay_description",
+					post_event = "mcs_quote_set_a",
+					videos = {
+						"mcshay1"
+					}
+				},
+				name_id = "heist_contact_mcshay",
+				id = "mcshay"
+			},
 			name_id = "menu_contacts",
 			id = "contacts"
 		},
@@ -5105,6 +5116,12 @@ function GuiTweakData:init(tweak_data)
 		limit = 5
 	}
 
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_pxp1_02",
+		texture_path = "guis/dlcs/in40/textures/pd2/new_heists/in40_02",
+		append_steam_id = "?playerid=",
+		url = "https://pd3.link/ShapePD3"
+	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_pxp1_01",
 		texture_path = "guis/dlcs/pxp1/textures/pd2/new_heists/pxp1_01",

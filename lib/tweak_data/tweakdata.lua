@@ -1440,6 +1440,7 @@ Play the full version soon to get your full PAYDAY!]],
 		}
 	end
 
+	self.experience_manager.prestige_xp_max = 30000000
 	self.pickups = {
 		ammo = {
 			unit = Idstring("units/pickups/ammo/ammo_pickup")
@@ -2811,6 +2812,8 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.launcher_poison_arbiter = deep_clone(self.projectiles.launcher_poison)
 	self.projectiles.launcher_poison_arbiter.damage = 38
 	self.projectiles.launcher_poison_arbiter.range = 300
+	self.projectiles.launcher_poison_arbiter.launch_speed = 7000
+	self.projectiles.launcher_poison_arbiter.curve_pow = 0.1
 	self.projectiles.launcher_poison_arbiter.poison_gas_range = 400
 	self.projectiles.launcher_poison_arbiter.poison_gas_dot_data = {
 		hurt_animation_chance = 1,
