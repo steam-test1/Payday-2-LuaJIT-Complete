@@ -2076,17 +2076,6 @@ function GuiTweakData:init(tweak_data)
 				name_id = "heist_contact_shayu",
 				id = "shayu"
 			},
-			{
-				{
-					desc_id = "heist_contact_mcshay_description",
-					post_event = "mcs_quote_set_a",
-					videos = {
-						"mcshay1"
-					}
-				},
-				name_id = "heist_contact_mcshay",
-				id = "mcshay"
-			},
 			name_id = "menu_contacts",
 			id = "contacts"
 		},

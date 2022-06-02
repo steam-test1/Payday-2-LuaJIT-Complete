@@ -9311,7 +9311,7 @@ function WeaponFactoryTweakData:_init_mac10()
 				a_obj = "a_of"
 			},
 			wpn_fps_upg_ns_pis_putnik = {
-				a_obj = "a_b"
+				parent = "barrel"
 			}
 		},
 		adds = {
@@ -34163,6 +34163,11 @@ function WeaponFactoryTweakData:_init_sr2()
 				"wpn_fps_smg_sr2_o_rail"
 			}
 		},
+		override = {
+			wpn_fps_upg_ns_pis_putnik = {
+				parent = "barrel"
+			}
+		},
 		default_blueprint = {
 			"wpn_fps_smg_sr2_body_lower",
 			"wpn_fps_smg_sr2_b_standard",
@@ -34236,7 +34241,11 @@ function WeaponFactoryTweakData:_init_x_sr2()
 			"gadget",
 			"barrel_ext"
 		},
-		override = {},
+		override = {
+			wpn_fps_upg_ns_pis_putnik = {
+				parent = "barrel"
+			}
+		},
 		default_blueprint = {
 			"wpn_fps_smg_sr2_body_lower",
 			"wpn_fps_smg_sr2_b_standard",
@@ -35971,6 +35980,11 @@ function WeaponFactoryTweakData:_init_pm9()
 			"gadget",
 			"sight"
 		},
+		override = {
+			wpn_fps_upg_ns_pis_putnik = {
+				parent = "barrel"
+			}
+		},
 		adds = {
 			wpn_fps_upg_o_aimpoint = {
 				"wpn_fps_smg_pm9_o_adapter"
@@ -36086,6 +36100,11 @@ function WeaponFactoryTweakData:_init_x_pm9()
 			},
 			wpn_fps_upg_fl_pis_m3x = {
 				"wpn_fps_smg_pm9_fl_adapter"
+			}
+		},
+		override = {
+			wpn_fps_upg_ns_pis_putnik = {
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
@@ -42018,6 +42037,11 @@ function WeaponFactoryTweakData:_init_coal()
 			"barrel_ext",
 			"gadget"
 		},
+		override = {
+			wpn_fps_upg_ns_pis_putnik = {
+				parent = "barrel"
+			}
+		},
 		adds = {
 			wpn_fps_upg_o_specter = {
 				"wpn_fps_smg_coal_o_scopemount_standard"
@@ -44868,6 +44892,7 @@ function WeaponFactoryTweakData:_init_erma()
 			reload = "reload",
 			magazine_empty = "last_recoil"
 		},
+		animations = {},
 		adds = {
 			wpn_fps_upg_o_specter = {
 				"wpn_fps_smg_erma_extra_rail"
@@ -44981,8 +45006,7 @@ function WeaponFactoryTweakData:_init_erma()
 			"wpn_fps_upg_o_fc1",
 			"wpn_fps_lmg_hk51b_ns_jcomp",
 			"wpn_fps_upg_o_tf90",
-			"wpn_fps_upg_o_poe",
-			"wpn_fps_upg_ns_pis_putnik"
+			"wpn_fps_upg_o_poe"
 		}
 	}
 	self.wpn_fps_smg_erma_npc = deep_clone(self.wpn_fps_smg_erma)
@@ -46470,6 +46494,11 @@ function WeaponFactoryTweakData:_init_x_coal()
 			fire_steelsight = "recoil",
 			fire = "recoil"
 		},
+		override = {
+			wpn_fps_upg_ns_pis_putnik = {
+				parent = "barrel"
+			}
+		},
 		default_blueprint = {
 			"wpn_fps_smg_coal_b_standard",
 			"wpn_fps_smg_coal_body_standard",
@@ -46709,8 +46738,7 @@ function WeaponFactoryTweakData:_init_x_erma()
 			"wpn_fps_upg_ass_ns_battle",
 			"wpn_fps_upg_fl_ass_utg",
 			"wpn_fps_upg_ns_ass_smg_v6",
-			"wpn_fps_lmg_hk51b_ns_jcomp",
-			"wpn_fps_upg_ns_pis_putnik"
+			"wpn_fps_lmg_hk51b_ns_jcomp"
 		}
 	}
 	self.wpn_fps_smg_x_erma_npc = deep_clone(self.wpn_fps_smg_x_erma)

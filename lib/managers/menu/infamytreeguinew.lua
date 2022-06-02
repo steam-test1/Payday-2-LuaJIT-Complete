@@ -779,9 +779,9 @@ function InfamyTreeGui:_setup()
 		name = "go_infamous_button"
 	})
 	local go_inf_text_main = go_inf_panel_main:text({
-		text = "Go Infamous:",
 		align = "center",
 		layer = 3,
+		text = managers.localization:to_upper_text("menu_infamy_go_infamous") .. ":",
 		h = FONT_SIZE,
 		font = FONT,
 		font_size = FONT_SIZE
@@ -808,7 +808,7 @@ function InfamyTreeGui:_setup()
 		name = "go_infamous_rep_text",
 		align = "right",
 		layer = 3,
-		text = managers.localization:to_upper_text("menu_infamy_go_inf_rep") .. " [Y]",
+		text = managers.localization:to_upper_text("menu_infamy_go_inf_rep"),
 		h = FONT_SIZE,
 		font = FONT,
 		font_size = FONT_SIZE,
@@ -846,7 +846,7 @@ function InfamyTreeGui:_setup()
 		name = "go_infamous_prestige_text",
 		align = "right",
 		layer = 3,
-		text = managers.localization:to_upper_text("menu_infamy_go_inf_prestige") .. " [X]",
+		text = managers.localization:to_upper_text("menu_infamy_go_inf_prestige"),
 		h = FONT_SIZE,
 		font = FONT,
 		font_size = FONT_SIZE,
@@ -1390,7 +1390,19 @@ end
 
 function InfamyTreeGui:special_btn_pressed(button)
 	if self._can_go_infamous and button == Idstring("menu_go_infamous") then
-		MenuCallbackHandler:become_infamous()
+		MenuCallbackHandler:become_infamous({
+			no_clbk = function ()
+				self.scroll:set_input_focus(true)
+			end
+		})
+	end
+
+	if self._can_go_infamous_prestige and button == Idstring("menu_toggle_filters") then
+		MenuCallbackHandler:become_infamous_with_prestige({
+			no_clbk = function ()
+				self.scroll:set_input_focus(true)
+			end
+		})
 	end
 
 	return false
