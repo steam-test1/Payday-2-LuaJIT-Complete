@@ -14213,8 +14213,6 @@ function WeaponFactoryTweakData:_init_hk51b()
 			"wpn_fps_upg_o_cmore",
 			"wpn_fps_upg_o_aimpoint_2",
 			"wpn_fps_upg_o_acog",
-			"wpn_fps_upg_i_singlefire",
-			"wpn_fps_upg_i_autofire",
 			"wpn_fps_upg_o_eotech_xps",
 			"wpn_fps_upg_o_reflex",
 			"wpn_fps_upg_o_rx01",
@@ -46561,6 +46559,12 @@ function WeaponFactoryTweakData:_init_x_baka()
 	self.parts.wpn_fps_smg_baka_s_folded_vanilla.pcs = nil
 	self.wpn_fps_smg_x_baka = {
 		unit = "units/pd2_dlc_osa/weapons/wpn_fps_smg_x_baka/wpn_fps_smg_x_baka",
+		override = {
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			}
+		},
 		adds = {
 			wpn_fps_upg_fl_pis_laser = {
 				"wpn_fps_smg_baka_fl_adapter"
@@ -47444,6 +47448,12 @@ end
 function WeaponFactoryTweakData:_init_x_polymer()
 	self.wpn_fps_smg_x_polymer = {
 		unit = "units/pd2_dlc_osa/weapons/wpn_fps_smg_x_polymer/wpn_fps_smg_x_polymer",
+		override = {
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			}
+		},
 		default_blueprint = {
 			"wpn_fps_smg_polymer_body_standard",
 			"wpn_fps_smg_polymer_bolt_standard",
@@ -47593,6 +47603,10 @@ function WeaponFactoryTweakData:_init_x_scorpion()
 					value = 1,
 					extra_ammo = 20
 				}
+			},
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		adds = {
@@ -47854,6 +47868,12 @@ function WeaponFactoryTweakData:_init_x_uzi()
 			},
 			wpn_fps_upg_fl_ass_utg = {
 				"wpn_fps_shot_r870_gadget_rail"
+			}
+		},
+		override = {
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
 			}
 		},
 		default_blueprint = {
