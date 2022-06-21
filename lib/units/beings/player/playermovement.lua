@@ -14,6 +14,7 @@ require("lib/units/beings/player/states/PlayerBipod")
 require("lib/units/beings/player/states/PlayerDriving")
 require("lib/units/beings/player/states/PlayerFreefall")
 require("lib/units/beings/player/states/PlayerParachuting")
+require("lib/units/beings/player/states/PlayerTurret")
 
 if _G.IS_VR then
 	require("lib/units/beings/player/states/vr/PlayerStandardVR")
@@ -165,7 +166,8 @@ function PlayerMovement:_setup_states()
 		bipod = PlayerBipod:new(unit),
 		driving = PlayerDriving:new(unit),
 		jerry2 = PlayerParachuting:new(unit),
-		jerry1 = PlayerFreefall:new(unit)
+		jerry1 = PlayerFreefall:new(unit),
+		player_turret = PlayerTurret:new(unit)
 	}
 end
 

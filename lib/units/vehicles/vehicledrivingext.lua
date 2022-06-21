@@ -550,7 +550,7 @@ end
 function VehicleDrivingExt:_loot_filter_func(carry_data)
 	local carry_id = carry_data:carry_id()
 
-	if carry_id == "gold" or carry_id == "goat" or carry_id == "present" or carry_id == "mad_master_server_value_1" or carry_id == "mad_master_server_value_2" or carry_id == "mad_master_server_value_3" or carry_id == "mad_master_server_value_4" or carry_id == "money" or carry_id == "diamonds" or carry_id == "coke" or carry_id == "weapon" or carry_id == "painting" or carry_id == "circuit" or carry_id == "diamonds" or carry_id == "engine_01" or carry_id == "engine_02" or carry_id == "engine_03" or carry_id == "engine_04" or carry_id == "engine_05" or carry_id == "engine_06" or carry_id == "engine_07" or carry_id == "engine_08" or carry_id == "engine_09" or carry_id == "engine_10" or carry_id == "engine_11" or carry_id == "engine_12" or carry_id == "meth" or carry_id == "lance_bag" or carry_id == "lance_bag_large" or carry_id == "grenades" or carry_id == "ammo" or carry_id == "cage_bag" or carry_id == "turret" or carry_id == "artifact_statue" or carry_id == "samurai_suit" or carry_id == "equipment_bag" or carry_id == "cro_loot1" or carry_id == "cro_loot2" or carry_id == "ladder_bag" or carry_id == "warhead" or carry_id == "paper_roll" or carry_id == "counterfeit_money" or carry_id == "safe_wpn" or carry_id == "safe_ovk" or carry_id == "prototype" or carry_id == "master_server" or carry_id == "lost_artifact" or carry_id == "masterpiece_painting" then
+	if carry_id == "gold" or carry_id == "goat" or carry_id == "present" or carry_id == "mad_master_server_value_1" or carry_id == "mad_master_server_value_2" or carry_id == "mad_master_server_value_3" or carry_id == "mad_master_server_value_4" or carry_id == "ranc_weapon" or carry_id == "money" or carry_id == "diamonds" or carry_id == "coke" or carry_id == "weapon" or carry_id == "painting" or carry_id == "circuit" or carry_id == "diamonds" or carry_id == "engine_01" or carry_id == "engine_02" or carry_id == "engine_03" or carry_id == "engine_04" or carry_id == "engine_05" or carry_id == "engine_06" or carry_id == "engine_07" or carry_id == "engine_08" or carry_id == "engine_09" or carry_id == "engine_10" or carry_id == "engine_11" or carry_id == "engine_12" or carry_id == "meth" or carry_id == "lance_bag" or carry_id == "lance_bag_large" or carry_id == "grenades" or carry_id == "ammo" or carry_id == "cage_bag" or carry_id == "turret" or carry_id == "artifact_statue" or carry_id == "samurai_suit" or carry_id == "equipment_bag" or carry_id == "cro_loot1" or carry_id == "cro_loot2" or carry_id == "ladder_bag" or carry_id == "warhead" or carry_id == "paper_roll" or carry_id == "counterfeit_money" or carry_id == "safe_wpn" or carry_id == "safe_ovk" or carry_id == "prototype" or carry_id == "master_server" or carry_id == "lost_artifact" or carry_id == "masterpiece_painting" then
 		return true
 	elseif tweak_data.carry[carry_data:carry_id()].is_unique_loot then
 		return true
@@ -1095,6 +1095,28 @@ function VehicleDrivingExt:_detect_npc_collisions()
 
 			if self._seats.driver.occupant == managers.player:local_player() then
 				attack_data.attacker_unit = managers.player:local_player()
+			end
+
+			local unit_is_enemy = unit:in_slot(managers.slot:get_mask("enemies"))
+			local td = tweak_data.achievement.ranc_9
+			local vehicle_pass = not td.vehicle_id or self.tweak_data == td.vehicle_id
+			local level_pass = td.job == (managers.job:has_active_job() and managers.job:current_level_id() or "")
+			local diff_pass = not td.difficulty or table.contains(td.difficulty, Global.game_settings.difficulty)
+			local local_player_is_inside = false
+			local players_inside = {}
+
+			for seat_id, seat in pairs(self._seats) do
+				if alive(seat.occupant) and not seat.occupant:brain() then
+					table.insert(players_inside, seat.occupant)
+				end
+
+				if seat.occupant == managers.player:local_player() then
+					local_player_is_inside = true
+				end
+			end
+
+			if unit_is_enemy and vehicle_pass and level_pass and diff_pass then
+				attack_data.players_in_vehicle = players_inside
 			end
 
 			damage_ext:damage_mission(attack_data)

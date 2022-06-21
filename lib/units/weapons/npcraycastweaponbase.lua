@@ -49,8 +49,9 @@ function NPCRaycastWeaponBase:init(unit)
 		}
 	end
 
+	local tweak_trail = self:weapon_tweak_data().trail
 	self._trail_effect_table = {
-		effect = self.TRAIL_EFFECT,
+		effect = tweak_trail and Idstring(tweak_trail) or self.TRAIL_EFFECT,
 		position = Vector3(),
 		normal = Vector3()
 	}

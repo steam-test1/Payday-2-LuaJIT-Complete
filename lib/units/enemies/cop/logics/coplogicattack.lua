@@ -1706,3 +1706,86 @@ function CopLogicAttack._chk_exit_non_walkable_area(data)
 		end
 	end
 end
+
+MarshalLogicAttack = MarshalLogicAttack or class(CopLogicAttack)
+
+function MarshalLogicAttack.update(data)
+	local my_data = data.internal_data
+
+	if my_data.has_old_action then
+		MarshalLogicAttack._upd_stop_old_action(data, my_data)
+
+		if not my_data.update_queue_id then
+			data.unit:brain():set_update_enabled_state(false)
+
+			my_data.update_queue_id = "MarshalLogicAttack.queued_update" .. tostring(data.key)
+
+			MarshalLogicAttack.queue_update(data, my_data)
+		end
+
+		return
+	end
+
+	if MarshalLogicAttack._chk_exit_non_walkable_area(data) then
+		return
+	end
+
+	MarshalLogicAttack._process_pathing_results(data, my_data)
+
+	if not data.attention_obj or data.attention_obj.reaction < AIAttentionObject.REACT_AIM then
+		MarshalLogicAttack._upd_enemy_detection(data, true)
+
+		if my_data ~= data.internal_data or not data.attention_obj then
+			return
+		end
+	end
+
+	if AIAttentionObject.REACT_COMBAT <= data.attention_obj.reaction then
+		my_data.want_to_take_cover = MarshalLogicAttack._chk_wants_to_take_cover(data, my_data)
+
+		MarshalLogicAttack._update_cover(data)
+		MarshalLogicAttack._upd_combat_movement(data)
+	end
+
+	if data.team.id == "criminal1" and (not data.objective or data.objective.type == "free") and (not data.path_fail_t or data.t - data.path_fail_t > 6) then
+		managers.groupai:state():on_criminal_jobless(data.unit)
+
+		if my_data ~= data.internal_data then
+			return
+		end
+	end
+
+	if not my_data.update_queue_id then
+		data.unit:brain():set_update_enabled_state(false)
+
+		my_data.update_queue_id = "MarshalLogicAttack.queued_update" .. tostring(data.key)
+
+		MarshalLogicAttack.queue_update(data, my_data)
+	end
+end
+
+function MarshalLogicAttack._chk_exit_non_walkable_area(data)
+	local my_data = data.internal_data
+
+	if my_data.advancing or not CopLogicAttack._can_move(data) or data.unit:movement():chk_action_forbidden("walk") then
+		return
+	end
+
+	local my_tracker = data.unit:movement():nav_tracker()
+
+	if not my_tracker:obstructed() then
+		return
+	end
+
+	if data.objective and data.objective.nav_seg then
+		local nav_seg_id = my_tracker:nav_segment()
+
+		if not managers.navigation._nav_segments[nav_seg_id].disabled then
+			data.objective.in_place = nil
+
+			data.logic.on_new_objective(data)
+
+			return true
+		end
+	end
+end

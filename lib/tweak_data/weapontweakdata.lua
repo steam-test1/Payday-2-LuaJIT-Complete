@@ -53,7 +53,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_m249_npc()
 	self:_init_data_contraband_npc()
 	self:_init_data_flamethrower_npc()
-	self:_init_data_heavy_snp_npc()
+	self:_init_data_dmr_npc()
 	self:_init_data_smoke_npc()
 	self:_init_data_groza_npc()
 	self:_init_data_type54_npc()
@@ -263,6 +263,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_x_holt_crew()
 	self:_init_data_m60_crew()
 	self:_init_data_r700_crew()
+	self:_init_ranc_heavy_machine_gun()
 	self:_precalculate_values()
 end
 
@@ -1380,21 +1381,22 @@ function WeaponTweakData:_init_data_flamethrower_npc()
 	self.flamethrower_npc.FIRE_MODE = "auto"
 end
 
-function WeaponTweakData:_init_data_heavy_snp_npc()
-	self.heavy_snp_npc.categories = {
+function WeaponTweakData:_init_data_dmr_npc()
+	self.dmr_npc.categories = {
 		"snp"
 	}
-	self.heavy_snp_npc.sounds.prefix = "zsniper_npc"
-	self.heavy_snp_npc.use_data.selection_index = SELECTION.PRIMARY
-	self.heavy_snp_npc.DAMAGE = 1
-	self.heavy_snp_npc.muzzleflash = "effects/payday2/particles/weapons/762_auto"
-	self.heavy_snp_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.heavy_snp_npc.CLIP_AMMO_MAX = 6
-	self.heavy_snp_npc.NR_CLIPS_MAX = 8
-	self.heavy_snp_npc.hold = "rifle"
-	self.heavy_snp_npc.alert_size = 5000
-	self.heavy_snp_npc.suppression = 1
-	self.heavy_snp_npc.FIRE_MODE = "single"
+	self.dmr_npc.sounds.prefix = "saint_victor_npc"
+	self.dmr_npc.use_data.selection_index = SELECTION.PRIMARY
+	self.dmr_npc.DAMAGE = 1
+	self.dmr_npc.muzzleflash = "effects/payday2/particles/weapons/762_auto"
+	self.dmr_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
+	self.dmr_npc.trail = "effects/particles/weapons/sniper_trail_marshal"
+	self.dmr_npc.CLIP_AMMO_MAX = 6
+	self.dmr_npc.NR_CLIPS_MAX = 8
+	self.dmr_npc.hold = "rifle"
+	self.dmr_npc.alert_size = 5000
+	self.dmr_npc.suppression = 1
+	self.dmr_npc.FIRE_MODE = "single"
 end
 
 function WeaponTweakData:_init_data_c45_crew()
@@ -28924,7 +28926,7 @@ function WeaponTweakData:_create_table_structure()
 		use_data = {},
 		auto = {}
 	}
-	self.heavy_snp_npc = {
+	self.dmr_npc = {
 		usage = "is_rifle",
 		sounds = {},
 		use_data = {}
@@ -30250,6 +30252,98 @@ function WeaponTweakData:_create_table_structure()
 		use_data = {},
 		auto = {}
 	}
+	self.ranc_heavy_machine_gun = {
+		usage = "is_pistol",
+		anim_usage = "is_pistol",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+end
+
+function WeaponTweakData:_init_ranc_heavy_machine_gun()
+	self.ranc_heavy_machine_gun.categories = clone(self.new_m4.categories)
+	self.ranc_heavy_machine_gun.sounds = {
+		fire = "turret_ranc_fire",
+		fire_single = "turret_ranc_fire_single",
+		fire_auto = "turret_ranc_fire",
+		stop_fire = "turret_ranc_stop",
+		dryfire = "primary_dryfire",
+		enter_steelsight = "m4_tighten"
+	}
+	self.ranc_heavy_machine_gun.animations = {
+		fire = "recoil",
+		equip_id = "equip_m4",
+		fire = "recoil",
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
+	}
+	self.ranc_heavy_machine_gun.has_fire_animation = true
+	self.ranc_heavy_machine_gun.use_data.selection_index = SELECTION.PRIMARY
+	self.ranc_heavy_machine_gun.muzzleflash = "effects/payday2/particles/weapons/50cal_browning_turret"
+	self.ranc_heavy_machine_gun.shell_ejection = "effects/payday2/particles/weapons/shells/shell_762_lmg"
+	self.ranc_heavy_machine_gun.trail_effect = "effects/payday2/particles/weapons/turret_streak"
+	self.ranc_heavy_machine_gun.CLIP_AMMO_MAX = 200
+	self.ranc_heavy_machine_gun.NR_CLIPS_MAX = 1
+	self.ranc_heavy_machine_gun.AMMO_MAX = self.ranc_heavy_machine_gun.CLIP_AMMO_MAX * self.ranc_heavy_machine_gun.NR_CLIPS_MAX
+	self.ranc_heavy_machine_gun.fire_mode_data = {
+		fire_rate = 0.15
+	}
+	self.ranc_heavy_machine_gun.auto.fire_rate = 0.15
+	self.ranc_heavy_machine_gun.hold = "pistol"
+	self.ranc_heavy_machine_gun.alert_size = 5000
+	self.ranc_heavy_machine_gun.suppression = 1
+	self.ranc_heavy_machine_gun.FIRE_MODE = "auto"
+	self.ranc_heavy_machine_gun.timers = {
+		unequip = 0.6,
+		equip = 0.6
+	}
+	self.ranc_heavy_machine_gun.name_id = "bm_w_ranc_hmg"
+	self.ranc_heavy_machine_gun.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_LOW
+	self.ranc_heavy_machine_gun.can_shoot_through_shield = true
+	self.ranc_heavy_machine_gun.can_shoot_through_enemy = true
+	self.ranc_heavy_machine_gun.can_shoot_through_wall = true
+	self.ranc_heavy_machine_gun.can_do_shotgun_push = true
+	self.ranc_heavy_machine_gun.spread = {
+		standing = 1
+	}
+	self.ranc_heavy_machine_gun.spread.crouching = self.ranc_heavy_machine_gun.spread.standing * 0.4
+	self.ranc_heavy_machine_gun.spread.steelsight = self.ranc_heavy_machine_gun.spread.standing * 0.4
+	self.ranc_heavy_machine_gun.spread.moving_standing = self.ranc_heavy_machine_gun.spread.standing
+	self.ranc_heavy_machine_gun.spread.moving_crouching = self.ranc_heavy_machine_gun.spread.standing
+	self.ranc_heavy_machine_gun.spread.moving_steelsight = self.ranc_heavy_machine_gun.spread.steelsight
+	self.ranc_heavy_machine_gun.kick = {
+		standing = {
+			-0.02,
+			0.02,
+			-0.02,
+			0.02
+		}
+	}
+	self.ranc_heavy_machine_gun.kick.crouching = self.ranc_heavy_machine_gun.kick.standing
+	self.ranc_heavy_machine_gun.kick.steelsight = self.ranc_heavy_machine_gun.kick.standing
+	self.ranc_heavy_machine_gun.shake = {
+		fire_multiplier = 1,
+		fire_steelsight_multiplier = -1
+	}
+	self.ranc_heavy_machine_gun.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 125,
+		alert_size = 7,
+		spread = 20,
+		spread_moving = 10,
+		recoil = 21,
+		value = 1,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 10,
+		concealment = 20
+	}
+	self.ranc_heavy_machine_gun.stats_modifiers = {
+		damage = 2
+	}
+	self.ranc_heavy_machine_gun.armor_piercing_chance = 1
 end
 
 function WeaponTweakData:_precalculate_values_wip()

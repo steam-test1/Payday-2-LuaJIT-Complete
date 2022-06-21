@@ -105,8 +105,9 @@ function PlayerManager:init()
 		mask_off = "ingame_mask_off",
 		arrested = "ingame_arrested",
 		clean = "ingame_clean",
-		fatal = "ingame_fatal",
+		player_turret = "ingame_standard",
 		standard = "ingame_standard",
+		fatal = "ingame_fatal",
 		bipod = "ingame_standard",
 		tased = "ingame_electrified"
 	}
@@ -577,6 +578,7 @@ function PlayerManager:_setup()
 	Global.player_manager.synced_vehicle_data = {}
 	Global.player_manager.synced_bipod = {}
 	Global.player_manager.synced_cocaine_stacks = {}
+	Global.player_manager.synced_player_turret_unit = {}
 	self._global = Global.player_manager
 end
 
@@ -2943,10 +2945,16 @@ function PlayerManager:set_synced_ammo_info(peer_id, selection_index, max_clip, 
 
 	if character and character.taken then
 		if peer_id ~= managers.network:session():local_peer():id() then
-			local weapon_unit = alive(character.unit) and character.unit:inventory() and character.unit:inventory().unit_by_selection and character.unit:inventory():unit_by_selection(selection_index)
+			local turret_unit = self:get_player_turret_for_peer(peer_id)
 
-			if alive(weapon_unit) and weapon_unit:base() and weapon_unit:base().set_ammo_info then
-				weapon_unit:base():set_ammo_info(max_clip, current_clip, current_left, max)
+			if alive(turret_unit) then
+				turret_unit:base():set_ammo_info(max_clip, current_clip, current_left, max)
+			else
+				local weapon_unit = alive(character.unit) and character.unit:inventory() and character.unit:inventory().unit_by_selection and character.unit:inventory():unit_by_selection(selection_index)
+
+				if alive(weapon_unit) and weapon_unit:base() and weapon_unit:base().set_ammo_info then
+					weapon_unit:base():set_ammo_info(max_clip, current_clip, current_left, max)
+				end
 			end
 		end
 
@@ -3587,6 +3595,7 @@ end
 
 function PlayerManager:peer_dropped_out(peer)
 	local peer_id = peer:id()
+	local peer_unit = peer:unit()
 
 	if Network:is_server() then
 		self:transfer_special_equipment(peer_id, true)
@@ -3612,6 +3621,12 @@ function PlayerManager:peer_dropped_out(peer)
 
 			self:server_drop_carry(carry_id, carry_multiplier, dye_initiated, has_dye_pack, dye_value_multiplier, position, Rotation(), dir, 0, nil, peer)
 		end
+
+		local turret_unit = self:get_player_turret_for_peer(peer_id)
+
+		if turret_unit then
+			self:server_player_turret_action(PlayerTurretBase.INTERACT_EXIT, turret_unit, peer_id, peer_unit)
+		end
 	end
 
 	self._global.synced_equipment_possession[peer_id] = nil
@@ -3625,9 +3640,6 @@ function PlayerManager:peer_dropped_out(peer)
 	self._global.synced_cocaine_stacks[peer_id] = nil
 
 	self:update_cocaine_hud()
-
-	local peer_unit = peer:unit()
-
 	self:remove_from_player_list(peer_unit)
 	managers.vehicle:remove_player_from_all_vehicles(peer_unit)
 end
@@ -5839,5 +5851,91 @@ function PlayerManager:crew_add_concealment(new_value)
 		if unit then
 			unit:base():update_concealment()
 		end
+	end
+end
+
+function PlayerManager:server_player_turret_action(action, turret_unit, peer_id, player_unit)
+	print("server_player_turret_action", action, turret_unit, peer_id, player_unit)
+
+	local state_changed = false
+
+	if alive(turret_unit) then
+		local state = turret_unit:base():get_state_from_action(action)
+		state_changed = turret_unit:base():change_state(state)
+	elseif action == PlayerTurretBase.INTERACT_EXIT then
+		state_changed = true
+	end
+
+	if state_changed then
+		managers.network:session():send_to_peers_synched("sync_player_turret_action", action, turret_unit, peer_id)
+
+		if action == PlayerTurretBase.INTERACT_ENTER then
+			managers.player:sync_enter_player_turret(turret_unit, peer_id, player_unit)
+		elseif action == PlayerTurretBase.INTERACT_EXIT then
+			managers.player:sync_exit_player_turret(peer_id, player_unit)
+		end
+	end
+
+	return state_changed
+end
+
+function PlayerManager:sync_enter_player_turret(turret_unit, peer_id, player_unit)
+	print("sync_enter_player_turret", turret_unit, peer_id, player_unit)
+
+	self._global.synced_player_turret_unit[peer_id] = turret_unit
+
+	turret_unit:base():on_player_enter(player_unit)
+
+	local is_local_player = self:local_player() == player_unit
+
+	if is_local_player then
+		call_on_next_update(function ()
+			self:set_player_state("player_turret")
+		end)
+	end
+end
+
+function PlayerManager:sync_exit_player_turret(peer_id, player_unit)
+	print("sync_exit_player_turret", peer_id, player_unit)
+
+	local turret_unit = self._global.synced_player_turret_unit[peer_id]
+
+	if alive(turret_unit) then
+		turret_unit:base():on_player_exit()
+	end
+
+	self._global.synced_player_turret_unit[peer_id] = nil
+end
+
+function PlayerManager:get_local_player_turret()
+	if managers.network:session() then
+		local peer_id = managers.network:session():local_peer():id()
+
+		return self._global.synced_player_turret_unit[peer_id]
+	end
+
+	return nil
+end
+
+function PlayerManager:get_player_turret_for_peer(peer_id)
+	return self._global.synced_player_turret_unit[peer_id]
+end
+
+function PlayerManager:update_husk_player_turret_to_peer(sync_peer)
+	local local_peer_id = managers.network:session():local_peer():id()
+	local turret_unit = self._global.synced_player_turret_unit[local_peer_id]
+
+	if alive(turret_unit) then
+		sync_peer:send_queued_sync("sync_husk_player_turret", turret_unit)
+	end
+end
+
+function PlayerManager:set_synced_player_turret(peer, turret_unit)
+	if alive(turret_unit) then
+		local peer_id = peer:id()
+		local player_unit = managers.criminals:character_unit_by_peer_id(peer_id)
+		self._global.synced_player_turret_unit[peer_id] = turret_unit
+
+		turret_unit:base():on_player_enter(player_unit)
 	end
 end

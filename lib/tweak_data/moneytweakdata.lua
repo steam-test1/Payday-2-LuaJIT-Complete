@@ -810,4 +810,6 @@ function MoneyTweakData:init(tweak_data)
 		kill_to_offshore_multiplier = 1000
 	}
 	self.bag_values.garden_gnome = 9.99
+	self.bag_values.ranc_weapon = 3000
+	self.bag_values.turret_part = 6000
 end

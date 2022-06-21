@@ -297,6 +297,7 @@ HuskPlayerMovement._mask_off_modifier_name = Idstring("look_mask_off")
 HuskPlayerMovement.clean_states = {
 	civilian = true,
 	clean = true,
+	player_turret = true,
 	mask_off = true
 }
 
@@ -628,6 +629,14 @@ function HuskPlayerMovement:update(unit, t, dt)
 
 		if self._state == "driving" then
 			self:_sync_movement_state_driving()
+		end
+	end
+
+	if self._retry_sync_movement_state_player_turret then
+		self._retry_sync_movement_state_player_turret = nil
+
+		if self._state == "player_turret" then
+			self:_sync_movement_state_player_turret()
 		end
 	end
 
@@ -1763,6 +1772,83 @@ function HuskPlayerMovement:_upd_attention_driving(t, dt)
 end
 
 function HuskPlayerMovement:_upd_attention_nothing(t, dt)
+end
+
+function HuskPlayerMovement:_upd_attention_player_turret(t, dt)
+	local peer_id = managers.network:session():peer_by_unit(self._unit):id()
+	local player_turret = managers.player:get_player_turret_for_peer(peer_id)
+
+	if not alive(player_turret) then
+		return
+	end
+
+	if not self._atention_on then
+		self._atention_on = true
+
+		self._machine:force_modifier(self._look_modifier_name)
+		self._machine:force_modifier(self._head_modifier_name)
+		self._machine:force_modifier(self._arm_modifier_name)
+	end
+
+	if self._sync_look_dir then
+		local body = Vector3()
+
+		mvector3.set(body, self._look_dir)
+		mvector3.set_z(body, mvector3.z(body) * -1)
+		self._look_modifier:set_target_y(body)
+		self._arm_modifier:set_target_y(body)
+		self._head_modifier:set_target_z(self._look_dir)
+	end
+
+	if player_turret:base():shooting() then
+		player_turret:base():auto_trigger_held(self._look_dir)
+	end
+end
+
+function HuskPlayerMovement:_upd_move_player_turret(t, dt)
+	local peer_id = managers.network:session():peer_by_unit(self._unit):id()
+	local player_turret = managers.player:get_player_turret_for_peer(peer_id)
+
+	if not alive(player_turret) then
+		return
+	end
+
+	self:_upd_displacement_pre_move(t, dt)
+
+	if not self._sync_look_dir then
+		self._sync_look_dir = self._look_dir
+	end
+
+	if self._sync_look_dir then
+		local tar_look_dir = tmp_vec1
+
+		mvec3_set(tar_look_dir, self._sync_look_dir)
+
+		local error_angle = tar_look_dir:angle(self._look_dir)
+		local rot_speed_rel = math.pow(math.min(error_angle / 90, 1), 0.5)
+		local rot_speed = math.lerp(40, 360, rot_speed_rel)
+		local rot_amount = math.min(rot_speed * dt, error_angle)
+		local error_axis = self._look_dir:cross(tar_look_dir)
+		local rot_adj = Rotation(error_axis, rot_amount)
+		self._look_dir = self._look_dir:rotate_with(rot_adj)
+	end
+
+	player_turret:movement():set_look_dir(self._look_dir)
+
+	local attach_local_pos = player_turret:base():get_attach_point_local_pos(true)
+	local spin, pitch = player_turret:movement():get_spin_pitch()
+	local new_player_position = tmp_vec1
+	local turret_rotation = tmp_rot1
+
+	mrotation.set_yaw_pitch_roll(turret_rotation, spin, 0, 0)
+	mrotation.multiply(turret_rotation, player_turret:rotation())
+	mvector3.set(new_player_position, attach_local_pos)
+	mvector3.rotate_with(new_player_position, turret_rotation)
+	mvector3.add(new_player_position, player_turret:position())
+	self:set_position(new_player_position)
+	self:set_rotation(turret_rotation)
+	self:_upd_displacement_post_move(t, dt)
+	self:_update_animation_standard(t, dt)
 end
 
 function HuskPlayerMovement:update_sync_look_dir(t, dt)
@@ -4476,6 +4562,92 @@ function HuskPlayerMovement:_sync_movement_state_parachute(event_descriptor)
 	self._unit:link(self._unit:orientation_object():name(), self._parachute_unit)
 	self:set_attention_updator(self._upd_attention_parachute)
 	self:set_movement_updator(self._upd_move_no_animations)
+end
+
+function HuskPlayerMovement:_sync_movement_state_player_turret(event_descriptor)
+	local peer_id = managers.network:session():peer_by_unit(self._unit):id()
+	local player_turret = managers.player:get_player_turret_for_peer(peer_id)
+
+	if not player_turret then
+		self._retry_sync_movement_state_player_turret = true
+
+		return false
+	end
+
+	self._arm_animator:clear_state_blocked()
+	self:refresh_primary_hand()
+	self:set_need_revive(false)
+	self:set_need_assistance(false)
+	managers.hud:set_mugshot_normal(self._unit:unit_data().mugshot_id)
+
+	if self._atention_on then
+		self._machine:forbid_modifier(self._look_modifier_name)
+		self._machine:forbid_modifier(self._head_modifier_name)
+		self._machine:forbid_modifier(self._arm_modifier_name)
+		self._machine:forbid_modifier(self._mask_off_modifier_name)
+
+		self._atention_on = false
+	end
+
+	self._unit:set_slot(3)
+
+	if Network:is_server() then
+		managers.groupai:state():on_player_weapons_hot()
+	end
+
+	managers.groupai:state():on_criminal_recovered(self._unit)
+	self._unit:inventory():hide_equipped_unit()
+
+	if self._weapon_hold then
+		for i, hold_type in ipairs(self._weapon_hold) do
+			self._machine:set_global(hold_type, 0)
+		end
+	end
+
+	if self._weapon_anim_global then
+		self._machine:set_global(self._weapon_anim_global, 0)
+	end
+
+	self._weapon_hold = {}
+	local weap_tweak = player_turret:base():weapon_tweak_data()
+
+	if type(weap_tweak.hold) == "table" then
+		local num = #weap_tweak.hold + 1
+
+		for i, hold_type in ipairs(weap_tweak.hold) do
+			self._machine:set_global(hold_type, self:get_hold_type_weight(hold_type) or num - i)
+			table.insert(self._weapon_hold, hold_type)
+		end
+	else
+		self._machine:set_global(weap_tweak.hold, self:get_hold_type_weight(weap_tweak.hold) or 1)
+		table.insert(self._weapon_hold, weap_tweak.hold)
+	end
+
+	local weapon_usage = weap_tweak.anim_usage or weap_tweak.usage
+
+	if self:arm_animation_enabled() then
+		self._arm_animator:set_state_blocked("bow", weapon_usage == "bow")
+		self:refresh_primary_hand()
+	end
+
+	self._machine:set_global(weapon_usage, 1)
+
+	self._weapon_anim_global = weapon_usage
+
+	if not self._ext_anim.stand then
+		local redir_res = self:play_redirect("stand")
+
+		if not redir_res then
+			self:play_state("std/stand/still/idle/look")
+		end
+	end
+
+	local obj = player_turret:base():get_attach_point_obj(true)
+
+	self:set_position(obj:position())
+	self:set_rotation(obj:rotation())
+	self:set_attention_updator(self._upd_attention_player_turret)
+	self:set_movement_updator(self._upd_move_player_turret)
 end
 
 function HuskPlayerMovement:on_cuffed()

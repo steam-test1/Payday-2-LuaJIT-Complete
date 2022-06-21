@@ -2213,6 +2213,36 @@ function WINDLCManager:init()
 					no_install = true,
 					entitlement_id = "29bb159f7efb4a8f98103d0648788a51",
 					external = true
+				},
+				rat_oilbaron = {
+					no_install = true,
+					entitlement_id = "ee24dd9f429f408a879cf417c78f964a",
+					external = true
+				},
+				rat_ranchdiesel = {
+					no_install = true,
+					entitlement_id = "ee24dd9f429f408a879cf417c78f964a",
+					external = true
+				},
+				rat_mocow = {
+					no_install = true,
+					entitlement_id = "ee24dd9f429f408a879cf417c78f964a",
+					external = true
+				},
+				prim_primtime = {
+					no_install = true,
+					entitlement_id = "97480f59f8424e3a89810e270583f468",
+					external = true
+				},
+				prim_darkmat = {
+					no_install = true,
+					entitlement_id = "271cc010fb0c456db16afbd1ceb94641",
+					external = true
+				},
+				prim_newhorizon = {
+					no_install = true,
+					entitlement_id = "d0a07cefd5ff443a8b597370bf766bbe",
+					external = true
 				}
 			},
 			entitlements = {}
@@ -2227,6 +2257,7 @@ end
 
 function WINDLCManager:_init_promoted_dlc_list()
 	self._promoted_dlc_list = {
+		"ranc",
 		"pxp1",
 		"txt1",
 		"pent",

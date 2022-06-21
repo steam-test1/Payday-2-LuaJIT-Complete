@@ -10216,6 +10216,26 @@ function TweakDataVR:init(tweak_data)
 					direction = Vector3(-1, 0, 0)
 				}
 			}
+		},
+		golfcart = {
+			max_angle = 90,
+			steering_pos = Vector3(-22, 35, 150),
+			middle_pos = Vector3(-22, 31, 140),
+			exit_pos = {
+				driver = {
+					position = Vector3(-70, 0, 140),
+					direction = Vector3(-1, 0, 0)
+				},
+				passenger_front = {
+					position = Vector3(0, -130, 130),
+					direction = Vector3(0, 0, -1),
+					up = Vector3(0, -1, 0)
+				}
+			},
+			throttle = {
+				type = "lever",
+				position = Vector3(7, 5, 120)
+			}
 		}
 	}
 	self.driving.blackhawk_2 = deep_clone(self.driving.blackhawk_1)

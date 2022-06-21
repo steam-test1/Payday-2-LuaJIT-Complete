@@ -22,6 +22,29 @@ function ElementSpawnEnemyGroup:_finalize_values()
 	if values.team == "default" then
 		values.team = nil
 	end
+
+	local preferred_groups = values.preferred_spawn_groups
+
+	if not preferred_groups then
+		return
+	end
+
+	local ref_chk = nil
+	local t_ins = table.insert
+
+	for group_id, group_data in pairs(tweak_data.group_ai.enemy_spawn_groups) do
+		ref_chk = group_data.spawn_point_chk_ref
+
+		if ref_chk then
+			for _, group_type in ipairs(preferred_groups) do
+				if ref_chk[group_type] then
+					t_ins(preferred_groups, group_id)
+
+					break
+				end
+			end
+		end
+	end
 end
 
 function ElementSpawnEnemyGroup:on_script_activated()

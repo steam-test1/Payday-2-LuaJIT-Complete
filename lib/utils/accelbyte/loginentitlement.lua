@@ -9,6 +9,7 @@ local SteamPlatformId = "steam"
 local IamSteamPlatformUrl = string.format("%s/iam/oauth/platforms/%s/token", BaseUrl, SteamPlatformId)
 local IamServerUrl = string.format("%s/iam/oauth/token", BaseUrl)
 local LambdaUrl = Utility:get_current_lambda_url()
+local publisher_user_id = nil
 NamespaceRoles = {
 	namespace = "",
 	roleId = ""
@@ -173,7 +174,7 @@ function Login:LoginWithUsernamePassword(username, password)
 		local response_json = json.decode(response_body)
 
 		Login:SerializeJsonString(response_json)
-		print("[AccelByte] Display name : " .. self.player_session.display_name)
+		print("[AccelByte] Display name : " .. tostring(self.player_session.display_name))
 	end
 
 	Steam:http_request_post(IamServerUrl, callback, payload_content_type, payload, payload_size, headers)
@@ -233,6 +234,7 @@ function Login:CheckPlatformIdForExistingAccount(platform_user_id, callback)
 			print("[AccelByte] Responses Body : " .. response_body)
 
 			local response_json = json.decode(response_body)
+			publisher_user_id = response_json.userId
 
 			Login:SerializeJsonString(response_json)
 		else
@@ -557,6 +559,43 @@ function Entitlement:QueryEntitlementAsString(offset, limit, callback)
 	Steam:http_request(Url, callback, headers)
 end
 
+function Entitlement:UpdateStat(stat_code, stat_value, update_method, callback)
+	print("[AccelByte] Entitlement:UpdateStat")
+
+	local payload_content_type = "application/json"
+	local namespace = Namespace
+	local user_id = Login.player_session.user_id
+	local Url = string.format("%s/social/v2/public/namespaces/%s/users/%s/stats/%s/statitems/value", BaseUrl, PublisherNamespace, publisher_user_id, stat_code)
+	local payload_body = {
+		updateStrategy = update_method,
+		value = stat_value
+	}
+	local payload_json = json.encode(payload_body)
+	local payload_size = string.len(payload_json)
+	local headers = {
+		Authorization = "Bearer " .. Login.player_session.access_token
+	}
+
+	local function callback(error_code, status_code, response_body)
+		if status_code == 200 then
+			print("[AccelByte] Callback UpdateStat Success: " .. Url)
+			print("Response Body : " .. response_body)
+
+			local response_json = json.decode(response_body)
+			local current_value = response_json.currentValue
+
+			print("Stat Code =" .. stat_code .. "  Current value = " .. current_value)
+			callback(true)
+		else
+			print("[AccelByte] Callback UpdateStat Fail : " .. Url)
+			print("[AccelByte] Callback UpdateStat ErrorCode : " .. error_code)
+			callback(false)
+		end
+	end
+
+	Steam:http_request_put(Url, callback, payload_content_type, payload_json, payload_size, headers)
+end
+
 function Entitlement:CheckAndVerifyUserEntitlement(callback)
 	Entitlement.result.data = {}
 	local steam_id = Steam:userid()
@@ -574,7 +613,13 @@ function Entitlement:CheckAndVerifyUserEntitlement(callback)
 
 		Telemetry:on_login()
 		Telemetry:on_login_screen_passed()
-		Entitlement:QueryEntitlementAsString(0, 10, entitlement_callback)
+
+		local function update_stat_callback(error_code, status_code, response_body)
+			print("[AccelByte] Callback update_stat_callback ")
+			Entitlement:QueryEntitlementAsString(0, 10, entitlement_callback)
+		end
+
+		Entitlement:UpdateStat("sync-platformupgrade", 1, "INCREMENT", update_stat_callback)
 	end
 
 	local function check_platform_callback(success)

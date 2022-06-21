@@ -164,6 +164,8 @@ function MenuMainState:at_enter(old_state)
 			managers.features:announce_feature("new_career")
 		end
 
+		managers.features:check_external_dlcs()
+
 		if not managers.custom_safehouse:unlocked() then
 			-- Nothing
 		elseif (tweak_data.safehouse.level_limit <= managers.experience:current_level() or managers.experience:current_rank() > 0) and not managers.custom_safehouse:has_entered_safehouse() and Global.mission_manager.safehouse_ask_amount < 2 and not Global.skip_menu_dialogs then

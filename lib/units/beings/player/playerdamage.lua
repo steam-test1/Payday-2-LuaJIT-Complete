@@ -1129,15 +1129,20 @@ function PlayerDamage:damage_melee(attack_data)
 end
 
 function PlayerDamage:is_friendly_fire(unit)
-	if not unit then
+	local attacker_mov_ext = alive(unit) and unit:movement()
+
+	if not attacker_mov_ext or not attacker_mov_ext.team or not attacker_mov_ext.friendly_fire then
 		return false
 	end
 
-	if unit:movement():team() ~= self._unit:movement():team() and unit:movement():friendly_fire() then
+	local my_team = self._unit:movement():team()
+	local attacker_team = attacker_mov_ext:team()
+
+	if attacker_team ~= my_team and attacker_mov_ext:friendly_fire() then
 		return false
 	end
 
-	local friendly_fire = not unit:movement():team().foes[self._unit:movement():team().id]
+	local friendly_fire = attacker_team and not attacker_team.foes[my_team.id]
 	friendly_fire = managers.mutators:modify_value("PlayerDamage:FriendlyFire", friendly_fire)
 
 	return friendly_fire

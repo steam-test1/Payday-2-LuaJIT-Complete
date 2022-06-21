@@ -128,6 +128,7 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 	end
 
 	local mvec3_dis = mvector3.distance
+	local mvec3_distance_sq = mvector3.distance_sq
 	local k = #close_units_list
 
 	while k > 0 do
@@ -139,6 +140,27 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 
 			if _G.IS_VR then
 				should_remove = should_remove or hand_unit:raycast("ray", hand_unit:position(), player_unit:movement():m_head_pos(), "slot_mask", 1)
+			end
+
+			if should_remove and unit:interaction().use_locators and unit:interaction():use_locators() then
+				local interact_distance = unit:interaction():interact_distance()
+				local max_interact_distance = unit:interaction():max_interact_distance()
+				local interact_distance_sq = interact_distance * interact_distance
+				local max_interact_distance_sq = max_interact_distance * max_interact_distance
+				local distance_sq = nil
+
+				for _, locator in pairs(unit:interaction():ray_objects()) do
+					distance_sq = mvec3_distance_sq(player_unit:position(), locator:position())
+					should_remove = interact_distance_sq < distance_sq and distance_sq < max_interact_distance_sq
+
+					if _G.IS_VR then
+						should_remove = should_remove or hand_unit:raycast("ray", hand_unit:position(), player_unit:movement():m_head_pos(), "slot_mask", 1)
+					end
+
+					if not should_remove then
+						break
+					end
+				end
 			end
 
 			if should_remove then
@@ -170,6 +192,29 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 
 			if valid then
 				table.insert(close_units_list, unit)
+			end
+
+			if not valid and unit:interaction().use_locators and unit:interaction():use_locators() then
+				local interact_distance = unit:interaction():interact_distance()
+				local max_interact_distance = unit:interaction():max_interact_distance()
+				local interact_distance_sq = interact_distance * interact_distance
+				local max_interact_distance_sq = max_interact_distance * max_interact_distance
+				local distance_sq = nil
+
+				for _, locator in pairs(unit:interaction():ray_objects()) do
+					distance_sq = mvec3_distance_sq(player_unit:position(), locator:position())
+					valid = distance_sq <= interact_distance_sq and max_interact_distance_sq <= distance_sq
+
+					if _G.IS_VR then
+						valid = valid and not hand_unit:raycast("ray", hand_unit:position(), player_unit:movement():m_head_pos(), "slot_mask", 1)
+					end
+
+					if valid then
+						table.insert(close_units_list, unit)
+
+						break
+					end
+				end
 			end
 		end
 	end
@@ -231,7 +276,7 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 			close_units_list[self._close_test_index]
 		} or close_units_list) do
 			if alive(unit) then
-				if unit:interaction():ray_objects() and unit:vehicle_driving() then
+				if unit:interaction():ray_objects() and (unit:vehicle_driving() or unit:interaction().use_locators and unit:interaction():use_locators()) then
 					for _, locator in pairs(unit:interaction():ray_objects()) do
 						mvector3.set(mvec1, locator:position())
 						mvector3.subtract(mvec1, camera_pos)

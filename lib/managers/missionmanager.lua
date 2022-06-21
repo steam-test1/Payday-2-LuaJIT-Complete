@@ -251,7 +251,8 @@ function MissionManager:init(...)
 		"pku_business_card",
 		"pku_hand",
 		"pku_carkeys",
-		"pku_gnome"
+		"pku_gnome",
+		"pku_crafted_weapon"
 	})
 
 	self._mission_filter = {}

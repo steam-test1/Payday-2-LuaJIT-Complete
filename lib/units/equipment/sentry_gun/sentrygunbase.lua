@@ -210,6 +210,43 @@ function SentryGunBase:spawn_from_sequence(align_obj_name, module_id)
 	unit:base():post_setup(1)
 end
 
+function SentryGunBase:spawn_from_sequence_new(align_obj_name, module_id, sentrygun_unit)
+	if not Network:is_server() then
+		return
+	end
+
+	local align_obj = self._unit:get_object(Idstring(align_obj_name))
+	local pos = align_obj:position()
+	local rot = align_obj:rotation()
+	local attached_data = SentryGunBase._attach(pos, rot)
+
+	if not attached_data then
+		return
+	end
+
+	local unit = nil
+
+	if sentrygun_unit then
+		unit = World:spawn_unit(Idstring(sentrygun_unit), pos, rot)
+	else
+		unit = World:spawn_unit(Idstring("units/payday2/equipment/gen_equipment_sentry/gen_equipment_sentry_placement"), pos, rot)
+	end
+
+	local rot_mul = SentryGunBase.ROTATION_SPEED_MUL[2]
+	local spread_mul = SentryGunBase.SPREAD_MUL[2]
+	local ammo_mul = SentryGunBase.AMMO_MUL[2]
+
+	unit:base():setup(managers.player:player_unit(), ammo_mul, 1, spread_mul, rot_mul, 1, true, attached_data)
+	managers.network:session():send_to_peers_synched("sync_equipment_setup", unit, 0, 0)
+	managers.network:session():send_to_peers_synched("from_server_sentry_gun_place_result", managers.network:session():local_peer():id(), 0, unit, 2, 2, true, 2, 1)
+
+	local team = managers.groupai:state():team_data(tweak_data.levels:get_default_team_ID("player"))
+
+	unit:movement():set_team(team)
+	unit:base():post_setup(1)
+	unit:interaction():set_active(true)
+end
+
 function SentryGunBase:activate_as_module(team_type, tweak_table_id)
 	self._tweak_table_id = tweak_table_id
 	local team_id = tweak_data.levels:get_default_team_ID(team_type)

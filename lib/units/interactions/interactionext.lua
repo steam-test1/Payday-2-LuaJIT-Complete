@@ -783,24 +783,7 @@ function UseInteractionExt:interact(player)
 		managers.mission:call_global_event(self._global_event, player)
 	end
 
-	if self._achievement_stat then
-		managers.achievment:award_progress(self._achievement_stat)
-	elseif self._achievement_id then
-		managers.achievment:award(self._achievement_id)
-	elseif self._challenge_stat then
-		managers.challenge:award_progress(self._challenge_stat)
-	elseif self._trophy_stat then
-		managers.custom_safehouse:award(self._trophy_stat)
-	elseif self._challenge_award then
-		managers.challenge:award(self._challenge_award)
-	elseif self._sidejob_award then
-		managers.generic_side_jobs:award(self._sidejob_award)
-	elseif self.award_blackmarket then
-		local args = string.split(self.award_blackmarket, " ")
-
-		managers.blackmarket:add_to_inventory(unpack(args))
-	end
-
+	self:_check_achievements()
 	print("Trying to OFF")
 
 	if not self.keep_active_after_interaction then
@@ -822,24 +805,8 @@ function UseInteractionExt:sync_interacted(peer, player, status, skip_alive_chec
 		return
 	end
 
-	if player ~= managers.player:player_unit() then
-		if self._achievement_stat then
-			managers.achievment:award_progress(self._achievement_stat)
-		elseif self._achievement_id then
-			managers.achievment:award(self._achievement_id)
-		elseif self._challenge_stat then
-			managers.challenge:award_progress(self._challenge_stat)
-		elseif self._trophy_stat then
-			managers.custom_safehouse:award(self._trophy_stat)
-		elseif self._challenge_award then
-			managers.challenge:award(self._challenge_award)
-		elseif self._sidejob_award then
-			managers.generic_side_jobs:award(self._sidejob_award)
-		elseif self.award_blackmarket then
-			local args = string.split(self.award_blackmarket, " ")
-
-			managers.blackmarket:add_to_inventory(unpack(args))
-		end
+	if player ~= managers.player:player_unit() and not self._award_local_only then
+		self:_check_achievements()
 	end
 
 	if not self._tweak_data.persists_on_synced_interaction then
@@ -854,6 +821,26 @@ function UseInteractionExt:sync_interacted(peer, player, status, skip_alive_chec
 	end
 
 	return player
+end
+
+function UseInteractionExt:_check_achievements()
+	if self._achievement_stat then
+		managers.achievment:award_progress(self._achievement_stat)
+	elseif self._achievement_id then
+		managers.achievment:award(self._achievement_id)
+	elseif self._challenge_stat then
+		managers.challenge:award_progress(self._challenge_stat)
+	elseif self._trophy_stat then
+		managers.custom_safehouse:award(self._trophy_stat)
+	elseif self._challenge_award then
+		managers.challenge:award(self._challenge_award)
+	elseif self._sidejob_award then
+		managers.generic_side_jobs:award(self._sidejob_award)
+	elseif self.award_blackmarket then
+		local args = string.split(self.award_blackmarket, " ")
+
+		managers.blackmarket:add_to_inventory(unpack(args))
+	end
 end
 
 function UseInteractionExt:destroy()
@@ -2597,6 +2584,10 @@ function SpecialEquipmentInteractionExt:sync_interacted(peer, player, status, sk
 		managers.mission:call_global_event(self._global_event, player)
 	end
 
+	if not self._award_local_only or player == managers.player:player_unit() then
+		self:_check_achievements()
+	end
+
 	if self._remove_on_interact and (Network:is_server() or self._unit:id() == -1) then
 		self._unit:set_slot(0)
 	end
@@ -3417,4 +3408,124 @@ function AccessCrimeNetInteractionExt:update(unit, t, dt)
 			end
 		end
 	end
+end
+
+PlayerTurretInteractionExt = PlayerTurretInteractionExt or class(UseInteractionExt)
+
+function PlayerTurretInteractionExt:init(unit)
+	PlayerTurretInteractionExt.super.init(self, unit)
+end
+
+function PlayerTurretInteractionExt:interact(player, locator)
+	PlayerTurretInteractionExt.super.super.interact(self, player, locator)
+
+	local success = false
+	local action = self._unit:base():get_action_for_interaction(player, locator)
+
+	if Network:is_server() then
+		local turret_unit = self._unit
+		local peer_id = managers.network:session():local_peer():id()
+		local player_unit = managers.player:player_unit()
+		success = managers.player:server_player_turret_action(action, turret_unit, peer_id, player_unit)
+	else
+		managers.network:session():send_to_host("sync_request_player_turret_action", action, self._unit)
+
+		success = true
+	end
+
+	return success
+end
+
+function PlayerTurretInteractionExt:selected(player, locator)
+	if not alive(player) or not self:can_select(player, locator) then
+		return false
+	end
+
+	local action = self._unit:base():get_action_for_interaction(player, locator)
+	local turret_tweak_data = self._unit:base():get_turret_tweak_data()
+	local tweak_data_entry = self.tweak_data
+
+	if action == PlayerTurretBase.INTERACT_ACTIVATE then
+		tweak_data_entry = turret_tweak_data.interact_activate
+	elseif action == PlayerTurretBase.INTERACT_DEACTIVATE then
+		tweak_data_entry = turret_tweak_data.interact_deactivate
+	elseif action == PlayerTurretBase.INTERACT_ASSEMBLE then
+		tweak_data_entry = turret_tweak_data.interact_assemble
+	elseif action == PlayerTurretBase.INTERACT_DISASSEMBLE then
+		tweak_data_entry = turret_tweak_data.interact_disassemble
+	elseif action == PlayerTurretBase.INTERACT_ENTER then
+		tweak_data_entry = turret_tweak_data.interact_enter
+	elseif action == PlayerTurretBase.INTERACT_EXIT then
+		tweak_data_entry = turret_tweak_data.interact_exit
+	end
+
+	if tweak_data_entry and tweak_data_entry ~= self.tweak_data then
+		self:set_tweak_data(tweak_data_entry)
+		self:set_dirty(false)
+	end
+
+	self._selected_locator = locator
+
+	return PlayerTurretInteractionExt.super.selected(self, player, locator)
+end
+
+function PlayerTurretInteractionExt:can_select(player, locator)
+	local action = self._unit:base():get_action_for_interaction(player, locator)
+	local can_select = PlayerTurretInteractionExt.super.can_select(self, player, locator)
+	can_select = can_select and not managers.player:is_carrying()
+	can_select = can_select and not self._unit:brain():is_active()
+	can_select = can_select and action ~= PlayerTurretBase.INTERACT_INVALID
+
+	return can_select
+end
+
+function PlayerTurretInteractionExt:can_interact(player)
+	local action = self._unit:base():get_action_for_interaction(player, self._selected_locator)
+	local can_interact = PlayerTurretInteractionExt.super.can_interact(self, player)
+	can_interact = can_interact and not managers.player:is_berserker()
+	can_interact = can_interact and not managers.player:is_carrying()
+	can_interact = can_interact and not self._unit:brain():is_active()
+	can_interact = can_interact and action ~= PlayerTurretBase.INTERACT_INVALID
+
+	return can_interact
+end
+
+function PlayerTurretInteractionExt:use_locators()
+	return true
+end
+
+function PlayerTurretInteractionExt:interact_position()
+	if alive(self._selected_locator) then
+		return self._selected_locator:position()
+	end
+
+	return PlayerTurretInteractionExt.super.interact_position(self)
+end
+
+function PlayerTurretInteractionExt:_setup_ray_objects()
+	if self._ray_object_names then
+		self._ray_objects = {}
+
+		for _, object_name in ipairs(self._ray_object_names) do
+			table.insert(self._ray_objects, self._unit:get_object(Idstring(object_name)))
+		end
+	end
+end
+
+function PlayerTurretInteractionExt:_post_event(player, sound_type, tweak_data_id)
+	if not alive(player) then
+		return
+	end
+
+	if player ~= managers.player:player_unit() then
+		return
+	end
+end
+
+function PlayerTurretInteractionExt:_set_active_contour_opacity()
+	return 1
+end
+
+function PlayerTurretInteractionExt:interact_distance()
+	return self._tweak_data.interact_distance or tweak_data.interaction.INTERACT_DISTANCE
 end

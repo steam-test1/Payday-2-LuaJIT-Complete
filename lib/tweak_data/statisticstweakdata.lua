@@ -221,7 +221,8 @@ function StatisticsTweakData:statistics_table()
 		"security_mex_no_pager",
 		"swat_turret",
 		"triad_boss",
-		"triad_boss_no_armor"
+		"triad_boss_no_armor",
+		"marshal_marksman"
 	}
 	local armor_list = {
 		"level_1",

@@ -329,15 +329,20 @@ function CopDamage:_check_special_death_conditions(variant, body, attacker_unit,
 end
 
 function CopDamage:is_friendly_fire(unit)
-	if not unit then
+	local attacker_mov_ext = alive(unit) and unit:movement()
+
+	if not attacker_mov_ext or not attacker_mov_ext.team or not attacker_mov_ext.friendly_fire then
 		return false
 	end
 
-	if unit:movement():team() ~= self._unit:movement():team() and unit:movement():friendly_fire() then
+	local my_team = self._unit:movement():team()
+	local attacker_team = attacker_mov_ext:team()
+
+	if attacker_team ~= my_team and attacker_mov_ext:friendly_fire() then
 		return false
 	end
 
-	return not unit:movement():team().foes[self._unit:movement():team().id]
+	return attacker_team and not attacker_team.foes[my_team.id]
 end
 
 function CopDamage:check_medic_heal()
@@ -2813,6 +2818,17 @@ function CopDamage:_check_friend_4(attack_data)
 	end
 end
 
+function CopDamage:_check_ranc_9(attack_data)
+	if attack_data.players_in_vehicle then
+		for _, player_id in ipairs(attack_data.players_in_vehicle) do
+			if player_id == managers.player:local_player() then
+				print("[CopDamage:_check_ranc_9]: award progress for hitting enemy")
+				managers.achievment:award_progress("ranc_9_stat", 1)
+			end
+		end
+	end
+end
+
 function CopDamage:die(attack_data)
 	if self._immortal then
 		debug_pause("Immortal character died!")
@@ -2821,6 +2837,7 @@ function CopDamage:die(attack_data)
 	local variant = attack_data.variant
 
 	self:_check_friend_4(attack_data)
+	self:_check_ranc_9(attack_data)
 	CopDamage.MAD_3_ACHIEVEMENT(attack_data)
 	self:_remove_debug_gui()
 	self._unit:base():set_slot(self._unit, 17)

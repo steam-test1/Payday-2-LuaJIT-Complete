@@ -1828,6 +1828,12 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.sbzac_wpn_fps_upg_charm_skullz = self.global_values.sbzac2
 	self.global_values.sbzac_elegantscarf = self.global_values.sbzac2
 	self.global_values.sbzac_color_sbzac2_01 = self.global_values.sbzac2
+	self.global_values.rat_oilbaron = self.global_values.rat
+	self.global_values.rat_ranchdiesel = self.global_values.rat
+	self.global_values.rat_mocow = self.global_values.rat
+	self.global_values.prim_darkmat = self.global_values.prim
+	self.global_values.prim_primtime = self.global_values.prim
+	self.global_values.prim_newhorizon = self.global_values.prim
 
 	self:_create_global_value_list_map()
 end

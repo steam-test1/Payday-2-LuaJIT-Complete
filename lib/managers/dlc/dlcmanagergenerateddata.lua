@@ -190,8 +190,20 @@ function GenericDLCManager:has_pgo()
 	return self:is_dlc_unlocked("pgo")
 end
 
+function GenericDLCManager:has_prim()
+	return self:is_dlc_unlocked("prim")
+end
+
 function GenericDLCManager:has_pxp1()
 	return self:is_dlc_unlocked("pxp1")
+end
+
+function GenericDLCManager:has_ranc()
+	return self:is_dlc_unlocked("ranc")
+end
+
+function GenericDLCManager:has_rat()
+	return self:is_dlc_unlocked("rat")
 end
 
 function GenericDLCManager:has_saco()
@@ -532,8 +544,20 @@ function WINDLCManager:init_generated()
 		no_install = true,
 		webpage = "https://ovk.af/FEXTP3YB"
 	}
+	Global.dlc_manager.all_dlc_data.prim = {
+		app_id = "218620",
+		no_install = true
+	}
 	Global.dlc_manager.all_dlc_data.pxp1 = {
 		app_id = "1945682",
+		no_install = true
+	}
+	Global.dlc_manager.all_dlc_data.ranc = {
+		app_id = "1945681",
+		no_install = true
+	}
+	Global.dlc_manager.all_dlc_data.rat = {
+		app_id = "218620",
 		no_install = true
 	}
 	Global.dlc_manager.all_dlc_data.saco = {

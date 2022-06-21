@@ -1034,6 +1034,25 @@ function CarryTweakData:init(tweak_data)
 			SO_category = "enemies"
 		}
 	}
+	self.turret_part = {
+		type = "medium",
+		name_id = "hud_carry_turret",
+		bag_value = "turret_part",
+		unit = "units/pd2_dlc_ranc/pickups/ranc_pku_turretbag/turret_bag",
+		visual_unit_name = "units/pd2_dlc_ranc/pickups/ranc_pku_turretbag/npc_ranc_turret_bag",
+		AI_carry = {
+			SO_category = "enemies"
+		}
+	}
+	self.ranc_weapon = {
+		type = "slightly_heavy",
+		name_id = "hud_carry_weapon",
+		bag_value = "ranc_weapon",
+		visual_unit_name = "units/payday2/characters/npc_acc_loot_bag_1/npc_acc_loot_bag_1",
+		AI_carry = {
+			SO_category = "enemies"
+		}
+	}
 end
 
 function CarryTweakData:get_carry_ids()

@@ -767,6 +767,22 @@ function LootDropTweakData:init_generated(tweak_data)
 		sort_number = 303,
 		category = "dlc"
 	}
+	self.global_values.prim = {
+		name_id = "bm_global_value_prim",
+		desc_id = "menu_l_global_value_prim",
+		unlock_id = "bm_global_value_prim_unlock",
+		color = tweak_data.screen_colors.community_color,
+		dlc = true,
+		free = false,
+		hide_unavailable = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = -3,
+		category = "pd2_clan"
+	}
 	self.global_values.pxp1 = {
 		name_id = "bm_global_value_pxp1",
 		desc_id = "menu_l_global_value_pxp1",
@@ -782,6 +798,38 @@ function LootDropTweakData:init_generated(tweak_data)
 		track = true,
 		sort_number = 509,
 		category = "dlc"
+	}
+	self.global_values.ranc = {
+		name_id = "bm_global_value_ranc",
+		desc_id = "menu_l_global_value_ranc",
+		unlock_id = "bm_global_value_ranc_unlock",
+		color = tweak_data.screen_colors.dlc_color,
+		dlc = true,
+		free = false,
+		hide_unavailable = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 519,
+		category = "dlc"
+	}
+	self.global_values.rat = {
+		name_id = "bm_global_value_rat",
+		desc_id = "menu_l_global_value_rat",
+		unlock_id = "bm_global_value_rat_unlock",
+		color = tweak_data.screen_colors.dlc_color,
+		dlc = true,
+		free = false,
+		hide_unavailable = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 300,
+		category = "collaboration"
 	}
 	self.global_values.saco = {
 		name_id = "bm_global_value_saco",

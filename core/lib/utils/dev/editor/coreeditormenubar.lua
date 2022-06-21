@@ -308,6 +308,9 @@ function CoreEditor:build_menubar()
 	view_menu:set_checked("SHOW CAMERA INFO", self._show_camera_position)
 	view_menu:append_check_item("SHOW_MARKER_BALL", "Show Marker", "Show Marker on / off")
 	view_menu:set_checked("SHOW_MARKER_BALL", self._layer_draw_marker)
+	view_menu:append_separator()
+	view_menu:append_check_item("SHOW_INTERACTION_RADII", "Interaction Radii", "Interaction Radii on / off")
+	view_menu:set_checked("SHOW_INTERACTION_RADII", self._show_interaction_radii)
 	menu_bar:append(view_menu, "View")
 	Global.frame:connect("LIGHTING", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "change_visualization"), "deferred_lighting")
 	Global.frame:connect("ALBEDO", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "change_visualization"), "albedo_visualization")
@@ -338,6 +341,10 @@ function CoreEditor:build_menubar()
 	Global.frame:connect("SHOW_MARKER_BALL", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "toggle_draw_marker_ball"), {
 		view_menu,
 		"SHOW_MARKER_BALL"
+	})
+	Global.frame:connect("SHOW_INTERACTION_RADII", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "toggle_interaction_radii"), {
+		view_menu,
+		"SHOW_INTERACTION_RADII"
 	})
 
 	local hide_menu = EWS:Menu("")
@@ -843,6 +850,11 @@ end
 
 function CoreEditor:toggle_draw_marker_ball(data)
 	self._layer_draw_marker = data[1]:is_checked(data[2])
+end
+
+function CoreEditor:toggle_interaction_radii(data)
+	self._show_interaction_radii = data[1]:is_checked(data[2])
+	managers.interaction._debug_all = self._show_interaction_radii
 end
 
 function CoreEditor:on_configuration()

@@ -128,6 +128,46 @@ function PortalManager:delete_unit(unit)
 	end
 end
 
+function PortalManager:find_unused_ids()
+	local unused = {}
+
+	for name, group in pairs(self._unit_groups) do
+		for unit_id, active in pairs(group._ids) do
+			local unit = managers.editor:find_unit_by_unit_id(unit_id)
+
+			if not unit then
+				table.insert(unused, unit_id)
+			end
+		end
+	end
+
+	return unused
+end
+
+function PortalManager:remove_unused_ids()
+	local unused_count = 0
+
+	for name, group in pairs(self._unit_groups) do
+		local unused = {}
+
+		for unit_id, active in pairs(group._ids) do
+			local unit = managers.editor:find_unit_by_unit_id(unit_id)
+
+			if not unit then
+				table.insert(unused, unit_id)
+			end
+		end
+
+		unused_count = unused_count + #unused
+
+		for _, id in pairs(unused) do
+			group._ids[id] = nil
+		end
+	end
+
+	return unused_count
+end
+
 function PortalManager:change_visibility(unit, i, inverse)
 	self._all_units[unit:key()] = self._all_units[unit:key()] + i
 

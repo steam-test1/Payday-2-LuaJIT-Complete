@@ -1825,6 +1825,12 @@ Play the full version soon to get your full PAYDAY!]],
 			track = "track_75"
 		},
 		{
+			track = "track_76"
+		},
+		{
+			track = "track_77"
+		},
+		{
 			track = "track_pth_01",
 			lock = "payday"
 		},
@@ -2907,6 +2913,48 @@ Play the full version soon to get your full PAYDAY!]],
 				slot = 12,
 				body = "a_body",
 				max_distance = math.pow(4000, 2)
+			}
+		}
+	}
+	self.player_turrets = {
+		ranc_heavy_machine_gun = {
+			interact_deactivate = "ranc_hold_disassemble_turret",
+			interact_enter = "ranc_hold_enter_turret",
+			disassemble_point = "disassemble",
+			enter_point = "enter",
+			assemble_point = "assemble",
+			interact_assemble = "ranc_hold_assemble_turret",
+			disassemble_into_inactive = true,
+			interact_disassemble = "ranc_hold_disassemble_turret",
+			bullet_objects = {
+				prefix = "g_bullet_",
+				amount = 12,
+				extra_objects = {
+					{
+						object = "g_bullets_box_1",
+						ammo = 170
+					},
+					{
+						object = "g_bullets_box_2",
+						ammo = 140
+					},
+					{
+						object = "g_bullets_box_3",
+						ammo = 110
+					},
+					{
+						object = "g_bullets_box_4",
+						ammo = 80
+					},
+					{
+						object = "g_bullets_box_5",
+						ammo = 50
+					},
+					{
+						object = "g_bullets_box_6",
+						ammo = 20
+					}
+				}
 			}
 		}
 	}

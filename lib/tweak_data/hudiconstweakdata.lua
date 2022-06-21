@@ -1746,6 +1746,96 @@ function HudIconsTweakData:init()
 			32
 		}
 	}
+	self.equipment_audio_device = {
+		texture = "guis/dlcs/ranc/textures/pd2/equipment_audio_device",
+		texture_rect = {
+			0,
+			0,
+			32,
+			32
+		}
+	}
+	self.equipment_laptop = {
+		texture = "guis/dlcs/ranc/textures/pd2/equipment_laptop",
+		texture_rect = {
+			0,
+			0,
+			32,
+			32
+		}
+	}
+	self.equipment_stock = {
+		texture = "guis/dlcs/ranc/textures/pd2/equipment_stock",
+		texture_rect = {
+			0,
+			0,
+			32,
+			32
+		}
+	}
+	self.equipment_barrel = {
+		texture = "guis/dlcs/ranc/textures/pd2/equipment_barrel",
+		texture_rect = {
+			0,
+			0,
+			32,
+			32
+		}
+	}
+	self.equipment_receiver = {
+		texture = "guis/dlcs/ranc/textures/pd2/equipment_receiver",
+		texture_rect = {
+			0,
+			0,
+			32,
+			32
+		}
+	}
+	self.equipment_acid = {
+		texture = "guis/dlcs/ranc/textures/pd2/equipment_acid",
+		texture_rect = {
+			0,
+			0,
+			32,
+			32
+		}
+	}
+	self.equipment_sheriff_star = {
+		texture = "guis/dlcs/ranc/textures/pd2/equipment_sheriff_star",
+		texture_rect = {
+			0,
+			0,
+			32,
+			32
+		}
+	}
+	self.equipment_hammer = {
+		texture = "guis/dlcs/ranc/textures/pd2/equipment_hammer",
+		texture_rect = {
+			0,
+			0,
+			32,
+			32
+		}
+	}
+	self.equipment_silver_ingot = {
+		texture = "guis/dlcs/ranc/textures/pd2/equipment_silver_ingot",
+		texture_rect = {
+			0,
+			0,
+			32,
+			32
+		}
+	}
+	self.equipment_mould = {
+		texture = "guis/dlcs/ranc/textures/pd2/equipment_mould",
+		texture_rect = {
+			0,
+			0,
+			32,
+			32
+		}
+	}
 	self.interaction_free = {
 		texture = "guis/textures/hud_icons",
 		texture_rect = {
@@ -14407,6 +14497,114 @@ function HudIconsTweakData:init()
 		texture_rect = {
 			2,
 			89,
+			85,
+			85
+		}
+	}
+	self.C_McShay_H_MindlandRanch_AllDiffs_D0 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_ranc",
+		texture_rect = {
+			89,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_McShay_H_MindlandRanch_AllDiffs_D1 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_ranc",
+		texture_rect = {
+			2,
+			176,
+			85,
+			85
+		}
+	}
+	self.C_McShay_H_MindlandRanch_AllDiffs_D2 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_ranc",
+		texture_rect = {
+			89,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_McShay_H_MindlandRanch_AllDiffs_D3 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_ranc",
+		texture_rect = {
+			176,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_McShay_H_MindlandRanch_AllDiffs_D4 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_ranc",
+		texture_rect = {
+			2,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_McShay_H_MindlandRanch_AllDiffs_D5 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_ranc",
+		texture_rect = {
+			89,
+			176,
+			85,
+			85
+		}
+	}
+	self.C_McShay_H_MindlandRanch_AllDiffs_D6 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_ranc",
+		texture_rect = {
+			176,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_McShay_H_MindlandRanch_AllDiffs_OD_D6 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_ranc",
+		texture_rect = {
+			2,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_McShay_H_MindlandRanch_Caddyshacked = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_ranc",
+		texture_rect = {
+			89,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_McShay_H_MindlandRanch_LuckyStreak = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_ranc",
+		texture_rect = {
+			263,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_McShay_H_MindlandRanch_MarshalLaw = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_ranc",
+		texture_rect = {
+			2,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_McShay_H_MindlandRanch_TexasTreasures = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_ranc",
+		texture_rect = {
+			2,
+			263,
 			85,
 			85
 		}

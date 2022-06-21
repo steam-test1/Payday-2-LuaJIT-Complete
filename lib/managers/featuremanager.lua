@@ -25,6 +25,18 @@ function FeatureManager:_setup()
 	self._default.announcements.safehouse_dailies = 1
 	self._default.announcements.tango_weapon_unlocked = 1
 	self._default.announcements.movie_theater_unlocked = 1
+	self._default.external_notifications = {
+		dialog_texas_heat_drop_name = {
+			"rat_oilbaron",
+			"rat_ranchdiesel",
+			"rat_mocow"
+		},
+		dialog_sbzacc_drop_name = {
+			"prim_primtime",
+			"prim_darkmat",
+			"prim_newhorizon"
+		}
+	}
 
 	if not Global.feature_manager then
 		self:reset()
@@ -37,7 +49,8 @@ function FeatureManager:save(data)
 	Application:debug("[FeatureManager:save]")
 
 	local save_data = {
-		announcements = deep_clone(self._global.announcements)
+		announcements = deep_clone(self._global.announcements),
+		external_notifications = deep_clone(self._global.external_notifications)
 	}
 	data.feature_manager = save_data
 end
@@ -56,6 +69,8 @@ function FeatureManager:load(data, version)
 			Global.feature_manager.announcements[announcement] = num
 		end
 	end
+
+	Global.feature_manager.external_notifications = data.feature_manager.external_notifications or {}
 end
 
 function FeatureManager:reset()
@@ -75,6 +90,7 @@ function FeatureManager:reset()
 	Global.feature_manager.announcements.short_heists_available = 1
 	Global.feature_manager.announcements.new_career = 1
 	Global.feature_manager.announced = {}
+	Global.feature_manager.external_notifications = {}
 	self._global = Global.feature_manager
 end
 
@@ -367,4 +383,26 @@ function FeatureManager:movie_theater_unlocked()
 	managers.menu:show_movie_theater_unlocked_dialog()
 
 	return true
+end
+
+function FeatureManager:check_external_dlcs()
+	local announce_drops = {}
+	local show_dialog = false
+
+	for group_id, drops in pairs(self._default.external_notifications) do
+		for index, drop_id in ipairs(drops) do
+			if not self._global.external_notifications[drop_id] and managers.dlc:is_dlc_unlocked(drop_id) then
+				self._global.external_notifications[drop_id] = true
+				announce_drops[group_id] = announce_drops[group_id] or {}
+
+				table.insert(announce_drops[group_id], drop_id)
+
+				show_dialog = true
+			end
+		end
+	end
+
+	if show_dialog then
+		managers.menu:show_external_items_dialog(announce_drops)
+	end
 end

@@ -1870,6 +1870,65 @@ function PrePlanningTweakData:init(tweak_data)
 		post_event = "preplan_10",
 		prio = 3
 	}
+	self.types.ranc_plane_loot_secure = {
+		name_id = "menu_pp_asset_ranc_plane_loot_secure",
+		desc_id = "menu_pp_asset_ranc_plane_loot_secure_desc",
+		category = "hired_help",
+		icon = 122,
+		total = 1,
+		cost = tweak_data:get_value("money_manager", "preplaning_thebomb_cost_pilot"),
+		budget_cost = 6,
+		post_event = "",
+		prio = 3
+	}
+	self.types.ranc_marked_crate = {
+		name_id = "menu_pp_asset_ranc_marked_crate",
+		desc_id = "menu_pp_asset_ranc_marked_crate_desc",
+		pos_not_important = true,
+		category = "hired_help",
+		icon = 123,
+		total = 1,
+		cost = tweak_data:get_value("money_manager", "preplanning_asset_cost_pex_parked_car"),
+		budget_cost = 3,
+		post_event = "",
+		prio = 3
+	}
+	self.types.ranc_extra_weapon_parts = {
+		name_id = "menu_pp_asset_ranc_extra_weapon_parts",
+		desc_id = "menu_pp_asset_ranc_extra_weapon_parts_desc",
+		pos_not_important = true,
+		category = "hired_help",
+		icon = 124,
+		total = 1,
+		cost = tweak_data:get_value("money_manager", "preplaning_asset_cost_drillparts"),
+		budget_cost = 4,
+		post_event = "",
+		prio = 3
+	}
+	self.types.ranc_ace_driver = {
+		name_id = "menu_pp_asset_ranc_ace_driver",
+		desc_id = "menu_pp_asset_ranc_ace_driver_desc",
+		pos_not_important = true,
+		category = "hired_help",
+		icon = 121,
+		total = 1,
+		cost = tweak_data:get_value("money_manager", "preplanning_asset_cost_kenaz_guitar_case_position"),
+		budget_cost = 2,
+		post_event = "",
+		prio = 3
+	}
+	self.types.ranc_reduce_countermeasure = {
+		name_id = "menu_pp_asset_ranc_reduce_countermeasure",
+		desc_id = "menu_pp_asset_ranc_reduce_countermeasure_desc",
+		pos_not_important = true,
+		category = "hired_help",
+		icon = 125,
+		total = 1,
+		cost = tweak_data:get_value("money_manager", "preplaning_thebomb_cost_hacker"),
+		budget_cost = 2,
+		post_event = "",
+		prio = 3
+	}
 end
 
 function PrePlanningTweakData:_create_locations(tweak_data)
@@ -3713,6 +3772,31 @@ function PrePlanningTweakData:_create_locations(tweak_data)
 			custom_points = {}
 		},
 		mission_briefing_texture = "guis/dlcs/pent/textures/pd2/pre_planning/pent_preview",
+		post_event_prefix = "loc",
+		total_budget = 10,
+		default_plans = {},
+		start_location = {
+			group = "a",
+			zoom = 1,
+			x = 512,
+			y = 512
+		}
+	}
+	self.locations.ranc = {
+		{
+			texture = "guis/dlcs/ranc/textures/pd2/pre_planning/ranc_01",
+			x2 = 12000,
+			rotation = 0,
+			map_size = 1,
+			map_x = -1.5,
+			map_y = 0,
+			name_id = "menu_pp_ranc_bpr_loc_a",
+			x1 = -0 - 12000,
+			y1 = -0 - 12000,
+			y2 = -0 + 12000,
+			custom_points = {}
+		},
+		mission_briefing_texture = "guis/dlcs/ranc/textures/pd2/pre_planning/ranc_preview",
 		post_event_prefix = "loc",
 		total_budget = 10,
 		default_plans = {},

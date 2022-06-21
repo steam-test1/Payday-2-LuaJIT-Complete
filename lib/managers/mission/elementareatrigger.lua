@@ -247,7 +247,9 @@ function ElementAreaTrigger:project_instigators()
 					"hydraulic_opener",
 					"chas_artifact",
 					"chas_teaset",
-					"gnome"
+					"gnome",
+					"ranc_weapon",
+					"turret_part"
 				}
 
 				if table.contains(carry_list, carry_id) then

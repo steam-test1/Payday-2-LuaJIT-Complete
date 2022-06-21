@@ -1852,6 +1852,16 @@ function CoreEditor:select_unit_by_unit_id(unit_id)
 	self:output_warning("No unit found with id " .. unit_id)
 end
 
+function CoreEditor:find_unit_by_unit_id(unit_id)
+	for layer_name, layer in pairs(self._layers) do
+		if layer:created_units_pairs()[unit_id] then
+			return layer:created_units_pairs()[unit_id]
+		end
+	end
+
+	return nil
+end
+
 function CoreEditor:show_replace_unit()
 	if not self._replace_dialog then
 		self._replace_dialog = ReplaceUnit:new("Replace Units", self._replace_unit_categories)
@@ -3973,9 +3983,13 @@ function CoreEditor:do_load()
 		dialog:reset()
 	end
 
+	local unused_portal_ids = managers.portal:remove_unused_ids()
+
 	self:clear_undo_stack()
 
 	self._loading = false
+
+	print("Unused portal ids: ", unused_portal_ids)
 end
 
 function CoreEditor:loading()

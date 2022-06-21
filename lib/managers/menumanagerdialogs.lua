@@ -3078,6 +3078,36 @@ function MenuManager:show_movie_theater_unlocked_dialog()
 	managers.system_menu:show(dialog_data)
 end
 
+function MenuManager:show_external_items_dialog(params)
+	local dialog_data = {
+		title = managers.localization:text("dialog_external_items_title")
+	}
+	local description_string = managers.localization:text("dialog_external_items_prefix_desc") .. "\n\n"
+
+	for group_id, drops in pairs(params) do
+		description_string = description_string .. managers.localization:text(group_id) .. "\n"
+
+		for _, drop_id in ipairs(drops) do
+			for _, loot in ipairs(tweak_data.dlc[drop_id].content.loot_drops) do
+				local item_string = tweak_data.blackmarket[loot.type_items] and tweak_data.blackmarket[loot.type_items][loot.item_entry] and tweak_data.blackmarket[loot.type_items][loot.item_entry].name_id or "???"
+				description_string = description_string .. "   -" .. managers.localization:text(item_string) .. " (" .. managers.localization:text("bm_menu_" .. loot.type_items) .. ") \n"
+			end
+		end
+
+		description_string = description_string .. "\n\n"
+	end
+
+	dialog_data.text = description_string
+	local ok_button = {
+		text = managers.localization:text("dialog_ok")
+	}
+	dialog_data.button_list = {
+		ok_button
+	}
+
+	managers.system_menu:show(dialog_data)
+end
+
 function MenuManager:show_accept_gamesight_telemetry(params)
 	local dialog_data = {
 		title = managers.localization:text("dialog_gamesight_telemetry_title"),

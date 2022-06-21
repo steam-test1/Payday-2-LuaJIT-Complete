@@ -26,6 +26,16 @@ function PlayerBipod:_enter(enter_data)
 		local speed_multiplier = self._equipped_unit:base():get_property("bipod_deploy_multiplier") or 1
 		local reload_name_id = tweak_data.animations.reload_name_id or self._equipped_unit:base().name_id
 		local equipped_unit_id = self._equipped_unit:base().name_id
+		self._camera_pos = self._unit:camera():position()
+		self._shoulder_pos = Vector3(0, 0, 0)
+
+		if tweak_data.bipod_weapon_translation then
+			mvector3.set(self._shoulder_pos, tweak_data.bipod_weapon_translation)
+		end
+
+		mvector3.rotate_with(self._shoulder_pos, self._unit:camera():rotation())
+		mvector3.add(self._shoulder_pos, self._camera_pos)
+
 		self._unit_deploy_position = player:position()
 
 		self._unit:camera():camera_unit():base():set_limits(tweak_data.bipod_camera_spin_limit, tweak_data.bipod_camera_pitch_limit)

@@ -1320,6 +1320,26 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 		},
 		access = access_type_walk_only
 	}
+	self.unit_categories.marshal_marksman = {
+		unit_types = {
+			america = {
+				Idstring("units/pd2_dlc_usm1/characters/ene_male_marshal_marksman_1/ene_male_marshal_marksman_1")
+			},
+			russia = {
+				Idstring("units/pd2_dlc_usm1/characters/ene_male_marshal_marksman_1/ene_male_marshal_marksman_1")
+			},
+			zombie = {
+				Idstring("units/pd2_dlc_usm1/characters/ene_male_marshal_marksman_1/ene_male_marshal_marksman_1")
+			},
+			murkywater = {
+				Idstring("units/pd2_dlc_usm1/characters/ene_male_marshal_marksman_1/ene_male_marshal_marksman_1")
+			},
+			federales = {
+				Idstring("units/pd2_dlc_usm1/characters/ene_male_marshal_marksman_1/ene_male_marshal_marksman_1")
+			}
+		},
+		access = access_type_all
+	}
 end
 
 function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
@@ -1416,6 +1436,10 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 			"charge",
 			"shield_cover",
 			"smoke_grenade"
+		},
+		marshal_marksman = {
+			"ranged_fire",
+			"flank"
 		}
 	}
 	self.enemy_spawn_groups = {}
@@ -3232,6 +3256,32 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 		}
 	}
 	self.enemy_spawn_groups.FBI_spoocs = self.enemy_spawn_groups.single_spooc
+
+	if Global.game_settings and Global.game_settings.level_id == "ranc" then
+		self.enemy_spawn_groups.marshal_squad = {
+			spawn_cooldown = 60,
+			max_nr_simultaneous_groups = 1,
+			initial_spawn_delay = 90,
+			amount = {
+				2,
+				2
+			},
+			spawn = {
+				{
+					respawn_cooldown = 30,
+					amount_min = 2,
+					rank = 1,
+					freq = 1,
+					unit = "marshal_marksman",
+					tactics = self._tactics.marshal_marksman
+				}
+			},
+			spawn_point_chk_ref = table.list_to_set({
+				"tac_swat_rifle_flank",
+				"tac_swat_rifle"
+			})
+		}
+	end
 end
 
 function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
@@ -4117,6 +4167,11 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 		0,
 		0
 	}
+	self.besiege.assault.groups.marshal_squad = {
+		0,
+		0,
+		0
+	}
 	self.besiege.reenforce.interval = {
 		10,
 		20,
@@ -4384,6 +4439,11 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 		0
 	}
 	self.besiege.recon.groups.Phalanx = {
+		0,
+		0,
+		0
+	}
+	self.besiege.recon.groups.marshal_squad = {
 		0,
 		0,
 		0

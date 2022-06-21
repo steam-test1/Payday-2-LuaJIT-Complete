@@ -3900,6 +3900,96 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		sequence = "set_ehtan"
 	}
 	self.player_styles.fighterpilot.characters.ecp_male = fighterpilot_characters_male_fat
+	self.player_styles.mocow = {
+		name_id = "bm_suit_mocow",
+		desc_id = "bm_suit_mocow_desc",
+		texture_bundle_folder = "rat",
+		global_value = "rat_mocow",
+		material_variations = {}
+	}
+	self.player_styles.mocow.material_variations.default = {
+		name_id = "bm_suit_var_mocow_suit_default",
+		global_value = "rat_mocow",
+		desc_id = "bm_suit_var_mocow_suit_default_desc"
+	}
+	self.player_styles.mocow.body_replacement = body_replacement_standard
+	self.player_styles.mocow.third_body_replacement = body_replacement_standard
+	self.player_styles.mocow.unit = "units/pd2_dlc_rat/characters/rat_acc_mocow/rat_acc_fps_mocow_male/rat_acc_fps_mocow_male"
+	self.player_styles.mocow.characters = {}
+	local mocow_characters_male = {
+		third_unit = "units/pd2_dlc_rat/characters/rat_acc_mocow/rat_acc_mocow_male_average/rat_acc_mocow_male_average"
+	}
+
+	set_characters_data("mocow", characters_male, mocow_characters_male)
+
+	local mocow_characters_male_big = {
+		third_unit = "units/pd2_dlc_rat/characters/rat_acc_mocow/rat_acc_mocow_male_big/rat_acc_mocow_male_big"
+	}
+
+	set_characters_data("mocow", characters_male_big, mocow_characters_male_big)
+
+	local mocow_characters_female = {
+		third_unit = "units/pd2_dlc_rat/characters/rat_acc_mocow/rat_acc_mocow_female_average/rat_acc_mocow_female_average"
+	}
+
+	set_characters_data("mocow", characters_female, mocow_characters_female)
+
+	local mocow_characters_female_big = {
+		third_unit = "units/pd2_dlc_rat/characters/rat_acc_mocow/rat_acc_mocow_female_fat/rat_acc_mocow_female_fat"
+	}
+
+	set_characters_data("mocow", characters_female_big, mocow_characters_female_big)
+
+	local mocow_characters_male_fat = {
+		third_unit = "units/pd2_dlc_rat/characters/rat_acc_mocow/rat_acc_mocow_male_fat/rat_acc_mocow_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.mocow.characters.ecp_male = mocow_characters_male_fat
+	self.player_styles.newhorizon = {
+		name_id = "bm_suit_newhorizon",
+		desc_id = "bm_suit_newhorizon_desc",
+		texture_bundle_folder = "prim",
+		global_value = "prim_newhorizon",
+		material_variations = {}
+	}
+	self.player_styles.newhorizon.material_variations.default = {
+		name_id = "bm_suit_var_newhorizon_suit_default",
+		global_value = "prim_newhorizon",
+		desc_id = "bm_suit_var_newhorizon_suit_default_desc"
+	}
+	self.player_styles.newhorizon.body_replacement = body_replacement_standard
+	self.player_styles.newhorizon.third_body_replacement = body_replacement_standard
+	self.player_styles.newhorizon.unit = "units/pd2_dlc_prim/characters/prim_acc_newhorizon/prim_acc_fps_newhorizon_male/prim_acc_fps_newhorizon_male"
+	self.player_styles.newhorizon.characters = {}
+	local newhorizon_characters_male = {
+		third_unit = "units/pd2_dlc_prim/characters/prim_acc_newhorizon/prim_acc_newhorizon_male_average/prim_acc_newhorizon_male_average"
+	}
+
+	set_characters_data("newhorizon", characters_male, newhorizon_characters_male)
+
+	local newhorizon_characters_male_big = {
+		third_unit = "units/pd2_dlc_prim/characters/prim_acc_newhorizon/prim_acc_newhorizon_male_big/prim_acc_newhorizon_male_big"
+	}
+
+	set_characters_data("newhorizon", characters_male_big, newhorizon_characters_male_big)
+
+	local newhorizon_characters_female = {
+		third_unit = "units/pd2_dlc_prim/characters/prim_acc_newhorizon/prim_acc_newhorizon_female_average/prim_acc_newhorizon_female_average"
+	}
+
+	set_characters_data("newhorizon", characters_female, newhorizon_characters_female)
+
+	local newhorizon_characters_female_big = {
+		third_unit = "units/pd2_dlc_prim/characters/prim_acc_newhorizon/prim_acc_newhorizon_female_fat/prim_acc_newhorizon_female_fat"
+	}
+
+	set_characters_data("newhorizon", characters_female_big, newhorizon_characters_female_big)
+
+	local newhorizon_characters_male_fat = {
+		third_unit = "units/pd2_dlc_prim/characters/prim_acc_newhorizon/prim_acc_newhorizon_male_fat/prim_acc_newhorizon_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.newhorizon.characters.ecp_male = newhorizon_characters_male_fat
 end
 
 function BlackMarketTweakData:get_player_style_value(player_style, character_name, key)

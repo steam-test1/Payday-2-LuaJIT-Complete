@@ -9261,6 +9261,146 @@ function init_auto_generated_achievement_data(tags)
 				tags.contracts.all
 			}
 		},
+		ranc_1 = {
+			ladder = "H_MindlandRanch",
+			sort_name = "C_McShay_H_MindlandRanch_AllDiffs_D0",
+			icon_id = "C_McShay_H_MindlandRanch_AllDiffs_D0",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.mcshay
+			}
+		},
+		ranc_10 = {
+			sort_name = "C_McShay_H_MindlandRanch_LuckyStreak",
+			icon_id = "C_McShay_H_MindlandRanch_LuckyStreak",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.contracts.mcshay
+			}
+		},
+		ranc_11 = {
+			sort_name = "C_McShay_H_MindlandRanch_MarshalLaw",
+			icon_id = "C_McShay_H_MindlandRanch_MarshalLaw",
+			progress = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.tactics.killer,
+				tags.contracts.mcshay
+			}
+		},
+		ranc_12 = {
+			ladder = "TexasTresures",
+			sort_name = "C_McShay_H_MindlandRanch_TexasTreasures",
+			icon_id = "C_McShay_H_MindlandRanch_TexasTreasures",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.contracts.mcshay
+			}
+		},
+		ranc_2 = {
+			ladder = "H_MindlandRanch",
+			sort_name = "C_McShay_H_MindlandRanch_AllDiffs_D1",
+			icon_id = "C_McShay_H_MindlandRanch_AllDiffs_D1",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.hard,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.mcshay
+			}
+		},
+		ranc_3 = {
+			ladder = "H_MindlandRanch",
+			sort_name = "C_McShay_H_MindlandRanch_AllDiffs_D2",
+			icon_id = "C_McShay_H_MindlandRanch_AllDiffs_D2",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.very_hard,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.mcshay
+			}
+		},
+		ranc_4 = {
+			ladder = "H_MindlandRanch",
+			sort_name = "C_McShay_H_MindlandRanch_AllDiffs_D3",
+			icon_id = "C_McShay_H_MindlandRanch_AllDiffs_D3",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.mcshay
+			}
+		},
+		ranc_5 = {
+			ladder = "H_MindlandRanch",
+			sort_name = "C_McShay_H_MindlandRanch_AllDiffs_D4",
+			icon_id = "C_McShay_H_MindlandRanch_AllDiffs_D4",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.mayhem,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.mcshay
+			}
+		},
+		ranc_6 = {
+			ladder = "H_MindlandRanch",
+			sort_name = "C_McShay_H_MindlandRanch_AllDiffs_D5",
+			icon_id = "C_McShay_H_MindlandRanch_AllDiffs_D5",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_wish,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.mcshay
+			}
+		},
+		ranc_7 = {
+			ladder = "H_MindlandRanch",
+			sort_name = "C_McShay_H_MindlandRanch_AllDiffs_D6",
+			icon_id = "C_McShay_H_MindlandRanch_AllDiffs_D6",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_sentence,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.mcshay
+			}
+		},
+		ranc_8 = {
+			ladder = "H_MindlandRanch",
+			sort_name = "C_McShay_H_MindlandRanch_AllDiffs_OD_D6",
+			icon_id = "C_McShay_H_MindlandRanch_AllDiffs_OD_D6",
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_sentence,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.mcshay
+			}
+		},
+		ranc_9 = {
+			icon_id = "C_McShay_H_MindlandRanch_Caddyshacked",
+			progress = true,
+			sort_name = "C_McShay_H_MindlandRanch_Caddyshacked",
+			additional_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.tactics.killer,
+				tags.contracts.mcshay
+			}
+		},
 		rvd_1 = {
 			icon_id = "C_Bain_H_ReservoirDogs_AllDiffs_D0",
 			ladder = "H_Reservoir",

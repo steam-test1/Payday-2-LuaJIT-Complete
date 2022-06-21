@@ -270,6 +270,8 @@ function PlayerTweakData:init()
 	self.stances.default.steelsight.vel_overshot.pivot = pivot_shoulder_translation
 	self.stances.default.steelsight.zoom_fov = true
 	self.stances.default.steelsight.FOV = self.stances.default.standard.FOV
+	self.stances.default.player_turret = deep_clone(self.stances.default.standard)
+	self.stances.default.player_turret.head.translation = Vector3(0, 0, 161)
 	self.stances.jowi = deep_clone(self.stances.default)
 	local pivot_shoulder_translation = Vector3(11.391, 45.0507, -3.38766)
 	local pivot_shoulder_rotation = Rotation(-0.326422, 0.247368, -0.0156885)

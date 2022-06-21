@@ -2525,6 +2525,80 @@ function LevelsTweakData:init()
 			}
 		}
 	}
+	self.ranc = {
+		name_id = "heist_ranc_hl",
+		briefing_id = "heist_ranc_briefing",
+		briefing_dialog = "Play_loc_ranc_brf",
+		world_name = "narratives/mcshay/ranc",
+		intro_event = "Play_loc_ranc_intro",
+		outro_event = {
+			loud = "Play_loc_ranc_end_loud",
+			stealth = "Play_loc_ranc_end_stealth"
+		},
+		music = "heist",
+		package = "packages/job_ranc",
+		cube = "cube_apply_heist_bank",
+		ai_group_type = america,
+		narrator = "locke",
+		ghost_bonus = 0.15,
+		load_screen = "guis/dlcs/ranc/textures/loading/job_ranc_01_df",
+		teams = {
+			criminal1 = {
+				foes = {
+					law1 = true,
+					mobster1 = true
+				},
+				friends = {
+					converted_enemy = true,
+					escort = true
+				}
+			},
+			law1 = {
+				foes = {
+					converted_enemy = true,
+					criminal1 = true,
+					mobster1 = true
+				},
+				friends = {}
+			},
+			mobster1 = {
+				foes = {
+					converted_enemy = true,
+					law1 = true,
+					criminal1 = true
+				},
+				friends = {}
+			},
+			converted_enemy = {
+				foes = {
+					law1 = true,
+					mobster1 = true
+				},
+				friends = {
+					criminal1 = true,
+					escort = true
+				}
+			},
+			neutral1 = {
+				foes = {},
+				friends = {}
+			},
+			hacked_turret = {
+				foes = {
+					law1 = true,
+					mobster1 = true
+				},
+				friends = {}
+			},
+			escort = {
+				foes = {},
+				friends = {
+					converted_enemy = true,
+					criminal1 = true
+				}
+			}
+		}
+	}
 	self._level_index = {
 		"welcome_to_the_jungle_1",
 		"welcome_to_the_jungle_1_night",
@@ -2649,7 +2723,8 @@ function LevelsTweakData:init()
 		"chas",
 		"sand",
 		"chca",
-		"pent"
+		"pent",
+		"ranc"
 	}
 
 	if SystemInfo:distribution() == Idstring("STEAM") then

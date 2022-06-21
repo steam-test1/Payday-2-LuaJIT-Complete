@@ -778,6 +778,27 @@ function TweakData:_setup_point_of_no_returns()
 	else
 		self.point_of_no_returns.rescue_vlad.text_id = "hud_assault_point_no_vlad_in"
 	end
+
+	self.point_of_no_returns.go_loud = {
+		text_id = "hud_assault_pnr_goloud",
+		texture = "guis/textures/pd2/hud_icon_noreturnbox",
+		texture_rect = {
+			0,
+			0,
+			32,
+			32
+		},
+		color = Color(1, 1, 0, 0),
+		timer_flash_color = Color(1, 1, 0.8, 0.2),
+		attention_color = Color(1, 1, 1, 1),
+		scale_box = true
+	}
+
+	if _G.IS_VR then
+		self.point_of_no_returns.go_loud.text_id = "hud_assault_pnr_goloud"
+	else
+		self.point_of_no_returns.go_loud.text_id = "hud_assault_pnr_goloud_in"
+	end
 end
 
 function TweakData:get_scene_pose_items(scene_pose)

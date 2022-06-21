@@ -62,6 +62,13 @@ function CopActionShoot:init(action_desc, common_data)
 	end
 
 	self._can_reload_while_moving_tmp = common_data.char_tweak.can_reload_while_moving_tmp
+	self._miss_first_player_shot = common_data.char_tweak.misses_first_player_shot and not self._ext_movement.missed_first_shot
+	self._glint_effect = weapon_unit:effect_spawner(Idstring("glint_scope"))
+
+	if self._glint_effect then
+		self._glint_effect:activate()
+	end
+
 	local weap_tweak = weapon_unit:base():weapon_tweak_data()
 	local weapon_usage_tweak = common_data.char_tweak.weapon[weap_tweak.usage]
 	self._weapon_unit = weapon_unit
@@ -98,9 +105,15 @@ function CopActionShoot:init(action_desc, common_data)
 end
 
 function CopActionShoot:on_inventory_event(event)
-	if self._weapon_unit and self._autofiring then
-		self._weapon_base:stop_autofire()
-		self._ext_movement:play_redirect("up_idle")
+	if self._weapon_unit then
+		if self._autofiring then
+			self._weapon_base:stop_autofire()
+			self._ext_movement:play_redirect("up_idle")
+		end
+
+		if self._glint_effect then
+			self._glint_effect:kill_effect()
+		end
 	end
 
 	local weapon_unit = self._ext_inventory:equipped_unit()
@@ -116,6 +129,11 @@ function CopActionShoot:on_inventory_event(event)
 		self._spread = weapon_usage_tweak.spread
 		self._falloff = weapon_usage_tweak.FALLOFF
 		self._automatic_weap = weap_tweak.auto and true
+		self._glint_effect = weapon_unit:effect_spawner(Idstring("glint_scope"))
+
+		if self._glint_effect then
+			self._glint_effect:activate()
+		end
 	else
 		self._weapon_base = nil
 		self._weap_tweak = nil
@@ -124,6 +142,7 @@ function CopActionShoot:on_inventory_event(event)
 		self._spread = nil
 		self._falloff = nil
 		self._automatic_weap = nil
+		self._glint_effect = nil
 	end
 
 	self._autofiring = nil
@@ -243,6 +262,10 @@ function CopActionShoot:on_exit()
 
 	if self._shooting_player and alive(self._attention.unit) then
 		self._attention.unit:movement():on_targetted_for_attack(false, self._common_data.unit)
+	end
+
+	if self._glint_effect then
+		self._glint_effect:kill_effect()
 	end
 end
 
@@ -581,6 +604,12 @@ function CopActionShoot:_get_unit_shoot_pos(t, pos, dis, w_tweak, falloff, i_ran
 	end
 
 	hit_chance = hit_chance * self._unit:character_damage():accuracy_multiplier()
+
+	if self._miss_first_player_shot and (shooting_local_player or self._attention and self._attention.unit and self._attention.unit:base() and self._attention.unit:base().is_husk_player) then
+		self._miss_first_player_shot = nil
+		self._ext_movement.missed_first_shot = true
+		hit_chance = 0
+	end
 
 	if self:_pseudorandom() < hit_chance then
 		mvec3_set(shoot_hist.m_last_pos, pos)

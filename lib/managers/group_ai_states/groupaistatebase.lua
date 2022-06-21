@@ -446,8 +446,6 @@ function GroupAIStateBase:propagate_alert(alert_data)
 		return
 	end
 
-	print("[GroupAIStateBase:propagate_alert]", inspect(alert_data))
-
 	local nav_manager = managers.navigation
 	local access_func = nav_manager.check_access
 	local alert_type = alert_data[1]
@@ -2580,8 +2578,6 @@ function GroupAIStateBase:_process_recurring_grp_SO(recurring_id, data)
 	if new_group then
 		data.groups = data.groups or {}
 		data.groups[new_group.id] = new_group
-
-		managers.network:session():send_to_peers_synched("group_ai_event", self:get_sync_event_id("cloaker_spawned"), 0)
 	end
 
 	data.delay_t = self._t + 5
@@ -4454,6 +4450,17 @@ end
 
 function GroupAIStateBase:_remove_group_member(group, u_key, is_casualty)
 	if group.size <= 1 and group.has_spawned then
+		local respawn_data = group.respawn_data
+
+		if respawn_data then
+			respawn_data.needs_spawn = true
+			respawn_data.timer = TimerManager:game():time() + respawn_data.tweak_data.spawn_cooldown
+
+			if respawn_data.respawning_units then
+				respawn_data.respawning_units = nil
+			end
+		end
+
 		self._groups[group.id] = nil
 
 		return true
@@ -4463,6 +4470,30 @@ function GroupAIStateBase:_remove_group_member(group, u_key, is_casualty)
 
 	if is_casualty then
 		group.casualties = group.casualties + 1
+		local respawn_data = group.respawn_data
+
+		if respawn_data and respawn_data.units_to_respawn then
+			local u_data = group.units[u_key]
+			local unit_name = u_data.unit:name()
+			local respawning_data = nil
+
+			for idx, data in ipairs(respawn_data.units_to_respawn) do
+				if data.units_lookup[unit_name:key()] then
+					respawning_data = respawn_data.units_to_respawn[idx]
+
+					break
+				end
+			end
+
+			if respawning_data then
+				respawn_data.respawning_units = respawn_data.respawning_units or {}
+				respawn_data.respawning_units[group.type] = {
+					timer = TimerManager:game():time() + respawning_data.cooldown,
+					name = unit_name,
+					team_id = group.team and group.team.id or "law1"
+				}
+			end
+		end
 	end
 
 	if group.leader_key == u_key then

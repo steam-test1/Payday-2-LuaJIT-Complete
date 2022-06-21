@@ -12,6 +12,7 @@ function VehicleTweakData:init(tweak_data)
 	self:_init_data_bike_1()
 	self:_init_data_bike_2()
 	self:_init_data_wanker()
+	self:_init_data_golfcart()
 end
 
 function VehicleTweakData:_init_data_falcogini()
@@ -707,5 +708,60 @@ function VehicleTweakData:_init_data_wanker()
 		interact_distance = 350,
 		driver_camera_offset = Vector3(0, 0, 0),
 		fov = 75
+	}
+end
+
+function VehicleTweakData:_init_data_golfcart()
+	self.golfcart = {
+		name_id = "vhl_golfcart_name",
+		hud_label_offset = 220,
+		animations = {
+			passenger_front = "drive_forklift_passanger",
+			vehicle_id = "forklift",
+			driver = "drive_forklift_driver"
+		},
+		sound = {
+			bump = "car_bumper_01",
+			hit_rtpc = "car_hit_vel",
+			lateral_slip_treshold = 10,
+			bump_rtpc = "car_bump_vel",
+			bump_treshold = 5,
+			slip_stop = "car_skid_stop_01",
+			slip = "car_skid_01",
+			engine_rpm_rtpc = "car_falcogini_rpm",
+			engine_start = "ranc_gc_ignition",
+			longitudal_slip_treshold = 10,
+			engine_speed_rtpc = "car_falcogini_speed",
+			door_close = "sit_down_in_forklift",
+			engine_sound_event = "ranc_gc_engine",
+			hit = "car_hit_gen_01"
+		},
+		seats = {
+			driver = {
+				driving = true,
+				name = "driver"
+			},
+			passenger_front = {
+				allow_shooting = true,
+				name = "passenger_front",
+				has_shooting_mode = false,
+				driving = false
+			}
+		},
+		loot_points = {
+			loot_left = {
+				name = "loot"
+			}
+		},
+		damage = {
+			max_health = 9000000
+		},
+		max_speed = 70,
+		max_rpm = 4000,
+		loot_drop_point = "v_repair_engine",
+		max_loot_bags = 4,
+		interact_distance = 350,
+		driver_camera_offset = Vector3(0, 0, 7.5),
+		fov = 70
 	}
 end

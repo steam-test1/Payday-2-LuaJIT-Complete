@@ -500,23 +500,6 @@ function FPCameraPlayerBase:_update_rot(axis, unscaled_axis)
 		self._output_data.rotation = Rotation(self._output_data.rotation:yaw(), self._output_data.rotation:pitch(), self._output_data.rotation:roll() + self._camera_properties.current_tilt)
 	end
 
-	local equipped_weapon = self._parent_unit:inventory():equipped_unit()
-	local bipod_weapon_translation = Vector3(0, 0, 0)
-
-	if equipped_weapon and equipped_weapon:base() then
-		local weapon_tweak_data = equipped_weapon:base():weapon_tweak_data()
-
-		if weapon_tweak_data and weapon_tweak_data.bipod_weapon_translation then
-			bipod_weapon_translation = weapon_tweak_data.bipod_weapon_translation
-		end
-	end
-
-	local bipod_pos = Vector3(0, 0, 0)
-	local bipod_rot = new_shoulder_rot
-
-	mvector3.set(bipod_pos, bipod_weapon_translation)
-	mvector3.rotate_with(bipod_pos, self._output_data.rotation)
-	mvector3.add(bipod_pos, new_head_pos)
 	mvector3.set(new_shoulder_pos, self._shoulder_stance.translation)
 	mvector3.add(new_shoulder_pos, self._vel_overshot.translation)
 	mvector3.rotate_with(new_shoulder_pos, self._output_data.rotation)
@@ -548,19 +531,23 @@ function FPCameraPlayerBase:_update_rot(axis, unscaled_axis)
 		self:set_rotation(shoulder_rot)
 		self._parent_unit:camera():set_position(self._parent_unit:position())
 		self._parent_unit:camera():set_rotation(cam_offset_rot)
+	elseif player_state == "bipod" then
+		local movement_state = self._parent_unit:movement():current_state()
+
+		self:set_position(movement_state._shoulder_pos or new_shoulder_pos)
+		self:set_rotation(new_shoulder_rot)
+		self._parent_unit:camera():set_position(movement_state._camera_pos or self._output_data.position)
+		self._parent_unit:camera():set_rotation(self._output_data.rotation)
+	elseif player_state == "player_turret" then
+		self:set_position(new_shoulder_pos)
+		self:set_rotation(new_shoulder_rot)
+		self._parent_unit:camera():set_position(self._output_data.position)
+		self._parent_unit:camera():set_rotation(self._output_data.rotation)
 	else
 		self:set_position(new_shoulder_pos)
 		self:set_rotation(new_shoulder_rot)
 		self._parent_unit:camera():set_position(self._output_data.position)
 		self._parent_unit:camera():set_rotation(self._output_data.rotation)
-	end
-
-	if player_state == "bipod" and not self._parent_unit:movement()._current_state:in_steelsight() then
-		self:set_position(PlayerBipod._shoulder_pos or new_shoulder_pos)
-		self:set_rotation(bipod_rot)
-		self._parent_unit:camera():set_position(PlayerBipod._camera_pos or self._output_data.position)
-	elseif not self._parent_unit:movement()._current_state:in_steelsight() then
-		PlayerBipod:set_camera_positions(bipod_pos, self._output_data.position)
 	end
 end
 
@@ -786,7 +773,7 @@ function FPCameraPlayerBase:_gamepad_look_function_ctl(stick_input, stick_input_
 	local aim_assist_y = 0
 	local cs = managers.player:current_state()
 	local aim_assist = false
-	local in_aim_assist_state = cs == "standard" or cs == "carry" or cs == "bipod"
+	local in_aim_assist_state = cs == "standard" or cs == "carry" or cs == "bipod" or cs == "player_turret"
 
 	if in_aim_assist_state and managers.controller:get_default_wrapper_type() ~= "pc" and managers.user:get_setting("sticky_aim") then
 		aim_assist = true

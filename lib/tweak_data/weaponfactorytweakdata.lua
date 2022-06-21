@@ -30536,6 +30536,12 @@ function WeaponFactoryTweakData:_init_polymer()
 			reload = "reload"
 		},
 		stock_adapter = "wpn_fps_smg_polymer_s_adapter",
+		override = {
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			}
+		},
 		default_blueprint = {
 			"wpn_fps_smg_polymer_body_standard",
 			"wpn_fps_smg_polymer_bolt_standard",
@@ -30608,7 +30614,8 @@ function WeaponFactoryTweakData:_init_polymer()
 			"wpn_fps_upg_o_fc1",
 			"wpn_fps_lmg_hk51b_ns_jcomp",
 			"wpn_fps_upg_o_tf90",
-			"wpn_fps_upg_o_poe"
+			"wpn_fps_upg_o_poe",
+			"wpn_fps_upg_ns_pis_putnik"
 		}
 	}
 	self.wpn_fps_smg_polymer_npc = deep_clone(self.wpn_fps_smg_polymer)
@@ -31090,6 +31097,12 @@ function WeaponFactoryTweakData:_init_baka()
 	self.parts.wpn_fps_smg_baka_fl_adapter.third_unit = "units/pd2_dlc_dragon/weapons/wpn_third_smg_baka_pts/wpn_third_smg_baka_fl_adapter"
 	self.wpn_fps_smg_baka = {
 		unit = "units/pd2_dlc_dragon/weapons/wpn_fps_smg_baka/wpn_fps_smg_baka",
+		override = {
+			wpn_fps_upg_ns_pis_putnik = {
+				a_obj = "a_ns",
+				parent = "barrel"
+			}
+		},
 		optional_types = {
 			"gadget",
 			"sight"
@@ -31152,6 +31165,7 @@ function WeaponFactoryTweakData:_init_baka()
 			"wpn_fps_upg_ass_ns_battle",
 			"wpn_fps_upg_fl_pis_m3x",
 			"wpn_fps_upg_ns_ass_smg_v6",
+			"wpn_fps_upg_ns_pis_putnik",
 			"wpn_fps_lmg_hk51b_ns_jcomp"
 		}
 	}
@@ -33491,6 +33505,7 @@ function WeaponFactoryTweakData:_init_steelsight_units()
 		self.parts[steelsight_id].texture_switch = self.parts[steelsight_id].texture_switch or self.parts[part_id].texture_switch
 		self.parts[steelsight_id].material_parameters = self.parts[steelsight_id].material_parameters or self.parts[part_id].material_parameters
 		self.parts[steelsight_id].third_unit = "units/payday2/weapons/wpn_upg_dummy/wpn_upg_dummy"
+		self.parts[steelsight_id].skip_third_thq = true
 	end
 end
 

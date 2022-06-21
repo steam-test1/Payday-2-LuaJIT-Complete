@@ -7418,4 +7418,290 @@ function InteractionTweakData:init(tweak_data)
 		interact_distance = 200,
 		timer = 2.5
 	}
+	self.ranc_hold_release_brake = {
+		text_id = "hud_int_release_brake",
+		action_text_id = "hud_action_release_brake",
+		axis = "z",
+		timer = 1,
+		sound_start = "RANC_Truck_Parking_Brake"
+	}
+	self.ranc_hold_push_truck = {
+		text_id = "hud_int_push_truck",
+		action_text_id = "hud_action_pushing_truck",
+		axis = "z",
+		timer = 2.5
+	}
+	self.ranc_hold_take_winchhook = {
+		text_id = "hud_int_take_winchhook",
+		action_text_id = "hud_action_take_winchhook",
+		axis = "z",
+		timer = 2,
+		sound_start = "RANC_Truck_Winch_Grab"
+	}
+	self.ranc_hold_attach_winchhook = {
+		text_id = "hud_int_attach_winchhook",
+		action_text_id = "hud_action_attach_winchhook",
+		axis = "z",
+		timer = 2,
+		sound_start = "RANC_Truck_Winch_Attach"
+	}
+	self.ranc_hold_start_truck = {
+		text_id = "hud_int_start_truck",
+		action_text_id = "hud_action_start_truck",
+		axis = "z",
+		timer = 2
+	}
+	self.ranc_press_take_laptop = {
+		text_id = "hud_int_take_laptop",
+		action_text_id = "hud_action_take_laptop",
+		interact_distance = 150,
+		start_active = true,
+		axis = "z",
+		sound_start = "alarm_clock_pick_up"
+	}
+	self.ranc_press_place_laptop = {
+		text_id = "hud_int_place_laptop",
+		action_text_id = "hud_action_place_laptop",
+		interact_distance = 150,
+		start_active = true,
+		axis = "z",
+		sound_start = "alarm_clock_place",
+		special_equipment = "laptop",
+		equipment_consume = true
+	}
+	self.ranc_hold_take_barrel = {
+		text_id = "hud_int_take_barrel",
+		action_text_id = "hud_action_take_barrel",
+		axis = "z",
+		sound_done = "RANC_Wep_Part_Collect",
+		special_equipment_block = "barrel"
+	}
+	self.ranc_hold_place_barrel = {
+		text_id = "hud_int_place_barrel",
+		action_text_id = "hud_action_place_barrel",
+		equipment_text_id = "hud_hint_need_barrel",
+		axis = "z",
+		special_equipment = "barrel",
+		equipment_consume = true
+	}
+	self.ranc_hold_take_receiver = {
+		text_id = "hud_int_take_receiver",
+		action_text_id = "hud_action_take_receiver",
+		axis = "z",
+		sound_done = "RANC_Wep_Part_Collect",
+		special_equipment_block = "receiver"
+	}
+	self.ranc_hold_place_receiver = {
+		text_id = "hud_int_place_receiver",
+		action_text_id = "hud_action_place_receiver",
+		equipment_text_id = "hud_hint_need_receiver",
+		axis = "z",
+		special_equipment = "receiver",
+		equipment_consume = true
+	}
+	self.ranc_hold_take_stock = {
+		text_id = "hud_int_take_stock",
+		action_text_id = "hud_action_take_stock",
+		axis = "z",
+		sound_done = "RANC_Wep_Part_Collect",
+		special_equipment_block = "stock"
+	}
+	self.ranc_hold_take_bugging_device = {
+		text_id = "hud_int_take_bugging_device",
+		action_text_id = "hud_action_take_bugging_device",
+		sound_start = "pickup_drone_helmet"
+	}
+	self.ranc_hold_place_stock = {
+		text_id = "hud_int_place_stock",
+		action_text_id = "hud_action_place_stock",
+		equipment_text_id = "hud_hint_need_stock",
+		axis = "z",
+		special_equipment = "stock",
+		equipment_consume = true
+	}
+	self.ranc_hold_construct_weapon = {
+		text_id = "hud_int_construct_weapon",
+		action_text_id = "hud_action_construct_weapon",
+		interact_distance = 100,
+		timer = 2,
+		start_active = true,
+		axis = "z",
+		sound_start = "RANC_Wep_Build",
+		sound_interupt = "RANC_Wep_Build_STOP",
+		sound_done = "RANC_Wep_Build_STOP"
+	}
+	self.ranc_hold_pour_acid = {
+		text_id = "hud_int_pour_acid",
+		action_text_id = "hud_action_pour_acid",
+		equipment_text_id = "hud_hint_need_acid",
+		axis = "z",
+		timer = 2.5,
+		special_equipment = "ranc_acid"
+	}
+	self.ranc_hold_move_plank = {
+		text_id = "hud_int_move_plank",
+		action_text_id = "hud_action_move_plank",
+		axis = "z",
+		timer = 1.5,
+		interact_distance = 200
+	}
+	self.ranc_press_log_into_laptop = {
+		text_id = "hud_int_log_into_laptop",
+		action_text_id = "hud_action_log_into_laptop",
+		axis = "z"
+	}
+	self.ranc_hold_plant_bugging_device = {
+		text_id = "hud_int_plant_bugging_device",
+		action_text_id = "hud_action_plant_bugging_device",
+		equipment_text_id = "hud_hint_plant_bugging_device",
+		interact_distance = 150,
+		timer = 3,
+		start_active = true,
+		axis = "z",
+		sound_start = "bugging_device_place",
+		equipment_consume = true,
+		dont_need_equipment = false,
+		special_equipment = "audio_device"
+	}
+	self.ranc_hold_adjust_temperature = {
+		text_id = "hud_int_adjust_temperature",
+		action_text_id = "hud_action_adjust_temperature",
+		interact_distance = 150,
+		timer = 2,
+		start_active = true,
+		axis = "x"
+	}
+	self.ranc_press_turn_off_radio = {
+		text_id = "hud_int_turn_off_radio",
+		action_text_id = "hud_action_turn_off_radio",
+		axis = "z"
+	}
+	self.ranc_press_turn_on_firepit = {
+		text_id = "hud_int_turn_on_firepit",
+		action_text_id = "hud_action_turn_on_firepit",
+		axis = "z",
+		sound_start = "fire_burning_message_loop"
+	}
+	self.ranc_press_reset_generator = {
+		text_id = "hud_int_reset_generator",
+		action_text_id = "hud_action_reset_generator",
+		axis = "z"
+	}
+	self.ranc_press_wake_computer = {
+		text_id = "hud_int_wake_computer",
+		action_text_id = "hud_action_wake_computer",
+		axis = "z",
+		sound_start = "RANC_Computer_Wake"
+	}
+	self.ranc_turret_part_carry = deep_clone(self.money_wrap)
+	self.ranc_turret_part_carry.text_id = "hud_int_take_turret_part"
+	self.ranc_turret_part_carry.action_text_id = "hud_action_take_turret_part"
+	self.ranc_take_acid = {
+		text_id = "hud_int_take_ranc_acid",
+		sound_done = "hydrogen_tank_put_down",
+		interact_distance = 100,
+		special_equipment_block = "ranc_acid"
+	}
+	self.ranc_take_sheriff_star = {
+		text_id = "hud_int_take_sheriff_star"
+	}
+	self.ranc_take_hammer = {
+		text_id = "hud_int_take_hammer"
+	}
+	self.ranc_take_silver_ingot = {
+		text_id = "hud_int_take_silver_ingot",
+		interact_distance = 150,
+		special_equipment_block = "ranc_silver_ingot"
+	}
+	self.ranc_take_mould = {
+		text_id = "hud_int_take_mould",
+		axis = "z"
+	}
+	self.ranc_break_wall = {
+		icon = "equipment_crowbar",
+		text_id = "debug_interact_crowbar_breach",
+		interact_distance = 100,
+		timer = 3,
+		start_active = false,
+		axis = "x",
+		special_equipment = "crowbar",
+		equipment_text_id = "location_unknown",
+		equipment_consume = false,
+		dont_need_equipment = false,
+		sound_start = "RANC_WoodFence_Stress",
+		sound_interupt = "RANC_WoodFence_Stress_STOP",
+		sound_done = "RANC_WoodFence_BRK"
+	}
+	self.ranc_hold_craft_sheriff_star = {
+		text_id = "hud_int_craft_sheriff_star",
+		action_text_id = "hud_action_craft_sheriff_star",
+		interact_distance = 100,
+		timer = 3,
+		start_active = false,
+		special_equipment = "ranc_silver_ingot",
+		equipment_text_id = "debug_interact_equipment_silver_ingot",
+		equipment_consume = true,
+		dont_need_equipment = false
+	}
+	self.ranc_hold_assemble_turret = {
+		text_id = "hud_int_assemble_turret",
+		action_text_id = "hud_action_assembling_turret",
+		interact_distance = 150,
+		timer = 2,
+		start_active = false
+	}
+	self.ranc_hold_disassemble_turret = {
+		text_id = "hud_int_disassemble_turret",
+		action_text_id = "hud_action_disassemble_turret",
+		axis = "z",
+		interact_distance = 150,
+		timer = 2
+	}
+	self.ranc_hold_enter_turret = {
+		text_id = "hud_int_enter_turret",
+		action_text_id = "hud_action_enter_turret",
+		axis = "z",
+		interact_distance = 150,
+		timer = 1
+	}
+	self.ranc_press_open_door = {
+		text_id = "hud_int_open_door",
+		action_text_id = "hud_action_open_door",
+		axis = "z",
+		interact_distance = 150
+	}
+	self.ranc_press_place_hammer = {
+		text_id = "hud_int_place_hammer",
+		action_text_id = "hud_action_place_hammer",
+		equipment_text_id = "hud_hint_need_hammer",
+		special_equipment = "ranc_hammer",
+		axis = "z",
+		interact_distance = 150,
+		equipment_consume = true
+	}
+	self.ranc_press_place_mould = {
+		text_id = "hud_int_place_mould",
+		action_text_id = "hud_action_place_mould",
+		equipment_text_id = "hud_hint_need_mould",
+		special_equipment = "ranc_mould",
+		axis = "z",
+		interact_distance = 150,
+		equipment_consume = true
+	}
+	self.ranc_press_pickup_horseshoe = {
+		text_id = "hud_int_pickup_horseshoe",
+		action_text_id = "hud_action_pickup_horseshoe",
+		axis = "z",
+		interact_distance = 100
+	}
+	self.ranc_take_weapons = {
+		icon = "develop",
+		text_id = "hud_int_take_weapons",
+		action_text_id = "hud_action_taking_weapons",
+		timer = 3,
+		interact_distance = 120
+	}
+	self.ranc_audio_case = deep_clone(self.invisible_interaction_open)
+	self.ranc_audio_case.axis = "x"
+	self.ranc_audio_case.interact_distance = 160
 end

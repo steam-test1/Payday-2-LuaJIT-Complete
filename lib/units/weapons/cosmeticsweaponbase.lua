@@ -156,7 +156,7 @@ function NewRaycastWeaponBase:_update_materials()
 			for part_id, part in pairs(self._parts) do
 				local part_data = managers.weapon_factory:get_part_data_by_part_id_from_weapon(part_id, self._factory_id, self._blueprint)
 
-				if part_data then
+				if part_data and (not self:_third_person() or not part_data.skip_third_thq) then
 					local new_material_config_ids = self:_material_config_name(part_id, part_data.unit, use_cc_material_config)
 
 					if part.unit:material_config() ~= new_material_config_ids and DB:has(material_config_ids, new_material_config_ids) then

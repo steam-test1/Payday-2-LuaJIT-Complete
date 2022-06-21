@@ -844,4 +844,57 @@ function EquipmentsTweakData:init()
 		icon = "equipment_cargo_strap",
 		text_id = "hud_equipment_cargo_strap"
 	}
+	self.specials.audio_device = {
+		transfer_quantity = 2,
+		sync_possession = true,
+		quantity = 2,
+		text_id = "hud_equipment_audio_device",
+		max_quantity = 2,
+		icon = "equipment_audio_device"
+	}
+	self.specials.laptop = {
+		sync_possession = true,
+		icon = "equipment_laptop",
+		text_id = "hud_equipment_laptop"
+	}
+	self.specials.stock = {
+		sync_possession = true,
+		icon = "equipment_stock",
+		text_id = "hud_equipment_stock"
+	}
+	self.specials.barrel = {
+		sync_possession = true,
+		icon = "equipment_barrel",
+		text_id = "hud_equipment_barrel"
+	}
+	self.specials.receiver = {
+		sync_possession = true,
+		icon = "equipment_receiver",
+		text_id = "hud_equipment_receiver"
+	}
+	self.specials.ranc_acid = {
+		sync_possession = true,
+		icon = "equipment_acid",
+		text_id = "hud_equipment_acid"
+	}
+	self.specials.ranc_sheriff_star = {
+		sync_possession = true,
+		icon = "equipment_sheriff_star",
+		text_id = "hud_equipment_sheriff_star"
+	}
+	self.specials.ranc_hammer = {
+		sync_possession = true,
+		icon = "equipment_hammer",
+		text_id = "hud_equipment_hammer"
+	}
+	self.specials.ranc_silver_ingot = {
+		sync_possession = true,
+		icon = "equipment_silver_ingot",
+		text_id = "hud_equipment_silver_ingot"
+	}
+	self.specials.ranc_mould = {
+		sync_possession = true,
+		icon = "equipment_mould",
+		text_id = "hud_equipment_mould"
+	}
 end

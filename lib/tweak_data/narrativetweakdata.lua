@@ -409,6 +409,12 @@ function NarrativeTweakData:init(tweak_data)
 		package = "packages/contact_shayu",
 		assets_gui = Idstring("guis/dlcs/pent/guis/preload_contact_shayu")
 	}
+	self.contacts.mcshay = {
+		name_id = "heist_contact_mcshay",
+		description_id = "heist_contact_mcshay_description",
+		package = "packages/contact_mcshay",
+		assets_gui = Idstring("guis/dlcs/ranc/guis/preload_contact_mcshay")
+	}
 	self.contacts.skirmish = {
 		name_id = "heist_contact_skirmish",
 		description_id = "heist_contact_bain_description",
@@ -6623,6 +6629,79 @@ function NarrativeTweakData:init(tweak_data)
 		3,
 		9
 	}
+	self.stages.ranc = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "ranc",
+		mission_filter = {
+			1
+		}
+	}
+	self.jobs.ranc = {
+		name_id = "heist_ranc",
+		briefing_id = "heist_ranc_crimenet",
+		contact = "mcshay",
+		region = "street",
+		jc = 30,
+		dlc = "ranc",
+		chain = {
+			self.stages.ranc
+		},
+		briefing_event = "Play_gem_ranc_cbf",
+		debrief_event = nil,
+		crimenet_callouts = {
+			"Play_gem_ranc_cnc"
+		},
+		crimenet_videos = {
+			"codex/mcshay1"
+		},
+		payout = {
+			50000,
+			125000,
+			250000,
+			550000,
+			700000,
+			700000,
+			700000
+		},
+		contract_cost = {
+			24000,
+			48000,
+			120000,
+			240000,
+			300000,
+			300000,
+			300000
+		},
+		contract_visuals = {}
+	}
+	self.jobs.ranc.contract_visuals.min_mission_xp = {
+		14200,
+		14200,
+		14200,
+		14200,
+		14200,
+		14200,
+		14200
+	}
+	self.jobs.ranc.contract_visuals.max_mission_xp = {
+		23200,
+		23200,
+		23200,
+		23200,
+		23200,
+		23200,
+		23200
+	}
+	self.jobs.ranc.contract_visuals.preview_image = {
+		id = "ranc",
+		folder = "ranc"
+	}
+	self.jobs.ranc.date_added = {
+		2022,
+		3,
+		9
+	}
 	self.stages.lbe_lobby_end = {
 		type = "d",
 		type_id = "heist_type_assault",
@@ -7419,7 +7498,8 @@ function NarrativeTweakData:init(tweak_data)
 		"chas",
 		"sand",
 		"chca",
-		"pent"
+		"pent",
+		"ranc"
 	}
 	self.forced_jobs = {
 		firestarter = true,

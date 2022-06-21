@@ -3,6 +3,7 @@ HuskCopDamage = HuskCopDamage or class(CopDamage)
 function HuskCopDamage:die(variant)
 	CopDamage.MAD_3_ACHIEVEMENT(variant)
 	self:_check_friend_4(variant)
+	self:_check_ranc_9(variant)
 	self._unit:base():set_slot(self._unit, 17)
 
 	if self._unit:inventory() then

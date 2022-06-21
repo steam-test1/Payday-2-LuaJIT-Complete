@@ -245,27 +245,68 @@ function PlayerEquipment:use_ecm_jammer()
 	local ray = self:valid_look_at_placement()
 
 	if ray then
-		managers.mission:call_global_event("player_deploy_ecmjammer")
-		managers.statistics:use_ecm_jammer()
+		local attach_unit = ray.unit
+		local attach_sync_unit, attach_sync_unit_id = nil
 
-		local duration_multiplier = managers.player:upgrade_level("ecm_jammer", "duration_multiplier", 0) + managers.player:upgrade_level("ecm_jammer", "duration_multiplier_2", 0) + 1
-		local relative_pos = ray.position - ray.body:position()
-
-		mvector3.rotate_with(relative_pos, ray.body:rotation():inverse())
-
-		local relative_rot = ray.body:rotation():inverse() * Rotation(ray.normal, math.UP)
-
-		if Network:is_client() then
-			self._ecm_jammer_placement_requested = true
-
-			managers.network:session():send_to_host("request_place_ecm_jammer", duration_multiplier, ray.body, relative_pos, relative_rot)
+		if attach_unit:id() ~= -1 then
+			attach_sync_unit = attach_unit
+			attach_sync_unit_id = ""
 		else
-			local rot = Rotation(ray.normal, math.UP)
-			local unit = ECMJammerBase.spawn(ray.position, rot, duration_multiplier, self._unit, managers.network:session():local_peer():id())
+			local attach_unit_key = attach_unit:key()
 
-			unit:base():set_active(true)
-			unit:base():link_attachment(ray.body, relative_pos, relative_rot)
-			managers.network:session():send_to_peers_synched("sync_deployable_attachment", unit, ray.body, relative_pos, relative_rot)
+			local function verify_id_for_sync(id)
+				local world_unit = managers.worlddefinition:get_unit(id)
+
+				if alive(world_unit) and world_unit:key() == attach_unit_key then
+					return id
+				end
+			end
+
+			local attach_unit_id = attach_unit:unit_data().unit_id
+			attach_sync_unit_id = attach_unit_id ~= 0 and verify_id_for_sync(attach_unit_id) or verify_id_for_sync(attach_unit:editor_id()) or nil
+
+			if type(attach_sync_unit_id) == "number" then
+				attach_sync_unit_id = tostring(attach_sync_unit_id) .. "ISNUMBER"
+			end
+		end
+
+		if attach_sync_unit or attach_sync_unit_id then
+			managers.mission:call_global_event("player_deploy_ecmjammer")
+			managers.statistics:use_ecm_jammer()
+
+			local attach_body = ray.body
+			local world_pos = ray.position
+			local world_rot = Rotation()
+
+			mrotation.set_look_at(world_rot, ray.normal, math.UP)
+
+			local relative_pos = mvector3.copy(world_pos)
+
+			mvector3.subtract(relative_pos, attach_body:position())
+
+			local relative_rot = attach_body:rotation()
+
+			mrotation.invert(relative_rot)
+			mvector3.rotate_with(relative_pos, relative_rot)
+			mrotation.multiply(relative_rot, world_rot)
+
+			relative_rot = Rotation(relative_rot:yaw(), relative_rot:pitch(), relative_rot:roll())
+			local sync_body_index = attach_unit:get_body_index(attach_body:name())
+			local duration_multiplier = managers.player:upgrade_level("ecm_jammer", "duration_multiplier", 0) + managers.player:upgrade_level("ecm_jammer", "duration_multiplier_2", 0) + 1
+
+			if Network:is_client() then
+				self._ecm_jammer_placement_requested = true
+
+				managers.network:session():send_to_host("request_place_ecm_jammer", attach_sync_unit, attach_sync_unit_id, sync_body_index, mvector3.copy(world_pos), world_rot, relative_pos, relative_rot, duration_multiplier)
+			else
+				local unit = ECMJammerBase.spawn(world_pos, world_rot, duration_multiplier, self._unit, managers.network:session():local_peer():id())
+
+				unit:base():set_active(true)
+				unit:base():link_attachment(attach_body, relative_pos, relative_rot)
+				managers.network:session():send_to_peers_synched("sync_deployable_attachment", unit, attach_sync_unit, attach_sync_unit_id, sync_body_index, relative_pos, relative_rot)
+			end
+		else
+			Application:error("[PlayerEquipment:use_ecm_jammer] Attach unit is not networked and cannot be found in world definition, preventing placement. Unit id: " .. tostring(attach_unit:unit_data().unit_id) .. " | Editor id: " .. tostring(attach_unit:editor_id()) .. " | Unit:", inspect(attach_unit))
 		end
 
 		return true

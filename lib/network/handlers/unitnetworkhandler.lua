@@ -1554,84 +1554,179 @@ function UnitNetworkHandler:sync_trip_mine_set_armed(unit, bool, length, sender)
 	unit:base():sync_trip_mine_set_armed(bool, length)
 end
 
-function UnitNetworkHandler:request_place_ecm_jammer(battery_life_upgrade_lvl, body, rel_pos, rel_rot, rpc)
-	local peer = self._verify_sender(rpc)
+function UnitNetworkHandler:request_place_ecm_jammer(sync_attach_unit, sync_attach_unit_id, body_index, world_pos, world_rot, rel_pos, rel_rot, battery_life_upgrade_lvl, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
 
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not peer then
+	local peer = self._verify_sender(sender_rpc)
+
+	if not peer then
+		return
+	end
+
+	local peer_id = peer:id()
+
+	if not managers.player:verify_equipment(peer_id, "ecm_jammer") then
 		return
 	end
 
 	local owner_unit = peer:unit()
 
 	if not alive(owner_unit) or owner_unit:id() == -1 then
-		rpc:from_server_ecm_jammer_place_result(nil)
+		sender_rpc:from_server_ecm_jammer_place_result_failed()
 
 		return
 	end
 
-	if not managers.player:verify_equipment(peer:id(), "ecm_jammer") then
+	local attach_unit, attach_body = nil
+
+	if alive(sync_attach_unit) then
+		attach_unit = sync_attach_unit
+		attach_body = attach_unit:body(body_index)
+	elseif sync_attach_unit_id ~= "" then
+		local attach_unit_id = sync_attach_unit_id
+
+		if string.find(attach_unit_id, "ISNUMBER") then
+			attach_unit_id = string.gsub(attach_unit_id, "ISNUMBER", "")
+			attach_unit_id = tonumber(attach_unit_id)
+		end
+
+		attach_unit = managers.worlddefinition:get_unit(attach_unit_id)
+
+		if alive(attach_unit) then
+			attach_body = attach_unit:body(body_index)
+		end
+	end
+
+	if not alive(attach_body) then
+		sender_rpc:from_server_ecm_jammer_place_result_failed()
+
 		return
 	end
 
-	if not alive(body) then
+	local ecm_unit = ECMJammerBase.spawn(world_pos, world_rot, battery_life_upgrade_lvl, owner_unit, peer_id)
+
+	if not alive(ecm_unit) then
+		sender_rpc:from_server_ecm_jammer_place_result_failed()
+
 		return
 	end
 
-	local peer = self._verify_sender(rpc)
-	local unit = ECMJammerBase.spawn(Vector3(), Rotation(), battery_life_upgrade_lvl, owner_unit, peer:id())
-
-	unit:base():set_server_information(peer:id())
-	unit:base():set_active(true)
-	unit:base():link_attachment(body, rel_pos, rel_rot)
-	rpc:from_server_ecm_jammer_place_result(unit, body, rel_pos, rel_rot)
+	ecm_unit:base():set_server_information(peer_id)
+	ecm_unit:base():set_active(true)
+	ecm_unit:base():link_attachment(attach_body, rel_pos, rel_rot)
+	sender_rpc:from_server_ecm_jammer_place_result(ecm_unit, sync_attach_unit, sync_attach_unit_id, body_index, rel_pos, rel_rot)
+	managers.network:session():send_to_peers_synched_except(peer_id, "sync_deployable_attachment", ecm_unit, sync_attach_unit, sync_attach_unit_id, body_index, rel_pos, rel_rot)
 end
 
-function UnitNetworkHandler:from_server_ecm_jammer_place_result(unit, body, rel_pos, rel_rot, rpc)
+function UnitNetworkHandler:from_server_ecm_jammer_place_result(ecm_unit, sync_attach_unit, sync_attach_unit_id, body_index, rel_pos, rel_rot, sender_rpc)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
 
-	unit = alive(unit) and unit or nil
+	local peer = self._verify_sender(sender_rpc)
 
-	if alive(managers.player:player_unit()) then
-		managers.player:player_unit():equipment():from_server_ecm_jammer_placement_result(unit and true or false)
-	end
-
-	if not unit then
+	if not peer then
 		return
 	end
 
-	if not alive(body) then
+	local ecm_unit = alive(ecm_unit) and ecm_unit or nil
+	local player_unit = managers.player:player_unit()
+
+	if player_unit then
+		player_unit:equipment():from_server_ecm_jammer_placement_result(ecm_unit and true or false)
+	end
+
+	if not ecm_unit then
 		return
 	end
 
-	unit:base():set_owner(managers.player:player_unit())
-	unit:base():link_attachment(body, rel_pos, rel_rot)
+	local attach_unit, attach_body = nil
+
+	if alive(sync_attach_unit) then
+		attach_unit = sync_attach_unit
+		attach_body = attach_unit:body(body_index)
+	elseif sync_attach_unit_id ~= "" then
+		local attach_unit_id = sync_attach_unit_id
+
+		if string.find(attach_unit_id, "ISNUMBER") then
+			attach_unit_id = string.gsub(attach_unit_id, "ISNUMBER", "")
+			attach_unit_id = tonumber(attach_unit_id)
+		end
+
+		attach_unit = managers.worlddefinition:get_unit(attach_unit_id)
+
+		if alive(attach_unit) then
+			attach_body = attach_unit:body(body_index)
+		end
+	end
+
+	if not alive(attach_body) then
+		return
+	end
+
+	ecm_unit:base():set_owner(player_unit)
+	ecm_unit:base():link_attachment(attach_body, rel_pos, rel_rot)
 end
 
-function UnitNetworkHandler:sync_deployable_attachment(unit, body, relative_pos, relative_rot, rpc)
+function UnitNetworkHandler:sync_deployable_attachment(deployable_unit, sync_attach_unit, sync_attach_unit_id, body_index, rel_pos, rel_rot, sender_rpc)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
 
-	if not alive(unit) then
+	local peer = self._verify_sender(sender_rpc)
+
+	if not peer then
 		return
 	end
 
-	if not alive(body) then
+	if not alive(deployable_unit) then
 		return
 	end
 
-	unit:base():link_attachment(body, relative_pos, relative_rot)
+	local attach_unit, attach_body = nil
+
+	if alive(sync_attach_unit) then
+		attach_unit = sync_attach_unit
+		attach_body = attach_unit:body(body_index)
+	elseif sync_attach_unit_id ~= "" then
+		local attach_unit_id = sync_attach_unit_id
+
+		if string.find(attach_unit_id, "ISNUMBER") then
+			attach_unit_id = string.gsub(attach_unit_id, "ISNUMBER", "")
+			attach_unit_id = tonumber(attach_unit_id)
+		end
+
+		attach_unit = managers.worlddefinition:get_unit(attach_unit_id)
+
+		if alive(attach_unit) then
+			attach_body = attach_unit:body(body_index)
+		end
+	end
+
+	if not alive(attach_body) then
+		return
+	end
+
+	deployable_unit:base():link_attachment(attach_body, rel_pos, rel_rot)
 end
 
-function UnitNetworkHandler:from_server_ecm_jammer_rejected(rpc)
+function UnitNetworkHandler:from_server_ecm_jammer_place_result_failed(sender_rpc)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
 
-	if alive(managers.player:player_unit()) then
-		managers.player:player_unit():equipment():from_server_ecm_jammer_placement_result(false)
+	local peer = self._verify_sender(sender_rpc)
+
+	if not peer then
+		return
+	end
+
+	local player_unit = managers.player:player_unit()
+
+	if player_unit then
+		player_unit:equipment():from_server_ecm_jammer_placement_result(false)
 	end
 end
 
@@ -4249,5 +4344,79 @@ function UnitNetworkHandler:sync_damage_absorption_hud(absorption_amount, sender
 
 	if teammate_panel then
 		teammate_panel:set_absorb_active(absorption_amount)
+	end
+end
+
+function UnitNetworkHandler:sync_request_player_turret_action(action, turret_unit, sender)
+	print("sync_request_player_turret_action", action, turret_unit, sender)
+
+	local peer = self._verify_sender(sender)
+
+	if not peer or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local peer_id = peer:id()
+	local player_unit = managers.criminals:character_unit_by_peer_id(peer_id)
+
+	if not alive(turret_unit) or not self._verify_character(player_unit) then
+		return
+	end
+
+	managers.player:server_player_turret_action(action, turret_unit, peer_id, player_unit)
+end
+
+function UnitNetworkHandler:sync_player_turret_action(action, turret_unit, peer_id, sender)
+	print("sync_player_turret_action", action, turret_unit, peer_id, sender)
+
+	local sender_peer = self._verify_sender(sender)
+
+	if not sender_peer or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	if not alive(turret_unit) then
+		return
+	end
+
+	local player_unit = managers.criminals:character_unit_by_peer_id(peer_id)
+
+	if action == PlayerTurretBase.INTERACT_ENTER then
+		if sender_peer:is_host() then
+			managers.player:sync_enter_player_turret(turret_unit, peer_id, player_unit)
+		end
+	elseif action == PlayerTurretBase.INTERACT_EXIT then
+		local local_peer_id = managers.network:session():local_peer():id()
+
+		if (sender_peer:is_host() or sender_peer:id() == peer_id) and local_peer_id ~= peer_id then
+			managers.player:sync_exit_player_turret(peer_id, player_unit)
+		end
+	end
+end
+
+function UnitNetworkHandler:sync_husk_player_turret(turret_unit, sender)
+	local peer = self._verify_sender(sender)
+
+	if not peer or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local peer_id = peer:id()
+	local player_unit = managers.criminals:character_unit_by_peer_id(peer_id)
+
+	if not alive(turret_unit) or not self._verify_character(player_unit) then
+		return
+	end
+
+	managers.player:set_synced_player_turret(peer, turret_unit)
+end
+
+function UnitNetworkHandler:shot_player_turret(turret_unit, impact, sender)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
+		return
+	end
+
+	if alive(turret_unit) and turret_unit:base() and turret_unit:base().fire_blank then
+		turret_unit:base():fire_blank(impact)
 	end
 end

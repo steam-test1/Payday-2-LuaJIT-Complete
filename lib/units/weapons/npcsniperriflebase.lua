@@ -7,7 +7,7 @@ local idstr_size = Idstring("size")
 function NPCSniperRifleBase:init(unit)
 	NPCSniperRifleBase.super.init(self, unit)
 
-	self._trail_length = World:effect_manager():get_initial_simulator_var_vector2(self.TRAIL_EFFECT, idstr_trail, idstr_simulator_length, idstr_size)
+	self._trail_length = World:effect_manager():get_initial_simulator_var_vector2(self._trail_effect_table.effect, idstr_trail, idstr_simulator_length, idstr_size)
 end
 
 function NPCSniperRifleBase:_spawn_trail_effect(direction, col_ray)

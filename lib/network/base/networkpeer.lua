@@ -1890,6 +1890,7 @@ function NetworkPeer:sync_data(peer)
 	managers.player:update_team_upgrades_to_peer(peer)
 	managers.player:update_husk_bipod_to_peer(peer)
 	managers.player:update_cocaine_stacks_to_peer(peer)
+	managers.player:update_husk_player_turret_to_peer(peer)
 	self:sync_mods(peer)
 	self:sync_is_vr(peer)
 
