@@ -5128,9 +5128,9 @@ function GuiTweakData:init(tweak_data)
 		url = "https://pd2.link/MidlandBundleSLS"
 	})
 	table.insert(self.new_heists, {
-		name_id = "menu_nh_pxp1_01",
-		texture_path = "guis/dlcs/pxp1/textures/pd2/new_heists/pxp1_01",
-		url = "https://pd2.link/McShayWeaponPackSLS"
+		name_id = "menu_nh_txt2_02",
+		texture_path = "guis/dlcs/ranc/textures/pd2/new_heists/ranc_03",
+		url = "https://pd2.link/SummerSale2022SL"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_ranc_02",

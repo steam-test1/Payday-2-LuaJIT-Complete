@@ -2221,12 +2221,12 @@ function WINDLCManager:init()
 				},
 				rat_ranchdiesel = {
 					no_install = true,
-					entitlement_id = "ee24dd9f429f408a879cf417c78f964a",
+					entitlement_id = "c4d74be8d4cf41d5a5921c11094a5bdf",
 					external = true
 				},
 				rat_mocow = {
 					no_install = true,
-					entitlement_id = "ee24dd9f429f408a879cf417c78f964a",
+					entitlement_id = "8c7aa8537d474094b0f93e1ccf06852d",
 					external = true
 				},
 				prim_primtime = {

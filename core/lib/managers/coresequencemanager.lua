@@ -68,6 +68,7 @@ function SequenceManager:init(area_damage_mask, target_world_mask, beings_mask)
 	self:register_event_element_class(StopEffectElement)
 	self:register_event_element_class(StopPhysicEffectElement)
 	self:register_event_element_class(TriggerElement)
+	self:register_event_element_class(DisableUnitElement)
 
 	self._filter_element_class_map = {}
 
@@ -5444,6 +5445,21 @@ function SetDamageElement:set_damage(env, damage, damage_type)
 	local extension = env.dest_body:extension().damage
 
 	extension:set_damage(damage_type, damage)
+end
+
+DisableUnitElement = DisableUnitElement or class(BaseElement)
+DisableUnitElement.NAME = "disable_unit"
+
+function DisableUnitElement:init(node, unit_element)
+	BaseElement.init(self, node, unit_element)
+end
+
+function DisableUnitElement:activate_callback(env)
+	if alive(env.dest_unit) then
+		env.dest_unit:set_enabled(false)
+	else
+		self:print_error("Unable disable destroyed unit.", true, env)
+	end
 end
 
 SetExtensionVarElement = SetExtensionVarElement or class(BaseElement)

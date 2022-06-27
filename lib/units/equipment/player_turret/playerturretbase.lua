@@ -490,7 +490,7 @@ function PlayerTurretBase:auto_fire_blank(direction)
 	local rays = {}
 	local right = direction:cross(math.UP):normalized()
 	local up = direction:cross(right):normalized()
-	local spread_x, spread_y = self:_get_spread(user_unit)
+	local spread_x, spread_y = self:_get_spread()
 	local theta = math.random() * 360
 	local ax = math.sin(theta) * math.random() * spread_x
 	local ay = math.cos(theta) * math.random() * (spread_y or spread_x)
@@ -516,7 +516,9 @@ function PlayerTurretBase:auto_fire_blank(direction)
 	end
 
 	if col_ray then
-		InstantBulletBase:on_collision(col_ray, self._unit, user_unit, self._damage, true)
+		if alive(user_unit) then
+			InstantBulletBase:on_collision(col_ray, self._unit, user_unit, self._damage, true)
+		end
 
 		if trail then
 			World:effect_manager():set_remaining_lifetime(trail, math.clamp((col_ray.distance - 600) / 10000, 0, col_ray.distance))
@@ -537,7 +539,7 @@ function PlayerTurretBase:auto_fire_blank(direction)
 		self:tweak_data_anim_play("fire", self:fire_rate_multiplier())
 	end
 
-	if user_unit:movement() then
+	if alive(user_unit) and user_unit:movement() then
 		local anim_data = user_unit:anim_data()
 
 		if not anim_data or not anim_data.reload then
@@ -545,12 +547,12 @@ function PlayerTurretBase:auto_fire_blank(direction)
 		end
 	end
 
-	self:play_tweak_data_sound("fire_single", "fire")
+	self:play_tweak_data_sound("fire_single_npc", "fire_single")
 
 	return true
 end
 
-function PlayerTurretBase:_get_spread(user_unit)
+function PlayerTurretBase:_get_spread()
 	return self._spread * (tweak_data.weapon[self._name_id] and tweak_data.weapon[self._name_id].spread.standing or 1)
 end
 
@@ -586,7 +588,7 @@ function PlayerTurretBase:save(save_data)
 	save_data.base = my_save_data
 	my_save_data.state = self._current_state
 	my_save_data.is_shooting = self:shooting()
-	self._next_fire_allowed = math.max(self._next_fire_allowed, self._unit:timer():time())
+	my_save_data.next_fire_allowed = self._next_fire_allowed - self._unit:timer():time()
 end
 
 function PlayerTurretBase:load(save_data)
@@ -595,6 +597,7 @@ function PlayerTurretBase:load(save_data)
 	self:change_state(my_save_data.state)
 
 	self._shooting = my_save_data.is_shooting
+	self._next_fire_allowed = self._unit:timer():time() + my_save_data.next_fire_allowed
 end
 
 function PlayerTurretBase:sync_net_event(state)

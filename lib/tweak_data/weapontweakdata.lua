@@ -30268,6 +30268,7 @@ function WeaponTweakData:_init_ranc_heavy_machine_gun()
 		fire_single = "turret_ranc_fire_single",
 		fire_auto = "turret_ranc_fire",
 		stop_fire = "turret_ranc_stop",
+		fire_single_npc = "turret_ranc_npc1a_1shot",
 		dryfire = "primary_dryfire",
 		enter_steelsight = "m4_tighten"
 	}
