@@ -214,6 +214,7 @@ function StatisticsTweakData:statistics_table()
 		"bolivian_indoors",
 		"drug_lord_boss",
 		"drug_lord_boss_stealth",
+		"ranchmanager",
 		"bolivian_indoors_mex",
 		"security_mex",
 		"civilian_mariachi",

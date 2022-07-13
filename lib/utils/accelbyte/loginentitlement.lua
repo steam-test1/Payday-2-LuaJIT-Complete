@@ -139,7 +139,7 @@ function Login:LoginWithSteamToken(ticket, callback)
 		local response_json = json.decode(response_body)
 
 		Login:SerializeJsonString(response_json)
-		print("[AccelByte] Display name : " .. self.player_session.display_name)
+		print("[AccelByte] Display name : " .. tostring(self.player_session.display_name))
 
 		if error_code == 1 and status_code == 200 and response_body ~= "" then
 			print("[AccelByte] LoginWithSteamToken Success")
@@ -616,7 +616,7 @@ function Entitlement:CheckAndVerifyUserEntitlement(callback)
 
 		local function update_stat_callback(error_code, status_code, response_body)
 			print("[AccelByte] Callback update_stat_callback ")
-			Entitlement:QueryEntitlementAsString(0, 10, entitlement_callback)
+			Entitlement:QueryEntitlementAsString(0, 100, entitlement_callback)
 		end
 
 		Entitlement:UpdateStat("sync-platformupgrade", 1, "INCREMENT", update_stat_callback)
@@ -675,7 +675,7 @@ function Entitlement:CheckAndVerifyUserEntitlement(callback)
 	end
 
 	if Login.player_session.platform_user_id == steam_id then
-		Entitlement:QueryEntitlementAsString(0, 10, entitlement_callback)
+		Entitlement:QueryEntitlementAsString(0, 100, entitlement_callback)
 	else
 		Login:LoginWithClientCredentials(get_client_token_callback)
 	end

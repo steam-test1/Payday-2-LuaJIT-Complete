@@ -9408,6 +9408,8 @@ function MenuCrimeNetFiltersInitiator:modify_node(original_node, data)
 
 		if job_id_filter then
 			job_id_filter:set_value(managers.network.matchmake:get_lobby_filter("job_id") or -1)
+			managers.network.matchmake:add_lobby_filter("job_id", job_id_filter:value(), "equal")
+			managers.user:set_setting("crimenet_filter_contract", job_id_filter:value())
 		end
 
 		local kick_option_filter = node:item("kick_option_filter")

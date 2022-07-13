@@ -787,7 +787,7 @@ function GenericDLCManager:has_ghm()
 end
 
 function GenericDLCManager:has_pda8_wpn_money()
-	return managers.event_jobs:get_event_stage() < 5
+	return managers.event_jobs:get_event_stage("pda8") < 5
 end
 
 function GenericDLCManager:has_gage_pack_shotgun()
@@ -2257,6 +2257,7 @@ end
 
 function WINDLCManager:_init_promoted_dlc_list()
 	self._promoted_dlc_list = {
+		"txt2",
 		"ranc",
 		"pxp1",
 		"txt1",

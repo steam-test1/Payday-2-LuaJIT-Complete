@@ -14,6 +14,7 @@ function MenuItemCrimeNetSkirmishServer:setup_gui(node, row_item)
 	local color = tweak_data.screen_colors.skirmish_color
 	local friend_color = tweak_data.screen_colors.friend_color
 	local regular_color = tweak_data.screen_colors.regular_color
+	local mutator_category = managers.mutators:get_enabled_active_mutator_category()
 	local lobby = row_item.item:parameters().lobby
 	local attributes_numbers = managers.network.matchmake:_lobby_to_numbers(lobby)
 	local host_name = lobby:key_value("owner_name")
@@ -63,7 +64,7 @@ function MenuItemCrimeNetSkirmishServer:setup_gui(node, row_item)
 		w = 32,
 		x = 2,
 		layer = 1,
-		color = mutators and managers.mutators:get_category_color() or color
+		color = mutators and managers.mutators:get_category_color(mutator_category) or color
 	})
 	local cx, cy = nil
 
@@ -77,7 +78,7 @@ function MenuItemCrimeNetSkirmishServer:setup_gui(node, row_item)
 			blend_mode = "normal",
 			layer = 2,
 			name = tostring(i),
-			color = mutators and managers.mutators:get_category_color() or color,
+			color = mutators and managers.mutators:get_category_color(mutator_category) or color,
 			visible = i <= num_plrs
 		})
 
@@ -104,7 +105,7 @@ function MenuItemCrimeNetSkirmishServer:setup_gui(node, row_item)
 		text = managers.localization:to_upper_text(is_weekly and "menu_weekly_skirmish" or "menu_skirmish"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
-		color = mutators and managers.mutators:get_category_text_color() or color
+		color = mutators and managers.mutators:get_category_text_color(mutator_category) or color
 	})
 	local state_label = side_panel:text({
 		name = "state_label",

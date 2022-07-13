@@ -1,13 +1,12 @@
 SideJobEventManager = SideJobEventManager or class()
-SideJobEventManager.save_version = 1
+SideJobEventManager.save_version = 2
 SideJobEventManager.global_table_name = "side_job_event"
 SideJobEventManager.save_table_name = "side_job_event"
 SideJobEventManager.category = "side_job_event"
 SideJobEventManager.category_id = "side_job_event"
 
 function SideJobEventManager:init()
-	self._challenges_tweak_data = tweak_data.event_jobs.challenges
-	self._collective_stats_tweak_data = tweak_data.event_jobs.collective_stats
+	self._tweak_data = tweak_data.event_jobs
 
 	self:_setup()
 end
@@ -21,14 +20,17 @@ function SideJobEventManager:_setup()
 
 	self._global = Global[self.global_table_name]
 
-	for _, challenge in ipairs(self:challenges()) do
-		self:_update_challenge_tracking(challenge, "track_id", "pda8_tracking", self.completed_challenge)
-		self:_update_challenge_stages(challenge, "stage_id", "pda8_stages", self._global.event_stage, self.completed_challenge)
+	if self._global.event_stage then
+		for _, challenge in ipairs(self:challenges()) do
+			for event_id, event_data in pairs(self._tweak_data.event_info) do
+				self:_update_challenge_stages(challenge, "stage_id", event_id .. "_stages", self._global.event_stage[event_id], self.completed_challenge)
+			end
+		end
 	end
 end
 
 function SideJobEventManager:_setup_challenges()
-	if not self._challenges_tweak_data then
+	if not self._tweak_data.challenges then
 		error("Can't setup a SideJobEventManager if challenges tweak data is defined!")
 
 		return
@@ -36,13 +38,17 @@ function SideJobEventManager:_setup_challenges()
 
 	local challenges = {}
 
-	for idx, challenge in ipairs(self._challenges_tweak_data) do
+	for idx, challenge in ipairs(self._tweak_data.challenges) do
 		table.insert(challenges, deep_clone(challenge))
 	end
 
 	Global[self.global_table_name].challenges = challenges
-	Global[self.global_table_name].collective_stats = deep_clone(self._collective_stats_tweak_data)
-	Global[self.global_table_name].event_stage = 0
+	Global[self.global_table_name].collective_stats = deep_clone(self._tweak_data.collective_stats)
+	Global[self.global_table_name].event_stage = {}
+
+	for event_id, event_data in pairs(self._tweak_data.event_info) do
+		Global[self.global_table_name].event_stage[event_id] = 0
+	end
 end
 
 function SideJobEventManager:reset()
@@ -298,11 +304,12 @@ function SideJobEventManager:award(id)
 		end
 	end
 
-	for stat_id, item_id in pairs(update_stats) do
-		for _, challenge in ipairs(self:challenges()) do
+	for _, challenge in ipairs(self:challenges()) do
+		for stat_id, item_id in pairs(update_stats) do
 			self:_update_challenge_collective(challenge, "collective_id", stat_id, item_id, self.completed_challenge)
-			self:_update_challenge_progress(challenge, "progress_id", item_id, 1, self.completed_challenge)
 		end
+
+		self:_update_challenge_progress(challenge, "progress_id", id, 1, self.completed_challenge)
 	end
 end
 
@@ -555,6 +562,12 @@ function SideJobEventManager:_award_reward(reward, challenge_id)
 			managers.money:on_loot_drop_offshore(value_id)
 		end
 
+		if reward.type_items == "xp" then
+			local value_id = tweak_data.blackmarket[reward.type_items][reward.item_entry].value_id
+
+			managers.experience:on_loot_drop_xp(value_id, true)
+		end
+
 		if add_to_inventory then
 			local entry = tweak_data:get_raw_value("blackmarket", reward.type_items, reward.item_entry)
 
@@ -597,10 +610,10 @@ function SideJobEventManager:any_challenge_completed()
 	return self._has_completed_mission
 end
 
-function SideJobEventManager:set_event_stage(stage)
-	print("SideJobEventManager:set_event_stage", stage)
+function SideJobEventManager:set_event_stage(event_id, stage)
+	print("SideJobEventManager:set_event_stage", event_id, stage)
 
-	self._global.event_stage = stage
+	self._global.event_stage[event_id] = stage
 	local identifier, is_upgrade_locked, is_upgrade_aquired = nil
 
 	for _, challenge in ipairs(self:challenges()) do
@@ -611,7 +624,7 @@ function SideJobEventManager:set_event_stage(stage)
 			end
 		end
 
-		self:_update_challenge_stages(challenge, "stage_id", "pda8_stages", self._global.event_stage, self.completed_challenge)
+		self:_update_challenge_stages(challenge, "stage_id", event_id .. "_stages", self._global.event_stage[event_id], self.completed_challenge)
 
 		identifier = UpgradesManager.AQUIRE_STRINGS[6] .. tostring(challenge.id)
 
@@ -646,10 +659,10 @@ function SideJobEventManager:award_on_mission_end()
 	self._global.award_on_mission_end = {}
 end
 
-function SideJobEventManager:get_event_stage()
-	return self._global.event_stage
+function SideJobEventManager:get_event_stage(event_id)
+	return self._global.event_stage[event_id]
 end
 
-function SideJobEventManager:is_event_active()
-	return self._global.event_stage < 5
+function SideJobEventManager:is_event_active(event_id)
+	return self._global.event_stage[event_id] < 5
 end

@@ -5117,10 +5117,19 @@ function GuiTweakData:init(tweak_data)
 	}
 
 	table.insert(self.new_heists, {
-		name_id = "menu_nh_ranc_01",
-		texture_path = "guis/dlcs/ranc/textures/pd2/new_heists/ranc_01",
-		append_steam_id = "?playerid=",
-		url = "https://pd2.link/MidlandRanchSLS"
+		name_id = "menu_nh_txt2_02",
+		texture_path = "guis/dlcs/txt2/textures/pd2/new_heists/txt2_02",
+		url = "https://pd2.link/LostInTransitBundleSLS"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_txt2_01",
+		texture_path = "guis/dlcs/txt2/textures/pd2/new_heists/txt2_01",
+		url = "https://pd2.link/HighOctaneTailorPackSLS"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_sbzacc_01",
+		texture_path = "guis/dlcs/txt2/textures/pd2/new_heists/sbzacc_01",
+		url = "https://sbz.link/account"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_txt1_02",
@@ -5128,9 +5137,10 @@ function GuiTweakData:init(tweak_data)
 		url = "https://pd2.link/MidlandBundleSLS"
 	})
 	table.insert(self.new_heists, {
-		name_id = "menu_nh_txt2_02",
-		texture_path = "guis/dlcs/ranc/textures/pd2/new_heists/ranc_03",
-		url = "https://pd2.link/SummerSale2022SL"
+		name_id = "menu_nh_ranc_01",
+		texture_path = "guis/dlcs/ranc/textures/pd2/new_heists/ranc_01",
+		append_steam_id = "?playerid=",
+		url = "https://pd2.link/MidlandRanchSLS"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_ranc_02",

@@ -11,7 +11,8 @@ ElementSpecialObjective._AI_GROUPS = {
 	"escort_guy_3",
 	"escort_guy_4",
 	"escort_guy_5",
-	"chavez"
+	"chavez",
+	"unique_patrol_forbid"
 }
 ElementSpecialObjective._PATHING_STYLES = {
 	"destination",

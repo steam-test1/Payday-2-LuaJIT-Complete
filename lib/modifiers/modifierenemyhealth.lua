@@ -7,7 +7,11 @@ ModifierEnemyHealth.total_localization = "menu_cs_modifier_total_generic_percent
 
 function ModifierEnemyHealth:init(data)
 	ModifierEnemyHealth.super.init(self, data)
-	MutatorEnemyHealth:modify_character_tweak_data(tweak_data.character, self:get_health_multiplier())
+
+	local excluded_enemies = tweak_data.crime_spree.excluded_enemies
+	local health_exclude_list = excluded_enemies and excluded_enemies.health
+
+	MutatorEnemyHealth:modify_character_tweak_data(tweak_data.character, self:get_health_multiplier(), health_exclude_list)
 end
 
 function ModifierEnemyHealth:get_health_multiplier()

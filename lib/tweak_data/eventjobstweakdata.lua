@@ -5,6 +5,17 @@ function EventJobsTweakData:init(tweak_data)
 
 	self:_init_pda8_challenges(tweak_data)
 
+	self.event_info = {
+		pda8 = {
+			steam_stages = {
+				false,
+				"pda_stat_a",
+				"pda_stat_b",
+				"pda_stat_c",
+				"pda_stat_d"
+			}
+		}
+	}
 	self.collective_stats = {
 		pda8_collective = {
 			found = {},

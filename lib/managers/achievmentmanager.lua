@@ -268,16 +268,24 @@ function AchievmentManager.update_global_stats(success)
 			end
 		end
 
-		if (tonumber(managers.network.account:get_lifetime_stat("pda_stat_d")) or 0) >= 1 then
-			managers.event_jobs:set_event_stage(5)
-		elseif (tonumber(managers.network.account:get_lifetime_stat("pda_stat_c")) or 0) >= 1 then
-			managers.event_jobs:set_event_stage(4)
-		elseif (tonumber(managers.network.account:get_lifetime_stat("pda_stat_b")) or 0) >= 1 then
-			managers.event_jobs:set_event_stage(3)
-		elseif (tonumber(managers.network.account:get_lifetime_stat("pda_stat_a")) or 0) >= 1 then
-			managers.event_jobs:set_event_stage(2)
-		else
-			managers.event_jobs:set_event_stage(1)
+		for event_id, event_data in pairs(tweak_data.event_jobs.event_info) do
+			local event_stage_set_success = false
+
+			if event_data.steam_stages then
+				for index, stage in table.reverse_ipairs(event_data.steam_stages) do
+					if stage and (tonumber(managers.network.account:get_lifetime_stat(stage)) or 0) >= 1 then
+						managers.event_jobs:set_event_stage(event_id, index)
+
+						event_stage_set_success = true
+
+						break
+					end
+				end
+			end
+
+			if not event_stage_set_success then
+				managers.event_jobs:set_event_stage(event_id, 1)
+			end
 		end
 	end
 end

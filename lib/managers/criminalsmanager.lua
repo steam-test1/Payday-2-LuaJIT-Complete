@@ -5,6 +5,10 @@ CriminalsManager.EVENTS = {
 	"on_criminal_added",
 	"on_criminal_removed"
 }
+local mvec1 = Vector3()
+local mvec2 = Vector3()
+local mrot1 = Rotation()
+local mrot2 = Rotation()
 
 function CriminalsManager:init()
 	self._listener_holder = EventListenerHolder:new()
@@ -377,6 +381,8 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 	if _G.IS_VR and unit:camera() then
 		return
 	end
+
+	local character_unit = unit
 
 	if unit:camera() and alive(unit:camera():camera_unit()) and unit:camera():camera_unit():damage() then
 		unit = unit:camera():camera_unit()

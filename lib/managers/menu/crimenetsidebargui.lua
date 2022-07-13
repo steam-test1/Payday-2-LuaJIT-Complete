@@ -407,7 +407,7 @@ function CrimeNetSidebarGui:clbk_skirmish()
 	managers.menu_component:post_event("menu_enter")
 	managers.menu:open_node("skirmish_select_contract", {
 		{
-			job_filter = "perform_filter_skirmish",
+			job_filter = "perform_job_filter_skirmish",
 			hide_title = true,
 			hide_filters = true,
 			align = "right",

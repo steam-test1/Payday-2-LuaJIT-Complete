@@ -17,9 +17,7 @@ local connection_errors = {
 	request_timeout = 2,
 	unknown_conn_error = 0
 }
-Telemetry.event_actions = {
-	balloon_popped = 0
-}
+Telemetry.event_actions = {}
 
 local function multiline(s)
 	if s:sub(-1) ~= "\n" then
@@ -1165,22 +1163,4 @@ function Telemetry:send_on_player_steam_stats_overdrill()
 	}
 
 	self:send("player_steam_stats_overdrill", telemetry_payload)
-end
-
-function Telemetry:on_player_game_event_action(action, params)
-	if action == Telemetry.event_actions.balloon_popped then
-		self:send_on_player_game_event_balloon(params)
-	end
-end
-
-function Telemetry:send_on_player_game_event_balloon(params)
-	if get_platform_name() ~= "WIN32" or not self._global._logged_in then
-		return
-	end
-
-	local telemetry_payload = {
-		balloon_type = params.balloon_type
-	}
-
-	self:send("balloon_popped", telemetry_payload)
 end

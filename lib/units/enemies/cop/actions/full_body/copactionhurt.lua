@@ -833,9 +833,9 @@ function CopActionHurt:init(action_desc, common_data)
 				local fire_variant = alive(action_desc.weapon_unit) and (tweak_data.weapon[action_desc.weapon_unit:base():get_name_id()] or tweak_data.weapon.amcar).fire_variant or "fire"
 
 				if action_desc.hurt_type == "fire_hurt" and tweak_table ~= "spooc" then
-					self._unit:sound():say(fire_variant == "money" and "moneythrower_hurt" or "burnhurt", nil, fire_variant == "money")
+					self._unit:sound():say("burnhurt")
 				elseif action_desc.hurt_type == "death" then
-					self._unit:sound():say(fire_variant == "money" and "moneythrower_death" or "burndeath", nil, fire_variant == "money")
+					self._unit:sound():say("burndeath")
 				end
 			end
 		elseif action_type == "death" then

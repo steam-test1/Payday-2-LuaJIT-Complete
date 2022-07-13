@@ -136,7 +136,9 @@ function CustomSafehouseGuiPageDaily:_setup_side_menu()
 	}
 
 	for _, event_jobs_data in ipairs(managers.event_jobs:challenges()) do
-		if not event_jobs_data.is_active_func or managers.event_jobs[event_jobs_data.is_active_func](managers.event_jobs) then
+		if event_jobs_data.is_active_func and not managers.event_jobs[event_jobs_data.is_active_func](managers.event_jobs) then
+			-- Nothing
+		elseif not event_jobs_data.temp_challenge then
 			local data = deep_clone(event_jobs_data)
 			data.name_id = event_jobs_data.name_id
 			data.category = "event_jobs"
@@ -1526,8 +1528,9 @@ function CustomSafehouseGuiRewardItem:init(daily_page, panel, order, reward_data
 				texture_path = "guis/textures/pd2/blackmarket/cash_drop"
 				reward_string = managers.experience:cash_string(managers.money:get_loot_drop_cash_value(td.value_id))
 			elseif category == "xp" then
+				local amount = tweak_data:get_value("experience_manager", "loot_drop_value", reward_data.item_entry) or 0
 				texture_path = "guis/textures/pd2/blackmarket/xp_drop"
-				reward_string = managers.localization:text("menu_challenge_xp_drop")
+				reward_string = amount .. " XP"
 			else
 				if category == "weapon_mods" or category == "weapon_bonus" then
 					category = "mods"

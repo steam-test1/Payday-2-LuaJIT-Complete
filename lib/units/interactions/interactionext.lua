@@ -777,7 +777,9 @@ function UseInteractionExt:interact(player)
 		})
 	end
 
-	managers.network:session():send_to_peers_synched("sync_interacted", self._unit, -2, self.tweak_data, 1)
+	if self._unit:id() ~= -1 then
+		managers.network:session():send_to_peers_synched("sync_interacted", self._unit, -2, self.tweak_data, 1)
+	end
 
 	if self._global_event then
 		managers.mission:call_global_event(self._global_event, player)
@@ -2223,6 +2225,34 @@ function CarryInteractionExt:sync_interacted(peer, player, status, skip_alive_ch
 
 	if no_player then
 		managers.mission:call_global_event("on_picked_up_carry", self._unit)
+	end
+end
+
+function CarryInteractionExt:_at_interact_start(player, timer)
+	CarryInteractionExt.super._at_interact_start(self, player, timer)
+
+	local carry_tweak = tweak_data.carry[self._unit:carry_data():carry_id()]
+
+	if carry_tweak.expire_t then
+		if Network:is_server() or self._unit:id() == -1 then
+			self._unit:carry_data():set_expire_paused(true)
+		else
+			managers.network:session():send_to_host("carry_interact_start", self._unit)
+		end
+	end
+end
+
+function CarryInteractionExt:_at_interact_interupt(player, complete)
+	CarryInteractionExt.super._at_interact_interupt(self, player, complete)
+
+	local carry_tweak = tweak_data.carry[self._unit:carry_data():carry_id()]
+
+	if not complete and carry_tweak.expire_t then
+		if Network:is_server() or self._unit:id() == -1 then
+			self._unit:carry_data():set_expire_paused(false)
+		else
+			managers.network:session():send_to_host("carry_interact_interupt", self._unit)
+		end
 	end
 end
 

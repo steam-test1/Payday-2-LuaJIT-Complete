@@ -179,7 +179,7 @@ function ContractBrokerGui:_create_job_data()
 		contact_tweak = tweak_data.narrative.contacts[contact]
 
 		if self._job_filter then
-			include_job = self._job_filter(contact)
+			include_job = self._job_filter(job_id, contact, job_tweak, contact_tweak)
 		else
 			include_job = not tweak_data.narrative:is_wrapped_to_job(job_id)
 			include_job = include_job and contact_tweak and not contact_tweak.hidden
@@ -703,10 +703,11 @@ function ContractBrokerGui:_setup_filter_contact()
 	local contacts = {}
 	local filters = {}
 
-	for index, job_id in ipairs(tweak_data.narrative:get_jobs_index()) do
-		local job_tweak = tweak_data.narrative:job_data(job_id)
-		local contact = job_tweak.contact
-		local contact_tweak = tweak_data.narrative.contacts[contact]
+	for index, data in ipairs(self._job_data) do
+		local job_id = data.job_id
+		local job_tweak = data.job_tweak
+		local contact = data.contact
+		local contact_tweak = data.contact_tweak
 
 		if contact then
 			local allow_contact = true
@@ -842,6 +843,10 @@ end
 
 function ContractBrokerGui:perform_filter_skirmish(value)
 	return value == "skirmish"
+end
+
+function ContractBrokerGui:perform_job_filter_skirmish(job_id, contact, job_tweak, contact_tweak)
+	return self:perform_filter_skirmish(contact)
 end
 
 function ContractBrokerGui:perform_filter_contact(value, optional_contact_filter)

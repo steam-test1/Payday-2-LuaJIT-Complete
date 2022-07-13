@@ -306,12 +306,13 @@ function CrimeNetManager:reset_seed()
 end
 
 function CrimeNetManager:spawn_job(name, difficulty, time_limit)
-	local count = #self._presets
+	local presets = self._presets
+	local count = #presets
 
 	for i = 1, count do
-		if self._presets[i].job_id == name then
+		if presets[i].job_id == name then
 			if difficulty then
-				if self._presets[i].difficulty == difficulty then
+				if presets[i].difficulty == difficulty then
 					self._active_jobs[i] = {
 						added = false,
 						active_timer = time_limit and self._active_job_time + math.random(5) or nil
@@ -350,6 +351,8 @@ function CrimeNetManager:update(t, dt)
 		return
 	end
 
+	local presets = self._presets
+
 	for id, job in pairs(self._active_jobs) do
 		if not job.added then
 			job.added = true
@@ -372,10 +375,10 @@ function CrimeNetManager:update(t, dt)
 		end
 	end
 
-	local max_active_jobs = math.min(self._MAX_ACTIVE_JOBS, #self._presets)
+	local max_active_jobs = math.min(self._MAX_ACTIVE_JOBS, #presets)
 
 	if self._debug_mass_spawning then
-		max_active_jobs = math.min(tweak_data.gui.crime_net.debug_options.mass_spawn_limit, #self._presets)
+		max_active_jobs = math.min(tweak_data.gui.crime_net.debug_options.mass_spawn_limit, #presets)
 	end
 
 	if table.size(self._active_jobs) < max_active_jobs and table.size(self._active_jobs) + table.size(self._active_server_jobs) < tweak_data.gui.crime_net.job_vars.total_active_jobs then
@@ -466,17 +469,18 @@ local disabled_contacts = {
 }
 
 function CrimeNetManager:activate_job()
-	local i = math.random(#self._presets)
+	local presets = self._presets
+	local i = math.random(#presets)
 
 	while i ~= i - 1 do
-		local chance = self._presets[i].chance
+		local chance = presets[i].chance
 		local roll = math.rand(1)
 
 		if roll <= chance then
-			local contact = tweak_data.narrative.jobs[self._presets[i].job_id].contact
+			local contact = tweak_data.narrative.jobs[presets[i].job_id].contact
 
 			if not self._active_jobs[i] and i ~= 0 and not table.contains(disabled_contacts, contact) then
-				print("-- activate", math.round(chance * 100) .. "%", self._presets[i].job_id, roll, chance)
+				print("-- activate", math.round(chance * 100) .. "%", presets[i].job_id, roll, chance)
 
 				self._active_jobs[i] = {
 					added = false,
@@ -487,12 +491,14 @@ function CrimeNetManager:activate_job()
 			end
 		end
 
-		i = 1 + math.mod(i, #self._presets)
+		i = 1 + math.mod(i, #presets)
 	end
 end
 
 function CrimeNetManager:preset(id)
-	return self._presets[id]
+	local presets = self._presets
+
+	return presets[id]
 end
 
 function CrimeNetManager:find_online_games(friends_only)

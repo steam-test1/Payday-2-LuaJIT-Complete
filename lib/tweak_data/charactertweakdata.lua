@@ -113,6 +113,7 @@ function CharacterTweakData:init(tweak_data)
 	self:_init_escort_sand(presets)
 	self:_init_civilian_no_penalty(presets)
 	self:_init_marshal_marksman(presets)
+	self:_init_ranchmanager(presets)
 
 	self._prefix_data = nil
 	self._prefix_data_p1 = nil
@@ -517,7 +518,10 @@ function CharacterTweakData:_init_heavy_swat(presets)
 	self.heavy_swat.chatter = presets.enemy_chatter.swat
 	self.heavy_swat.steal_loot = true
 	self.heavy_swat_sniper = deep_clone(self.heavy_swat)
-	self.heavy_swat_sniper.weapon = presets.weapon.sniper
+	self.heavy_swat_sniper.weapon = presets.weapon.good
+	self.heavy_swat_sniper.misses_first_player_shot = true
+	self.heavy_swat_sniper.shooting_death = false
+	self.heavy_swat_sniper.speech_prefix_p2 = "d"
 
 	table.insert(self._enemy_list, "heavy_swat")
 	table.insert(self._enemy_list, "heavy_swat_sniper")
@@ -3588,6 +3592,11 @@ function CharacterTweakData:_init_spa_vip_hurt(presets)
 	}
 	self.spa_vip_hurt.calls_in = nil
 	self.spa_vip_hurt.ignores_aggression = true
+end
+
+function CharacterTweakData:_init_ranchmanager(presets)
+	self.ranchmanager = deep_clone(self.bolivian)
+	self.ranchmanager.access = "security_patrol"
 end
 
 function CharacterTweakData:_init_russian(presets)
@@ -11133,6 +11142,7 @@ function CharacterTweakData:_set_normal()
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[3].dmg_mul = 0.5
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[4].dmg_mul = 0.7
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[5].dmg_mul = 0.5
+	self.marshal_marksman.HEALTH_INIT = 12
 	self.shield.melee_weapon_dmg_multiplier = 0.1
 	self.swat.melee_weapon_dmg_multiplier = 0.1
 	self.cop.melee_weapon_dmg_multiplier = 0.1
@@ -12068,6 +12078,7 @@ function CharacterTweakData:_set_hard()
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[3].dmg_mul = 1
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[4].dmg_mul = 1.35
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[5].dmg_mul = 1
+	self.marshal_marksman.HEALTH_INIT = 18
 	self.shield.melee_weapon_dmg_multiplier = 0.1
 	self.swat.melee_weapon_dmg_multiplier = 0.1
 	self.cop.melee_weapon_dmg_multiplier = 0.1
@@ -12703,6 +12714,7 @@ function CharacterTweakData:_set_overkill()
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[3].dmg_mul = 1.5
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[4].dmg_mul = 2
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[5].dmg_mul = 1.5
+	self.marshal_marksman.HEALTH_INIT = 36
 	self.hector_boss.weapon.is_shotgun_mag.FALLOFF = {
 		{
 			dmg_mul = 1.1,
@@ -13329,6 +13341,8 @@ function CharacterTweakData:_set_overkill_145()
 
 	self:_multiply_all_speeds(2.05, 2.1)
 
+	self.marshal_marksman.HEALTH_INIT = 72
+	self.marshal_marksman.weapon.is_rifle.focus_delay = 3
 	self.hector_boss.weapon.is_shotgun_mag.FALLOFF = {
 		{
 			dmg_mul = 2.2,
@@ -13439,7 +13453,6 @@ function CharacterTweakData:_set_overkill_145()
 	self:_multiply_weapon_delay(self.presets.weapon.sniper, 3)
 	self:_multiply_weapon_delay(self.presets.weapon.gang_member, 0)
 
-	self.marshal_marksman.weapon.is_rifle.focus_delay = 3
 	self.presets.gang_member_damage.REGENERATE_TIME = 2
 	self.presets.gang_member_damage.REGENERATE_TIME_AWAY = 0.6
 	self.presets.gang_member_damage.HEALTH_INIT = 400
@@ -13526,6 +13539,7 @@ function CharacterTweakData:_set_easy_wish()
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[3].dmg_mul = 3.75
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[4].dmg_mul = 5
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[5].dmg_mul = 3.75
+	self.marshal_marksman.HEALTH_INIT = 90
 	self.hector_boss.HEALTH_INIT = 900
 	self.mobster_boss.HEALTH_INIT = 900
 	self.biker_boss.HEALTH_INIT = 3000
@@ -14089,6 +14103,7 @@ function CharacterTweakData:_set_overkill_290()
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[3].dmg_mul = 7.5
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[4].dmg_mul = 10
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[5].dmg_mul = 7.5
+	self.marshal_marksman.HEALTH_INIT = 180
 	self.tank_mini.HEALTH_INIT = 2400
 	self.hector_boss.weapon.is_shotgun_mag.FALLOFF = {
 		{
@@ -15307,6 +15322,7 @@ function CharacterTweakData:_set_sm_wish()
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[3].dmg_mul = 10.5
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[4].dmg_mul = 14
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[5].dmg_mul = 10.5
+	self.marshal_marksman.HEALTH_INIT = 248
 	self.tank.HEALTH_INIT = 2400
 	self.tank_mini.HEALTH_INIT = 4800
 	self.tank_medic.HEALTH_INIT = 2400
@@ -16534,6 +16550,7 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 	self.fbi.HEALTH_INIT = self.fbi.HEALTH_INIT * hp_mul
 	self.swat.HEALTH_INIT = self.swat.HEALTH_INIT * hp_mul
 	self.heavy_swat.HEALTH_INIT = self.heavy_swat.HEALTH_INIT * hp_mul
+	self.heavy_swat_sniper.HEALTH_INIT = self.heavy_swat_sniper.HEALTH_INIT * hp_mul
 	self.fbi_heavy_swat.HEALTH_INIT = self.fbi_heavy_swat.HEALTH_INIT * hp_mul
 	self.sniper.HEALTH_INIT = self.sniper.HEALTH_INIT * hp_mul
 	self.gangster.HEALTH_INIT = self.gangster.HEALTH_INIT * hp_mul
@@ -16558,9 +16575,9 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 	self.bolivian_indoors_mex.HEALTH_INIT = self.bolivian_indoors_mex.HEALTH_INIT * hp_mul
 	self.drug_lord_boss.HEALTH_INIT = self.drug_lord_boss.HEALTH_INIT * hp_mul
 	self.drug_lord_boss_stealth.HEALTH_INIT = self.drug_lord_boss_stealth.HEALTH_INIT * hp_mul
+	self.ranchmanager.HEALTH_INIT = self.ranchmanager.HEALTH_INIT * hp_mul
 	self.triad_boss.HEALTH_INIT = self.triad_boss.HEALTH_INIT * hp_mul
 	self.triad_boss_no_armor.HEALTH_INIT = self.triad_boss_no_armor.HEALTH_INIT * hp_mul
-	self.marshal_marksman.HEALTH_INIT = self.marshal_marksman.HEALTH_INIT * hp_mul
 	self.marshal_marksman.HEALTH_INIT = self.marshal_marksman.HEALTH_INIT * hp_mul
 
 	if self.security.headshot_dmg_mul then
@@ -16589,6 +16606,10 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 
 	if self.heavy_swat.headshot_dmg_mul then
 		self.heavy_swat.headshot_dmg_mul = self.heavy_swat.headshot_dmg_mul * hs_mul
+	end
+
+	if self.heavy_swat_sniper.headshot_dmg_mul then
+		self.heavy_swat_sniper.headshot_dmg_mul = self.heavy_swat_sniper.headshot_dmg_mul * hs_mul
 	end
 
 	if self.fbi_heavy_swat.headshot_dmg_mul then
@@ -16683,6 +16704,10 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 		self.tank_mini.headshot_dmg_mul = self.tank_mini.headshot_dmg_mul * hs_mul
 	end
 
+	if self.ranchmanager.headshot_dmg_mul then
+		self.ranchmanager.headshot_dmg_mul = self.ranchmanager.headshot_dmg_mul * hs_mul
+	end
+
 	if self.triad_boss_no_armor.headshot_dmg_mul then
 		self.triad_boss_no_armor.headshot_dmg_mul = self.triad_boss_no_armor.headshot_dmg_mul * hs_mul
 	end
@@ -16712,6 +16737,7 @@ function CharacterTweakData:_multiply_all_speeds(walk_mul, run_mul)
 
 	table.insert(all_units, "bolivian")
 	table.insert(all_units, "bolivian_indoors")
+	table.insert(all_units, "ranchmanager")
 	table.insert(all_units, "bolivian_indoors_mex")
 	table.insert(all_units, "security_mex")
 	table.insert(all_units, "security_mex_no_pager")
@@ -17544,6 +17570,8 @@ function CharacterTweakData:character_map()
 				"civ_male_ranch_worker_3",
 				"ene_male_ranc_security_1",
 				"ene_male_ranc_security_2",
+				"ene_male_ranc_ranger_01",
+				"ene_male_ranc_ranger_02",
 				"ene_male_ranchmanager_1"
 			}
 		}

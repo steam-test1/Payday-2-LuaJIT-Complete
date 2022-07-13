@@ -8145,6 +8145,286 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		dlc = "prim_primtime",
 		texture_bundle_folder = "prim"
 	}
+	self.masks.chrodome = {
+		unit = "units/pd2_dlc_txt2/masks/msk_chrodome/msk_chrodome",
+		name_id = "bm_msk_chrodome",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "txt2",
+		texture_bundle_folder = "txt2",
+		offsets = {
+			max = {
+				Vector3(0, -1.94967, 0),
+				Rotation(0, 0, -0)
+			},
+			sydney = {
+				Vector3(0, 0, 0.673745),
+				Rotation(0, 0, -0)
+			},
+			chains = {
+				Vector3(0, -0.876458, 0.673745),
+				Rotation(0, 0, -0)
+			},
+			old_hoxton = {
+				Vector3(0, 1.26998, -0.518719),
+				Rotation(-0.30048, 6.56811, -1.66753e-09)
+			},
+			wild = {
+				Vector3(0, -1.47269, 0.673745),
+				Rotation(0, 0, -0)
+			},
+			wolf = {
+				Vector3(0, -1.11495, 0.912237),
+				Rotation(0, 0, -0)
+			},
+			jimmy = {
+				Vector3(0, 0.792991, 0),
+				Rotation(0, 2.27524, 0)
+			},
+			ecp_male = {
+				Vector3(0, -0.757211, 0),
+				Rotation(-0, -0, -0)
+			},
+			myh = {
+				Vector3(0, -0.995704, 0.554498),
+				Rotation(0, 0, -0)
+			}
+		}
+	}
+	self.masks.daredev = {
+		unit = "units/pd2_dlc_txt2/masks/msk_daredev/msk_daredev",
+		name_id = "bm_msk_daredev",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "txt2",
+		texture_bundle_folder = "txt2",
+		offsets = {
+			jimmy = {
+				Vector3(0, 1.74696, -0.637965),
+				Rotation(-0, -0, -0)
+			},
+			sydney = {
+				Vector3(0, 0.792991, -0.399472),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.funguy_default = {
+		unit = "units/pd2_dlc_txt2/masks/msk_funguy/msk_funguy",
+		name_id = "bm_msk_funguy",
+		type = "helmet",
+		inaccessible = true
+	}
+	self.masks.funguy_hair = {
+		unit = "units/pd2_dlc_txt2/masks/msk_funguy/msk_funguy_hair",
+		name_id = "bm_msk_funguy",
+		type = "helmet",
+		inaccessible = true
+	}
+	self.masks.funguy = {
+		unit = "units/pd2_dlc_txt2/masks/msk_funguy/msk_funguy",
+		name_id = "bm_msk_funguy",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "txt2",
+		texture_bundle_folder = "txt2",
+		characters = {
+			bonnie = "funguy_default",
+			sokol = "funguy_default",
+			myh = "funguy_default",
+			chico = "funguy_default",
+			dragan = "funguy_default",
+			ecp_male = "funguy_default",
+			ecp_female = "funguy_default",
+			dragon = "funguy_default",
+			old_hoxton = "funguy_hair",
+			jowi = "funguy_default",
+			max = "funguy_default",
+			joy = "funguy_default",
+			dallas = "funguy_default",
+			jacket = "funguy_default",
+			jimmy = "funguy_hair",
+			bodhi = "funguy_default",
+			wolf = "funguy_default",
+			wild = "funguy_default",
+			hoxton = "funguy_default",
+			female_1 = "funguy_hair",
+			chains = "funguy_default",
+			sydney = "funguy_default"
+		},
+		offsets = {
+			wolf = {
+				Vector3(0, 0, 0.673745),
+				Rotation(-0, -0, -0)
+			},
+			sydney = {
+				Vector3(0, 0, -0.0417333),
+				Rotation(-0, -0, -0)
+			},
+			dragon = {
+				Vector3(0, 0, 0.316006),
+				Rotation(-0, -0, -0)
+			},
+			ecp_male = {
+				Vector3(0, -0.518719, -0.16098),
+				Rotation(-0, -0, -0)
+			},
+			old_hoxton = {
+				Vector3(0, -0.637965, 0),
+				Rotation(-0, -0, -0)
+			},
+			bonnie = {
+				Vector3(0, 0.077513, -0.0417333),
+				Rotation(-0, -0, -0)
+			},
+			ecp_male = {
+				Vector3(0, -0.876458, 0.077513),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.speedfreak = {
+		unit = "units/pd2_dlc_txt2/masks/msk_speedfreak/msk_speedfreak",
+		name_id = "bm_msk_speedfreak",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "txt2",
+		texture_bundle_folder = "txt2",
+		offsets = {
+			wild = {
+				Vector3(0, -1.2342, 1.15073),
+				Rotation(-0, -0, -0)
+			},
+			myh = {
+				Vector3(0, 0, 0.673745),
+				Rotation(-0, -0, -0)
+			},
+			wolf = {
+				Vector3(0, 0, 0.912237),
+				Rotation(-0, -0, -0)
+			},
+			ecp_male = {
+				Vector3(0, -1.2342, 0.912237),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.threap_default = {
+		unit = "units/pd2_dlc_txt2/masks/msk_threap/msk_threap",
+		name_id = "bm_msk_threap",
+		type = "helmet",
+		inaccessible = true,
+		offsets = {
+			ecp_male = {
+				Vector3(0, -1.71118, 1.38922),
+				Rotation(-0, -0, -0)
+			},
+			sydney = {
+				Vector3(0, 0, 0.673745),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.threap_hair = {
+		unit = "units/pd2_dlc_txt2/masks/msk_threap/msk_threap_hair",
+		name_id = "bm_msk_threap",
+		type = "helmet",
+		inaccessible = true,
+		offsets = {
+			jimmy = {
+				Vector3(0, 0.673745, 0.554498),
+				Rotation(-0, -0, -0)
+			},
+			old_hoxton = {
+				Vector3(0, 0.554498, -0.876458),
+				Rotation(0, 7.42668, 0)
+			}
+		}
+	}
+	self.masks.threap = {
+		unit = "units/pd2_dlc_txt2/masks/msk_threap/msk_threap",
+		name_id = "bm_msk_threap",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "txt2",
+		texture_bundle_folder = "txt2",
+		characters = {
+			bonnie = "threap_default",
+			sokol = "threap_default",
+			myh = "threap_default",
+			chico = "threap_default",
+			dragan = "threap_default",
+			ecp_male = "threap_default",
+			ecp_female = "threap_default",
+			dragon = "threap_default",
+			old_hoxton = "threap_hair",
+			jowi = "threap_hair",
+			max = "threap_default",
+			joy = "threap_default",
+			dallas = "threap_default",
+			jacket = "threap_default",
+			jimmy = "threap_hair",
+			bodhi = "threap_default",
+			wolf = "threap_default",
+			wild = "threap_default",
+			hoxton = "threap_default",
+			female_1 = "threap_hair",
+			chains = "threap_default",
+			sydney = "threap_default"
+		}
+	}
+	self.masks.waytexas = {
+		unit = "units/pd2_dlc_txt2/masks/msk_waytexas/msk_waytexas",
+		name_id = "bm_msk_waytexase",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "txt2",
+		texture_bundle_folder = "txt2",
+		offsets = {
+			joy = {
+				Vector3(0, 0.673745, 0.435252),
+				Rotation(-0, -0, -0)
+			},
+			sydney = {
+				Vector3(0, 0.673745, 0.673745),
+				Rotation(-0, -0, -0)
+			},
+			chains = {
+				Vector3(0, 0.077513, -0.399472),
+				Rotation(-0, -0, -0)
+			},
+			jowi = {
+				Vector3(0, 0.554498, 0.554498),
+				Rotation(-0, -0, -0)
+			},
+			female_1 = {
+				Vector3(0, 0.792991, 0.077513),
+				Rotation(-0, -0, -0)
+			},
+			jimmy = {
+				Vector3(0, 0.792991, 0),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.masks) do

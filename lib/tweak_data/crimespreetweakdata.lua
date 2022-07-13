@@ -32,6 +32,17 @@ function CrimeSpreeTweakData:init(tweak_data)
 	self:init_modifiers(tweak_data)
 	self:init_gage_assets(tweak_data)
 	self:init_gui(tweak_data)
+	self:init_exclusion_data()
+end
+
+function CrimeSpreeTweakData:init_exclusion_data()
+	self.excluded_enemies = {
+		damage = table.list_to_set({
+			"sniper",
+			"heavy_swat_sniper"
+		}),
+		health = table.list_to_set({})
+	}
 end
 
 function CrimeSpreeTweakData:init_missions(tweak_data)

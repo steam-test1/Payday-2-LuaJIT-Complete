@@ -54,6 +54,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_contraband_npc()
 	self:_init_data_flamethrower_npc()
 	self:_init_data_dmr_npc()
+	self:_init_data_heavy_snp_npc()
 	self:_init_data_smoke_npc()
 	self:_init_data_groza_npc()
 	self:_init_data_type54_npc()
@@ -603,7 +604,7 @@ function WeaponTweakData:_init_data_m14_npc()
 	self.m14_npc.hold = "rifle"
 	self.m14_npc.alert_size = 5000
 	self.m14_npc.suppression = 1
-	self.ak47_npc.FIRE_MODE = "auto"
+	self.m14_npc.FIRE_MODE = "auto"
 end
 
 function WeaponTweakData:_init_data_m14_sniper_npc()
@@ -625,8 +626,6 @@ function WeaponTweakData:_init_data_m14_sniper_npc()
 	self.svd_snp_npc = deep_clone(self.m14_sniper_npc)
 	self.svdsil_snp_npc = deep_clone(self.m14_sniper_npc)
 	self.svdsil_snp_npc.has_suppressor = "suppressed_a"
-	self.heavy_snp_npc = deep_clone(self.m14_sniper_npc)
-	self.heavy_snp_npc.sounds.prefix = "zsniper_npc"
 end
 
 function WeaponTweakData:_init_data_r870_npc()
@@ -1364,6 +1363,7 @@ function WeaponTweakData:_init_data_flamethrower_npc()
 	self.flamethrower_npc.flame_effect = "effects/payday2/particles/explosions/flamethrower_cheap"
 	self.flamethrower_npc.bullet_class = "FlameBulletBase"
 	self.flamethrower_npc.flame_max_range = 1500
+	self.flamethrower_npc.extra_flames_offset = 0.05
 	self.flamethrower_npc.sounds.prefix = "flamethrower_npc"
 	self.flamethrower_npc.sounds.fire = "flamethrower_npc_fire"
 	self.flamethrower_npc.sounds.stop_fire = "flamethrower_npc_fire_stop"
@@ -1397,6 +1397,24 @@ function WeaponTweakData:_init_data_dmr_npc()
 	self.dmr_npc.alert_size = 5000
 	self.dmr_npc.suppression = 1
 	self.dmr_npc.FIRE_MODE = "single"
+end
+
+function WeaponTweakData:_init_data_heavy_snp_npc()
+	self.heavy_snp_npc.categories = {
+		"snp"
+	}
+	self.heavy_snp_npc.sounds.prefix = "zsniper_npc"
+	self.heavy_snp_npc.use_data.selection_index = SELECTION.PRIMARY
+	self.heavy_snp_npc.DAMAGE = 1
+	self.heavy_snp_npc.muzzleflash = "effects/payday2/particles/weapons/762_auto"
+	self.heavy_snp_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
+	self.heavy_snp_npc.CLIP_AMMO_MAX = 6
+	self.heavy_snp_npc.NR_CLIPS_MAX = 8
+	self.heavy_snp_npc.hold = "rifle"
+	self.heavy_snp_npc.alert_size = 5000
+	self.heavy_snp_npc.suppression = 1
+	self.heavy_snp_npc.FIRE_MODE = "single"
+	self.heavy_snp_npc.armor_piercing = true
 end
 
 function WeaponTweakData:_init_data_c45_crew()
@@ -28927,6 +28945,11 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.dmr_npc = {
+		usage = "is_rifle",
+		sounds = {},
+		use_data = {}
+	}
+	self.heavy_snp_npc = {
 		usage = "is_rifle",
 		sounds = {},
 		use_data = {}

@@ -310,6 +310,10 @@ function GenericDLCManager:has_txt1()
 	return self:is_dlc_unlocked("txt1")
 end
 
+function GenericDLCManager:has_txt2()
+	return self:is_dlc_unlocked("txt2")
+end
+
 function GenericDLCManager:has_wcc()
 	return self:is_dlc_unlocked("wcc")
 end
@@ -387,7 +391,7 @@ function WINDLCManager:init_generated()
 		no_install = true
 	}
 	Global.dlc_manager.all_dlc_data.ess = {
-		app_id = "1303240",
+		app_id = "218620",
 		no_install = true
 	}
 	Global.dlc_manager.all_dlc_data.faco = {
@@ -670,6 +674,11 @@ function WINDLCManager:init_generated()
 		app_id = "1945680",
 		no_install = true,
 		webpage = "https://pd2.link/SouthboundTailorPackYBS"
+	}
+	Global.dlc_manager.all_dlc_data.txt2 = {
+		app_id = "2074220",
+		no_install = true,
+		webpage = "https://pd2.link/HighOctaneTailorPackYBS"
 	}
 	Global.dlc_manager.all_dlc_data.wcc = {
 		app_id = "1347751",

@@ -655,6 +655,14 @@ function SkirmishTweakData:_init_wave_modifiers()
 			class = "ModifierSkulldozers"
 		}
 	}
+	self.wave_modifiers[5] = {
+		{
+			class = "ModifierHeavySniper",
+			data = {
+				spawn_chance = 5
+			}
+		}
+	}
 	self.wave_modifiers[7] = {
 		{
 			class = "ModifierDozerMedic"

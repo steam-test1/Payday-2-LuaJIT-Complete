@@ -2606,6 +2606,10 @@ function NavigationManager:convert_SO_AI_group_to_access(ai_group_name)
 		ai_group_filter = {
 			"SO_ID2"
 		}
+	elseif ai_group_name == "unique_patrol_forbid" then
+		ai_group_filter = {
+			"security_patrol"
+		}
 	else
 		debug_pause("[NavigationManager:convert_SO_AI_group_to_access] Unknown SO AI group name", ai_group_name)
 

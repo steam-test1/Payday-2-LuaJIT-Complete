@@ -3990,6 +3990,334 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		sequence = "set_ehtan"
 	}
 	self.player_styles.newhorizon.characters.ecp_male = newhorizon_characters_male_fat
+	self.player_styles.bikervest = {
+		name_id = "bm_suit_bikervest",
+		desc_id = "bm_suit_bikervest_desc",
+		texture_bundle_folder = "txt2",
+		global_value = "txt2",
+		material_variations = {}
+	}
+	self.player_styles.bikervest.material_variations.default = {
+		name_id = "bm_suit_var_bikervest_default",
+		global_value = "txt2",
+		desc_id = "bm_suit_var_bikervest_default_desc"
+	}
+	self.player_styles.bikervest.material_variations.camo = {
+		desc_id = "bm_suit_bikervest_camo_desc",
+		global_value = "txt2",
+		auto_aquire = true,
+		name_id = "bm_suit_bikervest_camo",
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_camo"
+	}
+	self.player_styles.bikervest.material_variations.red = {
+		desc_id = "bm_suit_bikervest_red_desc",
+		global_value = "txt2",
+		auto_aquire = true,
+		name_id = "bm_suit_bikervest_red",
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_red"
+	}
+	self.player_styles.bikervest.material_variations.white = {
+		desc_id = "bm_suit_bikervest_white_desc",
+		global_value = "txt2",
+		auto_aquire = true,
+		name_id = "bm_suit_bikervest_white",
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_white"
+	}
+	self.player_styles.bikervest.body_replacement = body_replacement_standard
+	self.player_styles.bikervest.third_body_replacement = body_replacement_standard
+	self.player_styles.bikervest.unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest"
+	self.player_styles.bikervest.characters = {}
+	local bikervest_characters_male = {
+		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average/txt2_acc_bikervest_male_average",
+		material_variations = {}
+	}
+	bikervest_characters_male.material_variations.camo = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_camo",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average/txt2_acc_bikervest_male_average_camo"
+	}
+	bikervest_characters_male.material_variations.red = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_red",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average/txt2_acc_bikervest_male_average_red"
+	}
+	bikervest_characters_male.material_variations.white = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_white",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average/txt2_acc_bikervest_male_average_white"
+	}
+
+	set_characters_data("bikervest", characters_male, bikervest_characters_male)
+
+	local bikervest_characters_dragon = {
+		unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_02",
+		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_02/txt2_acc_bikervest_male_average_02",
+		material_variations = {}
+	}
+	bikervest_characters_dragon.material_variations.camo = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_02_camo",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_02/txt2_acc_bikervest_male_average_02_camo"
+	}
+	bikervest_characters_dragon.material_variations.red = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_02_red",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_02/txt2_acc_bikervest_male_average_02_red"
+	}
+	bikervest_characters_dragon.material_variations.white = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_02_white",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_02/txt2_acc_bikervest_male_average_02_white"
+	}
+	self.player_styles.bikervest.characters.dragon = bikervest_characters_dragon
+	local bikervest_characters_bodhi = {
+		unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_bodhi",
+		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_bodhi/txt2_acc_bikervest_male_average_bodhi",
+		material_variations = {}
+	}
+	bikervest_characters_bodhi.material_variations.camo = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_bodhi_camo",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_bodhi/txt2_acc_bikervest_male_average_bodhi_camo"
+	}
+	bikervest_characters_bodhi.material_variations.red = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_bodhi_red",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_bodhi/txt2_acc_bikervest_male_average_bodhi_red"
+	}
+	bikervest_characters_bodhi.material_variations.white = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_bodhi_white",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_bodhi/txt2_acc_bikervest_male_average_bodhi_white"
+	}
+	self.player_styles.bikervest.characters.bodhi = bikervest_characters_bodhi
+	local bikervest_characters_scarface = {
+		unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_02",
+		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_02/txt2_acc_bikervest_male_average_02",
+		material_variations = {}
+	}
+	bikervest_characters_scarface.material_variations.camo = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_02_camo",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_02/txt2_acc_bikervest_male_average_02_camo"
+	}
+	bikervest_characters_scarface.material_variations.red = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_02_red",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_02/txt2_acc_bikervest_male_average_02_red"
+	}
+	bikervest_characters_scarface.material_variations.white = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_02_white",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_02/txt2_acc_bikervest_male_average_02_white"
+	}
+	self.player_styles.bikervest.characters.chico = bikervest_characters_scarface
+	local bikervest_characters_chains = {
+		unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_chains",
+		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_chains/txt2_acc_bikervest_male_average_chains",
+		material_variations = {}
+	}
+	bikervest_characters_chains.material_variations.camo = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_chains_camo",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_chains/txt2_acc_bikervest_male_average_chains_camo"
+	}
+	bikervest_characters_chains.material_variations.red = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_chains_red",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_chains/txt2_acc_bikervest_male_average_chains_red"
+	}
+	bikervest_characters_chains.material_variations.white = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_chains_white",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_average_chains/txt2_acc_bikervest_male_average_chains_white"
+	}
+	self.player_styles.bikervest.characters.chains = bikervest_characters_chains
+	local bikervest_characters_male_big = {
+		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_big/txt2_acc_bikervest_male_big",
+		material_variations = {}
+	}
+	bikervest_characters_male_big.material_variations.camo = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_camo",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_big/txt2_acc_bikervest_male_big_camo"
+	}
+	bikervest_characters_male_big.material_variations.red = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_red",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_big/txt2_acc_bikervest_male_big_red"
+	}
+	bikervest_characters_male_big.material_variations.white = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_white",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_big/txt2_acc_bikervest_male_big_white"
+	}
+
+	set_characters_data("bikervest", characters_male_big, bikervest_characters_male_big)
+
+	local bikervest_characters_sangres = {
+		unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_sangres",
+		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_big_sangres/txt2_acc_bikervest_male_big_sangres",
+		material_variations = {}
+	}
+	bikervest_characters_sangres.material_variations.camo = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_sangres_camo",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_big_sangres/txt2_acc_bikervest_male_big_sangres_camo"
+	}
+	bikervest_characters_sangres.material_variations.red = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_sangres_red",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_big_sangres/txt2_acc_bikervest_male_big_sangres_red"
+	}
+	bikervest_characters_sangres.material_variations.white = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_sangres_white",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_big_sangres/txt2_acc_bikervest_male_big_sangres_white"
+	}
+	self.player_styles.bikervest.characters.max = bikervest_characters_sangres
+	local bikervest_characters_female = {
+		unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female",
+		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_average/txt2_acc_bikervest_female_average",
+		material_variations = {}
+	}
+	bikervest_characters_female.material_variations.camo = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_camo",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_average/txt2_acc_bikervest_female_average_camo"
+	}
+	bikervest_characters_female.material_variations.red = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_red",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_average/txt2_acc_bikervest_female_average_red"
+	}
+	bikervest_characters_female.material_variations.white = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_white",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_average/txt2_acc_bikervest_female_average_white"
+	}
+
+	set_characters_data("bikervest", characters_female, bikervest_characters_female)
+
+	local bikervest_characters_sydney = {
+		unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_sydney",
+		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_average_sydney/txt2_acc_bikervest_female_average_sydney",
+		material_variations = {}
+	}
+	bikervest_characters_sydney.material_variations.camo = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_sydney_camo",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_average_sydney/txt2_acc_bikervest_female_average_sydney_camo"
+	}
+	bikervest_characters_sydney.material_variations.red = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_sydney_red",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_average_sydney/txt2_acc_bikervest_female_average_sydney_red"
+	}
+	bikervest_characters_sydney.material_variations.white = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_sydney_white",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_average_sydney/txt2_acc_bikervest_female_average_sydney_white"
+	}
+	self.player_styles.bikervest.characters.sydney = bikervest_characters_sydney
+	local bikervest_characters_joy = {
+		unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_joy",
+		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_average_joy/txt2_acc_bikervest_female_average_joy",
+		material_variations = {}
+	}
+	bikervest_characters_joy.material_variations.camo = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_joy_camo",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_average_joy/txt2_acc_bikervest_female_average_joy_camo"
+	}
+	bikervest_characters_joy.material_variations.red = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_joy_red",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_average_joy/txt2_acc_bikervest_female_average_joy_red"
+	}
+	bikervest_characters_joy.material_variations.white = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_joy_white",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_average_joy/txt2_acc_bikervest_female_average_joy_white"
+	}
+	self.player_styles.bikervest.characters.joy = bikervest_characters_joy
+	local bikervest_characters_female_big = {}
+	bikervest_characters_female.unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female"
+	bikervest_characters_female_big.third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_big/txt2_acc_bikervest_female_big"
+	bikervest_characters_female_big.material_variations = {
+		camo = {
+			material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_camo",
+			third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_big/txt2_acc_bikervest_female_big_camo"
+		},
+		red = {
+			material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_red",
+			third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_big/txt2_acc_bikervest_female_big_red"
+		},
+		white = {
+			material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_female_white",
+			third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_female_big/txt2_acc_bikervest_female_big_white"
+		}
+	}
+
+	set_characters_data("bikervest", characters_female_big, bikervest_characters_female_big)
+
+	local bikervest_characters_male_fat = {
+		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_fat/txt2_acc_bikervest_male_fat",
+		material_variations = {}
+	}
+	bikervest_characters_male_fat.material_variations.camo = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_camo",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_fat/txt2_acc_bikervest_male_fat_camo"
+	}
+	bikervest_characters_male_fat.material_variations.red = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_red",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_fat/txt2_acc_bikervest_male_fat_red"
+	}
+	bikervest_characters_male_fat.material_variations.white = {
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_fps_bikervest/txt2_acc_fps_bikervest_white",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikervest/txt2_acc_bikervest_male_fat/txt2_acc_bikervest_male_fat_white"
+	}
+	bikervest_characters_male_fat.sequence = "set_ehtan"
+	self.player_styles.bikervest.characters.ecp_male = bikervest_characters_male_fat
+	self.player_styles.bikerjacket = {
+		name_id = "bm_suit_bikerjacket",
+		desc_id = "bm_suit_bikerjacket_desc",
+		texture_bundle_folder = "txt2",
+		global_value = "txt2",
+		material_variations = {}
+	}
+	self.player_styles.bikerjacket.material_variations.default = {
+		name_id = "bm_suit_var_bikerjacket_suit_default",
+		global_value = "txt2",
+		desc_id = "bm_suit_var_bikerjacket_suit_default_desc"
+	}
+	self.player_styles.bikerjacket.body_replacement = body_replacement_standard
+	self.player_styles.bikerjacket.third_body_replacement = body_replacement_standard
+	self.player_styles.bikerjacket.unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/txt2_acc_fps_bikerjacket_male/txt2_acc_fps_bikerjacket_male"
+	self.player_styles.bikerjacket.material_variations.green = {
+		desc_id = "bm_suit_bikerjacket_green_desc",
+		global_value = "txt2",
+		auto_aquire = true,
+		name_id = "bm_suit_bikerjacket_green",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/shared_materials/txt2_acc_bikerjacket_green",
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/shared_materials/txt2_acc_fps_bikerjacket_green"
+	}
+	self.player_styles.bikerjacket.material_variations.gray = {
+		desc_id = "bm_suit_bikerjacket_gray_desc",
+		global_value = "txt2",
+		auto_aquire = true,
+		name_id = "bm_suit_bikerjacket_gray",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/shared_materials/txt2_acc_bikerjacket_gray",
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/shared_materials/txt2_acc_fps_bikerjacket_gray"
+	}
+	self.player_styles.bikerjacket.material_variations.red = {
+		desc_id = "bm_suit_bikerjacket_red_desc",
+		global_value = "txt2",
+		auto_aquire = true,
+		name_id = "bm_suit_bikerjacket_red",
+		third_material = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/shared_materials/txt2_acc_bikerjacket_red",
+		material = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/shared_materials/txt2_acc_fps_bikerjacket_red"
+	}
+	self.player_styles.bikerjacket.characters = {}
+	local bikerjacket_characters_male = {
+		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/txt2_acc_bikerjacket_male_average/txt2_acc_bikerjacket_male_average"
+	}
+
+	set_characters_data("bikerjacket", characters_male, bikerjacket_characters_male)
+
+	local bikerjacket_characters_male_big = {
+		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/txt2_acc_bikerjacket_male_big/txt2_acc_bikerjacket_male_big"
+	}
+
+	set_characters_data("bikerjacket", characters_male_big, bikerjacket_characters_male_big)
+
+	local bikerjacket_characters_female = {
+		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/txt2_acc_bikerjacket_female_average/txt2_acc_bikerjacket_female_average"
+	}
+
+	set_characters_data("bikerjacket", characters_female, bikerjacket_characters_female)
+
+	local bikerjacket_characters_female_big = {
+		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/txt2_acc_bikerjacket_female_fat/txt2_acc_bikerjacket_female_fat"
+	}
+
+	set_characters_data("bikerjacket", characters_female_big, bikerjacket_characters_female_big)
+
+	local bikerjacket_characters_male_fat = {
+		third_unit = "units/pd2_dlc_txt2/characters/txt2_acc_bikerjacket/txt2_acc_bikerjacket_male_fat/txt2_acc_bikerjacket_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.bikerjacket.characters.ecp_male = bikerjacket_characters_male_fat
 end
 
 function BlackMarketTweakData:get_player_style_value(player_style, character_name, key)
