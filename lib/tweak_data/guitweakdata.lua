@@ -1927,6 +1927,13 @@ function GuiTweakData:init(tweak_data)
 			id = "skirmish",
 			icon = "sidebar_skirmish",
 			item_class = "CrimeNetSidebarSkirmishItem"
+		},
+		{
+			name_id = "menu_event_a10th_info",
+			callback = "clbk_pda9_event",
+			id = "event",
+			icon = "sidebar_mutators",
+			item_class = "CrimeNetSidebarEventsItem"
 		}
 	}
 	self.crime_net.codex = {
@@ -5116,6 +5123,11 @@ function GuiTweakData:init(tweak_data)
 		limit = 5
 	}
 
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_pda9_01",
+		texture_path = "guis/dlcs/pda9/textures/pd2/new_heists/pda9_01",
+		url = "https://pd2.link/PD2NinthSLW"
+	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_txt2_02",
 		texture_path = "guis/dlcs/txt2/textures/pd2/new_heists/txt2_02",

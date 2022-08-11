@@ -8425,6 +8425,16 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 			}
 		}
 	}
+	self.masks.skulldia = {
+		unit = "units/pd2_dlc_pda9/masks/msk_skulldia/msk_skulldia",
+		name_id = "bm_msk_skulldia",
+		pcs = {},
+		value = 0,
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "pda9",
+		texture_bundle_folder = "pda9"
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.masks) do

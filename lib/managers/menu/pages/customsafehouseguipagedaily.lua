@@ -195,6 +195,32 @@ function CustomSafehouseGuiPageDaily:_setup_side_menu()
 		end
 	end
 
+	if managers.mutators:get_enabled_active_mutator_category() == "event" then
+		challenges = {}
+		self._challenges = {}
+		challenges.event_jobs = {
+			category_id = "menu_event_jobs"
+		}
+
+		for _, event_jobs_data in ipairs(managers.event_jobs:challenges()) do
+			if event_jobs_data.is_active_func and not managers.event_jobs[event_jobs_data.is_active_func](managers.event_jobs) then
+				-- Nothing
+			elseif event_jobs_data.temp_challenge then
+				local data = deep_clone(event_jobs_data)
+				data.name_id = event_jobs_data.name_id
+				data.category = "event_jobs"
+				local event_jobs_challenge = {
+					id = event_jobs_data.id,
+					data = data
+				}
+
+				table.insert(challenges.event_jobs, event_jobs_challenge)
+
+				self._challenges[event_jobs_challenge.id] = event_jobs_challenge.data
+			end
+		end
+	end
+
 	local current_y = 0
 	local first = true
 

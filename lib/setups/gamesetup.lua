@@ -251,6 +251,7 @@ require("lib/units/props/UnoPianoBase")
 require("lib/units/vehicles/VitHelicopterSync")
 require("lib/units/characters/PlayerBodyBoneMergeBase")
 require("lib/units/LuaHookExt")
+require("lib/units/props/AnniversaryPiggyBank")
 require("lib/units/SyncMaterials")
 require("lib/units/equipment/player_turret/PlayerTurretBase")
 require("lib/units/equipment/player_turret/PlayerTurretBrain")
@@ -608,6 +609,7 @@ function GameSetup:init_finalize()
 	managers.dialog:init_finalize()
 	managers.gage_assignment:init_finalize()
 	managers.assets:init_finalize()
+	managers.mutators:on_game_started()
 
 	if not Application:editor() then
 		managers.navigation:on_game_started()
@@ -715,6 +717,7 @@ function GameSetup:save(data)
 	managers.motion_path:save(data)
 	managers.crime_spree:sync_save(data)
 	managers.skirmish:sync_save(data)
+	managers.mutators:sync_save(data)
 end
 
 function GameSetup:load(data)
@@ -740,6 +743,7 @@ function GameSetup:load(data)
 	managers.motion_path:load(data)
 	managers.crime_spree:sync_load(data)
 	managers.skirmish:sync_load(data)
+	managers.mutators:sync_load(data)
 end
 
 function GameSetup:_update_debug_input()

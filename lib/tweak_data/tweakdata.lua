@@ -762,8 +762,8 @@ function TweakData:init()
 	self.story = StoryMissionsTweakData:new(self)
 	self.promo_unlocks = PromoUnlocksTweakData:new(self)
 	self.raid_jobs = RaidJobsTweakData:new(self)
-	self.event_jobs = EventJobsTweakData:new(self)
 	self.mutators = MutatorTweakData:new(self)
+	self.event_jobs = EventJobsTweakData:new(self)
 
 	self.blackmarket:build_player_style_list(self)
 	self.blackmarket:build_glove_list(self)
@@ -1311,7 +1311,9 @@ Play the full version soon to get your full PAYDAY!]],
 		xp70 = 20000,
 		xp80 = 24000,
 		xp90 = 28000,
-		xp100 = 32000
+		xp100 = 32000,
+		xp_pda9_1 = 250000,
+		xp_pda9_2 = 3000000
 	}
 	self.experience_manager.stage_completion = {
 		0,

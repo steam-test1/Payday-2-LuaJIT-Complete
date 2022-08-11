@@ -70,7 +70,11 @@ function FeatureManager:load(data, version)
 		end
 	end
 
-	Global.feature_manager.external_notifications = data.feature_manager.external_notifications or {}
+	if data.feature_manager then
+		Global.feature_manager.external_notifications = data.feature_manager.external_notifications or {}
+	else
+		Global.feature_manager.external_notifications = {}
+	end
 end
 
 function FeatureManager:reset()
@@ -381,6 +385,12 @@ end
 
 function FeatureManager:movie_theater_unlocked()
 	managers.menu:show_movie_theater_unlocked_dialog()
+
+	return true
+end
+
+function FeatureManager:pda9_event_explanation()
+	managers.menu:show_pda9_event_dialog()
 
 	return true
 end

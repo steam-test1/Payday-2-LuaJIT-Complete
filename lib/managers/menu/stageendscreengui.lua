@@ -792,6 +792,11 @@ function StageEndScreenGui:play_bain_debrief()
 	local level_data = Global.level_data.level_id and tweak_data.levels[Global.level_data.level_id]
 	local outro_event = level_data and (variant == 0 and level_data.outro_event or level_data.outro_event[variant])
 
+	if managers.mutators:is_mutator_active(MutatorPiggyBank) then
+		local piggybank_mutator = managers.mutators:get_mutator(MutatorPiggyBank)
+		outro_event = piggybank_mutator:get_outro_event(outro_event)
+	end
+
 	Application:debug("StageEndScreenGui:play_bain_debrief()", outro_event)
 
 	if outro_event then

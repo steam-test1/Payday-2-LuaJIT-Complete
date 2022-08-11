@@ -27,6 +27,44 @@ function SideJobEventManager:_setup()
 			end
 		end
 	end
+
+	if setup.IS_START_MENU then
+		self._event_data_fetched = false
+
+		self:_fetch_challenges()
+	end
+end
+
+local json = require("lib/utils/accelbyte/json")
+
+function SideJobEventManager:_fetch_challenges()
+	local events_url = "https://www.paydaythegame.com/ovk-media/redux/ninth-2yrgbaw/ninthstage.json"
+
+	if SystemInfo:distribution() == Idstring("STEAM") then
+		print("[SideJobEventManager] Getting Events from: ", events_url)
+
+		local done_clbk = callback(self, self, "_fetch_done_clbk")
+
+		Steam:http_request(events_url, done_clbk, Idstring("[SideJobEventManager] fetch_challenges()"):key())
+	end
+end
+
+function SideJobEventManager:_fetch_done_clbk(success, s)
+	print("[SideJobEventManager]", success, s)
+
+	if success then
+		local events_data = json.decode(s) or {}
+		self._event_data_fetched = true
+		local pda9_unlock_stage = (events_data.unlockstage or 0) + 1
+		local pda9_pigs = events_data.pigs or 0
+		self._global.event_data.pda9 = self._global.event_data.pda9 or {}
+		self._global.event_data.pda9.stage = pda9_unlock_stage
+		self._global.event_data.pda9.pigs = pda9_pigs
+
+		if self._global.event_stage.pda9 ~= pda9_unlock_stage then
+			self:set_event_stage("pda9", pda9_unlock_stage)
+		end
+	end
 end
 
 function SideJobEventManager:_setup_challenges()
@@ -49,6 +87,8 @@ function SideJobEventManager:_setup_challenges()
 	for event_id, event_data in pairs(self._tweak_data.event_info) do
 		Global[self.global_table_name].event_stage[event_id] = 0
 	end
+
+	Global[self.global_table_name].event_data = {}
 end
 
 function SideJobEventManager:reset()
@@ -104,10 +144,10 @@ function SideJobEventManager:save(cache)
 
 	local collective_stats = {}
 
-	for id, item in pairs(self._global.collective_stats) do
-		if item.found and table.size(item.found) > 0 then
+	for id, stat in pairs(self._global.collective_stats) do
+		if stat.found and table.size(stat.found) > 0 then
 			collective_stats[id] = {
-				found = item.found
+				found = stat.found
 			}
 		end
 	end
@@ -115,7 +155,8 @@ function SideJobEventManager:save(cache)
 	local save_data = {
 		version = self.save_version,
 		challenges = challenges,
-		collective_stats = collective_stats
+		collective_stats = collective_stats,
+		event_data = self._global.event_data
 	}
 	cache[self.save_table_name] = save_data
 end
@@ -168,12 +209,20 @@ function SideJobEventManager:load(cache, version)
 			end
 		end
 
-		for id, saved_item in pairs(state.collective_stats or {}) do
-			for idx, item in pairs(self._global.collective_stats) do
-				if id == idx then
-					item.found = saved_item.found
-				else
-					item.found = {}
+		for id, saved_stat in pairs(state.collective_stats or {}) do
+			local stat = self._global.collective_stats and self._global.collective_stats[id] or nil
+
+			if stat then
+				stat.found = saved_stat.found
+			end
+		end
+
+		if not self._event_data_fetched then
+			self._global.event_data = state.event_data or {}
+
+			for event_id, data in pairs(self._global.event_data) do
+				if data.stage then
+					self:set_event_stage(event_id, data.stage)
 				end
 			end
 		end

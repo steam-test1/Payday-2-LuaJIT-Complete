@@ -3559,3 +3559,15 @@ end
 function PlayerTurretInteractionExt:interact_distance()
 	return self._tweak_data.interact_distance or tweak_data.interaction.INTERACT_DISTANCE
 end
+
+CustomUnitInteractionExt = CustomUnitInteractionExt or class(UseInteractionExt)
+
+function CustomUnitInteractionExt:interact(player, locator)
+	CustomUnitInteractionExt.super.super.interact(self, player, locator)
+
+	if self._unit:base().on_interacted then
+		self._unit:base():on_interacted(player)
+	end
+
+	return true
+end

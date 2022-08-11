@@ -474,6 +474,10 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 	if unit:spawn_manager() then
 		unit:spawn_manager():remove_unit("char_mesh")
 
+		if character_unit:character_damage() then
+			character_unit:character_damage():remove_listener("visual_mesh")
+		end
+
 		local unit_name = tweak_data.blackmarket:get_player_style_value(player_style, character_name, get_value_string("unit"))
 		local char_mesh_unit = nil
 
@@ -500,6 +504,13 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 
 			if wanted_config_ids and char_mesh_unit:material_config() ~= wanted_config_ids then
 				managers.dyn_resource:change_material_config(wanted_config_ids, char_mesh_unit, true)
+			end
+
+			if char_mesh_unit:damage() and char_mesh_unit:damage():has_sequence("on_damage_taken") and character_unit:character_damage() then
+				character_unit:character_damage():add_listener("visual_mesh", {
+					"hurt",
+					"none"
+				}, CriminalsManager.character_mesh_damage_clbk)
 			end
 
 			char_mesh_unit:set_enabled(unit:enabled())
@@ -576,6 +587,40 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 	math.random()
 	math.random()
 	math.random()
+end
+
+function CriminalsManager.character_mesh_damage_clbk(character_unit, damage_info)
+	if alive(character_unit) and damage_info then
+		local unit = character_unit
+
+		if unit:camera() and alive(unit:camera():camera_unit()) and unit:camera():camera_unit():damage() then
+			unit = unit:camera():camera_unit()
+		end
+
+		local char_mesh = unit:spawn_manager():get_unit("char_mesh")
+
+		if alive(char_mesh) then
+			local pos = mvec1
+			local rot = mrot1
+
+			mvector3.set(pos, damage_info.pos or character_unit:movement():m_head_pos())
+
+			local dir = mvec2
+
+			mvector3.set(dir, damage_info.attack_dir or math.X)
+			mvector3.normalize(dir)
+			mrotation.set_look_at(rot, dir, math.UP)
+
+			local vel = mvec2
+
+			mvector3.set_zero(vel)
+
+			local normal = math.UP
+			local pos = mvector3.copy(pos)
+
+			char_mesh:damage():run_sequence("on_damage_taken", damage_info.result.variant, damage_info.attacker_unit, nil, normal, pos, rot, 0, vel, nil)
+		end
+	end
 end
 
 function CriminalsManager.get_new_visual_seed()

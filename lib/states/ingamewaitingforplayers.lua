@@ -99,6 +99,12 @@ function IngameWaitingForPlayersState:sync_start(variant, soundtrack, music_ext)
 	local level_data = Global.level_data.level_id and tweak_data.levels[Global.level_data.level_id]
 	self._intro_text_id = level_data and level_data.intro_text_id
 	self._intro_event = level_data and (variant == 0 and level_data.intro_event or level_data.intro_event[variant])
+
+	if managers.mutators:is_mutator_active(MutatorPiggyBank) then
+		local piggybank_mutator = managers.mutators:get_mutator(MutatorPiggyBank)
+		self._intro_event = piggybank_mutator:get_intro_event(self._intro_event)
+	end
+
 	self._blackscreen_started = true
 
 	managers.menu_component:close_asset_mission_briefing_gui()

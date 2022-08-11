@@ -127,7 +127,7 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		hitman = "heist_default",
 		gentleman = "heist_default",
 		clown = "heist_clown",
-		slaughterhouse = "heist_default",
+		moneysuit = "heist_default",
 		jumpsuit = "heat",
 		hiphop = "bonemittens",
 		gunslinger = "heist_default",
@@ -175,6 +175,7 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		cartelboss = "heist_default",
 		bullranch = "heist_default",
 		raincoat = "heist_default",
+		slaughterhouse = "heist_default",
 		cable_guy = "heist_default",
 		jail_pd2_clan = "heist_default",
 		esport = "esport",
@@ -725,5 +726,14 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		sort_number = 1,
 		unit = "units/pd2_dlc_txt2/characters/glv_redhand/glv_redhand",
 		third_material = "units/pd2_dlc_txt2/characters/glv_redhand/glv_redhand_third"
+	}
+	self.gloves.leatherspark = {
+		name_id = "bm_gloves_leatherspark",
+		desc_id = "bm_gloves_leatherspark_desc",
+		texture_bundle_folder = "pda9",
+		global_value = "pda9",
+		sort_number = 1,
+		unit = "units/pd2_dlc_pda9/characters/glv_leatherspark/glv_leatherspark",
+		third_material = "units/pd2_dlc_pda9/characters/glv_leatherspark/glv_leatherspark_third"
 	}
 end

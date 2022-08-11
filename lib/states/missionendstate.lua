@@ -1617,6 +1617,14 @@ function MissionEndState:chk_complete_heist_achievements()
 		end
 
 		managers.event_jobs:award_on_mission_end()
+
+		for _, mutator in ipairs(managers.mutators:active_mutators()) do
+			local active_mutator = mutator.mutator
+
+			if active_mutator.check_heist_end_achievements then
+				active_mutator:check_heist_end_achievements(self._success)
+			end
+		end
 	end
 
 	managers.achievment:clear_heist_success_awards()

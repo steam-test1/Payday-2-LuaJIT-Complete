@@ -539,6 +539,10 @@ function PlayerStandard:_update_fwd_ray()
 	end
 end
 
+function PlayerStandard:get_fwd_ray()
+	return self._fwd_ray
+end
+
 function PlayerStandard:force_input(inputs, release_inputs)
 	self._forced_inputs = inputs
 	self._forced_release_inputs = release_inputs

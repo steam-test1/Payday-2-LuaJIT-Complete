@@ -667,11 +667,13 @@ function InteractionTweakData:init(tweak_data)
 	self.hack_suburbia_outline = {
 		icon = "equipment_hack_ipad",
 		text_id = "debug_interact_hack_ipad",
+		interact_distance = 100,
 		timer = 5,
+		start_active = true,
+		axis = "y",
 		sound_start = "bar_keyboard",
 		sound_interupt = "bar_keyboard_cancel",
-		sound_done = "bar_keyboard_finished",
-		axis = "y"
+		sound_done = "bar_keyboard_finished"
 	}
 	self.hack_suburbia_jammed = {
 		icon = "equipment_hack_ipad",
@@ -7704,4 +7706,23 @@ function InteractionTweakData:init(tweak_data)
 	self.ranc_audio_case = deep_clone(self.invisible_interaction_open)
 	self.ranc_audio_case.axis = "x"
 	self.ranc_audio_case.interact_distance = 160
+	self.pda9_feed_bag = {
+		text_id = "hud_int_hold_grab_the_bag",
+		action_text_id = "hud_action_grabbing_bag",
+		start_active = true,
+		timer = 1.5
+	}
+	self.pda9_piggybank_1 = {
+		text_id = "hud_int_hold_explode_the_pig",
+		action_text_id = "hud_action_exploding_pig",
+		start_active = false,
+		timer = 3,
+		interact_distance = 200
+	}
+	self.pda9_piggybank_2 = deep_clone(self.pda9_piggybank_1)
+	self.pda9_piggybank_2.interact_distance = 300
+	self.pda9_piggybank_3 = deep_clone(self.pda9_piggybank_1)
+	self.pda9_piggybank_3.interact_distance = 400
+	self.pda9_piggybank_4 = deep_clone(self.pda9_piggybank_1)
+	self.pda9_piggybank_4.interact_distance = 500
 end

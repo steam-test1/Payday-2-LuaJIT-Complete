@@ -4318,6 +4318,59 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		sequence = "set_ehtan"
 	}
 	self.player_styles.bikerjacket.characters.ecp_male = bikerjacket_characters_male_fat
+	self.player_styles.moneysuit = {
+		name_id = "bm_suit_moneysuit",
+		desc_id = "bm_suit_moneysuit_desc",
+		texture_bundle_folder = "pda9",
+		global_value = "pda9",
+		material_variations = {}
+	}
+	self.player_styles.moneysuit.material_variations.default = {
+		name_id = "bm_suit_moneysuit_default",
+		global_value = "pda9",
+		desc_id = "bm_suit_moneysuit_default_desc"
+	}
+	self.player_styles.moneysuit.body_replacement = body_replacement_standard
+	self.player_styles.moneysuit.third_body_replacement = body_replacement_standard
+	self.player_styles.moneysuit.unit = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/pda9_acc_fps_moneysuit_male/pda9_acc_fps_moneysuit_male"
+	self.player_styles.moneysuit.material_variations.money = {
+		desc_id = "bm_suit_moneysuit_money_desc",
+		global_value = "pda9",
+		auto_aquire = true,
+		name_id = "bm_suit_moneysuit_money",
+		third_material = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/shared_materials/pda9_acc_moneysuit_money",
+		material = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/shared_materials/pda9_acc_fps_moneysuit_money"
+	}
+	self.player_styles.moneysuit.characters = {}
+	local moneysuit_characters_male = {
+		third_unit = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/pda9_acc_moneysuit_male_average/pda9_acc_moneysuit_male_average"
+	}
+
+	set_characters_data("moneysuit", characters_male, moneysuit_characters_male)
+
+	local moneysuit_characters_male_big = {
+		third_unit = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/pda9_acc_moneysuit_male_big/pda9_acc_moneysuit_male_big"
+	}
+
+	set_characters_data("moneysuit", characters_male_big, moneysuit_characters_male_big)
+
+	local moneysuit_characters_female = {
+		third_unit = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/pda9_acc_moneysuit_female_average/pda9_acc_moneysuit_female_average"
+	}
+
+	set_characters_data("moneysuit", characters_female, moneysuit_characters_female)
+
+	local moneysuit_characters_female_big = {
+		third_unit = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/pda9_acc_moneysuit_female_fat/pda9_acc_moneysuit_female_fat"
+	}
+
+	set_characters_data("moneysuit", characters_female_big, moneysuit_characters_female_big)
+
+	local moneysuit_characters_male_fat = {
+		third_unit = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/pda9_acc_moneysuit_male_fat/pda9_acc_moneysuit_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.moneysuit.characters.ecp_male = moneysuit_characters_male_fat
 end
 
 function BlackMarketTweakData:get_player_style_value(player_style, character_name, key)

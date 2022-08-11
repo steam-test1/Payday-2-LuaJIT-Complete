@@ -10384,7 +10384,7 @@ function BlackMarketManager:has_unlocked_shock()
 end
 
 function BlackMarketManager:has_unlocked_money()
-	local is_unlocked = managers.event_jobs:has_completed_and_claimed_rewards("pda8_1")
+	local is_unlocked = managers.event_jobs:has_completed_and_claimed_rewards("pda9_1")
 
-	return is_unlocked, "bm_menu_locked_pda8_1", "guis/textures/pd2/lock_achievement"
+	return is_unlocked, "bm_menu_locked_pda9_1", "guis/textures/pd2/lock_achievement"
 end

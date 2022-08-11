@@ -230,6 +230,12 @@ function PlayerManager:check_skills()
 		self._super_syndrome_count = 0
 	end
 
+	if managers.mutators:is_mutator_active(MutatorPiggyBank) then
+		self._message_system:register(Message.OnLethalHeadShot, "play_pda9_headshot", callback(self, self, "_play_pda9_headshot_event"))
+	else
+		self._message_system:unregister(Message.OnLethalHeadShot, "play_pda9_headshot")
+	end
+
 	if self:has_category_upgrade("player", "dodge_shot_gain") then
 		local last_gain_time = 0
 		local dodge_gain = self:upgrade_value("player", "dodge_shot_gain")[1]
@@ -276,6 +282,14 @@ function PlayerManager:check_skills()
 		self:register_message(Message.OnWeaponFired, "graze_damage", callback(SniperGrazeDamage, SniperGrazeDamage, "on_weapon_fired"))
 	else
 		self:unregister_message(Message.OnWeaponFired, "graze_damage")
+	end
+end
+
+function PlayerManager:_play_pda9_headshot_event()
+	local player_unit = self:player_unit()
+
+	if alive(player_unit) then
+		player_unit:sound():play("PD9A_HS", nil, false)
 	end
 end
 

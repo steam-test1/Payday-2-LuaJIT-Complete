@@ -3078,6 +3078,21 @@ function MenuManager:show_movie_theater_unlocked_dialog()
 	managers.system_menu:show(dialog_data)
 end
 
+function MenuManager:show_pda9_event_dialog()
+	local dialog_data = {
+		title = managers.localization:text("dialog_pda9_event_title"),
+		text = managers.localization:text("dialog_pda9_event_text")
+	}
+	local ok_button = {
+		text = managers.localization:text("dialog_ok")
+	}
+	dialog_data.button_list = {
+		ok_button
+	}
+
+	managers.system_menu:show(dialog_data)
+end
+
 function MenuManager:show_external_items_dialog(params)
 	local dialog_data = {
 		title = managers.localization:text("dialog_external_items_title")

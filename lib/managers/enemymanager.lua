@@ -760,6 +760,14 @@ function EnemyManager:on_enemy_died(dead_unit, damage_info)
 	self:_destroy_unit_gfx_lod_data(u_key)
 	managers.hud:remove_waypoint("wp_hostage_trade" .. tostring(dead_unit:key()))
 	managers.modifiers:run_func("OnEnemyDied", dead_unit, damage_info)
+
+	if Network:is_server() and managers.mutators:is_mutator_active(MutatorPiggyBank) and not dead_unit:base():has_tag("sniper") then
+		local piggybank_mutator = managers.mutators:get_mutator(MutatorPiggyBank)
+
+		if piggybank_mutator:can_spawn_bag() then
+			piggybank_mutator:on_enemy_killed(dead_unit, damage_info)
+		end
+	end
 end
 
 function EnemyManager:on_enemy_destroyed(enemy)

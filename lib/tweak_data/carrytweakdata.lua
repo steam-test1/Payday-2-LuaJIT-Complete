@@ -90,6 +90,7 @@ function CarryTweakData:init(tweak_data)
 		vault_loot_macka = tweak_data:get_value("money_manager", "small_loot", "vault_loot_macka"),
 		federali_medal = tweak_data:get_value("money_manager", "small_loot", "federali_medal")
 	}
+	self.types.piggy_feed = deep_clone(self.types.coke_light)
 	self.gold = {
 		type = "heavy",
 		name_id = "hud_carry_gold",
@@ -1052,6 +1053,13 @@ function CarryTweakData:init(tweak_data)
 		AI_carry = {
 			SO_category = "enemies"
 		}
+	}
+	self.pda9_feed = {
+		type = "piggy_feed",
+		name_id = "hud_carry_feed",
+		unit = "units/pd2_dlc_pda9/props/pda9_pickup_feed_bag/pda9_pickup_feed_bag",
+		visual_unit_name = "units/pd2_dlc_pda9/props/pda9_pickup_feed_bag/pda9_acc_feed_bag",
+		expire_t = 10
 	}
 end
 

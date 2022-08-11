@@ -97,6 +97,7 @@ function CrimeNetManager:_setup_vars()
 	self._refresh_server_t = 0
 	self._REFRESH_SERVERS_TIME = self._tweak_data.job_vars.refresh_servers_time
 	self._active_server_jobs = {}
+	self._sidebar_filter_excludes = {}
 end
 
 function CrimeNetManager:set_max_active_server_jobs(max_server_jobs)
@@ -208,12 +209,14 @@ function CrimeNetManager:_setup()
 	end
 
 	self._presets = {}
+	self._event_presets = {}
 	local plvl = managers.experience:current_level()
 	local player_stars = math.clamp(math.ceil((plvl + 1) / 10), 1, 10)
 	local stars = player_stars
 	local jc = math.lerp(0, 100, stars / 10)
 	local prank = managers.experience:current_rank()
 	local jcs = tweak_data.narrative:get_jcs_from_stars(stars, prank > 0)
+	local event_levels = table.map_keys(tweak_data.mutators.piggybank.level_coordinates)
 	local no_jcs = #jcs
 	local chance_curve = tweak_data.narrative.STARS_CURVES[player_stars]
 	local start_chance = tweak_data.narrative.JC_CHANCE
@@ -255,6 +258,20 @@ function CrimeNetManager:_setup()
 
 				table.insert(self._presets, job_data)
 
+				local job_in_event = #job_tweak.chain > 0
+
+				for _, stage in ipairs(job_tweak.chain) do
+					if not table.contains(event_levels, stage.level_id) then
+						job_in_event = false
+
+						break
+					end
+				end
+
+				if job_in_event then
+					table.insert(self._event_presets, job_data)
+				end
+
 				j = j + 1
 
 				break
@@ -278,6 +295,13 @@ function CrimeNetManager:_setup()
 	while #old_presets > 0 do
 		table.insert(self._presets, table.remove(old_presets, math.random(#old_presets)))
 	end
+
+	local old_event_presets = self._event_presets
+	self._event_presets = {}
+
+	while #old_event_presets > 0 do
+		table.insert(self._event_presets, table.remove(old_event_presets, math.random(#old_event_presets)))
+	end
 end
 
 function CrimeNetManager:update_difficulty_filter()
@@ -291,8 +315,14 @@ function CrimeNetManager:update_difficulty_filter()
 				job_data.difficulty = difficulty_name
 				job_data.difficulty_id = difficulty_filter_index
 			end
+
+			for _, job_data in ipairs(self._event_presets or {}) do
+				job_data.difficulty = difficulty_name
+				job_data.difficulty_id = difficulty_filter_index
+			end
 		else
 			self._presets = nil
+			self._event_presets = nil
 
 			self:_setup()
 		end
@@ -302,11 +332,21 @@ end
 function CrimeNetManager:reset_seed()
 	if not managers.menu_component or not managers.menu_component:has_crimenet_gui() then
 		self._presets = nil
+		self._event_presets = nil
 	end
+end
+
+function CrimeNetManager:is_event_active()
+	return MenuCallbackHandler:is_event()
 end
 
 function CrimeNetManager:spawn_job(name, difficulty, time_limit)
 	local presets = self._presets
+
+	if self:is_event_active() then
+		presets = self._event_presets
+	end
+
 	local count = #presets
 
 	for i = 1, count do
@@ -352,6 +392,10 @@ function CrimeNetManager:update(t, dt)
 	end
 
 	local presets = self._presets
+
+	if self:is_event_active() then
+		presets = self._event_presets
+	end
 
 	for id, job in pairs(self._active_jobs) do
 		if not job.added then
@@ -470,6 +514,11 @@ local disabled_contacts = {
 
 function CrimeNetManager:activate_job()
 	local presets = self._presets
+
+	if self:is_event_active() then
+		presets = self._event_presets
+	end
+
 	local i = math.random(#presets)
 
 	while i ~= i - 1 do
@@ -497,6 +546,10 @@ end
 
 function CrimeNetManager:preset(id)
 	local presets = self._presets
+
+	if self:is_event_active() then
+		presets = self._event_presets
+	end
 
 	return presets[id]
 end
@@ -1338,6 +1391,22 @@ end
 
 function CrimeNetManager:sidebar_collapsed()
 	return self._global.sidebar.collapsed
+end
+
+function CrimeNetManager:set_sidebar_exclude_filter(exclude_list)
+	self._sidebar_filter_excludes = exclude_list or {}
+end
+
+function CrimeNetManager:get_sidebar_filtered()
+	local sidebar_filtered = {}
+
+	for i, item in ipairs(tweak_data.gui.crime_net.sidebar) do
+		if not table.contains(self._sidebar_filter_excludes, item.name_id) then
+			table.insert(sidebar_filtered, item)
+		end
+	end
+
+	return sidebar_filtered
 end
 
 CrimeNetGui = CrimeNetGui or class()

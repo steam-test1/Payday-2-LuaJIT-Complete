@@ -787,7 +787,7 @@ function GenericDLCManager:has_ghm()
 end
 
 function GenericDLCManager:has_pda8_wpn_money()
-	return managers.event_jobs:get_event_stage("pda8") < 5
+	return true
 end
 
 function GenericDLCManager:has_gage_pack_shotgun()

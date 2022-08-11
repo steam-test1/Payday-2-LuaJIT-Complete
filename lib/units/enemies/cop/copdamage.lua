@@ -2972,6 +2972,8 @@ function CopDamage:sync_damage_bullet(attacker_unit, damage_percent, i_body, hit
 	attack_data.pos = hit_pos
 	attack_data.attacker_unit = attacker_unit
 	attack_data.variant = "bullet"
+	attack_data.headshot = head
+	attack_data.weapon_unit = attacker_unit and attacker_unit:inventory() and attacker_unit:inventory():equipped_unit()
 	local attack_dir, distance = nil
 
 	if attacker_unit then

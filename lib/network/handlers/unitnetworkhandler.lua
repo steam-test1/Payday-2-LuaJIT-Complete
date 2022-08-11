@@ -4420,3 +4420,89 @@ function UnitNetworkHandler:shot_player_turret(turret_unit, impact, sender)
 		turret_unit:base():fire_blank(impact)
 	end
 end
+
+function UnitNetworkHandler:sync_feed_piggybank(bag_unit, reached_next_level, sender)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local peer = self._verify_sender(sender)
+
+	if not peer then
+		return
+	end
+
+	local mutator = managers.mutators:get_mutator(MutatorPiggyBank)
+
+	if mutator then
+		mutator:sync_feed_piggybank(bag_unit, reached_next_level)
+	end
+end
+
+function UnitNetworkHandler:sync_piggybank_dialog(sync_index, sender)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local peer = self._verify_sender(sender)
+
+	if not peer then
+		return
+	end
+
+	local mutator = managers.mutators:get_mutator(MutatorPiggyBank)
+
+	if mutator then
+		mutator:sync_piggybank_dialog(sync_index)
+	end
+end
+
+function UnitNetworkHandler:sync_explode_piggybank(sender)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local peer = self._verify_sender(sender)
+
+	if not peer then
+		return
+	end
+
+	local mutator = managers.mutators:get_mutator(MutatorPiggyBank)
+
+	if mutator then
+		mutator:sync_explode_piggybank()
+	end
+end
+
+function UnitNetworkHandler:carry_interact_start(bag_unit, sender)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local peer = self._verify_sender(sender)
+
+	if not peer then
+		return
+	end
+
+	if alive(bag_unit) and bag_unit:carry_data() then
+		bag_unit:carry_data():set_expire_paused(true)
+	end
+end
+
+function UnitNetworkHandler:carry_interact_interupt(bag_unit, sender)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local peer = self._verify_sender(sender)
+
+	if not peer then
+		return
+	end
+
+	if alive(bag_unit) and bag_unit:carry_data() then
+		bag_unit:carry_data():set_expire_paused(false)
+	end
+end

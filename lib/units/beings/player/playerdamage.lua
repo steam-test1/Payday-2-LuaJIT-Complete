@@ -1220,7 +1220,9 @@ function PlayerDamage:damage_bullet(attack_data)
 			variant = "bullet",
 			type = "hurt"
 		},
-		attacker_unit = attack_data.attacker_unit
+		attacker_unit = attack_data.attacker_unit,
+		attack_dir = attack_data.attacker_unit and attack_data.attacker_unit:movement():m_pos() - self._unit:movement():m_pos() or Vector3(1, 0, 0),
+		pos = mvector3.copy(self._unit:movement():m_head_pos())
 	}
 	local pm = managers.player
 	local dmg_mul = pm:damage_reduction_skill_multiplier("bullet")

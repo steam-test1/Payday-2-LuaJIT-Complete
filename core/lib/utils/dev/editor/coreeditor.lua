@@ -3137,11 +3137,11 @@ end
 
 function CoreEditor:autosave()
 	if self._lastdir and self._lastfile then
-		self:save_incremental(self:create_temp_saves("autosave"), "world")
+		self:save_incremental(self:create_temp_saves("autosave"), "world", true)
 	end
 end
 
-function CoreEditor:save_incremental(dir, f_name)
+function CoreEditor:save_incremental(dir, f_name, autosaving)
 	dir = dir .. "\\" .. Application:date("%Y-%m-%d_%H_%M_%S")
 
 	SystemFS:make_dir(dir)
@@ -3149,10 +3149,10 @@ function CoreEditor:save_incremental(dir, f_name)
 	local path = dir .. "\\" .. f_name .. ".world"
 	local save_continents = true
 
-	self:do_save(path, dir, save_continents)
+	self:do_save(path, dir, save_continents, autosaving)
 end
 
-function CoreEditor:do_save(path, dir, save_continents)
+function CoreEditor:do_save(path, dir, save_continents, autosaving)
 	if not path and not dir then
 		Application:error("No path or dir specified when trying to save")
 
@@ -3251,7 +3251,13 @@ function CoreEditor:do_save(path, dir, save_continents)
 	self:_save_packages(dir)
 	self:_save_unit_stats(dir)
 	self:_save_bundle_info_files(dir)
-	self:_recompile(dir)
+
+	autosaving = autosaving or false
+
+	if not autosaving then
+		self:_recompile(dir)
+	end
+
 	self:output("Saved to " .. path)
 	cat_debug("editor", "Saved to ", path)
 end
