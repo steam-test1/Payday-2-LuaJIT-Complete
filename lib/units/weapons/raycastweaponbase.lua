@@ -289,8 +289,14 @@ function RaycastWeaponBase:dryfire()
 	self:play_tweak_data_sound("dryfire")
 end
 
+function RaycastWeaponBase:weapon_fire_rate()
+	local weapon_tweak_data = self:weapon_tweak_data()
+
+	return weapon_tweak_data.fire_mode_data and weapon_tweak_data.fire_mode_data.fire_rate or 0
+end
+
 function RaycastWeaponBase:recoil_wait()
-	return tweak_data.weapon[self._name_id].FIRE_MODE == "auto" and self:weapon_tweak_data().fire_mode_data.fire_rate or nil
+	return tweak_data.weapon[self._name_id].FIRE_MODE == "auto" and self:weapon_fire_rate() or nil
 end
 
 function RaycastWeaponBase:_fire_sound()
@@ -357,7 +363,7 @@ function RaycastWeaponBase:update_next_shooting_time()
 		end
 	end
 
-	local next_fire = (tweak_data.weapon[self._name_id].fire_mode_data and tweak_data.weapon[self._name_id].fire_mode_data.fire_rate or 0) / self:fire_rate_multiplier()
+	local next_fire = self:weapon_fire_rate() / self:fire_rate_multiplier()
 	self._next_fire_allowed = self._next_fire_allowed + next_fire
 end
 
@@ -389,6 +395,10 @@ function RaycastWeaponBase:trigger_held(...)
 	return fired
 end
 
+function RaycastWeaponBase:ammo_usage()
+	return 1
+end
+
 function RaycastWeaponBase:fire(from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul, target_unit)
 	if managers.player:has_activate_temporary_upgrade("temporary", "no_ammo_cost_buff") then
 		managers.player:deactivate_temporary_upgrade("temporary", "no_ammo_cost_buff")
@@ -409,6 +419,7 @@ function RaycastWeaponBase:fire(from_pos, direction, dmg_mul, shoot_player, spre
 
 	local is_player = self._setup.user_unit == managers.player:player_unit()
 	local consume_ammo = not managers.player:has_active_temporary_property("bullet_storm") and (not managers.player:has_activate_temporary_upgrade("temporary", "berserker_damage_multiplier") or not managers.player:has_category_upgrade("player", "berserker_no_ammo_cost")) or not is_player
+	local ammo_usage = self:ammo_usage()
 
 	if consume_ammo and (is_player or Network:is_server()) then
 		local base = self:ammo_base()
@@ -416,8 +427,6 @@ function RaycastWeaponBase:fire(from_pos, direction, dmg_mul, shoot_player, spre
 		if base:get_ammo_remaining_in_clip() == 0 then
 			return
 		end
-
-		local ammo_usage = 1
 
 		if is_player then
 			for _, category in ipairs(self:weapon_tweak_data().categories) do
@@ -434,10 +443,15 @@ function RaycastWeaponBase:fire(from_pos, direction, dmg_mul, shoot_player, spre
 			end
 		end
 
-		local mag = base:get_ammo_remaining_in_clip()
-		local remaining_ammo = mag - ammo_usage
+		local ammo_in_clip = base:get_ammo_remaining_in_clip()
+		local remaining_ammo = ammo_in_clip - ammo_usage
 
-		if mag > 0 and remaining_ammo <= (self.AKIMBO and 1 or 0) then
+		if remaining_ammo < 0 then
+			ammo_usage = ammo_usage + remaining_ammo
+			remaining_ammo = 0
+		end
+
+		if ammo_in_clip > 0 and remaining_ammo <= (self.AKIMBO and 1 or 0) then
 			local w_td = self:weapon_tweak_data()
 
 			if w_td.animations and w_td.animations.magazine_empty then
@@ -455,7 +469,7 @@ function RaycastWeaponBase:fire(from_pos, direction, dmg_mul, shoot_player, spre
 			self:set_magazine_empty(true)
 		end
 
-		base:set_ammo_remaining_in_clip(base:get_ammo_remaining_in_clip() - ammo_usage)
+		base:set_ammo_remaining_in_clip(ammo_in_clip - ammo_usage)
 		self:use_ammo(base, ammo_usage)
 	end
 
@@ -469,7 +483,7 @@ function RaycastWeaponBase:fire(from_pos, direction, dmg_mul, shoot_player, spre
 
 	self:_spawn_shell_eject_effect()
 
-	local ray_res = self:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul, target_unit)
+	local ray_res = self:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul, target_unit, ammo_usage)
 
 	if self._alert_events and ray_res.rays then
 		self:_check_alert(ray_res.rays, from_pos, direction, user_unit)

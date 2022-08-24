@@ -209,6 +209,7 @@ function PlayerTased:_check_action_primary_attack(t, input)
 	local action_forbidden = self:chk_action_forbidden("primary_attack")
 	action_forbidden = action_forbidden or self:_is_reloading() or self:_changing_weapon() or self._melee_expire_t or self._use_item_expire_t or self:_interacting() or alive(self._counter_taser_unit)
 	local action_wanted = input.btn_primary_attack_state
+	action_wanted = action_wanted or self:is_shooting_count()
 
 	if action_wanted then
 		if not action_forbidden then
@@ -235,7 +236,8 @@ function PlayerTased:_check_action_primary_attack(t, input)
 				else
 					if not self._shooting and weap_base:start_shooting_allowed() then
 						local start = fire_mode == "single" and input.btn_primary_attack_press
-						start = start or fire_mode ~= "single" and input.btn_primary_attack_state
+						start = start or fire_mode == "auto" and input.btn_primary_attack_state
+						start = start or fire_mode == "burst" and input.btn_primary_attack_press
 
 						if start then
 							weap_base:start_shooting()
@@ -287,8 +289,10 @@ function PlayerTased:_check_action_primary_attack(t, input)
 								end
 							end
 						end
+					elseif fire_mode == "burst" then
+						fired = weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
 					elseif input.btn_primary_attack_state then
-						fired = weap_base:trigger_held(self._ext_camera:position(), self._ext_camera:forward(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
+						fired = weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
 					end
 
 					new_action = true
@@ -296,7 +300,8 @@ function PlayerTased:_check_action_primary_attack(t, input)
 					if fired then
 						local weap_tweak_data = tweak_data.weapon[weap_base:get_name_id()]
 						local recoil_multiplier = weap_base:recoil() * weap_base:recoil_multiplier() + weap_base:recoil_addend()
-						local up, down, left, right = unpack(weap_tweak_data.kick[self._state_data.in_steelsight and "steelsight" or self._state_data.ducking and "crouching" or "standing"])
+						local kick_tweak_data = weap_tweak_data.kick[fire_mode] or weap_tweak_data.kick
+						local up, down, left, right = unpack(kick_tweak_data[self._state_data.in_steelsight and "steelsight" or self._state_data.ducking and "crouching" or "standing"])
 
 						self._camera_unit:base():recoil_kick(up * recoil_multiplier, down * recoil_multiplier, left * recoil_multiplier, right * recoil_multiplier)
 
@@ -330,6 +335,8 @@ function PlayerTased:_check_action_primary_attack(t, input)
 							self._ext_network:send("shot_blank", impact, 0)
 						end
 					elseif fire_mode == "single" then
+						new_action = false
+					elseif fire_mode == "burst" and weap_base:shooting_count() == 0 then
 						new_action = false
 					end
 				end

@@ -576,8 +576,10 @@ function NewRaycastWeaponBase:has_range_distance_scope()
 
 	for i, part_id in ipairs(self._scopes) do
 		part = self._parts[part_id]
+		local digital_gui = part and part.unit:digital_gui()
+		local digital_gui_upper = part and part.unit:digital_gui_upper()
 
-		if part and (part.unit:digital_gui() or part.unit:digital_gui_upper()) then
+		if digital_gui and digital_gui.number_set or digital_gui_upper and digital_gui_upper.number_set then
 			return true
 		end
 	end
@@ -595,13 +597,16 @@ function NewRaycastWeaponBase:set_scope_range_distance(distance)
 
 		for i, part_id in ipairs(self._scopes) do
 			part = self._parts[part_id]
+			local digital_gui = part and part.unit:digital_gui()
 
-			if part and part.unit:digital_gui() then
-				part.unit:digital_gui():number_set(distance and math.round(distance) or false, false)
+			if digital_gui and digital_gui.number_set then
+				digital_gui:number_set(distance and math.round(distance) or false, false)
 			end
 
-			if part and part.unit:digital_gui_upper() then
-				part.unit:digital_gui_upper():number_set(distance and math.round(distance) or false, false)
+			local digital_gui_upper = part and part.unit:digital_gui_upper()
+
+			if digital_gui_upper and digital_gui_upper.number_set then
+				digital_gui_upper:number_set(distance and math.round(distance) or false, false)
 			end
 		end
 	end
@@ -1561,7 +1566,7 @@ function NewRaycastWeaponBase:recoil_wait()
 
 	local multiplier = tweak_is_auto == weapon_is_auto and 1 or 2
 
-	return self:weapon_tweak_data().fire_mode_data.fire_rate * multiplier
+	return self:weapon_fire_rate() * multiplier
 end
 
 function NewRaycastWeaponBase:start_shooting()
@@ -1576,8 +1581,9 @@ function NewRaycastWeaponBase:stop_shooting()
 	NewRaycastWeaponBase.super.stop_shooting(self)
 
 	if self._fire_mode == ids_burst then
-		local fire_mode_data = tweak_data.weapon[self._name_id].fire_mode_data or {}
-		local next_fire = (fire_mode_data.burst_cooldown or fire_mode_data.fire_rate or 0) / self:fire_rate_multiplier()
+		local weapon_tweak_data = self:weapon_tweak_data()
+		local fire_mode_data = weapon_tweak_data.fire_mode_data or {}
+		local next_fire = (fire_mode_data.burst_cooldown or self:weapon_fire_rate()) / self:fire_rate_multiplier()
 		self._next_fire_allowed = math.max(self._next_fire_allowed, self._unit:timer():time() + next_fire)
 		self._shooting_count = 0
 	end

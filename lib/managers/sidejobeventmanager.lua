@@ -1,5 +1,5 @@
 SideJobEventManager = SideJobEventManager or class()
-SideJobEventManager.save_version = 2
+SideJobEventManager.save_version = 3
 SideJobEventManager.global_table_name = "side_job_event"
 SideJobEventManager.save_table_name = "side_job_event"
 SideJobEventManager.category = "side_job_event"
@@ -182,6 +182,24 @@ function SideJobEventManager:load(cache, version)
 								if not saved_objective.completed then
 									objectives_complete = false
 								end
+							elseif objective.choice_id ~= nil and objective.choice_id == saved_objective.choice_id then
+								for _, save_value in ipairs(objective.save_values) do
+									objective[save_value] = saved_objective[save_value] or objective[save_value]
+								end
+
+								local any_objective_completed = false
+
+								for choice_index, choice_objective in ipairs(objective.challenge_choices) do
+									for _, save_value in ipairs(choice_objective.save_values) do
+										choice_objective[save_value] = objective.challenge_choices_saved_values and objective.challenge_choices_saved_values[choice_index][save_value] or choice_objective[save_value]
+									end
+
+									if choice_objective.completed then
+										any_objective_completed = true
+									end
+								end
+
+								objectives_complete = any_objective_completed
 							end
 						end
 					end
@@ -189,6 +207,22 @@ function SideJobEventManager:load(cache, version)
 					for _, objective in ipairs(challenge.objectives) do
 						objective.progress = objective.max_progress
 						objective.completed = true
+
+						if objective.challenge_choices then
+							for _, saved_objective in ipairs(saved_challenge.objectives) do
+								if objective.choice_id ~= nil and objective.choice_id == saved_objective.choice_id then
+									for _, save_value in ipairs(objective.save_values) do
+										objective[save_value] = saved_objective[save_value] or objective[save_value]
+									end
+
+									for choice_index, choice_objective in ipairs(objective.challenge_choices) do
+										for _, save_value in ipairs(choice_objective.save_values) do
+											choice_objective[save_value] = saved_objective.challenge_choices_saved_values and saved_objective.challenge_choices_saved_values[choice_index][save_value] or choice_objective[save_value]
+										end
+									end
+								end
+							end
+						end
 					end
 				end
 
@@ -226,6 +260,35 @@ function SideJobEventManager:load(cache, version)
 				end
 			end
 		end
+
+		for _, challenge in ipairs(self:challenges()) do
+			for stat_id, stat in pairs(self._global.collective_stats) do
+				self:_update_challenge_collective(challenge, "collective_id", stat_id, "pda9_update", self.completed_challenge)
+			end
+		end
+	elseif state and state.version == 2 and self.save_version == 3 then
+		for idx, saved_challenge in ipairs(state.challenges or {}) do
+			local challenge = self:get_challenge(saved_challenge.id)
+
+			if challenge and (challenge.id == "pda9_community_1" or challenge.id == "pda9_community_2" or challenge.id == "pda9_community_3") then
+				local choice_objective = challenge.objectives[1].challenge_choices[1]
+				local new_objective = {}
+
+				for _, saved_value in ipairs(challenge.objectives[1].save_values) do
+					new_objective[saved_value] = challenge.objectives[1][saved_value]
+				end
+
+				for _, saved_value in ipairs(choice_objective.save_values) do
+					new_objective.challenge_choices_saved_values[1][saved_value] = saved_challenge.objectives[1][saved_value] or choice_objective[saved_value]
+				end
+
+				saved_challenge.objectives[1] = new_objective
+			end
+		end
+
+		state.version = 3
+
+		self:load(cache, 3)
 	end
 end
 
@@ -392,6 +455,11 @@ function SideJobEventManager:_update_challenge_progress(challenge, key, id, amou
 			else
 				print("[SideJobEventManager][Progress] already completed, skipping:", id)
 			end
+		elseif objective.challenge_choices and not objective.completed then
+			self:_update_challenge_choice(challenge, objective, key, complete_func, {
+				id = id,
+				amount = amount
+			})
 		end
 	end
 end
@@ -426,6 +494,11 @@ function SideJobEventManager:_update_challenge_collective(challenge, key, stat_i
 			else
 				print("[SideJobEventManager][Collective] already completed, skipping:", item_id)
 			end
+		elseif objective.challenge_choices and not objective.completed then
+			self:_update_challenge_choice(challenge, objective, key, complete_func, {
+				stat_id = stat_id,
+				item_id = item_id
+			})
 		end
 	end
 end
@@ -493,6 +566,55 @@ function SideJobEventManager:_update_challenge_stages(challenge, key, stat_id, s
 				break
 			else
 				print("[SideJobEventManager][Stages] already completed, skipping:", stat_id)
+			end
+		end
+	end
+end
+
+function SideJobEventManager:_update_challenge_choice(challenge, objective, key, complete_func, params)
+	local choice_pass = false
+
+	for choice_index, choice_challenge in ipairs(objective.challenge_choices) do
+		local fake_challenge = {
+			objectives = {
+				choice_challenge
+			}
+		}
+
+		if key == "collective_id" then
+			self:_update_challenge_collective(fake_challenge, key, params.stat_id, params.item_id, function ()
+				choice_pass = true
+			end)
+		elseif key == "progress_id" then
+			self:_update_challenge_progress(fake_challenge, key, params.id, params.amount, function ()
+				choice_pass = true
+			end)
+		end
+
+		objective.challenge_choices_saved_values[choice_index].progress = choice_challenge.progress
+		objective.challenge_choices_saved_values[choice_index].completed = choice_challenge.completed
+	end
+
+	if choice_pass then
+		print("[SideJobEventManager][Collective][Choice] awarding:", params.item_id)
+
+		local pass = true
+		objective.progress = objective.max_progress
+		objective.completed = objective.max_progress <= objective.progress
+
+		for _, objective in ipairs(challenge.objectives) do
+			if not objective.completed then
+				pass = false
+
+				break
+			end
+		end
+
+		if pass then
+			complete_func(self, challenge)
+
+			if managers.hud then
+				managers.hud:post_event("Achievement_challenge")
 			end
 		end
 	end

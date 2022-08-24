@@ -210,7 +210,6 @@ function MutatorPiggyBank:server_feed_piggybank(bag_unit)
 
 	managers.network:session():send_to_peers_synched("sync_feed_piggybank", bag_unit, reached_next_level)
 	self:sync_feed_piggybank(bag_unit, reached_next_level)
-	Telemetry:on_player_game_event_action(Telemetry.event_actions.piggybank_fed, {})
 end
 
 function MutatorPiggyBank:sync_feed_piggybank(bag_unit, reached_next_level)
@@ -252,7 +251,7 @@ function MutatorPiggyBank:on_pig_fed(bag_unit, current_piggybank_unit)
 	end
 
 	if alive(bag_unit) then
-		if Network:is_server() or bag_unit:id() ~= -1 then
+		if Network:is_server() or bag_unit:id() == -1 then
 			bag_unit:set_slot(0)
 		else
 			bag_unit:set_enabled(false)

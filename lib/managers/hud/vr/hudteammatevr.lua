@@ -1066,6 +1066,7 @@ function HUDTeammateVR:setup_firemode(id, weapon_selection_panel)
 	local can_toggle_firemode = weapon_tweak_data.CAN_TOGGLE_FIREMODE
 	local locked_to_auto = managers.weapon_factory:has_perk("fire_mode_auto", equipped_weapon.factory_id, equipped_weapon.blueprint)
 	local locked_to_single = managers.weapon_factory:has_perk("fire_mode_single", equipped_weapon.factory_id, equipped_weapon.blueprint)
+	locked_to_auto = managers.weapon_factory:has_perk("fire_mode_burst", equipped_weapon.factory_id, equipped_weapon.blueprint)
 	local firemode_single = weapon_selection_panel:text({
 		name = "firemode_single",
 		align = "right",

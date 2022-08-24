@@ -660,10 +660,6 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 
 	self._briefing_event = narrative.briefing_event
 
-	if MenuCallbackHandler:is_event() and MutatorPiggyBank.briefing_event then
-		self._briefing_event = MutatorPiggyBank.briefing_event
-	end
-
 	if self._briefing_event then
 		self._briefing_len_panel = self._contract_panel:panel({
 			w = contact_image:w(),

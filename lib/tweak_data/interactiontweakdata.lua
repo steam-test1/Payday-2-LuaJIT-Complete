@@ -667,7 +667,7 @@ function InteractionTweakData:init(tweak_data)
 	self.hack_suburbia_outline = {
 		icon = "equipment_hack_ipad",
 		text_id = "debug_interact_hack_ipad",
-		interact_distance = 100,
+		interact_distance = 200,
 		timer = 5,
 		start_active = true,
 		axis = "y",

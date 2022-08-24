@@ -103,6 +103,7 @@ function CharacterTweakData:init(tweak_data)
 	self:_init_bolivians(presets)
 	self:_init_drug_lord_boss(presets)
 	self:_init_drug_lord_boss_stealth(presets)
+	self:_init_bolivian_indoors_mex(presets)
 	self:_init_old_hoxton_mission(presets)
 	self:_init_spa_vip(presets)
 	self:_init_spa_vip_hurt(presets)
@@ -1674,6 +1675,24 @@ function CharacterTweakData:_init_hector_boss_no_armor(presets)
 	table.insert(self._enemy_list, "hector_boss_no_armor")
 end
 
+function CharacterTweakData:_init_bolivian_indoors_mex(presets)
+	self.bolivian_indoors_mex = deep_clone(self.gangster)
+	self.bolivian_indoors_mex.detection = presets.detection.guard
+	self.bolivian_indoors_mex.access = "security"
+	self.bolivian_indoors_mex.radio_prefix = "fri_"
+	self.bolivian_indoors_mex.suspicious = true
+	self.bolivian_indoors_mex.weapon.is_pistol.range = {
+		optimal = 900,
+		far = 3000,
+		close = 500
+	}
+	self.bolivian_indoors_mex.crouch_move = nil
+	self.bolivian_indoors_mex.no_arrest = false
+	self.bolivian_indoors_mex.has_alarm_pager = true
+
+	table.insert(self._enemy_list, "bolivian_indoors_mex")
+end
+
 function CharacterTweakData:_init_bolivians(presets)
 	self.bolivian = deep_clone(self.gangster)
 	self.bolivian.detection = presets.detection.guard
@@ -1694,12 +1713,6 @@ function CharacterTweakData:_init_bolivians(presets)
 	self.bolivian_indoors.has_alarm_pager = true
 
 	table.insert(self._enemy_list, "bolivian_indoors")
-
-	self.bolivian_indoors_mex = deep_clone(self.bolivian)
-	self.bolivian_indoors_mex.has_alarm_pager = true
-	self.bolivian_indoors_mex.access = "gangster"
-
-	table.insert(self._enemy_list, "bolivian_indoors_mex")
 end
 
 function CharacterTweakData:_init_drug_lord_boss(presets)

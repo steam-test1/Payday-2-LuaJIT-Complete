@@ -561,6 +561,32 @@ function CustomSafehouseGuiPageDaily:_setup_challenge(id)
 
 	current_y = description_text:bottom()
 
+	if daily_info.global_value then
+		local global_text = scroll:canvas():text({
+			blend_mode = "add",
+			name = "GlobalText",
+			word_wrap = true,
+			wrap = true,
+			align = "left",
+			vertical = "top",
+			valign = "scale",
+			halign = "scale",
+			layer = 1,
+			font_size = small_font_size,
+			font = small_font,
+			color = tweak_data.lootdrop.global_values[daily_info.global_value] and tweak_data.lootdrop.global_values[daily_info.global_value].color or tweak_data.screen_colors.title,
+			text = managers.localization:text("menu_l_global_value_side_job_" .. daily_info.global_value)
+		})
+
+		global_text:set_top(current_y)
+
+		local _, _, _, h = global_text:text_rect()
+
+		global_text:set_h(h)
+
+		current_y = global_text:bottom()
+	end
+
 	if daily_info.objective_id or daily_info.objectives then
 		local objective_title = scroll:canvas():text({
 			name = "ObjectiveHeader",
@@ -667,15 +693,47 @@ function CustomSafehouseGuiPageDaily:_setup_challenge(id)
 		local objectives = daily_challenge.trophy and daily_challenge.trophy.objectives or daily_challenge.objectives
 
 		for idx, objective in ipairs(objectives) do
-			local item = CustomSafehouseGuiProgressItem:new(scroll:canvas(), objective)
+			if objective.challenge_choices then
+				for index, choice_objective in ipairs(objective.challenge_choices) do
+					local item = CustomSafehouseGuiProgressItem:new(scroll:canvas(), choice_objective)
 
-			table.insert(self._progress_items, item)
+					table.insert(self._progress_items, item)
 
-			local pos = current_y
+					local pos = current_y
 
-			item:set_top(pos)
+					item:set_top(pos)
 
-			current_y = item:bottom()
+					current_y = item:bottom()
+
+					if index ~= #objective.challenge_choices then
+						local or_string = scroll:canvas():text({
+							text = "Or",
+							font_size = small_font_size,
+							font = small_font
+						})
+
+						self:make_fine_text(or_string)
+
+						pos = current_y
+
+						or_string:set_top(pos)
+
+						current_y = or_string:bottom()
+					end
+				end
+
+				current_y = current_y + small_font_size
+			else
+				local item = CustomSafehouseGuiProgressItem:new(scroll:canvas(), objective)
+
+				table.insert(self._progress_items, item)
+
+				local pos = current_y
+
+				item:set_top(pos)
+
+				current_y = item:bottom()
+			end
 		end
 	end
 
@@ -824,6 +882,7 @@ function CustomSafehouseGuiPageDaily:_update_daily_panel_size(new_width)
 
 	local canvas = self._challenge_scroll:canvas()
 	local desc_text = canvas:child("DescText")
+	local global_text = canvas:child("GlobalText")
 	local objective_title = canvas:child("ObjectiveHeader")
 	local objective_text = canvas:child("ObjectiveText")
 
@@ -837,8 +896,16 @@ function CustomSafehouseGuiPageDaily:_update_daily_panel_size(new_width)
 
 	desc_text:set_h(h)
 
+	if alive(global_text) then
+		global_text:set_w(new_width)
+
+		local _, _, _, h = global_text:text_rect()
+
+		global_text:set_h(h)
+	end
+
 	if alive(objective_title) then
-		objective_title:set_top(desc_text:bottom() + PANEL_PADDING * 2)
+		objective_title:set_top(global_text:bottom() + PANEL_PADDING * 2)
 	end
 
 	if alive(objective_text) then

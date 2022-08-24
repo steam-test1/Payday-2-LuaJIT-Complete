@@ -1512,10 +1512,6 @@ function JobManager:current_briefing_dialog()
 		return
 	end
 
-	if managers.mutators:is_mutator_active(MutatorPiggyBank) and MutatorPiggyBank.briefing_dialog then
-		return MutatorPiggyBank.briefing_dialog
-	end
-
 	if self._global.interupt_stage then
 		return managers.job:current_level_data().briefing_dialog
 	end

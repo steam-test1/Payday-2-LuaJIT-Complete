@@ -34,7 +34,6 @@ ContractBrokerGui.tabs = {
 }
 ContractBrokerGui.MAX_SEARCH_LENGTH = 20
 ContractBrokerGui.RELEASE_WINDOW = 7
-ContractBrokerGui.event_levels = table.map_keys(tweak_data.mutators.piggybank.level_coordinates)
 
 function ContractBrokerGui:init(ws, fullscreen_ws, node)
 	self._fullscreen_ws = managers.gui_data:create_fullscreen_16_9_workspace()
@@ -848,20 +847,6 @@ end
 
 function ContractBrokerGui:perform_job_filter_skirmish(job_id, contact, job_tweak, contact_tweak)
 	return self:perform_filter_skirmish(contact)
-end
-
-function ContractBrokerGui:perform_job_filter_event_gamemode(job_id, contact, job_tweak, contact_tweak)
-	if #job_tweak.chain == 0 then
-		return false
-	end
-
-	for _, stage in ipairs(job_tweak.chain) do
-		if not table.contains(self.event_levels, stage.level_id) then
-			return false
-		end
-	end
-
-	return contact_tweak and not contact_tweak.hidden
 end
 
 function ContractBrokerGui:perform_filter_contact(value, optional_contact_filter)

@@ -1049,6 +1049,7 @@ end
 function PlayerStandardVR:_check_action_primary_attack(t, input)
 	local new_action1, new_action2 = nil
 	local action_wanted = input.btn_primary_attack_state or input.btn_primary_attack_release or input.btn_akimbo_fire_state or input.btn_akimbo_fire_release
+	action_wanted = action_wanted or self:is_shooting_count()
 
 	if action_wanted then
 		local action_forbidden = self:_changing_weapon() or self:_is_meleeing() or self:_is_throwing_projectile(input) or self:_is_deploying_bipod() or self:is_switching_stances()
@@ -1107,7 +1108,10 @@ function PlayerStandardVR:_stop_shooting_weapon(index)
 end
 
 function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, weap_base, akimbo)
-	if not pressed and not held and not released then
+	local action_wanted = pressed or held or released
+	action_wanted = action_wanted or self:is_shooting_count()
+
+	if not action_wanted then
 		return false
 	end
 
@@ -1158,7 +1162,8 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 
 			if weap_base:start_shooting_allowed() and not self._shooting_forbidden then
 				local start = fire_mode == "single" and pressed
-				start = start or fire_mode ~= "single" and held
+				start = start or fire_mode == "auto" and held
+				start = start or fire_mode == "burst" and pressed
 				start = start and not fire_on_release
 				start = start or fire_on_release and released
 
@@ -1219,6 +1224,8 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 					weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
 				end
 			end
+		elseif fire_mode == "burst" then
+			fired = weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
 		elseif held then
 			if not self._next_wall_check_t or self._next_wall_check_t < t then
 				local wall_check_obj = tweak_data.vr.custom_wall_check[weap_base.name_id] and weap_base._unit:get_object(Idstring(tweak_data.vr.custom_wall_check[weap_base.name_id])) or weap_base:fire_object()
@@ -1241,7 +1248,8 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 			})
 
 			local weap_tweak_data = tweak_data.weapon[weap_base:get_name_id()]
-			local shake_multiplier = weap_tweak_data.shake[self._state_data.in_steelsight and "fire_steelsight_multiplier" or "fire_multiplier"]
+			local shake_tweak_data = weap_tweak_data.shake[fire_mode] or weap_tweak_data.shake
+			local shake_multiplier = shake_tweak_data[self._state_data.in_steelsight and "fire_steelsight_multiplier" or "fire_multiplier"]
 
 			self._ext_camera:play_shaker("fire_weapon_rot", 1 * shake_multiplier)
 			self._ext_camera:play_shaker("fire_weapon_kick", 1 * shake_multiplier, 1, 0.15)
@@ -1258,7 +1266,8 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 			end
 
 			local recoil_multiplier = (weap_base:recoil() + weap_base:recoil_addend()) * weap_base:recoil_multiplier()
-			local up, down, left, right = unpack(weap_tweak_data.kick[self._state_data.in_steelsight and "steelsight" or self._state_data.ducking and "crouching" or "standing"])
+			local kick_tweak_data = weap_tweak_data.kick[fire_mode] or weap_tweak_data.kick
+			local up, down, left, right = unpack(kick_tweak_data[self._state_data.in_steelsight and "steelsight" or self._state_data.ducking and "crouching" or "standing"])
 
 			self._camera_unit:base():recoil_kick(up * recoil_multiplier, down * recoil_multiplier, left * recoil_multiplier, right * recoil_multiplier)
 			self._unit:hand():apply_weapon_kick(weap_base._current_stats.recoil, akimbo)
@@ -1301,10 +1310,12 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 
 			if weap_base.third_person_important and weap_base:third_person_important() then
 				self._ext_network:send("shot_blank_reliable", impact, akimbo and 1 or 0)
-			elseif fire_mode == "single" or (weap_base.akimbo or akimbo) and not weap_base:weapon_tweak_data().allow_akimbo_autofire then
+			elseif fire_mode ~= "auto" or (weap_base.akimbo or akimbo) and not weap_base:weapon_tweak_data().allow_akimbo_autofire then
 				self._ext_network:send("shot_blank", impact, akimbo and 1 or 0)
 			end
 		elseif fire_mode == "single" or self._shooting_forbidden then
+			new_action = false
+		elseif fire_mode == "burst" and weap_base:shooting_count() == 0 then
 			new_action = false
 		end
 	end

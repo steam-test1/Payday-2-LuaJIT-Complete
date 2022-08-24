@@ -4341,6 +4341,13 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		third_material = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/shared_materials/pda9_acc_moneysuit_money",
 		material = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/shared_materials/pda9_acc_fps_moneysuit_money"
 	}
+	self.player_styles.moneysuit.material_variations.gold = {
+		desc_id = "bm_suit_moneysuit_gold_desc",
+		global_value = "pda9",
+		name_id = "bm_suit_moneysuit_gold",
+		third_material = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/shared_materials/pda9_acc_moneysuit_gold",
+		material = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/shared_materials/pda9_acc_fps_moneysuit_gold"
+	}
 	self.player_styles.moneysuit.characters = {}
 	local moneysuit_characters_male = {
 		third_unit = "units/pd2_dlc_pda9/characters/pda9_acc_moneysuit/pda9_acc_moneysuit_male_average/pda9_acc_moneysuit_male_average"

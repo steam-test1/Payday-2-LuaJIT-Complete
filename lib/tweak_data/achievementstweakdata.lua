@@ -1096,6 +1096,14 @@ function AchievementsTweakData:init(tweak_data)
 			},
 			difficulty = overkill_and_above
 		},
+		pda9_n4 = {
+			stat = "pda9_n4",
+			is_not_civilian = true,
+			result = "death",
+			melee_weapons = {
+				"moneybundle"
+			}
+		},
 		melee_kills = {
 			result = "death",
 			is_not_civilian = true,
@@ -6447,6 +6455,30 @@ function AchievementsTweakData:init(tweak_data)
 				amount = 1
 			}
 		},
+		pda9_n1 = {
+			award = "pda9_n1",
+			job = "dinner",
+			difficulties = overkill_and_above,
+			secured = {
+				carry_id = "gold",
+				total_amount = 9
+			}
+		},
+		pda9_n3 = {
+			stat = "pda9_n3",
+			secured = {
+				carry_id = "money_bundle",
+				amount = 1
+			}
+		},
+		pda9_n5 = {
+			stat = "pda9_n5",
+			difficulties = overkill_and_above,
+			secured = {
+				carry_id = "sandwich",
+				amount = 1
+			}
+		},
 		trophy_tfturret = {
 			trophy_stat = "trophy_tfturret",
 			is_dropin = false,
@@ -7829,6 +7861,10 @@ function AchievementsTweakData:init(tweak_data)
 			weapon = "msr",
 			stat = "gage3_16_stats",
 			multi_kill = 2
+		},
+		pda9_n2 = {
+			multi_kill = 2,
+			stat = "pda9_n2"
 		}
 	}
 	self.inventory = {}

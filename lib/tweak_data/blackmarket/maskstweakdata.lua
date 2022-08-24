@@ -8435,6 +8435,16 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		dlc = "pda9",
 		texture_bundle_folder = "pda9"
 	}
+	self.masks.megaskulldia = {
+		unit = "units/pd2_dlc_pda9/masks/msk_megaskulldia/msk_megaskulldia",
+		name_id = "bm_msk_megaskulldia",
+		pcs = {},
+		value = 0,
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "pda9",
+		texture_bundle_folder = "pda9"
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.masks) do

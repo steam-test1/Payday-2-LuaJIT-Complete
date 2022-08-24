@@ -4269,35 +4269,48 @@ function GroupAIStateBesiege:create_timed_groups_table()
 				individual_data = individual_groups
 			}
 			local units_to_respawn = nil
+			local can_use_respawn_table = false
 
-			for idx, spawn_data in ipairs(group_tweak_data.spawn) do
-				if spawn_data.respawn_cooldown then
-					units_to_respawn = units_to_respawn or {}
-					units_to_respawn[idx] = {
-						cooldown = spawn_data.respawn_cooldown,
-						units_lookup = {}
-					}
+			if type(group_tweak_data.amount) == "number" then
+				can_use_respawn_table = group_tweak_data.amount > 1
+			else
+				can_use_respawn_table = group_tweak_data.amount[1] > 1 or group_tweak_data.amount[2] > 1
+			end
 
-					for region_type, units in pairs(all_categories[spawn_data.unit].unit_types) do
-						for _, ids_unit in ipairs(units) do
-							units_to_respawn[idx].units_lookup[ids_unit:key()] = true
+			if can_use_respawn_table then
+				for idx, spawn_data in ipairs(group_tweak_data.spawn) do
+					if spawn_data.respawn_cooldown then
+						units_to_respawn = units_to_respawn or {}
+						units_to_respawn[idx] = {
+							cooldown = spawn_data.respawn_cooldown,
+							units_lookup = {}
+						}
+
+						for region_type, units in pairs(all_categories[spawn_data.unit].unit_types) do
+							for _, ids_unit in ipairs(units) do
+								units_to_respawn[idx].units_lookup[ids_unit:key()] = true
+							end
 						end
+					end
+				end
+			else
+				for idx, spawn_data in ipairs(group_tweak_data.spawn) do
+					if spawn_data.respawn_cooldown then
+						Application:error("[GroupAIStateBesiege:create_timed_groups_table] Respawn cooldown for individual units can't be used if only one unit can spawn. Spawn cooldown is used instead. In group: ", group_id)
+
+						break
 					end
 				end
 			end
 
 			for i = 1, group_tweak_data.max_nr_simultaneous_groups or 1 do
+				individual_groups[i] = {
+					needs_spawn = true,
+					tweak_data = group_tweak_data
+				}
+
 				if units_to_respawn then
-					individual_groups[i] = {
-						needs_spawn = true,
-						tweak_data = group_tweak_data,
-						units_to_respawn = clone(units_to_respawn)
-					}
-				else
-					individual_groups[i] = {
-						needs_spawn = true,
-						tweak_data = group_tweak_data
-					}
+					individual_groups[i].units_to_respawn = clone(units_to_respawn)
 				end
 			end
 		end

@@ -476,14 +476,13 @@ function VoteManager:update(t, dt)
 
 		if self._callback_counter < current_time then
 			if self._callback_type and self._callback_type == "restart" then
-				Telemetry:on_end_heist("restart_game", 0)
+				-- Nothing
 			end
 
 			if Network:is_server() and self._callback_type == "restart" then
 				managers.game_play_central:restart_the_game()
 			end
 
-			self._callback_type = nil
 			self._callback_counter = nil
 			self._callback_counter_print = nil
 		end
@@ -491,7 +490,7 @@ function VoteManager:update(t, dt)
 end
 
 function VoteManager:stop()
-	if self._callback_counter and self._callback_type and self._callback_type == "restart" then
+	if self._callback_type and self._callback_type == "restart" then
 		Telemetry:on_end_heist("restart_game", 0)
 	end
 

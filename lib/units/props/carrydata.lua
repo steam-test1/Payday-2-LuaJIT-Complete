@@ -387,7 +387,7 @@ CarryData.EXPIRE_CUSTOM_PARAMS = {
 	camera_shake_mul = 0
 }
 
-function CarryData:_expire()
+function CarryData:_expire(was_synced)
 	self:_unregister_steal_SO()
 	managers.mission:call_global_event("loot_exploded")
 
@@ -400,9 +400,11 @@ function CarryData:_expire()
 		managers.explosion:play_sound_and_effects(pos, normal, range, self.EXPIRE_CUSTOM_PARAMS)
 	end
 
-	managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "carry_data", self.EVENT_IDS.expire)
+	if not was_synced then
+		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "carry_data", self.EVENT_IDS.expire)
+	end
 
-	if Network:is_server() or self._unit:id() ~= -1 then
+	if Network:is_server() or self._unit:id() == -1 then
 		self._unit:set_slot(0)
 	else
 		self._unit:set_enabled(false)
@@ -419,8 +421,8 @@ CarryData.POOF_CUSTOM_PARAMS = {
 	camera_shake_mul = 4
 }
 
-function CarryData:poof()
-	if not self:can_poof() then
+function CarryData:poof(was_synced)
+	if not was_synced and not self:can_poof() then
 		return
 	end
 
@@ -433,8 +435,16 @@ function CarryData:poof()
 	local effect = CarryData.POOF_CUSTOM_PARAMS.effect
 
 	managers.explosion:play_sound_and_effects(pos, normal, range, CarryData.POOF_CUSTOM_PARAMS)
-	managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "carry_data", CarryData.EVENT_IDS.poof)
-	self._unit:set_slot(0)
+
+	if not was_synced then
+		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "carry_data", CarryData.EVENT_IDS.poof)
+	end
+
+	if Network:is_server() or self._unit:id() == -1 then
+		self._unit:set_slot(0)
+	else
+		self._unit:set_enabled(false)
+	end
 end
 
 function CarryData:_local_player_explosion_damage()
@@ -456,9 +466,9 @@ function CarryData:sync_net_event(event_id)
 	elseif event_id == CarryData.EVENT_IDS.will_explode then
 		self:_start_explosion()
 	elseif event_id == CarryData.EVENT_IDS.poof then
-		self:poof()
+		self:poof(true)
 	elseif event_id == CarryData.EVENT_IDS.expire then
-		self:_expire()
+		self:_expire(true)
 	end
 end
 

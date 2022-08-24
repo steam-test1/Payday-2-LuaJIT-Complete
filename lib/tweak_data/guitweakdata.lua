@@ -1927,13 +1927,6 @@ function GuiTweakData:init(tweak_data)
 			id = "skirmish",
 			icon = "sidebar_skirmish",
 			item_class = "CrimeNetSidebarSkirmishItem"
-		},
-		{
-			name_id = "menu_event_a10th_info",
-			callback = "clbk_pda9_event",
-			id = "event",
-			icon = "sidebar_mutators",
-			item_class = "CrimeNetSidebarEventsItem"
 		}
 	}
 	self.crime_net.codex = {
