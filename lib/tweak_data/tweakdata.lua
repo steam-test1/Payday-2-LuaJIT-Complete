@@ -2132,6 +2132,26 @@ Play the full version soon to get your full PAYDAY!]],
 		},
 		{
 			track = "today_is_payday_too"
+		},
+		{
+			track = "jokes_on_them",
+			lock = "tma1"
+		},
+		{
+			track = "ojos_de_diamante_new",
+			lock = "tma1"
+		},
+		{
+			track = "ojos_de_esmeralda_new",
+			lock = "tma1"
+		},
+		{
+			track = "silk_road",
+			lock = "tma1"
+		},
+		{
+			track = "its_clown_time",
+			lock = "tma1"
 		}
 	}
 	self.music.soundbank_list = {

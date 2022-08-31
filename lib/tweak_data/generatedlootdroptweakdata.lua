@@ -1183,6 +1183,22 @@ function LootDropTweakData:init_generated(tweak_data)
 		sort_number = 300,
 		category = "normal"
 	}
+	self.global_values.tma1 = {
+		name_id = "bm_global_value_tma1",
+		desc_id = "menu_l_global_value_tma1",
+		unlock_id = "bm_global_value_tma1_unlock",
+		color = tweak_data.screen_colors.dlc_color,
+		dlc = true,
+		free = false,
+		hide_unavailable = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 410,
+		category = "dlc"
+	}
 	self.global_values.toon = {
 		name_id = "bm_global_value_toon",
 		unlock_id = "bm_global_value_toon_unlock",

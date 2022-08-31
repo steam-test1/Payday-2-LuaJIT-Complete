@@ -19910,6 +19910,34 @@ function WeaponFactoryTweakData:create_charms(tweak_data)
 			stats = {
 				value = 1
 			}
+		},
+		wpn_fps_upg_charm_rooster = {
+			is_a_unlockable = true,
+			texture_bundle_folder = "tma1",
+			third_unit = "units/pd2_dlc_tma1/weapons/wpn_fps_upg_charm/wpn_third_upg_charm_rooster",
+			a_obj = "a_charm",
+			type = "charm",
+			dlc = "tma1",
+			name_id = "bm_wp_upg_charm_rooster",
+			unit = "units/pd2_dlc_tma1/weapons/wpn_fps_upg_charm/wpn_fps_upg_charm_rooster",
+			pcs = {},
+			stats = {
+				value = 1
+			}
+		},
+		wpn_fps_upg_charm_skull = {
+			is_a_unlockable = true,
+			texture_bundle_folder = "tma1",
+			third_unit = "units/pd2_dlc_tma1/weapons/wpn_fps_upg_charm/wpn_third_upg_charm_skull",
+			a_obj = "a_charm",
+			type = "charm",
+			dlc = "tma1",
+			name_id = "bm_wp_upg_charm_skull",
+			unit = "units/pd2_dlc_tma1/weapons/wpn_fps_upg_charm/wpn_fps_upg_charm_skull",
+			pcs = {},
+			stats = {
+				value = 1
+			}
 		}
 	}
 	local weapon_exclude_list = {

@@ -40351,4 +40351,20 @@ function BlackMarketTweakData:_setup_weapon_color_skins(tweak_data)
 		pattern_default = Idstring("units/pd2_dlc_lawp/weapon_colors/pattern/pattern_lawp_04_df"),
 		gradient_default = Idstring("units/pd2_dlc_lawp/weapon_colors/pattern_gradient/gradient_lawp_04_df")
 	})
+	self:create_new_color_skin("color_tma1_01", {
+		texture_bundle_folder = "tma1",
+		dlc = "tma1",
+		sort_number = 4,
+		color = Color("1e1e1e")
+	}, {
+		base_default = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_default"),
+		base_metal = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_metal"),
+		base_plastic = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_plastic"),
+		base_half = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half"),
+		base_half_02 = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half_02"),
+		base_detail = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_details"),
+		base_variation = Idstring("units/pd2_dlc_wcs/weapon_colors/base_gradient/wcs_black_df"),
+		pattern_default = Idstring("units/pd2_dlc_tma1/weapon_colors/pattern/tma1_pattern_01"),
+		gradient_default = Idstring("units/pd2_dlc_tma1/weapon_colors/pattern_gradient/tma1_gradient_01_df")
+	})
 end

@@ -294,6 +294,10 @@ function GenericDLCManager:has_tjp()
 	return self:is_dlc_unlocked("tjp")
 end
 
+function GenericDLCManager:has_tma1()
+	return self:is_dlc_unlocked("tma1")
+end
+
 function GenericDLCManager:has_toon()
 	return self:is_dlc_unlocked("toon")
 end
@@ -562,11 +566,13 @@ function WINDLCManager:init_generated()
 	}
 	Global.dlc_manager.all_dlc_data.pxp1 = {
 		app_id = "1945682",
-		no_install = true
+		no_install = true,
+		webpage = "https://pd2.link/McShayWeaponPackYBS"
 	}
 	Global.dlc_manager.all_dlc_data.ranc = {
 		app_id = "1945681",
-		no_install = true
+		no_install = true,
+		webpage = "https://pd2.link/MidlandRanchYBS"
 	}
 	Global.dlc_manager.all_dlc_data.rat = {
 		app_id = "218620",
@@ -660,6 +666,11 @@ function WINDLCManager:init_generated()
 	Global.dlc_manager.all_dlc_data.tjp = {
 		app_id = "218620",
 		no_install = true
+	}
+	Global.dlc_manager.all_dlc_data.tma1 = {
+		app_id = "2076560",
+		no_install = true,
+		webpage = "https://pd2.link/TijuanaMusicPackYB"
 	}
 	Global.dlc_manager.all_dlc_data.toon = {
 		app_id = "218620",

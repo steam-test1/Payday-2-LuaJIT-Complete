@@ -4378,6 +4378,51 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		sequence = "set_ehtan"
 	}
 	self.player_styles.moneysuit.characters.ecp_male = moneysuit_characters_male_fat
+	self.player_styles.dodsuit = {
+		name_id = "bm_suit_dodsuit",
+		desc_id = "bm_suit_dodsuit_desc",
+		texture_bundle_folder = "tma1",
+		global_value = "tma1",
+		material_variations = {}
+	}
+	self.player_styles.dodsuit.material_variations.default = {
+		name_id = "bm_suit_dodsuit_default",
+		global_value = "tma1",
+		desc_id = "bm_suit_dodsuit_default_desc"
+	}
+	self.player_styles.dodsuit.body_replacement = body_replacement_standard
+	self.player_styles.dodsuit.third_body_replacement = body_replacement_standard
+	self.player_styles.dodsuit.unit = "units/pd2_dlc_tma1/characters/tma1_acc_dod/tma1_acc_fps_dod_male/tma1_acc_fps_dod_male"
+	self.player_styles.dodsuit.characters = {}
+	local dodsuit_characters_male = {
+		third_unit = "units/pd2_dlc_tma1/characters/tma1_acc_dod/tma1_acc_dod_male_average/tma1_acc_dod_male_average"
+	}
+
+	set_characters_data("dodsuit", characters_male, dodsuit_characters_male)
+
+	local dodsuit_characters_male_big = {
+		third_unit = "units/pd2_dlc_tma1/characters/tma1_acc_dod/tma1_acc_dod_male_big/tma1_acc_dod_male_big"
+	}
+
+	set_characters_data("dodsuit", characters_male_big, dodsuit_characters_male_big)
+
+	local dodsuit_characters_female = {
+		third_unit = "units/pd2_dlc_tma1/characters/tma1_acc_dod/tma1_acc_dod_female_average/tma1_acc_dod_female_average"
+	}
+
+	set_characters_data("dodsuit", characters_female, dodsuit_characters_female)
+
+	local dodsuit_characters_female_big = {
+		third_unit = "units/pd2_dlc_tma1/characters/tma1_acc_dod/tma1_acc_dod_female_fat/tma1_acc_dod_female_fat"
+	}
+
+	set_characters_data("dodsuit", characters_female_big, dodsuit_characters_female_big)
+
+	local dodsuit_characters_male_fat = {
+		third_unit = "units/pd2_dlc_tma1/characters/tma1_acc_dod/tma1_acc_dod_male_fat/tma1_acc_dod_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.dodsuit.characters.ecp_male = dodsuit_characters_male_fat
 end
 
 function BlackMarketTweakData:get_player_style_value(player_style, character_name, key)

@@ -176,6 +176,7 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		bullranch = "heist_default",
 		raincoat = "heist_default",
 		slaughterhouse = "heist_default",
+		dodsuit = "heist_default",
 		cable_guy = "heist_default",
 		jail_pd2_clan = "heist_default",
 		esport = "esport",
@@ -735,5 +736,14 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		sort_number = 1,
 		unit = "units/pd2_dlc_pda9/characters/glv_leatherspark/glv_leatherspark",
 		third_material = "units/pd2_dlc_pda9/characters/glv_leatherspark/glv_leatherspark_third"
+	}
+	self.gloves.dodskull = {
+		name_id = "bm_gloves_dodskull",
+		desc_id = "bm_gloves_dodskull_desc",
+		texture_bundle_folder = "tma1",
+		global_value = "tma1",
+		sort_number = 1,
+		unit = "units/pd2_dlc_tma1/characters/glv_dodskull/glv_dodskull",
+		third_material = "units/pd2_dlc_tma1/characters/glv_dodskull/glv_dodskull_third"
 	}
 end

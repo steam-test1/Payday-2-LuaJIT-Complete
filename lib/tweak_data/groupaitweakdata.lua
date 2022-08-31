@@ -1326,16 +1326,16 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				Idstring("units/pd2_dlc_usm1/characters/ene_male_marshal_marksman_1/ene_male_marshal_marksman_1")
 			},
 			russia = {
-				Idstring("units/pd2_dlc_usm1/characters/ene_male_marshal_marksman_1/ene_male_marshal_marksman_1")
+				Idstring("units/pd2_dlc_usm1/characters/ene_male_marshal_marksman_2/ene_male_marshal_marksman_2")
 			},
 			zombie = {
-				Idstring("units/pd2_dlc_usm1/characters/ene_male_marshal_marksman_1/ene_male_marshal_marksman_1")
+				Idstring("units/pd2_dlc_usm1/characters/ene_male_marshal_marksman_2/ene_male_marshal_marksman_2")
 			},
 			murkywater = {
-				Idstring("units/pd2_dlc_usm1/characters/ene_male_marshal_marksman_1/ene_male_marshal_marksman_1")
+				Idstring("units/pd2_dlc_usm1/characters/ene_male_marshal_marksman_2/ene_male_marshal_marksman_2")
 			},
 			federales = {
-				Idstring("units/pd2_dlc_usm1/characters/ene_male_marshal_marksman_1/ene_male_marshal_marksman_1")
+				Idstring("units/pd2_dlc_usm1/characters/ene_male_marshal_marksman_2/ene_male_marshal_marksman_2")
 			}
 		},
 		access = access_type_all
@@ -3262,6 +3262,30 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 			spawn_cooldown = 60,
 			max_nr_simultaneous_groups = 1,
 			initial_spawn_delay = 90,
+			amount = {
+				2,
+				2
+			},
+			spawn = {
+				{
+					respawn_cooldown = 30,
+					amount_min = 2,
+					rank = 1,
+					freq = 1,
+					unit = "marshal_marksman",
+					tactics = self._tactics.marshal_marksman
+				}
+			},
+			spawn_point_chk_ref = table.list_to_set({
+				"tac_swat_rifle_flank",
+				"tac_swat_rifle"
+			})
+		}
+	else
+		self.enemy_spawn_groups.marshal_squad = {
+			spawn_cooldown = 60,
+			max_nr_simultaneous_groups = 1,
+			initial_spawn_delay = 600,
 			amount = {
 				2,
 				2

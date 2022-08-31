@@ -8445,6 +8445,23 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		dlc = "pda9",
 		texture_bundle_folder = "pda9"
 	}
+	self.masks.dodhat = {
+		unit = "units/pd2_dlc_tma1/masks/msk_dodhat/msk_dodhat",
+		name_id = "bm_msk_dodhat",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "tma1",
+		texture_bundle_folder = "tma1",
+		offsets = {
+			jimmy = {
+				Vector3(0, 0, 0.316006),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.masks) do

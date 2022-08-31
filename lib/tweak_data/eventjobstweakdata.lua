@@ -193,7 +193,7 @@ function EventJobsTweakData:_init_pda9_challenges(tweak_data)
 		id = "pda9_1",
 		objectives = {
 			self:_collective("pda9_collective_1", 2, {
-				name_id = "menu_pda9_item_1",
+				name_id = "menu_pda9_item_2",
 				desc_id = "menu_pda9_item_1_desc"
 			})
 		},
@@ -341,7 +341,7 @@ function EventJobsTweakData:_init_pda9_challenges(tweak_data)
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("pda9_piggy_stage_2", 1, {
-					name_id = "menu_pda9_item_2",
+					name_id = "menu_pda9_item_1",
 					desc_id = ""
 				}),
 				tweak_data.safehouse:_progress("pda9_n2", 99, {
@@ -383,7 +383,7 @@ function EventJobsTweakData:_init_pda9_challenges(tweak_data)
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("pda9_piggy_stage_1", 6, {
-					name_id = "menu_pda9_item_1",
+					name_id = "menu_pda9_item_2",
 					desc_id = ""
 				}),
 				tweak_data.safehouse:_progress("pda9_n3", 99, {

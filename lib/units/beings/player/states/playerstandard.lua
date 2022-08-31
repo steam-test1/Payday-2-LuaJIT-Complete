@@ -4334,12 +4334,7 @@ function PlayerStandard:_check_action_primary_attack(t, input)
 							weap_base:tweak_data_anim_play("fire", weap_base:fire_rate_multiplier())
 						end
 
-						local recoil_fire_modes = {
-							"single",
-							"burst"
-						}
-
-						if table.contains(recoil_fire_modes, fire_mode) and weap_base:get_name_id() ~= "saw" then
+						if fire_mode ~= "auto" and weap_base:get_name_id() ~= "saw" then
 							local state = nil
 
 							if not self._state_data.in_steelsight then

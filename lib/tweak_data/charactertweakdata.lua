@@ -1678,7 +1678,7 @@ end
 function CharacterTweakData:_init_bolivian_indoors_mex(presets)
 	self.bolivian_indoors_mex = deep_clone(self.gangster)
 	self.bolivian_indoors_mex.detection = presets.detection.guard
-	self.bolivian_indoors_mex.access = "security"
+	self.bolivian_indoors_mex.access = "gangster"
 	self.bolivian_indoors_mex.radio_prefix = "fri_"
 	self.bolivian_indoors_mex.suspicious = true
 	self.bolivian_indoors_mex.weapon.is_pistol.range = {
@@ -17569,7 +17569,8 @@ function CharacterTweakData:character_map()
 		usm1 = {
 			path = "units/pd2_dlc_usm1/characters/",
 			list = {
-				"ene_male_marshal_marksman_1"
+				"ene_male_marshal_marksman_1",
+				"ene_male_marshal_marksman_2"
 			}
 		},
 		ranc = {

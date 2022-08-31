@@ -694,7 +694,7 @@ function CopDamage:_check_damage_achievements(attack_data, head)
 	local achievements = tweak_data.achievement.enemy_kill_achievements or {}
 	local current_mask_id = managers.blackmarket:equipped_mask().mask_id
 	local attack_weapon_type = attack_weapon:base()._type
-	local weapons_pass, weapon_pass, fire_mode_pass, ammo_pass, enemy_pass, enemy_weapon_pass, mask_pass, hiding_pass, head_pass, steelsight_pass, distance_pass, zipline_pass, rope_pass, one_shot_pass, weapon_type_pass, level_pass, part_pass, parts_pass, timer_pass, cop_pass, gangster_pass, civilian_pass, count_no_reload_pass, count_pass, count_in_row_pass, diff_pass, complete_count_pass, critical_pass, variant_pass, attack_weapon_type_pass, vip_pass, tags_all_pass, tags_any_pass, player_state_pass, style_pass, all_pass, memory = nil
+	local weapons_pass, weapon_pass, fire_mode_pass, ammo_pass, enemy_pass, enemy_weapon_pass, mask_pass, hiding_pass, head_pass, steelsight_pass, distance_pass, zipline_pass, rope_pass, one_shot_pass, weapon_type_pass, level_pass, part_pass, parts_pass, cop_pass, gangster_pass, civilian_pass, count_no_reload_pass, count_pass, diff_pass, complete_count_pass, count_memory_pass, critical_pass, variant_pass, attack_weapon_type_pass, vip_pass, tags_all_pass, tags_any_pass, player_state_pass, style_pass, all_pass, memory = nil
 	local kill_count_no_reload = managers.job:get_memory("kill_count_no_reload_" .. tostring(attack_weapon:base()._name_id), true)
 	kill_count_no_reload = (kill_count_no_reload or 0) + 1
 
@@ -794,41 +794,40 @@ function CopDamage:_check_damage_achievements(attack_data, head)
 
 		vip_pass = not achievement_data.is_vip
 		all_pass = weapon_type_pass and weapons_pass and weapon_pass and fire_mode_pass and ammo_pass and one_shot_pass and enemy_pass and enemy_weapon_pass and mask_pass and hiding_pass and head_pass and distance_pass and zipline_pass and rope_pass and level_pass and part_pass and parts_pass and steelsight_pass and cop_pass and count_no_reload_pass and count_pass and diff_pass and complete_count_pass and critical_pass and variant_pass and attack_weapon_type_pass and vip_pass and tags_all_pass and tags_any_pass and player_state_pass and style_pass
-		timer_pass = not achievement_data.timer
+		count_memory_pass = not achievement_data.timer and not achievement_data.count_in_row
 
-		if all_pass and achievement_data.timer then
+		if achievement_data.timer then
 			memory = managers.job:get_memory(achievement, true)
 			local t = TimerManager:game():time()
 
 			if memory then
-				table.insert(memory, t)
+				if all_pass then
+					table.insert(memory, t)
 
-				for i = #memory, 1, -1 do
-					if achievement_data.timer <= t - memory[i] then
-						table.remove(memory, i)
+					for i = #memory, 1, -1 do
+						if achievement_data.timer <= t - memory[i] then
+							table.remove(memory, i)
+						end
 					end
+
+					count_memory_pass = (achievement_data.count or achievement_data.count_in_row) <= #memory
+
+					managers.job:set_memory(achievement, memory, true)
+				elseif achievement_data.count_in_row then
+					managers.job:set_memory(achievement, {}, true)
 				end
-
-				timer_pass = achievement_data.count <= #memory
-
-				managers.job:set_memory(achievement, memory, true)
-			else
+			elseif all_pass then
 				managers.job:set_memory(achievement, {
 					t
 				}, true)
 			end
-		end
-
-		all_pass = all_pass and timer_pass
-		count_in_row_pass = not achievement_data.count_in_row
-
-		if achievement_data.count_in_row then
+		elseif achievement_data.count_in_row then
 			memory = managers.job:get_memory(achievement, true) or 0
 
 			if memory then
 				if all_pass then
 					memory = memory + 1
-					count_in_row_pass = achievement_data.count_in_row <= memory
+					count_memory_pass = achievement_data.count_in_row <= memory
 				else
 					memory = false
 				end
@@ -837,7 +836,7 @@ function CopDamage:_check_damage_achievements(attack_data, head)
 			end
 		end
 
-		all_pass = all_pass and count_in_row_pass
+		all_pass = all_pass and count_memory_pass
 
 		if all_pass and not managers.achievment:award_data(achievement_data) then
 			Application:debug("[CopDamage] enemy_kill_achievements:", achievement)

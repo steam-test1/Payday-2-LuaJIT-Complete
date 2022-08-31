@@ -575,17 +575,31 @@ function RaycastWeaponBase:get_damage_falloff(damage, col_ray, user_unit)
 	return damage
 end
 
+function RaycastWeaponBase:can_shoot_through_wall()
+	return self._can_shoot_through_wall
+end
+
+function RaycastWeaponBase:can_shoot_through_shield()
+	return self._can_shoot_through_shield
+end
+
+function RaycastWeaponBase:can_shoot_through_enemy()
+	return self._can_shoot_through_enemy
+end
+
 function RaycastWeaponBase:_collect_hits(from, to)
-	local can_shoot_through = self._can_shoot_through_wall or self._can_shoot_through_shield or self._can_shoot_through_enemy
 	local ray_hits = nil
 	local hit_enemy = false
+	local can_shoot_through_wall = self:can_shoot_through_wall()
+	local can_shoot_through_shield = self:can_shoot_through_shield()
+	local can_shoot_through_enemy = self:can_shoot_through_enemy()
 	local enemy_mask = managers.slot:get_mask("enemies")
 	local wall_mask = managers.slot:get_mask("world_geometry", "vehicles")
 	local shield_mask = managers.slot:get_mask("enemy_shield_check")
 	local ai_vision_ids = Idstring("ai_vision")
 	local bulletproof_ids = Idstring("bulletproof")
 
-	if self._can_shoot_through_wall then
+	if can_shoot_through_wall then
 		ray_hits = World:raycast_wall("ray", from, to, "slot_mask", self._bullet_slotmask, "ignore_unit", self._setup.ignore_units, "thickness", 40, "thickness_mask", wall_mask)
 	else
 		ray_hits = World:raycast_all("ray", from, to, "slot_mask", self._bullet_slotmask, "ignore_unit", self._setup.ignore_units)
@@ -603,11 +617,11 @@ function RaycastWeaponBase:_collect_hits(from, to)
 			local weak_body = hit.body:has_ray_type(ai_vision_ids)
 			weak_body = weak_body or hit.body:has_ray_type(bulletproof_ids)
 
-			if not self._can_shoot_through_enemy and hit_enemy then
+			if not can_shoot_through_enemy and hit_enemy then
 				break
-			elseif not self._can_shoot_through_wall and hit.unit:in_slot(wall_mask) and weak_body then
+			elseif not can_shoot_through_wall and hit.unit:in_slot(wall_mask) and weak_body then
 				break
-			elseif not self._can_shoot_through_shield and hit.unit:in_slot(shield_mask) then
+			elseif not can_shoot_through_shield and hit.unit:in_slot(shield_mask) then
 				break
 			end
 		end

@@ -74,11 +74,13 @@ function BoxGuiObject:_create_side(panel, side, type, texture)
 	elseif type == 1 or type == 3 or type == 4 then
 		local one = side_panel:bitmap({
 			wrap_mode = "wrap",
-			texture = texture or "guis/textures/pd2/shared_lines"
+			texture = texture or "guis/textures/pd2/shared_lines",
+			color = self._color
 		})
 		local two = side_panel:bitmap({
 			wrap_mode = "wrap",
-			texture = texture or "guis/textures/pd2/shared_lines"
+			texture = texture or "guis/textures/pd2/shared_lines",
+			color = self._color
 		})
 		local x = math.random(1, 255)
 		local y = math.random(0, one:texture_height() / 2 - 1) * 2
@@ -138,7 +140,8 @@ function BoxGuiObject:_create_side(panel, side, type, texture)
 			wrap_mode = "wrap",
 			texture = texture or "guis/textures/pd2/shared_lines",
 			w = side_panel:w(),
-			h = side_panel:h()
+			h = side_panel:h(),
+			color = self._color
 		})
 		local x = math.random(1, 255)
 		local y = math.random(0, math.round(full:texture_height() / 2 - 1)) * 2
@@ -263,6 +266,23 @@ function BoxGuiObject:set_blend_mode(blend_mode, rec_panel)
 			d:set_blend_mode(blend_mode)
 		else
 			self:set_blend_mode(blend_mode, d)
+		end
+	end
+end
+
+function BoxGuiObject:render_template()
+	return self._render_template
+end
+
+function BoxGuiObject:set_render_template(render_template, rec_panel)
+	self._render_template = render_template
+	local render_template_ids = Idstring(render_template)
+
+	for i, d in pairs(rec_panel and rec_panel:children() or self._panel:children()) do
+		if d.set_render_template then
+			d:set_render_template(render_template_ids)
+		else
+			self:set_render_template(render_template, d)
 		end
 	end
 end

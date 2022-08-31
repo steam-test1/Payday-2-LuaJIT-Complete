@@ -1853,6 +1853,43 @@ function DLCTweakData:init_generated()
 	}
 	self.tjp_bundle.content.loot_global_value = "tjp"
 	self.tjp_bundle.content.loot_drops = {}
+	self.tma1_bundle = {
+		dlc = "has_tma1",
+		content = {}
+	}
+	self.tma1_bundle.content.loot_global_value = "tma1"
+	self.tma1_bundle.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "dodhat",
+			amount = 1
+		},
+		{
+			type_items = "gloves",
+			item_entry = "dodskull",
+			amount = 1
+		},
+		{
+			type_items = "player_styles",
+			item_entry = "dodsuit",
+			amount = 1
+		},
+		{
+			type_items = "weapon_skins",
+			item_entry = "color_tma1_01",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_upg_charm_rooster",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_upg_charm_skull",
+			amount = 1
+		}
+	}
 	self.toon_bundle = {
 		free = true,
 		content = {}

@@ -8496,7 +8496,7 @@ local function from_timed_memory(item, memory_name, count_name)
 	return {
 		get = function ()
 			local mem = managers.job:get_memory(memory_name, true) or {}
-			local t = Application:time()
+			local t = TimerManager:game():time()
 
 			return table.count(mem, function (time)
 				return t - time < item.timer

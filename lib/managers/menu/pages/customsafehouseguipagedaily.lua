@@ -662,7 +662,7 @@ function CustomSafehouseGuiPageDaily:_setup_challenge(id)
 
 				local _, _, _, h = objective_text:text_rect()
 
-				objective_text:set_h(h)
+				objective_text:set_h(h + 1)
 
 				current_y = objective_text:bottom()
 			end
@@ -707,9 +707,9 @@ function CustomSafehouseGuiPageDaily:_setup_challenge(id)
 
 					if index ~= #objective.challenge_choices then
 						local or_string = scroll:canvas():text({
-							text = "Or",
 							font_size = small_font_size,
-							font = small_font
+							font = small_font,
+							text = managers.localization:text("menu_objective_or")
 						})
 
 						self:make_fine_text(or_string)
@@ -719,6 +719,8 @@ function CustomSafehouseGuiPageDaily:_setup_challenge(id)
 						or_string:set_top(pos)
 
 						current_y = or_string:bottom()
+
+						table.insert(self._progress_items, or_string)
 					end
 				end
 
@@ -890,11 +892,13 @@ function CustomSafehouseGuiPageDaily:_update_daily_panel_size(new_width)
 		return
 	end
 
-	desc_text:set_w(new_width)
+	if alive(desc_text) then
+		desc_text:set_w(new_width)
 
-	local _, _, _, h = desc_text:text_rect()
+		local _, _, _, h = desc_text:text_rect()
 
-	desc_text:set_h(h)
+		desc_text:set_h(h + 1)
+	end
 
 	if alive(global_text) then
 		global_text:set_w(new_width)
@@ -902,10 +906,21 @@ function CustomSafehouseGuiPageDaily:_update_daily_panel_size(new_width)
 		local _, _, _, h = global_text:text_rect()
 
 		global_text:set_h(h)
+		global_text:set_top(desc_text:bottom())
 	end
 
 	if alive(objective_title) then
-		objective_title:set_top(global_text:bottom() + PANEL_PADDING * 2)
+		objective_title:set_w(new_width)
+
+		local _, _, _, h = objective_title:text_rect()
+
+		objective_title:set_h(h)
+
+		if alive(global_text) then
+			objective_title:set_top(global_text:bottom() + PANEL_PADDING * 2)
+		else
+			objective_title:set_top(desc_text:bottom() + PANEL_PADDING * 2)
+		end
 	end
 
 	if alive(objective_text) then
@@ -913,14 +928,19 @@ function CustomSafehouseGuiPageDaily:_update_daily_panel_size(new_width)
 
 		local _, _, _, h = objective_text:text_rect()
 
-		objective_text:set_h(h)
+		objective_text:set_h(h + 1)
 		objective_text:set_top(objective_title:bottom())
 	end
 
 	if self._progress_items then
 		local progress_title = canvas:child("ProgressHeader")
 
-		if progress_title then
+		if alive(progress_title) then
+			progress_title:set_w(new_width)
+
+			local _, _, _, h = progress_title:text_rect()
+
+			progress_title:set_h(h)
 			progress_title:set_top(objective_text:bottom() + PANEL_PADDING * 2)
 
 			for idx, item in ipairs(self._progress_items) do

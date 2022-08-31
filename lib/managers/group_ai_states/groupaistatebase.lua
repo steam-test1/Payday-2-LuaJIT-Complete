@@ -4475,10 +4475,12 @@ function GroupAIStateBase:_remove_group_member(group, u_key, is_casualty)
 		if respawn_data and respawn_data.units_to_respawn then
 			local u_data = group.units[u_key]
 			local unit_name = u_data.unit:name()
-			local respawning_data = nil
+			local respawning_data, category = nil
 
 			for idx, data in ipairs(respawn_data.units_to_respawn) do
-				if data.units_lookup[unit_name:key()] then
+				category = data.units_lookup[unit_name:key()]
+
+				if category then
 					respawning_data = respawn_data.units_to_respawn[idx]
 
 					break
@@ -4490,7 +4492,8 @@ function GroupAIStateBase:_remove_group_member(group, u_key, is_casualty)
 				respawn_data.respawning_units[group.type] = {
 					timer = TimerManager:game():time() + respawning_data.cooldown,
 					name = unit_name,
-					team_id = group.team and group.team.id or "law1"
+					team_id = group.team and group.team.id or "law1",
+					category = category
 				}
 			end
 		end
