@@ -1058,7 +1058,7 @@ function PlayerStandard:_update_crosshair_offset(t)
 		managers.hud:set_accessibility_dot_visible(true)
 	end
 
-	return
+	do return end
 
 	if not alive(self._equipped_unit) then
 		return

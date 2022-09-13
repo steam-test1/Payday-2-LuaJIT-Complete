@@ -536,13 +536,13 @@ function PlayerTased:give_shock_to_taser()
 		return
 	end
 
-	return
+	do return end
 
 	self:_give_shock_to_taser(self._counter_taser_unit)
 end
 
 function PlayerTased:_give_shock_to_taser(taser_unit)
-	return
+	do return end
 
 	local action_data = {
 		variant = "counter_tased",

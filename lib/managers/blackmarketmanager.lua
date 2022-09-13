@@ -1182,7 +1182,7 @@ function BlackMarketManager:equip_melee_weapon(melee_weapon_id)
 end
 
 function BlackMarketManager:_update_cached_mask()
-	return
+	do return end
 
 	if SystemInfo:platform() ~= Idstring("X360") then
 		return
@@ -6636,7 +6636,7 @@ function BlackMarketManager:get_customize_mask_id()
 		return
 	end
 
-	return self._customize_mask.mask_id
+	do return self._customize_mask.mask_id end
 
 	local mask = managers.blackmarket:get_crafted_category("masks")[self._customize_mask.slot]
 

@@ -139,7 +139,7 @@ function MenuBackdropGUI:create_black_borders()
 end
 
 function MenuBackdropGUI:_set_black_borders(manager)
-	return
+	do return end
 
 	local manager = self._gui_data_manager or managers.gui_data
 

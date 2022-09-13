@@ -176,7 +176,7 @@ function SkirmishManager:_has_players_in_custody()
 end
 
 function SkirmishManager:check_gameover_conditions()
-	return false
+	do return false end
 
 	if not self:is_skirmish() or not self._game_over_delay then
 		return false

@@ -227,7 +227,7 @@ end
 function MenuItemGrid:move_x(x, row_item)
 	self._selection_index = (self._selection_index + x - 1) % #self._options + 1
 
-	return true
+	do return true end
 
 	local current_row = math.ceil(self._selection_index / self._columns)
 	local new_selection_index = self._selection_index + x

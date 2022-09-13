@@ -229,7 +229,7 @@ function CoreCutsceneManager:start_delayed_cutscene()
 end
 
 function CoreCutsceneManager:update()
-	return
+	do return end
 
 	local time = self._timer:time()
 	local delta_time = self._timer:delta_time()

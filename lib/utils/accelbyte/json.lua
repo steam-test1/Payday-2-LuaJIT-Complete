@@ -92,13 +92,13 @@ local function encode_number(val)
 end
 
 local type_func_map = {
-	nil = encode_nil,
+	["nil"] = encode_nil,
 	table = encode_table,
 	string = encode_string,
 	number = encode_number,
 	boolean = tostring,
 	userdata = encode_nil,
-	function = encode_nil
+	["function"] = encode_nil
 }
 
 function encode(val, stack)
@@ -133,8 +133,8 @@ local delim_chars = create_set(" ", "\t", "\r", "\n", "]", "}", ",")
 local escape_chars = create_set("\\", "/", "\"", "b", "f", "n", "r", "t", "u")
 local literals = create_set("true", "false", "null")
 local literal_map = {
-	false = false,
-	true = true
+	["false"] = false,
+	["true"] = true
 }
 
 local function next_char(str, idx, set, negate)

@@ -998,7 +998,7 @@ function CoreEnvironmentControllerManager:set_base_chromatic_amount(base_chromat
 end
 
 function CoreEnvironmentControllerManager:set_chromatic_enabled(enabled)
-	return
+	do return end
 
 	self._chromatic_enabled = enabled
 

@@ -23,9 +23,9 @@ function UpgradesManager:_setup()
 				0,
 				0
 			},
-			target_tree = self:_autochange_tree(),
 			disabled_visual_upgrades = {}
 		}
+		Global.upgrades_manager.target_tree = self:_autochange_tree()
 	end
 
 	self._global = Global.upgrades_manager

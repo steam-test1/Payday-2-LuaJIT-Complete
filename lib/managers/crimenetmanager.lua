@@ -2460,7 +2460,7 @@ function CrimeNetGui:_create_locations()
 end
 
 function CrimeNetGui:_add_location(contact, data)
-	return
+	do return end
 
 	self._locations[contact] = self._locations[contact] or {}
 
@@ -2696,7 +2696,7 @@ function CrimeNetGui:set_getting_hacked(hacked)
 end
 
 function CrimeNetGui:add_special_contracts(no_casino, no_quickplay)
-	return
+	do return end
 
 	for index, special_contract in ipairs(tweak_data.gui.crime_net.special_contracts) do
 		local skip = false

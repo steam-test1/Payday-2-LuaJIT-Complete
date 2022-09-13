@@ -747,7 +747,7 @@ function MenuCrimeNetInitiator:modify_node(node)
 end
 
 function MenuCrimeNetInitiator:refresh_node(node)
-	return node
+	do return node end
 
 	local dead_list = {}
 

@@ -3383,7 +3383,7 @@ function MenuCallbackHandler:set_fov_multiplier(item)
 end
 
 function MenuCallbackHandler:set_fov_standard(item)
-	return
+	do return end
 
 	local fov = item:value()
 
@@ -3405,7 +3405,7 @@ function MenuCallbackHandler:set_fov_standard(item)
 end
 
 function MenuCallbackHandler:set_fov_zoom(item)
-	return
+	do return end
 
 	local fov = item:value()
 

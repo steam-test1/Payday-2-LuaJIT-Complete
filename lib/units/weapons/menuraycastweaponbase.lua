@@ -174,7 +174,7 @@ function NewRaycastWeaponBase:assemble(factory_id, skip_queue)
 	self:_check_thq_align_anim()
 	self:_update_stats_values()
 
-	return
+	do return end
 
 	local third_person = self:is_npc()
 	self._parts, self._blueprint = managers.weapon_factory:assemble_default(factory_id, self._unit, third_person, self:is_npc())
@@ -194,7 +194,7 @@ function NewRaycastWeaponBase:assemble_from_blueprint(factory_id, blueprint, ski
 	self:_check_thq_align_anim()
 	self:_update_stats_values()
 
-	return
+	do return end
 
 	local third_person = self:is_npc()
 	self._parts, self._blueprint = managers.weapon_factory:assemble_from_blueprint(factory_id, self._unit, blueprint, third_person, self:is_npc())
@@ -373,7 +373,7 @@ function NewRaycastWeaponBase:_update_fire_object()
 end
 
 function NewRaycastWeaponBase:_update_stats_values()
-	return
+	do return end
 
 	local base_stats = self:weapon_tweak_data().stats
 

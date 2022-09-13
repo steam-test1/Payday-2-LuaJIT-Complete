@@ -30,7 +30,7 @@ end
 function ListenerManager:get_closest_listener_position(position)
 	Application:error("ListenerManager:get_closest_listener_position dont function in wwise yet")
 
-	return
+	do return end
 
 	local closest_position, closest_distance = nil
 

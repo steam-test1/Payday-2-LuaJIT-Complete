@@ -3031,6 +3031,7 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 
 	set_characters_data("classyske", characters_female_big, classyske_characters_female_big)
 
+	;(function()
 	local classyske_characters_male_fat = {
 		third_unit = "units/pd2_dlc_trik/characters/trik_acc_classyske/trik_acc_classyske_male_fat/trik_acc_classyske_male_fat",
 		sequence = "set_ehtan"
@@ -4423,6 +4424,7 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		sequence = "set_ehtan"
 	}
 	self.player_styles.dodsuit.characters.ecp_male = dodsuit_characters_male_fat
+	end)()
 end
 
 function BlackMarketTweakData:get_player_style_value(player_style, character_name, key)

@@ -633,7 +633,7 @@ end
 function GageAssetsItem:move_left()
 	self:move(-1, 0)
 
-	return
+	do return end
 
 	if #self._assets_list == 0 then
 		return
@@ -656,7 +656,7 @@ end
 function GageAssetsItem:move_right()
 	self:move(1, 0)
 
-	return
+	do return end
 
 	if #self._assets_list == 0 then
 		return

@@ -47,7 +47,7 @@ function NetworkFriendsPSN:call_silent_callback(func, ...)
 end
 
 function NetworkFriendsPSN:get_friends_list()
-	return self._friends
+	do return self._friends end
 
 	local npids = {}
 	local friends = PSN:get_list_friends()

@@ -1119,7 +1119,7 @@ function TextBoxGui:moved_scroll_bar(x, y)
 	self._x = x
 	self._y = y
 
-	return
+	do return end
 
 	if not self:can_take_input() then
 		return false, "arrow"

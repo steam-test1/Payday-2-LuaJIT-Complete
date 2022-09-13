@@ -1373,7 +1373,7 @@ function PrePlanningLocation:add_custom_point(custom_point, index)
 end
 
 function PrePlanningLocation:set_active(active)
-	return
+	do return end
 
 	active = not not active
 
@@ -2848,7 +2848,7 @@ function PrePlanningMapGui:set_selected_element_item(item)
 end
 
 function PrePlanningMapGui:set_selected_element_index(index)
-	return
+	do return end
 
 	for i, data in ipairs(self._elements) do
 		if data.gui:set_selected(i == index) then

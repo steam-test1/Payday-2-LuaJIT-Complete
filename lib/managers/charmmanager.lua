@@ -291,7 +291,7 @@ function CharmManager:add_weapon(weapon_unit, parts, user_unit, is_menu, custom_
 				local charm_part = get_part_f(factory_manager, find_type, cloned_parts)
 
 				if not charm_part then
-					break
+					do break end
 					break
 				end
 
