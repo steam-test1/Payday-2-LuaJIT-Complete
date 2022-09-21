@@ -8416,6 +8416,62 @@ function DLCTweakData:init(tweak_data)
 			amount = 1
 		}
 	}
+	self.ach_pxp2_1 = {
+		dlc = "has_achievement",
+		achievement_id = "pxp2_1",
+		content = {}
+	}
+	self.ach_pxp2_1.content.loot_global_value = "pxp2"
+	self.ach_pxp2_1.content.loot_drops = {
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_hailstorm_conversion",
+			amount = 1
+		}
+	}
+	self.ach_pxp2_2 = {
+		dlc = "has_achievement",
+		achievement_id = "pxp2_2",
+		content = {}
+	}
+	self.ach_pxp2_2.content.loot_global_value = "pxp2"
+	self.ach_pxp2_2.content.loot_drops = {
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_sho_sko12_conversion",
+			amount = 1
+		}
+	}
+	self.ach_pxp2_3 = {
+		dlc = "has_achievement",
+		achievement_id = "pxp2_3",
+		content = {}
+	}
+	self.ach_pxp2_3.content.loot_global_value = "normal"
+	self.ach_pxp2_3.content.loot_drops = {
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_upg_a_rip",
+			amount = 1
+		}
+	}
+	self.pxp2_starter_pack = {
+		free = true,
+		content = {}
+	}
+	self.pxp2_starter_pack.content.loot_global_value = "normal"
+	self.pxp2_starter_pack.content.loot_drops = {
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_upg_charm_beer",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_upg_charm_foam",
+			amount = 1
+		}
+	}
 	self.sbzac_elegantteeth = {
 		content = {}
 	}

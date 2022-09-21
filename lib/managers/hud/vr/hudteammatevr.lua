@@ -683,6 +683,10 @@ function HUDTeammateVR:set_weapon_firemode(id, firemode)
 		local firemode_auto = weapon_selection:child("firemode_auto")
 
 		if alive(firemode_single) and alive(firemode_auto) then
+			if self._firemode_mapping then
+				firemode = self._firemode_mapping[fire_mode] or fire_mode
+			end
+
 			self:set_weapon_firemode_active(firemode_single, firemode == "single")
 			self:set_weapon_firemode_active(firemode_auto, firemode ~= "single")
 		end
@@ -1064,6 +1068,11 @@ function HUDTeammateVR:setup_firemode(id, weapon_selection_panel)
 	local weapon_tweak_data = tweak_data.weapon[equipped_weapon.weapon_id]
 	local firemode = weapon_tweak_data.FIRE_MODE
 	local can_toggle_firemode = weapon_tweak_data.CAN_TOGGLE_FIREMODE
+
+	if weapon_tweak_data.toggable_fire_modes then
+		can_toggle_firemode = #weapon_tweak_data.toggable_fire_modes > 1
+	end
+
 	local locked_to_auto = managers.weapon_factory:has_perk("fire_mode_auto", equipped_weapon.factory_id, equipped_weapon.blueprint)
 	local locked_to_single = managers.weapon_factory:has_perk("fire_mode_single", equipped_weapon.factory_id, equipped_weapon.blueprint)
 	locked_to_auto = managers.weapon_factory:has_perk("fire_mode_burst", equipped_weapon.factory_id, equipped_weapon.blueprint)
@@ -1091,6 +1100,11 @@ function HUDTeammateVR:setup_firemode(id, weapon_selection_panel)
 	})
 
 	firemode_auto:set_bottom(weapon_selection_panel:h())
+
+	if self._firemode_mapping then
+		firemode = self._firemode_mapping[fire_mode] or fire_mode
+	end
+
 	self:set_weapon_firemode_active(firemode_single, firemode == "single")
 	self:set_weapon_firemode_active(firemode_auto, firemode ~= "single")
 	firemode_single:set_visible(false)

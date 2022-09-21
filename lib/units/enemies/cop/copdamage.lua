@@ -716,8 +716,8 @@ function CopDamage:_check_damage_achievements(attack_data, head)
 		weapon_type_pass = not achievement_data.weapon_type or weapon_category and table.contains(weapon_category, achievement_data.weapon_type)
 		weapons_pass = not achievement_data.weapons or table.contains(achievement_data.weapons, attack_weapon:base()._name_id)
 		weapon_pass = not achievement_data.weapon or attack_weapon:base().name_id == achievement_data.weapon
-		fire_mode_pass = not achievement_data.fire_mode or attack_weapon:base():fire_mode() == achievement_data.fire_mode
-		ammo_pass = not achievement_data.total_ammo or attack_weapon:base():get_ammo_total() == achievement_data.total_ammo
+		fire_mode_pass = not achievement_data.fire_mode or attack_weapon:base().fire_mode and attack_weapon:base():fire_mode() == achievement_data.fire_mode
+		ammo_pass = not achievement_data.total_ammo or attack_weapon:base().get_ammo_total and attack_weapon:base():get_ammo_total() == achievement_data.total_ammo
 		one_shot_pass = not achievement_data.one_shot or attack_data.damage == self._HEALTH_INIT
 		enemy_pass = not achievement_data.enemy or unit_type == achievement_data.enemy
 		enemy_weapon_pass = not achievement_data.enemy_weapon or unit_weapon == achievement_data.enemy_weapon

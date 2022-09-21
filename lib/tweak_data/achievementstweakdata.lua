@@ -569,6 +569,12 @@ function AchievementsTweakData:init(tweak_data)
 				variation = "default",
 				style = "scrub"
 			}
+		},
+		pxp2_3 = {
+			kill = true,
+			stat = "pxp2_3_stats",
+			grenade_type = "poison_gas_grenade",
+			difficulties = overkill_and_above
 		}
 	}
 	self.shotgun_single_shot_kills = {
@@ -966,6 +972,17 @@ function AchievementsTweakData:init(tweak_data)
 				"wpn_fps_bow_long_m_poison",
 				"wpn_fps_bow_ecp_m_arrows_poison",
 				"wpn_fps_bow_elastic_m_poison"
+			}
+		},
+		pxp2_1 = {
+			fire_mode = "volley",
+			stat = "pxp2_1_stats"
+		},
+		pxp2_2 = {
+			stat = "pxp2_2_stats",
+			weapons = {
+				"sko12",
+				"x_sko12"
 			}
 		},
 		ranc_11 = {
@@ -7140,6 +7157,24 @@ function AchievementsTweakData:init(tweak_data)
 			{
 				award = "pxp1_1",
 				at = 200
+			}
+		},
+		pxp2_1_stats = {
+			{
+				award = "pxp2_1",
+				at = 500
+			}
+		},
+		pxp2_2_stats = {
+			{
+				award = "pxp2_2",
+				at = 1000
+			}
+		},
+		pxp2_3_stats = {
+			{
+				award = "pxp2_3",
+				at = 100
 			}
 		},
 		ranc_9_stat = {

@@ -827,7 +827,7 @@ function EnemyManager:register_shield(shield_unit)
 	if unit_data_ext then
 		unit_data_ext:add_destroy_listener(self._unit_clbk_key, callback(self, self, "unregister_shield"))
 	else
-		print("[EnemyManager:register_shield] ERROR - unit_data extension not found on shield unit ", shield_unit)
+		Application:error("[EnemyManager:register_shield] unit_data extension not found on shield unit ", shield_unit)
 	end
 
 	local t = self._timer:time()
@@ -1131,14 +1131,17 @@ function EnemyManager:_upd_corpse_disposal()
 		nr_found = nr_found + disposals_needed
 	end
 
-	local net = Network
-	local detach_f = net.detach_unit
+	local is_server = Network:is_server()
 
 	for u_key, _ in pairs(to_dispose) do
 		local unit = corpses[u_key].unit
 		corpses[u_key] = nil
 
-		unit:base():set_slot(unit, 0)
+		if is_server or unit:id() == -1 then
+			unit:base():set_slot(unit, 0)
+		else
+			unit:set_enabled(false)
+		end
 	end
 
 	enemy_data.nr_corpses = nr_corpses - nr_found
@@ -1245,11 +1248,17 @@ function EnemyManager:_upd_shield_disposal()
 		end
 	end
 
+	local is_server = Network:is_server()
+
 	for u_key, _ in pairs(to_dispose) do
 		local unit = shields[u_key].unit
 		shields[u_key] = nil
 
-		unit:set_slot(0)
+		if is_server or unit:id() == -1 then
+			unit:set_slot(0)
+		else
+			unit:set_enabled(false)
+		end
 	end
 
 	nr_shields = nr_shields - nr_found

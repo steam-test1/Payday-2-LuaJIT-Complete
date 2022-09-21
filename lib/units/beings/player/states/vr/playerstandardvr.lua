@@ -1050,6 +1050,7 @@ function PlayerStandardVR:_check_action_primary_attack(t, input)
 	local new_action1, new_action2 = nil
 	local action_wanted = input.btn_primary_attack_state or input.btn_primary_attack_release or input.btn_akimbo_fire_state or input.btn_akimbo_fire_release
 	action_wanted = action_wanted or self:is_shooting_count()
+	action_wanted = action_wanted or self:_is_charging_weapon()
 
 	if action_wanted then
 		local action_forbidden = self:_changing_weapon() or self:_is_meleeing() or self:_is_throwing_projectile(input) or self:_is_deploying_bipod() or self:is_switching_stances()
@@ -1110,6 +1111,7 @@ end
 function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, weap_base, akimbo)
 	local action_wanted = pressed or held or released
 	action_wanted = action_wanted or self:is_shooting_count()
+	action_wanted = action_wanted or self:_is_charging_weapon()
 
 	if not action_wanted then
 		return false
@@ -1164,6 +1166,7 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 				local start = fire_mode == "single" and pressed
 				start = start or fire_mode == "auto" and held
 				start = start or fire_mode == "burst" and pressed
+				start = start or fire_mode == "volley" and pressed
 				start = start and not fire_on_release
 				start = start or fire_on_release and released
 
@@ -1226,6 +1229,10 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 			end
 		elseif fire_mode == "burst" then
 			fired = weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
+		elseif fire_mode == "volley" then
+			fired = weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
+
+			print("fire", fired)
 		elseif held then
 			if not self._next_wall_check_t or self._next_wall_check_t < t then
 				local wall_check_obj = tweak_data.vr.custom_wall_check[weap_base.name_id] and weap_base._unit:get_object(Idstring(tweak_data.vr.custom_wall_check[weap_base.name_id])) or weap_base:fire_object()
@@ -1236,6 +1243,14 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 			if not self._shooting_forbidden then
 				fired = weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
 			end
+		end
+
+		local charging_weapon = weap_base:charging() and not table.contains(weap_base:weapon_tweak_data().categories, "bow")
+
+		if not self._state_data.charging_weapon and charging_weapon then
+			self:_start_action_charging_weapon(t)
+		elseif self._state_data.charging_weapon and not charging_weapon then
+			self:_end_action_charging_weapon(t)
 		end
 
 		new_action = true
@@ -1315,8 +1330,12 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 			end
 		elseif fire_mode == "single" or self._shooting_forbidden then
 			new_action = false
-		elseif fire_mode == "burst" and weap_base:shooting_count() == 0 then
-			new_action = false
+		elseif fire_mode == "burst" then
+			if weap_base:shooting_count() == 0 then
+				new_action = false
+			end
+		elseif fire_mode == "volley" then
+			new_action = self:_is_charging_weapon()
 		end
 	end
 

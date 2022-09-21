@@ -8,8 +8,8 @@ function SmokeScreenGrenade:_setup_server_data(...)
 	end
 end
 
-function SmokeScreenGrenade:set_thrower_unit(unit)
-	SmokeScreenGrenade.super.set_thrower_unit(self, unit)
+function SmokeScreenGrenade:set_thrower_unit(unit, ...)
+	SmokeScreenGrenade.super.set_thrower_unit(self, unit, ...)
 
 	self._has_dodge_bonus = self._thrower_unit ~= managers.player:player_unit() and self._thrower_unit:base():upgrade_value("player", "sicario_multiplier")
 end

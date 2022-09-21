@@ -23,12 +23,12 @@ function ElementSpawnEnemyGroup:_finalize_values()
 		values.team = nil
 	end
 
-	local preferred_groups = values.preferred_spawn_groups
-
-	if not preferred_groups then
-		return
+	if values.preferred_spawn_groups then
+		self:_chk_spawn_group_references(values.preferred_spawn_groups)
 	end
+end
 
+function ElementSpawnEnemyGroup:_chk_spawn_group_references(preferred_groups)
 	local ref_chk = nil
 	local t_ins = table.insert
 

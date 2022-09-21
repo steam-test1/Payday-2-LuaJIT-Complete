@@ -5117,6 +5117,11 @@ function GuiTweakData:init(tweak_data)
 	}
 
 	table.insert(self.new_heists, {
+		name_id = "menu_nh_pxp2_01",
+		texture_path = "guis/dlcs/pxp2/textures/pd2/new_heists/pxp2_01",
+		url = "https://pd2.link/McShayWeaponPack2SLS"
+	})
+	table.insert(self.new_heists, {
 		name_id = "menu_nh_tma1_01",
 		texture_path = "guis/dlcs/tma1/textures/pd2/new_heists/tma1_01",
 		url = "https://pd2.link/TijuanaMusicPackSL"

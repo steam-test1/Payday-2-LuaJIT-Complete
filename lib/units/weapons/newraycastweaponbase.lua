@@ -15,10 +15,12 @@ local tmp_vec2 = Vector3()
 local ids_single = Idstring("single")
 local ids_auto = Idstring("auto")
 local ids_burst = Idstring("burst")
+local ids_volley = Idstring("volley")
 local FIRE_MODE_IDS = {
 	single = ids_single,
 	auto = ids_auto,
-	burst = ids_burst
+	burst = ids_burst,
+	volley = ids_volley
 }
 NewRaycastWeaponBase = NewRaycastWeaponBase or class(RaycastWeaponBase)
 
@@ -43,6 +45,35 @@ function NewRaycastWeaponBase:init(unit)
 	self._stagger = false
 	self._fire_mode_category = self:weapon_tweak_data().FIRE_MODE
 	self._burst_count = self:weapon_tweak_data().BURST_COUNT or 3
+	self._fire_mode_data = {}
+	local fire_mode_data = self:weapon_tweak_data().fire_mode_data or {}
+
+	for id, ids in pairs(FIRE_MODE_IDS) do
+		if fire_mode_data[id] then
+			self._fire_mode_data[ids:key()] = fire_mode_data[id]
+		end
+	end
+
+	local volley_fire_mode = fire_mode_data.volley
+
+	if volley_fire_mode then
+		self._volley_spread_mul = volley_fire_mode.spread_mul or 1
+		self._volley_damage_mul = volley_fire_mode.damage_mul or 1
+		self._volley_ammo_usage = volley_fire_mode.ammo_usage or 1
+		self._volley_rays = volley_fire_mode.rays or 1
+	end
+
+	local toggable_fire_modes = fire_mode_data.toggable
+
+	if toggable_fire_modes then
+		self._toggable_fire_modes = {}
+
+		for _, fire_mode in ipairs(toggable_fire_modes) do
+			if FIRE_MODE_IDS[fire_mode] then
+				table.insert(self._toggable_fire_modes, FIRE_MODE_IDS[fire_mode])
+			end
+		end
+	end
 
 	if managers.player:has_category_upgrade("player", "armor_depleted_stagger_shot") then
 		local function clbk(value)
@@ -425,6 +456,7 @@ function NewRaycastWeaponBase:clbk_assembly_complete(clbk, parts, blueprint)
 	self:apply_material_parameters()
 	self:configure_scope()
 	self:check_npc()
+	self:call_on_digital_gui("set_firemode", self:fire_mode())
 	self:_set_parts_enabled(self._enabled)
 
 	if self._second_sight_data then
@@ -612,6 +644,35 @@ function NewRaycastWeaponBase:set_scope_range_distance(distance)
 	end
 end
 
+function NewRaycastWeaponBase:call_on_digital_gui(func_name, ...)
+	if not self._assembly_complete then
+		return
+	end
+
+	if self._scopes and self._parts then
+		local params = {
+			[#params + 1] = false,
+			...
+		}
+		local part = nil
+
+		for i, part_id in ipairs(self._scopes) do
+			part = self._parts[part_id]
+			local digital_gui = part and part.unit:digital_gui()
+
+			if digital_gui and digital_gui[func_name] then
+				digital_gui[func_name](digital_gui, unpack(params))
+			end
+
+			local digital_gui_upper = part and part.unit:digital_gui_upper()
+
+			if digital_gui_upper and digital_gui_upper[func_name] then
+				digital_gui_upper[func_name](digital_gui_upper, unpack(params))
+			end
+		end
+	end
+end
+
 function NewRaycastWeaponBase:check_highlight_unit(unit)
 	if not self._can_highlight then
 		return
@@ -730,6 +791,8 @@ function NewRaycastWeaponBase:_update_stats_values(disallow_replenish, ammo_data
 		self._locked_fire_mode = ids_single
 	elseif weapon_perks.fire_mode_burst then
 		self._locked_fire_mode = ids_burst
+	elseif weapon_perks.fire_mode_volley then
+		self._locked_fire_mode = ids_volley
 	else
 		self._locked_fire_mode = nil
 	end
@@ -743,6 +806,16 @@ function NewRaycastWeaponBase:_update_stats_values(disallow_replenish, ammo_data
 	local primary_category = self:weapon_tweak_data().categories and self:weapon_tweak_data().categories[1]
 	self._movement_penalty = tweak_data.upgrades.weapon_movement_penalty[primary_category] or 1
 	self._burst_count = self:weapon_tweak_data().BURST_COUNT or 3
+	local fire_mode_data = self:weapon_tweak_data().fire_mode_data or {}
+	local volley_fire_mode = fire_mode_data.volley
+
+	if volley_fire_mode then
+		self._volley_spread_mul = volley_fire_mode.spread_mul or 1
+		self._volley_damage_mul = volley_fire_mode.damage_mul or 1
+		self._volley_ammo_usage = volley_fire_mode.ammo_usage or 1
+		self._volley_rays = volley_fire_mode.rays or 1
+	end
+
 	local custom_stats = managers.weapon_factory:get_custom_stats_from_weapon(self._factory_id, self._blueprint)
 
 	for part_id, stats in pairs(custom_stats) do
@@ -770,6 +843,22 @@ function NewRaycastWeaponBase:_update_stats_values(disallow_replenish, ammo_data
 
 		if stats.fire_rate_multiplier then
 			self._ammo_data.fire_rate_multiplier = (self._ammo_data.fire_rate_multiplier or 0) + stats.fire_rate_multiplier - 1
+		end
+
+		if stats.volley_spread_mul then
+			self._volley_spread_mul = stats.volley_spread_mul
+		end
+
+		if stats.volley_damage_mul then
+			self._volley_damage_mul = stats.volley_damage_mul
+		end
+
+		if stats.volley_ammo_usage then
+			self._volley_ammo_usage = stats.volley_ammo_usage
+		end
+
+		if stats.volley_rays then
+			self._volley_rays = stats.volley_rays
 		end
 	end
 
@@ -831,6 +920,18 @@ function NewRaycastWeaponBase:_update_stats_values(disallow_replenish, ammo_data
 		effect = self._muzzle_effect,
 		parent = self._obj_fire,
 		force_synch = self._muzzle_effect_table.force_synch or false
+	}
+
+	if self._ammo_data and self._ammo_data.trail_effect ~= nil then
+		self._trail_effect = Idstring(self._ammo_data.trail_effect)
+	else
+		self._trail_effect = self:weapon_tweak_data().trail_effect and Idstring(self:weapon_tweak_data().trail_effect) or self.TRAIL_EFFECT
+	end
+
+	self._trail_effect_table = {
+		effect = self._trail_effect,
+		position = Vector3(),
+		normal = Vector3()
 	}
 	local base_stats = self:weapon_tweak_data().stats
 
@@ -1570,6 +1671,14 @@ function NewRaycastWeaponBase:recoil_wait()
 end
 
 function NewRaycastWeaponBase:start_shooting()
+	if self._fire_mode == ids_volley then
+		self:_start_charging()
+
+		self._shooting = true
+
+		return
+	end
+
 	NewRaycastWeaponBase.super.start_shooting(self)
 
 	if self._fire_mode == ids_burst then
@@ -1590,8 +1699,34 @@ function NewRaycastWeaponBase:stop_shooting()
 end
 
 function NewRaycastWeaponBase:trigger_held(...)
-	if self._fire_mode == ids_burst and (not self._shooting_count or self._shooting_count == 0) then
-		return false
+	if self._fire_mode == ids_burst then
+		if not self._shooting_count or self._shooting_count == 0 then
+			return false
+		end
+	elseif self._fire_mode == ids_volley then
+		if self._volley_fired then
+			return false
+		end
+
+		local volley_charge_time = self:charge_max_t()
+		local fired = false
+
+		if self._volley_charge_start_t + volley_charge_time <= managers.player:player_timer():time() then
+			fired = self:fire(...)
+
+			if fired then
+				self:call_on_digital_gui("stop_volley_charge")
+
+				self._next_fire_allowed = self._unit:timer():time() + self:charge_cooldown_t()
+
+				self:_fire_sound()
+
+				self._volley_charging = nil
+				self._volley_fired = true
+			end
+		end
+
+		return fired
 	end
 
 	local fired = NewRaycastWeaponBase.super.trigger_held(self, ...)
@@ -1623,9 +1758,135 @@ function NewRaycastWeaponBase:shooting_count()
 	return self._shooting_count or 0
 end
 
+function NewRaycastWeaponBase:can_shoot_through_wall()
+	local fire_mode_data = self._fire_mode_data[self._fire_mode:key()]
+
+	return fire_mode_data and fire_mode_data.can_shoot_through_wall or self._can_shoot_through_wall
+end
+
+function NewRaycastWeaponBase:can_shoot_through_shield()
+	local fire_mode_data = self._fire_mode_data[self._fire_mode:key()]
+
+	return fire_mode_data and fire_mode_data.can_shoot_through_shield or self._can_shoot_through_shield
+end
+
+function NewRaycastWeaponBase:can_shoot_through_enemy()
+	local fire_mode_data = self._fire_mode_data[self._fire_mode:key()]
+
+	return fire_mode_data and fire_mode_data.can_shoot_through_enemy or self._can_shoot_through_enemy
+end
+
+function NewRaycastWeaponBase:change_fire_effect(new_effect)
+	self._muzzle_effect_table.effect = new_effect and Idstring(new_effect) or self._muzzle_effect
+end
+
+function NewRaycastWeaponBase:change_trail_effect(new_effect)
+	self._trail_effect_table.effect = new_effect and Idstring(new_effect) or self._trail_effect
+end
+
+function NewRaycastWeaponBase:ammo_usage()
+	return self._fire_mode == ids_volley and self._volley_ammo_usage or 1
+end
+
+function NewRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul, shoot_through_data, ammo_usage)
+	if self:gadget_overrides_weapon_functions() then
+		return self:gadget_function_override("_fire_raycast", self, user_unit, from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul)
+	end
+
+	if self._fire_mode == ids_volley then
+		local ammo_usage_ratio = math.clamp(ammo_usage > 0 and ammo_usage / (self._volley_ammo_usage or ammo_usage) or 1, 0, 1)
+		local rays = math.ceil(ammo_usage_ratio * (self._volley_rays or 1))
+		spread_mul = spread_mul * (self._volley_spread_mul or 1)
+		dmg_mul = dmg_mul * (self._volley_damage_mul or 1)
+		local result = {
+			rays = {}
+		}
+
+		for i = 1, rays do
+			local raycast_res = NewRaycastWeaponBase.super._fire_raycast(self, user_unit, from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul)
+
+			if raycast_res.enemies_in_cone then
+				result.enemies_in_cone = result.enemies_in_cone or {}
+
+				table.map_append(result.enemies_in_cone, raycast_res.enemies_in_cone)
+			end
+
+			result.hit_enemy = result.hit_enemy or raycast_res.hit_enemy
+
+			table.list_append(result.rays, raycast_res.rays or {})
+		end
+
+		return result
+	end
+
+	return NewRaycastWeaponBase.super._fire_raycast(self, user_unit, from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul)
+end
+
+function NewRaycastWeaponBase:_start_charging()
+	self._volley_fired = nil
+	self._volley_charging = true
+	self._volley_charge_start_t = managers.player:player_timer():time()
+
+	self:play_tweak_data_sound("charge")
+	self:call_on_digital_gui("start_volley_charge", self:charge_max_t())
+end
+
+function NewRaycastWeaponBase:interupt_charging()
+	self._volley_fired = nil
+
+	if self._volley_charging then
+		self._volley_charging = nil
+
+		self:play_tweak_data_sound("charge_cancel")
+		self:call_on_digital_gui("stop_volley_charge")
+	end
+end
+
+function NewRaycastWeaponBase:charging()
+	if self._fire_mode == ids_volley then
+		return self._volley_charging and not self._volley_fired
+	end
+
+	return false
+end
+
+function NewRaycastWeaponBase:charge_max_t()
+	return self:weapon_tweak_data().charge_data.max_t or 0
+end
+
+function NewRaycastWeaponBase:charge_cooldown_t()
+	return self:weapon_tweak_data().charge_data.cooldown_t or 0
+end
+
+function NewRaycastWeaponBase:update_firemode_gui_ammo()
+	local ammo = self:get_ammo_remaining_in_clip()
+	local ammo_max = self:get_ammo_max_per_clip()
+	local low_ammo = ammo <= math.round(ammo_max * 0.25)
+	local out_of_ammo = ammo <= 0
+
+	if self._fire_mode == ids_volley then
+		ammo = math.min(self:ammo_usage(), ammo)
+		low_ammo = ammo < self:ammo_usage()
+	end
+
+	local color = nil
+
+	if out_of_ammo then
+		color = Color(1, 0.8, 0, 0)
+	elseif low_ammo then
+		color = Color(1, 0.9, 0.9, 0.3)
+	end
+
+	self:call_on_digital_gui("set_ammo", ammo, color)
+end
+
 function NewRaycastWeaponBase:can_toggle_firemode()
 	if self:gadget_overrides_weapon_functions() then
 		return self:gadget_function_override("can_toggle_firemode")
+	end
+
+	if self._toggable_fire_modes then
+		return #self._toggable_fire_modes > 1
 	end
 
 	return tweak_data.weapon[self._name_id].CAN_TOGGLE_FIREMODE
@@ -1635,6 +1896,34 @@ function NewRaycastWeaponBase:toggle_firemode(skip_post_event)
 	local can_toggle = not self._locked_fire_mode and self:can_toggle_firemode()
 
 	if can_toggle then
+		if self._toggable_fire_modes then
+			local cur_fire_mode = table.index_of(self._toggable_fire_modes, self._fire_mode)
+
+			if cur_fire_mode > 0 then
+				cur_fire_mode = cur_fire_mode % #self._toggable_fire_modes + 1
+				self._fire_mode = self._toggable_fire_modes[cur_fire_mode]
+
+				if not skip_post_event then
+					self._sound_fire:post_event(cur_fire_mode % 2 == 0 and "wp_auto_switch_on" or "wp_auto_switch_off")
+				end
+
+				local fire_mode_data = self._fire_mode_data[self._fire_mode:key()]
+				local fire_effect = fire_mode_data and (self._silencer and fire_mode_data.muzzleflash_silenced or fire_mode_data.muzzleflash)
+
+				self:change_fire_effect(fire_effect)
+
+				local trail_effect = fire_mode_data and fire_mode_data.trail_effect
+
+				self:change_trail_effect(trail_effect)
+				self:call_on_digital_gui("set_firemode", self:fire_mode())
+				self:update_firemode_gui_ammo()
+
+				return true
+			end
+
+			return false
+		end
+
 		if self._fire_mode == ids_single then
 			self._fire_mode = ids_auto
 
@@ -1657,6 +1946,7 @@ end
 
 function NewRaycastWeaponBase:set_ammo_remaining_in_clip(...)
 	NewRaycastWeaponBase.super.set_ammo_remaining_in_clip(self, ...)
+	self:update_firemode_gui_ammo()
 	self:check_bullet_objects()
 end
 

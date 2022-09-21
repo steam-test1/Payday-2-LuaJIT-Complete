@@ -53,8 +53,8 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_m249_npc()
 	self:_init_data_contraband_npc()
 	self:_init_data_flamethrower_npc()
-	self:_init_data_dmr_npc()
 	self:_init_data_heavy_snp_npc()
+	self:_init_data_dmr_npc()
 	self:_init_data_smoke_npc()
 	self:_init_data_groza_npc()
 	self:_init_data_type54_npc()
@@ -93,6 +93,8 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_usp_crew()
 	self:_init_data_g22c_crew()
 	self:_init_data_judge_crew()
+	self:_init_data_korth_crew()
+	self:_init_data_sko12_crew()
 	self:_init_data_m45_crew()
 	self:_init_data_s552_crew()
 	self:_init_data_ppk_crew()
@@ -216,6 +218,9 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_pm9_crew()
 	self:_init_data_x_pm9_crew()
 	self:_init_data_groza_crew()
+	self:_init_data_hailstorm_crew()
+	self:_init_data_x_sko12_crew()
+	self:_init_data_x_korth_crew()
 	self:_init_data_shak12_crew()
 	self:_init_data_x_coal_crew()
 	self:_init_data_x_baka_crew()
@@ -540,6 +545,22 @@ function WeaponTweakData:_init_data_raging_bull_npc()
 	self.raging_bull_npc.FIRE_MODE = "single"
 end
 
+function WeaponTweakData:_init_data_korth_npc()
+	self.korth_npc.categories = clone(self.korth.categories)
+	self.korth_npc.sounds.prefix = "korth_npc"
+	self.korth_npc.use_data.selection_index = SELECTION.SECONDARY
+	self.korth_npc.DAMAGE = 4
+	self.korth_npc.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.korth_npc.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.korth_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	self.korth_npc.CLIP_AMMO_MAX = 8
+	self.korth_npc.NR_CLIPS_MAX = 8
+	self.korth_npc.hold = "pistol"
+	self.korth_npc.alert_size = 5000
+	self.korth_npc.suppression = 1.8
+	self.korth_npc.FIRE_MODE = "single"
+end
+
 function WeaponTweakData:_init_data_m4_npc()
 	self.m4_npc.categories = clone(self.new_m4.categories)
 	self.m4_npc.sounds.prefix = "m4_npc"
@@ -779,6 +800,25 @@ function WeaponTweakData:_init_data_saiga_npc()
 	self.saiga_npc.is_shotgun = true
 	self.saiga_npc.rays = 12
 	self.saiga_npc.spread = 3
+end
+
+function WeaponTweakData:_init_data_sko12_npc()
+	self.sko12_npc.categories = clone(self.sko12.categories)
+	self.sko12_npc.sounds.prefix = "sko12_npc"
+	self.sko12_npc.use_data.selection_index = SELECTION.PRIMARY
+	self.sko12_npc.DAMAGE = 3
+	self.sko12_npc.muzzleflash = "effects/payday2/particles/weapons/762_auto"
+	self.sko12_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug"
+	self.sko12_npc.auto.fire_rate = 0.14
+	self.sko12_npc.CLIP_AMMO_MAX = 7
+	self.sko12_npc.NR_CLIPS_MAX = 10
+	self.sko12_npc.hold = "rifle"
+	self.sko12_npc.alert_size = 4500
+	self.sko12_npc.suppression = 1.8
+	self.sko12_npc.FIRE_MODE = "auto"
+	self.sko12_npc.is_shotgun = true
+	self.sko12_npc.rays = 12
+	self.sko12_npc.spread = 3
 end
 
 function WeaponTweakData:_init_data_sentry_gun_npc()
@@ -1381,24 +1421,6 @@ function WeaponTweakData:_init_data_flamethrower_npc()
 	self.flamethrower_npc.FIRE_MODE = "auto"
 end
 
-function WeaponTweakData:_init_data_dmr_npc()
-	self.dmr_npc.categories = {
-		"snp"
-	}
-	self.dmr_npc.sounds.prefix = "saint_victor_npc"
-	self.dmr_npc.use_data.selection_index = SELECTION.PRIMARY
-	self.dmr_npc.DAMAGE = 1
-	self.dmr_npc.muzzleflash = "effects/payday2/particles/weapons/762_auto"
-	self.dmr_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
-	self.dmr_npc.trail = "effects/particles/weapons/sniper_trail_marshal"
-	self.dmr_npc.CLIP_AMMO_MAX = 6
-	self.dmr_npc.NR_CLIPS_MAX = 8
-	self.dmr_npc.hold = "rifle"
-	self.dmr_npc.alert_size = 5000
-	self.dmr_npc.suppression = 1
-	self.dmr_npc.FIRE_MODE = "single"
-end
-
 function WeaponTweakData:_init_data_heavy_snp_npc()
 	self.heavy_snp_npc.categories = {
 		"snp"
@@ -1415,6 +1437,24 @@ function WeaponTweakData:_init_data_heavy_snp_npc()
 	self.heavy_snp_npc.suppression = 1
 	self.heavy_snp_npc.FIRE_MODE = "single"
 	self.heavy_snp_npc.armor_piercing = true
+end
+
+function WeaponTweakData:_init_data_dmr_npc()
+	self.dmr_npc.categories = {
+		"snp"
+	}
+	self.dmr_npc.sounds.prefix = "saint_victor_npc"
+	self.dmr_npc.use_data.selection_index = SELECTION.PRIMARY
+	self.dmr_npc.DAMAGE = 1
+	self.dmr_npc.muzzleflash = "effects/payday2/particles/weapons/762_auto"
+	self.dmr_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
+	self.dmr_npc.trail = "effects/particles/weapons/sniper_trail_marshal"
+	self.dmr_npc.CLIP_AMMO_MAX = 6
+	self.dmr_npc.NR_CLIPS_MAX = 8
+	self.dmr_npc.hold = "rifle"
+	self.dmr_npc.alert_size = 5000
+	self.dmr_npc.suppression = 1
+	self.dmr_npc.FIRE_MODE = "single"
 end
 
 function WeaponTweakData:_init_data_c45_crew()
@@ -1515,6 +1555,25 @@ function WeaponTweakData:_init_data_raging_bull_crew()
 	self.raging_bull_crew.FIRE_MODE = "single"
 	self.raging_bull_primary_crew = deep_clone(self.raging_bull_crew)
 	self.raging_bull_primary_crew.use_data.selection_index = SELECTION.PRIMARY
+end
+
+function WeaponTweakData:_init_data_korth_crew()
+	self.korth_crew.categories = clone(self.korth.categories)
+	self.korth_crew.sounds.prefix = "korth_npc"
+	self.korth_crew.use_data.selection_index = SELECTION.SECONDARY
+	self.korth_crew.DAMAGE = 4
+	self.korth_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.korth_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.korth_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	self.korth_crew.CLIP_AMMO_MAX = 8
+	self.korth_crew.NR_CLIPS_MAX = 8
+	self.korth_crew.hold = "pistol"
+	self.korth_crew.reload = "revolver"
+	self.korth_crew.alert_size = 5000
+	self.korth_crew.suppression = 1.8
+	self.korth_crew.FIRE_MODE = "single"
+	self.korth_primary_crew = deep_clone(self.korth_crew)
+	self.korth_primary_crew.use_data.selection_index = SELECTION.PRIMARY
 end
 
 function WeaponTweakData:_init_data_m4_crew()
@@ -1938,6 +1997,41 @@ function WeaponTweakData:_init_data_saiga_crew()
 	self.saiga_crew.suppression = 1.8
 	self.saiga_crew.FIRE_MODE = "auto"
 	self.saiga_crew.is_shotgun = true
+end
+
+function WeaponTweakData:_init_data_sko12_crew()
+	self.sko12_crew.categories = clone(self.sko12.categories)
+	self.sko12_crew.sounds.prefix = "sko12_npc"
+	self.sko12_crew.use_data.selection_index = SELECTION.PRIMARY
+	self.sko12_crew.DAMAGE = 2.7
+	self.sko12_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
+	self.sko12_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug"
+	self.sko12_crew.auto.fire_rate = 0.18
+	self.sko12_crew.CLIP_AMMO_MAX = 7
+	self.sko12_crew.NR_CLIPS_MAX = 10
+	self.sko12_crew.pull_magazine_during_reload = "rifle"
+	self.sko12_crew.hold = "rifle"
+	self.sko12_crew.alert_size = 4500
+	self.sko12_crew.suppression = 1.8
+	self.sko12_crew.FIRE_MODE = "auto"
+	self.sko12_crew.is_shotgun = true
+end
+
+function WeaponTweakData:_init_data_x_sko12_crew()
+	self.x_sko12_crew.categories = clone(self.x_sko12.categories)
+	self.x_sko12_crew.sounds.prefix = "sko12_x_npc"
+	self.x_sko12_crew.use_data.selection_index = SELECTION.PRIMARY
+	self.x_sko12_crew.DAMAGE = 1.25
+	self.x_sko12_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.x_sko12_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.x_sko12_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.x_sko12_crew.rays = 12
+	self.x_sko12_crew.CLIP_AMMO_MAX = 60
+	self.x_sko12_crew.NR_CLIPS_MAX = 5
+	self.x_sko12_crew.hold = "akimbo_pistol"
+	self.x_sko12_crew.alert_size = 1800
+	self.x_sko12_crew.suppression = 2
+	self.x_sko12_crew.FIRE_MODE = "auto"
 end
 
 function WeaponTweakData:_init_data_huntsman_crew()
@@ -4294,6 +4388,29 @@ function WeaponTweakData:_init_data_groza_npc()
 	self.groza_underbarrel_npc.FIRE_MODE = "auto"
 end
 
+function WeaponTweakData:_init_data_hailstorm_crew()
+	self.hailstorm_crew.categories = clone(self.hailstorm.categories)
+	self.hailstorm_crew.sounds.prefix = "hailstorm_npc"
+	self.hailstorm_crew.use_data.selection_index = SELECTION.PRIMARY
+	self.hailstorm_crew.DAMAGE = 2
+	self.hailstorm_crew.muzzleflash = "effects/payday2/particles/weapons/hailstorm_effect"
+	self.hailstorm_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/hailstorm_suppressed"
+	self.hailstorm_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	self.hailstorm_crew.trail_effect = "effects/payday2/particles/weapons/hailstorm_streak"
+	self.hailstorm_crew.CLIP_AMMO_MAX = 30
+	self.hailstorm_crew.NR_CLIPS_MAX = 5
+	self.hailstorm_crew.reload = "looped"
+	self.hailstorm_crew.auto.fire_rate = 0.083
+	self.hailstorm_crew.hold = {
+		"bullpup",
+		"rifle"
+	}
+	self.hailstorm_crew.reload = "bullpup"
+	self.hailstorm_crew.alert_size = 5000
+	self.hailstorm_crew.suppression = 1
+	self.hailstorm_crew.FIRE_MODE = "auto"
+end
+
 function WeaponTweakData:_init_data_basset_crew()
 	self.basset_crew.categories = clone(self.basset.categories)
 	self.basset_crew.sounds.prefix = "basset_npc"
@@ -4856,6 +4973,22 @@ function WeaponTweakData:_init_data_x_rota_crew()
 	self.x_rota_crew.alert_size = 1800
 	self.x_rota_crew.suppression = 2
 	self.x_rota_crew.FIRE_MODE = "single"
+end
+
+function WeaponTweakData:_init_data_x_korth_crew()
+	self.x_korth_crew.categories = clone(self.x_korth.categories)
+	self.x_korth_crew.sounds.prefix = "korth_npc"
+	self.x_korth_crew.use_data.selection_index = SELECTION.PRIMARY
+	self.x_korth_crew.DAMAGE = 1
+	self.x_korth_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.x_korth_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.x_korth_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	self.x_korth_crew.CLIP_AMMO_MAX = 20
+	self.x_korth_crew.NR_CLIPS_MAX = 5
+	self.x_korth_crew.hold = "akimbo_pistol"
+	self.x_korth_crew.alert_size = 2500
+	self.x_korth_crew.suppression = 1
+	self.x_korth_crew.FIRE_MODE = "single"
 end
 
 function WeaponTweakData:_init_data_shuno_crew()
@@ -5994,6 +6127,10 @@ function WeaponTweakData:_init_new_weapons(weapon_data)
 	self:_init_scar(weapon_data)
 	self:_init_p226(weapon_data)
 	self:_init_hk21(weapon_data)
+	self:_init_korth(weapon_data)
+	self:_init_sko12(weapon_data)
+	self:_init_x_sko12(weapon_data)
+	self:_init_x_korth(weapon_data)
 	self:_init_m249(weapon_data)
 	self:_init_rpk(weapon_data)
 	self:_init_m95(weapon_data)
@@ -6055,6 +6192,7 @@ function WeaponTweakData:_init_new_weapons(weapon_data)
 	self:_init_groza(weapon_data)
 	self:_init_pm9(weapon_data)
 	self:_init_x_pm9(weapon_data)
+	self:_init_hailstorm(weapon_data)
 	self:_init_shak12(weapon_data)
 	self:_init_m37(weapon_data)
 	self:_init_china(weapon_data)
@@ -7543,6 +7681,229 @@ function WeaponTweakData:_init_saiga(weapon_data)
 	}
 end
 
+function WeaponTweakData:_init_sko12(weapon_data)
+	self.sko12 = {
+		categories = {
+			"shotgun"
+		},
+		has_magazine = true,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.sko12.sounds.fire = "sko12_fire_single"
+	self.sko12.sounds.fire_single = "sko12_fire_single"
+	self.sko12.sounds.fire_auto = "sko12_fire"
+	self.sko12.sounds.dryfire = "shotgun_dryfire"
+	self.sko12.sounds.stop_fire = "sko12_stop"
+	self.sko12.sounds.enter_steelsight = "primary_steel_sight_enter"
+	self.sko12.sounds.leave_steelsight = "primary_steel_sight_exit"
+	self.sko12.timers = {
+		reload_not_empty = 3.1,
+		reload_empty = 3.6,
+		unequip = 0.6,
+		equip = 0.6
+	}
+	self.sko12.name_id = "bm_w_sko12"
+	self.sko12.desc_id = "bm_w_sko12_desc"
+	self.sko12.description_id = "des_sko12"
+	self.sko12.global_value = "pxp2"
+	self.sko12.texture_bundle_folder = "pxp2"
+	self.sko12.muzzleflash = "effects/payday2/particles/weapons/big_51b_auto_fps"
+	self.sko12.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
+	self.sko12.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug_g2"
+	self.sko12.use_data = {
+		selection_index = SELECTION.PRIMARY,
+		align_place = "right_hand"
+	}
+	self.sko12.DAMAGE = 6
+	self.sko12.damage_near = 2000
+	self.sko12.damage_far = 3000
+	self.sko12.rays = 8
+	self.sko12.damage_falloff = FALLOFF_TEMPLATE.SHOTGUN_FALL_PRIMARY_LOW
+	self.sko12.CLIP_AMMO_MAX = 28
+	self.sko12.NR_CLIPS_MAX = 2
+	self.sko12.AMMO_MAX = self.sko12.CLIP_AMMO_MAX * self.sko12.NR_CLIPS_MAX
+	self.sko12.AMMO_PICKUP = self:_pickup_chance(self.sko12.AMMO_MAX, PICKUP.SHOTGUN_HIGH_CAPACITY)
+	self.sko12.FIRE_MODE = "auto"
+	self.sko12.fire_mode_data = {
+		fire_rate = 0.22
+	}
+	self.sko12.CAN_TOGGLE_FIREMODE = true
+	self.sko12.auto = {
+		fire_rate = 0.22
+	}
+	self.sko12.spread = {
+		standing = self.r870.spread.standing,
+		crouching = self.r870.spread.crouching,
+		steelsight = self.r870.spread.steelsight,
+		moving_standing = self.r870.spread.moving_standing,
+		moving_crouching = self.r870.spread.moving_crouching,
+		moving_steelsight = self.r870.spread.moving_steelsight
+	}
+	self.sko12.kick = {
+		standing = self.r870.kick.standing
+	}
+	self.sko12.kick.crouching = self.sko12.kick.standing
+	self.sko12.kick.steelsight = self.r870.kick.steelsight
+	self.sko12.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.sko12.crosshair.standing.offset = 0.7
+	self.sko12.crosshair.standing.moving_offset = 0.7
+	self.sko12.crosshair.standing.kick_offset = 0.8
+	self.sko12.crosshair.crouching.offset = 0.65
+	self.sko12.crosshair.crouching.moving_offset = 0.65
+	self.sko12.crosshair.crouching.kick_offset = 0.75
+	self.sko12.crosshair.steelsight.hidden = true
+	self.sko12.crosshair.steelsight.offset = 0
+	self.sko12.crosshair.steelsight.moving_offset = 0
+	self.sko12.crosshair.steelsight.kick_offset = 0
+	self.sko12.shake = {
+		fire_multiplier = 2,
+		fire_steelsight_multiplier = 1.25
+	}
+	self.sko12.autohit = weapon_data.autohit_shotgun_default
+	self.sko12.aim_assist = weapon_data.aim_assist_shotgun_default
+	self.sko12.weapon_hold = "sko12"
+	self.sko12.animations = {
+		equip_id = "equip_sko12",
+		recoil_steelsight = true
+	}
+	self.sko12.panic_suppression_chance = 0.2
+	self.sko12.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 65,
+		alert_size = 7,
+		spread = 8,
+		spread_moving = 8,
+		recoil = 12,
+		value = 1,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 5,
+		concealment = 6
+	}
+end
+
+function WeaponTweakData:_init_x_sko12(weapon_data)
+	self.x_sko12 = {
+		categories = {
+			"akimbo",
+			"shotgun"
+		},
+		has_magazine = true,
+		allow_akimbo_autofire = true,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.x_sko12.sounds.fire = "sko12_x_fire_single"
+	self.x_sko12.sounds.fire_single = "sko12_x_fire_single"
+	self.x_sko12.sounds.fire_auto = "sko12_x_fire"
+	self.x_sko12.sounds.stop_fire = "sko12_x_stop"
+	self.x_sko12.sounds.enter_steelsight = "pistol_steel_sight_enter"
+	self.x_sko12.sounds.leave_steelsight = "pistol_steel_sight_exit"
+	self.x_sko12.sounds.dryfire = "secondary_dryfire"
+	self.x_sko12.timers = {
+		reload_not_empty = 3,
+		reload_empty = 3.5,
+		unequip = 0.5,
+		equip = 0.5
+	}
+	self.x_sko12.name_id = "bm_w_x_sko12"
+	self.x_sko12.desc_id = "bm_w_x_sko12_desc"
+	self.x_sko12.description_id = "des_x_sko12"
+	self.x_sko12.global_value = "pxp2"
+	self.x_sko12.texture_bundle_folder = "pxp2"
+	self.x_sko12.muzzleflash = "effects/payday2/particles/weapons/big_51b_auto_fps"
+	self.x_sko12.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
+	self.x_sko12.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug_g2"
+	self.x_sko12.use_data = {
+		selection_index = SELECTION.PRIMARY
+	}
+	self.x_sko12.use_shotgun_reload = false
+	self.x_sko12.CLIP_AMMO_MAX = 20
+	self.x_sko12.NR_CLIPS_MAX = 3
+	self.x_sko12.AMMO_MAX = self.x_sko12.CLIP_AMMO_MAX * self.x_sko12.NR_CLIPS_MAX
+	self.x_sko12.AMMO_PICKUP = self:_pickup_chance(self.x_sko12.AMMO_MAX, 4)
+	self.x_sko12.FIRE_MODE = "auto"
+	self.x_sko12.fire_mode_data = {}
+	self.x_sko12.DAMAGE = 4
+	self.x_sko12.damage_near = 2000
+	self.x_sko12.damage_far = 3000
+	self.x_sko12.rays = 6
+	self.x_sko12.fire_mode_data.fire_rate = 0.22
+	self.x_sko12.damage_falloff = FALLOFF_TEMPLATE.AKI_SHOTGUN_FALL_LOW
+	self.x_sko12.single = {
+		fire_rate = 0.22
+	}
+	self.x_sko12.CAN_TOGGLE_FIREMODE = true
+	self.x_sko12.spread = {
+		standing = self.r870.spread.standing,
+		crouching = self.r870.spread.crouching,
+		steelsight = self.r870.spread.steelsight,
+		moving_standing = self.r870.spread.moving_standing,
+		moving_crouching = self.r870.spread.moving_crouching,
+		moving_steelsight = self.r870.spread.moving_steelsight
+	}
+	self.x_sko12.kick = {
+		standing = {
+			1.4,
+			1.2,
+			-0.5,
+			0.5
+		}
+	}
+	self.x_sko12.kick.crouching = self.x_sko12.kick.standing
+	self.x_sko12.kick.steelsight = self.x_sko12.kick.standing
+	self.x_sko12.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.x_sko12.crosshair.standing.offset = 0.2
+	self.x_sko12.crosshair.standing.moving_offset = 0.6
+	self.x_sko12.crosshair.standing.kick_offset = 0.4
+	self.x_sko12.crosshair.crouching.offset = 0.1
+	self.x_sko12.crosshair.crouching.moving_offset = 0.6
+	self.x_sko12.crosshair.crouching.kick_offset = 0.3
+	self.x_sko12.crosshair.steelsight.hidden = true
+	self.x_sko12.crosshair.steelsight.offset = 0
+	self.x_sko12.crosshair.steelsight.moving_offset = 0
+	self.x_sko12.crosshair.steelsight.kick_offset = 0.1
+	self.x_sko12.shake = {
+		fire_multiplier = 1,
+		fire_steelsight_multiplier = -1
+	}
+	self.x_sko12.autohit = weapon_data.autohit_smg_default
+	self.x_sko12.aim_assist = weapon_data.aim_assist_smg_default
+	self.x_sko12.weapon_hold = "x_akmsu"
+	self.x_sko12.animations = {
+		has_steelsight_stance = true,
+		recoil_steelsight = true
+	}
+	self.x_sko12.texture_bundle_folder = "pxp2"
+	self.x_sko12.panic_suppression_chance = 0.2
+	self.x_sko12.stats = {
+		zoom = 3,
+		total_ammo_mod = 21,
+		damage = 50,
+		alert_size = 7,
+		spread = 8,
+		spread_moving = 8,
+		recoil = 10,
+		value = 1,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 5,
+		concealment = 15
+	}
+end
+
 function WeaponTweakData:_init_ak5(weapon_data)
 	self.ak5 = {
 		categories = {
@@ -8858,6 +9219,228 @@ function WeaponTweakData:_init_new_raging_bull(weapon_data)
 		reload = 11,
 		suppression = 7,
 		concealment = 26
+	}
+end
+
+function WeaponTweakData:_init_korth(weapon_data)
+	self.korth = {
+		categories = {
+			"pistol",
+			"revolver"
+		},
+		upgrade_blocks = {
+			weapon = {
+				"clip_ammo_increase"
+			}
+		},
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.korth.sounds.fire = "korth_fire"
+	self.korth.sounds.dryfire = "secondary_dryfire"
+	self.korth.sounds.enter_steelsight = "pistol_steel_sight_enter"
+	self.korth.sounds.leave_steelsight = "pistol_steel_sight_exit"
+	self.korth.timers = {
+		reload_not_empty = 2.75,
+		reload_empty = 2.75,
+		unequip = 0.5,
+		equip = 0.45
+	}
+	self.korth.FIRE_MODE = "single"
+	self.korth.fire_mode_data = {
+		fire_rate = 0.125
+	}
+	self.korth.single = {
+		fire_rate = 0.125
+	}
+	self.korth.name_id = "bm_w_korth"
+	self.korth.desc_id = "bm_w_korth_desc"
+	self.korth.description_id = "des_korth"
+	self.korth.global_value = "pxp2"
+	self.korth.texture_bundle_folder = "pxp2"
+	self.korth.muzzleflash = "effects/payday2/particles/weapons/357_effect_fps"
+	self.korth.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	self.korth.use_data = {
+		selection_index = SELECTION.SECONDARY
+	}
+	self.korth.DAMAGE = 2
+	self.korth.damage_falloff = FALLOFF_TEMPLATE.PISTOL_FALL_VERYHIGH
+	self.korth.CLIP_AMMO_MAX = 8
+	self.korth.NR_CLIPS_MAX = 7
+	self.korth.AMMO_MAX = self.korth.CLIP_AMMO_MAX * self.korth.NR_CLIPS_MAX
+	self.korth.AMMO_PICKUP = {
+		3,
+		2
+	}
+	self.korth.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight
+	}
+	self.korth.kick = {
+		standing = self.glock_17.kick.standing
+	}
+	self.korth.kick.crouching = self.korth.kick.standing
+	self.korth.kick.steelsight = self.korth.kick.standing
+	self.korth.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.korth.crosshair.standing.offset = 0.2
+	self.korth.crosshair.standing.moving_offset = 0.6
+	self.korth.crosshair.standing.kick_offset = 0.4
+	self.korth.crosshair.crouching.offset = 0.1
+	self.korth.crosshair.crouching.moving_offset = 0.6
+	self.korth.crosshair.crouching.kick_offset = 0.3
+	self.korth.crosshair.steelsight.hidden = true
+	self.korth.crosshair.steelsight.offset = 0
+	self.korth.crosshair.steelsight.moving_offset = 0
+	self.korth.crosshair.steelsight.kick_offset = 0.1
+	self.korth.shake = {
+		fire_multiplier = 1,
+		fire_steelsight_multiplier = -1
+	}
+	self.korth.autohit = weapon_data.autohit_pistol_default
+	self.korth.aim_assist = weapon_data.aim_assist_pistol_default
+	self.korth.weapon_hold = "korth"
+	self.korth.animations = {
+		equip_id = "equip_korth",
+		recoil_steelsight = true
+	}
+	self.korth.panic_suppression_chance = 0.2
+	self.korth.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 120,
+		alert_size = 7,
+		spread = 21,
+		spread_moving = 5,
+		recoil = 11,
+		value = 1,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 7,
+		concealment = 27
+	}
+end
+
+function WeaponTweakData:_init_x_korth(weapon_data)
+	self.x_korth = {
+		categories = {
+			"akimbo",
+			"pistol",
+			"revolver"
+		},
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.x_korth.sounds.fire = "korth_fire"
+	self.x_korth.sounds.enter_steelsight = "pistol_steel_sight_enter"
+	self.x_korth.sounds.leave_steelsight = "pistol_steel_sight_exit"
+	self.x_korth.sounds.dryfire = "secondary_dryfire"
+	self.x_korth.sounds.magazine_empty = "wp_akimbo_pistol_slide_lock"
+	self.x_korth.timers = {
+		reload_not_empty = 3.17,
+		reload_empty = 4,
+		unequip = 0.5,
+		equip = 0.5
+	}
+	self.x_korth.name_id = "bm_w_x_korth"
+	self.x_korth.desc_id = "bm_w_x_korth_desc"
+	self.x_korth.description_id = "des_x_korth"
+	self.x_korth.global_value = "pxp2"
+	self.x_korth.texture_bundle_folder = "pxp2"
+	self.x_korth.muzzleflash = "effects/payday2/particles/weapons/357_effect_fps"
+	self.x_korth.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
+	self.x_korth.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	self.x_korth.use_data = {
+		selection_index = SELECTION.PRIMARY
+	}
+	self.x_korth.DAMAGE = 1
+	self.x_korth.damage_falloff = FALLOFF_TEMPLATE.AKI_PISTOL_FALL_VERYHIGH
+	self.x_korth.CLIP_AMMO_MAX = 16
+	self.x_korth.NR_CLIPS_MAX = 5
+	self.x_korth.AMMO_MAX = self.x_korth.CLIP_AMMO_MAX * self.x_korth.NR_CLIPS_MAX
+	self.x_korth.AMMO_PICKUP = {
+		3,
+		2
+	}
+	self.x_korth.FIRE_MODE = "single"
+	self.x_korth.fire_mode_data = {
+		fire_rate = 0.125
+	}
+	self.x_korth.single = {
+		fire_rate = 0.125
+	}
+	self.x_korth.spread = {
+		standing = self.colt_1911.spread.standing,
+		crouching = self.colt_1911.spread.crouching,
+		steelsight = self.colt_1911.spread.steelsight,
+		moving_standing = self.colt_1911.spread.moving_standing,
+		moving_crouching = self.colt_1911.spread.moving_crouching,
+		moving_steelsight = self.colt_1911.spread.moving_steelsight
+	}
+	self.x_korth.kick = {
+		standing = {
+			1.6,
+			1.3,
+			-0.3,
+			0.3
+		}
+	}
+	self.x_korth.kick.crouching = self.x_korth.kick.standing
+	self.x_korth.kick.steelsight = self.x_korth.kick.standing
+	self.x_korth.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.x_korth.crosshair.standing.offset = 0.2
+	self.x_korth.crosshair.standing.moving_offset = 0.6
+	self.x_korth.crosshair.standing.kick_offset = 0.4
+	self.x_korth.crosshair.crouching.offset = 0.1
+	self.x_korth.crosshair.crouching.moving_offset = 0.6
+	self.x_korth.crosshair.crouching.kick_offset = 0.3
+	self.x_korth.crosshair.steelsight.hidden = true
+	self.x_korth.crosshair.steelsight.offset = 0
+	self.x_korth.crosshair.steelsight.moving_offset = 0
+	self.x_korth.crosshair.steelsight.kick_offset = 0.1
+	self.x_korth.shake = {
+		fire_multiplier = 1,
+		fire_steelsight_multiplier = -1
+	}
+	self.x_korth.autohit = weapon_data.autohit_pistol_default
+	self.x_korth.aim_assist = weapon_data.aim_assist_pistol_default
+	self.x_korth.weapon_hold = "x_judge"
+	self.x_korth.animations = {
+		second_gun_versions = {
+			reload_not_empty = "reload_not_empty_left",
+			reload = "reload_left"
+		},
+		has_steelsight_stance = true,
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
+	}
+	self.x_korth.panic_suppression_chance = 0.2
+	self.x_korth.stats = {
+		zoom = 3,
+		total_ammo_mod = 21,
+		damage = 120,
+		alert_size = 7,
+		spread = 21,
+		spread_moving = 5,
+		recoil = 11,
+		value = 1,
+		extra_ammo = 51,
+		reload = 13,
+		suppression = 7,
+		concealment = 27
 	}
 end
 
@@ -16247,6 +16830,158 @@ function WeaponTweakData:_init_groza(weapon_data)
 	}
 	self.groza_underbarrel.stats_modifiers = {
 		damage = 10
+	}
+end
+
+function WeaponTweakData:_init_hailstorm(weapon_data)
+	self.hailstorm = {
+		categories = {
+			"minigun"
+		},
+		ammo_default_sub_type = "ammo_electric",
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.hailstorm.sounds.fire = "hailstorm_shotgun_fire_single"
+	self.hailstorm.sounds.fire_auto = "hailstorm_fire"
+	self.hailstorm.sounds.stop_fire = "hailstorm_stop"
+	self.hailstorm.sounds.dryfire = "primary_dryfire"
+	self.hailstorm.sounds.charge_release = "long_release"
+	self.hailstorm.sounds.charge_release_fail = "bow_release_fail"
+	self.hailstorm.sounds.charge = "hailstorm_shotgun_fire_charge"
+	self.hailstorm.sounds.charge_cancel = "bow_charge_cancel"
+	self.hailstorm.sounds.enter_steelsight = "primary_steel_sight_enter"
+	self.hailstorm.sounds.leave_steelsight = "primary_steel_sight_exit"
+	self.hailstorm.timers = {
+		reload_not_empty = 3.6,
+		reload_empty = 4.3,
+		unequip = 0.55,
+		equip = 0.55
+	}
+	self.hailstorm.name_id = "bm_w_hailstorm"
+	self.hailstorm.desc_id = "bm_w_hailstorm_desc"
+	self.hailstorm.description_id = "des_hailstorm"
+	self.hailstorm.global_value = "pxp2"
+	self.hailstorm.texture_bundle_folder = "pxp2"
+	self.hailstorm.muzzleflash = "effects/payday2/particles/weapons/hailstorm_effect"
+	self.hailstorm.muzzleflash_silenced = "effects/payday2/particles/weapons/hailstorm_suppressed"
+	self.hailstorm.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	self.hailstorm.trail_effect = "effects/payday2/particles/weapons/hailstorm_streak"
+	self.hailstorm.use_data = {
+		selection_index = SELECTION.PRIMARY
+	}
+	self.hailstorm.DAMAGE = 1
+	self.hailstorm.damage_falloff = FALLOFF_TEMPLATE.SPECIAL_LOW
+	self.hailstorm.CLIP_AMMO_MAX = 120
+	self.hailstorm.NR_CLIPS_MAX = 4.5
+	self.hailstorm.AMMO_MAX = self.hailstorm.CLIP_AMMO_MAX * self.hailstorm.NR_CLIPS_MAX
+	self.hailstorm.AMMO_PICKUP = self:_pickup_chance(self.hailstorm.AMMO_MAX, PICKUP.SNIPER_HIGH_DAMAGE)
+	self.hailstorm.FIRE_MODE = "auto"
+	self.hailstorm.fire_mode_data = {
+		fire_rate = 0.03,
+		volley = {}
+	}
+	self.hailstorm.fire_mode_data.volley.spread_mul = 6
+	self.hailstorm.fire_mode_data.volley.damage_mul = 2
+	self.hailstorm.fire_mode_data.volley.ammo_usage = 30
+	self.hailstorm.fire_mode_data.volley.rays = 15
+	self.hailstorm.fire_mode_data.volley.can_shoot_through_wall = false
+	self.hailstorm.fire_mode_data.volley.can_shoot_through_shield = true
+	self.hailstorm.fire_mode_data.volley.can_shoot_through_enemy = true
+	self.hailstorm.fire_mode_data.volley.muzzleflash = "effects/payday2/particles/weapons/hailstorm_volley_effect"
+	self.hailstorm.fire_mode_data.volley.muzzleflash_silenced = "effects/payday2/particles/weapons/hailstorm_suppressed_volley"
+	self.hailstorm.fire_mode_data.toggable = {
+		"volley",
+		"auto"
+	}
+	self.hailstorm.charge_data = {
+		max_t = 0.5,
+		cooldown_t = 0.3
+	}
+	self.hailstorm.auto = {
+		fire_rate = 0.03
+	}
+	self.hailstorm.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight
+	}
+	self.hailstorm.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.hailstorm.crosshair.standing.offset = 0.016
+	self.hailstorm.crosshair.standing.moving_offset = 0.01
+	self.hailstorm.crosshair.standing.kick_offset = 0.08
+	self.hailstorm.crosshair.crouching.offset = 0.01
+	self.hailstorm.crosshair.crouching.moving_offset = 0.06
+	self.hailstorm.crosshair.crouching.kick_offset = 0.04
+	self.hailstorm.crosshair.steelsight.hidden = true
+	self.hailstorm.crosshair.steelsight.offset = 0
+	self.hailstorm.crosshair.steelsight.moving_offset = 0
+	self.hailstorm.crosshair.steelsight.kick_offset = 0.014
+	self.hailstorm.kick = {
+		standing = {
+			0.4,
+			0.5,
+			-0.7,
+			0.7
+		},
+		crouching = {
+			0.2,
+			0.3,
+			-0.5,
+			0.5
+		},
+		steelsight = {
+			0.3,
+			0.4,
+			-0.3,
+			0.3
+		},
+		volley = {}
+	}
+	self.hailstorm.kick.volley.standing = {
+		3.57,
+		3.59,
+		-0.16,
+		0.16
+	}
+	self.hailstorm.kick.volley.crouching = self.hailstorm.kick.standing
+	self.hailstorm.kick.volley.steelsight = self.hailstorm.kick.standing
+	self.hailstorm.shake = {
+		fire_multiplier = 0.1,
+		fire_steelsight_multiplier = -0.1,
+		volley = {}
+	}
+	self.hailstorm.shake.volley.fire_multiplier = 2
+	self.hailstorm.shake.volley.fire_steelsight_multiplier = -2
+	self.hailstorm.autohit = weapon_data.autohit_rifle_default
+	self.hailstorm.aim_assist = weapon_data.aim_assist_rifle_default
+	self.hailstorm.weapon_hold = "hailstorm"
+	self.hailstorm.animations = {
+		equip_id = "equip_mac11_rifle",
+		recoil_steelsight = true
+	}
+	self.hailstorm.panic_suppression_chance = 0.2
+	self.hailstorm.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 40,
+		alert_size = 8,
+		spread = 19,
+		spread_moving = 15,
+		recoil = 14,
+		value = 9,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 12,
+		concealment = 8
 	}
 end
 
@@ -28944,12 +29679,12 @@ function WeaponTweakData:_create_table_structure()
 		use_data = {},
 		auto = {}
 	}
-	self.dmr_npc = {
+	self.heavy_snp_npc = {
 		usage = "is_rifle",
 		sounds = {},
 		use_data = {}
 	}
-	self.heavy_snp_npc = {
+	self.dmr_npc = {
 		usage = "is_rifle",
 		sounds = {},
 		use_data = {}
@@ -28962,6 +29697,35 @@ function WeaponTweakData:_create_table_structure()
 	}
 	self.groza_underbarrel_npc = {
 		usage = "is_shotgun_pump",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.hailstorm_crew = {
+		usage = "is_rifle",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.korth_crew = {
+		usage = "is_revolver",
+		sounds = {},
+		use_data = {}
+	}
+	self.x_korth_crew = {
+		usage = "akimbo_pistol",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.sko12_crew = {
+		usage = "is_shotgun_mag",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.x_sko12_crew = {
+		usage = "akimbo_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}

@@ -137,7 +137,7 @@ function PlayerInventory:add_ignore_unit(unit)
 
 	self._ignore_destroy_listener_key = self._ignore_destroy_listener_key or "PlayerInventory" .. tostring(unit:key())
 
-	listener_class:add_destroy_listener(self._ignore_destroy_listener_key, callback(self, self, "clbk_remove_ignore_unit"))
+	listener_class:add_destroy_listener(self._ignore_destroy_listener_key, callback(self, self, "_clbk_remove_ignore_unit"))
 
 	self._ignore_units = self._ignore_units or {}
 
@@ -157,7 +157,7 @@ function PlayerInventory:add_ignore_unit(unit)
 	end
 end
 
-function PlayerInventory:clbk_remove_ignore_unit(unit)
+function PlayerInventory:_clbk_remove_ignore_unit(unit)
 	self:remove_ignore_unit(unit, true)
 end
 
@@ -167,6 +167,10 @@ function PlayerInventory:remove_ignore_unit(unit, is_callback)
 	end
 
 	table.delete(self._ignore_units, unit)
+
+	if not next(self._ignore_units) then
+		self._ignore_units = nil
+	end
 
 	local weapon_selections = self:available_selections()
 
@@ -179,10 +183,6 @@ function PlayerInventory:remove_ignore_unit(unit, is_callback)
 				weap_base:remove_ignore_unit(unit)
 			end
 		end
-	end
-
-	if not next(self._ignore_units) then
-		self._ignore_units = nil
 	end
 
 	if not is_callback and alive(unit) then
@@ -766,6 +766,14 @@ function PlayerInventory:load(data)
 	if data._jammer_data and data._jammer_data.effect == "jamming" then
 		self:start_jammer_effect(data._jammer_data.t + TimerManager:game():time())
 	end
+end
+
+function PlayerInventory:clbk_shield_link_request()
+	if not alive(self._unit) or self._unit:id() == -1 then
+		return
+	end
+
+	managers.network:session():send_to_host("request_shield_unit_link", self._unit)
 end
 
 function PlayerInventory:_clbk_weapon_add(data)

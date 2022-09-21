@@ -41,10 +41,12 @@ function CoreLuaPreprocessor:_parse_next_block(constants_table, current_pos, sou
 	local statements_list = {}
 
 	repeat
-		local sussess, finished = self:_parse_next_conditional_statement(source_str, source_len, current_pos, constants_table, statements_list)
+		local success, finished = self:_parse_next_conditional_statement(source_str, source_len, current_pos, constants_table, statements_list)
 
-		if not sussess then
-			self:print_error("[CoreLuaPreprocessor:_process_next_block] " .. self._IF_STATEMENT .. " statement parsing error. file: " .. self._source_path .. ". (" .. tostring(self:_line_number_at_pos(constants_end_pos + 1)) .. ")")
+		if not success then
+			local error_text = string.format("[CoreLuaPreprocessor:_process_next_block] %s statement parsing error. file: %s (%d)", finished or self._IF_STATEMENT, self._source_path, self:_line_number_at_pos(source_str, current_pos))
+
+			self:print_error(error_text)
 
 			return
 		end
@@ -120,13 +122,13 @@ function CoreLuaPreprocessor:_parse_next_conditional_statement(source_str, sourc
 			statement_info = self:_parse_statement(source_str, source_len, elseif_end_pos + 1, constants_table, statements_list)
 
 			if not statement_info then
-				return
+				return false, self._ELSEIF_STATEMENT
 			end
 		elseif else_start_pos and (else_start_pos == start_pos or self:_is_whitespace(source_str, start_pos, else_start_pos - 1)) then
 			statement_info = self:_parse_statement(source_str, source_len, else_end_pos + 1, false, statements_list)
 
 			if not statement_info then
-				return
+				return false, self._ELSE_STATEMENT
 			end
 
 			is_last_statement = true
@@ -173,7 +175,9 @@ function CoreLuaPreprocessor:_extract_constants(source_str, start_pos)
 	local bracket_open_pos = string.find(source_str, self._OPENING_BRACKET, start_pos, true)
 
 	if not bracket_open_pos then
-		self:print_error("[CoreLuaPreprocessor:_process_next_block] statement without opening bracket. file: " .. self._source_path .. ". (" .. tostring(self:_line_number_at_pos(start_pos)) .. ")")
+		local error_text = string.format("[CoreLuaPreprocessor:_process_next_block] statement without opening bracket. file: %s (%d)", self._source_path, self:_line_number_at_pos(source_str, start_pos))
+
+		self:print_error(error_text)
 
 		return
 	end
@@ -230,7 +234,9 @@ function CoreLuaPreprocessor:_find_corresponding_closing_bracket(source_str, sou
 			nr_open_brackets = nr_open_brackets + self:_count_opening_brackets(source_str, current_pos, closing_bracket_pos - 1)
 			current_pos = closing_bracket_pos + 1
 		else
-			self:print_error("[CoreLuaPreprocessor:_find_corresponding_closing_bracket_pos] Did not find corresponding closing bracket for opening bracket at " .. tostring(self:_line_number_at_pos(bracket_open_pos)) .. ". file: ", self._source_path)
+			local error_text = string.format("[CoreLuaPreprocessor:_find_corresponding_closing_bracket_pos] statement without closing bracket. file: %s (%d)", self._source_path, self:_line_number_at_pos(source_str, bracket_open_pos))
+
+			self:print_error(error_text)
 
 			break
 		end
@@ -341,5 +347,5 @@ function CoreLuaPreprocessor:_test_constants_truth(constants_statement_table, co
 end
 
 function CoreLuaPreprocessor:print_error(text)
-	print("\n[ERROR] " .. text .. "\n")
+	error(string.format("\n[ERROR] %s\n", text))
 end

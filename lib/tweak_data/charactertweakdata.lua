@@ -13355,7 +13355,6 @@ function CharacterTweakData:_set_overkill_145()
 	self:_multiply_all_speeds(2.05, 2.1)
 
 	self.marshal_marksman.HEALTH_INIT = 72
-	self.marshal_marksman.weapon.is_rifle.focus_delay = 3
 	self.hector_boss.weapon.is_shotgun_mag.FALLOFF = {
 		{
 			dmg_mul = 2.2,
@@ -13466,6 +13465,7 @@ function CharacterTweakData:_set_overkill_145()
 	self:_multiply_weapon_delay(self.presets.weapon.sniper, 3)
 	self:_multiply_weapon_delay(self.presets.weapon.gang_member, 0)
 
+	self.marshal_marksman.weapon.is_rifle.focus_delay = 3
 	self.presets.gang_member_damage.REGENERATE_TIME = 2
 	self.presets.gang_member_damage.REGENERATE_TIME_AWAY = 0.6
 	self.presets.gang_member_damage.HEALTH_INIT = 400

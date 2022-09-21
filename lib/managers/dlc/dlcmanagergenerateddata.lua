@@ -202,6 +202,10 @@ function GenericDLCManager:has_pxp1()
 	return self:is_dlc_unlocked("pxp1")
 end
 
+function GenericDLCManager:has_pxp2()
+	return self:is_dlc_unlocked("pxp2")
+end
+
 function GenericDLCManager:has_ranc()
 	return self:is_dlc_unlocked("ranc")
 end
@@ -568,6 +572,11 @@ function WINDLCManager:init_generated()
 		app_id = "1945682",
 		no_install = true,
 		webpage = "https://pd2.link/McShayWeaponPackYBS"
+	}
+	Global.dlc_manager.all_dlc_data.pxp2 = {
+		app_id = "2074230",
+		no_install = true,
+		webpage = "https://pd2.link/McShayWeaponPack2YBS"
 	}
 	Global.dlc_manager.all_dlc_data.ranc = {
 		app_id = "1945681",

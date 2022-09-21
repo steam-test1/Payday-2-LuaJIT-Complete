@@ -4810,7 +4810,8 @@ function UpgradesTweakData:init(tweak_data)
 				"new_mp5",
 				"serbu",
 				"microphone",
-				"selfie"
+				"selfie",
+				"sko12"
 			}
 		},
 		[14] = {
@@ -4890,7 +4891,8 @@ function UpgradesTweakData:init(tweak_data)
 				"x_olympic",
 				"x_mp9",
 				"maxim9",
-				"scout"
+				"scout",
+				"korth"
 			}
 		},
 		[20] = {
@@ -4953,7 +4955,8 @@ function UpgradesTweakData:init(tweak_data)
 				"x_vityaz",
 				"x_maxim9",
 				"type54",
-				"x_type54"
+				"x_type54",
+				"x_sko12"
 			}
 		},
 		[25] = {
@@ -5036,7 +5039,8 @@ function UpgradesTweakData:init(tweak_data)
 				"rep_upgrade3",
 				"shuno",
 				"holt",
-				"x_holt"
+				"x_holt",
+				"x_korth"
 			}
 		},
 		[31] = {
@@ -5204,7 +5208,8 @@ function UpgradesTweakData:init(tweak_data)
 			name_id = "weapons",
 			upgrades = {
 				"dingdong",
-				"tenderizer"
+				"tenderizer",
+				"hailstorm"
 			}
 		},
 		[50] = {
@@ -5489,6 +5494,9 @@ function UpgradesTweakData:init(tweak_data)
 	self:_r870_definitions()
 	self:_serbu_definitions()
 	self:_new_raging_bull_definitions()
+	self:_korth_weapon_definitions()
+	self:_sko12_weapon_definitions()
+	self:_x_korth_weapon_definitions()
 	self:_saw_definitions()
 	self:_usp_definitions()
 	self:_g22c_definitions()
@@ -5609,6 +5617,8 @@ function UpgradesTweakData:init(tweak_data)
 	self:_pm9_weapon_definitions()
 	self:_x_pm9_weapon_definitions()
 	self:_qbu88_weapon_definitions()
+	self:_hailstorm_weapon_definitions()
+	self:_x_sko12_weapon_definitions()
 	self:_shak12_weapon_definitions()
 	self:_breech_weapon_definitions()
 	self:_ching_weapon_definitions()
@@ -10944,6 +10954,15 @@ function UpgradesTweakData:_new_m4_definitions()
 	}
 end
 
+function UpgradesTweakData:_sko12_weapon_definitions()
+	self.definitions.sko12 = {
+		dlc = "pxp2",
+		factory_id = "wpn_fps_sho_sko12",
+		weapon_id = "sko12",
+		category = "weapon"
+	}
+end
+
 function UpgradesTweakData:_glock_18c_definitions()
 	self.definitions.glock_18c = {
 		factory_id = "wpn_fps_pis_g18c",
@@ -15554,6 +15573,42 @@ function UpgradesTweakData:_shak12_weapon_definitions()
 		dlc = "tawp",
 		factory_id = "wpn_fps_ass_shak12",
 		weapon_id = "shak12",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_hailstorm_weapon_definitions()
+	self.definitions.hailstorm = {
+		dlc = "pxp2",
+		factory_id = "wpn_fps_hailstorm",
+		weapon_id = "hailstorm",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_korth_weapon_definitions()
+	self.definitions.korth = {
+		dlc = "pxp2",
+		factory_id = "wpn_fps_pis_korth",
+		weapon_id = "korth",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_korth_weapon_definitions()
+	self.definitions.x_korth = {
+		dlc = "pxp2",
+		factory_id = "wpn_fps_pis_x_korth",
+		weapon_id = "x_korth",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_x_sko12_weapon_definitions()
+	self.definitions.x_sko12 = {
+		dlc = "pxp2",
+		factory_id = "wpn_fps_sho_x_sko12",
+		weapon_id = "x_sko12",
 		category = "weapon"
 	}
 end

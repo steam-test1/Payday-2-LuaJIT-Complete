@@ -336,6 +336,24 @@ function HudIconsTweakData:init()
 			18
 		}
 	}
+	self.firemode_volley_auto = {
+		texture = "guis/dlcs/pxp2/textures/pd2/hud_fireselector_volley",
+		texture_rect = {
+			2,
+			0,
+			8,
+			18
+		}
+	}
+	self.firemode_auto_volley = {
+		texture = "guis/dlcs/pxp2/textures/pd2/hud_fireselector_volley",
+		texture_rect = {
+			12,
+			0,
+			8,
+			18
+		}
+	}
 	self.loading = {
 		texture = "guis/textures/hud_icons",
 		texture_rect = {
@@ -15025,6 +15043,33 @@ function HudIconsTweakData:init()
 	}
 	self.C_All_H_Any_Plague = {
 		texture = "guis/dlcs/trk/atlases/pxp1_achievement",
+		texture_rect = {
+			2,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_All_H_All_FieldTest = {
+		texture = "guis/dlcs/trk/atlases/pxp2_achievement",
+		texture_rect = {
+			176,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_All_H_All_HeisteShothun = {
+		texture = "guis/dlcs/trk/atlases/pxp2_achievement",
+		texture_rect = {
+			89,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_All_H_All_Snake = {
+		texture = "guis/dlcs/trk/atlases/pxp2_achievement",
 		texture_rect = {
 			2,
 			2,

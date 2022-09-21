@@ -4185,6 +4185,7 @@ function PlayerStandard:_check_action_primary_attack(t, input)
 	local new_action = nil
 	local action_wanted = input.btn_primary_attack_state or input.btn_primary_attack_release
 	action_wanted = action_wanted or self:is_shooting_count()
+	action_wanted = action_wanted or self:_is_charging_weapon()
 
 	if action_wanted then
 		local action_forbidden = self:_is_reloading() or self:_changing_weapon() or self:_is_meleeing() or self._use_item_expire_t or self:_interacting() or self:_is_throwing_projectile() or self:_is_deploying_bipod() or self._menu_closed_fire_cooldown > 0 or self:is_switching_stances()
@@ -4228,6 +4229,7 @@ function PlayerStandard:_check_action_primary_attack(t, input)
 							local start = fire_mode == "single" and input.btn_primary_attack_press
 							start = start or fire_mode == "auto" and input.btn_primary_attack_state
 							start = start or fire_mode == "burst" and input.btn_primary_attack_press
+							start = start or fire_mode == "volley" and input.btn_primary_attack_press
 							start = start and not fire_on_release
 							start = start or fire_on_release and input.btn_primary_attack_release
 
@@ -4296,6 +4298,8 @@ function PlayerStandard:_check_action_primary_attack(t, input)
 						end
 					elseif fire_mode == "burst" then
 						fired = weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
+					elseif fire_mode == "volley" then
+						fired = weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
 					elseif input.btn_primary_attack_state then
 						fired = weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
 					end
@@ -4308,7 +4312,7 @@ function PlayerStandard:_check_action_primary_attack(t, input)
 						end
 					end
 
-					local charging_weapon = fire_on_release and weap_base:charging()
+					local charging_weapon = weap_base:charging()
 
 					if not self._state_data.charging_weapon and charging_weapon then
 						self:_start_action_charging_weapon(t)
@@ -4396,8 +4400,12 @@ function PlayerStandard:_check_action_primary_attack(t, input)
 						end
 					elseif fire_mode == "single" then
 						new_action = false
-					elseif fire_mode == "burst" and weap_base:shooting_count() == 0 then
-						new_action = false
+					elseif fire_mode == "burst" then
+						if weap_base:shooting_count() == 0 then
+							new_action = false
+						end
+					elseif fire_mode == "volley" then
+						new_action = self:_is_charging_weapon()
 					end
 				end
 			end
@@ -4485,6 +4493,8 @@ function PlayerStandard:_start_action_reload_enter(t)
 		if not self.RUN_AND_RELOAD then
 			self:_interupt_action_running(t)
 		end
+
+		self:_interupt_action_charging_weapon(t)
 
 		local is_reload_not_empty = weapon:clip_not_empty()
 		local base_reload_enter_expire_t = weapon:reload_enter_expire_t(is_reload_not_empty)

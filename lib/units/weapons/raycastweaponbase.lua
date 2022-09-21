@@ -62,8 +62,9 @@ function RaycastWeaponBase:init(unit)
 
 	self._sound_fire:link(self._unit:orientation_object())
 
+	self._trail_effect = self:weapon_tweak_data().trail_effect and Idstring(self:weapon_tweak_data().trail_effect) or self.TRAIL_EFFECT
 	self._trail_effect_table = {
-		effect = self.TRAIL_EFFECT,
+		effect = self._trail_effect,
 		position = Vector3(),
 		normal = Vector3()
 	}
@@ -2038,6 +2039,10 @@ end
 
 function RaycastWeaponBase:weapon_range()
 	return self._weapon_range or 20000
+end
+
+function RaycastWeaponBase:charging()
+	return false
 end
 
 function RaycastWeaponBase:apply_grip(apply)

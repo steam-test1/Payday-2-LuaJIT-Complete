@@ -1049,6 +1049,14 @@ function TweakData:_setup_scene_poses()
 		hk51b = {
 			"husk_rifle3",
 			required_pose = true
+		},
+		hailstorm = {
+			"husk_rifle5",
+			required_pose = true
+		},
+		sko12 = {
+			"husk_rifle1",
+			required_pose = true
 		}
 	}
 	self.scene_poses.infamy = {

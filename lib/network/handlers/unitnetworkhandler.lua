@@ -2647,7 +2647,7 @@ function UnitNetworkHandler:sync_throw_projectile(unit, pos, dir, projectile_typ
 	local thrower_unit = member and member:unit()
 
 	if alive(thrower_unit) then
-		unit:base():set_thrower_unit(thrower_unit)
+		unit:base():set_thrower_unit(thrower_unit, true, false)
 
 		if not tweak_entry.throwable and thrower_unit:movement() and thrower_unit:movement():current_state() then
 			unit:base():set_weapon_unit(thrower_unit:movement():current_state()._equipped_unit)
@@ -2672,7 +2672,7 @@ function UnitNetworkHandler:sync_throw_projectile_npc(unit, pos, dir, projectile
 	local tweak_entry = tweak_data.blackmarket.projectiles[projectile_type]
 
 	if alive(thrower_unit) then
-		unit:base():set_thrower_unit(thrower_unit, true)
+		unit:base():set_thrower_unit(thrower_unit, true, true)
 	end
 
 	unit:base():sync_throw_projectile(dir, projectile_type)

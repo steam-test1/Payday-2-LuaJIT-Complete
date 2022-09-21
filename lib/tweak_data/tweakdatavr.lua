@@ -472,6 +472,12 @@ function TweakDataVR:init(tweak_data)
 			x_deagle = {
 				position = Vector3(-0.5, 1, 2)
 			},
+			x_korth = {
+				position = Vector3(-0.5, 2, 2)
+			},
+			korth = {
+				position = Vector3(-0.5, 2, 2)
+			},
 			x_rage = {
 				position = Vector3(-0.5, 3, 2)
 			},
@@ -506,6 +512,10 @@ function TweakDataVR:init(tweak_data)
 				position = Vector3(0, 2, 2)
 			},
 			p90 = {
+				grip = "weapon_2_grip",
+				position = Vector3(-0.5, 2, 1)
+			},
+			hailstorm = {
 				grip = "weapon_2_grip",
 				position = Vector3(-0.5, 2, 1)
 			},
@@ -670,6 +680,9 @@ function TweakDataVR:init(tweak_data)
 				position = Vector3(-0.5, 3, 1.2)
 			},
 			x_rota = {
+				position = Vector3(-0.1, 2, 1.2)
+			},
+			x_sko12 = {
 				position = Vector3(-0.1, 2, 1.2)
 			},
 			coach = {
@@ -970,6 +983,14 @@ function TweakDataVR:init(tweak_data)
 			position = Vector3(0, 0, 2),
 			rotation = Rotation(0, -15, 0)
 		},
+		x_korth = {
+			position = Vector3(3, 2, 2),
+			rotation = Rotation(-45, 12, -20)
+		},
+		korth = {
+			position = Vector3(3, 2, 2),
+			rotation = Rotation(-45, 12, -20)
+		},
 		r870 = {
 			position = Vector3(3, 0, 0),
 			rotation = Rotation(-223, -129, 70),
@@ -1053,6 +1074,10 @@ function TweakDataVR:init(tweak_data)
 			position = Vector3(3, 0, 1),
 			rotation = Rotation(-1, 55, -4)
 		},
+		x_sko12 = {
+			position = Vector3(3, 0, 1),
+			rotation = Rotation(-1, 55, -4)
+		},
 		coach = {
 			position = Vector3(3, 0, 0),
 			rotation = Rotation(-223, -129, 70)
@@ -1119,6 +1144,10 @@ function TweakDataVR:init(tweak_data)
 		pm9 = {
 			position = Vector3(1, 0, -5),
 			rotation = Rotation(0, -15, 0)
+		},
+		hailstorm = {
+			position = Vector3(0, 1, 7),
+			rotation = Rotation(-90, 90, 170)
 		},
 		fmg9 = {
 			grip = "idle_wpn",
@@ -1513,6 +1542,16 @@ function TweakDataVR:init(tweak_data)
 			magazine = {
 				"g_speedloader"
 			}
+		},
+		x_korth = {
+			magazine = {
+				"g_speedloader"
+			}
+		},
+		korth = {
+			magazine = {
+				"g_speedloader"
+			}
 		}
 	}
 	self.weapon_assist = {
@@ -1541,6 +1580,10 @@ function TweakDataVR:init(tweak_data)
 				position = Vector3(0, 22, -2)
 			},
 			saiga = {
+				grip = "idle_wpn",
+				position = Vector3(-2, 32, 4)
+			},
+			sko12 = {
 				grip = "idle_wpn",
 				position = Vector3(-2, 32, 4)
 			},
@@ -1742,6 +1785,9 @@ function TweakDataVR:init(tweak_data)
 				position = Vector3(0, 23, -3)
 			},
 			p90 = {
+				position = Vector3(0, 10, -5)
+			},
+			hailstorm = {
 				position = Vector3(0, 10, -5)
 			},
 			polymer = {
@@ -3313,6 +3359,61 @@ function TweakDataVR:init(tweak_data)
 			}
 		},
 		p90 = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_p90_clip_slide_out"
+				},
+				{
+					time = 0.01,
+					pos = Vector3(0, -1, 2),
+					rot = Rotation(0, -5, 0)
+				},
+				{
+					time = 0.03,
+					pos = Vector3(0, -1.2, 2.2),
+					rot = Rotation(0, -5, 0)
+				},
+				{
+					time = 0.04,
+					pos = Vector3(0, -15, 4),
+					rot = Rotation(0, 0, 0)
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(10, -15, 4),
+					rot = Rotation(1, -4, -4)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_p90_clip_slide_in",
+					visible = true,
+					pos = Vector3(0, -15, 4),
+					rot = Rotation(0, 0, 0)
+				},
+				{
+					time = 0.01,
+					pos = Vector3(0, -1.2, 2.2),
+					rot = Rotation(0, -5, 0)
+				},
+				{
+					time = 0.45,
+					pos = Vector3(0, -1, 2),
+					rot = Rotation(0, -5, 0)
+				},
+				{
+					time = 0.5,
+					sound = "wp_p90_lever_release",
+					pos = Vector3(),
+					rot = Rotation()
+				}
+			}
+		},
+		hailstorm = {
 			start = {
 				{
 					time = 0,
@@ -6972,6 +7073,132 @@ function TweakDataVR:init(tweak_data)
 				}
 			}
 		},
+		x_korth = {
+			custom_mag_unit = "units/pd2_dlc_vr/units/wpn_pis_speedloader_6x/wpn_pis_speedloader_6x",
+			start = {
+				{
+					time = 0,
+					sound = "wp_chinchilla_cylinder_out",
+					anims = {
+						{
+							anim_group = "reload_right",
+							to = 0.5
+						},
+						{
+							anim_group = "reload_left",
+							to = 0.5
+						}
+					}
+				},
+				{
+					time = 0.02,
+					sound = "wp_chinchilla_eject_shells"
+				},
+				{
+					time = 0.25,
+					visible = false,
+					effect = {
+						object = "a_m",
+						name = "effects/payday2/particles/weapons/shells/shell_revolver_dump"
+					}
+				}
+			},
+			finish = {
+				{
+					visible = true,
+					time = 0,
+					sound = "wp_chinchilla_insert"
+				},
+				{
+					time = 0,
+					visible = {
+						visible = false,
+						parts = {
+							magazine = {
+								"g_speedloader"
+							}
+						}
+					}
+				},
+				{
+					time = 0.5,
+					sound = "wp_chinchilla_cylinder_in",
+					anims = {
+						{
+							anim_group = "reload_right",
+							from = 3.45
+						},
+						{
+							anim_group = "reload_left",
+							from = 3.45
+						}
+					}
+				}
+			}
+		},
+		korth = {
+			custom_mag_unit = "units/pd2_dlc_vr/units/wpn_pis_speedloader_6x/wpn_pis_speedloader_6x",
+			start = {
+				{
+					time = 0,
+					sound = "wp_chinchilla_cylinder_out",
+					anims = {
+						{
+							anim_group = "reload_right",
+							to = 0.5
+						},
+						{
+							anim_group = "reload_left",
+							to = 0.5
+						}
+					}
+				},
+				{
+					time = 0.02,
+					sound = "wp_chinchilla_eject_shells"
+				},
+				{
+					time = 0.25,
+					visible = false,
+					effect = {
+						object = "a_m",
+						name = "effects/payday2/particles/weapons/shells/shell_revolver_dump"
+					}
+				}
+			},
+			finish = {
+				{
+					visible = true,
+					time = 0,
+					sound = "wp_chinchilla_insert"
+				},
+				{
+					time = 0,
+					visible = {
+						visible = false,
+						parts = {
+							magazine = {
+								"g_speedloader"
+							}
+						}
+					}
+				},
+				{
+					time = 0.5,
+					sound = "wp_chinchilla_cylinder_in",
+					anims = {
+						{
+							anim_group = "reload_right",
+							from = 3.45
+						},
+						{
+							anim_group = "reload_left",
+							from = 3.45
+						}
+					}
+				}
+			}
+		},
 		x_beer = {
 			start = {
 				{
@@ -8204,6 +8431,46 @@ function TweakDataVR:init(tweak_data)
 				}
 			}
 		},
+		x_sko12 = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_rota_slide_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 0, -20),
+					rot = Rotation(0, 30, 0)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_rota_slide_slide_in",
+					visible = true,
+					pos = Vector3(0, 0, -20),
+					rot = Rotation(0, 30, 0)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, 0, -4),
+					rot = Rotation(0, 10, 60)
+				},
+				{
+					time = 0.8,
+					pos = Vector3(0, 0, -3),
+					rot = Rotation(0, 10, 60)
+				},
+				{
+					time = 0.99,
+					sound = "wp_rota_rotate_mag",
+					pos = Vector3(),
+					rot = Rotation()
+				}
+			}
+		},
 		r870 = {
 			reload_part_type = "lower_reciever",
 			custom_mag_unit = "units/pd2_dlc_vr/units/wpn_vr_m_slug/wpn_vr_m_slug_6",
@@ -8225,6 +8492,46 @@ function TweakDataVR:init(tweak_data)
 			}
 		},
 		saiga = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_ak47_clip_slide_out"
+				},
+				{
+					time = 0.02,
+					pos = Vector3(0, 4, -1),
+					rot = Rotation(0, 30, 0)
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 10, -20),
+					rot = Rotation(0, 60, 0)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_ak47_clip_slide_in",
+					visible = true,
+					pos = Vector3(0, 0, -20),
+					rot = Rotation()
+				},
+				{
+					time = 0.3,
+					pos = Vector3(0, 4, -1),
+					rot = Rotation(0, 30, 0)
+				},
+				{
+					time = 0.5,
+					sound = "wp_ak47_lever_release",
+					pos = Vector3(),
+					rot = Rotation()
+				}
+			}
+		},
+		sko12 = {
 			start = {
 				{
 					time = 0,
