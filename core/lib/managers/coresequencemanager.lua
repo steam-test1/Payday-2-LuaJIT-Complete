@@ -1521,6 +1521,10 @@ function SequenceEnvironment:init_static_env()
 	self.dest_unit = nil
 end
 
+function SequenceEnvironment.src_unit_unit()
+	return SequenceEnvironment.self.src_unit
+end
+
 function SequenceEnvironment.src_unit_pos()
 	return SequenceEnvironment.self.src_unit:position()
 end
@@ -3578,7 +3582,7 @@ function EnduranceElement:damage(env)
 	local new_damage = env.damage - self._abs[env.damage_type]
 
 	if self._players_only then
-		local attacker_id = managers.criminals:character_peer_id_by_unit(env.src_unit)
+		local attacker_id = alive(env.src_unit) and managers.criminals:character_peer_id_by_unit(env.src_unit)
 
 		if not attacker_id then
 			return

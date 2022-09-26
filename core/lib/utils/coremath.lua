@@ -4,6 +4,7 @@ if core then
 end
 
 nice = math.nice
+local temp_vec = Vector3()
 
 function rgb_to_hsv(r, g, b)
 	local max = math.max(r, g, b)
@@ -341,12 +342,18 @@ function math.bezier_len(points, n)
 	return len
 end
 
-function math.point_on_line(l1, l2, p)
+function math.point_on_line(l1, l2, p, ret_vector)
 	local u = (p.x - l1.x) * (l2.x - l1.x) + (p.y - l1.y) * (l2.y - l1.y) + (p.z - l1.z) * (l2.z - l1.z)
 	local u = math.clamp(u / math.pow((l2 - l1):length(), 2), 0, 1)
 	local x = l1.x + u * (l2.x - l1.x)
 	local y = l1.y + u * (l2.y - l1.y)
 	local z = l1.z + u * (l2.z - l1.z)
+
+	if ret_vector then
+		mvector3.set_static(ret_vector, x, y, z)
+
+		return
+	end
 
 	return Vector3(x, y, z)
 end

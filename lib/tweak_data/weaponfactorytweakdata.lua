@@ -6702,6 +6702,9 @@ function WeaponFactoryTweakData:_init_sko12()
 		},
 		forbids = {
 			"wpn_fps_addon_ris"
+		},
+		forbids = {
+			"wpn_fps_addon_ris"
 		}
 	}
 	self.parts.wpn_fps_sho_sko12_body_upper = {
@@ -6822,12 +6825,7 @@ function WeaponFactoryTweakData:_init_sko12()
 		dlc = "pxp2",
 		name_id = "bm_wp_sko12_stock_conversion",
 		unit = "units/pd2_dlc_pxp2/weapons/wpn_fps_sho_sko12_pts/wpn_fps_sho_sko12_upg_s_mfg_conversion",
-		pcs = {
-			10,
-			20,
-			30,
-			40
-		},
+		pcs = {},
 		stats = {
 			value = 1,
 			spread = 1
@@ -42462,8 +42460,7 @@ function WeaponFactoryTweakData:_init_contraband()
 			"wpn_fps_lmg_hk51b_ns_jcomp",
 			"wpn_fps_upg_o_tf90",
 			"wpn_fps_upg_o_poe",
-			"wpn_fps_sho_sko12_body_grip",
-			"wpn_fps_sho_sko12_stock"
+			"wpn_fps_sho_sko12_body_grip"
 		}
 	}
 	self.wpn_fps_ass_contraband_npc = deep_clone(self.wpn_fps_ass_contraband)
@@ -52492,6 +52489,10 @@ function WeaponFactoryTweakData:_init_mwm()
 			},
 			wpn_fps_snp_tti = {
 				translation = Vector3(0, 8, -0.1),
+				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_sho_sko12 = {
+				translation = Vector3(0, 0, -2.81),
 				rotation = Rotation(0, 0, 0)
 			},
 			wpn_fps_snp_siltstone = {

@@ -1230,9 +1230,9 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 		elseif fire_mode == "burst" then
 			fired = weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
 		elseif fire_mode == "volley" then
-			fired = weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
-
-			print("fire", fired)
+			if self._shooting then
+				fired = weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
+			end
 		elseif held then
 			if not self._next_wall_check_t or self._next_wall_check_t < t then
 				local wall_check_obj = tweak_data.vr.custom_wall_check[weap_base.name_id] and weap_base._unit:get_object(Idstring(tweak_data.vr.custom_wall_check[weap_base.name_id])) or weap_base:fire_object()
@@ -1327,6 +1327,10 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 				self._ext_network:send("shot_blank_reliable", impact, akimbo and 1 or 0)
 			elseif fire_mode ~= "auto" or (weap_base.akimbo or akimbo) and not weap_base:weapon_tweak_data().allow_akimbo_autofire then
 				self._ext_network:send("shot_blank", impact, akimbo and 1 or 0)
+			end
+
+			if fire_mode == "volley" then
+				self:_check_stop_shooting()
 			end
 		elseif fire_mode == "single" or self._shooting_forbidden then
 			new_action = false

@@ -4299,7 +4299,9 @@ function PlayerStandard:_check_action_primary_attack(t, input)
 					elseif fire_mode == "burst" then
 						fired = weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
 					elseif fire_mode == "volley" then
-						fired = weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
+						if self._shooting then
+							fired = weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
+						end
 					elseif input.btn_primary_attack_state then
 						fired = weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
 					end
@@ -4397,6 +4399,10 @@ function PlayerStandard:_check_action_primary_attack(t, input)
 							self._ext_network:send("shot_blank_reliable", impact, 0)
 						elseif fire_mode ~= "auto" or weap_base.akimbo and not weap_base:weapon_tweak_data().allow_akimbo_autofire then
 							self._ext_network:send("shot_blank", impact, 0)
+						end
+
+						if fire_mode == "volley" then
+							self:_check_stop_shooting()
 						end
 					elseif fire_mode == "single" then
 						new_action = false
@@ -4573,6 +4579,7 @@ function PlayerStandard:_interupt_action_reload(t)
 		self._equipped_unit:base():tweak_data_anim_stop("reload_exit")
 	end
 
+	self._queue_reload_interupt = nil
 	self._state_data.reload_enter_expire_t = nil
 	self._state_data.reload_expire_t = nil
 	self._state_data.reload_exit_expire_t = nil

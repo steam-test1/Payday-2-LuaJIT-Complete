@@ -1695,6 +1695,8 @@ function NewRaycastWeaponBase:stop_shooting()
 		local next_fire = (fire_mode_data.burst_cooldown or self:weapon_fire_rate()) / self:fire_rate_multiplier()
 		self._next_fire_allowed = math.max(self._next_fire_allowed, self._unit:timer():time() + next_fire)
 		self._shooting_count = 0
+	elseif self._fire_mode == ids_volley then
+		self:stop_volley_charge()
 	end
 end
 
@@ -1704,10 +1706,6 @@ function NewRaycastWeaponBase:trigger_held(...)
 			return false
 		end
 	elseif self._fire_mode == ids_volley then
-		if self._volley_fired then
-			return false
-		end
-
 		local volley_charge_time = self:charge_max_t()
 		local fired = false
 
@@ -1715,14 +1713,9 @@ function NewRaycastWeaponBase:trigger_held(...)
 			fired = self:fire(...)
 
 			if fired then
-				self:call_on_digital_gui("stop_volley_charge")
-
 				self._next_fire_allowed = self._unit:timer():time() + self:charge_cooldown_t()
 
 				self:_fire_sound()
-
-				self._volley_charging = nil
-				self._volley_fired = true
 			end
 		end
 
@@ -1823,7 +1816,6 @@ function NewRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_
 end
 
 function NewRaycastWeaponBase:_start_charging()
-	self._volley_fired = nil
 	self._volley_charging = true
 	self._volley_charge_start_t = managers.player:player_timer():time()
 
@@ -1831,20 +1823,24 @@ function NewRaycastWeaponBase:_start_charging()
 	self:call_on_digital_gui("start_volley_charge", self:charge_max_t())
 end
 
-function NewRaycastWeaponBase:interupt_charging()
-	self._volley_fired = nil
-
+function NewRaycastWeaponBase:stop_volley_charge()
 	if self._volley_charging then
 		self._volley_charging = nil
 
-		self:play_tweak_data_sound("charge_cancel")
 		self:call_on_digital_gui("stop_volley_charge")
+	end
+end
+
+function NewRaycastWeaponBase:interupt_charging()
+	if self._volley_charging then
+		self:stop_volley_charge()
+		self:play_tweak_data_sound("charge_cancel")
 	end
 end
 
 function NewRaycastWeaponBase:charging()
 	if self._fire_mode == ids_volley then
-		return self._volley_charging and not self._volley_fired
+		return self._volley_charging
 	end
 
 	return false
