@@ -35,14 +35,6 @@ for _, data in pairs(char_map) do
 end
 
 function CopBase:init(unit)
-	if unit:name() == Idstring("units/pd2_dlc_bph/characters/civ_male_locke_escort/civ_male_locke_escort_husk") then
-		local spawn_position = unit:position()
-
-		managers.enemy:add_delayed_clbk("LockePrisonPositionHack", function ()
-			unit:movement():set_position(spawn_position)
-		end, TimerManager:game():time() + 1)
-	end
-
 	UnitBase.init(self, unit, false)
 
 	self._char_tweak = tweak_data.character[self._tweak_table]
@@ -228,30 +220,48 @@ function CopBase:anim_act_clbk(unit, anim_act, send_to_action)
 	end
 end
 
-function CopBase:save(data)
+function CopBase:save(save_data)
+	local my_save_data = {}
+
 	if self._unit:interaction() and self._unit:interaction().tweak_data == "hostage_trade" then
-		data.is_hostage_trade = true
+		my_save_data.is_hostage_trade = true
 	elseif self._unit:interaction() and self._unit:interaction().tweak_data == "hostage_convert" then
-		data.is_hostage_convert = true
+		my_save_data.is_hostage_convert = true
 	end
 
-	data.buffs = {}
+	local buffs = {}
 
 	for name, buff_list in pairs(self._buffs) do
-		data.buffs[name] = {
+		buffs[name] = {
 			_total = buff_list._total
 		}
 	end
+
+	if next(buffs) then
+		my_save_data.buffs = buffs
+	end
+
+	if next(my_save_data) then
+		save_data.base = my_save_data
+	end
 end
 
-function CopBase:load(data)
-	if data.is_hostage_trade then
+function CopBase:load(load_data)
+	local my_load_data = load_data.base
+
+	if not my_load_data then
+		return
+	end
+
+	if my_load_data.is_hostage_trade then
 		CopLogicTrade.hostage_trade(self._unit, true, false)
-	elseif data.is_hostage_convert then
+	elseif my_load_data.is_hostage_convert then
 		self._unit:interaction():set_tweak_data("hostage_convert")
 	end
 
-	self._buffs = data.buffs
+	if my_load_data.buffs then
+		self._buffs = my_load_data.buffs
+	end
 end
 
 function CopBase:swap_material_config(material_applied_clbk)
@@ -296,6 +306,10 @@ function CopBase:set_material_state(original)
 	if original and not self._is_in_original_material or not original and self._is_in_original_material then
 		self:swap_material_config()
 	end
+end
+
+function CopBase:char_tweak_name()
+	return self._tweak_table
 end
 
 function CopBase:char_tweak()

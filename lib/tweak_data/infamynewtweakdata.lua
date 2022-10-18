@@ -27,10 +27,16 @@ function InfamyTweakData:init()
 		table.insert(self.statistics_rank_steps, 1, i)
 	end
 
-	self.join_stingers = 35
+	self.join_stingers = 36
 	self.free_join_stingers = {
 		0,
 		18
+	}
+	self.dlc_join_stingers = {
+		{
+			join_stinger = 36,
+			dlc = "a11th_stinger"
+		}
 	}
 	self.icon_rank_step = 100
 	self.infamy_icons = {

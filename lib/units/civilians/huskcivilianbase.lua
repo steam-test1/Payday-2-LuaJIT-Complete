@@ -41,3 +41,39 @@ function HuskCivilianBase:sync_net_event(event_id)
 		managers.groupai:state():on_hostage_follow(managers.player:player_unit(), self._unit, false)
 	end
 end
+
+HuskCivilianBaseResetSpawnPos = HuskCivilianBaseResetSpawnPos or class(HuskCivilianBase)
+
+function HuskCivilianBaseResetSpawnPos:init(unit)
+	local spawn_position = unit:position()
+	self._reset_spawn_pos_clbk_id = "HuskResetSpawnPos" .. tostring(unit:key())
+
+	managers.enemy:add_delayed_clbk(self._reset_spawn_pos_clbk_id, function ()
+		if alive(unit) then
+			unit:movement():set_position(spawn_position)
+		end
+
+		self._reset_spawn_pos_clbk_id = nil
+	end, TimerManager:game():time() + 1)
+	HuskCivilianBaseResetSpawnPos.super.init(self, unit)
+end
+
+function HuskCivilianBaseResetSpawnPos:load(...)
+	HuskCivilianBaseResetSpawnPos.super.load(self, ...)
+
+	if self._reset_spawn_pos_clbk_id then
+		managers.enemy:remove_delayed_clbk(self._reset_spawn_pos_clbk_id, true)
+
+		self._reset_spawn_pos_clbk_id = nil
+	end
+end
+
+function HuskCivilianBaseResetSpawnPos:pre_destroy(...)
+	HuskCivilianBaseResetSpawnPos.super.pre_destroy(self, ...)
+
+	if self._reset_spawn_pos_clbk_id then
+		managers.enemy:remove_delayed_clbk(self._reset_spawn_pos_clbk_id, true)
+
+		self._reset_spawn_pos_clbk_id = nil
+	end
+end

@@ -6790,7 +6790,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 	}
 	self.masks.smo_common_02 = {
 		unit = "units/pd2_dlc_smo/masks/smo_02/msk_smo_02",
-		name_id = "bm_msk_smo_02",
+		name_id = "bm_msk_cheat_error",
 		pcs = {},
 		value = 0,
 		type = "helmet",
@@ -6842,7 +6842,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 	}
 	self.masks.smo_big_02 = {
 		unit = "units/pd2_dlc_smo/masks/smo_02/msk_smo_big_02",
-		name_id = "bm_msk_smo_02",
+		name_id = "bm_msk_cheat_error",
 		type = "helmet",
 		inaccessible = true,
 		offsets = {
@@ -6862,7 +6862,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 	}
 	self.masks.smo_hila_02 = {
 		unit = "units/pd2_dlc_smo/masks/smo_02/msk_smo_02",
-		name_id = "bm_msk_smo_02",
+		name_id = "bm_msk_cheat_error",
 		type = "glasses",
 		skip_mask_on_sequence = true,
 		inaccessible = true
@@ -8217,13 +8217,13 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 	}
 	self.masks.funguy_default = {
 		unit = "units/pd2_dlc_txt2/masks/msk_funguy/msk_funguy",
-		name_id = "bm_msk_funguy",
+		name_id = "bm_msk_cheat_error",
 		type = "helmet",
 		inaccessible = true
 	}
 	self.masks.funguy_hair = {
 		unit = "units/pd2_dlc_txt2/masks/msk_funguy/msk_funguy_hair",
-		name_id = "bm_msk_funguy",
+		name_id = "bm_msk_cheat_error",
 		type = "helmet",
 		inaccessible = true
 	}
@@ -8323,7 +8323,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 	}
 	self.masks.threap_default = {
 		unit = "units/pd2_dlc_txt2/masks/msk_threap/msk_threap",
-		name_id = "bm_msk_threap",
+		name_id = "bm_msk_cheat_error",
 		type = "helmet",
 		inaccessible = true,
 		offsets = {
@@ -8339,7 +8339,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 	}
 	self.masks.threap_hair = {
 		unit = "units/pd2_dlc_txt2/masks/msk_threap/msk_threap_hair",
-		name_id = "bm_msk_threap",
+		name_id = "bm_msk_cheat_error",
 		type = "helmet",
 		inaccessible = true,
 		offsets = {
@@ -8460,6 +8460,204 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 				Vector3(0, 0, 0.316006),
 				Rotation(-0, -0, -0)
 			}
+		}
+	}
+	self.masks.homburg_default = {
+		unit = "units/pd2_dlc_a11th/masks/msk_homburg/msk_homburg",
+		name_id = "bm_msk_cheat_error",
+		type = "cowboyhat",
+		inaccessible = true,
+		offsets = {
+			max = {
+				Vector3(0.196759, 0, 0),
+				Rotation(-0, -0, -0)
+			},
+			chico = {
+				Vector3(0.316006, 0, 0),
+				Rotation(-0, -0, -0)
+			},
+			bodhi = {
+				Vector3(0.316006, 0, 0),
+				Rotation(-0, -0, -0)
+			},
+			hoxton = {
+				Vector3(0.077513, 0, 0),
+				Rotation(-0, -0, -0)
+			},
+			chains = {
+				Vector3(0.196759, 0.196759, 0),
+				Rotation(-0, -0, -0)
+			},
+			jowi = {
+				Vector3(0.316006, 0, 0.435252),
+				Rotation(-0, -0, -0)
+			},
+			female_1 = {
+				Vector3(0, 0, -0.0417333),
+				Rotation(-0, -0, -0)
+			},
+			old_hoxton = {
+				Vector3(0.077513, 0, 0),
+				Rotation(-0, -0, -0)
+			},
+			bonnie = {
+				Vector3(0, 0, 0.196759),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.homburg_big = {
+		unit = "units/pd2_dlc_a11th/masks/msk_homburg/msk_homburg_big",
+		name_id = "bm_msk_cheat_error",
+		type = "cowboyhat",
+		inaccessible = true,
+		offsets = {
+			ecp_male = {
+				Vector3(0.316006, -1.11495, 0),
+				Rotation(-0, -0, -0)
+			},
+			female_1 = {
+				Vector3(0.316006, 0, -0.518719),
+				Rotation(-0, -0, -0)
+			},
+			sydney = {
+				Vector3(0, 0.673745, -0.0417333),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.homburg = {
+		unit = "units/pd2_dlc_a11th/masks/msk_homburg/msk_homburg",
+		name_id = "bm_msk_homburg",
+		pcs = {},
+		value = 0,
+		sort_number = 0,
+		type = "cowboyhat",
+		preview_oobb_object = "g_mask",
+		dlc = "a11th_homburg",
+		texture_bundle_folder = "a11th",
+		characters = {
+			bonnie = "homburg_default",
+			sokol = "homburg_big",
+			myh = "homburg_big",
+			chico = "homburg_big",
+			dragan = "homburg_big",
+			ecp_male = "homburg_big",
+			ecp_female = "homburg_default",
+			dragon = "homburg_default",
+			old_hoxton = "homburg_default",
+			jowi = "homburg_big",
+			max = "homburg_default",
+			joy = "homburg_big",
+			dallas = "homburg_default",
+			jacket = "homburg_big",
+			jimmy = "homburg_big",
+			bodhi = "homburg_default",
+			wolf = "homburg_default",
+			wild = "homburg_default",
+			hoxton = "homburg_default",
+			female_1 = "homburg_big",
+			chains = "homburg_default",
+			sydney = "homburg_big"
+		}
+	}
+	self.masks.homburg_grey_default = {
+		unit = "units/pd2_dlc_a11th/masks/msk_homburg_grey/msk_homburg_grey",
+		name_id = "bm_msk_cheat_error",
+		type = "cowboyhat",
+		inaccessible = true,
+		offsets = {
+			max = {
+				Vector3(0.196759, 0, 0),
+				Rotation(-0, -0, -0)
+			},
+			chico = {
+				Vector3(0.316006, 0, 0),
+				Rotation(-0, -0, -0)
+			},
+			bodhi = {
+				Vector3(0.316006, 0, 0),
+				Rotation(-0, -0, -0)
+			},
+			hoxton = {
+				Vector3(0.077513, 0, 0),
+				Rotation(-0, -0, -0)
+			},
+			chains = {
+				Vector3(0.196759, 0.196759, 0),
+				Rotation(-0, -0, -0)
+			},
+			jowi = {
+				Vector3(0.316006, 0, 0.435252),
+				Rotation(-0, -0, -0)
+			},
+			female_1 = {
+				Vector3(0, 0, -0.0417333),
+				Rotation(-0, -0, -0)
+			},
+			old_hoxton = {
+				Vector3(0.077513, 0, 0),
+				Rotation(-0, -0, -0)
+			},
+			bonnie = {
+				Vector3(0, 0, 0.196759),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.homburg_grey_big = {
+		unit = "units/pd2_dlc_a11th/masks/msk_homburg_grey/msk_homburg_grey_big",
+		name_id = "bm_msk_cheat_error",
+		type = "cowboyhat",
+		inaccessible = true,
+		offsets = {
+			ecp_male = {
+				Vector3(0.316006, -1.11495, 0),
+				Rotation(-0, -0, -0)
+			},
+			female_1 = {
+				Vector3(0.316006, 0, -0.518719),
+				Rotation(-0, -0, -0)
+			},
+			sydney = {
+				Vector3(0, 0.673745, -0.0417333),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.homburg_grey = {
+		unit = "units/pd2_dlc_a11th/masks/msk_homburg_grey/msk_homburg_grey",
+		name_id = "bm_msk_homburg_grey",
+		pcs = {},
+		value = 0,
+		sort_number = 0,
+		type = "cowboyhat",
+		preview_oobb_object = "g_mask",
+		dlc = "a11th_homburg_grey",
+		texture_bundle_folder = "a11th",
+		characters = {
+			bonnie = "homburg_grey_default",
+			sokol = "homburg_grey_big",
+			myh = "homburg_grey_big",
+			chico = "homburg_grey_big",
+			dragan = "homburg_grey_big",
+			ecp_male = "homburg_grey_big",
+			ecp_female = "homburg_grey_default",
+			dragon = "homburg_grey_default",
+			old_hoxton = "homburg_grey_default",
+			jowi = "homburg_grey_big",
+			max = "homburg_grey_default",
+			joy = "homburg_grey_big",
+			dallas = "homburg_grey_default",
+			jacket = "homburg_grey_big",
+			jimmy = "homburg_grey_big",
+			bodhi = "homburg_grey_default",
+			wolf = "homburg_grey_default",
+			wild = "homburg_grey_default",
+			hoxton = "homburg_grey_default",
+			female_1 = "homburg_grey_big",
+			chains = "homburg_grey_default",
+			sydney = "homburg_grey_big"
 		}
 	}
 	local free_dlcs = tweak_data:free_dlc_list()

@@ -301,7 +301,8 @@ function ControllerManager:create_controller(name, index, debug, prio)
 	if name then
 		if self._controller_wrapper_map[name] then
 			controller_wrapper:destroy()
-			error("Tried to create a controller with a name \"" .. tostring(name) .. "\" that already exists.")
+
+			return self._controller_wrapper_map[name]
 		end
 
 		self._controller_wrapper_map[name] = controller_wrapper

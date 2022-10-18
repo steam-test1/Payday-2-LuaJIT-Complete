@@ -25,6 +25,7 @@ local sync_action_force_and_execute = {
 	force = true,
 	execute = true
 }
+local ids_unit = Idstring("unit")
 HuskPlayerMovement = HuskPlayerMovement or class()
 HuskPlayerMovement._ids_base = Idstring("base")
 HuskPlayerMovement._calc_suspicion_ratio_and_sync = PlayerMovement._calc_suspicion_ratio_and_sync
@@ -489,12 +490,17 @@ function HuskPlayerMovement:_destroy_current_carry_unit()
 
 		self._current_carry_unit = nil
 	end
+
+	if self._current_carry_unit_name then
+		self._current_carry_unit_name = nil
+	end
 end
 
 function HuskPlayerMovement:_create_carry_unit(unit_name)
 	self:_destroy_current_carry_unit()
 
-	self._current_carry_unit = safe_spawn_unit(Idstring(unit_name), self._unit:position())
+	self._current_carry_unit_name = Idstring(unit_name)
+	self._current_carry_unit = World:spawn_unit(self._current_carry_unit_name, self._unit:position())
 	local objects = {
 		"Spine",
 		"Spine1",

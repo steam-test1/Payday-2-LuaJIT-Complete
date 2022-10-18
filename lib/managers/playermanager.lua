@@ -5540,10 +5540,16 @@ function PlayerManager:_attempt_pocket_ecm_jammer()
 		return false
 	end
 
+	local started = false
+
 	if managers.groupai and managers.groupai:state():whisper_mode() then
-		player_inventory:start_jammer_effect()
+		started = player_inventory:start_jammer_effect()
 	else
-		player_inventory:start_feedback_effect()
+		started = player_inventory:start_feedback_effect()
+	end
+
+	if not started then
+		return false
 	end
 
 	local base_upgrade = self:upgrade_value("player", "pocket_ecm_jammer_base")

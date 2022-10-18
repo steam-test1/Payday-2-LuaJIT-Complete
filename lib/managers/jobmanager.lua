@@ -330,10 +330,18 @@ end
 function JobManager:_setup_job_heat()
 	local heat = {}
 	Global.job_manager.heat = heat
+	local job_data, is_wrapped_to_job, is_ignore_heat = nil
 
 	for _, job_id in ipairs(tweak_data.narrative:get_jobs_index()) do
-		if not tweak_data.narrative:is_wrapped_to_job(job_id) then
-			heat[job_id] = self:_get_default_heat()
+		job_data = tweak_data.narrative:job_data(job_id, true)
+
+		if job_data then
+			is_wrapped_to_job = job_data.wrapped_to_job
+			is_ignore_heat = job_data.ignore_heat
+
+			if not is_wrapped_to_job and not is_ignore_heat then
+				heat[job_id] = self:_get_default_heat()
+			end
 		end
 	end
 end
@@ -682,6 +690,10 @@ function JobManager:_check_add_heat_to_jobs(debug_job_id, ignore_debug_prints)
 		return
 	end
 
+	if job_tweak_data.ignore_heat then
+		return
+	end
+
 	local job_heat_data = job_tweak_data.heat
 
 	if not job_heat_data and not ignore_debug_prints then
@@ -693,15 +705,19 @@ function JobManager:_check_add_heat_to_jobs(debug_job_id, ignore_debug_prints)
 	local all_jobs = {}
 
 	for job_id, heat in pairs(self._global.heat) do
-		local is_not_this_job = job_id ~= current_job
-		local is_cooldown_ok = self:check_ok_with_cooldown(job_id)
-		local is_not_wrapped = not job_tweak_data.wrapped_to_job
-		local is_not_dlc_or_got = not job_tweak_data.dlc or managers.dlc:is_dlc_unlocked(job_tweak_data.dlc)
-		local is_not_ignore_heat = not tweak_data.narrative.jobs[job_id].ignore_heat
-		local pass_all_tests = is_cooldown_ok and is_not_wrapped and is_not_dlc_or_got and is_not_this_job and is_not_ignore_heat
+		local heat_job_tweak_data = tweak_data.narrative.jobs[job_id]
 
-		if pass_all_tests then
-			table.insert(all_jobs, job_id)
+		if heat_job_tweak_data then
+			local is_not_this_job = job_id ~= current_job
+			local is_cooldown_ok = self:check_ok_with_cooldown(job_id)
+			local is_not_wrapped = not job_tweak_data.wrapped_to_job
+			local is_not_dlc_or_got = not job_tweak_data.dlc or managers.dlc:is_dlc_unlocked(job_tweak_data.dlc)
+			local is_not_ignore_heat = not heat_job_tweak_data.ignore_heat
+			local pass_all_tests = is_cooldown_ok and is_not_wrapped and is_not_dlc_or_got and is_not_this_job and is_not_ignore_heat
+
+			if pass_all_tests then
+				table.insert(all_jobs, job_id)
+			end
 		end
 	end
 
@@ -714,32 +730,15 @@ function JobManager:_check_add_heat_to_jobs(debug_job_id, ignore_debug_prints)
 
 	local cooling = job_heat_data and job_heat_data.this_job or tweak_data.narrative.DEFAULT_HEAT.this_job or 0
 	local heating = job_heat_data and job_heat_data.other_jobs or tweak_data.narrative.DEFAULT_HEAT.other_jobs or 0
-	local debug_current_job_heat = self._global.heat[current_job]
-	local debug_other_jobs_heat = {}
 	self._last_known_heat = self._global.heat[current_job]
 
 	self:_change_job_heat(current_job, cooling, true)
 
 	for _, job_id in ipairs(heated_jobs) do
-		debug_other_jobs_heat[job_id] = self._global.heat[job_id]
-
 		self:_change_job_heat(job_id, heating)
 	end
 
 	self:_chk_fill_heat_containers()
-
-	if ignore_debug_prints then
-		return
-	end
-
-	Application:debug("[JobManager:_check_add_heat_to_jobs] Heat:")
-	print(tostring(current_job) .. ": " .. tostring(debug_current_job_heat) .. " -> " .. tostring(self._global.heat[current_job]))
-
-	for job_id, old_heat in pairs(debug_other_jobs_heat) do
-		print(tostring(job_id) .. ": " .. tostring(old_heat) .. " -> " .. tostring(self._global.heat[job_id]))
-	end
-
-	Application:debug("------------------------------------------")
 end
 
 function JobManager:_change_job_heat(job_id, heat, cap_heat)
@@ -753,7 +752,7 @@ function JobManager:_change_job_heat(job_id, heat, cap_heat)
 end
 
 function JobManager:set_job_heat(job_id, new_heat, cap_heat)
-	if tweak_data.narrative.jobs[job_id].ignore_heat then
+	if tweak_data.narrative.jobs[job_id] and tweak_data.narrative.jobs[job_id].ignore_heat then
 		return
 	end
 
@@ -767,12 +766,16 @@ function JobManager:set_job_heat(job_id, new_heat, cap_heat)
 end
 
 function JobManager:_get_job_heat(job_id)
+	if not tweak_data.narrative.jobs[job_id] then
+		return
+	end
+
 	if tweak_data.narrative:is_wrapped_to_job(job_id) then
 		return self:_get_job_heat(tweak_data.narrative.jobs[job_id].wrapped_to_job)
 	end
 
-	if tweak_data.narrative.jobs[job_id] and tweak_data.narrative.jobs[job_id].ignore_heat then
-		return 0
+	if tweak_data.narrative.jobs[job_id].ignore_heat then
+		return
 	end
 
 	return self._global.heat[job_id]
@@ -1029,35 +1032,53 @@ function JobManager:load(data)
 			Application:error("[JobManager:load] Job heat should already be setup'd!")
 		end
 
+		local job_data, is_wrapped_to_job, is_ignore_heat = nil
+
 		for _, job_id in ipairs(tweak_data.narrative:get_jobs_index()) do
 			if not self._global.heat[job_id] then
-				Application:debug("[JobManager:load] Adding new job heat", job_id)
+				job_data = tweak_data.narrative:job_data(job_id, true)
 
-				if tweak_data.narrative:has_job_wrapper(job_id) then
-					self._global.heat[job_id] = self:_get_wrapped_default_heat(job_id)
-				else
-					self._global.heat[job_id] = self:_get_default_heat()
+				if job_data then
+					is_wrapped_to_job = job_data.wrapped_to_job
+					is_ignore_heat = job_data.ignore_heat
+
+					if not is_wrapped_to_job and not is_ignore_heat then
+						if tweak_data.narrative:has_job_wrapper(job_id) then
+							self._global.heat[job_id] = self:_get_wrapped_default_heat(job_id)
+						else
+							self._global.heat[job_id] = self:_get_default_heat()
+						end
+					end
 				end
 			end
 		end
 
-		self:_chk_fill_heat_containers()
-
 		local invalid_jobs = {}
+		local job_index = nil
 
 		for job_id, heat in pairs(self._global.heat) do
-			if tweak_data.narrative:get_index_from_job_id(job_id) == 0 or tweak_data.narrative:is_wrapped_to_job(job_id) then
-				table.insert(invalid_jobs, job_id)
+			job_data = tweak_data.narrative:job_data(job_id, true)
+
+			if job_data then
+				job_index = tweak_data.narrative:get_index_from_job_id(job_id)
+				is_wrapped_to_job = job_data.wrapped_to_job
+				is_ignore_heat = job_data.ignore_heat
+
+				if job_index == 0 or is_wrapped_to_job or is_ignore_heat then
+					table.insert(invalid_jobs, job_id)
+				else
+					self:_chk_is_heat_correct(job_id)
+				end
 			else
-				self:_chk_is_heat_correct(job_id)
+				table.insert(invalid_jobs, job_id)
 			end
 		end
 
 		for _, job_id in ipairs(invalid_jobs) do
-			Application:debug("[JobManager:load] Removing invalid job heat", job_id)
-
 			self._global.heat[job_id] = nil
 		end
+
+		self:_chk_fill_heat_containers()
 
 		self._global.saved_ghost_bonus = data.job_manager.ghost_bonus or self._global.saved_ghost_bonus
 

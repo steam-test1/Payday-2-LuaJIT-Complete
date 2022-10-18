@@ -91,7 +91,7 @@ PlayerAction.TagTeamTagged = {
 			if was_killed and valid_player then
 				end_time = math.min(end_time + base_values.kill_extension, timer:time() + base_values.duration)
 
-				tagged:character_damage():restore_health(kill_health_gain, true)
+				tagged:character_damage():restore_health(kill_health_gain, true, true)
 			end
 		end
 

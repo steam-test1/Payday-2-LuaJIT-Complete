@@ -2332,8 +2332,8 @@ function CopActionWalk:chk_block(action_type, t)
 end
 
 function CopActionWalk:chk_block_client(action_desc, action_type, t)
-	if CopActionAct.chk_block(self, action_type, t) and (not action_desc or action_desc.body_part ~= 3) then
-		return true
+	if self._nav_link or not action_desc or action_desc.body_part ~= 3 then
+		return self:chk_block(action_type, t)
 	end
 end
 

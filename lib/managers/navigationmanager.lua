@@ -22,6 +22,7 @@ local math_max = math.max
 local math_clamp = math.clamp
 local math_ceil = math.ceil
 local math_floor = math.floor
+local math_lerp = math.lerp
 local temp_vec1 = Vector3()
 local temp_vec2 = Vector3()
 NavigationManager = NavigationManager or class()

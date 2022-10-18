@@ -2830,7 +2830,7 @@ function GroupAIStateBesiege:_set_recon_objective_to_group(group)
 
 			if forwardmost_i_nav_point and forwardmost_i_nav_point > 1 then
 				for i = forwardmost_i_nav_point + 1, #current_objective.coarse_path do
-					local nav_point = current_objective.coarse_path[forwardmost_i_nav_point]
+					local nav_point = current_objective.coarse_path[i]
 
 					if not self:is_nav_seg_safe(nav_point[1]) then
 						for i = 0, #current_objective.coarse_path - forwardmost_i_nav_point do
@@ -3056,7 +3056,7 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 		if obstructed_path_index then
 			print("obstructed_path_index", obstructed_path_index)
 
-			objective_area = self:get_area_from_nav_seg_id(group.coarse_path[math.max(obstructed_path_index - 1, 1)][1])
+			objective_area = self:get_area_from_nav_seg_id(current_objective.coarse_path[math.max(obstructed_path_index - 1, 1)][1])
 			pull_back = true
 		elseif not current_objective.moving_out then
 			local has_criminals_close = nil
@@ -3262,7 +3262,7 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 			local forwardmost_i_nav_point = self:_get_group_forwardmost_coarse_path_index(group)
 
 			if forwardmost_i_nav_point then
-				local nearest_safe_nav_seg_id = current_objective.coarse_path(forwardmost_i_nav_point)
+				local nearest_safe_nav_seg_id = current_objective.coarse_path[forwardmost_i_nav_point][1]
 				retreat_area = self:get_area_from_nav_seg_id(nearest_safe_nav_seg_id)
 			end
 		end
@@ -3672,7 +3672,7 @@ function GroupAIStateBesiege:_set_reenforce_objective_to_group(group)
 
 			if forwardmost_i_nav_point then
 				for i = forwardmost_i_nav_point + 1, #current_objective.coarse_path do
-					local nav_point = current_objective.coarse_path[forwardmost_i_nav_point]
+					local nav_point = current_objective.coarse_path[i]
 
 					if not self:is_nav_seg_safe(nav_point[1]) then
 						for i = 0, #current_objective.coarse_path - forwardmost_i_nav_point do
@@ -3841,7 +3841,7 @@ function GroupAIStateBesiege:_chk_coarse_path_obstructed(group)
 
 	if forwardmost_i_nav_point then
 		for i = forwardmost_i_nav_point + 1, #current_objective.coarse_path do
-			local nav_point = current_objective.coarse_path[forwardmost_i_nav_point]
+			local nav_point = current_objective.coarse_path[i]
 
 			if not self:is_nav_seg_safe(nav_point[1]) then
 				return i

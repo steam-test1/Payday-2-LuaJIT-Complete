@@ -3257,7 +3257,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 	}
 	self.enemy_spawn_groups.FBI_spoocs = self.enemy_spawn_groups.single_spooc
 
-	if Global.game_settings and Global.game_settings.level_id == "ranc" then
+	if Global.level_data and Global.level_data.level_id == "ranc" or Global.game_settings and Global.game_settings.level_id == "ranc" then
 		self.enemy_spawn_groups.marshal_squad = {
 			spawn_cooldown = 60,
 			max_nr_simultaneous_groups = 1,
@@ -3285,7 +3285,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 		self.enemy_spawn_groups.marshal_squad = {
 			spawn_cooldown = 60,
 			max_nr_simultaneous_groups = 1,
-			initial_spawn_delay = 600,
+			initial_spawn_delay = 480,
 			amount = {
 				2,
 				2

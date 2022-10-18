@@ -1834,6 +1834,10 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.prim_darkmat = self.global_values.prim
 	self.global_values.prim_primtime = self.global_values.prim
 	self.global_values.prim_newhorizon = self.global_values.prim
+	self.global_values.a11th_homburg = self.global_values.a11th
+	self.global_values.a11th_homburg_grey = self.global_values.a11th
+	self.global_values.a11th_corl = self.global_values.a11th
+	self.global_values.a11th_stinger = self.global_values.a11th
 
 	self:_create_global_value_list_map()
 end

@@ -4423,6 +4423,51 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		sequence = "set_ehtan"
 	}
 	self.player_styles.dodsuit.characters.ecp_male = dodsuit_characters_male_fat
+	self.player_styles.corl = {
+		name_id = "bm_suit_corl",
+		desc_id = "bm_suit_corl_desc",
+		texture_bundle_folder = "a11th",
+		global_value = "a11th_corl",
+		material_variations = {}
+	}
+	self.player_styles.corl.material_variations.default = {
+		name_id = "bm_suit_corl_default",
+		global_value = "a11th",
+		desc_id = "bm_suit_corl_default_desc"
+	}
+	self.player_styles.corl.body_replacement = body_replacement_standard
+	self.player_styles.corl.third_body_replacement = body_replacement_standard
+	self.player_styles.corl.unit = "units/pd2_dlc_a11th/characters/a11th_acc_corl/a11th_acc_fps_corl_male/a11th_acc_fps_corl_male"
+	self.player_styles.corl.characters = {}
+	local corl_characters_male = {
+		third_unit = "units/pd2_dlc_a11th/characters/a11th_acc_corl/a11th_acc_corl_male_average/a11th_acc_corl_male_average"
+	}
+
+	set_characters_data("corl", characters_male, corl_characters_male)
+
+	local corl_characters_male_big = {
+		third_unit = "units/pd2_dlc_a11th/characters/a11th_acc_corl/a11th_acc_corl_male_big/a11th_acc_corl_male_big"
+	}
+
+	set_characters_data("corl", characters_male_big, corl_characters_male_big)
+
+	local corl_characters_female = {
+		third_unit = "units/pd2_dlc_a11th/characters/a11th_acc_corl/a11th_acc_corl_female_average/a11th_acc_corl_female_average"
+	}
+
+	set_characters_data("corl", characters_female, corl_characters_female)
+
+	local corl_characters_female_big = {
+		third_unit = "units/pd2_dlc_a11th/characters/a11th_acc_corl/a11th_acc_corl_female_fat/a11th_acc_corl_female_fat"
+	}
+
+	set_characters_data("corl", characters_female_big, corl_characters_female_big)
+
+	local corl_characters_male_fat = {
+		third_unit = "units/pd2_dlc_a11th/characters/a11th_acc_corl/a11th_acc_corl_male_fat/a11th_acc_corl_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.corl.characters.ecp_male = corl_characters_male_fat
 end
 
 function BlackMarketTweakData:get_player_style_value(player_style, character_name, key)

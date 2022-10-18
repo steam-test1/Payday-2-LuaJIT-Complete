@@ -11,6 +11,12 @@ function DLCTweakData:init_generated()
 			amount = 1
 		}
 	}
+	self.a11th_bundle = {
+		free = true,
+		content = {}
+	}
+	self.a11th_bundle.content.loot_global_value = "a11th"
+	self.a11th_bundle.content.loot_drops = {}
 	self.afp_bundle = {
 		dlc = "has_afp",
 		content = {}

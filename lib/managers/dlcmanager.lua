@@ -281,6 +281,7 @@ function GenericDLCManager:give_dlc_and_verify_blackmarket()
 	Global.dlc_manager.verify_entitlements = nil
 
 	managers.event_jobs:aquire_claimed_upgrades()
+	managers.infamy:give_dlc()
 
 	if managers.blackmarket then
 		managers.blackmarket:tradable_dlcs()
@@ -2242,6 +2243,26 @@ function WINDLCManager:init()
 				prim_newhorizon = {
 					no_install = true,
 					entitlement_id = "d0a07cefd5ff443a8b597370bf766bbe",
+					external = true
+				},
+				a11th_homburg = {
+					no_install = true,
+					entitlement_id = "3bb309cf0f2946ffa9b060afd035eea8",
+					external = true
+				},
+				a11th_homburg_grey = {
+					no_install = true,
+					entitlement_id = "07af0503ae6b4510b503a4e8d4495f70",
+					external = true
+				},
+				a11th_corl = {
+					no_install = true,
+					entitlement_id = "837e358f1849463f93c83f2af546ae60",
+					external = true
+				},
+				a11th_stinger = {
+					no_install = true,
+					entitlement_id = "0160eece867b4b108192e511f84c237d",
 					external = true
 				}
 			},

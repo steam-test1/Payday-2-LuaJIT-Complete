@@ -178,6 +178,7 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		slaughterhouse = "heist_default",
 		dodsuit = "heist_default",
 		cable_guy = "heist_default",
+		corl = "heist_default",
 		jail_pd2_clan = "heist_default",
 		esport = "esport",
 		murky_suit = "murky",

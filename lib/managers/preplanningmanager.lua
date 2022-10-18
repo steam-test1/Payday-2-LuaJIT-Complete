@@ -185,6 +185,10 @@ end
 function PrePlanningManager:vote_on_plan(type, id)
 	local peer_id = managers.network:session():local_peer():id()
 
+	if self:player_voted_on_plan(type, id, peer_id) then
+		return
+	end
+
 	if Network:is_server() then
 		self:_server_vote_on_plan(type, id, peer_id)
 	elseif self:can_vote_on_plan(type, peer_id) then
@@ -196,8 +200,9 @@ end
 function PrePlanningManager:client_vote_on_plan(type, id, peer_id)
 	local index = self:get_mission_element_index(id, type)
 	local plan = tweak_data:get_raw_value("preplanning", "types", type, "plan")
+	local plan_tweak_data = tweak_data:get_raw_value("preplanning", "plans", plan)
 
-	if tweak_data:get_raw_value("preplanning", "plans", plan) then
+	if plan_tweak_data then
 		self._players_votes[peer_id] = self._players_votes[peer_id] or {}
 		self._players_votes[peer_id][plan] = {
 			type,
@@ -210,6 +215,27 @@ function PrePlanningManager:client_vote_on_plan(type, id, peer_id)
 		self._saved_vote_council = nil
 
 		managers.menu_component:update_preplanning_element(nil, nil)
+
+		local peer = managers.network:session() and managers.network:session():peer(peer_id)
+
+		if peer then
+			local plan_text_id = self:get_category_name(plan_tweak_data.category)
+			local type_text_id = self:get_type_name(type)
+			local mission_elements = self:get_mission_elements_by_type(type)
+
+			if #mission_elements > 1 then
+				type_text_id = string.format("%s - %s", type_text_id, self:get_element_name_by_type_index(type, index))
+			end
+
+			plan_text_id = utf8.to_upper(plan_text_id)
+			type_text_id = utf8.to_upper(type_text_id)
+
+			managers.chat:feed_system_message(ChatManager.GAME, managers.localization:text("menu_chat_preplanning_vote_on_plan", {
+				name = peer:name(),
+				plan = plan_text_id,
+				type = type_text_id
+			}))
+		end
 	end
 end
 
@@ -236,8 +262,9 @@ end
 function PrePlanningManager:_server_vote_on_plan(type, id, peer_id)
 	local index = self:get_mission_element_index(id, type)
 	local plan = tweak_data:get_raw_value("preplanning", "types", type, "plan")
+	local plan_tweak_data = tweak_data:get_raw_value("preplanning", "plans", plan)
 
-	if tweak_data:get_raw_value("preplanning", "plans", plan) and self:can_vote_on_plan(type, peer_id) then
+	if plan_tweak_data and self:can_vote_on_plan(type, peer_id) then
 		self._players_votes[peer_id] = self._players_votes[peer_id] or {}
 		self._players_votes[peer_id][plan] = {
 			type,
@@ -251,7 +278,35 @@ function PrePlanningManager:_server_vote_on_plan(type, id, peer_id)
 		self._saved_vote_council = nil
 
 		managers.menu_component:update_preplanning_element(nil, nil)
+
+		local peer = managers.network:session() and managers.network:session():peer(peer_id)
+
+		if peer then
+			local plan_text_id = self:get_category_name(plan_tweak_data.category)
+			local type_text_id = self:get_type_name(type)
+			local mission_elements = self:get_mission_elements_by_type(type)
+
+			if #mission_elements > 1 then
+				type_text_id = string.format("%s - %s", type_text_id, self:get_element_name_by_type_index(type, index))
+			end
+
+			plan_text_id = utf8.to_upper(plan_text_id)
+			type_text_id = utf8.to_upper(type_text_id)
+
+			managers.chat:feed_system_message(ChatManager.GAME, managers.localization:text("menu_chat_preplanning_vote_on_plan", {
+				name = peer:name(),
+				plan = plan_text_id,
+				type = type_text_id
+			}))
+		end
 	end
+end
+
+function PrePlanningManager:player_voted_on_plan(type, id, peer_id)
+	local index = self:get_mission_element_index(id, type)
+	local plan = tweak_data:get_raw_value("preplanning", "types", type, "plan")
+
+	return self._players_votes[peer_id] and self._players_votes[peer_id][plan] and self._players_votes[peer_id][plan][1] == type and self._players_votes[peer_id][plan][2] == index or false
 end
 
 function PrePlanningManager:get_player_votes(peer_id)

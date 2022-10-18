@@ -518,8 +518,6 @@ function CopMovement:set_character_anim_variables()
 
 		if self._tweak_data.allowed_stances.hos then
 			self:_change_stance(2)
-		else
-			self:_change_stance(3)
 		end
 	end
 
@@ -2640,7 +2638,7 @@ function CopMovement:sync_action_dodge_end()
 end
 
 function CopMovement:sync_action_aim_end()
-	self:_cancel_latest_action("shoot", true)
+	self:_cancel_latest_action("shoot")
 end
 
 function CopMovement:sync_action_hurt_end()

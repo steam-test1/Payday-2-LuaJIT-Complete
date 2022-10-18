@@ -2025,25 +2025,26 @@ function HUDTeammate:set_ability_radial(data)
 	radial_ability_panel:set_visible(progress > 0)
 end
 
+function HUDTeammate.activate_ability_radial_anim(o, anim_time, progress_start, radial_ability_panel, ability_meter, health_icon)
+	radial_ability_panel:set_visible(true)
+	over(anim_time, function (p)
+		local progress = progress_start * math.lerp(1, 0, p)
+
+		ability_meter:set_color(Color(1, progress, 1, 1))
+	end)
+	radial_ability_panel:set_visible(false)
+end
+
 function HUDTeammate:activate_ability_radial(time_left, time_total)
 	local radial_health_panel = self._radial_health_panel
 	local radial_ability_panel = radial_health_panel:child("radial_ability")
 	local ability_meter = radial_ability_panel:child("ability_meter")
+	local health_icon = radial_health_panel:child("health_icon")
 	time_total = time_total or time_left
 	local progress_start = time_left / time_total
 
-	local function anim(o)
-		radial_ability_panel:set_visible(true)
-		over(time_left, function (p)
-			local progress = progress_start * math.lerp(1, 0, p)
-
-			ability_meter:set_color(Color(1, progress, 1, 1))
-		end)
-		radial_ability_panel:set_visible(false)
-	end
-
 	radial_ability_panel:stop()
-	radial_ability_panel:animate(anim)
+	radial_ability_panel:animate(HUDTeammate.activate_ability_radial_anim, time_left, progress_start, radial_ability_panel, ability_meter, health_icon)
 
 	if self._main_player then
 		local current_time = managers.game_play_central:get_heist_timer()

@@ -33,6 +33,14 @@ function InfamyManager:_setup(reset)
 	self._global = Global.infamy_manager
 end
 
+function InfamyManager:give_dlc()
+	for i, dlc_stinger_data in ipairs(tweak_data.infamy.dlc_join_stingers) do
+		self._global.join_stingers[dlc_stinger_data.join_stinger].unlocked = managers.dlc:is_dlc_unlocked(dlc_stinger_data.dlc)
+	end
+
+	self:_verify_loaded_data()
+end
+
 function InfamyManager:points()
 	return Application:digest_value(self._global.points, false)
 end

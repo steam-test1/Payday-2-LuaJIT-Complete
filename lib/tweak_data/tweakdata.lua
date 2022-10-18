@@ -2855,7 +2855,7 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.launcher_poison_contraband = deep_clone(self.projectiles.launcher_poison)
 	self.projectiles.launcher_poison_contraband.damage = 86
 	self.projectiles.launcher_frag_ms3gl = deep_clone(self.projectiles.launcher_frag)
-	self.projectiles.launcher_frag_ms3gl.damage = 32
+	self.projectiles.launcher_frag_ms3gl.damage = 36
 	self.projectiles.launcher_incendiary_ms3gl = deep_clone(self.projectiles.launcher_incendiary)
 	self.projectiles.launcher_incendiary_ms3gl.damage = 1
 	self.projectiles.launcher_electric_ms3gl = deep_clone(self.projectiles.launcher_electric)
@@ -3096,11 +3096,12 @@ end
 
 function TweakData:init_accessibility_colors()
 	self.accessibility_colors = {
-		dot_white = Color.white,
-		dot_yellow = Color(255, 255, 201, 7) / 255,
-		dot_blue = Color(255, 77, 198, 255) / 255,
-		dot_green = Color.green
+		dot = {}
 	}
+	self.accessibility_colors.dot.white = Color.white
+	self.accessibility_colors.dot.yellow = Color(255, 255, 201, 7) / 255
+	self.accessibility_colors.dot.blue = Color(255, 77, 198, 255) / 255
+	self.accessibility_colors.dot.green = Color.green
 end
 
 function TweakData:free_dlc_list()

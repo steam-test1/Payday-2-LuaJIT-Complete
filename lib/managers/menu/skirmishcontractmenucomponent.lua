@@ -63,7 +63,7 @@ function SkirmishContractMenuComponent:init(ws, fullscreen_ws, node)
 	local job_chain = tweak_data.narrative:job_chain(job_id)
 	local job_stars = math.ceil(tweak_data.narrative:job_data(job_id).jc / 10)
 	local difficulty_stars = job_data.difficulty_id - 2
-	local job_heat_value = managers.job:get_job_heat(job_id)
+	local job_heat_value = managers.job:get_job_heat(job_id) or 0
 	local ignore_heat = job_heat_value > 0 and job_data.customize_contract
 	local contract_visuals = job_data.contract_visuals or {}
 	local xp_min = contract_visuals.min_mission_xp and contract_visuals.min_mission_xp or 0

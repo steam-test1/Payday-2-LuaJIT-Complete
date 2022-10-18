@@ -506,11 +506,17 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 				managers.dyn_resource:change_material_config(wanted_config_ids, char_mesh_unit, true)
 			end
 
-			if char_mesh_unit:damage() and char_mesh_unit:damage():has_sequence("on_damage_taken") and character_unit:character_damage() then
-				character_unit:character_damage():add_listener("visual_mesh", {
-					"hurt",
-					"none"
-				}, CriminalsManager.character_mesh_damage_clbk)
+			if char_mesh_unit:damage() then
+				if char_mesh_unit:damage():has_sequence("on_damage_taken") and character_unit:character_damage() then
+					character_unit:character_damage():add_listener("visual_mesh", {
+						"hurt",
+						"none"
+					}, CriminalsManager.character_mesh_damage_clbk)
+				end
+
+				if char_mesh_unit:damage():has_sequence("on_destroyed") and character_unit:base().add_destroy_listener then
+					character_unit:base():add_destroy_listener("visual_mesh", CriminalsManager.character_mesh_destroy_clbk)
+				end
 			end
 
 			char_mesh_unit:set_enabled(unit:enabled())
@@ -620,6 +626,24 @@ function CriminalsManager.character_mesh_damage_clbk(character_unit, damage_info
 
 			char_mesh:damage():run_sequence("on_damage_taken", damage_info.result.variant, damage_info.attacker_unit, nil, normal, pos, rot, 0, vel, nil)
 		end
+	end
+end
+
+function CriminalsManager.character_mesh_destroy_clbk(character_unit)
+	if not alive(character_unit) then
+		return
+	end
+
+	local unit = character_unit
+
+	if unit:camera() and alive(unit:camera():camera_unit()) and unit:camera():camera_unit():damage() then
+		unit = unit:camera():camera_unit()
+	end
+
+	local char_mesh = unit:spawn_manager():get_unit("char_mesh")
+
+	if alive(char_mesh) then
+		char_mesh:damage():run_sequence("on_destroyed")
 	end
 end
 
@@ -836,6 +860,10 @@ function CriminalsManager:character_by_peer_id(peer_id)
 end
 
 function CriminalsManager:character_by_unit(unit)
+	if type_name(unit) ~= "Unit" then
+		return false
+	end
+
 	local search_key = unit:key()
 
 	for _, character in pairs(self._characters) do

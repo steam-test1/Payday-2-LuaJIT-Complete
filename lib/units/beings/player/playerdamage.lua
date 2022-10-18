@@ -1310,7 +1310,7 @@ function PlayerDamage:damage_bullet(attack_data)
 		self._next_allowed_dmg_t = Application:digest_value(pm:player_timer():time() + self._dmg_interval, true)
 		self._last_received_dmg = attack_data.damage
 
-		managers.player:send_message(Message.OnPlayerDodge)
+		managers.player:send_message(Message.OnPlayerDodge, nil, attack_data)
 
 		return
 	end
@@ -2765,12 +2765,12 @@ function PlayerDamage:_stop_concussion()
 	self._concussion_data = nil
 end
 
-function PlayerDamage:on_flashbanged(sound_eff_mul)
+function PlayerDamage:on_flashbanged(sound_eff_mul, skip_explosion_sfx)
 	if self._downed_timer then
 		return
 	end
 
-	self:_start_tinnitus(sound_eff_mul)
+	self:_start_tinnitus(sound_eff_mul, skip_explosion_sfx)
 end
 
 function PlayerDamage:_start_tinnitus(sound_eff_mul, skip_explosion_sfx)

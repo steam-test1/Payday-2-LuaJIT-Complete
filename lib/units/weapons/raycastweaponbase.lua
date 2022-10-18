@@ -2613,7 +2613,7 @@ function DOTBulletBase:on_collision(col_ray, weapon_unit, user_unit, damage, bla
 	local hit_unit = col_ray.unit
 
 	if hit_unit:character_damage() and hit_unit:character_damage().damage_dot and not hit_unit:character_damage():dead() then
-		result = self:start_dot_damage(col_ray, weapon_unit, self:_dot_data_by_weapon(weapon_unit))
+		result = self:start_dot_damage(col_ray, weapon_unit, self:_dot_data_by_weapon(weapon_unit), alive(weapon_unit) and weapon_unit:base():get_name_id(), user_unit)
 	end
 
 	return result
@@ -2633,11 +2633,16 @@ function DOTBulletBase:_dot_data_by_weapon(weapon_unit)
 	return nil
 end
 
-function DOTBulletBase:start_dot_damage(col_ray, weapon_unit, dot_data, weapon_id)
+function DOTBulletBase:start_dot_damage(col_ray, weapon_unit, dot_data, weapon_id, user_unit)
 	dot_data = dot_data or self.DOT_DATA
 	local hurt_animation = not dot_data.hurt_animation_chance or math.rand(1) < dot_data.hurt_animation_chance
+	local dot_length = dot_data.dot_length
 
-	managers.dot:add_doted_enemy(col_ray.unit, TimerManager:game():time(), weapon_unit, dot_data.dot_length, dot_data.dot_damage, hurt_animation, self.VARIANT, weapon_id)
+	if dot_data.use_weapon_damage_falloff and alive(weapon_unit) then
+		dot_length = weapon_unit:base():get_damage_falloff(dot_length, col_ray, user_unit)
+	end
+
+	managers.dot:add_doted_enemy(col_ray.unit, TimerManager:game():time(), weapon_unit, dot_length, dot_data.dot_damage, hurt_animation, self.VARIANT, weapon_id)
 end
 
 function DOTBulletBase:give_damage_dot(col_ray, weapon_unit, attacker_unit, damage, hurt_animation, weapon_id)
@@ -2684,7 +2689,7 @@ function ProjectilesPoisonBulletBase:on_collision(col_ray, weapon_unit, user_uni
 		result = self:start_dot_damage(col_ray, weapon_unit, {
 			dot_damage = dot_type_data.dot_damage,
 			dot_length = dot_data.custom_length or dot_type_data.dot_length
-		})
+		}, weapon_unit:base():get_name_id(), user_unit)
 	end
 
 	return result

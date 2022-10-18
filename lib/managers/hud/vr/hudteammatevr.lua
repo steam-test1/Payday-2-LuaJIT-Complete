@@ -196,6 +196,7 @@ function HUDTeammateVR:_create_radial_health(radial_health_panel)
 			blend_mode = "add",
 			name = "ability_icon",
 			alpha = 1,
+			texture = "guis/textures/pd2/add_icon",
 			layer = 5,
 			w = radial_size * 0.5,
 			h = radial_size * 0.5
@@ -1037,6 +1038,36 @@ function HUDTeammateVR:set_deployable_equipment_from_string(...)
 	end
 
 	return __set_deployable_equipment_from_string(self, ...)
+end
+
+local __set_ability_radial = HUDTeammate.set_ability_radial
+
+function HUDTeammate:set_ability_radial(...)
+	__set_ability_radial(self, ...)
+
+	local radial_health_panel = self._radial_health_panel
+	local radial_ability_panel = radial_health_panel:child("radial_ability")
+	local health_icon = radial_health_panel:child("health_icon")
+
+	health_icon:set_visible(not radial_ability_panel:visible())
+end
+
+function HUDTeammate.activate_ability_radial_anim(o, anim_time, progress_start, radial_ability_panel, ability_meter, health_icon)
+	radial_ability_panel:set_visible(true)
+	health_icon:set_visible(false)
+	over(anim_time, function (p)
+		local progress = progress_start * math.lerp(1, 0, p)
+
+		ability_meter:set_color(Color(1, progress, 1, 1))
+	end)
+	radial_ability_panel:set_visible(false)
+	health_icon:set_visible(true)
+end
+
+local __activate_ability_radial = HUDTeammate.activate_ability_radial
+
+function HUDTeammate:activate_ability_radial(...)
+	__activate_ability_radial(self, ...)
 end
 
 function HUDTeammateVR:set_hand(hand)

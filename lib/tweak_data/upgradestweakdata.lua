@@ -2031,8 +2031,12 @@ function UpgradesTweakData:_init_pd2_values()
 	}
 	self.values.player.pocket_ecm_jammer_base = {
 		{
+			affects_cameras = true,
 			cooldown_drain = 6,
-			duration = 6
+			affects_pagers = true,
+			feedback_interval = 1,
+			duration = 6,
+			feedback_range = 2500
 		}
 	}
 	self.values.player.pocket_ecm_heal_on_kill = {

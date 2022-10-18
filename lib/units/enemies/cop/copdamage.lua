@@ -533,7 +533,7 @@ function CopDamage:damage_bullet(attack_data)
 			}
 
 			self:die(attack_data)
-			self:chk_killshot(attack_data.attacker_unit, "bullet", headshot)
+			self:chk_killshot(attack_data.attacker_unit, "bullet", headshot, attack_data.weapon_unit:base():get_name_id())
 		end
 	else
 		attack_data.damage = damage
@@ -1493,6 +1493,7 @@ function CopDamage:damage_fire(attack_data)
 	local result = nil
 	local damage = attack_data.damage
 	local is_civilian = CopDamage.is_civilian(self._unit:base()._tweak_table)
+	local head = self._head_body_name and attack_data.col_ray.body and attack_data.col_ray.body:name() == self._ids_head_body_name
 
 	if attack_data.attacker_unit == managers.player:player_unit() then
 		local critical_hit, crit_damage = self:roll_critical_hit(attack_data, damage)
@@ -1534,7 +1535,7 @@ function CopDamage:damage_fire(attack_data)
 			}
 
 			self:die(attack_data)
-			self:chk_killshot(attack_data.attacker_unit, "fire")
+			self:chk_killshot(attack_data.attacker_unit, "fire", head, attack_data.weapon_unit and attack_data.weapon_unit:base():get_name_id())
 		end
 	else
 		attack_data.damage = damage
@@ -1549,7 +1550,6 @@ function CopDamage:damage_fire(attack_data)
 
 	attack_data.result = result
 	attack_data.pos = attack_data.col_ray.position
-	local head = self._head_body_name and attack_data.col_ray.body and attack_data.col_ray.body:name() == self._ids_head_body_name
 	local headshot_multiplier = 1
 
 	if attack_data.attacker_unit == managers.player:player_unit() then
@@ -1901,7 +1901,7 @@ function CopDamage:damage_explosion(attack_data)
 			managers.player:activate_temporary_upgrade("temporary", "overkill_damage_multiplier")
 		end
 
-		self:chk_killshot(attacker_unit, "explosion")
+		self:chk_killshot(attacker_unit, "explosion", false, attack_data.weapon_unit and attack_data.weapon_unit:base():get_name_id())
 
 		if attacker_unit == managers.player:player_unit() then
 			if alive(attacker_unit) then
@@ -2021,7 +2021,7 @@ function CopDamage:damage_simple(attack_data)
 			managers.player:activate_temporary_upgrade("temporary", "overkill_damage_multiplier")
 		end
 
-		self:chk_killshot(attacker_unit, "shock")
+		self:chk_killshot(attacker_unit, "shock", false, attack_data.weapon_unit and attack_data.weapon_unit:base():get_name_id())
 
 		if attacker_unit == managers.player:player_unit() then
 			if alive(attacker_unit) then
@@ -2243,7 +2243,7 @@ function CopDamage:damage_tase(attack_data)
 		}
 
 		self:die(attack_data)
-		self:chk_killshot(attack_data.attacker_unit, "tase")
+		self:chk_killshot(attack_data.attacker_unit, "tase", false, attack_data.weapon_unit and attack_data.weapon_unit:base():get_name_id())
 	else
 		attack_data.damage = damage
 		local type = (self._char_tweak.can_be_tased == nil or self._char_tweak.can_be_tased) and "taser_tased" or "none"
@@ -2434,7 +2434,7 @@ function CopDamage:damage_melee(attack_data)
 			}
 
 			self:die(attack_data)
-			self:chk_killshot(attack_data.attacker_unit, "melee")
+			self:chk_killshot(attack_data.attacker_unit, "melee", false, attack_data.name_id)
 		end
 	else
 		attack_data.damage = damage
@@ -3000,13 +3000,13 @@ function CopDamage:sync_damage_bullet(attacker_unit, damage_percent, i_body, hit
 		}
 
 		self:die(attack_data)
-		self:chk_killshot(attacker_unit, "bullet")
+		self:chk_killshot(attacker_unit, "bullet", head, attack_data.weapon_unit and attack_data.weapon_unit:base():get_name_id())
 
 		local data = {
 			name = self._unit:base()._tweak_table,
 			stats_name = self._unit:base()._stats_name,
 			head_shot = head,
-			weapon_unit = attacker_unit and attacker_unit:inventory() and attacker_unit:inventory():equipped_unit(),
+			weapon_unit = attack_data.weapon_unit,
 			variant = attack_data.variant
 		}
 
@@ -3068,7 +3068,8 @@ function CopDamage:sync_damage_explosion(attacker_unit, damage_percent, i_attack
 	local damage = damage_percent * self._HEALTH_INIT_PRECENT
 	local attack_data = {
 		variant = variant,
-		attacker_unit = attacker_unit
+		attacker_unit = attacker_unit,
+		weapon_unit = weapon_unit or attacker_unit and attacker_unit:inventory() and attacker_unit:inventory():equipped_unit()
 	}
 	local result = nil
 
@@ -3085,7 +3086,7 @@ function CopDamage:sync_damage_explosion(attacker_unit, damage_percent, i_attack
 			head_shot = false,
 			name = self._unit:base()._tweak_table,
 			stats_name = self._unit:base()._stats_name,
-			weapon_unit = weapon_unit or attacker_unit and attacker_unit:inventory() and attacker_unit:inventory():equipped_unit()
+			weapon_unit = attack_data.weapon_unit
 		}
 
 		managers.statistics:killed_by_anyone(data)
@@ -3131,7 +3132,7 @@ function CopDamage:sync_damage_explosion(attacker_unit, damage_percent, i_attack
 		managers.hud:on_hit_confirmed()
 		managers.statistics:shot_fired({
 			hit = true,
-			weapon_unit = attacker_unit and attacker_unit:inventory() and attacker_unit:inventory():equipped_unit()
+			weapon_unit = attack_data.weapon_unit
 		})
 	end
 
@@ -3141,7 +3142,7 @@ function CopDamage:sync_damage_explosion(attacker_unit, damage_percent, i_attack
 			head_shot = false,
 			name = self._unit:base()._tweak_table,
 			stats_name = self._unit:base()._stats_name,
-			weapon_unit = attacker_unit and attacker_unit:inventory() and attacker_unit:inventory():equipped_unit()
+			weapon_unit = attack_data.weapon_unit
 		}
 		local attacker_unit = attack_data.attacker_unit
 
@@ -3150,7 +3151,7 @@ function CopDamage:sync_damage_explosion(attacker_unit, damage_percent, i_attack
 			data.weapon_unit = attack_data.attacker_unit
 		end
 
-		self:chk_killshot(attacker_unit, "explosion")
+		self:chk_killshot(attacker_unit, "explosion", false, attack_data.weapon_unit and attack_data.weapon_unit:base():get_name_id())
 
 		if attacker_unit == managers.player:player_unit() then
 			if alive(attacker_unit) then
@@ -3271,14 +3272,14 @@ function CopDamage:sync_damage_fire(attacker_unit, damage_percent, start_dot_dan
 		}
 
 		self:die(attack_data)
-		self:chk_killshot(attacker_unit, "fire")
+		self:chk_killshot(attacker_unit, "fire", false, attack_data.weapon_unit and attack_data.weapon_unit:base():get_name_id())
 
 		local data = {
 			variant = "fire",
 			head_shot = false,
 			name = self._unit:base()._tweak_table,
 			stats_name = self._unit:base()._stats_name,
-			weapon_unit = attacker_unit and attacker_unit:inventory() and attacker_unit:inventory():equipped_unit(),
+			weapon_unit = attack_data.weapon_unit,
 			is_molotov = weapon_id == "molotov"
 		}
 
@@ -3391,7 +3392,7 @@ function CopDamage:sync_damage_dot(attacker_unit, damage_percent, death, variant
 		}
 
 		self:die(attack_data)
-		self:chk_killshot(attacker_unit, variant or "dot", nil, weapon_id)
+		self:chk_killshot(attacker_unit, variant or "dot", false, weapon_id)
 
 		local real_variant = weapon_id and tweak_data.blackmarket and tweak_data.blackmarket.melee_weapons and tweak_data.blackmarket.melee_weapons[weapon_id] and "melee" or attack_data.variant
 		local data = {
@@ -3443,6 +3444,7 @@ function CopDamage:sync_damage_simple(attacker_unit, damage_percent, i_attack_va
 	attack_data.pos = hit_pos
 	attack_data.attacker_unit = attacker_unit
 	attack_data.variant = variant
+	attack_data.weapon_unit = attacker_unit and attacker_unit:inventory() and attacker_unit:inventory():equipped_unit()
 	local attack_dir, distance = nil
 
 	if attacker_unit then
@@ -3462,13 +3464,13 @@ function CopDamage:sync_damage_simple(attacker_unit, damage_percent, i_attack_va
 		}
 
 		self:die(attack_data)
-		self:chk_killshot(attacker_unit, variant)
+		self:chk_killshot(attacker_unit, variant, false, attack_data.weapon_unit and attack_data.weapon_unit:base():get_name_id())
 
 		local data = {
 			head_shot = false,
 			name = self._unit:base()._tweak_table,
 			stats_name = self._unit:base()._stats_name,
-			weapon_unit = attacker_unit and attacker_unit:inventory() and attacker_unit:inventory():equipped_unit(),
+			weapon_unit = attack_data.weapon_unit,
 			variant = attack_data.variant
 		}
 
@@ -3546,7 +3548,7 @@ function CopDamage:sync_damage_melee(attacker_unit, damage_percent, damage_effec
 		}
 
 		self:die(attack_data)
-		self:chk_killshot(attacker_unit, "melee")
+		self:chk_killshot(attacker_unit, "melee", false, nil)
 
 		local data = {
 			variant = "melee",
@@ -3624,7 +3626,7 @@ function CopDamage:sync_damage_tase(attacker_unit, damage_percent, variant, deat
 		}
 
 		self:die("bullet")
-		self:chk_killshot(attacker_unit, "tase")
+		self:chk_killshot(attacker_unit, "tase", false, attack_data.weapon_unit)
 
 		local data = {
 			head_shot = false,

@@ -581,7 +581,8 @@ end
 
 function WeaponDescription._get_mods_stats(name, base_stats, equipped_mods, bonus_stats)
 	local mods_stats = {}
-	local modifier_stats = tweak_data.weapon[name].stats_modifiers
+	local weapon_tweak = tweak_data.weapon[name]
+	local modifier_stats = weapon_tweak.stats_modifiers
 
 	for _, stat in pairs(WeaponDescription._stats_shown) do
 		mods_stats[stat.name] = {
@@ -640,6 +641,9 @@ function WeaponDescription._get_mods_stats(name, base_stats, equipped_mods, bonu
 							if part_data.custom_stats and part_data.custom_stats.fire_rate_multiplier then
 								mods_stats[stat.name].value = mods_stats[stat.name].value + part_data.custom_stats.fire_rate_multiplier - 1
 							end
+						elseif stat.name == "damage" and part_data.custom_stats and part_data.custom_stats.launcher_grenade then
+							local projectile_type = weapon_tweak.projectile_types and weapon_tweak.projectile_types[part_data.custom_stats.launcher_grenade] or part_data.custom_stats.launcher_grenade
+							mods_stats[stat.name].projectile_type = projectile_type
 						else
 							mods_stats[stat.name].index = mods_stats[stat.name].index + (part_data.stats[stat.name] or 0)
 						end
@@ -660,6 +664,10 @@ function WeaponDescription._get_mods_stats(name, base_stats, equipped_mods, bonu
 					local mult = 1 / tweak_stats[stat_name][chosen_index]
 					local mod_value = reload_time * mult
 					mods_stats[stat.name].value = mod_value - base_stats[stat.name].value
+				elseif stat.name == "damage" and mods_stats[stat.name].projectile_type then
+					local mod = modifier_stats and modifier_stats[stat.name] or 1
+					local projectile_tweak = tweak_data.projectiles[mods_stats[stat.name].projectile_type]
+					mods_stats[stat.name].value = projectile_tweak.damage * mod - base_stats[stat.name].value
 				else
 					if stat_name == "concealment" then
 						index = base_stats[stat.name].index + mods_stats[stat.name].index
@@ -740,7 +748,8 @@ function WeaponDescription._get_base_stats(name)
 	local base_stats = {}
 	local index = nil
 	local tweak_stats = tweak_data.weapon.stats
-	local modifier_stats = tweak_data.weapon[name].stats_modifiers
+	local weapon_tweak = tweak_data.weapon[name]
+	local modifier_stats = weapon_tweak.stats_modifiers
 
 	for _, stat in pairs(WeaponDescription._stats_shown) do
 		base_stats[stat.name] = {}
@@ -893,7 +902,8 @@ end
 function WeaponDescription._get_weapon_mod_stats(mod_name, weapon_name, base_stats, mods_stats, equipped_mods)
 	local tweak_stats = tweak_data.weapon.stats
 	local tweak_factory = tweak_data.weapon.factory.parts
-	local modifier_stats = tweak_data.weapon[weapon_name].stats_modifiers
+	local weapon_tweak = tweak_data.weapon[weapon_name]
+	local modifier_stats = weapon_tweak.stats_modifiers
 	local factory_id = managers.weapon_factory:get_factory_id_by_weapon_id(weapon_name)
 	local default_blueprint = managers.weapon_factory:get_default_blueprint_by_factory_id(factory_id)
 	local part_data = nil
@@ -960,6 +970,11 @@ function WeaponDescription._get_weapon_mod_stats(mod_name, weapon_name, base_sta
 					if part_data.custom_stats and part_data.custom_stats.fire_rate_multiplier then
 						mod[stat.name] = base_stats[stat.name].value * (part_data.custom_stats.fire_rate_multiplier - 1)
 					end
+				elseif stat.name == "damage" and part_data.custom_stats and part_data.custom_stats.launcher_grenade then
+					local projectile_type = weapon_tweak.projectile_types and weapon_tweak.projectile_types[part_data.custom_stats.launcher_grenade] or part_data.custom_stats.launcher_grenade
+					local modifier = modifier_stats and modifier_stats[stat.name] or 1
+					local projectile_tweak = tweak_data.projectiles[projectile_type]
+					mod[stat.name] = projectile_tweak.damage * modifier - base_stats[stat.name].value
 				else
 					local chosen_index = part_data.stats[stat.name] or 0
 

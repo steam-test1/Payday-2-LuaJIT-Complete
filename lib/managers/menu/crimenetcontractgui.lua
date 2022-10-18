@@ -330,7 +330,7 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 		next_top = ghost_warning_text:bottom()
 	end
 
-	local job_heat_value = managers.job:get_job_heat(job_data.job_id)
+	local job_heat_value = managers.job:get_job_heat(job_data.job_id) or 0
 	local ignore_heat = job_heat_value > 0 and self._customizable
 	local job_heat_mul = ignore_heat and 0 or managers.job:get_job_heat_multipliers(job_data.job_id) - 1
 	local job_heat = math.round(job_heat_mul * 100)
@@ -1575,7 +1575,7 @@ function CrimeNetContractGui:set_potential_rewards(show_max)
 	local difficulty_stars = job_data.difficulty_id - 2
 	local gui_panel = self._contract_panel
 	local potential_level_up_text = gui_panel:child("potential_level_up_text")
-	local job_heat_value = managers.job:get_job_heat(job_data.job_id)
+	local job_heat_value = managers.job:get_job_heat(job_data.job_id) or 0
 	local contract_visuals = job_data.contract_visuals or {}
 	local total_xp, dissected_xp, total_payout, base_payout, risk_payout = nil
 
@@ -1743,7 +1743,7 @@ function CrimeNetContractGui:set_all(t, dt)
 	local difficulty_stars = job_data.difficulty_id - 2
 	local gui_panel = self._contract_panel
 	local potential_level_up_text = gui_panel:child("potential_level_up_text")
-	local job_heat_value = managers.job:get_job_heat(job_data.job_id)
+	local job_heat_value = managers.job:get_job_heat(job_data.job_id) or 0
 	local contract_visuals = job_data.contract_visuals or {}
 	local xp_min = contract_visuals.min_mission_xp and (type(contract_visuals.min_mission_xp) == "table" and contract_visuals.min_mission_xp[difficulty_stars + 1] or contract_visuals.min_mission_xp) or 0
 	local total_xp, dissected_xp = managers.experience:get_contract_xp_by_stars(job_data.job_id, job_stars, difficulty_stars, job_data.professional, #narrative_chains, {

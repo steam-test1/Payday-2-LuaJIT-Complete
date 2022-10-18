@@ -941,26 +941,22 @@ function UnitNetworkHandler:sync_teammate_progress(type_index, enabled, tweak_da
 	managers.hud:teammate_progress(peer_id, type_index, enabled, tweak_data_id, timer, success)
 end
 
-function UnitNetworkHandler:action_aim_state(cop)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_character(cop) then
+function UnitNetworkHandler:action_aim_state(unit, state, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_character(unit) or not self._verify_sender(sender_rpc) then
 		return
 	end
 
-	local shoot_action = {
-		block_type = "action",
-		body_part = 3,
-		type = "shoot"
-	}
+	if state then
+		local shoot_action = {
+			block_type = "action",
+			body_part = 3,
+			type = "shoot"
+		}
 
-	cop:movement():action_request(shoot_action)
-end
-
-function UnitNetworkHandler:action_aim_end(cop)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_character(cop) then
-		return
+		unit:movement():action_request(shoot_action)
+	else
+		unit:movement():sync_action_aim_end()
 	end
-
-	cop:movement():sync_action_aim_end()
 end
 
 function UnitNetworkHandler:action_hurt_start(unit, hurt_type, body_part, death_type, type, variant, direction_vec, hit_pos)

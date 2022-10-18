@@ -48,8 +48,9 @@ function PlayerInventory:pre_destroy(unit)
 	end
 
 	self:destroy_all_items()
-	self:stop_jammer_effect()
-	self:stop_feedback_effect()
+	self:_chk_remove_queued_jammer_effects()
+	self:_stop_jammer_effect()
+	self:_stop_feedback_effect()
 
 	if self._ignore_units then
 		local destroy_key = self._ignore_destroy_listener_key
@@ -602,8 +603,9 @@ function PlayerInventory:on_death_exit()
 		selection.unit:unlink()
 	end
 
-	self:_stop_feedback_effect()
+	self:_chk_remove_queued_jammer_effects()
 	self:_stop_jammer_effect()
+	self:_stop_feedback_effect()
 end
 
 function PlayerInventory._chk_create_w_factory_indexes()
@@ -685,53 +687,68 @@ function PlayerInventory:show_equipped_unit()
 	end
 end
 
-function PlayerInventory:save(data)
+PlayerInventory._start_jammer_func_lookup_drop_in_save = {
+	jamming = "_start_jammer_effect_drop_in_save",
+	feedback = "_start_feedback_effect_drop_in_save"
+}
+PlayerInventory._start_jammer_func_lookup_drop_in_load = {
+	jamming = "_start_jammer_effect_drop_in_load",
+	feedback = "_start_feedback_effect_drop_in_load"
+}
+
+function PlayerInventory:_start_jammer_effect_drop_in_save(save_data, jammer_data)
+	save_data._jammer_data = {
+		t = jammer_data.t - TimerManager:game():time(),
+		effect = jammer_data.effect,
+		queued_effects = jammer_data.queued_effects
+	}
+end
+
+function PlayerInventory:_start_feedback_effect_drop_in_save(save_data, jammer_data)
+	save_data._jammer_data = {
+		t = jammer_data.t - TimerManager:game():time(),
+		effect = jammer_data.effect,
+		queued_effects = jammer_data.queued_effects
+	}
+end
+
+function PlayerInventory:_start_jammer_effect_drop_in_load(jammer_data)
+	self._start_jammer_effect(jammer_data.t)
+end
+
+function PlayerInventory:_start_feedback_effect_drop_in_load(jammer_data)
+	self._start_feedback_effect(jammer_data.t)
+end
+
+function PlayerInventory:save(save_data)
+	local my_save_data = {}
+
 	if self._equipped_selection then
 		local eq_weap_name = self:equipped_unit():base()._factory_id or self:equipped_unit():name()
 		local index = self._get_weapon_sync_index(eq_weap_name)
-		data.equipped_weapon_index = index
-		data.mask_visibility = self._mask_visibility
-		data.blueprint_string = self:equipped_unit():base().blueprint_to_string and self:equipped_unit():base():blueprint_to_string() or nil
-		data.gadget_on = self:equipped_unit():base().gadget_on and self:equipped_unit():base()._gadget_on
+		my_save_data.equipped_weapon_index = index
+		my_save_data.mask_visibility = self._mask_visibility
+		my_save_data.blueprint_string = self:equipped_unit():base().blueprint_to_string and self:equipped_unit():base():blueprint_to_string() or nil
+		my_save_data.gadget_on = self:equipped_unit():base().gadget_on and self:equipped_unit():base()._gadget_on
 		local gadget = self:equipped_unit():base().get_active_gadget and self:equipped_unit():base():get_active_gadget()
 
 		if gadget and gadget.color then
-			data.gadget_color = gadget:color()
+			my_save_data.gadget_color = gadget:color()
 		end
 
 		local cosmetics_data = self:equipped_unit():base().get_cosmetics and self:equipped_unit():base():get_cosmetics()
-		data.cosmetics_string = managers.blackmarket:outfit_string_from_cosmetics(cosmetics_data)
+		my_save_data.cosmetics_string = managers.blackmarket:outfit_string_from_cosmetics(cosmetics_data)
 	end
 
-	local function to_time_left(t)
-		return t and t - TimerManager:game():time()
+	local jammer_func = self._jammer_data and self._start_jammer_func_lookup_drop_in_save[self._jammer_data.effect]
+
+	if jammer_func and self[jammer_func] then
+		self[jammer_func](self, my_save_data, self._jammer_data)
 	end
 
-	local function copy_some(t, ...)
-		if not t then
-			return
-		end
-
-		local rtn = {}
-
-		for _, k in ipairs({
-			...
-		}) do
-			if k[1] then
-				local key, func = unpack(k)
-				rtn[key] = func(t[key])
-			else
-				rtn[k] = t[k]
-			end
-		end
-
-		return rtn
+	if next(my_save_data) then
+		save_data.inventory = my_save_data
 	end
-
-	data._jammer_data = copy_some(self._jammer_data, {
-		"t",
-		to_time_left
-	}, "effect", "interval", "range")
 end
 
 function PlayerInventory:cosmetics_string_from_peer(peer, weapon_name)
@@ -743,37 +760,37 @@ function PlayerInventory:cosmetics_string_from_peer(peer, weapon_name)
 	end
 end
 
-function PlayerInventory:load(data)
-	if data.equipped_weapon_index then
-		self._weapon_add_clbk = "playerinventory_load" .. tostring(self._unit:key())
+function PlayerInventory:load(load_data)
+	local my_load_data = load_data.inventory
+
+	if not my_load_data then
+		return
+	end
+
+	if my_load_data.equipped_weapon_index then
+		self._weapon_add_clbk = "playerinventory_load_weapon_add" .. tostring(self._unit:key())
 		local delayed_data = {
-			equipped_weapon_index = data.equipped_weapon_index,
-			blueprint_string = data.blueprint_string,
-			cosmetics_string = data.cosmetics_string,
-			gadget_on = data.gadget_on,
-			gadget_color = data.gadget_color
+			equipped_weapon_index = my_load_data.equipped_weapon_index,
+			blueprint_string = my_load_data.blueprint_string,
+			cosmetics_string = my_load_data.cosmetics_string,
+			gadget_on = my_load_data.gadget_on,
+			gadget_color = my_load_data.gadget_color
 		}
 
 		managers.enemy:add_delayed_clbk(self._weapon_add_clbk, callback(self, self, "_clbk_weapon_add", delayed_data), Application:time() + 1)
 	end
 
-	self._mask_visibility = data.mask_visibility and true or false
+	self._mask_visibility = my_load_data.mask_visibility and true or false
+	local jammer_data = my_load_data._jammer_data
+	local jammer_func = jammer_data and self._start_jammer_func_lookup_drop_in_load[jammer_data.effect]
 
-	if data._jammer_data and data._jammer_data.effect == "feedback" then
-		self:start_feedback_effect(data._jammer_data.t + TimerManager:game():time(), data._jammer_data.interval, data._jammer_data.range)
+	if jammer_func and self[jammer_func] then
+		self[jammer_func](self, jammer_data)
+
+		if self._jammer_data and jammer_data.queued_effects then
+			self._jammer_data.queued_effects = jammer_data.queued_effects
+		end
 	end
-
-	if data._jammer_data and data._jammer_data.effect == "jamming" then
-		self:start_jammer_effect(data._jammer_data.t + TimerManager:game():time())
-	end
-end
-
-function PlayerInventory:clbk_shield_link_request()
-	if not alive(self._unit) or self._unit:id() == -1 then
-		return
-	end
-
-	managers.network:session():send_to_host("request_shield_unit_link", self._unit)
 end
 
 function PlayerInventory:_clbk_weapon_add(data)
@@ -1006,21 +1023,38 @@ function PlayerInventory:set_weapon_enabled(state)
 	end
 end
 
+PlayerInventory._start_jammer_func_lookup = {
+	jamming = "_start_jammer_effect",
+	feedback = "_start_feedback_effect"
+}
+PlayerInventory._stop_jammer_func_lookup = {
+	jamming = "_stop_jammer_effect",
+	feedback = "_stop_feedback_effect"
+}
+
 function PlayerInventory:sync_net_event(event_id, peer)
+	if self._unit:base().is_local_player then
+		return
+	end
+
 	local net_events = self._NET_EVENTS
 
 	if event_id == net_events.jammer_start then
 		self:_start_jammer_effect()
 	elseif event_id == net_events.jammer_stop then
-		self:_stop_jammer_effect()
-	elseif event_id == net_events.feedback_start then
-		if Network:is_server() then
-			self:start_feedback_effect()
-		else
-			self:_start_feedback_effect()
+		local found_queued = self:_chk_remove_queued_jammer_effects("jamming")
+
+		if not found_queued then
+			self:_stop_jammer_effect()
 		end
+	elseif event_id == net_events.feedback_start then
+		self:_start_feedback_effect()
 	elseif event_id == net_events.feedback_stop then
-		self:_stop_feedback_effect()
+		local found_queued = self:_chk_remove_queued_jammer_effects("feedback")
+
+		if not found_queued then
+			self:_stop_feedback_effect()
+		end
 	end
 end
 
@@ -1028,6 +1062,18 @@ function PlayerInventory:get_jammer_time()
 	local upgrade_value = self._unit:base():upgrade_value("player", "pocket_ecm_jammer_base")
 
 	return upgrade_value and upgrade_value.duration or 0
+end
+
+function PlayerInventory:get_jammer_affect()
+	local upgrade_value = self._unit:base():upgrade_value("player", "pocket_ecm_jammer_base")
+
+	return upgrade_value and upgrade_value.affects_cameras or false, upgrade_value and upgrade_value.affects_pagers or false
+end
+
+function PlayerInventory:get_feedback_values()
+	local upgrade_value = self._unit:base():upgrade_value("player", "pocket_ecm_jammer_base")
+
+	return upgrade_value and upgrade_value.feedback_interval or 0, upgrade_value and upgrade_value.feedback_range or 0
 end
 
 function PlayerInventory:_send_net_event(event_id)
@@ -1039,152 +1085,244 @@ function PlayerInventory:_send_net_event_to_host(event_id)
 end
 
 function PlayerInventory:is_jammer_active()
-	return self._jammer_data and self._jammer_data.effect
+	return self._jammer_data and true or false
 end
 
-function PlayerInventory:start_jammer_effect(...)
-	self:_start_jammer_effect(...)
-	self:_send_net_event(self._NET_EVENTS.jammer_start)
+function PlayerInventory:start_jammer_effect()
+	local started = self:_start_jammer_effect()
+
+	if started then
+		self:_send_net_event(self._NET_EVENTS.jammer_start)
+	end
+
+	return started
 end
 
 function PlayerInventory:_start_jammer_effect(end_time)
-	end_time = end_time or self:get_jammer_time() + TimerManager:game():time()
+	if self._jammer_data then
+		self:_chk_queue_jammer_effect("jamming")
+
+		return
+	end
+
+	end_time = end_time or self:get_jammer_time()
+
+	if end_time == 0 then
+		return false
+	end
+
+	end_time = TimerManager:game():time() + end_time
+	local key_str = tostring(self._unit:key())
 	self._jammer_data = {
 		effect = "jamming",
 		t = end_time,
 		sound = self._unit:sound_source():post_event("ecm_jammer_jam_signal"),
-		stop_jamming_callback_key = "jammer" .. tostring(self._unit:key())
+		stop_jamming_callback_key = "PocketECMJamming" .. key_str
 	}
+	local affects_cameras, affects_pagers = self:get_jammer_affect()
 
 	managers.groupai:state():register_ecm_jammer(self._unit, {
-		pager = true,
 		call = true,
-		camera = true
+		camera = affects_cameras,
+		pager = affects_pagers
 	})
-	managers.enemy:add_delayed_clbk(self._jammer_data.stop_jamming_callback_key, callback(self, self, "stop_jammer_effect"), self._jammer_data.t)
+	managers.enemy:add_delayed_clbk(self._jammer_data.stop_jamming_callback_key, callback(self, self, "_clbk_stop_jammer_effect"), end_time)
 
-	local is_player = managers.player:player_unit() == self._unit
-	local dodge = is_player and self._unit:base():upgrade_value("temporary", "pocket_ecm_kill_dodge")
+	local local_player = managers.player:player_unit()
+	local user_is_local_player = local_player and local_player:key() == self._unit:key()
+	local dodge = user_is_local_player and self._unit:base():upgrade_value("temporary", "pocket_ecm_kill_dodge")
 
 	if dodge then
 		self._jammer_data.dodge_kills = dodge[3]
-		self._jammer_data.dodge_listener_key = "jamming_dodge" .. tostring(self._unit:key())
+		self._jammer_data.dodge_listener_key = "PocketECMJammingDodge" .. key_str
 
 		managers.player:register_message(Message.OnEnemyKilled, self._jammer_data.dodge_listener_key, callback(self, self, "_jamming_kill_dodge"))
 	end
+
+	return true
 end
 
 function PlayerInventory:stop_jammer_effect()
-	self:_stop_jammer_effect()
+	local stopped = self:_stop_jammer_effect()
 
-	if managers.network:session() then
+	if stopped and managers.network:session() then
 		self:_send_net_event(self._NET_EVENTS.jammer_stop)
 	end
 end
 
-function PlayerInventory:_stop_jammer_effect()
-	if not self._jammer_data or self._jammer_data.effect ~= "jamming" then
+function PlayerInventory:_clbk_stop_jammer_effect()
+	self:_stop_jammer_effect(true)
+end
+
+function PlayerInventory:_stop_jammer_effect(is_callback)
+	local jammer_data = self._jammer_data
+
+	if not jammer_data or jammer_data.effect ~= "jamming" then
+		return false
+	end
+
+	self._jammer_data = nil
+
+	if jammer_data.sound then
+		jammer_data.sound:stop()
+		self._unit:sound_source():post_event("ecm_jammer_jam_signal_stop")
+	end
+
+	managers.groupai:state():register_ecm_jammer(self._unit, false)
+
+	if not is_callback then
+		managers.enemy:remove_delayed_clbk(jammer_data.stop_jamming_callback_key, true)
+	end
+
+	if jammer_data.dodge_listener_key then
+		managers.player:unregister_message(Message.OnEnemyKilled, jammer_data.dodge_listener_key, true)
+	end
+
+	self:_chk_start_queued_jammer_effect(jammer_data)
+
+	return true
+end
+
+function PlayerInventory:start_feedback_effect()
+	local started = self:_start_feedback_effect()
+
+	if started then
+		self:_send_net_event(self._NET_EVENTS.feedback_start)
+	end
+
+	return started
+end
+
+function PlayerInventory:_start_feedback_effect(end_time)
+	if self._jammer_data then
+		self:_chk_queue_jammer_effect("feedback")
+
 		return
 	end
 
-	local _ = self._jammer_data.sound and self._jammer_data.sound:stop()
-	self._jammer_data.effect = nil
+	end_time = end_time or self:get_jammer_time()
 
-	self._unit:sound_source():post_event("ecm_jammer_jam_signal_stop")
-	managers.groupai:state():register_ecm_jammer(self._unit, false)
-	managers.enemy:remove_delayed_clbk(self._jammer_data.stop_jamming_callback_key, true)
-
-	if self._jammer_data.dodge_listener_key then
-		managers.player:unregister_message(Message.OnEnemyKilled, self._jammer_data.dodge_listener_key, true)
+	if end_time == 0 then
+		return false
 	end
-end
 
-function PlayerInventory:start_feedback_effect(...)
+	local interval, range, nr_ticks = nil
+
 	if Network:is_server() then
-		self:_start_feedback_effect(...)
-		self:_send_net_event(self._NET_EVENTS.feedback_start)
-	else
-		self:_send_net_event_to_host(self._NET_EVENTS.feedback_start)
-	end
-end
+		interval, range = self:get_feedback_values()
 
-function PlayerInventory:_start_feedback_effect(end_time, interval, range)
-	end_time = end_time or self:get_jammer_time() + TimerManager:game():time()
+		if interval == 0 or range == 0 then
+			return false
+		end
+
+		nr_ticks = math.max(1, math.floor(end_time / interval))
+	end
+
+	local t = TimerManager:game():time()
+	local key_str = tostring(self._unit:key())
+	end_time = t + end_time
 	self._jammer_data = {
 		effect = "feedback",
 		t = end_time,
-		interval = interval or 1.5,
-		range = range or 2500,
-		sound = self._unit:sound_source():post_event("ecm_jammer_puke_signal")
+		interval = interval,
+		range = range,
+		sound = self._unit:sound_source():post_event("ecm_jammer_puke_signal"),
+		feedback_callback_key = "PocketECMFeedback" .. key_str,
+		nr_ticks = nr_ticks
 	}
-	local is_player = managers.player:player_unit() == self._unit
-	local dodge = is_player and self._unit:base():upgrade_value("temporary", "pocket_ecm_kill_dodge")
-	local heal = is_player and self._unit:base():upgrade_value("player", "pocket_ecm_heal_on_kill") or self._unit:base():upgrade_value("team", "pocket_ecm_heal_on_kill")
 
-	if heal then
-		self._jammer_data.heal = heal
-		self._jammer_data.heal_listener_key = "feedback_heal" .. tostring(self._unit:key())
+	if Network:is_server() then
+		local interval_t = t + interval
 
-		managers.player:register_message(Message.OnEnemyKilled, self._jammer_data.heal_listener_key, callback(self, self, "_feedback_heal_on_kill"))
+		if nr_ticks == 1 and end_time < interval_t then
+			interval_t = end_time or interval_t
+		end
+
+		managers.enemy:add_delayed_clbk(self._jammer_data.feedback_callback_key, callback(self, self, "_do_feedback"), interval_t)
+	else
+		managers.enemy:add_delayed_clbk(self._jammer_data.feedback_callback_key, callback(self, self, "_clbk_stop_feedback_effect"), end_time)
 	end
+
+	local local_player = managers.player:player_unit()
+	local user_is_local_player = local_player and local_player:key() == self._unit:key()
+	local dodge = user_is_local_player and self._unit:base():upgrade_value("temporary", "pocket_ecm_kill_dodge")
+	local heal = user_is_local_player and self._unit:base():upgrade_value("player", "pocket_ecm_heal_on_kill") or self._unit:base():upgrade_value("team", "pocket_ecm_heal_on_kill")
 
 	if dodge then
 		self._jammer_data.dodge_kills = dodge[3]
-		self._jammer_data.dodge_listener_key = "jamming_dodge" .. tostring(self._unit:key())
+		self._jammer_data.dodge_listener_key = "PocketECMFeedbackDodge" .. key_str
 
 		managers.player:register_message(Message.OnEnemyKilled, self._jammer_data.dodge_listener_key, callback(self, self, "_jamming_kill_dodge"))
 	end
 
-	if Network:is_server() then
-		self._jammer_data.feedback_callback_key = "feedback" .. tostring(self._unit:key())
+	if heal then
+		self._jammer_data.heal = heal
+		self._jammer_data.heal_listener_key = "PocketECMFeedbackHeal" .. key_str
 
-		managers.enemy:add_delayed_clbk(self._jammer_data.feedback_callback_key, callback(self, self, "_do_feedback"), TimerManager:game():time() + self._jammer_data.interval)
+		managers.player:register_message(Message.OnEnemyKilled, self._jammer_data.heal_listener_key, callback(self, self, "_feedback_heal_on_kill"))
 	end
+
+	return true
 end
 
 function PlayerInventory:stop_feedback_effect()
-	self:_stop_feedback_effect()
+	local stopped = self:_stop_feedback_effect()
 
-	if Network:is_server() and managers.network:session() then
+	if stopped and managers.network:session() then
 		self:_send_net_event(self._NET_EVENTS.feedback_stop)
 	end
 end
 
-function PlayerInventory:_stop_feedback_effect()
-	if not self._jammer_data or self._jammer_data.effect ~= "feedback" then
-		return
+function PlayerInventory:_clbk_stop_feedback_effect()
+	self:_stop_feedback_effect(true)
+end
+
+function PlayerInventory:_stop_feedback_effect(is_callback)
+	local jammer_data = self._jammer_data
+
+	if not jammer_data or jammer_data.effect ~= "feedback" then
+		return false
 	end
 
-	local _ = self._jammer_data.sound and self._jammer_data.sound:stop()
-	self._jammer_data.effect = nil
+	self._jammer_data = nil
 
-	self._unit:sound_source():post_event("ecm_jammer_puke_signal_stop")
-
-	if self._jammer_data.heal_listener_key then
-		managers.player:unregister_message(Message.OnEnemyKilled, self._jammer_data.heal_listener_key, true)
+	if jammer_data.sound then
+		jammer_data.sound:stop()
+		self._unit:sound_source():post_event("ecm_jammer_puke_signal_stop")
 	end
 
-	if self._jammer_data.dodge_listener_key then
-		managers.player:unregister_message(Message.OnEnemyKilled, self._jammer_data.dodge_listener_key, true)
+	if not is_callback then
+		managers.enemy:remove_delayed_clbk(jammer_data.feedback_callback_key, true)
 	end
 
-	if Network:is_server() then
-		managers.enemy:remove_delayed_clbk(self._jammer_data.feedback_callback_key, true)
+	if jammer_data.dodge_listener_key then
+		managers.player:unregister_message(Message.OnEnemyKilled, jammer_data.dodge_listener_key, true)
 	end
+
+	if jammer_data.heal_listener_key then
+		managers.player:unregister_message(Message.OnEnemyKilled, jammer_data.heal_listener_key, true)
+	end
+
+	self:_chk_start_queued_jammer_effect(jammer_data)
+
+	return true
 end
 
 function PlayerInventory:_feedback_heal_on_kill()
-	local unit = managers.player:player_unit()
-	local is_downed = game_state_machine:verify_game_state(GameStateFilters.downed)
-	local swan_song_active = managers.player:has_activate_temporary_upgrade("temporary", "berserker_damage_multiplier")
-
-	if is_downed or swan_song_active then
+	if not self._jammer_data or not self._jammer_data.heal or not alive(self._unit) then
 		return
 	end
 
-	if alive(self._unit) and unit and self._jammer_data then
-		unit:character_damage():change_health(self._jammer_data.heal)
+	local local_player = managers.player:player_unit()
+	local damage_ext = local_player and local_player:character_damage()
+
+	if not damage_ext or damage_ext:dead() or damage_ext:need_revive() or damage_ext:is_berserker() then
+		return
 	end
+
+	local chk_berserker = self._unit:key() ~= local_player:key()
+
+	damage_ext:restore_health(self._jammer_data.heal, true, chk_berserker)
 end
 
 function PlayerInventory:_jamming_kill_dodge()
@@ -1205,20 +1343,113 @@ function PlayerInventory:_jamming_kill_dodge()
 	end
 end
 
-function PlayerInventory:_do_feedback()
-	local t = TimerManager:game():time()
+function PlayerInventory:_get_feedback_pos()
+	if not self._unit:movement() then
+		return self._unit:position()
+	end
 
-	if not alive(self._unit) or not self._jammer_data or t > self._jammer_data.t - 0.1 then
-		self:stop_feedback_effect()
+	if self._unit:base() and self._unit:base().is_husk_player then
+		return self._unit:movement():m_detect_pos()
+	else
+		return self._unit:movement():m_head_pos()
+	end
+end
+
+function PlayerInventory:_do_feedback()
+	if not alive(self._unit) then
+		self:_chk_remove_queued_jammer_effects()
+		self:_clbk_stop_feedback_effect()
 
 		return
 	end
 
-	ECMJammerBase._detect_and_give_dmg(self._unit:position(), nil, self._unit, 2500)
+	local jammer_data = self._jammer_data
 
-	if self._jammer_data.t - 0.1 < t + self._jammer_data.interval then
-		managers.enemy:add_delayed_clbk(self._jammer_data.feedback_callback_key, t + self._jammer_data.interval)
-	else
-		managers.enemy:add_delayed_clbk(self._jammer_data.feedback_callback_key, callback(self, self, "stop_feedback_effect"), self._jammer_data.t)
+	if not jammer_data then
+		self:_clbk_stop_feedback_effect()
+
+		return
 	end
+
+	ECMJammerBase._detect_and_give_dmg(self:_get_feedback_pos(), nil, self._unit, jammer_data.range)
+
+	jammer_data.nr_ticks = jammer_data.nr_ticks - 1
+	local t = TimerManager:game():time()
+	local end_time = jammer_data.t
+
+	if jammer_data.nr_ticks == 0 then
+		if t < end_time then
+			managers.enemy:add_delayed_clbk(jammer_data.feedback_callback_key, callback(self, self, "_clbk_stop_feedback_effect"), end_time)
+		else
+			self:_clbk_stop_feedback_effect()
+		end
+
+		return
+	end
+
+	local interval_t = t + jammer_data.interval
+
+	if jammer_data.nr_ticks == 1 and end_time < interval_t then
+		interval_t = end_time or interval_t
+	end
+
+	managers.enemy:add_delayed_clbk(jammer_data.feedback_callback_key, callback(self, self, "_do_feedback"), interval_t)
+end
+
+function PlayerInventory:_chk_queue_jammer_effect(effect)
+	if self._unit:base().is_husk_player then
+		if self._jammer_data.queued_effects then
+			table.insert(self._jammer_data.queued_effects, effect)
+		else
+			self._jammer_data.queued_effects = {
+				effect
+			}
+		end
+	end
+end
+
+function PlayerInventory:_chk_start_queued_jammer_effect(jammer_data)
+	if not jammer_data or not jammer_data.queued_effects then
+		return
+	end
+
+	local cur_effect = table.remove(jammer_data.queued_effects, 1)
+
+	if not next(jammer_data.queued_effects) then
+		jammer_data.queued_effects = nil
+	end
+
+	local jammer_func = self._start_jammer_func_lookup[cur_effect]
+
+	if jammer_func and self[jammer_func] then
+		self[jammer_func](self)
+	end
+
+	if self._jammer_data then
+		self._jammer_data.queued_effects = jammer_data.queued_effects
+	else
+		self:_chk_start_queued_jammer_effect(jammer_data)
+	end
+end
+
+function PlayerInventory:_chk_remove_queued_jammer_effects(search_effect)
+	if self._jammer_data then
+		if not search_effect then
+			self._jammer_data.queued_effects = nil
+		else
+			for i, effect in ipairs(self._jammer_data.queued_effects) do
+				if effect == search_effect then
+					table.remove(self._jammer_data.queued_effects, i)
+
+					if not next(self._jammer_data.queued_effects) then
+						self._jammer_data.queued_effects = nil
+					end
+
+					return i
+				end
+			end
+		end
+	end
+
+	return false
 end

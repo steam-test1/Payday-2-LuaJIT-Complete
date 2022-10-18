@@ -5685,7 +5685,8 @@ function WeaponFactoryTweakData:_init_ak74()
 			"wpn_fps_upg_o_45steel",
 			"wpn_fps_lmg_hk51b_ns_jcomp",
 			"wpn_fps_upg_o_tf90",
-			"wpn_fps_upg_o_poe"
+			"wpn_fps_upg_o_poe",
+			"wpn_fps_sho_sko12_stock"
 		}
 	}
 	self.wpn_fps_ass_74_npc = deep_clone(self.wpn_fps_ass_74)
@@ -5861,7 +5862,8 @@ function WeaponFactoryTweakData:_init_akm()
 			"wpn_fps_upg_o_45steel",
 			"wpn_fps_lmg_hk51b_ns_jcomp",
 			"wpn_fps_upg_o_tf90",
-			"wpn_fps_upg_o_poe"
+			"wpn_fps_upg_o_poe",
+			"wpn_fps_sho_sko12_stock"
 		}
 	}
 	self.wpn_fps_ass_akm_npc = deep_clone(self.wpn_fps_ass_akm)
@@ -6033,7 +6035,8 @@ function WeaponFactoryTweakData:_init_akm_gold()
 			"wpn_fps_upg_o_45steel",
 			"wpn_fps_lmg_hk51b_ns_jcomp",
 			"wpn_fps_upg_o_tf90",
-			"wpn_fps_upg_o_poe"
+			"wpn_fps_upg_o_poe",
+			"wpn_fps_sho_sko12_stock"
 		}
 	}
 	self.wpn_fps_ass_akm_gold_npc = deep_clone(self.wpn_fps_ass_akm_gold)
@@ -6311,7 +6314,8 @@ function WeaponFactoryTweakData:_init_akmsu()
 			"wpn_fps_lmg_hk51b_ns_jcomp",
 			"wpn_fps_upg_o_tf90",
 			"wpn_fps_upg_o_poe",
-			"wpn_fps_upg_ns_pis_putnik"
+			"wpn_fps_upg_ns_pis_putnik",
+			"wpn_fps_sho_sko12_stock"
 		}
 	}
 	self.wpn_fps_smg_akmsu_npc = deep_clone(self.wpn_fps_smg_akmsu)
@@ -6577,7 +6581,8 @@ function WeaponFactoryTweakData:_init_saiga()
 			"wpn_fps_upg_o_uh",
 			"wpn_fps_upg_o_fc1",
 			"wpn_fps_upg_o_tf90",
-			"wpn_fps_upg_o_poe"
+			"wpn_fps_upg_o_poe",
+			"wpn_fps_sho_sko12_stock"
 		}
 	}
 	self.wpn_fps_shot_saiga_npc = deep_clone(self.wpn_fps_shot_saiga)
@@ -13786,7 +13791,8 @@ function WeaponFactoryTweakData:_init_s552()
 			"wpn_fps_upg_o_45steel",
 			"wpn_fps_lmg_hk51b_ns_jcomp",
 			"wpn_fps_upg_o_tf90",
-			"wpn_fps_upg_o_poe"
+			"wpn_fps_upg_o_poe",
+			"wpn_fps_sho_sko12_stock"
 		}
 	}
 	self.wpn_fps_ass_s552_npc = deep_clone(self.wpn_fps_ass_s552)
@@ -15860,7 +15866,8 @@ function WeaponFactoryTweakData:_init_m249()
 			"wpn_fps_upg_fl_ass_utg",
 			"wpn_fps_snp_tti_s_vltor",
 			"wpn_fps_upg_ns_ass_smg_v6",
-			"wpn_fps_lmg_hk51b_ns_jcomp"
+			"wpn_fps_lmg_hk51b_ns_jcomp",
+			"wpn_fps_sho_sko12_stock"
 		}
 	}
 	self.wpn_fps_lmg_m249_npc = deep_clone(self.wpn_fps_lmg_m249)
@@ -16045,7 +16052,8 @@ function WeaponFactoryTweakData:_init_rpk()
 			"wpn_fps_upg_fl_ass_utg",
 			"wpn_fps_snp_tti_s_vltor",
 			"wpn_fps_upg_ns_ass_smg_v6",
-			"wpn_fps_lmg_hk51b_ns_jcomp"
+			"wpn_fps_lmg_hk51b_ns_jcomp",
+			"wpn_fps_sho_sko12_stock"
 		}
 	}
 	self.wpn_fps_lmg_rpk_npc = deep_clone(self.wpn_fps_lmg_rpk)
@@ -21630,7 +21638,7 @@ function WeaponFactoryTweakData:create_ammunition()
 			armor_piercing_add = 1,
 			muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_rip",
 			damage_far_mul = 1,
-			damage_near_mul = 3,
+			damage_near_mul = 1,
 			bullet_class = "PoisonBulletBase",
 			dot_data = {
 				type = "poison",
@@ -21638,6 +21646,7 @@ function WeaponFactoryTweakData:create_ammunition()
 					hurt_animation_chance = 1,
 					dot_damage = 12,
 					dot_length = 5,
+					use_weapon_damage_falloff = true,
 					dot_tick_period = 0.5
 				}
 			}
@@ -23923,7 +23932,8 @@ function WeaponFactoryTweakData:_init_sterling()
 			"wpn_fps_upg_ass_ns_surefire",
 			"wpn_fps_upg_ass_ns_battle",
 			"wpn_fps_upg_ns_ass_smg_v6",
-			"wpn_fps_lmg_hk51b_ns_jcomp"
+			"wpn_fps_lmg_hk51b_ns_jcomp",
+			"wpn_fps_upg_ns_pis_putnik"
 		}
 	}
 	self.parts.wpn_fps_smg_sterling_body_standard = {
@@ -28227,7 +28237,8 @@ function WeaponFactoryTweakData:_init_cobray()
 			"wpn_fps_lmg_hk51b_ns_jcomp",
 			"wpn_fps_upg_o_tf90",
 			"wpn_fps_upg_o_poe",
-			"wpn_fps_upg_ns_pis_putnik"
+			"wpn_fps_upg_ns_pis_putnik",
+			"wpn_fps_sho_sko12_stock"
 		}
 	}
 	self.wpn_fps_smg_cobray_npc = deep_clone(self.wpn_fps_smg_cobray)
@@ -32143,7 +32154,8 @@ function WeaponFactoryTweakData:_init_polymer()
 			"wpn_fps_lmg_hk51b_ns_jcomp",
 			"wpn_fps_upg_o_tf90",
 			"wpn_fps_upg_o_poe",
-			"wpn_fps_upg_ns_pis_putnik"
+			"wpn_fps_upg_ns_pis_putnik",
+			"wpn_fps_sho_sko12_stock"
 		}
 	}
 	self.wpn_fps_smg_polymer_npc = deep_clone(self.wpn_fps_smg_polymer)
@@ -39389,7 +39401,6 @@ function WeaponFactoryTweakData:_init_tecci()
 			"wpn_fps_lmg_hk51b_ns_jcomp",
 			"wpn_fps_upg_o_tf90",
 			"wpn_fps_upg_o_poe",
-			"wpn_fps_sho_sko12_body_grip",
 			"wpn_fps_sho_sko12_stock"
 		}
 	}
@@ -42459,8 +42470,7 @@ function WeaponFactoryTweakData:_init_contraband()
 			"wpn_fps_upg_o_45steel",
 			"wpn_fps_lmg_hk51b_ns_jcomp",
 			"wpn_fps_upg_o_tf90",
-			"wpn_fps_upg_o_poe",
-			"wpn_fps_sho_sko12_body_grip"
+			"wpn_fps_upg_o_poe"
 		}
 	}
 	self.wpn_fps_ass_contraband_npc = deep_clone(self.wpn_fps_ass_contraband)
@@ -43464,7 +43474,8 @@ function WeaponFactoryTweakData:_init_flint()
 			"wpn_fps_upg_o_45steel",
 			"wpn_fps_lmg_hk51b_ns_jcomp",
 			"wpn_fps_upg_o_tf90",
-			"wpn_fps_upg_o_poe"
+			"wpn_fps_upg_o_poe",
+			"wpn_fps_sho_sko12_stock"
 		}
 	}
 	self.wpn_fps_ass_flint_npc = deep_clone(self.wpn_fps_ass_flint)

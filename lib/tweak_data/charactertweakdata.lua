@@ -826,6 +826,7 @@ function CharacterTweakData:_init_marshal_marksman(presets)
 	self.marshal_marksman.speech_prefix_p1 = "l"
 	self.marshal_marksman.speech_prefix_p2 = "n"
 	self.marshal_marksman.speech_prefix_count = 4
+	self.marshal_marksman.priority_shout = "f34"
 	self.marshal_marksman.access = "swat"
 	self.marshal_marksman.no_retreat = true
 	self.marshal_marksman.no_arrest = true

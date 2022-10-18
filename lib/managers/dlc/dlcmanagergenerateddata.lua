@@ -2,6 +2,10 @@ function GenericDLCManager:has_a10th()
 	return self:is_dlc_unlocked("a10th")
 end
 
+function GenericDLCManager:has_a11th()
+	return self:is_dlc_unlocked("a11th")
+end
+
 function GenericDLCManager:has_afp()
 	return self:is_dlc_unlocked("afp")
 end
@@ -356,6 +360,10 @@ end
 
 function WINDLCManager:init_generated()
 	Global.dlc_manager.all_dlc_data.a10th = {
+		app_id = "218620",
+		no_install = true
+	}
+	Global.dlc_manager.all_dlc_data.a11th = {
 		app_id = "218620",
 		no_install = true
 	}

@@ -9954,7 +9954,17 @@ function MenuOptionInitiator:modify_adv_options(node)
 end
 
 function MenuOptionInitiator:modify_accessibility_options(node)
-	local option_value = nil
+	local option_value = "off"
+	local color_blind_hit_direction_item = node:item("toggle_color_blind_hit_direction")
+
+	if color_blind_hit_direction_item then
+		if managers.user:get_setting("color_blind_hit_direction") then
+			option_value = "on"
+		end
+
+		color_blind_hit_direction_item:set_value(option_value)
+	end
+
 	local accessibility_dot_item = node:item("accessibility_dot")
 
 	if accessibility_dot_item then
@@ -9965,7 +9975,7 @@ function MenuOptionInitiator:modify_accessibility_options(node)
 		end
 	end
 
-	local option_value = "off"
+	option_value = "off"
 	local accessibility_dot_size_item = node:item("accessibility_dot_size")
 
 	if accessibility_dot_size_item then
@@ -9985,17 +9995,6 @@ function MenuOptionInitiator:modify_accessibility_options(node)
 		end
 
 		toggle_dot_hide_ads:set_value(option_value)
-	end
-
-	option_value = "off"
-	local color_blind_hit_direction_item = node:item("toggle_color_blind_hit_direction")
-
-	if color_blind_hit_direction_item then
-		if managers.user:get_setting("color_blind_hit_direction") then
-			option_value = "on"
-		end
-
-		color_blind_hit_direction_item:set_value(option_value)
 	end
 
 	return node

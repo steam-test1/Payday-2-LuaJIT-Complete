@@ -1,13 +1,20 @@
 local flashbang_test_offset = Vector3(0, 0, 150)
 local debug_vec1 = Vector3()
 local temp_vec_1 = Vector3()
+local temp_vec_2 = Vector3()
 CoreEnvironmentControllerManager = CoreEnvironmentControllerManager or class()
 
 function CoreEnvironmentControllerManager:init()
 	self._DEFAULT_DOF_DISTANCE = 10
 	self._dof_distance = self._DEFAULT_DOF_DISTANCE
 	self._current_dof_distance = self._dof_distance
-	self._chromatic_enabled = false
+
+	if _G.IS_VR then
+		self._chromatic_enabled = false
+	else
+		self._chromatic_enabled = true
+	end
+
 	self._base_chromatic_amount = 0.15
 	self._base_contrast = 0.1
 	self._hurt_value = 1
@@ -566,7 +573,8 @@ function CoreEnvironmentControllerManager:set_post_composite(t, dt)
 		last_life = math.clamp((hurt_mod - 0.5) * 2, 0, 1)
 	end
 
-	self._lut_modifier_material:set_variable(ids_LUT_settings_b, Vector3(last_life, flash_2 + math.clamp(hit_some_mod * 2, 0, 1) * 0.25 + blur_zone_val * 0.15, 0))
+	mvector3.set_static(temp_vec_2, last_life, math.max(0, flash_2 + math.clamp(hit_some_mod * 2, 0, 1) * 0.25 + blur_zone_val * 0.15), 0)
+	self._lut_modifier_material:set_variable(ids_LUT_settings_b, temp_vec_2)
 	self._lut_modifier_material:set_variable(ids_LUT_contrast, flashbang * 0.5)
 end
 
@@ -834,8 +842,9 @@ function CoreEnvironmentControllerManager:_update_dof(t, dt)
 	end
 end
 
-function CoreEnvironmentControllerManager:set_flashbang(flashbang_pos, line_of_sight, travel_dis, linear_dis, duration)
-	local flash = self:test_line_of_sight(flashbang_pos + flashbang_test_offset, 200, 1000, 3000)
+function CoreEnvironmentControllerManager:set_flashbang(flashbang_pos, line_of_sight, travel_dis, linear_dis, duration, no_offset, no_effect)
+	local pos = no_offset and flashbang_pos or flashbang_pos + flashbang_test_offset
+	local flash = self:test_line_of_sight(pos, 200, 1000, 3000)
 	self._flashbang_duration = duration
 
 	if flash > 0 then
@@ -843,15 +852,18 @@ function CoreEnvironmentControllerManager:set_flashbang(flashbang_pos, line_of_s
 		self._current_flashbang_flash = math.min(self._current_flashbang_flash + flash, 1.5) * self._flashbang_duration
 	end
 
-	World:effect_manager():spawn({
-		effect = Idstring("effects/particles/explosions/explosion_grenade"),
-		position = flashbang_pos,
-		normal = Vector3(0, 0, 1)
-	})
+	if not no_effect then
+		World:effect_manager():spawn({
+			effect = Idstring("effects/particles/explosions/explosion_grenade"),
+			position = flashbang_pos,
+			normal = Vector3(0, 0, 1)
+		})
+	end
 end
 
-function CoreEnvironmentControllerManager:set_concussion_grenade(flashbang_pos, line_of_sight, travel_dis, linear_dis, duration)
-	local concussion = self:test_line_of_sight(flashbang_pos + flashbang_test_offset, 200, 1000, 3000)
+function CoreEnvironmentControllerManager:set_concussion_grenade(flashbang_pos, line_of_sight, travel_dis, linear_dis, duration, no_offset, no_effect)
+	local pos = no_offset and flashbang_pos or flashbang_pos + flashbang_test_offset
+	local concussion = self:test_line_of_sight(pos, 200, 1000, 3000)
 	self._concussion_duration = duration
 
 	if concussion > 0 then
@@ -998,7 +1010,9 @@ function CoreEnvironmentControllerManager:set_base_chromatic_amount(base_chromat
 end
 
 function CoreEnvironmentControllerManager:set_chromatic_enabled(enabled)
-	return
+	if _G.IS_VR then
+		return
+	end
 
 	self._chromatic_enabled = enabled
 

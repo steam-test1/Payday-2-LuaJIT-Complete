@@ -4176,6 +4176,7 @@ function SpecializationTierItem:init(tier_data, tree_panel, tree, tier, x, y, w,
 	self._locked = false
 	self._tree = tree
 	self._tier = tier
+	self._tier_data = tier_data
 	local specialization_descs = tweak_data.upgrades.specialization_descs[tree]
 	specialization_descs = specialization_descs and specialization_descs[tier] or {}
 	local macroes = {
@@ -4186,7 +4187,6 @@ function SpecializationTierItem:init(tier_data, tree_panel, tree, tier, x, y, w,
 		macroes[i] = d
 	end
 
-	self._tier_data = tier_data
 	self._name_string = tier_data.name_id and managers.localization:text(tier_data.name_id) or "NO_NAME_" .. tostring(tree) .. "_" .. tostring(tier)
 	self._desc_string = tier_data.desc_id and managers.localization:text(tier_data.desc_id, macroes) or "NO_DESC_" .. tostring(tree) .. "_" .. tostring(tier)
 

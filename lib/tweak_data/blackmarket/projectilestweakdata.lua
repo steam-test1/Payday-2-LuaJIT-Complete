@@ -628,7 +628,7 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 		throwable = true,
 		animation = "throw_grenade_com",
 		anim_global_param = "projectile_frag_com",
-		no_shouting = true,
+		no_shouting = false,
 		locks = {
 			achievement = "pxp1_1"
 		}

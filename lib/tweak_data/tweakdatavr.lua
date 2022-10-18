@@ -3216,7 +3216,7 @@ function TweakDataVR:init(tweak_data)
 			start = {
 				{
 					time = 0,
-					sound = "wp_packrat_mag_throw"
+					sound = "wp_holt_mag_throw"
 				},
 				{
 					drop_mag = true,
@@ -3228,7 +3228,7 @@ function TweakDataVR:init(tweak_data)
 			finish = {
 				{
 					time = 0,
-					sound = "wp_packrat_mag_in",
+					sound = "wp_holt_mag_in",
 					visible = true,
 					pos = Vector3(0, -6, -20)
 				},
@@ -3242,7 +3242,7 @@ function TweakDataVR:init(tweak_data)
 				},
 				{
 					time = 0.6,
-					sound = "wp_packrat_slide_release",
+					sound = "wp_holt_slide_release",
 					pos = Vector3()
 				}
 			}
@@ -7308,7 +7308,7 @@ function TweakDataVR:init(tweak_data)
 			start = {
 				{
 					time = 0,
-					sound = "wp_packrat_mag_throw"
+					sound = "wp_holt_mag_throw"
 				},
 				{
 					drop_mag = true,
@@ -7320,7 +7320,7 @@ function TweakDataVR:init(tweak_data)
 			finish = {
 				{
 					time = 0,
-					sound = "wp_packrat_mag_in",
+					sound = "wp_holt_mag_in",
 					visible = true,
 					pos = Vector3(0, -6, -20)
 				},
@@ -7334,7 +7334,7 @@ function TweakDataVR:init(tweak_data)
 				},
 				{
 					time = 0.6,
-					sound = "wp_packrat_slide_release",
+					sound = "wp_holt_slide_release",
 					pos = Vector3()
 				}
 			}
