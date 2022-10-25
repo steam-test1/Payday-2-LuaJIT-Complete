@@ -2264,6 +2264,21 @@ function WINDLCManager:init()
 					no_install = true,
 					entitlement_id = "0160eece867b4b108192e511f84c237d",
 					external = true
+				},
+				trt_railhat = {
+					no_install = true,
+					entitlement_id = "8a639d555e414f6d96c89daf15412252",
+					external = true
+				},
+				trt_railwork = {
+					no_install = true,
+					entitlement_id = "caf6162cf483441493bba569e61ed2c5",
+					external = true
+				},
+				trt_railroad = {
+					no_install = true,
+					entitlement_id = "856324f5178b4cb79670a6fb92cf904c",
+					external = true
 				}
 			},
 			entitlements = {}
@@ -2278,6 +2293,7 @@ end
 
 function WINDLCManager:_init_promoted_dlc_list()
 	self._promoted_dlc_list = {
+		"trai",
 		"pxp2",
 		"tma1",
 		"txt2",

@@ -114,6 +114,7 @@ function CharacterTweakData:init(tweak_data)
 	self:_init_escort_sand(presets)
 	self:_init_civilian_no_penalty(presets)
 	self:_init_marshal_marksman(presets)
+	self:_init_marshal_shield(presets)
 	self:_init_ranchmanager(presets)
 
 	self._prefix_data = nil
@@ -835,6 +836,315 @@ function CharacterTweakData:_init_marshal_marksman(presets)
 	self.marshal_marksman.rescue_hostages = false
 
 	table.insert(self._enemy_list, "marshal_marksman")
+end
+
+function CharacterTweakData:_init_marshal_shield(presets)
+	self.marshal_shield = deep_clone(presets.base)
+	self.marshal_shield.tags = {
+		"law",
+		"shield"
+	}
+	self.marshal_shield.experience = {}
+	self.marshal_shield.weapon = deep_clone(presets.weapon.normal)
+	self.marshal_shield.detection = presets.detection.normal
+	self.marshal_shield.HEALTH_INIT = 16
+	self.marshal_shield.headshot_dmg_mul = 2
+	self.marshal_shield.allowed_stances = {
+		cbt = true
+	}
+	self.marshal_shield.allowed_poses = {
+		crouch = true
+	}
+	self.marshal_shield.always_face_enemy = true
+	self.marshal_shield.move_speed = presets.move_speed.very_fast
+	self.marshal_shield.no_run_start = true
+	self.marshal_shield.no_run_stop = true
+	self.marshal_shield.no_retreat = true
+	self.marshal_shield.no_arrest = true
+	self.marshal_shield.surrender = nil
+	self.marshal_shield.ecm_vulnerability = 0
+	self.marshal_shield.ecm_hurts = {
+		ears = {
+			max_duration = 0,
+			min_duration = 0
+		}
+	}
+	self.marshal_shield.rescue_hostages = false
+	self.marshal_shield.deathguard = false
+	self.marshal_shield.no_equip_anim = true
+	self.marshal_shield.wall_fwd_offset = 100
+	self.marshal_shield.damage.explosion_damage_mul = 0.8
+	self.marshal_shield.calls_in = nil
+	self.marshal_shield.ignore_medic_revive_animation = true
+	self.marshal_shield.shooting_death = false
+	self.marshal_shield.damage.hurt_severity = presets.hurt_severities.no_hurts
+	self.marshal_shield.damage.shield_knocked = false
+	self.marshal_shield.immune_to_concussion = true
+	self.marshal_shield.damage.immune_to_knockback = true
+	self.marshal_shield.immune_to_knock_down = true
+	self.marshal_shield.use_animation_on_fire_damage = false
+	self.marshal_shield.flammable = true
+	self.marshal_shield.weapon.is_pistol = {
+		aim_delay = {
+			0,
+			0.2
+		},
+		focus_delay = 2,
+		focus_dis = 250,
+		spread = 60,
+		miss_dis = 15,
+		RELOAD_SPEED = 1,
+		melee_speed = nil,
+		melee_dmg = nil,
+		melee_retry_delay = nil,
+		range = {
+			optimal = 900,
+			far = 3000,
+			close = 500
+		},
+		FALLOFF = {
+			{
+				dmg_mul = 4,
+				r = 0,
+				acc = {
+					0.5,
+					0.9
+				},
+				recoil = {
+					0.25,
+					0.55
+				},
+				mode = {
+					0,
+					0,
+					1,
+					0
+				}
+			},
+			{
+				dmg_mul = 3,
+				r = 700,
+				acc = {
+					0.4,
+					0.6
+				},
+				recoil = {
+					0.35,
+					0.45
+				},
+				mode = {
+					0,
+					1,
+					0,
+					0
+				}
+			},
+			{
+				dmg_mul = 2.5,
+				r = 1000,
+				acc = {
+					0.3,
+					0.5
+				},
+				recoil = {
+					0.35,
+					0.55
+				},
+				mode = {
+					1,
+					0,
+					0,
+					0
+				}
+			},
+			{
+				dmg_mul = 1.25,
+				r = 2000,
+				acc = {
+					0.2,
+					0.4
+				},
+				recoil = {
+					0.35,
+					0.75
+				},
+				mode = {
+					1,
+					0,
+					0,
+					0
+				}
+			},
+			{
+				dmg_mul = 1,
+				r = 3000,
+				acc = {
+					0,
+					0.25
+				},
+				recoil = {
+					0.35,
+					1.5
+				},
+				mode = {
+					1,
+					0,
+					0,
+					0
+				}
+			}
+		}
+	}
+	self.marshal_shield.weapon_voice = "3"
+	self.marshal_shield.experience.cable_tie = "tie_swat"
+	self.marshal_shield.speech_prefix_p1 = "l"
+	self.marshal_shield.speech_prefix_p2 = self._speech_prefix_p2
+	self.marshal_shield.speech_prefix_count = 4
+	self.marshal_shield.priority_shout = "f31"
+	self.marshal_shield.access = "shield"
+	self.marshal_shield.chatter = presets.enemy_chatter.shield
+	self.marshal_shield.announce_incomming = "incomming_shield"
+	self.marshal_shield.steal_loot = nil
+
+	table.insert(self._enemy_list, "marshal_shield")
+
+	self.marshal_shield_break = deep_clone(self.marshal_shield)
+	self.marshal_shield_break.tags = {
+		"law"
+	}
+	self.marshal_shield_break.HEALTH_INIT = 64
+	self.marshal_shield_break.allowed_stances = nil
+	self.marshal_shield_break.allowed_poses = nil
+	self.marshal_shield_break.no_equip_anim = nil
+	self.marshal_shield_break.no_run_start = nil
+	self.marshal_shield_break.no_run_stop = nil
+	self.marshal_shield_break.always_face_enemy = nil
+	self.marshal_shield_break.wall_fwd_offset = nil
+	self.marshal_shield_break.priority_shout = nil
+	self.marshal_shield_break.access = "swat"
+	self.marshal_shield_break.chatter = presets.enemy_chatter.swat
+	self.marshal_shield_break.announce_incomming = nil
+	self.marshal_shield_break.damage.hurt_severity = presets.hurt_severities.base
+	self.marshal_shield_break.damage.explosion_damage_mul = 1
+	self.marshal_shield_break.use_animation_on_fire_damage = nil
+	self.marshal_shield_break.damage.shield_knocked = nil
+	self.marshal_shield_break.modify_health_on_tweak_change = true
+	self.marshal_shield_break.weapon.is_shotgun_mag = {
+		aim_delay = {
+			0.1,
+			0.1
+		},
+		focus_delay = 4,
+		focus_dis = 200,
+		spread = 20,
+		miss_dis = 40,
+		RELOAD_SPEED = 1,
+		melee_speed = 1,
+		melee_dmg = 2,
+		melee_retry_delay = {
+			1,
+			2
+		},
+		range = {
+			optimal = 400,
+			far = 2000,
+			close = 200
+		},
+		FALLOFF = {
+			{
+				dmg_mul = 6,
+				r = 0,
+				acc = {
+					0.7,
+					0.9
+				},
+				recoil = {
+					0.25,
+					0.45
+				},
+				mode = {
+					0,
+					1,
+					2,
+					0
+				}
+			},
+			{
+				dmg_mul = 5.25,
+				r = 700,
+				acc = {
+					0.7,
+					0.8
+				},
+				recoil = {
+					0.35,
+					0.55
+				},
+				mode = {
+					1,
+					2,
+					1,
+					0
+				}
+			},
+			{
+				dmg_mul = 4.5,
+				r = 1000,
+				acc = {
+					0.4,
+					0.7
+				},
+				recoil = {
+					0.35,
+					0.55
+				},
+				mode = {
+					1,
+					0,
+					0,
+					0
+				}
+			},
+			{
+				dmg_mul = 2,
+				r = 2000,
+				acc = {
+					0.3,
+					0.5
+				},
+				recoil = {
+					0.45,
+					1
+				},
+				mode = {
+					1,
+					0,
+					0,
+					0
+				}
+			},
+			{
+				dmg_mul = 1.5,
+				r = 3000,
+				acc = {
+					0.2,
+					0.3
+				},
+				recoil = {
+					0.35,
+					1.5
+				},
+				mode = {
+					1,
+					0,
+					0,
+					0
+				}
+			}
+		}
+	}
+
+	table.insert(self._enemy_list, "marshal_shield_break")
 end
 
 function CharacterTweakData:_init_gangster(presets)
@@ -11059,7 +11369,9 @@ function CharacterTweakData:_create_table_structure()
 		"heavy_zeal_sniper",
 		"smoke",
 		"flamethrower",
-		"dmr"
+		"dmr",
+		"deagle",
+		"sko12_conc"
 	}
 	self.weap_unit_names = {
 		Idstring("units/payday2/weapons/wpn_npc_beretta92/wpn_npc_beretta92"),
@@ -11094,7 +11406,9 @@ function CharacterTweakData:_create_table_structure()
 		Idstring("units/pd2_dlc_drm/weapons/wpn_npc_heavy_zeal_sniper/wpn_npc_heavy_zeal_sniper"),
 		Idstring("units/pd2_dlc_uno/weapons/wpn_npc_smoke/wpn_npc_smoke"),
 		Idstring("units/pd2_dlc_pent/weapons/wpn_npc_flamethrower/wpn_npc_flamethrower"),
-		Idstring("units/pd2_dlc_usm1/weapons/wpn_npc_dmr/wpn_npc_dmr")
+		Idstring("units/pd2_dlc_usm1/weapons/wpn_npc_dmr/wpn_npc_dmr"),
+		Idstring("units/pd2_dlc_usm2/weapons/wpn_npc_deagle/wpn_npc_deagle"),
+		Idstring("units/pd2_dlc_usm2/weapons/wpn_npc_sko12_conc/wpn_npc_sko12_conc")
 	}
 end
 
@@ -11157,6 +11471,18 @@ function CharacterTweakData:_set_normal()
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[4].dmg_mul = 0.7
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[5].dmg_mul = 0.5
 	self.marshal_marksman.HEALTH_INIT = 12
+	self.marshal_shield.HEALTH_INIT = 8
+	self.marshal_shield.weapon.is_pistol.FALLOFF[1].dmg_mul = 1
+	self.marshal_shield.weapon.is_pistol.FALLOFF[2].dmg_mul = 0.5
+	self.marshal_shield.weapon.is_pistol.FALLOFF[3].dmg_mul = 0.3
+	self.marshal_shield.weapon.is_pistol.FALLOFF[4].dmg_mul = 0.25
+	self.marshal_shield.weapon.is_pistol.FALLOFF[5].dmg_mul = 0.1
+	self.marshal_shield_break.HEALTH_INIT = 32
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[1].dmg_mul = 1
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[2].dmg_mul = 0.75
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[3].dmg_mul = 0.5
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[4].dmg_mul = 0.25
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[5].dmg_mul = 0.1
 	self.shield.melee_weapon_dmg_multiplier = 0.1
 	self.swat.melee_weapon_dmg_multiplier = 0.1
 	self.cop.melee_weapon_dmg_multiplier = 0.1
@@ -12093,6 +12419,16 @@ function CharacterTweakData:_set_hard()
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[4].dmg_mul = 1.35
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[5].dmg_mul = 1
 	self.marshal_marksman.HEALTH_INIT = 18
+	self.marshal_shield.weapon.is_pistol.FALLOFF[1].dmg_mul = 2
+	self.marshal_shield.weapon.is_pistol.FALLOFF[2].dmg_mul = 1
+	self.marshal_shield.weapon.is_pistol.FALLOFF[3].dmg_mul = 0.5
+	self.marshal_shield.weapon.is_pistol.FALLOFF[4].dmg_mul = 0.25
+	self.marshal_shield.weapon.is_pistol.FALLOFF[5].dmg_mul = 0.1
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[1].dmg_mul = 3
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[2].dmg_mul = 2
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[3].dmg_mul = 1
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[4].dmg_mul = 0.5
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[5].dmg_mul = 0.25
 	self.shield.melee_weapon_dmg_multiplier = 0.1
 	self.swat.melee_weapon_dmg_multiplier = 0.1
 	self.cop.melee_weapon_dmg_multiplier = 0.1
@@ -12729,6 +13065,16 @@ function CharacterTweakData:_set_overkill()
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[4].dmg_mul = 2
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[5].dmg_mul = 1.5
 	self.marshal_marksman.HEALTH_INIT = 36
+	self.marshal_shield.weapon.is_pistol.FALLOFF[1].dmg_mul = 3
+	self.marshal_shield.weapon.is_pistol.FALLOFF[2].dmg_mul = 2
+	self.marshal_shield.weapon.is_pistol.FALLOFF[3].dmg_mul = 1.5
+	self.marshal_shield.weapon.is_pistol.FALLOFF[4].dmg_mul = 1
+	self.marshal_shield.weapon.is_pistol.FALLOFF[5].dmg_mul = 0.5
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[1].dmg_mul = 5
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[2].dmg_mul = 4.25
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[3].dmg_mul = 3.5
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[4].dmg_mul = 1
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[5].dmg_mul = 0.5
 	self.hector_boss.weapon.is_shotgun_mag.FALLOFF = {
 		{
 			dmg_mul = 1.1,
@@ -13554,6 +13900,16 @@ function CharacterTweakData:_set_easy_wish()
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[4].dmg_mul = 5
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[5].dmg_mul = 3.75
 	self.marshal_marksman.HEALTH_INIT = 90
+	self.marshal_shield.weapon.is_pistol.FALLOFF[1].dmg_mul = 5
+	self.marshal_shield.weapon.is_pistol.FALLOFF[2].dmg_mul = 4
+	self.marshal_shield.weapon.is_pistol.FALLOFF[3].dmg_mul = 3
+	self.marshal_shield.weapon.is_pistol.FALLOFF[4].dmg_mul = 2
+	self.marshal_shield.weapon.is_pistol.FALLOFF[5].dmg_mul = 1.25
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[1].dmg_mul = 7
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[2].dmg_mul = 6.5
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[3].dmg_mul = 5.5
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[4].dmg_mul = 2
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[5].dmg_mul = 1.5
 	self.hector_boss.HEALTH_INIT = 900
 	self.mobster_boss.HEALTH_INIT = 900
 	self.biker_boss.HEALTH_INIT = 3000
@@ -14118,6 +14474,16 @@ function CharacterTweakData:_set_overkill_290()
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[4].dmg_mul = 10
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[5].dmg_mul = 7.5
 	self.marshal_marksman.HEALTH_INIT = 180
+	self.marshal_shield.weapon.is_pistol.FALLOFF[1].dmg_mul = 6
+	self.marshal_shield.weapon.is_pistol.FALLOFF[2].dmg_mul = 5
+	self.marshal_shield.weapon.is_pistol.FALLOFF[3].dmg_mul = 4
+	self.marshal_shield.weapon.is_pistol.FALLOFF[4].dmg_mul = 3
+	self.marshal_shield.weapon.is_pistol.FALLOFF[5].dmg_mul = 2
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[1].dmg_mul = 8
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[2].dmg_mul = 7.5
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[3].dmg_mul = 6.5
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[4].dmg_mul = 3
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[5].dmg_mul = 2
 	self.tank_mini.HEALTH_INIT = 2400
 	self.hector_boss.weapon.is_shotgun_mag.FALLOFF = {
 		{
@@ -15337,6 +15703,16 @@ function CharacterTweakData:_set_sm_wish()
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[4].dmg_mul = 14
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[5].dmg_mul = 10.5
 	self.marshal_marksman.HEALTH_INIT = 248
+	self.marshal_shield.weapon.is_pistol.FALLOFF[1].dmg_mul = 8
+	self.marshal_shield.weapon.is_pistol.FALLOFF[2].dmg_mul = 7
+	self.marshal_shield.weapon.is_pistol.FALLOFF[3].dmg_mul = 6
+	self.marshal_shield.weapon.is_pistol.FALLOFF[4].dmg_mul = 4
+	self.marshal_shield.weapon.is_pistol.FALLOFF[5].dmg_mul = 3
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[1].dmg_mul = 10
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[2].dmg_mul = 9
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[3].dmg_mul = 8
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[4].dmg_mul = 4
+	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[5].dmg_mul = 2.5
 	self.tank.HEALTH_INIT = 2400
 	self.tank_mini.HEALTH_INIT = 4800
 	self.tank_medic.HEALTH_INIT = 2400
@@ -16593,6 +16969,8 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 	self.triad_boss.HEALTH_INIT = self.triad_boss.HEALTH_INIT * hp_mul
 	self.triad_boss_no_armor.HEALTH_INIT = self.triad_boss_no_armor.HEALTH_INIT * hp_mul
 	self.marshal_marksman.HEALTH_INIT = self.marshal_marksman.HEALTH_INIT * hp_mul
+	self.marshal_shield.HEALTH_INIT = self.marshal_shield.HEALTH_INIT * hp_mul
+	self.marshal_shield_break.HEALTH_INIT = self.marshal_shield_break.HEALTH_INIT * hp_mul
 
 	if self.security.headshot_dmg_mul then
 		self.security.headshot_dmg_mul = self.security.headshot_dmg_mul * hs_mul
@@ -16728,6 +17106,14 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 
 	if self.marshal_marksman.headshot_dmg_mul then
 		self.marshal_marksman.headshot_dmg_mul = self.marshal_marksman.headshot_dmg_mul * hs_mul
+	end
+
+	if self.marshal_shield.headshot_dmg_mul then
+		self.marshal_shield.headshot_dmg_mul = self.marshal_shield.headshot_dmg_mul * hs_mul
+	end
+
+	if self.marshal_shield_break.headshot_dmg_mul then
+		self.marshal_shield_break.headshot_dmg_mul = self.marshal_shield_break.headshot_dmg_mul * hs_mul
 	end
 end
 
@@ -17572,6 +17958,12 @@ function CharacterTweakData:character_map()
 			list = {
 				"ene_male_marshal_marksman_1",
 				"ene_male_marshal_marksman_2"
+			}
+		},
+		usm2 = {
+			path = "units/pd2_dlc_usm2/characters/",
+			list = {
+				"ene_male_marshal_shield_1"
 			}
 		},
 		ranc = {

@@ -994,6 +994,15 @@ function AchievementsTweakData:init(tweak_data)
 			enemies = {
 				"marshal_marksman"
 			}
+		},
+		trai_11 = {
+			count_in_row = 5,
+			timer = 10,
+			award = "trai_11",
+			level_id = "trai",
+			in_head = true,
+			weapon_type = "revolver",
+			difficulty = overkill_and_above
 		}
 	}
 	self.enemy_melee_hit_achievements = {
@@ -5293,6 +5302,60 @@ function AchievementsTweakData:init(tweak_data)
 			one_down = true,
 			job = "ranc",
 			difficulty = sm_wish_and_above
+		},
+		trai_1 = {
+			award = "trai_1",
+			job = "trai",
+			difficulty = normal_and_above
+		},
+		trai_2 = {
+			award = "trai_2",
+			job = "trai",
+			difficulty = hard_and_above
+		},
+		trai_3 = {
+			award = "trai_3",
+			job = "trai",
+			difficulty = veryhard_and_above
+		},
+		trai_4 = {
+			award = "trai_4",
+			job = "trai",
+			difficulty = overkill_and_above
+		},
+		trai_5 = {
+			award = "trai_5",
+			job = "trai",
+			difficulty = easywish_and_above
+		},
+		trai_6 = {
+			award = "trai_6",
+			job = "trai",
+			difficulty = deathwish_and_above
+		},
+		trai_7 = {
+			award = "trai_7",
+			job = "trai",
+			difficulty = sm_wish_and_above
+		},
+		trai_8 = {
+			award = "trai_8",
+			one_down = true,
+			job = "trai",
+			difficulty = sm_wish_and_above
+		},
+		trai_10 = {
+			loud = true,
+			award = "trai_10",
+			job = "trai",
+			need_full_job = true,
+			difficulty = overkill_and_above,
+			equipped_team = {
+				secondary = "wpn_fps_pis_chinchilla",
+				primary = "wpn_fps_shot_huntsman",
+				num_skills = 0,
+				armor = "level_1"
+			}
 		},
 		uno_1 = {
 			award = "uno_1",

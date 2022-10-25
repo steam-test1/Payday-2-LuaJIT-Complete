@@ -10478,6 +10478,159 @@ function init_auto_generated_achievement_data(tags)
 				tags.contracts.events
 			}
 		},
+		trai_1 = {
+			icon_id = "C_McShay_H_LostInTransit_AllDiffs_D0",
+			ladder = "H_LostInTransit",
+			sort_name = "C_McShay_H_LostInTransit_AllDiffs_D0",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.mcshay
+			}
+		},
+		trai_10 = {
+			additional_id = true,
+			sort_name = "C_McShay_H_LostInTransit_TabulaRail",
+			icon_id = "C_McShay_H_LostInTransit_TabulaRail",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.inventory.weapon,
+				tags.inventory.armor,
+				tags.teamwork.players_1_to_4,
+				tags.contracts.mcshay
+			}
+		},
+		trai_11 = {
+			sort_name = "C_McShay_H_LostInTransit_Billy",
+			icon_id = "C_McShay_H_LostInTransit_Billy",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.tactics.killer,
+				tags.inventory.weapon,
+				tags.contracts.mcshay
+			}
+		},
+		trai_12 = {
+			sort_name = "C_McShay_H_LostInTransit_Victimless",
+			icon_id = "C_McShay_H_LostInTransit_Victimless",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.tactics.stealth,
+				tags.contracts.mcshay
+			}
+		},
+		trai_2 = {
+			icon_id = "C_McShay_H_LostInTransit_AllDiffs_D1",
+			ladder = "H_LostInTransit",
+			sort_name = "C_McShay_H_LostInTransit_AllDiffs_D1",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.hard,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.mcshay
+			}
+		},
+		trai_3 = {
+			icon_id = "C_McShay_H_LostInTransit_AllDiffs_D2",
+			ladder = "H_LostInTransit",
+			sort_name = "C_McShay_H_LostInTransit_AllDiffs_D2",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.very_hard,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.mcshay
+			}
+		},
+		trai_4 = {
+			icon_id = "C_McShay_H_LostInTransit_AllDiffs_D3",
+			ladder = "H_LostInTransit",
+			sort_name = "C_McShay_H_LostInTransit_AllDiffs_D3",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.mcshay
+			}
+		},
+		trai_5 = {
+			icon_id = "C_McShay_H_LostInTransit_AllDiffs_D4",
+			ladder = "H_LostInTransit",
+			sort_name = "C_McShay_H_LostInTransit_AllDiffs_D4",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.mayhem,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.mcshay
+			}
+		},
+		trai_6 = {
+			icon_id = "C_McShay_H_LostInTransit_AllDiffs_D5",
+			ladder = "H_LostInTransit",
+			sort_name = "C_McShay_H_LostInTransit_AllDiffs_D5",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_wish,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.mcshay
+			}
+		},
+		trai_7 = {
+			icon_id = "C_McShay_H_LostInTransit_AllDiffs_D6",
+			ladder = "H_LostInTransit",
+			sort_name = "C_McShay_H_LostInTransit_AllDiffs_D6",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_sentence,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.mcshay
+			}
+		},
+		trai_8 = {
+			icon_id = "C_McShay_H_LostInTransit_AllDiffs_OD_D6",
+			ladder = "H_LostInTransit",
+			sort_name = "C_McShay_H_LostInTransit_AllDiffs_OD_D6",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_sentence,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.mcshay
+			}
+		},
+		trai_9 = {
+			ladder = "TexasTresures",
+			sort_name = "C_McShay_H_LostInTransit_TexasTreasuresTwo",
+			icon_id = "C_McShay_H_LostInTransit_TexasTreasuresTwo",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.mcshay
+			}
+		},
 		glace_1 = {
 			need_unlock_icons = true,
 			icon_id = "C_Classics_H_GreenBridge_AllDiffs_D0",

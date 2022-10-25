@@ -46,6 +46,7 @@ function CopBase:init(unit)
 	}
 	self._is_in_original_material = true
 	self._buffs = {}
+	self._original_tweak_table = self._tweak_table
 end
 
 function CopBase:post_init()
@@ -64,6 +65,13 @@ function CopBase:post_init()
 
 	self:_chk_spawn_gear()
 	self:enable_leg_arm_hitbox()
+
+	if self._post_init_change_tweak_name then
+		local new_tweak_name = self._post_init_change_tweak_name
+		self._post_init_change_tweak_name = nil
+
+		self:change_char_tweak(new_tweak_name)
+	end
 end
 
 function CopBase:enable_leg_arm_hitbox()
@@ -109,15 +117,33 @@ function CopBase:has_any_tag(tags)
 	return my_tags and table.contains_any(my_tags, tags) or false
 end
 
-function CopBase:default_weapon_name()
-	local default_weapon_id = self._default_weapon_id
+function CopBase:default_weapon_name(selection_name)
 	local weap_ids = tweak_data.character.weap_ids
+	local weap_unit_names = tweak_data.character.weap_unit_names
+
+	if selection_name and self._default_weapons then
+		local weapon_id = self._default_weapons[selection_name]
+
+		if weapon_id then
+			for i_weap_id, weap_id in ipairs(weap_ids) do
+				if weapon_id == weap_id then
+					return weap_unit_names[i_weap_id]
+				end
+			end
+
+			Application:error("[CopBase:default_weapon_name] No weapon unit name in CharacterTweakData with id '" .. weapon_id .. "' with selection '" .. selection_name .. "' for unit:", self._unit)
+		end
+	end
+
+	local default_weapon_id = self._default_weapon_id
 
 	for i_weap_id, weap_id in ipairs(weap_ids) do
 		if default_weapon_id == weap_id then
-			return tweak_data.character.weap_unit_names[i_weap_id]
+			return weap_unit_names[i_weap_id]
 		end
 	end
+
+	Application:error("[CopBase:default_weapon_name] No weapon unit name in CharacterTweakData with default weapon id '" .. default_weapon_id .. "' for unit:", self._unit)
 end
 
 function CopBase:visibility_state()
@@ -241,6 +267,10 @@ function CopBase:save(save_data)
 		my_save_data.buffs = buffs
 	end
 
+	if self._tweak_table ~= self._original_tweak_table then
+		my_save_data.tweak_name_swap = self._tweak_table
+	end
+
 	if next(my_save_data) then
 		save_data.base = my_save_data
 	end
@@ -261,6 +291,10 @@ function CopBase:load(load_data)
 
 	if my_load_data.buffs then
 		self._buffs = my_load_data.buffs
+	end
+
+	if my_load_data.tweak_name_swap and my_load_data.tweak_name_swap ~= self._tweak_table then
+		self._post_init_change_tweak_name = my_load_data.tweak_name_swap
 	end
 end
 
@@ -321,6 +355,8 @@ function CopBase:melee_weapon()
 end
 
 function CopBase:pre_destroy(unit)
+	self._tweak_data_listener_holder = nil
+
 	if alive(self._headwear_unit) then
 		self._headwear_unit:set_slot(0)
 
@@ -406,4 +442,48 @@ function CopBase:get_total_buff(name)
 	end
 
 	return 0
+end
+
+function CopBase:add_tweak_data_changed_listener(key, clbk)
+	if not self._tweak_data_listener_holder then
+		self._tweak_data_listener_holder = ListenerHolder:new()
+	end
+
+	self._tweak_data_listener_holder:add(key, clbk)
+end
+
+function CopBase:remove_tweak_data_changed_listener(key)
+	if not self._tweak_data_listener_holder then
+		return
+	end
+
+	self._tweak_data_listener_holder:remove(key)
+
+	if self._tweak_data_listener_holder:is_empty() then
+		self._tweak_data_listener_holder = nil
+	end
+end
+
+function CopBase:_chk_call_tweak_data_changed_listeners(...)
+	if self._tweak_data_listener_holder then
+		self._tweak_data_listener_holder:call(...)
+	end
+end
+
+function CopBase:change_char_tweak(new_tweak_name)
+	local new_tweak_data = tweak_data.character[new_tweak_name]
+
+	if not new_tweak_data then
+		return
+	end
+
+	if new_tweak_name == self._tweak_table then
+		return
+	end
+
+	local old_tweak_data = self._char_tweak
+	self._tweak_table = new_tweak_name
+	self._char_tweak = new_tweak_data
+
+	self:_chk_call_tweak_data_changed_listeners(old_tweak_data, new_tweak_data)
 end

@@ -63,11 +63,16 @@ function CopInventory:_chk_spawn_shield(weapon_unit)
 	if self._shield_unit_name and not alive(self._shield_unit) then
 		local align_name = self._shield_align_name or Idstring("a_weapon_left_front")
 		local align_obj = self._unit:get_object(align_name)
-		self._shield_unit = World:spawn_unit(Idstring(self._shield_unit_name), align_obj:position(), align_obj:rotation())
+		local shield_unit = World:spawn_unit(Idstring(self._shield_unit_name), align_obj:position(), align_obj:rotation())
+		self._shield_unit = shield_unit
 
-		self._unit:link(align_name, self._shield_unit, self._shield_unit:orientation_object():name())
-		self._shield_unit:set_enabled(false)
-		self:add_ignore_unit(self._shield_unit)
+		self._unit:link(align_name, shield_unit, shield_unit:orientation_object():name())
+		shield_unit:set_enabled(false)
+		self:add_ignore_unit(shield_unit)
+
+		if shield_unit:id() ~= -1 and Network:is_server() then
+			managers.network:session():send_to_peers_synched("sync_shield_unit_link", self._unit, shield_unit)
+		end
 	end
 end
 
@@ -111,21 +116,55 @@ function CopInventory:drop_weapon()
 	end
 end
 
-function CopInventory:drop_shield()
-	local shield_unit = self._shield_unit
-	self._shield_unit = nil
+function CopInventory:on_shield_break(attacker_unit)
+	if not alive(self._shield_unit) then
+		return
+	end
 
-	if alive(shield_unit) then
-		shield_unit:unlink()
+	local shield_pos = self._shield_unit:oobb():center()
+	local shield_fwd_inv = -self._shield_unit:rotation():y()
 
-		local u_dmg = shield_unit:damage()
+	PlayerInventory.on_shield_break(self)
 
-		if u_dmg and u_dmg:has_sequence("enable_body") then
-			u_dmg:run_sequence_simple("enable_body")
+	local switch_data = self._shield_break_data
+
+	if not switch_data then
+		return
+	end
+
+	if switch_data.tweak_table_name_switch and self._unit:base() and self._unit:base().change_char_tweak then
+		self._unit:base():change_char_tweak(switch_data.tweak_table_name_switch)
+	end
+
+	if switch_data.anim_global_switch and self._unit:movement() and self._unit:movement().set_new_anim_global then
+		self._unit:movement():set_new_anim_global(switch_data.anim_global_switch)
+	end
+
+	if switch_data.hurt_data and self._unit:character_damage() and self._unit:character_damage().force_hurt then
+		attacker_unit = alive(attacker_unit) and attacker_unit or nil
+		local has_authority = false
+		has_authority = (not Network:is_server() or attacker_unit and attacker_unit:base() and not attacker_unit:base().is_husk_player and false) and attacker_unit and attacker_unit:base() and attacker_unit:base().is_local_player
+
+		if has_authority then
+			local attack_data = {
+				variant = "bullet",
+				type = switch_data.hurt_data.hurt_type or "hurt",
+				position = shield_pos,
+				direction = shield_fwd_inv,
+				col_ray = {
+					position = shield_pos,
+					ray = shield_fwd_inv
+				}
+			}
+
+			self._unit:character_damage():force_hurt(attack_data)
 		end
+	end
 
-		managers.enemy:register_shield(shield_unit)
-		self:remove_ignore_unit(shield_unit)
+	if switch_data.weapon_switch_selection and Network:is_server() and self:equipped_selection() ~= switch_data.weapon_switch_selection and self:is_selection_available(switch_data.weapon_switch_selection) then
+		self:equip_selection(switch_data.weapon_switch_selection, true)
+		self:set_weapon_enabled(true)
+		self:set_visibility_state(true)
 	end
 end
 
@@ -148,10 +187,4 @@ end
 
 function CopInventory:destroy_all_items()
 	CopInventory.super.destroy_all_items(self)
-
-	if alive(self._shield_unit) then
-		self._shield_unit:set_slot(0)
-
-		self._shield_unit = nil
-	end
 end

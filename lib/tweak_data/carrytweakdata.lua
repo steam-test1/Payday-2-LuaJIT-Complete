@@ -1061,6 +1061,15 @@ function CarryTweakData:init(tweak_data)
 		visual_unit_name = "units/pd2_dlc_pda9/props/pda9_pickup_feed_bag/pda9_acc_feed_bag",
 		expire_t = 10
 	}
+	self.trai_printing_plates = {
+		type = "medium",
+		name_id = "hud_carry_printing_plates",
+		bag_value = "money",
+		visual_unit_name = "units/payday2/characters/npc_acc_loot_bag_1/npc_acc_loot_bag_1",
+		AI_carry = {
+			SO_category = "enemies"
+		}
+	}
 end
 
 function CarryTweakData:get_carry_ids()

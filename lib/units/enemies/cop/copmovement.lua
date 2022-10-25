@@ -276,6 +276,8 @@ action_variants.tank_medic.heal = action_variants.medic.heal
 action_variants.tank_mini = action_variants.tank
 action_variants.heavy_swat_sniper = action_variants.heavy_swat
 action_variants.marshal_marksman = action_variants.swat
+action_variants.marshal_shield = clone(action_variants.shield)
+action_variants.marshal_shield_break = action_variants.swat
 action_variants.captain = security_variant
 action_variants.shadow_spooc = security_variant
 action_variants.civilian = {
@@ -365,6 +367,11 @@ function CopMovement:init(unit)
 	self._suppression = {
 		value = 0
 	}
+	self._original_anim_global = self._anim_global
+
+	if unit:base().add_tweak_data_changed_listener then
+		unit:base():add_tweak_data_changed_listener("CopMovementTweakDataChange" .. tostring(unit:key()), callback(self, self, "_clbk_tweak_data_changed"))
+	end
 end
 
 function CopMovement:post_init()
@@ -431,7 +438,18 @@ function CopMovement:post_init()
 	self:add_weapons()
 
 	if self._unit:inventory():is_selection_available(2) then
-		if managers.groupai:state():whisper_mode() or not self._unit:inventory():is_selection_available(1) then
+		if self._unit:inventory():shield_unit() then
+			if self._unit:inventory():is_selection_available(1) then
+				self._unit:inventory():equip_selection(1, true)
+
+				local primary = self._unit:inventory():unit_by_selection(2)
+
+				primary:set_visible(false)
+				primary:set_enabled(false)
+			else
+				self._unit:inventory():equip_selection(2, true)
+			end
+		elseif managers.groupai:state():whisper_mode() or not self._unit:inventory():is_selection_available(1) then
 			self._unit:inventory():equip_selection(2, true)
 		else
 			self._unit:inventory():equip_selection(1, true)
@@ -440,11 +458,10 @@ function CopMovement:post_init()
 		self._unit:inventory():equip_selection(1, true)
 	end
 
-	if self._ext_inventory:equipped_selection() == 2 and managers.groupai:state():whisper_mode() then
+	if not self._unit:inventory():shield_unit() and self._ext_inventory:equipped_selection() == 2 and managers.groupai:state():whisper_mode() then
 		self._ext_inventory:set_weapon_enabled(false)
 	end
 
-	local weap_name = self._ext_base:default_weapon_name(managers.groupai:state():enemy_weapons_hot() and "primary" or "secondary")
 	local fwd = self._m_rot:y()
 	self._action_common_data = {
 		stance = self._stance,
@@ -518,12 +535,28 @@ function CopMovement:set_character_anim_variables()
 
 		if self._tweak_data.allowed_stances.hos then
 			self:_change_stance(2)
+		else
+			self:_change_stance(3)
 		end
 	end
 
 	if self._tweak_data.allowed_poses and not self._tweak_data.allowed_poses.stand then
 		self:play_redirect("crouch")
 	end
+end
+
+function CopMovement:set_new_anim_global(new_global)
+	if self._anim_global then
+		if new_global == self._anim_global then
+			return
+		end
+
+		self._machine:set_global(self._anim_global, 0)
+	end
+
+	self._anim_global = new_global
+
+	self._machine:set_global(new_global, 1)
 end
 
 function CopMovement:nav_tracker()
@@ -2223,6 +2256,10 @@ function CopMovement:save(save_data)
 		end
 	end
 
+	if self._anim_global ~= self._original_anim_global then
+		my_save_data.anim_global = self._anim_global
+	end
+
 	if next(my_save_data) then
 		save_data.movement = my_save_data
 	end
@@ -2243,6 +2280,10 @@ function CopMovement:load(load_data)
 
 	self._allow_fire = my_load_data.allow_fire
 	self._attention = my_load_data.attention
+
+	if my_load_data.anim_global then
+		self._anim_global = my_load_data.anim_global
+	end
 
 	if my_load_data.stance_code then
 		self:_change_stance(my_load_data.stance_code)
@@ -2287,6 +2328,20 @@ function CopMovement:tweak_data_clbk_reload()
 	self._tweak_data = tweak_data.character[self._ext_base._tweak_table]
 	self._action_common_data = self._action_common_data or {}
 	self._action_common_data.char_tweak = self._tweak_data
+end
+
+function CopMovement:_clbk_tweak_data_changed(old_tweak_data, new_tweak_data)
+	self:tweak_data_clbk_reload()
+
+	if old_tweak_data ~= new_tweak_data then
+		self._machine:set_global("female", new_tweak_data.female and 1 or 0)
+
+		self._actions = self._action_variants[self._unit:base()._tweak_table]
+
+		if self._unit:unit_data().has_alarm_pager then
+			self._unit:unit_data().has_alarm_pager = new_tweak_data.has_alarm_pager
+		end
+	end
 end
 
 function CopMovement:_chk_start_queued_action()

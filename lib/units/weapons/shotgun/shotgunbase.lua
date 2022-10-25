@@ -129,6 +129,8 @@ function ShotgunBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoo
 				hit_objects[col_ray.unit:key()] = hit_objects[col_ray.unit:key()] or {}
 
 				table.insert(hit_objects[col_ray.unit:key()], col_ray)
+			elseif col_ray.unit:in_slot(self.shield_mask) then
+				self._bullet_class:on_collision(col_ray, self._unit, user_unit, damage / self._rays)
 			else
 				self._bullet_class:on_collision(col_ray, self._unit, user_unit, damage)
 			end

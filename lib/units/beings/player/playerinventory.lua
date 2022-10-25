@@ -47,6 +47,12 @@ function PlayerInventory:pre_destroy(unit)
 		self._weapon_add_clbk = nil
 	end
 
+	if self._shield_request_clbk_id then
+		managers.enemy:remove_delayed_clbk(self._shield_request_clbk_id)
+
+		self._shield_request_clbk_id = nil
+	end
+
 	self:destroy_all_items()
 	self:_chk_remove_queued_jammer_effects()
 	self:_stop_jammer_effect()
@@ -113,6 +119,19 @@ function PlayerInventory:destroy_all_items()
 		managers.dyn_resource:unload(Idstring("unit"), self._melee_weapon_unit_name, DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 
 		self._melee_weapon_unit_name = nil
+	end
+
+	local shield_unit = self._shield_unit
+	self._shield_unit = nil
+
+	if alive(shield_unit) then
+		shield_unit:unlink()
+
+		if Network:is_server() or shield_unit:id() == -1 then
+			shield_unit:set_slot(0)
+		else
+			shield_unit:set_enabled(false)
+		end
 	end
 end
 
@@ -746,6 +765,14 @@ function PlayerInventory:save(save_data)
 		self[jammer_func](self, my_save_data, self._jammer_data)
 	end
 
+	if alive(self._shield_unit) then
+		if self._shield_unit:id() ~= -1 then
+			my_save_data.needs_shield_link_request = true
+		end
+	elseif self._shield_was_synced then
+		my_save_data.chk_shield_dummy_removal = true
+	end
+
 	if next(my_save_data) then
 		save_data.inventory = my_save_data
 	end
@@ -791,6 +818,33 @@ function PlayerInventory:load(load_data)
 			self._jammer_data.queued_effects = jammer_data.queued_effects
 		end
 	end
+
+	if Network:is_client() then
+		if my_load_data.chk_shield_dummy_removal then
+			self._shield_unit_name = nil
+			local shield_unit = self._shield_unit
+			self._shield_unit = nil
+
+			if alive(shield_unit) and shield_unit:id() == -1 then
+				shield_unit:unlink()
+				shield_unit:set_slot(0)
+			end
+		elseif my_load_data.needs_shield_link_request then
+			self._shield_request_clbk_id = "playerinventory_load_shield_link" .. tostring(self._unit:key())
+
+			managers.enemy:add_delayed_clbk(self._shield_request_clbk_id, callback(self, self, "clbk_shield_link_request"), TimerManager:game():time() + 0.1)
+		end
+	end
+end
+
+function PlayerInventory:clbk_shield_link_request()
+	self._shield_request_clbk_id = nil
+
+	if not alive(self._unit) or self._unit:id() == -1 then
+		return
+	end
+
+	managers.network:session():send_to_host("request_shield_unit_link", self._unit)
 end
 
 function PlayerInventory:_clbk_weapon_add(data)
@@ -999,6 +1053,39 @@ end
 
 function PlayerInventory:anim_clbk_equip_exit(unit)
 	self:set_mask_visibility(true)
+end
+
+function PlayerInventory:shield_unit()
+	return self._shield_unit
+end
+
+function PlayerInventory:drop_shield()
+	local shield_unit = self._shield_unit
+	self._shield_unit = nil
+
+	if alive(shield_unit) then
+		if shield_unit:id() ~= -1 then
+			self._shield_was_synced = true
+		end
+
+		shield_unit:unlink()
+
+		local u_dmg = shield_unit:damage()
+
+		if u_dmg and u_dmg:has_sequence("enable_body") then
+			u_dmg:run_sequence_simple("enable_body")
+		end
+
+		managers.enemy:register_shield(shield_unit)
+		self:remove_ignore_unit(shield_unit)
+	end
+end
+
+function PlayerInventory:from_server_link_shield(shield_unit)
+end
+
+function PlayerInventory:on_shield_break(attacker_unit)
+	self:drop_shield()
 end
 
 function PlayerInventory:set_visibility_state(state)

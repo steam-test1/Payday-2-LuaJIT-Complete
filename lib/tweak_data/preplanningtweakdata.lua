@@ -1929,6 +1929,53 @@ function PrePlanningTweakData:init(tweak_data)
 		post_event = "",
 		prio = 3
 	}
+	self.types.trai_lower_hacktime = {
+		name_id = "menu_pp_asset_trai_lower_hacktime",
+		desc_id = "menu_pp_asset_trai_lower_hacktime_desc",
+		icon = 15,
+		pos_not_important = true,
+		category = "data_hacking",
+		total = 1,
+		cost = tweak_data:get_value("money_manager", "preplaning_thebomb_cost_hacker"),
+		budget_cost = 3,
+		post_event = "preplan_10",
+		prio = 3
+	}
+	self.types.trai_extra_blowtorch = {
+		name_id = "menu_pp_asset_trai_extra_blowtorch",
+		desc_id = "menu_pp_asset_trai_extra_blowtorch_desc",
+		pos_not_important = true,
+		category = "hired_help",
+		icon = 131,
+		total = 1,
+		cost = tweak_data:get_value("money_manager", "preplaning_asset_cost_deaddropbag"),
+		budget_cost = 2,
+		post_event = "",
+		prio = 3
+	}
+	self.types.trai_extra_turret_parts = {
+		name_id = "menu_pp_asset_trai_extra_turret_parts",
+		desc_id = "menu_pp_asset_trai_extra_turret_parts_desc",
+		pos_not_important = true,
+		category = "hired_help",
+		icon = 75,
+		total = 1,
+		cost = tweak_data:get_value("money_manager", "preplaning_asset_cost_drillparts"),
+		budget_cost = 3,
+		post_event = "",
+		prio = 3
+	}
+	self.types.trai_ladder = {
+		name_id = "menu_pp_asset_trai_ladder",
+		desc_id = "menu_pp_asset_trai_ladder_desc",
+		category = "hired_help",
+		icon = 63,
+		total = 1,
+		post_event = "preplan_16",
+		prio = 3,
+		cost = tweak_data:get_value("money_manager", "preplanning_asset_cost_bex_garbage_truck"),
+		budget_cost = 2
+	}
 end
 
 function PrePlanningTweakData:_create_locations(tweak_data)
@@ -3797,6 +3844,31 @@ function PrePlanningTweakData:_create_locations(tweak_data)
 			custom_points = {}
 		},
 		mission_briefing_texture = "guis/dlcs/ranc/textures/pd2/pre_planning/ranc_preview",
+		post_event_prefix = "loc",
+		total_budget = 10,
+		default_plans = {},
+		start_location = {
+			group = "a",
+			zoom = 1,
+			x = 512,
+			y = 512
+		}
+	}
+	self.locations.trai = {
+		{
+			texture = "guis/dlcs/trai/textures/pd2/pre_planning/trai_01",
+			x2 = 4500,
+			rotation = 0,
+			map_size = 1,
+			map_x = 0,
+			x1 = -11500,
+			map_y = 45,
+			name_id = "menu_pp_trai_bpr_loc_a",
+			y2 = 12500,
+			y1 = -3500,
+			custom_points = {}
+		},
+		mission_briefing_texture = "guis/dlcs/trai/textures/pd2/pre_planning/trai_01",
 		post_event_prefix = "loc",
 		total_budget = 10,
 		default_plans = {},

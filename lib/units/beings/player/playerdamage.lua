@@ -184,6 +184,11 @@ function PlayerDamage:init(unit)
 	}
 
 	self:clear_delayed_damage()
+
+	self._can_play_tinnitus = not managers.user:get_setting("accessibility_sounds_tinnitus") or false
+	self._can_play_tinnitus_clbk_func = callback(self, self, "clbk_tinnitus_toggle_changed")
+
+	managers.user:add_setting_changed_callback("accessibility_sounds_tinnitus", self._can_play_tinnitus_clbk_func)
 end
 
 function PlayerDamage:on_copr_ability_activated()
@@ -516,7 +521,8 @@ function PlayerDamage:update(unit, t, dt)
 		self._tinnitus_data.intensity = (self._tinnitus_data.end_t - t) / self._tinnitus_data.duration
 
 		if self._tinnitus_data.intensity <= 0 then
-			self:_stop_tinnitus()
+			SoundDevice:set_rtpc("downed_state_progression", math.max(self._downed_progression or 0, 0))
+			self:_stop_tinnitus(true)
 		else
 			SoundDevice:set_rtpc("downed_state_progression", math.max(self._downed_progression or 0, self._tinnitus_data.intensity * 100))
 		end
@@ -526,6 +532,7 @@ function PlayerDamage:update(unit, t, dt)
 		self._concussion_data.intensity = (self._concussion_data.end_t - t) / self._concussion_data.duration
 
 		if self._concussion_data.intensity <= 0 then
+			SoundDevice:set_rtpc("concussion_effect", 0)
 			self:_stop_concussion()
 		else
 			SoundDevice:set_rtpc("concussion_effect", self._concussion_data.intensity * 100)
@@ -2531,6 +2538,7 @@ function PlayerDamage:pre_destroy()
 	managers.environment_controller:set_last_life(false)
 	managers.environment_controller:set_downed_value(0)
 	SoundDevice:set_rtpc("downed_state_progression", 0)
+	SoundDevice:set_rtpc("concussion", 0)
 	SoundDevice:set_rtpc("shield_status", 100)
 	managers.environment_controller:set_hurt_value(1)
 	managers.environment_controller:set_health_effect_value(1)
@@ -2539,7 +2547,14 @@ function PlayerDamage:pre_destroy()
 	CopDamage.unregister_listener("on_damage")
 	managers.mission:remove_global_event_listener("player_regenerate_armor")
 	managers.mission:remove_global_event_listener("player_force_bleedout")
-	self._unit:sound():play("concussion_effect_off")
+	self:_stop_tinnitus()
+	self:_stop_concussion()
+
+	if self._can_play_tinnitus_clbk_func then
+		managers.user:remove_setting_changed_callback("accessibility_sounds_tinnitus", self._can_play_tinnitus_clbk_func)
+
+		self._can_play_tinnitus_clbk_func = nil
+	end
 end
 
 function PlayerDamage:_call_listeners(damage_info)
@@ -2726,33 +2741,53 @@ function PlayerDamage:reset_suppression()
 	self._supperssion_data.decay_start_t = nil
 end
 
-function PlayerDamage:on_concussion(mul)
+function PlayerDamage:on_concussion(mul, duration_tweak, skip_disoriented_sfx)
 	if self._downed_timer then
 		return
 	end
 
-	self:_start_concussion(mul)
+	self:_start_concussion(mul, duration_tweak, skip_disoriented_sfx)
 end
 
-function PlayerDamage:_start_concussion(mul)
+function PlayerDamage:_start_concussion(mul, duration_tweak, skip_disoriented_sfx)
 	if self._concussion_data then
+		if mul < self._concussion_data.intensity then
+			return
+		end
+
 		self._concussion_data.intensity = mul
-		local duration_tweak = tweak_data.projectiles.concussion.duration
-		self._concussion_data.duration = duration_tweak.min + mul * math.lerp(duration_tweak.additional - 2, duration_tweak.additional + 2, math.random())
+		duration_tweak = duration_tweak or tweak_data.projectiles.concussion.duration
+		self._concussion_data.duration = duration_tweak.min + mul * math.lerp(math.max(0, duration_tweak.additional - 2), duration_tweak.additional + 2, math.random())
 		self._concussion_data.end_t = managers.player:player_timer():time() + self._concussion_data.duration
 
 		SoundDevice:set_rtpc("concussion_effect", self._concussion_data.intensity * 100)
 	else
-		local duration = 4 + mul * math.lerp(8, 12, math.random())
+		duration_tweak = duration_tweak or tweak_data.projectiles.concussion.duration
+		local duration = duration_tweak.min + mul * math.lerp(math.max(0, duration_tweak.additional - 2), duration_tweak.additional + 2, math.random())
+
+		SoundDevice:set_rtpc("concussion_effect", mul * 100)
+
 		self._concussion_data = {
 			intensity = mul,
 			duration = duration,
-			end_t = managers.player:player_timer():time() + duration
+			end_t = managers.player:player_timer():time() + duration,
+			snd_event = self._unit:sound():play("concussion_effect_on")
 		}
 	end
 
-	self._unit:sound():play("concussion_player_disoriented_sfx")
-	self._unit:sound():play("concussion_effect_on")
+	if not skip_disoriented_sfx then
+		if self._concussion_data.snd_event_disorient then
+			self._concussion_data.snd_event_disorient:stop()
+
+			self._concussion_data.snd_event_disorient = nil
+		end
+
+		if self._can_play_tinnitus then
+			self._concussion_data.snd_event_disorient = self._unit:sound():play("concussion_player_disoriented_sfx")
+		else
+			self._unit:sound():play("flashbang_explode_sfx_player")
+		end
+	end
 end
 
 function PlayerDamage:_stop_concussion()
@@ -2760,7 +2795,9 @@ function PlayerDamage:_stop_concussion()
 		return
 	end
 
-	self._unit:sound():play("concussion_effect_off")
+	if self._concussion_data.snd_event then
+		self._unit:sound():play("concussion_effect_off")
+	end
 
 	self._concussion_data = nil
 end
@@ -2785,11 +2822,15 @@ function PlayerDamage:_start_tinnitus(sound_eff_mul, skip_explosion_sfx)
 
 		if self._tinnitus_data.snd_event then
 			self._tinnitus_data.snd_event:stop()
+
+			self._tinnitus_data.snd_event = nil
 		end
 
 		SoundDevice:set_rtpc("downed_state_progression", math.max(self._downed_progression or 0, self._tinnitus_data.intensity * 100))
 
-		self._tinnitus_data.snd_event = self._unit:sound():play("tinnitus_beep")
+		if self._can_play_tinnitus then
+			self._tinnitus_data.snd_event = self._unit:sound():play("tinnitus_beep")
+		end
 	else
 		local duration = 4 + sound_eff_mul * math.lerp(8, 12, math.random())
 
@@ -2798,9 +2839,12 @@ function PlayerDamage:_start_tinnitus(sound_eff_mul, skip_explosion_sfx)
 		self._tinnitus_data = {
 			intensity = sound_eff_mul,
 			duration = duration,
-			end_t = managers.player:player_timer():time() + duration,
-			snd_event = self._unit:sound():play("tinnitus_beep")
+			end_t = managers.player:player_timer():time() + duration
 		}
+
+		if self._can_play_tinnitus then
+			self._tinnitus_data.snd_event = self._unit:sound():play("tinnitus_beep")
+		end
 	end
 
 	if not skip_explosion_sfx then
@@ -2808,14 +2852,45 @@ function PlayerDamage:_start_tinnitus(sound_eff_mul, skip_explosion_sfx)
 	end
 end
 
-function PlayerDamage:_stop_tinnitus()
+function PlayerDamage:_stop_tinnitus(finished)
 	if not self._tinnitus_data then
 		return
 	end
 
-	self._unit:sound():play("tinnitus_beep_stop")
+	if self._tinnitus_data.snd_event then
+		if finished then
+			self._unit:sound():play("tinnitus_beep_stop")
+		else
+			self._tinnitus_data.snd_event:stop()
+		end
+	end
 
 	self._tinnitus_data = nil
+end
+
+function PlayerDamage:clbk_tinnitus_toggle_changed(setting_name, old, new)
+	local cur_setting = self._can_play_tinnitus
+	local new_setting = not new or false
+
+	if new_setting == cur_setting then
+		return
+	end
+
+	self._can_play_tinnitus = new_setting
+
+	if not new_setting then
+		if self._tinnitus_data and self._tinnitus_data.snd_event then
+			self._tinnitus_data.snd_event:stop()
+
+			self._tinnitus_data.snd_event = nil
+		end
+
+		if self._concussion_data and self._concussion_data.snd_event_disorient then
+			self._concussion_data.snd_event_disorient:stop()
+
+			self._concussion_data.snd_event_disorient = nil
+		end
+	end
 end
 
 function PlayerDamage:_chk_can_take_dmg()

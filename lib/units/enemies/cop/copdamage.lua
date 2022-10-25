@@ -163,6 +163,67 @@ function CopDamage:init(unit)
 	self:chk_has_aoe_damage()
 	self:chk_has_health_sequences()
 	self:chk_has_invul_to_slotmask()
+
+	if unit:base().add_tweak_data_changed_listener then
+		unit:base():add_tweak_data_changed_listener("CopDamageTweakDataChange" .. tostring(unit:key()), callback(self, self, "_clbk_tweak_data_changed"))
+	end
+end
+
+function CopDamage:_clbk_tweak_data_changed(old_tweak_data, new_tweak_data)
+	self._char_tweak = new_tweak_data
+	self._immune_to_knockback = new_tweak_data.damage.immune_to_knockback
+
+	if self._dead then
+		if new_tweak_data.modify_health_on_tweak_change then
+			self._HEALTH_INIT = new_tweak_data.HEALTH_INIT
+			self._HEALTH_INIT = managers.modifiers:modify_value("CopDamage:InitialHealth", self._HEALTH_INIT, self._unit:base()._tweak_table)
+
+			self:chk_has_player_health_scaling(new_tweak_data)
+
+			self._HEALTH_INIT_PRECENT = self._HEALTH_INIT / self._HEALTH_GRANULARITY
+		end
+	else
+		if old_tweak_data.do_not_drop_ammo and not new_tweak_data.do_not_drop_ammo then
+			if not self._pickup then
+				self._pickup = "ammo"
+			end
+		elseif not old_tweak_data.do_not_drop_ammo and new_tweak_data.do_not_drop_ammo then
+			self._pickup = nil
+		end
+
+		if not self.immortal then
+			if old_tweak_data.permanently_invulnerable and not new_tweak_data.permanently_invulnerable then
+				if self._invulnerable then
+					self:set_invulnerable(false)
+				end
+			elseif not old_tweak_data.permanently_invulnerable and new_tweak_data.permanently_invulnerable and not self._invulnerable then
+				self:set_invulnerable(true)
+			end
+		end
+
+		if new_tweak_data.modify_health_on_tweak_change then
+			local old_health = self._health
+			self._HEALTH_INIT = new_tweak_data.HEALTH_INIT
+			self._HEALTH_INIT = managers.modifiers:modify_value("CopDamage:InitialHealth", self._HEALTH_INIT, self._unit:base()._tweak_table)
+
+			self:chk_has_player_health_scaling(new_tweak_data)
+
+			self._health = self._HEALTH_INIT
+			self._health_ratio = 1
+			self._HEALTH_INIT_PRECENT = self._HEALTH_INIT / self._HEALTH_GRANULARITY
+
+			if old_health < self._health and self._unit:contour() then
+				self._unit:contour():add("medic_heal", false, nil, nil, false)
+				self._unit:contour():flash("medic_heal", 0.2)
+			end
+
+			self:_update_debug_ws()
+		end
+
+		self:chk_has_aoe_damage()
+	end
+
+	self:chk_has_invul_to_slotmask()
 end
 
 function CopDamage:is_immune_to_shield_knockback()
@@ -353,6 +414,20 @@ function CopDamage:check_medic_heal()
 	local medic = managers.enemy:get_nearby_medic(self._unit)
 
 	return medic and medic:character_damage():heal_unit(self._unit)
+end
+
+function CopDamage:force_hurt(attack_data)
+	if self._dead then
+		return
+	end
+
+	attack_data.damage = 0
+	attack_data.result = attack_data.result or {
+		type = attack_data.type,
+		variant = attack_data.variant
+	}
+
+	self:_call_listeners(attack_data)
 end
 
 function CopDamage:damage_bullet(attack_data)
@@ -1423,6 +1498,7 @@ function CopDamage:_chk_unique_death_requirements(damage_info, died)
 end
 
 function CopDamage:chk_has_invul_to_slotmask()
+	self._invul_to_slotmask = nil
 	local inv_slotmask = self._char_tweak.invulnerable_to_slotmask
 
 	if not inv_slotmask then
@@ -2062,6 +2138,10 @@ end
 function CopDamage:stun_hit(attack_data)
 	if self._dead or self._invulnerable then
 		return
+	end
+
+	if self:is_friendly_fire(attack_data.attacker_unit) then
+		return "friendly_fire"
 	end
 
 	if self:chk_immune_to_attacker(attack_data.attacker_unit) then

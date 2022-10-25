@@ -7725,4 +7725,196 @@ function InteractionTweakData:init(tweak_data)
 	self.pda9_piggybank_3.interact_distance = 400
 	self.pda9_piggybank_4 = deep_clone(self.pda9_piggybank_1)
 	self.pda9_piggybank_4.interact_distance = 500
+	self.trai_printing_plates_carry = deep_clone(self.money_wrap)
+	self.trai_printing_plates_carry.text_id = "hud_int_hold_take_printing_plates"
+	self.trai_printing_plates_carry.action_text_id = "hud_action_take_printing_plates"
+	self.trai_printing_plates_carry.axis = "x"
+	self.trai_fix_cable = {
+		text_id = "hud_int_trai_fix_cable",
+		action_text_id = "hud_action_trai_fix_cable",
+		interact_distance = 200,
+		timer = 10,
+		start_active = true,
+		sound_start = "TRAI_Cable",
+		sound_interupt = "TRAI_Cable_STOP",
+		sound_done = "TRAI_Cable_STOP",
+		axis = "z"
+	}
+	self.trai_achievement_safe = {
+		contour = "interactable_icon",
+		icon = "equipment_bank_manager_key",
+		text_id = "hud_int_trai_press_achievement_safe",
+		start_active = true,
+		special_equipment = "ranc_sheriff_star",
+		equipment_text_id = "debug_int_trai_equipment_sheriff_star",
+		dont_need_equipment = false
+	}
+	self.trai_crane_control = {
+		text_id = "hud_int_trai_hold_crane_control",
+		action_text_id = "hud_action_trai_hold_crane_control",
+		interact_distance = 200,
+		timer = 4,
+		axis = "x",
+		start_active = true,
+		sound_start = "bar_crane_control_panel",
+		sound_interupt = "bar_crane_control_panel_cancel",
+		sound_done = "bar_crane_control_panel_finished"
+	}
+	self.trai_place_thermite = {
+		icon = "equipment_thermite",
+		text_id = "hud_trai_hold_interact_place_thermite",
+		action_text_id = "hud_trai_action_place_thermite",
+		interact_distance = 200,
+		timer = 3,
+		start_active = true,
+		axis = "x",
+		special_equipment = "thermite",
+		equipment_text_id = "debug_interact_equipment_thermite",
+		equipment_consume = true,
+		dont_need_equipment = false
+	}
+	self.trai_connect_locke = {
+		text_id = "hud_int_trai_connect_locke",
+		action_text_id = "hud_action_trai_connect_locke",
+		interact_distance = 200,
+		timer = 1,
+		start_active = true,
+		axis = "z"
+	}
+	self.trai_hold_attach_hook = {
+		text_id = "hud_int_attach_hook",
+		action_text_id = "hud_action_attach_hook",
+		interact_distance = 150,
+		timer = 2,
+		axis = "z"
+	}
+	self.trai_hold_decouple_locomotive = {
+		text_id = "hud_int_decouple_locomotive",
+		action_text_id = "hud_action_decouple_locomotive",
+		interact_distance = 250,
+		timer = 2
+	}
+	self.trai_hold_refuel_locomotive = {
+		text_id = "hud_int_refuel_locomotive",
+		action_text_id = "hud_action_refuel_locomotive",
+		interact_distance = 150,
+		timer = 2,
+		axis = "z"
+	}
+	self.trai_hold_start_locomotive_engine = {
+		text_id = "hud_int_start_locomotive",
+		action_text_id = "hud_action_start_locomotive",
+		interact_distance = 150,
+		timer = 2,
+		axis = "z",
+		sound_start = "TRAI_Engine_Starting_Interaction",
+		sound_interupt = "TRAI_Engine_Fail"
+	}
+	self.trai_hold_picklock_toolsafe = {
+		icon = "equipment_bank_manager_key",
+		text_id = "hud_int_trai_toolsafe_lockpick",
+		action_text_id = "hud_action_trai_toolsafe_lockpick",
+		interact_distance = 150,
+		timer = 7,
+		start_active = true,
+		sound_start = "bar_pick_lock",
+		sound_interupt = "bar_pick_lock_cancel",
+		sound_done = "bar_pick_lock_finished",
+		upgrade_timer_multipliers = {
+			{
+				upgrade = "pick_lock_easy_speed_multiplier",
+				category = "player"
+			},
+			{
+				upgrade = "pick_lock_speed_multiplier",
+				category = "player"
+			}
+		},
+		is_lockpicking = true
+	}
+	self.trai_hold_toolsafe_pickuptool = {
+		text_id = "hud_int_trai_toolsafe_pickuptool",
+		action_text_id = "hud_action_trai_toolsafe_pickuptool",
+		interact_distance = 150,
+		timer = 15,
+		start_active = true,
+		sound_start = "bar_search_toolbox",
+		sound_interupt = "bar_search_toolbox_cancel",
+		sound_done = "bar_search_toolbox_pick_up"
+	}
+	self.trai_press_reinforced_big_sliding_gate_open = {
+		icon = "equipment_bank_manager_key",
+		text_id = "hud_int_trai_reinforced_big_sliding_gate_open",
+		action_text_id = "hud_action_trai_reinforced_big_sliding_gate_open",
+		interact_distance = 300,
+		special_equipment = "keychain",
+		equipment_text_id = "hud_action_trai_reinforced_big_sliding_gate_nokey",
+		equipment_consume = true,
+		dont_need_equipment = false
+	}
+	self.trai_connect_locke_walkietalkie = {
+		text_id = "hud_int_trai_connect_locke_walkietalkie",
+		action_text_id = "hud_action_trai_connect_locke_walkietalkie",
+		interact_distance = 150,
+		timer = 2,
+		start_active = true
+	}
+	self.trai_use_turntable = {
+		text_id = "hud_int_trai_turntable_console_use",
+		action_text_id = "hud_action_trai_turntable_console_use",
+		interact_distance = 150,
+		timer = 2,
+		start_active = false,
+		axis = "y"
+	}
+	self.trai_hold_access_console = {
+		text_id = "hud_int_trai_hold_access_console",
+		action_text_id = "hud_action_trai_hold_access_console",
+		interact_distance = 150,
+		timer = 5,
+		axis = "x"
+	}
+	self.trai_achievement_container_key = {
+		text_id = "hud_int_take_keys",
+		interact_distance = 200,
+		start_active = true
+	}
+	self.trai_achievement_container = {
+		icon = "develop",
+		text_id = "hud_int_invisible_interaction_open",
+		timer = 0.5,
+		start_active = true,
+		interact_distance = 150,
+		special_equipment = "trai_container_key",
+		equipment_text_id = "hud_trai_need_equipment_key",
+		equipment_consume = true,
+		dont_need_equipment = false
+	}
+	self.trai_hold_disable_alarm = {
+		text_id = "hud_int_hold_disable_alarm",
+		action_text_id = "hud_action_disabling_alarm",
+		interact_distance = 150,
+		timer = 2,
+		start_active = false,
+		axis = "y"
+	}
+	self.hack_trai_outline = {
+		icon = "equipment_hack_ipad",
+		text_id = "debug_interact_hack_ipad",
+		action_text_id = "hud_action_hacking_computer",
+		interact_distance = 200,
+		timer = 5,
+		start_active = true,
+		axis = "y",
+		sound_start = "bar_keyboard",
+		sound_interupt = "bar_keyboard_cancel",
+		sound_done = "bar_keyboard_finished"
+	}
+	self.trai_open_from_inside_main_wagon = {
+		text_id = "hud_int_invisible_interaction_open",
+		interact_distance = 150,
+		timer = 0.2,
+		start_active = false,
+		axis = "y"
+	}
 end

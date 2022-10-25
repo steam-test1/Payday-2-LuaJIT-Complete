@@ -55,6 +55,8 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_flamethrower_npc()
 	self:_init_data_heavy_snp_npc()
 	self:_init_data_dmr_npc()
+	self:_init_data_deagle_npc()
+	self:_init_data_sko12_conc_npc()
 	self:_init_data_smoke_npc()
 	self:_init_data_groza_npc()
 	self:_init_data_type54_npc()
@@ -492,6 +494,48 @@ function WeaponTweakData:_init_data_x_c45_npc()
 	self.x_c45_npc.alert_size = 2500
 	self.x_c45_npc.suppression = 1
 	self.x_c45_npc.FIRE_MODE = "single"
+end
+
+function WeaponTweakData:_init_data_deagle_npc()
+	self.deagle_npc.categories = {
+		"pistol"
+	}
+	self.deagle_npc.sounds.prefix = "deagle_npc"
+	self.deagle_npc.use_data.selection_index = SELECTION.SECONDARY
+	self.deagle_npc.DAMAGE = 1
+	self.deagle_npc.muzzleflash = "effects/payday2/particles/weapons/556_auto"
+	self.deagle_npc.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.deagle_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.deagle_npc.CLIP_AMMO_MAX = 10
+	self.deagle_npc.NR_CLIPS_MAX = 5
+	self.deagle_npc.hold = "pistol"
+	self.deagle_npc.alert_size = 2500
+	self.deagle_npc.suppression = 1
+	self.deagle_npc.FIRE_MODE = "single"
+end
+
+function WeaponTweakData:_init_data_sko12_conc_npc()
+	self.sko12_conc_npc.categories = clone(self.sko12.categories)
+	self.sko12_conc_npc.sounds.prefix = "sko12_npc"
+	self.sko12_conc_npc.use_data.selection_index = SELECTION.PRIMARY
+	self.sko12_conc_npc.DAMAGE = 1
+	self.sko12_conc_npc.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
+	self.sko12_conc_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug_g2"
+	self.sko12_conc_npc.CLIP_AMMO_MAX = 28
+	self.sko12_conc_npc.NR_CLIPS_MAX = 10
+	self.sko12_conc_npc.hold = "rifle"
+	self.sko12_conc_npc.alert_size = 4500
+	self.sko12_conc_npc.suppression = 1.8
+	self.sko12_conc_npc.FIRE_MODE = "single"
+	self.sko12_conc_npc.bullet_class = "ConcussiveInstantBulletBase"
+	self.sko12_conc_npc.concussion_data = {
+		mul = 0.5,
+		sound_duration = {
+			min = 4,
+			mul = 0.3,
+			additional = 4
+		}
+	}
 end
 
 function WeaponTweakData:_init_data_beretta92_npc()
@@ -29686,6 +29730,17 @@ function WeaponTweakData:_create_table_structure()
 	}
 	self.dmr_npc = {
 		usage = "is_rifle",
+		sounds = {},
+		use_data = {}
+	}
+	self.deagle_npc = {
+		usage = "is_pistol",
+		sounds = {},
+		use_data = {}
+	}
+	self.sko12_conc_npc = {
+		usage = "is_shotgun_mag",
+		anim_usage = "is_rifle",
 		sounds = {},
 		use_data = {}
 	}

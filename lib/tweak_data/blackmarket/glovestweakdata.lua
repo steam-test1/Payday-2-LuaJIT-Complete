@@ -178,8 +178,9 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		slaughterhouse = "heist_default",
 		dodsuit = "heist_default",
 		cable_guy = "heist_default",
-		corl = "heist_default",
+		railroad = "heist_default",
 		jail_pd2_clan = "heist_default",
+		corl = "heist_default",
 		esport = "esport",
 		murky_suit = "murky",
 		cyberhoodie = "heist_default",
@@ -746,5 +747,14 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		sort_number = 1,
 		unit = "units/pd2_dlc_tma1/characters/glv_dodskull/glv_dodskull",
 		third_material = "units/pd2_dlc_tma1/characters/glv_dodskull/glv_dodskull_third"
+	}
+	self.gloves.railwork = {
+		name_id = "bm_gloves_railwork",
+		desc_id = "bm_gloves_railwork_desc",
+		texture_bundle_folder = "trt",
+		global_value = "trt_railwork",
+		sort_number = 1,
+		unit = "units/pd2_dlc_trt/characters/glv_railwork/glv_railwork",
+		third_material = "units/pd2_dlc_trt/characters/glv_railwork/glv_railwork_third"
 	}
 end

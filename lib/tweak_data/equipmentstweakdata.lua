@@ -897,4 +897,14 @@ function EquipmentsTweakData:init()
 		icon = "equipment_mould",
 		text_id = "hud_equipment_mould"
 	}
+	self.specials.trai_usb_key = {
+		sync_possession = true,
+		icon = "equipment_usb_with_data",
+		text_id = "hud_equipment_usb_key"
+	}
+	self.specials.trai_container_key = {
+		sync_possession = true,
+		icon = "equipment_generic_key",
+		text_id = "hud_trai_equipment_key"
+	}
 end

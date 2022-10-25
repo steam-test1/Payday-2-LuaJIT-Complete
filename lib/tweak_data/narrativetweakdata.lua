@@ -6702,6 +6702,79 @@ function NarrativeTweakData:init(tweak_data)
 		3,
 		9
 	}
+	self.stages.trai = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "trai",
+		mission_filter = {
+			1
+		}
+	}
+	self.jobs.trai = {
+		name_id = "heist_trai",
+		briefing_id = "heist_trai_crimenet",
+		contact = "mcshay",
+		region = "street",
+		jc = 30,
+		dlc = "trai",
+		chain = {
+			self.stages.trai
+		},
+		briefing_event = "Play_gem_trai_cbf",
+		debrief_event = nil,
+		crimenet_callouts = {
+			"Play_gem_trai_cnc"
+		},
+		crimenet_videos = {
+			"codex/mcshay1"
+		},
+		payout = {
+			50000,
+			125000,
+			250000,
+			550000,
+			700000,
+			700000,
+			700000
+		},
+		contract_cost = {
+			24000,
+			48000,
+			120000,
+			240000,
+			300000,
+			300000,
+			300000
+		},
+		contract_visuals = {}
+	}
+	self.jobs.trai.contract_visuals.min_mission_xp = {
+		14200,
+		14200,
+		14200,
+		14200,
+		14200,
+		14200,
+		14200
+	}
+	self.jobs.trai.contract_visuals.max_mission_xp = {
+		23200,
+		23200,
+		23200,
+		23200,
+		23200,
+		23200,
+		23200
+	}
+	self.jobs.trai.contract_visuals.preview_image = {
+		id = "trai",
+		folder = "trai"
+	}
+	self.jobs.trai.date_added = {
+		2022,
+		3,
+		9
+	}
 	self.stages.lbe_lobby_end = {
 		type = "d",
 		type_id = "heist_type_assault",
@@ -7499,7 +7572,8 @@ function NarrativeTweakData:init(tweak_data)
 		"sand",
 		"chca",
 		"pent",
-		"ranc"
+		"ranc",
+		"trai"
 	}
 	self.forced_jobs = {
 		firestarter = true,

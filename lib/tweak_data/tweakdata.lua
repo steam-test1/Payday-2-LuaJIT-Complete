@@ -1833,6 +1833,9 @@ Play the full version soon to get your full PAYDAY!]],
 			track = "track_77"
 		},
 		{
+			track = "track_78"
+		},
+		{
 			track = "track_pth_01",
 			lock = "payday"
 		},
@@ -3102,6 +3105,10 @@ function TweakData:init_accessibility_colors()
 	self.accessibility_colors.dot.yellow = Color(255, 255, 201, 7) / 255
 	self.accessibility_colors.dot.blue = Color(255, 77, 198, 255) / 255
 	self.accessibility_colors.dot.green = Color.green
+	self.accessibility_colors.screenflash = {
+		default = 1,
+		black = -1
+	}
 end
 
 function TweakData:free_dlc_list()

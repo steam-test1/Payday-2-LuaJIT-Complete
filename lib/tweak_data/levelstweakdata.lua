@@ -2599,6 +2599,90 @@ function LevelsTweakData:init()
 			}
 		}
 	}
+	self.trai = {
+		name_id = "heist_trai_hl",
+		briefing_id = "heist_trai_briefing",
+		briefing_dialog = "Play_loc_trai_brf",
+		world_name = "narratives/mcshay/trai",
+		intro_event = "Play_loc_trai_intro",
+		outro_event = {
+			loud = "Play_loc_trai_end_loud",
+			stealth = "Play_loc_trai_end_stealth"
+		},
+		music = "heist",
+		package = "packages/job_trai",
+		cube = "cube_apply_heist_bank",
+		ai_group_type = america,
+		narrator = "locke",
+		ghost_bonus = 0.15,
+		load_screen = "guis/dlcs/trai/textures/loading/job_trai_01_df",
+		equipment = {
+			{
+				id = "ranc_sheriff_star",
+				job_value = {
+					value = 1,
+					key = "star_ranc",
+					save = true
+				}
+			}
+		},
+		teams = {
+			criminal1 = {
+				foes = {
+					law1 = true,
+					mobster1 = true
+				},
+				friends = {
+					converted_enemy = true,
+					escort = true
+				}
+			},
+			law1 = {
+				foes = {
+					converted_enemy = true,
+					criminal1 = true,
+					mobster1 = true
+				},
+				friends = {}
+			},
+			mobster1 = {
+				foes = {
+					converted_enemy = true,
+					law1 = true,
+					criminal1 = true
+				},
+				friends = {}
+			},
+			converted_enemy = {
+				foes = {
+					law1 = true,
+					mobster1 = true
+				},
+				friends = {
+					criminal1 = true,
+					escort = true
+				}
+			},
+			neutral1 = {
+				foes = {},
+				friends = {}
+			},
+			hacked_turret = {
+				foes = {
+					law1 = true,
+					mobster1 = true
+				},
+				friends = {}
+			},
+			escort = {
+				foes = {},
+				friends = {
+					converted_enemy = true,
+					criminal1 = true
+				}
+			}
+		}
+	}
 	self._level_index = {
 		"welcome_to_the_jungle_1",
 		"welcome_to_the_jungle_1_night",
@@ -2724,7 +2808,8 @@ function LevelsTweakData:init()
 		"sand",
 		"chca",
 		"pent",
-		"ranc"
+		"ranc",
+		"trai"
 	}
 
 	if SystemInfo:distribution() == Idstring("STEAM") then

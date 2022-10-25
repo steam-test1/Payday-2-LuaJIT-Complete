@@ -439,6 +439,10 @@ end
 function SentryGunBrain:_destroy_detected_attention_object_data(attention_info)
 	attention_info.handler:remove_listener("detect_" .. tostring(self._unit:key()))
 
+	if alive(attention_info.unit) and attention_info.unit:base() and attention_info.unit:base().add_tweak_data_changed_listener then
+		attention_info.unit:base():remove_tweak_data_changed_listener("detect_" .. tostring(self._unit:key()))
+	end
+
 	if attention_info.settings.notice_clbk then
 		attention_info.settings.notice_clbk(self._unit, false)
 	end
@@ -715,6 +719,16 @@ function SentryGunBrain:on_detected_attention_obj_modified(modified_u_key)
 	if old_notice_clbk and (not new_settings or not new_settings.notice_clbk) then
 		old_notice_clbk(self._unit, false)
 	end
+end
+
+function SentryGunBrain:on_detected_attention_obj_tweak_data_changed(modified_u_key, old_tweak_data, new_tweak_data)
+	local attention_info = self._detected_attention_objects[modified_u_key]
+
+	if not attention_info then
+		return
+	end
+
+	attention_info.char_tweak = new_tweak_data
 end
 
 function SentryGunBrain:on_damage_received(attacker_unit)

@@ -1838,6 +1838,9 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.a11th_homburg_grey = self.global_values.a11th
 	self.global_values.a11th_corl = self.global_values.a11th
 	self.global_values.a11th_stinger = self.global_values.a11th
+	self.global_values.trt_railwork = self.global_values.trt
+	self.global_values.trt_railhat = self.global_values.trt
+	self.global_values.trt_railroad = self.global_values.trt
 
 	self:_create_global_value_list_map()
 end

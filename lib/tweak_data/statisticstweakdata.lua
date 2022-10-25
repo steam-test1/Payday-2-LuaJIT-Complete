@@ -223,7 +223,8 @@ function StatisticsTweakData:statistics_table()
 		"swat_turret",
 		"triad_boss",
 		"triad_boss_no_armor",
-		"marshal_marksman"
+		"marshal_marksman",
+		"marshal_shield"
 	}
 	local armor_list = {
 		"level_1",

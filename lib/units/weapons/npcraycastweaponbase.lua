@@ -12,8 +12,24 @@ function NPCRaycastWeaponBase:init(unit)
 	self._player_manager = managers.player
 	self._unit = unit
 	self._name_id = self.name_id or "m4_npc"
-	self._bullet_slotmask = managers.slot:get_mask("bullet_impact_targets")
-	self._blank_slotmask = managers.slot:get_mask("bullet_blank_impact_targets")
+	local bullet_class = tweak_data.weapon[self._name_id].bullet_class
+
+	if bullet_class ~= nil then
+		bullet_class = CoreSerialize.string_to_classtable(bullet_class)
+
+		if bullet_class then
+			self._bullet_class = bullet_class
+		else
+			Application:error("[NPCRaycastWeaponBase:init] Unexisting class for bullet_class string ", weap_tweak.bullet_class, "defined for tweak data ID ", name_id)
+
+			self._bullet_class = InstantBulletBase
+		end
+	else
+		self._bullet_class = InstantBulletBase
+	end
+
+	self._bullet_slotmask = self._bullet_class:bullet_slotmask()
+	self._blank_slotmask = self._bullet_class:blank_slotmask()
 
 	self:_create_use_setups()
 
@@ -28,6 +44,13 @@ function NPCRaycastWeaponBase:init(unit)
 	self._damage = tweak_data.weapon[self._name_id].DAMAGE
 	self._next_fire_allowed = -1000
 	self._obj_fire = self._unit:get_object(Idstring("fire"))
+
+	if not self._obj_fire then
+		Application:error("[NPCRaycastWeaponBase:init] No 'fire' object defined in unit. Falling back to orientation object. Unit: ", self._unit)
+
+		self._obj_fire = self._unit:orientation_object()
+	end
+
 	self._sound_fire = SoundDevice:create_source("fire")
 
 	self._sound_fire:link(self._unit:orientation_object())
@@ -42,6 +65,13 @@ function NPCRaycastWeaponBase:init(unit)
 
 	if self._use_shell_ejection_effect then
 		self._obj_shell_ejection = self._unit:get_object(Idstring("a_shell"))
+
+		if not self._obj_shell_ejection then
+			Application:error("[NPCRaycastWeaponBase:init] No 'a_shell' object defined in unit. Falling back to orientation object. Unit: ", self._unit)
+
+			self._obj_shell_ejection = self._unit:orientation_object()
+		end
+
 		self._shell_ejection_effect = Idstring(self:weapon_tweak_data().shell_ejection or "effects/payday2/particles/weapons/shells/shell_556")
 		self._shell_ejection_effect_table = {
 			effect = self._shell_ejection_effect,
@@ -87,6 +117,8 @@ function NPCRaycastWeaponBase:init(unit)
 	if tweak_data.weapon[self._name_id].has_suppressor then
 		self._sound_fire:set_switch("suppressed", tweak_data.weapon[self._name_id].has_suppressor)
 	end
+
+	self._concussion_tweak = self:weapon_tweak_data().concussion_data
 end
 
 function NPCRaycastWeaponBase:setup(setup_data)
@@ -181,7 +213,7 @@ function NPCRaycastWeaponBase:fire_blank(direction, impact)
 		local trail = (not col_ray or col_ray.distance > 650) and World:effect_manager():spawn(self._trail_effect_table) or nil
 
 		if col_ray then
-			InstantBulletBase:on_collision(col_ray, self._unit, user_unit, self._damage, true)
+			self._unit:base():bullet_class():on_collision(col_ray, self._unit, user_unit, self._damage, true)
 
 			if trail then
 				World:effect_manager():set_remaining_lifetime(trail, math.clamp((col_ray.distance - 600) / 10000, 0, col_ray.distance))
@@ -282,14 +314,14 @@ function NPCRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_
 		player_hit, player_ray_data = self:damage_player(col_ray, from_pos, direction, result)
 
 		if player_hit then
-			InstantBulletBase:on_hit_player(col_ray or player_ray_data, self._unit, user_unit, damage)
+			self._unit:base():bullet_class():on_hit_player(col_ray or player_ray_data, self._unit, user_unit, damage)
 		end
 	end
 
 	local char_hit = nil
 
 	if not player_hit and col_ray then
-		char_hit = InstantBulletBase:on_collision(col_ray, self._unit, user_unit, damage)
+		char_hit = self._unit:base():bullet_class():on_collision(col_ray, self._unit, user_unit, damage)
 	end
 
 	if (not col_ray or col_ray.unit ~= target_unit) and target_unit and target_unit:character_damage() and target_unit:character_damage().build_suppression then

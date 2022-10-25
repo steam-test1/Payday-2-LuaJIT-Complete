@@ -2010,6 +2010,12 @@ function DLCTweakData:init_generated()
 			amount = 1
 		}
 	}
+	self.trai_bundle = {
+		dlc = "has_trai",
+		content = {}
+	}
+	self.trai_bundle.content.loot_global_value = "trai"
+	self.trai_bundle.content.loot_drops = {}
 	self.trd_bundle = {
 		dlc = "has_trd",
 		content = {}
@@ -2084,6 +2090,12 @@ function DLCTweakData:init_generated()
 			amount = 1
 		}
 	}
+	self.trt_bundle = {
+		dlc = "has_trt",
+		content = {}
+	}
+	self.trt_bundle.content.loot_global_value = "trt"
+	self.trt_bundle.content.loot_drops = {}
 	self.tstp_bundle = {
 		dlc = "has_tstp",
 		content = {}

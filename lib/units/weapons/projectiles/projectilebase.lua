@@ -62,7 +62,7 @@ function ProjectileBase:set_thrower_unit(unit, proj_ignore_thrower, thrower_igno
 			if self._ignore_units and table.contains(self._ignore_units, self._thrower_unit) then
 				self:remove_ignore_unit(self._thrower_unit, true)
 
-				local shield_unit = self._thrower_unit:inventory() and self._thrower_unit:inventory()._shield_unit
+				local shield_unit = self._thrower_unit:inventory() and self._thrower_unit:inventory():shield_unit()
 
 				if alive(shield_unit) and table.contains(self._ignore_units, shield_unit) then
 					self:remove_ignore_unit(shield_unit)
@@ -86,7 +86,7 @@ function ProjectileBase:set_thrower_unit(unit, proj_ignore_thrower, thrower_igno
 
 					table.insert(self._ignore_units, unit)
 
-					local shield_unit = unit:inventory() and unit:inventory()._shield_unit
+					local shield_unit = unit:inventory() and unit:inventory():shield_unit()
 
 					if alive(shield_unit) then
 						self:add_ignore_unit(shield_unit)
@@ -95,7 +95,7 @@ function ProjectileBase:set_thrower_unit(unit, proj_ignore_thrower, thrower_igno
 			elseif self._ignore_units and table.contains(self._ignore_units, unit) then
 				self:remove_ignore_unit(unit, true)
 
-				local shield_unit = unit:inventory() and unit:inventory()._shield_unit
+				local shield_unit = unit:inventory() and unit:inventory():shield_unit()
 
 				if alive(shield_unit) and table.contains(self._ignore_units, shield_unit) then
 					self:remove_ignore_unit(shield_unit)
@@ -147,7 +147,7 @@ function ProjectileBase:set_thrower_unit(unit, proj_ignore_thrower, thrower_igno
 
 		table.insert(self._ignore_units, unit)
 
-		local shield_unit = unit:inventory() and unit:inventory()._shield_unit
+		local shield_unit = unit:inventory() and unit:inventory():shield_unit()
 
 		if alive(shield_unit) then
 			self:add_ignore_unit(shield_unit)
@@ -168,7 +168,7 @@ function ProjectileBase:_clbk_thrower_unit_destroyed(unit)
 	if self._ignore_units and table.contains(self._ignore_units, unit) then
 		self:remove_ignore_unit(unit, true)
 
-		local shield_unit = unit:inventory() and unit:inventory()._shield_unit
+		local shield_unit = unit:inventory() and unit:inventory():shield_unit()
 
 		if alive(shield_unit) and table.contains(self._ignore_units, shield_unit) then
 			self:remove_ignore_unit(shield_unit)

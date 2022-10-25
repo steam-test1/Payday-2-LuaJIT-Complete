@@ -8679,4 +8679,37 @@ function DLCTweakData:init(tweak_data)
 		content = {}
 	}
 	self.a11th_stinger.content.loot_global_value = "a11th_stinger"
+	self.trt_railhat = {
+		content = {}
+	}
+	self.trt_railhat.content.loot_global_value = "trt_railhat"
+	self.trt_railhat.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "railhat",
+			amount = 1
+		}
+	}
+	self.trt_railwork = {
+		content = {}
+	}
+	self.trt_railwork.content.loot_global_value = "trt_railwork"
+	self.trt_railwork.content.loot_drops = {
+		{
+			type_items = "gloves",
+			item_entry = "railwork",
+			amount = 1
+		}
+	}
+	self.trt_railroad = {
+		content = {}
+	}
+	self.trt_railroad.content.loot_global_value = "trt_railroad"
+	self.trt_railroad.content.loot_drops = {
+		{
+			type_items = "player_styles",
+			item_entry = "railroad",
+			amount = 1
+		}
+	}
 end

@@ -14,8 +14,8 @@ local tmp_vec2 = Vector3()
 local tmp_rot1 = Rotation()
 RaycastWeaponBase = RaycastWeaponBase or class(UnitBase)
 RaycastWeaponBase.TRAIL_EFFECT = Idstring("effects/particles/weapons/weapon_trail")
-local MIN_KNOCK_BACK = 200
-local KNOCK_BACK_CHANCE = 0.8
+RaycastWeaponBase.SHIELD_MIN_KNOCK_BACK = tweak_data.upgrades.values.player.shield_knock_bullet.max_damage
+RaycastWeaponBase.SHIELD_KNOCK_BACK_CHANCE = tweak_data.upgrades.values.player.shield_knock_bullet.chance
 
 function RaycastWeaponBase:init(unit)
 	UnitBase.init(self, unit, false)
@@ -40,7 +40,22 @@ function RaycastWeaponBase:init(unit)
 	self._can_shoot_through_shield = tweak_data.weapon[self._name_id].can_shoot_through_shield
 	self._can_shoot_through_enemy = tweak_data.weapon[self._name_id].can_shoot_through_enemy
 	self._can_shoot_through_wall = tweak_data.weapon[self._name_id].can_shoot_through_wall
-	self._bullet_class = InstantBulletBase
+	local bullet_class = tweak_data.weapon[self._name_id].bullet_class
+
+	if bullet_class ~= nil then
+		bullet_class = CoreSerialize.string_to_classtable(bullet_class)
+
+		if bullet_class then
+			self._bullet_class = bullet_class
+		else
+			Application:error("[RaycastWeaponBase:init] Unexisting class for bullet_class string ", weap_tweak.bullet_class, "defined for tweak data ID ", name_id)
+
+			self._bullet_class = InstantBulletBase
+		end
+	else
+		self._bullet_class = InstantBulletBase
+	end
+
 	self._bullet_slotmask = self._bullet_class:bullet_slotmask()
 	self._blank_slotmask = self._bullet_class:blank_slotmask()
 	self._next_fire_allowed = -1000
@@ -73,6 +88,12 @@ function RaycastWeaponBase:init(unit)
 		weapon_unit = self._unit
 	}
 	self._magazine_empty_objects = {}
+	self._concussion_tweak = self:weapon_tweak_data().concussion_data
+	RaycastWeaponBase.shield_mask = RaycastWeaponBase.shield_mask or managers.slot:get_mask("enemy_shield_check")
+end
+
+function RaycastWeaponBase:bullet_class()
+	return self._bullet_class or InstantBulletBase
 end
 
 function RaycastWeaponBase:shooting_count()
@@ -2069,89 +2090,183 @@ end
 function RaycastWeaponBase:_chk_charm_upd_state()
 end
 
+function RaycastWeaponBase:variant()
+	return self._variant
+end
+
+function RaycastWeaponBase:concussion_tweak()
+	return self._concussion_tweak
+end
+
+function RaycastWeaponBase:has_armor_piercing()
+	return self._use_armor_piercing
+end
+
+function RaycastWeaponBase:is_knock_down()
+	if not self._knock_down then
+		return false
+	end
+
+	return self._knock_down > 0 and math.random() < self._knock_down
+end
+
+function RaycastWeaponBase:is_stagger()
+	return self._stagger
+end
+
+function RaycastWeaponBase:can_shield_knock()
+	return self._shield_knock
+end
+
+function RaycastWeaponBase:chk_shield_knock(hit_unit, col_ray, weapon_unit, user_unit, damage)
+	if not self:can_shield_knock() or not hit_unit:in_slot(self.shield_mask) then
+		return false
+	end
+
+	local enemy_unit = hit_unit:parent()
+	local char_dmg_ext = alive(enemy_unit) and enemy_unit:character_damage()
+
+	if not char_dmg_ext then
+		return false
+	end
+
+	if char_dmg_ext.is_immune_to_shield_knockback or char_dmg_ext:is_immune_to_shield_knockback() then
+		return false
+	end
+
+	local dmg_ratio = math.min(damage, self.SHIELD_MIN_KNOCK_BACK)
+	dmg_ratio = dmg_ratio / self.SHIELD_MIN_KNOCK_BACK + 1
+	local rand = math.random() * dmg_ratio
+
+	if self.SHIELD_KNOCK_BACK_CHANCE < rand then
+		local damage_info = {
+			damage = 0,
+			type = "shield_knock",
+			variant = "melee",
+			col_ray = col_ray,
+			result = {
+				variant = "melee",
+				type = "shield_knock"
+			}
+		}
+
+		enemy_unit:character_damage():_call_listeners(damage_info)
+
+		return true
+	end
+
+	return false
+end
+
 InstantBulletBase = InstantBulletBase or class()
 InstantBulletBase.id = "instant"
 
-function InstantBulletBase:on_collision(col_ray, weapon_unit, user_unit, damage, blank, no_sound)
-	local hit_unit = col_ray.unit
-	local shield_knock = false
-	local is_shield = hit_unit:in_slot(8) and alive(hit_unit:parent())
+function InstantBulletBase:chk_friendly_fire(hit_unit, user_unit)
+	local dmg_ext = hit_unit:character_damage()
 
-	if is_shield and not hit_unit:parent():character_damage():is_immune_to_shield_knockback() and weapon_unit then
-		shield_knock = weapon_unit:base()._shield_knock
-		local dmg_ratio = math.min(damage, MIN_KNOCK_BACK)
-		dmg_ratio = dmg_ratio / MIN_KNOCK_BACK + 1
-		local rand = math.random() * dmg_ratio
+	if dmg_ext and dmg_ext.is_friendly_fire and not dmg_ext:dead() and dmg_ext:is_friendly_fire(user_unit) then
+		return true
+	end
 
-		if KNOCK_BACK_CHANCE < rand then
-			local enemy_unit = hit_unit:parent()
+	local parent = not dmg_ext and hit_unit:parent()
 
-			if shield_knock and enemy_unit:character_damage() then
-				local damage_info = {
-					damage = 0,
-					type = "shield_knock",
-					variant = "melee",
-					col_ray = col_ray,
-					result = {
-						variant = "melee",
-						type = "shield_knock"
-					}
-				}
+	if alive(parent) then
+		dmg_ext = parent:character_damage()
 
-				enemy_unit:character_damage():_call_listeners(damage_info)
-			end
+		if dmg_ext and dmg_ext.is_friendly_fire and not dmg_ext:dead() and dmg_ext:is_friendly_fire(user_unit) then
+			return true
 		end
 	end
 
-	local play_impact_flesh = not hit_unit:character_damage() or not hit_unit:character_damage()._no_blood
+	return false
+end
 
-	if hit_unit:damage() and managers.network:session() and col_ray.body:extension() and col_ray.body:extension().damage then
-		local sync_damage = not blank and hit_unit:id() ~= -1
-		local network_damage = math.ceil(damage * 163.84)
-		damage = network_damage / 163.84
+function InstantBulletBase:on_collision(col_ray, weapon_unit, user_unit, damage, blank, no_sound)
+	local hit_unit = col_ray.unit
+	user_unit = alive(user_unit) and user_unit or nil
 
-		if sync_damage then
-			local normal_vec_yaw, normal_vec_pitch = self._get_vector_sync_yaw_pitch(col_ray.normal, 128, 64)
-			local dir_vec_yaw, dir_vec_pitch = self._get_vector_sync_yaw_pitch(col_ray.ray, 128, 64)
+	if user_unit and self:chk_friendly_fire(hit_unit, user_unit) then
+		return "friendly_fire"
+	end
 
-			managers.network:session():send_to_peers_synched("sync_body_damage_bullet", col_ray.unit:id() ~= -1 and col_ray.body or nil, user_unit:id() ~= -1 and user_unit or nil, normal_vec_yaw, normal_vec_pitch, col_ray.position, dir_vec_yaw, dir_vec_pitch, math.min(16384, network_damage))
-		end
+	local verify_hit_unit = false
 
-		local local_damage = not blank or hit_unit:id() == -1
+	if hit_unit:damage() then
+		local body_dmg_ext = col_ray.body:extension() and col_ray.body:extension().damage
 
-		if local_damage then
-			col_ray.body:extension().damage:damage_bullet(user_unit, col_ray.normal, col_ray.position, col_ray.ray, 1)
-			col_ray.body:extension().damage:damage_damage(user_unit, col_ray.normal, col_ray.position, col_ray.ray, damage)
+		if body_dmg_ext then
+			local sync_damage = not blank and hit_unit:id() ~= -1
+			local network_damage = math.ceil(damage * 163.84)
+			local body_damage = network_damage / 163.84
 
-			if alive(weapon_unit) and weapon_unit:base().categories and weapon_unit:base():categories() then
-				for _, category in ipairs(weapon_unit:base():categories()) do
-					col_ray.body:extension().damage:damage_bullet_type(category, user_unit, col_ray.normal, col_ray.position, col_ray.ray, 1)
+			if sync_damage and managers.network:session() then
+				local normal_vec_yaw, normal_vec_pitch = self._get_vector_sync_yaw_pitch(col_ray.normal, 128, 64)
+				local dir_vec_yaw, dir_vec_pitch = self._get_vector_sync_yaw_pitch(col_ray.ray, 128, 64)
+
+				managers.network:session():send_to_peers_synched("sync_body_damage_bullet", col_ray.unit:id() ~= -1 and col_ray.body or nil, user_unit and user_unit:id() ~= -1 and user_unit or nil, normal_vec_yaw, normal_vec_pitch, col_ray.position, dir_vec_yaw, dir_vec_pitch, math.min(16384, network_damage))
+			end
+
+			local local_damage = not blank or hit_unit:id() == -1
+
+			if local_damage then
+				verify_hit_unit = true
+				local weap_cats = alive(weapon_unit) and weapon_unit:base().categories and weapon_unit:base():categories()
+
+				body_dmg_ext:damage_bullet(user_unit, col_ray.normal, col_ray.position, col_ray.ray, 1)
+				body_dmg_ext:damage_damage(user_unit, col_ray.normal, col_ray.position, col_ray.ray, body_damage)
+
+				if weap_cats then
+					for _, category in ipairs(weap_cats) do
+						body_dmg_ext:damage_bullet_type(category, user_unit, col_ray.normal, col_ray.position, col_ray.ray, 1)
+					end
 				end
 			end
 		end
 	end
 
-	local result = nil
+	local play_impact_flesh = true
+	local result, do_push, push_mul = nil
 
-	if alive(weapon_unit) and hit_unit:character_damage() and hit_unit:character_damage().damage_bullet then
-		local is_alive = not hit_unit:character_damage():dead()
-		local knock_down = weapon_unit:base()._knock_down and weapon_unit:base()._knock_down > 0 and math.random() < weapon_unit:base()._knock_down
-		result = self:give_impact_damage(col_ray, weapon_unit, user_unit, damage, weapon_unit:base()._use_armor_piercing, false, knock_down, weapon_unit:base()._stagger, weapon_unit:base()._variant)
+	if not verify_hit_unit or alive(hit_unit) then
+		local hit_dmg_ext = hit_unit:character_damage()
+		play_impact_flesh = not hit_dmg_ext or not hit_dmg_ext._no_blood
 
-		if result ~= "friendly_fire" then
-			local is_dead = hit_unit:character_damage():dead()
-			local push_multiplier = self:_get_character_push_multiplier(weapon_unit, is_alive and is_dead)
+		if not blank and alive(weapon_unit) then
+			local weap_base = weapon_unit:base()
 
-			managers.game_play_central:physics_push(col_ray, push_multiplier)
+			if weap_base.chk_shield_knock then
+				weap_base:chk_shield_knock(hit_unit, col_ray, weapon_unit, user_unit, damage)
+			end
 
-			if result and result.type == "death" and weapon_unit:base()._do_shotgun_push then
-				managers.game_play_central:do_shotgun_push(col_ray.unit, col_ray.position, col_ray.ray, col_ray.distance, user_unit)
+			if hit_dmg_ext and hit_dmg_ext.damage_bullet then
+				local was_alive = not hit_dmg_ext:dead()
+				local armor_piercing = weap_base.has_armor_piercing and weap_base:has_armor_piercing()
+				local knock_down = weap_base.is_knock_down and weap_base:is_knock_down()
+				local stagger = weap_base.is_stagger and weap_base:is_stagger()
+				local variant = weap_base.variant and weap_base:variant()
+				result = self:give_impact_damage(col_ray, weapon_unit, user_unit, damage, armor_piercing, false, knock_down, stagger, variant)
+
+				if result ~= "friendly_fire" then
+					local has_died = hit_dmg_ext:dead()
+					do_push = true
+					push_mul = self:_get_character_push_multiplier(weapon_unit, was_alive and has_died)
+
+					if result and result.type == "death" and weap_base._do_shotgun_push then
+						managers.game_play_central:do_shotgun_push(col_ray.unit, col_ray.position, col_ray.ray, col_ray.distance, user_unit)
+					end
+				else
+					play_impact_flesh = false
+				end
+			else
+				do_push = true
 			end
 		else
-			play_impact_flesh = false
+			do_push = true
 		end
-	else
-		managers.game_play_central:physics_push(col_ray)
+	end
+
+	if do_push then
+		managers.game_play_central:physics_push(col_ray, push_mul)
 	end
 
 	if play_impact_flesh then
@@ -2693,4 +2808,30 @@ function ProjectilesPoisonBulletBase:on_collision(col_ray, weapon_unit, user_uni
 	end
 
 	return result
+end
+
+ConcussiveInstantBulletBase = ConcussiveInstantBulletBase or class(InstantBulletBase)
+
+function ConcussiveInstantBulletBase:give_impact_damage(col_ray, weapon_unit, user_unit, damage, ...)
+	if col_ray.unit:character_damage().on_concussion then
+		local conc_tweak = alive(weapon_unit) and weapon_unit:base().concussion_tweak and weapon_unit:base():concussion_tweak()
+		local conc_mul = conc_tweak and conc_tweak.mul or tweak_data.character.concussion_multiplier
+		local sound_tweak = conc_tweak and conc_tweak.sound_duration
+		local sound_eff_mul = sound_tweak and sound_tweak.mul or 0.3
+
+		managers.environment_controller:set_concussion_grenade(col_ray.unit:movement():m_head_pos(), true, 0, 0, conc_mul, true, true)
+		col_ray.unit:character_damage():on_concussion(sound_eff_mul, sound_tweak, false)
+	elseif col_ray.unit:character_damage().stun_hit then
+		local action_data = {
+			variant = "stun",
+			damage = 0,
+			attacker_unit = user_unit,
+			weapon_unit = weapon_unit,
+			col_ray = col_ray
+		}
+
+		col_ray.unit:character_damage():stun_hit(action_data)
+	end
+
+	return self.super.give_impact_damage(self, col_ray, weapon_unit, user_unit, damage, ...)
 end

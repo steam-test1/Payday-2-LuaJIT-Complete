@@ -105,3 +105,39 @@ function UnitDamage:set_update_callback(func_name, ...)
 
 	UnitDamage.super.set_update_callback(self, func_name, ...)
 end
+
+function UnitDamage:parent_function(ext_name, func_name, ...)
+	local parent_unit = self._unit:parent()
+
+	if not parent_unit then
+		return
+	end
+
+	if not alive(parent_unit) then
+		Application:error("[UnitDamage:parent_function] Parent was destroyed without unlinking.", self._unit)
+
+		return
+	end
+
+	if not func_name then
+		Application:error("[UnitDamage:parent_function] No function name parameter sent.", self._unit, self._unit:parent())
+
+		return
+	end
+
+	if ext_name then
+		local extension = parent_unit[ext_name](parent_unit)
+
+		if not extension then
+			Application:error("[UnitDamage:parent_function] No extension with name '" .. ext_name .. "' found in parent unit.", self._unit, self._unit:parent())
+		elseif not extension[func_name] then
+			Application:error("[UnitDamage:parent_function] No function with name '" .. func_name .. "' found in '" .. ext_name .. "' extension of parent unit.", self._unit, self._unit:parent())
+		else
+			extension[func_name](extension, ...)
+		end
+	elseif not parent_unit[func_name] then
+		Application:error("[UnitDamage:parent_function] No function with name '" .. func_name .. "' found in parent unit.", self._unit, self._unit:parent())
+	else
+		parent_unit[func_name](parent_unit, ...)
+	end
+end

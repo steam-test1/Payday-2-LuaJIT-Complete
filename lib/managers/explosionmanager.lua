@@ -398,7 +398,14 @@ function ExplosionManager:_detect_hits(params)
 		return unit:character_damage() and unit:character_damage().dead and not unit:character_damage():dead()
 	end
 
-	local bodies = World:find_bodies("intersect", "sphere", hit_pos, range, slotmask)
+	local bodies = nil
+
+	if params.shape ~= "cylinder" then
+		bodies = World:find_bodies("intersect", "sphere", hit_pos, range, slotmask)
+	else
+		bodies = World:find_bodies("intersect", "cylinder", hit_pos, params.to_pos, params.radius, slotmask)
+	end
+
 	local results = {
 		bodies_detected = bodies,
 		splinters = splinters,

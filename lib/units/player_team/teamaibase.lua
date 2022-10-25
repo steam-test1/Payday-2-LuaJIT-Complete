@@ -136,6 +136,9 @@ function TeamAIBase:unregister()
 	end
 end
 
+function TeamAIBase:chk_freeze_anims()
+end
+
 function TeamAIBase:character_name()
 	return managers.criminals:character_name_by_unit(self._unit)
 end

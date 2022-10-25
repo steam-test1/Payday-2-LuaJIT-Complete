@@ -609,6 +609,10 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.shield_knock = {
 		true
 	}
+	self.values.player.shield_knock_bullet = {
+		max_damage = 200,
+		chance = 0.8
+	}
 	self.values.temporary.overkill_damage_multiplier = {
 		{
 			1.75,

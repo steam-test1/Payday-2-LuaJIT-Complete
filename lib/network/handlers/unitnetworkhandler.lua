@@ -4417,6 +4417,50 @@ function UnitNetworkHandler:shot_player_turret(turret_unit, impact, sender)
 	end
 end
 
+function UnitNetworkHandler:sync_shield_unit_link(parent_unit, shield_unit, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local peer = self._verify_sender(sender_rpc)
+
+	if not peer then
+		return
+	end
+
+	if not alive(shield_unit) or not alive(parent_unit) then
+		return
+	end
+
+	local inv_ext = parent_unit:inventory()
+
+	if inv_ext and inv_ext.from_server_link_shield then
+		inv_ext:from_server_link_shield(shield_unit)
+	end
+end
+
+function UnitNetworkHandler:request_shield_unit_link(parent_unit, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local peer = self._verify_sender(sender_rpc)
+
+	if not peer then
+		return
+	end
+
+	if not alive(parent_unit) or not parent_unit:inventory() then
+		return
+	end
+
+	local shield_unit = parent_unit:inventory():shield_unit()
+
+	if shield_unit and shield_unit:id() ~= -1 then
+		sender_rpc:sync_shield_unit_link(shield_unit, parent_unit)
+	end
+end
+
 function UnitNetworkHandler:sync_feed_piggybank(bag_unit, reached_next_level, sender)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return

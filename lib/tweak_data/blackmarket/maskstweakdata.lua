@@ -8462,6 +8462,127 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 			}
 		}
 	}
+	self.masks.railhat_default = {
+		unit = "units/pd2_dlc_trt/masks/msk_railhat/msk_railhat",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true,
+		offsets = {
+			jacket = {
+				Vector3(0, 0, 0.435252),
+				Rotation(0, 0, -0)
+			},
+			sydney = {
+				Vector3(0, 0, 1.03148),
+				Rotation(0, 0, -0)
+			},
+			female_1 = {
+				Vector3(0, 0, 0.912237),
+				Rotation(0, 0, -0)
+			},
+			hoxton = {
+				Vector3(0, 0, 0.435252),
+				Rotation(-0, -0, -0)
+			},
+			max = {
+				Vector3(0, 0.316006, 0.316006),
+				Rotation(-0, -0, -0)
+			},
+			wolf = {
+				Vector3(0, 0, 0.554498),
+				Rotation(0, 0, -0)
+			},
+			bonnie = {
+				Vector3(0, 0, 0.554498),
+				Rotation(0, 0, -0)
+			},
+			bodhi = {
+				Vector3(0, 0, 0.196759),
+				Rotation(0, 0, -0)
+			},
+			jowi = {
+				Vector3(0, 0, 0.316006),
+				Rotation(0, 0, -0)
+			},
+			jimmy = {
+				Vector3(0, 0, 0.435252),
+				Rotation(0, 0, -0)
+			},
+			dragan = {
+				Vector3(0, 0, 0.554498),
+				Rotation(0, 0, -0)
+			}
+		}
+	}
+	self.masks.railhat_hair = {
+		unit = "units/pd2_dlc_trt/masks/msk_railhat/msk_railhat_hair",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true,
+		offsets = {
+			sokol = {
+				Vector3(0, -0.518719, 0.196759),
+				Rotation(0, 0, -0)
+			},
+			myh = {
+				Vector3(0, 0, -0.280226),
+				Rotation(0, 0, -0)
+			},
+			chico = {
+				Vector3(0, 0, -0.757211),
+				Rotation(0, 0, -0)
+			},
+			sydney = {
+				Vector3(0, 0.435252, 0),
+				Rotation(-0, -0, -0)
+			},
+			dragan = {
+				Vector3(0, -0.280226, -0.518719),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.railhat_clover = {
+		unit = "units/pd2_dlc_trt/masks/msk_railhat/msk_railhat_clover",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true
+	}
+	self.masks.railhat = {
+		unit = "units/pd2_dlc_trt/masks/msk_railhat/msk_railhat",
+		name_id = "bm_msk_railhat",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "trt_railhat",
+		texture_bundle_folder = "trt",
+		characters = {
+			bonnie = "railhat_default",
+			sokol = "railhat_hair",
+			myh = "railhat_hair",
+			chico = "railhat_hair",
+			dragan = "railhat_hair",
+			ecp_male = "railhat_default",
+			ecp_female = "railhat_default",
+			dragon = "railhat_default",
+			old_hoxton = "railhat_default",
+			jowi = "railhat_default",
+			max = "railhat_default",
+			joy = "railhat_hair",
+			dallas = "railhat_default",
+			jacket = "railhat_default",
+			jimmy = "railhat_hair",
+			bodhi = "railhat_default",
+			wolf = "railhat_default",
+			wild = "railhat_default",
+			hoxton = "railhat_default",
+			female_1 = "railhat_clover",
+			chains = "railhat_default",
+			sydney = "railhat_hair"
+		}
+	}
 	self.masks.homburg_default = {
 		unit = "units/pd2_dlc_a11th/masks/msk_homburg/msk_homburg",
 		name_id = "bm_msk_cheat_error",

@@ -35,6 +35,11 @@ function FeatureManager:_setup()
 			"prim_primtime",
 			"prim_darkmat",
 			"prim_newhorizon"
+		},
+		dialog_texas_heat_drop_name = {
+			"trt_railhat",
+			"trt_railwork",
+			"trt_railroad"
 		}
 	}
 

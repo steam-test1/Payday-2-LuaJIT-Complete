@@ -2235,6 +2235,16 @@ function MenuCallbackHandler:toggle_dot_hide_ads(item)
 	managers.user:set_setting("accessibility_dot_hide_ads", state, nil)
 end
 
+function MenuCallbackHandler:accessibility_screenflash_color_choice(item)
+	managers.user:set_setting("accessibility_screenflash_color", item:value(), nil)
+end
+
+function MenuCallbackHandler:accessibility_sounds_tinnitus_toggle(item)
+	local state = item:value() == "on"
+
+	managers.user:set_setting("accessibility_sounds_tinnitus", state, nil)
+end
+
 function MenuCallbackHandler:toggle_voicechat(item)
 	local vchat = item:value() == "on"
 
@@ -9995,6 +10005,27 @@ function MenuOptionInitiator:modify_accessibility_options(node)
 		end
 
 		toggle_dot_hide_ads:set_value(option_value)
+	end
+
+	local accessibility_screenflash_color = node:item("accessibility_screenflash_color_choice")
+
+	if accessibility_screenflash_color then
+		local setting = managers.user:get_setting("accessibility_screenflash_color")
+
+		if setting then
+			accessibility_screenflash_color:set_value(setting)
+		end
+	end
+
+	option_value = "off"
+	local accessibility_sounds_tinnitus = node:item("accessibility_sounds_tinnitus_toggle")
+
+	if accessibility_sounds_tinnitus then
+		if managers.user:get_setting("accessibility_sounds_tinnitus") then
+			option_value = "on"
+		end
+
+		accessibility_sounds_tinnitus:set_value(option_value)
 	end
 
 	return node

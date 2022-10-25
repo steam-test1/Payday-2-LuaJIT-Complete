@@ -66,3 +66,63 @@ end
 function HuskCopInventory:set_visibility_state(state)
 	CopInventory.set_visibility_state(self, state)
 end
+
+function HuskCopInventory:from_server_link_shield(shield_unit)
+	local cur_shield = self._shield_unit
+	self._shield_unit = shield_unit
+	self._shield_unit_name = nil
+	local vis_state = false
+	local enabled_state = false
+
+	if alive(cur_shield) then
+		if cur_shield:visible() then
+			vis_state = true
+		else
+			vis_state = false
+		end
+
+		if cur_shield:enabled() then
+			enabled_state = true
+		else
+			enabled_state = false
+		end
+
+		self:remove_ignore_unit(cur_shield)
+		cur_shield:unlink()
+
+		if cur_shield:id() == -1 then
+			cur_shield:set_slot(0)
+		else
+			cur_shield:set_enabled(false)
+		end
+	else
+		local equipped_weapon = self:equipped_unit()
+
+		if alive(equipped_weapon) then
+			if equipped_weapon:visible() then
+				vis_state = true
+			else
+				vis_state = false
+			end
+
+			if equipped_weapon:enabled() then
+				enabled_state = true
+			else
+				enabled_state = false
+			end
+		end
+	end
+
+	local align_name = self._shield_align_name or Idstring("a_weapon_left_front")
+	local align_obj = self._unit:get_object(align_name)
+
+	if align_obj then
+		self._unit:link(align_name, shield_unit, shield_unit:orientation_object():name())
+	else
+		self._unit:link(shield_unit, shield_unit:orientation_object():name())
+	end
+
+	shield_unit:set_visible(vis_state)
+	shield_unit:set_enabled(enabled_state)
+	self:add_ignore_unit(shield_unit)
+end

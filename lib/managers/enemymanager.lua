@@ -715,6 +715,11 @@ function EnemyManager:register_enemy(enemy)
 	self._enemy_data.unit_data[enemy:key()] = u_data
 
 	enemy:base():add_destroy_listener(self._unit_clbk_key, callback(self, self, "on_enemy_destroyed"))
+
+	if enemy:base().add_tweak_data_changed_listener then
+		enemy:base():add_tweak_data_changed_listener("EnemyManagerTweakDataChange" .. tostring(enemy:key()), callback(self, self, "_clbk_unit_tweak_data_changed", enemy:key()))
+	end
+
 	self:on_enemy_registered(enemy)
 end
 
@@ -821,6 +826,10 @@ function EnemyManager:on_enemy_unregistered(unit)
 	managers.groupai:state():on_enemy_unregistered(unit)
 end
 
+function EnemyManager:is_shield_registered(shield_unit)
+	return self._enemy_data.shields[shield_unit:key()] and true or false
+end
+
 function EnemyManager:register_shield(shield_unit)
 	local unit_data_ext = shield_unit:unit_data()
 
@@ -901,6 +910,11 @@ end
 
 function EnemyManager:register_civilian(unit)
 	unit:base():add_destroy_listener(self._unit_clbk_key, callback(self, self, "on_civilian_destroyed"))
+
+	if unit:base().add_tweak_data_changed_listener then
+		unit:base():add_tweak_data_changed_listener("EnemyManagerTweakDataChange" .. tostring(unit:key()), callback(self, self, "_clbk_unit_tweak_data_changed", unit:key()))
+	end
+
 	self:_create_unit_gfx_lod_data(unit, true)
 
 	local char_tweak = tweak_data.character[unit:base()._tweak_table]
@@ -1520,4 +1534,18 @@ function EnemyManager:cleanup_magazines(remove_to_i)
 	end
 
 	self._magazines = new_mags_table
+end
+
+function EnemyManager:_clbk_unit_tweak_data_changed(u_key, old_tweak_data, new_tweak_data)
+	local u_data = self._enemy_data.unit_data[u_key] or self._civilian_data.unit_data[u_key] or self._enemy_data.corpses[u_key]
+
+	if not u_data then
+		return
+	end
+
+	u_data.char_tweak = new_tweak_data
+
+	if old_tweak_data.access ~= new_tweak_data.access then
+		u_data.so_access = managers.navigation:convert_access_flag(new_tweak_data.access)
+	end
 end

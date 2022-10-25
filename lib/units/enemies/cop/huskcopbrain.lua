@@ -103,6 +103,9 @@ end
 function HuskCopBrain:action_complete_clbk(action)
 end
 
+function HuskCopBrain:on_tweak_data_changed(new_tweak_data)
+end
+
 function HuskCopBrain:on_alert(alert_data)
 	if self._unit:id() == -1 then
 		return

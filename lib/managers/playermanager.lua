@@ -822,12 +822,33 @@ function PlayerManager:_add_level_equipment(player)
 		return
 	end
 
+	local equipment_id, add_equipment, value = nil
+
 	for _, eq in ipairs(equipment) do
-		self:add_equipment({
-			silent = true,
-			equipment = eq,
-			slot = _
-		})
+		equipment_id = eq
+		add_equipment = true
+
+		if type(eq) == "table" then
+			equipment_id = eq.id
+
+			if eq.job_value then
+				if eq.job_value.save then
+					value = managers.mission:get_saved_job_value(eq.job_value.key)
+				else
+					value = managers.mission:get_job_value(eq.job_value.key)
+				end
+
+				add_equipment = add_equipment and value == eq.job_value.value
+			end
+		end
+
+		if add_equipment then
+			self:add_equipment({
+				silent = true,
+				equipment = equipment_id,
+				slot = _
+			})
+		end
 	end
 end
 

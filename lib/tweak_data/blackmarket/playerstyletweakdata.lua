@@ -4423,6 +4423,51 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		sequence = "set_ehtan"
 	}
 	self.player_styles.dodsuit.characters.ecp_male = dodsuit_characters_male_fat
+	self.player_styles.railroad = {
+		name_id = "bm_suit_railroad",
+		desc_id = "bm_suit_railroad_desc",
+		texture_bundle_folder = "trt",
+		global_value = "trt_railroad",
+		material_variations = {}
+	}
+	self.player_styles.railroad.material_variations.default = {
+		name_id = "bm_suit_railroad_default",
+		global_value = "trt",
+		desc_id = "bm_suit_railroad_default_desc"
+	}
+	self.player_styles.railroad.body_replacement = body_replacement_standard
+	self.player_styles.railroad.third_body_replacement = body_replacement_standard
+	self.player_styles.railroad.unit = "units/pd2_dlc_trt/characters/trt_acc_railroad/trt_acc_fps_railroad_male/trt_acc_fps_railroad_male"
+	self.player_styles.railroad.characters = {}
+	local railroad_characters_male = {
+		third_unit = "units/pd2_dlc_trt/characters/trt_acc_railroad/trt_acc_railroad_male_average/trt_acc_railroad_male_average"
+	}
+
+	set_characters_data("railroad", characters_male, railroad_characters_male)
+
+	local railroad_characters_male_big = {
+		third_unit = "units/pd2_dlc_trt/characters/trt_acc_railroad/trt_acc_railroad_male_big/trt_acc_railroad_male_big"
+	}
+
+	set_characters_data("railroad", characters_male_big, railroad_characters_male_big)
+
+	local railroad_characters_female = {
+		third_unit = "units/pd2_dlc_trt/characters/trt_acc_railroad/trt_acc_railroad_female_average/trt_acc_railroad_female_average"
+	}
+
+	set_characters_data("railroad", characters_female, railroad_characters_female)
+
+	local railroad_characters_female_big = {
+		third_unit = "units/pd2_dlc_trt/characters/trt_acc_railroad/trt_acc_railroad_female_fat/trt_acc_railroad_female_fat"
+	}
+
+	set_characters_data("railroad", characters_female_big, railroad_characters_female_big)
+
+	local railroad_characters_male_fat = {
+		third_unit = "units/pd2_dlc_trt/characters/trt_acc_railroad/trt_acc_railroad_male_fat/trt_acc_railroad_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.railroad.characters.ecp_male = railroad_characters_male_fat
 	self.player_styles.corl = {
 		name_id = "bm_suit_corl",
 		desc_id = "bm_suit_corl_desc",

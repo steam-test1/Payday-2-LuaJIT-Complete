@@ -453,6 +453,10 @@ function CopActionShoot:update(t)
 			end
 
 			if shoot then
+				if Network:is_server() and alive(self._ext_inventory._shield_unit) and target_dis < 1100 and self._ext_inventory._shield_unit:base() and self._ext_inventory._shield_unit:base().request_start_flash and self._ext_inventory._shield_unit:base():can_request_flash(t) then
+					self._ext_inventory._shield_unit:base():request_start_flash()
+				end
+
 				local melee = nil
 
 				if autotarget and (not self._common_data.melee_countered_t or t - self._common_data.melee_countered_t > 15) and target_dis < 130 and self._w_usage_tweak.melee_speed and self._melee_timeout_t < t then

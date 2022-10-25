@@ -753,6 +753,10 @@ function CopLogicBase._create_detected_attention_object_data(time, my_unit, u_ke
 
 		if att_unit:base().char_tweak then
 			char_tweak = att_unit:base():char_tweak()
+
+			if att_unit:base().add_tweak_data_changed_listener then
+				att_unit:base():add_tweak_data_changed_listener("detect_" .. tostring(my_unit:key()), callback(ext_brain, ext_brain, "on_detected_attention_obj_tweak_data_changed", u_key))
+			end
 		end
 
 		is_very_dangerous = att_unit:base()._tweak_table == "taser" or att_unit:base()._tweak_table == "spooc"
@@ -808,6 +812,10 @@ end
 function CopLogicBase._destroy_detected_attention_object_data(data, attention_info)
 	attention_info.handler:remove_listener("detect_" .. tostring(data.key))
 
+	if alive(attention_info.unit) and attention_info.unit:base() and attention_info.unit:base().add_tweak_data_changed_listener then
+		attention_info.unit:base():remove_tweak_data_changed_listener("detect_" .. tostring(data.key))
+	end
+
 	if attention_info.settings.notice_clbk then
 		attention_info.settings.notice_clbk(data.unit, false)
 	end
@@ -826,6 +834,10 @@ end
 function CopLogicBase._destroy_all_detected_attention_object_data(data)
 	for u_key, attention_info in pairs(data.detected_attention_objects) do
 		attention_info.handler:remove_listener("detect_" .. tostring(data.key))
+
+		if alive(attention_info.unit) and attention_info.unit:base() and attention_info.unit:base().add_tweak_data_changed_listener then
+			attention_info.unit:base():remove_tweak_data_changed_listener("detect_" .. tostring(data.key))
+		end
 
 		if not attention_info.identified and attention_info.settings.notice_clbk then
 			attention_info.settings.notice_clbk(data.unit, false)
@@ -919,6 +931,16 @@ function CopLogicBase.on_detected_attention_obj_modified(data, modified_u_key)
 	if AIAttentionObject.REACT_SCARED <= old_settings.reaction and (not new_settings or AIAttentionObject.REACT_SCARED > new_settings.reaction) then
 		managers.groupai:state():on_criminal_suspicion_progress(attention_info.unit, data.unit, nil)
 	end
+end
+
+function CopLogicBase.on_detected_attention_obj_tweak_data_changed(data, modified_u_key, old_tweak_data, new_tweak_data)
+	local attention_info = data.detected_attention_objects[modified_u_key]
+
+	if not attention_info then
+		return
+	end
+
+	attention_info.char_tweak = new_tweak_data
 end
 
 function CopLogicBase._set_attention_obj(data, new_att_obj, new_reaction)

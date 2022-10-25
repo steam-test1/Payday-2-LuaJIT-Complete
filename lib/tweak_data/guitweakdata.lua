@@ -5117,9 +5117,24 @@ function GuiTweakData:init(tweak_data)
 	}
 
 	table.insert(self.new_heists, {
+		name_id = "menu_nh_trai_01",
+		texture_path = "guis/dlcs/trai/textures/pd2/new_heists/trai_01",
+		url = "https://pd2.link/LostInTransitHeistSLS"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_trai_02",
+		texture_path = "guis/dlcs/trai/textures/pd2/new_heists/trai_02",
+		url = "https://pd2.link/LostInTransitBundleSLS"
+	})
+	table.insert(self.new_heists, {
 		name_id = "menu_nh_a11th_01",
 		texture_path = "guis/dlcs/a11th/textures/pd2/new_heists/a11th_01",
 		url = "https://pd2.link/PAYDAY11SLP2"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_trai_03",
+		texture_path = "guis/dlcs/trai/textures/pd2/new_heists/trai_03",
+		url = "https://pd2.link/LostInTransitDropsSL"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_pxp2_01",
