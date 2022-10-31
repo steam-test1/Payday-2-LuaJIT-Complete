@@ -7290,6 +7290,18 @@ function BlackMarketManager:character_mask_off_sequence_by_character_name(charac
 	return self:_character_tweak_data_by_name(character).mask_off_sequence
 end
 
+function BlackMarketManager:character_face_mask_on_sequence_by_character_name(character)
+	character = CriminalsManager.convert_old_to_new_character_workname(character)
+
+	return self:_character_tweak_data_by_name(character).face_mask_on_sequence
+end
+
+function BlackMarketManager:character_face_mask_off_sequence_by_character_name(character)
+	character = CriminalsManager.convert_old_to_new_character_workname(character)
+
+	return self:_character_tweak_data_by_name(character).face_mask_off_sequence
+end
+
 function BlackMarketManager:character_material_by_character_name(character)
 	character = CriminalsManager.convert_old_to_new_character_workname(character)
 	local material_config = self:_character_tweak_data_by_name(character).material_config

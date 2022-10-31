@@ -1281,7 +1281,8 @@ Play the full version soon to get your full PAYDAY!]],
 		[Idstring("heavy_swat_steel_no_decal"):key()] = "shield",
 		[Idstring("snow"):key()] = "snow",
 		[Idstring("ice"):key()] = "ice_thick",
-		[Idstring("aim_debug"):key()] = "aim_debug"
+		[Idstring("aim_debug"):key()] = "aim_debug",
+		[Idstring("flesh_devil"):key()] = "flesh"
 	}
 	self.screen = {
 		fadein_delay = 1

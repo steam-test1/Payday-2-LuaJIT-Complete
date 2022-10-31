@@ -69,7 +69,6 @@ end
 
 function HuskCopInventory:from_server_link_shield(shield_unit)
 	local cur_shield = self._shield_unit
-	self._shield_unit = shield_unit
 	self._shield_unit_name = nil
 	local vis_state = false
 	local enabled_state = false
@@ -87,8 +86,7 @@ function HuskCopInventory:from_server_link_shield(shield_unit)
 			enabled_state = false
 		end
 
-		self:remove_ignore_unit(cur_shield)
-		cur_shield:unlink()
+		self:unequip_shield()
 
 		if cur_shield:id() == -1 then
 			cur_shield:set_slot(0)
@@ -116,13 +114,19 @@ function HuskCopInventory:from_server_link_shield(shield_unit)
 	local align_name = self._shield_align_name or Idstring("a_weapon_left_front")
 	local align_obj = self._unit:get_object(align_name)
 
-	if align_obj then
-		self._unit:link(align_name, shield_unit, shield_unit:orientation_object():name())
-	else
-		self._unit:link(shield_unit, shield_unit:orientation_object():name())
+	if not align_obj then
+		Application:error("[HuskCopInventory:from_server_link_shield] No align object with name '" .. tostring(align_name) .. "' found in unit. Falling back to orientation object.", self._unit)
+
+		align_obj = self._unit:orientation_object()
+		align_name = align_obj:name()
 	end
 
-	shield_unit:set_visible(vis_state)
-	shield_unit:set_enabled(enabled_state)
-	self:add_ignore_unit(shield_unit)
+	self:equip_shield(shield_unit, align_name)
+
+	if self._shield_unit then
+		shield_unit:set_visible(vis_state)
+		shield_unit:set_enabled(enabled_state)
+	else
+		Application:error("[HuskCopInventory:from_server_link_shield] Failed to equip synced shield.", self._unit, shield_unit)
+	end
 end

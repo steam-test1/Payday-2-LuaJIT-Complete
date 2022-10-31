@@ -1160,21 +1160,7 @@ function ActionSpooc:anim_act_clbk(anim_act)
 		if self._strike_unit:base().is_local_player then
 			self:_play_strike_camera_shake()
 			mvector3.negate(target_vec)
-
-			local dot_fwd = mvector3.dot(target_vec, self._common_data.fwd)
-			local dot_r = mvector3.dot(target_vec, self._common_data.right)
-
-			if math.abs(dot_r) < math.abs(dot_fwd) then
-				if dot_fwd > 0 then
-					managers.environment_controller:hit_feedback_front()
-				else
-					managers.environment_controller:hit_feedback_back()
-				end
-			elseif dot_r > 0 then
-				managers.environment_controller:hit_feedback_right()
-			else
-				managers.environment_controller:hit_feedback_left()
-			end
+			managers.hud:on_hit_direction(target_vec, HUDHitDirection.DAMAGE_TYPES.HEALTH, 0)
 		end
 
 		if not self:is_flying_strike() then

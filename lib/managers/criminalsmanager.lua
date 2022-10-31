@@ -188,6 +188,10 @@ function CriminalsManager:_remove(id)
 		if not char_data.data.ai and alive(char_data.unit) then
 			self:on_last_valid_player_spawn_point_updated(char_data.unit)
 		end
+
+		if managers.game_play_central then
+			managers.game_play_central:remove_decal_unit_redirect(char_data.unit)
+		end
 	else
 		managers.hud:remove_teammate_panel_by_name_id(char_data.name)
 	end
@@ -469,6 +473,16 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 
 			run_sequence_safe(mask_on_sequence)
 		end
+
+		if mask_data.use_face_mask_on_sequence then
+			local face_mask_on_sequence = managers.blackmarket:character_face_mask_on_sequence_by_character_name(character_name)
+
+			run_sequence_safe(face_mask_on_sequence)
+		else
+			local face_mask_off_sequence = managers.blackmarket:character_face_mask_off_sequence_by_character_name(character_name)
+
+			run_sequence_safe(face_mask_off_sequence)
+		end
 	end
 
 	if unit:spawn_manager() then
@@ -516,6 +530,14 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 
 				if char_mesh_unit:damage():has_sequence("on_destroyed") and character_unit:base().add_destroy_listener then
 					character_unit:base():add_destroy_listener("visual_mesh", CriminalsManager.character_mesh_destroy_clbk)
+				end
+			end
+
+			if managers.game_play_central then
+				managers.game_play_central:remove_decal_unit_redirect(unit)
+
+				if tweak_data.blackmarket:get_player_style_value(player_style, character_name, get_value_string("redirect_decals")) then
+					managers.game_play_central:add_decal_unit_redirect(unit, char_mesh_unit)
 				end
 			end
 
@@ -622,7 +644,7 @@ function CriminalsManager.character_mesh_damage_clbk(character_unit, damage_info
 			mvector3.set_zero(vel)
 
 			local normal = math.UP
-			local pos = mvector3.copy(pos)
+			local pos = mvector3.copy(damage_info.col_ray and damage_info.col_ray.position or pos)
 
 			char_mesh:damage():run_sequence("on_damage_taken", damage_info.result.variant, damage_info.attacker_unit, nil, normal, pos, rot, 0, vel, nil)
 		end

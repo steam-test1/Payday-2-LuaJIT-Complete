@@ -433,7 +433,9 @@ function CopMovement:post_init()
 	self._unit:character_damage():add_listener("movement", event_list, callback(self, self, "damage_clbk"))
 	self._unit:inventory():add_listener("movement", {
 		"equip",
-		"unequip"
+		"unequip",
+		"shield_equip",
+		"shield_unequip"
 	}, callback(self, self, "clbk_inventory"))
 	self:add_weapons()
 
@@ -2081,41 +2083,43 @@ function CopMovement:anim_clbk_enemy_unspawn_melee_item()
 end
 
 function CopMovement:clbk_inventory(unit, event)
-	local weapon = self._ext_inventory:equipped_unit()
+	if event ~= "shield_equip" and event ~= "shield_unequip" then
+		local weapon = self._ext_inventory:equipped_unit()
 
-	if weapon then
-		if self._weapon_hold then
-			for i, hold_type in ipairs(self._weapon_hold) do
-				self._machine:set_global(hold_type, 0)
+		if weapon then
+			if self._weapon_hold then
+				for i, hold_type in ipairs(self._weapon_hold) do
+					self._machine:set_global(hold_type, 0)
+				end
 			end
-		end
 
-		if self._weapon_anim_global then
-			self._machine:set_global(self._weapon_anim_global, 0)
-		end
-
-		self._weapon_hold = {}
-		local weap_tweak = weapon:base():weapon_tweak_data()
-
-		if type(weap_tweak.hold) == "table" then
-			local num = #weap_tweak.hold + 1
-
-			for i, hold_type in ipairs(weap_tweak.hold) do
-				self._machine:set_global(hold_type, self:get_hold_type_weight(hold_type) or num - i)
-				table.insert(self._weapon_hold, hold_type)
+			if self._weapon_anim_global then
+				self._machine:set_global(self._weapon_anim_global, 0)
 			end
-		else
-			self._machine:set_global(weap_tweak.hold, self:get_hold_type_weight(weap_tweak.hold) or 1)
-			table.insert(self._weapon_hold, weap_tweak.hold)
+
+			self._weapon_hold = {}
+			local weap_tweak = weapon:base():weapon_tweak_data()
+
+			if type(weap_tweak.hold) == "table" then
+				local num = #weap_tweak.hold + 1
+
+				for i, hold_type in ipairs(weap_tweak.hold) do
+					self._machine:set_global(hold_type, self:get_hold_type_weight(hold_type) or num - i)
+					table.insert(self._weapon_hold, hold_type)
+				end
+			else
+				self._machine:set_global(weap_tweak.hold, self:get_hold_type_weight(weap_tweak.hold) or 1)
+				table.insert(self._weapon_hold, weap_tweak.hold)
+			end
+
+			local weapon_usage = weap_tweak.anim_usage or weap_tweak.usage
+
+			self._machine:set_global(weapon_usage, 1)
+
+			self._weapon_anim_global = weapon_usage
+
+			self._machine:set_global("is_npc", 1)
 		end
-
-		local weapon_usage = weap_tweak.anim_usage or weap_tweak.usage
-
-		self._machine:set_global(weapon_usage, 1)
-
-		self._weapon_anim_global = weapon_usage
-
-		self._machine:set_global("is_npc", 1)
 	end
 
 	for _, action in ipairs(self._active_actions) do

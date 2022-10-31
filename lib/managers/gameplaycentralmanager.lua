@@ -60,6 +60,23 @@ function GamePlayCentralManager:init()
 	local is_x360 = SystemInfo:platform() == Idstring("X360")
 	self._block_bullet_decals = is_ps3 or is_x360
 	self._block_blood_decals = is_x360
+	self._decal_unit_redirect = {}
+end
+
+function GamePlayCentralManager:add_decal_unit_redirect(unit, redirect_unit)
+	if not alive(unit) or not alive(redirect_unit) then
+		return
+	end
+
+	self._decal_unit_redirect[unit:key()] = redirect_unit
+end
+
+function GamePlayCentralManager:remove_decal_unit_redirect(unit)
+	if not alive(unit) then
+		return
+	end
+
+	self._decal_unit_redirect[unit:key()] = nil
 end
 
 function GamePlayCentralManager:setup_effects(level_id)
@@ -402,8 +419,16 @@ function GamePlayCentralManager:_play_bullet_hit(params)
 		return
 	end
 
-	if not alive(params.col_ray.unit) then
+	local unit = params.col_ray.unit
+
+	if not alive(unit) then
 		return
+	end
+
+	local unit_key = unit:key()
+
+	if alive(self._decal_unit_redirect[unit_key]) then
+		unit = self._decal_unit_redirect[unit_key]
 	end
 
 	local col_ray = params.col_ray
@@ -429,7 +454,7 @@ function GamePlayCentralManager:_play_bullet_hit(params)
 	mvec3_lerp(effect_normal, col_ray.normal, tmp_vec4, math.random())
 	mvec3_spread(effect_normal, 10)
 
-	local material_name, pos, norm = World:pick_decal_material(col_ray.unit, decal_ray_from, decal_ray_to, slot_mask)
+	local material_name, pos, norm = World:pick_decal_material(unit, decal_ray_from, decal_ray_to, slot_mask)
 	material_name = material_name ~= empty_idstr and material_name
 	local effect = params.effect
 
@@ -438,9 +463,9 @@ function GamePlayCentralManager:_play_bullet_hit(params)
 		local redir_name = nil
 
 		if need_decal then
-			redir_name, pos, norm = World:project_decal(decal, hit_pos + offset, col_ray.ray, col_ray.unit, math.UP, col_ray.normal)
+			redir_name, pos, norm = World:project_decal(decal, hit_pos + offset, col_ray.ray, unit, math.UP, col_ray.normal)
 		elseif need_effect then
-			redir_name, pos, norm = World:pick_decal_effect(decal, col_ray.unit, decal_ray_from, decal_ray_to, slot_mask)
+			redir_name, pos, norm = World:pick_decal_effect(decal, unit, decal_ray_from, decal_ray_to, slot_mask)
 		end
 
 		if redir_name == empty_idstr then

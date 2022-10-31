@@ -416,6 +416,8 @@ function BlackMarketTweakData:_init_characters(tweak_data)
 		menu_unit = "units/pd2_dlc_max/characters/npc_criminals_max/npc_criminal_max_menu",
 		texture_bundle_folder = "max",
 		sequence = "var_mtr_max",
+		face_mask_on_sequence = "face_mask_on",
+		face_mask_off_sequence = "face_mask_off",
 		material_config = {
 			{
 				fps = "units/pd2_dlc_max/characters/fps_criminals_max/mtr_max",
@@ -464,7 +466,9 @@ function BlackMarketTweakData:_init_characters(tweak_data)
 	}
 	self.characters.ai_max = {
 		npc_unit = "units/pd2_dlc_max/characters/npc_criminals_max/max/npc_criminal_max",
-		sequence = "var_mtr_max"
+		sequence = "var_mtr_max",
+		face_mask_on_sequence = "face_mask_on",
+		face_mask_off_sequence = "face_mask_off"
 	}
 	self.characters.joy = {
 		fps_unit = "units/pd2_dlc_joy/characters/npc_criminals_joy_1/fps_joy_mover",

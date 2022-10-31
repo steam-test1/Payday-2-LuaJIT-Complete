@@ -137,11 +137,9 @@ function PlayerCarry:_update_check_actions(t, dt)
 	if not new_action then
 		new_action = self:_check_action_primary_attack(t, input)
 
-		if not new_action then
+		if not _G.IS_VR and not new_action then
 			self:_check_stop_shooting()
 		end
-
-		self._shooting = new_action
 	end
 
 	new_action = new_action or self:_check_action_throw_projectile(t, input)

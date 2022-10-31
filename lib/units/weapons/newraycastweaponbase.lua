@@ -1577,12 +1577,7 @@ function NewRaycastWeaponBase:_set_parts_visible(visible)
 
 			if alive(unit) then
 				is_visible = visible and self:_is_part_visible(part_id)
-
-				if self:is_second_sight_on() then
-					is_visible = is_visible and not self._parts[part_id].steelsight_visible
-				else
-					is_visible = is_visible and (self._parts[part_id].steelsight_visible == nil or self._parts[part_id].steelsight_visible == steelsight_swap_state)
-				end
+				is_visible = is_visible and (self._parts[part_id].steelsight_visible == nil or self._parts[part_id].steelsight_visible == steelsight_swap_state)
 
 				unit:set_visible(is_visible)
 

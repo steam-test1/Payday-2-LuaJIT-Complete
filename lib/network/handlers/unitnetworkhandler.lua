@@ -2384,7 +2384,7 @@ function UnitNetworkHandler:sync_waiting_for_player_skip()
 	game_state_machine:current_state():sync_skip()
 end
 
-function UnitNetworkHandler:criminal_hurt(criminal_unit, attacker_unit, damage_ratio, sender)
+function UnitNetworkHandler:criminal_hurt(criminal_unit, attacker_unit, damage_ratio, height_offset, sender)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_character_and_sender(criminal_unit, sender) then
 		return
 	end
@@ -2395,6 +2395,26 @@ function UnitNetworkHandler:criminal_hurt(criminal_unit, attacker_unit, damage_r
 
 	managers.hud:set_mugshot_damage_taken(criminal_unit:unit_data().mugshot_id)
 	managers.groupai:state():criminal_hurt_drama(criminal_unit, attacker_unit, damage_ratio * 0.01)
+
+	if attacker_unit then
+		local char_data = managers.criminals:character_by_unit(criminal_unit)
+		local player_style = char_data and char_data.visual_state and char_data.visual_state.player_style
+		local third_redirect_decals = player_style and tweak_data.blackmarket:get_player_style_value(player_style, char_data.name, "third_redirect_decals")
+
+		if third_redirect_decals then
+			local hit_pos = mvector3.copy(criminal_unit:movement():m_pos())
+
+			mvector3.set_z(hit_pos, hit_pos.z + height_offset)
+
+			local col_ray = World:raycast("ray", attacker_unit:movement():m_head_pos(), hit_pos, "target_unit", criminal_unit)
+
+			if col_ray then
+				managers.game_play_central:play_impact_sound_and_effects({
+					col_ray = col_ray
+				})
+			end
+		end
+	end
 end
 
 function UnitNetworkHandler:copr_teammate_heal(healer_unit, upgrade_level, sender)
@@ -4417,18 +4437,20 @@ function UnitNetworkHandler:shot_player_turret(turret_unit, impact, sender)
 	end
 end
 
+function UnitNetworkHandler:sync_change_char_tweak(unit, new_tweak_name, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_character_and_sender(unit, sender_rpc) then
+		return
+	end
+
+	local base_ext = parent_unit:base()
+
+	if base_ext and base_ext.change_char_tweak then
+		base_ext:change_char_tweak(new_tweak_name)
+	end
+end
+
 function UnitNetworkHandler:sync_shield_unit_link(parent_unit, shield_unit, sender_rpc)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
-		return
-	end
-
-	local peer = self._verify_sender(sender_rpc)
-
-	if not peer then
-		return
-	end
-
-	if not alive(shield_unit) or not alive(parent_unit) then
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not alive(shield_unit) or not self._verify_character_and_sender(parent_unit, sender_rpc) then
 		return
 	end
 
@@ -4440,21 +4462,12 @@ function UnitNetworkHandler:sync_shield_unit_link(parent_unit, shield_unit, send
 end
 
 function UnitNetworkHandler:request_shield_unit_link(parent_unit, sender_rpc)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_character_and_sender(parent_unit, sender_rpc) then
 		return
 	end
 
-	local peer = self._verify_sender(sender_rpc)
-
-	if not peer then
-		return
-	end
-
-	if not alive(parent_unit) or not parent_unit:inventory() then
-		return
-	end
-
-	local shield_unit = parent_unit:inventory():shield_unit()
+	local inv_ext = parent_unit:inventory()
+	local shield_unit = inv_ext and inv_ext:shield_unit()
 
 	if shield_unit and shield_unit:id() ~= -1 then
 		sender_rpc:sync_shield_unit_link(shield_unit, parent_unit)

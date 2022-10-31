@@ -398,6 +398,14 @@ function ScrollItemList:set_selected_callback(func)
 	self._on_selected_callback = func
 end
 
+function ScrollItemList:selected_index()
+	for index, item in ipairs(self._current_items) do
+		if item == self._selected_item then
+			return index
+		end
+	end
+end
+
 function ScrollItemList:selected_item()
 	return self._selected_item
 end

@@ -40,6 +40,18 @@ function FeatureManager:_setup()
 			"trt_railhat",
 			"trt_railwork",
 			"trt_railroad"
+		},
+		dialog_texas_halloween_name = {
+			"h22_deadman",
+			"h22_nightwalker",
+			"h22_tasslefringe",
+			"h22_bloodysnarl",
+			"h22_ghostly",
+			"h22_tornrags",
+			"h22_banshee",
+			"h22_darkprince",
+			"h22_devilclaws",
+			"h22_devilhorn"
 		}
 	}
 

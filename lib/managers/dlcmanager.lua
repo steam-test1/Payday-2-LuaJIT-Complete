@@ -2279,6 +2279,56 @@ function WINDLCManager:init()
 					no_install = true,
 					entitlement_id = "856324f5178b4cb79670a6fb92cf904c",
 					external = true
+				},
+				h22_deadman = {
+					no_install = true,
+					entitlement_id = "5068bdffe90f41d99bb3364c698747a0",
+					external = true
+				},
+				h22_nightwalker = {
+					no_install = true,
+					entitlement_id = "4ae27196dd404d9e88f8491ceab0331e",
+					external = true
+				},
+				h22_tasslefringe = {
+					no_install = true,
+					entitlement_id = "ad637b9c32754b2f8de6adb6b27402ba",
+					external = true
+				},
+				h22_bloodysnarl = {
+					no_install = true,
+					entitlement_id = "6ba11d02103d40bb881aeaeee3635b47",
+					external = true
+				},
+				h22_ghostly = {
+					no_install = true,
+					entitlement_id = "cff914faa08142c9b6c36ff7d00461b2",
+					external = true
+				},
+				h22_tornrags = {
+					no_install = true,
+					entitlement_id = "3098a3509615457e84ea63d3393163cc",
+					external = true
+				},
+				h22_banshee = {
+					no_install = true,
+					entitlement_id = "52f194a7fe524b9591988f774b003dd6",
+					external = true
+				},
+				h22_darkprince = {
+					no_install = true,
+					entitlement_id = "18a43b128ad2440aa6fbaf2ed22fee5f",
+					external = true
+				},
+				h22_devilclaws = {
+					no_install = true,
+					entitlement_id = "cb43a681f3f447e1b8fec3b6766530f3",
+					external = true
+				},
+				h22_devilhorn = {
+					no_install = true,
+					entitlement_id = "b724258340d642c299e1589926917522",
+					external = true
 				}
 			},
 			entitlements = {}

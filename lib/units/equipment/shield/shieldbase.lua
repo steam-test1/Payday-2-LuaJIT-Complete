@@ -4,6 +4,13 @@ function ShieldBase:init(unit)
 	ShieldBase.super.init(self, unit, false)
 end
 
+function ShieldBase:get_use_data()
+	return nil
+end
+
+function ShieldBase:request_use(t)
+end
+
 SyncedShieldBase = SyncedShieldBase or class(ShieldBase)
 
 function SyncedShieldBase:init(...)
@@ -42,7 +49,7 @@ ShieldFlashBase._NET_EVENTS = {
 function ShieldFlashBase:init(...)
 	ShieldFlashBase.super.init(self, ...)
 
-	self._last_charge_start_t = 0
+	self._flash_charge_cooldown_t = 0
 	local shield_tweak_data = self._shield_tweak_name and tweak_data.group_ai.flash_shields[self._shield_tweak_name]
 
 	if not shield_tweak_data then
@@ -117,6 +124,27 @@ function ShieldFlashBase:init(...)
 	end
 end
 
+function ShieldFlashBase:get_use_data()
+	return Network:is_server() and {
+		range = self._flash_charge_range,
+		cooldown = self._flash_charge_cooldown_t
+	} or nil
+end
+
+function ShieldFlashBase:request_use(t)
+	t = t or TimerManager:game():time()
+
+	if not Network:is_server() or t < self._flash_charge_cooldown_t then
+		return
+	end
+
+	self._flash_charge_cooldown_t = t + self._flash_charge_cooldown
+
+	self:_start_flash()
+
+	return self._flash_charge_cooldown_t
+end
+
 function ShieldFlashBase:sync_net_event(event_id)
 	if event_id == self._NET_EVENTS.start_flash then
 		self:_start_flash()
@@ -125,23 +153,6 @@ end
 
 function ShieldFlashBase:is_charging()
 	return self._charge_upd_enabled
-end
-
-function ShieldFlashBase:can_request_flash(t)
-	t = t or TimerManager:game():time()
-
-	return self._last_charge_start_t < t
-end
-
-function ShieldFlashBase:request_start_flash(t)
-	if not Network:is_server() then
-		return
-	end
-
-	t = t or TimerManager:game():time()
-	self._last_charge_start_t = t + self._flash_charge_cooldown
-
-	self:_start_flash()
 end
 
 function ShieldFlashBase:_start_flash()
@@ -352,6 +363,8 @@ function ShieldFlashBase:_flash_local_player(detonate_pos, dir, range)
 			if self._flash_shape_radius < math.distance_to_segment(head_pos, detonate_pos, tmp_vec1) then
 				return
 			end
+		else
+			return
 		end
 	else
 		return

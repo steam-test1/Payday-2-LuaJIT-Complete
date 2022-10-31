@@ -5,6 +5,7 @@ PlayerDamage._ARMOR_STEPS = tweak_data.player.damage.ARMOR_STEPS
 PlayerDamage._ARMOR_DAMAGE_REDUCTION = tweak_data.player.damage.ARMOR_DAMAGE_REDUCTION
 PlayerDamage._ARMOR_DAMAGE_REDUCTION_STEPS = tweak_data.player.damage.ARMOR_DAMAGE_REDUCTION_STEPS
 PlayerDamage._UPPERS_COOLDOWN = 20
+local mvec1 = Vector3()
 
 function PlayerDamage:init(unit)
 	self._lives_init = tweak_data.player.damage.LIVES_INIT
@@ -533,7 +534,7 @@ function PlayerDamage:update(unit, t, dt)
 
 		if self._concussion_data.intensity <= 0 then
 			SoundDevice:set_rtpc("concussion_effect", 0)
-			self:_stop_concussion()
+			self:_stop_concussion(true)
 		else
 			SoundDevice:set_rtpc("concussion_effect", self._concussion_data.intensity * 100)
 		end
@@ -1512,13 +1513,23 @@ end
 
 function PlayerDamage:_send_damage_drama(attack_data, health_subtracted)
 	local dmg_percent = health_subtracted / self._HEALTH_INIT
-	local attacker = nil
+	local attacker = attack_data.attacker_unit
 
-	if not attacker or attack_data.attacker_unit:id() == -1 then
-		attacker = self._unit
+	if not alive(attacker) or not attacker:movement() or attacker:id() == -1 then
+		attacker = nil
 	end
 
-	self._unit:network():send("criminal_hurt", attacker, math.clamp(math.ceil(dmg_percent * 100), 1, 100))
+	local hit_offset_height = 150
+
+	if attack_data.col_ray and attack_data.origin then
+		local closest_point = mvec1
+
+		math.point_on_line(attack_data.origin, attack_data.col_ray.position, self._unit:movement():m_head_pos(), closest_point)
+
+		hit_offset_height = math.clamp(closest_point.z - self._unit:movement():m_pos().z, 0, 300)
+	end
+
+	self._unit:network():send("criminal_hurt", attacker or self._unit, math.clamp(math.ceil(dmg_percent * 100), 1, 100), hit_offset_height)
 
 	if Network:is_server() then
 		attacker = attack_data.attacker_unit
@@ -1624,7 +1635,6 @@ function PlayerDamage:damage_fall(data)
 	local die = death_limit < data.height
 
 	self._unit:sound():play("player_hit")
-	managers.environment_controller:hit_feedback_down()
 	managers.hud:on_hit_direction(Vector3(0, 0, 0), die and HUDHitDirection.DAMAGE_TYPES.HEALTH or HUDHitDirection.DAMAGE_TYPES.ARMOUR, 0)
 
 	if self._bleed_out and not is_free_falling then
@@ -2146,7 +2156,6 @@ function PlayerDamage:on_downed()
 	})
 	managers.hud:on_downed()
 	self:_stop_tinnitus()
-	self:_stop_concussion()
 	self:clear_armor_stored_health()
 	self:clear_delayed_damage()
 	managers.player:force_end_copr_ability()
@@ -2603,7 +2612,7 @@ function PlayerDamage:_chk_suppression_too_soon(amount)
 	end
 end
 
-function PlayerDamage.clbk_msg_overwrite_criminal_hurt(overwrite_data, msg_queue, msg_name, crim_unit, attacker_unit, dmg)
+function PlayerDamage.clbk_msg_overwrite_criminal_hurt(overwrite_data, msg_queue, msg_name, crim_unit, attacker_unit, dmg, height_offset)
 	if msg_queue then
 		local crim_key = crim_unit:key()
 		local attacker_key = attacker_unit:key()
@@ -2617,7 +2626,8 @@ function PlayerDamage.clbk_msg_overwrite_criminal_hurt(overwrite_data, msg_queue
 				msg_name,
 				crim_unit,
 				attacker_unit,
-				dmg
+				dmg,
+				height_offset
 			})
 
 			overwrite_data.indexes[crim_key] = {
@@ -2741,15 +2751,15 @@ function PlayerDamage:reset_suppression()
 	self._supperssion_data.decay_start_t = nil
 end
 
-function PlayerDamage:on_concussion(mul, duration_tweak, skip_disoriented_sfx)
+function PlayerDamage:on_concussion(mul, skip_disoriented_sfx, duration_tweak)
 	if self._downed_timer then
 		return
 	end
 
-	self:_start_concussion(mul, duration_tweak, skip_disoriented_sfx)
+	self:_start_concussion(mul, skip_disoriented_sfx, duration_tweak)
 end
 
-function PlayerDamage:_start_concussion(mul, duration_tweak, skip_disoriented_sfx)
+function PlayerDamage:_start_concussion(mul, skip_disoriented_sfx, duration_tweak)
 	if self._concussion_data then
 		if mul < self._concussion_data.intensity then
 			return
@@ -2790,13 +2800,17 @@ function PlayerDamage:_start_concussion(mul, duration_tweak, skip_disoriented_sf
 	end
 end
 
-function PlayerDamage:_stop_concussion()
+function PlayerDamage:_stop_concussion(finished)
 	if not self._concussion_data then
 		return
 	end
 
 	if self._concussion_data.snd_event then
 		self._unit:sound():play("concussion_effect_off")
+	end
+
+	if not finished and self._concussion_data.snd_event_disorient then
+		self._concussion_data.snd_event_disorient:stop()
 	end
 
 	self._concussion_data = nil

@@ -47,6 +47,7 @@ function CopBase:init(unit)
 	self._is_in_original_material = true
 	self._buffs = {}
 	self._original_tweak_table = self._tweak_table
+	self._original_stats_name = self._stats_name
 end
 
 function CopBase:post_init()
@@ -271,6 +272,10 @@ function CopBase:save(save_data)
 		my_save_data.tweak_name_swap = self._tweak_table
 	end
 
+	if self._stats_name ~= self._original_stats_name then
+		my_save_data.stats_name_swap = self._stats_name
+	end
+
 	if next(my_save_data) then
 		save_data.base = my_save_data
 	end
@@ -295,6 +300,10 @@ function CopBase:load(load_data)
 
 	if my_load_data.tweak_name_swap and my_load_data.tweak_name_swap ~= self._tweak_table then
 		self._post_init_change_tweak_name = my_load_data.tweak_name_swap
+	end
+
+	if my_load_data.stats_name_swap and my_load_data.stats_name_swap ~= self._stats_name then
+		self:change_stats_name(my_load_data.stats_name_swap)
 	end
 end
 
@@ -486,4 +495,12 @@ function CopBase:change_char_tweak(new_tweak_name)
 	self._char_tweak = new_tweak_data
 
 	self:_chk_call_tweak_data_changed_listeners(old_tweak_data, new_tweak_data)
+end
+
+function CopBase:change_stats_name(new_stats_name)
+	if not new_stats_name or new_stats_name == self._stats_name then
+		return
+	end
+
+	self._stats_name = new_stats_name
 end

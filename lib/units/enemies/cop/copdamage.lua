@@ -421,7 +421,7 @@ function CopDamage:force_hurt(attack_data)
 		return
 	end
 
-	attack_data.damage = 0
+	attack_data.damage = attack_data.damage or 0
 	attack_data.result = attack_data.result or {
 		type = attack_data.type,
 		variant = attack_data.variant

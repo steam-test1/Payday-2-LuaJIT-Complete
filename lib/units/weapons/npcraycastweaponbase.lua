@@ -307,7 +307,8 @@ function NPCRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_
 	mvector3.add(mvec_to, from_pos)
 
 	local damage = self._damage * (dmg_mul or 1)
-	local col_ray = World:raycast("ray", from_pos, mvec_to, "slot_mask", self._bullet_slotmask, "ignore_unit", self._setup.ignore_units)
+	local bullet_slotmask = self._bullet_slotmask
+	local col_ray = World:raycast("ray", from_pos, mvec_to, "slot_mask", bullet_slotmask, "ignore_unit", self._setup.ignore_units)
 	local player_hit, player_ray_data = nil
 
 	if shoot_player and self._hit_player then

@@ -8712,4 +8712,114 @@ function DLCTweakData:init(tweak_data)
 			amount = 1
 		}
 	}
+	self.h22_deadman = {
+		content = {}
+	}
+	self.h22_deadman.content.loot_global_value = "h22_deadman"
+	self.h22_deadman.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "deadman",
+			amount = 1
+		}
+	}
+	self.h22_nightwalker = {
+		content = {}
+	}
+	self.h22_nightwalker.content.loot_global_value = "h22_nightwalker"
+	self.h22_nightwalker.content.loot_drops = {
+		{
+			type_items = "player_styles",
+			item_entry = "nightwalker",
+			amount = 1
+		}
+	}
+	self.h22_tasslefringe = {
+		content = {}
+	}
+	self.h22_tasslefringe.content.loot_global_value = "h22_tasslefringe"
+	self.h22_tasslefringe.content.loot_drops = {
+		{
+			type_items = "gloves",
+			item_entry = "tasslefringe",
+			amount = 1
+		}
+	}
+	self.h22_bloodysnarl = {
+		content = {}
+	}
+	self.h22_bloodysnarl.content.loot_global_value = "h22_bloodysnarl"
+	self.h22_bloodysnarl.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "bloodysnarl",
+			amount = 1
+		}
+	}
+	self.h22_ghostly = {
+		content = {}
+	}
+	self.h22_ghostly.content.loot_global_value = "h22_ghostly"
+	self.h22_ghostly.content.loot_drops = {
+		{
+			type_items = "player_styles",
+			item_entry = "ghostly",
+			amount = 1
+		}
+	}
+	self.h22_tornrags = {
+		content = {}
+	}
+	self.h22_tornrags.content.loot_global_value = "h22_tornrags"
+	self.h22_tornrags.content.loot_drops = {
+		{
+			type_items = "gloves",
+			item_entry = "tornrags",
+			amount = 1
+		}
+	}
+	self.h22_banshee = {
+		content = {}
+	}
+	self.h22_banshee.content.loot_global_value = "h22_banshee"
+	self.h22_banshee.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "banshee",
+			amount = 1
+		}
+	}
+	self.h22_darkprince = {
+		content = {}
+	}
+	self.h22_darkprince.content.loot_global_value = "h22_darkprince"
+	self.h22_darkprince.content.loot_drops = {
+		{
+			type_items = "player_styles",
+			item_entry = "darkprince",
+			amount = 1
+		}
+	}
+	self.h22_devilclaws = {
+		content = {}
+	}
+	self.h22_devilclaws.content.loot_global_value = "h22_devilclaws"
+	self.h22_devilclaws.content.loot_drops = {
+		{
+			type_items = "gloves",
+			item_entry = "devilclaws",
+			amount = 1
+		}
+	}
+	self.h22_devilhorn = {
+		content = {}
+	}
+	self.h22_devilhorn.content.loot_global_value = "h22_devilhorn"
+	self.h22_devilhorn.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "devilhorn",
+			amount = 1
+		}
+	}
 end

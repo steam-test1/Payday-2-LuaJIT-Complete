@@ -2,7 +2,9 @@ PlayerInventory = PlayerInventory or class()
 PlayerInventory._all_event_types = {
 	"add",
 	"equip",
-	"unequip"
+	"unequip",
+	"shield_equip",
+	"shield_unequip"
 }
 local ids_unit = Idstring("unit")
 PlayerInventory._NET_EVENTS = {
@@ -125,7 +127,7 @@ function PlayerInventory:destroy_all_items()
 	self._shield_unit = nil
 
 	if alive(shield_unit) then
-		shield_unit:unlink()
+		self:unequip_shield()
 
 		if Network:is_server() or shield_unit:id() == -1 then
 			shield_unit:set_slot(0)
@@ -150,7 +152,7 @@ function PlayerInventory:add_ignore_unit(unit)
 	end
 
 	if not has_destroy_listener then
-		print("[PlayerInventory:add_ignore_unit] Cannot set unit for ignoring as it lacks a destroy listener.", unit)
+		Application:error("[PlayerInventory:add_ignore_unit] Cannot set unit for ignoring as it lacks a destroy listener.", unit)
 
 		return
 	end
@@ -732,11 +734,11 @@ function PlayerInventory:_start_feedback_effect_drop_in_save(save_data, jammer_d
 end
 
 function PlayerInventory:_start_jammer_effect_drop_in_load(jammer_data)
-	self._start_jammer_effect(jammer_data.t)
+	self:_start_jammer_effect(jammer_data.t)
 end
 
 function PlayerInventory:_start_feedback_effect_drop_in_load(jammer_data)
-	self._start_feedback_effect(jammer_data.t)
+	self:_start_feedback_effect(jammer_data.t)
 end
 
 function PlayerInventory:save(save_data)
@@ -819,21 +821,19 @@ function PlayerInventory:load(load_data)
 		end
 	end
 
-	if Network:is_client() then
-		if my_load_data.chk_shield_dummy_removal then
-			self._shield_unit_name = nil
-			local shield_unit = self._shield_unit
-			self._shield_unit = nil
+	if my_load_data.chk_shield_dummy_removal then
+		self._shield_unit_name = nil
+		local shield_unit = self._shield_unit
+		self._shield_unit = nil
 
-			if alive(shield_unit) and shield_unit:id() == -1 then
-				shield_unit:unlink()
-				shield_unit:set_slot(0)
-			end
-		elseif my_load_data.needs_shield_link_request then
-			self._shield_request_clbk_id = "playerinventory_load_shield_link" .. tostring(self._unit:key())
-
-			managers.enemy:add_delayed_clbk(self._shield_request_clbk_id, callback(self, self, "clbk_shield_link_request"), TimerManager:game():time() + 0.1)
+		if alive(shield_unit) and shield_unit:id() == -1 then
+			self:unequip_shield()
+			shield_unit:set_slot(0)
 		end
+	elseif my_load_data.needs_shield_link_request then
+		self._shield_request_clbk_id = "playerinventory_load_shield_link" .. tostring(self._unit:key())
+
+		managers.enemy:add_delayed_clbk(self._shield_request_clbk_id, callback(self, self, "clbk_shield_link_request"), TimerManager:game():time() + 0.1)
 	end
 end
 
@@ -1061,15 +1061,10 @@ end
 
 function PlayerInventory:drop_shield()
 	local shield_unit = self._shield_unit
-	self._shield_unit = nil
+
+	self:unequip_shield()
 
 	if alive(shield_unit) then
-		if shield_unit:id() ~= -1 then
-			self._shield_was_synced = true
-		end
-
-		shield_unit:unlink()
-
 		local u_dmg = shield_unit:damage()
 
 		if u_dmg and u_dmg:has_sequence("enable_body") then
@@ -1077,7 +1072,87 @@ function PlayerInventory:drop_shield()
 		end
 
 		managers.enemy:register_shield(shield_unit)
+	end
+end
+
+function PlayerInventory:equip_shield(shield_unit, align_name)
+	if self._shield_unit then
+		Application:stack_dump_error("[PlayerInventory:equip_shield] Attempted to equip a shield when a shield was already equipped.", self._shield_unit, self._unit)
+
+		return
+	end
+
+	local has_destroy_listener = nil
+	local listener_class = shield_unit:base()
+
+	if listener_class and listener_class.add_destroy_listener then
+		has_destroy_listener = true
+	else
+		listener_class = shield_unit:unit_data()
+
+		if listener_class and listener_class.add_destroy_listener then
+			has_destroy_listener = true
+		end
+	end
+
+	if not has_destroy_listener then
+		Application:error("[PlayerInventory:equip_shield] Shield unit lacks destroy listener.", shield_unit)
+
+		return
+	end
+
+	self._shield_unit = shield_unit
+
+	self._unit:link(align_name, shield_unit, shield_unit:orientation_object():name())
+
+	self._shield_destroyed_clbk_id = "ShieldDestroyed" .. tostring(self._unit:key())
+
+	listener_class:add_destroy_listener(self._shield_destroyed_clbk_id, callback(self, self, "_clbk_shield_destroyed"))
+	self:add_ignore_unit(shield_unit)
+	self:_call_listeners("shield_equip")
+end
+
+function PlayerInventory:_clbk_shield_destroyed(shield_unit)
+	self:unequip_shield(true)
+end
+
+function PlayerInventory:unequip_shield(is_callback)
+	local shield_unit = self._shield_unit
+	self._shield_unit = nil
+
+	if alive(shield_unit) then
+		shield_unit:unlink()
+
+		if shield_unit:id() ~= -1 then
+			self._shield_was_synced = true
+		end
+
+		if not is_callback and self._shield_destroyed_clbk_id then
+			local has_destroy_listener = nil
+			local listener_class = shield_unit:base()
+
+			if listener_class and listener_class.add_destroy_listener then
+				has_destroy_listener = true
+			else
+				listener_class = shield_unit:unit_data()
+
+				if listener_class and listener_class.add_destroy_listener then
+					has_destroy_listener = true
+				end
+			end
+
+			if has_destroy_listener then
+				listener_class:remove_destroy_listener(self._shield_destroyed_clbk_id)
+			end
+		end
+
 		self:remove_ignore_unit(shield_unit)
+	end
+
+	self._shield_destroyed_clbk_id = nil
+
+	if shield_unit then
+		self:_call_listeners("shield_unequip")
 	end
 end
 

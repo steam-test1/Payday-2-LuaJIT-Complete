@@ -224,7 +224,8 @@ function StatisticsTweakData:statistics_table()
 		"triad_boss",
 		"triad_boss_no_armor",
 		"marshal_marksman",
-		"marshal_shield"
+		"marshal_shield",
+		"marshal_shield_break"
 	}
 	local armor_list = {
 		"level_1",

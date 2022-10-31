@@ -69,6 +69,18 @@ function CopActionShoot:init(action_desc, common_data)
 		self._glint_effect:activate()
 	end
 
+	if self._ext_inventory.shield_unit then
+		self._shield_unit = self._ext_inventory:shield_unit()
+		local shield_base = self._shield_unit and self._shield_unit:base()
+		local use_data = shield_base and shield_base.get_use_data and shield_base:get_use_data()
+
+		if use_data then
+			self._shield_base = shield_base
+			self._shield_use_range = use_data.range
+			self._shield_use_cooldown = use_data.cooldown
+		end
+	end
+
 	local weap_tweak = weapon_unit:base():weapon_tweak_data()
 	local weapon_usage_tweak = common_data.char_tweak.weapon[weap_tweak.usage]
 	self._weapon_unit = weapon_unit
@@ -105,6 +117,32 @@ function CopActionShoot:init(action_desc, common_data)
 end
 
 function CopActionShoot:on_inventory_event(event)
+	if event == "shield_equip" then
+		local shield_unit = self._ext_inventory:shield_unit()
+
+		if shield_unit then
+			self._shield_unit = shield_unit
+			self._shield_base = shield_unit:base()
+			local shield_base = self._shield_unit and self._shield_unit:base()
+			local use_data = shield_base and shield_base.get_use_data and shield_base:get_use_data()
+
+			if use_data then
+				self._shield_base = shield_base
+				self._shield_use_range = use_data.range
+				self._shield_use_cooldown = use_data.cooldown
+			end
+		end
+
+		return
+	elseif event == "shield_unequip" then
+		self._shield_unit = nil
+		self._shield_base = nil
+		self._shield_use_range = nil
+		self._shield_use_cooldown = nil
+
+		return
+	end
+
 	if self._weapon_unit then
 		if self._autofiring then
 			self._weapon_base:stop_autofire()
@@ -321,6 +359,14 @@ function CopActionShoot:update(t)
 		target_vec = self:_upd_ik(target_vec, fwd_dot, t)
 	end
 
+	if self._shield_use_cooldown and target_vec and self._common_data.allow_fire and self._shield_use_cooldown < t and target_dis < self._shield_use_range then
+		local new_cooldown = self._shield_base:request_use(t)
+
+		if new_cooldown then
+			self._shield_use_cooldown = new_cooldown
+		end
+	end
+
 	if not ext_anim.reload and not ext_anim.equip and not ext_anim.melee then
 		if ext_anim.equip then
 			-- Nothing
@@ -453,13 +499,9 @@ function CopActionShoot:update(t)
 			end
 
 			if shoot then
-				if Network:is_server() and alive(self._ext_inventory._shield_unit) and target_dis < 1100 and self._ext_inventory._shield_unit:base() and self._ext_inventory._shield_unit:base().request_start_flash and self._ext_inventory._shield_unit:base():can_request_flash(t) then
-					self._ext_inventory._shield_unit:base():request_start_flash()
-				end
-
 				local melee = nil
 
-				if autotarget and (not self._common_data.melee_countered_t or t - self._common_data.melee_countered_t > 15) and target_dis < 130 and self._w_usage_tweak.melee_speed and self._melee_timeout_t < t then
+				if autotarget and not self._shield_unit and (not self._common_data.melee_countered_t or t - self._common_data.melee_countered_t > 15) and target_dis < 130 and self._w_usage_tweak.melee_speed and self._melee_timeout_t < t then
 					melee = self:_chk_start_melee(target_vec, target_dis, autotarget, target_pos)
 				end
 

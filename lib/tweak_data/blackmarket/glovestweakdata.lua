@@ -166,7 +166,7 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		thug = "heist_default",
 		mocow = "ranchdiesel",
 		badsanta = "heist_default",
-		newhorizon = "darkmat",
+		darkprince = "devilclaws",
 		bikervest = "heist_default",
 		clown_2 = "heist_default",
 		gangstercoat = "heist_default",
@@ -182,9 +182,12 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		jail_pd2_clan = "heist_default",
 		corl = "heist_default",
 		esport = "esport",
+		ghostly = "tornrags",
 		murky_suit = "murky",
 		cyberhoodie = "heist_default",
-		elegantscarf = "heist_default"
+		elegantscarf = "heist_default",
+		nightwalker = "tasslefringe",
+		newhorizon = "darkmat"
 	}
 	self.gloves.default = {
 		name_id = "bm_gloves_default",
@@ -756,5 +759,32 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		sort_number = 1,
 		unit = "units/pd2_dlc_trt/characters/glv_railwork/glv_railwork",
 		third_material = "units/pd2_dlc_trt/characters/glv_railwork/glv_railwork_third"
+	}
+	self.gloves.devilclaws = {
+		name_id = "bm_gloves_devilclaws",
+		desc_id = "bm_gloves_devilclaws_desc",
+		texture_bundle_folder = "h22",
+		global_value = "h22_devilclaws",
+		sort_number = 1,
+		unit = "units/pd2_dlc_h22/characters/glv_devilclaws/glv_devilclaws",
+		third_material = "units/pd2_dlc_h22/characters/glv_devilclaws/glv_devilclaws_third"
+	}
+	self.gloves.tasslefringe = {
+		name_id = "bm_gloves_tasslefringe",
+		desc_id = "bm_gloves_tasslefringe_desc",
+		texture_bundle_folder = "h22",
+		global_value = "h22_tasslefringe",
+		sort_number = 1,
+		unit = "units/pd2_dlc_h22/characters/glv_tasslefringe/glv_tasslefringe",
+		third_material = "units/pd2_dlc_h22/characters/glv_tasslefringe/glv_tasslefringe_third"
+	}
+	self.gloves.tornrags = {
+		name_id = "bm_gloves_tornrags",
+		desc_id = "bm_gloves_tornrags_desc",
+		texture_bundle_folder = "h22",
+		global_value = "h22_tornrags",
+		sort_number = 1,
+		unit = "units/pd2_dlc_h22/characters/glv_tornrags/glv_tornrags",
+		third_material = "units/pd2_dlc_h22/characters/glv_tornrags/glv_tornrags_third"
 	}
 end

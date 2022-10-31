@@ -15024,6 +15024,7 @@ function UpgradesTweakData:_bbq_weapon_definitions()
 		category = "melee_weapon"
 	}
 	self.flame_bullet = {
+		push_units = false,
 		show_blood_hits = false
 	}
 end

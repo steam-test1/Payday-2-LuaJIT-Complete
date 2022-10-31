@@ -1841,6 +1841,16 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.trt_railwork = self.global_values.trt
 	self.global_values.trt_railhat = self.global_values.trt
 	self.global_values.trt_railroad = self.global_values.trt
+	self.global_values.h22_deadman = self.global_values.h22
+	self.global_values.h22_nightwalker = self.global_values.h22
+	self.global_values.h22_tasslefringe = self.global_values.h22
+	self.global_values.h22_bloodysnarl = self.global_values.h22
+	self.global_values.h22_ghostly = self.global_values.h22
+	self.global_values.h22_tornrags = self.global_values.h22
+	self.global_values.h22_banshee = self.global_values.h22
+	self.global_values.h22_darkprince = self.global_values.h22
+	self.global_values.h22_devilclaws = self.global_values.h22
+	self.global_values.h22_devilhorn = self.global_values.h22
 
 	self:_create_global_value_list_map()
 end

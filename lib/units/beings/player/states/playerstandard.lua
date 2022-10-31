@@ -377,6 +377,10 @@ function PlayerStandard:in_steelsight()
 	return self._state_data.in_steelsight
 end
 
+function PlayerStandard:is_second_sight_on()
+	return self._equipped_unit and self._equipped_unit:base():is_second_sight_on()
+end
+
 function PlayerStandard:is_reticle_aim()
 	return self._state_data.reticle_obj and self._camera_unit:base():is_stance_done() and not self._equipped_unit:base():is_second_sight_on()
 end

@@ -8781,6 +8781,143 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 			sydney = "homburg_grey_big"
 		}
 	}
+	self.masks.banshee = {
+		unit = "units/pd2_dlc_h22/masks/msk_banshee/msk_banshee",
+		name_id = "bm_msk_banshee",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		use_face_mask_on_sequence = true,
+		dlc = "h22_banshee",
+		texture_bundle_folder = "h22"
+	}
+	self.masks.bloodysnarl = {
+		unit = "units/pd2_dlc_h22/masks/msk_bloodysnarl/msk_bloodysnarl",
+		name_id = "bm_msk_bloodysnarl",
+		pcs = {},
+		type = "helmet",
+		value = 0,
+		sort_number = 1,
+		preview_oobb_object = "g_mask",
+		dlc = "h22_bloodysnarl",
+		texture_bundle_folder = "h22"
+	}
+	self.masks.devilhorn = {
+		unit = "units/pd2_dlc_h22/masks/msk_devilhorn/msk_devilhorn",
+		name_id = "bm_msk_devilhorn",
+		pcs = {},
+		value = 0,
+		sort_number = 2,
+		preview_oobb_object = "g_mask",
+		dlc = "h22_devilhorn",
+		texture_bundle_folder = "h22"
+	}
+	self.masks.deadman_lears = {
+		unit = "units/pd2_dlc_h22/masks/msk_deadman/msk_deadman_lears",
+		name_id = "bm_msk_cheat_error",
+		skip_mask_on_sequence = true,
+		type = "glasses",
+		inaccessible = true,
+		offsets = {
+			sokol = {
+				Vector3(0, -0.876458, 0),
+				Rotation(0, 0, -0)
+			},
+			wolf = {
+				Vector3(0, -0.399472, -0.280226),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.deadman_default = {
+		unit = "units/pd2_dlc_h22/masks/msk_deadman/msk_deadman",
+		name_id = "bm_msk_cheat_error",
+		skip_mask_on_sequence = true,
+		type = "glasses",
+		inaccessible = true
+	}
+	self.masks.deadman_ethan = {
+		unit = "units/pd2_dlc_h22/masks/msk_deadman/msk_deadman_ethan",
+		name_id = "bm_msk_cheat_error",
+		skip_mask_on_sequence = true,
+		type = "glasses",
+		inaccessible = true
+	}
+	self.masks.deadman_bonnie = {
+		unit = "units/pd2_dlc_h22/masks/msk_deadman/msk_deadman_bonnie",
+		name_id = "bm_msk_cheat_error",
+		skip_mask_on_sequence = true,
+		type = "glasses",
+		inaccessible = true,
+		offsets = {
+			bonnie = {
+				Vector3(0, 0, 0.554498),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.deadman_short = {
+		unit = "units/pd2_dlc_h22/masks/msk_deadman/msk_deadman_short",
+		name_id = "bm_msk_cheat_error",
+		skip_mask_on_sequence = true,
+		type = "glasses",
+		inaccessible = true,
+		offsets = {
+			wild = {
+				Vector3(-0.16098, -0.518719, 0.554498),
+				Rotation(-0, -0, -0)
+			},
+			dallas = {
+				Vector3(0, -0.280226, 0),
+				Rotation(-0, -0, -0)
+			},
+			hoxton = {
+				Vector3(0, -0.280226, 0.673745),
+				Rotation(-0, -0, -0)
+			},
+			bonnie = {
+				Vector3(0, 0, 0.554498),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.deadman = {
+		unit = "units/pd2_dlc_h22/masks/msk_deadman/msk_deadman",
+		name_id = "bm_msk_uno_01",
+		pcs = {},
+		value = 0,
+		sort_number = 3,
+		skip_mask_on_sequence = true,
+		type = "glasses",
+		dlc = "h22_deadman",
+		texture_bundle_folder = "h22",
+		characters = {
+			bonnie = "deadman_bonnie",
+			sokol = "deadman_lears",
+			myh = "deadman_short",
+			chico = "deadman_default",
+			dragan = "deadman_default",
+			ecp_male = "deadman_ethan",
+			ecp_female = "deadman_lears",
+			dragon = "deadman_short",
+			old_hoxton = "deadman_default",
+			jowi = "deadman_default",
+			max = "deadman_short",
+			joy = "deadman_default",
+			dallas = "deadman_short",
+			jacket = "deadman_default",
+			jimmy = "deadman_default",
+			bodhi = "deadman_default",
+			wolf = "deadman_lears",
+			wild = "deadman_short",
+			hoxton = "deadman_short",
+			female_1 = "deadman_default",
+			chains = "deadman_short",
+			sydney = "deadman_lears"
+		}
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.masks) do
