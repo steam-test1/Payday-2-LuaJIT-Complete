@@ -204,8 +204,6 @@ function MenuManager:init(is_start_menu)
 	self:parallax_mapping_changed(nil, nil, managers.user:get_setting("parallax_mapping"))
 	managers.user:add_setting_changed_callback("video_aa", callback(self, self, "video_aa_changed"), true)
 	self:video_aa_changed(nil, nil, managers.user:get_setting("video_aa"))
-	managers.user:add_setting_changed_callback("workshop", callback(self, self, "workshop_changed"), true)
-	self:workshop_changed(nil, nil, managers.user:get_setting("workshop"))
 end
 
 function MenuManager:init_finalize()
@@ -586,12 +584,6 @@ function MenuManager:video_aa_changed(name, old_value, new_value)
 	end
 end
 
-function MenuManager:workshop_changed(name, old_value, new_value)
-	if managers.workshop then
-		managers.workshop:set_enabled(new_value)
-	end
-end
-
 function MenuManager:brightness_changed(name, old_value, new_value)
 	local brightness = math.clamp(new_value, _G.tweak_data.menu.MIN_BRIGHTNESS, _G.tweak_data.menu.MAX_BRIGHTNESS)
 
@@ -957,10 +949,6 @@ end
 
 function MenuManager:is_na()
 	return MenuManager.IS_NORTH_AMERICA
-end
-
-function MenuManager:check_vr_dlc()
-	local result = managers.dlc:chk_vr_dlc()
 end
 
 function MenuManager:open_sign_in_menu(cb)
@@ -1676,7 +1664,7 @@ function MenuCallbackHandler:is_win32()
 end
 
 function MenuCallbackHandler:is_actually_win32()
-	return SystemInfo:platform() == Idstring("WIN32")
+	return false
 end
 
 function MenuCallbackHandler:is_win32_pc()
@@ -3324,10 +3312,6 @@ end
 
 function MenuCallbackHandler:choice_choose_aa(item)
 	managers.user:set_setting("video_aa", item:value())
-end
-
-function MenuCallbackHandler:toggle_workshop(item)
-	managers.user:set_setting("workshop", item:value() == "on")
 end
 
 function MenuCallbackHandler:toggle_telemetry(item)
@@ -9948,10 +9932,6 @@ function MenuOptionInitiator:modify_resolution(node)
 end
 
 function MenuOptionInitiator:modify_adv_options(node)
-	if node:item("toggle_workshop") then
-		node:item("toggle_workshop"):set_value(managers.user:get_setting("workshop") and "on" or "off")
-	end
-
 	if node:item("toggle_telemetry") then
 		node:item("toggle_telemetry"):set_value(managers.user:get_setting("use_telemetry") and "on" or "off")
 	end

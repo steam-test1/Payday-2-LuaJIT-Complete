@@ -34,10 +34,6 @@ function WorkshopManager:create_item(type)
 			item:add_tag("Weapons")
 		end
 
-		if type == "armor_skin" then
-			item:add_tag("Armors")
-		end
-
 		item:save()
 		table.insert_sorted(self._items, item, UGCItem.SortByTimestamp)
 

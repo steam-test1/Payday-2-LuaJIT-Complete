@@ -12,7 +12,6 @@ core:register_module("lib/utils/dev/FreeFlight")
 
 Global.DEBUG_MENU_ON = Application:debug_enabled()
 Global.SKIP_OVERKILL_290 = SystemInfo:platform() == Idstring("PS3")
-Global.DISCORD_APP_ID = "364785249202208768"
 
 core:import("CoreSetup")
 require("lib/managers/DLCManager")
@@ -108,7 +107,6 @@ require("lib/units/props/WeaponFiremodeGui")
 require("lib/managers/ButlerMirroringManager")
 require("lib/managers/MultiProfileManager")
 require("lib/managers/BanListManager")
-require("lib/managers/WorkshopManager")
 require("lib/managers/CustomSafehouseManager")
 require("lib/managers/MutatorsManager")
 require("lib/managers/OverlayEffectManager")
@@ -298,10 +296,6 @@ function Setup:init_managers(managers)
 	managers.sync = SyncManager:new()
 	managers.modifiers = ModifiersManager:new()
 	managers.multi_profile = MultiProfileManager:new()
-	managers.workshop = WorkshopManager:new()
-
-	Discord:init(Global.DISCORD_APP_ID)
-
 	managers.custom_safehouse = CustomSafehouseManager:new()
 	managers.ban_list = BanListManager:new()
 	managers.skirmish = SkirmishManager:new()

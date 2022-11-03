@@ -36,7 +36,6 @@ end
 function RaidMenuGui:_launch_raid_dialog_yes()
 	managers.savefile:save_progress("local_hdd")
 	setup:quit()
-	os.execute("cmd /c start steam://run/" .. tostring(RaidMenuGui.RaidBetaAppId))
 end
 
 function RaidMenuGui:_launch_raid_dialog_no()

@@ -322,10 +322,6 @@ function ConnectionNetworkHandler:sync_game_settings(job_index, level_id_index, 
 	Global.game_settings.one_down = one_down
 	Global.game_settings.weekly_skirmish = weekly_skirmish
 
-	if managers.platform then
-		managers.platform:update_discord_heist()
-	end
-
 	peer:verify_job(job_id)
 
 	if managers.menu_component then

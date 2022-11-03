@@ -1027,60 +1027,6 @@ function Telemetry:send_on_game_launch()
 	if get_platform_name() ~= "WIN32" or not self._global._gamesight_enabled then
 		return
 	end
-
-	print("[Telemetry] Sending on game launch event")
-
-	local event_name = "game_launch"
-
-	local function telemetry_callback(error_code, status_code, response_body)
-		if error_code == connection_errors.no_conn_error then
-			if status_code == 204 or status_code == 200 then
-				print("[Telemetry] Gamesight payload successfully sent")
-			else
-				print(log_name, "problem on sending gamesight telemetry, http status: " .. status_code)
-			end
-		elseif error_code == connection_errors.request_timeout then
-			print(log_name, "problem on login, Request Timed Out")
-		else
-			print(log_name, "fatal error on sending gamesight telemetry, http status: " .. status_code)
-		end
-	end
-
-	local gamesight_identifiers = {}
-	local resolution = RenderSettings.resolution.x .. "x" .. RenderSettings.resolution.y
-	gamesight_identifiers.resolution = resolution
-	local os_name = Utility:get_os_name()
-
-	if os_name == "error" then
-		print(log_name, "problem on getting OS Name.")
-
-		os_name = ""
-	end
-
-	gamesight_identifiers.os = os_name
-	local os_language = Utility:get_current_language()
-
-	if string.len(os_language) > 6 then
-		print(log_name, os_language)
-
-		os_language = ""
-	end
-
-	gamesight_identifiers.language = os_language
-	local os_timezone = Utility:get_current_timezone()
-
-	if os_timezone == -1 then
-		print(log_name, "Unable to get the timezone properly")
-	end
-
-	gamesight_identifiers.timezone = os_timezone
-	local telemetry_payload = {
-		user_id = Steam:userid(),
-		type = event_name,
-		identifiers = gamesight_identifiers or {}
-	}
-
-	self:send_gamesight_telemetry_immediately(event_name, telemetry_payload, nil, telemetry_callback)
 end
 
 function Telemetry:send_on_player_heist_objective_start()

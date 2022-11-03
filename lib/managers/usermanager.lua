@@ -103,7 +103,6 @@ function GenericUserManager:setup_setting_map()
 	self:setup_setting(48, "video_ao", "aob")
 	self:setup_setting(49, "parallax_mapping", true)
 	self:setup_setting(50, "video_aa", not _G.IS_VR and "fxaa" or "off")
-	self:setup_setting(51, "workshop", false)
 	self:setup_setting(52, "enable_fov_based_sensitivity", false)
 	self:setup_setting(53, "quickplay_stealth", true)
 	self:setup_setting(54, "quickplay_loud", true)
@@ -781,6 +780,7 @@ function GenericUserManager:save(data)
 	end
 
 	data.use_telemetry_gamesight_decided = Global.use_telemetry_gamesight_decided
+	data.linux_policy_seen = Global.linux_policy_seen
 end
 
 function GenericUserManager:load(data, cache_version)
@@ -806,6 +806,7 @@ function GenericUserManager:load(data, cache_version)
 	end
 
 	Global.use_telemetry_gamesight_decided = data.use_telemetry_gamesight_decided
+	Global.linux_policy_seen = data.linux_policy_seen
 
 	self:sanitize_settings()
 end

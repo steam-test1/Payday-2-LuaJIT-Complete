@@ -2555,23 +2555,6 @@ function WINDLCManager:check_pdth(clbk)
 	end
 end
 
-function WINDLCManager:chk_vr_dlc()
-	local steam_vr = Steam:is_app_installed("250820")
-	local payday2_vr = Steam:is_product_installed("826090")
-
-	if steam_vr and not payday2_vr then
-		Steam:install_dlc("826090")
-
-		return true
-	elseif not steam_vr and payday2_vr then
-		Steam:uninstall_dlc("826090")
-
-		return false
-	end
-
-	return nil
-end
-
 function WINDLCManager:chk_content_updated()
 	for dlc_name, dlc_data in pairs(Global.dlc_manager.all_dlc_data) do
 		if not dlc_data.verified and self:_check_dlc_data(dlc_data) then

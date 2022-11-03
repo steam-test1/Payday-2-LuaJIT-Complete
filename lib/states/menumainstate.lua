@@ -68,8 +68,6 @@ function MenuMainState:at_enter(old_state)
 		if _G.IS_VR then
 			managers.menu:initialize_customization_gui()
 		end
-
-		managers.menu:check_vr_dlc()
 	end
 
 	if SystemInfo:platform() == Idstring("WIN32") and not Global.use_telemetry_gamesight_decided then
@@ -105,6 +103,13 @@ function MenuMainState:at_enter(old_state)
 			gamesight_func = gamesight_toggle_func,
 			accept_func = accept_func
 		})
+	end
+
+	if SystemInfo:platform() ~= Idstring("WIN32") and not Global.linux_policy_seen then
+		Global.linux_policy_seen = true
+
+		managers.savefile:setting_changed()
+		managers.menu:show_policy_seen({})
 	end
 
 	local has_invite = false

@@ -958,7 +958,7 @@ function StatisticsManager:publish_to_steam(session, success, completion)
 		}
 	end
 
-	stats.info_playing_pc = {
+	stats.info_playing_linux = {
 		value = 1,
 		method = "set",
 		type = "int"

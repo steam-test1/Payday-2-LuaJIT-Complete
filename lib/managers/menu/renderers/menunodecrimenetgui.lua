@@ -145,7 +145,10 @@ function MenuNodeCrimenetFiltersGui:_setup_item_panel(safe_rect, res)
 		max_layer = math.max(max_layer, child_layer)
 	end
 
-	for _, child in ipairs(self.item_panel:children()) do
+	slot8 = self.item_panel
+	local child = slot8
+
+	for _, child in ipairs(slot8.children(child)) do
 		-- Nothing
 	end
 
@@ -4308,7 +4311,10 @@ function MenuNodeChooseWeaponRewardGui:_setup_item_panel(safe_rect, res)
 		max_layer = math.max(max_layer, child_layer)
 	end
 
-	for _, child in ipairs(self.item_panel:children()) do
+	slot8 = self.item_panel
+	local child = slot8
+
+	for _, child in ipairs(slot8.children(child)) do
 		-- Nothing
 	end
 
@@ -4454,7 +4460,10 @@ function MenuNodeChooseWeaponCosmeticGui:_setup_item_panel(safe_rect, res)
 		max_layer = math.max(max_layer, child_layer)
 	end
 
-	for _, child in ipairs(self.item_panel:children()) do
+	slot8 = self.item_panel
+	local child = slot8
+
+	for _, child in ipairs(slot8.children(child)) do
 		-- Nothing
 	end
 

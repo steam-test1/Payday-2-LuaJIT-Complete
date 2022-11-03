@@ -1,5 +1,3 @@
-require("lib/managers/workshop/SkinEditor")
-require("lib/managers/workshop/ArmorSkinEditor")
 require("lib/utils/accelbyte/TelemetryConst")
 
 BlackMarketManager = BlackMarketManager or class()
@@ -108,8 +106,6 @@ function BlackMarketManager:_setup()
 	self._preloading_list = {}
 	self._preloading_index = 0
 	self._category_resource_loaded = {}
-	self._skin_editor = SkinEditor:new()
-	self._armor_skin_editor = ArmorSkinEditor:new()
 	self._event_listener_holder = EventListenerHolder:new()
 end
 
@@ -128,14 +124,6 @@ end
 
 function BlackMarketManager:dispatch_event(...)
 	self._event_listener_holder:call(...)
-end
-
-function BlackMarketManager:skin_editor()
-	return self._skin_editor
-end
-
-function BlackMarketManager:armor_skin_editor()
-	return self._armor_skin_editor
 end
 
 function BlackMarketManager:_setup_armors()
@@ -6131,10 +6119,6 @@ function BlackMarketManager:_update_preferred_character(update_character)
 
 	if SystemInfo:distribution() == Idstring("STEAM") then
 		managers.statistics:publish_equipped_to_steam()
-	end
-
-	if managers.platform then
-		managers.platform:update_discord_character()
 	end
 end
 

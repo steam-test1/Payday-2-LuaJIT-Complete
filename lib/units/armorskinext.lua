@@ -22,7 +22,7 @@ local material_variables = {
 	uv_scale = "uv_scale",
 	uv_offset_rot = "uv_offset_rot",
 	pattern_tweak = "pattern_tweak",
-	wear_and_tear = (managers.blackmarket and managers.blackmarket:skin_editor() and managers.blackmarket:skin_editor():active() or Application:production_build()) and "wear_tear_value" or nil
+	wear_and_tear = Application:production_build() and "wear_tear_value" or nil
 }
 
 function ArmorSkinExt:init(unit, update_enabled)
