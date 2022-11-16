@@ -80,7 +80,10 @@ function FragGrenade:_detonate(tag, unit, body, other_unit, other_body, position
 		owner = self._unit
 	})
 
-	managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", GrenadeBase.EVENT_IDS.detonate)
+	if self._unit:id() ~= -1 then
+		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", GrenadeBase.EVENT_IDS.detonate)
+	end
+
 	self._unit:set_slot(0)
 end
 
@@ -95,6 +98,12 @@ function FragGrenade:_detonate_on_client()
 
 	managers.explosion:give_local_player_dmg(pos, range, self._player_damage)
 	managers.explosion:explode_on_client(pos, math.UP, nil, self._damage, range, self._curve_pow, self._custom_params)
+
+	if self._unit:id() == -1 then
+		self._unit:set_slot(0)
+	else
+		self._unit:set_visible(false)
+	end
 end
 
 function FragGrenade:bullet_hit()

@@ -206,17 +206,19 @@ function CustomSafehouseGuiPageDaily:_setup_side_menu()
 			if event_jobs_data.is_active_func and not managers.event_jobs[event_jobs_data.is_active_func](managers.event_jobs) then
 				-- Nothing
 			elseif event_jobs_data.temp_challenge then
-				local data = deep_clone(event_jobs_data)
-				data.name_id = event_jobs_data.name_id
-				data.category = "event_jobs"
-				local event_jobs_challenge = {
-					id = event_jobs_data.id,
-					data = data
-				}
+				if event_jobs_data.temp_challenge == tweak_data.event_jobs.current_event then
+					local data = deep_clone(event_jobs_data)
+					data.name_id = event_jobs_data.name_id
+					data.category = "event_jobs"
+					local event_jobs_challenge = {
+						id = event_jobs_data.id,
+						data = data
+					}
 
-				table.insert(challenges.event_jobs, event_jobs_challenge)
+					table.insert(challenges.event_jobs, event_jobs_challenge)
 
-				self._challenges[event_jobs_challenge.id] = event_jobs_challenge.data
+					self._challenges[event_jobs_challenge.id] = event_jobs_challenge.data
+				end
 			end
 		end
 	end

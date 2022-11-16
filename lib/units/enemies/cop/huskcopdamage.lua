@@ -36,4 +36,10 @@ function HuskCopDamage:die(variant)
 	end
 
 	self:_on_death()
+
+	if self._tmp_invulnerable_clbk_key then
+		managers.enemy:remove_delayed_clbk(self._tmp_invulnerable_clbk_key)
+
+		self._tmp_invulnerable_clbk_key = nil
+	end
 end

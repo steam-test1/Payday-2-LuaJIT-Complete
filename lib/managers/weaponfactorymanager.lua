@@ -1476,22 +1476,29 @@ function WeaponFactoryManager:get_stance_mod(factory_id, blueprint, using_second
 	local part = nil
 	local translation = Vector3()
 	local rotation = Rotation()
+	local is_not_sight_type, is_weapon_sight, is_second_sight = nil
 
 	for _, part_id in ipairs(assembled_blueprint) do
 		if not forbidden[part_id] then
 			part = self:_part_data(part_id, factory_id, override)
 
-			if part.stance_mod and (part.type ~= "sight" and part.type ~= "gadget" or using_second_sight and part.type == "gadget" or not using_second_sight and part.type == "sight") and part.stance_mod[factory_id] then
-				local part_translation = part.stance_mod[factory_id].translation
+			if part.stance_mod then
+				is_not_sight_type = part.type ~= "sight" and part.type ~= "gadget"
+				is_weapon_sight = not using_second_sight and part.type == "sight"
+				is_second_sight = using_second_sight and part.type == "gadget"
 
-				if part_translation then
-					mvector3.add(translation, part_translation)
-				end
+				if (is_not_sight_type or is_weapon_sight or is_second_sight) and part.stance_mod[factory_id] then
+					local part_translation = part.stance_mod[factory_id].translation
 
-				local part_rotation = part.stance_mod[factory_id].rotation
+					if part_translation then
+						mvector3.add(translation, part_translation)
+					end
 
-				if part_rotation then
-					mrotation.multiply(rotation, part_rotation)
+					local part_rotation = part.stance_mod[factory_id].rotation
+
+					if part_rotation then
+						mrotation.multiply(rotation, part_rotation)
+					end
 				end
 			end
 		end

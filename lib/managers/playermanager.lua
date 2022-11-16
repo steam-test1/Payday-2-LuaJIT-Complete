@@ -4504,6 +4504,8 @@ function PlayerManager:add_grenade_amount(amount, sync)
 		amount = amount
 	})
 	self:update_grenades_amount_to_peers(grenade, amount, sync and peer_id)
+
+	return amount
 end
 
 function PlayerManager:update_grenades_to_peer(peer)

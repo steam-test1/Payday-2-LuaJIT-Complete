@@ -1506,6 +1506,7 @@ Play the full version soon to get your full PAYDAY!]],
 	self.contour.character.more_dangerous_color = Vector3(1, 0.1, 0.1)
 	self.contour.character.standard_opacity = 0
 	self.contour.character.heal_color = Vector3(0, 1, 0)
+	self.contour.character.tmp_invulnerable_color = Vector3(0.8, 0.3, 0)
 	self.contour.character_interactable = {
 		standard_color = Vector3(1, 0.5, 0),
 		selected_color = Vector3(1, 1, 1)
@@ -3107,9 +3108,26 @@ function TweakData:init_accessibility_colors()
 	self.accessibility_colors.dot.blue = Color(255, 77, 198, 255) / 255
 	self.accessibility_colors.dot.green = Color.green
 	self.accessibility_colors.screenflash = {
-		default = 1,
-		black = -1
+		flashbang = {},
+		hit_flash = {},
+		blurzone = {}
 	}
+	self.accessibility_colors.screenflash.flashbang.default = Color.white
+	self.accessibility_colors.screenflash.flashbang.black = Color.black
+	self.accessibility_colors.screenflash.flashbang.gray = Color(0.39215686274509803, 0.39215686274509803, 0.39215686274509803)
+	self.accessibility_colors.screenflash.flashbang.gray_light = Color(0.7843137254901961, 0.7843137254901961, 0.7843137254901961)
+	self.accessibility_colors.screenflash.flashbang.gray_dark = Color(0.19607843137254902, 0.19607843137254902, 0.19607843137254902)
+	self.accessibility_colors.screenflash.hit_flash.off = false
+	self.accessibility_colors.screenflash.hit_flash.default = Color(255, 255, 201, 7) / 255
+	self.accessibility_colors.screenflash.hit_flash.black = Color.black
+	self.accessibility_colors.screenflash.hit_flash.gray = Color(0.39215686274509803, 0.39215686274509803, 0.39215686274509803)
+	self.accessibility_colors.screenflash.hit_flash.gray_light = Color(0.7843137254901961, 0.7843137254901961, 0.7843137254901961)
+	self.accessibility_colors.screenflash.hit_flash.gray_dark = Color(0.19607843137254902, 0.19607843137254902, 0.19607843137254902)
+	self.accessibility_colors.screenflash.blurzone.default = Color(255, 255, 201, 7) / 255
+	self.accessibility_colors.screenflash.blurzone.black = Color.black
+	self.accessibility_colors.screenflash.blurzone.gray = Color(0.39215686274509803, 0.39215686274509803, 0.39215686274509803)
+	self.accessibility_colors.screenflash.blurzone.gray_light = Color(0.7843137254901961, 0.7843137254901961, 0.7843137254901961)
+	self.accessibility_colors.screenflash.blurzone.gray_dark = Color(0.19607843137254902, 0.19607843137254902, 0.19607843137254902)
 end
 
 function TweakData:free_dlc_list()

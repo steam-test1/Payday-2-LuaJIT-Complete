@@ -787,6 +787,9 @@ function WeaponFactoryTweakData:_init_sights()
 		perks = {
 			"scope"
 		},
+		adds = {
+			"wpn_fps_upg_o_specter_piggyback"
+		},
 		stance_mod = {
 			wpn_fps_ass_m4 = {
 				translation = Vector3(0, -1.5, -0.58)
@@ -3201,13 +3204,13 @@ function WeaponFactoryTweakData:_init_content_jobs()
 		}
 	}
 	self.parts.wpn_fps_upg_o_cs = {
-		type = "sight",
-		texture_bundle_folder = "gage_pack_jobs",
-		a_obj = "a_o",
 		dlc = "gage_pack_jobs",
-		reticle_obj = "g_reddot",
-		name_id = "bm_wp_upg_o_cs",
+		texture_bundle_folder = "gage_pack_jobs",
+		type = "sight",
 		unit = "units/pd2_dlc_gage_jobs/weapons/wpn_fps_upg_o_cs/wpn_fps_upg_o_cs",
+		reticle_obj = "g_reddot",
+		a_obj = "a_o",
+		name_id = "bm_wp_upg_o_cs",
 		pcs = {},
 		stats = {
 			zoom = 4,
@@ -3220,6 +3223,9 @@ function WeaponFactoryTweakData:_init_content_jobs()
 			"scope"
 		},
 		stance_mod = deep_clone(self.parts.wpn_fps_upg_o_specter.stance_mod),
+		adds = {
+			"wpn_fps_upg_o_cs_piggyback"
+		},
 		forbids = {
 			"wpn_fps_amcar_uupg_body_upperreciever",
 			"wpn_fps_ass_m16_os_frontsight",
@@ -3485,7 +3491,7 @@ function WeaponFactoryTweakData:_init_m4()
 			"wpn_fps_upg_ns_ass_smg_v6",
 			"wpn_fps_ass_shak12_ns_suppressor",
 			"wpn_fps_ass_shak12_ns_muzzle",
-			"                           wpn_fps_lmg_hk51b_ns_jcomp"
+			"wpn_fps_lmg_hk51b_ns_jcomp"
 		}
 	}
 	self.parts.wpn_fps_m4_upg_ns_mk12 = {
@@ -34241,6 +34247,9 @@ function WeaponFactoryTweakData:_init_scout()
 			},
 			wpn_fps_upg_o_spot = {
 				a_obj = "a_o_2"
+			},
+			wpn_fps_upg_o_northtac = {
+				a_obj = "a_o_2"
 			}
 		},
 		default_blueprint = {
@@ -36955,7 +36964,9 @@ function WeaponFactoryTweakData:_init_vityaz()
 			"wpn_fps_upg_ass_ns_battle",
 			"wpn_fps_lmg_hk51b_ns_jcomp",
 			"wpn_fps_upg_ns_pis_putnik",
-			"wpn_fps_upg_ns_ass_pbs1"
+			"wpn_fps_upg_ns_ass_pbs1",
+			"wpn_fps_upg_ak_ns_tgp",
+			"wpn_fps_upg_ak_ns_jmac"
 		}
 	}
 	self.parts.wpn_fps_smg_vityaz_b_long = {

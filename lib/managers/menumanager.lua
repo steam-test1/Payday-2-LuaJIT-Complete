@@ -2239,6 +2239,14 @@ function MenuCallbackHandler:accessibility_screenflash_color_choice(item)
 	managers.user:set_setting("accessibility_screenflash_color", item:value(), nil)
 end
 
+function MenuCallbackHandler:accessibility_screenflash_color_hit_flash_choice(item)
+	managers.user:set_setting("accessibility_screenflash_color_hit_flash", item:value(), nil)
+end
+
+function MenuCallbackHandler:accessibility_screenflash_color_blurzone_choice(item)
+	managers.user:set_setting("accessibility_screenflash_color_blurzone", item:value(), nil)
+end
+
 function MenuCallbackHandler:accessibility_sounds_tinnitus_toggle(item)
 	local state = item:value() == "on"
 
@@ -10014,6 +10022,26 @@ function MenuOptionInitiator:modify_accessibility_options(node)
 
 		if setting then
 			accessibility_screenflash_color:set_value(setting)
+		end
+	end
+
+	local accessibility_screenflash_color_hit_flash = node:item("accessibility_screenflash_color_hit_flash_choice")
+
+	if accessibility_screenflash_color_hit_flash then
+		local setting = managers.user:get_setting("accessibility_screenflash_color_hit_flash")
+
+		if setting then
+			accessibility_screenflash_color_hit_flash:set_value(setting)
+		end
+	end
+
+	local accessibility_screenflash_color_blurzone = node:item("accessibility_screenflash_color_blurzone_choice")
+
+	if accessibility_screenflash_color_blurzone then
+		local setting = managers.user:get_setting("accessibility_screenflash_color_blurzone")
+
+		if setting then
+			accessibility_screenflash_color_blurzone:set_value(setting)
 		end
 	end
 

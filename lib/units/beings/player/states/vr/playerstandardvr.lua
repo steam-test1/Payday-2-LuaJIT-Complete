@@ -1545,6 +1545,7 @@ function PlayerStandardVR:_interupt_action_reload(t)
 	managers.hud:belt():trigger_reload()
 	managers.hud:set_reload_visible(false)
 
+	self._queue_reload_interupt = nil
 	self._can_trigger_reload = nil
 	self._state_data.reload_expire_t = nil
 	self._state_data.needs_full_reload = nil

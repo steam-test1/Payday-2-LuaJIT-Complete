@@ -31,6 +31,10 @@ function CivilianBrain:init(unit)
 	self._SO_access = managers.navigation:convert_access_flag(tweak_data.character[unit:base()._tweak_table].access)
 	self._slotmask_enemies = managers.slot:get_mask("criminals")
 	CopBrain._reload_clbks[unit:key()] = callback(self, self, "on_reload")
+
+	if unit:base().add_tweak_data_changed_listener then
+		unit:base():add_tweak_data_changed_listener("CivilianBrainTweakDataChange" .. tostring(unit:key()), callback(self, self, "_clbk_tweak_data_changed"))
+	end
 end
 
 function CivilianBrain:update(unit, t, dt)

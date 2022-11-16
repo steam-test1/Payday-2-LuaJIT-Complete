@@ -1029,6 +1029,7 @@ function CharacterTweakData:_init_marshal_shield(presets)
 	self.marshal_shield_break.use_animation_on_fire_damage = nil
 	self.marshal_shield_break.damage.shield_knocked = nil
 	self.marshal_shield_break.modify_health_on_tweak_change = true
+	self.marshal_shield_break.tmp_invulnerable_on_tweak_change = 3
 	self.marshal_shield_break.weapon.is_shotgun_mag = {
 		aim_delay = {
 			0.1,

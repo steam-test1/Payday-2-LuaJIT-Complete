@@ -201,6 +201,19 @@ function CopDamage:_clbk_tweak_data_changed(old_tweak_data, new_tweak_data)
 			end
 		end
 
+		local applied_contour = false
+
+		if new_tweak_data.tmp_invulnerable_on_tweak_change then
+			self:set_invulnerable_tmp(new_tweak_data.tmp_invulnerable_on_tweak_change)
+
+			if self._unit:contour() then
+				applied_contour = true
+
+				self._unit:contour():add("tmp_invulnerable", false, new_tweak_data.tmp_invulnerable_on_tweak_change, nil, false)
+				self._unit:contour():flash("tmp_invulnerable", 0.2)
+			end
+		end
+
 		if new_tweak_data.modify_health_on_tweak_change then
 			local old_health = self._health
 			self._HEALTH_INIT = new_tweak_data.HEALTH_INIT
@@ -212,7 +225,7 @@ function CopDamage:_clbk_tweak_data_changed(old_tweak_data, new_tweak_data)
 			self._health_ratio = 1
 			self._HEALTH_INIT_PRECENT = self._HEALTH_INIT / self._HEALTH_GRANULARITY
 
-			if old_health < self._health and self._unit:contour() then
+			if not applied_contour and old_health < self._health and self._unit:contour() then
 				self._unit:contour():add("medic_heal", false, nil, nil, false)
 				self._unit:contour():flash("medic_heal", 0.2)
 			end
@@ -1207,6 +1220,7 @@ function CopDamage:chk_has_aoe_damage()
 	local aoe_data = {}
 	self._aoe_data = aoe_data
 	aoe_data.preparing = false
+	aoe_data.env_tweak_name = aoe_tweak_data.env_tweak_name
 	aoe_data.slotmask = slotmask
 	aoe_data.range = aoe_tweak_data.activation_range
 
@@ -2796,7 +2810,10 @@ function CopDamage:get_impact_segment(position)
 
 	for _, bone_name in pairs(self._impact_bones) do
 		local bone_obj = self._unit:get_object(bone_name)
-		local bone_dist_sq = mvector3.distance_sq(position, bone_obj:position())
+
+		bone_obj:m_position(mvec_1)
+
+		local bone_dist_sq = mvector3.distance_sq(position, mvec_1)
 
 		if not closest_bone or bone_dist_sq < closest_dist_sq then
 			closest_bone = bone_obj
@@ -2809,7 +2826,9 @@ function CopDamage:get_impact_segment(position)
 
 	for _, bone_obj in ipairs(closest_bone:children()) do
 		if self._impact_bones[bone_obj:name():key()] then
-			local bone_dist_sq = mvector3.distance_sq(position, bone_obj:position())
+			bone_obj:m_position(mvec_1)
+
+			local bone_dist_sq = mvector3.distance_sq(position, mvec_1)
 
 			if not closest_dist_sq or bone_dist_sq < closest_dist_sq then
 				closest_child = bone_obj
@@ -2821,7 +2840,9 @@ function CopDamage:get_impact_segment(position)
 	local bone_obj = closest_bone:parent()
 
 	if bone_obj and self._impact_bones[bone_obj:name():key()] then
-		local bone_dist_sq = mvector3.distance_sq(position, bone_obj:position())
+		bone_obj:m_position(mvec_1)
+
+		local bone_dist_sq = mvector3.distance_sq(position, mvec_1)
 
 		if not closest_dist_sq or bone_dist_sq < closest_dist_sq then
 			parent_bone = bone_obj
@@ -2964,6 +2985,12 @@ function CopDamage:die(attack_data)
 
 	self:_on_death()
 	managers.mutators:notify(Message.OnCopDamageDeath, self, attack_data)
+
+	if self._tmp_invulnerable_clbk_key then
+		managers.enemy:remove_delayed_clbk(self._tmp_invulnerable_clbk_key)
+
+		self._tmp_invulnerable_clbk_key = nil
+	end
 end
 
 function CopDamage:set_mover_collision_state(state)
@@ -3958,6 +3985,32 @@ function CopDamage:set_immortal(immortal)
 	self._immortal = immortal
 end
 
+function CopDamage:set_invulnerable_tmp(duration)
+	if type(duration) ~= "number" then
+		Application:error("[CopDamage:set_invulnerable_tmp] Duration passed is not a number, it is a '" .. type(duration) .. "'.")
+
+		return
+	end
+
+	duration = TimerManager:game():time() + duration
+
+	if self._tmp_invulnerable_clbk_key then
+		managers.enemy:reschedule_delayed_clbk(self._tmp_invulnerable_clbk_key, duration)
+	else
+		self:set_invulnerable(true)
+
+		self._tmp_invulnerable_clbk_key = "TempInvulnerable" .. tostring(self._unit:key())
+
+		managers.enemy:add_delayed_clbk(self._tmp_invulnerable_clbk_key, callback(self, self, "_clbk_temp_invulnerability_off"), duration)
+	end
+end
+
+function CopDamage:_clbk_temp_invulnerability_off()
+	self._tmp_invulnerable_clbk_key = nil
+
+	self:set_invulnerable(false)
+end
+
 function CopDamage:build_suppression(amount, panic_chance)
 	if self._dead or not self._char_tweak.suppression then
 		return
@@ -4382,6 +4435,12 @@ end
 
 function CopDamage:destroy(...)
 	self:_remove_debug_gui()
+
+	if self._tmp_invulnerable_clbk_key then
+		managers.enemy:remove_delayed_clbk(self._tmp_invulnerable_clbk_key)
+
+		self._tmp_invulnerable_clbk_key = nil
+	end
 end
 
 function CopDamage:can_kill()

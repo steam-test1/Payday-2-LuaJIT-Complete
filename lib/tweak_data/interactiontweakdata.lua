@@ -6076,15 +6076,13 @@ function InteractionTweakData:init(tweak_data)
 	self.pickup_evidence_pex = {
 		text_id = "hud_int_hold_check_evidence",
 		action_text_id = "hud_action_checking_evidence",
-		equipment_text_id = "hud_equipment_need_evidence",
+		interact_distance = 150,
+		timer = 2,
+		start_active = true,
 		special_equipment_block = "evidence",
 		sound_start = "bar_shuffle_papers",
 		sound_interupt = "bar_shuffle_papers_cancel",
-		sound_done = "bar_shuffle_papers_finished",
-		equipment_consume = true,
-		interact_distance = 150,
-		timer = 2,
-		start_active = true
+		sound_done = "bar_shuffle_papers_finished"
 	}
 	self.destroy_evidence_pex = {
 		text_id = "hud_int_hold_destroy_evidence",

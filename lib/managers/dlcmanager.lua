@@ -2343,6 +2343,7 @@ end
 
 function WINDLCManager:_init_promoted_dlc_list()
 	self._promoted_dlc_list = {
+		"txt3",
 		"trai",
 		"pxp2",
 		"tma1",

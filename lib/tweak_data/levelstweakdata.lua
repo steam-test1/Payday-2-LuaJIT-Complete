@@ -2615,6 +2615,7 @@ function LevelsTweakData:init()
 		ai_group_type = america,
 		narrator = "locke",
 		ghost_bonus = 0.15,
+		max_bags = 35,
 		load_screen = "guis/dlcs/trai/textures/loading/job_trai_01_df",
 		equipment = {
 			{

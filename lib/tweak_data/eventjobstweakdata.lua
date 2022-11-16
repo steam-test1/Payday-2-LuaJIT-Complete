@@ -2,6 +2,7 @@ EventJobsTweakData = EventJobsTweakData or class()
 
 function EventJobsTweakData:init(tweak_data)
 	self.challenges = {}
+	self.current_event = ""
 
 	self:_init_pda8_challenges(tweak_data)
 	self:_init_pda9_challenges(tweak_data)
@@ -186,7 +187,7 @@ function EventJobsTweakData:_init_pda9_challenges(tweak_data)
 	table.insert(self.challenges, {
 		reward_id = "menu_pda9_1_reward",
 		name_id = "menu_pda9_1",
-		temp_challenge = true,
+		temp_challenge = "PDA9",
 		desc_id = "menu_pda9_1_desc",
 		show_progress = true,
 		locked_id = "bm_menu_locked_pda9_1",
@@ -207,7 +208,7 @@ function EventJobsTweakData:_init_pda9_challenges(tweak_data)
 	table.insert(self.challenges, {
 		reward_id = "menu_pda9_2_reward",
 		name_id = "menu_pda9_2",
-		temp_challenge = true,
+		temp_challenge = "PDA9",
 		desc_id = "menu_pda9_2_desc",
 		show_progress = true,
 		locked_id = "bm_menu_locked_pda9_2",
@@ -232,7 +233,7 @@ function EventJobsTweakData:_init_pda9_challenges(tweak_data)
 	table.insert(self.challenges, {
 		reward_id = "menu_pda9_3_reward",
 		name_id = "menu_pda9_3",
-		temp_challenge = true,
+		temp_challenge = "PDA9",
 		desc_id = "menu_pda9_3_desc",
 		show_progress = true,
 		locked_id = "bm_menu_locked_pda9_3",
@@ -253,7 +254,7 @@ function EventJobsTweakData:_init_pda9_challenges(tweak_data)
 	table.insert(self.challenges, {
 		reward_id = "menu_pda9_4_reward",
 		name_id = "menu_pda9_4",
-		temp_challenge = true,
+		temp_challenge = "PDA9",
 		desc_id = "menu_pda9_4_desc",
 		show_progress = true,
 		locked_id = "bm_menu_locked_pda9_4",

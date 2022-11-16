@@ -1313,7 +1313,7 @@ function PlayerDamage:damage_bullet(attack_data)
 
 		self:_call_listeners(damage_info)
 		self:play_whizby(attack_data.col_ray.position)
-		self:_hit_direction(attack_data.attacker_unit:position())
+		self:_hit_direction(attack_data.attacker_unit:position(), attack_data.col_ray and attack_data.col_ray.ray or damage_info.attacK_dir)
 
 		self._next_allowed_dmg_t = Application:digest_value(pm:player_timer():time() + self._dmg_interval, true)
 		self._last_received_dmg = attack_data.damage
@@ -1345,7 +1345,7 @@ function PlayerDamage:damage_bullet(attack_data)
 		managers.rumble:play("damage_bullet")
 	end
 
-	self:_hit_direction(attack_data.attacker_unit:position())
+	self:_hit_direction(attack_data.attacker_unit:position(), attack_data.col_ray and attack_data.col_ray.ray or damage_info.attacK_dir)
 	pm:check_damage_carry(attack_data)
 
 	attack_data.damage = managers.player:modify_value("damage_taken", attack_data.damage, attack_data)
@@ -1580,7 +1580,7 @@ function PlayerDamage:damage_killzone(attack_data)
 		self:_damage_screen()
 		self:_check_bleed_out(nil)
 	else
-		self:_hit_direction(attack_data.col_ray.origin)
+		self:_hit_direction(attack_data.col_ray.origin, attack_data.col_ray.ray)
 
 		if self._bleed_out then
 			return
@@ -1635,7 +1635,8 @@ function PlayerDamage:damage_fall(data)
 	local die = death_limit < data.height
 
 	self._unit:sound():play("player_hit")
-	managers.hud:on_hit_direction(Vector3(0, 0, 0), die and HUDHitDirection.DAMAGE_TYPES.HEALTH or HUDHitDirection.DAMAGE_TYPES.ARMOUR, 0)
+	managers.environment_controller:hit_feedback_down()
+	managers.hud:on_hit_direction(Vector3(0, 0, -1), die and HUDHitDirection.DAMAGE_TYPES.HEALTH or HUDHitDirection.DAMAGE_TYPES.ARMOUR, 0)
 
 	if self._bleed_out and not is_free_falling then
 		return
@@ -1875,7 +1876,7 @@ function PlayerDamage:damage_fire_hit(attack_data)
 		self._unit:sound():play("player_hit_permadamage")
 	end
 
-	self:_hit_direction(attack_data.attacker_unit:position())
+	self:_hit_direction(attack_data.attacker_unit:position(), attack_data.col_ray and attack_data.col_ray.ray)
 	pm:check_damage_carry(attack_data)
 
 	attack_data.damage = managers.player:modify_value("damage_taken", attack_data.damage, attack_data)
@@ -2302,9 +2303,34 @@ function PlayerDamage:_bleed_out_damage(attack_data)
 	end
 end
 
-function PlayerDamage:_hit_direction(position_vector)
+function PlayerDamage:_hit_direction(position_vector, direction_vector)
 	if position_vector then
 		managers.hud:on_hit_direction(position_vector, self:get_real_armor() > 0 and HUDHitDirection.DAMAGE_TYPES.ARMOUR or HUDHitDirection.DAMAGE_TYPES.HEALTH)
+
+		if direction_vector then
+			local infront = math.dot(self._unit:camera():forward(), direction_vector)
+
+			if infront < -0.9 then
+				managers.environment_controller:hit_feedback_front()
+			elseif infront > 0.9 then
+				managers.environment_controller:hit_feedback_back()
+			else
+				local polar = self._unit:camera():forward():to_polar_with_reference(-direction_vector, math.UP)
+				local direction = Vector3(polar.spin, polar.pitch, 0):normalized()
+
+				if math.abs(direction.y) < math.abs(direction.x) then
+					if direction.x < 0 then
+						managers.environment_controller:hit_feedback_left()
+					else
+						managers.environment_controller:hit_feedback_right()
+					end
+				elseif direction.y < 0 then
+					managers.environment_controller:hit_feedback_up()
+				else
+					managers.environment_controller:hit_feedback_down()
+				end
+			end
+		end
 	end
 end
 
@@ -2552,6 +2578,8 @@ function PlayerDamage:pre_destroy()
 	managers.environment_controller:set_hurt_value(1)
 	managers.environment_controller:set_health_effect_value(1)
 	managers.environment_controller:set_suppression_value(0)
+	managers.environment_controller:set_flashbang_value(0)
+	managers.environment_controller:set_concussion_value(0)
 	managers.sequence:remove_inflict_updator_body("fire", self._unit:key(), self._inflict_damage_body:key())
 	CopDamage.unregister_listener("on_damage")
 	managers.mission:remove_global_event_listener("player_regenerate_armor")
@@ -2786,17 +2814,9 @@ function PlayerDamage:_start_concussion(mul, skip_disoriented_sfx, duration_twea
 	end
 
 	if not skip_disoriented_sfx then
-		if self._concussion_data.snd_event_disorient then
-			self._concussion_data.snd_event_disorient:stop()
+		local event_name = self._can_play_tinnitus and "concussion_player_disoriented_sfx" or "concussion_player_disoriented_noring"
 
-			self._concussion_data.snd_event_disorient = nil
-		end
-
-		if self._can_play_tinnitus then
-			self._concussion_data.snd_event_disorient = self._unit:sound():play("concussion_player_disoriented_sfx")
-		else
-			self._unit:sound():play("flashbang_explode_sfx_player")
-		end
+		self._unit:sound():play(event_name)
 	end
 end
 
@@ -2807,10 +2827,6 @@ function PlayerDamage:_stop_concussion(finished)
 
 	if self._concussion_data.snd_event then
 		self._unit:sound():play("concussion_effect_off")
-	end
-
-	if not finished and self._concussion_data.snd_event_disorient then
-		self._concussion_data.snd_event_disorient:stop()
 	end
 
 	self._concussion_data = nil
@@ -2892,17 +2908,23 @@ function PlayerDamage:clbk_tinnitus_toggle_changed(setting_name, old, new)
 
 	self._can_play_tinnitus = new_setting
 
-	if not new_setting then
-		if self._tinnitus_data and self._tinnitus_data.snd_event then
+	if self._tinnitus_data then
+		if new_setting then
+			if not self._tinnitus_data.snd_event then
+				if Application:paused() then
+					call_on_next_update(function ()
+						if self._can_play_tinnitus and self._tinnitus_data and alive(self._unit) then
+							self._tinnitus_data.snd_event = self._unit:sound():play("tinnitus_beep")
+						end
+					end, "PlayTinnitusOnUnpause" .. tostring(self._unit:key()))
+				else
+					self._tinnitus_data.snd_event = self._unit:sound():play("tinnitus_beep")
+				end
+			end
+		elseif self._tinnitus_data.snd_event then
 			self._tinnitus_data.snd_event:stop()
 
 			self._tinnitus_data.snd_event = nil
-		end
-
-		if self._concussion_data and self._concussion_data.snd_event_disorient then
-			self._concussion_data.snd_event_disorient:stop()
-
-			self._concussion_data.snd_event_disorient = nil
 		end
 	end
 end

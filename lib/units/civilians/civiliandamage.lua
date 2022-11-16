@@ -32,6 +32,12 @@ function CivilianDamage:die(variant)
 	self._dead = true
 
 	self:set_mover_collision_state(false)
+
+	if self._tmp_invulnerable_clbk_key then
+		managers.enemy:remove_delayed_clbk(self._tmp_invulnerable_clbk_key)
+
+		self._tmp_invulnerable_clbk_key = nil
+	end
 end
 
 function CivilianDamage:_on_damage_received(damage_info)

@@ -69,7 +69,10 @@ function CoreEnvironmentControllerManager:init()
 	self._default_fov_value = 75
 	self._current_fov_value = 75
 	self._fov_ratio = 1
-	self._screenflash_color_value = 1
+	self._screenflash_color_flash_override = 0.5
+	self._screenflash_color_flashbang = Color.white
+	self._screenflash_color_hit_flash = false
+	self._screenflash_color_blurzone = Color(255, 255, 201, 7) / 255
 end
 
 function CoreEnvironmentControllerManager:update(t, dt)
@@ -181,33 +184,45 @@ function CoreEnvironmentControllerManager:set_suppression_value(effective_value,
 end
 
 function CoreEnvironmentControllerManager:hit_feedback_front()
-	self._hit_front = math.min(self._hit_front + self._hit_amount, 1)
-	self._hit_some = math.min(self._hit_some + self._hit_amount, 1)
+	if self._hit_flash_overlay_effect_id then
+		self._hit_front = math.min(self._hit_front + self._hit_amount, 1)
+		self._hit_some = math.min(self._hit_some + self._hit_amount, 1)
+	end
 end
 
 function CoreEnvironmentControllerManager:hit_feedback_back()
-	self._hit_back = math.min(self._hit_back + self._hit_amount, 1)
-	self._hit_some = math.min(self._hit_some + self._hit_amount, 1)
+	if self._hit_flash_overlay_effect_id then
+		self._hit_back = math.min(self._hit_back + self._hit_amount, 1)
+		self._hit_some = math.min(self._hit_some + self._hit_amount, 1)
+	end
 end
 
 function CoreEnvironmentControllerManager:hit_feedback_right()
-	self._hit_right = math.min(self._hit_right + self._hit_amount, 1)
-	self._hit_some = math.min(self._hit_some + self._hit_amount, 1)
+	if self._hit_flash_overlay_effect_id then
+		self._hit_right = math.min(self._hit_right + self._hit_amount, 1)
+		self._hit_some = math.min(self._hit_some + self._hit_amount, 1)
+	end
 end
 
 function CoreEnvironmentControllerManager:hit_feedback_left()
-	self._hit_left = math.min(self._hit_left + self._hit_amount, 1)
-	self._hit_some = math.min(self._hit_some + self._hit_amount, 1)
+	if self._hit_flash_overlay_effect_id then
+		self._hit_left = math.min(self._hit_left + self._hit_amount, 1)
+		self._hit_some = math.min(self._hit_some + self._hit_amount, 1)
+	end
 end
 
 function CoreEnvironmentControllerManager:hit_feedback_up()
-	self._hit_up = math.min(self._hit_up + self._hit_amount, 1)
-	self._hit_some = math.min(self._hit_some + self._hit_amount, 1)
+	if self._hit_flash_overlay_effect_id then
+		self._hit_up = math.min(self._hit_up + self._hit_amount, 1)
+		self._hit_some = math.min(self._hit_some + self._hit_amount, 1)
+	end
 end
 
 function CoreEnvironmentControllerManager:hit_feedback_down()
-	self._hit_down = math.min(self._hit_down + self._hit_amount, 1)
-	self._hit_some = math.min(self._hit_some + self._hit_amount, 1)
+	if self._hit_flash_overlay_effect_id then
+		self._hit_down = math.min(self._hit_down + self._hit_amount, 1)
+		self._hit_some = math.min(self._hit_some + self._hit_amount, 1)
+	end
 end
 
 function CoreEnvironmentControllerManager:set_blurzone(id, mode, pos, radius, height, delete_after_fadeout)
@@ -574,11 +589,12 @@ function CoreEnvironmentControllerManager:set_post_composite(t, dt)
 		last_life = math.clamp((hurt_mod - 0.5) * 2, 0, 1)
 	end
 
-	if not self._screenflash_color_value_clbk_func then
-		self:set_screenflash_color_clbk()
+	if not self._screenflash_colors_setup then
+		self:set_screenflash_colors_clbks()
 	end
 
-	mvector3.set_static(temp_vec_2, last_life, self._screenflash_color_value * math.max(0, flash_2 + math.clamp(hit_some_mod * 2, 0, 1) * 0.25 + blur_zone_val * 0.15), 0)
+	self:_handle_screenflash(flash_2, hit_some_mod, blur_zone_val)
+	mvector3.set_static(temp_vec_2, last_life, 0, 0)
 	self._lut_modifier_material:set_variable(ids_LUT_settings_b, temp_vec_2)
 	self._lut_modifier_material:set_variable(ids_LUT_contrast, flashbang * 0.5)
 end
@@ -587,10 +603,6 @@ function CoreEnvironmentControllerManager:_update_post_effects()
 	self:set_ao_setting(managers.user:get_setting("video_ao"))
 	self:set_parallax_setting(managers.user:get_setting("parallax_mapping"))
 	self:set_aa_setting(managers.user:get_setting("video_aa"))
-
-	if not self._screenflash_color_value_clbk_func then
-		self:set_screenflash_color_clbk()
-	end
 end
 
 function CoreEnvironmentControllerManager:_create_dof_tweak_data()
@@ -851,22 +863,148 @@ function CoreEnvironmentControllerManager:_update_dof(t, dt)
 	end
 end
 
-function CoreEnvironmentControllerManager:set_screenflash_color(color_name)
-	self._screenflash_color_value = tweak_data.accessibility_colors.screenflash[color_name] or tweak_data.accessibility_colors.screenflash.default or 1
-end
+function CoreEnvironmentControllerManager:set_screenflash_colors_clbks()
+	self._screenflash_colors_setup = true
 
-function CoreEnvironmentControllerManager:set_screenflash_color_clbk()
-	if not self._screenflash_color_value_clbk_func then
-		self:set_screenflash_color(managers.user:get_setting("accessibility_screenflash_color"))
+	if not self._screenflash_color_clbk_func_flashbang then
+		self:set_screenflash_color_flashbang(managers.user:get_setting("accessibility_screenflash_color"))
 
-		self._screenflash_color_value_clbk_func = callback(self, self, "clbk_screenflash_color_changed")
+		self._screenflash_color_clbk_func_flashbang = callback(self, self, "clbk_screenflash_color_changed_flashbang")
 
-		managers.user:add_setting_changed_callback("accessibility_screenflash_color", self._screenflash_color_value_clbk_func)
+		managers.user:add_setting_changed_callback("accessibility_screenflash_color", self._screenflash_color_clbk_func_flashbang)
+	end
+
+	if not self._screenflash_color_clbk_func_hit_flash then
+		self:set_screenflash_color_hit_flash(managers.user:get_setting("accessibility_screenflash_color_hit_flash"))
+
+		self._screenflash_color_clbk_func_hit_flash = callback(self, self, "clbk_screenflash_color_changed_hit_flash")
+
+		managers.user:add_setting_changed_callback("accessibility_screenflash_color_hit_flash", self._screenflash_color_clbk_func_hit_flash)
+	end
+
+	if not self._screenflash_color_clbk_func_blurzone then
+		self:set_screenflash_color_blurzone(managers.user:get_setting("accessibility_screenflash_color_blurzone"))
+
+		self._screenflash_color_clbk_func_blurzone = callback(self, self, "clbk_screenflash_color_changed_blurzone")
+
+		managers.user:add_setting_changed_callback("accessibility_screenflash_color_blurzone", self._screenflash_color_clbk_func_blurzone)
 	end
 end
 
-function CoreEnvironmentControllerManager:clbk_screenflash_color_changed(setting_name, old_color_name, new_color_name)
-	self:set_screenflash_color(new_color_name)
+function CoreEnvironmentControllerManager:set_screenflash_color_flashbang(color_name)
+	local old_color = self._screenflash_color_flashbang
+	self._screenflash_color_flashbang = tweak_data.accessibility_colors.screenflash.flashbang[color_name] or tweak_data.accessibility_colors.screenflash.flashbang.default or Color.white
+
+	if self._flashbang_overlay_effect_id then
+		if old_color ~= self._screenflash_color_flashbang then
+			managers.overlay_effect:modify_effect_color_external(self._flashbang_overlay_effect_id, self._screenflash_color_flashbang)
+		end
+	else
+		self._flashbang_overlay_effect_id = managers.overlay_effect:add_effect_external({
+			blend_mode = "normal",
+			layer = -1,
+			alpha_start = 0,
+			color = self._screenflash_color_flashbang
+		})
+	end
+end
+
+function CoreEnvironmentControllerManager:set_screenflash_color_hit_flash(color_name)
+	local old_color = self._screenflash_color_hit_flash
+	local new_color = tweak_data.accessibility_colors.screenflash.hit_flash[color_name]
+
+	if not new_color then
+		if self._hit_flash_overlay_effect_id then
+			managers.overlay_effect:remove_effect_external(self._hit_flash_overlay_effect_id)
+
+			self._hit_flash_overlay_effect_id = nil
+		end
+
+		self._screenflash_color_hit_flash = false
+		self._hit_right = 0
+		self._hit_left = 0
+		self._hit_up = 0
+		self._hit_down = 0
+		self._hit_front = 0
+		self._hit_back = 0
+		self._hit_some = 0
+	else
+		self._screenflash_color_hit_flash = new_color
+
+		if self._hit_flash_overlay_effect_id then
+			if old_color ~= new_color then
+				managers.overlay_effect:modify_effect_color_external(self._hit_flash_overlay_effect_id, new_color)
+			end
+		else
+			self._hit_flash_overlay_effect_id = managers.overlay_effect:add_effect_external({
+				blend_mode = "normal",
+				layer = -1,
+				alpha_start = 0,
+				color = new_color
+			})
+		end
+	end
+end
+
+function CoreEnvironmentControllerManager:set_screenflash_color_blurzone(color_name)
+	local old_color = self._screenflash_color_blurzone
+	self._screenflash_color_blurzone = tweak_data.accessibility_colors.screenflash.blurzone[color_name] or tweak_data.accessibility_colors.screenflash.blurzone.default or Color(255, 255, 201, 7) / 255
+
+	if self._blurzone_flash_overlay_effect_id then
+		if old_color ~= self._screenflash_color_blurzone then
+			managers.overlay_effect:modify_effect_color_external(self._blurzone_flash_overlay_effect_id, self._screenflash_color_blurzone)
+		end
+	else
+		self._blurzone_flash_overlay_effect_id = managers.overlay_effect:add_effect_external({
+			blend_mode = "normal",
+			layer = -1,
+			alpha_start = 0,
+			color = self._screenflash_color_blurzone
+		})
+	end
+end
+
+function CoreEnvironmentControllerManager:clbk_screenflash_color_changed_flashbang(setting_name, old_color_name, new_color_name)
+	self:set_screenflash_color_flashbang(new_color_name)
+end
+
+function CoreEnvironmentControllerManager:clbk_screenflash_color_changed_hit_flash(setting_name, old_color_name, new_color_name)
+	self:set_screenflash_color_hit_flash(new_color_name)
+end
+
+function CoreEnvironmentControllerManager:clbk_screenflash_color_changed_blurzone(setting_name, old_color_name, new_color_name)
+	self:set_screenflash_color_blurzone(new_color_name)
+end
+
+function CoreEnvironmentControllerManager:_handle_screenflash(flashbang_value, hit_flash_value, blurzone_value)
+	hit_flash_value = self._hit_flash_overlay_effect_id and math.clamp(hit_flash_value * 2, 0, 1) * 0.25 or 0
+	blurzone_value = blurzone_value * 0.15
+	local total_value = math.clamp(flashbang_value + hit_flash_value + blurzone_value, 0, 1)
+
+	if self._screenflash_color_flash_override < total_value then
+		managers.overlay_effect:progress_effect_external(self._flashbang_overlay_effect_id, 1)
+
+		if self._hit_flash_overlay_effect_id then
+			managers.overlay_effect:progress_effect_external(self._hit_flash_overlay_effect_id, 0)
+		end
+
+		managers.overlay_effect:progress_effect_external(self._blurzone_flash_overlay_effect_id, 0)
+	else
+		local value_ceiling = self._screenflash_color_flash_override
+		flashbang_value = math.lerp(0, 1, math.clamp(flashbang_value, 0, value_ceiling) / value_ceiling)
+
+		managers.overlay_effect:progress_effect_external(self._flashbang_overlay_effect_id, flashbang_value)
+
+		if self._hit_flash_overlay_effect_id then
+			hit_flash_value = math.max(0, hit_flash_value)
+
+			managers.overlay_effect:progress_effect_external(self._hit_flash_overlay_effect_id, hit_flash_value)
+		end
+
+		blurzone_value = math.lerp(0, 1, math.clamp(blurzone_value, 0, value_ceiling) / value_ceiling)
+
+		managers.overlay_effect:progress_effect_external(self._blurzone_flash_overlay_effect_id, blurzone_value)
+	end
 end
 
 function CoreEnvironmentControllerManager:set_flashbang(flashbang_pos, line_of_sight, travel_dis, linear_dis, duration, no_offset, no_effect)
@@ -952,6 +1090,15 @@ function CoreEnvironmentControllerManager:test_line_of_sight(test_pos, min_dista
 	flash = (1 - flash) * dot_mul
 
 	return flash
+end
+
+function CoreEnvironmentControllerManager:set_flashbang_value(flashbang, flash)
+	self._current_flashbang = flashbang
+	self._current_flashbang_flash = flash or flashbang
+end
+
+function CoreEnvironmentControllerManager:set_concussion_value(concussion)
+	self._current_concussion = concussion
 end
 
 function CoreEnvironmentControllerManager:set_dof_override(mode)

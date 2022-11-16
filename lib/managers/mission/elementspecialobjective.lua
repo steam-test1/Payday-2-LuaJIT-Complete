@@ -793,6 +793,14 @@ function ElementSpecialObjective:get_as_followup(unit, skip_element_ids)
 	self:event("admin_fail", unit)
 end
 
+function ElementSpecialObjective:_has_action_duration()
+	if not self._values.action_duration_max and not self._values.action_duration_min then
+		return false
+	end
+
+	return true
+end
+
 function ElementSpecialObjective:_get_action_duration()
 	if not self._values.action_duration_max and not self._values.action_duration_min then
 		return
@@ -834,12 +842,43 @@ ElementSpecialObjective._stealth_idles = {
 	"e_so_ntl_stretch_shoulders",
 	"e_so_ntl_watch_look_calm"
 }
+ElementSpecialObjective._stealth_idles_no_loop = {
+	"e_so_ntl_idle_kickpebble",
+	"e_so_ntl_idle_look",
+	"e_so_ntl_idle_look2",
+	"e_so_ntl_idle_clock",
+	"e_so_ntl_idle_brush",
+	"e_so_ntl_idle_stickygum",
+	"e_so_ntl_idle_tired",
+	"e_so_ntl_brush_jacket",
+	"e_so_ntl_brush_shoe",
+	"e_so_ntl_clear_throat",
+	"e_so_ntl_idle_breath",
+	"e_so_ntl_idle_stand",
+	"e_so_ntl_idle_thinking",
+	"e_so_ntl_jawn",
+	"e_so_ntl_look_around",
+	"e_so_ntl_look_behind",
+	"e_so_ntl_look_up",
+	"e_so_ntl_restless",
+	"e_so_ntl_scratches_chin",
+	"e_so_ntl_stretch_shoulders",
+	"e_so_ntl_watch_look_calm"
+}
 
 function ElementSpecialObjective:_check_new_stealth_idle()
-	if table.contains(ElementSpecialObjective._stealth_idles, self._values.so_action) then
-		local new = ElementSpecialObjective._stealth_idles[math.random(#ElementSpecialObjective._stealth_idles)]
+	if self._values.so_action then
+		if not self:_has_action_duration() then
+			if table.contains(ElementSpecialObjective._stealth_idles_no_loop, self._values.so_action) then
+				local new = ElementSpecialObjective._stealth_idles_no_loop[math.random(#ElementSpecialObjective._stealth_idles_no_loop)]
 
-		return new
+				return new
+			end
+		elseif table.contains(ElementSpecialObjective._stealth_idles, self._values.so_action) then
+			local new = ElementSpecialObjective._stealth_idles[math.random(#ElementSpecialObjective._stealth_idles)]
+
+			return new
+		end
 	end
 
 	return self._values.so_action

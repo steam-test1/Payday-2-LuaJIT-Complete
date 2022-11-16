@@ -147,6 +147,12 @@ ContourExt._types = {
 		material_swap_required = true,
 		fadeout = 2,
 		color = tweak_data.contour.character.heal_color
+	},
+	tmp_invulnerable = {
+		priority = 1,
+		material_swap_required = true,
+		fadeout = 1,
+		color = tweak_data.contour.character.tmp_invulnerable_color
 	}
 }
 ContourExt.indexed_types = {}

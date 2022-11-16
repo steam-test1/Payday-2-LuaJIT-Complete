@@ -364,8 +364,6 @@ function CopBase:melee_weapon()
 end
 
 function CopBase:pre_destroy(unit)
-	self._tweak_data_listener_holder = nil
-
 	if alive(self._headwear_unit) then
 		self._headwear_unit:set_slot(0)
 
@@ -376,6 +374,8 @@ function CopBase:pre_destroy(unit)
 	self._ext_movement:pre_destroy()
 	self._unit:inventory():pre_destroy()
 	UnitBase.pre_destroy(self, unit)
+
+	self._tweak_data_listener_holder = nil
 end
 
 function CopBase:_refresh_buff_total(name)

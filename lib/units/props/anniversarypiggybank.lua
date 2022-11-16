@@ -20,8 +20,6 @@ function AnniversaryPiggyBank:sync_explode_pig(pig_level)
 end
 
 function AnniversaryPiggyBank:on_interacted()
-	print("SimonInteractionSuccess!")
-
 	if not Network:is_server() then
 		return
 	end

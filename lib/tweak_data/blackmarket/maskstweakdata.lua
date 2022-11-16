@@ -8918,6 +8918,574 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 			sydney = "deadman_lears"
 		}
 	}
+	self.masks.bandcap_dark_default = {
+		unit = "units/pd2_dlc_txt3/masks/msk_bandcap_dark/msk_bandcap_dark",
+		name_id = "bm_msk_cheat_error",
+		type = "cowboyhat",
+		inaccessible = true,
+		offsets = {
+			dragon = {
+				Vector3(0, 0, 0.673745),
+				Rotation(-0, -0, -0)
+			},
+			jacket = {
+				Vector3(0, 0.196759, 0.196759),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.bandcap_dark_hair = {
+		unit = "units/pd2_dlc_txt3/masks/msk_bandcap_dark/msk_bandcap_dark_hair",
+		name_id = "bm_msk_cheat_error",
+		type = "cowboyhat",
+		inaccessible = true,
+		offsets = {
+			jimmy = {
+				Vector3(0, 0.554498, 0),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.bandcap_dark = {
+		unit = "units/pd2_dlc_txt3/masks/msk_bandcap_dark/msk_bandcap_dark",
+		name_id = "bm_msk_bandcap_dark",
+		pcs = {},
+		value = 0,
+		type = "cowboyhat",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "txt3",
+		texture_bundle_folder = "txt3",
+		characters = {
+			bonnie = "bandcap_dark_default",
+			sokol = "bandcap_dark_default",
+			myh = "bandcap_dark_default",
+			chico = "bandcap_dark_default",
+			dragan = "bandcap_dark_default",
+			ecp_male = "bandcap_dark_default",
+			ecp_female = "bandcap_dark_default",
+			dragon = "bandcap_dark_default",
+			old_hoxton = "bandcap_dark_default",
+			jowi = "bandcap_dark_default",
+			max = "bandcap_dark_default",
+			joy = "bandcap_dark_default",
+			dallas = "bandcap_dark_default",
+			jacket = "bandcap_dark_default",
+			jimmy = "bandcap_dark_hair",
+			bodhi = "bandcap_dark_default",
+			wolf = "bandcap_dark_default",
+			wild = "bandcap_dark_default",
+			hoxton = "bandcap_dark_default",
+			female_1 = "bandcap_dark_hair",
+			chains = "bandcap_dark_default",
+			sydney = "bandcap_dark_hair"
+		}
+	}
+	self.masks.flapcapban_default = {
+		unit = "units/pd2_dlc_txt3/masks/msk_flapcapban/msk_flapcapban",
+		name_id = "bm_msk_cheat_error",
+		type = "cowboyhat",
+		inaccessible = true,
+		offsets = {
+			dragon = {
+				Vector3(0, 0, 0.673745),
+				Rotation(-0, -0, -0)
+			},
+			jacket = {
+				Vector3(0, 0, 1.03148),
+				Rotation(-0, -0, -0)
+			},
+			bonnie = {
+				Vector3(0, 0, 0.673745),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.flapcapban_hair = {
+		unit = "units/pd2_dlc_txt3/masks/msk_flapcapban/msk_flapcapban_hair",
+		name_id = "bm_msk_cheat_error",
+		type = "cowboyhat",
+		inaccessible = true
+	}
+	self.masks.flapcapban = {
+		unit = "units/pd2_dlc_txt3/masks/msk_flapcapban/msk_flapcapban",
+		name_id = "bm_msk_flapcapban",
+		pcs = {},
+		value = 0,
+		type = "cowboyhat",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "txt3",
+		texture_bundle_folder = "txt3",
+		characters = {
+			bonnie = "flapcapban_default",
+			sokol = "flapcapban_default",
+			myh = "flapcapban_default",
+			chico = "flapcapban_default",
+			dragan = "flapcapban_default",
+			ecp_male = "flapcapban_default",
+			ecp_female = "flapcapban_default",
+			dragon = "flapcapban_default",
+			old_hoxton = "flapcapban_default",
+			jowi = "flapcapban_default",
+			max = "flapcapban_default",
+			joy = "flapcapban_default",
+			dallas = "flapcapban_default",
+			jacket = "flapcapban_default",
+			jimmy = "flapcapban_hair",
+			bodhi = "flapcapban_default",
+			wolf = "flapcapban_default",
+			wild = "flapcapban_default",
+			hoxton = "flapcapban_default",
+			female_1 = "flapcapban_hair",
+			chains = "flapcapban_default",
+			sydney = "flapcapban_hair"
+		}
+	}
+	self.masks.gentgla_brown_default = {
+		unit = "units/pd2_dlc_txt3/masks/msk_gentgla_brown/msk_gentgla_brown",
+		name_id = "bm_msk_cheat_error",
+		type = "glasses",
+		inaccessible = true,
+		offsets = {
+			myh = {
+				Vector3(0, 0, -0.637965),
+				Rotation(-0, -0, -0)
+			},
+			old_hoxton = {
+				Vector3(0, -0.637965, -0.518719),
+				Rotation(0, 0, -0)
+			},
+			jowi = {
+				Vector3(0, -0.637965, 0),
+				Rotation(0, 0, -0)
+			},
+			jimmy = {
+				Vector3(0, 0.435252, -0.637965),
+				Rotation(0, 0, -0)
+			},
+			female_1 = {
+				Vector3(0, -0.757211, -0.16098),
+				Rotation(0, 0, -0)
+			},
+			dragan = {
+				Vector3(0, -0.637965, -0.399472),
+				Rotation(0, 0, -0)
+			}
+		}
+	}
+	self.masks.gentgla_brown_short = {
+		unit = "units/pd2_dlc_txt3/masks/msk_gentgla_brown/msk_gentgla_brown_short",
+		name_id = "bm_msk_cheat_error",
+		type = "glasses",
+		inaccessible = true
+	}
+	self.masks.gentgla_brown_lears = {
+		unit = "units/pd2_dlc_txt3/masks/msk_gentgla_brown/msk_gentgla_brown_lears",
+		name_id = "bm_msk_cheat_error",
+		type = "glasses",
+		inaccessible = true,
+		offsets = {
+			sokol = {
+				Vector3(0, -1.2342, 0),
+				Rotation(0, 0, -0)
+			},
+			ecp_female = {
+				Vector3(0, -0.637965, 0),
+				Rotation(0, 0, -0)
+			},
+			wolf = {
+				Vector3(0, 0, 0.554498),
+				Rotation(0, 0, -0)
+			},
+			sydney = {
+				Vector3(0, 0, 0.435252),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.gentgla_brown_bonnie = {
+		unit = "units/pd2_dlc_txt3/masks/msk_gentgla_brown/msk_gentgla_brown_bonnie",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true
+	}
+	self.masks.gentgla_brown_ethan = {
+		unit = "units/pd2_dlc_txt3/masks/msk_gentgla_brown/msk_gentgla_brown_ethan",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true,
+		offsets = {
+			max = {
+				Vector3(0, 0.673745, 0),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.gentgla_brown = {
+		unit = "units/pd2_dlc_txt3/masks/msk_gentgla_brown/msk_gentgla_brown",
+		name_id = "bm_msk_gentgla_brown",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "txt3",
+		texture_bundle_folder = "txt3",
+		characters = {
+			bonnie = "gentgla_brown_bonnie",
+			sokol = "gentgla_brown_lears",
+			myh = "gentgla_brown_default",
+			chico = "gentgla_brown_default",
+			dragan = "gentgla_brown_default",
+			ecp_male = "gentgla_brown_ethan",
+			ecp_female = "gentgla_brown_lears",
+			dragon = "gentgla_brown_short",
+			old_hoxton = "gentgla_brown_default",
+			jowi = "gentgla_brown_default",
+			max = "gentgla_brown_ethan",
+			joy = "gentgla_brown_default",
+			dallas = "gentgla_brown_short",
+			jacket = "gentgla_brown_short",
+			jimmy = "gentgla_brown_default",
+			bodhi = "gentgla_brown_short",
+			wolf = "gentgla_brown_lears",
+			wild = "gentgla_brown_short",
+			hoxton = "gentgla_brown_short",
+			female_1 = "gentgla_brown_default",
+			chains = "gentgla_brown_short",
+			sydney = "gentgla_brown_lears"
+		}
+	}
+	self.masks.gentgla_dark_default = {
+		unit = "units/pd2_dlc_txt3/masks/msk_gentgla_dark/msk_gentgla_dark",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true,
+		offsets = {
+			myh = {
+				Vector3(0, 0, -0.637965),
+				Rotation(-0, -0, -0)
+			},
+			old_hoxton = {
+				Vector3(0, -0.637965, -0.518719),
+				Rotation(0, 0, -0)
+			},
+			jowi = {
+				Vector3(0, -0.637965, 0),
+				Rotation(0, 0, -0)
+			},
+			jimmy = {
+				Vector3(0, 0.435252, -0.637965),
+				Rotation(0, 0, -0)
+			},
+			female_1 = {
+				Vector3(0, -0.757211, -0.16098),
+				Rotation(0, 0, -0)
+			},
+			dragan = {
+				Vector3(0, -0.637965, -0.399472),
+				Rotation(0, 0, -0)
+			}
+		}
+	}
+	self.masks.gentgla_dark_short = {
+		unit = "units/pd2_dlc_txt3/masks/msk_gentgla_dark/msk_gentgla_dark_short",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true
+	}
+	self.masks.gentgla_dark_lears = {
+		unit = "units/pd2_dlc_txt3/masks/msk_gentgla_dark/msk_gentgla_dark_lears",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true,
+		offsets = {
+			ecp_female = {
+				Vector3(0, -0.637965, 0),
+				Rotation(0, 0, -0)
+			},
+			wolf = {
+				Vector3(0, 0, 0.554498),
+				Rotation(-0, -0, -0)
+			},
+			sydney = {
+				Vector3(0, -0.280226, 0.554498),
+				Rotation(0, 0, -0)
+			}
+		}
+	}
+	self.masks.gentgla_dark_bonnie = {
+		unit = "units/pd2_dlc_txt3/masks/msk_gentgla_dark/msk_gentgla_dark_bonnie",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true
+	}
+	self.masks.gentgla_dark_ethan = {
+		unit = "units/pd2_dlc_txt3/masks/msk_gentgla_dark/msk_gentgla_dark_ethan",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true,
+		offsets = {
+			max = {
+				Vector3(0, 0.673745, 0),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.gentgla_dark = {
+		unit = "units/pd2_dlc_txt3/masks/msk_gentgla_dark/msk_gentgla_dark",
+		name_id = "bm_msk_gentgla_dark",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "txt3",
+		texture_bundle_folder = "txt3",
+		characters = {
+			bonnie = "gentgla_dark_bonnie",
+			sokol = "gentgla_dark_lears",
+			myh = "gentgla_dark_default",
+			chico = "gentgla_dark_default",
+			dragan = "gentgla_dark_default",
+			ecp_male = "gentgla_dark_ethan",
+			ecp_female = "gentgla_dark_lears",
+			dragon = "gentgla_dark_short",
+			old_hoxton = "gentgla_dark_default",
+			jowi = "gentgla_dark_default",
+			max = "gentgla_dark_ethan",
+			joy = "gentgla_dark_default",
+			dallas = "gentgla_dark_short",
+			jacket = "gentgla_dark_short",
+			jimmy = "gentgla_dark_default",
+			bodhi = "gentgla_dark_short",
+			wolf = "gentgla_dark_lears",
+			wild = "gentgla_dark_short",
+			hoxton = "gentgla_dark_short",
+			female_1 = "gentgla_dark_default",
+			chains = "gentgla_dark_short",
+			sydney = "gentgla_dark_lears"
+		}
+	}
+	self.masks.hatgla_dark_default = {
+		unit = "units/pd2_dlc_txt3/masks/msk_hatgla_dark/msk_hatgla_dark",
+		name_id = "bm_msk_cheat_error",
+		type = "glasses",
+		inaccessible = true,
+		offsets = {
+			chico = {
+				Vector3(0, 0.912237, 0),
+				Rotation(-0, -0, -0)
+			},
+			jimmy = {
+				Vector3(0, 1.38922, 0),
+				Rotation(-0, -0, -0)
+			},
+			sydney = {
+				Vector3(0, 0.435252, 0.435252),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.hatgla_dark_ethan = {
+		unit = "units/pd2_dlc_txt3/masks/msk_hatgla_dark/msk_hatgla_dark_ethan",
+		name_id = "bm_msk_cheat_error",
+		type = "glasses",
+		inaccessible = true
+	}
+	self.masks.hatgla_dark_short = {
+		unit = "units/pd2_dlc_txt3/masks/msk_hatgla_dark/msk_hatgla_dark_short",
+		name_id = "bm_msk_cheat_error",
+		type = "glasses",
+		inaccessible = true,
+		offsets = {
+			chains = {
+				Vector3(0, 0, -0.637965),
+				Rotation(-0, -0, -0)
+			},
+			dragon = {
+				Vector3(0, 0.316006, 0),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.hatgla_dark_bonnie = {
+		unit = "units/pd2_dlc_txt3/masks/msk_hatgla_dark/msk_hatgla_dark_bonnie",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true
+	}
+	self.masks.hatgla_dark_lears = {
+		unit = "units/pd2_dlc_txt3/masks/msk_hatgla_dark/msk_hatgla_dark_lears",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true,
+		offsets = {
+			sokol = {
+				Vector3(0, -1.2342, 1.03148),
+				Rotation(-0, -0, -0)
+			},
+			ecp_female = {
+				Vector3(0, -0.637965, 0.316006),
+				Rotation(-0, -0, -0)
+			},
+			wolf = {
+				Vector3(0, -0.399472, 0.912237),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.hatgla_dark = {
+		unit = "units/pd2_dlc_txt3/masks/msk_hatgla_dark/msk_hatgla_dark",
+		name_id = "bm_msk_hatgla_dark",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "txt3",
+		texture_bundle_folder = "txt3",
+		characters = {
+			bonnie = "hatgla_dark_bonnie",
+			sokol = "hatgla_dark_lears",
+			myh = "hatgla_dark_short",
+			chico = "hatgla_dark_default",
+			dragan = "hatgla_dark_default",
+			ecp_male = "hatgla_dark_ethan",
+			ecp_female = "hatgla_dark_lears",
+			dragon = "hatgla_dark_short",
+			old_hoxton = "hatgla_dark_default",
+			jowi = "hatgla_dark_default",
+			max = "hatgla_dark_short",
+			joy = "hatgla_dark_default",
+			dallas = "hatgla_dark_short",
+			jacket = "hatgla_dark_short",
+			jimmy = "hatgla_dark_default",
+			bodhi = "hatgla_dark_short",
+			wolf = "hatgla_dark_lears",
+			wild = "hatgla_dark_short",
+			hoxton = "hatgla_dark_short",
+			female_1 = "hatgla_dark_lears",
+			chains = "hatgla_dark_short",
+			sydney = "hatgla_dark_default"
+		}
+	}
+	self.masks.hatgla_green_default = {
+		unit = "units/pd2_dlc_txt3/masks/msk_hatgla_green/msk_hatgla_green",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true,
+		offsets = {
+			joy = {
+				Vector3(0, -0.518719, -0.399472),
+				Rotation(-0, -0, -0)
+			},
+			sydney = {
+				Vector3(0, -0.518719, 0),
+				Rotation(-0, -0, -0)
+			},
+			chico = {
+				Vector3(0, -0.280226, -0.995704),
+				Rotation(-0, -0, -0)
+			},
+			jimmy = {
+				Vector3(0, 0.077513, 0),
+				Rotation(-0, -0, -0)
+			},
+			jowi = {
+				Vector3(0, -0.757211, -0.280226),
+				Rotation(-0, -0, -0)
+			},
+			old_hoxton = {
+				Vector3(0, -0.637965, -0.637965),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.hatgla_green_ethan = {
+		unit = "units/pd2_dlc_txt3/masks/msk_hatgla_green/msk_hatgla_green_ethan",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true
+	}
+	self.masks.hatgla_green_short = {
+		unit = "units/pd2_dlc_txt3/masks/msk_hatgla_green/msk_hatgla_green_short",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true,
+		offsets = {
+			chains = {
+				Vector3(0, 0, -0.637965),
+				Rotation(-0, -0, -0)
+			},
+			dragon = {
+				Vector3(0, 0.316006, 0),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.hatgla_green_bonnie = {
+		unit = "units/pd2_dlc_txt3/masks/msk_hatgla_green/msk_hatgla_green_bonnie",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true
+	}
+	self.masks.hatgla_green_lears = {
+		unit = "units/pd2_dlc_txt3/masks/msk_hatgla_green/msk_hatgla_green_lears",
+		name_id = "bm_msk_cheat_error",
+		type = "helmet",
+		inaccessible = true,
+		offsets = {
+			sokol = {
+				Vector3(0, -1.2342, 1.03148),
+				Rotation(-0, -0, -0)
+			},
+			ecp_female = {
+				Vector3(0, -0.637965, 0.316006),
+				Rotation(-0, -0, -0)
+			},
+			wolf = {
+				Vector3(0, -0.399472, 0.912237),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.hatgla_green = {
+		unit = "units/pd2_dlc_txt3/masks/msk_hatgla_green/msk_hatgla_green",
+		name_id = "bm_msk_hatgla_green",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "txt3",
+		texture_bundle_folder = "txt3",
+		characters = {
+			bonnie = "hatgla_green_bonnie",
+			sokol = "hatgla_green_lears",
+			myh = "hatgla_green_short",
+			chico = "hatgla_green_default",
+			dragan = "hatgla_green_default",
+			ecp_male = "hatgla_green_ethan",
+			ecp_female = "hatgla_green_lears",
+			dragon = "hatgla_green_short",
+			old_hoxton = "hatgla_green_default",
+			jowi = "hatgla_green_default",
+			max = "hatgla_green_short",
+			joy = "hatgla_green_default",
+			dallas = "hatgla_green_short",
+			jacket = "hatgla_green_short",
+			jimmy = "hatgla_green_default",
+			bodhi = "hatgla_green_short",
+			wolf = "hatgla_green_lears",
+			wild = "hatgla_green_short",
+			hoxton = "hatgla_green_short",
+			female_1 = "hatgla_green_lears",
+			chains = "hatgla_green_short",
+			sydney = "hatgla_green_default"
+		}
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.masks) do

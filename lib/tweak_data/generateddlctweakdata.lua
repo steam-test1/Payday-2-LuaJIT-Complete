@@ -2288,6 +2288,58 @@ function DLCTweakData:init_generated()
 			amount = 1
 		}
 	}
+	self.txt3_bundle = {
+		dlc = "has_txt3",
+		content = {}
+	}
+	self.txt3_bundle.content.loot_global_value = "txt3"
+	self.txt3_bundle.content.loot_drops = {
+		{
+			type_items = "player_styles",
+			item_entry = "cargocasual",
+			amount = 1
+		},
+		{
+			type_items = "player_styles",
+			item_entry = "leatherfluff",
+			amount = 1
+		},
+		{
+			type_items = "player_styles",
+			item_entry = "puffervest",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "bandcap_dark",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "flapcapban",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "gentgla_brown",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "gentgla_dark",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "hatgla_dark",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "hatgla_green",
+			amount = 1
+		}
+	}
 	self.wcc_bundle = {
 		dlc = "has_wcc",
 		content = {}

@@ -377,11 +377,25 @@ function ProjectileBase:update(unit, t, dt)
 	if self._sweep_data and not self._collided then
 		self._unit:m_position(self._sweep_data.current_pos)
 
-		local ig_units = self._ignore_units
-		local col_ray = World:raycast("ray", self._sweep_data.last_pos, self._sweep_data.current_pos, "slot_mask", self._sweep_data.slot_mask, ig_units and "ignore_unit" or nil, ig_units or nil)
+		local raycast_params = {
+			"ray",
+			self._sweep_data.last_pos,
+			self._sweep_data.current_pos,
+			"slot_mask",
+			self._sweep_data.slot_mask
+		}
+
+		if self._ignore_units then
+			table.list_append(raycast_params, {
+				"ignore_unit",
+				self._ignore_units
+			})
+		end
+
+		local col_ray = World:raycast(unpack(raycast_params))
 
 		if self._draw_debug_trail then
-			Draw:brush(Color(1, 0, 0, 1), nil, 3):line(self._sweep_data.last_pos, self._sweep_data.current_pos)
+			Draw:brush(Color(0.25, 0, 0, 1), nil, 3):line(self._sweep_data.last_pos, self._sweep_data.current_pos)
 		end
 
 		if col_ray and col_ray.unit then

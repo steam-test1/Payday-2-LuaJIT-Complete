@@ -342,6 +342,10 @@ function GenericDLCManager:has_txt2()
 	return self:is_dlc_unlocked("txt2")
 end
 
+function GenericDLCManager:has_txt3()
+	return self:is_dlc_unlocked("txt3")
+end
+
 function GenericDLCManager:has_wcc()
 	return self:is_dlc_unlocked("wcc")
 end
@@ -740,6 +744,11 @@ function WINDLCManager:init_generated()
 		app_id = "2074220",
 		no_install = true,
 		webpage = "https://pd2.link/HighOctaneTailorPackYBS"
+	}
+	Global.dlc_manager.all_dlc_data.txt3 = {
+		app_id = "2200971",
+		no_install = true,
+		webpage = "https://pd2.link/StreetSmartTailorPackYBS"
 	}
 	Global.dlc_manager.all_dlc_data.wcc = {
 		app_id = "1347751",

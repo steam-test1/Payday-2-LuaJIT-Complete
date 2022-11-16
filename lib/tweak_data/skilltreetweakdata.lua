@@ -3713,7 +3713,7 @@ function SkillTreeTweakData:init()
 			deck4,
 			{
 				cost = 1000,
-				desc_id = "menu_deck8_3_desc",
+				desc_id = "menu_deck8_5_desc",
 				name_id = "menu_deck8_3",
 				upgrades = {
 					"player_damage_dampener_close_contact_2",

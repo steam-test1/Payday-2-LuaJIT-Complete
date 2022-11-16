@@ -1138,7 +1138,7 @@ function NewRaycastWeaponBase:_check_second_sight()
 end
 
 function NewRaycastWeaponBase:zoom()
-	if self:is_second_sight_on() then
+	if self:is_second_sight_on() and self._second_sight_data then
 		local gadget_zoom_stats = tweak_data.weapon.factory.parts[self._second_sight_data.part_id].stats.gadget_zoom
 
 		if not gadget_zoom_stats then
@@ -1282,8 +1282,6 @@ function NewRaycastWeaponBase:stance_mod()
 	if not self._blueprint or not self._factory_id then
 		return nil
 	end
-
-	local using_second_sight = self:is_second_sight_on()
 
 	return managers.weapon_factory:get_stance_mod(self._factory_id, self._blueprint, self:is_second_sight_on())
 end

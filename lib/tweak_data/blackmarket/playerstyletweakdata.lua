@@ -4649,6 +4649,213 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		sequence = "set_ehtan"
 	}
 	self.player_styles.nightwalker.characters.ecp_male = nightwalker_characters_male_fat
+	self.player_styles.cargocasual = {
+		name_id = "bm_suit_cargocasual",
+		desc_id = "bm_suit_cargocasual_desc",
+		texture_bundle_folder = "txt3",
+		global_value = "txt3",
+		material_variations = {}
+	}
+	self.player_styles.cargocasual.material_variations.default = {
+		name_id = "bm_suit_var_cargocasual_suit_default",
+		global_value = "txt3",
+		desc_id = "bm_suit_var_cargocasual_suit_default_desc"
+	}
+	self.player_styles.cargocasual.body_replacement = body_replacement_standard
+	self.player_styles.cargocasual.third_body_replacement = body_replacement_standard
+	self.player_styles.cargocasual.unit = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/txt3_acc_fps_cargocasual_male/txt3_acc_fps_cargocasual_male"
+	self.player_styles.cargocasual.material_variations.cassette = {
+		desc_id = "bm_suit_cargocasual_cassette_desc",
+		global_value = "txt3",
+		auto_aquire = true,
+		name_id = "bm_suit_cargocasual_cassette",
+		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/shared_materials/txt3_acc_cargocasual_cassette",
+		material = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/shared_materials/txt3_acc_fps_cargocasual_cassette"
+	}
+	self.player_styles.cargocasual.material_variations.monke = {
+		desc_id = "bm_suit_cargocasual_monke_desc",
+		global_value = "txt3",
+		auto_aquire = true,
+		name_id = "bm_suit_cargocasual_monke",
+		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/shared_materials/txt3_acc_cargocasual_monke",
+		material = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/shared_materials/txt3_acc_fps_cargocasual_monke"
+	}
+	self.player_styles.cargocasual.material_variations.texas = {
+		desc_id = "bm_suit_cargocasual_texas_desc",
+		global_value = "txt3",
+		auto_aquire = true,
+		name_id = "bm_suit_cargocasual_texas",
+		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/shared_materials/txt3_acc_cargocasual_texas",
+		material = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/shared_materials/txt3_acc_fps_cargocasual_texas"
+	}
+	self.player_styles.cargocasual.characters = {}
+	local cargocasual_characters_male = {
+		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/txt3_acc_cargocasual_male_average/txt3_acc_cargocasual_male_average"
+	}
+
+	set_characters_data("cargocasual", characters_male, cargocasual_characters_male)
+
+	local cargocasual_characters_male_big = {
+		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/txt3_acc_cargocasual_male_big/txt3_acc_cargocasual_male_big"
+	}
+
+	set_characters_data("cargocasual", characters_male_big, cargocasual_characters_male_big)
+
+	local cargocasual_characters_female = {
+		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/txt3_acc_cargocasual_female_average/txt3_acc_cargocasual_female_average"
+	}
+
+	set_characters_data("cargocasual", characters_female, cargocasual_characters_female)
+
+	local cargocasual_characters_female_big = {
+		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/txt3_acc_cargocasual_female_fat/txt3_acc_cargocasual_female_fat"
+	}
+
+	set_characters_data("cargocasual", characters_female_big, cargocasual_characters_female_big)
+
+	local cargocasual_characters_male_fat = {
+		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_cargocasual/txt3_acc_cargocasual_male_fat/txt3_acc_cargocasual_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.cargocasual.characters.ecp_male = cargocasual_characters_male_fat
+	self.player_styles.leatherfluff = {
+		name_id = "bm_suit_leatherfluff",
+		desc_id = "bm_suit_leatherfluff_desc",
+		texture_bundle_folder = "txt3",
+		global_value = "txt3",
+		material_variations = {}
+	}
+	self.player_styles.leatherfluff.material_variations.default = {
+		name_id = "bm_suit_var_leatherfluff_suit_default",
+		global_value = "txt3",
+		desc_id = "bm_suit_var_leatherfluff_suit_default_desc"
+	}
+	self.player_styles.leatherfluff.body_replacement = body_replacement_standard
+	self.player_styles.leatherfluff.third_body_replacement = body_replacement_standard
+	self.player_styles.leatherfluff.unit = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/txt3_acc_fps_leatherfluff_male/txt3_acc_fps_leatherfluff_male"
+	self.player_styles.leatherfluff.material_variations.bats = {
+		desc_id = "bm_suit_leatherfluff_bats_desc",
+		global_value = "txt3",
+		auto_aquire = true,
+		name_id = "bm_suit_leatherfluff_bats",
+		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/shared_materials/txt3_acc_leatherfluff_bats",
+		material = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/shared_materials/txt3_acc_fps_leatherfluff_bats"
+	}
+	self.player_styles.leatherfluff.material_variations.dots = {
+		desc_id = "bm_suit_leatherfluff_dots_desc",
+		global_value = "txt3",
+		auto_aquire = true,
+		name_id = "bm_suit_leatherfluff_dots",
+		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/shared_materials/txt3_acc_leatherfluff_dots",
+		material = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/shared_materials/txt3_acc_fps_leatherfluff_dots"
+	}
+	self.player_styles.leatherfluff.material_variations.lightning = {
+		desc_id = "bm_suit_leatherfluff_lightning_desc",
+		global_value = "txt3",
+		auto_aquire = true,
+		name_id = "bm_suit_leatherfluff_lightning",
+		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/shared_materials/txt3_acc_leatherfluff_lightning",
+		material = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/shared_materials/txt3_acc_fps_leatherfluff_lightning"
+	}
+	self.player_styles.leatherfluff.characters = {}
+	local leatherfluff_characters_male = {
+		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/txt3_acc_leatherfluff_male_average/txt3_acc_leatherfluff_male_average"
+	}
+
+	set_characters_data("leatherfluff", characters_male, leatherfluff_characters_male)
+
+	local leatherfluff_characters_male_big = {
+		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/txt3_acc_leatherfluff_male_big/txt3_acc_leatherfluff_male_big"
+	}
+
+	set_characters_data("leatherfluff", characters_male_big, leatherfluff_characters_male_big)
+
+	local leatherfluff_characters_female = {
+		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/txt3_acc_leatherfluff_female_average/txt3_acc_leatherfluff_female_average"
+	}
+
+	set_characters_data("leatherfluff", characters_female, leatherfluff_characters_female)
+
+	local leatherfluff_characters_female_big = {
+		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/txt3_acc_leatherfluff_female_fat/txt3_acc_leatherfluff_female_fat"
+	}
+
+	set_characters_data("leatherfluff", characters_female_big, leatherfluff_characters_female_big)
+
+	local leatherfluff_characters_male_fat = {
+		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_leatherfluff/txt3_acc_leatherfluff_male_fat/txt3_acc_leatherfluff_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.leatherfluff.characters.ecp_male = leatherfluff_characters_male_fat
+	self.player_styles.puffervest = {
+		name_id = "bm_suit_puffervest",
+		desc_id = "bm_suit_puffervest_desc",
+		texture_bundle_folder = "txt3",
+		global_value = "txt3",
+		material_variations = {}
+	}
+	self.player_styles.puffervest.material_variations.default = {
+		name_id = "bm_suit_var_puffervest_suit_default",
+		global_value = "txt3",
+		desc_id = "bm_suit_var_puffervest_suit_default_desc"
+	}
+	self.player_styles.puffervest.body_replacement = body_replacement_standard
+	self.player_styles.puffervest.third_body_replacement = body_replacement_standard
+	self.player_styles.puffervest.unit = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/txt3_acc_fps_puffervest_male/txt3_acc_fps_puffervest_male"
+	self.player_styles.puffervest.material_variations.blue = {
+		desc_id = "bm_suit_puffervest_blue_desc",
+		global_value = "txt3",
+		auto_aquire = true,
+		name_id = "bm_suit_puffervest_blue",
+		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/shared_materials/txt3_acc_puffervest_blue",
+		material = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/shared_materials/txt3_acc_fps_puffervest_blue"
+	}
+	self.player_styles.puffervest.material_variations.grey = {
+		desc_id = "bm_suit_puffervest_grey_desc",
+		global_value = "txt3",
+		auto_aquire = true,
+		name_id = "bm_suit_puffervest_grey",
+		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/shared_materials/txt3_acc_puffervest_grey",
+		material = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/shared_materials/txt3_acc_fps_puffervest_grey"
+	}
+	self.player_styles.puffervest.material_variations.red = {
+		desc_id = "bm_suit_puffervest_red_desc",
+		global_value = "txt3",
+		auto_aquire = true,
+		name_id = "bm_suit_puffervest_red",
+		third_material = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/shared_materials/txt3_acc_puffervest_red",
+		material = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/shared_materials/txt3_acc_fps_puffervest_red"
+	}
+	self.player_styles.puffervest.characters = {}
+	local puffervest_characters_male = {
+		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/txt3_acc_puffervest_male_average/txt3_acc_puffervest_male_average"
+	}
+
+	set_characters_data("puffervest", characters_male, puffervest_characters_male)
+
+	local puffervest_characters_male_big = {
+		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/txt3_acc_puffervest_male_big/txt3_acc_puffervest_male_big"
+	}
+
+	set_characters_data("puffervest", characters_male_big, puffervest_characters_male_big)
+
+	local puffervest_characters_female = {
+		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/txt3_acc_puffervest_female_average/txt3_acc_puffervest_female_average"
+	}
+
+	set_characters_data("puffervest", characters_female, puffervest_characters_female)
+
+	local puffervest_characters_female_big = {
+		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/txt3_acc_puffervest_female_fat/txt3_acc_puffervest_female_fat"
+	}
+
+	set_characters_data("puffervest", characters_female_big, puffervest_characters_female_big)
+
+	local puffervest_characters_male_fat = {
+		third_unit = "units/pd2_dlc_txt3/characters/txt3_acc_puffervest/txt3_acc_puffervest_male_fat/txt3_acc_puffervest_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.puffervest.characters.ecp_male = puffervest_characters_male_fat
 end
 
 function BlackMarketTweakData:get_player_style_value(player_style, character_name, key)
