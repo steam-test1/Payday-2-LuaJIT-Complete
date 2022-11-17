@@ -215,6 +215,10 @@ function CoreSetup:__init()
 		PackageManager:load("core/packages/language_" .. language)
 	end
 
+	if PackageManager:package_exists("core/packages/language") and not PackageManager:loaded("core/packages/language") then
+		PackageManager:load("core/packages/language")
+	end
+
 	if not PackageManager:loaded("core/packages/base") then
 		PackageManager:load("core/packages/base")
 	end

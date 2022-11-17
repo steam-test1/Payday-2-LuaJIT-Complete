@@ -1206,7 +1206,7 @@ function SkillTreeManager:infamy_reset()
 
 	for i = 1, current_tier do
 		for _, upgrade in ipairs(specialization_tweak[i].upgrades) do
-			managers.upgrades:aquire(upgrade, false, UpgradesManager.AQUIRE_STRINGS[7] .. tostring(current_specialization))
+			managers.upgrades:aquire(upgrade, false, UpgradesManager.AQUIRE_STRINGS[3] .. tostring(current_specialization))
 		end
 	end
 

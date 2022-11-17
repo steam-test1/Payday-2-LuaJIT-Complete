@@ -165,8 +165,8 @@ function PlayerBleedOut:_update_check_actions(t, dt)
 	if not new_action then
 		new_action = self:_check_action_primary_attack(t, input)
 
-		if not _G.IS_VR then
-			self._shooting = new_action
+		if not _G.IS_VR and not new_action then
+			self:_check_stop_shooting()
 		end
 	end
 
