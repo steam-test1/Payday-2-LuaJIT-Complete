@@ -203,7 +203,9 @@ end
 local lang_mods = {
 	[Idstring("japanese"):key()] = "japanese",
 	[Idstring("schinese"):key()] = "schinese",
-	[Idstring("korean"):key()] = "korean"
+	[Idstring("korean"):key()] = "korean",
+	[Idstring("polish"):key()] = "polish",
+	[Idstring("turkish"):key()] = "turkish"
 }
 
 function CoreSetup:__init()
@@ -213,10 +215,6 @@ function CoreSetup:__init()
 
 	if language and not PackageManager:loaded("core/packages/language_" .. language) then
 		PackageManager:load("core/packages/language_" .. language)
-	end
-
-	if PackageManager:package_exists("core/packages/language") and not PackageManager:loaded("core/packages/language") then
-		PackageManager:load("core/packages/language")
 	end
 
 	if not PackageManager:loaded("core/packages/base") then
