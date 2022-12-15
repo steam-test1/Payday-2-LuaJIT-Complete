@@ -374,6 +374,10 @@ function ScrollablePanel:scroll_with_bar(target_y, current_y)
 	end
 end
 
+function ScrollablePanel:grabbed_scroll_bar()
+	return self._grabbed_scroll_bar
+end
+
 function ScrollablePanel:release_scroll_bar()
 	self._pressing_arrow_up = false
 	self._pressing_arrow_down = false

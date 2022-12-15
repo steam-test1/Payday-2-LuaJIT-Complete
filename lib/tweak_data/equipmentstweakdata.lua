@@ -173,6 +173,18 @@ function EquipmentsTweakData:init()
 			category = "player"
 		}
 	}
+	self.grenade_crate = {
+		deploy_time = 2,
+		use_function_name = "use_grenade_crate",
+		dummy_unit = "units/pd2_dlc_mxm/equipment/gen_equipment_grenade_crate/gen_equipment_grenade_crate_dummy",
+		text_id = "debug_equipment_grenade_crate",
+		icon = "equipment_grenade_crate",
+		description_id = "des_ammo_bag",
+		visual_style = "throwables_bag",
+		quantity = {
+			1
+		}
+	}
 	self.specials = {
 		cable_tie = {
 			quantity = 2,
@@ -626,16 +638,18 @@ function EquipmentsTweakData:init()
 		asset_ammo_bag = 4,
 		asset_grenade_crate = 3,
 		first_aid_kit = 14,
-		asset_bodybags_bag = 3,
+		grenade_crate = 1,
 		bodybags_bag = 2,
-		sentry_gun = -1,
-		doctor_bag = 2
+		asset_bodybags_bag = 3,
+		doctor_bag = 2,
+		sentry_gun = -1
 	}
 	self.class_name_to_deployable_id = {
 		BodyBagsBagBase = "bodybags_bag",
-		FirstAidKitBase = "first_aid_kit",
+		GrenadeCrateDeployableBase = "grenade_crate",
+		AmmoBagBase = "ammo_bag",
 		DoctorBagBase = "doctor_bag",
-		AmmoBagBase = "ammo_bag"
+		FirstAidKitBase = "first_aid_kit"
 	}
 	self.specials.hand = {
 		sync_possession = true,
@@ -906,5 +920,10 @@ function EquipmentsTweakData:init()
 		sync_possession = true,
 		icon = "equipment_generic_key",
 		text_id = "hud_trai_equipment_key"
+	}
+	self.specials.corp_key_fob = {
+		sync_possession = true,
+		icon = "equipment_businesscard",
+		text_id = "hud_carry_corp_key_fob"
 	}
 end

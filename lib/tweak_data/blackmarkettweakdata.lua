@@ -866,6 +866,11 @@ function BlackMarketTweakData:_init_deployables(tweak_data)
 	self.deployables.bodybags_bag = {
 		name_id = "bm_equipment_bodybags_bag"
 	}
+	self.deployables.grenade_crate = {
+		name_id = "bm_equipment_grenade_crate",
+		dlc = "mxm",
+		texture_bundle_folder = "mxm"
+	}
 
 	self:_add_desc_from_name_macro(self.deployables)
 end

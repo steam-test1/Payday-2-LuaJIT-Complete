@@ -610,22 +610,25 @@ function RaycastWeaponBase:can_shoot_through_enemy()
 	return self._can_shoot_through_enemy
 end
 
-function RaycastWeaponBase:_collect_hits(from, to)
+function RaycastWeaponBase.collect_hits(from, to, setup_data)
+	setup_data = setup_data or {}
 	local ray_hits = nil
 	local hit_enemy = false
-	local can_shoot_through_wall = self:can_shoot_through_wall()
-	local can_shoot_through_shield = self:can_shoot_through_shield()
-	local can_shoot_through_enemy = self:can_shoot_through_enemy()
+	local can_shoot_through_wall = setup_data.can_shoot_through_wall
+	local can_shoot_through_shield = setup_data.can_shoot_through_shield
+	local can_shoot_through_enemy = setup_data.can_shoot_through_enemy
+	local bullet_slotmask = setup_data.bullet_slotmask or managers.slot:get_mask("bullet_impact_targets")
 	local enemy_mask = managers.slot:get_mask("enemies")
 	local wall_mask = managers.slot:get_mask("world_geometry", "vehicles")
 	local shield_mask = managers.slot:get_mask("enemy_shield_check")
 	local ai_vision_ids = Idstring("ai_vision")
 	local bulletproof_ids = Idstring("bulletproof")
+	local ignore_unit = setup_data.ignore_units or {}
 
 	if can_shoot_through_wall then
-		ray_hits = World:raycast_wall("ray", from, to, "slot_mask", self._bullet_slotmask, "ignore_unit", self._setup.ignore_units, "thickness", 40, "thickness_mask", wall_mask)
+		ray_hits = World:raycast_wall("ray", from, to, "slot_mask", bullet_slotmask, "ignore_unit", ignore_unit, "thickness", 40, "thickness_mask", wall_mask)
 	else
-		ray_hits = World:raycast_all("ray", from, to, "slot_mask", self._bullet_slotmask, "ignore_unit", self._setup.ignore_units)
+		ray_hits = World:raycast_all("ray", from, to, "slot_mask", bullet_slotmask, "ignore_unit", ignore_unit)
 	end
 
 	local units_hit = {}
@@ -651,6 +654,18 @@ function RaycastWeaponBase:_collect_hits(from, to)
 	end
 
 	return unique_hits, hit_enemy
+end
+
+function RaycastWeaponBase:_collect_hits(from, to)
+	local setup_data = {
+		can_shoot_through_wall = self:can_shoot_through_wall(),
+		can_shoot_through_shield = self:can_shoot_through_shield(),
+		can_shoot_through_enemy = self:can_shoot_through_enemy(),
+		bullet_slotmask = self._bullet_slotmask,
+		ignore_units = self._setup.ignore_units
+	}
+
+	return RaycastWeaponBase.collect_hits(from, to, setup_data)
 end
 
 local mvec_to = Vector3()
@@ -720,6 +735,7 @@ function RaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul
 	local hit_through_wall = false
 	local hit_through_shield = false
 	local hit_result = nil
+	local extra_collisions = self.extra_collisions and self:extra_collisions()
 
 	for _, hit in ipairs(ray_hits) do
 		damage = self:get_damage_falloff(damage, hit, user_unit)
@@ -727,6 +743,33 @@ function RaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul
 
 		if damage > 0 then
 			hit_result = self._bullet_class:on_collision(hit, self._unit, user_unit, damage)
+
+			if extra_collisions then
+				for idx, extra_col_data in ipairs(extra_collisions) do
+					if alive(hit.unit) then
+						if extra_col_data.fire_dot_data then
+							if self._ammo_data then
+								local fire_dot_data = self._ammo_data.fire_dot_data
+								self._ammo_data.fire_dot_data = extra_col_data.fire_dot_data
+
+								extra_col_data.bullet_class:on_collision(hit, self._unit, user_unit, damage * (extra_col_data.dmg_mul or 1))
+
+								self._ammo_data.fire_dot_data = fire_dot_data
+							else
+								self._ammo_data = {
+									fire_dot_data = extra_col_data.fire_dot_data
+								}
+
+								extra_col_data.bullet_class:on_collision(hit, self._unit, user_unit, damage * (extra_col_data.dmg_mul or 1))
+
+								self._ammo_data = nil
+							end
+						else
+							extra_col_data.bullet_class:on_collision(hit, self._unit, user_unit, damage * (extra_col_data.dmg_mul or 1))
+						end
+					end
+				end
+			end
 		end
 
 		if hit_result and hit_result.type == "death" then
@@ -2921,3 +2964,20 @@ function ConcussiveInstantBulletBase:give_impact_damage(col_ray, weapon_unit, us
 
 	return self.super.give_impact_damage(self, col_ray, weapon_unit, user_unit, damage, ...)
 end
+
+InstantSnowballBase = InstantSnowballBase or class(InstantExplosiveBulletBase)
+InstantSnowballBase.id = "xmas_snowball"
+InstantSnowballBase.CURVE_POW = tweak_data.projectiles.xmas_snowball.curve_pow
+InstantSnowballBase.PLAYER_DMG_MUL = tweak_data.projectiles.xmas_snowball.player_dmg_mul
+InstantSnowballBase.RANGE = tweak_data.projectiles.xmas_snowball.range
+InstantSnowballBase.ALERT_RADIUS = tweak_data.projectiles.xmas_snowball.alert_radius
+InstantSnowballBase.EFFECT_PARAMS = {
+	on_unit = true,
+	sound_muffle_effect = true,
+	effect = tweak_data.projectiles.xmas_snowball.effect_name,
+	sound_event = tweak_data.projectiles.xmas_snowball.sound_event,
+	feedback_range = tweak_data.projectiles.xmas_snowball.feedback_range,
+	camera_shake_max_mul = tweak_data.projectiles.xmas_snowball.camera_shake_max_mul,
+	idstr_decal = tweak_data.projectiles.xmas_snowball.idstr_decal,
+	idstr_effect = tweak_data.projectiles.xmas_snowball.idstr_effect
+}

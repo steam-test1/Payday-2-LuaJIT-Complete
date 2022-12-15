@@ -442,19 +442,15 @@ function HuskPlayerMovement:check_visual_equipment()
 end
 
 function HuskPlayerMovement:set_visual_deployable_equipment(deployable, amount)
-	local visible = amount > 0
-	local tweak_data = tweak_data.equipments[deployable]
-	local object_name = tweak_data.visual_object
-	local object_name_ids = Idstring(object_name)
-	self._current_visual_deployable_equipment = self._current_visual_deployable_equipment or object_name_ids
+	local char_name = managers.criminals:character_name_by_unit(self._unit)
 
-	if self._current_visual_deployable_equipment ~= object_name_ids then
-		self._unit:get_object(self._current_visual_deployable_equipment):set_visibility(false)
-
-		self._current_visual_deployable_equipment = object_name_ids
+	if not char_name then
+		return
 	end
 
-	self._unit:get_object(object_name_ids):set_visibility(visible)
+	managers.criminals:update_character_visual_state(char_name, {
+		deployable_id = amount > 0 and deployable or false
+	})
 end
 
 function HuskPlayerMovement:carry_id()

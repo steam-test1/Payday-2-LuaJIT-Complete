@@ -614,6 +614,28 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 	self.projectiles.underbarrel_m203_groza.unit = "units/pd2_dlc_sawp/weapons/wpn_launcher_electric/wpn_underbarrel_m203_groza"
 	self.projectiles.underbarrel_m203_groza.weapon_id = "groza"
 	self.projectiles.underbarrel_m203_groza.dlc = "sawp"
+	self.projectiles.xmas_snowball = {
+		name_id = "bm_grenade_xmas_snowball",
+		unit = "units/pd2_dlc_xm21/weapons/wpn_xmas_snowball/wpn_xmas_snowball",
+		unit_dummy = "units/pd2_dlc_xm21/weapons/wpn_xmas_snowball/wpn_xmas_snowball_husk",
+		local_unit = "units/pd2_dlc_xm21/weapons/wpn_xmas_snowball/wpn_xmas_snowball_local",
+		icon = "guis/dlcs/xm21/textures/pd2/hud_snowball",
+		texture_bundle_folder = "xm21",
+		base_cooldown = 2,
+		no_shouting = true,
+		impact_detonation = true,
+		client_authoritative = true,
+		no_cheat_count = true,
+		add_trail_effect = true,
+		is_a_grenade = true,
+		throwable = true,
+		animation = "throw_snowball",
+		max_amount = 6,
+		anim_global_param = "projectile_snowball",
+		throw_allowed_expire_t = 0.15,
+		expire_t = 0.8,
+		repeat_expire_t = 0.15
+	}
 	self.projectiles.poison_gas_grenade = {
 		name_id = "bm_grenade_poison_gas_grenade",
 		desc_id = "bm_grenade_poison_gas_grenade_desc",
@@ -674,6 +696,29 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 	self.projectiles.launcher_electric_ms3gl.no_cheat_count = true
 	self.projectiles.launcher_electric_ms3gl.time_cheat = nil
 	self.projectiles.launcher_electric_ms3gl.weapon_id = "ms3gl"
+	self.projectiles.sticky_grenade = {
+		name_id = "bm_grenade_sticky_grenade",
+		unit = "units/pd2_dlc_mxm/weapons/wpn_prj_sticky_grenade/wpn_prj_sticky_grenade",
+		local_unit = "units/pd2_dlc_mxm/weapons/wpn_prj_sticky_grenade/wpn_prj_sticky_grenade_local",
+		unit_dummy = "units/pd2_dlc_mxm/weapons/wpn_prj_sticky_grenade/wpn_prj_sticky_grenade_husk",
+		sprint_unit = "units/pd2_dlc_mxm/weapons/wpn_prj_sticky_grenade/wpn_prj_sticky_sprint",
+		icon = "sticky_grenade",
+		texture_bundle_folder = "mxm",
+		dlc = "mxm",
+		throw_shout = true,
+		impact_detonation = true,
+		client_authoritative = true,
+		add_trail_effect = true,
+		is_a_grenade = true,
+		is_explosive = true,
+		throwable = true,
+		animation = "throw_grenade",
+		max_amount = 3,
+		anim_global_param = "projectile_frag",
+		throw_allowed_expire_t = 0.1,
+		expire_t = 1.1,
+		repeat_expire_t = 1.5
+	}
 	self._projectiles_index = {
 		"frag",
 		"launcher_frag",
@@ -735,6 +780,7 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 		"underbarrel_electric_groza",
 		"underbarrel_m203_groza",
 		"copr_ability",
+		"xmas_snowball",
 		"poison_gas_grenade",
 		"launcher_poison",
 		"launcher_poison_ms3gl_conversion",
@@ -747,7 +793,8 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 		"launcher_poison_contraband",
 		"launcher_frag_ms3gl",
 		"launcher_incendiary_ms3gl",
-		"launcher_electric_ms3gl"
+		"launcher_electric_ms3gl",
+		"sticky_grenade"
 	}
 	local free_dlcs = tweak_data:free_dlc_list()
 

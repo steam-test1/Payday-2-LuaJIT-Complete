@@ -297,7 +297,7 @@ function ScrollableList:scroll_to_show_item_at_world(item, world_y)
 	self._scroll:perform_scroll(world_y - item:world_y(), 1)
 end
 
-function ScrollableList:add_lines_and_static_down_indicator()
+function ScrollableList:add_lines_and_static_down_indicator(layer)
 	local box = BoxGuiObject:new(self:scroll_item():scroll_panel(), {
 		w = self:canvas():w(),
 		sides = {
@@ -305,7 +305,8 @@ function ScrollableList:add_lines_and_static_down_indicator()
 			1,
 			2,
 			0
-		}
+		},
+		layer = layer
 	})
 	local down_no_scroll = BoxGuiObject:new(box._panel, {
 		sides = {
@@ -313,7 +314,8 @@ function ScrollableList:add_lines_and_static_down_indicator()
 			0,
 			0,
 			1
-		}
+		},
+		layer = layer
 	})
 	local down_scroll = BoxGuiObject:new(box._panel, {
 		sides = {
@@ -321,7 +323,8 @@ function ScrollableList:add_lines_and_static_down_indicator()
 			0,
 			0,
 			2
-		}
+		},
+		layer = layer
 	})
 
 	local function update_down_indicator()
@@ -531,6 +534,11 @@ function ScrollItemList:filter_items(filter_function, mod_start, keep_selection)
 		else
 			item:set_visible(false)
 		end
+	end
+
+	if #self._current_items == 0 and #self._all_items > 0 then
+		placer:add_row(self._all_items[1])
+		placer:clear()
 	end
 
 	if self._selected_item and not self._selected_item:visible() or not keep_selection then

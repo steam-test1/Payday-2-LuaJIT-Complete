@@ -288,6 +288,14 @@ function GroupAIStateBase:set_AI_enabled(state)
 			end
 		end
 	end
+
+	for _, mutator in ipairs(managers.mutators:active_mutators()) do
+		local active_mutator = mutator.mutator
+
+		if active_mutator.set_AI_enabled then
+			active_mutator:set_AI_enabled(state)
+		end
+	end
 end
 
 function GroupAIStateBase:_init_misc_data()

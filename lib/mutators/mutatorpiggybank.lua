@@ -210,6 +210,7 @@ function MutatorPiggyBank:server_feed_piggybank(bag_unit)
 
 	managers.network:session():send_to_peers_synched("sync_feed_piggybank", bag_unit, reached_next_level)
 	self:sync_feed_piggybank(bag_unit, reached_next_level)
+	Telemetry:on_player_game_event_action(Telemetry.event_actions.piggybank_fed, {})
 end
 
 function MutatorPiggyBank:sync_feed_piggybank(bag_unit, reached_next_level)

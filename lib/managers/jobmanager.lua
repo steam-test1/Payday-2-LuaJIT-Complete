@@ -1012,6 +1012,10 @@ function JobManager:is_level_christmas(level_id)
 end
 
 function JobManager:get_job_christmas_bonus(job_id)
+	if self:is_christmas_job(job_id) then
+		return (tweak_data:get_value("experience_manager", "limited_xmas_bonus_multiplier") or 1) - 1
+	end
+
 	return 0
 end
 
@@ -1531,6 +1535,14 @@ end
 function JobManager:current_briefing_dialog()
 	if not self._global.current_job then
 		return
+	end
+
+	if managers.mutators:is_mutator_active(MutatorPiggyBank) and MutatorPiggyBank.briefing_dialog then
+		return MutatorPiggyBank.briefing_dialog
+	end
+
+	if managers.mutators:is_mutator_active(MutatorCG22) and MutatorCG22.briefing_dialog then
+		return MutatorCG22.briefing_dialog
 	end
 
 	if self._global.interupt_stage then

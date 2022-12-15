@@ -396,12 +396,14 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 	end
 
 	local is_christmas_job = managers.job:is_christmas_job(job_data.job_id)
+	local has_christmas_bonus = false
 
 	if is_christmas_job then
 		local holiday_potential_bonus = managers.job:get_job_christmas_bonus(job_data.job_id)
 		local holiday_bonus_percentage = math.round(holiday_potential_bonus * 100)
+		has_christmas_bonus = holiday_bonus_percentage ~= 0
 
-		if holiday_bonus_percentage ~= 0 then
+		if has_christmas_bonus then
 			local holiday_string = tostring(holiday_bonus_percentage)
 			local holiday_text = self._contract_panel:text({
 				vertical = "top",
@@ -426,7 +428,10 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 		end
 	end
 
-	modifiers_text:set_visible(heat_warning_text:visible() or one_down_active or pro_warning_text:visible() or ghost_warning_text:visible())
+	local any_modifier_available = heat_warning_text:visible() or one_down_active or pro_warning_text:visible() or ghost_warning_text:visible()
+	any_modifier_available = any_modifier_available or has_christmas_bonus
+
+	modifiers_text:set_visible(any_modifier_available)
 
 	local risk_title = self._contract_panel:text({
 		font = font,
@@ -659,6 +664,7 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 	payday_text:set_bottom(self._contract_panel:h() - padding)
 
 	self._briefing_event = narrative.briefing_event
+	self._briefing_event = managers.mutators:get_briefing_override() or self._briefing_event
 
 	if self._briefing_event then
 		self._briefing_len_panel = self._contract_panel:panel({

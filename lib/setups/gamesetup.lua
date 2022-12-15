@@ -204,6 +204,7 @@ require("lib/units/weapons/grenades/QuickFlashGrenade")
 require("lib/units/weapons/grenades/QuickCsGrenade")
 require("lib/units/weapons/grenades/FlashGrenadeUnitDamage")
 require("lib/units/weapons/grenades/TearGasGrenade")
+require("lib/units/weapons/grenades/StickyGrenade")
 require("lib/units/equipment/repel_rope/RepelRopeBase")
 require("lib/units/weapons/ProjectileWeaponBase")
 require("lib/units/weapons/GrenadeLauncherBase")
@@ -331,6 +332,10 @@ function GameSetup:load_packages()
 	else
 		local lvl_tweak_data = Global.level_data and Global.level_data.level_id and tweak_data.levels[Global.level_data.level_id]
 		level_package = lvl_tweak_data and lvl_tweak_data.package
+
+		if lvl_tweak_data and lvl_tweak_data.is_christmas_heist then
+			table.insert(event_packages, "packages/event_xmas")
+		end
 	end
 
 	if level_package then

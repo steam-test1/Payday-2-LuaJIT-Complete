@@ -1941,6 +1941,10 @@ function UpgradesTweakData:_init_pd2_values()
 		{
 			2,
 			15
+		},
+		{
+			2,
+			30
 		}
 	}
 	self.values.player.passive_always_regen_armor = {
@@ -2168,6 +2172,67 @@ function UpgradesTweakData:_init_pd2_values()
 	}
 	self.values.player.activate_ability_downed = {
 		true
+	}
+	local health_boost = 0.2
+	local armor_boost = 0.05
+	local dodge_boost = 0.05
+	local crouch_speed_multiplier = 0.1
+	local carry_speed_multiplier = 0.1
+	self.values.player.mrwi_health_multiplier = {
+		1 + health_boost * 1,
+		1 + health_boost * 2,
+		1 + health_boost * 3,
+		1 + health_boost * 4
+	}
+	self.values.player.mrwi_armor_multiplier = {
+		1 + armor_boost * 1,
+		1 + armor_boost * 2,
+		1 + armor_boost * 3,
+		1 + armor_boost * 4
+	}
+	self.values.player.mrwi_dodge_chance = {
+		dodge_boost * 1,
+		dodge_boost * 2,
+		dodge_boost * 3,
+		dodge_boost * 4
+	}
+	self.values.player.mrwi_crouch_speed_multiplier = {
+		1 + crouch_speed_multiplier * 1,
+		1 + crouch_speed_multiplier * 2,
+		1 + crouch_speed_multiplier * 3,
+		1 + crouch_speed_multiplier * 4
+	}
+	self.values.player.mrwi_carry_speed_multiplier = {
+		1 + carry_speed_multiplier * 1,
+		1 + carry_speed_multiplier * 2,
+		1 + carry_speed_multiplier * 3,
+		1 + carry_speed_multiplier * 4
+	}
+	local auto_reload_kills = 10
+	self.values.player.primary_reload_secondary = {
+		auto_reload_kills
+	}
+	self.values.player.secondary_reload_primary = {
+		auto_reload_kills
+	}
+	self.values.weapon.mrwi_swap_speed_multiplier = {
+		2.6
+	}
+	self.values.player.dodge_ricochet_bullets = {
+		{
+			1,
+			0
+		}
+	}
+	self.values.player.headshot_regen_health_bonus = {
+		1
+	}
+	self.values.temporary.mrwi_health_invulnerable = {
+		{
+			0.5,
+			2,
+			15
+		}
 	}
 	self.values.player.warp_health = {
 		{
@@ -3796,6 +3861,7 @@ function UpgradesTweakData:_init_pd2_values()
 			editable_specialization_lootdrop_drop_multiplier
 		}
 	}
+	local editable_multi_choice_specialization_descs = {}
 	local editable_specialization_descs = {
 		{
 			{
@@ -4700,6 +4766,75 @@ function UpgradesTweakData:_init_pd2_values()
 	table.insert(copr_specialization[9], editable_specialization_lootdrop_drop_multiplier)
 	table.insert(editable_specialization_descs, copr_specialization)
 
+	local health_boost = (self.values.player.mrwi_health_multiplier[1] - 1) * 100
+	local armor_boost = (self.values.player.mrwi_armor_multiplier[1] - 1) * 100
+	local dodge_boost = self.values.player.mrwi_dodge_chance[1] * 100
+	local crouch_and_carry_boost = (self.values.player.mrwi_crouch_speed_multiplier[1] - 1) * 100
+	local mrwi_boost = {
+		{
+			tostring(health_boost) .. "%"
+		},
+		{
+			tostring(armor_boost) .. "%"
+		},
+		{
+			tostring(dodge_boost) .. "%"
+		},
+		{
+			tostring(crouch_and_carry_boost) .. "%"
+		}
+	}
+	local primary_reload_secondary_kills = self.values.player.primary_reload_secondary[1]
+	local headshot_regen_health_bonus = self.values.player.headshot_regen_health_bonus[1] * 10
+	local weapon_swap_speed = (self.values.weapon.mrwi_swap_speed_multiplier[1] - 1) * 200
+	local mrwi_health_invulnerable = self.values.temporary.mrwi_health_invulnerable[1]
+	local invulnerable_threshold = mrwi_health_invulnerable[1] * 100
+	local invulnerable_duration = mrwi_health_invulnerable[2]
+	local invulnerable_cooldown = mrwi_health_invulnerable[3]
+	local multi_choice_specialization_desc = {
+		mrwi_boost,
+		[3] = mrwi_boost,
+		[5] = mrwi_boost,
+		[7] = mrwi_boost,
+		[9] = {}
+	}
+	local deck9_options = UpgradesTweakData.mrwi_deck9_options()
+
+	for _, options in pairs(deck9_options) do
+		local data = nil
+
+		if options.tree and options.tier then
+			data = clone(editable_specialization_descs[options.tree][options.tier])
+		else
+			data = {}
+		end
+
+		for i, text in pairs(options.custom_editable_descs or {}) do
+			data[i] = text
+		end
+
+		table.insert(multi_choice_specialization_desc[9], data)
+	end
+
+	local specialization_descs = deep_clone(editable_specialization_template)
+	specialization_descs[1] = {
+		tostring(primary_reload_secondary_kills),
+		tostring(weapon_swap_speed) .. "%"
+	}
+	specialization_descs[3] = {
+		tostring(headshot_regen_health_bonus)
+	}
+	specialization_descs[5] = {}
+	specialization_descs[7] = {
+		tostring(invulnerable_threshold) .. "%",
+		tostring(invulnerable_duration),
+		tostring(invulnerable_cooldown)
+	}
+
+	table.insert(specialization_descs[9], editable_specialization_lootdrop_drop_multiplier)
+	table.insert(editable_specialization_descs, specialization_descs)
+
+	editable_multi_choice_specialization_descs[#editable_specialization_descs] = multi_choice_specialization_desc
 	self.specialization_descs = {}
 
 	for tree, data in pairs(editable_specialization_descs) do
@@ -4710,6 +4845,24 @@ function UpgradesTweakData:_init_pd2_values()
 
 			for i, desc in ipairs(tier_data) do
 				self.specialization_descs[tree][tier]["multiperk" .. (i == 1 and "" or tostring(i))] = desc
+			end
+		end
+	end
+
+	self.multi_choice_specialization_descs = {}
+
+	for tree, data in pairs(editable_multi_choice_specialization_descs) do
+		self.multi_choice_specialization_descs[tree] = {}
+
+		for tier, tier_data in pairs(data) do
+			self.multi_choice_specialization_descs[tree][tier] = {}
+
+			for choice_index, choice_data in pairs(tier_data) do
+				self.multi_choice_specialization_descs[tree][tier][choice_index] = {}
+
+				for i, desc in pairs(choice_data) do
+					self.multi_choice_specialization_descs[tree][tier][choice_index]["multiperk" .. (i == 1 and "" or tostring(i))] = desc
+				end
 			end
 		end
 	end
@@ -4726,7 +4879,8 @@ function UpgradesTweakData:init(tweak_data)
 				"msr",
 				"corgi",
 				"clean",
-				"aziz"
+				"aziz",
+				"xmas_snowball"
 			}
 		},
 		{
@@ -5092,6 +5246,7 @@ function UpgradesTweakData:init(tweak_data)
 				"desertfox",
 				"wpn_prj_target",
 				"tti",
+				"victor",
 				"ultima",
 				"x_2006m"
 			}
@@ -5466,6 +5621,7 @@ function UpgradesTweakData:init(tweak_data)
 	self:_armor_kit_definitions()
 	self:_first_aid_kit_definitions()
 	self:_bodybags_bag_definitions()
+	self:_grenade_crate_definitions()
 	self:_rep_definitions()
 	self:_jowi_definitions()
 	self:_x_1911_definitions()
@@ -5476,6 +5632,7 @@ function UpgradesTweakData:init(tweak_data)
 	self:_kabartanto_definitions()
 	self:_toothbrush_definitions()
 	self:_chef_definitions()
+	self:_mrwi_definitions()
 	self:_olympic_definitions()
 	self:_amcar_definitions()
 	self:_m16_definitions()
@@ -5597,6 +5754,7 @@ function UpgradesTweakData:init(tweak_data)
 	self:_contraband_weapon_definitions()
 	self:_ray_weapon_definitions()
 	self:_tti_weapon_definitions()
+	self:_victor_weapon_definitions()
 	self:_siltstone_weapon_definitions()
 	self:_flint_weapon_definitions()
 	self:_coal_weapon_definitions()
@@ -5756,6 +5914,7 @@ function UpgradesTweakData:_init_value_tables()
 		cable_tie = {},
 		bodybags_bag = {},
 		first_aid_kit = {},
+		grenade_crate = {},
 		weapon = {},
 		pistol = {},
 		assault_rifle = {},
@@ -12133,7 +12292,14 @@ function UpgradesTweakData:_grenades_definitions()
 		dlc = "copr",
 		category = "grenade"
 	}
+	self.definitions.xmas_snowball = {
+		category = "grenade"
+	}
 	self.definitions.poison_gas_grenade = {
+		category = "grenade"
+	}
+	self.definitions.sticky_grenade = {
+		dlc = "mxm",
 		category = "grenade"
 	}
 end
@@ -13681,6 +13847,304 @@ function UpgradesTweakData:_temporary_definitions()
 	}
 end
 
+function UpgradesTweakData:_mrwi_definitions()
+	for i = 1, 4 do
+		self.definitions["mrwi_health_multiplier_" .. tostring(i)] = {
+			incremental = true,
+			name_id = "menu_mrwi_health_multiplier",
+			category = "feature",
+			upgrade = {
+				value = 1,
+				upgrade = "mrwi_health_multiplier",
+				category = "player"
+			}
+		}
+		self.definitions["mrwi_armor_multiplier_" .. tostring(i)] = {
+			incremental = true,
+			name_id = "menu_mrwi_armor_multiplier",
+			category = "feature",
+			upgrade = {
+				value = 1,
+				upgrade = "mrwi_armor_multiplier",
+				category = "player"
+			}
+		}
+		self.definitions["mrwi_dodge_chance_" .. tostring(i)] = {
+			incremental = true,
+			name_id = "menu_mrwi_dodge_chance",
+			category = "feature",
+			upgrade = {
+				value = 1,
+				upgrade = "mrwi_dodge_chance",
+				category = "player"
+			}
+		}
+		self.definitions["mrwi_crouch_speed_multiplier_" .. tostring(i)] = {
+			incremental = true,
+			name_id = "menu_mrwi_crouch_speed_multiplier",
+			category = "feature",
+			upgrade = {
+				value = 1,
+				upgrade = "mrwi_crouch_speed_multiplier",
+				category = "player"
+			}
+		}
+		self.definitions["mrwi_carry_speed_multiplier_" .. tostring(i)] = {
+			incremental = true,
+			name_id = "menu_mrwi_carry_speed_multiplier",
+			category = "feature",
+			upgrade = {
+				value = 1,
+				upgrade = "mrwi_carry_speed_multiplier",
+				category = "player"
+			}
+		}
+	end
+
+	self.definitions.player_primary_reload_secondary_1 = {
+		name_id = "menu_player_primary_reload_secondary",
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "primary_reload_secondary",
+			category = "player"
+		}
+	}
+	self.definitions.player_secondary_reload_primary_1 = {
+		name_id = "menu_player_secondary_reload_primary",
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "secondary_reload_primary",
+			category = "player"
+		}
+	}
+	self.definitions.weapon_mrwi_swap_speed_multiplier_1 = {
+		name_id = "menu_weapon_mrwi_swap_speed_multiplier",
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "mrwi_swap_speed_multiplier",
+			category = "weapon"
+		}
+	}
+	self.definitions.player_headshot_regen_health_bonus_1 = {
+		name_id = "menu_player_headshot_regen_health_bonus",
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "headshot_regen_health_bonus",
+			category = "player"
+		}
+	}
+	self.definitions.player_dodge_ricochet_bullets = {
+		name_id = "menu_player_dodge_ricochet_bullets",
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "dodge_ricochet_bullets",
+			category = "player"
+		}
+	}
+	self.definitions.player_dodge_ricochet_bullets = {
+		name_id = "menu_player_dodge_ricochet_bullets",
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "dodge_ricochet_bullets",
+			category = "player"
+		}
+	}
+	self.definitions.temporary_mrwi_health_invulnerable_1 = {
+		name_id = "menu_temporary_mrwi_health_invulnerable",
+		category = "temporary",
+		upgrade = {
+			value = 1,
+			upgrade = "mrwi_health_invulnerable",
+			category = "temporary"
+		}
+	}
+	self.definitions.temporary_armor_break_invulnerable_2 = {
+		name_id = "menu_temporary_armor_break_invulnerable",
+		category = "temporary",
+		upgrade = {
+			value = 2,
+			upgrade = "armor_break_invulnerable",
+			category = "temporary"
+		}
+	}
+end
+
+function UpgradesTweakData.mrwi_deck9_options()
+	local deck9_options = {
+		{
+			tree = 1,
+			tier = 1
+		},
+		{
+			tree = 2,
+			tier = 7
+		},
+		{
+			tree = 3,
+			tier = 1
+		},
+		{
+			tree = 4,
+			tier = 3
+		},
+		{
+			tree = 5,
+			tier = 3,
+			upgrades = {
+				"player_perk_armor_regen_timer_multiplier_1"
+			},
+			custom_editable_descs = {
+				[1.0] = "15%"
+			}
+		},
+		{
+			tree = 6,
+			tier = 3
+		},
+		{
+			desc_id = "menu_deck23_9_7_desc",
+			short_id = "menu_deck23_9_7_short",
+			name_id = "menu_deck7_7",
+			upgrades = {
+				"player_tier_dodge_chance_1",
+				"player_stand_still_crouch_camouflage_bonus_1",
+				"player_stand_still_crouch_camouflage_bonus_2",
+				"player_stand_still_crouch_camouflage_bonus_3",
+				"player_alarm_pager_speed_multiplier"
+			},
+			custom_editable_descs = {
+				"20%",
+				"20%",
+				"10%"
+			},
+			icon_xy = {
+				1,
+				4
+			}
+		},
+		{
+			tier = 7,
+			tree = 8,
+			desc_id = "menu_deck8_1_desc",
+			upgrades = {
+				"player_damage_dampener_close_contact_1",
+				"player_damage_dampener_close_contact_2"
+			},
+			custom_editable_descs = {
+				[1.0] = "24%"
+			}
+		},
+		{
+			tree = 9,
+			tier = 3
+		},
+		{
+			tree = 10,
+			tier = 1
+		},
+		{
+			desc_id = "menu_deck23_9_11_desc",
+			short_id = "menu_deck23_9_11_short",
+			tier = 3,
+			tree = 11,
+			upgrades = {
+				"player_damage_to_hot_1"
+			},
+			custom_editable_descs = {
+				"2",
+				"0.3",
+				"3",
+				"1.5",
+				"20%"
+			}
+		},
+		{
+			tree = 12,
+			tier = 3
+		},
+		{
+			desc_id = "menu_deck23_9_13_desc",
+			short_id = "menu_deck23_9_13_short",
+			tier = 3,
+			tree = 13,
+			upgrades = {
+				"player_armor_health_store_amount_1"
+			},
+			custom_editable_descs = {
+				"8",
+				"1",
+				"10%"
+			}
+		},
+		{
+			desc_id = "menu_deck23_9_14_desc",
+			short_id = "menu_deck23_9_14_short",
+			tier = 3,
+			tree = 14,
+			upgrades = {
+				"player_cocaine_stacking_1"
+			},
+			custom_editable_descs = {
+				"100%",
+				"240",
+				"4",
+				"600",
+				"1",
+				"30",
+				"60% + 80",
+				"8"
+			}
+		},
+		{
+			tree = 15,
+			tier = 1,
+			upgrades = {
+				"temporary_armor_break_invulnerable_2"
+			},
+			custom_editable_descs = {
+				[2.0] = "30"
+			}
+		},
+		{
+			tree = 16,
+			tier = 1
+		},
+		{
+			tree = 17,
+			tier = 1
+		},
+		{
+			tree = 18,
+			tier = 1
+		},
+		{
+			tree = 19,
+			tier = 1
+		},
+		{
+			tree = 20,
+			tier = 1
+		},
+		{
+			tree = 21,
+			tier = 1
+		},
+		{
+			tree = 22,
+			tier = 1,
+			shorten_desc = true
+		}
+	}
+
+	return deck9_options
+end
+
 function UpgradesTweakData:_cooldown_definitions()
 	self.definitions.cooldown_long_dis_revive = {
 		name_id = "menu_cooldown_long_dis_revive",
@@ -14893,6 +15357,16 @@ function UpgradesTweakData:_bodybags_bag_definitions()
 	}
 end
 
+function UpgradesTweakData:_grenade_crate_definitions()
+	self.definitions.grenade_crate = {
+		equipment_id = "grenade_crate",
+		slot = 1,
+		dlc = "mxm",
+		category = "equipment",
+		name_id = "menu_equipment_grenade_crate"
+	}
+end
+
 function UpgradesTweakData:_jowi_definitions()
 	self.definitions.jowi = {
 		factory_id = "wpn_fps_jowi",
@@ -15357,6 +15831,15 @@ function UpgradesTweakData:_tti_weapon_definitions()
 		dlc = "spa",
 		factory_id = "wpn_fps_snp_tti",
 		weapon_id = "tti",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_victor_weapon_definitions()
+	self.definitions.victor = {
+		dlc = "savi",
+		factory_id = "wpn_fps_snp_victor",
+		weapon_id = "victor",
 		category = "weapon"
 	}
 end

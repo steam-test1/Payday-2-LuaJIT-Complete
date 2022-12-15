@@ -7915,4 +7915,15 @@ function InteractionTweakData:init(tweak_data)
 		start_active = false,
 		axis = "y"
 	}
+	self.cg22_spawn_present = {
+		text_id = "cg22_hold_summon_present",
+		action_text_id = "cg22_action_summon_present",
+		interact_distance = 400,
+		timer = 3,
+		start_active = true
+	}
+	self.cg22_bag_carry_drop = deep_clone(self.carry_drop)
+	self.cg22_bag_carry_drop.sound_start = "bar_bag_xmas_loop"
+	self.cg22_bag_carry_drop.sound_interupt = "bar_bag_xmas_loop_cancel"
+	self.cg22_bag_carry_drop.sound_done = "bar_bag_xmas_loop_finished"
 end

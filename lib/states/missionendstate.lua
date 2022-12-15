@@ -192,6 +192,13 @@ function MissionEndState:at_enter(old_state, params)
 	local spending_kills, spendings = managers.money:on_spend_session_moneythrower()
 	self._moneythrower_spending_kills = spending_kills
 	self._moneythrower_spendings = spendings
+
+	if managers.mutators:is_mutator_active(MutatorCG22) then
+		local mutator = managers.mutators:get_mutator(MutatorCG22)
+
+		managers.custom_safehouse:add_coins(mutator:get_coins_collected())
+	end
+
 	self._criminals_completed = self._success and params.num_winners or 0
 
 	managers.statistics:stop_session({
@@ -351,6 +358,19 @@ function MissionEndState:play_finishing_sound(success)
 	end
 
 	if not success and managers.groupai:state():bain_state() then
+		if managers.mutators:is_mutator_active(MutatorCG22) then
+			local cg22_mutator = managers.mutators:get_mutator(MutatorCG22)
+			local failure_event = false
+
+			if cg22_mutator.get_failure_event then
+				failure_event = cg22_mutator:get_failure_event()
+			end
+
+			if failure_event then
+				managers.dialog:queue_dialog(failure_event, {})
+			end
+		end
+
 		local level_data = Global.level_data.level_id and tweak_data.levels[Global.level_data.level_id]
 
 		if level_data and level_data.failure_event then
@@ -544,6 +564,15 @@ function MissionEndState:on_statistics_result(best_kills_peer_id, best_kills_sco
 			})
 			stage_cash_summary_string = stage_cash_summary_string .. offshore_string .. "\n"
 			stage_cash_summary_string = stage_cash_summary_string .. spending_string .. "\n"
+
+			if managers.mutators:is_mutator_active(MutatorCG22) then
+				local event_string = managers.localization:text("victory_stage_cash_summary_name_event")
+				stage_cash_summary_string = stage_cash_summary_string .. "\n" .. event_string .. "\n"
+				local mutator = managers.mutators:get_mutator(MutatorCG22)
+				stage_cash_summary_string = stage_cash_summary_string .. managers.localization:text("menu_exp_short") .. ":" .. mutator:get_xp_collected() .. " "
+				stage_cash_summary_string = stage_cash_summary_string .. managers.localization:text("short_basics_cash") .. ":" .. mutator:get_money_collected() .. " "
+				stage_cash_summary_string = stage_cash_summary_string .. managers.localization:text("menu_cs_coins") .. ":" .. mutator:get_coins_collected() .. " "
+			end
 		else
 			stage_cash_summary_string = managers.localization:text("failed_summary_name")
 		end

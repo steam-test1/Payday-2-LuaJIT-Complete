@@ -236,6 +236,96 @@ function PlayerManager:check_skills()
 		self._message_system:unregister(Message.OnLethalHeadShot, "play_pda9_headshot")
 	end
 
+	self._has_primary_reload_secondary = self:has_category_upgrade("player", "primary_reload_secondary")
+	self._has_secondary_reload_primary = self:has_category_upgrade("player", "secondary_reload_primary")
+
+	self:set_property("primary_reload_secondary_kills", 0)
+	self:set_property("secondary_reload_primary_kills", 0)
+
+	if self:has_category_upgrade("player", "dodge_ricochet_bullets") then
+		local hit_chance = self:upgrade_value("player", "dodge_ricochet_bullets")[1]
+		local cooldown = self:upgrade_value("player", "dodge_ricochet_bullets")[2]
+		local last_ricochet_time = 0
+		local from = Vector3()
+		local to = Vector3()
+		local dir = Vector3()
+
+		local function on_player_dodged(attack_data)
+			local t = TimerManager:game():time()
+
+			if attack_data.variant == "bullet" and t > last_ricochet_time + cooldown then
+				last_ricochet_time = t
+				local player_unit = self:local_player()
+				local attacker_unit = attack_data.attacker_unit
+
+				if not alive(attacker_unit) or not attacker_unit:character_damage() or attacker_unit:character_damage():dead() or not attacker_unit:character_damage().damage_simple then
+					return
+				end
+
+				mvector3.set(dir, attack_data.col_ray.ray)
+				mvector3.negate(dir)
+				mvector3.set(to, attack_data.col_ray.position)
+				mvector3.set(from, dir)
+				mvector3.multiply(from, attack_data.col_ray.distance or 20000)
+				mvector3.add(from, to)
+				math.point_on_line(from, to, player_unit:movement():m_head_pos(), to)
+				mvector3.direction(dir, to, from)
+				mvector3.set(from, to)
+				mvector3.set(to, dir)
+				mvector3.spread(to, 3)
+				mvector3.multiply(to, 20000)
+				mvector3.add(to, from)
+
+				local ray_hits = RaycastWeaponBase.collect_hits(from, to, {
+					ignore_unit = {
+						player_unit
+					}
+				})
+				local hit_dmg_ext = nil
+
+				for _, col_ray in ipairs(ray_hits) do
+					hit_dmg_ext = col_ray.unit:character_damage()
+
+					if hit_dmg_ext and hit_dmg_ext.damage_simple then
+						hit_dmg_ext:damage_simple({
+							variant = "bullet",
+							damage = attack_data.damage,
+							attacker_unit = player_unit,
+							pos = col_ray.position,
+							attack_dir = dir
+						})
+						managers.game_play_central:play_impact_flesh({
+							col_ray = col_ray
+						})
+					end
+
+					managers.game_play_central:play_impact_sound_and_effects({
+						col_ray = col_ray
+					})
+				end
+
+				local furthest_hit = ray_hits[#ray_hits]
+
+				if furthest_hit and furthest_hit.distance > 600 or not furthest_hit then
+					local trail_effect_table = {
+						effect = RaycastWeaponBase.TRAIL_EFFECT,
+						normal = dir,
+						position = from
+					}
+					local trail = World:effect_manager():spawn(trail_effect_table)
+
+					if furthest_hit then
+						World:effect_manager():set_remaining_lifetime(trail, math.clamp((furthest_hit.distance - 600) / 10000, 0, furthest_hit.distance))
+					end
+				end
+			end
+		end
+
+		self:register_message(Message.OnPlayerDodge, "dodge_ricochet_bullets", on_player_dodged)
+	else
+		self:unregister_message(Message.OnPlayerDodge, "dodge_ricochet_bullets")
+	end
+
 	if self:has_category_upgrade("player", "dodge_shot_gain") then
 		local last_gain_time = 0
 		local dodge_gain = self:upgrade_value("player", "dodge_shot_gain")[1]
@@ -1259,6 +1349,48 @@ function PlayerManager:on_killshot(killed_unit, variant, headshot, weapon_id)
 		self:_on_enter_shock_and_awe_event()
 	end
 
+	local selection_index = equipped_unit and equipped_unit:base() and equipped_unit:base():selection_index() or 0
+
+	if selection_index == 1 and self._has_secondary_reload_primary then
+		local kills_to_reload = self:upgrade_value("player", "secondary_reload_primary", 10)
+		local secondary_kills = self:get_property("secondary_reload_primary_kills", 0) + 1
+
+		if kills_to_reload <= secondary_kills then
+			local primary_unit = player_unit:inventory():unit_by_selection(2)
+			local primary_base = alive(primary_unit) and primary_unit:base()
+			local can_reload = primary_base and primary_base.can_reload and primary_base:can_reload()
+
+			if can_reload then
+				primary_base:on_reload()
+				managers.statistics:reloaded()
+				managers.hud:set_ammo_amount(primary_base:selection_index(), primary_base:ammo_info())
+			end
+
+			secondary_kills = 0
+		end
+
+		self:set_property("secondary_reload_primary_kills", secondary_kills)
+	elseif selection_index == 2 and self._has_primary_reload_secondary then
+		local kills_to_reload = self:upgrade_value("player", "primary_reload_secondary", 10)
+		local primary_kills = self:get_property("primary_reload_secondary_kills", 0) + 1
+
+		if kills_to_reload <= primary_kills then
+			local secondary_unit = player_unit:inventory():unit_by_selection(1)
+			local secondary_base = alive(secondary_unit) and secondary_unit:base()
+			local can_reload = secondary_base and secondary_base.can_reload and secondary_base:can_reload()
+
+			if can_reload then
+				secondary_base:on_reload()
+				managers.statistics:reloaded()
+				managers.hud:set_ammo_amount(secondary_base:selection_index(), secondary_base:ammo_info())
+			end
+
+			primary_kills = 0
+		end
+
+		self:set_property("primary_reload_secondary_kills", primary_kills)
+	end
+
 	self._message_system:notify(Message.OnEnemyKilled, nil, equipped_unit, variant, killed_unit)
 
 	if self._saw_panic_when_kill and variant ~= "melee" then
@@ -1567,6 +1699,12 @@ function PlayerManager:on_headshot_dealt()
 
 	if damage_ext and regen_armor_bonus > 0 then
 		damage_ext:restore_armor(regen_armor_bonus)
+	end
+
+	local regen_health_bonus = managers.player:upgrade_value("player", "headshot_regen_health_bonus", 0)
+
+	if damage_ext and regen_health_bonus > 0 then
+		damage_ext:restore_health(regen_health_bonus, true)
 	end
 end
 
@@ -2159,6 +2297,10 @@ function PlayerManager:get_limited_exp_multiplier(job_id, level_id)
 	local level_data = level_id and tweak_data.levels[level_id] or {}
 	local multiplier = tweak_data:get_value("experience_manager", "limited_bonus_multiplier") or 1
 
+	if level_data.is_christmas_heist then
+		multiplier = multiplier + (tweak_data:get_value("experience_manager", "limited_xmas_bonus_multiplier") or 1) - 1
+	end
+
 	return multiplier
 end
 
@@ -2333,6 +2475,7 @@ function PlayerManager:movement_speed_multiplier(speed_state, bonus_multiplier, 
 
 	if speed_state then
 		multiplier = multiplier + self:upgrade_value("player", speed_state .. "_speed_multiplier", 1) - 1
+		multiplier = multiplier + self:upgrade_value("player", "mrwi_" .. speed_state .. "_speed_multiplier", 1) - 1
 	end
 
 	multiplier = multiplier + self:get_hostage_bonus_multiplier("speed") - 1
@@ -2387,6 +2530,7 @@ function PlayerManager:body_armor_skill_multiplier(override_armor)
 	multiplier = multiplier + self:upgrade_value("player", "perk_armor_loss_multiplier", 1) - 1
 	multiplier = multiplier + self:upgrade_value("player", tostring(override_armor or managers.blackmarket:equipped_armor(true, true)) .. "_armor_multiplier", 1) - 1
 	multiplier = multiplier + self:upgrade_value("player", "chico_armor_multiplier", 1) - 1
+	multiplier = multiplier + self:upgrade_value("player", "mrwi_armor_multiplier", 1) - 1
 
 	return multiplier
 end
@@ -2429,6 +2573,7 @@ end
 
 function PlayerManager:skill_dodge_chance(running, crouching, on_zipline, override_armor, detection_risk)
 	local chance = self:upgrade_value("player", "passive_dodge_chance", 0)
+	chance = chance + self:upgrade_value("player", "mrwi_dodge_chance", 0)
 	local dodge_shot_gain = self:_dodge_shot_gain()
 
 	for _, smoke_screen in ipairs(self._smoke_screen_effects or {}) do
@@ -2541,6 +2686,7 @@ function PlayerManager:health_skill_multiplier()
 	multiplier = multiplier + self:team_upgrade_value("health", "passive_multiplier", 1) - 1
 	multiplier = multiplier + self:get_hostage_bonus_multiplier("health") - 1
 	multiplier = multiplier - self:upgrade_value("player", "health_decrease", 0)
+	multiplier = multiplier + self:upgrade_value("player", "mrwi_health_multiplier", 1) - 1
 
 	if self:num_local_minions() > 0 then
 		multiplier = multiplier + self:upgrade_value("player", "minion_master_health_multiplier", 1) - 1
@@ -4018,7 +4164,7 @@ function PlayerManager:check_equipment_placement_valid(player, equipment)
 
 	if equipment_data.equipment == "trip_mine" or equipment_data.equipment == "ecm_jammer" then
 		return player:equipment():valid_look_at_placement(tweak_data.equipments[equipment_data.equipment]) and true or false
-	elseif equipment_data.equipment == "sentry_gun" or equipment_data.equipment == "ammo_bag" or equipment_data.equipment == "sentry_gun_silent" or equipment_data.equipment == "doctor_bag" or equipment_data.equipment == "first_aid_kit" or equipment_data.equipment == "bodybags_bag" then
+	elseif equipment_data.equipment == "sentry_gun" or equipment_data.equipment == "ammo_bag" or equipment_data.equipment == "sentry_gun_silent" or equipment_data.equipment == "doctor_bag" or equipment_data.equipment == "first_aid_kit" or equipment_data.equipment == "bodybags_bag" or equipment_data.equipment == "grenade_crate" then
 		return player:equipment():valid_shape_placement(equipment_data.equipment, tweak_data.equipments[equipment_data.equipment]) and true or false
 	elseif equipment_data.equipment == "armor_kit" then
 		return true
@@ -4664,6 +4810,12 @@ function PlayerManager:set_carry(carry_id, carry_multiplier, dye_initiated, has_
 
 	player:movement():current_state():set_tweak_data(carry_type)
 	player:sound():play("Play_bag_generic_pickup", nil, false)
+
+	if managers.mutators:is_mutator_active(MutatorCG22) then
+		local cg22_mutator = managers.mutators:get_mutator(MutatorCG22)
+
+		cg22_mutator:on_bag_pickup(carry_id)
+	end
 end
 
 function PlayerManager:bank_carry()

@@ -1683,6 +1683,20 @@ function NetworkPeer:_reload_outfit()
 		}
 	end
 
+	if complete_outfit.deployable and not is_local_peer then
+		local deployable_tweak_data = tweak_data.equipments[complete_outfit.deployable]
+
+		if deployable_tweak_data.visual_style then
+			local deployable_style_u_name = tweak_data.blackmarket:get_player_style_value(deployable_tweak_data.visual_style, self._character, "third_unit")
+
+			if deployable_style_u_name then
+				new_outfit_assets.unit.deployable_style_w = {
+					name = Idstring(deployable_style_u_name)
+				}
+			end
+		end
+	end
+
 	self._outfit_assets = new_outfit_assets
 
 	for asset_id, asset_data in pairs(new_outfit_assets.unit) do

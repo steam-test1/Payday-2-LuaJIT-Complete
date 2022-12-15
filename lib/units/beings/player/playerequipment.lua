@@ -237,6 +237,30 @@ function PlayerEquipment:use_bodybags_bag()
 	return false
 end
 
+function PlayerEquipment:use_grenade_crate()
+	local ray = self:valid_shape_placement("grenade_crate")
+
+	if ray then
+		local pos = ray.position
+		local rot = self:_m_deploy_rot()
+		rot = Rotation(rot:yaw(), 0, 0)
+
+		managers.statistics:use_body_bag()
+
+		local amount_upgrade_lvl = 0
+
+		if Network:is_client() then
+			managers.network:session():send_to_host("place_deployable_bag", "GrenadeCrateDeployableBase", pos, rot, amount_upgrade_lvl)
+		else
+			local unit = GrenadeCrateDeployableBase.spawn(pos, rot, amount_upgrade_lvl, managers.network:session():local_peer():id())
+		end
+
+		return true
+	end
+
+	return false
+end
+
 function PlayerEquipment:use_ecm_jammer()
 	if self._ecm_jammer_placement_requested then
 		return
@@ -569,11 +593,16 @@ function PlayerEquipment:throw_projectile()
 end
 
 function PlayerEquipment:throw_grenade()
+	local grenade_name = managers.blackmarket:equipped_grenade()
+	local grenade_tweak = tweak_data.blackmarket.projectiles[grenade_name]
+
+	if grenade_tweak.client_authoritative then
+		return self:throw_projectile()
+	end
+
 	local from = self._unit:movement():m_head_pos()
 	local pos = from + self._unit:movement():m_head_rot():y() * 30 + Vector3(0, 0, 0)
 	local dir = self._unit:movement():m_head_rot():y()
-	local grenade_name = managers.blackmarket:equipped_grenade()
-	local grenade_tweak = tweak_data.blackmarket.projectiles[grenade_name]
 
 	if not grenade_tweak.no_shouting then
 		self._unit:sound():play("g43", nil, true)

@@ -236,12 +236,14 @@ function IngameContractGui:init(ws, node)
 	end
 
 	local is_christmas_job = managers.job:is_christmas_job(managers.job:current_job_id())
+	local has_christmas_bonus = false
 
 	if is_christmas_job then
 		local holiday_potential_bonus = managers.job:get_job_christmas_bonus(managers.job:current_job_id())
 		local holiday_bonus_percentage = math.round(holiday_potential_bonus * 100)
+		has_christmas_bonus = holiday_bonus_percentage ~= 0
 
-		if holiday_bonus_percentage ~= 0 then
+		if has_christmas_bonus then
 			local holiday_string = tostring(holiday_bonus_percentage)
 			local holiday_text = text_panel:text({
 				vertical = "top",
@@ -265,8 +267,10 @@ function IngameContractGui:init(ws, node)
 	end
 
 	next_top = next_top + 5
+	local any_modifier_available = heat_warning_text or pro_warning_text or ghost_warning_text or one_down_warning_text
+	any_modifier_available = any_modifier_available or has_christmas_bonus
 
-	modifiers_text:set_visible(heat_warning_text or pro_warning_text or ghost_warning_text or one_down_warning_text)
+	modifiers_text:set_visible(any_modifier_available)
 
 	local risk_color = tweak_data.screen_colors.risk
 	local risk_title = text_panel:text({

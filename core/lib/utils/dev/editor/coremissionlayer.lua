@@ -6,6 +6,7 @@ core:import("CoreTable")
 core:import("CoreEws")
 core:import("CoreClass")
 core:import("CoreEditorCommand")
+core:import("CoreUnit")
 
 MissionLayer = MissionLayer or class(CoreStaticLayer.StaticLayer)
 
@@ -141,13 +142,18 @@ function MissionLayer:do_spawn_unit(...)
 		return
 	end
 
-	if self._scripts[self:current_script()].continent ~= managers.editor:current_continent():name() then
-		managers.editor:output_warning("Can't create mission element because the current script doesn't belong to current continent.")
+	local unit = MissionLayer.super.do_spawn_unit(self, ...)
 
-		return
+	if unit ~= nil then
+		local ud = unit:unit_data()
+
+		if ud ~= nil and self._scripts[self:current_script()].continent ~= managers.editor:current_continent():name() and ud.only_exists_in_editor == false then
+			managers.editor:output_warning("Can't create mission element because the current script doesn't belong to current continent.")
+			self:delete_unit(unit)
+		end
 	end
 
-	return MissionLayer.super.do_spawn_unit(self, ...)
+	return unit
 end
 
 function MissionLayer:_on_unit_created(unit, ...)

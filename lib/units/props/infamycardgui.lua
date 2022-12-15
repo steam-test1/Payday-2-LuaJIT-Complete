@@ -2,6 +2,7 @@ require("lib/managers/menu/ExtendedPanel")
 require("lib/managers/menu/BoxGuiObject")
 
 InfamyCardGui = InfamyCardGui or class()
+InfamyCardGui._EXTENSION_NAME = "digital_gui"
 
 function InfamyCardGui:init(unit)
 	self._unit = unit
@@ -12,7 +13,7 @@ function InfamyCardGui:init(unit)
 	self._new_gui = World:newgui()
 
 	self:add_workspace(self._unit:get_object(Idstring(self._gui_object)))
-	self._unit:set_extension_update_enabled(Idstring("digital_gui"), false)
+	self._unit:set_extension_update_enabled(Idstring(self._EXTENSION_NAME), false)
 end
 
 function InfamyCardGui:add_workspace(gui_object)

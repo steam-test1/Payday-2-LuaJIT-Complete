@@ -199,7 +199,7 @@ function MutatorExplodingEnemies:_detonate(cop_damage, attack_data)
 		end
 
 		local range = self:get_explosion_size() * 100
-		local damage = attack_data.raw_damage or attack_data.damage or cop_damage._HEALTH_INIT
+		local damage = math.max(attack_data.raw_damage or attack_data.damage or cop_damage._HEALTH_INIT, 0)
 		local ply_damage = damage * 0.5
 		local normal = attack_data.attack_dir or math.UP
 		local slot_mask = managers.slot:get_mask("explosion_targets")

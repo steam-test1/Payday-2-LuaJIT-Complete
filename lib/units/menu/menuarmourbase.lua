@@ -79,6 +79,10 @@ function MenuArmourBase:glove_id()
 	return self._glove_id
 end
 
+function MenuArmourBase:deployable_id()
+	return self._deployable_id
+end
+
 function MenuArmourBase:set_armor_id(armor_id)
 	self._armor_id = armor_id
 
@@ -95,17 +99,7 @@ end
 function MenuArmourBase:set_mask_id(id)
 	self._mask_id = id
 
-	local function call_func()
-		if not self._applying_cosmetics and not self._request_update then
-			self:update_character_visuals(self._cosmetics)
-		end
-	end
-
-	if is_next_update_funcs_busy() then
-		call_func()
-	else
-		call_on_next_update(call_func)
-	end
+	self:request_character_visuals_update()
 end
 
 function MenuArmourBase:set_armor_skin_id(id)
@@ -131,6 +125,26 @@ function MenuArmourBase:set_glove_id(glove_id)
 	self._glove_id = glove_id
 
 	self:request_cosmetics_update()
+end
+
+function MenuArmourBase:set_deployable(deployable_id)
+	self._deployable_id = deployable_id
+
+	self:request_cosmetics_update()
+end
+
+function MenuArmourBase:request_character_visuals_update()
+	local function call_func()
+		if not self._applying_cosmetics and not self._request_update then
+			self:update_character_visuals(self._cosmetics)
+		end
+	end
+
+	if is_next_update_funcs_busy() then
+		call_func()
+	else
+		call_on_next_update(call_func)
+	end
 end
 
 function MenuArmourBase:request_cosmetics_update()
@@ -181,7 +195,8 @@ function MenuArmourBase:update_character_visuals(cosmetics)
 		glove_id = visual_state.glove_id or managers.blackmarket:get_default_glove_id(),
 		mask_id = visual_state.mask or self._mask_id,
 		armor_id = visual_state.armor or "level_1",
-		armor_skin = visual_state.armor_skin or "none"
+		armor_skin = visual_state.armor_skin or "none",
+		deployable_id = visual_state.deployable_id or false
 	}
 
 	CriminalsManager.set_character_visual_state(self._unit, character_name, character_visual_state)
@@ -244,7 +259,8 @@ function MenuArmourBase:_apply_cosmetics(clbks)
 		glove_id = self._glove_id,
 		mask = self._mask_id,
 		armor = self._armor_id,
-		armor_skin = self:use_cc() and self._armor_skin_id
+		armor_skin = self:use_cc() and self._armor_skin_id,
+		deployable_id = self._deployable_id or false
 	}
 
 	cat_print("character_cosmetics", "[MenuArmourBase:_apply_cosmetics]", inspect(visual_state))
@@ -299,6 +315,16 @@ function MenuArmourBase:_apply_cosmetics(clbks)
 
 	if glove_unit_name then
 		self:_add_asset(units, glove_unit_name)
+	end
+
+	if visual_state.deployable_id then
+		local deployable_tweak_data = tweak_data.equipments[visual_state.deployable_id]
+
+		if deployable_tweak_data.visual_style then
+			local deployable_style_name = tweak_data.blackmarket:get_player_style_value(deployable_tweak_data.visual_style, visual_state.character_name, "third_unit")
+
+			self:_add_asset(units, deployable_style_name)
+		end
 	end
 
 	if table.size(new_cosmetics.unit) > 0 or table.size(new_cosmetics.material_config) > 0 or table.size(new_cosmetics.texture) > 0 then

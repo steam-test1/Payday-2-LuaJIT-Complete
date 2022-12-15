@@ -462,6 +462,10 @@ function StatisticsManager:use_armor_bag()
 	self:_increment_misc("deploy_armorbag", 1)
 end
 
+function StatisticsManager:use_grenade_crate()
+	self:_increment_misc("deploy_grenadecrate", 1)
+end
+
 function StatisticsManager:in_custody()
 	self:_increment_misc("in_custody", 1)
 end
@@ -707,6 +711,10 @@ function StatisticsManager:publish_to_steam(session, success, completion)
 	stats.gadget_used_armor_bag = {
 		type = "int",
 		value = session.misc.deploy_armorbag or 0
+	}
+	stats.gadget_used_grenade_crate = {
+		type = "int",
+		value = session.misc.deploy_grenadecrate or 0
 	}
 
 	if completion then

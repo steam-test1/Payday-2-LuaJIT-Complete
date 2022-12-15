@@ -202,6 +202,15 @@ function TweakData:_init_pd2()
 			32
 		}
 	}
+	self.hud_icons.equipment_grenade_crate = {
+		texture = "guis/dlcs/mxm/textures/pd2/ordnance_bag",
+		texture_rect = {
+			0,
+			0,
+			32,
+			32
+		}
+	}
 	self.hud_icons.equipment_generic_key = {
 		texture = "guis/textures/pd2/hud_pickups",
 		texture_rect = {
@@ -722,6 +731,15 @@ function TweakData:_init_pd2()
 			0,
 			128,
 			128
+		}
+	}
+	self.hud_icons.sticky_grenade = {
+		texture = "guis/dlcs/mxm/textures/pd2/sticky_grenade",
+		texture_rect = {
+			0,
+			0,
+			32,
+			32
 		}
 	}
 	self.hud_icons.none_icon = {

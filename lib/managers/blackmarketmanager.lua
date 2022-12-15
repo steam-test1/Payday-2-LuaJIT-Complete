@@ -177,20 +177,22 @@ function BlackMarketManager:_setup_player_styles()
 	local stored_material_variations = nil
 
 	for player_style, data in pairs(tweak_data.blackmarket.player_styles) do
-		player_styles[player_style] = Global.blackmarket_manager.player_styles and Global.blackmarket_manager.player_styles[player_style] or {}
-		player_styles[player_style].unlocked = player_styles[player_style].unlocked or data.unlocked or false
-		player_styles[player_style].equipped_material_variation = player_styles[player_style].equipped_material_variation or "default"
-		stored_material_variations = player_styles[player_style].material_variations or {}
-		player_styles[player_style].material_variations = {}
+		if not data.unavailable then
+			player_styles[player_style] = Global.blackmarket_manager.player_styles and Global.blackmarket_manager.player_styles[player_style] or {}
+			player_styles[player_style].unlocked = player_styles[player_style].unlocked or data.unlocked or false
+			player_styles[player_style].equipped_material_variation = player_styles[player_style].equipped_material_variation or "default"
+			stored_material_variations = player_styles[player_style].material_variations or {}
+			player_styles[player_style].material_variations = {}
 
-		for var_id, var_data in pairs(data.material_variations or {}) do
-			player_styles[player_style].material_variations[var_id] = stored_material_variations[var_id] or {}
-			player_styles[player_style].material_variations[var_id].unlocked = player_styles[player_style].material_variations[var_id].unlocked or var_data.unlocked or var_data.auto_aquire and player_styles[player_style].unlocked or false
+			for var_id, var_data in pairs(data.material_variations or {}) do
+				player_styles[player_style].material_variations[var_id] = stored_material_variations[var_id] or {}
+				player_styles[player_style].material_variations[var_id].unlocked = player_styles[player_style].material_variations[var_id].unlocked or var_data.unlocked or var_data.auto_aquire and player_styles[player_style].unlocked or false
+			end
+
+			player_styles[player_style].material_variations.default = {
+				unlocked = true
+			}
 		end
-
-		player_styles[player_style].material_variations.default = {
-			unlocked = true
-		}
 	end
 
 	player_styles[self:get_default_player_style()].unlocked = true
@@ -10399,4 +10401,10 @@ function BlackMarketManager:has_unlocked_money()
 	local is_unlocked = managers.event_jobs:has_completed_and_claimed_rewards("pda9_1")
 
 	return is_unlocked, "bm_menu_locked_pda9_1", "guis/textures/pd2/lock_achievement"
+end
+
+function BlackMarketManager:has_unlocked_victor()
+	local is_unlocked = managers.event_jobs:has_completed_and_claimed_rewards("cg22_1")
+
+	return is_unlocked, "bm_menu_locked_cg22_1", "guis/textures/pd2/lock_achievement"
 end

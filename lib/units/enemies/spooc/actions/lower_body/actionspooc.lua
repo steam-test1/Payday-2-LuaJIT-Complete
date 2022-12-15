@@ -824,6 +824,10 @@ function ActionSpooc:_stop_walk()
 	return CopActionWalk._stop_walk(self)
 end
 
+function ActionSpooc:_husk_needs_speedup()
+	return false
+end
+
 function ActionSpooc:_upd_wait(t)
 	if self._ext_anim.move then
 		self:_stop_walk()

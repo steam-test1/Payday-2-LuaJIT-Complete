@@ -66,9 +66,10 @@ PlayerStandard.ANIM_STATES = {
 }
 PlayerStandard.projectile_throw_delays = {
 	projectile_frag_com = 0.83062744140625,
+	projectile_snowball = 0.48867034912109,
+	projectile_frag = 0.52984619140625,
 	projectile_dynamite = 0.86656761169434,
-	projectile_molotov = 0.86867332458496,
-	projectile_frag = 0.52984619140625
+	projectile_molotov = 0.86867332458496
 }
 PlayerStandard.debug_bipod = nil
 
@@ -228,6 +229,9 @@ function PlayerStandard:enter(state_data, enter_data)
 	self._last_sent_pos_t = enter_data and enter_data.last_sent_pos_t or managers.player:player_timer():time()
 	self._last_sent_pos = enter_data and enter_data.last_sent_pos or mvector3.copy(self._pos)
 	self._gnd_ray = true
+	local slow_mul, prevents_running = self._ext_damage:get_current_slowdown()
+	self._slowdown_mul = slow_mul ~= 1 and slow_mul or nil
+	self._slowdown_run_prevent = slow_mul and prevents_running or false
 end
 
 function PlayerStandard:_enter(enter_data)
@@ -521,24 +525,33 @@ function PlayerStandard:_chk_floor_moving_pos(pos)
 	end
 end
 
+local fwd_ray_to = Vector3()
+
 function PlayerStandard:_update_fwd_ray()
+	local weap_base = alive(self._equipped_unit) and self._equipped_unit:base()
 	local from = self._unit:movement():m_head_pos()
-	local range = alive(self._equipped_unit) and self._equipped_unit:base():has_range_distance_scope() and 20000 or 4000
-	local to = self._cam_fwd * range
+	local range = weap_base and weap_base.needs_extended_fwd_ray_range and weap_base:needs_extended_fwd_ray_range(self._state_data.in_steelsight) and 20000 or 4000
 
-	mvector3.add(to, from)
+	mvec3_set(fwd_ray_to, self._cam_fwd)
+	mvec3_mul(fwd_ray_to, range)
+	mvec3_add(fwd_ray_to, from)
 
-	self._fwd_ray = World:raycast("ray", from, to, "slot_mask", self._slotmask_fwd_ray)
+	local fwd_ray = World:raycast("ray", from, fwd_ray_to, "slot_mask", self._slotmask_fwd_ray)
+	self._fwd_ray = fwd_ray
 
-	managers.environment_controller:set_dof_distance(math.max(0, math.min(self._fwd_ray and self._fwd_ray.distance or 4000, 4000) - 200), self._state_data.in_steelsight)
+	managers.environment_controller:set_dof_distance(math.max(0, math.min(fwd_ray and fwd_ray.distance or 4000, 4000) - 200), self._state_data.in_steelsight)
 
-	if alive(self._equipped_unit) then
-		if self._state_data.in_steelsight and self._fwd_ray and self._fwd_ray.unit and self._equipped_unit:base().check_highlight_unit then
-			self._equipped_unit:base():check_highlight_unit(self._fwd_ray.unit)
+	if weap_base then
+		if fwd_ray and self._state_data.in_steelsight and weap_base.check_highlight_unit then
+			weap_base:check_highlight_unit(fwd_ray.unit)
 		end
 
-		if self._equipped_unit:base().set_scope_range_distance then
-			self._equipped_unit:base():set_scope_range_distance(self._fwd_ray and self._fwd_ray.distance / 100 or false)
+		if weap_base.set_unit_health_display then
+			weap_base:set_unit_health_display(fwd_ray and fwd_ray.unit or nil)
+		end
+
+		if weap_base.set_scope_range_distance then
+			weap_base:set_scope_range_distance(fwd_ray and fwd_ray.distance / 100 or false)
 		end
 	end
 end
@@ -1185,6 +1198,10 @@ function PlayerStandard:_get_max_walk_speed(t, force_run)
 		end
 	end
 
+	if self._slowdown_mul then
+		multiplier = multiplier * self._slowdown_mul
+	end
+
 	local final_speed = movement_speed * multiplier
 	self._cached_final_speed = self._cached_final_speed or 0
 
@@ -1195,6 +1212,23 @@ function PlayerStandard:_get_max_walk_speed(t, force_run)
 	end
 
 	return final_speed
+end
+
+function PlayerStandard:apply_slowdown(slow_mul, prevents_running)
+	slow_mul = slow_mul ~= 1 and slow_mul or nil
+	prevents_running = slow_mul and prevents_running or false
+
+	if prevents_running then
+		self._running_wanted = false
+
+		if self._running then
+			self:_end_action_running(managers.player:player_timer():time())
+			self:set_running(false)
+		end
+	end
+
+	self._slowdown_mul = slow_mul
+	self._slowdown_run_prevent = prevents_running
 end
 
 function PlayerStandard:_start_action_steelsight(t, gadget_state)
@@ -1303,6 +1337,12 @@ function PlayerStandard:_update_steelsight_timers(t, dt)
 end
 
 function PlayerStandard:_start_action_running(t)
+	if self._slowdown_run_prevent then
+		self._running_wanted = false
+
+		return
+	end
+
 	if not self._move_dir then
 		self._running_wanted = true
 
@@ -2004,6 +2044,10 @@ end
 
 function PlayerStandard:_toggle_gadget(weap_base)
 	local gadget_index = 0
+
+	if weap_base.toggle_second_sight and self:in_steelsight() and weap_base:has_second_sight() and weap_base:toggle_second_sight(self) then
+		return
+	end
 
 	if weap_base.toggle_gadget and weap_base:has_gadget() and weap_base:toggle_gadget(self) then
 		gadget_index = weap_base:current_gadget_index()
@@ -4635,6 +4679,7 @@ function PlayerStandard:_get_swap_speed_multiplier()
 	end
 
 	multiplier = managers.modifiers:modify_value("PlayerStandard:GetSwapSpeedMultiplier", multiplier)
+	multiplier = multiplier * managers.player:upgrade_value("weapon", "mrwi_swap_speed_multiplier", 1)
 
 	return multiplier
 end

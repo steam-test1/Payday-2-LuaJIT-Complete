@@ -53,6 +53,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_m249_npc()
 	self:_init_data_contraband_npc()
 	self:_init_data_flamethrower_npc()
+	self:_init_data_snowthrower_npc()
 	self:_init_data_heavy_snp_npc()
 	self:_init_data_dmr_npc()
 	self:_init_data_deagle_npc()
@@ -191,6 +192,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_contraband_crew()
 	self:_init_data_ray_crew()
 	self:_init_data_tti_crew()
+	self:_init_data_victor_crew()
 	self:_init_data_siltstone_crew()
 	self:_init_data_flint_crew()
 	self:_init_data_coal_crew()
@@ -1463,6 +1465,44 @@ function WeaponTweakData:_init_data_flamethrower_npc()
 	self.flamethrower_npc.alert_size = 2500
 	self.flamethrower_npc.suppression = 0.45
 	self.flamethrower_npc.FIRE_MODE = "auto"
+end
+
+function WeaponTweakData:_init_data_snowthrower_npc()
+	self.snowthrower_npc.categories = {
+		"flamethrower"
+	}
+	self.snowthrower_npc.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.snowthrower_npc.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.snowthrower_npc.shell_ejection = "effects/payday2/particles/weapons/heat/overheat"
+	self.snowthrower_npc.single_flame_effect_duration = 0.75
+	self.snowthrower_npc.flame_effect = "effects/payday2/particles/explosions/snowthrower"
+	self.snowthrower_npc.bullet_class = "FlameBulletBase"
+	self.snowthrower_npc.flame_max_range = 1500
+	self.snowthrower_npc.extra_flames_offset = 0.05
+	self.snowthrower_npc.sounds.prefix = "snowthrower_npc"
+	self.snowthrower_npc.sounds.fire = "snowthrower_npc_fire"
+	self.snowthrower_npc.sounds.stop_fire = "snowthrower_npc_fire_stop"
+	self.snowthrower_npc.use_data.selection_index = SELECTION.PRIMARY
+	self.snowthrower_npc.DAMAGE = 0.3
+	self.snowthrower_npc.CLIP_AMMO_MAX = 600
+	self.snowthrower_npc.NR_CLIPS_MAX = 4
+	self.snowthrower_npc.hold = {
+		"bullpup",
+		"rifle"
+	}
+	self.snowthrower_npc.auto.fire_rate = 0.05
+	self.snowthrower_npc.alert_size = 2500
+	self.snowthrower_npc.suppression = 0.45
+	self.snowthrower_npc.FIRE_MODE = "auto"
+	self.snowthrower_npc.slowdown_data = {
+		max_mul = 0.1,
+		add_mul = 0.05,
+		decay_time = 1,
+		id = "snowthrower_cold",
+		duration = 4,
+		mul = 0.7,
+		prevents_running = true
+	}
 end
 
 function WeaponTweakData:_init_data_heavy_snp_npc()
@@ -3924,6 +3964,24 @@ function WeaponTweakData:_init_data_tti_crew()
 	self.tti_crew.FIRE_MODE = "auto"
 end
 
+function WeaponTweakData:_init_data_victor_crew()
+	self.victor_crew.categories = clone(self.victor.categories)
+	self.victor_crew.sounds.prefix = "saint_victor_npc"
+	self.victor_crew.use_data.selection_index = SELECTION.SECONDARY
+	self.victor_crew.DAMAGE = 6
+	self.victor_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.victor_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.victor_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.victor_crew.CLIP_AMMO_MAX = 20
+	self.victor_crew.NR_CLIPS_MAX = 5
+	self.victor_crew.pull_magazine_during_reload = "rifle"
+	self.victor_crew.auto.fire_rate = 0.4
+	self.victor_crew.hold = "rifle"
+	self.victor_crew.alert_size = 5000
+	self.victor_crew.suppression = 1
+	self.victor_crew.FIRE_MODE = "auto"
+end
+
 function WeaponTweakData:_init_data_siltstone_crew()
 	self.siltstone_crew.categories = clone(self.siltstone.categories)
 	self.siltstone_crew.sounds.prefix = "siltstone_npc"
@@ -6268,6 +6326,7 @@ function WeaponTweakData:_init_new_weapons(weapon_data)
 	self:_init_contraband(weapon_data)
 	self:_init_ray(weapon_data)
 	self:_init_tti(weapon_data)
+	self:_init_victor(weapon_data)
 	self:_init_grv(weapon_data)
 	self:_init_flint(weapon_data)
 	self:_init_coal(weapon_data)
@@ -20519,7 +20578,7 @@ function WeaponTweakData:_init_ms3gl(weapon_data)
 	self.ms3gl.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 32,
+		damage = 36,
 		alert_size = 7,
 		spread = 10,
 		spread_moving = 6,
@@ -20994,6 +21053,127 @@ function WeaponTweakData:_init_tti(weapon_data)
 	}
 	self.tti.armor_piercing_chance = 1
 	self.tti.stats_modifiers = {
+		damage = 1
+	}
+end
+
+function WeaponTweakData:_init_victor(weapon_data)
+	self.victor = {
+		categories = {
+			"snp"
+		},
+		upgrade_blocks = {
+			weapon = {
+				"clip_ammo_increase"
+			}
+		},
+		has_description = true,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.victor.sounds.fire = "saint_victor_fire"
+	self.victor.sounds.dryfire = "primary_dryfire"
+	self.victor.sounds.enter_steelsight = "primary_steel_sight_enter"
+	self.victor.sounds.leave_steelsight = "primary_steel_sight_exit"
+	self.victor.timers = {
+		reload_not_empty = 2.5,
+		reload_empty = 3,
+		unequip = 0.9,
+		equip = 0.9
+	}
+	self.victor.name_id = "bm_w_victor"
+	self.victor.desc_id = "bm_w_victor_desc"
+	self.victor.description_id = "des_victor"
+	self.victor.global_value = "xm22"
+	self.victor.texture_bundle_folder = "savi"
+	self.victor.unlock_func = "has_unlocked_victor"
+	self.victor.muzzleflash = "effects/payday2/particles/weapons/308_muzzle"
+	self.victor.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
+	self.victor.use_data = {
+		selection_index = SELECTION.SECONDARY
+	}
+	self.victor.DAMAGE = 1
+	self.victor.damage_falloff = FALLOFF_TEMPLATE.SNIPER_FALL_LOW
+	self.victor.CLIP_AMMO_MAX = 10
+	self.victor.NR_CLIPS_MAX = 2
+	self.victor.AMMO_MAX = self.victor.CLIP_AMMO_MAX * self.victor.NR_CLIPS_MAX
+	self.victor.AMMO_PICKUP = self:_pickup_chance(self.victor.AMMO_MAX, PICKUP.SNIPER_LOW_DAMAGE)
+	self.victor.FIRE_MODE = "single"
+	self.victor.fire_mode_data = {
+		fire_rate = 0.4
+	}
+	self.victor.CAN_TOGGLE_FIREMODE = false
+	self.victor.single = {
+		fire_rate = 0.4
+	}
+	self.victor.auto = {
+		fire_rate = 0.4
+	}
+	self.victor.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight
+	}
+	self.victor.kick = {
+		standing = {
+			2.5,
+			2,
+			-0.5,
+			0.5
+		}
+	}
+	self.victor.kick.crouching = self.victor.kick.standing
+	self.victor.kick.steelsight = self.victor.kick.standing
+	self.victor.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.victor.crosshair.standing.offset = 1.14
+	self.victor.crosshair.standing.moving_offset = 1.8
+	self.victor.crosshair.standing.kick_offset = 1.6
+	self.victor.crosshair.crouching.offset = 1.1
+	self.victor.crosshair.crouching.moving_offset = 1.6
+	self.victor.crosshair.crouching.kick_offset = 1.4
+	self.victor.crosshair.steelsight.hidden = true
+	self.victor.crosshair.steelsight.offset = 1
+	self.victor.crosshair.steelsight.moving_offset = 1
+	self.victor.crosshair.steelsight.kick_offset = 1.14
+	self.victor.shake = {
+		fire_multiplier = 1.6,
+		fire_steelsight_multiplier = -1.1
+	}
+	self.victor.autohit = weapon_data.autohit_snp_default
+	self.victor.aim_assist = weapon_data.aim_assist_snp_default
+	self.victor.weapon_hold = "victor"
+	self.victor.animations = {
+		equip_id = "equip_victor",
+		recoil_steelsight = true
+	}
+	self.victor.panic_suppression_chance = 0.2
+	self.victor.can_shoot_through_enemy = true
+	self.victor.can_shoot_through_shield = true
+	self.victor.can_shoot_through_wall = true
+	self.victor.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 160,
+		alert_size = 8,
+		spread = 14,
+		spread_moving = 24,
+		recoil = 3,
+		value = 9,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 6,
+		concealment = 16
+	}
+	self.victor.armor_piercing_chance = 1
+	self.victor.stats_modifiers = {
 		damage = 1
 	}
 end
@@ -29723,6 +29903,13 @@ function WeaponTweakData:_create_table_structure()
 		use_data = {},
 		auto = {}
 	}
+	self.snowthrower_npc = {
+		usage = "is_flamethrower",
+		anim_usage = "is_bullpup",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
 	self.heavy_snp_npc = {
 		usage = "is_rifle",
 		sounds = {},
@@ -30586,6 +30773,13 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.tti_crew = {
+		usage = "is_sniper",
+		anim_usage = "is_rifle",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.victor_crew = {
 		usage = "is_sniper",
 		anim_usage = "is_rifle",
 		sounds = {},

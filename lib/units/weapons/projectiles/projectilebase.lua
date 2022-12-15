@@ -2,6 +2,7 @@ ProjectileBase = ProjectileBase or class(UnitBase)
 ProjectileBase.time_cheat = {}
 local mvec1 = Vector3()
 local mvec2 = Vector3()
+local mvec3 = Vector3()
 local mrot1 = Rotation()
 
 function ProjectileBase:init(unit)
@@ -22,6 +23,84 @@ function ProjectileBase:init(unit)
 	end
 
 	self._variant = "projectile"
+	local projectile_entry = self._tweak_projectile_entry
+	local tweak_entry = tweak_data.projectiles[projectile_entry]
+
+	if tweak_entry then
+		local blackmarket_tweak_entry = tweak_data.blackmarket.projectiles[projectile_entry]
+
+		self:_setup_warning_fx_vfx(tweak_entry, blackmarket_tweak_entry)
+	end
+end
+
+function ProjectileBase:_setup_warning_fx_vfx(tweak_entry, blackmarket_tweak_entry)
+	if not tweak_entry.warning_data then
+		return
+	end
+
+	local warning_fx_vfx_data = {}
+	local light_data = tweak_entry.warning_data.light_data
+
+	if light_data then
+		local light = World:create_light(light_data.type_str or "omni|specular")
+
+		if light_data.link_to_unit then
+			light:link(self._unit:orientation_object())
+		end
+
+		light:set_color(light_data.color)
+		light:set_specular_multiplier(light_data.specular_mul)
+		light:set_falloff_exponent(light_data.falloff_exp)
+		light:set_multiplier(0)
+		light:set_far_range(0)
+		light:set_enable(false)
+
+		warning_fx_vfx_data.light = {
+			light_obj = light,
+			range = light_data.range,
+			beep_mul = light_data.beep_mul,
+			fade_speed = light_data.beep_fade_speed,
+			link_to_unit = light_data.link_to_unit,
+			upd_position = light_data.update_position
+		}
+	end
+
+	if tweak_entry.warning_data.sound_data then
+		warning_fx_vfx_data.sound = {
+			needs_stop = false,
+			event = tweak_entry.warning_data.sound_data.event_name,
+			event_stop = tweak_entry.warning_data.sound_data.event_stop_name
+		}
+
+		if not self._unit:sound_source() then
+			Application:error("[ProjectileBase:_setup_warning_fx_vfx] No sound source to play sounds with unit.", self._unit)
+		end
+	end
+
+	if tweak_entry.warning_data.effect_data then
+		local effect_id = World:effect_manager():spawn({
+			effect = Idstring(tweak_entry.warning_data.effect_data.effect_name),
+			parent = tweak_entry.warning_data.effect_data.link_to_unit and self._unit:orientation_object() or nil
+		})
+
+		World:effect_manager():set_hidden(effect_id, true)
+		World:effect_manager():set_frozen(effect_id, true)
+
+		warning_fx_vfx_data.effect = {
+			effect_id = effect_id,
+			upd_position = tweak_entry.warning_data.effect_data.update_position
+		}
+	end
+
+	if next(warning_fx_vfx_data) then
+		warning_fx_vfx_data.enabled = false
+		warning_fx_vfx_data.timer = tweak_entry.detonate_timer
+		warning_fx_vfx_data.virtual_timer = tweak_entry.detonate_timer
+		warning_fx_vfx_data.after_impact = tweak_entry.warning_data.play_after_impact
+		warning_fx_vfx_data.when_attached = tweak_entry.warning_data.play_when_attached
+		warning_fx_vfx_data.beep_speeds = tweak_entry.warning_data.beep_speeds
+		self._warning_fx_vfx_data = warning_fx_vfx_data
+	end
 end
 
 function ProjectileBase:set_thrower_unit_by_peer_id(peer_id)
@@ -392,10 +471,23 @@ function ProjectileBase:update(unit, t, dt)
 			})
 		end
 
+		if self._sphere_cast_radius then
+			table.list_append(raycast_params, {
+				"sphere_cast_radius",
+				self._sphere_cast_radius,
+				"bundle",
+				4
+			})
+		end
+
 		local col_ray = World:raycast(unpack(raycast_params))
 
 		if self._draw_debug_trail then
-			Draw:brush(Color(0.25, 0, 0, 1), nil, 3):line(self._sweep_data.last_pos, self._sweep_data.current_pos)
+			if self._sphere_cast_radius then
+				Draw:brush(Color(0.25, 0, 0, 1), nil, 3):cylinder(self._sweep_data.last_pos, self._sweep_data.current_pos, self._sphere_cast_radius, 4)
+			else
+				Draw:brush(Color(0.25, 0, 0, 1), nil, 3):line(self._sweep_data.last_pos, self._sweep_data.current_pos)
+			end
 		end
 
 		if col_ray and col_ray.unit then
@@ -416,6 +508,204 @@ function ProjectileBase:update(unit, t, dt)
 		end
 
 		self._unit:m_position(self._sweep_data.last_pos)
+	end
+
+	if self._warning_fx_vfx_data then
+		self:_warning_fx_vfx_upd(unit, t, dt, self._warning_fx_vfx_data)
+	end
+end
+
+function ProjectileBase:_warning_fx_vfx_upd(unit, t, dt, warning_data)
+	if self._detonated then
+		self:_warning_fx_vfx_remove()
+
+		self._warning_fx_vfx_data = nil
+
+		return
+	end
+
+	if warning_data.after_impact or warning_data.when_attached then
+		local can_update = warning_data.after_impact and self._collided and true or warning_data.when_attached and unit:parent() and true or false
+
+		if can_update then
+			if warning_data.timer and warning_data.beep_speeds then
+				self:_warning_fx_vfx_progress(unit, t, dt, warning_data)
+			else
+				self:_warning_fx_vfx_enable(warning_data)
+			end
+		else
+			self:_warning_fx_vfx_disable(warning_data)
+		end
+	elseif warning_data.timer and warning_data.beep_speeds then
+		self:_warning_fx_vfx_progress(unit, t, dt, warning_data)
+	else
+		self:_warning_fx_vfx_enable(warning_data)
+	end
+
+	if warning_data.enabled then
+		local updated_pos = false
+		local light_data = warning_data.light
+		local effect_data = warning_data.effect
+
+		if light_data and light_data.upd_position and alive(light_data.light_obj) and light_data.upd_position then
+			updated_pos = true
+
+			unit:m_position(mvec3)
+			light_data.light_obj:set_position(mvec3)
+		end
+
+		if effect_data and effect_data.upd_position then
+			if not updated_pos then
+				unit:m_position(mvec3)
+			end
+
+			World:effect_manager():move(effect_data.effect_id, mvec3)
+		end
+	end
+end
+
+function ProjectileBase:_warning_fx_vfx_progress(unit, t, dt, warning_data)
+	if not warning_data.enabled then
+		self:_warning_fx_vfx_enable(warning_data)
+	end
+
+	warning_data.virtual_timer = warning_data.virtual_timer - dt
+	local light_data = warning_data.light
+
+	if not warning_data.beep_t then
+		warning_data.beep_t = warning_data.virtual_timer / warning_data.beep_speeds[1] * warning_data.beep_speeds[2]
+
+		if light_data and light_data.fade_speed then
+			light_data.mul = light_data.beep_mul or 1
+		end
+	else
+		warning_data.beep_t = warning_data.beep_t - dt
+
+		if warning_data.beep_t < 0 then
+			warning_data.beep_t = warning_data.virtual_timer / warning_data.beep_speeds[1] * warning_data.beep_speeds[2]
+
+			if light_data and light_data.fade_speed then
+				light_data.mul = light_data.beep_mul or 1
+			end
+
+			local sound_data = warning_data.sound
+
+			if sound_data and sound_data.event and not sound_data.needs_stop then
+				if sound_data.event_stop then
+					sound_data.needs_stop = true
+				end
+
+				if self._unit:sound_source() then
+					self._unit:sound_source():post_event(sound_data.event)
+				end
+			end
+		end
+
+		if light_data and light_data.fade_speed and alive(light_data.light_obj) then
+			light_data.mul = math.clamp(light_data.mul - dt * light_data.fade_speed, 0, 1)
+
+			light_data.light_obj:set_multiplier(light_data.mul)
+			light_data.light_obj:set_far_range(light_data.range * light_data.mul)
+		end
+	end
+end
+
+function ProjectileBase:_warning_fx_vfx_enable(warning_data)
+	if warning_data.enabled then
+		return
+	end
+
+	warning_data.enabled = true
+
+	if warning_data.timer and warning_data.beep_speeds then
+		warning_data.virtual_timer = warning_data.timer
+	end
+
+	local light_data = warning_data.light
+	local effect_data = warning_data.effect
+
+	if light_data and alive(light_data.light_obj) then
+		if not light_data.fade_speed or not warning_data.timer or not warning_data.beep_speeds then
+			light_data.light_obj:set_multiplier(light_data.beep_mul or 1)
+			light_data.light_obj:set_far_range(light_data.range)
+		end
+
+		light_data.light_obj:set_enable(true)
+	end
+
+	if not warning_data.timer or not warning_data.beep_speeds then
+		local sound_data = warning_data.sound
+
+		if sound_data and sound_data.event and self._unit:sound_source() then
+			if sound_data.event_stop then
+				sound_data.needs_stop = true
+			end
+
+			self._unit:sound_source():post_event(sound_data.event)
+		end
+	end
+
+	if effect_data then
+		World:effect_manager():set_hidden(effect_data.effect_id, false)
+		World:effect_manager():set_frozen(effect_data.effect_id, false)
+	end
+end
+
+function ProjectileBase:_warning_fx_vfx_disable(warning_data)
+	if not warning_data.enabled then
+		return
+	end
+
+	warning_data.beep_t = nil
+	warning_data.enabled = false
+	local light_data = warning_data.light
+	local sound_data = warning_data.sound
+	local effect_data = warning_data.effect
+
+	if light_data and alive(light_data.light_obj) then
+		light_data.light_obj:set_multiplier(0)
+		light_data.light_obj:set_far_range(0)
+		light_data.light_obj:set_enable(false)
+	end
+
+	if sound_data and sound_data.needs_stop and self._unit:sound_source() then
+		sound_data.needs_stop = false
+
+		self._unit:sound_source():post_event(sound_data.event_stop)
+	end
+
+	if effect_data then
+		World:effect_manager():set_hidden(effect_data.effect_id, true)
+		World:effect_manager():set_frozen(effect_data.effect_id, true)
+	end
+end
+
+function ProjectileBase:_warning_fx_vfx_remove()
+	local warning_data = self._warning_fx_vfx_data
+
+	if not warning_data then
+		return
+	end
+
+	self._warning_fx_vfx_data = nil
+	local light_data = warning_data.light
+	local sound_data = warning_data.sound
+	local effect_data = warning_data.effect
+
+	if light_data and alive(light_data.light_obj) then
+		if light_data.link_to_unit then
+			light_data.light_obj:unlink()
+		end
+
+		World:delete_light(light_data.light_obj)
+	end
+
+	if sound_data and sound_data.needs_stop and self._unit:sound_source() then
+		self._unit:sound_source():post_event(sound_data.event_stop)
+	end
+
+	if effect_data then
+		World:effect_manager():kill(effect_data.effect_id)
 	end
 end
 
@@ -527,6 +817,7 @@ function ProjectileBase:destroy(...)
 	self._ignore_destroy_listener_key = nil
 
 	self:remove_trail_effect()
+	self:_warning_fx_vfx_remove()
 end
 
 function ProjectileBase.throw_projectile(projectile_type, pos, dir, owner_peer_id)

@@ -2728,10 +2728,17 @@ function SkillTreeGui:mouse_pressed(button, x, y)
 				end
 			end
 
+			local current_specialization = managers.skilltree:get_specialization_value("current_specialization")
+
 			for _, tree_item in ipairs(self._spec_tree_items) do
 				local selected_item = tree_item:selected_item(x, y)
 
 				if selected_item then
+					if self._active_spec_tree == selected_item:tree() and self._active_spec_tree == current_specialization and selected_item:switch_multi_choice() then
+						self:_rec_round_object(selected_item._tier_panel)
+						self:update_spec_descriptions(selected_item)
+					end
+
 					self:set_active_page(selected_item:tree(), true)
 
 					return true
@@ -2769,6 +2776,17 @@ function SkillTreeGui:mouse_pressed(button, x, y)
 
 					self._button_press_delay = TimerManager:main():time() + 0.2
 				end
+			end
+		end
+	elseif button == Idstring("1") then
+		local current_specialization = managers.skilltree:get_specialization_value("current_specialization")
+
+		for _, tree_item in ipairs(self._spec_tree_items) do
+			local selected_item = tree_item:selected_item(x, y)
+
+			if selected_item and self._active_spec_tree == selected_item:tree() and self._active_spec_tree == current_specialization and selected_item:remove_multi_choice() then
+				self:_rec_round_object(selected_item._tier_panel)
+				self:update_spec_descriptions(selected_item)
 			end
 		end
 	end
@@ -4166,6 +4184,14 @@ function SpecializationTreeItem:refresh()
 	self._active_box_panel:set_visible(self._active)
 	self._tree_panel:stop()
 	self._tree_panel:animate(anim_refresh)
+
+	for tier, item in ipairs(self._items) do
+		local choice_panel = item._tier_panel:child("choice_panel")
+
+		if choice_panel then
+			choice_panel:set_visible(tier <= current_tier and self._active)
+		end
+	end
 end
 
 SpecializationTierItem = SpecializationTierItem or class(SpecializationItem)
@@ -4179,6 +4205,18 @@ function SpecializationTierItem:init(tier_data, tree_panel, tree, tier, x, y, w,
 	self._tier_data = tier_data
 	local specialization_descs = tweak_data.upgrades.specialization_descs[tree]
 	specialization_descs = specialization_descs and specialization_descs[tier] or {}
+	local multi_choice_specialization_descs = {}
+	local choice_data = nil
+
+	if tier_data.multi_choice then
+		local choice_index = managers.skilltree:get_specialization_value(self._tree, "choices", self._tier)
+
+		if choice_index and choice_index > 0 then
+			multi_choice_specialization_descs = tweak_data:get_raw_value("upgrades", "multi_choice_specialization_descs", tree, tier, choice_index) or {}
+			choice_data = tier_data.multi_choice[choice_index]
+		end
+	end
+
 	local macroes = {
 		BTN_ABILITY = managers.localization:btn_macro("throw_grenade")
 	}
@@ -4187,8 +4225,29 @@ function SpecializationTierItem:init(tier_data, tree_panel, tree, tier, x, y, w,
 		macroes[i] = d
 	end
 
-	self._name_string = tier_data.name_id and managers.localization:text(tier_data.name_id) or "NO_NAME_" .. tostring(tree) .. "_" .. tostring(tier)
-	self._desc_string = tier_data.desc_id and managers.localization:text(tier_data.desc_id, macroes) or "NO_DESC_" .. tostring(tree) .. "_" .. tostring(tier)
+	local choice_macroes = {
+		BTN_ABILITY = managers.localization:btn_macro("throw_grenade")
+	}
+
+	for i, d in pairs(multi_choice_specialization_descs) do
+		choice_macroes[i] = d
+	end
+
+	local name_id = choice_data and choice_data.name_id or tier_data.name_id
+	local name_string = name_id and managers.localization:text(name_id) or ""
+	local desc_string = ""
+
+	if choice_data and choice_data.desc_id then
+		desc_string = managers.localization:text(choice_data.desc_id, choice_macroes) .. "\n\n" or ""
+	end
+
+	if not choice_data or not choice_data.skip_tier_desc then
+		desc_string = desc_string .. (tier_data.desc_id and managers.localization:text(tier_data.desc_id, macroes) or "")
+	end
+
+	self._name_string = name_string
+	self._desc_string = desc_string
+	tier_data = choice_data or tier_data
 
 	if _G.IS_VR or managers.user:get_setting("show_vr_descs") then
 		local vr_desc_data = tweak_data:get_raw_value("vr", "specialization_descs_addons", self._tree, self._tier)
@@ -4245,7 +4304,8 @@ function SpecializationTierItem:init(tier_data, tree_panel, tree, tier, x, y, w,
 		guis_catalog = guis_catalog .. "dlcs/" .. tostring(tier_data.texture_bundle_folder) .. "/"
 	end
 
-	local icon_atlas_texture = guis_catalog .. "textures/pd2/specialization/icons_atlas"
+	local atlas_name = tier_data.icon_atlas or "icons_atlas"
+	local icon_atlas_texture = guis_catalog .. "textures/pd2/specialization/" .. atlas_name
 	local tier_icon = tier_panel:bitmap({
 		layer = 1,
 		halign = "scale",
@@ -4266,6 +4326,33 @@ function SpecializationTierItem:init(tier_data, tree_panel, tree, tier, x, y, w,
 	tier_icon:set_center(tier_panel:w() / 2, tier_panel:h() / 2)
 
 	self._tier_icon = tier_icon
+
+	if self._tier_data.multi_choice then
+		local current_specialization = managers.skilltree:get_specialization_value("current_specialization")
+		local current_tier = managers.skilltree:get_specialization_value(self._tree, "tiers", "current_tier")
+		local choice_index = managers.skilltree:get_specialization_value(self._tree, "choices", self._tier) or 0
+		local choice_panel = tier_panel:panel({
+			layer = 1,
+			name = "choice_panel"
+		})
+		local choice_text = choice_panel:text({
+			name = "choice_text",
+			blend_mode = "sub",
+			wrap = true,
+			word_wrap = true,
+			align = "right",
+			vertical = "top",
+			font = tweak_data.menu.pd2_small_font,
+			font_size = tweak_data.menu.pd2_small_font_size,
+			text = string.format("%d/%d", choice_index, #self._tier_data.multi_choice),
+			color = tweak_data.screen_colors.text
+		})
+
+		choice_panel:set_righttop(unlocked_bg:righttop())
+		choice_panel:move(-8, 5)
+		choice_panel:set_visible(self._tier <= current_tier and current_specialization == self._tree)
+	end
+
 	local progress_circle = tier_panel:bitmap({
 		texture = "guis/textures/pd2/specialization/progress_ring",
 		name = "progress_circle_current",
@@ -4366,6 +4453,41 @@ end
 
 function SpecializationTierItem:inside(x, y)
 	return self._inside_panel:tree_visible() and self._inside_panel:inside(x, y)
+end
+
+function SpecializationTierItem:switch_multi_choice()
+	local current_tier = managers.skilltree:get_specialization_value(self._tree, "tiers", "current_tier")
+
+	if self._tier <= current_tier and self._tier_data.multi_choice then
+		local choice_index = managers.skilltree:get_specialization_value(self._tree, "choices", self._tier)
+		choice_index = (choice_index or 0) % #self._tier_data.multi_choice + 1
+
+		managers.skilltree:set_specialization_choice(self._tree, self._tier, choice_index)
+
+		local tree_panel = self._tier_panel:parent()
+		local x, y, w, h = self._tier_panel:shape()
+
+		tree_panel:remove(self._tier_panel)
+		self:init(self._tier_data, tree_panel, self._tree, self._tier, x, y, w, h)
+
+		return true
+	end
+end
+
+function SpecializationTierItem:remove_multi_choice()
+	local current_tier = managers.skilltree:get_specialization_value(self._tree, "tiers", "current_tier")
+
+	if self._tier <= current_tier and self._tier_data.multi_choice then
+		managers.skilltree:set_specialization_choice(self._tree, self._tier, nil)
+
+		local tree_panel = self._tier_panel:parent()
+		local x, y, w, h = self._tier_panel:shape()
+
+		tree_panel:remove(self._tier_panel)
+		self:init(self._tier_data, tree_panel, self._tree, self._tier, x, y, w, h)
+
+		return true
+	end
 end
 
 function SpecializationTierItem:flash()

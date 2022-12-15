@@ -344,6 +344,7 @@ function CopActionWalk:init(action_desc, common_data)
 	CopActionAct._create_blocks_table(self, action_desc.blocks)
 
 	self._persistent = action_desc.persistent
+	self._interrupted = action_desc.interrupted
 	self._haste = action_desc.variant
 	self._start_t = TimerManager:game():time()
 	self._no_walk = action_desc.no_walk
@@ -1507,20 +1508,20 @@ function CopActionWalk:_get_current_max_walk_speed(move_dir)
 	local is_host = Network:is_server() or Global.game_settings.single_player
 
 	if not is_host then
-		self._host_peer = self._host_peer or managers.network:session():peer(1)
-		local ping_multiplier = 1
-
-		if self._host_peer then
-			ping_multiplier = ping_multiplier + Network:qos(self._host_peer:rpc()).ping / 1000
-		end
-
-		local lod = self._ext_base:lod_stage()
-		local lod_multiplier = 1 + (Unit.occluded(self._unit) and 1 or CopActionWalk.lod_multipliers[lod] or 1)
-
-		if managers.groupai:state():enemy_weapons_hot() then
-			speed = speed * lod_multiplier
-		else
+		if not managers.groupai:state():enemy_weapons_hot() then
 			speed = speed * tweak_data.network.stealth_speed_boost
+		elseif self:_husk_needs_speedup() then
+			local lod = self._ext_base:lod_stage()
+			local lod_multiplier = 1 + (Unit.occluded(self._unit) and 1 or CopActionWalk.lod_multipliers[lod] or 1)
+			speed = speed * lod_multiplier
+		end
+	end
+
+	if managers.mutators:is_mutator_active(MutatorCG22) then
+		local cg22 = managers.mutators:get_mutator(MutatorCG22)
+
+		if cg22:can_enemy_be_affected_by_buff("yellow", self._unit) then
+			speed = speed * cg22:get_enemy_yellow_multiplier()
 		end
 	end
 
@@ -1643,10 +1644,6 @@ function CopActionWalk:_nav_chk_walk(t, dt, vis_state)
 		end
 	else
 		vel = self:_get_current_max_walk_speed(self._ext_anim.move_side or "fwd")
-
-		if not self._sync and not self._start_run and self:_husk_needs_speedup() then
-			vel = 1.25 * vel
-		end
 	end
 
 	local walk_dis = vel * dt
@@ -2728,7 +2725,7 @@ function CopActionWalk:_advance_simplified_path()
 end
 
 function CopActionWalk:_husk_needs_speedup()
-	if self._ext_movement._queued_actions and next(self._ext_movement._queued_actions) then
+	if self._interrupted or self._ext_movement._queued_actions and next(self._ext_movement._queued_actions) then
 		return true
 	elseif #self._simplified_path > 2 then
 		local sz_path = #self._simplified_path

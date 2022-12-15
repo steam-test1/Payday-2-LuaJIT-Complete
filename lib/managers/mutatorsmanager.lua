@@ -9,6 +9,7 @@ require("lib/mutators/MutatorEnemyReplacer")
 require("lib/mutators/MutatorCloakerEffect")
 require("lib/mutators/MutatorShieldDozers")
 require("lib/mutators/MutatorPiggyBank")
+require("lib/mutators/MutatorCG22")
 
 MutatorsManager = MutatorsManager or class()
 MutatorsManager.package = "packages/toxic"
@@ -43,7 +44,8 @@ function MutatorsManager:init()
 		MutatorCloakerEffect:new(self),
 		MutatorShieldDozers:new(self),
 		MutatorTitandozers:new(self),
-		MutatorPiggyBank:new(self)
+		MutatorPiggyBank:new(self),
+		MutatorCG22:new(self)
 	}
 	self._active_mutators = {}
 	local activate = Global.mutators and Global.mutators.active_on_load
@@ -748,8 +750,28 @@ function MutatorsManager:get_category_text_color(category)
 	return tweak_data.screen_colors.mutators_color_text
 end
 
+function MutatorsManager:get_outro_event(default_outro_event)
+	for _, active_mutator in pairs(self:active_mutators()) do
+		if active_mutator.mutator.get_outro_event then
+			return active_mutator.mutator:get_outro_event(default_outro_event)
+		end
+	end
+
+	return default_outro_event
+end
+
+function MutatorsManager:get_briefing_override()
+	for _, mutator in ipairs(self._mutators) do
+		if mutator:is_enabled() or mutator:is_active() then
+			return mutator.briefing_event or nil
+		end
+	end
+
+	return nil
+end
+
 function MutatorsManager:show_mutators_launch_countdown(countdown)
-	if Network:is_server() then
+	if Network:is_server() or managers.mutators:get_enabled_active_mutator_category() == "event" then
 		return
 	end
 

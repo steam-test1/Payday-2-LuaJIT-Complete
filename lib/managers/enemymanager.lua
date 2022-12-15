@@ -773,6 +773,12 @@ function EnemyManager:on_enemy_died(dead_unit, damage_info)
 			piggybank_mutator:on_enemy_killed(dead_unit, damage_info)
 		end
 	end
+
+	if managers.mutators:is_mutator_active(MutatorCG22) and dead_unit:base():has_tag("snowman") then
+		local cg22_mutator = managers.mutators:get_mutator(MutatorCG22)
+
+		cg22_mutator:on_snowman_killed(dead_unit, damage_info)
+	end
 end
 
 function EnemyManager:on_enemy_destroyed(enemy)

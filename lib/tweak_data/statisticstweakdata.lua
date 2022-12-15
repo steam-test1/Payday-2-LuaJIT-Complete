@@ -223,6 +223,7 @@ function StatisticsTweakData:statistics_table()
 		"swat_turret",
 		"triad_boss",
 		"triad_boss_no_armor",
+		"snowman_boss",
 		"marshal_marksman",
 		"marshal_shield",
 		"marshal_shield_break"
@@ -269,7 +270,8 @@ function StatisticsTweakData:statistics_table()
 		"first_aid_kit",
 		"bodybags_bag",
 		"armor_kit",
-		"sentry_gun_silent"
+		"sentry_gun_silent",
+		"grenade_crate"
 	}
 
 	if not self._suit_list then

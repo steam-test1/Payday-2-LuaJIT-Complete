@@ -1166,6 +1166,7 @@ end
 
 function MenuSceneManager:_setup_event_units()
 	local active_event = false
+	active_event = true
 
 	if not active_event then
 		return
@@ -1178,6 +1179,10 @@ function MenuSceneManager:_setup_event_units()
 	end
 
 	self._event_units = {}
+
+	self:_setup_event_presents()
+	self:_setup_event_xmas_decorations()
+
 	local e_money = self._bg_unit:effect_spawner(Idstring("e_money"))
 
 	if e_money then
@@ -1220,6 +1225,30 @@ function MenuSceneManager:_setup_event_presents()
 		self._event_units[i] = World:spawn_unit(unit_names[unit_index], position, rotation)
 
 		table.remove(unit_names, unit_index)
+	end
+end
+
+function MenuSceneManager:_setup_event_xmas_decorations()
+	local a = self._bg_unit:get_object(Idstring("a_reference"))
+
+	if self._snow_effect then
+		World:effect_manager():kill(self._snow_effect)
+
+		self._snow_effect = nil
+	end
+
+	if alive(self._xmas_tree) then
+		self._xmas_tree:set_slot(0)
+
+		self._xmas_tree = nil
+	end
+
+	self._xmas_tree = World:spawn_unit(Idstring("units/pd2_dlc2/props/com_props_christmas_tree/com_prop_christmas_tree"), a:position() + Vector3(-150, 250, -50), Rotation(-45 + (math.random(2) - 1) * 180, 0, 0))
+
+	if alive(self._snow_pile) then
+		self._snow_pile:set_slot(0)
+
+		self._snow_pile = nil
 	end
 end
 
@@ -2026,26 +2055,7 @@ end
 function MenuSceneManager:set_character_deployable(deployable_id, unit, peer_id)
 	unit = unit or self._character_unit
 
-	if self._deployable_equipped[peer_id] and self._deployable_equipped[peer_id] ~= "nil" then
-		local tweak_data = tweak_data.equipments[self._deployable_equipped[peer_id]]
-		local object_name = tweak_data.visual_object
-
-		unit:get_object(Idstring(object_name)):set_visibility(false)
-	end
-
-	if deployable_id and deployable_id ~= "nil" then
-		local tweak_data = tweak_data.equipments[deployable_id]
-
-		if tweak_data then
-			local object_name = tweak_data.visual_object
-
-			unit:get_object(Idstring(object_name)):set_visibility(self._characters_deployable_visible)
-		else
-			deployable_id = "nil"
-		end
-	end
-
-	self._deployable_equipped[peer_id] = deployable_id
+	unit:base():set_deployable(self._characters_deployable_visible and deployable_id or false)
 end
 
 function MenuSceneManager:set_character_mask_by_id(mask_id, blueprint, unit, peer_id, character_name)

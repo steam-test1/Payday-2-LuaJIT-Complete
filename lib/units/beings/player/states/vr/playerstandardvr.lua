@@ -1411,22 +1411,42 @@ function PlayerStandardVR:_start_action_steelsight(t, gadget_state)
 	end
 end
 
+local fwd_ray_from = Vector3()
+local fwd_ray_to = Vector3()
+local fwd_ray_weap_rot = Rotation()
+
 function PlayerStandardVR:_update_fwd_ray()
-	if alive(self._equipped_unit) then
-		local from = self._equipped_unit:position()
-		local range = self._equipped_unit:base():has_range_distance_scope() and 20000 or 4000
-		local to = self._equipped_unit:rotation():y() * range
+	local weap_unit = self._equipped_unit
 
-		mvector3.add(to, from)
+	if not alive(weap_unit) then
+		self._fwd_ray = nil
 
-		self._fwd_ray = World:raycast("ray", from, to, "slot_mask", self._slotmask_fwd_ray)
+		return
+	end
 
-		if self._state_data.in_steelsight and self._fwd_ray and self._fwd_ray.unit and self._equipped_unit:base().check_highlight_unit then
-			self._equipped_unit:base():check_highlight_unit(self._fwd_ray.unit)
+	local weap_base = weap_unit:base()
+	local range = weap_base and weap_base.needs_extended_fwd_ray_range and weap_base:needs_extended_fwd_ray_range(self._state_data.in_steelsight) and 20000 or 4000
+
+	weap_unit:m_position(fwd_ray_from)
+	weap_unit:m_rotation(fwd_ray_weap_rot)
+	mrotation.y(fwd_ray_weap_rot, fwd_ray_to)
+	mvector3.multiply(fwd_ray_to, range)
+	mvector3.add(fwd_ray_to, fwd_ray_from)
+
+	local fwd_ray = World:raycast("ray", fwd_ray_from, fwd_ray_to, "slot_mask", self._slotmask_fwd_ray)
+	self._fwd_ray = fwd_ray
+
+	if weap_base then
+		if fwd_ray and self._state_data.in_steelsight and weap_base.check_highlight_unit then
+			weap_base:check_highlight_unit(fwd_ray.unit)
 		end
 
-		if self._equipped_unit:base().set_scope_range_distance then
-			self._equipped_unit:base():set_scope_range_distance(self._fwd_ray and self._fwd_ray.distance / 100 or false)
+		if weap_base.set_unit_health_display then
+			weap_base:set_unit_health_display(fwd_ray and fwd_ray.unit or nil)
+		end
+
+		if weap_base.set_scope_range_distance then
+			weap_base:set_scope_range_distance(fwd_ray and fwd_ray.distance / 100 or false)
 		end
 	end
 end

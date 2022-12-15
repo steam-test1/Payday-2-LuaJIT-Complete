@@ -17,7 +17,8 @@ CopDamage._ATTACK_VARIANTS = {
 	"stun",
 	"fire",
 	"healed",
-	"graze"
+	"graze",
+	[#CopDamage._ATTACK_VARIANTS + 1] = "bullet"
 }
 CopDamage._HEALTH_GRANULARITY = 512
 CopDamage.WEAPON_TYPE_GRANADE = 1
@@ -77,7 +78,8 @@ local impact_bones_tmp = {
 	"LeftFoot",
 	"RightUpLeg",
 	"RightLeg",
-	"RightFoot"
+	"RightFoot",
+	"c_sphere_head"
 }
 
 for i, k in ipairs(impact_bones_tmp) do
@@ -86,6 +88,35 @@ for i, k in ipairs(impact_bones_tmp) do
 end
 
 impact_bones_tmp = nil
+CopDamage.impact_body_distance = {}
+local impact_body_distance_tmp = {
+	Head = 15,
+	Spine1 = 25,
+	RightShoulder = 20,
+	LeftFoot = 5,
+	Spine2 = 20,
+	RightLeg = 10,
+	c_sphere_head = 15,
+	LeftShoulder = 20,
+	LeftUpLeg = 15,
+	RightFoot = 5,
+	LeftArm = 8,
+	Spine = 15,
+	Neck = 7,
+	RightUpLeg = 15,
+	RightArm = 8,
+	LeftLeg = 10,
+	LeftForeArm = 6,
+	RightForeArm = 6,
+	Hips = 15
+}
+
+for body_name, distance in pairs(impact_body_distance_tmp) do
+	local name_ids = Idstring(body_name)
+	CopDamage.impact_body_distance[name_ids:key()] = distance
+end
+
+impact_body_distance_tmp = nil
 local mvec_1 = Vector3()
 local mvec_2 = Vector3()
 
@@ -782,7 +813,7 @@ function CopDamage:_check_damage_achievements(attack_data, head)
 	local achievements = tweak_data.achievement.enemy_kill_achievements or {}
 	local current_mask_id = managers.blackmarket:equipped_mask().mask_id
 	local attack_weapon_type = attack_weapon:base()._type
-	local weapons_pass, weapon_pass, fire_mode_pass, ammo_pass, enemy_pass, enemy_weapon_pass, mask_pass, hiding_pass, head_pass, steelsight_pass, distance_pass, zipline_pass, rope_pass, one_shot_pass, weapon_type_pass, level_pass, part_pass, parts_pass, cop_pass, gangster_pass, civilian_pass, count_no_reload_pass, count_pass, diff_pass, complete_count_pass, count_memory_pass, critical_pass, variant_pass, attack_weapon_type_pass, vip_pass, tags_all_pass, tags_any_pass, player_state_pass, style_pass, all_pass, memory = nil
+	local weapons_pass, weapon_pass, fire_mode_pass, ammo_pass, enemy_pass, enemy_weapon_pass, mask_pass, hiding_pass, head_pass, steelsight_pass, distance_pass, zipline_pass, rope_pass, one_shot_pass, weapon_type_pass, level_pass, part_pass, parts_pass, cop_pass, gangster_pass, civilian_pass, count_no_reload_pass, count_pass, diff_pass, complete_count_pass, count_memory_pass, critical_pass, variant_pass, attack_weapon_type_pass, vip_pass, tags_all_pass, tags_any_pass, player_state_pass, mutators_pass, style_pass, all_pass, memory = nil
 	local kill_count_no_reload = managers.job:get_memory("kill_count_no_reload_" .. tostring(attack_weapon:base()._name_id), true)
 	kill_count_no_reload = (kill_count_no_reload or 0) + 1
 
@@ -825,6 +856,7 @@ function CopDamage:_check_damage_achievements(attack_data, head)
 		tags_any_pass = not achievement_data.enemy_tags_any or enemy_base:has_any_tag(achievement_data.enemy_tags_any)
 		player_state_pass = not achievement_data.player_state or achievement_data.player_state == managers.player:current_state()
 		style_pass = not achievement_data.player_style or achievement_data.player_style.style == managers.blackmarket:equipped_player_style() and (not achievement_data.player_style.variation or achievement_data.player_style.variation == managers.blackmarket:equipped_suit_variation())
+		mutators_pass = managers.mutators:check_achievements(achievement_data)
 		complete_count_pass = not achievement_data.complete_count
 
 		if achievement_data.complete_count and achievement_data.weapons then
@@ -881,7 +913,7 @@ function CopDamage:_check_damage_achievements(attack_data, head)
 		end
 
 		vip_pass = not achievement_data.is_vip
-		all_pass = weapon_type_pass and weapons_pass and weapon_pass and fire_mode_pass and ammo_pass and one_shot_pass and enemy_pass and enemy_weapon_pass and mask_pass and hiding_pass and head_pass and distance_pass and zipline_pass and rope_pass and level_pass and part_pass and parts_pass and steelsight_pass and cop_pass and count_no_reload_pass and count_pass and diff_pass and complete_count_pass and critical_pass and variant_pass and attack_weapon_type_pass and vip_pass and tags_all_pass and tags_any_pass and player_state_pass and style_pass
+		all_pass = weapon_type_pass and weapons_pass and weapon_pass and fire_mode_pass and ammo_pass and one_shot_pass and enemy_pass and enemy_weapon_pass and mask_pass and hiding_pass and head_pass and distance_pass and zipline_pass and rope_pass and level_pass and part_pass and parts_pass and steelsight_pass and cop_pass and count_no_reload_pass and count_pass and diff_pass and complete_count_pass and critical_pass and variant_pass and attack_weapon_type_pass and vip_pass and tags_all_pass and tags_any_pass and player_state_pass and style_pass and mutators_pass
 		count_memory_pass = not achievement_data.timer and not achievement_data.count_in_row
 
 		if achievement_data.timer then
@@ -1574,6 +1606,10 @@ end
 function CopDamage:damage_fire(attack_data)
 	if self._dead or self._invulnerable then
 		return
+	end
+
+	if self:is_friendly_fire(attack_data.attacker_unit) then
+		return "friendly_fire"
 	end
 
 	if self:chk_immune_to_attacker(attack_data.attacker_unit) then
@@ -3955,6 +3991,10 @@ function CopDamage:pickup()
 	return self._pickup
 end
 
+function CopDamage:health()
+	return self._health
+end
+
 function CopDamage:health_ratio()
 	return self._health_ratio
 end
@@ -4428,6 +4468,14 @@ function CopDamage:_apply_damage_reduction(damage)
 
 	if self._damage_reduction_multiplier then
 		damage = damage * self._damage_reduction_multiplier
+	end
+
+	if managers.mutators:is_mutator_active(MutatorCG22) then
+		local cg22_mutator = managers.mutators:get_mutator(MutatorCG22)
+
+		if cg22_mutator:can_enemy_be_affected_by_buff("blue", self._unit) then
+			damage = damage * cg22_mutator:get_enemy_blue_multiplier()
+		end
 	end
 
 	return damage

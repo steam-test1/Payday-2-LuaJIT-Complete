@@ -128,6 +128,7 @@ require("lib/units/editor/VehicleBoardingElement")
 require("lib/units/editor/EnvironmentOperatorElement")
 require("lib/units/editor/AreaDespawnElement")
 require("lib/utils/dev/tools/InventoryIconCreator")
+require("lib/utils/dev/tools/PreplanningHelper")
 
 WorldEditor = WorldEditor or class(CoreEditor)
 
@@ -315,12 +316,20 @@ end
 function WorldEditor:_project_add_left_upper_toolbar_tool()
 	self._left_upper_toolbar:add_tool("TB_INVENTORY_ICON_CREATOR", "Icon Creator", CoreEWS.image_path("world_editor/icon_creator_16x16.png"), "Material Editor")
 	self._left_upper_toolbar:connect("TB_INVENTORY_ICON_CREATOR", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "_open_inventory_icon_creator"), nil)
+	self._left_upper_toolbar:add_tool("TB_PREPLANNING_HELPER", "Preplanning Helper", CoreEWS.image_path("world_editor/icon_creator_16x16.png"), "Preplanning Helper")
+	self._left_upper_toolbar:connect("TB_PREPLANNING_HELPER", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "_open_preplanning_helper"), nil)
 end
 
 function WorldEditor:_open_inventory_icon_creator()
 	self._inventory_icon_creator = self._inventory_icon_creator or InventoryIconCreator:new()
 
 	self._inventory_icon_creator:show_ews()
+end
+
+function WorldEditor:_open_preplanning_helper()
+	self._preplanning_helper = self._preplanning_helper or PreplanningHelper:new()
+
+	self._preplanning_helper:show_ews()
 end
 
 function WorldEditor:open()
@@ -331,5 +340,39 @@ end
 function WorldEditor:on_enable_revision_number(changed, value)
 	if changed then
 		managers.menu_component:set_rev_visible(value)
+	end
+end
+
+function WorldEditor:deleted_unit(unit)
+	WorldEditor.super.deleted_unit(self, unit)
+
+	if self._preplanning_helper then
+		self._preplanning_helper:deleted_unit(unit)
+	end
+end
+
+function WorldEditor:select_unit(unit)
+	WorldEditor.super.select_unit(self, unit)
+
+	if self._preplanning_helper then
+		self._preplanning_helper:on_selected_unit(unit)
+	end
+end
+
+function WorldEditor:select_units(units)
+	WorldEditor.super.select_units(self, units)
+
+	if self._preplanning_helper then
+		for _, unit in ipairs(units) do
+			self._preplanning_helper:on_selected_unit(unit)
+		end
+	end
+end
+
+function WorldEditor:on_selected_unit(unit)
+	WorldEditor.super.on_selected_unit(self, unit)
+
+	if self._preplanning_helper then
+		self._preplanning_helper:on_selected_unit(unit)
 	end
 end

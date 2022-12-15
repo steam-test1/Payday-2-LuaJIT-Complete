@@ -791,6 +791,14 @@ function GenericDLCManager:has_pda8_wpn_money()
 	return true
 end
 
+function GenericDLCManager:has_victor_mods_pack_1()
+	return managers.event_jobs and (managers.event_jobs:has_already_claimed_reward("cg22_2", 1) or managers.event_jobs:has_already_claimed_reward("cg22_2", 2) or managers.event_jobs:has_already_claimed_reward("cg22_2", 3))
+end
+
+function GenericDLCManager:has_victor_mods_pack_2()
+	return managers.event_jobs and (managers.event_jobs:has_already_claimed_reward("cg22_3", 1) or managers.event_jobs:has_already_claimed_reward("cg22_3", 2))
+end
+
 function GenericDLCManager:has_gage_pack_shotgun()
 	return self:is_dlc_unlocked("gage_pack_shotgun")
 end
@@ -801,6 +809,10 @@ end
 
 function GenericDLCManager:has_a10mask()
 	return self:is_dlc_unlocked("a10mask")
+end
+
+function GenericDLCManager:has_mrwi_deck()
+	return managers.event_jobs:has_already_claimed_reward("cg22_community_4", 1)
 end
 
 function GenericDLCManager:has_goty_all_dlc_bundle_2014()
@@ -2195,6 +2207,10 @@ function WINDLCManager:init()
 					app_id = "1788140",
 					no_install = true
 				},
+				mrwi_deck = {
+					app_id = "218620",
+					no_install = true
+				},
 				sbzac_elegantteeth = {
 					no_install = true,
 					entitlement_id = "3b33555360c749249cf37923af3121a4",
@@ -2343,6 +2359,7 @@ end
 
 function WINDLCManager:_init_promoted_dlc_list()
 	self._promoted_dlc_list = {
+		"mxm",
 		"txt3",
 		"trai",
 		"pxp2",

@@ -70,7 +70,7 @@ function CrimeNetSidebarGui:_setup()
 	local next_position = padding
 	local item_margin = 2
 
-	for i, item in ipairs(tweak_data.gui.crime_net.sidebar) do
+	for i, item in ipairs(managers.crimenet:get_sidebar_filtered()) do
 		local visible = true
 
 		if item.visible_callback then
@@ -344,7 +344,36 @@ function CrimeNetSidebarGui:clbk_safehouse()
 end
 
 function CrimeNetSidebarGui:clbk_contract_broker()
-	managers.menu:open_node("contract_broker")
+	local node_data = nil
+
+	if MenuCallbackHandler:is_event() then
+		local tabs = {
+			{
+				"menu_filter_contractor",
+				"_setup_filter_contact"
+			},
+			{
+				"menu_filter_tactic",
+				"_setup_filter_gamemode_tactic"
+			},
+			{
+				"menu_filter_most_played",
+				"_setup_filter_most_played"
+			},
+			{
+				"menu_filter_favourite",
+				"_setup_filter_favourite"
+			}
+		}
+		node_data = {
+			{
+				job_filter = "perform_job_filter_event_gamemode",
+				tabs = tabs
+			}
+		}
+	end
+
+	managers.menu:open_node("contract_broker", node_data)
 end
 
 function CrimeNetSidebarGui:clbk_side_jobs()
@@ -369,6 +398,10 @@ end
 
 function CrimeNetSidebarGui:clbk_pda9_event()
 	managers.features:pda9_event_explanation()
+end
+
+function CrimeNetSidebarGui:clbk_cg22_event()
+	managers.features:cg22_event_explanation()
 end
 
 function CrimeNetSidebarGui:clbk_crime_spree()
@@ -855,6 +888,14 @@ function CrimeNetSidebarMutatorsItem:update(t, dt)
 
 		self._glow_panel:set_alpha(0.3 + _t * target_alpha)
 	end
+end
+
+CrimeNetSidebarEventsItem = CrimeNetSidebarEventsItem or class(CrimeNetSidebarMutatorsItem)
+
+function CrimeNetSidebarEventsItem:init(sidebar, panel, parameters)
+	parameters.glow_color = tweak_data.screen_colors.event_color
+
+	CrimeNetSidebarEventsItem.super.init(self, sidebar, panel, parameters)
 end
 
 CrimeNetSidebarCrimeSpreeItem = CrimeNetSidebarCrimeSpreeItem or class(CrimeNetSidebarItem)

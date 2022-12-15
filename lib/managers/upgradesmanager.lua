@@ -5,7 +5,8 @@ UpgradesManager.AQUIRE_STRINGS = {
 	"SpecializationTree",
 	"LevelTree",
 	"DLC",
-	"SideJob"
+	"SideJob",
+	"SpecializationChoice"
 }
 
 function UpgradesManager:init()

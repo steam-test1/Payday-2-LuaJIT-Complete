@@ -2713,10 +2713,14 @@ function UnitNetworkHandler:sync_attach_projectile(unit, instant_dynamic_pickup,
 
 		managers.network:session():send_to_peers_synched("sync_attach_projectile", synced_unit, instant_dynamic_pickup, alive(parent_unit) and parent_unit:id() ~= -1 and parent_unit or nil, alive(parent_unit) and parent_unit:id() ~= -1 and parent_body or nil, alive(parent_unit) and parent_unit:id() ~= -1 and parent_object or nil, local_pos, dir, projectile_type_index, peer_id)
 		synced_unit:base():set_thrower_unit_by_peer_id(peer_id)
+		synced_unit:base():set_projectile_entry(projectile_type)
 		synced_unit:base():sync_attach_to_unit(instant_dynamic_pickup, parent_unit, parent_body, parent_object, local_pos, dir)
 	elseif unit then
+		local projectile_type = tweak_data.blackmarket:get_projectile_name_from_index(projectile_type_index)
+
 		unit:set_position(world_position)
 		unit:base():set_thrower_unit_by_peer_id(peer_id)
+		unit:base():set_projectile_entry(projectile_type)
 		unit:base():sync_attach_to_unit(instant_dynamic_pickup, parent_unit, parent_body, parent_object, local_pos, dir)
 	end
 
@@ -4557,5 +4561,127 @@ function UnitNetworkHandler:carry_interact_interupt(bag_unit, sender)
 
 	if alive(bag_unit) and bag_unit:carry_data() then
 		bag_unit:carry_data():set_expire_paused(false)
+	end
+end
+
+function UnitNetworkHandler:_quick_verification(sender)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return false
+	end
+
+	local peer = self._verify_sender(sender)
+
+	if not peer then
+		return false
+	end
+
+	return true
+end
+
+function UnitNetworkHandler:sync_tree_interacted(blue_buff, green_buff, yellow_buff, sender)
+	if not self:_quick_verification(sender) then
+		return
+	end
+
+	local mutator = managers.mutators:get_mutator(MutatorCG22)
+
+	if mutator then
+		mutator:sync_tree_interacted(blue_buff, green_buff, yellow_buff)
+	end
+end
+
+function UnitNetworkHandler:sync_spawn_present(tree_unit, sequence, carry_id, sender)
+	if not self:_quick_verification(sender) then
+		return
+	end
+
+	local mutator = managers.mutators:get_mutator(MutatorCG22)
+
+	if mutator then
+		mutator:sync_spawn_present(tree_unit, sequence, carry_id)
+	end
+end
+
+function UnitNetworkHandler:sync_present_sledded(sled_unit, bag_carry_int, last_carried_player, sender)
+	if not self:_quick_verification(sender) then
+		return
+	end
+
+	local mutator = managers.mutators:get_mutator(MutatorCG22)
+
+	if mutator then
+		mutator:sync_present_sledded(sled_unit, bag_carry_int, last_carried_player)
+	end
+end
+
+function UnitNetworkHandler:sync_present_shredded(shredder_unit, bag_carry_int, next_buff_index, last_carried_player, sender)
+	if not self:_quick_verification(sender) then
+		return
+	end
+
+	local mutator = managers.mutators:get_mutator(MutatorCG22)
+
+	if mutator then
+		mutator:sync_present_shredded(shredder_unit, bag_carry_int, next_buff_index, last_carried_player)
+	end
+end
+
+function UnitNetworkHandler:sync_gain_buff(buff_string, sender)
+	if not self:_quick_verification(sender) then
+		return
+	end
+
+	local mutator = managers.mutators:get_mutator(MutatorCG22)
+
+	if mutator then
+		mutator:activate_buff(buff_string)
+	end
+end
+
+function UnitNetworkHandler:sync_santa_anim(unit, anim_id, sender)
+	if not self:_quick_verification(sender) then
+		return
+	end
+
+	local mutator = managers.mutators:get_mutator(MutatorCG22)
+
+	if mutator then
+		mutator:sync_santa_anim(unit, anim_id)
+	end
+end
+
+function UnitNetworkHandler:sync_on_snowman_spawned(sender)
+	if not self:_quick_verification(sender) then
+		return
+	end
+
+	local mutator = managers.mutators:get_mutator(MutatorCG22)
+
+	if mutator then
+		mutator:sync_on_snowman_spawned()
+	end
+end
+
+function UnitNetworkHandler:sync_cg22_dialog(dialog_id, sender)
+	if not self:_quick_verification(sender) then
+		return
+	end
+
+	local mutator = managers.mutators:get_mutator(MutatorCG22)
+
+	if mutator then
+		mutator:announcer_say(dialog_id)
+	end
+end
+
+function UnitNetworkHandler:sync_cg22_spawned_units(tree_unit, sled_unit, shredder_unit, santa_unit, sender)
+	if not self:_quick_verification(sender) then
+		return
+	end
+
+	local mutator = managers.mutators:get_mutator(MutatorCG22)
+
+	if mutator then
+		mutator:client_sync_spawned_units(tree_unit, sled_unit, shredder_unit, santa_unit)
 	end
 end

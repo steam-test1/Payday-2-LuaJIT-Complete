@@ -137,6 +137,7 @@ function SkillTreeManager:_setup_specialization()
 
 	for tree, data in ipairs(tweak_data.skilltree.specializations or {}) do
 		self._global.specializations[tree] = {
+			favorite = false,
 			points_spent = self:digest_value(0, true),
 			tiers = {
 				current_tier = self:digest_value(0, true),
@@ -145,7 +146,8 @@ function SkillTreeManager:_setup_specialization()
 					current_points = self:digest_value(0, true),
 					points = self:digest_value(data[1].cost, true)
 				}
-			}
+			},
+			choices = {}
 		}
 
 		for _, tier in ipairs(data) do
@@ -1121,8 +1123,19 @@ function SkillTreeManager:reset_specializations()
 				for _, upgrade in ipairs(specialization_tweak[i].upgrades) do
 					managers.upgrades:unaquire(upgrade, UpgradesManager.AQUIRE_STRINGS[3] .. tostring(current_specialization))
 				end
+
+				local multi_choice = specialization_tweak[i].multi_choice
+				local choice_index = tree_data.choices[i] and self:digest_value(tree_data.choices[i], false)
+
+				if multi_choice and choice_index and multi_choice[choice_index] then
+					for _, upgrade in ipairs(multi_choice[choice_index].upgrades) do
+						managers.upgrades:unaquire(upgrade, UpgradesManager.AQUIRE_STRINGS[7] .. tostring(current_specialization))
+					end
+				end
 			end
 		end
+
+		tree_data.choices = {}
 	end
 
 	local max_points = self:digest_value(self._global.specializations.max_points, false)
@@ -1207,6 +1220,15 @@ function SkillTreeManager:infamy_reset()
 	for i = 1, current_tier do
 		for _, upgrade in ipairs(specialization_tweak[i].upgrades) do
 			managers.upgrades:aquire(upgrade, false, UpgradesManager.AQUIRE_STRINGS[3] .. tostring(current_specialization))
+		end
+
+		local multi_choice = specialization_tweak[i].multi_choice
+		local choice_index = tree_data.choices[i] and self:digest_value(tree_data.choices[i], false)
+
+		if multi_choice and choice_index and multi_choice[choice_index] then
+			for _, upgrade in ipairs(multi_choice[choice_index].upgrades) do
+				managers.upgrades:aquire(upgrade, false, UpgradesManager.AQUIRE_STRINGS[7] .. tostring(current_specialization))
+			end
 		end
 	end
 
@@ -1421,6 +1443,8 @@ function SkillTreeManager:load(data, version)
 			for tree, data in ipairs(state.specializations) do
 				if self._global.specializations[tree] then
 					self._global.specializations[tree].points_spent = data.points_spent or self._global.specializations[tree].points_spent
+					self._global.specializations[tree].favorite = data.favorite or self._global.specializations[tree].favorite
+					self._global.specializations[tree].choices = data.choices or self._global.specializations[tree].choices
 				end
 			end
 		end
@@ -1574,10 +1598,28 @@ function SkillTreeManager:_verify_loaded_data(points_aquired_during_load)
 			for tier, spec_data in ipairs(specialization_tweak[tree]) do
 				if spec_data.cost <= points_left then
 					points_left = points_left - spec_data.cost
+					local multi_choice = spec_data.multi_choice
+					local choice_index = data.choices[tier] and self:digest_value(data.choices[tier], false)
+
+					if not multi_choice or not choice_index or not multi_choice[choice_index] then
+						if multi_choice and multi_choice[1] then
+							data.choices[tier] = self:digest_value(1, true)
+							choice_index = 1
+						else
+							data.choices[tier] = nil
+							choice_index = nil
+						end
+					end
 
 					if tree == current_specialization then
 						for _, upgrade in ipairs(spec_data.upgrades) do
 							managers.upgrades:aquire(upgrade, true, UpgradesManager.AQUIRE_STRINGS[3] .. tostring(current_specialization))
+						end
+
+						if multi_choice and choice_index then
+							for _, upgrade in ipairs(multi_choice[choice_index].upgrades) do
+								managers.upgrades:aquire(upgrade, true, UpgradesManager.AQUIRE_STRINGS[7] .. tostring(current_specialization))
+							end
 						end
 					end
 
@@ -1876,6 +1918,31 @@ function SkillTreeManager:_increase_specialization_tier(tree)
 		for _, upgrade in ipairs(spec_data.upgrades) do
 			managers.upgrades:aquire(upgrade, false, UpgradesManager.AQUIRE_STRINGS[3] .. tostring(tree))
 		end
+
+		local multi_choice = spec_data.multi_choice
+		local choice_index = tree_data.choices[current_tier] and self:digest_value(tree_data.choices[current_tier], false)
+
+		if multi_choice and not multi_choice[choice_index] and multi_choice[1] then
+			choice_index = 1
+			tree_data.choices[current_tier] = self:digest_value(1, true)
+		end
+
+		if multi_choice and choice_index and multi_choice[choice_index] then
+			for _, upgrade in ipairs(multi_choice[choice_index].upgrades) do
+				managers.upgrades:aquire(upgrade, false, UpgradesManager.AQUIRE_STRINGS[7] .. tostring(tree))
+			end
+		end
+	else
+		local spec_data = specialization_tweak[current_tier]
+
+		if spec_data then
+			local multi_choice = spec_data.multi_choice
+			local choice_index = tree_data.choices[current_tier] and self:digest_value(tree_data.choices[current_tier], false)
+
+			if multi_choice and not multi_choice[choice_index] and multi_choice[1] then
+				tree_data.choices[current_tier] = self:digest_value(1, true)
+			end
+		end
 	end
 
 	tier_data.current_tier = self:digest_value(current_tier, true)
@@ -1922,6 +1989,15 @@ function SkillTreeManager:set_current_specialization(tree)
 				for _, upgrade in ipairs(specialization_tweak[i].upgrades) do
 					managers.upgrades:unaquire(upgrade, UpgradesManager.AQUIRE_STRINGS[3] .. tostring(current_specialization))
 				end
+
+				local multi_choice = specialization_tweak[i].multi_choice
+				local choice_index = tree_data.choices[i] and self:digest_value(tree_data.choices[i], false)
+
+				if multi_choice and choice_index and multi_choice[choice_index] then
+					for _, upgrade in ipairs(multi_choice[choice_index].upgrades) do
+						managers.upgrades:unaquire(upgrade, UpgradesManager.AQUIRE_STRINGS[7] .. tostring(current_specialization))
+					end
+				end
 			end
 		end
 	end
@@ -1946,6 +2022,15 @@ function SkillTreeManager:set_current_specialization(tree)
 		for _, upgrade in ipairs(specialization_tweak[i].upgrades) do
 			managers.upgrades:aquire(upgrade, false, UpgradesManager.AQUIRE_STRINGS[3] .. tostring(tree))
 		end
+
+		local multi_choice = specialization_tweak[i].multi_choice
+		local choice_index = tree_data.choices[i] and self:digest_value(tree_data.choices[i], false)
+
+		if multi_choice and choice_index and multi_choice[choice_index] then
+			for _, upgrade in ipairs(multi_choice[choice_index].upgrades) do
+				managers.upgrades:aquire(upgrade, false, UpgradesManager.AQUIRE_STRINGS[7] .. tostring(tree))
+			end
+		end
 	end
 
 	if self._global.skill_switches[self._global.selected_skill_switch] then
@@ -1960,6 +2045,56 @@ function SkillTreeManager:set_current_specialization(tree)
 	end
 
 	return true
+end
+
+function SkillTreeManager:set_specialization_favorite(tree, state)
+	self._global.specializations[tree].favorite = state
+end
+
+function SkillTreeManager:get_specialization_favorite(tree)
+	return self._global.specializations[tree].favorite
+end
+
+function SkillTreeManager:set_specialization_choice(tree, tier, new_choice_index)
+	local tree_data = self._global.specializations[tree]
+
+	if not tree_data then
+		return
+	end
+
+	local tiers_data = tree_data.tiers
+
+	if not tiers_data then
+		return
+	end
+
+	local tweak_multi_choice = tweak_data:get_raw_value("skilltree", "specializations", tree, tier, "multi_choice") or {}
+	local current_choice_index = tree_data.choices[tier] and self:digest_value(tree_data.choices[tier], false)
+	local current_tier = self:digest_value(tiers_data.current_tier, false)
+
+	if tier <= current_tier then
+		tree_data.choices[tier] = new_choice_index and tweak_multi_choice[new_choice_index] and self:digest_value(new_choice_index, true) or tweak_multi_choice and tweak_multi_choice[1] and self:digest_value(1, true) or nil
+		new_choice_index = tree_data.choices[tier] and self:digest_value(tree_data.choices[tier], false) or nil
+	else
+		tree_data.choices[tier] = nil
+		new_choice_index = nil
+	end
+
+	local current_specialization = self:digest_value(self._global.specializations.current_specialization, false, 0)
+
+	if current_specialization == tree then
+		if current_choice_index and tweak_multi_choice[current_choice_index] then
+			for _, upgrade in ipairs(tweak_multi_choice[current_choice_index].upgrades) do
+				managers.upgrades:unaquire(upgrade, UpgradesManager.AQUIRE_STRINGS[7] .. tostring(current_specialization))
+			end
+		end
+
+		if new_choice_index and tweak_multi_choice[new_choice_index] then
+			for _, upgrade in ipairs(tweak_multi_choice[new_choice_index].upgrades) do
+				managers.upgrades:aquire(upgrade, false, UpgradesManager.AQUIRE_STRINGS[7] .. tostring(current_specialization))
+			end
+		end
+	end
 end
 
 function SkillTreeManager:debug_print_specialization_data(data, times)

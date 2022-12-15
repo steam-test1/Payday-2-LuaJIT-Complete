@@ -1167,6 +1167,12 @@ function Telemetry:send_on_player_steam_stats_overdrill()
 	self:send("player_steam_stats_overdrill", telemetry_payload)
 end
 
+function Telemetry:on_player_game_event_action(action, params)
+	if action == Telemetry.event_actions.piggybank_fed then
+		self:send_on_game_event_piggybank_fed(params)
+	end
+end
+
 function Telemetry:send_on_game_event_piggybank_fed(params)
 	if get_platform_name() ~= "WIN32" or not self._global._logged_in then
 		return
@@ -1179,4 +1185,43 @@ function Telemetry:send_on_game_event_piggybank_fed(params)
 	}
 
 	self:send("piggybank_fed", telemetry_payload)
+end
+
+function Telemetry:send_on_game_event_on_bag_collected(params)
+	if get_platform_name() ~= "WIN32" or not self._global._logged_in then
+		return
+	end
+
+	local telemetry_payload = {
+		HeistID = self._heist_id,
+		BagType = params.bag_type,
+		CollectedType = params.collection_type
+	}
+
+	self:send("cg22_bag_collected", telemetry_payload)
+end
+
+function Telemetry:send_on_game_event_snoman_death(params)
+	if get_platform_name() ~= "WIN32" or not self._global._logged_in then
+		return
+	end
+
+	local telemetry_payload = {
+		HeistID = self._heist_id,
+		WeaponID = params.weapon_id
+	}
+
+	self:send("cg22_snowman_death", telemetry_payload)
+end
+
+function Telemetry:send_on_game_event_tree_interacted(params)
+	if get_platform_name() ~= "WIN32" or not self._global._logged_in then
+		return
+	end
+
+	local telemetry_payload = {
+		HeistID = self._heist_id
+	}
+
+	self:send("cg22_tree_interacted", telemetry_payload)
 end

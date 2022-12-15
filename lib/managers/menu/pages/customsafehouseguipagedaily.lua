@@ -1609,6 +1609,7 @@ function CustomSafehouseGuiRewardItem:init(daily_page, panel, order, reward_data
 
 			texture_path = guis_catalog .. "textures/pd2/blackmarket/icons/player_styles/" .. player_style_id
 			texture_path = texture_path .. "_" .. suit_variation_id
+			reward_string = managers.localization:text(suit_variation_data.name_id)
 		end
 	elseif reward_data.type_items == "offshore" then
 		local td = tweak_data:get_raw_value("blackmarket", "cash", reward_data.item_entry)
@@ -1617,6 +1618,25 @@ function CustomSafehouseGuiRewardItem:init(daily_page, panel, order, reward_data
 			texture_path = "guis/textures/pd2/blackmarket/cash_drop"
 			reward_string = managers.experience:cash_string(managers.money:get_loot_drop_cash_value(td.value_id))
 		end
+	elseif reward_data.type_items == "perkdeck" then
+		local td = tweak_data.skilltree.specializations[reward_data.item_entry][9]
+		local guis_catalog = "guis/"
+
+		if td.texture_bundle_folder then
+			guis_catalog = guis_catalog .. "dlcs/" .. tostring(td.texture_bundle_folder) .. "/"
+		end
+
+		local atlas_name = td.icon_atlas or "icons_atlas"
+		texture_path = guis_catalog .. "textures/pd2/specialization/" .. atlas_name
+		local texture_rect_x = td.icon_xy and td.icon_xy[1] or 0
+		local texture_rect_y = td.icon_xy and td.icon_xy[2] or 0
+		texture_rect = {
+			texture_rect_x * 64,
+			texture_rect_y * 64,
+			64,
+			64
+		}
+		reward_string = managers.localization:text(tweak_data.skilltree.specializations[reward_data.item_entry].name_id)
 	elseif reward_data.item_entry then
 		local id = reward_data.item_entry
 		local category = reward_data.type_items

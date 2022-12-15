@@ -575,6 +575,13 @@ function AchievementsTweakData:init(tweak_data)
 			stat = "pxp2_3_stats",
 			grenade_type = "poison_gas_grenade",
 			difficulties = overkill_and_above
+		},
+		cg22_personal_1 = {
+			grenade_type = "xmas_snowball",
+			stat = "cg22_personal_1",
+			mutators = {
+				"MutatorCG22"
+			}
 		}
 	}
 	self.shotgun_single_shot_kills = {
@@ -1003,6 +1010,33 @@ function AchievementsTweakData:init(tweak_data)
 			in_head = true,
 			weapon_type = "revolver",
 			difficulty = overkill_and_above
+		},
+		cg22_personal_2 = {
+			stat = "cg22_personal_2",
+			mutators = {
+				"MutatorCG22"
+			},
+			weapons = {
+				"victor"
+			}
+		},
+		cg22_personal_3 = {
+			stat = "cg22_personal_3",
+			mutators = {
+				"MutatorCG22"
+			},
+			weapons = {
+				"victor"
+			},
+			difficulty = overkill_and_above,
+			enemies = {
+				"sniper",
+				"shield",
+				"taser",
+				"tank",
+				"spooc",
+				"medic"
+			}
 		}
 	}
 	self.enemy_melee_hit_achievements = {

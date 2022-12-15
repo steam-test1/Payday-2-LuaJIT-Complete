@@ -1730,6 +1730,40 @@ function LootDropTweakData:init(tweak_data)
 		sort_number = 510,
 		category = "global_event"
 	}
+	self.global_values.mrwi_deck = {
+		name_id = "bm_global_value_mrwi",
+		desc_id = "menu_l_global_value_mrwi",
+		unlock_id = "bm_global_value_mrwi_unlock",
+		color = tweak_data.screen_colors.event_color,
+		dlc = true,
+		free = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = false,
+		track = true,
+		sort_number = 512,
+		category = "global_event",
+		no_store = true
+	}
+	self.global_values.victor_mods_pack_1 = {
+		name_id = "bm_global_value_xm22",
+		desc_id = "menu_l_global_value_xm22",
+		unlock_id = "bm_menu_locked_cg22_2",
+		color = tweak_data.screen_colors.event_color,
+		dlc = true,
+		free = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = false,
+		track = true,
+		sort_number = 514,
+		category = "global_event"
+	}
+	self.global_values.victor_mods_pack_2 = deep_clone(self.global_values.victor_mods_pack_1)
+	self.global_values.victor_mods_pack_2.unlock_id = "bm_menu_locked_cg22_3"
+	self.global_values.victor_mods_pack_1.sort_number = 516
 
 	if SystemInfo:platform() == Idstring("PS3") then
 		self.global_values.sweettooth = {

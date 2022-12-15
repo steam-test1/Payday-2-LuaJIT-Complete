@@ -4,6 +4,7 @@ require("lib/utils/gui/BlurSheet")
 require("lib/managers/menu/MenuGuiComponent")
 require("lib/managers/menu/MenuGuiComponentGeneric")
 require("lib/managers/menu/SkillTreeGui")
+require("lib/managers/menu/SpecializationGuiNew")
 require("lib/managers/menu/InfamyTreeGuiNew")
 require("lib/managers/menu/BlackMarketGui")
 require("lib/managers/menu/InventoryList")
@@ -2736,7 +2737,7 @@ end
 function MenuComponentManager:create_skilltree_gui(node)
 	self:close_skilltree_gui()
 
-	self._skilltree_gui = SkillTreeGui:new(self._ws, self._fullscreen_ws, node)
+	self._skilltree_gui = SpecializationGuiNew:new(self._ws, self._fullscreen_ws, node)
 	self._old_skilltree_gui_active = true
 
 	self:enable_skilltree_gui()
@@ -3692,6 +3693,8 @@ function MenuComponentManager:get_texture_from_mod_type(type, sub_type, gadget, 
 		else
 			texture = "guis/textures/pd2/blackmarket/inv_mod_weapon_cosmetics"
 		end
+	elseif type == "drag_handle" then
+		texture = "guis/textures/pd2/blackmarket/inv_mod_bolt"
 	else
 		texture = "guis/textures/pd2/blackmarket/inv_mod_" .. type
 	end

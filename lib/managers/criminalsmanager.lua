@@ -311,6 +311,16 @@ function CriminalsManager:update_character_visual_state(character_name, visual_s
 	local mask_id = visual_state.mask_id or character.visual_state.mask_id
 	local armor_id = visual_state.armor_id or character.visual_state.armor_id or "level_1"
 	local armor_skin = visual_state.armor_skin or character.visual_state.armor_skin or "none"
+	local deployable_id = false
+
+	if not is_local_peer then
+		if visual_state.deployable_id ~= nil then
+			deployable_id = visual_state.deployable_id
+		elseif character.visual_state.deployable_id then
+			deployable_id = character.visual_state.deployable_id
+		end
+	end
+
 	local player_style = self:active_player_style() or managers.blackmarket:get_default_player_style()
 	local suit_variation = nil
 	local user_player_style = visual_state.player_style or character.visual_state.player_style or managers.blackmarket:get_default_player_style()
@@ -329,7 +339,8 @@ function CriminalsManager:update_character_visual_state(character_name, visual_s
 		glove_id = glove_id,
 		mask_id = mask_id,
 		armor_id = armor_id,
-		armor_skin = armor_skin
+		armor_skin = armor_skin,
+		deployable_id = deployable_id
 	}
 
 	local function get_value_string(value)
@@ -352,6 +363,19 @@ function CriminalsManager:update_character_visual_state(character_name, visual_s
 		end
 	end
 
+	if deployable_id and not is_local_peer then
+		local deployable_tweak_data = tweak_data.equipments[deployable_id]
+		local style_name = deployable_tweak_data.visual_style
+
+		if style_name then
+			local unit_name = tweak_data.blackmarket:get_player_style_value(style_name, character_name, get_value_string("unit"))
+
+			if unit_name then
+				self:safe_load_asset(character, unit_name, "deployable_id")
+			end
+		end
+	end
+
 	CriminalsManager.set_character_visual_state(unit, character_name, character_visual_state)
 
 	character.visual_state = {
@@ -362,7 +386,8 @@ function CriminalsManager:update_character_visual_state(character_name, visual_s
 		glove_id = glove_id,
 		mask_id = mask_id,
 		armor_id = armor_id,
-		armor_skin = armor_skin
+		armor_skin = armor_skin,
+		deployable_id = deployable_id
 	}
 end
 
@@ -377,6 +402,7 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 	local mask_id = visual_state.mask_id
 	local armor_id = visual_state.armor_id
 	local armor_skin = visual_state.armor_skin
+	local deployable_id = visual_state.deployable_id
 
 	if not alive(unit) then
 		return
@@ -420,6 +446,7 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 		return is_local_peer and tostring(value) or "third_" .. tostring(value)
 	end
 
+	local spawn_manager = unit:spawn_manager()
 	local time_seed = math.random(os.time())
 
 	math.randomseed(visual_seed)
@@ -485,8 +512,8 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 		end
 	end
 
-	if unit:spawn_manager() then
-		unit:spawn_manager():remove_unit("char_mesh")
+	if spawn_manager then
+		spawn_manager:remove_unit("char_mesh")
 
 		if character_unit:character_damage() then
 			character_unit:character_damage():remove_listener("visual_mesh")
@@ -496,9 +523,9 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 		local char_mesh_unit = nil
 
 		if unit_name then
-			unit:spawn_manager():spawn_and_link_unit("_char_joint_names", "char_mesh", unit_name)
+			spawn_manager:spawn_and_link_unit("_char_joint_names", "char_mesh", unit_name)
 
-			char_mesh_unit = unit:spawn_manager():get_unit("char_mesh")
+			char_mesh_unit = spawn_manager:get_unit("char_mesh")
 		end
 
 		if alive(char_mesh_unit) then
@@ -544,14 +571,14 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 			char_mesh_unit:set_enabled(unit:enabled())
 		end
 
-		unit:spawn_manager():remove_unit("char_gloves")
+		spawn_manager:remove_unit("char_gloves")
 
 		local char_gloves_unit = nil
 
 		if gloves_unit_name then
-			unit:spawn_manager():spawn_and_link_unit("_char_joint_names", "char_gloves", gloves_unit_name)
+			spawn_manager:spawn_and_link_unit("_char_joint_names", "char_gloves", gloves_unit_name)
 
-			char_gloves_unit = unit:spawn_manager():get_unit("char_gloves")
+			char_gloves_unit = spawn_manager:get_unit("char_gloves")
 		end
 
 		if alive(char_gloves_unit) then
@@ -571,14 +598,14 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 			char_gloves_unit:set_enabled(unit:enabled())
 		end
 
-		unit:spawn_manager():remove_unit("char_glove_adapter")
+		spawn_manager:remove_unit("char_glove_adapter")
 
 		local adapter_tweak = tweak_data.blackmarket.glove_adapter
 
 		if not table.contains(adapter_tweak.player_style_exclude_list, player_style) and adapter_tweak.unit then
-			unit:spawn_manager():spawn_and_link_unit("_char_joint_names", "char_glove_adapter", adapter_tweak.unit)
+			spawn_manager:spawn_and_link_unit("_char_joint_names", "char_glove_adapter", adapter_tweak.unit)
 
-			local glove_adapter_unit = unit:spawn_manager():get_unit("char_glove_adapter")
+			local glove_adapter_unit = spawn_manager:get_unit("char_glove_adapter")
 
 			if alive(glove_adapter_unit) then
 				local new_character_name = CriminalsManager.convert_old_to_new_character_workname(character_name)
@@ -596,6 +623,54 @@ function CriminalsManager.set_character_visual_state(unit, character_name, visua
 				end
 			end
 		end
+	end
+
+	if not is_local_peer then
+		local old_deployable_id = unit:base().current_deployable_object
+
+		if old_deployable_id then
+			local deployable_tweak_data = tweak_data.equipments[old_deployable_id]
+			local object_name = deployable_tweak_data.visual_object
+
+			if object_name then
+				unit:get_object(Idstring(object_name)):set_visibility(false)
+			end
+		end
+
+		if spawn_manager then
+			spawn_manager:remove_unit("deployable_mesh")
+		end
+
+		if deployable_id then
+			local deployable_tweak_data = tweak_data.equipments[deployable_id]
+			local object_name = deployable_tweak_data.visual_object
+
+			if object_name then
+				unit:get_object(Idstring(object_name)):set_visibility(true)
+			end
+
+			local style_name = deployable_tweak_data.visual_style
+
+			if style_name and spawn_manager then
+				local unit_name = tweak_data.blackmarket:get_player_style_value(style_name, character_name, get_value_string("unit"))
+				local char_mesh_unit = nil
+
+				if unit_name then
+					spawn_manager:spawn_and_link_unit("_char_joint_names", "deployable_mesh", unit_name)
+
+					char_mesh_unit = spawn_manager:get_unit("deployable_mesh")
+				end
+
+				if alive(char_mesh_unit) then
+					local unit_sequence = tweak_data.blackmarket:get_player_style_value(player_style, character_name, get_value_string("sequence"))
+
+					run_sequence_safe(unit_sequence, char_mesh_unit)
+					char_mesh_unit:set_enabled(unit:enabled())
+				end
+			end
+		end
+
+		unit:base().current_deployable_object = deployable_id
 	end
 
 	if unit:armor_skin() and unit:armor_skin().set_armor_id then

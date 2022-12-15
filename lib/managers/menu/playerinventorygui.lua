@@ -4663,7 +4663,7 @@ function PlayerInventoryGui:open_throwable_menu()
 		on_create_func_name = "populate_grenades",
 		category = "grenades",
 		override_slots = {
-			4,
+			5,
 			5
 		},
 		identifier = BlackMarketGui.identifiers.grenade
@@ -4814,7 +4814,7 @@ end
 
 function PlayerInventoryGui:open_deployable_menu()
 	local override_slots = {
-		3,
+		4,
 		3
 	}
 	local new_node_data = {}

@@ -111,6 +111,7 @@ function CharacterTweakData:init(tweak_data)
 	self:_init_civilian_mariachi(presets)
 	self:_init_triad(presets)
 	self:_init_triad_boss(presets)
+	self:_init_snowman_boss(presets)
 	self:_init_escort_sand(presets)
 	self:_init_civilian_no_penalty(presets)
 	self:_init_marshal_marksman(presets)
@@ -1319,6 +1320,81 @@ function CharacterTweakData:_init_triad_boss(presets)
 	self.triad_boss_no_armor.immune_to_concussion = true
 
 	table.insert(self._enemy_list, "triad_boss_no_armor")
+end
+
+function CharacterTweakData:_init_snowman_boss(presets)
+	self.snowman_boss = deep_clone(presets.base)
+	self.snowman_boss.experience = {}
+	self.snowman_boss.tags = {
+		"tank",
+		"snowman",
+		"special"
+	}
+	self.snowman_boss.weapon = deep_clone(presets.weapon.good)
+	self.snowman_boss.weapon.is_flamethrower.melee_speed = nil
+	self.snowman_boss.weapon.is_flamethrower.melee_dmg = nil
+	self.snowman_boss.weapon.is_flamethrower.melee_retry_delay = nil
+	self.snowman_boss.detection = presets.detection.normal
+	self.snowman_boss.HEALTH_INIT = 435
+	self.snowman_boss.headshot_dmg_mul = 2
+	self.snowman_boss.damage.hurt_severity = presets.hurt_severities.no_hurts
+	self.snowman_boss.damage.explosion_damage_mul = 0.5
+	self.snowman_boss.can_be_tased = false
+	self.snowman_boss.suppression = nil
+	self.snowman_boss.move_speed = presets.move_speed.slow
+	self.snowman_boss.allowed_stances = {
+		cbt = true
+	}
+	self.snowman_boss.allowed_poses = {
+		stand = true
+	}
+	self.snowman_boss.crouch_move = false
+	self.snowman_boss.no_run_start = true
+	self.snowman_boss.no_run_stop = true
+	self.snowman_boss.no_retreat = true
+	self.snowman_boss.no_arrest = true
+	self.snowman_boss.surrender = nil
+	self.snowman_boss.ecm_vulnerability = 0
+	self.snowman_boss.ecm_hurts = {
+		ears = {
+			max_duration = 0,
+			min_duration = 0
+		}
+	}
+	self.snowman_boss.weapon_voice = "3"
+	self.snowman_boss.experience.cable_tie = "tie_swat"
+	self.snowman_boss.access = "tank"
+	self.snowman_boss.speech_prefix_p1 = "bb"
+	self.snowman_boss.speech_prefix_p2 = "n"
+	self.snowman_boss.speech_prefix_count = 1
+	self.snowman_boss.priority_shout = "f30"
+	self.snowman_boss.rescue_hostages = false
+	self.snowman_boss.melee_weapon_dmg_multiplier = 2.5
+	self.snowman_boss.steal_loot = nil
+	self.snowman_boss.calls_in = nil
+	self.snowman_boss.chatter = presets.enemy_chatter.no_chatter
+	self.snowman_boss.use_radio = nil
+	self.snowman_boss.use_animation_on_fire_damage = false
+	self.snowman_boss.flammable = false
+	self.snowman_boss.immune_to_knock_down = true
+	self.snowman_boss.immune_to_concussion = true
+	self.snowman_boss.can_reload_while_moving_tmp = true
+	self.snowman_boss.no_headshot_add_mul = true
+	self.snowman_boss.player_health_scaling_mul = 1.5
+	self.snowman_boss.aoe_damage_data = {
+		verification_delay = 0.3,
+		activation_range = 300,
+		activation_delay = 1,
+		env_tweak_name = "snowman_boss_aoe_fire",
+		check_player = true,
+		check_npc_slotmask = {
+			"criminals",
+			-2,
+			-3
+		}
+	}
+
+	table.insert(self._enemy_list, "snowman_boss")
 end
 
 function CharacterTweakData:_init_captain(presets)
@@ -11372,7 +11448,8 @@ function CharacterTweakData:_create_table_structure()
 		"flamethrower",
 		"dmr",
 		"deagle",
-		"sko12_conc"
+		"sko12_conc",
+		"snowthrower"
 	}
 	self.weap_unit_names = {
 		Idstring("units/payday2/weapons/wpn_npc_beretta92/wpn_npc_beretta92"),
@@ -11409,7 +11486,8 @@ function CharacterTweakData:_create_table_structure()
 		Idstring("units/pd2_dlc_pent/weapons/wpn_npc_flamethrower/wpn_npc_flamethrower"),
 		Idstring("units/pd2_dlc_usm1/weapons/wpn_npc_dmr/wpn_npc_dmr"),
 		Idstring("units/pd2_dlc_usm2/weapons/wpn_npc_deagle/wpn_npc_deagle"),
-		Idstring("units/pd2_dlc_usm2/weapons/wpn_npc_sko12_conc/wpn_npc_sko12_conc")
+		Idstring("units/pd2_dlc_usm2/weapons/wpn_npc_sko12_conc/wpn_npc_sko12_conc"),
+		Idstring("units/pd2_dlc_cg22/weapons/wpn_npc_snowthrower/wpn_npc_snowthrower")
 	}
 end
 
@@ -11964,6 +12042,12 @@ function CharacterTweakData:_set_normal()
 	self.triad_boss.weapon.is_flamethrower.FALLOFF[3].dmg_mul = 0.4
 	self.triad_boss.weapon.is_flamethrower.FALLOFF[4].dmg_mul = 0.2
 	self.triad_boss.weapon.is_flamethrower.FALLOFF[5].dmg_mul = 0.1
+	self.snowman_boss.player_health_scaling_mul = nil
+	self.snowman_boss.weapon.is_flamethrower.FALLOFF[1].dmg_mul = 0.6
+	self.snowman_boss.weapon.is_flamethrower.FALLOFF[2].dmg_mul = 0.5
+	self.snowman_boss.weapon.is_flamethrower.FALLOFF[3].dmg_mul = 0.4
+	self.snowman_boss.weapon.is_flamethrower.FALLOFF[4].dmg_mul = 0.2
+	self.snowman_boss.weapon.is_flamethrower.FALLOFF[5].dmg_mul = 0.1
 	self.presets.gang_member_damage.REGENERATE_TIME = 1.5
 	self.presets.gang_member_damage.REGENERATE_TIME_AWAY = 0.2
 	self.presets.gang_member_damage.HEALTH_INIT = 200
@@ -12541,6 +12625,11 @@ function CharacterTweakData:_set_hard()
 	self.triad_boss.weapon.is_flamethrower.FALLOFF[3].dmg_mul = 0.4
 	self.triad_boss.weapon.is_flamethrower.FALLOFF[4].dmg_mul = 0.2
 	self.triad_boss.weapon.is_flamethrower.FALLOFF[5].dmg_mul = 0.1
+	self.snowman_boss.weapon.is_flamethrower.FALLOFF[1].dmg_mul = 1
+	self.snowman_boss.weapon.is_flamethrower.FALLOFF[2].dmg_mul = 0.6
+	self.snowman_boss.weapon.is_flamethrower.FALLOFF[3].dmg_mul = 0.4
+	self.snowman_boss.weapon.is_flamethrower.FALLOFF[4].dmg_mul = 0.2
+	self.snowman_boss.weapon.is_flamethrower.FALLOFF[5].dmg_mul = 0.1
 	self.presets.gang_member_damage.REGENERATE_TIME = 2
 	self.presets.gang_member_damage.REGENERATE_TIME_AWAY = 0.4
 
@@ -13177,6 +13266,11 @@ function CharacterTweakData:_set_overkill()
 	self.triad_boss.weapon.is_flamethrower.FALLOFF[3].dmg_mul = 1.4
 	self.triad_boss.weapon.is_flamethrower.FALLOFF[4].dmg_mul = 1.2
 	self.triad_boss.weapon.is_flamethrower.FALLOFF[5].dmg_mul = 1.1
+	self.snowman_boss.weapon.is_flamethrower.FALLOFF[1].dmg_mul = 1.8
+	self.snowman_boss.weapon.is_flamethrower.FALLOFF[2].dmg_mul = 1.6
+	self.snowman_boss.weapon.is_flamethrower.FALLOFF[3].dmg_mul = 1.4
+	self.snowman_boss.weapon.is_flamethrower.FALLOFF[4].dmg_mul = 1.2
+	self.snowman_boss.weapon.is_flamethrower.FALLOFF[5].dmg_mul = 1.1
 	self.phalanx_minion.HEALTH_INIT = 150
 	self.phalanx_minion.DAMAGE_CLAMP_BULLET = 15
 	self.phalanx_minion.DAMAGE_CLAMP_EXPLOSION = self.phalanx_minion.DAMAGE_CLAMP_BULLET
@@ -16972,6 +17066,7 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 	self.marshal_marksman.HEALTH_INIT = self.marshal_marksman.HEALTH_INIT * hp_mul
 	self.marshal_shield.HEALTH_INIT = self.marshal_shield.HEALTH_INIT * hp_mul
 	self.marshal_shield_break.HEALTH_INIT = self.marshal_shield_break.HEALTH_INIT * hp_mul
+	self.snowman_boss.HEALTH_INIT = self.snowman_boss.HEALTH_INIT * hp_mul
 
 	if self.security.headshot_dmg_mul then
 		self.security.headshot_dmg_mul = self.security.headshot_dmg_mul * hs_mul
@@ -17115,6 +17210,10 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 
 	if self.marshal_shield_break.headshot_dmg_mul then
 		self.marshal_shield_break.headshot_dmg_mul = self.marshal_shield_break.headshot_dmg_mul * hs_mul
+	end
+
+	if self.snowman_boss.headshot_dmg_mul then
+		self.snowman_boss.headshot_dmg_mul = self.snowman_boss.headshot_dmg_mul * hs_mul
 	end
 end
 
@@ -17981,6 +18080,12 @@ function CharacterTweakData:character_map()
 				"ene_male_ranc_ranger_01",
 				"ene_male_ranc_ranger_02",
 				"ene_male_ranchmanager_1"
+			}
+		},
+		cg22 = {
+			path = "units/pd2_dlc_cg22/characters/",
+			list = {
+				"ene_snowman_boss"
 			}
 		}
 	}

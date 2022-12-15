@@ -274,6 +274,12 @@ function DLCTweakData:init_generated()
 			amount = 1
 		}
 	}
+	self.cg22_bundle = {
+		dlc = "has_cg22",
+		content = {}
+	}
+	self.cg22_bundle.content.loot_global_value = "cg22"
+	self.cg22_bundle.content.loot_drops = {}
 	self.chas_bundle = {
 		dlc = "has_chas",
 		content = {}
@@ -857,6 +863,12 @@ function DLCTweakData:init_generated()
 			amount = 1
 		}
 	}
+	self.mrwi_bundle = {
+		dlc = "has_mrwi",
+		content = {}
+	}
+	self.mrwi_bundle.content.loot_global_value = "mrwi"
+	self.mrwi_bundle.content.loot_drops = {}
 	self.mts_bundle = {
 		dlc = "has_mts",
 		content = {}
@@ -923,6 +935,83 @@ function DLCTweakData:init_generated()
 		{
 			type_items = "weapon_mods",
 			item_entry = "wpn_fps_upg_ns_pis_typhoon",
+			amount = 1
+		}
+	}
+	self.mxm_bundle = {
+		dlc = "has_mxm",
+		content = {}
+	}
+	self.mxm_bundle.content.loot_global_value = "mxm"
+	self.mxm_bundle.content.loot_drops = {
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_upg_ak_s_zenitco",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_upg_ak_fg_zenitco",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_upg_ak_body_upperreceiver_zenitco",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_upg_ak_dh_zenitco",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_upg_ak_ns_zenitco",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_m4_uupg_m_strike",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_m4_uupg_lower_radian",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_m4_uupg_upper_radian",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_m4_uupg_g_billet",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_upg_fl_dbal_laser",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_upg_o_mbus_pro",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_upg_o_health",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_upg_o_atibal",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_upg_o_hamr",
 			amount = 1
 		}
 	}
@@ -1447,6 +1536,12 @@ function DLCTweakData:init_generated()
 	}
 	self.sand_bundle.content.loot_global_value = "sand"
 	self.sand_bundle.content.loot_drops = {}
+	self.savi_bundle = {
+		dlc = "has_savi",
+		content = {}
+	}
+	self.savi_bundle.content.loot_global_value = "savi"
+	self.savi_bundle.content.loot_drops = {}
 	self.sawp_bundle = {
 		dlc = "has_sawp",
 		content = {}
@@ -2646,6 +2741,12 @@ function DLCTweakData:init_generated()
 	}
 	self.xm21_bundle.content.loot_global_value = "xm21"
 	self.xm21_bundle.content.loot_drops = {}
+	self.xm22_bundle = {
+		dlc = "has_xm22",
+		content = {}
+	}
+	self.xm22_bundle.content.loot_global_value = "xm22"
+	self.xm22_bundle.content.loot_drops = {}
 	self.xmn_bundle = {
 		free = true,
 		content = {}

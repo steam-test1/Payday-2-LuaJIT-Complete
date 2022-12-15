@@ -58,6 +58,18 @@ function CarryTweakData:init(tweak_data)
 		can_run = true,
 		throw_distance_multiplier = 1
 	}
+	self.types.cg22_light = {
+		move_speed_modifier = 0.33,
+		jump_modifier = 0.33,
+		can_run = true,
+		throw_distance_multiplier = 0.4
+	}
+	self.types.cg22_heavy = {
+		move_speed_modifier = 0.5,
+		jump_modifier = 0.5,
+		can_run = true,
+		throw_distance_multiplier = 0.5
+	}
 	self.types.explosives = deep_clone(self.types.medium)
 	self.types.explosives.can_explode = true
 	self.types.cloaker_explosives = deep_clone(self.types.medium)
@@ -1066,6 +1078,33 @@ function CarryTweakData:init(tweak_data)
 		name_id = "hud_carry_printing_plates",
 		bag_value = "money",
 		visual_unit_name = "units/payday2/characters/npc_acc_loot_bag_1/npc_acc_loot_bag_1",
+		AI_carry = {
+			SO_category = "enemies"
+		}
+	}
+	self.cg22_bag = {
+		type = "cg22_light",
+		name_id = "hud_carry_bag",
+		unit = "units/pd2_dlc_cg22/pickups/cg22_pku_bag/cg22_pku_bag",
+		visual_unit_name = "units/pd2_dlc_cg22/pickups/cg22_npc_bag/npc_cg22_bag",
+		AI_carry = {
+			SO_category = "enemies"
+		}
+	}
+	self.cg22_bag_green = {
+		type = "cg22_heavy",
+		name_id = "hud_carry_bag_green",
+		unit = "units/pd2_dlc_cg22/pickups/cg22_pku_bag/cg22_pku_bag_green",
+		visual_unit_name = "units/pd2_dlc_cg22/pickups/cg22_npc_bag/npc_cg22_bag_green",
+		AI_carry = {
+			SO_category = "enemies"
+		}
+	}
+	self.cg22_bag_yellow = {
+		type = "cg22_light",
+		name_id = "hud_carry_bag_yellow",
+		unit = "units/pd2_dlc_cg22/pickups/cg22_pku_bag/cg22_pku_bag_yellow",
+		visual_unit_name = "units/pd2_dlc_cg22/pickups/cg22_npc_bag/npc_cg22_bag_yellow",
 		AI_carry = {
 			SO_category = "enemies"
 		}

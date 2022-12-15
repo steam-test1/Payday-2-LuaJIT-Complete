@@ -8822,4 +8822,35 @@ function DLCTweakData:init(tweak_data)
 			amount = 1
 		}
 	}
+	self.mrwi_deck = {
+		content = {},
+		dlc = "has_mrwi_deck"
+	}
+	self.mrwi_deck.content.loot_global_value = "mrwi_deck"
+	self.mrwi_deck.content.loot_drops = {}
+	self.mrwi_deck.content.upgrades = {}
+	self.mxm_upgrades = {
+		content = {},
+		dlc = "has_mxm"
+	}
+	self.mxm_upgrades.content.loot_global_value = "mxm"
+	self.mxm_upgrades.content.loot_drops = {}
+	self.mxm_upgrades.content.upgrades = {
+		"sticky_grenade",
+		"grenade_crate"
+	}
+	self.victor_mods_pack_1 = {
+		content = {},
+		dlc = "has_victor_mods_pack_1"
+	}
+	self.victor_mods_pack_1.content.loot_global_value = "victor_mods_pack_1"
+	self.victor_mods_pack_1.content.loot_drops = {}
+	self.victor_mods_pack_1.content.upgrades = {}
+	self.victor_mods_pack_2 = {
+		content = {},
+		dlc = "has_victor_mods_pack_2"
+	}
+	self.victor_mods_pack_2.content.loot_global_value = "victor_mods_pack_2"
+	self.victor_mods_pack_2.content.loot_drops = {}
+	self.victor_mods_pack_2.content.upgrades = {}
 end

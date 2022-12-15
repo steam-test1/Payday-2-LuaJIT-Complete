@@ -1360,6 +1360,26 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 		},
 		access = access_type_walk_only
 	}
+	self.unit_categories.snowman_boss = {
+		unit_types = {
+			america = {
+				Idstring("units/pd2_dlc_cg22/characters/ene_snowman_boss/ene_snowman_boss")
+			},
+			russia = {
+				Idstring("units/pd2_dlc_cg22/characters/ene_snowman_boss/ene_snowman_boss")
+			},
+			zombie = {
+				Idstring("units/pd2_dlc_cg22/characters/ene_snowman_boss/ene_snowman_boss")
+			},
+			murkywater = {
+				Idstring("units/pd2_dlc_cg22/characters/ene_snowman_boss/ene_snowman_boss")
+			},
+			federales = {
+				Idstring("units/pd2_dlc_cg22/characters/ene_snowman_boss/ene_snowman_boss")
+			}
+		},
+		access = access_type_all
+	}
 end
 
 function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
@@ -3363,6 +3383,25 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 			})
 		}
 	end
+
+	self.enemy_spawn_groups.snowman_boss = {
+		amount = {
+			1,
+			1
+		},
+		spawn = {
+			{
+				freq = 1,
+				amount_min = 1,
+				rank = 1,
+				unit = "snowman_boss",
+				tactics = self._tactics.tank_rush
+			}
+		},
+		spawn_point_chk_ref = table.list_to_set({
+			"tac_bull_rush"
+		})
+	}
 end
 
 function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
@@ -4288,6 +4327,11 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 		0,
 		0
 	}
+	self.besiege.assault.groups.snowman_boss = {
+		0,
+		0,
+		0
+	}
 	self.besiege.reenforce.interval = {
 		10,
 		20,
@@ -4560,6 +4604,11 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 		0
 	}
 	self.besiege.recon.groups.marshal_squad = {
+		0,
+		0,
+		0
+	}
+	self.besiege.recon.groups.snowman_boss = {
 		0,
 		0,
 		0

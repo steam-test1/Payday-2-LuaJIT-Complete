@@ -261,13 +261,11 @@ function ArrowBase:_switch_to_pickup(dynamic)
 end
 
 function ArrowBase:_check_stop_flyby_sound(skip_impact)
-	if not self._requires_stop_flyby_sound then
-		return
+	if self._requires_stop_flyby_sound then
+		self._requires_stop_flyby_sound = nil
+
+		self:_tweak_data_play_sound("flyby_stop")
 	end
-
-	self._requires_stop_flyby_sound = nil
-
-	self:_tweak_data_play_sound("flyby_stop")
 
 	if not skip_impact then
 		self:_tweak_data_play_sound("impact")
@@ -358,12 +356,24 @@ function ArrowBase:_attach_to_hit_unit(is_remote, dynamic_pickup_wanted)
 			}, callback(self, self, "clbk_hit_unit_death"))
 		end
 
+		local has_destroy_listener = nil
 		local hit_base = hit_unit:base()
+		local listener_class = hit_base
 
-		if hit_base and hit_base.add_destroy_listener and not self._destroy_listener_id then
+		if listener_class and listener_class.add_destroy_listener then
+			has_destroy_listener = true
+		else
+			listener_class = hit_unit:unit_data()
+
+			if listener_class and listener_class.add_destroy_listener then
+				has_destroy_listener = true
+			end
+		end
+
+		if has_destroy_listener then
 			self._destroy_listener_id = "ArrowBase_destroy" .. tostring(self._unit:key())
 
-			hit_base:add_destroy_listener(self._destroy_listener_id, callback(self, self, "clbk_hit_unit_destroyed"))
+			listener_class:add_destroy_listener(self._destroy_listener_id, callback(self, self, "clbk_hit_unit_destroyed"))
 		end
 
 		if hit_base and hit_base._tweak_table == tweak_data.achievement.pincushion.enemy and alive(self:weapon_unit()) and self:weapon_unit():base():is_category(tweak_data.achievement.pincushion.weapon_category) then
@@ -672,7 +682,7 @@ function ArrowBase:_kill_trail()
 end
 
 function ArrowBase:destroy(unit)
-	self:_check_stop_flyby_sound()
+	self:_check_stop_flyby_sound(true)
 
 	if self._owner_peer_id and ArrowBase._arrow_units[self._owner_peer_id] then
 		ArrowBase._arrow_units[self._owner_peer_id][self._unit:key()] = nil
@@ -685,7 +695,22 @@ function ArrowBase:destroy(unit)
 	self._death_listener_id = nil
 
 	if self._destroy_listener_id and alive(self._col_ray.unit) then
-		self._col_ray.unit:base():remove_destroy_listener(self._destroy_listener_id)
+		local has_listener = false
+		local listener_class = self._col_ray.unit:base()
+
+		if listener_class and listener_class.remove_destroy_listener then
+			has_listener = true
+		else
+			listener_class = self._col_ray.unit:unit_data()
+
+			if listener_class and listener_class.remove_destroy_listener then
+				has_listener = true
+			end
+		end
+
+		if has_listener then
+			listener_class:remove_destroy_listener(self._destroy_listener_id)
+		end
 	end
 
 	self._destroy_listener_id = nil

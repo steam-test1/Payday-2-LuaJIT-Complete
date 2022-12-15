@@ -39,18 +39,39 @@ local json = require("lib/utils/accelbyte/json")
 
 function SideJobEventManager:_fetch_challenges()
 	local events_url = "https://www.paydaythegame.com/ovk-media/redux/ninth-2yrgbaw/ninthstage.json"
+	local cg22_events_url = "https://www.paydaythegame.com/ovk-media/redux/hl22-u3yhfbfaud/holiday22stage.json"
 
 	if SystemInfo:distribution() == Idstring("STEAM") then
-		print("[SideJobEventManager] Getting Events from: ", events_url)
-
+		self._fetch_que = self._fetch_que or {}
 		local done_clbk = callback(self, self, "_fetch_done_clbk")
 
-		Steam:http_request(events_url, done_clbk, Idstring("[SideJobEventManager] fetch_challenges()"):key())
+		table.insert(self._fetch_que, {
+			url = events_url,
+			clbk = done_clbk
+		})
+
+		local cg22_done_clbk = callback(self, self, "_cg22_fetch_done_clbk")
+
+		table.insert(self._fetch_que, {
+			url = cg22_events_url,
+			clbk = cg22_done_clbk
+		})
+		self:_pop_fetch_que()
+	end
+end
+
+function SideJobEventManager:_pop_fetch_que()
+	if self._fetch_que and #self._fetch_que > 0 and not self._fetching_json then
+		self._fetching_json = true
+		local data = table.remove(self._fetch_que, 1)
+
+		print("[SideJobEventManager] Getting Events from: ", data.url)
+		Steam:http_request(data.url, data.clbk, Idstring("[SideJobEventManager] fetch_challenges()"):key())
 	end
 end
 
 function SideJobEventManager:_fetch_done_clbk(success, s)
-	print("[SideJobEventManager]", success, s)
+	print("[SideJobEventManager] - PDA9", success, s)
 
 	if success then
 		local events_data = json.decode(s) or {}
@@ -65,6 +86,32 @@ function SideJobEventManager:_fetch_done_clbk(success, s)
 			self:set_event_stage("pda9", pda9_unlock_stage)
 		end
 	end
+
+	self._fetching_json = false
+
+	self:_pop_fetch_que()
+end
+
+function SideJobEventManager:_cg22_fetch_done_clbk(success, s)
+	print("[SideJobEventManager] - CG22", success, s)
+
+	if success then
+		local events_data = json.decode(s) or {}
+		self._event_data_fetched = true
+		local cg22_unlock_stage = (events_data.unlockstage or 0) + 1
+		local cg22_bags = events_data.bags or 0
+		self._global.event_data.cg22 = self._global.event_data.cg22 or {}
+		self._global.event_data.cg22.stage = cg22_unlock_stage
+		self._global.event_data.cg22.bags = cg22_bags
+
+		if self._global.event_stage.cg22 ~= cg22_unlock_stage then
+			self:set_event_stage("cg22", cg22_unlock_stage)
+		end
+	end
+
+	self._fetching_json = false
+
+	self:_pop_fetch_que()
 end
 
 function SideJobEventManager:_setup_challenges()
@@ -174,7 +221,7 @@ function SideJobEventManager:load(cache, version)
 				if not saved_challenge.completed then
 					for _, objective in ipairs(challenge.objectives) do
 						for _, saved_objective in ipairs(saved_challenge.objectives) do
-							if objective.achievement_id ~= nil and objective.achievement_id == saved_objective.achievement_id or objective.progress_id ~= nil and objective.progress_id == saved_objective.progress_id or objective.collective_id ~= nil and objective.collective_id == saved_objective.collective_id or objective.stage_id ~= nil and objective.stage_id == saved_objective.stage_id then
+							if objective.achievement_id ~= nil and objective.achievement_id == saved_objective.achievement_id or objective.progress_id ~= nil and objective.progress_id == saved_objective.progress_id or objective.collective_id ~= nil and objective.collective_id == saved_objective.collective_id then
 								for _, save_value in ipairs(objective.save_values) do
 									objective[save_value] = saved_objective[save_value] or objective[save_value]
 								end
@@ -200,6 +247,26 @@ function SideJobEventManager:load(cache, version)
 								end
 
 								objectives_complete = any_objective_completed
+							elseif objective.choice_id or saved_objective.choice_id then
+								local choice_table = objective.choice_id and objective.challenge_choices or saved_objective.choice_id and saved_objective.challenge_choices_saved_values
+
+								for choice_idx, item in pairs(choice_table) do
+									if item.progress_id and (item.progress_id == objective.progress_id or item.progress_id == saved_objective.progress_id) then
+										local new_objective = saved_objective.choice_id and item or saved_objective
+
+										if objective.choice_id then
+											for _, save_value in ipairs(objective.challenge_choices[choice_idx].save_values) do
+												objective.challenge_choices[choice_idx][save_value] = new_objective[save_value] or objective.challenge_choices[choice_idx][save_value]
+											end
+										else
+											for _, save_value in ipairs(objective.save_values) do
+												objective[save_value] = new_objective[save_value] or objective[save_value]
+											end
+										end
+									end
+								end
+
+								objectives_complete = false
 							end
 						end
 					end
@@ -218,6 +285,24 @@ function SideJobEventManager:load(cache, version)
 									for choice_index, choice_objective in ipairs(objective.challenge_choices) do
 										for _, save_value in ipairs(choice_objective.save_values) do
 											choice_objective[save_value] = saved_objective.challenge_choices_saved_values and saved_objective.challenge_choices_saved_values[choice_index][save_value] or choice_objective[save_value]
+										end
+									end
+								elseif objective.choice_id or saved_objective.choice_id then
+									local choice_table = objective.choice_id and objective.challenge_choices or saved_objective.choice_id and saved_objective.challenge_choices_saved_values
+
+									for choice_idx, item in pairs(choice_table) do
+										if item.progress_id and (item.progress_id == objective.progress_id or item.progress_id == saved_objective.progress_id) then
+											local new_objective = saved_objective.choice_id and item or saved_objective
+
+											if objective.choice_id then
+												for _, save_value in ipairs(objective.challenge_choices[choice_idx].save_values) do
+													objective.challenge_choices[choice_idx][save_value] = new_objective[save_value] or objective.challenge_choices[choice_idx][save_value]
+												end
+											else
+												for _, save_value in ipairs(objective.save_values) do
+													objective[save_value] = new_objective[save_value] or objective[save_value]
+												end
+											end
 										end
 									end
 								end
@@ -788,13 +873,6 @@ function SideJobEventManager:set_event_stage(event_id, stage)
 	local identifier, is_upgrade_locked, is_upgrade_aquired = nil
 
 	for _, challenge in ipairs(self:challenges()) do
-		for _, objective in pairs(challenge.objectives) do
-			if objective.stage_id then
-				objective.completed = false
-				objective.progress = 0
-			end
-		end
-
 		self:_update_challenge_stages(challenge, "stage_id", event_id .. "_stages", self._global.event_stage[event_id], self.completed_challenge)
 
 		identifier = UpgradesManager.AQUIRE_STRINGS[6] .. tostring(challenge.id)

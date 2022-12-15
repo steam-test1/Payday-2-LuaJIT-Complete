@@ -4441,3 +4441,49 @@ function GroupAIStateBesiege:_respawn_unit_for_group(task_data, group_data, targ
 		return true
 	end
 end
+
+function GroupAIStateBesiege:spawn_snowman_boss()
+	local assault_candidates = {}
+
+	for _, criminal_data in pairs(self._char_criminals) do
+		table.insert(assault_candidates, self:get_area_from_nav_seg_id(criminal_data.tracker:nav_segment()))
+	end
+
+	if not next(assault_candidates) then
+		return false
+	end
+
+	local target_area = assault_candidates[math.random(#assault_candidates)]
+	local spawn_group, spawn_group_type = self:_find_spawn_group_near_area(target_area, {
+		snowman_boss = {
+			1,
+			1,
+			1
+		}
+	}, nil, nil, nil)
+
+	if not spawn_group then
+		return false
+	end
+
+	local grp_objective = {
+		attitude = "engage",
+		pose = "stand",
+		type = "assault_area",
+		stance = "hos",
+		area = spawn_group.area,
+		coarse_path = {
+			{
+				spawn_group.area.pos_nav_seg,
+				spawn_group.area.pos
+			}
+		}
+	}
+	local group = self:_spawn_in_group(spawn_group, spawn_group_type, grp_objective, nil)
+
+	if group then
+		return group
+	end
+
+	return false
+end

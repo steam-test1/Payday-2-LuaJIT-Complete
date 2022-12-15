@@ -25,6 +25,7 @@ function FeatureManager:_setup()
 	self._default.announcements.safehouse_dailies = 1
 	self._default.announcements.tango_weapon_unlocked = 1
 	self._default.announcements.movie_theater_unlocked = 1
+	self._default.announcements.cg22_event_explanation = 1
 	self._default.external_notifications = {
 		dialog_texas_heat_drop_name = {
 			"rat_oilbaron",
@@ -110,6 +111,7 @@ function FeatureManager:reset()
 	Global.feature_manager.announcements.short_heist = 1
 	Global.feature_manager.announcements.short_heists_available = 1
 	Global.feature_manager.announcements.new_career = 1
+	Global.feature_manager.announcements.cg22_event_explanation = 1
 	Global.feature_manager.announced = {}
 	Global.feature_manager.external_notifications = {}
 	self._global = Global.feature_manager
@@ -408,6 +410,12 @@ end
 
 function FeatureManager:pda9_event_explanation()
 	managers.menu:show_pda9_event_dialog()
+
+	return true
+end
+
+function FeatureManager:cg22_event_explanation()
+	managers.menu:show_cg22_event_dialog()
 
 	return true
 end

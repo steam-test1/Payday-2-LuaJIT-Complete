@@ -34,6 +34,7 @@ ContractBrokerGui.tabs = {
 }
 ContractBrokerGui.MAX_SEARCH_LENGTH = 20
 ContractBrokerGui.RELEASE_WINDOW = 7
+ContractBrokerGui.event_levels = table.map_keys(tweak_data.mutators.piggybank.level_coordinates)
 
 function ContractBrokerGui:init(ws, fullscreen_ws, node)
 	self._fullscreen_ws = managers.gui_data:create_fullscreen_16_9_workspace()
@@ -788,6 +789,12 @@ function ContractBrokerGui:_setup_filter_tactic()
 		},
 		{
 			"menu_filter_tactic_stealthable"
+		},
+		{
+			"menu_filter_tactic_holiday",
+			{
+				event_icon = managers.localization:get_default_macro("BTN_XMAS")
+			}
 		}
 	}
 	local last_y = 0
@@ -849,6 +856,76 @@ function ContractBrokerGui:perform_job_filter_skirmish(job_id, contact, job_twea
 	return self:perform_filter_skirmish(contact)
 end
 
+function ContractBrokerGui:perform_job_filter_event_gamemode(job_id, contact, job_tweak, contact_tweak)
+	if #job_tweak.chain == 0 then
+		return false
+	end
+
+	for _, stage in ipairs(job_tweak.chain) do
+		if not table.contains(self.event_levels, stage.level_id) then
+			return false
+		end
+	end
+
+	return contact_tweak and not contact_tweak.hidden
+end
+
+function ContractBrokerGui:_setup_filter_gamemode_tactic()
+	local tactics = {
+		{
+			"menu_st_category_all"
+		},
+		{
+			"menu_filter_tactic_holiday",
+			{
+				event_icon = managers.localization:get_default_macro("BTN_XMAS")
+			}
+		}
+	}
+	local last_y = 0
+	local check_new_job_data = {
+		filter_key = "job",
+		filter_func = ContractBrokerGui.perform_filter_gamemode_tactic
+	}
+
+	for index, filter in ipairs(tactics) do
+		check_new_job_data.filter_param = index
+		local text = self:_add_filter_button(filter[1], last_y, {
+			check_new_job_data = check_new_job_data,
+			text_macros = filter[2]
+		})
+		last_y = text:bottom() + 1
+	end
+
+	self:add_filter("job", ContractBrokerGui.perform_filter_gamemode_tactic)
+	self:set_sorting_function(ContractBrokerGui.perform_standard_sort)
+end
+
+function ContractBrokerGui:perform_filter_gamemode_tactic(job_tweak, wrapped_tweak, optional_current_filter)
+	local current_filter = optional_current_filter or self._current_filter or 1
+
+	if current_filter == 1 then
+		return true
+	end
+
+	if current_filter == 2 then
+		local allow = false
+		local chain = wrapped_tweak and wrapped_tweak.chain or job_tweak.chain
+
+		for _, data in ipairs(chain) do
+			local level_data = tweak_data.levels[data.level_id]
+
+			if level_data then
+				allow = allow or level_data.is_christmas_heist ~= nil
+			end
+		end
+
+		return allow
+	end
+
+	return false
+end
+
 function ContractBrokerGui:perform_filter_contact(value, optional_contact_filter)
 	local contact_filter = optional_contact_filter or self._contact_filter_list[self._current_filter] or self._contact_filter_list[1] or {}
 
@@ -883,6 +960,8 @@ function ContractBrokerGui:perform_filter_tactic(job_tweak, wrapped_tweak, optio
 				allow = allow or level_data.ghost_required or level_data.ghost_required_visual
 			elseif current_filter == 3 then
 				allow = allow or level_data.ghost_bonus ~= nil
+			elseif current_filter == 4 then
+				allow = allow or level_data.is_christmas_heist ~= nil
 			end
 		end
 	end

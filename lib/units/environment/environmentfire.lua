@@ -28,11 +28,12 @@ function EnvironmentFire:on_spawn(data, normal, user_unit, added_time, range_mul
 		camera_shake_max_mul = 4,
 		sound_muffle_effect = true,
 		effect = data.effect_name,
-		sound_event = data.sound_event,
 		feedback_range = data.range * 2,
-		sound_event_burning = data.sound_event_burning,
+		sound_event = data.sound_event,
 		sound_event_impact_duration = data.sound_event_impact_duration,
-		sound_event_duration = data.burn_duration + added_time
+		sound_event_burning = data.sound_event_burning,
+		sound_event_duration = data.burn_duration + added_time,
+		sound_event_burning_stop = data.sound_event_burning_stop
 	}
 	self._data = data
 	self._normal = normal
@@ -47,7 +48,7 @@ function EnvironmentFire:on_spawn(data, normal, user_unit, added_time, range_mul
 	self._curve_pow = data.curve_pow
 	self._damage = data.damage
 	self._player_damage = data.player_damage
-	self._fire_dot_data = deep_clone(data.fire_dot_data)
+	self._fire_dot_data = data.fire_dot_data and deep_clone(data.fire_dot_data)
 	self._fire_alert_radius = data.fire_alert_radius
 	self._no_fire_alert = data.no_fire_alert
 	self._is_molotov = data.is_molotov

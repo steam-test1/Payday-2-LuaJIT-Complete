@@ -4856,6 +4856,102 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		sequence = "set_ehtan"
 	}
 	self.player_styles.puffervest.characters.ecp_male = puffervest_characters_male_fat
+	self.player_styles.elfsuit = {
+		name_id = "bm_suit_elfsuit",
+		desc_id = "bm_suit_elfsuit_desc",
+		texture_bundle_folder = "xm22",
+		global_value = "xm22",
+		material_variations = {}
+	}
+	self.player_styles.elfsuit.material_variations.default = {
+		name_id = "bm_suit_elfsuit_default",
+		global_value = "xm22",
+		desc_id = "bm_suit_elfsuit_default_desc"
+	}
+	self.player_styles.elfsuit.body_replacement = body_replacement_standard
+	self.player_styles.elfsuit.third_body_replacement = body_replacement_standard
+	self.player_styles.elfsuit.unit = "units/pd2_dlc_xm22/characters/xm22_acc_elf/xm22_acc_fps_elf_male/xm22_acc_fps_elf_male"
+	self.player_styles.elfsuit.material_variations.red = {
+		desc_id = "bm_suit_elfsuit_red_desc",
+		global_value = "xm22",
+		name_id = "bm_suit_elfsuit_red",
+		third_material = "units/pd2_dlc_xm22/characters/xm22_acc_elf/shared_materials/xm22_acc_elf_red",
+		material = "units/pd2_dlc_xm22/characters/xm22_acc_elf/shared_materials/xm22_acc_fps_elf_male_red"
+	}
+	self.player_styles.elfsuit.material_variations.violet = {
+		desc_id = "bm_suit_elfsuit_violet_desc",
+		global_value = "xm22",
+		name_id = "bm_suit_elfsuit_violet",
+		third_material = "units/pd2_dlc_xm22/characters/xm22_acc_elf/shared_materials/xm22_acc_elf_violet",
+		material = "units/pd2_dlc_xm22/characters/xm22_acc_elf/shared_materials/xm22_acc_fps_elf_male_violet"
+	}
+	self.player_styles.elfsuit.material_variations.yellow = {
+		desc_id = "bm_suit_elfsuit_yellow_desc",
+		global_value = "xm22",
+		name_id = "bm_suit_elfsuit_yellow",
+		third_material = "units/pd2_dlc_xm22/characters/xm22_acc_elf/shared_materials/xm22_acc_elf_yellow",
+		material = "units/pd2_dlc_xm22/characters/xm22_acc_elf/shared_materials/xm22_acc_fps_elf_male_yellow"
+	}
+	self.player_styles.elfsuit.characters = {}
+	local elf_characters_male = {
+		third_unit = "units/pd2_dlc_xm22/characters/xm22_acc_elf/xm22_acc_elf_male_average/xm22_acc_elf_male_average"
+	}
+
+	set_characters_data("elfsuit", characters_male, elf_characters_male)
+
+	local elfsuit_characters_male_big = {
+		third_unit = "units/pd2_dlc_xm22/characters/xm22_acc_elf/xm22_acc_elf_male_big/xm22_acc_elf_male_big"
+	}
+
+	set_characters_data("elfsuit", characters_male_big, elfsuit_characters_male_big)
+
+	local elfsuit_characters_female = {
+		third_unit = "units/pd2_dlc_xm22/characters/xm22_acc_elf/xm22_acc_elf_female_average/xm22_acc_elf_female_average"
+	}
+
+	set_characters_data("elfsuit", characters_female, elfsuit_characters_female)
+
+	local elfsuit_characters_female_big = {
+		third_unit = "units/pd2_dlc_xm22/characters/xm22_acc_elf/xm22_acc_elf_female_fat/xm22_acc_elf_female_fat"
+	}
+
+	set_characters_data("elfsuit", characters_female_big, elfsuit_characters_female_big)
+
+	local elfsuit_characters_male_fat = {
+		third_unit = "units/pd2_dlc_xm22/characters/xm22_acc_elf/xm22_acc_elf_male_fat/xm22_acc_elf_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.elfsuit.characters.ecp_male = elfsuit_characters_male_fat
+	self.player_styles.throwables_bag = {
+		unavailable = true,
+		material_variations = {}
+	}
+	self.player_styles.throwables_bag.material_variations.default = {}
+	self.player_styles.throwables_bag.third_unit = "units/pd2_dlc_mxm/characters/mxm_acc_throwables_bag_male_average/mxm_acc_throwables_bag_male_average"
+	self.player_styles.throwables_bag.characters = {}
+	local throwables_bag_characters_male_big = {
+		third_unit = "units/pd2_dlc_mxm/characters/mxm_acc_throwables_bag_male_big/mxm_acc_throwables_bag_male_big"
+	}
+
+	set_characters_data("throwables_bag", characters_male_big, throwables_bag_characters_male_big)
+
+	local throwables_bag_characters_female = {
+		third_unit = "units/pd2_dlc_mxm/characters/mxm_acc_throwables_bag_female_average/mxm_acc_throwables_bag_female_average"
+	}
+
+	set_characters_data("throwables_bag", characters_female, throwables_bag_characters_female)
+
+	local throwables_bag_characters_female_big = {
+		third_unit = "units/pd2_dlc_mxm/characters/mxm_acc_throwables_bag_female_fat/mxm_acc_throwables_bag_female_fat"
+	}
+
+	set_characters_data("throwables_bag", characters_female_big, throwables_bag_characters_female_big)
+
+	local throwables_bag_characters_male_fat = {
+		third_unit = "units/pd2_dlc_mxm/characters/mxm_acc_throwables_bag_female_fat/mxm_acc_throwables_bag_female_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.throwables_bag.characters.ecp_male = throwables_bag_characters_male_fat
 end
 
 function BlackMarketTweakData:get_player_style_value(player_style, character_name, key)
@@ -5038,6 +5134,12 @@ end
 function BlackMarketTweakData:build_player_style_list(tweak_data)
 	local x_td, y_td, x_gv, y_gv, x_sn, y_sn = nil
 
+	local function map_func(x)
+		x_td = self.player_styles[x]
+
+		return not x_td.unavailable
+	end
+
 	local function sort_func(x, y)
 		if x == "none" then
 			return true
@@ -5068,5 +5170,13 @@ function BlackMarketTweakData:build_player_style_list(tweak_data)
 		return x < y
 	end
 
-	self.player_style_list = table.map_keys(self.player_styles, sort_func)
+	self.player_style_list = {}
+
+	for key, data in pairs(self.player_styles) do
+		if not data.unavailable then
+			table.insert(self.player_style_list, key)
+		end
+	end
+
+	table.sort(self.player_style_list, sort_func)
 end

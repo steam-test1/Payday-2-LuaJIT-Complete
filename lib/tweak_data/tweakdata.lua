@@ -1353,6 +1353,7 @@ Play the full version soon to get your full PAYDAY!]],
 		1.3
 	}
 	self.experience_manager.limited_bonus_multiplier = 1
+	self.experience_manager.limited_xmas_bonus_multiplier = 1.15
 	self.experience_manager.level_limit = {
 		low_cap_level = -1,
 		low_cap_multiplier = 0.75,
@@ -2163,7 +2164,9 @@ Play the full version soon to get your full PAYDAY!]],
 		"soundbanks/music",
 		"soundbanks/music_alesso"
 	}
-	self.music.event_track_overrides = {}
+	self.music.event_track_overrides = {
+		mainmenu = "today_is_payday_too"
+	}
 	self.blame = {
 		default = "hint_blame_missing",
 		empty = nil,
@@ -2399,6 +2402,9 @@ Play the full version soon to get your full PAYDAY!]],
 		launcher_electric_ms3gl = {
 			explosion = false,
 			tase = false
+		},
+		sticky_grenade = {
+			explosion = false
 		}
 	}
 	self.projectiles = {
@@ -2793,6 +2799,28 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.underbarrel_electric_groza = deep_clone(self.projectiles.underbarrel_electric)
 	self.projectiles.underbarrel_electric_groza.sound_event = "gl_electric_explode"
 	self.projectiles.underbarrel_m203_groza = deep_clone(self.projectiles.launcher_m203)
+	self.projectiles.xmas_snowball = {
+		damage = 28,
+		curve_pow = 0.1,
+		player_damage = 1,
+		range = 100,
+		name_id = "bm_grenade_xmas_snowball",
+		launch_speed = 1000,
+		adjust_z = 0,
+		mass_look_up_modifier = 1,
+		push_at_body_index = 0,
+		bullet_class = "InstantSnowballBase",
+		remove_on_impact = true,
+		sound_event = "no_sound",
+		sounds = {}
+	}
+	self.projectiles.xmas_snowball.sounds.flyby = "jav_flyby"
+	self.projectiles.xmas_snowball.sounds.flyby_stop = "jav_flyby_stop"
+	self.projectiles.xmas_snowball.sounds.impact = "snow_impact_gen"
+	self.projectiles.xmas_snowball.effect_name = "effects/payday2/particles/impacts/snowball_impact"
+	self.projectiles.xmas_snowball.idstr_decal = Idstring("snow_explosion_std")
+	self.projectiles.xmas_snowball.idstr_effect = Idstring("")
+	self.projectiles.xmas_snowball.alert_radius = 0
 	self.projectiles.poison_gas_grenade = {
 		damage = 100,
 		player_damage = 0,
@@ -2866,6 +2894,40 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.launcher_electric_ms3gl = deep_clone(self.projectiles.launcher_electric)
 	self.projectiles.launcher_electric_ms3gl.damage = 14
 	self.projectiles.launcher_electric_ms3gl.sound_event = "gl_electric_explode"
+	self.projectiles.sticky_grenade = {
+		damage = 120,
+		curve_pow = 0.1,
+		player_damage = 10,
+		range = 500,
+		launch_speed = 500,
+		in_air_timer = 10,
+		detonate_timer = 2.5,
+		sweep_radius = 25,
+		name_id = "bm_sticky_grenade",
+		sounds = {}
+	}
+	self.projectiles.sticky_grenade.sounds.impact = "grenade_sticky_impact"
+	self.projectiles.sticky_grenade.warning_data = {
+		play_when_attached = true,
+		beep_speeds = {
+			0.1,
+			0.025
+		},
+		sound_data = {
+			event_name = "grenade_sticky_beep",
+			event_stop_name = "grenade_sticky_beep_stop"
+		},
+		light_data = {
+			type_str = "omni|specular",
+			range = 300,
+			beep_mul = 0.3,
+			falloff_exp = 0.5,
+			beep_fade_speed = 4,
+			specular_mul = 0.5,
+			link_to_unit = true,
+			color = Vector3(0, 0, 255)
+		}
+	}
 	self.voting = {
 		timeout = 30,
 		cooldown = 50,

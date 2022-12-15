@@ -26,6 +26,7 @@ require("lib/managers/hud/HUDWaitingLegend")
 require("lib/managers/hud/HUDStageEndCrimeSpreeScreen")
 require("lib/managers/hud/HUDStatsScreenSkirmish")
 require("lib/managers/hud/HUDLootScreenSkirmish")
+require("lib/managers/hud/HUDMutator")
 
 HUDManager.disabled = {
 	[Idstring("guis/player_hud"):key()] = true,
@@ -566,6 +567,7 @@ function HUDManager:_setup_player_info_hud_pd2()
 	self:_create_hud_chat()
 	self:_create_assault_corner()
 	self:_create_waiting_legend(hud)
+	self:_create_mutator(hud)
 	self:_create_accessibility(hud)
 end
 
@@ -1119,6 +1121,25 @@ end
 
 function HUDManager:modify_heist_time(time)
 	self._hud_heist_timer:modify_time(time)
+end
+
+function HUDManager:_create_mutator(hud)
+	if not _G.IS_VR then
+		hud = hud or managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
+		self._hud_mutator = HUDMutator:new(hud)
+	end
+end
+
+function HUDManager:add_buff(buff_id, name_id, color, time_left, show_time_left)
+	if not _G.IS_VR then
+		self._hud_mutator:add_buff(buff_id, name_id, color, time_left, show_time_left)
+	end
+end
+
+function HUDManager:update_mutator_hud(t, dt)
+	if not _G.IS_VR then
+		self._hud_mutator:update(t, dt)
+	end
 end
 
 function HUDManager:_create_accessibility(hud)

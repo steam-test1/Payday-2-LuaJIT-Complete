@@ -9486,6 +9486,50 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 			sydney = "hatgla_green_default"
 		}
 	}
+	self.masks.elfhat = {
+		unit = "units/pd2_dlc_xm22/masks/msk_elfhat/msk_elfhat",
+		name_id = "bm_msk_elfhat",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "xm22",
+		texture_bundle_folder = "xm22"
+	}
+	self.masks.elfhat_red = {
+		unit = "units/pd2_dlc_xm22/masks/msk_elfhat_red/msk_elfhat_red",
+		name_id = "bm_msk_elfhat_red",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "xm22",
+		texture_bundle_folder = "xm22"
+	}
+	self.masks.elfhat_yellow = {
+		unit = "units/pd2_dlc_xm22/masks/msk_elfhat_yellow/msk_elfhat_yellow",
+		name_id = "bm_msk_elfhat_yellow",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "xm22",
+		texture_bundle_folder = "xm22"
+	}
+	self.masks.elfhat_violet = {
+		unit = "units/pd2_dlc_xm22/masks/msk_elfhat_violet/msk_elfhat_violet",
+		name_id = "bm_msk_elfhat_violet",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "xm22",
+		texture_bundle_folder = "xm22"
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.masks) do

@@ -7576,17 +7576,37 @@ function BlackMarketGui:update_info_text()
 		updated_texts[1].text = slot_data.name_localized
 
 		if not self._slot_data.unlocked then
-			updated_texts[3].text = managers.localization:to_upper_text(slot_data.level == 0 and (slot_data.skill_name or "bm_menu_skilltree_locked") or "bm_menu_level_req", {
+			local text_id = nil
+
+			if slot_data.dlc_locked then
+				text_id = slot_data.dlc_locked
+			elseif slot_data.level == 0 then
+				text_id = slot_data.skill_name or "bm_menu_skilltree_locked"
+			else
+				text_id = "bm_menu_level_req"
+			end
+
+			updated_texts[3].text = managers.localization:to_upper_text(text_id, {
 				level = slot_data.level,
 				SKILL = slot_data.name
 			})
 			updated_texts[3].text = updated_texts[3].text .. "\n"
 		end
 
-		updated_texts[4].text = managers.localization:text(tweak_data.blackmarket.deployables[slot_data.name].desc_id, {
+		updated_texts[4].resource_color = {}
+		local desc_text = managers.localization:text(tweak_data.blackmarket.deployables[slot_data.name].desc_id, {
 			BTN_INTERACT = managers.localization:btn_macro("interact", true),
 			BTN_USE_ITEM = managers.localization:btn_macro("use_item", true)
 		})
+		updated_texts[4].text = desc_text .. "\n"
+
+		if slot_data.global_value and slot_data.global_value ~= "normal" then
+			updated_texts[4].text = updated_texts[4].text .. "##" .. managers.localization:to_upper_text(tweak_data.lootdrop.global_values[slot_data.global_value].desc_id) .. "##"
+
+			table.insert(updated_texts[4].resource_color, tweak_data.lootdrop.global_values[slot_data.global_value].color)
+		end
+
+		updated_texts[4].below_stats = true
 	elseif identifier == self.identifiers.character then
 		updated_texts[1].text = slot_data.name_localized
 
@@ -10606,20 +10626,22 @@ function BlackMarketGui:populate_deployables(data)
 	local can_switch_fire_mode = managers.player:has_category_upgrade("sentry_gun", "ap_bullets")
 	local index = 0
 	local second_deployable = managers.player:has_category_upgrade("player", "second_deployable")
+	local d_tweak_data = nil
 
 	for i, deployable_data in ipairs(sort_data) do
+		d_tweak_data = tweak_data.blackmarket.deployables[deployable_data[1]]
+		new_data = {
+			name = deployable_data[1],
+			name_localized = managers.localization:text(d_tweak_data.name_id),
+			category = "deployables"
+		}
 		guis_catalog = "guis/"
-		local bundle_folder = tweak_data.blackmarket.deployables[deployable_data[1]] and tweak_data.blackmarket.deployables[deployable_data[1]].texture_bundle_folder
+		local bundle_folder = d_tweak_data.texture_bundle_folder
 
 		if bundle_folder then
 			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
 		end
 
-		new_data = {
-			name = deployable_data[1]
-		}
-		new_data.name_localized = managers.localization:text(tweak_data.blackmarket.deployables[new_data.name].name_id)
-		new_data.category = "deployables"
 		new_data.bitmap_texture = guis_catalog .. "textures/pd2/blackmarket/icons/deployables/" .. tostring(new_data.name)
 		new_data.slot = i
 		new_data.unlocked = table.contains(managers.player:availible_equipment(1), new_data.name)
@@ -10640,7 +10662,6 @@ function BlackMarketGui:populate_deployables(data)
 			end
 		end
 
-		is_sentry_gun = new_data.name == "sentry_gun" or new_data.name == "sentry_gun_silent"
 		new_data.slot = slot
 		new_data.equipped = slot ~= 0
 
@@ -10659,8 +10680,16 @@ function BlackMarketGui:populate_deployables(data)
 		end
 
 		new_data.stream = false
-		new_data.skill_based = new_data.level == 0
-		new_data.skill_name = "bm_menu_skill_locked_" .. new_data.name
+
+		if d_tweak_data.dlc then
+			new_data.dlc_based = true
+			new_data.dlc_locked = tweak_data.lootdrop.global_values[d_tweak_data.dlc].unlock_id or "bm_menu_dlc_locked"
+			new_data.global_value = managers.dlc:dlc_to_global_value(d_tweak_data.dlc) or "normal"
+		else
+			new_data.skill_based = new_data.level == 0
+			new_data.skill_name = "bm_menu_skill_locked_" .. new_data.name
+		end
+
 		new_data.lock_texture = self:get_lock_icon(new_data)
 
 		if new_data.unlocked and not new_data.equipped and not second_deployable then
@@ -10678,6 +10707,8 @@ function BlackMarketGui:populate_deployables(data)
 		if new_data.equipped then
 			table.insert(new_data, "lo_d_unequip")
 		end
+
+		is_sentry_gun = new_data.name == "sentry_gun" or new_data.name == "sentry_gun_silent"
 
 		if new_data.unlocked and is_sentry_gun and can_switch_fire_mode then
 			local is_ap_rounds = managers.player:get_equipment_setting(new_data.name, "fire_mode") == 2

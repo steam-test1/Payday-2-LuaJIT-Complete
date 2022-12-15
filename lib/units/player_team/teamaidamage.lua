@@ -22,6 +22,8 @@ TeamAIDamage._HEALTH_GRANULARITY = CopDamage._HEALTH_GRANULARITY
 TeamAIDamage.set_invulnerable = CopDamage.set_invulnerable
 TeamAIDamage._hurt_severities = CopDamage._hurt_severities
 TeamAIDamage.get_damage_type = CopDamage.get_damage_type
+TeamAIDamage.get_impact_segment = CopDamage.get_impact_segment
+TeamAIDamage._impact_bones = CopDamage._impact_bones
 
 function TeamAIDamage:init(unit)
 	self._unit = unit

@@ -3372,7 +3372,7 @@ function NewLoadoutTab:create_grenade_loadout()
 		on_create_func_name = "populate_grenades",
 		category = "grenades",
 		override_slots = {
-			4,
+			5,
 			5
 		},
 		identifier = Idstring("grenade")

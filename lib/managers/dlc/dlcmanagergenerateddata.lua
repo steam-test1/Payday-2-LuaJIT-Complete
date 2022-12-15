@@ -34,6 +34,10 @@ function GenericDLCManager:has_cctp()
 	return self:is_dlc_unlocked("cctp")
 end
 
+function GenericDLCManager:has_cg22()
+	return self:is_dlc_unlocked("cg22")
+end
+
 function GenericDLCManager:has_chas()
 	return self:is_dlc_unlocked("chas")
 end
@@ -162,12 +166,20 @@ function GenericDLCManager:has_mmh()
 	return self:is_dlc_unlocked("mmh")
 end
 
+function GenericDLCManager:has_mrwi()
+	return self:is_dlc_unlocked("mrwi")
+end
+
 function GenericDLCManager:has_mts()
 	return self:is_dlc_unlocked("mts")
 end
 
 function GenericDLCManager:has_mwm()
 	return self:is_dlc_unlocked("mwm")
+end
+
+function GenericDLCManager:has_mxm()
+	return self:is_dlc_unlocked("mxm")
 end
 
 function GenericDLCManager:has_mxw()
@@ -228,6 +240,10 @@ end
 
 function GenericDLCManager:has_sand()
 	return self:is_dlc_unlocked("sand")
+end
+
+function GenericDLCManager:has_savi()
+	return self:is_dlc_unlocked("savi")
 end
 
 function GenericDLCManager:has_sawp()
@@ -370,6 +386,10 @@ function GenericDLCManager:has_xm21()
 	return self:is_dlc_unlocked("xm21")
 end
 
+function GenericDLCManager:has_xm22()
+	return self:is_dlc_unlocked("xm22")
+end
+
 function GenericDLCManager:has_xmn()
 	return self:is_dlc_unlocked("xmn")
 end
@@ -412,6 +432,10 @@ function WINDLCManager:init_generated()
 	}
 	Global.dlc_manager.all_dlc_data.cctp = {
 		app_id = "1778791",
+		no_install = true
+	}
+	Global.dlc_manager.all_dlc_data.cg22 = {
+		app_id = "218620",
 		no_install = true
 	}
 	Global.dlc_manager.all_dlc_data.chas = {
@@ -546,6 +570,10 @@ function WINDLCManager:init_generated()
 		app_id = "218620",
 		no_install = true
 	}
+	Global.dlc_manager.all_dlc_data.mrwi = {
+		app_id = "218620",
+		no_install = true
+	}
 	Global.dlc_manager.all_dlc_data.mts = {
 		app_id = "1872590",
 		no_install = true
@@ -554,6 +582,11 @@ function WINDLCManager:init_generated()
 		app_id = "1184412",
 		no_install = true,
 		webpage = "https://ovk.af/ingame2CartelOptics"
+	}
+	Global.dlc_manager.all_dlc_data.mxm = {
+		app_id = "2218650",
+		no_install = true,
+		webpage = "https://pd2.link/McShayModPackYBS"
 	}
 	Global.dlc_manager.all_dlc_data.mxw = {
 		app_id = "1449441",
@@ -623,6 +656,10 @@ function WINDLCManager:init_generated()
 		app_id = "1654480",
 		no_install = true,
 		webpage = "https://ovk.af/UkrainianPrisonerYBS"
+	}
+	Global.dlc_manager.all_dlc_data.savi = {
+		app_id = "218620",
+		no_install = true
 	}
 	Global.dlc_manager.all_dlc_data.sawp = {
 		app_id = "1619070",
@@ -774,6 +811,10 @@ function WINDLCManager:init_generated()
 		no_install = true
 	}
 	Global.dlc_manager.all_dlc_data.xm21 = {
+		app_id = "218620",
+		no_install = true
+	}
+	Global.dlc_manager.all_dlc_data.xm22 = {
 		app_id = "218620",
 		no_install = true
 	}

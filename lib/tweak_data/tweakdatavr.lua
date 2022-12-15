@@ -725,6 +725,9 @@ function TweakDataVR:init(tweak_data)
 			qbu88 = {
 				position = Vector3(-0.2, -1, 0)
 			},
+			victor = {
+				position = Vector3(-0.2, 1, 1)
+			},
 			gre_m79 = {
 				grip = "weapon_2_grip",
 				position = Vector3(-1.5, 1.8, 0)
@@ -1404,6 +1407,10 @@ function TweakDataVR:init(tweak_data)
 			position = Vector3(0, 3, 5),
 			rotation = Rotation(88, 100, 28)
 		},
+		victor = {
+			position = Vector3(1, 2, 0),
+			rotation = Rotation(-2, -16, 9)
+		},
 		scout = {
 			position = Vector3(0, 3, 5),
 			rotation = Rotation(88, 100, 28)
@@ -1770,6 +1777,10 @@ function TweakDataVR:init(tweak_data)
 			desertfox = {
 				grip = "idle_wpn",
 				position = Vector3(-1, 18, 2)
+			},
+			victor = {
+				grip = "idle_wpn",
+				position = Vector3(0, 26.5, 2)
 			},
 			olympic = {
 				grip = "idle_wpn",
@@ -9669,6 +9680,42 @@ function TweakDataVR:init(tweak_data)
 				{
 					time = 0.6,
 					sound = "wp_tti_release_lever",
+					pos = Vector3()
+				}
+			}
+		},
+		victor = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_victor_mag_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 5, -20),
+					rot = Rotation(0, 30, 0)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_victor_mag_in",
+					visible = true,
+					pos = Vector3(0, 0, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, 0, -4.5)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, 0, -4)
+				},
+				{
+					time = 0.6,
+					sound = "wp_victor_release_lever",
 					pos = Vector3()
 				}
 			}

@@ -627,7 +627,7 @@ end
 
 function FireManager:play_sound_and_effects(position, normal, range, custom_params, molotov_damage_effect_table)
 	self:player_feedback(position, normal, range, custom_params)
-	self:spawn_sound_and_effects(position, normal, range, custom_params and custom_params.effect, custom_params and custom_params.sound_event, custom_params and custom_params.on_unit, custom_params and custom_params.idstr_decal, custom_params and custom_params.idstr_effect, molotov_damage_effect_table, custom_params.sound_event_burning, custom_params.sound_event_impact_duration or 0, custom_params.sound_event_duration or 0)
+	self:spawn_sound_and_effects(position, normal, range, custom_params and custom_params.effect, custom_params and custom_params.sound_event, custom_params and custom_params.on_unit, custom_params and custom_params.idstr_decal, custom_params and custom_params.idstr_effect, molotov_damage_effect_table, custom_params.sound_event_burning, custom_params.sound_event_impact_duration or 0, custom_params.sound_event_duration or 0, custom_params.sound_event_burning_stop)
 end
 
 function FireManager:player_feedback(position, normal, range, custom_params)
@@ -636,11 +636,12 @@ end
 local decal_ray_from = Vector3()
 local decal_ray_to = Vector3()
 
-function FireManager:spawn_sound_and_effects(position, normal, range, effect_name, sound_event, on_unit, idstr_decal, idstr_effect, molotov_damage_effect_table, sound_event_burning, sound_event_impact_duration, sound_event_duration)
+function FireManager:spawn_sound_and_effects(position, normal, range, effect_name, sound_event, on_unit, idstr_decal, idstr_effect, molotov_damage_effect_table, sound_event_burning, sound_event_impact_duration, sound_event_duration, sound_event_burning_stop)
 	effect_name = effect_name or "effects/payday2/particles/explosions/molotov_grenade"
+	molotov_damage_effect_table = type(molotov_damage_effect_table) == "table" and molotov_damage_effect_table or nil
 	local effect_id = nil
 
-	if molotov_damage_effect_table ~= nil then
+	if molotov_damage_effect_table then
 		if effect_name ~= "none" then
 			effect_id = World:effect_manager():spawn({
 				effect = Idstring(effect_name),
@@ -680,20 +681,31 @@ function FireManager:spawn_sound_and_effects(position, normal, range, effect_nam
 		sound_switch_name = material_name ~= empty_idstr and material_name
 	end
 
-	if effect_name == molotov_effect and molotov_damage_effect_table ~= nil and #molotov_damage_effect_table <= 1 or effect_name ~= molotov_effect then
+	if not molotov_damage_effect_table or #molotov_damage_effect_table <= 1 then
 		if sound_event ~= "no_sound" then
-			local sound_source = SoundDevice:create_source("MolotovImpact")
+			if sound_event_burning == "no_sound" and sound_event_burning_stop ~= "no_sound" then
+				self:_dispose_of_impact_sound({
+					position = position,
+					sound_switch_name = sound_switch_name,
+					sound_event_duration = sound_event_duration,
+					sound_event_impact_duration = sound_event_impact_duration,
+					sound_event_burning = sound_event,
+					sound_event_burning_stop = sound_event_burning_stop
+				})
+			else
+				local sound_source = SoundDevice:create_source("MolotovImpact")
 
-			sound_source:set_position(position)
+				sound_source:set_position(position)
 
-			if sound_switch_name then
-				sound_source:set_switch("materials", managers.game_play_central:material_name(sound_switch_name))
+				if sound_switch_name then
+					sound_source:set_switch("materials", managers.game_play_central:material_name(sound_switch_name))
+				end
+
+				sound_source:post_event(sound_event)
+				managers.enemy:add_delayed_clbk("MolotovImpact", callback(GrenadeBase, GrenadeBase, "_dispose_of_sound", {
+					sound_source = sound_source
+				}), TimerManager:game():time() + sound_event_impact_duration)
 			end
-
-			sound_source:post_event(sound_event)
-			managers.enemy:add_delayed_clbk("MolotovImpact", callback(GrenadeBase, GrenadeBase, "_dispose_of_sound", {
-				sound_source = sound_source
-			}), TimerManager:game():time() + sound_event_impact_duration)
 		end
 
 		if sound_event_burning ~= "no_sound" then
@@ -701,7 +713,8 @@ function FireManager:spawn_sound_and_effects(position, normal, range, effect_nam
 				position = position,
 				sound_event_duration = sound_event_duration,
 				sound_event_impact_duration = sound_event_impact_duration,
-				sound_event_burning = sound_event_burning
+				sound_event_burning = sound_event_burning,
+				sound_event_burning_stop = sound_event_burning_stop
 			}), TimerManager:game():time() + sound_event_impact_duration)
 		end
 	end
@@ -716,22 +729,32 @@ function FireManager:_dispose_of_impact_sound(custom_params)
 	local sound_source_burning_loop = SoundDevice:create_source("MolotovBurning")
 
 	sound_source_burning_loop:set_position(custom_params.position)
+
+	if custom_params.sound_switch_name then
+		sound_source_burning_loop:set_switch("materials", managers.game_play_central:material_name(custom_params.sound_switch_name))
+	end
+
 	sound_source_burning_loop:post_event(custom_params.sound_event_burning or "burn_loop_gen")
 
-	local molotov_tweak = tweak_data.env_effect:molotov_fire()
-	local t = custom_params.sound_event_duration or tonumber(molotov_tweak.burn_duration)
+	local t = custom_params.sound_event_duration or tonumber(tweak_data.env_effect:molotov_fire().burn_duration)
 
 	managers.enemy:add_delayed_clbk("MolotovBurning", callback(FireManager, FireManager, "_fade_out_burn_loop_sound", {
 		position = custom_params.position,
-		sound_source = sound_source_burning_loop
+		sound_source = sound_source_burning_loop,
+		sound_event_burning_stop = custom_params.sound_event_burning_stop
 	}), TimerManager:game():time() + t - custom_params.sound_event_impact_duration)
 end
 
 function FireManager:_fade_out_burn_loop_sound(custom_params)
-	local fade_duration = 2
+	if custom_params.sound_event_burning_stop ~= "no_sound" then
+		custom_params.sound_source:post_event(custom_params.sound_event_burning_stop or "burn_loop_gen_stop_fade")
 
-	custom_params.sound_source:post_event("burn_loop_gen_stop_fade")
-	managers.enemy:add_delayed_clbk("MolotovFading", callback(GrenadeBase, GrenadeBase, "_dispose_of_sound", custom_params), TimerManager:game():time() + fade_duration)
+		local fade_duration = 2
+
+		managers.enemy:add_delayed_clbk("MolotovFading", callback(GrenadeBase, GrenadeBase, "_dispose_of_sound", custom_params), TimerManager:game():time() + fade_duration)
+	else
+		custom_params.sound_source:stop()
+	end
 end
 
 function FireManager:on_simulation_ended()

@@ -57,6 +57,16 @@ function PlayerDamage:init(unit)
 	self._dire_need = managers.player:has_category_upgrade("player", "armor_depleted_stagger_shot")
 	self._has_damage_speed = managers.player:has_inactivate_temporary_upgrade("temporary", "damage_speed_multiplier")
 	self._has_damage_speed_team = managers.player:upgrade_value("player", "team_damage_speed_multiplier_send", 0) ~= 0
+	self._has_mrwi_health_invulnerable = player_manager:has_category_upgrade("temporary", "mrwi_health_invulnerable")
+
+	if self._has_mrwi_health_invulnerable then
+		local upgrade_values = player_manager:upgrade_value("temporary", "mrwi_health_invulnerable")
+		local health_threshold = upgrade_values[1]
+		local duration = upgrade_values[2]
+		local cooldown = upgrade_values[3]
+		self._mrwi_health_invulnerable_threshold = health_threshold
+		self._mrwi_health_invulnerable_cooldown = cooldown
+	end
 
 	local function revive_player()
 		self:revive(true)
@@ -186,6 +196,7 @@ function PlayerDamage:init(unit)
 
 	self:clear_delayed_damage()
 
+	self._slowdowns = {}
 	self._can_play_tinnitus = not managers.user:get_setting("accessibility_sounds_tinnitus") or false
 	self._can_play_tinnitus_clbk_func = callback(self, self, "clbk_tinnitus_toggle_changed")
 
@@ -419,6 +430,7 @@ function PlayerDamage:update(unit, t, dt)
 	self:_check_update_max_armor()
 	self:_update_can_take_dmg_timer(dt)
 	self:_update_regen_on_the_side(dt)
+	self:_update_slowdowns(dt)
 
 	if not self._armor_stored_health_max_set then
 		self._armor_stored_health_max_set = true
@@ -1437,6 +1449,19 @@ function PlayerDamage:_chk_cheat_death()
 end
 
 function PlayerDamage:_calc_health_damage(attack_data)
+	if attack_data.weapon_unit then
+		local weap_base = alive(attack_data.weapon_unit) and attack_data.weapon_unit:base()
+		local weap_tweak_data = weap_base and weap_base.weapon_tweak_data and weap_base:weapon_tweak_data()
+
+		if weap_tweak_data and weap_tweak_data.slowdown_data then
+			self:apply_slowdown(weap_tweak_data.slowdown_data)
+		end
+	end
+
+	if managers.player:has_activate_temporary_upgrade("temporary", "mrwi_health_invulnerable") then
+		return 0
+	end
+
 	local health_subtracted = 0
 	health_subtracted = self:get_real_health()
 
@@ -1449,6 +1474,18 @@ function PlayerDamage:_calc_health_damage(attack_data)
 
 		if teammate_heal_level and self:get_real_health() > 0 then
 			self._unit:network():send("copr_teammate_heal", teammate_heal_level)
+		end
+	end
+
+	if self._has_mrwi_health_invulnerable then
+		local health_threshold = self._mrwi_health_invulnerable_threshold or 0.5
+		local is_cooling_down = managers.player:get_temporary_property("mrwi_health_invulnerable", false)
+
+		if self:health_ratio() <= health_threshold and not is_cooling_down then
+			local cooldown_time = self._mrwi_health_invulnerable_cooldown or 10
+
+			managers.player:activate_temporary_upgrade("temporary", "mrwi_health_invulnerable")
+			managers.player:activate_temporary_property("mrwi_health_invulnerable", cooldown_time, true)
 		end
 	end
 
@@ -3042,6 +3079,83 @@ function PlayerDamage:remaining_delayed_damage()
 	end
 
 	return remaining_damage
+end
+
+function PlayerDamage:apply_slowdown(slowdown_data)
+	local applied_data = self._slowdowns[slowdown_data.id]
+
+	if applied_data then
+		if applied_data.add_mul then
+			applied_data.mul = math.max(applied_data.max_mul or 0, applied_data.mul - applied_data.add_mul)
+		end
+
+		applied_data.current_mul = applied_data.mul
+		applied_data.current_duration = applied_data.duration
+		applied_data.current_decay_t = applied_data.decay_t
+
+		self:_update_slowdowns_state()
+	else
+		self._slowdowns[slowdown_data.id] = {
+			mul = slowdown_data.mul,
+			add_mul = slowdown_data.add_mul,
+			max_mul = slowdown_data.max_mul,
+			current_mul = slowdown_data.mul,
+			duration = slowdown_data.duration,
+			current_duration = slowdown_data.duration,
+			decay_t = slowdown_data.decay_time,
+			current_decay_t = slowdown_data.decay_time,
+			prevents_running = slowdown_data.prevents_running
+		}
+	end
+
+	self:_update_slowdowns_state()
+end
+
+function PlayerDamage:get_current_slowdown()
+	local lowest_mul = nil
+	local prevents_running = false
+
+	for id, data in pairs(self._slowdowns) do
+		prevents_running = prevents_running or data.prevents_running
+
+		if not lowest_mul or data.current_mul < lowest_mul then
+			lowest_mul = data.current_mul
+		end
+	end
+
+	return lowest_mul, prevents_running
+end
+
+function PlayerDamage:_update_slowdowns_state()
+	local slow_mul, prevents_running = self:get_current_slowdown()
+
+	if self._unit:movement():current_state().apply_slowdown then
+		self._unit:movement():current_state():apply_slowdown(slow_mul, prevents_running)
+	end
+end
+
+function PlayerDamage:_update_slowdowns(dt)
+	if not next(self._slowdowns) then
+		return
+	end
+
+	for id, data in pairs(self._slowdowns) do
+		data.current_duration = data.current_duration - dt
+
+		if data.current_duration > 0 then
+			if data.current_decay_t then
+				data.current_decay_t = data.current_decay_t - dt
+
+				if data.current_decay_t <= 0 then
+					data.current_mul = math.lerp(1, data.mul, math.min(data.current_duration + data.decay_t, data.duration) / data.duration)
+				end
+			end
+		else
+			self._slowdowns[id] = nil
+		end
+	end
+
+	self:_update_slowdowns_state()
 end
 
 PlayerBodyDamage = PlayerBodyDamage or class()

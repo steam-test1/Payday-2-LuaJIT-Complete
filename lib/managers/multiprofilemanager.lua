@@ -31,6 +31,18 @@ function MultiProfileManager:save_current()
 	profile.glove_id = blm:equipped_glove_id()
 	profile.skillset = skt.selected_skill_switch
 	profile.perk_deck = Application:digest_value(skt.specializations.current_specialization, false)
+	local perk_choices = managers.skilltree:get_specialization_value(profile.perk_deck, "choices")
+
+	if perk_choices then
+		profile.perk_deck_choices = {}
+
+		for tier, choice_index in pairs(perk_choices) do
+			profile.perk_deck_choices[tier] = Application:digest_value(choice_index, false)
+		end
+	else
+		profile.perk_deck_choices = nil
+	end
+
 	profile.mask = blm:equipped_mask_slot()
 	profile.henchmen_loadout = {}
 	profile.preferred_henchmen = {}
@@ -56,6 +68,13 @@ function MultiProfileManager:load_current()
 	skt:switch_skills(profile.skillset)
 	managers.player:check_skills()
 	skt:set_current_specialization(profile.perk_deck)
+
+	if profile.perk_deck_choices then
+		for tier, choice_index in pairs(profile.perk_deck_choices) do
+			skt:set_specialization_choice(profile.perk_deck, tier, choice_index)
+		end
+	end
+
 	blm:equip_weapon("primaries", profile.primary)
 	blm:equip_weapon("secondaries", profile.secondary)
 	blm:equip_melee_weapon(profile.melee)
