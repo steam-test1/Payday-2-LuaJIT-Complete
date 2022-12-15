@@ -5105,6 +5105,7 @@ function GuiTweakData:init(tweak_data)
 	}
 	wts.types.gadget = wts.types.sight
 	wts.types.sight_swap = wts.types.sight
+	wts.types.second_sight = wts.types.sight
 	self.weapon_texture_switches = wts
 	self.default_part_texture_switch = "1 3"
 	self.part_texture_switches = {

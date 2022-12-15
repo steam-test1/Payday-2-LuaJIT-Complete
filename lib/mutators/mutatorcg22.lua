@@ -406,7 +406,7 @@ function MutatorCG22:update(t, dt)
 			local current_player_state = managers.player:get_current_state()
 			local fwd_ray = current_player_state and current_player_state.get_fwd_ray and current_player_state:get_fwd_ray()
 
-			if fwd_ray and alive(fwd_ray.unit) and fwd_ray.unit:unit_data().is_a_shredder then
+			if fwd_ray and alive(fwd_ray.unit) and fwd_ray.unit:unit_data() and fwd_ray.unit:unit_data().is_a_shredder then
 				local macros = {
 					BUFF_STRING = ""
 				}

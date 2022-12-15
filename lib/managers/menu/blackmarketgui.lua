@@ -13304,8 +13304,10 @@ function BlackMarketGui:populate_mods(data)
 			end
 
 			local factory = tweak_data.weapon.factory.parts[data[equipped].name]
+			local is_correct_type = data.name == "sight" or data.name == "gadget"
+			is_correct_type = is_correct_type or data.name == "second_sight"
 
-			if (data.name == "sight" or data.name == "gadget") and factory and factory.texture_switch then
+			if is_correct_type and factory and factory.texture_switch then
 				if not crafted.customize_locked then
 					table.insert(data[equipped], "wm_reticle_switch_menu")
 				end

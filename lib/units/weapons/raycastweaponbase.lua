@@ -747,26 +747,7 @@ function RaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul
 			if extra_collisions then
 				for idx, extra_col_data in ipairs(extra_collisions) do
 					if alive(hit.unit) then
-						if extra_col_data.fire_dot_data then
-							if self._ammo_data then
-								local fire_dot_data = self._ammo_data.fire_dot_data
-								self._ammo_data.fire_dot_data = extra_col_data.fire_dot_data
-
-								extra_col_data.bullet_class:on_collision(hit, self._unit, user_unit, damage * (extra_col_data.dmg_mul or 1))
-
-								self._ammo_data.fire_dot_data = fire_dot_data
-							else
-								self._ammo_data = {
-									fire_dot_data = extra_col_data.fire_dot_data
-								}
-
-								extra_col_data.bullet_class:on_collision(hit, self._unit, user_unit, damage * (extra_col_data.dmg_mul or 1))
-
-								self._ammo_data = nil
-							end
-						else
-							extra_col_data.bullet_class:on_collision(hit, self._unit, user_unit, damage * (extra_col_data.dmg_mul or 1))
-						end
+						extra_col_data.bullet_class:on_collision(hit, self._unit, user_unit, damage * (extra_col_data.dmg_mul or 1))
 					end
 				end
 			end
