@@ -812,7 +812,7 @@ function GenericDLCManager:has_a10mask()
 end
 
 function GenericDLCManager:has_mrwi_deck()
-	return managers.event_jobs:has_already_claimed_reward("cg22_community_4", 1)
+	return managers.event_jobs:has_completed_and_claimed_rewards("cg22_community_4")
 end
 
 function GenericDLCManager:has_goty_all_dlc_bundle_2014()

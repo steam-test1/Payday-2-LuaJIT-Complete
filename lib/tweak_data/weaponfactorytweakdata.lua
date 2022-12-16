@@ -1466,7 +1466,7 @@ function WeaponFactoryTweakData:_init_sights()
 				translation = Vector3(0, 0, -6.7)
 			},
 			wpn_fps_ass_akm = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -6.6)
 			},
 			wpn_fps_ass_akm_gold = {
 				translation = Vector3(0, 0, -3.75)
@@ -7515,7 +7515,8 @@ function WeaponFactoryTweakData:_init_mxm_mods()
 			recoil = 2
 		},
 		forbids = {
-			"wpn_fps_ass_m16_os_frontsight"
+			"wpn_fps_ass_m16_os_frontsight",
+			"wpn_fps_m4_uupg_b_sd"
 		}
 	}
 	self.parts.wpn_fps_m4_uupg_m_strike = {
@@ -7612,24 +7613,6 @@ function WeaponFactoryTweakData:_init_mxm_mods()
 			concealment = 2,
 			value = 6,
 			spread_moving = -2
-		}
-	}
-	self.parts.wpn_fps_m4_uupg_s_hera = {
-		unit = "units/pd2_dlc_mxm/weapons/wpn_fps_upg_mxm_m4/wpn_fps_m4_uupg_s_hera",
-		a_obj = "a_s",
-		type = "stock",
-		name_id = "bm_wp_m4_uupg_s_hera",
-		pcs = {
-			10,
-			20,
-			30,
-			40
-		},
-		stats = {
-			value = 5,
-			recoil = -2,
-			concealment = 3,
-			spread_moving = 2
 		}
 	}
 	self.parts.wpn_fps_upg_ak_fg_zenitco = {
@@ -7928,7 +7911,6 @@ function WeaponFactoryTweakData:_init_mxm_mods()
 	self.parts.wpn_fps_upg_o_mbus_pro_rear.third_unit = "units/pd2_dlc_mxm/weapons/wpn_fps_upg_mbus_pro/wpn_third_upg_o_mbus_pro_rear"
 	self.parts.wpn_fps_upg_o_mbus_pro_front.third_unit = "units/pd2_dlc_mxm/weapons/wpn_fps_upg_mbus_pro/wpn_third_upg_o_mbus_pro_front"
 	self.parts.wpn_fps_upg_o_health.third_unit = "units/pd2_dlc_mxm/weapons/wpn_fps_upg_o_health/wpn_third_upg_o_health"
-	self.parts.wpn_fps_m4_uupg_s_hera.third_unit = "units/pd2_dlc_mxm/weapons/wpn_fps_upg_mxm_m4/wpn_fps_m4_uupg_s_hera"
 	self.parts.wpn_fps_upg_ak_fg_zenitco.third_unit = "units/pd2_dlc_mxm/weapons/wpn_upg_ak_mod_pts/wpn_third_upg_ak_fg_zenitco"
 	self.parts.wpn_fps_upg_ak_body_upperreceiver_zenitco.third_unit = "units/pd2_dlc_mxm/weapons/wpn_upg_ak_mod_pts/wpn_third_upg_ak_body_upperreceiver_zenitco"
 	self.parts.wpn_fps_upg_ak_dh_zenitco.third_unit = "units/pd2_dlc_mxm/weapons/wpn_upg_ak_mod_pts/wpn_third_upg_ak_dh_zenitco"
@@ -8918,7 +8900,6 @@ function WeaponFactoryTweakData:_init_saiga()
 			"wpn_fps_upg_o_hamr",
 			"wpn_fps_upg_o_atibal",
 			"wpn_fps_upg_o_health",
-			"wpn_fps_upg_ak_fg_zenitco",
 			"wpn_fps_upg_ak_body_upperreceiver_zenitco",
 			"wpn_fps_upg_ak_dh_zenitco",
 			"wpn_fps_upg_ak_ns_zenitco",
@@ -13575,7 +13556,6 @@ function WeaponFactoryTweakData:_init_serbu()
 			"wpn_fps_upg_o_atibal",
 			"wpn_fps_upg_o_health",
 			"wpn_fps_m4_uupg_g_billet",
-			"wpn_fps_m4_uupg_s_zulu",
 			"wpn_fps_snp_victor_g_mod3",
 			"wpn_fps_snp_victor_s_mod0"
 		}
@@ -37338,6 +37318,108 @@ function WeaponFactoryTweakData:_init_model70()
 			},
 			wpn_fps_upg_fl_ass_utg = {
 				"wpn_fps_snp_model70_fl_rail"
+			}
+		},
+		override = {
+			wpn_fps_upg_o_45rds_v2 = {
+				override = {
+					wpn_fps_upg_fl_ass_smg_sho_surefire = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_upg_fl_ass_smg_sho_peqbox = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_upg_fl_ass_peq15 = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_upg_fl_ass_laser = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_upg_fl_dbal_laser = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_upg_fl_ass_utg = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_addon_ris = {
+						a_obj = "a_fl_2"
+					}
+				}
+			},
+			wpn_fps_upg_o_45rds = {
+				override = {
+					wpn_fps_upg_fl_ass_smg_sho_surefire = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_upg_fl_ass_smg_sho_peqbox = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_upg_fl_ass_peq15 = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_upg_fl_ass_laser = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_upg_fl_dbal_laser = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_upg_fl_ass_utg = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_addon_ris = {
+						a_obj = "a_fl_2"
+					}
+				}
+			},
+			wpn_fps_upg_o_45steel = {
+				override = {
+					wpn_fps_upg_fl_ass_smg_sho_surefire = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_upg_fl_ass_smg_sho_peqbox = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_upg_fl_ass_peq15 = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_upg_fl_ass_laser = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_upg_fl_dbal_laser = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_upg_fl_ass_utg = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_addon_ris = {
+						a_obj = "a_fl_2"
+					}
+				}
+			},
+			wpn_fps_upg_o_45iron = {
+				override = {
+					wpn_fps_upg_fl_ass_smg_sho_surefire = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_upg_fl_ass_smg_sho_peqbox = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_upg_fl_ass_peq15 = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_upg_fl_ass_laser = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_upg_fl_dbal_laser = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_upg_fl_ass_utg = {
+						a_obj = "a_fl_2"
+					},
+					wpn_fps_addon_ris = {
+						a_obj = "a_fl_2"
+					}
+				}
 			}
 		},
 		default_blueprint = {

@@ -1759,11 +1759,12 @@ function LootDropTweakData:init(tweak_data)
 		drops = false,
 		track = true,
 		sort_number = 514,
-		category = "global_event"
+		category = "global_event",
+		unique_lock_icon = "guis/textures/pd2/lock_achievement"
 	}
 	self.global_values.victor_mods_pack_2 = deep_clone(self.global_values.victor_mods_pack_1)
 	self.global_values.victor_mods_pack_2.unlock_id = "bm_menu_locked_cg22_3"
-	self.global_values.victor_mods_pack_1.sort_number = 516
+	self.global_values.victor_mods_pack_2.sort_number = 516
 
 	if SystemInfo:platform() == Idstring("PS3") then
 		self.global_values.sweettooth = {

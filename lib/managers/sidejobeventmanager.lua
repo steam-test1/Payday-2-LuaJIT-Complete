@@ -28,6 +28,8 @@ function SideJobEventManager:_setup()
 		end
 	end
 
+	self._global.event_data = self._global.event_data or {}
+
 	if setup.IS_START_MENU then
 		self._event_data_fetched = false
 
@@ -104,7 +106,7 @@ function SideJobEventManager:_cg22_fetch_done_clbk(success, s)
 		self._global.event_data.cg22.stage = cg22_unlock_stage
 		self._global.event_data.cg22.bags = cg22_bags
 
-		if self._global.event_stage.cg22 ~= cg22_unlock_stage then
+		if self._global.event_stage.cg22 ~= cg22_unlock_stage and self._has_loaded then
 			self:set_event_stage("cg22", cg22_unlock_stage)
 		end
 	end
@@ -221,7 +223,7 @@ function SideJobEventManager:load(cache, version)
 				if not saved_challenge.completed then
 					for _, objective in ipairs(challenge.objectives) do
 						for _, saved_objective in ipairs(saved_challenge.objectives) do
-							if objective.achievement_id ~= nil and objective.achievement_id == saved_objective.achievement_id or objective.progress_id ~= nil and objective.progress_id == saved_objective.progress_id or objective.collective_id ~= nil and objective.collective_id == saved_objective.collective_id then
+							if objective.achievement_id ~= nil and objective.achievement_id == saved_objective.achievement_id or objective.progress_id ~= nil and objective.progress_id == saved_objective.progress_id or objective.collective_id ~= nil and objective.collective_id == saved_objective.collective_id or objective.stage_id ~= nil and objective.stage_id == saved_objective.stage_id then
 								for _, save_value in ipairs(objective.save_values) do
 									objective[save_value] = saved_objective[save_value] or objective[save_value]
 								end
@@ -351,6 +353,27 @@ function SideJobEventManager:load(cache, version)
 				self:_update_challenge_collective(challenge, "collective_id", stat_id, "pda9_update", self.completed_challenge)
 			end
 		end
+
+		if self._event_data_fetched and self._global.event_data.cg22 then
+			for index, challenge in ipairs(self:challenges()) do
+				local challenge_status = challenge.completed
+
+				for idx, objective in ipairs(challenge.objectives) do
+					if objective.stage_id == "cg22_stages" and not table.contains(objective.stages, self._global.event_data.cg22.stage or 1) then
+						objective.completed = false
+						challenge_status = false
+					end
+				end
+
+				challenge.completed = challenge_status
+			end
+		end
+
+		if self._event_data_fetched and self._global.event_data.cg22 then
+			self:set_event_stage("cg22", self._global.event_data.cg22.stage or 1)
+		end
+
+		self._has_loaded = true
 	elseif state and state.version == 2 and self.save_version == 3 then
 		for idx, saved_challenge in ipairs(state.challenges or {}) do
 			local challenge = self:get_challenge(saved_challenge.id)
