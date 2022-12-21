@@ -165,7 +165,7 @@ function MutatorCG22:spawn_network_units()
 		local santa_rotation = Rotation(self._sled:rotation():yaw() + 180, self._sled:rotation():pitch(), self._sled:rotation():roll())
 		self._santa = World:spawn_unit(Idstring(MutatorCG22.santa), self._sled:position() + Vector3(math.cos(self._sled:rotation():yaw() + 90) * -115, math.sin(self._sled:rotation():yaw() + 90) * -115, 0) + Vector3(0, 0, 30), santa_rotation)
 
-		self._santa:movement():set_team(managers.groupai:state():team_data(tweak_data.levels:get_default_team_ID("player")))
+		self._santa:movement():set_team(managers.groupai:state():team_data("cg22"))
 		self._santa:movement():play_redirect("cm_so_pilot_drunk_idle")
 
 		self._shredder = World:spawn_unit(Idstring(MutatorCG22.shredder), self._shredder_position, self._shredder_rotation)

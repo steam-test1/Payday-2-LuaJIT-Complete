@@ -12257,7 +12257,7 @@ function UpgradesTweakData:_grenades_definitions()
 		category = "grenade"
 	}
 	self.definitions.chico_injector = {
-		dlc = "chico",
+		dlc = "chico_or_mrwi_deck",
 		category = "grenade"
 	}
 	self.definitions.fir_com = {
@@ -12275,7 +12275,7 @@ function UpgradesTweakData:_grenades_definitions()
 		category = "grenade"
 	}
 	self.definitions.tag_team = {
-		dlc = "ecp",
+		dlc = "ecp_or_mrwi_deck",
 		category = "grenade"
 	}
 	self.definitions.damage_control = {

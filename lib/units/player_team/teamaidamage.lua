@@ -24,6 +24,8 @@ TeamAIDamage._hurt_severities = CopDamage._hurt_severities
 TeamAIDamage.get_damage_type = CopDamage.get_damage_type
 TeamAIDamage.get_impact_segment = CopDamage.get_impact_segment
 TeamAIDamage._impact_bones = CopDamage._impact_bones
+TeamAIDamage.can_kill = CopDamage.can_kill
+TeamAIDamage.impact_body_distance = clone(CopDamage.impact_body_distance)
 
 function TeamAIDamage:init(unit)
 	self._unit = unit

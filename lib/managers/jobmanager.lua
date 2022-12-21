@@ -1132,6 +1132,12 @@ function JobManager:synced_interupt_stage(interupt, is_synced_from_server)
 end
 
 function JobManager:set_next_interupt_stage(interupt)
+	if managers.mutators:is_mutator_active(MutatorCG22) then
+		self._global.next_interupt_stage = nil
+
+		return
+	end
+
 	self._global.next_interupt_stage = interupt
 end
 

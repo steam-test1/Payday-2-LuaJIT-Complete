@@ -815,6 +815,22 @@ function GenericDLCManager:has_mrwi_deck()
 	return managers.event_jobs:has_completed_and_claimed_rewards("cg22_community_4")
 end
 
+function GenericDLCManager:has_mrwi_deck_equipped_mimicing(choice)
+	local has_deck_unlocked = self:has_mrwi_deck()
+	local has_deck_equipped = managers.skilltree:get_specialization_value("current_specialization") == 23
+	local has_choice = managers.skilltree:get_specialization_value(23, "choices", 9) == choice
+
+	return has_deck_unlocked and has_deck_equipped and has_choice
+end
+
+function GenericDLCManager:has_chico_or_mrwi_deck()
+	return self:has_chico() or self:has_mrwi_deck_equipped_mimicing(17)
+end
+
+function GenericDLCManager:has_ecp_or_mrwi_deck()
+	return self:has_ecp() or self:has_mrwi_deck_equipped_mimicing(20)
+end
+
 function GenericDLCManager:has_goty_all_dlc_bundle_2014()
 	return self:has_goty_weapon_bundle_2014() and self:has_goty_heist_bundle_2014() and self:is_dlcs_unlocked({
 		"character_pack_clover"
@@ -2351,6 +2367,10 @@ function WINDLCManager:init()
 		}
 
 		self:init_generated()
+
+		Global.dlc_manager.all_dlc_data.chico_or_mrwi_deck = deep_clone(Global.dlc_manager.all_dlc_data.chico)
+		Global.dlc_manager.all_dlc_data.ecp_or_mrwi_deck = deep_clone(Global.dlc_manager.all_dlc_data.ecp)
+
 		self:_verify_dlcs()
 	end
 

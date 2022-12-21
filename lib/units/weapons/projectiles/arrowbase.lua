@@ -303,7 +303,9 @@ function ArrowBase:_attach_to_hit_unit(is_remote, dynamic_pickup_wanted)
 	elseif alive(hit_unit) then
 		local damage_ext = hit_unit:character_damage()
 
-		if damage_ext and damage_ext.get_impact_segment then
+		if damage_ext and damage_ext.can_attach_projectiles and not damage_ext:can_attach_projectiles() then
+			switch_to_dynamic_pickup = true
+		elseif damage_ext and damage_ext.get_impact_segment then
 			parent_obj, child_obj = damage_ext:get_impact_segment(self._col_ray.position)
 
 			if parent_obj then
@@ -337,8 +339,6 @@ function ArrowBase:_attach_to_hit_unit(is_remote, dynamic_pickup_wanted)
 			if not hit_unit:character_damage():dead() and damage_ext:can_kill() then
 				switch_to_pickup = false
 			end
-		elseif damage_ext and damage_ext.can_attach_projectiles and not damage_ext:can_attach_projectiles() then
-			switch_to_dynamic_pickup = true
 		elseif not alive(self._col_ray.body) or not self._col_ray.body:enabled() then
 			local_pos = (global_pos - hit_unit:position()):rotate_with(hit_unit:rotation():inverse())
 			switch_to_dynamic_pickup = true

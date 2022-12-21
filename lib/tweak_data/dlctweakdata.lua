@@ -8829,6 +8829,20 @@ function DLCTweakData:init(tweak_data)
 	self.mrwi_deck.content.loot_global_value = "mrwi_deck"
 	self.mrwi_deck.content.loot_drops = {}
 	self.mrwi_deck.content.upgrades = {}
+	self.chico_or_mrwi_deck = {
+		content = {},
+		dlc = "has_chico_or_mrwi_deck"
+	}
+	self.chico_or_mrwi_deck.content.loot_global_value = "chico"
+	self.chico_or_mrwi_deck.content.loot_drops = {}
+	self.chico_or_mrwi_deck.content.upgrades = {}
+	self.ecp_or_mrwi_deck = {
+		content = {},
+		dlc = "has_ecp_or_mrwi_deck"
+	}
+	self.ecp_or_mrwi_deck.content.loot_global_value = "ecp"
+	self.ecp_or_mrwi_deck.content.loot_drops = {}
+	self.ecp_or_mrwi_deck.content.upgrades = {}
 	self.mxm_upgrades = {
 		content = {},
 		dlc = "has_mxm"

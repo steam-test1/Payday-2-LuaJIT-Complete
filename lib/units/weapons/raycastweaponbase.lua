@@ -812,13 +812,28 @@ function RaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul
 	end
 
 	if not tweak_data.achievement.tango_4.difficulty or table.contains(tweak_data.achievement.tango_4.difficulty, Global.game_settings.difficulty) then
-		if self._gadgets and table.contains(self._gadgets, "wpn_fps_upg_o_45rds") and cop_kill_count > 0 and managers.player:player_unit():movement():current_state():in_steelsight() then
+		local second_sight_index, has_second_sight = nil
+
+		for index, data in ipairs(self._second_sights or {}) do
+			if data.part_id == "wpn_fps_upg_o_45rds" then
+				second_sight_index = index
+				has_second_sight = true
+
+				break
+			end
+		end
+
+		if has_second_sight and cop_kill_count > 0 and managers.player:player_unit():movement():current_state():in_steelsight() then
+			local second_sight_on = self._second_sight_on and self._second_sight_on > 0 and self._second_sight_on
+
 			if self._tango_4_data then
-				if self._gadget_on == self._tango_4_data.last_gadget_state then
-					self._tango_4_data = nil
-				else
-					self._tango_4_data.last_gadget_state = self._gadget_on
+				local is_correct_sight = second_sight_on ~= self._tango_4_data.last_second_sight_state and (not second_sight_on or second_sight_on == second_sight_index)
+
+				if is_correct_sight then
+					self._tango_4_data.last_second_sight_state = second_sight_on
 					self._tango_4_data.count = self._tango_4_data.count + 1
+				else
+					self._tango_4_data = nil
 				end
 
 				if self._tango_4_data and tweak_data.achievement.tango_4.count <= self._tango_4_data.count then
@@ -827,7 +842,7 @@ function RaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul
 			else
 				self._tango_4_data = {
 					count = 1,
-					last_gadget_state = self._gadget_on
+					last_second_sight_state = second_sight_on
 				}
 			end
 		elseif self._tango_4_data then

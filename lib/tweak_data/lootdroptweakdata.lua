@@ -1886,6 +1886,8 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.h22_darkprince = self.global_values.h22
 	self.global_values.h22_devilclaws = self.global_values.h22
 	self.global_values.h22_devilhorn = self.global_values.h22
+	self.global_values.chico_or_mrwi_deck = self.global_values.chico
+	self.global_values.ecp_or_mrwi_deck = self.global_values.ecp
 
 	self:_create_global_value_list_map()
 end

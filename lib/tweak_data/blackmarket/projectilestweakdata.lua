@@ -414,7 +414,7 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 		icon = "chico_injector",
 		ability = "chico_injector",
 		texture_bundle_folder = "chico",
-		dlc = "chico",
+		dlc = "chico_or_mrwi_deck",
 		base_cooldown = 30,
 		max_amount = 1,
 		sounds = {
@@ -495,7 +495,7 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 		icon = "tag_team",
 		ability = "tag_team",
 		texture_bundle_folder = "ecp",
-		dlc = "ecp",
+		dlc = "ecp_or_mrwi_deck",
 		max_amount = 1,
 		base_cooldown = 60,
 		sounds = {
@@ -622,6 +622,7 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 		icon = "guis/dlcs/xm21/textures/pd2/hud_snowball",
 		texture_bundle_folder = "xm21",
 		base_cooldown = 2,
+		throw_shout = true,
 		no_shouting = true,
 		impact_detonation = true,
 		client_authoritative = true,
@@ -705,7 +706,6 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 		icon = "sticky_grenade",
 		texture_bundle_folder = "mxm",
 		dlc = "mxm",
-		throw_shout = true,
 		impact_detonation = true,
 		client_authoritative = true,
 		add_trail_effect = true,
