@@ -1166,7 +1166,6 @@ end
 
 function MenuSceneManager:_setup_event_units()
 	local active_event = false
-	active_event = true
 
 	if not active_event then
 		return
@@ -1179,10 +1178,6 @@ function MenuSceneManager:_setup_event_units()
 	end
 
 	self._event_units = {}
-
-	self:_setup_event_presents()
-	self:_setup_event_xmas_decorations()
-
 	local e_money = self._bg_unit:effect_spawner(Idstring("e_money"))
 
 	if e_money then
@@ -1225,30 +1220,6 @@ function MenuSceneManager:_setup_event_presents()
 		self._event_units[i] = World:spawn_unit(unit_names[unit_index], position, rotation)
 
 		table.remove(unit_names, unit_index)
-	end
-end
-
-function MenuSceneManager:_setup_event_xmas_decorations()
-	local a = self._bg_unit:get_object(Idstring("a_reference"))
-
-	if self._snow_effect then
-		World:effect_manager():kill(self._snow_effect)
-
-		self._snow_effect = nil
-	end
-
-	if alive(self._xmas_tree) then
-		self._xmas_tree:set_slot(0)
-
-		self._xmas_tree = nil
-	end
-
-	self._xmas_tree = World:spawn_unit(Idstring("units/pd2_dlc2/props/com_props_christmas_tree/com_prop_christmas_tree"), a:position() + Vector3(-150, 250, -50), Rotation(-45 + (math.random(2) - 1) * 180, 0, 0))
-
-	if alive(self._snow_pile) then
-		self._snow_pile:set_slot(0)
-
-		self._snow_pile = nil
 	end
 end
 

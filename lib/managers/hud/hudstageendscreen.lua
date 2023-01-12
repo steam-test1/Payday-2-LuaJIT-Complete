@@ -2449,9 +2449,7 @@ function HUDStageEndScreen:stage_experience_init(t, dt)
 		"bonus_extra",
 		"bonus_ghost",
 		"heat_xp",
-		"bonus_mutators",
-		"bonus_event_double",
-		"bonus_cg22"
+		"bonus_mutators"
 	}
 	local bonuses_params = {
 		bonus_mission_xp = {
@@ -2513,14 +2511,6 @@ function HUDStageEndScreen:stage_experience_init(t, dt)
 		bonus_mutators = {
 			color = tweak_data.screen_colors.important_1,
 			title = managers.localization:to_upper_text("menu_mutators_reduction_exp")
-		},
-		bonus_event_double = {
-			color = tweak_data.screen_colors.event_color,
-			title = managers.localization:to_upper_text("menu_event_double_exp_bonus")
-		},
-		bonus_cg22 = {
-			color = tweak_data.screen_colors.event_color,
-			title = managers.localization:to_upper_text("menu_cg22_exp_bonus")
 		}
 	}
 

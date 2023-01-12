@@ -2201,8 +2201,6 @@ function BlackMarketManager:is_weapon_modified(factory_id, blueprint)
 	local weapon = tweak_data.weapon.factory[factory_id]
 
 	if not weapon then
-		Application:error("BlackMarketManager:is_weapon_modified", "factory_id", factory_id, "blueprint", inspect(blueprint))
-
 		return false
 	end
 
@@ -2215,6 +2213,10 @@ function BlackMarketManager:is_weapon_modified(factory_id, blueprint)
 	end
 
 	return false
+end
+
+function BlackMarketManager:ignore_damage_upgrades(weapon_id, blueprint)
+	return tweak_data.weapon[weapon_id] and tweak_data.weapon[weapon_id].ignore_damage_upgrades
 end
 
 function BlackMarketManager:update(t, dt)
@@ -9543,7 +9545,7 @@ end
 function BlackMarketManager:damage_addend(name, categories, silencer, detection_risk, current_state, blueprint)
 	local value = 0
 
-	if tweak_data.weapon[name] and tweak_data.weapon[name].ignore_damage_upgrades then
+	if self:ignore_damage_upgrades(name, blueprint) then
 		return value
 	end
 
@@ -9561,7 +9563,7 @@ end
 function BlackMarketManager:damage_multiplier(name, categories, silencer, detection_risk, current_state, blueprint)
 	local multiplier = 1
 
-	if tweak_data.weapon[name] and tweak_data.weapon[name].ignore_damage_upgrades then
+	if self:ignore_damage_upgrades(name, blueprint) then
 		return multiplier
 	end
 

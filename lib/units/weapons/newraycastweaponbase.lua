@@ -2916,7 +2916,7 @@ function NewRaycastWeaponBase:reload_interuptable()
 end
 
 function NewRaycastWeaponBase:shotgun_shell_data()
-	if self._use_shotgun_reload then
+	if self._use_shotgun_reload and not self._skip_reload_shotgun_shell then
 		local reload_shell_data = self:weapon_tweak_data().animations.reload_shell_data
 		local unit_name = "units/payday2/weapons/wpn_fps_shell/wpn_fps_shell"
 
@@ -3120,65 +3120,6 @@ function NewRaycastWeaponBase:set_magazine_empty(is_empty)
 			self:set_objects_visible(part.unit, magazine_empty_objects, not is_empty)
 		end
 	end
-end
-
-function NewRaycastWeaponBase:ammo_type_buff_add(ammo_id, ammo_buff_data)
-	if self._buffs_data and self._buffs_data[ammo_id] then
-		return
-	end
-
-	local change_data = {}
-
-	if ammo_buff_data.extra_collisions then
-		for class_name, collision_data in pairs(ammo_buff_data.extra_collisions) do
-			local bullet_class = CoreSerialize.string_to_classtable(class_name)
-
-			if bullet_class then
-				self._extra_collisions = self._extra_collisions or {}
-				self._extra_collisions[#self._extra_collisions + 1] = {
-					bullet_class = bullet_class,
-					dmg_mul = collision_data.dmg_mul,
-					fire_dot_data = collision_data.fire_dot_data
-				}
-				change_data.collisions = change_data.collisions or {}
-
-				table.insert(change_data.collisions, #self._extra_collisions)
-			end
-		end
-	end
-
-	if next(change_data) then
-		self._buffs_data = self._buffs_data or {}
-		self._buffs_data[ammo_id] = change_data
-	end
-end
-
-function NewRaycastWeaponBase:ammo_type_buff_remove(ammo_id)
-	local buff_data = self._buffs_data and self._buffs_data[ammo_id]
-
-	if not buff_data then
-		return
-	end
-
-	self._buffs_data[ammo_id] = nil
-
-	if not next(self._buffs_data) then
-		self._buffs_data = nil
-	end
-
-	if self._extra_collisions then
-		for i, col_i in ipairs(buff_data.collisions) do
-			self._extra_collisions[col_i] = nil
-		end
-
-		if not next(self._extra_collisions) then
-			self._extra_collisions = nil
-		end
-	end
-end
-
-function NewRaycastWeaponBase:extra_collisions()
-	return self._extra_collisions
 end
 
 if _G.IS_VR then

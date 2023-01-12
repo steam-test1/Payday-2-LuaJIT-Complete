@@ -114,16 +114,17 @@ function NewRaycastWeaponBase:get_cosmetics_data()
 	return self._cosmetics_data
 end
 
-function NewRaycastWeaponBase:_material_config_name(part_id, unit_name, use_cc_material_config, force_third_person)
+function NewRaycastWeaponBase:_material_config_name(part_id, part_data, use_cc_material_config, force_third_person)
+	local unit_name = part_data.unit
 	force_third_person = force_third_person or _G.IS_VR
 
 	if self:is_npc() or force_third_person then
-		if use_cc_material_config and tweak_data.weapon.factory.parts[part_id].cc_thq_material_config then
-			return tweak_data.weapon.factory.parts[part_id].cc_thq_material_config
+		if use_cc_material_config and part_data.cc_thq_material_config then
+			return part_data.cc_thq_material_config
 		end
 
-		if tweak_data.weapon.factory.parts[part_id].thq_material_config then
-			return tweak_data.weapon.factory.parts[part_id].thq_material_config
+		if part_data.thq_material_config then
+			return part_data.thq_material_config
 		end
 
 		local cc_string = use_cc_material_config and "_cc" or ""
@@ -132,8 +133,8 @@ function NewRaycastWeaponBase:_material_config_name(part_id, unit_name, use_cc_m
 		return Idstring(unit_name .. cc_string .. thq_string)
 	end
 
-	if use_cc_material_config and tweak_data.weapon.factory.parts[part_id].cc_material_config then
-		return tweak_data.weapon.factory.parts[part_id].cc_material_config
+	if use_cc_material_config and part_data.cc_material_config then
+		return part_data.cc_material_config
 	end
 
 	return Idstring(unit_name .. "_cc")
@@ -157,7 +158,7 @@ function NewRaycastWeaponBase:_update_materials()
 				local part_data = managers.weapon_factory:get_part_data_by_part_id_from_weapon(part_id, self._factory_id, self._blueprint)
 
 				if part_data and (not self:_third_person() or not part_data.skip_third_thq) then
-					local new_material_config_ids = self:_material_config_name(part_id, part_data.unit, use_cc_material_config)
+					local new_material_config_ids = self:_material_config_name(part_id, part_data, use_cc_material_config)
 
 					if part.unit:material_config() ~= new_material_config_ids and DB:has(material_config_ids, new_material_config_ids) then
 						part.unit:set_material_config(new_material_config_ids, true)
@@ -185,8 +186,10 @@ function NewRaycastWeaponBase:_update_materials()
 		local material_config_ids = Idstring("material_config")
 
 		for part_id, part in pairs(self._parts) do
-			if tweak_data.weapon.factory.parts[part_id] then
-				local new_material_config_ids = tweak_data.weapon.factory.parts[part_id].material_config or Idstring(self:is_npc() and tweak_data.weapon.factory.parts[part_id].third_unit or tweak_data.weapon.factory.parts[part_id].unit)
+			local part_data = managers.weapon_factory:get_part_data_by_part_id_from_weapon(part_id, self._factory_id, self._blueprint)
+
+			if part_data then
+				local new_material_config_ids = self:is_npc() and part_data.third_material_config or part_data.material_config or Idstring(self:is_npc() and part_data.third_unit or part_data.unit)
 
 				if part.unit:material_config() ~= new_material_config_ids and DB:has(material_config_ids, new_material_config_ids) then
 					part.unit:set_material_config(new_material_config_ids, true)
@@ -391,7 +394,7 @@ function NewRaycastWeaponBase:spawn_magazine_unit(pos, rot, hide_bullets)
 	local use_cc_material_config = is_thq and self:get_cosmetics_data() and true or false
 	local material_config_ids = Idstring("material_config")
 	local mag_unit = World:spawn_unit(part_data.name, pos, rot)
-	local new_material_config_ids = self:_material_config_name(mag_id, mag_data.unit, use_cc_material_config, true)
+	local new_material_config_ids = self:_material_config_name(mag_id, mag_data, use_cc_material_config, true)
 
 	if mag_unit:material_config() ~= new_material_config_ids and DB:has(material_config_ids, new_material_config_ids) then
 		mag_unit:set_material_config(new_material_config_ids, true)

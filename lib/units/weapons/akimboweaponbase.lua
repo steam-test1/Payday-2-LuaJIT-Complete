@@ -25,6 +25,7 @@ end
 
 function AkimboWeaponBase:_create_second_gun(unit_name)
 	local factory_id = self._factory_id
+	local blueprint = self._blueprint
 	local factory_weapon = tweak_data.weapon.factory[factory_id]
 	local ids_unit_name = Idstring(factory_weapon.unit)
 	local new_unit = World:spawn_unit(ids_unit_name, Vector3(), Rotation())
@@ -34,8 +35,6 @@ function AkimboWeaponBase:_create_second_gun(unit_name)
 	if self._cosmetics then
 		new_unit:base():set_cosmetics_data(self._cosmetics)
 	end
-
-	local blueprint = self._blueprint
 
 	if blueprint then
 		local charm_parts = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("charm", factory_id, blueprint)

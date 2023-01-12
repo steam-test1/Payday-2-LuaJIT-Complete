@@ -66,10 +66,9 @@ PlayerStandard.ANIM_STATES = {
 }
 PlayerStandard.projectile_throw_delays = {
 	projectile_frag_com = 0.83062744140625,
-	projectile_snowball = 0.48867034912109,
-	projectile_frag = 0.52984619140625,
 	projectile_dynamite = 0.86656761169434,
-	projectile_molotov = 0.86867332458496
+	projectile_molotov = 0.86867332458496,
+	projectile_frag = 0.52984619140625
 }
 PlayerStandard.debug_bipod = nil
 

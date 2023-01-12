@@ -1517,14 +1517,6 @@ function CopActionWalk:_get_current_max_walk_speed(move_dir)
 		end
 	end
 
-	if managers.mutators:is_mutator_active(MutatorCG22) then
-		local cg22 = managers.mutators:get_mutator(MutatorCG22)
-
-		if cg22:can_enemy_be_affected_by_buff("yellow", self._unit) then
-			speed = speed * cg22:get_enemy_yellow_multiplier()
-		end
-	end
-
 	return speed
 end
 

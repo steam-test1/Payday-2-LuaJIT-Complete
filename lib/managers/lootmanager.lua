@@ -349,6 +349,18 @@ function LootManager:get_secured_bonus_bags_amount(is_vehicle)
 	return amount
 end
 
+function LootManager:get_secured_bags_amount(is_vehicle)
+	local amount = 0
+
+	for _, data in ipairs(self._global.secured) do
+		if not tweak_data.carry.small_loot[data.carry_id] and not tweak_data.carry[data.carry_id].is_vehicle == not is_vehicle then
+			amount = amount + 1
+		end
+	end
+
+	return amount
+end
+
 function LootManager:get_secured_bonus_bags_value(level_id, is_vehicle)
 	local mandatory_bags_amount = self._global.mandatory_bags.amount or 0
 	local amount_bags = tweak_data.levels[level_id] and tweak_data.levels[level_id].max_bags or 20

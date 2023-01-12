@@ -664,7 +664,6 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 	payday_text:set_bottom(self._contract_panel:h() - padding)
 
 	self._briefing_event = narrative.briefing_event
-	self._briefing_event = managers.mutators:get_briefing_override() or self._briefing_event
 
 	if self._briefing_event then
 		self._briefing_len_panel = self._contract_panel:panel({

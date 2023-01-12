@@ -658,7 +658,7 @@ function Telemetry:on_start_heist()
 	self._map_name = "invalid map name"
 
 	if managers.job:current_level_data() then
-		self._heist_name = managers.job:current_level_id()
+		self._heist_name = managers.job:current_job_variant() or managers.job:current_level_data().name_id
 		self._map_name = managers.job:current_level_data().world_name
 	end
 
@@ -1165,12 +1165,6 @@ function Telemetry:send_on_player_steam_stats_overdrill()
 	}
 
 	self:send("player_steam_stats_overdrill", telemetry_payload)
-end
-
-function Telemetry:on_player_game_event_action(action, params)
-	if action == Telemetry.event_actions.piggybank_fed then
-		self:send_on_game_event_piggybank_fed(params)
-	end
 end
 
 function Telemetry:send_on_game_event_piggybank_fed(params)

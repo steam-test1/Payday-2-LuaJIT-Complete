@@ -2,7 +2,7 @@ EventJobsTweakData = EventJobsTweakData or class()
 
 function EventJobsTweakData:init(tweak_data)
 	self.challenges = {}
-	self.current_event = "CG22"
+	self.current_event = ""
 
 	self:_init_pda8_challenges(tweak_data)
 	self:_init_pda9_challenges(tweak_data)
@@ -503,16 +503,25 @@ end
 function EventJobsTweakData:_init_cg22_challenges(tweak_data)
 	table.insert(self.challenges, {
 		reward_id = "menu_cg22_1_reward",
-		name_id = "menu_cg22_1",
-		temp_challenge = "CG22",
-		desc_id = "menu_cg22_1_desc",
-		show_progress = true,
 		locked_id = "bm_menu_locked_cg22_1",
 		id = "cg22_1",
+		name_id = "menu_cg22_1",
+		desc_id = "menu_cg22_1_desc",
+		show_progress = true,
 		objectives = {
-			tweak_data.safehouse:_progress("cg22_personal_1", 100, {
-				name_id = "menu_cg22_personal_1",
-				desc_id = "menu_cg22_personal_1_desc"
+			self:_choice({
+				tweak_data.safehouse:_progress("cg22_personal_1", 100, {
+					name_id = "menu_cg22_personal_1",
+					desc_id = "menu_cg22_personal_1_desc"
+				}),
+				tweak_data.safehouse:_progress("cg22_post_objective_1", 2000, {
+					name_id = "menu_cg22_post_objective_1",
+					desc_id = "menu_cg22_post_objective_1_desc"
+				})
+			}, 1, {
+				name_id = "menu_cg22_1_choice_obj",
+				choice_id = "cg22_personal_1",
+				desc_id = "menu_cg22_post_objective_1_desc"
 			})
 		},
 		rewards = {
@@ -524,16 +533,25 @@ function EventJobsTweakData:_init_cg22_challenges(tweak_data)
 	})
 	table.insert(self.challenges, {
 		reward_id = "menu_cg22_2_reward",
-		name_id = "menu_cg22_2",
-		temp_challenge = "CG22",
-		desc_id = "menu_cg22_2_desc",
-		show_progress = true,
 		locked_id = "bm_menu_locked_cg22_2",
 		id = "cg22_2",
+		name_id = "menu_cg22_2",
+		desc_id = "menu_cg22_2_desc",
+		show_progress = true,
 		objectives = {
-			tweak_data.safehouse:_progress("cg22_personal_2", 500, {
-				name_id = "menu_cg22_personal_2",
-				desc_id = "menu_cg22_personal_2_desc"
+			self:_choice({
+				tweak_data.safehouse:_progress("cg22_personal_2", 500, {
+					name_id = "menu_cg22_personal_2",
+					desc_id = "menu_cg22_personal_2_desc"
+				}),
+				tweak_data.safehouse:_progress("cg22_post_objective_2", 150, {
+					name_id = "menu_cg22_post_objective_2",
+					desc_id = "menu_cg22_post_objective_2_desc"
+				})
+			}, 1, {
+				name_id = "menu_cg22_2_choice_obj",
+				choice_id = "cg22_personal_2",
+				desc_id = "menu_cg22_post_objective_2_desc"
 			})
 		},
 		rewards = {
@@ -557,16 +575,25 @@ function EventJobsTweakData:_init_cg22_challenges(tweak_data)
 	})
 	table.insert(self.challenges, {
 		reward_id = "menu_cg22_3_reward",
-		name_id = "menu_cg22_3",
-		temp_challenge = "CG22",
-		desc_id = "menu_cg22_3_desc",
-		show_progress = true,
 		locked_id = "bm_menu_locked_cg22_3",
 		id = "cg22_3",
+		name_id = "menu_cg22_3",
+		desc_id = "menu_cg22_3_desc",
+		show_progress = true,
 		objectives = {
-			tweak_data.safehouse:_progress("cg22_personal_3", 150, {
-				name_id = "menu_cg22_personal_3",
-				desc_id = "menu_cg22_personal_3_desc"
+			self:_choice({
+				tweak_data.safehouse:_progress("cg22_personal_3", 150, {
+					name_id = "menu_cg22_personal_3",
+					desc_id = "menu_cg22_personal_3_desc"
+				}),
+				tweak_data.safehouse:_progress("cg22_post_objective_3", 1000, {
+					name_id = "menu_cg22_post_objective_3",
+					desc_id = "menu_cg22_post_objective_3_desc"
+				})
+			}, 1, {
+				name_id = "menu_cg22_3_choice_obj",
+				choice_id = "cg22_personal_3",
+				desc_id = "menu_cg22_post_objective_3_desc"
 			})
 		},
 		rewards = {
@@ -582,16 +609,25 @@ function EventJobsTweakData:_init_cg22_challenges(tweak_data)
 	})
 	table.insert(self.challenges, {
 		reward_id = "menu_cg22_community_1_reward",
-		name_id = "menu_cg22_community_1",
-		temp_challenge = "CG22",
-		desc_id = "menu_cg22_community_1_desc",
-		show_progress = true,
 		locked_id = "bm_menu_locked_cg22_community_1",
 		id = "cg22_community_1",
+		name_id = "menu_cg22_community_1",
+		desc_id = "menu_cg22_community_1_desc",
+		show_progress = true,
 		objectives = {
-			tweak_data.safehouse:_progress("cg22_secure_objective", 3, {
-				name_id = "menu_cg22_item_1",
-				desc_id = "menu_cg22_item_1_desc"
+			self:_choice({
+				tweak_data.safehouse:_progress("cg22_secure_objective", 3, {
+					name_id = "menu_cg22_item_1",
+					desc_id = "menu_cg22_item_1_desc"
+				}),
+				tweak_data.safehouse:_progress("cg22_post_objective_4", 20, {
+					name_id = "menu_cg22_post_objective_4",
+					desc_id = "menu_cg22_post_objective_4_desc"
+				})
+			}, 1, {
+				name_id = "menu_cg22_4_choice_obj",
+				choice_id = "cg22_community_1",
+				desc_id = "menu_cg22_post_objective_4_desc"
 			}),
 			self:_stage("cg22_stages", 1, {
 				name_id = "menu_cg22_1_track_obj",
@@ -619,16 +655,25 @@ function EventJobsTweakData:_init_cg22_challenges(tweak_data)
 	})
 	table.insert(self.challenges, {
 		reward_id = "menu_cg22_community_2_reward",
-		name_id = "menu_cg22_community_2",
-		temp_challenge = "CG22",
-		desc_id = "menu_cg22_community_2_desc",
-		show_progress = true,
 		locked_id = "bm_menu_locked_cg22_community_2",
 		id = "cg22_community_2",
+		name_id = "menu_cg22_community_2",
+		desc_id = "menu_cg22_community_2_desc",
+		show_progress = true,
 		objectives = {
-			tweak_data.safehouse:_progress("cg22_sacrifice_objective", 3, {
-				name_id = "menu_cg22_item_2",
-				desc_id = "menu_cg22_item_2_desc"
+			self:_choice({
+				tweak_data.safehouse:_progress("cg22_sacrifice_objective", 3, {
+					name_id = "menu_cg22_item_2",
+					desc_id = "menu_cg22_item_2_desc"
+				}),
+				tweak_data.safehouse:_progress("cg22_post_objective_5", 40, {
+					name_id = "menu_cg22_post_objective_5",
+					desc_id = "menu_cg22_post_objective_5_desc"
+				})
+			}, 1, {
+				name_id = "menu_cg22_5_choice_obj",
+				choice_id = "cg22_community_2",
+				desc_id = "menu_cg22_post_objective_5_desc"
 			}),
 			self:_stage("cg22_stages", 1, {
 				name_id = "menu_cg22_2_track_obj",
@@ -654,16 +699,25 @@ function EventJobsTweakData:_init_cg22_challenges(tweak_data)
 	})
 	table.insert(self.challenges, {
 		reward_id = "menu_cg22_community_3_reward",
-		name_id = "menu_cg22_community_3",
-		temp_challenge = "CG22",
-		desc_id = "menu_cg22_community_3_desc",
-		show_progress = true,
 		locked_id = "bm_menu_locked_cg22_community_3",
 		id = "cg22_community_3",
+		name_id = "menu_cg22_community_3",
+		desc_id = "menu_cg22_community_3_desc",
+		show_progress = true,
 		objectives = {
-			tweak_data.safehouse:_progress("cg22_snowman_objective", 1, {
-				name_id = "menu_cg22_item_3",
-				desc_id = "menu_cg22_item_3_desc"
+			self:_choice({
+				tweak_data.safehouse:_progress("cg22_snowman_objective", 1, {
+					name_id = "menu_cg22_item_3",
+					desc_id = "menu_cg22_item_3_desc"
+				}),
+				tweak_data.safehouse:_progress("cg22_post_objective_4", 100, {
+					name_id = "menu_cg22_post_objective_6",
+					desc_id = "menu_cg22_post_objective_6_desc"
+				})
+			}, 1, {
+				name_id = "menu_cg22_6_choice_obj",
+				choice_id = "cg22_community_3",
+				desc_id = "menu_cg22_post_objective_6_desc"
 			}),
 			self:_stage("cg22_stages", 1, {
 				name_id = "menu_cg22_3_track_obj",
@@ -688,16 +742,25 @@ function EventJobsTweakData:_init_cg22_challenges(tweak_data)
 	})
 	table.insert(self.challenges, {
 		reward_id = "menu_cg22_community_4_reward",
-		name_id = "menu_cg22_community_4",
-		temp_challenge = "CG22",
-		desc_id = "menu_cg22_community_4_desc",
-		show_progress = true,
 		locked_id = "bm_menu_locked_cg22_community_4",
 		id = "cg22_community_4",
+		name_id = "menu_cg22_community_4",
+		desc_id = "menu_cg22_community_4_desc",
+		show_progress = true,
 		objectives = {
-			tweak_data.safehouse:_progress("cg22_sacrifice_objective", 30, {
-				name_id = "menu_cg22_item_2",
-				desc_id = "menu_cg22_item_2_desc"
+			self:_choice({
+				tweak_data.safehouse:_progress("cg22_sacrifice_objective", 30, {
+					name_id = "menu_cg22_item_2",
+					desc_id = "menu_cg22_item_2_desc"
+				}),
+				tweak_data.safehouse:_progress("cg22_post_objective_4", 250, {
+					name_id = "menu_cg22_post_objective_7",
+					desc_id = "menu_cg22_post_objective_7_desc"
+				})
+			}, 1, {
+				name_id = "menu_cg22_7_choice_obj",
+				choice_id = "cg22_community_4",
+				desc_id = "menu_cg22_post_objective_7_desc"
 			}),
 			self:_stage("cg22_stages", 1, {
 				name_id = "menu_cg22_4_track_obj",
@@ -718,16 +781,25 @@ function EventJobsTweakData:_init_cg22_challenges(tweak_data)
 	})
 	table.insert(self.challenges, {
 		reward_id = "menu_cg22_community_5_reward",
-		name_id = "menu_cg22_community_5",
-		temp_challenge = "CG22",
-		desc_id = "menu_cg22_community_5_desc",
-		show_progress = true,
 		locked_id = "bm_menu_locked_cg22_community_5",
 		id = "cg22_community_5",
+		name_id = "menu_cg22_community_5",
+		desc_id = "menu_cg22_community_5_desc",
+		show_progress = true,
 		objectives = {
-			tweak_data.safehouse:_progress("cg22_snowman_objective", 10, {
-				name_id = "menu_cg22_item_3",
-				desc_id = "menu_cg22_item_3_desc"
+			self:_choice({
+				tweak_data.safehouse:_progress("cg22_snowman_objective", 10, {
+					name_id = "menu_cg22_item_3",
+					desc_id = "menu_cg22_item_3_desc"
+				}),
+				tweak_data.safehouse:_progress("cg22_post_objective_5", 200, {
+					name_id = "menu_cg22_post_objective_8",
+					desc_id = "menu_cg22_post_objective_8_desc"
+				})
+			}, 1, {
+				name_id = "menu_cg22_8_choice_obj",
+				choice_id = "cg22_community_5",
+				desc_id = "menu_cg22_post_objective_8_desc"
 			}),
 			self:_stage("cg22_stages", 1, {
 				name_id = "menu_cg22_5_track_obj",
@@ -750,16 +822,25 @@ function EventJobsTweakData:_init_cg22_challenges(tweak_data)
 	})
 	table.insert(self.challenges, {
 		reward_id = "menu_cg22_community_6_reward",
-		name_id = "menu_cg22_community_6",
-		temp_challenge = "CG22",
-		desc_id = "menu_cg22_community_6_desc",
-		show_progress = true,
 		locked_id = "bm_menu_locked_cg22_community_6",
 		id = "cg22_community_6",
+		name_id = "menu_cg22_community_6",
+		desc_id = "menu_cg22_community_6_desc",
+		show_progress = true,
 		objectives = {
-			tweak_data.safehouse:_progress("cg22_secure_objective", 30, {
-				name_id = "menu_cg22_item_1",
-				desc_id = "menu_cg22_item_1_desc"
+			self:_choice({
+				tweak_data.safehouse:_progress("cg22_secure_objective", 30, {
+					name_id = "menu_cg22_item_1",
+					desc_id = "menu_cg22_item_1_desc"
+				}),
+				tweak_data.safehouse:_progress("cg22_post_objective_4", 500, {
+					name_id = "menu_cg22_post_objective_9",
+					desc_id = "menu_cg22_post_objective_9_desc"
+				})
+			}, 1, {
+				name_id = "menu_cg22_9_choice_obj",
+				choice_id = "cg22_community_6",
+				desc_id = "menu_cg22_post_objective_9_desc"
 			}),
 			self:_stage("cg22_stages", 1, {
 				name_id = "menu_cg22_6_track_obj",

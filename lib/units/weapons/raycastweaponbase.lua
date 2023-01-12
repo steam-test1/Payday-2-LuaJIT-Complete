@@ -735,7 +735,6 @@ function RaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul
 	local hit_through_wall = false
 	local hit_through_shield = false
 	local hit_result = nil
-	local extra_collisions = self.extra_collisions and self:extra_collisions()
 
 	for _, hit in ipairs(ray_hits) do
 		damage = self:get_damage_falloff(damage, hit, user_unit)
@@ -743,14 +742,6 @@ function RaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul
 
 		if damage > 0 then
 			hit_result = self._bullet_class:on_collision(hit, self._unit, user_unit, damage)
-
-			if extra_collisions then
-				for idx, extra_col_data in ipairs(extra_collisions) do
-					if alive(hit.unit) then
-						extra_col_data.bullet_class:on_collision(hit, self._unit, user_unit, damage * (extra_col_data.dmg_mul or 1))
-					end
-				end
-			end
 		end
 
 		if hit_result and hit_result.type == "death" then
@@ -2960,20 +2951,3 @@ function ConcussiveInstantBulletBase:give_impact_damage(col_ray, weapon_unit, us
 
 	return self.super.give_impact_damage(self, col_ray, weapon_unit, user_unit, damage, ...)
 end
-
-InstantSnowballBase = InstantSnowballBase or class(InstantExplosiveBulletBase)
-InstantSnowballBase.id = "xmas_snowball"
-InstantSnowballBase.CURVE_POW = tweak_data.projectiles.xmas_snowball.curve_pow
-InstantSnowballBase.PLAYER_DMG_MUL = tweak_data.projectiles.xmas_snowball.player_dmg_mul
-InstantSnowballBase.RANGE = tweak_data.projectiles.xmas_snowball.range
-InstantSnowballBase.ALERT_RADIUS = tweak_data.projectiles.xmas_snowball.alert_radius
-InstantSnowballBase.EFFECT_PARAMS = {
-	on_unit = true,
-	sound_muffle_effect = true,
-	effect = tweak_data.projectiles.xmas_snowball.effect_name,
-	sound_event = tweak_data.projectiles.xmas_snowball.sound_event,
-	feedback_range = tweak_data.projectiles.xmas_snowball.feedback_range,
-	camera_shake_max_mul = tweak_data.projectiles.xmas_snowball.camera_shake_max_mul,
-	idstr_decal = tweak_data.projectiles.xmas_snowball.idstr_decal,
-	idstr_effect = tweak_data.projectiles.xmas_snowball.idstr_effect
-}

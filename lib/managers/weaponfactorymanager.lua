@@ -980,10 +980,11 @@ end
 function WeaponFactoryManager:get_ammo_data_from_weapon(factory_id, blueprint)
 	local factory = tweak_data.weapon.factory
 	local t = {}
+	local override = self:_get_override_parts(factory_id, blueprint)
 
 	for _, id in ipairs(self:get_assembled_blueprint(factory_id, blueprint)) do
 		if factory.parts[id].type == "ammo" then
-			local part = self:_part_data(id, factory_id)
+			local part = self:_part_data(id, factory_id, override)
 			t = part.custom_stats
 		end
 	end

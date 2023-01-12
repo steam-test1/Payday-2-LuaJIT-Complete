@@ -1037,6 +1037,21 @@ function AchievementsTweakData:init(tweak_data)
 				"spooc",
 				"medic"
 			}
+		},
+		cg22_post_objective_1 = {
+			weapon_type = "snp",
+			stat = "cg22_post_objective_1"
+		},
+		cg22_post_objective_2 = {
+			weapon = "victor",
+			stat = "cg22_post_objective_2",
+			enemy = "spooc",
+			difficulty = veryhard_and_above
+		},
+		cg22_post_objective_5 = {
+			stat = "cg22_post_objective_5",
+			enemy = "tank",
+			difficulty = overkill_and_above
 		}
 	}
 	self.enemy_melee_hit_achievements = {
@@ -7997,6 +8012,11 @@ function AchievementsTweakData:init(tweak_data)
 		pda9_n2 = {
 			multi_kill = 2,
 			stat = "pda9_n2"
+		},
+		cg22_post_objective_3 = {
+			weapon = "victor",
+			stat = "cg22_post_objective_3",
+			multi_kill = 2
 		}
 	}
 	self.inventory = {}

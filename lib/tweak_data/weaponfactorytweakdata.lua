@@ -1463,7 +1463,7 @@ function WeaponFactoryTweakData:_init_sights()
 				translation = Vector3(0, 0, -3.75)
 			},
 			wpn_fps_ass_74 = {
-				translation = Vector3(0, 0, -6.7)
+				translation = Vector3(0, 0, -40.7)
 			},
 			wpn_fps_ass_akm = {
 				translation = Vector3(0, 0, -6.6)
@@ -1481,43 +1481,43 @@ function WeaponFactoryTweakData:_init_sights()
 				translation = Vector3(0, 0, -3.75)
 			},
 			wpn_fps_smg_akmsu = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -15.75)
 			},
 			wpn_fps_ass_ak5 = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -7)
 			},
 			wpn_fps_smg_vityaz = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -6.75)
 			},
 			wpn_fps_ass_aug = {
 				translation = Vector3(0, 0, -6.3)
 			},
 			wpn_fps_ass_g36 = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -6.4)
 			},
 			wpn_fps_smg_p90 = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -6.45)
 			},
 			wpn_fps_ass_m14 = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -7.4)
 			},
 			wpn_fps_smg_mp9 = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -7)
 			},
 			wpn_fps_smg_mp5 = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -6.4)
 			},
 			wpn_fps_smg_mac10 = {
 				translation = Vector3(0, 0, -3.75)
 			},
 			wpn_fps_ass_s552 = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -5.6)
 			},
 			wpn_fps_smg_m45 = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -7.4)
 			},
 			wpn_fps_smg_mp7 = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -6.3)
 			},
 			wpn_fps_ass_scar = {
 				translation = Vector3(0, 0, -3.75)
@@ -1553,13 +1553,13 @@ function WeaponFactoryTweakData:_init_sights()
 				translation = Vector3(0, 0, -3.75)
 			},
 			wpn_fps_smg_scorpion = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -8.75)
 			},
 			wpn_fps_smg_tec9 = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -8.45)
 			},
 			wpn_fps_smg_uzi = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -8.5)
 			},
 			wpn_fps_pis_judge = {
 				translation = Vector3(0, 0, -8.8)
@@ -1568,28 +1568,34 @@ function WeaponFactoryTweakData:_init_sights()
 				translation = Vector3(0, 0, -3.75)
 			},
 			wpn_fps_ass_galil = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -6.75)
 			},
 			wpn_fps_ass_famas = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -9.75)
 			},
 			wpn_fps_sho_spas12 = {
 				translation = Vector3(0, 0, -3.75)
 			},
 			wpn_fps_smg_sterling = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -7)
 			},
 			wpn_fps_snp_mosin = {
 				translation = Vector3(0, 0, -7.75)
 			},
 			wpn_fps_smg_thompson = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, -3, -7.75)
 			},
 			wpn_fps_ass_l85a2 = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -1.5)
 			},
 			wpn_fps_ass_vhs = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -4.75)
+			},
+			wpn_fps_smg_cobray = {
+				translation = Vector3(-0, 0, -3.5)
+			},
+			wpn_fps_ass_asval = {
+				translation = Vector3(-0, 0, -3.4)
 			},
 			wpn_fps_rpg7 = {
 				translation = Vector3(0, 0, -3.75)
@@ -1622,16 +1628,19 @@ function WeaponFactoryTweakData:_init_sights()
 				translation = Vector3(0, 0, -3.75)
 			},
 			wpn_fps_smg_sr2 = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -8)
 			},
 			wpn_fps_ass_tecci = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -5.2)
+			},
+			wpn_fps_ass_sub2000 = {
+				translation = Vector3(0, 0, -3.5)
 			},
 			wpn_fps_smg_hajk = {
 				translation = Vector3(0, 0, -3.75)
 			},
 			wpn_fps_ass_groza = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -8.6)
 			},
 			wpn_fps_snp_qbu88 = {
 				translation = Vector3(0, 0, -3.75)
@@ -1653,7 +1662,7 @@ function WeaponFactoryTweakData:_init_sights()
 				translation = Vector3(0, 0, -7.5)
 			},
 			wpn_fps_smg_schakal = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -6.25)
 			},
 			wpn_fps_lmg_hk51b = {
 				translation = Vector3(0, 0, -3.75)
@@ -1683,10 +1692,10 @@ function WeaponFactoryTweakData:_init_sights()
 				translation = Vector3(0, 0, -7.4)
 			},
 			wpn_fps_ass_flint = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -6.2)
 			},
 			wpn_fps_smg_coal = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -7.5)
 			},
 			wpn_fps_smg_shepheard = {
 				translation = Vector3(0, 0, -3.75)
@@ -1695,7 +1704,7 @@ function WeaponFactoryTweakData:_init_sights()
 				translation = Vector3(0, 0, -3.75)
 			},
 			wpn_fps_smg_erma = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -7.6)
 			},
 			wpn_fps_bow_ecp = {
 				translation = Vector3(0, 0, -3.75)
@@ -1704,7 +1713,7 @@ function WeaponFactoryTweakData:_init_sights()
 				translation = Vector3(0, 0, -3.75)
 			},
 			wpn_fps_ass_corgi = {
-				translation = Vector3(0, 0, -3.75)
+				translation = Vector3(0, 0, -5.75)
 			},
 			wpn_fps_gre_slap = {
 				translation = Vector3(0, 0, -3.75)
@@ -2127,7 +2136,7 @@ function WeaponFactoryTweakData:_init_sights()
 				translation = Vector3(-0.1, 0, -12.5)
 			},
 			wpn_fps_ass_l85a2 = {
-				translation = Vector3(-0.1, 0, 6.55)
+				translation = Vector3(-0.1, 0, -4.1)
 			},
 			wpn_fps_ass_vhs = {
 				translation = Vector3(-0.1, 0, -7.35)
@@ -7200,7 +7209,7 @@ function WeaponFactoryTweakData:_init_ak_parts()
 			wpn_fps_upg_o_hamr_reddot = {
 				stance_mod = {
 					wpn_fps_ass_74 = {
-						translation = Vector3(0, -3, -3.2),
+						translation = Vector3(0, -3, -3.3),
 						rotation = Rotation(0, -0, 0)
 					}
 				}
@@ -7837,6 +7846,7 @@ function WeaponFactoryTweakData:_init_mxm_mods()
 			"scope",
 			"display_unit_health"
 		},
+		forbids = {},
 		texture_switch = {
 			material = "gfx_reddot",
 			channel = "diffuse_texture"
@@ -37794,7 +37804,7 @@ function WeaponFactoryTweakData:_init_scout()
 		},
 		stance_mod = {
 			wpn_fps_snp_scout = {
-				translation = Vector3(-0.01, -10, 2.55),
+				translation = Vector3(-0.01, -10, 4.1),
 				rotation = Rotation(0, 0, 0)
 			}
 		},
@@ -38116,8 +38126,7 @@ function WeaponFactoryTweakData:_init_scout()
 			"wpn_fps_upg_o_poe",
 			"wpn_fps_upg_o_hamr",
 			"wpn_fps_upg_o_atibal",
-			"wpn_fps_upg_o_health",
-			"wpn_fps_upg_o_mbus_pro"
+			"wpn_fps_upg_o_health"
 		}
 	}
 	self.wpn_fps_snp_scout_npc = deep_clone(self.wpn_fps_snp_scout)
@@ -45251,7 +45260,7 @@ function WeaponFactoryTweakData:_init_tng()
 				rotation = Rotation(0, 0, -45)
 			},
 			wpn_fps_snp_scout = {
-				translation = Vector3(-1.9, 0, -7.25),
+				translation = Vector3(-2.4, 0, -7.35),
 				rotation = Rotation(0, 0, -45)
 			},
 			wpn_fps_snp_qbu88 = {
@@ -48156,7 +48165,8 @@ function WeaponFactoryTweakData:_init_flint()
 			"wpn_fps_upg_o_hamr",
 			"wpn_fps_upg_o_atibal",
 			"wpn_fps_upg_o_health",
-			"wpn_fps_upg_ak_ns_zenitco"
+			"wpn_fps_upg_ak_ns_zenitco",
+			"wpn_fps_upg_ak_s_zenitco"
 		}
 	}
 	self.wpn_fps_ass_flint_npc = deep_clone(self.wpn_fps_ass_flint)

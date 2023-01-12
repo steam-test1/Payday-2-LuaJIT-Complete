@@ -110,9 +110,8 @@ function ShotgunBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoo
 	local autoaim, dodge_enemies = self:check_autoaim(from_pos, direction, self._range)
 	local weight = 0.1
 	local enemy_died = false
-	local extra_collisions = self.extra_collisions and self:extra_collisions()
 
-	local function hit_enemy(col_ray, ray_i)
+	local function hit_enemy(col_ray)
 		if col_ray.unit:character_damage() then
 			local enemy_key = col_ray.unit:key()
 
@@ -132,24 +131,8 @@ function ShotgunBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoo
 				table.insert(hit_objects[col_ray.unit:key()], col_ray)
 			elseif col_ray.unit:in_slot(self.shield_mask) then
 				self._bullet_class:on_collision(col_ray, self._unit, user_unit, damage / self._rays)
-
-				if extra_collisions and ray_i == 1 then
-					for idx, extra_col_data in ipairs(extra_collisions) do
-						if alive(col_ray.unit) then
-							extra_col_data.bullet_class:on_collision(col_ray, self._unit, user_unit, damage * (extra_col_data.dmg_mul or 1))
-						end
-					end
-				end
 			else
 				self._bullet_class:on_collision(col_ray, self._unit, user_unit, damage)
-
-				if extra_collisions and ray_i == 1 then
-					for idx, extra_col_data in ipairs(extra_collisions) do
-						if alive(col_ray.unit) then
-							extra_col_data.bullet_class:on_collision(col_ray, self._unit, user_unit, damage * (extra_col_data.dmg_mul or 1))
-						end
-					end
-				end
 			end
 		end
 	end
@@ -193,7 +176,7 @@ function ShotgunBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoo
 			if col_ray and col_ray.unit:in_slot(managers.slot:get_mask("enemies")) then
 				self._autohit_current = (self._autohit_current + weight) / (1 + weight)
 
-				hit_enemy(col_ray, i)
+				hit_enemy(col_ray)
 
 				autoaim = false
 			else
@@ -207,20 +190,20 @@ function ShotgunBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoo
 						self._autohit_current = (self._autohit_current + weight) / (1 + weight)
 						hit_something = true
 
-						hit_enemy(autohit, i)
+						hit_enemy(autohit)
 					else
 						self._autohit_current = self._autohit_current / (1 + weight)
 					end
 				elseif col_ray then
 					hit_something = true
 
-					hit_enemy(col_ray, i)
+					hit_enemy(col_ray)
 				end
 			end
 		elseif col_ray then
 			hit_something = true
 
-			hit_enemy(col_ray, i)
+			hit_enemy(col_ray)
 		end
 	end
 
@@ -269,14 +252,6 @@ function ShotgunBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoo
 				my_result = ShotgunBase.super._fire_raycast(self, user_unit, from_pos, col_ray.ray, dmg_mul, shoot_player, 0, autohit_mul, suppr_mul, shoot_through_data)
 			else
 				my_result = self._bullet_class:on_collision(col_ray, self._unit, user_unit, damage)
-
-				if extra_collisions then
-					for idx, extra_col_data in ipairs(extra_collisions) do
-						if alive(col_ray.unit) then
-							extra_col_data.bullet_class:on_collision(col_ray, self._unit, user_unit, damage * (extra_col_data.dmg_mul or 1))
-						end
-					end
-				end
 			end
 
 			my_result = managers.mutators:modify_value("ShotgunBase:_fire_raycast", my_result)
