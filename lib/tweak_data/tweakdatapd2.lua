@@ -1117,6 +1117,10 @@ function TweakData:_setup_scene_poses()
 		sko12 = {
 			"husk_rifle1",
 			required_pose = true
+		},
+		hcar = {
+			"husk_rifle1",
+			required_pose = true
 		}
 	}
 	self.scene_poses.infamy = {

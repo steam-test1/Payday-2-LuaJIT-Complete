@@ -345,8 +345,10 @@ local function equip_weapon_in_game(category, slot)
 		return true
 	end
 
-	local factory_weapon = tweak_data.weapon.factory[Global.blackmarket_manager.crafted_items[category][slot].factory_id]
-	local ids_unit_name = Idstring(factory_weapon.unit)
+	local weapon = Global.blackmarket_manager.crafted_items[category][slot]
+	local factory_id = weapon.factory_id
+	local blueprint = weapon.blueprint
+	local ids_unit_name = Idstring(managers.weapon_factory:get_weapon_unit(factory_id, blueprint))
 
 	if not managers.dyn_resource:is_resource_ready(Idstring("unit"), ids_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE) then
 		managers.dyn_resource:load(Idstring("unit"), ids_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)

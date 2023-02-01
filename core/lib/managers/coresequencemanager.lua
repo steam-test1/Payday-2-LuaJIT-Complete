@@ -4208,13 +4208,16 @@ function BodyElement.load(unit, data)
 	for body_id, cat_data in pairs(data) do
 		for _, sub_data in pairs(cat_data) do
 			local body = unit:body(body_id)
-			local param = sub_data[2]
 
-			if type(param) == "string" then
-				param = Idstring(param)
+			if body then
+				local param = sub_data[2]
+
+				if type(param) == "string" then
+					param = Idstring(param)
+				end
+
+				body[sub_data[1]](body, param)
 			end
-
-			body[sub_data[1]](body, param)
 		end
 	end
 end
@@ -4876,7 +4879,9 @@ function LightElement.load(unit, data)
 	for obj_name, sub_data in pairs(data) do
 		local obj = unit:get_object(obj_name:id())
 
-		obj[sub_data[1]](obj, sub_data[2])
+		if obj then
+			obj[sub_data[1]](obj, sub_data[2])
+		end
 	end
 end
 
@@ -5170,7 +5175,9 @@ function ObjectElement.load(unit, data)
 		for func_name, values in pairs(sub_data) do
 			local obj = unit:get_object(values[1])
 
-			obj[func_name](obj, values[2])
+			if obj then
+				obj[func_name](obj, values[2])
+			end
 		end
 	end
 end
@@ -6220,7 +6227,9 @@ function WwiseElement.load(unit, data)
 	for source, sub_data in pairs(data) do
 		local sound_source = unit:sound_source(source and Idstring(source))
 
-		sound_source[sub_data[1]](sound_source, sub_data[2])
+		if sound_source then
+			sound_source[sub_data[1]](sound_source, sub_data[2])
+		end
 	end
 end
 

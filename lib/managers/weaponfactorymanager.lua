@@ -115,6 +115,23 @@ function WeaponFactoryManager:get_weapons_uses_part(part_id)
 	return self._part_used_by_weapons[part_id]
 end
 
+function WeaponFactoryManager:get_weapon_unit(factory_id, blueprint)
+	local factory_weapon = tweak_data.weapon.factory[factory_id]
+
+	if not factory_weapon then
+		return nil
+	end
+
+	blueprint = blueprint or factory_weapon.default_blueprint
+	local ammo_data = self:get_ammo_data_from_weapon(factory_id, blueprint)
+
+	if ammo_data and ammo_data.weapon_unit then
+		return ammo_data.weapon_unit
+	end
+
+	return factory_weapon.unit
+end
+
 function WeaponFactoryManager:get_weapon_id_by_factory_id(factory_id)
 	local upgrade = managers.upgrades:weapon_upgrade_by_factory_id(factory_id)
 
@@ -984,6 +1001,21 @@ function WeaponFactoryManager:get_ammo_data_from_weapon(factory_id, blueprint)
 
 	for _, id in ipairs(self:get_assembled_blueprint(factory_id, blueprint)) do
 		if factory.parts[id].type == "ammo" then
+			local part = self:_part_data(id, factory_id, override)
+			t = part.custom_stats
+		end
+	end
+
+	return t
+end
+
+function WeaponFactoryManager:get_underbarrel_ammo_data_from_weapon(factory_id, blueprint)
+	local factory = tweak_data.weapon.factory
+	local t = {}
+	local override = self:_get_override_parts(factory_id, blueprint)
+
+	for _, id in ipairs(self:get_assembled_blueprint(factory_id, blueprint)) do
+		if factory.parts[id].type == "underbarrel_ammo" then
 			local part = self:_part_data(id, factory_id, override)
 			t = part.custom_stats
 		end

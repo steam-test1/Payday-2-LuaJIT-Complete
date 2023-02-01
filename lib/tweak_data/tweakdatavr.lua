@@ -732,6 +732,10 @@ function TweakDataVR:init(tweak_data)
 				grip = "weapon_2_grip",
 				position = Vector3(-1.5, 1.8, 0)
 			},
+			contender = {
+				grip = "weapon_2_grip",
+				position = Vector3(-0.5, 1.2, 0)
+			},
 			m134 = {
 				position = Vector3(-8, 29, 0)
 			},
@@ -791,6 +795,9 @@ function TweakDataVR:init(tweak_data)
 				position = Vector3(-0.5, 0.8, 2)
 			},
 			galil = {
+				position = Vector3(-0.5, 0, 1)
+			},
+			hcar = {
 				position = Vector3(-0.5, 0, 1)
 			},
 			vhs = {
@@ -1359,6 +1366,14 @@ function TweakDataVR:init(tweak_data)
 			position = Vector3(0, 3, 2),
 			rotation = Rotation(0, -25, 0)
 		},
+		tkb = {
+			position = Vector3(0, -4, 7),
+			rotation = Rotation(0, -25, 0)
+		},
+		hcar = {
+			position = Vector3(0, 0, 0),
+			rotation = Rotation(0, -20, 0)
+		},
 		shak12 = {
 			position = Vector3(0, 3, 2),
 			rotation = Rotation(0, -25, 0)
@@ -1461,6 +1476,10 @@ function TweakDataVR:init(tweak_data)
 		ms3gl = {
 			position = Vector3(0, 2, -4),
 			rotation = Rotation(20, -15, 1)
+		},
+		contender = {
+			position = Vector3(1.5, 0, 2),
+			rotation = Rotation(-45, 12, -20)
 		},
 		china = {
 			grip = "idle_wpn",
@@ -1917,6 +1936,13 @@ function TweakDataVR:init(tweak_data)
 			groza = {
 				position = Vector3(0, 19, -4)
 			},
+			tkb = {
+				position = Vector3(-5, 27, -2)
+			},
+			hcar = {
+				grip = "idle_wpn",
+				position = Vector3(-2, 32, 2)
+			},
 			contraband = {
 				grip = "idle_wpn",
 				position = Vector3(-1, 30, 0)
@@ -1984,6 +2010,10 @@ function TweakDataVR:init(tweak_data)
 				}
 			},
 			gre_m79 = {
+				grip = "idle_wpn",
+				position = Vector3(-1, 20, -2)
+			},
+			contender = {
 				grip = "idle_wpn",
 				position = Vector3(-1, 20, -2)
 			},
@@ -5375,6 +5405,42 @@ function TweakDataVR:init(tweak_data)
 				}
 			}
 		},
+		tkb = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_tkb_clip_grab_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 5, -20),
+					rot = Rotation(0, 30, 0)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_tkb_clip_slide_in",
+					visible = true,
+					pos = Vector3(0, 0, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, 0, -4.5)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, 0, -4)
+				},
+				{
+					time = 0.6,
+					sound = "wp_tkb_lever_release",
+					pos = Vector3()
+				}
+			}
+		},
 		g36 = {
 			start = {
 				{
@@ -5623,6 +5689,42 @@ function TweakDataVR:init(tweak_data)
 				{
 					time = 0.6,
 					sound = "wp_galil_lever_release",
+					pos = Vector3()
+				}
+			}
+		},
+		hcar = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_hcar_clip_slide_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, 5, -20),
+					rot = Rotation(0, 30, 0)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_hcar_clip_slide_in",
+					visible = true,
+					pos = Vector3(0, 0, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, 0, -4.5)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, 0, -4)
+				},
+				{
+					time = 0.6,
+					sound = "wp_hcar_lever_release",
 					pos = Vector3()
 				}
 			}
@@ -9855,6 +9957,62 @@ function TweakDataVR:init(tweak_data)
 				{
 					time = 0.99,
 					sound = "wp_gl40_barrel_close",
+					pos = Vector3(),
+					anims = {
+						{
+							anim_group = "reload",
+							from = 3
+						}
+					}
+				}
+			}
+		},
+		contender = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_contender_lock_open",
+					anims = {
+						{
+							anim_group = "reload",
+							to = 1,
+							from = 0.4
+						}
+					},
+					visible = {
+						visible = false,
+						parts = {
+							magazine = true
+						}
+					}
+				},
+				{
+					time = 0.01,
+					sound = "wp_contender_barrel_open"
+				},
+				{
+					time = 0.12,
+					sound = "wp_contender_shell_out",
+					effect = {
+						object = "a_m",
+						name = "effects/payday2/particles/weapons/shells/shell_556"
+					}
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_contender_shell_in",
+					visible = {
+						visible = true,
+						parts = {
+							magazine = true
+						}
+					}
+				},
+				{
+					time = 0.99,
+					sound = "wp_contender_barrel_close",
 					pos = Vector3(),
 					anims = {
 						{

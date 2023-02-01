@@ -603,6 +603,8 @@ function NodeGui:_item_panel_height()
 		end
 	end
 
+	height = height - (table.size(self.row_items) > 0 and self.spacing or 0)
+
 	return height
 end
 

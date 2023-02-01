@@ -1602,7 +1602,7 @@ function NetworkPeer:_reload_outfit()
 	end
 
 	local factory_id = complete_outfit.primary.factory_id .. (is_local_peer and "" or "_npc")
-	local ids_primary_u_name = Idstring(tweak_data.weapon.factory[factory_id].unit)
+	local ids_primary_u_name = Idstring(managers.weapon_factory:get_weapon_unit(factory_id, complete_outfit.primary.blueprint))
 	new_outfit_assets.unit.primary_w = {
 		name = ids_primary_u_name
 	}
@@ -1617,7 +1617,7 @@ function NetworkPeer:_reload_outfit()
 	end
 
 	local factory_id = complete_outfit.secondary.factory_id .. (is_local_peer and "" or "_npc")
-	local ids_secondary_u_name = Idstring(tweak_data.weapon.factory[factory_id].unit)
+	local ids_secondary_u_name = Idstring(managers.weapon_factory:get_weapon_unit(factory_id, complete_outfit.secondary.blueprint))
 	new_outfit_assets.unit.secondary_w = {
 		name = ids_secondary_u_name
 	}

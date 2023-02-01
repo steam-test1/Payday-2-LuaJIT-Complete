@@ -1249,6 +1249,7 @@ function PlayerStandard:_start_action_steelsight(t, gadget_state)
 
 	self._steelsight_wanted = false
 	self._state_data.in_steelsight = true
+	self._state_data.reload_steelsight_expire_t = nil
 
 	self:_update_crosshair_offset()
 	self:_stance_entered()
@@ -4177,6 +4178,16 @@ function PlayerStandard:_check_action_steelsight(t, input)
 		end
 	end
 
+	if self._state_data.reload_steelsight_expire_t and t < self._state_data.reload_steelsight_expire_t then
+		if managers.user:get_setting("hold_to_steelsight") and input.btn_steelsight_release then
+			self._steelsight_wanted = false
+		elseif input.btn_steelsight_press then
+			self._steelsight_wanted = true
+		end
+
+		return new_action
+	end
+
 	if managers.user:get_setting("hold_to_steelsight") and input.btn_steelsight_release then
 		self._steelsight_wanted = false
 
@@ -4497,14 +4508,19 @@ function PlayerStandard:_check_stop_shooting()
 end
 
 function PlayerStandard:_start_action_charging_weapon(t)
+	local ANIM_LENGTH = 1.5
+	local max = self._equipped_unit:base():charge_max_t()
+
+	if max == 0 then
+		return
+	end
+
+	local speed_multiplier = ANIM_LENGTH / max
 	self._state_data.charging_weapon = true
 	self._state_data.charging_weapon_data = {
 		t = t,
 		max_t = 2.5
 	}
-	local ANIM_LENGTH = 1.5
-	local max = self._equipped_unit:base():charge_max_t()
-	local speed_multiplier = ANIM_LENGTH / max
 
 	self._equipped_unit:base():tweak_data_anim_play("charge", speed_multiplier)
 	self._ext_camera:play_redirect(self:get_animation("charge"), speed_multiplier)
@@ -4589,11 +4605,13 @@ function PlayerStandard:_start_action_reload(t)
 		local reload_name_id = tweak_data.animations.reload_name_id or weapon.name_id
 		local reload_default_expire_t = 2.6
 		local reload_tweak = tweak_data.timers.reload_empty
+		local reload_steelsight_expire_t = tweak_data.timers.reload_steelsight
 
 		if is_reload_not_empty then
 			reload_anim = "reload_not_empty"
 			reload_default_expire_t = 2.2
 			reload_tweak = tweak_data.timers.reload_not_empty
+			reload_steelsight_expire_t = tweak_data.timers.reload_steelsight_not_empty
 		end
 
 		local reload_ids = Idstring(string.format("%s%s_%s", reload_prefix, reload_anim, reload_name_id))
@@ -4602,6 +4620,10 @@ function PlayerStandard:_start_action_reload(t)
 		Application:trace("PlayerStandard:_start_action_reload( t ): ", reload_ids)
 
 		self._state_data.reload_expire_t = t + (reload_tweak or weapon:reload_expire_t(is_reload_not_empty) or reload_default_expire_t) / speed_multiplier
+
+		if reload_steelsight_expire_t then
+			self._state_data.reload_steelsight_expire_t = t + reload_steelsight_expire_t / speed_multiplier
+		end
 
 		weapon:start_reload()
 
@@ -4630,6 +4652,7 @@ function PlayerStandard:_interupt_action_reload(t)
 	self._state_data.reload_enter_expire_t = nil
 	self._state_data.reload_expire_t = nil
 	self._state_data.reload_exit_expire_t = nil
+	self._state_data.reload_steelsight_expire_t = nil
 
 	managers.player:remove_property("shock_and_awe_reload_multiplier")
 	self:send_reload_interupt()

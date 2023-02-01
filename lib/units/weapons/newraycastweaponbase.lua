@@ -208,7 +208,7 @@ end
 
 function NewRaycastWeaponBase:setup_underbarrel_data()
 	local underbarrel_part = managers.weapon_factory:get_part_from_weapon_by_type("underbarrel", self._parts)
-	local underbarrel_ammo_data = managers.weapon_factory:get_part_data_type_from_weapon_by_type("underbarrel_ammo", "custom_stats", self._parts)
+	local underbarrel_ammo_data = managers.weapon_factory:get_underbarrel_ammo_data_from_weapon(self._factory_id, self._blueprint)
 
 	if underbarrel_part and alive(underbarrel_part.unit) and underbarrel_part.unit:base() and underbarrel_part.unit:base().setup_data then
 		underbarrel_part.unit:base():setup_data(self._setup, 1, underbarrel_ammo_data)
@@ -1012,6 +1012,10 @@ function NewRaycastWeaponBase:_update_stats_values(disallow_replenish, ammo_data
 		bonus_stats = {}
 	end
 
+	if self.modify_base_stats then
+		self:modify_base_stats(stats)
+	end
+
 	if stats.zoom then
 		stats.zoom = math.min(stats.zoom + managers.player:upgrade_value(primary_category, "zoom_increase", 0), #stats_tweak_data.zoom)
 	end
@@ -1584,7 +1588,7 @@ function NewRaycastWeaponBase:_set_parts_enabled(enabled)
 
 		for part_id, data in pairs(self._parts) do
 			if alive(data.unit) then
-				if not enabled then
+				if not enabled and (not data.unit:base() or data.unit:base().GADGET_TYPE ~= "second_sight") then
 					anim_groups = data.unit:anim_groups()
 
 					for _, anim in ipairs(anim_groups) do
@@ -1603,6 +1607,10 @@ function NewRaycastWeaponBase:_set_parts_enabled(enabled)
 
 				if data.unit:digital_gui_upper() then
 					data.unit:digital_gui_upper():set_visible(enabled)
+				end
+
+				if data.unit:digital_gui_thd() then
+					data.unit:digital_gui_thd():set_visible(enabled)
 				end
 			end
 		end
@@ -1674,6 +1682,10 @@ function NewRaycastWeaponBase:_set_parts_visible(visible)
 
 				if unit:digital_gui_upper() then
 					unit:digital_gui_upper():set_visible(visible)
+				end
+
+				if unit:digital_gui_thd() then
+					unit:digital_gui_thd():set_visible(visible)
 				end
 			end
 		end
@@ -1780,7 +1792,7 @@ function NewRaycastWeaponBase:trigger_held(...)
 		local volley_charge_time = self:charge_max_t()
 		local fired = false
 
-		if self._volley_charge_start_t + volley_charge_time <= managers.player:player_timer():time() then
+		if volley_charge_time == 0 or self._volley_charge_start_t + volley_charge_time <= managers.player:player_timer():time() then
 			fired = self:fire(...)
 
 			if fired then
@@ -1852,6 +1864,16 @@ function NewRaycastWeaponBase:ammo_usage()
 	return self._fire_mode == ids_volley and self._volley_ammo_usage or 1
 end
 
+function NewRaycastWeaponBase:_fire_sound()
+	if self._fire_mode == ids_volley and self:weapon_tweak_data().sounds.fire_volley then
+		self:play_tweak_data_sound("fire_volley", "fire")
+
+		return
+	end
+
+	NewRaycastWeaponBase.super._fire_sound(self)
+end
+
 function NewRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul, shoot_through_data, ammo_usage)
 	if self:gadget_overrides_weapon_functions() then
 		return self:gadget_function_override("_fire_raycast", self, user_unit, from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul)
@@ -1887,11 +1909,17 @@ function NewRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_
 end
 
 function NewRaycastWeaponBase:_start_charging()
+	local charge_max_t = self:charge_max_t()
+
+	if charge_max_t == 0 then
+		return
+	end
+
 	self._volley_charging = true
 	self._volley_charge_start_t = managers.player:player_timer():time()
 
 	self:play_tweak_data_sound("charge")
-	self:call_on_digital_gui("start_volley_charge", self:charge_max_t())
+	self:call_on_digital_gui("start_volley_charge", charge_max_t)
 end
 
 function NewRaycastWeaponBase:stop_volley_charge()
@@ -1945,6 +1973,14 @@ function NewRaycastWeaponBase:update_firemode_gui_ammo()
 	end
 
 	self:call_on_digital_gui("set_ammo", ammo, color)
+end
+
+function NewRaycastWeaponBase:_get_sound_event(event, alternative_event)
+	if not self:gadget_overrides_weapon_functions() and self._ammo_data and self._ammo_data.sounds and self._ammo_data.sounds[event] then
+		return self._ammo_data.sounds[event]
+	end
+
+	return NewRaycastWeaponBase.super._get_sound_event(self, event, alternative_event)
 end
 
 function NewRaycastWeaponBase:can_toggle_firemode()

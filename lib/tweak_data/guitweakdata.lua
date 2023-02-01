@@ -5118,6 +5118,11 @@ function GuiTweakData:init(tweak_data)
 	}
 
 	table.insert(self.new_heists, {
+		name_id = "menu_nh_pxp3",
+		texture_path = "guis/dlcs/pxp3/textures/pd2/new_heists/pxp3",
+		url = "https://pd2.link/McShayWeaponPack3SLS"
+	})
+	table.insert(self.new_heists, {
 		name_id = "menu_nh_txt3_02",
 		texture_path = "guis/dlcs/txt3/textures/pd2/new_heists/txt3_02",
 		url = "https://pd2.link/EnergyCrisisBundleSLS"
@@ -5128,11 +5133,6 @@ function GuiTweakData:init(tweak_data)
 		url = "https://pd2.link/McShayModPackSLS"
 	})
 	table.insert(self.new_heists, {
-		name_id = "menu_nh_xm22_01",
-		texture_path = "guis/dlcs/xm22/textures/pd2/new_heists/xm22_01",
-		url = "https://pd2.link/Holiday2022SLW"
-	})
-	table.insert(self.new_heists, {
 		name_id = "menu_nh_txt3_01",
 		texture_path = "guis/dlcs/txt3/textures/pd2/new_heists/txt3_01",
 		url = "https://pd2.link/StreetSmartTailorPackSLS"
@@ -5141,6 +5141,11 @@ function GuiTweakData:init(tweak_data)
 		name_id = "menu_nh_trai_02",
 		texture_path = "guis/dlcs/trai/textures/pd2/new_heists/trai_02",
 		url = "https://pd2.link/LostInTransitBundleSLS"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_xm22_01",
+		texture_path = "guis/dlcs/xm22/textures/pd2/new_heists/xm22_01",
+		url = "https://pd2.link/Holiday2022SLW"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_trai_01",

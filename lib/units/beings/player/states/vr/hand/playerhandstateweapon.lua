@@ -174,7 +174,7 @@ function PlayerHandStateWeapon:link_arrow_unit(weap_base)
 	local arrow_data = managers.weapon_factory:get_part_data_by_part_id_from_weapon(arrow_id, weap_base._factory_id, weap_base._blueprint)
 	local unit_name = arrow_data.unit
 	self._arrow_unit = World:spawn_unit(Idstring(unit_name), self._hand_unit:position(), self._hand_unit:rotation())
-	local material_config_ids = weap_base:_material_config_name(arrow_id, unit_name, weap_base._cosmetics_data and true)
+	local material_config_ids = weap_base:_material_config_name(arrow_id, arrow_data, weap_base._cosmetics_data and true)
 
 	if self._arrow_unit:material_config() ~= material_config_ids and DB:has(Idstring("material_config"), material_config_ids) then
 		self._arrow_unit:set_material_config(material_config_ids, true)

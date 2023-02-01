@@ -5175,7 +5175,8 @@ function UpgradesTweakData:init(tweak_data)
 				"bowie",
 				"micstand",
 				"x_hs2000",
-				"qbu88"
+				"qbu88",
+				"contender"
 			}
 		},
 		[29] = {
@@ -5371,13 +5372,15 @@ function UpgradesTweakData:init(tweak_data)
 			upgrades = {
 				"dingdong",
 				"tenderizer",
-				"hailstorm"
+				"hailstorm",
+				"hcar"
 			}
 		},
 		[50] = {
 			name_id = "lvl_50",
 			upgrades = {
-				"rep_upgrade5"
+				"rep_upgrade5",
+				"tkb"
 			}
 		},
 		[51] = {
@@ -5673,6 +5676,9 @@ function UpgradesTweakData:init(tweak_data)
 	self:_p226_definitions()
 	self:_hk21_definitions()
 	self:_hk51b_definitions()
+	self:_tkb_definitions()
+	self:_contender_definitions()
+	self:_hcar_definitions()
 	self:_m249_definitions()
 	self:_rpk_definitions()
 	self:_m95_definitions()
@@ -11596,6 +11602,33 @@ function UpgradesTweakData:_hk51b_definitions()
 		dlc = "pxp1",
 		factory_id = "wpn_fps_lmg_hk51b",
 		weapon_id = "hk51b",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_tkb_definitions()
+	self.definitions.tkb = {
+		dlc = "pxp3",
+		factory_id = "wpn_fps_ass_tkb",
+		weapon_id = "tkb",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_contender_definitions()
+	self.definitions.contender = {
+		dlc = "pxp3",
+		factory_id = "wpn_fps_snp_contender",
+		weapon_id = "contender",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_hcar_definitions()
+	self.definitions.hcar = {
+		dlc = "pxp3",
+		factory_id = "wpn_fps_lmg_hcar",
+		weapon_id = "hcar",
 		category = "weapon"
 	}
 end

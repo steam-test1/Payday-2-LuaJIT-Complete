@@ -26,8 +26,7 @@ end
 function AkimboWeaponBase:_create_second_gun(unit_name)
 	local factory_id = self._factory_id
 	local blueprint = self._blueprint
-	local factory_weapon = tweak_data.weapon.factory[factory_id]
-	local ids_unit_name = Idstring(factory_weapon.unit)
+	local ids_unit_name = Idstring(managers.weapon_factory:get_weapon_unit(factory_id, blueprint))
 	local new_unit = World:spawn_unit(ids_unit_name, Vector3(), Rotation())
 
 	new_unit:base():set_factory_data(factory_id)

@@ -350,7 +350,10 @@ function PlayerTased:_check_action_primary_attack(t, input)
 						end
 
 						if fire_mode == "volley" then
-							self:_check_stop_shooting()
+							self._equipped_unit:base():stop_shooting()
+							self._camera_unit:base():stop_shooting()
+
+							new_action = false
 						end
 					elseif fire_mode == "single" then
 						new_action = false

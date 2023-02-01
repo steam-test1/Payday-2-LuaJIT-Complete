@@ -8472,6 +8472,23 @@ function DLCTweakData:init(tweak_data)
 			amount = 1
 		}
 	}
+	self.pxp3_starter_pack = {
+		free = true,
+		content = {}
+	}
+	self.pxp3_starter_pack.content.loot_global_value = "normal"
+	self.pxp3_starter_pack.content.loot_drops = {
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_upg_a_grenade_launcher_hornet",
+			amount = 1
+		},
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_upg_a_underbarrel_hornet",
+			amount = 1
+		}
+	}
 	self.sbzac_elegantteeth = {
 		content = {}
 	}

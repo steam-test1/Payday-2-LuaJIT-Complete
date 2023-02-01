@@ -163,6 +163,9 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_sparrow_crew()
 	self:_init_data_model70_crew()
 	self:_init_data_scout_crew()
+	self:_init_data_tkb_crew()
+	self:_init_data_contender_crew()
+	self:_init_data_hcar_crew()
 	self:_init_data_m37_crew()
 	self:_init_data_china_crew()
 	self:_init_data_sr2_crew()
@@ -1696,6 +1699,63 @@ function WeaponTweakData:_init_data_ak47_crew()
 	self.ak47_crew.alert_size = 5000
 	self.ak47_crew.suppression = 1
 	self.ak47_crew.FIRE_MODE = "auto"
+end
+
+function WeaponTweakData:_init_data_tkb_crew()
+	self.tkb_crew.categories = {
+		"assault_rifle"
+	}
+	self.tkb_crew.sounds.prefix = "tkb_npc"
+	self.tkb_crew.use_data.selection_index = SELECTION.PRIMARY
+	self.tkb_crew.DAMAGE = 3
+	self.tkb_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
+	self.tkb_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
+	self.tkb_crew.CLIP_AMMO_MAX = 30
+	self.tkb_crew.NR_CLIPS_MAX = 5
+	self.tkb_crew.auto.fire_rate = 0.107
+	self.tkb_crew.hold = "rifle"
+	self.tkb_crew.alert_size = 5000
+	self.tkb_crew.suppression = 1
+	self.tkb_crew.FIRE_MODE = "auto"
+end
+
+function WeaponTweakData:_init_data_contender_crew()
+	self.contender_crew.categories = {
+		"snp"
+	}
+	self.contender_crew.sounds.prefix = "tcg2_npc"
+	self.contender_crew.use_data.selection_index = SELECTION.SECONDARY
+	self.contender_crew.DAMAGE = 2
+	self.contender_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.contender_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.contender_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.contender_crew.no_trail = true
+	self.contender_crew.CLIP_AMMO_MAX = 1
+	self.contender_crew.NR_CLIPS_MAX = 4
+	self.contender_crew.looped_reload_speed = 0.16666666666666666
+	self.contender_crew.auto.fire_rate = 0.1
+	self.contender_crew.hold = "rifle"
+	self.contender_crew.alert_size = 2800
+	self.contender_crew.suppression = 1
+	self.contender_crew.FIRE_MODE = "single"
+end
+
+function WeaponTweakData:_init_data_hcar_crew()
+	self.hcar_crew.categories = {
+		"lmg"
+	}
+	self.hcar_crew.sounds.prefix = "hcar_npc"
+	self.hcar_crew.use_data.selection_index = SELECTION.PRIMARY
+	self.hcar_crew.DAMAGE = 8.7
+	self.hcar_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
+	self.hcar_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
+	self.hcar_crew.CLIP_AMMO_MAX = 30
+	self.hcar_crew.NR_CLIPS_MAX = 5
+	self.hcar_crew.auto.fire_rate = 0.107
+	self.hcar_crew.hold = "rifle"
+	self.hcar_crew.alert_size = 5000
+	self.hcar_crew.suppression = 1
+	self.hcar_crew.FIRE_MODE = "auto"
 end
 
 function WeaponTweakData:_init_data_m14_crew()
@@ -6115,6 +6175,9 @@ function WeaponTweakData:_pickup_chance(max_ammo, selection_index)
 		elseif selection_index == PICKUP.AR_DMR_CAPACITY then
 			low = 0.018
 			high = 0.04
+		elseif selection_index == PICKUP.LMG_DMR_CAPACITY then
+			low = 0.01
+			high = 0.04
 		elseif selection_index == PICKUP.PISTOL_HIGH_CAPACITY then
 			low = 0.025
 			high = 0.035
@@ -6164,6 +6227,9 @@ function WeaponTweakData:_pickup_chance(max_ammo, selection_index)
 	elseif selection_index == PICKUP.LMG_HIGH_CAPACITY then
 		low = 0.02
 		high = 0.024
+	elseif selection_index == PICKUP.LMG_DMR_CAPACITY then
+		low = 0.005
+		high = 0.02
 	elseif selection_index == PICKUP.SHOTGUN_HIGH_CAPACITY then
 		low = 0.05
 		high = 0.075
@@ -6295,6 +6361,9 @@ function WeaponTweakData:_init_new_weapons(weapon_data)
 	self:_init_pm9(weapon_data)
 	self:_init_x_pm9(weapon_data)
 	self:_init_hailstorm(weapon_data)
+	self:_init_tkb(weapon_data)
+	self:_init_contender(weapon_data)
+	self:_init_hcar(weapon_data)
 	self:_init_shak12(weapon_data)
 	self:_init_m37(weapon_data)
 	self:_init_china(weapon_data)
@@ -7781,6 +7850,380 @@ function WeaponTweakData:_init_saiga(weapon_data)
 		reload = 11,
 		suppression = 5,
 		concealment = 13
+	}
+end
+
+function WeaponTweakData:_init_tkb(weapon_data)
+	self.tkb = {
+		categories = {
+			"assault_rifle"
+		},
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.tkb.sounds.fire = "tkb_fire_single"
+	self.tkb.sounds.fire_single = "tkb_fire_single_auto"
+	self.tkb.sounds.fire_volley = "tkb_fire_single"
+	self.tkb.sounds.fire_auto = "tkb_fire"
+	self.tkb.sounds.stop_fire = "tkb_stop"
+	self.tkb.sounds.dryfire = "primary_dryfire"
+	self.tkb.sounds.charge_release = "long_release"
+	self.tkb.sounds.charge_release_fail = "bow_release_fail"
+	self.tkb.sounds.charge = "hailstorm_shotgun_fire_charge"
+	self.tkb.sounds.charge_cancel = "bow_charge_cancel"
+	self.tkb.sounds.enter_steelsight = "primary_steel_sight_enter"
+	self.tkb.sounds.leave_steelsight = "primary_steel_sight_exit"
+	self.tkb.timers = {
+		reload_not_empty = 2.5,
+		reload_empty = 3.5,
+		unequip = 0.5,
+		equip = 1
+	}
+	self.tkb.name_id = "bm_w_tkb"
+	self.tkb.desc_id = "bm_w_akm_tkb"
+	self.tkb.description_id = "des_tkb"
+	self.tkb.global_value = "pxp3"
+	self.tkb.texture_bundle_folder = "pxp3"
+	self.tkb.muzzleflash = "effects/payday2/particles/weapons/tkb_muzzle"
+	self.tkb.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
+	self.tkb.use_data = {
+		selection_index = SELECTION.PRIMARY
+	}
+	self.tkb.DAMAGE = 1.25
+	self.tkb.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_MEDIUM
+	self.tkb.CLIP_AMMO_MAX = 90
+	self.tkb.NR_CLIPS_MAX = 2
+	self.tkb.AMMO_MAX = self.tkb.CLIP_AMMO_MAX * self.tkb.NR_CLIPS_MAX
+	self.tkb.AMMO_PICKUP = self:_pickup_chance(self.tkb.AMMO_MAX, PICKUP.AR_LOW_CAPACITY)
+	self.tkb.FIRE_MODE = "auto"
+	self.tkb.fire_mode_data = {
+		fire_rate = 0.075
+	}
+	self.tkb.CAN_TOGGLE_FIREMODE = true
+	self.tkb.auto = {
+		fire_rate = 0.075
+	}
+	self.tkb.fire_mode_data.auto = {
+		muzzleflash_silenced = "effects/payday2/particles/weapons/tkb_suppressed"
+	}
+	self.tkb.fire_mode_data.volley = {
+		spread_mul = 2.5,
+		damage_mul = 1.5,
+		ammo_usage = 3,
+		rays = 3,
+		can_shoot_through_wall = false,
+		can_shoot_through_shield = true,
+		can_shoot_through_enemy = true,
+		muzzleflash = "effects/payday2/particles/weapons/tkb_muzzle",
+		muzzleflash_silenced = "effects/payday2/particles/weapons/tkb_suppressed"
+	}
+	self.tkb.fire_mode_data.toggable = {
+		"volley",
+		"auto"
+	}
+	self.tkb.charge_data = {
+		max_t = 0.001,
+		cooldown_t = 0.15
+	}
+	self.tkb.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight
+	}
+	self.tkb.kick = {
+		standing = self.new_m4.kick.standing,
+		crouching = self.akm.kick.standing,
+		steelsight = self.akm.kick.standing
+	}
+	self.tkb.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.tkb.crosshair.standing.offset = 0.26
+	self.tkb.crosshair.standing.moving_offset = 1
+	self.tkb.crosshair.standing.kick_offset = 0.8
+	self.tkb.crosshair.crouching.offset = 0.18
+	self.tkb.crosshair.crouching.moving_offset = 0.9
+	self.tkb.crosshair.crouching.kick_offset = 0.6
+	self.tkb.crosshair.steelsight.hidden = true
+	self.tkb.crosshair.steelsight.offset = 0
+	self.tkb.crosshair.steelsight.moving_offset = 0
+	self.tkb.crosshair.steelsight.kick_offset = 0.1
+	self.tkb.shake = {
+		fire_multiplier = 1,
+		fire_steelsight_multiplier = -1
+	}
+	self.tkb.autohit = weapon_data.autohit_rifle_default
+	self.tkb.aim_assist = weapon_data.aim_assist_rifle_default
+	self.tkb.weapon_hold = "tkb"
+	self.tkb.animations = {
+		equip_id = "equip_tkb",
+		recoil_steelsight = true
+	}
+	self.tkb.challenges = {
+		group = "rifle",
+		weapon = "tkb"
+	}
+	self.tkb.panic_suppression_chance = 0.2
+	self.tkb.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 60,
+		alert_size = 7,
+		spread = 16,
+		spread_moving = 14,
+		recoil = 10,
+		value = 1,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 7,
+		concealment = 16
+	}
+end
+
+function WeaponTweakData:_init_contender(weapon_data)
+	self.contender = {
+		categories = {
+			"snp"
+		},
+		upgrade_blocks = {
+			weapon = {
+				"clip_ammo_increase"
+			}
+		},
+		projectile_types = {},
+		ammo_default_sub_type = "ammo_explosive",
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.contender.sounds.fire = "tcg2_fire"
+	self.contender.sounds.dryfire = "shotgun_dryfire"
+	self.contender.sounds.enter_steelsight = "secondary_steel_sight_enter"
+	self.contender.sounds.leave_steelsight = "secondary_steel_sight_exit"
+	self.contender.timers = {
+		reload_not_empty = 1
+	}
+	self.contender.timers.reload_empty = self.contender.timers.reload_not_empty
+	self.contender.timers.reload_steelsight = 1.78
+	self.contender.timers.reload_steelsight_not_empty = self.contender.timers.reload_steelsight
+	self.contender.timers.unequip = 0.6
+	self.contender.timers.equip = 0.6
+	self.contender.name_id = "bm_w_contender"
+	self.contender.desc_id = "bm_w_contender_desc"
+	self.contender.description_id = "des_contender"
+	self.contender.global_value = "pxp3"
+	self.contender.texture_bundle_folder = "pxp3"
+	self.contender.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
+	self.contender.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	self.contender.use_data = {
+		selection_index = SELECTION.SECONDARY,
+		align_place = "right_hand"
+	}
+	self.contender.DAMAGE = 6
+	self.contender.damage_near = 2000
+	self.contender.damage_far = 3000
+	self.contender.rays = 6
+	self.contender.damage_falloff = FALLOFF_TEMPLATE.SNIPER_FALL_HIGH
+	self.contender.CLIP_AMMO_MAX = 1
+	self.contender.NR_CLIPS_MAX = 10
+	self.contender.AMMO_MAX = self.contender.CLIP_AMMO_MAX * self.contender.NR_CLIPS_MAX
+	self.contender.AMMO_PICKUP = {
+		0.55,
+		0.65
+	}
+	self.contender.FIRE_MODE = "single"
+	self.contender.fire_mode_data = {
+		fire_rate = 1.7
+	}
+	self.contender.single = {
+		fire_rate = 1.7
+	}
+	self.contender.spread = {
+		standing = self.r870.spread.standing,
+		crouching = self.r870.spread.crouching,
+		steelsight = self.r870.spread.steelsight,
+		moving_standing = self.r870.spread.moving_standing,
+		moving_crouching = self.r870.spread.moving_crouching,
+		moving_steelsight = self.r870.spread.moving_steelsight
+	}
+	self.contender.kick = {
+		standing = {
+			2.9,
+			3,
+			-0.5,
+			0.5
+		}
+	}
+	self.contender.kick.crouching = self.contender.kick.standing
+	self.contender.kick.steelsight = self.contender.kick.standing
+	self.contender.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.contender.crosshair.standing.offset = 0.16
+	self.contender.crosshair.standing.moving_offset = 0.8
+	self.contender.crosshair.standing.kick_offset = 0.6
+	self.contender.crosshair.standing.hidden = true
+	self.contender.crosshair.crouching.offset = 0.08
+	self.contender.crosshair.crouching.moving_offset = 0.7
+	self.contender.crosshair.crouching.kick_offset = 0.4
+	self.contender.crosshair.crouching.hidden = true
+	self.contender.crosshair.steelsight.hidden = true
+	self.contender.crosshair.steelsight.offset = 0
+	self.contender.crosshair.steelsight.moving_offset = 0
+	self.contender.crosshair.steelsight.kick_offset = 0.1
+	self.contender.shake = {
+		fire_multiplier = 2,
+		fire_steelsight_multiplier = 2
+	}
+	self.contender.autohit = weapon_data.autohit_shotgun_default
+	self.contender.aim_assist = weapon_data.aim_assist_shotgun_default
+	self.contender.animations = {
+		equip_id = "equip_contender",
+		recoil_steelsight = true
+	}
+	self.contender.panic_suppression_chance = 0.2
+	self.contender.can_shoot_through_enemy = true
+	self.contender.can_shoot_through_shield = true
+	self.contender.can_shoot_through_wall = true
+	self.contender.ignore_damage_upgrades = true
+	self.contender.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 120,
+		alert_size = 7,
+		spread = 17,
+		spread_moving = 16,
+		recoil = 2,
+		value = 1,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 14,
+		concealment = 20
+	}
+	self.contender.stats_modifiers = {
+		damage = 4
+	}
+	self.contender.armor_piercing_chance = 1
+end
+
+function WeaponTweakData:_init_hcar(weapon_data)
+	self.hcar = {
+		categories = {
+			"lmg"
+		},
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.hcar.sounds.fire = "hcar_fire_single"
+	self.hcar.sounds.fire_single = "hcar_fire_single"
+	self.hcar.sounds.fire_auto = "hcar_fire"
+	self.hcar.sounds.stop_fire = "hcar_stop"
+	self.hcar.sounds.dryfire = "primary_dryfire"
+	self.hcar.sounds.charge_release = "long_release"
+	self.hcar.sounds.charge_release_fail = "bow_release_fail"
+	self.hcar.sounds.charge = "hailstorm_shotgun_fire_charge"
+	self.hcar.sounds.charge_cancel = "bow_charge_cancel"
+	self.hcar.sounds.enter_steelsight = "primary_steel_sight_enter"
+	self.hcar.sounds.leave_steelsight = "primary_steel_sight_exit"
+	self.hcar.timers = {
+		reload_not_empty = 3.2,
+		reload_empty = 3.7,
+		unequip = 0.5,
+		equip = 0.5
+	}
+	self.hcar.name_id = "bm_w_hcar"
+	self.hcar.desc_id = "bm_w_akm_hcar"
+	self.hcar.description_id = "des_hcar"
+	self.hcar.global_value = "pxp3"
+	self.hcar.texture_bundle_folder = "pxp3"
+	self.hcar.muzzleflash = "effects/payday2/particles/weapons/big_51b_auto_fps"
+	self.hcar.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
+	self.hcar.use_data = {
+		selection_index = SELECTION.PRIMARY
+	}
+	self.hcar.DAMAGE = 1.25
+	self.hcar.damage_falloff = FALLOFF_TEMPLATE.LMG_FALL_HIGH
+	self.hcar.CLIP_AMMO_MAX = 20
+	self.hcar.NR_CLIPS_MAX = 8
+	self.hcar.AMMO_MAX = self.hcar.CLIP_AMMO_MAX * self.hcar.NR_CLIPS_MAX
+	self.hcar.AMMO_PICKUP = {
+		2,
+		3
+	}
+	self.hcar.FIRE_MODE = "auto"
+	self.hcar.fire_mode_data = {
+		fire_rate = 0.1
+	}
+	self.hcar.CAN_TOGGLE_FIREMODE = true
+	self.hcar.auto = {
+		fire_rate = 0.1
+	}
+	self.hcar.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight
+	}
+	self.hcar.kick = {
+		standing = self.new_m4.kick.standing,
+		crouching = self.akm.kick.standing,
+		steelsight = self.akm.kick.standing
+	}
+	self.hcar.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.hcar.crosshair.standing.offset = 0.26
+	self.hcar.crosshair.standing.moving_offset = 1
+	self.hcar.crosshair.standing.kick_offset = 0.8
+	self.hcar.crosshair.crouching.offset = 0.18
+	self.hcar.crosshair.crouching.moving_offset = 0.9
+	self.hcar.crosshair.crouching.kick_offset = 0.6
+	self.hcar.crosshair.steelsight.hidden = true
+	self.hcar.crosshair.steelsight.offset = 0
+	self.hcar.crosshair.steelsight.moving_offset = 0
+	self.hcar.crosshair.steelsight.kick_offset = 0.1
+	self.hcar.shake = {
+		fire_multiplier = 1,
+		fire_steelsight_multiplier = -1
+	}
+	self.hcar.autohit = weapon_data.autohit_rifle_default
+	self.hcar.aim_assist = weapon_data.aim_assist_rifle_default
+	self.hcar.weapon_hold = "hcar"
+	self.hcar.animations = {
+		equip_id = "equip_hcar",
+		recoil_steelsight = true
+	}
+	self.hcar.challenges = {
+		group = "rifle",
+		weapon = "hcar"
+	}
+	self.hcar.panic_suppression_chance = 0.2
+	self.hcar.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 128,
+		alert_size = 7,
+		spread = 19,
+		spread_moving = 18,
+		recoil = 11,
+		value = 1,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 3,
+		concealment = 10
 	}
 end
 
@@ -29968,6 +30411,24 @@ function WeaponTweakData:_create_table_structure()
 	}
 	self.x_sko12_crew = {
 		usage = "akimbo_pistol",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.tkb_crew = {
+		usage = "is_rifle",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.contender_crew = {
+		usage = "is_rifle",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.hcar_crew = {
+		usage = "is_lmg",
 		sounds = {},
 		use_data = {},
 		auto = {}

@@ -10620,9 +10620,10 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		trai_9 = {
+			icon_id = "C_McShay_H_LostInTransit_TexasTreasuresTwo",
 			ladder = "TexasTresures",
 			sort_name = "C_McShay_H_LostInTransit_TexasTreasuresTwo",
-			icon_id = "C_McShay_H_LostInTransit_TexasTreasuresTwo",
+			additional_id = true,
 			tags = {
 				tags.progress.heisting,
 				tags.difficulty.normal,

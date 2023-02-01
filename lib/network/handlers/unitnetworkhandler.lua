@@ -4446,7 +4446,7 @@ function UnitNetworkHandler:sync_change_char_tweak(unit, new_tweak_name, sender_
 		return
 	end
 
-	local base_ext = parent_unit:base()
+	local base_ext = unit:base()
 
 	if base_ext and base_ext.change_char_tweak then
 		base_ext:change_char_tweak(new_tweak_name)

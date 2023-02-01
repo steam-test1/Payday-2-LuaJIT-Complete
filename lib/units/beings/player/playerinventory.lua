@@ -346,8 +346,7 @@ function PlayerInventory:add_unit_by_name(new_unit_name, equip, instant)
 end
 
 function PlayerInventory:add_unit_by_factory_name(factory_name, equip, instant, blueprint, cosmetics, texture_switches)
-	local factory_weapon = tweak_data.weapon.factory[factory_name]
-	local ids_unit_name = Idstring(factory_weapon.unit)
+	local ids_unit_name = Idstring(managers.weapon_factory:get_weapon_unit(factory_name, blueprint))
 
 	managers.dyn_resource:load(ids_unit, ids_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
 

@@ -134,6 +134,7 @@ CopActionAct._act_redirects = {
 		"e_sp_down_8m_var4",
 		"e_sp_over_3_35m",
 		"e_sp_over_1m_dwn_12m",
+		"e_sp_swing_dwn_11m",
 		"e_sp_climb_over_4m",
 		"e_sp_dwn_22m",
 		"e_sp_down_13m",

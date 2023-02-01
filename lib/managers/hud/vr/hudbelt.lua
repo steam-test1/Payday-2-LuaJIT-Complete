@@ -41,7 +41,14 @@ local function get_icon(icon_type)
 			return "guis/textures/pd2/none_icon", "invalid"
 		end
 
-		return "guis/textures/pd2/blackmarket/icons/deployables/outline/" .. id
+		local prefix = "guis"
+		local texture = "/textures/pd2/blackmarket/icons/deployables/outline/" .. id
+
+		if not DB:has(Idstring("texture"), Idstring(prefix .. texture)) then
+			prefix = "guis/dlcs/" .. tweak_data.blackmarket.deployables[id].texture_bundle_folder
+		end
+
+		return prefix .. texture
 	elseif icon_type == "throwable" then
 		local g_id = managers.blackmarket:equipped_grenade()
 		local prefix = "guis"

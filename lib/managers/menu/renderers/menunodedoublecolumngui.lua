@@ -393,6 +393,7 @@ function MenuNodeDoubleColumnGui:_item_panel_height()
 		end
 	end
 
+	primary_height = primary_height - (table.size(self.primary_row_items) > 0 and self.spacing or 0)
 	local secondary_height = self.height_padding * 2
 
 	for _, row_item in pairs(self.secondary_row_items) do
@@ -402,7 +403,9 @@ function MenuNodeDoubleColumnGui:_item_panel_height()
 		end
 	end
 
-	return secondary_height < primary_height and primary_height or secondary_height
+	secondary_height = secondary_height - (table.size(self.secondary_row_items) > 0 and self.spacing or 0)
+
+	return primary_height > secondary_height and primary_height or secondary_height
 end
 
 function MenuNodeDoubleColumnGui:highlight_item(item, mouse_over)

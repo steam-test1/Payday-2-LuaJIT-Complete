@@ -2216,6 +2216,15 @@ function BlackMarketManager:is_weapon_modified(factory_id, blueprint)
 end
 
 function BlackMarketManager:ignore_damage_upgrades(weapon_id, blueprint)
+	if blueprint then
+		local factory_id = managers.weapon_factory:get_factory_id_by_weapon_id(weapon_id)
+		local ammo_data = managers.weapon_factory:get_ammo_data_from_weapon(factory_id, blueprint)
+
+		if ammo_data and ammo_data.ignore_damage_upgrades ~= nil then
+			return ammo_data.ignore_damage_upgrades
+		end
+	end
+
 	return tweak_data.weapon[weapon_id] and tweak_data.weapon[weapon_id].ignore_damage_upgrades
 end
 
@@ -4994,12 +5003,12 @@ end
 
 function BlackMarketManager:buy_and_modify_weapon(category, slot, global_value, part_id, free_of_charge, no_consume, loading)
 	if not self._global.crafted_items[category] or not self._global.crafted_items[category][slot] then
-		Application:error("[BlackMarketManager:modify_weapon] Trying to buy and modify weapon that doesn't exist", category, slot)
+		Application:error("[BlackMarketManager:buy_and_modify_weapon] Trying to buy and modify weapon that doesn't exist", category, slot)
 
 		return
 	end
 
-	self:modify_weapon(category, slot, global_value, part_id, loading)
+	self:modify_weapon(category, slot, global_value, part_id, false, loading)
 
 	if not free_of_charge then
 		managers.money:on_buy_weapon_modification(self._global.crafted_items[category][slot].weapon_id, part_id, global_value)
@@ -8701,6 +8710,7 @@ function BlackMarketManager:_cleanup_blackmarket()
 									table.insert(invalid_parts, {
 										global_value = "normal",
 										refund = false,
+										reason = "not for weapon (default)",
 										slot = slot,
 										default_mod = default_mod,
 										part_id = part_id
@@ -8708,6 +8718,7 @@ function BlackMarketManager:_cleanup_blackmarket()
 								else
 									table.insert(invalid_parts, {
 										refund = true,
+										reason = "not for weapon",
 										slot = slot,
 										global_value = item.global_values[part_id] or "normal",
 										part_id = part_id
@@ -8819,7 +8830,7 @@ function BlackMarketManager:_cleanup_blackmarket()
 
 		for _, data in ipairs(invalid_parts) do
 			if crafted_category[data.slot] then
-				Application:error("BlackMarketManager:_cleanup_blackmarket() Removing invalid Weapon part", data.reason, "slot", data.slot, "part_id", data.part_id, "inspect", inspect(crafted_category[data.slot]), inspect(data))
+				Application:error("BlackMarketManager:_cleanup_blackmarket() Removing invalid Weapon part", data.reason, "slot", data.slot, "part_id", data.part_id, "default_mod", data.default_mod, "inspect", inspect(crafted_category[data.slot]), inspect(data))
 
 				if data.default_mod then
 					self:buy_and_modify_weapon(category, data.slot, data.global_value, data.default_mod, true, true, true)

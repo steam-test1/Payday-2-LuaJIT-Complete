@@ -3544,8 +3544,9 @@ function InteractionTweakData:init(tweak_data)
 	}
 	self.cas_open_door = {
 		text_id = "hud_cas_open_door",
-		start_active = true,
 		interact_distance = 150,
+		timer = 3,
+		start_active = true,
 		can_interact_in_civilian = true
 	}
 	self.cas_close_door = {

@@ -2379,6 +2379,7 @@ end
 
 function WINDLCManager:_init_promoted_dlc_list()
 	self._promoted_dlc_list = {
+		"pxp3",
 		"mxm",
 		"txt3",
 		"trai",

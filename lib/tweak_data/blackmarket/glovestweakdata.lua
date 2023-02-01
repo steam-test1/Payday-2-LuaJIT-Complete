@@ -151,6 +151,7 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		puffervest = "heist_default",
 		leatherfluff = "heist_default",
 		mocow = "ranchdiesel",
+		sleekygent = "beigedriver",
 		classyske = "heist_default",
 		tux = "heist_default",
 		continental = "continental",
