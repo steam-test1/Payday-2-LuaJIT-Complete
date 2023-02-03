@@ -7913,8 +7913,8 @@ function WeaponTweakData:_init_tkb(weapon_data)
 		ammo_usage = 3,
 		rays = 3,
 		can_shoot_through_wall = false,
-		can_shoot_through_shield = true,
-		can_shoot_through_enemy = true,
+		can_shoot_through_shield = false,
+		can_shoot_through_enemy = false,
 		muzzleflash = "effects/payday2/particles/weapons/tkb_muzzle",
 		muzzleflash_silenced = "effects/payday2/particles/weapons/tkb_suppressed"
 	}
@@ -8017,6 +8017,7 @@ function WeaponTweakData:_init_contender(weapon_data)
 	self.contender.name_id = "bm_w_contender"
 	self.contender.desc_id = "bm_w_contender_desc"
 	self.contender.description_id = "des_contender"
+	self.contender.has_description = true
 	self.contender.global_value = "pxp3"
 	self.contender.texture_bundle_folder = "pxp3"
 	self.contender.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
@@ -21245,7 +21246,7 @@ function WeaponTweakData:_init_contraband(weapon_data)
 	self.contraband_m203.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 960,
+		damage = 96,
 		alert_size = 7,
 		spread = 25,
 		spread_moving = 6,

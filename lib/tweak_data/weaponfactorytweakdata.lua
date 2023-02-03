@@ -983,8 +983,8 @@ function WeaponFactoryTweakData:_init_sights()
 				rotation = Rotation(0, 0, 0)
 			},
 			wpn_fps_sho_m590 = {
-				translation = Vector3(-0.24, -3.5, -4.5),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(-0.24, -3.5, -3.9),
+				rotation = Rotation(0, -0.5, 0)
 			},
 			wpn_fps_smg_sr2 = {
 				translation = Vector3(0, 5, -4.6),
@@ -8440,43 +8440,43 @@ function WeaponFactoryTweakData:_init_pxp3_mods()
 		},
 		stance_mod = {
 			wpn_fps_snp_m95 = {
-				translation = Vector3(-0.013, -22, -4.595)
+				translation = Vector3(-0.013, -18, -3.85)
 			},
 			wpn_fps_snp_msr = {
-				translation = Vector3(0, -32, -4.3)
+				translation = Vector3(0, -30, -3.55)
 			},
 			wpn_fps_snp_r93 = {
-				translation = Vector3(0, -28, -4.52)
+				translation = Vector3(0, -25, -3.75)
 			},
 			wpn_fps_snp_sbl = {
-				translation = Vector3(0, -35, -4.58)
+				translation = Vector3(0, -28, -3.85)
 			},
 			wpn_fps_snp_mosin = {
-				translation = Vector3(-0.01, -51, -5.04)
+				translation = Vector3(-0.01, -45, -4.3)
 			},
 			wpn_fps_snp_wa2000 = {
-				translation = Vector3(0, -28, 0)
+				translation = Vector3(0, -23, 0.75)
 			},
 			wpn_fps_snp_model70 = {
-				translation = Vector3(0, -30, -4.79)
+				translation = Vector3(0, -25, -4.05)
 			},
 			wpn_fps_snp_r700 = {
-				translation = Vector3(0, -36, -3.8)
+				translation = Vector3(0, -27, -3.8)
 			},
 			wpn_fps_snp_desertfox = {
-				translation = Vector3(0, -38.5, -4.7)
+				translation = Vector3(0, -33, -3.95)
 			},
 			wpn_fps_snp_tti = {
-				translation = Vector3(0, -21, -0.86)
+				translation = Vector3(0, -18, -0.1)
 			},
 			wpn_fps_snp_qbu88 = {
-				translation = Vector3(-0.013, -35, -0.43)
+				translation = Vector3(-0.013, -35, 0.3)
 			},
 			wpn_fps_snp_scout = {
-				translation = Vector3(0, -40, -0.1)
+				translation = Vector3(-0.01, -38, 0.65)
 			},
 			wpn_fps_snp_siltstone = {
-				translation = Vector3(0, -17, -4.78)
+				translation = Vector3(0, -14, -4.02)
 			},
 			wpn_fps_snp_victor = {
 				translation = Vector3(0, -27, -0.325)
@@ -8544,7 +8544,43 @@ function WeaponFactoryTweakData:_init_pxp3_mods()
 				translation = Vector3(0, 0, -5.5)
 			},
 			wpn_fps_snp_r700 = {
-				translation = Vector3(0, -7, -8.9)
+				translation = Vector3(0, -8, -8.9)
+			},
+			wpn_fps_snp_msr = {
+				translation = Vector3(0, -12, -8.6)
+			},
+			wpn_fps_snp_sbl = {
+				translation = Vector3(0, -12, -8.85)
+			},
+			wpn_fps_snp_model70 = {
+				translation = Vector3(0, -10, -9.1)
+			},
+			wpn_fps_snp_wa2000 = {
+				translation = Vector3(0, -8, -4.3)
+			},
+			wpn_fps_snp_r93 = {
+				translation = Vector3(0, -10, -8.8)
+			},
+			wpn_fps_snp_mosin = {
+				translation = Vector3(-0.01, -30, -9.4)
+			},
+			wpn_fps_snp_m95 = {
+				translation = Vector3(-0.013, -4, -8.95)
+			},
+			wpn_fps_snp_siltstone = {
+				translation = Vector3(0, 0, -9.1)
+			},
+			wpn_fps_snp_tti = {
+				translation = Vector3(0, -4, -5.2)
+			},
+			wpn_fps_snp_desertfox = {
+				translation = Vector3(0, -20, -9)
+			},
+			wpn_fps_snp_qbu88 = {
+				translation = Vector3(-0.013, -20, -4.75)
+			},
+			wpn_fps_snp_scout = {
+				translation = Vector3(0, -25, -4.45)
 			},
 			wpn_fps_snp_contender = {
 				translation = Vector3(0, -7, -8.5),

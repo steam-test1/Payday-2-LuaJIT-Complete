@@ -921,9 +921,4 @@ function EquipmentsTweakData:init()
 		icon = "equipment_generic_key",
 		text_id = "hud_trai_equipment_key"
 	}
-	self.specials.corp_key_fob = {
-		sync_possession = true,
-		icon = "equipment_businesscard",
-		text_id = "hud_carry_corp_key_fob"
-	}
 end
