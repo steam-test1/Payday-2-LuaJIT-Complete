@@ -812,4 +812,6 @@ function MoneyTweakData:init(tweak_data)
 	self.bag_values.garden_gnome = 9.99
 	self.bag_values.ranc_weapon = 3000
 	self.bag_values.turret_part = 6000
+	self.bag_values.corp_papers = 2500
+	self.bag_values.corp_prototype = 3000
 end

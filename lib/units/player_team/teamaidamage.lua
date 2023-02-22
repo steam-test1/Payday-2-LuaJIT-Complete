@@ -328,13 +328,13 @@ function TeamAIDamage:damage_mission(attack_data)
 end
 
 function TeamAIDamage:damage_tase(attack_data)
-	if attack_data ~= nil and PlayerDamage.is_friendly_fire(self, attack_data.attacker_unit) then
-		self:friendly_fire_hit()
-
+	if not self:can_be_tased() then
 		return
 	end
 
-	if self:_cannot_take_damage() then
+	if attack_data ~= nil and PlayerDamage.is_friendly_fire(self, attack_data.attacker_unit) then
+		self:friendly_fire_hit()
+
 		return
 	end
 
@@ -374,6 +374,28 @@ function TeamAIDamage:damage_tase(attack_data)
 end
 
 function TeamAIDamage:damage_dot(attack_data)
+end
+
+function TeamAIDamage:can_be_tased()
+	if self._bleed_out or self:_cannot_take_damage() then
+		return false
+	end
+
+	return true
+end
+
+function TeamAIDamage:on_non_lethal_electrocution(electrocution_time_mul)
+	if self._to_incapacitated_clbk_id then
+		return
+	end
+
+	self:damage_tase(nil)
+
+	if self._to_incapacitated_clbk_id then
+		self._to_incapacitated_prevent = true
+
+		managers.enemy:reschedule_delayed_clbk(self._to_incapacitated_clbk_id, TimerManager:game():time() + self._char_dmg_tweak.TASED_TIME * (electrocution_time_mul or 1))
+	end
 end
 
 function TeamAIDamage:_apply_damage(attack_data, result)
@@ -1108,17 +1130,20 @@ function TeamAIDamage:_send_tase_attack_result()
 	self._unit:network():send("from_server_damage_tase")
 end
 
-function TeamAIDamage:on_tase_ended()
+function TeamAIDamage:on_tase_ended(force_recovery)
 	if self._tase_effect then
 		World:effect_manager():fade_kill(self._tase_effect)
 	end
 
-	if self._to_incapacitated_clbk_id then
+	if force_recovery or self._to_incapacitated_clbk_id then
 		self._regenerate_t = TimerManager:game():time() + self._char_dmg_tweak.REGENERATE_TIME
 
-		managers.enemy:remove_delayed_clbk(self._to_incapacitated_clbk_id)
+		if self._to_incapacitated_clbk_id then
+			managers.enemy:remove_delayed_clbk(self._to_incapacitated_clbk_id)
 
-		self._to_incapacitated_clbk_id = nil
+			self._to_incapacitated_clbk_id = nil
+		end
+
 		local action_data = {
 			variant = "stand",
 			body_part = 1,
@@ -1141,7 +1166,13 @@ end
 function TeamAIDamage:clbk_exit_to_incapacitated()
 	self._to_incapacitated_clbk_id = nil
 
-	self:_on_incapacitated()
+	if self._to_incapacitated_prevent then
+		self._to_incapacitated_prevent = nil
+
+		self:on_tase_ended(true)
+	else
+		self:_on_incapacitated()
+	end
 end
 
 function TeamAIDamage:on_incapacitated()
@@ -1165,6 +1196,7 @@ function TeamAIDamage:_on_incapacitated()
 		self._to_incapacitated_clbk_id = nil
 	end
 
+	self._to_incapacitated_prevent = nil
 	self._regenerate_t = nil
 	local dmg_info = {
 		variant = "bleeding",
@@ -1231,6 +1263,8 @@ function TeamAIDamage:_clear_damage_transition_callbacks()
 
 		self._to_dead_clbk_id = nil
 	end
+
+	self._to_incapacitated_prevent = nil
 end
 
 function TeamAIDamage:last_suppression_t()

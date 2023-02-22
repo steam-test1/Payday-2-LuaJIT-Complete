@@ -7,6 +7,12 @@ function ElementPlaySound:init(...)
 	ElementPlaySound.super.init(self, ...)
 end
 
+function ElementPlaySound:on_script_activated()
+	if Network:is_server() then
+		self._mission_script:add_save_state_cb(self._id)
+	end
+end
+
 function ElementPlaySound:client_on_executed(...)
 	self:on_executed(...)
 end
@@ -22,7 +28,11 @@ function ElementPlaySound:on_executed(instigator)
 
 	if self._values.use_instigator then
 		if Network:is_server() and alive(instigator) and instigator:id() ~= -1 then
-			instigator:sound():say(self._values.sound_event, true, not self._values.append_prefix, true)
+			if self._values.use_play_func then
+				instigator:sound():play(self._values.sound_event, nil, true)
+			else
+				instigator:sound():say(self._values.sound_event, true, not self._values.append_prefix, true)
+			end
 		end
 	elseif not self._values.elements or #self._values.elements == 0 then
 		self:_play_sound()
@@ -36,7 +46,11 @@ end
 function ElementPlaySound:_play_sound_on_elements()
 	local function f(unit)
 		if unit:id() ~= -1 then
-			unit:sound():say(self._values.sound_event, true, not self._values.append_prefix, true)
+			if self._values.use_play_func then
+				unit:sound():play(self._values.sound_event, nil, true)
+			else
+				unit:sound():say(self._values.sound_event, true, not self._values.append_prefix, true)
+			end
 		end
 	end
 
@@ -59,7 +73,7 @@ function ElementPlaySound:_play_sound()
 		self._source:set_orientation(self._values.rotation)
 
 		if self._source:post_event(self._values.sound_event, callback(self, self, "sound_ended"), nil, "end_of_event") then
-			self._mission_script:add_save_state_cb(self._id)
+			self._playing_sound = true
 		end
 	elseif Application:editor() then
 		managers.editor:output_error("Cant play sound event nil [" .. self._editor_name .. "]")
@@ -67,7 +81,7 @@ function ElementPlaySound:_play_sound()
 end
 
 function ElementPlaySound:sound_ended(...)
-	self._mission_script:remove_save_state_cb(self._id)
+	self._playing_sound = nil
 end
 
 function ElementPlaySound:operation_remove()
@@ -78,10 +92,16 @@ function ElementPlaySound:operation_remove()
 end
 
 function ElementPlaySound:save(data)
+	data.enabled = self._values.enabled
+	data.was_playing_sound = self._playing_sound
 end
 
 function ElementPlaySound:load(data)
-	self:_play_sound()
+	self:set_enabled(data.enabled)
+
+	if data.was_playing_sound then
+		self:_play_sound()
+	end
 end
 
 function ElementPlaySound:stop_simulation()

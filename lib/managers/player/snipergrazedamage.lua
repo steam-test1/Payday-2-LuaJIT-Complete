@@ -29,22 +29,24 @@ function SniperGrazeDamage:on_weapon_fired(weapon_unit, result)
 	local ally_mask = managers.slot:get_mask("all_criminals")
 
 	for i, hit in ipairs(result.rays) do
-		local is_turret = hit.unit:in_slot(sentry_mask)
-		local is_ally = hit.unit:in_slot(ally_mask)
-		local is_valid_hit = hit.damage_result and hit.damage_result.attack_data and true or false
+		if alive(hit.unit) then
+			local is_turret = hit.unit:in_slot(sentry_mask)
+			local is_ally = hit.unit:in_slot(ally_mask)
+			local is_valid_hit = hit.damage_result and hit.damage_result.attack_data and true or false
 
-		if not is_turret and not is_ally and is_valid_hit then
-			local result = hit.damage_result
-			local attack_data = result.attack_data
-			local headshot_kill = attack_data.headshot and (result.type == "death" or result.type == "healed")
-			local damage_mul = headshot_kill and upgrade_value.damage_factor_headshot or upgrade_value.damage_factor
-			local damage = attack_data.damage * damage_mul
+			if not is_turret and not is_ally and is_valid_hit then
+				local result = hit.damage_result
+				local attack_data = result.attack_data
+				local headshot_kill = attack_data.headshot and (result.type == "death" or result.type == "healed")
+				local damage_mul = headshot_kill and upgrade_value.damage_factor_headshot or upgrade_value.damage_factor
+				local damage = attack_data.damage * damage_mul
 
-			if best_damage < damage then
-				best_damage = damage
+				if best_damage < damage then
+					best_damage = damage
+				end
+
+				enemies_hit[hit.unit:key()] = true
 			end
-
-			enemies_hit[hit.unit:key()] = true
 		end
 	end
 
@@ -81,6 +83,7 @@ function SniperGrazeDamage:on_weapon_fired(weapon_unit, result)
 			variant = "graze",
 			damage = best_damage,
 			attacker_unit = managers.player:player_unit(),
+			weapon_unit = weapon_unit,
 			pos = hit.position,
 			attack_dir = -hit.normal
 		})

@@ -43,6 +43,17 @@ function ElementLaserTrigger:init(...)
 		self._slotmask = World:make_slot_mask(14)
 	end
 
+	if Network:is_client() then
+		self._instigator_find_func = ElementAreaTrigger.instigator_find_functions_client[self._values.instigator]
+	else
+		self._instigator_find_func = ElementAreaTrigger.instigator_find_functions[self._values.instigator]
+		self._check_amount_func = ElementAreaTrigger.check_amount_functions[self._values.instigator]
+	end
+
+	self._instigator_count_all_func = ElementAreaTrigger.instigator_project_all_functions[self._values.instigator]
+	self._instigator_count_inside_func = ElementAreaTrigger.instigator_project_inside_functions[self._values.instigator]
+	self._instigator_valid_func = ElementAreaTrigger.instigator_valid_functions[self._values.instigator]
+
 	if not self._values.skip_dummies then
 		self._dummy_units = {}
 		self._dummies_visible = true
@@ -388,14 +399,17 @@ function ElementLaserTrigger:_client_check_state(unit)
 		if not inside or not rule_ok then
 			table.delete(self._inside, unit)
 			managers.network:session():send_to_host("to_server_area_event", 2, self._id, unit)
+			ElementAreaTrigger._chk_local_client_execute(self, unit, "on_exit")
 		end
 	elseif inside and rule_ok then
 		table.insert(self._inside, unit)
 		managers.network:session():send_to_host("to_server_area_event", 1, self._id, unit)
+		ElementAreaTrigger._chk_local_client_execute(self, unit, "on_enter")
 	end
 
 	if inside and rule_ok then
 		managers.network:session():send_to_host("to_server_area_event", 3, self._id, unit)
+		ElementAreaTrigger._chk_local_client_execute(self, unit, "while_inside")
 	end
 end
 

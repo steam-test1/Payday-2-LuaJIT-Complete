@@ -534,7 +534,7 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.regain_throwable_from_ammo = {
 		{
 			chance = 0.05,
-			chance_inc = 1.01
+			chance_inc = 0.01
 		}
 	}
 	self.values.player.damage_shake_multiplier = {

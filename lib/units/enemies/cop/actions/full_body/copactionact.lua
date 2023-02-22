@@ -287,6 +287,8 @@ CopActionAct._act_redirects = {
 		"cf_sp_umbrella_var1",
 		"cf_sp_umbrella_var2",
 		"cm_sp_inspect_var1",
+		"cm_sp_corp_car_l_exit",
+		"cm_sp_corp_car_r_exit",
 		"cm_sp_gives_cpr",
 		"cm_sp_wounded_lying",
 		"cm_sp_accident_scene",

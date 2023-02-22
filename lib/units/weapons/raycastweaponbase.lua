@@ -1334,6 +1334,10 @@ end
 
 function RaycastWeaponBase:set_ammo_total(ammo_total)
 	self._ammo_total = self:digest_value(ammo_total, true)
+
+	if self:get_stored_pickup_ammo() and self:get_ammo_max() <= ammo_total then
+		self:remove_pickup_ammo()
+	end
 end
 
 function RaycastWeaponBase:add_ammo_to_pool(ammo, index)
@@ -1476,6 +1480,18 @@ function RaycastWeaponBase:calculate_ammo_max_per_clip()
 	ammo = ammo + (self._extra_ammo or 0)
 
 	return ammo
+end
+
+function RaycastWeaponBase:get_stored_pickup_ammo()
+	return self._stored_pickup_ammo and self:digest_value(self._stored_pickup_ammo, false)
+end
+
+function RaycastWeaponBase:store_pickup_ammo(ammo_to_store)
+	self._stored_pickup_ammo = self:digest_value(ammo_to_store, true)
+end
+
+function RaycastWeaponBase:remove_pickup_ammo()
+	self._stored_pickup_ammo = nil
 end
 
 function RaycastWeaponBase:_get_current_damage(dmg_mul)
@@ -1762,39 +1778,56 @@ function RaycastWeaponBase:add_ammo(ratio, add_amount_override)
 			return false, 0
 		end
 
-		local multiplier_min = 1
-		local multiplier_max = 1
-
-		if ammo_base._ammo_data and ammo_base._ammo_data.ammo_pickup_min_mul then
-			multiplier_min = ammo_base._ammo_data.ammo_pickup_min_mul
-		else
-			multiplier_min = managers.player:upgrade_value("player", "pick_up_ammo_multiplier", 1)
-			multiplier_min = multiplier_min + managers.player:upgrade_value("player", "pick_up_ammo_multiplier_2", 1) - 1
-			multiplier_min = multiplier_min + managers.player:crew_ability_upgrade_value("crew_scavenge", 0)
-		end
-
-		if ammo_base._ammo_data and ammo_base._ammo_data.ammo_pickup_max_mul then
-			multiplier_max = ammo_base._ammo_data.ammo_pickup_max_mul
-		else
-			multiplier_max = managers.player:upgrade_value("player", "pick_up_ammo_multiplier", 1)
-			multiplier_max = multiplier_max + managers.player:upgrade_value("player", "pick_up_ammo_multiplier_2", 1) - 1
-			multiplier_max = multiplier_max + managers.player:crew_ability_upgrade_value("crew_scavenge", 0)
-		end
-
+		local stored_pickup_ammo = nil
 		local add_amount = add_amount_override
-		local picked_up = true
 
 		if not add_amount then
-			local rng_ammo = math.lerp(ammo_base._ammo_pickup[1] * multiplier_min, ammo_base._ammo_pickup[2] * multiplier_max, math.random())
-			picked_up = rng_ammo > 0
-			add_amount = math.max(0, math.round(rng_ammo))
+			local multiplier_min = 1
+			local multiplier_max = 1
+
+			if ammo_base._ammo_data then
+				multiplier_min = ammo_base._ammo_data.ammo_pickup_min_mul or multiplier_min
+				multiplier_max = ammo_base._ammo_data.ammo_pickup_max_mul or multiplier_max
+			end
+
+			local mul_1 = managers.player:upgrade_value("player", "pick_up_ammo_multiplier", 1) - 1
+			local mul_2 = managers.player:upgrade_value("player", "pick_up_ammo_multiplier_2", 1) - 1
+			local crew_mul = managers.player:crew_ability_upgrade_value("crew_scavenge", 0)
+			local total = mul_1 + mul_2 + crew_mul
+			multiplier_min = multiplier_min + total
+			multiplier_max = multiplier_max + total
+			add_amount = math.lerp(ammo_base._ammo_pickup[1] * multiplier_min, ammo_base._ammo_pickup[2] * multiplier_max, math.random())
+			add_amount = add_amount * (ratio or 1)
+			stored_pickup_ammo = ammo_base:get_stored_pickup_ammo()
+
+			if stored_pickup_ammo then
+				add_amount = add_amount + stored_pickup_ammo
+
+				ammo_base:remove_pickup_ammo()
+			end
 		end
 
-		add_amount = math.floor(add_amount * (ratio or 1))
+		local rounded_amount = math.floor(add_amount)
+		local new_ammo = ammo_base:get_ammo_total() + rounded_amount
+		local max_allowed_ammo = ammo_base:get_ammo_max()
 
-		ammo_base:set_ammo_total(math.clamp(ammo_base:get_ammo_total() + add_amount, 0, ammo_base:get_ammo_max()))
+		if not add_amount_override and new_ammo < max_allowed_ammo then
+			local leftover_ammo = add_amount - rounded_amount
 
-		return picked_up, add_amount
+			if leftover_ammo > 0 then
+				ammo_base:store_pickup_ammo(leftover_ammo)
+			end
+		end
+
+		ammo_base:set_ammo_total(math.clamp(new_ammo, 0, max_allowed_ammo))
+
+		if stored_pickup_ammo then
+			add_amount = math.floor(add_amount - stored_pickup_ammo)
+		else
+			add_amount = rounded_amount
+		end
+
+		return true, add_amount
 	end
 
 	local picked_up, add_amount = nil

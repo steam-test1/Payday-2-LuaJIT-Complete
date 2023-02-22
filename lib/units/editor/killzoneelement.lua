@@ -18,6 +18,7 @@ function KillzoneUnitElement:_build_panel(panel, panel_sizer)
 		"sniper",
 		"gas",
 		"fire",
-		"laser"
+		"laser",
+		"electricity"
 	})
 end

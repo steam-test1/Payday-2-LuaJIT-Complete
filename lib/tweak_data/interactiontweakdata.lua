@@ -3545,7 +3545,6 @@ function InteractionTweakData:init(tweak_data)
 	self.cas_open_door = {
 		text_id = "hud_cas_open_door",
 		interact_distance = 150,
-		timer = 3,
 		start_active = true,
 		can_interact_in_civilian = true
 	}
@@ -7915,6 +7914,169 @@ function InteractionTweakData:init(tweak_data)
 		timer = 0.2,
 		start_active = false,
 		axis = "y"
+	}
+	self.corp_hold_phone_play_voice_message = {
+		text_id = "corp_hold_phone_play_voice_message",
+		action_text_id = "corp_action_phone_play_voice_message",
+		interact_distance = 200,
+		timer = 2,
+		start_active = false
+	}
+	self.corp_hold_pku_paperpile_bag = {
+		text_id = "corp_hold_pku_paper_pile_bag",
+		action_text_id = "corp_action_pku_paper_pile_bag",
+		interact_distance = 200,
+		timer = 3,
+		start_active = true,
+		sound_start = "bar_bag_generic",
+		sound_interupt = "bar_bag_generic_cancel",
+		sound_done = "bar_bag_generic_finished"
+	}
+	self.corp_pickup_prototype = {
+		text_id = "corp_hold_pku_prototype",
+		action_text_id = "corp_action_pku_prototype",
+		interact_distance = 200,
+		timer = 3,
+		axis = "x"
+	}
+	self.corp_hack_email = {
+		icon = "equipment_hack_ipad",
+		text_id = "corp_hold_computer_email",
+		interact_distance = 200,
+		timer = 2,
+		start_active = true,
+		axis = "y",
+		sound_start = "bar_keyboard",
+		sound_interupt = "bar_keyboard_cancel",
+		sound_done = "bar_keyboard_finished"
+	}
+	self.corp_hack_lead_email = deep_clone(self.corp_hack_email)
+	self.corp_hack_lead_email.text_id = "corp_hold_computer_lead_schedule"
+	self.corp_download_email = {
+		icon = "equipment_hack_ipad",
+		text_id = "corp_hold_computer_download_email",
+		interact_distance = 200,
+		timer = 2,
+		start_active = true,
+		axis = "y",
+		sound_start = "bar_keyboard",
+		sound_interupt = "bar_keyboard_cancel",
+		sound_done = "bar_keyboard_finished"
+	}
+	self.corp_key_fob = {
+		text_id = "hud_int_corp_take_key_fob",
+		interact_distance = 200,
+		start_active = true
+	}
+	self.corp_hold_unlock_controlbox = {
+		text_id = "corp_hold_unlock_controlbox",
+		action_text_id = "corp_action_unlock_controlbox",
+		interact_distance = 200,
+		timer = 3,
+		start_active = true,
+		axis = "x",
+		special_equipment = "keychain",
+		equipment_text_id = "hud_equipment_corp_controlbox_need_keys",
+		equipment_consume = true,
+		dont_need_equipment = false
+	}
+	self.corp_hold_close_curtains = {
+		text_id = "corp_hold_close_curtains",
+		action_text_id = "corp_action_close_curtains",
+		interact_distance = 200,
+		timer = 1,
+		start_active = true,
+		axis = "x"
+	}
+	self.corp_hold_voice_recorder_play = {
+		text_id = "corp_hold_voice_recorder_play",
+		action_text_id = "corp_action_voice_recorder_play",
+		interact_distance = 200,
+		timer = 2,
+		start_active = true,
+		axis = "y"
+	}
+	self.corp_hold_shelf_research_documents = {
+		text_id = "hud_corp_hold_shelf_research_documents",
+		action_text_id = "hud_corp_action_shelf_research_documents",
+		sound_start = "bar_shuffle_papers",
+		sound_interupt = "bar_shuffle_papers_cancel",
+		sound_done = "bar_shuffle_papers_finished",
+		interact_distance = 150,
+		timer = 2,
+		start_active = true,
+		axis = "x"
+	}
+	self.corp_hud_hold_use_tag_reader = {
+		text_id = "corp_hud_hold_use_tag_reader",
+		action_text_id = "corp_hud_action_use_tag_reader",
+		timer = 1,
+		start_active = true,
+		interact_distance = 150,
+		special_equipment = "corp_key_fob",
+		equipment_text_id = "hud_equipment_corp_tag_reader_need_keycard",
+		equipment_consume = true,
+		axis = "x"
+	}
+	self.corp_hold_cut_cable = {
+		text_id = "hud_int_hold_cut_cable",
+		action_text_id = "hud_action_cutting_cable",
+		start_active = false,
+		interact_distance = 250,
+		timer = 0.5,
+		sound_start = "bar_cut_fence",
+		sound_interupt = "bar_cut_fence_cancel",
+		sound_done = "bar_cut_fence_finished"
+	}
+	self.corp_hold_desk_drawer_open = {
+		text_id = "corp_hold_desk_drawer_open",
+		action_text_id = "corp_action_desk_drawer_open",
+		interact_distance = 200,
+		timer = 1,
+		start_active = true,
+		axis = "x"
+	}
+	self.corp_hold_desk_drawer_close = {
+		text_id = "corp_hold_desk_drawer_close",
+		action_text_id = "corp_action_desk_drawer_close",
+		interact_distance = 200,
+		timer = 1,
+		axis = "x"
+	}
+	self.corp_unlock_usb_laptop = {
+		text_id = "hud_int_corp_use_usb_laptop",
+		action_text_id = "hud_action_corp_use_usb_laptop",
+		interact_distance = 150,
+		timer = 2,
+		start_active = false,
+		special_equipment = "trai_usb_key",
+		equipment_text_id = "debug_interact_equipment_usb_stick",
+		equipment_consume = true,
+		dont_need_equipment = false,
+		axis = "x"
+	}
+	self.corp_prop_celing_wires_cut = {
+		text_id = "hud_int_corp_prop_celing_wires_cut",
+		action_text_id = "hud_action_corp_prop_celing_wires_cut",
+		interact_distance = 250,
+		timer = 2,
+		start_active = false,
+		sound_start = "bar_wire_cut",
+		sound_interupt = "bar_wire_cut_cancel",
+		sound_done = "bar_wire_cut_finished"
+	}
+	self.pickup_asset_zaxis = deep_clone(self.pickup_asset)
+	self.pickup_asset_zaxis.axis = "z"
+	self.corp_achievement_usb_laptop = {
+		icon = "develop",
+		text_id = "hud_hold_use_achievement_laptop",
+		timer = 0.5,
+		start_active = true,
+		interact_distance = 150,
+		special_equipment = "trai_usb_key",
+		equipment_text_id = "hud_equipment_corp_achievement_need_usb",
+		equipment_consume = true,
+		dont_need_equipment = false
 	}
 	self.cg22_spawn_present = {
 		text_id = "cg22_hold_summon_present",

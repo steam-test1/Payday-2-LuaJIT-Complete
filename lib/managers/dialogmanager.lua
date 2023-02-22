@@ -99,7 +99,7 @@ function DialogManager:_add_delayed_dialog(dialog_request)
 end
 
 function DialogManager:queue_narrator_dialog(id, params)
-	self:queue_dialog(self._narrator_prefix .. id, params)
+	return self:queue_dialog(self._narrator_prefix .. id, params)
 end
 
 function DialogManager:set_narrator(narrator)

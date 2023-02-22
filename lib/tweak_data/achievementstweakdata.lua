@@ -982,8 +982,11 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		pxp2_1 = {
+			stat = "pxp2_1_stats",
 			fire_mode = "volley",
-			stat = "pxp2_1_stats"
+			weapons = {
+				"hailstorm"
+			}
 		},
 		pxp2_2 = {
 			stat = "pxp2_2_stats",
@@ -5405,6 +5408,47 @@ function AchievementsTweakData:init(tweak_data)
 				num_skills = 0,
 				armor = "level_1"
 			}
+		},
+		corp_1 = {
+			award = "corp_1",
+			job = "corp",
+			difficulty = normal_and_above
+		},
+		corp_2 = {
+			award = "corp_2",
+			job = "corp",
+			difficulty = hard_and_above
+		},
+		corp_3 = {
+			award = "corp_3",
+			job = "corp",
+			difficulty = veryhard_and_above
+		},
+		corp_4 = {
+			award = "corp_4",
+			job = "corp",
+			difficulty = overkill_and_above
+		},
+		corp_5 = {
+			award = "corp_5",
+			job = "corp",
+			difficulty = easywish_and_above
+		},
+		corp_6 = {
+			award = "corp_6",
+			job = "corp",
+			difficulty = deathwish_and_above
+		},
+		corp_7 = {
+			award = "corp_7",
+			job = "corp",
+			difficulty = sm_wish_and_above
+		},
+		corp_8 = {
+			award = "corp_8",
+			one_down = true,
+			job = "corp",
+			difficulty = sm_wish_and_above
 		},
 		uno_1 = {
 			award = "uno_1",

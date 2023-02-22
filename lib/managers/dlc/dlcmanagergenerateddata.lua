@@ -50,6 +50,14 @@ function GenericDLCManager:has_copr()
 	return self:is_dlc_unlocked("copr")
 end
 
+function GenericDLCManager:has_corp()
+	return self:is_dlc_unlocked("corp")
+end
+
+function GenericDLCManager:has_cot()
+	return self:is_dlc_unlocked("cot")
+end
+
 function GenericDLCManager:has_ess()
 	return self:is_dlc_unlocked("ess")
 end
@@ -451,6 +459,15 @@ function WINDLCManager:init_generated()
 		no_install = true
 	}
 	Global.dlc_manager.all_dlc_data.copr = {
+		app_id = "218620",
+		no_install = true
+	}
+	Global.dlc_manager.all_dlc_data.corp = {
+		app_id = "2215010",
+		no_install = true,
+		webpage = "https://pd2.link/HostileTakeoverHeistYBS"
+	}
+	Global.dlc_manager.all_dlc_data.cot = {
 		app_id = "218620",
 		no_install = true
 	}

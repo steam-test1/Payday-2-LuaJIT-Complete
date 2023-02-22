@@ -1346,16 +1346,16 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				Idstring("units/pd2_dlc_usm2/characters/ene_male_marshal_shield_1/ene_male_marshal_shield_1")
 			},
 			russia = {
-				Idstring("units/pd2_dlc_usm2/characters/ene_male_marshal_shield_1/ene_male_marshal_shield_1")
+				Idstring("units/pd2_dlc_usm2/characters/ene_male_marshal_shield_2/ene_male_marshal_shield_2")
 			},
 			zombie = {
-				Idstring("units/pd2_dlc_usm2/characters/ene_male_marshal_shield_1/ene_male_marshal_shield_1")
+				Idstring("units/pd2_dlc_usm2/characters/ene_male_marshal_shield_2/ene_male_marshal_shield_2")
 			},
 			murkywater = {
-				Idstring("units/pd2_dlc_usm2/characters/ene_male_marshal_shield_1/ene_male_marshal_shield_1")
+				Idstring("units/pd2_dlc_usm2/characters/ene_male_marshal_shield_2/ene_male_marshal_shield_2")
 			},
 			federales = {
-				Idstring("units/pd2_dlc_usm2/characters/ene_male_marshal_shield_1/ene_male_marshal_shield_1")
+				Idstring("units/pd2_dlc_usm2/characters/ene_male_marshal_shield_2/ene_male_marshal_shield_2")
 			}
 		},
 		access = access_type_walk_only
@@ -3337,7 +3337,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 	elseif Global.level_data and Global.level_data.level_id == "ranc" or Global.game_settings and Global.game_settings.level_id == "ranc" then
 		self.enemy_spawn_groups.marshal_squad = {
 			spawn_cooldown = 60,
-			max_nr_simultaneous_groups = 1,
+			max_nr_simultaneous_groups = 2,
 			initial_spawn_delay = 90,
 			amount = {
 				2,
@@ -3346,7 +3346,15 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 			spawn = {
 				{
 					respawn_cooldown = 30,
-					amount_min = 2,
+					amount_min = 1,
+					rank = 2,
+					freq = 1,
+					unit = "marshal_shield",
+					tactics = self._tactics.marshal_shield
+				},
+				{
+					respawn_cooldown = 30,
+					amount_min = 1,
 					rank = 1,
 					freq = 1,
 					unit = "marshal_marksman",
@@ -3354,14 +3362,15 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			},
 			spawn_point_chk_ref = table.list_to_set({
-				"tac_swat_rifle_flank",
-				"tac_swat_rifle"
+				"tac_shield_wall",
+				"tac_shield_wall_ranged",
+				"tac_shield_wall_charge"
 			})
 		}
 	else
 		self.enemy_spawn_groups.marshal_squad = {
 			spawn_cooldown = 60,
-			max_nr_simultaneous_groups = 1,
+			max_nr_simultaneous_groups = 2,
 			initial_spawn_delay = 480,
 			amount = {
 				2,
@@ -3370,7 +3379,15 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 			spawn = {
 				{
 					respawn_cooldown = 30,
-					amount_min = 2,
+					amount_min = 1,
+					rank = 2,
+					freq = 1,
+					unit = "marshal_shield",
+					tactics = self._tactics.marshal_shield
+				},
+				{
+					respawn_cooldown = 30,
+					amount_min = 1,
 					rank = 1,
 					freq = 1,
 					unit = "marshal_marksman",
@@ -3378,8 +3395,9 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			},
 			spawn_point_chk_ref = table.list_to_set({
-				"tac_swat_rifle_flank",
-				"tac_swat_rifle"
+				"tac_shield_wall",
+				"tac_shield_wall_ranged",
+				"tac_shield_wall_charge"
 			})
 		}
 	end

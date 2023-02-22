@@ -15,12 +15,14 @@ function CorePlaySoundUnitElement:init(unit)
 	self._hed.append_prefix = false
 	self._hed.use_instigator = false
 	self._hed.interrupt = true
+	self._hed.use_play_func = false
 
 	table.insert(self._save_values, "sound_event")
 	table.insert(self._save_values, "elements")
 	table.insert(self._save_values, "append_prefix")
 	table.insert(self._save_values, "use_instigator")
 	table.insert(self._save_values, "interrupt")
+	table.insert(self._save_values, "use_play_func")
 end
 
 function CorePlaySoundUnitElement:draw_links(t, dt, selected_unit, all_units)
@@ -168,6 +170,7 @@ function CorePlaySoundUnitElement:_build_panel(panel, panel_sizer)
 	self:_build_value_checkbox(panel, panel_sizer, "append_prefix", "Append unit prefix")
 	self:_build_value_checkbox(panel, panel_sizer, "use_instigator", "Play on instigator")
 	self:_build_value_checkbox(panel, panel_sizer, "interrupt", "Interrupt existing sound")
+	self:_build_value_checkbox(panel, panel_sizer, "use_play_func", "Use 'play' function in unit sound extension instead of 'say'")
 end
 
 function CorePlaySoundUnitElement:add_to_mission_package()

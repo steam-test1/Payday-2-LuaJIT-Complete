@@ -8839,6 +8839,39 @@ function DLCTweakData:init(tweak_data)
 			amount = 1
 		}
 	}
+	self.cot_smilecigar = {
+		content = {}
+	}
+	self.cot_smilecigar.content.loot_global_value = "cot_smilecigar"
+	self.cot_smilecigar.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "smilecigar",
+			amount = 1
+		}
+	}
+	self.cot_sleekygent = {
+		content = {}
+	}
+	self.cot_sleekygent.content.loot_global_value = "cot_sleekygent"
+	self.cot_sleekygent.content.loot_drops = {
+		{
+			type_items = "player_styles",
+			item_entry = "sleekygent",
+			amount = 1
+		}
+	}
+	self.cot_beigedriver = {
+		content = {}
+	}
+	self.cot_beigedriver.content.loot_global_value = "cot_beigedriver"
+	self.cot_beigedriver.content.loot_drops = {
+		{
+			type_items = "gloves",
+			item_entry = "beigedriver",
+			amount = 1
+		}
+	}
 	self.mrwi_deck = {
 		content = {},
 		dlc = "has_mrwi_deck"

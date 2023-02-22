@@ -434,7 +434,9 @@ function GroupAIStateBesiege:_begin_assault_task(assault_areas)
 	assault_task.force_spawned = 0
 
 	if self._hostage_headcount > 0 then
-		assault_task.phase_end_t = assault_task.phase_end_t + self:_get_difficulty_dependent_value(self._tweak_data.assault.hostage_hesitation_delay)
+		local hostage_delay = self:_get_difficulty_dependent_value(self._tweak_data.assault.hostage_hesitation_delay)
+		anticipation_duration = anticipation_duration + hostage_delay
+		assault_task.phase_end_t = assault_task.phase_end_t + hostage_delay
 		assault_task.is_hesitating = true
 		assault_task.voice_delay = self._t + (assault_task.phase_end_t - self._t) / 2
 	end

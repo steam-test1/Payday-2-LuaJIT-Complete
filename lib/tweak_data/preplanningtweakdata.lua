@@ -1976,6 +1976,155 @@ function PrePlanningTweakData:init(tweak_data)
 		cost = tweak_data:get_value("money_manager", "preplanning_asset_cost_bex_garbage_truck"),
 		budget_cost = 2
 	}
+	self.types.corp_entry_main = {
+		name_id = "menu_pp_asset_corp_entry_main",
+		desc_id = "menu_pp_asset_corp_entry_main_desc",
+		plan = "entry_plan_generic",
+		pos_not_important = false,
+		category = "entry_plan_generic",
+		icon = 95,
+		total = 1,
+		cost = 0,
+		budget_cost = 0,
+		post_event = "preplan_07",
+		prio = 3
+	}
+	self.types.corp_entry_parking = {
+		name_id = "menu_pp_asset_corp_entry_parking",
+		desc_id = "menu_pp_asset_corp_entry_parking_desc",
+		plan = "entry_plan_generic",
+		pos_not_important = false,
+		category = "entry_plan_generic",
+		icon = 95,
+		total = 1,
+		cost = tweak_data:get_value("money_manager", "preplaning_asset_cost_escapebig"),
+		budget_cost = 3,
+		post_event = "preplan_07",
+		prio = 3
+	}
+	self.types.corp_escape_parking_north = {
+		name_id = "menu_pp_asset_corp_escape_parking_north",
+		desc_id = "menu_pp_asset_corp_escape_parking_north_desc",
+		plan = "escape_plan",
+		pos_not_important = false,
+		category = "escape_plan",
+		icon = 54,
+		total = 1,
+		cost = 0,
+		budget_cost = 0,
+		post_event = "preplan_17",
+		prio = 3
+	}
+	self.types.corp_escape_parking_south = {
+		name_id = "menu_pp_asset_corp_escape_parking_south",
+		desc_id = "menu_pp_asset_corp_escape_parking_south_desc",
+		plan = "escape_plan",
+		pos_not_important = false,
+		category = "escape_plan",
+		icon = 54,
+		total = 1,
+		cost = tweak_data:get_value("money_manager", "preplaning_asset_cost_escapebig"),
+		budget_cost = 3,
+		post_event = "preplan_17",
+		prio = 3
+	}
+	self.types.corp_helicopter_west = {
+		name_id = "menu_pp_asset_corp_helicopter_west",
+		desc_id = "menu_pp_asset_corp_helicopter_west_desc",
+		plan = "plan_of_action",
+		pos_not_important = false,
+		category = "plan_of_action",
+		icon = 73,
+		total = 1,
+		cost = tweak_data:get_value("money_manager", "preplaning_asset_cost_escapebig"),
+		budget_cost = 3,
+		post_event = "preplan_17",
+		prio = 3
+	}
+	self.types.corp_helicopter_east = {
+		name_id = "menu_pp_asset_corp_helicopter_east",
+		desc_id = "menu_pp_asset_corp_helicopter_east_desc",
+		plan = "plan_of_action",
+		pos_not_important = false,
+		category = "plan_of_action",
+		icon = 73,
+		total = 1,
+		cost = 0,
+		budget_cost = 0,
+		post_event = "preplan_17",
+		prio = 3
+	}
+	self.types.corp_wine_delivery = {
+		name_id = "menu_pp_asset_corp_wine_delivery",
+		desc_id = "menu_pp_asset_corp_wine_delivery_desc",
+		pos_not_important = true,
+		category = "hired_help",
+		icon = 82,
+		total = 1,
+		cost = tweak_data:get_value("money_manager", "preplaning_asset_cost_drillparts"),
+		budget_cost = 2,
+		post_event = "",
+		prio = 3
+	}
+	self.types.corp_zipline_north = {
+		name_id = "menu_pp_asset_corp_zipline_north",
+		desc_id = "menu_pp_asset_corp_zipline_north_desc",
+		category = "mission_equipment",
+		pos_not_important = false,
+		icon = 62,
+		total = 1,
+		post_event = "preplan_07",
+		prio = 3,
+		cost = tweak_data:get_value("money_manager", "preplaning_asset_cost_zipline"),
+		budget_cost = 2
+	}
+	self.types.corp_zipline_south = {
+		name_id = "menu_pp_asset_corp_zipline_south",
+		desc_id = "menu_pp_asset_corp_zipline_south_desc",
+		category = "mission_equipment",
+		pos_not_important = false,
+		icon = 62,
+		total = 1,
+		post_event = "preplan_07",
+		prio = 3,
+		cost = tweak_data:get_value("money_manager", "preplaning_asset_cost_zipline"),
+		budget_cost = 2
+	}
+	self.types.corp_equipment_drop = {
+		name_id = "menu_pp_asset_corp_equipment_drop",
+		desc_id = "menu_pp_asset_corp_equipment_drop_desc",
+		category = "mission_equipment",
+		pos_not_important = false,
+		icon = 132,
+		total = 1,
+		post_event = "preplan_07",
+		prio = 3,
+		cost = tweak_data:get_value("money_manager", "preplaning_asset_cost_bag_shortcut"),
+		budget_cost = 2
+	}
+	self.types.corp_open_office_door = {
+		name_id = "menu_pp_asset_corp_open_door",
+		desc_id = "menu_pp_asset_corp_open_door_desc",
+		category = "hired_help",
+		icon = 41,
+		total = 1,
+		post_event = "preplan_16",
+		prio = 3,
+		cost = tweak_data:get_value("money_manager", "preplanning_asset_cost_pex_open_window"),
+		budget_cost = 2
+	}
+	self.types.corp_lower_hacktime = {
+		name_id = "menu_pp_asset_corp_lower_hacktime",
+		desc_id = "menu_pp_asset_corp_lower_hacktime_desc",
+		icon = 15,
+		pos_not_important = true,
+		category = "data_hacking",
+		total = 1,
+		cost = tweak_data:get_value("money_manager", "preplaning_thebomb_cost_hacker"),
+		budget_cost = 4,
+		post_event = "",
+		prio = 3
+	}
 end
 
 function PrePlanningTweakData:_create_locations(tweak_data)
@@ -3872,6 +4021,61 @@ function PrePlanningTweakData:_create_locations(tweak_data)
 		post_event_prefix = "loc",
 		total_budget = 10,
 		default_plans = {},
+		start_location = {
+			group = "a",
+			zoom = 1,
+			x = 512,
+			y = 512
+		}
+	}
+	self.locations.corp = {
+		{
+			texture = "guis/dlcs/corp/textures/pd2/pre_planning/corp_01",
+			x2 = 11800,
+			rotation = 0,
+			map_size = 1,
+			map_x = -0.55,
+			x1 = -10200,
+			map_y = 0,
+			name_id = "menu_pp_corp_bpr_loc_a",
+			y2 = 11000,
+			y1 = -11000,
+			custom_points = {}
+		},
+		{
+			texture = "guis/dlcs/corp/textures/pd2/pre_planning/corp_02",
+			x2 = 11800,
+			rotation = 0,
+			map_size = 1,
+			map_x = 0.55,
+			x1 = -10200,
+			map_y = 0,
+			name_id = "menu_pp_corp_bpr_loc_b",
+			y2 = 11000,
+			y1 = -11000,
+			custom_points = {}
+		},
+		{
+			texture = "guis/dlcs/corp/textures/pd2/pre_planning/corp_03",
+			x2 = 11800,
+			rotation = 0,
+			map_size = 1,
+			map_x = 1.65,
+			x1 = -10200,
+			map_y = 0,
+			name_id = "menu_pp_corp_bpr_loc_c",
+			y2 = 11000,
+			y1 = -11000,
+			custom_points = {}
+		},
+		mission_briefing_texture = "guis/dlcs/corp/textures/pd2/pre_planning/corp_01",
+		post_event_prefix = "loc",
+		total_budget = 10,
+		default_plans = {
+			escape_plan = "corp_escape_parking_north",
+			entry_plan_generic = "corp_entry_main",
+			plan_of_action = "corp_helicopter_east"
+		},
 		start_location = {
 			group = "a",
 			zoom = 1,

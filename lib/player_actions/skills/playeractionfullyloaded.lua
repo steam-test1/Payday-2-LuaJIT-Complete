@@ -10,7 +10,7 @@ local function on_ammo_pickup(unit, pickup_chance, increase)
 
 			managers.player:add_grenade_amount(1, true)
 		else
-			chance = chance * increase
+			chance = chance + increase
 		end
 	end
 
@@ -36,5 +36,8 @@ PlayerAction.FullyLoaded = {
 		end
 
 		player_manager:unregister_message(Message.OnAmmoPickup, co)
+	end,
+	Function_Force_Remove = function (co)
+		managers.player:unregister_message(Message.OnAmmoPickup, co)
 	end
 }

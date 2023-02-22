@@ -1846,7 +1846,9 @@ function GroupAIStateBase:on_criminal_disabled(unit, custom_status)
 	record.status = custom_status or "disabled"
 
 	if Network:is_server() then
-		self._downs_during_assault = self._downs_during_assault + 1
+		if record.status ~= "electrified" then
+			self._downs_during_assault = self._downs_during_assault + 1
+		end
 
 		for key, data in pairs(self._police) do
 			data.unit:brain():on_criminal_neutralized(criminal_key)
@@ -1865,11 +1867,14 @@ function GroupAIStateBase:on_criminal_neutralized(unit)
 		return
 	end
 
+	local already_counted_as_down = record.status and record.status ~= "electrified"
 	record.status = "dead"
 	record.arrest_timeout = 0
 
 	if Network:is_server() then
-		self._downs_during_assault = self._downs_during_assault + 1
+		if not already_counted_as_down then
+			self._downs_during_assault = self._downs_during_assault + 1
+		end
 
 		for key, data in pairs(self._police) do
 			data.unit:brain():on_criminal_neutralized(criminal_key)

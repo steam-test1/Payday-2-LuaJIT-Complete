@@ -68,12 +68,12 @@ function CharmManager:get_movement_data(weapon, user, is_menu)
 
 	if not user then
 		if not is_menu then
-			print("[CharmManager:get_movement_data] ERROR? - In-game weapon has no user unit", weapon)
+			cat_print("charm_manager", "[CharmManager:get_movement_data] ERROR? - In-game weapon has no user unit", weapon)
 
 			data.update_type = "simulate_ingame_no_user"
 			data.prev_weapon_rot = Rotation()
 		elseif _G.IS_VR then
-			print("[CharmManager:get_movement_data] Menu weapon in VR")
+			cat_print("charm_manager", "[CharmManager:get_movement_data] Menu weapon in VR")
 
 			data.update_type = "simulate_menu_vr"
 			data.prev_weapon_rot = Rotation()
@@ -82,11 +82,11 @@ function CharmManager:get_movement_data(weapon, user, is_menu)
 			local parent_unit = weapon:parent()
 
 			if parent_unit and not entries[parent_unit:key()] then
-				print("[CharmManager:get_movement_data] Menu weapon with parent unit")
+				cat_print("charm_manager", "[CharmManager:get_movement_data] Menu weapon with parent unit")
 
 				data.update_type = "simulate_menu_standard"
 			else
-				print("[CharmManager:get_movement_data] Menu weapon without a parent unit")
+				cat_print("charm_manager", "[CharmManager:get_movement_data] Menu weapon without a parent unit")
 
 				data.update_type = "simulate_menu_no_character"
 				data.prev_weapon_rot = Rotation()
@@ -101,7 +101,7 @@ function CharmManager:get_movement_data(weapon, user, is_menu)
 
 	if base_ext and base_ext.is_local_player then
 		if _G.IS_VR then
-			print("[CharmManager:get_movement_data] Weapon has user unit: local VR player")
+			cat_print("charm_manager", "[CharmManager:get_movement_data] Weapon has user unit: local VR player")
 
 			local mov_ext = user:movement()
 
@@ -113,12 +113,12 @@ function CharmManager:get_movement_data(weapon, user, is_menu)
 				data.ghost_m_head_pos = ghost_head_pos
 				data.user_m_pos = ghost_pos:with_z(mvec3_z(ghost_head_pos))
 			else
-				print("[CharmManager:get_movement_data] ERROR - Local VR player unit has no movement() extension", user)
+				cat_print("charm_manager", "[CharmManager:get_movement_data] ERROR - Local VR player unit has no movement() extension", user)
 
 				data.update_type = "simulate_ingame_no_user"
 			end
 		else
-			print("[CharmManager:get_movement_data] weapon has user unit: local player")
+			cat_print("charm_manager", "[CharmManager:get_movement_data] weapon has user unit: local player")
 
 			data.update_type = "simulate_ingame_standard"
 			local cam_ext = user:camera()
@@ -133,7 +133,7 @@ function CharmManager:get_movement_data(weapon, user, is_menu)
 				data.m_fwd = chk_ext:forward()
 				data.m_right = chk_ext:right()
 			else
-				print("[CharmManager:get_movement_data] ERROR - Local player unit has no camera() extension, falling back to movement() extension", user)
+				cat_print("charm_manager", "[CharmManager:get_movement_data] ERROR - Local player unit has no camera() extension, falling back to movement() extension", user)
 
 				chk_ext = user:movement()
 
@@ -142,7 +142,7 @@ function CharmManager:get_movement_data(weapon, user, is_menu)
 					data.user_unit = user
 					data.user_m_pos = chk_ext:m_head_pos()
 				else
-					print("[CharmManager:get_movement_data] ERROR - Local player unit has no movement() extension", user)
+					cat_print("charm_manager", "[CharmManager:get_movement_data] ERROR - Local player unit has no movement() extension", user)
 
 					data.update_type = "simulate_ingame_no_user"
 				end
@@ -161,7 +161,7 @@ function CharmManager:get_movement_data(weapon, user, is_menu)
 			data.user_unit = user
 			data.user_m_pos = mov_ext:m_pos()
 		else
-			print("[CharmManager:get_movement_data] ERROR - user unit has no movement() extension")
+			cat_print("charm_manager", "[CharmManager:get_movement_data] ERROR - user unit has no movement() extension")
 
 			data.update_type = "simulate_ingame_no_user"
 		end
@@ -196,7 +196,7 @@ function CharmManager:get_charm_data(charm_data_table, charm_unit, custom_body_o
 	local u_key = charm_unit:key()
 
 	if charm_data_table[u_key] then
-		print("[CharmManager:get_charm_data] This charm unit is already simulating physics, skipping")
+		cat_print("charm_manager", "[CharmManager:get_charm_data] This charm unit is already simulating physics, skipping")
 
 		return
 	end
@@ -209,14 +209,14 @@ function CharmManager:get_charm_data(charm_data_table, charm_unit, custom_body_o
 	local charm_ring = get_object_f(charm_unit, ids_f(parent_obj_name))
 
 	if not charm_body or not charm_ring then
-		print("[CharmManager:get_charm_data] This charm unit won't simulate fake physics because of the following reason/s", charm_unit)
+		cat_print("charm_manager", "[CharmManager:get_charm_data] This charm unit won't simulate fake physics because of the following reason/s", charm_unit)
 
 		if not charm_body then
-			print("No charm body object '" .. tostring(body_obj_name) .. "' found in charm unit")
+			cat_print("charm_manager", "No charm body object '" .. tostring(body_obj_name) .. "' found in charm unit")
 		end
 
 		if not charm_ring then
-			print("No charm ring object '" .. tostring(parent_obj_name) .. "' found in charm unit")
+			cat_print("charm_manager", "No charm ring object '" .. tostring(parent_obj_name) .. "' found in charm unit")
 		end
 
 		return
@@ -251,7 +251,7 @@ function CharmManager:add_weapon(weapon_unit, parts, user_unit, is_menu, custom_
 	local custom_units = custom_params.custom_units
 
 	if not custom_units and not parts then
-		print("[CharmManager:add_weapon] ERROR - No weapon parts or custom units sent")
+		cat_print("charm_manager", "[CharmManager:add_weapon] ERROR - No weapon parts or custom units sent")
 
 		return
 	end
@@ -310,7 +310,7 @@ function CharmManager:add_weapon(weapon_unit, parts, user_unit, is_menu, custom_
 	end
 
 	if not next(charm_data) then
-		print("[CharmManager:add_weapon] No charm weapon parts found")
+		cat_print("charm_manager", "[CharmManager:add_weapon] No charm weapon parts found")
 
 		return
 	end
@@ -365,7 +365,7 @@ function CharmManager:remove_weapon(weapon_unit)
 	local entry = weapons[u_key]
 
 	if not entry then
-		print("[CharmManager:remove_weapon] ERROR - Weapon wasn't added ", weapon_unit)
+		cat_print("charm_manager", "[CharmManager:remove_weapon] ERROR - Weapon wasn't added ", weapon_unit)
 
 		return
 	elseif enabled_weapons[u_key] then
@@ -392,8 +392,8 @@ function CharmManager:remove_weapon(weapon_unit)
 
 					charm_unit:set_moving()
 				else
-					print("[CharmManager:remove_weapon] Charm unit was already destroyed on weapon unit ", weapon_unit)
-					print("This should only happen during unload_all_units() and similar calls, where the unit is destroyed without the weapon being disassembled")
+					cat_print("charm_manager", "[CharmManager:remove_weapon] Charm unit was already destroyed on weapon unit ", weapon_unit)
+					cat_print("charm_manager", "This should only happen during unload_all_units() and similar calls, where the unit is destroyed without the weapon being disassembled")
 				end
 			end
 		end
@@ -413,11 +413,11 @@ function CharmManager:enable_charm_upd(weapon_unit)
 	local enabled_weapons = self._enabled_weapons
 
 	if not entry then
-		print("[CharmManager:enable_charm_upd] ERROR - Attempted to enable charm updating on a weapon that wasn't added ", weapon_unit)
+		cat_print("charm_manager", "[CharmManager:enable_charm_upd] ERROR - Attempted to enable charm updating on a weapon that wasn't added ", weapon_unit)
 
 		return
 	elseif enabled_weapons[u_key] then
-		print("[CharmManager:enable_charm_upd] ERROR - Weapon already had charm updating enabled ", weapon_unit)
+		cat_print("charm_manager", "[CharmManager:enable_charm_upd] ERROR - Weapon already had charm updating enabled ", weapon_unit)
 
 		return
 	end
@@ -470,11 +470,11 @@ function CharmManager:disable_charm_upd(weapon_unit)
 	local enabled_weapons = self._enabled_weapons
 
 	if not entry then
-		print("[CharmManager:disable_charm_upd] ERROR - weapon wasn't added ", weapon_unit)
+		cat_print("charm_manager", "[CharmManager:disable_charm_upd] ERROR - weapon wasn't added ", weapon_unit)
 
 		return
 	elseif not enabled_weapons[u_key] then
-		print("[CharmManager:disable_charm_upd] ERROR - weapon already had charm updating disabled ", weapon_unit)
+		cat_print("charm_manager", "[CharmManager:disable_charm_upd] ERROR - weapon already had charm updating disabled ", weapon_unit)
 
 		return
 	end
@@ -513,13 +513,13 @@ function CharmManager:_chk_updator()
 				self.update = self[nil]
 			end
 
-			print("[CharmManager:_chk_updator] set enabled")
+			cat_print("charm_manager", "[CharmManager:_chk_updator] set enabled")
 		end
 	elseif not self._is_upd_empty then
 		self._is_upd_empty = true
 		self.update = self.update_empty
 
-		print("[CharmManager:_chk_updator] set disabled")
+		cat_print("charm_manager", "[CharmManager:_chk_updator] set disabled")
 	end
 end
 

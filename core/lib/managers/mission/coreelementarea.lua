@@ -129,6 +129,20 @@ function ElementAreaTrigger:remove_callback()
 	end
 end
 
+function ElementAreaTrigger:_chk_local_client_execute(unit, ...)
+	if not self._values.on_executed then
+		return
+	end
+
+	for _, params in ipairs(self._values.on_executed) do
+		local element = self:get_mission_element(params.id)
+
+		if element and element.client_local_on_executed then
+			element:client_local_on_executed(unit, ...)
+		end
+	end
+end
+
 function ElementAreaTrigger:on_executed(instigator, ...)
 	if not self._values.enabled then
 		return
@@ -210,7 +224,19 @@ function ElementAreaTrigger:update_area()
 
 	if self._values.trigger_on == "on_empty" then
 		if Network:is_server() then
+			local saved_client_players = {}
+
+			for _, instigator in ipairs(self._inside) do
+				if alive(instigator) and instigator:base() and instigator:base().is_husk_player then
+					table.insert(saved_client_players, instigator)
+				end
+			end
+
 			self._inside = {}
+
+			for i, unit in ipairs(saved_client_players) do
+				table.insert(self._inside, unit)
+			end
 
 			for _, unit in ipairs(self:instigators()) do
 				if alive(unit) then
@@ -218,8 +244,19 @@ function ElementAreaTrigger:update_area()
 				end
 			end
 
+			if self._on_empty_find_func_switch then
+				self._instigator_find_func = self._on_empty_find_func_switch
+				self._on_empty_find_func_switch = nil
+			end
+
 			if #self._inside == 0 then
 				self:on_executed()
+			end
+		elseif Network:is_client() then
+			for _, unit in ipairs(self:instigators()) do
+				if alive(unit) then
+					self:_client_check_state(unit)
+				end
 			end
 		end
 	else
@@ -244,7 +281,9 @@ function ElementAreaTrigger:update_area()
 end
 
 function ElementAreaTrigger:sync_enter_area(unit)
-	table.insert(self._inside, unit)
+	if not table.contains(self._inside, unit) then
+		table.insert(self._inside, unit)
+	end
 
 	if self._values.trigger_on == "on_enter" or self._values.trigger_on == "both" or self._values.trigger_on == "while_inside" then
 		self:_check_amount(unit)
@@ -286,7 +325,7 @@ function ElementAreaTrigger:_should_trigger(unit)
 		local inside = nil
 
 		if unit:movement() then
-			inside = self:_is_inside(unit:movement():m_pos())
+			inside = self:_is_inside(unit:movement().m_newest_pos and unit:movement():m_newest_pos() or unit:movement():m_pos())
 		else
 			local object = nil
 
@@ -363,18 +402,31 @@ end
 
 function ElementAreaTrigger:_client_check_state(unit)
 	local rule_ok = self:_check_instigator_rules(unit)
-	local inside = self:_is_inside(unit:position())
+	local inside = nil
+
+	if unit:movement() then
+		inside = self:_is_inside(unit:movement():m_pos())
+	else
+		unit:m_position(tmp_vec1)
+
+		inside = self:_is_inside(tmp_vec1)
+	end
 
 	if table.contains(self._inside, unit) then
-		if not inside or not rule_ok then
+		if inside and rule_ok then
+			if self._values.trigger_on == "while_inside" then
+				managers.network:session():send_to_host("to_server_area_event", 3, self._id, unit)
+				self:_chk_local_client_execute(unit, "while_inside")
+			end
+		else
 			table.delete(self._inside, unit)
 			managers.network:session():send_to_host("to_server_area_event", 2, self._id, unit)
-		elseif self._values.trigger_on == "while_inside" then
-			managers.network:session():send_to_host("to_server_area_event", 3, self._id, unit)
+			self:_chk_local_client_execute(unit, "on_exit")
 		end
 	elseif inside and rule_ok then
 		table.insert(self._inside, unit)
 		managers.network:session():send_to_host("to_server_area_event", 1, self._id, unit)
+		self:_chk_local_client_execute(unit, "on_enter")
 	end
 end
 
@@ -481,7 +533,7 @@ function ElementAreaReportTrigger:_check_state(unit)
 		local inside = nil
 
 		if unit:movement() then
-			inside = self:_is_inside(unit:movement():m_pos())
+			inside = self:_is_inside(unit:movement().m_newest_pos and unit:movement():m_newest_pos() or unit:movement():m_pos())
 		else
 			unit:m_position(tmp_vec1)
 
@@ -591,26 +643,36 @@ end
 
 function ElementAreaReportTrigger:_client_check_state(unit)
 	local rule_ok = self:_check_instigator_rules(unit)
-	local inside = self:_is_inside(unit:position())
+	local inside = nil
+
+	if unit:movement() then
+		inside = self:_is_inside(unit:movement():m_pos())
+	else
+		unit:m_position(tmp_vec1)
+
+		inside = self:_is_inside(tmp_vec1)
+	end
+
+	if inside and not rule_ok and self:_has_on_executed_alternative("rule_failed") then
+		managers.network:session():send_to_host("to_server_area_event", 4, self._id, unit)
+		self:_chk_local_client_execute(unit, "rule_failed")
+	end
 
 	if table.contains(self._inside, unit) then
-		if not inside or not rule_ok then
+		if inside and rule_ok then
+			if self:_has_on_executed_alternative("while_inside") then
+				managers.network:session():send_to_host("to_server_area_event", 3, self._id, unit)
+				self:_chk_local_client_execute(unit, "while_inside")
+			end
+		else
 			table.delete(self._inside, unit)
 			managers.network:session():send_to_host("to_server_area_event", 2, self._id, unit)
+			self:_chk_local_client_execute(unit, "on_exit")
 		end
 	elseif inside and rule_ok then
 		table.insert(self._inside, unit)
 		managers.network:session():send_to_host("to_server_area_event", 1, self._id, unit)
-	end
-
-	if inside then
-		if rule_ok then
-			if self:_has_on_executed_alternative("while_inside") then
-				managers.network:session():send_to_host("to_server_area_event", 3, self._id, unit)
-			end
-		elseif self:_has_on_executed_alternative("rule_failed") then
-			managers.network:session():send_to_host("to_server_area_event", 4, self._id, unit)
-		end
+		self:_chk_local_client_execute(unit, "on_enter")
 	end
 end
 

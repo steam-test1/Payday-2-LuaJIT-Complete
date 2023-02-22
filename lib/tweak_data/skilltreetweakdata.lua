@@ -3765,8 +3765,7 @@ function SkillTreeTweakData:init()
 				name_id = "menu_deck8_3",
 				upgrades = {
 					"player_damage_dampener_close_contact_2",
-					"melee_stacking_hit_expire_t",
-					"melee_stacking_hit_damage_multiplier_1"
+					"melee_stacking_hit_expire_t"
 				},
 				icon_xy = {
 					4,

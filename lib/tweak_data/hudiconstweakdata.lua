@@ -14735,6 +14735,114 @@ function HudIconsTweakData:init()
 			85
 		}
 	}
+	self.C_Keegan_H_HostileTakeover_AllDiffs_D0 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
+		texture_rect = {
+			2,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_Keegan_H_HostileTakeover_AllDiffs_D1 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
+		texture_rect = {
+			89,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Keegan_H_HostileTakeover_AllDiffs_D2 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
+		texture_rect = {
+			2,
+			176,
+			85,
+			85
+		}
+	}
+	self.C_Keegan_H_HostileTakeover_AllDiffs_D3 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
+		texture_rect = {
+			2,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Keegan_H_HostileTakeover_AllDiffs_D4 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
+		texture_rect = {
+			89,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_Keegan_H_HostileTakeover_AllDiffs_D5 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
+		texture_rect = {
+			176,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Keegan_H_HostileTakeover_AllDiffs_D6 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
+		texture_rect = {
+			2,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Keegan_H_HostileTakeover_AllDiffs_OD_D6 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
+		texture_rect = {
+			89,
+			89,
+			85,
+			85
+		}
+	}
+	self.C_Keegan_H_HostileTakeover_JustPassing = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
+		texture_rect = {
+			2,
+			2,
+			85,
+			85
+		}
+	}
+	self.C_Keegan_H_HostileTakeover_PAYDAYKART = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
+		texture_rect = {
+			89,
+			176,
+			85,
+			85
+		}
+	}
+	self.C_Keegan_H_HostileTakeover_System = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
+		texture_rect = {
+			263,
+			350,
+			85,
+			85
+		}
+	}
+	self.C_Keegan_H_HostileTakeover_TexasTreasuresThree = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
+		texture_rect = {
+			176,
+			263,
+			85,
+			85
+		}
+	}
 	self.C_Bain_H_Arena_Holdout_3 = {
 		texture = "guis/dlcs/trk/atlases/achievement_atlas_shl",
 		texture_rect = {

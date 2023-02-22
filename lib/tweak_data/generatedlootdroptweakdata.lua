@@ -207,6 +207,38 @@ function LootDropTweakData:init_generated(tweak_data)
 		sort_number = 514,
 		category = "normal"
 	}
+	self.global_values.corp = {
+		name_id = "bm_global_value_corp",
+		desc_id = "menu_l_global_value_corp",
+		unlock_id = "bm_global_value_corp_unlock",
+		color = tweak_data.screen_colors.dlc_color,
+		dlc = true,
+		free = false,
+		hide_unavailable = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 520,
+		category = "dlc"
+	}
+	self.global_values.cot = {
+		name_id = "bm_global_value_cot",
+		desc_id = "menu_l_global_value_cot",
+		unlock_id = "bm_global_value_cot_unlock",
+		color = tweak_data.screen_colors.dlc_color,
+		dlc = true,
+		free = false,
+		hide_unavailable = true,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 301,
+		category = "collaboration"
+	}
 	self.global_values.ess = {
 		name_id = "bm_global_value_ess",
 		desc_id = "menu_l_global_value_ess",

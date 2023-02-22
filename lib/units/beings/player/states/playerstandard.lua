@@ -4792,7 +4792,7 @@ function PlayerStandard:_find_pickups(t)
 			if may_find_grenade then
 				local data = managers.player:upgrade_value("player", "regain_throwable_from_ammo", nil)
 
-				if data then
+				if data and not managers.player:got_max_grenades() then
 					managers.player:add_coroutine("regain_throwable_from_ammo", PlayerAction.FullyLoaded, managers.player, data.chance, data.chance_inc)
 				end
 			end

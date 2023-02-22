@@ -1486,6 +1486,9 @@ Play the full version soon to get your full PAYDAY!]],
 		},
 		hand = {
 			unit = Idstring("units/pd2_dlc_chca/pickups/chca_pku_hand/chca_pku_hand")
+		},
+		corp_access_tag = {
+			unit = Idstring("units/pd2_dlc_corp/pickups/corp_pku_security_fob/corp_pku_security_fob")
 		}
 	}
 	self.danger_zones = {
@@ -1836,6 +1839,9 @@ Play the full version soon to get your full PAYDAY!]],
 		},
 		{
 			track = "track_78"
+		},
+		{
+			track = "track_79"
 		},
 		{
 			track = "track_pth_01",

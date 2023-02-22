@@ -443,6 +443,7 @@ function HostNetworkSession:chk_drop_in_peer(dropin_peer)
 	dropin_peer:on_sync_start()
 	dropin_peer:chk_enable_queue()
 	dropin_peer:set_is_dropin(true)
+	managers.mission:call_global_event("on_peer_dropin", dropin_peer_id)
 
 	self._dropin_peer = dropin_peer
 

@@ -2,6 +2,7 @@ WeaponAmmo = WeaponAmmo or class()
 
 function WeaponAmmo:init(weapon_id, ammo_max_per_clip, ammo_max)
 	self._name_id = weapon_id
+	self._digest_values = SystemInfo:platform() == Idstring("WIN32")
 
 	self:set_ammo_max_per_clip(ammo_max_per_clip)
 	self:set_ammo_max(ammo_max)
@@ -107,6 +108,10 @@ end
 
 function WeaponAmmo:set_ammo_total(ammo_total)
 	self._ammo_total = self:digest_value(ammo_total, true)
+
+	if self:get_stored_pickup_ammo() and self:get_ammo_max() <= ammo_total then
+		self:remove_pickup_ammo()
+	end
 end
 
 function WeaponAmmo:add_ammo_to_pool(ammo, index)
@@ -195,4 +200,16 @@ end
 
 function WeaponAmmo:get_ammo_remaining_in_clip()
 	return self._ammo_remaining_in_clip and self:digest_value(self._ammo_remaining_in_clip, false) or self:digest_value(self._ammo_remaining_in_clip2, false)
+end
+
+function WeaponAmmo:get_stored_pickup_ammo()
+	return self._stored_pickup_ammo and self:digest_value(self._stored_pickup_ammo, false)
+end
+
+function WeaponAmmo:store_pickup_ammo(ammo_to_store)
+	self._stored_pickup_ammo = self:digest_value(ammo_to_store, true)
+end
+
+function WeaponAmmo:remove_pickup_ammo()
+	self._stored_pickup_ammo = nil
 end

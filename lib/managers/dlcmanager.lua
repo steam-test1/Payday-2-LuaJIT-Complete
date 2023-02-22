@@ -2361,6 +2361,21 @@ function WINDLCManager:init()
 					no_install = true,
 					entitlement_id = "b724258340d642c299e1589926917522",
 					external = true
+				},
+				cot_smilecigar = {
+					no_install = true,
+					entitlement_id = "6d27f3b50a1343a39a6efb48f1440480",
+					external = true
+				},
+				cot_sleekygent = {
+					no_install = true,
+					entitlement_id = "964138fe4a064a1683d7198d525e69c8",
+					external = true
+				},
+				cot_beigedriver = {
+					no_install = true,
+					entitlement_id = "7825a51f35c647a4be462ece610936cc",
+					external = true
 				}
 			},
 			entitlements = {}
@@ -2379,6 +2394,7 @@ end
 
 function WINDLCManager:_init_promoted_dlc_list()
 	self._promoted_dlc_list = {
+		"corp",
 		"pxp3",
 		"mxm",
 		"txt3",

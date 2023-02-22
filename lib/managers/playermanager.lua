@@ -578,6 +578,10 @@ function PlayerManager:add_coroutine(name, func, ...)
 	self._coroutine_mgr:add_coroutine(name, func, ...)
 end
 
+function PlayerManager:remove_coroutine(name)
+	self._coroutine_mgr:remove_coroutine(name)
+end
+
 function PlayerManager:add_to_property(name, value)
 	self._properties:add_to_property(name, value)
 end
@@ -4646,6 +4650,10 @@ function PlayerManager:add_grenade_amount(amount, sync)
 		amount = amount
 	})
 	self:update_grenades_amount_to_peers(grenade, amount, sync and peer_id)
+
+	if self:got_max_grenades() and self._coroutine_mgr:is_running("regain_throwable_from_ammo") then
+		self:remove_coroutine("regain_throwable_from_ammo")
+	end
 
 	return amount
 end

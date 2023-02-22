@@ -74,7 +74,8 @@ function CoroutineManager:_add()
 		local co = coroutine.create(value.func.Function)
 		self._coroutines[value.func.Priority][value.name] = {
 			co = co,
-			arg = value.arg
+			arg = value.arg,
+			force_rem_func = value.func.Function_Force_Remove
 		}
 		self._buffer[key] = nil
 	end
@@ -108,7 +109,13 @@ function CoroutineManager:remove_coroutine(name)
 
 	for i = 1, size do
 		if self._coroutines[i][name] then
+			local co_data = self._coroutines[i][name]
 			self._coroutines[i][name] = nil
+			local rem_func = co_data.force_rem_func
+
+			if rem_func then
+				rem_func(co_data.co)
+			end
 
 			return
 		end

@@ -252,7 +252,9 @@ function MissionManager:init(...)
 		"pku_hand",
 		"pku_carkeys",
 		"pku_gnome",
-		"pku_crafted_weapon"
+		"pku_crafted_weapon",
+		"pku_corp_papers",
+		"on_peer_dropin"
 	})
 
 	self._mission_filter = {}

@@ -1493,23 +1493,52 @@ function HUDManager:setup_anticipation(total_t)
 	local exists = self._anticipation_dialogs and true or false
 	self._anticipation_dialogs = {}
 
-	if not exists and total_t == 45 then
-		table.insert(self._anticipation_dialogs, {
-			time = 45,
-			dialog = 1
-		})
-		table.insert(self._anticipation_dialogs, {
-			time = 30,
-			dialog = 2
-		})
-	elseif exists and total_t == 45 then
+	if not exists then
+		if total_t >= 30 then
+			if total_t >= 35 then
+				table.insert(self._anticipation_dialogs, {
+					time = 35,
+					dialog = 1
+				})
+			end
+
+			table.insert(self._anticipation_dialogs, {
+				time = 30,
+				dialog = 2
+			})
+			table.insert(self._anticipation_dialogs, {
+				time = 20,
+				dialog = 3
+			})
+			table.insert(self._anticipation_dialogs, {
+				time = 10,
+				dialog = 4
+			})
+		elseif total_t >= 20 then
+			table.insert(self._anticipation_dialogs, {
+				time = 20,
+				dialog = 3
+			})
+			table.insert(self._anticipation_dialogs, {
+				time = 10,
+				dialog = 4
+			})
+		elseif total_t >= 10 then
+			table.insert(self._anticipation_dialogs, {
+				time = 10,
+				dialog = 4
+			})
+		elseif total_t >= 5 then
+			table.insert(self._anticipation_dialogs, {
+				time = 5,
+				dialog = 1
+			})
+		end
+	elseif total_t >= 30 then
 		table.insert(self._anticipation_dialogs, {
 			time = 30,
 			dialog = 6
 		})
-	end
-
-	if total_t == 45 then
 		table.insert(self._anticipation_dialogs, {
 			time = 20,
 			dialog = 3
@@ -1518,9 +1547,7 @@ function HUDManager:setup_anticipation(total_t)
 			time = 10,
 			dialog = 4
 		})
-	end
-
-	if total_t == 35 then
+	elseif total_t >= 20 then
 		table.insert(self._anticipation_dialogs, {
 			time = 20,
 			dialog = 7
@@ -1529,12 +1556,15 @@ function HUDManager:setup_anticipation(total_t)
 			time = 10,
 			dialog = 4
 		})
-	end
-
-	if total_t == 25 then
+	elseif total_t >= 10 then
 		table.insert(self._anticipation_dialogs, {
 			time = 10,
 			dialog = 8
+		})
+	elseif total_t >= 5 then
+		table.insert(self._anticipation_dialogs, {
+			time = 5,
+			dialog = 1
 		})
 	end
 end

@@ -1060,16 +1060,34 @@ function PlayerDamage:damage_tase(attack_data)
 	end
 end
 
-function PlayerDamage:on_self_tased(electrocution_time_mul)
+function PlayerDamage:can_be_tased()
 	local cur_state = self._unit:movement():current_state_name()
 
 	if self._god_mode or self._invulnerable or self._mission_damage_blockers.invulnerable then
-		return
+		return false
 	elseif self:incapacitated() or self:is_downed() or self:arrested() then
-		return
+		return false
 	elseif self._unit:movement():current_state().immortal then
-		return
+		return false
 	elseif cur_state == "tased" or cur_state == "fatal" then
+		return false
+	end
+
+	return true
+end
+
+function PlayerDamage:on_self_tased(electrocution_time_mul)
+	if not self:can_be_tased() then
+		return
+	end
+
+	self:on_tased(true)
+	self._unit:movement():on_non_lethal_electrocution(electrocution_time_mul)
+	managers.player:set_player_state("tased")
+end
+
+function PlayerDamage:on_non_lethal_electrocution(electrocution_time_mul)
+	if not self:can_be_tased() then
 		return
 	end
 

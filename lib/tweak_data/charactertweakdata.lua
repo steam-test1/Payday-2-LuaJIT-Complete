@@ -18063,7 +18063,8 @@ function CharacterTweakData:character_map()
 		usm2 = {
 			path = "units/pd2_dlc_usm2/characters/",
 			list = {
-				"ene_male_marshal_shield_1"
+				"ene_male_marshal_shield_1",
+				"ene_male_marshal_shield_2"
 			}
 		},
 		ranc = {
@@ -18086,6 +18087,13 @@ function CharacterTweakData:character_map()
 			path = "units/pd2_dlc_cg22/characters/",
 			list = {
 				"ene_snowman_boss"
+			}
+		},
+		corp = {
+			path = "units/pd2_dlc_corp/characters/",
+			list = {
+				"civ_female_marketing_lead",
+				"civ_male_researcher_lead"
 			}
 		}
 	}

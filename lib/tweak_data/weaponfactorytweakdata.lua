@@ -8378,10 +8378,11 @@ function WeaponFactoryTweakData:_init_pxp3_mods()
 			40
 		},
 		stats = {
+			suppression = 12,
 			value = 1,
-			concealment = -1,
 			damage = -2,
-			alert_size = 12
+			alert_size = 12,
+			concealment = -1
 		},
 		perks = {
 			"silencer"
@@ -9871,7 +9872,13 @@ function WeaponFactoryTweakData:_init_saiga()
 			wpn_fps_upg_o_hamr = {
 				a_obj = "a_of"
 			},
+			wpn_fps_upg_o_hamr_reddot = {
+				a_obj = "a_of"
+			},
 			wpn_fps_upg_o_atibal = {
+				a_obj = "a_of"
+			},
+			wpn_fps_upg_o_atibal_reddot = {
 				a_obj = "a_of"
 			},
 			wpn_fps_upg_o_health = {
@@ -10060,8 +10067,6 @@ function WeaponFactoryTweakData:_init_saiga()
 			"wpn_fps_upg_ak_g_edg",
 			"wpn_fps_upg_ak_g_gradus",
 			"wpn_fps_upg_ak_g_rk9",
-			"wpn_fps_upg_ak_ns_tgp",
-			"wpn_fps_upg_ak_ns_jmac",
 			"wpn_fps_sho_saiga_b_short",
 			"wpn_fps_sho_saiga_fg_holy",
 			"wpn_fps_upg_o_spot",
@@ -20196,7 +20201,7 @@ function WeaponFactoryTweakData:_init_msr()
 		}
 	}
 	self.wpn_fps_snp_msr_npc = deep_clone(self.wpn_fps_snp_msr)
-	self.wpn_fps_snp_msr_npc.unit = "units/pd2_dlc_gage_snp/weapons/wpn_fps_snp_msr/wpn_fps_snp_msr_npc"
+	self.wpn_fps_snp_msr_npc.unit = "units/pd2_dlc_fawp/weapons/wpn_fps_sho_m590/wpn_fps_sho_m590_npc"
 end
 
 function WeaponFactoryTweakData:_init_r93()
@@ -21938,8 +21943,9 @@ function WeaponFactoryTweakData:_init_contender()
 	self.parts.wpn_fps_snp_contender_suppressor = {
 		type = "barrel_ext",
 		texture_bundle_folder = "pxp3",
-		dlc = "pxp3",
+		sub_type = "silencer",
 		a_obj = "a_ns",
+		dlc = "pxp3",
 		parent = "barrel",
 		name_id = "bm_wp_contender_suppressor",
 		unit = "units/pd2_dlc_pxp3/weapons/wpn_fps_snp_contender_pts/wpn_fps_snp_contender_suppressor",
@@ -21950,11 +21956,12 @@ function WeaponFactoryTweakData:_init_contender()
 			40
 		},
 		stats = {
-			value = 1,
-			concealment = -2,
-			alert_size = 12,
+			suppression = 12,
 			spread = 1,
+			alert_size = 12,
+			value = 1,
 			recoil = 1,
+			concealment = -2,
 			damage = -0
 		},
 		perks = {
@@ -22377,10 +22384,11 @@ end
 
 function WeaponFactoryTweakData:_init_hcar()
 	self.parts.wpn_fps_lmg_hcar_suppressor = {
-		a_obj = "a_ns",
+		sub_type = "silencer",
 		texture_bundle_folder = "pxp3",
-		dlc = "pxp3",
+		a_obj = "a_ns",
 		type = "barrel_ext",
+		dlc = "pxp3",
 		parent = "barrel",
 		name_id = "bm_wp_hcar_suppressor",
 		unit = "units/pd2_dlc_pxp3/weapons/wpn_fps_lmg_hcar_pts/wpn_fps_lmg_hcar_suppressor",
@@ -22397,12 +22405,13 @@ function WeaponFactoryTweakData:_init_hcar()
 			suppressed = "suppressed_b"
 		},
 		stats = {
-			recoil = 1,
-			spread = 2,
-			concealment = -2,
 			alert_size = 12,
+			spread_moving = 2,
+			spread = 2,
+			suppression = 12,
 			value = 1,
-			spread_moving = 2
+			recoil = 1,
+			concealment = -2
 		}
 	}
 	self.parts.wpn_fps_lmg_hcar_barrel_standard = {
@@ -26392,7 +26401,7 @@ function WeaponFactoryTweakData:create_charms(tweak_data)
 			texture_bundle_folder = "xm22",
 			type = "charm",
 			a_obj = "a_charm",
-			third_unit = "units/pd2_dlc_xm22/wpn_fps_upg_charm_teddymoowpn_third_upg_charm_teddymoo",
+			third_unit = "units/pd2_dlc_xm22/wpn_fps_upg_charm_teddymoo/wpn_third_upg_charm_teddymoo",
 			dlc = "xm22",
 			name_id = "bm_wp_upg_charm_teddymoo",
 			unit = "units/pd2_dlc_xm22/wpn_fps_upg_charm_teddymoo/wpn_fps_upg_charm_teddymoo",
@@ -27307,10 +27316,12 @@ function WeaponFactoryTweakData:_init_hornet_grenade()
 		},
 		override = {
 			wpn_fps_ass_groza_gl_gp25 = {
+				muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet",
 				model = Idstring("units/pd2_dlc_pxp3/weapons/wpn_fps_grenade_launcher_hornet/wpn_fps_ass_groza_gl_gp25_hornet"),
 				unit = hornet_unit_folder .. "wpn_fps_ass_groza_gl_gp25_hornet"
 			},
 			wpn_fps_ass_contraband_gl_m203 = {
+				muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet",
 				unit = hornet_unit_folder .. "wpn_fps_ass_contraband_gl_m203_hornet"
 			}
 		}

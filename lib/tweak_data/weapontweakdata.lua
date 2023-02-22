@@ -7878,7 +7878,7 @@ function WeaponTweakData:_init_tkb(weapon_data)
 		reload_not_empty = 2.5,
 		reload_empty = 3.5,
 		unequip = 0.5,
-		equip = 1
+		equip = 0.5
 	}
 	self.tkb.name_id = "bm_w_tkb"
 	self.tkb.desc_id = "bm_w_akm_tkb"
@@ -8007,7 +8007,7 @@ function WeaponTweakData:_init_contender(weapon_data)
 	self.contender.sounds.enter_steelsight = "secondary_steel_sight_enter"
 	self.contender.sounds.leave_steelsight = "secondary_steel_sight_exit"
 	self.contender.timers = {
-		reload_not_empty = 1
+		reload_not_empty = 1.3
 	}
 	self.contender.timers.reload_empty = self.contender.timers.reload_not_empty
 	self.contender.timers.reload_steelsight = 1.78

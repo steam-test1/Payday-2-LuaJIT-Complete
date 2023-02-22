@@ -611,6 +611,18 @@ function EnemyManager:is_clbk_registered(id)
 	return false
 end
 
+function EnemyManager:get_delayed_clbk_exec_t(id)
+	if self._delayed_clbks then
+		for i, clbk_data in ipairs(self._delayed_clbks) do
+			if clbk_data[1] == id then
+				return clbk_data[2]
+			end
+		end
+	end
+
+	return nil
+end
+
 function EnemyManager:remove_delayed_clbk(id, no_pause)
 	local all_clbks = self._delayed_clbks
 

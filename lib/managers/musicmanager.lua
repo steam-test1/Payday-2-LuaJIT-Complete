@@ -630,6 +630,7 @@ function MusicManager:jukebox_default_tracks()
 		heistlost = "resultscreen_lose",
 		heist_haunted = "track_22",
 		heist_mad = "track_44",
+		heist_corp = "track_79",
 		heist_dark = "music_dark",
 		heist_tag = "music_tag",
 		heist_fish = "music_fish",

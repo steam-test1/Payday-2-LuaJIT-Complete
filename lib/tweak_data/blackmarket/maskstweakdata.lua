@@ -9530,6 +9530,16 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		dlc = "xm22",
 		texture_bundle_folder = "xm22"
 	}
+	self.masks.smilecigar = {
+		unit = "units/pd2_dlc_cot/masks/msk_smilecigar/msk_smilecigar",
+		name_id = "bm_msk_smilecigar",
+		pcs = {},
+		value = 0,
+		sort_number = 2,
+		preview_oobb_object = "g_mask",
+		dlc = "cot_smilecigar",
+		texture_bundle_folder = "cot"
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.masks) do

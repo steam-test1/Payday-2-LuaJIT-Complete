@@ -1,4 +1,33 @@
 CopDamage = CopDamage or class()
+CopDamage.civilian_types = table.list_to_set({
+	"civilian",
+	"civilian_female",
+	"bank_manager",
+	"robbers_safehouse",
+	"civilian_mariachi",
+	"civilian_no_penalty"
+})
+CopDamage.gangster_types = table.list_to_set({
+	"gangster",
+	"biker_escape",
+	"mobster",
+	"mobster_boss",
+	"biker",
+	"hector_boss",
+	"hector_boss_no_armor",
+	"chavez_boss",
+	"biker_boss",
+	"triad",
+	"triad_boss",
+	"triad_boss_no_armor",
+	"bolivian",
+	"bolivian_indoors",
+	"drug_lord_boss",
+	"drug_lord_boss_stealth",
+	"ranchmanager",
+	"captain",
+	"bolivian_indoors_mex"
+})
 CopDamage._all_event_types = {
 	"dmg_rcv",
 	"light_hurt",
@@ -279,7 +308,12 @@ function CopDamage:accuracy_multiplier()
 end
 
 function CopDamage:set_accuracy_multiplier(mul)
-	if mul then
+	mul = mul or 1
+
+	if self._stun_acc_clbk_id then
+		self._accuracy_multiplier_restore = mul
+		self._accuracy_multiplier = mul * self._ON_STUN_ACCURACY_DECREASE
+	else
 		self._accuracy_multiplier = mul
 	end
 end
@@ -609,9 +643,13 @@ function CopDamage:damage_bullet(attack_data)
 		local add_head_shot_mul = attack_data.weapon_unit:base():get_add_head_shot_mul()
 
 		if add_head_shot_mul then
-			local tweak_headshot_mul = math.max(0, self._char_tweak.headshot_dmg_mul - 1)
-			local mul = tweak_headshot_mul * add_head_shot_mul + 1
-			damage = damage * mul
+			if self._char_tweak.headshot_dmg_mul then
+				local tweak_headshot_mul = math.max(0, self._char_tweak.headshot_dmg_mul - 1)
+				local mul = tweak_headshot_mul * add_head_shot_mul + 1
+				damage = damage * mul
+			else
+				damage = self._health * 10
+			end
 		end
 	end
 
@@ -979,11 +1017,11 @@ function CopDamage:_check_damage_achievements(attack_data, head)
 end
 
 function CopDamage.is_civilian(type)
-	return type == "civilian" or type == "civilian_female" or type == "bank_manager" or type == "robbers_safehouse" or type == "civilian_mariachi"
+	return CopDamage.civilian_types[type]
 end
 
 function CopDamage.is_gangster(type)
-	return type == "gangster" or type == "biker_escape" or type == "mobster" or type == "mobster_boss" or type == "biker" or type == "biker_boss" or type == "triad" or type == "bolivian" or type == "drug_lord_boss" or type == "drug_lord_boss_stealth" or type == "ranchmanager" or type == "captain" or type == "bolivian_indoors_mex"
+	return CopDamage.gangster_types[type]
 end
 
 function CopDamage.is_cop(type)
@@ -2213,27 +2251,45 @@ function CopDamage:stun_hit(attack_data)
 end
 
 function CopDamage:_create_stun_exit_clbk()
-	if not self._stun_exit_clbk then
-		self._stun_exit_clbk = true
+	if not self._stun_exit_clbk_id then
+		self._stun_exit_clbk_id = "CopDamageStunPenalty" .. tostring(self._unit:key())
 
-		self._listener_holder:add("after_stun_accuracy", {
+		self._listener_holder:add(self._stun_exit_clbk_id, {
 			"on_exit_hurt"
 		}, callback(self, self, "_on_stun_hit_exit"))
 	end
 end
 
 function CopDamage:_on_stun_hit_exit()
-	self:set_accuracy_multiplier(self._ON_STUN_ACCURACY_DECREASE)
+	self._listener_holder:remove(self._stun_exit_clbk_id)
 
-	local function f()
-		self:set_accuracy_multiplier(1)
+	self._stun_exit_clbk_id = nil
+
+	self:_apply_stun_accuracy_penalty()
+end
+
+function CopDamage:_apply_stun_accuracy_penalty(acc_reset_t)
+	acc_reset_t = acc_reset_t or TimerManager:game():time() + self._ON_STUN_ACCURACY_DECREASE_TIME
+
+	if self._stun_acc_clbk_id then
+		managers.enemy:reschedule_delayed_clbk(self._stun_acc_clbk_id, acc_reset_t)
+	else
+		self._accuracy_multiplier_restore = self._accuracy_multiplier
+
+		self:set_accuracy_multiplier(self._ON_STUN_ACCURACY_DECREASE * self._accuracy_multiplier)
+
+		self._stun_acc_clbk_id = "CopDamageStunRestore" .. tostring(self._unit:key())
+
+		managers.enemy:add_delayed_clbk(self._stun_acc_clbk_id, callback(self, self, "_restore_stun_accuracy_clbk"), acc_reset_t)
 	end
+end
 
-	managers.enemy:add_delayed_clbk("ResetAccuracy", f, TimerManager:game():time() + self._ON_STUN_ACCURACY_DECREASE_TIME)
+function CopDamage:_restore_stun_accuracy_clbk()
+	self._stun_acc_clbk_id = nil
+	local mul = self._accuracy_multiplier_restore
+	self._accuracy_multiplier_restore = nil
 
-	self._stun_exit_clbk = nil
-
-	self._listener_holder:remove("after_stun_accuracy")
+	self:set_accuracy_multiplier(mul)
 end
 
 function CopDamage:roll_critical_hit(attack_data, damage)
@@ -2376,7 +2432,7 @@ function CopDamage:damage_tase(attack_data)
 		self:chk_killshot(attack_data.attacker_unit, "tase", false, attack_data.weapon_unit and attack_data.weapon_unit:base():get_name_id())
 	else
 		attack_data.damage = damage
-		local type = (self._char_tweak.can_be_tased == nil or self._char_tweak.can_be_tased) and "taser_tased" or "none"
+		local type = (attack_data.forced or self._char_tweak.can_be_tased == nil or self._char_tweak.can_be_tased) and "taser_tased" or "none"
 		result = {
 			type = type,
 			variant = attack_data.variant
@@ -2385,7 +2441,7 @@ function CopDamage:damage_tase(attack_data)
 		self:_apply_damage_to_health(damage)
 	end
 
-	if result.type == "taser_tased" and (not self._unit:anim_data() or not self._unit:anim_data().act) then
+	if result.type == "taser_tased" and (attack_data.forced or not self._unit:anim_data() or not self._unit:anim_data().act) then
 		if self._tase_effect then
 			World:effect_manager():fade_kill(self._tase_effect)
 		end
@@ -2398,13 +2454,15 @@ function CopDamage:damage_tase(attack_data)
 	local head = nil
 
 	if self._head_body_name then
-		head = attack_data.col_ray.body and self._head_body_key and attack_data.col_ray.body:key() == self._head_body_key
+		head = attack_data.col_ray and attack_data.col_ray.body and self._head_body_key and attack_data.col_ray.body:key() == self._head_body_key
 		local body = self._unit:body(self._head_body_name)
+		local dir_vec = head and attack_data.col_ray.ray or body:rotation():y()
 
 		self:_spawn_head_gadget({
 			position = body:position(),
 			rotation = body:rotation(),
-			dir = -attack_data.col_ray.ray
+			skip_push = not head,
+			dir = dir_vec
 		})
 	end
 
@@ -2894,30 +2952,71 @@ function CopDamage:get_impact_segment(position)
 	return parent_bone, child_bone
 end
 
-function CopDamage:_spawn_head_gadget(params)
-	if not self._head_gear then
+function CopDamage:hide_head_gear()
+	if not self._head_gear_object then
 		return
 	end
 
-	if self._head_gear_object then
-		if self._nr_head_gear_objects then
-			for i = 1, self._nr_head_gear_objects do
-				local head_gear_obj_name = self._head_gear_object .. tostring(i)
+	if self._nr_head_gear_objects then
+		local object, head_gear_obj_name = nil
+		local obj_name = self._head_gear_object
 
-				self._unit:get_object(Idstring(head_gear_obj_name)):set_visibility(false)
+		for i = 1, self._nr_head_gear_objects do
+			head_gear_obj_name = obj_name .. tostring(i)
+			object = self._unit:get_object(Idstring(head_gear_obj_name))
+
+			if object then
+				object:set_visibility(false)
 			end
-		else
-			self._unit:get_object(Idstring(self._head_gear_object)):set_visibility(false)
 		end
+	else
+		local object = self._unit:get_object(Idstring(self._head_gear_object))
 
-		if self._head_gear_decal_mesh then
-			local mesh_name_idstr = Idstring(self._head_gear_decal_mesh)
-
-			self._unit:decal_surface(mesh_name_idstr):set_mesh_material(mesh_name_idstr, Idstring("flesh"))
+		if object then
+			object:set_visibility(false)
 		end
 	end
 
+	if self._head_gear_decal_mesh then
+		local mesh_name_idstr = Idstring(self._head_gear_decal_mesh)
+		local decal = self._unit:decal_surface(mesh_name_idstr)
+
+		if decal then
+			local material_idstr = self._head_gear_decal_mesh_switch and Idstring(self._head_gear_decal_mesh_switch) or Idstring("flesh")
+
+			decal:set_mesh_material(mesh_name_idstr, material_idstr)
+		end
+	end
+end
+
+function CopDamage:_spawn_head_gadget(params)
+	if not self._head_gear or self._head_gear_spawned then
+		return
+	end
+
+	self:hide_head_gear()
+
+	if self._head_gear_play_effect then
+		local effect_table = {
+			effect = Idstring(self._head_gear_play_effect),
+			position = params.position,
+			normal = params.dir or nil,
+			rotation = not params.dir and params.rotation or nil
+		}
+
+		World:effect_manager():spawn(effect_table)
+	end
+
+	if self._head_gear_play_sound then
+		unit:sound():play(self._head_gear_play_sound)
+	end
+
 	local unit = World:spawn_unit(Idstring(self._head_gear), params.position, params.rotation)
+
+	if unit:slot() ~= 18 then
+		debug_pause_unit(unit, "[CopDamage:_spawn_head_gadget] Head gadget unit is in the wrong slot (" .. tostring(unit:slot()) .. "), should be slot 18.", unit, self._unit)
+		unit:set_slot(18)
+	end
 
 	if not params.skip_push then
 		local dir = math.UP - params.dir / 2
@@ -2927,7 +3026,7 @@ function CopDamage:_spawn_head_gadget(params)
 		body:push_at(body:mass(), dir * math.lerp(300, 650, math.random()), unit:position() + Vector3(math.rand(1), math.rand(1), math.rand(1)))
 	end
 
-	self._head_gear = false
+	self._head_gear_spawned = true
 end
 
 function CopDamage:dead()
@@ -4322,41 +4421,92 @@ function CopDamage:_update_debug_ws(damage_info)
 end
 
 function CopDamage:save(data)
-	local save_health = self._health ~= self._HEALTH_INIT
-
-	if managers.crime_spree:is_active() then
-		save_health = save_health or managers.crime_spree:has_active_modifier_of_type("ModifierEnemyHealthAndDamage")
-	end
+	local my_save_data = {}
+	local cur_health = self._health
+	local init_health = self._HEALTH_INIT
+	local save_health = cur_health ~= init_health or self._char_tweak.HEALTH_INIT ~= init_health or managers.crime_spree:has_active_modifier_of_type("ModifierEnemyHealthAndDamage")
 
 	if save_health then
-		data.char_dmg = data.char_dmg or {}
-		data.char_dmg.health = self._health
-		data.char_dmg.health_init = self._HEALTH_INIT
+		my_save_data.health = cur_health
+		my_save_data.health_init = init_health
+	end
+
+	if self._damage_reduction_multiplier then
+		my_save_data.damage_reduction_multiplier = self._damage_reduction_multiplier
 	end
 
 	if self._invulnerable then
-		data.char_dmg = data.char_dmg or {}
-		data.char_dmg.invulnerable = self._invulnerable
+		my_save_data.invulnerable = self._invulnerable
+	end
+
+	if self._tmp_invulnerable_clbk_key then
+		local inv_end_t = managers.enemy:get_delayed_clbk_exec_t(self._tmp_invulnerable_clbk_key)
+
+		if inv_end_t then
+			my_save_data.tmp_invulnerable_t = inv_end_t - TimerManager:game():time()
+		end
 	end
 
 	if self._immortal then
-		data.char_dmg = data.char_dmg or {}
-		data.char_dmg.immortal = self._immortal
+		my_save_data.immortal = self._immortal
+	end
+
+	if self._accuracy_multiplier then
+		if self._accuracy_multiplier_restore then
+			if self._accuracy_multiplier_restore ~= 1 then
+				my_save_data.accuracy_multiplier = self._accuracy_multiplier_restore
+			end
+		elseif self._accuracy_multiplier ~= 1 then
+			my_save_data.accuracy_multiplier = self._accuracy_multiplier
+		end
+	end
+
+	if self._stun_exit_clbk_id then
+		my_save_data.set_stun_exit_clbk = true
+	end
+
+	if self._stun_acc_clbk_id then
+		local acc_reset_t = managers.enemy:get_delayed_clbk_exec_t(self._stun_acc_clbk_id)
+
+		if acc_reset_t then
+			my_save_data.stun_accuracy_penalty_t = acc_reset_t - TimerManager:game():time()
+		end
 	end
 
 	if self._unit:in_slot(16) then
-		data.char_dmg = data.char_dmg or {}
-		data.char_dmg.is_converted = true
+		my_save_data.is_converted = true
+		local owner_key = nil
+		local minion_key = self._unit:key()
+
+		for u_key, u_data in pairs(managers.groupai:state():all_player_criminals()) do
+			if u_data.minions and u_data.minions[minion_key] then
+				owner_key = u_key
+
+				break
+			end
+		end
+
+		local peer = owner_key and managers.network:session():peer_by_unit_key(owner_key)
+
+		if peer then
+			my_save_data.converted_owner_peer_id = peer:id()
+		end
 	end
 
 	if self._lower_health_percentage_limit then
-		data.char_dmg = data.char_dmg or {}
-		data.char_dmg.lower_health_percentage_limit = self._lower_health_percentage_limit
+		my_save_data.lower_health_percentage_limit = self._lower_health_percentage_limit
 	end
 
 	if self._dead then
-		data.char_dmg = data.char_dmg or {}
-		data.char_dmg.is_dead = true
+		my_save_data.is_dead = true
+	end
+
+	if self._head_gear_spawned then
+		my_save_data.remove_head_gear = true
+	end
+
+	if next(my_save_data) then
+		data.char_dmg = my_save_data
 	end
 end
 
@@ -4369,17 +4519,41 @@ function CopDamage:load(data)
 		self._health = data.char_dmg.health
 		self._HEALTH_INIT = data.char_dmg.health_init or self._HEALTH_INIT
 		self._health_ratio = self._health / self._HEALTH_INIT
+		self._HEALTH_INIT_PRECENT = self._HEALTH_INIT / self._HEALTH_GRANULARITY
+
+		self:_update_debug_ws()
 	end
 
 	if data.char_dmg.invulnerable then
 		self._invulnerable = data.char_dmg.invulnerable
 	end
 
+	if data.char_dmg.tmp_invulnerable_t then
+		self:set_invulnerable_tmp(data.char_dmg.tmp_invulnerable_t)
+
+		if self._unit:contour() then
+			self._unit:contour():add("tmp_invulnerable", false, data.char_dmg.tmp_invulnerable_t, nil, false)
+			self._unit:contour():flash("tmp_invulnerable", 0.2)
+		end
+	end
+
 	self._immortal = data.char_dmg.immortal or self._immortal
+
+	if data.char_dmg.accuracy_multiplier then
+		self:set_accuracy_multiplier(data.char_dmg.accuracy_multiplier)
+	end
+
+	if data.char_dmg.set_stun_exit_clbk then
+		self:_create_stun_exit_clbk()
+	end
+
+	if data.char_dmg.stun_accuracy_penalty_t then
+		self:_apply_stun_accuracy_penalty(TimerManager:game():time() + data.char_dmg.stun_accuracy_penalty_t)
+	end
 
 	if data.char_dmg.is_converted then
 		self._unit:set_slot(16)
-		managers.groupai:state():sync_converted_enemy(self._unit)
+		managers.groupai:state():sync_converted_enemy(self._unit, data.char_dmg.converted_owner_peer_id)
 		self:set_mover_collision_state(false)
 
 		local add_contour = true
@@ -4398,6 +4572,10 @@ function CopDamage:load(data)
 		end
 	end
 
+	if data.char_dmg.damage_reduction_multiplier then
+		self._damage_reduction_multiplier = data.char_dmg.damage_reduction_multiplier
+	end
+
 	if data.char_dmg.lower_health_percentage_limit then
 		self:_set_lower_health_percentage_limit(data.char_dmg.lower_health_percentage_limit)
 	end
@@ -4407,14 +4585,24 @@ function CopDamage:load(data)
 
 		self:_remove_debug_gui()
 		self._unit:base():set_slot(self._unit, 17)
-		self._unit:inventory():drop_shield()
+
+		if self._unit:inventory() then
+			self._unit:inventory():drop_shield()
+		end
+
 		self:set_mover_collision_state(false)
 
-		if self._unit:base():has_tag("civilian") then
+		if managers.enemy:is_civilian(self._unit) then
 			managers.enemy:on_civilian_died(self._unit, {})
 		else
 			managers.enemy:on_enemy_died(self._unit, {})
 		end
+	end
+
+	if data.char_dmg.remove_head_gear then
+		self:hide_head_gear()
+
+		self._head_gear_spawned = true
 	end
 end
 
@@ -4480,6 +4668,12 @@ function CopDamage:destroy(...)
 		managers.enemy:remove_delayed_clbk(self._tmp_invulnerable_clbk_key)
 
 		self._tmp_invulnerable_clbk_key = nil
+	end
+
+	if self._stun_acc_clbk_id then
+		managers.enemy:remove_delayed_clbk(self._stun_acc_clbk_id)
+
+		self._stun_acc_clbk_id = nil
 	end
 end
 

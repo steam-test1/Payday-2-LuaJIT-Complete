@@ -366,7 +366,20 @@ function HuskTeamAIDamage:sync_damage_incapacitated()
 end
 
 function HuskTeamAIDamage:sync_damage_tase()
+	if self._dead or self._fatal then
+		return
+	end
+
 	self:damage_tase()
+
+	local damage_info = {
+		variant = "tase",
+		result = {
+			type = "hurt"
+		}
+	}
+
+	self:_call_listeners(damage_info)
 end
 
 function HuskTeamAIDamage:sync_unit_recovered()

@@ -2,407 +2,489 @@ core:import("CoreElementArea")
 core:import("CoreClass")
 
 ElementAreaTrigger = ElementAreaTrigger or class(CoreElementArea.ElementAreaTrigger)
+local instigator_find_functions = {
+	player = function (values, instigators)
+		local player_unit = managers.player:player_unit()
 
-function ElementAreaTrigger:init(...)
-	ElementAreaTrigger.super.init(self, ...)
-end
-
-function ElementAreaTrigger:project_instigators()
-	local instigators = {}
-
-	if Network:is_client() then
-		if self._values.instigator == "player" or self._values.instigator == "local_criminals" or self._values.instigator == "persons" then
-			table.insert(instigators, managers.player:player_unit())
-		elseif self._values.instigator == "player1" or self._values.instigator == "player2" or self._values.instigator == "player3" or self._values.instigator == "player4" then
-			local id = tonumber(string.match(self._values.instigator, "%d$"))
-
-			if managers.network:session() and managers.network:session():local_peer():id() == id then
-				table.insert(instigators, managers.player:player_unit())
-			end
-		elseif self._values.instigator == "vr_player" and _G.IS_VR then
-			table.insert(instigators, managers.player:player_unit())
+		if player_unit then
+			table.insert(instigators, player_unit)
 		end
+	end,
+	vr_player = function (values, instigators)
+		if _G.IS_VR then
+			local player_unit = managers.player:player_unit()
 
-		return instigators
-	end
-
-	if self._values.instigator == "player" then
-		table.insert(instigators, managers.player:player_unit())
-	elseif self._values.instigator == "player_not_in_vehicle" then
-		table.insert(instigators, managers.player:player_unit())
-	elseif self._values.instigator == "vr_player" and _G.IS_VR then
-		table.insert(instigators, managers.player:player_unit())
-	elseif self._values.instigator == "vehicle" then
-		local vehicles = managers.vehicle:get_all_vehicles()
-
-		for _, v in pairs(vehicles) do
-			if not v:npc_vehicle_driving() then
-				table.insert(instigators, v)
+			if player_unit then
+				table.insert(instigators, player_unit)
 			end
 		end
-	elseif self._values.instigator == "npc_vehicle" then
-		local vehicles = managers.vehicle:get_all_vehicles()
-
-		for _, v in pairs(vehicles) do
-			if v:npc_vehicle_driving() then
-				table.insert(instigators, v)
+	end,
+	vehicle = function (values, instigators)
+		for _, vehicle_unit in ipairs(managers.vehicle:get_all_vehicles()) do
+			if not vehicle_unit:npc_vehicle_driving() then
+				table.insert(instigators, vehicle_unit)
 			end
 		end
-	elseif self._values.instigator == "vehicle_with_players" then
-		local vehicles = managers.vehicle:get_all_vehicles()
-
-		for _, v in pairs(vehicles) do
-			table.insert(instigators, v)
+	end,
+	npc_vehicle = function (values, instigators)
+		for _, vehicle_unit in ipairs(managers.vehicle:get_all_vehicles()) do
+			if vehicle_unit:npc_vehicle_driving() then
+				table.insert(instigators, vehicle_unit)
+			end
 		end
-	elseif self._values.instigator == "enemies" then
-		local state = managers.groupai:state()
+	end,
+	vehicle_with_players = function (values, instigators)
+		for _, vehicle_unit in ipairs(managers.vehicle:get_all_vehicles()) do
+			if vehicle_unit:vehicle_driving() then
+				table.insert(instigators, vehicle_unit)
+			end
+		end
+	end,
+	enemies = function (values, instigators)
+		local has_hostages = managers.groupai:state():police_hostage_count() > 0
+		local has_converted_enemies = managers.groupai:state():get_amount_enemies_converted_to_criminals() > 0
 
-		if state:police_hostage_count() <= 0 and state:get_amount_enemies_converted_to_criminals() <= 0 then
+		if has_converted_enemies then
+			if has_hostages then
+				for _, data in pairs(managers.enemy:all_enemies()) do
+					if not data.is_converted and not data.unit:brain():surrendered() then
+						table.insert(instigators, data.unit)
+					end
+				end
+			else
+				for _, data in pairs(managers.enemy:all_enemies()) do
+					if not data.is_converted then
+						table.insert(instigators, data.unit)
+					end
+				end
+			end
+		elseif has_hostages then
 			for _, data in pairs(managers.enemy:all_enemies()) do
-				table.insert(instigators, data.unit)
+				if not data.unit:brain():surrendered() then
+					table.insert(instigators, data.unit)
+				end
 			end
 		else
 			for _, data in pairs(managers.enemy:all_enemies()) do
-				if not data.unit:anim_data().surrender and not data.is_converted then
-					table.insert(instigators, data.unit)
-				end
-			end
-		end
-	elseif self._values.instigator == "civilians" then
-		for _, data in pairs(managers.enemy:all_civilians()) do
-			table.insert(instigators, data.unit)
-		end
-	elseif self._values.instigator == "escorts" then
-		for _, data in pairs(managers.enemy:all_civilians()) do
-			if tweak_data.character[data.unit:base()._tweak_table].is_escort then
 				table.insert(instigators, data.unit)
 			end
 		end
-	elseif self._values.instigator == "hostages" then
-		if managers.groupai:state():police_hostage_count() > 0 then
+	end,
+	intimidated_enemies = function (values, instigators)
+		local has_hostages = managers.groupai:state():police_hostage_count() > 0
+		local has_converted_enemies = managers.groupai:state():get_amount_enemies_converted_to_criminals() > 0
+
+		if has_converted_enemies then
+			if has_hostages then
+				for _, data in pairs(managers.enemy:all_enemies()) do
+					if data.is_converted or data.unit:brain():surrendered() then
+						table.insert(instigators, data.unit)
+					end
+				end
+			else
+				for _, data in pairs(managers.enemy:all_enemies()) do
+					if data.is_converted then
+						table.insert(instigators, data.unit)
+					end
+				end
+			end
+		elseif has_hostages then
 			for _, data in pairs(managers.enemy:all_enemies()) do
-				if data.unit:anim_data().surrender then
+				if data.unit:brain():surrendered() then
 					table.insert(instigators, data.unit)
 				end
 			end
 		end
-
+	end,
+	civilians = function (values, instigators)
 		for _, data in pairs(managers.enemy:all_civilians()) do
-			if data.unit:anim_data().tied then
+			table.insert(instigators, data.unit)
+		end
+	end,
+	escorts = function (values, instigators)
+		for _, data in pairs(managers.enemy:all_civilians()) do
+			if data.unit:base():char_tweak().is_escort then
 				table.insert(instigators, data.unit)
 			end
 		end
-	elseif self._values.instigator == "intimidated_enemies" then
-		local state = managers.groupai:state()
+	end,
+	hostages = function (values, instigators)
+		if managers.groupai:state():hostage_count() > 0 then
+			if managers.groupai:state():police_hostage_count() > 0 then
+				for _, data in pairs(managers.enemy:all_enemies()) do
+					if data.unit:brain():is_hostage() then
+						table.insert(instigators, data.unit)
+					end
+				end
+			end
 
-		if state:police_hostage_count() > 0 or state:get_amount_enemies_converted_to_criminals() > 0 then
-			for _, data in pairs(managers.enemy:all_enemies()) do
-				if data.unit:anim_data().surrender or data.is_converted then
+			local brain_ext = nil
+
+			for _, data in pairs(managers.enemy:all_civilians()) do
+				brain_ext = data.unit:brain()
+
+				if brain_ext:is_hostage() or brain_ext:is_tied() then
 					table.insert(instigators, data.unit)
 				end
 			end
 		end
-	elseif self._values.instigator == "criminals" then
-		for _, data in pairs(managers.groupai:state():all_char_criminals()) do
-			table.insert(instigators, data.unit)
+	end,
+	local_criminals = function (values, instigators)
+		local player_unit = managers.player:player_unit()
+
+		if player_unit then
+			table.insert(instigators, player_unit)
 		end
-	elseif self._values.instigator == "player_criminals" then
-		for _, data in pairs(managers.groupai:state():all_player_criminals()) do
-			table.insert(instigators, data.unit)
-		end
-	elseif self._values.instigator == "local_criminals" then
-		table.insert(instigators, managers.player:player_unit())
 
 		for _, data in pairs(managers.groupai:state():all_AI_criminals()) do
 			table.insert(instigators, data.unit)
 		end
-	elseif self._values.instigator == "persons" then
-		table.insert(instigators, managers.player:player_unit())
+	end,
+	persons = function (values, instigators)
+		local player_unit = managers.player:player_unit()
 
-		for _, data in pairs(managers.groupai:state():all_char_criminals()) do
-			table.insert(instigators, data.unit)
+		if player_unit then
+			table.insert(instigators, player_unit)
 		end
 
-		for _, data in pairs(managers.enemy:all_civilians()) do
+		for _, data in pairs(managers.groupai:state():all_AI_criminals()) do
 			table.insert(instigators, data.unit)
 		end
 
 		for _, data in pairs(managers.enemy:all_enemies()) do
 			table.insert(instigators, data.unit)
 		end
-	elseif self._values.instigator == "ai_teammates" then
+
+		for _, data in pairs(managers.enemy:all_civilians()) do
+			table.insert(instigators, data.unit)
+		end
+	end,
+	ai_teammates = function (values, instigators)
 		for _, data in pairs(managers.groupai:state():all_AI_criminals()) do
 			table.insert(instigators, data.unit)
 		end
-	elseif self._values.instigator == "loot" or self._values.instigator == "unique_loot" then
-		local all_found = World:find_units_quick("all", 14)
-		local filter_func = nil
+	end,
+	loot = function (values, instigators)
+		local carry_list = ElementAreaTrigger.carry_list
+		local carry_ext = nil
 
-		if self._values.instigator == "loot" then
-			function filter_func(carry_data)
-				local carry_id = carry_data:carry_id()
-				local carry_list = {
-					"gold",
-					"money",
-					"coke",
-					"coke_pure",
-					"sandwich",
-					"weapon",
-					"painting",
-					"circuit",
-					"diamonds",
-					"meth",
-					"lance_bag",
-					"lance_bag_large",
-					"grenades",
-					"engine_01",
-					"engine_02",
-					"engine_03",
-					"engine_04",
-					"engine_05",
-					"engine_06",
-					"engine_07",
-					"engine_08",
-					"engine_09",
-					"engine_10",
-					"engine_11",
-					"engine_12",
-					"ammo",
-					"cage_bag",
-					"turret",
-					"artifact_statue",
-					"samurai_suit",
-					"equipment_bag",
-					"cro_loot1",
-					"cro_loot2",
-					"ladder_bag",
-					"hope_diamond",
-					"mus_artifact",
-					"mus_artifact_paint",
-					"winch_part",
-					"winch_part_e3",
-					"fireworks",
-					"evidence_bag",
-					"watertank_empty",
-					"watertank_full",
-					"warhead",
-					"paper_roll",
-					"counterfeit_money",
-					"unknown",
-					"safe_wpn",
-					"safe_ovk",
-					"nail_muriatic_acid",
-					"nail_caustic_soda",
-					"nail_hydrogen_chloride",
-					"nail_euphadrine_pills",
-					"safe_secure_dummy",
-					"din_pig",
-					"meth_half",
-					"parachute",
-					"equipment_bag_global_event",
-					"prototype",
-					"master_server",
-					"lost_artifact",
-					"breaching_charges",
-					"masterpiece_painting",
-					"drk_bomb_part",
-					"goat",
-					"present",
-					"mad_master_server_value_1",
-					"mad_master_server_value_2",
-					"mad_master_server_value_3",
-					"mad_master_server_value_4",
-					"drk_bomb_part",
-					"weapon_glock",
-					"weapon_scar",
-					"bike_part_light",
-					"bike_part_heavy",
-					"toothbrush",
-					"drone_control_helmet",
-					"chl_puck",
-					"cloaker_gold",
-					"cloaker_money",
-					"cloaker_cocaine",
-					"robot_toy",
-					"ordinary_wine",
-					"expensive_vine",
-					"women_shoes",
-					"vr_headset",
-					"diamond_necklace",
-					"yayo",
-					"rubies",
-					"red_diamond",
-					"diamonds_dah",
-					"old_wine",
-					"winch_part_2",
-					"winch_part_3",
-					"box_unknown_tag",
-					"battery",
-					"box_unknown",
-					"black_tablet",
-					"uno_gold",
-					"roman_armor",
-					"faberge_egg",
-					"treasure",
-					"hydraulic_opener",
-					"chas_artifact",
-					"chas_teaset",
-					"gnome",
-					"ranc_weapon",
-					"turret_part",
-					"trai_printing_plates"
-				}
+		for _, unit in ipairs(World:find_units_quick("all", 14)) do
+			carry_ext = unit:carry_data()
 
-				if table.contains(carry_list, carry_id) then
-					return true
-				end
-			end
-		else
-			function filter_func(carry_data)
-				local carry_id = carry_data:carry_id()
-
-				if tweak_data.carry[carry_id].is_unique_loot then
-					return true
-				end
-			end
-		end
-
-		for _, unit in ipairs(all_found) do
-			local carry_data = unit:carry_data()
-
-			if carry_data and filter_func(carry_data) then
+			if carry_ext and carry_list[carry_ext:carry_id()] then
 				table.insert(instigators, unit)
 			end
 		end
-	elseif self._values.instigator == "equipment" then
-		if self._values.instigator_name ~= nil then
-			local all_found = World:find_units_quick("all", 14)
+	end,
+	unique_loot = function (values, instigators)
+		local carry_tweak_data = tweak_data.carry
+		local carry_ext, carry_entry = nil
 
-			local function filter_func(unit)
-				if unit:base() and unit:base().get_name_id and unit:base():get_name_id() == self._values.instigator_name then
-					return true
-				end
+		for _, unit in ipairs(World:find_units_quick("all", 14)) do
+			carry_ext = unit:carry_data()
+			carry_entry = carry_ext and carry_tweak_data[carry_ext:carry_id()]
+
+			if carry_entry and carry_entry.is_unique_loot then
+				table.insert(instigators, unit)
 			end
+		end
+	end,
+	equipment = function (values, instigators)
+		local wanted_name = values.instigator_name
 
-			for _, unit in ipairs(all_found) do
-				if filter_func(unit) then
+		if wanted_name ~= nil then
+			local base_ext = nil
+
+			for _, unit in ipairs(World:find_units_quick("all", 14)) do
+				base_ext = unit:base()
+
+				if base_ext and base_ext.get_name_id and base_ext:get_name_id() == wanted_name then
 					table.insert(instigators, unit)
 				end
 			end
 		end
-	elseif self._values.instigator == "player1" or self._values.instigator == "player2" or self._values.instigator == "player3" or self._values.instigator == "player4" and not Global.game_host then
-		local id = tonumber(string.match(self._values.instigator, "%d$"))
+	end,
+	enemy_corpses = function (values, instigators)
+		if not managers.enemy:is_corpse_disposal_enabled() then
+			local is_civ_func = CopDamage.is_civilian
+			local base_ext, tweak_name = nil
 
-		if managers.network:session() and managers.network:session():local_peer():id() == id then
-			table.insert(instigators, managers.player:player_unit())
-		end
-	elseif not managers.enemy:is_corpse_disposal_enabled() and (self._values.instigator == "enemy_corpses" or self._values.instigator == "civilian_corpses" or self._values.instigator == "all_corpses") then
-		local all_found = World:find_units_quick("all", 17)
+			for _, unit in ipairs(World:find_units_quick("all", 17)) do
+				base_ext = unit:base()
+				tweak_name = base_ext and base_ext._tweak_table
 
-		if self._values.instigator == "all_corpses" then
-			table.list_append(instigators, all_found)
-		else
-			local corpse_type, filter_func = nil
-
-			if self._values.instigator == "civilian_corpses" then
-				filter_func = CopDamage.is_civilian
-			else
-				function filter_func(corpse_type)
-					return not CopDamage.is_civilian(corpse_type)
+				if tweak_name and not is_civ_func(tweak_name) then
+					table.insert(instigators, unit)
 				end
 			end
+		end
+	end,
+	civilian_corpses = function (values, instigators)
+		if not managers.enemy:is_corpse_disposal_enabled() then
+			local is_civ_func = CopDamage.is_civilian
+			local base_ext, tweak_name = nil
 
-			for _, unit in ipairs(all_found) do
-				corpse_type = alive(unit) and unit:base() and unit:base()._tweak_table
+			for _, unit in ipairs(World:find_units_quick("all", 17)) do
+				base_ext = unit:base()
+				tweak_name = base_ext and base_ext._tweak_table
 
-				if corpse_type and filter_func(corpse_type) then
+				if tweak_name and is_civ_func(tweak_name) then
 					table.insert(instigators, unit)
+				end
+			end
+		end
+	end,
+	all_corpses = function (values, instigators)
+		if not managers.enemy:is_corpse_disposal_enabled() then
+			table.list_append(instigators, World:find_units_quick("all", 17))
+		end
+	end,
+	player1 = function (values, instigators)
+		local session = managers.network:session()
+
+		if session then
+			local id = tonumber(string.match(values.instigator, "%d$"))
+
+			if session:local_peer():id() == id then
+				local player_unit = managers.player:player_unit()
+
+				if player_unit then
+					table.insert(instigators, player_unit)
 				end
 			end
 		end
 	end
-
-	return instigators
-end
-
-function ElementAreaTrigger:project_amount_all()
-	if self._values.instigator == "criminals" or self._values.instigator == "local_criminals" then
-		local i = 0
+}
+instigator_find_functions.player_not_in_vehicle = instigator_find_functions.player
+instigator_find_functions.criminals = instigator_find_functions.local_criminals
+instigator_find_functions.player_criminals = instigator_find_functions.player
+instigator_find_functions.player2 = instigator_find_functions.player1
+instigator_find_functions.player3 = instigator_find_functions.player1
+local instigator_find_functions_client = {
+	player = instigator_find_functions.player,
+	player_not_in_vehicle = instigator_find_functions.player,
+	criminals = instigator_find_functions.player,
+	player_criminals = instigator_find_functions.player,
+	local_criminals = instigator_find_functions.player,
+	persons = instigator_find_functions.player,
+	player1 = instigator_find_functions.player1,
+	player2 = instigator_find_functions.player1,
+	player3 = instigator_find_functions.player1,
+	player4 = instigator_find_functions.player1,
+	vr_player = instigator_find_functions.vr_player
+}
+local instigator_project_all_functions = {
+	criminals = function ()
+		local counter = 0
 
 		for _, data in pairs(managers.groupai:state():all_char_criminals()) do
-			i = i + 1
+			counter = counter + 1
 		end
 
-		return i
-	elseif self._values.instigator == "ai_teammates" then
-		local i = 0
+		return counter
+	end,
+	ai_teammates = function ()
+		local counter = 0
 
 		for _, data in pairs(managers.groupai:state():all_AI_criminals()) do
-			i = i + 1
+			counter = counter + 1
 		end
 
-		return i
+		return counter
 	end
+}
+instigator_project_all_functions.local_criminals = instigator_project_all_functions.criminals
+local instigator_project_inside_functions = {
+	player_not_in_vehicle = function (instigators_inside)
+		local counter = 0
+		local all_vehicles = managers.vehicle:get_all_vehicles()
+		local vehicle_ext = nil
 
-	return managers.network:session() and managers.network:session():amount_of_alive_players() or 0
-end
-
-function ElementAreaTrigger:project_amount_inside()
-	local counter = #self._inside
-
-	if self._values.instigator == "vehicle_with_players" then
-		for _, instigator in pairs(self._inside) do
-			local vehicle = instigator:vehicle_driving()
-
-			if vehicle then
-				counter = vehicle:num_players_inside()
-			end
-		end
-	elseif self._values.instigator == "player_not_in_vehicle" then
-		counter = 0
-		local vehicles = managers.vehicle:get_all_vehicles()
-
-		for _, instigator in pairs(self._inside) do
+		for _, player_unit in ipairs(instigators_inside) do
 			local in_vehicle = false
 
-			for _, vehicle in pairs(vehicles) do
-				in_vehicle = in_vehicle or vehicle:vehicle_driving():find_seat_for_player(instigator)
+			for _, vehicle_unit in ipairs(all_vehicles) do
+				vehicle_ext = vehicle_unit:vehicle_driving()
+
+				if vehicle_ext and vehicle_ext:find_seat_for_player(player_unit) then
+					in_vehicle = true
+
+					break
+				end
 			end
 
 			if not in_vehicle then
 				counter = counter + 1
 			end
 		end
+
+		return counter
 	end
+}
+local instigator_valid_functions = {
+	vehicle_with_players = function (self, unit)
+		if not unit then
+			return true
+		end
 
-	return counter
-end
+		if not unit:vehicle_driving() then
+			return false
+		end
 
-function ElementAreaTrigger:is_instigator_valid(unit)
-	if self._values.instigator == "vehicle_with_players" and unit then
-		local result = false
 		local amount = self._values.amount == "all" and self:project_amount_all()
 		amount = amount or tonumber(self._values.amount)
+		local result = false
 		local inside_vehicle = unit:vehicle_driving():num_players_inside()
 
-		if unit:vehicle_driving() and inside_vehicle > 0 and amount <= inside_vehicle then
+		if inside_vehicle > 0 and amount <= inside_vehicle then
 			result = true
 		end
 
 		return result
-	elseif self._values.instigator == "player_not_in_vehicle" then
-		local vehicles = managers.vehicle:get_all_vehicles()
+	end,
+	player_not_in_vehicle = function (self)
+		local all_vehicles = managers.vehicle:get_all_vehicles()
+		local vehicle_ext = nil
 
-		for _, instigator in pairs(self._inside) do
-			for _, vehicle in pairs(vehicles) do
-				if vehicle:vehicle_driving():find_seat_for_player(instigator) then
+		for _, player_unit in ipairs(self._inside) do
+			for _, vehicle_unit in ipairs(all_vehicles) do
+				vehicle_ext = vehicle_unit:vehicle_driving()
+
+				if vehicle_ext and vehicle_ext:find_seat_for_player(player_unit) then
 					return false
 				end
 			end
 		end
+
+		return true
+	end
+}
+local check_amount_functions = {
+	vehicle_with_players = function (self, unit)
+		if self._values.trigger_on ~= "on_enter" then
+			self.super._check_amount(self, unit)
+
+			return
+		end
+
+		self:_clean_destroyed_units()
+
+		if unit and self:is_instigator_valid(unit) then
+			self:on_executed(unit)
+
+			return
+		end
+
+		for i, instigator in ipairs(self._inside) do
+			if self:is_instigator_valid(instigator) then
+				self:on_executed(instigator)
+
+				break
+			end
+		end
+	end
+}
+local on_empty_find_func_switch = {
+	criminals = function (values, instigators)
+		for _, data in pairs(managers.groupai:state():all_char_criminals()) do
+			table.insert(instigators, data.unit)
+		end
+	end,
+	player_criminals = function (values, instigators)
+		for _, data in pairs(managers.groupai:state():all_player_criminals()) do
+			table.insert(instigators, data.unit)
+		end
+	end,
+	persons = function (values, instigators)
+		for _, data in pairs(managers.groupai:state():all_char_criminals()) do
+			table.insert(instigators, data.unit)
+		end
+
+		for _, data in pairs(managers.enemy:all_enemies()) do
+			table.insert(instigators, data.unit)
+		end
+
+		for _, data in pairs(managers.enemy:all_civilians()) do
+			table.insert(instigators, data.unit)
+		end
+	end
+}
+ElementAreaTrigger.instigator_find_functions = instigator_find_functions
+ElementAreaTrigger.instigator_find_functions_client = instigator_find_functions_client
+ElementAreaTrigger.instigator_project_all_functions = instigator_project_all_functions
+ElementAreaTrigger.instigator_project_inside_functions = instigator_project_inside_functions
+ElementAreaTrigger.instigator_valid_functions = instigator_valid_functions
+ElementAreaTrigger.check_amount_functions = check_amount_functions
+ElementAreaTrigger.on_empty_find_func_switch = on_empty_find_func_switch
+instigator_find_functions, instigator_find_functions_client, instigator_project_all_functions, instigator_project_inside_functions, instigator_valid_functions, check_amount_functions, on_empty_find_func_switch = nil
+
+function ElementAreaTrigger:init(...)
+	ElementAreaTrigger.super.init(self, ...)
+
+	ElementAreaTrigger.carry_list = ElementAreaTrigger.carry_list or tweak_data.carry:get_carry_ids_lookup_for_area_trigger()
+	local instigator_type = self._values and self._values.instigator
+
+	if Network:is_client() then
+		self._instigator_find_func = ElementAreaTrigger.instigator_find_functions_client[instigator_type]
+	else
+		self._instigator_find_func = ElementAreaTrigger.instigator_find_functions[instigator_type]
+		self._check_amount_func = ElementAreaTrigger.check_amount_functions[instigator_type]
+
+		if self._values.trigger_on == "on_empty" then
+			local temp_switch = ElementAreaTrigger.on_empty_find_func_switch[instigator_type]
+
+			if temp_switch then
+				self._on_empty_find_func_switch = self._instigator_find_func
+				self._instigator_find_func = temp_switch
+			end
+		end
+	end
+
+	self._instigator_count_all_func = ElementAreaTrigger.instigator_project_all_functions[instigator_type]
+	self._instigator_count_inside_func = ElementAreaTrigger.instigator_project_inside_functions[instigator_type]
+	self._instigator_valid_func = ElementAreaTrigger.instigator_valid_functions[instigator_type]
+end
+
+function ElementAreaTrigger:project_instigators()
+	local instigators = {}
+
+	if self._instigator_find_func then
+		self._instigator_find_func(self._values, instigators)
+	end
+
+	return instigators
+end
+
+function ElementAreaTrigger:project_amount_all()
+	if self._instigator_count_all_func then
+		return self._instigator_count_all_func()
+	end
+
+	return managers.network:session() and managers.network:session():amount_of_alive_players() or 0
+end
+
+function ElementAreaTrigger:project_amount_inside()
+	if self._instigator_count_inside_func then
+		return self._instigator_count_inside_func(self._inside)
+	end
+
+	return #self._inside
+end
+
+function ElementAreaTrigger:is_instigator_valid(unit)
+	if self._instigator_valid_func then
+		return self:_instigator_valid_func(unit)
 	end
 
 	return true
+end
+
+function ElementAreaTrigger:_check_amount(...)
+	if self._check_amount_func then
+		self:_check_amount_func(...)
+	end
+
+	ElementAreaTrigger.super._check_amount(self, ...)
 end
 
 CoreClass.override_class(CoreElementArea.ElementAreaTrigger, ElementAreaTrigger)

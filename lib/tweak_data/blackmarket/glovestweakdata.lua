@@ -792,4 +792,13 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		unit = "units/pd2_dlc_h22/characters/glv_tornrags/glv_tornrags",
 		third_material = "units/pd2_dlc_h22/characters/glv_tornrags/glv_tornrags_third"
 	}
+	self.gloves.beigedriver = {
+		name_id = "bm_gloves_beigedriver",
+		desc_id = "bm_gloves_beigedriver_desc",
+		texture_bundle_folder = "cot",
+		global_value = "cot_beigedriver",
+		sort_number = 1,
+		unit = "units/pd2_dlc_cot/characters/glv_beigedriver/glv_beigedriver",
+		third_material = "units/pd2_dlc_cot/characters/glv_beigedriver/glv_beigedriver_third"
+	}
 end

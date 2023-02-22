@@ -190,7 +190,8 @@ function CarryTweakData:init(tweak_data)
 		type = "heavy",
 		bag_value = "weapons",
 		name_id = "hud_carry_weapons",
-		visual_unit_name = "units/payday2/characters/npc_acc_loot_bag_1/npc_acc_loot_bag_1"
+		visual_unit_name = "units/payday2/characters/npc_acc_loot_bag_1/npc_acc_loot_bag_1",
+		no_area_trigger_detection = true
 	}
 	self.grenades = {
 		type = "explosives",
@@ -209,7 +210,8 @@ function CarryTweakData:init(tweak_data)
 		visual_unit_name = "units/payday2/characters/npc_acc_body_bag_1/npc_acc_body_bag_1",
 		default_value = 1,
 		is_unique_loot = true,
-		skip_exit_secure = true
+		skip_exit_secure = true,
+		no_area_trigger_detection = true
 	}
 	self.special_person = {
 		type = "being",
@@ -218,7 +220,8 @@ function CarryTweakData:init(tweak_data)
 		visual_unit_name = "units/payday2/characters/npc_acc_body_bag_1/npc_acc_body_bag_1",
 		default_value = 1,
 		is_unique_loot = true,
-		skip_exit_secure = true
+		skip_exit_secure = true,
+		no_area_trigger_detection = true
 	}
 	self.circuit = {
 		type = "heavy",
@@ -473,7 +476,8 @@ function CarryTweakData:init(tweak_data)
 		bag_value = "vehicle_falcogini",
 		AI_carry = {
 			SO_category = ""
-		}
+		},
+		no_area_trigger_detection = true
 	}
 	self.warhead = {
 		type = "very_heavy",
@@ -1071,12 +1075,31 @@ function CarryTweakData:init(tweak_data)
 		name_id = "hud_carry_feed",
 		unit = "units/pd2_dlc_pda9/props/pda9_pickup_feed_bag/pda9_pickup_feed_bag",
 		visual_unit_name = "units/pd2_dlc_pda9/props/pda9_pickup_feed_bag/pda9_acc_feed_bag",
-		expire_t = 10
+		expire_t = 10,
+		no_area_trigger_detection = true
 	}
 	self.trai_printing_plates = {
 		type = "medium",
 		name_id = "hud_carry_printing_plates",
 		bag_value = "money",
+		visual_unit_name = "units/payday2/characters/npc_acc_loot_bag_1/npc_acc_loot_bag_1",
+		AI_carry = {
+			SO_category = "enemies"
+		}
+	}
+	self.corp_papers = {
+		type = "light",
+		name_id = "hud_carry_papers",
+		bag_value = "corp_papers",
+		visual_unit_name = "units/payday2/characters/npc_acc_loot_bag_1/npc_acc_loot_bag_1",
+		AI_carry = {
+			SO_category = "enemies"
+		}
+	}
+	self.corp_prototype = {
+		type = "heavy",
+		name_id = "hud_carry_corp_prototype",
+		bag_value = "corp_prototype",
 		visual_unit_name = "units/payday2/characters/npc_acc_loot_bag_1/npc_acc_loot_bag_1",
 		AI_carry = {
 			SO_category = "enemies"
@@ -1089,7 +1112,8 @@ function CarryTweakData:init(tweak_data)
 		visual_unit_name = "units/pd2_dlc_cg22/pickups/cg22_npc_bag/npc_cg22_bag",
 		AI_carry = {
 			SO_category = "enemies"
-		}
+		},
+		no_area_trigger_detection = true
 	}
 	self.cg22_bag_green = {
 		type = "cg22_heavy",
@@ -1098,7 +1122,8 @@ function CarryTweakData:init(tweak_data)
 		visual_unit_name = "units/pd2_dlc_cg22/pickups/cg22_npc_bag/npc_cg22_bag_green",
 		AI_carry = {
 			SO_category = "enemies"
-		}
+		},
+		no_area_trigger_detection = true
 	}
 	self.cg22_bag_yellow = {
 		type = "cg22_light",
@@ -1107,7 +1132,8 @@ function CarryTweakData:init(tweak_data)
 		visual_unit_name = "units/pd2_dlc_cg22/pickups/cg22_npc_bag/npc_cg22_bag_yellow",
 		AI_carry = {
 			SO_category = "enemies"
-		}
+		},
+		no_area_trigger_detection = true
 	}
 end
 
@@ -1123,6 +1149,18 @@ function CarryTweakData:get_carry_ids()
 	table.sort(t)
 
 	return t
+end
+
+function CarryTweakData:get_carry_ids_lookup_for_area_trigger()
+	local lookup_table = {}
+
+	for id, tweak in pairs(self) do
+		if type(tweak) == "table" and tweak.type and not tweak.no_area_trigger_detection then
+			lookup_table[id] = true
+		end
+	end
+
+	return lookup_table
 end
 
 function CarryTweakData:get_zipline_offset(carry_id)

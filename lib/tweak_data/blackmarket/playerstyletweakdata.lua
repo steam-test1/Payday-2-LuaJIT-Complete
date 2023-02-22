@@ -4952,6 +4952,51 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		sequence = "set_ehtan"
 	}
 	self.player_styles.throwables_bag.characters.ecp_male = throwables_bag_characters_male_fat
+	self.player_styles.sleekygent = {
+		name_id = "bm_suit_sleekygent",
+		desc_id = "bm_suit_sleekygent_desc",
+		texture_bundle_folder = "cot",
+		global_value = "cot_sleekygent",
+		material_variations = {}
+	}
+	self.player_styles.sleekygent.material_variations.default = {
+		name_id = "bm_suit_sleekygent_default",
+		global_value = "cot_sleekygent",
+		desc_id = "bm_suit_sleekygent_default_desc"
+	}
+	self.player_styles.sleekygent.body_replacement = body_replacement_standard
+	self.player_styles.sleekygent.third_body_replacement = body_replacement_standard
+	self.player_styles.sleekygent.unit = "units/pd2_dlc_cot/characters/cot_acc_sleekygent/cot_acc_fps_sleekygent_male/cot_acc_fps_sleekygent_male"
+	self.player_styles.sleekygent.characters = {}
+	local sleekygent_characters_male = {
+		third_unit = "units/pd2_dlc_cot/characters/cot_acc_sleekygent/cot_acc_sleekygent_male_average/cot_acc_sleekygent_male_average"
+	}
+
+	set_characters_data("sleekygent", characters_male, sleekygent_characters_male)
+
+	local sleekygent_characters_male_big = {
+		third_unit = "units/pd2_dlc_cot/characters/cot_acc_sleekygent/cot_acc_sleekygent_male_big/cot_acc_sleekygent_male_big"
+	}
+
+	set_characters_data("sleekygent", characters_male_big, sleekygent_characters_male_big)
+
+	local sleekygent_characters_female = {
+		third_unit = "units/pd2_dlc_cot/characters/cot_acc_sleekygent/cot_acc_sleekygent_female_average/cot_acc_sleekygent_female_average"
+	}
+
+	set_characters_data("sleekygent", characters_female, sleekygent_characters_female)
+
+	local sleekygent_characters_female_big = {
+		third_unit = "units/pd2_dlc_cot/characters/cot_acc_sleekygent/cot_acc_sleekygent_female_fat/cot_acc_sleekygent_female_fat"
+	}
+
+	set_characters_data("sleekygent", characters_female_big, sleekygent_characters_female_big)
+
+	local sleekygent_characters_male_fat = {
+		third_unit = "units/pd2_dlc_cot/characters/cot_acc_sleekygent/cot_acc_sleekygent_male_fat/cot_acc_sleekygent_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.sleekygent.characters.ecp_male = sleekygent_characters_male_fat
 end
 
 function BlackMarketTweakData:get_player_style_value(player_style, character_name, key)

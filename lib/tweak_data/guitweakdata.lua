@@ -2087,6 +2087,17 @@ function GuiTweakData:init(tweak_data)
 				name_id = "heist_contact_mcshay",
 				id = "mcshay"
 			},
+			{
+				{
+					desc_id = "heist_contact_blaine_description",
+					post_event = "keegan_quote_set_a",
+					videos = {
+						"blaine1"
+					}
+				},
+				name_id = "heist_contact_blaine",
+				id = "blaine"
+			},
 			name_id = "menu_contacts",
 			id = "contacts"
 		},
@@ -5118,24 +5129,34 @@ function GuiTweakData:init(tweak_data)
 	}
 
 	table.insert(self.new_heists, {
+		name_id = "menu_nh_corp_01",
+		texture_path = "guis/dlcs/corp/textures/pd2/new_heists/corp_02",
+		url = "https://pd2.link/HostileTakeoverHeistSLS"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_txt3_02",
+		texture_path = "guis/dlcs/txt3/textures/pd2/new_heists/txt3_02",
+		url = "https://pd2.link/HostileTakeoverBundleSLS"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_corp",
+		texture_path = "guis/dlcs/corp/textures/pd2/new_heists/corp_01",
+		url = "https://pd2.link/HostileTakeoverDropsSL"
+	})
+	table.insert(self.new_heists, {
 		name_id = "menu_nh_pxp3",
 		texture_path = "guis/dlcs/pxp3/textures/pd2/new_heists/pxp3",
 		url = "https://pd2.link/McShayWeaponPack3SLS"
 	})
 	table.insert(self.new_heists, {
-		name_id = "menu_nh_txt3_02",
-		texture_path = "guis/dlcs/txt3/textures/pd2/new_heists/txt3_02",
-		url = "https://pd2.link/EnergyCrisisBundleSLS"
+		name_id = "menu_nh_txt3_01",
+		texture_path = "guis/dlcs/txt3/textures/pd2/new_heists/txt3_01",
+		url = "https://pd2.link/StreetSmartTailorPackSLS"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_mxm_01",
 		texture_path = "guis/dlcs/mxm/textures/pd2/new_heists/mxm_01",
 		url = "https://pd2.link/McShayModPackSLS"
-	})
-	table.insert(self.new_heists, {
-		name_id = "menu_nh_txt3_01",
-		texture_path = "guis/dlcs/txt3/textures/pd2/new_heists/txt3_01",
-		url = "https://pd2.link/StreetSmartTailorPackSLS"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_trai_02",
