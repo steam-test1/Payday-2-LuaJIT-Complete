@@ -214,6 +214,10 @@ function KillzoneManager:_add_unit(unit, zone_type, element_id)
 	local u_key = unit:key()
 
 	if zone_type == "sniper" then
+		if not unit:character_damage().damage_killzone then
+			return
+		end
+
 		local warning_time = 4
 		data = {
 			timer = 0,
@@ -223,6 +227,10 @@ function KillzoneManager:_add_unit(unit, zone_type, element_id)
 			unit = unit
 		}
 	elseif zone_type == "gas" then
+		if not unit:character_damage().damage_killzone then
+			return
+		end
+
 		data = {
 			next_after_first = 0.25,
 			timer = 0,
@@ -232,6 +240,10 @@ function KillzoneManager:_add_unit(unit, zone_type, element_id)
 			unit = unit
 		}
 	elseif zone_type == "fire" then
+		if not unit:character_damage().damage_killzone then
+			return
+		end
+
 		data = {
 			next_after_first = 0.25,
 			timer = 0,
@@ -241,6 +253,10 @@ function KillzoneManager:_add_unit(unit, zone_type, element_id)
 			unit = unit
 		}
 	elseif zone_type == "laser" then
+		if not unit:character_damage().damage_killzone then
+			return
+		end
+
 		data = {
 			timer = 0,
 			type = zone_type,
@@ -249,6 +265,10 @@ function KillzoneManager:_add_unit(unit, zone_type, element_id)
 		}
 	elseif zone_type == "electricity" then
 		if unit == managers.player:player_unit() or managers.groupai:state():all_AI_criminals()[u_key] then
+			if not unit:character_damage().on_non_lethal_electrocution or not unit:movement() or not unit:movement().tased then
+				return
+			end
+
 			data = {
 				next_after_first = 3,
 				timer = 0,

@@ -14739,12 +14739,21 @@ function HudIconsTweakData:init()
 		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
 		texture_rect = {
 			2,
-			263,
+			350,
 			85,
 			85
 		}
 	}
 	self.C_Keegan_H_HostileTakeover_AllDiffs_D1 = {
+		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
+		texture_rect = {
+			2,
+			263,
+			85,
+			85
+		}
+	}
+	self.C_Keegan_H_HostileTakeover_AllDiffs_D2 = {
 		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
 		texture_rect = {
 			89,
@@ -14753,20 +14762,11 @@ function HudIconsTweakData:init()
 			85
 		}
 	}
-	self.C_Keegan_H_HostileTakeover_AllDiffs_D2 = {
-		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
-		texture_rect = {
-			2,
-			176,
-			85,
-			85
-		}
-	}
 	self.C_Keegan_H_HostileTakeover_AllDiffs_D3 = {
 		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
 		texture_rect = {
 			2,
-			350,
+			176,
 			85,
 			85
 		}
@@ -14801,8 +14801,8 @@ function HudIconsTweakData:init()
 	self.C_Keegan_H_HostileTakeover_AllDiffs_OD_D6 = {
 		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
 		texture_rect = {
-			89,
-			89,
+			263,
+			350,
 			85,
 			85
 		}
@@ -14810,8 +14810,8 @@ function HudIconsTweakData:init()
 	self.C_Keegan_H_HostileTakeover_JustPassing = {
 		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
 		texture_rect = {
-			2,
-			2,
+			89,
+			89,
 			85,
 			85
 		}
@@ -14819,8 +14819,8 @@ function HudIconsTweakData:init()
 	self.C_Keegan_H_HostileTakeover_PAYDAYKART = {
 		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
 		texture_rect = {
-			89,
-			176,
+			2,
+			2,
 			85,
 			85
 		}
@@ -14828,8 +14828,8 @@ function HudIconsTweakData:init()
 	self.C_Keegan_H_HostileTakeover_System = {
 		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
 		texture_rect = {
-			263,
-			350,
+			89,
+			176,
 			85,
 			85
 		}

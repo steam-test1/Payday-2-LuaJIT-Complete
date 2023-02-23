@@ -1944,7 +1944,7 @@ function UpgradesTweakData:_init_pd2_values()
 		},
 		{
 			2,
-			30
+			45
 		}
 	}
 	self.values.player.passive_always_regen_armor = {
@@ -2133,7 +2133,7 @@ function UpgradesTweakData:_init_pd2_values()
 		0.5,
 		0.25
 	}
-	self.copr_ability_cooldown = 30
+	self.copr_ability_cooldown = 40
 	self.copr_risen_cooldown_add = 30
 	self.copr_high_damage_multiplier = {
 		20,
