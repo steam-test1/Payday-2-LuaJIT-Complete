@@ -460,7 +460,7 @@ function CopDamage:_check_special_death_conditions(variant, body, attacker_unit,
 				self._unit:damage():run_sequence_simple(body_data.sequence)
 			end
 
-			if body_data.special_comment and attacker_unit == managers.player:player_unit() then
+			if body_data.special_comment then
 				return body_data.special_comment
 			end
 		end
@@ -738,8 +738,10 @@ function CopDamage:damage_bullet(attack_data)
 			if is_civilian then
 				managers.money:civilian_killed()
 			end
-		elseif attack_data.attacker_unit:in_slot(managers.slot:get_mask("criminals_no_deployables")) then
-			self:_AI_comment_death(attack_data.attacker_unit, self._unit)
+		elseif managers.groupai:state():is_unit_team_AI(attack_data.attacker_unit) then
+			local special_comment = self:_check_special_death_conditions(attack_data.variant, attack_data.col_ray.body, attack_data.attacker_unit, attack_data.weapon_unit)
+
+			self:_comment_death(attack_data.attacker_unit, self._unit, special_comment)
 		elseif attack_data.attacker_unit:base().sentry_gun then
 			if Network:is_server() then
 				local server_info = attack_data.weapon_unit:base():server_information()
@@ -1017,11 +1019,11 @@ function CopDamage:_check_damage_achievements(attack_data, head)
 end
 
 function CopDamage.is_civilian(type)
-	return CopDamage.civilian_types[type]
+	return CopDamage.civilian_types[type] or false
 end
 
 function CopDamage.is_gangster(type)
-	return CopDamage.gangster_types[type]
+	return CopDamage.gangster_types[type] or false
 end
 
 function CopDamage.is_cop(type)
@@ -1034,41 +1036,69 @@ function CopDamage:_show_death_hint(type)
 	end
 end
 
+local death_comments_lookup = {
+	tank = "g30x_any",
+	shield = "g31x_any",
+	taser = "g32x_any",
+	spooc = "g33x_any",
+	sniper = "g35x_any",
+	marksman = "g35x_any",
+	medic = "g36x_any"
+}
+CopDamage.death_comments_lookup = death_comments_lookup
+death_comments_lookup = nil
+CopDamage.death_comments_priority = {
+	"tank",
+	"spooc",
+	"taser",
+	"shield",
+	"sniper",
+	"marksman",
+	"medic"
+}
+
 function CopDamage:_comment_death(attacker, killed_unit, special_comment)
-	local victim_base = killed_unit:base()
+	local is_local_player = attacker:base() and attacker:base().is_local_player
 
 	if special_comment then
-		PlayerStandard.say_line(attacker:sound(), special_comment)
-	elseif victim_base:has_tag("tank") then
-		PlayerStandard.say_line(attacker:sound(), "g30x_any")
-	elseif victim_base:has_tag("spooc") then
-		PlayerStandard.say_line(attacker:sound(), "g33x_any")
-	elseif victim_base:has_tag("taser") then
-		PlayerStandard.say_line(attacker:sound(), "g32x_any")
-	elseif victim_base:has_tag("shield") then
-		PlayerStandard.say_line(attacker:sound(), "g31x_any")
-	elseif victim_base:has_tag("sniper") then
-		PlayerStandard.say_line(attacker:sound(), "g35x_any")
-	elseif victim_base:has_tag("medic") then
-		PlayerStandard.say_line(attacker:sound(), "g36x_any")
+		if is_local_player then
+			PlayerStandard.say_line(attacker:sound(), special_comment)
+		else
+			attacker:sound():say(special_comment, true)
+		end
+
+		return
 	end
-end
 
-function CopDamage:_AI_comment_death(unit, killed_unit)
 	local victim_base = killed_unit:base()
+	local char_tweak = victim_base.char_tweak and victim_base:char_tweak()
 
-	if victim_base:has_tag("tank") then
-		unit:sound():say("g30x_any", true)
-	elseif victim_base:has_tag("spooc") then
-		unit:sound():say("g33x_any", true)
-	elseif victim_base:has_tag("taser") then
-		unit:sound():say("g32x_any", true)
-	elseif victim_base:has_tag("shield") then
-		unit:sound():say("g31x_any", true)
-	elseif victim_base:has_tag("sniper") then
-		unit:sound():say("g35x_any", true)
-	elseif victim_base:has_tag("medic") then
-		unit:sound():say("g36x_any", true)
+	if char_tweak and char_tweak.unique_death_callout then
+		if is_local_player then
+			PlayerStandard.say_line(attacker:sound(), char_tweak.unique_death_callout)
+		else
+			attacker:sound():say(char_tweak.unique_death_callout, true)
+		end
+
+		return
+	end
+
+	local has_tag_func = victim_base.has_tag
+
+	for _, tag in ipairs(CopDamage.death_comments_priority) do
+		if has_tag_func(victim_base, tag) then
+			local comment = CopDamage.death_comments_lookup[tag]
+
+			if comment and is_local_player then
+				PlayerStandard.say_line(attacker:sound(), comment)
+
+				break
+			end
+
+			attacker:sound():say(comment, true)
+
+			break
+		end
 	end
 end
 

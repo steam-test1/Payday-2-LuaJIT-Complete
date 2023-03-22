@@ -1354,8 +1354,10 @@ function PlayerManager:on_killshot(killed_unit, variant, headshot, weapon_id)
 	end
 
 	local selection_index = equipped_unit and equipped_unit:base() and equipped_unit:base():selection_index() or 0
+	local update_secondary_reload_primary = selection_index == 1 and self._has_secondary_reload_primary
+	local update_primary_reload_secondary = selection_index == 2 and self._has_primary_reload_secondary
 
-	if selection_index == 1 and self._has_secondary_reload_primary then
+	if update_secondary_reload_primary then
 		local kills_to_reload = self:upgrade_value("player", "secondary_reload_primary", 10)
 		local secondary_kills = self:get_property("secondary_reload_primary_kills", 0) + 1
 
@@ -1374,7 +1376,7 @@ function PlayerManager:on_killshot(killed_unit, variant, headshot, weapon_id)
 		end
 
 		self:set_property("secondary_reload_primary_kills", secondary_kills)
-	elseif selection_index == 2 and self._has_primary_reload_secondary then
+	elseif update_primary_reload_secondary then
 		local kills_to_reload = self:upgrade_value("player", "primary_reload_secondary", 10)
 		local primary_kills = self:get_property("primary_reload_secondary_kills", 0) + 1
 

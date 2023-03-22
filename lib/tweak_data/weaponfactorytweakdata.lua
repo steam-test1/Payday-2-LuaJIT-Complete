@@ -6553,8 +6553,8 @@ function WeaponFactoryTweakData:_init_m16()
 					recoil = -4
 				},
 				custom_stats = {
-					ammo_pickup_max_mul = 0.8,
-					ammo_pickup_min_mul = 0.7
+					ammo_pickup_max_mul = 0.6,
+					ammo_pickup_min_mul = 0.4
 				}
 			}
 		},
@@ -7471,8 +7471,8 @@ function WeaponFactoryTweakData:_init_ak74()
 					recoil = -9
 				},
 				custom_stats = {
-					ammo_pickup_max_mul = 0.4,
-					ammo_pickup_min_mul = 0.45
+					ammo_pickup_max_mul = 0.3,
+					ammo_pickup_min_mul = 0.25
 				}
 			}
 		},
@@ -22628,8 +22628,8 @@ function WeaponFactoryTweakData:_init_hcar()
 			fire_rate = 1.667
 		},
 		custom_stats = {
-			ammo_pickup_max_mul = 4,
-			ammo_pickup_min_mul = 3,
+			ammo_pickup_max_mul = 3.8,
+			ammo_pickup_min_mul = 2.8,
 			fire_rate_multiplier = 1.667
 		},
 		bullet_objects = {
@@ -22888,8 +22888,8 @@ function WeaponFactoryTweakData:_init_g3()
 			value = 1
 		},
 		custom_stats = {
-			ammo_pickup_max_mul = 0.7,
-			ammo_pickup_min_mul = 0.8
+			ammo_pickup_max_mul = 0.6,
+			ammo_pickup_min_mul = 0.4
 		}
 	}
 	self.parts.wpn_fps_ass_g3_b_short = {
@@ -22911,8 +22911,8 @@ function WeaponFactoryTweakData:_init_g3()
 			recoil = 5
 		},
 		custom_stats = {
-			ammo_pickup_max_mul = 2.8,
-			ammo_pickup_min_mul = 2
+			ammo_pickup_max_mul = 1.8,
+			ammo_pickup_min_mul = 1.5
 		},
 		forbids = {
 			"wpn_fps_ammo_type"
@@ -26829,7 +26829,9 @@ function WeaponFactoryTweakData:create_ammunition()
 			damage = -127
 		},
 		custom_stats = {
-			launcher_grenade = "launcher_incendiary"
+			ammo_pickup_min_mul = 0.6,
+			launcher_grenade = "launcher_incendiary",
+			ammo_pickup_max_mul = 0.6
 		},
 		override = {
 			wpn_fps_gre_m32_mag = {
@@ -26859,7 +26861,9 @@ function WeaponFactoryTweakData:create_ammunition()
 			damage = -40
 		},
 		custom_stats = {
-			launcher_grenade = "launcher_electric"
+			ammo_pickup_min_mul = 0.8,
+			launcher_grenade = "launcher_electric",
+			ammo_pickup_max_mul = 0.8
 		}
 	}
 	self.parts.wpn_fps_upg_a_grenade_launcher_poison = {
@@ -26878,7 +26882,9 @@ function WeaponFactoryTweakData:create_ammunition()
 			damage = -10
 		},
 		custom_stats = {
-			launcher_grenade = "launcher_poison"
+			ammo_pickup_min_mul = 0.4,
+			launcher_grenade = "launcher_poison",
+			ammo_pickup_max_mul = 0.4
 		}
 	}
 	self.parts.wpn_fps_gre_ms3gl_conversion_grenade_poison = {
@@ -26897,7 +26903,9 @@ function WeaponFactoryTweakData:create_ammunition()
 		},
 		custom_stats = {
 			burst_count = 2,
-			launcher_grenade = "launcher_poison_ms3gl_conversion"
+			launcher_grenade = "launcher_poison_ms3gl_conversion",
+			ammo_pickup_min_mul = 0.4,
+			ammo_pickup_max_mul = 0.4
 		}
 	}
 	self.parts.wpn_fps_gre_ms3gl_conversion.forbids = self.parts.wpn_fps_gre_ms3gl_conversion.forbids or {}
@@ -26945,7 +26953,9 @@ function WeaponFactoryTweakData:create_ammunition()
 			damage = -67
 		},
 		custom_stats = {
-			launcher_grenade = "launcher_incendiary_arbiter"
+			ammo_pickup_min_mul = 0.6,
+			launcher_grenade = "launcher_incendiary_arbiter",
+			ammo_pickup_max_mul = 0.6
 		}
 	}
 	self.parts.wpn_fps_upg_a_grenade_launcher_electric_arbiter = {
@@ -26964,7 +26974,9 @@ function WeaponFactoryTweakData:create_ammunition()
 			damage = -18
 		},
 		custom_stats = {
-			launcher_grenade = "launcher_electric_arbiter"
+			ammo_pickup_min_mul = 0.8,
+			launcher_grenade = "launcher_electric_arbiter",
+			ammo_pickup_max_mul = 0.8
 		}
 	}
 	self.parts.wpn_fps_upg_a_grenade_launcher_poison_arbiter = {
@@ -26983,7 +26995,9 @@ function WeaponFactoryTweakData:create_ammunition()
 			damage = -38
 		},
 		custom_stats = {
-			launcher_grenade = "launcher_poison"
+			ammo_pickup_min_mul = 0.4,
+			launcher_grenade = "launcher_poison",
+			ammo_pickup_max_mul = 0.4
 		}
 	}
 	local weapons = {
@@ -27017,7 +27031,9 @@ function WeaponFactoryTweakData:create_ammunition()
 			damage = -31
 		},
 		custom_stats = {
-			launcher_grenade = "launcher_incendiary"
+			ammo_pickup_min_mul = 0.6,
+			launcher_grenade = "launcher_incendiary",
+			ammo_pickup_max_mul = 0.6
 		}
 	}
 	self.parts.wpn_fps_upg_a_grenade_launcher_electric_ms3gl = {
@@ -27036,7 +27052,9 @@ function WeaponFactoryTweakData:create_ammunition()
 			damage = -12
 		},
 		custom_stats = {
-			launcher_grenade = "launcher_electric"
+			ammo_pickup_min_mul = 0.8,
+			launcher_grenade = "launcher_electric",
+			ammo_pickup_max_mul = 0.8
 		}
 	}
 	self.parts.wpn_fps_upg_a_grenade_launcher_poison_ms3gl = {
@@ -27055,7 +27073,9 @@ function WeaponFactoryTweakData:create_ammunition()
 			damage = -10
 		},
 		custom_stats = {
-			launcher_grenade = "launcher_poison"
+			ammo_pickup_min_mul = 0.4,
+			launcher_grenade = "launcher_poison",
+			ammo_pickup_max_mul = 0.4
 		}
 	}
 	local weapons = {
@@ -27087,7 +27107,9 @@ function WeaponFactoryTweakData:create_ammunition()
 		pcs = {},
 		stats = {},
 		custom_stats = {
-			launcher_grenade = "underbarrel_electric"
+			ammo_pickup_min_mul = 0.8,
+			launcher_grenade = "underbarrel_electric",
+			ammo_pickup_max_mul = 0.8
 		}
 	}
 
@@ -27127,7 +27149,9 @@ function WeaponFactoryTweakData:create_ammunition()
 		unit = "units/payday2/weapons/wpn_upg_dummy/wpn_upg_dummy",
 		pcs = {},
 		custom_stats = {
-			launcher_grenade = "launcher_poison"
+			ammo_pickup_min_mul = 0.4,
+			launcher_grenade = "launcher_poison",
+			ammo_pickup_max_mul = 0.4
 		}
 	}
 
@@ -27275,7 +27299,9 @@ function WeaponFactoryTweakData:_init_hornet_grenade()
 			value = 4
 		},
 		custom_stats = {
-			muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet"
+			ammo_pickup_min_mul = 1.2,
+			muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet",
+			ammo_pickup_max_mul = 1.2
 		},
 		override = {
 			wpn_fps_gre_m32_mag = {
@@ -27312,7 +27338,9 @@ function WeaponFactoryTweakData:_init_hornet_grenade()
 			value = 2
 		},
 		custom_stats = {
-			muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet"
+			ammo_pickup_min_mul = 1.2,
+			muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet",
+			ammo_pickup_max_mul = 1.2
 		},
 		override = {
 			wpn_fps_ass_groza_gl_gp25 = {
@@ -27451,6 +27479,8 @@ function WeaponFactoryTweakData:_init_hornet_grenade()
 		}
 	}
 	local launcher_value = self.parts.wpn_fps_upg_a_grenade_launcher_hornet.stats.value
+	local launcher_pickup_min = self.parts.wpn_fps_upg_a_grenade_launcher_hornet.custom_stats.ammo_pickup_min_mul
+	local launcher_pickup_max = self.parts.wpn_fps_upg_a_grenade_launcher_hornet.custom_stats.ammo_pickup_max_mul
 	local fps_data, npc_data, hornet_override = nil
 
 	for factory_id, override in pairs(grenade_launchers) do
@@ -27464,12 +27494,17 @@ function WeaponFactoryTweakData:_init_hornet_grenade()
 			hornet_override = override
 			hornet_override.stats.value = launcher_value
 			hornet_override.custom_stats.weapon_unit = hornet_unit_folder .. factory_id
+			hornet_override.custom_stats.ammo_pickup_min_mul = launcher_pickup_min
+			hornet_override.custom_stats.ammo_pickup_max_mul = launcher_pickup_max
 			fps_data.override = fps_data.override or {}
 			fps_data.override.wpn_fps_upg_a_grenade_launcher_hornet = hornet_override
 			npc_data.override = npc_data.override or {}
 			npc_data.override.wpn_fps_upg_a_grenade_launcher_hornet = hornet_override
 		end
 	end
+
+	local underbarrel_launcher_pickup_min = self.parts.wpn_fps_upg_a_underbarrel_hornet.custom_stats.ammo_pickup_min_mul
+	local underbarrel_launcher_pickup_max = self.parts.wpn_fps_upg_a_underbarrel_hornet.custom_stats.ammo_pickup_max_mul
 
 	for factory_id, override in pairs(grenade_underbarrels) do
 		fps_data = self[factory_id]
@@ -27481,6 +27516,8 @@ function WeaponFactoryTweakData:_init_hornet_grenade()
 
 			hornet_override = override
 			hornet_override.custom_stats.base_stats_modifiers = hornet_override.stats
+			hornet_override.custom_stats.ammo_pickup_min_mul = underbarrel_launcher_pickup_min
+			hornet_override.custom_stats.ammo_pickup_max_mul = underbarrel_launcher_pickup_max
 			hornet_override.stats = nil
 			fps_data.override = fps_data.override or {}
 			fps_data.override.wpn_fps_upg_a_underbarrel_hornet = hornet_override
@@ -28892,8 +28929,8 @@ function WeaponFactoryTweakData:_init_c96()
 			recoil = 2
 		},
 		custom_stats = {
-			ammo_pickup_max_mul = 0.5,
-			ammo_pickup_min_mul = 1
+			ammo_pickup_max_mul = 0.55,
+			ammo_pickup_min_mul = 0.55
 		},
 		animations = {
 			reload_not_empty = "reload_not_empty",
@@ -31259,8 +31296,8 @@ function WeaponFactoryTweakData:_init_modpack_m4_ak()
 			recoil = -3
 		},
 		custom_stats = {
-			ammo_pickup_max_mul = 0.5,
-			ammo_pickup_min_mul = 1
+			ammo_pickup_max_mul = 0.6,
+			ammo_pickup_min_mul = 0.4
 		},
 		sound_switch = {
 			suppressed = "regular_b"
@@ -33275,8 +33312,8 @@ function WeaponFactoryTweakData:_init_modpack_m4_ak()
 			recoil = -10
 		},
 		custom_stats = {
-			ammo_pickup_max_mul = 0.4,
-			ammo_pickup_min_mul = 0.45
+			ammo_pickup_max_mul = 0.3,
+			ammo_pickup_min_mul = 0.25
 		},
 		forbids = {
 			"wpn_fps_ammo_type"
@@ -44693,8 +44730,8 @@ function WeaponFactoryTweakData:_init_shak12()
 			recoil = -1
 		},
 		custom_stats = {
-			ammo_pickup_max_mul = 0.8,
-			ammo_pickup_min_mul = 0.7
+			ammo_pickup_max_mul = 0.6,
+			ammo_pickup_min_mul = 0.4
 		},
 		perks = {
 			"fire_mode_single"
@@ -48138,8 +48175,11 @@ function WeaponFactoryTweakData:_init_tng()
 			prefix = "g_bullet_"
 		},
 		stats = {
+			reload = 10,
 			value = 2,
-			reload = 10
+			spread = -1,
+			concealment = -1,
+			recoil = -2
 		},
 		animations = {
 			reload_not_empty = "reload_not_empty",
@@ -48160,8 +48200,11 @@ function WeaponFactoryTweakData:_init_tng()
 			prefix = "g_bullet_"
 		},
 		stats = {
+			reload = 10,
 			value = 2,
-			reload = 10
+			spread = -1,
+			concealment = -1,
+			recoil = -2
 		}
 	}
 	self.parts.wpn_fps_m4_upg_m_quick = {
@@ -48174,8 +48217,11 @@ function WeaponFactoryTweakData:_init_tng()
 		unit = "units/pd2_dlc_tng/weapons/wpn_fps_smg_olympic_m_quick/wpn_fps_m4_upg_m_quick",
 		pcs = {},
 		stats = {
+			reload = 10,
 			value = 2,
-			reload = 10
+			spread = -1,
+			concealment = -1,
+			recoil = -2
 		}
 	}
 	self.parts.wpn_fps_upg_ak_m_quick = {
@@ -48188,8 +48234,11 @@ function WeaponFactoryTweakData:_init_tng()
 		unit = "units/pd2_dlc_tng/weapons/wpn_fps_ass_ak_m_quick/wpn_fps_upg_ak_m_quick",
 		pcs = {},
 		stats = {
+			reload = 10,
 			value = 2,
-			reload = 10
+			spread = -1,
+			concealment = -1,
+			recoil = -2
 		}
 	}
 	self.parts.wpn_fps_ass_g36_m_quick = {
@@ -48202,8 +48251,11 @@ function WeaponFactoryTweakData:_init_tng()
 		unit = "units/pd2_dlc_tng/weapons/wpn_fps_ass_g36_m_quick/wpn_fps_ass_g36_m_quick",
 		pcs = {},
 		stats = {
+			reload = 10,
 			value = 2,
-			reload = 10
+			spread = -1,
+			concealment = -1,
+			recoil = -2
 		},
 		animations = {
 			reload_not_empty = "reload_not_empty",
@@ -48220,9 +48272,12 @@ function WeaponFactoryTweakData:_init_tng()
 		unit = "units/pd2_dlc_tng/weapons/wpn_fps_smg_mac10_m_quick/wpn_fps_smg_mac10_m_quick",
 		pcs = {},
 		stats = {
+			extra_ammo = 4,
 			value = 2,
-			reload = 10,
-			extra_ammo = 4
+			recoil = -2,
+			spread = -1,
+			concealment = -1,
+			reload = 10
 		},
 		animations = {
 			reload_not_empty = "reload_not_empty",
@@ -48239,8 +48294,11 @@ function WeaponFactoryTweakData:_init_tng()
 		unit = "units/pd2_dlc_tng/weapons/wpn_fps_smg_sr2_m_quick/wpn_fps_smg_sr2_m_quick",
 		pcs = {},
 		stats = {
+			reload = 10,
 			value = 2,
-			reload = 10
+			spread = -1,
+			concealment = -1,
+			recoil = -2
 		},
 		animations = {
 			reload_not_empty = "reload_not_empty",

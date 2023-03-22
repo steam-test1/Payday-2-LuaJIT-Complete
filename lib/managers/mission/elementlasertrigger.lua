@@ -98,6 +98,30 @@ function ElementLaserTrigger:on_script_activated(...)
 	if self._values.enabled then
 		self:add_callback()
 	end
+
+	if Network:is_client() then
+		self:_chk_setup_local_client_on_execute_elements()
+	end
+end
+
+function ElementLaserTrigger:_chk_setup_local_client_on_execute_elements()
+	if not self._values.on_executed or self:_has_on_executed_alternative("empty") or self:_calc_base_delay() > 0 then
+		return
+	end
+
+	for _, params in ipairs(self._values.on_executed) do
+		local element = self:get_mission_element(params.id)
+
+		if element and element.client_local_on_executed and self:_calc_element_delay(params) <= 0 then
+			self._local_client_execute_elements = self._local_client_execute_elements or {}
+
+			table.insert(self._local_client_execute_elements, {
+				element = element,
+				alternative = params.alternative
+			})
+			element:set_enable_client_local_on_executed(self._id)
+		end
+	end
 end
 
 function ElementLaserTrigger:set_enabled(enabled)
@@ -141,12 +165,12 @@ end
 function ElementLaserTrigger:client_on_executed(...)
 end
 
-function ElementLaserTrigger:on_executed(instigator, alternative)
+function ElementLaserTrigger:on_executed(instigator, ...)
 	if not self._values.enabled then
 		return
 	end
 
-	ElementLaserTrigger.super.on_executed(self, instigator, alternative)
+	ElementLaserTrigger.super.on_executed(self, instigator, ...)
 
 	if not self._values.enabled then
 		self:remove_callback()
@@ -399,17 +423,17 @@ function ElementLaserTrigger:_client_check_state(unit)
 		if not inside or not rule_ok then
 			table.delete(self._inside, unit)
 			managers.network:session():send_to_host("to_server_area_event", 2, self._id, unit)
-			ElementAreaTrigger._chk_local_client_execute(self, unit, "on_exit")
+			ElementAreaReportTrigger._chk_local_client_execute(self, unit, "leave")
 		end
 	elseif inside and rule_ok then
 		table.insert(self._inside, unit)
 		managers.network:session():send_to_host("to_server_area_event", 1, self._id, unit)
-		ElementAreaTrigger._chk_local_client_execute(self, unit, "on_enter")
+		ElementAreaReportTrigger._chk_local_client_execute(self, unit, "enter")
 	end
 
 	if inside and rule_ok then
 		managers.network:session():send_to_host("to_server_area_event", 3, self._id, unit)
-		ElementAreaTrigger._chk_local_client_execute(self, unit, "while_inside")
+		ElementAreaReportTrigger._chk_local_client_execute(self, unit, "while_inside")
 	end
 end
 

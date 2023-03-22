@@ -3476,7 +3476,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 			flash_charge_stun_sound_explosion = "no_sound",
 			flash_charge_timer = 3,
 			beep_effect = "effects/payday2/particles/character/marshal_red_light",
-			flash_charge_stun_range = 300,
+			flash_charge_stun_range = 1500,
 			beep_sound = "USM_Beep",
 			flash_range = 1200,
 			flash_charge_range = 1100,

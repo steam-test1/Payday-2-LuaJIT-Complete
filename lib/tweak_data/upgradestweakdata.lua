@@ -4636,7 +4636,6 @@ function UpgradesTweakData:_init_pd2_values()
 			heal_amount,
 			heal_amount_tagged,
 			kill_extension,
-			cooldown_drain_owner,
 			duration,
 			cooldown
 		},

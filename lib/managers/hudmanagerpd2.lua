@@ -243,8 +243,8 @@ function HUDManager:remove_waiting(peer_id)
 	end
 end
 
-function HUDManager:set_teammate_weapon_firemode(i, id, firemode)
-	self._teammate_panels[i]:set_weapon_firemode(id, firemode)
+function HUDManager:set_teammate_weapon_firemode(i, ...)
+	self._teammate_panels[i]:set_weapon_firemode(...)
 end
 
 function HUDManager:set_ammo_amount(selection_index, max_clip, current_clip, current_left, max)

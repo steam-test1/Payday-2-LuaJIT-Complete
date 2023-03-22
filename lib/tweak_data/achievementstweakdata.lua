@@ -6861,6 +6861,16 @@ function AchievementsTweakData:init(tweak_data)
 		jiufeng = {
 			"chas",
 			"sand"
+		},
+		shayu = {
+			"pent"
+		},
+		mcshay = {
+			"ranc",
+			"trai"
+		},
+		blaine = {
+			"corp"
 		}
 	}
 	self.persistent_stat_unlocks = {

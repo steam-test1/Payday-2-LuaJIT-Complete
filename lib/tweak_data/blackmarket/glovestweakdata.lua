@@ -149,12 +149,14 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		newhorizon = "darkmat",
 		elfsuit = "heist_default",
 		puffervest = "heist_default",
-		leatherfluff = "heist_default",
+		bthekid = "txbull",
 		mocow = "ranchdiesel",
-		sleekygent = "beigedriver",
+		sambass = "txsuede",
 		classyske = "heist_default",
 		tux = "heist_default",
 		continental = "continental",
+		leatherfluff = "heist_default",
+		sleekygent = "beigedriver",
 		lowinttech = "heist_default",
 		boss = "heist_default",
 		rusbear = "heist_default",
@@ -172,6 +174,7 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		murky_suit = "murky",
 		cyberhoodie = "heist_default",
 		elegantscarf = "heist_default",
+		cassidy = "txrider",
 		hitman = "heist_default",
 		clown = "heist_clown",
 		railroad = "heist_default",
@@ -191,6 +194,7 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		punk = "punk",
 		cartelboss = "heist_default",
 		raincoat = "heist_default",
+		jessjames = "txrivet",
 		cable_guy = "heist_default",
 		jail_pd2_clan = "heist_default"
 	}
@@ -800,5 +804,41 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		sort_number = 1,
 		unit = "units/pd2_dlc_cot/characters/glv_beigedriver/glv_beigedriver",
 		third_material = "units/pd2_dlc_cot/characters/glv_beigedriver/glv_beigedriver_third"
+	}
+	self.gloves.txbull = {
+		name_id = "bm_gloves_txbull",
+		desc_id = "bm_gloves_txbull_desc",
+		texture_bundle_folder = "txt4",
+		global_value = "txt4",
+		sort_number = 1,
+		unit = "units/pd2_dlc_txt4/characters/glv_txbull/glv_txbull",
+		third_material = "units/pd2_dlc_txt4/characters/glv_txbull/glv_txbull_third"
+	}
+	self.gloves.txrider = {
+		name_id = "bm_gloves_txrider",
+		desc_id = "bm_gloves_txrider_desc",
+		texture_bundle_folder = "txt4",
+		global_value = "txt4",
+		sort_number = 1,
+		unit = "units/pd2_dlc_txt4/characters/glv_txrider/glv_txrider",
+		third_material = "units/pd2_dlc_txt4/characters/glv_txrider/glv_txrider_third"
+	}
+	self.gloves.txrivet = {
+		name_id = "bm_gloves_txrivet",
+		desc_id = "bm_gloves_txrivet_desc",
+		texture_bundle_folder = "txt4",
+		global_value = "txt4",
+		sort_number = 1,
+		unit = "units/pd2_dlc_txt4/characters/glv_txrivet/glv_txrivet",
+		third_material = "units/pd2_dlc_txt4/characters/glv_txrivet/glv_txrivet_third"
+	}
+	self.gloves.txsuede = {
+		name_id = "bm_gloves_txsuede",
+		desc_id = "bm_gloves_txsuede_desc",
+		texture_bundle_folder = "txt4",
+		global_value = "txt4",
+		sort_number = 1,
+		unit = "units/pd2_dlc_txt4/characters/glv_txsuede/glv_txsuede",
+		third_material = "units/pd2_dlc_txt4/characters/glv_txsuede/glv_txsuede_third"
 	}
 end

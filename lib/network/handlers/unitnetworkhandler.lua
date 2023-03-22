@@ -594,10 +594,10 @@ function UnitNetworkHandler:reload_weapon_interupt(unit, sender)
 	unit:movement():sync_reload_weapon_interupt()
 end
 
-function UnitNetworkHandler:run_mission_element(id, unit, orientation_element_index)
+function UnitNetworkHandler:run_mission_element(id, unit, orientation_element_index, id_from)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		if self._verify_gamestate(self._gamestate_filter.any_end_game) then
-			managers.mission:client_run_mission_element_end_screen(id, unit, orientation_element_index)
+			managers.mission:client_run_mission_element_end_screen(id, unit, orientation_element_index, id_from)
 
 			return
 		end
@@ -607,19 +607,19 @@ function UnitNetworkHandler:run_mission_element(id, unit, orientation_element_in
 		return
 	end
 
-	managers.mission:client_run_mission_element(id, unit, orientation_element_index)
+	managers.mission:client_run_mission_element(id, unit, orientation_element_index, id_from)
 end
 
-function UnitNetworkHandler:run_mission_element_no_instigator(id, orientation_element_index)
+function UnitNetworkHandler:run_mission_element_no_instigator(id, orientation_element_index, id_from)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		if self._verify_gamestate(self._gamestate_filter.any_end_game) then
-			managers.mission:client_run_mission_element_end_screen(id, nil, orientation_element_index)
+			managers.mission:client_run_mission_element_end_screen(id, nil, orientation_element_index, id_from)
 		end
 
 		return
 	end
 
-	managers.mission:client_run_mission_element(id, nil, orientation_element_index)
+	managers.mission:client_run_mission_element(id, nil, orientation_element_index, id_from)
 end
 
 function UnitNetworkHandler:to_server_mission_element_trigger(id, unit)

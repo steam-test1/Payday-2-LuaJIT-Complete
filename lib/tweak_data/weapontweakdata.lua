@@ -11818,7 +11818,7 @@ function WeaponTweakData:_init_r93(weapon_data)
 	}
 	self.r93.FIRE_MODE = "single"
 	self.r93.fire_mode_data = {
-		fire_rate = 1.2
+		fire_rate = 1
 	}
 	self.r93.CAN_TOGGLE_FIREMODE = false
 	self.r93.single = {
@@ -12360,8 +12360,8 @@ function WeaponTweakData:_init_gre_m79(weapon_data)
 	self.gre_m79.NR_CLIPS_MAX = math.round(weapon_data.total_damage_primary / 50 / self.gre_m79.CLIP_AMMO_MAX)
 	self.gre_m79.AMMO_MAX = self.gre_m79.CLIP_AMMO_MAX * self.gre_m79.NR_CLIPS_MAX
 	self.gre_m79.AMMO_PICKUP = {
-		0.05,
-		0.65
+		0.15,
+		0.2
 	}
 	self.gre_m79.FIRE_MODE = "single"
 	self.gre_m79.fire_mode_data = {
@@ -14052,7 +14052,7 @@ function WeaponTweakData:_init_mosin(weapon_data)
 	self.mosin.DAMAGE = 1
 	self.mosin.damage_falloff = FALLOFF_TEMPLATE.SNIPER_FALL_HIGH
 	self.mosin.CLIP_AMMO_MAX = 5
-	self.mosin.NR_CLIPS_MAX = 5
+	self.mosin.NR_CLIPS_MAX = 6
 	self.mosin.AMMO_MAX = self.mosin.CLIP_AMMO_MAX * self.mosin.NR_CLIPS_MAX
 	self.mosin.AMMO_PICKUP = {
 		0.7,
@@ -15510,8 +15510,8 @@ function WeaponTweakData:_init_m32(weapon_data)
 	self.m32.NR_CLIPS_MAX = 2
 	self.m32.AMMO_MAX = self.m32.CLIP_AMMO_MAX * self.m32.NR_CLIPS_MAX
 	self.m32.AMMO_PICKUP = {
-		0.05,
-		0.65
+		0.25,
+		0.3
 	}
 	self.m32.FIRE_MODE = "single"
 	self.m32.fire_mode_data = {
@@ -17304,8 +17304,8 @@ function WeaponTweakData:_init_groza(weapon_data)
 	self.groza_underbarrel.NR_CLIPS_MAX = 2
 	self.groza_underbarrel.AMMO_MAX = self.groza_underbarrel.CLIP_AMMO_MAX * self.groza_underbarrel.NR_CLIPS_MAX
 	self.groza_underbarrel.AMMO_PICKUP = {
-		0.05,
-		0.45
+		0.075,
+		0.1
 	}
 	self.groza_underbarrel.FIRE_MODE = "single"
 	self.groza_underbarrel.fire_mode_data = {
@@ -18737,8 +18737,8 @@ function WeaponTweakData:_init_china(weapon_data)
 	self.china.NR_CLIPS_MAX = 2
 	self.china.AMMO_MAX = self.china.CLIP_AMMO_MAX * self.china.NR_CLIPS_MAX
 	self.china.AMMO_PICKUP = {
-		0.05,
-		0.65
+		0.15,
+		0.2
 	}
 	self.china.FIRE_MODE = "single"
 	self.china.fire_mode_data = {
@@ -20163,7 +20163,7 @@ function WeaponTweakData:_init_boot(weapon_data)
 	self.boot.damage_far = 3000
 	self.boot.rays = 10
 	self.boot.CLIP_AMMO_MAX = 7
-	self.boot.NR_CLIPS_MAX = 3
+	self.boot.NR_CLIPS_MAX = 4
 	self.boot.AMMO_MAX = self.boot.CLIP_AMMO_MAX * self.boot.NR_CLIPS_MAX
 	self.boot.AMMO_PICKUP = self:_pickup_chance(self.boot.AMMO_MAX, PICKUP.OTHER)
 	self.boot.FIRE_MODE = "single"
@@ -20831,8 +20831,8 @@ function WeaponTweakData:_init_arbiter(weapon_data)
 	self.arbiter.NR_CLIPS_MAX = 3
 	self.arbiter.AMMO_MAX = self.arbiter.CLIP_AMMO_MAX * self.arbiter.NR_CLIPS_MAX
 	self.arbiter.AMMO_PICKUP = {
-		0.05,
-		0.65
+		0.15,
+		0.2
 	}
 	self.arbiter.FIRE_MODE = "single"
 	self.arbiter.fire_mode_data = {
@@ -20960,8 +20960,8 @@ function WeaponTweakData:_init_ms3gl(weapon_data)
 	self.ms3gl.NR_CLIPS_MAX = 3
 	self.ms3gl.AMMO_MAX = self.ms3gl.CLIP_AMMO_MAX * self.ms3gl.NR_CLIPS_MAX
 	self.ms3gl.AMMO_PICKUP = {
-		0.55,
-		0.65
+		0.25,
+		0.3
 	}
 	self.ms3gl.FIRE_MODE = "burst"
 	self.ms3gl.BURST_COUNT = 3
@@ -21186,8 +21186,8 @@ function WeaponTweakData:_init_contraband(weapon_data)
 	self.contraband_m203.NR_CLIPS_MAX = 2
 	self.contraband_m203.AMMO_MAX = self.contraband_m203.CLIP_AMMO_MAX * self.contraband_m203.NR_CLIPS_MAX
 	self.contraband_m203.AMMO_PICKUP = {
-		0.05,
-		0.45
+		0.075,
+		0.1
 	}
 	self.contraband_m203.FIRE_MODE = "single"
 	self.contraband_m203.fire_mode_data = {
@@ -22520,12 +22520,9 @@ function WeaponTweakData:_init_rsh12(weapon_data)
 	self.rsh12.DAMAGE = 2
 	self.rsh12.damage_falloff = FALLOFF_TEMPLATE.PISTOL_FALL_SUPER
 	self.rsh12.CLIP_AMMO_MAX = 5
-	self.rsh12.NR_CLIPS_MAX = 4
+	self.rsh12.NR_CLIPS_MAX = 8
 	self.rsh12.AMMO_MAX = self.rsh12.CLIP_AMMO_MAX * self.rsh12.NR_CLIPS_MAX
-	self.rsh12.AMMO_PICKUP = {
-		0.75,
-		0.25
-	}
+	self.rsh12.AMMO_PICKUP = self:_pickup_chance(self.rsh12.AMMO_MAX, PICKUP.SNIPER_HIGH_DAMAGE)
 	self.rsh12.spread = {
 		standing = self.r870.spread.standing,
 		crouching = self.r870.spread.crouching,
@@ -24384,8 +24381,8 @@ function WeaponTweakData:_init_slap(weapon_data)
 	self.slap.NR_CLIPS_MAX = math.round(weapon_data.total_damage_primary / 50 / self.slap.CLIP_AMMO_MAX)
 	self.slap.AMMO_MAX = self.slap.CLIP_AMMO_MAX * self.slap.NR_CLIPS_MAX
 	self.slap.AMMO_PICKUP = {
-		0.05,
-		0.65
+		0.15,
+		0.2
 	}
 	self.slap.FIRE_MODE = "single"
 	self.slap.fire_mode_data = {

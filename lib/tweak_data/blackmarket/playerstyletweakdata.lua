@@ -4997,6 +4997,186 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		sequence = "set_ehtan"
 	}
 	self.player_styles.sleekygent.characters.ecp_male = sleekygent_characters_male_fat
+	self.player_styles.bthekid = {
+		name_id = "bm_suit_bthekid",
+		desc_id = "bm_suit_bthekid_desc",
+		texture_bundle_folder = "txt4",
+		global_value = "txt4",
+		material_variations = {}
+	}
+	self.player_styles.bthekid.material_variations.default = {
+		name_id = "bm_suit_bthekid",
+		global_value = "txt4",
+		desc_id = "bm_suit_bthekid_desc"
+	}
+	self.player_styles.bthekid.body_replacement = body_replacement_standard
+	self.player_styles.bthekid.third_body_replacement = body_replacement_standard
+	self.player_styles.bthekid.unit = "units/pd2_dlc_txt4/characters/txt4_acc_bthekid/txt4_acc_fps_bthekid_male/txt4_acc_fps_bthekid_male"
+	self.player_styles.bthekid.characters = {}
+	local bthekid_characters_male = {
+		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_bthekid/txt4_acc_bthekid_male_average/txt4_acc_bthekid_male_average"
+	}
+
+	set_characters_data("bthekid", characters_male, bthekid_characters_male)
+
+	local bthekid_characters_male_big = {
+		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_bthekid/txt4_acc_bthekid_male_big/txt4_acc_bthekid_male_big"
+	}
+
+	set_characters_data("bthekid", characters_male_big, bthekid_characters_male_big)
+
+	local bthekid_characters_female = {
+		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_bthekid/txt4_acc_bthekid_female_average/txt4_acc_bthekid_female_average"
+	}
+
+	set_characters_data("bthekid", characters_female, bthekid_characters_female)
+
+	local bthekid_characters_female_big = {
+		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_bthekid/txt4_acc_bthekid_female_fat/txt4_acc_bthekid_female_fat"
+	}
+
+	set_characters_data("bthekid", characters_female_big, bthekid_characters_female_big)
+
+	local bthekid_characters_male_fat = {
+		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_bthekid/txt4_acc_bthekid_male_fat/txt4_acc_bthekid_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.bthekid.characters.ecp_male = bthekid_characters_male_fat
+	self.player_styles.cassidy = {
+		name_id = "bm_suit_cassidy",
+		desc_id = "bm_suit_cassidy_desc",
+		texture_bundle_folder = "txt4",
+		global_value = "txt4",
+		material_variations = {}
+	}
+	self.player_styles.cassidy.material_variations.default = {
+		name_id = "bm_suit_cassidy",
+		global_value = "txt4",
+		desc_id = "bm_suit_cassidy_desc"
+	}
+	self.player_styles.cassidy.body_replacement = body_replacement_standard
+	self.player_styles.cassidy.third_body_replacement = body_replacement_standard
+	self.player_styles.cassidy.unit = "units/pd2_dlc_txt4/characters/txt4_acc_cassidy/txt4_acc_fps_cassidy_male/txt4_acc_fps_cassidy_male"
+	self.player_styles.cassidy.characters = {}
+	local cassidy_characters_male = {
+		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_cassidy/txt4_acc_cassidy_male_average/txt4_acc_cassidy_male_average"
+	}
+
+	set_characters_data("cassidy", characters_male, cassidy_characters_male)
+
+	local cassidy_characters_male_big = {
+		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_cassidy/txt4_acc_cassidy_male_big/txt4_acc_cassidy_male_big"
+	}
+
+	set_characters_data("cassidy", characters_male_big, cassidy_characters_male_big)
+
+	local cassidy_characters_female = {
+		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_cassidy/txt4_acc_cassidy_female_average/txt4_acc_cassidy_female_average"
+	}
+
+	set_characters_data("cassidy", characters_female, cassidy_characters_female)
+
+	local cassidy_characters_female_big = {
+		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_cassidy/txt4_acc_cassidy_female_fat/txt4_acc_cassidy_female_fat"
+	}
+
+	set_characters_data("cassidy", characters_female_big, cassidy_characters_female_big)
+
+	local cassidy_characters_male_fat = {
+		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_cassidy/txt4_acc_cassidy_male_fat/txt4_acc_cassidy_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.cassidy.characters.ecp_male = cassidy_characters_male_fat
+	self.player_styles.jessjames = {
+		name_id = "bm_suit_jessjames",
+		desc_id = "bm_suit_jessjames_desc",
+		texture_bundle_folder = "txt4",
+		global_value = "txt4",
+		material_variations = {}
+	}
+	self.player_styles.jessjames.material_variations.default = {
+		name_id = "bm_suit_jessjames",
+		global_value = "txt4",
+		desc_id = "bm_suit_jessjames_desc"
+	}
+	self.player_styles.jessjames.body_replacement = body_replacement_standard
+	self.player_styles.jessjames.third_body_replacement = body_replacement_standard
+	self.player_styles.jessjames.unit = "units/pd2_dlc_txt4/characters/txt4_acc_jessjames/txt4_acc_fps_jessjames_male/txt4_acc_fps_jessjames_male"
+	self.player_styles.jessjames.characters = {}
+	local jessjames_characters_male = {
+		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_jessjames/txt4_acc_jessjames_male_average/txt4_acc_jessjames_male_average"
+	}
+
+	set_characters_data("jessjames", characters_male, jessjames_characters_male)
+
+	local jessjames_characters_male_big = {
+		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_jessjames/txt4_acc_jessjames_male_big/txt4_acc_jessjames_male_big"
+	}
+
+	set_characters_data("jessjames", characters_male_big, jessjames_characters_male_big)
+
+	local jessjames_characters_female = {
+		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_jessjames/txt4_acc_jessjames_female_average/txt4_acc_jessjames_female_average"
+	}
+
+	set_characters_data("jessjames", characters_female, jessjames_characters_female)
+
+	local jessjames_characters_female_big = {
+		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_jessjames/txt4_acc_jessjames_female_fat/txt4_acc_jessjames_female_fat"
+	}
+
+	set_characters_data("jessjames", characters_female_big, jessjames_characters_female_big)
+
+	local jessjames_characters_male_fat = {
+		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_jessjames/txt4_acc_jessjames_male_fat/txt4_acc_jessjames_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.jessjames.characters.ecp_male = jessjames_characters_male_fat
+	self.player_styles.sambass = {
+		name_id = "bm_suit_sambass",
+		desc_id = "bm_suit_sambass_desc",
+		texture_bundle_folder = "txt4",
+		global_value = "txt4",
+		material_variations = {}
+	}
+	self.player_styles.sambass.material_variations.default = {
+		name_id = "bm_suit_sambass",
+		global_value = "txt4",
+		desc_id = "bm_suit_sambass_desc"
+	}
+	self.player_styles.sambass.body_replacement = body_replacement_standard
+	self.player_styles.sambass.third_body_replacement = body_replacement_standard
+	self.player_styles.sambass.unit = "units/pd2_dlc_txt4/characters/txt4_acc_sambass/txt4_acc_fps_sambass_male/txt4_acc_fps_sambass_male"
+	self.player_styles.sambass.characters = {}
+	local sambass_characters_male = {
+		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_sambass/txt4_acc_sambass_male_average/txt4_acc_sambass_male_average"
+	}
+
+	set_characters_data("sambass", characters_male, sambass_characters_male)
+
+	local sambass_characters_male_big = {
+		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_sambass/txt4_acc_sambass_male_big/txt4_acc_sambass_male_big"
+	}
+
+	set_characters_data("sambass", characters_male_big, sambass_characters_male_big)
+
+	local sambass_characters_female = {
+		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_sambass/txt4_acc_sambass_female_average/txt4_acc_sambass_female_average"
+	}
+
+	set_characters_data("sambass", characters_female, sambass_characters_female)
+
+	local sambass_characters_female_big = {
+		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_sambass/txt4_acc_sambass_female_fat/txt4_acc_sambass_female_fat"
+	}
+
+	set_characters_data("sambass", characters_female_big, sambass_characters_female_big)
+
+	local sambass_characters_male_fat = {
+		third_unit = "units/pd2_dlc_txt4/characters/txt4_acc_sambass/txt4_acc_sambass_male_fat/txt4_acc_sambass_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.sambass.characters.ecp_male = sambass_characters_male_fat
 end
 
 function BlackMarketTweakData:get_player_style_value(player_style, character_name, key)

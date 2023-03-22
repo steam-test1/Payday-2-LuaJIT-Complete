@@ -67,6 +67,10 @@ function HuskCopInventory:set_visibility_state(state)
 	CopInventory.set_visibility_state(self, state)
 end
 
+function HuskCopInventory:on_shield_break(...)
+	CopInventory.on_shield_break(self, ...)
+end
+
 function HuskCopInventory:from_server_link_shield(shield_unit)
 	local cur_shield = self._shield_unit
 	self._shield_unit_name = nil

@@ -6154,7 +6154,7 @@ function GroupAIStateBase:_upd_debug_draw_attentions()
 end
 
 function GroupAIStateBase:is_enemy_converted_to_criminal(unit)
-	return self._converted_police[unit:key()]
+	return self._converted_police[unit:key()] and true or false
 end
 
 function GroupAIStateBase:get_amount_enemies_converted_to_criminals()
@@ -6313,7 +6313,7 @@ function GroupAIStateBase:is_unit_in_phalanx_minion_data(unit_key)
 end
 
 function GroupAIStateBase:is_unit_team_AI(unit)
-	return self._ai_criminals[unit:key()]
+	return self._ai_criminals[unit:key()] and true or false
 end
 
 function GroupAIStateBase:set_force_attention(data)

@@ -117,7 +117,7 @@ function GrenadeBase:_check_achievements(unit, is_dead, damage_percent, hit_coun
 		job_pass = not achievement_data.job or managers.job:current_real_job_id() == achievement_data.job
 		crouching_pass = not achievement_data.crouching or is_crouching
 		session_kill_pass = not achievement_data.session_kills or achievement_data.session_kills <= managers.statistics:session_killed_by_projectile(achievement_data.grenade_type)
-		is_civilian_pass = achievement_data.is_civilian == nil and true or achievement_data.is_civilian == is_civilian
+		is_civilian_pass = achievement_data.is_civilian == nil and true or achievement_data.is_civilian == (is_civilian or false)
 		tags_all_pass = not achievement_data.enemy_tags_all or enemy_base:has_all_tags(achievement_data.enemy_tags_all)
 		tags_any_pass = not achievement_data.enemy_tags_any or enemy_base:has_any_tag(achievement_data.enemy_tags_any)
 		player_state_pass = not achievement_data.player_state or achievement_data.player_state == managers.player:current_state()

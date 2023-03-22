@@ -1665,7 +1665,7 @@ function NewRaycastWeaponBase:_set_parts_visible(visible)
 
 				unit:set_visible(is_visible)
 
-				if not visible then
+				if not visible and (not unit:base() or unit:base().GADGET_TYPE ~= "second_sight") then
 					anim_groups = unit:anim_groups()
 
 					for _, anim in ipairs(anim_groups) do
@@ -2647,8 +2647,9 @@ end
 function NewRaycastWeaponBase:damage_multiplier()
 	local user_unit = self._setup and self._setup.user_unit
 	local current_state = alive(user_unit) and user_unit:movement() and user_unit:movement()._current_state
+	local multiplier = managers.blackmarket:damage_multiplier(self._name_id, self:weapon_tweak_data().categories, self._silencer, nil, current_state, self._blueprint)
 
-	return managers.blackmarket:damage_multiplier(self._name_id, self:weapon_tweak_data().categories, self._silencer, nil, current_state, self._blueprint)
+	return multiplier
 end
 
 function NewRaycastWeaponBase:melee_damage_multiplier()
@@ -2664,7 +2665,9 @@ function NewRaycastWeaponBase:spread_index_addend(current_state)
 end
 
 function NewRaycastWeaponBase:spread_multiplier(current_state)
-	return managers.blackmarket:accuracy_multiplier(self._name_id, self:weapon_tweak_data().categories, self._silencer, current_state, self._spread_moving, self:fire_mode(), self._blueprint, self:is_single_shot())
+	local multiplier = managers.blackmarket:accuracy_multiplier(self._name_id, self:weapon_tweak_data().categories, self._silencer, current_state, self._spread_moving, self:fire_mode(), self._blueprint, self:is_single_shot())
+
+	return multiplier
 end
 
 function NewRaycastWeaponBase:recoil_addend()
@@ -2682,7 +2685,9 @@ function NewRaycastWeaponBase:recoil_multiplier()
 		is_moving = alive(user_unit) and user_unit:movement() and user_unit:movement()._current_state and user_unit:movement()._current_state._moving
 	end
 
-	return managers.blackmarket:recoil_multiplier(self._name_id, self:weapon_tweak_data().categories, self._silencer, self._blueprint, is_moving)
+	local multiplier = managers.blackmarket:recoil_multiplier(self._name_id, self:weapon_tweak_data().categories, self._silencer, self._blueprint, is_moving)
+
+	return multiplier
 end
 
 function NewRaycastWeaponBase:enter_steelsight_speed_multiplier()

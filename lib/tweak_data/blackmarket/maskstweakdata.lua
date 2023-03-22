@@ -9540,6 +9540,62 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		dlc = "cot_smilecigar",
 		texture_bundle_folder = "cot"
 	}
+	self.masks.bthekidmask = {
+		unit = "units/pd2_dlc_txt4/masks/msk_bthekidmask/msk_bthekidmask",
+		name_id = "bm_msk_bthekidmask",
+		pcs = {},
+		value = 0,
+		type = "cowboyhat",
+		sort_number = 2,
+		preview_oobb_object = "g_mask",
+		dlc = "txt4",
+		texture_bundle_folder = "txt4",
+		offsets = {
+			sydney = {
+				Vector3(0, 0, 0.435252),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.cassidymask = {
+		unit = "units/pd2_dlc_txt4/masks/msk_cassidymask/msk_cassidymask",
+		name_id = "bm_msk_cassidymask",
+		pcs = {},
+		value = 0,
+		type = "cowboyhat",
+		sort_number = 2,
+		preview_oobb_object = "g_mask",
+		dlc = "txt4",
+		texture_bundle_folder = "txt4"
+	}
+	self.masks.jessjamesmask = {
+		unit = "units/pd2_dlc_txt4/masks/msk_jessjamesmask/msk_jessjamesmask",
+		name_id = "bm_msk_jessjamesmask",
+		pcs = {},
+		value = 0,
+		type = "cowboyhat",
+		sort_number = 2,
+		preview_oobb_object = "g_mask",
+		dlc = "txt4",
+		texture_bundle_folder = "txt4"
+	}
+	self.masks.sambassmask = {
+		unit = "units/pd2_dlc_txt4/masks/msk_sambassmask/msk_sambassmask",
+		name_id = "bm_msk_sambassmask",
+		pcs = {},
+		value = 0,
+		type = "cowboyhat",
+		sort_number = 2,
+		preview_oobb_object = "g_mask",
+		dlc = "txt4",
+		texture_bundle_folder = "txt4",
+		offsets = {
+			jimmy = {
+				Vector3(0, 0, -0.518719),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.masks) do

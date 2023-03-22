@@ -29,7 +29,7 @@ function RaycastWeaponBase:init(unit)
 	self:_create_use_setups()
 
 	self._setup = {}
-	self._digest_values = SystemInfo:platform() == Idstring("WIN32")
+	self._digest_values = true
 	self._ammo_data = false
 	self._do_shotgun_push = tweak_data.weapon[self._name_id].do_shotgun_push or false
 
@@ -1297,45 +1297,25 @@ function RaycastWeaponBase:digest_value(value, digest)
 end
 
 function RaycastWeaponBase:set_ammo_max_per_clip(ammo_max_per_clip)
-	if self._ammo_max_per_clip then
-		if self._ammo_max_per_clip2 then
-			print("haxor")
-		end
-
-		self._ammo_max_per_clip2 = self:digest_value(ammo_max_per_clip, true)
-		self._ammo_max_per_clip = nil
-	else
-		self._ammo_max_per_clip = self:digest_value(ammo_max_per_clip, true)
-		self._ammo_max_per_clip2 = nil
-	end
+	self._ammo_max_per_clip = ammo_max_per_clip
 end
 
 function RaycastWeaponBase:get_ammo_max_per_clip()
-	return self._ammo_max_per_clip and self:digest_value(self._ammo_max_per_clip, false) or self:digest_value(self._ammo_max_per_clip2, false)
+	return self._ammo_max_per_clip
 end
 
 function RaycastWeaponBase:set_ammo_max(ammo_max)
-	if self._ammo_max then
-		if self._ammo_max2 then
-			print("haxor")
-		end
-
-		self._ammo_max2 = self:digest_value(ammo_max, true)
-		self._ammo_max = nil
-	else
-		self._ammo_max = self:digest_value(ammo_max, true)
-		self._ammo_max2 = nil
-	end
+	self._ammo_max = ammo_max
 end
 
 function RaycastWeaponBase:get_ammo_max()
-	return self._ammo_max and self:digest_value(self._ammo_max, false) or self:digest_value(self._ammo_max2, false)
+	return self._ammo_max
 end
 
 function RaycastWeaponBase:set_ammo_total(ammo_total)
-	self._ammo_total = self:digest_value(ammo_total, true)
+	self._ammo_total = ammo_total
 
-	if self:get_stored_pickup_ammo() and self:get_ammo_max() <= ammo_total then
+	if self:has_stored_pickup_ammo() and self:get_ammo_max() <= ammo_total then
 		self:remove_pickup_ammo()
 	end
 end
@@ -1354,7 +1334,7 @@ function RaycastWeaponBase:add_ammo_to_pool(ammo, index)
 end
 
 function RaycastWeaponBase:get_ammo_total()
-	return self._ammo_total and self:digest_value(self._ammo_total, false) or self:digest_value(self._ammo_total2, false)
+	return self._ammo_total
 end
 
 function RaycastWeaponBase:get_ammo_ratio()
@@ -1411,21 +1391,11 @@ function RaycastWeaponBase:remove_ammo(percent)
 end
 
 function RaycastWeaponBase:set_ammo_remaining_in_clip(ammo_remaining_in_clip)
-	if self._ammo_remaining_in_clip then
-		if self._ammo_remaining_in_clip2 then
-			print("haxor")
-		end
-
-		self._ammo_remaining_in_clip2 = self:digest_value(ammo_remaining_in_clip, true)
-		self._ammo_remaining_in_clip = nil
-	else
-		self._ammo_remaining_in_clip = self:digest_value(ammo_remaining_in_clip, true)
-		self._ammo_remaining_in_clip2 = nil
-	end
+	self._ammo_remaining_in_clip = ammo_remaining_in_clip
 end
 
 function RaycastWeaponBase:get_ammo_remaining_in_clip()
-	return self._ammo_remaining_in_clip and self:digest_value(self._ammo_remaining_in_clip, false) or self:digest_value(self._ammo_remaining_in_clip2, false)
+	return self._ammo_remaining_in_clip
 end
 
 function RaycastWeaponBase:replenish()
@@ -1480,6 +1450,10 @@ function RaycastWeaponBase:calculate_ammo_max_per_clip()
 	ammo = ammo + (self._extra_ammo or 0)
 
 	return ammo
+end
+
+function RaycastWeaponBase:has_stored_pickup_ammo()
+	return self._stored_pickup_ammo and true or false
 end
 
 function RaycastWeaponBase:get_stored_pickup_ammo()
@@ -1773,30 +1747,31 @@ function RaycastWeaponBase:add_ammo_in_bullets(bullets)
 end
 
 function RaycastWeaponBase:add_ammo(ratio, add_amount_override)
+	local mul_1 = managers.player:upgrade_value("player", "pick_up_ammo_multiplier", 1) - 1
+	local mul_2 = managers.player:upgrade_value("player", "pick_up_ammo_multiplier_2", 1) - 1
+	local crew_mul = managers.player:crew_ability_upgrade_value("crew_scavenge", 0)
+	local pickup_mul = 1 + mul_1 + mul_2 + crew_mul
+
 	local function _add_ammo(ammo_base, ratio, add_amount_override)
 		if ammo_base:get_ammo_max() == ammo_base:get_ammo_total() then
 			return false, 0
 		end
 
+		local picked_up = true
 		local stored_pickup_ammo = nil
 		local add_amount = add_amount_override
 
 		if not add_amount then
-			local multiplier_min = 1
-			local multiplier_max = 1
+			local min_pickup = ammo_base._ammo_pickup[1]
+			local max_pickup = ammo_base._ammo_pickup[2]
 
-			if ammo_base._ammo_data then
-				multiplier_min = ammo_base._ammo_data.ammo_pickup_min_mul or multiplier_min
-				multiplier_max = ammo_base._ammo_data.ammo_pickup_max_mul or multiplier_max
+			if ammo_base._ammo_data and (self._ammo_data.ammo_pickup_min_mul or self._ammo_data.ammo_pickup_max_mul) then
+				min_pickup = min_pickup * (self._ammo_data.ammo_pickup_min_mul or 1)
+				max_pickup = max_pickup * (self._ammo_data.ammo_pickup_max_mul or 1)
 			end
 
-			local mul_1 = managers.player:upgrade_value("player", "pick_up_ammo_multiplier", 1) - 1
-			local mul_2 = managers.player:upgrade_value("player", "pick_up_ammo_multiplier_2", 1) - 1
-			local crew_mul = managers.player:crew_ability_upgrade_value("crew_scavenge", 0)
-			local total = mul_1 + mul_2 + crew_mul
-			multiplier_min = multiplier_min + total
-			multiplier_max = multiplier_max + total
-			add_amount = math.lerp(ammo_base._ammo_pickup[1] * multiplier_min, ammo_base._ammo_pickup[2] * multiplier_max, math.random())
+			add_amount = math.lerp(min_pickup * pickup_mul, max_pickup * pickup_mul, math.random())
+			picked_up = add_amount > 0
 			add_amount = add_amount * (ratio or 1)
 			stored_pickup_ammo = ammo_base:get_stored_pickup_ammo()
 
@@ -1827,7 +1802,7 @@ function RaycastWeaponBase:add_ammo(ratio, add_amount_override)
 			add_amount = rounded_amount
 		end
 
-		return true, add_amount
+		return picked_up, add_amount
 	end
 
 	local picked_up, add_amount = nil
@@ -1997,9 +1972,9 @@ function RaycastWeaponBase:_get_sound_event(event, alternative_event)
 	end
 
 	local sounds = tweak_data.weapon[str_name].sounds
-	local event = sounds and (sounds[event] or sounds[alternative_event])
+	local sound_event = sounds and (sounds[event] or sounds[alternative_event])
 
-	return event
+	return sound_event
 end
 
 function RaycastWeaponBase:add_ignore_unit(unit)

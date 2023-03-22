@@ -354,23 +354,23 @@ function MissionManager:activate_script(...)
 	MissionManager.super.activate_script(self, ...)
 end
 
-function MissionManager:client_run_mission_element(id, unit, orientation_element_index)
+function MissionManager:client_run_mission_element(id, unit, orientation_element_index, id_from)
 	for name, data in pairs(self._scripts) do
 		if data:element(id) then
 			data:element(id):set_synced_orientation_element_index(orientation_element_index)
-			data:element(id):client_on_executed(unit)
+			data:element(id):client_on_executed(unit, nil, nil, id_from > 0 and id_from or nil)
 
 			return
 		end
 	end
 end
 
-function MissionManager:client_run_mission_element_end_screen(id, unit, orientation_element_index)
+function MissionManager:client_run_mission_element_end_screen(id, unit, orientation_element_index, id_from)
 	for name, data in pairs(self._scripts) do
 		if data:element(id) then
 			if data:element(id).client_on_executed_end_screen then
 				data:element(id):set_synced_orientation_element_index(orientation_element_index)
-				data:element(id):client_on_executed_end_screen(unit)
+				data:element(id):client_on_executed_end_screen(unit, nil, nil, id_from > 0 and id_from or nil)
 			end
 
 			return

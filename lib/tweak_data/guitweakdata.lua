@@ -5129,9 +5129,14 @@ function GuiTweakData:init(tweak_data)
 	}
 
 	table.insert(self.new_heists, {
-		name_id = "menu_nh_corp_01",
-		texture_path = "guis/dlcs/corp/textures/pd2/new_heists/corp_02",
-		url = "https://pd2.link/HostileTakeoverHeistSLS"
+		name_id = "menu_nh_txt4_01",
+		texture_path = "guis/dlcs/txt4/textures/pd2/new_heists/txt4_01",
+		url = "https://pd2.link/CrudeAwakeningBundleSLS"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_txt4_02",
+		texture_path = "guis/dlcs/txt4/textures/pd2/new_heists/txt4_02",
+		url = "https://pd2.link/LawlessTailorPackSLS"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_txt3_02",
@@ -5139,14 +5144,19 @@ function GuiTweakData:init(tweak_data)
 		url = "https://pd2.link/HostileTakeoverBundleSLS"
 	})
 	table.insert(self.new_heists, {
-		name_id = "menu_nh_corp",
-		texture_path = "guis/dlcs/corp/textures/pd2/new_heists/corp_01",
-		url = "https://pd2.link/HostileTakeoverDropsSL"
+		name_id = "menu_nh_corp_01",
+		texture_path = "guis/dlcs/corp/textures/pd2/new_heists/corp_02",
+		url = "https://pd2.link/HostileTakeoverHeistSLS"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_pxp3",
 		texture_path = "guis/dlcs/pxp3/textures/pd2/new_heists/pxp3",
 		url = "https://pd2.link/McShayWeaponPack3SLS"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_corp",
+		texture_path = "guis/dlcs/corp/textures/pd2/new_heists/corp_01",
+		url = "https://pd2.link/HostileTakeoverDropsSL"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_txt3_01",

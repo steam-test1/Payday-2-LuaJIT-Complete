@@ -83,7 +83,7 @@ function MissionScriptElement:_check_instigator(instigator)
 	return managers.player:player_unit()
 end
 
-function MissionScriptElement:on_executed(instigator, alternative, skip_execute_on_executed)
+function MissionScriptElement:on_executed(instigator, alternative, skip_execute_on_executed, sync_id_from)
 	if not self._values.enabled then
 		return
 	end
@@ -92,9 +92,9 @@ function MissionScriptElement:on_executed(instigator, alternative, skip_execute_
 
 	if Network:is_server() then
 		if instigator and alive(instigator) and instigator:id() ~= -1 then
-			managers.network:session():send_to_peers_synched("run_mission_element", self._id, instigator, self._last_orientation_index or 0)
+			managers.network:session():send_to_peers_synched("run_mission_element", self._id, instigator, self._last_orientation_index or 0, sync_id_from or 0)
 		else
-			managers.network:session():send_to_peers_synched("run_mission_element_no_instigator", self._id, self._last_orientation_index or 0)
+			managers.network:session():send_to_peers_synched("run_mission_element_no_instigator", self._id, self._last_orientation_index or 0, sync_id_from or 0)
 		end
 	end
 
@@ -177,19 +177,20 @@ function MissionScriptElement:execute_on_executed(execute_params)
 
 			if element then
 				local delay = self:_calc_element_delay(params)
+				local sync_id_from = element.client_local_on_executed and self._id or nil
 
 				if delay > 0 then
 					if self:is_debug() or element:is_debug() then
 						self._mission_script:debug_output("  Executing element '" .. element:editor_name() .. "' in " .. delay .. " seconds ...", Color(1, 0.75, 0.75, 0.75))
 					end
 
-					self._mission_script:add(callback(element, element, "on_executed", execute_params.instigator), delay, 1)
+					self._mission_script:add(callback(element, element, "on_executed", execute_params.instigator, nil, nil, sync_id_from), delay, 1)
 				else
 					if self:is_debug() or element:is_debug() then
 						self._mission_script:debug_output("  Executing element '" .. element:editor_name() .. "' ...", Color(1, 0.75, 0.75, 0.75))
 					end
 
-					element:on_executed(execute_params.instigator)
+					element:on_executed(execute_params.instigator, nil, nil, sync_id_from)
 				end
 			end
 		end

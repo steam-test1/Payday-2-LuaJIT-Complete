@@ -1552,7 +1552,7 @@ function HUDTeammate:set_weapon_selected(id, hud_icon)
 	self:_set_weapon_selected(id, hud_icon)
 end
 
-function HUDTeammate:set_weapon_firemode(id, firemode)
+function HUDTeammate:set_weapon_firemode(id, firemode, ...)
 	local is_secondary = id == 1
 	local secondary_weapon_panel = self._player_panel:child("weapons_panel"):child("secondary_weapon_panel")
 	local primary_weapon_panel = self._player_panel:child("weapons_panel"):child("primary_weapon_panel")

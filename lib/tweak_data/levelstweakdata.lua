@@ -2700,6 +2700,7 @@ function LevelsTweakData:init()
 		ai_group_type = america,
 		narrator = "locke",
 		ghost_bonus = 0.15,
+		max_bags = 25,
 		load_screen = "guis/dlcs/corp/textures/loading/job_corp_01_df",
 		equipment = {
 			{

@@ -37,8 +37,11 @@ end
 function CopBase:init(unit)
 	UnitBase.init(self, unit, false)
 
-	self._char_tweak = tweak_data.character[self._tweak_table]
 	self._unit = unit
+	self._char_tweak = tweak_data.character[self._tweak_table]
+
+	self:_set_tags(self._char_tweak.tags)
+
 	self._visibility_state = true
 	self._foot_obj_map = {
 		right = self._unit:get_object(Idstring("RightToeBase")),
@@ -100,22 +103,54 @@ function CopBase:_chk_spawn_gear()
 	end
 end
 
-function CopBase:has_tag(tag)
-	local tags = self:char_tweak().tags
+function CopBase:_set_tags(tags)
+	local tag_type = type(tags)
 
-	return tags and table.contains(tags, tag) or false
+	if tag_type == "table" then
+		self._tags = table.list_to_set(clone(tags))
+	elseif tag_type == "string" then
+		self._tags = {
+			tags
+		}
+	else
+		self._tags = nil
+	end
+end
+
+function CopBase:has_tag(tag)
+	return self._tags and self._tags[tag] or false
 end
 
 function CopBase:has_all_tags(tags)
-	local my_tags = self:char_tweak().tags
+	local my_tags = self._tags
 
-	return my_tags and table.contains_all(my_tags, tags) or false
+	if not my_tags then
+		return false
+	end
+
+	for _, tag in pairs(tags) do
+		if not my_tags[tag] then
+			return false
+		end
+	end
+
+	return true
 end
 
 function CopBase:has_any_tag(tags)
-	local my_tags = self:char_tweak().tags
+	local my_tags = self._tags
 
-	return my_tags and table.contains_any(my_tags, tags) or false
+	if not my_tags then
+		return false
+	end
+
+	for _, tag in pairs(tags) do
+		if my_tags[tag] then
+			return true
+		end
+	end
+
+	return false
 end
 
 function CopBase:default_weapon_name(selection_name)
@@ -494,6 +529,7 @@ function CopBase:change_char_tweak(new_tweak_name)
 	self._tweak_table = new_tweak_name
 	self._char_tweak = new_tweak_data
 
+	self:_set_tags(new_tweak_data.tags)
 	self:_chk_call_tweak_data_changed_listeners(old_tweak_data, new_tweak_data)
 end
 

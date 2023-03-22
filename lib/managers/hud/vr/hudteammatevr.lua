@@ -669,9 +669,9 @@ end
 
 HUDTeammateVR.default_set_weapon_firemode = HUDTeammate.set_weapon_firemode
 
-function HUDTeammateVR:set_weapon_firemode(id, firemode)
+function HUDTeammateVR:set_weapon_firemode(id, firemode, ...)
 	if not self._main_player then
-		return self:default_set_weapon_firemode(id, firemode)
+		return self:default_set_weapon_firemode(id, firemode, ...)
 	end
 
 	local is_secondary = id == 1

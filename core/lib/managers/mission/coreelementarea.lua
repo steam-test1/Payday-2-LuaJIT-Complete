@@ -61,6 +61,10 @@ function ElementAreaTrigger:on_script_activated()
 	if self._values.enabled then
 		self:add_callback()
 	end
+
+	if Network:is_client() then
+		self:_chk_setup_local_client_on_execute_elements()
+	end
 end
 
 function ElementAreaTrigger:_add_shape(shape)
@@ -98,9 +102,16 @@ function ElementAreaTrigger:_is_inside(pos)
 end
 
 function ElementAreaTrigger:set_enabled(enabled)
-	if not enabled and Network:is_server() and self._values.trigger_on == "both" then
-		for _, unit in ipairs(CoreTable.clone(self._inside)) do
-			self:sync_exit_area(unit)
+	if not enabled and self._values.trigger_on == "both" then
+		if Network:is_client() then
+			for _, unit in ipairs(CoreTable.clone(self._inside)) do
+				table.delete(self._inside, unit)
+				self:_chk_local_client_execute(unit)
+			end
+		elseif Network:is_server() then
+			for _, unit in ipairs(CoreTable.clone(self._inside)) do
+				self:sync_exit_area(unit)
+			end
 		end
 	end
 
@@ -129,17 +140,40 @@ function ElementAreaTrigger:remove_callback()
 	end
 end
 
-function ElementAreaTrigger:_chk_local_client_execute(unit, ...)
-	if not self._values.on_executed then
+function ElementAreaTrigger:_chk_setup_local_client_on_execute_elements()
+	if not self._values.on_executed or self._values.trigger_on == "on_empty" or self._values.amount == "all" then
+		return
+	end
+
+	local amount = tonumber(self._values.amount)
+
+	if amount and amount > 1 then
+		return
+	end
+
+	if self:_calc_base_delay() > 0 then
 		return
 	end
 
 	for _, params in ipairs(self._values.on_executed) do
 		local element = self:get_mission_element(params.id)
 
-		if element and element.client_local_on_executed then
-			element:client_local_on_executed(unit, ...)
+		if element and element.client_local_on_executed and self:_calc_element_delay(params) <= 0 then
+			self._local_client_execute_elements = self._local_client_execute_elements or {}
+
+			table.insert(self._local_client_execute_elements, element)
+			element:set_enable_client_local_on_executed(self._id)
 		end
+	end
+end
+
+function ElementAreaTrigger:_chk_local_client_execute(instigator)
+	if not self._local_client_execute_elements then
+		return
+	end
+
+	for _, element in ipairs(self._local_client_execute_elements) do
+		element:client_local_on_executed(instigator, self._id)
 	end
 end
 
@@ -416,17 +450,23 @@ function ElementAreaTrigger:_client_check_state(unit)
 		if inside and rule_ok then
 			if self._values.trigger_on == "while_inside" then
 				managers.network:session():send_to_host("to_server_area_event", 3, self._id, unit)
-				self:_chk_local_client_execute(unit, "while_inside")
+				self:_chk_local_client_execute(unit)
 			end
 		else
 			table.delete(self._inside, unit)
 			managers.network:session():send_to_host("to_server_area_event", 2, self._id, unit)
-			self:_chk_local_client_execute(unit, "on_exit")
+
+			if self._values.trigger_on == "on_exit" or self._values.trigger_on == "both" then
+				self:_chk_local_client_execute(unit)
+			end
 		end
 	elseif inside and rule_ok then
 		table.insert(self._inside, unit)
 		managers.network:session():send_to_host("to_server_area_event", 1, self._id, unit)
-		self:_chk_local_client_execute(unit, "on_enter")
+
+		if self._values.trigger_on == "on_enter" or self._values.trigger_on == "both" or self._values.trigger_on == "while_inside" then
+			self:_chk_local_client_execute(unit)
+		end
 	end
 end
 
@@ -502,6 +542,64 @@ function ElementAreaOperator:on_executed(instigator)
 end
 
 ElementAreaReportTrigger = ElementAreaReportTrigger or class(ElementAreaTrigger)
+
+function ElementAreaReportTrigger:set_enabled(enabled)
+	ElementAreaTrigger.super.set_enabled(self, enabled)
+
+	if enabled then
+		self:add_callback()
+	else
+		self._inside = {}
+
+		self:remove_callback()
+	end
+end
+
+function ElementAreaReportTrigger:_chk_setup_local_client_on_execute_elements()
+	if not self._values.on_executed or self._values.amount == "all" then
+		return
+	end
+
+	local amount = tonumber(self._values.amount)
+
+	if amount and amount > 1 then
+		return
+	end
+
+	if self:_has_on_executed_alternative("reached_amount") or self:_has_on_executed_alternative("empty") then
+		return
+	end
+
+	if self:_calc_base_delay() > 0 then
+		return
+	end
+
+	for _, params in ipairs(self._values.on_executed) do
+		local element = self:get_mission_element(params.id)
+
+		if element and element.client_local_on_executed and self:_calc_element_delay(params) <= 0 then
+			self._local_client_execute_elements = self._local_client_execute_elements or {}
+
+			table.insert(self._local_client_execute_elements, {
+				element = element,
+				alternative = params.alternative
+			})
+			element:set_enable_client_local_on_executed(self._id)
+		end
+	end
+end
+
+function ElementAreaReportTrigger:_chk_local_client_execute(instigator, alternative)
+	if not self._local_client_execute_elements then
+		return
+	end
+
+	for _, element_data in ipairs(self._local_client_execute_elements) do
+		if not alternative or not element_data.alternative or alternative == element_data.alternative then
+			element_data.element:client_local_on_executed(instigator, self._id)
+		end
+	end
+end
 
 function ElementAreaReportTrigger:update_area()
 	if not self._values.enabled then
@@ -667,12 +765,15 @@ function ElementAreaReportTrigger:_client_check_state(unit)
 		else
 			table.delete(self._inside, unit)
 			managers.network:session():send_to_host("to_server_area_event", 2, self._id, unit)
-			self:_chk_local_client_execute(unit, "on_exit")
+			self:_chk_local_client_execute(unit, "leave")
 		end
 	elseif inside and rule_ok then
 		table.insert(self._inside, unit)
 		managers.network:session():send_to_host("to_server_area_event", 1, self._id, unit)
-		self:_chk_local_client_execute(unit, "on_enter")
+
+		local alternative = self:_has_on_executed_alternative("while_inside") and "while_inside" or "enter"
+
+		self:_chk_local_client_execute(unit, alternative)
 	end
 end
 

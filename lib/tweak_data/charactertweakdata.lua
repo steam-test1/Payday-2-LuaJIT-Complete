@@ -691,7 +691,8 @@ end
 function CharacterTweakData:_init_marshal_marksman(presets)
 	self.marshal_marksman = deep_clone(presets.base)
 	self.marshal_marksman.tags = {
-		"law"
+		"law",
+		"marksman"
 	}
 	self.marshal_marksman.experience = {
 		cable_tie = "tie_swat"
