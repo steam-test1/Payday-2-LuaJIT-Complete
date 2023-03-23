@@ -423,17 +423,17 @@ function ElementLaserTrigger:_client_check_state(unit)
 		if not inside or not rule_ok then
 			table.delete(self._inside, unit)
 			managers.network:session():send_to_host("to_server_area_event", 2, self._id, unit)
-			ElementAreaReportTrigger._chk_local_client_execute(self, unit, "leave")
+			CoreElementArea.ElementAreaReportTrigger._chk_local_client_execute(self, unit, "leave")
 		end
 	elseif inside and rule_ok then
 		table.insert(self._inside, unit)
 		managers.network:session():send_to_host("to_server_area_event", 1, self._id, unit)
-		ElementAreaReportTrigger._chk_local_client_execute(self, unit, "enter")
+		CoreElementArea.ElementAreaReportTrigger._chk_local_client_execute(self, unit, "enter")
 	end
 
 	if inside and rule_ok then
 		managers.network:session():send_to_host("to_server_area_event", 3, self._id, unit)
-		ElementAreaReportTrigger._chk_local_client_execute(self, unit, "while_inside")
+		CoreElementArea.ElementAreaReportTrigger._chk_local_client_execute(self, unit, "while_inside")
 	end
 end
 
