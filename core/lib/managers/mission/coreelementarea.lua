@@ -141,7 +141,7 @@ function ElementAreaTrigger:remove_callback()
 end
 
 function ElementAreaTrigger:_chk_setup_local_client_on_execute_elements()
-	if not self._values.on_executed or self._values.trigger_on == "on_empty" or self._values.amount == "all" then
+	if not self._instigator_find_func or not self._values.on_executed or self._values.trigger_on == "on_empty" or self._values.amount == "all" then
 		return
 	end
 
@@ -556,7 +556,7 @@ function ElementAreaReportTrigger:set_enabled(enabled)
 end
 
 function ElementAreaReportTrigger:_chk_setup_local_client_on_execute_elements()
-	if not self._values.on_executed or self._values.amount == "all" then
+	if not self._instigator_find_func or not self._values.on_executed or self._values.amount == "all" then
 		return
 	end
 

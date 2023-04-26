@@ -688,6 +688,16 @@ function HUDTeammateVR:set_weapon_firemode(id, firemode, ...)
 				firemode = self._firemode_mapping[fire_mode] or fire_mode
 			end
 
+			local is_alt = select(1, ...)
+
+			if is_alt then
+				if firemode == "single" then
+					firemode = "auto"
+				else
+					firemode = "single"
+				end
+			end
+
 			self:set_weapon_firemode_active(firemode_single, firemode == "single")
 			self:set_weapon_firemode_active(firemode_auto, firemode ~= "single")
 		end
@@ -1134,6 +1144,14 @@ function HUDTeammateVR:setup_firemode(id, weapon_selection_panel)
 
 	if self._firemode_mapping then
 		firemode = self._firemode_mapping[fire_mode] or fire_mode
+	end
+
+	if firemode == "single" then
+		firemode_auto:set_text(firemode_single:text())
+		firemode_auto:set_selection_color(firemode_single:selection_color())
+	else
+		firemode_single:set_text(firemode_auto:text())
+		firemode_single:set_selection_color(firemode_auto:selection_color())
 	end
 
 	self:set_weapon_firemode_active(firemode_single, firemode == "single")

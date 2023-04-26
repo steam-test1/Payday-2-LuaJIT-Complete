@@ -111,6 +111,9 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_m95_crew()
 	self:_init_data_msr_crew()
 	self:_init_data_r93_crew()
+	self:_init_data_awp_crew()
+	self:_init_data_supernova_crew()
+	self:_init_data_kacchainsaw_crew()
 	self:_init_data_fal_crew()
 	self:_init_data_ben_crew()
 	self:_init_data_striker_crew()
@@ -534,11 +537,11 @@ function WeaponTweakData:_init_data_sko12_conc_npc()
 	self.sko12_conc_npc.FIRE_MODE = "single"
 	self.sko12_conc_npc.bullet_class = "ConcussiveInstantBulletBase"
 	self.sko12_conc_npc.concussion_data = {
-		mul = 0.5,
+		mul = 0.2,
 		sound_duration = {
-			min = 4,
+			min = 2,
 			mul = 0.3,
-			additional = 4
+			additional = 2
 		}
 	}
 end
@@ -2493,6 +2496,79 @@ function WeaponTweakData:_init_data_r93_crew()
 	self.r93_crew.alert_size = 5000
 	self.r93_crew.suppression = 1
 	self.r93_crew.FIRE_MODE = "single"
+end
+
+function WeaponTweakData:_init_data_awp_crew()
+	self.awp_crew.categories = clone(self.awp.categories)
+	self.awp_crew.sounds.prefix = "awp_npc"
+	self.awp_crew.use_data.selection_index = SELECTION.PRIMARY
+	self.awp_crew.DAMAGE = 15
+	self.awp_crew.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
+	self.awp_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_sniper"
+	self.awp_crew.CLIP_AMMO_MAX = 10
+	self.awp_crew.NR_CLIPS_MAX = 5
+	self.awp_crew.pull_magazine_during_reload = "rifle"
+	self.awp_crew.auto.fire_rate = 1
+	self.awp_crew.hold = "rifle"
+	self.awp_crew.alert_size = 5000
+	self.awp_crew.suppression = 1
+	self.awp_crew.FIRE_MODE = "single"
+end
+
+function WeaponTweakData:_init_data_supernova_crew()
+	self.supernova_crew.categories = clone(self.supernova.categories)
+	self.supernova_crew.sounds.prefix = "supernova_npc"
+	self.supernova_crew.use_data.selection_index = SELECTION.PRIMARY
+	self.supernova_crew.DAMAGE = 5
+	self.supernova_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
+	self.supernova_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug"
+	self.supernova.single.fire_rate = 0.4
+	self.supernova_crew.CLIP_AMMO_MAX = 7
+	self.supernova_crew.NR_CLIPS_MAX = 6
+	self.supernova_crew.looped_reload_speed = 0.7
+	self.supernova_crew.hold = "rifle"
+	self.supernova_crew.alert_size = 4500
+	self.supernova_crew.suppression = 1.8
+	self.supernova_crew.FIRE_MODE = "single"
+	self.supernova_crew.is_shotgun = true
+end
+
+function WeaponTweakData:_init_data_kacchainsaw_crew()
+	self.kacchainsaw_crew.categories = clone(self.kacchainsaw.categories)
+	self.kacchainsaw_crew.sounds.prefix = "kac_npc"
+	self.kacchainsaw_crew.use_data.selection_index = SELECTION.PRIMARY
+	self.kacchainsaw_crew.DAMAGE = 0.99
+	self.kacchainsaw_crew.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
+	self.kacchainsaw_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
+	self.kacchainsaw_crew.CLIP_AMMO_MAX = 200
+	self.kacchainsaw_crew.NR_CLIPS_MAX = 2
+	self.kacchainsaw_crew.auto.fire_rate = 0.066
+	self.kacchainsaw_crew.hold = "rifle"
+	self.kacchainsaw_crew.alert_size = 5000
+	self.kacchainsaw_crew.suppression = 1
+	self.kacchainsaw_crew.FIRE_MODE = "auto"
+	self.kacchainsaw_crew.animations = {
+		thq_align_anim = "thq"
+	}
+	self.kacchainsaw_crew.has_fire_animation = true
+	self.kacchainsaw_flamethrower_npc.categories = clone(self.kacchainsaw_flamethrower.categories)
+	self.kacchainsaw_flamethrower_npc.sounds.prefix = "flamethrower_npc"
+	self.kacchainsaw_flamethrower_npc.sounds.fire = "flamethrower_npc_fire"
+	self.kacchainsaw_flamethrower_npc.sounds.stop_fire = "flamethrower_npc_fire_stop"
+	self.kacchainsaw_flamethrower_npc.use_data.selection_index = SELECTION.PRIMARY
+	self.kacchainsaw_flamethrower_npc.DAMAGE = 1
+	self.kacchainsaw_flamethrower_npc.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.kacchainsaw_flamethrower_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	self.kacchainsaw_flamethrower_npc.flame_effect = "effects/payday2/particles/explosions/flamethrower_cheap"
+	self.kacchainsaw_flamethrower_npc.flame_max_range = self.kacchainsaw_flamethrower.flame_max_range
+	self.kacchainsaw_flamethrower_npc.single_flame_effect_duration = self.kacchainsaw_flamethrower.single_flame_effect_duration
+	self.kacchainsaw_flamethrower_npc.CLIP_AMMO_MAX = self.kacchainsaw_flamethrower.CLIP_AMMO_MAX
+	self.kacchainsaw_flamethrower_npc.NR_CLIPS_MAX = self.kacchainsaw_flamethrower.NR_CLIPS_MAX
+	self.kacchainsaw_flamethrower_npc.auto.fire_rate = self.kacchainsaw_flamethrower.auto.fire_rate
+	self.kacchainsaw_flamethrower_npc.hold = "rifle"
+	self.kacchainsaw_flamethrower_npc.alert_size = 5000
+	self.kacchainsaw_flamethrower_npc.suppression = 1
+	self.kacchainsaw_flamethrower_npc.FIRE_MODE = "auto"
 end
 
 function WeaponTweakData:_init_data_fal_crew()
@@ -6299,6 +6375,9 @@ function WeaponTweakData:_init_new_weapons(weapon_data)
 	self:_init_sko12(weapon_data)
 	self:_init_x_sko12(weapon_data)
 	self:_init_x_korth(weapon_data)
+	self:_init_awp(weapon_data)
+	self:_init_supernova(weapon_data)
+	self:_init_kacchainsaw(weapon_data)
 	self:_init_m249(weapon_data)
 	self:_init_rpk(weapon_data)
 	self:_init_m95(weapon_data)
@@ -11554,10 +11633,10 @@ function WeaponTweakData:_init_m95(weapon_data)
 	self.m95.sounds.enter_steelsight = "primary_steel_sight_enter"
 	self.m95.sounds.leave_steelsight = "primary_steel_sight_exit"
 	self.m95.timers = {
-		reload_not_empty = 3.96,
-		reload_empty = 5.23,
-		unequip = 0.9,
-		equip = 0.9
+		reload_not_empty = 3.8,
+		reload_empty = 5.1,
+		unequip = 0.6,
+		equip = 0.6
 	}
 	self.m95.name_id = "bm_w_m95"
 	self.m95.desc_id = "bm_w_m95_desc"
@@ -11575,12 +11654,12 @@ function WeaponTweakData:_init_m95(weapon_data)
 	self.m95.NR_CLIPS_MAX = 3
 	self.m95.AMMO_MAX = self.m95.CLIP_AMMO_MAX * self.m95.NR_CLIPS_MAX
 	self.m95.AMMO_PICKUP = {
-		0.05,
+		0.1,
 		0.65
 	}
 	self.m95.FIRE_MODE = "single"
 	self.m95.fire_mode_data = {
-		fire_rate = 1.5
+		fire_rate = 1.25
 	}
 	self.m95.CAN_TOGGLE_FIREMODE = false
 	self.m95.single = {
@@ -11650,6 +11729,501 @@ function WeaponTweakData:_init_m95(weapon_data)
 	self.m95.armor_piercing_chance = 1
 	self.m95.stats_modifiers = {
 		damage = 35
+	}
+end
+
+function WeaponTweakData:_init_awp(weapon_data)
+	self.awp = {
+		categories = {
+			"snp"
+		},
+		upgrade_blocks = {
+			weapon = {
+				"clip_ammo_increase"
+			}
+		},
+		has_description = true,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.awp.sounds.fire = "awp_fire"
+	self.awp.sounds.dryfire = "primary_dryfire"
+	self.awp.sounds.enter_steelsight = "lmg_steelsight_enter"
+	self.awp.sounds.leave_steelsight = "lmg_steelsight_exit"
+	self.awp.timers = {
+		reload_not_empty = 3,
+		reload_empty = 4,
+		unequip = 0.6,
+		equip = 0.7
+	}
+	self.awp.name_id = "bm_w_awp"
+	self.awp.desc_id = "bm_w_awp_desc"
+	self.awp.description_id = "des_awp"
+	self.awp.global_value = "pxp4"
+	self.awp.texture_bundle_folder = "pxp4"
+	self.awp.muzzleflash = "effects/payday2/particles/weapons/awp_muzzle"
+	self.awp.shell_ejection = "effects/payday2/particles/weapons/shells/shell_awp"
+	self.awp.use_data = {
+		selection_index = SELECTION.PRIMARY,
+		align_place = "left_hand"
+	}
+	self.awp.DAMAGE = 1
+	self.awp.damage_falloff = FALLOFF_TEMPLATE.SNIPER_FALL_VERYHIGH
+	self.awp.CLIP_AMMO_MAX = 7
+	self.awp.NR_CLIPS_MAX = 2
+	self.awp.AMMO_MAX = self.awp.CLIP_AMMO_MAX * self.awp.NR_CLIPS_MAX
+	self.awp.AMMO_PICKUP = {
+		0.45,
+		0.65
+	}
+	self.awp.FIRE_MODE = "single"
+	self.awp.fire_mode_data = {
+		fire_rate = 1.5
+	}
+	self.awp.CAN_TOGGLE_FIREMODE = false
+	self.awp.fire_mode_data.single = {
+		muzzleflash_silenced = "effects/payday2/particles/weapons/awp_suppressed"
+	}
+	self.awp.single = {
+		fire_rate = 1.5
+	}
+	self.awp.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight
+	}
+	self.awp.kick = {
+		standing = {
+			3,
+			4.8,
+			-0.3,
+			0.3
+		}
+	}
+	self.awp.kick.crouching = self.awp.kick.standing
+	self.awp.kick.steelsight = self.awp.kick.standing
+	self.awp.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.awp.crosshair.standing.offset = 1.14
+	self.awp.crosshair.standing.moving_offset = 1.8
+	self.awp.crosshair.standing.kick_offset = 1.6
+	self.awp.crosshair.crouching.offset = 1.1
+	self.awp.crosshair.crouching.moving_offset = 1.6
+	self.awp.crosshair.crouching.kick_offset = 1.4
+	self.awp.crosshair.steelsight.hidden = true
+	self.awp.crosshair.steelsight.offset = 1
+	self.awp.crosshair.steelsight.moving_offset = 1
+	self.awp.crosshair.steelsight.kick_offset = 1.14
+	self.awp.shake = {
+		fire_multiplier = 3.5,
+		fire_steelsight_multiplier = -3.5
+	}
+	self.awp.autohit = weapon_data.autohit_snp_default
+	self.awp.aim_assist = weapon_data.aim_assist_snp_default
+	self.awp.weapon_hold = "awp"
+	self.awp.animations = {
+		equip_id = "equip_awp",
+		recoil_steelsight = true
+	}
+	self.awp.can_shoot_through_enemy = true
+	self.awp.can_shoot_through_shield = true
+	self.awp.can_shoot_through_wall = true
+	self.awp.panic_suppression_chance = 0.2
+	self.awp.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 175,
+		alert_size = 7,
+		spread = 23,
+		spread_moving = 22,
+		recoil = 4,
+		value = 9,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 6,
+		concealment = 10
+	}
+	self.awp.armor_piercing_chance = 1
+	self.awp.stats_modifiers = {
+		damage = 6
+	}
+end
+
+function WeaponTweakData:_init_supernova(weapon_data)
+	self.supernova = {
+		categories = {
+			"shotgun"
+		},
+		upgrade_blocks = {
+			weapon = {
+				"clip_ammo_increase"
+			}
+		},
+		use_shotgun_reload = true,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.supernova.sounds.fire = "supernova_fire"
+	self.supernova.sounds.fire_alt = "supernova_fire"
+	self.supernova.sounds.dryfire = "shotgun_dryfire"
+	self.supernova.sounds.enter_steelsight = "primary_steel_sight_enter"
+	self.supernova.sounds.leave_steelsight = "primary_steel_sight_exit"
+	self.supernova.timers = {
+		shotgun_reload_enter = 0.8,
+		shotgun_reload_exit_empty = 0.9666666666666667,
+		shotgun_reload_exit_not_empty = 0.5666666666666667,
+		shotgun_reload_shell = 0.6,
+		shotgun_reload_first_shell_offset = 0,
+		unequip = 0.85,
+		equip = 0.85
+	}
+	self.supernova.name_id = "bm_w_supernova"
+	self.supernova.desc_id = "bm_w_supernova_desc"
+	self.supernova.description_id = "des_supernova"
+	self.supernova.texture_bundle_folder = "pxp4"
+	self.supernova.global_value = "pxp4"
+	self.supernova.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
+	self.supernova.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug_semi"
+	self.supernova.use_data = {
+		selection_index = SELECTION.PRIMARY,
+		align_place = "right_hand"
+	}
+	self.supernova.DAMAGE = 6
+	self.supernova.damage_falloff = FALLOFF_TEMPLATE.SHOTGUN_FALL_PRIMARY_MEDIUM
+	self.supernova.damage_near = 2000
+	self.supernova.damage_far = 3000
+	self.supernova.rays = 9
+	self.supernova.CLIP_AMMO_MAX = 5
+	self.supernova.NR_CLIPS_MAX = 5
+	self.supernova.AMMO_MAX = self.supernova.CLIP_AMMO_MAX * self.supernova.NR_CLIPS_MAX
+	self.supernova.AMMO_PICKUP = self:_pickup_chance(self.supernova.AMMO_MAX, PICKUP.SHOTGUN_HIGH_CAPACITY)
+	self.supernova.FIRE_MODE = "single"
+	self.supernova.fire_mode_data = {
+		fire_rate = 0.6
+	}
+	self.supernova.single = {
+		fire_rate = 0.6
+	}
+	self.supernova.alt_fire_data = {
+		fire_rate = 0.2,
+		spread_mul = 1.25,
+		damage_mul = 0.75,
+		shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug",
+		recoil_mul = 0.75,
+		animations = {
+			fire_steelsight = "recoil_steelsight_alt",
+			fire = "recoil_alt"
+		}
+	}
+	self.supernova.spread = {
+		standing = self.r870.spread.standing,
+		crouching = self.r870.spread.crouching,
+		steelsight = self.r870.spread.steelsight,
+		moving_standing = self.r870.spread.moving_standing,
+		moving_crouching = self.r870.spread.moving_crouching,
+		moving_steelsight = self.r870.spread.moving_steelsight
+	}
+	self.supernova.kick = {
+		standing = {
+			2.1,
+			2.2,
+			-0.1,
+			0.1
+		}
+	}
+	self.supernova.kick.crouching = self.supernova.kick.standing
+	self.supernova.kick.steelsight = {
+		1.5,
+		1.7,
+		-0.2,
+		0.2
+	}
+	self.supernova.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.supernova.crosshair.standing.offset = 0.7
+	self.supernova.crosshair.standing.moving_offset = 0.7
+	self.supernova.crosshair.standing.kick_offset = 0.8
+	self.supernova.crosshair.crouching.offset = 0.65
+	self.supernova.crosshair.crouching.moving_offset = 0.65
+	self.supernova.crosshair.crouching.kick_offset = 0.75
+	self.supernova.crosshair.steelsight.hidden = true
+	self.supernova.crosshair.steelsight.offset = 0
+	self.supernova.crosshair.steelsight.moving_offset = 0
+	self.supernova.crosshair.steelsight.kick_offset = 0
+	self.supernova.shake = {
+		fire_multiplier = 1,
+		fire_steelsight_multiplier = -1
+	}
+	self.supernova.autohit = weapon_data.autohit_shotgun_default
+	self.supernova.aim_assist = weapon_data.aim_assist_shotgun_default
+	self.supernova.weapon_hold = "supernova"
+	self.supernova.animations = {
+		equip_id = "equip_supernova",
+		recoil_steelsight = true
+	}
+	self.supernova.panic_suppression_chance = 0.2
+	self.supernova.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 134,
+		alert_size = 7,
+		spread = 11,
+		spread_moving = 10,
+		recoil = 9,
+		value = 1,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 5,
+		concealment = 13
+	}
+end
+
+function WeaponTweakData:_init_kacchainsaw(weapon_data)
+	self.kacchainsaw = {
+		categories = {
+			"lmg"
+		},
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.kacchainsaw.sounds.fire = "kac_fire_single"
+	self.kacchainsaw.sounds.fire_single = "kac_fire_single"
+	self.kacchainsaw.sounds.fire_auto = "kac_fire"
+	self.kacchainsaw.sounds.stop_fire = "kac_stop"
+	self.kacchainsaw.sounds.dryfire = "primary_dryfire"
+	self.kacchainsaw.sounds.enter_steelsight = "lmg_steelsight_enter"
+	self.kacchainsaw.sounds.leave_steelsight = "lmg_steelsight_exit"
+	self.kacchainsaw.timers = {
+		reload_not_empty = 5,
+		reload_empty = 6,
+		unequip = 0.9,
+		equip = 0.9,
+		deploy_bipod = 1
+	}
+	self.kacchainsaw.bipod_camera_spin_limit = 40
+	self.kacchainsaw.bipod_camera_pitch_limit = 15
+	self.kacchainsaw.bipod_weapon_translation = Vector3(-8.5, 20, -5)
+	self.kacchainsaw.bipod_deploy_multiplier = 1
+	self.kacchainsaw.name_id = "bm_w_kacchainsaw"
+	self.kacchainsaw.desc_id = "bm_w_kacchainsaw_desc"
+	self.kacchainsaw.description_id = "des_kacchainsaw"
+	self.kacchainsaw.global_value = "pxp4"
+	self.kacchainsaw.texture_bundle_folder = "pxp4"
+	self.kacchainsaw.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
+	self.kacchainsaw.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
+	self.kacchainsaw.use_data = {
+		selection_index = SELECTION.PRIMARY
+	}
+	self.kacchainsaw.DAMAGE = 1
+	self.kacchainsaw.damage_falloff = FALLOFF_TEMPLATE.LMG_FALL_HIGH
+	self.kacchainsaw.CLIP_AMMO_MAX = 150
+	self.kacchainsaw.NR_CLIPS_MAX = 2
+	self.kacchainsaw.AMMO_MAX = self.kacchainsaw.CLIP_AMMO_MAX * self.kacchainsaw.NR_CLIPS_MAX
+	self.kacchainsaw.AMMO_PICKUP = self:_pickup_chance(self.kacchainsaw.AMMO_MAX, PICKUP.LMG_HIGH_CAPACITY)
+	self.kacchainsaw.FIRE_MODE = "auto"
+	self.kacchainsaw.fire_mode_data = {
+		fire_rate = 0.06
+	}
+	self.kacchainsaw.CAN_TOGGLE_FIREMODE = false
+	self.kacchainsaw.auto = {
+		fire_rate = 0.06
+	}
+	self.kacchainsaw.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight,
+		bipod = weapon_data.default_bipod_spread
+	}
+	self.kacchainsaw.kick = {
+		standing = {
+			-0.2,
+			0.8,
+			-1,
+			1.4
+		}
+	}
+	self.kacchainsaw.kick.crouching = self.kacchainsaw.kick.standing
+	self.kacchainsaw.kick.steelsight = self.kacchainsaw.kick.standing
+	self.kacchainsaw.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.kacchainsaw.crosshair.standing.offset = 0.16
+	self.kacchainsaw.crosshair.standing.moving_offset = 1
+	self.kacchainsaw.crosshair.standing.kick_offset = 0.8
+	self.kacchainsaw.crosshair.crouching.offset = 0.1
+	self.kacchainsaw.crosshair.crouching.moving_offset = 0.6
+	self.kacchainsaw.crosshair.crouching.kick_offset = 0.4
+	self.kacchainsaw.crosshair.steelsight.hidden = true
+	self.kacchainsaw.crosshair.steelsight.offset = 0
+	self.kacchainsaw.crosshair.steelsight.moving_offset = 0
+	self.kacchainsaw.crosshair.steelsight.kick_offset = 0.14
+	self.kacchainsaw.shake = {
+		fire_multiplier = 0.5,
+		fire_steelsight_multiplier = -0.5
+	}
+	self.kacchainsaw.autohit = weapon_data.autohit_lmg_default
+	self.kacchainsaw.aim_assist = weapon_data.aim_assist_lmg_default
+	self.kacchainsaw.weapon_hold = "kacchainsaw"
+	self.kacchainsaw.animations = {
+		equip_id = "equip_kacchainsaw",
+		fire = "recoil",
+		reload = "reload",
+		reload_not_empty = "reload_not_empty",
+		recoil_steelsight = true,
+		bipod_enter = "bipod_enter",
+		bipod_exit = "bipod_exit",
+		bipod_recoil = "bipod_recoil",
+		bipod_recoil_enter = "bipod_recoil",
+		bipod_recoil_loop = "bipod_recoil_loop",
+		bipod_recoil_exit = "bipod_recoil_exit",
+		thq_align_anim = "thq"
+	}
+	self.kacchainsaw.panic_suppression_chance = 0.2
+	self.kacchainsaw.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 68,
+		alert_size = 8,
+		spread = 12,
+		spread_moving = 8,
+		recoil = 7,
+		value = 9,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 3,
+		concealment = 9
+	}
+	self.kacchainsaw_flamethrower = {
+		categories = {
+			"flamethrower"
+		},
+		has_description = false,
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.kacchainsaw_flamethrower.sounds.fire = "flamethrower_fire"
+	self.kacchainsaw_flamethrower.sounds.stop_fire = "flamethrower_stop"
+	self.kacchainsaw_flamethrower.sounds.dryfire = "flamethrower_dryfire"
+	self.kacchainsaw_flamethrower.sounds.enter_steelsight = "secondary_steel_sight_enter"
+	self.kacchainsaw_flamethrower.sounds.leave_steelsight = "secondary_steel_sight_exit"
+	self.kacchainsaw_flamethrower.timers = {
+		reload_not_empty = 2.9
+	}
+	self.kacchainsaw_flamethrower.timers.reload_empty = self.kacchainsaw_flamethrower.timers.reload_not_empty
+	self.kacchainsaw_flamethrower.timers.unequip = 0.85
+	self.kacchainsaw_flamethrower.timers.equip = 0.85
+	self.kacchainsaw_flamethrower.name_id = "bm_w_kacchainsaw_flamethrower"
+	self.kacchainsaw_flamethrower.desc_id = "bm_w_kacchainsaw_flamethrower_desc"
+	self.kacchainsaw_flamethrower.description_id = "des_kacchainsaw_flamethrower"
+	self.kacchainsaw_flamethrower.global_value = "pxp4"
+	self.kacchainsaw_flamethrower.texture_bundle_folder = "pxp4"
+	self.kacchainsaw_flamethrower.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
+	self.kacchainsaw_flamethrower.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	self.kacchainsaw_flamethrower.flame_effect = "effects/payday2/particles/explosions/flamethrower"
+	self.kacchainsaw_flamethrower.use_data = {
+		selection_index = SELECTION.UNDERBARREL_PRIMARY,
+		align_place = "right_hand"
+	}
+	self.kacchainsaw_flamethrower.DAMAGE = 1
+	self.kacchainsaw_flamethrower.rays = 12
+	self.kacchainsaw_flamethrower.CLIP_AMMO_MAX = 100
+	self.kacchainsaw_flamethrower.NR_CLIPS_MAX = 2
+	self.kacchainsaw_flamethrower.AMMO_MAX = self.kacchainsaw_flamethrower.CLIP_AMMO_MAX * self.kacchainsaw_flamethrower.NR_CLIPS_MAX
+	self.kacchainsaw_flamethrower.AMMO_PICKUP = self:_pickup_chance(self.kacchainsaw_flamethrower.CLIP_AMMO_MAX, PICKUP.SNIPER_HIGH_DAMAGE)
+	self.kacchainsaw_flamethrower.FIRE_MODE = "auto"
+	self.kacchainsaw_flamethrower.fire_mode_data = {
+		fire_rate = 0.03
+	}
+	self.kacchainsaw_flamethrower.auto = {
+		fire_rate = 0.05
+	}
+	self.kacchainsaw_flamethrower.spread = {
+		standing = self.r870.spread.standing,
+		crouching = self.r870.spread.crouching,
+		steelsight = self.r870.spread.steelsight,
+		moving_standing = self.r870.spread.moving_standing,
+		moving_crouching = self.r870.spread.moving_crouching,
+		moving_steelsight = self.r870.spread.moving_steelsight
+	}
+	self.kacchainsaw_flamethrower.kick = {
+		standing = {
+			0,
+			0,
+			0,
+			0
+		}
+	}
+	self.kacchainsaw_flamethrower.kick.crouching = self.kacchainsaw_flamethrower.kick.standing
+	self.kacchainsaw_flamethrower.kick.steelsight = self.kacchainsaw_flamethrower.kick.standing
+	self.kacchainsaw_flamethrower.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.kacchainsaw_flamethrower.crosshair.standing.offset = 0.16
+	self.kacchainsaw_flamethrower.crosshair.standing.moving_offset = 0.8
+	self.kacchainsaw_flamethrower.crosshair.standing.kick_offset = 0.6
+	self.kacchainsaw_flamethrower.crosshair.standing.hidden = true
+	self.kacchainsaw_flamethrower.crosshair.crouching.offset = 0.08
+	self.kacchainsaw_flamethrower.crosshair.crouching.moving_offset = 0.7
+	self.kacchainsaw_flamethrower.crosshair.crouching.kick_offset = 0.4
+	self.kacchainsaw_flamethrower.crosshair.crouching.hidden = true
+	self.kacchainsaw_flamethrower.crosshair.steelsight.hidden = true
+	self.kacchainsaw_flamethrower.crosshair.steelsight.offset = 0
+	self.kacchainsaw_flamethrower.crosshair.steelsight.moving_offset = 0
+	self.kacchainsaw_flamethrower.crosshair.steelsight.kick_offset = 0.1
+	self.kacchainsaw_flamethrower.shake = {
+		fire_multiplier = 0,
+		fire_steelsight_multiplier = 0
+	}
+	self.kacchainsaw_flamethrower.autohit = weapon_data.autohit_shotgun_default
+	self.kacchainsaw_flamethrower.aim_assist = weapon_data.aim_assist_shotgun_default
+	self.kacchainsaw_flamethrower.animations = {
+		equip_id = "equip_flamethrower",
+		recoil_steelsight = false
+	}
+	self.kacchainsaw_flamethrower.flame_max_range = 1000
+	self.kacchainsaw_flamethrower.single_flame_effect_duration = 1
+	self.kacchainsaw_flamethrower.panic_suppression_chance = 0.2
+	self.kacchainsaw_flamethrower.fire_dot_data = {
+		dot_trigger_chance = 75,
+		dot_damage = 30,
+		dot_length = 1.6,
+		dot_trigger_max_distance = 3000,
+		dot_tick_period = 0.5
+	}
+	self.kacchainsaw_flamethrower.weapon_hold = "kacchainsaw"
+	self.kacchainsaw_flamethrower.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 7,
+		alert_size = 1,
+		spread = 1,
+		spread_moving = 6,
+		recoil = 1,
+		value = 1,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 2,
+		concealment = 7
 	}
 end
 
@@ -15435,7 +16009,7 @@ function WeaponTweakData:_init_flamethrower_mk2(weapon_data)
 	self.flamethrower_mk2.panic_suppression_chance = 0.2
 	self.flamethrower_mk2.fire_dot_data = {
 		dot_trigger_chance = 75,
-		dot_damage = 30,
+		dot_damage = 55,
 		dot_length = 1.6,
 		dot_trigger_max_distance = 3000,
 		dot_tick_period = 0.5
@@ -17355,6 +17929,7 @@ function WeaponTweakData:_init_groza(weapon_data)
 	}
 	self.groza_underbarrel.autohit = weapon_data.autohit_shotgun_default
 	self.groza_underbarrel.aim_assist = weapon_data.aim_assist_shotgun_default
+	self.groza_underbarrel.weapon_hold = "groza"
 	self.groza_underbarrel.animations = {
 		equip_id = "equip_groza_underbarrel",
 		recoil_steelsight = true
@@ -21237,6 +21812,7 @@ function WeaponTweakData:_init_contraband(weapon_data)
 	}
 	self.contraband_m203.autohit = weapon_data.autohit_shotgun_default
 	self.contraband_m203.aim_assist = weapon_data.aim_assist_shotgun_default
+	self.contraband_m203.weapon_hold = "contraband"
 	self.contraband_m203.animations = {
 		equip_id = "equip_contraband_m203",
 		recoil_steelsight = true
@@ -27954,7 +28530,7 @@ function WeaponTweakData:_init_system(weapon_data)
 	self.system.panic_suppression_chance = 0.2
 	self.system.fire_dot_data = {
 		dot_trigger_chance = 75,
-		dot_damage = 30,
+		dot_damage = 42,
 		dot_length = 1.6,
 		dot_trigger_max_distance = 3000,
 		dot_tick_period = 0.5
@@ -30695,6 +31271,31 @@ function WeaponTweakData:_create_table_structure()
 	}
 	self.hk51b_crew = {
 		usage = "is_lmg",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.awp_crew = {
+		usage = "is_sniper",
+		anim_usage = "is_rifle",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.supernova_crew = {
+		usage = "is_shotgun_pump",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.kacchainsaw_crew = {
+		usage = "is_lmg",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.kacchainsaw_flamethrower_npc = {
+		usage = "is_flamethrower",
 		sounds = {},
 		use_data = {},
 		auto = {}

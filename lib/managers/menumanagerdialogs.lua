@@ -3273,6 +3273,101 @@ function MenuManager:show_policy_seen(params)
 	managers.system_menu:show(dialog_data)
 end
 
+function MenuManager:show_accept_policy_new(params)
+	local dialog_data = {
+		title = managers.localization:text("dialog_gamesight_telemetry_title"),
+		text = managers.localization:text("dialog_license_policy_text")
+	}
+	local privacy_button = {}
+	local license_button = {}
+
+	if SystemInfo:distribution() == Idstring("STEAM") then
+		privacy_button.text = managers.localization:text("dialog_privacy")
+		privacy_button.no_close = true
+
+		function privacy_button.callback_func()
+			if MenuCallbackHandler:is_overlay_enabled() then
+				Steam:overlay_activate("url", tweak_data.gui.privacy_webpage)
+			else
+				managers.menu:show_enable_steam_overlay()
+			end
+		end
+
+		license_button.text = managers.localization:text("dialog_license")
+		license_button.no_close = true
+
+		function license_button.callback_func()
+			if MenuCallbackHandler:is_overlay_enabled() then
+				Steam:overlay_activate("url", tweak_data.gui.license_webpage)
+			else
+				managers.menu:show_enable_steam_overlay()
+			end
+		end
+	end
+
+	local accept_button = {
+		text = managers.localization:text("dialog_accept"),
+		callback_func = params.accept_func
+	}
+	local deny_button = {
+		text = managers.localization:text("dialog_decline"),
+		callback_func = params.deny_func,
+		cancel_button = true
+	}
+	dialog_data.button_list = {
+		privacy_button,
+		license_button,
+		accept_button,
+		deny_button
+	}
+
+	managers.system_menu:show(dialog_data)
+end
+
+function MenuManager:show_accept_telemetry_new(params)
+	local dialog_data = {
+		title = managers.localization:text("dialog_telemetry_title_new"),
+		text = managers.localization:text("dialog_telemetry_text")
+	}
+	local accept_button = {
+		text = managers.localization:text("dialog_telemetry_toggle"),
+		callback_func = params.accept_func
+	}
+	local deny_button = {
+		text = managers.localization:text("dialog_telemetry_toggle_off"),
+		callback_func = params.deny_func,
+		cancel_button = true
+	}
+	dialog_data.button_list = {
+		accept_button,
+		deny_button
+	}
+
+	managers.system_menu:show(dialog_data)
+end
+
+function MenuManager:show_accept_gamesight_new(params)
+	local dialog_data = {
+		title = managers.localization:text("dialog_gamesight_title"),
+		text = managers.localization:text("dialog_gamesight_text")
+	}
+	local accept_button = {
+		text = managers.localization:text("dialog_gamesight_toggle"),
+		callback_func = params.accept_func
+	}
+	local deny_button = {
+		text = managers.localization:text("dialog_gamesight_toggle_off"),
+		callback_func = params.deny_func,
+		cancel_button = true
+	}
+	dialog_data.button_list = {
+		accept_button,
+		deny_button
+	}
+
+	managers.system_menu:show(dialog_data)
+end
+
 function MenuManager:show_accept_telemetry(params)
 	local dialog_data = {
 		title = managers.localization:text("dialog_telemetry_title"),
@@ -3301,4 +3396,19 @@ function MenuManager:show_accept_telemetry(params)
 	}
 
 	managers.system_menu:show_document(dialog_data)
+end
+
+function MenuManager:show_lron_dialog(params)
+	local dialog_data = {
+		title = managers.localization:text("dialog_lron_event_title"),
+		text = managers.localization:text("dialog_lron_event_text")
+	}
+	local ok_button = {
+		text = managers.localization:text("dialog_ok")
+	}
+	dialog_data.button_list = {
+		ok_button
+	}
+
+	managers.system_menu:show(dialog_data)
 end

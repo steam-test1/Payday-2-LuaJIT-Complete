@@ -127,3 +127,86 @@ function WeaponUnderbarrelShotgunRaycast:_build_suppression(weapon, enemies_in_c
 
 	return true
 end
+
+WeaponUnderbarrelFlamethrower = WeaponUnderbarrelFlamethrower or class(WeaponUnderbarrelRaycast)
+
+mixin(WeaponUnderbarrelFlamethrower, NewRaycastWeaponBase)
+mixin(WeaponUnderbarrelFlamethrower, NewFlamethrowerBase)
+
+function WeaponUnderbarrelFlamethrower:init(unit)
+	self._blueprint = {}
+	self._parts = {}
+
+	WeaponUnderbarrel.init(self, unit)
+	NewFlamethrowerBase.init(self, unit)
+end
+
+function WeaponUnderbarrelFlamethrower:_fire_raycast(weapon_base, user_unit, from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul, shoot_through_data)
+	return NewFlamethrowerBase._fire_raycast(self, user_unit, from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul, shoot_through_data)
+end
+
+function WeaponUnderbarrelFlamethrower:_check_alert(weapon, rays, fire_pos, direction, user_unit)
+	NewFlamethrowerBase._check_alert(self, rays, fire_pos, direction, user_unit)
+
+	return true
+end
+
+function WeaponUnderbarrelFlamethrower:_build_suppression(weapon, enemies_in_cone, suppr_mul)
+	NewFlamethrowerBase._build_suppression(self, enemies_in_cone, suppr_mul)
+
+	return true
+end
+
+function WeaponUnderbarrelFlamethrower:_spawn_muzzle_effect()
+	return false
+end
+
+function WeaponUnderbarrelFlamethrower:_spawn_shell_eject_effect()
+	return false
+end
+
+function WeaponUnderbarrelFlamethrower:_get_tweak_data_weapon_animation(anim)
+	return WeaponUnderbarrel._get_tweak_data_weapon_animation(self, anim)
+end
+
+function WeaponUnderbarrelFlamethrower:reload_prefix()
+	return WeaponUnderbarrel.reload_prefix(self)
+end
+
+function WeaponUnderbarrelFlamethrower:_check_state(current_state)
+	WeaponUnderbarrelRaycast._check_state(self, current_state)
+
+	self._enabled = self._on
+
+	if self._enabled then
+		self:on_enabled()
+	else
+		self:on_disabled()
+	end
+end
+
+function WeaponUnderbarrelFlamethrower:_get_sound_event(weapon, event, alternative_event)
+	return WeaponUnderbarrel._get_sound_event(self, weapon, event, alternative_event)
+end
+
+function WeaponUnderbarrelFlamethrower:start_shooting(weapon)
+	self._next_fire_allowed = math.max(self._next_fire_allowed, self._unit:timer():time())
+	self._shooting = true
+	self._bullets_fired = 0
+end
+
+function WeaponUnderbarrelFlamethrower:tweak_data_anim_play(...)
+	Application:error("WeaponUnderbarrelFlamethrower:tweak_data_anim_play", ...)
+end
+
+function WeaponUnderbarrelFlamethrower:tweak_data_anim_play_at_end(...)
+	Application:error("WeaponUnderbarrelFlamethrower:tweak_data_anim_play_at_end", ...)
+end
+
+function WeaponUnderbarrelFlamethrower:tweak_data_anim_stop(...)
+	Application:error("WeaponUnderbarrelFlamethrower:tweak_data_anim_stop", ...)
+end
+
+function WeaponUnderbarrelFlamethrower:tweak_data_anim_is_playing(...)
+	Application:error("WeaponUnderbarrelFlamethrower:tweak_data_anim_is_playing", ...)
+end

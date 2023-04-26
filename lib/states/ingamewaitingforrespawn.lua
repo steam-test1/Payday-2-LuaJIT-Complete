@@ -186,8 +186,11 @@ function IngameWaitingForRespawnState.request_player_spawn(peer_to_spawn)
 	local player_unit = managers.player:player_unit()
 
 	if player_unit then
-		managers.hud:set_teammate_weapon_firemode(HUDManager.PLAYER_PANEL, 1, player_unit:inventory():unit_by_selection(1):base():fire_mode())
-		managers.hud:set_teammate_weapon_firemode(HUDManager.PLAYER_PANEL, 2, player_unit:inventory():unit_by_selection(2):base():fire_mode())
+		local first_base_ext = player_unit:inventory():unit_by_selection(1):base()
+		local second_base_ext = player_unit:inventory():unit_by_selection(2):base()
+
+		managers.hud:set_teammate_weapon_firemode(HUDManager.PLAYER_PANEL, 1, first_base_ext:fire_mode(), first_base_ext:alt_fire_active())
+		managers.hud:set_teammate_weapon_firemode(HUDManager.PLAYER_PANEL, 2, second_base_ext:fire_mode(), second_base_ext:alt_fire_active())
 	end
 end
 

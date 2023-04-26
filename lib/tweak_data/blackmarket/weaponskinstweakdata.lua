@@ -40367,4 +40367,140 @@ function BlackMarketTweakData:_setup_weapon_color_skins(tweak_data)
 		pattern_default = Idstring("units/pd2_dlc_tma1/weapon_colors/pattern/tma1_pattern_01"),
 		gradient_default = Idstring("units/pd2_dlc_tma1/weapon_colors/pattern_gradient/tma1_gradient_01_df")
 	})
+	self:create_new_color_skin("color_pxp4_01", {
+		texture_bundle_folder = "pxp4",
+		global_value = "normal",
+		sort_number = 1,
+		global_value_category = "collectable",
+		color = Color("1e1e1e")
+	}, {
+		base_default = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_default"),
+		base_metal = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_metal"),
+		base_plastic = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_plastic"),
+		base_half = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half"),
+		base_half_02 = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half_02"),
+		base_detail = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_details"),
+		base_variation = Idstring("units/pd2_dlc_wcs/weapon_colors/base_gradient/wcs_black_df"),
+		pattern_default = Idstring("units/pd2_dlc_pxp4/weapon_colors/pattern/pxp4_pattern_01_df"),
+		gradient_default = Idstring("units/pd2_dlc_pxp4/weapon_colors/pattern_gradient/pxp4_gradient_01_df")
+	})
+	self:create_new_color_skin("color_pxp4_02", {
+		texture_bundle_folder = "pxp4",
+		global_value = "normal",
+		sort_number = 2,
+		global_value_category = "collectable",
+		color = Color("1e1e1e")
+	}, {
+		base_default = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_default"),
+		base_metal = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_metal"),
+		base_plastic = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_plastic"),
+		base_half = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half"),
+		base_half_02 = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half_02"),
+		base_detail = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_details"),
+		base_variation = Idstring("units/pd2_dlc_wcs/weapon_colors/base_gradient/wcs_black_df"),
+		pattern_default = Idstring("units/pd2_dlc_pxp4/weapon_colors/pattern/pxp4_pattern_02_df"),
+		gradient_default = Idstring("units/pd2_dlc_pxp4/weapon_colors/pattern_gradient/pxp4_gradient_02_df")
+	})
+	self:create_new_color_skin("color_pxp4_03", {
+		texture_bundle_folder = "pxp4",
+		global_value = "normal",
+		sort_number = 3,
+		global_value_category = "collectable",
+		color = Color("1e1e1e")
+	}, {
+		base_default = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_default"),
+		base_metal = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_metal"),
+		base_plastic = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_plastic"),
+		base_half = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half"),
+		base_half_02 = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half_02"),
+		base_detail = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_details"),
+		base_variation = Idstring("units/pd2_dlc_wcs/weapon_colors/base_gradient/wcs_black_df"),
+		pattern_default = Idstring("units/pd2_dlc_pxp4/weapon_colors/pattern/pxp4_pattern_03_df"),
+		gradient_default = Idstring("units/pd2_dlc_pxp4/weapon_colors/pattern_gradient/pxp4_gradient_03_df")
+	})
+	self:create_new_color_skin("color_pxp4_04", {
+		texture_bundle_folder = "pxp4",
+		global_value = "normal",
+		sort_number = 4,
+		global_value_category = "collectable",
+		color = Color("1e1e1e")
+	}, {
+		base_default = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_default"),
+		base_metal = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_metal"),
+		base_plastic = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_plastic"),
+		base_half = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half"),
+		base_half_02 = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half_02"),
+		base_detail = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_details"),
+		base_variation = Idstring("units/pd2_dlc_wcs/weapon_colors/base_gradient/wcs_black_df"),
+		pattern_default = Idstring("units/pd2_dlc_pxp4/weapon_colors/pattern/pxp4_pattern_04_df"),
+		gradient_default = Idstring("units/pd2_dlc_pxp4/weapon_colors/pattern_gradient/pxp4_gradient_04_df")
+	})
+	self:create_new_color_skin("color_pxp4_05", {
+		texture_bundle_folder = "pxp4",
+		global_value = "normal",
+		sort_number = 5,
+		global_value_category = "collectable",
+		color = Color("1e1e1e")
+	}, {
+		base_default = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_default"),
+		base_metal = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_metal"),
+		base_plastic = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_plastic"),
+		base_half = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half"),
+		base_half_02 = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half_02"),
+		base_detail = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_details"),
+		base_variation = Idstring("units/pd2_dlc_wcs/weapon_colors/base_gradient/wcs_black_df"),
+		pattern_default = Idstring("units/pd2_dlc_pxp4/weapon_colors/pattern/pxp4_pattern_05_df"),
+		gradient_default = Idstring("units/pd2_dlc_pxp4/weapon_colors/pattern_gradient/pxp4_gradient_05_df")
+	})
+	self:create_new_color_skin("color_pxp4_06", {
+		texture_bundle_folder = "pxp4",
+		global_value = "normal",
+		sort_number = 6,
+		global_value_category = "collectable",
+		color = Color("1e1e1e")
+	}, {
+		base_default = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_default"),
+		base_metal = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_metal"),
+		base_plastic = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_plastic"),
+		base_half = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half"),
+		base_half_02 = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half_02"),
+		base_detail = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_details"),
+		base_variation = Idstring("units/pd2_dlc_wcs/weapon_colors/base_gradient/wcs_black_df"),
+		pattern_default = Idstring("units/pd2_dlc_pxp4/weapon_colors/pattern/pxp4_pattern_06_df"),
+		gradient_default = Idstring("units/pd2_dlc_pxp4/weapon_colors/pattern_gradient/pxp4_gradient_06_df")
+	})
+	self:create_new_color_skin("color_pxp4_07", {
+		texture_bundle_folder = "pxp4",
+		global_value = "normal",
+		sort_number = 7,
+		global_value_category = "collectable",
+		color = Color("1e1e1e")
+	}, {
+		base_default = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_default"),
+		base_metal = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_metal"),
+		base_plastic = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_plastic"),
+		base_half = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half"),
+		base_half_02 = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half_02"),
+		base_detail = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_details"),
+		base_variation = Idstring("units/pd2_dlc_wcs/weapon_colors/base_gradient/wcs_black_df"),
+		pattern_default = Idstring("units/pd2_dlc_pxp4/weapon_colors/pattern/pxp4_pattern_07_df"),
+		gradient_default = Idstring("units/pd2_dlc_pxp4/weapon_colors/pattern_gradient/pxp4_gradient_07_df")
+	})
+	self:create_new_color_skin("color_pxp4_08", {
+		texture_bundle_folder = "pxp4",
+		global_value = "normal",
+		sort_number = 8,
+		global_value_category = "collectable",
+		color = Color("1e1e1e")
+	}, {
+		base_default = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_default"),
+		base_metal = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_metal"),
+		base_plastic = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_plastic"),
+		base_half = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half"),
+		base_half_02 = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_half_02"),
+		base_detail = Idstring("units/pd2_dlc_wcc/weapon_colors/base_gradient/base_gradient_wcc_pattern_details"),
+		base_variation = Idstring("units/pd2_dlc_wcs/weapon_colors/base_gradient/wcs_black_df"),
+		pattern_default = Idstring("units/pd2_dlc_pxp4/weapon_colors/pattern/pxp4_pattern_08_df"),
+		gradient_default = Idstring("units/pd2_dlc_pxp4/weapon_colors/pattern_gradient/pxp4_gradient_08_df")
+	})
 end

@@ -13,6 +13,14 @@ function WeaponAmmo:weapon_tweak_data()
 	return tweak_data.weapon[self._name_id]
 end
 
+function WeaponAmmo:ammo_data()
+	return self._ammo_data
+end
+
+function WeaponAmmo:set_ammo_data(ammo_data)
+	self._ammo_data = ammo_data
+end
+
 function WeaponAmmo:digest_value(value, digest)
 	if self._digest_values then
 		return Application:digest_value(value, digest)

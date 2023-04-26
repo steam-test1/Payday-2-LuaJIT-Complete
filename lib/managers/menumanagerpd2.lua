@@ -270,6 +270,14 @@ function MenuCallbackHandler:got_completed_story_mission()
 	return current.completed and not current.rewarded
 end
 
+function MenuCallbackHandler:show_leakedrecording()
+	return true
+end
+
+function MenuCallbackHandler:show_leakedrecording_glow()
+	return false
+end
+
 function MenuCallbackHandler:show_side_job_menu_icon()
 	local all_challenges = {}
 

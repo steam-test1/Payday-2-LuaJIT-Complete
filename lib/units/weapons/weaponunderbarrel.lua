@@ -18,6 +18,9 @@ function WeaponUnderbarrel:setup_data(setup_data, damage_multiplier, ammo_data)
 	self._alert_fires = {}
 	self._autoaim = setup_data.autoaim
 	self._setup = setup_data
+	self._ammo_data = ammo_data or {}
+
+	self._ammo:set_ammo_data(self._ammo_data)
 end
 
 function WeaponUnderbarrel:_update_stats_values()

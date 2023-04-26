@@ -2,6 +2,7 @@ ShieldBase = ShieldBase or class(UnitBase)
 
 function ShieldBase:init(unit)
 	ShieldBase.super.init(self, unit, false)
+	self:_setup_priority_bodies()
 end
 
 function ShieldBase:get_use_data()
@@ -9,6 +10,35 @@ function ShieldBase:get_use_data()
 end
 
 function ShieldBase:request_use(t)
+end
+
+function ShieldBase:_setup_priority_bodies()
+	if self._priority_bodies then
+		self._priority_bodies_ids = {}
+
+		for body_name, priority in pairs(self._priority_bodies) do
+			self._priority_bodies_ids[Idstring(body_name):key()] = priority
+		end
+	end
+end
+
+function ShieldBase:chk_body_hit_priority(old_body_hit, new_body_hit)
+	if not self._priority_bodies_ids then
+		return false
+	end
+
+	local old_body_prio = self._priority_bodies_ids[old_body_hit:name():key()]
+	local new_body_prio = self._priority_bodies_ids[new_body_hit:name():key()]
+
+	if not old_body_prio then
+		if new_body_prio then
+			return true
+		end
+	elseif new_body_prio and new_body_prio < old_body_prio then
+		return true
+	end
+
+	return false
 end
 
 SyncedShieldBase = SyncedShieldBase or class(ShieldBase)
@@ -35,8 +65,20 @@ function SyncedShieldBase:load(data)
 	SyncedShieldBase.super.load(self, data)
 
 	if data.SyncedShieldBase and data.SyncedShieldBase.register_dropped_shield then
-		self._unit:set_enabled(true)
-		managers.enemy:register_shield(self._unit)
+		call_on_next_update(function ()
+			if not alive(self._unit) then
+				return
+			end
+
+			local u_dmg = self._unit:damage()
+
+			if u_dmg and u_dmg:has_sequence("enable_body") then
+				u_dmg:run_sequence_simple("enable_body")
+			end
+
+			self._unit:set_enabled(true)
+			managers.enemy:register_shield(self._unit)
+		end)
 	end
 end
 
@@ -145,6 +187,18 @@ function ShieldFlashBase:request_use(t)
 	return self._flash_charge_cooldown_t
 end
 
+function ShieldFlashBase:chk_body_hit_priority(old_body_hit, new_body_hit)
+	if self._charge_upd_enabled and self._priority_counter_body_ids_key then
+		if old_body_hit:name():key() ~= self._priority_counter_body_ids_key and new_body_hit:name():key() == self._priority_counter_body_ids_key then
+			return true
+		end
+
+		return false
+	end
+
+	return self.super.chk_body_hit_priority(self, old_body_hit, new_body_hit)
+end
+
 function ShieldFlashBase:sync_net_event(event_id)
 	if event_id == self._NET_EVENTS.start_flash then
 		self:_start_flash()
@@ -167,9 +221,13 @@ function ShieldFlashBase:_flash()
 	end
 end
 
-function ShieldFlashBase:clbk_seq_flash_start(parent_obj)
+function ShieldFlashBase:clbk_seq_flash_start(parent_obj, priority_counter_body)
 	if self:is_charging() then
 		return
+	end
+
+	if alive(priority_counter_body) then
+		self._priority_counter_body_ids_key = priority_counter_body:name():key()
 	end
 
 	if parent_obj and parent_obj ~= self._effect_parent_obj then
@@ -218,6 +276,7 @@ function ShieldFlashBase:clbk_seq_flash(pos, dir)
 
 	if self._charge_upd_enabled then
 		self._charge_upd_enabled = nil
+		self._priority_counter_body_ids_key = nil
 
 		self._unit:set_extension_update_enabled(Idstring("base"), false)
 	end
@@ -263,6 +322,7 @@ function ShieldFlashBase:clbk_seq_chk_interrupt_flash(parent_obj)
 	end
 
 	self._charge_upd_enabled = nil
+	self._priority_counter_body_ids_key = nil
 
 	self._unit:set_extension_update_enabled(Idstring("base"), false)
 
@@ -448,6 +508,7 @@ function ShieldFlashBase:pre_destroy(...)
 	ShieldFlashBase.super.pre_destroy(self, ...)
 
 	self._charge_upd_enabled = nil
+	self._priority_counter_body_ids_key = nil
 
 	self:destroy_light()
 	self:destroy_sound_source()
@@ -457,6 +518,7 @@ function ShieldFlashBase:destroy(...)
 	ShieldFlashBase.super.destroy(self, ...)
 
 	self._charge_upd_enabled = nil
+	self._priority_counter_body_ids_key = nil
 
 	self:destroy_light()
 	self:destroy_sound_source()

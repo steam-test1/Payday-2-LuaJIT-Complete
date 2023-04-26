@@ -8489,6 +8489,53 @@ function DLCTweakData:init(tweak_data)
 			amount = 1
 		}
 	}
+	self.pxp4_starter_pack = {
+		free = true,
+		content = {}
+	}
+	self.pxp4_starter_pack.content.loot_global_value = "normal"
+	self.pxp4_starter_pack.content.loot_drops = {
+		{
+			type_items = "weapon_skins",
+			item_entry = "color_pxp4_01",
+			amount = 1
+		},
+		{
+			type_items = "weapon_skins",
+			item_entry = "color_pxp4_02",
+			amount = 1
+		},
+		{
+			type_items = "weapon_skins",
+			item_entry = "color_pxp4_03",
+			amount = 1
+		},
+		{
+			type_items = "weapon_skins",
+			item_entry = "color_pxp4_04",
+			amount = 1
+		},
+		{
+			type_items = "weapon_skins",
+			item_entry = "color_pxp4_05",
+			amount = 1
+		},
+		{
+			type_items = "weapon_skins",
+			item_entry = "color_pxp4_06",
+			amount = 1
+		},
+		{
+			type_items = "weapon_skins",
+			item_entry = "color_pxp4_07",
+			amount = 1
+		},
+		{
+			type_items = "weapon_skins",
+			item_entry = "color_pxp4_08",
+			amount = 1
+		}
+	}
 	self.sbzac_elegantteeth = {
 		content = {}
 	}

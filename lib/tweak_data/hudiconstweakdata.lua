@@ -354,6 +354,24 @@ function HudIconsTweakData:init()
 			18
 		}
 	}
+	self.firemode_single_alt = {
+		texture = "guis/dlcs/pxp4/textures/pd2/hud_fireselector_supernova",
+		texture_rect = {
+			2,
+			0,
+			8,
+			18
+		}
+	}
+	self.firemode_alt_single = {
+		texture = "guis/dlcs/pxp4/textures/pd2/hud_fireselector_supernova",
+		texture_rect = {
+			12,
+			0,
+			8,
+			18
+		}
+	}
 	self.loading = {
 		texture = "guis/textures/hud_icons",
 		texture_rect = {
@@ -11414,6 +11432,7 @@ function HudIconsTweakData:init()
 	self.sidebar_filters = self:create_next_icon(sidebar_atlas)
 	self.sidebar_question = self:create_next_icon(sidebar_atlas)
 	self.sidebar_quickplay = self:create_next_icon(sidebar_atlas)
+	self.sidebar_leakedrecording = self:create_next_icon(sidebar_atlas)
 	self.sidebar_skirmish = {
 		texture = "guis/dlcs/skm/textures/pd2/crimenet/crimenet_sidebar_icon_skm",
 		texture_rect = {

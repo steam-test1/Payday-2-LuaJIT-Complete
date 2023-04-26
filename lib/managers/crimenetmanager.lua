@@ -2213,6 +2213,13 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 		end
 	end
 
+	local player_rank = managers.experience:current_rank()
+
+	if player_rank >= 1 or player_level >= 20 then
+		print("SimonLaunchExplanation")
+		managers.features:announce_feature("lron_event_explanation")
+	end
+
 	managers.challenge:fetch_challenges()
 end
 

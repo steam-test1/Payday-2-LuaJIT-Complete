@@ -314,6 +314,9 @@ function MenuSceneManager:_init_lobby_poses()
 		},
 		m134 = {
 			"lobby_minigun_idle1"
+		},
+		kacchainsaw = {
+			"lobby_idle_minigun_2"
 		}
 	}
 end

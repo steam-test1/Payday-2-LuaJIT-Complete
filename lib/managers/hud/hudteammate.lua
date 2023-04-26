@@ -1130,6 +1130,10 @@ function HUDTeammate:_create_primary_weapon_firemode()
 			single_id = string.format("firemode_%s_%s", firemode_single_key, firemode_auto_key)
 		end
 
+		if weapon_tweak_data.alt_fire_data then
+			single_id = string.format("firemode_%s_%s", fire_mode, "alt")
+		end
+
 		local texture, texture_rect = tweak_data.hud_icons:get_icon_data(single_id)
 		local firemode_single = weapon_selection_panel:bitmap({
 			name = "firemode_single",
@@ -1149,6 +1153,10 @@ function HUDTeammate:_create_primary_weapon_firemode()
 			local firemode_single_key = toggable_fire_modes[1] or "single"
 			local firemode_auto_key = toggable_fire_modes[2] or "auto"
 			auto_id = string.format("firemode_%s_%s", firemode_auto_key, firemode_single_key)
+		end
+
+		if weapon_tweak_data.alt_fire_data then
+			auto_id = string.format("firemode_%s_%s", "alt", fire_mode)
 		end
 
 		local texture, texture_rect = tweak_data.hud_icons:get_icon_data(auto_id)
@@ -1218,6 +1226,10 @@ function HUDTeammate:_create_secondary_weapon_firemode()
 			single_id = string.format("firemode_%s_%s", firemode_single_key, firemode_auto_key)
 		end
 
+		if weapon_tweak_data.alt_fire_data then
+			single_id = string.format("firemode_%s_%s", fire_mode, "alt")
+		end
+
 		local texture, texture_rect = tweak_data.hud_icons:get_icon_data(single_id)
 		local firemode_single = weapon_selection_panel:bitmap({
 			name = "firemode_single",
@@ -1237,6 +1249,10 @@ function HUDTeammate:_create_secondary_weapon_firemode()
 			local firemode_single_key = toggable_fire_modes[1] or "single"
 			local firemode_auto_key = toggable_fire_modes[2] or "auto"
 			auto_id = string.format("firemode_%s_%s", firemode_auto_key, firemode_single_key)
+		end
+
+		if weapon_tweak_data.alt_fire_data then
+			auto_id = string.format("firemode_%s_%s", "alt", fire_mode)
 		end
 
 		local texture, texture_rect = tweak_data.hud_icons:get_icon_data(auto_id)
@@ -1565,6 +1581,16 @@ function HUDTeammate:set_weapon_firemode(id, firemode, ...)
 
 		if firemode_mapping then
 			firemode = firemode_mapping[firemode] or firemode
+		end
+
+		local is_alt = select(1, ...)
+
+		if is_alt then
+			if firemode == "single" then
+				firemode = "auto"
+			else
+				firemode = "single"
+			end
 		end
 
 		if alive(firemode_single) and alive(firemode_auto) then

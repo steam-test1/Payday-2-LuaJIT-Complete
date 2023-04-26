@@ -24,6 +24,18 @@ for body_name, distance in pairs(impact_body_distance_tmp) do
 end
 
 impact_body_distance_tmp = nil
+local bodies_tmp = {
+	[Idstring("head"):key()] = 1,
+	[Idstring("body_helmet_plate"):key()] = 2,
+	[Idstring("body_helmet_glass"):key()] = 2,
+	[Idstring("body_armor_chest"):key()] = 3,
+	[Idstring("body_armor_stomache"):key()] = 3,
+	[Idstring("body_armor_back"):key()] = 3,
+	[Idstring("body_armor_throat"):key()] = 3,
+	[Idstring("body_armor_neck"):key()] = 3
+}
+TankCopDamage._priority_bodies_ids = bodies_tmp
+bodies_tmp = nil
 
 function TankCopDamage:init(...)
 	TankCopDamage.super.init(self, ...)

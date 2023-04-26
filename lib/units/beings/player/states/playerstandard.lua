@@ -384,6 +384,10 @@ function PlayerStandard:is_second_sight_on()
 	return self._equipped_unit and self._equipped_unit:base():is_second_sight_on()
 end
 
+function PlayerStandard:second_sight_use_steelsight_unit()
+	return self._equipped_unit and self._equipped_unit:base():second_sight_use_steelsight_unit()
+end
+
 function PlayerStandard:is_reticle_aim()
 	return self._state_data.reticle_obj and self._camera_unit:base():is_stance_done() and not self._equipped_unit:base():is_second_sight_on()
 end
@@ -1128,6 +1132,12 @@ function PlayerStandard:_stance_entered(unequipped)
 	misc_attribs = (not self:_is_using_bipod() or self:_is_throwing_projectile() or stances.bipod) and (self._state_data.in_steelsight and stances.steelsight or self._state_data.ducking and stances.crouched or stances.standard)
 	local duration = tweak_data.player.TRANSITION_DURATION + (self._equipped_unit:base():transition_duration() or 0)
 	local duration_multiplier = self._state_data.in_steelsight and 1 / self._equipped_unit:base():enter_steelsight_speed_multiplier() or 1
+
+	if self._instant_stance_transition then
+		self._instant_stance_transition = nil
+		duration_multiplier = 0
+	end
+
 	local new_fov = self:get_zoom_fov(misc_attribs) + 0
 
 	self._camera_unit:base():clbk_stance_entered(misc_attribs.shoulders, head_stance, misc_attribs.vel_overshot, new_fov, misc_attribs.shakers, stance_mod, duration_multiplier, duration)
@@ -2036,7 +2046,9 @@ function PlayerStandard:_check_action_weapon_firemode(t, input)
 			self:_check_stop_shooting()
 
 			if self._equipped_unit:base():toggle_firemode() then
-				managers.hud:set_teammate_weapon_firemode(HUDManager.PLAYER_PANEL, self._unit:inventory():equipped_selection(), self._equipped_unit:base():fire_mode())
+				local base_ext = self._equipped_unit:base()
+
+				managers.hud:set_teammate_weapon_firemode(HUDManager.PLAYER_PANEL, self._unit:inventory():equipped_selection(), base_ext:fire_mode(), base_ext:alt_fire_active())
 			end
 		end
 	end
@@ -3944,7 +3956,10 @@ function PlayerStandard:_check_action_deploy_underbarrel(t, input)
 
 			if alive(self._equipped_unit) then
 				managers.hud:set_ammo_amount(self._equipped_unit:base():selection_index(), self._equipped_unit:base():ammo_info())
-				managers.hud:set_teammate_weapon_firemode(HUDManager.PLAYER_PANEL, self._unit:inventory():equipped_selection(), self._equipped_unit:base():fire_mode())
+
+				local base_ext = self._equipped_unit:base()
+
+				managers.hud:set_teammate_weapon_firemode(HUDManager.PLAYER_PANEL, self._unit:inventory():equipped_selection(), base_ext:fire_mode(), base_ext:alt_fire_active())
 			end
 
 			managers.network:session():send_to_peers_synched("sync_underbarrel_switch", self._equipped_unit:base():selection_index(), underbarrel_name_id, underbarrel_state)
@@ -4406,6 +4421,10 @@ function PlayerStandard:_check_action_primary_attack(t, input)
 							elseif weap_tweak_data.animations.recoil_steelsight then
 								state = self._ext_camera:play_redirect(weap_base:is_second_sight_on() and self:get_animation("recoil") or self:get_animation("recoil_steelsight"), 1)
 							end
+
+							if state then
+								self._camera_unit:anim_state_machine():set_parameter(state, "alt_weight", self._equipped_unit:base():alt_fire_active() and 1 or 0)
+							end
 						end
 
 						local recoil_multiplier = (weap_base:recoil() + weap_base:recoil_addend()) * weap_base:recoil_multiplier()
@@ -4707,6 +4726,55 @@ function PlayerStandard:_get_swap_speed_multiplier()
 end
 
 function PlayerStandard:_start_action_unequip_weapon(t, data)
+	local selection_wanted = data.selection_wanted
+
+	if data.next then
+		local _, next_selection = self._ext_inventory:get_next_selection()
+		selection_wanted = next_selection
+	elseif data.previous then
+		local _, previous_selection = self._ext_inventory:get_previous_selection()
+		selection_wanted = previous_selection
+	end
+
+	local want_instant_secondary = selection_wanted == 1 and managers.player:has_active_temporary_property("intant_swap_to_secondary")
+	local want_instant_primary = selection_wanted == 2 and managers.player:has_active_temporary_property("intant_swap_to_primary")
+
+	if want_instant_secondary or want_instant_primary then
+		local weap_base = self._equipped_unit:base()
+
+		weap_base:tweak_data_anim_stop("equip")
+		self:_interupt_action_charging_weapon(t)
+		self:_interupt_action_reload(t)
+
+		if weap_base.manages_steelsight and weap_base:manages_steelsight() then
+			self:_interupt_action_steelsight(t)
+		end
+
+		managers.player:remove_temporary_property("intant_swap_to_secondary")
+		managers.player:remove_temporary_property("intant_swap_to_primary")
+
+		local select_equip = self._ext_inventory:get_selected(selection_wanted)
+		select_equip = select_equip and select_equip.unit
+
+		if select_equip then
+			if select_equip:base() and select_equip:base().manages_steelsight and select_equip:base():manages_steelsight() then
+				self:_interupt_action_steelsight(t)
+			end
+
+			local state = self:_is_underbarrel_attachment_active(select_equip) and "underbarrel" or "standard"
+
+			self:set_animation_state(state)
+		end
+
+		self._instant_stance_transition = true
+
+		self._ext_inventory:equip_selection(selection_wanted, true)
+		self._ext_camera:play_redirect(self:get_animation("idle"))
+		managers.upgrades:setup_current_weapon()
+
+		return
+	end
+
 	local speed_multiplier = self:_get_swap_speed_multiplier()
 
 	self._equipped_unit:base():tweak_data_anim_stop("equip")

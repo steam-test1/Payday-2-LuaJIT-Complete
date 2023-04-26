@@ -242,6 +242,9 @@ function PlayerManager:check_skills()
 	self:set_property("primary_reload_secondary_kills", 0)
 	self:set_property("secondary_reload_primary_kills", 0)
 
+	self._has_primary_reload_swap_secondary = self:has_category_upgrade("weapon", "primary_reload_swap_secondary")
+	self._has_secondary_reload_swap_primary = self:has_category_upgrade("weapon", "secondary_reload_swap_primary")
+
 	if self:has_category_upgrade("player", "dodge_ricochet_bullets") then
 		local hit_chance = self:upgrade_value("player", "dodge_ricochet_bullets")[1]
 		local cooldown = self:upgrade_value("player", "dodge_ricochet_bullets")[2]
@@ -608,6 +611,10 @@ end
 
 function PlayerManager:activate_temporary_property(name, time, value)
 	self._temporary_properties:activate_property(name, time, value)
+end
+
+function PlayerManager:remove_temporary_property(name)
+	self._temporary_properties:remove_property(name)
 end
 
 function PlayerManager:add_to_temporary_property(name, time, value)
@@ -1128,8 +1135,11 @@ function PlayerManager:spawned_player(id, unit)
 	self:_change_player_state()
 
 	if id == 1 then
-		managers.hud:set_teammate_weapon_firemode(HUDManager.PLAYER_PANEL, 1, unit:inventory():unit_by_selection(1):base():fire_mode())
-		managers.hud:set_teammate_weapon_firemode(HUDManager.PLAYER_PANEL, 2, unit:inventory():unit_by_selection(2):base():fire_mode())
+		local first_base_ext = unit:inventory():unit_by_selection(1):base()
+		local second_base_ext = unit:inventory():unit_by_selection(2):base()
+
+		managers.hud:set_teammate_weapon_firemode(HUDManager.PLAYER_PANEL, 1, first_base_ext:fire_mode(), first_base_ext:alt_fire_active())
+		managers.hud:set_teammate_weapon_firemode(HUDManager.PLAYER_PANEL, 2, second_base_ext:fire_mode(), second_base_ext:alt_fire_active())
 
 		local grenade_cooldown = tweak_data.blackmarket.projectiles[managers.blackmarket:equipped_grenade()].base_cooldown
 
@@ -1356,6 +1366,9 @@ function PlayerManager:on_killshot(killed_unit, variant, headshot, weapon_id)
 	local selection_index = equipped_unit and equipped_unit:base() and equipped_unit:base():selection_index() or 0
 	local update_secondary_reload_primary = selection_index == 1 and self._has_secondary_reload_primary
 	local update_primary_reload_secondary = selection_index == 2 and self._has_primary_reload_secondary
+	local equipped_weapon_id = equipped_unit and equipped_unit:base() and equipped_unit:base():get_name_id()
+	update_secondary_reload_primary = update_secondary_reload_primary and weapon_id == equipped_weapon_id
+	update_primary_reload_secondary = update_primary_reload_secondary and weapon_id == equipped_weapon_id
 
 	if update_secondary_reload_primary then
 		local kills_to_reload = self:upgrade_value("player", "secondary_reload_primary", 10)
@@ -1370,6 +1383,13 @@ function PlayerManager:on_killshot(killed_unit, variant, headshot, weapon_id)
 				primary_base:on_reload()
 				managers.statistics:reloaded()
 				managers.hud:set_ammo_amount(primary_base:selection_index(), primary_base:ammo_info())
+				player_unit:sound():play("perkdeck_activate")
+
+				if self._has_secondary_reload_swap_primary then
+					local duration = self:upgrade_value("weapon", "secondary_reload_swap_primary", 3)
+
+					self:activate_temporary_property("intant_swap_to_primary", duration, true)
+				end
 			end
 
 			secondary_kills = 0
@@ -1389,6 +1409,13 @@ function PlayerManager:on_killshot(killed_unit, variant, headshot, weapon_id)
 				secondary_base:on_reload()
 				managers.statistics:reloaded()
 				managers.hud:set_ammo_amount(secondary_base:selection_index(), secondary_base:ammo_info())
+				player_unit:sound():play("perkdeck_activate")
+
+				if self._has_primary_reload_swap_secondary then
+					local duration = self:upgrade_value("weapon", "primary_reload_swap_secondary", 3)
+
+					self:activate_temporary_property("intant_swap_to_secondary", duration, true)
+				end
 			end
 
 			primary_kills = 0
@@ -5894,7 +5921,9 @@ function PlayerManager:clbk_copr_ability_ended()
 	local character_damage = alive(player_unit) and player_unit:character_damage()
 
 	if character_damage then
-		local out_of_health = character_damage:health_ratio() < self:upgrade_value("player", "copr_static_damage_ratio", 0)
+		local health_ratio = character_damage:health_ratio()
+		local static_damage_ratio = self:upgrade_value("player", "copr_static_damage_ratio", 0) - 1e-08
+		local out_of_health = health_ratio < static_damage_ratio
 		local risen_from_dead = self:get_property("copr_risen", false) == true
 
 		character_damage:on_copr_ability_deactivated()

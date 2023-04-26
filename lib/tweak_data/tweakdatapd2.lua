@@ -948,8 +948,11 @@ function TweakData:_setup_scene_pose_items()
 			"secondary"
 		},
 		husk_rifle4 = {
-			nil,
+			"primary",
 			"secondary"
+		},
+		husk_minigun_2 = {
+			"primary"
 		},
 		cvc_var1 = {},
 		cvc_var2 = {},
@@ -1120,6 +1123,10 @@ function TweakData:_setup_scene_poses()
 		},
 		hcar = {
 			"husk_rifle1",
+			required_pose = true
+		},
+		kacchainsaw = {
+			"husk_minigun_2",
 			required_pose = true
 		}
 	}

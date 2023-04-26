@@ -72,38 +72,51 @@ function MenuMainState:at_enter(old_state)
 		managers.menu:check_vr_dlc()
 	end
 
-	if SystemInfo:platform() == Idstring("WIN32") and not Global.use_telemetry_gamesight_decided then
-		local telemetry_state = true
-		local gamesight_state = true
-
-		local function telemetry_toggle_func(state)
-			managers.user:set_setting("use_telemetry", state, true)
+	if SystemInfo:platform() == Idstring("WIN32") and not Global.use_telemetry_gamesight_eula_decided then
+		local function gamesight_accept_func()
+			managers.user:set_setting("use_gamesight", true, true)
 			_G.MenuCallbackHandler:save_settings()
-
-			telemetry_state = state
 		end
 
-		local function gamesight_toggle_func(state)
-			managers.user:set_setting("use_gamesight", state, true)
+		local function gamesight_deny_func()
+			managers.user:set_setting("use_gamesight", false, true)
 			_G.MenuCallbackHandler:save_settings()
-
-			gamesight_state = state
 		end
 
-		local function accept_func()
-			managers.user:set_setting("use_telemetry", telemetry_state, true)
-			managers.user:set_setting("use_gamesight", gamesight_state, true)
+		local function telemetry_accept_func()
+			managers.user:set_setting("use_telemetry", true, true)
 			_G.MenuCallbackHandler:save_settings()
-			Telemetry:send_on_game_launch()
+			managers.menu:show_accept_gamesight_new({
+				accept_func = gamesight_accept_func,
+				deny_func = gamesight_deny_func
+			})
 		end
 
-		Global.use_telemetry_gamesight_decided = true
+		local function telemetry_deny_func()
+			managers.user:set_setting("use_telemetry", false, true)
+			_G.MenuCallbackHandler:save_settings()
+			managers.menu:show_accept_gamesight_new({
+				accept_func = gamesight_accept_func,
+				deny_func = gamesight_deny_func
+			})
+		end
 
-		managers.savefile:setting_changed()
-		managers.menu:show_accept_gamesight_telemetry({
-			telemetry_func = telemetry_toggle_func,
-			gamesight_func = gamesight_toggle_func,
-			accept_func = accept_func
+		local function eula_accept_func()
+			Global.use_telemetry_gamesight_eula_decided = true
+
+			managers.menu:show_accept_telemetry_new({
+				accept_func = telemetry_accept_func,
+				deny_func = telemetry_deny_func
+			})
+		end
+
+		local function eula_deny_func()
+			_G.setup:quit()
+		end
+
+		managers.menu:show_accept_policy_new({
+			accept_func = eula_accept_func,
+			deny_func = eula_deny_func
 		})
 	end
 

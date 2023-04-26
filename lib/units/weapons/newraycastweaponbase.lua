@@ -75,6 +75,9 @@ function NewRaycastWeaponBase:init(unit)
 		end
 	end
 
+	self._alt_fire_data = self:weapon_tweak_data().alt_fire_data
+	self._alt_fire_active = false
+
 	if managers.player:has_category_upgrade("player", "armor_depleted_stagger_shot") then
 		local function clbk(value)
 			self:set_stagger(value)
@@ -880,48 +883,62 @@ function NewRaycastWeaponBase:_update_stats_values(disallow_replenish, ammo_data
 	end
 
 	local custom_stats = managers.weapon_factory:get_custom_stats_from_weapon(self._factory_id, self._blueprint)
+	local part_data = nil
+	local is_underbarrel = self.is_underbarrel and self:is_underbarrel()
+	local weap_factory_parts = tweak_data.weapon.factory.parts
 
 	for part_id, stats in pairs(custom_stats) do
-		if stats.movement_speed then
-			self._movement_penalty = self._movement_penalty * stats.movement_speed
+		part_data = weap_factory_parts[part_id]
+		local can_apply = true
+
+		if part_data.type == "underbarrel_ammo" then
+			can_apply = is_underbarrel
+		elseif part_data.type == "ammo" then
+			can_apply = not is_underbarrel
 		end
 
-		if tweak_data.weapon.factory.parts[part_id].type ~= "ammo" then
-			if stats.ammo_pickup_min_mul then
-				self._ammo_data.ammo_pickup_min_mul = self._ammo_data.ammo_pickup_min_mul and self._ammo_data.ammo_pickup_min_mul * stats.ammo_pickup_min_mul or stats.ammo_pickup_min_mul
+		if can_apply then
+			if stats.movement_speed then
+				self._movement_penalty = self._movement_penalty * stats.movement_speed
 			end
 
-			if stats.ammo_pickup_max_mul then
-				self._ammo_data.ammo_pickup_max_mul = self._ammo_data.ammo_pickup_max_mul and self._ammo_data.ammo_pickup_max_mul * stats.ammo_pickup_max_mul or stats.ammo_pickup_max_mul
+			if part_data.type ~= "ammo" and part_data.type ~= "underbarrel_ammo" then
+				if stats.ammo_pickup_min_mul then
+					self._ammo_data.ammo_pickup_min_mul = self._ammo_data.ammo_pickup_min_mul and self._ammo_data.ammo_pickup_min_mul * stats.ammo_pickup_min_mul or stats.ammo_pickup_min_mul
+				end
+
+				if stats.ammo_pickup_max_mul then
+					self._ammo_data.ammo_pickup_max_mul = self._ammo_data.ammo_pickup_max_mul and self._ammo_data.ammo_pickup_max_mul * stats.ammo_pickup_max_mul or stats.ammo_pickup_max_mul
+				end
+
+				if stats.ammo_offset then
+					self._ammo_data.ammo_offset = (self._ammo_data.ammo_offset or 0) + stats.ammo_offset
+				end
+
+				if stats.fire_rate_multiplier then
+					self._ammo_data.fire_rate_multiplier = (self._ammo_data.fire_rate_multiplier or 0) + stats.fire_rate_multiplier - 1
+				end
 			end
-		end
 
-		if stats.burst_count then
-			self._burst_count = stats.burst_count
-		end
+			if stats.burst_count then
+				self._burst_count = stats.burst_count
+			end
 
-		if stats.ammo_offset then
-			self._ammo_data.ammo_offset = (self._ammo_data.ammo_offset or 0) + stats.ammo_offset
-		end
+			if stats.volley_spread_mul then
+				self._volley_spread_mul = stats.volley_spread_mul
+			end
 
-		if stats.fire_rate_multiplier then
-			self._ammo_data.fire_rate_multiplier = (self._ammo_data.fire_rate_multiplier or 0) + stats.fire_rate_multiplier - 1
-		end
+			if stats.volley_damage_mul then
+				self._volley_damage_mul = stats.volley_damage_mul
+			end
 
-		if stats.volley_spread_mul then
-			self._volley_spread_mul = stats.volley_spread_mul
-		end
+			if stats.volley_ammo_usage then
+				self._volley_ammo_usage = stats.volley_ammo_usage
+			end
 
-		if stats.volley_damage_mul then
-			self._volley_damage_mul = stats.volley_damage_mul
-		end
-
-		if stats.volley_ammo_usage then
-			self._volley_ammo_usage = stats.volley_ammo_usage
-		end
-
-		if stats.volley_rays then
-			self._volley_rays = stats.volley_rays
+			if stats.volley_rays then
+				self._volley_rays = stats.volley_rays
+			end
 		end
 	end
 
@@ -1375,6 +1392,10 @@ function NewRaycastWeaponBase:_get_tweak_data_weapon_animation(anim)
 		return name
 	end
 
+	if self._alt_fire_active and self._alt_fire_data and self._alt_fire_data.animations and self._alt_fire_data.animations[anim] then
+		return self._alt_fire_data.animations[anim]
+	end
+
 	return anim
 end
 
@@ -1713,6 +1734,20 @@ function NewRaycastWeaponBase:get_steelsight_swap_progress_trigger()
 	return NewRaycastWeaponBase.super.get_steelsight_swap_progress_trigger(self)
 end
 
+function NewRaycastWeaponBase:second_sight_use_steelsight_unit()
+	local second_sight = self:get_active_second_sight()
+
+	if second_sight then
+		local part_stats = tweak_data.weapon.factory.parts[second_sight.part_id].custom_stats
+
+		if part_stats then
+			return part_stats.use_primary_steelsight_unit or false
+		end
+	end
+
+	return false
+end
+
 function NewRaycastWeaponBase:fire_mode()
 	if self:gadget_overrides_weapon_functions() then
 		local firemode = self:gadget_function_override("fire_mode")
@@ -2042,9 +2077,29 @@ function NewRaycastWeaponBase:toggle_firemode(skip_post_event)
 		end
 
 		return true
+	elseif self._alt_fire_data then
+		self._alt_fire_active = not self._alt_fire_active
+
+		if self._alt_fire_data.shell_ejection then
+			self._shell_ejection_effect = Idstring(self._alt_fire_active and self._alt_fire_data.shell_ejection or self:weapon_tweak_data().shell_ejection or "effects/payday2/particles/weapons/shells/shell_556")
+			self._shell_ejection_effect_table = {
+				effect = self._shell_ejection_effect,
+				parent = self._obj_shell_ejection
+			}
+		end
+
+		if not skip_post_event then
+			self._sound_fire:post_event(self._alt_fire_active and "wp_auto_switch_on" or "wp_auto_switch_off")
+		end
+
+		return true
 	end
 
 	return false
+end
+
+function NewRaycastWeaponBase:alt_fire_active()
+	return self._alt_fire_active
 end
 
 function NewRaycastWeaponBase:set_ammo_remaining_in_clip(...)
@@ -2637,6 +2692,14 @@ function NewRaycastWeaponBase:fire_rate_multiplier()
 	return self._fire_rate_multiplier
 end
 
+function NewRaycastWeaponBase:weapon_fire_rate()
+	if self._alt_fire_active and self._alt_fire_data and self._alt_fire_data.fire_rate then
+		return self._alt_fire_data.fire_rate
+	end
+
+	return NewRaycastWeaponBase.super.weapon_fire_rate(self)
+end
+
 function NewRaycastWeaponBase:damage_addend()
 	local user_unit = self._setup and self._setup.user_unit
 	local current_state = alive(user_unit) and user_unit:movement() and user_unit:movement()._current_state
@@ -2648,6 +2711,10 @@ function NewRaycastWeaponBase:damage_multiplier()
 	local user_unit = self._setup and self._setup.user_unit
 	local current_state = alive(user_unit) and user_unit:movement() and user_unit:movement()._current_state
 	local multiplier = managers.blackmarket:damage_multiplier(self._name_id, self:weapon_tweak_data().categories, self._silencer, nil, current_state, self._blueprint)
+
+	if self._alt_fire_active and self._alt_fire_data then
+		multiplier = multiplier * (self._alt_fire_data.damage_mul or 1)
+	end
 
 	return multiplier
 end
@@ -2666,6 +2733,10 @@ end
 
 function NewRaycastWeaponBase:spread_multiplier(current_state)
 	local multiplier = managers.blackmarket:accuracy_multiplier(self._name_id, self:weapon_tweak_data().categories, self._silencer, current_state, self._spread_moving, self:fire_mode(), self._blueprint, self:is_single_shot())
+
+	if self._alt_fire_active and self._alt_fire_data then
+		multiplier = multiplier * (self._alt_fire_data.spread_mul or 1)
+	end
 
 	return multiplier
 end
@@ -2686,6 +2757,10 @@ function NewRaycastWeaponBase:recoil_multiplier()
 	end
 
 	local multiplier = managers.blackmarket:recoil_multiplier(self._name_id, self:weapon_tweak_data().categories, self._silencer, self._blueprint, is_moving)
+
+	if self._alt_fire_active and self._alt_fire_data then
+		multiplier = multiplier * (self._alt_fire_data.recoil_mul or 1)
+	end
 
 	return multiplier
 end

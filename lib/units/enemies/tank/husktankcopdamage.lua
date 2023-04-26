@@ -1,4 +1,5 @@
 HuskTankCopDamage = HuskTankCopDamage or class(HuskCopDamage)
+HuskTankCopDamage._priority_bodies_ids = TankCopDamage._priority_bodies_ids
 
 function HuskTankCopDamage:init(...)
 	HuskTankCopDamage.super.init(self, ...)

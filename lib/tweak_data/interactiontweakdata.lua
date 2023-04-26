@@ -6771,7 +6771,8 @@ function InteractionTweakData:init(tweak_data)
 		special_equipment = "cas_usb_key",
 		axis = "y",
 		start_active = false,
-		equipment_consume = true
+		equipment_consume = true,
+		sound_event = "insert_usb_stick"
 	}
 	self.sand_place_documents = {
 		text_id = "hud_int_place_documents",
@@ -8089,4 +8090,13 @@ function InteractionTweakData:init(tweak_data)
 	self.cg22_bag_carry_drop.sound_start = "bar_bag_xmas_loop"
 	self.cg22_bag_carry_drop.sound_interupt = "bar_bag_xmas_loop_cancel"
 	self.cg22_bag_carry_drop.sound_done = "bar_bag_xmas_loop_finished"
+	self.press_use_lrm_safe_keycard = {
+		text_id = "hud_int_use_lrm_safe_keycard",
+		equipment_text_id = "hud_int_action_lrm_safe_keycard",
+		special_equipment = "lrm_keycard",
+		interact_distance = 125,
+		equipment_consume = true,
+		axis = "x",
+		sound_done = "card_reader_first_card"
+	}
 end

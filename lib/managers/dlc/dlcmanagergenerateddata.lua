@@ -238,6 +238,10 @@ function GenericDLCManager:has_pxp3()
 	return self:is_dlc_unlocked("pxp3")
 end
 
+function GenericDLCManager:has_pxp4()
+	return self:is_dlc_unlocked("pxp4")
+end
+
 function GenericDLCManager:has_ranc()
 	return self:is_dlc_unlocked("ranc")
 end
@@ -669,6 +673,11 @@ function WINDLCManager:init_generated()
 		no_install = true,
 		webpage = "https://pd2.link/McShayWeaponPack3YBS"
 	}
+	Global.dlc_manager.all_dlc_data.pxp4 = {
+		app_id = "2353510",
+		no_install = true,
+		webpage = "https://pd2.link/McShayWeaponPack4YBS"
+	}
 	Global.dlc_manager.all_dlc_data.ranc = {
 		app_id = "1945681",
 		no_install = true,
@@ -819,7 +828,8 @@ function WINDLCManager:init_generated()
 	}
 	Global.dlc_manager.all_dlc_data.txt4 = {
 		app_id = "2352300",
-		no_install = true
+		no_install = true,
+		webpage = "https://pd2.link/LawlessTailorPackYBS"
 	}
 	Global.dlc_manager.all_dlc_data.wcc = {
 		app_id = "1347751",

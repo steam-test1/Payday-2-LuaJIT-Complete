@@ -782,7 +782,7 @@ function GenericUserManager:save(data)
 		data.debug_post_effects_enabled = Global.debug_post_effects_enabled
 	end
 
-	data.use_telemetry_gamesight_decided = Global.use_telemetry_gamesight_decided
+	data.use_telemetry_gamesight_eula_decided = Global.use_telemetry_gamesight_eula_decided
 end
 
 function GenericUserManager:load(data, cache_version)
@@ -807,7 +807,7 @@ function GenericUserManager:load(data, cache_version)
 		Global.debug_post_effects_enabled = true
 	end
 
-	Global.use_telemetry_gamesight_decided = data.use_telemetry_gamesight_decided
+	Global.use_telemetry_gamesight_eula_decided = data.use_telemetry_gamesight_eula_decided
 
 	self:sanitize_settings()
 end

@@ -56,6 +56,43 @@ function SentryGunDamage:init(unit)
 	self._SHIELD_HEALTH_INIT_PERCENT = self._SHIELD_HEALTH_INIT / self._HEALTH_GRANULARITY
 	self._local_car_damage = 0
 	self._repair_counter = 0
+
+	if not self._ignore_client_damage then
+		self:_setup_priority_bodies()
+	end
+end
+
+function SentryGunDamage:_setup_priority_bodies()
+	self._priority_bodies_ids = {}
+
+	if self._bag_body_name_ids then
+		self._priority_bodies_ids[self._bag_body_name_ids:key()] = 1
+	end
+
+	if self._shield_body_name_ids then
+		self._priority_bodies_ids[self._shield_body_name_ids:key()] = 2
+	end
+end
+
+function SentryGunDamage:chk_body_hit_priority(old_body_hit, new_body_hit)
+	if not self._priority_bodies_ids then
+		return false
+	end
+
+	local old_body_prio = self._priority_bodies_ids[old_body_hit:name():key()]
+	local new_body_prio = self._priority_bodies_ids[new_body_hit:name():key()]
+
+	if not old_body_prio then
+		if new_body_prio then
+			return true
+		elseif self._invulnerable_bodies and self._invulnerable_bodies[old_body_hit:name():key()] and not self._invulnerable_bodies[new_body_hit:name():key()] then
+			return true
+		end
+	elseif new_body_prio and new_body_prio < old_body_prio then
+		return true
+	end
+
+	return false
 end
 
 function SentryGunDamage:set_health(amount, shield_health_amount)

@@ -105,7 +105,7 @@ function ElementLaserTrigger:on_script_activated(...)
 end
 
 function ElementLaserTrigger:_chk_setup_local_client_on_execute_elements()
-	if not self._values.on_executed or self:_has_on_executed_alternative("empty") or self:_calc_base_delay() > 0 then
+	if not self._instigator_find_func or not self._values.on_executed or self:_has_on_executed_alternative("empty") or self:_calc_base_delay() > 0 then
 		return
 	end
 

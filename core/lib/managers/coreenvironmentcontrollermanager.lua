@@ -1024,15 +1024,30 @@ function CoreEnvironmentControllerManager:set_flashbang(flashbang_pos, line_of_s
 			normal = Vector3(0, 0, 1)
 		})
 	end
+
+	local player = managers.player:player_unit()
+
+	if player then
+		local flash_value = math.pow(math.min(self._current_flashbang, 1), 16) + math.min(self._current_flashbang_flash, 1)
+
+		if self._screenflash_color_flash_override < flash_value then
+			PlayerStandard.say_line(player:sound(), "g41x_any")
+		end
+	end
 end
 
 function CoreEnvironmentControllerManager:set_concussion_grenade(flashbang_pos, line_of_sight, travel_dis, linear_dis, duration, no_offset, no_effect)
 	local pos = no_offset and flashbang_pos or flashbang_pos + flashbang_test_offset
 	local concussion = self:test_line_of_sight(pos, 200, 1000, 3000)
-	self._concussion_duration = duration
 
 	if concussion > 0 then
-		self._current_concussion = math.min(self._current_concussion + concussion, 1.5) * self._concussion_duration
+		if self._current_concussion < concussion then
+			duration = duration ~= 0 and duration or 1
+			duration = 1 + (1 - duration) * 2
+			self._concussion_duration = duration
+		end
+
+		self._current_concussion = math.min(self._current_concussion + concussion, 1)
 	end
 end
 

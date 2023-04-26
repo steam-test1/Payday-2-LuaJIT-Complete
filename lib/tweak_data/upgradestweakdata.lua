@@ -2215,6 +2215,13 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.player.secondary_reload_primary = {
 		auto_reload_kills
 	}
+	local auto_reload_swap_duration = 3
+	self.values.weapon.primary_reload_swap_secondary = {
+		auto_reload_swap_duration
+	}
+	self.values.weapon.secondary_reload_swap_primary = {
+		auto_reload_swap_duration
+	}
 	self.values.weapon.mrwi_swap_speed_multiplier = {
 		2.6
 	}
@@ -4785,7 +4792,9 @@ function UpgradesTweakData:_init_pd2_values()
 	}
 	local primary_reload_secondary_kills = self.values.player.primary_reload_secondary[1]
 	local headshot_regen_health_bonus = self.values.player.headshot_regen_health_bonus[1] * 10
+	local on_headshot_dealt_cooldown = self.on_headshot_dealt_cooldown
 	local weapon_swap_speed = (self.values.weapon.mrwi_swap_speed_multiplier[1] - 1) * 200
+	local weapon_swap_speed_duration = self.values.weapon.primary_reload_swap_secondary[1]
 	local mrwi_health_invulnerable = self.values.temporary.mrwi_health_invulnerable[1]
 	local invulnerable_threshold = mrwi_health_invulnerable[1] * 100
 	local invulnerable_duration = mrwi_health_invulnerable[2]
@@ -4818,10 +4827,11 @@ function UpgradesTweakData:_init_pd2_values()
 	local specialization_descs = deep_clone(editable_specialization_template)
 	specialization_descs[1] = {
 		tostring(primary_reload_secondary_kills),
-		tostring(weapon_swap_speed) .. "%"
+		tostring(weapon_swap_speed_duration)
 	}
 	specialization_descs[3] = {
-		tostring(headshot_regen_health_bonus)
+		tostring(headshot_regen_health_bonus),
+		tostring(on_headshot_dealt_cooldown)
 	}
 	specialization_descs[5] = {}
 	specialization_descs[7] = {
@@ -5175,7 +5185,8 @@ function UpgradesTweakData:init(tweak_data)
 				"micstand",
 				"x_hs2000",
 				"qbu88",
-				"contender"
+				"contender",
+				"awp"
 			}
 		},
 		[29] = {
@@ -5191,7 +5202,8 @@ function UpgradesTweakData:init(tweak_data)
 				"x_czech",
 				"czech",
 				"x_stech",
-				"stech"
+				"stech",
+				"supernova"
 			}
 		},
 		[30] = {
@@ -5322,7 +5334,8 @@ function UpgradesTweakData:init(tweak_data)
 				"fal",
 				"tomahawk",
 				"coal",
-				"x_coal"
+				"x_coal",
+				"kacchainsaw"
 			}
 		},
 		[43] = {
@@ -5680,6 +5693,9 @@ function UpgradesTweakData:init(tweak_data)
 	self:_hcar_definitions()
 	self:_m249_definitions()
 	self:_rpk_definitions()
+	self:_awp_definitions()
+	self:_supernova_definitions()
+	self:_kacchainsaw_weapon_definitions()
 	self:_m95_definitions()
 	self:_msr_definitions()
 	self:_r93_definitions()
@@ -11668,6 +11684,39 @@ function UpgradesTweakData:_msr_definitions()
 	}
 end
 
+function UpgradesTweakData:_awp_definitions()
+	self.definitions.awp = {
+		dlc = "pxp4",
+		factory_id = "wpn_fps_snp_awp",
+		weapon_id = "awp",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_supernova_definitions()
+	self.definitions.supernova = {
+		dlc = "pxp4",
+		factory_id = "wpn_fps_sho_supernova",
+		weapon_id = "supernova",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_kacchainsaw_weapon_definitions()
+	self.definitions.kacchainsaw = {
+		dlc = "pxp4",
+		factory_id = "wpn_fps_lmg_kacchainsaw",
+		weapon_id = "kacchainsaw",
+		category = "weapon"
+	}
+	self.definitions.kacchainsaw_flamethrower = {
+		dlc = "pxp4",
+		factory_id = "wpn_fps_lmg_kacchainsaw_flamethrower",
+		weapon_id = "kacchainsaw_flamethrower",
+		category = "weapon"
+	}
+end
+
 function UpgradesTweakData:_r93_definitions()
 	self.definitions.r93 = {
 		dlc = "gage_pack_snp",
@@ -13956,6 +14005,24 @@ function UpgradesTweakData:_mrwi_definitions()
 			category = "weapon"
 		}
 	}
+	self.definitions.weapon_mrwi_primary_reload_swap_secondary_1 = {
+		name_id = "weapon_mrwi_primary_reload_swap_secondary",
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "primary_reload_swap_secondary",
+			category = "weapon"
+		}
+	}
+	self.definitions.weapon_mrwi_secondary_reload_swap_primary_1 = {
+		name_id = "weapon_mrwi_secondary_reload_swap_primary",
+		category = "feature",
+		upgrade = {
+			value = 1,
+			upgrade = "secondary_reload_swap_primary",
+			category = "weapon"
+		}
+	}
 	self.definitions.player_headshot_regen_health_bonus_1 = {
 		name_id = "menu_player_headshot_regen_health_bonus",
 		category = "feature",
@@ -14014,8 +14081,18 @@ function UpgradesTweakData.mrwi_deck9_options()
 			tier = 7
 		},
 		{
+			short_id = "menu_deck23_9_3_short",
+			tier = 1,
 			tree = 3,
-			tier = 1
+			desc_id = "menu_deck23_9_3_desc",
+			upgrades = {
+				"player_tier_armor_multiplier_3",
+				"player_armor_regen_timer_multiplier_passive"
+			},
+			custom_editable_descs = {
+				[1.0] = "20%",
+				[2.0] = "10%"
+			}
 		},
 		{
 			tree = 4,

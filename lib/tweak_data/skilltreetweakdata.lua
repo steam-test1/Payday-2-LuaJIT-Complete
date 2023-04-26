@@ -5304,6 +5304,13 @@ function SkillTreeTweakData:init()
 		category = "versatile"
 	}
 
+	table.delete(mrwi_specialization[1].upgrades, "weapon_mrwi_swap_speed_multiplier_1")
+	table.insert(mrwi_specialization[1].upgrades, "weapon_mrwi_primary_reload_swap_secondary_1")
+	table.insert(mrwi_specialization[1].upgrades, "weapon_mrwi_secondary_reload_swap_primary_1")
+
+	mrwi_specialization[1].desc_id = "menu_pxp4_deck23_1_desc"
+	mrwi_specialization[1].short_id = "menu_pxp4_deck23_1_short"
+
 	table.insert(self.specializations, mrwi_specialization)
 
 	self.specialization_category = {

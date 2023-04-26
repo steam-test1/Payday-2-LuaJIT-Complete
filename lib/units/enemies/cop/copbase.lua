@@ -110,7 +110,7 @@ function CopBase:_set_tags(tags)
 		self._tags = table.list_to_set(clone(tags))
 	elseif tag_type == "string" then
 		self._tags = {
-			tags
+			[tags] = true
 		}
 	else
 		self._tags = nil

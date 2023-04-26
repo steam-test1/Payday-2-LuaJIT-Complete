@@ -345,8 +345,16 @@ function NewRaycastWeaponBaseVR:custom_magazine_name()
 end
 
 function NewRaycastWeaponBaseVR:spawn_belt_magazine_unit(pos)
-	if self:custom_magazine_name() then
-		return World:spawn_unit(Idstring(self:custom_magazine_name()), pos or Vector3(), Rotation())
+	local belt_mag_unit = self:custom_magazine_name()
+
+	if belt_mag_unit then
+		local belt_mag_unit_id = Idstring(belt_mag_unit)
+
+		if not managers.dyn_resource:is_resource_ready(Idstring("unit"), belt_mag_unit_id, managers.dyn_resource.DYN_RESOURCES_PACKAGE) then
+			managers.dyn_resource:load(Idstring("unit"), belt_mag_unit_id, managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
+		end
+
+		return World:spawn_unit(belt_mag_unit_id, pos or Vector3(), Rotation())
 	end
 
 	return self:spawn_magazine_unit(pos)

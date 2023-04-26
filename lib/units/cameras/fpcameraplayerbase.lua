@@ -243,6 +243,10 @@ function FPCameraPlayerBase:_update_stance(t, dt)
 			local in_steelsight = self._parent_movement_ext._current_state:in_steelsight()
 			local in_second_sight = self._parent_movement_ext._current_state:is_second_sight_on()
 
+			if in_second_sight and self._parent_movement_ext._current_state:second_sight_use_steelsight_unit() then
+				in_second_sight = false
+			end
+
 			if in_steelsight and not in_second_sight and not self._steelsight_swap_state then
 				self:_set_steelsight_swap_state(true)
 			elseif (not in_steelsight or in_second_sight) and self._steelsight_swap_state then
@@ -257,6 +261,11 @@ function FPCameraPlayerBase:_update_stance(t, dt)
 			self._shoulder_stance.rotation = trans_data.start_rotation:slerp(trans_data.end_rotation, progress_smooth)
 			local in_steelsight = self._parent_movement_ext._current_state:in_steelsight()
 			local in_second_sight = self._parent_movement_ext._current_state:is_second_sight_on()
+
+			if in_second_sight and self._parent_movement_ext._current_state:second_sight_use_steelsight_unit() then
+				in_second_sight = false
+			end
+
 			local absolute_progress = nil
 
 			if in_steelsight and not in_second_sight then
@@ -1244,6 +1253,33 @@ function FPCameraPlayerBase:clbk_stance_entered(new_shoulder_stance, new_head_st
 			transition.start_fov = self._fov.fov
 			transition.start_t = t
 			transition.duration = transition_duration
+		end
+	end
+
+	if transition_duration <= 0 then
+		if self._shoulder_stance.transition then
+			self._shoulder_stance.translation = mvector3.copy(self._shoulder_stance.transition.end_translation)
+			self._shoulder_stance.rotation = self._shoulder_stance.transition.end_rotation
+			self._shoulder_stance.transition = nil
+		end
+
+		if self._head_stance.transition then
+			self._head_stance.translation = mvector3.copy(self._head_stance.transition.end_translation)
+			self._head_stance.rotation = self._head_stance.transition.end_rotation
+			self._head_stance.transition = nil
+		end
+
+		if self._vel_overshot.transition then
+			self._vel_overshot.yaw_neg = self._vel_overshot.transition.end_yaw_neg
+			self._vel_overshot.yaw_pos = self._vel_overshot.transition.end_yaw_pos
+			self._vel_overshot.pitch_neg = self._vel_overshot.transition.end_pitch_neg
+			self._vel_overshot.pitch_pos = self._vel_overshot.transition.end_pitch_pos
+			self._vel_overshot.pivot = mvector3.copy(self._vel_overshot.transition.end_pivot)
+			self._vel_overshot.transition = nil
+		end
+
+		if self._fov.transition then
+			self:set_fov_instant(self._fov.transition.end_fov)
 		end
 	end
 

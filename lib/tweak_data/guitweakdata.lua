@@ -1927,6 +1927,17 @@ function GuiTweakData:init(tweak_data)
 			id = "skirmish",
 			icon = "sidebar_skirmish",
 			item_class = "CrimeNetSidebarSkirmishItem"
+		},
+		{
+			item_class = "CrimeNetSidebarSeparator"
+		},
+		{
+			visible_callback = "clbk_visible_leakedrecording",
+			name_id = "menu_cn_leakedrecording",
+			callback = "clbk_leakedrecording",
+			id = "leakedrecording",
+			icon = "sidebar_leakedrecording",
+			item_class = "CrimeNetSidebarLeakedRecordingItem"
 		}
 	}
 	self.crime_net.codex = {
@@ -5124,6 +5135,54 @@ function GuiTweakData:init(tweak_data)
 		"category",
 		"bonus"
 	}
+	self.leakedrecordings = {
+		missions = {
+			{
+				coming_soon = false,
+				briefing_track = "Play_loc_secr_01",
+				heist = "kosugi",
+				poster_icon = "guis/dlcs/lron/textures/pd2/crimenet/badforbusiness",
+				recording_track = "Play_spe_bfb_01",
+				job_value = "LRON",
+				poster_rect = {
+					0,
+					14,
+					256,
+					484
+				}
+			},
+			{
+				coming_soon = true,
+				poster_icon = "guis/dlcs/lrm/textures/pd2/crimenet/coming_soon_cellmates",
+				poster_rect = {
+					0,
+					14,
+					256,
+					484
+				}
+			},
+			{
+				coming_soon = true,
+				poster_icon = "guis/dlcs/lrm/textures/pd2/crimenet/coming_soon_garnets",
+				poster_rect = {
+					0,
+					14,
+					256,
+					484
+				}
+			},
+			{
+				coming_soon = true,
+				poster_icon = "guis/dlcs/lrm/textures/pd2/crimenet/coming_soon_enemies",
+				poster_rect = {
+					0,
+					14,
+					256,
+					484
+				}
+			}
+		}
+	}
 	self.new_heists = {
 		limit = 5
 	}
@@ -5134,6 +5193,11 @@ function GuiTweakData:init(tweak_data)
 		url = "https://pd2.link/CrudeAwakeningBundleSLS"
 	})
 	table.insert(self.new_heists, {
+		name_id = "menu_nh_pxp4",
+		texture_path = "guis/dlcs/pxp4/textures/pd2/new_heists/pxp4",
+		url = "https://pd2.link/McShayWeaponPack4SLS"
+	})
+	table.insert(self.new_heists, {
 		name_id = "menu_nh_txt4_02",
 		texture_path = "guis/dlcs/txt4/textures/pd2/new_heists/txt4_02",
 		url = "https://pd2.link/LawlessTailorPackSLS"
@@ -5142,6 +5206,11 @@ function GuiTweakData:init(tweak_data)
 		name_id = "menu_nh_txt3_02",
 		texture_path = "guis/dlcs/txt3/textures/pd2/new_heists/txt3_02",
 		url = "https://pd2.link/HostileTakeoverBundleSLS"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_pxp4_02",
+		texture_path = "guis/dlcs/pxp4/textures/pd2/new_heists/pxp4_02",
+		url = "https://pd2.link/CrudeAwakeningNebulaSL"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_corp_01",
