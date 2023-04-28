@@ -8,6 +8,11 @@ function WeaponUnderbarrel:init(unit)
 	self._deployed = false
 
 	self:setup_underbarrel()
+
+	WeaponUnderbarrel.shield_mask = WeaponUnderbarrel.shield_mask or managers.slot:get_mask("enemy_shield_check")
+	WeaponUnderbarrel.enemy_mask = WeaponUnderbarrel.enemy_mask or managers.slot:get_mask("enemies")
+	WeaponUnderbarrel.wall_mask = WeaponUnderbarrel.wall_mask or managers.slot:get_mask("world_geometry")
+	WeaponUnderbarrel.wall_vehicle_mask = WeaponUnderbarrel.wall_vehicle_mask or managers.slot:get_mask("world_geometry", "vehicles")
 end
 
 function WeaponUnderbarrel:destroy(unit)

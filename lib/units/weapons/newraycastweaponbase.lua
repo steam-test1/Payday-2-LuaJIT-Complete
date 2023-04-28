@@ -2092,6 +2092,8 @@ function NewRaycastWeaponBase:toggle_firemode(skip_post_event)
 			self._sound_fire:post_event(self._alt_fire_active and "wp_auto_switch_on" or "wp_auto_switch_off")
 		end
 
+		self:update_damage()
+
 		return true
 	end
 

@@ -12196,10 +12196,12 @@ function WeaponTweakData:_init_kacchainsaw(weapon_data)
 	}
 	self.kacchainsaw_flamethrower.autohit = weapon_data.autohit_shotgun_default
 	self.kacchainsaw_flamethrower.aim_assist = weapon_data.aim_assist_shotgun_default
+	self.kacchainsaw_flamethrower.weapon_hold = "kacchainsaw"
 	self.kacchainsaw_flamethrower.animations = {
 		equip_id = "equip_flamethrower",
 		recoil_steelsight = false
 	}
+	self.kacchainsaw_flamethrower.use_stance = "kacchainsaw"
 	self.kacchainsaw_flamethrower.flame_max_range = 1000
 	self.kacchainsaw_flamethrower.single_flame_effect_duration = 1
 	self.kacchainsaw_flamethrower.panic_suppression_chance = 0.2
@@ -12210,7 +12212,6 @@ function WeaponTweakData:_init_kacchainsaw(weapon_data)
 		dot_trigger_max_distance = 3000,
 		dot_tick_period = 0.5
 	}
-	self.kacchainsaw_flamethrower.weapon_hold = "kacchainsaw"
 	self.kacchainsaw_flamethrower.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
@@ -17934,6 +17935,7 @@ function WeaponTweakData:_init_groza(weapon_data)
 		equip_id = "equip_groza_underbarrel",
 		recoil_steelsight = true
 	}
+	self.groza_underbarrel.use_stance = "groza"
 	self.groza_underbarrel.panic_suppression_chance = 0.2
 	self.groza_underbarrel.ignore_damage_upgrades = true
 	self.groza_underbarrel.stats = {
@@ -21817,6 +21819,7 @@ function WeaponTweakData:_init_contraband(weapon_data)
 		equip_id = "equip_contraband_m203",
 		recoil_steelsight = true
 	}
+	self.contraband_m203.use_stance = "contraband"
 	self.contraband_m203.panic_suppression_chance = 0.2
 	self.contraband_m203.ignore_damage_upgrades = true
 	self.contraband_m203.stats = {
@@ -22831,6 +22834,7 @@ function WeaponTweakData:_init_type54(weapon_data)
 	}
 	self.type54_underbarrel.autohit = weapon_data.autohit_shotgun_default
 	self.type54_underbarrel.aim_assist = weapon_data.aim_assist_shotgun_default
+	self.type54_underbarrel.use_stance = "type54"
 	self.type54_underbarrel.panic_suppression_chance = 0.2
 	self.type54_underbarrel.ignore_crit_damage = true
 	self.type54_underbarrel.ignore_damage_multipliers = true
@@ -22980,6 +22984,7 @@ function WeaponTweakData:_init_x_type54(weapon_data)
 	self.x_type54_underbarrel.description_id = "des_x_type54_underbarrel"
 	self.x_type54_underbarrel.use_data.selection_index = SELECTION.UNDERBARREL_PRIMARY
 	self.x_type54_underbarrel.animations.equip_id = "equip_type54_underbarrel"
+	self.x_type54_underbarrel.use_stance = "x_type54"
 	self.x_type54_underbarrel.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
 	self.x_type54_underbarrel.damage_near = 2000
 	self.x_type54_underbarrel.damage_far = 3000

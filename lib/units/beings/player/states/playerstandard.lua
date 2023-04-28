@@ -169,8 +169,7 @@ function PlayerStandard:enter(state_data, enter_data)
 	self._state_data = state_data
 	self._state_data.using_bipod = managers.player:current_state() == "bipod"
 	self._equipped_unit = self._ext_inventory:equipped_unit()
-	local weapon = self._ext_inventory:equipped_unit()
-	self._weapon_hold = weapon and weapon:base().weapon_hold and weapon:base():weapon_hold() or weapon:base():get_name_id()
+	self._weapon_hold = self:get_weapon_hold_str()
 
 	self:inventory_clbk_listener(self._unit, "equip")
 	self:_enter(enter_data)
@@ -4958,23 +4957,38 @@ function PlayerStandard:set_animation_weapon_hold(name_override)
 		self._camera_unit:anim_state_machine():set_global(self._weapon_hold, 0)
 	end
 
-	if not name_override then
-		local weapon = self._ext_inventory:equipped_unit()
-
-		if weapon then
-			self._weapon_hold = weapon:base().weapon_hold and weapon:base():weapon_hold() or weapon:base():get_name_id()
-
-			if self:current_anim_state_name() ~= "standard" then
-				self._weapon_hold = self._weapon_hold .. "_" .. self:current_anim_state_name()
-			end
-		end
-	else
-		self._weapon_hold = name_override
-	end
+	self._weapon_hold = name_override or self:get_weapon_hold_str()
 
 	if self._weapon_hold then
 		self._camera_unit:anim_state_machine():set_global(self._weapon_hold, 1)
 	end
+end
+
+function PlayerStandard:get_weapon_hold_str()
+	local hold_str = self._weapon_hold or "m4"
+	local weapon = self._ext_inventory:equipped_unit()
+
+	if weapon then
+		local base_ext = weapon:base()
+		local hold_tweak = base_ext.weapon_hold and base_ext:weapon_hold()
+		local ignore_states = nil
+
+		if type(hold_tweak) == "table" then
+			hold_str = hold_tweak[1]
+			ignore_states = hold_tweak[2]
+		else
+			hold_str = hold_tweak
+		end
+
+		hold_str = hold_str or base_ext:get_name_id()
+		local cur_state = self:current_anim_state_name()
+
+		if cur_state ~= "standard" and (not ignore_states or ignore_states[cur_state] ~= false) then
+			hold_str = hold_str .. "_" .. cur_state
+		end
+	end
+
+	return hold_str
 end
 
 function PlayerStandard:inventory_clbk_listener(unit, event)

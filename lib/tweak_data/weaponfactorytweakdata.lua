@@ -21853,12 +21853,13 @@ function WeaponFactoryTweakData:_init_supernova()
 			40
 		},
 		stats = {
-			value = 1,
+			extra_ammo = 1,
 			total_ammo_mod = 4,
 			damage = -10,
 			concealment = 2,
 			spread = -2,
-			recoil = 1
+			recoil = 1,
+			value = 1
 		},
 		override = {
 			wpn_fps_sho_supernova_b_standard = {
