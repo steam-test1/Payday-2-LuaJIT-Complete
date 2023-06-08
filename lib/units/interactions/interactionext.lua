@@ -18,6 +18,8 @@ BaseInteractionExt.INFO_IDS = {
 	64,
 	128
 }
+BaseInteractionExt.is_steam = SystemInfo:distribution() == Idstring("STEAM")
+BaseInteractionExt.is_epic = SystemInfo:distribution() == Idstring("EPIC")
 
 function BaseInteractionExt:init(unit)
 	self._unit = unit
@@ -3336,39 +3338,53 @@ end
 
 AccessFBIFilesInteractionExt = AccessFBIFilesInteractionExt or class(UseInteractionExt)
 
-function AccessFBIFilesInteractionExt:_interact_blocked(player)
-	return false
+function AccessFBIFilesInteractionExt:init(unit)
+	AccessFBIFilesInteractionExt.super.init(self, unit)
+	self._unit:set_enabled(BaseInteractionExt.is_steam)
+end
+
+function AccessFBIFilesInteractionExt:can_select(player)
+	return self._unit:enabled()
 end
 
 function AccessFBIFilesInteractionExt:interact(player)
 	AccessFBIFilesInteractionExt.super.super.interact(self, player)
-	Steam:overlay_activate("url", tweak_data.gui.fbi_files_webpage .. "/suspect/" .. Steam:userid() .. "/")
+	managers.network.account:overlay_activate("url", tweak_data.gui.fbi_files_webpage .. "/suspect/" .. managers.network.account:player_id() .. "/")
 
 	return true
 end
 
 AccessPD2StashInteractionExt = AccessPD2StashInteractionExt or class(UseInteractionExt)
 
-function AccessPD2StashInteractionExt:_interact_blocked(player)
-	return false
+function AccessPD2StashInteractionExt:init(unit)
+	AccessPD2StashInteractionExt.super.init(self, unit)
+	self._unit:set_enabled(BaseInteractionExt.is_steam)
+end
+
+function AccessPD2StashInteractionExt:can_select(player)
+	return self._unit:enabled()
 end
 
 function AccessPD2StashInteractionExt:interact(player)
 	AccessPD2StashInteractionExt.super.super.interact(self, player)
-	Steam:overlay_activate("url", "https://fbi.paydaythegame.com/?skinbrowser=show")
+	managers.network.account:overlay_activate("url", "https://fbi.paydaythegame.com/?skinbrowser=show")
 
 	return true
 end
 
 AccessBankInvadersInteractionExt = AccessBankInvadersInteractionExt or class(UseInteractionExt)
 
-function AccessBankInvadersInteractionExt:_interact_blocked(player)
-	return false
+function AccessBankInvadersInteractionExt:init(unit)
+	AccessBankInvadersInteractionExt.super.init(self, unit)
+end
+
+function AccessBankInvadersInteractionExt:can_select(player)
+	return self._unit:enabled()
 end
 
 function AccessBankInvadersInteractionExt:interact(player)
 	AccessBankInvadersInteractionExt.super.super.interact(self, player)
-	Steam:overlay_activate("url", "https://www.paydaythegame.com/legacy-static/bankinvaders2/")
+	managers.network.account:overlay_activate("url", "https://www.paydaythegame.com/legacy-static/bankinvaders2/")
 
 	return true
 end

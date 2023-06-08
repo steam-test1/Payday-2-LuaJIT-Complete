@@ -34,7 +34,7 @@ function MenuManager:on_enter_lobby()
 		managers.menu:active_menu().logic:select_node("lobby", true, {})
 	end
 
-	managers.platform:set_rich_presence("MPLobby")
+	managers.platform:set_rich_presence_state("MPLobby")
 	managers.menu_component:pre_set_game_chat_leftbottom(0, 50)
 	managers.network:session():on_entered_lobby()
 	self:setup_local_lobby_character()
@@ -100,7 +100,7 @@ function MenuManager:cash_safe_scene_done()
 end
 
 function MenuManager:http_test()
-	Steam:http_request("http://www.overkillsoftware.com/?feed=rss", callback(self, self, "http_test_result"))
+	HttpRequest:get("http://www.overkillsoftware.com/?feed=rss", callback(self, self, "http_test_result"))
 end
 
 function MenuManager:http_test_result(success, body)
@@ -159,7 +159,7 @@ function MenuCallbackHandler:start_job(job_data)
 		managers.network.matchmake:create_lobby(matchmake_attributes)
 	end
 
-	managers.platform:refresh_rich_presence()
+	managers.platform:refresh_rich_presence_state()
 end
 
 function MenuCallbackHandler:play_single_player_job(item)
@@ -471,7 +471,7 @@ function MenuCallbackHandler:_update_outfit_information()
 	local outfit_string = managers.blackmarket:outfit_string()
 
 	if self:is_steam() then
-		Steam:set_rich_presence("outfit", outfit_string)
+		managers.platform:set_rich_presence("outfit", outfit_string)
 	end
 
 	if managers.network:session() then
@@ -894,9 +894,7 @@ function MenuManager:show_buy_weapon(params, weapon, cost)
 end
 
 function MenuCallbackHandler:on_visit_crimefest_challenges()
-	if SystemInfo:distribution() == Idstring("STEAM") then
-		Steam:overlay_activate("url", tweak_data.gui.crimefest_challenges_webpage)
-	end
+	managers.network.account:overlay_activate("url", tweak_data.gui.crimefest_challenges_webpage)
 end
 
 function MenuCallbackHandler:got_new_steam_lootdrop(item)
@@ -914,23 +912,61 @@ function MenuCallbackHandler:can_toggle_chat()
 end
 
 function MenuCallbackHandler:on_visit_fbi_files()
-	if SystemInfo:distribution() == Idstring("STEAM") then
-		if MenuCallbackHandler:is_overlay_enabled() then
-			Steam:overlay_activate("url", tweak_data.gui.fbi_files_webpage)
-		else
-			managers.menu:show_enable_steam_overlay()
-		end
-	end
+	managers.network.account:overlay_activate("url", tweak_data.gui.fbi_files_webpage)
 end
 
 function MenuCallbackHandler:on_visit_fbi_files_suspect(item)
-	if item and SystemInfo:distribution() == Idstring("STEAM") then
-		if MenuCallbackHandler:is_overlay_enabled() then
-			Steam:overlay_activate("url", tweak_data.gui.fbi_files_webpage .. (item and "/suspect/" .. item:name() .. "/" or ""))
-		else
-			managers.menu:show_enable_steam_overlay()
-		end
+	if item then
+		managers.network.account:overlay_activate("url", tweak_data.gui.fbi_files_webpage .. (item and "/suspect/" .. item:name() .. "/" or ""))
 	end
+end
+
+function MenuCallbackHandler:on_add_user_socialhub(item)
+	managers.menu:show_socialhub_action_dialog({
+		action = "add",
+		user_id = item._parameters.user_id,
+		name = item:name(),
+		callback = function ()
+			if item then
+				managers.socialhub:add_user_friend(item._parameters.user_id)
+				MenuCallbackHandler:save_progress()
+			end
+
+			managers.menu:back(true)
+		end
+	})
+end
+
+function MenuCallbackHandler:on_block_user_socialhub(item)
+	managers.menu:show_socialhub_action_dialog({
+		action = "block",
+		user_id = item._parameters.user_id,
+		name = item:name(),
+		callback = function ()
+			if item then
+				managers.socialhub:add_user_blocked(item._parameters.user_id)
+				MenuCallbackHandler:save_progress()
+			end
+
+			managers.menu:back(true)
+		end
+	})
+end
+
+function MenuCallbackHandler:on_remove_user_socialhub(item)
+	managers.menu:show_socialhub_action_dialog({
+		action = "remove",
+		user_id = item._parameters.user_id,
+		name = item:name(),
+		callback = function ()
+			if item then
+				managers.socialhub:remove_user_friend(item._parameters.user_id)
+				MenuCallbackHandler:save_progress()
+			end
+
+			managers.menu:back(true)
+		end
+	})
 end
 
 FbiFilesInitiator = FbiFilesInitiator or class()
@@ -959,7 +995,7 @@ function FbiFilesInitiator:modify_node(node, up)
 			localize_help = false,
 			callback = "on_visit_fbi_files_suspect",
 			to_upper = false,
-			name = peer:user_id(),
+			name = peer:account_id(),
 			text_id = name .. experience,
 			color_ranges = color_ranges,
 			rpc = peer:rpc(),
@@ -970,24 +1006,26 @@ function FbiFilesInitiator:modify_node(node, up)
 		node:add_item(new_item)
 
 		for _, peer in pairs(managers.network:session():peers()) do
-			local name = peer:name()
-			local color_range_offset = utf8.len(name) + 2
-			local experience, color_ranges = managers.experience:gui_string(level, rank, color_range_offset)
-			experience = " (" .. experience .. ")"
-			local params = {
-				localize = false,
-				localize_help = false,
-				callback = "on_visit_fbi_files_suspect",
-				to_upper = false,
-				name = peer:user_id(),
-				text_id = name .. experience,
-				color_ranges = color_ranges,
-				rpc = peer:rpc(),
-				peer = peer
-			}
-			local new_item = node:create_item(nil, params)
+			if peer:acount_type() == Idstring("STEAM") then
+				local name = peer:name()
+				local color_range_offset = utf8.len(name) + 2
+				local experience, color_ranges = managers.experience:gui_string(level, rank, color_range_offset)
+				experience = " (" .. experience .. ")"
+				local params = {
+					localize = false,
+					localize_help = false,
+					callback = "on_visit_fbi_files_suspect",
+					to_upper = false,
+					name = peer:account_id(),
+					text_id = name .. experience,
+					color_ranges = color_ranges,
+					rpc = peer:rpc(),
+					peer = peer
+				}
+				local new_item = node:create_item(nil, params)
 
-			node:add_item(new_item)
+				node:add_item(new_item)
+			end
 		end
 	end
 
@@ -1035,7 +1073,7 @@ function PlayerListInitiator:add_peer_item(node, peer)
 		localize_help = false,
 		callback = "on_player_list_inspect_peer",
 		to_upper = false,
-		name = peer:user_id(),
+		name = peer:account_id(),
 		text_id = text_id,
 		color_ranges = color_ranges,
 		icon = texture,
@@ -1052,10 +1090,11 @@ function PlayerListInitiator:modify_node(node, up)
 	node:clean_items()
 
 	local params = {
-		callback = "on_visit_fbi_files",
+		visible_callback = "is_steam",
 		name = "on_visit_fbi_files",
-		help_id = "menu_visit_fbi_files_help",
-		text_id = "menu_visit_fbi_files"
+		callback = "on_visit_fbi_files",
+		text_id = "menu_visit_fbi_files",
+		help_id = "menu_visit_fbi_files_help"
 	}
 	local new_item = node:create_item(nil, params)
 
@@ -1114,16 +1153,18 @@ function InspectPlayerInitiator:modify_node(node, inspect_peer)
 
 	node:add_item(new_item)
 
-	local params = {
-		callback = "on_visit_fbi_files_suspect",
-		help_id = "menu_visit_fbi_files_help",
-		text_id = "menu_visit_fbi_files",
-		name = inspect_peer:user_id()
-	}
-	local new_item = node:create_item(nil, params)
+	if MenuCallbackHandler:is_steam() and inspect_peer:account_type() == Idstring("STEAM") then
+		local params = {
+			callback = "on_visit_fbi_files_suspect",
+			help_id = "menu_visit_fbi_files_help",
+			text_id = "menu_visit_fbi_files",
+			name = inspect_peer:account_id()
+		}
+		local new_item = node:create_item(nil, params)
 
-	node:add_item(new_item)
-	self:create_divider(node, "fbi_spacer")
+		node:add_item(new_item)
+		self:create_divider(node, "fbi_spacer")
+	end
 
 	if not is_local_peer and Network:is_server() then
 		if MenuCallbackHandler:kick_player_visible() or MenuCallbackHandler:kick_vote_visible() then
@@ -1140,7 +1181,7 @@ function InspectPlayerInitiator:modify_node(node, inspect_peer)
 		end
 
 		local function get_identifier(peer)
-			return SystemInfo:platform() == Idstring("WIN32") and peer:user_id() or peer:name()
+			return SystemInfo:platform() == Idstring("WIN32") and peer:account_id() or peer:name()
 		end
 
 		local params = {
@@ -1170,9 +1211,46 @@ function InspectPlayerInitiator:modify_node(node, inspect_peer)
 		toggle_mute:set_value(inspect_peer:is_muted() and "on" or "off")
 	end
 
+	self:create_divider(node, "socialhub_spacer")
+
+	if not is_local_peer and not managers.socialhub:is_user_friend(inspect_peer._user_id) then
+		local add_user = {
+			callback = "on_add_user_socialhub",
+			name = "shub_add_user",
+			text_id = "menu_players_socialhub_add_user",
+			help_id = "menu_players_socialhub_add_user_help",
+			user_id = inspect_peer._user_id
+		}
+		local new_item = node:create_item(nil, add_user)
+
+		node:add_item(new_item)
+
+		local block_user = {
+			callback = "on_block_user_socialhub",
+			name = "shub_block_user",
+			text_id = "menu_players_socialhub_block_user",
+			help_id = "menu_players_socialhub_block_user_help",
+			user_id = inspect_peer._user_id
+		}
+		local new_item = node:create_item(nil, block_user)
+
+		node:add_item(new_item)
+	elseif not is_local_peer and managers.socialhub:is_user_friend(inspect_peer._user_id) then
+		local remove_user = {
+			callback = "on_remove_user_socialhub",
+			name = "shub_remove_user",
+			text_id = "menu_players_socialhub_remove_user",
+			help_id = "menu_players_socialhub_remove_friend_help",
+			user_id = inspect_peer._user_id
+		}
+		local new_item = node:create_item(nil, remove_user)
+
+		node:add_item(new_item)
+	end
+
 	self:create_divider(node, "admin_spacer")
 
-	local user = Steam:user(inspect_peer:ip())
+	local user = SystemInfo:distribution() == Idstring("STEAM") and Steam:user(inspect_peer:ip())
 
 	if user and user:rich_presence("is_modded") == "1" or inspect_peer:is_modded() then
 		local params = {
@@ -1217,9 +1295,9 @@ function MenuCallbackHandler:inspect_mod(item)
 	local mod_name = item:parameters().mod_id
 
 	if mod_name then
-		Steam:overlay_activate("url", "https://modworkshop.net/find/mod?q=" .. mod_name .. "&tags=&gid=1")
+		managers.network.account:overlay_activate("url", "https://modworkshop.net/find/mod?q=" .. mod_name .. "&tags=&gid=1")
 	else
-		Steam:overlay_activate("url", "https://modworkshop.net")
+		managers.network.account:overlay_activate("url", "https://modworkshop.net")
 	end
 end
 
@@ -1407,7 +1485,7 @@ function MenuCallbackHandler:steam_buy_drill(item, data)
 		managers.network.account:add_overlay_listener("steam_transaction_tradable_item", {
 			"overlay_close"
 		}, callback(MenuCallbackHandler, MenuCallbackHandler, "on_steam_transaction_over"))
-		Steam:overlay_activate("url", tweak_data.economy:create_buy_tradable_url(def_id, quantity))
+		managers.network.account:overlay_activate("url", tweak_data.economy:create_buy_tradable_url(def_id, quantity))
 		managers.menu:show_buying_tradable_item_dialog()
 	end
 end
@@ -1430,7 +1508,7 @@ function MenuCallbackHandler:steam_buy_safe_from_community(item, data)
 		managers.network.account:add_overlay_listener("steam_transaction_tradable_item", {
 			"overlay_close"
 		}, callback(MenuCallbackHandler, MenuCallbackHandler, "on_steam_transaction_over"))
-		Steam:overlay_activate("url", tweak_data.economy:create_market_link_url("safes", safe))
+		managers.network.account:overlay_activate("url", tweak_data.economy:create_market_link_url("safes", safe))
 		managers.menu:show_buying_tradable_item_dialog()
 	end
 end
@@ -1453,13 +1531,13 @@ function MenuCallbackHandler:steam_find_item_from_community(item, data)
 		managers.network.account:add_overlay_listener("steam_transaction_tradable_item", {
 			"overlay_close"
 		}, callback(MenuCallbackHandler, MenuCallbackHandler, "on_steam_transaction_over"))
-		Steam:overlay_activate("url", tweak_data.economy:create_weapon_skin_market_search_url(weapon_id, cosmetic_id))
+		managers.network.account:overlay_activate("url", tweak_data.economy:create_weapon_skin_market_search_url(weapon_id, cosmetic_id))
 		managers.menu:show_buying_tradable_item_dialog()
 	elseif cosmetic_id and data.armor then
 		managers.network.account:add_overlay_listener("steam_transaction_tradable_item", {
 			"overlay_close"
 		}, callback(MenuCallbackHandler, MenuCallbackHandler, "on_steam_transaction_over"))
-		Steam:overlay_activate("url", tweak_data.economy:create_armor_skin_market_search_url(data.cosmetic_id))
+		managers.network.account:overlay_activate("url", tweak_data.economy:create_armor_skin_market_search_url(data.cosmetic_id))
 		managers.menu:show_buying_tradable_item_dialog()
 	end
 end
@@ -1475,7 +1553,7 @@ function MenuCallbackHandler:steam_sell_item(item)
 		managers.network.account:add_overlay_listener("steam_transaction_tradable_item", {
 			"overlay_close"
 		}, callback(MenuCallbackHandler, MenuCallbackHandler, "on_steam_transaction_over"))
-		Steam:overlay_activate("url", tweak_data.economy:create_sell_tradable_url(steam_id, instance_id))
+		managers.network.account:overlay_activate("url", tweak_data.economy:create_sell_tradable_url(steam_id, instance_id))
 	end
 end
 
@@ -1555,7 +1633,7 @@ function MenuBanListInitiator:modify_node(node)
 	local added = false
 
 	local function get_identifier(peer)
-		return SystemInfo:platform() == Idstring("WIN32") and peer:user_id() or peer:name()
+		return SystemInfo:platform() == Idstring("WIN32") and peer:account_id() or peer:name()
 	end
 
 	if managers.network:session() then
@@ -1828,7 +1906,7 @@ function MenuMutatorsInitiator:modify_node(node)
 	node:clean_items()
 
 	local function get_identifier(peer)
-		return SystemInfo:platform() == Idstring("WIN32") and peer:user_id() or peer:name()
+		return SystemInfo:platform() == Idstring("WIN32") and peer:account_id() or peer:name()
 	end
 
 	if #managers.mutators:mutators() < 1 then
@@ -3168,7 +3246,15 @@ function MenuCallbackHandler:toggle_vr_descs(item)
 end
 
 function MenuCallbackHandler:enable_movie_theater()
-	return managers.achievment:get_info("vit_1").awarded
+	return managers.achievment:get_info("vit_1").awarded or managers.achievment:get_info("fin_1").awarded
+end
+
+function MenuCallbackHandler:has_only_one_movie()
+	return managers.achievment:get_info("vit_1").awarded and not managers.achievment:get_info("fin_1").awarded
+end
+
+function MenuCallbackHandler:has_all_movies()
+	return managers.achievment:get_info("fin_1").awarded
 end
 
 function MenuCallbackHandler:only_one_movie()
@@ -3458,12 +3544,6 @@ function MenuCallbackHandler:sort_weapon_colors(x_option, y_option)
 end
 
 function MenuCallbackHandler:open_dlc_store_page(dlc, context)
-	if not MenuCallbackHandler:is_overlay_enabled() then
-		managers.menu:show_enable_steam_overlay()
-
-		return false
-	end
-
 	local dlc_data = Global.dlc_manager.all_dlc_data[dlc]
 
 	if not dlc_data then
@@ -3471,21 +3551,7 @@ function MenuCallbackHandler:open_dlc_store_page(dlc, context)
 		dlc_data = Global.dlc_manager.all_dlc_data[dlc]
 	end
 
-	if dlc_data then
-		if dlc_data.app_id then
-			local url = string.format("https://store.steampowered.com/app/%s/?utm_source=%s&utm_medium=%s&utm_campaign=%s", tostring(dlc_data.app_id), "ingame", context and tostring(context) or "inventory", "ingameupsell")
-
-			Steam:overlay_activate("url", url)
-		elseif dlc_data.source_id then
-			Steam:overlay_activate("game", "OfficialGameGroup")
-		else
-			Steam:overlay_activate("url", tweak_data.gui.store_page)
-		end
-
-		return true
-	end
-
-	return false
+	return managers.network.account:open_dlc_store_page(dlc_data, context)
 end
 
 MenuArmorSkinEditorInitiator = MenuArmorSkinEditorInitiator or class(MenuInitiatorBase)

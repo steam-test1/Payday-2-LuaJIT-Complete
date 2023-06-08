@@ -70,6 +70,21 @@ end
 function NetworkVoiceChatDisabled:peer_team(xuid, team, rpc)
 end
 
+function NetworkVoiceChatDisabled:enabled()
+end
+
+function NetworkVoiceChatDisabled:set_recording()
+end
+
+function NetworkVoiceChatDisabled:on_member_added()
+end
+
+function NetworkVoiceChatDisabled:on_member_removed()
+end
+
+function NetworkVoiceChatDisabled:is_muted()
+end
+
 function NetworkVoiceChatDisabled:_open_close_peers()
 end
 

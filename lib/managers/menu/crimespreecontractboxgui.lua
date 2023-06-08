@@ -108,9 +108,7 @@ function CrimeSpreeContractBoxGui:mouse_pressed(button, x, y)
 				local peer = managers.network:session() and managers.network:session():peer(peer_id)
 
 				if peer then
-					Steam:overlay_activate("url", tweak_data.gui.fbi_files_webpage .. "/suspect/" .. peer:user_id() .. "/")
-
-					return
+					return peer:overlay_inspect()
 				end
 			end
 		end

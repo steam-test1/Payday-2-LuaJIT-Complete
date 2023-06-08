@@ -53,23 +53,23 @@ function RaidMenuGui:open_raid_masks_menu()
 end
 
 function RaidMenuGui:open_raid_trailer()
-	Steam:overlay_activate("url", "https://www.youtube.com/embed/XARRgLUzSiA")
+	managers.network.account:overlay_activate("url", "https://www.youtube.com/embed/XARRgLUzSiA")
 end
 
 function RaidMenuGui:open_dev_diary_trailer()
-	Steam:overlay_activate("url", "https://www.youtube.com/embed/cm98FnsSKvY")
+	managers.network.account:overlay_activate("url", "https://www.youtube.com/embed/cm98FnsSKvY")
 end
 
 function RaidMenuGui:open_gameplay_trailer()
-	Steam:overlay_activate("url", "https://www.youtube.com/embed/Kl2qT-UJVJ4")
+	managers.network.account:overlay_activate("url", "https://www.youtube.com/embed/Kl2qT-UJVJ4")
 end
 
 function RaidMenuGui:open_raid_gang()
-	Steam:overlay_activate("url", "http://www.raidworldwar2.com/#characters")
+	managers.network.account:overlay_activate("url", "http://www.raidworldwar2.com/#characters")
 end
 
 function RaidMenuGui:open_raid_feedback()
-	Steam:overlay_activate("url", "https://steamcommunity.com/games/" .. RaidMenuGui.RaidAppId .. "/")
+	managers.network.account:overlay_activate("url", "https://steamcommunity.com/games/" .. RaidMenuGui.RaidAppId .. "/")
 end
 
 function RaidMenuGui:open_raid_special_edition_menu()
@@ -78,11 +78,11 @@ function RaidMenuGui:open_raid_special_edition_menu()
 end
 
 function RaidMenuGui:open_raid_special_edition()
-	Steam:overlay_activate("url", "https://store.steampowered.com/app/" .. RaidMenuGui.RaidAppId .. "/")
+	managers.network.account:overlay_activate("url", "https://store.steampowered.com/app/" .. RaidMenuGui.RaidAppId .. "/")
 end
 
 function RaidMenuGui:open_raid_twitch()
-	Steam:overlay_activate("url", "https://www.twitch.tv/liongamelion")
+	managers.network.account:overlay_activate("url", "https://www.twitch.tv/liongamelion")
 end
 
 function RaidMenuGui:open_raid_preorder_menu()
@@ -91,7 +91,7 @@ function RaidMenuGui:open_raid_preorder_menu()
 end
 
 function RaidMenuGui:open_raid_preorder()
-	Steam:overlay_activate("url", "https://store.steampowered.com/app/" .. RaidMenuGui.RaidAppId .. "/")
+	managers.network.account:overlay_activate("url", "https://store.steampowered.com/app/" .. RaidMenuGui.RaidAppId .. "/")
 end
 
 function RaidMenuGui:preview_breech()

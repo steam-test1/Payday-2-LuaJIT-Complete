@@ -74,15 +74,18 @@ function GenericPlatformManager:presence()
 	return self._current_presence
 end
 
-function GenericPlatformManager:set_rich_presence(name)
+function GenericPlatformManager:set_rich_presence(Key, value)
+end
+
+function GenericPlatformManager:set_rich_presence_state(name)
 	self._current_rich_presence = name
 end
 
-function GenericPlatformManager:refresh_rich_presence()
-	self:set_rich_presence(self._current_rich_presence)
+function GenericPlatformManager:refresh_rich_presence_state()
+	self:set_rich_presence_state(self._current_rich_presence)
 end
 
-function GenericPlatformManager:rich_presence()
+function GenericPlatformManager:rich_presence_state()
 	return self._current_rich_presence
 end
 
@@ -113,9 +116,9 @@ function Xbox360PlatformManager:destroy_context()
 	XboxLive:set_callback(nil)
 end
 
-function Xbox360PlatformManager:set_rich_presence(name, callback)
-	print("Xbox360PlatformManager:set_rich_presence", name)
-	GenericPlatformManager.set_rich_presence(self, name)
+function Xbox360PlatformManager:set_rich_presence_state(name, callback)
+	print("Xbox360PlatformManager:set_rich_presence_state", name)
+	GenericPlatformManager.set_rich_presence_state(self, name)
 
 	if callback then
 		XboxLive:set_context("presence", name, callback)
@@ -142,9 +145,9 @@ function XB1PlatformManager:destroy_context()
 	XboxLive:set_callback(nil)
 end
 
-function XB1PlatformManager:set_rich_presence(name, callback)
-	print("XB1PlatformManager:set_rich_presence", name)
-	GenericPlatformManager.set_rich_presence(self, name)
+function XB1PlatformManager:set_rich_presence_state(name, callback)
+	print("XB1PlatformManager:set_rich_presence_state", name)
+	GenericPlatformManager.set_rich_presence_state(self, name)
 
 	if callback then
 		XboxLive:set_context("presence", name, callback)
@@ -257,9 +260,9 @@ function PS4PlatformManager:set_presence(name)
 	GenericPlatformManager.set_presence(self, name)
 end
 
-function PS4PlatformManager:set_rich_presence(name)
-	print("PS4PlatformManager:set_rich_presence", name)
-	GenericPlatformManager.set_rich_presence(self, name)
+function PS4PlatformManager:set_rich_presence_state(name)
+	print("PS4PlatformManager:set_rich_presence_state", name)
+	GenericPlatformManager.set_rich_presence_state(self, name)
 	PSN:set_presence_info(managers.localization:text("ps4_presence_" .. name))
 end
 
@@ -297,21 +300,44 @@ end
 
 WinPlatformManager = WinPlatformManager or class(GenericPlatformManager)
 PlatformManager.PLATFORM_CLASS_MAP[_G.Idstring("WIN32"):key()] = WinPlatformManager
+local is_steam = SystemInfo:distribution() == _G.Idstring("STEAM")
+local is_epic = SystemInfo:distribution() == _G.Idstring("EPIC")
+local is_mm_eos = SystemInfo:matchmaking() == _G.Idstring("MM_EPIC")
 
-function WinPlatformManager:set_rich_presence(name)
+function WinPlatformManager:set_rich_presence(key, value)
+	if is_steam then
+		Steam:set_rich_presence(key, value)
+	elseif is_epic then
+		-- Nothing
+	end
+end
+
+function WinPlatformManager:set_rich_presence_state(name)
 	self._current_rich_presence = name
 
-	if SystemInfo:distribution() == Idstring("STEAM") and not Global.game_settings.single_player then
+	if not Global.game_settings.single_player then
 		if name == "Idle" then
-			Steam:set_rich_presence("status", "")
-			Steam:set_rich_presence("steam_display", "")
+			if is_steam then
+				self:set_rich_presence("status", "")
+				self:set_rich_presence("steam_display", "")
+
+				if is_mm_eos then
+					self:set_rich_presence("connect", "")
+				end
+			end
 		elseif managers.network.matchmake.lobby_handler then
 			local rich_presence_allowed = true
 			rich_presence_allowed = rich_presence_allowed and Global.game_settings.permission ~= "private"
 
 			if not rich_presence_allowed then
-				Steam:set_rich_presence("status", "")
-				Steam:set_rich_presence("steam_display", "")
+				if is_steam then
+					self:set_rich_presence("status", "")
+					self:set_rich_presence("steam_display", "")
+
+					if is_mm_eos then
+						self:set_rich_presence("connect", "")
+					end
+				end
 
 				return
 			end
@@ -361,15 +387,24 @@ function WinPlatformManager:set_rich_presence(name)
 				difficulty = difficulty or "",
 				heist_token = heist_token or "",
 				max_peers = max_peers,
-				steam_display = display_token or "",
-				steam_player_group = lobby_id,
-				steam_player_group_size = peer_count,
-				crime_spree_rank = crime_spree_rank or "",
-				status = self:_build_legacy_presence_string()
+				crime_spree_rank = crime_spree_rank or ""
 			}
 
+			if is_steam then
+				rp_pairs.steam_display = display_token or ""
+				rp_pairs.steam_player_group = lobby_id
+				rp_pairs.steam_player_group_size = peer_count
+				rp_pairs.status = self:_build_legacy_presence_string()
+
+				if is_mm_eos and lobby_id and managers.network.account.connect_string then
+					local connect_string = string.format("%s %s", managers.network.account.connect_string, lobby_id)
+
+					self:set_rich_presence("connect", connect_string)
+				end
+			end
+
 			for key, value in pairs(rp_pairs) do
-				Steam:set_rich_presence(key, value)
+				self:set_rich_presence(key, value)
 			end
 		end
 	end

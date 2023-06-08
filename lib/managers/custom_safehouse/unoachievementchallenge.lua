@@ -50,7 +50,7 @@ function UnoAchievementChallenge:set_peer_completed(peer_id, completed)
 end
 
 function UnoAchievementChallenge:uno_ending_key()
-	return Application:md5_encrypt("9x7XhhdHVse6hmRBTmz2" .. Steam:userid())
+	return Application:md5_encrypt("9x7XhhdHVse6hmRBTmz2" .. managers.network.account:player_id())
 end
 
 function UnoAchievementChallenge:on_achievement_awarded(achievement_id)

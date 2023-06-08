@@ -13,7 +13,7 @@ local mobdebug = {
 	yieldtimeout = 0.02,
 	_DESCRIPTION = "Mobile Remote Debugger for the Lua programming language",
 	_NAME = "mobdebug",
-	_VERSION = "0.706",
+	_VERSION = "0.803",
 	_COPYRIGHT = "Paul Kulchenko",
 	checkcount = 200,
 	connecttimeout = 2,
@@ -35,8 +35,13 @@ local find = string.find
 local genv = _G or _ENV
 local jit = rawget(genv, "jit")
 local MOAICoroutine = rawget(genv, "MOAICoroutine")
-local metagindex = getmetatable(genv) and getmetatable(genv).__index
-local ngx = type(metagindex) == "table" and metagindex.rawget and metagindex:rawget("ngx") or nil
+local ngx = rawget(genv, "ngx")
+
+if not ngx then
+	local metagindex = getmetatable(genv) and getmetatable(genv).__index
+	ngx = type(metagindex) == "table" and metagindex.rawget and metagindex:rawget("ngx") or nil
+end
+
 local corocreate = ngx and coroutine._create or coroutine.create
 local cororesume = ngx and coroutine._resume or coroutine.resume
 local coroyield = ngx and coroutine._yield or coroutine.yield
@@ -183,7 +188,9 @@ local serpent = function ()
 	end
 
 	for k, v in pairs(G) do
-		globals[v] = k
+		if type(v) == "function" then
+			globals[v] = k
+		end
 	end
 
 	for _, g in ipairs({
@@ -196,7 +203,9 @@ local serpent = function ()
 		"os"
 	}) do
 		for k, v in pairs(type(G[g]) == "table" and G[g] or {}) do
-			globals[v] = g .. "." .. k
+			if type(v) == "function" then
+				globals[v] = g .. "." .. k
+			end
 		end
 	end
 
@@ -513,7 +522,7 @@ local function stack(start)
 		while true do
 			local name, value = debug.getlocal(f, -i)
 
-			if not name or name ~= "(*vararg)" then
+			if not name then
 				break
 			end
 
@@ -576,10 +585,6 @@ local function stack(start)
 			},
 			vars(i + 1)
 		})
-
-		if source.what == "main" then
-			break
-		end
 	end
 
 	return stack
@@ -733,7 +738,7 @@ local function capture_vars(level, thread)
 			name, value = debug.getlocal(level, -i)
 		end
 
-		if not name or name ~= "(*vararg)" then
+		if not name then
 			break
 		end
 
@@ -841,7 +846,7 @@ local function handle_breakpoint(peer)
 		return
 	end
 
-	local res, _, partial = peer:receive()
+	local res, _, partial = peer:receive("*l")
 
 	if not res then
 		if partial then
@@ -879,7 +884,7 @@ local function normalize_path(file)
 end
 
 local function debug_hook(event, line)
-	if jit then
+	if jit and (not ngx or type(ngx) ~= "table" or not ngx.say) then
 		local coro, main = coroutine.running()
 
 		if not coro or main then
@@ -950,10 +955,9 @@ local function debug_hook(event, line)
 
 				if find(file, "^%./") then
 					file = sub(file, 3)
-				else
-					file = gsub(file, "^" .. q(basedir), "")
 				end
 
+				file = gsub(file, "^" .. q(basedir), "")
 				file = gsub(file, "\n", " ")
 			else
 				file = mobdebug.line(file)
@@ -1049,12 +1053,10 @@ local function stringify_results(params, status, ...)
 		params.comment = 1
 	end
 
-	local t = {
-		...
-	}
+	local t = {}
 
-	for i, v in pairs(t) do
-		local ok, res = pcall(mobdebug.line, v, params)
+	for i = 1, select("#", ...) do
+		local ok, res = pcall(mobdebug.line, select(i, ...), params)
 		t[i] = ok and res or ("%q"):format(res):gsub("\n", "n"):gsub("", "\\026")
 	end
 
@@ -1086,6 +1088,7 @@ local function done()
 	coro_debugger = nil
 	seen_hook = nil
 	abort = nil
+	basedir = ""
 end
 
 local function debugger_loop(sev, svars, sfile, sline)
@@ -1110,7 +1113,7 @@ local function debugger_loop(sev, svars, sfile, sline)
 		end
 
 		while true do
-			line, err = server:receive()
+			line, err = server:receive("*l")
 
 			if not line then
 				if err == "timeout" then
@@ -1675,11 +1678,11 @@ local function handle(params, client, options)
 
 	if command == "run" or command == "step" or command == "out" or command == "over" or command == "exit" then
 		client:send(string.upper(command) .. "\n")
-		client:receive()
+		client:receive("*l")
 
 		while true do
 			local done = true
-			local breakpoint = client:receive()
+			local breakpoint = client:receive("*l")
 
 			if not breakpoint then
 				print("Program finished")
@@ -1751,7 +1754,7 @@ local function handle(params, client, options)
 
 			client:send("SETB " .. file .. " " .. line .. "\n")
 
-			if command == "asetb" or client:receive() == "200 OK" then
+			if command == "asetb" or client:receive("*l") == "200 OK" then
 				set_breakpoint(file, line)
 			else
 				print("Error: breakpoint not inserted")
@@ -1765,7 +1768,7 @@ local function handle(params, client, options)
 		if exp then
 			client:send("SETW " .. exp .. "\n")
 
-			local answer = client:receive()
+			local answer = client:receive("*l")
 			local _, _, watch_idx = string.find(answer, "^200 OK (%d+)%s*$")
 
 			if watch_idx then
@@ -1797,7 +1800,7 @@ local function handle(params, client, options)
 
 			client:send("DELB " .. file .. " " .. line .. "\n")
 
-			if command == "adelb" or client:receive() == "200 OK" then
+			if command == "adelb" or client:receive("*l") == "200 OK" then
 				remove_breakpoint(file, line)
 			else
 				print("Error: breakpoint not removed")
@@ -1811,7 +1814,7 @@ local function handle(params, client, options)
 
 		client:send("DELB " .. file .. " " .. tostring(line) .. "\n")
 
-		if client:receive() == "200 OK" then
+		if client:receive("*l") == "200 OK" then
 			remove_breakpoint(file, line)
 		else
 			print("Error: all breakpoints not removed")
@@ -1822,7 +1825,7 @@ local function handle(params, client, options)
 		if index then
 			client:send("DELW " .. index .. "\n")
 
-			if client:receive() == "200 OK" then
+			if client:receive("*l") == "200 OK" then
 				watches[index] = nil
 			else
 				print("Error: watch expression not removed")
@@ -1834,7 +1837,7 @@ local function handle(params, client, options)
 		for index, exp in pairs(watches) do
 			client:send("DELW " .. index .. "\n")
 
-			if client:receive() == "200 OK" then
+			if client:receive("*l") == "200 OK" then
 				watches[index] = nil
 			else
 				print("Error: watch expression at index " .. index .. " [" .. exp .. "] not removed")
@@ -1845,7 +1848,7 @@ local function handle(params, client, options)
 
 		if exp or command == "reload" then
 			if command == "eval" or command == "exec" then
-				exp = exp:gsub("%-%-%[(=*)%[.-%]%1%]", ""):gsub("%-%-.-\n", " "):gsub("\n", " ")
+				exp = exp:gsub("\n", "\r")
 
 				if command == "eval" then
 					exp = "return " .. exp
@@ -1892,7 +1895,7 @@ local function handle(params, client, options)
 			end
 
 			while true do
-				local params, err = client:receive()
+				local params, err = client:receive("*l")
 
 				if not params then
 					return nil, nil, "Debugger connection " .. (err or "error")
@@ -1987,7 +1990,7 @@ local function handle(params, client, options)
 
 		client:send("STACK" .. (opts and " " .. opts or "") .. "\n")
 
-		local resp = client:receive()
+		local resp = client:receive("*l")
 		local _, _, status, res = string.find(resp, "^(%d+)%s+%w+%s+(.+)%s*$")
 
 		if status == "200" then
@@ -2033,7 +2036,7 @@ local function handle(params, client, options)
 		if stream and mode then
 			client:send("OUTPUT " .. stream .. " " .. mode .. "\n")
 
-			local resp, err = client:receive()
+			local resp, err = client:receive("*l")
 
 			if not resp then
 				print("Unknown error: " .. err)
@@ -2077,7 +2080,7 @@ local function handle(params, client, options)
 
 			client:send("BASEDIR " .. (remdir or dir) .. "\n")
 
-			local resp, err = client:receive()
+			local resp, err = client:receive("*l")
 
 			if not resp then
 				print("Unknown error: " .. err)
@@ -2146,9 +2149,9 @@ local function listen(host, port)
 	local client = server:accept()
 
 	client:send("STEP\n")
-	client:receive()
+	client:receive("*l")
 
-	local breakpoint = client:receive()
+	local breakpoint = client:receive("*l")
 	local _, _, file, line = string.find(breakpoint, "^202 Paused%s+(.-)%s+(%d+)%s*$")
 
 	if file and line then

@@ -13,7 +13,7 @@ end
 
 BaseNetworkSession.LOADING_CONNECTION_TIMEOUT = SystemInfo:platform() == Idstring("WIN32") and 20 or 20
 BaseNetworkSession._LOAD_WAIT_TIME = 3
-BaseNetworkSession._STEAM_P2P_SEND_INTERVAL = 1
+BaseNetworkSession._WINDISTRIB_P2P_SEND_INTERVAL = 1
 
 function BaseNetworkSession:init()
 	print("[BaseNetworkSession:init]")
@@ -36,9 +36,11 @@ function BaseNetworkSession:init()
 end
 
 function BaseNetworkSession:create_local_peer(load_outfit)
-	local my_name = managers.network.account:username_id()
-	local my_user_id = SystemInfo:distribution() == Idstring("STEAM") and Steam:userid() or false
-	self._local_peer = NetworkPeer:new(my_name, Network:self("TCP_IP"), 0, false, false, false, managers.blackmarket:get_preferred_character(), my_user_id)
+	local my_name = managers.network.matchmake:username()
+	local my_user_id = managers.network.matchmake:userid()
+	local my_account_type_str = NetworkPeer:account_type_str_from_type(SystemInfo:distribution())
+	local my_account_id = managers.network.account:player_id()
+	self._local_peer = NetworkPeer:new(my_name, Network:self(SystemInfo:matchmaking_protocol()), 0, false, false, false, managers.blackmarket:get_preferred_character(), my_user_id, my_account_type_str, my_account_id)
 
 	if load_outfit then
 		self._local_peer:set_outfit_string(managers.blackmarket:outfit_string(), nil)
@@ -234,10 +236,10 @@ function BaseNetworkSession:is_kicked(peer_name)
 	return self._kicked_list[peer_name]
 end
 
-function BaseNetworkSession:add_peer(name, rpc, in_lobby, loading, synched, id, character, user_id, xuid, xnaddr)
-	print("[BaseNetworkSession:add_peer]", name, rpc, in_lobby, loading, synched, id, character, user_id, xuid, xnaddr)
+function BaseNetworkSession:add_peer(name, rpc, in_lobby, loading, synched, id, character, user_id, account_type_str, account_id, xuid, xnaddr)
+	print("[BaseNetworkSession:add_peer]", name, rpc, in_lobby, loading, synched, id, character, user_id, account_type_str, account_id, xuid, xnaddr)
 
-	local peer = NetworkPeer:new(name, rpc, id, loading, synched, in_lobby, character, user_id)
+	local peer = NetworkPeer:new(name, rpc, id, loading, synched, in_lobby, character, user_id, account_type_str, account_id)
 
 	peer:set_xuid(xuid)
 
@@ -245,9 +247,7 @@ function BaseNetworkSession:add_peer(name, rpc, in_lobby, loading, synched, id, 
 		peer:set_xnaddr(xnaddr)
 	end
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
-		Steam:set_played_with(peer:user_id())
-	end
+	managers.network.account:set_played_with(peer:user_id())
 
 	self._peers[id] = peer
 	self._peers_all[id] = peer
@@ -259,7 +259,7 @@ function BaseNetworkSession:add_peer(name, rpc, in_lobby, loading, synched, id, 
 	end
 
 	if managers.platform then
-		managers.platform:refresh_rich_presence()
+		managers.platform:refresh_rich_presence_state()
 	end
 
 	if rpc then
@@ -298,7 +298,7 @@ function BaseNetworkSession:remove_peer(peer, peer_id, reason)
 	self:_on_peer_removed(peer, peer_id, reason)
 
 	if managers.platform then
-		managers.platform:refresh_rich_presence()
+		managers.platform:refresh_rich_presence_state()
 	end
 
 	if peer:rpc() then
@@ -631,7 +631,7 @@ function BaseNetworkSession:update()
 	end
 
 	self:upd_trash_connections(wall_time)
-	self:send_steam_p2p_msgs(wall_time)
+	self:send_windistrib_p2p_msgs(wall_time)
 end
 
 function BaseNetworkSession:end_update()
@@ -1032,19 +1032,17 @@ function BaseNetworkSession:ps3_disconnect(connected)
 	end
 end
 
-function BaseNetworkSession:on_steam_p2p_ping(sender_rpc)
+function BaseNetworkSession:on_windistrib_p2p_ping(sender_rpc)
 	local user_id = sender_rpc:ip_at_index(0)
 	local peer = self:peer_by_user_id(user_id)
 
 	if not peer then
-		print("[BaseNetworkSession:on_steam_p2p_ping] unknown peer", user_id)
+		print("[BaseNetworkSession:on_windistrib_p2p_ping] unknown peer", user_id)
 
 		return
 	end
 
 	if self._server_protocol ~= "TCP_IP" then
-		print("[BaseNetworkSession:on_steam_p2p_ping] wrong server protocol", self._server_protocol)
-
 		return
 	end
 
@@ -1057,7 +1055,7 @@ function BaseNetworkSession:on_steam_p2p_ping(sender_rpc)
 	if peer:rpc() and final_rpc:ip_at_index(0) == peer:rpc():ip_at_index(0) and final_rpc:protocol_at_index(0) == peer:rpc():protocol_at_index(0) then
 		local sender_ip = Network:get_ip_address_from_user_id(user_id)
 
-		print("[BaseNetworkSession:on_steam_p2p_ping] already had IP", peer:rpc():ip_at_index(0), peer:rpc():protocol_at_index(0))
+		print("[BaseNetworkSession:on_windistrib_p2p_ping] already had IP", peer:rpc():ip_at_index(0), peer:rpc():protocol_at_index(0))
 
 		return
 	end
@@ -1151,19 +1149,16 @@ function BaseNetworkSession:chk_send_connection_established(name, user_id, peer)
 	end
 end
 
-function BaseNetworkSession:send_steam_p2p_msgs(wall_t)
-	if self._server_protocol ~= "TCP_IP" then
-		return
-	end
-
+function BaseNetworkSession:send_windistrib_p2p_msgs(wall_t)
 	if SystemInfo:platform() ~= self._ids_WIN32 then
 		return
 	end
 
 	for peer_id, peer in pairs(self._peers) do
-		if peer ~= self._server_peer and not peer:ip_verified() and (not peer:next_steam_p2p_send_t() or peer:next_steam_p2p_send_t() < wall_t) then
-			peer:steam_rpc():steam_p2p_ping()
-			peer:set_next_steam_p2p_send_t(wall_t + self._STEAM_P2P_SEND_INTERVAL)
+		if peer ~= self._server_peer and (not peer:next_windistrib_p2p_send_t() or peer:next_windistrib_p2p_send_t() < wall_t) then
+			print("pinging peer ", peer_id)
+			peer:rpc():windistrib_p2p_ping()
+			peer:set_next_windistrib_p2p_send_t(wall_t + self._WINDISTRIB_P2P_SEND_INTERVAL)
 		end
 	end
 end

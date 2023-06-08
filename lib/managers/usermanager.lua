@@ -151,6 +151,9 @@ function GenericUserManager:setup_setting_map()
 	self:setup_setting(99, "accessibility_screenflash_color_hit_flash", "off")
 	self:setup_setting(100, "accessibility_screenflash_color_blurzone", "default")
 	self:setup_setting(101, "accessibility_sounds_tinnitus", false)
+	self:setup_setting(102, "toggle_socialhub_hide_code", false)
+	self:setup_setting(103, "socialhub_invite", "all")
+	self:setup_setting(104, "socialhub_notification", "full")
 	self:setup_setting(200, "use_telemetry", false)
 	self:setup_setting(201, "use_gamesight", false)
 	self:setup_setting(300, "adaptive_quality", true)
@@ -1111,7 +1114,7 @@ function Xbox360UserManager:get_xuid(user_index)
 end
 
 function Xbox360UserManager:invite_accepted_by_inactive_user()
-	managers.platform:set_rich_presence("Idle")
+	managers.platform:set_rich_presence_state("Idle")
 	self:perform_load_start_menu()
 	managers.menu:reset_all_loaded_data()
 end
@@ -1185,6 +1188,7 @@ end
 
 WinUserManager = WinUserManager or class(GenericUserManager)
 UserManager.PLATFORM_CLASS_MAP[Idstring("WIN32"):key()] = WinUserManager
+local is_epic = SystemInfo:distribution() == Idstring("EPIC")
 
 function WinUserManager:init()
 	self._init_finalize_index = not self:is_global_initialized()
@@ -1207,11 +1211,76 @@ function WinUserManager:init_finalize()
 end
 
 function WinUserManager:set_index(user_index)
+	if is_epic and not self._epic_logged_in_and_ready then
+		self._epic_user_index = user_index
+
+		return
+	end
+
 	if user_index then
 		self:set_user_soft(user_index, nil, true, nil, true, false)
 	end
 
 	GenericUserManager.set_index(self, user_index)
+end
+
+function WinUserManager:check_user(callback_func, show_select_user_question_dialog)
+	if is_epic and not self._epic_logged_in_and_ready then
+		if not self._epic_check_user_params then
+			self._epic_dlcs_checked = false
+			self._epic_achievements_fetched = false
+			self._epic_logged_in_and_ready = false
+			self._epic_check_user_params = {
+				callback_func,
+				show_select_user_question_dialog
+			}
+		end
+
+		return
+	end
+
+	GenericUserManager.check_user(self, callback_func, show_select_user_question_dialog)
+end
+
+function WinUserManager:update(t, dt)
+	if is_epic and self._epic_check_user_params and EpicMM:logged_on() then
+		if not Global.dlc_manager.ownership_check_called then
+			Global.dlc_manager.ownership_check_called = true
+
+			managers.dlc:check_ownerships()
+		end
+
+		if not Global.achievment_manager.init_called then
+			Global.achievment_manager.init_called = true
+
+			managers.achievment.handler:init()
+		end
+
+		if not self._epic_dlcs_checked and managers.dlc:has_catalog_ownerships() then
+			self._epic_dlcs_checked = true
+		end
+
+		if not self._epic_achievements_fetched and managers.network.account:is_achievements_fetched() then
+			self._epic_achievements_fetched = true
+		end
+
+		if self._epic_dlcs_checked and self._epic_achievements_fetched then
+			self._epic_logged_in_and_ready = true
+			local user_index = self._epic_user_index
+			self._epic_user_index = nil
+
+			if user_index then
+				self:set_index(user_index)
+			end
+
+			local callback_func, show_select_user_question_dialog = unpack(self._epic_check_user_params)
+			self._epic_check_user_params = nil
+
+			self:check_user(callback_func, show_select_user_question_dialog)
+
+			return
+		end
+	end
 end
 
 XB1UserManager = XB1UserManager or class(GenericUserManager)

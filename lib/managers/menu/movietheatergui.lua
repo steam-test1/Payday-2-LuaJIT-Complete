@@ -107,6 +107,7 @@ MovieTheaterGui = MovieTheaterGui or class(ExtendedPanel)
 
 function MovieTheaterGui:init(ws, fullscreen_ws, node)
 	MovieTheaterGui.super.init(self, ws:panel())
+	tweak_data:load_movie_list()
 
 	self._music_volume = (managers.user:get_setting("music_volume") or 100) / 100
 	self._sfx_volume = (managers.user:get_setting("sfx_volume") or 100) / 100

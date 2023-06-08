@@ -42,24 +42,21 @@ local json = require("lib/utils/accelbyte/json")
 function SideJobEventManager:_fetch_challenges()
 	local events_url = "https://www.paydaythegame.com/ovk-media/redux/ninth-2yrgbaw/ninthstage.json"
 	local cg22_events_url = "https://www.paydaythegame.com/ovk-media/redux/hl22-u3yhfbfaud/holiday22stage.json"
+	self._fetch_que = self._fetch_que or {}
+	local done_clbk = callback(self, self, "_fetch_done_clbk")
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
-		self._fetch_que = self._fetch_que or {}
-		local done_clbk = callback(self, self, "_fetch_done_clbk")
+	table.insert(self._fetch_que, {
+		url = events_url,
+		clbk = done_clbk
+	})
 
-		table.insert(self._fetch_que, {
-			url = events_url,
-			clbk = done_clbk
-		})
+	local cg22_done_clbk = callback(self, self, "_cg22_fetch_done_clbk")
 
-		local cg22_done_clbk = callback(self, self, "_cg22_fetch_done_clbk")
-
-		table.insert(self._fetch_que, {
-			url = cg22_events_url,
-			clbk = cg22_done_clbk
-		})
-		self:_pop_fetch_que()
-	end
+	table.insert(self._fetch_que, {
+		url = cg22_events_url,
+		clbk = cg22_done_clbk
+	})
+	self:_pop_fetch_que()
 end
 
 function SideJobEventManager:_pop_fetch_que()
@@ -68,7 +65,7 @@ function SideJobEventManager:_pop_fetch_que()
 		local data = table.remove(self._fetch_que, 1)
 
 		print("[SideJobEventManager] Getting Events from: ", data.url)
-		Steam:http_request(data.url, data.clbk, Idstring("[SideJobEventManager] fetch_challenges()"):key())
+		HttpRequest:get(data.url, data.clbk, nil, Idstring("[SideJobEventManager] fetch_challenges()"):key())
 	end
 end
 

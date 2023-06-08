@@ -5,7 +5,7 @@ SkirmishContractBoxGui = SkirmishContractBoxGui or class(ContractBoxGui)
 function SkirmishContractBoxGui:_is_weekly()
 	local lobby_data = managers.network.matchmake:get_lobby_data()
 
-	return tonumber(lobby_data.skirmish) == SkirmishManager.LOBBY_WEEKLY
+	return lobby_data and tonumber(lobby_data.skirmish) == SkirmishManager.LOBBY_WEEKLY
 end
 
 function SkirmishContractBoxGui:_crewpage_text()

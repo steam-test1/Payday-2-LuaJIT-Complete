@@ -407,9 +407,9 @@ function IngameWaitingForPlayersState:at_enter()
 		local is_safe_house = managers.job:current_job_data() and managers.job:current_job_id() == "safehouse"
 		local rich_presence = is_safe_house and "SafeHousePlaying" or "SPPlaying"
 
-		managers.platform:set_rich_presence(rich_presence)
+		managers.platform:set_rich_presence_state(rich_presence)
 	else
-		managers.platform:set_rich_presence("MPPlaying")
+		managers.platform:set_rich_presence_state("MPPlaying")
 	end
 
 	if Global.exe_argument_auto_enter_level then
@@ -557,7 +557,7 @@ function IngameWaitingForPlayersState:at_exit(next_state)
 
 	managers.game_play_central:start_heist_timer()
 	managers.platform:set_presence("Playing")
-	managers.platform:set_rich_presence(rich_presence)
+	managers.platform:set_rich_presence_state(rich_presence)
 	managers.platform:set_playing(true)
 
 	if not Network:is_server() and managers.network:session() and managers.network:session():server_peer() then

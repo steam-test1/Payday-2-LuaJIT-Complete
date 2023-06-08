@@ -3157,22 +3157,14 @@ function MenuManager:show_accept_gamesight_telemetry(params)
 		privacy_button.no_close = true
 
 		function privacy_button.callback_func()
-			if MenuCallbackHandler:is_overlay_enabled() then
-				Steam:overlay_activate("url", tweak_data.gui.privacy_webpage)
-			else
-				managers.menu:show_enable_steam_overlay()
-			end
+			managers.network.account:overlay_activate("url", tweak_data.gui.privacy_webpage)
 		end
 
 		license_button.text = managers.localization:text("dialog_license")
 		license_button.no_close = true
 
 		function license_button.callback_func()
-			if MenuCallbackHandler:is_overlay_enabled() then
-				Steam:overlay_activate("url", tweak_data.gui.license_webpage)
-			else
-				managers.menu:show_enable_steam_overlay()
-			end
+			managers.network.account:overlay_activate("url", tweak_data.gui.license_webpage)
 		end
 	end
 
@@ -3234,22 +3226,14 @@ function MenuManager:show_policy_seen(params)
 		privacy_button.no_close = true
 
 		function privacy_button.callback_func()
-			if MenuCallbackHandler:is_overlay_enabled() then
-				Steam:overlay_activate("url", tweak_data.gui.privacy_webpage)
-			else
-				managers.menu:show_enable_steam_overlay()
-			end
+			managers.network.account:overlay_activate("url", tweak_data.gui.privacy_webpage)
 		end
 
 		license_button.text = managers.localization:text("dialog_license")
 		license_button.no_close = true
 
 		function license_button.callback_func()
-			if MenuCallbackHandler:is_overlay_enabled() then
-				Steam:overlay_activate("url", tweak_data.gui.license_webpage)
-			else
-				managers.menu:show_enable_steam_overlay()
-			end
+			managers.network.account:overlay_activate("url", tweak_data.gui.license_webpage)
 		end
 	end
 
@@ -3408,6 +3392,89 @@ function MenuManager:show_lron_dialog(params)
 	}
 	dialog_data.button_list = {
 		ok_button
+	}
+
+	managers.system_menu:show(dialog_data)
+end
+
+function MenuManager:show_eos_no_connect_dialog(params)
+	local dialog_data = {
+		title = managers.localization:text("dialog_eos_no_connect_title"),
+		text = managers.localization:text("dialog_eos_no_connect_text"),
+		focus_button = 2
+	}
+	local button_list = {}
+
+	if SystemInfo:distribution() == Idstring("STEAM") then
+		local play_offline_button = {
+			text = managers.localization:text("dialog_eos_play_offline"),
+			callback_func = params.play_offline_func,
+			cancel_button = true
+		}
+
+		table.insert(button_list, play_offline_button)
+	else
+		local quit_button = {
+			text = managers.localization:text("dialog_eos_quit"),
+			callback_func = params.quit_func,
+			cancel_button = true
+		}
+
+		table.insert(button_list, quit_button)
+	end
+
+	local wait_button = {
+		text = managers.localization:text("dialog_eos_wait"),
+		callback_func = params.wait_func
+	}
+
+	table.insert(button_list, wait_button)
+
+	dialog_data.button_list = button_list
+
+	managers.system_menu:show(dialog_data)
+end
+
+function MenuManager:show_epic_separate_window_opened(params)
+	local dialog_data = {
+		title = managers.localization:text("dialog_epic_separate_window_title"),
+		text = managers.localization:text("dialog_epic_separate_window_text")
+	}
+	local ok_button = {
+		text = managers.localization:text("dialog_ok"),
+		callback_func = params.ok_func
+	}
+	dialog_data.button_list = {
+		ok_button
+	}
+
+	managers.system_menu:show(dialog_data)
+end
+
+function MenuManager:show_socialhub_action_dialog(params)
+	local dialog_data = {
+		title = managers.localization:text("menu_socialhub_confirmation_dialog_title")
+	}
+	local action_text = params.action == "add" and "socialhub_user_action_add" or params.action == "remove" and "socialhub_user_action_remove" or params.action == "block" and "socialhub_user_action_block" or params.action == "unblock" and "socialhub_user_action_unblock" or params.action == "invite" and "socialhub_user_action_invite" or ""
+	local user = managers.socialhub:get_user(params.user_id)
+	local username = params.name or user and user.name or ""
+	local userid = user and user.id or ""
+	dialog_data.text = managers.localization:text("menu_socialhub_confirmation_dialog_text", {
+		ACTION = managers.localization:text(action_text),
+		USER_NAME = username,
+		USER_ID = userid
+	})
+	local yes_button = {
+		text = managers.localization:text("dialog_yes"),
+		callback_func = params.callback
+	}
+	local no_button = {
+		text = managers.localization:text("dialog_no"),
+		cancel_button = true
+	}
+	dialog_data.button_list = {
+		yes_button,
+		no_button
 	}
 
 	managers.system_menu:show(dialog_data)

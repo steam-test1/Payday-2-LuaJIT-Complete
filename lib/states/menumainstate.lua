@@ -8,7 +8,7 @@ end
 
 function MenuMainState:at_enter(old_state)
 	managers.platform:set_playing(false)
-	managers.platform:set_rich_presence("Idle")
+	managers.platform:set_rich_presence_state("Idle")
 
 	if old_state:name() ~= "freeflight" or not managers.menu:is_active() then
 		managers.menu_scene:setup_camera()
@@ -70,6 +70,14 @@ function MenuMainState:at_enter(old_state)
 		end
 
 		managers.menu:check_vr_dlc()
+	end
+
+	if SystemInfo:platform() == Idstring("WIN32") then
+		local signed_in = managers.network and managers.network.account and managers.network.account:local_signin_state()
+
+		if not signed_in then
+			self._chk_signed_in_state_t = 4
+		end
 	end
 
 	if SystemInfo:platform() == Idstring("WIN32") and not Global.use_telemetry_gamesight_eula_decided then
@@ -149,7 +157,7 @@ function MenuMainState:at_enter(old_state)
 
 		Global.psn_boot_invite_checked = true
 	elseif SystemInfo:platform() == Idstring("WIN32") then
-		if SystemInfo:distribution() == Idstring("STEAM") and Global.boot_invite then
+		if Global.boot_invite then
 			has_invite = true
 			local lobby = Global.boot_invite
 			Global.boot_invite = nil
@@ -244,6 +252,21 @@ function MenuMainState:at_exit(new_state)
 end
 
 function MenuMainState:update(t, dt)
+	if self._chk_signed_in_state_t then
+		self._chk_signed_in_state_t = self._chk_signed_in_state_t - dt
+
+		if self._chk_signed_in_state_t < 0 then
+			if managers.network and managers.network.account and managers.network.account:local_signin_state() == true then
+				self._chk_signed_in_state_t = nil
+
+				if managers.dlc then
+					managers.dlc:chk_content_updated()
+				end
+			else
+				self._chk_signed_in_state_t = 4
+			end
+		end
+	end
 end
 
 function MenuMainState:on_server_left()
@@ -285,4 +308,12 @@ function MenuMainState:_create_disconnected_dialog()
 end
 
 function MenuMainState:on_disconnected()
+end
+
+function MenuMainState:on_disconnected_from_service()
+	self._chk_signed_in_state_t = 4
+
+	if managers.dlc then
+		managers.dlc:chk_content_updated()
+	end
 end

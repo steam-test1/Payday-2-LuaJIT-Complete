@@ -254,20 +254,30 @@ function FeatureManager:join_pd2_clan()
 		text = managers.localization:text("dialog_ok"),
 		cancel_button = true
 	}
-	local joining_pd2_clan_button = {
-		text = managers.localization:text("dialog_join_pd2_clan"),
-		callback_func = function ()
-			if MenuCallbackHandler:is_overlay_enabled() then
-				Steam:overlay_activate("game", "OfficialGameGroup")
-			else
-				managers.menu:show_enable_steam_overlay()
+	local button_list = {}
+
+	if SystemInfo:distribution() == Idstring("STEAM") then
+		local joining_pd2_clan_button = {
+			text = managers.localization:text("dialog_join_pd2_clan"),
+			callback_func = function ()
+				managers.network.account:overlay_activate("game", "OfficialGameGroup")
 			end
+		}
+
+		table.insert(button_list, joining_pd2_clan_button)
+	end
+
+	local joining_nebula_button = {
+		text = managers.localization:text("menu_no_sbz_account"),
+		callback_func = function ()
+			managers.network.account:overlay_activate("url", tweak_data.gui.sbz_account_webpage)
 		end
 	}
-	params.button_list = {
-		joining_pd2_clan_button,
-		ok_button
-	}
+
+	table.insert(button_list, joining_nebula_button)
+	table.insert(button_list, ok_button)
+
+	params.button_list = button_list
 	params.focus_button = 1
 
 	managers.menu:show_video_message_dialog(params)

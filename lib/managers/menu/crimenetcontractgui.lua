@@ -2092,12 +2092,12 @@ function CrimeNetContractGui:mouse_pressed(o, button, x, y)
 				local mod_name = item[1]:name()
 
 				if mod_name then
-					Steam:overlay_activate("url", "https://modworkshop.net/find/mod?q=" .. mod_name .. "&tags=&gid=1")
+					managers.network.account:overlay_activate("url", "https://modworkshop.net/find/mod?q=" .. mod_name .. "&tags=&gid=1")
 
 					break
 				end
 
-				Steam:overlay_activate("url", "https://modworkshop.net")
+				managers.network.account:overlay_activate("url", "https://modworkshop.net")
 
 				break
 			end

@@ -640,12 +640,12 @@ function ChatGui:_show_crimenet_chat()
 			return
 		elseif Input:keyboard() then
 			-- Nothing
-		elseif MenuCallbackHandler:is_overlay_enabled() then
-			managers.menu:show_requires_big_picture()
-
-			return
-		else
-			managers.menu:show_enable_steam_overlay()
+		elseif SystemInfo:distribution() == Idstring("STEAM") then
+			if MenuCallbackHandler:is_overlay_enabled() then
+				managers.menu:show_requires_big_picture()
+			else
+				managers.menu:show_enable_steam_overlay()
+			end
 
 			return
 		end
@@ -818,14 +818,12 @@ function ChatGui:enter_key_callback()
 	if command_key and command_list[command_key:key()] then
 		if command_key == Idstring("ready") then
 			managers.menu_component:on_ready_pressed_mission_briefing_gui()
-		elseif SystemInfo:distribution() == Idstring("STEAM") then
-			if command_key == Idstring("fbi_files") then
-				Steam:overlay_activate("url", tweak_data.gui.fbi_files_webpage)
-			elseif command_key == Idstring("fbi_search") then
-				Steam:overlay_activate("url", tweak_data.gui.fbi_files_webpage .. (command_args[1] and "/suspect/" .. command_args[1] .. "/" or ""))
-			elseif command_key == Idstring("fbi_inspect") then
-				Steam:overlay_activate("url", tweak_data.gui.fbi_files_webpage .. (command_args[1] and "/modus/" .. command_args[1] .. "/" or ""))
-			end
+		elseif command_key == Idstring("fbi_files") then
+			managers.network.account:overlay_activate("url", tweak_data.gui.fbi_files_webpage)
+		elseif command_key == Idstring("fbi_search") then
+			managers.network.account:overlay_activate("url", tweak_data.gui.fbi_files_webpage .. (command_args[1] and "/suspect/" .. command_args[1] .. "/" or ""))
+		elseif command_key == Idstring("fbi_inspect") then
+			managers.network.account:overlay_activate("url", tweak_data.gui.fbi_files_webpage .. (command_args[1] and "/modus/" .. command_args[1] .. "/" or ""))
 		end
 	elseif string.len(message) > 0 then
 		local u_name = managers.network.account:username()

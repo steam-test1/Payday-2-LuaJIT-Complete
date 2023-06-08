@@ -13193,6 +13193,7 @@ function WeaponFactoryTweakData:_init_mp5()
 			"wpn_fps_smg_mp5_b_mp5sd"
 		},
 		forbids = {
+			"wpn_fps_upg_ns_ass_smg_tank",
 			"wpn_fps_upg_ns_ass_smg_large",
 			"wpn_fps_upg_ns_ass_smg_medium",
 			"wpn_fps_upg_ns_ass_smg_small",
@@ -21381,7 +21382,6 @@ function WeaponFactoryTweakData:_init_kacchainsaw()
 			"wpn_fps_lmg_kacchainsaw_b_long",
 			"wpn_fps_lmg_kacchainsaw_sling",
 			"wpn_fps_lmg_kacchainsaw_mag_b",
-			"wpn_fps_lmg_hcar_suppressor",
 			"wpn_fps_upg_ns_ass_smg_firepig",
 			"wpn_fps_upg_ns_ass_smg_stubby",
 			"wpn_fps_upg_ns_ass_smg_tank",
@@ -21440,7 +21440,6 @@ function WeaponFactoryTweakData:_init_kacchainsaw()
 			"wpn_fps_lmg_kacchainsaw_mag_b",
 			"wpn_fps_lmg_kacchainsaw_flamethrower",
 			"wpn_fps_lmg_kacchainsaw_conversionkit",
-			"wpn_fps_lmg_hcar_suppressor",
 			"wpn_fps_upg_ns_ass_smg_firepig",
 			"wpn_fps_upg_ns_ass_smg_stubby",
 			"wpn_fps_upg_ns_ass_smg_tank",
@@ -39391,8 +39390,6 @@ function WeaponFactoryTweakData:_init_sub2000()
 			"wpn_fps_upg_ns_ass_smg_firepig",
 			"wpn_fps_upg_ns_ass_smg_stubby",
 			"wpn_fps_upg_ns_ass_smg_tank",
-			"wpn_fps_lmg_kacchainsaw_ns_muzzle",
-			"wpn_fps_lmg_kacchainsaw_ns_suppressor",
 			"wpn_fps_upg_ass_ns_jprifles",
 			"wpn_fps_upg_ass_ns_linear",
 			"wpn_fps_upg_ass_ns_surefire",
@@ -39622,6 +39619,12 @@ function WeaponFactoryTweakData:_init_sub2000()
 				parent = "foregrip"
 			},
 			wpn_fps_upg_fl_ass_utg = {
+				parent = "foregrip"
+			},
+			wpn_fps_lmg_kacchainsaw_ns_muzzle = {
+				parent = "foregrip"
+			},
+			wpn_fps_lmg_kacchainsaw_ns_suppressor = {
 				parent = "foregrip"
 			},
 			wpn_fps_upg_ns_ass_smg_v6 = {
@@ -46121,6 +46124,8 @@ function WeaponFactoryTweakData:_init_pm9()
 			"wpn_fps_smg_pm9_g_standard",
 			"wpn_fps_smg_pm9_g_wood",
 			"wpn_fps_smg_pm9_s_tactical",
+			"wpn_fps_lmg_kacchainsaw_ns_muzzle",
+			"wpn_fps_lmg_kacchainsaw_ns_suppressor",
 			"wpn_fps_upg_o_docter",
 			"wpn_fps_upg_o_t1micro",
 			"wpn_fps_upg_ns_ass_smg_large",
@@ -46440,7 +46445,6 @@ function WeaponFactoryTweakData:_init_qbu88()
 			"wpn_fps_upg_o_hamr",
 			"wpn_fps_upg_o_atibal",
 			"wpn_fps_upg_o_health",
-			"wpn_fps_upg_o_mbus_pro",
 			"wpn_fps_upg_o_schmidt",
 			"wpn_fps_upg_o_schmidt_magnified"
 		}
@@ -59349,6 +59353,12 @@ function WeaponFactoryTweakData:_init_x_g18c()
 					reload_not_empty_left = "reload_not_empty_left",
 					magazine_empty = "last_recoil"
 				}
+			},
+			wpn_fps_pis_g26_g_gripforce = {
+				a_obj = "a_g_2"
+			},
+			wpn_fps_pis_g26_g_laser = {
+				a_obj = "a_g_2"
 			}
 		},
 		optional_types = {
@@ -65666,6 +65676,14 @@ function WeaponFactoryTweakData:_init_fmg9()
 			wpn_fps_upg_ns_pis_putnik = {
 				a_obj = "a_ns",
 				parent = "reciever"
+			},
+			wpn_fps_lmg_kacchainsaw_ns_muzzle = {
+				a_obj = "a_ns",
+				parent = "reciever"
+			},
+			wpn_fps_lmg_kacchainsaw_ns_suppressor = {
+				a_obj = "a_ns",
+				parent = "reciever"
 			}
 		},
 		uses_parts = {
@@ -65690,13 +65708,13 @@ function WeaponFactoryTweakData:_init_fmg9()
 			"wpn_fps_upg_ns_ass_smg_large",
 			"wpn_fps_upg_ns_ass_smg_stubby",
 			"wpn_fps_upg_ns_ass_smg_tank",
-			"wpn_fps_lmg_kacchainsaw_ns_muzzle",
-			"wpn_fps_lmg_kacchainsaw_ns_suppressor",
 			"wpn_fps_upg_ns_ass_smg_firepig",
 			"wpn_fps_upg_ass_ns_surefire",
 			"wpn_fps_upg_ass_ns_jprifles",
 			"wpn_fps_upg_ass_ns_linear",
-			"wpn_fps_upg_ass_ns_battle"
+			"wpn_fps_upg_ass_ns_battle",
+			"wpn_fps_lmg_kacchainsaw_ns_muzzle",
+			"wpn_fps_lmg_kacchainsaw_ns_suppressor"
 		}
 	}
 	self.wpn_fps_smg_fmg9_npc = deep_clone(self.wpn_fps_smg_fmg9)

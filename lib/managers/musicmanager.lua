@@ -297,7 +297,7 @@ function MusicManager:load_settings(data)
 		self:_heist_sah_track_fix()
 	end
 
-	if managers.network and not self._added_overlay_listeners then
+	if managers.network and SystemInfo:distribution() == Idstring("STEAM") and not self._added_overlay_listeners then
 		managers.network.account:add_overlay_listener("steam_music_manager_open", {
 			"overlay_open"
 		}, callback(self, self, "on_steam_overlay_open"))

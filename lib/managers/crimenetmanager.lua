@@ -514,6 +514,8 @@ local is_ps3 = SystemInfo:platform() == Idstring("PS3")
 local is_x360 = SystemInfo:platform() == Idstring("X360")
 local is_xb1 = SystemInfo:platform() == Idstring("XB1")
 local is_ps4 = SystemInfo:platform() == Idstring("PS4")
+local is_steam = SystemInfo:distribution() == Idstring("STEAM")
+local is_epic = SystemInfo:distribution() == Idstring("EPIC")
 
 function CrimeNetManager:_find_online_games(friends_only)
 	if is_win32 then
@@ -549,7 +551,7 @@ function CrimeNetManager:_find_online_games_xbox360(friends_only)
 			local name_str = tostring(room.owner_name)
 			local attributes_numbers = attribute_list[i].numbers
 
-			if managers.network.matchmake:is_server_ok(friends_only, room.owner_id, attributes_numbers) then
+			if managers.network.matchmake:is_server_ok(friends_only, room, attributes_numbers) then
 				local host_name = name_str
 				local level_id = tweak_data.levels:get_level_name_from_index(attributes_numbers[1] % 1000)
 				local name_id = level_id and tweak_data.levels[level_id] and tweak_data.levels[level_id].name_id
@@ -669,7 +671,7 @@ function CrimeNetManager:_find_online_games_xb1(friends_only)
 			end
 
 			local is_friend = XboxLive:is_friend(room.xuid)
-			local is_ok = (not friends_only or is_friend) and managers.network.matchmake:is_server_ok(friends_only, room.owner_id, attributes_numbers)
+			local is_ok = (not friends_only or is_friend) and managers.network.matchmake:is_server_ok(friends_only, room, attributes_numbers)
 
 			if is_ok then
 				dead_list[room.room_id] = nil
@@ -753,7 +755,7 @@ function CrimeNetManager:_find_online_games_ps3(friends_only)
 				local friend_str = room.friend_id and tostring(room.friend_id)
 				local attributes_numbers = managers.network.matchmake:_psn2payday(info.attribute_list[i].numbers)
 
-				if managers.network.matchmake:is_server_ok(friends_only, room.owner_id, attributes_numbers) then
+				if managers.network.matchmake:is_server_ok(friends_only, room, attributes_numbers) then
 					local host_name = name_str
 					local level_id, name_id, level_name, difficulty_id, difficulty, job_id, state_string_id, state_name, state, num_plrs = self:_server_properties(attributes_numbers)
 					local is_friend = friend_names[host_name] and true or false
@@ -830,7 +832,7 @@ function CrimeNetManager:_find_online_games_ps3(friends_only)
 
 					local is_friend = friend_names[name_str] and true or false
 
-					if (not friends_only or is_friend) and managers.network.matchmake:is_server_ok(friends_only, room.owner_id, attributes_numbers) then
+					if (not friends_only or is_friend) and managers.network.matchmake:is_server_ok(friends_only, room, attributes_numbers) then
 						dead_list[name_str] = nil
 						local host_name = name_str
 						local level_id, name_id, level_name, difficulty_id, difficulty, job_id, state_string_id, state_name, state, num_plrs = self:_server_properties(attributes_numbers)
@@ -883,7 +885,7 @@ function CrimeNetManager:_find_online_games_ps4(friends_only)
 				local friend_str = room.friend_id and tostring(room.friend_id)
 				local attributes_numbers = managers.network.matchmake:_psn2payday(info.attribute_list[i].numbers)
 
-				if managers.network.matchmake:is_server_ok(friends_only, room.owner_id, attributes_numbers) then
+				if managers.network.matchmake:is_server_ok(friends_only, room, attributes_numbers) then
 					local host_name = name_str
 					local level_id, name_id, level_name, difficulty_id, difficulty, job_id, state_string_id, state_name, state, num_plrs = self:_server_properties(attributes_numbers)
 					local mutators_data = attribute_list[i].strings[1]
@@ -980,7 +982,7 @@ function CrimeNetManager:_find_online_games_ps4(friends_only)
 
 					local is_friend = friend_names[name_str] and true or false
 
-					if (not friends_only or is_friend) and managers.network.matchmake:is_server_ok(friends_only, room.owner_id, attributes_numbers) then
+					if (not friends_only or is_friend) and managers.network.matchmake:is_server_ok(friends_only, room, attributes_numbers) then
 						dead_list[name_str] = nil
 						local host_name = name_str
 						local level_id, name_id, level_name, difficulty_id, difficulty, job_id, state_string_id, state_name, state, num_plrs = self:_server_properties(attributes_numbers)
@@ -1050,7 +1052,7 @@ function CrimeNetManager:_find_online_games_win32(friends_only)
 			local attributes_numbers = attribute_list[i].numbers
 			local attributes_mutators = attribute_list[i].mutators
 
-			if managers.network.matchmake:is_server_ok(friends_only, room.owner_id, attribute_list[i], nil) then
+			if managers.network.matchmake:is_server_ok(friends_only, room, attribute_list[i], nil) then
 				dead_list[room.room_id] = nil
 				local host_name = name_str
 				local level_id = tweak_data.levels:get_level_name_from_index(attributes_numbers[1] % 1000)
@@ -1068,17 +1070,7 @@ function CrimeNetManager:_find_online_games_win32(friends_only)
 				local state_name = state_string_id and managers.localization:text("menu_lobby_server_state_" .. state_string_id) or "UNKNOWN"
 				local state = attributes_numbers[4]
 				local num_plrs = attributes_numbers[5]
-				local is_friend = false
-
-				if Steam:logged_on() and Steam:friends() then
-					for _, friend in ipairs(Steam:friends()) do
-						if friend:id() == room.owner_id then
-							is_friend = true
-
-							break
-						end
-					end
-				end
+				local is_friend = managers.network.matchmake:is_user_friend(room.owner_id, room.owner_account_id)
 
 				if name_id then
 					if not self._active_server_jobs[room.room_id] then
@@ -1165,14 +1157,16 @@ function CrimeNetManager:_find_online_games_win32(friends_only)
 	managers.network.matchmake:register_callback("search_lobby", f)
 	managers.network.matchmake:search_lobby(friends_only)
 
-	local function usrs_f(success, amount)
-		if success then
-			managers.menu_component:set_crimenet_players_online(amount)
+	if SystemInfo:distribution() == Idstring("STEAM") then
+		local function usrs_f(success, amount)
+			if success then
+				managers.menu_component:set_crimenet_players_online(amount)
+			end
 		end
-	end
 
-	Steam:sa_handler():concurrent_users_callback(usrs_f)
-	Steam:sa_handler():get_concurrent_users()
+		Steam:sa_handler():concurrent_users_callback(usrs_f)
+		Steam:sa_handler():get_concurrent_users()
+	end
 end
 
 function CrimeNetManager:save(data)
@@ -1261,7 +1255,7 @@ function CrimeNetManager:join_quick_play_game()
 				skip_level = true
 			end
 
-			if not skip_level and managers.network.matchmake:is_server_ok(false, room.owner_id, attribute_list[i]) then
+			if not skip_level and managers.network.matchmake:is_server_ok(false, room, attribute_list[i]) then
 				local owner_level = room.owner_level and tonumber(room.owner_level)
 
 				if owner_level and min_level <= owner_level and owner_level <= max_level then
@@ -2202,10 +2196,10 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 
 		if is_win32 then
 			managers.features:announce_feature("thq_feature")
-		end
 
-		if is_win32 and SystemInfo:distribution() == Idstring("STEAM") and Steam:logged_on() and not managers.dlc:is_dlc_unlocked("pd2_clan") and math.random() < 0.2 then
-			managers.features:announce_feature("join_pd2_clan")
+			if not managers.dlc:is_dlc_unlocked("pd2_clan") and math.random() < 0.2 then
+				managers.features:announce_feature("join_pd2_clan")
+			end
 		end
 
 		if managers.dlc:is_dlc_unlocked("gage_pack_jobs") then
@@ -2216,7 +2210,6 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 	local player_rank = managers.experience:current_rank()
 
 	if player_rank >= 1 or player_level >= 20 then
-		print("SimonLaunchExplanation")
 		managers.features:announce_feature("lron_event_explanation")
 	end
 
@@ -4334,13 +4327,15 @@ function CrimeNetGui:check_job_pressed(x, y)
 				managers.menu:open_node(node, {
 					data
 				})
-			elseif is_win32 then
+			elseif is_steam then
 				local dlc_data = Global.dlc_manager.all_dlc_data[data.dlc]
 				local app_id = dlc_data and dlc_data.app_id
 
-				if app_id and SystemInfo:distribution() == Idstring("STEAM") then
-					Steam:overlay_activate("store", app_id)
+				if app_id then
+					managers.network.account:overlay_activate("store", app_id)
 				end
+			elseif is_epic then
+				-- Nothing
 			end
 
 			if job.expanded then

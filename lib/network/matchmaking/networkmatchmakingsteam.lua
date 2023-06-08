@@ -2,7 +2,7 @@ require("lib/utils/accelbyte/Telemetry")
 
 NetworkMatchMakingSTEAM = NetworkMatchMakingSTEAM or class()
 NetworkMatchMakingSTEAM.OPEN_SLOTS = tweak_data.max_players
-NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "payday2_v1.138.187"
+NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY = "payday2_v1.139.193"
 
 function NetworkMatchMakingSTEAM:init()
 	cat_print("lobby", "matchmake = NetworkMatchMakingSTEAM")
@@ -146,8 +146,6 @@ function NetworkMatchMakingSTEAM:set_join_invite_pending(lobby_id)
 end
 
 function NetworkMatchMakingSTEAM:update()
-	Steam:update()
-
 	if self._try_re_enter_lobby then
 		if self._try_re_enter_lobby == "lost" then
 			Application:error("REQUESTING RE-OPEN LOBBY")
@@ -208,6 +206,30 @@ end
 
 function NetworkMatchMakingSTEAM:_get_mutators_from_lobby(lobby)
 	return managers.mutators:get_mutators_from_lobby(lobby)
+end
+
+function NetworkMatchMakingSTEAM:username()
+	return Steam:username()
+end
+
+function NetworkMatchMakingSTEAM:username_by_id(id)
+	return Steam:username(id)
+end
+
+function NetworkMatchMakingSTEAM:userid()
+	return Steam:userid()
+end
+
+function NetworkMatchMakingSTEAM:is_user_friend(userid, account_id)
+	return managers.network.account:is_player_friend(userid)
+end
+
+function NetworkMatchMakingSTEAM:invite_friends_to_lobby()
+	local lobby_id = self.lobby_handler and self.lobby_handler:id()
+
+	if lobby_id then
+		managers.network.account:overlay_activate("invite", lobby_id)
+	end
 end
 
 function NetworkMatchMakingSTEAM:get_friends_lobbies()
@@ -369,6 +391,16 @@ function NetworkMatchMakingSTEAM:set_difficulty_filter(filter)
 	self._difficulty_filter = filter
 end
 
+function NetworkMatchMakingSTEAM:_make_room_info(lobby)
+	return {
+		owner_id = lobby:key_value("owner_id"),
+		owner_name = lobby:key_value("owner_name"),
+		owner_account_id = lobby:key_value("owner_id"),
+		room_id = lobby:id(),
+		owner_level = lobby:key_value("owner_level")
+	}
+end
+
 function NetworkMatchMakingSTEAM:search_lobby(friends_only, no_filters)
 	self._search_friends_only = friends_only
 
@@ -403,12 +435,7 @@ function NetworkMatchMakingSTEAM:search_lobby(friends_only, no_filters)
 			if lobbies then
 				for _, lobby in ipairs(lobbies) do
 					if self._difficulty_filter == 0 or self._difficulty_filter == tonumber(lobby:key_value("difficulty")) then
-						table.insert(info.room_list, {
-							owner_id = lobby:key_value("owner_id"),
-							owner_name = lobby:key_value("owner_name"),
-							room_id = lobby:id(),
-							owner_level = lobby:key_value("owner_level")
-						})
+						table.insert(info.room_list, self:_make_room_info(lobby))
 
 						local attributes_data = {
 							numbers = self:_lobby_to_numbers(lobby),
@@ -536,6 +563,14 @@ function NetworkMatchMakingSTEAM:game_owner_name()
 	return managers.network.matchmake.lobby_handler:get_lobby_data("owner_name")
 end
 
+function NetworkMatchMakingSTEAM:game_owner_account_type_str()
+	return "STEAM"
+end
+
+function NetworkMatchMakingSTEAM:game_owner_account_id()
+	return managers.network.matchmake.lobby_handler:get_lobby_data("owner_id")
+end
+
 function NetworkMatchMakingSTEAM:is_server_ok(friends_only, room, attributes_list, is_invite)
 	local attributes_numbers = attributes_list.numbers
 	local attributes_mutators = attributes_list.mutators
@@ -595,7 +630,7 @@ function NetworkMatchMakingSTEAM:is_server_ok(friends_only, room, attributes_lis
 		return false, 5
 	end
 
-	local lobby = Steam:lobby(room)
+	local lobby = Steam:lobby(room.room_id)
 	local lobby_crime_spree = tonumber(lobby:key_value("crime_spree"))
 
 	if lobby_crime_spree and lobby_crime_spree > 0 and not managers.crime_spree:unlocked() then
@@ -635,7 +670,7 @@ function NetworkMatchMakingSTEAM:join_server_with_check(room_id, is_invite)
 			end
 		end
 
-		local server_ok, ok_error = self:is_server_ok(nil, room_id, {
+		local server_ok, ok_error = self:is_server_ok(nil, self:_make_room_info(lobby), {
 			numbers = attributes
 		}, is_invite)
 
@@ -1083,4 +1118,16 @@ function NetworkMatchMakingSTEAM:from_host_lobby_re_opened(status)
 			managers.network.matchmake:leave_game()
 		end
 	end
+end
+
+function NetworkMatchMakingSTEAM:get_lobby_type()
+	if not self.lobby_handler then
+		return "unknown"
+	end
+
+	return self.lobby_handler:lobby_type()
+end
+
+function NetworkMatchMakingSTEAM:server_time()
+	return Steam:server_time()
 end

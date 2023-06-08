@@ -36,20 +36,9 @@ function MenuItemCrimeNetServer:setup_gui(node, row_item)
 		mutators = num_mutators and num_mutators > 0
 	end
 
-	local is_friend = false
-
-	if Steam:logged_on() and Steam:friends() then
-		local owner_id = lobby:key_value("owner_id")
-
-		for _, friend in ipairs(Steam:friends()) do
-			if friend:id() == owner_id then
-				is_friend = true
-
-				break
-			end
-		end
-	end
-
+	local owner_id = lobby:key_value("owner_id")
+	local owner_account_id = lobby:key_value("owner_account_id")
+	local is_friend = managers.network.matchmake:is_user_friend(owner_id, owner_account_id)
 	row_item.gui_panel = node.item_panel:panel({
 		w = node.item_panel:w()
 	})

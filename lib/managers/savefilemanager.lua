@@ -445,7 +445,7 @@ function SavefileManager:_save(slot, cache_only, save_system)
 			meta_data.cache
 		}
 
-		if SystemInfo:distribution() == Idstring("STEAM") then
+		if SystemInfo:distribution() == Idstring("STEAM") or SystemInfo:distribution() == Idstring("EPIC") then
 			task_data.save_system = save_system or "steam_cloud"
 		end
 
@@ -513,6 +513,7 @@ function SavefileManager:_save_cache(slot)
 		managers.generic_side_jobs:save(cache)
 		managers.event_jobs:save(cache)
 		managers.skirmish:save(cache)
+		managers.socialhub:save(cache)
 	end
 
 	if SystemInfo:distribution() == Idstring("STEAM") then
@@ -750,7 +751,7 @@ function SavefileManager:_load(slot, cache_only, save_system)
 				task_data.disable_ownership_check = is_setting_slot
 			end
 
-			if SystemInfo:distribution() == Idstring("STEAM") then
+			if SystemInfo:distribution() == Idstring("STEAM") or SystemInfo:distribution() == Idstring("EPIC") then
 				task_data.save_system = save_system or "steam_cloud"
 			end
 
@@ -1065,6 +1066,7 @@ function SavefileManager:_load_cache(slot)
 			managers.promo_unlocks:load(cache, version)
 			managers.generic_side_jobs:load(cache, version)
 			managers.skirmish:load(cache, version)
+			managers.socialhub:load(cache, version)
 		end
 	else
 		Application:error("[SavefileManager] Unable to load savefile from slot \"" .. tostring(slot) .. "\".")

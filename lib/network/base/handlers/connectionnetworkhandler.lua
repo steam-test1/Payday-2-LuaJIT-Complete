@@ -42,12 +42,12 @@ function ConnectionNetworkHandler:discover_host_reply(sender_name, level_id, lev
 	managers.network:on_discover_host_reply(sender, sender_name, level_name, my_ip, state, difficulty)
 end
 
-function ConnectionNetworkHandler:request_join(peer_name, preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender)
+function ConnectionNetworkHandler:request_join(peer_name, peer_account_type_str, peer_account_id, preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender)
 	if not self._verify_in_server_session() then
 		return
 	end
 
-	managers.network:session():on_join_request_received(peer_name, preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender)
+	managers.network:session():on_join_request_received(peer_name, peer_account_type_str, peer_account_id, preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender)
 end
 
 function ConnectionNetworkHandler:join_request_reply(reply_id, my_peer_id, my_character, level_index, difficulty_index, one_down, state, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, sender)
@@ -60,15 +60,15 @@ function ConnectionNetworkHandler:join_request_reply(reply_id, my_peer_id, my_ch
 	managers.network:session():on_join_request_reply(reply_id, my_peer_id, my_character, level_index, difficulty_index, one_down, state, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, sender)
 end
 
-function ConnectionNetworkHandler:peer_handshake(name, peer_id, ip, in_lobby, loading, synched, character, slot, mask_set, xuid, xnaddr)
-	print(" 1 ConnectionNetworkHandler:peer_handshake", name, peer_id, ip, in_lobby, loading, synched, character, slot, mask_set, xuid, xnaddr)
+function ConnectionNetworkHandler:peer_handshake(name, peer_id, peer_user_id, peer_account_type_str, peer_account_id, in_lobby, loading, synched, character, slot, mask_set, xuid, xnaddr)
+	print(" 1 ConnectionNetworkHandler:peer_handshake", name, peer_id, peer_user_id, peer_account_type_str, peer_account_id, in_lobby, loading, synched, character, slot, mask_set, xuid, xnaddr)
 
 	if not self._verify_in_client_session() then
 		return
 	end
 
 	print(" 2 ConnectionNetworkHandler:peer_handshake")
-	managers.network:session():peer_handshake(name, peer_id, ip, in_lobby, loading, synched, character, slot, mask_set, xuid, xnaddr)
+	managers.network:session():peer_handshake(name, peer_id, peer_user_id, peer_account_type_str, peer_account_id, in_lobby, loading, synched, character, slot, mask_set, xuid, xnaddr)
 end
 
 function ConnectionNetworkHandler:request_player_name(sender)
@@ -671,18 +671,18 @@ function ConnectionNetworkHandler:sync_profile(level, rank, sender)
 	peer:set_profile(level, rank)
 end
 
-function ConnectionNetworkHandler:steam_p2p_ping(sender)
-	print("[ConnectionNetworkHandler:steam_p2p_ping] from", sender:ip_at_index(0), sender:protocol_at_index(0))
+function ConnectionNetworkHandler:windistrib_p2p_ping(sender)
+	print("[ConnectionNetworkHandler:windistrib_p2p_ping] from", sender:ip_at_index(0), sender:protocol_at_index(0))
 
 	local session = managers.network:session()
 
 	if not session or session:closing() then
-		print("[ConnectionNetworkHandler:steam_p2p_ping] no session or closing")
+		print("[ConnectionNetworkHandler:windistrib_p2p_ping] no session or closing")
 
 		return
 	end
 
-	session:on_steam_p2p_ping(sender)
+	session:on_windistrib_p2p_ping(sender)
 end
 
 function ConnectionNetworkHandler:re_open_lobby_request(state, sender)

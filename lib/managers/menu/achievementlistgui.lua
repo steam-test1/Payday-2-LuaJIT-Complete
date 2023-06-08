@@ -407,13 +407,23 @@ end
 
 function AchievementListItem:mouse_clicked(o, button, x, y)
 	if button == Idstring("0") and self._click:inside(x, y) then
-		tag_print("Achivement", self._id)
-		self._owner:_on_preview()
+		local selected = self._owner._scroll and self._owner._scroll:selected_item()
 
-		return true
+		if selected and selected:inside(x, y) then
+			tag_print("Achivement", self._id)
+			self._owner:_on_preview()
+
+			return true
+		end
 	end
 
 	AchievementListItem.super.mouse_clicked(self, o, button, x, y)
+end
+
+function AchievementListItem:mouse_moved(o, x, y)
+	if self._click:inside(x, y) then
+		return true, "link"
+	end
 end
 
 ToggleInputPanel = ToggleInputPanel or class(ExtendedPanel)
@@ -1817,6 +1827,14 @@ function AchievementListGui:mouse_clicked(o, button, x, y)
 	end
 
 	return AchievementListGui.super.mouse_clicked(self, o, button, x, y)
+end
+
+function AchievementListGui:mouse_moved(o, x, y)
+	if self._search.panel:inside(x, y) then
+		return true, "link"
+	end
+
+	return AchievementListGui.super.mouse_moved(self, o, x, y)
 end
 
 function AchievementListGui:_on_milestone()

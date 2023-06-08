@@ -304,7 +304,7 @@ function ArmorSkinEditor:publish_skin(skin, title, desc, changelog, callb)
 			local id = managers.blackmarket:skin_editor():get_current_skin():id()
 
 			if id then
-				Steam:overlay_activate("url", "steam://url/CommunityFilePage/" .. id)
+				managers.network.account:overlay_activate("url", "steam://url/CommunityFilePage/" .. id)
 			end
 		else
 			local dialog_data = {

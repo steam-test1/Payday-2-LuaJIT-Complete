@@ -5,7 +5,7 @@ UGCItem.PREVIEW_FILE = "preview.png"
 UGCItem.TMP_FILE = "tmp"
 UGCItem.DEFAULT_TAGS = {}
 UGCItem.DEFAULT_VISIBILITY = "hidden"
-local UGC = Steam:ugc_handler()
+local UGC = SystemInfo:distribution() == Idstring("STEAM") and Steam:ugc_handler()
 
 local function time_stamp()
 	local t = os.date("*t")

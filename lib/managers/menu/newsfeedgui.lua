@@ -74,7 +74,7 @@ end
 function NewsFeedGui:make_news_request()
 	if SystemInfo:distribution() == Idstring("STEAM") then
 		print("make_news_request()")
-		Steam:http_request("http://steamcommunity.com/games/218620/rss", callback(self, self, "news_result"))
+		HttpRequest:get("http://steamcommunity.com/games/218620/rss", callback(self, self, "news_result"))
 	end
 end
 
@@ -197,13 +197,7 @@ function NewsFeedGui:mouse_pressed(button, x, y)
 	end
 
 	if button == Idstring("0") and self._panel:inside(x, y) then
-		if MenuCallbackHandler:is_overlay_enabled() then
-			Steam:overlay_activate("url", self._links[self._news.i])
-		else
-			managers.menu:show_enable_steam_overlay()
-		end
-
-		return true
+		return managers.network.account:overlay_activate("url", self._links[self._news.i])
 	end
 end
 

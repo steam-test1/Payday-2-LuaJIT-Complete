@@ -58,7 +58,7 @@ function MenuNodeUpdatesGui:init(node, layer, parameters)
 			end
 		end
 
-		Steam:http_request(self._tweak_data.db_url, callback(self, self, "_db_result_recieved"))
+		HttpRequest:get(self._tweak_data.db_url, callback(self, self, "_db_result_recieved"))
 	end
 end
 
@@ -734,19 +734,19 @@ function MenuNodeUpdatesGui:open(content_update)
 	local play_sound = true
 
 	if SystemInfo:platform() == Idstring("WIN32") then
-		if not MenuCallbackHandler:is_overlay_enabled() then
-			managers.menu:show_enable_steam_overlay()
-
-			play_sound = false
-		elseif content_update.webpage then
-			Steam:overlay_activate("url", content_update.webpage)
+		if content_update.webpage then
+			play_sound = managers.network.account:overlay_activate("url", content_update.webpage)
 		elseif content_update.store then
-			Steam:overlay_activate("store", content_update.store)
+			if SystemInfo:distribution() == Idstring("STEAM") then
+				play_sound = managers.network.account:overlay_activate("store", content_update.store)
+			elseif SystemInfo:distribution() == Idstring("EPIC") then
+				-- Nothing
+			end
 		elseif content_update.use_db then
 			local webpage = self._db_items and self._db_items[content_update.id] and self._db_items[content_update.id].link
 
 			if webpage then
-				Steam:overlay_activate("url", webpage)
+				play_sound = managers.network.account:overlay_activate("url", webpage)
 			else
 				play_sound = false
 			end
@@ -769,10 +769,8 @@ function MenuNodeUpdatesGui:open(content_update)
 end
 
 function MenuNodeUpdatesGui:open_url(url)
-	if SystemInfo:platform() == Idstring("WIN32") then
-		Steam:overlay_activate("url", url)
-		managers.menu_component:post_event("menu_enter")
-	end
+	managers.network.account:overlay_activate("url", url)
+	managers.menu_component:post_event("menu_enter")
 end
 
 function MenuNodeUpdatesGui:input_focus()

@@ -313,6 +313,14 @@ function NetworkMatchMakingPSN:game_owner_name()
 	return tostring(self._game_owner_id)
 end
 
+function NetworkMatchMakingPSN:game_owner_account_type_str()
+	return ""
+end
+
+function NetworkMatchMakingPSN:game_owner_account_id()
+	return self:game_owner_name()
+end
+
 function NetworkMatchMakingPSN:is_full()
 	if #self._players == self.OPEN_SLOTS - 1 then
 		return true
@@ -1351,7 +1359,7 @@ function NetworkMatchMakingPSN:join_boot_invite()
 	self:_join_invite_accepted(message.room_id)
 end
 
-function NetworkMatchMakingPSN:is_server_ok(friends_only, owner_id, attributes_numbers, skip_permission_check)
+function NetworkMatchMakingPSN:is_server_ok(friends_only, room, attributes_numbers, skip_permission_check)
 	print("[NetworkMatchMakingPSN:is_server_ok]")
 
 	local permission = attributes_numbers and tweak_data:index_to_permission(attributes_numbers[3]) or "public"
@@ -1381,11 +1389,11 @@ function NetworkMatchMakingPSN:is_server_ok(friends_only, owner_id, attributes_n
 	end
 
 	if permission == "friends_only" then
-		if not managers.network.friends:is_friend(owner_id) then
+		if not managers.network.friends:is_friend(room.owner_id) then
 			print("[NetworkMatchMakingPSN:is_server_ok] Discard server cause friends only perimssion")
 		end
 
-		return managers.network.friends:is_friend(owner_id), 2
+		return managers.network.friends:is_friend(room.owner_id), 2
 	end
 
 	print("[NetworkMatchMakingPSN:is_server_ok] Discard server")
@@ -1427,11 +1435,10 @@ function NetworkMatchMakingPSN:join_server_with_check(room_id, skip_permission_c
 
 		local room_info = results.rooms[1]
 		local attributes = room_info.attributes
-		local owner_id = room_info.owner
 
 		print(inspect(attributes))
 
-		local server_ok, ok_error = self:is_server_ok(nil, owner_id, attributes.numbers, skip_permission_check)
+		local server_ok, ok_error = self:is_server_ok(nil, room_info, attributes.numbers, skip_permission_check)
 
 		if server_ok then
 			self._attributes_numbers = attributes.numbers

@@ -640,9 +640,7 @@ function DocumentBoxGui:button_pressed(index)
 end
 
 function DocumentBoxGui:hyperlink_pressed(link)
-	if SystemInfo:platform() == Idstring("WIN32") and SystemInfo:distribution() == Idstring("STEAM") then
-		Steam:overlay_activate("url", link)
-	end
+	managers.network.account:overlay_activate("url", link)
 end
 
 function DocumentBoxGui:scroll_up(value)

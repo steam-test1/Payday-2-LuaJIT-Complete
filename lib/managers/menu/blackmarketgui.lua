@@ -11206,9 +11206,10 @@ function BlackMarketGui:populate_armor_skins(data)
 	local new_data = {}
 	local sort_data = {}
 	local inventory_tradable = managers.blackmarket:get_inventory_tradable()
+	local is_steam = SystemInfo:distribution() == Idstring("STEAM")
 
 	for skin_id, skin_data in pairs(tweak_data.economy.armor_skins) do
-		if skin_data.sorted == nil or skin_data.sorted then
+		if (is_steam or not skin_data.steam_economy) and skin_data.sorted == nil or skin_data.sorted then
 			table.insert(sort_data, skin_id)
 		end
 	end
@@ -14353,9 +14354,16 @@ function BlackMarketGui:choose_weapon_mods_callback(data)
 	local new_node_data = {}
 	local cosmetic_instances = managers.blackmarket:get_cosmetics_instances_by_weapon_id(data.name)
 	local all_cosmetics = managers.blackmarket:get_cosmetics_by_weapon_id(data.name)
+	local bmm = managers.blackmarket
+	local is_tam_f = bmm.is_weapon_skin_tam
+	local all_skins_td = tweak_data.blackmarket.weapon_skins
+	local is_steam = SystemInfo:distribution() == Idstring("STEAM")
+	local cosmetic_td = nil
 
 	for id, data in pairs(all_cosmetics) do
-		if managers.blackmarket:is_weapon_skin_tam(id) then
+		cosmetic_td = all_skins_td[id]
+
+		if not is_steam and not cosmetic_td.is_a_color_skin and not cosmetic_td.is_a_unlockable or is_tam_f(bmm, id) then
 			all_cosmetics[id] = nil
 		end
 	end
@@ -15080,13 +15088,9 @@ function BlackMarketGui:cancel_preview_cosmetic_on_weapon_callback(data)
 end
 
 function BlackMarketGui:purchase_market_cosmetic_on_weapon_callback(data)
-	if not MenuCallbackHandler:is_overlay_enabled() then
-		managers.menu:show_enable_steam_overlay_tradable_item()
-	else
-		local weapon = managers.blackmarket:get_crafted_category_slot(data.category, data.slot)
+	local weapon = managers.blackmarket:get_crafted_category_slot(data.category, data.slot)
 
-		Steam:overlay_activate("url", tweak_data.economy:create_weapon_skin_market_search_url(weapon.weapon_id, data.cosmetic_id))
-	end
+	managers.network.account:overlay_activate("url", tweak_data.economy:create_weapon_skin_market_search_url(weapon.weapon_id, data.cosmetic_id))
 end
 
 function BlackMarketGui:choose_weapon_cosmetics_callback(data)

@@ -108,8 +108,6 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 		self._id = achievement_data_or_id
 	end
 
-	print(self._id)
-
 	if not managers.menu:is_pc_controller() then
 		self._legends = TextLegendsBar:new(parent, nil, {
 			layer = self:layer()
@@ -233,160 +231,167 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 	end
 
 	self._detail = detail
-	local friend_list = placer:add_right(ScrollableList:new(self, {
-		scrollbar_padding = 5,
-		input = true,
-		w = self:w() - self._detail:right() - 5,
-		h = self._detail:h()
-	}, {
-		padding = 0
-	}), 0)
 
-	friend_list:add_lines_and_static_down_indicator()
-
-	self._friend_list = friend_list
-
-	placer:set_at(friend_list:left() + friend_list:canvas():w(), nil)
-
-	if managers.menu:is_pc_controller() then
-		placer:set_keep_current(1)
-		placer:add_bottom_ralign(TextButton:new(self, {
+	if SystemInfo:distribution() == Idstring("STEAM") then
+		local friend_list = placer:add_right(ScrollableList:new(self, {
+			scrollbar_padding = 5,
 			input = true,
-			text_id = "menu_back",
-			font = medium_font,
-			font_size = medium_font_size
-		}, function ()
-			self._back_callback()
-		end))
-	else
-		self:grow(0, 10)
-	end
+			w = self:w() - self._detail:right() - 5,
+			h = self._detail:h()
+		}, {
+			padding = 0
+		}), 0)
 
-	self._num_friend_text = placer:add_top_ralign(self:fine_text({
-		keep_w = true,
-		align = "right",
-		text = managers.localization:text("menu_achievement_friends_unlocked", {
-			COUNT = ""
-		}),
-		font = small_font,
-		font_size = small_font_size,
-		color = grey_color
-	}))
-	local canvas = friend_list:canvas()
-	local f_placer = ResizingPlacer:new(canvas, {
-		padding = 4,
-		y = 10,
-		x = canvas:row_w() - 10
-	})
+		friend_list:add_lines_and_static_down_indicator()
 
-	self._num_friend_text:set_text(managers.localization:text("menu_achievement_fetching_data"))
+		self._friend_list = friend_list
 
-	local friend_p = 0
-	local global_p = managers.achievment:get_global_achieved_percent(self._id)
-	global_p = global_p >= 0 and global_p / 100 or 0
+		placer:set_at(friend_list:left() + friend_list:canvas():w(), nil)
 
-	placer:push()
+		if managers.menu:is_pc_controller() then
+			placer:set_keep_current(1)
+			placer:add_bottom_ralign(TextButton:new(self, {
+				input = true,
+				text_id = "menu_back",
+				font = medium_font,
+				font_size = medium_font_size
+			}, function ()
+				self._back_callback()
+			end))
+		else
+			self:grow(0, 10)
+		end
 
-	local f_text = managers.localization:text("menu_achievement_friends_unlocked_percent", {
-		COUNT = string.format("%.1f", friend_p * 100)
-	})
-	local g_text = managers.localization:text("menu_achievement_global_unlocked_percent", {
-		COUNT = string.format("%.1f", global_p * 100)
-	})
-	local friend_p_text = placer:add_top_ralign(self:fine_text({
-		text = f_text,
-		font = small_font,
-		font_size = small_font_size,
-		color = grey_color
-	}))
+		self._num_friend_text = placer:add_top_ralign(self:fine_text({
+			keep_w = true,
+			align = "right",
+			text = managers.localization:text("menu_achievement_friends_unlocked", {
+				COUNT = ""
+			}),
+			font = small_font,
+			font_size = small_font_size,
+			color = grey_color
+		}))
+		local canvas = friend_list:canvas()
+		local f_placer = ResizingPlacer:new(canvas, {
+			padding = 4,
+			y = 10,
+			x = canvas:row_w() - 10
+		})
 
-	placer:add_top_ralign(self:fine_text({
-		text = g_text,
-		font = small_font,
-		font_size = small_font_size,
-		color = Color(255, 30, 70, 100) / 255
-	}), 0)
-	placer:pop()
+		self._num_friend_text:set_text(managers.localization:text("menu_achievement_fetching_data"))
 
-	local _, cy = placer:current_center()
-	local circle_size = 42
-	local friend_circle = placer:add_left(HalfCircleProgressBar:new(self, {
-		texture = "guis/dlcs/trk/textures/pd2/circle_inside",
-		alpha = 1,
-		back_alpha = 0.1,
-		w = circle_size,
-		h = circle_size
-	}, friend_p), 15)
-	local global_circle = HalfCircleProgressBar:new(self, {
-		texture = "guis/dlcs/trk/textures/pd2/circle_outside",
-		alpha = 1,
-		back_alpha = 0.1,
-		w = circle_size,
-		h = circle_size
-	}, global_p)
+		local friend_p = 0
+		local global_p = managers.achievment:get_global_achieved_percent(self._id)
+		global_p = global_p >= 0 and global_p / 100 or 0
 
-	friend_circle:set_center_y(cy)
-	global_circle:set_lefttop(friend_circle:lefttop())
+		placer:push()
 
-	if friend_circle:left() < title:right() then
-		title:set_w(title:w() - title:right() + friend_circle:left())
-	end
+		local f_text = managers.localization:text("menu_achievement_friends_unlocked_percent", {
+			COUNT = string.format("%.1f", friend_p * 100)
+		})
+		local g_text = managers.localization:text("menu_achievement_global_unlocked_percent", {
+			COUNT = string.format("%.1f", global_p * 100)
+		})
+		local friend_p_text = placer:add_top_ralign(self:fine_text({
+			text = f_text,
+			font = small_font,
+			font_size = small_font_size,
+			color = grey_color
+		}))
 
-	if managers.network.account:signin_state() == "signed in" then
-		local total_friends = Steam:friends()
-		local unlocked_friends = {}
+		placer:add_top_ralign(self:fine_text({
+			text = g_text,
+			font = small_font,
+			font_size = small_font_size,
+			color = Color(255, 30, 70, 100) / 255
+		}), 0)
+		placer:pop()
 
-		managers.achievment:get_friends_with_achievement(self._id, function (friend)
-			print("[Ach]", "GET FRIEND WITH ACHIEVEMENT", friend)
+		local _, cy = placer:current_center()
+		local circle_size = 42
+		local friend_circle = placer:add_left(HalfCircleProgressBar:new(self, {
+			texture = "guis/dlcs/trk/textures/pd2/circle_inside",
+			alpha = 1,
+			back_alpha = 0.1,
+			w = circle_size,
+			h = circle_size
+		}, friend_p), 15)
+		local global_circle = HalfCircleProgressBar:new(self, {
+			texture = "guis/dlcs/trk/textures/pd2/circle_outside",
+			alpha = 1,
+			back_alpha = 0.1,
+			w = circle_size,
+			h = circle_size
+		}, global_p)
 
-			if not alive(friend_list) or not alive(self._panel) then
-				print("[Ach]", "\tQuit!")
+		friend_circle:set_center_y(cy)
+		global_circle:set_lefttop(friend_circle:lefttop())
 
-				return
-			end
+		if friend_circle:left() < title:right() then
+			title:set_w(title:w() - title:right() + friend_circle:left())
+		end
 
-			if friend == true then
-				print("[Ach]", "\tDONE!")
-				self._num_friend_text:set_text(managers.localization:text("menu_achievement_friends_unlocked", {
-					COUNT = #unlocked_friends
-				}))
+		if managers.network.account:signin_state() == "signed in" then
+			if SystemInfo:distribution() == Idstring("STEAM") then
+				local total_friends = Steam:friends()
+				local unlocked_friends = {}
 
-				return
-			elseif friend == false then
-				print("[Ach]", "\tFAILED!")
-				self._num_friend_text:set_text("ERROR")
+				managers.achievment:get_friends_with_achievement(self._id, function (friend)
+					print("[Ach]", "GET FRIEND WITH ACHIEVEMENT", friend)
 
-				return
-			end
+					if not alive(friend_list) or not alive(self._panel) then
+						print("[Ach]", "\tQuit!")
 
-			table.insert(unlocked_friends, friend)
+						return
+					end
 
-			local friend_p = #unlocked_friends / #total_friends
+					if friend == true then
+						print("[Ach]", "\tDONE!")
+						self._num_friend_text:set_text(managers.localization:text("menu_achievement_friends_unlocked", {
+							COUNT = #unlocked_friends
+						}))
 
-			friend_circle:set_progress(friend_p)
-			friend_p_text:set_text(managers.localization:text("menu_achievement_friends_unlocked_percent", {
-				COUNT = string.format("%.1f", friend_p * 100)
-			}))
-			self.make_fine_text(friend_p_text)
-			Steam:friend_avatar(Steam.SMALL_AVATAR, friend:id(), function (texture)
-				if alive(friend_list) then
-					local avatar = f_placer:add_left(canvas:fit_bitmap({
-						w = 32,
-						h = 32,
-						texture = texture
-					}), 10)
-					local name = f_placer:add_left(canvas:fine_text({
-						text = friend:name(),
-						font = small_font,
-						font_size = small_font_size,
-						color = grey_color
+						return
+					elseif friend == false then
+						print("[Ach]", "\tFAILED!")
+						self._num_friend_text:set_text("ERROR")
+
+						return
+					end
+
+					table.insert(unlocked_friends, friend)
+
+					local friend_p = #unlocked_friends / #total_friends
+
+					friend_circle:set_progress(friend_p)
+					friend_p_text:set_text(managers.localization:text("menu_achievement_friends_unlocked_percent", {
+						COUNT = string.format("%.1f", friend_p * 100)
 					}))
+					self.make_fine_text(friend_p_text)
+					Steam:friend_avatar(Steam.SMALL_AVATAR, friend:id(), function (texture)
+						if alive(friend_list) then
+							local avatar = f_placer:add_left(canvas:fit_bitmap({
+								w = 32,
+								h = 32,
+								texture = texture
+							}), 10)
+							local name = f_placer:add_left(canvas:fine_text({
+								text = friend:name(),
+								font = small_font,
+								font_size = small_font_size,
+								color = grey_color
+							}))
 
-					name:set_center_y(avatar:center_y())
-					f_placer:new_row()
-				end
-			end)
-		end)
+							name:set_center_y(avatar:center_y())
+							f_placer:new_row()
+						end
+					end)
+				end)
+			elseif SystemInfo:distribution() == Idstring("EPIC") then
+				-- Nothing
+			end
+		end
 	end
 
 	local back_panel = self:panel({

@@ -212,7 +212,7 @@ function add_prints(class_name, ignore_list)
 	end
 end
 
-function tag_print(tag, ...)
+function tag_string(tag, ...)
 	tag = string.sub(tag, 1, 1) == "[" and tag or "[" .. tag .. "]"
 
 	local function do_things(tag, ...)
@@ -238,12 +238,26 @@ function tag_print(tag, ...)
 		return str:sub(2)
 	end
 
-	print(do_things(tag, ...))
+	return do_things(tag, ...)
+end
+
+function tag_print(tag, ...)
+	print(tag_string(tag, ...))
+end
+
+function tag_error(tag, ...)
+	Application:error(tag_string(tag, ...))
 end
 
 function make_tag_print(tag)
 	return function (...)
 		tag_print(tag, ...)
+	end
+end
+
+function make_tag_error(tag)
+	return function (...)
+		tag_error(tag, ...)
 	end
 end
 
@@ -502,11 +516,11 @@ function profile(s)
 
 	function t.instrumented(...)
 		local id = Profiler:start(t.s)
-		res = t.f(...)
+		res, res2, res3, res4, res5 = t.f(...)
 
 		Profiler:stop(id)
 
-		return res
+		return res, res2, res3, res4, res5
 	end
 
 	t.patch(t.instrumented)

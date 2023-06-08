@@ -8064,155 +8064,155 @@ function init_auto_generated_achievement_data(tags)
 			}
 		},
 		corp_1 = {
-			icon_id = "C_Keegan_H_HostileTakeover_AllDiffs_D0",
+			icon_id = "C_Blaine_H_HostileTakeover_AllDiffs_D0",
 			ladder = "H_LostInTransit",
-			sort_name = "C_Keegan_H_HostileTakeover_AllDiffs_D0",
+			sort_name = "C_Blaine_H_HostileTakeover_AllDiffs_D0",
 			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.normal,
 				tags.tactics.loud,
 				tags.tactics.stealth,
-				tags.contracts.keegan
+				tags.contracts.blaine
 			}
 		},
 		corp_10 = {
-			sort_name = "C_Keegan_H_HostileTakeover_System",
-			icon_id = "C_Keegan_H_HostileTakeover_System",
+			sort_name = "C_Blaine_H_HostileTakeover_System",
+			icon_id = "C_Blaine_H_HostileTakeover_System",
 			tags = {
 				tags.progress.heisting,
 				tags.difficulty.overkill,
 				tags.tactics.loud,
 				tags.tactics.killer,
-				tags.contracts.keegan
+				tags.contracts.blaine
 			}
 		},
 		corp_11 = {
 			additional_id = true,
-			sort_name = "C_Keegan_H_HostileTakeover_PAYDAYKART",
-			icon_id = "C_Keegan_H_HostileTakeover_PAYDAYKART",
+			sort_name = "C_Blaine_H_HostileTakeover_PAYDAYKART",
+			icon_id = "C_Blaine_H_HostileTakeover_PAYDAYKART",
 			tags = {
 				tags.progress.heisting,
 				tags.difficulty.normal,
 				tags.tactics.loud,
 				tags.tactics.timed,
-				tags.contracts.keegan
+				tags.contracts.blaine
 			}
 		},
 		corp_12 = {
 			additional_id = true,
-			sort_name = "C_Keegan_H_HostileTakeover_JustPassing",
-			icon_id = "C_Keegan_H_HostileTakeover_JustPassing",
+			sort_name = "C_Blaine_H_HostileTakeover_JustPassing",
+			icon_id = "C_Blaine_H_HostileTakeover_JustPassing",
 			tags = {
 				tags.progress.heisting,
 				tags.difficulty.overkill,
 				tags.tactics.stealth,
 				tags.tactics.timed,
-				tags.contracts.keegan
+				tags.contracts.blaine
 			}
 		},
 		corp_2 = {
-			icon_id = "C_Keegan_H_HostileTakeover_AllDiffs_D1",
+			icon_id = "C_Blaine_H_HostileTakeover_AllDiffs_D1",
 			ladder = "H_LostInTransit",
-			sort_name = "C_Keegan_H_HostileTakeover_AllDiffs_D1",
+			sort_name = "C_Blaine_H_HostileTakeover_AllDiffs_D1",
 			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.hard,
 				tags.tactics.loud,
 				tags.tactics.stealth,
-				tags.contracts.keegan
+				tags.contracts.blaine
 			}
 		},
 		corp_3 = {
-			icon_id = "C_Keegan_H_HostileTakeover_AllDiffs_D2",
+			icon_id = "C_Blaine_H_HostileTakeover_AllDiffs_D2",
 			ladder = "H_LostInTransit",
-			sort_name = "C_Keegan_H_HostileTakeover_AllDiffs_D2",
+			sort_name = "C_Blaine_H_HostileTakeover_AllDiffs_D2",
 			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.very_hard,
 				tags.tactics.loud,
 				tags.tactics.stealth,
-				tags.contracts.keegan
+				tags.contracts.blaine
 			}
 		},
 		corp_4 = {
-			icon_id = "C_Keegan_H_HostileTakeover_AllDiffs_D3",
+			icon_id = "C_Blaine_H_HostileTakeover_AllDiffs_D3",
 			ladder = "H_LostInTransit",
-			sort_name = "C_Keegan_H_HostileTakeover_AllDiffs_D3",
+			sort_name = "C_Blaine_H_HostileTakeover_AllDiffs_D3",
 			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.overkill,
 				tags.tactics.loud,
 				tags.tactics.stealth,
-				tags.contracts.keegan
+				tags.contracts.blaine
 			}
 		},
 		corp_5 = {
-			icon_id = "C_Keegan_H_HostileTakeover_AllDiffs_D4",
+			icon_id = "C_Blaine_H_HostileTakeover_AllDiffs_D4",
 			ladder = "H_LostInTransit",
-			sort_name = "C_Keegan_H_HostileTakeover_AllDiffs_D4",
+			sort_name = "C_Blaine_H_HostileTakeover_AllDiffs_D4",
 			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.mayhem,
 				tags.tactics.loud,
 				tags.tactics.stealth,
-				tags.contracts.keegan
+				tags.contracts.blaine
 			}
 		},
 		corp_6 = {
-			icon_id = "C_Keegan_H_HostileTakeover_AllDiffs_D5",
+			icon_id = "C_Blaine_H_HostileTakeover_AllDiffs_D5",
 			ladder = "H_LostInTransit",
-			sort_name = "C_Keegan_H_HostileTakeover_AllDiffs_D5",
+			sort_name = "C_Blaine_H_HostileTakeover_AllDiffs_D5",
 			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.death_wish,
 				tags.tactics.loud,
 				tags.tactics.stealth,
-				tags.contracts.keegan
+				tags.contracts.blaine
 			}
 		},
 		corp_7 = {
-			icon_id = "C_Keegan_H_HostileTakeover_AllDiffs_D6",
+			icon_id = "C_Blaine_H_HostileTakeover_AllDiffs_D6",
 			ladder = "H_LostInTransit",
-			sort_name = "C_Keegan_H_HostileTakeover_AllDiffs_D6",
+			sort_name = "C_Blaine_H_HostileTakeover_AllDiffs_D6",
 			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.death_sentence,
 				tags.tactics.loud,
 				tags.tactics.stealth,
-				tags.contracts.keegan
+				tags.contracts.blaine
 			}
 		},
 		corp_8 = {
-			icon_id = "C_Keegan_H_HostileTakeover_AllDiffs_OD_D6",
+			icon_id = "C_Blaine_H_HostileTakeover_AllDiffs_OD_D6",
 			ladder = "H_LostInTransit",
-			sort_name = "C_Keegan_H_HostileTakeover_AllDiffs_OD_D6",
+			sort_name = "C_Blaine_H_HostileTakeover_AllDiffs_OD_D6",
 			additional_id = true,
 			tags = {
 				tags.progress.completion,
 				tags.difficulty.death_sentence,
 				tags.tactics.loud,
 				tags.tactics.stealth,
-				tags.contracts.keegan
+				tags.contracts.blaine
 			}
 		},
 		corp_9 = {
-			icon_id = "C_Keegan_H_HostileTakeover_TexasTreasuresThree",
+			icon_id = "C_Blaine_H_HostileTakeover_TexasTreasuresThree",
 			ladder = "TexasTresures",
-			sort_name = "C_Keegan_H_HostileTakeover_TexasTreasuresThree",
+			sort_name = "C_Blaine_H_HostileTakeover_TexasTreasuresThree",
 			additional_id = true,
 			tags = {
 				tags.progress.heisting,
 				tags.difficulty.normal,
 				tags.tactics.loud,
 				tags.tactics.stealth,
-				tags.contracts.keegan
+				tags.contracts.blaine
 			}
 		},
 		dah_1 = {

@@ -25,7 +25,7 @@ function UnoPuzzleDoorBase:init(unit)
 end
 
 function UnoPuzzleDoorBase:init_puzzle()
-	Steam:sa_handler():set_stat("uno_puzzle_door_activated", 1)
+	managers.network.account:set_stat("uno_puzzle_door_activated", 1)
 	self:set_riddle(1)
 end
 

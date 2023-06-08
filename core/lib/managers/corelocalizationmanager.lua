@@ -13,6 +13,7 @@ function LocalizationManager:init()
 	self:set_default_macro("EMPTY", "")
 
 	local platform_id = SystemInfo:platform()
+	local distribution_id = SystemInfo:distribution()
 
 	if platform_id == Idstring("X360") then
 		self._platform = "X360"
@@ -24,6 +25,12 @@ function LocalizationManager:init()
 		self._platform = "PS3"
 	else
 		self._platform = "WIN32"
+
+		if distribution_id == Idstring("STEAM") then
+			self._distribution = "steam"
+		elseif distribution_id == Idstring("EPIC") then
+			self._distribution = "epic"
+		end
 	end
 end
 
@@ -55,6 +62,8 @@ function LocalizationManager:text(string_id, macros)
 		return_string = ""
 	elseif self:exists(string_id .. "_" .. self._platform) then
 		str_id = string_id .. "_" .. self._platform
+	elseif self._distribution and self:exists(string_id .. "_" .. self._distribution) then
+		str_id = string_id .. "_" .. self._distribution
 	elseif self:exists(string_id) then
 		str_id = string_id
 	end

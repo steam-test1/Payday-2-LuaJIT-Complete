@@ -244,6 +244,25 @@ function NetworkMatchMaking:get_friends_lobbies()
 	end
 end
 
+function NetworkMatchMaking:username()
+	return ""
+end
+
+function NetworkMatchMaking:username_by_id(id)
+	return ""
+end
+
+function NetworkMatchMaking:userid()
+	return 0
+end
+
+function NetworkMatchMaking:is_user_friend(userid, account_id)
+	return managers.network.account:is_player_friend(account_id)
+end
+
+function NetworkAccountSTEAM:invite_friends_to_lobby()
+end
+
 function NetworkMatchMaking:search_friends_only()
 	return self._search_friends_only
 end
@@ -403,6 +422,14 @@ end
 
 function NetworkMatchMaking:game_owner_name()
 	return managers.network.matchmake.lobby_handler:get_lobby_data("owner_name")
+end
+
+function NetworkMatchMaking:game_owner_account_type_str()
+	return ""
+end
+
+function NetworkMatchMaking:game_owner_account_id()
+	return managers.network.matchmake.lobby_handler:get_lobby_data("owner_id")
 end
 
 function NetworkMatchMaking:is_server_ok(friends_only, room, attributes_numbers, is_invite)
@@ -715,8 +742,8 @@ function NetworkMatchMaking:set_attributes(settings)
 	}
 	local level_index, job_index = self:_split_attribute_number(settings.numbers[1], 1000)
 	local lobby_attributes = {
-		owner_name = managers.network.account:username_id(),
-		owner_id = managers.network.account:player_id(),
+		owner_name = self:username(),
+		owner_id = self:userid(),
 		level = level_index,
 		difficulty = settings.numbers[2],
 		permission = settings.numbers[3],
@@ -771,4 +798,16 @@ function NetworkMatchMaking:from_host_lobby_re_opened(status)
 			managers.network.matchmake:leave_game()
 		end
 	end
+end
+
+function NetworkMatchMaking:get_lobby_type()
+	if not self.lobby_handler then
+		return "unknown"
+	end
+
+	return self.lobby_handler:lobby_type()
+end
+
+function NetworkMatchMaking:server_time()
+	return 0
 end

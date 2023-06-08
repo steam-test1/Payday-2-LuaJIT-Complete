@@ -55,13 +55,13 @@ function VehicleDrivingExt:init(unit)
 	self._vehicle = self._unit:vehicle()
 
 	if self._vehicle == nil then
-		print("[DRIVING] unit doesn't contain a vehicle")
+		Application:error("[VehicleDrivingExt:init] Unit doesn't contain a vehicle C method.", self._unit)
 	end
 
 	self._vehicle_view = self._unit:get_object(Idstring("v_driver"))
 
 	if self._vehicle_view == nil then
-		print("[DRIVING] vehicle doesn't contain driver view point")
+		Application:error("[VehicleDrivingExt:init] Unit doesn't contain driver view point object 'v_driver'.", self._unit)
 	end
 
 	self._drop_time_delay = nil
@@ -78,7 +78,12 @@ function VehicleDrivingExt:init(unit)
 	self.inertia_modifier = self.inertia_modifier or 1
 	self._old_speed = Vector3(0, 0, 0)
 
-	managers.vehicle:add_vehicle(self._unit)
+	if not self._registered then
+		self._registered = true
+
+		managers.vehicle:add_vehicle(self._unit)
+	end
+
 	self._unit:set_body_collision_callback(callback(self, self, "collision_callback"))
 	self:set_tweak_data(tweak_data.vehicle[self.tweak_data])
 
@@ -1761,8 +1766,19 @@ function VehicleDrivingExt:_number_in_the_vehicle()
 end
 
 function VehicleDrivingExt:pre_destroy(unit)
+	if self._registered then
+		self._registered = nil
+
+		managers.vehicle:remove_vehicle(self._unit)
+	end
 end
 
-function VehicleDrivingExt:destroy()
+function VehicleDrivingExt:destroy(unit)
+	if self._registered then
+		self._registered = nil
+
+		managers.vehicle:remove_vehicle(self._unit)
+	end
+
 	managers.hud:_remove_name_label(self._unit:unit_data().name_label_id)
 end

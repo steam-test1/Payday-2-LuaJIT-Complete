@@ -5,6 +5,8 @@ require("lib/network/matchmaking/NetworkAccount")
 require("lib/network/matchmaking/NetworkAccountPSN")
 require("lib/network/matchmaking/NetworkAccountSTEAM")
 require("lib/network/matchmaking/NetworkAccountSTEAMDebug")
+require("lib/network/matchmaking/NetworkAccountEPIC")
+require("lib/network/matchmaking/NetworkAccountEPICDebug")
 require("lib/network/matchmaking/NetworkAccountXBL")
 require("lib/network/matchmaking/NetworkFriend")
 require("lib/network/matchmaking/NetworkFriendsPSN")
@@ -15,6 +17,7 @@ require("lib/network/matchmaking/NetworkGroupLobbyPSN")
 require("lib/network/matchmaking/NetworkMatchMaking")
 require("lib/network/matchmaking/NetworkMatchMakingPSN")
 require("lib/network/matchmaking/NetworkMatchMakingSTEAM")
+require("lib/network/matchmaking/NetworkMatchMakingEPIC")
 require("lib/network/matchmaking/NetworkMatchMakingXBL")
 require("lib/network/matchmaking/NetworkVoiceChatDisabled")
 require("lib/network/matchmaking/NetworkVoiceChatPSN")
@@ -42,12 +45,6 @@ else
 end
 
 NetworkManager.DROPIN_ENABLED = true
-
-if SystemInfo:platform() == Idstring("X360") or SystemInfo:platform() == Idstring("PS3") or SystemInfo:platform() == Idstring("PS4") or SystemInfo:platform() == Idstring("XB1") then
-	NetworkManager.PROTOCOL_TYPE = "TCP_IP"
-else
-	NetworkManager.PROTOCOL_TYPE = "STEAM"
-end
 
 function NetworkManager:init()
 	self.OVERWRITEABLE_MSGS = {
@@ -102,6 +99,9 @@ function NetworkManager:init()
 		if SystemInfo:distribution() == Idstring("STEAM") then
 			self.account = NetworkAccountSTEAM:new()
 			self.voice_chat = NetworkVoiceChatSTEAM:new()
+		elseif SystemInfo:distribution() == Idstring("EPIC") then
+			self.account = NetworkAccountEPIC:new()
+			self.voice_chat = NetworkVoiceChatDisabled:new()
 		else
 			self.account = NetworkAccount:new()
 			self.voice_chat = NetworkVoiceChatDisabled:new()
@@ -134,8 +134,10 @@ function NetworkManager:_create_lobby()
 	if self._is_win32 then
 		cat_print("lobby", "Online Lobby is PC")
 
-		if SystemInfo:distribution() == Idstring("STEAM") then
+		if SystemInfo:matchmaking() == Idstring("MM_STEAM") then
 			self.matchmake = NetworkMatchMakingSTEAM:new()
+		elseif SystemInfo:matchmaking() == Idstring("MM_EPIC") then
+			self.matchmake = NetworkMatchMakingEPIC:new()
 		else
 			self.matchmake = NetworkMatchMaking:new()
 		end
@@ -637,10 +639,6 @@ function NetworkManager.clbk_msg_overwrite(overwrite_data, msg_queue, ...)
 	else
 		overwrite_data.index = nil
 	end
-end
-
-function NetworkManager:protocol_type()
-	return self.PROTOCOL_TYPE
 end
 
 function NetworkManager:set_packet_throttling_enabled(state)

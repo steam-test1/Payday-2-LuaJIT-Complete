@@ -8,13 +8,11 @@ function RemoteCommandManagerPD2:init()
 	end
 end
 
-local steam_users = {}
-
 function RemoteCommandManagerPD2:remote_callback(method, parameters)
 	if method == "user_id" then
-		return tostring(Steam:userid())
+		return tostring(managers.network.account:player_id())
 	elseif method == "user_name" then
-		return Steam:username()
+		return managers.network.account:username_id()
 	elseif method == "num_players" then
 		return managers.network:session():amount_of_players()
 	elseif method == "start_timer" then
@@ -62,12 +60,7 @@ function RemoteCommandManagerPD2:remote_callback(method, parameters)
 			for _, peer in pairs(managers.network:session():all_peers()) do
 				if peer and not peer:is_host() then
 					local user_id = tostring(peer:user_id())
-					local user_name = steam_users[user_id]
-
-					if not user_name then
-						user_name = Steam:username(user_id)
-						steam_users[user_id] = user_name
-					end
+					local user_name = peer:name()
 
 					table.insert(players, {
 						user_id = user_id,

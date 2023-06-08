@@ -196,6 +196,10 @@ function ScrollableList:clear()
 end
 
 function ScrollableList:mouse_moved(button, x, y)
+	if not alive(self._scroll) then
+		return
+	end
+
 	local h, c = self._scroll:mouse_moved(button, x, y)
 
 	if not self._scroll:panel():inside(x, y) then
@@ -210,6 +214,10 @@ function ScrollableList:mouse_moved(button, x, y)
 end
 
 function ScrollableList:mouse_clicked(o, button, x, y)
+	if not alive(self._scroll) then
+		return
+	end
+
 	self._scroll:mouse_clicked(o, button, x, y)
 
 	if not self._scroll:panel():inside(x, y) then
@@ -220,7 +228,13 @@ function ScrollableList:mouse_clicked(o, button, x, y)
 end
 
 function ScrollableList:mouse_pressed(button, x, y)
-	self._scroll:mouse_pressed(button, x, y)
+	if not alive(self._scroll) then
+		return
+	end
+
+	if self._scroll:mouse_pressed(button, x, y) then
+		return true
+	end
 
 	if not self._scroll:panel():inside(x, y) then
 		return
@@ -230,6 +244,10 @@ function ScrollableList:mouse_pressed(button, x, y)
 end
 
 function ScrollableList:mouse_released(button, x, y)
+	if not alive(self._scroll) then
+		return
+	end
+
 	self._scroll:mouse_released(button, x, y)
 
 	if not self._scroll:panel():inside(x, y) then
@@ -240,6 +258,10 @@ function ScrollableList:mouse_released(button, x, y)
 end
 
 function ScrollableList:mouse_wheel_up(x, y)
+	if not alive(self._scroll) then
+		return
+	end
+
 	self._scroll:scroll(x, y, 1)
 
 	if not self._scroll:panel():inside(x, y) then
@@ -250,6 +272,10 @@ function ScrollableList:mouse_wheel_up(x, y)
 end
 
 function ScrollableList:mouse_wheel_down(x, y)
+	if not alive(self._scroll) then
+		return
+	end
+
 	self._scroll:scroll(x, y, -1)
 
 	if not self._scroll:panel():inside(x, y) then
@@ -370,18 +396,32 @@ function ScrollItemList:set_input_focus(state)
 end
 
 function ScrollItemList:input_focus()
-	return self:allow_input() and self._input_focus
+	return self:allow_input() and self._input_focus or self._scroll:grabbed_scroll_bar()
 end
 
 function ScrollItemList:mouse_moved(button, x, y)
+	if self._scroll:grabbed_scroll_bar() then
+		return self._scroll:mouse_moved(button, x, y)
+	end
+
 	if not self._scroll:panel():inside(x, y) then
 		return
 	end
 
+	local used, pointer = nil
+
 	for k, v in pairs(self._current_items) do
 		if v:inside(x, y) then
+			if v.mouse_moved then
+				used, pointer = v:mouse_moved(button, x, y)
+			end
+
 			if self._selected_item ~= v then
 				self:select_item(v)
+			end
+
+			if used then
+				return used, pointer
 			end
 
 			break
@@ -389,6 +429,24 @@ function ScrollItemList:mouse_moved(button, x, y)
 	end
 
 	return ScrollItemList.super.mouse_moved(self, button, x, y)
+end
+
+function ScrollItemList:mouse_pressed(button, x, y)
+	if not self._scroll:panel():inside(x, y) then
+		return
+	end
+
+	for k, v in pairs(self._current_items) do
+		if v:inside(x, y) then
+			if v.mouse_pressed then
+				v:mouse_pressed(button, x, y)
+			end
+
+			break
+		end
+	end
+
+	return ScrollItemList.super.mouse_pressed(self, button, x, y)
 end
 
 function ScrollItemList:_on_selected_changed(selected)
@@ -425,7 +483,15 @@ function ScrollItemList:move_selection(move)
 		local new_index = index + move
 		new_index = math.clamp(new_index, 1, #self._current_items)
 
-		self:select_index(new_index)
+		if self._current_items[new_index].skip_selection and self._current_items[new_index]:skip_selection() then
+			if new_index == #self._current_items or new_index == 1 then
+				return
+			else
+				self:move_selection(move + math.sign(move))
+			end
+		else
+			self:select_index(new_index)
+		end
 	end
 
 	if self._selected_item then
@@ -438,13 +504,13 @@ function ScrollItemList:select_item(item)
 		return
 	end
 
-	if self._selected_item then
+	if self._selected_item and self._selected_item.set_selected then
 		self._selected_item:set_selected(false)
 
 		self._selected_item = nil
 	end
 
-	if item then
+	if item and item.set_selected then
 		self._selected_item = item
 
 		item:set_selected(true)
@@ -453,19 +519,34 @@ function ScrollItemList:select_item(item)
 	self:_on_selected_changed(item)
 end
 
-function ScrollItemList:add_item(item, force_visible)
+function ScrollItemList:add_item(item, force_visible, at_index)
 	if force_visible ~= nil then
 		item:set_visible(force_visible)
 	end
 
 	if item:visible() then
 		self._canvas:placer():add_row(item)
-		table.insert(self._current_items, item)
+
+		if at_index then
+			table.insert(self._current_items, at_index, item)
+		else
+			table.insert(self._current_items, item)
+		end
 	end
 
-	table.insert(self._all_items, item)
+	if at_index then
+		table.insert(self._all_items, at_index, item)
+	else
+		table.insert(self._all_items, item)
+	end
 
 	return item
+end
+
+function ScrollItemList:remove_item(index, reverse_sort_order)
+	table.remove(self._current_items, index)
+	table.remove(self._all_items, index)
+	self:place_items_in_order(nil, nil, reverse_sort_order)
 end
 
 function ScrollItemList:move_up()
@@ -491,7 +572,10 @@ end
 function ScrollItemList:sort_items(sort_function, mod_placer, keep_selection)
 	table.sort(self._current_items, sort_function)
 	table.sort(self._all_items, sort_function)
+	self:place_items_in_order(mod_placer, keep_selection)
+end
 
+function ScrollItemList:place_items_in_order(mod_placer, keep_selection, reverse_order)
 	local placer = self._canvas:placer()
 
 	placer:clear()
@@ -502,8 +586,14 @@ function ScrollItemList:sort_items(sort_function, mod_placer, keep_selection)
 
 	local w_y = self._selected_item and self._selected_item:world_y()
 
-	for _, item in ipairs(self._current_items) do
-		placer:add_row(item)
+	if reverse_order then
+		for _, item in table.reverse_ipairs(self._current_items) do
+			placer:add_row(item)
+		end
+	else
+		for _, item in ipairs(self._current_items) do
+			placer:add_row(item)
+		end
 	end
 
 	if not keep_selection and self._selected_item then
@@ -1345,4 +1435,87 @@ function TextLegendsBar:_update_items()
 	if text_item then
 		complete_line(text_item)
 	end
+end
+
+TabItem = TabItem or class()
+
+function TabItem:init(parent, panel_data, tab_data)
+	self._on_pressed_callback = tab_data.callback
+	self._active_state = tab_data.initial_state or false
+	self._tab_panel = parent:panel(panel_data)
+	self._tab_text = self._tab_panel:text({
+		valign = "grow",
+		vertical = "center",
+		align = "center",
+		halign = "grow",
+		layer = 5,
+		text = managers.localization:to_upper_text(tab_data.name_id),
+		color = Color.black,
+		font = medium_font,
+		font_size = medium_font_size
+	})
+	local _, _, tw, th = self._tab_text:text_rect()
+
+	self._tab_panel:set_size(tw + 10, th + 10)
+
+	self._tab_rect = self._tab_panel:bitmap({
+		texture = "guis/textures/pd2/shared_tab_box",
+		visible = true,
+		layer = 3,
+		color = tweak_data.screen_colors.text,
+		w = self._tab_panel:w(),
+		h = self._tab_panel:h()
+	})
+
+	self:selected_changed(false)
+end
+
+function TabItem:selected_changed(state)
+	self._active_state = state
+
+	self._tab_rect:set_visible(state)
+	self._tab_text:set_color(state and Color.black or tweak_data.screen_colors.button_stage_3)
+end
+
+function TabItem:inside(x, y)
+	return self._tab_panel:inside(x, y)
+end
+
+function TabItem:hovered(state)
+	if self._active_state then
+		return
+	end
+
+	self._tab_text:set_color(state and tweak_data.screen_colors.button_stage_2 or tweak_data.screen_colors.button_stage_3)
+
+	if self._hover_state ~= state then
+		self._hover_state = state
+
+		if state then
+			managers.menu_component:post_event("highlight")
+		end
+	end
+end
+
+function TabItem:get_active_state()
+	return self._active_state
+end
+
+function TabItem:pressed()
+	if not self._active_state and self._on_pressed_callback then
+		self._on_pressed_callback()
+	end
+end
+
+function TabItem:bounds()
+	return {
+		left = self._tab_panel:left(),
+		right = self._tab_panel:right(),
+		top = self._tab_panel:top(),
+		bottom = self._tab_panel:bottom()
+	}
+end
+
+function TabItem:alive()
+	return alive(self._tab_panel)
 end

@@ -5663,7 +5663,17 @@ function BlackMarketManager:on_unaquired_armor(upgrade, id)
 end
 
 function BlackMarketManager:_is_armor_skin_valid(skin_id)
-	return tweak_data.economy.armor_skins[skin_id] and true or false
+	local td = tweak_data.economy.armor_skins[skin_id]
+
+	if not td then
+		return false
+	end
+
+	if td.steam_economy and SystemInfo:distribution() ~= Idstring("STEAM") then
+		return false
+	end
+
+	return true
 end
 
 function BlackMarketManager:_get_default_armor_skin()
@@ -7462,10 +7472,15 @@ function BlackMarketManager:on_remove_weapon_cosmetics(category, slot, skip_upda
 end
 
 function BlackMarketManager:on_equip_weapon_cosmetics(category, slot, instance_id)
-	local item_data = self:get_inventory_tradable()[instance_id]
+	local item_data = nil
+
+	if SystemInfo:distribution() == Idstring("STEAM") then
+		item_data = self:get_inventory_tradable()[instance_id]
+	end
 
 	if not item_data then
-		local is_not_steam_inventory_item = tweak_data.blackmarket.weapon_skins[instance_id] and tweak_data.blackmarket.weapon_skins[instance_id].is_a_unlockable
+		local td = tweak_data.blackmarket.weapon_skins[instance_id]
+		local is_not_steam_inventory_item = td and td.is_a_unlockable
 
 		if is_not_steam_inventory_item then
 			item_data = {
@@ -7874,12 +7889,14 @@ function BlackMarketManager:_remove_unowned_armor_skin(loading)
 	local skin_id = tweak_data.economy:get_real_armor_skin_id(self:equipped_armor_skin())
 	local a_td = tweak_data.economy.armor_skins[skin_id]
 
-	if a_td and a_td.steam_economy ~= false then
-		for instance_id, item in pairs(self._global.inventory_tradable) do
-			if item.entry == skin_id then
-				remove_armor = false
+	if a_td and a_td.steam_economy then
+		if SystemInfo:distribution() == Idstring("STEAM") then
+			for instance_id, item in pairs(self._global.inventory_tradable) do
+				if item.entry == skin_id then
+					remove_armor = false
 
-				break
+					break
+				end
 			end
 		end
 

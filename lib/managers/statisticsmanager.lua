@@ -2559,16 +2559,16 @@ function StatisticsManager:send_statistics()
 end
 
 function StatisticsManager:check_stats()
-	if SystemInfo:distribution() == Idstring("STEAM") and self._global.stat_check and self._global.stat_check.h then
+	if self._global.stat_check and self._global.stat_check.h then
 		local function result_function(success, body)
 		end
 
 		local check = self._global.stat_check.h
 		local checkURL = "https://fbi.paydaythegame.com/fstatscheck/fstatscheck.php"
-		local id = Steam:userid()
+		local id = managers.network.account:player_id()
 		checkURL = checkURL .. "?id=" .. id .. "&h=" .. check
 
-		Steam:http_request(checkURL, result_function)
+		HttpRequest:get(checkURL, result_function)
 	end
 end
 

@@ -2401,81 +2401,77 @@ function NarrativeTweakData:init(tweak_data)
 		45000,
 		45000
 	}
-
-	if SystemInfo:distribution() == Idstring("STEAM") then
-		self.stages.roberts = {
-			type = "d",
-			type_id = "heist_type_assault",
-			level_id = "roberts"
-		}
-		self.jobs.roberts = {
-			name_id = "heist_roberts",
-			briefing_id = "heist_roberts_crimenet",
-			package = "packages/job_roberts",
-			contact = "bain",
-			region = "street",
-			jc = 40,
-			chain = {
-				self.stages.roberts
-			},
-			load_screen = "guis/dlcs/pic/textures/loading/job_go_bank",
-			briefing_event = "pln_cs1_cbf_01",
-			debrief_event = nil,
-			crimenet_callouts = {
-				"pln_cs1_cnc_01"
-			},
-			crimenet_videos = {
-				"cn_jewel1",
-				"cn_jewel2",
-				"cn_jewel3"
-			},
-			payout = {
-				55000,
-				110000,
-				275000,
-				550000,
-				700000,
-				700000,
-				700000
-			},
-			experience_mul = {
-				1,
-				1,
-				1,
-				1.2,
-				1.2
-			},
-			contract_cost = {
-				24000,
-				48000,
-				120000,
-				240000,
-				300000,
-				300000,
-				300000
-			},
-			contract_visuals = {}
-		}
-		self.jobs.roberts.contract_visuals.min_mission_xp = {
-			6500,
-			6500,
-			6500,
-			6500,
-			6500,
-			6500,
-			6500
-		}
-		self.jobs.roberts.contract_visuals.max_mission_xp = {
-			22000,
-			22000,
-			22000,
-			22000,
-			22000,
-			22000,
-			22000
-		}
-	end
-
+	self.stages.roberts = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "roberts"
+	}
+	self.jobs.roberts = {
+		name_id = "heist_roberts",
+		briefing_id = "heist_roberts_crimenet",
+		package = "packages/job_roberts",
+		contact = "bain",
+		region = "street",
+		jc = 40,
+		chain = {
+			self.stages.roberts
+		},
+		load_screen = "guis/dlcs/pic/textures/loading/job_go_bank",
+		briefing_event = "pln_cs1_cbf_01",
+		debrief_event = nil,
+		crimenet_callouts = {
+			"pln_cs1_cnc_01"
+		},
+		crimenet_videos = {
+			"cn_jewel1",
+			"cn_jewel2",
+			"cn_jewel3"
+		},
+		payout = {
+			55000,
+			110000,
+			275000,
+			550000,
+			700000,
+			700000,
+			700000
+		},
+		experience_mul = {
+			1,
+			1,
+			1,
+			1.2,
+			1.2
+		},
+		contract_cost = {
+			24000,
+			48000,
+			120000,
+			240000,
+			300000,
+			300000,
+			300000
+		},
+		contract_visuals = {}
+	}
+	self.jobs.roberts.contract_visuals.min_mission_xp = {
+		6500,
+		6500,
+		6500,
+		6500,
+		6500,
+		6500,
+		6500
+	}
+	self.jobs.roberts.contract_visuals.max_mission_xp = {
+		22000,
+		22000,
+		22000,
+		22000,
+		22000,
+		22000,
+		22000
+	}
 	self.stages.kosugi = {
 		type = "d",
 		type_id = "heist_type_assault",
@@ -7705,10 +7701,7 @@ function NarrativeTweakData:init(tweak_data)
 		gallery = true
 	}
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
-		table.insert(self._jobs_index, "roberts")
-	end
-
+	table.insert(self._jobs_index, "roberts")
 	self:set_job_wrappers()
 
 	local free_dlcs = tweak_data:free_dlc_list()

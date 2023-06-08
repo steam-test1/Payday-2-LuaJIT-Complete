@@ -2,11 +2,11 @@ local medium_font = tweak_data.menu.pd2_medium_font
 local medium_font_size = tweak_data.menu.pd2_medium_font_size
 SearchBoxGuiObject = SearchBoxGuiObject or class()
 
-function SearchBoxGuiObject:init(parent_panel, ws, current_search)
+function SearchBoxGuiObject:init(parent_panel, ws, current_search, override_panel_parameters)
 	self._ws = ws
 	self._sorting_list = {}
 
-	self:set_searchbox(parent_panel)
+	self:set_searchbox(parent_panel, override_panel_parameters)
 
 	if current_search then
 		self.text:set_text(current_search)
@@ -27,13 +27,19 @@ function SearchBoxGuiObject:destroy()
 	self.panel:parent():remove(self.panel)
 end
 
-function SearchBoxGuiObject:set_searchbox(parent_panel)
-	self.panel = parent_panel:panel({
+function SearchBoxGuiObject:set_searchbox(parent_panel, override_panel_parameters)
+	local panel_parameters = {
 		w = 256,
 		alpha = 1,
 		layer = 15,
 		h = medium_font_size
-	})
+	}
+
+	for index, item in pairs(override_panel_parameters or {}) do
+		panel_parameters[index] = item
+	end
+
+	self.panel = parent_panel:panel(panel_parameters)
 
 	self.panel:rect({
 		visible = true,
@@ -96,7 +102,7 @@ function SearchBoxGuiObject:register_list(list)
 end
 
 function SearchBoxGuiObject:mouse_pressed(button, x, y)
-	if button == Idstring("0") and self.panel:inside(x, y) then
+	if button == Idstring("0") and alive(self.panel) and self.panel:inside(x, y) then
 		self:connect_search_input()
 
 		return true
@@ -110,7 +116,7 @@ function SearchBoxGuiObject:mouse_pressed(button, x, y)
 end
 
 function SearchBoxGuiObject:mouse_moved(o, x, y)
-	local inside = self.panel:inside(x, y)
+	local inside = alive(self.panel) and self.panel:inside(x, y) or false
 
 	if self._focus and not inside or not self._focus and inside then
 		return true, "link"
@@ -144,7 +150,7 @@ function SearchBoxGuiObject:input_focus()
 	return self._focus
 end
 
-SearchBoxGuiObject.MAX_SEARCH_LENGTH = 28
+SearchBoxGuiObject.MAX_SEARCH_LENGTH = 32
 
 function SearchBoxGuiObject:connect_search_input()
 	if self._adding_to_data or self._focus then
@@ -342,6 +348,12 @@ function SearchBoxGuiObject:update_key_down(o, k)
 
 		self:update_caret()
 		wait(0.03)
+	end
+end
+
+function SearchBoxGuiObject:clear_text()
+	if self.text then
+		self.text:set_text("")
 	end
 end
 

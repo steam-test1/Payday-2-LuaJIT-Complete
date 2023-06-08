@@ -784,6 +784,8 @@ function RaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul
 
 		if dmg > 0 then
 			local hit_result = self._bullet_class:on_collision(hit, self._unit, user_unit, dmg)
+			hit_through_wall = hit_through_wall or hit.unit:in_slot(self.wall_mask)
+			hit_through_shield = hit_through_shield or hit.unit:in_slot(self.shield_mask) and alive(hit.unit:parent())
 
 			if hit_result then
 				hit.damage_result = hit_result
@@ -797,9 +799,6 @@ function RaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul
 					if not is_civilian then
 						cop_kill_count = cop_kill_count + 1
 					end
-
-					hit_through_wall = hit_through_wall or hit.unit:in_slot(self.wall_mask)
-					hit_through_shield = hit_through_shield or hit.unit:in_slot(self.shield_mask) and alive(hit.unit:parent())
 
 					self:_check_kill_achievements(cop_kill_count, unit_type, is_civilian, hit_through_wall, hit_through_shield)
 				end
@@ -815,7 +814,7 @@ function RaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul
 		self._shot_fired_stats_table.hit = hit_anyone
 		self._shot_fired_stats_table.hit_count = hit_count
 
-		if (not self._ammo_data or not self._ammo_data.ignore_statistic) and not self._rays then
+		if not self._ammo_data or not self._ammo_data.ignore_statistic then
 			managers.statistics:shot_fired(self._shot_fired_stats_table)
 		end
 	end

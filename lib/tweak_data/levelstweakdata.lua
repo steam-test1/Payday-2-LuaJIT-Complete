@@ -819,28 +819,24 @@ function LevelsTweakData:init()
 		max_bags = 28,
 		ai_group_type = america
 	}
-
-	if SystemInfo:distribution() == Idstring("STEAM") then
-		self.roberts = {
-			name_id = "heist_roberts_hl",
-			briefing_id = "heist_roberts_briefing",
-			briefing_dialog = "Play_pln_cs1_brf",
-			world_name = "narratives/bain/roberts",
-			intro_event = "Play_pln_cs1_intro_01",
-			outro_event = {
-				"Play_pln_cs1_end_01",
-				"Play_pln_cs1_end_02",
-				"Play_pln_cs1_end_03"
-			},
-			music = "heist",
-			package = "packages/narr_roberts",
-			cube = "cube_apply_heist_bank",
-			ghost_bonus = 0.1,
-			max_bags = 14,
-			ai_group_type = america
-		}
-	end
-
+	self.roberts = {
+		name_id = "heist_roberts_hl",
+		briefing_id = "heist_roberts_briefing",
+		briefing_dialog = "Play_pln_cs1_brf",
+		world_name = "narratives/bain/roberts",
+		intro_event = "Play_pln_cs1_intro_01",
+		outro_event = {
+			"Play_pln_cs1_end_01",
+			"Play_pln_cs1_end_02",
+			"Play_pln_cs1_end_03"
+		},
+		music = "heist",
+		package = "packages/narr_roberts",
+		cube = "cube_apply_heist_bank",
+		ghost_bonus = 0.1,
+		max_bags = 14,
+		ai_group_type = america
+	}
 	self.mia_1 = {
 		name_id = "heist_mia_1_hl",
 		briefing_id = "heist_mia_1_briefing",
@@ -2899,9 +2895,7 @@ function LevelsTweakData:init()
 		"corp"
 	}
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
-		table.insert(self._level_index, "roberts")
-	end
+	table.insert(self._level_index, "roberts")
 
 	self.escape_levels = {
 		"escape_cafe",

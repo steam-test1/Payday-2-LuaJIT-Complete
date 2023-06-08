@@ -18,31 +18,33 @@ function CommunityChallengesManager:init()
 	}
 	Global.community_challenges_manager = self._global
 
-	self:fetch_community_challenge_data()
+	if SystemInfo:distribution() == Idstring("STEAM") then
+		self:fetch_community_challenge_data_steam()
+	end
 end
 
 function CommunityChallengesManager:update(t, dt)
 	self._message_system:update()
 end
 
-function CommunityChallengesManager:fetch_community_challenge_data()
-	if SystemInfo:distribution() == Idstring("STEAM") then
-		local now = Application:time()
-
-		if now <= self._next_stat_request_limit then
-			return
-		end
-
-		self._next_stat_request_limit = now + 10
-
-		if not _G.IS_VR then
-			Steam:sa_handler():refresh_global_stats_cb(callback(self, self, "_on_global_stats_refresh_complete"))
-			Steam:sa_handler():refresh_global_stats()
-		end
+function CommunityChallengesManager:fetch_community_challenge_data_steam()
+	if _G.IS_VR then
+		return
 	end
+
+	local now = Application:time()
+
+	if now <= self._next_stat_request_limit then
+		return
+	end
+
+	self._next_stat_request_limit = now + 10
+
+	Steam:sa_handler():refresh_global_stats_cb(callback(self, self, "_on_global_stats_refresh_complete_steam"))
+	Steam:sa_handler():refresh_global_stats()
 end
 
-function CommunityChallengesManager:_on_global_stats_refresh_complete(success)
+function CommunityChallengesManager:_on_global_stats_refresh_complete_steam(success)
 	if not success then
 		return
 	end

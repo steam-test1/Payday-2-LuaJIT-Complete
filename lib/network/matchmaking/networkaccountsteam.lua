@@ -25,13 +25,16 @@ NetworkAccountSTEAM.lb_levels = {
 
 function NetworkAccountSTEAM:init()
 	NetworkAccount.init(self)
-
-	self._listener_holder = EventListenerHolder:new()
-
 	Steam:init()
 	Steam:request_listener(NetworkAccountSTEAM._on_join_request, NetworkAccountSTEAM._on_server_request)
 	Steam:error_listener(NetworkAccountSTEAM._on_disconnected, NetworkAccountSTEAM._on_ipc_fail, NetworkAccountSTEAM._on_connect_fail)
 	Steam:overlay_listener(callback(self, self, "_on_open_overlay"), callback(self, self, "_on_close_overlay"))
+
+	if SystemInfo:matchmaking() == Idstring("MM_EPIC") and Steam.set_connect_string then
+		self.connect_string = "-join_game"
+
+		Steam:set_connect_string(self.connect_string)
+	end
 
 	self._gamepad_text_listeners = {}
 
@@ -45,7 +48,6 @@ function NetworkAccountSTEAM:init()
 	managers.savefile:add_load_done_callback(callback(self, self, "_load_done"))
 	Steam:lb_handler():register_storage_done_callback(NetworkAccountSTEAM._on_leaderboard_stored)
 	Steam:lb_handler():register_mappings_done_callback(NetworkAccountSTEAM._on_leaderboard_mapped)
-	self:set_lightfx()
 	self:inventory_load()
 end
 
@@ -59,17 +61,17 @@ function NetworkAccountSTEAM:update()
 end
 
 function NetworkAccountSTEAM:_set_presences()
-	Steam:set_rich_presence("level", managers.experience:current_level())
+	managers.platform:set_rich_presence("level", managers.experience:current_level())
 
 	if MenuCallbackHandler:is_modded_client() then
-		Steam:set_rich_presence("is_modded", 1)
+		managers.platform:set_rich_presence("is_modded", 1)
 	else
-		Steam:set_rich_presence("is_modded", 0)
+		managers.platform:set_rich_presence("is_modded", 0)
 	end
 end
 
 function NetworkAccountSTEAM:set_presences_peer_id(peer_id)
-	Steam:set_rich_presence("peer_id", peer_id)
+	managers.platform:set_rich_presence("peer_id", peer_id)
 end
 
 function NetworkAccountSTEAM:get_win_ratio(difficulty, level)
@@ -90,28 +92,12 @@ function NetworkAccountSTEAM:get_win_ratio(difficulty, level)
 	return ratio[#ratio / 2]
 end
 
-function NetworkAccountSTEAM:set_lightfx()
-	if managers.user:get_setting("use_lightfx") then
-		print("[NetworkAccountSTEAM:init] Initializing LightFX...")
-
-		self._has_alienware = LightFX:initialize() and LightFX:has_lamps()
-
-		if self._has_alienware then
-			LightFX:set_lamps(0, 255, 0, 255)
-		end
-
-		print("[NetworkAccountSTEAM:init] Initializing LightFX done")
-	else
-		self._has_alienware = nil
-	end
-end
-
 function NetworkAccountSTEAM._on_troll_group_recieved(success, page)
 	if success and string.find(page, "<steamID64>" .. Steam:userid() .. "</steamID64>") then
 		managers.network.account._masks.troll = true
 	end
 
-	Steam:http_request("http://steamcommunity.com/gid/103582791432592205/memberslistxml/?xml=1", NetworkAccountSTEAM._on_com_group_recieved)
+	HttpRequest:get("http://steamcommunity.com/gid/103582791432592205/memberslistxml/?xml=1", NetworkAccountSTEAM._on_com_group_recieved)
 end
 
 function NetworkAccountSTEAM._on_com_group_recieved(success, page)
@@ -119,7 +105,7 @@ function NetworkAccountSTEAM._on_com_group_recieved(success, page)
 		managers.network.account._masks.hockey_com = true
 	end
 
-	Steam:http_request("http://steamcommunity.com/gid/103582791432508229/memberslistxml/?xml=1", NetworkAccountSTEAM._on_dev_group_recieved)
+	HttpRequest:get("http://steamcommunity.com/gid/103582791432508229/memberslistxml/?xml=1", NetworkAccountSTEAM._on_dev_group_recieved)
 end
 
 function NetworkAccountSTEAM._on_dev_group_recieved(success, page)
@@ -128,22 +114,16 @@ function NetworkAccountSTEAM._on_dev_group_recieved(success, page)
 	end
 end
 
-function NetworkAccountSTEAM:has_alienware()
-	return self._has_alienware
+function NetworkAccountSTEAM:is_overlay_enabled()
+	return Steam:overlay_enabled() or false
 end
 
-function NetworkAccountSTEAM:_call_listeners(event, params)
-	if self._listener_holder then
-		self._listener_holder:call(event, params)
+function NetworkAccountSTEAM:overlay_activate(...)
+	if self:is_overlay_enabled() then
+		Steam:overlay_activate(...)
+	else
+		managers.menu:show_enable_steam_overlay()
 	end
-end
-
-function NetworkAccountSTEAM:add_overlay_listener(key, events, clbk)
-	self._listener_holder:add(key, events, clbk)
-end
-
-function NetworkAccountSTEAM:remove_overlay_listener(key)
-	self._listener_holder:remove(key)
 end
 
 function NetworkAccountSTEAM:_on_open_overlay()
@@ -223,6 +203,14 @@ end
 
 function NetworkAccountSTEAM._on_stats_stored(status)
 	print("[NetworkAccountSTEAM:_on_stats_stored] Statistics stored, ", status, ". Publishing leaderboard score to Steam!")
+end
+
+function NetworkAccountSTEAM:get_sa_handler()
+	return Steam:sa_handler()
+end
+
+function NetworkAccountSTEAM:set_stat(key, value)
+	Steam:sa_handler():set_stat(key, value)
 end
 
 function NetworkAccountSTEAM:get_stat(key)
@@ -344,6 +332,12 @@ function NetworkAccountSTEAM._on_disconnected(lobby_id, friend_id)
 	end
 
 	Application:warn("Disconnected from Steam!! Please wait", 12)
+
+	local cur_game_state = game_state_machine and game_state_machine:current_state()
+
+	if cur_game_state and cur_game_state.on_disconnected_from_service then
+		cur_game_state:on_disconnected_from_service()
+	end
 end
 
 function NetworkAccountSTEAM._on_ipc_fail(lobby_id, friend_id)
@@ -432,6 +426,32 @@ function NetworkAccountSTEAM:set_playing(state)
 	Steam:set_playing(state)
 end
 
+function NetworkAccountSTEAM:set_played_with(id)
+	Steam:set_played_with(id)
+end
+
+function NetworkAccountSTEAM:get_friend_user(player_id)
+	local friends = Steam:logged_on() and Steam:friends() or {}
+
+	for _, friend in ipairs(friends) do
+		if friend:id() == player_id then
+			return friend
+		end
+	end
+end
+
+function NetworkAccountSTEAM:is_player_friend(player_id)
+	local friends = Steam:logged_on() and Steam:friends() or {}
+
+	for _, friend in ipairs(friends) do
+		if friend:id() == player_id then
+			return true
+		end
+	end
+
+	return NetworkAccountSTEAM.super.is_player_friend(self, player_id)
+end
+
 function NetworkAccountSTEAM:_load_globals()
 	if Global.steam and Global.steam.account then
 		self._outfit_signature = Global.steam.account.outfit_signature and Global.steam.account.outfit_signature:get_data()
@@ -453,6 +473,34 @@ end
 
 function NetworkAccountSTEAM:is_ready_to_close()
 	return not self._inventory_is_loading and not self._inventory_outfit_refresh_requested and not self._inventory_outfit_refresh_in_progress
+end
+
+function NetworkAccountSTEAM:open_dlc_store_page(dlc_data, context)
+	if dlc_data then
+		if context == "buy_dlc" and dlc_data.webpage then
+			return managers.network.account:overlay_activate("url", dlc_data.webpage)
+		end
+
+		if dlc_data.app_id then
+			local url = string.format("https://store.steampowered.com/app/%s/?utm_source=%s&utm_medium=%s&utm_campaign=%s", tostring(dlc_data.app_id), "ingame", context and tostring(context) or "inventory", "ingameupsell")
+
+			return self:overlay_activate("url", url)
+		elseif dlc_data.source_id then
+			return self:overlay_activate("game", "OfficialGameGroup")
+		else
+			return self:overlay_activate("url", tweak_data.gui.store_page)
+		end
+	end
+
+	return false
+end
+
+function NetworkAccountSTEAM:open_new_heist_page(new_heist_data)
+	if new_heist_data then
+		return self:overlay_activate("url", new_heist_data.url)
+	end
+
+	return false
 end
 
 function NetworkAccountSTEAM:inventory_load()
@@ -479,7 +527,7 @@ function NetworkAccountSTEAM:inventory_reward(reward_callback, item)
 	return true
 end
 
-function NetworkAccount:inventory_reward_unlock(safe, safe_instance_id, drill_instance_id, reward_unlock_callback)
+function NetworkAccountSTEAM:inventory_reward_unlock(safe, safe_instance_id, drill_instance_id, reward_unlock_callback)
 	local safe_tweak = tweak_data.economy.safes[safe]
 
 	if not safe_tweak or not safe_tweak.content or not safe_tweak.drill then
@@ -509,7 +557,7 @@ function NetworkAccount:inventory_reward_unlock(safe, safe_instance_id, drill_in
 	Steam:inventory_reward_unlock(safe_instance_id, drill_instance_id, content_tweak.def_id, reward_unlock_callback)
 end
 
-function NetworkAccount:inventory_reward_open(safe, safe_instance_id, reward_unlock_callback)
+function NetworkAccountSTEAM:inventory_reward_open(safe, safe_instance_id, reward_unlock_callback)
 	local safe_tweak = tweak_data.economy.safes[safe]
 	local content_tweak = safe_tweak and tweak_data.economy.contents[safe_tweak.content]
 	safe_instance_id = safe_instance_id or managers.blackmarket:tradable_instance_id("safes", safe)

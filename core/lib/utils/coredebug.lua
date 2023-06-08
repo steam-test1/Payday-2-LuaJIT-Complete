@@ -147,6 +147,30 @@ function cat_debug_inspect(cat, ...)
 	end
 end
 
+function cat_tag_print(cat, ...)
+	if Global.category_print[cat] then
+		_G.tag_print(cat, ...)
+	end
+end
+
+function cat_tag_error(cat, ...)
+	if Global.category_print[cat] then
+		_G.tag_error(cat, ...)
+	end
+end
+
+function make_cat_tag_print(cat)
+	return function (...)
+		cat_tag_print(cat, ...)
+	end
+end
+
+function make_cat_tag_error(cat)
+	return function (...)
+		cat_tag_error(cat, ...)
+	end
+end
+
 function catprint_save()
 	local data = {
 		_meta = "categories"

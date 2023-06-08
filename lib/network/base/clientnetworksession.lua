@@ -8,12 +8,28 @@ function ClientNetworkSession:request_join_host(host_rpc, result_cb)
 
 	self._cb_find_game = result_cb
 	local host_name = managers.network.matchmake:game_owner_name()
-	local host_user_id = SystemInfo:platform() == self._ids_WIN32 and host_rpc:ip_at_index(0) or false
-	local id, peer = self:add_peer(host_name, nil, nil, nil, nil, 1, nil, host_user_id, "", "")
+	local host_account_type_str = managers.network.matchmake:game_owner_account_type_str()
+	local host_account_id = managers.network.matchmake:game_owner_account_id()
+	local drop_in_name = host_name
 
-	if SystemInfo:platform() == self._ids_WIN32 then
-		peer:set_steam_rpc(host_rpc)
+	if host_account_type_str == "STEAM" then
+		local temp = host_name
+
+		if SystemInfo:distribution() == Idstring("STEAM") then
+			host_name = managers.network.account:username_by_id(host_account_id)
+		elseif SystemInfo:matchmaking() == Idstring("MM_STEAM") then
+			host_name = managers.network.matchmake:username_by_id(host_account_id)
+		end
+
+		if host_name == "" or host_name == "[unknown]" then
+			host_name = temp
+		end
 	end
+
+	local host_user_id = SystemInfo:platform() == self._ids_WIN32 and host_rpc:ip_at_index(0) or false
+	local id, peer = self:add_peer(host_name, host_rpc, nil, nil, nil, 1, nil, host_user_id, host_account_type_str, host_account_id, "", "")
+
+	peer:set_name_drop_in(drop_in_name)
 
 	local ticket = peer:create_ticket()
 	self._server_peer = peer
@@ -21,7 +37,6 @@ function ClientNetworkSession:request_join_host(host_rpc, result_cb)
 	Network:set_multiplayer(true)
 	Network:set_client(host_rpc)
 
-	local request_rpc = SystemInfo:platform() == self._ids_WIN32 and peer:steam_rpc() or host_rpc
 	local xuid = (SystemInfo:platform() == Idstring("X360") or SystemInfo:platform() == Idstring("XB1")) and managers.network.account:player_id() or ""
 	local lvl = managers.experience:current_level()
 	local rank = managers.experience:current_rank()
@@ -29,9 +44,11 @@ function ClientNetworkSession:request_join_host(host_rpc, result_cb)
 	local gameversion = managers.network.matchmake.GAMEVERSION or -1
 	local join_req_id = self:_get_join_attempt_identifier()
 	self._join_request_params = {
-		host_rpc = request_rpc,
+		host_rpc = host_rpc,
 		params = {
 			self._local_peer:name(),
+			self._local_peer:account_type_str(),
+			self._local_peer:account_id(),
 			managers.blackmarket:get_preferred_character_string(),
 			managers.dlc:dlcs_string(),
 			xuid,
@@ -44,7 +61,7 @@ function ClientNetworkSession:request_join_host(host_rpc, result_cb)
 		}
 	}
 
-	request_rpc:request_join(unpack(self._join_request_params.params))
+	host_rpc:request_join(unpack(self._join_request_params.params))
 
 	self._first_join_request_t = TimerManager:wall():time()
 	self._last_join_request_t = self._first_join_request_t
@@ -71,11 +88,7 @@ function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_charac
 
 			return
 		else
-			if sender:protocol_at_index(0) == "STEAM" then
-				self._server_protocol = "STEAM"
-			else
-				self._server_protocol = "TCP_IP"
-			end
+			self._server_protocol = sender:protocol_at_index(0)
 
 			print("self._server_protocol", self._server_protocol)
 			self._server_peer:set_rpc(sender)
@@ -292,8 +305,8 @@ function ClientNetworkSession:load_lobby(...)
 	self:_load_lobby(...)
 end
 
-function ClientNetworkSession:peer_handshake(name, peer_id, peer_user_id, in_lobby, loading, synched, character, mask_set, xuid, xnaddr)
-	print("ClientNetworkSession:peer_handshake", name, peer_id, peer_user_id, in_lobby, loading, synched, character, mask_set, xuid, xnaddr)
+function ClientNetworkSession:peer_handshake(name, peer_id, peer_user_id, peer_account_type_str, peer_account_id, in_lobby, loading, synched, character, mask_set, xuid, xnaddr)
+	print("ClientNetworkSession:peer_handshake", name, peer_id, peer_user_id, peer_account_type_str, peer_account_id, in_lobby, loading, synched, character, mask_set, xuid, xnaddr)
 
 	if self._peers[peer_id] then
 		print("ALREADY HAD PEER returns here")
@@ -309,8 +322,8 @@ function ClientNetworkSession:peer_handshake(name, peer_id, peer_user_id, in_lob
 
 	local rpc = nil
 
-	if self._server_protocol == "STEAM" then
-		rpc = Network:handshake(peer_user_id, nil, "STEAM")
+	if self._server_protocol == SystemInfo:matchmaking_protocol() then
+		rpc = Network:handshake(peer_user_id, nil, SystemInfo:matchmaking_protocol())
 
 		Network:add_co_client(rpc)
 	end
@@ -326,12 +339,25 @@ function ClientNetworkSession:peer_handshake(name, peer_id, peer_user_id, in_lob
 		peer_user_id = false
 	end
 
-	if SystemInfo:platform() == Idstring("WIN32") then
-		name = managers.network.account:username_by_id(peer_user_id)
+	local drop_in_name = name
+
+	if peer_account_type_str == "STEAM" then
+		local temp = name
+
+		if SystemInfo:distribution() == Idstring("STEAM") then
+			name = managers.network.account:username_by_id(peer_account_id)
+		elseif SystemInfo:matchmaking() == Idstring("MM_STEAM") then
+			name = managers.network.matchmake:username_by_id(peer_account_id)
+		end
+
+		if name == "" or name == "[unknown]" then
+			name = temp
+		end
 	end
 
-	local id, peer = self:add_peer(name, rpc, in_lobby, loading, synched, peer_id, character, peer_user_id, xuid, nil)
+	local id, peer = self:add_peer(name, rpc, in_lobby, loading, synched, peer_id, character, peer_user_id, peer_account_type_str, peer_account_id, xuid, nil)
 
+	peer:set_name_drop_in(drop_in_name)
 	cat_print("multiplayer_base", "[ClientNetworkSession:peer_handshake]", name, peer_user_id, loading, synched, id, inspect(peer))
 
 	local check_peer = (SystemInfo:platform() == Idstring("X360") or SystemInfo:platform() == Idstring("XB1")) and peer or nil

@@ -136,7 +136,7 @@ end
 function IngameLobbyMenuState:at_enter()
 	managers.music:stop()
 	managers.platform:set_presence("Mission_end")
-	managers.platform:set_rich_presence(Global.game_settings.single_player and "SPEnd" or "MPEnd")
+	managers.platform:set_rich_presence_state(Global.game_settings.single_player and "SPEnd" or "MPEnd")
 	managers.hud:remove_updator("point_of_no_return")
 	print("[IngameLobbyMenuState:at_enter()]")
 

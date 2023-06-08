@@ -46,8 +46,8 @@ function HostNetworkSession:create_local_peer(load_outfit)
 	end
 end
 
-function HostNetworkSession:on_join_request_received(peer_name, preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender)
-	return self._state.on_join_request_received and self._state:on_join_request_received(self._state_data, peer_name, preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender)
+function HostNetworkSession:on_join_request_received(peer_name, peer_account_type_str, peer_account_id, preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender)
+	return self._state.on_join_request_received and self._state:on_join_request_received(self._state_data, peer_name, peer_account_type_str, peer_account_id, preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender)
 end
 
 function HostNetworkSession:send_to_host(...)
@@ -458,7 +458,7 @@ function HostNetworkSession:dropin_peer()
 	return self._dropin_peer
 end
 
-function HostNetworkSession:add_peer(name, rpc, in_lobby, loading, synched, id, character, user_id, xuid, xnaddr)
+function HostNetworkSession:add_peer(name, rpc, in_lobby, loading, synched, id, character, user_id, account_type_str, account_id, xuid, xnaddr)
 	id = id or self:_get_free_client_id(user_id)
 
 	if not id then
@@ -472,7 +472,7 @@ function HostNetworkSession:add_peer(name, rpc, in_lobby, loading, synched, id, 
 	end
 
 	local peer = nil
-	id, peer = HostNetworkSession.super.add_peer(self, name, rpc, in_lobby, loading, synched, id, character, user_id, xuid, xnaddr)
+	id, peer = HostNetworkSession.super.add_peer(self, name, rpc, in_lobby, loading, synched, id, character, user_id, account_type_str, account_id, xuid, xnaddr)
 
 	self:chk_server_joinable_state()
 

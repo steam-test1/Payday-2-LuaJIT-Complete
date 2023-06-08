@@ -2217,7 +2217,7 @@ function PlayerTweakData:_init_kacchainsaw()
 	self.stances.kacchainsaw.steelsight.vel_overshot.pitch_neg = -10
 	self.stances.kacchainsaw.steelsight.vel_overshot.pitch_pos = 10
 	local pivot_head_translation = Vector3(10, 5, -4.5)
-	local pivot_head_rotation = Rotation(0.106618, 2.35, -3.62858)
+	local pivot_head_rotation = Rotation(0.10661, 2.35, -3.6285)
 	self.stances.kacchainsaw.crouched.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
 	self.stances.kacchainsaw.crouched.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
 	self.stances.kacchainsaw.crouched.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -30, 0)

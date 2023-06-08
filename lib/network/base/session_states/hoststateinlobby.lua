@@ -1,10 +1,44 @@
 HostStateInLobby = HostStateInLobby or class(HostStateBase)
 
-function HostStateInLobby:on_join_request_received(data, peer_name, client_preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender)
-	print("HostStateInLobby:on_join_request_received peer_level", peer_level, join_attempt_identifier, gameversion)
+function HostStateInLobby:on_join_request_received(data, peer_name, peer_account_type_str, peer_account_id, client_preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender)
+	print("[HostStateInLobby:on_join_request_received]", data, peer_name, peer_account_type_str, peer_account_id, client_preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender:ip_at_index(0))
 
-	if SystemInfo:platform() == Idstring("WIN32") then
-		peer_name = managers.network.account:username_by_id(sender:ip_at_index(0))
+	local peer_id = sender:ip_at_index(0)
+	local drop_in_name = peer_name
+
+	if peer_account_type_str == "STEAM" then
+		local temp = peer_name
+
+		if SystemInfo:distribution() == Idstring("STEAM") then
+			peer_name = managers.network.account:username_by_id(peer_account_id)
+		elseif SystemInfo:matchmaking() == Idstring("MM_STEAM") then
+			peer_name = managers.network.matchmake:username_by_id(peer_account_id)
+		end
+
+		if peer_name == "" or peer_name == "[unknown]" then
+			peer_name = temp
+		end
+	end
+
+	local my_user_id = data.local_peer:user_id() or ""
+
+	if SocialHubFriends:is_blocked(peer_id) then
+		self:_send_request_denied(sender, 0, my_user_id)
+
+		return
+	end
+
+	if managers.network.matchmake:get_lobby_type() == "friend" then
+		print("[HostStateInLobby:on_join_request_received] lobby type friend only, check if friend")
+
+		if SocialHubFriends:is_friend_global(peer_id, peer_account_type_str, peer_account_id) then
+			print("[HostStateInLobby:on_join_request_received] ok we are friend with ", peer_name)
+		else
+			print("[HostStateInLobby:on_join_request_received] we are NOT friend with ", peer_name, " deny request")
+			self:_send_request_denied(sender, 0, my_user_id)
+
+			return
+		end
 	end
 
 	if self:_has_peer_left_PSN(peer_name) then
@@ -13,20 +47,29 @@ function HostStateInLobby:on_join_request_received(data, peer_name, client_prefe
 		return
 	end
 
-	local my_user_id = data.local_peer:user_id() or ""
-
-	if self:_is_banned(peer_name, sender) then
+	if self:_is_banned(peer_name, peer_account_id) then
 		self:_send_request_denied(sender, 9, my_user_id)
 
 		return
 	end
 
-	local user = Steam:user(sender:ip_at_index(0))
+	if not MenuCallbackHandler:is_modded_client() and not Global.game_settings.allow_modded_players then
+		local is_modded = false
 
-	if not MenuCallbackHandler:is_modded_client() and not Global.game_settings.allow_modded_players and user and user:rich_presence("is_modded") == "1" then
-		self:_send_request_denied(sender, 10, my_user_id)
+		if SystemInfo:distribution() == Idstring("STEAM") and peer_account_type_str == "STEAM" then
+			local user = Steam:user(sender:ip_at_index(0))
+			is_modded = user:rich_presence("is_modded") == "1"
+		end
 
-		return
+		if SystemInfo:distribution() == Idstring("EPIC") and peer_account_type_str == "EPIC" then
+			-- Nothing
+		end
+
+		if is_modded then
+			self:_send_request_denied(sender, 10, my_user_id)
+
+			return
+		end
 	end
 
 	if peer_level < Global.game_settings.reputation_permission then
@@ -57,8 +100,8 @@ function HostStateInLobby:on_join_request_received(data, peer_name, client_prefe
 
 	if old_peer then
 		if join_attempt_identifier ~= old_peer:join_attempt_identifier() then
-			data.session:remove_peer(old_peer, old_peer:id(), "lost")
 			self:_send_request_denied(sender, 0, my_user_id)
+			data.session:remove_peer(old_peer, old_peer:id(), "lost")
 		end
 
 		return
@@ -81,7 +124,7 @@ function HostStateInLobby:on_join_request_received(data, peer_name, client_prefe
 	end
 
 	local new_peer_id, new_peer = nil
-	new_peer_id, new_peer = data.session:add_peer(peer_name, nil, true, false, false, nil, character, sender:ip_at_index(0), xuid, xnaddr)
+	new_peer_id, new_peer = data.session:add_peer(peer_name, nil, true, false, false, nil, character, sender:ip_at_index(0), peer_account_type_str, peer_account_id, xuid, xnaddr)
 
 	if not new_peer_id then
 		print("there was no clean peer_id")
@@ -92,11 +135,12 @@ function HostStateInLobby:on_join_request_received(data, peer_name, client_prefe
 
 	new_peer:set_dlcs(dlcs)
 	new_peer:set_xuid(xuid)
+	new_peer:set_name_drop_in(drop_in_name)
 	new_peer:set_join_attempt_identifier(join_attempt_identifier)
 
 	local new_peer_rpc = nil
 
-	if managers.network:protocol_type() == "TCP_IP" then
+	if sender:protocol_at_index(0) == "TCP_IP" then
 		new_peer_rpc = managers.network:session():resolve_new_peer_rpc(new_peer, sender)
 	else
 		new_peer_rpc = sender
@@ -107,8 +151,8 @@ function HostStateInLobby:on_join_request_received(data, peer_name, client_prefe
 	Network:add_client(new_peer:rpc())
 
 	if not new_peer:begin_ticket_session(auth_ticket) then
-		data.session:remove_peer(new_peer, new_peer:id(), "auth_fail")
 		self:_send_request_denied(sender, 8, my_user_id)
+		data.session:remove_peer(new_peer, new_peer:id(), "auth_fail")
 
 		return
 	end

@@ -20,6 +20,9 @@ local is_ps4 = SystemInfo:platform() == Idstring("PS4")
 local is_xb1 = SystemInfo:platform() == Idstring("XB1")
 local is_x360 = SystemInfo:platform() == Idstring("X360")
 local is_win32 = SystemInfo:platform() == Idstring("WIN32")
+local is_steam = SystemInfo:distribution() == Idstring("STEAM")
+local is_epic = SystemInfo:distribution() == Idstring("EPIC")
+local is_mm_eos = SystemInfo:matchmaking() == Idstring("MM_EPIC")
 
 function MenuTitlescreenState:setup()
 	local res = RenderSettings.resolution
@@ -57,6 +60,7 @@ function MenuTitlescreenState:setup()
 		w = self._workspace:panel():w(),
 		h = self._workspace:panel():h()
 	})
+	self._text = text
 
 	text:set_bottom(self._workspace:panel():h() / 1.25)
 
@@ -133,6 +137,14 @@ function MenuTitlescreenState:at_enter()
 	self._clbk_game_has_music_control_callback = callback(self, self, "clbk_game_has_music_control")
 
 	managers.platform:add_event_callback("media_player_control", self._clbk_game_has_music_control_callback)
+
+	if is_epic and EpicMM:logged_on() then
+		print("[ABC] Epic logged on before titlescreen, checking ownership")
+		managers.dlc:check_ownerships()
+
+		self._wait_on_dlcs = true
+	end
+
 	self:reset_attract_video()
 end
 
@@ -148,7 +160,42 @@ end
 
 function MenuTitlescreenState:update(t, dt)
 	if self._waiting_for_loaded_savegames then
-		if not managers.savefile:is_in_loading_sequence() and not self._user_has_changed then
+		if is_mm_eos and self._waiting_on_connection == nil and not EpicMM:logged_on() then
+			self._waiting_on_connection = 10
+
+			self._text:set_text(managers.localization:to_upper_text("menu_connect_eos"))
+
+			return
+		end
+
+		if is_mm_eos and self._waiting_on_connection and EpicMM:logged_on() then
+			self._waiting_on_connection = nil
+		end
+
+		if self._waiting_on_connection and self._waiting_on_connection ~= true then
+			self._waiting_on_connection = self._waiting_on_connection - dt
+
+			if self._waiting_on_connection < 0 then
+				self._waiting_on_connection = true
+
+				managers.menu:show_eos_no_connect_dialog({
+					play_offline_func = function ()
+						self._waiting_on_connection = false
+					end,
+					quit_func = function ()
+						_G.setup:quit()
+					end,
+					wait_func = function ()
+						self._waiting_on_connection = nil
+					end
+				})
+
+				return
+			end
+		end
+
+		if not managers.savefile:is_in_loading_sequence() and not self._user_has_changed and not self._waiting_on_connection then
+			self._text:hide()
 			self:_load_savegames_done()
 			Telemetry:on_login()
 			Telemetry:on_login_screen_passed()
@@ -187,6 +234,10 @@ function MenuTitlescreenState:update(t, dt)
 
 				print("[MenuTitlescreenState:update] showing corrupt_DLC")
 				managers.menu:show_corrupt_dlc()
+			end
+
+			if is_epic and not EpicMM:logged_on() then
+				self._text:set_text(managers.localization:to_upper_text("menu_connect_eos"))
 			end
 		elseif not self:check_attract_video() and self:is_attract_video_delay_done() then
 			self:play_attract_video()

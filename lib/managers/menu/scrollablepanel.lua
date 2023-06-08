@@ -448,6 +448,10 @@ function ScrollablePanel:_default_update(dt)
 end
 
 function ScrollablePanel:mouse_moved(button, x, y)
+	if not alive(self:panel()) then
+		return
+	end
+
 	if self._grabbed_scroll_bar then
 		self:scroll_with_bar(y, self._current_y)
 
@@ -456,13 +460,13 @@ function ScrollablePanel:mouse_moved(button, x, y)
 		return true, "grab"
 	elseif alive(self._scroll_bar) and self._scroll_bar:visible() and self._scroll_bar:inside(x, y) then
 		return true, "hand"
-	elseif self:panel():child("scroll_up_indicator_arrow"):inside(x, y) then
+	elseif alive(self:panel():child("scroll_up_indicator_arrow")) and self:panel():child("scroll_up_indicator_arrow"):inside(x, y) then
 		if self._pressing_arrow_up then
 			self:perform_scroll(SCROLL_SPEED * 0.1, 1)
 		end
 
 		return true, self:panel():child("scroll_up_indicator_arrow"):alpha() > 0 and "link" or "arrow"
-	elseif self:panel():child("scroll_down_indicator_arrow"):inside(x, y) then
+	elseif alive(self:panel():child("scroll_down_indicator_arrow")) and self:panel():child("scroll_down_indicator_arrow"):inside(x, y) then
 		if self._pressing_arrow_down then
 			self:perform_scroll(SCROLL_SPEED * 0.1, -1)
 		end
@@ -472,22 +476,30 @@ function ScrollablePanel:mouse_moved(button, x, y)
 end
 
 function ScrollablePanel:mouse_clicked(o, button, x, y)
+	if not alive(self:panel()) then
+		return
+	end
+
 	if alive(self._scroll_bar) and self._scroll_bar:visible() and self._scroll_bar:inside(x, y) then
 		return true
 	end
 end
 
 function ScrollablePanel:mouse_pressed(button, x, y)
+	if not alive(self:panel()) then
+		return
+	end
+
 	if alive(self._scroll_bar) and self._scroll_bar:visible() and self._scroll_bar:inside(x, y) then
 		self._grabbed_scroll_bar = true
 		self._current_y = y
 
 		return true
-	elseif self:panel():child("scroll_up_indicator_arrow"):inside(x, y) then
+	elseif alive(self:panel():child("scroll_up_indicator_arrow")) and self:panel():child("scroll_up_indicator_arrow"):inside(x, y) then
 		self._pressing_arrow_up = true
 
 		return true
-	elseif self:panel():child("scroll_down_indicator_arrow"):inside(x, y) then
+	elseif alive(self:panel():child("scroll_down_indicator_arrow")) and self:panel():child("scroll_down_indicator_arrow"):inside(x, y) then
 		self._pressing_arrow_down = true
 
 		return true

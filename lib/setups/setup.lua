@@ -15,6 +15,8 @@ Global.SKIP_OVERKILL_290 = SystemInfo:platform() == Idstring("PS3")
 Global.DISCORD_APP_ID = "364785249202208768"
 
 core:import("CoreSetup")
+require("lib/utils/HttpRequest")
+HttpRequest:init()
 require("lib/managers/DLCManager")
 
 managers.dlc = DLCManager:new()
@@ -131,6 +133,7 @@ require("lib/utils/dev/api/TestAPI")
 require("lib/utils/accelbyte/Telemetry")
 require("lib/managers/CharmManager")
 require("lib/managers/MachineGunBeltManager")
+require("lib/managers/social_hub/SocialHubManager")
 
 script_data = script_data or {}
 game_state_machine = game_state_machine or nil
@@ -314,6 +317,7 @@ function Setup:init_managers(managers)
 	managers.story = StoryMissionsManager:new()
 	managers.promo_unlocks = PromoUnlockManager:new()
 	managers.raid_jobs = RaidJobsManager:new()
+	managers.socialhub = SocialHubManager:new()
 
 	managers.savefile:load_settings()
 
@@ -596,6 +600,7 @@ function Setup:update(t, dt)
 	managers.vehicle:update(t, dt)
 	managers.mutators:update(t, dt)
 	managers.crime_spree:update(t, dt)
+	managers.socialhub:update(t, dt)
 	game_state_machine:update(t, dt)
 
 	if self._main_thread_loading_screen_gui_visible then

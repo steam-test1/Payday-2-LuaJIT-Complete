@@ -1,4 +1,5 @@
 require("lib/managers/menu/WalletGuiObject")
+require("lib/managers/social_hub/LobbyCodeMenuComponent")
 
 local function make_fine_text(text)
 	local x, y, w, h = text:text_rect()
@@ -3773,6 +3774,10 @@ function MissionBriefingGui:init(saferect_ws, fullrect_ws, node)
 
 	self._lobby_mutators_text:set_visible(mutators_active)
 
+	self._lobby_code_text = LobbyCodeMenuComponent:new(self._safe_workspace, self._full_workspace)
+
+	self._lobby_code_text:panel():set_layer(2)
+
 	local local_peer = managers.network:session():local_peer()
 
 	for peer_id, peer in pairs(managers.network:session():peers()) do
@@ -3825,6 +3830,10 @@ function MissionBriefingGui:update(t, dt)
 		local a = 0.75 + math.abs(math.sin(t * 120) * 0.25)
 
 		self._lobby_mutators_text:set_alpha(a)
+	end
+
+	if self._lobby_code_text then
+		self._lobby_code_text:update(t, dt)
 	end
 end
 
@@ -4173,9 +4182,7 @@ function MissionBriefingGui:mouse_pressed(button, x, y)
 				local peer = managers.network:session() and managers.network:session():peer(peer_id)
 
 				if peer then
-					Steam:overlay_activate("url", tweak_data.gui.fbi_files_webpage .. "/suspect/" .. peer:user_id() .. "/")
-
-					return
+					return peer:overlay_inspect()
 				end
 			end
 		end
@@ -4211,6 +4218,10 @@ function MissionBriefingGui:mouse_pressed(button, x, y)
 
 	if self._ready_button:inside(x, y) or self._ready_tick_box:inside(x, y) then
 		self:on_ready_pressed()
+	end
+
+	if self._lobby_code_text then
+		self._lobby_code_text:mouse_pressed(button, x, y)
 	end
 
 	if not self._ready then
@@ -4280,6 +4291,14 @@ function MissionBriefingGui:mouse_moved(x, y)
 
 	if managers.hud._hud_mission_briefing and managers.hud._hud_mission_briefing._backdrop then
 		managers.hud._hud_mission_briefing._backdrop:mouse_moved(x, y)
+	end
+
+	if self._lobby_code_text then
+		local success, mouse_state = self._lobby_code_text:mouse_moved(x, y)
+
+		if success then
+			return success, mouse_state
+		end
 	end
 
 	local u, p = self._multi_profile_item:mouse_moved(x, y)
@@ -4572,6 +4591,10 @@ function MissionBriefingGui:special_btn_pressed(button)
 		managers.multi_profile:previous_profile()
 	end
 
+	if self._lobby_code_text then
+		self._lobby_code_text:special_btn_pressed(button)
+	end
+
 	return false
 end
 
@@ -4621,6 +4644,10 @@ function MissionBriefingGui:hide()
 	if self._lobby_mutators_text then
 		self._lobby_mutators_text:set_visible(false)
 	end
+
+	if self._lobby_code_text:panel() then
+		self._lobby_code_text:panel():set_visible(false)
+	end
 end
 
 function MissionBriefingGui:show()
@@ -4631,6 +4658,10 @@ function MissionBriefingGui:show()
 
 	if self._lobby_mutators_text then
 		self._lobby_mutators_text:set_visible(managers.mutators:are_mutators_enabled() and managers.mutators:allow_mutators_in_level(managers.job:current_level_id()))
+	end
+
+	if self._lobby_code_text:panel() then
+		self._lobby_code_text:panel():set_visible(true)
 	end
 end
 

@@ -294,6 +294,12 @@ function InfamyTreeItem:get_preview_category()
 	return self:is_previewable() and self:get_infamy_upgrades()[1][2]
 end
 
+function InfamyTreeItem:mouse_moved(button, x, y)
+	if self:inside(x, y) and not self:is_open() then
+		return true, "link"
+	end
+end
+
 function InfamyTreeItem:spawn_preview()
 	if self:is_previewable() then
 		if self:get_preview_category() == "masks" then
@@ -1319,15 +1325,17 @@ function InfamyTreeGui:mouse_moved(o, x, y)
 		back_button:set_color(BUTTON_COLOR)
 	end
 
-	if not used and self.scroll:inside(x, y) and self.scroll:input_focus() and managers.menu_scene.infamy_menu_ready then
-		used, pointer = self.scroll:mouse_moved("", x, y)
+	if not used and self.scroll:input_focus() and managers.menu_scene.infamy_menu_ready then
+		used, pointer = self.scroll:mouse_moved(o, x, y)
 	end
 
 	return used, pointer
 end
 
 function InfamyTreeGui:mouse_pressed(button, x, y)
-	self.scroll:mouse_pressed(button, x, y)
+	if self.scroll:mouse_pressed(button, x, y) then
+		return true
+	end
 
 	if button == Idstring("0") then
 		if self._panel:child("back_button"):inside(x, y) then

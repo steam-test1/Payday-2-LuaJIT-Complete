@@ -724,6 +724,7 @@ function LootDropTweakData:init(tweak_data)
 		track = true,
 		sort_number = 88,
 		unique_lock_icon = "guis/textures/pd2/blackmarket/money_lock",
+		hide_unavailable = SystemInfo:distribution() == Idstring("EPIC") and true or false,
 		category = "collaboration"
 	}
 	self.global_values.hlm2 = {
@@ -739,6 +740,7 @@ function LootDropTweakData:init(tweak_data)
 		track = true,
 		sort_number = 89,
 		unique_lock_icon = "guis/textures/pd2/blackmarket/money_lock",
+		hide_unavailable = SystemInfo:distribution() == Idstring("EPIC") and true or false,
 		category = "collaboration"
 	}
 	self.global_values.hlm2_deluxe = {
@@ -754,6 +756,7 @@ function LootDropTweakData:init(tweak_data)
 		track = true,
 		sort_number = 90,
 		unique_lock_icon = "guis/textures/pd2/blackmarket/money_lock",
+		hide_unavailable = SystemInfo:distribution() == Idstring("EPIC") and true or false,
 		category = "collaboration"
 	}
 	self.global_values.speedrunners = {

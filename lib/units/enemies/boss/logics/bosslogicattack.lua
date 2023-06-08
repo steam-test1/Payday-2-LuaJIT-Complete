@@ -265,70 +265,52 @@ function BossLogicAttack._upd_combat_movement(data, my_data)
 
 				BossLogicAttack._chk_request_action_walk_to_chase_pos(data, my_data, speed)
 			elseif not my_data.chase_path_search_id and focus_enemy.nav_tracker then
-				local height_diff = math_abs(data.m_pos.z - focus_enemy.m_pos.z)
+				my_data.chase_pos = nil
+				local chase_pos = focus_enemy.nav_tracker:field_position()
+				local pos_on_wall = CopLogicTravel._get_pos_on_wall(chase_pos, 300, nil, nil)
 
-				if height_diff < 300 then
-					chase = true
-				else
-					local engage = my_data.attitude == "engage"
-
-					if enemy_visible then
-						if focus_enemy.dis > 1000 or engage and focus_enemy.dis > 500 then
-							chase = true
-						end
-					elseif focus_enemy.verified_dis > 1000 or engage and focus_enemy.verified_dis > 500 or not focus_enemy.verified_t or t - focus_enemy.verified_t > 2 then
-						chase = true
-					end
+				if mvec3_not_equal(chase_pos, pos_on_wall) then
+					my_data.chase_pos = pos_on_wall
 				end
 
-				if chase then
-					my_data.chase_pos = nil
-					local chase_pos = focus_enemy.nav_tracker:field_position()
-					local pos_on_wall = CopLogicTravel._get_pos_on_wall(chase_pos, 300, nil, nil)
+				if my_data.chase_pos then
+					local my_pos = data.unit:movement():nav_tracker():field_position()
+					local unobstructed_line = nil
 
-					if mvec3_not_equal(chase_pos, pos_on_wall) then
-						my_data.chase_pos = pos_on_wall
+					if math_abs(my_pos.z - my_data.chase_pos.z) < 40 then
+						local ray_params = {
+							allow_entry = false,
+							pos_from = my_pos,
+							pos_to = my_data.chase_pos
+						}
+
+						if not managers.navigation:raycast(ray_params) then
+							unobstructed_line = true
+						end
 					end
 
-					if my_data.chase_pos then
-						local my_pos = data.unit:movement():nav_tracker():field_position()
-						local unobstructed_line = nil
+					if unobstructed_line then
+						my_data.chase_path = {
+							mvec3_cpy(my_pos),
+							my_data.chase_pos
+						}
+						local enemy_dis = enemy_visible and focus_enemy.dis or focus_enemy.verified_dis
+						local run_dist = enemy_visible and 800 or 400
+						local speed = enemy_dis < run_dist and "walk" or "run"
 
-						if math_abs(my_pos.z - my_data.chase_pos.z) < 40 then
-							local ray_params = {
-								allow_entry = false,
-								pos_from = my_pos,
-								pos_to = my_data.chase_pos
-							}
-
-							if not managers.navigation:raycast(ray_params) then
-								unobstructed_line = true
-							end
-						end
-
-						if unobstructed_line then
-							my_data.chase_path = {
-								mvec3_cpy(my_pos),
-								my_data.chase_pos
-							}
-							local enemy_dis = enemy_visible and focus_enemy.dis or focus_enemy.verified_dis
-							local run_dist = enemy_visible and 800 or 400
-							local speed = enemy_dis < run_dist and "walk" or "run"
-
-							BossLogicAttack._chk_request_action_walk_to_chase_pos(data, my_data, speed)
-						else
-							my_data.chase_path_search_id = tostring(data.unit:key()) .. "chase"
-							my_data.pathing_to_chase_pos = true
-
-							data.brain:add_pos_rsrv("path", {
-								radius = 60,
-								position = mvec3_cpy(my_data.chase_pos)
-							})
-							data.brain:search_for_path(my_data.chase_path_search_id, my_data.chase_pos)
-						end
+						BossLogicAttack._chk_request_action_walk_to_chase_pos(data, my_data, speed)
 					else
-						my_data.chase_path_failed_t = t
+						my_data.chase_path_search_id = tostring(data.unit:key()) .. "chase"
+						my_data.pathing_to_chase_pos = true
+
+						data.brain:add_pos_rsrv("path", {
+							radius = 60,
+							position = mvec3_cpy(my_data.chase_pos)
+						})
+						data.brain:search_for_path(my_data.chase_path_search_id, my_data.chase_pos)
 					end
+				else
+					my_data.chase_path_failed_t = t
 				end
 			end
 		end

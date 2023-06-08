@@ -67,6 +67,11 @@ require("lib/managers/menu/SkirmishSelectInfoMenuComponent")
 require("lib/managers/menu/SkirmishContractBoxGui")
 require("lib/managers/menu/IngameContractGuiSkirmish")
 require("lib/managers/menu/MovieTheaterGui")
+require("lib/managers/social_hub/MenuNodeSocialHubGui")
+require("lib/managers/social_hub/LobbyCodeMenuComponent")
+require("lib/managers/social_hub/UserCodeMenuComponent")
+require("lib/managers/social_hub/SocialHubNotificationMenuComponent")
+require("lib/managers/social_hub/CrimenetSearchLobbyCodeGui")
 
 MenuComponentManager = MenuComponentManager or class()
 
@@ -344,6 +349,30 @@ function MenuComponentManager:init()
 		movie_theater = {
 			create = callback(self, self, "create_movie_theater_gui"),
 			close = callback(self, self, "close_movie_theater_gui")
+		},
+		social_hub = {
+			create = callback(self, self, "create_social_hub_gui"),
+			close = callback(self, self, "close_social_hub_gui")
+		},
+		lobby_code = {
+			create = callback(self, self, "create_lobby_code_gui"),
+			close = callback(self, self, "close_lobby_code_gui")
+		},
+		ingame_lobby_code = {
+			create = callback(self, self, "create_ingame_lobby_code_gui"),
+			close = callback(self, self, "close_ingame_lobby_code_gui")
+		},
+		user_code = {
+			create = callback(self, self, "create_user_code_gui"),
+			close = callback(self, self, "close_user_code_gui")
+		},
+		socialhub_notification = {
+			create = callback(self, self, "create_socialhub_notification_gui"),
+			close = callback(self, self, "close_socialhub_notification_gui")
+		},
+		crimenet_search_lobby_code = {
+			create = callback(self, self, "create_crimenet_search_lobby_code_gui"),
+			close = callback(self, self, "close_crimenet_search_lobby_code_gui")
 		}
 	}
 	self._alive_components = {}
@@ -561,6 +590,8 @@ function MenuComponentManager:set_active_components(components, node)
 			to_close[component] = true
 		end
 	end
+
+	table.insert(components, "socialhub_notification")
 
 	for _, component in ipairs(components) do
 		if self._active_components[component] then
@@ -1324,6 +1355,10 @@ function MenuComponentManager:special_btn_pressed(...)
 		return true
 	end
 
+	if self._ingame_lobby_code_gui and self._ingame_lobby_code_gui:special_btn_pressed(...) then
+		return true
+	end
+
 	if self._infamytree_gui and self._infamytree_gui:special_btn_pressed(...) then
 		return true
 	end
@@ -1352,6 +1387,14 @@ function MenuComponentManager:special_btn_released(...)
 end
 
 function MenuComponentManager:mouse_pressed(o, button, x, y)
+	if self._lobby_code_gui and self._lobby_code_gui:mouse_pressed(button, x, y) then
+		return true
+	end
+
+	if self._ingame_lobby_code_gui and self._ingame_lobby_code_gui:mouse_pressed(button, x, y) then
+		return true
+	end
+
 	if self._game_chat_gui and self._game_chat_gui:mouse_pressed(button, x, y) then
 		return true
 	end
@@ -1785,6 +1828,33 @@ end
 
 function MenuComponentManager:mouse_moved(o, x, y)
 	local wanted_pointer = "arrow"
+
+	if self._lobby_code_gui then
+		local used, pointer = self._lobby_code_gui:mouse_moved(x, y)
+		wanted_pointer = pointer or wanted_pointer
+
+		if used then
+			return true, wanted_pointer
+		end
+	end
+
+	if self._user_code_gui then
+		local used, pointer = self._user_code_gui:mouse_moved(x, y)
+		wanted_pointer = pointer or wanted_pointer
+
+		if used then
+			return true, wanted_pointer
+		end
+	end
+
+	if self._ingame_lobby_code_gui then
+		local used, pointer = self._ingame_lobby_code_gui:mouse_moved(x, y)
+		wanted_pointer = pointer or wanted_pointer
+
+		if used then
+			return true, wanted_pointer
+		end
+	end
 
 	if self._game_chat_gui then
 		local used, pointer = self._game_chat_gui:mouse_moved(x, y)
@@ -5008,6 +5078,10 @@ function MenuComponentManager:close_custom_safehouse_menu(category)
 end
 
 function MenuComponentManager:create_new_heists_gui(node)
+	if SystemInfo:distribution() == Idstring("EPIC") then
+		return
+	end
+
 	if not node then
 		return
 	end
@@ -5272,6 +5346,144 @@ end
 
 function MenuComponentManager:crimenet_sidebar_gui()
 	return self._crimenet_sidebar_gui
+end
+
+function MenuComponentManager:create_social_hub_gui(node)
+	self:close_social_hub_gui()
+
+	self._social_hub_gui = SocialHubGui:new(self._ws, self._fullscreen_ws, node)
+
+	self:register_component("social_hub", self._social_hub_gui)
+end
+
+function MenuComponentManager:close_social_hub_gui()
+	if self._social_hub_gui then
+		self._social_hub_gui:close()
+
+		self._social_hub_gui = nil
+
+		self:unregister_component("social_hub")
+	end
+end
+
+function MenuComponentManager:social_hub_gui()
+	return self._social_hub_gui
+end
+
+function MenuComponentManager:social_hub_gui_reset_tab_by_index(index)
+	if self._social_hub_gui then
+		self._social_hub_gui:reset_tab_by_index(index)
+	end
+end
+
+function MenuComponentManager:social_hub_gui_reset_tab_by_name(name)
+	if self._social_hub_gui then
+		self._social_hub_gui:reset_tab_by_name(name)
+	end
+end
+
+function MenuComponentManager:create_lobby_code_gui(node)
+	self:close_lobby_code_gui()
+
+	self._lobby_code_gui = LobbyCodeMenuComponent:new(self._ws, self._fullscreen_ws, node)
+
+	self:register_component("lobby_code", self._lobby_code_gui)
+end
+
+function MenuComponentManager:close_lobby_code_gui()
+	if self._lobby_code_gui then
+		self._lobby_code_gui:close()
+
+		self._lobby_code_gui = nil
+
+		self:unregister_component("lobby_code")
+	end
+end
+
+function MenuComponentManager:create_ingame_lobby_code_gui(node)
+	self:close_ingame_lobby_code_gui()
+
+	self._ingame_lobby_code_gui = LobbyCodeMenuComponent:new(self._ws, self._fullscreen_ws, node)
+
+	self:register_component("ingame_lobby_code", self._ingame_lobby_code_gui)
+
+	local panel = self._ingame_lobby_code_gui:panel()
+	local parent = panel:parent()
+
+	panel:set_rightbottom(parent:w(), parent:h() - 24)
+	panel:set_layer(tweak_data.gui.MENU_COMPONENT_LAYER + 100)
+end
+
+function MenuComponentManager:close_ingame_lobby_code_gui()
+	if self._ingame_lobby_code_gui then
+		self._ingame_lobby_code_gui:close()
+
+		self._ingame_lobby_code_gui = nil
+
+		self:unregister_component("ingame_lobby_code")
+	end
+end
+
+function MenuComponentManager:user_code_gui()
+	return self._user_code_gui
+end
+
+function MenuComponentManager:create_user_code_gui(node)
+	self:close_user_code_gui()
+
+	self._user_code_gui = UserCodeMenuComponent:new(self._ws, self._fullscreen_ws, node)
+
+	self:register_component("user_code", self._user_code_gui)
+	self._user_code_gui:panel():set_righttop(self._ws:panel():righttop())
+end
+
+function MenuComponentManager:close_user_code_gui()
+	if self._user_code_gui then
+		self._user_code_gui:close()
+
+		self._user_code_gui = nil
+
+		self:unregister_component("user_code")
+	end
+end
+
+function MenuComponentManager:user_code_gui()
+	return self._lobby_code_gui
+end
+
+function MenuComponentManager:create_socialhub_notification_gui(node)
+	if not self._socialhub_notification_gui then
+		self._socialhub_notification_gui = SocialHubNotification:new(self._ws, self._fullscreen_ws, node)
+
+		self:register_component("socialhub_notification", self._socialhub_notification_gui)
+	end
+end
+
+function MenuComponentManager:close_socialhub_notification_gui()
+end
+
+function MenuComponentManager:push_socialhub_notification(type, user, size)
+	if self._socialhub_notification_gui then
+		self._socialhub_notification_gui:push_notification(type, user, size)
+	end
+end
+
+function MenuComponentManager:create_crimenet_search_lobby_code_gui(node)
+	self:close_crimenet_search_lobby_code_gui()
+
+	self._crimenet_search_lobby_code_gui = CrimenetSearchLobbyCodeGui:new(self._ws, self._fullscreen_ws, node)
+
+	self:register_component("crimenet_search_lobby_code", self._crimenet_search_lobby_code_gui)
+end
+
+function MenuComponentManager:close_crimenet_search_lobby_code_gui()
+	if self._crimenet_search_lobby_code_gui then
+		self._crimenet_search_lobby_code_gui:close()
+
+		self._crimenet_search_lobby_code_gui = nil
+
+		self:unregister_component("crimenet_search_lobby_code")
+	end
 end
 
 function MenuComponentManager:create_raid_menu_gui(node)

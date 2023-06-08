@@ -54,7 +54,7 @@ function VehicleManager:add_vehicle(vehicle)
 end
 
 function VehicleManager:remove_vehicle(vehicle)
-	table.delete(vehicle)
+	table.delete(self._vehicles, vehicle)
 	managers.hud:_remove_name_label(vehicle:unit_data().name_label_id)
 
 	if Application:editor() then
@@ -260,9 +260,9 @@ function VehicleManager:sync_vehicle_data(vehicle_unit, state, occupant_driver, 
 	Application:debug("[VehicleManager]", inspect(managers.player._global.synced_vehicle_data))
 
 	if state ~= VehicleDrivingExt.STATE_INACTIVE then
-		vehicle_unit:damage():run_sequence_simple("driving")
-		vehicle_unit:vehicle():set_active(true)
-		v_ext:set_state(state, true)
+		if not vehicle_unit:vehicle():is_active() then
+			v_ext:activate_vehicle()
+		end
 
 		if vehicle_unit:damage():has_sequence("local_driving_exit") then
 			vehicle_unit:damage():run_sequence("local_driving_exit")

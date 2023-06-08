@@ -11451,6 +11451,15 @@ function HudIconsTweakData:init()
 			64
 		}
 	}
+	self.sidebar_lobby_search = {
+		texture = "guis/dlcs/shub/textures/search_icon",
+		texture_rect = {
+			0,
+			0,
+			128,
+			128
+		}
+	}
 	self.C_Locke_H_AlsDeal_AllDiffs_D0 = {
 		texture = "guis/dlcs/wwh/textures/pd2/wwh_achievements_atlas",
 		texture_rect = {
@@ -14754,7 +14763,7 @@ function HudIconsTweakData:init()
 			85
 		}
 	}
-	self.C_Keegan_H_HostileTakeover_AllDiffs_D0 = {
+	self.C_Blaine_H_HostileTakeover_AllDiffs_D0 = {
 		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
 		texture_rect = {
 			2,
@@ -14763,7 +14772,7 @@ function HudIconsTweakData:init()
 			85
 		}
 	}
-	self.C_Keegan_H_HostileTakeover_AllDiffs_D1 = {
+	self.C_Blaine_H_HostileTakeover_AllDiffs_D1 = {
 		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
 		texture_rect = {
 			2,
@@ -14772,7 +14781,7 @@ function HudIconsTweakData:init()
 			85
 		}
 	}
-	self.C_Keegan_H_HostileTakeover_AllDiffs_D2 = {
+	self.C_Blaine_H_HostileTakeover_AllDiffs_D2 = {
 		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
 		texture_rect = {
 			89,
@@ -14781,7 +14790,7 @@ function HudIconsTweakData:init()
 			85
 		}
 	}
-	self.C_Keegan_H_HostileTakeover_AllDiffs_D3 = {
+	self.C_Blaine_H_HostileTakeover_AllDiffs_D3 = {
 		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
 		texture_rect = {
 			2,
@@ -14790,7 +14799,7 @@ function HudIconsTweakData:init()
 			85
 		}
 	}
-	self.C_Keegan_H_HostileTakeover_AllDiffs_D4 = {
+	self.C_Blaine_H_HostileTakeover_AllDiffs_D4 = {
 		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
 		texture_rect = {
 			89,
@@ -14799,7 +14808,7 @@ function HudIconsTweakData:init()
 			85
 		}
 	}
-	self.C_Keegan_H_HostileTakeover_AllDiffs_D5 = {
+	self.C_Blaine_H_HostileTakeover_AllDiffs_D5 = {
 		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
 		texture_rect = {
 			176,
@@ -14808,7 +14817,7 @@ function HudIconsTweakData:init()
 			85
 		}
 	}
-	self.C_Keegan_H_HostileTakeover_AllDiffs_D6 = {
+	self.C_Blaine_H_HostileTakeover_AllDiffs_D6 = {
 		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
 		texture_rect = {
 			2,
@@ -14817,7 +14826,7 @@ function HudIconsTweakData:init()
 			85
 		}
 	}
-	self.C_Keegan_H_HostileTakeover_AllDiffs_OD_D6 = {
+	self.C_Blaine_H_HostileTakeover_AllDiffs_OD_D6 = {
 		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
 		texture_rect = {
 			263,
@@ -14826,7 +14835,7 @@ function HudIconsTweakData:init()
 			85
 		}
 	}
-	self.C_Keegan_H_HostileTakeover_JustPassing = {
+	self.C_Blaine_H_HostileTakeover_JustPassing = {
 		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
 		texture_rect = {
 			89,
@@ -14835,7 +14844,7 @@ function HudIconsTweakData:init()
 			85
 		}
 	}
-	self.C_Keegan_H_HostileTakeover_PAYDAYKART = {
+	self.C_Blaine_H_HostileTakeover_PAYDAYKART = {
 		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
 		texture_rect = {
 			2,
@@ -14844,7 +14853,7 @@ function HudIconsTweakData:init()
 			85
 		}
 	}
-	self.C_Keegan_H_HostileTakeover_System = {
+	self.C_Blaine_H_HostileTakeover_System = {
 		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
 		texture_rect = {
 			89,
@@ -14853,7 +14862,7 @@ function HudIconsTweakData:init()
 			85
 		}
 	}
-	self.C_Keegan_H_HostileTakeover_TexasTreasuresThree = {
+	self.C_Blaine_H_HostileTakeover_TexasTreasuresThree = {
 		texture = "guis/dlcs/trk/atlases/achievement_atlas_corp",
 		texture_rect = {
 			176,

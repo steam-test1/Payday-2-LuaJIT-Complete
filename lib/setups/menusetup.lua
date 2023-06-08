@@ -28,6 +28,9 @@ core:import("SequenceManager")
 
 MenuSetup = MenuSetup or class(Setup)
 MenuSetup.IS_START_MENU = true
+local is_steam = SystemInfo:distribution() == Idstring("STEAM")
+local is_epic = SystemInfo:distribution() == Idstring("EPIC")
+local is_mm_eos = SystemInfo:matchmaking() == Idstring("MM_EPIC")
 
 function MenuSetup:load_packages()
 	Setup.load_packages(self)
@@ -163,6 +166,8 @@ function MenuSetup:init_game()
 					end
 				elseif arg == "+connect_lobby" then
 					Global.boot_invite = arg_list[i + 1]
+				elseif is_steam and is_mm_eos and arg == managers.network.account.connect_string then
+					Global.boot_invite = arg_list[i + 1]
 				elseif arg == "-auto_enter_level" then
 					Global.exe_argument_auto_enter_level = true
 					i = i + 1
@@ -185,8 +190,6 @@ function MenuSetup:init_game()
 		else
 			game_state_machine:change_state_by_name("bootup")
 		end
-
-		tweak_data:load_movie_list()
 	end
 
 	return gsm

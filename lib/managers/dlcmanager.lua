@@ -3,8 +3,13 @@ DLCManager.PLATFORM_CLASS_MAP = {}
 
 function DLCManager:new(...)
 	local platform = SystemInfo:platform()
+	local platform_key = platform:key()
 
-	return (self.PLATFORM_CLASS_MAP[platform:key()] or GenericDLCManager):new(...)
+	if platform == Idstring("WIN32") then
+		platform_key = SystemInfo:distribution():key()
+	end
+
+	return (self.PLATFORM_CLASS_MAP[platform_key] or GenericDLCManager):new(...)
 end
 
 GenericDLCManager = GenericDLCManager or class()
@@ -20,6 +25,16 @@ function GenericDLCManager:_set_dlc_save_table()
 		Global.dlc_save = {
 			packages = {}
 		}
+	end
+end
+
+function GenericDLCManager:chk_vr_dlc()
+	return nil
+end
+
+function GenericDLCManager:check_pdth(clbk)
+	if clbk then
+		clbk(false, false)
 	end
 end
 
@@ -278,7 +293,7 @@ end
 function GenericDLCManager:give_dlc_and_verify_blackmarket()
 	self:give_dlc_package()
 
-	Global.dlc_manager.verify_entitlements = nil
+	Global.dlc_manager.verify_content_update = nil
 
 	managers.event_jobs:aquire_claimed_upgrades()
 	managers.infamy:give_dlc()
@@ -555,6 +570,10 @@ function GenericDLCManager:is_dlc_unlocked(dlc)
 	return tweak_data.dlc[dlc] and tweak_data.dlc[dlc].free or self:has_dlc(dlc)
 end
 
+GenericDLCManager.dlc_data_name_converter = {
+	cce = "career_criminal_edition"
+}
+
 function GenericDLCManager:has_dlc(dlc)
 	local dlc_tweak = tweak_data.dlc[dlc]
 
@@ -569,10 +588,7 @@ function GenericDLCManager:has_dlc(dlc)
 		end
 	end
 
-	if dlc == "cce" then
-		dlc = "career_criminal_edition"
-	end
-
+	dlc = self.dlc_data_name_converter[dlc] or dlc
 	local dlc_data = Global.dlc_manager.all_dlc_data[dlc]
 
 	if not dlc_data then
@@ -645,6 +661,10 @@ end
 
 function GenericDLCManager:has_pd2_clan()
 	return self:is_dlc_unlocked("pd2_clan")
+end
+
+function GenericDLCManager:has_john_wick_character()
+	return self:is_dlc_unlocked("john_wick_character")
 end
 
 function GenericDLCManager:has_raidww2_clan()
@@ -886,9 +906,7 @@ function GenericDLCManager:has_achievement_milestone(data)
 end
 
 function GenericDLCManager:has_stat(data)
-	local sa_handler = Steam:sa_handler()
-
-	return sa_handler:get_stat(data.stat_id) >= (data.stat_value or 1)
+	return true
 end
 
 function GenericDLCManager:has_dlc_or_soundtrack_or_cce(dlc)
@@ -1789,607 +1807,28 @@ function WINDLCManager:init()
 
 	if not Global.dlc_manager then
 		Global.dlc_manager = {
-			all_dlc_data = {
-				full_game = {
-					app_id = "218620",
-					verified = true
-				},
-				preorder = {
-					app_id = "247450",
-					no_install = true
-				},
-				career_criminal_edition = {
-					app_id = "218630",
-					no_install = true
-				},
-				alienware_alpha = {
-					app_id = "328861",
-					no_install = true
-				},
-				alienware_alpha_promo = {
-					app_id = "318720",
-					no_install = true
-				},
-				soundtrack = {
-					app_id = "254260",
-					no_install = true
-				},
-				pdth_soundtrack = {
-					app_id = "207816",
-					no_install = true
-				},
-				armored_transport = {
-					app_id = "264610",
-					no_install = true
-				},
-				gage_pack = {
-					app_id = "267380",
-					no_install = true
-				},
-				gage_pack_lmg = {
-					app_id = "275590",
-					no_install = true
-				},
-				gage_pack_jobs = {
-					app_id = "259381",
-					no_install = true
-				},
-				gage_pack_snp = {
-					app_id = "259380",
-					no_install = true
-				},
-				gage_pack_shotgun = {
-					app_id = "311050",
-					no_install = true
-				},
-				gage_pack_assault = {
-					app_id = "320030",
-					no_install = true
-				},
-				overkill_pack = {
-					app_id = "348090",
-					no_install = true
-				},
-				complete_overkill_pack = {
-					app_id = "348091",
-					no_install = true
-				},
-				akm4_pack = {
-					app_id = "351890",
-					no_install = true
-				},
-				big_bank = {
-					app_id = "306690",
-					no_install = true
-				},
-				hl_miami = {
-					app_id = "323500",
-					no_install = true
-				},
-				hlm_game = {
-					no_install = true,
-					app_id = "219150",
-					external = true
-				},
-				hlm2 = {
-					no_install = true,
-					app_id = "274170",
-					external = true
-				},
-				hlm2_deluxe = {
-					no_install = true,
-					app_id = "355390",
-					external = true
-				},
-				hlm2_aus = {
-					no_install = true,
-					app_id = "338951",
-					external = true
-				},
-				speedrunners = {
-					no_install = true,
-					app_id = "207140",
-					external = true
-				},
-				character_pack_clover = {
-					app_id = "337661",
-					no_install = true
-				},
-				character_pack_dragan = {
-					app_id = "344140",
-					no_install = true
-				},
-				character_pack_sokol = {
-					app_id = "374301",
-					no_install = true
-				},
-				hope_diamond = {
-					app_id = "337660",
-					no_install = true
-				},
-				the_bomb = {
-					app_id = "339480",
-					no_install = true
-				},
-				bbq = {
-					app_id = "358150",
-					no_install = true
-				},
-				west = {
-					app_id = "349830",
-					no_install = true
-				},
-				arena = {
-					app_id = "366660",
-					no_install = true
-				},
-				kenaz = {
-					app_id = "374300",
-					no_install = true
-				},
-				turtles = {
-					app_id = "384021",
-					no_install = true
-				},
-				dragon = {
-					app_id = "384020",
-					no_install = true
-				},
-				berry = {
-					app_id = "422400",
-					no_install = true
-				},
-				xmas_soundtrack = {
-					app_id = "267381",
-					no_install = true
-				},
-				bsides_soundtrack = {
-					app_id = "368870",
-					no_install = true
-				},
-				twitch_pack = {
-					app_id = "306110",
-					no_install = true
-				},
-				humble_pack2 = {
-					app_id = "331040",
-					no_install = true
-				},
-				humble_pack3 = {
-					app_id = "375380",
-					no_install = true
-				},
-				humble_pack4 = {
-					app_id = "375381",
-					no_install = true
-				},
-				e3_s15a = {
-					app_id = "375382",
-					no_install = true
-				},
-				e3_s15b = {
-					app_id = "375383",
-					no_install = true
-				},
-				e3_s15c = {
-					app_id = "375384",
-					no_install = true
-				},
-				e3_s15d = {
-					app_id = "375385",
-					no_install = true
-				},
-				pdcon_2015 = {
-					app_id = "338950",
-					no_install = true
-				},
-				gage_pack_historical = {
-					app_id = "331900",
-					no_install = true
-				},
-				steel = {
-					app_id = "401650",
-					no_install = true
-				},
-				bobblehead = {
-					app_id = "328860",
-					no_install = true
-				},
-				peta = {
-					app_id = "433730",
-					no_install = true
-				},
-				pal = {
-					app_id = "441600",
-					no_install = true
-				},
-				opera = {
-					app_id = "468410",
-					no_install = true
-				},
-				jigg = {
-					app_id = "486610",
-					no_install = true
-				},
-				wild = {
-					app_id = "450660",
-					no_install = true
-				},
-				born = {
-					app_id = "487210",
-					no_install = true
-				},
-				dbd_deluxe = {
-					no_install = true,
-					app_id = "489980",
-					external = true
-				},
-				dbd_regular = {
-					no_install = true,
-					app_id = "381210",
-					external = true
-				},
-				pim = {
-					app_id = "545100",
-					no_install = true
-				},
-				rota = {
-					app_id = "218620",
-					no_install = true
-				},
-				gotti_bundle = {
-					app_id = "218620",
-					no_install = true
-				},
-				nyck_bundle = {
-					app_id = "218620",
-					no_install = true
-				},
-				sparkle = {
-					app_id = "532810",
-					no_install = true
-				},
-				urf_bundle = {
-					app_id = "218620",
-					no_install = true
-				},
-				tango = {
-					app_id = "548420",
-					no_install = true
-				},
-				friend = {
-					app_id = "548421",
-					no_install = true
-				},
-				chico = {
-					app_id = "548422",
-					no_install = true
-				},
-				rvd = {
-					app_id = "218620",
-					no_install = true
-				},
-				pd2_clan = {
-					source_id = "103582791433980119"
-				},
-				dbd_clan = {
-					source_id = "103582791441335905"
-				},
-				solus_clan = {
-					source_id = "103582791438562929"
-				},
-				pdcon_2016 = {
-					app_id = "552490",
-					no_install = true
-				},
-				win_bundle = {
-					app_id = "218620",
-					no_install = true
-				},
-				swm = {
-					app_id = "588130",
-					no_install = true
-				},
-				yor_bundle = {
-					app_id = "218620",
-					no_install = true
-				},
-				sha = {
-					app_id = "218620",
-					no_install = true
-				},
-				spa = {
-					app_id = "591710",
-					no_install = true
-				},
-				grv = {
-					app_id = "612900",
-					no_install = true
-				},
-				amp = {
-					app_id = "218620",
-					no_install = true
-				},
-				mp2 = {
-					app_id = "218620",
-					no_install = true
-				},
-				mom = {
-					app_id = "218620",
-					no_install = true
-				},
-				ant = {
-					no_install = true,
-					app_id = "489570",
-					external = true
-				},
-				pn2 = {
-					app_id = "618940",
-					no_install = true
-				},
-				max = {
-					app_id = "218620",
-					no_install = true
-				},
-				trk = {
-					app_id = "218620",
-					no_install = true
-				},
-				dgm = {
-					app_id = "218620",
-					no_install = true
-				},
-				ztm = {
-					app_id = "735640",
-					no_install = true
-				},
-				joy = {
-					app_id = "218620",
-					no_install = true
-				},
-				raidww2_clan = {
-					source_id = "103582791460014708"
-				},
-				fdm = {
-					app_id = "707620",
-					no_install = true
-				},
-				ecp = {
-					app_id = "758420",
-					no_install = true
-				},
-				cmo = {
-					app_id = "218620",
-					no_install = true
-				},
-				cmt = {
-					app_id = "218620",
-					no_install = true
-				},
-				pbm = {
-					app_id = "735630",
-					no_install = true
-				},
-				dnm = {
-					app_id = "218620",
-					no_install = true
-				},
-				wwh = {
-					app_id = "218620",
-					no_install = true
-				},
-				myh = {
-					app_id = "218620",
-					no_install = true
-				},
-				fgl = {
-					app_id = "218620",
-					no_install = true
-				},
-				osa = {
-					app_id = "218620",
-					no_install = true
-				},
-				ami = {
-					app_id = "218620",
-					no_install = true
-				},
-				gwm = {
-					app_id = "218620",
-					no_install = true
-				},
-				dmg = {
-					app_id = "218620",
-					no_install = true
-				},
-				ggac = {
-					app_id = "218620",
-					no_install = true
-				},
-				pmp = {
-					app_id = "218620",
-					no_install = true
-				},
-				ghm = {
-					app_id = "218620",
-					no_install = true
-				},
-				srtr2 = {
-					no_install = true,
-					app_id = "55230",
-					external = true
-				},
-				a10mask = {
-					app_id = "1788140",
-					no_install = true
-				},
-				mrwi_deck = {
-					app_id = "218620",
-					no_install = true
-				},
-				sbzac_elegantteeth = {
-					no_install = true,
-					entitlement_id = "3b33555360c749249cf37923af3121a4",
-					external = true
-				},
-				sbzac_wpn_fps_upg_charm_skullz = {
-					no_install = true,
-					entitlement_id = "af17b1ef651345d1a8a48ea6ff67fe36",
-					external = true
-				},
-				sbzac_elegantscarf = {
-					no_install = true,
-					entitlement_id = "10e2783cc2244fcfbf40a316ac84bc55",
-					external = true
-				},
-				sbzac_color_sbzac2_01 = {
-					no_install = true,
-					entitlement_id = "29bb159f7efb4a8f98103d0648788a51",
-					external = true
-				},
-				rat_oilbaron = {
-					no_install = true,
-					entitlement_id = "ee24dd9f429f408a879cf417c78f964a",
-					external = true
-				},
-				rat_ranchdiesel = {
-					no_install = true,
-					entitlement_id = "c4d74be8d4cf41d5a5921c11094a5bdf",
-					external = true
-				},
-				rat_mocow = {
-					no_install = true,
-					entitlement_id = "8c7aa8537d474094b0f93e1ccf06852d",
-					external = true
-				},
-				prim_primtime = {
-					no_install = true,
-					entitlement_id = "97480f59f8424e3a89810e270583f468",
-					external = true
-				},
-				prim_darkmat = {
-					no_install = true,
-					entitlement_id = "271cc010fb0c456db16afbd1ceb94641",
-					external = true
-				},
-				prim_newhorizon = {
-					no_install = true,
-					entitlement_id = "d0a07cefd5ff443a8b597370bf766bbe",
-					external = true
-				},
-				a11th_homburg = {
-					no_install = true,
-					entitlement_id = "3bb309cf0f2946ffa9b060afd035eea8",
-					external = true
-				},
-				a11th_homburg_grey = {
-					no_install = true,
-					entitlement_id = "07af0503ae6b4510b503a4e8d4495f70",
-					external = true
-				},
-				a11th_corl = {
-					no_install = true,
-					entitlement_id = "837e358f1849463f93c83f2af546ae60",
-					external = true
-				},
-				a11th_stinger = {
-					no_install = true,
-					entitlement_id = "0160eece867b4b108192e511f84c237d",
-					external = true
-				},
-				trt_railhat = {
-					no_install = true,
-					entitlement_id = "8a639d555e414f6d96c89daf15412252",
-					external = true
-				},
-				trt_railwork = {
-					no_install = true,
-					entitlement_id = "caf6162cf483441493bba569e61ed2c5",
-					external = true
-				},
-				trt_railroad = {
-					no_install = true,
-					entitlement_id = "856324f5178b4cb79670a6fb92cf904c",
-					external = true
-				},
-				h22_deadman = {
-					no_install = true,
-					entitlement_id = "5068bdffe90f41d99bb3364c698747a0",
-					external = true
-				},
-				h22_nightwalker = {
-					no_install = true,
-					entitlement_id = "4ae27196dd404d9e88f8491ceab0331e",
-					external = true
-				},
-				h22_tasslefringe = {
-					no_install = true,
-					entitlement_id = "ad637b9c32754b2f8de6adb6b27402ba",
-					external = true
-				},
-				h22_bloodysnarl = {
-					no_install = true,
-					entitlement_id = "6ba11d02103d40bb881aeaeee3635b47",
-					external = true
-				},
-				h22_ghostly = {
-					no_install = true,
-					entitlement_id = "cff914faa08142c9b6c36ff7d00461b2",
-					external = true
-				},
-				h22_tornrags = {
-					no_install = true,
-					entitlement_id = "3098a3509615457e84ea63d3393163cc",
-					external = true
-				},
-				h22_banshee = {
-					no_install = true,
-					entitlement_id = "52f194a7fe524b9591988f774b003dd6",
-					external = true
-				},
-				h22_darkprince = {
-					no_install = true,
-					entitlement_id = "18a43b128ad2440aa6fbaf2ed22fee5f",
-					external = true
-				},
-				h22_devilclaws = {
-					no_install = true,
-					entitlement_id = "cb43a681f3f447e1b8fec3b6766530f3",
-					external = true
-				},
-				h22_devilhorn = {
-					no_install = true,
-					entitlement_id = "b724258340d642c299e1589926917522",
-					external = true
-				},
-				cot_smilecigar = {
-					no_install = true,
-					entitlement_id = "6d27f3b50a1343a39a6efb48f1440480",
-					external = true
-				},
-				cot_sleekygent = {
-					no_install = true,
-					entitlement_id = "964138fe4a064a1683d7198d525e69c8",
-					external = true
-				},
-				cot_beigedriver = {
-					no_install = true,
-					entitlement_id = "7825a51f35c647a4be462ece610936cc",
-					external = true
-				}
-			},
+			all_dlc_data = {},
 			entitlements = {}
 		}
 
+		self:init_dlc_data()
 		self:init_generated()
-
-		Global.dlc_manager.all_dlc_data.chico_or_mrwi_deck = deep_clone(Global.dlc_manager.all_dlc_data.chico)
-		Global.dlc_manager.all_dlc_data.ecp_or_mrwi_deck = deep_clone(Global.dlc_manager.all_dlc_data.ecp)
-
+		self:init_entitlements()
+		self:_chk_blocked()
 		self:_verify_dlcs()
 	end
 
 	self:_init_promoted_dlc_list()
+end
+
+function WINDLCManager:_chk_blocked()
+	if self.blocked_dlcs then
+		for blocked_dlc_name, _ in pairs(self.blocked_dlcs) do
+			if Global.dlc_manager.all_dlc_data[blocked_dlc_name] then
+				Global.dlc_manager.all_dlc_data[blocked_dlc_name].blocked = true
+			end
+		end
+	end
 end
 
 function WINDLCManager:_init_promoted_dlc_list()
@@ -2476,33 +1915,52 @@ function WINDLCManager:get_promoted_dlc_list()
 	return self._promoted_dlc_list
 end
 
-function WINDLCManager:set_entitlements(entitlements)
-	print("WINDLCManager:set_entitlements", inspect(entitlements))
-
-	Global.dlc_manager.entitlements = entitlements or {}
-	Global.dlc_manager.received_entitlements = true
-	local entitlement_updated = false
-	local has_entitlement = nil
-
+function WINDLCManager:_verify_dlcs()
 	for dlc_name, dlc_data in pairs(Global.dlc_manager.all_dlc_data) do
-		if dlc_data.entitlement_id then
-			has_entitlement = self:has_entitlement(dlc_data.entitlement_id)
-			entitlement_updated = entitlement_updated or has_entitlement ~= dlc_data.verified
-			dlc_data.verified = has_entitlement
-		end
-	end
-
-	if entitlement_updated then
-		if (game_state_machine and game_state_machine:current_state_name()) == "menu_main" then
-			self:give_dlc_and_verify_blackmarket()
-		else
-			Global.dlc_manager.verify_entitlements = true
+		if not dlc_data.verified and self:_check_dlc_data(dlc_data) then
+			dlc_data.verified = true
 		end
 	end
 end
 
+function WINDLCManager:_check_dlc_data(dlc_data)
+	if dlc_data.entitlement_id and self:has_entitlement(dlc_data.entitlement_id) then
+		return true
+	end
+
+	return false
+end
+
+function WINDLCManager:chk_content_updated()
+	local has_content = nil
+	local content_updated = false
+
+	for dlc_name, dlc_data in pairs(Global.dlc_manager.all_dlc_data) do
+		has_content = self:_check_dlc_data(dlc_data)
+		content_updated = content_updated or has_content ~= dlc_data.verified
+		dlc_data.verified = has_content
+	end
+
+	if content_updated then
+		if (game_state_machine and game_state_machine:current_state_name()) == "menu_main" then
+			self:give_dlc_and_verify_blackmarket()
+		else
+			Global.dlc_manager.verify_content_update = true
+		end
+	end
+end
+
+function WINDLCManager:set_entitlements(entitlements)
+	print("WINDLCManager:set_entitlements", inspect(entitlements))
+
+	Global.dlc_manager.entitlements = table.list_to_set(entitlements or {})
+	Global.dlc_manager.received_entitlements = true
+
+	self:chk_content_updated()
+end
+
 function WINDLCManager:has_entitlement(entitlement_id)
-	return table.contains(Global.dlc_manager.entitlements, entitlement_id)
+	return Global.dlc_manager.entitlements[entitlement_id]
 end
 
 function WINDLCManager:save(data)
@@ -2517,51 +1975,98 @@ function WINDLCManager:load(data)
 	if data.dlc_entitlements and not Global.dlc_manager.received_entitlements then
 		Global.dlc_manager.entitlements = data.dlc_entitlements
 
-		for dlc_name, dlc_data in pairs(Global.dlc_manager.all_dlc_data) do
-			if dlc_data.entitlement_id then
-				dlc_data.verified = self:has_entitlement(dlc_data.entitlement_id)
-			end
-		end
+		self:chk_content_updated()
 	end
 end
 
 function WINDLCManager:init_finalize()
 	WINDLCManager.super.init_finalize(self)
 
-	if Global.dlc_manager.verify_entitlements and (game_state_machine and game_state_machine:last_queued_state_name()) == "menu_main" then
+	if Global.dlc_manager.verify_content_update and (game_state_machine and game_state_machine:last_queued_state_name()) == "menu_main" then
 		self:give_dlc_and_verify_blackmarket()
 	end
 end
 
-function WINDLCManager:_check_dlc_data(dlc_data)
-	if SystemInfo:distribution() == Idstring("STEAM") then
-		if dlc_data.app_id then
-			if dlc_data.no_install then
-				if Steam:is_product_owned(dlc_data.app_id) then
+WinSteamDLCManager = WinSteamDLCManager or class(WINDLCManager)
+DLCManager.PLATFORM_CLASS_MAP[Idstring("STEAM"):key()] = WinSteamDLCManager
+
+function WinSteamDLCManager:init()
+	WinSteamDLCManager.super.init(self)
+end
+
+function WinSteamDLCManager:_init_promoted_dlc_list()
+	WinSteamDLCManager.super._init_promoted_dlc_list(self)
+end
+
+function WinSteamDLCManager:has_stat(data)
+	local sa_handler = Steam:sa_handler()
+
+	return sa_handler:get_stat(data.stat_id) >= (data.stat_value or 1)
+end
+
+function WinSteamDLCManager:_check_dlc_data(dlc_data)
+	if dlc_data.blocked then
+		return false
+	end
+
+	local had_verification = false
+
+	if dlc_data.app_id then
+		had_verification = true
+
+		if dlc_data.no_install then
+			if Steam:is_product_owned(dlc_data.app_id) then
+				if not dlc_data.verify_all then
 					return true
 				end
-			elseif Steam:is_product_installed(dlc_data.app_id) then
+			elseif dlc_data.verify_all then
+				return false
+			end
+		elseif Steam:is_product_installed(dlc_data.app_id) then
+			if not dlc_data.verify_all then
 				return true
 			end
-		elseif dlc_data.source_id then
-			if Steam:is_user_in_source(Steam:userid(), dlc_data.source_id) then
+		elseif dlc_data.verify_all then
+			return false
+		end
+	end
+
+	if dlc_data.source_id then
+		had_verification = true
+
+		if Steam:is_user_in_source(Steam:userid(), dlc_data.source_id) then
+			if not dlc_data.verify_all then
 				return true
 			end
-		elseif dlc_data.entitlement_id and self:has_entitlement(dlc_data.entitlement_id) then
-			return true
+		elseif dlc_data.verify_all then
+			return false
 		end
 	end
-end
 
-function WINDLCManager:_verify_dlcs()
-	for dlc_name, dlc_data in pairs(Global.dlc_manager.all_dlc_data) do
-		if not dlc_data.verified and self:_check_dlc_data(dlc_data) then
-			dlc_data.verified = true
+	if dlc_data.entitlement_id then
+		had_verification = true
+
+		if self:has_entitlement(dlc_data.entitlement_id) then
+			if not dlc_data.verify_all then
+				return true
+			end
+		elseif dlc_data.verify_all then
+			return false
 		end
 	end
+
+	if dlc_data.verify_all then
+		return had_verification
+	end
+
+	return false
 end
 
-function WINDLCManager:check_pdth(clbk)
+function WinSteamDLCManager:_verify_dlcs()
+	WinSteamDLCManager.super._verify_dlcs(self)
+end
+
+function WinSteamDLCManager:check_pdth(clbk)
 	if not self._check_pdth_request and clbk and Global.dlc_manager.has_pdth ~= nil then
 		clbk(Global.dlc_manager.has_pdth, Global.dlc_manager.pdth_tester)
 
@@ -2590,7 +2095,7 @@ function WINDLCManager:check_pdth(clbk)
 					if key == "achieved" and value == "true" then
 						Global.dlc_manager.pdth_tester = true
 					elseif key == "error" then
-						print("[WINDLCManager:check_pdth] Request error ", value)
+						print("[WinSteamDLCManager:check_pdth] Request error ", value)
 					end
 				end
 			end
@@ -2604,15 +2109,15 @@ function WINDLCManager:check_pdth(clbk)
 			self._check_pdth_request = nil
 		end
 
-		print("[WINDLCManager:check_pdth] Send request")
+		print("[WinSteamDLCManager:check_pdth] Send request")
 
 		self._check_pdth_request = true
 
-		Steam:http_request("https://fbi.paydaythegame.com/veterancheck/veterancheck.php?steamid=" .. Steam:userid(), result_function)
+		HttpRequest:get("https://fbi.paydaythegame.com/veterancheck/veterancheck.php?steamid=" .. Steam:userid(), result_function)
 	end
 end
 
-function WINDLCManager:chk_vr_dlc()
+function WinSteamDLCManager:chk_vr_dlc()
 	local steam_vr = Steam:is_app_installed("250820")
 	local payday2_vr = Steam:is_product_installed("826090")
 
@@ -2629,14 +2134,120 @@ function WINDLCManager:chk_vr_dlc()
 	return nil
 end
 
-function WINDLCManager:chk_content_updated()
-	for dlc_name, dlc_data in pairs(Global.dlc_manager.all_dlc_data) do
-		if not dlc_data.verified and self:_check_dlc_data(dlc_data) then
-			managers.menu:show_dlc_require_restart()
+WinEpicDLCManager = WinEpicDLCManager or class(WINDLCManager)
+DLCManager.PLATFORM_CLASS_MAP[Idstring("EPIC"):key()] = WinEpicDLCManager
+WinEpicDLCManager.blocked_dlcs = table.list_to_set({
+	"preorder",
+	"cce",
+	"career_criminal_edition",
+	"alienware_alpha",
+	"alienware_alpha_promo",
+	"complete_overkill_pack",
+	"bobblehead"
+})
 
-			break
+function WinEpicDLCManager:init()
+	WinEpicDLCManager.super.init(self)
+	self:check_ownerships()
+end
+
+function WinEpicDLCManager:check_ownerships()
+	if EpicMM:logged_on() and not Global.dlc_manager.catalog_ownerships then
+		local catalog_item_ids = {}
+
+		local function chk_func(chk_id)
+			local epic_id = nil
+
+			for _, item_id in ipairs(catalog_item_ids) do
+				epic_id = type(catalog_item_ids) == "table" and item_id[1] or item_id
+
+				if epic_id == chk_id then
+					return true
+				end
+			end
+
+			return false
+		end
+
+		for dlc, data in pairs(Global.dlc_manager.all_dlc_data) do
+			if data.epic_id and not chk_func(data.epic_id) then
+				table.insert(catalog_item_ids, data.epic_sandbox and {
+					data.epic_id,
+					data.epic_sandbox
+				} or data.epic_id)
+			end
+		end
+
+		Global.dlc_manager.test_catalog_item_ids = catalog_item_ids
+		Global.dlc_manager.ownership_check_called = true
+
+		return EpicEntitlements:check_local_ownership(catalog_item_ids, callback(self, self, "on_ownership_received"))
+	end
+
+	return false
+end
+
+function WinEpicDLCManager:on_ownership_received(catalog_ownerships)
+	Global.dlc_manager.catalog_ownerships = catalog_ownerships
+end
+
+function WinEpicDLCManager:has_catalog_ownerships()
+	return not not Global.dlc_manager.catalog_ownerships
+end
+
+function WinEpicDLCManager:on_signin_complete()
+	self:_verify_dlcs()
+end
+
+function WinEpicDLCManager:_check_dlc_data(dlc_data)
+	if dlc_data.blocked then
+		return false
+	end
+
+	local had_verification = false
+
+	if dlc_data.epic_id then
+		had_verification = true
+
+		if Global.dlc_manager.catalog_ownerships and Global.dlc_manager.catalog_ownerships[dlc_data.epic_id] then
+			if not dlc_data.verify_all then
+				return true
+			end
+		elseif dlc_data.verify_all then
+			return false
 		end
 	end
+
+	if dlc_data.entitlement_id then
+		had_verification = true
+
+		if self:has_entitlement(dlc_data.entitlement_id) then
+			if not dlc_data.verify_all then
+				return true
+			end
+		elseif dlc_data.verify_all then
+			return false
+		end
+	end
+
+	if dlc_data.verify_all then
+		return had_verification
+	end
+
+	return false
+end
+
+function WinEpicDLCManager:_verify_dlcs()
+	if not Global.dlc_manager.catalog_ownerships then
+		return
+	end
+
+	WinEpicDLCManager.super._verify_dlcs(self)
+end
+
+if SystemInfo:platform() == Idstring("WIN32") then
+	require("lib/managers/dlc/DLCManagerWin32Data")
+	require("lib/managers/dlc/DLCManagerEntitlementData")
 end
 
 require("lib/managers/dlc/DLCManagerGeneratedData")

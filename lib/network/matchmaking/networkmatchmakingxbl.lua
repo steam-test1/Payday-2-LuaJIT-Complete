@@ -492,6 +492,14 @@ function NetworkMatchMakingXBL:game_owner_name()
 	return self._game_owner_name
 end
 
+function NetworkMatchMakingXBL:game_owner_account_type_str()
+	return ""
+end
+
+function NetworkMatchMakingXBL:game_owner_account_id()
+	return self:game_owner_name()
+end
+
 function NetworkMatchMakingXBL:is_server_ok(friends_only, session_id, attributes_numbers)
 	local permission = tweak_data:index_to_permission(attributes_numbers[3])
 	local level_index, job_index = self:_split_attribute_number(attributes_numbers[1], 1000)

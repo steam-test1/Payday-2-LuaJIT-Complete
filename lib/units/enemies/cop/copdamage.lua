@@ -146,11 +146,6 @@ for body_name, distance in pairs(impact_body_distance_tmp) do
 end
 
 impact_body_distance_tmp = nil
-local bodies_tmp = {
-	[Idstring("head"):key()] = 1
-}
-CopDamage._priority_bodies_ids = bodies_tmp
-bodies_tmp = nil
 local mvec_1 = Vector3()
 local mvec_2 = Vector3()
 
@@ -386,8 +381,20 @@ function CopDamage:is_head(body)
 end
 
 function CopDamage:chk_body_hit_priority(old_body_hit, new_body_hit)
+	if self._ids_head_body_name then
+		if self:is_head(old_body_hit) then
+			return false
+		elseif self:is_head(new_body_hit) then
+			return true
+		end
+	end
+
 	if not self._priority_bodies_ids then
-		return false
+		if self._ids_plate_name and old_body_hit:name() == self._ids_plate_name and new_body_hit:name() ~= self._ids_plate_name then
+			return true
+		else
+			return false
+		end
 	end
 
 	local old_body_prio = self._priority_bodies_ids[old_body_hit:name():key()]

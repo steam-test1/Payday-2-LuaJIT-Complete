@@ -26,6 +26,9 @@ function GameState:on_disconnected()
 	game_state_machine:change_state_by_name("disconnected")
 end
 
+function GameState:on_disconnected_from_service()
+end
+
 function GameState:on_server_left()
 	game_state_machine:change_state_by_name("server_left")
 end

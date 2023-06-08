@@ -21,8 +21,6 @@ function ShotgunBase:init(...)
 end
 
 function ShotgunBase:setup_default()
-	self._damage_near = tweak_data.weapon[self._name_id].damage_near
-	self._damage_far = tweak_data.weapon[self._name_id].damage_far
 	self._rays = tweak_data.weapon[self._name_id].rays or self._ammo_data and self._ammo_data.rays or 6
 
 	if tweak_data.weapon[self._name_id].use_shotgun_reload == nil then
@@ -266,6 +264,11 @@ function ShotgunBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoo
 			local hit_result = bullet_class:on_collision(hit, self._unit, user_unit, dmg)
 			hit_result = managers.mutators:modify_value("ShotgunBase:_fire_raycast", hit_result)
 
+			if check_additional_achievements then
+				hit_through_wall = hit_through_wall or hit.unit:in_slot(self.wall_mask)
+				hit_through_shield = hit_through_shield or hit.unit:in_slot(self.shield_mask) and alive(hit.unit:parent())
+			end
+
 			if hit_result then
 				hit.damage_result = hit_result
 				hit_anyone = true
@@ -283,9 +286,6 @@ function ShotgunBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoo
 					end
 
 					if check_additional_achievements then
-						hit_through_wall = hit_through_wall or hit.unit:in_slot(self.wall_mask)
-						hit_through_shield = hit_through_shield or hit.unit:in_slot(self.shield_mask) and alive(hit.unit:parent())
-
 						self:_check_kill_achievements(cop_kill_count, unit_type, is_civilian, hit_through_wall, hit_through_shield)
 					end
 				end
@@ -296,6 +296,8 @@ function ShotgunBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoo
 	if check_additional_achievements then
 		self:_check_tango_achievements(cop_kill_count)
 	end
+
+	self:_check_one_shot_shotgun_achievements(kill_data)
 
 	if alert_rays then
 		result.rays = #alert_rays > 0 and alert_rays
@@ -309,8 +311,6 @@ function ShotgunBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoo
 			managers.statistics:shot_fired(self._shot_fired_stats_table)
 		end
 	end
-
-	self:_check_one_shot_shotgun_achievements(kill_data)
 
 	return result
 end

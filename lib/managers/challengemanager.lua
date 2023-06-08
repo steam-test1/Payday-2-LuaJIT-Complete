@@ -69,10 +69,7 @@ function ChallengeManager:_fetch_challenges()
 	self._global.retrieving = true
 	self._missionsURL = "https://www.overkillsoftware.com/ovk-media/stats/pd2missions.json"
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
-		print("Getting Missions from: ", self._missionsURL)
-		Steam:http_request(self._missionsURL, done_clbk, Idstring("ChallengeManager:_fetch_challenges()"):key())
-	end
+	HttpRequest:get(self._missionsURL, done_clbk, nil, Idstring("ChallengeManager:_fetch_challenges()"):key())
 end
 
 function ChallengeManager:_fetch_done_clbk(success, s)

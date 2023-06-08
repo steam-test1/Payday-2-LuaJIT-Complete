@@ -1852,6 +1852,13 @@ function GuiTweakData:init(tweak_data)
 			icon = "sidebar_filters"
 		},
 		{
+			visible_callback = "clbk_visible_search_lobby_code",
+			name_id = "menu_cn_search_lobby_code",
+			callback = "clbk_search_lobby_code",
+			id = "search_lobby_code",
+			icon = "sidebar_expand"
+		},
+		{
 			item_class = "CrimeNetSidebarSeparator"
 		},
 		{
@@ -5200,7 +5207,7 @@ function GuiTweakData:init(tweak_data)
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_txt4_02",
 		texture_path = "guis/dlcs/txt4/textures/pd2/new_heists/txt4_02",
-		url = "https://pd2.link/LawlessTailorPackSLS"
+		url = "_https://pd2.link/LawlessTailorPackSLS"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_txt3_02",

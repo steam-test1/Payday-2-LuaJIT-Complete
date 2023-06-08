@@ -1014,10 +1014,18 @@ function MenuManager:open_sign_in_menu(cb)
 		else
 			self:show_err_not_signed_in_dialog()
 		end
-	elseif managers.network.account:signin_state() == "signed in" then
-		cb(true)
 	else
-		self:show_err_not_signed_in_dialog()
+		local is_signed_in = managers.network.account:signin_state() == "signed in"
+
+		if SystemInfo:matchmaking() == Idstring("MM_EPIC") and not EpicMM:logged_on() then
+			is_signed_in = false
+		end
+
+		if is_signed_in then
+			cb(true)
+		else
+			self:show_err_not_signed_in_dialog()
+		end
 	end
 end
 
@@ -1319,6 +1327,7 @@ function MenuManager:_close_lobby_menu_components()
 	managers.menu_component:close_lobby_profile_gui()
 	managers.menu_component:close_contract_gui()
 	managers.menu_component:close_chat_gui()
+	managers.menu_component:close_lobby_code_gui()
 end
 
 function MenuManager:on_leave_lobby()
@@ -1330,7 +1339,7 @@ function MenuManager:on_leave_lobby()
 		managers.user:on_exit_online_menus()
 	end
 
-	managers.platform:set_rich_presence("Idle")
+	managers.platform:set_rich_presence_state("Idle")
 	managers.menu:close_menu("menu_main")
 	managers.menu:open_menu("menu_main")
 	managers.network.matchmake:leave_game()
@@ -1530,13 +1539,7 @@ function MenuCallbackHandler:has_all_dlcs()
 end
 
 function MenuCallbackHandler:is_overlay_enabled()
-	if SystemInfo:platform() ~= Idstring("WIN32") then
-		return false
-	end
-
-	if SystemInfo:distribution() == Idstring("STEAM") then
-		return Steam:overlay_enabled() or false
-	end
+	return managers.network.account:is_overlay_enabled()
 end
 
 function MenuCallbackHandler:is_installed()
@@ -1621,26 +1624,13 @@ function MenuCallbackHandler:visible_callback_dlc_buy_win32(item)
 
 	item:set_parameter("text_id", "menu_dlc_buy_" .. locked_dlc)
 	item:set_parameter("help_id", "menu_dlc_buy_" .. locked_dlc .. "_help")
-
-	local dlc_data = Global.dlc_manager.all_dlc_data[locked_dlc]
-
-	item:set_parameter("store_id", dlc_data and dlc_data.app_id)
-	item:set_parameter("webpage", dlc_data and dlc_data.webpage)
+	item:set_parameter("dlc_data", Global.dlc_manager.all_dlc_data[locked_dlc])
 
 	return true
 end
 
 function MenuCallbackHandler:dlc_buy_win32(item)
-	local webpage = item:parameter("webpage")
-	local store_id = item:parameter("store_id")
-
-	if webpage then
-		Steam:overlay_activate("url", webpage)
-	elseif store_id then
-		Steam:overlay_activate("store", store_id)
-	else
-		Steam:overlay_activate("url", tweak_data.gui.store_page)
-	end
+	managers.network.account:open_dlc_store_page(item:parameter("dlc_data"), "buy_dlc")
 end
 
 function MenuCallbackHandler:not_has_all_dlcs()
@@ -1687,12 +1677,20 @@ function MenuCallbackHandler:is_steam()
 	return SystemInfo:distribution() == Idstring("STEAM")
 end
 
+function MenuCallbackHandler:is_epic()
+	return SystemInfo:distribution() == Idstring("EPIC")
+end
+
+function MenuCallbackHandler:is_not_epic()
+	return SystemInfo:distribution() ~= Idstring("EPIC")
+end
+
 function MenuCallbackHandler:is_fullscreen()
 	return managers.viewport:is_fullscreen()
 end
 
 function MenuCallbackHandler:voice_enabled()
-	return self:is_ps3() or self:is_win32() and managers.network and managers.network.voice_chat and managers.network.voice_chat:enabled()
+	return self:is_ps3() or self:is_win32() and managers.network and managers.network.voice_chat and managers.network.voice_chat.enabled and managers.network.voice_chat:enabled()
 end
 
 function MenuCallbackHandler:customize_controller_enabled()
@@ -1752,9 +1750,9 @@ function MenuCallbackHandler:has_dropin()
 end
 
 function MenuCallbackHandler:has_sbz_account()
-	local steam_id = Steam:userid()
+	local player_id = managers.network.account:player_id()
 
-	return steam_id and Login.player_session.platform_user_id == steam_id or false
+	return player_id and Login.player_session.platform_user_id == player_id or false
 end
 
 function MenuCallbackHandler:has_no_sbz_account()
@@ -1942,6 +1940,14 @@ function MenuCallbackHandler:is_crime_spree()
 	return managers.crime_spree:is_active()
 end
 
+function MenuCallbackHandler:is_epic_mm()
+	return SystemInfo:matchmaking() == Idstring("MM_EPIC")
+end
+
+function MenuCallbackHandler:is_steam_mm()
+	return SystemInfo:matchmaking() == Idstring("MM_STEAM")
+end
+
 function MenuCallbackHandler:debug_menu_enabled()
 	return managers.menu:debug_menu_enabled()
 end
@@ -1967,27 +1973,15 @@ function MenuCallbackHandler:has_peer_4()
 end
 
 function MenuCallbackHandler:on_visit_forum()
-	if not MenuCallbackHandler:is_overlay_enabled() then
-		managers.menu:show_enable_steam_overlay()
-
-		return
-	end
-
-	Steam:overlay_activate("url", "http://forums.steampowered.com/forums/forumdisplay.php?f=1225")
+	managers.network.account:overlay_activate("url", "http://forums.steampowered.com/forums/forumdisplay.php?f=1225")
 end
 
 function MenuCallbackHandler:on_visit_gamehub()
-	if not MenuCallbackHandler:is_overlay_enabled() then
-		managers.menu:show_enable_steam_overlay()
-
-		return
-	end
-
-	Steam:overlay_activate("url", "http://steamcommunity.com/app/218620")
+	managers.network.account:overlay_activate("url", "http://steamcommunity.com/app/218620")
 end
 
 function MenuCallbackHandler:on_buy_dlc1()
-	Steam:overlay_activate("url", tweak_data.gui.store_page)
+	managers.network.account:overlay_activate("url", tweak_data.gui.store_page)
 end
 
 function MenuCallbackHandler:on_account_picker()
@@ -2251,6 +2245,20 @@ function MenuCallbackHandler:accessibility_sounds_tinnitus_toggle(item)
 	local state = item:value() == "on"
 
 	managers.user:set_setting("accessibility_sounds_tinnitus", state, nil)
+end
+
+function MenuCallbackHandler:toggle_socialhub_hide_code(item)
+	local state = item:value() == "on"
+
+	managers.user:set_setting("toggle_socialhub_hide_code", state, nil)
+end
+
+function MenuCallbackHandler:socialhub_invite(item)
+	managers.user:set_setting("socialhub_invite", item:value(), nil)
+end
+
+function MenuCallbackHandler:socialhub_notification(item)
+	managers.user:set_setting("socialhub_notification", item:value(), nil)
 end
 
 function MenuCallbackHandler:toggle_voicechat(item)
@@ -3574,23 +3582,25 @@ function MenuCallbackHandler:_find_online_games(friends_only)
 		managers.network.matchmake:register_callback("search_lobby", f)
 		managers.network.matchmake:search_lobby(friends_only)
 
-		local function usrs_f(success, amount)
-			print("usrs_f", success, amount)
+		if SystemInfo:distribution() == Idstring("STEAM") then
+			local function usrs_f(success, amount)
+				print("usrs_f", success, amount)
 
-			if success then
-				local stack = managers.menu:active_menu().renderer._node_gui_stack
-				local node_gui = stack[#stack]
+				if success then
+					local stack = managers.menu:active_menu().renderer._node_gui_stack
+					local node_gui = stack[#stack]
 
-				if node_gui.set_mini_info then
-					node_gui:set_mini_info(managers.localization:text("menu_players_online", {
-						COUNT = amount
-					}))
+					if node_gui.set_mini_info then
+						node_gui:set_mini_info(managers.localization:text("menu_players_online", {
+							COUNT = amount
+						}))
+					end
 				end
 			end
-		end
 
-		Steam:sa_handler():concurrent_users_callback(usrs_f)
-		Steam:sa_handler():get_concurrent_users()
+			Steam:sa_handler():concurrent_users_callback(usrs_f)
+			Steam:sa_handler():get_concurrent_users()
+		end
 	end
 
 	if self:is_ps3() or self:is_ps4() then
@@ -3625,14 +3635,8 @@ end
 function MenuCallbackHandler:find_friends()
 end
 
-function MenuCallbackHandler:invite_friends()
-	if managers.network.matchmake.lobby_handler then
-		if MenuCallbackHandler:is_overlay_enabled() then
-			Steam:overlay_activate("invite", managers.network.matchmake.lobby_handler:id())
-		else
-			managers.menu:show_enable_steam_overlay()
-		end
-	end
+function MenuCallbackHandler:invite_friends_STEAM()
+	managers.network.matchmake:invite_friends_to_lobby()
 end
 
 function MenuCallbackHandler:invite_friend(item)
@@ -4182,13 +4186,7 @@ function MenuCallbackHandler:set_default_options()
 end
 
 function MenuCallbackHandler:sbz_account_login_webpage()
-	if SystemInfo:distribution() == Idstring("STEAM") then
-		if MenuCallbackHandler:is_overlay_enabled() then
-			Steam:overlay_activate("url", tweak_data.gui.sbz_account_webpage)
-		else
-			managers.menu:show_enable_steam_overlay()
-		end
-	end
+	managers.network.account:overlay_activate("url", tweak_data.gui.sbz_account_webpage)
 end
 
 function MenuCallbackHandler:set_default_control_options()
@@ -4548,6 +4546,19 @@ function InviteFriendsSTEAM:refresh_node(node, friend)
 end
 
 function InviteFriendsSTEAM:update_node(node)
+end
+
+InviteFriendsEPIC = InviteFriendsEPIC or class()
+
+function InviteFriendsEPIC:modify_node(node, up)
+	return node
+end
+
+function InviteFriendsEPIC:refresh_node(node, friend)
+	return node
+end
+
+function InviteFriendsEPIC:update_node(node)
 end
 
 PauseMenu = PauseMenu or class()
@@ -4986,7 +4997,7 @@ function MenuPSNHostBrowser:refresh_node(node, info_list, friends_only)
 			local friend_str = room.friend_id and tostring(room.friend_id)
 			local attributes_numbers = attribute_list[i].numbers
 
-			if managers.network.matchmake:is_server_ok(friends_only, room.owner_id, attributes_numbers) then
+			if managers.network.matchmake:is_server_ok(friends_only, room, attributes_numbers) then
 				dead_list[name_str] = nil
 				local host_name = name_str
 				local level_id = attributes_numbers and tweak_data.levels:get_level_name_from_index(attributes_numbers[1] % 1000)
@@ -5196,7 +5207,7 @@ function MenuSTEAMHostBrowser:refresh_node(node, info, friends_only)
 		local attributes_numbers = attribute_list[i].numbers
 		local attributes_mutators = attribute_list[i].mutators
 
-		if managers.network.matchmake:is_server_ok(friends_only, room.owner_id, attributes_numbers, nil, attributes_mutators) then
+		if managers.network.matchmake:is_server_ok(friends_only, room, attributes_numbers, nil, attributes_mutators) then
 			dead_list[room.room_id] = nil
 			local host_name = name_str
 			local level_id = tweak_data.levels:get_level_name_from_index(attributes_numbers[1] % 1000)
@@ -5277,6 +5288,7 @@ function MenuSTEAMHostBrowser:refresh_node(node, info, friends_only)
 	return new_node
 end
 
+MenuEPICHostBrowser = MenuEPICHostBrowser or class(MenuSTEAMHostBrowser)
 MenuLANHostBrowser = MenuLANHostBrowser or class()
 
 function MenuLANHostBrowser:modify_node(node, up)
@@ -9938,6 +9950,8 @@ function MenuOptionInitiator:modify_node(node)
 		return self:modify_adv_options(node)
 	elseif node_name == "accessibility_options" then
 		return self:modify_accessibility_options(node)
+	elseif node_name == "socialhub_options" then
+		return self:modify_socialhub_options(node)
 	end
 end
 
@@ -10054,6 +10068,41 @@ function MenuOptionInitiator:modify_accessibility_options(node)
 		end
 
 		accessibility_sounds_tinnitus:set_value(option_value)
+	end
+
+	return node
+end
+
+function MenuOptionInitiator:modify_socialhub_options(node)
+	local option_value = "off"
+	local toggle_socialhub_hide_code_item = node:item("toggle_socialhub_hide_code")
+
+	if toggle_socialhub_hide_code_item then
+		if managers.user:get_setting("toggle_socialhub_hide_code") then
+			option_value = "on"
+		end
+
+		toggle_socialhub_hide_code_item:set_value(option_value)
+	end
+
+	local socialhub_invite_item = node:item("socialhub_invite")
+
+	if socialhub_invite_item then
+		local setting = managers.user:get_setting("socialhub_invite")
+
+		if setting then
+			socialhub_invite_item:set_value(setting)
+		end
+	end
+
+	local socialhub_notification_item = node:item("socialhub_notification")
+
+	if socialhub_notification_item then
+		local setting = managers.user:get_setting("socialhub_notification")
+
+		if setting then
+			socialhub_notification_item:set_value(setting)
+		end
 	end
 
 	return node

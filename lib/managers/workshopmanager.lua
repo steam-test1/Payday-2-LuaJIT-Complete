@@ -4,10 +4,16 @@ WorkshopManager = WorkshopManager or class()
 WorkshopManager.PATH = "workshop/"
 WorkshopManager.FULL_PATH = Application:base_path() .. WorkshopManager.PATH
 WorkshopManager.STAGING_NAME = "temporary_staging"
-local UGC = Steam:ugc_handler()
+local UGC = SystemInfo:distribution() == Idstring("STEAM") and Steam:ugc_handler()
 
 function WorkshopManager:init()
 	if self._initialized then
+		return
+	end
+
+	if SystemInfo:distribution() ~= Idstring("STEAM") then
+		self:set_enabled(false)
+
 		return
 	end
 

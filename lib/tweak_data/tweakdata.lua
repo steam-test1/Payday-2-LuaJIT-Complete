@@ -3050,7 +3050,7 @@ function TweakData:load_movie_list()
 		for i = 0, movie_data:num_children() - 1 do
 			local item = movie_data:child(i):parameter_map()
 
-			if item.file and DB:has(Idstring("movie"), item.file) then
+			if (not item.visible_callback or callback(MenuCallbackHandler, MenuCallbackHandler, item.visible_callback)()) and item.file and DB:has(Idstring("movie"), item.file) then
 				table.insert(self.movies, item)
 			end
 		end

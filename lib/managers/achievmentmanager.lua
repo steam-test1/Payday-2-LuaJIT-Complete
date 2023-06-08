@@ -17,21 +17,50 @@ function AchievmentManager:init()
 	self.script_data = {}
 
 	if SystemInfo:platform() == Idstring("WIN32") then
+		self.oldest_achievement_callback_handler = CoreEvent.CallbackEventHandler:new()
+
 		if SystemInfo:distribution() == Idstring("STEAM") then
-			self.oldest_achievement_callback_handler = CoreEvent.CallbackEventHandler:new()
 			AchievmentManager.do_award = AchievmentManager.award_steam
 
 			if not Global.achievment_manager then
-				self:_parse_achievments("Steam")
-
 				self.handler = Steam:sa_handler()
 
+				self:_parse_achievments("Steam")
 				self.handler:initialized_callback(AchievmentManager.fetch_achievments)
 				self.handler:init()
 
 				Global.achievment_manager = {
 					handler = self.handler,
 					achievments = self.achievments
+				}
+			else
+				self.handler = Global.achievment_manager.handler
+				self.achievments = Global.achievment_manager.achievments
+			end
+		elseif SystemInfo:distribution() == Idstring("EPIC") then
+			AchievmentManager.do_award = AchievmentManager.award_epic
+
+			if not Global.achievment_manager then
+				self.handler = EpicAchievementHandler
+
+				self:_parse_achievments("Epic")
+
+				local init_called = false
+
+				self.handler:initialized_callback(function ()
+					AchievmentManager.fetch_achievments("success")
+				end)
+
+				if EpicMM:logged_on() then
+					init_called = true
+
+					self.handler:init()
+				end
+
+				Global.achievment_manager = {
+					handler = self.handler,
+					achievments = self.achievments,
+					init_called = init_called
 				}
 			else
 				self.handler = Global.achievment_manager.handler
@@ -227,9 +256,9 @@ function AchievmentManager.fetch_achievments(error_str)
 			if managers.achievment.handler:has_achievement(ach.id) then
 				ach.awarded = true
 
-				Telemetry:append_steam_achievement(ach.id)
+				Telemetry:append_achievement_list(ach.id)
 
-				unlock_time = managers.achievment.handler:achievement_unlock_time(ach.id)
+				unlock_time = managers.achievment.handler.achievement_unlock_time and tonumber(managers.achievment.handler:achievement_unlock_time(ach.id)) or -1
 
 				if unlock_time >= 0 then
 					oldest_achievement_date = math.min(oldest_achievement_date or unlock_time, unlock_time)
@@ -720,7 +749,7 @@ function AchievmentManager:_give_reward(id, skip_exp)
 
 	self:track(id, false)
 
-	data.unlock_time = self.handler:achievement_unlock_time(id)
+	data.unlock_time = self.handler.achievement_unlock_time and tonumber(self.handler:achievement_unlock_time(id)) or -1
 
 	if data.dlc_loot then
 		managers.dlc:on_achievement_award_loot()
@@ -746,7 +775,11 @@ function AchievmentManager:award_progress(stat, value)
 	print("[AchievmentManager] award_progress: ", stat .. " increased by " .. tostring(value or 1))
 
 	if SystemInfo:platform() == Idstring("WIN32") then
-		self.handler:achievement_store_callback(AchievmentManager.steam_unlock_result)
+		if self.handler and SystemInfo:distribution() == Idstring("STEAM") then
+			self.handler:achievement_store_callback(AchievmentManager.steam_unlock_result)
+		elseif SystemInfo:distribution() == Idstring("EPIC") then
+			self.handler:achievement_store_callback(AchievmentManager.epic_unlock_result)
+		end
 	end
 
 	local unlocks = tweak_data.achievement.persistent_stat_unlocks[stat] or {}
@@ -811,6 +844,13 @@ function AchievmentManager:award_steam(id)
 	end
 end
 
+function AchievmentManager:award_epic(id)
+	print("[AchievmentManager] award_epic Awarded Epic achievment", id)
+	self.handler:achievement_store_callback(AchievmentManager.epic_unlock_result)
+	self.handler:set_achievement(self:get_info(id).id)
+	self.handler:store_data()
+end
+
 function AchievmentManager:clear_steam(id)
 	print("[AchievmentManager:clear_steam]", id)
 
@@ -839,6 +879,18 @@ end
 
 function AchievmentManager.steam_unlock_result(achievment)
 	print("[AchievmentManager:steam_unlock_result] Awarded Steam achievment", achievment)
+
+	for id, ach in pairs(managers.achievment.achievments) do
+		if ach.id == achievment then
+			managers.achievment:_give_reward(id)
+
+			return
+		end
+	end
+end
+
+function AchievmentManager.epic_unlock_result(achievment)
+	print("[AchievmentManager:epic_unlock_result] Awarded Epic achievment", achievment)
 
 	for id, ach in pairs(managers.achievment.achievments) do
 		if ach.id == achievment then

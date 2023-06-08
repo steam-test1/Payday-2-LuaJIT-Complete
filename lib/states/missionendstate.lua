@@ -49,7 +49,7 @@ function MissionEndState:at_enter(old_state, params)
 			rp_state = "Idle"
 		end
 
-		managers.platform:set_rich_presence(rp_state)
+		managers.platform:set_rich_presence_state(rp_state)
 	end
 
 	managers.platform:set_playing(false)

@@ -323,7 +323,7 @@ function ProfileBoxGui:mouse_pressed(button, x, y)
 end
 
 function ProfileBoxGui:_trigger_stats()
-	Steam:overlay_activate("game", "Stats")
+	managers.network.account:overlay_activate("game", "Stats")
 end
 
 function ProfileBoxGui:_trigger_profile()
@@ -331,7 +331,7 @@ function ProfileBoxGui:_trigger_profile()
 end
 
 function ProfileBoxGui:_trigger_achievements()
-	Steam:overlay_activate("game", "Achievements")
+	managers.network.account:overlay_activate("game", "Achievements")
 end
 
 function ProfileBoxGui:mouse_moved(x, y)

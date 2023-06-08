@@ -3,22 +3,23 @@ local ids_NORMAL = Idstring("NORMAL")
 NetworkPeer = NetworkPeer or class()
 NetworkPeer.PRE_HANDSHAKE_CHK_TIME = 8
 
-function NetworkPeer:init(name, rpc, id, loading, synced, in_lobby, character, user_id)
+function NetworkPeer:init(name, rpc, id, loading, synced, in_lobby, character, user_id, account_type_str, account_id)
 	self._name = name or managers.localization:text("menu_" .. tostring(character or "russian"))
 	self._rpc = rpc
 	self._id = id
 	self._user_id = user_id
+	self._account_type_str = account_type_str
+	self._account_id = account_id or user_id
 	self._xuid = ""
+	self._need_steam_ticket = account_type_str == "STEAM" and (SystemInfo:distribution() == Idstring("STEAM") or SystemInfo:matchmaking() == Idstring("MM_STEAM"))
 	local is_local_peer = nil
 
 	if self._rpc then
-		if self._rpc:ip_at_index(0) == Network:self("TCP_IP"):ip_at_index(0) then
+		if self._rpc:ip_at_index(0) == Network:self(SystemInfo:matchmaking_protocol()):ip_at_index(0) then
 			is_local_peer = true
 		elseif SystemInfo:platform() == Idstring("PS4") then
 			PSNVoice:send_to(self._name, self._rpc)
 		end
-	elseif self._steam_rpc and self._steam_rpc:ip_at_index(0) == Network:self("STEAM"):ip_at_index(0) then
-		is_local_peer = true
 	end
 
 	if is_local_peer and (id ~= 1 or managers.network:session():is_host()) then
@@ -36,16 +37,6 @@ function NetworkPeer:init(name, rpc, id, loading, synced, in_lobby, character, u
 		end
 
 		self._ip = self._rpc:ip_at_index(0)
-	end
-
-	if user_id and SystemInfo:distribution() == Idstring("STEAM") then
-		self._steam_rpc = Network:handshake(user_id, nil, "STEAM")
-
-		Network:set_connection_persistent(self._steam_rpc, true)
-
-		if not is_local_peer then
-			Network:set_connection_id(self._steam_rpc, self._id)
-		end
 	end
 
 	self:set_throttling_enabled(managers.user:get_setting("net_packet_throttling"))
@@ -79,8 +70,12 @@ function NetworkPeer:init(name, rpc, id, loading, synced, in_lobby, character, u
 
 	self._creation_t = TimerManager:wall_running():time()
 
-	if self._rpc and not self._loading and managers.network.voice_chat.on_member_added and self._rpc:ip_at_index(0) ~= Network:self("TCP_IP"):ip_at_index(0) then
-		managers.network.voice_chat:on_member_added(self, self._muted)
+	if self._rpc and not self._loading and managers.network.voice_chat.on_member_added then
+		local network_self = Network:self(self._rpc:protocol_at_index(0))
+
+		if network_self and self._rpc:ip_at_index(0) ~= network_self:ip_at_index(0) then
+			managers.network.voice_chat:on_member_added(self, self._muted)
+		end
 	end
 
 	self._profile = {
@@ -119,18 +114,18 @@ function NetworkPeer:set_rpc(rpc)
 end
 
 function NetworkPeer:create_ticket()
-	if SystemInfo:distribution() == Idstring("STEAM") then
-		return Steam:create_ticket(self._user_id)
+	if self._need_steam_ticket then
+		return Steam:create_ticket(self._account_id)
 	end
 
 	return ""
 end
 
 function NetworkPeer:begin_ticket_session(ticket)
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if self._need_steam_ticket then
 		self._ticket_wait_response = true
 		self._begin_ticket_session_called = true
-		local result = Steam:begin_ticket_session(self._user_id, ticket, callback(self, self, "on_verify_ticket"))
+		local result = Steam:begin_ticket_session(self._account_id, ticket, callback(self, self, "on_verify_ticket"))
 		self._begin_ticket_session_called = nil
 
 		return result
@@ -168,17 +163,17 @@ function NetworkPeer:on_verify_ticket(result, reason)
 end
 
 function NetworkPeer:end_ticket_session()
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if self._need_steam_ticket then
 		self._ticket_wait_response = nil
 
-		Steam:end_ticket_session(self._user_id)
-		Steam:destroy_ticket(self._user_id)
+		Steam:end_ticket_session(self._account_id)
+		Steam:destroy_ticket(self._account_id)
 	end
 end
 
 function NetworkPeer:change_ticket_callback()
-	if SystemInfo:distribution() == Idstring("STEAM") then
-		Steam:change_ticket_callback(self._user_id, callback(self, self, "on_verify_ticket"))
+	if self._need_steam_ticket then
+		Steam:change_ticket_callback(self._account_id, callback(self, self, "on_verify_ticket"))
 	end
 end
 
@@ -199,7 +194,7 @@ function NetworkPeer:verify_job(job)
 		return
 	end
 
-	if SystemInfo:distribution() == Idstring("STEAM") and not Steam:is_user_product_owned(self._user_id, dlc_data.app_id) then
+	if SystemInfo:distribution() == Idstring("STEAM") and not Steam:is_user_product_owned(self._account_id, dlc_data.app_id) then
 		self:mark_cheater(VoteManager.REASON.invalid_job, Network:is_server())
 	end
 end
@@ -225,7 +220,7 @@ function NetworkPeer:verify_character()
 		return
 	end
 
-	if SystemInfo:distribution() == Idstring("STEAM") and not Steam:is_user_product_owned(self._user_id, dlc_data.app_id) then
+	if SystemInfo:distribution() == Idstring("STEAM") and not Steam:is_user_product_owned(self._account_id, dlc_data.app_id) then
 		self:mark_cheater(VoteManager.REASON.invalid_character, Network:is_server())
 	end
 end
@@ -359,7 +354,7 @@ function NetworkPeer:_verify_item_data(item_data)
 	for _, dlc in pairs(dlc_list) do
 		local dlc_data = dlc and Global.dlc_manager.all_dlc_data[dlc]
 
-		if dlc_data and dlc_data.app_id and not dlc_data.external and not Steam:is_user_product_owned(self._user_id, dlc_data.app_id) then
+		if dlc_data and dlc_data.app_id and not dlc_data.external and SystemInfo:distribution() == Idstring("STEAM") and not Steam:is_user_product_owned(self._account_id, dlc_data.app_id) then
 			return false
 		end
 	end
@@ -556,16 +551,6 @@ function NetworkPeer:tradable_verification_failed(group, outfit)
 	end
 end
 
-function NetworkPeer:set_steam_rpc(rpc)
-	self._steam_rpc = rpc
-
-	if self._steam_rpc then
-		Network:set_connection_persistent(self._steam_rpc, true)
-		Network:set_throttling_disabled(self._steam_rpc, not managers.user:get_setting("net_packet_throttling"))
-		Network:set_connection_id(self._steam_rpc, self._id)
-	end
-end
-
 function NetworkPeer:set_dlcs(dlcs)
 	local i_dlcs = string.split(dlcs, " ")
 
@@ -582,13 +567,25 @@ function NetworkPeer:load(data)
 	print("[NetworkPeer:load] data:", inspect(data))
 
 	self._name = data.name
+	self._account_type_str = data.account_type_str
+	self._account_id = data.account_id
+	self._need_steam_ticket = self._account_type_str == "STEAM" and (SystemInfo:distribution() == Idstring("STEAM") or SystemInfo:matchmaking() == Idstring("MM_STEAM"))
 
-	if SystemInfo:platform() == Idstring("WIN32") then
-		self._name = managers.network.account:username_by_id(data.user_id)
+	if self._account_type_str == "STEAM" then
+		local temp = self._name
+
+		if SystemInfo:distribution() == Idstring("STEAM") then
+			self._name = managers.network.account:username_by_id(self._account_id)
+		elseif SystemInfo:matchmaking() == Idstring("MM_STEAM") then
+			self._name = managers.network.matchmake:username_by_id(self._account_id)
+		end
+
+		if self._name == "" or self._name == "[unknown]" then
+			self._name = temp
+		end
 	end
 
 	self._rpc = data.rpc
-	self._steam_rpc = data.steam_rpc
 	self._id = data.id
 
 	if self._rpc then
@@ -645,10 +642,11 @@ end
 function NetworkPeer:save(data)
 	print("[NetworkPeer:save] ID:", self._id)
 
-	data.name = self._name
+	data.name = self._name_drop_in or self._name
 	data.rpc = self._rpc
-	data.steam_rpc = self._steam_rpc
 	data.id = self._id
+	data.account_type_str = self._account_type_str
+	data.account_id = self._account_id
 
 	print("SAVE IP", data.ip, "self._rpc ip", self._rpc and self._rpc:ip_at_index(0))
 
@@ -699,12 +697,8 @@ function NetworkPeer:rpc()
 	return self._rpc
 end
 
-function NetworkPeer:steam_rpc()
-	return self._steam_rpc
-end
-
 function NetworkPeer:connection_info()
-	return self._name, self._id, self._user_id or "", self._in_lobby, self._loading, self._synced, self._character, "remove", self._xuid, self._xnaddr
+	return self._name, self._id, self._user_id or "", self._account_type_str, self._account_id, self._in_lobby, self._loading, self._synced, self._character, "remove", self._xuid, self._xnaddr
 end
 
 function NetworkPeer:synched()
@@ -786,9 +780,18 @@ function NetworkPeer:set_ip_verified(state)
 
 	self:_chk_flush_msg_queues()
 
-	local user = Steam:user(self:ip())
+	local is_modded = self:is_modded()
 
-	if user and user:rich_presence("is_modded") == "1" or self:is_modded() then
+	if SystemInfo:distribution() == Idstring("STEAM") and self:account_type_str() == "STEAM" then
+		local user = Steam:user(self:ip())
+		is_modded = is_modded or user and user:rich_presence("is_modded") == "1"
+	end
+
+	if SystemInfo:distribution() == Idstring("EPIC") and self:account_type_str() == "EPIC" then
+		-- Nothing
+	end
+
+	if is_modded then
 		managers.chat:feed_system_message(ChatManager.GAME, managers.localization:text("menu_chat_peer_added_modded", {
 			name = self:name()
 		}))
@@ -1094,14 +1097,8 @@ function NetworkPeer:chk_timeout(timeout)
 		local silent_time = Network:receive_silent_time(self._rpc)
 
 		if timeout < silent_time then
-			if self._steam_rpc then
-				silent_time = math.min(silent_time, Network:receive_silent_time(self._steam_rpc))
-			end
-
-			if timeout < silent_time then
-				print("PINGED OUT", self._ip, silent_time, timeout)
-				self:_ping_timedout()
-			end
+			print("PINGED OUT", self._ip, silent_time, timeout)
+			self:_ping_timedout()
 		end
 	else
 		self:_ping_timedout()
@@ -1138,19 +1135,17 @@ function NetworkPeer:set_id(my_id)
 
 	if self == managers.network:session():local_peer() then
 		Network:set_connection_id(nil, self._id)
-	else
-		if self._rpc then
-			Network:set_connection_id(self._rpc, self._id)
-		end
-
-		if self._steam_rpc then
-			Network:set_connection_id(self._steam_rpc, self._id)
-		end
+	elseif self._rpc then
+		Network:set_connection_id(self._rpc, self._id)
 	end
 end
 
 function NetworkPeer:set_name(name)
 	self._name = name
+end
+
+function NetworkPeer:set_name_drop_in(name)
+	self._name_drop_in = name
 end
 
 function NetworkPeer:destroy()
@@ -1164,10 +1159,6 @@ function NetworkPeer:destroy()
 		if managers.network.voice_chat.on_member_removed then
 			managers.network.voice_chat:on_member_removed(self)
 		end
-	end
-
-	if self._steam_rpc then
-		Network:reset_connection(self._steam_rpc)
 	end
 
 	self:_unload_outfit()
@@ -1481,16 +1472,41 @@ function NetworkPeer:user_id()
 	return self._user_id
 end
 
+function NetworkPeer:account_type_str_from_type(account_type)
+	for _, account_type_str in pairs({
+		"STEAM",
+		"EPIC"
+	}) do
+		if account_type == Idstring(account_type_str) then
+			return account_type_str
+		end
+	end
+
+	return "None"
+end
+
+function NetworkPeer:account_type()
+	return Idstring(self._account_type_str)
+end
+
+function NetworkPeer:account_type_str()
+	return self._account_type_str
+end
+
+function NetworkPeer:account_id()
+	return self._account_id
+end
+
 function NetworkPeer:is_host()
 	return self._id == 1
 end
 
-function NetworkPeer:next_steam_p2p_send_t()
-	return self._next_steam_p2p_send_t
+function NetworkPeer:next_windistrib_p2p_send_t()
+	return self._next_windistrib_p2p_send_t
 end
 
-function NetworkPeer:set_next_steam_p2p_send_t(t)
-	self._next_steam_p2p_send_t = t
+function NetworkPeer:set_next_windistrib_p2p_send_t(t)
+	self._next_windistrib_p2p_send_t = t
 end
 
 function NetworkPeer:set_force_open_lobby_state(state)
@@ -1842,10 +1858,6 @@ end
 function NetworkPeer:set_throttling_enabled(state)
 	if self._rpc then
 		Network:set_throttling_disabled(self._rpc, not state)
-	end
-
-	if self._steam_rpc then
-		Network:set_throttling_disabled(self._steam_rpc, not state)
 	end
 end
 
@@ -2212,4 +2224,10 @@ end
 
 function NetworkPeer:is_vr()
 	return self._is_vr
+end
+
+function NetworkPeer:overlay_inspect()
+	if self._account_type_str == "STEAM" then
+		return managers.network.account:overlay_activate("url", tweak_data.gui.fbi_files_webpage .. "/suspect/" .. self:account_id() .. "/")
+	end
 end

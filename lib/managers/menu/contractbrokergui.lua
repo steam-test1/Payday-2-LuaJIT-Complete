@@ -59,8 +59,8 @@ function ContractBrokerGui:init(ws, fullscreen_ws, node)
 	self._enabled = true
 	self._current_filter = Global.contract_broker and Global.contract_broker.filter or 1
 	self._highlighted_filter = Global.contract_broker and Global.contract_broker.filter or 1
-	self._current_tab = Global.contract_broker and Global.contract_broker.tab or 1
-	self._highlighted_tab = Global.contract_broker and Global.contract_broker.tab or 1
+	self._current_tab = math.min(Global.contract_broker and Global.contract_broker.tab or 1, #self.tabs)
+	self._highlighted_tab = math.min(Global.contract_broker and Global.contract_broker.tab or 1, #self.tabs)
 	self._current_selection = 0
 	self._job_data = {}
 	self._contact_data = {}

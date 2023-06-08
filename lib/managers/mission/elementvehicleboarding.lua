@@ -100,9 +100,9 @@ function ElementVehicleBoarding:on_executed(instigator)
 		end
 	elseif self._values.operation == "disembark" then
 		local player = managers.player:player_unit()
-		local movement_ext = player:movement()
+		local movement_ext = player and player:movement()
 
-		if movement_ext:current_state_name() == "driving" then
+		if movement_ext and movement_ext:current_state_name() == "driving" then
 			movement_ext:current_state():cb_leave()
 		end
 	end

@@ -194,7 +194,7 @@ function BlackMarketTweakData:_init_characters(tweak_data)
 	}
 	self.characters.locked.jowi = {
 		sequence = "var_mtr_john_wick",
-		dlc = "pd2_clan",
+		dlc = "john_wick_character",
 		material_config = {
 			fps = "units/payday2/characters/fps_criminals_suit_1/mtr_john_wick",
 			npc = "units/payday2/characters/npc_criminals_suit_1/mtr_john_wick"

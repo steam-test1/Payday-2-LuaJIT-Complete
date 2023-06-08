@@ -437,6 +437,15 @@ function CrimeNetSidebarGui:clbk_visible_leakedrecording()
 	return true
 end
 
+function CrimeNetSidebarGui:clbk_visible_search_lobby_code()
+	return true
+end
+
+function CrimeNetSidebarGui:clbk_search_lobby_code()
+	managers.menu_component:post_event("menu_enter")
+	managers.menu:open_node("crimenet_search_lobby_code")
+end
+
 CrimeNetSidebarSeparator = CrimeNetSidebarSeparator or class()
 
 function CrimeNetSidebarSeparator:init(sidebar, parent_panel, parameters)
