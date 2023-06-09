@@ -1,5 +1,5 @@
 SocialHubManager = SocialHubManager or class()
-SideJobEventManager.save_version = 1
+SocialHubManager.save_version = 1
 SocialHubManager._invite_cache = {}
 
 function SocialHubManager:init()

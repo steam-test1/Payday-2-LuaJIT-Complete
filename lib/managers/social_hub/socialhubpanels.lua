@@ -232,9 +232,11 @@ function SocialHubLobbyItem:init(parent, data)
 
 	self._content_panel = self._panel:panel({
 		x = 5,
+		layer = 100,
 		w = parent:w() - 10
 	})
 	self._select_panel = self._panel:panel({
+		layer = 100,
 		visible = false
 	})
 	self._unselected_alpha = 0.9
@@ -255,12 +257,14 @@ function SocialHubLobbyItem:setup_panel()
 	})
 
 	local left_panel = self._content_panel:panel({
+		layer = 100,
 		w = self._content_panel:w() / 2
 	})
 	local left_x_placer = 20
 	local top_y_placer = left_panel:h() / 4
 	local bottom_y_placer = left_panel:h() / 4 * 3
 	local heist_mode_icon = left_panel:bitmap({
+		layer = 100,
 		visible = false,
 		color = Color.white,
 		texture = "guis/textures/pd2/cn_playstyle_stealth" or "guis/textures/pd2/cn_playstyle_loud"
@@ -271,6 +275,7 @@ function SocialHubLobbyItem:setup_panel()
 
 	local lobby_marker = left_panel:bitmap({
 		texture = "guis/textures/pd2/crimenet_marker_join",
+		layer = 100,
 		color = Color.white,
 		texture_rect = {
 			0,
@@ -287,6 +292,7 @@ function SocialHubLobbyItem:setup_panel()
 		local peer_icon = left_panel:bitmap({
 			texture = "guis/textures/pd2/crimenet_marker_peerflag",
 			visible = true,
+			layer = 100,
 			color = Color.white,
 			x = lobby_marker:x() + 3 + (i - 1) * 6,
 			y = lobby_marker:y() + 8
@@ -296,9 +302,10 @@ function SocialHubLobbyItem:setup_panel()
 	left_x_placer = lobby_marker:right() + 5
 	self.data.LEVEL = tonumber(self.data.LEVEL)
 	local heist_name = left_panel:text({
+		layer = 100,
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size,
-		text = self.data.LEVEL and tweak_data.levels:get_localized_level_name_from_level_id(tweak_data.levels:get_level_name_from_index(self.data.LEVEL)) or "UNKNOWN",
+		text = self.data.LEVEL and managers.localization:text(tweak_data.narrative:job_data(tweak_data.narrative:get_job_name_from_index(self.data.LEVEL)).name_id) or "UNKNOWN",
 		x = left_x_placer
 	})
 
@@ -306,6 +313,7 @@ function SocialHubLobbyItem:setup_panel()
 	heist_name:set_center_y(bottom_y_placer)
 
 	local player_name = left_panel:text({
+		layer = 100,
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size,
 		text = self.data.OWNER_NAME or "",
@@ -321,7 +329,8 @@ function SocialHubLobbyItem:setup_panel()
 		local index = left_panel
 		local skull_icon = left_panel.bitmap
 		local item = {
-			texture = "guis/textures/pd2/cn_miniskull"
+			texture = "guis/textures/pd2/cn_miniskull",
+			layer = 100
 		}
 
 		if true or not Color.black then
@@ -342,6 +351,7 @@ function SocialHubLobbyItem:setup_panel()
 	self._lobby_setting_text = right_panel:text({
 		text = "FRIENDS ONLY",
 		visible = false,
+		layer = 100,
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size
 	})
@@ -357,7 +367,9 @@ function SocialHubLobbyItem:setup_panel()
 	local right_placer_x = self._buttons_panel:right()
 
 	for index, item in ipairs(self.data.buttons or {}) do
-		local button = self._buttons_panel:panel({})
+		local button = self._buttons_panel:panel({
+			layer = 100
+		})
 
 		button:rect({
 			name = "bg",

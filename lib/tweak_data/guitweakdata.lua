@@ -719,7 +719,7 @@ function GuiTweakData:init(tweak_data)
 		active_job_time = 25,
 		new_job_min_time = 1.5,
 		new_job_max_time = 3.5,
-		refresh_servers_time = SystemInfo:platform() == Idstring("PS4") and 10 or 5,
+		refresh_servers_time = SystemInfo:platform() == Idstring("PS4") and 10 or SystemInfo:matchmaking() == Idstring("MM_EPIC") and 10 or 5,
 		total_active_jobs = 40,
 		max_active_server_jobs = 100
 	}

@@ -445,8 +445,10 @@ function SavefileManager:_save(slot, cache_only, save_system)
 			meta_data.cache
 		}
 
-		if SystemInfo:distribution() == Idstring("STEAM") or SystemInfo:distribution() == Idstring("EPIC") then
+		if SystemInfo:distribution() == Idstring("STEAM") then
 			task_data.save_system = save_system or "steam_cloud"
+		elseif SystemInfo:distribution() == Idstring("EPIC") then
+			task_data.save_system = "local_hdd"
 		end
 
 		self:_on_task_queued(task_data)
@@ -640,6 +642,8 @@ function SavefileManager:_save_data_to_slot(target_slot, data, clbk, save_system
 
 	if SystemInfo:distribution() == Idstring("STEAM") then
 		task_data.save_system = save_system or "steam_cloud"
+	elseif SystemInfo:distribution() == Idstring("EPIC") then
+		task_data.save_system = "local_hdd"
 	end
 
 	local function save_callback_obj(task_data, result_data)
@@ -696,6 +700,8 @@ function SavefileManager:_copy_slot(src_slot, target_slot, clbk, save_system)
 
 	if SystemInfo:distribution() == Idstring("STEAM") then
 		task_data.save_system = save_system or "steam_cloud"
+	elseif SystemInfo:distribution() == Idstring("EPIC") then
+		task_data.save_system = "local_hdd"
 	end
 
 	local function load_callback_obj(td, rd)
@@ -751,11 +757,16 @@ function SavefileManager:_load(slot, cache_only, save_system)
 				task_data.disable_ownership_check = is_setting_slot
 			end
 
-			if SystemInfo:distribution() == Idstring("STEAM") or SystemInfo:distribution() == Idstring("EPIC") then
+			if SystemInfo:distribution() == Idstring("STEAM") then
 				task_data.save_system = save_system or "steam_cloud"
 			end
 
 			local load_callback_obj = task_data.save_system == "local_hdd" and callback(self, self, "clbk_result_load_backup") or callback(self, self, "clbk_result_load")
+
+			if SystemInfo:distribution() == Idstring("EPIC") then
+				task_data.save_system = "local_hdd"
+				load_callback_obj = callback(self, self, "clbk_result_load")
+			end
 
 			self:_on_task_queued(task_data)
 			SaveGameManager:load(task_data, load_callback_obj)
@@ -1000,6 +1011,8 @@ function SavefileManager:_remove(slot, save_system)
 
 	if SystemInfo:distribution() == Idstring("STEAM") then
 		task_data.save_system = save_system or "steam_cloud"
+	elseif SystemInfo:distribution() == Idstring("EPIC") then
+		task_data.save_system = "local_hdd"
 	end
 
 	self._save_slots_to_load[slot] = nil
