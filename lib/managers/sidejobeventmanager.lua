@@ -397,15 +397,18 @@ function SideJobEventManager:load(cache, version)
 	elseif SystemInfo:distribution() == Idstring("STEAM") and state and state.version == 1 and self.save_version == 3 then
 		for idx, saved_challenge in ipairs(state.challenges or {}) do
 			local challenge = self:get_challenge(saved_challenge.id)
-			saved_challenge.completed = true
 
-			for objective_index, saved_objective in ipairs(saved_challenge.objectives) do
-				saved_objective.progress = challenge.objectives[objective_index].max_progress
-				saved_objective.completed = true
+			if challenge then
+				saved_challenge.completed = true
 
-				for choice_objective_index, saved_choice_objective in ipairs(saved_objective.challenge_choices_saved_values or {}) do
-					saved_choice_objective.progress = challenge.objectives[objective_index].challenge_choices[choice_objective_index].max_progress
-					saved_choice_objective.completed = true
+				for objective_index, saved_objective in ipairs(saved_challenge.objectives) do
+					saved_objective.progress = challenge.objectives[objective_index].max_progress
+					saved_objective.completed = true
+
+					for choice_objective_index, saved_choice_objective in ipairs(saved_objective.challenge_choices_saved_values or {}) do
+						saved_choice_objective.progress = challenge.objectives[objective_index].challenge_choices[choice_objective_index].max_progress
+						saved_choice_objective.completed = true
+					end
 				end
 			end
 		end

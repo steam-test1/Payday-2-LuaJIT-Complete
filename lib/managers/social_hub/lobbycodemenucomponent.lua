@@ -18,12 +18,22 @@ function LobbyCodeMenuComponent:init(ws, fullscreen_ws, node)
 		h = 100,
 		y = 80
 	})
+	Global.lobby_code = Global.lobby_code or {}
 
 	if managers.network.matchmake.lobby_handler then
 		self._id_code = managers.network.matchmake.lobby_handler:id()
 
 		self:create_hub_panel()
-		self:set_code_hidden(not managers.user:get_setting("toggle_socialhub_hide_code"))
+
+		local initial_state = nil
+
+		if Global.lobby_code.state ~= nil then
+			initial_state = Global.lobby_code.state
+		else
+			initial_state = not managers.user:get_setting("toggle_socialhub_hide_code")
+		end
+
+		self:set_code_hidden(initial_state)
 	end
 end
 
@@ -185,6 +195,8 @@ function LobbyCodeMenuComponent:set_code(code_string)
 end
 
 function LobbyCodeMenuComponent:set_code_hidden(hidden_state)
+	Global.lobby_code.state = hidden_state
+
 	self._code_hider:set_visible(hidden_state)
 	self._id_text:set_visible(not hidden_state)
 	self._code_hidden_text:set_visible(hidden_state)
@@ -243,6 +255,10 @@ function LobbyCodeMenuComponent:mouse_pressed(button, x, y)
 end
 
 function LobbyCodeMenuComponent:special_btn_pressed(button)
+	if managers.menu:is_pc_controller() then
+		return
+	end
+
 	if button == Idstring("menu_unlocked_achievement") then
 		self:copy_code()
 	elseif self._code_hider and button == Idstring("menu_preview_item") then

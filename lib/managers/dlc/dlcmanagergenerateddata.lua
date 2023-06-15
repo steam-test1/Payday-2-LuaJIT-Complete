@@ -429,7 +429,7 @@ function WINDLCManager:init_generated()
 		app_id = "1255151",
 		epic_id = "77aa4f7bb9374ce3ba5300d4e132caf4",
 		no_install = true,
-		webpage = "ovk.af/bexwpyb"
+		webpage = "https://pd2.link/bexwpyb"
 	}
 	Global.dlc_manager.all_dlc_data.anv = {
 		app_id = "218620",
@@ -445,13 +445,13 @@ function WINDLCManager:init_generated()
 		app_id = "1351060",
 		epic_id = "7ae51c06cfce4adb9870352bb6909b14",
 		no_install = true,
-		webpage = "https://ovk.af/pexwpyb"
+		webpage = "https://pd2.link/pexwpyb"
 	}
 	Global.dlc_manager.all_dlc_data.bex = {
 		app_id = "1252200",
 		epic_id = "d530394a24f5418ebdccf8140912d836",
 		no_install = true,
-		webpage = "ovk.af/bexheistyb"
+		webpage = "https://pd2.link/bexheistyb"
 	}
 	Global.dlc_manager.all_dlc_data.ccmt = {
 		app_id = "218620",
@@ -523,7 +523,7 @@ function WINDLCManager:init_generated()
 		app_id = "1449450",
 		epic_id = "9248ff7cc0a04444994d8dee4b57809c",
 		no_install = true,
-		webpage = "https://ovk.af/FEXBMHYB"
+		webpage = "https://pd2.link/FEXBMHYB"
 	}
 	Global.dlc_manager.all_dlc_data.flm = {
 		app_id = "218620",
@@ -630,13 +630,13 @@ function WINDLCManager:init_generated()
 		app_id = "1255150",
 		epic_id = "e8b99080ed6c46c9a3875181f97b3108",
 		no_install = true,
-		webpage = "ovk.af/bextp2yb"
+		webpage = "https://pd2.link/bextp2yb"
 	}
 	Global.dlc_manager.all_dlc_data.mex = {
 		app_id = "1184411",
 		epic_id = "cfc5a94ba4f74e02a7628d8bbf40d993",
 		no_install = true,
-		webpage = "https://ovk.af/ingame2BorderCrossing"
+		webpage = "https://pd2.link/ingame2BorderCrossing"
 	}
 	Global.dlc_manager.all_dlc_data.mmh = {
 		app_id = "218620",
@@ -657,7 +657,7 @@ function WINDLCManager:init_generated()
 		app_id = "1184412",
 		epic_id = "646f01e31690479ba2a59620fcad57ae",
 		no_install = true,
-		webpage = "https://ovk.af/ingame2CartelOptics"
+		webpage = "https://pd2.link/ingame2CartelOptics"
 	}
 	Global.dlc_manager.all_dlc_data.mxm = {
 		app_id = "2218650",
@@ -669,13 +669,13 @@ function WINDLCManager:init_generated()
 		app_id = "1449441",
 		epic_id = "1e53666bc6e4449f8e99a09d402aaeab",
 		no_install = true,
-		webpage = "https://ovk.af/FEXGWPYB"
+		webpage = "https://pd2.link/FEXGWPYB"
 	}
 	Global.dlc_manager.all_dlc_data.ocp = {
 		app_id = "1449442",
 		epic_id = "e8f714b12cc3466ea3beae881c37ab47",
 		no_install = true,
-		webpage = "https://ovk.af/FEXWCP3YB"
+		webpage = "https://pd2.link/FEXWCP3YB"
 	}
 	Global.dlc_manager.all_dlc_data.oct21 = {
 		app_id = "218620",
@@ -702,13 +702,13 @@ function WINDLCManager:init_generated()
 		app_id = "1347750",
 		epic_id = "868e206d0eb34fb4b132929351b8daca",
 		no_install = true,
-		webpage = "https://ovk.af/pexheistyb"
+		webpage = "https://pd2.link/pexheistyb"
 	}
 	Global.dlc_manager.all_dlc_data.pgo = {
 		app_id = "1449440",
 		epic_id = "cde3b34730b74606b59a0047cf1672ae",
 		no_install = true,
-		webpage = "https://ovk.af/FEXTP3YB"
+		webpage = "https://pd2.link/FEXTP3YB"
 	}
 	Global.dlc_manager.all_dlc_data.prim = {
 		app_id = "218620",
@@ -759,7 +759,7 @@ function WINDLCManager:init_generated()
 		app_id = "1654480",
 		epic_id = "9a6807952b044d5299900ca7e8b3e29d",
 		no_install = true,
-		webpage = "https://ovk.af/UkrainianPrisonerYBS"
+		webpage = "https://pd2.link/UkrainianPrisonerYBS"
 	}
 	Global.dlc_manager.all_dlc_data.savi = {
 		app_id = "218620",
@@ -770,7 +770,7 @@ function WINDLCManager:init_generated()
 		app_id = "1619070",
 		epic_id = "b0adb3e8cd734612950224011ad83d20",
 		no_install = true,
-		webpage = "https://ovk.af/SmugglerPack2YBS"
+		webpage = "https://pd2.link/SmugglerPack2YBS"
 	}
 	Global.dlc_manager.all_dlc_data.sbzac2 = {
 		app_id = "218620",
@@ -792,7 +792,7 @@ function WINDLCManager:init_generated()
 		app_id = "1654481",
 		epic_id = "8b8a9291e5df4865b806d56617ff6ba0",
 		no_install = true,
-		webpage = "https://ovk.af/UkrainianPrisonerYBS2"
+		webpage = "https://pd2.link/UkrainianPrisonerYBS2"
 	}
 	Global.dlc_manager.all_dlc_data.sft = {
 		app_id = "218620",
@@ -885,7 +885,7 @@ function WINDLCManager:init_generated()
 		app_id = "1184410",
 		epic_id = "9f045b7afd3445e394bc22b8c8b4ddfc",
 		no_install = true,
-		webpage = "https://ovk.af/ingame2TailorPack"
+		webpage = "https://pd2.link/ingame2TailorPack"
 	}
 	Global.dlc_manager.all_dlc_data.trik = {
 		app_id = "218620",
@@ -930,7 +930,7 @@ function WINDLCManager:init_generated()
 		app_id = "1347751",
 		epic_id = "4c371acada21422cb711289b653e9600",
 		no_install = true,
-		webpage = "https://ovk.af/pexwcp2yb"
+		webpage = "https://pd2.link/pexwcp2yb"
 	}
 	Global.dlc_manager.all_dlc_data.wcc_s01 = {
 		app_id = "1349280",
@@ -941,13 +941,13 @@ function WINDLCManager:init_generated()
 		app_id = "1349281",
 		epic_id = "325fdb2dd4554b0591e0060540dbaf26",
 		no_install = true,
-		webpage = "https://ovk.af/pexlcyb"
+		webpage = "https://pd2.link/pexlcyb"
 	}
 	Global.dlc_manager.all_dlc_data.wcs = {
 		app_id = "1255152",
 		epic_id = "d8480500d20b4e9480cc921248f34758",
 		no_install = true,
-		webpage = "ovk.af/bexwcp1yb"
+		webpage = "https://pd2.link/bexwcp1yb"
 	}
 	Global.dlc_manager.all_dlc_data.xm20 = {
 		app_id = "218620",

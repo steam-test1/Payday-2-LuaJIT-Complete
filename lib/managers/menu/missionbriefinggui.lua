@@ -4684,6 +4684,10 @@ function MissionBriefingGui:close()
 		end
 	end
 
+	if self._lobby_code_text then
+		self._lobby_code_text:close()
+	end
+
 	if self._panel and alive(self._panel) then
 		self._panel:parent():remove(self._panel)
 	end

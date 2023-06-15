@@ -67,7 +67,7 @@ end
 function ChallengeManager:_fetch_challenges()
 	local done_clbk = callback(self, self, "_fetch_done_clbk")
 	self._global.retrieving = true
-	self._missionsURL = "https://www.overkillsoftware.com/ovk-media/stats/pd2missions.json"
+	self._missionsURL = "https://www.paydaythegame.com/ovk-media/stats/pd2missions.json"
 
 	HttpRequest:get(self._missionsURL, done_clbk, nil, Idstring("ChallengeManager:_fetch_challenges()"):key())
 end

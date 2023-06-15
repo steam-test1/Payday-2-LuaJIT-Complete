@@ -234,7 +234,7 @@ function SearchBoxGuiObject:search_key_press(o, k)
 		end
 
 		text:replace_text("")
-	elseif k == Idstring("insert") then
+	elseif k == Idstring("insert") or self._key_ctrl_pressed == true and k == Idstring("v") then
 		local clipboard = Application:get_clipboard() or ""
 
 		text:replace_text(clipboard)
@@ -272,13 +272,17 @@ function SearchBoxGuiObject:search_key_press(o, k)
 		if type(self._enter_callback) ~= "number" then
 			self._enter_callback()
 		end
-	elseif k == Idstring("esc") and type(self._esc_callback) ~= "number" then
-		if not _G.IS_VR then
-			text:set_text("")
-			text:set_selection(0, 0)
-		end
+	elseif k == Idstring("esc") then
+		if type(self._esc_callback) ~= "number" then
+			if not _G.IS_VR then
+				text:set_text("")
+				text:set_selection(0, 0)
+			end
 
-		self._esc_callback()
+			self._esc_callback()
+		end
+	elseif k == Idstring("left ctrl") or k == Idstring("right ctrl") then
+		self._key_ctrl_pressed = true
 	end
 
 	self:update_caret()
@@ -287,6 +291,10 @@ end
 function SearchBoxGuiObject:search_key_release(o, k)
 	if self._key_pressed == k then
 		self._key_pressed = false
+	end
+
+	if k == Idstring("left ctrl") or k == Idstring("right ctrl") then
+		self._key_ctrl_pressed = false
 	end
 end
 
@@ -358,6 +366,10 @@ function SearchBoxGuiObject:clear_text()
 end
 
 function SearchBoxGuiObject:enter_text(o, s)
+	if s and string.byte(s) < 32 then
+		return
+	end
+
 	if self._skip_first then
 		self._skip_first = false
 

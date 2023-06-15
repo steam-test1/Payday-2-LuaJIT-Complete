@@ -5078,10 +5078,6 @@ function MenuComponentManager:close_custom_safehouse_menu(category)
 end
 
 function MenuComponentManager:create_new_heists_gui(node)
-	if SystemInfo:distribution() == Idstring("EPIC") then
-		return
-	end
-
 	if not node then
 		return
 	end

@@ -20,6 +20,8 @@ local connection_errors = {
 Telemetry.event_actions = {
 	piggybank_fed = 1
 }
+local is_steam = SystemInfo:distribution() == Idstring("STEAM")
+local is_epic = SystemInfo:distribution() == Idstring("EPIC")
 
 local function multiline(s)
 	if s:sub(-1) ~= "\n" then
@@ -81,9 +83,9 @@ local function get_platform_name()
 end
 
 local function get_distribution()
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if is_steam then
 		return "STEAM"
-	elseif SystemInfo:distribution() == Idstring("EPIC") then
+	elseif is_epic then
 		return "EPIC"
 	else
 		return "NONE"
@@ -193,10 +195,10 @@ local function get_total_playtime()
 	if not Global.telemetry._total_playtime then
 		local endpoint = nil
 
-		if SystemInfo:distribution() == Idstring("STEAM") then
+		if is_steam then
 			endpoint = get_playtime_endpoint_steam
 			endpoint = endpoint:gsub("%{steamId}", managers.network.account:player_id())
-		elseif SystemInfo:distribution() == Idstring("EPIC") then
+		elseif is_epic then
 			-- Nothing
 		end
 
@@ -228,11 +230,11 @@ end
 local function update_total_playtime(new_playtime)
 	local endpoint = nil
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if is_steam then
 		endpoint = update_playtime_endpoint_steam
 		endpoint = endpoint:gsub("%{steamId}", managers.network.account:player_id())
 		endpoint = endpoint:gsub("%{playtime}", tostring(new_playtime))
-	elseif SystemInfo:distribution() == Idstring("EPIC") then
+	elseif is_epic then
 		-- Nothing
 	end
 
@@ -591,10 +593,12 @@ function Telemetry:send_on_player_logged_in(reason)
 
 	for _, dlc_data in pairs(Global.dlc_manager.all_dlc_data) do
 		if dlc_data.verified and dlc_data.verified == true then
-			if dlc_data.app_id and dlc_data.app_id ~= Global.dlc_manager.all_dlc_data.full_game.app_id then
+			if is_steam and dlc_data.app_id and dlc_data.app_id ~= Global.dlc_manager.all_dlc_data.full_game.app_id then
 				table.insert(installed_dlc_list, dlc_data.app_id)
-			elseif dlc_data.source_id then
+			elseif is_steam and dlc_data.source_id then
 				table.insert(installed_dlc_list, dlc_data.source_id)
+			elseif is_epic and dlc_data.epic_id and dlc_data.epic_id ~= Global.dlc_manager.all_dlc_data.full_game.epic_id then
+				table.insert(installed_dlc_list, dlc_data.epic_id)
 			elseif dlc_data.entitlement_id then
 				table.insert(installed_entitlement_list, dlc_data.entitlement_id)
 			end
@@ -1166,9 +1170,9 @@ function Telemetry:send_on_player_achievements(achievements)
 		Achievements = achievement_list
 	}
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if is_steam then
 		self:send("player_steam_achievements", telemetry_payload)
-	elseif SystemInfo:distribution() == Idstring("EPIC") then
+	elseif is_epic then
 		-- Nothing
 	end
 

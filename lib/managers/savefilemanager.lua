@@ -1435,6 +1435,11 @@ function SavefileManager:clbk_result_load_backup(task_data, result_data)
 
 				if status == "OK" then
 					local cache = slot_data.data
+
+					if not cache then
+						return
+					end
+
 					local version = cache.version or 0
 					local version_name = cache.version_name
 

@@ -220,6 +220,10 @@ function SocialHubUserItem:get_status_prio()
 	return 4
 end
 
+function SocialHubUserItem:get_name()
+	return self.friend_data.name or ""
+end
+
 SocialHubLobbyItem = SocialHubLobbyItem or class(ListItem)
 
 function SocialHubLobbyItem:init(parent, data)
@@ -300,12 +304,14 @@ function SocialHubLobbyItem:setup_panel()
 	end
 
 	left_x_placer = lobby_marker:right() + 5
-	self.data.LEVEL = tonumber(self.data.LEVEL)
+	self.data.JOB_ID = tonumber(self.data.JOB_ID)
+	local job_name = tweak_data.narrative:get_job_name_from_index(self.data.JOB_ID)
+	local job_data = tweak_data.narrative:job_data(job_name)
 	local heist_name = left_panel:text({
 		layer = 100,
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size,
-		text = self.data.LEVEL and managers.localization:text(tweak_data.narrative:job_data(tweak_data.narrative:get_job_name_from_index(self.data.LEVEL)).name_id) or "UNKNOWN",
+		text = self.data.JOB_ID and job_data and managers.localization:text(job_data.name_id) or "UNKNOWN",
 		x = left_x_placer
 	})
 
@@ -334,12 +340,12 @@ function SocialHubLobbyItem:setup_panel()
 		}
 
 		if true or not Color.black then
-			slot16 = tweak_data.screen_colors.risk
+			slot18 = tweak_data.screen_colors.risk
 		end
 
-		item.color = slot16
+		item.color = slot18
 		item.x = left_x_placer + 3 + (i - 1) * 11
-		local skull_icon = slot13(index, item)
+		local skull_icon = slot15(index, item)
 
 		skull_icon:set_center_y(bottom_y_placer)
 	end

@@ -2251,6 +2251,9 @@ function MenuCallbackHandler:toggle_socialhub_hide_code(item)
 	local state = item:value() == "on"
 
 	managers.user:set_setting("toggle_socialhub_hide_code", state, nil)
+
+	Global.lobby_code = Global.lobby_code or {}
+	Global.lobby_code.state = not state
 end
 
 function MenuCallbackHandler:socialhub_invite(item)

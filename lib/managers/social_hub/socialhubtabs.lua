@@ -186,6 +186,25 @@ function SocialHubFriendTab:setup_panel(parent_panel)
 				return false
 			end
 		end
+
+		if lhs.get_name and rhs.get_name then
+			local lhs_name = utf8.to_lower(lhs:get_name())
+			local rhs_name = utf8.to_lower(rhs:get_name())
+
+			for i = 1, math.min(string.len(lhs_name), string.len(rhs_name)) do
+				if string.byte(string.sub(lhs_name, i, i)) < string.byte(string.sub(rhs_name, i, i)) then
+					return true
+				elseif string.byte(string.sub(rhs_name, i, i)) < string.byte(string.sub(lhs_name, i, i)) then
+					return false
+				end
+			end
+
+			if string.len(lhs_name) < string.len(rhs_name) then
+				return true
+			elseif string.len(rhs_name) < string.len(lhs_name) then
+				return false
+			end
+		end
 	end)
 	self.scroll:select_index(1)
 end
@@ -532,6 +551,10 @@ function SocialHubInviteTab:confirm_pressed()
 end
 
 function SocialHubInviteTab:special_btn_pressed(button)
+	if not managers.menu:is_pc_controller() then
+		return
+	end
+
 	if button == Idstring("menu_respec_tree") then
 		self._searchbox:clear_text()
 		self._searchbox:enter_text(nil, Application:get_clipboard())

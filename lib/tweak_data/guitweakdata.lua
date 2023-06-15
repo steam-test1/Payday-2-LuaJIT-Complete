@@ -20,7 +20,7 @@ function GuiTweakData:init(tweak_data)
 		desc_id = "menu_content_diamond_store_desc"
 	}
 	local birthday = {
-		webpage = "http://www.overkillsoftware.com/birthday/",
+		webpage = "https://www.paydaythegame.com/static/payday2/birthday/",
 		name_id = "menu_content_birthday",
 		id = "birthday",
 		date_id = "menu_content_birthday_date",
@@ -28,7 +28,7 @@ function GuiTweakData:init(tweak_data)
 		desc_id = "menu_content_birthday_desc"
 	}
 	local halloween = {
-		webpage = "http://www.overkillsoftware.com/helltopay/",
+		webpage = "https://www.paydaythegame.com/static/payday2/helltopay/",
 		name_id = "menu_content_halloween",
 		id = "halloween",
 		date_id = "menu_content_halloween_date",
@@ -148,7 +148,7 @@ function GuiTweakData:init(tweak_data)
 		desc_id = "menu_content_gage_pack_assault_desc"
 	}
 	local jukebox = {
-		webpage = "http://www.overkillsoftware.com/bigfatmusicupdate/",
+		webpage = "https://www.paydaythegame.com/static/payday2/bigfatmusicupdate/",
 		name_id = "menu_content_jukebox",
 		id = "jukebox",
 		date_id = "menu_content_jukebox_date",
@@ -164,7 +164,7 @@ function GuiTweakData:init(tweak_data)
 		desc_id = "menu_content_hl_miami_desc"
 	}
 	local crimefest = {
-		webpage = "http://www.overkillsoftware.com/crimefest/mrated.html",
+		webpage = "https://www.paydaythegame.com/static/payday2/crimefest/mrated.html",
 		name_id = "menu_content_crimefest",
 		id = "crimefest",
 		date_id = "menu_content_crimefest_date",
@@ -196,7 +196,7 @@ function GuiTweakData:init(tweak_data)
 		desc_id = "menu_content_hoxton_job_desc"
 	}
 	local halloween_2014 = {
-		webpage = "http://www.overkillsoftware.com/halloween/",
+		webpage = "https://www.paydaythegame.com/static/payday2/halloween/",
 		name_id = "menu_content_halloween_2014",
 		id = "halloween_2014",
 		date_id = "menu_content_halloween_2014_date",
@@ -212,7 +212,7 @@ function GuiTweakData:init(tweak_data)
 		desc_id = "menu_content_gage_pack_historical_desc"
 	}
 	local christmas_2014 = {
-		webpage = "http://www.overkillsoftware.com/whitechristmas/",
+		webpage = "https://www.paydaythegame.com/payday2/updates/whitechristmas/",
 		name_id = "menu_content_christmas_2014",
 		id = "christmas_2014",
 		date_id = "menu_content_christmas_2014_date",
@@ -236,7 +236,7 @@ function GuiTweakData:init(tweak_data)
 		desc_id = "menu_content_hope_diamond_desc"
 	}
 	local hw_boxing = {
-		webpage = "http://www.overkillsoftware.com/happynewyear/",
+		webpage = "https://www.paydaythegame.com/payday2/updates/happynewyear/",
 		name_id = "menu_content_hw_boxing",
 		id = "hw_boxing",
 		date_id = "menu_content_hw_boxing_date",
@@ -268,7 +268,7 @@ function GuiTweakData:init(tweak_data)
 		desc_id = "menu_content_akm4_pack_desc"
 	}
 	local infamy_2_0 = {
-		webpage = "http://www.overkillsoftware.com/games/infamy2/",
+		webpage = "https://www.paydaythegame.com/payday2/updates/infamy2/",
 		name_id = "menu_content_infamy_2_0",
 		id = "infamy_2_0",
 		date_id = "menu_content_infamy_2_0_date",
@@ -284,7 +284,7 @@ function GuiTweakData:init(tweak_data)
 		desc_id = "menu_content_overkill_pack_desc"
 	}
 	local complete_overkill_pack = {
-		webpage = "http://www.overkillsoftware.com/thehypetrain/",
+		webpage = "https://www.paydaythegame.com/payday2/updates/thehypetrain/",
 		name_id = "menu_content_complete_overkill_pack",
 		id = "complete_overkill_pack",
 		date_id = "menu_content_complete_overkill_pack_date",
@@ -311,13 +311,13 @@ function GuiTweakData:init(tweak_data)
 		store = 337661,
 		name_id = "menu_content_bbq",
 		id = "bbq",
-		webpage = "http://www.overkillsoftware.com/bbq/",
+		webpage = "https://www.paydaythegame.com/payday2/updates/bbq/",
 		date_id = "menu_content_bbq_date",
 		image = "guis/textures/pd2/content_updates/bbq",
 		desc_id = "menu_content_bbq_desc"
 	}
 	local springbreak = {
-		webpage = "http://www.overkillsoftware.com/springbreak/",
+		webpage = "https://www.paydaythegame.com/payday2/updates/springbreak/",
 		name_id = "menu_content_springbreak",
 		id = "springbreak",
 		date_id = "menu_content_springbreak_date",
@@ -333,7 +333,7 @@ function GuiTweakData:init(tweak_data)
 		desc_id = "menu_content_bbq_desc"
 	}
 	local fpsanimation = {
-		webpage = "http://www.overkillsoftware.com/animations-update/",
+		webpage = "https://www.paydaythegame.com/payday2/updates/animations-update/",
 		name_id = "menu_content_fpsanimation",
 		id = "fpsanimation",
 		date_id = "menu_content_fpsanimation_date",
@@ -341,7 +341,7 @@ function GuiTweakData:init(tweak_data)
 		desc_id = "menu_content_fpsanimation_desc"
 	}
 	local springcleaning = {
-		webpage = "http://steamcommunity.com/games/218620/announcements/detail/177107167839449807",
+		webpage = "https://steamcommunity.com/games/218620/announcements/detail/177107167839449807",
 		name_id = "menu_content_springcleaning",
 		id = "springcleaning",
 		date_id = "menu_content_springcleaning_date",
@@ -365,7 +365,7 @@ function GuiTweakData:init(tweak_data)
 		desc_id = "menu_content_bsides_desc"
 	}
 	local shoutout = {
-		webpage = "http://www.overkillsoftware.com/meltdown/",
+		webpage = "https://www.paydaythegame.com/payday2/updates/meltdown/",
 		name_id = "menu_content_shoutout",
 		id = "shoutout",
 		date_id = "menu_content_shoutout_date",
@@ -421,7 +421,7 @@ function GuiTweakData:init(tweak_data)
 		desc_id = "menu_content_steel_desc"
 	}
 	local gordon = {
-		webpage = "http://www.overkillsoftware.com/games/fbifiles/",
+		webpage = "https://www.paydaythegame.com/payday2/updates/fbifiles/",
 		name_id = "menu_content_gordon",
 		id = "gordon",
 		date_id = "menu_content_gordon_date",
@@ -429,7 +429,7 @@ function GuiTweakData:init(tweak_data)
 		desc_id = "menu_content_gordon_desc"
 	}
 	local rip = {
-		webpage = "http://www.overkillsoftware.com/games/pointbreak/",
+		webpage = "https://www.paydaythegame.com/payday2/updates/pointbreak/",
 		name_id = "menu_content_rip",
 		id = "rip",
 		date_id = "menu_content_rip_date",
@@ -445,7 +445,7 @@ function GuiTweakData:init(tweak_data)
 		desc_id = "menu_content_berry_desc"
 	}
 	local cane = {
-		webpage = "http://www.overkillsoftware.com/games/christmas2015/",
+		webpage = "https://www.paydaythegame.com/payday2/updates/christmas2015/",
 		name_id = "menu_content_cane",
 		id = "cane",
 		date_id = "menu_content_cane_date",
@@ -469,7 +469,7 @@ function GuiTweakData:init(tweak_data)
 		desc_id = "menu_content_pal_desc"
 	}
 	local coco = {
-		webpage = "http://www.overkillsoftware.com/games/hardcorehenry/",
+		webpage = "https://www.paydaythegame.com/payday2/updates/hardcorehenry/",
 		name_id = "menu_content_coco",
 		id = "coco",
 		date_id = "menu_content_coco_date",
@@ -477,7 +477,7 @@ function GuiTweakData:init(tweak_data)
 		desc_id = "menu_content_coco_desc"
 	}
 	local mad = {
-		webpage = "http://www.overkillsoftware.com/games/hardcorehenry/",
+		webpage = "https://www.paydaythegame.com/payday2/updates/hardcorehenry/",
 		name_id = "menu_content_mad",
 		id = "mad",
 		date_id = "menu_content_mad_date",
@@ -493,7 +493,7 @@ function GuiTweakData:init(tweak_data)
 		desc_id = "menu_content_opera_desc"
 	}
 	local update100 = {
-		webpage = "http://www.overkillsoftware.com/games/update100/",
+		webpage = "https://www.paydaythegame.com/payday2/updates/update100/",
 		name_id = "menu_content_update100",
 		id = "update100",
 		date_id = "menu_content_update100_date",
@@ -501,7 +501,7 @@ function GuiTweakData:init(tweak_data)
 		desc_id = "menu_content_update100_desc"
 	}
 	local tutorial = {
-		webpage = "http://steamcommunity.com/app/218620/allnews/",
+		webpage = "https://steamcommunity.com/app/218620/allnews/",
 		name_id = "menu_content_tutorial",
 		id = "tutorial",
 		date_id = "menu_content_tutorial_date",
@@ -545,7 +545,7 @@ function GuiTweakData:init(tweak_data)
 		num_items = 6,
 		choice_id = "menu_content_updates_previous"
 	}
-	self.store_page = "http://store.steampowered.com/app/218620"
+	self.store_page = "https://store.steampowered.com/app/218620"
 
 	if SystemInfo:platform() == Idstring("WIN32") then
 		self.content_updates.item_list = {
@@ -636,9 +636,9 @@ function GuiTweakData:init(tweak_data)
 	self.fav_videos = {
 		title_id = "menu_fav_videos",
 		num_items = 3,
-		db_url = "http://www.overkillsoftware.com/?page_id=1263",
+		db_url = "https://www.paydaythegame.com/static/payday2/birthday/",
 		button = {
-			url = "http://www.overkillsoftware.com/?page_id=1263",
+			url = "https://www.paydaythegame.com/static/payday2/birthday/",
 			text_id = "menu_fav_video_homepage"
 		},
 		item_list = {
@@ -705,7 +705,7 @@ function GuiTweakData:init(tweak_data)
 	self.MAX_WEAPON_PAGES = math.ceil(min_amount_weapons / (self.WEAPON_ROWS_PER_PAGE * self.WEAPON_COLUMNS_PER_PAGE))
 	self.MAX_WEAPON_SLOTS = self.MAX_WEAPON_PAGES * self.WEAPON_ROWS_PER_PAGE * self.WEAPON_COLUMNS_PER_PAGE
 	self.fbi_files_webpage = "https://fbi.paydaythegame.com/"
-	self.crimefest_challenges_webpage = "http://www.overkillsoftware.com/games/roadtocrimefest/"
+	self.crimefest_challenges_webpage = "https://www.paydaythegame.com/payday2/updates/roadtocrimefest/"
 	self.sbz_account_webpage = "https://www.paydaythegame.com/account/register/"
 	self.privacy_webpage = "https://pd2.link/PrivacyPolicy"
 	self.license_webpage = "https://pd2.link/TermsOfService"
@@ -1852,11 +1852,11 @@ function GuiTweakData:init(tweak_data)
 			icon = "sidebar_filters"
 		},
 		{
-			visible_callback = "clbk_visible_search_lobby_code",
+			visible_callback = "clbk_visible_multiplayer",
 			name_id = "menu_cn_search_lobby_code",
 			callback = "clbk_search_lobby_code",
 			id = "search_lobby_code",
-			icon = "sidebar_expand"
+			icon = "sidebar_lobby_search"
 		},
 		{
 			item_class = "CrimeNetSidebarSeparator"
@@ -5197,21 +5197,25 @@ function GuiTweakData:init(tweak_data)
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_txt4_01",
 		texture_path = "guis/dlcs/txt4/textures/pd2/new_heists/txt4_01",
+		epic_url = "https://pd2.link/CrudeAwakeningBundleSLE",
 		url = "https://pd2.link/CrudeAwakeningBundleSLS"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_pxp4",
 		texture_path = "guis/dlcs/pxp4/textures/pd2/new_heists/pxp4",
+		epic_url = "https://pd2.link/McShayWeaponPack4SLE",
 		url = "https://pd2.link/McShayWeaponPack4SLS"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_txt4_02",
 		texture_path = "guis/dlcs/txt4/textures/pd2/new_heists/txt4_02",
+		epic_url = "https://pd2.link/LawlessTailorPackSLE",
 		url = "_https://pd2.link/LawlessTailorPackSLS"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_txt3_02",
 		texture_path = "guis/dlcs/txt3/textures/pd2/new_heists/txt3_02",
+		epic_url = "https://pd2.link/HostileTakeoverBundleSLE",
 		url = "https://pd2.link/HostileTakeoverBundleSLS"
 	})
 	table.insert(self.new_heists, {
@@ -5318,7 +5322,7 @@ function GuiTweakData:init(tweak_data)
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_ranc_02",
 		texture_path = "guis/dlcs/ranc/textures/pd2/new_heists/ranc_02",
-		url = "http://pd2.link/Drops"
+		url = "https://pd2.link/Drops"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_pxp1_02",
@@ -5329,7 +5333,7 @@ function GuiTweakData:init(tweak_data)
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_in33_02",
 		texture_path = "guis/dlcs/in33/textures/pd2/new_heists/in33_02",
-		url = "https://ovk.af/Infamy33SLW3"
+		url = "https://pd2.link/Infamy33SLW3"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_pent_01",
@@ -5344,232 +5348,232 @@ function GuiTweakData:init(tweak_data)
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_lawp_01",
 		texture_path = "guis/dlcs/lawp/textures/pd2/new_heists/lawp_01",
-		url = "https://ovk.af/SmugglerPack4SLS"
+		url = "https://pd2.link/SmugglerPack4SLS"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_ja22_02",
 		texture_path = "guis/dlcs/ja22/textures/pd2/new_heists/ja22_02",
-		url = "https://ovk.af/BCBundleSLS"
+		url = "https://pd2.link/BCBundleSLS"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_snow_01",
 		texture_path = "guis/dlcs/snow/textures/pd2/new_heists/snow_01",
-		url = "https://ovk.af/Xmas2021SLS2"
+		url = "https://pd2.link/Xmas2021SLS2"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_xm21_01",
 		texture_path = "guis/dlcs/xm21/textures/pd2/new_heists/xm21_01",
-		url = "https://ovk.af/Xmas2021SLA"
+		url = "https://pd2.link/Xmas2021SLA"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_in33_01",
 		texture_path = "guis/dlcs/in33/textures/pd2/new_heists/in33_01",
-		url = "https://ovk.af/Infamy33SLW"
+		url = "https://pd2.link/Infamy33SLW"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_trik_01",
 		texture_path = "guis/dlcs/trik/textures/pd2/new_heists/trik_01",
-		url = "https://ovk.af/PD2HW21SLW"
+		url = "https://pd2.link/PD2HW21SLW"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_a10th_01",
 		texture_path = "guis/dlcs/a10th/textures/pd2/new_heists/a10th_01",
-		url = "https://ovk.af/PAYDAY10SLW"
+		url = "https://pd2.link/PAYDAY10SLW"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_chca_01",
 		texture_path = "guis/dlcs/chca/textures/pd2/new_heists/chca_01",
-		url = "https://ovk.af/BlackCatSLS"
+		url = "https://pd2.link/BlackCatSLS"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_cctp_01",
 		texture_path = "guis/dlcs/cctp/textures/pd2/new_heists/cctp_01",
-		url = "https://ovk.af/BlackCatSLS2"
+		url = "https://pd2.link/BlackCatSLS2"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_tawp",
 		texture_path = "guis/dlcs/tawp/textures/pd2/new_heists/tawp",
-		url = "https://ovk.af/SmugglerPack3SLS"
+		url = "https://pd2.link/SmugglerPack3SLS"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_ivs",
 		texture_path = "guis/dlcs/ivs/textures/pd2/new_heists/ivs",
-		url = "https://ovk.af/PD2Upd210SLA"
+		url = "https://pd2.link/PD2Upd210SLA"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_sand_bundle",
 		texture_path = "guis/dlcs/sand/textures/pd2/new_heists/sand_bundle",
-		url = "https://ovk.af/UKPBundleSLS"
+		url = "https://pd2.link/UKPBundleSLS"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_sand",
 		texture_path = "guis/textures/pd2/new_heists/sand",
-		url = "https://ovk.af/UkrainianPrisonerSLS"
+		url = "https://pd2.link/UkrainianPrisonerSLS"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_sdtp",
 		texture_path = "guis/textures/pd2/new_heists/sdtp",
-		url = "https://ovk.af/UkrainianPrisonerSLS2"
+		url = "https://pd2.link/UkrainianPrisonerSLS2"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_sawp",
 		texture_path = "guis/textures/pd2/new_heists/sawp",
-		url = "https://ovk.af/SmugglerPack2SLW"
+		url = "https://pd2.link/SmugglerPack2SLW"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_srtr",
 		texture_path = "guis/dlcs/srtr/textures/pd2/new_heists/srtr",
-		url = "https://ovk.af/SR3PD2SLA"
+		url = "https://pd2.link/SR3PD2SLA"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_in32",
 		texture_path = "guis/textures/pd2/new_heists/in32",
-		url = "https://ovk.af/in32Slider"
+		url = "https://pd2.link/in32Slider"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_apfo",
 		texture_path = "guis/textures/pd2/new_heists/apfo",
-		url = "https://ovk.af/Ap21AnnSlider"
+		url = "https://pd2.link/Ap21AnnSlider"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_chas",
 		texture_path = "guis/textures/pd2/new_heists/chas",
-		url = "https://ovk.af/CGDPWebS"
+		url = "https://pd2.link/CGDPWebS"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_faco",
 		texture_path = "guis/textures/pd2/new_heists/faco",
-		url = "https://ovk.af/JFSPSliderW"
+		url = "https://pd2.link/JFSPSliderW"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_silkroad_collection",
 		texture_path = "guis/textures/pd2/new_heists/silkroad_collection",
-		url = "https://ovk.af/JFSPSlider"
+		url = "https://pd2.link/JFSPSlider"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_in31",
 		texture_path = "guis/textures/pd2/new_heists/in31",
-		url = "https://ovk.af/JFSPSliderT"
+		url = "https://pd2.link/JFSPSliderT"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_ja21",
 		texture_path = "guis/dlcs/ja21/textures/pd2/new_heists/ja21",
-		url = "https://ovk.af/pd2bidenmask"
+		url = "https://pd2.link/pd2bidenmask"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_inf",
 		texture_path = "guis/textures/pd2/new_heists/inf",
-		url = "https://ovk.af/FEXUpdateSlider"
+		url = "https://pd2.link/FEXUpdateSlider"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_xm20",
 		texture_path = "guis/textures/pd2/new_heists/xm20",
-		url = "https://ovk.af/xmas2020"
+		url = "https://pd2.link/xmas2020"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_fex_bundle",
 		texture_path = "guis/textures/pd2/new_heists/fex_bundle",
-		url = "https://ovk.af/FEXBundleSlider"
+		url = "https://pd2.link/FEXBundleSlider"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_legacy",
 		texture_path = "guis/textures/pd2/new_heists/legacy",
-		url = "https://ovk.af/ingameLegacy"
+		url = "https://pd2.link/ingameLegacy"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_anv",
 		texture_path = "guis/textures/pd2/new_heists/anv",
-		url = "https://ovk.af/7thAnniversary"
+		url = "https://pd2.link/7thAnniversary"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_pex_bundle",
 		texture_path = "guis/textures/pd2/new_heists/pex_bundle",
-		url = "https://ovk.af/pexbundleslider"
+		url = "https://pd2.link/pexbundleslider"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_pex",
 		texture_path = "guis/textures/pd2/new_heists/pex",
-		url = "https://ovk.af/pexheistslider"
+		url = "https://pd2.link/pexheistslider"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_atw",
 		texture_path = "guis/textures/pd2/new_heists/atw",
-		url = "https://ovk.af/pexwpslider"
+		url = "https://pd2.link/pexwpslider"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_wcc",
 		texture_path = "guis/textures/pd2/new_heists/wcc",
-		url = "https://ovk.af/pexwcp2slider"
+		url = "https://pd2.link/pexwcp2slider"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_u1993",
 		texture_path = "guis/textures/pd2/new_heists/u1993",
-		url = "http://ovk.af/april2020"
+		url = "https://pd2.link/april2020"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_bex",
 		texture_path = "guis/textures/pd2/new_heists/bex",
-		url = "ovk.af/bexheistslider"
+		url = "https://pd2.link/bexheistslider"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_tailor_pack_2",
 		texture_path = "guis/textures/pd2/new_heists/tailor_pack_2",
-		url = "ovk.af/bextp2slider"
+		url = "https://pd2.link/bextp2slider"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_weapon_pack",
 		texture_path = "guis/textures/pd2/new_heists/weapon_pack",
-		url = "ovk.af/bexwpslider"
+		url = "https://pd2.link/bexwpslider"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_weapon_color_pack",
 		texture_path = "guis/textures/pd2/new_heists/weapon_color_pack",
-		url = "ovk.af/bexwcp1slider"
+		url = "https://pd2.link/bexwcp1slider"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_bex_dlc_bundle",
 		texture_path = "guis/textures/pd2/new_heists/bex_dlc_bundle",
-		url = "ovk.af/bexbundleslider"
+		url = "https://pd2.link/bexbundleslider"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_combo",
 		texture_path = "guis/textures/pd2/new_heists/combo",
-		url = "https://ovk.af/ingameBCBundle"
+		url = "https://pd2.link/ingameBCBundle"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_xmn_2019",
 		texture_path = "guis/textures/pd2/new_heists/xmn_2019",
-		url = "http://store.steampowered.com/app/218620/PAYDAY_2/"
+		url = "https://store.steampowered.com/app/218620/PAYDAY_2/"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_mex",
 		texture_path = "guis/textures/pd2/new_heists/mex",
-		url = "https://ovk.af/ingameBorderCrossing"
+		url = "https://pd2.link/ingameBorderCrossing"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_trd",
 		texture_path = "guis/textures/pd2/new_heists/trd",
-		url = "https://ovk.af/ingameTailorPack"
+		url = "https://pd2.link/ingameTailorPack"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_mwm",
 		texture_path = "guis/textures/pd2/new_heists/mwm",
-		url = "https://ovk.af/ingameCartelOptics"
+		url = "https://pd2.link/ingameCartelOptics"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_theme",
 		texture_path = "guis/textures/pd2/new_heists/theme",
-		url = "https://ovk.af/themedbundle"
+		url = "https://pd2.link/themedbundle"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_crimefest_2018",
 		texture_path = "guis/textures/pd2/new_heists/crimefest_2018",
-		url = "https://www.overkillsoftware.com/games/breakingnews/"
+		url = "https://www.paydaythegame.com/payday2/updates/breakingnews/"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_icebreaker",
 		texture_path = "guis/textures/pd2/new_heists/icebreaker",
-		url = "https://www.overkillsoftware.com/games/icebreaker/"
+		url = "https://www.paydaythegame.com/payday2/updates/icebreaker/"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_sft",
@@ -5584,122 +5588,122 @@ function GuiTweakData:init(tweak_data)
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_cat",
 		texture_path = "guis/textures/pd2/new_heists/cat",
-		url = "http://www.overkillsoftware.com/games/communitysafe7/"
+		url = "https://www.paydaythegame.com/payday2/updates/communitysafe7/"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_sb_2018_thesecretisreallyreal",
 		texture_path = "guis/textures/pd2/new_heists/sb_2018_thesecretisreallyreal",
-		url = "http://www.overkillsoftware.com/archive/thesecretisreallyreal/"
+		url = "https://www.paydaythegame.com/archive/thesecretisreallyreal/"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_pd2vr_launch",
 		texture_path = "guis/textures/pd2/new_heists/pd2vr_launch",
-		url = "http://steamcommunity.com/games/218620/announcements/detail/1669019670888919416"
+		url = "https://steamcommunity.com/games/218620/announcements/detail/1669019670888919416"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_sb_2018_sale",
 		texture_path = "guis/textures/pd2/new_heists/sb_2018_sale",
-		url = "http://store.steampowered.com/app/218620/PAYDAY_2/"
+		url = "https://store.steampowered.com/app/218620/PAYDAY_2/"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_ggez",
 		texture_path = "guis/textures/pd2/new_heists/difficultyandsniper_update",
-		url = "http://steamcommunity.com/games/218620/announcements/detail/1666767238319907275"
+		url = "https://steamcommunity.com/games/218620/announcements/detail/1666767238319907275"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_css",
 		texture_path = "guis/textures/pd2/new_heists/css",
-		url = "http://steamcommunity.com/games/218620/announcements/detail/1671268301110805355"
+		url = "https://steamcommunity.com/games/218620/announcements/detail/1671268301110805355"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_ami",
 		texture_path = "guis/textures/pd2/new_heists/ami",
-		url = "http://steamcommunity.com/games/218620/announcements/detail/1664512272293565206"
+		url = "https://steamcommunity.com/games/218620/announcements/detail/1664512272293565206"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_fgl",
 		texture_path = "guis/textures/pd2/new_heists/fgl",
-		url = "http://steamcommunity.com/games/218620/announcements/detail/2784778964087853978"
+		url = "https://steamcommunity.com/games/218620/announcements/detail/2784778964087853978"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_brooklynbank_heist",
 		texture_path = "guis/textures/pd2/new_heists/brooklynbank_heist",
-		url = "http://www.overkillsoftware.com/games/brookyn-bank-heist/"
+		url = "https://www.paydaythegame.com/payday2/updates/brookyn-bank-heist/"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_reservoirdogs_heist",
 		texture_path = "guis/textures/pd2/new_heists/reservoirdogs_heist",
-		url = "http://www.overkillsoftware.com/games/reservoirdogs/"
+		url = "https://www.paydaythegame.com/payday2/updates/reservoirdogs/"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_h3h3_characters",
 		texture_path = "guis/textures/pd2/new_heists/h3h3_characters",
-		url = "http://www.overkillsoftware.com/games/h3h3/"
+		url = "https://www.paydaythegame.com/payday2/updates/h3h3/"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_locke_and_load_ultimate_discount",
 		texture_path = "guis/textures/pd2/new_heists/locke_and_load_discount",
-		url = "http://store.steampowered.com/bundle/3756/PAYDAY_2_Ultimate_Edition/"
+		url = "https://store.steampowered.com/bundle/3756/PAYDAY_2_Ultimate_Edition/"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_halloween_2017_heist",
 		texture_path = "guis/textures/pd2/new_heists/halloween_2017_heist",
-		url = "http://steamcommunity.com/games/218620/announcements/detail/1453961083959105742"
+		url = "https://steamcommunity.com/games/218620/announcements/detail/1453961083959105742"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_cas",
 		texture_path = "guis/textures/pd2/new_heists/community_armor_safe",
-		url = "http://www.overkillsoftware.com/games/communityarmorsafe/"
+		url = "https://www.paydaythegame.com/payday2/updates/communityarmorsafe/"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_locke_and_load_event",
 		texture_path = "guis/textures/pd2/new_heists/locke_and_load_event",
-		url = "http://www.overkillsoftware.com/games/lockeandload/"
+		url = "https://www.paydaythegame.com/payday2/updates/lockeandload/"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_locke_and_load_f2p",
 		texture_path = "guis/textures/pd2/new_heists/locke_and_load_f2p",
-		url = "http://store.steampowered.com/app/218620/PAYDAY_2/"
+		url = "https://store.steampowered.com/app/218620/PAYDAY_2/"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_enter_the_gungeon_collab",
 		texture_path = "guis/textures/pd2/new_heists/enter_the_gungeon_collab",
-		url = "http://steamcommunity.com/games/218620/announcements/detail/1462966036244751362"
+		url = "https://steamcommunity.com/games/218620/announcements/detail/1462966036244751362"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_community_safe_5",
 		texture_path = "guis/textures/pd2/new_heists/community_safe_5",
-		url = "http://www.overkillsoftware.com/games/communitysafe5/"
+		url = "https://www.paydaythegame.com/payday2/updates/communitysafe5/"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_aldstone_room",
 		texture_path = "guis/textures/pd2/new_heists/aldstone_room",
-		url = "http://www.overkillsoftware.com/games/aldstonesheritage/"
+		url = "https://www.paydaythegame.com/payday2/updates/aldstonesheritage/"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_golden_chains",
 		texture_path = "guis/textures/pd2/new_heists/golden_chains",
-		url = "http://steamcommunity.com/games/218620/announcements/detail/1444947199697735668"
+		url = "https://steamcommunity.com/games/218620/announcements/detail/1444947199697735668"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_community_safe_4",
 		texture_path = "guis/textures/pd2/new_heists/community_safe_4",
-		url = "http://www.overkillsoftware.com/games/communitysafe4/"
+		url = "https://www.paydaythegame.com/payday2/updates/communitysafe4/"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_crime_spree_update",
 		texture_path = "guis/textures/pd2/new_heists/crime_spree_update",
-		url = "http://store.steampowered.com/news/?appids=218620"
+		url = "https://store.steampowered.com/news/?appids=218620"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_dsync_beta_is_live",
 		texture_path = "guis/textures/pd2/new_heists/desync_beta_is_live",
-		url = "http://steamcommunity.com/games/218620/announcements/detail/1342486185513464930"
+		url = "https://steamcommunity.com/games/218620/announcements/detail/1342486185513464930"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_russian_national_day",
 		texture_path = "guis/textures/pd2/new_heists/russian_national_day",
-		url = "http://store.steampowered.com/news/?appids=218620"
+		url = "https://store.steampowered.com/news/app/218620"
 	})
 end
 

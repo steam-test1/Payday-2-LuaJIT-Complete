@@ -100,7 +100,7 @@ function MenuManager:cash_safe_scene_done()
 end
 
 function MenuManager:http_test()
-	HttpRequest:get("http://www.overkillsoftware.com/?feed=rss", callback(self, self, "http_test_result"))
+	HttpRequest:get("https://www.paydaythegame.com/feed/?feed=rss", callback(self, self, "http_test_result"))
 end
 
 function MenuManager:http_test_result(success, body)
@@ -925,7 +925,7 @@ function MenuCallbackHandler:on_add_user_socialhub(item)
 	managers.menu:show_socialhub_action_dialog({
 		action = "add",
 		user_id = item._parameters.user_id,
-		name = item:name(),
+		name = item:parameters().peer_name,
 		callback = function ()
 			if item then
 				managers.socialhub:add_user_friend(item._parameters.user_id)
@@ -941,7 +941,7 @@ function MenuCallbackHandler:on_block_user_socialhub(item)
 	managers.menu:show_socialhub_action_dialog({
 		action = "block",
 		user_id = item._parameters.user_id,
-		name = item:name(),
+		name = item:parameters().peer_name,
 		callback = function ()
 			if item then
 				managers.socialhub:add_user_blocked(item._parameters.user_id)
@@ -957,7 +957,7 @@ function MenuCallbackHandler:on_remove_user_socialhub(item)
 	managers.menu:show_socialhub_action_dialog({
 		action = "remove",
 		user_id = item._parameters.user_id,
-		name = item:name(),
+		name = item:parameters().peer_name,
 		callback = function ()
 			if item then
 				managers.socialhub:remove_user_friend(item._parameters.user_id)
@@ -1216,9 +1216,10 @@ function InspectPlayerInitiator:modify_node(node, inspect_peer)
 	if not is_local_peer and not managers.socialhub:is_user_friend(inspect_peer._user_id) then
 		local add_user = {
 			callback = "on_add_user_socialhub",
+			name = "shub_add_user",
 			text_id = "menu_players_socialhub_add_user",
 			help_id = "menu_players_socialhub_add_user_help",
-			name = inspect_peer:name(),
+			peer_name = inspect_peer:name(),
 			user_id = inspect_peer._user_id
 		}
 		local new_item = node:create_item(nil, add_user)
@@ -1227,9 +1228,10 @@ function InspectPlayerInitiator:modify_node(node, inspect_peer)
 
 		local block_user = {
 			callback = "on_block_user_socialhub",
+			name = "shub_block_user",
 			text_id = "menu_players_socialhub_block_user",
 			help_id = "menu_players_socialhub_block_user_help",
-			name = inspect_peer:name(),
+			peer_name = inspect_peer:name(),
 			user_id = inspect_peer._user_id
 		}
 		local new_item = node:create_item(nil, block_user)
@@ -1238,9 +1240,10 @@ function InspectPlayerInitiator:modify_node(node, inspect_peer)
 	elseif not is_local_peer and managers.socialhub:is_user_friend(inspect_peer._user_id) then
 		local remove_user = {
 			callback = "on_remove_user_socialhub",
+			name = "shub_remove_user",
 			text_id = "menu_players_socialhub_remove_user",
 			help_id = "menu_players_socialhub_remove_friend_help",
-			name = inspect_peer:name(),
+			peer_name = inspect_peer:name(),
 			user_id = inspect_peer._user_id
 		}
 		local new_item = node:create_item(nil, remove_user)

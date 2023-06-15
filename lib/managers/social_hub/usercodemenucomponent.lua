@@ -18,11 +18,21 @@ function UserCodeMenuComponent:init(ws, fullscreen_ws, node)
 		h = 100,
 		y = 80
 	})
+	Global.lobby_code = Global.lobby_code or {}
 	self._id_code = managers.network.matchmake:userid()
 
 	self:create_hub_panel()
 	self:set_header(managers.localization:to_upper_text("menu_user_code"))
-	self:set_code_hidden(not managers.user:get_setting("toggle_socialhub_hide_code"))
+
+	local initial_state = nil
+
+	if Global.lobby_code.state ~= nil then
+		initial_state = Global.lobby_code.state
+	else
+		initial_state = not managers.user:get_setting("toggle_socialhub_hide_code")
+	end
+
+	self:set_code_hidden(initial_state)
 end
 
 function UserCodeMenuComponent:copy_code()
