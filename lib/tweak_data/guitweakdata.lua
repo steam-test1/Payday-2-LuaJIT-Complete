@@ -719,7 +719,7 @@ function GuiTweakData:init(tweak_data)
 		active_job_time = 25,
 		new_job_min_time = 1.5,
 		new_job_max_time = 3.5,
-		refresh_servers_time = SystemInfo:platform() == Idstring("PS4") and 10 or SystemInfo:matchmaking() == Idstring("MM_EPIC") and 10 or 5,
+		refresh_servers_time = SystemInfo:platform() == Idstring("PS4") and 10 or 5,
 		total_active_jobs = 40,
 		max_active_server_jobs = 100
 	}
@@ -5221,6 +5221,7 @@ function GuiTweakData:init(tweak_data)
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_pxp4_02",
 		texture_path = "guis/dlcs/pxp4/textures/pd2/new_heists/pxp4_02",
+		epic_url = "https://pd2.link/CrudeAwakeningNebulaSL",
 		url = "https://pd2.link/CrudeAwakeningNebulaSL"
 	})
 	table.insert(self.new_heists, {

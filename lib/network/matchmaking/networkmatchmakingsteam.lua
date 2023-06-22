@@ -401,6 +401,9 @@ function NetworkMatchMakingSTEAM:_make_room_info(lobby)
 	}
 end
 
+function NetworkMatchMakingSTEAM:lobby_search_reset()
+end
+
 function NetworkMatchMakingSTEAM:search_lobby(friends_only, no_filters)
 	self._search_friends_only = friends_only
 
@@ -884,6 +887,26 @@ function NetworkMatchMakingSTEAM:join_server(room_id, skip_showing_dialog, quick
 					managers.network.voice_chat:destroy_voice()
 					managers.network:queue_stop_network()
 					managers.menu:show_mods_disallowed_dialog()
+				elseif res == "SHUB_BLOCKED" then
+					managers.network.matchmake:leave_game()
+					managers.network.voice_chat:destroy_voice()
+					managers.network:queue_stop_network()
+					managers.menu:show_shub_blocked_dialog()
+				elseif res == "SHUB_NOT_FRIEND" then
+					managers.network.matchmake:leave_game()
+					managers.network.voice_chat:destroy_voice()
+					managers.network:queue_stop_network()
+					managers.menu:show_shub_not_friend_dialog()
+				elseif res == "HOST_LOADING" then
+					managers.network.matchmake:leave_game()
+					managers.network.voice_chat:destroy_voice()
+					managers.network:queue_stop_network()
+					managers.menu:show_host_loading_dialog()
+				elseif res == "ALREADY_JOINED" then
+					managers.network.matchmake:leave_game()
+					managers.network.voice_chat:destroy_voice()
+					managers.network:queue_stop_network()
+					managers.menu:show_already_joined_dialog()
 				else
 					Application:error("[NetworkMatchMakingSTEAM:join_server] FAILED TO START MULTIPLAYER!", res)
 				end

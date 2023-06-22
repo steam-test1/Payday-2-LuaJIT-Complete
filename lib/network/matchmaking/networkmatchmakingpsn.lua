@@ -1031,6 +1031,9 @@ function NetworkMatchMakingPSN:start_search_lobbys(friends_only)
 	end
 end
 
+function NetworkMatchMakingPSN:lobby_search_reset()
+end
+
 function NetworkMatchMakingPSN:search_lobby(settings)
 	local numbers = settings and settings.numbers or {
 		1,

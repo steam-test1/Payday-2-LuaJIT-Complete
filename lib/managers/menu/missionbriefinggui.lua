@@ -3778,6 +3778,10 @@ function MissionBriefingGui:init(saferect_ws, fullrect_ws, node)
 
 	self._lobby_code_text:panel():set_layer(2)
 
+	if managers.crime_spree:is_active() then
+		self._lobby_code_text:panel():set_position(600, self._lobby_code_text:panel():y())
+	end
+
 	local local_peer = managers.network:session():local_peer()
 
 	for peer_id, peer in pairs(managers.network:session():peers()) do

@@ -3479,3 +3479,79 @@ function MenuManager:show_socialhub_action_dialog(params)
 
 	managers.system_menu:show(dialog_data)
 end
+
+function MenuManager:show_shub_blocked_dialog(params)
+	local title = "dialog_mp_shub_blocked_title"
+	local dialog_data = {
+		title = managers.localization:text(title),
+		text = managers.localization:text("dialog_mp_shub_blocked_text")
+	}
+	local ok_button = {
+		text = managers.localization:text("dialog_ok"),
+		callback_func = params and params.ok_func
+	}
+	dialog_data.button_list = {
+		ok_button
+	}
+
+	managers.system_menu:show(dialog_data)
+
+	Global.on_remove_peer_message = nil
+end
+
+function MenuManager:show_shub_not_friend_dialog(params)
+	local title = "dialog_mp_shub_not_friend_title"
+	local dialog_data = {
+		title = managers.localization:text(title),
+		text = managers.localization:text("dialog_mp_shub_not_friend_text")
+	}
+	local ok_button = {
+		text = managers.localization:text("dialog_ok"),
+		callback_func = params and params.ok_func
+	}
+	dialog_data.button_list = {
+		ok_button
+	}
+
+	managers.system_menu:show(dialog_data)
+
+	Global.on_remove_peer_message = nil
+end
+
+function MenuManager:show_host_loading_dialog(params)
+	local title = "dialog_mp_host_loading_title"
+	local dialog_data = {
+		title = managers.localization:text(title),
+		text = managers.localization:text("dialog_mp_host_loading_text")
+	}
+	local ok_button = {
+		text = managers.localization:text("dialog_ok"),
+		callback_func = params and params.ok_func
+	}
+	dialog_data.button_list = {
+		ok_button
+	}
+
+	managers.system_menu:show(dialog_data)
+
+	Global.on_remove_peer_message = nil
+end
+
+function MenuManager:show_already_joined_dialog(params)
+	local title = "dialog_mp_already_joined_title"
+	local dialog_data = {
+		title = managers.localization:text(title),
+		text = managers.localization:text("dialog_mp_already_joined_text")
+	}
+	local ok_button = {
+		text = managers.localization:text("dialog_ok"),
+		callback_func = params and params.ok_func
+	}
+	dialog_data.button_list = {
+		ok_button
+	}
+
+	managers.system_menu:show(dialog_data)
+
+	Global.on_remove_peer_message = nil
+end

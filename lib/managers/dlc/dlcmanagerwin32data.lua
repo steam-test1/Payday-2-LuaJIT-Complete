@@ -250,7 +250,7 @@ function WINDLCManager:init_dlc_data()
 	Global.dlc_manager.all_dlc_data.pal = {
 		app_id = "441600",
 		no_install = true,
-		epic_id = "abbe65f5f6804324bea8f9cd0740b085"
+		epic_id = "b73a2f7ddfb44713a521b7a165062cb3"
 	}
 	Global.dlc_manager.all_dlc_data.opera = {
 		app_id = "468410",

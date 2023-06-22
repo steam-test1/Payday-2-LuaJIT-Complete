@@ -429,6 +429,9 @@ function CrimeNetManager:start(skip_servers)
 	self:_setup()
 
 	self._active_jobs = {}
+
+	managers.network.matchmake.lobby_search_reset()
+
 	self._active = true
 	self._active_server_jobs = {}
 	self._refresh_server_t = 0

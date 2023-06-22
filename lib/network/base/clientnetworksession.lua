@@ -204,6 +204,18 @@ function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_charac
 	elseif reply == 10 then
 		self:remove_peer(self._server_peer, 1)
 		cb("MODS_DISALLOWED")
+	elseif reply == 11 then
+		self:remove_peer(self._server_peer, 1)
+		cb("SHUB_BLOCKED")
+	elseif reply == 12 then
+		self:remove_peer(self._server_peer, 1)
+		cb("SHUB_NOT_FRIEND")
+	elseif reply == 13 then
+		self:remove_peer(self._server_peer, 1)
+		cb("HOST_LOADING")
+	elseif reply == 14 then
+		self:remove_peer(self._server_peer, 1)
+		cb("ALREADY_JOINED")
 	end
 end
 

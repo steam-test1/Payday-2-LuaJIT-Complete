@@ -414,6 +414,9 @@ end
 function NetworkMatchMakingXBL:add_lobby_filter(key, value, comparision_type)
 end
 
+function NetworkMatchMakingXBL:lobby_search_reset()
+end
+
 function NetworkMatchMakingXBL:search_lobby(friends_only)
 	if self._searching_lobbys then
 		print("Allready searching lobbys, waiting result")

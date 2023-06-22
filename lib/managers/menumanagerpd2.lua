@@ -1213,42 +1213,44 @@ function InspectPlayerInitiator:modify_node(node, inspect_peer)
 
 	self:create_divider(node, "socialhub_spacer")
 
-	if not is_local_peer and not managers.socialhub:is_user_friend(inspect_peer._user_id) then
-		local add_user = {
-			callback = "on_add_user_socialhub",
-			name = "shub_add_user",
-			text_id = "menu_players_socialhub_add_user",
-			help_id = "menu_players_socialhub_add_user_help",
-			peer_name = inspect_peer:name(),
-			user_id = inspect_peer._user_id
-		}
-		local new_item = node:create_item(nil, add_user)
+	if not is_local_peer and not managers.socialhub:is_user_platform_friend(inspect_peer._user_id) then
+		if not managers.socialhub:is_user_friend(inspect_peer._user_id) then
+			local add_user = {
+				callback = "on_add_user_socialhub",
+				name = "shub_add_user",
+				text_id = "menu_players_socialhub_add_user",
+				help_id = "menu_players_socialhub_add_user_help",
+				peer_name = inspect_peer:name(),
+				user_id = inspect_peer._user_id
+			}
+			local new_item = node:create_item(nil, add_user)
 
-		node:add_item(new_item)
+			node:add_item(new_item)
 
-		local block_user = {
-			callback = "on_block_user_socialhub",
-			name = "shub_block_user",
-			text_id = "menu_players_socialhub_block_user",
-			help_id = "menu_players_socialhub_block_user_help",
-			peer_name = inspect_peer:name(),
-			user_id = inspect_peer._user_id
-		}
-		local new_item = node:create_item(nil, block_user)
+			local block_user = {
+				callback = "on_block_user_socialhub",
+				name = "shub_block_user",
+				text_id = "menu_players_socialhub_block_user",
+				help_id = "menu_players_socialhub_block_user_help",
+				peer_name = inspect_peer:name(),
+				user_id = inspect_peer._user_id
+			}
+			local new_item = node:create_item(nil, block_user)
 
-		node:add_item(new_item)
-	elseif not is_local_peer and managers.socialhub:is_user_friend(inspect_peer._user_id) then
-		local remove_user = {
-			callback = "on_remove_user_socialhub",
-			name = "shub_remove_user",
-			text_id = "menu_players_socialhub_remove_user",
-			help_id = "menu_players_socialhub_remove_friend_help",
-			peer_name = inspect_peer:name(),
-			user_id = inspect_peer._user_id
-		}
-		local new_item = node:create_item(nil, remove_user)
+			node:add_item(new_item)
+		else
+			local remove_user = {
+				callback = "on_remove_user_socialhub",
+				name = "shub_remove_user",
+				text_id = "menu_players_socialhub_remove_user",
+				help_id = "menu_players_socialhub_remove_friend_help",
+				peer_name = inspect_peer:name(),
+				user_id = inspect_peer._user_id
+			}
+			local new_item = node:create_item(nil, remove_user)
 
-		node:add_item(new_item)
+			node:add_item(new_item)
+		end
 	end
 
 	self:create_divider(node, "admin_spacer")

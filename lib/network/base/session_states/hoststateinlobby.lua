@@ -23,7 +23,7 @@ function HostStateInLobby:on_join_request_received(data, peer_name, peer_account
 	local my_user_id = data.local_peer:user_id() or ""
 
 	if SocialHubFriends:is_blocked(peer_id) then
-		self:_send_request_denied(sender, 0, my_user_id)
+		self:_send_request_denied(sender, 11, my_user_id)
 
 		return
 	end
@@ -35,7 +35,7 @@ function HostStateInLobby:on_join_request_received(data, peer_name, peer_account
 			print("[HostStateInLobby:on_join_request_received] ok we are friend with ", peer_name)
 		else
 			print("[HostStateInLobby:on_join_request_received] we are NOT friend with ", peer_name, " deny request")
-			self:_send_request_denied(sender, 0, my_user_id)
+			self:_send_request_denied(sender, 12, my_user_id)
 
 			return
 		end
@@ -85,7 +85,7 @@ function HostStateInLobby:on_join_request_received(data, peer_name, peer_account
 	end
 
 	if data.wants_to_load_level then
-		self:_send_request_denied(sender, 0, my_user_id)
+		self:_send_request_denied(sender, 13, my_user_id)
 
 		return
 	end
@@ -100,7 +100,7 @@ function HostStateInLobby:on_join_request_received(data, peer_name, peer_account
 
 	if old_peer then
 		if join_attempt_identifier ~= old_peer:join_attempt_identifier() then
-			self:_send_request_denied(sender, 0, my_user_id)
+			self:_send_request_denied(sender, 14, my_user_id)
 			data.session:remove_peer(old_peer, old_peer:id(), "lost")
 		end
 

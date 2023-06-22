@@ -311,6 +311,9 @@ function NetworkMatchMaking:set_difficulty_filter(filter)
 	self._difficulty_filter = filter
 end
 
+function NetworkMatchMaking:lobby_search_reset()
+end
+
 function NetworkMatchMaking:search_lobby(friends_only)
 	self._search_friends_only = friends_only
 
@@ -618,6 +621,26 @@ function NetworkMatchMaking:join_server(room_id, skip_showing_dialog)
 					Global.on_remove_peer_message = res == "AUTH_HOST_FAILED" and "dialog_authentication_host_fail" or "dialog_authentication_fail"
 
 					managers.menu:show_peer_kicked_dialog()
+				elseif res == "SHUB_BLOCKED" then
+					managers.network.matchmake:leave_game()
+					managers.network.voice_chat:destroy_voice()
+					managers.network:queue_stop_network()
+					managers.menu:show_shub_blocked_dialog()
+				elseif res == "SHUB_NOT_FRIEND" then
+					managers.network.matchmake:leave_game()
+					managers.network.voice_chat:destroy_voice()
+					managers.network:queue_stop_network()
+					managers.menu:show_shub_not_friend_dialog()
+				elseif res == "HOST_LOADING" then
+					managers.network.matchmake:leave_game()
+					managers.network.voice_chat:destroy_voice()
+					managers.network:queue_stop_network()
+					managers.menu:show_host_loading_dialog()
+				elseif res == "ALREADY_JOINED" then
+					managers.network.matchmake:leave_game()
+					managers.network.voice_chat:destroy_voice()
+					managers.network:queue_stop_network()
+					managers.menu:show_already_joined_dialog()
 				else
 					Application:error("[NetworkMatchMaking:join_server] FAILED TO START MULTIPLAYER!", res)
 				end

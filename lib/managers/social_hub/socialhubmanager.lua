@@ -19,6 +19,8 @@ function SocialHubManager:init()
 	self._platform_users = {}
 	self._invited_users = {}
 
+	self:cleanup_blocked_list()
+
 	if SystemInfo:matchmaking() == Idstring("MM_EPIC") and EpicSocialHub then
 		EpicSocialHub:subscribe_to_lobby_invites(callback(self, self, "on_invite_recieved"), callback(self, self, "on_invite_accepted"))
 	end
@@ -48,6 +50,7 @@ function SocialHubManager:load(cache, version)
 
 	SocialHubFriends:sync_friends(self._global.friend_users)
 	SocialHubFriends:sync_blocked(self._global.blocked_users)
+	self:cleanup_blocked_list()
 end
 
 function SocialHubManager:update(t, dt)
@@ -74,6 +77,8 @@ function SocialHubManager:fetch_steam_friends(callback)
 		})
 		table.insert(self._platform_users, item:id())
 	end
+
+	self:cleanup_blocked_list()
 
 	if callback then
 		callback()
@@ -110,6 +115,8 @@ function SocialHubManager:epic_friends_data_callback(gui_callback, success, user
 			table.insert(self._platform_users, index)
 		end
 	end
+
+	self:cleanup_blocked_list()
 
 	if gui_callback then
 		gui_callback()
@@ -266,7 +273,6 @@ function SocialHubManager:add_cached_user(id, data)
 		id = id,
 		account_id = data.account_id,
 		platform = data.account_type,
-		lobby = data.lobby,
 		rich_presence = data.rich_presence,
 		state = data.state
 	}
@@ -286,6 +292,14 @@ end
 
 function SocialHubManager:get_number_of_cross_friends()
 	return #self._global.friend_users
+end
+
+function SocialHubManager:cleanup_blocked_list(user_id)
+	for index, blocked_id in ipairs(self._global.blocked_users) do
+		if self:is_user_friend(blocked_id) or self:is_user_platform_friend(blocked_id) then
+			self:remove_user_blocked(blocked_id)
+		end
+	end
 end
 
 function SocialHubManager:get_actions_for_user(callback_object, callback_function, user_id)
