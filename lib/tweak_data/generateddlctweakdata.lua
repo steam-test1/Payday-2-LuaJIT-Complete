@@ -310,6 +310,18 @@ function DLCTweakData:init_generated()
 	}
 	self.cot_bundle.content.loot_global_value = "cot"
 	self.cot_bundle.content.loot_drops = {}
+	self.deep_bundle = {
+		dlc = "has_deep",
+		content = {}
+	}
+	self.deep_bundle.content.loot_global_value = "deep"
+	self.deep_bundle.content.loot_drops = {}
+	self.dot_bundle = {
+		dlc = "has_dot",
+		content = {}
+	}
+	self.dot_bundle.content.loot_global_value = "dot"
+	self.dot_bundle.content.loot_drops = {}
 	self.ess_bundle = {
 		dlc = "has_ess",
 		content = {}

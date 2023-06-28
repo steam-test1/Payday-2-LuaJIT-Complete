@@ -2,7 +2,7 @@ BossDamage = BossDamage or class(CopDamage)
 
 function BossDamage:seq_clbk_armorbreak()
 	if not self._unit:character_damage():dead() then
-		self._unit:sound():say("armorbreak")
+		self._unit:sound():say(self._unit:sound().armorbreak_str or "armorbreak")
 	end
 end
 

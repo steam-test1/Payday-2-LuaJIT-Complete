@@ -477,8 +477,6 @@ function InteractionTweakData:init(tweak_data)
 	self.hospital_phone = {
 		icon = "interaction_answerphone",
 		text_id = "debug_interact_hospital_phone",
-		interact_distance = 100,
-		timer = 3,
 		start_active = false
 	}
 	self.hospital_security_cable = {
@@ -7473,6 +7471,7 @@ function InteractionTweakData:init(tweak_data)
 		axis = "z",
 		sound_start = "alarm_clock_place",
 		special_equipment = "laptop",
+		equipment_text_id = "hud_missing_laptop",
 		equipment_consume = true
 	}
 	self.ranc_hold_take_barrel = {
@@ -8103,5 +8102,156 @@ function InteractionTweakData:init(tweak_data)
 		equipment_consume = true,
 		axis = "x",
 		sound_done = "card_reader_first_card"
+	}
+	self.deep_hold_pipe_corner_spin = {
+		text_id = "deep_hold_pipe_corner_spin",
+		action_text_id = "deep_action_pipe_corner_spin",
+		interact_distance = 300,
+		timer = 1,
+		start_active = true
+	}
+	self.deep_hold_pku_oilsample_good = {
+		text_id = "deep_hold_pku_bloodsample_good",
+		action_text_id = "deep_action_pku_bloodsample_good",
+		interact_distance = 200,
+		timer = 0.5,
+		start_active = true
+	}
+	self.deep_hold_pku_oilsample_bad = {
+		text_id = "deep_hold_pku_bloodsample_bad",
+		action_text_id = "deep_action_pku_bloodsample_bad",
+		interact_distance = 200,
+		timer = 0.5,
+		start_active = true
+	}
+	self.deep_press_test_oil_sample = {
+		text_id = "deep_press_test_oil_sample",
+		interact_distance = 150,
+		timer = 0,
+		start_active = true,
+		axis = "x",
+		special_equipment = "deep_oil_sample",
+		equipment_text_id = "hud_equipment_deep_need_oil_sample",
+		equipment_consume = true,
+		dont_need_equipment = false,
+		sound_start = "bar_oil_sample_fill_loop",
+		sound_interupt = "bar_oil_sample_fill_loop_cancel",
+		sound_done = "bar_oil_sample_fill_loop_finished"
+	}
+	self.deep_hold_resume_test = {
+		text_id = "hud_deep_hold_resume_test",
+		action_text_id = "hud_action_deep_resume_test",
+		interact_distance = 150,
+		timer = 3,
+		start_active = false,
+		force_update_position = true,
+		sound_start = "bar_train_panel_hacking",
+		sound_interupt = "bar_train_panel_hacking_cancel",
+		sound_done = "bar_train_panel_hacking_finished"
+	}
+	self.deep_hold_fuel_lever = {
+		text_id = "deep_hold_fuel_lever",
+		action_text_id = "deep_action_fuel_lever",
+		interact_distance = 150,
+		timer = 3,
+		start_active = true,
+		axis = "x"
+	}
+	self.pickup_oilsample = {
+		text_id = "hud_hold_pickup_oilsample",
+		action_text_id = "hud_action_pickup_oilsample",
+		interact_distance = 150,
+		timer = 5,
+		start_active = true,
+		axis = "x",
+		sound_start = "liquid_pour",
+		sound_interupt = "liquid_pour_stop",
+		sound_done = "liquid_pour_stop",
+		blocked_hint = "carry_block"
+	}
+	self.deep_hold_control_panel = {
+		text_id = "deep_hold_control_lever",
+		action_text_id = "deep_action_control_lever",
+		interact_distance = 150,
+		timer = 3,
+		start_active = true,
+		axis = "x"
+	}
+	self.deep_press_achi_intercom_phone = {
+		text_id = "deep_hud_press_intercom",
+		interact_distance = 150,
+		start_active = true,
+		axis = "x"
+	}
+	self.hold_turn_on_gas = {
+		text_id = "hud_hold_turn_on_gas",
+		action_text_id = "hud_action_turn_on_gas",
+		timer = 5,
+		start_active = false,
+		sound_start = "bar_twist_valve",
+		sound_interupt = "bar_twist_valve_cancel",
+		sound_done = "bar_twist_valve_finished"
+	}
+	self.hold_override_pc = {
+		text_id = "hud_hold_override_pc",
+		action_text_id = "hud_action_overide_pc",
+		timer = 5,
+		axis = "x",
+		start_active = false,
+		sound_start = "bar_keyboard",
+		sound_interupt = "bar_keyboard_cancel",
+		sound_done = "bar_keyboard_finished"
+	}
+	self.deep_press_network_cable_connect = {
+		icon = "develop",
+		text_id = "hud_deep_press_network_cable_connect",
+		sound_event = "ammo_bag_drop",
+		interact_distance = 200,
+		axis = "y"
+	}
+	self.deep_pickup_ladder = {
+		text_id = "deep_hud_int_hold_pickup_ladder",
+		action_text_id = "deep_hud_int_action_pickup_ladder",
+		start_active = false,
+		timer = 3,
+		sound_done = "",
+		interact_distance = 300,
+		axis = "x"
+	}
+	self.deep_jam_fan = {
+		text_id = "deep_hud_int_hold_jam_vent",
+		action_text_id = "deep_hud_int_action_jam_vent",
+		interact_distance = 200,
+		timer = 3,
+		start_active = true,
+		special_equipment = "crowbar",
+		equipment_text_id = "debug_interact_equipment_crowbar",
+		equipment_consume = true,
+		dont_need_equipment = false,
+		sound_start = "bar_fan_jam",
+		sound_interupt = "bar_fan_jam_cancel",
+		sound_done = "bar_fan_jam_finished"
+	}
+	self.deep_hold_turn_off_valve = {
+		text_id = "deep_hud_int_hold_open_valve",
+		action_text_id = "deep_hud_int_action_open_valve",
+		timer = 4,
+		interact_distance = 200,
+		start_active = false,
+		sound_start = "bar_turn_off_cooling_system_start",
+		sound_interupt = "bar_turn_off_cooling_system_cancel"
+	}
+	self.deep_press_pickup_texas_suit = {
+		text_id = "hud_deep_press_pickup_texas_suit",
+		sound_event = "ammo_bag_drop",
+		interact_distance = 200,
+		axis = "y"
+	}
+	self.deep_press_open = {
+		text_id = "deep_hud_int_open_door",
+		action_text_id = "deep_hud_int_action_opens",
+		start_active = false,
+		axis = "y",
+		timer = 0
 	}
 end

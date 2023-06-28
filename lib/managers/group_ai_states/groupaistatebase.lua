@@ -2619,6 +2619,7 @@ function GroupAIStateBase:save(save_data)
 
 	my_save_data.teams = self._teams
 	my_save_data.endscreen_variant = self._endscreen_variant
+	my_save_data.failure_variant = self._failure_variant
 	my_save_data.assault_number = self._assault_number
 	my_save_data.nr_successful_alarm_pager_bluffs = self._nr_successful_alarm_pager_bluffs
 end
@@ -2651,6 +2652,7 @@ function GroupAIStateBase:load(load_data)
 
 	self._teams = my_load_data.teams
 	self._endscreen_variant = my_load_data.endscreen_variant
+	self._failure_variant = my_load_data.failure_variant
 	self._nr_successful_alarm_pager_bluffs = my_load_data.nr_successful_alarm_pager_bluffs
 
 	self:_call_listeners("team_def")
@@ -2885,6 +2887,15 @@ function GroupAIStateBase:spawn_one_teamAI(is_drop_in, char_name, pos, rotation,
 			objective = objective
 		})
 
+		if player:movement():current_state_name() == "driving" then
+			local peer_id = managers.network:session():peer_by_unit(player):id()
+			local vehicle_data = managers.player:get_vehicle_for_peer(peer_id)
+			local vehicle_unit = vehicle_data and vehicle_data.vehicle_unit
+			local vehicle_ext = alive(vehicle_unit) and vehicle_unit:vehicle_driving()
+
+			vehicle_ext:place_team_ai_in_vehicle(unit)
+		end
+
 		return unit
 	end
 end
@@ -2938,6 +2949,7 @@ function GroupAIStateBase:remove_one_teamAI(name_to_remove, replace_with_player)
 	end
 
 	local trade_entry = self:sync_remove_one_teamAI(name, replace_with_player)
+	local seat_name = nil
 
 	managers.network:session():send_to_peers_synched("sync_remove_one_teamAI", name, replace_with_player)
 
@@ -2948,12 +2960,14 @@ function GroupAIStateBase:remove_one_teamAI(name_to_remove, replace_with_player)
 			unit:movement():throw_bag()
 		end
 
+		seat_name = unit:movement().vehicle_seat and unit:movement().vehicle_seat.name
+
 		unit:brain():set_active(false)
 		unit:base():set_slot(unit, 0)
 		unit:base():unregister()
 	end
 
-	return trade_entry, unit
+	return trade_entry, unit, seat_name
 end
 
 function GroupAIStateBase:set_unit_teamAI(unit, character_name, team_id, visual_seed, loadout)
@@ -3256,7 +3270,7 @@ function GroupAIStateBase:_determine_spawn_objective_for_criminal_AI()
 	local valid_criminals = {}
 
 	for pl_key, pl_record in pairs(self._player_criminals) do
-		if pl_record.status ~= "dead" then
+		if pl_record.status ~= "dead" and managers.network:session():peer_by_unit(pl_record.unit) then
 			table.insert(valid_criminals, pl_key)
 		end
 	end
@@ -3476,6 +3490,14 @@ end
 
 function GroupAIStateBase:endscreen_variant(variant)
 	return self._endscreen_variant
+end
+
+function GroupAIStateBase:set_failure_variant(variant)
+	self._failure_variant = variant
+end
+
+function GroupAIStateBase:failure_variant(variant)
+	return self._failure_variant
 end
 
 function GroupAIStateBase:bain_state()

@@ -1892,6 +1892,9 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.cot_smilecigar = self.global_values.cot
 	self.global_values.cot_sleekygent = self.global_values.cot
 	self.global_values.cot_beigedriver = self.global_values.cot
+	self.global_values.dot_roclown_suit = self.global_values.dot
+	self.global_values.dot_roclogrip_glv = self.global_values.dot
+	self.global_values.dot_roclown_msk = self.global_values.dot
 	self.global_values.chico_or_mrwi_deck = self.global_values.chico
 	self.global_values.ecp_or_mrwi_deck = self.global_values.ecp
 

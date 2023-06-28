@@ -32,8 +32,14 @@ function ManageSpawnedUnits:spawn_unit(unit_id, align_obj_name, unit)
 	local spawned_contour_ext = spawn_unit:contour()
 
 	if contour_ext and spawned_contour_ext then
+		if spawned_contour_ext.init_contour then
+			Application:error("[ManageSpawnedUnits:spawn_unit] Spawned child unit shouldn't have a init contour defined in unit file.", spawn_unit)
+		end
+
+		spawned_contour_ext:set_is_child(true)
+
 		for _, contour in ipairs(contour_ext:contour_list()) do
-			spawned_contour_ext:add(contour.type, nil, nil, contour.color, true)
+			spawned_contour_ext:add(contour.type, false, nil, contour.color)
 		end
 	end
 

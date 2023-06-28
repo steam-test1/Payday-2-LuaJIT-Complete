@@ -51,7 +51,7 @@ function PlayerArrested:enter(state_data, enter_data)
 	self._entry_speech_clbk = "PlayerArrested_entryspeech"
 
 	managers.enemy:add_delayed_clbk(self._entry_speech_clbk, callback(self, self, "clbk_entry_speech"), TimerManager:game():time() + 5 + 2 * math.random())
-	managers.network:session():send_to_peers_synched("sync_contour_state", self._unit, -1, table.index_of(ContourExt.indexed_types, "teammate_cuffed"), true, 1)
+	managers.network:session():send_to_peers_synched("sync_contour_add", self._unit, -1, table.index_of(ContourExt.indexed_types, "teammate_cuffed"), 1)
 end
 
 function PlayerArrested:_enter(enter_data)
@@ -87,7 +87,7 @@ function PlayerArrested:exit(state_data, new_state_name)
 		self._entry_speech_clbk = nil
 	end
 
-	managers.network:session():send_to_peers_synched("sync_contour_state", self._unit, -1, table.index_of(ContourExt.indexed_types, "teammate_cuffed"), false, 1)
+	managers.network:session():send_to_peers_synched("sync_contour_remove", self._unit, -1, table.index_of(ContourExt.indexed_types, "teammate_cuffed"))
 
 	if not self._unequip_weapon_expire_t and not self._timer_finished then
 		local exit_data = {

@@ -8343,6 +8343,173 @@ function init_auto_generated_achievement_data(tags)
 				tags.contracts.classic
 			}
 		},
+		deep_1 = {
+			icon_id = "C_Blaine_H_CrudeAwakeing_AllDiffs_D0",
+			ladder = "H_Crude",
+			sort_name = "C_Blaine_H_CrudeAwakeing_AllDiffs_D0",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.blaine
+			}
+		},
+		deep_10 = {
+			need_unlock_icons = true,
+			icon_id = "C_Blaine_H_CrudeAwakeing_TexasTreasuresThree",
+			ladder = "TexasTresures",
+			sort_name = "C_Blaine_H_CrudeAwakeing_TexasTreasuresThree",
+			additional_id = true,
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.unlock.outfit,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.blaine
+			}
+		},
+		deep_11 = {
+			sort_name = "C_Blaine_H_CrudeAwakeing_CashLiquid",
+			icon_id = "C_Blaine_H_CrudeAwakeing_CashLiquid",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.blaine
+			}
+		},
+		deep_12 = {
+			need_unlock_icons = true,
+			icon_id = "C_Blaine_H_CrudeAwakeing_Human",
+			sort_name = "C_Blaine_H_CrudeAwakeing_Human",
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.overkill,
+				tags.unlock.mask,
+				tags.tactics.loud,
+				tags.tactics.killer,
+				tags.contracts.blaine
+			}
+		},
+		deep_13 = {
+			sort_name = "C_Blaine_H_CrudeAwakeing_TheRight",
+			icon_id = "C_Blaine_H_CrudeAwakeing_TheRight",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.blaine
+			}
+		},
+		deep_2 = {
+			icon_id = "C_Blaine_H_CrudeAwakeing_AllDiffs_D1",
+			ladder = "H_Crude",
+			sort_name = "C_Blaine_H_CrudeAwakeing_AllDiffs_D1",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.hard,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.blaine
+			}
+		},
+		deep_3 = {
+			icon_id = "C_Blaine_H_CrudeAwakeing_AllDiffs_D2",
+			ladder = "H_Crude",
+			sort_name = "C_Blaine_H_CrudeAwakeing_AllDiffs_D2",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.very_hard,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.blaine
+			}
+		},
+		deep_4 = {
+			icon_id = "C_Blaine_H_CrudeAwakeing_AllDiffs_D3",
+			ladder = "H_Crude",
+			sort_name = "C_Blaine_H_CrudeAwakeing_AllDiffs_D3",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.overkill,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.blaine
+			}
+		},
+		deep_5 = {
+			icon_id = "C_Blaine_H_CrudeAwakeing_AllDiffs_D4",
+			ladder = "H_Crude",
+			sort_name = "C_Blaine_H_CrudeAwakeing_AllDiffs_D4",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.mayhem,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.blaine
+			}
+		},
+		deep_6 = {
+			icon_id = "C_Blaine_H_CrudeAwakeing_AllDiffs_D5",
+			ladder = "H_Crude",
+			sort_name = "C_Blaine_H_CrudeAwakeing_AllDiffs_D5",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_wish,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.blaine
+			}
+		},
+		deep_7 = {
+			icon_id = "C_Blaine_H_CrudeAwakeing_AllDiffs_D6",
+			ladder = "H_Crude",
+			sort_name = "C_Blaine_H_CrudeAwakeing_AllDiffs_D6",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_sentence,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.blaine
+			}
+		},
+		deep_8 = {
+			icon_id = "C_Blaine_H_CrudeAwakeing_AllDiffs_OD_D6",
+			ladder = "H_Crude",
+			sort_name = "C_Blaine_H_CrudeAwakeing_AllDiffs_OD_D6",
+			additional_id = true,
+			tags = {
+				tags.progress.completion,
+				tags.difficulty.death_sentence,
+				tags.tactics.loud,
+				tags.tactics.stealth,
+				tags.contracts.blaine
+			}
+		},
+		deep_9 = {
+			sort_name = "C_Blaine_H_CrudeAwakeing_Seagulls",
+			icon_id = "C_Blaine_H_CrudeAwakeing_Seagulls",
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.tactics.stealth,
+				tags.tactics.killer,
+				tags.contracts.blaine
+			}
+		},
 		des_1 = {
 			icon_id = "C_Locke_H_HenrysRock_AllDiffs_D0",
 			ladder = "H_HenrysRock",

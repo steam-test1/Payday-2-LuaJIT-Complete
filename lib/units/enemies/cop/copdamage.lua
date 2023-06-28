@@ -616,12 +616,15 @@ function CopDamage:damage_bullet(attack_data)
 
 	damage = damage * (self._marked_dmg_mul or 1)
 
-	if self._marked_dmg_mul and self._marked_dmg_dist_mul then
-		local dst = mvector3.distance(attack_data.origin, self._unit:position())
+	if self._marked_dmg_dist_mul then
 		local spott_dst = tweak_data.upgrades.values.player.marked_inc_dmg_distance[self._marked_dmg_dist_mul]
 
-		if spott_dst[1] < dst then
-			damage = damage * spott_dst[2]
+		if spott_dst then
+			local dst = mvector3.distance(attack_data.origin, self._unit:position())
+
+			if spott_dst[1] < dst then
+				damage = damage * spott_dst[2]
+			end
 		end
 	end
 
@@ -1296,7 +1299,7 @@ function CopDamage:spawn_aoe()
 	EnvironmentFire.spawn(unit:position() + normal * 160, unit:rotation(), params, normal, unit, 0, 1)
 
 	if self._aoe_data.play_voiceline then
-		self._unit:sound():say("aoe")
+		self._unit:sound():say(self._unit:sound().aoe_str or "aoe")
 	end
 end
 
@@ -4172,6 +4175,8 @@ function CopDamage:convert_to_criminal(health_multiplier)
 end
 
 function CopDamage:set_invulnerable(state)
+	local old_state = self._invulnerable and true or false
+
 	if state then
 		self._invulnerable = (self._invulnerable or 0) + 1
 	elseif self._invulnerable then
@@ -4179,6 +4184,16 @@ function CopDamage:set_invulnerable(state)
 			self._invulnerable = nil
 		else
 			self._invulnerable = self._invulnerable - 1
+		end
+	end
+
+	local new_state = self._invulnerable and true or false
+
+	if old_state ~= new_state and self._invul_impact_override then
+		if new_state then
+			managers.game_play_central:add_impact_override(self._unit, self._invul_impact_override)
+		else
+			managers.game_play_central:remove_impact_override(self._unit)
 		end
 	end
 end
@@ -4335,14 +4350,9 @@ function CopDamage:shoot_pos_mid(m_pos)
 	self._spine2_obj:m_position(m_pos)
 end
 
-function CopDamage:on_marked_state(state, bonus_distance_damage)
-	if state then
-		self._marked_dmg_mul = self._marked_dmg_mul or tweak_data.upgrades.values.player.marked_enemy_damage_mul
-		self._marked_dmg_dist_mul = bonus_distance_damage
-	else
-		self._marked_dmg_mul = nil
-		self._marked_dmg_dist_mul = nil
-	end
+function CopDamage:on_marked_state(bonus_damage, bonus_distance_damage)
+	self._marked_dmg_mul = bonus_damage and (self._marked_dmg_mul or tweak_data.upgrades.values.player.marked_enemy_damage_mul) or nil
+	self._marked_dmg_dist_mul = bonus_distance_damage or nil
 end
 
 function CopDamage:_get_attack_variant_index(variant)
@@ -4737,6 +4747,10 @@ function CopDamage:destroy(...)
 		managers.enemy:remove_delayed_clbk(self._stun_acc_clbk_id)
 
 		self._stun_acc_clbk_id = nil
+	end
+
+	if self._invul_impact_override then
+		managers.game_play_central:remove_impact_override(self._unit)
 	end
 end
 

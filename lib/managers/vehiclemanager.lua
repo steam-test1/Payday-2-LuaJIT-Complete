@@ -45,17 +45,17 @@ function VehicleManager:remove_listener(key)
 	self._listener_holder:remove(key)
 end
 
-function VehicleManager:add_vehicle(vehicle)
-	table.insert(self._vehicles, vehicle)
+function VehicleManager:add_vehicle(vehicle_unit)
+	table.insert(self._vehicles, vehicle_unit)
 
 	if Application:editor() then
 		self._listener_holder:call("on_add")
 	end
 end
 
-function VehicleManager:remove_vehicle(vehicle)
-	table.delete(self._vehicles, vehicle)
-	managers.hud:_remove_name_label(vehicle:unit_data().name_label_id)
+function VehicleManager:remove_vehicle(vehicle_unit)
+	table.delete(self._vehicles, vehicle_unit)
+	managers.hud:_remove_name_label(vehicle_unit:unit_data().name_label_id)
 
 	if Application:editor() then
 		self._listener_holder:call("on_remove")
@@ -118,6 +118,7 @@ function VehicleManager:update_vehicles_data_to_peer(peer)
 			Application:debug("[VehicleManager] Syncing vehicle data for: ", v_ext._unit:id(), v_ext._current_state_name)
 
 			local driver, passenger_front, passenger_back_left, passenger_back_right = nil
+			local manual_exit_disabled = v_ext._manual_exit_disabled
 
 			if v_ext._seats.driver and alive(v_ext._seats.driver.occupant) then
 				driver = v_ext._seats.driver.occupant
@@ -141,7 +142,7 @@ function VehicleManager:update_vehicles_data_to_peer(peer)
 				is_trunk_open = v_ext._trunk_open
 			end
 
-			peer:send_queued_sync("sync_vehicle_data", v_ext._unit, v_ext._current_state_name, driver, passenger_front, passenger_back_left, passenger_back_right, is_trunk_open)
+			peer:send_queued_sync("sync_vehicle_data", v_ext._unit, v_ext._current_state_name, driver, passenger_front, passenger_back_left, passenger_back_right, is_trunk_open, manual_exit_disabled)
 
 			if v_npc_ext then
 				peer:send_queued_sync("sync_npc_vehicle_data", v_npc_ext._unit, v_npc_ext._current_state_name, v_npc_ext._target_unit)
@@ -186,8 +187,9 @@ function VehicleManager:sync_npc_vehicle_data(vehicle_unit, state_name, target_u
 	v_npc_ext:start()
 end
 
-function VehicleManager:sync_vehicle_data(vehicle_unit, state, occupant_driver, occupant_left, occupant_back_left, occupant_back_right, is_trunk_open)
+function VehicleManager:sync_vehicle_data(vehicle_unit, state, occupant_driver, occupant_left, occupant_back_left, occupant_back_right, is_trunk_open, manual_exit_disabled)
 	local v_ext = vehicle_unit:vehicle_driving()
+	v_ext._manual_exit_disabled = manual_exit_disabled
 
 	if v_ext._seats.driver then
 		v_ext._seats.driver.occupant = occupant_driver

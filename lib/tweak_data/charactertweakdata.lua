@@ -111,6 +111,7 @@ function CharacterTweakData:init(tweak_data)
 	self:_init_civilian_mariachi(presets)
 	self:_init_triad(presets)
 	self:_init_triad_boss(presets)
+	self:_init_deep_boss(presets)
 	self:_init_snowman_boss(presets)
 	self:_init_escort_sand(presets)
 	self:_init_civilian_no_penalty(presets)
@@ -1321,6 +1322,69 @@ function CharacterTweakData:_init_triad_boss(presets)
 	self.triad_boss_no_armor.immune_to_concussion = true
 
 	table.insert(self._enemy_list, "triad_boss_no_armor")
+end
+
+function CharacterTweakData:_init_deep_boss(presets)
+	self.deep_boss = deep_clone(presets.base)
+	self.deep_boss.experience = {}
+	self.deep_boss.weapon = deep_clone(presets.weapon.good)
+	self.deep_boss.weapon.is_rifle.melee_retry_delay = {
+		7,
+		8
+	}
+	self.deep_boss.detection = presets.detection.normal
+	self.deep_boss.HEALTH_INIT = 2000
+	self.deep_boss.headshot_dmg_mul = 1
+	self.deep_boss.damage.hurt_severity = presets.hurt_severities.no_hurts
+	self.deep_boss.damage.explosion_damage_mul = 0.5
+	self.deep_boss.can_be_tased = false
+	self.deep_boss.suppression = nil
+	self.deep_boss.move_speed = presets.move_speed.slow
+	self.deep_boss.allowed_stances = {
+		cbt = true
+	}
+	self.deep_boss.allowed_poses = {
+		stand = true
+	}
+	self.deep_boss.crouch_move = false
+	self.deep_boss.no_equip_anim = true
+	self.deep_boss.no_run_start = true
+	self.deep_boss.no_run_stop = true
+	self.deep_boss.no_retreat = true
+	self.deep_boss.no_arrest = true
+	self.deep_boss.surrender = nil
+	self.deep_boss.ecm_vulnerability = 0
+	self.deep_boss.ecm_hurts = {
+		ears = {
+			max_duration = 0,
+			min_duration = 0
+		}
+	}
+	self.deep_boss.weapon_voice = "3"
+	self.deep_boss.experience.cable_tie = "tie_swat"
+	self.deep_boss.access = "gangster"
+	self.deep_boss.speech_prefix_p1 = "bb"
+	self.deep_boss.speech_prefix_p2 = "n"
+	self.deep_boss.speech_prefix_count = 1
+	self.deep_boss.spawn_sound_event = "Play_gab_deep_11"
+	self.deep_boss.die_sound_event = "Play_gab_deep_15"
+	self.deep_boss.rescue_hostages = false
+	self.deep_boss.melee_weapon = "fists_electric"
+	self.deep_boss.melee_weapon_dmg_multiplier = 2.5
+	self.deep_boss.steal_loot = nil
+	self.deep_boss.calls_in = nil
+	self.deep_boss.chatter = presets.enemy_chatter.no_chatter
+	self.deep_boss.use_radio = nil
+	self.deep_boss.use_animation_on_fire_damage = false
+	self.deep_boss.flammable = false
+	self.deep_boss.immune_to_knock_down = true
+	self.deep_boss.immune_to_concussion = true
+	self.deep_boss.can_reload_while_moving_tmp = true
+	self.deep_boss.ignore_headshot = true
+	self.deep_boss.no_headshot_add_mul = true
+	self.deep_boss.player_health_scaling_mul = 1.1
+
+	table.insert(self._enemy_list, "deep_boss")
 end
 
 function CharacterTweakData:_init_snowman_boss(presets)
@@ -2725,9 +2789,6 @@ function CharacterTweakData:_init_tank(presets)
 	self.tank.deathguard = true
 	self.tank.melee_weapon = "fists"
 	self.tank.melee_weapon_dmg_multiplier = 2.5
-	self.tank.melee_anims = {
-		"cbt_std_melee"
-	}
 	self.tank.critical_hits = {
 		damage_mul = self.tank.headshot_dmg_mul * 1
 	}
@@ -17064,6 +17125,7 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 	self.ranchmanager.HEALTH_INIT = self.ranchmanager.HEALTH_INIT * hp_mul
 	self.triad_boss.HEALTH_INIT = self.triad_boss.HEALTH_INIT * hp_mul
 	self.triad_boss_no_armor.HEALTH_INIT = self.triad_boss_no_armor.HEALTH_INIT * hp_mul
+	self.deep_boss.HEALTH_INIT = self.deep_boss.HEALTH_INIT * hp_mul
 	self.marshal_marksman.HEALTH_INIT = self.marshal_marksman.HEALTH_INIT * hp_mul
 	self.marshal_shield.HEALTH_INIT = self.marshal_shield.HEALTH_INIT * hp_mul
 	self.marshal_shield_break.HEALTH_INIT = self.marshal_shield_break.HEALTH_INIT * hp_mul
@@ -17199,6 +17261,10 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 
 	if self.triad_boss_no_armor.headshot_dmg_mul then
 		self.triad_boss_no_armor.headshot_dmg_mul = self.triad_boss_no_armor.headshot_dmg_mul * hs_mul
+	end
+
+	if self.deep_boss.headshot_dmg_mul then
+		self.deep_boss.headshot_dmg_mul = self.deep_boss.headshot_dmg_mul * hs_mul
 	end
 
 	if self.marshal_marksman.headshot_dmg_mul then
@@ -18095,6 +18161,20 @@ function CharacterTweakData:character_map()
 			list = {
 				"civ_female_marketing_lead",
 				"civ_male_researcher_lead"
+			}
+		},
+		deep = {
+			path = "units/pd2_dlc_deep/characters/",
+			list = {
+				"ene_gabriel",
+				"ene_gabriel_nomask",
+				"ene_deep_security_1",
+				"ene_deep_security_2",
+				"ene_deep_security_3",
+				"ene_deep_security_3",
+				"civ_male_deep_dockworker_01",
+				"civ_male_deep_dockworker_02",
+				"civ_male_deep_dockworker_03"
 			}
 		}
 	}

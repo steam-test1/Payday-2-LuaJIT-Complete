@@ -56,6 +56,14 @@ function ElementDialogue:init(...)
 	ElementDialogue.super.init(self, ...)
 end
 
+function ElementDialogue:on_script_activated()
+	if Network:is_server() then
+		self._mission_script:add_save_state_cb(self._id)
+	end
+
+	ElementDialogue.super.on_script_activated(self)
+end
+
 function ElementDialogue:client_on_executed(...)
 	self:on_executed(...)
 end
@@ -122,4 +130,13 @@ function ElementDialogue:_can_play()
 	else
 		return true
 	end
+end
+
+function ElementDialogue:save(data)
+	data.save_me = true
+	data.enabled = self._values.enabled
+end
+
+function ElementDialogue:load(data)
+	self:set_enabled(data.enabled)
 end

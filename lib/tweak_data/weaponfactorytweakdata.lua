@@ -12756,276 +12756,235 @@ function WeaponFactoryTweakData:_init_deagle()
 			"barrel_ext",
 			"gadget",
 			"sight"
-		},
-		adds = {
-			wpn_fps_upg_fl_pis_laser = {
-				"wpn_fps_pis_deagle_fg_rail"
-			},
-			wpn_fps_upg_fl_pis_tlr1 = {
-				"wpn_fps_pis_deagle_fg_rail"
-			},
-			wpn_fps_upg_fl_pis_crimson = {
-				"wpn_fps_pis_deagle_fg_rail"
-			},
-			wpn_fps_upg_fl_pis_x400v = {
-				"wpn_fps_pis_deagle_fg_rail"
-			},
-			wpn_fps_upg_fl_pis_m3x = {
-				"wpn_fps_pis_deagle_fg_rail"
-			},
-			wpn_fps_upg_fl_pis_perst = {
-				"wpn_fps_pis_deagle_fg_rail"
-			},
-			wpn_fps_pis_deagle_b_standard = {
-				"wpn_fps_pis_deagle_o_standard_rear",
-				"wpn_fps_pis_deagle_o_standard_front"
-			},
-			wpn_fps_pis_deagle_b_long = {
-				"wpn_fps_pis_deagle_o_standard_rear",
-				"wpn_fps_pis_deagle_o_standard_front_long"
-			},
-			wpn_fps_pis_deagle_b_modern = {
-				"wpn_fps_pis_deagle_o_standard_rear",
-				"wpn_fps_pis_deagle_o_standard_front"
-			},
-			wpn_fps_upg_o_specter = {
-				"wpn_fps_pis_rage_o_adapter"
-			},
-			wpn_fps_upg_o_aimpoint = {
-				"wpn_fps_pis_rage_o_adapter"
-			},
-			wpn_fps_upg_o_aimpoint_2 = {
-				"wpn_fps_pis_rage_o_adapter"
-			},
-			wpn_fps_upg_o_docter = {
-				"wpn_fps_pis_rage_o_adapter"
-			},
-			wpn_fps_upg_o_eotech = {
-				"wpn_fps_pis_rage_o_adapter"
-			},
-			wpn_fps_upg_o_t1micro = {
-				"wpn_fps_pis_rage_o_adapter"
-			},
-			wpn_fps_upg_o_cmore = {
-				"wpn_fps_pis_rage_o_adapter"
-			},
-			wpn_fps_upg_o_acog = {
-				"wpn_fps_pis_rage_o_adapter"
-			},
-			wpn_fps_upg_o_cs = {
-				"wpn_fps_pis_rage_o_adapter"
-			},
-			wpn_fps_upg_o_eotech_xps = {
-				"wpn_fps_pis_rage_o_adapter"
-			},
-			wpn_fps_upg_o_reflex = {
-				"wpn_fps_pis_rage_o_adapter"
-			},
-			wpn_fps_upg_o_rx01 = {
-				"wpn_fps_pis_rage_o_adapter"
-			},
-			wpn_fps_upg_o_rx30 = {
-				"wpn_fps_pis_rage_o_adapter"
-			},
-			wpn_fps_upg_o_spot = {
-				"wpn_fps_pis_rage_o_adapter"
-			},
-			wpn_fps_upg_o_bmg = {
-				"wpn_fps_pis_rage_o_adapter"
-			},
-			wpn_fps_upg_o_fc1 = {
-				"wpn_fps_pis_rage_o_adapter"
-			},
-			wpn_fps_upg_o_uh = {
-				"wpn_fps_pis_rage_o_adapter"
-			},
-			wpn_fps_upg_o_tf90 = {
-				"wpn_fps_pis_rage_o_adapter"
-			},
-			wpn_fps_upg_o_poe = {
-				"wpn_fps_pis_rage_o_adapter"
-			},
-			wpn_fps_upg_o_hamr = {
-				"wpn_fps_pis_rage_o_adapter"
-			},
-			wpn_fps_upg_o_atibal = {
-				"wpn_fps_pis_rage_o_adapter"
-			},
-			wpn_fps_upg_o_health = {
-				"wpn_fps_pis_rage_o_adapter"
-			}
-		},
-		override = {
-			wpn_upg_o_marksmansight_rear = {
-				a_obj = "a_o",
-				forbids = table.list_add(self.parts.wpn_upg_o_marksmansight_rear.forbids, {
-					"wpn_fps_pis_deagle_o_standard_front",
-					"wpn_fps_pis_deagle_o_standard_front_long",
-					"wpn_fps_pis_deagle_o_standard_rear"
-				})
-			},
-			wpn_upg_o_marksmansight_front = {
-				a_obj = "a_os"
-			},
-			wpn_fps_upg_o_specter = {
-				a_obj = "a_quite"
-			},
-			wpn_fps_upg_o_aimpoint = {
-				a_obj = "a_quite"
-			},
-			wpn_fps_upg_o_aimpoint_2 = {
-				a_obj = "a_quite"
-			},
-			wpn_fps_upg_o_docter = {
-				a_obj = "a_quite"
-			},
-			wpn_fps_upg_o_eotech = {
-				a_obj = "a_quite"
-			},
-			wpn_fps_upg_o_t1micro = {
-				a_obj = "a_quite"
-			},
-			wpn_fps_upg_o_cmore = {
-				a_obj = "a_quite"
-			},
-			wpn_fps_upg_o_acog = {
-				a_obj = "a_quite"
-			},
-			wpn_fps_upg_o_cs = {
-				a_obj = "a_quite"
-			},
-			wpn_fps_upg_o_eotech_xps = {
-				a_obj = "a_quite"
-			},
-			wpn_fps_upg_o_reflex = {
-				a_obj = "a_quite"
-			},
-			wpn_fps_upg_o_rx01 = {
-				a_obj = "a_quite"
-			},
-			wpn_fps_upg_o_rx30 = {
-				a_obj = "a_quite"
-			},
-			wpn_fps_upg_o_rmr = {
-				parent = "lower_reciever"
-			},
-			wpn_fps_upg_o_spot = {
-				a_obj = "a_quite"
-			},
-			wpn_fps_upg_o_rms = {
-				parent = "lower_reciever"
-			},
-			wpn_fps_upg_o_rikt = {
-				parent = "lower_reciever"
-			},
-			wpn_fps_upg_o_bmg = {
-				a_obj = "a_quite"
-			},
-			wpn_fps_upg_o_fc1 = {
-				a_obj = "a_quite"
-			},
-			wpn_fps_upg_o_uh = {
-				a_obj = "a_quite"
-			},
-			wpn_fps_upg_o_tf90 = {
-				a_obj = "a_quite"
-			},
-			wpn_fps_upg_o_poe = {
-				a_obj = "a_quite"
-			},
-			wpn_fps_upg_ns_pis_putnik = {
-				a_obj = "a_co"
-			},
-			wpn_fps_upg_o_hamr = {
-				a_obj = "a_quite"
-			},
-			wpn_fps_upg_o_hamr_reddot = {
-				a_obj = "a_quite"
-			},
-			wpn_fps_upg_o_atibal = {
-				a_obj = "a_quite"
-			},
-			wpn_fps_upg_o_atibal_reddot = {
-				a_obj = "a_quite"
-			},
-			wpn_fps_upg_o_health = {
-				a_obj = "a_quite"
-			}
-		},
-		default_blueprint = {
-			"wpn_fps_pis_deagle_body_standard",
-			"wpn_fps_pis_deagle_b_standard",
-			"wpn_fps_pis_deagle_g_standard",
-			"wpn_fps_pis_deagle_m_standard"
-		},
-		uses_parts = {
-			"wpn_fps_pis_deagle_body_standard",
-			"wpn_fps_pis_deagle_b_standard",
-			"wpn_fps_pis_deagle_b_long",
-			"wpn_fps_pis_deagle_co_long",
-			"wpn_fps_pis_deagle_co_short",
-			"wpn_fps_pis_deagle_fg_rail",
-			"wpn_fps_pis_deagle_g_bling",
-			"wpn_fps_pis_deagle_g_ergo",
-			"wpn_fps_pis_deagle_g_standard",
-			"wpn_fps_pis_deagle_m_extended",
-			"wpn_fps_pis_deagle_m_standard",
-			"wpn_fps_pis_deagle_o_standard_rear",
-			"wpn_fps_pis_deagle_o_standard_front",
-			"wpn_fps_pis_deagle_o_standard_front_long",
-			"wpn_upg_o_marksmansight_rear",
-			"wpn_fps_upg_fl_pis_laser",
-			"wpn_fps_upg_fl_pis_tlr1",
-			"wpn_fps_upg_ns_pis_large",
-			"wpn_fps_upg_ns_pis_medium",
-			"wpn_fps_upg_ns_pis_small",
-			"wpn_fps_upg_ns_pis_large_kac",
-			"wpn_fps_upg_ns_pis_medium_gem",
-			"wpn_fps_upg_fl_pis_perst",
-			"wpn_fps_pis_deagle_extra",
-			"wpn_fps_pis_rage_o_adapter",
-			"wpn_fps_pis_deagle_lock",
-			"wpn_fps_upg_ns_pis_medium_slim",
-			"wpn_fps_upg_pis_ns_flash",
-			"wpn_fps_upg_o_specter",
-			"wpn_fps_upg_o_aimpoint",
-			"wpn_fps_upg_o_docter",
-			"wpn_fps_upg_o_eotech",
-			"wpn_fps_upg_o_t1micro",
-			"wpn_fps_upg_o_cmore",
-			"wpn_fps_upg_o_aimpoint_2",
-			"wpn_fps_upg_o_acog",
-			"wpn_fps_upg_o_eotech_xps",
-			"wpn_fps_upg_o_reflex",
-			"wpn_fps_upg_o_rx01",
-			"wpn_fps_upg_o_rx30",
-			"wpn_fps_upg_o_cs",
-			"wpn_fps_upg_o_rmr",
-			"wpn_fps_upg_fl_pis_crimson",
-			"wpn_fps_upg_fl_pis_x400v",
-			"wpn_fps_upg_ns_pis_meatgrinder",
-			"wpn_fps_upg_ns_pis_ipsccomp",
-			"wpn_fps_upg_fl_pis_m3x",
-			"wpn_fps_upg_ns_ass_filter",
-			"wpn_fps_upg_ns_pis_jungle",
-			"wpn_fps_pis_deagle_b_legend",
-			"wpn_fps_upg_o_spot",
-			"wpn_fps_upg_o_xpsg33_magnifier",
-			"wpn_fps_pis_deagle_b_modern",
-			"wpn_fps_upg_ns_pis_typhoon",
-			"wpn_fps_upg_o_sig",
-			"wpn_fps_upg_o_bmg",
-			"wpn_fps_upg_o_uh",
-			"wpn_fps_upg_o_fc1",
-			"wpn_fps_upg_o_rms",
-			"wpn_fps_upg_o_rikt",
-			"wpn_fps_upg_o_tf90",
-			"wpn_fps_upg_o_poe",
-			"wpn_fps_upg_ns_pis_putnik",
-			"wpn_fps_upg_o_hamr",
-			"wpn_fps_upg_o_atibal",
-			"wpn_fps_upg_o_health"
 		}
+	}
+	local deagle_optics_add = {
+		"wpn_fps_pis_rage_o_adapter"
+	}
+	self.wpn_fps_pis_deagle.adds = {
+		wpn_fps_upg_fl_pis_laser = {
+			"wpn_fps_pis_deagle_fg_rail"
+		},
+		wpn_fps_upg_fl_pis_tlr1 = {
+			"wpn_fps_pis_deagle_fg_rail"
+		},
+		wpn_fps_upg_fl_pis_crimson = {
+			"wpn_fps_pis_deagle_fg_rail"
+		},
+		wpn_fps_upg_fl_pis_x400v = {
+			"wpn_fps_pis_deagle_fg_rail"
+		},
+		wpn_fps_upg_fl_pis_m3x = {
+			"wpn_fps_pis_deagle_fg_rail"
+		},
+		wpn_fps_upg_fl_pis_perst = {
+			"wpn_fps_pis_deagle_fg_rail"
+		},
+		wpn_fps_pis_deagle_b_standard = {
+			"wpn_fps_pis_deagle_o_standard_rear",
+			"wpn_fps_pis_deagle_o_standard_front"
+		},
+		wpn_fps_pis_deagle_b_long = {
+			"wpn_fps_pis_deagle_o_standard_rear",
+			"wpn_fps_pis_deagle_o_standard_front_long"
+		},
+		wpn_fps_pis_deagle_b_modern = {
+			"wpn_fps_pis_deagle_o_standard_rear",
+			"wpn_fps_pis_deagle_o_standard_front"
+		},
+		wpn_fps_upg_o_specter = deagle_optics_add,
+		wpn_fps_upg_o_aimpoint = deagle_optics_add,
+		wpn_fps_upg_o_aimpoint_2 = deagle_optics_add,
+		wpn_fps_upg_o_docter = deagle_optics_add,
+		wpn_fps_upg_o_eotech = deagle_optics_add,
+		wpn_fps_upg_o_t1micro = deagle_optics_add,
+		wpn_fps_upg_o_cmore = deagle_optics_add,
+		wpn_fps_upg_o_acog = deagle_optics_add,
+		wpn_fps_upg_o_cs = deagle_optics_add,
+		wpn_fps_upg_o_eotech_xps = deagle_optics_add,
+		wpn_fps_upg_o_reflex = deagle_optics_add,
+		wpn_fps_upg_o_rx01 = deagle_optics_add,
+		wpn_fps_upg_o_rx30 = deagle_optics_add,
+		wpn_fps_upg_o_spot = deagle_optics_add,
+		wpn_fps_upg_o_bmg = deagle_optics_add,
+		wpn_fps_upg_o_fc1 = deagle_optics_add,
+		wpn_fps_upg_o_uh = deagle_optics_add,
+		wpn_fps_upg_o_tf90 = deagle_optics_add,
+		wpn_fps_upg_o_poe = deagle_optics_add,
+		wpn_fps_upg_o_hamr = deagle_optics_add,
+		wpn_fps_upg_o_atibal = deagle_optics_add,
+		wpn_fps_upg_o_health = deagle_optics_add
+	}
+	self.wpn_fps_pis_deagle.override = {
+		wpn_upg_o_marksmansight_rear = {
+			a_obj = "a_o",
+			forbids = table.list_add(self.parts.wpn_upg_o_marksmansight_rear.forbids, {
+				"wpn_fps_pis_deagle_o_standard_front",
+				"wpn_fps_pis_deagle_o_standard_front_long",
+				"wpn_fps_pis_deagle_o_standard_rear"
+			})
+		},
+		wpn_upg_o_marksmansight_front = {
+			a_obj = "a_os"
+		},
+		wpn_fps_upg_o_specter = {
+			a_obj = "a_quite"
+		},
+		wpn_fps_upg_o_aimpoint = {
+			a_obj = "a_quite"
+		},
+		wpn_fps_upg_o_aimpoint_2 = {
+			a_obj = "a_quite"
+		},
+		wpn_fps_upg_o_docter = {
+			a_obj = "a_quite"
+		},
+		wpn_fps_upg_o_eotech = {
+			a_obj = "a_quite"
+		},
+		wpn_fps_upg_o_t1micro = {
+			a_obj = "a_quite"
+		},
+		wpn_fps_upg_o_cmore = {
+			a_obj = "a_quite"
+		},
+		wpn_fps_upg_o_acog = {
+			a_obj = "a_quite"
+		},
+		wpn_fps_upg_o_cs = {
+			a_obj = "a_quite"
+		},
+		wpn_fps_upg_o_eotech_xps = {
+			a_obj = "a_quite"
+		},
+		wpn_fps_upg_o_reflex = {
+			a_obj = "a_quite"
+		},
+		wpn_fps_upg_o_rx01 = {
+			a_obj = "a_quite"
+		},
+		wpn_fps_upg_o_rx30 = {
+			a_obj = "a_quite"
+		},
+		wpn_fps_upg_o_rmr = {
+			parent = "lower_reciever"
+		},
+		wpn_fps_upg_o_spot = {
+			a_obj = "a_quite"
+		},
+		wpn_fps_upg_o_rms = {
+			parent = "lower_reciever"
+		},
+		wpn_fps_upg_o_rikt = {
+			parent = "lower_reciever"
+		},
+		wpn_fps_upg_o_bmg = {
+			a_obj = "a_quite"
+		},
+		wpn_fps_upg_o_fc1 = {
+			a_obj = "a_quite"
+		},
+		wpn_fps_upg_o_uh = {
+			a_obj = "a_quite"
+		},
+		wpn_fps_upg_o_tf90 = {
+			a_obj = "a_quite"
+		},
+		wpn_fps_upg_o_poe = {
+			a_obj = "a_quite"
+		},
+		wpn_fps_upg_ns_pis_putnik = {
+			a_obj = "a_co"
+		},
+		wpn_fps_upg_o_hamr = {
+			a_obj = "a_quite"
+		},
+		wpn_fps_upg_o_hamr_reddot = {
+			a_obj = "a_quite"
+		},
+		wpn_fps_upg_o_atibal = {
+			a_obj = "a_quite"
+		},
+		wpn_fps_upg_o_atibal_reddot = {
+			a_obj = "a_quite"
+		},
+		wpn_fps_upg_o_health = {
+			a_obj = "a_quite"
+		}
+	}
+	self.wpn_fps_pis_deagle.default_blueprint = {
+		"wpn_fps_pis_deagle_body_standard",
+		"wpn_fps_pis_deagle_b_standard",
+		"wpn_fps_pis_deagle_g_standard",
+		"wpn_fps_pis_deagle_m_standard"
+	}
+	self.wpn_fps_pis_deagle.uses_parts = {
+		"wpn_fps_pis_deagle_body_standard",
+		"wpn_fps_pis_deagle_b_standard",
+		"wpn_fps_pis_deagle_b_long",
+		"wpn_fps_pis_deagle_co_long",
+		"wpn_fps_pis_deagle_co_short",
+		"wpn_fps_pis_deagle_fg_rail",
+		"wpn_fps_pis_deagle_g_bling",
+		"wpn_fps_pis_deagle_g_ergo",
+		"wpn_fps_pis_deagle_g_standard",
+		"wpn_fps_pis_deagle_m_extended",
+		"wpn_fps_pis_deagle_m_standard",
+		"wpn_fps_pis_deagle_o_standard_rear",
+		"wpn_fps_pis_deagle_o_standard_front",
+		"wpn_fps_pis_deagle_o_standard_front_long",
+		"wpn_upg_o_marksmansight_rear",
+		"wpn_fps_upg_fl_pis_laser",
+		"wpn_fps_upg_fl_pis_tlr1",
+		"wpn_fps_upg_ns_pis_large",
+		"wpn_fps_upg_ns_pis_medium",
+		"wpn_fps_upg_ns_pis_small",
+		"wpn_fps_upg_ns_pis_large_kac",
+		"wpn_fps_upg_ns_pis_medium_gem",
+		"wpn_fps_upg_fl_pis_perst",
+		"wpn_fps_pis_deagle_extra",
+		"wpn_fps_pis_rage_o_adapter",
+		"wpn_fps_pis_deagle_lock",
+		"wpn_fps_upg_ns_pis_medium_slim",
+		"wpn_fps_upg_pis_ns_flash",
+		"wpn_fps_upg_o_specter",
+		"wpn_fps_upg_o_aimpoint",
+		"wpn_fps_upg_o_docter",
+		"wpn_fps_upg_o_eotech",
+		"wpn_fps_upg_o_t1micro",
+		"wpn_fps_upg_o_cmore",
+		"wpn_fps_upg_o_aimpoint_2",
+		"wpn_fps_upg_o_acog",
+		"wpn_fps_upg_o_eotech_xps",
+		"wpn_fps_upg_o_reflex",
+		"wpn_fps_upg_o_rx01",
+		"wpn_fps_upg_o_rx30",
+		"wpn_fps_upg_o_cs",
+		"wpn_fps_upg_o_rmr",
+		"wpn_fps_upg_fl_pis_crimson",
+		"wpn_fps_upg_fl_pis_x400v",
+		"wpn_fps_upg_ns_pis_meatgrinder",
+		"wpn_fps_upg_ns_pis_ipsccomp",
+		"wpn_fps_upg_fl_pis_m3x",
+		"wpn_fps_upg_ns_ass_filter",
+		"wpn_fps_upg_ns_pis_jungle",
+		"wpn_fps_pis_deagle_b_legend",
+		"wpn_fps_upg_o_spot",
+		"wpn_fps_upg_o_xpsg33_magnifier",
+		"wpn_fps_pis_deagle_b_modern",
+		"wpn_fps_upg_ns_pis_typhoon",
+		"wpn_fps_upg_o_sig",
+		"wpn_fps_upg_o_bmg",
+		"wpn_fps_upg_o_uh",
+		"wpn_fps_upg_o_fc1",
+		"wpn_fps_upg_o_rms",
+		"wpn_fps_upg_o_rikt",
+		"wpn_fps_upg_o_tf90",
+		"wpn_fps_upg_o_poe",
+		"wpn_fps_upg_ns_pis_putnik",
+		"wpn_fps_upg_o_hamr",
+		"wpn_fps_upg_o_atibal",
+		"wpn_fps_upg_o_health"
 	}
 	self.wpn_fps_pis_deagle_npc = deep_clone(self.wpn_fps_pis_deagle)
 	self.wpn_fps_pis_deagle_npc.unit = "units/payday2/weapons/wpn_fps_pis_deagle/wpn_fps_pis_deagle_npc"
@@ -14916,7 +14875,8 @@ function WeaponFactoryTweakData:_init_g17()
 		unit = "units/payday2/weapons/wpn_fps_pis_g17/wpn_fps_pis_g17",
 		optional_types = {
 			"barrel_ext",
-			"gadget"
+			"gadget",
+			"exclusive_set"
 		},
 		override = {
 			wpn_fps_upg_o_rmr = {
@@ -37141,7 +37101,8 @@ function WeaponFactoryTweakData:_init_x_g17()
 		unit = "units/pd2_dlc_butcher_mods/weapons/wpn_fps_pis_x_g17/wpn_fps_pis_x_g17",
 		optional_types = {
 			"barrel_ext",
-			"gadget"
+			"gadget",
+			"exclusive_set"
 		},
 		animations = {
 			reload = "reload_right",

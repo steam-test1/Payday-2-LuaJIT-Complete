@@ -503,8 +503,12 @@ function BossLogicAttack._get_priority_attention(data, attention_objects, reacti
 				local is_sentry = attention_data.is_deployable
 				local target_priority_slot = crim_record and not is_sentry and 3 or 7
 
-				if visible then
+				if visible or data.logic._keep_player_focus_t and attention_data.is_human_player and attention_data.verified_t and data.t - attention_data.verified_t < data.logic._keep_player_focus_t then
 					if attention_data.is_human_player then
+						if data.logic._keep_player_focus_t then
+							target_priority = target_priority * (visible and 0.5 or 0.75)
+						end
+
 						target_priority_slot = target_priority_slot - 2
 					end
 
@@ -998,7 +1002,7 @@ function BossLogicAttack._chk_request_action_walk_to_chase_pos(data, my_data, sp
 		local cur_att_obj = data.attention_obj
 
 		if cur_att_obj and cur_att_obj.criminal_record and not cur_att_obj.is_deployable then
-			data.unit:sound():say("combat", true)
+			data.unit:sound():say(data.unit:sound().combat_str or "combat", true)
 		end
 
 		return true
@@ -1065,4 +1069,15 @@ end
 
 function BossLogicAttack._set_verified_paths(data, verified_paths)
 	data.internal_data.chase_path = verified_paths.chase_path
+end
+
+DeepBossLogicAttack = DeepBossLogicAttack or class(BossLogicAttack)
+DeepBossLogicAttack._keep_player_focus_t = 10
+
+function DeepBossLogicAttack.damage_clbk(data, damage_info)
+	BossLogicAttack.damage_clbk(data, damage_info)
+
+	if not data.unit:character_damage():dead() and data.unit:character_damage().health_ratio and data.unit:character_damage():health_ratio() < 0.4 then
+		data.unit:sound():say(data.unit:sound().combat_str_alt or "combat_alt", true)
+	end
 end

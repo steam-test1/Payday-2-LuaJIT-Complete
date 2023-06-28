@@ -5177,6 +5177,96 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		sequence = "set_ehtan"
 	}
 	self.player_styles.sambass.characters.ecp_male = sambass_characters_male_fat
+	self.player_styles.bossflag = {
+		name_id = "bm_suit_bossflag",
+		desc_id = "bm_suit_bossflag_desc",
+		texture_bundle_folder = "deep",
+		global_value = "deep",
+		material_variations = {}
+	}
+	self.player_styles.bossflag.material_variations.default = {
+		name_id = "bm_suit_bossflag",
+		global_value = "deep",
+		desc_id = "bm_suit_bossflag_desc"
+	}
+	self.player_styles.bossflag.body_replacement = body_replacement_standard
+	self.player_styles.bossflag.third_body_replacement = body_replacement_standard
+	self.player_styles.bossflag.unit = "units/pd2_dlc_deep/characters/deep_acc_bossflag/deep_acc_fps_bossflag_male/deep_acc_fps_bossflag_male"
+	self.player_styles.bossflag.characters = {}
+	local bossflag_characters_male = {
+		third_unit = "units/pd2_dlc_deep/characters/deep_acc_bossflag/deep_acc_bossflag_male_average/deep_acc_bossflag_male_average"
+	}
+
+	set_characters_data("bossflag", characters_male, bossflag_characters_male)
+
+	local bossflag_characters_male_big = {
+		third_unit = "units/pd2_dlc_deep/characters/deep_acc_bossflag/deep_acc_bossflag_male_big/deep_acc_bossflag_male_big"
+	}
+
+	set_characters_data("bossflag", characters_male_big, bossflag_characters_male_big)
+
+	local bossflag_characters_female = {
+		third_unit = "units/pd2_dlc_deep/characters/deep_acc_bossflag/deep_acc_bossflag_female_average/deep_acc_bossflag_female_average"
+	}
+
+	set_characters_data("bossflag", characters_female, bossflag_characters_female)
+
+	local bossflag_characters_female_big = {
+		third_unit = "units/pd2_dlc_deep/characters/deep_acc_bossflag/deep_acc_bossflag_female_fat/deep_acc_bossflag_female_fat"
+	}
+
+	set_characters_data("bossflag", characters_female_big, bossflag_characters_female_big)
+
+	local bossflag_characters_male_fat = {
+		third_unit = "units/pd2_dlc_deep/characters/deep_acc_bossflag/deep_acc_bossflag_male_fat/deep_acc_bossflag_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.bossflag.characters.ecp_male = bossflag_characters_male_fat
+	self.player_styles.roclown = {
+		name_id = "bm_suit_roclown",
+		desc_id = "bm_suit_roclown_desc",
+		texture_bundle_folder = "dot",
+		global_value = "dot_roclown_suit",
+		material_variations = {}
+	}
+	self.player_styles.roclown.material_variations.default = {
+		name_id = "bm_suit_roclown",
+		global_value = "dot_roclown_suit",
+		desc_id = "bm_suit_roclown_desc"
+	}
+	self.player_styles.roclown.body_replacement = body_replacement_standard
+	self.player_styles.roclown.third_body_replacement = body_replacement_standard
+	self.player_styles.roclown.unit = "units/pd2_dlc_dot/characters/dot_acc_rodeoclownsuit/dot_acc_fps_rodeoclownsuit_male/dot_acc_fps_rodeoclownsuit_male"
+	self.player_styles.roclown.characters = {}
+	local roclown_characters_male = {
+		third_unit = "units/pd2_dlc_dot/characters/dot_acc_rodeoclownsuit/dot_acc_rodeoclownsuit_male_average/dot_acc_rodeoclownsuit_male_average"
+	}
+
+	set_characters_data("roclown", characters_male, roclown_characters_male)
+
+	local roclown_characters_male_big = {
+		third_unit = "units/pd2_dlc_dot/characters/dot_acc_rodeoclownsuit/dot_acc_rodeoclownsuit_male_big/dot_acc_rodeoclownsuit_male_big"
+	}
+
+	set_characters_data("roclown", characters_male_big, roclown_characters_male_big)
+
+	local roclown_characters_female = {
+		third_unit = "units/pd2_dlc_dot/characters/dot_acc_rodeoclownsuit/dot_acc_rodeoclownsuit_female_average/dot_acc_rodeoclownsuit_female_average"
+	}
+
+	set_characters_data("roclown", characters_female, roclown_characters_female)
+
+	local roclown_characters_female_big = {
+		third_unit = "units/pd2_dlc_dot/characters/dot_acc_rodeoclownsuit/dot_acc_rodeoclownsuit_female_fat/dot_acc_rodeoclownsuit_female_fat"
+	}
+
+	set_characters_data("roclown", characters_female_big, roclown_characters_female_big)
+
+	local roclown_characters_male_fat = {
+		third_unit = "units/pd2_dlc_dot/characters/dot_acc_rodeoclownsuit/dot_acc_rodeoclownsuit_male_fat/dot_acc_rodeoclownsuit_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.roclown.characters.ecp_male = roclown_characters_male_fat
 end
 
 function BlackMarketTweakData:get_player_style_value(player_style, character_name, key)

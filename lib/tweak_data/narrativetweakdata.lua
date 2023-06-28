@@ -6850,6 +6850,152 @@ function NarrativeTweakData:init(tweak_data)
 		2,
 		22
 	}
+	self.stages.deep = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "deep",
+		mission_filter = {
+			1
+		}
+	}
+	self.jobs.deep = {
+		name_id = "heist_deep",
+		briefing_id = "heist_deep_crimenet",
+		contact = "blaine",
+		region = "street",
+		jc = 30,
+		dlc = "deep",
+		chain = {
+			self.stages.deep
+		},
+		briefing_event = "Play_kee_deep_cbf",
+		debrief_event = nil,
+		crimenet_callouts = {
+			"Play_kee_deep_cnc"
+		},
+		crimenet_videos = {
+			"codex/blaine1"
+		},
+		payout = {
+			50000,
+			125000,
+			250000,
+			550000,
+			700000,
+			700000,
+			700000
+		},
+		contract_cost = {
+			24000,
+			48000,
+			120000,
+			240000,
+			300000,
+			300000,
+			300000
+		},
+		contract_visuals = {}
+	}
+	self.jobs.deep.contract_visuals.min_mission_xp = {
+		14200,
+		14200,
+		14200,
+		14200,
+		14200,
+		14200,
+		14200
+	}
+	self.jobs.deep.contract_visuals.max_mission_xp = {
+		23200,
+		23200,
+		23200,
+		23200,
+		23200,
+		23200,
+		23200
+	}
+	self.jobs.deep.contract_visuals.preview_image = {
+		id = "deep",
+		folder = "deep"
+	}
+	self.jobs.deep.date_added = {
+		2023,
+		1,
+		23
+	}
+	self.stages.bossp = {
+		type = "d",
+		type_id = "heist_type_assault",
+		level_id = "boss",
+		mission_filter = {
+			1
+		}
+	}
+	self.jobs.boss = {
+		name_id = "heist_boss",
+		briefing_id = "heist_boss_crimenet",
+		contact = "blaine",
+		region = "street",
+		jc = 30,
+		dlc = "deep",
+		chain = {
+			self.stages.boss
+		},
+		briefing_event = "Play_kee_deep_cbf",
+		debrief_event = nil,
+		crimenet_callouts = {
+			"Play_kee_deep_cnc"
+		},
+		crimenet_videos = {
+			"codex/blaine1"
+		},
+		payout = {
+			50000,
+			125000,
+			250000,
+			550000,
+			700000,
+			700000,
+			700000
+		},
+		contract_cost = {
+			24000,
+			48000,
+			120000,
+			240000,
+			300000,
+			300000,
+			300000
+		},
+		contract_visuals = {}
+	}
+	self.jobs.boss.contract_visuals.min_mission_xp = {
+		14200,
+		14200,
+		14200,
+		14200,
+		14200,
+		14200,
+		14200
+	}
+	self.jobs.boss.contract_visuals.max_mission_xp = {
+		23200,
+		23200,
+		23200,
+		23200,
+		23200,
+		23200,
+		23200
+	}
+	self.jobs.boss.contract_visuals.preview_image = {
+		id = "ranc",
+		folder = "ranc"
+	}
+	self.jobs.boss.date_added = {
+		2023,
+		1,
+		23
+	}
 	self.stages.lbe_lobby_end = {
 		type = "d",
 		type_id = "heist_type_assault",
@@ -7649,7 +7795,8 @@ function NarrativeTweakData:init(tweak_data)
 		"pent",
 		"ranc",
 		"trai",
-		"corp"
+		"corp",
+		"deep"
 	}
 	self.forced_jobs = {
 		firestarter = true,

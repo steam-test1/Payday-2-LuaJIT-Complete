@@ -131,3 +131,57 @@ function EndscreenVariantElement:_get_params(panel, panel_sizer)
 
 	return bscreen_params
 end
+
+FailureVariantElement = FailureVariantElement or class(BlackscreenVariantElement)
+
+function FailureVariantElement:init(unit)
+	FailureVariantElement.super.init(self, unit)
+end
+
+function FailureVariantElement:_get_params(panel, panel_sizer)
+	local bscreen_params = {
+		default = "0",
+		name = "Failure variant:",
+		ctrlr_proportions = 2,
+		name_proportions = 1,
+		tooltip = "Select variant, from level_tweak_data.level.failure_music",
+		sorted = false,
+		panel = panel,
+		sizer = panel_sizer,
+		options = {
+			"1",
+			"2",
+			"3",
+			"4",
+			"5",
+			"6",
+			"7",
+			"8",
+			"9",
+			"10",
+			"11",
+			"12",
+			"13",
+			"14",
+			"15",
+			"16",
+			"17",
+			"18",
+			"19",
+			"20",
+			"21",
+			"22",
+			"23",
+			"24",
+			"25",
+			"26",
+			"27",
+			"28",
+			"29",
+			"30"
+		},
+		value = self._hed.variant
+	}
+
+	return bscreen_params
+end

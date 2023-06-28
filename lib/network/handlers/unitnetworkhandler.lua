@@ -959,6 +959,16 @@ function UnitNetworkHandler:action_aim_state(unit, state, sender_rpc)
 	end
 end
 
+function UnitNetworkHandler:action_melee_attack(unit, body_part, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender_rpc) or not self._verify_character(unit) then
+		return
+	end
+
+	if unit:movement() and unit:movement().sync_action_melee_attack then
+		unit:movement():sync_action_melee_attack(body_part)
+	end
+end
+
 function UnitNetworkHandler:action_hurt_start(unit, hurt_type, body_part, death_type, type, variant, direction_vec, hit_pos)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_character(unit) then
 		return
@@ -1050,6 +1060,16 @@ function UnitNetworkHandler:set_allow_fire(unit, state)
 	end
 
 	unit:movement():synch_allow_fire(state)
+end
+
+function UnitNetworkHandler:set_cool_state(unit, state, sender)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_character_and_sender(unit, sender) then
+		return
+	end
+
+	if unit:movement() and unit:movement().set_cool then
+		unit:movement():set_cool(state)
+	end
 end
 
 function UnitNetworkHandler:set_stance(unit, stance_code, instant, execute_queued, sender)
@@ -3041,8 +3061,8 @@ function UnitNetworkHandler:sync_assault_dialog(index)
 	managers.hud:sync_assault_dialog(index)
 end
 
-function UnitNetworkHandler:sync_contour_state(unit, u_id, type, state, multiplier, sender)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
+function UnitNetworkHandler:sync_contour_add(unit, u_id, type_index, multiplier, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender_rpc) then
 		return
 	end
 
@@ -3059,15 +3079,45 @@ function UnitNetworkHandler:sync_contour_state(unit, u_id, type, state, multipli
 	end
 
 	if not contour_unit then
-		Application:error("[UnitNetworkHandler:sync_contour_state] Unit is missing")
+		Application:error("[UnitNetworkHandler:sync_contour_add] Unit is missing")
 
 		return
 	end
 
-	if state then
-		contour_unit:contour():add(ContourExt.indexed_types[type], false, multiplier)
+	if contour_unit:contour() then
+		contour_unit:contour():add(ContourExt.indexed_types[type_index], false, multiplier)
 	else
-		contour_unit:contour():remove(ContourExt.indexed_types[type], nil)
+		Application:error("[UnitNetworkHandler:sync_contour_add] No 'contour' extension found on unit.", self._unit)
+	end
+end
+
+function UnitNetworkHandler:sync_contour_remove(unit, u_id, type_index, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender_rpc) then
+		return
+	end
+
+	local contour_unit = nil
+
+	if alive(unit) and unit:id() ~= -1 then
+		contour_unit = unit
+	else
+		local unit_data = managers.enemy:get_corpse_unit_data_from_id(u_id)
+
+		if unit_data then
+			contour_unit = unit_data.unit
+		end
+	end
+
+	if not contour_unit then
+		Application:error("[UnitNetworkHandler:sync_contour_remove] Unit is missing")
+
+		return
+	end
+
+	if contour_unit:contour() then
+		contour_unit:contour():remove(ContourExt.indexed_types[type_index], nil)
+	else
+		Application:error("[UnitNetworkHandler:sync_contour_remove] No 'contour' extension found on unit.", self._unit)
 	end
 end
 
@@ -3619,8 +3669,16 @@ function UnitNetworkHandler:sync_char_team(unit, team_index, sender)
 	unit:movement():set_team(team_data)
 end
 
-function UnitNetworkHandler:sync_drill_upgrades(unit, autorepair_level_1, autorepair_level_2, drill_speed_level, silent, reduced_alert)
-	unit:base():set_skill_upgrades(Drill.create_upgrades(autorepair_level_1, autorepair_level_2, drill_speed_level, silent, reduced_alert))
+function UnitNetworkHandler:sync_drill_upgrades(unit, autorepair_level_1, autorepair_level_2, drill_speed_level, silent, reduced_alert, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender_rpc) then
+		return
+	end
+
+	local base_ext = alive(unit) and unit:base()
+
+	if base_ext and base_ext.set_skill_upgrades then
+		base_ext:set_skill_upgrades(Drill.create_upgrades(autorepair_level_1, autorepair_level_2, drill_speed_level, silent, reduced_alert))
+	end
 end
 
 function UnitNetworkHandler:sync_vehicle_driving(action, unit, player)
@@ -3656,14 +3714,22 @@ function UnitNetworkHandler:sync_vehicle_state(unit, position, rotation, velocit
 	unit:vehicle_driving():sync_state(position, rotation, velocity)
 end
 
-function UnitNetworkHandler:sync_enter_vehicle_host(vehicle, seat_name, peer_id, player)
-	Application:debug("[DRIVING_NET] sync_enter_vehicle_host", seat_name)
-
-	if not alive(vehicle) then
+function UnitNetworkHandler:sync_enter_vehicle_host(vehicle_unit, seat_name, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
 
-	managers.player:server_enter_vehicle(vehicle, peer_id, player, seat_name)
+	local peer = self._verify_sender(sender_rpc)
+
+	if not peer or not alive(peer:unit()) or peer:unit():id() == -1 then
+		return
+	end
+
+	if not alive(vehicle_unit) or not vehicle_unit:vehicle_driving() then
+		return
+	end
+
+	managers.player:server_enter_vehicle(vehicle_unit, peer:id(), peer:unit(), seat_name)
 end
 
 function UnitNetworkHandler:sync_vehicle_player(action, vehicle, peer_id, player, seat_name)
@@ -3676,14 +3742,14 @@ function UnitNetworkHandler:sync_vehicle_player(action, vehicle, peer_id, player
 	end
 end
 
-function UnitNetworkHandler:sync_vehicle_data(vehicle, state_name, occupant_driver, occupant_left, occupant_back_left, occupant_back_right, is_trunk_open)
+function UnitNetworkHandler:sync_vehicle_data(vehicle, state_name, occupant_driver, occupant_left, occupant_back_left, occupant_back_right, is_trunk_open, manual_exit_disabled)
 	Application:debug("[DRIVING_NET] sync_vehicles_data")
 
 	if not alive(vehicle) then
 		return
 	end
 
-	managers.vehicle:sync_vehicle_data(vehicle, state_name, occupant_driver, occupant_left, occupant_back_left, occupant_back_right, is_trunk_open)
+	managers.vehicle:sync_vehicle_data(vehicle, state_name, occupant_driver, occupant_left, occupant_back_left, occupant_back_right, is_trunk_open, manual_exit_disabled)
 end
 
 function UnitNetworkHandler:sync_npc_vehicle_data(vehicle, state_name, target_unit)
@@ -3768,9 +3834,16 @@ function UnitNetworkHandler:sync_give_vehicle_loot_to_player(vehicle, carry_id, 
 	vehicle:vehicle_driving():sync_give_vehicle_loot_to_player(carry_id, multiplier, peer_id)
 end
 
-function UnitNetworkHandler:sync_vehicle_interact_trunk(vehicle, peer_id)
-	Application:debug("[DRIVING_NET] sync_vehicle_interact_trunk")
-	vehicle:vehicle_driving():_interact_trunk(vehicle)
+function UnitNetworkHandler:sync_vehicle_interact_trunk(vehicle_unit, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender_rpc) then
+		return
+	end
+
+	local driving_ext = alive(vehicle_unit) and vehicle_unit:vehicle_driving()
+
+	if driving_ext and driving_ext._interact_trunk then
+		driving_ext:_interact_trunk()
+	end
 end
 
 function UnitNetworkHandler:sync_damage_reduction_buff(damage_reduction)

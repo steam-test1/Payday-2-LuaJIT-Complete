@@ -1971,8 +1971,8 @@ function NetworkPeer:spawn_unit(spawn_point_id, is_drop_in, spawn_as)
 
 	print("[NetworkPeer:spawn_unit] Member assigned as", character_name)
 
-	local old_unit = nil
-	trade_entry, old_unit = managers.groupai:state():remove_one_teamAI(character_name, member_downed or member_dead)
+	local old_unit, seat_name = nil
+	trade_entry, old_unit, seat_name = managers.groupai:state():remove_one_teamAI(character_name, member_downed or member_dead)
 
 	if trade_entry and member_dead then
 		trade_entry.peer_id = self._id
@@ -2022,8 +2022,8 @@ function NetworkPeer:spawn_unit(spawn_point_id, is_drop_in, spawn_as)
 	local vehicle = managers.vehicle:find_active_vehicle_with_player()
 
 	if vehicle and not spawn_in_custody then
-		Application:debug("[NetworkPeer] Spawning peer_id in vehicle, peer_id:" .. self._id)
-		managers.player:server_enter_vehicle(vehicle, self._id, unit)
+		print("[NetworkPeer] Spawning peer_id in vehicle, peer_id:" .. tostring(self._id), seat_name)
+		managers.player:server_enter_vehicle(vehicle, self._id, unit, seat_name)
 	end
 
 	if self:is_vr() and unit:movement() and unit:movement().set_is_vr then

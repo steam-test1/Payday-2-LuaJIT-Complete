@@ -61,6 +61,7 @@ function GamePlayCentralManager:init()
 	self._block_bullet_decals = is_ps3 or is_x360
 	self._block_blood_decals = is_x360
 	self._decal_unit_redirect = {}
+	self._impact_override = {}
 end
 
 function GamePlayCentralManager:add_decal_unit_redirect(unit, redirect_unit)
@@ -77,6 +78,22 @@ function GamePlayCentralManager:remove_decal_unit_redirect(unit)
 	end
 
 	self._decal_unit_redirect[unit:key()] = nil
+end
+
+function GamePlayCentralManager:add_impact_override(unit, redirect_str)
+	if not alive(unit) then
+		return
+	end
+
+	self._impact_override[unit:key()] = redirect_str
+end
+
+function GamePlayCentralManager:remove_impact_override(unit)
+	if not alive(unit) then
+		return
+	end
+
+	self._impact_override[unit:key()] = nil
 end
 
 function GamePlayCentralManager:setup_effects(level_id)
@@ -314,6 +331,12 @@ function GamePlayCentralManager:play_impact_flesh(params)
 	local col_ray = params.col_ray
 
 	if alive(col_ray.unit) and col_ray.unit:in_slot(self._slotmask_flesh) then
+		local overrides = self._impact_override[col_ray.unit:key()]
+
+		if overrides and overrides.no_splatter_decal then
+			return
+		end
+
 		if not self._block_blood_decals then
 			local splatter_from = col_ray.position
 			local splatter_to = col_ray.position + col_ray.ray * 1000
@@ -410,15 +433,6 @@ end
 local zero_vector = Vector3()
 
 function GamePlayCentralManager:_play_bullet_hit(params)
-	local hit_pos = params.col_ray.position
-	local need_sound = not params.no_sound and World:in_view_with_options(hit_pos, 4000, 0, 0)
-	local need_effect = World:in_view_with_options(hit_pos, 20, 100, 5000)
-	local need_decal = not self._block_bullet_decals and not params.no_decal and need_effect and World:in_view_with_options(hit_pos, 3000, 0, 0)
-
-	if not need_sound and not need_effect and not need_decal then
-		return
-	end
-
 	local unit = params.col_ray.unit
 
 	if not alive(unit) then
@@ -426,6 +440,15 @@ function GamePlayCentralManager:_play_bullet_hit(params)
 	end
 
 	local unit_key = unit:key()
+	local overrides = self._impact_override[unit_key]
+	local hit_pos = params.col_ray.position
+	local need_sound = not params.no_sound and World:in_view_with_options(hit_pos, 4000, 0, 0)
+	local need_effect = World:in_view_with_options(hit_pos, 20, 100, 5000)
+	local need_decal = not self._block_bullet_decals and not params.no_decal and (not overrides or not overrides.no_decal) and need_effect and World:in_view_with_options(hit_pos, 3000, 0, 0)
+
+	if not need_sound and not need_effect and not need_decal then
+		return
+	end
 
 	if alive(self._decal_unit_redirect[unit_key]) then
 		unit = self._decal_unit_redirect[unit_key]
@@ -433,9 +456,9 @@ function GamePlayCentralManager:_play_bullet_hit(params)
 
 	local col_ray = params.col_ray
 	local event = params.event or "bullet_hit"
-	local decal = params.decal and Idstring(params.decal) or idstr_bullet_hit
+	local decal = overrides and overrides.decal and Idstring(overrides.decal) or params.decal and Idstring(params.decal) or idstr_bullet_hit
 	local slot_mask = params.slot_mask or self._slotmask_bullet_impact_targets
-	local sound_switch_name = nil
+	local sound_switch_name = overrides and overrides.sound_switch_name or nil
 	local decal_ray_from = tmp_vec1
 	local decal_ray_to = tmp_vec2
 
@@ -456,7 +479,7 @@ function GamePlayCentralManager:_play_bullet_hit(params)
 
 	local material_name, pos, norm = World:pick_decal_material(unit, decal_ray_from, decal_ray_to, slot_mask)
 	material_name = material_name ~= empty_idstr and material_name
-	local effect = params.effect
+	local effect = overrides and overrides.effect_name and Idstring(overrides.effect_name) or params.effect
 
 	if material_name then
 		local offset = col_ray.sphere_cast_radius and col_ray.ray * col_ray.sphere_cast_radius or zero_vector
@@ -480,7 +503,7 @@ function GamePlayCentralManager:_play_bullet_hit(params)
 			}
 		end
 
-		sound_switch_name = need_sound and (params.sound_switch_name or material_name)
+		sound_switch_name = need_sound and (sound_switch_name or params.sound_switch_name or material_name)
 	else
 		if need_effect then
 			local generic_effect = effect or idstr_fallback
@@ -491,7 +514,7 @@ function GamePlayCentralManager:_play_bullet_hit(params)
 			}
 		end
 
-		sound_switch_name = need_sound and (params.sound_switch_name or idstr_no_material)
+		sound_switch_name = need_sound and (sound_switch_name or params.sound_switch_name or idstr_no_material)
 	end
 
 	if effect and effect.effect then
@@ -594,7 +617,9 @@ function GamePlayCentralManager:set_flashlights_on(flashlights_on)
 	local weapons = World:find_units_quick("all", 13)
 
 	for _, weapon in ipairs(weapons) do
-		weapon:base():flashlight_state_changed()
+		if weapon:base().flashlight_state_changed then
+			weapon:base():flashlight_state_changed()
+		end
 	end
 end
 

@@ -113,20 +113,21 @@ function PlayerDriving:exit(state_data, new_state_name)
 	self:_interupt_action_melee()
 
 	local exit_position = self._vehicle_ext:find_exit_position(self._unit)
+	local exit_pos = self._exit_data and self._exit_data.position or exit_position and exit_position:position()
+	local exit_rot = self._exit_data and self._exit_data.rotation or exit_position and exit_position:rotation() or Rotation()
+	self._exit_data = nil
 
-	if exit_position then
-		local exit_rot = exit_position:rotation()
-
+	if exit_pos then
 		self._unit:set_rotation(exit_rot)
 		self._unit:camera():set_rotation(exit_rot)
 
-		local pos = exit_position:position() + Vector3(0, 0, 30)
+		local pos = exit_pos + Vector3(0, 0, 30)
 
 		self._unit:set_position(pos)
 		self._unit:camera():set_position(pos)
 
 		if _G.IS_VR then
-			self._unit:movement():set_ghost_position(exit_position:position())
+			self._unit:movement():set_ghost_position(exit_pos)
 		end
 
 		self._unit:camera():camera_unit():base():set_spin(exit_rot:y():to_polar().spin)
@@ -158,7 +159,7 @@ function PlayerDriving:exit(state_data, new_state_name)
 	local exit_data = {
 		skip_equip = true
 	}
-	local velocity = self._unit:mover():velocity()
+	local velocity = self._unit:mover() and self._unit:mover():velocity()
 
 	self:_activate_mover(PlayerStandard.MOVER_STAND, velocity)
 	self._ext_network:send("set_pose", 1)
@@ -550,7 +551,21 @@ function PlayerDriving:_get_vehicle()
 	self._vehicle = self._vehicle_unit:vehicle()
 end
 
-function PlayerDriving:cb_leave()
+function PlayerDriving:cb_leave(exit_data)
+	if exit_data then
+		local default_exit_state = "standard"
+
+		if self._was_unarmed and managers.groupai:state():whisper_mode() then
+			default_exit_state = "mask_off"
+		end
+
+		self._exit_data = exit_data
+
+		managers.player:set_player_state(exit_data.state or default_exit_state)
+
+		return
+	end
+
 	local cant_exit = self._vehicle_ext:find_exit_position(self._unit) == nil
 
 	if cant_exit then

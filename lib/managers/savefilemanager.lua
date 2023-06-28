@@ -765,7 +765,7 @@ function SavefileManager:_load(slot, cache_only, save_system)
 
 			if SystemInfo:distribution() == Idstring("EPIC") then
 				task_data.save_system = "local_hdd"
-				load_callback_obj = callback(self, self, "clbk_result_load")
+				load_callback_obj = save_system == "local_hdd" and callback(self, self, "clbk_result_load_backup") or callback(self, self, "clbk_result_load")
 			end
 
 			self:_on_task_queued(task_data)

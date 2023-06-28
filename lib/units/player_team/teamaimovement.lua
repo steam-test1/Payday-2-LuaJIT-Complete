@@ -146,6 +146,10 @@ function TeamAIMovement:set_cool(state)
 		return
 	end
 
+	if Network:is_server() then
+		self._ext_network:send("set_cool_state", state)
+	end
+
 	local old_state = self._cool
 
 	if state then
@@ -361,6 +365,15 @@ end
 
 function TeamAIMovement:carry_tweak()
 	return self:carry_id() and tweak_data.carry.types[tweak_data.carry[self:carry_id()].type]
+end
+
+function TeamAIMovement:bank_carry()
+	local carry_data = self:carry_data()
+
+	if carry_data then
+		managers.loot:secure(carry_data:carry_id(), carry_data:multiplier())
+		self._carry_unit:set_slot(0)
+	end
 end
 
 function TeamAIMovement:throw_bag(target_unit, reason)

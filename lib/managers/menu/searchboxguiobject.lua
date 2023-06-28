@@ -366,7 +366,9 @@ function SearchBoxGuiObject:clear_text()
 end
 
 function SearchBoxGuiObject:enter_text(o, s)
-	if s and string.byte(s) < 32 then
+	local byte = s and string.byte(s)
+
+	if byte and byte < 32 then
 		return
 	end
 

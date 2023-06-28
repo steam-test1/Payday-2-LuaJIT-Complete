@@ -158,9 +158,11 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		leatherfluff = "heist_default",
 		sleekygent = "beigedriver",
 		lowinttech = "heist_default",
+		bossflag = "heist_default",
 		boss = "heist_default",
 		rusbear = "heist_default",
 		texvest = "heist_default",
+		roclown = "roclogrip",
 		thug = "heist_default",
 		bikervest = "heist_default",
 		clown_2 = "heist_default",
@@ -840,5 +842,14 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		sort_number = 1,
 		unit = "units/pd2_dlc_txt4/characters/glv_txsuede/glv_txsuede",
 		third_material = "units/pd2_dlc_txt4/characters/glv_txsuede/glv_txsuede_third"
+	}
+	self.gloves.roclogrip = {
+		name_id = "bm_gloves_roclogrip",
+		desc_id = "bm_gloves_roclogrip_desc",
+		texture_bundle_folder = "dot",
+		global_value = "dot_roclogrip_glv",
+		sort_number = 1,
+		unit = "units/pd2_dlc_dot/characters/glv_roclogrip/glv_roclogrip",
+		third_material = "units/pd2_dlc_dot/characters/glv_roclogrip/glv_roclogrip_third"
 	}
 end

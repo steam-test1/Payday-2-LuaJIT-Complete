@@ -5450,6 +5450,47 @@ function AchievementsTweakData:init(tweak_data)
 			job = "corp",
 			difficulty = sm_wish_and_above
 		},
+		deep_1 = {
+			award = "deep_1",
+			job = "deep",
+			difficulty = normal_and_above
+		},
+		deep_2 = {
+			award = "deep_2",
+			job = "deep",
+			difficulty = hard_and_above
+		},
+		deep_3 = {
+			award = "deep_3",
+			job = "deep",
+			difficulty = veryhard_and_above
+		},
+		deep_4 = {
+			award = "deep_4",
+			job = "deep",
+			difficulty = overkill_and_above
+		},
+		deep_5 = {
+			award = "deep_5",
+			job = "deep",
+			difficulty = easywish_and_above
+		},
+		deep_6 = {
+			award = "deep_6",
+			job = "deep",
+			difficulty = deathwish_and_above
+		},
+		deep_7 = {
+			award = "deep_7",
+			job = "deep",
+			difficulty = sm_wish_and_above
+		},
+		deep_8 = {
+			award = "deep_8",
+			one_down = true,
+			job = "deep",
+			difficulty = sm_wish_and_above
+		},
 		uno_1 = {
 			award = "uno_1",
 			bag_loot_value = 400000,
@@ -6870,7 +6911,8 @@ function AchievementsTweakData:init(tweak_data)
 			"trai"
 		},
 		blaine = {
-			"corp"
+			"corp",
+			"deep"
 		}
 	}
 	self.persistent_stat_unlocks = {

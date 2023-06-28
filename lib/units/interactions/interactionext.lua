@@ -2858,6 +2858,16 @@ end
 
 function DrivingInteractionExt:can_interact(player)
 	local can_interact = DrivingInteractionExt.super.can_interact(self, player)
+	local can_enter_with_carry = false
+
+	if managers.player:is_carrying() then
+		local carry_data = managers.player:get_my_carry_data()
+		local carry_tweak_data = tweak_data.carry[carry_data.carry_id]
+		local skip_exit_secure = carry_tweak_data and carry_tweak_data.skip_exit_secure
+		local vehicle_ext = self._unit and self._unit:vehicle_driving()
+		local secure_carry_on_enter = vehicle_ext and vehicle_ext.secure_carry_on_enter
+		can_enter_with_carry = secure_carry_on_enter and not skip_exit_secure
+	end
 
 	if can_interact and managers.player:is_berserker() and self._action ~= VehicleDrivingExt.INTERACT_LOOT and self._action ~= VehicleDrivingExt.INTERACT_TRUNK then
 		can_interact = false
@@ -2866,7 +2876,7 @@ function DrivingInteractionExt:can_interact(player)
 			time = 2,
 			text = managers.localization:text("hud_vehicle_no_enter_berserker")
 		})
-	elseif can_interact and managers.player:is_carrying() then
+	elseif can_interact and managers.player:is_carrying() and not can_enter_with_carry then
 		if self._action == VehicleDrivingExt.INTERACT_ENTER or self._action == VehicleDrivingExt.INTERACT_DRIVE then
 			can_interact = false
 

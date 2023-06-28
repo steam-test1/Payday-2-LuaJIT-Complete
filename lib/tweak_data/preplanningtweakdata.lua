@@ -68,9 +68,9 @@ function PrePlanningTweakData:init(tweak_data)
 		category = "entry_plan_generic"
 	}
 	self.gui = {
-		custom_icons_path = "guis/dlcs/big_bank/textures/pd2/pre_planning/preplan_icon_types",
-		type_icons_path = "guis/dlcs/big_bank/textures/pd2/pre_planning/preplan_icon_types",
-		category_icons_path = "guis/dlcs/big_bank/textures/pd2/pre_planning/preplan_icon_frames",
+		custom_icons_path = "guis/dlcs/deep/textures/pd2/pre_planning/preplan_icon_types",
+		type_icons_path = "guis/dlcs/deep/textures/pd2/pre_planning/preplan_icon_types",
+		category_icons_path = "guis/dlcs/deep/textures/pd2/pre_planning/preplan_icon_frames",
 		category_icons_bg = 42,
 		MAX_DRAW_POINTS = 1000
 	}
@@ -2125,6 +2125,98 @@ function PrePlanningTweakData:init(tweak_data)
 		post_event = "",
 		prio = 3
 	}
+	self.types.deep_select_bridge = {
+		name_id = "menu_pp_asset_deep_select_bridge",
+		desc_id = "menu_pp_asset_deep_select_bridge_desc",
+		plan = "entry_plan_generic",
+		pos_not_important = false,
+		category = "mission_equipment",
+		icon = 23,
+		total = 1,
+		cost = 0,
+		budget_cost = 0,
+		post_event = "preplan_07",
+		prio = 3
+	}
+	self.types.deep_door_sabbotage = {
+		name_id = "menu_pp_asset_door_sabbotage",
+		desc_id = "menu_pp_asset_door_sabbotage_desc",
+		category = "data_hacking",
+		pos_not_important = true,
+		icon = 45,
+		total = 1,
+		post_event = "preplan_16",
+		prio = 3,
+		cost = tweak_data:get_value("money_manager", "preplanning_asset_cost_pex_open_window"),
+		budget_cost = 2
+	}
+	self.types.deep_extra_boss_loot = {
+		name_id = "menu_pp_asset_deep_extra_boss_loot",
+		desc_id = "menu_pp_asset_deep_extra_boss_loot_desc",
+		pos_not_important = false,
+		category = "insider_help",
+		icon = 123,
+		total = 1,
+		cost = tweak_data:get_value("money_manager", "preplaning_asset_cost_drillparts"),
+		budget_cost = 4,
+		post_event = "",
+		prio = 3
+	}
+	self.types.deep_keycard_holder = {
+		name_id = "menu_pp_asset_deep_keycard_holder",
+		desc_id = "menu_pp_asset_deep_keycard_holder_desc",
+		upgrade_lock = {
+			upgrade = "additional_assets",
+			category = "player"
+		},
+		pos_not_important = true,
+		category = "insider_help",
+		icon = 53,
+		total = 1,
+		cost = tweak_data:get_value("money_manager", "preplaning_asset_cost_unlocked_door"),
+		budget_cost = 2,
+		post_event = "",
+		prio = 3
+	}
+	self.types.deep_parachute_entrance = {
+		name_id = "menu_pp_asset_deep_parachute_entrance",
+		desc_id = "menu_pp_asset_deep_parachute_entrance_desc",
+		plan = "entry_plan_generic",
+		pos_not_important = false,
+		category = "entry_plan_generic",
+		icon = 133,
+		total = 1,
+		cost = tweak_data:get_value("money_manager", "preplanning_asset_cost_fex_stealth_entry_with_boat"),
+		budget_cost = 6,
+		post_event = "preplan_07",
+		prio = 3
+	}
+	self.types.deep_boat_entrance = {
+		name_id = "menu_pp_asset_deep_boat_entrance",
+		desc_id = "menu_pp_asset_deep_boat_entrance_desc",
+		plan = "entry_plan_generic",
+		pos_not_important = false,
+		category = "entry_plan_generic",
+		icon = 134,
+		total = 1,
+		cost = 0,
+		budget_cost = 0,
+		post_event = "preplan_07",
+		prio = 3
+	}
+	self.types.deep_uninterruptable_gen_loud = {
+		name_id = "menu_pp_asset_deep_uninterruptable_gen_loud",
+		desc_id = "menu_pp_asset_deep_uninterruptable_gen_loud_desc",
+		plan = "entry_plan_generic",
+		pos_not_important = false,
+		category = "insider_help",
+		icon = 93,
+		total = 1,
+		cost = tweak_data:get_value("money_manager", "preplanning_asset_cost_pex_open_window"),
+		budget_cost = 4,
+		post_event = "preplan_07",
+		prio = 3
+	}
 end
 
 function PrePlanningTweakData:_create_locations(tweak_data)
@@ -4075,6 +4167,85 @@ function PrePlanningTweakData:_create_locations(tweak_data)
 			escape_plan = "corp_escape_parking_north",
 			entry_plan_generic = "corp_entry_main",
 			plan_of_action = "corp_helicopter_east"
+		},
+		start_location = {
+			group = "a",
+			zoom = 1,
+			x = 512,
+			y = 512
+		}
+	}
+	self.locations.deep = {
+		{
+			texture = "guis/dlcs/deep/textures/pd2/pre_planning/deep_01",
+			x2 = 7500,
+			rotation = 0,
+			map_size = 1,
+			map_x = -0.55,
+			x1 = -7500,
+			map_y = 0,
+			name_id = "menu_pp_deep_bpr_loc_a",
+			y2 = 7500,
+			y1 = -7500,
+			custom_points = {}
+		},
+		{
+			texture = "guis/dlcs/deep/textures/pd2/pre_planning/deep_02",
+			x2 = 7500,
+			rotation = 0,
+			map_size = 1,
+			map_x = 0.55,
+			x1 = -7500,
+			map_y = 0,
+			name_id = "menu_pp_deep_bpr_loc_b",
+			y2 = 7500,
+			y1 = -7500,
+			custom_points = {}
+		},
+		{
+			texture = "guis/dlcs/deep/textures/pd2/pre_planning/deep_03",
+			x2 = 7500,
+			rotation = 0,
+			map_size = 1,
+			map_x = 1.65,
+			x1 = -7500,
+			map_y = 0,
+			name_id = "menu_pp_deep_bpr_loc_c",
+			y2 = 7500,
+			y1 = -7500,
+			custom_points = {}
+		},
+		{
+			texture = "guis/dlcs/deep/textures/pd2/pre_planning/deep_04",
+			x2 = 7500,
+			rotation = 0,
+			map_size = 1,
+			map_x = 2.75,
+			x1 = -7500,
+			map_y = 0,
+			name_id = "menu_pp_deep_bpr_loc_d",
+			y2 = 7500,
+			y1 = -7500,
+			custom_points = {}
+		},
+		{
+			texture = "guis/dlcs/deep/textures/pd2/pre_planning/deep_05",
+			x2 = 7500,
+			rotation = 0,
+			map_size = 1,
+			map_x = 3.85,
+			x1 = -7500,
+			map_y = 0,
+			name_id = "menu_pp_deep_bpr_loc_e",
+			y2 = 7500,
+			y1 = -7500,
+			custom_points = {}
+		},
+		mission_briefing_texture = "guis/dlcs/deep/textures/pd2/pre_planning/deep_01",
+		post_event_prefix = "loc",
+		total_budget = 10,
+		default_plans = {
+			entry_plan_generic = "deep_boat_entrance"
 		},
 		start_location = {
 			group = "a",

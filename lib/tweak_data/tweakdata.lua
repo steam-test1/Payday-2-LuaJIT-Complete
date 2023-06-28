@@ -1510,6 +1510,7 @@ Play the full version soon to get your full PAYDAY!]],
 	self.contour.character.standard_opacity = 0
 	self.contour.character.heal_color = Vector3(0, 1, 0)
 	self.contour.character.tmp_invulnerable_color = Vector3(0.8, 0.3, 0)
+	self.contour.character.vulnerable_color = Vector3(0.6, 0.2, 0.2)
 	self.contour.character_interactable = {
 		standard_color = Vector3(1, 0.5, 0),
 		selected_color = Vector3(1, 1, 1)
@@ -1842,6 +1843,9 @@ Play the full version soon to get your full PAYDAY!]],
 		},
 		{
 			track = "track_79"
+		},
+		{
+			track = "track_80"
 		},
 		{
 			track = "track_pth_01",
@@ -2955,7 +2959,8 @@ Play the full version soon to get your full PAYDAY!]],
 		cooldown = 3,
 		debug_drawing = false,
 		disabled_units = {
-			"spooc"
+			"spooc",
+			"deep_boss"
 		}
 	}
 	self.spotlights = {

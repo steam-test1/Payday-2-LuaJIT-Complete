@@ -13,6 +13,7 @@ function SetOutlineElement:init(unit)
 
 	table.insert(self._save_values, "elements")
 	table.insert(self._save_values, "set_outline")
+	table.insert(self._save_values, "outline_type")
 	table.insert(self._save_values, "use_instigator")
 	table.insert(self._save_values, "clear_previous")
 end
@@ -37,6 +38,10 @@ function SetOutlineElement:_build_panel(panel, panel_sizer)
 		ctrlr = set_outline
 	})
 	panel_sizer:add(set_outline, 0, 0, "EXPAND")
+
+	local contour_types = table.map_keys(ContourExt._types)
+
+	self:_build_value_combobox(panel, panel_sizer, "outline_type", contour_types)
 	self:_build_value_checkbox(panel, panel_sizer, "use_instigator", "Sets outline on the instigator")
 	self:_build_value_checkbox(panel, panel_sizer, "clear_previous", "Clears any previously set outlines (fixes issue with escorts)")
 end

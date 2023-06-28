@@ -7,10 +7,12 @@ function VehicleBoardingElement:init(unit)
 
 	self._hed.vehicle = nil
 	self._hed.operation = "embark"
+	self._hed.teleport_points = {}
 
 	table.insert(self._save_values, "vehicle")
 	table.insert(self._save_values, "operation")
 	table.insert(self._save_values, "seats_order")
+	table.insert(self._save_values, "teleport_points")
 end
 
 function VehicleBoardingElement:update_editing()
@@ -21,25 +23,54 @@ function VehicleBoardingElement:add_element()
 		mask = managers.slot:get_mask("vehicles")
 	})
 
-	if not ray then
-		return
-	end
+	if ray and ray.unit then
+		local element_data = ray.unit:mission_element_data()
+		local is_vehicle = ray.unit:vehicle_driving() ~= nil
 
-	local element_data = ray.unit:mission_element_data()
-	local is_vehicle = ray.unit:vehicle_driving() ~= nil
-
-	if not is_vehicle then
-		return
-	end
-
-	local id = ray.unit:unit_data().unit_id
-
-	if is_vehicle then
-		if self._hed.vehicle == id then
-			self:set_vehicle(nil)
-		else
-			self:set_vehicle(ray.unit)
+		if not is_vehicle then
+			return
 		end
+
+		local id = ray.unit:unit_data().unit_id
+
+		if is_vehicle then
+			if self._hed.vehicle == id then
+				self:set_vehicle(nil)
+			else
+				self:set_vehicle(ray.unit)
+			end
+		end
+
+		return
+	end
+
+	local ray = managers.editor:unit_by_raycast({
+		ray_type = "editor",
+		mask = 10
+	})
+
+	if ray and ray.unit and string.find(ray.unit:name():s(), "point_teleport_player", 1, true) then
+		local id = ray.unit:unit_data().unit_id
+		local peer_id = table.get_key(self._hed.teleport_points, id)
+		local select_index = self._teleport_points_list:selected_index()
+
+		if peer_id then
+			self._hed.teleport_points[peer_id] = nil
+		else
+			peer_id = select_index + 1
+			select_index = peer_id
+
+			if peer_id and peer_id > 0 then
+				self._hed.teleport_points[peer_id] = id
+			end
+		end
+
+		if select_index and _G.tweak_data.max_players <= select_index then
+			select_index = 0
+		end
+
+		self:_update_gui()
+		self._teleport_points_list:select_index(select_index)
 	end
 end
 
@@ -84,6 +115,21 @@ function VehicleBoardingElement:draw_links(t, dt, selected_unit, all_units)
 			})
 		end
 	end
+
+	for peer_id, point_id in pairs(self._hed.teleport_points) do
+		local unit = managers.editor:unit_with_id(point_id)
+		local draw = unit and (not selected_unit or unit == selected_unit or self._unit == selected_unit)
+
+		if draw then
+			self:_draw_link({
+				g = 0.15,
+				b = 0.75,
+				r = 0,
+				from_unit = self._unit,
+				to_unit = unit
+			})
+		end
+	end
 end
 
 function VehicleBoardingElement:_update_gui()
@@ -94,6 +140,7 @@ function VehicleBoardingElement:_update_gui()
 	self._move_up_button:set_enabled(seats_interface_enabled)
 	self._move_down_button:set_enabled(seats_interface_enabled)
 	self:_populate_seats_list()
+	self:_populate_teleport_points_list()
 end
 
 function VehicleBoardingElement:_populate_seats_list()
@@ -152,6 +199,84 @@ function VehicleBoardingElement:_move_seat_in_direction(direction)
 	self._seats_list:select_index(swap_index - 1)
 end
 
+function VehicleBoardingElement:_populate_teleport_points_list()
+	self._teleport_points_list:clear()
+
+	local first_empty_slot = nil
+
+	for peer_id = 1, _G.tweak_data.max_players do
+		local point_id = self._hed.teleport_points[peer_id]
+		local name_id = ""
+
+		if point_id then
+			local unit = managers.editor:unit_with_id(point_id)
+			name_id = unit and unit:unit_data() and unit:unit_data().name_id or point_id
+		else
+			first_empty_slot = first_empty_slot or peer_id
+		end
+
+		local s = string.format("[%s] %s", tostring(peer_id), tostring(name_id))
+
+		self._teleport_points_list:append(s)
+	end
+
+	if first_empty_slot then
+		self._teleport_points_list:select_index(first_empty_slot - 1)
+	end
+end
+
+function VehicleBoardingElement:_teleport_remove_clicked(button, event)
+	local peer_id = self._teleport_points_list:selected_index() + 1
+	self._hed.teleport_points[peer_id] = nil
+
+	self:_populate_teleport_points_list()
+	self._teleport_points_list:select_index(peer_id - 1)
+end
+
+function VehicleBoardingElement:_teleport_move_up_clicked(button, event)
+	self:_move_teleport_in_direction("up")
+end
+
+function VehicleBoardingElement:_teleport_move_down_clicked(button, event)
+	self:_move_teleport_in_direction("down")
+end
+
+function VehicleBoardingElement:_select_teleport_doubleclicked(...)
+	local peer_id = self._teleport_points_list:selected_index() + 1
+	local point_id = self._hed.teleport_points[peer_id]
+	local unit = managers.editor:unit_with_id(point_id)
+
+	if unit then
+		managers.editor:select_unit(unit)
+	end
+end
+
+function VehicleBoardingElement:_move_teleport_in_direction(direction)
+	local peer_id = self._teleport_points_list:selected_index() + 1
+	local swap_index = nil
+
+	if direction == "up" then
+		swap_index = peer_id - 1
+
+		if peer_id <= 1 then
+			return
+		end
+	elseif direction == "down" then
+		swap_index = peer_id + 1
+
+		if peer_id > _G.tweak_data.max_players - 1 then
+			return
+		end
+	end
+
+	local temp = self._hed.teleport_points[swap_index]
+	self._hed.teleport_points[swap_index] = self._hed.teleport_points[peer_id]
+	self._hed.teleport_points[peer_id] = temp
+
+	self:_populate_teleport_points_list()
+	self._teleport_points_list:select_index(swap_index - 1)
+end
+
 function VehicleBoardingElement:_build_panel(panel, panel_sizer)
 	self:_create_panel()
 
@@ -182,5 +307,30 @@ function VehicleBoardingElement:_build_panel(panel, panel_sizer)
 
 	self._move_down_button:connect("EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "_move_down_clicked"), nil)
 	panel_sizer:add(self._move_down_button, 0, 0, "EXPAND")
+
+	local teleport_points_label = EWS:StaticText(panel, "")
+
+	teleport_points_label:set_label("Teleport points by peer id:")
+	panel_sizer:add(teleport_points_label, 0, 0, "EXPAND")
+
+	self._teleport_points_list = EWS:ListBox(panel, "", "LB_SINGLE,LB_HSCROLL,LB_NEEDED_SB")
+
+	self._teleport_points_list:connect("EVT_COMMAND_LISTBOX_DOUBLECLICKED", callback(self, self, "_select_teleport_doubleclicked"), nil)
+	panel_sizer:add(self._teleport_points_list, 0, 0, "EXPAND")
+
+	self._teleport_move_up_button = EWS:Button(panel, "Move Up")
+
+	self._teleport_move_up_button:connect("EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "_teleport_move_up_clicked"), nil)
+	panel_sizer:add(self._teleport_move_up_button, 0, 0, "EXPAND")
+
+	self._teleport_move_down_button = EWS:Button(panel, "Move Down")
+
+	self._teleport_move_down_button:connect("EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "_teleport_move_down_clicked"), nil)
+	panel_sizer:add(self._teleport_move_down_button, 0, 0, "EXPAND")
+
+	self._teleport_remove_button = EWS:Button(panel, "Remove")
+
+	self._teleport_remove_button:connect("EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "_teleport_remove_clicked"), nil)
+	panel_sizer:add(self._teleport_remove_button, 0, 0, "EXPAND")
 	self:_update_gui()
 end

@@ -9596,6 +9596,39 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 			}
 		}
 	}
+	self.masks.gabhelm = {
+		unit = "units/pd2_dlc_deep/characters/msk_gabhelm/msk_gabhelm",
+		name_id = "bm_msk_gabhelm",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "deep",
+		texture_bundle_folder = "deep"
+	}
+	self.masks.bossflagmask = {
+		unit = "units/pd2_dlc_deep/characters/msk_bossflagmask/msk_bossflagmask",
+		name_id = "bm_msk_bossflagmask",
+		pcs = {},
+		value = 0,
+		type = "cowboyhat",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "deep",
+		texture_bundle_folder = "deep"
+	}
+	self.masks.roclown = {
+		unit = "units/pd2_dlc_dot/masks/msk_roclown/msk_roclown",
+		name_id = "bm_msk_roclown",
+		pcs = {},
+		value = 0,
+		type = "helmet",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "dot_roclown_msk",
+		texture_bundle_folder = "dot"
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.masks) do

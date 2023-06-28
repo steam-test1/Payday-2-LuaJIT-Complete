@@ -5376,7 +5376,7 @@ function PlayerManager:enter_vehicle(vehicle, locator)
 	if Network:is_server() then
 		self:server_enter_vehicle(vehicle, peer_id, player, seat.name)
 	else
-		managers.network:session():send_to_host("sync_enter_vehicle_host", vehicle, seat.name, peer_id, player)
+		managers.network:session():send_to_host("sync_enter_vehicle_host", vehicle, seat.name)
 	end
 end
 
@@ -5394,7 +5394,11 @@ function PlayerManager:server_enter_vehicle(vehicle, peer_id, player, seat_name)
 	if seat ~= nil then
 		managers.network:session():send_to_peers_synched("sync_vehicle_player", "enter", vehicle, peer_id, player, seat.name)
 		self:_enter_vehicle(vehicle, peer_id, player, seat.name)
+
+		return true
 	end
+
+	return false
 end
 
 function PlayerManager:sync_enter_vehicle(vehicle, peer_id, player, seat_name)
@@ -5422,6 +5426,18 @@ function PlayerManager:_enter_vehicle(vehicle, peer_id, player, seat_name)
 	vehicle:link(Idstring(VehicleDrivingExt.SEAT_PREFIX .. seat_name), player)
 
 	if self:local_player() == player then
+		if self:is_carrying() then
+			local carry_data = self:get_my_carry_data()
+			local carry_tweak_data = tweak_data.carry[carry_data.carry_id]
+			local skip_exit_secure = carry_tweak_data and carry_tweak_data.skip_exit_secure
+			local vehicle_ext = vehicle:vehicle_driving()
+			local secure_carry_on_enter = vehicle_ext and vehicle_ext.secure_carry_on_enter
+
+			if secure_carry_on_enter and not skip_exit_secure then
+				self:bank_carry()
+			end
+		end
+
 		self:set_player_state("driving")
 	end
 

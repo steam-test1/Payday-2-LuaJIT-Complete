@@ -103,6 +103,7 @@ function VehicleDrivingExt:init(unit)
 		self._interaction_loot = true
 	end
 
+	self._allow_whisper_mode = self.allow_whisper_mode or self._tweak_data.allow_whisper_mode or false
 	self._playing_slip_sound_dt = 0
 	self._playing_reverse_sound_dt = 0
 	self._playing_engine_sound = false
@@ -627,8 +628,8 @@ end
 function VehicleDrivingExt:reserve_seat(player, position, seat_name)
 	local seat = nil
 
-	if position then
-		seat = self:get_available_seat(position)
+	if not seat_name then
+		seat = self:get_available_seat(position or player:position())
 	else
 		for _, s in pairs(self._seats) do
 			if s.name == seat_name then
@@ -636,12 +637,14 @@ function VehicleDrivingExt:reserve_seat(player, position, seat_name)
 			end
 		end
 
-		if alive(seat.occupant) and seat.occupant:brain() == nil then
-			seat = self:get_available_seat(player:position())
+		if alive(seat.occupant) and not seat.occupant:brain() then
+			seat = self:get_available_seat(position or player:position())
 		end
 	end
 
 	if seat == nil then
+		Application:error("[VehicleDrivingExt:reserve_seat] Couldn't find a seat for player. ", player, self._unit)
+
 		return nil
 	end
 
@@ -755,7 +758,7 @@ function VehicleDrivingExt:_evacuate_seat(seat)
 	seat.occupant:unlink()
 
 	seat.occupant:movement().vehicle_unit = nil
-	seat.occupant:movement().seat = nil
+	seat.occupant:movement().vehicle_seat = nil
 
 	if seat.occupant:character_damage():dead() then
 		-- Nothing
@@ -772,6 +775,10 @@ function VehicleDrivingExt:_evacuate_seat(seat)
 
 	seat.occupant:movement():set_rotation(rot)
 	seat.occupant:movement():set_position(pos)
+
+	if self.team_ai_invulnerable then
+		seat.occupant:character_damage():set_invulnerable(false)
+	end
 
 	seat.occupant = nil
 end
@@ -921,13 +928,58 @@ function VehicleDrivingExt:num_players_inside()
 	return num_players
 end
 
+function VehicleDrivingExt:place_team_ai_in_vehicle(unit)
+	if managers.groupai:state():whisper_mode() and not self._allow_whisper_mode then
+		return
+	end
+
+	local movement_ext = unit:movement()
+	local brain_ext = unit:brain()
+	local damage_ext = unit:character_damage()
+
+	for _, seat in pairs(self._seats) do
+		if not seat.driving and not alive(seat.occupant) and (not seat.drive_SO_data or not seat.drive_SO_data.unit) then
+			self:_create_seat_SO(seat, true)
+
+			local so_data = seat.drive_SO_data
+			so_data.unit = unit
+			so_data.ride_objective.action.align_sync = true
+
+			damage_ext:revive_instant()
+			brain_ext:set_objective(so_data.ride_objective)
+			managers.network:session():send_to_peers("sync_ai_vehicle_action", "enter", self._unit, seat.name, unit)
+
+			movement_ext.vehicle_unit = self._unit
+			movement_ext.vehicle_seat = seat
+
+			movement_ext:set_position(seat.object:position())
+			movement_ext:set_rotation(seat.object:rotation())
+			movement_ext:action_request(so_data.ride_objective.action)
+			managers.groupai:state():remove_special_objective(so_data.SO_id)
+
+			return
+		end
+	end
+end
+
 function VehicleDrivingExt:on_team_ai_enter(ai_unit)
 	ai_unit:movement().vehicle_unit:link(Idstring(VehicleDrivingExt.THIRD_PREFIX .. ai_unit:movement().vehicle_seat.name), ai_unit, ai_unit:orientation_object():name())
 
 	ai_unit:movement().vehicle_seat.occupant = ai_unit
 
 	if ai_unit:movement():carrying_bag() then
-		ai_unit:movement():throw_bag()
+		local carry_tweak_data = ai_unit:movement():carry_tweak()
+		local skip_exit_secure = carry_tweak_data and carry_tweak_data.skip_exit_secure
+
+		if self.secure_carry_on_enter and not skip_exit_secure then
+			ai_unit:movement():bank_carry()
+		else
+			ai_unit:movement():throw_bag()
+		end
+	end
+
+	if self.team_ai_invulnerable then
+		ai_unit:character_damage():set_invulnerable(true)
 	end
 
 	Application:debug("VehicleDrivingExt:sync_ai_vehicle_action")
@@ -972,6 +1024,10 @@ end
 
 function VehicleDrivingExt:activate_vehicle()
 	if not self._vehicle:is_active() then
+		if not self._unit:enabled() then
+			self._unit:set_enabled(true)
+		end
+
 		self._unit:damage():run_sequence_simple("driving")
 		self._vehicle:set_active(true)
 		self:set_state(VehicleDrivingExt.STATE_DRIVING)
@@ -1521,7 +1577,7 @@ function VehicleDrivingExt:_chk_register_drive_SO()
 end
 
 function VehicleDrivingExt:_create_seat_SO(seat, dont_register)
-	if seat.drive_SO_data then
+	if seat and seat.drive_SO_data then
 		return
 	end
 
@@ -1730,26 +1786,21 @@ function VehicleDrivingExt:shooting_stance_allowed()
 end
 
 function VehicleDrivingExt:interact_trunk()
-	local vehicle = self._unit
-	local peer_id = managers.network:session():local_peer():id()
-
-	managers.network:session():send_to_peers_synched("sync_vehicle_interact_trunk", vehicle, peer_id)
-	self:_interact_trunk(vehicle)
+	managers.network:session():send_to_peers_synched("sync_vehicle_interact_trunk", self._unit)
+	self:_interact_trunk()
 end
 
-function VehicleDrivingExt:_interact_trunk(vehicle)
-	local driving_ext = vehicle:vehicle_driving()
+function VehicleDrivingExt:_interact_trunk()
+	if self._trunk_open then
+		self._unit:damage():run_sequence_simple(VehicleDrivingExt.SEQUENCE_TRUNK_CLOSE)
 
-	if driving_ext._trunk_open then
-		vehicle:damage():run_sequence_simple(VehicleDrivingExt.SEQUENCE_TRUNK_CLOSE)
-
-		driving_ext._trunk_open = false
-		driving_ext._interaction_loot = false
+		self._trunk_open = false
+		self._interaction_loot = false
 	else
-		vehicle:damage():run_sequence_simple(VehicleDrivingExt.SEQUENCE_TRUNK_OPEN)
+		self._unit:damage():run_sequence_simple(VehicleDrivingExt.SEQUENCE_TRUNK_OPEN)
 
-		driving_ext._trunk_open = true
-		driving_ext._interaction_loot = true
+		self._trunk_open = true
+		self._interaction_loot = true
 	end
 end
 

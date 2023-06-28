@@ -20,10 +20,12 @@ function ElementSetOutline:on_executed(instigator)
 				unit:contour():remove("highlight", true)
 			end
 
+			local c_type = self._values.outline_type or "highlight_character"
+
 			if self._values.set_outline then
-				unit:contour():add("highlight_character", true)
+				unit:contour():add(c_type, true, nil, nil, true)
 			else
-				unit:contour():remove("highlight_character", true)
+				unit:contour():remove(c_type, true, true)
 			end
 		end
 	end

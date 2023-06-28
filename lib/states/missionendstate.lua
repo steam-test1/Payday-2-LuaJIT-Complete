@@ -213,9 +213,15 @@ function MissionEndState:at_enter(old_state, params)
 	end
 
 	local level_data = Global.level_data.level_id and tweak_data.levels[Global.level_data.level_id]
+	local failure_music = not self._success and level_data and level_data.failure_music
 
-	if not self._success and level_data and level_data.failure_music then
-		managers.menu:post_event(level_data.failure_music)
+	if type(failure_music) == "table" then
+		local failure_variant = managers.groupai:state():failure_variant() or 0
+		failure_music = failure_music[failure_variant] or nil
+	end
+
+	if failure_music then
+		managers.menu:post_event(failure_music)
 	else
 		managers.music:post_event(self._success and managers.music:jukebox_menu_track("heistresult") or managers.music:jukebox_menu_track("heistlost"))
 	end
@@ -372,9 +378,15 @@ function MissionEndState:play_finishing_sound(success)
 		end
 
 		local level_data = Global.level_data.level_id and tweak_data.levels[Global.level_data.level_id]
+		local failure_event = level_data and level_data.failure_event
 
-		if level_data and level_data.failure_event then
-			managers.dialog:queue_dialog(level_data.failure_event, {})
+		if type(failure_event) == "table" then
+			local failure_variant = managers.groupai:state():failure_variant() or 0
+			failure_event = failure_event[failure_variant] or nil
+		end
+
+		if failure_event then
+			managers.dialog:queue_dialog(failure_event, {})
 		else
 			managers.dialog:queue_narrator_dialog("g01x", {})
 		end

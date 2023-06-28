@@ -935,11 +935,20 @@ function EquipmentsTweakData:init()
 		text_id = "hud_carry_corp_achi_blueprint"
 	}
 	self.specials.lrm_keycard = {
-		transfer_quantity = 1,
+		transfer_quantity = 2,
 		sync_possession = true,
 		quantity = 1,
 		text_id = "hud_int_equipment_pickup_lrm_keycard",
 		max_quantity = 2,
 		icon = "equipment_rfid_tag_01"
+	}
+	self.specials.deep_oil_sample = {
+		sync_possession = true,
+		action_message = "deep_oil_sample",
+		transfer_quantity = 1,
+		text_id = "hud_equipment_int_deep_oil_sample",
+		max_quantity = 1,
+		icon = "equipment_vial",
+		quantity = 1
 	}
 end

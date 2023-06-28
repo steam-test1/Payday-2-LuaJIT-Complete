@@ -451,6 +451,12 @@ function WeaponTweakData:_init_data_npc_melee()
 		animation_param = "melee_fist",
 		player_blood_effect = true
 	}
+	self.npc_melee.fists_electric = deep_clone(self.npc_melee.fists)
+	self.npc_melee.fists_electric.tase_data = {
+		tase_strength = "light",
+		electrocution_time_mul = 0.5
+	}
+	self.npc_melee.fists_electric.additional_impact_sound = "buzzer_detector_hit_body"
 	self.npc_melee.helloween = {
 		unit_name = Idstring("units/pd2_halloween/weapons/wpn_mel_titan_hammer/wpn_mel_titan_hammer"),
 		damage = 10,

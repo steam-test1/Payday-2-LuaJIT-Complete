@@ -254,7 +254,8 @@ function MissionManager:init(...)
 		"pku_gnome",
 		"pku_crafted_weapon",
 		"pku_corp_papers",
-		"on_peer_dropin"
+		"on_peer_dropin",
+		"pku_luggage_money"
 	})
 
 	self._mission_filter = {}

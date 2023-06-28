@@ -58,6 +58,14 @@ function GenericDLCManager:has_cot()
 	return self:is_dlc_unlocked("cot")
 end
 
+function GenericDLCManager:has_deep()
+	return self:is_dlc_unlocked("deep")
+end
+
+function GenericDLCManager:has_dot()
+	return self:is_dlc_unlocked("dot")
+end
+
 function GenericDLCManager:has_ess()
 	return self:is_dlc_unlocked("ess")
 end
@@ -490,6 +498,17 @@ function WINDLCManager:init_generated()
 		webpage = "https://pd2.link/HostileTakeoverHeistYBS"
 	}
 	Global.dlc_manager.all_dlc_data.cot = {
+		app_id = "218620",
+		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
+		no_install = true
+	}
+	Global.dlc_manager.all_dlc_data.deep = {
+		app_id = "2353512",
+		epic_id = "f46f3eb2ddef40f28e8d0875eef443b3",
+		no_install = true,
+		webpage = "https://pd2.link/CrudeAwakeningHeistYBS"
+	}
+	Global.dlc_manager.all_dlc_data.dot = {
 		app_id = "218620",
 		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
 		no_install = true

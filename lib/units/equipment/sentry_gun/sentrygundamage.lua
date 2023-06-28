@@ -116,12 +116,9 @@ function SentryGunDamage:shoot_pos_mid(m_pos)
 	mvector3.set(m_pos, self._ext_movement:m_head_pos())
 end
 
-function SentryGunDamage:on_marked_state(state)
-	if state then
-		self._marked_dmg_mul = self._marked_dmg_mul or tweak_data.upgrades.values.player.marked_enemy_damage_mul
-	else
-		self._marked_dmg_mul = nil
-	end
+function SentryGunDamage:on_marked_state(bonus_damage, bonus_distance_damage)
+	self._marked_dmg_mul = bonus_damage and (self._marked_dmg_mul or tweak_data.upgrades.values.player.marked_enemy_damage_mul) or nil
+	self._marked_dmg_dist_mul = bonus_distance_damage or nil
 end
 
 function SentryGunDamage:damage_bullet(attack_data)
@@ -153,6 +150,18 @@ function SentryGunDamage:damage_bullet(attack_data)
 	end
 
 	dmg_adjusted = dmg_adjusted * (self._marked_dmg_mul or 1)
+
+	if self._marked_dmg_dist_mul then
+		local spott_dst = tweak_data.upgrades.values.player.marked_inc_dmg_distance[self._marked_dmg_dist_mul]
+
+		if spott_dst then
+			local dst = mvector3.distance(attack_data.origin, self._unit:position())
+
+			if spott_dst[1] < dst then
+				damage = damage * spott_dst[2]
+			end
+		end
+	end
 
 	if hit_shield then
 		dmg_adjusted = dmg_adjusted * tweak_data.weapon[self._unit:base():get_name_id()].SHIELD_DMG_MUL

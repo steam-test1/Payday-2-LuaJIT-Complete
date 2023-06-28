@@ -595,6 +595,7 @@ CopActionAct._act_redirects = {
 		"e_nl_over_1m_fwd_1_5m",
 		"e_nl_over_1_down_10m_var1",
 		"e_nl_over_1_down_10m_var2",
+		"e_nl_over_1_down_10m_var4",
 		"e_nl_over_1_down_4_5m_var1",
 		"e_nl_over_1_down_5_5m_var1",
 		"e_nl_over_1_down_22m_var1",

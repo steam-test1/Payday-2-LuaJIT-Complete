@@ -5159,8 +5159,12 @@ function GuiTweakData:init(tweak_data)
 				}
 			},
 			{
-				coming_soon = true,
-				poster_icon = "guis/dlcs/lrm/textures/pd2/crimenet/coming_soon_cellmates",
+				coming_soon = false,
+				briefing_track = "Play_loc_secr_02",
+				heist = "mex",
+				poster_icon = "guis/dlcs/lrtw/textures/pd2/crimenet/cellmates",
+				recording_track = "Play_spe_clm_01",
+				job_value = "LRTW",
 				poster_rect = {
 					0,
 					14,
@@ -5194,6 +5198,12 @@ function GuiTweakData:init(tweak_data)
 		limit = 5
 	}
 
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_deep_01",
+		texture_path = "guis/dlcs/deep/textures/pd2/new_heists/deep_01",
+		epic_url = "https://pd2.link/CrudeAwakeningHeistSLE",
+		url = "https://pd2.link/CrudeAwakeningHeistSLS"
+	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_txt4_01",
 		texture_path = "guis/dlcs/txt4/textures/pd2/new_heists/txt4_01",
