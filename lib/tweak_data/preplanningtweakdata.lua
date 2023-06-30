@@ -2187,7 +2187,7 @@ function PrePlanningTweakData:init(tweak_data)
 		icon = 133,
 		total = 1,
 		cost = tweak_data:get_value("money_manager", "preplanning_asset_cost_fex_stealth_entry_with_boat"),
-		budget_cost = 6,
+		budget_cost = 4,
 		post_event = "preplan_07",
 		prio = 3
 	}

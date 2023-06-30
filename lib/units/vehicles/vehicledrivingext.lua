@@ -1024,13 +1024,24 @@ end
 
 function VehicleDrivingExt:activate_vehicle()
 	if not self._vehicle:is_active() then
-		if not self._unit:enabled() then
+		local was_not_enabled = not self._unit:enabled()
+
+		if was_not_enabled then
 			self._unit:set_enabled(true)
 		end
 
 		self._unit:damage():run_sequence_simple("driving")
 		self._vehicle:set_active(true)
-		self:set_state(VehicleDrivingExt.STATE_DRIVING)
+
+		if Network:is_server() then
+			self:set_state(VehicleDrivingExt.STATE_DRIVING)
+		end
+
+		if was_not_enabled then
+			call_on_next_update(function ()
+				self._unit:set_enabled(false)
+			end)
+		end
 	end
 
 	self._last_drop_position = self._unit:get_object(Idstring(self._tweak_data.loot_drop_point)):position()

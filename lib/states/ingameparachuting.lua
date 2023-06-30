@@ -33,16 +33,16 @@ end
 function IngameParachuting:at_exit()
 	local player = managers.player:player_unit()
 
-	if player then
-		player:base():set_enabled(false)
-	end
-
 	managers.hud:hide(PlayerBase.PLAYER_INFO_HUD)
 	managers.hud:hide(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN)
 
-	local unit = safe_spawn_unit(Idstring("units/pd2_dlc_jerry/props/jry_equipment_parachute/jry_equipment_parachute_ragdoll"), player:position(), player:rotation())
+	if player then
+		player:base():set_enabled(false)
 
-	unit:damage():run_sequence_simple("make_dynamic")
+		local unit = safe_spawn_unit(Idstring("units/pd2_dlc_jerry/props/jry_equipment_parachute/jry_equipment_parachute_ragdoll"), player:position(), player:rotation())
+
+		unit:damage():run_sequence_simple("make_dynamic")
+	end
 end
 
 function IngameParachuting:on_server_left()

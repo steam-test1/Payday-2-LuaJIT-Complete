@@ -81,12 +81,28 @@ function PlayerDriving:_enter(enter_data)
 	end
 
 	self._unit:camera():set_shaker_parameter("breathing", "amplitude", 0)
-	self._unit:camera()._camera_unit:base():animate_fov(self._vehicle_ext._tweak_data.fov, 0.33)
+	self._unit:camera()._camera_unit:base():animate_fov(self:get_zoom_fov({}), 0.33)
 
 	self._controller = self._unit:base():controller()
 
 	managers.controller:set_ingame_mode("driving")
 	self:_upd_attention()
+end
+
+function PlayerDriving:get_zoom_fov(stance_data)
+	if self._vehicle == nil then
+		return PlayerStandard.get_zoom_fov(self, stance_data)
+	end
+
+	local fov = self._vehicle_ext._tweak_data.fov or stance_data and stance_data.FOV or 75
+
+	if self._seat.allow_shooting or self._stance == PlayerDriving.STANCE_SHOOTING then
+		return PlayerStandard.get_zoom_fov(self, {
+			FOV = fov
+		})
+	end
+
+	return fov
 end
 
 function PlayerDriving:exit(state_data, new_state_name)
@@ -346,6 +362,7 @@ function PlayerDriving:_enter_shooting_stance()
 
 	self:_postion_player_on_seat()
 	self:_set_camera_limits("shooting")
+	self:_stance_entered()
 	self._unit:camera():play_redirect(self:get_animation("equip"))
 	managers.controller:set_ingame_mode("main")
 end
@@ -355,6 +372,7 @@ function PlayerDriving:_exit_shooting_stance()
 
 	self:_postion_player_on_seat(self._seat)
 	self:_set_camera_limits("passenger")
+	self:_stance_entered()
 
 	if not self._seat.allow_shooting then
 		local t = managers.player:player_timer():time()

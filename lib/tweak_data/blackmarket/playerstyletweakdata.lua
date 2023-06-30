@@ -5181,12 +5181,14 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		name_id = "bm_suit_bossflag",
 		desc_id = "bm_suit_bossflag_desc",
 		texture_bundle_folder = "deep",
-		global_value = "deep",
+		locks = {
+			achievement = "deep_10"
+		},
 		material_variations = {}
 	}
 	self.player_styles.bossflag.material_variations.default = {
 		name_id = "bm_suit_bossflag",
-		global_value = "deep",
+		global_value = "normal",
 		desc_id = "bm_suit_bossflag_desc"
 	}
 	self.player_styles.bossflag.body_replacement = body_replacement_standard

@@ -1445,12 +1445,6 @@ end
 function BaseNetworkSession:_get_next_spawn_point_id()
 	local id = self._spawn_point_beanbag[self._next_i_spawn_point]
 
-	if not managers.network:spawn_point(id) and managers.network:has_spawn_points() then
-		self:_create_spawn_point_beanbag()
-
-		return self:_get_next_spawn_point_id()
-	end
-
 	if self._next_i_spawn_point == #self._spawn_point_beanbag then
 		self._next_i_spawn_point = 1
 	else

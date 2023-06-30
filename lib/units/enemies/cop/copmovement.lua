@@ -2331,7 +2331,7 @@ function CopMovement:load(load_data)
 		self:_change_stance(my_load_data.stance_code)
 	end
 
-	if my_load_data.cool_state then
+	if my_load_data.cool_state ~= self._cool then
 		self:set_cool(my_load_data.cool_state)
 	end
 

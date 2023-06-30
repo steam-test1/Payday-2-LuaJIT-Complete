@@ -266,6 +266,8 @@ function VehicleManager:sync_vehicle_data(vehicle_unit, state, occupant_driver, 
 			v_ext:activate_vehicle()
 		end
 
+		v_ext:set_state(state, true)
+
 		if vehicle_unit:damage():has_sequence("local_driving_exit") then
 			vehicle_unit:damage():run_sequence("local_driving_exit")
 		end

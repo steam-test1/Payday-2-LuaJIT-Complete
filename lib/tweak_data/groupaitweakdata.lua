@@ -14,6 +14,7 @@ function GroupAITweakData:init(tweak_data)
 	self:_init_chatter_data()
 	self:_init_unit_categories(difficulty_index)
 	self:_init_enemy_spawn_groups(difficulty_index)
+	self:_init_enemy_spawn_groups_level(tweak_data, difficulty_index)
 end
 
 function GroupAITweakData:_init_chatter_data()
@@ -3300,108 +3301,6 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 		}
 	}
 	self.enemy_spawn_groups.FBI_spoocs = self.enemy_spawn_groups.single_spooc
-
-	if Global.level_data and Global.level_data.level_id == "trai" or Global.game_settings and Global.game_settings.level_id == "trai" then
-		self.enemy_spawn_groups.marshal_squad = {
-			spawn_cooldown = 60,
-			max_nr_simultaneous_groups = 2,
-			initial_spawn_delay = 90,
-			amount = {
-				2,
-				2
-			},
-			spawn = {
-				{
-					respawn_cooldown = 30,
-					amount_min = 1,
-					rank = 2,
-					freq = 1,
-					unit = "marshal_shield",
-					tactics = self._tactics.marshal_shield
-				},
-				{
-					respawn_cooldown = 30,
-					amount_min = 1,
-					rank = 1,
-					freq = 1,
-					unit = "marshal_marksman",
-					tactics = self._tactics.marshal_marksman
-				}
-			},
-			spawn_point_chk_ref = table.list_to_set({
-				"tac_shield_wall",
-				"tac_shield_wall_ranged",
-				"tac_shield_wall_charge"
-			})
-		}
-	elseif Global.level_data and Global.level_data.level_id == "ranc" or Global.game_settings and Global.game_settings.level_id == "ranc" then
-		self.enemy_spawn_groups.marshal_squad = {
-			spawn_cooldown = 60,
-			max_nr_simultaneous_groups = 2,
-			initial_spawn_delay = 90,
-			amount = {
-				2,
-				2
-			},
-			spawn = {
-				{
-					respawn_cooldown = 30,
-					amount_min = 1,
-					rank = 2,
-					freq = 1,
-					unit = "marshal_shield",
-					tactics = self._tactics.marshal_shield
-				},
-				{
-					respawn_cooldown = 30,
-					amount_min = 1,
-					rank = 1,
-					freq = 1,
-					unit = "marshal_marksman",
-					tactics = self._tactics.marshal_marksman
-				}
-			},
-			spawn_point_chk_ref = table.list_to_set({
-				"tac_shield_wall",
-				"tac_shield_wall_ranged",
-				"tac_shield_wall_charge"
-			})
-		}
-	else
-		self.enemy_spawn_groups.marshal_squad = {
-			spawn_cooldown = 60,
-			max_nr_simultaneous_groups = 2,
-			initial_spawn_delay = 480,
-			amount = {
-				2,
-				2
-			},
-			spawn = {
-				{
-					respawn_cooldown = 30,
-					amount_min = 1,
-					rank = 2,
-					freq = 1,
-					unit = "marshal_shield",
-					tactics = self._tactics.marshal_shield
-				},
-				{
-					respawn_cooldown = 30,
-					amount_min = 1,
-					rank = 1,
-					freq = 1,
-					unit = "marshal_marksman",
-					tactics = self._tactics.marshal_marksman
-				}
-			},
-			spawn_point_chk_ref = table.list_to_set({
-				"tac_shield_wall",
-				"tac_shield_wall_ranged",
-				"tac_shield_wall_charge"
-			})
-		}
-	end
-
 	self.enemy_spawn_groups.snowman_boss = {
 		amount = {
 			1,
@@ -3420,6 +3319,96 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 			"tac_bull_rush"
 		})
 	}
+end
+
+function GroupAITweakData:_init_enemy_spawn_groups_level(tweak_data, difficulty_index)
+	local lvl_tweak_data = tweak_data.levels[Global.game_settings and Global.game_settings.level_id or Global.level_data and Global.level_data.level_id]
+
+	if lvl_tweak_data and lvl_tweak_data.ai_unit_group_overrides then
+		local unit_types = nil
+
+		for unit_type, faction_type_data in pairs(lvl_tweak_data.ai_unit_group_overrides) do
+			unit_types = self.unit_categories[unit_type] and self.unit_categories[unit_type].unit_types
+
+			if unit_types then
+				for faction_type, override in pairs(faction_type_data) do
+					if unit_types[faction_type] then
+						unit_types[faction_type] = override
+					end
+				end
+			end
+		end
+	end
+
+	if lvl_tweak_data and not lvl_tweak_data.ai_marshal_spawns_disabled then
+		if lvl_tweak_data.ai_marshal_spawns_fast then
+			self.enemy_spawn_groups.marshal_squad = {
+				spawn_cooldown = 60,
+				max_nr_simultaneous_groups = 2,
+				initial_spawn_delay = 90,
+				amount = {
+					2,
+					2
+				},
+				spawn = {
+					{
+						respawn_cooldown = 30,
+						amount_min = 1,
+						rank = 2,
+						freq = 1,
+						unit = "marshal_shield",
+						tactics = self._tactics.marshal_shield
+					},
+					{
+						respawn_cooldown = 30,
+						amount_min = 1,
+						rank = 1,
+						freq = 1,
+						unit = "marshal_marksman",
+						tactics = self._tactics.marshal_marksman
+					}
+				},
+				spawn_point_chk_ref = table.list_to_set({
+					"tac_shield_wall",
+					"tac_shield_wall_ranged",
+					"tac_shield_wall_charge"
+				})
+			}
+		else
+			self.enemy_spawn_groups.marshal_squad = {
+				spawn_cooldown = 60,
+				max_nr_simultaneous_groups = 2,
+				initial_spawn_delay = 480,
+				amount = {
+					2,
+					2
+				},
+				spawn = {
+					{
+						respawn_cooldown = 30,
+						amount_min = 1,
+						rank = 2,
+						freq = 1,
+						unit = "marshal_shield",
+						tactics = self._tactics.marshal_shield
+					},
+					{
+						respawn_cooldown = 30,
+						amount_min = 1,
+						rank = 1,
+						freq = 1,
+						unit = "marshal_marksman",
+						tactics = self._tactics.marshal_marksman
+					}
+				},
+				spawn_point_chk_ref = table.list_to_set({
+					"tac_shield_wall",
+					"tac_shield_wall_ranged",
+					"tac_shield_wall_charge"
+				})
+			}
+		end
+	end
 end
 
 function GroupAITweakData:_init_task_data(difficulty_index, difficulty)

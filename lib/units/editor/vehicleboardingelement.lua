@@ -44,6 +44,10 @@ function VehicleBoardingElement:add_element()
 		return
 	end
 
+	if not self._hed.seats_order then
+		return
+	end
+
 	local ray = managers.editor:unit_by_raycast({
 		ray_type = "editor",
 		mask = 10
@@ -51,21 +55,21 @@ function VehicleBoardingElement:add_element()
 
 	if ray and ray.unit and string.find(ray.unit:name():s(), "point_teleport_player", 1, true) then
 		local id = ray.unit:unit_data().unit_id
-		local peer_id = table.get_key(self._hed.teleport_points, id)
+		local seat_id = table.get_key(self._hed.teleport_points, id)
 		local select_index = self._teleport_points_list:selected_index()
 
-		if peer_id then
-			self._hed.teleport_points[peer_id] = nil
+		if seat_id then
+			self._hed.teleport_points[seat_id] = nil
 		else
-			peer_id = select_index + 1
-			select_index = peer_id
+			seat_id = select_index + 1
+			select_index = seat_id
 
-			if peer_id and peer_id > 0 then
-				self._hed.teleport_points[peer_id] = id
+			if seat_id and seat_id > 0 then
+				self._hed.teleport_points[seat_id] = id
 			end
 		end
 
-		if select_index and _G.tweak_data.max_players <= select_index then
+		if select_index and select_index >= #self._hed.seats_order then
 			select_index = 0
 		end
 
@@ -101,9 +105,10 @@ end
 function VehicleBoardingElement:draw_links(t, dt, selected_unit, all_units)
 	VehicleBoardingElement.super.draw_links(self, t, dt, selected_unit)
 
-	if self._hed.vehicle then
-		local unit = self:vehicle_unit()
-		local draw = unit and (not selected_unit or unit == selected_unit or self._unit == selected_unit)
+	local vehicle_unit = self._hed.vehicle and self:vehicle_unit()
+
+	if vehicle_unit then
+		local draw = not selected_unit or vehicle_unit == selected_unit or self._unit == selected_unit
 
 		if draw then
 			self:_draw_link({
@@ -111,23 +116,33 @@ function VehicleBoardingElement:draw_links(t, dt, selected_unit, all_units)
 				b = 0,
 				r = 0,
 				from_unit = self._unit,
-				to_unit = unit
+				to_unit = vehicle_unit
 			})
 		end
-	end
 
-	for peer_id, point_id in pairs(self._hed.teleport_points) do
-		local unit = managers.editor:unit_with_id(point_id)
-		local draw = unit and (not selected_unit or unit == selected_unit or self._unit == selected_unit)
+		for seat_id, point_id in pairs(self._hed.teleport_points) do
+			local teleport_unit = managers.editor:unit_with_id(point_id)
+			local draw = teleport_unit and (not selected_unit or teleport_unit == selected_unit or self._unit == selected_unit)
 
-		if draw then
-			self:_draw_link({
-				g = 0.15,
-				b = 0.75,
-				r = 0,
-				from_unit = self._unit,
-				to_unit = unit
-			})
+			if draw then
+				self:_draw_link({
+					g = 0.15,
+					b = 0.75,
+					r = 0,
+					from_unit = self._unit,
+					to_unit = teleport_unit
+				})
+
+				local seat_name = self._hed.seats_order and self._hed.seats_order[seat_id]
+
+				if seat_name then
+					local exit_object = vehicle_unit:get_object(Idstring(VehicleDrivingExt.EXIT_PREFIX .. seat_name))
+
+					if exit_object then
+						Application:draw_arrow(exit_object:position(), teleport_unit:position(), 0, 0.45, 0.45, 0.11)
+					end
+				end
+			end
 		end
 	end
 end
@@ -140,7 +155,6 @@ function VehicleBoardingElement:_update_gui()
 	self._move_up_button:set_enabled(seats_interface_enabled)
 	self._move_down_button:set_enabled(seats_interface_enabled)
 	self:_populate_seats_list()
-	self:_populate_teleport_points_list()
 end
 
 function VehicleBoardingElement:_populate_seats_list()
@@ -163,6 +177,8 @@ function VehicleBoardingElement:_populate_seats_list()
 	for i, seat_name in ipairs(self._hed.seats_order) do
 		self._seats_list:append(seat_name)
 	end
+
+	self:_populate_teleport_points_list()
 end
 
 function VehicleBoardingElement:_move_up_clicked(button, event)
@@ -202,20 +218,24 @@ end
 function VehicleBoardingElement:_populate_teleport_points_list()
 	self._teleport_points_list:clear()
 
+	if not self._hed.seats_order then
+		return
+	end
+
 	local first_empty_slot = nil
 
-	for peer_id = 1, _G.tweak_data.max_players do
-		local point_id = self._hed.teleport_points[peer_id]
+	for seat_id = 1, #self._hed.seats_order do
+		local point_id = self._hed.teleport_points[seat_id]
 		local name_id = ""
 
 		if point_id then
 			local unit = managers.editor:unit_with_id(point_id)
 			name_id = unit and unit:unit_data() and unit:unit_data().name_id or point_id
 		else
-			first_empty_slot = first_empty_slot or peer_id
+			first_empty_slot = first_empty_slot or seat_id
 		end
 
-		local s = string.format("[%s] %s", tostring(peer_id), tostring(name_id))
+		local s = string.format("%s (%s)", tostring(name_id), tostring(self._hed.seats_order[seat_id]))
 
 		self._teleport_points_list:append(s)
 	end
@@ -226,11 +246,11 @@ function VehicleBoardingElement:_populate_teleport_points_list()
 end
 
 function VehicleBoardingElement:_teleport_remove_clicked(button, event)
-	local peer_id = self._teleport_points_list:selected_index() + 1
-	self._hed.teleport_points[peer_id] = nil
+	local seat_id = self._teleport_points_list:selected_index() + 1
+	self._hed.teleport_points[seat_id] = nil
 
 	self:_populate_teleport_points_list()
-	self._teleport_points_list:select_index(peer_id - 1)
+	self._teleport_points_list:select_index(seat_id - 1)
 end
 
 function VehicleBoardingElement:_teleport_move_up_clicked(button, event)
@@ -242,8 +262,8 @@ function VehicleBoardingElement:_teleport_move_down_clicked(button, event)
 end
 
 function VehicleBoardingElement:_select_teleport_doubleclicked(...)
-	local peer_id = self._teleport_points_list:selected_index() + 1
-	local point_id = self._hed.teleport_points[peer_id]
+	local seat_id = self._teleport_points_list:selected_index() + 1
+	local point_id = self._hed.teleport_points[seat_id]
 	local unit = managers.editor:unit_with_id(point_id)
 
 	if unit then
@@ -252,26 +272,30 @@ function VehicleBoardingElement:_select_teleport_doubleclicked(...)
 end
 
 function VehicleBoardingElement:_move_teleport_in_direction(direction)
-	local peer_id = self._teleport_points_list:selected_index() + 1
+	if not self._hed.seats_order then
+		return
+	end
+
+	local seat_id = self._teleport_points_list:selected_index() + 1
 	local swap_index = nil
 
 	if direction == "up" then
-		swap_index = peer_id - 1
+		swap_index = seat_id - 1
 
-		if peer_id <= 1 then
+		if seat_id <= 1 then
 			return
 		end
 	elseif direction == "down" then
-		swap_index = peer_id + 1
+		swap_index = seat_id + 1
 
-		if peer_id > _G.tweak_data.max_players - 1 then
+		if seat_id > #self._hed.seats_order - 1 then
 			return
 		end
 	end
 
 	local temp = self._hed.teleport_points[swap_index]
-	self._hed.teleport_points[swap_index] = self._hed.teleport_points[peer_id]
-	self._hed.teleport_points[peer_id] = temp
+	self._hed.teleport_points[swap_index] = self._hed.teleport_points[seat_id]
+	self._hed.teleport_points[seat_id] = temp
 
 	self:_populate_teleport_points_list()
 	self._teleport_points_list:select_index(swap_index - 1)
@@ -310,7 +334,7 @@ function VehicleBoardingElement:_build_panel(panel, panel_sizer)
 
 	local teleport_points_label = EWS:StaticText(panel, "")
 
-	teleport_points_label:set_label("Teleport points by peer id:")
+	teleport_points_label:set_label("Optional disembark teleport points (instead of using vehicle exit positions):")
 	panel_sizer:add(teleport_points_label, 0, 0, "EXPAND")
 
 	self._teleport_points_list = EWS:ListBox(panel, "", "LB_SINGLE,LB_HSCROLL,LB_NEEDED_SB")

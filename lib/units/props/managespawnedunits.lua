@@ -201,18 +201,31 @@ end
 function ManageSpawnedUnits:remove_unit(unit_id)
 	local entry = self._spawned_units[unit_id]
 
-	if (Network:is_server() or self.allow_client_spawn) and entry and alive(entry.unit) then
-		entry.unit:set_slot(0)
+	if entry and alive(entry.unit) then
+		entry.unit:unlink()
 		entry.unit:set_visible(false)
+		entry.unit:set_enabled(false)
+
+		if Network:is_server() or self.allow_client_spawn then
+			entry.unit:set_slot(0)
+		end
 	end
 
 	self._spawned_units[unit_id] = nil
 end
 
 function ManageSpawnedUnits:destroy(unit)
+	local allowed_to_delete = Network:is_server() or self.allow_client_spawn
+
 	for i, entry in pairs(self._spawned_units) do
 		if alive(entry.unit) then
-			entry.unit:set_slot(0)
+			entry.unit:unlink()
+			entry.unit:set_visible(false)
+			entry.unit:set_enabled(false)
+
+			if allowed_to_delete then
+				entry.unit:set_slot(0)
+			end
 		end
 	end
 

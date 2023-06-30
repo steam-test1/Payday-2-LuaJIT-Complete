@@ -9,8 +9,8 @@ end
 function BossDamage:die(...)
 	local contour_ext = self._unit:contour()
 
-	if contour_ext then
-		contour_ext:remove(contour_ext.init_contour or "highlight_character")
+	if contour_ext and contour_ext.clear_all then
+		contour_ext:clear_all()
 	end
 
 	BossDamage.super.die(self, ...)

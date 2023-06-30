@@ -4598,7 +4598,17 @@ function CopDamage:load(data)
 	end
 
 	if data.char_dmg.invulnerable then
+		local old_state = self._invulnerable and true or false
 		self._invulnerable = data.char_dmg.invulnerable
+		local new_state = self._invulnerable and true or false
+
+		if old_state ~= new_state and self._invul_impact_override then
+			if new_state then
+				managers.game_play_central:add_impact_override(self._unit, self._invul_impact_override)
+			else
+				managers.game_play_central:remove_impact_override(self._unit)
+			end
+		end
 	end
 
 	if data.char_dmg.tmp_invulnerable_t then

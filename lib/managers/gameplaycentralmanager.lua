@@ -240,7 +240,17 @@ function GamePlayCentralManager:update(t, dt)
 			for peer_id, peer in pairs(managers.network:session():peers()) do
 				local sync_time = math.min(100000, heist_time + Network:qos(peer:rpc()).ping / 1000)
 
-				peer:send_queued_sync("sync_heist_time", sync_time)
+				peer:send_queued_sync("sync_heist_time", sync_time, 1)
+			end
+
+			local no_return_time, no_return_id = managers.groupai:state():get_point_of_no_return_timer()
+
+			if no_return_time and no_return_id then
+				for peer_id, peer in pairs(managers.network:session():peers()) do
+					local sync_time = math.min(100000, no_return_time + Network:qos(peer:rpc()).ping / 1000)
+
+					peer:send_queued_sync("sync_heist_time", sync_time, 2)
+				end
 			end
 		end
 	end
@@ -715,9 +725,17 @@ function GamePlayCentralManager:stop_heist_timer()
 	self._heist_timer.running = false
 end
 
-function GamePlayCentralManager:sync_heist_time(heist_time)
-	self._heist_timer.offset_time = heist_time
-	self._heist_timer.start_time = Application:time()
+function GamePlayCentralManager:sync_heist_time(time, id)
+	if id == 1 then
+		self._heist_timer.offset_time = time
+		self._heist_timer.start_time = Application:time()
+	elseif id == 2 then
+		local _, no_return_id = managers.groupai:state():get_point_of_no_return_timer()
+
+		if no_return_id then
+			managers.groupai:state():sync_point_of_no_return_timer(time, no_return_id)
+		end
+	end
 end
 
 function GamePlayCentralManager:restart_the_game()

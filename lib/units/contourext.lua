@@ -430,9 +430,7 @@ function ContourExt:remove(type, sync, is_element)
 		return
 	end
 
-	local contour_list = clone(self._contour_list)
-
-	for i, setup in ipairs(contour_list) do
+	for i, setup in ipairs(self._contour_list) do
 		if setup.type == type then
 			self:_remove(i, sync, is_element)
 
@@ -469,7 +467,13 @@ function ContourExt:has_id(id)
 	return false
 end
 
-function ContourExt:_clear()
+function ContourExt:clear_all()
+	if self._contour_list then
+		while self._contour_list and next(self._contour_list) do
+			self:remove(self._contour_list[#self._contour_list].type, false, false)
+		end
+	end
+
 	self._contour_list = nil
 	self._materials = nil
 end
@@ -515,8 +519,10 @@ function ContourExt:_remove(index, sync, is_element)
 		end
 
 		if not was_swap then
-			for _, material in ipairs(self._materials) do
-				material:set_variable(idstr_contour_opacity, 0)
+			for _, material in ipairs(self._materials or self._unit:get_objects_by_type(idstr_material)) do
+				if alive(material) then
+					material:set_variable(idstr_contour_opacity, 0)
+				end
 			end
 		end
 	end
@@ -526,7 +532,8 @@ function ContourExt:_remove(index, sync, is_element)
 	table.remove(self._contour_list, index)
 
 	if #self._contour_list == 0 then
-		self:_clear()
+		self._contour_list = nil
+		self._materials = nil
 	elseif index == 1 then
 		self:_apply_top_preset()
 	end

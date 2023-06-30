@@ -8108,7 +8108,8 @@ function InteractionTweakData:init(tweak_data)
 		action_text_id = "deep_action_pipe_corner_spin",
 		interact_distance = 300,
 		timer = 1,
-		start_active = true
+		start_active = true,
+		sync_not_active = true
 	}
 	self.deep_hold_pku_oilsample_good = {
 		text_id = "deep_hold_pku_bloodsample_good",

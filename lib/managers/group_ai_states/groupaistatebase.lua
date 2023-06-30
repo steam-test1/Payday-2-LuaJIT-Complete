@@ -2703,6 +2703,28 @@ function GroupAIStateBase:remove_point_of_no_return_timer(point_of_no_return_id)
 	end
 end
 
+function GroupAIStateBase:get_point_of_no_return_timer()
+	return self._point_of_no_return_timer, self._point_of_no_return_id
+end
+
+function GroupAIStateBase:sync_point_of_no_return_timer(time, id)
+	if setup:has_queued_exec() then
+		return
+	end
+
+	if self._point_of_no_return_id == id then
+		local prev_time = self._point_of_no_return_timer or time
+		self._point_of_no_return_timer = time
+		local sec = math.max(math.floor(self._point_of_no_return_timer), 0)
+
+		if sec < math.floor(prev_time) then
+			managers.hud:flash_point_of_no_return_timer(sec <= 10)
+		end
+
+		managers.hud:feed_point_of_no_return_timer(self._point_of_no_return_timer, self._is_inside_point_of_no_return)
+	end
+end
+
 function GroupAIStateBase:set_is_inside_point_of_no_return(peer_id, is_inside)
 	self._peers_inside_point_of_no_return[peer_id] = is_inside
 end

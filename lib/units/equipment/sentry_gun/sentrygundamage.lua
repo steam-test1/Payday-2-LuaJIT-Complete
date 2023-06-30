@@ -158,7 +158,7 @@ function SentryGunDamage:damage_bullet(attack_data)
 			local dst = mvector3.distance(attack_data.origin, self._unit:position())
 
 			if spott_dst[1] < dst then
-				damage = damage * spott_dst[2]
+				dmg_adjusted = dmg_adjusted * spott_dst[2]
 			end
 		end
 	end

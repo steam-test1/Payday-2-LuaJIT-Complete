@@ -1714,6 +1714,7 @@ function LevelsTweakData:init()
 		cube = "cube_apply_heist_bank",
 		max_bags = 80,
 		ai_group_type = zombie,
+		ai_marshal_spawns_disabled = true,
 		load_screen = "guis/dlcs/pic/textures/loading/job_halloween2017"
 	}
 	self.wwh = {
@@ -2535,6 +2536,7 @@ function LevelsTweakData:init()
 		package = "packages/job_ranc",
 		cube = "cube_apply_heist_bank",
 		ai_group_type = america,
+		ai_marshal_spawns_fast = true,
 		narrator = "locke",
 		ghost_bonus = 0.15,
 		load_screen = "guis/dlcs/ranc/textures/loading/job_ranc_01_df",
@@ -2609,6 +2611,7 @@ function LevelsTweakData:init()
 		package = "packages/job_trai",
 		cube = "cube_apply_heist_bank",
 		ai_group_type = america,
+		ai_marshal_spawns_fast = true,
 		narrator = "locke",
 		ghost_bonus = 0.15,
 		max_bags = 35,
@@ -2694,6 +2697,7 @@ function LevelsTweakData:init()
 		package = "packages/job_corp",
 		cube = "cube_apply_heist_bank",
 		ai_group_type = america,
+		ai_marshal_spawns_fast = true,
 		narrator = "locke",
 		ghost_bonus = 0.15,
 		max_bags = 25,
@@ -2783,6 +2787,19 @@ function LevelsTweakData:init()
 		package = "packages/job_deep",
 		cube = "cube_apply_heist_bank",
 		ai_group_type = america,
+		ai_marshal_spawns_fast = true,
+		ai_unit_group_overrides = {
+			marshal_shield = {
+				america = {
+					Idstring("units/pd2_dlc_usm2/characters/ene_male_marshal_shield_2/ene_male_marshal_shield_2")
+				}
+			},
+			marshal_marksman = {
+				america = {
+					Idstring("units/pd2_dlc_usm1/characters/ene_male_marshal_marksman_2/ene_male_marshal_marksman_2")
+				}
+			}
+		},
 		narrator = "locke",
 		ghost_bonus = 0.15,
 		load_screen = "guis/dlcs/deep/textures/loading/job_deep_01_df",

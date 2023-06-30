@@ -4728,6 +4728,10 @@ function HuskPlayerMovement:clbk_inventory_event(unit, event)
 			self:play_state("std/stand/still/idle/look")
 		end
 
+		if self._state == "driving" then
+			self:_sync_movement_state_driving()
+		end
+
 		if self:arm_animation_enabled() then
 			weapon:base():apply_grip(true)
 
@@ -5197,7 +5201,7 @@ function HuskPlayerMovement:on_exit_zipline()
 end
 
 function HuskPlayerMovement:zipline_unit()
-	if self._zipline and self._zipline.zipline_unit then
+	if self._zipline and self._zipline.enabled and self._zipline.zipline_unit then
 		return self._zipline.zipline_unit
 	end
 end

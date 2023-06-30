@@ -799,7 +799,7 @@ function UseInteractionExt:interact(player)
 end
 
 function UseInteractionExt:sync_interacted(peer, player, status, skip_alive_check)
-	if not self._active then
+	if not self._active and not self._tweak_data.sync_not_active then
 		return
 	end
 
