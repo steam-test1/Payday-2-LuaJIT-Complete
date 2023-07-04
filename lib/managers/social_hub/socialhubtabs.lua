@@ -5,6 +5,9 @@ SocialHubTab = SocialHubTab or class()
 function SocialHubTab:init(parent_panel)
 end
 
+function SocialHubTab:on_selected()
+end
+
 function SocialHubTab:on_user_item_pressed(action, user_id)
 	print("SocialHubTab:on_user_item_pressed", inspect(action or "NO"), inspect(user_id or "NO"))
 
@@ -338,8 +341,42 @@ function SocialHubInviteTab:init(parent_panel, ws)
 	}, {
 		layer = 100
 	})
+	self._next_refresh_time = 0
 
 	self:setup_panel(parent_panel)
+
+	self._loading_icon = parent_panel:bitmap({
+		texture = "guis/textures/icon_loading",
+		name = "loading_icon",
+		h = 32,
+		visible = false,
+		w = 32,
+		layer = 100
+	})
+end
+
+function SocialHubInviteTab:on_selected()
+	if self._next_refresh_time and self._next_refresh_time < TimerManager:wall():time() then
+		self._refresh_count = table.size(managers.socialhub:get_pending_lobbies())
+		self._next_refresh_time = self._refresh_count == 0 and TimerManager:wall():time() + 1 or false
+
+		local function spin_anim(o)
+			o:set_visible(true)
+			o:set_alpha(1)
+
+			while true do
+				local dt = coroutine.yield()
+
+				o:rotate(360 * dt)
+			end
+		end
+
+		self._loading_icon:animate(spin_anim)
+
+		for index, item in pairs(managers.socialhub:get_pending_lobbies()) do
+			EpicSocialHub:get_lobby_info(index, callback(self, self, "on_refresh_lobby_fetched"))
+		end
+	end
 end
 
 function SocialHubInviteTab:setup_panel(parent_panel)
@@ -456,6 +493,44 @@ function SocialHubInviteTab:on_search_lobby_fetched(lobby_id, host_user_id, lobb
 
 	self.scroll:add_item(self.search_item, nil, #self.scroll:items())
 	self.scroll:place_items_in_order(nil, true, true)
+end
+
+function SocialHubInviteTab:on_refresh_lobby_fetched(lobby_id, host_user_id, lobby_parameters)
+	self._refresh_count = self._refresh_count - 1
+
+	if not alive(self.scroll) then
+		return
+	end
+
+	if host_user_id then
+		lobby_parameters.LOBBYID = lobby_id
+
+		managers.socialhub:update_pending_lobby(lobby_id, lobby_parameters)
+	else
+		managers.socialhub:remove_pending_lobby(lobby_id)
+	end
+
+	if self._refresh_count == 0 then
+		self._next_refresh_time = TimerManager:wall():time() + 10
+
+		self:reset_tab()
+
+		local function fade_anim(o)
+			local alpha = o:alpha()
+
+			while alpha > 0 do
+				local dt = coroutine.yield()
+				alpha = alpha - 2 * dt
+
+				o:set_alpha(alpha)
+			end
+
+			o:stop()
+			o:set_visible(false)
+		end
+
+		self._loading_icon:animate(fade_anim)
+	end
 end
 
 function SocialHubInviteTab:on_user_lobby_pressed(first, second, third)

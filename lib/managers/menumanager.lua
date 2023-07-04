@@ -1582,7 +1582,6 @@ function MenuCallbackHandler:choice_job_plan_filter(item)
 	end
 
 	managers.network.matchmake:add_lobby_filter("job_plan", job_plan_filter, "equal")
-	managers.network.matchmake:search_lobby(managers.network.matchmake:search_friends_only())
 	managers.user:set_setting("crimenet_filter_tactic", job_plan_filter)
 end
 
@@ -2426,7 +2425,6 @@ function MenuCallbackHandler:choice_max_lobbies_filter(item)
 	local max_server_jobs_filter = item:value()
 
 	managers.network.matchmake:set_lobby_return_count(max_server_jobs_filter)
-	managers.network.matchmake:search_lobby(managers.network.matchmake:search_friends_only())
 	managers.user:set_setting("crimenet_filter_max_servers", max_server_jobs_filter)
 end
 
@@ -2438,8 +2436,12 @@ function MenuCallbackHandler:choice_distance_filter(item)
 	end
 
 	managers.network.matchmake:set_distance_filter(dist_filter)
-	managers.network.matchmake:search_lobby(managers.network.matchmake:search_friends_only())
-	managers.user:set_setting("crimenet_filter_distance", dist_filter)
+
+	if SystemInfo:matchmaking() == Idstring("MM_EPIC") then
+		managers.user:set_setting("crimenet_filter_distance_epic", dist_filter)
+	else
+		managers.user:set_setting("crimenet_filter_distance", dist_filter)
+	end
 end
 
 function MenuCallbackHandler:choice_difficulty_filter(item)
@@ -2450,7 +2452,6 @@ function MenuCallbackHandler:choice_difficulty_filter(item)
 	end
 
 	managers.network.matchmake:add_lobby_filter("difficulty", diff_filter, "equal")
-	managers.network.matchmake:search_lobby(managers.network.matchmake:search_friends_only())
 	managers.user:set_setting("crimenet_filter_difficulty", diff_filter)
 	managers.crimenet:update_difficulty_filter()
 end
@@ -2471,7 +2472,6 @@ function MenuCallbackHandler:choice_job_id_filter(item)
 	end
 
 	managers.network.matchmake:add_lobby_filter("job_id", job_id_filter, "equal")
-	managers.network.matchmake:search_lobby(managers.network.matchmake:search_friends_only())
 	managers.user:set_setting("crimenet_filter_contract", job_id_filter)
 end
 
@@ -2483,7 +2483,6 @@ function MenuCallbackHandler:choice_new_servers_only(item)
 	end
 
 	managers.network.matchmake:add_lobby_filter("num_players", num_players_filter, "equal")
-	managers.network.matchmake:search_lobby(managers.network.matchmake:search_friends_only())
 	managers.user:set_setting("crimenet_filter_new_servers_only", num_players_filter)
 end
 
@@ -2495,7 +2494,6 @@ function MenuCallbackHandler:choice_kick_option(item)
 	end
 
 	managers.network.matchmake:add_lobby_filter("kick_option", kicking_filter, "equal")
-	managers.network.matchmake:search_lobby(managers.network.matchmake:search_friends_only())
 	managers.user:set_setting("crimenet_filter_kick", kicking_filter)
 end
 
@@ -2503,7 +2501,6 @@ function MenuCallbackHandler:choice_job_appropriate_filter(item)
 	local diff_appropriate = item:value()
 	Global.game_settings.search_appropriate_jobs = diff_appropriate == "on" and true or false
 
-	managers.network.matchmake:search_lobby(managers.network.matchmake:search_friends_only())
 	managers.user:set_setting("crimenet_filter_level_appopriate", diff_appropriate == "on" and true or false)
 end
 
@@ -2511,7 +2508,6 @@ function MenuCallbackHandler:choice_allow_safehouses_filter(item)
 	local allow_safehouses = item:value() == "on" and true or false
 	Global.game_settings.allow_search_safehouses = allow_safehouses
 
-	managers.network.matchmake:search_lobby(managers.network.matchmake:search_friends_only())
 	managers.user:set_setting("crimenet_filter_safehouses", allow_safehouses)
 end
 
@@ -2520,7 +2516,6 @@ function MenuCallbackHandler:choice_mutated_lobbies_filter(item)
 	Global.game_settings.search_mutated_lobbies = allow_mutators
 
 	managers.user:set_setting("crimenet_filter_mutators", allow_mutators)
-	managers.network.matchmake:search_lobby(managers.network.matchmake:search_friends_only())
 end
 
 function MenuCallbackHandler:choice_modded_lobbies_filter(item)
@@ -2528,7 +2523,6 @@ function MenuCallbackHandler:choice_modded_lobbies_filter(item)
 	Global.game_settings.search_modded_lobbies = allow_modded
 
 	managers.user:set_setting("crimenet_filter_modded", allow_modded)
-	managers.network.matchmake:search_lobby(managers.network.matchmake:search_friends_only())
 end
 
 function MenuCallbackHandler:chocie_one_down_filter(item)
@@ -2543,14 +2537,12 @@ function MenuCallbackHandler:choice_weekly_skirmish_filter(item)
 	Global.game_settings.search_only_weekly_skirmish = only_weekly
 
 	managers.user:set_setting("crimenet_filter_weekly_skirmish", only_weekly)
-	managers.network.matchmake:search_lobby(managers.network.matchmake:search_friends_only())
 end
 
 function MenuCallbackHandler:choice_skirmish_wave_filter(item)
 	Global.game_settings.skirmish_wave_filter = item:value()
 
 	managers.user:set_setting("crimenet_filter_skirmish_wave", item:value())
-	managers.network.matchmake:search_lobby(managers.network.matchmake:search_friends_only())
 end
 
 function MenuCallbackHandler:choice_server_state_lobby(item)
@@ -2561,12 +2553,12 @@ function MenuCallbackHandler:choice_server_state_lobby(item)
 	end
 
 	managers.network.matchmake:add_lobby_filter("state", state_filter, "equal")
-	managers.network.matchmake:search_lobby(managers.network.matchmake:search_friends_only())
 	managers.user:set_setting("crimenet_filter_in_lobby", state_filter)
 end
 
 function MenuCallbackHandler:save_crimenet_filters()
 	managers.savefile:save_setting(true)
+	managers.network.matchmake:search_lobby(managers.network.matchmake:search_friends_only())
 end
 
 function MenuCallbackHandler:refresh_node(item)
@@ -9668,7 +9660,6 @@ end
 function MenuCallbackHandler:_reset_filters(item)
 	if managers.network.matchmake.reset_filters then
 		managers.network.matchmake:reset_filters()
-		managers.network.matchmake:search_lobby(managers.network.matchmake:search_friends_only())
 		self:refresh_node(item)
 	end
 end

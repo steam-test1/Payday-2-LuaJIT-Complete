@@ -176,6 +176,7 @@ function SocialHubGui:on_tab_item_pressed(index)
 		if i == index then
 			tab_item:selected_changed(true)
 			self._content_panel_list[i]:set_visible(true)
+			item.tab:on_selected()
 		else
 			tab_item:selected_changed(false)
 			self._content_panel_list[i]:set_visible(false)

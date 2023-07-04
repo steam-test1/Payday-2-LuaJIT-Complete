@@ -246,8 +246,8 @@ function SocialHubManager:get_user(id)
 	return self._global.cached_users[id]
 end
 
-function SocialHubManager:is_user_platform_friend(id)
-	if SystemInfo:distribution() == Idstring("STEAM") then
+function SocialHubManager:is_user_platform_friend(id, check_account)
+	if check_account and SystemInfo:distribution() == Idstring("STEAM") then
 		local user = self:get_user(id)
 
 		if user then
@@ -310,7 +310,7 @@ function SocialHubManager:get_actions_for_user(callback_object, callback_functio
 	local user_data = self:get_user(user_id)
 	local is_blocked = self:is_user_blocked(user_id)
 	local is_friend = self:is_user_friend(user_id)
-	local is_platform_friend = self:is_user_platform_friend(user_id)
+	local is_platform_friend = self:is_user_platform_friend(user_id, true)
 	local actions = {}
 
 	if managers.network.matchmake.lobby_handler and not is_blocked then
@@ -365,6 +365,12 @@ end
 
 function SocialHubManager:remove_pending_lobby(lobby_id)
 	self._global.pending_lobbies[lobby_id] = nil
+end
+
+function SocialHubManager:update_pending_lobby(lobby_id, lobby_parameters)
+	if self._global.pending_lobbies[lobby_id] then
+		self._global.pending_lobbies[lobby_id] = lobby_parameters
+	end
 end
 
 function SocialHubManager:get_pending_lobbies()

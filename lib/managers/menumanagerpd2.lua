@@ -1213,7 +1213,7 @@ function InspectPlayerInitiator:modify_node(node, inspect_peer)
 
 	self:create_divider(node, "socialhub_spacer")
 
-	if not is_local_peer and not managers.socialhub:is_user_platform_friend(inspect_peer._user_id) then
+	if not is_local_peer and not managers.socialhub:is_user_platform_friend(inspect_peer._user_id, true) then
 		if not managers.socialhub:is_user_friend(inspect_peer._user_id) then
 			local add_user = {
 				callback = "on_add_user_socialhub",

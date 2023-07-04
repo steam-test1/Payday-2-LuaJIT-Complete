@@ -652,7 +652,6 @@ function MenuCallbackHandler:choice_spree_difference_filter(item)
 	Global.game_settings.crime_spree_max_lobby_diff = item:value()
 
 	managers.user:set_setting("crime_spree_lobby_diff", item:value())
-	managers.network.matchmake:search_lobby(managers.network.matchmake:search_friends_only())
 end
 
 function MenuCallbackHandler:debug_crime_spree_reset()

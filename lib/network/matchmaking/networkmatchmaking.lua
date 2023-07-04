@@ -94,7 +94,7 @@ function NetworkMatchMaking:load_user_filters()
 	local new_servers = managers.user:get_setting("crimenet_filter_new_servers_only")
 	local in_lobby = managers.user:get_setting("crimenet_filter_in_lobby")
 	local max_servers = managers.user:get_setting("crimenet_filter_max_servers")
-	local distance = managers.user:get_setting("crimenet_filter_distance")
+	local distance = (SystemInfo:matchmaking() ~= Idstring("MM_EPIC") or managers.user:get_setting("crimenet_filter_distance_epic")) and managers.user:get_setting("crimenet_filter_distance")
 	local difficulty = managers.user:get_setting("crimenet_filter_difficulty")
 	local job_id = managers.user:get_setting("crimenet_filter_contract")
 	local kick = managers.user:get_setting("crimenet_filter_kick")
@@ -103,7 +103,13 @@ function NetworkMatchMaking:load_user_filters()
 	managers.network.matchmake:add_lobby_filter("state", in_lobby, "equal")
 	managers.network.matchmake:set_lobby_return_count(max_servers)
 	managers.network.matchmake:add_lobby_filter("num_players", new_servers, "equal")
-	managers.network.matchmake:set_distance_filter(managers.user:get_setting("crimenet_filter_distance"))
+
+	if SystemInfo:matchmaking() == Idstring("MM_EPIC") then
+		managers.network.matchmake:set_distance_filter(managers.user:get_setting("crimenet_filter_distance_epic"))
+	else
+		managers.network.matchmake:set_distance_filter(managers.user:get_setting("crimenet_filter_distance"))
+	end
+
 	managers.network.matchmake:add_lobby_filter("difficulty", difficulty, "equal")
 	managers.network.matchmake:add_lobby_filter("job_id", job_id, "equal")
 	managers.network.matchmake:add_lobby_filter("kick_option", kick, "equal")

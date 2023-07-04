@@ -20,7 +20,7 @@ function ElementPlayerState:client_local_on_executed(instigator, element_id)
 		return
 	end
 
-	self:set_state()
+	self:set_state(instigator)
 end
 
 function ElementPlayerState:on_executed(instigator, alternative, skip_execute_on_executed, sync_id_from)
@@ -30,16 +30,16 @@ function ElementPlayerState:on_executed(instigator, alternative, skip_execute_on
 
 	if Network:is_client() then
 		if not sync_id_from or not self._can_client_local_on_execute or not self._can_client_local_on_execute[sync_id_from] then
-			self:set_state()
+			self:set_state(instigator)
 		end
 	elseif Network:is_server() then
-		self:set_state()
+		self:set_state(instigator)
 	end
 
-	ElementPlayerState.super.on_executed(self, self._unit or instigator)
+	ElementPlayerState.super.on_executed(self, self._unit or instigator, alternative, skip_execute_on_executed, sync_id_from)
 end
 
-function ElementPlayerState:set_state()
+function ElementPlayerState:set_state(instigator)
 	local state = self._values.state
 	local player_unit = managers.player:player_unit()
 	local requires_alive_player = false

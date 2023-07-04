@@ -526,14 +526,18 @@ function NetworkMatchMakingSTEAM:search_lobby(friends_only, no_filters)
 				end
 
 				self.browser:set_lobby_filter("crime_spree", min_level, "equalto_or_greater_than")
+				self.browser:set_lobby_filter("skirmish", 0, "equalto_less_than")
+				self.browser:set_lobby_filter("skirmish_wave")
 			elseif Global.game_settings.gamemode_filter == "skirmish" then
 				local min = SkirmishManager.LOBBY_NORMAL
 
+				self.browser:set_lobby_filter("crime_spree", -1, "equalto_less_than")
 				self.browser:set_lobby_filter("skirmish", min, "equalto_or_greater_than")
 				self.browser:set_lobby_filter("skirmish_wave", Global.game_settings.skirmish_wave_filter or 99, "equalto_less_than")
 			elseif Global.game_settings.gamemode_filter == GamemodeStandard.id then
 				self.browser:set_lobby_filter("crime_spree", -1, "equalto_less_than")
 				self.browser:set_lobby_filter("skirmish", 0, "equalto_less_than")
+				self.browser:set_lobby_filter("skirmish_wave")
 			end
 		end
 

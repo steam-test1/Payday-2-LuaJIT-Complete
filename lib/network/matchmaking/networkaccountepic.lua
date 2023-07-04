@@ -1,6 +1,13 @@
 require("lib/network/matchmaking/NetworkAccount")
 
 NetworkAccountEPIC = NetworkAccountEPIC or class(NetworkAccount)
+NetworkAccountEPIC.static_lifetime_stat = {
+	pda_stat_b = 1,
+	pda_stat_a = 1,
+	gsu = 4,
+	pda_stat_d = 1,
+	pda_stat_c = 1
+}
 NetworkAccountEPIC.lb_diffs = {
 	hard = "Hard",
 	overkill = "Very Hard",
@@ -148,8 +155,16 @@ function NetworkAccountEPIC:get_stat(key)
 	return EpicAchievementHandler:get_stat(key)
 end
 
+function NetworkAccountEPIC:has_stat(key)
+	return true
+end
+
+function NetworkAccountEPIC:set_stat(key, value)
+	EpicAchievementHandler:set_stat(key, value)
+end
+
 function NetworkAccountEPIC:get_lifetime_stat(key)
-	return 0
+	return NetworkAccountEPIC.static_lifetime_stat[key] or 0
 end
 
 function NetworkAccountEPIC:get_global_stat(key, days)
@@ -465,30 +480,10 @@ end
 function NetworkAccountEPIC:convert_drills_to_safes(list)
 end
 
-function NetworkAccountEPIC:set_stat(key, value)
-	EpicAchievementHandler:set_stat(key, value)
-end
-
-function NetworkAccountEPIC:get_stat(key)
-	return EpicAchievementHandler:get_stat(key)
-end
-
-function NetworkAccountEPIC:has_stat(key)
-	return true
-end
-
 function NetworkAccountEPIC:achievement_unlock_time(key)
 	local res = tonumber(EpicAchievementHandler:achievement_unlock_time(key))
 
 	return res ~= -1 and res or nil
-end
-
-function NetworkAccountEPIC:get_lifetime_stat(key)
-	return 0
-end
-
-function NetworkAccountEPIC:get_global_stat(key, days)
-	return 0
 end
 
 function NetworkAccountEPIC:publish_statistics(stats, force_store)
