@@ -4554,7 +4554,11 @@ function UnitNetworkHandler:sync_feed_piggybank(bag_unit, reached_next_level, se
 		return
 	end
 
-	local mutator = managers.mutators:get_mutator(MutatorPiggyBank)
+	local mutator = nil
+
+	if managers.mutators:is_mutator_active(MutatorPiggyBank) then
+		mutator = managers.mutators:get_mutator(MutatorPiggyBank)
+	end
 
 	if mutator then
 		mutator:sync_feed_piggybank(bag_unit, reached_next_level)
@@ -4572,7 +4576,11 @@ function UnitNetworkHandler:sync_piggybank_dialog(sync_index, sender)
 		return
 	end
 
-	local mutator = managers.mutators:get_mutator(MutatorPiggyBank)
+	local mutator = nil
+
+	if managers.mutators:is_mutator_active(MutatorPiggyBank) then
+		mutator = managers.mutators:get_mutator(MutatorPiggyBank)
+	end
 
 	if mutator then
 		mutator:sync_piggybank_dialog(sync_index)
@@ -4590,7 +4598,11 @@ function UnitNetworkHandler:sync_explode_piggybank(sender)
 		return
 	end
 
-	local mutator = managers.mutators:get_mutator(MutatorPiggyBank)
+	local mutator = nil
+
+	if managers.mutators:is_mutator_active(MutatorPiggyBank) then
+		mutator = managers.mutators:get_mutator(MutatorPiggyBank)
+	end
 
 	if mutator then
 		mutator:sync_explode_piggybank()
@@ -4696,10 +4708,14 @@ function UnitNetworkHandler:sync_gain_buff(buff_string, sender)
 		return
 	end
 
-	local mutator = managers.mutators:get_mutator(MutatorCG22)
+	local mutator = nil
+
+	if managers.mutators:is_mutator_active(MutatorCG22) then
+		mutator = managers.mutators:get_mutator(MutatorCG22)
+	end
 
 	if mutator then
-		mutator:activate_buff(buff_string)
+		mutator:activate_buff(buff_string, false)
 	end
 end
 

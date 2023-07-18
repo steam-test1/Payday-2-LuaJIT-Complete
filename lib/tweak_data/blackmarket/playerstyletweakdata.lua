@@ -608,12 +608,20 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		body_replacement = body_replacement_standard,
 		third_body_replacement = body_replacement_standard,
 		unit = "units/pd2_dlc_dah/characters/dah_acc_fps_stealth_suit/dah_acc_fps_stealth_suit",
-		characters = {}
+		material_variations = {}
+	}
+	self.player_styles.sneak_suit.material_variations.default = {
+		name_id = "bm_suit_sneak_suit",
+		desc_id = "bm_suit_sneak_suit_desc"
+	}
+	self.player_styles.sneak_suit.body_replacement = body_replacement_standard
+	self.player_styles.sneak_suit.third_body_replacement = body_replacement_standard
+	self.player_styles.sneak_suit.characters = {}
+	local sneak_suit_characters_male = {
+		third_unit = "units/pd2_dlc_dah/characters/dah_acc_stealth_suit/dah_acc_stealth_suit"
 	}
 
-	set_characters_data("sneak_suit", characters_male, {
-		third_unit = "units/pd2_dlc_dah/characters/dah_acc_stealth_suit/dah_acc_stealth_suit"
-	})
+	set_characters_data("sneak_suit", characters_male, sneak_suit_characters_male)
 	set_characters_data("sneak_suit", characters_male_big, {
 		third_unit = "units/pd2_dlc_dah/characters/dah_acc_stealth_suit_male_big/dah_acc_stealth_suit_male_big"
 	})

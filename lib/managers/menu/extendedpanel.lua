@@ -296,6 +296,11 @@ function ExtendedPanel.make_bitmap_fit(bitmap, target_w, target_h)
 	bitmap:set_size(math.round(dw * target_w), math.round(dh * target_h))
 end
 
+function ExtendedPanel.center_panel(parent, panel)
+	panel:set_center_x(parent:w() / 2)
+	panel:set_center_y(parent:h() / 2)
+end
+
 function ExtendedPanel:add_input_component(component)
 	self._input_components_set[component] = true
 

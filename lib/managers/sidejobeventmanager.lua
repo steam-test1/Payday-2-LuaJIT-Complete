@@ -31,86 +31,58 @@ function SideJobEventManager:_setup()
 	self._global.event_data = self._global.event_data or {}
 
 	if setup.IS_START_MENU then
-		self._event_data_fetched = false
-
-		self:_fetch_challenges()
+		self:_fetch_community_challenges()
 	end
 end
 
 local json = require("lib/utils/accelbyte/json")
 
-function SideJobEventManager:_fetch_challenges()
-	local events_url = "https://www.paydaythegame.com/ovk-media/redux/ninth-2yrgbaw/ninthstage.json"
-	local cg22_events_url = "https://www.paydaythegame.com/ovk-media/redux/hl22-u3yhfbfaud/holiday22stage.json"
-	self._fetch_que = self._fetch_que or {}
-	local done_clbk = callback(self, self, "_fetch_done_clbk")
+function SideJobEventManager:_fetch_community_challenges()
+	self._fetched_event_data = {}
+	self._fetched_all_event_data = false
+	self._fetched_event_data_count = table.size(self._tweak_data.community_challenges)
 
-	table.insert(self._fetch_que, {
-		url = events_url,
-		clbk = done_clbk
-	})
-
-	local cg22_done_clbk = callback(self, self, "_cg22_fetch_done_clbk")
-
-	table.insert(self._fetch_que, {
-		url = cg22_events_url,
-		clbk = cg22_done_clbk
-	})
-	self:_pop_fetch_que()
-end
-
-function SideJobEventManager:_pop_fetch_que()
-	if self._fetch_que and #self._fetch_que > 0 and not self._fetching_json then
-		self._fetching_json = true
-		local data = table.remove(self._fetch_que, 1)
-
-		print("[SideJobEventManager] Getting Events from: ", data.url)
-		HttpRequest:get(data.url, data.clbk, nil, Idstring("[SideJobEventManager] fetch_challenges()"):key())
+	for event_id, challenge in pairs(self._tweak_data.community_challenges) do
+		HttpRequest:get(challenge.url, callback(self, self, "_fetch_done_clbk", event_id))
 	end
 end
 
-function SideJobEventManager:_fetch_done_clbk(success, s)
-	print("[SideJobEventManager] - PDA9", success, s)
+function SideJobEventManager:_fetch_done_clbk(event_id, success, s)
+	print("[SideJobEventManager:_fetch_done_clbk]", success, s)
 
 	if success then
-		local events_data = json.decode(s) or {}
-		self._event_data_fetched = true
-		local pda9_unlock_stage = (events_data.unlockstage or 0) + 1
-		local pda9_pigs = events_data.pigs or 0
-		self._global.event_data.pda9 = self._global.event_data.pda9 or {}
-		self._global.event_data.pda9.stage = pda9_unlock_stage
-		self._global.event_data.pda9.pigs = pda9_pigs
+		local challenge_tweak = self._tweak_data.community_challenges[event_id]
+		local json_data = json.decode(s) or {}
+		self._fetched_event_data[event_id] = self._fetched_event_data[event_id] or {}
 
-		if self._global.event_stage.pda9 ~= pda9_unlock_stage then
-			self:set_event_stage("pda9", pda9_unlock_stage)
+		for key, json_id in pairs(challenge_tweak.event_data) do
+			self._fetched_event_data[event_id][key] = json_data[json_id] or 0
 		end
 	end
 
-	self._fetching_json = false
+	self._fetched_event_data_count = self._fetched_event_data_count - 1
 
-	self:_pop_fetch_que()
+	if self._fetched_event_data_count == 0 then
+		self:_apply_fetched_event_data()
+	end
 end
 
-function SideJobEventManager:_cg22_fetch_done_clbk(success, s)
-	print("[SideJobEventManager] - CG22", success, s)
+function SideJobEventManager:_apply_fetched_event_data()
+	self._global.event_data = self._fetched_event_data or {}
 
-	if success then
-		local events_data = json.decode(s) or {}
-		self._event_data_fetched = true
-		local cg22_unlock_stage = (events_data.unlockstage or 0) + 1
-		local cg22_bags = events_data.bags or 0
-		self._global.event_data.cg22 = self._global.event_data.cg22 or {}
-		self._global.event_data.cg22.stage = cg22_unlock_stage
-		self._global.event_data.cg22.bags = cg22_bags
+	for event_id, event_data in pairs(self._global.event_data) do
+		local event_info = self._tweak_data.event_info[event_id] or {}
+		local event_stage = (event_data.stage or 0) + event_info.stage_offset
+		event_data.stage = event_stage
 
-		if self._global.event_stage.cg22 ~= cg22_unlock_stage and self._has_loaded then
-			self:set_event_stage("cg22", cg22_unlock_stage)
+		if self._global.event_stage[event_id] ~= event_stage then
+			self:set_event_stage(event_id, event_stage)
 		end
 	end
 
-	self._fetching_json = false
-
-	self:_pop_fetch_que()
+	self._fetched_all_event_data = true
+	self._fetched_event_data = nil
+	self._fetched_event_data_count = nil
 end
 
 function SideJobEventManager:_setup_challenges()
@@ -131,7 +103,7 @@ function SideJobEventManager:_setup_challenges()
 	Global[self.global_table_name].event_stage = {}
 
 	for event_id, event_data in pairs(self._tweak_data.event_info) do
-		Global[self.global_table_name].event_stage[event_id] = 0
+		Global[self.global_table_name].event_stage[event_id] = event_data.stage_offset or 0
 	end
 
 	Global[self.global_table_name].event_data = {}
@@ -335,7 +307,7 @@ function SideJobEventManager:load(cache, version)
 			end
 		end
 
-		if not self._event_data_fetched then
+		if not self._fetched_all_event_data then
 			self._global.event_data = state.event_data or {}
 
 			for event_id, data in pairs(self._global.event_data) do
@@ -351,7 +323,7 @@ function SideJobEventManager:load(cache, version)
 			end
 		end
 
-		if self._event_data_fetched and self._global.event_data.cg22 then
+		if self._fetched_all_event_data and self._global.event_data.cg22 then
 			for index, challenge in ipairs(self:challenges()) do
 				local challenge_status = challenge.completed
 
@@ -366,7 +338,7 @@ function SideJobEventManager:load(cache, version)
 			end
 		end
 
-		if self._event_data_fetched and self._global.event_data.cg22 then
+		if self._fetched_all_event_data and self._global.event_data.cg22 then
 			self:set_event_stage("cg22", self._global.event_data.cg22.stage or 1)
 		end
 

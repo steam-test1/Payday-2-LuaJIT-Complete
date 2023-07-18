@@ -1136,6 +1136,12 @@ function HUDManager:add_buff(buff_id, name_id, color, time_left, show_time_left)
 	end
 end
 
+function HUDManager:show_stage_transition(next_level)
+	if not _G.IS_VR then
+		self._hud_mutator:show_stage_transition(next_level)
+	end
+end
+
 function HUDManager:update_mutator_hud(t, dt)
 	if not _G.IS_VR then
 		self._hud_mutator:update(t, dt)

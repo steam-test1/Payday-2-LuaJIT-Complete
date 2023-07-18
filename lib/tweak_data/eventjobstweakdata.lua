@@ -2,11 +2,11 @@ EventJobsTweakData = EventJobsTweakData or class()
 
 function EventJobsTweakData:init(tweak_data)
 	self.challenges = {}
-	self.current_event = ""
 
 	self:_init_pda8_challenges(tweak_data)
 	self:_init_pda9_challenges(tweak_data)
 	self:_init_cg22_challenges(tweak_data)
+	self:_init_community_challenges(tweak_data)
 
 	self.event_info = {
 		pda8 = {
@@ -18,8 +18,12 @@ function EventJobsTweakData:init(tweak_data)
 				"pda_stat_d"
 			}
 		},
-		pda9 = {},
-		cg22 = {}
+		pda9 = {
+			stage_offset = 1
+		},
+		cg22 = {
+			stage_offset = 1
+		}
 	}
 	self.collective_stats = {
 		pda8_collective = {
@@ -869,6 +873,25 @@ function EventJobsTweakData:_init_cg22_challenges(tweak_data)
 			}
 		}
 	})
+end
+
+function EventJobsTweakData:_init_community_challenges(tweak_data)
+	self.community_challenges = {
+		pda9 = {
+			url = "https://www.paydaythegame.com/ovk-media/redux/ninth-2yrgbaw/ninthstage.json",
+			event_data = {
+				pigs = "pigs",
+				stage = "unlockstage"
+			}
+		},
+		cg22 = {
+			url = "https://www.paydaythegame.com/ovk-media/redux/hl22-u3yhfbfaud/holiday22stage.json",
+			event_data = {
+				bags = "bags",
+				stage = "unlockstage"
+			}
+		}
+	}
 end
 
 function EventJobsTweakData:_collective(collective_id, max_progress, data)

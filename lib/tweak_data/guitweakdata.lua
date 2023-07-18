@@ -5173,8 +5173,12 @@ function GuiTweakData:init(tweak_data)
 				}
 			},
 			{
-				coming_soon = true,
-				poster_icon = "guis/dlcs/lrm/textures/pd2/crimenet/coming_soon_garnets",
+				coming_soon = false,
+				briefing_track = "Play_loc_secr_03",
+				heist = "dah",
+				poster_icon = "guis/dlcs/lrth/textures/pd2/crimenet/garnets",
+				recording_track = "Play_spe_grt_01",
+				job_value = "LRTH",
 				poster_rect = {
 					0,
 					14,

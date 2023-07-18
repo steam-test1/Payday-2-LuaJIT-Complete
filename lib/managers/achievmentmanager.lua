@@ -311,10 +311,6 @@ function AchievmentManager.update_global_stats(success)
 					end
 				end
 			end
-
-			if not event_stage_set_success then
-				managers.event_jobs:set_event_stage(event_id, 1)
-			end
 		end
 	end
 end

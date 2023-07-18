@@ -3412,6 +3412,21 @@ function MenuManager:show_lrtw_dialog(params)
 	managers.system_menu:show(dialog_data)
 end
 
+function MenuManager:show_lrth_dialog(params)
+	local dialog_data = {
+		title = managers.localization:text("dialog_lrth_event_title"),
+		text = managers.localization:text("dialog_lrth_event_text")
+	}
+	local ok_button = {
+		text = managers.localization:text("dialog_ok")
+	}
+	dialog_data.button_list = {
+		ok_button
+	}
+
+	managers.system_menu:show(dialog_data)
+end
+
 function MenuManager:show_eos_no_connect_dialog(params)
 	local dialog_data = {
 		title = managers.localization:text("dialog_eos_no_connect_title"),

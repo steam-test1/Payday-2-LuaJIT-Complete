@@ -223,7 +223,7 @@ function PrePlanningManager:client_vote_on_plan(type, id, peer_id)
 			local type_text_id = self:get_type_name(type)
 			local mission_elements = self:get_mission_elements_by_type(type)
 
-			if #mission_elements > 1 then
+			if mission_elements and #mission_elements > 1 then
 				type_text_id = string.format("%s - %s", type_text_id, self:get_element_name_by_type_index(type, index))
 			end
 
@@ -286,7 +286,7 @@ function PrePlanningManager:_server_vote_on_plan(type, id, peer_id)
 			local type_text_id = self:get_type_name(type)
 			local mission_elements = self:get_mission_elements_by_type(type)
 
-			if #mission_elements > 1 then
+			if mission_elements and #mission_elements > 1 then
 				type_text_id = string.format("%s - %s", type_text_id, self:get_element_name_by_type_index(type, index))
 			end
 

@@ -2215,6 +2215,7 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 	if player_rank >= 1 or player_level >= 20 then
 		managers.features:announce_feature("lron_event_explanation")
 		managers.features:announce_feature("lrtw_event_explanation")
+		managers.features:announce_feature("lrth_event_explanation")
 	end
 
 	managers.challenge:fetch_challenges()

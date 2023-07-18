@@ -376,18 +376,21 @@ function HUDLootScreenSkirmish:make_lootdrop(lootdrop_data)
 	local lootdrops = {}
 	local cash = 0
 	local xp = 0
+	local max_cards = #data.cards
 	local card_index = 1
 	local item_panel = nil
 	local coins = lootdrop_data.coins or 0
 
 	if coins > 0 then
-		item_panel = data.cards[card_index].item_panel
-		data.cards[card_index].type = CARD_TYPES.coins
+		if data.cards[card_index] then
+			item_panel = data.cards[card_index].item_panel
+			data.cards[card_index].type = CARD_TYPES.coins
 
-		self:_add_item_textures({
-			type_items = "coins",
-			item_entry = coins
-		}, item_panel)
+			self:_add_item_textures({
+				type_items = "coins",
+				item_entry = coins
+			}, item_panel)
+		end
 
 		card_index = card_index + 1
 	end
@@ -404,10 +407,14 @@ function HUDLootScreenSkirmish:make_lootdrop(lootdrop_data)
 			category = "weapon_color_skins"
 		end
 
-		item_panel = data.cards[card_index].item_panel
-		data.cards[card_index].type = CARD_TYPES[category]
+		item_panel = nil
 
-		self:_add_item_textures(lootdrop_data, item_panel)
+		if data.cards[card_index] then
+			item_panel = data.cards[card_index].item_panel
+			data.cards[card_index].type = CARD_TYPES[category]
+
+			self:_add_item_textures(lootdrop_data, item_panel)
+		end
 
 		td = nil
 
@@ -441,7 +448,7 @@ function HUDLootScreenSkirmish:make_lootdrop(lootdrop_data)
 			td = tweak_data.blackmarket[td_cat][item_id]
 		end
 
-		if category == "textures" then
+		if item_panel and category == "textures" then
 			table.insert(data.patterns, item_panel)
 		end
 
@@ -707,6 +714,13 @@ end
 function HUDLootScreenSkirmish:_add_item_textures(lootdrop_data, panel)
 	local category = lootdrop_data.type_items
 	local item_id = lootdrop_data.item_entry
+
+	if not panel then
+		Application:stack_dump_error("[HUDLootScreenSkirmish:_add_item_textures] Tried to add item texture to non-existing card!", inspect(lootdrop_data))
+
+		return
+	end
+
 	local center_x = panel:w() / 2
 	local center_y = panel:h() / 2
 
