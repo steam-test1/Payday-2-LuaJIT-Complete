@@ -16,8 +16,21 @@ function LootDropScreenGui:init(saferect_ws, fullrect_ws, lootscreen_hud, saved_
 		self._fullscreen_panel:hide()
 	end
 
-	local is_skirmish = managers.skirmish:is_skirmish()
-	local waiting_text_string = managers.localization:to_upper_text(is_skirmish and "menu_l_waiting_for_cards" or "menu_l_waiting_for_all")
+	local is_mass_drop = managers.skirmish:is_skirmish()
+
+	if not is_mass_drop then
+		local mutator_class = managers.mutators:get_mass_drop_mutator()
+
+		if mutator_class then
+			if mutator_class then
+				is_mass_drop = true
+			else
+				is_mass_drop = false
+			end
+		end
+	end
+
+	local waiting_text_string = managers.localization:to_upper_text(is_mass_drop and "menu_l_waiting_for_cards" or "menu_l_waiting_for_all")
 	self._continue_button = self._panel:text({
 		name = "ready_button",
 		vertical = "center",
@@ -91,7 +104,7 @@ function LootDropScreenGui:init(saferect_ws, fullrect_ws, lootscreen_hud, saved_
 		return
 	end
 
-	if is_skirmish then
+	if is_mass_drop then
 		self._card_chosen = true
 
 		return

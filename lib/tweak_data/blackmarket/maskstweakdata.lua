@@ -9631,6 +9631,156 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		dlc = "dot_roclown_msk",
 		texture_bundle_folder = "dot"
 	}
+	self.masks.teddymoo = {
+		unit = "units/pd2_dlc_pda10/masks/msk_teddymoo/msk_teddymoo",
+		name_id = "bm_msk_teddymoo",
+		pcs = {},
+		value = 0,
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "pda10",
+		texture_bundle_folder = "pda10"
+	}
+	self.masks.guldgris = {
+		unit = "units/pd2_dlc_pda10/masks/msk_guldgris/msk_guldgris",
+		name_id = "bm_msk_guldgris",
+		pcs = {},
+		value = 0,
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "pda10",
+		texture_bundle_folder = "pda10"
+	}
+	self.masks.splitcrim = {
+		unit = "units/pd2_dlc_pda10/masks/msk_splitcrim/msk_splitcrim",
+		name_id = "bm_msk_splitcrim",
+		pcs = {},
+		value = 0,
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "pda10",
+		texture_bundle_folder = "pda10"
+	}
+	self.masks.zoothat_black = {
+		unit = "units/pd2_dlc_pda10/masks/msk_zoothat_black/msk_zoothat_black",
+		name_id = "bm_msk_zoothat_black",
+		pcs = {},
+		value = 0,
+		type = "cowboyhat",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "pda10",
+		texture_bundle_folder = "pda10",
+		offsets = {
+			joy = {
+				Vector3(0, 0, -0.995704),
+				Rotation(-0, -0, -0)
+			},
+			jimmy = {
+				Vector3(0, 0, -0.995704),
+				Rotation(-0, -0, -0)
+			},
+			female_1 = {
+				Vector3(0, 1.15073, -0.995704),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.zoothat_yellow = {
+		unit = "units/pd2_dlc_pda10/masks/msk_zoothat_yellow/msk_zoothat_yellow",
+		name_id = "bm_msk_zoothat_yellow",
+		pcs = {},
+		value = 0,
+		type = "cowboyhat",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "pda10",
+		texture_bundle_folder = "pda10",
+		offsets = {
+			joy = {
+				Vector3(0, 0, -0.995704),
+				Rotation(-0, -0, -0)
+			},
+			jimmy = {
+				Vector3(0, 0, -0.995704),
+				Rotation(-0, -0, -0)
+			},
+			female_1 = {
+				Vector3(0, 1.15073, -0.995704),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.zoothat_red = {
+		unit = "units/pd2_dlc_pda10/masks/msk_zoothat_red/msk_zoothat_red",
+		name_id = "bm_msk_zoothat_red",
+		pcs = {},
+		value = 0,
+		type = "cowboyhat",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "pda10",
+		texture_bundle_folder = "pda10",
+		offsets = {
+			joy = {
+				Vector3(0, 0, -0.995704),
+				Rotation(-0, -0, -0)
+			},
+			jimmy = {
+				Vector3(0, 0, -0.995704),
+				Rotation(-0, -0, -0)
+			},
+			female_1 = {
+				Vector3(0, 1.15073, -0.995704),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.zoothat_blue = {
+		unit = "units/pd2_dlc_pda10/masks/msk_zoothat_blue/msk_zoothat_blue",
+		name_id = "bm_msk_zoothat_blue",
+		pcs = {},
+		value = 0,
+		type = "cowboyhat",
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "pda10",
+		texture_bundle_folder = "pda10",
+		offsets = {
+			joy = {
+				Vector3(0, 0, -0.995704),
+				Rotation(-0, -0, -0)
+			},
+			jimmy = {
+				Vector3(0, 0, -0.995704),
+				Rotation(-0, -0, -0)
+			},
+			female_1 = {
+				Vector3(0, 1.15073, -0.995704),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
+	self.masks.hackmask = {
+		unit = "units/pd2_dlc_lrfo/masks/msk_hackmask/msk_hackmask",
+		name_id = "bm_msk_hackmask",
+		pcs = {},
+		value = 0,
+		sort_number = 0,
+		preview_oobb_object = "g_mask",
+		dlc = "lrfo",
+		texture_bundle_folder = "lrfo",
+		offsets = {
+			wolf = {
+				Vector3(0, -0.280226, 0.554498),
+				Rotation(-0, -0, -0)
+			},
+			wild = {
+				Vector3(0, -0.399472, 0.077513),
+				Rotation(-0, -0, -0)
+			}
+		}
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.masks) do

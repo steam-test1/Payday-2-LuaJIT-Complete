@@ -189,6 +189,7 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		kungfumaster = "heist_default",
 		scrub = "heist_default",
 		bikerjacket = "heist_default",
+		hacksuit = "hackglove",
 		peacoat = "saints",
 		baron = "jesterstripe",
 		darkprince = "devilclaws",
@@ -198,7 +199,8 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		raincoat = "heist_default",
 		jessjames = "txrivet",
 		cable_guy = "heist_default",
-		jail_pd2_clan = "heist_default"
+		jail_pd2_clan = "heist_default",
+		gangzsta = "heist_default"
 	}
 	self.gloves.default = {
 		name_id = "bm_gloves_default",
@@ -500,6 +502,23 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		sort_number = 4,
 		unit = "units/pd2_dlc_tstp/characters/tstp_glv_blackdragon/tstp_glv_blackdragon",
 		third_material = "units/pd2_dlc_tstp/characters/tstp_glv_blackdragon/tstp_glv_blackdragon_third"
+	}
+	self.gloves.tiger_red = {
+		name_id = "bm_gloves_tiger_red",
+		desc_id = "bm_gloves_tiger_red_desc",
+		texture_bundle_folder = "pda10",
+		global_value = "pda10",
+		sort_number = 1,
+		unit = "units/pd2_dlc_pda10/characters/glv_tiger_red/glv_tiger_red",
+		third_material = "units/pd2_dlc_pda10/characters/glv_tiger_red/glv_tiger_red_third"
+	}
+	self.gloves.tiger_neon = {
+		name_id = "bm_gloves_tiger_neon",
+		desc_id = "bm_gloves_tiger_neon_desc",
+		texture_bundle_folder = "pda10",
+		global_value = "pda10",
+		unit = "units/pd2_dlc_pda10/characters/glv_tiger_neon/glv_tiger_neon",
+		third_material = "units/pd2_dlc_pda10/characters/glv_tiger_neon/glv_tiger_neon_third"
 	}
 	self.gloves.goldnet = {
 		name_id = "bm_gloves_goldnet",
@@ -851,5 +870,14 @@ function BlackMarketTweakData:_init_gloves(tweak_data)
 		sort_number = 1,
 		unit = "units/pd2_dlc_dot/characters/glv_roclogrip/glv_roclogrip",
 		third_material = "units/pd2_dlc_dot/characters/glv_roclogrip/glv_roclogrip_third"
+	}
+	self.gloves.hackglove = {
+		name_id = "bm_gloves_hackglove",
+		desc_id = "bm_gloves_hackglove_desc",
+		texture_bundle_folder = "lrfo",
+		global_value = "lrfo",
+		sort_number = 1,
+		unit = "units/pd2_dlc_lrfo/characters/glv_hackglove/glv_hackglove",
+		third_material = "units/pd2_dlc_lrfo/characters/glv_hackglove/glv_hackglove_third"
 	}
 end

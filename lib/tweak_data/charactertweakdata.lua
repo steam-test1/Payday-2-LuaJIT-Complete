@@ -113,6 +113,7 @@ function CharacterTweakData:init(tweak_data)
 	self:_init_triad_boss(presets)
 	self:_init_deep_boss(presets)
 	self:_init_snowman_boss(presets)
+	self:_init_piggydozer(presets)
 	self:_init_escort_sand(presets)
 	self:_init_civilian_no_penalty(presets)
 	self:_init_marshal_marksman(presets)
@@ -1460,6 +1461,83 @@ function CharacterTweakData:_init_snowman_boss(presets)
 	}
 
 	table.insert(self._enemy_list, "snowman_boss")
+end
+
+function CharacterTweakData:_init_piggydozer(presets)
+	self.piggydozer = deep_clone(presets.base)
+	self.piggydozer.experience = {}
+	self.piggydozer.tags = {
+		"tank",
+		"eventboss",
+		"special"
+	}
+	self.piggydozer.weapon = deep_clone(presets.weapon.good)
+	self.piggydozer.weapon.is_flamethrower.melee_speed = nil
+	self.piggydozer.weapon.is_flamethrower.melee_dmg = nil
+	self.piggydozer.weapon.is_flamethrower.melee_retry_delay = nil
+	self.piggydozer.detection = presets.detection.normal
+	self.piggydozer.HEALTH_INIT = 435
+	self.piggydozer.headshot_dmg_mul = 2
+	self.piggydozer.damage.hurt_severity = presets.hurt_severities.no_hurts
+	self.piggydozer.damage.explosion_damage_mul = 0.5
+	self.piggydozer.can_be_tased = false
+	self.piggydozer.suppression = nil
+	self.piggydozer.move_speed = presets.move_speed.slow
+	self.piggydozer.allowed_stances = {
+		cbt = true
+	}
+	self.piggydozer.allowed_poses = {
+		stand = true
+	}
+	self.piggydozer.crouch_move = false
+	self.piggydozer.no_run_start = true
+	self.piggydozer.no_run_stop = true
+	self.piggydozer.no_retreat = true
+	self.piggydozer.no_arrest = true
+	self.piggydozer.surrender = nil
+	self.piggydozer.ecm_vulnerability = 0
+	self.piggydozer.ecm_hurts = {
+		ears = {
+			max_duration = 0,
+			min_duration = 0
+		}
+	}
+	self.piggydozer.weapon_voice = "3"
+	self.piggydozer.experience.cable_tie = "tie_swat"
+	self.piggydozer.access = "tank"
+	self.piggydozer.speech_prefix_p1 = "bb"
+	self.piggydozer.speech_prefix_p2 = "n"
+	self.piggydozer.speech_prefix_count = 1
+	self.piggydozer.priority_shout = "f30"
+	self.piggydozer.rescue_hostages = false
+	self.piggydozer.melee_weapon_dmg_multiplier = 2.5
+	self.piggydozer.steal_loot = nil
+	self.piggydozer.calls_in = nil
+	self.piggydozer.chatter = presets.enemy_chatter.no_chatter
+	self.piggydozer.use_radio = nil
+	self.piggydozer.use_animation_on_fire_damage = false
+	self.piggydozer.flammable = false
+	self.piggydozer.immune_to_knock_down = true
+	self.piggydozer.immune_to_concussion = true
+	self.piggydozer.can_reload_while_moving_tmp = true
+	self.piggydozer.no_headshot_add_mul = true
+	self.piggydozer.player_health_scaling_mul = 1.5
+	self.piggydozer.throwable = "molotov"
+	self.piggydozer.aoe_damage_data = {
+		verification_delay = 0.3,
+		activation_range = 300,
+		activation_delay = 1,
+		env_tweak_name = "triad_boss_aoe_fire",
+		play_voiceline = true,
+		check_player = true,
+		check_npc_slotmask = {
+			"criminals",
+			-2,
+			-3
+		}
+	}
+
+	table.insert(self._enemy_list, "piggydozer")
 end
 
 function CharacterTweakData:_init_captain(presets)
@@ -12110,6 +12188,12 @@ function CharacterTweakData:_set_normal()
 	self.snowman_boss.weapon.is_flamethrower.FALLOFF[3].dmg_mul = 0.4
 	self.snowman_boss.weapon.is_flamethrower.FALLOFF[4].dmg_mul = 0.2
 	self.snowman_boss.weapon.is_flamethrower.FALLOFF[5].dmg_mul = 0.1
+	self.piggydozer.player_health_scaling_mul = nil
+	self.piggydozer.weapon.is_flamethrower.FALLOFF[1].dmg_mul = 0.6
+	self.piggydozer.weapon.is_flamethrower.FALLOFF[2].dmg_mul = 0.5
+	self.piggydozer.weapon.is_flamethrower.FALLOFF[3].dmg_mul = 0.4
+	self.piggydozer.weapon.is_flamethrower.FALLOFF[4].dmg_mul = 0.2
+	self.piggydozer.weapon.is_flamethrower.FALLOFF[5].dmg_mul = 0.1
 	self.presets.gang_member_damage.REGENERATE_TIME = 1.5
 	self.presets.gang_member_damage.REGENERATE_TIME_AWAY = 0.2
 	self.presets.gang_member_damage.HEALTH_INIT = 200
@@ -12692,6 +12776,11 @@ function CharacterTweakData:_set_hard()
 	self.snowman_boss.weapon.is_flamethrower.FALLOFF[3].dmg_mul = 0.4
 	self.snowman_boss.weapon.is_flamethrower.FALLOFF[4].dmg_mul = 0.2
 	self.snowman_boss.weapon.is_flamethrower.FALLOFF[5].dmg_mul = 0.1
+	self.piggydozer.weapon.is_flamethrower.FALLOFF[1].dmg_mul = 1
+	self.piggydozer.weapon.is_flamethrower.FALLOFF[2].dmg_mul = 0.6
+	self.piggydozer.weapon.is_flamethrower.FALLOFF[3].dmg_mul = 0.4
+	self.piggydozer.weapon.is_flamethrower.FALLOFF[4].dmg_mul = 0.2
+	self.piggydozer.weapon.is_flamethrower.FALLOFF[5].dmg_mul = 0.1
 	self.presets.gang_member_damage.REGENERATE_TIME = 2
 	self.presets.gang_member_damage.REGENERATE_TIME_AWAY = 0.4
 
@@ -13333,6 +13422,11 @@ function CharacterTweakData:_set_overkill()
 	self.snowman_boss.weapon.is_flamethrower.FALLOFF[3].dmg_mul = 1.4
 	self.snowman_boss.weapon.is_flamethrower.FALLOFF[4].dmg_mul = 1.2
 	self.snowman_boss.weapon.is_flamethrower.FALLOFF[5].dmg_mul = 1.1
+	self.piggydozer.weapon.is_flamethrower.FALLOFF[1].dmg_mul = 1.8
+	self.piggydozer.weapon.is_flamethrower.FALLOFF[2].dmg_mul = 1.6
+	self.piggydozer.weapon.is_flamethrower.FALLOFF[3].dmg_mul = 1.4
+	self.piggydozer.weapon.is_flamethrower.FALLOFF[4].dmg_mul = 1.2
+	self.piggydozer.weapon.is_flamethrower.FALLOFF[5].dmg_mul = 1.1
 	self.phalanx_minion.HEALTH_INIT = 150
 	self.phalanx_minion.DAMAGE_CLAMP_BULLET = 15
 	self.phalanx_minion.DAMAGE_CLAMP_EXPLOSION = self.phalanx_minion.DAMAGE_CLAMP_BULLET
@@ -17130,6 +17224,7 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 	self.marshal_shield.HEALTH_INIT = self.marshal_shield.HEALTH_INIT * hp_mul
 	self.marshal_shield_break.HEALTH_INIT = self.marshal_shield_break.HEALTH_INIT * hp_mul
 	self.snowman_boss.HEALTH_INIT = self.snowman_boss.HEALTH_INIT * hp_mul
+	self.piggydozer.HEALTH_INIT = self.piggydozer.HEALTH_INIT * hp_mul
 
 	if self.security.headshot_dmg_mul then
 		self.security.headshot_dmg_mul = self.security.headshot_dmg_mul * hs_mul
@@ -17281,6 +17376,10 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 
 	if self.snowman_boss.headshot_dmg_mul then
 		self.snowman_boss.headshot_dmg_mul = self.snowman_boss.headshot_dmg_mul * hs_mul
+	end
+
+	if self.piggydozer.headshot_dmg_mul then
+		self.piggydozer.headshot_dmg_mul = self.piggydozer.headshot_dmg_mul * hs_mul
 	end
 end
 
@@ -18154,6 +18253,12 @@ function CharacterTweakData:character_map()
 			path = "units/pd2_dlc_cg22/characters/",
 			list = {
 				"ene_snowman_boss"
+			}
+		},
+		pda10 = {
+			path = "units/pd2_dlc_pda10/characters/",
+			list = {
+				"ene_dozer_piggy"
 			}
 		},
 		corp = {

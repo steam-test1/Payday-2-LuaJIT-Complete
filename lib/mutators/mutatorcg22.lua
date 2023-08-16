@@ -651,7 +651,12 @@ function MutatorCG22:_server_on_snowman_spawned()
 end
 
 function MutatorCG22:sync_on_snowman_spawned()
-	managers.hud:add_buff("snowman_spawn", "hud_buff_snowman_warning", Color.white, 5)
+	managers.hud:add_buff({
+		name_id = "hud_buff_snowman_warning",
+		buff_id = "snowman_spawn",
+		time_left = 5,
+		color = Color.white
+	})
 	self:announcer_say("Play_alm_xmas22_09", false)
 end
 
@@ -833,7 +838,12 @@ function MutatorCG22:activate_health_refresh_buff(buff_td)
 
 	if unit_damage then
 		unit_damage:restore_health(buff_td.amount, true)
-		managers.hud:add_buff("recover_health", buff_td.hud_string_id, buff_td.color, 2)
+		managers.hud:add_buff({
+			name_id = "buff_td.hud_string_id",
+			buff_id = "recover_health",
+			time_left = 2,
+			color = buff_td.color
+		})
 	end
 end
 
@@ -845,7 +855,12 @@ function MutatorCG22:activate_ammo_refresh_buff(buff_td)
 			if alive(weapon.unit) then
 				weapon.unit:base():replenish()
 				managers.hud:set_ammo_amount(id, weapon.unit:base():ammo_info())
-				managers.hud:add_buff("ammo_refresh", buff_td.hud_string_id, buff_td.color, 2)
+				managers.hud:add_buff({
+					buff_id = "ammo_refresh",
+					time_left = 2,
+					name_id = buff_td.hud_string_id,
+					color = buff_td.color
+				})
 			end
 		end
 	end
@@ -854,7 +869,12 @@ end
 function MutatorCG22:activate_bag_speed_increase_buff(buff_td)
 	self._perma_buffs.bag_speed_amount = self._perma_buffs.bag_speed_amount + 1
 
-	managers.hud:add_buff("bag_speed_increase", buff_td.hud_string_id, buff_td.color, 2)
+	managers.hud:add_buff({
+		buff_id = "bag_speed_increase",
+		time_left = 2,
+		name_id = buff_td.hud_string_id,
+		color = buff_td.color
+	})
 end
 
 function MutatorCG22:activate_ammo_types_buff(buff_td)
@@ -873,7 +893,12 @@ function MutatorCG22:activate_ammo_types_buff(buff_td)
 		unit_inventory:ammo_type_buff_add(ammo_type)
 	end
 
-	managers.hud:add_buff("ammo_types_" .. ammo_type, buff_td.hud_string_id .. "_" .. ammo_type, buff_td.color, buff_td.duration)
+	managers.hud:add_buff({
+		buff_id = "ammo_types_" .. ammo_type,
+		name_id = buff_td.hud_string_id .. "_" .. ammo_type,
+		color = buff_td.color,
+		time_left = buff_td.duration
+	})
 end
 
 function MutatorCG22:remove_ammo_types_buff(buff_id, ammo_type)

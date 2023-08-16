@@ -90,6 +90,16 @@ function RaycastWeaponBase:init(unit)
 	}
 	self._magazine_empty_objects = {}
 	self._concussion_tweak = self:weapon_tweak_data().concussion_data
+	local mutator = nil
+
+	if managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
+		mutator = managers.mutators:get_mutator(MutatorPiggyRevenge)
+	end
+
+	if mutator and mutator.check_modify_weapon then
+		self._active_modify_mutator = mutator
+	end
+
 	RaycastWeaponBase.shield_mask = RaycastWeaponBase.shield_mask or managers.slot:get_mask("enemy_shield_check")
 	RaycastWeaponBase.enemy_mask = RaycastWeaponBase.enemy_mask or managers.slot:get_mask("enemies")
 	RaycastWeaponBase.wall_mask = RaycastWeaponBase.wall_mask or managers.slot:get_mask("world_geometry")
@@ -98,6 +108,18 @@ end
 
 function RaycastWeaponBase:bullet_class()
 	return self._bullet_class or InstantBulletBase
+end
+
+function RaycastWeaponBase:override_bullet_class(bullet_class_string)
+	if self._default_bullet_class == nil then
+		self._default_bullet_class = self._bullet_class
+	end
+
+	local bullet_class = bullet_class_string and CoreSerialize.string_to_classtable(bullet_class_string)
+	bullet_class = bullet_class or self._default_bullet_class
+	self._bullet_class = bullet_class or InstantBulletBase
+	self._bullet_slotmask = self._bullet_class:bullet_slotmask()
+	self._blank_slotmask = self._bullet_class:blank_slotmask()
 end
 
 function RaycastWeaponBase:shooting_count()
@@ -446,6 +468,10 @@ function RaycastWeaponBase:fire(from_pos, direction, dmg_mul, shoot_player, spre
 		end
 	end
 
+	if self._autoaim and self._active_modify_mutator then
+		self._active_modify_mutator:check_modify_weapon(self)
+	end
+
 	if self._bullets_fired then
 		if self._bullets_fired == 1 and self:weapon_tweak_data().sounds.fire_single then
 			self:play_tweak_data_sound("stop_fire")
@@ -479,6 +505,16 @@ function RaycastWeaponBase:fire(from_pos, direction, dmg_mul, shoot_player, spre
 					end
 				end
 			end
+		end
+
+		local mutator = nil
+
+		if managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
+			mutator = managers.mutators:get_mutator(MutatorPiggyRevenge)
+		end
+
+		if mutator and mutator.get_free_ammo_chance and mutator:get_free_ammo_chance() then
+			ammo_usage = 0
 		end
 
 		local ammo_in_clip = base:get_ammo_remaining_in_clip()
@@ -625,6 +661,38 @@ function RaycastWeaponBase:can_shoot_through_enemy()
 	return self._can_shoot_through_enemy
 end
 
+function RaycastWeaponBase:override_shoot_through(wall, shield, enemy)
+	if self._default_can_shoot_through_wall == nil then
+		self._default_can_shoot_through_wall = self._can_shoot_through_wall
+	end
+
+	if self._default_can_shoot_through_shield == nil then
+		self._default_can_shoot_through_shield = self._can_shoot_through_shield
+	end
+
+	if self._default_can_shoot_through_enemy == nil then
+		self._default_can_shoot_through_enemy = self._can_shoot_through_enemy
+	end
+
+	if wall ~= nil then
+		self._can_shoot_through_wall = wall
+	else
+		self._can_shoot_through_wall = self._default_can_shoot_through_wall
+	end
+
+	if shield ~= nil then
+		self._can_shoot_through_shield = shield
+	else
+		self._can_shoot_through_shield = self._default_can_shoot_through_shield
+	end
+
+	if enemy ~= nil then
+		self._can_shoot_through_enemy = enemy
+	else
+		self._can_shoot_through_enemy = self._default_can_shoot_through_enemy
+	end
+end
+
 function RaycastWeaponBase.collect_hits(from, to, setup_data)
 	setup_data = setup_data or {}
 	local ray_hits = nil
@@ -687,7 +755,7 @@ end
 
 function RaycastWeaponBase:_collect_hits(from, to)
 	local setup_data = {
-		stop_on_impact = self._bullet_class and self._bullet_class.stop_on_impact,
+		stop_on_impact = self:bullet_class().stop_on_impact,
 		can_shoot_through_wall = self:can_shoot_through_wall(),
 		can_shoot_through_shield = self:can_shoot_through_shield(),
 		can_shoot_through_enemy = self:can_shoot_through_enemy(),
@@ -776,6 +844,7 @@ function RaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul
 	local cop_kill_count = 0
 	local hit_through_wall = false
 	local hit_through_shield = false
+	local extra_collisions = self.extra_collisions and self:extra_collisions()
 	local is_civ_f = CopDamage.is_civilian
 	local damage = self:_get_current_damage(dmg_mul)
 
@@ -783,7 +852,16 @@ function RaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul
 		local dmg = self:get_damage_falloff(damage, hit, user_unit)
 
 		if dmg > 0 then
-			local hit_result = self._bullet_class:on_collision(hit, self._unit, user_unit, dmg)
+			local hit_result = self:bullet_class():on_collision(hit, self._unit, user_unit, dmg)
+
+			if extra_collisions then
+				for idx, extra_col_data in ipairs(extra_collisions) do
+					if alive(hit.unit) then
+						extra_col_data.bullet_class:on_collision(hit, self._unit, user_unit, dmg * (extra_col_data.dmg_mul or 1))
+					end
+				end
+			end
+
 			hit_through_wall = hit_through_wall or hit.unit:in_slot(self.wall_mask)
 			hit_through_shield = hit_through_shield or hit.unit:in_slot(self.shield_mask) and alive(hit.unit:parent())
 
@@ -1231,7 +1309,7 @@ function RaycastWeaponBase:force_hit(from_pos, direction, user_unit, impact_pos,
 		body = hit_body or hit_unit:body(0)
 	}
 
-	self._bullet_class:on_collision(col_ray, self._unit, user_unit, self._damage)
+	self:bullet_class():on_collision(col_ray, self._unit, user_unit, self._damage)
 end
 
 function RaycastWeaponBase:_get_tweak_data_weapon_animation(anim)
@@ -2639,6 +2717,13 @@ FlameBulletBase.EFFECT_PARAMS = {
 	idstr_effect = Idstring(""),
 	pushunits = tweak_data.upgrades.flame_bullet.push_units
 }
+FlameBulletBase.FIRE_DOT_DATA = {
+	dot_trigger_chance = 35,
+	dot_damage = 15,
+	dot_length = 6,
+	dot_trigger_max_distance = 3000,
+	dot_tick_period = 0.5
+}
 
 function FlameBulletBase:bullet_slotmask()
 	return managers.slot:get_mask("bullet_impact_targets_no_shields")
@@ -2775,6 +2860,7 @@ function FlameBulletBase:give_fire_damage(col_ray, weapon_unit, user_unit, damag
 		fire_dot_data = weapon_tweak_data and weapon_tweak_data.fire_dot_data
 	end
 
+	fire_dot_data = fire_dot_data or self.FIRE_DOT_DATA
 	local action_data = {
 		variant = variant or "fire",
 		damage = damage,

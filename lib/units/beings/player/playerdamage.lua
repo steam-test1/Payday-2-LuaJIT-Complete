@@ -382,10 +382,14 @@ function PlayerDamage:force_into_bleedout(can_activate_berserker, ignore_reduce_
 		return
 	end
 
+	if ignore_reduce_revive == nil then
+		ignore_reduce_revive = self:check_ignore_reduce_revive()
+	end
+
 	self._check_berserker_done = nil
 
 	self:set_health(0)
-	self:_chk_cheat_death()
+	self:_chk_cheat_death(ignore_reduce_revive)
 	self:_damage_screen()
 	self:_check_bleed_out(can_activate_berserker, nil, ignore_reduce_revive)
 	managers.hud:set_player_health({
@@ -1390,6 +1394,7 @@ function PlayerDamage:damage_bullet(attack_data)
 		return
 	end
 
+	self:mutator_update_attack_data(attack_data)
 	self:_check_chico_heal(attack_data)
 
 	local armor_reduction_multiplier = 0
@@ -1456,12 +1461,26 @@ function PlayerDamage:_calc_armor_damage(attack_data)
 	return health_subtracted
 end
 
-function PlayerDamage:_chk_cheat_death()
-	if Application:digest_value(self._revives, false) > 1 and not self._check_berserker_done and managers.player:has_category_upgrade("player", "cheat_death_chance") then
+function PlayerDamage:_chk_cheat_death(ignore_reduce_revive)
+	local can_revive = (Application:digest_value(self._revives, false) > 1 or ignore_reduce_revive) and not self._check_berserker_done
+
+	if can_revive and managers.player:has_category_upgrade("player", "cheat_death_chance") then
 		local r = math.rand(1)
 
 		if r <= managers.player:upgrade_value("player", "cheat_death_chance", 0) then
 			self._auto_revive_timer = 1
+		end
+	end
+
+	if can_revive and not self._auto_revive_timer then
+		local mutator = nil
+
+		if managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
+			mutator = managers.mutators:get_mutator(MutatorPiggyRevenge)
+		end
+
+		if mutator and mutator.auto_revive_timer then
+			self._auto_revive_timer = mutator:auto_revive_timer()
 		end
 	end
 end
@@ -1513,13 +1532,14 @@ function PlayerDamage:_calc_health_damage(attack_data)
 		"melee",
 		"delayed_tick"
 	}, attack_data.variant)
+	local ignore_reduce_revive = self:check_ignore_reduce_revive()
 
 	if self:get_real_health() == 0 and trigger_skills then
-		self:_chk_cheat_death()
+		self:_chk_cheat_death(ignore_reduce_revive)
 	end
 
 	self:_damage_screen()
-	self:_check_bleed_out(trigger_skills)
+	self:_check_bleed_out(trigger_skills, nil, ignore_reduce_revive)
 	managers.hud:set_player_health({
 		current = self:get_real_health(),
 		total = self:_max_health(),
@@ -1564,6 +1584,32 @@ function PlayerDamage:_check_chico_heal(attack_data)
 			self:restore_health(health_received, true)
 		end
 	end
+end
+
+function PlayerDamage:mutator_update_attack_data(attack_data)
+	local mutator = nil
+
+	if managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
+		mutator = managers.mutators:get_mutator(MutatorPiggyRevenge)
+	end
+
+	if mutator and mutator.damage_reduction_multiplier then
+		attack_data.damage = attack_data.damage * mutator:damage_reduction_multiplier()
+	end
+end
+
+function PlayerDamage:check_ignore_reduce_revive()
+	local mutator = nil
+
+	if managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
+		mutator = managers.mutators:get_mutator(MutatorPiggyRevenge)
+	end
+
+	if mutator and mutator.check_ignore_reduce_revive then
+		return mutator:check_ignore_reduce_revive()
+	end
+
+	return false
 end
 
 function PlayerDamage:_send_damage_drama(attack_data, health_subtracted)
@@ -1643,6 +1689,7 @@ function PlayerDamage:damage_killzone(attack_data)
 
 		attack_data.damage = managers.player:modify_value("damage_taken", attack_data.damage, attack_data)
 
+		self:mutator_update_attack_data(attack_data)
 		self:_check_chico_heal(attack_data)
 
 		local armor_reduction_multiplier = 0
@@ -1797,6 +1844,7 @@ function PlayerDamage:damage_explosion(attack_data)
 	attack_data.damage = managers.player:modify_value("damage_taken", attack_data.damage, attack_data)
 
 	self:copr_update_attack_data(attack_data)
+	self:mutator_update_attack_data(attack_data)
 	self:_check_chico_heal(attack_data)
 
 	local armor_subtracted = self:_calc_armor_damage(attack_data)
@@ -1855,6 +1903,7 @@ function PlayerDamage:damage_fire(attack_data)
 	attack_data.damage = damage * dmg_mul
 	attack_data.damage = managers.player:modify_value("damage_taken", attack_data.damage, attack_data)
 
+	self:mutator_update_attack_data(attack_data)
 	self:_check_chico_heal(attack_data)
 
 	local armor_subtracted = self:_calc_armor_damage(attack_data)
@@ -1942,6 +1991,7 @@ function PlayerDamage:damage_fire_hit(attack_data)
 		return
 	end
 
+	self:mutator_update_attack_data(attack_data)
 	self:_check_chico_heal(attack_data)
 
 	local armor_reduction_multiplier = 0
@@ -1998,6 +2048,7 @@ function PlayerDamage:damage_simple(attack_data)
 		return
 	end
 
+	self:mutator_update_attack_data(attack_data)
 	self:_check_chico_heal(attack_data)
 
 	local armor_reduction_multiplier = 0

@@ -251,8 +251,15 @@ function PlayerCarry:_get_max_walk_speed(...)
 		multiplier = math.clamp(multiplier, 0, 1)
 	end
 
+	local mutator = nil
+
 	if managers.mutators:is_mutator_active(MutatorCG22) then
-		local mutator = managers.mutators:get_mutator(MutatorCG22)
+		mutator = managers.mutators:get_mutator(MutatorCG22)
+	elseif managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
+		mutator = managers.mutators:get_mutator(MutatorPiggyRevenge)
+	end
+
+	if mutator and mutator.get_bag_speed_increase_multiplier then
 		multiplier = multiplier * mutator:get_bag_speed_increase_multiplier()
 	end
 

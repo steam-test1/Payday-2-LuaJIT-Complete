@@ -609,6 +609,7 @@ function Setup:update(t, dt)
 
 	TestAPIHelper.update(t, dt)
 	Telemetry:update(t, dt)
+	HttpRequest:update(t, dt)
 end
 
 function Setup:paused_update(t, dt)

@@ -98,7 +98,12 @@ function NetworkManager:init()
 	elseif self._is_win32 then
 		if SystemInfo:distribution() == Idstring("STEAM") then
 			self.account = NetworkAccountSTEAM:new()
-			self.voice_chat = NetworkVoiceChatSTEAM:new()
+
+			if SystemInfo:matchmaking() == Idstring("MM_STEAM") then
+				self.voice_chat = NetworkVoiceChatSTEAM:new()
+			else
+				self.voice_chat = NetworkVoiceChatDisabled:new()
+			end
 		elseif SystemInfo:distribution() == Idstring("EPIC") then
 			self.account = NetworkAccountEPIC:new()
 			self.voice_chat = NetworkVoiceChatDisabled:new()
@@ -534,11 +539,11 @@ function NetworkManager:host_game()
 	end
 end
 
-function NetworkManager:join_game_at_host_rpc(host_rpc, result_cb)
+function NetworkManager:join_game_at_host_rpc(host_rpc, is_invite, result_cb)
 	self._discover_hosts_cb = nil
 
 	if self._session then
-		self._session:request_join_host(host_rpc, result_cb)
+		self._session:request_join_host(host_rpc, is_invite, result_cb)
 	else
 		print("[NetworkManager:join_game_at_host_rpc] no session!!!")
 	end

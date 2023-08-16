@@ -586,7 +586,7 @@ function Telemetry:send_on_player_logged_in(reason)
 		PlayerLevel = managers.experience:current_level(),
 		InfamyLevel = managers.experience:current_rank(),
 		Reason = Global.telemetry._times_logged_in == 0 and "startup" or "optin",
-		PD2StarbreezeAccountID = Login.player_session.user_id and Login.player_session.user_id ~= "" and true or false
+		PD2StarbreezeAccountID = Login.player_session.user_id or ""
 	}
 	local installed_dlc_list = {}
 	local installed_entitlement_list = {}
@@ -1200,6 +1200,12 @@ function Telemetry:send_on_player_steam_stats_overdrill()
 	self:send("player_steam_stats_overdrill", telemetry_payload)
 end
 
+function Telemetry:on_player_game_event_action(action, params)
+	if action == Telemetry.event_actions.piggybank_fed then
+		self:send_on_game_event_piggybank_fed(params)
+	end
+end
+
 function Telemetry:send_on_game_event_piggybank_fed(params)
 	if get_platform_name() ~= "WIN32" or not self._global._logged_in then
 		return
@@ -1263,4 +1269,32 @@ function Telemetry:send_on_leakedrecording_played(params)
 	}
 
 	self:send("leakedrecording_played", telemetry_payload)
+end
+
+function Telemetry:send_on_game_event_piggyrevenge_fed(params)
+	if get_platform_name() ~= "WIN32" or not self._global._logged_in then
+		return
+	end
+
+	local total_kills = managers.statistics:session_anyone_killed_by_grenade() + managers.statistics:session_anyone_killed_by_melee() + managers.statistics:session_anyone_killed_by_weapons()
+	local telemetry_payload = {
+		HeistID = self._heist_id,
+		TotalKills = total_kills
+	}
+
+	self:send("piggyrevenge_fed", telemetry_payload)
+end
+
+function Telemetry:send_on_game_event_piggyrevenge_exploded(params)
+	if get_platform_name() ~= "WIN32" or not self._global._logged_in then
+		return
+	end
+
+	local telemetry_payload = {
+		HeistID = self._heist_id,
+		PiggyStage = params.stage,
+		BagProcess = params.progress
+	}
+
+	self:send("piggyrevenge_exploded", telemetry_payload)
 end

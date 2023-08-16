@@ -1645,6 +1645,10 @@ function CustomSafehouseGuiRewardItem:init(daily_page, panel, order, reward_data
 			category = managers.upgrades:get_category(id)
 		end
 
+		if category == "melee_weapon" then
+			category = "melee_weapons"
+		end
+
 		local td = tweak_data:get_raw_value("blackmarket", category, id) or tweak_data:get_raw_value(category, id)
 
 		if td then

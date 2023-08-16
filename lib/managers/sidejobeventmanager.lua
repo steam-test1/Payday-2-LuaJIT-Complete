@@ -876,6 +876,28 @@ function SideJobEventManager:has_completed_and_claimed_rewards(challenge_id)
 	return true
 end
 
+function SideJobEventManager:has_completed_and_claimed_item(challenge_id, type_items, item_entry)
+	local challenge = self:get_challenge(challenge_id)
+
+	if not challenge then
+		Application:error("[SideJobEventManager:claim_reward] Invalid challenge", challenge_id)
+
+		return nil
+	end
+
+	if not challenge.completed or not challenge.rewards then
+		return false
+	end
+
+	for id, reward in pairs(challenge.rewards) do
+		if reward.item_entry == item_entry and reward.type_items == type_items then
+			return reward.rewarded
+		end
+	end
+
+	return true
+end
+
 function SideJobEventManager:any_challenge_completed()
 	return self._has_completed_mission
 end

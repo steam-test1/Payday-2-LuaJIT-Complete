@@ -678,11 +678,6 @@ function LeakedRecordingMissionGui:play_recording()
 
 	self._cog_is_rotating = true
 	self._cog_rotation = 0
-	local briefing_button = self._mission_panel:child("briefing_button")
-
-	if briefing_button then
-		briefing_button:set_visible(true)
-	end
 
 	if not managers.menu:is_pc_controller() then
 		local legends = {}
@@ -699,6 +694,12 @@ function LeakedRecordingMissionGui:play_recording()
 		self:update_legend(legends)
 	else
 		self.start_text:set_text(managers.localization:text("menu_lr_gadget_stop"))
+
+		local briefing_button = self._mission_panel:child("briefing_button")
+
+		if briefing_button then
+			briefing_button:set_visible(true)
+		end
 	end
 end
 
@@ -706,11 +707,6 @@ function LeakedRecordingMissionGui:stop_recording()
 	self._sound_source:stop()
 
 	self._cog_is_rotating = false
-	local briefing_button = self._mission_panel:child("briefing_button")
-
-	if briefing_button then
-		briefing_button:set_visible(false)
-	end
 
 	if not managers.menu:is_pc_controller() then
 		local legends = {}
@@ -724,6 +720,12 @@ function LeakedRecordingMissionGui:stop_recording()
 		self:update_legend(legends)
 	else
 		self.start_text:set_text(managers.localization:text("menu_lr_gadget_play"))
+
+		local briefing_button = self._mission_panel:child("briefing_button")
+
+		if briefing_button then
+			briefing_button:set_visible(false)
+		end
 	end
 end
 

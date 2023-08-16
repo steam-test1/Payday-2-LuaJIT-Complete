@@ -3108,6 +3108,21 @@ function MenuManager:show_cg22_event_dialog()
 	managers.system_menu:show(dialog_data)
 end
 
+function MenuManager:show_pda10_event_dialog()
+	local dialog_data = {
+		title = managers.localization:text("dialog_pda10_event_title"),
+		text = managers.localization:text("dialog_pda10_event_text")
+	}
+	local ok_button = {
+		text = managers.localization:text("dialog_ok")
+	}
+	dialog_data.button_list = {
+		ok_button
+	}
+
+	managers.system_menu:show(dialog_data)
+end
+
 function MenuManager:show_external_items_dialog(params)
 	local dialog_data = {
 		title = managers.localization:text("dialog_external_items_title")
@@ -3416,6 +3431,21 @@ function MenuManager:show_lrth_dialog(params)
 	local dialog_data = {
 		title = managers.localization:text("dialog_lrth_event_title"),
 		text = managers.localization:text("dialog_lrth_event_text")
+	}
+	local ok_button = {
+		text = managers.localization:text("dialog_ok")
+	}
+	dialog_data.button_list = {
+		ok_button
+	}
+
+	managers.system_menu:show(dialog_data)
+end
+
+function MenuManager:show_lrfo_dialog(params)
+	local dialog_data = {
+		title = managers.localization:text("dialog_lrfo_event_title"),
+		text = managers.localization:text("dialog_lrfo_event_text")
 	}
 	local ok_button = {
 		text = managers.localization:text("dialog_ok")

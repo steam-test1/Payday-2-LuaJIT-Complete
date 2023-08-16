@@ -1381,6 +1381,26 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 		},
 		access = access_type_all
 	}
+	self.unit_categories.piggydozer = {
+		unit_types = {
+			america = {
+				Idstring("units/pd2_dlc_pda10/characters/ene_dozer_piggy/ene_dozer_piggy")
+			},
+			russia = {
+				Idstring("units/pd2_dlc_pda10/characters/ene_dozer_piggy/ene_dozer_piggy")
+			},
+			zombie = {
+				Idstring("units/pd2_dlc_pda10/characters/ene_dozer_piggy/ene_dozer_piggy")
+			},
+			murkywater = {
+				Idstring("units/pd2_dlc_pda10/characters/ene_dozer_piggy/ene_dozer_piggy")
+			},
+			federales = {
+				Idstring("units/pd2_dlc_pda10/characters/ene_dozer_piggy/ene_dozer_piggy")
+			}
+		},
+		access = access_type_all
+	}
 end
 
 function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
@@ -3319,6 +3339,24 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 			"tac_bull_rush"
 		})
 	}
+	self.enemy_spawn_groups.piggydozer = {
+		amount = {
+			1,
+			1
+		},
+		spawn = {
+			{
+				freq = 1,
+				amount_min = 1,
+				rank = 1,
+				unit = "piggydozer",
+				tactics = self._tactics.tank_rush
+			}
+		},
+		spawn_point_chk_ref = table.list_to_set({
+			"tac_bull_rush"
+		})
+	}
 end
 
 function GroupAITweakData:_init_enemy_spawn_groups_level(tweak_data, difficulty_index)
@@ -4339,6 +4377,11 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 		0,
 		0
 	}
+	self.besiege.assault.groups.piggydozer = {
+		0,
+		0,
+		0
+	}
 	self.besiege.reenforce.interval = {
 		10,
 		20,
@@ -4616,6 +4659,11 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 		0
 	}
 	self.besiege.recon.groups.snowman_boss = {
+		0,
+		0,
+		0
+	}
+	self.besiege.recon.groups.piggydozer = {
 		0,
 		0,
 		0

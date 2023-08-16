@@ -548,6 +548,24 @@ function WeaponFactoryManager:_get_override_parts(factory_id, blueprint)
 		end
 	end
 
+	if factory[factory_id] and factory[factory_id].merge_overrides then
+		for _, part_id in ipairs(blueprint) do
+			local part = self:_part_data(part_id, factory_id, override_override)
+
+			if part and part.override then
+				for override_id, override_data in pairs(part.override) do
+					overridden[override_id] = overridden[override_id] or {}
+
+					for id, data in pairs(override_data) do
+						overridden[override_id][id] = data
+					end
+				end
+			end
+		end
+
+		return overridden
+	end
+
 	for _, part_id in ipairs(blueprint) do
 		local part = self:_part_data(part_id, factory_id, override_override)
 

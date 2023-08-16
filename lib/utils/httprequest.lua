@@ -14,6 +14,10 @@ function HttpRequest:init()
 	end
 end
 
+function HttpRequest:update(t, dt)
+	self:check_requests()
+end
+
 function HttpRequest:on_request_done(clbk, ...)
 	self._current_request = false
 

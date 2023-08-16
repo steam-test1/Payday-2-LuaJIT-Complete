@@ -995,3 +995,92 @@ end
 function LootDropManager:load(data)
 	self._global = data.LootDropManager
 end
+
+function LootDropManager:get_amount_mass_drop(data)
+	if not data then
+		return 0
+	end
+
+	local num_rewards = 1
+
+	if data.coins and data.coins > 0 then
+		num_rewards = num_rewards + 1
+	end
+
+	if data.cash and data.cash > 0 then
+		num_rewards = num_rewards + 1
+	end
+
+	if data.xp and data.xp > 0 then
+		num_rewards = num_rewards + 1
+	end
+
+	if data.additional_lootdrops then
+		num_rewards = num_rewards + data.additional_lootdrops
+	end
+
+	return num_rewards
+end
+
+function LootDropManager:set_mass_drop(data)
+	if not data or data.coroutine then
+		return false
+	end
+
+	local amount_coins = data.coins or 0
+
+	if amount_coins > 0 then
+		managers.custom_safehouse:add_coins(amount_coins)
+	end
+
+	local amount_cash = data.cash or 0
+
+	if amount_cash > 0 then
+		managers.money:add_to_spending(amount_cash)
+	end
+
+	local amount_xp = data.xp or 0
+
+	if amount_xp > 0 then
+		managers.experience:give_experience(amount_xp)
+	end
+
+	local amount_lootdrops = data.inventory_reward and 0 or 1
+	amount_lootdrops = amount_lootdrops + (data.additional_lootdrops or 0)
+	local item_pc = managers.lootdrop:get_random_item_pc()
+	data.coroutine = self:new_make_mass_drop(amount_lootdrops, item_pc, data)
+
+	return true
+end
+
+function LootDropManager:fetch_mass_lootdrops(data)
+	if data and data.coroutine then
+		local status = coroutine.status(data.coroutine)
+
+		if status == "dead" then
+			local lootdrops = {
+				items = clone(data.items)
+			}
+
+			table.list_append(lootdrops.items, data.special_rewards or {})
+
+			lootdrops.cash = data.cash
+			lootdrops.xp = data.xp
+			local amount_coins = data.coins or 0
+
+			if amount_coins > 0 then
+				lootdrops.coins = data.coins
+			end
+
+			data.coroutine = false
+
+			return lootdrops
+		elseif status == "suspended" then
+			coroutine.resume(data.coroutine)
+		end
+
+		return false
+	end
+
+	return {}
+end

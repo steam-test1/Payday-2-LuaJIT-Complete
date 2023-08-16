@@ -29,6 +29,8 @@ function FeatureManager:_setup()
 	self._default.announcements.lron_event_explanation = 1
 	self._default.announcements.lrtw_event_explanation = 1
 	self._default.announcements.lrth_event_explanation = 1
+	self._default.announcements.lrfo_event_explanation = 1
+	self._default.announcements.pda10_event_explanation = 1
 	self._default.external_notifications = {
 		dialog_texas_heat_drop_name = {
 			"rat_oilbaron",
@@ -118,6 +120,8 @@ function FeatureManager:reset()
 	Global.feature_manager.announcements.lron_event_explanation = 1
 	Global.feature_manager.announcements.lrtw_event_explanation = 1
 	Global.feature_manager.announcements.lrth_event_explanation = 1
+	Global.feature_manager.announcements.lrfo_event_explanation = 1
+	Global.feature_manager.announcements.pda10_event_explanation = 1
 	Global.feature_manager.announced = {}
 	Global.feature_manager.external_notifications = {}
 	self._global = Global.feature_manager
@@ -436,6 +440,12 @@ function FeatureManager:cg22_event_explanation()
 	return true
 end
 
+function FeatureManager:pda10_event_explanation()
+	managers.menu:show_pda10_event_dialog()
+
+	return true
+end
+
 function FeatureManager:lron_event_explanation()
 	managers.menu:show_lron_dialog()
 
@@ -450,6 +460,12 @@ end
 
 function FeatureManager:lrth_event_explanation()
 	managers.menu:show_lrth_dialog()
+
+	return true
+end
+
+function FeatureManager:lrfo_event_explanation()
+	managers.menu:show_lrfo_dialog()
 
 	return true
 end

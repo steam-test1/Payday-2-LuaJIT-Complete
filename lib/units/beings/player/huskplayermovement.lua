@@ -3748,15 +3748,16 @@ HuskPlayerMovement.magazine_collisions = {
 	}
 }
 
-function HuskPlayerMovement:_material_config_name(part_id, unit_name, use_cc_material_config)
-	local unit_name = tweak_data.weapon.factory.parts[part_id].unit
+function HuskPlayerMovement:_material_config_name(part_id, part_data, unit_name, use_cc_material_config)
+	part_data = part_data or tweak_data.weapon.factory.parts[part_id]
+	local unit_name = part_data.unit
 
-	if use_cc_material_config and tweak_data.weapon.factory.parts[part_id].cc_thq_material_config then
-		return tweak_data.weapon.factory.parts[part_id].cc_thq_material_config
+	if use_cc_material_config and part_data.cc_thq_material_config then
+		return part_data.cc_thq_material_config
 	end
 
-	if tweak_data.weapon.factory.parts[part_id].thq_material_config then
-		return tweak_data.weapon.factory.parts[part_id].thq_material_config
+	if part_data.thq_material_config then
+		return part_data.thq_material_config
 	end
 
 	local cc_string = use_cc_material_config and "_cc" or ""
@@ -3795,7 +3796,8 @@ function HuskPlayerMovement:_spawn_magazine_unit(part_id, unit_name, pos, rot)
 	local use_cc_material_config = is_thq and equipped_weapon and equipped_weapon:base()._cosmetics_data and true or false
 	local material_config_ids = Idstring("material_config")
 	local magazine_unit = World:spawn_unit(unit_name, pos, rot)
-	local new_material_config_ids = self:_material_config_name(part_id, magazine_unit, use_cc_material_config)
+	local part_data = equipped_weapon and managers.weapon_factory:get_part_data_by_part_id_from_weapon(part_id, equipped_weapon:base()._factory_id, equipped_weapon:base()._blueprint)
+	local new_material_config_ids = self:_material_config_name(part_id, part_data, magazine_unit, use_cc_material_config)
 
 	if magazine_unit:material_config() ~= new_material_config_ids and DB:has(material_config_ids, new_material_config_ids) then
 		magazine_unit:set_material_config(new_material_config_ids, true)

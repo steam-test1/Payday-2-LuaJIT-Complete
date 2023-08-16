@@ -658,6 +658,10 @@ function CopDamage:damage_bullet(attack_data)
 
 		if tweak_data.character[self._unit:base()._tweak_table].priority_shout then
 			damage = damage * managers.player:upgrade_value("weapon", "special_damage_taken_multiplier", 1)
+
+			if attack_data.weapon_unit:base().weapon_tweak_data then
+				damage = damage * (attack_data.weapon_unit:base():weapon_tweak_data().special_damage_multiplier or 1)
+			end
 		end
 
 		if head then
@@ -3881,6 +3885,7 @@ function CopDamage:sync_damage_melee(attacker_unit, damage_percent, damage_effec
 	attack_data.result = result
 	attack_data.damage = damage
 	attack_data.is_synced = true
+	attack_data.name_id = attacker_unit and attacker_unit:inventory() and attacker_unit:inventory():get_melee_weapon_id()
 	local attack_dir = nil
 
 	if attacker_unit then
@@ -4739,6 +4744,14 @@ function CopDamage:_apply_damage_reduction(damage)
 
 	if self._damage_reduction_multiplier then
 		damage = damage * self._damage_reduction_multiplier
+	end
+
+	if managers.mutators:is_mutator_active(MutatorCG22) then
+		local cg22_mutator = managers.mutators:get_mutator(MutatorCG22)
+
+		if cg22_mutator:can_enemy_be_affected_by_buff("blue", self._unit) then
+			damage = damage * cg22_mutator:get_enemy_blue_multiplier()
+		end
 	end
 
 	return damage

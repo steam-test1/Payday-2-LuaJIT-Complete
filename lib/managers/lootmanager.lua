@@ -212,7 +212,7 @@ end
 
 function LootManager:check_achievements(carry_id, multiplier)
 	local real_total_value = self:get_real_total_value()
-	local memory, total_memory_value, all_pass, total_value_pass, jobs_pass, levels_pass, difficulties_pass, total_time_pass, no_assets_pass, no_deployable_pass, secured_pass, is_dropin_pass = nil
+	local memory, total_memory_value, all_pass, total_value_pass, jobs_pass, levels_pass, difficulties_pass, total_time_pass, no_assets_pass, no_deployable_pass, secured_pass, is_dropin_pass, bag_with_value_pass = nil
 
 	for achievement, achievement_data in pairs(tweak_data.achievement.loot_cash_achievements or {}) do
 		jobs_pass = not achievement_data.jobs or table.contains(achievement_data.jobs, managers.job:current_real_job_id())
@@ -223,6 +223,7 @@ function LootManager:check_achievements(carry_id, multiplier)
 		no_deployable_pass = not achievement_data.no_deployable or not managers.player:has_deployable_been_used()
 		is_dropin_pass = achievement_data.is_dropin == nil or achievement_data.is_dropin == managers.statistics:is_dropin()
 		secured_pass = not achievement_data.secured
+		bag_with_value_pass = not achievement_data.bag_with_value
 
 		if achievement_data.secured then
 			if achievement_data.secured[1] ~= nil then
@@ -275,7 +276,12 @@ function LootManager:check_achievements(carry_id, multiplier)
 			total_value_pass = not achievement_data.total_value or achievement_data.total_value <= total_memory_value
 		end
 
-		all_pass = total_value_pass and jobs_pass and levels_pass and difficulties_pass and total_time_pass and no_assets_pass and no_deployable_pass and secured_pass and is_dropin_pass
+		if not bag_with_value_pass then
+			local carry_td = tweak_data.carry[carry_id]
+			bag_with_value_pass = carry_td and carry_td.bag_value and true or false
+		end
+
+		all_pass = total_value_pass and jobs_pass and levels_pass and difficulties_pass and total_time_pass and no_assets_pass and no_deployable_pass and secured_pass and is_dropin_pass and bag_with_value_pass
 
 		if all_pass and not managers.achievment:award_data(achievement_data) then
 			Application:debug("[LootManager] loot_cash_achievements:", achievement)

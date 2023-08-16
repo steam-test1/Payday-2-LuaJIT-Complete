@@ -4543,7 +4543,7 @@ function UnitNetworkHandler:request_shield_unit_link(parent_unit, sender_rpc)
 	end
 end
 
-function UnitNetworkHandler:sync_feed_piggybank(bag_unit, reached_next_level, sender)
+function UnitNetworkHandler:sync_feed_piggybank(bag_unit, reached_next_level, last_carried_player, sender)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
@@ -4558,10 +4558,12 @@ function UnitNetworkHandler:sync_feed_piggybank(bag_unit, reached_next_level, se
 
 	if managers.mutators:is_mutator_active(MutatorPiggyBank) then
 		mutator = managers.mutators:get_mutator(MutatorPiggyBank)
+	elseif managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
+		mutator = managers.mutators:get_mutator(MutatorPiggyRevenge)
 	end
 
 	if mutator then
-		mutator:sync_feed_piggybank(bag_unit, reached_next_level)
+		mutator:sync_feed_piggybank(bag_unit, reached_next_level, last_carried_player)
 	end
 end
 
@@ -4580,6 +4582,8 @@ function UnitNetworkHandler:sync_piggybank_dialog(sync_index, sender)
 
 	if managers.mutators:is_mutator_active(MutatorPiggyBank) then
 		mutator = managers.mutators:get_mutator(MutatorPiggyBank)
+	elseif managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
+		mutator = managers.mutators:get_mutator(MutatorPiggyRevenge)
 	end
 
 	if mutator then
@@ -4602,6 +4606,8 @@ function UnitNetworkHandler:sync_explode_piggybank(sender)
 
 	if managers.mutators:is_mutator_active(MutatorPiggyBank) then
 		mutator = managers.mutators:get_mutator(MutatorPiggyBank)
+	elseif managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
+		mutator = managers.mutators:get_mutator(MutatorPiggyRevenge)
 	end
 
 	if mutator then
@@ -4712,6 +4718,8 @@ function UnitNetworkHandler:sync_gain_buff(buff_string, sender)
 
 	if managers.mutators:is_mutator_active(MutatorCG22) then
 		mutator = managers.mutators:get_mutator(MutatorCG22)
+	elseif managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
+		mutator = managers.mutators:get_mutator(MutatorPiggyRevenge)
 	end
 
 	if mutator then
@@ -4736,7 +4744,13 @@ function UnitNetworkHandler:sync_on_snowman_spawned(sender)
 		return
 	end
 
-	local mutator = managers.mutators:get_mutator(MutatorCG22)
+	local mutator = nil
+
+	if managers.mutators:is_mutator_active(MutatorCG22) then
+		mutator = managers.mutators:get_mutator(MutatorCG22)
+	elseif managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
+		mutator = managers.mutators:get_mutator(MutatorPiggyRevenge)
+	end
 
 	if mutator then
 		mutator:sync_on_snowman_spawned()

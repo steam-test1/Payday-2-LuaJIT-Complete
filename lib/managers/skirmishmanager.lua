@@ -487,101 +487,32 @@ function SkirmishManager:add_random_special_reward(lootpool)
 	return reward
 end
 
-function SkirmishManager:get_amount_rewards()
+function SkirmishManager:get_mass_drop_data()
+	local data = {}
 	local wave_progress = self:get_wave_progress()
-	local num_rewards = 1
-
-	for wave, amount in pairs(tweak_data.skirmish.additional_coins) do
-		if wave <= wave_progress and amount > 0 then
-			num_rewards = num_rewards + 1
-
-			break
-		end
-	end
-
-	for wave, lootpool in pairs(tweak_data.skirmish.additional_rewards) do
-		if wave <= wave_progress then
-			num_rewards = num_rewards + 1
-		end
-	end
-
-	for wave, amount in pairs(tweak_data.skirmish.additional_lootdrops) do
-		if wave <= wave_progress then
-			num_rewards = num_rewards + amount
-		end
-	end
-
-	return num_rewards
-end
-
-function SkirmishManager:make_lootdrops(got_inventory_reward)
-	local wave_progress = self:get_wave_progress()
-	self._generated_lootdrops = {}
-	local amount_coins = 0
+	data.coins = 0
 
 	for wave, amount in pairs(tweak_data.skirmish.additional_coins) do
 		if wave <= wave_progress then
-			amount_coins = amount_coins + amount
+			data.coins = data.coins + amount
 		end
 	end
 
-	self._generated_lootdrops.coins = amount_coins
-
-	if amount_coins > 0 then
-		managers.custom_safehouse:add_coins(amount_coins)
-	end
-
-	self._generated_lootdrops.special_rewards = {}
+	data.special_rewards = {}
 
 	for wave, lootpool in pairs(tweak_data.skirmish.additional_rewards) do
 		if wave <= wave_progress then
-			table.insert(self._generated_lootdrops.special_rewards, self:add_random_special_reward(lootpool))
+			table.insert(data.special_rewards, self:add_random_special_reward(lootpool))
 		end
 	end
 
-	local amount_lootdrops = not got_inventory_reward and 1 or 0
+	data.additional_lootdrops = 0
 
 	for wave, amount in pairs(tweak_data.skirmish.additional_lootdrops) do
 		if wave <= wave_progress then
-			amount_lootdrops = amount_lootdrops + amount
+			data.additional_lootdrops = data.additional_lootdrops + amount
 		end
 	end
 
-	local item_pc = managers.lootdrop:get_random_item_pc()
-	self._lootdrops_coroutine = managers.lootdrop:new_make_mass_drop(amount_lootdrops, item_pc, self._generated_lootdrops)
-end
-
-function SkirmishManager:get_generated_lootdrops()
-	return self._loot_drops or {}
-end
-
-function SkirmishManager:has_finished_generating_additional_rewards()
-	if self._lootdrops_coroutine then
-		local status = coroutine.status(self._lootdrops_coroutine)
-
-		if status == "dead" then
-			self._loot_drops = {
-				items = clone(self._generated_lootdrops.items)
-			}
-
-			table.list_append(self._loot_drops.items, self._generated_lootdrops.special_rewards or {})
-
-			if self._generated_lootdrops.coins > 0 then
-				self._loot_drops.coins = self._generated_lootdrops.coins
-			end
-
-			self._generated_lootdrops = nil
-			self._lootdrops_coroutine = nil
-
-			return true
-		elseif status == "suspended" then
-			coroutine.resume(self._lootdrops_coroutine)
-
-			return false
-		else
-			return false
-		end
-	end
-
-	return true
+	return data
 end

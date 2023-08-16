@@ -544,6 +544,14 @@ function BlackMarketManager:weapon_unlocked_by_crafted(category, slot)
 		return false
 	end
 
+	for _, part_id in ipairs(crafted.blueprint) do
+		local event_job_challenge = managers.event_jobs:get_challenge_from_reward("weapon_mods", part_id)
+
+		if event_job_challenge and not event_job_challenge.completed then
+			return false, event_job_challenge.locked_id or "menu_event_job_lock_info"
+		end
+	end
+
 	return unlocked
 end
 
@@ -9084,6 +9092,16 @@ function BlackMarketManager:_verify_dlc_items()
 		end
 	end
 
+	if equipped_mask then
+		local event_job_challenge = managers.event_jobs:get_challenge_from_reward("masks", equipped_mask.mask_id)
+
+		if event_job_challenge and not event_job_challenge.completed then
+			self:equip_mask(1)
+
+			equipped_mask = nil
+		end
+	end
+
 	self._global._preferred_character = self._global._preferred_character or self._defaults.preferred_character
 	local character_name = CriminalsManager.convert_old_to_new_character_workname(self._global._preferred_character)
 	local char_tweak = tweak_data.blackmarket.characters.locked[character_name] or tweak_data.blackmarket.characters[character_name]
@@ -10428,13 +10446,23 @@ function BlackMarketManager:has_unlocked_shock()
 end
 
 function BlackMarketManager:has_unlocked_money()
-	local is_unlocked = managers.event_jobs:has_completed_and_claimed_rewards("pda9_1")
-
-	return is_unlocked, "bm_menu_locked_pda9_1", "guis/textures/pd2/lock_achievement"
+	return true
 end
 
 function BlackMarketManager:has_unlocked_victor()
 	local is_unlocked = managers.event_jobs:has_completed_and_claimed_rewards("cg22_1")
 
 	return is_unlocked, "bm_menu_locked_cg22_1", "guis/textures/pd2/lock_achievement"
+end
+
+function BlackMarketManager:has_unlocked_bessy()
+	local is_unlocked = managers.event_jobs:has_completed_and_claimed_item("pda10_3", "upgrades", "bessy")
+
+	return is_unlocked, "bm_menu_locked_pda10_3", "guis/textures/pd2/lock_achievement"
+end
+
+function BlackMarketManager:has_unlocked_piggy_hammer()
+	local is_unlocked = managers.event_jobs:has_completed_and_claimed_item("pda10_5", "upgrades", "piggy_hammer")
+
+	return is_unlocked, "bm_menu_locked_pda10_5", "guis/textures/pd2/lock_achievement"
 end

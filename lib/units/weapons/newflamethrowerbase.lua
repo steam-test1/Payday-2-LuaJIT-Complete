@@ -558,7 +558,7 @@ function NewFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, dmg_m
 		end
 	end
 
-	local bullet_class = self._bullet_class
+	local bullet_class = self:bullet_class()
 	local fake_ray_dir, fake_ray_dis = nil
 
 	for i = 1, #valid_hit_bodies do

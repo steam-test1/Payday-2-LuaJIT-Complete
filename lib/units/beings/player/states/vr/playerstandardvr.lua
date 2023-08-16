@@ -1527,8 +1527,12 @@ function PlayerStandardVR:_start_action_reload(t)
 		end
 
 		if not managers.vr:get_setting("auto_reload") then
+			local reload_timeline = tweak_data.vr.reload_timelines[weapon:get_name_id()]
+
 			if table.contains(tweak.categories, "bow") then
 				reload_time = 0
+			elseif reload_timeline and reload_timeline.manual_reload_reduction then
+				reload_time = reload_time - tweak_data.vr.reload_buff - reload_timeline.manual_reload_reduction / speed_multiplier
 			else
 				reload_time = reload_time - tweak_data.vr.reload_buff
 			end

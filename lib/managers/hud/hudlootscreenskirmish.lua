@@ -379,6 +379,39 @@ function HUDLootScreenSkirmish:make_lootdrop(lootdrop_data)
 	local max_cards = #data.cards
 	local card_index = 1
 	local item_panel = nil
+
+	if lootdrop_data.cash and lootdrop_data.cash > 0 then
+		cash = lootdrop_data.cash
+
+		if data.cards[card_index] then
+			item_panel = data.cards[card_index].item_panel
+			data.cards[card_index].type = CARD_TYPES.cash
+
+			self:_add_item_textures({
+				type_items = "bonus_cash",
+				item_entry = cash
+			}, item_panel)
+		end
+
+		card_index = card_index + 1
+	end
+
+	if lootdrop_data.xp and lootdrop_data.xp > 0 then
+		xp = lootdrop_data.xp
+
+		if data.cards[card_index] then
+			item_panel = data.cards[card_index].item_panel
+			data.cards[card_index].type = CARD_TYPES.xp
+
+			self:_add_item_textures({
+				type_items = "bonus_xp",
+				item_entry = xp
+			}, item_panel)
+		end
+
+		card_index = card_index + 1
+	end
+
 	local coins = lootdrop_data.coins or 0
 
 	if coins > 0 then
@@ -743,6 +776,52 @@ function HUDLootScreenSkirmish:_add_item_textures(lootdrop_data, panel)
 		coin_icon:set_center(center_x, center_y)
 		coin_text:set_center_x(center_x)
 		coin_text:set_bottom(panel:h())
+
+		return
+	end
+
+	if category == "bonus_cash" then
+		local value_id = item_id
+		local cash_icon = panel:bitmap({
+			texture = "guis/textures/pd2/blackmarket/cash_drop",
+			blend_mode = "normal"
+		})
+		local cash_text = FineText:new(panel, {
+			blend_mode = "normal",
+			layer = 1,
+			text = managers.experience:cash_string(value_id),
+			font = medium_font,
+			font_size = medium_font_size,
+			color = tweak_data.screen_colors.text
+		})
+
+		ExtendedPanel.make_bitmap_fit(cash_icon, panel:w(), panel:h())
+		cash_icon:set_center(center_x, center_y)
+		cash_text:set_center_x(center_x)
+		cash_text:set_bottom(panel:h())
+
+		return
+	end
+
+	if category == "bonus_xp" then
+		local value_id = item_id
+		local xp_icon = panel:bitmap({
+			texture = "guis/textures/pd2/blackmarket/xp_drop",
+			blend_mode = "normal"
+		})
+		local xp_text = FineText:new(panel, {
+			blend_mode = "normal",
+			layer = 1,
+			text = managers.experience:experience_string(value_id),
+			font = medium_font,
+			font_size = medium_font_size,
+			color = tweak_data.screen_colors.text
+		})
+
+		ExtendedPanel.make_bitmap_fit(xp_icon, panel:w(), panel:h())
+		xp_icon:set_center(center_x, center_y)
+		xp_text:set_center_x(center_x)
+		xp_text:set_bottom(panel:h())
 
 		return
 	end

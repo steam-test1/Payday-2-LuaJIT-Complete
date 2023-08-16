@@ -2,10 +2,12 @@ EventJobsTweakData = EventJobsTweakData or class()
 
 function EventJobsTweakData:init(tweak_data)
 	self.challenges = {}
+	self.current_event = "PDA10"
 
 	self:_init_pda8_challenges(tweak_data)
 	self:_init_pda9_challenges(tweak_data)
 	self:_init_cg22_challenges(tweak_data)
+	self:_init_pda10_challenges(tweak_data)
 	self:_init_community_challenges(tweak_data)
 
 	self.event_info = {
@@ -22,6 +24,9 @@ function EventJobsTweakData:init(tweak_data)
 			stage_offset = 1
 		},
 		cg22 = {
+			stage_offset = 1
+		},
+		pda10 = {
 			stage_offset = 1
 		}
 	}
@@ -875,6 +880,303 @@ function EventJobsTweakData:_init_cg22_challenges(tweak_data)
 	})
 end
 
+function EventJobsTweakData:_init_pda10_challenges(tweak_data)
+	table.insert(self.challenges, {
+		reward_id = "menu_pda10_3_reward",
+		name_id = "menu_pda10_3",
+		temp_challenge = "PDA10",
+		desc_id = "menu_pda10_3_desc",
+		show_progress = true,
+		locked_id = "bm_menu_locked_pda10_3",
+		id = "pda10_3",
+		objectives = {
+			self:_choice({
+				tweak_data.safehouse:_progress("pda10_heist_objective", 2, {
+					name_id = "menu_pda10_personal_3",
+					desc_id = "menu_pda10_personal_3_desc"
+				}),
+				tweak_data.safehouse:_progress("pda10_heist_post_objective", 50, {
+					name_id = "menu_pda10_post_objective_3",
+					desc_id = "menu_pda10_post_objective_3_desc"
+				})
+			}, 1, {
+				name_id = "menu_pda10_3_choice_obj",
+				choice_id = "pda10_personal_3",
+				desc_id = "menu_pda10_post_objective_3_desc"
+			}),
+			self:_stage("pda10_stages", 1, {
+				name_id = "menu_pda10_stage_3",
+				desc_id = "menu_pda10_stage_3_desc",
+				stages = {
+					4,
+					5,
+					6,
+					7
+				}
+			})
+		},
+		rewards = {
+			{
+				item_entry = "bessy",
+				type_items = "upgrades"
+			},
+			{
+				item_entry = "wpn_fps_spec_bessy_bayonette",
+				type_items = "weapon_mods"
+			},
+			{
+				item_entry = "zoothat_black",
+				type_items = "masks"
+			}
+		}
+	})
+	table.insert(self.challenges, {
+		reward_id = "menu_pda10_5_reward",
+		name_id = "menu_pda10_5",
+		temp_challenge = "PDA10",
+		desc_id = "menu_pda10_5_desc",
+		show_progress = true,
+		locked_id = "bm_menu_locked_pda10_5",
+		id = "pda10_5",
+		objectives = {
+			self:_choice({
+				tweak_data.safehouse:_progress("pda10_musket_objective", 10, {
+					name_id = "menu_pda10_personal_5",
+					desc_id = "menu_pda10_personal_5_desc"
+				}),
+				tweak_data.safehouse:_progress("pda10_musket_post_objective", 100, {
+					name_id = "menu_pda10_post_objective_5",
+					desc_id = "menu_pda10_post_objective_5_desc"
+				})
+			}, 1, {
+				name_id = "menu_pda10_5_choice_obj",
+				choice_id = "pda10_personal_5",
+				desc_id = "menu_pda10_post_objective_5_desc"
+			}),
+			self:_stage("pda10_stages", 1, {
+				name_id = "menu_pda10_stage_5",
+				desc_id = "menu_pda10_stage_5_desc",
+				stages = {
+					6,
+					7
+				}
+			})
+		},
+		rewards = {
+			{
+				item_entry = "tiger_red",
+				type_items = "gloves"
+			},
+			{
+				item_entry = "zoothat_red",
+				type_items = "masks"
+			},
+			{
+				item_entry = "gangzsta",
+				type_items = "player_styles"
+			}
+		}
+	})
+	table.insert(self.challenges, {
+		reward_id = "menu_pda10_2_reward",
+		name_id = "menu_pda10_2",
+		temp_challenge = "PDA10",
+		desc_id = "menu_pda10_2_desc",
+		show_progress = true,
+		locked_id = "bm_menu_locked_pda10_2",
+		id = "pda10_2",
+		objectives = {
+			self:_choice({
+				tweak_data.safehouse:_progress("pda10_bags_objective", 25, {
+					name_id = "menu_pda10_personal_2",
+					desc_id = "menu_pda10_personal_2_desc"
+				}),
+				tweak_data.safehouse:_progress("pda10_bags_post_objective", 100, {
+					name_id = "menu_pda10_post_objective_2",
+					desc_id = "menu_pda10_post_objective_2_desc"
+				})
+			}, 1, {
+				name_id = "menu_pda10_2_choice_obj",
+				choice_id = "pda10_personal_2",
+				desc_id = "menu_pda10_post_objective_2_desc"
+			}),
+			self:_stage("pda10_stages", 1, {
+				name_id = "menu_pda10_stage_2",
+				desc_id = "menu_pda10_stage_2_desc",
+				stages = {
+					3,
+					4,
+					5,
+					6,
+					7
+				}
+			})
+		},
+		rewards = {
+			{
+				item_entry = "piggy_hammer",
+				type_items = "upgrades"
+			},
+			{
+				item_entry = "zoothat_yellow",
+				type_items = "masks"
+			}
+		}
+	})
+	table.insert(self.challenges, {
+		reward_id = "menu_pda10_6_reward",
+		name_id = "menu_pda10_6",
+		temp_challenge = "PDA10",
+		desc_id = "menu_pda10_6_desc",
+		show_progress = true,
+		locked_id = "bm_menu_locked_pda10_6",
+		id = "pda10_6",
+		objectives = {
+			self:_choice({
+				tweak_data.safehouse:_progress("pda10_hammer_objective", 25, {
+					name_id = "menu_pda10_personal_6",
+					desc_id = "menu_pda10_personal_6_desc"
+				}),
+				tweak_data.safehouse:_progress("pda10_hammer_post_objective", 100, {
+					name_id = "menu_pda10_post_objective_6",
+					desc_id = "menu_pda10_post_objective_6_desc"
+				})
+			}, 1, {
+				name_id = "menu_pda10_6_choice_obj",
+				choice_id = "pda10_personal_6",
+				desc_id = "menu_pda10_post_objective_6_desc"
+			}),
+			self:_stage("pda10_stages", 1, {
+				name_id = "menu_pda10_stage_6",
+				desc_id = "menu_pda10_stage_6_desc",
+				stages = {
+					6,
+					7
+				}
+			})
+		},
+		rewards = {
+			{
+				item_entry = "tiger_neon",
+				type_items = "gloves"
+			},
+			{
+				item_entry = "zoothat_blue",
+				type_items = "masks"
+			},
+			{
+				item_entry = "splitcrim",
+				type_items = "masks"
+			}
+		}
+	})
+	table.insert(self.challenges, {
+		reward_id = "menu_pda10_1_reward",
+		name_id = "menu_pda10_1",
+		temp_challenge = "PDA10",
+		desc_id = "menu_pda10_1_desc",
+		show_progress = true,
+		locked_id = "bm_menu_locked_pda10_1",
+		id = "pda10_1",
+		objectives = {
+			self:_choice({
+				tweak_data.safehouse:_progress("pda10_dozer_objective", 25, {
+					name_id = "menu_pda10_personal_1",
+					desc_id = "menu_pda10_personal_1_desc"
+				}),
+				tweak_data.safehouse:_progress("pda10_dozer_post_objective", 100, {
+					name_id = "menu_pda10_post_objective_1",
+					desc_id = "menu_pda10_post_objective_1_desc"
+				})
+			}, 1, {
+				name_id = "menu_pda10_1_choice_obj",
+				choice_id = "pda10_personal_1",
+				desc_id = "menu_pda10_post_objective_1_desc"
+			}),
+			self:_stage("pda10_stages", 1, {
+				name_id = "menu_pda10_stage_1",
+				desc_id = "menu_pda10_stage_1_desc",
+				stages = {
+					2,
+					3,
+					4,
+					5,
+					6,
+					7
+				}
+			})
+		},
+		rewards = {
+			{
+				item_entry = "teddymoo",
+				type_items = "masks"
+			},
+			{
+				item_entry = "wpn_fps_pis_deagle_ck",
+				type_items = "weapon_mods"
+			},
+			{
+				type_items = "suit_variations",
+				item_entry = {
+					"thug",
+					"gold"
+				}
+			}
+		}
+	})
+	table.insert(self.challenges, {
+		reward_id = "menu_pda10_4_reward",
+		name_id = "menu_pda10_4",
+		temp_challenge = "PDA10",
+		desc_id = "menu_pda10_4_desc",
+		show_progress = true,
+		locked_id = "bm_menu_locked_pda10_4",
+		id = "pda10_4",
+		objectives = {
+			self:_choice({
+				tweak_data.safehouse:_progress("pda10_buff_objective", 35, {
+					name_id = "menu_pda10_personal_4",
+					desc_id = "menu_pda10_personal_4_desc"
+				}),
+				tweak_data.safehouse:_progress("pda10_buff_post_objective", 100, {
+					name_id = "menu_pda10_post_objective_4",
+					desc_id = "menu_pda10_post_objective_4_desc"
+				})
+			}, 1, {
+				name_id = "menu_pda10_4_choice_obj",
+				choice_id = "pda10_personal_4",
+				desc_id = "menu_pda10_post_objective_4_desc"
+			}),
+			self:_stage("pda10_stages", 1, {
+				name_id = "menu_pda10_stage_4",
+				desc_id = "menu_pda10_stage_4_desc",
+				stages = {
+					5,
+					6,
+					7
+				}
+			})
+		},
+		rewards = {
+			{
+				item_entry = "guldgris",
+				type_items = "masks"
+			},
+			{
+				item_entry = "wpn_fps_pis_g17_ck",
+				type_items = "weapon_mods"
+			},
+			{
+				type_items = "suit_variations",
+				item_entry = {
+					"sneak_suit",
+					"camo"
+				}
+			}
+		}
+	})
+end
+
 function EventJobsTweakData:_init_community_challenges(tweak_data)
 	self.community_challenges = {
 		pda9 = {
@@ -888,6 +1190,13 @@ function EventJobsTweakData:_init_community_challenges(tweak_data)
 			url = "https://www.paydaythegame.com/ovk-media/redux/hl22-u3yhfbfaud/holiday22stage.json",
 			event_data = {
 				bags = "bags",
+				stage = "unlockstage"
+			}
+		},
+		pda10 = {
+			url = "https://www.paydaythegame.com/ovk-media/redux/pd210-uty37awwutu63fa/piggybucks.json",
+			event_data = {
+				bags = "bucks",
 				stage = "unlockstage"
 			}
 		}

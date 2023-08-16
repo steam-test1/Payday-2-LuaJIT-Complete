@@ -3,7 +3,7 @@ ClientNetworkSession.HOST_SANITY_CHECK_INTERVAL = 4
 ClientNetworkSession.HOST_REQUEST_JOIN_INTERVAL = 2
 ClientNetworkSession.JOIN_REQUEST_TIMEOUT = 20
 
-function ClientNetworkSession:request_join_host(host_rpc, result_cb)
+function ClientNetworkSession:request_join_host(host_rpc, is_invite, result_cb)
 	print("[ClientNetworkSession:request_join_host]", host_rpc, result_cb)
 
 	self._cb_find_game = result_cb
@@ -49,6 +49,7 @@ function ClientNetworkSession:request_join_host(host_rpc, result_cb)
 			self._local_peer:name(),
 			self._local_peer:account_type_str(),
 			self._local_peer:account_id(),
+			is_invite,
 			managers.blackmarket:get_preferred_character_string(),
 			managers.dlc:dlcs_string(),
 			xuid,

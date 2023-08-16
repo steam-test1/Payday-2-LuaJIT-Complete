@@ -775,6 +775,12 @@ function DLCTweakData:init_generated()
 			amount = 1
 		}
 	}
+	self.lrfo_bundle = {
+		dlc = "has_lrfo",
+		content = {}
+	}
+	self.lrfo_bundle.content.loot_global_value = "lrfo"
+	self.lrfo_bundle.content.loot_drops = {}
 	self.m422_bundle = {
 		free = true,
 		content = {}
@@ -1204,6 +1210,12 @@ function DLCTweakData:init_generated()
 	}
 	self.oct21_bundle.content.loot_global_value = "oct21"
 	self.oct21_bundle.content.loot_drops = {}
+	self.pda10_bundle = {
+		dlc = "has_pda10",
+		content = {}
+	}
+	self.pda10_bundle.content.loot_global_value = "pda10"
+	self.pda10_bundle.content.loot_drops = {}
 	self.pda8_bundle = {
 		free = true,
 		content = {}

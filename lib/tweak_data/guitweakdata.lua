@@ -1936,6 +1936,7 @@ function GuiTweakData:init(tweak_data)
 			item_class = "CrimeNetSidebarSkirmishItem"
 		},
 		{
+			name_id = "menu_cn_leakedrecording_separator",
 			item_class = "CrimeNetSidebarSeparator"
 		},
 		{
@@ -1945,6 +1946,13 @@ function GuiTweakData:init(tweak_data)
 			id = "leakedrecording",
 			icon = "sidebar_leakedrecording",
 			item_class = "CrimeNetSidebarLeakedRecordingItem"
+		},
+		{
+			name_id = "menu_event_a10th_info",
+			callback = "clbk_pda10_event",
+			id = "event",
+			icon = "sidebar_mutators",
+			item_class = "CrimeNetSidebarEventsItem"
 		}
 	}
 	self.crime_net.codex = {
@@ -5187,8 +5195,12 @@ function GuiTweakData:init(tweak_data)
 				}
 			},
 			{
-				coming_soon = true,
-				poster_icon = "guis/dlcs/lrm/textures/pd2/crimenet/coming_soon_enemies",
+				coming_soon = false,
+				briefing_track = "Play_loc_secr_04",
+				heist = "hox",
+				poster_icon = "guis/dlcs/lrfo/textures/pd2/crimenet/enemies",
+				recording_track = "Play_spe_ets_01",
+				job_value = "LRFO",
 				poster_rect = {
 					0,
 					14,
@@ -5202,6 +5214,30 @@ function GuiTweakData:init(tweak_data)
 		limit = 5
 	}
 
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_pda10_01",
+		texture_path = "guis/dlcs/pda10/textures/pd2/new_heists/pda10_01",
+		epic_url = "https://t.paydaythegame.com/c/vqiyyn",
+		url = "https://t.paydaythegame.com/c/vqiyyn"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_pda10_02",
+		texture_path = "guis/dlcs/pda10/textures/pd2/new_heists/pda10_02",
+		epic_url = "https://t.paydaythegame.com/c/f4yt3i",
+		url = "https://t.paydaythegame.com/c/f4yt3i"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_pda10_03",
+		texture_path = "guis/dlcs/pda10/textures/pd2/new_heists/pda10_03",
+		epic_url = "https://t.paydaythegame.com/c/20jyqr",
+		url = "https://t.paydaythegame.com/c/20jyqr"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_pda10_04",
+		texture_path = "guis/dlcs/pda10/textures/pd2/new_heists/pda10_04",
+		epic_url = "https://t.paydaythegame.com/c/wcxnzh",
+		url = "https://t.paydaythegame.com/c/oedttw"
+	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_deep_01",
 		texture_path = "guis/dlcs/deep/textures/pd2/new_heists/deep_01",

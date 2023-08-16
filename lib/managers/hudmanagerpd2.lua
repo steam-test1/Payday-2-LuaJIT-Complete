@@ -1130,15 +1130,21 @@ function HUDManager:_create_mutator(hud)
 	end
 end
 
-function HUDManager:add_buff(buff_id, name_id, color, time_left, show_time_left)
+function HUDManager:add_buff(data)
 	if not _G.IS_VR then
-		self._hud_mutator:add_buff(buff_id, name_id, color, time_left, show_time_left)
+		self._hud_mutator:add_buff(data)
 	end
 end
 
-function HUDManager:show_stage_transition(next_level)
+function HUDManager:remove_buff(buff_id)
 	if not _G.IS_VR then
-		self._hud_mutator:show_stage_transition(next_level)
+		self._hud_mutator:remove_buff(buff_id)
+	end
+end
+
+function HUDManager:show_stage_transition(next_level, progress)
+	if not _G.IS_VR then
+		self._hud_mutator:show_stage_transition(next_level, progress)
 	end
 end
 

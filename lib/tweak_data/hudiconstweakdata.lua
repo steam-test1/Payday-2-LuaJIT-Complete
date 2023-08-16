@@ -15447,6 +15447,15 @@ function HudIconsTweakData:init()
 			85
 		}
 	}
+	self.Other_H_NONE_ConspiracyTheory = {
+		texture = "guis/dlcs/trk/atlases/conspiracy_theory_achievement",
+		texture_rect = {
+			2,
+			2,
+			85,
+			85
+		}
+	}
 
 	TextureCorrectionTweakData:new(self)
 

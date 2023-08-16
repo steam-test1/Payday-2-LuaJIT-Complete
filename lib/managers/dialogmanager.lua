@@ -70,7 +70,7 @@ function DialogManager:queue_dialog(id, params)
 			return false
 		end
 
-		if dialog.priority < self._dialog_list[self._current_dialog.id].priority then
+		if dialog.priority <= self._dialog_list[self._current_dialog.id].priority then
 			if self._next_dialog then
 				self:_call_done_callback(self._dialog_list[self._next_dialog.id].params and self._dialog_list[self._next_dialog.id].params.done_cbk, "skipped")
 			end

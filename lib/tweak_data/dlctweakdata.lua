@@ -9025,4 +9025,27 @@ function DLCTweakData:init(tweak_data)
 	self.victor_mods_pack_2.content.loot_global_value = "victor_mods_pack_2"
 	self.victor_mods_pack_2.content.loot_drops = {}
 	self.victor_mods_pack_2.content.upgrades = {}
+	self.ach_lrfo_1 = {
+		content = {},
+		dlc = "has_achievement",
+		achievement_id = "lrfo_1"
+	}
+	self.ach_lrfo_1.content.loot_global_value = "lrfo"
+	self.ach_lrfo_1.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "hackmask",
+			amount = 1
+		},
+		{
+			type_items = "player_styles",
+			item_entry = "hacksuit",
+			amount = 1
+		},
+		{
+			type_items = "gloves",
+			item_entry = "hackglove",
+			amount = 1
+		}
+	}
 end

@@ -213,6 +213,7 @@ function NewRaycastWeaponBaseVR:update_reload_finish(t, dt)
 end
 
 function NewRaycastWeaponBase:_play_reload_anim(anim_group_id, to, from, unit)
+	local speed_multiplier = self:reload_speed_multiplier()
 	unit = unit or self._unit
 
 	unit:anim_stop(anim_group_id)
@@ -222,9 +223,11 @@ function NewRaycastWeaponBase:_play_reload_anim(anim_group_id, to, from, unit)
 	end
 
 	if to then
-		unit:anim_play_to(anim_group_id, to)
+		unit:anim_play_to(anim_group_id, to, speed_multiplier)
 	else
-		unit:anim_play(anim_group_id)
+		local length = unit:anim_length(anim_group_id)
+
+		unit:anim_play_to(anim_group_id, length, speed_multiplier)
 	end
 end
 
@@ -233,6 +236,8 @@ function NewRaycastWeaponBaseVR:update_reload_mag(time)
 		return
 	end
 
+	local auto_reload = managers.vr:get_setting("auto_reload")
+	local reload_state = auto_reload and "auto" or "manual"
 	local mag_data = self._timeline:get_data(time)
 
 	self._reload_mag_unit:set_local_position(mag_data.pos)
@@ -278,22 +283,24 @@ function NewRaycastWeaponBaseVR:update_reload_mag(time)
 
 	if mag_data.anims then
 		for _, anim_data in ipairs(mag_data.anims) do
-			if anim_data.part then
-				local part_list = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk(anim_data.part, self._factory_id, self._blueprint)
+			if not anim_data.state or anim_data.state == reload_state then
+				if anim_data.part then
+					local part_list = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk(anim_data.part, self._factory_id, self._blueprint)
 
-				for _, part_name in ipairs(part_list or {}) do
-					local part_data = self._parts[part_name]
+					for _, part_name in ipairs(part_list or {}) do
+						local part_data = self._parts[part_name]
 
-					if part_data.animations and part_data.animations[anim_data.anim_group] then
-						local anim_group_id = Idstring(part_data.animations[anim_data.anim_group])
+						if part_data.animations and part_data.animations[anim_data.anim_group] then
+							local anim_group_id = Idstring(part_data.animations[anim_data.anim_group])
 
-						self:_play_reload_anim(anim_group_id, anim_data.to, anim_data.from, part_data.unit)
+							self:_play_reload_anim(anim_group_id, anim_data.to, anim_data.from, part_data.unit)
+						end
 					end
-				end
-			else
-				local anim_group_id = Idstring(anim_data.anim_group)
+				else
+					local anim_group_id = Idstring(anim_data.anim_group)
 
-				self:_play_reload_anim(anim_group_id, anim_data.to, anim_data.from)
+					self:_play_reload_anim(anim_group_id, anim_data.to, anim_data.from)
+				end
 			end
 		end
 	end

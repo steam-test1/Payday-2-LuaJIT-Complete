@@ -623,6 +623,22 @@ function LootDropTweakData:init_generated(tweak_data)
 		sort_number = 515,
 		category = "dlc"
 	}
+	self.global_values.lrfo = {
+		name_id = "bm_global_value_lrfo",
+		desc_id = "menu_l_global_value_lrfo",
+		unlock_id = "bm_global_value_lrfo_unlock",
+		color = tweak_data.screen_colors.community_color,
+		dlc = true,
+		free = false,
+		hide_unavailable = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 3,
+		category = "pd2_clan"
+	}
 	self.global_values.m422 = {
 		name_id = "bm_global_value_m422",
 		desc_id = "menu_l_global_value_m422",
@@ -846,6 +862,22 @@ function LootDropTweakData:init_generated(tweak_data)
 		track = true,
 		sort_number = 263,
 		category = "normal"
+	}
+	self.global_values.pda10 = {
+		name_id = "bm_global_value_pda10",
+		desc_id = "menu_l_global_value_pda10",
+		unlock_id = "bm_global_value_pda10_unlock",
+		color = tweak_data.screen_colors.event_color,
+		dlc = true,
+		free = false,
+		hide_unavailable = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 512,
+		category = "global_event"
 	}
 	self.global_values.pda8 = {
 		name_id = "bm_global_value_pda8",

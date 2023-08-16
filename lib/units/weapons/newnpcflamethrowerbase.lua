@@ -102,7 +102,7 @@ function NewNPCFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, dm
 		end
 	end
 
-	local bullet_class = self._bullet_class
+	local bullet_class = self:bullet_class()
 	local fake_ray_dir, fake_ray_dis, hit_base_ext = nil
 
 	for i = 1, #valid_hit_bodies do
@@ -202,7 +202,7 @@ function NewNPCFlamethrowerBase:fire_blank(direction, impact, sub_id, override_d
 				range = col_dis or range
 			end
 
-			self._bullet_class:on_collision(col_ray, weap_unit, user_unit, self._damage, true)
+			self:bullet_class():on_collision(col_ray, weap_unit, user_unit, self._damage, true)
 		end
 	end
 
@@ -372,7 +372,7 @@ function NPCBossFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, d
 		end
 	end
 
-	local bullet_class = self._bullet_class
+	local bullet_class = self:bullet_class()
 	local fake_ray_dir, fake_ray_dis, hit_base_ext = nil
 
 	for i = 1, #valid_hit_bodies do

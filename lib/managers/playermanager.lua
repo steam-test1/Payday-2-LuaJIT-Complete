@@ -232,6 +232,8 @@ function PlayerManager:check_skills()
 
 	if managers.mutators:is_mutator_active(MutatorPiggyBank) then
 		self._message_system:register(Message.OnLethalHeadShot, "play_pda9_headshot", callback(self, self, "_play_pda9_headshot_event"))
+	elseif managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
+		self._message_system:register(Message.OnLethalHeadShot, "play_pda9_headshot", callback(self, self, "_play_pda9_headshot_event"))
 	else
 		self._message_system:unregister(Message.OnLethalHeadShot, "play_pda9_headshot")
 	end
@@ -2582,6 +2584,16 @@ function PlayerManager:body_armor_regen_multiplier(moving, health_ratio)
 		multiplier = multiplier * (1 - managers.player:upgrade_value("player", "armor_regen_damage_health_ratio_multiplier", 0) * damage_health_ratio)
 	end
 
+	local mutator = nil
+
+	if managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
+		mutator = managers.mutators:get_mutator(MutatorPiggyRevenge)
+	end
+
+	if mutator and mutator.armor_regen_timer_multiplier then
+		multiplier = multiplier * mutator:armor_regen_timer_multiplier()
+	end
+
 	return multiplier
 end
 
@@ -2668,6 +2680,15 @@ function PlayerManager:critical_hit_chance(detection_risk)
 	multiplier = multiplier + self._crit_mul - 1
 	local detection_risk_add_crit_chance = managers.player:upgrade_value("player", "detection_risk_add_crit_chance")
 	multiplier = multiplier + self:get_value_from_risk_upgrade(detection_risk_add_crit_chance, detection_risk)
+	local mutator = nil
+
+	if managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
+		mutator = managers.mutators:get_mutator(MutatorPiggyRevenge)
+	end
+
+	if mutator and mutator.additional_critical_chance then
+		multiplier = multiplier + mutator:additional_critical_chance()
+	end
 
 	return multiplier
 end
@@ -4932,6 +4953,15 @@ function PlayerManager:sync_carry_data(unit, carry_id, carry_multiplier, dye_ini
 	local throw_distance_multiplier = self:upgrade_value_by_level("carry", "throw_distance_multiplier", throw_distance_multiplier_upgrade_level, 1)
 	local carry_type = tweak_data.carry[carry_id].type
 	throw_distance_multiplier = throw_distance_multiplier * tweak_data.carry.types[carry_type].throw_distance_multiplier
+	local mutator = nil
+
+	if managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
+		mutator = managers.mutators:get_mutator(MutatorPiggyRevenge)
+	end
+
+	if mutator and mutator.get_bag_throw_multiplier then
+		throw_distance_multiplier = throw_distance_multiplier * mutator:get_bag_throw_multiplier(carry_id)
+	end
 
 	unit:carry_data():set_carry_id(carry_id)
 	unit:carry_data():set_multiplier(carry_multiplier)

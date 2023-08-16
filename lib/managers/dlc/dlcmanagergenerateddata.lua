@@ -154,6 +154,10 @@ function GenericDLCManager:has_lawp()
 	return self:is_dlc_unlocked("lawp")
 end
 
+function GenericDLCManager:has_lrfo()
+	return self:is_dlc_unlocked("lrfo")
+end
+
 function GenericDLCManager:has_m422()
 	return self:is_dlc_unlocked("m422")
 end
@@ -208,6 +212,10 @@ end
 
 function GenericDLCManager:has_oct21()
 	return self:is_dlc_unlocked("oct21")
+end
+
+function GenericDLCManager:has_pda10()
+	return self:is_dlc_unlocked("pda10")
 end
 
 function GenericDLCManager:has_pda8()
@@ -625,6 +633,11 @@ function WINDLCManager:init_generated()
 		epic_id = "ca4528520efe4b89a5df2850989ab111",
 		no_install = true
 	}
+	Global.dlc_manager.all_dlc_data.lrfo = {
+		app_id = "218620",
+		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
+		no_install = true
+	}
 	Global.dlc_manager.all_dlc_data.m422 = {
 		app_id = "218620",
 		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
@@ -697,6 +710,11 @@ function WINDLCManager:init_generated()
 		webpage = "https://pd2.link/FEXWCP3YB"
 	}
 	Global.dlc_manager.all_dlc_data.oct21 = {
+		app_id = "218620",
+		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
+		no_install = true
+	}
+	Global.dlc_manager.all_dlc_data.pda10 = {
 		app_id = "218620",
 		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
 		no_install = true

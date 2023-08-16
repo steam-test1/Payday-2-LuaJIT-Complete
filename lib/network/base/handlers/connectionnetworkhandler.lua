@@ -42,12 +42,12 @@ function ConnectionNetworkHandler:discover_host_reply(sender_name, level_id, lev
 	managers.network:on_discover_host_reply(sender, sender_name, level_name, my_ip, state, difficulty)
 end
 
-function ConnectionNetworkHandler:request_join(peer_name, peer_account_type_str, peer_account_id, preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender)
+function ConnectionNetworkHandler:request_join(peer_name, peer_account_type_str, peer_account_id, is_invite, preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender)
 	if not self._verify_in_server_session() then
 		return
 	end
 
-	managers.network:session():on_join_request_received(peer_name, peer_account_type_str, peer_account_id, preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender)
+	managers.network:session():on_join_request_received(peer_name, peer_account_type_str, peer_account_id, is_invite, preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender)
 end
 
 function ConnectionNetworkHandler:join_request_reply(reply_id, my_peer_id, my_character, level_index, difficulty_index, one_down, state, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, sender)
@@ -578,6 +578,8 @@ function ConnectionNetworkHandler:set_member_ready(peer_id, ready, mode, outfit_
 		return
 	end
 
+	print("[ConnectionNetworkHandler:set_member_ready] peer_id", peer_id, "mode", mode, "outfit_versions_str", outfit_versions_str)
+
 	local peer = managers.network:session():peer(peer_id)
 
 	if not peer then
@@ -820,6 +822,9 @@ function ConnectionNetworkHandler:feed_lootdrop_skirmish(reward_string, sender)
 		coins = tonumber(lootdrops[loot_index])
 	}
 	loot_index = loot_index + 1
+	lootdrop_data.cash = tonumber(lootdrops[loot_index])
+	lootdrop_data.xp = tonumber(lootdrops[loot_index + 1])
+	loot_index = loot_index + 2
 	local global_values = tweak_data.lootdrop.global_value_list_index
 	local item = nil
 

@@ -11799,6 +11799,7 @@ function BlackMarketGui:populate_gloves(data)
 					new_data.lock_texture = "guis/textures/pd2/lock_achievement"
 					new_data.dlc_locked = achievement_visual and achievement_visual.desc_id or "achievement_" .. tostring(achievement) .. "_desc"
 				else
+					new_data.lock_texture = "guis/textures/pd2/skilltree/padlock"
 					local event_job_challenge = managers.event_jobs:get_challenge_from_reward(data.category, new_data.name)
 
 					if event_job_challenge then
@@ -11912,6 +11913,14 @@ function BlackMarketGui:populate_masks_new(data)
 					-- Nothing
 				elseif managers.dlc:is_content_infamy_locked(data.category, new_data.name) then
 					-- Nothing
+				else
+					local event_job_challenge = managers.event_jobs:get_challenge_from_reward(data.category, new_data.name)
+
+					if event_job_challenge and not event_job_challenge.completed then
+						new_data.unlocked = false
+						new_data.lock_texture = "guis/textures/pd2/lock_achievement"
+						new_data.dlc_locked = event_job_challenge.locked_id or "menu_event_job_lock_info"
+					end
 				end
 			end
 
@@ -12315,14 +12324,14 @@ function BlackMarketGui:populate_weapon_category_new(data)
 			new_data.stream = true
 			new_data.akimbo_gui_data = tweak_data.weapon[crafted.weapon_id] and tweak_data.weapon[crafted.weapon_id].akimbo_gui_data
 			new_data.comparision_data = not new_data.ignore_slot and managers.blackmarket:get_weapon_stats(category, index)
-			new_data.global_value = part_dlc_lock or tweak_data.weapon[new_data.name] and tweak_data.weapon[new_data.name].global_value or "normal"
 
 			if _G.IS_VR then
 				new_data.vr_locked = tweak_data.vr:is_locked("weapons", crafted.weapon_id)
 				new_data.unlocked = new_data.unlocked and not tweak_data.vr:is_locked("weapons", crafted.weapon_id)
 			end
 
-			new_data.dlc_locked = tweak_data.lootdrop.global_values[new_data.global_value].unlock_id or nil
+			local locked_global_value = part_dlc_lock or tweak_data.weapon[new_data.name] and tweak_data.weapon[new_data.name].global_value or "normal"
+			new_data.dlc_locked = tweak_data.lootdrop.global_values[locked_global_value] and tweak_data.lootdrop.global_values[locked_global_value].unlock_id or part_dlc_lock or nil
 			new_data.lock_texture = new_data.ignore_slot or self:get_lock_icon(new_data)
 			new_data.holding = currently_holding and hold_crafted_item.slot == index
 			new_data.part_dlc_lock = part_dlc_lock
@@ -13073,6 +13082,14 @@ function BlackMarketGui:populate_mods(data)
 			new_data.lock_texture = self:get_lock_icon(new_data)
 			new_data.lock_color = self:get_lock_color(new_data)
 			new_data.dlc_locked = tweak_data.lootdrop.global_values[new_data.global_value].unlock_id or "bm_menu_dlc_locked"
+		else
+			local event_job_challenge = managers.event_jobs:get_challenge_from_reward("weapon_mods", new_data.name)
+
+			if event_job_challenge and not event_job_challenge.completed then
+				new_data.unlocked = type(new_data.unlocked) == "number" and -math.abs(new_data.unlocked) or new_data.unlocked
+				new_data.lock_texture = "guis/textures/pd2/lock_achievement"
+				new_data.dlc_locked = event_job_challenge.locked_id or "menu_event_job_lock_info"
+			end
 		end
 
 		local weapon_id = managers.blackmarket:get_crafted_category(new_data.category)[new_data.slot].weapon_id
@@ -13099,11 +13116,19 @@ function BlackMarketGui:populate_mods(data)
 				new_data.lock_texture = "guis/textures/pd2/lock_infamy"
 				new_data.dlc_locked = "menu_infamy_lock_info"
 			else
-				local selected_text = managers.localization:text("bm_menu_no_items")
-				new_data.corner_text = {
-					selected_text = selected_text,
-					noselected_text = selected_text
-				}
+				local event_job_challenge = managers.event_jobs:get_challenge_from_reward("weapon_mods", new_data.name)
+
+				if event_job_challenge and not event_job_challenge.completed then
+					new_data.unlocked = -math.abs(new_data.unlocked)
+					new_data.lock_texture = "guis/textures/pd2/lock_achievement"
+					new_data.dlc_locked = event_job_challenge.locked_id or "menu_event_job_lock_info"
+				else
+					local selected_text = managers.localization:text("bm_menu_no_items")
+					new_data.corner_text = {
+						selected_text = selected_text,
+						noselected_text = selected_text
+					}
+				end
 			end
 		elseif new_data.unlocked and not new_data.can_afford then
 			new_data.corner_text = {

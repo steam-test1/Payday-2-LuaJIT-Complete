@@ -194,7 +194,7 @@ function MoneyManager:on_mission_completed(num_winners)
 		return
 	end
 
-	local stage_value, job_value, bag_value, vehicle_value, small_value, crew_value, total_payout, risk_table, payout_table, mutators_reduction = self:get_real_job_money_values(num_winners)
+	local stage_value, job_value, bag_value, vehicle_value, small_value, crew_value, total_payout, event_value, risk_table, payout_table, mutators_reduction = self:get_real_job_money_values(num_winners)
 
 	managers.loot:clear_postponed_small_loot()
 	self:_set_stage_payout(stage_value + risk_table.stage_risk)
@@ -229,7 +229,7 @@ function MoneyManager:get_contract_money_by_stars(job_stars, risk_stars, job_day
 		small_value = extra_params and extra_params.small_value or 0,
 		vehicle_value = extra_params and extra_params.vehicle_value or 0
 	}
-	local stage_value, job_value, bag_value, vehicle_value, small_value, crew_value, total_payout, risk_table, job_table = self:get_money_by_params(params)
+	local stage_value, job_value, bag_value, vehicle_value, small_value, crew_value, total_payout, event_value, risk_table, job_table = self:get_money_by_params(params)
 	local stage_risk_value = risk_table.stage_risk
 	local job_risk_value = risk_table.job_risk
 	local total_stage_value = stage_value
@@ -319,6 +319,7 @@ function MoneyManager:get_money_by_params(params)
 	local bag_risk = 0
 	local vehicle_risk = 0
 	local small_risk = 0
+	local event_value = 0
 	local static_value, base_static_value, risk_static_value = self:get_money_by_job(job_id, difficulty_stars + 1)
 	static_value = static_value * cash_skill_bonus
 	base_static_value = static_value - risk_static_value
@@ -338,7 +339,13 @@ function MoneyManager:get_money_by_params(params)
 			bag_value = (bag_value + mandatory_bags) * bag_skill_bonus
 			vehicle_value = bonus_vehicles
 			vehicle_risk = math.round(vehicle_value * money_multiplier)
-			total_payout = math.max(0, math.round((static_value + bag_value + bag_risk + vehicle_value + vehicle_risk) / offshore_rate + small_value))
+
+			if managers.mutators:is_mutator_active(MutatorCG22) then
+				local mutator = managers.mutators:get_mutator(MutatorCG22)
+				event_value = mutator:get_money_collected()
+			end
+
+			total_payout = math.max(0, math.round((static_value + bag_value + bag_risk + vehicle_value + vehicle_risk) / offshore_rate + small_value + event_value / offshore_rate))
 			stage_value = 0
 			bag_value = math.max(0, math.round(bag_value / offshore_rate))
 			bag_risk = math.max(0, math.round(bag_risk / offshore_rate))
@@ -347,6 +354,7 @@ function MoneyManager:get_money_by_params(params)
 			crew_value = total_payout
 			total_payout = math.max(0, math.round(total_payout * self:get_tweak_value("money_manager", "alive_humans_multiplier", num_winners)))
 			crew_value = total_payout - crew_value
+			event_value = math.max(0, math.round(event_value / offshore_rate))
 		else
 			total_payout = small_value
 		end
@@ -364,6 +372,7 @@ function MoneyManager:get_money_by_params(params)
 			small_risk = small_risk * limited_bonus
 			crew_value = crew_value * limited_bonus
 			total_payout = total_payout * limited_bonus
+			event_value = event_value * limited_bonus
 		end
 
 		if on_last_stage then
@@ -460,6 +469,7 @@ function MoneyManager:get_money_by_params(params)
 	bag_risk = bag_risk * mutators_multiplier
 	vehicle_risk = vehicle_risk * mutators_multiplier
 	small_risk = small_risk * mutators_multiplier
+	event_value = event_value * mutators_multiplier
 	local mutators_reduction = original_total_payout - total_payout
 	local ret = {
 		stage_value,
@@ -469,6 +479,7 @@ function MoneyManager:get_money_by_params(params)
 		small_value,
 		crew_value,
 		total_payout,
+		event_value,
 		{
 			stage_risk = stage_risk,
 			job_risk = job_risk,
@@ -1505,7 +1516,8 @@ function MoneyManager:get_payouts()
 		small_loot_payout = self._small_loot_payout,
 		crew_payout = self._crew_payout,
 		mutators_reduction = self._mutators_reduction or 0,
-		skirmish_payout = managers.skirmish:current_ransom_amount()
+		skirmish_payout = managers.skirmish:current_ransom_amount(),
+		event_payout = self._crew_payout
 	}
 end
 

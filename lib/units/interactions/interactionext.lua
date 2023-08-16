@@ -407,6 +407,16 @@ function BaseInteractionExt:interact_start(player, data)
 		}), say_t)
 	end
 
+	local mutator = nil
+
+	if managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
+		mutator = managers.mutators:get_mutator(MutatorPiggyRevenge)
+	end
+
+	if mutator and mutator.on_unit_start_interact then
+		mutator:on_unit_start_interact(self.tweak_data, self._tweak_data)
+	end
+
 	if self:_timer_value() then
 		if not self:can_interact(player) then
 			if self._tweak_data.blocked_hint then
@@ -2261,6 +2271,16 @@ end
 function CarryInteractionExt:_get_modified_timer()
 	if self._has_modified_timer then
 		return 0
+	end
+
+	local mutator = nil
+
+	if managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
+		mutator = managers.mutators:get_mutator(MutatorPiggyRevenge)
+	end
+
+	if mutator and mutator.get_interaction_override then
+		return self._tweak_data.timer * mutator:get_interaction_override()
 	end
 
 	if managers.player:has_category_upgrade("carry", "interact_speed_multiplier") then

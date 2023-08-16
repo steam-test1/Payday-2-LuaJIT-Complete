@@ -8894,6 +8894,20 @@ function init_auto_generated_achievement_data(tags)
 				tags.contracts.all
 			}
 		},
+		lrfo_1 = {
+			need_unlock_icons = true,
+			icon_id = "Other_H_NONE_ConspiracyTheory",
+			sort_name = "Other_H_NONE_ConspiracyTheory",
+			additional_id = true,
+			unlock_id = true,
+			tags = {
+				tags.progress.heisting,
+				tags.difficulty.normal,
+				tags.unlock.outfit,
+				tags.tactics.loud,
+				tags.tactics.stealth
+			}
+		},
 		mex2_1 = {
 			icon_id = "C_Locke_H_BorderCrystals_AllDiffs_D0",
 			ladder = "H_BorderCrystals",

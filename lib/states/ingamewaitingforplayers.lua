@@ -106,6 +106,9 @@ function IngameWaitingForPlayersState:sync_start(variant, soundtrack, music_ext)
 	elseif managers.mutators:is_mutator_active(MutatorCG22) then
 		local cg22_mutator = managers.mutators:get_mutator(MutatorCG22)
 		self._intro_event = cg22_mutator:get_intro_event(self._intro_event)
+	elseif managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
+		local piggyrevenge_mutator = managers.mutators:get_mutator(MutatorPiggyRevenge)
+		self._intro_event = piggyrevenge_mutator:get_intro_event(self._intro_event)
 	end
 
 	self._blackscreen_started = true

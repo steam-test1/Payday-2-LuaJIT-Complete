@@ -368,7 +368,7 @@ function TimerGui:_start(timer, current_timer)
 	self._done = false
 	self._timer = timer or 5
 	self._current_timer = current_timer or self._timer
-	self._time_left = self._current_timer * math.max(self._timer_multiplier or 1, 0.01)
+	self._time_left = self._current_timer * self:get_timer_multiplier()
 
 	self._gui_script.timer:set_w(self._timer_lenght * (1 - self._current_timer / self._timer))
 	self._gui_script.working_text:set_text(managers.localization:text(self._gui_working))
@@ -414,6 +414,21 @@ end
 
 function TimerGui:set_timer_multiplier(multiplier)
 	self._timer_multiplier = multiplier
+end
+
+function TimerGui:get_timer_multiplier()
+	local timer_multiplier = self._timer_multiplier or 1
+	local mutator = nil
+
+	if managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
+		mutator = managers.mutators:get_mutator(MutatorPiggyRevenge)
+	end
+
+	if mutator and mutator.drill_speed_multiplier then
+		timer_multiplier = timer_multiplier * mutator:drill_speed_multiplier()
+	end
+
+	return math.max(timer_multiplier, 0.01)
 end
 
 function TimerGui:set_skill(skill)
@@ -489,7 +504,7 @@ function TimerGui:update(unit, t, dt)
 		return
 	end
 
-	local dt_mod = math.max(self._timer_multiplier or 1, 0.01)
+	local dt_mod = self:get_timer_multiplier()
 
 	if self._current_jam_timer then
 		self._current_jam_timer = self._current_jam_timer - dt / dt_mod

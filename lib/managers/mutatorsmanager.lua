@@ -10,6 +10,7 @@ require("lib/mutators/MutatorCloakerEffect")
 require("lib/mutators/MutatorShieldDozers")
 require("lib/mutators/MutatorPiggyBank")
 require("lib/mutators/MutatorCG22")
+require("lib/mutators/MutatorPiggyRevenge")
 
 MutatorsManager = MutatorsManager or class()
 MutatorsManager.package = "packages/toxic"
@@ -45,7 +46,8 @@ function MutatorsManager:init()
 		MutatorShieldDozers:new(self),
 		MutatorTitandozers:new(self),
 		MutatorPiggyBank:new(self),
-		MutatorCG22:new(self)
+		MutatorCG22:new(self),
+		MutatorPiggyRevenge:new(self)
 	}
 	self._active_mutators = {}
 	local activate = Global.mutators and Global.mutators.active_on_load
@@ -770,8 +772,28 @@ function MutatorsManager:get_briefing_override()
 	return nil
 end
 
+function MutatorsManager:get_track_override(track)
+	for _, mutator in ipairs(self._mutators) do
+		if (mutator:is_enabled() or mutator:is_active()) and mutator.track_overrides then
+			return mutator.track_overrides[track]
+		end
+	end
+
+	return nil
+end
+
+function MutatorsManager:get_mass_drop_mutator()
+	for _, mutator in ipairs(self._mutators) do
+		if (mutator:is_enabled() or mutator:is_active()) and mutator.got_mass_drop and mutator:got_mass_drop() then
+			return mutator
+		end
+	end
+
+	return nil
+end
+
 function MutatorsManager:show_mutators_launch_countdown(countdown)
-	if Network:is_server() then
+	if Network:is_server() or managers.mutators:get_enabled_active_mutator_category() == "event" then
 		return
 	end
 

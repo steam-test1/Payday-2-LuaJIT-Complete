@@ -2,6 +2,7 @@ MutatorTweakData = MutatorTweakData or class()
 
 function MutatorTweakData:init(tweak_data)
 	self:init_piggybank(tweak_data)
+	self:init_piggyrevenge(tweak_data)
 	self:init_cg22(tweak_data)
 end
 
@@ -99,8 +100,8 @@ function MutatorTweakData:init_piggybank(tweak_data)
 		},
 		level_coordinates = {
 			firestarter_1 = {
-				position = Vector3(-848.169, -1484.02, -5.18241),
-				rotation = Rotation(-1.16773, 0, 0)
+				position = Vector3(-674.629, 441.088, -5.22051),
+				rotation = Rotation(90.2014, 0, 0)
 			},
 			firestarter_2 = {
 				position = Vector3(-2125.22, 2789.92, -24.3859),
@@ -111,8 +112,8 @@ function MutatorTweakData:init_piggybank(tweak_data)
 				rotation = Rotation(-177.786, 0, -0)
 			},
 			jewelry_store = {
-				position = Vector3(-20.6412, 3653.49, 19.8175),
-				rotation = Rotation(179.94, 0, -0)
+				position = Vector3(789.17, 3933.9, 19.8133),
+				rotation = Rotation(90.4765, 0, 0)
 			},
 			branchbank = {
 				position = Vector3(-3965.54, 3311.53, -5.18584),
@@ -131,8 +132,8 @@ function MutatorTweakData:init_piggybank(tweak_data)
 				rotation = Rotation(90.0561, 0, 0)
 			},
 			red2 = {
-				position = Vector3(-3453.65, 26.286, -0.182674),
-				rotation = Rotation(91.5345, 0, 0)
+				position = Vector3(-946.349, -557.972, -0.186199),
+				rotation = Rotation(-0.192015, 0, 0)
 			},
 			pal = {
 				position = Vector3(-7405.17, -1171.12, 12.0178),
@@ -159,8 +160,8 @@ function MutatorTweakData:init_piggybank(tweak_data)
 				rotation = Rotation(-90.2844, 0, -0)
 			},
 			roberts = {
-				position = Vector3(1862.43, -341.785, -76.7702),
-				rotation = Rotation(122.244, 0, -0)
+				position = Vector3(-2092.3, -1718.91, -86.4668),
+				rotation = Rotation(178.65, 0, -0)
 			},
 			rvd1 = {
 				position = Vector3(-2175.52, -2698.72, -25.186),
@@ -169,10 +170,6 @@ function MutatorTweakData:init_piggybank(tweak_data)
 			rvd2 = {
 				position = Vector3(-26.96, 1537.23, -5.18682),
 				rotation = Rotation(-88.8213, 0, 0)
-			},
-			run = {
-				position = Vector3(-2829.11, -9281.92, 2044.81),
-				rotation = Rotation(173.33, 0, -0)
 			},
 			mad = {
 				position = Vector3(6250.55, 3727.1, 3.74605),
@@ -195,8 +192,8 @@ function MutatorTweakData:init_piggybank(tweak_data)
 				rotation = Rotation(171.697, 0, -0)
 			},
 			mus = {
-				position = Vector3(-5826.79, 1504.41, -1004.54),
-				rotation = Rotation(-160.412, 0, -0)
+				position = Vector3(-5335.68, 216.333, -1004.54),
+				rotation = Rotation(-89.8006, 0, 0)
 			},
 			big = {
 				position = Vector3(4283.11, -362.942, -605.189),
@@ -223,12 +220,12 @@ function MutatorTweakData:init_piggybank(tweak_data)
 				rotation = Rotation(87.6614, 0, 0)
 			},
 			ukrainian_job = {
-				position = Vector3(-20.6412, 3653.49, 19.8175),
-				rotation = Rotation(179.94, 0, -0)
+				position = Vector3(789.17, 3933.9, 19.8133),
+				rotation = Rotation(90.4765, 0, 0)
 			},
 			mex = {
-				position = Vector3(3804.28, -9322.23, -3205.19),
-				rotation = Rotation(-165.413, 0, -0)
+				position = Vector3(956.932, -11332.9, -3205.19),
+				rotation = Rotation(1.47601, 0, 0)
 			},
 			des = {
 				position = Vector3(-180, -2700, 100),
@@ -237,6 +234,30 @@ function MutatorTweakData:init_piggybank(tweak_data)
 			trai = {
 				position = Vector3(-3042.98, 5799.85, 120.418),
 				rotation = Rotation(-90.0341, 0, -0)
+			},
+			corp = {
+				position = Vector3(2298.47, 1361.31, -5.17966),
+				rotation = Rotation(91.2705, 0, 0)
+			},
+			deep = {
+				position = Vector3(-2131.21, -1559.31, 4896.84),
+				rotation = Rotation(180, 0, 0)
+			},
+			glace = {
+				position = Vector3(-829.22, -24881.7, 5752.35),
+				rotation = Rotation(38.3421, 0, 0)
+			},
+			shoutout_raid = {
+				position = Vector3(4120.23, -3142.08, 969.813),
+				rotation = Rotation(44.7551, 0, 0)
+			},
+			arm_par = {
+				position = Vector3(44.9385, 4481.05, -180.187),
+				rotation = Rotation(179.656, 0, -0)
+			},
+			arm_for = {
+				position = Vector3(-1603.44, -3166.04, -1132.96),
+				rotation = Rotation(-1.05467, 0, 0)
 			}
 		},
 		event_jobs_from_level = {}
@@ -269,6 +290,361 @@ function MutatorTweakData:init_piggybank(tweak_data)
 		overkill_290 = 3500,
 		sm_wish = 4000,
 		normal = 1000
+	}
+end
+
+function MutatorTweakData:init_piggyrevenge(tweak_data)
+	self.piggyrevenge = {}
+	local dialog_1 = {}
+	local sequence_1 = {
+		grow = "anim_pig_idle"
+	}
+	local reward_1 = nil
+	local dialog_2 = {
+		explode = "Play_alm_pda9_12",
+		show = "Play_alm_pda9_05"
+	}
+	local sequence_2 = {
+		explode = "anim_pig_explode",
+		grow = "anim_pig_grow",
+		show = "anim_pig_idle"
+	}
+	local reward_2 = {
+		coins = 3,
+		cash_multiplier = 1.5,
+		additional_lootdrops = 1,
+		xp_multiplier = 1.5
+	}
+	local dialog_3 = {
+		explode = "Play_alm_pda9_13",
+		show = "Play_alm_pda9_07"
+	}
+	local sequence_3 = {
+		explode = "anim_pig_explode",
+		grow = "anim_pig_grow",
+		show = "show"
+	}
+	local reward_3 = {
+		coins = 5,
+		cash_multiplier = 2,
+		additional_lootdrops = 2,
+		xp_multiplier = 2
+	}
+	local dialog_4 = {
+		explode = "Play_alm_pda9_14",
+		show = "Play_alm_pda9_08"
+	}
+	local sequence_4 = {
+		explode = "anim_pig_explode",
+		grow = "anim_pig_grow",
+		show = "show"
+	}
+	local reward_4 = {
+		coins = 10,
+		cash_multiplier = 3,
+		additional_lootdrops = 3,
+		xp_multiplier = 3
+	}
+	local dialog_5 = {
+		explode = "Play_alm_pda9_15",
+		show = "Play_alm_pda9_09"
+	}
+	local sequence_5 = {
+		explode = "anim_pig_explode",
+		grow = "anim_pig_grow",
+		show = "show"
+	}
+	local reward_5 = {
+		coins = 15,
+		cash_multiplier = 4,
+		additional_lootdrops = 4,
+		xp_multiplier = 4
+	}
+	local dialog_6 = {
+		explode = "Play_alm_pda9_16",
+		show = "Play_alm_pda9_10"
+	}
+	local sequence_6 = {
+		explode = "anim_pig_explode",
+		show = "show_eyes"
+	}
+	local reward_6 = {
+		coins = 25,
+		cash_multiplier = 5,
+		additional_lootdrops = 5,
+		xp_multiplier = 5
+	}
+	self.piggyrevenge.drop_count = 10
+	self.piggyrevenge.normal_kill_points = 1
+	self.piggyrevenge.headshot_kill_points = 2
+	self.piggyrevenge.weapon_kill_points = {
+		bessy_crew = 10,
+		money = 2,
+		bessy = 10,
+		piggy_hammer = 10,
+		money_crew = 2
+	}
+	self.piggyrevenge.progress_range = 1000
+	self.piggyrevenge.pig_levels = {
+		{
+			secure_zone_index = 1,
+			range = 200,
+			piggy_unit_index = 1,
+			bag_requirement = 0,
+			rewards = reward_1,
+			dialogs = dialog_1,
+			sequences = sequence_1
+		},
+		{
+			secure_zone_index = 1,
+			range = 200,
+			piggy_unit_index = 1,
+			bag_requirement = 1,
+			rewards = reward_2,
+			dialogs = dialog_2,
+			sequences = sequence_2,
+			buff_pool = {
+				"utility"
+			}
+		},
+		{
+			secure_zone_index = 2,
+			range = 300,
+			piggy_unit_index = 2,
+			bag_requirement = 20,
+			rewards = reward_3,
+			dialogs = dialog_3,
+			sequences = sequence_3,
+			buff_pool = {
+				"utility",
+				"offensive"
+			}
+		},
+		{
+			secure_zone_index = 3,
+			range = 400,
+			piggy_unit_index = 3,
+			bag_requirement = 80,
+			rewards = reward_4,
+			dialogs = dialog_4,
+			sequences = sequence_4,
+			buff_pool = {
+				"utility",
+				"defensive"
+			}
+		},
+		{
+			secure_zone_index = 4,
+			range = 500,
+			piggy_unit_index = 4,
+			bag_requirement = 240,
+			rewards = reward_5,
+			dialogs = dialog_5,
+			sequences = sequence_5,
+			buff_pool = {
+				"offensive"
+			}
+		},
+		{
+			range = 0,
+			piggy_unit_index = 4,
+			bag_requirement = 560,
+			rewards = reward_6,
+			dialogs = dialog_6,
+			sequences = sequence_6,
+			buff_pool = {
+				"defensive"
+			}
+		}
+	}
+	self.piggyrevenge.level_coordinates = deep_clone(self.piggybank.level_coordinates)
+
+	table.map_append(self.piggyrevenge.level_coordinates, {})
+
+	self.piggyrevenge.event_jobs_from_level = {}
+	local event_levels = table.map_keys(self.piggyrevenge.level_coordinates)
+
+	for index, job_id in ipairs(tweak_data.narrative:get_jobs_index()) do
+		local job_tweak = tweak_data.narrative.jobs[job_id]
+		local job_in_event = #job_tweak.chain > 0
+
+		for _, stage in ipairs(job_tweak.chain) do
+			if not table.contains(event_levels, stage.level_id) then
+				job_in_event = false
+
+				break
+			end
+		end
+
+		if job_in_event then
+			table.insert(self.piggyrevenge.event_jobs_from_level, job_id)
+		end
+	end
+
+	self.piggyrevenge.buffs = {
+		drill_speed = {
+			vo_line = "Play_alm_pda9_21",
+			category_type = "utility",
+			hud_string_id = "hud_drill_speed_buff",
+			func_name = "drill_speed",
+			drill_speed_multiplier = 0.5
+		},
+		bag_speed = {
+			speed_multiplier = 1.5,
+			interaction_override = 0.1,
+			vo_line = "Play_alm_pda9_22",
+			category_type = "utility",
+			hud_string_id = "hud_bag_speed_buff",
+			func_name = "bag_speed"
+		},
+		bag_throw = {
+			vo_line = "Play_alm_pda9_23",
+			throw_multiplier = 2,
+			category_type = "utility",
+			hud_string_id = "hud_bag_throw_buff",
+			func_name = "bag_throw"
+		},
+		ammo_modifier = {
+			vo_line = "Play_alm_pda9_24",
+			category_type = "offensive",
+			hud_string_id = "hud_ammo_modifier_buff",
+			func_name = "ammo_modifier",
+			weapon_modifiers = {
+				{
+					weight = 60
+				},
+				{
+					shoot_through_wall = true,
+					shoot_through_shield = true,
+					bullet_class = false,
+					weight = 10,
+					shoot_through_enemy = true
+				},
+				{
+					weight = 10,
+					bullet_class = "InstantExplosiveBulletBase"
+				},
+				{
+					weight = 10,
+					bullet_class = "FlameBulletBase"
+				},
+				{
+					weight = 10,
+					bullet_class = "PoisonBulletBase"
+				}
+			}
+		},
+		critical_chance = {
+			vo_line = "Play_alm_pda9_25",
+			additional_critical_chance = 0.2,
+			category_type = "offensive",
+			hud_string_id = "hud_critical_chance_buff",
+			func_name = "critical_chance"
+		},
+		ammo_free_chance = {
+			free_ammo_percentage = 0.35,
+			vo_line = "Play_alm_pda9_26",
+			category_type = "offensive",
+			hud_string_id = "hud_ammo_free_chance_buff",
+			func_name = "ammo_free_chance"
+		},
+		headshot_aoe = {
+			vo_line = "Play_alm_pda9_27",
+			radius = 300,
+			damage_multiplier = 0.5,
+			category_type = "offensive",
+			hud_string_id = "hud_headshot_aoe_buff",
+			func_name = "headshot_aoe"
+		},
+		damage_reduction = {
+			vo_line = "Play_alm_pda9_28",
+			damage_reduction_multiplier = 0.9,
+			category_type = "defensive",
+			hud_string_id = "hud_damage_reduction_buff",
+			func_name = "damage_reduction"
+		},
+		auto_revive = {
+			vo_line = "Play_alm_pda9_29",
+			category_type = "defensive",
+			hud_string_id = "hud_auto_revive_buff",
+			func_name = "auto_revive",
+			revive_timer = 2
+		},
+		faster_armor_regen = {
+			vo_line = "Play_alm_pda9_30",
+			armor_regen_timer_multiplier = 0.75,
+			category_type = "defensive",
+			hud_string_id = "hud_faster_armor_regen_buff",
+			func_name = "faster_armor_regen"
+		},
+		downed_free_chance = {
+			vo_line = "Play_alm_pda9_31",
+			chance_percentage = 0.5,
+			category_type = "defensive",
+			hud_string_id = "hud_downed_free_chance_buff",
+			func_name = "downed_free_chance"
+		}
+	}
+	self.piggyrevenge.buff_textures = {
+		utility = {
+			texture = "guis/dlcs/pda10/textures/pd2/buffs/utilities_icon",
+			texture_rect = {
+				0,
+				0,
+				128,
+				128
+			}
+		},
+		offensive = {
+			texture = "guis/dlcs/pda10/textures/pd2/buffs/offensive_icon",
+			texture_rect = {
+				0,
+				0,
+				128,
+				128
+			}
+		},
+		defensive = {
+			texture = "guis/dlcs/pda10/textures/pd2/buffs/defensive_icon",
+			texture_rect = {
+				0,
+				0,
+				128,
+				128
+			}
+		}
+	}
+	self.piggyrevenge.buff_pool = {}
+
+	for index, item in pairs(self.piggyrevenge.buffs) do
+		if item.category_type then
+			self.piggyrevenge.buff_pool[item.category_type] = self.piggyrevenge.buff_pool[item.category_type] or {}
+
+			table.insert(self.piggyrevenge.buff_pool[item.category_type], index)
+		end
+	end
+
+	self.piggyrevenge.piggydozer_bag_drops = {
+		{
+			weight = 50,
+			bags = 1
+		},
+		{
+			weight = 30,
+			bags = 3
+		},
+		{
+			weight = 15,
+			bags = 5
+		},
+		{
+			weight = 4,
+			bags = 10
+		},
+		{
+			weight = 1,
+			bags = 50
+		}
 	}
 end
 

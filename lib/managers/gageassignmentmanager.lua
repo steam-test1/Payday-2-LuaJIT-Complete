@@ -456,6 +456,8 @@ function GageAssignmentManager:on_unit_interact(unit, assignment)
 	end
 
 	self._progressed_assignments[assignment] = self._progressed_assignments[assignment] + 1
+
+	managers.event_jobs:award("pda10_buff_post_objective")
 end
 
 function GageAssignmentManager:show_chat_message(peer_name)

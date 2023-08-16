@@ -373,6 +373,8 @@ function TeamAIMovement:bank_carry()
 	if carry_data then
 		managers.loot:secure(carry_data:carry_id(), carry_data:multiplier())
 		self._carry_unit:set_slot(0)
+
+		self._carry_unit = nil
 	end
 end
 

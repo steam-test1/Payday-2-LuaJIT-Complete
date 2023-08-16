@@ -1,7 +1,7 @@
 HostStateInLobby = HostStateInLobby or class(HostStateBase)
 
-function HostStateInLobby:on_join_request_received(data, peer_name, peer_account_type_str, peer_account_id, client_preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender)
-	print("[HostStateInLobby:on_join_request_received]", data, peer_name, peer_account_type_str, peer_account_id, client_preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender:ip_at_index(0))
+function HostStateInLobby:on_join_request_received(data, peer_name, peer_account_type_str, peer_account_id, is_invite, client_preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender)
+	print("[HostStateInLobby:on_join_request_received]", data, peer_name, peer_account_type_str, peer_account_id, is_invite, client_preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender:ip_at_index(0))
 
 	local peer_id = sender:ip_at_index(0)
 	local drop_in_name = peer_name
@@ -28,7 +28,7 @@ function HostStateInLobby:on_join_request_received(data, peer_name, peer_account
 		return
 	end
 
-	if managers.network.matchmake:get_lobby_type() == "friend" then
+	if not is_invite and managers.network.matchmake:get_lobby_type() == "friend" then
 		print("[HostStateInLobby:on_join_request_received] lobby type friend only, check if friend")
 
 		if SocialHubFriends:is_friend_global(peer_id, peer_account_type_str, peer_account_id) then

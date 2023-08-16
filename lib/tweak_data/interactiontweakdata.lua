@@ -7718,6 +7718,7 @@ function InteractionTweakData:init(tweak_data)
 	self.pda9_piggybank_1 = {
 		text_id = "hud_int_hold_explode_the_pig",
 		action_text_id = "hud_action_exploding_pig",
+		mutator_sound_start = "Play_alm_pda9_32",
 		start_active = false,
 		timer = 3,
 		interact_distance = 200
