@@ -201,6 +201,8 @@ function MutatorPiggyRevenge:sync_save(mutator_manager, save_data)
 	my_save_data.reminder_t = self._reminder_t
 	my_save_data.reminder_dialog = self._reminder_dialog
 	my_save_data.pig_fed_count = self._pig_fed_count
+	my_save_data.active_buffs = self._active_buffs
+	my_save_data.boss_count = self._boss_count
 end
 
 function MutatorPiggyRevenge:sync_load(mutator_manager, load_data)
@@ -229,6 +231,34 @@ function MutatorPiggyRevenge:sync_load(mutator_manager, load_data)
 	self._reminder_t = my_load_data.reminder_t
 	self._reminder_dialog = my_load_data.reminder_dialog
 	self._pig_fed_count = my_load_data.pig_fed_count
+	self._active_buffs = my_load_data.active_buffs or {}
+	self._boss_count = my_load_data.boss_count or 0
+
+	for _, buff_id in ipairs(self._active_buffs) do
+		local buff_td = self._tweakdata.buffs[buff_id]
+		local func = buff_td and self["activate_" .. buff_td.func_name .. "_buff"]
+
+		if func then
+			func(self, buff_td)
+		end
+	end
+
+	if self._boss_count > 0 then
+		managers.hud:add_buff({
+			buff_id = "piggydozer_spawn",
+			name_id = "hud_buff_piggydozer_warning",
+			time_left = -1,
+			icon_texture = "guis/textures/pd2/hud_icon_assaultbox",
+			negative = -1,
+			color = tweak_data.screen_colors.important_1,
+			icon_texture_rect = {
+				0,
+				0,
+				32,
+				32
+			}
+		})
+	end
 end
 
 function MutatorPiggyRevenge:server_feed_piggybank(bag_unit)

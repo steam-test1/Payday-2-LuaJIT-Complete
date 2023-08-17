@@ -342,7 +342,19 @@ function SideJobEventManager:load(cache, version)
 			self:set_event_stage("cg22", self._global.event_data.cg22.stage or 1)
 		end
 
-		self._has_loaded = true
+		if self._fetched_all_event_data and self._global.event_data.pda10 then
+			for index, challenge in ipairs(self:challenges()) do
+				for idx, objective in ipairs(challenge.objectives) do
+					if objective.stage_id == "pda10_stages" then
+						objective.completed = false
+					end
+				end
+			end
+		end
+
+		if self._fetched_all_event_data and self._global.event_data.pda10 then
+			self:set_event_stage("pda10", self._global.event_data.pda10.stage or 1)
+		end
 	elseif state and state.version == 2 and self.save_version == 3 then
 		for idx, saved_challenge in ipairs(state.challenges or {}) do
 			local challenge = self:get_challenge(saved_challenge.id)
