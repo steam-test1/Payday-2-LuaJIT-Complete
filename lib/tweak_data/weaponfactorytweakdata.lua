@@ -30609,6 +30609,9 @@ function WeaponFactoryTweakData:_init_x_deagle()
 			"wpn_fps_upg_ns_ass_filter",
 			"wpn_fps_upg_ns_pis_jungle",
 			"wpn_fps_pis_deagle_b_modern",
+			"wpn_fps_pis_deagle_ck",
+			"wpn_fps_pis_deagle_o_adapter_ck",
+			"wpn_fps_pis_deagle_o_ck",
 			"wpn_fps_upg_ns_pis_typhoon",
 			"wpn_fps_upg_ns_pis_putnik"
 		}

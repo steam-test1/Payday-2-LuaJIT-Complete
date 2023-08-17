@@ -908,6 +908,8 @@ function EventJobsTweakData:_init_pda10_challenges(tweak_data)
 				name_id = "menu_pda10_stage_3",
 				desc_id = "menu_pda10_stage_3_desc",
 				stages = {
+					2,
+					3,
 					4,
 					5,
 					6,
@@ -957,6 +959,9 @@ function EventJobsTweakData:_init_pda10_challenges(tweak_data)
 				name_id = "menu_pda10_stage_5",
 				desc_id = "menu_pda10_stage_5_desc",
 				stages = {
+					3,
+					4,
+					5,
 					6,
 					7
 				}
@@ -1004,7 +1009,6 @@ function EventJobsTweakData:_init_pda10_challenges(tweak_data)
 				name_id = "menu_pda10_stage_2",
 				desc_id = "menu_pda10_stage_2_desc",
 				stages = {
-					3,
 					4,
 					5,
 					6,
@@ -1050,6 +1054,7 @@ function EventJobsTweakData:_init_pda10_challenges(tweak_data)
 				name_id = "menu_pda10_stage_6",
 				desc_id = "menu_pda10_stage_6_desc",
 				stages = {
+					5,
 					6,
 					7
 				}
@@ -1097,10 +1102,6 @@ function EventJobsTweakData:_init_pda10_challenges(tweak_data)
 				name_id = "menu_pda10_stage_1",
 				desc_id = "menu_pda10_stage_1_desc",
 				stages = {
-					2,
-					3,
-					4,
-					5,
 					6,
 					7
 				}
@@ -1151,8 +1152,6 @@ function EventJobsTweakData:_init_pda10_challenges(tweak_data)
 				name_id = "menu_pda10_stage_4",
 				desc_id = "menu_pda10_stage_4_desc",
 				stages = {
-					5,
-					6,
 					7
 				}
 			})
