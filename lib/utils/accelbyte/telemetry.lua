@@ -1200,12 +1200,6 @@ function Telemetry:send_on_player_steam_stats_overdrill()
 	self:send("player_steam_stats_overdrill", telemetry_payload)
 end
 
-function Telemetry:on_player_game_event_action(action, params)
-	if action == Telemetry.event_actions.piggybank_fed then
-		self:send_on_game_event_piggybank_fed(params)
-	end
-end
-
 function Telemetry:send_on_game_event_piggybank_fed(params)
 	if get_platform_name() ~= "WIN32" or not self._global._logged_in then
 		return

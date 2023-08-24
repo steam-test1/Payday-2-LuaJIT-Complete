@@ -256,22 +256,12 @@ function ShotgunBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoo
 	local hit_through_wall = false
 	local hit_through_shield = false
 	local is_civ_f = CopDamage.is_civilian
-	local extra_collisions = self.extra_collisions and self:extra_collisions()
 
 	for _, hit in ipairs(all_hits) do
 		local dmg = self:get_damage_falloff(damage, hit, user_unit)
 
 		if dmg > 0 then
 			local hit_result = bullet_class:on_collision(hit, self._unit, user_unit, dmg)
-
-			if extra_collisions then
-				for idx, extra_col_data in ipairs(extra_collisions) do
-					if alive(hit.unit) then
-						extra_col_data.bullet_class:on_collision(hit, self._unit, user_unit, dmg * (extra_col_data.dmg_mul or 1))
-					end
-				end
-			end
-
 			hit_result = managers.mutators:modify_value("ShotgunBase:_fire_raycast", hit_result)
 
 			if check_additional_achievements then

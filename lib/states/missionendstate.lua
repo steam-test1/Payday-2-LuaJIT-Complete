@@ -576,15 +576,6 @@ function MissionEndState:on_statistics_result(best_kills_peer_id, best_kills_sco
 			})
 			stage_cash_summary_string = stage_cash_summary_string .. offshore_string .. "\n"
 			stage_cash_summary_string = stage_cash_summary_string .. spending_string .. "\n"
-
-			if managers.mutators:is_mutator_active(MutatorCG22) then
-				local event_string = managers.localization:text("victory_stage_cash_summary_name_event")
-				stage_cash_summary_string = stage_cash_summary_string .. "\n" .. event_string .. "\n"
-				local mutator = managers.mutators:get_mutator(MutatorCG22)
-				stage_cash_summary_string = stage_cash_summary_string .. managers.localization:text("menu_exp_short") .. ":" .. mutator:get_xp_collected() .. " "
-				stage_cash_summary_string = stage_cash_summary_string .. managers.localization:text("short_basics_cash") .. ":" .. mutator:get_money_collected() .. " "
-				stage_cash_summary_string = stage_cash_summary_string .. managers.localization:text("menu_cs_coins") .. ":" .. mutator:get_coins_collected() .. " "
-			end
 		else
 			stage_cash_summary_string = managers.localization:text("failed_summary_name")
 		end

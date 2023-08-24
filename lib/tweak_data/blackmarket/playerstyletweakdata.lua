@@ -5363,6 +5363,59 @@ function BlackMarketTweakData:_init_player_styles(tweak_data)
 		sequence = "set_ehtan"
 	}
 	self.player_styles.gangzsta.characters.ecp_male = gangzsta_characters_male_fat
+	self.player_styles.dgame = {
+		name_id = "bm_suit_dgame",
+		desc_id = "bm_suit_dgame_desc",
+		texture_bundle_folder = "dgs",
+		global_value = "dgs",
+		material_variations = {}
+	}
+	self.player_styles.dgame.material_variations.default = {
+		name_id = "bm_suit_dgame_default",
+		global_value = "dgs",
+		desc_id = "bm_suit_dgame_default_desc"
+	}
+	self.player_styles.dgame.body_replacement = body_replacement_standard
+	self.player_styles.dgame.third_body_replacement = body_replacement_standard
+	self.player_styles.dgame.unit = "units/pd2_dlc_dgs/characters/dgs_acc_dgame/dgs_acc_fps_dgame_male/dgs_acc_fps_dgame_male"
+	self.player_styles.dgame.material_variations.white = {
+		desc_id = "bm_suit_dgame_white_desc",
+		global_value = "dgs",
+		auto_aquire = true,
+		name_id = "bm_suit_dgame_white",
+		third_material = "units/pd2_dlc_dgs/characters/dgs_acc_dgame/shared_materials/dgs_acc_dgame_white",
+		material = "units/pd2_dlc_dgs/characters/dgs_acc_dgame/shared_materials/dgs_acc_fps_dgame_white"
+	}
+	self.player_styles.dgame.characters = {}
+	local dgame_characters_male = {
+		third_unit = "units/pd2_dlc_dgs/characters/dgs_acc_dgame/dgs_acc_dgame_male_average/dgs_acc_dgame_male_average"
+	}
+
+	set_characters_data("dgame", characters_male, dgame_characters_male)
+
+	local dgame_characters_male_big = {
+		third_unit = "units/pd2_dlc_dgs/characters/dgs_acc_dgame/dgs_acc_dgame_male_big/dgs_acc_dgame_male_big"
+	}
+
+	set_characters_data("dgame", characters_male_big, dgame_characters_male_big)
+
+	local dgame_characters_female = {
+		third_unit = "units/pd2_dlc_dgs/characters/dgs_acc_dgame/dgs_acc_dgame_female_average/dgs_acc_dgame_female_average"
+	}
+
+	set_characters_data("dgame", characters_female, dgame_characters_female)
+
+	local dgame_characters_female_big = {
+		third_unit = "units/pd2_dlc_dgs/characters/dgs_acc_dgame/dgs_acc_dgame_female_fat/dgs_acc_dgame_female_fat"
+	}
+
+	set_characters_data("dgame", characters_female_big, dgame_characters_female_big)
+
+	local dgame_characters_male_fat = {
+		third_unit = "units/pd2_dlc_dgs/characters/dgs_acc_dgame/dgs_acc_dgame_male_fat/dgs_acc_dgame_male_fat",
+		sequence = "set_ehtan"
+	}
+	self.player_styles.dgame.characters.ecp_male = dgame_characters_male_fat
 	self.player_styles.hacksuit = {
 		name_id = "bm_suit_hacksuit",
 		desc_id = "bm_suit_hacksuit_desc",

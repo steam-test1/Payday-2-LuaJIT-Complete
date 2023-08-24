@@ -383,9 +383,6 @@ function TweakDataVR:init(tweak_data)
 		bayonets = {
 			wpn_fps_snp_mosin_ns_bayonet = {
 				hit_point = Vector3(0, 30, -3)
-			},
-			wpn_fps_spec_bessy_bayonette = {
-				hit_point = Vector3(0, 30, -3)
 			}
 		},
 		custom = {
@@ -750,9 +747,6 @@ function TweakDataVR:init(tweak_data)
 			},
 			kacchainsaw = {
 				position = Vector3(-0, 5, 5)
-			},
-			bessy = {
-				position = Vector3(0, -6, 2)
 			},
 			m32 = {
 				position = Vector3(-0.5, 0, 2)
@@ -2054,10 +2048,6 @@ function TweakDataVR:init(tweak_data)
 						position = Vector3(0, 49, 10)
 					}
 				}
-			},
-			bessy = {
-				grip = "idle_wpn",
-				position = Vector3(0, 40, 0)
 			},
 			contender = {
 				grip = "idle_wpn",
@@ -10264,105 +10254,6 @@ function TweakDataVR:init(tweak_data)
 					time = 0.9,
 					sound = "wp_minigun_belt_in",
 					pos = Vector3()
-				}
-			}
-		},
-		bessy = {
-			manual_reload_reduction = 2,
-			reload_part_type = "barrel",
-			custom_mag_unit = "units/pd2_dlc_pda10/weapons/wpn_fps_spec_bessy_pts/wpn_vr_spec_bessy_pouch",
-			start = {
-				{
-					time = 0,
-					anims = {
-						{
-							anim_group = "reload",
-							part = "stock",
-							from = 0,
-							state = "auto",
-							to = 11.1
-						},
-						{
-							anim_group = "reload",
-							part = "extra",
-							from = 0,
-							state = "auto",
-							to = 11.1
-						},
-						{
-							anim_group = "reload",
-							part = "reciever",
-							from = 0,
-							state = "auto",
-							to = 11.1
-						},
-						{
-							anim_group = "reload",
-							part = "stock",
-							from = 0,
-							state = "manual",
-							to = 9.166666666666666
-						},
-						{
-							anim_group = "reload",
-							part = "extra",
-							from = 0,
-							state = "manual",
-							to = 9.166666666666666
-						},
-						{
-							anim_group = "reload",
-							part = "reciever",
-							from = 0,
-							state = "manual",
-							to = 9.166666666666666
-						}
-					}
-				},
-				{
-					time = 0,
-					sound = "wp_musket_flint_pull"
-				},
-				{
-					time = 0.4,
-					sound = "wp_musket_hammer_pull"
-				},
-				{
-					time = 2.4,
-					sound = "wp_musket_rod_in_barrel_first"
-				},
-				{
-					time = 3.4,
-					sound = "wp_musket_rod_out_side_first"
-				}
-			},
-			finish = {
-				{
-					time = 0,
-					sound = "wp_musket_rod_out_barrel_second",
-					anims = {
-						{
-							anim_group = "reload",
-							part = "stock",
-							from = 10.966666666666667,
-							state = "manual",
-							to = 11.1
-						},
-						{
-							anim_group = "reload",
-							part = "extra",
-							from = 10.966666666666667,
-							state = "manual",
-							to = 11.1
-						},
-						{
-							anim_group = "reload",
-							part = "reciever",
-							from = 10.6,
-							state = "manual",
-							to = 11.1
-						}
-					}
 				}
 			}
 		},

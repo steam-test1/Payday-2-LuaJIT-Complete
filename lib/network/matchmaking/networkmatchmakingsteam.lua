@@ -98,7 +98,6 @@ function NetworkMatchMakingSTEAM:load_user_filters()
 	Global.game_settings.crime_spree_max_lobby_diff = managers.user:get_setting("crime_spree_lobby_diff")
 	Global.game_settings.search_only_weekly_skirmish = managers.user:get_setting("crimenet_filter_weekly_skirmish")
 	Global.game_settings.skirmish_wave_filter = managers.user:get_setting("crimenet_filter_skirmish_wave")
-	Global.game_settings.search_event_lobbies_override = false
 	local new_servers = managers.user:get_setting("crimenet_filter_new_servers_only")
 	local in_lobby = managers.user:get_setting("crimenet_filter_in_lobby")
 	local max_servers = managers.user:get_setting("crimenet_filter_max_servers")
@@ -263,8 +262,6 @@ function NetworkMatchMakingSTEAM:get_friends_lobbies()
 					local build_key = lobby:key_value(NetworkMatchMakingSTEAM._BUILD_SEARCH_INTEREST_KEY)
 					is_friend_server_ok = is_key_valid(build_key)
 				end
-
-				is_friend_server_ok = is_friend_server_ok and lobby:key_value("event") == (Global.game_settings.search_event_lobbies_override and 1 or 0)
 
 				if is_friend_server_ok then
 					table.insert(info.room_list, {
@@ -478,8 +475,7 @@ function NetworkMatchMakingSTEAM:search_lobby(friends_only, no_filters)
 			"kick_option",
 			"job_class_min",
 			"job_class_max",
-			"allow_mods",
-			"event"
+			"allow_mods"
 		}
 
 		if self._BUILD_SEARCH_INTEREST_KEY then
@@ -532,19 +528,16 @@ function NetworkMatchMakingSTEAM:search_lobby(friends_only, no_filters)
 				self.browser:set_lobby_filter("crime_spree", min_level, "equalto_or_greater_than")
 				self.browser:set_lobby_filter("skirmish", 0, "equalto_less_than")
 				self.browser:set_lobby_filter("skirmish_wave")
-				self.browser:set_lobby_filter("event", 0, "equal")
 			elseif Global.game_settings.gamemode_filter == "skirmish" then
 				local min = SkirmishManager.LOBBY_NORMAL
 
 				self.browser:set_lobby_filter("crime_spree", -1, "equalto_less_than")
 				self.browser:set_lobby_filter("skirmish", min, "equalto_or_greater_than")
 				self.browser:set_lobby_filter("skirmish_wave", Global.game_settings.skirmish_wave_filter or 99, "equalto_less_than")
-				self.browser:set_lobby_filter("event", 0, "equal")
 			elseif Global.game_settings.gamemode_filter == GamemodeStandard.id then
 				self.browser:set_lobby_filter("crime_spree", -1, "equalto_less_than")
 				self.browser:set_lobby_filter("skirmish", 0, "equalto_less_than")
 				self.browser:set_lobby_filter("skirmish_wave")
-				self.browser:set_lobby_filter("event", Global.game_settings.search_event_lobbies_override and 1 or 0, "equal")
 			end
 		end
 
@@ -684,23 +677,12 @@ function NetworkMatchMakingSTEAM:join_server_with_check(room_id, is_invite)
 			end
 		end
 
-		local event_key = lobby:key_value("event")
-		local wanted_event_key = Global.game_settings.search_event_lobbies_override and 1 or 0
-
-		if event_key == "value_missing" or event_key == "value_pending" or tonumber(event_key) ~= wanted_event_key then
-			print("Wrong event game mode!", "wanted", wanted_event_key, "event key", event_key)
-			managers.system_menu:close("join_server")
-			managers.menu:show_failed_joining_dialog()
-
-			return
-		end
-
 		local server_ok, ok_error = self:is_server_ok(nil, self:_make_room_info(lobby), {
 			numbers = attributes
 		}, is_invite)
 
 		if server_ok then
-			self:join_server(room_id, true)
+			self:join_server(room_id, true, false, is_invite)
 		else
 			managers.system_menu:close("join_server")
 
@@ -780,7 +762,7 @@ function NetworkMatchMakingSTEAM._handle_chat_message(user, message)
 	managers.chat:receive_message_by_name(ChatManager.GLOBAL, user:name(), s)
 end
 
-function NetworkMatchMakingSTEAM:join_server(room_id, skip_showing_dialog, quickplay)
+function NetworkMatchMakingSTEAM:join_server(room_id, skip_showing_dialog, quickplay, is_invite)
 	if not skip_showing_dialog then
 		managers.menu:show_joining_lobby_dialog()
 	end
@@ -934,7 +916,7 @@ function NetworkMatchMakingSTEAM:join_server(room_id, skip_showing_dialog, quick
 				end
 			end
 
-			managers.network:join_game_at_host_rpc(self._server_rpc, joined_game)
+			managers.network:join_game_at_host_rpc(self._server_rpc, is_invite, joined_game)
 
 			if quickplay then
 				Telemetry:last_quickplay_room_id(self.lobby_handler:id())
@@ -1119,8 +1101,7 @@ function NetworkMatchMakingSTEAM:set_attributes(settings)
 		job_plan = settings.numbers[10],
 		mods = self:build_mods_list(),
 		allow_mods = self:get_allow_mods_setting(),
-		one_down = Global.game_settings.one_down and 1 or 0,
-		event = Global.game_settings.search_event_lobbies_override and 1 or 0
+		one_down = Global.game_settings.one_down and 1 or 0
 	}
 
 	if self._BUILD_SEARCH_INTEREST_KEY then

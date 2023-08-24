@@ -3003,8 +3003,7 @@ function SkillTreeTweakData:init()
 		"x_p226",
 		"x_m45",
 		"x_mp7",
-		"x_ppk",
-		"money"
+		"x_ppk"
 	}
 	self.skill_switches = {
 		{

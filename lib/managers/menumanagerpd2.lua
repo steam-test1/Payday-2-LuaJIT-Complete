@@ -32,14 +32,6 @@ function MenuManager:on_enter_lobby()
 		managers.menu:active_menu().logic:select_node("crime_spree_lobby", true, {})
 	else
 		managers.menu:active_menu().logic:select_node("lobby", true, {})
-
-		if managers.mutators:get_enabled_active_mutator_category() == "event" then
-			local track_override = managers.mutators:get_track_override("lobby")
-
-			if track_override then
-				managers.music:post_event(track_override)
-			end
-		end
 	end
 
 	managers.platform:set_rich_presence_state("MPLobby")

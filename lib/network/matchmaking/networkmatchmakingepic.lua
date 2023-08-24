@@ -98,7 +98,6 @@ function NetworkMatchMakingEPIC:load_user_filters()
 	Global.game_settings.crime_spree_max_lobby_diff = managers.user:get_setting("crime_spree_lobby_diff")
 	Global.game_settings.search_only_weekly_skirmish = managers.user:get_setting("crimenet_filter_weekly_skirmish")
 	Global.game_settings.skirmish_wave_filter = managers.user:get_setting("crimenet_filter_skirmish_wave")
-	Global.game_settings.search_event_lobbies_override = false
 	local new_servers = managers.user:get_setting("crimenet_filter_new_servers_only")
 	local in_lobby = managers.user:get_setting("crimenet_filter_in_lobby")
 	local max_servers = managers.user:get_setting("crimenet_filter_max_servers")
@@ -371,8 +370,7 @@ function NetworkMatchMakingEPIC:search_lobby(friends_only, no_filters)
 		"kick_option",
 		"job_class_min",
 		"job_class_max",
-		"allow_mods",
-		"event"
+		"allow_mods"
 	}
 
 	if self._BUILD_SEARCH_INTEREST_KEY then
@@ -434,19 +432,16 @@ function NetworkMatchMakingEPIC:search_lobby(friends_only, no_filters)
 			LobbyBrowser:set_lobby_filter("crime_spree", min_level, "equalto_or_greater_than")
 			LobbyBrowser:set_lobby_filter("skirmish", 0, "equalto_less_than")
 			LobbyBrowser:set_lobby_filter("skirmish_wave")
-			LobbyBrowser:set_lobby_filter("event", 0, "equal")
 		elseif Global.game_settings.gamemode_filter == "skirmish" then
 			local min = SkirmishManager.LOBBY_NORMAL
 
 			LobbyBrowser:set_lobby_filter("crime_spree", -1, "equalto_less_than")
 			LobbyBrowser:set_lobby_filter("skirmish", min, "equalto_or_greater_than")
 			LobbyBrowser:set_lobby_filter("skirmish_wave", Global.game_settings.skirmish_wave_filter or 99, "equalto_less_than")
-			LobbyBrowser:set_lobby_filter("event", 0, "equal")
 		elseif Global.game_settings.gamemode_filter == GamemodeStandard.id then
 			LobbyBrowser:set_lobby_filter("crime_spree", -1, "equalto_less_than")
 			LobbyBrowser:set_lobby_filter("skirmish", 0, "equalto_less_than")
 			LobbyBrowser:set_lobby_filter("skirmish_wave")
-			LobbyBrowser:set_lobby_filter("event", Global.game_settings.search_event_lobbies_override and 1 or 0, "equal")
 		end
 	end
 
@@ -586,17 +581,6 @@ function NetworkMatchMakingEPIC:join_server_with_check(room_id, is_invite)
 
 				return
 			end
-		end
-
-		local event_key = lobby:key_value("event")
-		local wanted_event_key = Global.game_settings.search_event_lobbies_override and 1 or 0
-
-		if event_key == "value_missing" or event_key == "value_pending" or tonumber(event_key) ~= wanted_event_key then
-			print("Wrong event game mode!", "wanted", wanted_event_key, "event key", event_key)
-			managers.system_menu:close("join_server")
-			managers.menu:show_failed_joining_dialog()
-
-			return
 		end
 
 		local server_ok, ok_error = self:is_server_ok(nil, self:_make_room_info(lobby), {
@@ -1008,8 +992,7 @@ function NetworkMatchMakingEPIC:set_attributes(settings)
 		job_plan = settings.numbers[10],
 		mods = self:build_mods_list(),
 		allow_mods = self:get_allow_mods_setting(),
-		one_down = Global.game_settings.one_down and 1 or 0,
-		event = Global.game_settings.search_event_lobbies_override and 1 or 0
+		one_down = Global.game_settings.one_down and 1 or 0
 	}
 
 	if self._BUILD_SEARCH_INTEREST_KEY then

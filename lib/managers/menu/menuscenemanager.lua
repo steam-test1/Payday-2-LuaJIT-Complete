@@ -317,9 +317,6 @@ function MenuSceneManager:_init_lobby_poses()
 		},
 		kacchainsaw = {
 			"lobby_idle_minigun_2"
-		},
-		bessy = {
-			"lobby_idle_bessy"
 		}
 	}
 end
@@ -1172,7 +1169,6 @@ end
 
 function MenuSceneManager:_setup_event_units()
 	local active_event = false
-	active_event = true
 
 	if not active_event then
 		return
@@ -1185,10 +1181,6 @@ function MenuSceneManager:_setup_event_units()
 	end
 
 	self._event_units = {}
-
-	self:_setup_event_presents()
-	self:_setup_event_confetti()
-
 	local e_money = self._bg_unit:effect_spawner(Idstring("e_money"))
 
 	if e_money then

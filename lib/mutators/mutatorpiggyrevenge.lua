@@ -289,10 +289,9 @@ function MutatorPiggyRevenge:sync_feed_piggybank(bag_unit, reached_next_level, l
 	self:on_pig_fed(bag_unit, current_piggybank_unit)
 
 	if last_carried_player and last_carried_player == managers.network:session():local_peer():id() then
-		Telemetry:send_on_game_event_piggyrevenge_fed({})
 		managers.event_jobs:award("pda10_bags_objective")
 	elseif Network:is_server() then
-		Telemetry:send_on_game_event_piggyrevenge_fed({})
+		-- Nothing
 	end
 end
 

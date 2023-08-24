@@ -255,6 +255,22 @@ function LootDropTweakData:init_generated(tweak_data)
 		sort_number = 521,
 		category = "dlc"
 	}
+	self.global_values.dgs = {
+		name_id = "bm_global_value_dgs",
+		desc_id = "menu_l_global_value_dgs",
+		unlock_id = "bm_global_value_dgs_unlock",
+		color = tweak_data.screen_colors.community_color,
+		dlc = true,
+		free = false,
+		hide_unavailable = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 4,
+		category = "pd2_clan"
+	}
 	self.global_values.dot = {
 		name_id = "bm_global_value_dot",
 		desc_id = "menu_l_global_value_dot",

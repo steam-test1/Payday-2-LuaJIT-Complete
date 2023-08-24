@@ -279,8 +279,6 @@ function PlayerInventory:add_unit(new_unit, is_equip, equip_is_instant)
 	else
 		self:_place_selection(selection_index, is_equip)
 	end
-
-	self:_chk_ammo_type_buff(new_unit)
 end
 
 function PlayerInventory:clbk_weapon_unit_destroyed(weap_unit)
@@ -1620,71 +1618,4 @@ function PlayerInventory:_chk_remove_queued_jammer_effects(search_effect)
 	end
 
 	return false
-end
-
-PlayerInventory.ammo_types_buff = {
-	explosive = {
-		extra_collisions = {
-			InstantExplosiveBulletBase = {}
-		}
-	}
-}
-
-function PlayerInventory:ammo_type_buff_add(ammo_type_name)
-	local buff_data = PlayerInventory.ammo_types_buff[ammo_type_name]
-
-	if not buff_data then
-		return
-	end
-
-	local weapon_selections = self:available_selections()
-
-	if weapon_selections then
-		for i_sel, selection_data in pairs(weapon_selections) do
-			local weap_unit = selection_data.unit
-			local weap_base = weap_unit and weap_unit:base()
-
-			if weap_base and weap_base.ammo_type_buff_add then
-				weap_base:ammo_type_buff_add(ammo_type_name, buff_data)
-			end
-		end
-	end
-end
-
-function PlayerInventory:ammo_type_buff_remove(ammo_type_name)
-	if not PlayerInventory.ammo_types_buff[ammo_type_name] then
-		return
-	end
-
-	local weapon_selections = self:available_selections()
-
-	if weapon_selections then
-		for i_sel, selection_data in pairs(weapon_selections) do
-			local weap_unit = selection_data.unit
-			local weap_base = weap_unit and weap_unit:base()
-
-			if weap_base and weap_base.ammo_type_buff_remove then
-				weap_base:ammo_type_buff_remove(ammo_type_name)
-			end
-		end
-	end
-end
-
-function PlayerInventory:_chk_ammo_type_buff(weapon_unit)
-	if not managers.mutators:is_mutator_active(MutatorCG22) or not weapon_unit:base().ammo_type_buff_add then
-		return
-	end
-
-	local cg22_mutator = managers.mutators:get_mutator(MutatorCG22)
-	local ammo_types = cg22_mutator:get_active_temp_buff("ammo_types")
-
-	if ammo_types then
-		for ammo_type_name, _ in pairs(ammo_types) do
-			local buff_data = PlayerInventory.ammo_types_buff[ammo_type_name]
-
-			if buff_data then
-				weapon_unit:base():ammo_type_buff_add(ammo_type_name, buff_data)
-			end
-		end
-	end
 end

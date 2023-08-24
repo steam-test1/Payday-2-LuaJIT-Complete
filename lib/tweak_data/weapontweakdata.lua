@@ -135,7 +135,6 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_c96_crew()
 	self:_init_data_sterling_crew()
 	self:_init_data_mosin_crew()
-	self:_init_data_bessy_crew()
 	self:_init_data_m1928_crew()
 	self:_init_data_l85a2_crew()
 	self:_init_data_hs2000_crew()
@@ -265,7 +264,6 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_x_rota_crew()
 	self:_init_data_shuno_crew()
 	self:_init_data_system_crew()
-	self:_init_data_money_crew()
 	self:_init_data_komodo_crew()
 	self:_init_data_elastic_crew()
 	self:_init_data_legacy_crew()
@@ -2954,24 +2952,6 @@ function WeaponTweakData:_init_data_mosin_crew()
 	self.mosin_secondary_crew.use_data.selection_index = SELECTION.SECONDARY
 end
 
-function WeaponTweakData:_init_data_bessy_crew()
-	self.bessy_crew.categories = clone(self.bessy.categories)
-	self.bessy_crew.sounds.prefix = "musket_npc"
-	self.bessy_crew.use_data.selection_index = SELECTION.PRIMARY
-	self.bessy_crew.DAMAGE = 15
-	self.bessy_crew.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
-	self.bessy_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
-	self.bessy_crew.CLIP_AMMO_MAX = 5
-	self.bessy_crew.NR_CLIPS_MAX = 8
-	self.bessy_crew.auto.fire_rate = 1
-	self.bessy_crew.hold = "rifle"
-	self.bessy_crew.alert_size = 5000
-	self.bessy_crew.suppression = 1
-	self.bessy_crew.FIRE_MODE = "single"
-	self.bessy_secondary_crew = deep_clone(self.bessy_crew)
-	self.bessy_secondary_crew.use_data.selection_index = SELECTION.SECONDARY
-end
-
 function WeaponTweakData:_init_data_m1928_crew()
 	self.m1928_crew.categories = clone(self.m1928.categories)
 	self.m1928_crew.sounds.prefix = "m1928_npc"
@@ -5272,35 +5252,6 @@ function WeaponTweakData:_init_data_shuno_crew()
 	self.shuno_crew.has_fire_animation = true
 end
 
-function WeaponTweakData:_init_data_money_crew()
-	self.money_crew.categories = clone(self.money.categories)
-	self.money_crew.sounds.prefix = "moneythrower_npc"
-	self.money_crew.sounds.fire = "moneythrower_npc_fire"
-	self.money_crew.sounds.stop_fire = "moneythrower_npc_fire_stop"
-	self.money_crew.use_data.selection_index = SELECTION.SECONDARY
-	self.money_crew.DAMAGE = 1
-	self.money_crew.flame_effect = "effects/payday2/particles/explosions/moneythrower"
-	self.money_crew.single_flame_effect_duration = 1
-	self.money_crew.flame_max_range = 1300
-	self.money_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
-	self.money_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
-	self.money_crew.shell_ejection = "effects/payday2/particles/weapons/shells/empty"
-	self.money_crew.CLIP_AMMO_MAX = 300
-	self.money_crew.NR_CLIPS_MAX = 4
-	self.money_crew.pull_magazine_during_reload = "large_metal"
-	self.money_crew.hold = {
-		"bullpup",
-		"rifle"
-	}
-	self.money_crew.reload = "rifle"
-	self.money_crew.auto.fire_rate = 0.05
-	self.money_crew.fire_variant = "money"
-	self.money_crew.hud_icon = "rifle"
-	self.money_crew.alert_size = 2500
-	self.money_crew.suppression = 0.45
-	self.money_crew.FIRE_MODE = "auto"
-end
-
 function WeaponTweakData:_init_data_system_crew()
 	self.system_crew.categories = clone(self.system.categories)
 	self.system_crew.sounds.prefix = "system_npc"
@@ -6459,7 +6410,6 @@ function WeaponTweakData:_init_new_weapons(weapon_data)
 	self:_init_c96(weapon_data)
 	self:_init_sterling(weapon_data)
 	self:_init_mosin(weapon_data)
-	self:_init_bessy(weapon_data)
 	self:_init_m1928(weapon_data)
 	self:_init_l85a2(weapon_data)
 	self:_init_vhs(weapon_data)
@@ -6588,7 +6538,6 @@ function WeaponTweakData:_init_new_weapons(weapon_data)
 	self:_init_x_rota(weapon_data)
 	self:_init_shuno(weapon_data)
 	self:_init_system(weapon_data)
-	self:_init_money(weapon_data)
 	self:_init_komodo(weapon_data)
 	self:_init_elastic(weapon_data)
 	self:_init_legacy(weapon_data)
@@ -14763,129 +14712,6 @@ function WeaponTweakData:_init_mosin(weapon_data)
 	self.mosin.armor_piercing_chance = 1
 	self.mosin.stats_modifiers = {
 		damage = 4
-	}
-end
-
-function WeaponTweakData:_init_bessy(weapon_data)
-	self.bessy = {
-		categories = {
-			"snp"
-		},
-		upgrade_blocks = {
-			weapon = {
-				"clip_ammo_increase"
-			}
-		},
-		has_description = true,
-		damage_melee = weapon_data.damage_melee_default,
-		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
-		sounds = {}
-	}
-	self.bessy.sounds.fire = "musket_fire"
-	self.bessy.sounds.dryfire = "primary_dryfire"
-	self.bessy.sounds.enter_steelsight = "lmg_steelsight_enter"
-	self.bessy.sounds.leave_steelsight = "lmg_steelsight_exit"
-	self.bessy.timers = {
-		reload_not_empty = 11.1,
-		reload_empty = 11.1,
-		unequip = 0.6,
-		equip = 0.5
-	}
-	self.bessy.name_id = "bm_w_bessy"
-	self.bessy.desc_id = "bm_w_bessy_desc"
-	self.bessy.description_id = "des_bessy"
-	self.bessy.global_value = "pda10"
-	self.bessy.texture_bundle_folder = "pda10"
-	self.bessy.unlock_func = "has_unlocked_bessy"
-	self.bessy.muzzleflash = "effects/payday2/particles/weapons/bessy_muzzle"
-	self.bessy.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
-	self.bessy.use_data = {
-		selection_index = SELECTION.PRIMARY,
-		align_place = "left_hand"
-	}
-	self.bessy.DAMAGE = 1
-	self.bessy.damage_falloff = FALLOFF_TEMPLATE.SNIPER_FALL_HIGH
-	self.bessy.CLIP_AMMO_MAX = 1
-	self.bessy.NR_CLIPS_MAX = 15
-	self.bessy.AMMO_MAX = self.bessy.CLIP_AMMO_MAX * self.bessy.NR_CLIPS_MAX
-	self.bessy.AMMO_PICKUP = {
-		0.2,
-		0.8
-	}
-	self.bessy.FIRE_MODE = "single"
-	self.bessy.fire_mode_data = {
-		fire_rate = 1
-	}
-	self.bessy.CAN_TOGGLE_FIREMODE = false
-	self.bessy.single = {
-		fire_rate = 20
-	}
-	self.bessy.spread = {
-		standing = self.new_m4.spread.standing,
-		crouching = self.new_m4.spread.crouching,
-		steelsight = self.new_m4.spread.steelsight,
-		moving_standing = self.new_m4.spread.moving_standing,
-		moving_crouching = self.new_m4.spread.moving_crouching,
-		moving_steelsight = self.new_m4.spread.moving_steelsight
-	}
-	self.bessy.kick = {
-		standing = {
-			3,
-			4.8,
-			-0.3,
-			0.3
-		}
-	}
-	self.bessy.kick.crouching = self.bessy.kick.standing
-	self.bessy.kick.steelsight = self.bessy.kick.standing
-	self.bessy.crosshair = {
-		standing = {},
-		crouching = {},
-		steelsight = {}
-	}
-	self.bessy.crosshair.standing.offset = 1.14
-	self.bessy.crosshair.standing.moving_offset = 1.8
-	self.bessy.crosshair.standing.kick_offset = 1.6
-	self.bessy.crosshair.crouching.offset = 1.1
-	self.bessy.crosshair.crouching.moving_offset = 1.6
-	self.bessy.crosshair.crouching.kick_offset = 1.4
-	self.bessy.crosshair.steelsight.hidden = true
-	self.bessy.crosshair.steelsight.offset = 1
-	self.bessy.crosshair.steelsight.moving_offset = 1
-	self.bessy.crosshair.steelsight.kick_offset = 1.14
-	self.bessy.shake = {
-		fire_multiplier = 3.5,
-		fire_steelsight_multiplier = -3.5
-	}
-	self.bessy.autohit = weapon_data.autohit_snp_default
-	self.bessy.aim_assist = weapon_data.aim_assist_snp_default
-	self.bessy.weapon_hold = "bessy"
-	self.bessy.animations = {
-		equip_id = "equip_bessy",
-		recoil_steelsight = true
-	}
-	self.bessy.can_shoot_through_enemy = true
-	self.bessy.can_shoot_through_shield = true
-	self.bessy.can_shoot_through_wall = true
-	self.bessy.panic_suppression_chance = 0.2
-	self.bessy.stats = {
-		zoom = 1,
-		total_ammo_mod = 21,
-		damage = 200,
-		alert_size = 7,
-		spread = 24,
-		spread_moving = 24,
-		recoil = 1,
-		value = 9,
-		extra_ammo = 51,
-		reload = 11,
-		suppression = 5,
-		concealment = 6
-	}
-	self.bessy.special_damage_multiplier = 5
-	self.bessy.armor_piercing_chance = 1
-	self.bessy.stats_modifiers = {
-		damage = 50
 	}
 end
 
@@ -28620,125 +28446,6 @@ function WeaponTweakData:_init_shuno(weapon_data)
 	}
 end
 
-function WeaponTweakData:_init_money(weapon_data)
-	self.money = {
-		categories = {
-			"flamethrower"
-		},
-		has_description = false,
-		damage_melee = weapon_data.damage_melee_default,
-		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
-		sounds = {}
-	}
-	self.money.sounds.fire = "moneythrower_fire"
-	self.money.sounds.stop_fire = "moneythrower_stop"
-	self.money.sounds.dryfire = "flamethrower_dryfire"
-	self.money.sounds.enter_steelsight = "secondary_steel_sight_enter"
-	self.money.sounds.leave_steelsight = "secondary_steel_sight_exit"
-	self.money.timers = {
-		reload_not_empty = 8.5,
-		reload_empty = 8.5,
-		unequip = 0.85,
-		equip = 0.85
-	}
-	self.money.name_id = "bm_w_money"
-	self.money.desc_id = "bm_w_money_desc"
-	self.money.description_id = "des_money"
-	self.money.global_value = "pda8_wpn_money"
-	self.money.texture_bundle_folder = "pda8"
-	self.money.unlock_func = "has_unlocked_money"
-	self.money.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
-	self.money.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
-	self.money.flame_effect = "effects/payday2/particles/explosions/moneythrower"
-	self.money.use_data = {
-		selection_index = SELECTION.SECONDARY,
-		align_place = "right_hand"
-	}
-	self.money.DAMAGE = 1
-	self.money.rays = 12
-	self.money.CLIP_AMMO_MAX = 400
-	self.money.NR_CLIPS_MAX = 2
-	self.money.AMMO_MAX = self.money.CLIP_AMMO_MAX * self.money.NR_CLIPS_MAX
-	self.money.AMMO_PICKUP = self:_pickup_chance(self.money.CLIP_AMMO_MAX, PICKUP.SNIPER_HIGH_DAMAGE)
-	self.money.FIRE_MODE = "auto"
-	self.money.fire_mode_data = {
-		fire_rate = 0.03
-	}
-	self.money.auto = {
-		fire_rate = 0.05
-	}
-	self.money.spread = {
-		standing = self.r870.spread.standing,
-		crouching = self.r870.spread.crouching,
-		steelsight = self.r870.spread.steelsight,
-		moving_standing = self.r870.spread.moving_standing,
-		moving_crouching = self.r870.spread.moving_crouching,
-		moving_steelsight = self.r870.spread.moving_steelsight
-	}
-	self.money.kick = {
-		standing = {
-			0,
-			0,
-			0,
-			0
-		}
-	}
-	self.money.kick.crouching = self.money.kick.standing
-	self.money.kick.steelsight = self.money.kick.standing
-	self.money.crosshair = {
-		standing = {},
-		crouching = {},
-		steelsight = {}
-	}
-	self.money.crosshair.standing.offset = 0.16
-	self.money.crosshair.standing.moving_offset = 0.8
-	self.money.crosshair.standing.kick_offset = 0.6
-	self.money.crosshair.standing.hidden = true
-	self.money.crosshair.crouching.offset = 0.08
-	self.money.crosshair.crouching.moving_offset = 0.7
-	self.money.crosshair.crouching.kick_offset = 0.4
-	self.money.crosshair.crouching.hidden = true
-	self.money.crosshair.steelsight.hidden = true
-	self.money.crosshair.steelsight.offset = 0
-	self.money.crosshair.steelsight.moving_offset = 0
-	self.money.crosshair.steelsight.kick_offset = 0.1
-	self.money.shake = {
-		fire_multiplier = 0,
-		fire_steelsight_multiplier = 0
-	}
-	self.money.autohit = weapon_data.autohit_shotgun_default
-	self.money.aim_assist = weapon_data.aim_assist_shotgun_default
-	self.money.animations = {}
-	self.money.weapon_hold = "system"
-	self.money.animations.equip_id = "equip_system"
-	self.money.animations.recoil_steelsight = false
-	self.money.fire_variant = "money"
-	self.money.flame_max_range = 1300
-	self.money.single_flame_effect_duration = 1
-	self.money.panic_suppression_chance = 0.2
-	self.money.fire_dot_data = {
-		dot_trigger_chance = 0.75,
-		dot_damage = 10,
-		dot_length = 1,
-		dot_trigger_max_distance = 1300,
-		dot_tick_period = 0.5
-	}
-	self.money.stats = {
-		zoom = 1,
-		total_ammo_mod = 21,
-		damage = 95,
-		alert_size = 1,
-		spread = 1,
-		spread_moving = 6,
-		recoil = 0,
-		value = 1,
-		extra_ammo = 51,
-		reload = 11,
-		suppression = 2,
-		concealment = 21
-	}
-end
-
 function WeaponTweakData:_init_system(weapon_data)
 	self.system = {
 		categories = {
@@ -31764,13 +31471,6 @@ function WeaponTweakData:_create_table_structure()
 		use_data = {},
 		auto = {}
 	}
-	self.bessy_crew = {
-		usage = "is_sniper",
-		anim_usage = "is_rifle",
-		sounds = {},
-		use_data = {},
-		auto = {}
-	}
 	self.m1928_crew = {
 		usage = "is_smg",
 		sounds = {},
@@ -32563,12 +32263,6 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.system_crew = {
-		usage = "is_rifle",
-		sounds = {},
-		use_data = {},
-		auto = {}
-	}
-	self.money_crew = {
 		usage = "is_rifle",
 		sounds = {},
 		use_data = {},

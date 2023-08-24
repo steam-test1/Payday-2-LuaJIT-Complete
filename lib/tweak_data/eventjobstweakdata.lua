@@ -2,7 +2,6 @@ EventJobsTweakData = EventJobsTweakData or class()
 
 function EventJobsTweakData:init(tweak_data)
 	self.challenges = {}
-	self.current_event = "PDA10"
 
 	self:_init_pda8_challenges(tweak_data)
 	self:_init_pda9_challenges(tweak_data)
@@ -883,12 +882,11 @@ end
 function EventJobsTweakData:_init_pda10_challenges(tweak_data)
 	table.insert(self.challenges, {
 		reward_id = "menu_pda10_3_reward",
-		name_id = "menu_pda10_3",
-		temp_challenge = "PDA10",
-		desc_id = "menu_pda10_3_desc",
-		show_progress = true,
 		locked_id = "bm_menu_locked_pda10_3",
 		id = "pda10_3",
+		name_id = "menu_pda10_3",
+		desc_id = "menu_pda10_3_desc",
+		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("pda10_heist_objective", 2, {
@@ -919,14 +917,6 @@ function EventJobsTweakData:_init_pda10_challenges(tweak_data)
 		},
 		rewards = {
 			{
-				item_entry = "bessy",
-				type_items = "upgrades"
-			},
-			{
-				item_entry = "wpn_fps_spec_bessy_bayonette",
-				type_items = "weapon_mods"
-			},
-			{
 				item_entry = "zoothat_black",
 				type_items = "masks"
 			}
@@ -934,12 +924,11 @@ function EventJobsTweakData:_init_pda10_challenges(tweak_data)
 	})
 	table.insert(self.challenges, {
 		reward_id = "menu_pda10_5_reward",
-		name_id = "menu_pda10_5",
-		temp_challenge = "PDA10",
-		desc_id = "menu_pda10_5_desc",
-		show_progress = true,
 		locked_id = "bm_menu_locked_pda10_5",
 		id = "pda10_5",
+		name_id = "menu_pda10_5",
+		desc_id = "menu_pda10_5_desc",
+		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("pda10_musket_objective", 10, {
@@ -984,12 +973,11 @@ function EventJobsTweakData:_init_pda10_challenges(tweak_data)
 	})
 	table.insert(self.challenges, {
 		reward_id = "menu_pda10_2_reward",
-		name_id = "menu_pda10_2",
-		temp_challenge = "PDA10",
-		desc_id = "menu_pda10_2_desc",
-		show_progress = true,
 		locked_id = "bm_menu_locked_pda10_2",
 		id = "pda10_2",
+		name_id = "menu_pda10_2",
+		desc_id = "menu_pda10_2_desc",
+		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("pda10_bags_objective", 25, {
@@ -1018,10 +1006,6 @@ function EventJobsTweakData:_init_pda10_challenges(tweak_data)
 		},
 		rewards = {
 			{
-				item_entry = "piggy_hammer",
-				type_items = "upgrades"
-			},
-			{
 				item_entry = "zoothat_yellow",
 				type_items = "masks"
 			}
@@ -1029,12 +1013,11 @@ function EventJobsTweakData:_init_pda10_challenges(tweak_data)
 	})
 	table.insert(self.challenges, {
 		reward_id = "menu_pda10_6_reward",
-		name_id = "menu_pda10_6",
-		temp_challenge = "PDA10",
-		desc_id = "menu_pda10_6_desc",
-		show_progress = true,
 		locked_id = "bm_menu_locked_pda10_6",
 		id = "pda10_6",
+		name_id = "menu_pda10_6",
+		desc_id = "menu_pda10_6_desc",
+		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("pda10_hammer_objective", 25, {
@@ -1077,12 +1060,11 @@ function EventJobsTweakData:_init_pda10_challenges(tweak_data)
 	})
 	table.insert(self.challenges, {
 		reward_id = "menu_pda10_1_reward",
-		name_id = "menu_pda10_1",
-		temp_challenge = "PDA10",
-		desc_id = "menu_pda10_1_desc",
-		show_progress = true,
 		locked_id = "bm_menu_locked_pda10_1",
 		id = "pda10_1",
+		name_id = "menu_pda10_1",
+		desc_id = "menu_pda10_1_desc",
+		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("pda10_dozer_objective", 25, {
@@ -1127,12 +1109,11 @@ function EventJobsTweakData:_init_pda10_challenges(tweak_data)
 	})
 	table.insert(self.challenges, {
 		reward_id = "menu_pda10_4_reward",
-		name_id = "menu_pda10_4",
-		temp_challenge = "PDA10",
-		desc_id = "menu_pda10_4_desc",
-		show_progress = true,
 		locked_id = "bm_menu_locked_pda10_4",
 		id = "pda10_4",
+		name_id = "menu_pda10_4",
+		desc_id = "menu_pda10_4_desc",
+		show_progress = true,
 		objectives = {
 			self:_choice({
 				tweak_data.safehouse:_progress("pda10_buff_objective", 35, {

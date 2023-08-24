@@ -786,39 +786,8 @@ function ExperienceManager:get_xp_by_params(params)
 	bonus_xp = managers.player:get_limited_exp_multiplier(job_id, level_id)
 	extra_bonus_dissect = math.round(total_xp * bonus_xp - total_xp)
 	total_xp = total_xp + extra_bonus_dissect
-	local piggybank_rewards = tweak_data.mutators.piggybank.rewards
-	local pig_level = false
-
-	if managers.mutators:is_mutator_active(MutatorPiggyBank) then
-		local piggybank_mutator = managers.mutators:get_mutator(MutatorPiggyBank)
-		pig_level = piggybank_mutator:get_exploded_pig_level()
-	end
-
-	local bonus_piggybank_dissect = math.round(pig_level and (piggybank_rewards[Global.game_settings.difficulty] or piggybank_rewards.default) * tweak_data.mutators.piggybank.pig_levels[pig_level].bag_requirement or 0)
-	total_xp = total_xp + bonus_piggybank_dissect
-	local bonus_cg22_dissect = 0
-
-	if managers.mutators:is_mutator_active(MutatorCG22) then
-		local cg22_mutator = managers.mutators:get_mutator(MutatorCG22)
-		bonus_cg22_dissect = math.round(cg22_mutator:get_xp_collected())
-	end
-
-	total_xp = total_xp + bonus_cg22_dissect
-	local piggyrevenge_level_tweak = tweak_data.mutators.piggyrevenge.pig_levels
-	local piggyrevenge_level = false
-
-	if managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
-		local piggyrevenge_mutator = managers.mutators:get_mutator(MutatorPiggyRevenge)
-		piggyrevenge_level = math.clamp(piggyrevenge_mutator:get_exploded_pig_level(), 1, #piggyrevenge_level_tweak)
-	end
-
-	local piggybank_rewards = piggyrevenge_level and piggyrevenge_level_tweak[piggyrevenge_level].rewards
-	local bonus_piggyrevenge_dissect = piggybank_rewards and total_xp * ((piggybank_rewards.xp_multiplier or 1) - 1) or 0
-	total_xp = total_xp + bonus_piggyrevenge_dissect
 	local bonus_mutators_dissect = total_xp * managers.mutators:get_experience_reduction() * -1
 	total_xp = total_xp + bonus_mutators_dissect
-	local bonus_event_double_dissect = managers.mutators:is_mutator_active(MutatorCG22) and total_xp or 0
-	total_xp = total_xp + bonus_event_double_dissect
 	local dissection_table = {
 		bonus_risk = math.round(risk_dissect),
 		bonus_num_players = math.round(alive_crew_dissect),
@@ -835,10 +804,6 @@ function ExperienceManager:get_xp_by_params(params)
 		bonus_gage_assignment = math.round(gage_assignment_dissect),
 		bonus_mission_xp = math.round(mission_xp_dissect),
 		bonus_mutators = math.round(bonus_mutators_dissect),
-		bonus_event_double = math.round(bonus_event_double_dissect),
-		bonus_piggybank = math.round(bonus_piggybank_dissect),
-		bonus_cg22 = math.round(bonus_cg22_dissect),
-		bonus_piggyrevenge = math.round(bonus_piggyrevenge_dissect),
 		stage_xp = math.round(stage_xp_dissect),
 		job_xp = math.round(job_xp_dissect),
 		base = math.round(base_xp),

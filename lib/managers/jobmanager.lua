@@ -1128,18 +1128,6 @@ function JobManager:synced_interupt_stage(interupt, is_synced_from_server)
 end
 
 function JobManager:set_next_interupt_stage(interupt)
-	if managers.mutators:is_mutator_active(MutatorCG22) then
-		self._global.next_interupt_stage = nil
-
-		return
-	end
-
-	if managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
-		self._global.next_interupt_stage = nil
-
-		return
-	end
-
 	self._global.next_interupt_stage = interupt
 end
 
@@ -1543,18 +1531,6 @@ end
 function JobManager:current_briefing_dialog()
 	if not self._global.current_job then
 		return
-	end
-
-	if managers.mutators:is_mutator_active(MutatorPiggyBank) and MutatorPiggyBank.briefing_dialog then
-		return MutatorPiggyBank.briefing_dialog
-	end
-
-	if managers.mutators:is_mutator_active(MutatorCG22) and MutatorCG22.briefing_dialog then
-		return MutatorCG22.briefing_dialog
-	end
-
-	if managers.mutators:is_mutator_active(MutatorPiggyRevenge) and MutatorPiggyRevenge.briefing_dialog then
-		return MutatorPiggyRevenge.briefing_dialog
 	end
 
 	if self._global.interupt_stage then

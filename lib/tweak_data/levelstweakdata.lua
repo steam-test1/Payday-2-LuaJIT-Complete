@@ -3323,26 +3323,6 @@ function LevelsTweakData:get_team_setup()
 		end
 	end
 
-	if managers.mutators:is_mutator_active(MutatorCG22) then
-		local team_ids = {}
-
-		for team_id, team_data in pairs(teams) do
-			team_data.friends = team_data.friends or {}
-			team_data.friends.cg22 = true
-
-			table.insert(team_ids, team_id)
-		end
-
-		teams.cg22 = {
-			foes = {},
-			friends = {}
-		}
-
-		for _, team_id in ipairs(team_ids) do
-			teams.cg22.friends[team_id] = true
-		end
-	end
-
 	return teams
 end
 
