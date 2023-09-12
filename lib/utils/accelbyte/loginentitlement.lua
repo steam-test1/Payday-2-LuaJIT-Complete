@@ -686,11 +686,11 @@ function Entitlement:UpdateCrossGameRecognition()
 	local payload_content_type = "application/json"
 	local completed_index = 0
 	local completed_achievement_list = {
-		"skull_very_hard",
-		"skull_overkill",
-		"skull_easywish",
-		"skull_deathwish",
-		"skull_smwish",
+		"death_28",
+		"death_29",
+		"pick_66",
+		"death_30",
+		"axe_66",
 		"ggez_1"
 	}
 
@@ -703,6 +703,7 @@ function Entitlement:UpdateCrossGameRecognition()
 	end
 
 	local wanted_stats = {
+		["user-launch-game"] = 1,
 		["user-infamy"] = managers.experience:current_rank(),
 		["diff-very-hard"] = completed_index >= 1 and 1 or 0,
 		["diff-overkill"] = completed_index >= 2 and 1 or 0,
