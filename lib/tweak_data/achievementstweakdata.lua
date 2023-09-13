@@ -287,7 +287,7 @@ function AchievementsTweakData:init(tweak_data)
 	self.pincushion = {
 		award = "scorpion_3",
 		weapon_category = "bow",
-		enemy = "tank",
+		enemy_tag = "tank",
 		count = 10
 	}
 	self.jordan_1 = "brooklyn_1"
@@ -454,8 +454,10 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		any_shield_kills = {
 			kill = true,
-			enemy = "shield",
-			challenge_stat = "any_shield_kills"
+			challenge_stat = "any_shield_kills",
+			enemy_tags_any = {
+				"shield"
+			}
 		},
 		any_taser_kills = {
 			kill = true,
@@ -464,8 +466,10 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		any_tank_kills = {
 			kill = true,
-			enemy = "tank",
-			challenge_stat = "any_tank_kills"
+			challenge_stat = "any_tank_kills",
+			enemy_tags_any = {
+				"tank"
+			}
 		},
 		any_spooc_kills = {
 			kill = true,
@@ -475,13 +479,8 @@ function AchievementsTweakData:init(tweak_data)
 		trophy_special_kills = {
 			kill = true,
 			trophy_stat = "trophy_special_kills",
-			enemies = {
-				"sniper",
-				"shield",
-				"taser",
-				"tank",
-				"spooc",
-				"medic"
+			enemy_tags_any = {
+				"special"
 			}
 		},
 		trophy_ace = {
@@ -613,8 +612,10 @@ function AchievementsTweakData:init(tweak_data)
 		fool_me_once = {
 			weapon = "m45",
 			stat = "armored_9_stat",
-			enemy = "shield",
-			mask = "bush"
+			mask = "bush",
+			enemy_tags_any = {
+				"shield"
+			}
 		},
 		wanted = {
 			weapon = "ak5",
@@ -651,13 +652,17 @@ function AchievementsTweakData:init(tweak_data)
 		surprise_motherfucker = {
 			weapon = "m95",
 			stat = "gage3_12_stats",
-			enemy = "tank"
+			enemy_tags_any = {
+				"tank"
+			}
 		},
 		man_with_golden_gun = {
 			weapon = "akm_gold",
 			stat = "gage3_2_stats",
-			enemy = "tank",
-			enemy_weapon = "m249"
+			enemy_weapon = "m249",
+			enemy_tags_any = {
+				"tank"
+			}
 		},
 		lord_of_flies = {
 			in_head = true,
@@ -713,8 +718,10 @@ function AchievementsTweakData:init(tweak_data)
 		knock_knock = {
 			weapon_type = "shotgun",
 			stat = "gage4_6_stats",
-			enemy = "shield",
-			part_id = "wpn_fps_upg_a_slug"
+			part_id = "wpn_fps_upg_a_slug",
+			enemy_tags_any = {
+				"shield"
+			}
 		},
 		peek_a_boo = {
 			weapon_type = "shotgun",
@@ -732,7 +739,9 @@ function AchievementsTweakData:init(tweak_data)
 		bang_for_buck = {
 			weapon_type = "shotgun",
 			stat = "gage4_10_stats",
-			enemy = "tank",
+			enemy_tags_any = {
+				"tank"
+			},
 			parts = {
 				"wpn_fps_upg_a_custom",
 				"wpn_fps_upg_a_custom_free"
@@ -741,7 +750,9 @@ function AchievementsTweakData:init(tweak_data)
 		grind_fest = {
 			weapon = "g3",
 			stat = "gage5_1_stats",
-			enemy = "tank"
+			enemy_tags_any = {
+				"tank"
+			}
 		},
 		kill_streak = {
 			weapon = "galil",
@@ -837,8 +848,11 @@ function AchievementsTweakData:init(tweak_data)
 			challenge_stat = "explosive_kills"
 		},
 		sentry_kills = {
-			attack_weapon_type = "sentry_gun",
-			challenge_stat = "sentry_kills"
+			challenge_stat = "sentry_kills",
+			attack_weapon_type = {
+				"sentry_gun",
+				"sentry_gun_silent"
+			}
 		},
 		challenge_winters_mutated = {
 			challenge_award = "challenge_winters_mutated",
@@ -859,16 +873,20 @@ function AchievementsTweakData:init(tweak_data)
 			challenge_stat = "any_sniper_kills"
 		},
 		any_shield_kills = {
-			enemy = "shield",
-			challenge_stat = "any_shield_kills"
+			challenge_stat = "any_shield_kills",
+			enemy_tags_any = {
+				"shield"
+			}
 		},
 		any_taser_kills = {
 			enemy = "taser",
 			challenge_stat = "any_taser_kills"
 		},
 		any_tank_kills = {
-			enemy = "tank",
-			challenge_stat = "any_tank_kills"
+			challenge_stat = "any_tank_kills",
+			enemy_tags_any = {
+				"tank"
+			}
 		},
 		any_spooc_kills = {
 			enemy = "spooc",
@@ -887,21 +905,16 @@ function AchievementsTweakData:init(tweak_data)
 			weapon_type = "smg",
 			count = 25
 		},
-		trophy_special_kills = {
-			trophy_stat = "trophy_special_kills",
-			enemies = {
-				"sniper",
-				"shield",
-				"taser",
-				"tank",
-				"spooc",
+		trophy_medic = {
+			trophy_stat = "trophy_medic",
+			enemy_tags_any = {
 				"medic"
 			}
 		},
-		trophy_medic = {
-			trophy_stat = "trophy_medic",
-			enemies = {
-				"medic"
+		trophy_special_kills = {
+			trophy_stat = "trophy_special_kills",
+			enemy_tags_any = {
+				"special"
 			}
 		},
 		pim_1 = {
@@ -917,13 +930,8 @@ function AchievementsTweakData:init(tweak_data)
 			level_id = "mad",
 			stat = "pim_3_stats",
 			difficulty = overkill_and_above,
-			enemies = {
-				"sniper",
-				"shield",
-				"taser",
-				"tank",
-				"spooc",
-				"medic"
+			enemy_tags_any = {
+				"special"
 			}
 		},
 		grv_2 = {
@@ -1032,13 +1040,8 @@ function AchievementsTweakData:init(tweak_data)
 				"victor"
 			},
 			difficulty = overkill_and_above,
-			enemies = {
-				"sniper",
-				"shield",
-				"taser",
-				"tank",
-				"spooc",
-				"medic"
+			enemy_tags_any = {
+				"special"
 			}
 		},
 		cg22_post_objective_1 = {
@@ -1053,12 +1056,16 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		cg22_post_objective_5 = {
 			stat = "cg22_post_objective_5",
-			enemy = "tank",
+			enemy_tags_any = {
+				"tank"
+			},
 			difficulty = overkill_and_above
 		},
 		pda10_dozer_post_objective = {
-			enemy = "tank",
-			stat = "pda10_dozer_post_objective"
+			stat = "pda10_dozer_post_objective",
+			enemy_tags_any = {
+				"tank"
+			}
 		},
 		pda10_musket_post_objective = {
 			weapon_type = "snp",
@@ -1073,10 +1080,12 @@ function AchievementsTweakData:init(tweak_data)
 			result = "death"
 		},
 		are_you_kidding_me = {
-			enemy = "tank",
 			melee_type = "knife",
 			award = "gage2_10",
-			result = "death"
+			result = "death",
+			enemy_tags_any = {
+				"tank"
+			}
 		},
 		no_time_to_bleed = {
 			health = 25,
@@ -1090,10 +1099,12 @@ function AchievementsTweakData:init(tweak_data)
 			difficulty = overkill_and_above
 		},
 		police_brutality = {
-			enemy = "shield",
 			melee_id = "baton",
 			award = "gage4_1",
-			result = "death"
+			result = "death",
+			enemy_tags_any = {
+				"shield"
+			}
 		},
 		every_day_shovelin = {
 			stat = "gage4_7_stats",
@@ -1129,10 +1140,12 @@ function AchievementsTweakData:init(tweak_data)
 			is_not_civilian = true
 		},
 		knockout = {
-			enemy = "tank",
 			melee_id = "boxing_gloves",
 			award = "gorilla_1",
-			result = "death"
+			result = "death",
+			enemy_tags_any = {
+				"tank"
+			}
 		},
 		stick_a_fork_in_me = {
 			is_not_civilian = true,
@@ -1156,11 +1169,13 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		steel_4 = {
-			enemy = "tank",
 			enemy_weapon = "saiga",
 			award = "steel_4",
 			result = "death",
-			melee_id = "great"
+			melee_id = "great",
+			enemy_tags_any = {
+				"tank"
+			}
 		},
 		gsu_01 = {
 			melee_id = "spoon",
@@ -1209,8 +1224,10 @@ function AchievementsTweakData:init(tweak_data)
 		any_shield_kills = {
 			result = "death",
 			is_not_civilian = true,
-			enemy = "shield",
-			challenge_stat = "any_shield_kills"
+			challenge_stat = "any_shield_kills",
+			enemy_tags_any = {
+				"shield"
+			}
 		},
 		any_taser_kills = {
 			result = "death",
@@ -1221,8 +1238,10 @@ function AchievementsTweakData:init(tweak_data)
 		any_tank_kills = {
 			result = "death",
 			is_not_civilian = true,
-			enemy = "tank",
-			challenge_stat = "any_tank_kills"
+			challenge_stat = "any_tank_kills",
+			enemy_tags_any = {
+				"tank"
+			}
 		},
 		any_spooc_kills = {
 			result = "death",
@@ -1231,13 +1250,12 @@ function AchievementsTweakData:init(tweak_data)
 			challenge_stat = "any_spooc_kills"
 		},
 		trophy_knockouts = {
-			trophy_stat = "trophy_knockouts",
+			melee_id = "boxing_gloves",
 			is_not_civilian = true,
 			result = "death",
-			melee_id = "boxing_gloves",
-			enemies = {
-				"tank",
-				"tank_hw"
+			trophy_stat = "trophy_knockouts",
+			enemy_tags_any = {
+				"tank"
 			}
 		},
 		trophy_washington = {
@@ -1248,20 +1266,17 @@ function AchievementsTweakData:init(tweak_data)
 		trophy_medic = {
 			is_not_civilian = true,
 			trophy_stat = "trophy_medic",
-			enemy = "medic",
-			result = "death"
+			result = "death",
+			enemy_tags_any = {
+				"medic"
+			}
 		},
 		trophy_special_kills = {
-			trophy_stat = "trophy_special_kills",
 			is_not_civilian = true,
+			trophy_stat = "trophy_special_kills",
 			result = "death",
-			enemies = {
-				"sniper",
-				"shield",
-				"taser",
-				"tank",
-				"spooc",
-				"medic"
+			enemy_tags_any = {
+				"special"
 			}
 		},
 		daily_hangover = {
@@ -1394,8 +1409,10 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		pda10_dozer_post_objective = {
 			stat = "pda10_dozer_post_objective",
-			enemy = "tank",
-			result = "death"
+			result = "death",
+			enemy_tags_any = {
+				"tank"
+			}
 		}
 	}
 	self.complete_heist_achievements = {
@@ -6126,7 +6143,8 @@ function AchievementsTweakData:init(tweak_data)
 				"man",
 				"run",
 				"glace",
-				"dah"
+				"dah",
+				"nmh"
 			}
 		},
 		daily_discord = {
@@ -8126,7 +8144,7 @@ function AchievementsTweakData:init(tweak_data)
 			weapon = "r93",
 			stat = "gage3_10_stats",
 			obstacle = "shield",
-			enemy = "shield"
+			enemy_tag = "shield"
 		},
 		you_cant_hide = {
 			weapon = "r93",

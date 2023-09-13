@@ -78,8 +78,27 @@ function ButtonBoxGui:_setup_buttons_panel(info_area, button_list, focus_button,
 	return buttons_panel
 end
 
+function ButtonBoxGui:_setup_scroll_bar(main, scroll_panel, buttons_panel, top_line, bottom_line)
+	ButtonBoxGui.super._setup_scroll_bar(self, main, scroll_panel, buttons_panel, top_line, bottom_line)
+
+	local focus_button = self._text_box_focus_button
+	self._text_box_focus_button = nil
+
+	self:set_focus_button(focus_button, false)
+end
+
 function ButtonBoxGui:_override_info_area_size(info_area, scroll_panel, buttons_panel)
 	info_area:set_h(math.min(scroll_panel:bottom() + buttons_panel:h() + 10 + 5, 620))
+
+	local text = scroll_panel:child("text")
+
+	if info_area:h() < buttons_panel:h() + scroll_panel:y() + text:h() then
+		text:grow(-buttons_panel:w(), 0)
+
+		local _, _, ttw, tth = text:text_rect()
+
+		text:set_h(tth)
+	end
 end
 
 function ButtonBoxGui:set_focus_button(focus_button, allow_callbacks)
@@ -103,11 +122,36 @@ function ButtonBoxGui:_set_button_selected(index, is_selected, allow_callbacks)
 		allow_callbacks = true
 	end
 
-	if allow_callbacks and is_selected and self._button_list then
-		local button = self._button_list[index]
+	local button = self._button_list and self._button_list[index]
 
-		if button and button.focus_callback_func then
+	if button and is_selected then
+		if allow_callbacks and button.focus_callback_func then
 			button.focus_callback_func()
+		end
+
+		local button_panel = nil
+
+		if button.id_name then
+			button_panel = self._text_box_buttons_panel:child(button.id_name)
+		else
+			button_panel = self._text_box_buttons_panel:children()[index]
+		end
+
+		if button_panel then
+			local top = self._text_box_buttons_panel:top() + button_panel:top()
+			local bottom = self._text_box_buttons_panel:top() + button_panel:bottom()
+			local padding = 10
+			local y_top = padding
+			local y_bottom = self._info_area:h() - padding
+			local new_y = self._text_box_buttons_panel:y()
+
+			if top < y_top then
+				new_y = new_y - top + y_top
+			elseif y_bottom < bottom then
+				new_y = new_y - bottom + y_bottom
+			end
+
+			self._text_box_buttons_panel:set_y(new_y)
 		end
 	end
 end
@@ -133,7 +177,13 @@ function ButtonBoxGui:_scroll_buttons(direction)
 	local SCROLL_SPEED = 28
 	local speed = SCROLL_SPEED * TimerManager:main():delta_time() * 200
 	local new_y = self._text_box_buttons_panel:y() + speed * direction
-	new_y = math.clamp(new_y, self._info_area:h() - 10 - self._text_box_buttons_panel:h(), tweak_data.menu.pd2_large_font_size + 4)
+	local padding = 10
+
+	if self._text_box_buttons_panel:h() > self._info_area:h() - 2 * padding then
+		new_y = math.clamp(new_y, self._info_area:h() - self._text_box_buttons_panel:h() - padding, padding)
+	else
+		new_y = self._info_area:h() - self._text_box_buttons_panel:h() - padding
+	end
 
 	self._text_box_buttons_panel:set_y(new_y)
 end

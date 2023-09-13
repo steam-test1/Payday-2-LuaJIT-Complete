@@ -66,7 +66,7 @@ end
 function CharmManager:get_movement_data(weapon, user, is_menu)
 	local data = {}
 
-	if not user then
+	if not alive(user) then
 		if not is_menu then
 			cat_print("charm_manager", "[CharmManager:get_movement_data] ERROR? - In-game weapon has no user unit", weapon)
 
@@ -122,25 +122,21 @@ function CharmManager:get_movement_data(weapon, user, is_menu)
 
 			data.update_type = "simulate_ingame_standard"
 			local cam_ext = user:camera()
-			data.user_m_pos = cam_ext:position()
-			data.m_fwd = cam_ext:forward()
-			data.m_right = cam_ext:right()
-			local chk_ext = user:camera()
 
-			if chk_ext then
+			if cam_ext then
 				data.update_type = "simulate_ingame_standard"
-				data.user_m_pos = chk_ext:position()
-				data.m_fwd = chk_ext:forward()
-				data.m_right = chk_ext:right()
+				data.user_m_pos = cam_ext:position()
+				data.m_fwd = cam_ext:forward()
+				data.m_right = cam_ext:right()
 			else
 				cat_print("charm_manager", "[CharmManager:get_movement_data] ERROR - Local player unit has no camera() extension, falling back to movement() extension", user)
 
-				chk_ext = user:movement()
+				local mov_ext = user:movement()
 
-				if chk_ext then
+				if mov_ext then
 					data.update_type = "simulate_ingame_upd_m"
 					data.user_unit = user
-					data.user_m_pos = chk_ext:m_head_pos()
+					data.user_m_pos = mov_ext:m_head_pos()
 				else
 					cat_print("charm_manager", "[CharmManager:get_movement_data] ERROR - Local player unit has no movement() extension", user)
 

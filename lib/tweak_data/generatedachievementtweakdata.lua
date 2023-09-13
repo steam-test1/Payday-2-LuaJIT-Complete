@@ -15193,7 +15193,7 @@ function init_auto_generated_achievement_data(tags)
 				tags.difficulty.normal,
 				tags.tactics.loud,
 				tags.tactics.killer,
-				tags.inventory.mask
+				tags.inventory.weapon
 			}
 		},
 		cac_10 = {

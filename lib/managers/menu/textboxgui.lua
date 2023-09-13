@@ -348,29 +348,9 @@ function TextBoxGui:_create_text_box(ws, title, text, content_data, config)
 		end
 	end
 
-	local scroll_up_indicator_shade = main:panel({
-		halign = "right",
-		name = "scroll_up_indicator_shade",
-		valign = "top",
-		y = 100,
-		layer = 5,
-		x = scroll_panel:x(),
-		w = main:w() - buttons_panel:w()
-	})
-	local scroll_down_indicator_shade = main:panel({
-		halign = "right",
-		name = "scroll_down_indicator_shade",
-		valign = "bottom",
-		y = 100,
-		layer = 5,
-		x = scroll_panel:x(),
-		w = main:w() - buttons_panel:w()
-	})
 	local texture, rect = tweak_data.hud_icons:get_icon_data("scrollbar_arrow")
 
 	scroll_panel:grow(-rect[3], 0)
-	scroll_up_indicator_shade:set_w(scroll_panel:w())
-	scroll_down_indicator_shade:set_w(scroll_panel:w())
 	text:set_w(scroll_panel:w())
 
 	local _, _, ttw, tth = text:text_rect()
@@ -403,50 +383,8 @@ function TextBoxGui:_create_text_box(ws, title, text, content_data, config)
 
 	top_line:set_world_bottom(scroll_panel:world_top())
 	bottom_line:set_world_top(scroll_panel:world_bottom())
-	scroll_up_indicator_shade:set_top(top_line:bottom())
-	scroll_down_indicator_shade:set_bottom(bottom_line:top())
-
-	local scroll_up_indicator_arrow = main:bitmap({
-		name = "scroll_up_indicator_arrow",
-		layer = 3,
-		halign = "right",
-		valign = "top",
-		texture = texture,
-		texture_rect = rect,
-		color = Color.white
-	})
-
-	scroll_up_indicator_arrow:set_lefttop(scroll_panel:right() + 2, scroll_up_indicator_shade:top() + 8)
-
-	local scroll_down_indicator_arrow = main:bitmap({
-		name = "scroll_down_indicator_arrow",
-		layer = 3,
-		halign = "right",
-		valign = "bottom",
-		rotation = 180,
-		texture = texture,
-		texture_rect = rect,
-		color = Color.white
-	})
-
-	scroll_down_indicator_arrow:set_leftbottom(scroll_panel:right() + 2, scroll_down_indicator_shade:bottom() - 8)
-	BoxGuiObject:new(scroll_up_indicator_shade, {
-		sides = {
-			0,
-			0,
-			2,
-			0
-		}
-	}):set_aligns("scale", "scale")
-	BoxGuiObject:new(scroll_down_indicator_shade, {
-		sides = {
-			0,
-			0,
-			0,
-			2
-		}
-	}):set_aligns("scale", "scale")
 	lower_static_panel:set_bottom(buttons_panel:top() - 2)
+	self:_setup_scroll_bar(main, scroll_panel, buttons_panel, top_line, bottom_line)
 
 	self._info_box = BoxGuiObject:new(info_area, {
 		sides = {
@@ -456,28 +394,6 @@ function TextBoxGui:_create_text_box(ws, title, text, content_data, config)
 			1
 		}
 	})
-	local bar_h = scroll_down_indicator_arrow:top() - scroll_up_indicator_arrow:bottom()
-	local scroll_bar = main:panel({
-		name = "scroll_bar",
-		halign = "right",
-		w = 4,
-		layer = 4,
-		h = bar_h
-	})
-	self._scroll_bar_box_class = BoxGuiObject:new(scroll_bar, {
-		sides = {
-			2,
-			2,
-			0,
-			0
-		}
-	})
-
-	self._scroll_bar_box_class:set_aligns("scale", "scale")
-	scroll_bar:set_w(8)
-	scroll_bar:set_bottom(scroll_down_indicator_arrow:top())
-	scroll_bar:set_center_x(scroll_down_indicator_arrow:center_x())
-
 	local legend_minimize = main:text({
 		text = "MINIMIZE",
 		name = "legend_minimize",
@@ -537,6 +453,96 @@ function TextBoxGui:_create_text_box(ws, title, text, content_data, config)
 	end
 
 	return main
+end
+
+function TextBoxGui:_setup_scroll_bar(main, scroll_panel, buttons_panel, top_line, bottom_line)
+	local scroll_up_indicator_shade = main:panel({
+		halign = "right",
+		name = "scroll_up_indicator_shade",
+		valign = "top",
+		y = 100,
+		layer = 5,
+		x = scroll_panel:x(),
+		w = main:w() - buttons_panel:w()
+	})
+	local scroll_down_indicator_shade = main:panel({
+		halign = "right",
+		name = "scroll_down_indicator_shade",
+		valign = "bottom",
+		y = 100,
+		layer = 5,
+		x = scroll_panel:x(),
+		w = main:w() - buttons_panel:w()
+	})
+
+	scroll_up_indicator_shade:set_w(scroll_panel:w())
+	scroll_down_indicator_shade:set_w(scroll_panel:w())
+	scroll_up_indicator_shade:set_top(top_line:bottom())
+	scroll_down_indicator_shade:set_bottom(bottom_line:top())
+
+	local texture, rect = tweak_data.hud_icons:get_icon_data("scrollbar_arrow")
+	local scroll_up_indicator_arrow = main:bitmap({
+		name = "scroll_up_indicator_arrow",
+		layer = 3,
+		halign = "right",
+		valign = "top",
+		texture = texture,
+		texture_rect = rect,
+		color = Color.white
+	})
+
+	scroll_up_indicator_arrow:set_lefttop(scroll_panel:right() + 2, scroll_up_indicator_shade:top() + 8)
+
+	local scroll_down_indicator_arrow = main:bitmap({
+		name = "scroll_down_indicator_arrow",
+		layer = 3,
+		halign = "right",
+		valign = "bottom",
+		rotation = 180,
+		texture = texture,
+		texture_rect = rect,
+		color = Color.white
+	})
+
+	scroll_down_indicator_arrow:set_leftbottom(scroll_panel:right() + 2, scroll_down_indicator_shade:bottom() - 8)
+	BoxGuiObject:new(scroll_up_indicator_shade, {
+		sides = {
+			0,
+			0,
+			2,
+			0
+		}
+	}):set_aligns("scale", "scale")
+	BoxGuiObject:new(scroll_down_indicator_shade, {
+		sides = {
+			0,
+			0,
+			0,
+			2
+		}
+	}):set_aligns("scale", "scale")
+
+	local bar_h = scroll_down_indicator_arrow:top() - scroll_up_indicator_arrow:bottom()
+	local scroll_bar = main:panel({
+		name = "scroll_bar",
+		halign = "right",
+		w = 4,
+		layer = 4,
+		h = bar_h
+	})
+	self._scroll_bar_box_class = BoxGuiObject:new(scroll_bar, {
+		sides = {
+			2,
+			2,
+			0,
+			0
+		}
+	})
+
+	self._scroll_bar_box_class:set_aligns("scale", "scale")
+	scroll_bar:set_w(8)
+	scroll_bar:set_bottom(scroll_down_indicator_arrow:top())
+	scroll_bar:set_center_x(scroll_down_indicator_arrow:center_x())
 end
 
 function TextBoxGui:_setup_stats_panel(scroll_panel, stats_list, stats_text)

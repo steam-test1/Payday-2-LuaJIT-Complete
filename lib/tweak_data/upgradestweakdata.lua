@@ -5715,6 +5715,7 @@ function UpgradesTweakData:init(tweak_data)
 	self:_c96_definitions()
 	self:_sterling_definitions()
 	self:_mosin_definitions()
+	self:_bessy_definitions()
 	self:_m1928_definitions()
 	self:_l85a2_definitions()
 	self:_vhs_definitions()
@@ -5848,6 +5849,7 @@ function UpgradesTweakData:init(tweak_data)
 	self:_x_rota_weapon_definitions()
 	self:_shuno_weapon_definitions()
 	self:_system_weapon_definitions()
+	self:_money_weapon_definitions()
 	self:_komodo_weapon_definitions()
 	self:_elastic_weapon_definitions()
 	self:_legacy_weapon_definitions()
@@ -11879,6 +11881,15 @@ function UpgradesTweakData:_mosin_definitions()
 	}
 end
 
+function UpgradesTweakData:_bessy_definitions()
+	self.definitions.bessy = {
+		dlc = "pda10_bessy",
+		factory_id = "wpn_fps_spec_bessy",
+		weapon_id = "bessy",
+		category = "weapon"
+	}
+end
+
 function UpgradesTweakData:_m1928_definitions()
 	self.definitions.m1928 = {
 		dlc = "pd2_clan",
@@ -12064,6 +12075,10 @@ function UpgradesTweakData:_melee_weapon_definitions()
 	}
 	self.definitions.alien_maul = {
 		dlc = "alienware_alpha_promo",
+		category = "melee_weapon"
+	}
+	self.definitions.piggy_hammer = {
+		dlc = "pda10_piggy_hammer",
 		category = "melee_weapon"
 	}
 	self.definitions.shillelagh = {
@@ -12370,6 +12385,10 @@ function UpgradesTweakData:_grenades_definitions()
 	}
 	self.definitions.copr_ability = {
 		dlc = "copr",
+		category = "grenade"
+	}
+	self.definitions.xmas_snowball = {
+		dlc = "xmas_snowball",
 		category = "grenade"
 	}
 	self.definitions.poison_gas_grenade = {
@@ -16612,6 +16631,15 @@ function UpgradesTweakData:_system_weapon_definitions()
 	self.definitions.system = {
 		factory_id = "wpn_fps_fla_system",
 		weapon_id = "system",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_money_weapon_definitions()
+	self.definitions.money = {
+		dlc = "pda8_wpn_money",
+		factory_id = "wpn_fps_fla_money",
+		weapon_id = "money",
 		category = "weapon"
 	}
 end

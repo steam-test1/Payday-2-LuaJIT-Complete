@@ -815,7 +815,19 @@ function GenericDLCManager:has_ghm()
 end
 
 function GenericDLCManager:has_pda8_wpn_money()
-	return true
+	return managers.perpetual_event:has_event_upgrade("money")
+end
+
+function GenericDLCManager:has_pda10_bessy()
+	return managers.perpetual_event:has_event_upgrade("bessy")
+end
+
+function GenericDLCManager:has_pda10_piggy_hammer()
+	return managers.perpetual_event:has_event_upgrade("piggy_hammer")
+end
+
+function GenericDLCManager:has_xmas_snowball()
+	return managers.perpetual_event:has_event_upgrade("xmas_snowball")
 end
 
 function GenericDLCManager:has_victor_mods_pack_1()

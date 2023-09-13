@@ -387,7 +387,134 @@ function MoneyTweakData:init(tweak_data)
 		pattern_value = self._create_value_table(smallest_mask_part_cost * 0.4, biggest_mask_part_cost, 10, true, 1.1),
 		color_value = self._create_value_table(smallest_mask_part_cost * 0.3, biggest_mask_part_cost, 10, true, 1)
 	}
+
+	local function millions(value)
+		return value * 1000000
+	end
+
 	self.skill_switch_cost = {
+		{
+			spending = 0,
+			offshore = millions(0)
+		},
+		{
+			spending = 0,
+			offshore = millions(0)
+		},
+		{
+			spending = 0,
+			offshore = millions(0)
+		},
+		{
+			spending = 0,
+			offshore = millions(1)
+		},
+		{
+			spending = 0,
+			offshore = millions(10)
+		},
+		{
+			spending = 0,
+			offshore = millions(10)
+		},
+		{
+			spending = 0,
+			offshore = millions(10)
+		},
+		{
+			spending = 0,
+			offshore = millions(20)
+		},
+		{
+			spending = 0,
+			offshore = millions(20)
+		},
+		{
+			spending = 0,
+			offshore = millions(20)
+		},
+		{
+			spending = 0,
+			offshore = millions(25)
+		},
+		{
+			spending = 0,
+			offshore = millions(25)
+		},
+		{
+			spending = 0,
+			offshore = millions(25)
+		},
+		{
+			spending = 0,
+			offshore = millions(25)
+		},
+		{
+			spending = 0,
+			offshore = millions(25)
+		},
+		{
+			spending = 0,
+			offshore = millions(30)
+		},
+		{
+			spending = 0,
+			offshore = millions(30)
+		},
+		{
+			spending = 0,
+			offshore = millions(30)
+		},
+		{
+			spending = 0,
+			offshore = millions(30)
+		},
+		{
+			spending = 0,
+			offshore = millions(30)
+		},
+		{
+			spending = 0,
+			offshore = millions(35)
+		},
+		{
+			spending = 0,
+			offshore = millions(35)
+		},
+		{
+			spending = 0,
+			offshore = millions(35)
+		},
+		{
+			spending = 0,
+			offshore = millions(35)
+		},
+		{
+			spending = 0,
+			offshore = millions(35)
+		},
+		{
+			spending = 0,
+			offshore = millions(40)
+		},
+		{
+			spending = 0,
+			offshore = millions(40)
+		},
+		{
+			spending = 0,
+			offshore = millions(40)
+		},
+		{
+			spending = 0,
+			offshore = millions(40)
+		},
+		{
+			spending = 0,
+			offshore = millions(40)
+		}
+	}
+	self.old_skill_switch_cost = {
 		{
 			offshore = 0,
 			spending = 0

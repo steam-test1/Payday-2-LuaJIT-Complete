@@ -1012,6 +1012,13 @@ function JobManager:is_level_christmas(level_id)
 end
 
 function JobManager:get_job_christmas_bonus(job_id)
+	local add_bonus = false
+	local add_bonus = managers.perpetual_event:get_holiday_tactics()
+
+	if add_bonus and self:is_christmas_job(job_id) then
+		return (tweak_data:get_value("experience_manager", "limited_xmas_bonus_multiplier") or 1) - 1
+	end
+
 	return 0
 end
 
@@ -1128,6 +1135,7 @@ function JobManager:synced_interupt_stage(interupt, is_synced_from_server)
 end
 
 function JobManager:set_next_interupt_stage(interupt)
+	interupt = managers.mutators:get_interupt_stage_override(interupt)
 	self._global.next_interupt_stage = interupt
 end
 
@@ -1531,6 +1539,12 @@ end
 function JobManager:current_briefing_dialog()
 	if not self._global.current_job then
 		return
+	end
+
+	local briefing_dialog_override = managers.mutators:get_briefing_dialog_override()
+
+	if briefing_dialog_override then
+		return briefing_dialog_override
 	end
 
 	if self._global.interupt_stage then

@@ -45,6 +45,10 @@ local mrot2 = Rotation()
 function MutatorCG22:register_values(mutator_manager)
 end
 
+function MutatorCG22:next_interupt_stage(interupt)
+	return nil
+end
+
 function MutatorCG22:setup(mutator_manager)
 	print("MutatorCG22:setup")
 

@@ -56,7 +56,7 @@ function UnoDeviceBase:cycle_hints()
 	local uno_challenge = nil
 	uno_challenge = managers.custom_safehouse:uno_achievement_challenge()
 
-	if uno_challenge then
+	if uno_challenge and uno_challenge:challenge() then
 		local achievement_id = uno_challenge:challenge()[self._next_hint]
 
 		self:show_hint(achievement_id)

@@ -21,6 +21,7 @@ require("lib/managers/DLCManager")
 
 managers.dlc = DLCManager:new()
 
+require("lib/managers/PerpetualEventManager")
 require("lib/tweak_data/TweakData")
 require("lib/utils/Utl")
 require("lib/utils/SequenceActivator")
@@ -284,6 +285,7 @@ function Setup:init_managers(managers)
 	managers.blackmarket = BlackMarketManager:new()
 	managers.crimenet = CrimeNetManager:new()
 	managers.event_jobs = SideJobEventManager:new()
+	managers.perpetual_event = PerpetualEventManager:new()
 	managers.lootdrop = LootDropManager:new()
 	managers.chat = ChatManager:new()
 	managers.menu_component = MenuComponentManager:new()
@@ -566,6 +568,7 @@ function Setup:init_finalize()
 	end
 
 	managers.skirmish:init_finalize()
+	managers.perpetual_event:init_finalize()
 end
 
 function Setup:update(t, dt)

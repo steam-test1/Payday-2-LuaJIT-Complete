@@ -149,6 +149,10 @@ function BootupState:setup()
 	local play_intros = not Application:production_build()
 
 	if play_intros then
+		if SystemInfo:distribution() == Idstring("EPIC") and EpicMM.wait_for_logged_on then
+			EpicMM:wait_for_logged_on(5)
+		end
+
 		self:setup_intro_videos()
 	end
 

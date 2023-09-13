@@ -250,7 +250,9 @@ function HuskPlayerInventory:set_weapon_underbarrel(selection_index, underbarrel
 		return
 	end
 
-	selection.unit:base():set_underbarrel(underbarrel_id, is_on)
+	if selection.unit:base().set_underbarrel then
+		selection.unit:base():set_underbarrel(underbarrel_id, is_on)
+	end
 end
 
 function HuskPlayerInventory:set_visibility_state(state)

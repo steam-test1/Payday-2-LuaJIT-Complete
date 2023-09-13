@@ -792,6 +792,26 @@ function MutatorsManager:get_mass_drop_mutator()
 	return nil
 end
 
+function MutatorsManager:get_interupt_stage_override(interupt)
+	for _, mutator in ipairs(self._mutators) do
+		if (mutator:is_enabled() or mutator:is_active()) and mutator.next_interupt_stage then
+			return mutator:next_interupt_stage(interupt)
+		end
+	end
+
+	return interupt
+end
+
+function MutatorsManager:get_briefing_dialog_override()
+	for _, mutator in ipairs(self._mutators) do
+		if (mutator:is_enabled() or mutator:is_active()) and mutator.briefing_dialog then
+			return mutator.briefing_dialog
+		end
+	end
+
+	return nil
+end
+
 function MutatorsManager:show_mutators_launch_countdown(countdown)
 	if Network:is_server() then
 		return

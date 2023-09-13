@@ -790,6 +790,9 @@ function ContractBrokerGui:_setup_filter_tactic()
 			"menu_filter_tactic_stealthable"
 		}
 	}
+
+	managers.perpetual_event:setup_contract_broker_filter_tactic(tactics, 4)
+
 	local last_y = 0
 	local check_new_job_data = {
 		filter_key = "job",
@@ -883,6 +886,8 @@ function ContractBrokerGui:perform_filter_tactic(job_tweak, wrapped_tweak, optio
 				allow = allow or level_data.ghost_required or level_data.ghost_required_visual
 			elseif current_filter == 3 then
 				allow = allow or level_data.ghost_bonus ~= nil
+			elseif current_filter == 4 then
+				allow = allow or managers.perpetual_event:perform_contract_filter_tactic(level_data)
 			end
 		end
 	end

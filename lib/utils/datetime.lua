@@ -13,9 +13,9 @@ function DateTime:init(date)
 	end
 
 	self._date_table = {
-		year = date[1] or date.year or 0,
-		month = date[2] or date.month or 0,
-		day = date[3] or date.day or 0
+		year = date[1] or date.year or date._date_table and date._date_table.year or 0,
+		month = date[2] or date.month or date._date_table and date._date_table.month or 0,
+		day = date[3] or date.day or date._date_table and date._date_table.day or 0
 	}
 	self._value = 0
 	self._value = self._value + self._date_table.year * DateTime.days_per_month * DateTime.months_per_year

@@ -277,6 +277,14 @@ function HUDManager:set_teammate_ammo_amount(id, selection_index, max_clip, curr
 	self._teammate_panels[id]:set_ammo_amount_by_type(type, max_clip, current_clip, current_left, max)
 end
 
+function HUDManager:set_alt_ammo(state)
+	for id, panel in pairs(self._teammate_panels) do
+		if panel.set_alt_ammo then
+			panel:set_alt_ammo(state)
+		end
+	end
+end
+
 function HUDManager:set_weapon_ammo_by_unit(unit)
 	local second_weapon_index = self._hud.selected_weapon == 1 and 2 or 1
 

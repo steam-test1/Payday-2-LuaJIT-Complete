@@ -231,12 +231,12 @@ function BlackMarketManager:_setup_grenades()
 
 		if grenade.ability or grenade.base_cooldown then
 			grenades[grenade_id] = {
-				ability = true,
 				amount = 0,
 				equipped = false,
 				unlocked = false,
 				skill_based = true,
-				level = 0
+				level = 0,
+				ability = not grenade.ignore_auto_equip
 			}
 		end
 	end
@@ -3116,8 +3116,8 @@ function BlackMarketManager:modify_damage_falloff(damage_falloff, custom_stats)
 				damage_falloff.optimal_range = stats.falloff_override.optimal_range or damage_falloff.optimal_range
 				damage_falloff.near_falloff = stats.falloff_override.near_falloff or damage_falloff.near_falloff
 				damage_falloff.far_falloff = stats.falloff_override.far_falloff or damage_falloff.far_falloff
-				damage_falloff.near_mul = stats.falloff_override.near_mul or damage_falloff.near_mul
-				damage_falloff.far_mul = stats.falloff_override.far_mul or damage_falloff.far_mul
+				damage_falloff.near_multiplier = stats.falloff_override.near_multiplier or damage_falloff.near_multiplier
+				damage_falloff.far_multiplier = stats.falloff_override.far_multiplier or damage_falloff.far_multiplier
 			end
 
 			if stats.optimal_distance_mul ~= nil then
@@ -3144,16 +3144,16 @@ function BlackMarketManager:modify_damage_falloff(damage_falloff, custom_stats)
 			end
 
 			if stats.near_damage_mul ~= nil then
-				damage_falloff.near_mul = damage_falloff.near_mul * stats.near_damage_mul
+				damage_falloff.near_multiplier = damage_falloff.near_multiplier * stats.near_damage_mul
 			end
 
 			if stats.far_damage_mul ~= nil then
-				damage_falloff.far_mul = damage_falloff.far_mul * stats.far_damage_mul
+				damage_falloff.far_multiplier = damage_falloff.far_multiplier * stats.far_damage_mul
 			end
 
 			if stats.falloff_damage_mul ~= nil then
-				damage_falloff.near_mul = damage_falloff.near_mul * stats.falloff_damage_mul
-				damage_falloff.far_mul = damage_falloff.far_mul * stats.falloff_damage_mul
+				damage_falloff.near_multiplier = damage_falloff.near_multiplier * stats.falloff_damage_mul
+				damage_falloff.far_multiplier = damage_falloff.far_multiplier * stats.falloff_damage_mul
 			end
 
 			if stats.damage_near_mul ~= nil then
@@ -4616,12 +4616,12 @@ function BlackMarketManager:on_aquired_melee_weapon(upgrade, id, loading)
 end
 
 function BlackMarketManager:on_unaquired_melee_weapon(upgrade, id)
+	local equipped_melee_weapon = managers.blackmarket:equipped_melee_weapon()
 	self._global.melee_weapons[id].unlocked = false
 	self._global.melee_weapons[id].owned = false
-	local equipped_melee_weapon = managers.blackmarket:equipped_melee_weapon()
 
 	if equipped_melee_weapon and equipped_melee_weapon == id then
-		equipped_melee_weapon.equipped = false
+		self._global.melee_weapons[id].equipped = false
 
 		self:_verfify_equipped_category("melee_weapons")
 	end
@@ -6261,7 +6261,7 @@ function BlackMarketManager:set_part_texture_switch(category, slot, part_id, dat
 	local part_data = tweak_data.weapon.factory.parts[part_id]
 
 	if not part_data then
-		Applicaton:error("[BlackMarketManager:set_part_texture_switch] Part do not exist", "category", category, "slot", slot, "part_id", part_id, "texture_id", texture_id)
+		Application:error("[BlackMarketManager:set_part_texture_switch] Part do not exist", "category", category, "slot", slot, "part_id", part_id, "texture_id", texture_id)
 
 		return
 	end
@@ -6371,7 +6371,7 @@ function BlackMarketManager:set_part_custom_colors(category, slot, part_id, colo
 	local part_data = tweak_data.weapon.factory.parts[part_id]
 
 	if not part_data then
-		Applicaton:error("[BlackMarketManager:set_part_custom_colors] Part do not exist", "category", category, "slot", slot, "part_id", part_id, "texture_id", texture_id)
+		Application:error("[BlackMarketManager:set_part_custom_colors] Part do not exist", "category", category, "slot", slot, "part_id", part_id, "texture_id", texture_id)
 
 		return
 	end
@@ -7594,6 +7594,32 @@ function BlackMarketManager:get_cosmetics_instances_by_weapon_id(weapon_id)
 	end
 
 	return items
+end
+
+function BlackMarketManager:get_weapons_with_cosmetics_instance()
+	local cosmetics_on_weapons = {}
+	local cosmetic_tweak, instance_id = nil
+	local crafted_list = self._global.crafted_items or {}
+
+	for category, category_data in pairs(crafted_list) do
+		if category == "primaries" or category == "secondaries" then
+			for slot, weapon_data in pairs(category_data) do
+				cosmetic_tweak = weapon_data.cosmetics and tweak_data.blackmarket.weapon_skins[weapon_data.cosmetics.id]
+
+				if weapon_data.cosmetics and not cosmetic_tweak.is_a_unlockable then
+					instance_id = weapon_data.cosmetics.instance_id
+					cosmetics_on_weapons[instance_id] = cosmetics_on_weapons[instance_id] or {}
+
+					table.insert(cosmetics_on_weapons[instance_id], {
+						category,
+						slot
+					})
+				end
+			end
+		end
+	end
+
+	return cosmetics_on_weapons
 end
 
 function BlackMarketManager:get_cosmetics_by_weapon_id(weapon_id)
@@ -10446,7 +10472,7 @@ function BlackMarketManager:has_unlocked_shock()
 end
 
 function BlackMarketManager:has_unlocked_money()
-	return true
+	return managers.upgrades:aquired("money"), "bm_wpn_money_event_ended", "guis/textures/pd2/lock_achievement"
 end
 
 function BlackMarketManager:has_unlocked_victor()
@@ -10456,13 +10482,9 @@ function BlackMarketManager:has_unlocked_victor()
 end
 
 function BlackMarketManager:has_unlocked_bessy()
-	local is_unlocked = managers.event_jobs:has_completed_and_claimed_item("pda10_3", "upgrades", "bessy")
-
-	return is_unlocked, "bm_menu_locked_pda10_3", "guis/textures/pd2/lock_achievement"
+	return managers.upgrades:aquired("bessy"), "bm_wpn_money_event_ended", "guis/textures/pd2/lock_achievement"
 end
 
 function BlackMarketManager:has_unlocked_piggy_hammer()
-	local is_unlocked = managers.event_jobs:has_completed_and_claimed_item("pda10_5", "upgrades", "piggy_hammer")
-
-	return is_unlocked, "bm_menu_locked_pda10_5", "guis/textures/pd2/lock_achievement"
+	return managers.upgrades:aquired("piggy_hammer"), "bm_wpn_money_event_ended", "guis/textures/pd2/lock_achievement"
 end

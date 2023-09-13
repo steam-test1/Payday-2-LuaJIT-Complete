@@ -166,7 +166,7 @@ end
 function NetworkAccount:set_playing(state)
 end
 
-function NetworkAccount:set_played_with(id)
+function NetworkAccount:set_played_with(peer)
 end
 
 function NetworkAccount:_load_globals()

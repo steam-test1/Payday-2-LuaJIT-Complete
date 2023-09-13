@@ -44,6 +44,10 @@ local idstr_size = Idstring("size")
 function MutatorPiggyRevenge:register_values(mutator_manager)
 end
 
+function MutatorPiggyRevenge:next_interupt_stage(interupt)
+	return nil
+end
+
 function MutatorPiggyRevenge:setup(mutator_manager)
 	print("MutatorPiggyRevenge:setup")
 

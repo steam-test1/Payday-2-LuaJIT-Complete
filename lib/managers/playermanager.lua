@@ -2331,6 +2331,12 @@ function PlayerManager:get_limited_exp_multiplier(job_id, level_id)
 	local job_data = tweak_data.narrative:job_data(job_id) or {}
 	local level_data = level_id and tweak_data.levels[level_id] or {}
 	local multiplier = tweak_data:get_value("experience_manager", "limited_bonus_multiplier") or 1
+	local add_xmas_bonus = false
+	local add_xmas_bonus = managers.perpetual_event:get_holiday_tactics() == "BTN_XMAS"
+
+	if add_xmas_bonus and level_data.is_christmas_heist then
+		multiplier = multiplier + (tweak_data:get_value("experience_manager", "limited_xmas_bonus_multiplier") or 1) - 1
+	end
 
 	return multiplier
 end
@@ -3199,6 +3205,53 @@ end
 
 function PlayerManager:get_synced_ammo_info(peer_id)
 	return self._global.synced_ammo_info[peer_id]
+end
+
+function PlayerManager:alt_hud_ammo_setting_changed(state)
+	if managers.hud then
+		managers.hud:set_alt_ammo(state)
+
+		if managers.network and managers.network:session() then
+			local local_peer_id = managers.network:session():local_peer():id()
+			local synced_ammo_info = self._global.synced_ammo_info[local_peer_id]
+
+			if synced_ammo_info then
+				local player = self:player_unit()
+
+				if player then
+					local selections = player:inventory():available_selections()
+
+					if selections then
+						for i, weap_data in pairs(selections) do
+							local idx = alive(weap_data.unit) and weap_data.unit:base():selection_index()
+
+							if idx and synced_ammo_info[idx] then
+								managers.hud:set_teammate_ammo_amount(HUDManager.PLAYER_PANEL, idx, unpack(synced_ammo_info[idx]))
+							end
+						end
+					end
+				end
+			end
+
+			if managers.criminals then
+				for peer_id, peer_ammo_data in pairs(self._global.synced_ammo_info) do
+					if peer_id ~= local_peer_id then
+						local character = managers.criminals:character_by_peer_id(peer_id)
+
+						if character and character.taken then
+							local character_data = character.data
+
+							if character_data and character_data.panel_id then
+								for selection_index, ammo_info in pairs(peer_ammo_data) do
+									managers.hud:set_teammate_ammo_amount(character_data.panel_id, selection_index, unpack(ammo_info))
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
 end
 
 function PlayerManager:update_carry_to_peer(peer)
@@ -5411,6 +5464,10 @@ function PlayerManager:enter_vehicle(vehicle, locator)
 end
 
 function PlayerManager:server_enter_vehicle(vehicle, peer_id, player, seat_name)
+	if not alive(player) or not alive(vehicle) then
+		return
+	end
+
 	local vehicle_ext = vehicle:vehicle_driving()
 	local seat = nil
 
@@ -5436,6 +5493,10 @@ function PlayerManager:sync_enter_vehicle(vehicle, peer_id, player, seat_name)
 end
 
 function PlayerManager:_enter_vehicle(vehicle, peer_id, player, seat_name)
+	if not alive(player) or not alive(vehicle) then
+		return
+	end
+
 	self._global.synced_vehicle_data[peer_id] = {
 		vehicle_unit = vehicle,
 		seat = seat_name

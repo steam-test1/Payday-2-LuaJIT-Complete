@@ -4752,6 +4752,9 @@ function PlayerInventoryGui:open_armor_menu(selected_tab)
 
 	managers.environment_controller:set_dof_distance(10, false)
 	managers.menu_scene:remove_item()
+
+	new_node_data.search_box_disconnect_callback_name = "on_search_item"
+
 	managers.menu:open_node("blackmarket_outfit_node", {
 		new_node_data
 	})

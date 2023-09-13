@@ -1368,10 +1368,12 @@ function GroupAIStateBase:on_enemy_registered(unit)
 		self._police_force = self._police_force + 1
 	end
 
-	local unit_type = unit:base()._tweak_table
+	local tags = unit:base().get_tags and unit:base():get_tags() or {}
 
-	if self._special_unit_types[unit_type] then
-		self:register_special_unit(unit:key(), unit_type)
+	for special_tag, is_set in pairs(self._special_unit_types) do
+		if is_set and tags[special_tag] then
+			self:register_special_unit(unit:key(), special_tag)
+		end
 	end
 
 	if Network:is_client() then
@@ -1380,18 +1382,7 @@ function GroupAIStateBase:on_enemy_registered(unit)
 end
 
 function GroupAIStateBase:is_enemy_special(unit)
-	if not unit:base() then
-		return false
-	end
-
-	local category_name = unit:base()._tweak_table
-	local category = self._special_units[category_name]
-
-	if not category then
-		return false
-	end
-
-	return category[unit:key()]
+	return alive(unit) and unit:base() and unit:base().has_tag and unit:base():has_tag("special")
 end
 
 function GroupAIStateBase:criminal_hurt_drama(unit, attacker, dmg_percent)
@@ -1445,10 +1436,12 @@ function GroupAIStateBase:on_enemy_unregistered(unit)
 		record.unit:brain():on_cop_neutralized(u_key)
 	end
 
-	local unit_type = unit:base()._tweak_table
+	local tags = unit:base().get_tags and unit:base():get_tags() or {}
 
-	if self._special_unit_types[unit_type] then
-		self:unregister_special_unit(u_key, unit_type)
+	for special_tag, is_set in pairs(self._special_unit_types) do
+		if is_set and tags[special_tag] then
+			self:unregister_special_unit(u_key, special_tag)
+		end
 	end
 
 	local dead = unit:character_damage():dead()

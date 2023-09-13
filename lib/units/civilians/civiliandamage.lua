@@ -87,7 +87,11 @@ function CivilianDamage:no_intimidation_by_dmg()
 end
 
 function CivilianDamage:is_friendly_fire(unit)
-	if not unit then
+	if not alive(unit) or not unit:movement() then
+		return false
+	end
+
+	if not alive(self._unit) or not self._unit:movement() then
 		return false
 	end
 

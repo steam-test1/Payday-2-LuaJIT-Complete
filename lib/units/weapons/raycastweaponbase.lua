@@ -861,14 +861,15 @@ function RaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul
 				hit_count = hit_count + 1
 
 				if hit_result.type == "death" then
-					local unit_type = hit.unit:base() and hit.unit:base()._tweak_table
+					local unit_base = hit.unit:base()
+					local unit_type = unit_base and unit_base._tweak_table
 					local is_civilian = unit_type and is_civ_f(unit_type)
 
 					if not is_civilian then
 						cop_kill_count = cop_kill_count + 1
 					end
 
-					self:_check_kill_achievements(cop_kill_count, unit_type, is_civilian, hit_through_wall, hit_through_shield)
+					self:_check_kill_achievements(cop_kill_count, unit_base, unit_type, is_civilian, hit_through_wall, hit_through_shield)
 				end
 			end
 		end
@@ -907,7 +908,7 @@ function RaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul
 	return result
 end
 
-function RaycastWeaponBase:_check_kill_achievements(cop_kill_count, unit_type, is_civilian, hit_through_wall, hit_through_shield)
+function RaycastWeaponBase:_check_kill_achievements(cop_kill_count, unit_base, unit_type, is_civilian, hit_through_wall, hit_through_shield)
 	if not is_civilian and self:is_category(tweak_data.achievement.easy_as_breathing.weapon_type) then
 		self._kills_without_releasing_trigger = (self._kills_without_releasing_trigger or 0) + 1
 
@@ -917,17 +918,18 @@ function RaycastWeaponBase:_check_kill_achievements(cop_kill_count, unit_type, i
 	end
 
 	if cop_kill_count > 0 then
-		local multi_kill, enemy_pass, obstacle_pass, weapon_pass, weapons_pass, weapon_type_pass = nil
+		local multi_kill, enemy_pass, enemy_tag_pass, obstacle_pass, weapon_pass, weapons_pass, weapon_type_pass = nil
 
 		for achievement, achievement_data in pairs(tweak_data.achievement.sniper_kill_achievements) do
 			multi_kill = not achievement_data.multi_kill or cop_kill_count == achievement_data.multi_kill
 			enemy_pass = not achievement_data.enemy or unit_type == achievement_data.enemy
+			enemy_tag_pass = not achievement_data.enemy_tag or unit_base and unit_base.has_tag and unit_base:has_tag(achievement_data.enemy_tag)
 			obstacle_pass = not achievement_data.obstacle or achievement_data.obstacle == "wall" and hit_through_wall or achievement_data.obstacle == "shield" and hit_through_shield
 			weapon_pass = not achievement_data.weapon or self._name_id == achievement_data.weapon
 			weapons_pass = not achievement_data.weapons or table.contains(achievement_data.weapons, self._name_id)
 			weapon_type_pass = not achievement_data.weapon_type or self:is_category(achievement_data.weapon_type)
 
-			if multi_kill and enemy_pass and obstacle_pass and weapon_pass and weapons_pass and weapon_type_pass then
+			if multi_kill and enemy_pass and enemy_tag_pass and obstacle_pass and weapon_pass and weapons_pass and weapon_type_pass then
 				if achievement_data.stat then
 					managers.achievment:award_progress(achievement_data.stat)
 				elseif achievement_data.award then
@@ -3095,3 +3097,20 @@ function ConcussiveInstantBulletBase:give_impact_damage(col_ray, weapon_unit, us
 
 	return self.super.give_impact_damage(self, col_ray, weapon_unit, user_unit, damage, ...)
 end
+
+InstantSnowballBase = InstantSnowballBase or class(InstantExplosiveBulletBase)
+InstantSnowballBase.id = "xmas_snowball"
+InstantSnowballBase.CURVE_POW = tweak_data.projectiles.xmas_snowball.curve_pow
+InstantSnowballBase.PLAYER_DMG_MUL = tweak_data.projectiles.xmas_snowball.player_dmg_mul
+InstantSnowballBase.RANGE = tweak_data.projectiles.xmas_snowball.range
+InstantSnowballBase.ALERT_RADIUS = tweak_data.projectiles.xmas_snowball.alert_radius
+InstantSnowballBase.EFFECT_PARAMS = {
+	on_unit = true,
+	sound_muffle_effect = true,
+	effect = tweak_data.projectiles.xmas_snowball.effect_name,
+	sound_event = tweak_data.projectiles.xmas_snowball.sound_event,
+	feedback_range = tweak_data.projectiles.xmas_snowball.feedback_range,
+	camera_shake_max_mul = tweak_data.projectiles.xmas_snowball.camera_shake_max_mul,
+	idstr_decal = tweak_data.projectiles.xmas_snowball.idstr_decal,
+	idstr_effect = tweak_data.projectiles.xmas_snowball.idstr_effect
+}

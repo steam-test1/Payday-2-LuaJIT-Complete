@@ -276,7 +276,8 @@ function ShotgunBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoo
 
 				if hit_result.type == "death" then
 					kill_data.kills = kill_data.kills + 1
-					local unit_type = hit.unit:base() and hit.unit:base()._tweak_table
+					local unit_base = hit.unit:base()
+					local unit_type = unit_base and unit_base._tweak_table
 					local is_civilian = unit_type and is_civ_f(unit_type)
 
 					if is_civilian then
@@ -286,7 +287,7 @@ function ShotgunBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoo
 					end
 
 					if check_additional_achievements then
-						self:_check_kill_achievements(cop_kill_count, unit_type, is_civilian, hit_through_wall, hit_through_shield)
+						self:_check_kill_achievements(cop_kill_count, unit_base, unit_type, is_civilian, hit_through_wall, hit_through_shield)
 					end
 				end
 			end

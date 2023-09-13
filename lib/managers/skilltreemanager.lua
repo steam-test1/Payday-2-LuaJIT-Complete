@@ -878,7 +878,13 @@ function SkillTreeManager:get_skill_switch_name(skill_switch, add_quotation)
 end
 
 function SkillTreeManager:get_default_skill_switch_name(skill_switch)
-	return managers.localization:text(tweak_data.skilltree.skill_switches[skill_switch] and tweak_data.skilltree.skill_switches[skill_switch].name_id or tostring(skill_switch))
+	local skill_switch_tweak = tweak_data.skilltree.skill_switches[skill_switch]
+	local name_id = skill_switch_tweak and skill_switch_tweak.name_id or "menu_st_skill_switch_default"
+	local params = {
+		SKILL_SWITCH = tostring(skill_switch)
+	}
+
+	return managers.localization:text(name_id, params)
 end
 
 function SkillTreeManager:set_skill_switch_name(skill_switch, name)
@@ -1414,6 +1420,7 @@ end
 
 function SkillTreeManager:save(data)
 	local state = {
+		SKILL_SWITCH_SWITCHED = 1,
 		points = self._global.points,
 		trees = self._global.trees,
 		skills = self._global.skills,
@@ -1450,6 +1457,18 @@ function SkillTreeManager:load(data, version)
 		end
 
 		if state.skill_switches then
+			if not state.SKILL_SWITCH_SWITCHED then
+				local reordered_skill_switches = deep_clone(self._global.skill_switches)
+				local switch_data = nil
+
+				for old_index, new_index in ipairs(tweak_data.skilltree.skill_switch_switch) do
+					reordered_skill_switches[new_index] = state.skill_switches[old_index]
+				end
+
+				state.skill_switches = reordered_skill_switches
+				state.selected_skill_switch = tweak_data.skilltree.skill_switch_switch[state.selected_skill_switch] or state.selected_skill_switch
+			end
+
 			self._global.selected_skill_switch = state.selected_skill_switch or 1
 
 			for i, data in pairs(state.skill_switches) do

@@ -303,9 +303,14 @@ function PlayerCamera:set_rotation(rot)
 
 	if tweak_data.network then
 		local update_network = tweak_data.network.camera.network_sync_delta_t < sync_dt and angle_delta > 0 or tweak_data.network.camera.network_angle_delta < angle_delta
-		local locked_look_dir = self._locked_look_dir_t and t < self._locked_look_dir_t
+
+		if sync_dt < tweak_data.network.camera.network_max_sync_t then
+			update_network = false
+		end
 
 		if update_network then
+			local locked_look_dir = self._locked_look_dir_t and t < self._locked_look_dir_t
+
 			if _G.IS_VR then
 				if locked_look_dir then
 					if self._unit:hand():arm_simulation_enabled() then

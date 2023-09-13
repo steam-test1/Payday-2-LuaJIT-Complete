@@ -790,11 +790,11 @@ function CrimeNetSidebarSafehouseItem:init(sidebar, panel, parameters)
 
 		self._siren_red = self:create_glow(sidebar._fullscreen_panel, Color(255, 255, 0, 0) / 255, 0.85)
 
-		self._siren_red:set_center(self._icon:right() + self._icon:w() + 14 - 2, self._panel:bottom() + self._panel:h() * 0.5 - 2)
+		self._siren_red:set_world_center(managers.gui_data:safe_to_full_16_9(self._icon:world_center()))
 
 		self._siren_blue = self:create_glow(sidebar._fullscreen_panel, Color(255, 0, 180, 255) / 255, 1)
 
-		self._siren_blue:set_center(self._icon:right() + self._icon:w() + 14 + 2, self._panel:bottom() + self._panel:h() * 0.5 - 2)
+		self._siren_blue:set_world_center(managers.gui_data:safe_to_full_16_9(self._icon:world_center()))
 
 		self._raid_active = true
 	end

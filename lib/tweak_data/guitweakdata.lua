@@ -694,12 +694,12 @@ function GuiTweakData:init(tweak_data)
 	self.mouse_pointer.controller.acceleration_speed = 4
 	self.mouse_pointer.controller.max_acceleration = 3
 	self.mouse_pointer.controller.mouse_pointer_speed = 125
-	local min_amount_masks = 160
+	local min_amount_masks = 320
 	self.MASK_ROWS_PER_PAGE = 4
 	self.MASK_COLUMNS_PER_PAGE = 4
 	self.MAX_MASK_PAGES = math.ceil(min_amount_masks / (self.MASK_ROWS_PER_PAGE * self.MASK_COLUMNS_PER_PAGE))
 	self.MAX_MASK_SLOTS = self.MAX_MASK_PAGES * self.MASK_ROWS_PER_PAGE * self.MASK_COLUMNS_PER_PAGE
-	local min_amount_weapons = 160
+	local min_amount_weapons = 320
 	self.WEAPON_ROWS_PER_PAGE = 4
 	self.WEAPON_COLUMNS_PER_PAGE = 4
 	self.MAX_WEAPON_PAGES = math.ceil(min_amount_weapons / (self.WEAPON_ROWS_PER_PAGE * self.WEAPON_COLUMNS_PER_PAGE))
@@ -5232,6 +5232,12 @@ function GuiTweakData:init(tweak_data)
 		url = "https://t.paydaythegame.com/c/exuz4t"
 	})
 	table.insert(self.new_heists, {
+		name_id = "menu_nh_pxp4_02",
+		texture_path = "guis/dlcs/pxp4/textures/pd2/new_heists/pxp4_02",
+		epic_url = "https://pd2.link/CrudeAwakeningNebulaSL",
+		url = "https://pd2.link/CrudeAwakeningNebulaSL"
+	})
+	table.insert(self.new_heists, {
 		name_id = "menu_nh_pda10_01",
 		texture_path = "guis/dlcs/pda10/textures/pd2/new_heists/pda10_01",
 		epic_url = "https://t.paydaythegame.com/c/vqiyyn",
@@ -5272,12 +5278,6 @@ function GuiTweakData:init(tweak_data)
 		texture_path = "guis/dlcs/txt3/textures/pd2/new_heists/txt3_02",
 		epic_url = "https://pd2.link/HostileTakeoverBundleSLE",
 		url = "https://pd2.link/HostileTakeoverBundleSLS"
-	})
-	table.insert(self.new_heists, {
-		name_id = "menu_nh_pxp4_02",
-		texture_path = "guis/dlcs/pxp4/textures/pd2/new_heists/pxp4_02",
-		epic_url = "https://pd2.link/CrudeAwakeningNebulaSL",
-		url = "https://pd2.link/CrudeAwakeningNebulaSL"
 	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_corp_01",

@@ -211,6 +211,7 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 	radial_health_panel:set_bottom(self._player_panel:h())
 	self:_create_radial_health(radial_health_panel, main_player)
 
+	self._alt_ammo = managers.user:get_setting("alt_hud_ammo")
 	local weapon_panel_w = 80
 	local weapons_panel = self._player_panel:panel({
 		name = "weapons_panel",
@@ -1610,6 +1611,12 @@ function HUDTeammate:set_ammo_amount_by_type(type, max_clip, current_clip, curre
 
 	weapon_panel:set_visible(true)
 
+	local ammo_clip = weapon_panel:child("ammo_clip")
+
+	if self._alt_ammo and ammo_clip:visible() then
+		current_left = math.max(0, current_left - max_clip - (current_clip - max_clip))
+	end
+
 	local low_ammo = current_left <= math.round(max_clip / 2)
 	local low_ammo_clip = current_clip <= math.round(max_clip / 4)
 	local out_of_ammo_clip = current_clip <= 0
@@ -1620,7 +1627,6 @@ function HUDTeammate:set_ammo_amount_by_type(type, max_clip, current_clip, curre
 	local color_clip = out_of_ammo_clip and Color(1, 0.9, 0.3, 0.3)
 	color_clip = color_clip or low_ammo_clip and Color(1, 0.9, 0.9, 0.3)
 	color_clip = color_clip or Color.white
-	local ammo_clip = weapon_panel:child("ammo_clip")
 	local zero = current_clip < 10 and "00" or current_clip < 100 and "0" or ""
 
 	ammo_clip:set_text(zero .. tostring(current_clip))
@@ -1723,6 +1729,10 @@ function HUDTeammate:set_custom_radial(data)
 
 	radial_custom:set_color(Color(1, red, 1, 1))
 	radial_custom:set_visible(red > 0)
+end
+
+function HUDTeammate:set_alt_ammo(state)
+	self._alt_ammo = state
 end
 
 function HUDTeammate:_damage_taken()

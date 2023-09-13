@@ -437,7 +437,7 @@ function MenuManager:toggle_menu_state()
 				self:close_menu("menu_pause")
 				managers.savefile:save_setting(true)
 			end
-		elseif (not self:active_menu() or #self:active_menu().logic._node_stack == 1 or not managers.menu:active_menu().logic:selected_node() or managers.menu:active_menu().logic:selected_node():parameters().allow_pause_menu) and managers.menu_component:input_focus() ~= 1 then
+		elseif (not self:active_menu() or #self:active_menu().logic._node_stack == 1 or not managers.menu:active_menu().logic:selected_node() or managers.menu:active_menu().logic:selected_node():parameters().allow_pause_menu) and managers.menu_component:input_focus() ~= true then
 			self:open_menu("menu_pause")
 
 			if Global.game_settings.single_player then
@@ -1947,6 +1947,10 @@ function MenuCallbackHandler:is_steam_mm()
 	return SystemInfo:matchmaking() == Idstring("MM_STEAM")
 end
 
+function MenuCallbackHandler:has_gamemode_event()
+	return managers.perpetual_event:has_event_gamemode()
+end
+
 function MenuCallbackHandler:debug_menu_enabled()
 	return managers.menu:debug_menu_enabled()
 end
@@ -2205,6 +2209,16 @@ function MenuCallbackHandler:toggle_infamy_roman_card(item)
 
 	if managers.menu_scene then
 		managers.menu_scene:refresh_infamy_cards()
+	end
+end
+
+function MenuCallbackHandler:toggle_alt_hud_ammo(item)
+	local on = item:value() == "on"
+
+	managers.user:set_setting("alt_hud_ammo", on)
+
+	if managers.player then
+		managers.player:alt_hud_ammo_setting_changed(on)
 	end
 end
 
@@ -10564,6 +10578,17 @@ function MenuOptionInitiator:modify_user_interface_options(node)
 		color_blind_hit_direction_item:set_value(option_value)
 	end
 
+	option_value = "off"
+	local toggle_alt_hud_ammo_item = node:item("toggle_alt_hud_ammo")
+
+	if toggle_alt_hud_ammo_item then
+		if managers.user:get_setting("alt_hud_ammo") then
+			option_value = "on"
+		end
+
+		toggle_alt_hud_ammo_item:set_value(option_value)
+	end
+
 	return node
 end
 
@@ -10616,7 +10641,7 @@ function SkillSwitchInitiator:modify_node(node, data)
 
 	local hightlight_color, row_item_color, callback = nil
 
-	self:create_divider(node, "title", "menu_st_skill_switch_title_name", nil, tweak_data.screen_colors.text)
+	self:create_divider(node, "title", "menu_st_skill_switch_title_name", 2, tweak_data.screen_colors.text)
 
 	for skill_switch, data in ipairs(Global.skilltree_manager.skill_switches) do
 		hightlight_color, row_item_color, callback = nil
@@ -10659,7 +10684,7 @@ function SkillSwitchInitiator:modify_node(node, data)
 		})
 	end
 
-	self:create_divider(node, "back_div")
+	self:create_divider(node, "back_div", nil, 2, nil)
 	self:add_back_button(node)
 	node:set_default_item_name(1)
 

@@ -56,6 +56,7 @@ function MachineGunBeltManager:add_weapon(weapon_unit, parts, user_unit, is_menu
 	end
 
 	local entry = {
+		amplitude = 0,
 		weapon_unit = weapon_unit,
 		charm_data = charm_data,
 		mov_data = self:get_movement_data(weapon_unit, user_unit, is_menu),

@@ -155,6 +155,7 @@ function GenericUserManager:setup_setting_map()
 	self:setup_setting(103, "socialhub_invite", "all")
 	self:setup_setting(104, "socialhub_notification", "full")
 	self:setup_setting(105, "crimenet_filter_distance_epic", 3)
+	self:setup_setting(109, "alt_hud_ammo", false)
 	self:setup_setting(200, "use_telemetry", false)
 	self:setup_setting(201, "use_gamesight", false)
 	self:setup_setting(300, "adaptive_quality", true)
@@ -289,7 +290,8 @@ function GenericUserManager:reset_user_interface_setting_map()
 		"throwable_contour",
 		"ammo_contour",
 		"infamy_roman_rank",
-		"infamy_roman_card"
+		"infamy_roman_card",
+		"alt_hud_ammo"
 	}
 
 	for _, name in pairs(settings) do
@@ -760,11 +762,11 @@ function GenericUserManager:check_storage(callback_func, auto_select)
 end
 
 function GenericUserManager:get_setting_map()
-	return CoreTable.deep_clone(Global.user_manager.setting_map)
+	return CoreTable.deep_clone(Global.user_manager.setting_map or {})
 end
 
 function GenericUserManager:set_setting_map(setting_map)
-	for id, value in pairs(setting_map) do
+	for id, value in pairs(setting_map or {}) do
 		local name = Global.user_manager.setting_data_id_to_name_map[id]
 
 		self:set_setting(name, value)

@@ -37,6 +37,12 @@ function CrimeNetManager:_create_crimenet_broker_global()
 		}
 		self._global = Global.crimenet
 	end
+
+	for job_id, stat in pairs(self._global.broker.stats) do
+		if stat.last_played_date then
+			stat.last_played_date = DateTime:new(stat.last_played_date)
+		end
+	end
 end
 
 function CrimeNetManager:is_job_favourite(job_id)
@@ -60,23 +66,50 @@ function CrimeNetManager:get_favourite_jobs()
 end
 
 function CrimeNetManager:get_last_played_job(job_id)
-	if job_id then
-		self._global.broker.stats[job_id] = self._global.broker.stats[job_id] or {}
-
-		return self._global.broker.stats[job_id].last_played_date
-	else
+	if not job_id then
 		return DateTime:new("today")
 	end
+
+	if tweak_data.narrative:has_job_wrapper(job_id) then
+		local job_data = tweak_data.narrative:job_data(job_id)
+		local last_played_date = nil
+
+		for _, job_id in ipairs(job_data.job_wrapper) do
+			self._global.broker.stats[job_id] = self._global.broker.stats[job_id] or {}
+
+			if self._global.broker.stats[job_id].last_played_date and (not last_played_date or last_played_date < self._global.broker.stats[job_id].last_played_date) then
+				last_played_date = self._global.broker.stats[job_id].last_played_date
+			end
+		end
+
+		return last_played_date
+	end
+
+	self._global.broker.stats[job_id] = self._global.broker.stats[job_id] or {}
+
+	return self._global.broker.stats[job_id].last_played_date
 end
 
 function CrimeNetManager:get_job_times_played(job_id)
-	if job_id then
-		self._global.broker.stats[job_id] = self._global.broker.stats[job_id] or {}
-
-		return self._global.broker.stats[job_id].plays or 0
-	else
+	if not job_id then
 		return 0
 	end
+
+	if tweak_data.narrative:has_job_wrapper(job_id) then
+		local job_data = tweak_data.narrative:job_data(job_id)
+		local times_played = 0
+
+		for _, job_id in ipairs(job_data.job_wrapper) do
+			self._global.broker.stats[job_id] = self._global.broker.stats[job_id] or {}
+			times_played = times_played + (self._global.broker.stats[job_id].plays or 0)
+		end
+
+		return times_played
+	end
+
+	self._global.broker.stats[job_id] = self._global.broker.stats[job_id] or {}
+
+	return self._global.broker.stats[job_id].plays or 0
 end
 
 function CrimeNetManager:set_job_played_today(job_id)
@@ -127,13 +160,14 @@ function CrimeNetManager:get_jobs_by_player_stars(span)
 				local difficulty = tweak_data:index_to_difficulty(difficulty_id)
 
 				if job_jc <= pstars + span and job_jc >= pstars - span then
+					slot22.marker_dot_color = job_data.marker_dot_color or nil
+					slot22.color_lerp = job_data.color_lerp or nil
+
 					table.insert(t, {
 						job_jc = job_jc,
 						job_id = job_id,
 						difficulty_id = difficulty_id,
-						difficulty = difficulty,
-						marker_dot_color = job_data.marker_dot_color or nil,
-						color_lerp = job_data.color_lerp or nil
+						difficulty = difficulty
 					})
 				end
 			end
@@ -172,13 +206,13 @@ function CrimeNetManager:_get_jobs_by_jc()
 
 				if is_not_level_locked then
 					t[job_jc] = t[job_jc] or {}
+					slot28.marker_dot_color = job_data.marker_dot_color or nil
+					slot28.color_lerp = job_data.color_lerp or nil
 
 					table.insert(t[job_jc], {
 						job_id = job_id,
 						difficulty_id = difficulty_id,
-						difficulty = difficulty,
-						marker_dot_color = job_data.marker_dot_color or nil,
-						color_lerp = job_data.color_lerp or nil
+						difficulty = difficulty
 					})
 				end
 			end
@@ -1755,6 +1789,29 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 	})
 	mw = math.max(mw, self:make_fine_text(ghost_text))
 	next_y = ghost_text:bottom()
+	local add_xmas = false
+	local add_xmas = managers.perpetual_event:get_holiday_tactics() == "BTN_XMAS"
+
+	if add_xmas then
+		local holiday_icon = legend_panel:bitmap({
+			texture = "guis/textures/pd2/cn_mini_xmas",
+			x = 10,
+			y = next_y + 2,
+			color = tweak_data.screen_colors.event_color
+		})
+		local holiday_text = legend_panel:text({
+			blend_mode = "add",
+			font = tweak_data.menu.pd2_small_font,
+			font_size = tweak_data.menu.pd2_small_font_size,
+			x = host_text:left(),
+			y = next_y,
+			text = managers.localization:to_upper_text("menu_cn_legend_holiday"),
+			color = tweak_data.screen_colors.event_color
+		})
+		mw = math.max(mw, self:make_fine_text(holiday_text))
+		next_y = holiday_text:bottom()
+	end
+
 	local kick_none_icon = legend_panel:bitmap({
 		texture = "guis/textures/pd2/cn_kick_marker",
 		x = 10,
@@ -1945,6 +2002,28 @@ function CrimeNetGui:init(ws, fullscreeen_ws, node)
 					exp_bonus = limited_string
 				}),
 				color = tweak_data.screen_colors.button_stage_2
+			})
+		end
+	end
+
+	local add_limited = false
+	add_limited = managers.perpetual_event:get_holiday_tactics() == "BTN_XMAS"
+
+	if add_limited then
+		local limited_bonus = (tweak_data:get_value("experience_manager", "limited_xmas_bonus_multiplier") or 1) - 1
+
+		if limited_bonus > 0 then
+			local limited_string = mul_to_procent_string(limited_bonus)
+			local limited_text = global_bonuses_panel:text({
+				blend_mode = "add",
+				align = "center",
+				font = tweak_data.menu.pd2_small_font,
+				font_size = tweak_data.menu.pd2_small_font_size,
+				text = managers.localization:to_upper_text("menu_cn_holiday_bonus", {
+					bonus = limited_string,
+					event_icon = managers.localization:get_default_macro("BTN_XMAS")
+				}),
+				color = tweak_data.screen_colors.event_color
 			})
 		end
 	end
@@ -3444,6 +3523,25 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 
 		ghost_icon:set_top(side_icons_top)
 		ghost_icon:set_right(next_icon_right)
+
+		next_icon_right = next_icon_right - 12
+	end
+
+	local add_christmas = false
+	local add_christmas = managers.perpetual_event:get_holiday_tactics() == "BTN_XMAS"
+	local christmas_icon = nil
+
+	if add_christmas and data.job_id and managers.job:is_christmas_job(data.job_id) then
+		christmas_icon = icon_panel:bitmap({
+			blend_mode = "add",
+			name = "christmas_icon",
+			texture = "guis/textures/pd2/cn_mini_xmas",
+			rotation = 360,
+			color = tweak_data.screen_colors.event_color
+		})
+
+		christmas_icon:set_top(side_icons_top)
+		christmas_icon:set_right(next_icon_right)
 
 		next_icon_right = next_icon_right - 12
 	end

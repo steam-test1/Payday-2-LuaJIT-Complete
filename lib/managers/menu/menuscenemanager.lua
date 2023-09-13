@@ -317,6 +317,9 @@ function MenuSceneManager:_init_lobby_poses()
 		},
 		kacchainsaw = {
 			"lobby_idle_minigun_2"
+		},
+		bessy = {
+			"lobby_idle_bessy"
 		}
 	}
 end
@@ -1162,29 +1165,102 @@ function MenuSceneManager:_setup_bg()
 	self._menu_logo = World:spawn_unit(Idstring("units/menu/menu_scene/menu_logo"), Vector3(0, 10, 0), Rotation(yaw, 0, 0))
 
 	self:set_character(managers.blackmarket:get_preferred_character())
-	self:_setup_event_units()
 	self:_setup_lobby_characters()
 	self:_setup_henchmen_characters()
 end
 
-function MenuSceneManager:_setup_event_units()
-	local active_event = false
-
-	if not active_event then
-		return
-	end
-
+function MenuSceneManager:remove_event_units()
 	if self._event_units then
 		for _, unit in ipairs(self._event_units) do
-			unit:set_slot(0)
+			if alive(unit) then
+				unit:set_slot(0)
+			end
 		end
 	end
 
 	self._event_units = {}
-	local e_money = self._bg_unit:effect_spawner(Idstring("e_money"))
 
-	if e_money then
-		e_money:set_enabled(false)
+	if self._event_effects then
+		for _, effect in ipairs(self._event_effects) do
+			if World:effect_manager():alive(effect) then
+				World:effect_manager():kill(effect)
+			end
+		end
+	end
+
+	self._event_effects = {}
+end
+
+function MenuSceneManager:setup_event_units()
+	self:remove_event_units()
+
+	local event_menu_scene = managers.perpetual_event:get_menu_scene()
+
+	if not event_menu_scene then
+		return
+	end
+
+	if event_menu_scene.presents then
+		self:_setup_event_presents()
+	end
+
+	if event_menu_scene.confetti then
+		self:_setup_event_confetti()
+	end
+
+	if event_menu_scene.xmas_tree then
+		self:_setup_event_xmas_tree()
+	end
+
+	if event_menu_scene.xmas_snow then
+		self:_setup_event_xmas_snow()
+	end
+
+	local center_position = Vector3()
+	local no_rotation = Rotation()
+
+	if event_menu_scene.event_units then
+		local unit_name, position, rotation, unit = nil
+
+		for _, data in ipairs(event_menu_scene.event_units) do
+			unit_name = data.unit_name and Idstring(data.unit_name)
+			position = data.position or center_position
+			rotation = data.rotation or no_rotation
+
+			if unit_name then
+				unit = World:spawn_unit(unit_name, position, rotation)
+
+				table.insert(self._event_units, unit)
+			end
+		end
+	end
+
+	if event_menu_scene.event_effects then
+		local effect_name, position, rotation, effect = nil
+
+		for _, data in ipairs(event_menu_scene.event_effects) do
+			effect_name = data.effect_name and Idstring(data.effect_name)
+			position = data.position or center_position
+			rotation = data.rotation or no_rotation
+
+			if effect_name then
+				effect = World:effect_manager():spawn({
+					effect = effect_name,
+					position = position,
+					rotation = rotation
+				})
+
+				table.insert(self._event_effects, effect)
+			end
+		end
+	end
+
+	if not event_menu_scene.money_effect then
+		local e_money = self._bg_unit:effect_spawner(Idstring("e_money"))
+
+		if e_money then
+			e_money:set_enabled(false)
+		end
 	end
 end
 
@@ -1220,24 +1296,34 @@ function MenuSceneManager:_setup_event_presents()
 	for i, position in ipairs(positions) do
 		rotation = Rotation((math.random(2) - 1) * 25, 0, 0)
 		unit_index = math.random(#unit_names)
-		self._event_units[i] = World:spawn_unit(unit_names[unit_index], position, rotation)
 
+		table.insert(self._event_units, World:spawn_unit(unit_names[unit_index], position, rotation))
 		table.remove(unit_names, unit_index)
 	end
 end
 
+function MenuSceneManager:_setup_event_xmas_tree()
+	local a_ref = self._bg_unit:get_object(Idstring("a_reference"))
+	local xmas_tree = World:spawn_unit(Idstring("units/pd2_dlc2/props/com_props_christmas_tree/com_prop_christmas_tree"), a_ref:position() + Vector3(-150, 250, -50), Rotation(-45 + (math.random(2) - 1) * 180, 0, 0))
+
+	table.insert(self._event_units, xmas_tree)
+end
+
+function MenuSceneManager:_setup_event_xmas_snow()
+	local a_ref = self._bg_unit:get_object(Idstring("a_reference"))
+	local snow_pile = World:spawn_unit(Idstring("units/pd2_dlc_cane/props/cne_prop_snow_pile_01/cne_prop_snow_pile_01"), a_ref:position() + Vector3(-35, 275, -75), Rotation(305, 0, 0))
+
+	table.insert(self._event_units, snow_pile)
+end
+
 function MenuSceneManager:_setup_event_confetti()
-	if self._confetti_effect then
-		World:effect_manager():kill(self._confetti_effect)
-
-		self._confetti_effect = nil
-	end
-
-	self._confetti_effect = World:effect_manager():spawn({
+	local confetti_effect = World:effect_manager():spawn({
 		effect = Idstring("effects/payday2/environment/confetti_menu"),
 		position = Vector3(0, 0, 0),
 		rotation = Rotation()
 	})
+
+	table.insert(self._event_effects, confetti_effect)
 end
 
 function MenuSceneManager:_set_player_character_unit(unit_name)

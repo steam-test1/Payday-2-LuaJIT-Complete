@@ -1155,6 +1155,14 @@ function NetworkMatchMakingSTEAM:get_lobby_type()
 	return self.lobby_handler:lobby_type()
 end
 
+function NetworkMatchMakingSTEAM:set_login_time(login_time)
+	self._login_time = login_time
+end
+
+function NetworkMatchMakingSTEAM:login_time()
+	return self._login_time or self:server_time()
+end
+
 function NetworkMatchMakingSTEAM:server_time()
 	return Steam:server_time()
 end

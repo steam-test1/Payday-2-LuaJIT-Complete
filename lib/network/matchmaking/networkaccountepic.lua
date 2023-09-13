@@ -352,7 +352,7 @@ end
 function NetworkAccountEPIC:set_playing(state)
 end
 
-function NetworkAccountEPIC:set_played_with(id)
+function NetworkAccountEPIC:set_played_with(peer)
 end
 
 function NetworkAccountEPIC:get_friend_user(user_id)

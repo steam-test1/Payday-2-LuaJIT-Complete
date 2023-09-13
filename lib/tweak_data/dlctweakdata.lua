@@ -8297,6 +8297,27 @@ function DLCTweakData:init(tweak_data)
 	self.pda8_wpn_money.content.loot_global_value = "pda8_wpn_money"
 	self.pda8_wpn_money.content.loot_drops = {}
 	self.pda8_wpn_money.content.upgrades = {}
+	self.pda10_bessy = {
+		content = {},
+		dlc = "has_pda10_bessy"
+	}
+	self.pda10_bessy.content.loot_global_value = "pda10_bessy"
+	self.pda10_bessy.content.loot_drops = {}
+	self.pda10_bessy.content.upgrades = {}
+	self.pda10_piggy_hammer = {
+		content = {},
+		dlc = "has_pda10_piggy_hammer"
+	}
+	self.pda10_piggy_hammer.content.loot_global_value = "pda10_piggy_hammer"
+	self.pda10_piggy_hammer.content.loot_drops = {}
+	self.pda10_piggy_hammer.content.upgrades = {}
+	self.xmas_snowball = {
+		content = {},
+		dlc = "has_xmas_snowball"
+	}
+	self.xmas_snowball.content.loot_global_value = "xmas_snowball"
+	self.xmas_snowball.content.loot_drops = {}
+	self.xmas_snowball.content.upgrades = {}
 	self.ach_tawp_1 = {
 		content = {},
 		dlc = "has_achievement",

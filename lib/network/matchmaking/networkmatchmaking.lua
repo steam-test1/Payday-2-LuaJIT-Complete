@@ -837,6 +837,14 @@ function NetworkMatchMaking:get_lobby_type()
 	return self.lobby_handler:lobby_type()
 end
 
+function NetworkMatchMaking:set_login_time(login_time)
+	self._login_time = login_time
+end
+
+function NetworkMatchMaking:login_time()
+	return self._login_time or self:server_time()
+end
+
 function NetworkMatchMaking:server_time()
 	return 0
 end

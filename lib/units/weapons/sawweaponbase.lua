@@ -226,17 +226,6 @@ function SawWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, sh
 	return result, valid_hit
 end
 
-function SawWeaponBase:ammo_info()
-	return self:get_ammo_max_per_clip(), self:get_ammo_remaining_in_clip(), self:remaining_full_clips(), self:get_ammo_max()
-end
-
-function SawWeaponBase:set_ammo_info(max_clip, current_clip, current_left, max)
-	self:set_ammo_max_per_clip(max_clip)
-	self:set_ammo_max(max)
-	self:set_remaining_full_clips(current_left)
-	self:set_ammo_remaining_in_clip(current_clip)
-end
-
 function SawWeaponBase:can_reload()
 	return self:clip_empty() and SawWeaponBase.super.can_reload(self)
 end

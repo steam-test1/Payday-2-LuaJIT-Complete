@@ -414,7 +414,8 @@ function CopActionShoot:update(t)
 
 				local spread_pos = temp_vec2
 
-				mvec3_rand_orth(spread_pos, target_vec)
+				mvec3_set(spread_pos, target_vec)
+				mvec3_rand_orth(spread_pos)
 				mvec3_set_l(spread_pos, spread)
 				mvec3_add(spread_pos, target_pos)
 
@@ -563,7 +564,8 @@ function CopActionShoot:update(t)
 
 						local spread_pos = temp_vec2
 
-						mvec3_rand_orth(spread_pos, target_vec)
+						mvec3_set(spread_pos, target_vec)
+						mvec3_rand_orth(spread_pos)
 						mvec3_set_l(spread_pos, spread)
 						mvec3_add(spread_pos, target_pos)
 
@@ -672,7 +674,7 @@ function CopActionShoot:_get_unit_shoot_pos(t, pos, dis, w_tweak, falloff, i_ran
 		mvec3_rot(error_vec, temp_rot1)
 
 		local miss_min_dis = shooting_local_player and 31 or 150
-		local error_vec_len = miss_min_dis + w_tweak.spread * math.random() + w_tweak.miss_dis * math.random() * (1 - focus_prog)
+		local error_vec_len = miss_min_dis + w_tweak.spread + w_tweak.miss_dis * (1 - focus_prog)
 
 		mvec3_set_l(error_vec, error_vec_len)
 		mvec3_add(error_vec, pos)

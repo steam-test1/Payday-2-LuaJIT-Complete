@@ -102,9 +102,9 @@ end
 function SocialHubManager:epic_friends_data_callback(gui_callback, success, users)
 	print("epic_friends_data_callback", inspect(success), inspect(users))
 
-	if success then
-		self._platform_users = {}
+	self._platform_users = {}
 
+	if success then
 		for index, item in pairs(users or {}) do
 			self:add_cached_user(index, {
 				display_name = item.display_name,

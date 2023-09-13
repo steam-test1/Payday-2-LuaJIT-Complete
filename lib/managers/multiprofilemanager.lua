@@ -201,6 +201,11 @@ function MultiProfileManager:open_quick_select()
 	for idx, profile in pairs(self._global._profiles) do
 		local text = profile.name or "Profile " .. idx
 
+		if idx == self._global._current_profile then
+			text = utf8.char(187) .. text
+			dialog_data.focus_button = idx
+		end
+
 		table.insert(dialog_data.button_list, {
 			text = text,
 			callback_func = function ()
@@ -246,11 +251,18 @@ end
 function MultiProfileManager:save(data)
 	local save_data = deep_clone(self._global._profiles)
 	save_data.current_profile = self._global._current_profile
+	save_data.SKILL_SWITCH_SWITCHED = 1
 	data.multi_profile = save_data
 end
 
 function MultiProfileManager:load(data)
 	if data.multi_profile then
+		if not data.SKILL_SWITCH_SWITCHED then
+			for i, profile in ipairs(data.multi_profile) do
+				profile.skillset = tweak_data.skilltree.skill_switch_switch[profile.skillset] or profile.skillset
+			end
+		end
+
 		for i, profile in ipairs(data.multi_profile) do
 			self:_add_profile(profile, i)
 		end
@@ -284,7 +296,7 @@ function MultiProfileManager:infamy_reset()
 end
 
 function MultiProfileManager:_check_amount()
-	local wanted_amount = 15
+	local wanted_amount = 30
 
 	if not self:current_profile() then
 		self:save_current()

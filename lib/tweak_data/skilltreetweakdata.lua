@@ -3007,6 +3007,176 @@ function SkillTreeTweakData:init()
 	}
 	self.skill_switches = {
 		{
+			locks = {
+				level = 0
+			}
+		},
+		{
+			locks = {
+				level = 25
+			}
+		},
+		{
+			locks = {
+				level = 50
+			}
+		},
+		{
+			locks = {
+				level = 75
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		},
+		{
+			locks = {
+				level = 100
+			}
+		}
+	}
+	self.skill_switches[10].locks.achievement = "frog_1"
+	self.skill_switch_switch = {
+		1,
+		3,
+		4,
+		5,
+		11,
+		12,
+		13,
+		14,
+		15,
+		16,
+		17,
+		18,
+		19,
+		20,
+		10
+	}
+	self.old_skill_switches = {
+		{
 			name_id = "menu_st_skill_switch_1"
 		},
 		{

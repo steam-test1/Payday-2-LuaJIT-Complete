@@ -376,7 +376,7 @@ function ArrowBase:_attach_to_hit_unit(is_remote, dynamic_pickup_wanted)
 			listener_class:add_destroy_listener(self._destroy_listener_id, callback(self, self, "clbk_hit_unit_destroyed"))
 		end
 
-		if hit_base and hit_base._tweak_table == tweak_data.achievement.pincushion.enemy and alive(self:weapon_unit()) and self:weapon_unit():base():is_category(tweak_data.achievement.pincushion.weapon_category) then
+		if hit_base and hit_base.has_tag and hit_base:has_tag(tweak_data.achievement.pincushion.enemy_tag) and alive(self:weapon_unit()) and self:weapon_unit():base():is_category(tweak_data.achievement.pincushion.weapon_category) then
 			hit_base._num_attached_arrows = (hit_base._num_attached_arrows or 0) + 1
 
 			if hit_base._num_attached_arrows == tweak_data.achievement.pincushion.count then

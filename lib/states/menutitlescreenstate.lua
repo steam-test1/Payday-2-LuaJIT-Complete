@@ -139,7 +139,6 @@ function MenuTitlescreenState:at_enter()
 	managers.platform:add_event_callback("media_player_control", self._clbk_game_has_music_control_callback)
 
 	if is_epic and EpicMM:logged_on() then
-		print("[ABC] Epic logged on before titlescreen, checking ownership")
 		managers.dlc:check_ownerships()
 
 		self._wait_on_dlcs = true
@@ -158,7 +157,29 @@ function MenuTitlescreenState:clbk_game_has_music_control(status)
 	end
 end
 
+function MenuTitlescreenState:_get_eos_login_time()
+	if self._queried_login_time then
+		return
+	end
+
+	self._queried_login_time = true
+	local userid = EpicMM:userid()
+
+	EpicMM:query_users({
+		userid
+	}, function (s, data)
+		if s then
+			managers.network.matchmake:set_login_time(data[userid].last_login_time)
+			managers.perpetual_event:fetch_event()
+		end
+	end)
+end
+
 function MenuTitlescreenState:update(t, dt)
+	if is_mm_eos and EpicMM:logged_on() then
+		self:_get_eos_login_time()
+	end
+
 	if self._waiting_for_loaded_savegames then
 		if is_mm_eos and self._waiting_on_connection == nil and not EpicMM:logged_on() then
 			self._waiting_on_connection = 10
@@ -181,6 +202,8 @@ function MenuTitlescreenState:update(t, dt)
 				managers.menu:show_eos_no_connect_dialog({
 					play_offline_func = function ()
 						self._waiting_on_connection = false
+
+						managers.perpetual_event:fetch_event()
 					end,
 					quit_func = function ()
 						_G.setup:quit()
@@ -194,12 +217,13 @@ function MenuTitlescreenState:update(t, dt)
 			end
 		end
 
+		if not managers.perpetual_event:is_event_ready() then
+			return
+		end
+
 		if not managers.savefile:is_in_loading_sequence() and not self._user_has_changed and not self._waiting_on_connection then
 			self._text:hide()
 			self:_load_savegames_done()
-			Telemetry:on_login()
-			Telemetry:on_login_screen_passed()
-			Entitlement:CheckAndVerifyUserEntitlement()
 		end
 
 		return
@@ -371,6 +395,11 @@ function MenuTitlescreenState:check_storage_callback(success)
 end
 
 function MenuTitlescreenState:_load_savegames_done()
+	Telemetry:on_login()
+	Telemetry:on_login_screen_passed()
+	Entitlement:CheckAndVerifyUserEntitlement()
+	managers.perpetual_event:apply_event()
+
 	local sound_source = SoundDevice:create_source("MenuTitleScreen")
 
 	sound_source:post_event("menu_enter")

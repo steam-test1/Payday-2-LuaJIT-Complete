@@ -69,6 +69,12 @@ function ClientNetworkSession:request_join_host(host_rpc, is_invite, result_cb)
 end
 
 function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_character, level_index, difficulty_index, one_down, state_index, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, sender)
+	if not sender then
+		print("[ClientNetworkSession:on_join_request_reply] Invalid sender")
+
+		return
+	end
+
 	print("[ClientNetworkSession:on_join_request_reply] ", self._server_peer and self._server_peer:user_id(), user_id, sender:ip_at_index(0), sender:protocol_at_index(0))
 
 	if not self._server_peer or not self._cb_find_game then

@@ -426,8 +426,10 @@ function NetworkAccountSTEAM:set_playing(state)
 	Steam:set_playing(state)
 end
 
-function NetworkAccountSTEAM:set_played_with(id)
-	Steam:set_played_with(id)
+function NetworkAccountSTEAM:set_played_with(peer)
+	if peer and peer:account_type() == Idstring("STEAM") then
+		Steam:set_played_with(peer:account_id())
+	end
 end
 
 function NetworkAccountSTEAM:get_friend_user(player_id)

@@ -820,6 +820,75 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.alien_maul.sounds.charge = "alpha_charge"
 	self.melee_weapons.alien_maul.melee_damage_delay = 0.2
 	self.melee_weapons.alien_maul.stats.concealment = 26
+	self.melee_weapons.piggy_hammer = deep_clone(self.melee_weapons.kabar)
+	self.melee_weapons.piggy_hammer.name_id = "bm_melee_piggy_hammer"
+	self.melee_weapons.piggy_hammer.info_id = "bm_melee_piggy_hammer_info"
+	self.melee_weapons.piggy_hammer.anim_global_param = "melee_baseballbat"
+	self.melee_weapons.piggy_hammer.type = "axe"
+	self.melee_weapons.piggy_hammer.texture_bundle_folder = "pda10"
+	self.melee_weapons.piggy_hammer.dlc = "pda10_piggy_hammer"
+	self.melee_weapons.piggy_hammer.locks = {
+		func = "has_unlocked_piggy_hammer"
+	}
+	self.melee_weapons.piggy_hammer.free = nil
+	self.melee_weapons.piggy_hammer.align_objects = {
+		"a_weapon_right"
+	}
+	self.melee_weapons.piggy_hammer.unit = "units/pd2_dlc_pda10/weapons/wpn_fps_mel_piggy_hammer_pts/wpn_fps_mel_piggy_hammer"
+	self.melee_weapons.piggy_hammer.third_unit = "units/pd2_dlc_pda10/weapons/wpn_fps_mel_piggy_hammer_pts/wpn_third_mel_piggy_hammer"
+	self.melee_weapons.piggy_hammer.stats.weapon_type = "blunt"
+	self.melee_weapons.piggy_hammer.stats.min_damage = 2
+	self.melee_weapons.piggy_hammer.stats.max_damage = 4
+	self.melee_weapons.piggy_hammer.stats.min_damage_effect = 10
+	self.melee_weapons.piggy_hammer.stats.max_damage_effect = 10
+	self.melee_weapons.piggy_hammer.stats.special_damage_multiplier = 1.5
+	self.melee_weapons.piggy_hammer.stats.charge_time = 3
+	self.melee_weapons.piggy_hammer.stats.range = 275
+	self.melee_weapons.piggy_hammer.stats.weapon_type = "blunt"
+	self.melee_weapons.piggy_hammer.sounds = {}
+	self.melee_weapons.piggy_hammer.repeat_expire_t = 0.9
+	self.melee_weapons.piggy_hammer.expire_t = 1.2
+	self.melee_weapons.piggy_hammer.sounds.equip = "piggy_equip"
+	self.melee_weapons.piggy_hammer.sounds.hit_air = "piggy_hit_air"
+	self.melee_weapons.piggy_hammer.sounds.hit_gen = "piggy_hit_gen"
+	self.melee_weapons.piggy_hammer.sounds.hit_body = "piggy_hit_body"
+	self.melee_weapons.piggy_hammer.sounds.charge = "piggy_charge"
+	self.melee_weapons.piggy_hammer.melee_damage_delay = 0.2
+	self.melee_weapons.piggy_hammer.stats.concealment = 26
+	self.melee_weapons.piggy_hammer.anims = {
+		charge = {
+			loop = true,
+			anim = "Idle"
+		}
+	}
+	self.melee_weapons.piggy_hammer.menu_scene_anim = "Idle"
+	self.melee_weapons.piggy_hammer.menu_scene_params = {
+		loop = true
+	}
+	self.melee_weapons.piggy_hammer.random_special_effects = {
+		{
+			weight = 45,
+			tase_data = {
+				tase_strength = "light"
+			}
+		},
+		{
+			weight = 40,
+			dot_data = {
+				type = "poison",
+				custom_data = {
+					hurt_animation_chance = 1,
+					dot_damage = 12,
+					dot_length = 5,
+					dot_tick_period = 0.5
+				}
+			}
+		},
+		{
+			weight = 15,
+			instant_kill = true
+		}
+	}
 	self.melee_weapons.shillelagh = deep_clone(self.melee_weapons.kabar)
 	self.melee_weapons.shillelagh.name_id = "bm_melee_shillelagh"
 	self.melee_weapons.shillelagh.dlc = "character_pack_clover"

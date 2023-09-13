@@ -1,5 +1,6 @@
 HUDChat = HUDChat or class()
 HUDChat.line_height = 21
+HUDChat.max_lines = 10
 
 function HUDChat:init(ws, hud)
 	self._ws = ws
@@ -47,9 +48,83 @@ function HUDChat:init(ws, hud)
 			Color.white:with_alpha(0)
 		}
 	})
+
+	local scroll_panel = output_panel:panel({
+		name = "scroll_panel",
+		x = 0,
+		h = 10,
+		w = self._output_width
+	})
+	self._scroll_indicator_box_class = BoxGuiObject:new(output_panel, {
+		sides = {
+			0,
+			0,
+			0,
+			0
+		}
+	})
+	local scroll_up_indicator_shade = output_panel:bitmap({
+		texture = "guis/textures/headershadow",
+		name = "scroll_up_indicator_shade",
+		visible = false,
+		rotation = 180,
+		layer = 2,
+		color = Color.white,
+		w = output_panel:w()
+	})
+	local texture, rect = tweak_data.hud_icons:get_icon_data("scrollbar_arrow")
+	local scroll_up_indicator_arrow = self._panel:bitmap({
+		name = "scroll_up_indicator_arrow",
+		layer = 2,
+		texture = texture,
+		texture_rect = rect,
+		color = Color.white
+	})
+	local scroll_down_indicator_shade = output_panel:bitmap({
+		texture = "guis/textures/headershadow",
+		name = "scroll_down_indicator_shade",
+		visible = false,
+		layer = 2,
+		color = Color.white,
+		w = output_panel:w()
+	})
+	local texture, rect = tweak_data.hud_icons:get_icon_data("scrollbar_arrow")
+	local scroll_down_indicator_arrow = self._panel:bitmap({
+		name = "scroll_down_indicator_arrow",
+		layer = 2,
+		rotation = 180,
+		texture = texture,
+		texture_rect = rect,
+		color = Color.white
+	})
+	local bar_h = scroll_down_indicator_arrow:top() - scroll_up_indicator_arrow:bottom()
+	local texture, rect = tweak_data.hud_icons:get_icon_data("scrollbar")
+	local scroll_bar = self._panel:panel({
+		w = 15,
+		name = "scroll_bar",
+		layer = 2,
+		h = bar_h
+	})
+	local scroll_bar_box_panel = scroll_bar:panel({
+		name = "scroll_bar_box_panel",
+		halign = "scale",
+		w = 4,
+		x = 5,
+		valign = "scale"
+	})
+	self._scroll_bar_box_class = BoxGuiObject:new(scroll_bar_box_panel, {
+		sides = {
+			2,
+			2,
+			0,
+			0
+		}
+	})
+
+	output_panel:set_x(scroll_down_indicator_arrow:w() + 4)
 	self:_create_input_panel()
 	self:_layout_input_panel()
-	self:_layout_output_panel()
+	self:_layout_output_panel(true)
 end
 
 function HUDChat:set_layer(layer)
@@ -168,12 +243,15 @@ function HUDChat:_create_input_panel()
 	})
 end
 
-function HUDChat:_layout_output_panel()
+function HUDChat:_layout_output_panel(force_update_scroll_indicators)
 	local output_panel = self._panel:child("output_panel")
+	local scroll_panel = output_panel:child("scroll_panel")
 
+	scroll_panel:set_w(self._output_width)
 	output_panel:set_w(self._output_width)
 
 	local line_height = HUDChat.line_height
+	local max_lines = HUDChat.max_lines
 	local lines = 0
 
 	for i = #self._lines, 1, -1 do
@@ -189,7 +267,10 @@ function HUDChat:_layout_output_panel()
 		lines = lines + line:number_of_lines()
 	end
 
-	output_panel:set_h(line_height * math.min(10, lines))
+	local scroll_at_bottom = scroll_panel:bottom() == output_panel:h()
+
+	output_panel:set_h(line_height * math.min(max_lines, lines))
+	scroll_panel:set_h(line_height * lines)
 
 	local y = 0
 
@@ -198,16 +279,26 @@ function HUDChat:_layout_output_panel()
 		local icon = self._lines[i][2]
 		local _, _, w, h = line:text_rect()
 
-		line:set_bottom(output_panel:h() - y)
+		line:set_bottom(scroll_panel:h() - y)
 
 		if icon then
+			icon:set_left(icon:left())
 			icon:set_top(line:top() + 1)
+			line:set_left(icon:right())
+		else
+			line:set_left(line:left())
 		end
 
-		y = y + h
+		y = y + line_height * line:number_of_lines()
 	end
 
 	output_panel:set_bottom(self._input_panel:top())
+
+	if lines <= max_lines or scroll_at_bottom then
+		scroll_panel:set_bottom(output_panel:h())
+	end
+
+	self:set_scroll_indicators(force_update_scroll_indicators)
 end
 
 function HUDChat:_layout_input_panel()
@@ -223,6 +314,101 @@ function HUDChat:_layout_input_panel()
 
 	focus_indicator:set_shape(input_text:shape())
 	self._input_panel:set_y(self._input_panel:parent():h() - self._input_panel:h())
+end
+
+function HUDChat:set_scroll_indicators(force_update_scroll_indicators)
+	local output_panel = self._panel:child("output_panel")
+	local scroll_panel = output_panel:child("scroll_panel")
+	local scroll_up_indicator_shade = output_panel:child("scroll_up_indicator_shade")
+	local scroll_up_indicator_arrow = self._panel:child("scroll_up_indicator_arrow")
+	local scroll_down_indicator_shade = output_panel:child("scroll_down_indicator_shade")
+	local scroll_down_indicator_arrow = self._panel:child("scroll_down_indicator_arrow")
+	local scroll_bar = self._panel:child("scroll_bar")
+
+	scroll_up_indicator_shade:set_top(0)
+	scroll_down_indicator_shade:set_bottom(output_panel:h())
+	scroll_up_indicator_arrow:set_righttop(output_panel:left() - 2, output_panel:top() + 2)
+	scroll_down_indicator_arrow:set_rightbottom(output_panel:left() - 2, output_panel:bottom() - 2)
+
+	local bar_h = scroll_down_indicator_arrow:top() - scroll_up_indicator_arrow:bottom()
+
+	if scroll_panel:h() ~= 0 then
+		local old_h = scroll_bar:h()
+
+		scroll_bar:set_h(bar_h * output_panel:h() / scroll_panel:h())
+
+		if old_h ~= scroll_bar:h() then
+			self._scroll_bar_box_class:create_sides(scroll_bar:child("scroll_bar_box_panel"), {
+				sides = {
+					2,
+					2,
+					0,
+					0
+				}
+			})
+		end
+	end
+
+	local sh = scroll_panel:h() ~= 0 and scroll_panel:h() or 1
+
+	scroll_bar:set_y(scroll_up_indicator_arrow:bottom() - scroll_panel:y() * (output_panel:h() - scroll_up_indicator_arrow:h() * 2) / sh)
+	scroll_bar:set_center_x(scroll_up_indicator_arrow:center_x())
+
+	local visible = output_panel:h() < scroll_panel:h() and self._focus
+	local scroll_up_visible = visible and scroll_panel:top() < 0
+	local scroll_dn_visible = visible and output_panel:h() < scroll_panel:bottom()
+
+	self:_layout_input_panel()
+	scroll_bar:set_visible(visible)
+
+	local update_scroll_indicator_box = force_update_scroll_indicators or false
+
+	if scroll_up_indicator_arrow:visible() ~= scroll_up_visible then
+		scroll_up_indicator_shade:set_visible(false)
+		scroll_up_indicator_arrow:set_visible(scroll_up_visible)
+
+		update_scroll_indicator_box = true
+	end
+
+	if scroll_down_indicator_arrow:visible() ~= scroll_dn_visible then
+		scroll_down_indicator_shade:set_visible(false)
+		scroll_down_indicator_arrow:set_visible(scroll_dn_visible)
+
+		update_scroll_indicator_box = true
+	end
+
+	if update_scroll_indicator_box then
+		self._scroll_indicator_box_class:create_sides(output_panel, {
+			sides = {
+				0,
+				0,
+				scroll_up_visible and 2 or 0,
+				scroll_dn_visible and 2 or 0
+			}
+		})
+	end
+end
+
+function HUDChat:scroll_up()
+	local output_panel = self._panel:child("output_panel")
+	local scroll_panel = output_panel:child("scroll_panel")
+
+	if output_panel:h() < scroll_panel:h() then
+		scroll_panel:set_top(math.min(0, scroll_panel:top() + HUDChat.line_height))
+
+		return true
+	end
+end
+
+function HUDChat:scroll_down()
+	local output_panel = self._panel:child("output_panel")
+	local scroll_panel = output_panel:child("scroll_panel")
+
+	if output_panel:h() < scroll_panel:h() then
+		scroll_panel:set_bottom(math.max(scroll_panel:bottom() - HUDChat.line_height, output_panel:h()))
+
+		return true
+	end
 end
 
 function HUDChat:input_focus()
@@ -241,7 +427,7 @@ function HUDChat:_on_focus()
 	local output_panel = self._panel:child("output_panel")
 
 	output_panel:stop()
-	output_panel:animate(callback(self, self, "_animate_show_component"), output_panel:alpha())
+	output_panel:animate(callback(self, self, "_animate_show_output"), output_panel:alpha())
 	self._input_panel:stop()
 	self._input_panel:animate(callback(self, self, "_animate_show_component"))
 
@@ -260,6 +446,7 @@ function HUDChat:_on_focus()
 	self._enter_text_set = false
 
 	self._input_panel:child("input_bg"):animate(callback(self, self, "_animate_input_bg"))
+	self:set_scroll_indicators(true)
 	self:set_layer(1100)
 	self:update_caret()
 end
@@ -285,6 +472,12 @@ function HUDChat:_loose_focus()
 
 	text:stop()
 	self._input_panel:child("input_bg"):stop()
+
+	local output_panel = self._panel:child("output_panel")
+	local scroll_panel = output_panel:child("scroll_panel")
+
+	scroll_panel:set_bottom(output_panel:h())
+	self:set_scroll_indicators()
 	self:set_layer(1)
 	self:update_caret()
 end
@@ -463,6 +656,12 @@ function HUDChat:update_key_down(o, k)
 			elseif s < n then
 				text:set_selection(s + 1, s + 1)
 			end
+		elseif self._key_pressed == Idstring("up") then
+			self:scroll_up()
+			self:set_scroll_indicators()
+		elseif self._key_pressed == Idstring("down") then
+			self:scroll_down()
+			self:set_scroll_indicators()
 		else
 			self._key_pressed = false
 		end
@@ -546,6 +745,12 @@ function HUDChat:key_press(o, k)
 		elseif s < n then
 			text:set_selection(s + 1, s + 1)
 		end
+	elseif k == Idstring("up") then
+		self:scroll_up()
+		self:set_scroll_indicators()
+	elseif k == Idstring("down") then
+		self:scroll_down()
+		self:set_scroll_indicators()
 	elseif self._key_pressed == Idstring("end") then
 		text:set_selection(n, n)
 	elseif self._key_pressed == Idstring("home") then
@@ -568,13 +773,14 @@ end
 
 function HUDChat:receive_message(name, message, color, icon)
 	local output_panel = self._panel:child("output_panel")
+	local scroll_panel = output_panel:child("scroll_panel")
 	local len = utf8.len(name) + 1
 	local x = 0
 	local icon_bitmap = nil
 
 	if icon then
 		local icon_texture, icon_texture_rect = tweak_data.hud_icons:get_icon_data(icon)
-		icon_bitmap = output_panel:bitmap({
+		icon_bitmap = scroll_panel:bitmap({
 			y = 1,
 			texture = icon_texture,
 			texture_rect = icon_texture_rect,
@@ -583,7 +789,7 @@ function HUDChat:receive_message(name, message, color, icon)
 		x = icon_bitmap:right()
 	end
 
-	local line = output_panel:text({
+	local line = scroll_panel:text({
 		halign = "left",
 		vertical = "top",
 		hvertical = "top",
@@ -615,12 +821,32 @@ function HUDChat:receive_message(name, message, color, icon)
 	self:_layout_output_panel()
 
 	if not self._focus then
+		scroll_panel:set_bottom(output_panel:h())
+		self:set_scroll_indicators()
+	end
+
+	if not self._focus then
 		local output_panel = self._panel:child("output_panel")
 
 		output_panel:stop()
 		output_panel:animate(callback(self, self, "_animate_show_component"), output_panel:alpha())
 		output_panel:animate(callback(self, self, "_animate_fade_output"))
 	end
+end
+
+function HUDChat:_animate_show_output(o, start_alpha)
+	local TOTAL_T = 0.25
+	local t = 0
+	start_alpha = start_alpha or 0
+
+	while t < TOTAL_T do
+		local dt = coroutine.yield()
+		t = t + dt
+
+		self:set_output_alpha(start_alpha + t / TOTAL_T * (1 - start_alpha))
+	end
+
+	self:set_output_alpha(1)
 end
 
 function HUDChat:_animate_fade_output()
@@ -687,7 +913,19 @@ function HUDChat:_animate_input_bg(input_bg)
 end
 
 function HUDChat:set_output_alpha(alpha)
-	self._panel:child("output_panel"):set_alpha(alpha)
+	local output_panel = self._panel:child("output_panel")
+	local scroll_bar = self._panel:child("scroll_bar")
+	local scroll_up_indicator_shade = output_panel:child("scroll_up_indicator_shade")
+	local scroll_up_indicator_arrow = self._panel:child("scroll_up_indicator_arrow")
+	local scroll_down_indicator_shade = output_panel:child("scroll_down_indicator_shade")
+	local scroll_down_indicator_arrow = self._panel:child("scroll_down_indicator_arrow")
+
+	output_panel:set_alpha(alpha)
+	scroll_bar:set_alpha(alpha)
+	scroll_up_indicator_shade:set_alpha(alpha)
+	scroll_up_indicator_arrow:set_alpha(alpha)
+	scroll_down_indicator_shade:set_alpha(alpha)
+	scroll_down_indicator_arrow:set_alpha(alpha)
 end
 
 function HUDChat:remove()

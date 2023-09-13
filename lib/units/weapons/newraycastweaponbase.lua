@@ -228,8 +228,8 @@ function NewRaycastWeaponBase:_default_damage_falloff()
 	self._optimal_range = falloff_data.optimal_range or 0
 	self._near_falloff = falloff_data.near_falloff or 0
 	self._far_falloff = falloff_data.far_falloff or 0
-	self._near_mul = falloff_data.near_multiplier or 0
-	self._far_mul = falloff_data.far_multiplier or 0
+	self._near_multiplier = falloff_data.near_multiplier or 0
+	self._far_multiplier = falloff_data.far_multiplier or 0
 end
 
 function NewRaycastWeaponBase:set_stagger(value)
@@ -1127,9 +1127,9 @@ function NewRaycastWeaponBase:get_damage_falloff(damage, col_ray, user_unit)
 	local optimal_start = self._optimal_distance
 	local optimal_end = self._optimal_distance + self._optimal_range
 	local far_dist = optimal_end + self._far_falloff
-	local near_mul = self._near_mul
+	local near_mul = self._near_multiplier
 	local optimal_mul = 1
-	local far_mul = self._far_mul
+	local far_mul = self._far_multiplier
 	local primary_category = self:weapon_tweak_data().categories and self:weapon_tweak_data().categories[1]
 	local current_state = user_unit and user_unit:movement() and user_unit:movement()._current_state
 
@@ -1174,9 +1174,9 @@ function NewRaycastWeaponBase:is_weak_hit(distance, user_unit)
 	end
 
 	if distance < near_distance then
-		return self._near_mul < 1
+		return self._near_multiplier < 1
 	elseif far_distance < distance then
-		return self._far_mul < 1
+		return self._far_multiplier < 1
 	end
 
 	return false
@@ -2852,6 +2852,10 @@ function RaycastWeaponBase:use_shotgun_reload()
 	return self._use_shotgun_reload
 end
 
+function RaycastWeaponBase:cache_reload_speed_multiplier()
+	self._current_reload_speed_multiplier = self._current_reload_speed_multiplier or self:reload_speed_multiplier()
+end
+
 function NewRaycastWeaponBase:reload_expire_t(is_not_empty)
 	if self._use_shotgun_reload then
 		local ammo_total = self:get_ammo_total()
@@ -2971,7 +2975,7 @@ function NewRaycastWeaponBase:start_reload(...)
 			self:update_ammo_objects()
 		end
 
-		self._current_reload_speed_multiplier = speed_multiplier
+		self:cache_reload_speed_multiplier()
 	end
 end
 

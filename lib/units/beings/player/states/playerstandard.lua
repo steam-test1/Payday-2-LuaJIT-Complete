@@ -66,9 +66,10 @@ PlayerStandard.ANIM_STATES = {
 }
 PlayerStandard.projectile_throw_delays = {
 	projectile_frag_com = 0.83062744140625,
+	projectile_snowball = 0.48867034912109,
+	projectile_frag = 0.52984619140625,
 	projectile_dynamite = 0.86656761169434,
-	projectile_molotov = 0.86867332458496,
-	projectile_frag = 0.52984619140625
+	projectile_molotov = 0.86867332458496
 }
 PlayerStandard.debug_bipod = nil
 
@@ -964,7 +965,13 @@ function PlayerStandard:_update_movement(t, dt)
 end
 
 function PlayerStandard:_update_network_position(t, dt, cur_pos, pos_new)
-	if not self._last_sent_pos_t or t - self._last_sent_pos_t > 1 / tweak_data.network.player_tick_rate then
+	local update_network = not self._last_sent_pos_t or t - self._last_sent_pos_t > 1 / tweak_data.network.player_tick_rate or mvector3.distance_sq(self._last_sent_pos, cur_pos) > tweak_data.network.player_distance_travel * tweak_data.network.player_distance_travel
+
+	if self._last_sent_pos_t and t - self._last_sent_pos_t < tweak_data.network.player_max_sync_t then
+		update_network = false
+	end
+
+	if update_network then
 		local move_speed = math.clamp(mvector3.length(self._stick_move), 0, 1)
 
 		if move_speed < PlayerStandard.MOVEMENT_DEADZONE then
@@ -3638,7 +3645,7 @@ function PlayerStandard:_check_action_jump(t, input)
 end
 
 function PlayerStandard:_start_action_jump(t, action_start_data)
-	if self._running and not self.RUN_AND_RELOAD and not self._equipped_unit:base():run_and_shoot_allowed() then
+	if self._running and self:_is_reloading() and not self.RUN_AND_RELOAD and not self._equipped_unit:base():run_and_shoot_allowed() then
 		self:_interupt_action_reload(t)
 		self._ext_camera:play_redirect(self:get_animation("stop_running"), self._equipped_unit:base():exit_run_speed_multiplier())
 	end
@@ -4613,6 +4620,8 @@ function PlayerStandard:_start_action_reload_enter(t)
 		local base_reload_enter_expire_t = weapon:reload_enter_expire_t(is_reload_not_empty)
 
 		if base_reload_enter_expire_t and base_reload_enter_expire_t > 0 then
+			weapon:cache_reload_speed_multiplier()
+
 			local speed_multiplier = weapon:reload_speed_multiplier()
 
 			self._ext_camera:play_redirect(Idstring("reload_enter_" .. weapon.name_id), speed_multiplier)
@@ -4690,6 +4699,10 @@ function PlayerStandard:_interupt_action_reload(t)
 		self._equipped_unit:base():tweak_data_anim_stop("reload")
 		self._equipped_unit:base():tweak_data_anim_stop("reload_not_empty")
 		self._equipped_unit:base():tweak_data_anim_stop("reload_exit")
+
+		if self._equipped_unit:base().on_reload_stop then
+			self._equipped_unit:base():on_reload_stop()
+		end
 	end
 
 	self._queue_reload_interupt = nil

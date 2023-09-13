@@ -2231,20 +2231,37 @@ function MenuManager:show_confirm_mission_asset_buy_all(params)
 		dialog_data.text = dialog_data.text .. "\n" .. managers.localization:text("menu_asset_buy_all_desc", {
 			price = managers.experience:cash_string(total_cost)
 		})
-		local yes_button = {
-			text = managers.localization:text("dialog_yes"),
-			callback_func = params.yes_func
-		}
-		local no_button = {
-			text = managers.localization:text("dialog_no"),
-			callback_func = params.no_func,
-			cancel_button = true
-		}
-		dialog_data.focus_button = 2
-		dialog_data.button_list = {
-			yes_button,
-			no_button
-		}
+
+		if total_cost <= managers.money:total() then
+			local yes_button = {
+				text = managers.localization:text("dialog_yes"),
+				callback_func = params.yes_func
+			}
+			local no_button = {
+				text = managers.localization:text("dialog_no"),
+				callback_func = params.no_func,
+				cancel_button = true
+			}
+			dialog_data.focus_button = 2
+			dialog_data.button_list = {
+				yes_button,
+				no_button
+			}
+		else
+			dialog_data.text = dialog_data.text .. "\n##" .. managers.localization:to_upper_text("bm_menu_not_enough_cash") .. "##"
+
+			table.insert(dialog_data.text_formating_color_table, tweak_data.screen_colors.important_1)
+
+			local ok_button = {
+				text = managers.localization:text("dialog_ok"),
+				callback_func = params.ok_func,
+				cancel_button = true
+			}
+			dialog_data.focus_button = 1
+			dialog_data.button_list = {
+				ok_button
+			}
+		end
 	else
 		dialog_data.text = dialog_data.text .. "\n" .. managers.localization:text("menu_asset_buy_all_fail")
 		local ok_button = {

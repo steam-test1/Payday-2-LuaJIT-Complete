@@ -694,7 +694,8 @@ function CharacterTweakData:_init_marshal_marksman(presets)
 	self.marshal_marksman = deep_clone(presets.base)
 	self.marshal_marksman.tags = {
 		"law",
-		"marksman"
+		"marksman",
+		"special"
 	}
 	self.marshal_marksman.experience = {
 		cable_tie = "tie_swat"
@@ -846,7 +847,8 @@ function CharacterTweakData:_init_marshal_shield(presets)
 	self.marshal_shield = deep_clone(presets.base)
 	self.marshal_shield.tags = {
 		"law",
-		"shield"
+		"shield",
+		"special"
 	}
 	self.marshal_shield.experience = {}
 	self.marshal_shield.weapon = deep_clone(presets.weapon.normal)
@@ -11678,6 +11680,8 @@ function CharacterTweakData:_set_easy()
 	self:_set_characters_weapon_preset("normal")
 
 	self.flashbang_multiplier = 1
+
+	self:_process_weapon_usage_table()
 end
 
 function CharacterTweakData:_set_normal()
@@ -12638,6 +12642,8 @@ function CharacterTweakData:_set_normal()
 	self.presets.weapon.gang_member.is_shotgun_mag = deep_clone(self.presets.weapon.gang_member.is_shotgun_pump)
 	self.flashbang_multiplier = 1
 	self.concussion_multiplier = 1
+
+	self:_process_weapon_usage_table()
 end
 
 function CharacterTweakData:_set_hard()
@@ -13289,6 +13295,8 @@ function CharacterTweakData:_set_hard()
 			}
 		}
 	}
+
+	self:_process_weapon_usage_table()
 end
 
 function CharacterTweakData:_set_overkill()
@@ -13941,6 +13949,8 @@ function CharacterTweakData:_set_overkill()
 	}
 	self.flashbang_multiplier = 1.5
 	self.concussion_multiplier = 1
+
+	self:_process_weapon_usage_table()
 end
 
 function CharacterTweakData:_set_overkill_145()
@@ -14136,6 +14146,8 @@ function CharacterTweakData:_set_overkill_145()
 	}
 	self.flashbang_multiplier = 1.75
 	self.concussion_multiplier = 1
+
+	self:_process_weapon_usage_table()
 end
 
 function CharacterTweakData:_set_easy_wish()
@@ -14684,11 +14696,11 @@ function CharacterTweakData:_set_easy_wish()
 		0
 	}
 	self.tank.weapon.is_rifle.focus_delay = 0
-	self.tank.weapon.mini.aim_delay = {
+	self.tank_mini.weapon.mini.aim_delay = {
 		0,
 		0
 	}
-	self.tank.weapon.mini.focus_delay = 0
+	self.tank_mini.weapon.mini.focus_delay = 0
 	self.shield.weapon.is_smg.aim_delay = {
 		0,
 		0
@@ -14710,6 +14722,8 @@ function CharacterTweakData:_set_easy_wish()
 	self.phalanx_vip.DAMAGE_CLAMP_EXPLOSION = self.phalanx_vip.DAMAGE_CLAMP_BULLET
 	self.flashbang_multiplier = 2
 	self.concussion_multiplier = 1
+
+	self:_process_weapon_usage_table()
 end
 
 function CharacterTweakData:_set_overkill_290()
@@ -15545,12 +15559,12 @@ function CharacterTweakData:_set_overkill_290()
 			}
 		}
 	}
-	self.tank.weapon.mini.aim_delay = {
+	self.tank_mini.weapon.mini.aim_delay = {
 		0,
 		0
 	}
-	self.tank.weapon.mini.focus_delay = 0
-	self.tank.weapon.mini.FALLOFF = {
+	self.tank_mini.weapon.mini.focus_delay = 0
+	self.tank_mini.weapon.mini.FALLOFF = {
 		{
 			dmg_mul = 5,
 			r = 100,
@@ -15939,6 +15953,8 @@ function CharacterTweakData:_set_overkill_290()
 	self.phalanx_vip.DAMAGE_CLAMP_EXPLOSION = self.phalanx_vip.DAMAGE_CLAMP_BULLET
 	self.flashbang_multiplier = 2
 	self.concussion_multiplier = 1
+
+	self:_process_weapon_usage_table()
 end
 
 function CharacterTweakData:_set_sm_wish()
@@ -16776,12 +16792,12 @@ function CharacterTweakData:_set_sm_wish()
 			}
 		}
 	}
-	self.tank.weapon.mini.aim_delay = {
+	self.tank_mini.weapon.mini.aim_delay = {
 		0,
 		0
 	}
-	self.tank.weapon.mini.focus_delay = 0
-	self.tank.weapon.mini.FALLOFF = {
+	self.tank_mini.weapon.mini.focus_delay = 0
+	self.tank_mini.weapon.mini.FALLOFF = {
 		{
 			dmg_mul = 6,
 			r = 100,
@@ -16873,11 +16889,11 @@ function CharacterTweakData:_set_sm_wish()
 			}
 		}
 	}
-	self.tank.weapon.mini.aim_delay = {
+	self.tank_mini.weapon.mini.aim_delay = {
 		0,
 		0
 	}
-	self.tank.weapon.mini.focus_delay = 0
+	self.tank_mini.weapon.mini.focus_delay = 0
 	self.shield.weapon.is_smg.aim_delay = {
 		0,
 		0
@@ -17175,6 +17191,8 @@ function CharacterTweakData:_set_sm_wish()
 	self.phalanx_vip.DAMAGE_CLAMP_EXPLOSION = self.phalanx_vip.DAMAGE_CLAMP_BULLET
 	self.flashbang_multiplier = 2
 	self.concussion_multiplier = 1
+
+	self:_process_weapon_usage_table()
 end
 
 function CharacterTweakData:_multiply_weapon_delay(weap_usage_table, mul)

@@ -2752,7 +2752,7 @@ function PrePlanningTweakData:_create_locations(tweak_data)
 			y1 = -3200,
 			custom_points = {}
 		},
-		mission_briefing_texture = "guis/textures/pd2/pre_planning/mission_briefing_big",
+		mission_briefing_texture = "guis/textures/pd2/pre_planning/mission_briefing_branchbank",
 		total_budget = 8,
 		default_plans = {
 			vault_plan = "branchbank_lance"
@@ -2791,7 +2791,7 @@ function PrePlanningTweakData:_create_locations(tweak_data)
 			y1 = -3200,
 			custom_points = {}
 		},
-		mission_briefing_texture = "guis/textures/pd2/pre_planning/mission_briefing_big",
+		mission_briefing_texture = "guis/textures/pd2/pre_planning/mission_briefing_branchbank",
 		total_budget = 8,
 		default_plans = {
 			vault_plan = "branchbank_lance"

@@ -1288,6 +1288,8 @@ function AssetsItem:mouse_moved(x, y)
 			managers.menu_component:post_event("highlight")
 			self:check_deselect_item()
 		end
+
+		return false, true
 	elseif self.buy_all_button_highlighted then
 		self.buy_all_button_highlighted = false
 
@@ -3070,10 +3072,12 @@ function NewLoadoutTab:populate_category(data)
 			new_data.akimbo_gui_data = tweak_data.weapon[crafted.weapon_id] and tweak_data.weapon[crafted.weapon_id].akimbo_gui_data
 			new_data.comparision_data = new_data.unlocked and managers.blackmarket:get_weapon_stats(category, index)
 			new_data.stream = false
-			new_data.global_value = part_dlc_lock or tweak_data.weapon[new_data.name] and tweak_data.weapon[new_data.name].global_value or "normal"
-			new_data.dlc_locked = tweak_data.lootdrop.global_values[new_data.global_value].unlock_id or nil
+			local locked_global_value = part_dlc_lock or tweak_data.weapon[new_data.name] and tweak_data.weapon[new_data.name].global_value or "normal"
+			new_data.dlc_locked = tweak_data.lootdrop.global_values[locked_global_value] and tweak_data.lootdrop.global_values[locked_global_value].unlock_id or part_dlc_lock or nil
 			new_data.lock_texture = BlackMarketGui.get_lock_icon(self, new_data)
 			new_data.name_color = crafted.locked_name and crafted.cosmetics and tweak_data.economy.rarities[tweak_data.blackmarket.weapon_skins[crafted.cosmetics.id].rarity or "common"].color
+			new_data.global_value = tweak_data.weapon[new_data.name] and tweak_data.weapon[new_data.name].global_value or "normal"
+			new_data.part_dlc_lock = part_dlc_lock
 
 			if not new_data.equipped and new_data.unlocked then
 				table.insert(new_data, "lo_w_equip")
@@ -4389,7 +4393,7 @@ function MissionBriefingGui:input_focus()
 		end
 	end
 
-	return self._displaying_asset and 1 or self._enabled
+	return self._displaying_asset and true or self._enabled and 1
 end
 
 function MissionBriefingGui:scroll_up()

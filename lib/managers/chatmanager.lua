@@ -1101,7 +1101,7 @@ function ChatGui:enter_loose_focus_delay_end()
 end
 
 function ChatGui:special_btn_pressed(button)
-	if MenuCallbackHandler:is_win32() and button == Idstring("toggle_chat") and not self._focus and self._is_crimenet_chat then
+	if MenuCallbackHandler:is_win32() and button == Idstring("toggle_chat") and not self._focus and self._is_crimenet_chat and managers.menu_component:input_focus() ~= true then
 		self:toggle_crimenet_chat()
 
 		return true
@@ -1143,20 +1143,27 @@ function ChatGui:mouse_moved(x, y)
 	end
 
 	local inside = self._input_panel:inside(x, y)
+	local my_input_focus = self:input_focus()
+	local ui_input_focus = managers.menu_component:input_focus()
+	local can_focus = my_input_focus == true or ui_input_focus ~= true
 
-	self._input_panel:child("focus_indicator"):set_visible(inside or self._focus)
+	if can_focus then
+		self._input_panel:child("focus_indicator"):set_visible(inside or self._focus)
 
-	if self._panel:child("scroll_bar"):visible() and self._panel:child("scroll_bar"):inside(x, y) then
-		return true, "hand"
-	elseif self._panel:child("scroll_down_indicator_arrow"):visible() and self._panel:child("scroll_down_indicator_arrow"):inside(x, y) or self._panel:child("scroll_up_indicator_arrow"):visible() and self._panel:child("scroll_up_indicator_arrow"):inside(x, y) then
-		return true, "link"
+		if self._panel:child("scroll_bar"):visible() and self._panel:child("scroll_bar"):inside(x, y) then
+			return true, "hand"
+		elseif self._panel:child("scroll_down_indicator_arrow"):visible() and self._panel:child("scroll_down_indicator_arrow"):inside(x, y) or self._panel:child("scroll_up_indicator_arrow"):visible() and self._panel:child("scroll_up_indicator_arrow"):inside(x, y) then
+			return true, "link"
+		end
+
+		if self._focus then
+			inside = not inside
+		end
+
+		return inside or self._focus, inside and "link" or "arrow"
 	end
 
-	if self._focus then
-		inside = not inside
-	end
-
-	return inside or self._focus, inside and "link" or "arrow"
+	return false, "link"
 end
 
 function ChatGui:moved_scroll_bar(x, y)
@@ -1227,39 +1234,44 @@ function ChatGui:mouse_pressed(button, x, y)
 	end
 
 	local inside = self._input_panel:inside(x, y)
+	local my_input_focus = self:input_focus()
+	local ui_input_focus = managers.menu_component:input_focus()
+	local can_focus = my_input_focus == true or ui_input_focus ~= true
 
-	if inside then
-		self:_on_focus()
+	if can_focus then
+		if inside then
+			self:_on_focus()
 
-		return true
-	end
+			return true
+		end
 
-	if self._panel:child("output_panel"):inside(x, y) then
-		if button == Idstring("mouse wheel down") then
-			if self:mouse_wheel_down(x, y) then
+		if self._panel:child("output_panel"):inside(x, y) then
+			if button == Idstring("mouse wheel down") then
+				if self:mouse_wheel_down(x, y) then
+					self:set_scroll_indicators()
+					self:_on_focus()
+
+					return true
+				end
+			elseif button == Idstring("mouse wheel up") then
+				if self:mouse_wheel_up(x, y) then
+					self:set_scroll_indicators()
+					self:_on_focus()
+
+					return true
+				end
+			elseif button == Idstring("0") and self:check_grab_scroll_panel(x, y) then
 				self:set_scroll_indicators()
 				self:_on_focus()
 
 				return true
 			end
-		elseif button == Idstring("mouse wheel up") then
-			if self:mouse_wheel_up(x, y) then
-				self:set_scroll_indicators()
-				self:_on_focus()
-
-				return true
-			end
-		elseif button == Idstring("0") and self:check_grab_scroll_panel(x, y) then
+		elseif button == Idstring("0") and self:check_grab_scroll_bar(x, y) then
 			self:set_scroll_indicators()
 			self:_on_focus()
 
 			return true
 		end
-	elseif button == Idstring("0") and self:check_grab_scroll_bar(x, y) then
-		self:set_scroll_indicators()
-		self:_on_focus()
-
-		return true
 	end
 
 	return self:_loose_focus()
@@ -1621,6 +1633,12 @@ function ChatGui:update_key_down(o, k)
 			elseif s < n then
 				text:set_selection(s + 1, s + 1)
 			end
+		elseif self._key_pressed == Idstring("up") then
+			self:scroll_up()
+			self:set_scroll_indicators()
+		elseif self._key_pressed == Idstring("down") then
+			self:scroll_down()
+			self:set_scroll_indicators()
 		else
 			self._key_pressed = false
 		end
@@ -1706,6 +1724,12 @@ function ChatGui:key_press(o, k)
 		elseif s < n then
 			text:set_selection(s + 1, s + 1)
 		end
+	elseif k == Idstring("up") then
+		self:scroll_up()
+		self:set_scroll_indicators()
+	elseif k == Idstring("down") then
+		self:scroll_down()
+		self:set_scroll_indicators()
 	elseif self._key_pressed == Idstring("end") then
 		text:set_selection(n, n)
 	elseif self._key_pressed == Idstring("home") then

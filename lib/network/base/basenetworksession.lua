@@ -247,7 +247,7 @@ function BaseNetworkSession:add_peer(name, rpc, in_lobby, loading, synched, id, 
 		peer:set_xnaddr(xnaddr)
 	end
 
-	managers.network.account:set_played_with(peer:user_id())
+	managers.network.account:set_played_with(peer)
 
 	self._peers[id] = peer
 	self._peers_all[id] = peer
@@ -1659,6 +1659,10 @@ end
 
 function BaseNetworkSession:on_statistics_recieved(peer_id, peer_kills, peer_specials_kills, peer_head_shots, accuracy, downs)
 	local peer = self:peer(peer_id)
+
+	if not peer then
+		return
+	end
 
 	peer:set_statistics(peer_kills, peer_specials_kills, peer_head_shots, accuracy, downs)
 
