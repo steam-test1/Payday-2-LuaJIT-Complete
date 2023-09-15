@@ -1121,7 +1121,7 @@ function StageEndScreenGui:mouse_moved(x, y)
 end
 
 function StageEndScreenGui:input_focus()
-	return self._enabled and true or nil
+	return self._enabled and 1 or nil
 end
 
 function StageEndScreenGui:scroll_up()

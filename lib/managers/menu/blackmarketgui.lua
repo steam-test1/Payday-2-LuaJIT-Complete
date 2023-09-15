@@ -12108,6 +12108,9 @@ function BlackMarketGui:populate_masks_new(data)
 				end
 			end
 
+			local override_color = Color.white
+			new_data.bitmap_color = override_color
+
 			if crafted.modded then
 				new_data.mini_icons = {}
 				local color_1 = tweak_data.blackmarket.mask_colors[crafted.blueprint.color_a.id].color
@@ -12456,15 +12459,18 @@ function BlackMarketGui:populate_weapon_category_new(data)
 				new_data.new_drop_data = {}
 			end
 
+			local override_color = Color.white
+			new_data.bitmap_color = override_color
 			new_data.mini_icons = {}
 
 			if not new_data.ignore_slot then
 				for _, icon in ipairs(icon_list) do
 					table.insert(new_data.mini_icons, {
+						stream = false,
 						layer = 1,
 						h = 16,
-						stream = false,
 						w = 16,
+						color = override_color,
 						texture = icon.texture,
 						right = (icon_index - 1) % 11 * 18,
 						bottom = math.floor((icon_index - 1) / 11) * 25,
@@ -12473,12 +12479,13 @@ function BlackMarketGui:populate_weapon_category_new(data)
 
 					if new_parts[icon.type] then
 						table.insert(new_data.mini_icons, {
-							texture = "guis/textures/pd2/blackmarket/inv_mod_new",
+							stream = false,
 							layer = 1,
 							h = 8,
-							stream = false,
+							texture = "guis/textures/pd2/blackmarket/inv_mod_new",
 							w = 16,
 							alpha = 1,
+							color = override_color,
 							right = (icon_index - 1) % 11 * 18,
 							bottom = math.floor((icon_index - 1) / 11) * 25 + 16
 						})
@@ -13765,9 +13772,6 @@ function BlackMarketGui:get_filtered_search_list(item_list, td, id_identifier)
 			local global_value = item_tweak.global_value or "normal"
 			local gv_tweak = tweak_data.lootdrop.global_values[global_value]
 			local search_strings = {
-				item_id,
-				global_value,
-				item_tweak.texture_bundle_folder,
 				utf8.to_lower(managers.localization:text(item_tweak.name_id)),
 				utf8.to_lower(managers.localization:text(gv_tweak.name_id))
 			}

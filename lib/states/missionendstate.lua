@@ -784,7 +784,7 @@ function MissionEndState:_continue_blocked()
 		return true
 	end
 
-	if managers.menu_component:input_focus() == 1 then
+	if managers.menu_component:input_focus() == true then
 		return true
 	end
 

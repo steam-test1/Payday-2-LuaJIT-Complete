@@ -383,7 +383,7 @@ function LootDropScreenGui:mouse_moved(x, y)
 end
 
 function LootDropScreenGui:input_focus()
-	return self._enabled
+	return self._enabled and 1 or false
 end
 
 function LootDropScreenGui:scroll_up()
