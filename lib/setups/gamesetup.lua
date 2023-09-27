@@ -727,6 +727,7 @@ function GameSetup:save(data)
 	managers.crime_spree:sync_save(data)
 	managers.skirmish:sync_save(data)
 	managers.mutators:sync_save(data)
+	managers.worlddefinition:sync_save(data)
 end
 
 function GameSetup:load(data)
@@ -753,6 +754,7 @@ function GameSetup:load(data)
 	managers.crime_spree:sync_load(data)
 	managers.skirmish:sync_load(data)
 	managers.mutators:sync_load(data)
+	managers.worlddefinition:sync_load(data)
 end
 
 function GameSetup:_update_debug_input()

@@ -1568,6 +1568,19 @@ function BlackMarketGuiSlotItem:init(main_panel, data, x, y, w, h)
 		})
 	end
 
+	if data.search_rect then
+		local box = BoxGuiObject:new(self._panel, {
+			sides = {
+				2,
+				2,
+				2,
+				2
+			}
+		})
+
+		box:set_color(tweak_data.screen_color_yellow)
+	end
+
 	local red_box = false
 	local number_text = false
 	self._conflict = data.conflict
@@ -12109,6 +12122,31 @@ function BlackMarketGui:populate_masks_new(data)
 			end
 
 			local override_color = Color.white
+
+			if self._data.search_string and self._data.search_string ~= "" then
+				local filtered_list = {}
+				local search_string = utf8.to_lower(self._data.search_string)
+				local gv_tweak = tweak_data.lootdrop.global_values[new_data.global_value]
+				local search_strings = {
+					utf8.to_lower(managers.localization:text(gv_tweak.name_id)),
+					utf8.to_lower(new_data.name_localized),
+					utf8.to_lower(new_data.raw_name_localized)
+				}
+				local found_id = false
+
+				for _, id in ipairs(search_strings) do
+					if string.find(id, search_string) ~= nil then
+						found_id = true
+
+						break
+					end
+				end
+
+				if found_id then
+					new_data.search_rect = true
+				end
+			end
+
 			new_data.bitmap_color = override_color
 
 			if crafted.modded then
@@ -12460,6 +12498,31 @@ function BlackMarketGui:populate_weapon_category_new(data)
 			end
 
 			local override_color = Color.white
+
+			if self._data.search_string and self._data.search_string ~= "" then
+				local filtered_list = {}
+				local search_string = utf8.to_lower(self._data.search_string)
+				local gv_tweak = tweak_data.lootdrop.global_values[new_data.global_value]
+				local search_strings = {
+					utf8.to_lower(managers.localization:text(gv_tweak.name_id)),
+					utf8.to_lower(new_data.name_localized),
+					utf8.to_lower(new_data.raw_name_localized)
+				}
+				local found_id = false
+
+				for _, id in ipairs(search_strings) do
+					if string.find(id, search_string) ~= nil then
+						found_id = true
+
+						break
+					end
+				end
+
+				if found_id then
+					new_data.search_rect = true
+				end
+			end
+
 			new_data.bitmap_color = override_color
 			new_data.mini_icons = {}
 

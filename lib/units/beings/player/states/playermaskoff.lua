@@ -108,8 +108,18 @@ function PlayerMaskOff:_update_check_actions(t, dt)
 		mvector3.rotate_with(self._move_dir, cam_flat_rot)
 	end
 
-	self:_update_interaction_timers(t)
-	self:_update_start_standard_timers(t)
+	local cur_state = self._ext_movement:current_state_name()
+	local new_action = self:_update_interaction_timers(t)
+
+	if cur_state ~= self._ext_movement:current_state_name() then
+		return
+	end
+
+	new_action = self:_update_start_standard_timers(t) or new_action
+
+	if cur_state ~= self._ext_movement:current_state_name() then
+		return
+	end
 
 	if input.btn_stats_screen_press then
 		self._unit:base():set_stats_screen_visible(true)
@@ -119,9 +129,21 @@ function PlayerMaskOff:_update_check_actions(t, dt)
 
 	self:_update_foley(t, input)
 
-	local new_action = nil
-	new_action = new_action or self:_check_use_item(t, input)
-	new_action = new_action or self:_check_action_interact(t, input)
+	if not new_action then
+		new_action = self:_check_use_item(t, input)
+
+		if cur_state ~= self._ext_movement:current_state_name() then
+			return
+		end
+	end
+
+	if not new_action then
+		new_action = self:_check_action_interact(t, input)
+
+		if cur_state ~= self._ext_movement:current_state_name() then
+			return
+		end
+	end
 
 	if not new_action and self._state_data.ducking then
 		self:_end_action_ducking(t)
@@ -134,9 +156,19 @@ function PlayerMaskOff:_update_check_actions(t, dt)
 end
 
 function PlayerMaskOff:_check_action_interact(t, input)
+	local pressed, released, holding = nil
+
+	if self._interact_expire_t then
+		pressed, released, holding = self:_check_tap_to_interact_inputs(t, input.btn_interact_press, input.btn_interact_release, input.btn_interact_state)
+	else
+		holding = input.btn_interact_state
+		released = input.btn_interact_release
+		pressed = input.btn_interact_press
+	end
+
 	local new_action, timer, interact_object = nil
 
-	if input.btn_interact_press then
+	if pressed then
 		if _G.IS_VR then
 			self._interact_hand = input.btn_interact_left_press and PlayerHand.LEFT or PlayerHand.RIGHT
 		end
@@ -151,6 +183,7 @@ function PlayerMaskOff:_check_action_interact(t, input)
 
 				self._ext_camera:camera_unit():base():set_limits(80, 50)
 				self:_start_action_interact(t, input, timer, interact_object)
+				self:_chk_tap_to_interact_enable(t, timer, interact_object)
 			end
 
 			if not new_action and (not self._intimidate_t or tweak_data.player.movement_state.interaction_delay < t - self._intimidate_t) then
@@ -164,7 +197,7 @@ function PlayerMaskOff:_check_action_interact(t, input)
 		end
 	end
 
-	if input.btn_interact_release then
+	if released then
 		self:_interupt_action_interact()
 	end
 
@@ -188,6 +221,8 @@ function PlayerMaskOff:_start_action_interact(t, input, timer, interact_object)
 end
 
 function PlayerMaskOff:_interupt_action_interact(t, input, complete)
+	self:_clear_tap_to_interact()
+
 	if self._interact_expire_t then
 		self._interact_expire_t = nil
 
@@ -215,60 +250,33 @@ function PlayerMaskOff:_upd_attention()
 end
 
 function PlayerMaskOff:_check_use_item(t, input)
-	local new_action = nil
-	local action_wanted = input.btn_use_item_press
+	local pressed, released, holding = nil
 
-	if action_wanted then
+	if self._start_standard_expire_t then
+		pressed, released, holding = self:_check_tap_to_interact_inputs(t, input.btn_use_item_press, input.btn_use_item_release, input.btn_use_item_state)
+	else
+		holding = input.btn_use_item_state
+		released = input.btn_use_item_release
+		pressed = input.btn_use_item_press
+	end
+
+	local new_action = nil
+
+	if pressed then
 		local action_forbidden = self._use_item_expire_t or self:_changing_weapon() or self:_interacting()
 
 		if not action_forbidden then
 			self:_start_action_state_standard(t)
+
+			new_action = true
 		end
 	end
 
-	if input.btn_use_item_release then
+	if released then
 		self:_interupt_action_start_standard()
 	end
-end
 
-function PlayerMaskOff:_start_action_use_item(t)
-	self:_interupt_action_reload(t)
-	self:_interupt_action_steelsight(t)
-	self:_interupt_action_running(t)
-
-	local deploy_timer = managers.player:selected_equipment_deploy_timer()
-	self._use_item_expire_t = t + deploy_timer
-
-	managers.hud:show_progress_timer_bar(0, deploy_timer)
-
-	local text = managers.player:selected_equipment_deploying_text() or managers.localization:text("hud_deploying_equipment", {
-		EQUIPMENT = managers.player:selected_equipment_name()
-	})
-
-	managers.hud:show_progress_timer({
-		text = text
-	})
-
-	local equipment_id = managers.player:selected_equipment_id()
-
-	managers.network:session():send_to_peers_synched("sync_teammate_progress", 2, true, equipment_id, deploy_timer, false)
-end
-
-function PlayerMaskOff:_end_action_use_item(valid)
-	local result = managers.player:use_selected_equipment(self._unit)
-
-	self:_interupt_action_use_item(nil, nil, valid)
-end
-
-function PlayerMaskOff:_interupt_action_use_item(t, input, complete)
-	if self._use_item_expire_t then
-		self._use_item_expire_t = nil
-
-		managers.hud:hide_progress_timer_bar(complete)
-		managers.hud:remove_progress_timer()
-		self._unit:equipment():on_deploy_interupted()
-		managers.network:session():send_to_peers_synched("sync_teammate_progress", 2, false, "", 0, complete and true or false)
-	end
+	return new_action
 end
 
 function PlayerMaskOff:_update_start_standard_timers(t)
@@ -279,21 +287,27 @@ function PlayerMaskOff:_update_start_standard_timers(t)
 			self:_end_action_start_standard(t)
 
 			self._start_standard_expire_t = nil
+
+			return true
 		end
 	end
 end
 
 function PlayerMaskOff:_start_action_state_standard(t)
-	self._start_standard_expire_t = t + tweak_data.player.put_on_mask_time
+	local mask_on_time = tweak_data.player.put_on_mask_time
+	self._start_standard_expire_t = t + mask_on_time
 
-	managers.hud:show_progress_timer_bar(0, tweak_data.player.put_on_mask_time)
+	managers.hud:show_progress_timer_bar(0, mask_on_time)
 	managers.hud:show_progress_timer({
 		text = managers.localization:text("hud_starting_heist")
 	})
+	self:_chk_tap_to_interact_enable(t, mask_on_time)
 	managers.network:session():send_to_peers_synched("sync_teammate_progress", 3, true, "mask_on_action", tweak_data.player.put_on_mask_time, false)
 end
 
 function PlayerMaskOff:_interupt_action_start_standard(t, input, complete)
+	self:_clear_tap_to_interact()
+
 	if self._start_standard_expire_t then
 		self._start_standard_expire_t = nil
 

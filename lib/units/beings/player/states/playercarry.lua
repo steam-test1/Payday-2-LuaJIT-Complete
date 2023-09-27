@@ -109,7 +109,14 @@ function PlayerCarry:_update_check_actions(t, dt)
 	local input = self:_get_input(t, dt)
 
 	self:_determine_move_direction()
-	self:_update_interaction_timers(t)
+
+	local cur_state = self._ext_movement:current_state_name()
+	local new_action = self:_update_interaction_timers(t)
+
+	if cur_state ~= self._ext_movement:current_state_name() then
+		return
+	end
+
 	self:_update_throw_projectile_timers(t, input)
 	self:_update_reload_timers(t, dt, input)
 	self:_update_melee_timers(t, input)
@@ -126,7 +133,6 @@ function PlayerCarry:_update_check_actions(t, dt)
 
 	self:_update_foley(t, input)
 
-	local new_action = nil
 	new_action = new_action or self:_check_action_weapon_gadget(t, input)
 	new_action = new_action or self:_check_action_weapon_firemode(t, input)
 	new_action = new_action or self:_check_action_melee(t, input)
@@ -145,16 +151,39 @@ function PlayerCarry:_update_check_actions(t, dt)
 	new_action = new_action or self:_check_action_throw_projectile(t, input)
 	new_action = new_action or self:_check_action_deploy_underbarrel(t, input)
 
-	self:_check_action_interact(t, input)
+	if not new_action then
+		new_action = self:_check_action_interact(t, input)
+
+		if cur_state ~= self._ext_movement:current_state_name() then
+			return
+		end
+	end
+
 	self:_check_action_jump(t, input)
 	self:_check_action_run(t, input)
 	self:_check_action_ladder(t, input)
 	self:_check_action_zipline(t, input)
 	self:_check_action_cash_inspect(t, input)
-	self:_check_action_deploy_bipod(t, input)
+
+	if not new_action then
+		new_action = self:_check_action_deploy_bipod(t, input)
+
+		if cur_state ~= self._ext_movement:current_state_name() then
+			return
+		end
+	end
+
 	self:_check_action_duck(t, input)
 	self:_check_action_steelsight(t, input)
-	self:_check_use_item(t, input)
+
+	if not new_action then
+		new_action = self:_check_use_item(t, input)
+
+		if cur_state ~= self._ext_movement:current_state_name() then
+			return
+		end
+	end
+
 	self:_update_use_item_timers(t, input)
 	self:_check_action_change_equipment(t, input)
 	self:_find_pickups(t)
@@ -268,12 +297,6 @@ end
 
 function PlayerCarry:_get_walk_headbob(...)
 	return PlayerCarry.super._get_walk_headbob(self, ...) * tweak_data.carry.types[self._tweak_data_name].move_speed_modifier
-end
-
-function PlayerCarry:pre_destroy(unit)
-end
-
-function PlayerCarry:destroy()
 end
 
 function PlayerCarry:_get_input(...)

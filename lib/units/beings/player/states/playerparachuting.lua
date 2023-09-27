@@ -131,11 +131,6 @@ function PlayerParachuting:_update_check_actions(t, dt)
 	local anim_data = self._ext_anim
 	new_action = new_action or self:_check_action_weapon_gadget(t, input)
 	new_action = new_action or self:_check_action_weapon_firemode(t, input)
-
-	if not new_action then
-		-- Nothing
-	end
-
 	new_action = new_action or self:_check_action_reload(t, input)
 	new_action = new_action or self:_check_change_weapon(t, input)
 	new_action = new_action or self:_check_action_primary_attack(t, input)

@@ -126,6 +126,14 @@ function BaseInteractionExt:dirty()
 	return self._dirty
 end
 
+function BaseInteractionExt:set_text_dirty(dirty)
+	self._text_dirty = dirty
+end
+
+function BaseInteractionExt:text_dirty()
+	return self._text_dirty
+end
+
 function BaseInteractionExt:interact_position()
 	self:_update_interact_position()
 
@@ -239,11 +247,26 @@ function BaseInteractionExt:selected(player, locator, hand_id)
 
 	self._hand_id = hand_id
 	self._is_selected = true
+
+	self:update_show_interact(player, locator)
+
+	if self._tweak_data.contour_preset or self._tweak_data.contour_preset_selected then
+		if not self._selected_contour_id and self._tweak_data.contour_preset_selected and self._tweak_data.contour_preset ~= self._tweak_data.contour_preset_selected then
+			self._selected_contour_id = self._unit:contour():add(self._tweak_data.contour_preset_selected)
+		end
+	else
+		self:set_contour("selected_color")
+	end
+
+	return true
+end
+
+function BaseInteractionExt:update_show_interact(player, locator)
 	local string_macros = {}
 
 	self:_add_string_macros(string_macros)
 
-	local text_id = self:get_text_id(player, locator)
+	local text_id = self:get_text_id(player, self._selected_locator or locator)
 	local text = managers.localization:text(text_id, string_macros)
 	local icon = self._tweak_data.icon
 
@@ -266,20 +289,12 @@ function BaseInteractionExt:selected(player, locator, hand_id)
 		end
 	end
 
-	if self._tweak_data.contour_preset or self._tweak_data.contour_preset_selected then
-		if not self._selected_contour_id and self._tweak_data.contour_preset_selected and self._tweak_data.contour_preset ~= self._tweak_data.contour_preset_selected then
-			self._selected_contour_id = self._unit:contour():add(self._tweak_data.contour_preset_selected)
-		end
-	else
-		self:set_contour("selected_color")
-	end
-
 	managers.hud:show_interact({
 		text = text,
 		icon = icon
 	})
 
-	return true
+	self._text_dirty = false
 end
 
 function BaseInteractionExt:get_text_id(player, locator)
@@ -292,6 +307,8 @@ end
 
 function BaseInteractionExt:unselect()
 	self._is_selected = nil
+	self._dirty = false
+	self._text_dirty = false
 
 	if self._tweak_data.contour_preset or self._tweak_data.contour_preset_selected then
 		if self._selected_contour_id then
@@ -789,7 +806,7 @@ function UseInteractionExt:interact(player)
 		})
 	end
 
-	if self._unit:id() ~= -1 then
+	if self._unit:id() ~= -1 or self._unit:unit_data() and self._unit:unit_data().unit_id then
 		managers.network:session():send_to_peers_synched("sync_interacted", self._unit, -2, self.tweak_data, 1)
 	end
 

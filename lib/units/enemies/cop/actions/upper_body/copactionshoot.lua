@@ -503,7 +503,7 @@ function CopActionShoot:update(t)
 				local melee = nil
 
 				if autotarget and not self._shield_unit and (not self._common_data.melee_countered_t or t - self._common_data.melee_countered_t > 15) and target_dis < 130 and self._w_usage_tweak.melee_speed and self._melee_timeout_t < t then
-					melee = self:_chk_start_melee(target_vec, target_dis, autotarget, target_pos)
+					melee = self:_chk_start_melee(false)
 				end
 
 				if not melee then
@@ -919,7 +919,7 @@ function CopActionShoot:_set_ik_updator(name)
 	self._upd_ik = self[name]
 end
 
-function CopActionShoot:_chk_start_melee(target_vec, target_dis, autotarget, target_pos)
+function CopActionShoot:_chk_start_melee(was_synced)
 	local melee_weapon = self._unit:base():melee_weapon()
 	local is_weapon = melee_weapon == "weapon"
 	local state = self._ext_movement:play_redirect(is_weapon and "melee" or "melee_item")
@@ -934,18 +934,21 @@ function CopActionShoot:_chk_start_melee(target_vec, target_dis, autotarget, tar
 
 			self._common_data.machine:set_parameter(state, anim_attack_vars[melee_var], 1)
 
-			local param = tweak_data.weapon.npc_melee[melee_weapon].animation_param
+			local melee_tweak = tweak_data.weapon.npc_melee[melee_weapon]
+			local param = melee_tweak and melee_tweak.animation_param or "melee_fireaxe"
 
 			self._common_data.machine:set_parameter(state, param, 1)
 		end
 
-		local anim_speed = self._w_usage_tweak.melee_speed
+		local anim_speed = self._w_usage_tweak.melee_speed or 1
 
-		self._common_data.machine:set_speed(state, anim_speed or 1)
+		self._common_data.machine:set_speed(state, anim_speed)
 
 		self._melee_timeout_t = TimerManager:game():time() + (self._w_usage_tweak.melee_retry_delay and math.lerp(self._w_usage_tweak.melee_retry_delay[1], self._w_usage_tweak.melee_retry_delay[2], self:_pseudorandom()) or 1)
 
-		self._common_data.ext_network:send("action_melee_attack", self._body_part)
+		if not was_synced then
+			self._common_data.ext_network:send("action_melee_attack", self._body_part)
+		end
 	else
 		debug_pause_unit(self._common_data.unit, "[CopActionShoot:_chk_start_melee] redirect failed in state", self._common_data.machine:segment_state(Idstring("base")), self._common_data.unit)
 	end
@@ -954,11 +957,11 @@ function CopActionShoot:_chk_start_melee(target_vec, target_dis, autotarget, tar
 end
 
 function CopActionShoot:sync_start_melee()
-	if self._ext_anim.melee then
+	if self._shield_unit or self._ext_anim.melee then
 		return
 	end
 
-	self:_chk_start_melee()
+	self:_chk_start_melee(true)
 end
 
 function CopActionShoot:anim_clbk_melee_strike()

@@ -174,11 +174,13 @@ function PlayerTurret:_stance_entered(unequipped)
 
 	local stances = tweak_data.player.stances[stance_id] or tweak_data.player.stances.default
 	local misc_attribs = stances.standard
-	local duration = tweak_data.player.TRANSITION_DURATION
+	local head_duration = 0.1
+	local head_duration_multiplier = 1
+	local duration = 0.1
 	local duration_multiplier = 1
 	local new_fov = self:get_zoom_fov(misc_attribs)
 
-	self._camera_unit:base():clbk_stance_entered(misc_attribs.shoulders, head_stance, misc_attribs.vel_overshot, new_fov, misc_attribs.shakers, stance_mod, duration_multiplier, 0.1)
+	self._camera_unit:base():clbk_stance_entered(misc_attribs.shoulders, head_stance, misc_attribs.vel_overshot, new_fov, misc_attribs.shakers, stance_mod, duration_multiplier, duration, duration_multiplier, head_duration)
 	managers.menu:set_mouse_sensitivity(self:in_steelsight())
 end
 
@@ -225,7 +227,9 @@ function PlayerTurret:_update_check_actions(t, dt)
 	local input = self:_get_input(t, dt)
 
 	self:_determine_move_direction()
-	self:_update_interaction_timers(t)
+
+	local new_action = self:_update_interaction_timers(t)
+
 	self:_update_throw_projectile_timers(t, input)
 	self:_update_reload_timers(t, dt, input)
 	self:_update_melee_timers(t, input)
@@ -239,7 +243,6 @@ function PlayerTurret:_update_check_actions(t, dt)
 		self._unit:base():set_stats_screen_visible(false)
 	end
 
-	local new_action = false
 	new_action = new_action or self:_check_action_unmount_turret(t, input)
 	new_action = new_action or self:_check_action_reload(t, input)
 	new_action = new_action or self:_check_action_primary_attack(t, input)

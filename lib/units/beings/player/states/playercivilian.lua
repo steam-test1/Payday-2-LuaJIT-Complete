@@ -113,7 +113,12 @@ function PlayerCivilian:_update_check_actions(t, dt)
 		mvector3.rotate_with(self._move_dir, cam_flat_rot)
 	end
 
-	self:_update_interaction_timers(t)
+	local cur_state = self._ext_movement:current_state_name()
+	local new_action = self:_update_interaction_timers(t)
+
+	if cur_state ~= self._ext_movement:current_state_name() then
+		return
+	end
 
 	if input.btn_stats_screen_press then
 		self._unit:base():set_stats_screen_visible(true)
@@ -123,8 +128,13 @@ function PlayerCivilian:_update_check_actions(t, dt)
 
 	self:_update_foley(t, input)
 
-	local new_action = nil
-	new_action = new_action or self:_check_action_interact(t, input)
+	if not new_action then
+		new_action = self:_check_action_interact(t, input)
+
+		if cur_state ~= self._ext_movement:current_state_name() then
+			return
+		end
+	end
 
 	if not new_action and self._state_data.ducking then
 		self:_end_action_ducking(t)
@@ -137,9 +147,17 @@ function PlayerCivilian:_update_check_actions(t, dt)
 end
 
 function PlayerCivilian:_check_action_interact(t, input)
-	local new_action, timer, interact_object = nil
+	local new_action, timer, interact_object, pressed, released, holding = nil
 
-	if input.btn_interact_press then
+	if self._interact_expire_t then
+		pressed, released, holding = self:_check_tap_to_interact_inputs(t, input.btn_interact_press, input.btn_interact_release, input.btn_interact_state)
+	else
+		holding = input.btn_interact_state
+		released = input.btn_interact_release
+		pressed = input.btn_interact_press
+	end
+
+	if pressed then
 		if _G.IS_VR then
 			self._interact_hand = input.btn_interact_left_press and PlayerHand.LEFT or PlayerHand.RIGHT
 		end
@@ -154,6 +172,7 @@ function PlayerCivilian:_check_action_interact(t, input)
 
 				self._ext_camera:camera_unit():base():set_limits(80, 50)
 				self:_start_action_interact(t, input, timer, interact_object)
+				self:_chk_tap_to_interact_enable(t, timer, interact_object)
 			end
 		end
 
@@ -162,7 +181,7 @@ function PlayerCivilian:_check_action_interact(t, input)
 		end
 	end
 
-	if input.btn_interact_release then
+	if released then
 		self:_interupt_action_interact()
 	end
 
@@ -188,6 +207,8 @@ function PlayerCivilian:_start_action_interact(t, input, timer, interact_object)
 end
 
 function PlayerCivilian:_interupt_action_interact(t, input, complete)
+	self:_clear_tap_to_interact()
+
 	if self._interact_expire_t then
 		self._interact_expire_t = nil
 
@@ -224,6 +245,8 @@ function PlayerCivilian:_update_interaction_timers(t)
 				self:_end_action_interact(t)
 
 				self._interact_expire_t = nil
+
+				return true
 			end
 		end
 	end

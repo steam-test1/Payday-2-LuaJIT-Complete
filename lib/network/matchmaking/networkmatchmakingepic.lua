@@ -574,7 +574,7 @@ function NetworkMatchMakingEPIC:join_server_with_check(room_id, is_invite)
 		if NetworkMatchMakingEPIC._BUILD_SEARCH_INTEREST_KEY then
 			local ikey = lobby:key_value(NetworkMatchMakingEPIC._BUILD_SEARCH_INTEREST_KEY)
 
-			if ikey == "value_missing" or ikey == "value_pending" then
+			if ikey == "value_missing" then
 				print("Wrong version!!")
 				managers.system_menu:close("join_server")
 				managers.menu:show_failed_joining_dialog()

@@ -239,7 +239,7 @@ function Setup:init_managers(managers)
 	Global.game_settings = Global.game_settings or {
 		is_playing = false,
 		auto_kick = true,
-		drop_in_option = 1,
+		drop_in_option = 3,
 		permission = "public",
 		job_plan = -1,
 		search_modded_lobbies = true,

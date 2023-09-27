@@ -1168,9 +1168,10 @@ function FPCameraPlayerBase:_set_steelsight_swap_state(steelsight_swap_state)
 	end
 end
 
-function FPCameraPlayerBase:clbk_stance_entered(new_shoulder_stance, new_head_stance, new_vel_overshot, new_fov, new_shakers, stance_mod, duration_multiplier, duration)
+function FPCameraPlayerBase:clbk_stance_entered(new_shoulder_stance, new_head_stance, new_vel_overshot, new_fov, new_shakers, stance_mod, duration_multiplier, duration, head_duration_multiplier, head_duration)
 	local t = managers.player:player_timer():time()
 	local transition_duration = duration * duration_multiplier
+	local head_transition_duration = head_duration * head_duration_multiplier
 
 	if new_shoulder_stance then
 		local was_in_steelsight = self._shoulder_stance.in_steelsight
@@ -1223,7 +1224,7 @@ function FPCameraPlayerBase:clbk_stance_entered(new_shoulder_stance, new_head_st
 		transition.start_translation = mvector3.copy(self._head_stance.translation)
 		transition.start_rotation = self._head_stance.rotation
 		transition.start_t = t
-		transition.duration = transition_duration
+		transition.duration = head_transition_duration
 	end
 
 	if new_vel_overshot then

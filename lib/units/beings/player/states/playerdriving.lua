@@ -107,13 +107,13 @@ end
 
 function PlayerDriving:exit(state_data, new_state_name)
 	print("[DRIVING] PlayerDriving: Exiting vehicle")
+	self:_interupt_action_exit_vehicle()
 	PlayerDriving.super.exit(self, state_data, new_state_name)
 
 	if self._vehicle_unit:camera() then
 		self._vehicle_unit:camera():deactivate(self._unit)
 	end
 
-	self:_interupt_action_exit_vehicle()
 	self:_interupt_action_steelsight()
 
 	local projectile_entry = managers.blackmarket:equipped_projectile()
@@ -214,6 +214,7 @@ function PlayerDriving:_get_input(t, dt)
 	input.btn_vehicle_shooting_stance = input.any_input_pressed and self._controller:get_input_pressed("vehicle_shooting_stance")
 	input.btn_vehicle_exit_press = input.any_input_pressed and self._controller:get_input_pressed("vehicle_exit")
 	input.btn_vehicle_exit_release = input.any_input_released and self._controller:get_input_released("vehicle_exit")
+	input.btn_vehicle_exit_state = input.any_input_downed and self._controller:get_input_bool("vehicle_exit")
 
 	return input
 end
@@ -400,7 +401,17 @@ function PlayerDriving:_exit_shooting_stance()
 end
 
 function PlayerDriving:_check_action_exit_vehicle(t, input)
-	if input.btn_vehicle_exit_press then
+	local pressed, released, holding = nil
+
+	if self._exit_vehicle_expire_t then
+		pressed, released, holding = self:_check_tap_to_interact_inputs(t, input.btn_vehicle_exit_press, input.btn_vehicle_exit_release, input.btn_vehicle_exit_state)
+	else
+		holding = input.btn_vehicle_exit_state
+		released = input.btn_vehicle_exit_release
+		pressed = input.btn_vehicle_exit_press
+	end
+
+	if pressed then
 		if self._vehicle_ext.respawn_available then
 			if self._seat.driving then
 				self._vehicle_ext:respawn_vehicle()
@@ -416,7 +427,7 @@ function PlayerDriving:_check_action_exit_vehicle(t, input)
 		end
 	end
 
-	if input.btn_vehicle_exit_release then
+	if released then
 		self:_interupt_action_exit_vehicle()
 	end
 end
@@ -440,6 +451,9 @@ function PlayerDriving:_start_action_exit_vehicle(t)
 	managers.hud:show_progress_timer({
 		text = text
 	})
+	self:_chk_tap_to_interact_enable(t, deploy_timer, nil)
+
+	return true
 end
 
 function PlayerDriving:_interacting()
@@ -447,6 +461,8 @@ function PlayerDriving:_interacting()
 end
 
 function PlayerDriving:_interupt_action_exit_vehicle(t, input, complete)
+	self:_clear_tap_to_interact()
+
 	if self._exit_vehicle_expire_t then
 		self._exit_vehicle_expire_t = nil
 
@@ -462,16 +478,15 @@ function PlayerDriving:_update_action_timers(t, input)
 		managers.hud:set_progress_timer_bar_width(deploy_timer - (self._exit_vehicle_expire_t - t), deploy_timer)
 
 		if self._exit_vehicle_expire_t <= t then
-			self:_end_action_exit_vehicle()
+			self:_end_action_exit_vehicle(t)
 
 			self._exit_vehicle_expire_t = nil
 		end
 	end
 end
 
-function PlayerDriving:_end_action_exit_vehicle()
-	managers.hud:hide_progress_timer_bar(true)
-	managers.hud:remove_progress_timer()
+function PlayerDriving:_end_action_exit_vehicle(t)
+	self:_interupt_action_exit_vehicle(t, nil, true)
 	self:cb_leave()
 end
 

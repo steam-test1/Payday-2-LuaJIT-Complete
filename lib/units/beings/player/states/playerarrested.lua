@@ -245,8 +245,8 @@ function PlayerArrested:clbk_entry_speech()
 	PlayerStandard.say_line(self, "s20x_sin")
 end
 
-function PlayerArrested:pre_destroy(unit)
-	PlayerArrested.super.pre_destroy(self, unit)
+function PlayerArrested:pre_destroy(...)
+	PlayerArrested.super.pre_destroy(self, ...)
 	PlayerBleedOut._unregister_revive_SO(self)
 
 	if self._entry_speech_clbk then
@@ -256,6 +256,7 @@ function PlayerArrested:pre_destroy(unit)
 	end
 end
 
-function PlayerArrested:destroy()
-	PlayerBleedOut._unregister_revive_SO(self)
+function PlayerArrested:destroy(...)
+	PlayerArrested.super.destroy(self, ...)
+	PlayerBleedOut._unregister_revive_SO(self, ...)
 end

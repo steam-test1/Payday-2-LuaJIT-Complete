@@ -2260,6 +2260,22 @@ function MenuCallbackHandler:accessibility_sounds_tinnitus_toggle(item)
 	managers.user:set_setting("accessibility_sounds_tinnitus", state, nil)
 end
 
+function MenuCallbackHandler:tap_to_interact_choice(item)
+	local setting = item:value()
+
+	managers.user:set_setting("tap_to_interact", setting, nil)
+end
+
+function MenuCallbackHandler:tap_to_interact_time_set(item)
+	managers.user:set_setting("tap_to_interact_time", item:value(), nil)
+end
+
+function MenuCallbackHandler:tap_to_interact_show_text_toggle(item)
+	local state = item:value() == "on"
+
+	managers.user:set_setting("tap_to_interact_show_text", state, nil)
+end
+
 function MenuCallbackHandler:toggle_socialhub_hide_code(item)
 	local state = item:value() == "on"
 
@@ -9932,34 +9948,17 @@ function MenuCrimeNetSmartMatchmakingInitiator:pre_create_clbk(node)
 end
 
 MenuOptionInitiator = MenuOptionInitiator or class()
+MenuOptionInitiator.diff_name_lookup = {
+	debug = "debug_options"
+}
 
 function MenuOptionInitiator:modify_node(node)
 	local node_name = node:parameters().name
+	node_name = self.diff_name_lookup[node_name] or node_name
+	local modify_func = self["modify_" .. node_name]
 
-	if node_name == "resolution" then
-		return self:modify_resolution(node)
-	elseif node_name == "video" then
-		return self:modify_video(node)
-	elseif node_name == "adv_video" then
-		return self:modify_adv_video(node)
-	elseif node_name == "controls" then
-		return self:modify_controls(node)
-	elseif node_name == "debug" then
-		return self:modify_debug_options(node)
-	elseif node_name == "options" then
-		return self:modify_options(node)
-	elseif node_name == "network_options" then
-		return self:modify_network_options(node)
-	elseif node_name == "user_interface_options" then
-		return self:modify_user_interface_options(node)
-	elseif node_name == "vr_options" then
-		return self:modify_vr_options(node)
-	elseif node_name == "adv_options" then
-		return self:modify_adv_options(node)
-	elseif node_name == "accessibility_options" then
-		return self:modify_accessibility_options(node)
-	elseif node_name == "socialhub_options" then
-		return self:modify_socialhub_options(node)
+	if modify_func and type(modify_func) == "function" then
+		return modify_func(self, node)
 	end
 end
 
@@ -10385,6 +10384,38 @@ function MenuOptionInitiator:modify_controls(node)
 		end
 
 		sticky_aim_item:set_value(option_value)
+	end
+
+	local tap_choice_setting = nil
+	local tap_to_interact = node:item("tap_to_interact_choice")
+
+	if tap_to_interact then
+		tap_choice_setting = managers.user:get_setting("tap_to_interact")
+
+		if tap_choice_setting then
+			tap_to_interact:set_value(tap_choice_setting)
+		end
+	end
+
+	local tap_to_interact_time = node:item("tap_to_interact_time_set")
+
+	if tap_to_interact_time then
+		local setting = managers.user:get_setting("tap_to_interact_time")
+
+		if setting then
+			tap_to_interact_time:set_value(setting)
+		end
+	end
+
+	option_value = "off"
+	local tap_to_interact_show_text = node:item("tap_to_interact_show_text_toggle")
+
+	if tap_to_interact_show_text then
+		if managers.user:get_setting("tap_to_interact_show_text") then
+			option_value = "on"
+		end
+
+		tap_to_interact_show_text:set_value(option_value)
 	end
 
 	local cs_item = node:item("camera_sensitivity")

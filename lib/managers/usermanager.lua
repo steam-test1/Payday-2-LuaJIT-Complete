@@ -104,7 +104,7 @@ function GenericUserManager:setup_setting_map()
 	self:setup_setting(49, "parallax_mapping", true)
 	self:setup_setting(50, "video_aa", not _G.IS_VR and "fxaa" or "off")
 	self:setup_setting(51, "workshop", false)
-	self:setup_setting(52, "enable_fov_based_sensitivity", false)
+	self:setup_setting(52, "enable_fov_based_sensitivity", true)
 	self:setup_setting(53, "quickplay_stealth", true)
 	self:setup_setting(54, "quickplay_loud", true)
 	self:setup_setting(55, "corpse_limit", 8)
@@ -155,6 +155,9 @@ function GenericUserManager:setup_setting_map()
 	self:setup_setting(103, "socialhub_invite", "all")
 	self:setup_setting(104, "socialhub_notification", "full")
 	self:setup_setting(105, "crimenet_filter_distance_epic", 3)
+	self:setup_setting(106, "tap_to_interact", "off")
+	self:setup_setting(107, "tap_to_interact_time", 1)
+	self:setup_setting(108, "tap_to_interact_show_text", false)
 	self:setup_setting(109, "alt_hud_ammo", false)
 	self:setup_setting(200, "use_telemetry", false)
 	self:setup_setting(201, "use_gamesight", false)
@@ -210,7 +213,9 @@ function GenericUserManager:reset_controls_setting_map()
 		"enable_camera_sensitivity_separate",
 		"camera_zoom_sensitivity_x",
 		"camera_zoom_sensitivity_y",
-		"sticky_aim"
+		"sticky_aim",
+		"tap_to_interact",
+		"tap_to_interact_time"
 	}
 
 	for _, name in pairs(settings) do
@@ -401,6 +406,71 @@ function GenericUserManager:has_setting_changed(old_value, new_value)
 		return false
 	else
 		return old_value ~= new_value
+	end
+end
+
+function GenericUserManager:check_add_setting_clbks_to_obj(obj, to_add)
+	if type(obj) ~= "table" then
+		Application:error("[GenericUserManager:check_add_setting_clbks_to_obj] obj isn't a table. ", type(obj), inspect(obj))
+
+		return
+	end
+
+	local clbks = to_add or obj.settings_clbks_to_add
+
+	if not clbks then
+		Application:error("[GenericUserManager:check_add_setting_clbks_to_obj] No callbacks sent and no 'settings_clbks_to_add' table found in obj.", inspect(obj))
+
+		return
+	end
+
+	obj._setting_clbks = obj._setting_clbks or {}
+
+	for sett_name, sett_data in pairs(to_add or obj.settings_clbks_to_add) do
+		if not obj._setting_clbks[sett_name] then
+			local data = type(sett_data) == "table" and sett_data or {}
+			local var_name = data.var_name or "_setting_" .. tostring(sett_name)
+			obj[var_name] = self:get_setting(sett_name)
+			obj._setting_clbks[sett_name] = data.clbk or data.clbk_name and callback(obj, obj, data.clbk_name) or function (setting_name, old_value, new_value)
+				obj[var_name] = new_value
+			end
+
+			self:add_setting_changed_callback(sett_name, obj._setting_clbks[sett_name], data.trigger_default_now)
+		end
+	end
+end
+
+function GenericUserManager:check_remove_setting_clbks_from_obj(obj, to_remove)
+	if not obj._setting_clbks or not next(obj._setting_clbks) then
+		return
+	end
+
+	if to_remove then
+		local rem_type = type(to_remove)
+
+		if rem_type == "string" or rem_type == "number" then
+			if obj._setting_clbks[to_remove] then
+				self:remove_setting_changed_callback(to_remove, obj._setting_clbks[to_remove])
+
+				obj._setting_clbks[to_remove] = nil
+			end
+		elseif rem_type == "table" then
+			for sett_name, _ in pairs(to_remove) do
+				if obj._setting_clbks[to_remove] then
+					self:remove_setting_changed_callback(to_remove, obj._setting_clbks[to_remove])
+
+					obj._setting_clbks[to_remove] = nil
+				end
+			end
+		else
+			Application:error("[GenericUserManager:check_remove_setting_clbks_from_obj] Invalid 'to_remove' parameter: " .. rem_type, inspect(to_remove))
+		end
+	else
+		for sett_name, set_clbk in pairs(obj._setting_clbks) do
+			self:remove_setting_changed_callback(sett_name, set_clbk)
+		end
+
+		obj._setting_clbks = nil
 	end
 end
 

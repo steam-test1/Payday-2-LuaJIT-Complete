@@ -15,6 +15,3 @@ end
 function PlayerEmpty:update(t, dt)
 	PlayerMovementState.update(self, t, dt)
 end
-
-function PlayerEmpty:destroy()
-end

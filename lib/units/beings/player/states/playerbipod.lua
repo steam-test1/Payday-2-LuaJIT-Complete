@@ -156,7 +156,9 @@ function PlayerBipod:_update_check_actions(t, dt)
 	local input = self:_get_input(t, dt)
 
 	self:_determine_move_direction()
-	self:_update_interaction_timers(t)
+
+	local new_action = self:_update_interaction_timers(t)
+
 	self:_update_throw_projectile_timers(t, input)
 	self:_update_reload_timers(t, dt, input)
 	self:_update_melee_timers(t, input)
@@ -172,8 +174,7 @@ function PlayerBipod:_update_check_actions(t, dt)
 
 	self:_update_foley(t, input)
 
-	local new_action = false
-	new_action = self:_check_action_reload(t, input)
+	new_action = new_action or self:_check_action_reload(t, input)
 	new_action = new_action or self:_check_action_weapon_gadget(t, input)
 
 	if not new_action then

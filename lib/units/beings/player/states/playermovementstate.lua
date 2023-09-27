@@ -1,7 +1,29 @@
 PlayerMovementState = PlayerMovementState or class()
+PlayerMovementState.settings_clbks_to_add = {
+	hold_to_steelsight = true,
+	hold_to_run = true,
+	hold_to_duck = true,
+	fov_multiplier = true,
+	use_headbob = true,
+	aim_assist = true,
+	tap_to_interact = {
+		clbk_name = "_clbk_sett_var_changed"
+	},
+	tap_to_interact_time = {
+		clbk_name = "_clbk_sett_var_changed"
+	},
+	tap_to_interact_show_text = {
+		clbk_name = "_clbk_sett_var_changed"
+	},
+	accessibility_dot_hide_ads = {
+		var_name = "_setting_dot_hide_ads"
+	}
+}
 
 function PlayerMovementState:init(unit)
 	self._unit = unit
+
+	managers.user:check_add_setting_clbks_to_obj(self)
 end
 
 function PlayerMovementState:enter(state_data, enter_data)
@@ -65,7 +87,17 @@ function PlayerMovementState:save(data)
 end
 
 function PlayerMovementState:pre_destroy()
+	if managers.user then
+		managers.user:check_remove_setting_clbks_from_obj(self)
+	end
 end
 
 function PlayerMovementState:destroy()
+	if managers.user then
+		managers.user:check_remove_setting_clbks_from_obj(self)
+	end
+end
+
+function PlayerMovementState:_clbk_sett_var_changed(setting_name, old_value, new_value)
+	self["_setting_" .. setting_name] = new_value ~= "off" and new_value or nil
 end

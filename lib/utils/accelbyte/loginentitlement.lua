@@ -140,9 +140,9 @@ function Login:LoginWithEpicToken(ticket, callback)
 		cat_print("accelbyte", "[AccelByte] Callback LoginWithEpicToken : " .. IamEpicPlatformUrl)
 		cat_print("accelbyte", "[AccelByte] Error_code : " .. error_code)
 		cat_print("accelbyte", "[AccelByte] Status_code : " .. status_code)
-		cat_print("accelbyte", "[AccelByte] Response Body : " .. response_body)
+		cat_print("accelbyte", "[AccelByte] Response Body : " .. tostring(response_body))
 
-		local response_json = json.decode(response_body)
+		local response_json = response_body and json.decode(response_body) or {}
 
 		Login:SerializeJsonString(response_json)
 		cat_print("accelbyte", "[AccelByte] Display name : " .. tostring(self.player_session.display_name))
@@ -174,9 +174,9 @@ function Login:LoginWithSteamToken(ticket, callback)
 		cat_print("accelbyte", "[AccelByte] Callback LoginWithSteamToken : " .. IamSteamPlatformUrl)
 		cat_print("accelbyte", "[AccelByte] Error_code : " .. error_code)
 		cat_print("accelbyte", "[AccelByte] Status_code : " .. status_code)
-		cat_print("accelbyte", "Response Body : " .. response_body)
+		cat_print("accelbyte", "[AccelByte] Response Body : " .. tostring(response_body))
 
-		local response_json = json.decode(response_body)
+		local response_json = response_body and json.decode(response_body) or {}
 
 		Login:SerializeJsonString(response_json)
 		cat_print("accelbyte", "[AccelByte] Display name : " .. tostring(self.player_session.display_name))

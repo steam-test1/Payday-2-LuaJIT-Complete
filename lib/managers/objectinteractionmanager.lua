@@ -228,6 +228,10 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 			local distance = mvec3_dis(player_pos, self._active_unit:interaction():interact_position())
 			locked = self._active_unit:interaction():interact_dont_interupt_on_distance() or distance <= self._active_unit:interaction():interact_distance()
 			locked = locked or _G.IS_VR
+
+			if self._active_unit:interaction():text_dirty() then
+				self._active_unit:interaction():update_show_interact(player_unit, self._active_locator)
+			end
 		end
 	end
 
@@ -360,12 +364,13 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 				self._active_locator = nil
 			end
 		elseif alive(self._active_unit) and self._active_unit:interaction():dirty() then
-			self._active_unit:interaction():set_dirty(false)
 			self._active_unit:interaction():unselect()
 
 			if not self._active_unit:interaction():selected(player_unit, self._active_locator, hand_id) then
 				active_unit = nil
 			end
+		elseif alive(self._active_unit) and self._active_unit:interaction():text_dirty() then
+			self._active_unit:interaction():update_show_interact(player_unit, self._active_locator)
 		end
 
 		self._active_unit = active_unit

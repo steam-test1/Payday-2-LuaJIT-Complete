@@ -113,6 +113,7 @@ function PlayerFatal:_update_check_actions(t, dt)
 	self:_update_foley(t, input)
 
 	local new_action = nil
+	local cur_state = self._ext_movement:current_state_name()
 
 	if input.btn_stats_screen_press then
 		self._unit:base():set_stats_screen_visible(true)
@@ -120,7 +121,13 @@ function PlayerFatal:_update_check_actions(t, dt)
 		self._unit:base():set_stats_screen_visible(false)
 	end
 
-	new_action = new_action or self:_check_action_interact(t, input)
+	if not new_action then
+		new_action = self:_check_action_interact(t, input)
+
+		if cur_state ~= self._ext_movement:current_state_name() then
+			return
+		end
+	end
 
 	if not new_action then
 		local projectile_entry = managers.blackmarket:equipped_projectile()
@@ -174,13 +181,17 @@ function PlayerFatal:_end_action_dead(t)
 	self:_activate_mover(Idstring("stand"))
 end
 
-function PlayerFatal:pre_destroy(unit)
+function PlayerFatal:pre_destroy(...)
+	PlayerFatal.super.pre_destroy(self, ...)
+
 	if Network:is_server() then
 		PlayerBleedOut._unregister_revive_SO(self)
 	end
 end
 
-function PlayerFatal:destroy()
+function PlayerFatal:destroy(...)
+	PlayerFatal.super.destroy(self, ...)
+
 	if Network:is_server() then
 		PlayerBleedOut._unregister_revive_SO(self)
 	end

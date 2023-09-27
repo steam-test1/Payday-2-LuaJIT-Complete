@@ -126,7 +126,7 @@ function HUDInteraction:hide_interaction_bar(complete)
 	end
 end
 
-function HUDInteraction:set_bar_valid(valid, text_id)
+function HUDInteraction:set_bar_valid(valid, text_id, macros)
 	local texture = valid and "guis/textures/pd2/hud_progress_active" or "guis/textures/pd2/hud_progress_invalid"
 
 	self._interact_circle:set_image(texture)
@@ -135,7 +135,7 @@ function HUDInteraction:set_bar_valid(valid, text_id)
 	local invalid_text = self._hud_panel:child(self._child_ivalid_name_text)
 
 	if text_id then
-		invalid_text:set_text(managers.localization:to_upper_text(text_id))
+		invalid_text:set_text(managers.localization:to_upper_text(text_id, macros))
 	end
 
 	invalid_text:set_visible(not valid)

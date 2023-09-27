@@ -157,6 +157,7 @@ function PlayerBleedOut:_update_check_actions(t, dt)
 	self:_update_foley(t, input)
 
 	local new_action = nil
+	local cur_state = self._ext_movement:current_state_name()
 	new_action = new_action or self:_check_action_weapon_gadget(t, input)
 	new_action = new_action or self:_check_action_weapon_firemode(t, input)
 	new_action = new_action or self:_check_action_reload(t, input)
@@ -172,7 +173,15 @@ function PlayerBleedOut:_update_check_actions(t, dt)
 
 	new_action = new_action or self:_check_action_throw_projectile(t, input)
 	new_action = new_action or self:_check_action_equip(t, input)
-	new_action = new_action or self:_check_action_interact(t, input)
+
+	if not new_action then
+		new_action = self:_check_action_interact(t, input)
+
+		if cur_state ~= self._ext_movement:current_state_name() then
+			return
+		end
+	end
+
 	new_action = new_action or self:_check_action_steelsight(t, input)
 	new_action = new_action or self:_check_action_deploy_underbarrel(t, input)
 
@@ -591,15 +600,17 @@ function PlayerBleedOut:clbk_deathguard_administered(unit)
 	unit:movement():set_cool(false)
 end
 
-function PlayerBleedOut:pre_destroy(unit)
-	PlayerBleedOut.super.pre_destroy(self, unit)
+function PlayerBleedOut:pre_destroy(...)
+	PlayerBleedOut.super.pre_destroy(self, ...)
 
 	if Network:is_server() then
 		self:_unregister_revive_SO()
 	end
 end
 
-function PlayerBleedOut:destroy()
+function PlayerBleedOut:destroy(...)
+	PlayerBleedOut.super.destroy(self, ...)
+
 	if Network:is_server() then
 		self:_unregister_revive_SO()
 	end

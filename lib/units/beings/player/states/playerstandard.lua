@@ -359,7 +359,14 @@ function PlayerStandard:update(t, dt)
 	self:_calculate_standard_variables(t, dt)
 	self:_update_ground_ray()
 	self:_update_fwd_ray()
+
+	local cur_state = self._ext_movement:current_state_name()
+
 	self:_update_check_actions(t, dt)
+
+	if cur_state ~= self._ext_movement:current_state_name() then
+		return
+	end
 
 	if self._menu_closed_fire_cooldown > 0 then
 		self._menu_closed_fire_cooldown = self._menu_closed_fire_cooldown - dt
@@ -484,9 +491,6 @@ function PlayerStandard:_calculate_standard_variables(t, dt)
 			mvector3.multiply(self._last_velocity_xy, math.max(0, fwd_dot))
 		end
 	end
-
-	self._setting_hold_to_run = managers.user:get_setting("hold_to_run")
-	self._setting_hold_to_duck = managers.user:get_setting("hold_to_duck")
 end
 
 local tmp_ground_from_vec = Vector3()
@@ -569,14 +573,15 @@ function PlayerStandard:force_input(inputs, release_inputs)
 end
 
 function PlayerStandard:_create_on_controller_disabled_input()
-	local release_interact = Global.game_settings.single_player or not managers.menu:get_controller():get_input_bool("interact")
+	local is_single_player = Global.game_settings.single_player
+	local menu_controller = managers.menu:get_controller()
 	local input = {
-		btn_melee_release = true,
-		btn_steelsight_release = true,
 		is_customized = true,
-		btn_use_item_release = true,
-		btn_projectile_release = true,
-		btn_interact_release = release_interact
+		btn_steelsight_release = is_single_player or not menu_controller:get_input_bool("secondary_attack"),
+		btn_interact_release = not self._force_holding_interact and (is_single_player or not menu_controller:get_input_bool("interact")),
+		btn_use_item_release = not self._force_holding_interact and (is_single_player or not menu_controller:get_input_bool("use_item")),
+		btn_melee_release = is_single_player or not menu_controller:get_input_bool("melee"),
+		btn_projectile_release = is_single_player or not menu_controller:get_input_bool("throw_grenade")
 	}
 
 	return input
@@ -592,9 +597,14 @@ function PlayerStandard:_get_input(t, dt, paused)
 			return self:_create_on_controller_disabled_input()
 		end
 	elseif not self._state_data.controller_enabled then
+		local menu_controller = managers.menu:get_controller()
 		local input = {
 			is_customized = true,
-			btn_interact_release = managers.menu:get_controller():get_input_released("interact")
+			btn_steelsight_release = menu_controller:get_input_released("secondary_attack"),
+			btn_interact_release = not self._force_holding_interact and menu_controller:get_input_released("interact"),
+			btn_use_item_release = not self._force_holding_interact and menu_controller:get_input_released("use_item"),
+			btn_melee_release = menu_controller:get_input_released("melee"),
+			btn_projectile_release = menu_controller:get_input_released("throw_grenade")
 		}
 
 		return input
@@ -636,12 +646,14 @@ function PlayerStandard:_get_input(t, dt, paused)
 		btn_steelsight_state = downed and self._controller:get_input_bool("secondary_attack"),
 		btn_interact_press = pressed and self._controller:get_input_pressed("interact"),
 		btn_interact_release = released and self._controller:get_input_released("interact"),
+		btn_interact_state = downed and self._controller:get_input_bool("interact"),
 		btn_run_press = pressed and self._controller:get_input_pressed("run"),
 		btn_run_release = released and self._controller:get_input_released("run"),
 		btn_run_state = downed and self._controller:get_input_bool("run"),
 		btn_switch_weapon_press = pressed and self._controller:get_input_pressed("switch_weapon"),
 		btn_use_item_press = pressed and self._controller:get_input_pressed("use_item"),
 		btn_use_item_release = released and self._controller:get_input_released("use_item"),
+		btn_use_item_state = downed and self._controller:get_input_bool("use_item"),
 		btn_melee_press = pressed and self._controller:get_input_pressed("melee"),
 		btn_melee_release = released and self._controller:get_input_released("melee"),
 		btn_meleet_state = downed and self._controller:get_input_bool("melee"),
@@ -745,12 +757,25 @@ function PlayerStandard:_update_check_actions(t, dt, paused)
 	local input = self:_get_input(t, dt, paused)
 
 	self:_determine_move_direction()
-	self:_update_interaction_timers(t)
+
+	local cur_state = self._ext_movement:current_state_name()
+	local new_action = self:_update_interaction_timers(t)
+
+	if cur_state ~= self._ext_movement:current_state_name() then
+		return
+	end
+
 	self:_update_throw_projectile_timers(t, input)
 	self:_update_reload_timers(t, dt, input)
 	self:_update_melee_timers(t, input)
 	self:_update_charging_weapon_timers(t, input)
-	self:_update_use_item_timers(t, input)
+
+	new_action = self:_update_use_item_timers(t, input) or new_action
+
+	if cur_state ~= self._ext_movement:current_state_name() then
+		return
+	end
+
 	self:_update_equip_weapon_timers(t, input)
 	self:_update_running_timers(t)
 	self:_update_zipline_timers(t, dt)
@@ -773,7 +798,6 @@ function PlayerStandard:_update_check_actions(t, dt, paused)
 
 	self:_update_foley(t, input)
 
-	local new_action = nil
 	local anim_data = self._ext_anim
 	new_action = new_action or self:_check_action_weapon_gadget(t, input)
 
@@ -795,9 +819,24 @@ function PlayerStandard:_update_check_actions(t, dt, paused)
 	end
 
 	new_action = new_action or self:_check_action_equip(t, input)
-	new_action = new_action or self:_check_use_item(t, input)
+
+	if not new_action then
+		new_action = self:_check_use_item(t, input)
+
+		if cur_state ~= self._ext_movement:current_state_name() then
+			return
+		end
+	end
+
 	new_action = new_action or self:_check_action_throw_projectile(t, input)
-	new_action = new_action or self:_check_action_interact(t, input)
+
+	if not new_action then
+		new_action = self:_check_action_interact(t, input)
+
+		if cur_state ~= self._ext_movement:current_state_name() then
+			return
+		end
+	end
 
 	self:_check_action_jump(t, input)
 	self:_check_action_run(t, input)
@@ -1076,9 +1115,7 @@ function PlayerStandard:_check_step(t)
 end
 
 function PlayerStandard:_update_crosshair_offset(t)
-	local name_id = self._equipped_unit:base():get_name_id()
-
-	if self._state_data.in_steelsight and managers.user:get_setting("accessibility_dot_hide_ads") then
+	if self._state_data.in_steelsight and self._setting_dot_hide_ads then
 		managers.hud:set_accessibility_dot_visible(false)
 	else
 		managers.hud:set_accessibility_dot_visible(true)
@@ -1136,7 +1173,9 @@ function PlayerStandard:_stance_entered(unequipped)
 	stances = (self:_is_meleeing() or self:_is_throwing_projectile()) and tweak_data.player.stances.default or tweak_data.player.stances[stance_id] or tweak_data.player.stances.default
 	local misc_attribs = stances.standard
 	misc_attribs = (not self:_is_using_bipod() or self:_is_throwing_projectile() or stances.bipod) and (self._state_data.in_steelsight and stances.steelsight or self._state_data.ducking and stances.crouched or stances.standard)
-	local duration = tweak_data.player.TRANSITION_DURATION + (self._equipped_unit:base():transition_duration() or 0)
+	local head_duration = tweak_data.player.TRANSITION_DURATION
+	local head_duration_multiplier = 1
+	local duration = head_duration + (self._equipped_unit:base():transition_duration() or 0)
 	local duration_multiplier = self._state_data.in_steelsight and 1 / self._equipped_unit:base():enter_steelsight_speed_multiplier() or 1
 
 	if self._instant_stance_transition then
@@ -1146,7 +1185,7 @@ function PlayerStandard:_stance_entered(unequipped)
 
 	local new_fov = self:get_zoom_fov(misc_attribs) + 0
 
-	self._camera_unit:base():clbk_stance_entered(misc_attribs.shoulders, head_stance, misc_attribs.vel_overshot, new_fov, misc_attribs.shakers, stance_mod, duration_multiplier, duration)
+	self._camera_unit:base():clbk_stance_entered(misc_attribs.shoulders, head_stance, misc_attribs.vel_overshot, new_fov, misc_attribs.shakers, stance_mod, duration_multiplier, duration, head_duration_multiplier, head_duration)
 	managers.menu:set_mouse_sensitivity(self:in_steelsight())
 end
 
@@ -1290,7 +1329,7 @@ function PlayerStandard:_start_action_steelsight(t, gadget_state)
 
 	self._state_data.reticle_obj = weap_base.get_reticle_obj and weap_base:get_reticle_obj()
 
-	if managers.controller:get_default_wrapper_type() ~= "pc" and managers.user:get_setting("aim_assist") then
+	if managers.controller:get_default_wrapper_type() ~= "pc" and self._setting_aim_assist then
 		local closest_ray = self._equipped_unit:base():check_autoaim(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), nil, true)
 
 		self._camera_unit:base():clbk_aim_assist(closest_ray)
@@ -1395,7 +1434,7 @@ function PlayerStandard:_start_action_running(t)
 		return
 	end
 
-	if (not self._state_data.shake_player_start_running or not self._ext_camera:shaker():is_playing(self._state_data.shake_player_start_running)) and managers.user:get_setting("use_headbob") then
+	if (not self._state_data.shake_player_start_running or not self._ext_camera:shaker():is_playing(self._state_data.shake_player_start_running)) and self._setting_use_headbob then
 		self._state_data.shake_player_start_running = self._ext_camera:play_shaker("player_start_running", 0.75)
 	end
 
@@ -1440,7 +1479,7 @@ function PlayerStandard:_interupt_action_running(t)
 end
 
 function PlayerStandard:_start_action_ducking(t)
-	if self:_interacting() or self:_on_zipline() then
+	if self:_on_zipline() then
 		return
 	end
 
@@ -1849,11 +1888,197 @@ function PlayerStandard:_check_action_use_ability(t, input)
 	return action_wanted
 end
 
+function PlayerStandard:_show_tap_to_interact_text(text_id, int_obj)
+	if self._setting_tap_to_interact_show_text or self._setting_tap_to_interact then
+		local int_ext = int_obj and int_obj:interaction()
+		local int_tweak = int_ext and int_ext.tweak_data and tweak_data.interaction[int_ext.tweak_data]
+
+		if int_tweak and int_tweak.cancel_text_add then
+			text_id = text_id .. tostring(int_tweak.cancel_text_add)
+		end
+
+		local macro = (self._use_item_expire_t or self._start_standard_expire_t) and "use_item" or "interact"
+		local text_data = {
+			text = managers.localization:text(text_id, {
+				BTN_INTERACT = managers.localization:btn_macro(macro, false)
+			})
+		}
+
+		if self._use_item_expire_t or self._exit_vehicle_expire_t or self._start_standard_expire_t then
+			managers.hud:show_progress_timer(text_data)
+		else
+			managers.hud:show_interact(text_data)
+		end
+	end
+end
+
+function PlayerStandard:_clear_tap_to_interact()
+	self._force_holding_interact = false
+	self._force_holding_interact_t = nil
+	self._force_holding_interact_t_inv = nil
+
+	if self._setting_tap_to_interact_show_text or self._setting_tap_to_interact then
+		local int_obj = self._interact_params and self._interact_params.object
+
+		if alive(int_obj) and int_obj == (self._interaction or managers.interaction):active_unit() then
+			int_obj:interaction():set_text_dirty(true)
+		end
+	end
+end
+
+function PlayerStandard:_chk_tap_to_interact_enable(t, int_timer, int_obj, ...)
+	if int_timer > 0 then
+		local tap_int_func = self._setting_tap_to_interact and self["_check_tap_to_interact_" .. self._setting_tap_to_interact]
+
+		if tap_int_func then
+			tap_int_func(self, t, int_timer, int_obj, ...)
+		elseif self._setting_tap_to_interact_show_text then
+			self:_show_tap_to_interact_text("hud_int_release_cancel", int_obj)
+		end
+	end
+end
+
+function PlayerStandard:_check_tap_to_interact_tap(t, int_timer, int_obj)
+	self._force_holding_interact = false
+	self._force_holding_interact_t = nil
+	local threshold = math.max(0.1, self._setting_tap_to_interact_time or 0)
+	self._force_holding_interact_t_inv = t + threshold
+
+	self:_show_tap_to_interact_text("hud_int_press_cancel", int_obj)
+end
+
+function PlayerStandard:_check_tap_to_interact_toggle_hold(t, int_timer, int_obj)
+	self._force_holding_interact_t_inv = nil
+
+	if not self._setting_tap_to_interact_time then
+		self._force_holding_interact = false
+		self._force_holding_interact_t = nil
+
+		if self._setting_tap_to_interact_show_text then
+			self:_show_tap_to_interact_text("hud_int_release_cancel", int_obj)
+		end
+	elseif self._setting_tap_to_interact_time <= 0 then
+		self._force_holding_interact = true
+		self._force_holding_interact_t = nil
+
+		self:_show_tap_to_interact_text("hud_int_press_cancel", int_obj)
+	else
+		self._force_holding_interact = false
+		self._force_holding_interact_t = t + self._setting_tap_to_interact_time
+
+		if self._setting_tap_to_interact_show_text then
+			self:_show_tap_to_interact_text("hud_int_release_cancel", int_obj)
+		end
+	end
+end
+
+function PlayerStandard:_check_tap_to_interact_toggle_timer(t, int_timer, int_obj)
+	self._force_holding_interact_t = nil
+	self._force_holding_interact_t_inv = nil
+
+	if self._setting_tap_to_interact_time and self._setting_tap_to_interact_time <= int_timer then
+		self._force_holding_interact = true
+
+		self:_show_tap_to_interact_text("hud_int_press_cancel", int_obj)
+	else
+		self._force_holding_interact = false
+
+		if self._setting_tap_to_interact_show_text then
+			self:_show_tap_to_interact_text("hud_int_release_cancel", int_obj)
+		end
+	end
+end
+
+function PlayerStandard:_check_tap_to_interact_inputs(t, pressed, released, holding)
+	if self._force_holding_interact and not self._setting_tap_to_interact then
+		self._force_holding_interact = false
+		self._force_holding_interact_t = nil
+		self._force_holding_interact_t_inv = nil
+		pressed = false
+		released = true
+		holding = false
+
+		if self._start_intimidate then
+			self._start_intimidate = false
+		end
+	end
+
+	if pressed then
+		if self._force_holding_interact or self._force_holding_interact_t or self._force_holding_interact_t_inv then
+			self._force_holding_interact = false
+			self._force_holding_interact_t = nil
+			self._force_holding_interact_t_inv = nil
+			pressed = false
+			released = true
+			holding = false
+		end
+	elseif self._force_holding_interact_t then
+		if not holding then
+			self._force_holding_interact_t = nil
+		elseif self._force_holding_interact_t <= t then
+			self._force_holding_interact = true
+			self._force_holding_interact_t = nil
+			local obj = self._interact_params and self._interact_params.object
+
+			self:_show_tap_to_interact_text("hud_int_press_cancel", alive(obj) and obj)
+		end
+	elseif self._force_holding_interact_t_inv then
+		if not holding then
+			self._force_holding_interact = true
+			self._force_holding_interact_t_inv = nil
+		elseif self._force_holding_interact_t_inv <= t then
+			self._force_holding_interact_t_inv = nil
+
+			if self._setting_tap_to_interact_show_text then
+				local obj = self._interact_params and self._interact_params.object
+
+				self:_show_tap_to_interact_text("hud_int_release_cancel", alive(obj) and obj)
+			elseif self._start_standard_expire_t then
+				managers.hud:show_progress_timer({
+					text = managers.localization:text("hud_starting_heist")
+				})
+			elseif self._exit_vehicle_expire_t then
+				managers.hud:show_progress_timer({
+					text = managers.localization:text("hud_action_exit_vehicle")
+				})
+			else
+				local obj = self._interact_params and self._interact_params.object
+
+				if alive(obj) then
+					obj:interaction():set_text_dirty(true)
+				end
+			end
+		end
+	end
+
+	if self._force_holding_interact then
+		pressed = false
+		released = false
+		holding = true
+
+		if self._start_intimidate then
+			self._start_intimidate = false
+		end
+	end
+
+	return pressed, released, holding
+end
+
 function PlayerStandard:_check_action_interact(t, input)
 	local keyboard = self._controller.TYPE == "pc" or managers.controller:get_default_wrapper_type() == "pc"
+	local pressed, released, holding = nil
+
+	if self._interact_expire_t then
+		pressed, released, holding = self:_check_tap_to_interact_inputs(t, input.btn_interact_press, input.btn_interact_release, input.btn_interact_state)
+	else
+		holding = input.btn_interact_state
+		released = input.btn_interact_release
+		pressed = input.btn_interact_press
+	end
+
 	local new_action, timer, interact_object = nil
 
-	if input.btn_interact_press then
+	if pressed then
 		if _G.IS_VR then
 			self._interact_hand = input.btn_interact_left_press and PlayerHand.LEFT or PlayerHand.RIGHT
 		end
@@ -1870,6 +2095,7 @@ function PlayerStandard:_check_action_interact(t, input)
 
 				self._ext_camera:camera_unit():base():set_limits(80, 50)
 				self:_start_action_interact(t, input, timer, interact_object)
+				self:_chk_tap_to_interact_enable(t, timer, interact_object)
 			end
 
 			if not new_action then
@@ -1886,9 +2112,7 @@ function PlayerStandard:_check_action_interact(t, input)
 		force_secondary_intimidate = true
 	end
 
-	if input.btn_interact_release then
-		local released = true
-
+	if released then
 		if _G.IS_VR then
 			local release_hand = input.btn_interact_left_release and PlayerHand.LEFT or PlayerHand.RIGHT
 			released = release_hand == self._interact_hand
@@ -1917,7 +2141,7 @@ function PlayerStandard:_check_action_interact(t, input)
 end
 
 function PlayerStandard:_action_interact_forbidden()
-	local action_forbidden = self:chk_action_forbidden("interact") or self._unit:base():stats_screen_visible() or self:_interacting() or self._ext_movement:has_carry_restriction() or self:is_deploying() or self:_changing_weapon() or self:_is_throwing_projectile() or self:_is_meleeing() or self:_on_zipline()
+	local action_forbidden = self:chk_action_forbidden("interact") or self._unit:base():stats_screen_visible() or self:_interacting() or self._ext_movement:has_carry_restriction() or self:is_deploying() or self:_is_throwing_projectile() or self:_is_meleeing() or self:_on_zipline()
 
 	return action_forbidden
 end
@@ -1975,6 +2199,8 @@ function PlayerStandard:_start_action_interact(t, input, timer, interact_object)
 end
 
 function PlayerStandard:_interupt_action_interact(t, input, complete)
+	self:_clear_tap_to_interact()
+
 	if self._interact_expire_t then
 		self._interact_expire_t = nil
 
@@ -2035,6 +2261,8 @@ function PlayerStandard:_update_interaction_timers(t)
 				self:_end_action_interact(t)
 
 				self._interact_expire_t = nil
+
+				return true
 			end
 		end
 	end
@@ -2796,11 +3024,20 @@ function PlayerStandard:_update_reload_timers(t, dt, input)
 end
 
 function PlayerStandard:_check_use_item(t, input)
-	local new_action = nil
-	local action_wanted = input.btn_use_item_press
+	local pressed, released, holding = nil
 
-	if action_wanted then
-		local action_forbidden = self._use_item_expire_t or self:_interacting() or self:_changing_weapon() or self:_is_throwing_projectile() or self:_is_meleeing()
+	if self._use_item_expire_t then
+		pressed, released, holding = self:_check_tap_to_interact_inputs(t, input.btn_use_item_press, input.btn_use_item_release, input.btn_use_item_state)
+	else
+		holding = input.btn_use_item_state
+		released = input.btn_use_item_release
+		pressed = input.btn_use_item_press
+	end
+
+	local new_action = nil
+
+	if pressed then
+		local action_forbidden = self._use_item_expire_t or self:_interacting() or self:_is_throwing_projectile() or self:_is_meleeing()
 
 		if not action_forbidden and managers.player:can_use_selected_equipment(self._unit) then
 			self:_start_action_use_item(t)
@@ -2809,7 +3046,7 @@ function PlayerStandard:_check_use_item(t, input)
 		end
 	end
 
-	if input.btn_use_item_release then
+	if released then
 		self:_interupt_action_use_item()
 	end
 
@@ -2820,8 +3057,37 @@ function PlayerStandard:_update_use_item_timers(t, input)
 	if self._use_item_expire_t then
 		local valid = managers.player:check_selected_equipment_placement_valid(self._unit)
 		local deploy_timer = managers.player:selected_equipment_deploy_timer()
+		local text_id, macros = nil
 
-		managers.hud:set_progress_timer_bar_valid(valid, not valid and "hud_deploy_valid_help")
+		if not valid then
+			if self._setting_tap_to_interact_show_text or self._setting_tap_to_interact and (self._force_holding_interact or self._force_holding_interact_t_inv) then
+				if self._force_holding_interact or self._force_holding_interact_t_inv then
+					text_id = "hud_int_press_cancel"
+				else
+					text_id = "hud_int_release_cancel"
+				end
+
+				macros = {
+					BTN_INTERACT = managers.localization:btn_macro("use_item", false)
+				}
+			else
+				text_id = "hud_deploy_valid_help"
+			end
+		elseif not self._setting_tap_to_interact_show_text and self._setting_tap_to_interact then
+			if self._force_holding_interact or self._force_holding_interact_t_inv then
+				self:_show_tap_to_interact_text("hud_int_press_cancel", nil)
+			else
+				local text = managers.player:selected_equipment_deploying_text() or managers.localization:text("hud_deploying_equipment", {
+					EQUIPMENT = managers.player:selected_equipment_name()
+				})
+
+				managers.hud:show_progress_timer({
+					text = text
+				})
+			end
+		end
+
+		managers.hud:set_progress_timer_bar_valid(valid, text_id, macros)
 		managers.hud:set_progress_timer_bar_width(deploy_timer - (self._use_item_expire_t - t), deploy_timer)
 
 		if self._use_item_expire_t <= t then
@@ -2866,6 +3132,8 @@ function PlayerStandard:_start_action_use_item(t)
 		self._unit:sound_source():post_event(post_event)
 	end
 
+	self:_chk_tap_to_interact_enable(t, deploy_timer)
+
 	local equipment_id = managers.player:selected_equipment_id()
 
 	managers.network:session():send_to_peers_synched("sync_teammate_progress", 2, true, equipment_id, deploy_timer, false)
@@ -2889,6 +3157,8 @@ function PlayerStandard:_end_action_use_item(valid)
 end
 
 function PlayerStandard:_interupt_action_use_item(t, input, complete)
+	self:_clear_tap_to_interact()
+
 	if self._use_item_expire_t then
 		self._use_item_expire_t = nil
 		local tweak_data = self._equipped_unit:base():weapon_tweak_data()
@@ -2944,7 +3214,9 @@ function PlayerStandard:_update_equip_weapon_timers(t, input)
 
 		self._unequip_weapon_expire_t = nil
 
-		self:_start_action_equip_weapon(t)
+		if not self:_interacting() then
+			self:_start_action_equip_weapon(t)
+		end
 	end
 
 	if self._equip_weapon_expire_t and self._equip_weapon_expire_t <= t then
@@ -4226,7 +4498,7 @@ function PlayerStandard:_check_action_steelsight(t, input)
 	end
 
 	if self._state_data.reload_steelsight_expire_t and t < self._state_data.reload_steelsight_expire_t then
-		if managers.user:get_setting("hold_to_steelsight") and input.btn_steelsight_release then
+		if self._setting_hold_to_steelsight and input.btn_steelsight_release then
 			self._steelsight_wanted = false
 		elseif input.btn_steelsight_press then
 			self._steelsight_wanted = true
@@ -4235,7 +4507,7 @@ function PlayerStandard:_check_action_steelsight(t, input)
 		return new_action
 	end
 
-	if managers.user:get_setting("hold_to_steelsight") and input.btn_steelsight_release then
+	if self._setting_hold_to_steelsight and input.btn_steelsight_release then
 		self._steelsight_wanted = false
 
 		if self._state_data.in_steelsight then
@@ -4276,7 +4548,7 @@ end
 
 function PlayerStandard:get_zoom_fov(stance_data)
 	local fov = stance_data and stance_data.FOV or 75
-	local fov_multiplier = managers.user:get_setting("fov_multiplier")
+	local fov_multiplier = self._setting_fov_multiplier
 
 	if self._state_data.in_steelsight then
 		fov = self._equipped_unit:base():zoom()
@@ -5135,7 +5407,9 @@ function PlayerStandard:save(data)
 	end
 end
 
-function PlayerStandard:pre_destroy()
+function PlayerStandard:pre_destroy(...)
+	PlayerStandard.super.pre_destroy(self, ...)
+
 	if self._pos_reservation then
 		managers.navigation:unreserve_pos(self._pos_reservation)
 

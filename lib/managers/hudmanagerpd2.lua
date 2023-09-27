@@ -930,8 +930,8 @@ function HUDManager:set_progress_timer_bar_width(current, total)
 	self._progress_timer:set_interaction_bar_width(current, total)
 end
 
-function HUDManager:set_progress_timer_bar_valid(valid, text_id)
-	self._progress_timer:set_bar_valid(valid, text_id)
+function HUDManager:set_progress_timer_bar_valid(valid, text_id, macros)
+	self._progress_timer:set_bar_valid(valid, text_id, macros)
 end
 
 function HUDManager:hide_progress_timer_bar(complete)
