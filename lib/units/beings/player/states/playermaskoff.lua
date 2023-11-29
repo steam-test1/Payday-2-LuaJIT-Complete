@@ -158,7 +158,7 @@ end
 function PlayerMaskOff:_check_action_interact(t, input)
 	local pressed, released, holding = nil
 
-	if self._interact_expire_t then
+	if self._interact_expire_t and not self._start_standard_expire_t then
 		pressed, released, holding = self:_check_tap_to_interact_inputs(t, input.btn_interact_press, input.btn_interact_release, input.btn_interact_state)
 	else
 		holding = input.btn_interact_state
@@ -221,9 +221,9 @@ function PlayerMaskOff:_start_action_interact(t, input, timer, interact_object)
 end
 
 function PlayerMaskOff:_interupt_action_interact(t, input, complete)
-	self:_clear_tap_to_interact()
-
 	if self._interact_expire_t then
+		self:_clear_tap_to_interact()
+
 		self._interact_expire_t = nil
 
 		if alive(self._interact_params.object) then
@@ -252,7 +252,7 @@ end
 function PlayerMaskOff:_check_use_item(t, input)
 	local pressed, released, holding = nil
 
-	if self._start_standard_expire_t then
+	if self._start_standard_expire_t and not self._interact_expire_t then
 		pressed, released, holding = self:_check_tap_to_interact_inputs(t, input.btn_use_item_press, input.btn_use_item_release, input.btn_use_item_state)
 	else
 		holding = input.btn_use_item_state
@@ -306,9 +306,9 @@ function PlayerMaskOff:_start_action_state_standard(t)
 end
 
 function PlayerMaskOff:_interupt_action_start_standard(t, input, complete)
-	self:_clear_tap_to_interact()
-
 	if self._start_standard_expire_t then
+		self:_clear_tap_to_interact()
+
 		self._start_standard_expire_t = nil
 
 		managers.hud:hide_progress_timer_bar(complete)

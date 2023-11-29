@@ -5,8 +5,6 @@ function WINDLCManager:init_entitlements()
 	Global.dlc_manager.all_dlc_data.solus_clan.external = true
 	Global.dlc_manager.all_dlc_data.raidww2_clan.entitlement_id = "b00bcc69f3d84d4784974030e5ccb512"
 	Global.dlc_manager.all_dlc_data.raidww2_clan.external = true
-	Global.dlc_manager.all_dlc_data.john_wick_character.entitlement_id = "7398e1658f94491c97734f4106bafc0b"
-	Global.dlc_manager.all_dlc_data.john_wick_character.external = true
 	Global.dlc_manager.all_dlc_data.speedrunners.entitlement_id = "49c924e301054fc88c22c5cd232e573b"
 	Global.dlc_manager.all_dlc_data.speedrunners.external = true
 	Global.dlc_manager.all_dlc_data.e3_s15a.entitlement_id = "23a0aeacad244f859768aad406d9911e"

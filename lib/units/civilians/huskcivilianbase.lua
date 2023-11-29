@@ -11,7 +11,6 @@ function HuskCivilianBase:post_init()
 	self:set_anim_lod(1)
 
 	self._lod_stage = 1
-	self._allow_invisible = true
 	local spawn_state = nil
 
 	if self._spawn_state then
@@ -26,6 +25,8 @@ function HuskCivilianBase:post_init()
 		self._ext_movement:play_state(spawn_state)
 	end
 
+	self._ext_anim.idle_full_blend = true
+
 	self._ext_movement:post_init()
 	managers.enemy:register_civilian(self._unit)
 	self:enable_leg_arm_hitbox()
@@ -38,7 +39,11 @@ function HuskCivilianBase:sync_net_event(event_id)
 	if event_id == 1 then
 		managers.groupai:state():on_hostage_follow(managers.player:player_unit(), self._unit, true)
 	elseif event_id == 2 then
+		managers.groupai:state():on_hostage_follow(nil, self._unit, true)
+	elseif event_id == 3 then
 		managers.groupai:state():on_hostage_follow(managers.player:player_unit(), self._unit, false)
+	elseif event_id == 4 then
+		managers.groupai:state():on_hostage_follow(nil, self._unit, false)
 	end
 end
 

@@ -356,13 +356,13 @@ function CopLogicArrest._upd_enemy_detection(data)
 
 	if new_reaction ~= AIAttentionObject.REACT_ARREST then
 		if (not new_reaction or new_reaction < AIAttentionObject.REACT_SHOOT or not new_attention.verified or new_attention.dis >= 1500) and (my_data.in_position or not my_data.should_arrest and not my_data.should_stand_close) then
-			if data.char_tweak.calls_in and my_data.next_action_delay_t < data.t and not managers.groupai:state():is_police_called() and not my_data.calling_the_police and not my_data.turning and not data.unit:sound():speaking(data.t) then
+			if data.char_tweak.calls_in and my_data.next_action_delay_t < data.t and managers.groupai:state():can_police_be_called() and not managers.groupai:state():is_police_called() and not my_data.calling_the_police and not my_data.turning and not data.unit:sound():speaking(data.t) then
 				CopLogicArrest._call_the_police(data, my_data, true)
 
 				return
 			end
 
-			if (managers.groupai:state():is_police_called() or managers.groupai:state():chk_enemy_calling_in_area(managers.groupai:state():get_area_from_nav_seg_id(data.unit:movement():nav_tracker():nav_segment()), data.key)) and not my_data.calling_the_police then
+			if not managers.groupai:state():can_police_be_called() or (managers.groupai:state():is_police_called() or managers.groupai:state():chk_enemy_calling_in_area(managers.groupai:state():get_area_from_nav_seg_id(data.unit:movement():nav_tracker():nav_segment()), data.key)) and not my_data.calling_the_police then
 				local wanted_state = CopLogicBase._get_logic_state_from_reaction(data) or "idle"
 
 				CopLogicBase._exit(data.unit, wanted_state)

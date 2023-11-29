@@ -10,6 +10,8 @@ local mvec3_len = mvector3.length
 local mvec3_len_sq = mvector3.length_sq
 local math_clamp = math.clamp
 local math_lerp = math.lerp
+local math_acos = math.acos
+local math_pow = math.pow
 local tmp_vec1 = Vector3()
 local tmp_vec2 = Vector3()
 local tmp_rot1 = Rotation()
@@ -31,17 +33,18 @@ function RaycastWeaponBase:init(unit)
 	self._setup = {}
 	self._digest_values = true
 	self._ammo_data = false
-	self._do_shotgun_push = tweak_data.weapon[self._name_id].do_shotgun_push or false
+	local td = tweak_data.weapon[self._name_id]
+	self._do_shotgun_push = td.do_shotgun_push or false
 
 	self:replenish()
 
-	self._aim_assist_data = tweak_data.weapon[self._name_id].aim_assist
-	self._autohit_data = tweak_data.weapon[self._name_id].autohit
-	self._autohit_current = self._autohit_data.INIT_RATIO
-	self._can_shoot_through_shield = tweak_data.weapon[self._name_id].can_shoot_through_shield
-	self._can_shoot_through_enemy = tweak_data.weapon[self._name_id].can_shoot_through_enemy
-	self._can_shoot_through_wall = tweak_data.weapon[self._name_id].can_shoot_through_wall
-	local bullet_class = tweak_data.weapon[self._name_id].bullet_class
+	self._aim_assist_data = td.aim_assist
+	self._autohit_data = td.autohit
+	self._autohit_current = self._autohit_data and self._autohit_data.INIT_RATIO
+	self._can_shoot_through_shield = td.can_shoot_through_shield
+	self._can_shoot_through_enemy = td.can_shoot_through_enemy
+	self._can_shoot_through_wall = td.can_shoot_through_wall
+	local bullet_class = td.bullet_class
 
 	if bullet_class ~= nil then
 		bullet_class = CoreSerialize.string_to_classtable(bullet_class)
@@ -61,7 +64,7 @@ function RaycastWeaponBase:init(unit)
 	self._blank_slotmask = self._bullet_class:blank_slotmask()
 	self._next_fire_allowed = -1000
 	self._obj_fire = self._unit:get_object(Idstring("fire"))
-	self._muzzle_effect = Idstring(self:weapon_tweak_data().muzzleflash or "effects/particles/test/muzzleflash_maingun")
+	self._muzzle_effect = Idstring(td.muzzleflash or "effects/particles/test/muzzleflash_maingun")
 	self._muzzle_effect_table = {
 		force_synch = true,
 		effect = self._muzzle_effect,
@@ -69,7 +72,7 @@ function RaycastWeaponBase:init(unit)
 	}
 	self._use_shell_ejection_effect = true
 	self._obj_shell_ejection = self._unit:get_object(Idstring("a_shell"))
-	self._shell_ejection_effect = Idstring(self:weapon_tweak_data().shell_ejection or "effects/payday2/particles/weapons/shells/shell_556")
+	self._shell_ejection_effect = Idstring(td.shell_ejection or "effects/payday2/particles/weapons/shells/shell_556")
 	self._shell_ejection_effect_table = {
 		effect = self._shell_ejection_effect,
 		parent = self._obj_shell_ejection
@@ -78,7 +81,7 @@ function RaycastWeaponBase:init(unit)
 
 	self._sound_fire:link(self._unit:orientation_object())
 
-	self._trail_effect = self:weapon_tweak_data().trail_effect and Idstring(self:weapon_tweak_data().trail_effect) or self.TRAIL_EFFECT
+	self._trail_effect = td.trail_effect and Idstring(td.trail_effect) or self.TRAIL_EFFECT
 	self._trail_effect_table = {
 		effect = self._trail_effect,
 		position = Vector3(),
@@ -89,7 +92,7 @@ function RaycastWeaponBase:init(unit)
 		weapon_unit = self._unit
 	}
 	self._magazine_empty_objects = {}
-	self._concussion_tweak = self:weapon_tweak_data().concussion_data
+	self._concussion_tweak = td.concussion_data
 	local mutator = nil
 
 	if managers.mutators:is_mutator_active(MutatorPiggyRevenge) then
@@ -119,6 +122,11 @@ function RaycastWeaponBase:override_bullet_class(bullet_class_string)
 	bullet_class = bullet_class or self._default_bullet_class
 	self._bullet_class = bullet_class or InstantBulletBase
 	self._bullet_slotmask = self._bullet_class:bullet_slotmask()
+
+	if self._setup and self._setup.user_unit == managers.player:player_unit() then
+		self._bullet_slotmask = managers.mutators:modify_value("RaycastWeaponBase:modify_slot_mask", self._bullet_slotmask)
+	end
+
 	self._blank_slotmask = self._bullet_class:blank_slotmask()
 end
 
@@ -247,7 +255,8 @@ end
 
 function RaycastWeaponBase:setup(setup_data, damage_multiplier)
 	self._autoaim = setup_data.autoaim
-	local stats = tweak_data.weapon[self._name_id].stats
+	local td = tweak_data.weapon[self._name_id]
+	local stats = td.stats
 	self._alert_events = setup_data.alert_AI and {} or nil
 	self._alert_fires = {}
 	local weapon_stats = tweak_data.weapon.stats
@@ -286,7 +295,22 @@ function RaycastWeaponBase:setup(setup_data, damage_multiplier)
 		self._reload = 1
 	end
 
+	if self._suppression then
+		self._suppression_data = {
+			near_angle = td.suppression_custom_data and td.suppression_custom_data.near_angle or 50,
+			far_angle = td.suppression_custom_data and td.suppression_custom_data.far_angle or 5,
+			far_dis = td.suppression_custom_data and td.suppression_custom_data.far_dis or 5000
+		}
+	else
+		self._suppression_data = nil
+	end
+
 	self._bullet_slotmask = setup_data.hit_slotmask or self._bullet_slotmask
+
+	if setup_data.user_unit == managers.player:player_unit() then
+		self._bullet_slotmask = managers.mutators:modify_value("RaycastWeaponBase:modify_slot_mask", self._bullet_slotmask)
+	end
+
 	self._panic_suppression_chance = setup_data.panic_suppression_skill and self:weapon_tweak_data().panic_suppression_chance
 
 	if self._panic_suppression_chance == 0 then
@@ -294,7 +318,7 @@ function RaycastWeaponBase:setup(setup_data, damage_multiplier)
 	end
 
 	self._setup = setup_data
-	self._fire_mode = self._fire_mode or tweak_data.weapon[self._name_id].FIRE_MODE or "single"
+	self._fire_mode = self._fire_mode or td.FIRE_MODE or "single"
 
 	if self._setup.timer then
 		self:set_timer(self._setup.timer)
@@ -579,12 +603,10 @@ function RaycastWeaponBase:_build_suppression(enemies_in_cone, suppr_mul)
 	end
 
 	if enemies_in_cone then
-		for enemy_data, dis_error in pairs(enemies_in_cone) do
-			print(enemy_data.unit)
+		local panic_chance = self._panic_suppression_chance
 
-			if not enemy_data.unit:movement():cool() then
-				enemy_data.unit:character_damage():build_suppression(suppr_mul * dis_error * self._suppression, self._panic_suppression_chance)
-			end
+		for u_key, data in pairs(enemies_in_cone) do
+			data.unit:character_damage():build_suppression(suppr_mul * data.error_mul * self._suppression, panic_chance and panic_chance * data.error_mul)
 		end
 	end
 end
@@ -711,7 +733,9 @@ function RaycastWeaponBase.collect_hits(from, to, setup_data)
 			hit_enemy = hit.unit:in_slot(enemy_mask)
 		end
 
-		return ray_hits, hit_enemy
+		return ray_hits, hit_enemy, hit_enemy and {
+			[hit.unit:key()] = hit.unit
+		} or nil
 	end
 
 	local can_shoot_through_wall = setup_data.can_shoot_through_wall
@@ -728,29 +752,39 @@ function RaycastWeaponBase.collect_hits(from, to, setup_data)
 		ray_hits = World:raycast_all("ray", from, to, "slot_mask", bullet_slotmask, "ignore_unit", ignore_unit)
 	end
 
-	local units_hit = {}
 	local unique_hits = {}
+	local enemies_hit = {}
+	local unit, u_key, is_enemy = nil
+	local units_hit = {}
+	local in_slot_func = Unit.in_slot
+	local has_ray_type_func = Body.has_ray_type
 
 	for i, hit in ipairs(ray_hits) do
-		if not units_hit[hit.unit:key()] then
-			units_hit[hit.unit:key()] = true
+		unit = hit.unit
+		u_key = unit:key()
+
+		if not units_hit[u_key] then
+			units_hit[u_key] = true
 			unique_hits[#unique_hits + 1] = hit
 			hit.hit_position = hit.position
-			hit_enemy = hit_enemy or hit.unit:in_slot(enemy_mask)
-			local weak_body = hit.body:has_ray_type(ai_vision_ids)
-			weak_body = weak_body or hit.body:has_ray_type(bulletproof_ids)
+			is_enemy = in_slot_func(unit, enemy_mask)
 
-			if not can_shoot_through_enemy and hit_enemy then
+			if is_enemy then
+				enemies_hit[u_key] = unit
+				hit_enemy = true
+			end
+
+			if not can_shoot_through_enemy and is_enemy then
 				break
-			elseif not can_shoot_through_wall and hit.unit:in_slot(wall_mask) and weak_body then
+			elseif not can_shoot_through_shield and in_slot_func(unit, shield_mask) then
 				break
-			elseif not can_shoot_through_shield and hit.unit:in_slot(shield_mask) then
+			elseif not can_shoot_through_wall and in_slot_func(unit, wall_mask) and (has_ray_type_func(hit.body, ai_vision_ids) or has_ray_type_func(hit.body, bulletproof_ids)) then
 				break
 			end
 		end
 	end
 
-	return unique_hits, hit_enemy
+	return unique_hits, hit_enemy, hit_enemy and enemies_hit or nil
 end
 
 function RaycastWeaponBase:_collect_hits(from, to)
@@ -788,54 +822,56 @@ function RaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul
 	spread_mul = spread_mul or 1
 
 	mvector3.cross(mvec_right_ax, direction, math.UP)
-	mvector3.normalize(mvec_right_ax)
+	mvec3_norm(mvec_right_ax)
 	mvector3.cross(mvec_up_ay, direction, mvec_right_ax)
-	mvector3.normalize(mvec_up_ay)
-	mvector3.set(mvec_spread_direction, direction)
+	mvec3_norm(mvec_up_ay)
+	mvec3_set(mvec_spread_direction, direction)
 
 	local theta = math.random() * 360
 
-	mvector3.multiply(mvec_right_ax, math.rad(math.sin(theta) * math.random() * spread_x * spread_mul))
-	mvector3.multiply(mvec_up_ay, math.rad(math.cos(theta) * math.random() * spread_y * spread_mul))
-	mvector3.add(mvec_spread_direction, mvec_right_ax)
-	mvector3.add(mvec_spread_direction, mvec_up_ay)
-	mvector3.set(mvec_to, mvec_spread_direction)
-	mvector3.multiply(mvec_to, ray_distance)
-	mvector3.add(mvec_to, from_pos)
+	mvec3_mul(mvec_right_ax, math.rad(math.sin(theta) * math.random() * spread_x * spread_mul))
+	mvec3_mul(mvec_up_ay, math.rad(math.cos(theta) * math.random() * spread_y * spread_mul))
+	mvec3_add(mvec_spread_direction, mvec_right_ax)
+	mvec3_add(mvec_spread_direction, mvec_up_ay)
+	mvec3_set(mvec_to, mvec_spread_direction)
+	mvec3_mul(mvec_to, ray_distance)
+	mvec3_add(mvec_to, from_pos)
 
-	local ray_hits, hit_enemy = self:_collect_hits(from_pos, mvec_to)
-	local auto_hit_candidate, suppression_enemies = self:check_autoaim(from_pos, direction)
+	local ray_hits, hit_enemy, enemies_hit = self:_collect_hits(from_pos, mvec_to)
 
-	if suppression_enemies and self._suppression then
-		result.enemies_in_cone = suppression_enemies
-	end
-
-	if self._autoaim then
+	if self._autoaim and self._autohit_data then
 		local weight = 0.1
-
-		if auto_hit_candidate and not hit_enemy then
-			local autohit_chance = 1 - math.clamp((self._autohit_current - self._autohit_data.MIN_RATIO) / (self._autohit_data.MAX_RATIO - self._autohit_data.MIN_RATIO), 0, 1)
-
-			if autohit_mul then
-				autohit_chance = autohit_chance * autohit_mul
-			end
-
-			if math.random() < autohit_chance then
-				self._autohit_current = (self._autohit_current + weight) / (1 + weight)
-
-				mvector3.set(mvec_spread_direction, auto_hit_candidate.ray)
-				mvector3.set(mvec_to, mvec_spread_direction)
-				mvector3.multiply(mvec_to, ray_distance)
-				mvector3.add(mvec_to, from_pos)
-
-				ray_hits, hit_enemy = self:_collect_hits(from_pos, mvec_to)
-			end
-		end
 
 		if hit_enemy then
 			self._autohit_current = (self._autohit_current + weight) / (1 + weight)
-		elseif auto_hit_candidate then
-			self._autohit_current = self._autohit_current / (1 + weight)
+		else
+			local auto_hit_candidate, enemies_to_suppress = self:check_autoaim(from_pos, direction, nil, nil, nil, true)
+			result.enemies_in_cone = enemies_to_suppress or false
+
+			if auto_hit_candidate then
+				local autohit_chance = self:get_current_autohit_chance_for_roll()
+
+				if autohit_mul then
+					autohit_chance = autohit_chance * autohit_mul
+				end
+
+				if math.random() < autohit_chance then
+					self._autohit_current = (self._autohit_current + weight) / (1 + weight)
+
+					mvec3_set(mvec_spread_direction, auto_hit_candidate.ray)
+					mvec3_set(mvec_to, mvec_spread_direction)
+					mvec3_mul(mvec_to, ray_distance)
+					mvec3_add(mvec_to, from_pos)
+
+					ray_hits, hit_enemy, enemies_hit = self:_collect_hits(from_pos, mvec_to)
+				end
+			end
+
+			if hit_enemy then
+				self._autohit_current = (self._autohit_current + weight) / (1 + weight)
+			elseif auto_hit_candidate then
+				self._autohit_current = self._autohit_current / (1 + weight)
+			end
 		end
 	end
 
@@ -892,12 +928,28 @@ function RaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul
 
 	if (not furthest_hit or furthest_hit.distance > 600) and alive(self._obj_fire) then
 		self._obj_fire:m_position(self._trail_effect_table.position)
-		mvector3.set(self._trail_effect_table.normal, mvec_spread_direction)
+		mvec3_set(self._trail_effect_table.normal, mvec_spread_direction)
 
 		local trail = World:effect_manager():spawn(self._trail_effect_table)
 
 		if furthest_hit then
-			World:effect_manager():set_remaining_lifetime(trail, math.clamp((furthest_hit.distance - 600) / 10000, 0, furthest_hit.distance))
+			World:effect_manager():set_remaining_lifetime(trail, math_clamp((furthest_hit.distance - 600) / 10000, 0, furthest_hit.distance))
+		end
+	end
+
+	if result.enemies_in_cone == nil then
+		result.enemies_in_cone = self._suppression and self:check_suppression(from_pos, direction, enemies_hit) or nil
+	elseif enemies_hit and self._suppression then
+		result.enemies_in_cone = result.enemies_in_cone or {}
+		local all_enemies = managers.enemy:all_enemies()
+
+		for u_key, enemy in pairs(enemies_hit) do
+			if all_enemies[u_key] then
+				result.enemies_in_cone[u_key] = {
+					error_mul = 1,
+					unit = enemy
+				}
+			end
 		end
 	end
 
@@ -987,128 +1039,119 @@ function RaycastWeaponBase:_check_tango_achievements(cop_kill_count)
 	end
 end
 
-function RaycastWeaponBase:get_aim_assist(from_pos, direction, max_dist, use_aim_assist)
-	local autohit = use_aim_assist and self._aim_assist_data or self._autohit_data
-	local autohit_near_angle = autohit.near_angle
-	local autohit_far_angle = autohit.far_angle
-	local far_dis = autohit.far_dis
-	local closest_error, closest_ray = nil
-	local tar_vec = tmp_vec1
-	local ignore_units = self._setup.ignore_units
-	local slotmask = self._bullet_slotmask
-	local enemies = managers.enemy:all_enemies()
+function RaycastWeaponBase:get_current_autohit_chance_for_roll()
+	return self._autohit_data and 1 - math_clamp((self._autohit_current - self._autohit_data.MIN_RATIO) / (self._autohit_data.MAX_RATIO - self._autohit_data.MIN_RATIO), 0, 1)
+end
 
-	for u_key, enemy_data in pairs(enemies) do
-		local enemy = enemy_data.unit
-
-		if enemy:base():lod_stage() == 1 and not enemy:in_slot(16) then
-			local com = enemy:movement():m_com()
-
-			mvec3_set(tar_vec, com)
-			mvec3_sub(tar_vec, from_pos)
-
-			local tar_aim_dot = mvec3_dot(direction, tar_vec)
-			local tar_vec_len = math_clamp(mvec3_norm(tar_vec), 1, far_dis)
-
-			if tar_aim_dot > 0 and (not max_dist or tar_aim_dot < max_dist) then
-				local error_dot = mvec3_dot(direction, tar_vec)
-				local error_angle = math.acos(error_dot)
-				local dis_lerp = math.pow(tar_aim_dot / far_dis, 0.25)
-				local autohit_min_angle = math_lerp(autohit_near_angle, autohit_far_angle, dis_lerp)
-
-				if error_angle < autohit_min_angle then
-					local percent_error = error_angle / autohit_min_angle
-
-					if not closest_error or percent_error < closest_error then
-						tar_vec_len = tar_vec_len + 100
-
-						mvec3_mul(tar_vec, tar_vec_len)
-						mvec3_add(tar_vec, from_pos)
-
-						local vis_ray = World:raycast("ray", from_pos, tar_vec, "slot_mask", slotmask, "ignore_unit", ignore_units)
-
-						if vis_ray and vis_ray.unit:key() == u_key and (not closest_error or error_angle < closest_error) then
-							closest_error = error_angle
-							closest_ray = vis_ray
-
-							mvec3_set(tmp_vec1, com)
-							mvec3_sub(tmp_vec1, from_pos)
-
-							local d = mvec3_dot(direction, tmp_vec1)
-
-							mvec3_set(tmp_vec1, direction)
-							mvec3_mul(tmp_vec1, d)
-							mvec3_add(tmp_vec1, from_pos)
-							mvec3_sub(tmp_vec1, com)
-
-							closest_ray.distance_to_aim_line = mvec3_len(tmp_vec1)
-						end
-					end
-				end
-			end
-		end
-	end
+function RaycastWeaponBase:get_aim_assist(...)
+	local closest_ray = self:check_autoaim(...)
 
 	return closest_ray
 end
 
-function RaycastWeaponBase:check_autoaim(from_pos, direction, max_dist, use_aim_assist, autohit_override_data)
-	local autohit = use_aim_assist and self._aim_assist_data or self._autohit_data
-	autohit = autohit_override_data or autohit
+function RaycastWeaponBase:check_autoaim(from_pos, direction, max_dist, use_aim_assist, autohit_override_data, check_suppression)
+	local autohit = autohit_override_data or use_aim_assist and self._aim_assist_data or self._autohit_data
+
+	if not autohit then
+		return nil, {}
+	end
+
 	local autohit_near_angle = autohit.near_angle
 	local autohit_far_angle = autohit.far_angle
-	local far_dis = autohit.far_dis
+	local autohit_far_dis = autohit.far_dis
 	local closest_error, closest_ray = nil
 	local tar_vec = tmp_vec1
 	local ignore_units = self._setup.ignore_units
 	local slotmask = self._bullet_slotmask
-	local enemies = managers.enemy:all_enemies()
-	local suppression_near_angle = 50
-	local suppression_far_angle = 5
-	local suppression_enemies = nil
+	local in_steel_sight = nil
+	local user_unit = self._setup.user_unit
+	local current_state = user_unit:movement() and user_unit:movement()._current_state
 
-	for u_key, enemy_data in pairs(enemies) do
-		local enemy = enemy_data.unit
+	if current_state then
+		in_steel_sight = current_state:in_steelsight()
+	end
 
-		if enemy:base():lod_stage() == 1 and not enemy:in_slot(16) then
-			local com = enemy:movement():m_com()
+	local suppression_near_angle, suppression_far_angle, suppression_far_dis, suppression_enemies = nil
 
-			mvec3_set(tar_vec, com)
-			mvec3_sub(tar_vec, from_pos)
+	if check_suppression and self._suppression and self._suppression_data then
+		suppression_near_angle = self._suppression_data.near_angle
+		suppression_far_angle = self._suppression_data.far_angle
+		suppression_far_dis = self._suppression_data.far_dis
+		suppression_enemies = {}
+	end
 
-			local tar_aim_dot = mvec3_dot(direction, tar_vec)
+	local enemy, mov_ext, chk_pos, error_angle, tar_aim_dot, tar_vec_len, autohit_min_angle, suppression_min_angle, vis_ray = nil
+	local tar_vec = tmp_vec1
+	local in_slot_func = Unit.in_slot
+	local world = World
+	local raycast_f = World.raycast
+
+	for u_key, enemy_data in pairs(managers.enemy:all_enemies()) do
+		enemy = enemy_data.unit
+		mov_ext = enemy:movement()
+
+		if enemy:base():lod_stage() and not in_slot_func(enemy, 16) then
+			local from_m_com, already_normalized = nil
+
+			if suppression_enemies and not mov_ext:cool() then
+				from_m_com = true
+				chk_pos = mov_ext:m_com()
+
+				mvec3_set(tar_vec, chk_pos)
+				mvec3_sub(tar_vec, from_pos)
+
+				tar_aim_dot = mvec3_dot(direction, tar_vec)
+
+				if tar_aim_dot > 0 then
+					already_normalized = true
+					tar_vec_len = mvec3_norm(tar_vec)
+					error_angle = math_acos(mvec3_dot(direction, tar_vec))
+					suppression_min_angle = math_lerp(suppression_near_angle, suppression_far_angle, math_pow(tar_aim_dot / suppression_far_dis, 0.25))
+
+					if error_angle < suppression_min_angle then
+						suppression_enemies[u_key] = {
+							unit = enemy,
+							error_mul = 1 - error_angle / suppression_min_angle
+						}
+					end
+				end
+			end
+
+			if in_steel_sight or not from_m_com then
+				chk_pos = in_steel_sight and mov_ext:m_head_pos() or mov_ext:m_com()
+
+				mvec3_set(tar_vec, chk_pos)
+				mvec3_sub(tar_vec, from_pos)
+
+				tar_aim_dot = mvec3_dot(direction, tar_vec)
+			end
 
 			if tar_aim_dot > 0 and (not max_dist or tar_aim_dot < max_dist) then
-				local tar_vec_len = math_clamp(mvec3_norm(tar_vec), 1, far_dis)
-				local error_dot = mvec3_dot(direction, tar_vec)
-				local error_angle = math.acos(error_dot)
-				local dis_lerp = math.pow(tar_aim_dot / far_dis, 0.25)
-				local suppression_min_angle = math_lerp(suppression_near_angle, suppression_far_angle, dis_lerp)
-
-				if error_angle < suppression_min_angle then
-					suppression_enemies = suppression_enemies or {}
-					local percent_error = error_angle / suppression_min_angle
-					suppression_enemies[enemy_data] = percent_error
+				if not in_steel_sight and from_m_com and already_normalized then
+					tar_vec_len = math_clamp(tar_vec_len, 1, autohit_far_dis)
+				else
+					tar_vec_len = math_clamp(mvec3_norm(tar_vec), 1, autohit_far_dis)
+					error_angle = math_acos(mvec3_dot(direction, tar_vec))
 				end
 
-				local autohit_min_angle = math_lerp(autohit_near_angle, autohit_far_angle, dis_lerp)
+				autohit_min_angle = math_lerp(autohit_near_angle, autohit_far_angle, math_pow(tar_aim_dot / autohit_far_dis, 0.25))
 
 				if error_angle < autohit_min_angle then
 					local percent_error = error_angle / autohit_min_angle
 
-					if not closest_error or percent_error < closest_error then
+					if not closest_error or closest_error > error_angle / autohit_min_angle then
 						tar_vec_len = tar_vec_len + 100
 
 						mvec3_mul(tar_vec, tar_vec_len)
 						mvec3_add(tar_vec, from_pos)
 
-						local vis_ray = World:raycast("ray", from_pos, tar_vec, "slot_mask", slotmask, "ignore_unit", ignore_units)
+						vis_ray = raycast_f(world, "ray", from_pos, tar_vec, "slot_mask", slotmask, "ignore_unit", ignore_units)
 
 						if vis_ray and vis_ray.unit:key() == u_key and (not closest_error or error_angle < closest_error) then
 							closest_error = error_angle
 							closest_ray = vis_ray
 
-							mvec3_set(tmp_vec1, com)
+							mvec3_set(tmp_vec1, chk_pos)
 							mvec3_sub(tmp_vec1, from_pos)
 
 							local d = mvec3_dot(direction, tmp_vec1)
@@ -1116,7 +1159,7 @@ function RaycastWeaponBase:check_autoaim(from_pos, direction, max_dist, use_aim_
 							mvec3_set(tmp_vec1, direction)
 							mvec3_mul(tmp_vec1, d)
 							mvec3_add(tmp_vec1, from_pos)
-							mvec3_sub(tmp_vec1, com)
+							mvec3_sub(tmp_vec1, chk_pos)
 
 							closest_ray.distance_to_aim_line = mvec3_len(tmp_vec1)
 						end
@@ -1126,7 +1169,72 @@ function RaycastWeaponBase:check_autoaim(from_pos, direction, max_dist, use_aim_
 		end
 	end
 
-	return closest_ray, suppression_enemies
+	return closest_ray, suppression_enemies and next(suppression_enemies) and suppression_enemies or nil
+end
+
+function RaycastWeaponBase:check_suppression(from_pos, direction, hit_enemies)
+	if not self._suppression_data then
+		return nil
+	end
+
+	local suppression_enemies = {}
+	local near_angle = self._suppression_data.near_angle
+	local far_angle = self._suppression_data.far_angle
+	local far_dis = self._suppression_data.far_dis
+	local com, enemy, mov_ext, error_angle, tar_aim_dot, suppression_min_angle = nil
+	local tar_vec = tmp_vec1
+	local in_slot_func = Unit.in_slot
+
+	for u_key, enemy_data in pairs(managers.enemy:all_enemies()) do
+		enemy = enemy_data.unit
+		mov_ext = enemy:movement()
+
+		if not mov_ext:cool() then
+			if hit_enemies and hit_enemies[u_key] then
+				suppression_enemies[u_key] = {
+					error_mul = 1,
+					unit = enemy
+				}
+			elseif enemy:base():lod_stage() and not in_slot_func(enemy, 16) then
+				com = mov_ext:m_com()
+
+				mvec3_set(tar_vec, com)
+				mvec3_sub(tar_vec, from_pos)
+
+				tar_aim_dot = mvec3_dot(direction, tar_vec)
+
+				if tar_aim_dot > 0 then
+					mvec3_norm(tar_vec)
+
+					error_angle = math_acos(mvec3_dot(direction, tar_vec))
+					suppression_min_angle = math_lerp(near_angle, far_angle, math_pow(tar_aim_dot / far_dis, 0.25))
+
+					if error_angle < suppression_min_angle then
+						suppression_enemies[u_key] = {
+							unit = enemy,
+							error_mul = 1 - error_angle / suppression_min_angle
+						}
+					end
+				end
+			end
+		end
+	end
+
+	return next(suppression_enemies) and suppression_enemies or nil
+end
+
+function RaycastWeaponBase:debug_draw_proj_cone(from_pos, direction, near_angle, far_angle, far_dis, pause)
+	for i = 1, far_dis / 100 do
+		local proj_dis = i * 100
+		local test_angle = math_lerp(near_angle, far_angle, (proj_dis / far_dis)^0.25)
+		local test_radius = proj_dis * math.tan(test_angle * 0.5)
+
+		Application:draw_cone(from_pos, from_pos + direction * proj_dis, test_radius * 2, 0, 0, 0.7)
+	end
+
+	if pause then
+		Application:set_pause(true)
+	end
 end
 
 local mvec_from_pos = Vector3()
@@ -1146,25 +1254,28 @@ function RaycastWeaponBase:_check_alert(rays, fire_pos, direction, user_unit)
 	local mvec3_dis = mvector3.distance_sq
 	local all_alerts = self._alert_events
 	local alert_rad = self._alert_size / 4
+	local filter = self._setup.alert_filter
 	local from_pos = mvec_from_pos
+	local copied_from_pos = nil
 	local tolerance = 250000
 
-	mvector3.set(from_pos, direction)
-	mvector3.multiply(from_pos, -alert_rad)
-	mvector3.add(from_pos, fire_pos)
-
-	for i = #all_alerts, 1, -1 do
-		if all_alerts[i][3] < t then
-			table.remove(all_alerts, i)
-		end
-	end
+	mvec3_set(from_pos, direction)
+	mvec3_mul(from_pos, -alert_rad)
+	mvec3_add(from_pos, fire_pos)
 
 	if #rays > 0 then
+		local event_pos = nil
+
 		for _, ray in ipairs(rays) do
-			local event_pos = ray.position
+			event_pos = ray.position
+			local alert_data = nil
 
 			for i = #all_alerts, 1, -1 do
-				if mvec3_dis(all_alerts[i][1], event_pos) < tolerance and mvec3_dis(all_alerts[i][2], from_pos) < tolerance then
+				alert_data = all_alerts[i]
+
+				if alert_data[4] < t then
+					table.remove(all_alerts, i)
+				elseif alert_data[3] == alert_rad and mvec3_dis(alert_data[1], event_pos) < tolerance and mvec3_dis(alert_data[2], from_pos) < tolerance then
 					event_pos = nil
 
 					break
@@ -1172,9 +1283,12 @@ function RaycastWeaponBase:_check_alert(rays, fire_pos, direction, user_unit)
 			end
 
 			if event_pos then
+				copied_from_pos = copied_from_pos or mvector3.copy(from_pos)
+
 				table.insert(all_alerts, {
 					event_pos,
-					from_pos,
+					copied_from_pos,
+					alert_rad,
 					exp_t
 				})
 
@@ -1182,9 +1296,9 @@ function RaycastWeaponBase:_check_alert(rays, fire_pos, direction, user_unit)
 					"bullet",
 					event_pos,
 					alert_rad,
-					self._setup.alert_filter,
+					filter,
 					user_unit,
-					from_pos
+					copied_from_pos
 				}
 
 				group_ai:propagate_alert(new_alert)
@@ -1192,32 +1306,40 @@ function RaycastWeaponBase:_check_alert(rays, fire_pos, direction, user_unit)
 		end
 	end
 
+	local skip_alert = false
 	local fire_alerts = self._alert_fires
-	local cached = false
+	alert_rad = self._alert_size
+	local alert_data = nil
 
 	for i = #fire_alerts, 1, -1 do
-		if fire_alerts[i][2] < t then
+		alert_data = fire_alerts[i]
+
+		if alert_data[3] < t then
 			table.remove(fire_alerts, i)
-		elseif mvec3_dis(fire_alerts[i][1], fire_pos) < tolerance then
-			cached = true
+		elseif alert_data[2] == alert_rad and mvec3_dis(alert_data[1], fire_pos) < tolerance then
+			skip_alert = true
 
 			break
 		end
 	end
 
-	if not cached then
+	if not skip_alert then
+		fire_pos = mvector3.copy(fire_pos)
+		copied_from_pos = copied_from_pos or mvector3.copy(from_pos)
+
 		table.insert(fire_alerts, {
 			fire_pos,
+			alert_rad,
 			exp_t
 		})
 
 		local new_alert = {
 			"bullet",
 			fire_pos,
-			self._alert_size,
-			self._setup.alert_filter,
+			alert_rad,
+			filter,
 			user_unit,
-			from_pos
+			copied_from_pos
 		}
 
 		group_ai:propagate_alert(new_alert)
@@ -2709,13 +2831,8 @@ FlameBulletBase.EFFECT_PARAMS = {
 	idstr_effect = Idstring(""),
 	pushunits = tweak_data.upgrades.flame_bullet.push_units
 }
-FlameBulletBase.FIRE_DOT_DATA = {
-	dot_trigger_chance = 35,
-	dot_damage = 15,
-	dot_length = 6,
-	dot_trigger_max_distance = 3000,
-	dot_tick_period = 0.5
-}
+FlameBulletBase.VARIANT = "fire"
+FlameBulletBase.DOT_DATA_NAME = "default_fire"
 
 function FlameBulletBase:bullet_slotmask()
 	return managers.slot:get_mask("bullet_impact_targets_no_shields")
@@ -2803,10 +2920,10 @@ function FlameBulletBase:on_collision(col_ray, weapon_unit, user_unit, damage, b
 					local has_died = hit_dmg_ext:dead()
 					do_push = true
 					push_mul = self:_get_character_push_multiplier(weapon_unit, was_alive and has_died)
-				end
 
-				if result and result.type == "death" and weap_base.should_shotgun_push and weap_base:should_shotgun_push() then
-					do_shotgun_push = true
+					if result and result.type == "death" and weap_base.should_shotgun_push and weap_base:should_shotgun_push() then
+						do_shotgun_push = true
+					end
 				end
 			else
 				play_impact_flesh = false
@@ -2841,20 +2958,8 @@ function FlameBulletBase:on_collision(col_ray, weapon_unit, user_unit, damage, b
 end
 
 function FlameBulletBase:give_fire_damage(col_ray, weapon_unit, user_unit, damage, armor_piercing, shield_knock, knock_down, stagger, variant)
-	local fire_dot_data = nil
-	local weap_base = weapon_unit:base()
-	local ammo_data = weap_base and weap_base.ammo_data and weap_base:ammo_data()
-
-	if ammo_data and ammo_data.bullet_class == "FlameBulletBase" then
-		fire_dot_data = ammo_data.fire_dot_data
-	else
-		local weapon_tweak_data = weap_base and weap_base.weapon_tweak_data and weap_base:weapon_tweak_data()
-		fire_dot_data = weapon_tweak_data and weapon_tweak_data.fire_dot_data
-	end
-
-	fire_dot_data = fire_dot_data or self.FIRE_DOT_DATA
 	local action_data = {
-		variant = variant or "fire",
+		variant = variant or self.VARIANT,
 		damage = damage,
 		weapon_unit = weapon_unit,
 		attacker_unit = user_unit,
@@ -2862,28 +2967,146 @@ function FlameBulletBase:give_fire_damage(col_ray, weapon_unit, user_unit, damag
 		armor_piercing = armor_piercing,
 		shield_knock = shield_knock,
 		knock_down = knock_down,
-		stagger = stagger,
-		fire_dot_data = fire_dot_data
+		stagger = stagger
 	}
 	local defense_data = col_ray.unit:character_damage():damage_fire(action_data)
+
+	if defense_data and defense_data ~= "friendly_fire" then
+		local char_dmg_ext = alive(col_ray.unit) and col_ray.unit:character_damage()
+
+		if char_dmg_ext and char_dmg_ext.damage_dot and (not char_dmg_ext.dead or not char_dmg_ext:dead()) then
+			local dot_data = DOTBulletBase._dot_data_by_weapon(self, weapon_unit)
+
+			if dot_data then
+				self:start_dot_damage(col_ray, weapon_unit, dot_data, nil, user_unit, defense_data)
+			end
+		end
+	end
 
 	return defense_data
 end
 
-function FlameBulletBase:give_fire_damage_dot(col_ray, weapon_unit, attacker_unit, damage, is_fire_dot_damage, is_molotov)
+function FlameBulletBase:start_dot_damage(col_ray, weapon_unit, dot_data, weapon_id, user_unit, defense_data)
+	local target_unit = col_ray.unit
+
+	if not alive(target_unit) then
+		return
+	end
+
+	local target_base_ext = target_unit:base()
+	local char_tweak = target_base_ext and target_base_ext.char_tweak and target_base_ext:char_tweak()
+	local flammable = char_tweak and char_tweak.flammable ~= false
+	local can_dot = flammable
+
+	if not can_dot then
+		return
+	end
+
+	can_dot = not dot_data.dot_trigger_chance or math.random() <= dot_data.dot_trigger_chance or false
+
+	if not can_dot then
+		return
+	end
+
+	local weapon = nil
+	local attacker = alive(user_unit) and user_unit or nil
+
+	if attacker then
+		local base_ext = attacker:base()
+
+		if base_ext and base_ext.thrower_unit then
+			attacker = base_ext:thrower_unit()
+			attacker = alive(attacker) and attacker or nil
+			weapon = user_unit
+		end
+	end
+
+	if dot_data.dot_trigger_max_distance then
+		if not attacker then
+			return
+		end
+
+		local distance = mvector3.distance(attacker:position(), target_unit:position())
+		can_dot = distance <= dot_data.dot_trigger_max_distance
+	end
+
+	if not can_dot then
+		return
+	end
+
+	weapon = weapon or alive(weapon_unit) and weapon_unit or nil
+
+	if not weapon_id and weapon then
+		local base_ext = weapon:base()
+		weapon_id = base_ext and base_ext.get_name_id and base_ext:get_name_id()
+	end
+
+	local data = {
+		unit = target_unit,
+		dot_data = dot_data,
+		weapon_id = weapon_id,
+		weapon_unit = weapon,
+		attacker_unit = attacker
+	}
+
+	managers.fire:add_doted_enemy(data)
+
+	if char_tweak and char_tweak.use_animation_on_fire_damage ~= false then
+		local char_dmg_ext = target_unit:character_damage()
+
+		if char_dmg_ext.get_last_time_unit_got_fire_damage and char_dmg_ext.force_hurt then
+			local last_fire_t = char_dmg_ext:get_last_time_unit_got_fire_damage()
+			local t = TimerManager:game():time()
+
+			if not last_fire_t or t - last_fire_t > (char_tweak.fire_animation_cooldown or 1) then
+				local damage_info = nil
+
+				if type(defense_data) == "table" and defense_data.attack_data then
+					damage_info = defense_data.attack_data
+					damage_info.type = "fire_hurt"
+
+					if damage_info.result then
+						damage_info.result.type = "fire_hurt"
+						damage_info.result.variant = dot_data.variant or self.VARIANT
+					else
+						damage_info.result = {
+							type = "fire_hurt",
+							variant = dot_data.variant or self.VARIANT
+						}
+					end
+				else
+					damage_info = {
+						damage = 0,
+						type = "fire_hurt",
+						variant = dot_data.variant or self.VARIANT,
+						col_ray = col_ray,
+						result = {
+							type = "fire_hurt",
+							variant = dot_data.variant or self.VARIANT
+						}
+					}
+				end
+
+				char_dmg_ext:force_hurt(damage_info)
+			end
+		end
+	end
+end
+
+function FlameBulletBase:give_damage_dot(col_ray, weapon_unit, attacker_unit, damage, hurt_animation, weapon_id, variant)
 	local action_data = {
-		variant = "fire",
+		variant = variant or self.VARIANT,
 		damage = damage,
 		weapon_unit = weapon_unit,
 		attacker_unit = attacker_unit,
 		col_ray = col_ray,
-		is_fire_dot_damage = is_fire_dot_damage,
-		is_molotov = is_molotov
+		weapon_id = weapon_id
 	}
-	local defense_data = {}
+	local defense_data = nil
+	local char_dmg_ext = col_ray and alive(col_ray.unit) and col_ray.unit:character_damage()
 
-	if col_ray and col_ray.unit and alive(col_ray.unit) and col_ray.unit:character_damage() then
-		defense_data = col_ray.unit:character_damage():damage_fire(action_data)
+	if char_dmg_ext and char_dmg_ext.damage_dot then
+		defense_data = char_dmg_ext:damage_dot(action_data)
 	end
 
 	return defense_data
@@ -2921,8 +3144,7 @@ function DragonBreathBulletBase:give_impact_damage(col_ray, weapon_unit, user_un
 		shield_knock = shield_knock,
 		origin = user_unit:position(),
 		knock_down = knock_down,
-		stagger = stagger,
-		ignite_character = "dragonsbreath"
+		stagger = stagger
 	}
 	local defense_data = col_ray.unit:character_damage():damage_bullet(action_data)
 
@@ -2930,17 +3152,12 @@ function DragonBreathBulletBase:give_impact_damage(col_ray, weapon_unit, user_un
 end
 
 DOTBulletBase = DOTBulletBase or class(InstantBulletBase)
-DOTBulletBase.DOT_DATA = {
-	hurt_animation_chance = 1,
-	dot_damage = 0.5,
-	dot_length = 6,
-	dot_tick_period = 0.5
-}
+DOTBulletBase.DOT_DATA_NAME = "weapon_dotbulletbase"
 
 function DOTBulletBase:on_collision(col_ray, weapon_unit, user_unit, damage, blank)
 	local result = DOTBulletBase.super.on_collision(self, col_ray, weapon_unit, user_unit, damage, blank, self.NO_BULLET_INPACT_SOUND)
 
-	if result ~= "friendly_fire" then
+	if not blank and result and result ~= "friendly_fire" then
 		local hit_unit = col_ray.unit
 		local hit_dmg_ext = alive(hit_unit) and hit_unit:character_damage()
 
@@ -2960,10 +3177,15 @@ end
 function DOTBulletBase:_dot_data_by_weapon(weapon_unit)
 	local weap_base = alive(weapon_unit) and weapon_unit:base()
 	local ammo_data = weap_base.ammo_data and weap_base:ammo_data()
-	local ammo_dot_data = ammo_data and ammo_data.dot_data
+	local dot_data_name = ammo_data and ammo_data.dot_data_name
 
-	if ammo_dot_data then
-		return managers.dot:create_dot_data(ammo_dot_data.type, ammo_dot_data.custom_data)
+	if not dot_data_name then
+		local weapon_tweak_data = weap_base and weap_base.weapon_tweak_data and weap_base:weapon_tweak_data()
+		dot_data_name = weapon_tweak_data and weapon_tweak_data.dot_data_name
+	end
+
+	if dot_data_name then
+		return tweak_data.dot:get_dot_data(dot_data_name)
 	end
 
 	return nil
@@ -2974,26 +3196,36 @@ function DOTBulletBase:start_dot_damage(col_ray, weapon_unit, dot_data, weapon_i
 		return
 	end
 
-	dot_data = dot_data or self.DOT_DATA
+	dot_data = dot_data or tweak_data.dot:get_dot_data(self.DOT_DATA_NAME)
 	weapon_unit = alive(weapon_unit) and weapon_unit or nil
+	user_unit = alive(user_unit) and user_unit or nil
 	local hurt_animation = not dot_data.hurt_animation_chance or math.rand(1) < dot_data.hurt_animation_chance
-	local dot_length = dot_data.dot_length
+	local modified_length = nil
 
 	if dot_data.use_weapon_damage_falloff then
 		local weap_base = weapon_unit and weapon_unit:base()
 
 		if weap_base and weap_base.get_damage_falloff then
-			user_unit = alive(user_unit) and user_unit or nil
-			dot_length = weap_base:get_damage_falloff(dot_length, col_ray, user_unit)
+			modified_length = weap_base:get_damage_falloff(dot_data.dot_length, col_ray, user_unit)
 		end
 	end
 
-	managers.dot:add_doted_enemy(col_ray.unit, TimerManager:game():time(), weapon_unit, dot_length, dot_data.dot_damage, hurt_animation, self.VARIANT, weapon_id)
+	local data = {
+		unit = col_ray.unit,
+		dot_data = dot_data,
+		hurt_animation = hurt_animation,
+		modified_length = modified_length,
+		weapon_id = weapon_id,
+		weapon_unit = weapon_unit,
+		attacker_unit = user_unit
+	}
+
+	managers.dot:add_doted_enemy(data)
 end
 
-function DOTBulletBase:give_damage_dot(col_ray, weapon_unit, attacker_unit, damage, hurt_animation, weapon_id)
+function DOTBulletBase:give_damage_dot(col_ray, weapon_unit, attacker_unit, damage, hurt_animation, weapon_id, variant)
 	local action_data = {
-		variant = self.VARIANT,
+		variant = variant or self.VARIANT,
 		damage = damage,
 		weapon_unit = weapon_unit,
 		attacker_unit = attacker_unit,
@@ -3001,10 +3233,11 @@ function DOTBulletBase:give_damage_dot(col_ray, weapon_unit, attacker_unit, dama
 		hurt_animation = hurt_animation,
 		weapon_id = weapon_id
 	}
-	local defense_data = {}
+	local defense_data = nil
+	local char_dmg_ext = col_ray and alive(col_ray.unit) and col_ray.unit:character_damage()
 
-	if col_ray and alive(col_ray.unit) and col_ray.unit:character_damage() then
-		defense_data = col_ray.unit:character_damage():damage_dot(action_data)
+	if char_dmg_ext and char_dmg_ext.damage_dot then
+		defense_data = char_dmg_ext:damage_dot(action_data)
 	end
 
 	return defense_data
@@ -3018,35 +3251,22 @@ ProjectilesPoisonBulletBase.NO_BULLET_INPACT_SOUND = true
 function ProjectilesPoisonBulletBase:on_collision(col_ray, weapon_unit, user_unit, damage, blank)
 	local result = DOTBulletBase.super.on_collision(self, col_ray, weapon_unit, user_unit, damage, blank, self.NO_BULLET_INPACT_SOUND)
 
-	if result ~= "friendly_fire" then
+	if not blank and result and result ~= "friendly_fire" then
 		local hit_unit = col_ray.unit
 		local hit_dmg_ext = alive(hit_unit) and hit_unit:character_damage()
 
 		if hit_dmg_ext and hit_dmg_ext.damage_dot and not hit_dmg_ext:dead() then
-			weapon_unit = alive(weapon_unit) and weapon_unit or nil
-			local weap_base = weapon_unit and weapon_unit:base()
+			local weap_base = alive(weapon_unit) and weapon_unit:base()
 
 			if weap_base then
 				local dot_data = tweak_data.projectiles[weap_base._projectile_entry]
-				dot_data = dot_data and dot_data.dot_data
+				dot_data = dot_data and dot_data.dot_data_name and tweak_data.dot:get_dot_data(dot_data.dot_data_name)
 
-				if not dot_data then
-					return
+				if dot_data then
+					local weapon_id = weap_base and weap_base.get_name_id and weap_base:get_name_id()
+
+					self:start_dot_damage(col_ray, weapon_unit, dot_data, weapon_id, user_unit)
 				end
-
-				local dot_type_data = tweak_data:get_dot_type_data(dot_data.type)
-
-				if not dot_type_data then
-					return
-				end
-
-				local weapon_id = weap_base and weap_base.get_name_id and weap_base:get_name_id()
-				user_unit = alive(user_unit) and user_unit or nil
-
-				self:start_dot_damage(col_ray, weapon_unit, {
-					dot_damage = dot_type_data.dot_damage,
-					dot_length = dot_data.custom_length or dot_type_data.dot_length
-				}, weapon_id, user_unit)
 			end
 		end
 	end

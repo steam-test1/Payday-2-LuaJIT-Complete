@@ -52,6 +52,7 @@ function PlayerBase:update_concealment()
 
 	self:set_suspicion_multiplier("equipment", 1 / con_mul)
 	self:set_detection_multiplier("equipment", 1 / con_mul)
+	self:setup_hud_offset()
 end
 
 function PlayerBase:update(unit, t, dt)
@@ -86,12 +87,12 @@ function PlayerBase:_setup_suspicion_and_detection_data()
 	}
 end
 
-function PlayerBase:setup_hud_offset(peer)
+function PlayerBase:setup_hud_offset()
 	if not self._suspicion_settings then
 		return
 	end
 
-	self._suspicion_settings.hud_offset = managers.blackmarket:get_suspicion_offset_of_peer(peer or managers.network:session():local_peer(), tweak_data.player.SUSPICION_OFFSET_LERP or 0.75)
+	self._suspicion_settings.hud_offset = managers.blackmarket:get_suspicion_offset_of_peer(managers.network:session():local_peer(), tweak_data.player.SUSPICION_OFFSET_LERP or 0.75)
 end
 
 function PlayerBase:save(data)

@@ -106,7 +106,16 @@ function TeamAIMovement:on_cuffed()
 end
 
 function TeamAIMovement:on_SPOOCed(enemy_unit)
-	self._unit:character_damage():on_incapacitated()
+	local state = "incapacitated"
+	state = managers.modifiers:modify_value("TeamAIMovement:OnSpooked", state)
+
+	if state == "arrested" then
+		self:on_cuffed()
+	else
+		self._unit:character_damage():on_incapacitated()
+	end
+
+	return true
 end
 
 function TeamAIMovement:is_SPOOC_attack_allowed()
@@ -253,47 +262,19 @@ function TeamAIMovement:current_state_name()
 	return nil
 end
 
-function TeamAIMovement:pre_destroy()
+function TeamAIMovement:pre_destroy(...)
+	TeamAIMovement.super.pre_destroy(self, ...)
+
 	if self._heat_listener_clbk then
 		managers.groupai:state():remove_listener(self._heat_listener_clbk)
 
 		self._heat_listener_clbk = nil
 	end
 
-	if self._nav_tracker then
-		managers.navigation:destroy_nav_tracker(self._nav_tracker)
-
-		self._nav_tracker = nil
-	end
-
 	if self._switch_to_not_cool_clbk_id then
 		managers.enemy:remove_delayed_clbk(self._switch_to_not_cool_clbk_id)
 
 		self._switch_to_not_cool_clbk_id = nil
-	end
-
-	if self._link_data then
-		self._link_data.parent:base():remove_destroy_listener("CopMovement" .. tostring(unit:key()))
-	end
-
-	if alive(self._rope) then
-		self._rope:base():retract()
-
-		self._rope = nil
-	end
-
-	self:_destroy_gadgets()
-
-	for i_action, action in ipairs(self._active_actions) do
-		if action and action.on_destroy then
-			action:on_destroy()
-		end
-	end
-
-	if self._attention and self._attention.destroy_listener_key then
-		self._attention.unit:base():remove_destroy_listener(self._attention.destroy_listener_key)
-
-		self._attention.destroy_listener_key = nil
 	end
 end
 
@@ -302,7 +283,6 @@ function TeamAIMovement:save(save_data)
 
 	save_data.movement = save_data.movement or {}
 	save_data.movement.should_stay = self._should_stay
-	save_data.movement.has_bag = self:carrying_bag()
 end
 
 function TeamAIMovement:load(load_data)
@@ -310,10 +290,6 @@ function TeamAIMovement:load(load_data)
 
 	if load_data.movement then
 		self:set_should_stay(load_data.movement.should_stay)
-
-		if load_data.movement.has_bag and Network:is_client() then
-			managers.network:session():send_to_host("request_carried_bag_unit", self._unit)
-		end
 	end
 end
 
@@ -347,99 +323,10 @@ function TeamAIMovement:chk_action_forbidden(action_type)
 	return TeamAIMovement.super.chk_action_forbidden(self, action_type)
 end
 
-function TeamAIMovement:carrying_bag()
-	return self._carry_unit and true or false
-end
-
-function TeamAIMovement:set_carrying_bag(unit)
-	self._carry_unit = unit
-end
-
-function TeamAIMovement:carry_id()
-	return self._carry_unit and self._carry_unit:carry_data():carry_id()
-end
-
-function TeamAIMovement:carry_data()
-	return self._carry_unit and self._carry_unit:carry_data()
-end
-
-function TeamAIMovement:carry_tweak()
-	return self:carry_id() and tweak_data.carry.types[tweak_data.carry[self:carry_id()].type]
-end
-
-function TeamAIMovement:bank_carry()
-	local carry_data = self:carry_data()
-
-	if carry_data then
-		managers.loot:secure(carry_data:carry_id(), carry_data:multiplier())
-		self._carry_unit:set_slot(0)
-
-		self._carry_unit = nil
-	end
-end
-
-function TeamAIMovement:throw_bag(target_unit, reason)
-	if not self:carrying_bag() then
-		return
-	end
-
-	local carry_unit = self._carry_unit
-	self._was_carrying = {
-		unit = carry_unit,
-		reason = reason
-	}
-
-	carry_unit:carry_data():unlink()
-
-	if Network:is_server() then
-		self:sync_throw_bag(carry_unit, target_unit)
-		managers.network:session():send_to_peers("sync_ai_throw_bag", self._unit, carry_unit, target_unit)
-	end
-end
-
-function TeamAIMovement:was_carrying_bag()
-	return self._was_carrying
-end
-
-function TeamAIMovement:sync_throw_bag(carry_unit, target_unit)
-	if alive(target_unit) then
-		local dir = target_unit:position() - self._unit:position()
-
-		mvector3.set_z(dir, math.abs(dir.x + dir.y) * 0.5)
-
-		local throw_distance_multiplier = tweak_data.carry.types[tweak_data.carry[carry_unit:carry_data():carry_id()].type].throw_distance_multiplier
-
-		carry_unit:push(tweak_data.ai_carry.throw_force, (dir - carry_unit:velocity()) * throw_distance_multiplier)
-	end
-end
-
 function TeamAIMovement:update(...)
 	TeamAIMovement.super.update(self, ...)
 
 	if self._pre_destroyed then
 		return
-	end
-
-	if self._ext_anim and self._ext_anim.reload then
-		if not alive(self._left_hand_obj) then
-			self._left_hand_obj = self._unit:get_object(Idstring("LeftHandMiddle1"))
-		end
-
-		if alive(self._left_hand_obj) then
-			if self._left_hand_pos then
-				self._left_hand_direction = self._left_hand_direction or Vector3()
-
-				mvec3_set(self._left_hand_direction, self._left_hand_pos)
-				mvec3_sub(self._left_hand_direction, self._left_hand_obj:position())
-
-				self._left_hand_velocity = mvec3_len(self._left_hand_direction)
-
-				mvec3_norm(self._left_hand_direction)
-			end
-
-			self._left_hand_pos = self._left_hand_pos or Vector3()
-
-			mvec3_set(self._left_hand_pos, self._left_hand_obj:position())
-		end
 	end
 end

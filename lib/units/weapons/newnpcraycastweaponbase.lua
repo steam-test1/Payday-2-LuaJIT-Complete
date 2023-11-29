@@ -20,13 +20,21 @@ function NewNPCRaycastWeaponBase:init(unit)
 
 	self._setup = {}
 	self._digest_values = false
+	self._fires_blanks = Network:is_client()
+	local td = tweak_data.weapon[self._name_id]
 
-	self:set_ammo_max(tweak_data.weapon[self._name_id].AMMO_MAX)
+	if not self._do_shotgun_push then
+		local non_npc_id = self:non_npc_name_id()
+		local non_npc_td = tweak_data.weapon[non_npc_id]
+		self._do_shotgun_push = non_npc_td and non_npc_td.do_shotgun_push or self:is_category("shotgun") or false
+	end
+
+	self:set_ammo_max(td.AMMO_MAX)
 	self:set_ammo_total(self:get_ammo_max())
-	self:set_ammo_max_per_clip(tweak_data.weapon[self._name_id].CLIP_AMMO_MAX)
+	self:set_ammo_max_per_clip(td.CLIP_AMMO_MAX)
 	self:set_ammo_remaining_in_clip(self:get_ammo_max_per_clip())
 
-	self._damage = tweak_data.weapon[self._name_id].DAMAGE
+	self._damage = td.DAMAGE
 	self._shoot_through_data = {
 		from = Vector3()
 	}
@@ -36,7 +44,7 @@ function NewNPCRaycastWeaponBase:init(unit)
 
 	self._sound_fire:link(self._unit:orientation_object())
 
-	self._muzzle_effect = Idstring(self:weapon_tweak_data().muzzleflash or "effects/particles/test/muzzleflash_maingun")
+	self._muzzle_effect = Idstring(td.muzzleflash or "effects/particles/test/muzzleflash_maingun")
 	self._muzzle_effect_table = {
 		force_synch = false,
 		effect = self._muzzle_effect,
@@ -46,7 +54,7 @@ function NewNPCRaycastWeaponBase:init(unit)
 
 	if self._use_shell_ejection_effect then
 		self._obj_shell_ejection = self._unit:get_object(Idstring("a_shell"))
-		self._shell_ejection_effect = Idstring(self:weapon_tweak_data().shell_ejection or "effects/payday2/particles/weapons/shells/shell_556")
+		self._shell_ejection_effect = Idstring(td.shell_ejection or "effects/payday2/particles/weapons/shells/shell_556")
 		self._shell_ejection_effect_table = {
 			effect = self._shell_ejection_effect,
 			parent = self._obj_shell_ejection
@@ -75,17 +83,6 @@ function NewNPCRaycastWeaponBase:init(unit)
 		end
 	else
 		self._voice = "a"
-	end
-
-	if self._unit:get_object(Idstring("ls_flashlight")) then
-		self._flashlight_data = {
-			light = self._unit:get_object(Idstring("ls_flashlight")),
-			effect = self._unit:effect_spawner(Idstring("flashlight"))
-		}
-
-		self._flashlight_data.light:set_far_range(400)
-		self._flashlight_data.light:set_spot_angle_end(25)
-		self._flashlight_data.light:set_multiplier(2)
 	end
 
 	self._textures = {}
@@ -401,12 +398,11 @@ function NewNPCRaycastWeaponBase:_spawn_muzzle_effect(from_pos, direction)
 end
 
 function NewNPCRaycastWeaponBase:destroy(unit)
-	NewNPCRaycastWeaponBase.super.destroy(self, unit)
-
 	if self._shooting then
 		self:stop_autofire()
 	end
 
+	NewNPCRaycastWeaponBase.super.destroy(self, unit)
 	managers.mission:remove_global_event_listener(tostring(self._unit:key()))
 end
 
@@ -487,8 +483,13 @@ function NewNPCRaycastWeaponBase:_sound_singleshot()
 	end
 end
 
-function NewNPCRaycastWeaponBase:set_user_is_team_ai(enabled)
-	self._is_team_ai = enabled
+function NewNPCRaycastWeaponBase:set_user_is_team_ai(state)
+	self._is_team_ai = state
+end
+
+function NewNPCRaycastWeaponBase:set_team_ai_ap_rounds(state)
+	self._use_armor_piercing = state
+	self._has_ap_rounds = state
 end
 
 local mvec_to = Vector3()
@@ -529,11 +530,11 @@ function NewNPCRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, d
 
 	if col_ray then
 		if col_ray.unit:in_slot(self._character_slotmask) then
-			hit_unit = InstantBulletBase:on_collision(col_ray, self._unit, user_unit, damage)
+			hit_unit = InstantBulletBase:on_collision(col_ray, self._unit, user_unit, damage, self._fires_blanks)
 		elseif shoot_player and self._hit_player and self:damage_player(col_ray, from_pos, direction) then
 			InstantBulletBase:on_hit_player(col_ray, self._unit, user_unit, self._damage * (dmg_mul or 1))
 		else
-			hit_unit = InstantBulletBase:on_collision(col_ray, self._unit, user_unit, damage)
+			hit_unit = InstantBulletBase:on_collision(col_ray, self._unit, user_unit, damage, self._fires_blanks)
 		end
 	elseif shoot_player and self._hit_player then
 		local hit, ray_data = self:damage_player(col_ray, from_pos, direction)
@@ -573,7 +574,7 @@ function NewNPCRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, d
 	end
 
 	if col_ray and col_ray.unit then
-		local ap_skill = self._is_team_ai and managers.player:has_category_upgrade("team", "crew_ai_ap_ammo")
+		local ap_skill = self._is_team_ai and self._has_ap_rounds
 
 		repeat
 			if hit_unit and not ap_skill then

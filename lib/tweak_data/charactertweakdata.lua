@@ -77,29 +77,9 @@ function CharacterTweakData:init(tweak_data)
 	self:_init_escort(presets)
 	self:_init_escort_undercover(presets)
 	self:_init_escort_criminal(presets)
-	self:_init_russian(presets)
-	self:_init_german(presets)
-	self:_init_spanish(presets)
-	self:_init_american(presets)
-	self:_init_jowi(presets)
-	self:_init_old_hoxton(presets)
-	self:_init_clover(presets)
-	self:_init_dragan(presets)
-	self:_init_jacket(presets)
-	self:_init_bonnie(presets)
-	self:_init_sokol(presets)
-	self:_init_dragon(presets)
-	self:_init_bodhi(presets)
-	self:_init_jimmy(presets)
-	self:_init_sydney(presets)
-	self:_init_wild(presets)
+	self:_init_team_ai(presets)
 	self:_init_biker_boss(presets)
 	self:_init_chavez_boss(presets)
-	self:_init_chico(presets)
-	self:_init_max(presets)
-	self:_init_joy(presets)
-	self:_init_myh(presets)
-	self:_init_ecp(presets)
 	self:_init_bolivians(presets)
 	self:_init_drug_lord_boss(presets)
 	self:_init_drug_lord_boss_stealth(presets)
@@ -207,10 +187,7 @@ function CharacterTweakData:_init_security(presets)
 	self.security.surrender = presets.surrender.easy
 	self.security.ecm_vulnerability = 1
 	self.security.ecm_hurts = {
-		ears = {
-			max_duration = 10,
-			min_duration = 8
-		}
+		ears = 9
 	}
 	self.security.weapon_voice = "3"
 	self.security.experience.cable_tie = "tie_swat"
@@ -282,10 +259,7 @@ function CharacterTweakData:_init_gensec(presets)
 	self.gensec.surrender = presets.surrender.easy
 	self.gensec.ecm_vulnerability = 1
 	self.gensec.ecm_hurts = {
-		ears = {
-			max_duration = 10,
-			min_duration = 8
-		}
+		ears = 9
 	}
 	self.gensec.weapon_voice = "3"
 	self.gensec.experience.cable_tie = "tie_swat"
@@ -325,14 +299,11 @@ function CharacterTweakData:_init_cop(presets)
 	self.cop.surrender = presets.surrender.easy
 	self.cop.ecm_vulnerability = 1
 	self.cop.ecm_hurts = {
-		ears = {
-			max_duration = 10,
-			min_duration = 8
-		}
+		ears = 9
 	}
 	self.cop.weapon_voice = "1"
 	self.cop.experience.cable_tie = "tie_swat"
-	self.cop.speech_prefix_p1 = self._prefix_data_p1.swat()
+	self.cop.speech_prefix_p1 = self._prefix_data_p1.cop()
 	self.cop.speech_prefix_p2 = "n"
 	self.cop.speech_prefix_count = 4
 	self.cop.access = "cop"
@@ -378,10 +349,7 @@ function CharacterTweakData:_init_fbi(presets)
 	self.fbi.surrender = presets.surrender.easy
 	self.fbi.ecm_vulnerability = 1
 	self.fbi.ecm_hurts = {
-		ears = {
-			max_duration = 10,
-			min_duration = 8
-		}
+		ears = 9
 	}
 	self.fbi.weapon_voice = "2"
 	self.fbi.experience.cable_tie = "tie_swat"
@@ -397,6 +365,13 @@ function CharacterTweakData:_init_fbi(presets)
 	self.fbi.steal_loot = true
 
 	table.insert(self._enemy_list, "fbi")
+
+	self.fbi_female = deep_clone(self.fbi)
+	self.fbi_female.speech_prefix_p1 = "fl"
+	self.fbi_female.speech_prefix_p2 = "n"
+	self.fbi_female.speech_prefix_count = 1
+
+	table.insert(self._enemy_list, "fbi_female")
 end
 
 function CharacterTweakData:_init_medic(presets)
@@ -411,8 +386,8 @@ function CharacterTweakData:_init_medic(presets)
 	self.medic.detection = presets.detection.normal
 	self.medic.HEALTH_INIT = 30
 	self.medic.headshot_dmg_mul = 2
-	self.medic.damage.hurt_severity = presets.hurt_severities.no_hurts
-	self.medic.suppression = presets.suppression.no_supress
+	self.medic.damage.hurt_severity = presets.hurt_severities.only_light_hurt
+	self.medic.suppression = nil
 	self.medic.surrender = presets.surrender.special
 	self.medic.move_speed = presets.move_speed.very_fast
 	self.medic.surrender_break_time = {
@@ -421,10 +396,7 @@ function CharacterTweakData:_init_medic(presets)
 	}
 	self.medic.ecm_vulnerability = 1
 	self.medic.ecm_hurts = {
-		ears = {
-			max_duration = 10,
-			min_duration = 8
-		}
+		ears = 9
 	}
 	self.medic.weapon_voice = "2"
 	self.medic.experience.cable_tie = "tie_swat"
@@ -442,7 +414,7 @@ function CharacterTweakData:_init_medic(presets)
 	}
 	self.medic.steal_loot = false
 	self.medic.priority_shout = "f47"
-	self.medic.priority_shout_max_dis = 700
+	self.medic.use_animation_on_fire_damage = false
 
 	table.insert(self._enemy_list, "medic")
 end
@@ -466,10 +438,7 @@ function CharacterTweakData:_init_swat(presets)
 	self.swat.surrender = presets.surrender.easy
 	self.swat.ecm_vulnerability = 1
 	self.swat.ecm_hurts = {
-		ears = {
-			max_duration = 10,
-			min_duration = 8
-		}
+		ears = 9
 	}
 	self.swat.weapon_voice = "2"
 	self.swat.experience.cable_tie = "tie_swat"
@@ -483,8 +452,10 @@ function CharacterTweakData:_init_swat(presets)
 	self.swat.melee_weapon = "knife_1"
 	self.swat.melee_weapon_dmg_multiplier = 1
 	self.swat.steal_loot = true
+	self.zeal_swat = deep_clone(self.swat)
 
 	table.insert(self._enemy_list, "swat")
+	table.insert(self._enemy_list, "zeal_swat")
 end
 
 function CharacterTweakData:_init_heavy_swat(presets)
@@ -507,10 +478,7 @@ function CharacterTweakData:_init_heavy_swat(presets)
 	self.heavy_swat.surrender = presets.surrender.easy
 	self.heavy_swat.ecm_vulnerability = 1
 	self.heavy_swat.ecm_hurts = {
-		ears = {
-			max_duration = 10,
-			min_duration = 8
-		}
+		ears = 9
 	}
 	self.heavy_swat.weapon_voice = "2"
 	self.heavy_swat.experience.cable_tie = "tie_swat"
@@ -522,6 +490,7 @@ function CharacterTweakData:_init_heavy_swat(presets)
 	self.heavy_swat.no_arrest = true
 	self.heavy_swat.chatter = presets.enemy_chatter.swat
 	self.heavy_swat.steal_loot = true
+	self.zeal_heavy_swat = deep_clone(self.heavy_swat)
 	self.heavy_swat_sniper = deep_clone(self.heavy_swat)
 	self.heavy_swat_sniper.weapon = presets.weapon.good
 	self.heavy_swat_sniper.misses_first_player_shot = true
@@ -529,6 +498,7 @@ function CharacterTweakData:_init_heavy_swat(presets)
 	self.heavy_swat_sniper.speech_prefix_p2 = "d"
 
 	table.insert(self._enemy_list, "heavy_swat")
+	table.insert(self._enemy_list, "zeal_heavy_swat")
 	table.insert(self._enemy_list, "heavy_swat_sniper")
 end
 
@@ -551,10 +521,7 @@ function CharacterTweakData:_init_fbi_swat(presets)
 	self.fbi_swat.surrender = presets.surrender.easy
 	self.fbi_swat.ecm_vulnerability = 1
 	self.fbi_swat.ecm_hurts = {
-		ears = {
-			max_duration = 10,
-			min_duration = 8
-		}
+		ears = 9
 	}
 	self.fbi_swat.weapon_voice = "2"
 	self.fbi_swat.experience.cable_tie = "tie_swat"
@@ -591,10 +558,7 @@ function CharacterTweakData:_init_fbi_heavy_swat(presets)
 	self.fbi_heavy_swat.surrender = presets.surrender.easy
 	self.fbi_heavy_swat.ecm_vulnerability = 1
 	self.fbi_heavy_swat.ecm_hurts = {
-		ears = {
-			max_duration = 10,
-			min_duration = 8
-		}
+		ears = 9
 	}
 	self.fbi_heavy_swat.weapon_voice = "2"
 	self.fbi_heavy_swat.experience.cable_tie = "tie_swat"
@@ -629,10 +593,7 @@ function CharacterTweakData:_init_city_swat(presets)
 	self.city_swat.surrender = presets.surrender.easy
 	self.city_swat.ecm_vulnerability = 1
 	self.city_swat.ecm_hurts = {
-		ears = {
-			max_duration = 10,
-			min_duration = 8
-		}
+		ears = 9
 	}
 	self.city_swat.weapon_voice = "2"
 	self.city_swat.experience.cable_tie = "tie_swat"
@@ -669,10 +630,7 @@ function CharacterTweakData:_init_sniper(presets)
 	self.sniper.suppression = presets.suppression.easy
 	self.sniper.ecm_vulnerability = 1
 	self.sniper.ecm_hurts = {
-		ears = {
-			max_duration = 10,
-			min_duration = 8
-		}
+		ears = 9
 	}
 	self.sniper.weapon_voice = "1"
 	self.sniper.experience.cable_tie = "tie_swat"
@@ -823,10 +781,7 @@ function CharacterTweakData:_init_marshal_marksman(presets)
 	self.marshal_marksman.shooting_death = false
 	self.marshal_marksman.ecm_vulnerability = 1
 	self.marshal_marksman.ecm_hurts = {
-		ears = {
-			max_duration = 10,
-			min_duration = 8
-		}
+		ears = 9
 	}
 	self.marshal_marksman.weapon_voice = "1"
 	self.marshal_marksman.speech_prefix_p1 = "l"
@@ -868,13 +823,6 @@ function CharacterTweakData:_init_marshal_shield(presets)
 	self.marshal_shield.no_retreat = true
 	self.marshal_shield.no_arrest = true
 	self.marshal_shield.surrender = nil
-	self.marshal_shield.ecm_vulnerability = 0
-	self.marshal_shield.ecm_hurts = {
-		ears = {
-			max_duration = 0,
-			min_duration = 0
-		}
-	}
 	self.marshal_shield.rescue_hostages = false
 	self.marshal_shield.deathguard = false
 	self.marshal_shield.no_equip_anim = true
@@ -883,7 +831,7 @@ function CharacterTweakData:_init_marshal_shield(presets)
 	self.marshal_shield.calls_in = nil
 	self.marshal_shield.ignore_medic_revive_animation = true
 	self.marshal_shield.shooting_death = false
-	self.marshal_shield.damage.hurt_severity = presets.hurt_severities.no_hurts
+	self.marshal_shield.damage.hurt_severity = presets.hurt_severities.only_light_hurt
 	self.marshal_shield.damage.shield_knocked = false
 	self.marshal_shield.immune_to_concussion = true
 	self.marshal_shield.damage.immune_to_knockback = true
@@ -1016,7 +964,8 @@ function CharacterTweakData:_init_marshal_shield(presets)
 
 	self.marshal_shield_break = deep_clone(self.marshal_shield)
 	self.marshal_shield_break.tags = {
-		"law"
+		"law",
+		"special"
 	}
 	self.marshal_shield_break.HEALTH_INIT = 64
 	self.marshal_shield_break.allowed_stances = nil
@@ -1034,6 +983,7 @@ function CharacterTweakData:_init_marshal_shield(presets)
 	self.marshal_shield_break.damage.explosion_damage_mul = 1
 	self.marshal_shield_break.use_animation_on_fire_damage = nil
 	self.marshal_shield_break.damage.shield_knocked = nil
+	self.marshal_shield_break.ignore_medic_revive_animation = false
 	self.marshal_shield_break.modify_health_on_tweak_change = true
 	self.marshal_shield_break.tmp_invulnerable_on_tweak_change = 3
 	self.marshal_shield_break.weapon.is_shotgun_mag = {
@@ -1167,10 +1117,7 @@ function CharacterTweakData:_init_gangster(presets)
 	self.gangster.surrender = nil
 	self.gangster.ecm_vulnerability = 1
 	self.gangster.ecm_hurts = {
-		ears = {
-			max_duration = 10,
-			min_duration = 8
-		}
+		ears = 9
 	}
 	self.gangster.no_arrest = true
 	self.gangster.no_retreat = true
@@ -1199,6 +1146,13 @@ function CharacterTweakData:_init_biker(presets)
 	self.biker.calls_in = true
 
 	table.insert(self._enemy_list, "biker")
+
+	self.biker_female = deep_clone(self.biker)
+	self.biker_female.speech_prefix_p1 = "fl"
+	self.biker_female.speech_prefix_p2 = "n"
+	self.biker_female.speech_prefix_count = 1
+
+	table.insert(self._enemy_list, "biker_female")
 end
 
 function CharacterTweakData:_init_triad(presets)
@@ -1229,7 +1183,7 @@ function CharacterTweakData:_init_triad_boss(presets)
 	self.triad_boss.detection = presets.detection.normal
 	self.triad_boss.HEALTH_INIT = 540
 	self.triad_boss.headshot_dmg_mul = 2
-	self.triad_boss.damage.hurt_severity = presets.hurt_severities.no_hurts
+	self.triad_boss.damage.hurt_severity = presets.hurt_severities.only_light_hurt
 	self.triad_boss.damage.explosion_damage_mul = 0.5
 	self.triad_boss.can_be_tased = false
 	self.triad_boss.suppression = nil
@@ -1246,13 +1200,6 @@ function CharacterTweakData:_init_triad_boss(presets)
 	self.triad_boss.no_retreat = true
 	self.triad_boss.no_arrest = true
 	self.triad_boss.surrender = nil
-	self.triad_boss.ecm_vulnerability = 0
-	self.triad_boss.ecm_hurts = {
-		ears = {
-			max_duration = 0,
-			min_duration = 0
-		}
-	}
 	self.triad_boss.weapon_voice = "3"
 	self.triad_boss.experience.cable_tie = "tie_swat"
 	self.triad_boss.access = "gangster"
@@ -1268,9 +1215,9 @@ function CharacterTweakData:_init_triad_boss(presets)
 	self.triad_boss.use_radio = nil
 	self.triad_boss.use_animation_on_fire_damage = false
 	self.triad_boss.flammable = false
+	self.triad_boss.can_be_healed = false
 	self.triad_boss.immune_to_knock_down = true
 	self.triad_boss.immune_to_concussion = true
-	self.triad_boss.can_reload_while_moving_tmp = true
 	self.triad_boss.no_headshot_add_mul = true
 	self.triad_boss.bullet_damage_only_from_front = true
 	self.triad_boss.player_health_scaling_mul = 1.5
@@ -1298,7 +1245,7 @@ function CharacterTweakData:_init_triad_boss(presets)
 	self.triad_boss_no_armor = deep_clone(self.gangster)
 	self.triad_boss_no_armor.suspicious = nil
 	self.triad_boss_no_armor.detection = presets.detection.normal
-	self.triad_boss_no_armor.damage.hurt_severity = presets.hurt_severities.no_hurts
+	self.triad_boss_no_armor.damage.hurt_severity = presets.hurt_severities.only_light_hurt
 	self.triad_boss_no_armor.move_speed = presets.move_speed.very_fast
 	self.triad_boss_no_armor.dodge = presets.dodge.athletic
 	self.triad_boss_no_armor.crouch_move = nil
@@ -1307,13 +1254,8 @@ function CharacterTweakData:_init_triad_boss(presets)
 	self.triad_boss_no_armor.no_retreat = true
 	self.triad_boss_no_armor.no_arrest = true
 	self.triad_boss_no_armor.surrender = nil
-	self.triad_boss_no_armor.ecm_vulnerability = 0
-	self.triad_boss_no_armor.ecm_hurts = {
-		ears = {
-			max_duration = 0,
-			min_duration = 0
-		}
-	}
+	self.triad_boss_no_armor.ecm_vulnerability = nil
+	self.triad_boss_no_armor.ecm_hurts = nil
 	self.triad_boss_no_armor.rescue_hostages = false
 	self.triad_boss_no_armor.steal_loot = nil
 	self.triad_boss_no_armor.calls_in = nil
@@ -1321,6 +1263,7 @@ function CharacterTweakData:_init_triad_boss(presets)
 	self.triad_boss_no_armor.use_radio = nil
 	self.triad_boss_no_armor.radio_prefix = "fri_"
 	self.triad_boss_no_armor.use_animation_on_fire_damage = false
+	self.triad_boss_no_armor.can_be_healed = false
 	self.triad_boss_no_armor.immune_to_knock_down = true
 	self.triad_boss_no_armor.immune_to_concussion = true
 
@@ -1338,7 +1281,7 @@ function CharacterTweakData:_init_deep_boss(presets)
 	self.deep_boss.detection = presets.detection.normal
 	self.deep_boss.HEALTH_INIT = 2000
 	self.deep_boss.headshot_dmg_mul = 1
-	self.deep_boss.damage.hurt_severity = presets.hurt_severities.no_hurts
+	self.deep_boss.damage.hurt_severity = presets.hurt_severities.only_light_hurt
 	self.deep_boss.damage.explosion_damage_mul = 0.5
 	self.deep_boss.can_be_tased = false
 	self.deep_boss.suppression = nil
@@ -1356,13 +1299,6 @@ function CharacterTweakData:_init_deep_boss(presets)
 	self.deep_boss.no_retreat = true
 	self.deep_boss.no_arrest = true
 	self.deep_boss.surrender = nil
-	self.deep_boss.ecm_vulnerability = 0
-	self.deep_boss.ecm_hurts = {
-		ears = {
-			max_duration = 0,
-			min_duration = 0
-		}
-	}
 	self.deep_boss.weapon_voice = "3"
 	self.deep_boss.experience.cable_tie = "tie_swat"
 	self.deep_boss.access = "gangster"
@@ -1380,9 +1316,9 @@ function CharacterTweakData:_init_deep_boss(presets)
 	self.deep_boss.use_radio = nil
 	self.deep_boss.use_animation_on_fire_damage = false
 	self.deep_boss.flammable = false
+	self.deep_boss.can_be_healed = false
 	self.deep_boss.immune_to_knock_down = true
 	self.deep_boss.immune_to_concussion = true
-	self.deep_boss.can_reload_while_moving_tmp = true
 	self.deep_boss.ignore_headshot = true
 	self.deep_boss.no_headshot_add_mul = true
 	self.deep_boss.player_health_scaling_mul = 1.1
@@ -1405,7 +1341,7 @@ function CharacterTweakData:_init_snowman_boss(presets)
 	self.snowman_boss.detection = presets.detection.normal
 	self.snowman_boss.HEALTH_INIT = 435
 	self.snowman_boss.headshot_dmg_mul = 2
-	self.snowman_boss.damage.hurt_severity = presets.hurt_severities.no_hurts
+	self.snowman_boss.damage.hurt_severity = presets.hurt_severities.only_light_hurt
 	self.snowman_boss.damage.explosion_damage_mul = 0.5
 	self.snowman_boss.can_be_tased = false
 	self.snowman_boss.suppression = nil
@@ -1422,13 +1358,6 @@ function CharacterTweakData:_init_snowman_boss(presets)
 	self.snowman_boss.no_retreat = true
 	self.snowman_boss.no_arrest = true
 	self.snowman_boss.surrender = nil
-	self.snowman_boss.ecm_vulnerability = 0
-	self.snowman_boss.ecm_hurts = {
-		ears = {
-			max_duration = 0,
-			min_duration = 0
-		}
-	}
 	self.snowman_boss.weapon_voice = "3"
 	self.snowman_boss.experience.cable_tie = "tie_swat"
 	self.snowman_boss.access = "tank"
@@ -1446,7 +1375,6 @@ function CharacterTweakData:_init_snowman_boss(presets)
 	self.snowman_boss.flammable = false
 	self.snowman_boss.immune_to_knock_down = true
 	self.snowman_boss.immune_to_concussion = true
-	self.snowman_boss.can_reload_while_moving_tmp = true
 	self.snowman_boss.no_headshot_add_mul = true
 	self.snowman_boss.player_health_scaling_mul = 1.5
 	self.snowman_boss.aoe_damage_data = {
@@ -1480,7 +1408,7 @@ function CharacterTweakData:_init_piggydozer(presets)
 	self.piggydozer.detection = presets.detection.normal
 	self.piggydozer.HEALTH_INIT = 435
 	self.piggydozer.headshot_dmg_mul = 2
-	self.piggydozer.damage.hurt_severity = presets.hurt_severities.no_hurts
+	self.piggydozer.damage.hurt_severity = presets.hurt_severities.only_light_hurt
 	self.piggydozer.damage.explosion_damage_mul = 0.5
 	self.piggydozer.can_be_tased = false
 	self.piggydozer.suppression = nil
@@ -1497,13 +1425,6 @@ function CharacterTweakData:_init_piggydozer(presets)
 	self.piggydozer.no_retreat = true
 	self.piggydozer.no_arrest = true
 	self.piggydozer.surrender = nil
-	self.piggydozer.ecm_vulnerability = 0
-	self.piggydozer.ecm_hurts = {
-		ears = {
-			max_duration = 0,
-			min_duration = 0
-		}
-	}
 	self.piggydozer.weapon_voice = "3"
 	self.piggydozer.experience.cable_tie = "tie_swat"
 	self.piggydozer.access = "tank"
@@ -1521,7 +1442,6 @@ function CharacterTweakData:_init_piggydozer(presets)
 	self.piggydozer.flammable = false
 	self.piggydozer.immune_to_knock_down = true
 	self.piggydozer.immune_to_concussion = true
-	self.piggydozer.can_reload_while_moving_tmp = true
 	self.piggydozer.no_headshot_add_mul = true
 	self.piggydozer.player_health_scaling_mul = 1.5
 	self.piggydozer.throwable = "molotov"
@@ -1556,6 +1476,13 @@ function CharacterTweakData:_init_captain(presets)
 	self.captain.suppression = nil
 
 	table.insert(self._enemy_list, "captain")
+
+	self.captain_female = deep_clone(self.captain)
+	self.captain_female.speech_prefix_p1 = "fl"
+	self.captain_female.speech_prefix_p2 = "n"
+	self.captain_female.speech_prefix_count = 1
+
+	table.insert(self._enemy_list, "captain_female")
 end
 
 function CharacterTweakData:_init_biker_escape(presets)
@@ -1710,13 +1637,7 @@ function CharacterTweakData:_init_mobster_boss(presets)
 	self.mobster_boss.no_retreat = true
 	self.mobster_boss.no_arrest = true
 	self.mobster_boss.surrender = nil
-	self.mobster_boss.ecm_vulnerability = 0.85
-	self.mobster_boss.ecm_hurts = {
-		ears = {
-			max_duration = 9,
-			min_duration = 7
-		}
-	}
+	self.mobster_boss.can_be_healed = false
 	self.mobster_boss.weapon_voice = "3"
 	self.mobster_boss.experience.cable_tie = "tie_swat"
 	self.mobster_boss.access = "gangster"
@@ -1861,7 +1782,7 @@ function CharacterTweakData:_init_biker_boss(presets)
 	self.biker_boss.HEALTH_INIT = 350
 	self.biker_boss.headshot_dmg_mul = 2
 	self.biker_boss.damage.explosion_damage_mul = 1
-	self.biker_boss.damage.hurt_severity = presets.hurt_severities.no_hurts
+	self.biker_boss.damage.hurt_severity = presets.hurt_severities.only_light_hurt
 	self.biker_boss.can_be_tased = false
 	self.biker_boss.move_speed = presets.move_speed.very_slow
 	self.biker_boss.allowed_poses = {
@@ -1870,13 +1791,6 @@ function CharacterTweakData:_init_biker_boss(presets)
 	self.biker_boss.no_retreat = true
 	self.biker_boss.no_arrest = true
 	self.biker_boss.surrender = nil
-	self.biker_boss.ecm_vulnerability = 0
-	self.biker_boss.ecm_hurts = {
-		ears = {
-			max_duration = 0,
-			min_duration = 0
-		}
-	}
 	self.biker_boss.weapon_voice = "3"
 	self.biker_boss.experience.cable_tie = "tie_swat"
 	self.biker_boss.access = "gangster"
@@ -1894,6 +1808,7 @@ function CharacterTweakData:_init_biker_boss(presets)
 	self.biker_boss.DAMAGE_CLAMP_EXPLOSION = 80
 	self.biker_boss.use_animation_on_fire_damage = false
 	self.biker_boss.flammable = true
+	self.biker_boss.can_be_healed = false
 	self.biker_boss.immune_to_knock_down = true
 	self.biker_boss.immune_to_concussion = true
 
@@ -2034,13 +1949,6 @@ function CharacterTweakData:_init_chavez_boss(presets)
 	self.chavez_boss.no_retreat = true
 	self.chavez_boss.no_arrest = true
 	self.chavez_boss.surrender = nil
-	self.chavez_boss.ecm_vulnerability = 0
-	self.chavez_boss.ecm_hurts = {
-		ears = {
-			max_duration = 0,
-			min_duration = 0
-		}
-	}
 	self.chavez_boss.weapon_voice = "1"
 	self.chavez_boss.experience.cable_tie = "tie_swat"
 	self.chavez_boss.access = "gangster"
@@ -2058,6 +1966,7 @@ function CharacterTweakData:_init_chavez_boss(presets)
 	self.chavez_boss.DAMAGE_CLAMP_EXPLOSION = 80
 	self.chavez_boss.use_animation_on_fire_damage = false
 	self.chavez_boss.flammable = true
+	self.chavez_boss.can_be_healed = false
 	self.chavez_boss.immune_to_knock_down = true
 	self.chavez_boss.immune_to_concussion = true
 
@@ -2203,6 +2112,7 @@ function CharacterTweakData:_init_hector_boss_no_armor(presets)
 	self.hector_boss_no_armor.calls_in = nil
 	self.hector_boss_no_armor.chatter = presets.enemy_chatter.no_chatter
 	self.hector_boss_no_armor.use_radio = nil
+	self.hector_boss_no_armor.can_be_healed = false
 	self.hector_boss_no_armor.immune_to_concussion = true
 
 	table.insert(self._enemy_list, "hector_boss_no_armor")
@@ -2382,13 +2292,6 @@ function CharacterTweakData:_init_drug_lord_boss(presets)
 	self.drug_lord_boss.no_retreat = true
 	self.drug_lord_boss.no_arrest = true
 	self.drug_lord_boss.surrender = nil
-	self.drug_lord_boss.ecm_vulnerability = 0
-	self.drug_lord_boss.ecm_hurts = {
-		ears = {
-			max_duration = 0,
-			min_duration = 0
-		}
-	}
 	self.drug_lord_boss.weapon_voice = "3"
 	self.drug_lord_boss.experience.cable_tie = "tie_swat"
 	self.drug_lord_boss.access = "gangster"
@@ -2407,6 +2310,7 @@ function CharacterTweakData:_init_drug_lord_boss(presets)
 	self.drug_lord_boss.DAMAGE_CLAMP_EXPLOSION = 80
 	self.drug_lord_boss.use_animation_on_fire_damage = false
 	self.drug_lord_boss.flammable = true
+	self.drug_lord_boss.can_be_healed = false
 	self.drug_lord_boss.immune_to_knock_down = true
 	self.drug_lord_boss.immune_to_concussion = true
 
@@ -2547,13 +2451,6 @@ function CharacterTweakData:_init_drug_lord_boss_stealth(presets)
 	self.drug_lord_boss_stealth.no_retreat = true
 	self.drug_lord_boss_stealth.no_arrest = true
 	self.drug_lord_boss_stealth.surrender = nil
-	self.drug_lord_boss_stealth.ecm_vulnerability = 0
-	self.drug_lord_boss_stealth.ecm_hurts = {
-		ears = {
-			max_duration = 0,
-			min_duration = 0
-		}
-	}
 	self.drug_lord_boss_stealth.weapon_voice = "3"
 	self.drug_lord_boss_stealth.experience.cable_tie = "tie_swat"
 	self.drug_lord_boss_stealth.access = "gangster"
@@ -2572,6 +2469,7 @@ function CharacterTweakData:_init_drug_lord_boss_stealth(presets)
 	self.drug_lord_boss_stealth.DAMAGE_CLAMP_EXPLOSION = 80
 	self.drug_lord_boss_stealth.use_animation_on_fire_damage = false
 	self.drug_lord_boss_stealth.flammable = true
+	self.drug_lord_boss_stealth.can_be_healed = false
 	self.drug_lord_boss_stealth.immune_to_knock_down = true
 	self.drug_lord_boss_stealth.immune_to_concussion = true
 
@@ -2716,7 +2614,7 @@ function CharacterTweakData:_init_tank(presets)
 			}
 		}
 	}
-	self.tank.weapon.is_rifle = {
+	self.tank.weapon.is_lmg = {
 		aim_delay = {
 			0.1,
 			0.2
@@ -2853,10 +2751,7 @@ function CharacterTweakData:_init_tank(presets)
 	self.tank.surrender = nil
 	self.tank.ecm_vulnerability = 0.85
 	self.tank.ecm_hurts = {
-		ears = {
-			max_duration = 3,
-			min_duration = 1
-		}
+		ears = 2
 	}
 	self.tank.weapon_voice = "3"
 	self.tank.experience.cable_tie = "tie_swat"
@@ -2873,10 +2768,11 @@ function CharacterTweakData:_init_tank(presets)
 		damage_mul = self.tank.headshot_dmg_mul * 1
 	}
 	self.tank.die_sound_event = "bdz_x02a_any_3p"
-	self.tank.damage.hurt_severity = presets.hurt_severities.no_hurts
+	self.tank.damage.hurt_severity = presets.hurt_severities.only_light_hurt
 	self.tank.can_be_tased = false
 	self.tank.chatter = {
 		retreat = true,
+		entrance = true,
 		aggressive = true,
 		contact = true
 	}
@@ -2890,136 +2786,22 @@ function CharacterTweakData:_init_tank(presets)
 	self.tank.immune_to_concussion = true
 	self.tank.no_headshot_add_mul = true
 	self.tank_hw = deep_clone(self.tank)
-	self.tank_hw.move_speed = {
-		stand = {
-			walk = {
-				ntl = {
-					strafe = 60,
-					fwd = 72,
-					bwd = 56
-				},
-				hos = {
-					strafe = 60,
-					fwd = 72,
-					bwd = 56
-				},
-				cbt = {
-					strafe = 60,
-					fwd = 72,
-					bwd = 56
-				}
-			},
-			run = {
-				hos = {
-					strafe = 70,
-					fwd = 72,
-					bwd = 56
-				},
-				cbt = {
-					strafe = 50,
-					fwd = 72,
-					bwd = 60
-				}
-			}
-		},
-		crouch = {
-			walk = {
-				hos = {
-					strafe = 60,
-					fwd = 72,
-					bwd = 56
-				},
-				cbt = {
-					strafe = 60,
-					fwd = 72,
-					bwd = 56
-				}
-			},
-			run = {
-				hos = {
-					strafe = 65,
-					fwd = 72,
-					bwd = 56
-				},
-				cbt = {
-					strafe = 50,
-					fwd = 72,
-					bwd = 60
-				}
-			}
-		}
-	}
+	self.tank_hw.move_speed = presets.move_speed.extremely_slow
 	self.tank_hw.HEALTH_INIT = 200
 	self.tank_hw.headshot_dmg_mul = 1
 	self.tank_hw.ignore_headshot = true
+	self.tank_hw.damage.hurt_severity = presets.hurt_severities.no_hurts
 	self.tank_hw.damage.explosion_damage_mul = 1
-	self.tank_hw.use_animation_on_fire_damage = false
-	self.tank_hw.flammable = true
+	self.tank_hw.DAMAGE_CLAMP_BULLET = 235
 	self.tank_medic = deep_clone(self.tank)
 
 	table.insert(self.tank_medic.tags, "medic")
 
 	self.tank_mini = deep_clone(self.tank)
+	self.tank_mini.HEALTH_INIT = self.tank_mini.HEALTH_INIT * 2
+	self.tank_mini.damage.hurt_severity = presets.hurt_severities.no_hurts
 	self.tank_mini.weapon.mini = {}
-	self.tank_mini.move_speed = {
-		stand = {
-			walk = {
-				ntl = {
-					strafe = 60,
-					fwd = 72,
-					bwd = 56
-				},
-				hos = {
-					strafe = 60,
-					fwd = 72,
-					bwd = 56
-				},
-				cbt = {
-					strafe = 60,
-					fwd = 72,
-					bwd = 56
-				}
-			},
-			run = {
-				hos = {
-					strafe = 70,
-					fwd = 72,
-					bwd = 56
-				},
-				cbt = {
-					strafe = 50,
-					fwd = 72,
-					bwd = 60
-				}
-			}
-		},
-		crouch = {
-			walk = {
-				hos = {
-					strafe = 60,
-					fwd = 72,
-					bwd = 56
-				},
-				cbt = {
-					strafe = 60,
-					fwd = 72,
-					bwd = 56
-				}
-			},
-			run = {
-				hos = {
-					strafe = 65,
-					fwd = 72,
-					bwd = 56
-				},
-				cbt = {
-					strafe = 50,
-					fwd = 72,
-					bwd = 60
-				}
-			}
-		}
-	}
+	self.tank_mini.move_speed = presets.move_speed.extremely_slow
 	self.tank_mini.weapon.mini.aim_delay = {
 		0.1,
 		0.2
@@ -3041,8 +2823,8 @@ function CharacterTweakData:_init_tank(presets)
 		close = 1000
 	}
 	self.tank_mini.weapon.mini.autofire_rounds = {
-		20,
-		40
+		40,
+		100
 	}
 	self.tank_mini.weapon.mini.FALLOFF = {
 		{
@@ -3178,7 +2960,7 @@ function CharacterTweakData:_init_spooc(presets)
 	self.spooc.move_speed = presets.move_speed.lightning
 	self.spooc.no_retreat = true
 	self.spooc.no_arrest = true
-	self.spooc.damage.hurt_severity = presets.hurt_severities.only_fire_and_poison_hurts
+	self.spooc.damage.hurt_severity = presets.hurt_severities.only_poison_and_light_hurt
 	self.spooc.surrender_break_time = {
 		4,
 		6
@@ -3204,9 +2986,11 @@ function CharacterTweakData:_init_spooc(presets)
 	self.spooc.access = "spooc"
 	self.spooc.use_animation_on_fire_damage = false
 	self.spooc.flammable = true
+	self.spooc.can_be_healed = false
 	self.spooc.dodge = presets.dodge.ninja
 	self.spooc.dodge_with_grenade = {
 		smoke = {
+			instant = false,
 			duration = {
 				10,
 				20
@@ -3248,7 +3032,7 @@ function CharacterTweakData:_init_shadow_spooc(presets)
 	self.shadow_spooc.move_speed = presets.move_speed.lightning
 	self.shadow_spooc.no_retreat = true
 	self.shadow_spooc.no_arrest = true
-	self.shadow_spooc.damage.hurt_severity = presets.hurt_severities.only_fire_and_poison_hurts
+	self.shadow_spooc.damage.hurt_severity = presets.hurt_severities.only_poison_and_light_hurt
 	self.shadow_spooc.surrender_break_time = {
 		4,
 		6
@@ -3275,6 +3059,7 @@ function CharacterTweakData:_init_shadow_spooc(presets)
 	self.shadow_spooc.use_radio = nil
 	self.shadow_spooc.use_animation_on_fire_damage = false
 	self.shadow_spooc.flammable = false
+	self.shadow_spooc.can_be_healed = false
 	self.shadow_spooc.dodge = presets.dodge.ninja
 	self.shadow_spooc.chatter = presets.enemy_chatter.no_chatter
 	self.shadow_spooc.do_not_drop_ammo = true
@@ -3318,10 +3103,7 @@ function CharacterTweakData:_init_shield(presets)
 	self.shield.surrender = nil
 	self.shield.ecm_vulnerability = 0.9
 	self.shield.ecm_hurts = {
-		ears = {
-			max_duration = 9,
-			min_duration = 7
-		}
+		ears = 8
 	}
 	self.shield.priority_shout = "f31"
 	self.shield.rescue_hostages = false
@@ -3331,7 +3113,7 @@ function CharacterTweakData:_init_shield(presets)
 	self.shield.damage.explosion_damage_mul = 0.8
 	self.shield.calls_in = nil
 	self.shield.ignore_medic_revive_animation = true
-	self.shield.damage.hurt_severity = presets.hurt_severities.only_explosion_hurts
+	self.shield.damage.hurt_severity = presets.hurt_severities.only_explosion_and_light_hurt
 	self.shield.damage.shield_knocked = true
 	self.shield.use_animation_on_fire_damage = false
 	self.shield.flammable = true
@@ -3583,19 +3365,15 @@ function CharacterTweakData:_init_phalanx_minion(presets)
 	self.phalanx_minion.DAMAGE_CLAMP_BULLET = 70
 	self.phalanx_minion.DAMAGE_CLAMP_EXPLOSION = self.phalanx_minion.DAMAGE_CLAMP_BULLET
 	self.phalanx_minion.damage.explosion_damage_mul = 6
-	self.phalanx_minion.damage.hurt_severity = presets.hurt_severities.no_hurts
+	self.phalanx_minion.damage.hurt_severity = presets.hurt_severities.only_light_hurt
 	self.phalanx_minion.can_be_tased = false
 	self.phalanx_minion.damage.shield_knocked = false
 	self.phalanx_minion.damage.immune_to_knockback = true
 	self.phalanx_minion.immune_to_knock_down = true
 	self.phalanx_minion.immune_to_concussion = true
-	self.phalanx_minion.ignore_medic_revive_animation = true
 	self.phalanx_minion.ecm_vulnerability = 1
 	self.phalanx_minion.ecm_hurts = {
-		ears = {
-			max_duration = 3,
-			min_duration = 2
-		}
+		ears = 2.5
 	}
 	self.phalanx_minion.priority_shout = "f45"
 
@@ -3633,9 +3411,9 @@ function CharacterTweakData:_init_taser(presets)
 			miss_dis = 40,
 			RELOAD_SPEED = 0.66,
 			spread = 20,
-			tase_sphere_cast_radius = 30,
+			tase_sphere_cast_radius = 18,
 			melee_dmg = 10,
-			tase_distance = 1500,
+			tase_distance = 1000,
 			focus_dis = 200,
 			focus_delay = 4,
 			aim_delay = {
@@ -3647,8 +3425,8 @@ function CharacterTweakData:_init_taser(presets)
 				2
 			},
 			aim_delay_tase = {
-				0,
-				0
+				1,
+				1
 			},
 			range = {
 				optimal = 2000,
@@ -3759,10 +3537,7 @@ function CharacterTweakData:_init_taser(presets)
 	self.taser.surrender = presets.surrender.special
 	self.taser.ecm_vulnerability = 0.9
 	self.taser.ecm_hurts = {
-		ears = {
-			max_duration = 8,
-			min_duration = 6
-		}
+		ears = 7
 	}
 	self.taser.surrender_break_time = {
 		4,
@@ -3781,6 +3556,7 @@ function CharacterTweakData:_init_taser(presets)
 	self.taser.deathguard = true
 	self.taser.chatter = {
 		retreat = true,
+		entrance = true,
 		aggressive = true,
 		contact = true
 	}
@@ -3812,14 +3588,10 @@ function CharacterTweakData:_init_inside_man(presets)
 		10,
 		15
 	}
-	self.inside_man.suppression = presets.suppression.no_supress
 	self.inside_man.surrender = nil
 	self.inside_man.ecm_vulnerability = 1
 	self.inside_man.ecm_hurts = {
-		ears = {
-			max_duration = 10,
-			min_duration = 8
-		}
+		ears = 9
 	}
 	self.inside_man.weapon_voice = "1"
 	self.inside_man.experience.cable_tie = "tie_swat"
@@ -3831,6 +3603,10 @@ function CharacterTweakData:_init_inside_man(presets)
 	self.inside_man.chatter = presets.enemy_chatter.no_chatter
 	self.inside_man.melee_weapon = "baton"
 	self.inside_man.calls_in = nil
+	self.inside_woman = deep_clone(self.inside_man)
+	self.inside_woman.speech_prefix_p1 = "fl"
+	self.inside_woman.speech_prefix_p2 = "n"
+	self.inside_woman.speech_prefix_count = 1
 end
 
 function CharacterTweakData:_init_civilian(presets)
@@ -3862,14 +3638,7 @@ function CharacterTweakData:_init_civilian(presets)
 		damage = {
 			hurt_severity = presets.hurt_severities.no_hurts
 		},
-		can_be_tased = false,
-		ecm_vulnerability = 1,
-		ecm_hurts = {
-			ears = {
-				max_duration = 10,
-				min_duration = 8
-			}
-		}
+		can_be_tased = false
 	}
 	self.civilian.experience.cable_tie = "tie_civ"
 	self.civilian.silent_priority_shout = "f37"
@@ -3888,6 +3657,7 @@ function CharacterTweakData:_init_civilian(presets)
 	self.civilian_female.female = true
 	self.civilian_female.access = "civ_female"
 	self.robbers_safehouse = deep_clone(self.civilian)
+	self.robbers_safehouse.calls_in = nil
 	self.robbers_safehouse.scare_shot = 0
 	self.robbers_safehouse.scare_intimidate = 0
 	self.robbers_safehouse.intimidateable = false
@@ -3941,14 +3711,7 @@ function CharacterTweakData:_init_bank_manager(presets)
 			120
 		},
 		submission_intimidate = 120,
-		damage = presets.hurt_severities.no_hurts,
-		ecm_vulnerability = 1,
-		ecm_hurts = {
-			ears = {
-				max_duration = 10,
-				min_duration = 8
-			}
-		}
+		damage = presets.hurt_severities.no_hurts
 	}
 	self.bank_manager.experience.cable_tie = "tie_civ"
 	self.bank_manager.speech_prefix_p1 = "cm"
@@ -4010,8 +3773,7 @@ function CharacterTweakData:_init_escort(presets)
 			5,
 			20
 		},
-		damage = presets.hurt_severities.no_hurts,
-		ecm_hurts = {}
+		damage = presets.hurt_severities.no_hurts
 	}
 	self.escort.experience.cable_tie = "tie_civ"
 	self.escort.speech_prefix_p1 = "cm"
@@ -4100,7 +3862,6 @@ function CharacterTweakData:_init_old_hoxton_mission(presets)
 		6,
 		10
 	}
-	self.old_hoxton_mission.suppression = presets.suppression.no_supress
 	self.old_hoxton_mission.surrender = false
 	self.old_hoxton_mission.weapon_voice = "1"
 	self.old_hoxton_mission.experience.cable_tie = "tie_swat"
@@ -4121,7 +3882,6 @@ function CharacterTweakData:_init_spa_vip(presets)
 	self.spa_vip.is_escort = true
 	self.spa_vip.escort_idle_talk = false
 	self.spa_vip.escort_scared_dist = 100
-	self.spa_vip.suppression.panic_chance_mul = 0
 end
 
 function CharacterTweakData:_init_spa_vip_hurt(presets)
@@ -4142,485 +3902,91 @@ function CharacterTweakData:_init_ranchmanager(presets)
 	self.ranchmanager.access = "security_patrol"
 end
 
-function CharacterTweakData:_init_russian(presets)
-	self.russian = {
-		damage = presets.gang_member_damage,
-		weapon = deep_clone(presets.weapon.gang_member)
+function CharacterTweakData:_init_team_ai(presets)
+	local team_ai_tweak_names = {
+		"russian",
+		"german",
+		"spanish",
+		"american",
+		"jowi",
+		"old_hoxton",
+		"female_1",
+		"dragan",
+		"jacket",
+		"bonnie",
+		"sokol",
+		"dragon",
+		"bodhi",
+		"jimmy",
+		"sydney",
+		"wild",
+		"chico",
+		"max",
+		"joy",
+		"myh",
+		"ecp_female",
+		"ecp_male"
 	}
-	self.russian.weapon.weapons_of_choice = {
-		primary = "wpn_fps_ass_74_npc",
-		secondary = Idstring("units/payday2/weapons/wpn_npc_beretta92/wpn_npc_beretta92")
-	}
-	self.russian.detection = presets.detection.gang_member
-	self.russian.move_speed = presets.move_speed.very_fast
-	self.russian.crouch_move = false
-	self.russian.speech_prefix = "rb2"
-	self.russian.weapon_voice = "1"
-	self.russian.access = "teamAI1"
-	self.russian.arrest = {
-		timeout = 240,
-		aggression_timeout = 6,
-		arrest_timeout = 240
-	}
-end
+	local char_weapon_tables = self.char_wep_tables
 
-function CharacterTweakData:_init_german(presets)
-	self.german = {
-		damage = presets.gang_member_damage,
-		weapon = deep_clone(presets.weapon.gang_member)
-	}
-	self.german.weapon.weapons_of_choice = {
-		primary = "wpn_fps_ass_m4_npc",
-		secondary = Idstring("units/payday2/weapons/wpn_npc_beretta92/wpn_npc_beretta92")
-	}
-	self.german.detection = presets.detection.gang_member
-	self.german.move_speed = presets.move_speed.very_fast
-	self.german.crouch_move = false
-	self.german.speech_prefix = "rb2"
+	for _, tweak_name in ipairs(team_ai_tweak_names) do
+		local char_tweaks = {}
+		self[tweak_name] = char_tweaks
+		char_tweaks.damage = presets.gang_member_damage
+		char_tweaks.weapon = clone(presets.weapon.gang_member)
+		char_tweaks.weapon.weapons_of_choice = {
+			primary = "wpn_fps_ass_m4_npc"
+		}
+		char_tweaks.detection = presets.detection.gang_member
+		char_tweaks.move_speed = presets.move_speed.very_fast
+		char_tweaks.crouch_move = false
+		char_tweaks.speech_prefix = "rb2"
+		char_tweaks.weapon_voice = "1"
+		char_tweaks.access = "teamAI1"
+		char_tweaks.arrest = {
+			timeout = 240,
+			aggression_timeout = 6,
+			arrest_timeout = 240
+		}
+	end
+
 	self.german.weapon_voice = "2"
-	self.german.access = "teamAI1"
-	self.german.arrest = {
-		timeout = 240,
-		aggression_timeout = 6,
-		arrest_timeout = 240
-	}
-end
-
-function CharacterTweakData:_init_spanish(presets)
-	self.spanish = {
-		damage = presets.gang_member_damage,
-		weapon = deep_clone(presets.weapon.gang_member)
-	}
-	self.spanish.weapon.weapons_of_choice = {
-		primary = "wpn_fps_ass_m4_npc",
-		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
-	}
-	self.spanish.detection = presets.detection.gang_member
-	self.spanish.move_speed = presets.move_speed.very_fast
-	self.spanish.crouch_move = false
-	self.spanish.speech_prefix = "rb2"
 	self.spanish.weapon_voice = "3"
-	self.spanish.access = "teamAI1"
-	self.spanish.arrest = {
-		timeout = 240,
-		aggression_timeout = 6,
-		arrest_timeout = 240
-	}
-end
-
-function CharacterTweakData:_init_american(presets)
-	self.american = {
-		damage = presets.gang_member_damage,
-		weapon = deep_clone(presets.weapon.gang_member)
-	}
-	self.american.weapon.weapons_of_choice = {
-		primary = "wpn_fps_ass_74_npc",
-		secondary = Idstring("units/payday2/weapons/wpn_npc_c45/wpn_npc_c45")
-	}
-	self.american.detection = presets.detection.gang_member
-	self.american.move_speed = presets.move_speed.very_fast
-	self.american.crouch_move = false
-	self.american.speech_prefix = "rb2"
 	self.american.weapon_voice = "3"
-	self.american.access = "teamAI1"
-	self.american.arrest = {
-		timeout = 240,
-		aggression_timeout = 6,
-		arrest_timeout = 240
-	}
-end
-
-function CharacterTweakData:_init_jowi(presets)
-	self.jowi = {
-		damage = presets.gang_member_damage,
-		weapon = deep_clone(presets.weapon.gang_member)
-	}
-	self.jowi.weapon.weapons_of_choice = {
-		primary = "wpn_fps_ass_m4_npc",
-		secondary = Idstring("units/payday2/weapons/wpn_npc_c45/wpn_npc_c45")
-	}
-	self.jowi.detection = presets.detection.gang_member
-	self.jowi.move_speed = presets.move_speed.very_fast
-	self.jowi.crouch_move = false
-	self.jowi.speech_prefix = "rb2"
 	self.jowi.weapon_voice = "3"
-	self.jowi.access = "teamAI1"
-	self.jowi.arrest = {
-		timeout = 240,
-		aggression_timeout = 6,
-		arrest_timeout = 240
-	}
-end
-
-function CharacterTweakData:_init_old_hoxton(presets)
-	self.old_hoxton = {
-		damage = presets.gang_member_damage,
-		weapon = deep_clone(presets.weapon.gang_member)
-	}
-	self.old_hoxton.weapon.weapons_of_choice = {
-		primary = "wpn_fps_ass_m4_npc",
-		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
-	}
-	self.old_hoxton.detection = presets.detection.gang_member
-	self.old_hoxton.move_speed = presets.move_speed.very_fast
-	self.old_hoxton.crouch_move = false
-	self.old_hoxton.speech_prefix = "rb2"
 	self.old_hoxton.weapon_voice = "3"
-	self.old_hoxton.access = "teamAI1"
-	self.old_hoxton.arrest = {
-		timeout = 240,
-		aggression_timeout = 6,
-		arrest_timeout = 240
-	}
-end
-
-function CharacterTweakData:_init_clover(presets)
-	self.female_1 = {
-		damage = presets.gang_member_damage,
-		weapon = deep_clone(presets.weapon.gang_member)
-	}
-	self.female_1.weapon.weapons_of_choice = {
-		primary = "wpn_fps_ass_m4_npc",
-		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
-	}
-	self.female_1.detection = presets.detection.gang_member
-	self.female_1.move_speed = presets.move_speed.very_fast
-	self.female_1.crouch_move = false
 	self.female_1.speech_prefix = "rb7"
 	self.female_1.weapon_voice = "3"
-	self.female_1.access = "teamAI1"
-	self.female_1.arrest = {
-		timeout = 240,
-		aggression_timeout = 6,
-		arrest_timeout = 240
-	}
-end
-
-function CharacterTweakData:_init_dragan(presets)
-	self.dragan = {
-		damage = presets.gang_member_damage,
-		weapon = deep_clone(presets.weapon.gang_member)
-	}
-	self.dragan.weapon.weapons_of_choice = {
-		primary = "wpn_fps_ass_m4_npc",
-		secondary = Idstring("units/payday2/weapons/wpn_npc_c45/wpn_npc_c45")
-	}
-	self.dragan.detection = presets.detection.gang_member
-	self.dragan.move_speed = presets.move_speed.very_fast
-	self.dragan.crouch_move = false
 	self.dragan.speech_prefix = "rb8"
 	self.dragan.weapon_voice = "3"
-	self.dragan.access = "teamAI1"
-	self.dragan.arrest = {
-		timeout = 240,
-		aggression_timeout = 6,
-		arrest_timeout = 240
-	}
-end
-
-function CharacterTweakData:_init_jacket(presets)
-	self.jacket = {
-		damage = presets.gang_member_damage,
-		weapon = deep_clone(presets.weapon.gang_member)
-	}
-	self.jacket.weapon.weapons_of_choice = {
-		primary = "wpn_fps_ass_m4_npc",
-		secondary = Idstring("units/payday2/weapons/wpn_npc_c45/wpn_npc_c45")
-	}
-	self.jacket.detection = presets.detection.gang_member
-	self.jacket.move_speed = presets.move_speed.very_fast
-	self.jacket.crouch_move = false
 	self.jacket.speech_prefix = "rb9"
 	self.jacket.weapon_voice = "3"
-	self.jacket.access = "teamAI1"
-	self.jacket.arrest = {
-		timeout = 240,
-		aggression_timeout = 6,
-		arrest_timeout = 240
-	}
-end
-
-function CharacterTweakData:_init_bonnie(presets)
-	self.bonnie = {
-		damage = presets.gang_member_damage,
-		weapon = deep_clone(presets.weapon.gang_member)
-	}
-	self.bonnie.weapon.weapons_of_choice = {
-		primary = "wpn_fps_ass_m4_npc",
-		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
-	}
-	self.bonnie.detection = presets.detection.gang_member
-	self.bonnie.move_speed = presets.move_speed.very_fast
-	self.bonnie.crouch_move = false
 	self.bonnie.speech_prefix = "rb10"
 	self.bonnie.weapon_voice = "3"
-	self.bonnie.access = "teamAI1"
-	self.bonnie.arrest = {
-		timeout = 240,
-		aggression_timeout = 6,
-		arrest_timeout = 240
-	}
-end
-
-function CharacterTweakData:_init_sokol(presets)
-	self.sokol = {
-		damage = presets.gang_member_damage,
-		weapon = deep_clone(presets.weapon.gang_member)
-	}
-	self.sokol.weapon.weapons_of_choice = {
-		primary = "wpn_fps_ass_m4_npc",
-		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
-	}
-	self.sokol.detection = presets.detection.gang_member
-	self.sokol.move_speed = presets.move_speed.very_fast
-	self.sokol.crouch_move = false
 	self.sokol.speech_prefix = "rb11"
 	self.sokol.weapon_voice = "3"
-	self.sokol.access = "teamAI1"
-	self.sokol.arrest = {
-		timeout = 240,
-		aggression_timeout = 6,
-		arrest_timeout = 240
-	}
-end
-
-function CharacterTweakData:_init_dragon(presets)
-	self.dragon = {
-		damage = presets.gang_member_damage,
-		weapon = deep_clone(presets.weapon.gang_member)
-	}
-	self.dragon.weapon.weapons_of_choice = {
-		primary = "wpn_fps_ass_m4_npc",
-		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
-	}
-	self.dragon.detection = presets.detection.gang_member
-	self.dragon.move_speed = presets.move_speed.very_fast
-	self.dragon.crouch_move = false
 	self.dragon.speech_prefix = "rb12"
 	self.dragon.weapon_voice = "3"
-	self.dragon.access = "teamAI1"
-	self.dragon.arrest = {
-		timeout = 240,
-		aggression_timeout = 6,
-		arrest_timeout = 240
-	}
-end
-
-function CharacterTweakData:_init_bodhi(presets)
-	self.bodhi = {
-		damage = presets.gang_member_damage,
-		weapon = deep_clone(presets.weapon.gang_member)
-	}
-	self.bodhi.weapon.weapons_of_choice = {
-		primary = "wpn_fps_ass_m4_npc",
-		secondary = Idstring("units/payday2/weapons/wpn_npc_c45/wpn_npc_c45")
-	}
-	self.bodhi.detection = presets.detection.gang_member
-	self.bodhi.move_speed = presets.move_speed.very_fast
-	self.bodhi.crouch_move = false
 	self.bodhi.speech_prefix = "rb13"
 	self.bodhi.weapon_voice = "3"
-	self.bodhi.access = "teamAI1"
-	self.bodhi.arrest = {
-		timeout = 240,
-		aggression_timeout = 6,
-		arrest_timeout = 240
-	}
-end
-
-function CharacterTweakData:_init_jimmy(presets)
-	self.jimmy = {
-		damage = presets.gang_member_damage,
-		weapon = deep_clone(presets.weapon.gang_member)
-	}
-	self.jimmy.weapon.weapons_of_choice = {
-		primary = "wpn_fps_ass_m4_npc",
-		secondary = Idstring("units/payday2/weapons/wpn_npc_c45/wpn_npc_c45")
-	}
-	self.jimmy.detection = presets.detection.gang_member
-	self.jimmy.move_speed = presets.move_speed.very_fast
-	self.jimmy.crouch_move = false
 	self.jimmy.speech_prefix = "rb14"
 	self.jimmy.weapon_voice = "3"
-	self.jimmy.access = "teamAI1"
-	self.jimmy.arrest = {
-		timeout = 240,
-		aggression_timeout = 6,
-		arrest_timeout = 240
-	}
-end
-
-function CharacterTweakData:_init_sydney(presets)
-	self.sydney = {
-		damage = presets.gang_member_damage,
-		weapon = deep_clone(presets.weapon.gang_member)
-	}
-	self.sydney.weapon.weapons_of_choice = {
-		primary = "wpn_fps_ass_m4_npc",
-		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
-	}
-	self.sydney.detection = presets.detection.gang_member
-	self.sydney.move_speed = presets.move_speed.very_fast
-	self.sydney.crouch_move = false
 	self.sydney.speech_prefix = "rb15"
 	self.sydney.weapon_voice = "3"
-	self.sydney.access = "teamAI1"
-	self.sydney.arrest = {
-		timeout = 240,
-		aggression_timeout = 6,
-		arrest_timeout = 240
-	}
-end
-
-function CharacterTweakData:_init_wild(presets)
-	self.wild = {
-		damage = presets.gang_member_damage,
-		weapon = deep_clone(presets.weapon.gang_member)
-	}
-	self.wild.weapon.weapons_of_choice = {
-		primary = "wpn_fps_ass_m4_npc",
-		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
-	}
-	self.wild.detection = presets.detection.gang_member
-	self.wild.move_speed = presets.move_speed.very_fast
-	self.wild.crouch_move = false
 	self.wild.speech_prefix = "rb16"
 	self.wild.weapon_voice = "3"
-	self.wild.access = "teamAI1"
-	self.wild.arrest = {
-		timeout = 240,
-		aggression_timeout = 6,
-		arrest_timeout = 240
-	}
-end
-
-function CharacterTweakData:_init_chico(presets)
-	self.chico = {
-		damage = presets.gang_member_damage,
-		weapon = deep_clone(presets.weapon.gang_member)
-	}
-	self.chico.weapon.weapons_of_choice = {
-		primary = "wpn_fps_ass_m4_npc",
-		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
-	}
-	self.chico.detection = presets.detection.gang_member
-	self.chico.move_speed = presets.move_speed.very_fast
-	self.chico.crouch_move = false
 	self.chico.speech_prefix = "rb17"
 	self.chico.weapon_voice = "3"
-	self.chico.access = "teamAI1"
-	self.chico.arrest = {
-		timeout = 240,
-		aggression_timeout = 6,
-		arrest_timeout = 240
-	}
-end
-
-function CharacterTweakData:_init_max(presets)
-	self.max = {
-		damage = presets.gang_member_damage,
-		weapon = deep_clone(presets.weapon.gang_member)
-	}
-	self.max.weapon.weapons_of_choice = {
-		primary = "wpn_fps_ass_m4_npc",
-		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
-	}
-	self.max.detection = presets.detection.gang_member
-	self.max.move_speed = presets.move_speed.very_fast
-	self.max.crouch_move = false
 	self.max.speech_prefix = "rb18"
 	self.max.weapon_voice = "3"
-	self.max.access = "teamAI1"
-	self.max.arrest = {
-		timeout = 240,
-		aggression_timeout = 6,
-		arrest_timeout = 240
-	}
-end
-
-function CharacterTweakData:_init_joy(presets)
-	self.joy = {
-		damage = presets.gang_member_damage,
-		weapon = deep_clone(presets.weapon.gang_member)
-	}
-	self.joy.weapon.weapons_of_choice = {
-		primary = "wpn_fps_ass_m4_npc",
-		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
-	}
-	self.joy.detection = presets.detection.gang_member
-	self.joy.move_speed = presets.move_speed.very_fast
-	self.joy.crouch_move = false
 	self.joy.speech_prefix = "rb19"
 	self.joy.weapon_voice = "3"
-	self.joy.access = "teamAI1"
-	self.joy.arrest = {
-		timeout = 240,
-		aggression_timeout = 6,
-		arrest_timeout = 240
-	}
-end
-
-function CharacterTweakData:_init_myh(presets)
-	self.myh = {
-		damage = presets.gang_member_damage,
-		weapon = deep_clone(presets.weapon.gang_member)
-	}
-	self.myh.weapon.weapons_of_choice = {
-		primary = "wpn_fps_ass_m4_npc",
-		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
-	}
-	self.myh.detection = presets.detection.gang_member
-	self.myh.move_speed = presets.move_speed.very_fast
-	self.myh.crouch_move = false
 	self.myh.speech_prefix = "rb22"
 	self.myh.weapon_voice = "3"
-	self.myh.access = "teamAI1"
-	self.myh.arrest = {
-		timeout = 240,
-		aggression_timeout = 6,
-		arrest_timeout = 240
-	}
-end
-
-function CharacterTweakData:_init_ecp(presets)
-	self.ecp_female = {
-		damage = presets.gang_member_damage,
-		weapon = deep_clone(presets.weapon.gang_member)
-	}
-	self.ecp_female.weapon.weapons_of_choice = {
-		primary = "wpn_fps_ass_m4_npc",
-		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
-	}
-	self.ecp_female.detection = presets.detection.gang_member
-	self.ecp_female.move_speed = presets.move_speed.very_fast
-	self.ecp_female.crouch_move = false
 	self.ecp_female.speech_prefix = "rb21"
 	self.ecp_female.weapon_voice = "3"
-	self.ecp_female.access = "teamAI1"
-	self.ecp_female.arrest = {
-		timeout = 240,
-		aggression_timeout = 6,
-		arrest_timeout = 240
-	}
-	self.ecp_male = {
-		damage = presets.gang_member_damage,
-		weapon = deep_clone(presets.weapon.gang_member)
-	}
-	self.ecp_male.weapon.weapons_of_choice = {
-		primary = "wpn_fps_ass_m4_npc",
-		secondary = Idstring("units/payday2/weapons/wpn_npc_mac11/wpn_npc_mac11")
-	}
-	self.ecp_male.detection = presets.detection.gang_member
-	self.ecp_male.move_speed = presets.move_speed.very_fast
-	self.ecp_male.crouch_move = false
 	self.ecp_male.speech_prefix = "rb20"
 	self.ecp_male.weapon_voice = "3"
-	self.ecp_male.access = "teamAI1"
-	self.ecp_male.arrest = {
-		timeout = 240,
-		aggression_timeout = 6,
-		arrest_timeout = 240
-	}
 end
 
 function CharacterTweakData:_presets(tweak_data)
@@ -4670,26 +4036,40 @@ function CharacterTweakData:_presets(tweak_data)
 		}
 	}
 	presets.hurt_severities.only_light_hurt = {
-		tase = true,
 		bullet = {
-			health_reference = 1,
+			health_reference = "current",
 			zones = {
+				{
+					none = 0.4,
+					light = 0.6,
+					health_limit = 0.3
+				},
 				{
 					light = 1
 				}
 			}
 		},
 		explosion = {
-			health_reference = 1,
+			health_reference = "current",
 			zones = {
 				{
-					explode = 1
+					none = 0.4,
+					light = 0.6,
+					health_limit = 0.3
+				},
+				{
+					light = 1
 				}
 			}
 		},
 		melee = {
-			health_reference = 1,
+			health_reference = "current",
 			zones = {
+				{
+					none = 0.4,
+					light = 0.6,
+					health_limit = 0.3
+				},
 				{
 					light = 1
 				}
@@ -4699,7 +4079,7 @@ function CharacterTweakData:_presets(tweak_data)
 			health_reference = 1,
 			zones = {
 				{
-					light = 1
+					none = 1
 				}
 			}
 		},
@@ -4712,51 +4092,8 @@ function CharacterTweakData:_presets(tweak_data)
 			}
 		}
 	}
-	presets.hurt_severities.only_light_hurt_and_fire = {
-		tase = true,
-		bullet = {
-			health_reference = 1,
-			zones = {
-				{
-					light = 1
-				}
-			}
-		},
-		explosion = {
-			health_reference = 1,
-			zones = {
-				{
-					explode = 1
-				}
-			}
-		},
-		melee = {
-			health_reference = 1,
-			zones = {
-				{
-					light = 1
-				}
-			}
-		},
-		fire = {
-			health_reference = 1,
-			zones = {
-				{
-					fire = 1
-				}
-			}
-		},
-		poison = {
-			health_reference = 1,
-			zones = {
-				{
-					none = 1
-				}
-			}
-		}
-	}
-	presets.hurt_severities.light_hurt_fire_poison = deep_clone(presets.hurt_severities.only_light_hurt_and_fire)
-	presets.hurt_severities.light_hurt_fire_poison.poison = {
+	presets.hurt_severities.only_poison_and_light_hurt = deep_clone(presets.hurt_severities.only_light_hurt)
+	presets.hurt_severities.only_poison_and_light_hurt.poison = {
 		health_reference = 1,
 		zones = {
 			{
@@ -4764,18 +4101,22 @@ function CharacterTweakData:_presets(tweak_data)
 			}
 		}
 	}
-	presets.hurt_severities.only_explosion_hurts = {
-		tase = true,
+	presets.hurt_severities.only_explosion_and_light_hurt = {
 		bullet = {
-			health_reference = 1,
+			health_reference = "current",
 			zones = {
 				{
-					none = 1
+					none = 0.4,
+					light = 0.6,
+					health_limit = 0.3
+				},
+				{
+					light = 1
 				}
 			}
 		},
 		explosion = {
-			health_reference = 1,
+			health_reference = "current",
 			zones = {
 				{
 					explode = 1
@@ -4783,10 +4124,15 @@ function CharacterTweakData:_presets(tweak_data)
 			}
 		},
 		melee = {
-			health_reference = 1,
+			health_reference = "current",
 			zones = {
 				{
-					none = 1
+					none = 0.4,
+					light = 0.6,
+					health_limit = 0.3
+				},
+				{
+					light = 1
 				}
 			}
 		},
@@ -4803,55 +4149,11 @@ function CharacterTweakData:_presets(tweak_data)
 			zones = {
 				{
 					none = 1
-				}
-			}
-		}
-	}
-	presets.hurt_severities.only_fire_and_poison_hurts = {
-		tase = true,
-		bullet = {
-			health_reference = 1,
-			zones = {
-				{
-					none = 1
-				}
-			}
-		},
-		explosion = {
-			health_reference = 1,
-			zones = {
-				{
-					none = 1
-				}
-			}
-		},
-		melee = {
-			health_reference = 1,
-			zones = {
-				{
-					none = 1
-				}
-			}
-		},
-		fire = {
-			health_reference = 1,
-			zones = {
-				{
-					fire = 1
-				}
-			}
-		},
-		poison = {
-			health_reference = 1,
-			zones = {
-				{
-					poison = 1
 				}
 			}
 		}
 	}
 	presets.hurt_severities.base = {
-		tase = true,
 		bullet = {
 			health_reference = "current",
 			zones = {
@@ -4875,8 +4177,6 @@ function CharacterTweakData:_presets(tweak_data)
 					health_limit = 0.9
 				},
 				{
-					light = 0,
-					moderate = 0,
 					heavy = 1
 				}
 			}
@@ -4904,28 +4204,24 @@ function CharacterTweakData:_presets(tweak_data)
 			health_reference = "current",
 			zones = {
 				{
-					heavy = 0,
-					health_limit = 0.3,
+					none = 0.3,
 					light = 0.7,
-					moderate = 0,
-					none = 0.3
-				},
-				{
-					heavy = 0,
-					light = 1,
-					moderate = 0,
-					health_limit = 0.8
+					health_limit = 0.1
 				},
 				{
 					heavy = 0.2,
-					light = 0.6,
-					moderate = 0.2,
-					health_limit = 0.9
+					light = 0.4,
+					moderate = 0.4,
+					health_limit = 0.4
 				},
 				{
-					light = 0,
-					moderate = 0,
-					heavy = 9
+					heavy = 0.6,
+					light = 0.2,
+					moderate = 0.2,
+					health_limit = 0.8
+				},
+				{
+					heavy = 1
 				}
 			}
 		},
@@ -4933,7 +4229,7 @@ function CharacterTweakData:_presets(tweak_data)
 			health_reference = "current",
 			zones = {
 				{
-					fire = 1
+					none = 1
 				}
 			}
 		},
@@ -4941,8 +4237,7 @@ function CharacterTweakData:_presets(tweak_data)
 			health_reference = "current",
 			zones = {
 				{
-					poison = 1,
-					none = 0
+					poison = 1
 				}
 			}
 		}
@@ -5008,16 +4303,16 @@ function CharacterTweakData:_presets(tweak_data)
 		}
 	}
 	presets.gang_member_damage = {
-		HEALTH_INIT = 75,
-		REGENERATE_TIME = 2,
-		REGENERATE_TIME_AWAY = 0.2,
-		DOWNED_TIME = tweak_data.player.damage.DOWNED_TIME,
-		TASED_TIME = tweak_data.player.damage.TASED_TIME,
-		BLEED_OUT_HEALTH_INIT = tweak_data.player.damage.BLEED_OUT_HEALTH_INIT,
-		ARRESTED_TIME = tweak_data.player.damage.ARRESTED_TIME,
-		INCAPACITATED_TIME = tweak_data.player.damage.INCAPACITATED_TIME,
-		hurt_severity = deep_clone(presets.hurt_severities.base)
+		HEALTH_INIT = 75
 	}
+	presets.gang_member_damage.BLEED_OUT_HEALTH_INIT = presets.gang_member_damage.HEALTH_INIT * 0.1
+	presets.gang_member_damage.REGENERATE_TIME = 2
+	presets.gang_member_damage.REGENERATE_TIME_AWAY = 0.2
+	presets.gang_member_damage.DOWNED_TIME = tweak_data.player.damage.DOWNED_TIME
+	presets.gang_member_damage.TASED_TIME = tweak_data.player.damage.TASED_TIME
+	presets.gang_member_damage.ARRESTED_TIME = tweak_data.player.damage.ARRESTED_TIME
+	presets.gang_member_damage.INCAPACITATED_TIME = tweak_data.player.damage.INCAPACITATED_TIME
+	presets.gang_member_damage.hurt_severity = deep_clone(presets.hurt_severities.base)
 	presets.gang_member_damage.hurt_severity.bullet = {
 		health_reference = "current",
 		zones = {
@@ -9855,7 +9150,7 @@ function CharacterTweakData:_presets(tweak_data)
 	presets.weapon.gang_member.is_pistol.FALLOFF = {
 		{
 			dmg_mul = 5,
-			r = 300,
+			r = 700,
 			acc = {
 				1,
 				1
@@ -9879,8 +9174,47 @@ function CharacterTweakData:_presets(tweak_data)
 				1
 			},
 			recoil = {
-				2,
-				3
+				0.7,
+				1
+			},
+			mode = {
+				0.1,
+				0.3,
+				4,
+				7
+			}
+		}
+	}
+	presets.weapon.gang_member.is_revolver = deep_clone(presets.weapon.gang_member.is_pistol)
+	presets.weapon.gang_member.is_revolver.FALLOFF = {
+		{
+			dmg_mul = 7.5,
+			r = 700,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				0.5,
+				0.9
+			},
+			mode = {
+				0.1,
+				0.3,
+				4,
+				7
+			}
+		},
+		{
+			dmg_mul = 5,
+			r = 10000,
+			acc = {
+				1,
+				1
+			},
+			recoil = {
+				1.5,
+				2
 			},
 			mode = {
 				0.1,
@@ -9936,8 +9270,8 @@ function CharacterTweakData:_presets(tweak_data)
 					1
 				},
 				recoil = {
-					2,
-					3
+					1,
+					1.5
 				},
 				mode = {
 					0.1,
@@ -9993,8 +9327,8 @@ function CharacterTweakData:_presets(tweak_data)
 					1
 				},
 				recoil = {
-					1,
-					1
+					2,
+					3
 				},
 				mode = {
 					1,
@@ -10011,8 +9345,8 @@ function CharacterTweakData:_presets(tweak_data)
 					1
 				},
 				recoil = {
-					1,
-					1
+					2,
+					3
 				},
 				mode = {
 					1,
@@ -10029,8 +9363,8 @@ function CharacterTweakData:_presets(tweak_data)
 					0.95
 				},
 				recoil = {
-					1,
-					1
+					3,
+					4
 				},
 				mode = {
 					1,
@@ -10047,8 +9381,8 @@ function CharacterTweakData:_presets(tweak_data)
 					0.9
 				},
 				recoil = {
-					1,
-					1
+					4,
+					5
 				},
 				mode = {
 					1,
@@ -10212,8 +9546,8 @@ function CharacterTweakData:_presets(tweak_data)
 					1
 				},
 				recoil = {
-					0.25,
-					0.45
+					0.5,
+					0.9
 				},
 				mode = {
 					0.1,
@@ -10230,8 +9564,8 @@ function CharacterTweakData:_presets(tweak_data)
 					1
 				},
 				recoil = {
-					2,
-					3
+					1.5,
+					2
 				},
 				mode = {
 					0.1,
@@ -10372,7 +9706,6 @@ function CharacterTweakData:_presets(tweak_data)
 		}
 	}
 	presets.weapon.gang_member.is_smg = presets.weapon.gang_member.is_rifle
-	presets.weapon.gang_member.is_pistol = presets.weapon.gang_member.is_pistol
 	presets.weapon.gang_member.is_revolver = presets.weapon.gang_member.is_pistol
 	presets.weapon.gang_member.is_bullpup = presets.weapon.gang_member.is_rifle
 	presets.weapon.gang_member.mac11 = presets.weapon.gang_member.is_smg
@@ -11073,6 +10406,65 @@ function CharacterTweakData:_presets(tweak_data)
 				}
 			}
 		},
+		extremely_slow = {
+			stand = {
+				walk = {
+					ntl = {
+						strafe = 60,
+						fwd = 72,
+						bwd = 56
+					},
+					hos = {
+						strafe = 60,
+						fwd = 72,
+						bwd = 56
+					},
+					cbt = {
+						strafe = 60,
+						fwd = 72,
+						bwd = 56
+					}
+				},
+				run = {
+					hos = {
+						strafe = 70,
+						fwd = 72,
+						bwd = 56
+					},
+					cbt = {
+						strafe = 50,
+						fwd = 72,
+						bwd = 60
+					}
+				}
+			},
+			crouch = {
+				walk = {
+					hos = {
+						strafe = 60,
+						fwd = 72,
+						bwd = 56
+					},
+					cbt = {
+						strafe = 60,
+						fwd = 72,
+						bwd = 56
+					}
+				},
+				run = {
+					hos = {
+						strafe = 65,
+						fwd = 72,
+						bwd = 56
+					},
+					cbt = {
+						strafe = 50,
+						fwd = 72,
+						bwd = 60
+					}
+				}
+			}
+		},
 		very_slow = {
 			stand = {
 				walk = {
@@ -11386,7 +10778,8 @@ function CharacterTweakData:_presets(tweak_data)
 			base_chance = 1
 		},
 		never = {
-			base_chance = 0
+			base_chance = 0,
+			impossible = true
 		},
 		easy = {
 			base_chance = 0.3,
@@ -11396,8 +10789,9 @@ function CharacterTweakData:_presets(tweak_data)
 				isolated = 0.08,
 				weapon_down = 0.5,
 				health = {
-					[1.0] = 0.1,
-					[0.999] = 0.9
+					0.1,
+					[0.999] = 0.3,
+					[0.5] = 0.5
 				}
 			},
 			factors = {
@@ -11530,9 +10924,6 @@ function CharacterTweakData:_presets(tweak_data)
 		no_chatter = {},
 		cop = {
 			retreat = true,
-			aggressive = true,
-			go_go = true,
-			contact = true,
 			suppress = true
 		},
 		swat = {
@@ -11561,6 +10952,7 @@ function CharacterTweakData:_create_table_structure()
 		"raging_bull",
 		"m4",
 		"m4_yellow",
+		"s552",
 		"ak47",
 		"r870",
 		"mossberg",
@@ -11599,6 +10991,7 @@ function CharacterTweakData:_create_table_structure()
 		Idstring("units/payday2/weapons/wpn_npc_raging_bull/wpn_npc_raging_bull"),
 		Idstring("units/payday2/weapons/wpn_npc_m4/wpn_npc_m4"),
 		Idstring("units/payday2/weapons/wpn_npc_m4_yellow/wpn_npc_m4_yellow"),
+		Idstring("units/payday2/weapons/wpn_npc_s552/wpn_npc_s552"),
 		Idstring("units/payday2/weapons/wpn_npc_ak47/wpn_npc_ak47"),
 		Idstring("units/payday2/weapons/wpn_npc_r870/wpn_npc_r870"),
 		Idstring("units/payday2/weapons/wpn_npc_sawnoff_shotgun/wpn_npc_sawnoff_shotgun"),
@@ -11708,6 +11101,7 @@ function CharacterTweakData:_set_normal()
 	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[5].dmg_mul = 0.1
 	self.shield.melee_weapon_dmg_multiplier = 0.1
 	self.swat.melee_weapon_dmg_multiplier = 0.1
+	self.zeal_swat.melee_weapon_dmg_multiplier = 0.1
 	self.cop.melee_weapon_dmg_multiplier = 0.1
 
 	self:_multiply_weapon_delay(self.presets.weapon.normal, 0)
@@ -11809,6 +11203,190 @@ function CharacterTweakData:_set_normal()
 		}
 	}
 	self.swat.weapon.is_shotgun_pump.FALLOFF = {
+		{
+			dmg_mul = 1.5,
+			r = 100,
+			acc = {
+				0.6,
+				0.9
+			},
+			recoil = {
+				1.5,
+				2
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 0.5,
+			r = 500,
+			acc = {
+				0.4,
+				0.9
+			},
+			recoil = {
+				1.5,
+				2
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 0.25,
+			r = 1000,
+			acc = {
+				0.2,
+				0.75
+			},
+			recoil = {
+				1.5,
+				2
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 0.25,
+			r = 2000,
+			acc = {
+				0.01,
+				0.25
+			},
+			recoil = {
+				1.5,
+				2
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 0.1,
+			r = 3000,
+			acc = {
+				0.05,
+				0.35
+			},
+			recoil = {
+				1.5,
+				2
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		}
+	}
+	self.zeal_swat.weapon.is_rifle.FALLOFF = {
+		{
+			dmg_mul = 1,
+			r = 100,
+			acc = {
+				0.6,
+				0.9
+			},
+			recoil = {
+				0.4,
+				0.8
+			},
+			mode = {
+				0,
+				3,
+				3,
+				1
+			}
+		},
+		{
+			dmg_mul = 0.5,
+			r = 500,
+			acc = {
+				0.4,
+				0.9
+			},
+			recoil = {
+				0.45,
+				0.8
+			},
+			mode = {
+				0,
+				3,
+				3,
+				1
+			}
+		},
+		{
+			dmg_mul = 0.5,
+			r = 1000,
+			acc = {
+				0.2,
+				0.8
+			},
+			recoil = {
+				0.35,
+				0.75
+			},
+			mode = {
+				1,
+				2,
+				2,
+				0
+			}
+		},
+		{
+			dmg_mul = 0.25,
+			r = 2000,
+			acc = {
+				0.2,
+				0.5
+			},
+			recoil = {
+				0.4,
+				1.2
+			},
+			mode = {
+				3,
+				2,
+				2,
+				0
+			}
+		},
+		{
+			dmg_mul = 0.1,
+			r = 3000,
+			acc = {
+				0.01,
+				0.35
+			},
+			recoil = {
+				1.5,
+				3
+			},
+			mode = {
+				3,
+				1,
+				1,
+				0
+			}
+		}
+	}
+	self.zeal_swat.weapon.is_shotgun_pump.FALLOFF = {
 		{
 			dmg_mul = 1.5,
 			r = 100,
@@ -12084,6 +11662,190 @@ function CharacterTweakData:_set_normal()
 			}
 		}
 	}
+	self.zeal_heavy_swat.weapon.is_rifle.FALLOFF = {
+		{
+			dmg_mul = 1,
+			r = 100,
+			acc = {
+				0.6,
+				0.9
+			},
+			recoil = {
+				0.4,
+				0.8
+			},
+			mode = {
+				0,
+				3,
+				3,
+				1
+			}
+		},
+		{
+			dmg_mul = 0.5,
+			r = 500,
+			acc = {
+				0.4,
+				0.9
+			},
+			recoil = {
+				0.45,
+				0.8
+			},
+			mode = {
+				0,
+				3,
+				3,
+				1
+			}
+		},
+		{
+			dmg_mul = 0.5,
+			r = 1000,
+			acc = {
+				0.2,
+				0.8
+			},
+			recoil = {
+				0.35,
+				0.75
+			},
+			mode = {
+				1,
+				2,
+				2,
+				0
+			}
+		},
+		{
+			dmg_mul = 0.25,
+			r = 2000,
+			acc = {
+				0.2,
+				0.5
+			},
+			recoil = {
+				0.4,
+				1.2
+			},
+			mode = {
+				3,
+				2,
+				2,
+				0
+			}
+		},
+		{
+			dmg_mul = 0.1,
+			r = 3000,
+			acc = {
+				0.01,
+				0.35
+			},
+			recoil = {
+				1.5,
+				3
+			},
+			mode = {
+				3,
+				1,
+				1,
+				0
+			}
+		}
+	}
+	self.zeal_heavy_swat.weapon.is_shotgun_pump.FALLOFF = {
+		{
+			dmg_mul = 1.5,
+			r = 100,
+			acc = {
+				0.6,
+				0.9
+			},
+			recoil = {
+				1.5,
+				2
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 0.5,
+			r = 500,
+			acc = {
+				0.4,
+				0.9
+			},
+			recoil = {
+				1.5,
+				2
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 0.25,
+			r = 1000,
+			acc = {
+				0.2,
+				0.75
+			},
+			recoil = {
+				1.5,
+				2
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 0.25,
+			r = 2000,
+			acc = {
+				0.01,
+				0.25
+			},
+			recoil = {
+				1.5,
+				2
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		},
+		{
+			dmg_mul = 0.1,
+			r = 3000,
+			acc = {
+				0.05,
+				0.35
+			},
+			recoil = {
+				1.5,
+				2
+			},
+			mode = {
+				1,
+				0,
+				0,
+				0
+			}
+		}
+	}
 	self.hector_boss.weapon.is_shotgun_mag.FALLOFF = {
 		{
 			dmg_mul = 0.22,
@@ -12201,445 +11963,40 @@ function CharacterTweakData:_set_normal()
 	self.presets.gang_member_damage.REGENERATE_TIME = 1.5
 	self.presets.gang_member_damage.REGENERATE_TIME_AWAY = 0.2
 	self.presets.gang_member_damage.HEALTH_INIT = 200
+	self.presets.gang_member_damage.BLEED_OUT_HEALTH_INIT = self.presets.gang_member_damage.HEALTH_INIT * 0.1
 
 	self:_set_characters_weapon_preset("normal")
 
-	self.presets.weapon.gang_member.is_pistol.FALLOFF = {
-		{
-			dmg_mul = 2,
-			r = 300,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			dmg_mul = 1,
-			r = 10000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_rifle.FALLOFF = {
-		{
-			dmg_mul = 2,
-			r = 300,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			dmg_mul = 1,
-			r = 10000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_sniper.FALLOFF = {
-		{
-			dmg_mul = 4,
-			r = 500,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 4,
-			r = 1000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 4,
-			r = 2500,
-			acc = {
-				0.95,
-				1
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 2,
-			r = 4000,
-			acc = {
-				0.9,
-				0.95
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 2,
-			r = 10000,
-			acc = {
-				0.85,
-				0.9
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_lmg.FALLOFF = {
-		{
-			dmg_mul = 2,
-			r = 100,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 1.5,
-			r = 1000,
-			acc = {
-				0.85,
-				0.9
-			},
-			recoil = {
-				0.4,
-				0.65
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 1,
-			r = 2000,
-			acc = {
-				0.6,
-				0.8
-			},
-			recoil = {
-				0.8,
-				1.25
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 0.5,
-			r = 3000,
-			acc = {
-				0.5,
-				0.7
-			},
-			recoil = {
-				0.8,
-				1.25
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 0.3,
-			r = 4000,
-			acc = {
-				0.02,
-				0.25
-			},
-			recoil = {
-				1,
-				2
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 0.1,
-			r = 10000,
-			acc = {
-				0.01,
-				0.1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF = {
-		{
-			dmg_mul = 2,
-			r = 300,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			dmg_mul = 1,
-			r = 10000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF = {
-		{
-			dmg_mul = 2,
-			r = 100,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.1,
-				0.1
-			},
-			mode = {
-				1,
-				1,
-				4,
-				6
-			}
-		},
-		{
-			dmg_mul = 2,
-			r = 500,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.1,
-				0.1
-			},
-			mode = {
-				1,
-				1,
-				4,
-				5
-			}
-		},
-		{
-			dmg_mul = 1,
-			r = 1000,
-			acc = {
-				0.85,
-				0.95
-			},
-			recoil = {
-				0.1,
-				0.15
-			},
-			mode = {
-				1,
-				2,
-				4,
-				4
-			}
-		},
-		{
-			dmg_mul = 0.75,
-			r = 2000,
-			acc = {
-				0.75,
-				0.9
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				1,
-				4,
-				4,
-				1
-			}
-		},
-		{
-			dmg_mul = 0.25,
-			r = 3000,
-			acc = {
-				0.4,
-				0.7
-			},
-			recoil = {
-				0.4,
-				0.5
-			},
-			mode = {
-				4,
-				2,
-				1,
-				0
-			}
-		},
-		{
-			dmg_mul = 0.1,
-			r = 10000,
-			acc = {
-				0.05,
-				0.2
-			},
-			recoil = {
-				0.5,
-				1
-			},
-			mode = {
-				2,
-				1,
-				0,
-				0
-			}
-		}
-	}
+	self.presets.weapon.gang_member.is_pistol.FALLOFF[1].dmg_mul = 2
+	self.presets.weapon.gang_member.is_pistol.FALLOFF[2].dmg_mul = 1
+	self.presets.weapon.gang_member.is_revolver.FALLOFF[1].dmg_mul = 2
+	self.presets.weapon.gang_member.is_revolver.FALLOFF[2].dmg_mul = 1
+	self.presets.weapon.gang_member.is_rifle.FALLOFF[1].dmg_mul = 2
+	self.presets.weapon.gang_member.is_rifle.FALLOFF[2].dmg_mul = 1
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[1].dmg_mul = 4
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[2].dmg_mul = 4
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[3].dmg_mul = 4
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[4].dmg_mul = 2
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[5].dmg_mul = 2
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[1].dmg_mul = 2
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[2].dmg_mul = 1.5
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[3].dmg_mul = 1
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[4].dmg_mul = 0.5
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[5].dmg_mul = 0.3
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[6].dmg_mul = 0.1
+	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF[1].dmg_mul = 2
+	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF[2].dmg_mul = 1
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[1].dmg_mul = 2
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[2].dmg_mul = 2
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[3].dmg_mul = 1
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[4].dmg_mul = 0.75
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[5].dmg_mul = 0.25
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[6].dmg_mul = 0.1
 	self.presets.weapon.gang_member.is_smg = self.presets.weapon.gang_member.is_rifle
-	self.presets.weapon.gang_member.is_pistol = self.presets.weapon.gang_member.is_pistol
-	self.presets.weapon.gang_member.is_revolver = self.presets.weapon.gang_member.is_pistol
-	self.presets.weapon.gang_member.is_rifle = self.presets.weapon.gang_member.is_rifle
-	self.presets.weapon.gang_member.is_shotgun_pump = self.presets.weapon.gang_member.is_shotgun_pump
 	self.presets.weapon.gang_member.mac11 = self.presets.weapon.gang_member.is_smg
 	self.presets.weapon.gang_member.rifle = deep_clone(self.presets.weapon.gang_member.is_rifle)
 	self.presets.weapon.gang_member.rifle.autofire_rounds = nil
 	self.presets.weapon.gang_member.akimbo_pistol = self.presets.weapon.gang_member.is_pistol
-	self.presets.weapon.gang_member.is_shotgun_mag = deep_clone(self.presets.weapon.gang_member.is_shotgun_pump)
 	self.flashbang_multiplier = 1
 	self.concussion_multiplier = 1
 
@@ -12793,442 +12150,37 @@ function CharacterTweakData:_set_hard()
 	self:_set_characters_weapon_preset("normal")
 
 	self.presets.gang_member_damage.HEALTH_INIT = 200
-	self.presets.weapon.gang_member.is_pistol.FALLOFF = {
-		{
-			dmg_mul = 2,
-			r = 300,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			dmg_mul = 1,
-			r = 10000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_rifle.FALLOFF = {
-		{
-			dmg_mul = 2,
-			r = 300,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			dmg_mul = 1,
-			r = 10000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_sniper.FALLOFF = {
-		{
-			dmg_mul = 4,
-			r = 500,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 4,
-			r = 1000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 4,
-			r = 2500,
-			acc = {
-				0.95,
-				1
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 2,
-			r = 4000,
-			acc = {
-				0.9,
-				0.95
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 2,
-			r = 10000,
-			acc = {
-				0.85,
-				0.9
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_lmg.FALLOFF = {
-		{
-			dmg_mul = 2,
-			r = 100,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 1.5,
-			r = 1000,
-			acc = {
-				0.85,
-				0.9
-			},
-			recoil = {
-				0.4,
-				0.65
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 1,
-			r = 2000,
-			acc = {
-				0.6,
-				0.8
-			},
-			recoil = {
-				0.8,
-				1.25
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 0.5,
-			r = 3000,
-			acc = {
-				0.5,
-				0.7
-			},
-			recoil = {
-				0.8,
-				1.25
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 0.3,
-			r = 4000,
-			acc = {
-				0.02,
-				0.25
-			},
-			recoil = {
-				1,
-				2
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 0.1,
-			r = 10000,
-			acc = {
-				0.01,
-				0.1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF = {
-		{
-			dmg_mul = 2,
-			r = 300,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			dmg_mul = 1,
-			r = 10000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF = {
-		{
-			dmg_mul = 2,
-			r = 100,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.1,
-				0.1
-			},
-			mode = {
-				1,
-				1,
-				4,
-				6
-			}
-		},
-		{
-			dmg_mul = 2,
-			r = 500,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.1,
-				0.1
-			},
-			mode = {
-				1,
-				1,
-				4,
-				5
-			}
-		},
-		{
-			dmg_mul = 1,
-			r = 1000,
-			acc = {
-				0.85,
-				0.95
-			},
-			recoil = {
-				0.1,
-				0.15
-			},
-			mode = {
-				1,
-				2,
-				4,
-				4
-			}
-		},
-		{
-			dmg_mul = 0.75,
-			r = 2000,
-			acc = {
-				0.75,
-				0.9
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				1,
-				4,
-				4,
-				1
-			}
-		},
-		{
-			dmg_mul = 0.25,
-			r = 3000,
-			acc = {
-				0.4,
-				0.7
-			},
-			recoil = {
-				0.4,
-				0.5
-			},
-			mode = {
-				4,
-				2,
-				1,
-				0
-			}
-		},
-		{
-			dmg_mul = 0.1,
-			r = 10000,
-			acc = {
-				0.05,
-				0.2
-			},
-			recoil = {
-				0.5,
-				1
-			},
-			mode = {
-				2,
-				1,
-				0,
-				0
-			}
-		}
-	}
+	self.presets.gang_member_damage.BLEED_OUT_HEALTH_INIT = self.presets.gang_member_damage.HEALTH_INIT * 0.1
+	self.presets.weapon.gang_member.is_pistol.FALLOFF[1].dmg_mul = 2
+	self.presets.weapon.gang_member.is_pistol.FALLOFF[2].dmg_mul = 1
+	self.presets.weapon.gang_member.is_revolver.FALLOFF[1].dmg_mul = 2
+	self.presets.weapon.gang_member.is_revolver.FALLOFF[2].dmg_mul = 1
+	self.presets.weapon.gang_member.is_rifle.FALLOFF[1].dmg_mul = 2
+	self.presets.weapon.gang_member.is_rifle.FALLOFF[2].dmg_mul = 1
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[1].dmg_mul = 4
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[2].dmg_mul = 4
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[3].dmg_mul = 4
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[4].dmg_mul = 2
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[5].dmg_mul = 2
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[1].dmg_mul = 2
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[2].dmg_mul = 1.5
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[3].dmg_mul = 1
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[4].dmg_mul = 0.5
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[5].dmg_mul = 0.3
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[6].dmg_mul = 0.1
+	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF[1].dmg_mul = 2
+	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF[2].dmg_mul = 1
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[1].dmg_mul = 2
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[2].dmg_mul = 2
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[3].dmg_mul = 1
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[4].dmg_mul = 0.75
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[5].dmg_mul = 0.25
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[6].dmg_mul = 0.1
 	self.presets.weapon.gang_member.is_smg = self.presets.weapon.gang_member.is_rifle
-	self.presets.weapon.gang_member.is_pistol = self.presets.weapon.gang_member.is_pistol
-	self.presets.weapon.gang_member.is_revolver = self.presets.weapon.gang_member.is_pistol
-	self.presets.weapon.gang_member.is_rifle = self.presets.weapon.gang_member.is_rifle
-	self.presets.weapon.gang_member.is_shotgun_pump = self.presets.weapon.gang_member.is_shotgun_pump
 	self.presets.weapon.gang_member.mac11 = self.presets.weapon.gang_member.is_smg
 	self.presets.weapon.gang_member.rifle = deep_clone(self.presets.weapon.gang_member.is_rifle)
 	self.presets.weapon.gang_member.rifle.autofire_rounds = nil
 	self.presets.weapon.gang_member.akimbo_pistol = self.presets.weapon.gang_member.is_pistol
-	self.presets.weapon.gang_member.is_shotgun_mag = deep_clone(self.presets.weapon.gang_member.is_shotgun_pump)
 	self.flashbang_multiplier = 1.25
 	self.concussion_multiplier = 1
 	self.shadow_spooc.shadow_spooc_attack_timeout = {
@@ -13444,442 +12396,37 @@ function CharacterTweakData:_set_overkill()
 	self.presets.gang_member_damage.REGENERATE_TIME = 2
 	self.presets.gang_member_damage.REGENERATE_TIME_AWAY = 0.6
 	self.presets.gang_member_damage.HEALTH_INIT = 300
-	self.presets.weapon.gang_member.is_pistol.FALLOFF = {
-		{
-			dmg_mul = 3.5,
-			r = 300,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			dmg_mul = 1.6,
-			r = 10000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_rifle.FALLOFF = {
-		{
-			dmg_mul = 3.5,
-			r = 300,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			dmg_mul = 1.6,
-			r = 10000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_sniper.FALLOFF = {
-		{
-			dmg_mul = 7,
-			r = 500,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 7,
-			r = 1000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 7,
-			r = 2500,
-			acc = {
-				0.95,
-				1
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 3.5,
-			r = 4000,
-			acc = {
-				0.9,
-				0.95
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 3.5,
-			r = 10000,
-			acc = {
-				0.85,
-				0.9
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_lmg.FALLOFF = {
-		{
-			dmg_mul = 3,
-			r = 100,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 2,
-			r = 1000,
-			acc = {
-				0.85,
-				0.9
-			},
-			recoil = {
-				0.4,
-				0.65
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 1.5,
-			r = 2000,
-			acc = {
-				0.6,
-				0.8
-			},
-			recoil = {
-				0.8,
-				1.25
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 1,
-			r = 3000,
-			acc = {
-				0.5,
-				0.7
-			},
-			recoil = {
-				0.8,
-				1.25
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 0.66,
-			r = 4000,
-			acc = {
-				0.02,
-				0.25
-			},
-			recoil = {
-				1,
-				2
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 0.2,
-			r = 10000,
-			acc = {
-				0.01,
-				0.1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF = {
-		{
-			dmg_mul = 3.5,
-			r = 300,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			dmg_mul = 1.6,
-			r = 10000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF = {
-		{
-			dmg_mul = 3.5,
-			r = 100,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.1,
-				0.1
-			},
-			mode = {
-				1,
-				1,
-				4,
-				6
-			}
-		},
-		{
-			dmg_mul = 3.5,
-			r = 500,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.1,
-				0.1
-			},
-			mode = {
-				1,
-				1,
-				4,
-				5
-			}
-		},
-		{
-			dmg_mul = 1.5,
-			r = 1000,
-			acc = {
-				0.85,
-				0.95
-			},
-			recoil = {
-				0.1,
-				0.15
-			},
-			mode = {
-				1,
-				2,
-				4,
-				4
-			}
-		},
-		{
-			dmg_mul = 1,
-			r = 2000,
-			acc = {
-				0.75,
-				0.9
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				1,
-				4,
-				4,
-				1
-			}
-		},
-		{
-			dmg_mul = 0.5,
-			r = 3000,
-			acc = {
-				0.4,
-				0.7
-			},
-			recoil = {
-				0.4,
-				0.5
-			},
-			mode = {
-				4,
-				2,
-				1,
-				0
-			}
-		},
-		{
-			dmg_mul = 0.2,
-			r = 10000,
-			acc = {
-				0.05,
-				0.2
-			},
-			recoil = {
-				0.5,
-				1
-			},
-			mode = {
-				2,
-				1,
-				0,
-				0
-			}
-		}
-	}
+	self.presets.gang_member_damage.BLEED_OUT_HEALTH_INIT = self.presets.gang_member_damage.HEALTH_INIT * 0.1
+	self.presets.weapon.gang_member.is_pistol.FALLOFF[1].dmg_mul = 1.6
+	self.presets.weapon.gang_member.is_pistol.FALLOFF[2].dmg_mul = 3.5
+	self.presets.weapon.gang_member.is_revolver.FALLOFF[1].dmg_mul = 3.5
+	self.presets.weapon.gang_member.is_revolver.FALLOFF[2].dmg_mul = 1.6
+	self.presets.weapon.gang_member.is_rifle.FALLOFF[1].dmg_mul = 3.5
+	self.presets.weapon.gang_member.is_rifle.FALLOFF[2].dmg_mul = 1.6
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[1].dmg_mul = 7
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[2].dmg_mul = 7
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[3].dmg_mul = 7
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[4].dmg_mul = 3.5
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[5].dmg_mul = 3.5
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[1].dmg_mul = 3
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[2].dmg_mul = 2
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[3].dmg_mul = 1.5
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[4].dmg_mul = 1
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[5].dmg_mul = 0.66
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[6].dmg_mul = 0.2
+	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF[1].dmg_mul = 3.5
+	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF[2].dmg_mul = 1.6
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[1].dmg_mul = 3.5
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[2].dmg_mul = 3.5
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[3].dmg_mul = 1.5
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[4].dmg_mul = 1
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[5].dmg_mul = 0.5
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[6].dmg_mul = 0.2
 	self.presets.weapon.gang_member.is_smg = self.presets.weapon.gang_member.is_rifle
-	self.presets.weapon.gang_member.is_pistol = self.presets.weapon.gang_member.is_pistol
-	self.presets.weapon.gang_member.is_revolver = self.presets.weapon.gang_member.is_pistol
-	self.presets.weapon.gang_member.is_rifle = self.presets.weapon.gang_member.is_rifle
-	self.presets.weapon.gang_member.is_shotgun_pump = self.presets.weapon.gang_member.is_shotgun_pump
 	self.presets.weapon.gang_member.mac11 = self.presets.weapon.gang_member.is_smg
 	self.presets.weapon.gang_member.rifle = deep_clone(self.presets.weapon.gang_member.is_rifle)
 	self.presets.weapon.gang_member.rifle.autofire_rounds = nil
 	self.presets.weapon.gang_member.akimbo_pistol = self.presets.weapon.gang_member.is_pistol
-	self.presets.weapon.gang_member.is_shotgun_mag = deep_clone(self.presets.weapon.gang_member.is_shotgun_pump)
 
 	self:_set_characters_weapon_preset("good")
 
@@ -14077,6 +12624,7 @@ function CharacterTweakData:_set_overkill_145()
 	self.presets.gang_member_damage.REGENERATE_TIME = 2
 	self.presets.gang_member_damage.REGENERATE_TIME_AWAY = 0.6
 	self.presets.gang_member_damage.HEALTH_INIT = 400
+	self.presets.gang_member_damage.BLEED_OUT_HEALTH_INIT = self.presets.gang_member_damage.HEALTH_INIT * 0.1
 
 	self:_set_characters_weapon_preset("expert")
 
@@ -14188,442 +12736,38 @@ function CharacterTweakData:_set_easy_wish()
 	self.presets.gang_member_damage.REGENERATE_TIME = 1.8
 	self.presets.gang_member_damage.REGENERATE_TIME_AWAY = 0.6
 	self.presets.gang_member_damage.HEALTH_INIT = 400
-	self.presets.weapon.gang_member.is_pistol.FALLOFF = {
-		{
-			dmg_mul = 10,
-			r = 300,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			dmg_mul = 5,
-			r = 10000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_rifle.FALLOFF = {
-		{
-			dmg_mul = 10,
-			r = 300,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			dmg_mul = 5,
-			r = 10000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_sniper.FALLOFF = {
-		{
-			dmg_mul = 20,
-			r = 500,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 20,
-			r = 1000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 20,
-			r = 2500,
-			acc = {
-				0.95,
-				1
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 10,
-			r = 4000,
-			acc = {
-				0.9,
-				0.95
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 10,
-			r = 10000,
-			acc = {
-				0.85,
-				0.9
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_lmg.FALLOFF = {
-		{
-			dmg_mul = 10,
-			r = 100,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 7.5,
-			r = 1000,
-			acc = {
-				0.85,
-				0.9
-			},
-			recoil = {
-				0.4,
-				0.65
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 5,
-			r = 2000,
-			acc = {
-				0.6,
-				0.8
-			},
-			recoil = {
-				0.8,
-				1.25
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 3,
-			r = 3000,
-			acc = {
-				0.5,
-				0.7
-			},
-			recoil = {
-				0.8,
-				1.25
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 2,
-			r = 4000,
-			acc = {
-				0.02,
-				0.25
-			},
-			recoil = {
-				1,
-				2
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 0.5,
-			r = 10000,
-			acc = {
-				0.01,
-				0.1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF = {
-		{
-			dmg_mul = 10,
-			r = 300,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			dmg_mul = 5,
-			r = 10000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF = {
-		{
-			dmg_mul = 10,
-			r = 100,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.1,
-				0.1
-			},
-			mode = {
-				1,
-				1,
-				4,
-				6
-			}
-		},
-		{
-			dmg_mul = 8,
-			r = 500,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.1,
-				0.1
-			},
-			mode = {
-				1,
-				1,
-				4,
-				5
-			}
-		},
-		{
-			dmg_mul = 7,
-			r = 1000,
-			acc = {
-				0.85,
-				0.95
-			},
-			recoil = {
-				0.1,
-				0.15
-			},
-			mode = {
-				1,
-				2,
-				4,
-				4
-			}
-		},
-		{
-			dmg_mul = 5,
-			r = 2000,
-			acc = {
-				0.75,
-				0.9
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				1,
-				4,
-				4,
-				1
-			}
-		},
-		{
-			dmg_mul = 2,
-			r = 3000,
-			acc = {
-				0.4,
-				0.7
-			},
-			recoil = {
-				0.4,
-				0.5
-			},
-			mode = {
-				4,
-				2,
-				1,
-				0
-			}
-		},
-		{
-			dmg_mul = 0.2,
-			r = 10000,
-			acc = {
-				0.05,
-				0.2
-			},
-			recoil = {
-				0.5,
-				1
-			},
-			mode = {
-				2,
-				1,
-				0,
-				0
-			}
-		}
-	}
+	self.presets.gang_member_damage.BLEED_OUT_HEALTH_INIT = self.presets.gang_member_damage.HEALTH_INIT * 0.1
+	self.presets.weapon.gang_member.is_pistol.FALLOFF[1].dmg_mul = 10
+	self.presets.weapon.gang_member.is_pistol.FALLOFF[2].dmg_mul = 5
+	self.presets.weapon.gang_member.is_revolver.FALLOFF[1].dmg_mul = 10
+	self.presets.weapon.gang_member.is_revolver.FALLOFF[2].dmg_mul = 5
+	self.presets.weapon.gang_member.is_rifle.FALLOFF[1].dmg_mul = 10
+	self.presets.weapon.gang_member.is_rifle.FALLOFF[2].dmg_mul = 5
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[1].dmg_mul = 20
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[2].dmg_mul = 20
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[3].dmg_mul = 20
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[4].dmg_mul = 10
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[5].dmg_mul = 10
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[1].dmg_mul = 10
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[2].dmg_mul = 7.5
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[3].dmg_mul = 5
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[4].dmg_mul = 3
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[5].dmg_mul = 2
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[6].dmg_mul = 0.5
+	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF[1].dmg_mul = 10
+	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF[2].dmg_mul = 5
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[1].dmg_mul = 10
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[2].dmg_mul = 8
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[3].dmg_mul = 7
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[4].dmg_mul = 5
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[5].dmg_mul = 2
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[6].dmg_mul = 0.4
 	self.presets.weapon.gang_member.is_smg = self.presets.weapon.gang_member.is_rifle
-	self.presets.weapon.gang_member.is_pistol = self.presets.weapon.gang_member.is_pistol
-	self.presets.weapon.gang_member.is_revolver = self.presets.weapon.gang_member.is_pistol
 	self.presets.weapon.gang_member.is_rifle = self.presets.weapon.gang_member.is_rifle
-	self.presets.weapon.gang_member.is_shotgun_pump = self.presets.weapon.gang_member.is_shotgun_pump
 	self.presets.weapon.gang_member.mac11 = self.presets.weapon.gang_member.is_smg
 	self.presets.weapon.gang_member.rifle = deep_clone(self.presets.weapon.gang_member.is_rifle)
 	self.presets.weapon.gang_member.rifle.autofire_rounds = nil
 	self.presets.weapon.gang_member.akimbo_pistol = self.presets.weapon.gang_member.is_pistol
-	self.presets.weapon.gang_member.is_shotgun_mag = deep_clone(self.presets.weapon.gang_member.is_shotgun_pump)
 
 	self:_set_characters_weapon_preset("expert")
 
@@ -14691,11 +12835,11 @@ function CharacterTweakData:_set_easy_wish()
 			}
 		}
 	}
-	self.tank.weapon.is_rifle.aim_delay = {
+	self.tank.weapon.is_lmg.aim_delay = {
 		0,
 		0
 	}
-	self.tank.weapon.is_rifle.focus_delay = 0
+	self.tank.weapon.is_lmg.focus_delay = 0
 	self.tank_mini.weapon.mini.aim_delay = {
 		0,
 		0
@@ -14706,14 +12850,12 @@ function CharacterTweakData:_set_easy_wish()
 		0
 	}
 	self.shield.weapon.is_smg.focus_delay = 0
-	self.shield.weapon.is_smg.focus_dis = 200
 	self.shield.weapon.is_pistol.aim_delay = {
 		0,
 		0
 	}
 	self.shield.weapon.is_pistol.focus_delay = 0
 	self.city_swat.damage.explosion_damage_mul = 1
-	self.city_swat.damage.hurt_severity = self.presets.hurt_severities.light_hurt_fire_poison
 	self.phalanx_minion.HEALTH_INIT = 400
 	self.phalanx_minion.DAMAGE_CLAMP_BULLET = 40
 	self.phalanx_minion.DAMAGE_CLAMP_EXPLOSION = self.phalanx_minion.DAMAGE_CLAMP_BULLET
@@ -14857,442 +12999,38 @@ function CharacterTweakData:_set_overkill_290()
 	self.presets.gang_member_damage.REGENERATE_TIME = 1.8
 	self.presets.gang_member_damage.REGENERATE_TIME_AWAY = 0.6
 	self.presets.gang_member_damage.HEALTH_INIT = 800
-	self.presets.weapon.gang_member.is_pistol.FALLOFF = {
-		{
-			dmg_mul = 10,
-			r = 300,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			dmg_mul = 5,
-			r = 10000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_rifle.FALLOFF = {
-		{
-			dmg_mul = 10,
-			r = 300,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			dmg_mul = 5,
-			r = 10000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_sniper.FALLOFF = {
-		{
-			dmg_mul = 20,
-			r = 500,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 20,
-			r = 1000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 20,
-			r = 2500,
-			acc = {
-				0.95,
-				1
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 10,
-			r = 4000,
-			acc = {
-				0.9,
-				0.95
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 10,
-			r = 10000,
-			acc = {
-				0.85,
-				0.9
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_lmg.FALLOFF = {
-		{
-			dmg_mul = 10,
-			r = 100,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 7.5,
-			r = 1000,
-			acc = {
-				0.85,
-				0.9
-			},
-			recoil = {
-				0.4,
-				0.65
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 5,
-			r = 2000,
-			acc = {
-				0.6,
-				0.8
-			},
-			recoil = {
-				0.8,
-				1.25
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 3,
-			r = 3000,
-			acc = {
-				0.5,
-				0.7
-			},
-			recoil = {
-				0.8,
-				1.25
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 2,
-			r = 4000,
-			acc = {
-				0.02,
-				0.25
-			},
-			recoil = {
-				1,
-				2
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 0.5,
-			r = 10000,
-			acc = {
-				0.01,
-				0.1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF = {
-		{
-			dmg_mul = 10,
-			r = 300,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			dmg_mul = 5,
-			r = 10000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF = {
-		{
-			dmg_mul = 10,
-			r = 100,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.1,
-				0.1
-			},
-			mode = {
-				1,
-				1,
-				4,
-				6
-			}
-		},
-		{
-			dmg_mul = 8,
-			r = 500,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.1,
-				0.1
-			},
-			mode = {
-				1,
-				1,
-				4,
-				5
-			}
-		},
-		{
-			dmg_mul = 7,
-			r = 1000,
-			acc = {
-				0.85,
-				0.95
-			},
-			recoil = {
-				0.1,
-				0.15
-			},
-			mode = {
-				1,
-				2,
-				4,
-				4
-			}
-		},
-		{
-			dmg_mul = 5,
-			r = 2000,
-			acc = {
-				0.75,
-				0.9
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				1,
-				4,
-				4,
-				1
-			}
-		},
-		{
-			dmg_mul = 2,
-			r = 3000,
-			acc = {
-				0.4,
-				0.7
-			},
-			recoil = {
-				0.4,
-				0.5
-			},
-			mode = {
-				4,
-				2,
-				1,
-				0
-			}
-		},
-		{
-			dmg_mul = 0.2,
-			r = 10000,
-			acc = {
-				0.05,
-				0.2
-			},
-			recoil = {
-				0.5,
-				1
-			},
-			mode = {
-				2,
-				1,
-				0,
-				0
-			}
-		}
-	}
+	self.presets.gang_member_damage.BLEED_OUT_HEALTH_INIT = self.presets.gang_member_damage.HEALTH_INIT * 0.1
+	self.presets.weapon.gang_member.is_pistol.FALLOFF[1].dmg_mul = 10
+	self.presets.weapon.gang_member.is_pistol.FALLOFF[2].dmg_mul = 5
+	self.presets.weapon.gang_member.is_revolver.FALLOFF[1].dmg_mul = 10
+	self.presets.weapon.gang_member.is_revolver.FALLOFF[2].dmg_mul = 5
+	self.presets.weapon.gang_member.is_rifle.FALLOFF[1].dmg_mul = 10
+	self.presets.weapon.gang_member.is_rifle.FALLOFF[2].dmg_mul = 5
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[1].dmg_mul = 20
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[2].dmg_mul = 20
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[3].dmg_mul = 20
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[4].dmg_mul = 10
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[5].dmg_mul = 10
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[1].dmg_mul = 10
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[2].dmg_mul = 7.5
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[3].dmg_mul = 5
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[4].dmg_mul = 3
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[5].dmg_mul = 2
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[6].dmg_mul = 0.5
+	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF[1].dmg_mul = 10
+	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF[2].dmg_mul = 5
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[1].dmg_mul = 10
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[2].dmg_mul = 8
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[3].dmg_mul = 7
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[4].dmg_mul = 5
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[5].dmg_mul = 2
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[6].dmg_mul = 0.4
 	self.presets.weapon.gang_member.is_smg = self.presets.weapon.gang_member.is_rifle
-	self.presets.weapon.gang_member.is_pistol = self.presets.weapon.gang_member.is_pistol
-	self.presets.weapon.gang_member.is_revolver = self.presets.weapon.gang_member.is_pistol
 	self.presets.weapon.gang_member.is_rifle = self.presets.weapon.gang_member.is_rifle
-	self.presets.weapon.gang_member.is_shotgun_pump = self.presets.weapon.gang_member.is_shotgun_pump
 	self.presets.weapon.gang_member.mac11 = self.presets.weapon.gang_member.is_smg
 	self.presets.weapon.gang_member.rifle = deep_clone(self.presets.weapon.gang_member.is_rifle)
 	self.presets.weapon.gang_member.rifle.autofire_rounds = nil
 	self.presets.weapon.gang_member.akimbo_pistol = self.presets.weapon.gang_member.is_pistol
-	self.presets.weapon.gang_member.is_shotgun_mag = deep_clone(self.presets.weapon.gang_member.is_shotgun_pump)
 
 	self:_set_characters_weapon_preset("deathwish")
 
@@ -15462,12 +13200,12 @@ function CharacterTweakData:_set_overkill_290()
 	self.tank.weapon.is_shotgun_pump.FALLOFF[1].dmg_mul = 9
 	self.tank.weapon.is_shotgun_pump.FALLOFF[2].dmg_mul = 8
 	self.tank.weapon.is_shotgun_pump.FALLOFF[3].dmg_mul = 7
-	self.tank.weapon.is_rifle.aim_delay = {
+	self.tank.weapon.is_lmg.aim_delay = {
 		0,
 		0
 	}
-	self.tank.weapon.is_rifle.focus_delay = 0
-	self.tank.weapon.is_rifle.FALLOFF = {
+	self.tank.weapon.is_lmg.focus_delay = 0
+	self.tank.weapon.is_lmg.FALLOFF = {
 		{
 			dmg_mul = 5,
 			r = 100,
@@ -15564,387 +13302,22 @@ function CharacterTweakData:_set_overkill_290()
 		0
 	}
 	self.tank_mini.weapon.mini.focus_delay = 0
-	self.tank_mini.weapon.mini.FALLOFF = {
-		{
-			dmg_mul = 5,
-			r = 100,
-			acc = {
-				0.7,
-				0.9
-			},
-			recoil = {
-				0.4,
-				0.7
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 5,
-			r = 500,
-			acc = {
-				0.5,
-				0.75
-			},
-			recoil = {
-				0.5,
-				0.8
-			},
-			mode = {
-				0,
-				0,
-				0,
-				6
-			}
-		},
-		{
-			dmg_mul = 5,
-			r = 1000,
-			acc = {
-				0.3,
-				0.6
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				0,
-				0,
-				2,
-				6
-			}
-		},
-		{
-			dmg_mul = 5,
-			r = 2000,
-			acc = {
-				0.25,
-				0.55
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				0,
-				0,
-				2,
-				6
-			}
-		},
-		{
-			dmg_mul = 5,
-			r = 3000,
-			acc = {
-				0.15,
-				0.5
-			},
-			recoil = {
-				1,
-				2
-			},
-			mode = {
-				0,
-				0,
-				2,
-				6
-			}
-		}
-	}
+	self.tank_mini.weapon.mini.FALLOFF[1].dmg_mul = 5
+	self.tank_mini.weapon.mini.FALLOFF[2].dmg_mul = 5
+	self.tank_mini.weapon.mini.FALLOFF[3].dmg_mul = 5
+	self.tank_mini.weapon.mini.FALLOFF[4].dmg_mul = 5
+	self.tank_mini.weapon.mini.FALLOFF[5].dmg_mul = 5
 	self.shield.weapon.is_smg.aim_delay = {
 		0,
 		0
 	}
 	self.shield.weapon.is_smg.focus_delay = 0
-	self.shield.weapon.is_smg.focus_dis = 200
-	self.shield.weapon.is_smg.FALLOFF = {
-		{
-			dmg_mul = 7,
-			r = 0,
-			acc = {
-				0.9,
-				0.95
-			},
-			recoil = {
-				0.35,
-				0.35
-			},
-			mode = {
-				0.2,
-				2,
-				4,
-				10
-			}
-		},
-		{
-			dmg_mul = 7,
-			r = 700,
-			acc = {
-				0.8,
-				0.8
-			},
-			recoil = {
-				0.35,
-				0.55
-			},
-			mode = {
-				0.2,
-				2,
-				4,
-				10
-			}
-		},
-		{
-			dmg_mul = 7,
-			r = 1000,
-			acc = {
-				0.6,
-				0.65
-			},
-			recoil = {
-				0.35,
-				0.55
-			},
-			mode = {
-				0.2,
-				2,
-				4,
-				10
-			}
-		},
-		{
-			dmg_mul = 7,
-			r = 2000,
-			acc = {
-				0.5,
-				0.7
-			},
-			recoil = {
-				0.35,
-				1
-			},
-			mode = {
-				2,
-				5,
-				6,
-				4
-			}
-		},
-		{
-			dmg_mul = 7,
-			r = 3000,
-			acc = {
-				0.5,
-				0.5
-			},
-			recoil = {
-				0.5,
-				1.2
-			},
-			mode = {
-				6,
-				4,
-				2,
-				0
-			}
-		}
-	}
 	self.shield.weapon.is_pistol.aim_delay = {
 		0,
 		0
 	}
 	self.shield.weapon.is_pistol.focus_delay = 0
-	self.shield.weapon.is_pistol.FALLOFF = {
-		{
-			dmg_mul = 7.5,
-			r = 0,
-			acc = {
-				0.6,
-				0.9
-			},
-			recoil = {
-				0.35,
-				0.45
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 7.5,
-			r = 700,
-			acc = {
-				0.6,
-				0.8
-			},
-			recoil = {
-				0.35,
-				0.45
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 7.5,
-			r = 1000,
-			acc = {
-				0.6,
-				0.75
-			},
-			recoil = {
-				0.35,
-				0.45
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 7.5,
-			r = 2000,
-			acc = {
-				0.6,
-				0.75
-			},
-			recoil = {
-				0.35,
-				0.65
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 7.5,
-			r = 3000,
-			acc = {
-				0.5,
-				0.6
-			},
-			recoil = {
-				0.35,
-				1.5
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		}
-	}
-	self.taser.weapon.is_rifle.FALLOFF = {
-		{
-			dmg_mul = 7,
-			r = 100,
-			acc = {
-				0.9,
-				0.95
-			},
-			recoil = {
-				0.4,
-				0.4
-			},
-			mode = {
-				0,
-				3,
-				3,
-				1
-			}
-		},
-		{
-			dmg_mul = 7,
-			r = 500,
-			acc = {
-				0.75,
-				0.95
-			},
-			recoil = {
-				0.4,
-				0.5
-			},
-			mode = {
-				0,
-				3,
-				3,
-				1
-			}
-		},
-		{
-			dmg_mul = 7,
-			r = 1000,
-			acc = {
-				0.7,
-				0.9
-			},
-			recoil = {
-				0.4,
-				0.6
-			},
-			mode = {
-				1,
-				2,
-				3,
-				0
-			}
-		},
-		{
-			dmg_mul = 7,
-			r = 2000,
-			acc = {
-				0.65,
-				0.8
-			},
-			recoil = {
-				0.5,
-				1
-			},
-			mode = {
-				3,
-				2,
-				2,
-				0
-			}
-		},
-		{
-			dmg_mul = 7,
-			r = 3000,
-			acc = {
-				0.55,
-				0.75
-			},
-			recoil = {
-				1,
-				2
-			},
-			mode = {
-				3,
-				1,
-				1,
-				0
-			}
-		}
-	}
 	self.city_swat.damage.explosion_damage_mul = 1
-	self.city_swat.damage.hurt_severity = self.presets.hurt_severities.light_hurt_fire_poison
 	self.phalanx_minion.HEALTH_INIT = 400
 	self.phalanx_minion.DAMAGE_CLAMP_BULLET = 40
 	self.phalanx_minion.DAMAGE_CLAMP_EXPLOSION = self.phalanx_minion.DAMAGE_CLAMP_BULLET
@@ -16090,442 +13463,38 @@ function CharacterTweakData:_set_sm_wish()
 	self.presets.gang_member_damage.REGENERATE_TIME = 1.8
 	self.presets.gang_member_damage.REGENERATE_TIME_AWAY = 0.6
 	self.presets.gang_member_damage.HEALTH_INIT = 800
-	self.presets.weapon.gang_member.is_pistol.FALLOFF = {
-		{
-			dmg_mul = 10,
-			r = 300,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			dmg_mul = 5,
-			r = 10000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_rifle.FALLOFF = {
-		{
-			dmg_mul = 10,
-			r = 300,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			dmg_mul = 5,
-			r = 10000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_sniper.FALLOFF = {
-		{
-			dmg_mul = 20,
-			r = 500,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 20,
-			r = 1000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 20,
-			r = 2500,
-			acc = {
-				0.95,
-				1
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 10,
-			r = 4000,
-			acc = {
-				0.9,
-				0.95
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		},
-		{
-			dmg_mul = 10,
-			r = 10000,
-			acc = {
-				0.85,
-				0.9
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				1,
-				0,
-				0,
-				0
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_lmg.FALLOFF = {
-		{
-			dmg_mul = 10,
-			r = 100,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 7.5,
-			r = 1000,
-			acc = {
-				0.85,
-				0.9
-			},
-			recoil = {
-				0.4,
-				0.65
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 5,
-			r = 2000,
-			acc = {
-				0.6,
-				0.8
-			},
-			recoil = {
-				0.8,
-				1.25
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 3,
-			r = 3000,
-			acc = {
-				0.5,
-				0.7
-			},
-			recoil = {
-				0.8,
-				1.25
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 2,
-			r = 4000,
-			acc = {
-				0.02,
-				0.25
-			},
-			recoil = {
-				1,
-				2
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 0.5,
-			r = 10000,
-			acc = {
-				0.01,
-				0.1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF = {
-		{
-			dmg_mul = 10,
-			r = 300,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		},
-		{
-			dmg_mul = 5,
-			r = 10000,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				2,
-				3
-			},
-			mode = {
-				0.1,
-				0.3,
-				4,
-				7
-			}
-		}
-	}
-	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF = {
-		{
-			dmg_mul = 10,
-			r = 100,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.1,
-				0.1
-			},
-			mode = {
-				1,
-				1,
-				4,
-				6
-			}
-		},
-		{
-			dmg_mul = 8,
-			r = 500,
-			acc = {
-				1,
-				1
-			},
-			recoil = {
-				0.1,
-				0.1
-			},
-			mode = {
-				1,
-				1,
-				4,
-				5
-			}
-		},
-		{
-			dmg_mul = 7,
-			r = 1000,
-			acc = {
-				0.85,
-				0.95
-			},
-			recoil = {
-				0.1,
-				0.15
-			},
-			mode = {
-				1,
-				2,
-				4,
-				4
-			}
-		},
-		{
-			dmg_mul = 5,
-			r = 2000,
-			acc = {
-				0.75,
-				0.9
-			},
-			recoil = {
-				0.25,
-				0.45
-			},
-			mode = {
-				1,
-				4,
-				4,
-				1
-			}
-		},
-		{
-			dmg_mul = 2,
-			r = 3000,
-			acc = {
-				0.4,
-				0.7
-			},
-			recoil = {
-				0.4,
-				0.5
-			},
-			mode = {
-				4,
-				2,
-				1,
-				0
-			}
-		},
-		{
-			dmg_mul = 0.2,
-			r = 10000,
-			acc = {
-				0.05,
-				0.2
-			},
-			recoil = {
-				0.5,
-				1
-			},
-			mode = {
-				2,
-				1,
-				0,
-				0
-			}
-		}
-	}
+	self.presets.gang_member_damage.BLEED_OUT_HEALTH_INIT = self.presets.gang_member_damage.HEALTH_INIT * 0.1
+	self.presets.weapon.gang_member.is_pistol.FALLOFF[1].dmg_mul = 10
+	self.presets.weapon.gang_member.is_pistol.FALLOFF[2].dmg_mul = 5
+	self.presets.weapon.gang_member.is_revolver.FALLOFF[1].dmg_mul = 10
+	self.presets.weapon.gang_member.is_revolver.FALLOFF[2].dmg_mul = 5
+	self.presets.weapon.gang_member.is_rifle.FALLOFF[1].dmg_mul = 10
+	self.presets.weapon.gang_member.is_rifle.FALLOFF[2].dmg_mul = 5
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[1].dmg_mul = 20
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[2].dmg_mul = 20
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[3].dmg_mul = 20
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[4].dmg_mul = 10
+	self.presets.weapon.gang_member.is_sniper.FALLOFF[5].dmg_mul = 10
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[1].dmg_mul = 10
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[2].dmg_mul = 7.5
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[3].dmg_mul = 5
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[4].dmg_mul = 3
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[5].dmg_mul = 2
+	self.presets.weapon.gang_member.is_lmg.FALLOFF[6].dmg_mul = 0.5
+	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF[1].dmg_mul = 10
+	self.presets.weapon.gang_member.is_shotgun_pump.FALLOFF[2].dmg_mul = 5
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[1].dmg_mul = 10
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[2].dmg_mul = 8
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[3].dmg_mul = 7
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[4].dmg_mul = 5
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[5].dmg_mul = 2
+	self.presets.weapon.gang_member.is_shotgun_mag.FALLOFF[6].dmg_mul = 0.4
 	self.presets.weapon.gang_member.is_smg = self.presets.weapon.gang_member.is_rifle
-	self.presets.weapon.gang_member.is_pistol = self.presets.weapon.gang_member.is_pistol
-	self.presets.weapon.gang_member.is_revolver = self.presets.weapon.gang_member.is_pistol
 	self.presets.weapon.gang_member.is_rifle = self.presets.weapon.gang_member.is_rifle
-	self.presets.weapon.gang_member.is_shotgun_pump = self.presets.weapon.gang_member.is_shotgun_pump
 	self.presets.weapon.gang_member.mac11 = self.presets.weapon.gang_member.is_smg
 	self.presets.weapon.gang_member.rifle = deep_clone(self.presets.weapon.gang_member.is_rifle)
 	self.presets.weapon.gang_member.rifle.autofire_rounds = nil
 	self.presets.weapon.gang_member.akimbo_pistol = self.presets.weapon.gang_member.is_pistol
-	self.presets.weapon.gang_member.is_shotgun_mag = deep_clone(self.presets.weapon.gang_member.is_shotgun_pump)
 
 	self:_set_characters_weapon_preset("deathwish")
 
@@ -16695,12 +13664,12 @@ function CharacterTweakData:_set_sm_wish()
 	self.tank.weapon.is_shotgun_pump.FALLOFF[1].dmg_mul = 9
 	self.tank.weapon.is_shotgun_pump.FALLOFF[2].dmg_mul = 8
 	self.tank.weapon.is_shotgun_pump.FALLOFF[3].dmg_mul = 7
-	self.tank.weapon.is_rifle.aim_delay = {
+	self.tank.weapon.is_lmg.aim_delay = {
 		0,
 		0
 	}
-	self.tank.weapon.is_rifle.focus_delay = 0
-	self.tank.weapon.is_rifle.FALLOFF = {
+	self.tank.weapon.is_lmg.focus_delay = 0
+	self.tank.weapon.is_lmg.FALLOFF = {
 		{
 			dmg_mul = 6,
 			r = 100,
@@ -16797,392 +13766,22 @@ function CharacterTweakData:_set_sm_wish()
 		0
 	}
 	self.tank_mini.weapon.mini.focus_delay = 0
-	self.tank_mini.weapon.mini.FALLOFF = {
-		{
-			dmg_mul = 6,
-			r = 100,
-			acc = {
-				0.7,
-				0.9
-			},
-			recoil = {
-				0.4,
-				0.7
-			},
-			mode = {
-				0,
-				0,
-				0,
-				1
-			}
-		},
-		{
-			dmg_mul = 6,
-			r = 500,
-			acc = {
-				0.5,
-				0.75
-			},
-			recoil = {
-				0.5,
-				0.8
-			},
-			mode = {
-				0,
-				0,
-				0,
-				6
-			}
-		},
-		{
-			dmg_mul = 6,
-			r = 1000,
-			acc = {
-				0.3,
-				0.6
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				0,
-				0,
-				2,
-				6
-			}
-		},
-		{
-			dmg_mul = 6,
-			r = 2000,
-			acc = {
-				0.25,
-				0.55
-			},
-			recoil = {
-				1,
-				1
-			},
-			mode = {
-				0,
-				0,
-				2,
-				6
-			}
-		},
-		{
-			dmg_mul = 6,
-			r = 3000,
-			acc = {
-				0.15,
-				0.5
-			},
-			recoil = {
-				1,
-				2
-			},
-			mode = {
-				0,
-				0,
-				2,
-				6
-			}
-		}
-	}
-	self.tank_mini.weapon.mini.aim_delay = {
-		0,
-		0
-	}
-	self.tank_mini.weapon.mini.focus_delay = 0
+	self.tank_mini.weapon.mini.FALLOFF[1].dmg_mul = 6
+	self.tank_mini.weapon.mini.FALLOFF[2].dmg_mul = 6
+	self.tank_mini.weapon.mini.FALLOFF[3].dmg_mul = 6
+	self.tank_mini.weapon.mini.FALLOFF[4].dmg_mul = 6
+	self.tank_mini.weapon.mini.FALLOFF[5].dmg_mul = 6
 	self.shield.weapon.is_smg.aim_delay = {
 		0,
 		0
 	}
 	self.shield.weapon.is_smg.focus_delay = 0
-	self.shield.weapon.is_smg.focus_dis = 200
-	self.shield.weapon.is_smg.FALLOFF = {
-		{
-			dmg_mul = 7,
-			r = 0,
-			acc = {
-				0.9,
-				0.95
-			},
-			recoil = {
-				0.35,
-				0.35
-			},
-			mode = {
-				0.2,
-				2,
-				4,
-				10
-			}
-		},
-		{
-			dmg_mul = 7,
-			r = 700,
-			acc = {
-				0.8,
-				0.8
-			},
-			recoil = {
-				0.35,
-				0.55
-			},
-			mode = {
-				0.2,
-				2,
-				4,
-				10
-			}
-		},
-		{
-			dmg_mul = 7,
-			r = 1000,
-			acc = {
-				0.6,
-				0.65
-			},
-			recoil = {
-				0.35,
-				0.55
-			},
-			mode = {
-				0.2,
-				2,
-				4,
-				10
-			}
-		},
-		{
-			dmg_mul = 7,
-			r = 2000,
-			acc = {
-				0.5,
-				0.7
-			},
-			recoil = {
-				0.35,
-				1
-			},
-			mode = {
-				2,
-				5,
-				6,
-				4
-			}
-		},
-		{
-			dmg_mul = 7,
-			r = 3000,
-			acc = {
-				0.5,
-				0.5
-			},
-			recoil = {
-				0.5,
-				1.2
-			},
-			mode = {
-				6,
-				4,
-				2,
-				0
-			}
-		}
-	}
 	self.shield.weapon.is_pistol.aim_delay = {
 		0,
 		0
 	}
 	self.shield.weapon.is_pistol.focus_delay = 0
-	self.shield.weapon.is_pistol.FALLOFF = {
-		{
-			dmg_mul = 6,
-			r = 100,
-			acc = {
-				0.95,
-				0.95
-			},
-			recoil = {
-				0.1,
-				0.25
-			},
-			mode = {
-				0,
-				3,
-				3,
-				4
-			}
-		},
-		{
-			dmg_mul = 5,
-			r = 500,
-			acc = {
-				0.6,
-				0.75
-			},
-			recoil = {
-				0.1,
-				0.3
-			},
-			mode = {
-				0,
-				3,
-				3,
-				4
-			}
-		},
-		{
-			dmg_mul = 5,
-			r = 1000,
-			acc = {
-				0.5,
-				0.65
-			},
-			recoil = {
-				0.35,
-				0.5
-			},
-			mode = {
-				0,
-				6,
-				3,
-				3
-			}
-		},
-		{
-			dmg_mul = 4,
-			r = 2000,
-			acc = {
-				0.5,
-				0.6
-			},
-			recoil = {
-				0.35,
-				0.5
-			},
-			mode = {
-				0,
-				6,
-				3,
-				0
-			}
-		},
-		{
-			dmg_mul = 4,
-			r = 3000,
-			acc = {
-				0.5,
-				0.6
-			},
-			recoil = {
-				0.5,
-				1.5
-			},
-			mode = {
-				1,
-				6,
-				2,
-				0
-			}
-		}
-	}
-	self.taser.weapon.is_rifle.FALLOFF = {
-		{
-			dmg_mul = 7.5,
-			r = 100,
-			acc = {
-				0.9,
-				0.975
-			},
-			recoil = {
-				0.25,
-				0.3
-			},
-			mode = {
-				0,
-				3,
-				3,
-				1
-			}
-		},
-		{
-			dmg_mul = 6.5,
-			r = 500,
-			acc = {
-				0.875,
-				0.95
-			},
-			recoil = {
-				0.25,
-				0.3
-			},
-			mode = {
-				0,
-				3,
-				8,
-				1
-			}
-		},
-		{
-			dmg_mul = 6.5,
-			r = 1000,
-			acc = {
-				0.7,
-				0.9
-			},
-			recoil = {
-				0.35,
-				0.55
-			},
-			mode = {
-				0,
-				2,
-				5,
-				1
-			}
-		},
-		{
-			dmg_mul = 5.5,
-			r = 2000,
-			acc = {
-				0.7,
-				0.85
-			},
-			recoil = {
-				0.4,
-				0.7
-			},
-			mode = {
-				3,
-				2,
-				5,
-				1
-			}
-		},
-		{
-			dmg_mul = 5.5,
-			r = 3000,
-			acc = {
-				0.65,
-				0.75
-			},
-			recoil = {
-				0.7,
-				1.1
-			},
-			mode = {
-				3,
-				1,
-				5,
-				0.5
-			}
-		}
-	}
 	self.city_swat.damage.explosion_damage_mul = 1
-	self.city_swat.damage.hurt_severity = self.presets.hurt_severities.light_hurt_fire_poison
 	self.phalanx_minion.HEALTH_INIT = 400
 	self.phalanx_minion.DAMAGE_CLAMP_BULLET = 40
 	self.phalanx_minion.DAMAGE_CLAMP_EXPLOSION = self.phalanx_minion.DAMAGE_CLAMP_BULLET
@@ -17207,13 +13806,17 @@ end
 
 function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 	self.fbi.HEALTH_INIT = self.fbi.HEALTH_INIT * hp_mul
+	self.fbi_female.HEALTH_INIT = self.fbi_female.HEALTH_INIT * hp_mul
 	self.swat.HEALTH_INIT = self.swat.HEALTH_INIT * hp_mul
 	self.heavy_swat.HEALTH_INIT = self.heavy_swat.HEALTH_INIT * hp_mul
 	self.heavy_swat_sniper.HEALTH_INIT = self.heavy_swat_sniper.HEALTH_INIT * hp_mul
 	self.fbi_heavy_swat.HEALTH_INIT = self.fbi_heavy_swat.HEALTH_INIT * hp_mul
+	self.zeal_swat.HEALTH_INIT = self.zeal_swat.HEALTH_INIT * hp_mul
+	self.zeal_heavy_swat.HEALTH_INIT = self.zeal_heavy_swat.HEALTH_INIT * hp_mul
 	self.sniper.HEALTH_INIT = self.sniper.HEALTH_INIT * hp_mul
 	self.gangster.HEALTH_INIT = self.gangster.HEALTH_INIT * hp_mul
 	self.biker.HEALTH_INIT = self.biker.HEALTH_INIT * hp_mul
+	self.biker_female.HEALTH_INIT = self.biker_female.HEALTH_INIT * hp_mul
 	self.tank.HEALTH_INIT = self.tank.HEALTH_INIT * hp_mul
 	self.triad.HEALTH_INIT = self.triad.HEALTH_INIT * hp_mul
 	self.tank_mini.HEALTH_INIT = self.tank_mini.HEALTH_INIT * hp_mul
@@ -17260,8 +13863,16 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 		self.cop.headshot_dmg_mul = self.cop.headshot_dmg_mul * hs_mul
 	end
 
+	if self.cop_female.headshot_dmg_mul then
+		self.cop_female.headshot_dmg_mul = self.cop_female.headshot_dmg_mul * hs_mul
+	end
+
 	if self.fbi.headshot_dmg_mul then
 		self.fbi.headshot_dmg_mul = self.fbi.headshot_dmg_mul * hs_mul
+	end
+
+	if self.fbi_female.headshot_dmg_mul then
+		self.fbi_female.headshot_dmg_mul = self.fbi_female.headshot_dmg_mul * hs_mul
 	end
 
 	if self.swat.headshot_dmg_mul then
@@ -17280,6 +13891,14 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 		self.fbi_heavy_swat.headshot_dmg_mul = self.fbi_heavy_swat.headshot_dmg_mul * hs_mul
 	end
 
+	if self.zeal_swat.headshot_dmg_mul then
+		self.zeal_swat.headshot_dmg_mul = self.zeal_swat.headshot_dmg_mul * hs_mul
+	end
+
+	if self.zeal_heavy_swat.headshot_dmg_mul then
+		self.zeal_heavy_swat.headshot_dmg_mul = self.zeal_heavy_swat.headshot_dmg_mul * hs_mul
+	end
+
 	if self.sniper.headshot_dmg_mul then
 		self.sniper.headshot_dmg_mul = self.sniper.headshot_dmg_mul * hs_mul
 	end
@@ -17290,6 +13909,10 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 
 	if self.biker.headshot_dmg_mul then
 		self.biker.headshot_dmg_mul = self.biker.headshot_dmg_mul * hs_mul
+	end
+
+	if self.biker_female.headshot_dmg_mul then
+		self.biker_female.headshot_dmg_mul = self.biker_female.headshot_dmg_mul * hs_mul
 	end
 
 	if self.triad.headshot_dmg_mul then
@@ -17402,71 +14025,21 @@ function CharacterTweakData:_multiply_all_hp(hp_mul, hs_mul)
 end
 
 function CharacterTweakData:_multiply_all_speeds(walk_mul, run_mul)
-	local all_units = {
-		"security",
-		"cop",
-		"fbi",
-		"swat",
-		"heavy_swat",
-		"sniper",
-		"gangster",
-		"tank",
-		"spooc",
-		"shield",
-		"taser",
-		"city_swat",
-		"fbi_swat",
-		"shadow_spooc"
-	}
-
-	table.insert(all_units, "bolivian")
-	table.insert(all_units, "bolivian_indoors")
-	table.insert(all_units, "ranchmanager")
-	table.insert(all_units, "bolivian_indoors_mex")
-	table.insert(all_units, "security_mex")
-	table.insert(all_units, "security_mex_no_pager")
-
-	for _, name in ipairs(all_units) do
-		local speed_table = self[name].SPEED_WALK
-		speed_table.hos = speed_table.hos * walk_mul
-		speed_table.cbt = speed_table.cbt * walk_mul
-	end
-
-	self.security.SPEED_RUN = self.security.SPEED_RUN * run_mul
-	self.security_mex.SPEED_RUN = self.security_mex.SPEED_RUN * run_mul
-	self.security_mex_no_pager.SPEED_RUN = self.security_mex_no_pager.SPEED_RUN * run_mul
-	self.cop.SPEED_RUN = self.cop.SPEED_RUN * run_mul
-	self.fbi.SPEED_RUN = self.fbi.SPEED_RUN * run_mul
-	self.swat.SPEED_RUN = self.swat.SPEED_RUN * run_mul
-	self.heavy_swat.SPEED_RUN = self.heavy_swat.SPEED_RUN * run_mul
-	self.fbi_heavy_swat.SPEED_RUN = self.fbi_heavy_swat.SPEED_RUN * run_mul
-	self.sniper.SPEED_RUN = self.sniper.SPEED_RUN * run_mul
-	self.gangster.SPEED_RUN = self.gangster.SPEED_RUN * run_mul
-	self.biker.SPEED_RUN = self.biker.SPEED_RUN * run_mul
-	self.tank.SPEED_RUN = self.tank.SPEED_RUN * run_mul
-	self.spooc.SPEED_RUN = self.spooc.SPEED_RUN * run_mul
-	self.triad.SPEED_RUN = self.triad.SPEED_RUN * run_mul
-	self.shadow_spooc.SPEED_RUN = self.spooc.SPEED_RUN * run_mul
-	self.shield.SPEED_RUN = self.shield.SPEED_RUN * run_mul
-	self.taser.SPEED_RUN = self.taser.SPEED_RUN * run_mul
-	self.city_swat.SPEED_RUN = self.city_swat.SPEED_RUN * run_mul
-	self.biker_escape.SPEED_RUN = self.biker_escape.SPEED_RUN * run_mul
-	self.fbi_swat.SPEED_RUN = self.fbi_swat.SPEED_RUN * run_mul
 end
 
 function CharacterTweakData:_set_characters_weapon_preset(preset)
 	local all_units = {
 		"security",
 		"cop",
+		"cop_female",
 		"fbi",
-		"swat",
-		"heavy_swat",
+		"fbi_female",
+		"zeal_swat",
+		"zeal_heavy_swat",
 		"gangster",
-		"swat"
+		"security_mex",
+		"security_mex_no_pager"
 	}
-
-	table.insert(all_units, "security_mex")
-	table.insert(all_units, "security_mex_no_pager")
 
 	for _, name in ipairs(all_units) do
 		self[name].weapon = self.presets.weapon[preset]

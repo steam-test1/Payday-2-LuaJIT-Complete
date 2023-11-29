@@ -4239,7 +4239,7 @@ function InteractionTweakData:init(tweak_data)
 		timer = 1,
 		interact_distance = 150,
 		start_active = false,
-		action_text_id = "hud_int_hold_born_receive_item_blow_torch",
+		action_text_id = "hud_action_taking_blow_torch",
 		sound_done = "bag_light_drop"
 	}
 	self.hold_hand_over_soda = {

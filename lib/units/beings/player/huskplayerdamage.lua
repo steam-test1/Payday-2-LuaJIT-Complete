@@ -108,8 +108,6 @@ end
 
 function HuskPlayerDamage:damage_fire(attack_data)
 	if managers.mutators:is_mutator_active(MutatorFriendlyFire) then
-		attack_data.damage = attack_data.damage * 0.2
-
 		self:_send_damage_to_owner(attack_data)
 	end
 end

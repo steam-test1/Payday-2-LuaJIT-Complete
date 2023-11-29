@@ -128,8 +128,8 @@ function HuskCopInventory:from_server_link_shield(shield_unit)
 	self:equip_shield(shield_unit, align_name)
 
 	if self._shield_unit then
-		shield_unit:set_visible(vis_state)
-		shield_unit:set_enabled(enabled_state)
+		self:set_shield_visible(vis_state)
+		self:set_shield_enabled(enabled_state)
 	else
 		Application:error("[HuskCopInventory:from_server_link_shield] Failed to equip synced shield.", self._unit, shield_unit)
 	end

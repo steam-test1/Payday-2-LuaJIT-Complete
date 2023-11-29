@@ -448,10 +448,14 @@ function SecurityCamera:set_access_camera_mission_element(access_camera_mission_
 	self._access_camera_mission_element = access_camera_mission_element
 end
 
-function SecurityCamera:get_mark_check_position()
+function SecurityCamera:get_mark_check_position(m_vec)
 	local obj = self._unit:get_object(Idstring("CameraLens")) or self._unit:get_object(Idstring("g_lamp"))
 
-	return obj:position()
+	if obj then
+		obj:m_position(m_vec)
+	else
+		self._unit:m_position(m_vec)
+	end
 end
 
 function SecurityCamera:destroyed()

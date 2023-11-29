@@ -12,6 +12,9 @@ MutatorShotgunTweak.icon_coords = {
 	7,
 	1
 }
+local tmp_vec = Vector3()
+local tmp_rot = Rotation()
+local shotgun_wat_effect = Idstring("physic_effects/shotgun_wat")
 
 function MutatorShotgunTweak:register_values(mutator_manager)
 	self:register_value("pull_strength", 3, "ps")
@@ -59,24 +62,68 @@ function MutatorShotgunTweak:to_the_mothership_strength()
 end
 
 function MutatorShotgunTweak:_on_shotgun_push(unit, hit_pos, dir, distance, attacker)
-	if alive(unit) and alive(attacker) then
-		local str = self:get_pull_strength()
+	if not alive(unit) or not alive(attacker) or not managers.groupai:state():criminal_record(attacker:key()) then
+		return
+	end
 
-		World:play_physic_effect(Idstring("physic_effects/shotgun_wat"), unit:body("rag_Head"), attacker:body("inflict_reciever"), str)
-		World:play_physic_effect(Idstring("physic_effects/shotgun_wat"), unit:body("rag_Hips"), attacker:body("inflict_reciever"), str)
-		World:play_physic_effect(Idstring("physic_effects/shotgun_wat"), unit:body("rag_Spine"), attacker:body("inflict_reciever"), str)
-		World:play_physic_effect(Idstring("physic_effects/shotgun_wat"), unit:body("rag_Spine1"), attacker:body("inflict_reciever"), str)
-		World:play_physic_effect(Idstring("physic_effects/shotgun_wat"), unit:body("rag_Spine2"), attacker:body("inflict_reciever"), str)
-		World:play_physic_effect(Idstring("physic_effects/shotgun_wat"), unit:body("rag_RightForeArm"), attacker:body("inflict_reciever"), str)
-		World:play_physic_effect(Idstring("physic_effects/shotgun_wat"), unit:body("rag_LeftForeArm"), attacker:body("inflict_reciever"), str)
+	local str = self:get_pull_strength()
+	local attacker_base_ext = attacker:base()
+	local attacker_body_name = attacker_base_ext and attacker_base_ext.is_local_player and "inflict_reciever" or "body"
+	local attacker_body = attacker:body(attacker_body_name)
 
-		if attacker == managers.player:player_unit() and self._sound_device then
-			self._sound_device:stop()
-			self._sound_device:set_position(attacker:position())
-			self._sound_device:set_orientation(attacker:rotation())
-			self._sound_device:post_event("mutators_hfos_01")
+	if not attacker_body then
+		return
+	end
+
+	local world = World
+	local play_physic_effect_f = world.play_physic_effect
+	local get_body_f = unit.body
+
+	if self:get_to_the_mothership() then
+		local body = nil
+		local valid_bodies = {}
+
+		for i = 0, unit:num_bodies() - 1 do
+			body = get_body_f(unit, i)
+
+			if body and body:enabled() and body:dynamic() then
+				valid_bodies[#valid_bodies + 1] = body
+			end
+		end
+
+		local nr_valid_bodies = #valid_bodies
+
+		for i = 1, nr_valid_bodies do
+			body = valid_bodies[i]
+
+			for idx = 1, nr_valid_bodies do
+				play_physic_effect_f(world, shotgun_wat_effect, body, attacker_body, str)
+			end
+		end
+	else
+		local body = nil
+
+		for i = 0, unit:num_bodies() - 1 do
+			body = get_body_f(unit, i)
+
+			if body and body:enabled() and body:dynamic() then
+				play_physic_effect_f(world, shotgun_wat_effect, body, attacker_body, str)
+			end
 		end
 	end
+
+	local sound_source = self._sound_device
+
+	if not sound_source then
+		return
+	end
+
+	attacker:m_position(tmp_vec)
+	attacker:m_rotation(tmp_rot)
+	sound_source:stop()
+	sound_source:set_position(tmp_vec)
+	sound_source:set_orientation(tmp_rot)
+	sound_source:post_event("mutators_hfos_01")
 end
 
 function MutatorShotgunTweak:modify_value(id, value)
@@ -89,10 +136,6 @@ function MutatorShotgunTweak:modify_value(id, value)
 			return math.min(value, 16)
 		end
 	elseif id == "ShotgunBase:_fire_raycast" then
-		if value and value.hit_enemy and value.type == "death" then
-			value.type = "death"
-		end
-
 		if value and value.variant == "explosion" then
 			value.type = "death"
 		end

@@ -391,13 +391,7 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 		achievement = "gsu_01"
 	}
 	self.melee_weapons.spoon_gold.texture_bundle_folder = "apfo"
-	self.melee_weapons.spoon_gold.fire_dot_data = {
-		dot_trigger_chance = "20",
-		dot_damage = "10",
-		dot_length = "3.1",
-		dot_trigger_max_distance = "3000",
-		dot_tick_period = "0.5"
-	}
+	self.melee_weapons.spoon_gold.dot_data_name = "melee_spoon_gold"
 	self.melee_weapons.spoon_gold.align_objects = {
 		"a_weapon_right"
 	}
@@ -604,7 +598,7 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.briefcase.melee_damage_delay = 0.2
 	self.melee_weapons.kabartanto = deep_clone(self.melee_weapons.kabar)
 	self.melee_weapons.kabartanto.name_id = "bm_melee_kabar_tanto"
-	self.melee_weapons.kabartanto.dlc = "pd2_clan"
+	self.melee_weapons.kabartanto.dlc = "john_wick_character"
 	self.melee_weapons.kabartanto.texture_bundle_folder = nil
 	self.melee_weapons.kabartanto.type = "knife"
 	self.melee_weapons.kabartanto.unit = "units/pd2_crimefest_2014/oct22/weapons/wpn_fps_mel_kabar_tanto/wpn_fps_mel_kabar_tanto"
@@ -874,15 +868,7 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 		},
 		{
 			weight = 40,
-			dot_data = {
-				type = "poison",
-				custom_data = {
-					hurt_animation_chance = 1,
-					dot_damage = 12,
-					dot_length = 5,
-					dot_tick_period = 0.5
-				}
-			}
+			dot_data_name = "melee_piggy_hammer"
 		},
 		{
 			weight = 15,
@@ -1605,13 +1591,7 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	}
 	self.melee_weapons.cqc.unit = "units/pd2_dlc_turtles/weapons/wpn_fps_mel_cqc/wpn_fps_mel_cqc"
 	self.melee_weapons.cqc.third_unit = "units/pd2_dlc_turtles/weapons/wpn_fps_mel_cqc/wpn_third_mel_cqc"
-	self.melee_weapons.cqc.dot_data = {
-		type = "poison",
-		custom_data = {
-			dot_length = 1,
-			hurt_animation_chance = 0.7
-		}
-	}
+	self.melee_weapons.cqc.dot_data_name = "melee_cqc"
 	self.melee_weapons.cqc.stats.weapon_type = "sharp"
 	self.melee_weapons.cqc.stats.min_damage = 3
 	self.melee_weapons.cqc.stats.max_damage = 8
@@ -2807,7 +2787,6 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 			"var2"
 		},
 		anim_global_param = "melee_clean",
-		dlc = "rvd",
 		texture_bundle_folder = "rvd",
 		type = "knife",
 		align_objects = {
@@ -3018,13 +2997,7 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.fear.sounds.hit_body = "cqc_hit_body"
 	self.melee_weapons.fear.sounds.charge = "cqc_charge"
 	self.melee_weapons.fear.melee_charge_shaker = "player_melee_charge_wing"
-	self.melee_weapons.fear.dot_data = {
-		type = "poison",
-		custom_data = {
-			dot_length = 1,
-			hurt_animation_chance = 0.7
-		}
-	}
+	self.melee_weapons.fear.dot_data_name = "melee_fear"
 	self.melee_weapons.fear.stats = {
 		weapon_type = "sharp",
 		min_damage = 3,

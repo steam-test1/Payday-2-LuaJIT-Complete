@@ -5525,7 +5525,7 @@ function UpgradesTweakData:init(tweak_data)
 		true
 	}
 	self.values.player.intimidation_multiplier = {
-		1.25
+		1.5
 	}
 	self.steps.player = {
 		thick_skin = {
@@ -15525,7 +15525,7 @@ end
 
 function UpgradesTweakData:_g26_definitions()
 	self.definitions.g26 = {
-		dlc = "pd2_clan",
+		dlc = "john_wick_character",
 		factory_id = "wpn_fps_pis_g26",
 		weapon_id = "g26",
 		category = "weapon"

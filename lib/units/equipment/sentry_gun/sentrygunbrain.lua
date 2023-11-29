@@ -609,6 +609,10 @@ function SentryGunBrain:_upd_flash_grenade(t)
 		return
 	end
 
+	if managers.groupai:state():is_cs_grenade_active() then
+		return
+	end
+
 	local grenade_tweak = self._tweak_data.FLASH_GRENADE
 	local check_t = self._next_flash_grenade_chk_t or t
 	self._next_flash_grenade_chk_t = check_t + math.lerp(grenade_tweak.check_interval[1], grenade_tweak.check_interval[2], math.random())

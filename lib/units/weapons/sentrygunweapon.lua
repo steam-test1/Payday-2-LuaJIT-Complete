@@ -33,6 +33,7 @@ function SentryGunWeapon:init(unit)
 		self._ammo_max = self._ammo_total
 		self._ammo_sync = 16
 	else
+		self._fires_blanks = true
 		self._ammo_ratio = 1
 	end
 
@@ -71,6 +72,7 @@ function SentryGunWeapon:_set_fire_mode(use_armor_piercing)
 	self._current_damage_mul = self._use_armor_piercing and self._AP_ROUNDS_DAMAGE_MULTIPLIER or 1
 
 	self:flip_fire_sound()
+	self._unit:base():set_use_armor_piercing(use_armor_piercing)
 end
 
 function SentryGunWeapon:set_fire_mode_net(use_armor_piercing)
@@ -343,10 +345,10 @@ function SentryGunWeapon:_fire_raycast(from_pos, direction, shoot_player, target
 
 	if not player_hit and col_ray then
 		local damage = self:_apply_dmg_mul(self._damage, col_ray, from_pos)
-		hit_unit = InstantBulletBase:on_collision(col_ray, self._unit, self._unit, damage)
+		hit_unit = InstantBulletBase:on_collision(col_ray, self._unit, self._unit, damage, self._fires_blanks)
 	end
 
-	if (not col_ray or col_ray.unit ~= target_unit) and target_unit and target_unit:character_damage() and target_unit:character_damage().build_suppression then
+	if not shoot_player and (not col_ray or col_ray.unit ~= target_unit) and target_unit and target_unit:character_damage() and target_unit:character_damage().build_suppression then
 		target_unit:character_damage():build_suppression(self._suppression)
 	end
 

@@ -297,6 +297,12 @@ function ContourExt:add(type, sync, multiplier, override_color, is_element)
 		end
 	end
 
+	if not self._removed_occlusion then
+		self._removed_occlusion = true
+
+		managers.occlusion:remove_occlusion(self._unit)
+	end
+
 	local setup = {
 		ref_c = 1,
 		type = type,
@@ -499,23 +505,35 @@ function ContourExt:_remove(index, sync, is_element)
 		return
 	end
 
-	if #self._contour_list == 1 then
-		managers.occlusion:add_occlusion(self._unit)
+	local was_swap = nil
 
-		local was_swap = nil
+	if setup.data.material_swap_required then
+		local base_ext = self._unit:base()
 
-		if setup.data.material_swap_required then
-			local base_ext = self._unit:base()
+		if base_ext and base_ext.set_material_state then
+			local should_swap = true
 
-			if base_ext and base_ext.set_material_state then
+			for _, other_setup in ipairs(self._contour_list) do
+				if setup ~= other_setup and other_setup.data.material_swap_required then
+					should_swap = false
+
+					break
+				end
+			end
+
+			if should_swap then
 				was_swap = true
 
 				base_ext:set_material_state(true)
-
-				if base_ext.set_allow_invisible then
-					base_ext:set_allow_invisible(true)
-				end
 			end
+		end
+	end
+
+	if #self._contour_list == 1 then
+		if self._removed_occlusion then
+			self._removed_occlusion = nil
+
+			managers.occlusion:add_occlusion(self._unit)
 		end
 
 		if not was_swap then
@@ -739,7 +757,6 @@ function ContourExt:_apply_top_preset()
 			Application:error("[ContourExt:_apply_top_preset] Attempted to apply a material swap contour to a unit without a 'base' extension or required functions.", self._unit)
 		end
 
-		managers.occlusion:remove_occlusion(self._unit)
 		self:material_applied()
 	end
 end
@@ -753,14 +770,6 @@ function ContourExt:material_applied(material_was_swapped)
 	local data = setup.data
 
 	if material_was_swapped then
-		managers.occlusion:remove_occlusion(self._unit)
-
-		local base_ext = self._unit:base()
-
-		if base_ext and base_ext.set_allow_invisible then
-			base_ext:set_allow_invisible(false)
-		end
-
 		self:update_materials()
 	else
 		self._materials = nil
@@ -903,5 +912,13 @@ function ContourExt:load(load_data)
 				self:add(setup.type)
 			end
 		end
+	end
+end
+
+function ContourExt:destroy(unit)
+	if self._removed_occlusion then
+		self._removed_occlusion = nil
+
+		managers.occlusion:add_occlusion(self._unit)
 	end
 end

@@ -161,7 +161,7 @@ function HostStateInGame:on_join_request_received(data, peer_name, peer_account_
 		return
 	end
 
-	local ticket = new_peer:create_ticket()
+	local ticket = new_peer:create_ticket(data.local_peer:account_id())
 	local level_index = tweak_data.levels:get_index_from_level_id(Global.game_settings.level_id)
 	local difficulty_index = tweak_data:difficulty_to_index(Global.game_settings.difficulty)
 	local job_id_index = 0

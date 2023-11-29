@@ -78,7 +78,7 @@ function NewRaycastWeaponBaseVR:_hide_objects()
 	end
 end
 
-function NewRaycastWeaponBaseVR:check_autoaim(from_pos, direction, max_dist, use_aim_assist, autohit_override_data)
+function NewRaycastWeaponBaseVR:check_autoaim(from_pos, direction, max_dist, use_aim_assist, autohit_override_data, check_suppression)
 	local spread_x, spread_y = __get_spread(self, self._setup.user_unit)
 	local spread = math.max((spread_x + spread_y) / 2, 1)
 	local autohit = use_aim_assist and self._aim_assist_data or self._autohit_data
@@ -87,7 +87,7 @@ function NewRaycastWeaponBaseVR:check_autoaim(from_pos, direction, max_dist, use
 	autohit.near_angle = autohit.near_angle * 2 / spread
 	autohit.far_angle = autohit.far_angle * 3 / spread
 
-	return __check_autoaim(self, from_pos, direction, max_dist, use_aim_assist, autohit)
+	return __check_autoaim(self, from_pos, direction, max_dist, use_aim_assist, autohit, check_suppression)
 end
 
 function NewRaycastWeaponBaseVR:_get_spread(user_unit)

@@ -39,6 +39,7 @@ require("lib/tweak_data/InputTweakData")
 require("lib/tweak_data/ArmorSkinsTweakData")
 require("lib/tweak_data/CrimeSpreeTweakData")
 require("lib/tweak_data/FireTweakData")
+require("lib/tweak_data/DOTTweakData")
 require("lib/tweak_data/NetworkTweakData")
 require("lib/tweak_data/AnimationTweakData")
 require("lib/tweak_data/StoryMissionsTweakData")
@@ -675,6 +676,22 @@ function TweakData:init()
 	self.weapon = WeaponTweakData:new(self)
 	self.weapon_akimbo_mappings = self.weapon:get_akimbo_mappings()
 	self.weapon_npc_mappings = self.weapon:get_npc_mappings()
+	self.weapons_by_category = {}
+
+	for weapon, data in pairs(self.weapon) do
+		if data.autohit then
+			for _, cat in ipairs(data.categories or {}) do
+				self.weapons_by_category[cat] = self.weapons_by_category[cat] or {}
+
+				table.insert(self.weapons_by_category[cat], weapon)
+			end
+		end
+	end
+
+	for cat, data in pairs(self.weapons_by_category) do
+		table.sort(data)
+	end
+
 	local weapon_tweak_meta = {
 		__index = function (table, key)
 			if key == "category" then
@@ -757,6 +774,7 @@ function TweakData:init()
 	self.input = InputTweakData:new(self)
 	self.crime_spree = CrimeSpreeTweakData:new(self)
 	self.fire = FireTweakData:new(self)
+	self.dot = DOTTweakData:new(self)
 	self.network = NetworkTweakData:new(self)
 	self.animation = AnimationTweakData:new(self)
 	self.story = StoryMissionsTweakData:new(self)
@@ -1699,10 +1717,12 @@ Play the full version soon to get your full PAYDAY!]],
 		},
 		{
 			track = "track_37",
+			hide_unavailable = true,
 			lock = "berry"
 		},
 		{
 			track = "track_38",
+			hide_unavailable = true,
 			lock = "berry"
 		},
 		{
@@ -1746,10 +1766,12 @@ Play the full version soon to get your full PAYDAY!]],
 		},
 		{
 			track = "track_50",
+			hide_unavailable = true,
 			lock = "friend"
 		},
 		{
 			track = "track_51",
+			hide_unavailable = true,
 			lock = "spa"
 		},
 		{
@@ -1768,10 +1790,14 @@ Play the full version soon to get your full PAYDAY!]],
 			track = "track_56"
 		},
 		{
-			track = "track_57"
+			track = "track_57",
+			hide_unavailable = true,
+			lock = "rvd"
 		},
 		{
-			track = "track_58"
+			track = "track_58",
+			hide_unavailable = true,
+			lock = "rvd"
 		},
 		{
 			track = "track_59"
@@ -1893,7 +1919,9 @@ Play the full version soon to get your full PAYDAY!]],
 			track = "music_dark"
 		},
 		{
-			track = "music_fish"
+			track = "music_fish",
+			hide_unavailable = true,
+			lock = "fish"
 		},
 		{
 			track = "music_tag"
@@ -1966,18 +1994,22 @@ Play the full version soon to get your full PAYDAY!]],
 		},
 		{
 			track = "pb_do_you_wanna",
+			hide_unavailable = true,
 			lock = "berry"
 		},
 		{
 			track = "pb_i_need_your_love",
+			hide_unavailable = true,
 			lock = "berry"
 		},
 		{
 			track = "pb_still_breathing",
+			hide_unavailable = true,
 			lock = "berry"
 		},
 		{
 			track = "pb_take_me_down",
+			hide_unavailable = true,
 			lock = "berry"
 		},
 		{
@@ -2447,19 +2479,13 @@ Play the full version soon to get your full PAYDAY!]],
 	}
 	self.projectiles.molotov = {
 		damage = 3,
-		player_damage = 2,
-		fire_dot_data = {
-			dot_trigger_chance = 35,
-			dot_damage = 1,
-			dot_length = 3,
-			dot_trigger_max_distance = 3000,
-			dot_tick_period = 0.5
-		},
-		range = 75,
-		burn_duration = 10,
+		player_damage = 1,
+		dot_data_name = "proj_molotov",
+		range = 350,
+		burn_duration = 15,
 		burn_tick_period = 0.5,
 		sound_event = "molotov_impact",
-		sound_event_impact_duration = 4,
+		sound_event_impact_duration = 0,
 		name_id = "bm_grenade_molotov",
 		alert_radius = 1500,
 		fire_alert_radius = 1500
@@ -2475,18 +2501,13 @@ Play the full version soon to get your full PAYDAY!]],
 		launch_speed = 1250,
 		curve_pow = 0.1,
 		player_damage = 2,
-		fire_dot_data = {
-			dot_trigger_chance = 35,
-			dot_damage = 25,
-			dot_length = 6.1,
-			dot_trigger_max_distance = 3000,
-			dot_tick_period = 0.5
-		},
-		range = 75,
+		dot_data_name = "proj_launcher_incendiary",
+		range = 350,
 		init_timer = 2.5,
 		mass_look_up_modifier = 1,
 		sound_event = "gl_explode",
 		sound_event_impact_duration = 1,
+		effect_name = "effects/payday2/particles/explosions/grenade_incendiary_explosion",
 		name_id = "bm_launcher_incendiary",
 		burn_duration = 6,
 		burn_tick_period = 0.5
@@ -2513,18 +2534,13 @@ Play the full version soon to get your full PAYDAY!]],
 		launch_speed = 7000,
 		curve_pow = 0.1,
 		player_damage = 2,
-		fire_dot_data = {
-			dot_trigger_chance = 35,
-			dot_damage = 25,
-			dot_length = 6.1,
-			dot_trigger_max_distance = 3000,
-			dot_tick_period = 0.5
-		},
+		dot_data_name = "proj_launcher_incendiary_arbiter",
 		range = 350,
 		init_timer = 2.5,
 		mass_look_up_modifier = 1,
 		sound_event = "gl_explode",
-		sound_event_impact_duration = 0.25,
+		sound_event_impact_duration = 1,
+		effect_name = "effects/payday2/particles/explosions/grenade_incendiary_explosion",
 		name_id = "bm_launcher_incendiary",
 		burn_duration = 3,
 		burn_tick_period = 0.5
@@ -2535,13 +2551,7 @@ Play the full version soon to get your full PAYDAY!]],
 		damage = 3,
 		curve_pow = 0.1,
 		player_damage = 3,
-		fire_dot_data = {
-			dot_trigger_chance = 100,
-			dot_damage = 25,
-			dot_length = 2.1,
-			dot_trigger_max_distance = 3000,
-			dot_tick_period = 0.5
-		},
+		dot_data_name = "proj_fire_com",
 		range = 500,
 		name_id = "bm_grenade_fir_com",
 		sound_event = "white_explosion",
@@ -2596,9 +2606,7 @@ Play the full version soon to get your full PAYDAY!]],
 		mass_look_up_modifier = 1,
 		name_id = "bm_prj_four",
 		push_at_body_index = 0,
-		dot_data = {
-			type = "poison"
-		},
+		dot_data_name = "proj_four",
 		bullet_class = "ProjectilesPoisonBulletBase",
 		sounds = {}
 	}
@@ -2839,12 +2847,7 @@ Play the full version soon to get your full PAYDAY!]],
 		poison_gas_duration = 20,
 		poison_gas_fade_time = 2,
 		poison_gas_tick_time = 0.3,
-		poison_gas_dot_data = {
-			hurt_animation_chance = 1,
-			dot_damage = 2,
-			dot_length = 30,
-			dot_tick_period = 0.5
-		}
+		poison_gas_dot_data_name = "proj_gas_grenade_cloud"
 	}
 	self.projectiles.launcher_poison = deep_clone(self.projectiles.launcher_frag)
 	self.projectiles.launcher_poison.launch_speed = 1250
@@ -2858,12 +2861,7 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.launcher_poison.poison_gas_duration = 15
 	self.projectiles.launcher_poison.poison_gas_fade_time = 2
 	self.projectiles.launcher_poison.poison_gas_tick_time = 0.3
-	self.projectiles.launcher_poison.poison_gas_dot_data = {
-		hurt_animation_chance = 1,
-		dot_damage = 1,
-		dot_length = 30,
-		dot_tick_period = 0.5
-	}
+	self.projectiles.launcher_poison.poison_gas_dot_data_name = "proj_launcher_cloud"
 	self.projectiles.launcher_poison.poison_gas_effect = "effects/particles/explosions/poison_gas"
 	self.projectiles.launcher_poison_ms3gl_conversion = deep_clone(self.projectiles.launcher_poison)
 	self.projectiles.launcher_poison_ms3gl_conversion.damage = 48
@@ -2884,12 +2882,7 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.launcher_poison_arbiter.launch_speed = 7000
 	self.projectiles.launcher_poison_arbiter.curve_pow = 0.1
 	self.projectiles.launcher_poison_arbiter.poison_gas_range = 400
-	self.projectiles.launcher_poison_arbiter.poison_gas_dot_data = {
-		hurt_animation_chance = 1,
-		dot_damage = 0.8,
-		dot_length = 10,
-		dot_tick_period = 0.5
-	}
+	self.projectiles.launcher_poison_arbiter.poison_gas_dot_data_name = "proj_launcher_arbiter_cloud"
 	self.projectiles.launcher_poison_slap = deep_clone(self.projectiles.launcher_poison)
 	self.projectiles.launcher_poison_slap.damage = 120
 	self.projectiles.launcher_poison_slap.range = 600
@@ -2941,14 +2934,6 @@ Play the full version soon to get your full PAYDAY!]],
 		cooldown = 50,
 		restart_delay = 5
 	}
-	self.dot_types = {
-		poison = {
-			damage_class = "PoisonBulletBase",
-			dot_damage = 25,
-			dot_length = 6,
-			hurt_animation_chance = 1
-		}
-	}
 	self.tase_data = {
 		light = {},
 		heavy = {
@@ -2979,12 +2964,7 @@ Play the full version soon to get your full PAYDAY!]],
 	self.team_ai.stop_action.teleport_distance = 5000
 	self.medic = {
 		radius = 400,
-		cooldown = 3,
-		debug_drawing = false,
-		disabled_units = {
-			"spooc",
-			"deep_boss"
-		}
+		cooldown = 3
 	}
 	self.spotlights = {
 		helicopter_1 = {
@@ -3212,10 +3192,6 @@ function TweakData:free_dlc_list()
 	local free_dlcs = {}
 
 	return free_dlcs
-end
-
-function TweakData:get_dot_type_data(type)
-	return self.dot_types[type]
 end
 
 function TweakData:_execute_reload_clbks()

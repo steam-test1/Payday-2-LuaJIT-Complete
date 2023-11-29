@@ -259,12 +259,11 @@ function SentryGunBase:activate_as_module(team_type, tweak_table_id)
 		auto_reload = true,
 		expend_ammo = true,
 		spread_mul = 1,
-		autoaim = true,
 		alert_AI = false,
 		ignore_units = {
 			self._unit
 		},
-		bullet_slotmask = managers.slot:get_mask("bullet_impact_targets")
+		bullet_slotmask = managers.slot:get_mask(Network:is_server() and "bullet_impact_targets" or "bullet_blank_impact_targets")
 	}
 
 	self._unit:weapon():setup(weapon_setup_data, 1)
@@ -345,9 +344,8 @@ function SentryGunBase:setup(owner, ammo_multiplier, armor_multiplier, spread_mu
 
 	local setup_data = {
 		expend_ammo = true,
-		autoaim = true,
-		alert_AI = true,
 		creates_alerts = true,
+		alert_AI = true,
 		user_unit = self._owner,
 		ignore_units = {
 			self._unit,
@@ -541,6 +539,10 @@ end
 
 function SentryGunBase:weapon_tweak_data()
 	return tweak_data.weapon[self._unit:weapon()._name_id]
+end
+
+function SentryGunBase:set_use_armor_piercing(state)
+	self._use_armor_piercing = true
 end
 
 function SentryGunBase:check_interact_blocked(player)
@@ -776,11 +778,7 @@ function SentryGunBase:load(save_data)
 	end
 
 	if self._is_module then
-		local turret_units = managers.groupai:state():turrets()
-
-		if not turret_units or not table.contains(turret_units, self._unit) then
-			managers.groupai:state():register_turret(self._unit)
-		end
+		managers.groupai:state():register_turret(self._unit)
 	end
 end
 

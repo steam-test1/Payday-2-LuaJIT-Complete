@@ -1,9 +1,14 @@
 require("lib/units/enemies/cop/CopBase")
 
 HuskPlayerBase = HuskPlayerBase or class(PlayerBase)
+HuskPlayerBase._anim_lods = CopBase._anim_lods
 HuskPlayerBase.set_anim_lod = CopBase.set_anim_lod
 HuskPlayerBase.set_visibility_state = CopBase.set_visibility_state
-HuskPlayerBase._anim_lods = CopBase._anim_lods
+HuskPlayerBase._update_visibility_state = CopBase._update_visibility_state
+HuskPlayerBase.set_force_invisible = CopBase.set_force_invisible
+HuskPlayerBase.chk_freeze_anims = CopBase.chk_freeze_anims
+HuskPlayerBase._set_animated_bones_state = CopBase._set_animated_bones_state
+HuskPlayerBase.prevent_main_bones_disabling = CopBase.prevent_main_bones_disabling
 
 function HuskPlayerBase:init(unit)
 	UnitBase.init(self, unit, false)
@@ -19,17 +24,17 @@ end
 
 function HuskPlayerBase:post_init()
 	self._ext_anim = self._unit:anim_data()
+	self._ext_movement = self._unit:movement()
 
 	self._unit:movement():post_init()
 	managers.groupai:state():register_criminal(self._unit)
-	managers.occlusion:remove_occlusion(self._unit)
 	self:set_anim_lod(1)
 
 	self._lod_stage = 1
-	self._allow_invisible = true
 	local spawn_state = self._spawn_state or "std/stand/still/idle/look"
 
 	self._unit:movement():play_state(spawn_state)
+	self:prevent_main_bones_disabling(true)
 end
 
 function HuskPlayerBase:load(data)
@@ -106,6 +111,21 @@ function HuskPlayerBase:update_concealment()
 
 	self:set_suspicion_multiplier("equipment", 1 / con_mul)
 	self:set_detection_multiplier("equipment", 1 / con_mul)
+	self:setup_hud_offset()
+end
+
+function HuskPlayerBase:setup_hud_offset()
+	if not self._suspicion_settings then
+		return
+	end
+
+	local peer = managers.network:session():peer_by_unit(self._unit)
+
+	if not peer then
+		return
+	end
+
+	self._suspicion_settings.hud_offset = managers.blackmarket:get_suspicion_offset_of_peer(peer, tweak_data.player.SUSPICION_OFFSET_LERP or 0.75)
 end
 
 function HuskPlayerBase:set_temporary_upgrade_owned(category, upgrade, level, index)
@@ -181,7 +201,4 @@ function HuskPlayerBase:nick_name()
 end
 
 function HuskPlayerBase:on_death_exit()
-end
-
-function HuskPlayerBase:chk_freeze_anims()
 end

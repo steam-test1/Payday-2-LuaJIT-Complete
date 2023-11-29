@@ -100,40 +100,51 @@ function MutatorCloakerEffect:OnPlayerCloakerKicked(cloaker_unit)
 end
 
 function MutatorCloakerEffect:effect_smoke(unit)
-	local smoke_grenade = World:spawn_unit(Idstring("units/weapons/smoke_grenade_quick/smoke_grenade_quick"), unit:position(), unit:rotation())
+	local mov_ext = unit:movement()
+	local tracker = mov_ext and mov_ext:nav_tracker()
+	local pos = tracker and tracker:field_position() or unit:position()
+	local ray_to = mvector3.copy(pos)
 
-	smoke_grenade:base():activate_immediately(unit:position(), tweak_data.group_ai.smoke_grenade_lifetime)
+	mvector3.set_z(ray_to, ray_to.z - 50)
+
+	local ground_ray = unit:raycast("ray", pos, ray_to, "slot_mask", managers.slot:get_mask("statics"))
+
+	if ground_ray then
+		mvector3.set(pos, ground_ray.hit_position)
+		mvector3.set_z(pos, pos.z + 3)
+	end
+
+	local duration = tweak_data.group_ai.smoke_grenade_lifetime
+
+	managers.groupai:state():spawn_instant_local_smoke_grenade(pos, duration)
 end
 
 function MutatorCloakerEffect:effect_fire(unit)
-	local position = unit:position()
-	local rotation = unit:rotation()
-	local data = self:cloaker_fire_large()
+	local mov_ext = unit:movement()
+	local tracker = mov_ext and mov_ext:nav_tracker()
+	local pos = tracker and tracker:field_position() or unit:position()
+	local ray_to = mvector3.copy(pos)
 
-	if managers.mutators:is_mutator_active(MutatorEnemyReplacer) then
-		data = self:cloaker_fire_small()
+	mvector3.set_z(ray_to, ray_to.z - 50)
+
+	local ground_ray = unit:raycast("ray", pos, ray_to, "slot_mask", managers.slot:get_mask("statics"))
+
+	if ground_ray then
+		mvector3.set(pos, ground_ray.hit_position)
+		mvector3.set_z(pos, pos.z + 3)
 	end
 
-	EnvironmentFire.spawn(position, rotation, data, math.UP, unit, 0, 1)
+	local data = managers.mutators:is_mutator_active(MutatorEnemyReplacer) and self:cloaker_fire_small() or self:cloaker_fire_large()
+
+	EnvironmentFire.spawn(pos, unit:rotation(), data, math.UP, unit, nil, 0, 1)
 end
 
 function MutatorCloakerEffect:effect_explode(unit)
 	local foot = unit:get_object(Idstring("RightFoot"))
 	local pos = foot and foot:position() or unit:position()
 	local range = 800
-	local damage = 1000
 	local ply_damage = 100
 	local normal = math.UP
-	local slot_mask = managers.slot:get_mask("explosion_targets")
-	local curve_pow = 3
-	local damage_params = {
-		hit_pos = pos,
-		range = range,
-		collision_slotmask = slot_mask,
-		curve_pow = curve_pow,
-		damage = damage,
-		player_damage = ply_damage
-	}
 	local effect_params = {
 		sound_event = "grenade_explode",
 		effect = "effects/payday2/particles/explosions/grenade_explosion",
@@ -146,8 +157,22 @@ function MutatorCloakerEffect:effect_explode(unit)
 	managers.explosion:play_sound_and_effects(pos, normal, range, effect_params)
 
 	if Network:is_server() then
+		local damage = 1000
+		local curve_pow = 3
+		local damage_params = {
+			no_raycast_check_characters = true,
+			player_damage = 0,
+			hit_pos = pos,
+			range = range,
+			collision_slotmask = managers.slot:get_mask("explosion_targets"),
+			curve_pow = curve_pow,
+			damage = damage,
+			user = unit,
+			ignore_unit = unit
+		}
+
 		managers.explosion:detect_and_give_dmg(damage_params)
-		managers.network:session():send_to_peers_synched("sync_explosion_to_client", unit, pos, normal, ply_damage, range, curve_pow)
+		managers.network:session():send_to_peers_synched("element_explode_on_client", pos, normal, damage, range, curve_pow)
 	end
 end
 
@@ -174,49 +199,21 @@ function MutatorCloakerEffect:cloaker_fire_large()
 		fire_alert_radius = 1500,
 		hexes = 6,
 		sound_event_burning = "burn_loop_gen",
-		is_molotov = true,
+		alert_radius = 1500,
 		player_damage = 2,
 		sound_event_impact_duration = 4,
 		burn_tick_period = 0.5,
 		burn_duration = 15,
-		alert_radius = 1500,
-		effect_name = "effects/payday2/particles/explosions/molotov_grenade",
-		fire_dot_data = {
-			dot_trigger_chance = 35,
-			dot_damage = 15,
-			dot_length = 6,
-			dot_trigger_max_distance = 3000,
-			dot_tick_period = 0.5
-		}
+		dot_data_name = "enemy_mutator_cloaker_groundfire",
+		effect_name = "effects/payday2/particles/explosions/molotov_grenade"
 	}
 
 	return params
 end
 
 function MutatorCloakerEffect:cloaker_fire_small()
-	local params = {
-		sound_event = "molotov_impact",
-		range = 75,
-		curve_pow = 3,
-		damage = 1,
-		fire_alert_radius = 1500,
-		hexes = 2,
-		sound_event_burning = "burn_loop_gen",
-		is_molotov = true,
-		player_damage = 2,
-		sound_event_impact_duration = 4,
-		burn_tick_period = 0.5,
-		burn_duration = 15,
-		alert_radius = 1500,
-		effect_name = "effects/payday2/particles/explosions/molotov_grenade",
-		fire_dot_data = {
-			dot_trigger_chance = 35,
-			dot_damage = 15,
-			dot_length = 6,
-			dot_trigger_max_distance = 3000,
-			dot_tick_period = 0.5
-		}
-	}
+	local params = self:cloaker_fire_large()
+	params.hexes = 2
 
 	return params
 end

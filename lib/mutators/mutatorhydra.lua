@@ -472,9 +472,8 @@ function MutatorHydra.play_split_particle(position, rotation)
 	end
 end
 
-function MutatorHydra:split_enemy(cop_damage, attack_data)
+function MutatorHydra:split_enemy(parent_unit, attack_data)
 	if Network:is_server() then
-		local parent_unit = cop_damage._unit
 		local spawn_selector = self.enemy_list[parent_unit:name():key()]
 
 		if spawn_selector then

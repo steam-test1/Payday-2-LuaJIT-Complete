@@ -71,15 +71,8 @@ function PlayerTurretBase:init(unit)
 	self._digest_values = false
 	self._ammo_data = false
 	self._damage = 0
-	self._autohit_data = {
-		INIT_RATIO = 1,
-		MAX_RATIO = 1,
-		far_angle = 0.0005,
-		far_dis = 10000,
-		MIN_RATIO = 0,
-		near_angle = 0.0005
-	}
-	self._autohit_current = self._autohit_data.INIT_RATIO
+	self._autohit_data = nil
+	self._autohit_current = nil
 	local weap_tweak = self:weapon_tweak_data()
 	self._bullet_class = InstantBulletBase
 	self._bullet_slotmask = self._bullet_class:bullet_slotmask()

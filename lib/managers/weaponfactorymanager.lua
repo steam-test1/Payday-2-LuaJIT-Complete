@@ -7,6 +7,7 @@ function WeaponFactoryManager:init()
 	self:_setup()
 
 	self._tasks = {}
+	self._skip_occlusion_units = {}
 
 	self:set_use_thq_weapon_parts(managers.user:get_setting("use_thq_weapon_parts"))
 end
@@ -925,6 +926,9 @@ function WeaponFactoryManager:_spawn_and_link_unit(u_name, a_obj, third_person, 
 	local res = link_to_unit:link(a_obj, unit, unit:orientation_object():name())
 
 	if managers.occlusion and not third_person then
+		local u_key = unit:key()
+		self._skip_occlusion_units[u_key] = (self._skip_occlusion_units[u_key] or 0) + 1
+
 		managers.occlusion:remove_occlusion(unit)
 	end
 
@@ -1700,6 +1704,9 @@ function WeaponFactoryManager:disassemble(parts)
 	local names = {}
 
 	if parts then
+		local occ_manager = managers.occlusion
+		local add_occ_func = occ_manager and occ_manager.add_occlusion
+
 		for part_id, data in pairs(parts) do
 			if data.package then
 				self:unload_package(data.package)
@@ -1708,6 +1715,20 @@ function WeaponFactoryManager:disassemble(parts)
 			end
 
 			if alive(data.unit) then
+				local u_key = data.unit:key()
+
+				if self._skip_occlusion_units[u_key] then
+					self._skip_occlusion_units[u_key] = self._skip_occlusion_units[u_key] - 1
+
+					if self._skip_occlusion_units[u_key] <= 0 then
+						self._skip_occlusion_units[u_key] = nil
+					end
+
+					if occ_manager then
+						add_occ_func(occ_manager, data.unit)
+					end
+				end
+
 				World:delete_unit(data.unit)
 			end
 		end

@@ -125,7 +125,7 @@ function NewNPCFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, dm
 		if hit_base_ext and hit_base_ext.is_local_player then
 			bullet_class:on_hit_player(fake_ray, self._unit, user_unit, damage)
 		else
-			bullet_class:on_collision(fake_ray, self._unit, user_unit, damage)
+			bullet_class:on_collision(fake_ray, self._unit, user_unit, damage, self._fires_blanks)
 		end
 	end
 
@@ -395,7 +395,7 @@ function NPCBossFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, d
 		if hit_base_ext and hit_base_ext.is_local_player then
 			bullet_class:on_hit_player(fake_ray, self._unit, user_unit, damage)
 		else
-			bullet_class:on_collision(fake_ray, self._unit, user_unit, damage)
+			bullet_class:on_collision(fake_ray, self._unit, user_unit, damage, self._fires_blanks)
 		end
 	end
 

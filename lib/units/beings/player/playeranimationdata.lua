@@ -28,8 +28,43 @@ function PlayerAnimationData:foot()
 	return self._footstep
 end
 
+function PlayerAnimationData:anim_clbk_chk_freeze_anims(unit)
+	self.can_freeze = true
+	local base_ext = unit:base()
+
+	if base_ext and base_ext.chk_freeze_anims then
+		base_ext:chk_freeze_anims()
+	end
+end
+
 function PlayerAnimationData:anim_clbk_upper_body_empty(unit)
 	unit:anim_state_machine():stop_segment(Idstring("upper_body"))
+
+	self.upper_body_active = false
+	self.upper_body_empty = false
+
+	if self.can_freeze then
+		local base_ext = unit:base()
+
+		if base_ext and base_ext.chk_freeze_anims then
+			base_ext:chk_freeze_anims()
+		end
+	end
+end
+
+function PlayerAnimationData:anim_clbk_upper_body_ext_empty(unit)
+	unit:anim_state_machine():stop_segment(Idstring("upper_body_ext"))
+
+	self.upper_body_ext_active = false
+	self.upper_body_ext_empty = false
+
+	if self.can_freeze then
+		local base_ext = unit:base()
+
+		if base_ext and base_ext.chk_freeze_anims then
+			base_ext:chk_freeze_anims()
+		end
+	end
 end
 
 function PlayerAnimationData:anim_clbk_base_empty(unit)

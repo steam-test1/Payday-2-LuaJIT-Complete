@@ -543,6 +543,9 @@ function WeaponTweakData:_init_data_sko12_conc_npc()
 	self.sko12_conc_npc.alert_size = 4500
 	self.sko12_conc_npc.suppression = 1.8
 	self.sko12_conc_npc.FIRE_MODE = "single"
+	self.sko12_conc_npc.is_shotgun = true
+	self.sko12_conc_npc.rays = 12
+	self.sko12_conc_npc.spread = 3
 	self.sko12_conc_npc.bullet_class = "ConcussiveInstantBulletBase"
 	self.sko12_conc_npc.concussion_data = {
 		mul = 0.2,
@@ -568,6 +571,7 @@ function WeaponTweakData:_init_data_beretta92_npc()
 	self.beretta92_npc.alert_size = 300
 	self.beretta92_npc.suppression = 0.3
 	self.beretta92_npc.FIRE_MODE = "single"
+	self.beretta92_npc.has_suppressor = "suppressed_b"
 end
 
 function WeaponTweakData:_init_data_glock_18_npc()
@@ -600,25 +604,10 @@ function WeaponTweakData:_init_data_raging_bull_npc()
 	self.raging_bull_npc.CLIP_AMMO_MAX = 6
 	self.raging_bull_npc.NR_CLIPS_MAX = 8
 	self.raging_bull_npc.hold = "pistol"
+	self.raging_bull_npc.reload = "revolver"
 	self.raging_bull_npc.alert_size = 5000
 	self.raging_bull_npc.suppression = 1.8
 	self.raging_bull_npc.FIRE_MODE = "single"
-end
-
-function WeaponTweakData:_init_data_korth_npc()
-	self.korth_npc.categories = clone(self.korth.categories)
-	self.korth_npc.sounds.prefix = "korth_npc"
-	self.korth_npc.use_data.selection_index = SELECTION.SECONDARY
-	self.korth_npc.DAMAGE = 4
-	self.korth_npc.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
-	self.korth_npc.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
-	self.korth_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
-	self.korth_npc.CLIP_AMMO_MAX = 8
-	self.korth_npc.NR_CLIPS_MAX = 8
-	self.korth_npc.hold = "pistol"
-	self.korth_npc.alert_size = 5000
-	self.korth_npc.suppression = 1.8
-	self.korth_npc.FIRE_MODE = "single"
 end
 
 function WeaponTweakData:_init_data_m4_npc()
@@ -729,17 +718,16 @@ function WeaponTweakData:_init_data_r870_npc()
 end
 
 function WeaponTweakData:_init_data_mossberg_npc()
-	self.mossberg_npc.categories = {
-		"shotgun"
-	}
-	self.mossberg_npc.sounds.prefix = "mossberg_npc"
+	self.mossberg_npc.categories = clone(self.huntsman.categories)
+	self.mossberg_npc.sounds.prefix = "huntsman_npc"
 	self.mossberg_npc.use_data.selection_index = SELECTION.PRIMARY
 	self.mossberg_npc.DAMAGE = 6
 	self.mossberg_npc.muzzleflash = "effects/payday2/particles/weapons/762_auto"
-	self.mossberg_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug_semi"
-	self.mossberg_npc.CLIP_AMMO_MAX = 6
+	self.mossberg_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	self.mossberg_npc.CLIP_AMMO_MAX = 2
 	self.mossberg_npc.NR_CLIPS_MAX = 4
 	self.mossberg_npc.hold = "rifle"
+	self.mossberg_npc.looped_reload_speed = 0.2
 	self.mossberg_npc.alert_size = 3000
 	self.mossberg_npc.suppression = 2
 	self.mossberg_npc.FIRE_MODE = "single"
@@ -767,7 +755,10 @@ function WeaponTweakData:_init_data_mp5_npc()
 	self.mp5_tactical_npc.has_suppressor = "suppressed_a"
 	self.ump_npc = deep_clone(self.mp5_npc)
 	self.akmsu_smg_npc = deep_clone(self.mp5_npc)
+	self.akmsu_smg_npc.has_suppressor = "suppressed_a"
+	self.akmsu_smg_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.asval_smg_npc = deep_clone(self.mp5_npc)
+	self.asval_smg_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.asval_smg_npc.has_suppressor = "suppressed_a"
 end
 
@@ -784,10 +775,8 @@ function WeaponTweakData:_init_data_mac11_npc()
 	self.mac11_npc.CLIP_AMMO_MAX = 40
 	self.mac11_npc.NR_CLIPS_MAX = 5
 	self.mac11_npc.auto.fire_rate = 0.11
-	self.mac11_npc.hold = {
-		"uzi",
-		"pistol"
-	}
+	self.mac11_npc.hold = "pistol"
+	self.mac11_npc.reload = "uzi"
 	self.mac11_npc.alert_size = 2500
 	self.mac11_npc.suppression = 1
 	self.mac11_npc.FIRE_MODE = "auto"
@@ -836,7 +825,12 @@ function WeaponTweakData:_init_data_mp9_npc()
 	self.mp9_npc.CLIP_AMMO_MAX = 30
 	self.mp9_npc.NR_CLIPS_MAX = 5
 	self.mp9_npc.auto.fire_rate = 0.125
-	self.mp9_npc.hold = "pistol"
+	self.mp9_npc.hold = {
+		"uzi",
+		"bullpup",
+		"rifle"
+	}
+	self.mp9_npc.reload = "uzi"
 	self.mp9_npc.alert_size = 1000
 	self.mp9_npc.suppression = 1
 	self.mp9_npc.FIRE_MODE = "auto"
@@ -860,25 +854,6 @@ function WeaponTweakData:_init_data_saiga_npc()
 	self.saiga_npc.is_shotgun = true
 	self.saiga_npc.rays = 12
 	self.saiga_npc.spread = 3
-end
-
-function WeaponTweakData:_init_data_sko12_npc()
-	self.sko12_npc.categories = clone(self.sko12.categories)
-	self.sko12_npc.sounds.prefix = "sko12_npc"
-	self.sko12_npc.use_data.selection_index = SELECTION.PRIMARY
-	self.sko12_npc.DAMAGE = 3
-	self.sko12_npc.muzzleflash = "effects/payday2/particles/weapons/762_auto"
-	self.sko12_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug"
-	self.sko12_npc.auto.fire_rate = 0.14
-	self.sko12_npc.CLIP_AMMO_MAX = 7
-	self.sko12_npc.NR_CLIPS_MAX = 10
-	self.sko12_npc.hold = "rifle"
-	self.sko12_npc.alert_size = 4500
-	self.sko12_npc.suppression = 1.8
-	self.sko12_npc.FIRE_MODE = "auto"
-	self.sko12_npc.is_shotgun = true
-	self.sko12_npc.rays = 12
-	self.sko12_npc.spread = 3
 end
 
 function WeaponTweakData:_init_data_sentry_gun_npc()
@@ -1355,6 +1330,7 @@ function WeaponTweakData:_init_data_s552_npc()
 	self.s552_npc.alert_size = 5000
 	self.s552_npc.suppression = 1
 	self.s552_npc.FIRE_MODE = "auto"
+	self.s552_npc.has_suppressor = "suppressed_c"
 end
 
 function WeaponTweakData:_init_data_scar_npc()
@@ -1890,6 +1866,7 @@ function WeaponTweakData:_init_data_mp9_crew()
 		"bullpup",
 		"rifle"
 	}
+	self.mp9_crew.reload = "uzi"
 	self.mp9_crew.alert_size = 1000
 	self.mp9_crew.suppression = 1
 	self.mp9_crew.FIRE_MODE = "auto"
@@ -2042,6 +2019,7 @@ function WeaponTweakData:_init_data_mac10_crew()
 	self.mac10_crew.pull_magazine_during_reload = "smg"
 	self.mac10_crew.auto.fire_rate = 0.06
 	self.mac10_crew.hold = "pistol"
+	self.mac10_crew.reload = "uzi"
 	self.mac10_crew.alert_size = 1000
 	self.mac10_crew.suppression = 1
 	self.mac10_crew.FIRE_MODE = "auto"
@@ -2200,6 +2178,7 @@ function WeaponTweakData:_init_data_huntsman_crew()
 	self.huntsman_crew.NR_CLIPS_MAX = 4
 	self.huntsman_crew.looped_reload_speed = 0.2
 	self.huntsman_crew.hold = "rifle"
+	self.huntsman_crew.looped_reload_single = true
 	self.huntsman_crew.alert_size = 4500
 	self.huntsman_crew.suppression = 1.8
 	self.huntsman_crew.FIRE_MODE = "single"
@@ -3118,6 +3097,7 @@ function WeaponTweakData:_init_data_b682_crew()
 	self.b682_crew.NR_CLIPS_MAX = 4
 	self.b682_crew.looped_reload_speed = 0.2
 	self.b682_crew.hold = "rifle"
+	self.b682_crew.looped_reload_single = true
 	self.b682_crew.alert_size = 4500
 	self.b682_crew.suppression = 1.8
 	self.b682_crew.FIRE_MODE = "single"
@@ -3266,6 +3246,7 @@ function WeaponTweakData:_init_data_winchester1874_crew()
 	self.winchester1874_crew.looped_reload_speed = 0.7407407407407407
 	self.winchester1874_crew.auto.fire_rate = 0.7
 	self.winchester1874_crew.hold = "rifle"
+	self.winchester1874_crew.reload = "looped"
 	self.winchester1874_crew.alert_size = 5000
 	self.winchester1874_crew.suppression = 1
 	self.winchester1874_crew.FIRE_MODE = "auto"
@@ -3490,10 +3471,8 @@ function WeaponTweakData:_init_data_shak12_crew()
 	self.shak12_crew.NR_CLIPS_MAX = 5
 	self.shak12_crew.pull_magazine_during_reload = "rifle"
 	self.shak12_crew.auto.fire_rate = 0.07
-	self.shak12_crew.hold = {
-		"bullpup",
-		"rifle"
-	}
+	self.shak12_crew.hold = "rifle"
+	self.shak12_crew.hold = "bullpup"
 	self.shak12_crew.alert_size = 5000
 	self.shak12_crew.suppression = 1
 	self.shak12_crew.FIRE_MODE = "auto"
@@ -4480,6 +4459,7 @@ function WeaponTweakData:_init_data_ching_crew()
 	self.ching_crew.pull_magazine_during_reload = "rifle"
 	self.ching_crew.reload = "looped"
 	self.ching_crew.looped_reload_speed = 1
+	self.ching_crew.looped_reload_single = true
 	self.ching_crew.auto.fire_rate = 0.085
 	self.ching_crew.hold = "rifle"
 	self.ching_crew.alert_size = 5000
@@ -10230,6 +10210,7 @@ function WeaponTweakData:_init_saw(weapon_data)
 		equip_id = "equip_saw",
 		recoil_steelsight = true
 	}
+	self.saw.no_recoil_anim_redirect = true
 	self.saw.panic_suppression_chance = 0.2
 	self.saw.stats = {
 		zoom = 1,
@@ -12251,7 +12232,7 @@ function WeaponTweakData:_init_kacchainsaw(weapon_data)
 		fire_multiplier = 0,
 		fire_steelsight_multiplier = 0
 	}
-	self.kacchainsaw_flamethrower.autohit = weapon_data.autohit_shotgun_default
+	self.kacchainsaw_flamethrower.autohit = false
 	self.kacchainsaw_flamethrower.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.kacchainsaw_flamethrower.weapon_hold = "kacchainsaw"
 	self.kacchainsaw_flamethrower.animations = {
@@ -12262,13 +12243,7 @@ function WeaponTweakData:_init_kacchainsaw(weapon_data)
 	self.kacchainsaw_flamethrower.flame_max_range = 1000
 	self.kacchainsaw_flamethrower.single_flame_effect_duration = 1
 	self.kacchainsaw_flamethrower.panic_suppression_chance = 0.2
-	self.kacchainsaw_flamethrower.fire_dot_data = {
-		dot_trigger_chance = 75,
-		dot_damage = 30,
-		dot_length = 1.6,
-		dot_trigger_max_distance = 3000,
-		dot_tick_period = 0.5
-	}
+	self.kacchainsaw_flamethrower.dot_data_name = "weapon_kacchainsaw_flamethrower"
 	self.kacchainsaw_flamethrower.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
@@ -14139,7 +14114,7 @@ function WeaponTweakData:_init_g26(weapon_data)
 	self.g26.name_id = "bm_wp_pis_g26"
 	self.g26.desc_id = "bm_wp_pis_g26_desc"
 	self.g26.description_id = "des_g26"
-	self.g26.global_value = "pd2_clan"
+	self.g26.global_value = "john_wick_character"
 	self.g26.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.g26.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.g26.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
@@ -15396,7 +15371,7 @@ function WeaponTweakData:_init_m134(weapon_data)
 		fire_multiplier = 0.5,
 		fire_steelsight_multiplier = -0.5
 	}
-	self.m134.autohit = weapon_data.autohit_minigun_default
+	self.m134.autohit = false
 	self.m134.aim_assist = weapon_data.aim_assist_lmg_default
 	self.m134.weapon_hold = "m134"
 	self.m134.animations = {
@@ -16179,7 +16154,7 @@ function WeaponTweakData:_init_flamethrower_mk2(weapon_data)
 		fire_multiplier = 0,
 		fire_steelsight_multiplier = 0
 	}
-	self.flamethrower_mk2.autohit = weapon_data.autohit_shotgun_default
+	self.flamethrower_mk2.autohit = false
 	self.flamethrower_mk2.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.flamethrower_mk2.animations = {
 		equip_id = "equip_flamethrower",
@@ -16188,13 +16163,7 @@ function WeaponTweakData:_init_flamethrower_mk2(weapon_data)
 	self.flamethrower_mk2.flame_max_range = 1000
 	self.flamethrower_mk2.single_flame_effect_duration = 1
 	self.flamethrower_mk2.panic_suppression_chance = 0.2
-	self.flamethrower_mk2.fire_dot_data = {
-		dot_trigger_chance = 75,
-		dot_damage = 55,
-		dot_length = 1.6,
-		dot_trigger_max_distance = 3000,
-		dot_tick_period = 0.5
-	}
+	self.flamethrower_mk2.dot_data_name = "weapon_flamethrower_mk2"
 	self.flamethrower_mk2.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
@@ -25074,7 +25043,6 @@ function WeaponTweakData:_init_corgi(weapon_data)
 		equip_id = "equip_corgi",
 		recoil_steelsight = true
 	}
-	self.corgi.global_value = "rvd"
 	self.corgi.texture_bundle_folder = "rvd"
 	self.corgi.panic_suppression_chance = 0.2
 	self.corgi.stats = {
@@ -28595,7 +28563,7 @@ function WeaponTweakData:_init_shuno(weapon_data)
 		fire_multiplier = 0.5,
 		fire_steelsight_multiplier = -0.5
 	}
-	self.shuno.autohit = weapon_data.autohit_minigun_default
+	self.shuno.autohit = false
 	self.shuno.aim_assist = weapon_data.aim_assist_lmg_default
 	self.shuno.weapon_hold = "shuno"
 	self.shuno.animations = {
@@ -28706,7 +28674,7 @@ function WeaponTweakData:_init_money(weapon_data)
 		fire_multiplier = 0,
 		fire_steelsight_multiplier = 0
 	}
-	self.money.autohit = weapon_data.autohit_shotgun_default
+	self.money.autohit = false
 	self.money.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.money.animations = {}
 	self.money.weapon_hold = "system"
@@ -28716,13 +28684,7 @@ function WeaponTweakData:_init_money(weapon_data)
 	self.money.flame_max_range = 1300
 	self.money.single_flame_effect_duration = 1
 	self.money.panic_suppression_chance = 0.2
-	self.money.fire_dot_data = {
-		dot_trigger_chance = 0.75,
-		dot_damage = 10,
-		dot_length = 1,
-		dot_trigger_max_distance = 1300,
-		dot_tick_period = 0.5
-	}
+	self.money.dot_data_name = "weapon_money"
 	self.money.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
@@ -28823,7 +28785,7 @@ function WeaponTweakData:_init_system(weapon_data)
 		fire_multiplier = 0,
 		fire_steelsight_multiplier = 0
 	}
-	self.system.autohit = weapon_data.autohit_shotgun_default
+	self.system.autohit = false
 	self.system.aim_assist = weapon_data.aim_assist_shotgun_default
 	self.system.animations = {}
 	self.system.weapon_hold = "system"
@@ -28832,13 +28794,7 @@ function WeaponTweakData:_init_system(weapon_data)
 	self.system.flame_max_range = 1000
 	self.system.single_flame_effect_duration = 1
 	self.system.panic_suppression_chance = 0.2
-	self.system.fire_dot_data = {
-		dot_trigger_chance = 75,
-		dot_damage = 42,
-		dot_length = 1.6,
-		dot_trigger_max_distance = 3000,
-		dot_tick_period = 0.5
-	}
+	self.system.dot_data_name = "weapon_system"
 	self.system.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
@@ -31098,7 +31054,7 @@ function WeaponTweakData:_create_table_structure()
 		use_data = {}
 	}
 	self.benelli_npc = {
-		usage = "is_shotgun_pump",
+		usage = "is_shotgun_mag",
 		sounds = {},
 		use_data = {}
 	}
@@ -31119,12 +31075,6 @@ function WeaponTweakData:_create_table_structure()
 		use_data = {},
 		auto = {}
 	}
-	self.m79_npc = {
-		usage = "is_rifle",
-		sounds = {},
-		use_data = {},
-		auto = {}
-	}
 	self.glock_18_npc = {
 		usage = "is_pistol",
 		sounds = {},
@@ -31138,6 +31088,12 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.g36_npc = {
+		usage = "is_rifle",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.smoke_npc = {
 		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
@@ -31171,12 +31127,6 @@ function WeaponTweakData:_create_table_structure()
 		sounds = {},
 		auto = {}
 	}
-	self.smoke_npc = {
-		usage = "is_rifle",
-		sounds = {},
-		use_data = {},
-		auto = {}
-	}
 	self.ceiling_turret_module = {
 		sounds = {},
 		auto = {}
@@ -31194,13 +31144,13 @@ function WeaponTweakData:_create_table_structure()
 		auto = {}
 	}
 	self.hk21_npc = {
-		usage = "is_rifle",
+		usage = "is_lmg",
 		sounds = {},
 		use_data = {},
 		auto = {}
 	}
 	self.m249_npc = {
-		usage = "is_rifle",
+		usage = "is_lmg",
 		sounds = {},
 		use_data = {},
 		auto = {}
@@ -31248,7 +31198,6 @@ function WeaponTweakData:_create_table_structure()
 	}
 	self.sko12_conc_npc = {
 		usage = "is_shotgun_mag",
-		anim_usage = "is_rifle",
 		sounds = {},
 		use_data = {}
 	}
@@ -31307,12 +31256,6 @@ function WeaponTweakData:_create_table_structure()
 	}
 	self.hcar_crew = {
 		usage = "is_lmg",
-		sounds = {},
-		use_data = {},
-		auto = {}
-	}
-	self.shak12_npc = {
-		usage = "is_rifle",
 		sounds = {},
 		use_data = {},
 		auto = {}

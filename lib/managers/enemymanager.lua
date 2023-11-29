@@ -414,6 +414,7 @@ function EnemyManager:_init_enemy_data()
 	lod_entries.com = {}
 	self._corpses_to_detach = {}
 	self._corpse_disposal_enabled = 0
+	self._medic_units = {}
 end
 
 function EnemyManager:all_enemies()
@@ -528,11 +529,6 @@ function EnemyManager:_execute_queued_task(i)
 	local task = table.remove(self._queued_tasks, i)
 	self._queued_task_executed = true
 
-	if task.data and task.data.unit and not alive(task.data.unit) then
-		print("[EnemyManager:_execute_queued_task] dead unit", inspect(task))
-		Application:stack_dump()
-	end
-
 	if task.v_cb then
 		task.v_cb(task.id)
 	end
@@ -543,7 +539,7 @@ end
 function EnemyManager:_update_queued_tasks(t, dt)
 	local i_asap_task, asp_task_t = nil
 	self._queue_buffer = self._queue_buffer + dt
-	local tick_rate = tweak_data.group_ai.ai_tick_rate
+	local tick_rate = self._tick_rate
 
 	if tick_rate <= self._queue_buffer then
 		for i_task, task_data in ipairs(self._queued_tasks) do
@@ -564,6 +560,8 @@ function EnemyManager:_update_queued_tasks(t, dt)
 
 	if #self._queued_tasks == 0 then
 		self._queue_buffer = 0
+	else
+		self._queue_buffer = math.min(self._queue_buffer, tick_rate * #self._queued_tasks)
 	end
 
 	if i_asap_task and not self._queued_task_executed then
@@ -767,7 +765,7 @@ function EnemyManager:on_enemy_died(dead_unit, damage_info)
 
 	if should_be_disposed_of then
 		if self:is_corpse_disposal_enabled() then
-			Network:detach_unit(dead_unit)
+			detach_unit_from_network(dead_unit)
 			self:chk_queue_disposal(t)
 		else
 			self:_store_for_disposal_detach(u_key, dead_unit)
@@ -776,7 +774,6 @@ function EnemyManager:on_enemy_died(dead_unit, damage_info)
 
 	self:_destroy_unit_gfx_lod_data(u_key)
 	managers.hud:remove_waypoint("wp_hostage_trade" .. tostring(dead_unit:key()))
-	managers.modifiers:run_func("OnEnemyDied", dead_unit, damage_info)
 
 	if Network:is_server() and managers.mutators:is_mutator_active(MutatorPiggyBank) and not dead_unit:base():has_tag("sniper") then
 		local piggybank_mutator = managers.mutators:get_mutator(MutatorPiggyBank)
@@ -989,7 +986,7 @@ function EnemyManager:on_civilian_died(dead_unit, damage_info)
 
 	if should_be_disposed_of then
 		if self:is_corpse_disposal_enabled() then
-			Network:detach_unit(dead_unit)
+			detach_unit_from_network(dead_unit)
 			self:chk_queue_disposal(t)
 		else
 			self:_store_for_disposal_detach(u_key, dead_unit)
@@ -1057,11 +1054,10 @@ function EnemyManager:_chk_detach_stored_units()
 		return
 	end
 
-	local net = Network
-	local detach_f = net.detach_unit
+	local detach_f = detach_unit_from_network
 
 	for u_key, unit in pairs(units) do
-		detach_f(net, unit)
+		detach_f(unit)
 	end
 
 	self._corpses_to_detach = {}
@@ -1086,7 +1082,7 @@ function EnemyManager:enable_disposal_on_corpse(unit)
 	enemy_data.nr_corpses = enemy_data.nr_corpses + 1
 
 	if self:is_corpse_disposal_enabled() then
-		Network:detach_unit(unit)
+		detach_unit_from_network(unit)
 		self:chk_queue_disposal(self._timer:time())
 	else
 		self:_store_for_disposal_detach(u_key, unit)
@@ -1393,9 +1389,14 @@ end
 
 function EnemyManager:dispose_all_corpses()
 	self._destroyed = true
+	local detach_f = detach_unit_from_network
 
 	for key, corpse_data in pairs(self._enemy_data.corpses) do
 		if alive(corpse_data.unit) then
+			if corpse_data.unit:id() ~= -1 then
+				detach_f(corpse_data.unit)
+			end
+
 			World:delete_unit(corpse_data.unit)
 		end
 	end
@@ -1510,23 +1511,109 @@ function EnemyManager:remove_corpse_by_id(u_id)
 	end
 end
 
-function EnemyManager:get_nearby_medic(unit)
-	if self:is_civilian(unit) then
-		return nil
-	end
+function EnemyManager:register_medic(medic_unit)
+	self._medic_units[medic_unit:key()] = medic_unit
+end
 
-	local enemies = World:find_units_quick(unit, "sphere", unit:position(), tweak_data.medic.radius, managers.slot:get_mask("enemies"))
+function EnemyManager:unregister_medic(medic_unit)
+	self._medic_units[medic_unit:key()] = nil
+end
 
-	for _, enemy in ipairs(enemies) do
-		if enemy:base():has_tag("medic") then
-			return enemy
+function EnemyManager:is_unit_registered_as_medic(test_unit)
+	return self._medic_units[test_unit:key()] and true or false
+end
+
+function EnemyManager:get_nearby_medic(requesting_unit)
+	local valid_medics = {}
+	local request_u_key = requesting_unit:key()
+
+	for u_key, medic in pairs(self._medic_units) do
+		if u_key ~= request_u_key and medic:character_damage():is_available_for_healing(requesting_unit) then
+			valid_medics[u_key] = medic
 		end
 	end
 
-	return nil
+	local closest_medic = nil
+
+	if next(valid_medics) then
+		local request_pos = tmp_vec1
+		local medic_pos = tmp_vec2
+
+		requesting_unit:m_position(request_pos)
+
+		local dis_sq, closest_dis_sq = nil
+
+		for u_key, medic in pairs(valid_medics) do
+			medic:m_position(medic_pos)
+
+			dis_sq = mvec3_dis_sq(request_pos, medic_pos)
+
+			if dis_sq <= medic:character_damage():get_healing_radius_sq() and (not closest_dis_sq or dis_sq < closest_dis_sq) then
+				closest_medic = medic
+				closest_dis_sq = dis_sq
+			end
+		end
+	end
+
+	return closest_medic
+end
+
+function EnemyManager:find_nearby_affiliated_medics(requesting_unit)
+	local valid_medics = {}
+	local medics_in_range = {}
+	local request_u_key = requesting_unit:key()
+
+	for u_key, medic in pairs(self._medic_units) do
+		if u_key ~= request_u_key and medic:character_damage():verify_heal_requesting_unit(requesting_unit) then
+			valid_medics[u_key] = medic
+		end
+	end
+
+	if next(valid_medics) then
+		local request_pos = tmp_vec1
+		local medic_pos = tmp_vec2
+
+		requesting_unit:m_position(request_pos)
+
+		for u_key, medic in pairs(valid_medics) do
+			medic:m_position(medic_pos)
+
+			if mvec3_dis_sq(request_pos, medic_pos) <= medic:character_damage():get_healing_radius_sq() then
+				medics_in_range[u_key] = medic
+			end
+		end
+	end
+
+	return medics_in_range
 end
 
 function EnemyManager:add_magazine(mag_unit, col_unit)
+	if alive(mag_unit) then
+		local body_ray_type = Idstring("body")
+		local ids_ray_pass = Idstring("pass")
+		local ids_ray_block = Idstring("block")
+		local ids_ray_ignore = Idstring("ignore")
+		local get_body_f = mag_unit.body
+		local nr_bodies = mag_unit:num_bodies()
+
+		for i = 0, nr_bodies - 1 do
+			local body = get_body_f(mag_unit, i)
+			local ray_mode = body:ray_mode()
+
+			if ray_mode == ids_ray_block or ray_mode == ids_ray_pass then
+				body:set_ray_mode(ids_ray_ignore)
+			end
+
+			if body:has_ray_type(body_ray_type) then
+				body:remove_ray_type(body_ray_type)
+			end
+		end
+	end
+
+	if alive(col_unit) and col_unit:slot() == 1 then
+		col_unit:set_slot(11)
+	end
+
 	local all_mags = self._magazines
 	local new_nr_mags = #all_mags + 1
 	all_mags[new_nr_mags] = {

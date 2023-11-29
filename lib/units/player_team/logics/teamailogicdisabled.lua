@@ -16,10 +16,13 @@ function TeamAILogicDisabled.enter(data, new_logic_name, enter_params)
 	my_data.enemy_detect_slotmask = managers.slot:get_mask("enemies")
 
 	if old_internal_data then
+		my_data.turning = old_internal_data.turning
+		my_data.firing = old_internal_data.firing
+		my_data.shooting = old_internal_data.shooting
+		my_data.attention_unit = old_internal_data.attention_unit
+
 		CopLogicAttack._set_best_cover(data, my_data, old_internal_data.best_cover)
 		CopLogicAttack._set_nearest_cover(my_data, old_internal_data.nearest_cover)
-
-		my_data.attention_unit = old_internal_data.attention_unit
 	end
 
 	local key_str = tostring(data.key)
@@ -142,7 +145,7 @@ function TeamAILogicDisabled._upd_aim(data, my_data)
 
 	if my_data.stay_cool then
 		-- Nothing
-	elseif focus_enemy then
+	elseif focus_enemy and AIAttentionObject.REACT_SHOOT <= focus_enemy.reaction then
 		if focus_enemy.verified then
 			if focus_enemy.verified_dis < 2000 or my_data.alert_t and data.t - my_data.alert_t < 7 then
 				shoot = true
@@ -153,8 +156,6 @@ function TeamAILogicDisabled._upd_aim(data, my_data)
 			if my_data.shooting and data.t - focus_enemy.verified_t < 3 then
 				shoot = true
 			end
-		elseif focus_enemy.verified_dis < 600 and my_data.walking_to_cover_shoot_pos then
-			aim = true
 		end
 	end
 

@@ -372,6 +372,11 @@ function NewFlamethrowerBase:setup_default()
 
 	self._bullet_class = bullet_class
 	self._bullet_slotmask = bullet_class:bullet_slotmask()
+
+	if self._setup and self._setup.user_unit == managers.player:player_unit() then
+		self._bullet_slotmask = managers.mutators:modify_value("RaycastWeaponBase:modify_slot_mask", self._bullet_slotmask)
+	end
+
 	self._blank_slotmask = bullet_class:blank_slotmask()
 end
 
@@ -413,6 +418,11 @@ function NewFlamethrowerBase:_update_stats_values()
 			if bullet_class then
 				self._bullet_class = bullet_class
 				self._bullet_slotmask = bullet_class:bullet_slotmask()
+
+				if self._setup and self._setup.user_unit == managers.player:player_unit() then
+					self._bullet_slotmask = managers.mutators:modify_value("RaycastWeaponBase:modify_slot_mask", self._bullet_slotmask)
+				end
+
 				self._blank_slotmask = bullet_class:blank_slotmask()
 			else
 				print("[NewFlamethrowerBase:_update_stats_values] Unexisting class for bullet_class string ", ammo_data.bullet_class, "defined in ammo_data for tweak data ID ", self._name_id)
@@ -509,7 +519,6 @@ function NewFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, dmg_m
 	local result = {}
 	local damage = self:_get_current_damage(dmg_mul)
 	local damage_range = self._flame_max_range or self._range
-	local autoaim, suppress_enemies = self:check_autoaim(from_pos, direction, damage_range)
 
 	mvec3_set(mvec_to, direction)
 	mvec3_mul(mvec_to, damage_range)
@@ -533,12 +542,14 @@ function NewFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, dmg_m
 
 	local hit_bodies = World:find_bodies("intersect", "capsule", from_pos, mvec_to, self._flame_radius, self._bullet_slotmask)
 	local weap_unit = self._unit
-	local hit_enemies = 0
-	local hit_body, hit_unit, hit_u_key = nil
-	local units_hit = {}
+	local enemies_hit = {}
 	local valid_hit_bodies = {}
+	local units_hit = {}
+	local hit_body, hit_unit, hit_u_key = nil
 	local ignore_units = self._setup.ignore_units
 	local t_contains = table.contains
+	local in_slot_f = Unit.in_slot
+	local enemy_mask = self.enemy_mask
 
 	for i = 1, #hit_bodies do
 		hit_body = hit_bodies[i]
@@ -551,15 +562,16 @@ function NewFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, dmg_m
 				units_hit[hit_u_key] = true
 				valid_hit_bodies[#valid_hit_bodies + 1] = hit_body
 
-				if hit_unit:character_damage() then
-					hit_enemies = hit_enemies + 1
+				if in_slot_f(hit_unit, enemy_mask) then
+					enemies_hit[hit_u_key] = hit_unit
 				end
 			end
 		end
 	end
 
+	local hit_count = 0
 	local bullet_class = self:bullet_class()
-	local fake_ray_dir, fake_ray_dis = nil
+	local hit_body, fake_ray_dir, fake_ray_dis = nil
 
 	for i = 1, #valid_hit_bodies do
 		hit_body = valid_hit_bodies[i]
@@ -576,33 +588,23 @@ function NewFlamethrowerBase:_fire_raycast(user_unit, from_pos, direction, dmg_m
 			hit_position = hit_pos
 		}
 
-		bullet_class:on_collision(fake_ray, weap_unit, user_unit, damage)
-	end
-
-	local suppression = suppress_enemies and self._suppression
-
-	if suppression then
-		local panic_suppr_chance = self._panic_suppression_chance
-
-		for enemy_data, dis_error in pairs(suppress_enemies) do
-			enemy_data.unit:character_damage():build_suppression(suppr_mul * dis_error * suppression, panic_suppr_chance)
+		if bullet_class:on_collision(fake_ray, weap_unit, user_unit, damage) then
+			hit_count = hit_count + 1
 		end
 	end
 
+	result.enemies_in_cone = self._suppression and self:check_suppression(from_pos, direction, enemies_hit) or nil
+
 	if self._alert_events then
-		result.rays = {
-			{
-				position = from_pos
-			}
-		}
+		result.rays = {}
 	end
 
-	if hit_enemies > 0 then
+	if hit_count > 0 then
 		result.hit_enemy = true
 
 		managers.statistics:shot_fired({
 			hit = true,
-			hit_count = hit_enemies,
+			hit_count = hit_count,
 			weapon_unit = weap_unit
 		})
 	else

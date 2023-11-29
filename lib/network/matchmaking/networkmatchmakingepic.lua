@@ -450,6 +450,8 @@ function NetworkMatchMakingEPIC:search_lobby(friends_only, no_filters)
 			if data.value and data.value ~= -1 then
 				LobbyBrowser:set_lobby_filter(data.key, data.value, data.comparision_type)
 				print(data.key, data.value, data.comparision_type)
+			elseif LobbyBrowser.remove_lobby_filter then
+				LobbyBrowser:remove_lobby_filter(data.key)
 			end
 		end
 	end

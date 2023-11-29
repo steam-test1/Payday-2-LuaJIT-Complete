@@ -25,7 +25,7 @@ function ExplosionManager:add_sustain_effect(effect_id, sustain_time)
 	})
 end
 
-function ExplosionManager:give_local_player_dmg(pos, range, damage, ignite_character)
+function ExplosionManager:give_local_player_dmg(pos, range, damage)
 	local player = managers.player:player_unit()
 
 	if player then
@@ -33,8 +33,7 @@ function ExplosionManager:give_local_player_dmg(pos, range, damage, ignite_chara
 			variant = "explosion",
 			position = pos,
 			range = range,
-			damage = damage,
-			ignite_character = ignite_character
+			damage = damage
 		})
 	end
 end
@@ -480,7 +479,6 @@ function ExplosionManager:_damage_characters(detect_results, params, variant, da
 	local range = params.range
 	local curve_pow = params.curve_pow
 	local verify_callback = params.verify_callback
-	local ignite_character = params.ignite_character
 	damage_func_name = damage_func_name or "damage_explosion"
 	local counts = {
 		cops = {
@@ -540,7 +538,6 @@ function ExplosionManager:_damage_characters(detect_results, params, variant, da
 					position = unit:position(),
 					ray = dir
 				}
-				action_data.ignite_character = ignite_character
 
 				unit:character_damage()[damage_func_name](unit:character_damage(), action_data)
 			else
@@ -709,8 +706,7 @@ function ExplosionManager:detect_and_give_dmg(params)
 			variant = "explosion",
 			position = hit_pos,
 			range = range,
-			damage = player_damage,
-			ignite_character = params.ignite_character
+			damage = player_damage
 		})
 	end
 

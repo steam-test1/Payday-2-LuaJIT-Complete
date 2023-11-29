@@ -50,7 +50,7 @@ function CopActionStand:init(action_desc, common_data)
 	local redir_result = common_data.ext_movement:play_redirect("stand", enter_t)
 
 	if redir_result then
-		if Network:is_server() then
+		if Network:is_server() and not action_desc.no_sync then
 			common_data.ext_network:send("set_pose", 1)
 		end
 
@@ -63,9 +63,7 @@ function CopActionStand:init(action_desc, common_data)
 end
 
 function CopActionStand:update(t)
-	if self._ext_anim.base_need_upd then
-		self._ext_movement:upd_m_head_pos()
-	else
+	if not self._ext_anim.upper_need_upd then
 		self._expired = true
 	end
 end

@@ -49,12 +49,33 @@ function TeamAIInventory:add_unit_by_name(new_unit_name, equip)
 	new_unit:set_enabled(false)
 end
 
+function TeamAIInventory:has_ap_ammo()
+	return self._has_ap_rounds
+end
+
+function TeamAIInventory:update_ap_ammo()
+	local state = managers.player:has_category_upgrade("team", "crew_ai_ap_ammo")
+	self._has_ap_rounds = state
+
+	for i, sel_data in pairs(self._available_selections) do
+		local base_ext = alive(sel_data.unit) and sel_data.unit:base()
+
+		if base_ext and base_ext.set_team_ai_ap_rounds then
+			base_ext:set_team_ai_ap_rounds(state)
+		end
+	end
+end
+
 function TeamAIInventory:add_unit(new_unit, equip)
 	TeamAIInventory.super.add_unit(self, new_unit, equip)
 
 	if new_unit:base().set_user_is_team_ai then
 		print("Set as team ai")
 		new_unit:base():set_user_is_team_ai(true)
+	end
+
+	if new_unit:base().set_team_ai_ap_rounds then
+		new_unit:base():set_team_ai_ap_rounds(managers.player:has_category_upgrade("team", "crew_ai_ap_ammo"))
 	end
 
 	new_unit:set_enabled(false)

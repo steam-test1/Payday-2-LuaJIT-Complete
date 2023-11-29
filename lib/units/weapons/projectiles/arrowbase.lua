@@ -576,12 +576,6 @@ function ArrowBase:_tweak_data_play_sound(entry)
 	self._unit:sound_source(Idstring("snd")):post_event(event)
 end
 
-function ArrowBase:outside_worlds_bounding_box()
-	if Network:is_server() or self._unit:id() == -1 then
-		self._unit:set_slot(0)
-	end
-end
-
 function ArrowBase:save(data)
 	ArrowBase.super.save(self, data)
 

@@ -748,7 +748,8 @@ end
 
 function ProjectileBase:save(data)
 	local state = {
-		timer = self._timer
+		timer = self._timer,
+		destroy_hide_t = self._destroy_clbk_id and managers.enemy:get_delayed_clbk_exec_t(self._destroy_clbk_id) - TimerManager:game():time() or nil
 	}
 	data.ProjectileBase = state
 end
@@ -756,6 +757,27 @@ end
 function ProjectileBase:load(data)
 	local state = data.ProjectileBase
 	self._timer = state.timer
+
+	if state.destroy_hide_t then
+		self:_handle_hiding_and_destroying(true, state.destroy_hide_t)
+	end
+end
+
+function ProjectileBase:outside_worlds_bounding_box()
+	if Network:is_server() or self._unit:id() == -1 then
+		self._unit:set_slot(0)
+	else
+		if self._kill_trail then
+			self:_kill_trail()
+		end
+
+		if self._check_stop_flyby_sound then
+			self:_check_stop_flyby_sound(true)
+		end
+
+		self:remove_trail_effect()
+		self:_warning_fx_vfx_remove()
+	end
 end
 
 function ProjectileBase:destroy(...)
@@ -815,6 +837,12 @@ function ProjectileBase:destroy(...)
 
 	self._ignore_units = nil
 	self._ignore_destroy_listener_key = nil
+
+	if self._destroy_clbk_id then
+		managers.enemy:remove_delayed_clbk(self._destroy_clbk_id)
+
+		self._destroy_clbk_id = nil
+	end
 
 	self:remove_trail_effect()
 	self:_warning_fx_vfx_remove()
@@ -903,6 +931,75 @@ function ProjectileBase:remove_trail_effect()
 		managers.game_play_central:remove_projectile_trail(self._unit)
 
 		self._added_trail_effect = nil
+	end
+end
+
+function ProjectileBase:_hide_and_freeze(skip_bodies)
+	if not skip_bodies then
+		local body_ray_type = Idstring("body")
+		local ids_ray_pass = Idstring("pass")
+		local ids_ray_block = Idstring("block")
+		local ids_ray_ignore = Idstring("ignore")
+		local get_body_f = self._unit.body
+		local nr_bodies = self._unit:num_bodies()
+		local body, ray_mode = nil
+
+		for i = 0, nr_bodies - 1 do
+			body = get_body_f(self._unit, i)
+			ray_mode = body:ray_mode()
+
+			if ray_mode == ids_ray_block or ray_mode == ids_ray_pass then
+				body:set_ray_mode(ids_ray_ignore)
+			end
+
+			if body:has_ray_type(body_ray_type) then
+				body:remove_ray_type(body_ray_type)
+			end
+
+			body:set_fixed()
+		end
+	end
+
+	self._unit:set_visible(false)
+
+	if self._kill_trail then
+		self:_kill_trail()
+	end
+
+	if self._check_stop_flyby_sound then
+		self:_check_stop_flyby_sound(true)
+	end
+
+	if self._flyby_snd_src_name then
+		self._unit:sound_source(Idstring(self._flyby_snd_src_name)):stop()
+	end
+
+	self:remove_trail_effect()
+	self:_warning_fx_vfx_remove()
+end
+
+function ProjectileBase:_handle_hiding_and_destroying(destroy, destruction_delay)
+	self:_hide_and_freeze(true)
+	self._unit:set_enabled(false)
+
+	if destroy and (Network:is_server() or self._unit:id() == -1) then
+		if destruction_delay then
+			if not self._destroy_clbk_id then
+				self._destroy_clbk_id = "projectile_destroy" .. tostring(self._unit:key())
+
+				managers.enemy:add_delayed_clbk(self._destroy_clbk_id, callback(self, self, "_clbk_destroy"), TimerManager:game():time() + destruction_delay)
+			end
+		else
+			self._unit:set_slot(0)
+		end
+	end
+end
+
+function ProjectileBase:_clbk_destroy()
+	self._destroy_clbk_id = nil
+
+	if alive(self._unit) then
+		self._unit:set_slot(0)
 	end
 end
 

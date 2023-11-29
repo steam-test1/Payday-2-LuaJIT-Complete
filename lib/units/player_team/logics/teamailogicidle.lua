@@ -209,6 +209,18 @@ function TeamAILogicIdle.exit(data, new_logic_name, enter_params)
 		managers.navigation:release_cover(my_data.nearest_cover[1])
 	end
 
+	local current_attention = data.unit:movement():attention()
+
+	if current_attention then
+		if current_attention.pos then
+			my_data.attention_unit = mvector3.copy(current_attention.pos)
+		elseif current_attention.u_key then
+			my_data.attention_unit = current_attention.u_key
+		elseif current_attention.unit then
+			my_data.attention_unit = current_attention.unit:key()
+		end
+	end
+
 	data.brain:rem_pos_rsrv("path")
 end
 
@@ -371,8 +383,9 @@ function TeamAILogicIdle.on_long_dis_interacted(data, other_unit, secondary)
 	local should_stay = false
 
 	if objective_type == "follow" then
-		if data.unit:movement():carrying_bag() and not data.unit:movement()._should_stay then
-			local throw_distance = tweak_data.ai_carry.throw_distance * data.unit:movement():carry_tweak().throw_distance_multiplier
+		if data.unit:movement():carrying_bag() and not data.unit:movement():should_stay() then
+			local carry_type_tweak = data.unit:movement():carry_type_tweak()
+			local throw_distance = tweak_data.ai_carry.throw_distance * (carry_type_tweak and carry_type_tweak.throw_distance_multiplier or 1)
 			local dist = data.unit:position() - other_unit:position()
 			local throw_bag = mvector3.dot(dist, dist) < throw_distance * throw_distance
 
@@ -591,7 +604,7 @@ end
 
 function TeamAILogicIdle._find_intimidateable_civilians(criminal, use_default_shout_shape, max_angle, max_dis)
 	local head_pos = criminal:movement():m_head_pos()
-	local look_vec = criminal:movement():m_rot():y()
+	local look_vec = criminal:movement():m_fwd()
 	local close_dis = 400
 	local intimidateable_civilians = {}
 	local best_civ = nil
@@ -901,7 +914,7 @@ function TeamAILogicIdle._check_should_relocate(data, my_data, objective)
 	local max_allowed_dis_xy = 500
 	local max_allowed_dis_z = 250
 
-	mvector3.set(tmp_vec1, follow_unit:movement():m_pos())
+	mvector3.set(tmp_vec1, follow_unit:movement():m_newest_pos())
 	mvector3.subtract(tmp_vec1, data.m_pos)
 
 	local too_far = nil
@@ -922,7 +935,9 @@ function TeamAILogicIdle._check_should_relocate(data, my_data, objective)
 end
 
 function TeamAILogicIdle._ignore_shield(unit, attention)
-	if managers.player:has_category_upgrade("team", "crew_ai_ap_ammo") then
+	local inv_ext = unit:inventory()
+
+	if inv_ext.has_ap_ammo and inv_ext:has_ap_ammo() then
 		return false
 	end
 
@@ -940,7 +955,7 @@ function TeamAILogicIdle._ignore_shield(unit, attention)
 
 	local hit_shield = World:raycast("ray", head_pos, u_head_pos, "ignore_unit", {
 		unit
-	}, "slot_mask", TeamAILogicIdle._shield_check)
+	}, "slot_mask", TeamAILogicIdle._shield_check, "report")
 
 	return not not hit_shield
 end

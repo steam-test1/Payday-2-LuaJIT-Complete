@@ -26,6 +26,9 @@ function TeamAILogicAssault.enter(data, new_logic_name, enter_params)
 	my_data.weapon_range = data.char_tweak.weapon[data.unit:inventory():equipped_unit():base():weapon_tweak_data().usage].range
 
 	if old_internal_data then
+		my_data.turning = old_internal_data.turning
+		my_data.firing = old_internal_data.firing
+		my_data.shooting = old_internal_data.shooting
 		my_data.attention_unit = old_internal_data.attention_unit
 
 		CopLogicAttack._set_best_cover(data, my_data, old_internal_data.best_cover)
@@ -228,10 +231,9 @@ function TeamAILogicAssault.mark_enemy(data, criminal, to_mark, play_sound, play
 		end
 	end
 
-	if play_action and not criminal:movement():chk_action_forbidden("action") then
+	if play_action and not data.unit:anim_data().reload and not criminal:movement():chk_action_forbidden("action") then
 		local new_action = {
 			variant = "arrest",
-			align_sync = true,
 			body_part = 3,
 			type = "act"
 		}

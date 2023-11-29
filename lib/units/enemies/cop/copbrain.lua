@@ -39,14 +39,18 @@ logic_variants.gensec = security_variant
 logic_variants.cop = security_variant
 logic_variants.cop_female = security_variant
 logic_variants.fbi = security_variant
+logic_variants.fbi_female = security_variant
 logic_variants.swat = security_variant
 logic_variants.heavy_swat = security_variant
 logic_variants.fbi_swat = security_variant
 logic_variants.fbi_heavy_swat = security_variant
+logic_variants.zeal_swat = security_variant
+logic_variants.zeal_heavy_swat = security_variant
 logic_variants.nathan = security_variant
 logic_variants.sniper = security_variant
 logic_variants.gangster = security_variant
 logic_variants.biker = security_variant
+logic_variants.biker_female = security_variant
 logic_variants.mobster = security_variant
 logic_variants.mobster_boss = security_variant
 logic_variants.hector_boss = security_variant
@@ -56,6 +60,7 @@ logic_variants.biker_escape = security_variant
 logic_variants.city_swat = security_variant
 logic_variants.old_hoxton_mission = security_variant
 logic_variants.inside_man = security_variant
+logic_variants.inside_woman = security_variant
 logic_variants.medic = security_variant
 logic_variants.triad = security_variant
 logic_variants.triad_boss_no_armor = security_variant
@@ -80,6 +85,7 @@ logic_variants.cop_scared = security_variant
 logic_variants.security_undominatable = security_variant
 logic_variants.mute_security_undominatable = security_variant
 logic_variants.captain = security_variant
+logic_variants.captain_female = security_variant
 
 for _, tweak_table_name in pairs({
 	"shield",
@@ -274,16 +280,18 @@ function CopBrain:save(save_data)
 		my_save_data.weapon_laser_on = true
 	end
 
-	if self._logic_data.internal_data.weapon_laser_on then
-		my_save_data.weapon_laser_on = true
-	end
-
 	if self._logic_data.name == "trade" and self._logic_data.internal_data.fleeing then
 		my_save_data.trade_flee_contour = true
 	end
 
 	my_save_data.team_id = self._logic_data.team.id
 	my_save_data.surrendered = self:is_current_logic("intimidated")
+	my_save_data.dead = self._unit:character_damage():dead()
+
+	if self._logic_data.internal_data.tied then
+		my_save_data.is_cop_tied = true
+	end
+
 	save_data.brain = my_save_data
 end
 
@@ -461,6 +469,32 @@ function CopBrain:clbk_coarse_pathing_results(search_id, path)
 end
 
 function CopBrain:clbk_pathing_results(search_id, path)
+	local dead_nav_link_id = self._nav_links_to_check_on_results and self._nav_links_to_check_on_results[search_id]
+
+	if dead_nav_link_id then
+		if path then
+			for i, nav_point in ipairs(path) do
+				if not nav_point.x and (not alive(nav_point) or nav_point:script_data().element:id() == dead_nav_link_id) then
+					path = nil
+
+					break
+				end
+			end
+
+			self._nav_links_to_check_on_results[search_id] = nil
+
+			if not next(self._nav_links_to_check_on_results) then
+				self._nav_links_to_check_on_results = nil
+			end
+		else
+			self._nav_links_to_check_on_results[search_id] = nil
+
+			if not next(self._nav_links_to_check_on_results) then
+				self._nav_links_to_check_on_results = nil
+			end
+		end
+	end
+
 	self:_add_pathing_result(search_id, path)
 
 	if path then
@@ -483,11 +517,35 @@ function CopBrain:_add_pathing_result(search_id, path)
 end
 
 function CopBrain:cancel_all_pathing_searches()
+	local dead_nav_links = self._nav_links_to_check_on_results
+	local has_dead_nav_link = {}
+
 	for search_id, search_type in pairs(self._logic_data.active_searches) do
 		if search_type == 2 then
 			managers.navigation:cancel_coarse_search(search_id)
 		else
 			managers.navigation:cancel_pathing_search(search_id)
+
+			if dead_nav_links and dead_nav_links[search_id] then
+				has_dead_nav_link[search_id] = true
+				dead_nav_links[search_id] = nil
+			end
+		end
+	end
+
+	if dead_nav_links and not next(dead_nav_links) then
+		self._nav_links_to_check_on_results = nil
+	end
+
+	if self._logic_data.pathing_results then
+		for search_id, path in pairs(self._logic_data.pathing_results) do
+			if path ~= "failed" and not has_dead_nav_link[search_id] and type(path[1]) ~= "table" then
+				for i, nav_point in ipairs(path) do
+					if not nav_point.x and nav_point:script_data().element:nav_link_delay() > 0 then
+						nav_point:set_delay_time(0)
+					end
+				end
+			end
 		end
 	end
 
@@ -500,6 +558,14 @@ function CopBrain:abort_detailed_pathing(search_id)
 		self._logic_data.active_searches[search_id] = nil
 
 		managers.navigation:cancel_pathing_search(search_id)
+
+		if self._nav_links_to_check_on_results and self._nav_links_to_check_on_results[search_id] then
+			self._nav_links_to_check_on_results[search_id] = nil
+
+			if not next(self._nav_links_to_check_on_results) then
+				self._nav_links_to_check_on_results = nil
+			end
+		end
 	end
 end
 
@@ -566,9 +632,7 @@ function CopBrain:cancel_trade()
 end
 
 function CopBrain:interaction_voice()
-	if self._logic_data.objective and self._logic_data.objective.followup_objective and self._logic_data.objective.followup_objective.trigger_on == "interact" and (not self._logic_data.objective or not self._logic_data.objective.nav_seg or not not self._logic_data.objective.in_place) and not self._unit:anim_data().unintimidateable then
-		return self._logic_data.objective.followup_objective.interaction_voice
-	end
+	return self._logic_data.objective and self._logic_data.objective.followup_objective and self._logic_data.objective.followup_objective.interaction_voice
 end
 
 function CopBrain:on_intimidated(amount, aggressor_unit)
@@ -720,18 +784,18 @@ function CopBrain:_chk_use_cover_grenade(unit)
 
 	local grenade_was_used = nil
 
-	if self._logic_data.attention_obj.dis > 1000 or not self._logic_data.char_tweak.dodge_with_grenade.flash then
+	if not self._logic_data.char_tweak.dodge_with_grenade.flash or self._logic_data.attention_obj.dis > 1000 then
 		if self._logic_data.char_tweak.dodge_with_grenade.smoke and not managers.groupai:state():is_smoke_grenade_active() then
 			local duration = self._logic_data.char_tweak.dodge_with_grenade.smoke.duration
 
-			managers.groupai:state():detonate_smoke_grenade(self._logic_data.m_pos + math.UP * 10, self._unit:movement():m_head_pos(), math.lerp(duration[1], duration[2], math.random()), false)
+			managers.groupai:state():detonate_smoke_grenade(self._logic_data.m_pos + math.UP * 10, nil, math.lerp(duration[1], duration[2], math.random()), false, self._logic_data.char_tweak.dodge_with_grenade.smoke.instant)
 
 			grenade_was_used = true
 		end
 	elseif self._logic_data.char_tweak.dodge_with_grenade.flash then
 		local duration = self._logic_data.char_tweak.dodge_with_grenade.flash.duration
 
-		managers.groupai:state():detonate_smoke_grenade(self._logic_data.m_pos + math.UP * 10, self._unit:movement():m_head_pos(), math.lerp(duration[1], duration[2], math.random()), true)
+		managers.groupai:state():detonate_smoke_grenade(self._logic_data.m_pos + math.UP * 10, nil, math.lerp(duration[1], duration[2], math.random()), true, self._logic_data.char_tweak.dodge_with_grenade.flash.instant)
 
 		grenade_was_used = true
 	end
@@ -761,6 +825,15 @@ function CopBrain:on_nav_link_unregistered(element_id)
 		if failed_search_ids then
 			for search_id, _ in pairs(failed_search_ids) do
 				self._logic_data.pathing_results[search_id] = "failed"
+			end
+		end
+	end
+
+	if next(self._logic_data.active_searches) then
+		for search_id, search_type in pairs(self._logic_data.active_searches) do
+			if search_type ~= 2 then
+				self._nav_links_to_check_on_results = self._nav_links_to_check_on_results or {}
+				self._nav_links_to_check_on_results[search_id] = element_id
 			end
 		end
 	end
@@ -825,9 +898,7 @@ function CopBrain:set_attention_settings(params)
 				}
 			end
 		elseif params.corpse_cbt then
-			att_settings = {
-				"enemy_combatant_corpse_cbt"
-			}
+			-- Nothing
 		elseif params.corpse_sneak then
 			att_settings = {
 				"enemy_law_corpse_sneak",
@@ -892,12 +963,14 @@ end
 function CopBrain:on_suppressed(state)
 	self._logic_data.is_suppressed = state or nil
 
+	if state == "panic" then
+		self._unit:sound():say("lk3b", true)
+	elseif self._logic_data.char_tweak.chatter.suppress then
+		self._unit:sound():say("hlp", true)
+	end
+
 	if self._current_logic.on_suppressed_state then
 		self._current_logic.on_suppressed_state(self._logic_data)
-
-		if self._logic_data.char_tweak.chatter.suppress then
-			self._unit:sound():say("hlp", true)
-		end
 	end
 end
 
@@ -1026,7 +1099,10 @@ function CopBrain:convert_to_criminal(mastermind_criminal)
 
 	self._unit:brain():action_request(action_data)
 	self._unit:sound():say("cn1", true, nil)
-	managers.network:session():send_to_peers_synched("sync_unit_converted", self._unit)
+end
+
+function CopBrain:converted()
+	return self._logic_data.is_converted
 end
 
 function CopBrain:on_surrender_chance()

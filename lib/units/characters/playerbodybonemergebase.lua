@@ -4,7 +4,6 @@ function PlayerBodyBoneMergeBase:init(unit)
 	UnitBase.init(self, unit, false)
 
 	self._visibility_state = true
-	self._allow_invisible = true
 	self._is_in_original_material = true
 end
 
@@ -53,8 +52,4 @@ function PlayerBodyBoneMergeBase:on_material_applied(material_applied_clbk)
 	if material_applied_clbk then
 		material_applied_clbk()
 	end
-end
-
-function PlayerBodyBoneMergeBase:set_allow_invisible(allow)
-	self._allow_invisible = allow
 end

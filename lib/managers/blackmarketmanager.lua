@@ -459,7 +459,7 @@ function BlackMarketManager:_setup_weapons()
 	Global.blackmarket_manager.weapons = weapons
 
 	for weapon, data in pairs(tweak_data.weapon) do
-		if data.autohit then
+		if data.autohit ~= nil then
 			local selection_index = data.use_data.selection_index
 			local equipped = weapon == managers.player:weapon_in_slot(selection_index)
 			local factory_id = managers.weapon_factory:get_factory_id_by_weapon_id(weapon)
@@ -8201,7 +8201,7 @@ function BlackMarketManager:load(data)
 		self._global.weapons = default_global.weapons or {}
 
 		for weapon, data in pairs(tweak_data.weapon) do
-			if not self._global.weapons[weapon] and data.autohit then
+			if not self._global.weapons[weapon] and data.autohit ~= nil then
 				local selection_index = data.use_data.selection_index
 				local factory_id = managers.weapon_factory:get_factory_id_by_weapon_id(weapon)
 				self._global.weapons[weapon] = {
@@ -9122,6 +9122,16 @@ function BlackMarketManager:_verify_dlc_items()
 		local event_job_challenge = managers.event_jobs:get_challenge_from_reward("masks", equipped_mask.mask_id)
 
 		if event_job_challenge and not event_job_challenge.completed then
+			self:equip_mask(1)
+
+			equipped_mask = nil
+		end
+	end
+
+	if equipped_mask then
+		local mask_tweak = tweak_data.blackmarket.masks[equipped_mask.mask_id]
+
+		if mask_tweak and mask_tweak.dlc and not managers.dlc:is_dlc_unlocked(mask_tweak.dlc) then
 			self:equip_mask(1)
 
 			equipped_mask = nil

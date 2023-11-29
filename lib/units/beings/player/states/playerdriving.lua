@@ -24,7 +24,7 @@ function PlayerDriving:enter(state_data, enter_data)
 	PlayerDriving.super.enter(self, state_data, enter_data)
 
 	for _, ai in pairs(managers.groupai:state():all_AI_criminals()) do
-		if ai.unit:movement() and ai.unit:movement()._should_stay then
+		if not ai.is_deployable and ai.unit:movement() and ai.unit:movement():should_stay() then
 			ai.unit:movement():set_should_stay(false)
 		end
 	end
@@ -243,6 +243,7 @@ function PlayerDriving:update(t, dt)
 	self:_calculate_standard_variables(t, dt)
 	self:_update_ground_ray()
 	self:_update_fwd_ray()
+	self:_upd_nav_data()
 	self:_check_action_change_camera(t, input)
 	self:_check_action_rear_cam(t, input)
 	self:_update_hud(t, input)
@@ -461,9 +462,9 @@ function PlayerDriving:_interacting()
 end
 
 function PlayerDriving:_interupt_action_exit_vehicle(t, input, complete)
-	self:_clear_tap_to_interact()
-
 	if self._exit_vehicle_expire_t then
+		self:_clear_tap_to_interact()
+
 		self._exit_vehicle_expire_t = nil
 
 		managers.hud:hide_progress_timer_bar(complete)

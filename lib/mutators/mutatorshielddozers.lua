@@ -19,16 +19,12 @@ MutatorShieldDozers.shield_units = {
 	"units/payday2/characters/ene_acc_shield_lights/ene_acc_shield_lights",
 	"units/payday2/characters/ene_acc_shield_small/shield_small"
 }
-MutatorShieldDozers.allowed_tweak_datas = {
-	"tank",
-	"tank_hw"
-}
 
 function MutatorShieldDozers:modify_value(id, value)
 	if id == "CopInventory:add_unit_by_name" then
-		local unit_type = value._unit:base()._tweak_table
+		local base_ext = value._unit:base()
 
-		if table.contains(self.allowed_tweak_datas, unit_type) then
+		if base_ext and base_ext.has_tag and base_ext:has_tag("tank") then
 			local len = #self.shield_units
 			local rand = math.clamp(value._unit:id() % len + 1, 1, len)
 			local shield = self.shield_units[rand]

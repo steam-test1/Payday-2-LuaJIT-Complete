@@ -178,7 +178,7 @@ function Drill:set_jammed(jammed)
 
 		self:_reset_melee_autorepair()
 
-		if self._autorepair and not self._autorepair_clbk_id then
+		if self._autorepair_chance and not self._autorepair_clbk_id and math.random() < self._autorepair_chance then
 			self._autorepair_clbk_id = "Drill_autorepair" .. tostring(self._unit:key())
 
 			managers.enemy:add_delayed_clbk(self._autorepair_clbk_id, callback(self, self, "clbk_autorepair"), TimerManager:game():time() + 5 + 15 * math.random())
@@ -431,7 +431,7 @@ function Drill:on_sabotage_SO_started(saboteur)
 
 	self._unit:timer_gui():set_jammed(true)
 
-	if not self._bain_report_sabotage_clbk_id then
+	if self.is_drill and not self._bain_report_sabotage_clbk_id then
 		self._bain_report_sabotage_clbk_id = "Drill_bain_report_sabotage" .. tostring(self._unit:key())
 
 		managers.enemy:add_delayed_clbk(self._bain_report_sabotage_clbk_id, callback(self, self, "clbk_bain_report_sabotage"), TimerManager:game():time() + 2 + 4 * math.random())
@@ -456,8 +456,6 @@ function Drill:_set_attention_state(state)
 	if self.ignore_detection then
 		if self._attention_handler then
 			self._attention_handler:set_attention(nil)
-
-			self._attention_handler = nil
 		end
 
 		return
@@ -465,10 +463,12 @@ function Drill:_set_attention_state(state)
 
 	if state then
 		if not self._attention_setting then
-			self._attention_handler = AIAttentionObject:new(self._unit, true)
+			if not self._attention_handler then
+				self._attention_handler = AIAttentionObject:new(self._unit, true)
 
-			if self._attention_obj_name then
-				self._attention_handler:set_detection_object_name(self._attention_obj_name)
+				if self._attention_obj_name then
+					self._attention_handler:set_detection_object_name(self._attention_obj_name)
+				end
 			end
 
 			local descriptor = self._alert_radius and "drill_civ_ene_ntl" or "drill_silent_civ_ene_ntl"
@@ -478,8 +478,6 @@ function Drill:_set_attention_state(state)
 		end
 	elseif self._attention_handler then
 		self._attention_handler:set_attention(nil)
-
-		self._attention_handler = nil
 	end
 end
 
@@ -610,8 +608,8 @@ function Drill:set_skill_upgrades(upgrades)
 				drill_autorepair_chance = drill_autorepair_chance + tweak_data.upgrades.values.player.drill_autorepair_1[1]
 			end
 
-			if Network:is_server() and math.random() < drill_autorepair_chance then
-				self:set_autorepair(true)
+			if Network:is_server() and drill_autorepair_chance > 0 then
+				self:set_autorepair(drill_autorepair_chance)
 			end
 
 			if current_auto_repair_level_1 > 0 and current_auto_repair_level_2 > 0 then
@@ -634,15 +632,17 @@ function Drill:get_skill_upgrades()
 	return self._skill_upgrades or {}
 end
 
-function Drill:set_autorepair(state)
+function Drill:set_autorepair(chance)
 	if self._skill_upgrades.auto_repair_level_1 and self._skill_upgrades.auto_repair_level_1 > 0 or self._skill_upgrades.auto_repair_level_2 and self._skill_upgrades.auto_repair_level_2 > 0 then
+		self._autorepair_chance = chance
+
 		return
 	end
 
-	self._autorepair = state
+	self._autorepair_chance = chance
 
-	if state then
-		if self._jammed and not self._autorepair_clbk_id then
+	if chance then
+		if self._jammed and not self._autorepair_clbk_id and math.random() < chance then
 			self._autorepair_clbk_id = "Drill_autorepair" .. tostring(self._unit:key())
 
 			managers.enemy:add_delayed_clbk(self._autorepair_clbk_id, callback(self, self, "clbk_autorepair"), TimerManager:game():time() + 5 + 15 * math.random())
@@ -985,5 +985,5 @@ function Drill:compare_skill_upgrades(skill_upgrades)
 		return false
 	end
 
-	return self._skill_upgrades.auto_repair_level_1 < skill_upgrades.auto_repair_level_1 or self._skill_upgrades.auto_repair_level_2 < skill_upgrades.auto_repair_level_2 or self._skill_upgrades.speed_upgrade_level < skill_upgrades.speed_upgrade_level or skill_upgrades.silent_drill and not self._skill_upgrades.silent_drill or skill_upgrades.reduced_alert and not self._skill_upgrades.reduced_alert
+	return (skill_upgrades.auto_repair_level_1 or 0) > (self._skill_upgrades.auto_repair_level_1 or 0) or (skill_upgrades.auto_repair_level_2 or 0) > (self._skill_upgrades.auto_repair_level_2 or 0) or (skill_upgrades.speed_upgrade_level or 0) > (self._skill_upgrades.speed_upgrade_level or 0) or skill_upgrades.silent_drill and not self._skill_upgrades.silent_drill or skill_upgrades.reduced_alert and not self._skill_upgrades.reduced_alert
 end

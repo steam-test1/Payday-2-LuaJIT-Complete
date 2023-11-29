@@ -1,14 +1,23 @@
 EnvironmentFire = EnvironmentFire or class(UnitBase)
 local unit_id = Idstring("units/payday2/environment/environment_fire_1/environment_fire_1")
 
-function EnvironmentFire.spawn(position, rotation, data, normal, user_unit, added_time, range_multiplier)
+function EnvironmentFire.spawn(position, rotation, data, normal, user_unit, weapon_unit, added_time, range_multiplier)
 	local unit = World:spawn_unit(unit_id, position, rotation)
+	local time_until_destruction = nil
 
 	if unit then
-		unit:base():on_spawn(data, normal, user_unit, added_time, range_multiplier)
+		local base_ext = unit:base()
+
+		if base_ext then
+			if base_ext.on_spawn then
+				base_ext:on_spawn(data, normal, user_unit, weapon_unit, added_time, range_multiplier)
+			end
+
+			time_until_destruction = base_ext.get_duration_until_destruction and base_ext:get_duration_until_destruction()
+		end
 	end
 
-	return unit
+	return unit, time_until_destruction
 end
 
 function EnvironmentFire:init(unit)
@@ -23,7 +32,11 @@ function EnvironmentFire:get_name_id()
 	return "environment_fire"
 end
 
-function EnvironmentFire:on_spawn(data, normal, user_unit, added_time, range_multiplier)
+function EnvironmentFire:get_duration_until_destruction()
+	return self._burn_duration + self._burn_duration_destroy
+end
+
+function EnvironmentFire:on_spawn(data, normal, user_unit, weapon_unit, added_time, range_multiplier)
 	local custom_params = {
 		camera_shake_max_mul = 4,
 		sound_muffle_effect = true,
@@ -39,16 +52,18 @@ function EnvironmentFire:on_spawn(data, normal, user_unit, added_time, range_mul
 	self._normal = normal
 	self._added_time = added_time
 	self._range_multiplier = range_multiplier
+	local dot_data = data.dot_data_name and tweak_data.dot:get_dot_data(data.dot_data_name)
+	self._dot_data = dot_data and deep_clone(dot_data)
 	self._user_unit = user_unit
+	self._weapon_unit = weapon_unit
 	self._burn_duration = data.burn_duration + added_time
-	self._burn_duration_destroy = (data.fire_dot_data and data.fire_dot_data.dot_length or 0) + 1
+	self._burn_duration_destroy = (self._dot_data and self._dot_data.dot_length or 0) + 1
 	self._burn_tick_counter = 0
 	self._burn_tick_period = data.burn_tick_period
 	self._range = data.range * range_multiplier
 	self._curve_pow = data.curve_pow
 	self._damage = data.damage
 	self._player_damage = data.player_damage
-	self._fire_dot_data = data.fire_dot_data and deep_clone(data.fire_dot_data)
 	self._fire_alert_radius = data.fire_alert_radius
 	self._no_fire_alert = data.no_fire_alert
 	self._is_molotov = data.is_molotov
@@ -260,7 +275,9 @@ function EnvironmentFire:_do_damage()
 
 				if Network:is_server() then
 					local user = self._user_unit
+					local weapon = self._weapon_unit
 					user = alive(user) and user or nil
+					weapon = alive(weapon) and weapon or nil
 					local hit_units, splinters = managers.fire:detect_and_give_dmg({
 						player_damage = 0,
 						push_units = false,
@@ -271,10 +288,10 @@ function EnvironmentFire:_do_damage()
 						damage = self._damage,
 						ignore_unit = user or self._unit,
 						user = user,
-						owner = self._unit,
+						owner = weapon or self._unit,
 						alert_radius = self._fire_alert_radius,
 						no_alert = self._no_fire_alert,
-						fire_dot_data = self._fire_dot_data,
+						dot_data = self._dot_data,
 						is_molotov = self._is_molotov
 					})
 				end
@@ -298,7 +315,8 @@ end
 function EnvironmentFire:save(data)
 	local state = {
 		burn_duration = self._burn_duration,
-		user_unit = self._user_unit,
+		user_unit = alive(self._user_unit) and self._user_unit:id() ~= -1 and self._user_unit or nil,
+		weapon_unit = alive(self._weapon_unit) and self._weapon_unit:id() ~= -1 and self._weapon_unit or nil,
 		burn_duration = self._burn_duration,
 		burn_tick_counter = self._burn_tick_counter,
 		burn_tick_period = self._burn_tick_period,
@@ -306,7 +324,7 @@ function EnvironmentFire:save(data)
 		curve_pow = self._curve_pow,
 		damage = self._damage,
 		player_damage = self._player_damage,
-		fire_dot_data = self._fire_dot_data,
+		dot_data = self._dot_data,
 		fire_alert_radius = self._fire_alert_radius,
 		no_fire_alert = self._no_fire_alert,
 		is_molotov = self._is_molotov,
@@ -323,6 +341,7 @@ function EnvironmentFire:load(data)
 	local state = data.EnvironmentFire
 	self._burn_duration = state.burn_duration
 	self._user_unit = state.user_unit
+	self._weapon_unit = state.weapon_unit
 	self._burn_duration = state.burn_duration
 	self._burn_tick_counter = state.burn_tick_counter
 	self._burn_tick_period = state.burn_tick_period
@@ -330,7 +349,7 @@ function EnvironmentFire:load(data)
 	self._curve_pow = state.curve_pow
 	self._damage = state.damage
 	self._player_damage = state.player_damage
-	self._fire_dot_data = state.fire_dot_data
+	self._dot_data = state.dot_data
 	self._fire_alert_radius = state.fire_alert_radius
 	self._no_fire_alert = state.no_fire_alert
 	self._is_molotov = state.is_molotov

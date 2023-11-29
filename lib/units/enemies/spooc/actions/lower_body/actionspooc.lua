@@ -4,10 +4,12 @@ ActionSpooc._walk_anim_lengths = CopActionWalk._walk_anim_lengths
 ActionSpooc._matching_walk_anims = CopActionWalk._matching_walk_anims
 ActionSpooc._walk_side_rot = CopActionWalk._walk_side_rot
 ActionSpooc._anim_movement = CopActionWalk._anim_movement
+ActionSpooc._move_dir_convert = CopActionWalk._move_dir_convert
 ActionSpooc._get_max_walk_speed = CopActionWalk._get_max_walk_speed
 ActionSpooc._get_current_max_walk_speed = CopActionWalk._get_current_max_walk_speed
 ActionSpooc._global_incremental_action_ID = 1
 ActionSpooc._apply_freefall = CopActionWalk._apply_freefall
+ActionSpooc._fallback_pose = "stand"
 ActionSpooc._tmp_vec1 = Vector3()
 ActionSpooc._tmp_vec2 = Vector3()
 
@@ -267,7 +269,6 @@ function ActionSpooc:_start_sprint()
 		self:_set_updator("_upd_start_anim_first_frame")
 	else
 		self:_set_updator("_upd_sprint")
-		self._common_data.unit:base():chk_freeze_anims()
 	end
 end
 
@@ -334,7 +335,6 @@ function ActionSpooc:_upd_strike_first_frame(t)
 	self._last_vel_z = 0
 
 	self:_set_updator("_upd_striking")
-	self._common_data.unit:base():chk_freeze_anims()
 end
 
 function ActionSpooc:_upd_chase_path()
@@ -476,7 +476,7 @@ function ActionSpooc:_upd_sprint(t)
 
 		self._ext_movement:set_rotation(rot_new)
 
-		local pose = self._stance.values[4] > 0 and "wounded" or self._ext_anim.pose or "stand"
+		local pose = self._stance.values[4] > 0 and "wounded" or self._ext_anim.pose or self._fallback_pose
 		local real_velocity = self._cur_vel
 		local variant = nil
 
@@ -506,7 +506,7 @@ function ActionSpooc:_upd_sprint(t)
 
 		self:_adjust_move_anim(wanted_walk_dir, variant)
 
-		local pose = self._ext_anim.pose
+		local pose = self._ext_anim.pose or self._fallback_pose
 		local anim_walk_speed = self._walk_anim_velocities[pose][self._common_data.stance.name][variant][wanted_walk_dir]
 		local wanted_walk_anim_speed = real_velocity / anim_walk_speed
 
@@ -521,12 +521,11 @@ function ActionSpooc:_upd_sprint(t)
 end
 
 function ActionSpooc:_upd_start_anim_first_frame(t)
-	local pose = self._ext_anim.pose
+	local pose = self._ext_anim.pose or self._fallback_pose
 	local speed_mul = self._walk_velocity.fwd / self._walk_anim_velocities[pose][self._common_data.stance.name].run.fwd
 
 	self:_start_move_anim(self._start_run_turn and self._start_run_turn[3] or self._start_run_straight, "run", speed_mul, self._start_run_turn)
 	self:_set_updator("_upd_start_anim")
-	self._common_data.unit:base():chk_freeze_anims()
 end
 
 function ActionSpooc:_upd_start_anim(t)
@@ -690,6 +689,14 @@ end
 
 function ActionSpooc:_expire()
 	self._expired = true
+
+	if Network:is_server() and self._ext_anim.spooc_loop then
+		self._ext_movement:action_request({
+			sync = true,
+			body_part = 1,
+			type = "idle"
+		})
+	end
 end
 
 function ActionSpooc:save(save_data)
@@ -1030,7 +1037,7 @@ function ActionSpooc:on_attention(attention)
 end
 
 function ActionSpooc:complete()
-	return self._beating_end_t and self._beating_end_t < TimerManager:game():time() and self._last_vel_z >= 0
+	return self._beating_end_t and self._beating_end_t < TimerManager:game():time() and (not self._action_desc.flying_strike or self._last_vel_z >= 0)
 end
 
 function ActionSpooc:action_id()

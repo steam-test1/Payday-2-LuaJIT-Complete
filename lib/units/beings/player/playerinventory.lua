@@ -124,7 +124,6 @@ function PlayerInventory:destroy_all_items()
 	end
 
 	local shield_unit = self._shield_unit
-	self._shield_unit = nil
 
 	if alive(shield_unit) then
 		self:unequip_shield()
@@ -823,7 +822,6 @@ function PlayerInventory:load(load_data)
 	if my_load_data.chk_shield_dummy_removal then
 		self._shield_unit_name = nil
 		local shield_unit = self._shield_unit
-		self._shield_unit = nil
 
 		if alive(shield_unit) and shield_unit:id() == -1 then
 			self:unequip_shield()
@@ -948,8 +946,18 @@ function PlayerInventory:set_mask_visibility(state)
 
 	self:update_mask_offset(mask_data)
 
+	local base_ext = self._unit:base()
+
+	if base_ext and base_ext.visibility_state then
+		mask_unit:set_visible(base_ext:visibility_state())
+	end
+
 	if not mask_id or not tweak_data.blackmarket.masks[mask_id].type then
 		local backside = World:spawn_unit(Idstring("units/payday2/masks/msk_backside/msk_backside"), mask_align:position(), mask_align:rotation())
+
+		if base_ext and base_ext.visibility_state then
+			backside:set_visible(base_ext:visibility_state())
+		end
 
 		self._mask_unit:link(self._mask_unit:orientation_object():name(), backside, backside:orientation_object():name())
 	end
@@ -1167,6 +1175,18 @@ function PlayerInventory:on_shield_break(attacker_unit)
 	self:drop_shield()
 end
 
+function PlayerInventory:set_lod_stage(stage)
+	local weapon = self.get_weapon and self:get_weapon()
+
+	if weapon then
+		local base_ext = weapon:base()
+
+		if base_ext and base_ext.set_flashlight_light_lod_enabled then
+			base_ext:set_flashlight_light_lod_enabled(stage == 1)
+		end
+	end
+end
+
 function PlayerInventory:set_visibility_state(state)
 	for i, sel_data in pairs(self._available_selections) do
 		local enabled = sel_data.unit:enabled()
@@ -1174,6 +1194,18 @@ function PlayerInventory:set_visibility_state(state)
 		sel_data.unit:base():set_visibility_state(enabled and state)
 	end
 
+	self:set_shield_visible(state)
+
+	if alive(self._mask_unit) then
+		self._mask_unit:set_visible(state)
+
+		for _, linked_unit in ipairs(self._mask_unit:children()) do
+			linked_unit:set_visible(state)
+		end
+	end
+end
+
+function PlayerInventory:set_shield_visible(state)
 	if alive(self._shield_unit) then
 		self._shield_unit:set_visible(state)
 	end
@@ -1184,6 +1216,10 @@ function PlayerInventory:set_weapon_enabled(state)
 		self:equipped_unit():set_enabled(state)
 	end
 
+	self:set_shield_enabled(state)
+end
+
+function PlayerInventory:set_shield_enabled(state)
 	if alive(self._shield_unit) then
 		self._shield_unit:set_enabled(state)
 	end

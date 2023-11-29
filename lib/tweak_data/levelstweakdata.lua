@@ -880,6 +880,7 @@ function LevelsTweakData:init()
 				foes = {
 					converted_enemy = true,
 					criminal1 = true,
+					hacked_turret = true,
 					mobster1 = true
 				},
 				friends = {}
@@ -888,16 +889,22 @@ function LevelsTweakData:init()
 				foes = {
 					converted_enemy = true,
 					law1 = true,
+					hacked_turret = true,
 					criminal1 = true
 				},
-				friends = {}
+				friends = {
+					mobster_boss = true
+				}
 			},
 			mobster_boss = {
 				foes = {
 					converted_enemy = true,
-					criminal1 = true
+					criminal1 = true,
+					hacked_turret = true
 				},
-				friends = {}
+				friends = {
+					mobster1 = true
+				}
 			},
 			converted_enemy = {
 				foes = {
@@ -915,6 +922,7 @@ function LevelsTweakData:init()
 			},
 			hacked_turret = {
 				foes = {
+					mobster_boss = true,
 					law1 = true,
 					mobster1 = true
 				},
@@ -1246,7 +1254,8 @@ function LevelsTweakData:init()
 		},
 		cube = "cube_apply_heist_bank",
 		max_bags = 1000,
-		ai_group_type = america
+		ai_group_type = america,
+		no_police_calling = true
 	}
 	self.peta = {
 		name_id = "heist_peta_hl",
@@ -1300,7 +1309,8 @@ function LevelsTweakData:init()
 		music = "heist",
 		package = "packages/narr_man",
 		cube = "cube_apply_heist_bank",
-		max_bags = 10
+		max_bags = 10,
+		no_police_calling = true
 	}
 	self.dark = {
 		name_id = "heist_dark_hl",
@@ -1330,7 +1340,10 @@ function LevelsTweakData:init()
 		music = "heist",
 		package = "packages/lvl_mad",
 		cube = "cube_apply_heist_bank",
-		ai_group_type = russia
+		ai_group_type = russia,
+		prevent_carry_disposal = table.list_to_set({
+			"person"
+		})
 	}
 	self.biker_train = {
 		name_id = "heist_biker_train_hl",
@@ -1498,7 +1511,8 @@ function LevelsTweakData:init()
 			no_hostages = true
 		},
 		is_safehouse = true,
-		disable_mutators = true
+		disable_mutators = true,
+		no_police_calling = true
 	}
 	self.chill_combat = {
 		name_id = "heist_chill_combat_hl",
@@ -1649,7 +1663,15 @@ function LevelsTweakData:init()
 		equipment = {
 			"saw"
 		},
-		player_style = "raincoat"
+		player_style = "raincoat",
+		no_police_calling = true,
+		on_enter_clbks = {
+			function ()
+				if Network:is_server() then
+					managers.groupai:state():on_police_weapons_hot(managers.groupai:state().analyse_giveaway("empty"))
+				end
+			end
+		}
 	}
 	self.dah = {
 		name_id = "heist_dah_hl",
@@ -2107,6 +2129,7 @@ function LevelsTweakData:init()
 				foes = {
 					converted_enemy = true,
 					criminal1 = true,
+					hacked_turret = true,
 					mobster1 = true
 				},
 				friends = {}
@@ -2115,6 +2138,7 @@ function LevelsTweakData:init()
 				foes = {
 					converted_enemy = true,
 					law1 = true,
+					hacked_turret = true,
 					criminal1 = true
 				},
 				friends = {}
@@ -2166,62 +2190,7 @@ function LevelsTweakData:init()
 		narrator = "locke",
 		ghost_bonus = 0.15,
 		load_screen = "guis/dlcs/fex/textures/loading/job_fex_01_df",
-		teams = {
-			criminal1 = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {
-					converted_enemy = true,
-					escort = true
-				}
-			},
-			law1 = {
-				foes = {
-					converted_enemy = true,
-					criminal1 = true,
-					mobster1 = true
-				},
-				friends = {}
-			},
-			mobster1 = {
-				foes = {
-					converted_enemy = true,
-					law1 = true,
-					criminal1 = true
-				},
-				friends = {}
-			},
-			converted_enemy = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {
-					criminal1 = true,
-					escort = true
-				}
-			},
-			neutral1 = {
-				foes = {},
-				friends = {}
-			},
-			hacked_turret = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {}
-			},
-			escort = {
-				foes = {},
-				friends = {
-					converted_enemy = true,
-					criminal1 = true
-				}
-			}
-		}
+		teams = deep_clone(self.pex.teams)
 	}
 	self.chas = {
 		name_id = "heist_chas_hl",
@@ -2240,62 +2209,7 @@ function LevelsTweakData:init()
 		narrator = "locke",
 		ghost_bonus = 0.15,
 		load_screen = "guis/dlcs/chas/textures/loading/job_chas_01_df",
-		teams = {
-			criminal1 = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {
-					converted_enemy = true,
-					escort = true
-				}
-			},
-			law1 = {
-				foes = {
-					converted_enemy = true,
-					criminal1 = true,
-					mobster1 = true
-				},
-				friends = {}
-			},
-			mobster1 = {
-				foes = {
-					converted_enemy = true,
-					law1 = true,
-					criminal1 = true
-				},
-				friends = {}
-			},
-			converted_enemy = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {
-					criminal1 = true,
-					escort = true
-				}
-			},
-			neutral1 = {
-				foes = {},
-				friends = {}
-			},
-			hacked_turret = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {}
-			},
-			escort = {
-				foes = {},
-				friends = {
-					converted_enemy = true,
-					criminal1 = true
-				}
-			}
-		}
+		teams = deep_clone(self.fex.teams)
 	}
 	self.sand = {
 		name_id = "heist_sand_hl",
@@ -2314,62 +2228,7 @@ function LevelsTweakData:init()
 		narrator = "locke",
 		ghost_bonus = 0.15,
 		load_screen = "guis/dlcs/sand/textures/loading/job_sand_01_df",
-		teams = {
-			criminal1 = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {
-					converted_enemy = true,
-					escort = true
-				}
-			},
-			law1 = {
-				foes = {
-					converted_enemy = true,
-					criminal1 = true,
-					mobster1 = true
-				},
-				friends = {}
-			},
-			mobster1 = {
-				foes = {
-					converted_enemy = true,
-					law1 = true,
-					criminal1 = true
-				},
-				friends = {}
-			},
-			converted_enemy = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {
-					criminal1 = true,
-					escort = true
-				}
-			},
-			neutral1 = {
-				foes = {},
-				friends = {}
-			},
-			hacked_turret = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {}
-			},
-			escort = {
-				foes = {},
-				friends = {
-					converted_enemy = true,
-					criminal1 = true
-				}
-			}
-		}
+		teams = deep_clone(self.chas.teams)
 	}
 	self.chca = {
 		name_id = "heist_chca_hl",
@@ -2391,62 +2250,7 @@ function LevelsTweakData:init()
 		narrator = "locke",
 		ghost_bonus = 0.15,
 		load_screen = "guis/dlcs/chca/textures/loading/job_chca_01_df",
-		teams = {
-			criminal1 = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {
-					converted_enemy = true,
-					escort = true
-				}
-			},
-			law1 = {
-				foes = {
-					converted_enemy = true,
-					criminal1 = true,
-					mobster1 = true
-				},
-				friends = {}
-			},
-			mobster1 = {
-				foes = {
-					converted_enemy = true,
-					law1 = true,
-					criminal1 = true
-				},
-				friends = {}
-			},
-			converted_enemy = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {
-					criminal1 = true,
-					escort = true
-				}
-			},
-			neutral1 = {
-				foes = {},
-				friends = {}
-			},
-			hacked_turret = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {}
-			},
-			escort = {
-				foes = {},
-				friends = {
-					converted_enemy = true,
-					criminal1 = true
-				}
-			}
-		}
+		teams = deep_clone(self.sand.teams)
 	}
 	self.pent = {
 		name_id = "heist_pent_hl",
@@ -2465,62 +2269,7 @@ function LevelsTweakData:init()
 		narrator = "locke",
 		ghost_bonus = 0.15,
 		load_screen = "guis/dlcs/pent/textures/loading/job_pent_01_df",
-		teams = {
-			criminal1 = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {
-					converted_enemy = true,
-					escort = true
-				}
-			},
-			law1 = {
-				foes = {
-					converted_enemy = true,
-					criminal1 = true,
-					mobster1 = true
-				},
-				friends = {}
-			},
-			mobster1 = {
-				foes = {
-					converted_enemy = true,
-					law1 = true,
-					criminal1 = true
-				},
-				friends = {}
-			},
-			converted_enemy = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {
-					criminal1 = true,
-					escort = true
-				}
-			},
-			neutral1 = {
-				foes = {},
-				friends = {}
-			},
-			hacked_turret = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {}
-			},
-			escort = {
-				foes = {},
-				friends = {
-					converted_enemy = true,
-					criminal1 = true
-				}
-			}
-		}
+		teams = deep_clone(self.chca.teams)
 	}
 	self.ranc = {
 		name_id = "heist_ranc_hl",
@@ -2540,62 +2289,7 @@ function LevelsTweakData:init()
 		narrator = "locke",
 		ghost_bonus = 0.15,
 		load_screen = "guis/dlcs/ranc/textures/loading/job_ranc_01_df",
-		teams = {
-			criminal1 = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {
-					converted_enemy = true,
-					escort = true
-				}
-			},
-			law1 = {
-				foes = {
-					converted_enemy = true,
-					criminal1 = true,
-					mobster1 = true
-				},
-				friends = {}
-			},
-			mobster1 = {
-				foes = {
-					converted_enemy = true,
-					law1 = true,
-					criminal1 = true
-				},
-				friends = {}
-			},
-			converted_enemy = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {
-					criminal1 = true,
-					escort = true
-				}
-			},
-			neutral1 = {
-				foes = {},
-				friends = {}
-			},
-			hacked_turret = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {}
-			},
-			escort = {
-				foes = {},
-				friends = {
-					converted_enemy = true,
-					criminal1 = true
-				}
-			}
-		}
+		teams = deep_clone(self.pent.teams)
 	}
 	self.trai = {
 		name_id = "heist_trai_hl",
@@ -2626,62 +2320,7 @@ function LevelsTweakData:init()
 				}
 			}
 		},
-		teams = {
-			criminal1 = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {
-					converted_enemy = true,
-					escort = true
-				}
-			},
-			law1 = {
-				foes = {
-					converted_enemy = true,
-					criminal1 = true,
-					mobster1 = true
-				},
-				friends = {}
-			},
-			mobster1 = {
-				foes = {
-					converted_enemy = true,
-					law1 = true,
-					criminal1 = true
-				},
-				friends = {}
-			},
-			converted_enemy = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {
-					criminal1 = true,
-					escort = true
-				}
-			},
-			neutral1 = {
-				foes = {},
-				friends = {}
-			},
-			hacked_turret = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {}
-			},
-			escort = {
-				foes = {},
-				friends = {
-					converted_enemy = true,
-					criminal1 = true
-				}
-			}
-		}
+		teams = deep_clone(self.ranc.teams)
 	}
 	self.corp = {
 		name_id = "heist_corp_hl",
@@ -2712,62 +2351,7 @@ function LevelsTweakData:init()
 				}
 			}
 		},
-		teams = {
-			criminal1 = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {
-					converted_enemy = true,
-					escort = true
-				}
-			},
-			law1 = {
-				foes = {
-					converted_enemy = true,
-					criminal1 = true,
-					mobster1 = true
-				},
-				friends = {}
-			},
-			mobster1 = {
-				foes = {
-					converted_enemy = true,
-					law1 = true,
-					criminal1 = true
-				},
-				friends = {}
-			},
-			converted_enemy = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {
-					criminal1 = true,
-					escort = true
-				}
-			},
-			neutral1 = {
-				foes = {},
-				friends = {}
-			},
-			hacked_turret = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {}
-			},
-			escort = {
-				foes = {},
-				friends = {
-					converted_enemy = true,
-					criminal1 = true
-				}
-			}
-		}
+		teams = deep_clone(self.trai.teams)
 	}
 	self.deep = {
 		name_id = "heist_deep_hl",
@@ -2813,62 +2397,7 @@ function LevelsTweakData:init()
 				}
 			}
 		},
-		teams = {
-			criminal1 = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {
-					converted_enemy = true,
-					escort = true
-				}
-			},
-			law1 = {
-				foes = {
-					converted_enemy = true,
-					criminal1 = true,
-					mobster1 = true
-				},
-				friends = {}
-			},
-			mobster1 = {
-				foes = {
-					converted_enemy = true,
-					law1 = true,
-					criminal1 = true
-				},
-				friends = {}
-			},
-			converted_enemy = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {
-					criminal1 = true,
-					escort = true
-				}
-			},
-			neutral1 = {
-				foes = {},
-				friends = {}
-			},
-			hacked_turret = {
-				foes = {
-					law1 = true,
-					mobster1 = true
-				},
-				friends = {}
-			},
-			escort = {
-				foes = {},
-				friends = {
-					converted_enemy = true,
-					criminal1 = true
-				}
-			}
-		}
+		teams = deep_clone(self.corp.teams)
 	}
 	self._level_index = {
 		"welcome_to_the_jungle_1",
@@ -3284,6 +2813,7 @@ function LevelsTweakData:get_team_setup()
 				foes = {
 					converted_enemy = true,
 					criminal1 = true,
+					hacked_turret = true,
 					mobster1 = true
 				},
 				friends = {}
@@ -3292,6 +2822,7 @@ function LevelsTweakData:get_team_setup()
 				foes = {
 					converted_enemy = true,
 					law1 = true,
+					hacked_turret = true,
 					criminal1 = true
 				},
 				friends = {}
@@ -3380,8 +2911,6 @@ function LevelsTweakData:get_ai_group_type()
 		end
 	end
 
-	print("[LevelsTweakData:get_ai_group_type] group is not defined for this level, fallback on default")
-
 	return self.ai_groups.default
 end
 
@@ -3400,4 +2929,24 @@ function LevelsTweakData:get_narrator_prefix(narrator)
 	}
 
 	return narrator_codes[narrator] or "ban"
+end
+
+function LevelsTweakData:get_can_call_the_police()
+	local level_data = Global.level_data and Global.level_data.level_id and self[Global.level_data.level_id]
+
+	if level_data and level_data.no_police_calling then
+		return false
+	end
+
+	return true
+end
+
+function LevelsTweakData:get_prevent_carry_disposal(carry_id)
+	local level_data = Global.level_data and Global.level_data.level_id and self[Global.level_data.level_id]
+
+	if level_data and level_data.prevent_carry_disposal and level_data.prevent_carry_disposal[carry_id] then
+		return true
+	end
+
+	return false
 end

@@ -280,7 +280,8 @@ function SkillTreeTweakData:init()
 			upgrades = {
 				"player_intimidate_range_mul",
 				"player_intimidate_aura",
-				"player_civ_intimidation_mul"
+				"player_civ_intimidation_mul",
+				"player_intimidation_multiplier"
 			},
 			cost = self.costs.default
 		},
@@ -1973,8 +1974,7 @@ function SkillTreeTweakData:init()
 			upgrades = {
 				"player_marked_inc_dmg_distance_1",
 				"weapon_steelsight_highlight_specials",
-				"player_mark_enemy_time_multiplier",
-				"player_marked_distance_mul"
+				"player_mark_enemy_time_multiplier"
 			},
 			cost = self.costs.hightierpro
 		},

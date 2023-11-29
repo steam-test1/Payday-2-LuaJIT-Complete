@@ -108,6 +108,7 @@ function ElementSpawnEnemyDummy:produce(params)
 		end
 	end
 
+	unit:base():hide_and_remove_collisions_for_a_few_frames()
 	unit:base():add_destroy_listener(self._unit_destroy_clbk_key, callback(self, self, "clbk_unit_destroyed"))
 
 	unit:unit_data().mission_element = self

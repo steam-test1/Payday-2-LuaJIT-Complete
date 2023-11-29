@@ -3,6 +3,7 @@ ManageSpawnedUnits = ManageSpawnedUnits or class()
 function ManageSpawnedUnits:init(unit)
 	self._unit = unit
 	self._spawned_units = {}
+	self._visibility_state = true
 
 	unit:set_extension_update_enabled(Idstring("spawn_manager"), false)
 end
@@ -42,6 +43,8 @@ function ManageSpawnedUnits:spawn_unit(unit_id, align_obj_name, unit)
 			spawned_contour_ext:add(contour.type, false, nil, contour.color)
 		end
 	end
+
+	spawn_unit:set_visible(self._visibility_state)
 
 	local unit_entry = {
 		align_obj_name = align_obj_name,
@@ -193,7 +196,7 @@ function ManageSpawnedUnits:local_push_child_unit(unit_id, mass, pow, vec3_a, ve
 
 	self._spawned_units[unit_id].unit:push(mass, dir)
 
-	if Network:is_server() then
+	if Network:is_server() and not self.local_only then
 		managers.network:session():send_to_peers_synched("run_local_push_child_unit", self._unit, "spawn_manager", unit_id, mass, pow, vec3_a, vec3_b)
 	end
 end
@@ -206,7 +209,7 @@ function ManageSpawnedUnits:remove_unit(unit_id)
 		entry.unit:set_visible(false)
 		entry.unit:set_enabled(false)
 
-		if Network:is_server() or self.allow_client_spawn then
+		if Network:is_server() or entry.unit:id() == -1 then
 			entry.unit:set_slot(0)
 		end
 	end
@@ -215,7 +218,7 @@ function ManageSpawnedUnits:remove_unit(unit_id)
 end
 
 function ManageSpawnedUnits:destroy(unit)
-	local allowed_to_delete = Network:is_server() or self.allow_client_spawn
+	local allowed_to_delete = Network:is_server()
 
 	for i, entry in pairs(self._spawned_units) do
 		if alive(entry.unit) then
@@ -223,13 +226,27 @@ function ManageSpawnedUnits:destroy(unit)
 			entry.unit:set_visible(false)
 			entry.unit:set_enabled(false)
 
-			if allowed_to_delete then
+			if allowed_to_delete or entry.unit:id() == -1 then
 				entry.unit:set_slot(0)
 			end
 		end
 	end
 
 	self._spawned_units = {}
+end
+
+function ManageSpawnedUnits:on_post_detached_from_network()
+	if self._sync_spawn_and_link then
+		local spawned_units = self._spawned_units
+
+		for unit_id, _ in pairs(self._sync_spawn_and_link) do
+			local unit_entry = spawned_units[unit_id]
+
+			if unit_entry and alive(unit_entry.unit) and unit_entry.unit:id() ~= -1 then
+				detach_unit_from_network(unit_entry.unit)
+			end
+		end
+	end
 end
 
 function ManageSpawnedUnits:save(data)
@@ -242,11 +259,21 @@ function ManageSpawnedUnits:save(data)
 	data.managed_spawned_units = {
 		linked_joints = self._sync_spawn_and_link
 	}
+	local sync_units = {}
 
-	for sync_id, unit_entry in pairs(self._spawned_units) do
-		if alive(unit_entry.unit) and sync_id ~= -1 then
-			managers.network:session():send_to_peers_synched("sync_unit_spawn", self._unit, unit_entry.unit, unit_entry.align_obj_name, sync_id, "spawn_manager")
+	for unit_id, unit_entry in pairs(self._spawned_units) do
+		if alive(unit_entry.unit) and unit_entry.unit:id() ~= -1 then
+			sync_units[unit_id] = unit_entry
 		end
+	end
+
+	if next(sync_units) then
+		local peer = managers.network:session():dropin_peer()
+
+		managers.enemy:add_delayed_clbk("ManageSpawnedUnitsDropIn" .. tostring(self._unit:key()), callback(self, self, "_clbk_drop_in_sync", {
+			peer_id = peer:id(),
+			sync_units = sync_units
+		}), TimerManager:game():time() + 0.1)
 	end
 end
 
@@ -265,6 +292,30 @@ function ManageSpawnedUnits:load(data)
 	else
 		for id, data in pairs(self._sync_spawn_and_link) do
 			self:spawn_and_link_unit(data.joint_table, id, data.unit)
+		end
+	end
+end
+
+function ManageSpawnedUnits:_clbk_drop_in_sync(data)
+	if not alive(self._unit) or self._unit:id() == -1 then
+		return
+	end
+
+	local session = managers.network:session()
+
+	if not session then
+		return
+	end
+
+	local peer = session:peer(data.peer_id)
+
+	if not peer then
+		return
+	end
+
+	for unit_id, unit_entry in pairs(data.sync_units) do
+		if alive(unit_entry.unit) and unit_entry.unit:id() ~= -1 then
+			session:send_to_peer_synched(peer, "sync_unit_spawn", self._unit, unit_entry.unit, unit_entry.align_obj_name, unit_id, "spawn_manager")
 		end
 	end
 end
@@ -293,7 +344,7 @@ function ManageSpawnedUnits:_spawn_run_sequence(unit_id, sequence_name)
 	if unit:damage():has_sequence(sequence_name) then
 		unit:damage():run_sequence_simple(sequence_name)
 	else
-		Application:error(sequence_name, "sequence does not exist in:\n", unit:name())
+		Application:error("[ManageSpawnedUnits:_spawn_run_sequence] Sequence name '" .. tostring(sequence_name) .. "' does not exist in unit:\n", unit:name())
 	end
 end
 
@@ -332,4 +383,20 @@ function ManageSpawnedUnits:get_unit(unit_id)
 	end
 
 	return entry.unit
+end
+
+function ManageSpawnedUnits:set_visibility_state(state)
+	self._visibility_state = state
+
+	if self._sync_spawn_and_link then
+		local spawned_units = self._spawned_units
+
+		for unit_id, _ in pairs(self._sync_spawn_and_link) do
+			local unit_entry = spawned_units[unit_id]
+
+			if unit_entry and alive(unit_entry.unit) then
+				unit_entry.unit:set_visible(state)
+			end
+		end
+	end
 end

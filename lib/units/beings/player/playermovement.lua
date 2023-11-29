@@ -53,6 +53,9 @@ function PlayerMovement:init(unit)
 	mvector3.set_z(self._m_stand_pos, self._m_pos.z + 140)
 
 	self._m_com = math.lerp(self._m_pos, self._m_stand_pos, 0.5)
+	self._m_rot = unit:rotation()
+	self._m_fwd = self._m_rot:y()
+	self._m_right = self._m_rot:x()
 	self._kill_overlay_t = managers.player:player_timer():time() + 5
 	self._state_data = {
 		in_air = false,
@@ -100,6 +103,7 @@ function PlayerMovement:post_init()
 
 	self._m_head_rot = self._unit:camera()._m_cam_rot
 	self._m_head_pos = self._unit:camera()._m_cam_pos
+	self._m_head_fwd = self._unit:camera()._m_cam_fwd
 
 	if managers.navigation:is_data_ready() and (not Global.running_simulation or Global.running_simulation_with_mission) then
 		self._nav_tracker = managers.navigation:create_nav_tracker(self._unit:position())
@@ -275,6 +279,26 @@ function PlayerMovement:m_com()
 	return self._m_com
 end
 
+function PlayerMovement:m_rot()
+	self._unit:m_rotation(self._m_rot)
+
+	return self._m_rot
+end
+
+function PlayerMovement:m_fwd()
+	self._unit:m_rotation(self._m_rot)
+	mrotation.y(self._m_rot, self._m_fwd)
+
+	return self._m_fwd
+end
+
+function PlayerMovement:m_right()
+	self._unit:m_rotation(self._m_rot)
+	mrotation.x(self._m_rot, self._m_right)
+
+	return self._m_right
+end
+
 function PlayerMovement:m_head_pos()
 	return self._m_head_pos
 end
@@ -283,12 +307,20 @@ function PlayerMovement:m_head_rot()
 	return self._m_head_rot
 end
 
+function PlayerMovement:m_head_fwd()
+	return self._m_head_fwd
+end
+
 function PlayerMovement:m_detect_pos()
 	return self._m_head_pos
 end
 
 function PlayerMovement:m_newest_pos()
 	return self._m_pos
+end
+
+function PlayerMovement:detect_look_dir()
+	return self._m_head_fwd
 end
 
 function PlayerMovement:get_object(object_name)

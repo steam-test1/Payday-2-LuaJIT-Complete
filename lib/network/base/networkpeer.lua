@@ -113,9 +113,9 @@ function NetworkPeer:set_rpc(rpc)
 	end
 end
 
-function NetworkPeer:create_ticket()
+function NetworkPeer:create_ticket(verifyer_id)
 	if self._need_steam_ticket then
-		return Steam:create_ticket(self._account_id)
+		return Steam:create_ticket(self._account_id, verifyer_id)
 	end
 
 	return ""
@@ -2131,7 +2131,7 @@ function NetworkPeer:unit_delete()
 		end
 
 		if self._unit:id() ~= -1 then
-			Network:detach_unit(self._unit)
+			detach_unit_from_network(self._unit)
 		end
 
 		self._unit:inventory():destroy_all_items()
@@ -2152,12 +2152,17 @@ function NetworkPeer:_update_equipped_armor()
 
 	if self._equipped_armor_id ~= new_armor_id then
 		self._equipped_armor_id = new_armor_id
-		local con_mul, index = managers.blackmarket:get_concealment_of_peer(self)
 
-		self._unit:base():set_suspicion_multiplier("equipment", 1 / con_mul)
-		self._unit:base():set_detection_multiplier("equipment", 1 / con_mul)
-		self._unit:base():setup_hud_offset(self)
+		self:update_concealment()
 	end
+end
+
+function NetworkPeer:update_concealment()
+	if not alive(self._unit) then
+		return
+	end
+
+	self._unit:base():update_concealment()
 end
 
 function NetworkPeer:set_is_dropin(is_dropin)

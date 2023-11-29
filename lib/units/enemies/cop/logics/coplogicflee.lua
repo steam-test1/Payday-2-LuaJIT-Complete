@@ -410,8 +410,7 @@ function CopLogicFlee._chk_reaction_to_attention_object(data, attention_data, st
 		if dis < 500 then
 			return math.min(attention_data.settings.reaction, AIAttentionObject.REACT_COMBAT)
 		elseif dis < 3000 then
-			local criminal_fwd = att_unit:movement():m_head_rot():y()
-			local criminal_look_dot = mvector3.dot(my_vec, criminal_fwd)
+			local criminal_look_dot = mvector3.dot(my_vec, att_unit:movement():detect_look_dir())
 
 			if criminal_look_dot > 0.9 then
 				local aggression_age = record.assault_t and data.t - record.assault_t

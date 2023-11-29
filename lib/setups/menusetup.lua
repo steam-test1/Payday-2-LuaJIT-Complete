@@ -164,6 +164,8 @@ function MenuSetup:init_game()
 
 						intro_skipped = true
 					end
+				elseif arg == "-single_shot_autofire" then
+					Global.single_shot_autofire = true
 				elseif arg == "+connect_lobby" then
 					Global.boot_invite = arg_list[i + 1]
 				elseif is_steam and is_mm_eos and arg == managers.network.account.connect_string then

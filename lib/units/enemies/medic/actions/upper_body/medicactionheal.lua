@@ -8,34 +8,21 @@ function MedicActionHeal:init(action_desc, common_data)
 	self._body_part = action_desc.body_part
 	self._unit = common_data.unit
 	self._machine = common_data.machine
-	self._attention = common_data.attention
 	self._action_desc = action_desc
 
-	self._ext_movement:play_redirect("heal")
-	self._unit:sound():say("heal", true)
+	if not self._ext_movement:play_redirect("heal", action_desc.start_anim_time) then
+		return false
+	end
 
-	self._done = false
-
-	self:check_achievements()
+	CopActionAct._create_blocks_table(self, action_desc.blocks)
+	self._ext_movement:enable_update()
 
 	return true
 end
 
-function MedicActionHeal:on_exit()
-	if self._unit:contour() then
-		self._unit:contour():remove("medic_healing", true)
-	end
-end
-
 function MedicActionHeal:update(t)
-	if not self._unit:anim_data().healing then
-		self._done = true
-
-		self._ext_movement:play_redirect("idle")
-		self._ext_movement:action_request({
-			body_part = 2,
-			type = "idle"
-		})
+	if not self._ext_anim.healing then
+		self._expired = true
 	end
 end
 
@@ -48,15 +35,11 @@ function MedicActionHeal:expired()
 end
 
 function MedicActionHeal:chk_block(action_type, t)
-	if action_type == "heavy_hurt" or action_type == "hurt" or action_type == "death" then
+	if action_type == "death" then
 		return false
 	end
 
-	return not self._done
-end
-
-function MedicActionHeal:on_attention(attention)
-	self._attention = attention
+	return CopActionAct.chk_block(self, action_type, t)
 end
 
 function MedicActionHeal:body_part()
@@ -68,14 +51,16 @@ function MedicActionHeal:need_upd()
 end
 
 function MedicActionHeal:save(save_data)
-	for i, k in pairs(self._action_desc) do
-		if type_name(k) ~= "Unit" or alive(k) then
-			save_data[i] = k
+	if self._ext_anim.heal then
+		for k, v in pairs(self._action_desc) do
+			save_data[k] = v
 		end
+
+		save_data.start_anim_time = self._machine:segment_real_time(Idstring("upper_body"))
 	end
 end
 
-function MedicActionHeal:check_achievements()
+function MedicActionHeal.check_achievements()
 	local total_healed = (managers.job:get_memory("medic_heal_total", true) or 0) + 1
 
 	managers.job:set_memory("medic_heal_total", total_healed, true)

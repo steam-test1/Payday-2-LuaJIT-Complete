@@ -193,13 +193,9 @@ function PlayerManager:check_skills()
 	end
 
 	if self:has_category_upgrade("player", "double_drop") then
-		self._target_kills = self:upgrade_value("player", "double_drop", 0)
-
-		self._message_system:register(Message.OnEnemyKilled, "double_ammo_drop", callback(self, self, "_on_spawn_extra_ammo_event"))
+		self._target_kills_double_drop = self:upgrade_value("player", "double_drop", 0)
 	else
-		self._target_kills = 0
-
-		self._message_system:unregister(Message.OnEnemyKilled, "double_ammo_drop")
+		self._target_kills_double_drop = nil
 	end
 
 	if self:has_category_upgrade("temporary", "single_shot_fast_reload") then
@@ -517,16 +513,6 @@ function PlayerManager:change_stockholm_syndrome_count(value)
 	end
 end
 
-function PlayerManager:_on_spawn_extra_ammo_event(equipped_unit, variant, killed_unit)
-	if self._num_kills % self._target_kills == 0 then
-		if Network:is_client() then
-			managers.network:session():send_to_host("sync_spawn_extra_ammo", killed_unit)
-		else
-			self:spawn_extra_ammo(killed_unit)
-		end
-	end
-end
-
 function PlayerManager:mul_melee_damage(value)
 	self._melee_dmg_mul = self._melee_dmg_mul * value
 end
@@ -686,6 +672,7 @@ function PlayerManager:_setup()
 	}
 	Global.player_manager.synced_bonuses = {}
 	Global.player_manager.synced_equipment_possession = {}
+	Global.player_manager.synced_equipment_possession_waiting = {}
 	Global.player_manager.synced_deployables = {}
 	Global.player_manager.synced_grenades = {}
 	Global.player_manager.synced_cable_ties = {}
@@ -1333,9 +1320,36 @@ function PlayerManager:aquire_equipment(upgrade, id, loading)
 	self:_verify_equipment_kit(loading)
 end
 
-function PlayerManager:spawn_extra_ammo(unit)
-	if alive(unit) then
-		unit:character_damage():drop_pickup(true)
+function PlayerManager:_on_spawn_extra_ammo_event(killed_unit)
+	if Network:is_client() then
+		if killed_unit:id() ~= -1 then
+			managers.network:session():send_to_host("sync_spawn_extra_ammo", killed_unit)
+		else
+			Application:error("[PlayerManager:_on_spawn_extra_ammo_event] Killed unit was already detached? Can't sync extra drop request to the host.")
+		end
+	else
+		self:spawn_extra_ammo(killed_unit, nil)
+	end
+end
+
+function PlayerManager:spawn_extra_ammo(killed_unit, requesting_peer)
+	if alive(killed_unit) and killed_unit:character_damage() and killed_unit:character_damage().drop_pickup then
+		killed_unit:character_damage():drop_pickup(true)
+	elseif requesting_peer then
+		local peer_unit = requesting_peer:unit()
+
+		if alive(peer_unit) then
+			local mov_ext = peer_unit:movement()
+			local tracker = mov_ext and mov_ext:nav_tracker()
+			local position = tracker and (tracker:lost() and tracker:field_position() or tracker:position()) or mov_ext and mov_ext:m_pos() or peer_unit:position()
+			local rotation = mov_ext and mov_ext:m_rot() or peer_unit:rotation()
+
+			managers.game_play_central:spawn_pickup({
+				name = "ammo",
+				position = position,
+				rotation = rotation
+			})
+		end
 	end
 end
 
@@ -1363,6 +1377,10 @@ function PlayerManager:on_killshot(killed_unit, variant, headshot, weapon_id)
 
 	if self._num_kills % self._SHOCK_AND_AWE_TARGET_KILLS == 0 and self:has_category_upgrade("player", "automatic_faster_reload") then
 		self:_on_enter_shock_and_awe_event()
+	end
+
+	if self._target_kills_double_drop and self._num_kills % self._target_kills_double_drop == 0 then
+		self:_on_spawn_extra_ammo_event(killed_unit)
 	end
 
 	local selection_index = equipped_unit and equipped_unit:base() and equipped_unit:base():selection_index() or 0
@@ -1701,10 +1719,6 @@ function PlayerManager:_check_damage_to_cops(t, unit, damage_info)
 		return
 	end
 
-	if damage_info.is_fire_dot_damage then
-		return
-	end
-
 	if CopDamage.is_civilian(unit:base()._tweak_table) then
 		return
 	end
@@ -1763,10 +1777,6 @@ function PlayerManager:_check_damage_to_hot(t, unit, damage_info)
 	end
 
 	if not alive(unit) or not unit:base() or not damage_info then
-		return
-	end
-
-	if damage_info.is_fire_dot_damage then
 		return
 	end
 
@@ -2697,6 +2707,15 @@ function PlayerManager:critical_hit_chance(detection_risk)
 	end
 
 	return multiplier
+end
+
+function PlayerManager:update_cached_detection_risk()
+	if not self._cached_detection_risk then
+		return
+	end
+
+	self._cached_detection_risk = managers.blackmarket:get_suspicion_offset_of_local(tweak_data.player.SUSPICION_OFFSET_LERP or 0.75)
+	self._cached_detection_risk = math.round(self._cached_detection_risk * 100)
 end
 
 function PlayerManager:get_value_from_risk_upgrade(risk_upgrade, detection_risk)
@@ -3710,6 +3729,11 @@ end
 
 function PlayerManager:set_synced_equipment_possession(peer_id, equipment, amount)
 	local only_update_amount = self._global.synced_equipment_possession[peer_id] and self._global.synced_equipment_possession[peer_id][equipment]
+
+	if Network:is_server() then
+		self:_chk_equipment_waiting_for_response(peer_id, equipment, amount, only_update_amount)
+	end
+
 	self._global.synced_equipment_possession[peer_id] = self._global.synced_equipment_possession[peer_id] or {}
 	self._global.synced_equipment_possession[peer_id][equipment] = amount or 1
 	local character_data = managers.criminals:character_data_by_peer_id(peer_id)
@@ -3726,6 +3750,41 @@ function PlayerManager:set_synced_equipment_possession(peer_id, equipment, amoun
 				icon = icon,
 				amount = amount
 			})
+		end
+	end
+end
+
+function PlayerManager:_set_equipment_waiting_for_response(peer_id, equipment, amount)
+	self._global.synced_equipment_possession_waiting[peer_id] = self._global.synced_equipment_possession_waiting[peer_id] or {}
+	self._global.synced_equipment_possession_waiting[peer_id][equipment] = (self._global.synced_equipment_possession_waiting[peer_id][equipment] or 0) + (amount or 1)
+end
+
+function PlayerManager:_chk_equipment_waiting_for_response(peer_id, equipment, amount, current_amount)
+	local peer_waiting = self._global.synced_equipment_possession_waiting[peer_id]
+
+	if not peer_waiting then
+		return
+	end
+
+	local waiting_for_equipment = peer_waiting[equipment]
+
+	if not waiting_for_equipment then
+		return
+	end
+
+	waiting_for_equipment = waiting_for_equipment + (current_amount or 0) - (amount or 1)
+
+	if waiting_for_equipment > 0 then
+		peer_waiting[equipment] = waiting_for_equipment
+	else
+		if waiting_for_equipment < 0 then
+			Application:error("[PlayerManager:_chk_equipment_waiting_for_response] Peer has more equipment than we expected?. Expected: " .. tostring(peer_waiting[equipment]) .. " | Synced: " .. tostring((amount or 1) - (current_amount or 0)) .. "")
+		end
+
+		peer_waiting[equipment] = nil
+
+		if not next(peer_waiting) then
+			self._global.synced_equipment_possession_waiting[peer_id] = nil
 		end
 	end
 end
@@ -3760,6 +3819,7 @@ function PlayerManager:transfer_from_custody_special_equipment_to(target_id)
 
 								if peer then
 									peer:send("give_equipment", name, transfer_amount, true)
+									self:_set_equipment_waiting_for_response(target_id, name, transfer_amount)
 								else
 									transfer_amount = 0
 
@@ -3788,7 +3848,14 @@ function PlayerManager:on_sole_criminal_respawned(peer_id)
 	self:transfer_from_custody_special_equipment_to(peer_id)
 end
 
-function PlayerManager:transfer_special_equipment(peer_id, include_custody)
+function PlayerManager:transfer_special_equipment(peer_id, include_custody, dropped_out)
+	if dropped_out and self._global.synced_equipment_possession_waiting[peer_id] then
+		for equipment_name, amount in pairs(self._global.synced_equipment_possession_waiting[peer_id]) do
+			self._global.synced_equipment_possession[peer_id] = self._global.synced_equipment_possession[peer_id] or {}
+			self._global.synced_equipment_possession[peer_id][equipment_name] = (self._global.synced_equipment_possession[peer_id][equipment_name] or 0) + amount
+		end
+	end
+
 	if self._global.synced_equipment_possession[peer_id] then
 		local local_peer = managers.network:session():local_peer()
 		local local_peer_id = local_peer:id()
@@ -3834,6 +3901,7 @@ function PlayerManager:transfer_special_equipment(peer_id, include_custody)
 				local equipment_lost = true
 				local amount_to_transfer = amount
 				local max_amount = equipment_data.transfer_quantity or 1
+				local safety_available_peers = dropped_out and {} or nil
 
 				for _, p in ipairs(peers) do
 					local id = p:id()
@@ -3844,6 +3912,17 @@ function PlayerManager:transfer_special_equipment(peer_id, include_custody)
 						amount_to_transfer = amount_to_transfer - transfer_amount
 
 						if Network:is_server() then
+							if safety_available_peers then
+								local max_amount = equipment_data.max_quantity or equipment_data.quantity
+
+								if max_amount and max_amount > peer_amount + transfer_amount then
+									table.insert(safety_available_peers, {
+										peer = p,
+										amount = max_amount - peer_amount - transfer_amount
+									})
+								end
+							end
+
 							if id == local_peer_id then
 								managers.player:add_special({
 									transfer = true,
@@ -3852,6 +3931,7 @@ function PlayerManager:transfer_special_equipment(peer_id, include_custody)
 								})
 							else
 								p:send("give_equipment", name, transfer_amount, true)
+								self:_set_equipment_waiting_for_response(id, name, transfer_amount)
 							end
 						end
 
@@ -3869,8 +3949,69 @@ function PlayerManager:transfer_special_equipment(peer_id, include_custody)
 					end
 				end
 
-				if equipment_lost and name == "evidence" then
-					managers.mission:call_global_event("equipment_evidence_lost")
+				if equipment_lost and Network:is_server() then
+					if dropped_out then
+						local to_send = {}
+
+						while #safety_available_peers > 0 do
+							local to_remove = {}
+
+							for idx, available_data in ipairs(safety_available_peers) do
+								amount_to_transfer = amount_to_transfer - 1
+								available_data.amount = available_data.amount - 1
+								to_send[idx] = to_send[idx] or {
+									amount = 0,
+									peer = available_data.peer
+								}
+								to_send[idx].amount = to_send[idx].amount + 1
+
+								if amount_to_transfer == 0 then
+									break
+								elseif available_data.amount == 0 then
+									table.insert(to_remove, idx)
+								end
+							end
+
+							if amount_to_transfer == 0 then
+								break
+							elseif #to_remove > 0 then
+								for _, idx in ipairs(to_remove) do
+									table.remove(safety_available_peers, idx)
+								end
+							end
+						end
+
+						for _, send_data in pairs(to_send) do
+							if send_data.peer:id() == local_peer_id then
+								managers.player:add_special({
+									transfer = true,
+									name = name,
+									amount = send_data.amount
+								})
+							else
+								send_data.peer:send("give_equipment", name, send_data.amount, true)
+								self:_set_equipment_waiting_for_response(peer:id(), name, send_data.amount)
+							end
+						end
+
+						if amount_to_transfer > 0 then
+							local level_id = managers.job:current_level_id()
+							local lvl_equipment = (tweak_data.levels[level_id] or {}).equipment
+
+							if not lvl_equipment or not table.contains(lvl_equipment, name) then
+								managers.player:add_special({
+									transfer = true,
+									dropped_out = true,
+									name = name,
+									amount = amount_to_transfer
+								})
+							elseif name == "evidence" then
+								managers.mission:call_global_event("equipment_evidence_lost")
+							end
+						end
+					elseif name == "evidence" then
+						managers.mission:call_global_event("equipment_evidence_lost")
+					end
 				end
 			end
 		end
@@ -3882,7 +4023,7 @@ function PlayerManager:peer_dropped_out(peer)
 	local peer_unit = peer:unit()
 
 	if Network:is_server() then
-		self:transfer_special_equipment(peer_id, true)
+		self:transfer_special_equipment(peer_id, true, true)
 
 		if self._global.synced_carry[peer_id] and self._global.synced_carry[peer_id].approved then
 			local carry_id = self._global.synced_carry[peer_id].carry_id
@@ -3914,6 +4055,7 @@ function PlayerManager:peer_dropped_out(peer)
 	end
 
 	self._global.synced_equipment_possession[peer_id] = nil
+	self._global.synced_equipment_possession_waiting[peer_id] = nil
 	self._global.synced_deployables[peer_id] = nil
 	self._global.synced_cable_ties[peer_id] = nil
 	self._global.synced_grenades[peer_id] = nil
@@ -4463,9 +4605,23 @@ function PlayerManager:add_special(params)
 	end
 
 	if special_equipment then
-		if equipment.max_quantity or equipment.quantity or params.transfer and equipment.transfer_quantity then
+		if equipment.max_quantity or equipment.quantity or params.transfer and equipment.transfer_quantity or params.dropped_out then
 			local dedigested_amount = special_equipment.amount and Application:digest_value(special_equipment.amount, false) or 1
-			local new_amount = self:has_category_upgrade(name, "quantity_unlimited") and -1 or math.min(dedigested_amount + amount, (params.transfer and equipment.transfer_quantity or equipment.max_quantity or equipment.quantity) + extra)
+			local max_amount = nil
+
+			if not params.dropped_out then
+				if params.transfer then
+					max_amount = equipment.transfer_quantity or 1
+
+					if equipment.max_quantity or equipment.quantity then
+						max_amount = math.max(max_amount, (equipment.max_quantity or equipment.quantity) + extra)
+					end
+				else
+					max_amount = (equipment.max_quantity or equipment.quantity) + extra
+				end
+			end
+
+			local new_amount = self:has_category_upgrade(name, "quantity_unlimited") and -1 or params.dropped_out and dedigested_amount + amount or math.min(dedigested_amount + amount, max_amount)
 			special_equipment.amount = Application:digest_value(new_amount, true)
 
 			if special_equipment.is_cable_tie then
@@ -4502,7 +4658,7 @@ function PlayerManager:add_special(params)
 	local is_cable_tie = name == "cable_tie"
 	local quantity = nil
 
-	if is_cable_tie or not params.transfer then
+	if is_cable_tie or not params.transfer and not params.dropped_out then
 		quantity = self:has_category_upgrade(name, "quantity_unlimited") and -1 or equipment.quantity and (respawn and math.min(params.amount, (equipment.max_quantity or equipment.quantity or 1) + extra) or equipment.quantity and math.min(amount + extra, (equipment.max_quantity or equipment.quantity or 1) + extra))
 	else
 		quantity = params.amount
@@ -4518,7 +4674,7 @@ function PlayerManager:add_special(params)
 		managers.hud:add_special_equipment({
 			id = name,
 			icon = icon,
-			amount = quantity or equipment.transfer_quantity and 1 or nil
+			amount = quantity or not equipment.avoid_tranfer and 1 or nil
 		})
 		self:update_equipment_possession_to_peers(name, quantity)
 	end
@@ -4895,10 +5051,10 @@ function PlayerManager:set_carry(carry_id, carry_multiplier, dye_initiated, has_
 	if not dye_initiated then
 		dye_initiated = true
 
-		if carry_data.dye then
+		if carry_data.dye and not CarryData.disable_dye_packs then
 			local chance = tweak_data.carry.dye.chance * managers.player:upgrade_value("player", "dye_pack_chance_multiplier", 1)
 
-			if false then
+			if math.rand(1) < chance then
 				has_dye_pack = true
 				dye_value_multiplier = math.round(tweak_data.carry.dye.value_multiplier * managers.player:upgrade_value("player", "dye_pack_cash_loss_multiplier", 1))
 			end
@@ -6180,13 +6336,21 @@ function PlayerManager:update_poison_gas(t, dt)
 end
 
 function PlayerManager:crew_add_concealment(new_value)
-	for k, v in pairs(managers.network:session():all_peers()) do
-		local unit = v:unit()
+	self:update_cached_detection_risk()
 
-		print(unit)
+	for _, peer in pairs(managers.network:session():all_peers()) do
+		peer:update_concealment()
+	end
+end
 
-		if unit then
-			unit:base():update_concealment()
+function PlayerManager:crew_ai_ap_ammo(new_value)
+	for u_key, u_data in pairs(managers.groupai:state():all_AI_criminals()) do
+		if not u_data.is_deployable then
+			local inv_ext = alive(u_data.unit) and u_data.unit:inventory()
+
+			if inv_ext and inv_ext.update_ap_ammo then
+				inv_ext:update_ap_ammo()
+			end
 		end
 	end
 end

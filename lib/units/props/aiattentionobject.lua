@@ -25,8 +25,6 @@ function AIAttentionObject:init(unit, is_not_extension)
 	self._is_extension = not is_not_extension
 
 	if self._is_extension then
-		self:set_update_enabled(true)
-
 		if Network:is_client() and unit:unit_data().only_visible_in_editor then
 			unit:set_visible(false)
 		end
@@ -41,7 +39,13 @@ function AIAttentionObject:init(unit, is_not_extension)
 				self:add_attention(att_setting)
 			end
 		end
+
+		self:set_update_enabled(true)
 	end
+end
+
+function AIAttentionObject:is_extension()
+	return self._is_extension
 end
 
 function AIAttentionObject:update(unit, t, dt)
@@ -49,6 +53,14 @@ function AIAttentionObject:update(unit, t, dt)
 end
 
 function AIAttentionObject:set_update_enabled(state)
+	if not self._is_extension then
+		return
+	end
+
+	if state and not self._registered then
+		state = false
+	end
+
 	self._unit:set_extension_update_enabled(Idstring("attention"), state)
 end
 
@@ -88,7 +100,7 @@ function AIAttentionObject:add_attention(settings)
 
 	self._attention_data[settings.id] = settings
 
-	if needs_register then
+	if needs_register or not self._registered then
 		self:_register()
 	end
 
@@ -104,9 +116,13 @@ function AIAttentionObject:remove_attention(id)
 		self._attention_data[id] = nil
 
 		if not next(self._attention_data) then
-			managers.groupai:state():unregister_AI_attention_object((self._parent_unit or self._unit):key())
-
 			self._attention_data = nil
+
+			if self._registered then
+				self:_unregister()
+			end
+		else
+			self:_chk_update_registered_state()
 		end
 
 		self:_call_listeners()
@@ -119,10 +135,14 @@ function AIAttentionObject:set_attention(settings, id)
 			self._attention_data = {
 				[id or settings.id] = settings
 			}
+
+			self:_chk_update_registered_state()
 		else
 			self._attention_data = nil
 
-			managers.groupai:state():unregister_AI_attention_object((self._parent_unit or self._unit):key())
+			if self._registered then
+				self:_unregister()
+			end
 		end
 
 		self:_call_listeners()
@@ -143,6 +163,8 @@ function AIAttentionObject:override_attention(original_preset_name, override_pre
 		local call_listeners = self._attention_data and self._attention_data[original_preset_name] or self._overrides[original_preset_name]
 		self._overrides[original_preset_name] = override_preset
 
+		self:_chk_update_registered_state()
+
 		if call_listeners then
 			self:_call_listeners()
 		end
@@ -153,12 +175,13 @@ function AIAttentionObject:override_attention(original_preset_name, override_pre
 			self._overrides = nil
 		end
 
+		self:_chk_update_registered_state()
 		self:_call_listeners()
 	end
 end
 
 function AIAttentionObject:get_attention(filter, min, max, team)
-	if not self._attention_data then
+	if not self._registered or not self._attention_data then
 		return
 	end
 
@@ -224,14 +247,93 @@ function AIAttentionObject:remove_listener(key)
 end
 
 function AIAttentionObject:_call_listeners()
-	local u_key = (self._parent_unit or self._unit):key()
+	if not self._register_key then
+		return
+	end
 
-	managers.groupai:state():on_AI_attention_changed(u_key)
-	self._listener_holder:call(u_key)
+	managers.groupai:state():on_AI_attention_changed(self._register_key)
+	self._listener_holder:call(self._register_key)
 end
 
 function AIAttentionObject:_register()
-	managers.groupai:state():register_AI_attention_object(self._parent_unit or self._unit, self, nil)
+	if self._registered then
+		debug_pause_unit(self._unit, "[AIAttentionObject:_register] Already registered? ", self._parent_unit, self._unit)
+
+		return
+	end
+
+	if not managers.groupai:state():enemy_weapons_hot() or not self:is_attention_irrelevant_for_weapons_hot() then
+		local tracker = not self._is_extension and self._unit:movement() and self._unit:movement():nav_tracker()
+
+		managers.groupai:state():register_AI_attention_object(self._parent_unit or self._unit, self, tracker)
+
+		self._registered = true
+		self._register_key = (self._parent_unit or self._unit):key()
+
+		self:set_update_enabled(true)
+	end
+end
+
+function AIAttentionObject:_unregister()
+	if not self._registered then
+		debug_pause_unit(self._unit, "[AIAttentionObject:_unregister] Wasn't registered? ", self._parent_unit, self._unit)
+
+		return
+	end
+
+	self._registered = nil
+
+	managers.groupai:state():unregister_AI_attention_object(self._register_key)
+	self:_call_listeners()
+
+	self._register_key = nil
+
+	self:set_update_enabled(false)
+end
+
+function AIAttentionObject:_chk_update_registered_state()
+	if not self._attention_data or not managers.groupai:state():enemy_weapons_hot() then
+		return
+	end
+
+	if self._registered then
+		if self:is_attention_irrelevant_for_weapons_hot() then
+			self:_unregister()
+		end
+	elseif not self:is_attention_irrelevant_for_weapons_hot() then
+		self:_register()
+	end
+end
+
+function AIAttentionObject:is_attention_irrelevant_for_weapons_hot()
+	if not self._is_extension then
+		return false
+	end
+
+	local overrides = self._overrides
+	local react_requirement = self.REACT_SHOOT
+
+	if overrides then
+		for id, settings in pairs(overrides) do
+			if react_requirement <= settings.reaction then
+				return false
+			end
+		end
+	end
+
+	for id, settings in pairs(self._attention_data) do
+		if (not overrides or not overrides[id]) and react_requirement <= settings.reaction then
+			return false
+		end
+	end
+
+	return true
+end
+
+function AIAttentionObject:on_enemy_weapons_hot()
+	if self._registered and self:is_attention_irrelevant_for_weapons_hot() then
+		self:_unregister()
+	end
 end
 
 function AIAttentionObject:link(parent_unit, obj_name, local_pos)
@@ -262,8 +364,15 @@ function AIAttentionObject:link(parent_unit, obj_name, local_pos)
 			managers.network:session():send_to_peers_synched("link_attention_no_rot", self._parent_unit, self._unit, obj_name, local_pos)
 		end
 
+		if self._registered then
+			self:_unregister()
+			self:_register()
+			self:_call_listeners()
+		end
+
 		self:set_update_enabled(true)
 	else
+		local had_parent = self._parent_unit
 		self._parent_unit = nil
 		self._parent_obj_name = nil
 		self._local_pos = nil
@@ -271,6 +380,12 @@ function AIAttentionObject:link(parent_unit, obj_name, local_pos)
 
 		if Network:is_server() then
 			managers.network:session():send_to_peers_synched("unlink_attention", self._unit)
+		end
+
+		if had_parent and self._registered then
+			self:_unregister()
+			self:_register()
+			self:_call_listeners()
 		end
 
 		self:set_update_enabled(false)

@@ -31,7 +31,7 @@ function ClientNetworkSession:request_join_host(host_rpc, is_invite, result_cb)
 
 	peer:set_name_drop_in(drop_in_name)
 
-	local ticket = peer:create_ticket()
+	local ticket = peer:create_ticket(self._local_peer:account_id())
 	self._server_peer = peer
 
 	Network:set_multiplayer(true)

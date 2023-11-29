@@ -295,15 +295,10 @@ function CopActionTase:update(t)
 						CopDamage._notify_listeners("on_criminal_tased", self._unit, self._attention.unit)
 
 						self._discharging = true
+						self._tasered_sound = self._unit:sound():play("tasered_3rd", nil)
 
-						if not self._tasing_local_unit:base().is_local_player then
-							self._tasered_sound = self._unit:sound():play("tasered_3rd", nil)
-						end
-
-						local redir_res = self._ext_movement:play_redirect("recoil")
-
-						if redir_res then
-							self._machine:set_parameter(redir_res, "hvy", 0)
+						if self._unit:base():lod_stage() == 1 then
+							self._ext_movement:play_redirect("recoil_single")
 						end
 
 						self._shoot_t = nil
@@ -311,10 +306,9 @@ function CopActionTase:update(t)
 				end
 			elseif not self._tasing_local_unit then
 				self._tasered_sound = self._unit:sound():play("tasered_3rd", nil)
-				local redir_res = self._ext_movement:play_redirect("recoil")
 
-				if redir_res then
-					self._machine:set_parameter(redir_res, "hvy", 0)
+				if self._unit:base():lod_stage() == 1 then
+					self._ext_movement:play_redirect("recoil_single")
 				end
 
 				self._shoot_t = nil

@@ -64,9 +64,12 @@ function ConcussionGrenade:_detonate(tag, unit, body, other_unit, other_body, po
 		verify_callback = callback(self, self, "_can_stun_unit")
 	})
 
-	managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", GrenadeBase.EVENT_IDS.detonate)
+	if self._unit:id() ~= -1 then
+		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", GrenadeBase.EVENT_IDS.detonate)
+	end
+
 	self:_flash_player()
-	self._unit:set_slot(0)
+	self:_handle_hiding_and_destroying(true, nil)
 end
 
 function ConcussionGrenade:_can_stun_unit(unit)
@@ -99,6 +102,7 @@ function ConcussionGrenade:_detonate_on_client()
 
 	managers.explosion:explode_on_client(pos, math.UP, nil, self._damage, range, self._curve_pow, self._custom_params)
 	self:_flash_player()
+	self:_handle_hiding_and_destroying(true, nil)
 end
 
 function ConcussionGrenade:_flash_player()

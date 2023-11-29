@@ -215,7 +215,8 @@ function GenericUserManager:reset_controls_setting_map()
 		"camera_zoom_sensitivity_y",
 		"sticky_aim",
 		"tap_to_interact",
-		"tap_to_interact_time"
+		"tap_to_interact_time",
+		"tap_to_interact_show_text"
 	}
 
 	for _, name in pairs(settings) do

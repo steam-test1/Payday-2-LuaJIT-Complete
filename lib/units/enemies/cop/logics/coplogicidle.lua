@@ -87,7 +87,7 @@ function CopLogicIdle.enter(data, new_logic_name, enter_params)
 		end
 
 		my_data.scan = objective.scan
-		my_data.rubberband_rotation = objective.rubberband_rotation and data.unit:movement():m_rot():y()
+		my_data.rubberband_rotation = objective.rubberband_rotation and mvector3.copy(data.unit:movement():m_fwd())
 	else
 		my_data.scan = true
 	end
@@ -139,6 +139,18 @@ function CopLogicIdle.exit(data, new_logic_name, enter_params)
 
 	if my_data.nearest_cover then
 		managers.navigation:release_cover(my_data.nearest_cover[1])
+	end
+
+	local current_attention = data.unit:movement():attention()
+
+	if current_attention then
+		if current_attention.pos then
+			my_data.attention_unit = mvector3.copy(current_attention.pos)
+		elseif current_attention.u_key then
+			my_data.attention_unit = current_attention.u_key
+		elseif current_attention.unit then
+			my_data.attention_unit = current_attention.unit:key()
+		end
 	end
 
 	data.brain:rem_pos_rsrv("path")
@@ -285,7 +297,7 @@ function CopLogicIdle._upd_scan(data, my_data)
 
 	if not my_data.stare_pos or not my_data.next_scan_t or data.t < my_data.next_scan_t then
 		if not my_data.turning and my_data.fwd_offset then
-			local return_spin = my_data.rubberband_rotation:to_polar_with_reference(data.unit:movement():m_rot():y(), math.UP).spin
+			local return_spin = my_data.rubberband_rotation:to_polar_with_reference(data.unit:movement():m_fwd(), math.UP).spin
 
 			if math.abs(return_spin) < 15 then
 				my_data.fwd_offset = nil
@@ -587,15 +599,17 @@ function CopLogicIdle.on_intimidated(data, amount, aggressor_unit)
 	if managers.groupai:state():has_room_for_police_hostage() then
 		local i_am_special = managers.groupai:state():is_enemy_special(data.unit)
 		local required_skill = i_am_special and "intimidate_specials" or "intimidate_enemies"
-		local aggressor_can_intimidate = nil
+		local aggressor_can_intimidate = true
 		local aggressor_intimidation_mul = 1
 
 		if aggressor_unit:base().is_local_player then
 			aggressor_can_intimidate = managers.player:has_category_upgrade("player", required_skill)
 			aggressor_intimidation_mul = aggressor_intimidation_mul * managers.player:upgrade_value("player", "empowered_intimidation_mul", 1) * managers.player:upgrade_value("player", "intimidation_multiplier", 1)
-		else
+		elseif aggressor_unit:base().is_husk_player then
 			aggressor_can_intimidate = aggressor_unit:base():upgrade_value("player", required_skill)
 			aggressor_intimidation_mul = aggressor_intimidation_mul * (aggressor_unit:base():upgrade_value("player", "empowered_intimidation_mul") or 1) * (aggressor_unit:base():upgrade_value("player", "intimidation_multiplier") or 1)
+		elseif i_am_special then
+			aggressor_can_intimidate = false
 		end
 
 		if aggressor_can_intimidate then
@@ -915,7 +929,7 @@ function CopLogicIdle.action_complete_clbk(data, action)
 		data.internal_data.turning = nil
 
 		if data.internal_data.fwd_offset then
-			local return_spin = data.internal_data.rubberband_rotation:to_polar_with_reference(data.unit:movement():m_rot():y(), math.UP).spin
+			local return_spin = data.internal_data.rubberband_rotation:to_polar_with_reference(data.unit:movement():m_fwd(), math.UP).spin
 
 			if math.abs(return_spin) < 15 then
 				data.internal_data.fwd_offset = nil
@@ -981,7 +995,7 @@ function CopLogicIdle.clbk_action_timeout(ignore_this, data)
 
 	my_data.action_expired = true
 
-	if data.unit:anim_data().act and data.unit:anim_data().needs_idle then
+	if data.unit:anim_data().act and data.unit:anim_data().needs_idle and not data.unit:anim_data().to_idle then
 		CopLogicIdle._start_idle_action_from_act(data)
 	end
 
@@ -1006,7 +1020,7 @@ function CopLogicIdle._chk_relocate(data)
 			return
 		end
 
-		if data.is_tied and data.objective.lose_track_dis and data.objective.lose_track_dis * data.objective.lose_track_dis < mvector3.distance_sq(data.m_pos, data.objective.follow_unit:movement():m_pos()) then
+		if data.is_tied and data.objective.lose_track_dis and data.objective.lose_track_dis * data.objective.lose_track_dis < mvector3.distance_sq(data.m_pos, data.objective.follow_unit:movement():m_newest_pos()) then
 			data.brain:set_objective(nil)
 
 			return true
@@ -1015,9 +1029,9 @@ function CopLogicIdle._chk_relocate(data)
 		local relocate = nil
 		local follow_unit = data.objective.follow_unit
 		local advance_pos = follow_unit:brain() and follow_unit:brain():is_advancing()
-		local follow_unit_pos = advance_pos or follow_unit:movement():m_pos()
+		local follow_unit_pos = advance_pos or follow_unit:movement():m_newest_pos()
 
-		if data.objective.relocated_to and mvector3.equal(data.objective.relocated_to, follow_unit_pos) then
+		if data.objective.relocated_to and mvector3.distance_sq(data.objective.relocated_to, follow_unit_pos) > 1 then
 			return
 		end
 
@@ -1046,10 +1060,11 @@ function CopLogicIdle._chk_relocate(data)
 
 			return true
 		end
-	elseif data.objective and data.objective.type == "defend_area" then
+	elseif data.objective and data.objective.type == "defend_area" and (not data.objective.grp_objective or data.objective.grp_objective.type ~= "retire") then
 		local area = data.objective.area
 
-		if area and not next(area.criminal.units) then
+		if area and not next(area.criminal.units) and (not data.attention_obj or AIAttentionObject.REACT_AIM > data.attention_obj.reaction) then
+			local records = managers.groupai:state():all_char_criminals()
 			local found_areas = {
 				[area] = true
 			}
@@ -1061,10 +1076,16 @@ function CopLogicIdle._chk_relocate(data)
 			while next(areas_to_search) do
 				local current_area = table.remove(areas_to_search)
 
-				if next(current_area.criminal.units) then
-					target_area = current_area
+				for criminal_key, _ in pairs(current_area.criminal.units) do
+					if records[criminal_key] then
+						local status = records[criminal_key].status
 
-					break
+						if not status or status == "electrified" then
+							target_area = current_area
+
+							break
+						end
+					end
 				end
 
 				for _, n_area in pairs(current_area.neighbours) do
@@ -1188,7 +1209,7 @@ function CopLogicIdle._chk_focus_on_attention_object(data, my_data)
 end
 
 function CopLogicIdle._chk_turn_needed(data, my_data, my_pos, look_pos)
-	local fwd = data.unit:movement():m_rot():y()
+	local fwd = data.unit:movement():m_fwd()
 	local target_vec = look_pos - my_pos
 	local error_polar = target_vec:to_polar_with_reference(fwd, math.UP)
 	local error_spin = error_polar.spin
@@ -1419,7 +1440,7 @@ function CopLogicIdle._upd_curious_reaction(data)
 	end
 
 	local function _get_spin_to_att_obj()
-		return (attention_obj.m_pos - data.m_pos):to_polar_with_reference(data.unit:movement():m_rot():y(), math.UP).spin
+		return (attention_obj.m_pos - data.m_pos):to_polar_with_reference(data.unit:movement():m_fwd(), math.UP).spin
 	end
 
 	local turned_around = nil
@@ -1447,7 +1468,8 @@ function CopLogicIdle._turn_by_spin(data, my_data, spin)
 	local new_action_data = {
 		body_part = 2,
 		type = "turn",
-		angle = spin
+		angle = spin,
+		sync = data.cool
 	}
 	my_data.turning = data.unit:brain():action_request(new_action_data)
 
@@ -1564,7 +1586,11 @@ function CopLogicIdle._perform_objective_action(data, my_data, objective)
 end
 
 function CopLogicIdle._upd_stop_old_action(data, my_data, objective)
-	local can_stop_action = not my_data.action_started and objective and objective.action and not data.unit:anim_data().to_idle
+	if data.unit:anim_data().to_idle then
+		return
+	end
+
+	local can_stop_action = not my_data.action_started and objective and objective.action and true or false
 
 	if objective and objective.type == "free" then
 		can_stop_action = true

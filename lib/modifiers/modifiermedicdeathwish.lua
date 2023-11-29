@@ -4,21 +4,31 @@ ModifierMedicDeathwish.name_id = "none"
 ModifierMedicDeathwish.desc_id = "menu_cs_modifier_medic_deathwish"
 
 function ModifierMedicDeathwish:OnEnemyDied(unit, damage_info)
-	if Network:is_client() then
+	if damage_info.is_synced or not managers.enemy:is_unit_registered_as_medic(unit) then
 		return
 	end
 
-	if unit:base():has_tag("medic") then
-		local enemies = World:find_units_quick(unit, "sphere", unit:position(), tweak_data.medic.radius, managers.slot:get_mask("enemies"))
+	local char_dmg_ext = unit:character_damage()
 
-		for _, enemy in ipairs(enemies) do
-			if unit:character_damage():heal_unit(enemy, true) then
-				enemy:movement():action_request({
-					body_part = 3,
-					type = "healed",
-					client_interrupt = Network:is_client()
-				})
-			end
+	if not char_dmg_ext or not char_dmg_ext.get_healing_radius then
+		local str = not char_dmg_ext and "No 'character_damage_extension' on unit." or "No 'get_healing_radius' function in 'character_damage' extension of unit."
+
+		Application:error("[ModifierMedicDeathwish:OnEnemyDied] " .. str, unit)
+
+		return
+	end
+
+	local enemies = World:find_units_quick(unit, "sphere", unit:position(), char_dmg_ext:get_healing_radius(), managers.slot:get_mask("enemies"))
+	local healed_anyone = false
+
+	for _, enemy in ipairs(enemies) do
+		if char_dmg_ext:heal_unit_external(enemy, false) then
+			healed_anyone = true
 		end
+	end
+
+	if healed_anyone then
+		MedicActionHeal.check_achievements()
+		managers.network:session():send_to_peers_synched("sync_medic_heal", nil)
 	end
 end

@@ -32,8 +32,6 @@ end
 
 function MutatorFriendlyFire:setup(mutator_manager)
 	MutatorFriendlyFire.super.setup(mutator_manager)
-
-	managers.slot._masks.bullet_impact_targets = managers.slot._masks.bullet_impact_targets_ff
 end
 
 function MutatorFriendlyFire:get_friendly_fire_damage_multiplier()
@@ -45,9 +43,11 @@ function MutatorFriendlyFire:modify_value(id, value)
 		return false
 	elseif id == "HuskPlayerDamage:FriendlyFireDamage" then
 		return value * self:get_friendly_fire_damage_multiplier() * 0.25
-	elseif id == "ProjectileBase:create_sweep_data:slot_mask" then
+	elseif id == "ProjectileBase:create_sweep_data:slot_mask" or id == "RaycastWeaponBase:modify_slot_mask" or id == "PlayerStandard:modify_melee_slot_mask" then
 		return value + 3
 	end
+
+	return value
 end
 
 function MutatorFriendlyFire:_min_damage()

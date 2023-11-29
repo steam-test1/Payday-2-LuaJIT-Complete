@@ -275,13 +275,11 @@ function SentryGunDamage:damage_fire(attack_data)
 
 		local attacker = attack_data.attacker_unit
 
-		if not attacker or attacker:id() == -1 then
+		if not alive(attacker) or attacker:id() == -1 then
 			attacker = self._unit
 		end
 
-		local i_attack_variant = CopDamage._get_attack_variant_index(self, attack_data.variant)
-
-		self._unit:network():send("damage_fire", attacker, damage_sync, false, self._dead and true or false, attack_data.col_ray.ray, nil, nil, false)
+		self._unit:network():send("damage_fire", attacker, damage_sync, self._dead and true or false, attack_data.col_ray.ray, 0, false)
 	end
 
 	if not self._dead then
@@ -444,9 +442,16 @@ function SentryGunDamage:die(attacker_unit, variant, options)
 	self._unit:brain():set_active(false)
 	self._unit:movement():set_active(false)
 	self._unit:movement():on_death()
-	managers.groupai:state():on_criminal_neutralized(self._unit)
+
+	if managers.groupai:state():criminal_record(self._unit:key()) then
+		managers.groupai:state():on_criminal_neutralized(self._unit)
+	end
+
 	self._unit:base():on_death()
-	self._unit:sound_source():post_event(self._breakdown_snd_event)
+
+	if self._breakdown_snd_event then
+		self._unit:sound_source():post_event(self._breakdown_snd_event)
+	end
 
 	self._shield_smoke_level = 0
 
@@ -456,9 +461,7 @@ function SentryGunDamage:die(attacker_unit, variant, options)
 		self._unit:damage():run_sequence_simple(sequence_death)
 	end
 
-	local turret_units = managers.groupai:state():turrets()
-
-	if turret_units and table.contains(turret_units, self._unit) then
+	if managers.groupai:state():is_unit_turret(self._unit) then
 		if global_event then
 			managers.mission:call_global_event("turret_destroyed")
 		end

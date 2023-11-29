@@ -84,12 +84,13 @@ end
 
 local tmp_vec1 = Vector3()
 ShieldFlashBase = ShieldFlashBase or class(SyncedShieldBase)
-ShieldFlashBase._NET_EVENTS = {
-	start_flash = 1
-}
 
 function ShieldFlashBase:init(...)
 	ShieldFlashBase.super.init(self, ...)
+
+	if self._unit:id() == -1 then
+		Application:error("[ShieldFlashBase:init] Unit must be network-synced.", self._unit)
+	end
 
 	self._flash_charge_cooldown_t = 0
 	local shield_tweak_data = self._shield_tweak_name and tweak_data.group_ai.flash_shields[self._shield_tweak_name]
@@ -199,10 +200,44 @@ function ShieldFlashBase:chk_body_hit_priority(old_body_hit, new_body_hit)
 	return self.super.chk_body_hit_priority(self, old_body_hit, new_body_hit)
 end
 
-function ShieldFlashBase:sync_net_event(event_id)
-	if event_id == self._NET_EVENTS.start_flash then
-		self:_start_flash()
+function ShieldFlashBase:sync_flash_start(event_sync_idx)
+	local dmg_ext = self._unit:damage()
+
+	if not dmg_ext then
+		Application:error("[ShieldFlashBase:sync_flash_start] No 'damage' extension found on unit.", self._unit)
+
+		return
 	end
+
+	local sequence_name = self._sync_flash_start_lookup and self._sync_flash_start_lookup[event_sync_idx] or "verify_start_flash"
+
+	if dmg_ext:has_sequence(sequence_name) then
+		dmg_ext:run_sequence_simple(sequence_name)
+	else
+		Application:error("[ShieldFlashBase:sync_flash_start] No sequence with name '" .. sequence_name .. "' found on unit.", self._unit)
+	end
+end
+
+function ShieldFlashBase:sync_flash_counter_stun(attacker_unit, pos, normal, event_sync_idx)
+	if self._already_countered_lookup and self._already_countered_lookup[event_sync_idx] then
+		return
+	end
+
+	local dmg_ext = self._unit:damage()
+
+	if not dmg_ext then
+		Application:error("[ShieldFlashBase:sync_flash_counter_stun] No 'damage' extension found on unit.", self._unit)
+	else
+		local sequence_name = self._sync_flash_counter_lookup and self._sync_flash_counter_lookup[event_sync_idx] or "verify_flash"
+
+		if dmg_ext:has_sequence(sequence_name) then
+			dmg_ext:run_sequence_simple(sequence_name)
+		else
+			Application:error("[ShieldFlashBase:sync_flash_counter_stun] No sequence with name '" .. sequence_name .. "' found on unit.", self._unit)
+		end
+	end
+
+	self:_do_counter_stun(pos, normal, attacker_unit, nil)
 end
 
 function ShieldFlashBase:is_charging()
@@ -221,7 +256,7 @@ function ShieldFlashBase:_flash()
 	end
 end
 
-function ShieldFlashBase:clbk_seq_flash_start(parent_obj, priority_counter_body)
+function ShieldFlashBase:clbk_seq_flash_start(parent_obj, priority_counter_body, event_sync_idx)
 	if self:is_charging() then
 		return
 	end
@@ -244,7 +279,7 @@ function ShieldFlashBase:clbk_seq_flash_start(parent_obj, priority_counter_body)
 	end
 
 	if Network:is_server() then
-		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", self._NET_EVENTS.start_flash)
+		managers.network:session():send_to_peers_synched("sync_shield_flash_start", self._unit, event_sync_idx or 0)
 	end
 
 	self._timer = self._flash_charge_timer
@@ -339,20 +374,31 @@ function ShieldFlashBase:clbk_seq_chk_interrupt_flash(parent_obj)
 	end
 end
 
-function ShieldFlashBase:clbk_seq_chk_interrupt_flash_hit(pos, normal, attacker_unit)
+function ShieldFlashBase:clbk_seq_chk_interrupt_flash_hit(pos, normal, attacker_unit, event_sync_idx)
 	local was_charging = self._charge_upd_enabled
 
 	self:clbk_seq_chk_interrupt_flash(self._effect_parent_obj)
 
 	if was_charging then
-		attacker_unit = alive(attacker_unit) and attacker_unit or nil
-
-		self:_do_counter_stun(pos, normal, attacker_unit)
+		self:_do_counter_stun(pos, normal, attacker_unit, event_sync_idx or 0)
 	end
 end
 
-function ShieldFlashBase:_do_counter_stun(pos, normal, attacker_unit, range_mul)
-	local range = self._flash_charge_stun_range * (range_mul or 1)
+function ShieldFlashBase:_do_counter_stun(pos, normal, attacker_unit, event_sync_idx)
+	attacker_unit = alive(attacker_unit) and attacker_unit or nil
+
+	if event_sync_idx then
+		self._already_countered_lookup = self._already_countered_lookup or {}
+		self._already_countered_lookup[event_sync_idx] = true
+		local has_authority = false
+		has_authority = (not Network:is_server() or attacker_unit and attacker_unit:base() and not attacker_unit:base().is_husk_player and false) and attacker_unit and attacker_unit:base() and attacker_unit:base().is_local_player
+
+		if has_authority then
+			managers.network:session():send_to_peers_synched("sync_shield_flash_counter_stun", self._unit, attacker_unit, pos, normal, event_sync_idx)
+		end
+	end
+
+	local range = self._flash_charge_stun_range
 	local slot_mask = self._flash_charge_stun_slotmask
 	local effect_params = {
 		camera_shake_max_mul = 4,

@@ -159,7 +159,7 @@ function GroupAIStateBase:upd_team_AI_distance()
 			end
 
 			if closest_unit then
-				if ai.unit:movement() and ai.unit:movement()._should_stay and closest_distance > tweak_data.team_ai.stop_action.distance * tweak_data.team_ai.stop_action.distance then
+				if ai.unit:movement() and ai.unit:movement():should_stay() and closest_distance > tweak_data.team_ai.stop_action.distance * tweak_data.team_ai.stop_action.distance then
 					ai.unit:movement():set_should_stay(false)
 					print("[GroupAIStateBase:update] team ai is too far away, started moving again")
 				end
@@ -229,6 +229,8 @@ function GroupAIStateBase:set_AI_enabled(state)
 
 	managers.enemy:dispose_all_corpses()
 
+	local detach_f = detach_unit_from_network
+
 	if not state then
 		self._num_converted_police = table.size(self._converted_police)
 
@@ -237,13 +239,13 @@ function GroupAIStateBase:set_AI_enabled(state)
 		end
 
 		for u_key, u_data in pairs(managers.enemy:all_enemies()) do
-			Network:detach_unit(u_data.unit)
+			detach_f(u_data.unit)
 			World:delete_unit(u_data.unit)
 		end
 
 		for u_key, u_data in pairs(self._criminals) do
 			if u_data.ai then
-				Network:detach_unit(u_data.unit)
+				detach_f(u_data.unit)
 				World:delete_unit(u_data.unit)
 			elseif u_data.is_deployable then
 				World:delete_unit(u_data.unit)
@@ -252,14 +254,14 @@ function GroupAIStateBase:set_AI_enabled(state)
 
 		for u_key, u_data in pairs(managers.enemy:all_civilians()) do
 			if alive(u_data.unit) then
-				Network:detach_unit(u_data.unit)
+				detach_f(u_data.unit)
 				World:delete_unit(u_data.unit)
 			end
 		end
 
 		for _, char in ipairs(managers.criminals:characters()) do
 			if char.ai == false and alive(char.unit) then
-				Network:detach_unit(char.unit)
+				detach_f(char.unit)
 				unit:set_extension_update_enabled(Idstring("movement"), false)
 			end
 		end
@@ -321,6 +323,7 @@ function GroupAIStateBase:_init_misc_data()
 	}
 	self._nav_seg_to_area_map = {}
 	self._security_cameras = {}
+	self._turret_units = {}
 	self._ecm_jammers = {}
 	self._suspicion_hud_data = {}
 	self._nr_successful_alarm_pager_bluffs = 0
@@ -560,7 +563,7 @@ function GroupAIStateBase:calm_ai()
 					})
 				end
 
-				if not crim.unit:anim_data().upper_body_empty then
+				if crim.unit:anim_data().upper_body_active and not crim.unit:anim_data().upper_body_empty then
 					crim.unit:movement():action_request({
 						sync = true,
 						body_part = 3,
@@ -673,6 +676,10 @@ function GroupAIStateBase:on_enemy_weapons_hot(is_delayed_callback)
 		managers.mission:call_global_event("police_weapons_hot")
 		self:_call_listeners("enemy_weapons_hot")
 		managers.enemy:set_corpse_disposal_enabled(true)
+
+		for u_key, attention_data in pairs(self:get_all_AI_attention_objects()) do
+			attention_data.handler:on_enemy_weapons_hot()
+		end
 	end
 end
 
@@ -687,6 +694,10 @@ end
 
 function GroupAIStateBase:is_police_called()
 	return self._police_called
+end
+
+function GroupAIStateBase:can_police_be_called()
+	return tweak_data.levels:get_can_call_the_police()
 end
 
 function GroupAIStateBase:enemy_weapons_hot()
@@ -1315,6 +1326,7 @@ function GroupAIStateBase:on_simulation_ended()
 	}
 	self._nav_seg_to_area_map = {}
 	self._security_cameras = {}
+	self._turret_units = {}
 	self._alert_listeners = {}
 	self._ecm_jammers = {}
 	self._enemy_loot_drop_points = {}
@@ -1368,11 +1380,13 @@ function GroupAIStateBase:on_enemy_registered(unit)
 		self._police_force = self._police_force + 1
 	end
 
-	local tags = unit:base().get_tags and unit:base():get_tags() or {}
+	if Network:is_server() then
+		local tags = unit:base().get_tags and unit:base():get_tags() or {}
 
-	for special_tag, is_set in pairs(self._special_unit_types) do
-		if is_set and tags[special_tag] then
-			self:register_special_unit(unit:key(), special_tag)
+		for special_tag, is_set in pairs(self._special_unit_types) do
+			if is_set and tags[special_tag] then
+				self:register_special_unit(unit:key(), special_tag)
+			end
 		end
 	end
 
@@ -1400,12 +1414,6 @@ function GroupAIStateBase:criminal_hurt_drama(unit, attacker, dmg_percent)
 end
 
 function GroupAIStateBase:on_enemy_unregistered(unit)
-	if self:is_unit_in_phalanx_minion_data(unit:key()) then
-		self:unregister_phalanx_minion(unit:key())
-		CopLogicPhalanxMinion:chk_should_breakup()
-		CopLogicPhalanxMinion:chk_should_reposition()
-	end
-
 	self._police_force = self._police_force - 1
 	local u_key = unit:key()
 
@@ -1413,6 +1421,12 @@ function GroupAIStateBase:on_enemy_unregistered(unit)
 
 	if not Network:is_server() then
 		return
+	end
+
+	if self:is_unit_in_phalanx_minion_data(u_key) then
+		self:unregister_phalanx_minion(u_key)
+		CopLogicPhalanxMinion:chk_should_breakup()
+		CopLogicPhalanxMinion:chk_should_reposition()
 	end
 
 	local e_data = self._police[u_key]
@@ -1513,7 +1527,13 @@ function GroupAIStateBase:on_civilian_unregistered(unit)
 end
 
 function GroupAIStateBase:report_aggression(unit)
-	self._criminals[unit:key()].assault_t = self._t
+	local record = self._criminals[unit:key()]
+
+	if not record then
+		return
+	end
+
+	record.assault_t = self._t
 end
 
 function GroupAIStateBase:register_fleeing_civilian(u_key, unit)
@@ -1543,6 +1563,26 @@ function GroupAIStateBase:unregister_special_unit(u_key, category_name)
 
 		if not next(category) then
 			self._special_units[category_name] = nil
+		end
+	end
+end
+
+function GroupAIStateBase:on_unit_tags_updated(unit, old_tags, new_tags)
+	if not Network:is_server() then
+		return
+	end
+
+	if old_tags or new_tags then
+		local u_key = unit:key()
+
+		for special_tag, is_set in pairs(self._special_unit_types) do
+			if is_set and old_tags and old_tags[special_tag] then
+				self:unregister_special_unit(u_key, special_tag)
+			end
+
+			if is_set and new_tags and new_tags[special_tag] then
+				self:register_special_unit(u_key, special_tag)
+			end
 		end
 	end
 end
@@ -3836,14 +3876,16 @@ function GroupAIStateBase:_adjust_cop_importance(e_key, imp_adj)
 	end
 end
 
-function GroupAIStateBase:queue_smoke_grenade(id, detonate_pos, duration, ignore_control, flashbang)
+function GroupAIStateBase:queue_smoke_grenade(id, detonate_pos, shooter_pos, duration, ignore_control, flashbang, instant)
 	self._smoke_grenades = self._smoke_grenades or {}
 	local data = {
 		id = id,
 		detonate_pos = detonate_pos,
+		shooter_pos = shooter_pos,
 		duration = duration,
 		ignore_control = ignore_control,
-		flashbang = flashbang
+		flashbang = flashbang,
+		instant = instant
 	}
 	self._smoke_grenades[id] = data
 end
@@ -3852,13 +3894,13 @@ function GroupAIStateBase:detonate_queued_smoke_grenades()
 	if self._smoke_grenades then
 		for id, data in pairs(self._smoke_grenades) do
 			if not data.grenade then
-				self:detonate_world_smoke_grenade(id)
+				self:detonate_world_smoke_grenade(id, true)
 			end
 		end
 	end
 end
 
-function GroupAIStateBase:detonate_world_smoke_grenade(id)
+function GroupAIStateBase:detonate_world_smoke_grenade(id, sync)
 	self._smoke_grenades = self._smoke_grenades or {}
 
 	if not self._smoke_grenades[id] then
@@ -3877,54 +3919,103 @@ function GroupAIStateBase:detonate_world_smoke_grenade(id)
 		local flashbang_unit = "units/payday2/weapons/wpn_frag_flashbang/wpn_frag_flashbang"
 		local pos = data.detonate_pos + Vector3(0, 0, 1)
 		local rotation = Rotation(math.random() * 360, 0, 0)
-		local flash_grenade = World:spawn_unit(Idstring(flashbang_unit), data.detonate_pos, rotation)
+		local flash_grenade = World:spawn_unit(Idstring(flashbang_unit), pos, rotation)
 
-		flash_grenade:base():activate(data.detonate_pos, data.duration)
+		managers.network:session():send_to_peers_synched("sync_flash_grenade_data", flash_grenade, data.shooter_pos or Vector3(), data.instant and true or false)
+
+		if data.instant then
+			flash_grenade:base():activate_immediately(data.shooter_pos, data.duration)
+		else
+			flash_grenade:base():activate(data.shooter_pos, data.duration)
+		end
 
 		self._smoke_grenades[id] = nil
 	else
 		data.duration = data.duration == 0 and 15 or data.duration
-		local smoke_grenade = World:spawn_unit(Idstring("units/weapons/smoke_grenade_quick/smoke_grenade_quick"), data.detonate_pos, Rotation())
+		local rotation = Rotation(math.random() * 360, 0, 0)
+		local smoke_grenade = World:spawn_unit(Idstring("units/weapons/smoke_grenade_quick/smoke_grenade_quick"), data.detonate_pos, rotation)
 
-		smoke_grenade:base():activate(data.detonate_pos, data.duration)
+		if data.instant then
+			smoke_grenade:base():activate_immediately(data.shooter_pos, data.duration)
+		else
+			smoke_grenade:base():activate(data.shooter_pos, data.duration)
+		end
+
 		managers.groupai:state():teammate_comment(nil, "g40x_any", data.detonate_pos, true, 2000, false)
 
 		data.grenade = smoke_grenade
+
+		self:_update_smoke_end_t(TimerManager:game():time() + data.duration)
 	end
 
-	if Network:is_server() then
-		managers.network:session():send_to_peers_synched("sync_smoke_grenade", data.detonate_pos, data.detonate_pos, data.duration, data.flashbang and true or false)
+	if sync and not flashbang and Network:is_server() then
+		managers.network:session():send_to_peers_synched("sync_smoke_grenade", data.detonate_pos, data.shooter_pos or Vector3(), data.duration, data.flashbang and true or false, data.instant and true or false)
 	end
 end
 
-function GroupAIStateBase:sync_smoke_grenade(detonate_pos, shooter_pos, duration, flashbang)
-	self._smoke_grenades = self._smoke_grenades or {}
-	local id = #self._smoke_grenades
+function GroupAIStateBase:detonate_smoke_grenade(detonate_pos, shooter_pos, duration, flashbang, instant)
+	if not flashbang then
+		managers.network:session():send_to_peers_synched("sync_smoke_grenade", detonate_pos, shooter_pos or Vector3(), duration, flashbang and true or false, instant and true or false)
+	end
 
-	self:queue_smoke_grenade(id, detonate_pos, duration, true, flashbang)
-	self:detonate_world_smoke_grenade(id)
+	self:sync_smoke_grenade(detonate_pos, shooter_pos, duration, flashbang, instant)
+end
+
+function GroupAIStateBase:sync_smoke_grenade(detonate_pos, shooter_pos, duration, flashbang, instant)
+	self._smoke_grenades = self._smoke_grenades or {}
+	local id = #self._smoke_grenades + 1
+
+	self:queue_smoke_grenade(id, detonate_pos, shooter_pos, duration, true, flashbang, instant)
+	self:detonate_world_smoke_grenade(id, false)
+end
+
+function GroupAIStateBase:spawn_instant_local_smoke_grenade(detonate_pos, duration)
+	self:sync_smoke_grenade(detonate_pos, nil, duration, false, false)
 end
 
 function GroupAIStateBase:sync_smoke_grenade_kill()
 	if self._smoke_grenades then
+		local base_ext = nil
+
 		for id, data in pairs(self._smoke_grenades) do
-			if alive(data.grenade) and data.grenade:base() and data.grenade:base().preemptive_kill then
-				data.grenade:base():preemptive_kill()
+			base_ext = alive(data.grenade) and data.grenade:base()
+
+			if base_ext and base_ext.preemptive_kill then
+				base_ext:preemptive_kill()
 			end
 		end
 
 		self._smoke_grenades = {}
 	end
+
+	self._smoke_end_t = nil
 end
 
-function GroupAIStateBase:sync_cs_grenade(detonate_pos, shooter_pos, duration)
+function GroupAIStateBase:_update_smoke_end_t(end_t)
+	self._smoke_end_t = self._smoke_end_t and math.max(self._smoke_end_t, end_t) or end_t
+end
+
+function GroupAIStateBase:is_smoke_grenade_active()
+	return self._smoke_end_t and TimerManager:game():time() < self._smoke_end_t
+end
+
+function GroupAIStateBase:detonate_cs_grenade(detonate_pos, shooter_pos, duration, instant)
+	managers.network:session():send_to_peers_synched("sync_cs_grenade", detonate_pos, shooter_pos or Vector3(), duration, instant and true or false)
+	self:sync_cs_grenade(detonate_pos, shooter_pos, duration, instant)
+end
+
+function GroupAIStateBase:sync_cs_grenade(detonate_pos, shooter_pos, duration, instant)
 	local cs_duration = duration == 0 and 15 or duration
-	self._cs_grenade = World:spawn_unit(Idstring("units/weapons/cs_grenade_quick/cs_grenade_quick"), detonate_pos, Rotation())
+	local rotation = Rotation(math.random() * 360, 0, 0)
+	self._cs_grenade = World:spawn_unit(Idstring("units/weapons/cs_grenade_quick/cs_grenade_quick"), detonate_pos, rotation)
 
-	self._cs_grenade:base():activate(shooter_pos or detonate_pos, cs_duration)
+	if instant then
+		self._cs_grenade:base():activate_immediately(shooter_pos, cs_duration)
+	else
+		self._cs_grenade:base():activate(shooter_pos, cs_duration)
+	end
 
-	self._cs_end_t = Application:time() + cs_duration
-	self._cs_grenade_ignore_control = nil
+	self._cs_end_t = TimerManager:game():time() + cs_duration
 end
 
 function GroupAIStateBase:sync_cs_grenade_kill()
@@ -3935,6 +4026,10 @@ function GroupAIStateBase:sync_cs_grenade_kill()
 	end
 
 	self._cs_end_t = nil
+end
+
+function GroupAIStateBase:is_cs_grenade_active()
+	return self._cs_end_t and TimerManager:game():time() < self._cs_end_t
 end
 
 function GroupAIStateBase:_call_listeners(event, params)
@@ -3974,6 +4069,8 @@ function GroupAIStateBase:sync_hostage_headcount(nr_hostages)
 end
 
 function GroupAIStateBase:_set_rescue_state(state)
+	return
+
 	self._rescue_allowed = state
 	local all_civilians = managers.enemy:all_civilians()
 
@@ -4133,6 +4230,8 @@ function GroupAIStateBase:chk_say_teamAI_combat_chatter(unit)
 	if chance < math.random() then
 		return
 	end
+
+	self._teamAI_last_combat_chatter_t = self._t
 
 	unit:sound():say("g90", true, true)
 end
@@ -5423,37 +5522,43 @@ function GroupAIStateBase:notify_bain_weapons_hot(called_reason)
 end
 
 GroupAIStateBase.blame_triggers = {
-	shield = "cop",
-	swat = "cop",
-	fbi = "cop",
 	heavy_swat = "cop",
+	swat = "cop",
+	tank = "cop",
+	fbi = "cop",
 	cop = "cop",
-	sniper = "cop",
+	security = "cop",
 	patrol = "cop",
 	civilian = "civ",
-	murky = "cop",
-	security = "cop",
-	biker_escape = "gan",
-	mobster = "gan",
-	medic = "cop",
-	biker_boss = "gan",
-	gangster = "gan",
-	civilian_female = "civ",
-	cop_female = "cop",
-	bank_manager = "civ",
+	bolivian_indoors = "gan",
+	bolivian = "gan",
+	biker_female = "gan",
+	security_mex = "cop",
 	escort = "civ",
+	shield = "cop",
+	sniper = "cop",
+	civilian_mariachi = "civ",
+	biker_escape = "gan",
+	civilian_no_penalty = "civ",
+	triad = "gan",
 	dealer = "gan",
-	tank = "cop",
 	security_camera = "cam",
 	bolivian_indoors_mex = "gan",
+	city_swat = "cop",
+	biker_boss = "gan",
+	mobster_boss = "gan",
+	murky = "cop",
+	civilian_female = "civ",
+	bank_manager = "civ",
+	gangster = "gan",
+	mobster = "gan",
+	medic = "cop",
+	biker = "gan",
+	cop_female = "cop",
 	spooc = "cop",
-	security_mex = "cop",
 	security_mex_no_pager = "cop",
 	taser = "cop",
-	mobster_boss = "gan",
-	civilian_no_penalty = "civ",
-	civilian_mariachi = "civ",
-	triad = "gan"
+	fbi_female = "cop"
 }
 GroupAIStateBase.unique_triggers = {
 	glass_alarm = "gls_alarm",
@@ -6222,25 +6327,43 @@ end
 
 function GroupAIStateBase:on_hostage_follow(owner, follower, state)
 	if state then
-		local owner_data = self:criminal_record(owner:key())
-		owner_data.following_hostages = owner_data.following_hostages or {}
-		owner_data.following_hostages[follower:key()] = follower
-		local follower_data = managers.enemy:all_civilians()[follower:key()]
+		owner = alive(owner) and owner or nil
 
-		if follower_data then
-			follower_data.hostage_following = owner
+		if owner then
+			local owner_data = self:criminal_record(owner:key())
+
+			if owner_data then
+				owner_data.following_hostages = owner_data.following_hostages or {}
+				owner_data.following_hostages[follower:key()] = follower
+			end
+
+			local follower_data = managers.enemy:all_civilians()[follower:key()]
+
+			if follower_data then
+				follower_data.hostage_following = owner
+			end
 		end
 
 		if Network:is_server() then
-			local peer = managers.network:session():peer_by_unit(owner)
+			local peer = owner and managers.network:session():peer_by_unit(owner)
 
-			if peer and peer:id() ~= managers.network:session():local_peer():id() then
-				peer:send_queued_sync("sync_unit_event_id_16", follower, "base", 1)
+			if peer then
+				local peer_id = peer:id()
+
+				if peer_id ~= managers.network:session():local_peer():id() then
+					peer:send_queued_sync("sync_unit_event_id_16", follower, "base", 1)
+					managers.network:session():send_to_peers_synched_except(peer_id, "sync_unit_event_id_16", follower, "base", 2)
+				else
+					managers.network:session():send_to_peers_synched("sync_unit_event_id_16", follower, "base", 2)
+				end
+			else
+				managers.network:session():send_to_peers_synched("sync_unit_event_id_16", follower, "base", 2)
 			end
 		end
 	else
 		local follower_data = managers.enemy:all_civilians()[follower:key()]
 		owner = owner or follower_data and follower_data.hostage_following
+		owner = alive(owner) and owner or nil
 		local owner_data = owner and self:criminal_record(owner:key())
 
 		if owner_data and owner_data.following_hostages then
@@ -6255,13 +6378,28 @@ function GroupAIStateBase:on_hostage_follow(owner, follower, state)
 			follower_data.hostage_following = nil
 		end
 
-		if owner and follower and Network:is_server() then
-			local peer = managers.network:session():peer_by_unit(owner)
+		if Network:is_server() and follower:id() ~= 1 then
+			local peer = owner and managers.network:session():peer_by_unit(owner)
 
-			if peer and peer:id() ~= managers.network:session():local_peer():id() then
-				peer:send_queued_sync("sync_unit_event_id_16", follower, "base", 2)
+			if peer then
+				local peer_id = peer:id()
+
+				if peer_id ~= managers.network:session():local_peer():id() then
+					peer:send_queued_sync("sync_unit_event_id_16", follower, "base", 3)
+					managers.network:session():send_to_peers_synched_except(peer_id, "sync_unit_event_id_16", follower, "base", 4)
+				else
+					managers.network:session():send_to_peers_synched("sync_unit_event_id_16", follower, "base", 4)
+				end
+			else
+				managers.network:session():send_to_peers_synched("sync_unit_event_id_16", follower, "base", 4)
 			end
 		end
+	end
+
+	local mov_ext = follower:movement()
+
+	if mov_ext and mov_ext.set_hostage_speed_modifier then
+		mov_ext:set_hostage_speed_modifier(state)
 	end
 end
 
@@ -6290,27 +6428,19 @@ function GroupAIStateBase:check_criminals_dead()
 end
 
 function GroupAIStateBase:register_turret(unit)
-	self._turret_units = self._turret_units or {}
-
-	table.insert(self._turret_units, unit)
+	self._turret_units[unit:key()] = unit
 end
 
 function GroupAIStateBase:unregister_turret(unit)
-	if not self._turret_units then
-		return
-	end
-
-	for id, turret_unit in pairs(self._turret_units) do
-		if turret_unit:key() == unit:key() then
-			self._turret_units[id] = nil
-
-			return
-		end
-	end
+	self._turret_units[unit:key()] = nil
 end
 
 function GroupAIStateBase:turrets()
 	return self._turret_units
+end
+
+function GroupAIStateBase:is_unit_turret(unit)
+	return self._turret_units[unit:key()] and true or false
 end
 
 function GroupAIStateBase:phalanx_minions()

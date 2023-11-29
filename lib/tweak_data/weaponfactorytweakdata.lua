@@ -28895,13 +28895,7 @@ function WeaponFactoryTweakData:create_ammunition()
 			damage_near_mul = 1,
 			bullet_class = "FlameBulletBase",
 			rays = 12,
-			fire_dot_data = {
-				dot_trigger_chance = "100",
-				dot_damage = "10",
-				dot_length = "3.1",
-				dot_trigger_max_distance = "1400",
-				dot_tick_period = "0.5"
-			}
+			dot_data_name = "ammo_dragons_breath"
 		},
 		forbids = {
 			"wpn_fps_upg_ns_shot_thick",
@@ -28930,19 +28924,10 @@ function WeaponFactoryTweakData:create_ammunition()
 		custom_stats = {
 			armor_piercing_add = 1,
 			muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_rip",
+			dot_data_name = "ammo_rip",
 			damage_far_mul = 1,
 			damage_near_mul = 1,
-			bullet_class = "PoisonBulletBase",
-			dot_data = {
-				type = "poison",
-				custom_data = {
-					hurt_animation_chance = 1,
-					dot_damage = 12,
-					dot_length = 5,
-					use_weapon_damage_falloff = true,
-					dot_tick_period = 0.5
-				}
-			}
+			bullet_class = "PoisonBulletBase"
 		}
 	}
 	local weapons = {
@@ -29510,6 +29495,7 @@ function WeaponFactoryTweakData:_clone_part_for_weapon(part_id, factory_id, amou
 end
 
 function WeaponFactoryTweakData:_init_hornet_grenade()
+	local FALLOFF_TEMPLATE = WeaponFalloffTemplate.setup_weapon_falloff_templates()
 	local hornet_unit_folder = "units/pd2_dlc_pxp3/weapons/wpn_fps_grenade_launcher_hornet/"
 	self.parts.wpn_fps_upg_a_grenade_launcher_hornet = {
 		is_a_unlockable = true,
@@ -29529,6 +29515,7 @@ function WeaponFactoryTweakData:_init_hornet_grenade()
 		custom_stats = {
 			ammo_pickup_min_mul = 1.2,
 			muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet",
+			rays = 20,
 			ammo_pickup_max_mul = 1.2
 		},
 		override = {
@@ -29568,6 +29555,7 @@ function WeaponFactoryTweakData:_init_hornet_grenade()
 		custom_stats = {
 			ammo_pickup_min_mul = 1.2,
 			muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet",
+			rays = 20,
 			ammo_pickup_max_mul = 1.2
 		},
 		override = {
@@ -29590,12 +29578,13 @@ function WeaponFactoryTweakData:_init_hornet_grenade()
 				spread = -17
 			},
 			custom_stats = {
-				muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet",
 				can_shoot_through_shield = true,
 				ignore_damage_upgrades = false,
+				muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet",
 				sounds = {
 					fire_single = "hornet_fire"
-				}
+				},
+				falloff_override = FALLOFF_TEMPLATE.SHOTGUN_FALL_SECONDARY_HIGH
 			}
 		},
 		wpn_fps_gre_china = {
@@ -29605,12 +29594,13 @@ function WeaponFactoryTweakData:_init_hornet_grenade()
 				spread = -17
 			},
 			custom_stats = {
-				muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet",
 				can_shoot_through_shield = true,
 				ignore_damage_upgrades = false,
+				muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet",
 				sounds = {
 					fire_single = "hornet_fire"
-				}
+				},
+				falloff_override = FALLOFF_TEMPLATE.SHOTGUN_FALL_SECONDARY_HIGH
 			}
 		},
 		wpn_fps_gre_m32 = {
@@ -29620,12 +29610,13 @@ function WeaponFactoryTweakData:_init_hornet_grenade()
 				spread = -17
 			},
 			custom_stats = {
-				muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet",
 				can_shoot_through_shield = true,
 				ignore_damage_upgrades = false,
+				muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet",
 				sounds = {
 					fire_single = "hornet_fire"
-				}
+				},
+				falloff_override = FALLOFF_TEMPLATE.SHOTGUN_FALL_PRIMARY_HIGH
 			}
 		},
 		wpn_fps_gre_m79 = {
@@ -29635,12 +29626,13 @@ function WeaponFactoryTweakData:_init_hornet_grenade()
 				spread = -17
 			},
 			custom_stats = {
-				muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet",
 				can_shoot_through_shield = true,
 				ignore_damage_upgrades = false,
+				muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet",
 				sounds = {
 					fire_single = "hornet_fire"
-				}
+				},
+				falloff_override = FALLOFF_TEMPLATE.SHOTGUN_FALL_PRIMARY_HIGH
 			}
 		},
 		wpn_fps_gre_ms3gl = {
@@ -29650,12 +29642,13 @@ function WeaponFactoryTweakData:_init_hornet_grenade()
 				spread = -2
 			},
 			custom_stats = {
-				muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet",
 				can_shoot_through_shield = true,
 				ignore_damage_upgrades = false,
+				muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet",
 				sounds = {
 					fire_single = "hornet_fire"
-				}
+				},
+				falloff_override = FALLOFF_TEMPLATE.SHOTGUN_FALL_SECONDARY_HIGH
 			}
 		},
 		wpn_fps_gre_slap = {
@@ -29665,12 +29658,13 @@ function WeaponFactoryTweakData:_init_hornet_grenade()
 				spread = -14
 			},
 			custom_stats = {
-				muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet",
 				can_shoot_through_shield = true,
 				ignore_damage_upgrades = false,
+				muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet",
 				sounds = {
 					fire_single = "hornet_fire"
-				}
+				},
+				falloff_override = FALLOFF_TEMPLATE.SHOTGUN_FALL_SECONDARY_HIGH
 			}
 		}
 	}
@@ -29682,12 +29676,13 @@ function WeaponFactoryTweakData:_init_hornet_grenade()
 				spread = -18
 			},
 			custom_stats = {
-				muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet",
 				can_shoot_through_shield = true,
 				ignore_damage_upgrades = false,
+				muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet",
 				sounds = {
 					fire_single = "hornet_fire"
-				}
+				},
+				falloff_override = FALLOFF_TEMPLATE.SHOTGUN_FALL_SECONDARY_VERYHIGH
 			}
 		},
 		wpn_fps_ass_contraband = {
@@ -29697,18 +29692,20 @@ function WeaponFactoryTweakData:_init_hornet_grenade()
 				spread = -18
 			},
 			custom_stats = {
-				muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet",
 				can_shoot_through_shield = true,
 				ignore_damage_upgrades = false,
+				muzzleflash = "effects/payday2/particles/weapons/shotgun/sho_muzzleflash_hornet",
 				sounds = {
 					fire_single = "hornet_fire"
-				}
+				},
+				falloff_override = FALLOFF_TEMPLATE.SHOTGUN_FALL_SECONDARY_VERYHIGH
 			}
 		}
 	}
 	local launcher_value = self.parts.wpn_fps_upg_a_grenade_launcher_hornet.stats.value
 	local launcher_pickup_min = self.parts.wpn_fps_upg_a_grenade_launcher_hornet.custom_stats.ammo_pickup_min_mul
 	local launcher_pickup_max = self.parts.wpn_fps_upg_a_grenade_launcher_hornet.custom_stats.ammo_pickup_max_mul
+	local launcher_rays = self.parts.wpn_fps_upg_a_grenade_launcher_hornet.custom_stats.rays
 	local fps_data, npc_data, hornet_override = nil
 
 	for factory_id, override in pairs(grenade_launchers) do
@@ -29724,6 +29721,7 @@ function WeaponFactoryTweakData:_init_hornet_grenade()
 			hornet_override.custom_stats.weapon_unit = hornet_unit_folder .. factory_id
 			hornet_override.custom_stats.ammo_pickup_min_mul = launcher_pickup_min
 			hornet_override.custom_stats.ammo_pickup_max_mul = launcher_pickup_max
+			hornet_override.custom_stats.rays = launcher_rays
 			fps_data.override = fps_data.override or {}
 			fps_data.override.wpn_fps_upg_a_grenade_launcher_hornet = hornet_override
 			npc_data.override = npc_data.override or {}
@@ -29733,6 +29731,7 @@ function WeaponFactoryTweakData:_init_hornet_grenade()
 
 	local underbarrel_launcher_pickup_min = self.parts.wpn_fps_upg_a_underbarrel_hornet.custom_stats.ammo_pickup_min_mul
 	local underbarrel_launcher_pickup_max = self.parts.wpn_fps_upg_a_underbarrel_hornet.custom_stats.ammo_pickup_max_mul
+	local underbarrel_launcher_rays = self.parts.wpn_fps_upg_a_underbarrel_hornet.custom_stats.rays
 
 	for factory_id, override in pairs(grenade_underbarrels) do
 		fps_data = self[factory_id]
@@ -29746,6 +29745,7 @@ function WeaponFactoryTweakData:_init_hornet_grenade()
 			hornet_override.custom_stats.base_stats_modifiers = hornet_override.stats
 			hornet_override.custom_stats.ammo_pickup_min_mul = underbarrel_launcher_pickup_min
 			hornet_override.custom_stats.ammo_pickup_max_mul = underbarrel_launcher_pickup_max
+			hornet_override.custom_stats.rays = underbarrel_launcher_rays
 			hornet_override.stats = nil
 			fps_data.override = fps_data.override or {}
 			fps_data.override.wpn_fps_upg_a_underbarrel_hornet = hornet_override
@@ -37665,12 +37665,12 @@ function WeaponFactoryTweakData:_init_flamethrower_mk2()
 		}
 	}
 	self.parts.wpn_fps_fla_mk2_mag_rare = {
-		texture_bundle_folder = "bbq",
-		dlc = "bbq",
 		type = "magazine",
+		texture_bundle_folder = "bbq",
+		a_obj = "a_m",
+		dlc = "bbq",
 		name_id = "bm_wp_fla_mk2_mag_rare",
 		unit = "units/pd2_dlc_bbq/weapons/wpn_fps_fla_mk2_pts/wpn_fps_fla_mk2_mag_rare",
-		a_obj = "a_m",
 		pcs = {
 			20,
 			30,
@@ -37680,6 +37680,9 @@ function WeaponFactoryTweakData:_init_flamethrower_mk2()
 			value = 1,
 			total_ammo_mod = 5,
 			damage = -4
+		},
+		custom_stats = {
+			dot_data_name = "ammo_flamethrower_mk2_rare"
 		}
 	}
 	self.parts.wpn_fps_fla_mk2_mag = {
@@ -37692,12 +37695,12 @@ function WeaponFactoryTweakData:_init_flamethrower_mk2()
 		}
 	}
 	self.parts.wpn_fps_fla_mk2_mag_welldone = {
-		texture_bundle_folder = "bbq",
-		dlc = "bbq",
 		type = "magazine",
+		texture_bundle_folder = "bbq",
+		a_obj = "a_m",
+		dlc = "bbq",
 		name_id = "bm_wp_fla_mk2_mag_welldone",
 		unit = "units/pd2_dlc_bbq/weapons/wpn_fps_fla_mk2_pts/wpn_fps_fla_mk2_mag_welldone",
-		a_obj = "a_m",
 		pcs = {
 			20,
 			30,
@@ -37707,6 +37710,9 @@ function WeaponFactoryTweakData:_init_flamethrower_mk2()
 			value = 1,
 			total_ammo_mod = -5,
 			damage = 7
+		},
+		custom_stats = {
+			dot_data_name = "ammo_flamethrower_mk2_welldone"
 		}
 	}
 	self.parts.wpn_fps_fla_mk2_body.third_unit = "units/pd2_dlc_bbq/weapons/wpn_fps_fla_mk2_pts/wpn_third_fla_mk2_body"
@@ -39017,11 +39023,8 @@ function WeaponFactoryTweakData:_init_plainsrider()
 			total_ammo_mod = -6
 		},
 		custom_stats = {
-			launcher_grenade = "bow_poison_arrow",
-			dot_data = {
-				type = "poison",
-				custom_data = {}
-			}
+			dot_data_name = "ammo_proj_bow",
+			launcher_grenade = "bow_poison_arrow"
 		}
 	}
 	self.parts.wpn_fps_bow_plainsrider_body_standard.third_unit = "units/pd2_dlc_west/weapons/wpn_fps_bow_plainsrider_pts/wpn_third_bow_plainsrider_body_standard"
@@ -40738,11 +40741,8 @@ function WeaponFactoryTweakData:_init_hunter()
 			total_ammo_mod = -6
 		},
 		custom_stats = {
-			launcher_grenade = "crossbow_poison_arrow",
-			dot_data = {
-				type = "poison",
-				custom_data = {}
-			}
+			dot_data_name = "ammo_proj_crossbow",
+			launcher_grenade = "crossbow_poison_arrow"
 		}
 	}
 	self.parts.wpn_fps_upg_a_crossbow_explosion = {
@@ -41204,11 +41204,8 @@ function WeaponFactoryTweakData:_init_arblast()
 			total_ammo_mod = -6
 		},
 		custom_stats = {
-			launcher_grenade = "arblast_poison_arrow",
-			dot_data = {
-				type = "poison",
-				custom_data = {}
-			}
+			dot_data_name = "ammo_proj_arblast",
+			launcher_grenade = "arblast_poison_arrow"
 		}
 	}
 	self.parts.wpn_fps_bow_arblast_m_explosive = {
@@ -41332,11 +41329,8 @@ function WeaponFactoryTweakData:_init_frankish()
 			total_ammo_mod = -6
 		},
 		custom_stats = {
-			launcher_grenade = "frankish_poison_arrow",
-			dot_data = {
-				type = "poison",
-				custom_data = {}
-			}
+			dot_data_name = "ammo_proj_frankish",
+			launcher_grenade = "frankish_poison_arrow"
 		}
 	}
 	self.parts.wpn_fps_bow_frankish_m_explosive = {
@@ -41475,11 +41469,8 @@ function WeaponFactoryTweakData:_init_long()
 			total_ammo_mod = -6
 		},
 		custom_stats = {
-			launcher_grenade = "long_poison_arrow",
-			dot_data = {
-				type = "poison",
-				custom_data = {}
-			}
+			dot_data_name = "ammo_proj_long",
+			launcher_grenade = "long_poison_arrow"
 		}
 	}
 	self.parts.wpn_fps_bow_long_body_standard.third_unit = "units/pd2_dlc_steel/weapons/wpn_fps_bow_long_pts/wpn_third_bow_long_body_standard"
@@ -56473,11 +56464,8 @@ function WeaponFactoryTweakData:_init_ecp()
 			damage = -60
 		},
 		custom_stats = {
-			launcher_grenade = "ecp_arrow_poison",
-			dot_data = {
-				type = "poison",
-				custom_data = {}
-			}
+			dot_data_name = "ammo_proj_ecp",
+			launcher_grenade = "ecp_arrow_poison"
 		}
 	}
 	self.parts.wpn_fps_bow_ecp_m_casing = {
@@ -60924,6 +60912,9 @@ function WeaponFactoryTweakData:_init_system()
 			value = 1,
 			total_ammo_mod = -5,
 			damage = 7
+		},
+		custom_stats = {
+			dot_data_name = "ammo_system_high"
 		}
 	}
 	self.parts.wpn_fps_fla_system_m_low = {
@@ -60942,6 +60933,9 @@ function WeaponFactoryTweakData:_init_system()
 			value = 1,
 			total_ammo_mod = 5,
 			damage = -4
+		},
+		custom_stats = {
+			dot_data_name = "ammo_system_low"
 		}
 	}
 	self.parts.wpn_fps_fla_system_m_standard = {
@@ -61415,11 +61409,8 @@ function WeaponFactoryTweakData:_init_elastic()
 			total_ammo_mod = -6
 		},
 		custom_stats = {
-			launcher_grenade = "elastic_arrow_poison",
-			dot_data = {
-				type = "poison",
-				custom_data = {}
-			}
+			dot_data_name = "ammo_proj_elastic",
+			launcher_grenade = "elastic_arrow_poison"
 		}
 	}
 	self.parts.wpn_fps_bow_elastic_body_regular.third_unit = "units/pd2_dlc_ram/weapons/wpn_fps_bow_elastic_pts/wpn_third_bow_elastic_body_regular"

@@ -462,7 +462,7 @@ function CopLogicAttack._cancel_expected_pos_path(data, my_data)
 end
 
 function CopLogicAttack._chk_request_action_turn_to_enemy(data, my_data, my_pos, enemy_pos)
-	local fwd = data.unit:movement():m_rot():y()
+	local fwd = data.unit:movement():m_fwd()
 	local target_vec = enemy_pos - my_pos
 	local error_spin = target_vec:to_polar_with_reference(fwd, math.UP).spin
 
@@ -614,7 +614,7 @@ function CopLogicAttack._update_cover(data)
 			local threat_pos = enemy_tracker:field_position()
 
 			if data.objective and data.objective.type == "follow" then
-				local near_pos = data.objective.follow_unit:movement():m_pos()
+				local near_pos = data.objective.follow_unit:movement():m_newest_pos()
 
 				if (not best_cover or not CopLogicAttack._verify_follow_cover(best_cover[1], near_pos, threat_pos, 200, 1000)) and not my_data.processing_cover_path and not my_data.charge_path_search_id then
 					local follow_unit_area = managers.groupai:state():get_area_from_nav_seg_id(data.objective.follow_unit:movement():nav_tracker():nav_segment())

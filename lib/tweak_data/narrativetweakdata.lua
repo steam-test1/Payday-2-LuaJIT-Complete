@@ -5180,6 +5180,7 @@ function NarrativeTweakData:init(tweak_data)
 		briefing_id = "heist_rvd_crimenet",
 		package = "packages/narr_rvd",
 		contact = "bain",
+		dlc = "rvd",
 		region = "street",
 		jc = 60,
 		chain = {

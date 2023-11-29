@@ -251,6 +251,7 @@ function BlackMarketTweakData:_init_characters(tweak_data)
 		}
 	}
 	self.characters.locked.bodhi = {
+		dlc = "rvd",
 		texture_bundle_folder = "rip",
 		sequence = "var_mtr_bodhi",
 		material_config = {

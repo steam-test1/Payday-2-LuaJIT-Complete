@@ -729,64 +729,60 @@ function MusicManager:jukebox_default_tracks()
 	return default_options
 end
 
-function MusicManager:jukebox_music_tracks()
-	local tracks = {}
-	local tracks_locked = {}
-	local lock_data = {
-		armored = managers.dlc and managers.dlc:has_dlc_or_soundtrack_or_cce("armored_transport"),
-		infamy = managers.experience and managers.experience:current_rank() > 0,
-		deathwish = managers.experience and (managers.experience:current_rank() > 0 or tweak_data.difficulty_level_locks[tweak_data:difficulty_to_index("overkill_290")] <= managers.experience:current_level()),
-		bigbank = managers.dlc and managers.dlc:has_dlc_or_soundtrack_or_cce("big_bank"),
-		assault = managers.dlc and managers.dlc:has_dlc_or_soundtrack_or_cce("gage_pack_assault"),
-		miami = managers.dlc and managers.dlc:has_dlc_or_soundtrack_or_cce("hl_miami"),
-		diamond = managers.dlc and managers.dlc:has_dlc_or_soundtrack_or_cce("hope_diamond"),
-		thebomb = managers.dlc and managers.dlc:has_dlc_or_soundtrack_or_cce("the_bomb"),
-		kenaz = managers.dlc and managers.dlc:has_dlc_or_soundtrack_or_cce("kenaz"),
-		payday = managers.dlc and managers.dlc:is_dlc_unlocked("pdth_soundtrack"),
-		berry = managers.dlc and managers.dlc:has_dlc_or_soundtrack_or_cce("berry"),
-		peta = managers.dlc and managers.dlc:has_dlc_or_soundtrack_or_cce("peta"),
-		pal = managers.dlc and managers.dlc:has_dlc_or_soundtrack_or_cce("pal"),
-		born = managers.dlc and managers.dlc:has_dlc_or_soundtrack_or_cce("born"),
-		friend = managers.dlc and managers.dlc:has_dlc_or_soundtrack_or_cce("friend"),
-		spa = managers.dlc and managers.dlc:has_dlc_or_soundtrack_or_cce("spa")
-	}
-
-	for _, data in ipairs(tweak_data.music.track_list) do
-		table.insert(tracks, data.track)
-
-		if data.lock and not self:track_unlocked(data.track) then
-			if lock_data[data.lock] then
-				self:unlock_track(data.track)
-				self:playlist_add(data.track)
-			else
-				tracks_locked[data.track] = data.lock
-			end
-		end
+function MusicManager:get_lock_data()
+	if not managers.dlc or not managers.experience then
+		return {}
 	end
 
-	return tracks, tracks_locked
+	if managers.dlc.has_catalog_ownerships and not managers.dlc:has_catalog_ownerships() then
+		return {}
+	end
+
+	self._lock_data = self._lock_data or {
+		alesso = managers.dlc:is_dlc_unlocked("arena"),
+		armored = managers.dlc:has_dlc_or_soundtrack_or_cce("armored_transport"),
+		assault = managers.dlc:has_dlc_or_soundtrack_or_cce("gage_pack_assault"),
+		bigbank = managers.dlc:has_dlc_or_soundtrack_or_cce("big_bank"),
+		bsides = managers.dlc:is_dlc_unlocked("bsides_soundtrack"),
+		diamond = managers.dlc:has_dlc_or_soundtrack_or_cce("hope_diamond"),
+		kenaz = managers.dlc:has_dlc_or_soundtrack_or_cce("kenaz"),
+		miami = managers.dlc:has_dlc_or_soundtrack_or_cce("hl_miami"),
+		payday = managers.dlc:is_dlc_unlocked("pdth_soundtrack"),
+		soundtrack = managers.dlc:has_soundtrack_or_cce(),
+		thebomb = managers.dlc:has_dlc_or_soundtrack_or_cce("the_bomb"),
+		xmas = managers.dlc:is_dlc_unlocked("xmas_soundtrack"),
+		berry = managers.dlc:has_dlc_or_soundtrack_or_cce("berry"),
+		peta = managers.dlc:has_dlc_or_soundtrack_or_cce("peta"),
+		pal = managers.dlc:has_dlc_or_soundtrack_or_cce("pal"),
+		born = managers.dlc:has_dlc_or_soundtrack_or_cce("born"),
+		born_wild = managers.dlc:has_dlc_or_soundtrack_or_cce("born") or managers.dlc:is_dlc_unlocked("wild"),
+		friend = managers.dlc:has_dlc_or_soundtrack_or_cce("friend"),
+		spa = managers.dlc:has_dlc_or_soundtrack_or_cce("spa"),
+		fish = managers.dlc:has_dlc_or_soundtrack_or_cce("spa"),
+		rvd = managers.dlc:has_dlc_or_soundtrack_or_cce("rvd"),
+		tma1 = managers.dlc:is_dlc_unlocked("tma1")
+	}
+	self._lock_data.infamy = managers.experience:current_rank() > 0
+	self._lock_data.deathwish = managers.experience:current_rank() > 0 or tweak_data.difficulty_level_locks[tweak_data:difficulty_to_index("overkill_290")] <= managers.experience:current_level()
+
+	return self._lock_data
 end
 
-function MusicManager:jukebox_menu_tracks()
+function MusicManager:_jukebox_get_tracks(track_list)
+	local lock_data = self:get_lock_data()
 	local tracks = {}
 	local tracks_locked = {}
-	local lock_data = {
-		bsides = managers.dlc and managers.dlc:is_dlc_unlocked("bsides_soundtrack"),
-		tma1 = managers.dlc and managers.dlc:is_dlc_unlocked("tma1"),
-		soundtrack = managers.dlc and managers.dlc:has_soundtrack_or_cce(),
-		payday = managers.dlc and managers.dlc:is_dlc_unlocked("pdth_soundtrack"),
-		xmas = managers.dlc and managers.dlc:is_dlc_unlocked("xmas_soundtrack"),
-		alesso = managers.dlc and managers.dlc:is_dlc_unlocked("arena"),
-		berry = managers.dlc and managers.dlc:has_dlc_or_soundtrack_or_cce("berry"),
-		born_wild = managers.dlc and (managers.dlc:has_dlc_or_soundtrack_or_cce("born") or managers.dlc:is_dlc_unlocked("wild")),
-		peta = managers.dlc and managers.dlc:has_dlc_or_soundtrack_or_cce("peta"),
-		pal = managers.dlc and managers.dlc:has_dlc_or_soundtrack_or_cce("pal")
-	}
+	local is_locked, is_hidden = nil
 
-	for _, data in ipairs(tweak_data.music.track_menu_list) do
-		table.insert(tracks, data.track)
+	for _, data in ipairs(track_list) do
+		is_locked = data.lock and not lock_data[data.lock] or false
+		is_hidden = is_locked and data.hide_unavailable or false
 
-		if data.lock and not lock_data[data.lock] then
+		if not is_hidden then
+			table.insert(tracks, data.track)
+		end
+
+		if is_locked then
 			tracks_locked[data.track] = data.lock
 		end
 	end
@@ -794,21 +790,25 @@ function MusicManager:jukebox_menu_tracks()
 	return tracks, tracks_locked
 end
 
-function MusicManager:jukebox_ghost_tracks()
-	local tracks = {}
-	local tracks_locked = {}
+function MusicManager:jukebox_music_tracks()
+	local lock_data = self:get_lock_data()
 
-	if managers.dlc then
-		for _, data in ipairs(tweak_data.music.track_ghost_list) do
-			table.insert(tracks, data.track)
-
-			if data.lock and not managers.dlc:has_dlc_or_soundtrack_or_cce(data.lock) then
-				tracks_locked[data.track] = data.lock
-			end
+	for _, data in ipairs(tweak_data.music.track_list) do
+		if not self:track_unlocked(data.track) and data.lock and lock_data[data.lock] then
+			self:unlock_track(data.track)
+			self:playlist_add(data.track)
 		end
 	end
 
-	return tracks, tracks_locked
+	return self:_jukebox_get_tracks(tweak_data.music.track_list)
+end
+
+function MusicManager:jukebox_menu_tracks()
+	return self:_jukebox_get_tracks(tweak_data.music.track_menu_list)
+end
+
+function MusicManager:jukebox_ghost_tracks()
+	return self:_jukebox_get_tracks(tweak_data.music.track_ghost_list)
 end
 
 function MusicManager:music_tracks()

@@ -174,11 +174,17 @@ function Login:LoginWithSteamToken(ticket, callback)
 		cat_print("accelbyte", "[AccelByte] Callback LoginWithSteamToken : " .. IamSteamPlatformUrl)
 		cat_print("accelbyte", "[AccelByte] Error_code : " .. error_code)
 		cat_print("accelbyte", "[AccelByte] Status_code : " .. status_code)
-		cat_print("accelbyte", "[AccelByte] Response Body : " .. tostring(response_body))
 
-		local response_json = response_body and json.decode(response_body) or {}
+		local response_json = nil
 
-		Login:SerializeJsonString(response_json)
+		if response_body then
+			cat_print("accelbyte", "Response Body : " .. response_body)
+
+			response_json = json.decode(response_body)
+
+			Login:SerializeJsonString(response_json)
+		end
+
 		cat_print("accelbyte", "[AccelByte] Display name : " .. tostring(self.player_session.display_name))
 
 		if error_code == 1 and status_code == 200 and response_body ~= "" then
@@ -821,23 +827,28 @@ function Entitlement:CheckAndVerifyUserEntitlement(callback)
 			cat_print("accelbyte", "[AccelByte] Linked Starbreeze User for this Platform ID is found")
 
 			if SystemInfo:distribution() == Idstring("STEAM") then
-				local ticket = Utility:get_steamticket()
-
-				local function login_with_steam_callback(success, reason)
-					if success then
-						cat_print("accelbyte", "[AccelByte] Successfully authenticated the Steam Ticket, now logging in with Steam to AB Backend , callback reason " .. reason)
-						Login:LoginWithSteamToken(ticket, login_callback)
-					else
+				local function get_steamticket_callback(steam_ticket)
+					if steam_ticket == "" then
 						cat_print("accelbyte", "[AccelByte] Failed to authenticate Steam Ticket, reason : " .. reason)
+
+						return
 					end
+
+					local function login_with_steam_callback(success, reason)
+						if success then
+							cat_print("accelbyte", "[AccelByte] Successfully authenticated the Steam Ticket, now logging in with Steam to AB Backend , callback reason " .. reason)
+							Login:LoginWithSteamToken(ticket, login_callback)
+						else
+							cat_print("accelbyte", "[AccelByte] Failed to authenticate Steam Ticket, reason : " .. reason)
+						end
+					end
+
+					Steam:bind_steam_ticket_validate_callback(player_id, login_with_steam_callback, steam_ticket)
+					Login:LoginWithSteamToken(steam_ticket, login_callback)
 				end
 
-				Steam:bind_steam_ticket_validate_callback(player_id, login_with_steam_callback, ticket)
-
-				return
-			end
-
-			if SystemInfo:distribution() == Idstring("EPIC") then
+				Utility:get_steamticket(get_steamticket_callback)
+			elseif SystemInfo:distribution() == Idstring("EPIC") then
 				local ticket = EpicEntitlements:get_epic_ticket()
 
 				if string.len(ticket) > 0 then

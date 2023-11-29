@@ -211,6 +211,7 @@ function CarryTweakData:init(tweak_data)
 		default_value = 1,
 		is_unique_loot = true,
 		skip_exit_secure = true,
+		remove_on_weapons_hot = true,
 		no_area_trigger_detection = true
 	}
 	self.special_person = {

@@ -15,6 +15,8 @@ function SentryGunMovement:init(unit)
 	self._m_head_fwd = self._m_rot:y()
 	self._unit_up = self._m_rot:z()
 	self._unit_fwd = self._m_rot:y()
+	self._unit_right = self._m_rot:x()
+	self._m_head_rot = self._head_obj:rotation()
 	self._m_head_pos = self._head_obj:position()
 	self._vel = {
 		pitch = 0,
@@ -98,6 +100,8 @@ function SentryGunMovement:_update_inactivating(t, dt)
 end
 
 function SentryGunMovement:_update_rearming(t, dt)
+	self:_upd_hacking(t, dt)
+
 	if self._rearm_complete_t and self._rearm_complete_t < t then
 		self:complete_rearming()
 	end
@@ -119,6 +123,8 @@ function SentryGunMovement:complete_rearming()
 end
 
 function SentryGunMovement:_update_repairing(t, dt)
+	self:_upd_hacking(t, dt)
+
 	if self._repair_complete_t then
 		local repair_complete_ratio = 1 - (self._repair_complete_t - t) / self._tweak.AUTO_REPAIR_DURATION
 
@@ -346,8 +352,9 @@ end
 function SentryGunMovement:_upd_mutables()
 	self._head_obj:m_position(self._m_head_pos)
 	self._unit:m_rotation(self._m_rot)
-	self._head_obj:m_rotation(tmp_rot1)
-	mrotation.y(tmp_rot1, self._m_head_fwd)
+	self._head_obj:m_rotation(self._m_head_rot)
+	mrotation.y(self._m_head_rot, self._m_head_fwd)
+	mrotation.x(self._m_rot, self._unit_right)
 	mrotation.y(self._m_rot, self._unit_fwd)
 	mrotation.z(self._m_rot, self._unit_up)
 end
@@ -364,6 +371,10 @@ function SentryGunMovement:m_pos()
 	return self._m_head_pos
 end
 
+function CopMovement:m_newest_pos()
+	return self._m_head_pos
+end
+
 function SentryGunMovement:m_detect_pos()
 	return self._m_head_pos
 end
@@ -372,8 +383,28 @@ function SentryGunMovement:m_stand_pos()
 	return self._m_head_pos
 end
 
+function SentryGunMovement:m_head_rot()
+	return self._m_head_rot
+end
+
 function SentryGunMovement:m_head_fwd()
 	return self._m_head_fwd
+end
+
+function SentryGunMovement:detect_look_dir()
+	return self._m_head_fwd
+end
+
+function SentryGunMovement:m_rot()
+	return self._m_rot
+end
+
+function SentryGunMovement:m_fwd()
+	return self._unit_fwd
+end
+
+function SentryGunMovement:m_right()
+	return self._unit_right
 end
 
 function SentryGunMovement:set_look_vec3(look_vec3)
@@ -712,9 +743,7 @@ function SentryGunMovement:set_team(team_data)
 
 	self._unit:weapon():update_laser()
 
-	local turret_units = managers.groupai:state():turrets()
-
-	if turret_units and table.contains(turret_units, self._unit) then
+	if managers.groupai:state():is_unit_turret(self._unit) then
 		if self._unit:movement():team().foes[tweak_data.levels:get_default_team_ID("player")] then
 			self._unit:contour():remove("mark_unit_friendly", false)
 		else

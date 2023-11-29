@@ -623,6 +623,9 @@ function ZipLine:attach_bag(bag)
 	body:set_keyframed()
 
 	self._attached_bag = bag
+
+	self._unit:link(bag)
+
 	local carry_id = self._attached_bag:carry_data():carry_id()
 	self._attached_bag_offset = tweak_data.carry:get_zipline_offset(carry_id)
 	self._bag_disabled_collisions = {}
@@ -648,6 +651,7 @@ function ZipLine:release_bag()
 	local body = self._attached_bag:body("hinge_body_1") or self._attached_bag:body(0)
 
 	body:set_dynamic()
+	self._attached_bag:unlink()
 
 	if self._bag_disabled_collisions then
 		for _, body in ipairs(self._bag_disabled_collisions) do

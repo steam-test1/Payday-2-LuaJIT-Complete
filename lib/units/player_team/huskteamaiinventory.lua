@@ -2,6 +2,7 @@ HuskTeamAIInventory = HuskTeamAIInventory or class(HuskCopInventory)
 HuskTeamAIInventory.preload_mask = TeamAIInventory.preload_mask
 HuskTeamAIInventory.clbk_mask_unit_loaded = TeamAIInventory.clbk_mask_unit_loaded
 HuskTeamAIInventory._reset_mask_visibility = TeamAIInventory._reset_mask_visibility
+HuskTeamAIInventory.update_ap_ammo = TeamAIInventory.update_ap_ammo
 HuskTeamAIInventory._ensure_weapon_visibility = TeamAIInventory._ensure_weapon_visibility
 HuskTeamAIInventory.set_visibility_state = TeamAIInventory.set_visibility_state
 
@@ -28,7 +29,7 @@ function HuskTeamAIInventory:add_unit_by_name(new_unit_name, equip)
 	}
 
 	new_unit:base():setup(setup_data)
-	CopInventory.add_unit(self, new_unit, equip)
+	TeamAIInventory.add_unit(self, new_unit, equip)
 end
 
 function HuskTeamAIInventory:pre_destroy()

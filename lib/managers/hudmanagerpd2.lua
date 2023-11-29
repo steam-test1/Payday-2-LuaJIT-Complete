@@ -50,7 +50,7 @@ function HUDManager:controller_mod_changed()
 	end
 
 	if alive(managers.interaction:active_unit()) then
-		managers.interaction:active_unit():interaction():selected()
+		managers.interaction:active_unit():interaction():set_text_dirty(true)
 	end
 end
 

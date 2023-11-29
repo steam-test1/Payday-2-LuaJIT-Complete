@@ -1,5 +1,13 @@
 SpoocLogicIdle = class(CopLogicIdle)
 
+function SpoocLogicIdle.exit(data, new_logic_name, enter_params)
+	SpoocLogicIdle.super.exit(data, new_logic_name, enter_params)
+
+	if new_logic_name ~= "inactive" and data.unit:anim_data().hide_loop then
+		SpoocLogicIdle._exit_hiding(data)
+	end
+end
+
 function SpoocLogicIdle._upd_enemy_detection(data)
 	managers.groupai:state():on_unit_detection_updated(data.unit)
 
@@ -9,8 +17,9 @@ function SpoocLogicIdle._upd_enemy_detection(data)
 	local new_attention, new_prio_slot, new_reaction = CopLogicIdle._get_priority_attention(data, data.detected_attention_objects)
 
 	CopLogicBase._set_attention_obj(data, new_attention, new_reaction)
+	SpoocLogicIdle._chk_exit_hiding(data)
 
-	if new_reaction and AIAttentionObject.REACT_SUSPICIOUS < new_reaction then
+	if new_reaction and AIAttentionObject.REACT_SUSPICIOUS < new_reaction and (not data.unit:anim_data().hide or data.unit:anim_data().hide_loop) then
 		local objective = data.objective
 		local wanted_state = nil
 		local allow_trans, obj_failed = CopLogicBase.is_obstructed(data, objective, nil, new_attention)
@@ -20,6 +29,10 @@ function SpoocLogicIdle._upd_enemy_detection(data)
 		end
 
 		if wanted_state and wanted_state ~= data.name then
+			if data.unit:anim_data().hide_loop then
+				SpoocLogicIdle._exit_hiding(data)
+			end
+
 			if obj_failed then
 				data.objective_failed_clbk(data.unit, data.objective)
 			end
@@ -40,8 +53,6 @@ function SpoocLogicIdle._upd_enemy_detection(data)
 		return delay
 	end
 
-	SpoocLogicIdle._chk_exit_hiding(data)
-
 	if my_data ~= data.internal_data then
 		return delay
 	end
@@ -52,7 +63,7 @@ end
 function SpoocLogicIdle.damage_clbk(data, damage_info)
 	local res = SpoocLogicIdle.super.damage_clbk(data, damage_info)
 
-	if data.unit:anim_data().hide then
+	if data.unit:anim_data().hide_loop then
 		SpoocLogicIdle._exit_hiding(data)
 	end
 
@@ -60,29 +71,19 @@ function SpoocLogicIdle.damage_clbk(data, damage_info)
 end
 
 function SpoocLogicIdle._exit_hiding(data)
-	data.unit:set_objective({
-		type = "act",
-		action = {
-			variant = "idle",
-			body_part = 1,
-			type = "act",
-			blocks = {
-				heavy_hurt = -1,
-				idle = -1,
-				action = -1,
-				turn = -1,
-				light_hurt = -1,
-				walk = -1,
-				fire_hurt = -1,
-				hurt = -1,
-				expl_hurt = -1
-			}
-		}
-	})
+	if data.unit:anim_data().to_idle then
+		return
+	end
+
+	CopLogicIdle._start_idle_action_from_act(data)
 end
 
 function SpoocLogicIdle._chk_exit_hiding(data)
-	if data.attention_obj and AIAttentionObject.REACT_SHOOT <= data.attention_obj.reaction and data.unit:anim_data().hide_loop then
+	if not data.unit:anim_data().hide_loop then
+		return
+	end
+
+	if data.attention_obj and AIAttentionObject.REACT_SHOOT <= data.attention_obj.reaction then
 		if data.attention_obj.dis < 1500 and data.attention_obj.verified then
 			SpoocLogicIdle._exit_hiding(data)
 		elseif data.attention_obj.dis < 700 then

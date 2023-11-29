@@ -1,18 +1,19 @@
 HuskCopDamage = HuskCopDamage or class(CopDamage)
 
-function HuskCopDamage:die(variant)
-	CopDamage.MAD_3_ACHIEVEMENT(variant)
-	self:_check_friend_4(variant)
-	self:_check_ranc_9(variant)
+function HuskCopDamage:die(attack_data)
+	managers.modifiers:run_func("OnEnemyDied", self._unit, attack_data)
+	CopDamage.MAD_3_ACHIEVEMENT(attack_data)
+	self:_check_friend_4(attack_data)
+	self:_check_ranc_9(attack_data)
 	self._unit:base():set_slot(self._unit, 17)
+	self:_remove_debug_gui()
 
 	if self._unit:inventory() then
 		self._unit:inventory():drop_shield()
 	end
 
-	self:_chk_unique_death_requirements(variant, true)
+	self:_chk_unique_death_requirements(attack_data, true)
 
-	variant = variant or "bullet"
 	self._health = 0
 	self._health_ratio = 0
 	self._dead = true

@@ -275,16 +275,6 @@ function TripMineBase:update(unit, t, dt)
 		return
 	end
 
-	if self._deactive_timer then
-		self._deactive_timer = self._deactive_timer - dt
-
-		if self._deactive_timer <= 0 then
-			self._deactive_timer = nil
-		end
-
-		return
-	end
-
 	if not self._armed then
 		if self._sensor_upgrade then
 			self:_sensor(t)
@@ -401,18 +391,16 @@ function TripMineBase:explode()
 end
 
 function TripMineBase:_explode(col_ray)
-	if not managers.network:session() then
+	if not managers.network:session() or self._detonated then
 		return
 	end
 
+	self._detonated = true
 	local damage_size = tweak_data.weapon.trip_mines.damage_size * managers.player:upgrade_value("trip_mine", "explosion_size_multiplier_1", 1) * managers.player:upgrade_value("trip_mine", "damage_multiplier", 1)
 	local player = managers.player:player_unit()
 
 	managers.explosion:give_local_player_dmg(self._position, damage_size, tweak_data.weapon.trip_mines.player_damage)
 	self._unit:set_extension_update_enabled(Idstring("base"), false)
-
-	self._deactive_timer = 5
-
 	self:_play_sound_and_effects()
 
 	local slotmask = managers.slot:get_mask("explosion_targets")
@@ -474,13 +462,16 @@ function TripMineBase:_explode(col_ray)
 		end
 	end
 
+	local destruction_delay = nil
+
 	if managers.network:session() then
 		if managers.player:has_category_upgrade("trip_mine", "fire_trap") then
 			local fire_trap_data = managers.player:upgrade_value("trip_mine", "fire_trap", nil)
 
 			if fire_trap_data then
 				managers.network:session():send_to_peers_synched("sync_trip_mine_explode_spawn_fire", self._unit, player, self._ray_from_pos, self._ray_to_pos, damage_size, damage, fire_trap_data[1], fire_trap_data[2])
-				self:_spawn_environment_fire(player, fire_trap_data[1], fire_trap_data[2])
+
+				destruction_delay = self:_spawn_environment_fire(player, fire_trap_data[1], fire_trap_data[2])
 			end
 		elseif player then
 			managers.network:session():send_to_peers_synched("sync_trip_mine_explode", self._unit, player, self._ray_from_pos, self._ray_to_pos, damage_size, damage)
@@ -501,20 +492,29 @@ function TripMineBase:_explode(col_ray)
 
 	if Network:is_server() then
 		managers.mission:call_global_event("tripmine_exploded")
-		Application:error("TRIPMINE EXPLODED")
 	end
 
-	self._unit:set_slot(0)
+	self:_handle_hiding_and_destroying(true, destruction_delay)
 end
 
 function TripMineBase:sync_trip_mine_explode_and_spawn_fire(user_unit, ray_from, ray_to, damage_size, damage, added_time, range_multiplier)
-	self:_spawn_environment_fire(user_unit, added_time, range_multiplier)
-	self:sync_trip_mine_explode(user_unit, ray_from, ray_to, damage_size, damage)
+	if self._detonated then
+		return
+	end
+
+	local destruction_delay = self:_spawn_environment_fire(user_unit, added_time, range_multiplier)
+
+	self:sync_trip_mine_explode(user_unit, ray_from, ray_to, damage_size, damage, destruction_delay)
 end
 
-function TripMineBase:sync_trip_mine_explode(user_unit, ray_from, ray_to, damage_size, damage)
+function TripMineBase:sync_trip_mine_explode(user_unit, ray_from, ray_to, damage_size, damage, destruction_delay)
+	if self._detonated then
+		return
+	end
+
+	self._detonated = true
+
 	self:_play_sound_and_effects()
-	self._unit:set_slot(0)
 	managers.explosion:give_local_player_dmg(self._position, damage_size, tweak_data.weapon.trip_mines.player_damage)
 
 	local bodies = World:find_bodies("intersect", "cylinder", ray_from, ray_to, damage_size, managers.slot:get_mask("explosion_targets"))
@@ -545,7 +545,40 @@ function TripMineBase:sync_trip_mine_explode(user_unit, ray_from, ray_to, damage
 
 	if Network:is_server() then
 		managers.mission:call_global_event("tripmine_exploded")
-		Application:error("TRIPMINE EXPLODED")
+	end
+
+	self:_handle_hiding_and_destroying(true, destruction_delay)
+end
+
+function TripMineBase:_handle_hiding_and_destroying(destroy, destruction_delay)
+	self._unit:set_visible(false)
+
+	local int_ext = self._unit:interaction()
+
+	if int_ext then
+		int_ext:set_active(false)
+	end
+
+	self._unit:set_enabled(false)
+
+	if destroy and (Network:is_server() or self._unit:id() == -1) then
+		if destruction_delay then
+			if not self._destroy_clbk_id then
+				self._destroy_clbk_id = "trip_mine_destroy" .. tostring(self._unit:key())
+
+				managers.enemy:add_delayed_clbk(self._destroy_clbk_id, callback(self, self, "_clbk_destroy"), TimerManager:game():time() + destruction_delay)
+			end
+		else
+			self._unit:set_slot(0)
+		end
+	end
+end
+
+function TripMineBase:_clbk_destroy()
+	self._destroy_clbk_id = nil
+
+	if alive(self._unit) then
+		self._unit:set_slot(0)
 	end
 end
 
@@ -559,7 +592,10 @@ function TripMineBase:_spawn_environment_fire(user_unit, added_time, range_multi
 	mvector3.set(dir, normal)
 	mvector3.multiply(dir, 20)
 	mvector3.add(position, dir)
-	EnvironmentFire.spawn(position, rotation, data, normal, user_unit, added_time, range_multiplier)
+
+	local groundfire_unit, time_until_destruction = EnvironmentFire.spawn(position, rotation, data, normal, user_unit, self._unit, added_time, range_multiplier)
+
+	return time_until_destruction
 end
 
 function TripMineBase:_play_sound_and_effects()
@@ -615,7 +651,8 @@ function TripMineBase:save(data)
 		first_armed = self._first_armed,
 		sensor_upgrade = self._sensor_upgrade,
 		ray_from_pos = self._ray_from_pos,
-		ray_to_pos = self._ray_to_pos
+		ray_to_pos = self._ray_to_pos,
+		destroy_hide_t = self._destroy_clbk_id and managers.enemy:get_delayed_clbk_exec_t(self._destroy_clbk_id) - TimerManager:game():time() or nil
 	}
 	data.TripMineBase = state
 end
@@ -635,6 +672,16 @@ function TripMineBase:load(data)
 	self:sync_trip_mine_set_armed(state.armed, state.length)
 
 	self._was_dropin = true
+
+	if self._validate_clbk_id then
+		managers.enemy:remove_delayed_clbk(self._validate_clbk_id)
+
+		self._validate_clbk_id = nil
+	end
+
+	if state.destroy_hide_t then
+		self:_handle_hiding_and_destroying(true, state.destroy_hide_t)
+	end
 end
 
 function TripMineBase:_debug_draw(from, to)
@@ -648,5 +695,11 @@ function TripMineBase:destroy()
 		managers.enemy:remove_delayed_clbk(self._validate_clbk_id)
 
 		self._validate_clbk_id = nil
+	end
+
+	if self._destroy_clbk_id then
+		managers.enemy:remove_delayed_clbk(self._destroy_clbk_id)
+
+		self._destroy_clbk_id = nil
 	end
 end

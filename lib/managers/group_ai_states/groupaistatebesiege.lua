@@ -85,25 +85,9 @@ function GroupAIStateBesiege:assign_enemy_to_group_ai(unit, team_id)
 	local u_tracker = unit:movement():nav_tracker()
 	local seg = u_tracker:nav_segment()
 	local area = self:get_area_from_nav_seg_id(seg)
-	local current_unit_type = tweak_data.levels:get_ai_group_type()
-	local u_name = unit:name()
-	local u_category = nil
-
-	for cat_name, category in pairs(tweak_data.group_ai.unit_categories) do
-		local units = category.unit_types[current_unit_type]
-
-		for _, test_u_name in ipairs(units) do
-			if u_name == test_u_name then
-				u_category = cat_name
-
-				break
-			end
-		end
-	end
-
 	local group_desc = {
 		size = 1,
-		type = u_category or "custom"
+		type = "custom"
 	}
 	local group = self:_create_group(group_desc)
 	group.team = self._teams[team_id]
@@ -326,7 +310,9 @@ function GroupAIStateBesiege:_begin_new_tasks()
 		local criminal_character_in_area = false
 
 		for criminal_key, _ in pairs(area.criminal.units) do
-			if not self._criminals[criminal_key].status and not self._criminals[criminal_key].is_deployable then
+			local status = self._criminals[criminal_key].status
+
+			if (not status or status == "electrified") and not self._criminals[criminal_key].is_deployable then
 				criminal_character_in_area = true
 
 				break
@@ -717,14 +703,6 @@ function GroupAIStateBesiege:_verify_anticipation_spawn_point(sp_data)
 	return true
 end
 
-function GroupAIStateBesiege:is_smoke_grenade_active()
-	return self._smoke_end_t and Application:time() < self._smoke_end_t
-end
-
-function GroupAIStateBesiege:is_cs_grenade_active()
-	return self._cs_end_t and Application:time() < self._cs_end_t
-end
-
 function GroupAIStateBesiege:_begin_reenforce_task(reenforce_area)
 	local new_task = {
 		use_spawn_event = true,
@@ -1108,19 +1086,6 @@ function GroupAIStateBesiege:_find_spawn_group_near_area(target_area, allowed_gr
 	end
 
 	local time = TimerManager:game():time()
-	local timer_can_spawn = false
-
-	for id in pairs(valid_spawn_groups) do
-		if not self._spawn_group_timers[id] or self._spawn_group_timers[id] <= time then
-			timer_can_spawn = true
-
-			break
-		end
-	end
-
-	if not timer_can_spawn then
-		self._spawn_group_timers = {}
-	end
 
 	for id in pairs(valid_spawn_groups) do
 		if self._spawn_group_timers[id] and time < self._spawn_group_timers[id] then
@@ -1194,7 +1159,10 @@ function GroupAIStateBesiege:_choose_best_group(best_groups, total_weight)
 		rand_wgt = rand_wgt - candidate.wght
 
 		if rand_wgt <= 0 then
-			self._spawn_group_timers[spawn_group_id(candidate.group)] = TimerManager:game():time() + math.random(15, 20)
+			self._spawn_group_timers[spawn_group_id(candidate.group)] = TimerManager:game():time() + 5
+
+			math.random(3)
+
 			best_grp = candidate.group
 			best_grp_type = candidate.group_type
 			best_grp.delay_t = self._t + best_grp.interval
@@ -1936,8 +1904,34 @@ function GroupAIStateBesiege:_draw_enemy_activity(t)
 			text_str = text_str .. ":" .. l_data.spawned_in_phase
 		end
 
-		if l_data.unit:anim_state_machine() then
-			text_str = text_str .. ":animation( " .. l_data.unit:anim_state_machine():segment_state(Idstring("base")):s() .. " )"
+		local ext_mov = l_data.unit:movement()
+		local active_actions = ext_mov._active_actions
+
+		if active_actions then
+			local full_body = active_actions[1]
+
+			if full_body then
+				local variant = full_body.variant
+				text_str = text_str .. ":action[1]( " .. full_body:type() .. " )"
+			end
+
+			local lower_body = active_actions[2]
+
+			if lower_body then
+				text_str = text_str .. ":action[2]( " .. lower_body:type() .. " )"
+			end
+
+			local upper_body = active_actions[3]
+
+			if upper_body then
+				text_str = text_str .. ":action[3]( " .. upper_body:type() .. " )"
+			end
+
+			local superficial = active_actions[4]
+
+			if superficial then
+				text_str = text_str .. ":action[4]( " .. superficial:type() .. " )"
+			end
 		end
 
 		if logic_name_text then
@@ -2571,7 +2565,7 @@ function GroupAIStateBesiege:set_wave_mode(flag)
 		else
 			self._task_data.assault.next_dispatch_t = self._t
 		end
-	elseif flag == "besiege" then
+	elseif flag == "assault" or flag == "besiege" then
 		if self._task_data.regroup.active then
 			self._task_data.assault.next_dispatch_t = self._task_data.regroup.end_t
 		elseif not self._task_data.assault.active then
@@ -2985,7 +2979,7 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 			if tactic_name == "deathguard" and not phase_is_anticipation then
 				if current_objective.tactic == tactic_name then
 					for u_key, u_data in pairs(self._char_criminals) do
-						if u_data.status and current_objective.follow_unit == u_data.unit then
+						if u_data.status and u_data.status ~= "electrified" and current_objective.follow_unit == u_data.unit then
 							local crim_nav_seg = u_data.tracker:nav_segment()
 
 							if current_objective.area.nav_segs[crim_nav_seg] then
@@ -2998,7 +2992,7 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 				local closest_crim_u_data, closest_crim_dis_sq = nil
 
 				for u_key, u_data in pairs(self._char_criminals) do
-					if u_data.status then
+					if u_data.status and u_data.status ~= "electrified" then
 						local closest_u_id, closest_u_data, closest_u_dis_sq = self._get_closest_group_unit_to_pos(u_data.m_pos, group.units)
 
 						if closest_u_dis_sq and (not closest_crim_dis_sq or closest_u_dis_sq < closest_crim_dis_sq) then
@@ -3119,8 +3113,19 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 
 		repeat
 			local search_area = table.remove(to_search_areas, 1)
+			local criminal_character_in_area = false
 
-			if next(search_area.criminal.units) then
+			for criminal_key, _ in pairs(search_area.criminal.units) do
+				local status = self._criminals[criminal_key].status
+
+				if (not status or status == "electrified") and not self._criminals[criminal_key].is_deployable then
+					criminal_character_in_area = true
+
+					break
+				end
+			end
+
+			if criminal_character_in_area then
 				local assault_from_here = true
 
 				if not push and tactics_map and tactics_map.flank then
@@ -3208,9 +3213,11 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 
 				if charge then
 					for c_key, c_data in pairs(assault_area.criminal.units) do
-						detonate_pos = c_data.unit:movement():m_pos()
+						if not self._criminals[c_key].is_deployable then
+							detonate_pos = c_data.unit:movement():m_pos()
 
-						break
+							break
+						end
 					end
 				end
 
@@ -3222,24 +3229,22 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 				self:_voice_move_in_start(group)
 			end
 
-			if not push or used_grenade then
-				local grp_objective = {
-					type = "assault_area",
-					stance = "hos",
-					area = assault_area,
-					coarse_path = assault_path,
-					pose = push and "crouch" or "stand",
-					attitude = push and "engage" or "avoid",
-					moving_in = push and true or nil,
-					open_fire = push or nil,
-					pushed = push or nil,
-					charge = charge,
-					interrupt_dis = charge and 0 or nil
-				}
-				group.is_chasing = group.is_chasing or push
+			local grp_objective = {
+				type = "assault_area",
+				stance = "hos",
+				area = assault_area,
+				coarse_path = assault_path,
+				pose = push and "crouch" or "stand",
+				attitude = push and "engage" or "avoid",
+				moving_in = push and true or nil,
+				open_fire = push or nil,
+				pushed = push or nil,
+				charge = charge,
+				interrupt_dis = charge and 0 or nil
+			}
+			group.is_chasing = group.is_chasing or push
 
-				self:_set_objective_to_enemy_group(group, grp_objective)
-			end
+			self:_set_objective_to_enemy_group(group, grp_objective)
 		end
 	elseif pull_back then
 		local retreat_area, do_not_retreat = nil
@@ -3492,7 +3497,7 @@ function GroupAIStateBesiege:_chk_group_use_smoke_grenade(group, task_data, deto
 				end
 
 				if detonate_pos and shooter_u_data then
-					self:detonate_smoke_grenade(detonate_pos, shooter_pos, duration, false)
+					self:detonate_smoke_grenade(detonate_pos, shooter_pos, duration, false, false)
 
 					task_data.use_smoke_timer = self._t + math.lerp(tweak_data.group_ai.smoke_and_flash_grenade_timeout[1], tweak_data.group_ai.smoke_and_flash_grenade_timeout[2], math.rand(0, 1)^0.5)
 					task_data.use_smoke = false
@@ -3538,7 +3543,7 @@ function GroupAIStateBesiege:_chk_group_use_flash_grenade(group, task_data, deto
 				end
 
 				if detonate_pos and shooter_u_data then
-					self:detonate_smoke_grenade(detonate_pos, shooter_pos, duration, true)
+					self:detonate_smoke_grenade(detonate_pos, shooter_pos, duration, true, false)
 
 					task_data.use_smoke_timer = self._t + math.lerp(tweak_data.group_ai.smoke_and_flash_grenade_timeout[1], tweak_data.group_ai.smoke_and_flash_grenade_timeout[2], math.random()^0.5)
 					task_data.use_smoke = false
@@ -3552,16 +3557,6 @@ function GroupAIStateBesiege:_chk_group_use_flash_grenade(group, task_data, deto
 			end
 		end
 	end
-end
-
-function GroupAIStateBesiege:detonate_smoke_grenade(detonate_pos, shooter_pos, duration, flashbang)
-	managers.network:session():send_to_peers_synched("sync_smoke_grenade", detonate_pos, shooter_pos, duration, flashbang and true or false)
-	self:sync_smoke_grenade(detonate_pos, shooter_pos, duration, flashbang)
-end
-
-function GroupAIStateBesiege:detonate_cs_grenade(detonate_pos, shooter_pos, duration)
-	managers.network:session():send_to_peers_synched("sync_cs_grenade", detonate_pos, shooter_pos, duration)
-	self:sync_cs_grenade(detonate_pos, shooter_pos, duration)
 end
 
 function GroupAIStateBesiege:_assign_assault_groups_to_retire()

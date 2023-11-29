@@ -308,10 +308,11 @@ function HuskPlayerMovement:init(unit)
 	self._crouch_detection_offset_z = mvec3_z(tweak_data.player.stances.default.crouched.head.translation)
 	self._m_pos = unit:position()
 	self._m_rot = unit:rotation()
+	self._m_fwd = self._m_rot:y()
+	self._m_right = self._m_rot:x()
+	self._look_dir = self._m_rot:y()
 	self._auto_firing = 0
 	self._firing = 0
-	self._look_dir = self._m_rot:y()
-	self._sync_look_dir = nil
 	self._look_ang_vel = 0
 	self._move_data = nil
 	self._last_vel_z = 0
@@ -348,7 +349,8 @@ function HuskPlayerMovement:init(unit)
 	self._m_com = math.lerp(self._m_pos, self._m_stand_pos, 0.5)
 	self._obj_head = unit:get_object(Idstring("Head"))
 	self._obj_spine = unit:get_object(Idstring("Spine1"))
-	self._m_head_rot = Rotation(self._look_dir, math.UP)
+	self._m_head_rot = self._obj_head:rotation()
+	self._m_head_fwd = self._m_head_rot:z()
 	self._m_head_pos = self._obj_head:position()
 	self._m_detect_pos = mvector3.copy(self._m_head_pos)
 	self._m_newest_pos = mvector3.copy(self._m_pos)
@@ -381,6 +383,7 @@ end
 
 function HuskPlayerMovement:post_init()
 	self._ext_anim = self._unit:anim_data()
+	self._ext_base = self._unit:base()
 
 	self._unit:inventory():add_listener("HuskPlayerMovement", {
 		"equip"
@@ -398,7 +401,7 @@ function HuskPlayerMovement:post_init()
 
 	self._attention_handler = CharacterAttentionObject:new(self._unit)
 
-	self._attention_handler:setup_attention_positions(self._m_detect_pos, nil)
+	self._attention_handler:setup_attention_positions(self._m_detect_pos, self._m_newest_pos)
 
 	self._enemy_weapons_hot_listen_id = "PlayerMovement" .. tostring(self._unit:key())
 
@@ -645,11 +648,8 @@ function HuskPlayerMovement:update(unit, t, dt)
 	self._arm_animator:update(t, dt)
 end
 
-function HuskPlayerMovement:enable_update()
-end
-
 function HuskPlayerMovement:sync_look_dir(fwd, yaw, pitch)
-	mvector3.normalize(fwd)
+	mvec3_norm(fwd)
 
 	self._sync_look_dir = fwd
 
@@ -700,8 +700,8 @@ function HuskPlayerMovement:set_arm_setting(setting_id, setting_param)
 			self:refresh_primary_hand(true)
 
 			if self._ext_anim.melee and alive(self._machine) then
-				self._machine:stop_segment(Idstring("upper_body_ext"))
-				self._machine:stop_segment(Idstring("upper_body"))
+				self:play_redirect("up_idle_ext")
+				self:play_redirect("up_idle")
 			end
 		end
 	end
@@ -789,7 +789,7 @@ function HuskPlayerMovement:block_melee()
 
 	if self._ext_anim.melee then
 		if alive(self._machine) then
-			self._machine:stop_segment(Idstring("upper_body_ext"))
+			self:play_redirect("up_idle_ext")
 		end
 
 		if alive(self._unit:inventory():equipped_unit()) then
@@ -825,7 +825,7 @@ function HuskPlayerMovement:clbk_arm_animator(enabled)
 end
 
 function HuskPlayerMovement:set_look_dir_instant(fwd)
-	mvector3.set(self._look_dir, fwd)
+	mvec3_set(self._look_dir, fwd)
 	self._look_modifier:set_target_y(self._look_dir)
 
 	self._sync_look_dir = nil
@@ -847,6 +847,10 @@ function HuskPlayerMovement:m_head_rot()
 	return self._m_head_rot
 end
 
+function HuskPlayerMovement:m_head_fwd()
+	return self._m_head_fwd
+end
+
 function HuskPlayerMovement:m_head_pos()
 	return self._m_head_pos
 end
@@ -863,6 +867,14 @@ function HuskPlayerMovement:m_rot()
 	return self._m_rot
 end
 
+function HuskPlayerMovement:m_fwd()
+	return self._m_fwd
+end
+
+function HuskPlayerMovement:m_right()
+	return self._m_right
+end
+
 function HuskPlayerMovement:get_object(object_name)
 	return self._unit:get_object(object_name)
 end
@@ -877,44 +889,75 @@ end
 
 function HuskPlayerMovement:_calculate_m_pose()
 	mrotation.set_look_at(self._m_head_rot, self._look_dir, math.UP)
+	mrotation.z(self._m_head_rot, self._m_head_fwd)
 	self._obj_head:m_position(self._m_head_pos)
-	self._obj_spine:m_position(self._m_com)
+	mvector3.lerp(self._m_com, self._m_pos, self._m_head_pos, 0.5)
 
+	local upd_nav_data = nil
 	local det_pos = self._m_detect_pos
 
 	if self._move_data then
 		local path = self._move_data.path
 
 		mvector3.set(det_pos, path[#path])
+
+		upd_nav_data = mvector3.distance_sq(self._m_newest_pos, det_pos) > 1
+
 		mvector3.set(self._m_newest_pos, det_pos)
 	else
 		mvector3.set(det_pos, self._m_pos)
+
+		upd_nav_data = mvector3.distance_sq(self._m_newest_pos, det_pos) > 1
+
 		mvector3.set(self._m_newest_pos, self._m_pos)
 	end
 
 	local offset_z = self._pose_code == 2 and self._crouch_detection_offset_z or mvec3_z(self._m_head_pos) - mvec3_z(self._m_pos)
 
 	mvec3_set_z(det_pos, mvec3_z(det_pos) + offset_z)
+
+	if upd_nav_data then
+		if self._nav_tracker then
+			self._nav_tracker:move(self._m_newest_pos)
+
+			local nav_seg_id = self._nav_tracker:nav_segment()
+
+			if self._standing_nav_seg_id ~= nav_seg_id then
+				self._standing_nav_seg_id = nav_seg_id
+				local metadata = managers.navigation:get_nav_seg_metadata(nav_seg_id)
+
+				self._unit:base():set_suspicion_multiplier("area", metadata.suspicion_mul)
+				self._unit:base():set_detection_multiplier("area", metadata.detection_mul and 1 / metadata.detection_mul or nil)
+				managers.groupai:state():on_criminal_nav_seg_change(self._unit, nav_seg_id)
+			end
+		end
+
+		if Network:is_server() then
+			if not self._pos_reservation then
+				self._pos_reservation = {
+					radius = 100,
+					position = self._m_newest_pos,
+					filter = self._pos_rsrv_id
+				}
+				self._pos_reservation_slow = {
+					radius = 100,
+					position = mvector3.copy(self._m_newest_pos),
+					filter = self._pos_rsrv_id
+				}
+
+				managers.navigation:add_pos_reservation(self._pos_reservation)
+				managers.navigation:add_pos_reservation(self._pos_reservation_slow)
+			else
+				managers.navigation:move_pos_rsrv(self._pos_reservation)
+				self:_upd_slow_pos_reservation()
+			end
+		end
+	end
 end
 
 function HuskPlayerMovement:set_position(pos)
 	mvector3.set(self._m_pos, pos)
 	self._unit:set_position(pos)
-
-	if self._nav_tracker then
-		self._nav_tracker:move(pos)
-
-		local nav_seg_id = self._nav_tracker:nav_segment()
-
-		if self._standing_nav_seg_id ~= nav_seg_id then
-			self._standing_nav_seg_id = nav_seg_id
-			local metadata = managers.navigation:get_nav_seg_metadata(nav_seg_id)
-
-			self._unit:base():set_suspicion_multiplier("area", metadata.suspicion_mul)
-			self._unit:base():set_detection_multiplier("area", metadata.detection_mul and 1 / metadata.detection_mul or nil)
-			managers.groupai:state():on_criminal_nav_seg_change(self._unit, nav_seg_id)
-		end
-	end
 end
 
 function HuskPlayerMovement:get_location_id()
@@ -923,27 +966,31 @@ end
 
 function HuskPlayerMovement:set_rotation(rot)
 	mrotation.set_yaw_pitch_roll(self._m_rot, rot:yaw(), 0, 0)
+	mrotation.y(self._m_rot, self._m_fwd)
+	mrotation.x(self._m_rot, self._m_right)
 	self._unit:set_rotation(rot)
 end
 
 function HuskPlayerMovement:set_m_rotation(rot)
 	mrotation.set_yaw_pitch_roll(self._m_rot, rot:yaw(), 0, 0)
+	mrotation.y(self._m_rot, self._m_fwd)
+	mrotation.x(self._m_rot, self._m_right)
 end
 
 function HuskPlayerMovement:nav_tracker()
 	return self._nav_tracker
 end
 
+function HuskPlayerMovement:_unfreeze_anims()
+	CopMovement._unfreeze_anims(self)
+end
+
+function HuskPlayerMovement:on_anim_freeze(state)
+	self._frozen = state
+end
+
 function HuskPlayerMovement:play_redirect(redirect_name, at_time)
-	local result = self._unit:play_redirect(Idstring(redirect_name), at_time)
-	result = result ~= Idstring("") and result
-
-	if result then
-		return result
-	end
-
-	print("[HuskPlayerMovement:play_redirect] redirect", redirect_name, "failed in", self._machine:segment_state(self._ids_base), self._machine:segment_state(Idstring("upper_body")))
-	Application:stack_dump()
+	return self:play_redirect_idstr(Idstring(redirect_name), at_time)
 end
 
 function HuskPlayerMovement:play_redirect_delayed(redirect_name, at_time, delay)
@@ -962,9 +1009,44 @@ function HuskPlayerMovement:play_redirect_delayed(redirect_name, at_time, delay)
 	end
 end
 
+HuskPlayerMovement._can_replay_lookup = {
+	[Idstring("stand"):key()] = true,
+	[Idstring("crouch"):key()] = true
+}
+
 function HuskPlayerMovement:play_redirect_idstr(redirect_name, at_time)
+	local was_frozen = self._frozen
+
+	if was_frozen then
+		self:_unfreeze_anims()
+	end
+
+	local replay_t, replay_speed = nil
+	local replay_redir = self._ext_anim.upper_upd_on_pose_change and self._can_replay_lookup[redirect_name:key()] and self._ext_anim.upper_upd_on_pose_change
+
+	if replay_redir then
+		replay_t = self._machine:segment_relative_time(Idstring("upper_body"))
+		local segment_state = self._machine:segment_state(Idstring("upper_body"))
+
+		if segment_state then
+			replay_speed = self._machine:get_speed(segment_state)
+		end
+	end
+
 	local result = self._unit:play_redirect(redirect_name, at_time)
 	result = result ~= Idstring("") and result
+
+	if result and replay_redir then
+		local replay_result = self._unit:play_redirect(Idstring(replay_redir), replay_t)
+
+		if replay_speed and replay_result ~= Idstring("") then
+			self._machine:set_speed(replay_result, replay_speed)
+		end
+	end
+
+	if was_frozen then
+		self._ext_base:chk_freeze_anims()
+	end
 
 	if result then
 		return result
@@ -975,8 +1057,18 @@ function HuskPlayerMovement:play_redirect_idstr(redirect_name, at_time)
 end
 
 function HuskPlayerMovement:play_state(state_name, at_time)
+	local was_frozen = self._frozen
+
+	if was_frozen then
+		self:_unfreeze_anims()
+	end
+
 	local result = self._unit:play_state(Idstring(state_name), at_time)
 	result = result ~= Idstring("") and result
+
+	if was_frozen then
+		self._ext_base:chk_freeze_anims()
+	end
 
 	if result then
 		return result
@@ -987,8 +1079,18 @@ function HuskPlayerMovement:play_state(state_name, at_time)
 end
 
 function HuskPlayerMovement:play_state_idstr(state_name, at_time)
+	local was_frozen = self._frozen
+
+	if was_frozen then
+		self:_unfreeze_anims()
+	end
+
 	local result = self._unit:play_state(state_name, at_time)
 	result = result ~= Idstring("") and result
+
+	if was_frozen then
+		self._ext_base:chk_freeze_anims()
+	end
 
 	if result then
 		return result
@@ -1013,7 +1115,7 @@ function HuskPlayerMovement:sync_melee_start(hand)
 
 	if self:arm_animation_enabled() then
 		if self._ext_anim.reload and alive(self._machine) then
-			self._machine:stop_segment(Idstring("upper_body"))
+			self:play_redirect("up_idle")
 		end
 
 		if self:arm_animation_blocked() then
@@ -1047,7 +1149,7 @@ function HuskPlayerMovement:sync_melee_stop()
 		self._ext_anim.melee = false
 
 		if alive(self._machine) then
-			self._machine:stop_segment(Idstring("upper_body_ext"))
+			self:play_redirect("up_idle_ext")
 		end
 	end
 end
@@ -2023,7 +2125,7 @@ function HuskPlayerMovement:_upd_slow_pos_reservation(t, dt)
 		mvec3_mul(tmp_vec2, slow_dist)
 		mvec3_add(tmp_vec2, self._pos_reservation.position)
 		mvec3_set(self._pos_reservation_slow.position, tmp_vec2)
-		managers.navigation:move_pos_rsrv(self._pos_reservation)
+		managers.navigation:move_pos_rsrv(self._pos_reservation_slow)
 	end
 end
 
@@ -2772,30 +2874,6 @@ function HuskPlayerMovement:sync_action_walk_nav_point(pos, speed, action, param
 	self._movement_history = self._movement_history or {}
 	local path_len = #self._movement_path
 	pos = pos or (path_len <= 0 or self._movement_path[path_len].pos) and mvector3.copy(self:m_pos())
-
-	if Network:is_server() then
-		if not self._pos_reservation then
-			self._pos_reservation = {
-				radius = 100,
-				position = mvector3.copy(pos),
-				filter = self._pos_rsrv_id
-			}
-			self._pos_reservation_slow = {
-				radius = 100,
-				position = mvector3.copy(pos),
-				filter = self._pos_rsrv_id
-			}
-
-			managers.navigation:add_pos_reservation(self._pos_reservation)
-			managers.navigation:add_pos_reservation(self._pos_reservation_slow)
-		else
-			self._pos_reservation.position = mvector3.copy(pos)
-
-			managers.navigation:move_pos_rsrv(self._pos_reservation)
-			self:_upd_slow_pos_reservation()
-		end
-	end
-
 	local can_add = true
 
 	if not params.force and path_len > 0 then
@@ -3562,7 +3640,8 @@ HuskPlayerMovement.reload_times = {
 	shotgun = 83 / HuskPlayerMovement.reload_time_fps,
 	bullpup = 74 / HuskPlayerMovement.reload_time_fps,
 	uzi = 70 / HuskPlayerMovement.reload_time_fps,
-	akimbo_pistol = 35 / HuskPlayerMovement.reload_time_fps
+	akimbo_pistol = 35 / HuskPlayerMovement.reload_time_fps,
+	revolver = 74 / HuskPlayerMovement.reload_time_fps
 }
 HuskPlayerMovement.str_is_shotgun_pump = "is_shotgun_pump"
 HuskPlayerMovement.str_looped = "looped"
@@ -3575,13 +3654,13 @@ function HuskPlayerMovement:get_reload_animation_time(hold_type)
 	if type(hold_type) == "table" then
 		for _, hold in ipairs(hold_type) do
 			if self.reload_times[hold] then
-				return self.reload_times[hold], hold
+				return self.reload_times[hold]
 			end
 		end
 
 		return self.reload_times.default
 	elseif self.reload_times[hold_type] then
-		return self.reload_times[hold_type], hold_type
+		return self.reload_times[hold_type]
 	else
 		Application:stack_dump_error("No reload animation time found for hold type!", hold_type)
 
@@ -3600,7 +3679,6 @@ end
 function HuskPlayerMovement:sync_reload_weapon(empty_reload, reload_speed_multiplier)
 	local anim_multiplier = 1
 	local anim_redirect = "reload"
-	local anim_hold_type, anim_reload_type = nil
 
 	self._arm_animator:set_state_blocked("reload", true)
 
@@ -3613,7 +3691,7 @@ function HuskPlayerMovement:sync_reload_weapon(empty_reload, reload_speed_multip
 			return
 		end
 
-		local reload_anim_time, hold_type = self:get_reload_animation_time(w_td_crew.hold)
+		local reload_anim_time = self:get_reload_animation_time(w_td_crew.hold)
 		local reload_time = 1
 		local timers = w_td.timers
 		local looped_reload = self:is_looped_reload(w_td_crew)
@@ -3630,18 +3708,6 @@ function HuskPlayerMovement:sync_reload_weapon(empty_reload, reload_speed_multip
 			reload_time = (reload_time or 1) / (reload_speed_multiplier or 1)
 			anim_multiplier = reload_anim_time / reload_time
 		end
-
-		if hold_type then
-			anim_hold_type = "hold_" .. hold_type
-		end
-
-		if not looped_reload then
-			if w_td_crew.reload then
-				anim_reload_type = "reload_" .. w_td_crew.reload
-			elseif hold_type then
-				anim_reload_type = "reload_" .. hold_type
-			end
-		end
 	else
 		local equipped_weapon = self:_equipped_weapon_base()
 
@@ -3654,38 +3720,22 @@ function HuskPlayerMovement:sync_reload_weapon(empty_reload, reload_speed_multip
 
 	if redir_res then
 		self._machine:set_speed(redir_res, anim_multiplier)
-
-		if anim_hold_type then
-			self._machine:set_parameter(redir_res, anim_hold_type, 1)
-
-			self._last_anim_hold_type = anim_hold_type
-		end
-
-		if anim_reload_type then
-			self._machine:set_parameter(redir_res, anim_reload_type, 1)
-		end
-
-		self._reload_anim_type = anim_reload_type or anim_hold_type
 	end
 end
 
 function HuskPlayerMovement:anim_clbk_start_reload_looped()
-	local anim_multiplier = 1
-	local w_td_crew = self:_equipped_weapon_crew_tweak_data() or {}
-
-	if w_td_crew then
-		anim_multiplier = w_td_crew.looped_reload_speed or 1
-		anim_multiplier = anim_multiplier * (self._reload_speed_multiplier or 1)
-	end
-
 	local redir_res = self:play_redirect("reload_looped")
 
 	if redir_res then
-		self._machine:set_speed(redir_res, anim_multiplier)
+		local anim_multiplier = 1
+		local w_td_crew = self:_equipped_weapon_crew_tweak_data() or {}
 
-		if self._last_anim_hold_type then
-			self._machine:set_parameter(redir_res, self._last_anim_hold_type, 1)
+		if w_td_crew then
+			anim_multiplier = w_td_crew.looped_reload_speed or 1
+			anim_multiplier = anim_multiplier * (self._reload_speed_multiplier or 1)
 		end
+
+		self._machine:set_speed(redir_res, anim_multiplier)
 	end
 end
 
@@ -3696,13 +3746,7 @@ function HuskPlayerMovement:sync_reload_weapon_interupt()
 		local w_td_crew = self:_equipped_weapon_crew_tweak_data() or {}
 
 		if self:is_looped_reload(w_td_crew) then
-			local redir_res = self:play_redirect("reload_looped_exit")
-
-			if redir_res and self._last_anim_hold_type then
-				self._machine:set_parameter(redir_res, self._last_anim_hold_type, 1)
-
-				self._last_anim_hold_type = nil
-			end
+			self:play_redirect("reload_looped_exit")
 		end
 	end
 
@@ -4614,6 +4658,7 @@ function HuskPlayerMovement:_sync_movement_state_player_turret(event_descriptor)
 
 	self._weapon_hold = {}
 	local weap_tweak = player_turret:base():weapon_tweak_data()
+	local reload_hold_param = nil
 
 	if type(weap_tweak.hold) == "table" then
 		local num = #weap_tweak.hold + 1
@@ -4621,10 +4666,39 @@ function HuskPlayerMovement:_sync_movement_state_player_turret(event_descriptor)
 		for i, hold_type in ipairs(weap_tweak.hold) do
 			self._machine:set_global(hold_type, self:get_hold_type_weight(hold_type) or num - i)
 			table.insert(self._weapon_hold, hold_type)
+
+			if not reload_hold_param_set and self.reload_times[hold_type] then
+				reload_hold_param = hold_type
+
+				self._machine:set_global("hold_" .. hold_type, 1)
+				table.insert(self._weapon_hold, "hold_" .. hold_type)
+			end
 		end
 	else
 		self._machine:set_global(weap_tweak.hold, self:get_hold_type_weight(weap_tweak.hold) or 1)
 		table.insert(self._weapon_hold, weap_tweak.hold)
+
+		if self.reload_times[weap_tweak.hold] then
+			reload_hold_param = weap_tweak.hold
+
+			self._machine:set_global("hold_" .. weap_tweak.hold, 1)
+			table.insert(self._weapon_hold, "hold_" .. weap_tweak.hold)
+		end
+	end
+
+	local anim_reload_type = nil
+
+	if weap_tweak.reload then
+		if weap_tweak.reload ~= "looped" then
+			anim_reload_type = "reload_" .. weap_tweak.reload
+		end
+	elseif reload_hold_param then
+		anim_reload_type = "reload_" .. reload_hold_param
+	end
+
+	if anim_reload_type then
+		self._machine:set_global(anim_reload_type, 1)
+		table.insert(self._weapon_hold, anim_reload_type)
 	end
 
 	local weapon_usage = weap_tweak.anim_usage or weap_tweak.usage
@@ -4701,6 +4775,7 @@ function HuskPlayerMovement:clbk_inventory_event(unit, event)
 		end
 
 		self._weapon_hold = {}
+		local reload_hold_param = nil
 		local weap_tweak = weapon:base():weapon_tweak_data()
 
 		if type(weap_tweak.hold) == "table" then
@@ -4709,10 +4784,39 @@ function HuskPlayerMovement:clbk_inventory_event(unit, event)
 			for i, hold_type in ipairs(weap_tweak.hold) do
 				self._machine:set_global(hold_type, self:get_hold_type_weight(hold_type) or num - i)
 				table.insert(self._weapon_hold, hold_type)
+
+				if not reload_hold_param and self.reload_times[hold_type] then
+					reload_hold_param = hold_type
+
+					self._machine:set_global("hold_" .. hold_type, 1)
+					table.insert(self._weapon_hold, "hold_" .. hold_type)
+				end
 			end
 		else
 			self._machine:set_global(weap_tweak.hold, self:get_hold_type_weight(weap_tweak.hold) or 1)
 			table.insert(self._weapon_hold, weap_tweak.hold)
+
+			if self.reload_times[weap_tweak.hold] then
+				reload_hold_param = weap_tweak.hold
+
+				self._machine:set_global("hold_" .. weap_tweak.hold, 1)
+				table.insert(self._weapon_hold, "hold_" .. weap_tweak.hold)
+			end
+		end
+
+		local anim_reload_type = nil
+
+		if weap_tweak.reload then
+			if weap_tweak.reload ~= "looped" then
+				anim_reload_type = "reload_" .. weap_tweak.reload
+			end
+		elseif reload_hold_param then
+			anim_reload_type = "reload_" .. reload_hold_param
+		end
+
+		if anim_reload_type then
+			self._machine:set_global(anim_reload_type, 1)
+			table.insert(self._weapon_hold, anim_reload_type)
 		end
 
 		local weapon_usage = weap_tweak.anim_usage or weap_tweak.usage
@@ -4804,7 +4908,7 @@ function HuskPlayerMovement:_post_load(unit, t, dt)
 
 		if managers.network:session():peer_by_unit(unit) == nil then
 			Application:error("[HuskPlayerBase:_post_load] A player husk who appears to not have an owning member was detached.")
-			Network:detach_unit(unit)
+			detach_unit_from_network(unit)
 			unit:set_slot(0)
 
 			return

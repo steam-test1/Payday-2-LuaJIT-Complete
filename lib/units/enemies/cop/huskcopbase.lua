@@ -13,6 +13,7 @@ function HuskCopBase:post_init()
 	managers.enemy:register_enemy(self._unit)
 	self:_chk_spawn_gear()
 	self:enable_leg_arm_hitbox()
+	self:hide_and_remove_collisions_for_a_few_frames()
 end
 
 function HuskCopBase:pre_destroy(unit)

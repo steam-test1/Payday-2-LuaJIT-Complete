@@ -144,9 +144,11 @@ function PlayerTweakData:init()
 	self.fall_damage_alert_size = 250
 	self.SUSPICION_OFFSET_LERP = 0.75
 	self.long_dis_interaction = {
-		intimidate_range_enemies = 1000,
+		intimidate_range_escorts = 300,
 		highlight_range = 3000,
 		intimidate_range_civilians = 1000,
+		intimidate_range_enemies = 1000,
+		highlight_range_cameras = 2000,
 		intimidate_range_teammates = 100000,
 		intimidate_strength = 0.5
 	}

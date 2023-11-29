@@ -472,7 +472,7 @@ function CivilianLogicIdle.is_obstructed(data, aggressor_unit)
 		return true
 	end
 
-	if aggressor_unit and aggressor_unit:movement() and objective.interrupt_dis and mvector3.distance_sq(data.m_pos, aggressor_unit:movement():m_pos()) < objective.interrupt_dis * objective.interrupt_dis then
+	if aggressor_unit and aggressor_unit:movement() and objective.interrupt_dis and mvector3.distance_sq(data.m_pos, aggressor_unit:movement():m_newest_pos()) < objective.interrupt_dis * objective.interrupt_dis then
 		return true
 	end
 

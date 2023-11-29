@@ -227,7 +227,7 @@ end
 function MutatorCG22:network_delete_unit(unit)
 	if alive(unit) then
 		if unit:id() ~= -1 then
-			Network:detach_unit(unit)
+			detach_unit_from_network(unit)
 		end
 
 		World:delete_unit(unit)

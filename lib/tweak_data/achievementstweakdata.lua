@@ -430,12 +430,11 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		pim_2 = {
 			kill = true,
-			grenade_type = "wpn_prj_target",
+			is_civilian = false,
 			success = true,
 			job = "dark",
 			crouching = true,
-			stat = "pim_2_stats",
-			is_civilian = false
+			stat = "pim_2_stats"
 		},
 		tango_2 = {
 			kill = true,
@@ -918,17 +917,17 @@ function AchievementsTweakData:init(tweak_data)
 			}
 		},
 		pim_1 = {
-			weapon = "desertfox",
 			stat = "pim_1_stats",
+			weapon_type = "snp",
 			difficulty = overkill_and_above,
 			enemies = {
 				"sniper"
 			}
 		},
 		pim_3 = {
-			weapon = "schakal",
 			level_id = "mad",
 			stat = "pim_3_stats",
+			weapon_type = "smg",
 			difficulty = overkill_and_above,
 			enemy_tags_any = {
 				"special"
@@ -1318,7 +1317,7 @@ function AchievementsTweakData:init(tweak_data)
 		cac_6 = {
 			award = "cac_6",
 			melee_id = "moneybundle",
-			enemy = "cop_female",
+			enemy = "fbi_female",
 			job = "rvd"
 		},
 		cac_14 = {
@@ -2803,10 +2802,7 @@ function AchievementsTweakData:init(tweak_data)
 			need_full_job = true,
 			everyone_killed_by_grenade = 0,
 			difficulty = overkill_and_above,
-			shots_by_weapon = {
-				"packrat",
-				"x_packrat"
-			}
+			shots_by_weapon = tweak_data.weapons_by_category.pistol
 		},
 		orange_6 = {
 			award = "orange_6",

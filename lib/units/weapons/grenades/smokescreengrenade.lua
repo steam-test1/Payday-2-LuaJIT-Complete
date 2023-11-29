@@ -24,13 +24,16 @@ function SmokeScreenGrenade:_detonate(tag, unit, body, other_unit, other_body, p
 	end
 
 	managers.player:spawn_smoke_screen(pos, normal, self._unit, self._has_dodge_bonus)
-	managers.groupai:state():propagate_alert({
-		"explosion",
-		pos,
-		range,
-		managers.groupai:state("civilian_enemies"),
-		self._unit
-	})
+
+	if Network:is_server() then
+		managers.groupai:state():propagate_alert({
+			"explosion",
+			pos,
+			range,
+			managers.groupai:state("civilian_enemies"),
+			self._unit
+		})
+	end
 end
 
 function SmokeScreenGrenade:bullet_hit()

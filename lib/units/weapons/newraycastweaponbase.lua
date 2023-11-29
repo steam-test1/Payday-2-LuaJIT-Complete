@@ -976,6 +976,11 @@ function NewRaycastWeaponBase:_update_stats_values(disallow_replenish, ammo_data
 		if self._ammo_data.bullet_class ~= nil then
 			self._bullet_class = CoreSerialize.string_to_classtable(self._ammo_data.bullet_class)
 			self._bullet_slotmask = self._bullet_class:bullet_slotmask()
+
+			if self._setup and self._setup.user_unit == managers.player:player_unit() then
+				self._bullet_slotmask = managers.mutators:modify_value("RaycastWeaponBase:modify_slot_mask", self._bullet_slotmask)
+			end
+
 			self._blank_slotmask = self._bullet_class:blank_slotmask()
 		end
 
@@ -1160,7 +1165,7 @@ end
 
 function NewRaycastWeaponBase:is_weak_hit(distance, user_unit)
 	if not distance or not user_unit or self._optimal_distance + self._optimal_range == 0 then
-		return false
+		return 1
 	end
 
 	local near_distance = self._optimal_distance - self._near_falloff
@@ -1173,13 +1178,27 @@ function NewRaycastWeaponBase:is_weak_hit(distance, user_unit)
 		far_distance = far_distance * mul
 	end
 
+	local scale_mul = 1
+
 	if distance < near_distance then
-		return self._near_multiplier < 1
+		if self._near_multiplier < 1 then
+			if 0.5 or self._near_multiplier > 1 then
+				scale_mul = 1.2
+
+				if 1.2 then
+					-- Nothing
+				end
+			end
+		end
 	elseif far_distance < distance then
-		return self._far_multiplier < 1
+		if self._far_multiplier < 1 then
+			scale_mul = 0.5
+		elseif self._far_multiplier > 1 then
+			scale_mul = 1.2
+		end
 	end
 
-	return false
+	return scale_mul
 end
 
 function NewRaycastWeaponBase:get_add_head_shot_mul()

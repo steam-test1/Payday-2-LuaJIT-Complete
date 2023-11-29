@@ -329,15 +329,17 @@ function WINDLCManager:init_dlc_data()
 		no_install = true
 	}
 	Global.dlc_manager.all_dlc_data.rvd = {
-		app_id = "218620",
+		app_id = "2596140",
 		no_install = true,
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+		epic_id = "379e51448cb44304b5482dd9d8ee8e9e"
 	}
 	Global.dlc_manager.all_dlc_data.pd2_clan = {
 		source_id = "103582791433980119"
 	}
 	Global.dlc_manager.all_dlc_data.john_wick_character = {
-		source_id = "103582791433980119"
+		app_id = "2596140",
+		no_install = true,
+		epic_id = "379e51448cb44304b5482dd9d8ee8e9e"
 	}
 	Global.dlc_manager.all_dlc_data.dbd_clan = {
 		source_id = "103582791441335905"

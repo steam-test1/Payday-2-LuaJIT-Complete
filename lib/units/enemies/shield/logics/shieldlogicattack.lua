@@ -233,6 +233,8 @@ end
 
 function ShieldLogicAttack._chk_request_action_walk_to_optimal_pos(data, my_data, end_rot)
 	if not data.unit:movement():chk_action_forbidden("walk") then
+		ShieldLogicAttack._correct_path_start_pos(data, my_data.optimal_path)
+
 		local new_action_data = {
 			type = "walk",
 			body_part = 2,

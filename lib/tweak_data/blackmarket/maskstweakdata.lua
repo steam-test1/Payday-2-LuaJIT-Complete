@@ -1514,7 +1514,8 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		value = 0,
 		type = "glasses",
 		skip_mask_on_sequence = true,
-		global_value = "infamous"
+		global_value = "infamous",
+		dlc = "john_wick_character"
 	}
 	self.masks.stoneface = {
 		unit = "units/pd2_crimefest_2014/oct22/masks/stoneface/msk_stoneface",
@@ -2767,20 +2768,17 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		pcs = {},
 		value = 0,
 		global_value = "infamous",
-		texture_bundle_folder = "rip"
+		texture_bundle_folder = "rip",
+		dlc = "rvd"
 	}
 	self.masks.bodhi_begins = {
 		unit = "units/pd2_dlc_rip/masks/bodhi_begins/msk_bodhi_begins",
 		name_id = "bm_msk_bodhi_begins",
-		pcs = {
-			10,
-			20,
-			30,
-			40
-		},
+		pcs = {},
 		value = 0,
 		global_value = "infamous",
-		texture_bundle_folder = "rip"
+		texture_bundle_folder = "rip",
+		dlc = "rvd"
 	}
 	self.masks.water_spirit = {
 		unit = "units/pd2_dlc_jerry/masks/msk_water_spirit/msk_water_spirit",
@@ -5606,6 +5604,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		type = "glasses",
 		skip_mask_on_sequence = true,
 		global_value = "rvd",
+		dlc = "rvd",
 		offsets = {
 			sydney = {
 				Vector3(0, 4.01264, -1.94967),
@@ -5712,6 +5711,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		skip_mask_on_sequence = true,
 		sort_number = 60,
 		global_value = "rvd",
+		dlc = "rvd",
 		offsets = {
 			jacket = {
 				Vector3(0, 1.03149, -1.11495),
@@ -5802,6 +5802,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		type = "glasses",
 		skip_mask_on_sequence = true,
 		global_value = "rvd",
+		dlc = "rvd",
 		offsets = {
 			sydney = {
 				Vector3(0.077513, 3.53566, -1.11495),

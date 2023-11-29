@@ -7,16 +7,15 @@ function HuskTeamAIBase:default_weapon_name()
 end
 
 function HuskTeamAIBase:post_init()
+	self._ext_movement = self._unit:movement()
 	self._ext_anim = self._unit:anim_data()
 
-	self._unit:movement():post_init()
+	self._ext_movement:post_init()
 	self:set_anim_lod(1)
 
 	self._lod_stage = 1
-	self._allow_invisible = true
 
 	TeamAIBase._register(self)
-	managers.occlusion:remove_occlusion(self._unit)
 end
 
 function HuskTeamAIBase:nick_name()
@@ -57,9 +56,6 @@ function HuskTeamAIBase:load(data)
 		managers.blackmarket:verfify_recived_crew_loadout(loadout, true)
 		managers.groupai:state():set_unit_teamAI(self._unit, character_name, tweak_data.levels:get_default_team_ID("player"), data.base.visual_seed, loadout)
 	end
-end
-
-function HuskTeamAIBase:chk_freeze_anims()
 end
 
 function HuskTeamAIBase:unregister()

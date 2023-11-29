@@ -137,14 +137,17 @@ function TaserLogicAttack._upd_enemy_detection(data)
 
 	CopLogicBase._upd_attention_obj_detection(data, min_reaction, nil)
 
+	local tasing = my_data.tasing
+	local tased_u_key = tasing and tasing.target_u_key
+	local under_fire_nr = 0
 	local under_multiple_fire = nil
 	local alert_chk_t = data.t - 1.2
 
 	for key, enemy_data in pairs(data.detected_attention_objects) do
-		if enemy_data.dmg_t and alert_chk_t < enemy_data.dmg_t then
-			under_multiple_fire = (under_multiple_fire or 0) + 1
+		if tased_u_key ~= key and enemy_data.dmg_t and alert_chk_t < enemy_data.dmg_t then
+			under_fire_nr = under_fire_nr + 1
 
-			if under_multiple_fire > 2 then
+			if under_fire_nr > 2 then
 				under_multiple_fire = true
 
 				break
@@ -153,8 +156,6 @@ function TaserLogicAttack._upd_enemy_detection(data)
 	end
 
 	local find_new_focus_enemy = nil
-	local tasing = my_data.tasing
-	local tased_u_key = tasing and tasing.target_u_key
 	local tase_in_effect = tasing and tasing.target_u_data.unit:movement():tased()
 
 	if tase_in_effect or tasing and data.t - tasing.start_t < math.max(1, data.char_tweak.weapon.is_rifle.aim_delay_tase[2] * 1.5) then
@@ -444,8 +445,8 @@ function TaserLogicAttack._chk_reaction_to_attention_object(data, attention_data
 end
 
 function TaserLogicAttack._chk_play_charge_weapon_sound(data, my_data, focus_enemy)
-	if not my_data.tasing and (not my_data.last_charge_snd_play_t or data.t - my_data.last_charge_snd_play_t > 30) and focus_enemy.verified_dis < 2000 and math.abs(data.m_pos.z - focus_enemy.m_pos.z) < 300 then
-		my_data.last_charge_snd_play_t = data.t
+	if not my_data.tasing and (not data.last_charge_snd_play_t or data.t - data.last_charge_snd_play_t > 30) and focus_enemy.verified_dis < 2000 and math.abs(data.m_pos.z - focus_enemy.m_pos.z) < 300 then
+		data.last_charge_snd_play_t = data.t
 
 		data.unit:sound():play("taser_charge", nil, true)
 	end

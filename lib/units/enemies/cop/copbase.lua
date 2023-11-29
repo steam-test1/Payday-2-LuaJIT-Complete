@@ -64,9 +64,6 @@ function CopBase:post_init()
 	self._ext_movement:post_init(true)
 	self._unit:brain():post_init()
 	managers.enemy:register_enemy(self._unit)
-
-	self._allow_invisible = true
-
 	self:_chk_spawn_gear()
 	self:enable_leg_arm_hitbox()
 
@@ -75,6 +72,53 @@ function CopBase:post_init()
 		self._post_init_change_tweak_name = nil
 
 		self:change_char_tweak(new_tweak_name)
+	end
+end
+
+function CopBase:hide_and_remove_collisions_for_a_few_frames(frames)
+	frames = frames or 6
+
+	if self._hidden_frames then
+		self._hidden_frames = frames
+
+		return
+	end
+
+	self._unit:set_extension_update_enabled(Idstring("base"), true)
+
+	self._hidden_frames = frames
+
+	self:prevent_main_bones_disabling(true)
+	self:set_force_invisible(true)
+
+	local char_dmg_ext = self._unit:character_damage()
+
+	if char_dmg_ext and char_dmg_ext.set_mover_collision_state then
+		char_dmg_ext:set_mover_collision_state(false)
+	end
+end
+
+function CopBase:update(unit, t, dt)
+	if not self._hidden_frames then
+		self._unit:set_extension_update_enabled(Idstring("base"), false)
+
+		return
+	end
+
+	self._hidden_frames = self._hidden_frames - 1
+
+	if self._hidden_frames <= 0 then
+		self._hidden_frames = nil
+
+		self._unit:set_extension_update_enabled(Idstring("base"), false)
+		self:prevent_main_bones_disabling(false)
+		self:set_force_invisible(false)
+
+		local char_dmg_ext = self._unit:character_damage()
+
+		if char_dmg_ext and char_dmg_ext.set_mover_collision_state then
+			char_dmg_ext:set_mover_collision_state(true)
+		end
 	end
 end
 
@@ -209,68 +253,121 @@ function CopBase:lod_stage()
 	return self._lod_stage
 end
 
-function CopBase:set_allow_invisible(allow)
-	self._allow_invisible = allow
+function CopBase:prevent_invisibility(state)
+	state = state and true or false
+
+	if state then
+		if self._prevent_invisible then
+			self._prevent_invisible = self._prevent_invisible + 1
+
+			return
+		else
+			self._prevent_invisible = 1
+		end
+	elseif self._prevent_invisible then
+		self._prevent_invisible = self._prevent_invisible - 1
+
+		if self._prevent_invisible <= 0 then
+			self._prevent_invisible = nil
+		else
+			return
+		end
+	else
+		return
+	end
+
+	if self._prevent_invisible and not self._lod_stage then
+		self:set_visibility_state(false)
+	end
+end
+
+function CopBase:set_force_invisible(state)
+	if state then
+		if not self._force_invisible then
+			self._force_invisible = true
+
+			self:_update_visibility_state(false)
+			self:set_anim_lod(false)
+			self:chk_freeze_anims()
+		end
+	elseif self._force_invisible then
+		self._force_invisible = false
+		local new_lod = self._lod_stage
+		self._lod_stage = false
+
+		self:set_visibility_state(new_lod)
+	end
 end
 
 function CopBase:set_visibility_state(stage)
 	local state = stage and true
 
-	if not state and not self._allow_invisible then
+	if not state and self._prevent_invisible then
 		state = true
-		stage = 1
+		stage = 3
+	end
+
+	if self._force_invisible then
+		self._lod_stage = stage
+
+		return
 	end
 
 	if self._lod_stage == stage then
 		return
 	end
 
-	local inventory = self._unit:inventory()
-	local weapon = inventory and inventory.get_weapon and inventory:get_weapon()
-
-	if weapon then
-		weapon:base():set_flashlight_light_lod_enabled(stage ~= 2 and not not stage)
-	end
-
 	if self._visibility_state ~= state then
-		local unit = self._unit
-
-		if inventory then
-			inventory:set_visibility_state(state)
-		end
-
-		unit:set_visible(state)
-
-		if self._headwear_unit then
-			self._headwear_unit:set_visible(state)
-		end
-
-		if state or self._ext_anim.can_freeze and self._ext_anim.upper_body_empty then
-			unit:set_animatable_enabled(ids_lod, state)
-			unit:set_animatable_enabled(ids_ik_aim, state)
-		end
-
-		self._visibility_state = state
+		self:_update_visibility_state(state)
 	end
 
-	if state then
-		self:set_anim_lod(stage)
-		self._unit:movement():enable_update(true)
-
-		if stage == 1 then
-			self._unit:set_animatable_enabled(ids_lod1, true)
-		elseif self._lod_stage == 1 then
-			self._unit:set_animatable_enabled(ids_lod1, false)
-		end
-	end
+	self:set_anim_lod(stage)
 
 	self._lod_stage = stage
 
 	self:chk_freeze_anims()
 end
 
+function CopBase:_update_visibility_state(state)
+	self._unit:set_visible(state)
+
+	local inventory = self._unit:inventory()
+
+	if inventory then
+		inventory:set_visibility_state(state)
+	end
+
+	if self._headwear_unit then
+		self._headwear_unit:set_visible(state)
+	end
+
+	local spawn_manager_ext = self._unit:spawn_manager()
+
+	if spawn_manager_ext then
+		spawn_manager_ext:set_visibility_state(state)
+	end
+
+	self._visibility_state = state
+end
+
 function CopBase:set_anim_lod(stage)
-	self._unit:set_animation_lod(unpack(self._anim_lods[stage]))
+	self._unit:set_animation_lod(unpack(self._anim_lods[stage or #self._anim_lods]))
+
+	local inventory = self._unit:inventory()
+
+	if inventory and inventory.set_lod_stage then
+		inventory:set_lod_stage(stage)
+	end
+
+	if stage == 1 then
+		self._unit:set_animatable_enabled(ids_lod1, true)
+	elseif self._lod_stage == 1 then
+		if self._ext_anim.recoil_auto and not self.is_husk_player then
+			self._ext_movement:play_redirect("up_idle")
+		end
+
+		self._unit:set_animatable_enabled(ids_lod1, false)
+	end
 end
 
 function CopBase:on_death_exit()
@@ -278,19 +375,66 @@ function CopBase:on_death_exit()
 end
 
 function CopBase:chk_freeze_anims()
-	if (not self._lod_stage or self._lod_stage > 1) and self._ext_anim.can_freeze and self._ext_anim.upper_body_empty then
+	if (self._force_invisible or not self._lod_stage or self._lod_stage > 1) and self._ext_anim.can_freeze and not self._ext_anim.upper_body_active and not self._ext_anim.upper_body_ext_active then
 		if not self._anims_frozen then
 			self._anims_frozen = true
 
 			self._unit:set_animations_enabled(false)
 			self._ext_movement:on_anim_freeze(true)
+
+			if self._force_invisible or not self._lod_stage then
+				self:_set_animated_bones_state(false)
+			end
 		end
 	elseif self._anims_frozen then
 		self._anims_frozen = nil
 
 		self._unit:set_animations_enabled(true)
 		self._ext_movement:on_anim_freeze(false)
+
+		if not self._force_invisible and self._lod_stage then
+			self:_set_animated_bones_state(true)
+		end
 	end
+end
+
+function CopBase:prevent_main_bones_disabling(state)
+	if state then
+		if self._prevent_main_bones_disabling then
+			self._prevent_main_bones_disabling = self._prevent_main_bones_disabling + 1
+
+			return
+		else
+			self._prevent_main_bones_disabling = 1
+		end
+	elseif self._prevent_main_bones_disabling then
+		self._prevent_main_bones_disabling = self._prevent_main_bones_disabling - 1
+
+		if self._prevent_main_bones_disabling <= 0 then
+			self._prevent_main_bones_disabling = nil
+		else
+			return
+		end
+	else
+		return
+	end
+
+	if state then
+		self:_set_animated_bones_state(true, true)
+	elseif (self._force_invisible or not self._lod_stage) and self._ext_anim.can_freeze and not self._ext_anim.upper_body_active and not self._ext_anim.upper_body_ext_active then
+		self:_set_animated_bones_state(false, true)
+	else
+		self:_set_animated_bones_state(true, true)
+	end
+end
+
+function CopBase:_set_animated_bones_state(state, changing_prevention_state)
+	if not changing_prevention_state and self._prevent_main_bones_disabling then
+		return
+	end
+
+	self._unit:set_animatable_enabled(ids_lod, state)
+	self._unit:set_animatable_enabled(ids_ik_aim, state)
 end
 
 function CopBase:anim_act_clbk(unit, anim_act, send_to_action)
@@ -440,11 +584,10 @@ function CopBase:_refresh_buff_total(name)
 		sum = sum + buff
 	end
 
-	buff_list._total = sum
+	local sync_value = math.round(sum * 1000)
+	buff_list._total = sync_value * 0.001
 
-	if Network:is_server() then
-		managers.network:session():send_to_peers_synched("sync_enemy_buff", self._unit, name, math.round(buff_list._total * 1000))
-	end
+	managers.network:session():send_to_peers_synched("sync_enemy_buff", self._unit, name, sync_value)
 end
 
 function CopBase:_sync_buff_total(name, total)
@@ -547,8 +690,15 @@ function CopBase:change_char_tweak(new_tweak_name)
 	local old_tweak_data = self._char_tweak
 	self._tweak_table = new_tweak_name
 	self._char_tweak = new_tweak_data
+	local old_tags = self._tags
+	local was_special = self:has_tag("special")
 
 	self:_set_tags(new_tweak_data.tags)
+
+	if was_special then
+		managers.groupai:state():on_unit_tags_updated(self._unit, old_tags, self._tags)
+	end
+
 	self:_chk_call_tweak_data_changed_listeners(old_tweak_data, new_tweak_data)
 end
 

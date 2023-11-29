@@ -983,7 +983,7 @@ function BossLogicAttack._chk_request_action_walk_to_chase_pos(data, my_data, sp
 		return
 	end
 
-	CopLogicAttack._correct_path_start_pos(data, my_data.chase_path)
+	BossLogicAttack._correct_path_start_pos(data, my_data.chase_path)
 
 	local new_action_data = {
 		body_part = 2,

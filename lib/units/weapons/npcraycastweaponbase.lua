@@ -12,7 +12,8 @@ function NPCRaycastWeaponBase:init(unit)
 	self._player_manager = managers.player
 	self._unit = unit
 	self._name_id = self.name_id or "m4_npc"
-	local bullet_class = tweak_data.weapon[self._name_id].bullet_class
+	local td = tweak_data.weapon[self._name_id]
+	local bullet_class = td.bullet_class
 
 	if bullet_class ~= nil then
 		bullet_class = CoreSerialize.string_to_classtable(bullet_class)
@@ -35,13 +36,14 @@ function NPCRaycastWeaponBase:init(unit)
 
 	self._setup = {}
 	self._digest_values = false
+	self._fires_blanks = Network:is_client()
 
-	self:set_ammo_max(tweak_data.weapon[self._name_id].AMMO_MAX)
+	self:set_ammo_max(td.AMMO_MAX)
 	self:set_ammo_total(self:get_ammo_max())
-	self:set_ammo_max_per_clip(tweak_data.weapon[self._name_id].CLIP_AMMO_MAX)
+	self:set_ammo_max_per_clip(td.CLIP_AMMO_MAX)
 	self:set_ammo_remaining_in_clip(self:get_ammo_max_per_clip())
 
-	self._damage = tweak_data.weapon[self._name_id].DAMAGE
+	self._damage = td.DAMAGE
 	self._next_fire_allowed = -1000
 	self._obj_fire = self._unit:get_object(Idstring("fire"))
 
@@ -55,7 +57,18 @@ function NPCRaycastWeaponBase:init(unit)
 
 	self._sound_fire:link(self._unit:orientation_object())
 
-	self._muzzle_effect = Idstring(self:weapon_tweak_data().muzzleflash or "effects/particles/test/muzzleflash_maingun")
+	if td.has_suppressor then
+		self._sound_fire:set_switch("suppressed", td.has_suppressor)
+
+		self._muzzle_effect = Idstring(td.muzzleflash_silenced or "effects/payday2/particles/weapons/9mm_auto_silence")
+	else
+		self._muzzle_effect = Idstring(td.muzzleflash or "effects/particles/test/muzzleflash_maingun")
+	end
+
+	if td.armor_piercing then
+		self._use_armor_piercing = true
+	end
+
 	self._muzzle_effect_table = {
 		force_synch = false,
 		effect = self._muzzle_effect,
@@ -72,14 +85,14 @@ function NPCRaycastWeaponBase:init(unit)
 			self._obj_shell_ejection = self._unit:orientation_object()
 		end
 
-		self._shell_ejection_effect = Idstring(self:weapon_tweak_data().shell_ejection or "effects/payday2/particles/weapons/shells/shell_556")
+		self._shell_ejection_effect = Idstring(td.shell_ejection or "effects/payday2/particles/weapons/shells/shell_556")
 		self._shell_ejection_effect_table = {
 			effect = self._shell_ejection_effect,
 			parent = self._obj_shell_ejection
 		}
 	end
 
-	local tweak_trail = self:weapon_tweak_data().trail
+	local tweak_trail = td.trail
 	self._trail_effect_table = {
 		position = Vector3(),
 		normal = Vector3(),
@@ -103,22 +116,37 @@ function NPCRaycastWeaponBase:init(unit)
 		self._voice = "a"
 	end
 
-	if self._unit:get_object(Idstring("ls_flashlight")) then
-		self._flashlight_data = {
-			light = self._unit:get_object(Idstring("ls_flashlight")),
-			effect = self._unit:effect_spawner(Idstring("flashlight"))
-		}
+	if not self._flashlight_data then
+		local flashlight_effect = self._unit:effect_spawner(Idstring("flashlight"))
 
-		self._flashlight_data.light:set_far_range(400)
-		self._flashlight_data.light:set_spot_angle_end(25)
-		self._flashlight_data.light:set_multiplier(2)
+		if flashlight_effect then
+			local flashlight_light_obj = self._unit:get_object(Idstring("ls_flashlight"))
+
+			if flashlight_light_obj then
+				self._flashlight_data = {
+					effect = flashlight_effect
+				}
+
+				flashlight_light_obj:set_rotation(self._unit:rotation())
+
+				local light = World:create_light("spot|specular")
+				self._flashlight_data.light = light
+
+				light:link(flashlight_light_obj)
+				light:set_far_range(400)
+				light:set_spot_angle_end(25)
+				light:set_multiplier(2)
+
+				local obj_rot = flashlight_light_obj:rotation()
+
+				light:set_rotation(Rotation(obj_rot:z(), -obj_rot:x(), -obj_rot:y()))
+				light:set_enable(false)
+				self._unit:set_moving()
+			end
+		end
 	end
 
-	if tweak_data.weapon[self._name_id].has_suppressor then
-		self._sound_fire:set_switch("suppressed", tweak_data.weapon[self._name_id].has_suppressor)
-	end
-
-	self._concussion_tweak = self:weapon_tweak_data().concussion_data
+	self._concussion_tweak = td.concussion_data
 end
 
 function NPCRaycastWeaponBase:setup(setup_data)
@@ -228,6 +256,12 @@ function NPCRaycastWeaponBase:fire_blank(direction, impact)
 end
 
 function NPCRaycastWeaponBase:destroy(unit)
+	if self._flashlight_data and alive(self._flashlight_data.light) then
+		World:delete_light(self._flashlight_data.light)
+
+		self._flashlight_data.light = nil
+	end
+
 	RaycastWeaponBase.super.pre_destroy(self, unit)
 
 	if self._shooting then
@@ -322,10 +356,10 @@ function NPCRaycastWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_
 	local char_hit = nil
 
 	if not player_hit and col_ray then
-		char_hit = self._unit:base():bullet_class():on_collision(col_ray, self._unit, user_unit, damage)
+		char_hit = self._unit:base():bullet_class():on_collision(col_ray, self._unit, user_unit, damage, self._fires_blanks)
 	end
 
-	if (not col_ray or col_ray.unit ~= target_unit) and target_unit and target_unit:character_damage() and target_unit:character_damage().build_suppression then
+	if not shoot_player and (not col_ray or col_ray.unit ~= target_unit) and target_unit and target_unit:character_damage() and target_unit:character_damage().build_suppression then
 		target_unit:character_damage():build_suppression(tweak_data.weapon[self._name_id].suppression)
 	end
 

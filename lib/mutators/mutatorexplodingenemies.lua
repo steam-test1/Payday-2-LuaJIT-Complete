@@ -19,6 +19,7 @@ MutatorExplodingEnemies.icon_coords = {
 function MutatorExplodingEnemies:register_values(mutator_manager)
 	self:register_value("explosion_size", 4, "es")
 	self:register_value("nuclear_dozers", false, "nd")
+	self:register_value("explosion_delay", 0, "ed")
 end
 
 function MutatorExplodingEnemies:setup(mutator_manager)
@@ -38,6 +39,13 @@ function MutatorExplodingEnemies:name()
 		name = string.format("%s - %s", name, managers.localization:text("menu_mutator_creeps_nuclear"))
 	end
 
+	if self:_mutate_name("explosion_delay") then
+		local macros = {
+			delay = string.format("%.2f", self:value("explosion_delay"))
+		}
+		name = string.format("%s - %s", name, managers.localization:text("menu_mutator_creeps_name_delay", macros))
+	end
+
 	return name
 end
 
@@ -54,7 +62,7 @@ function MutatorExplodingEnemies:use_nuclear_bulldozers()
 end
 
 function MutatorExplodingEnemies:explosion_delay()
-	return 0
+	return self:value("explosion_delay")
 end
 
 function MutatorExplodingEnemies:_min_explosion_size()
@@ -83,6 +91,25 @@ function MutatorExplodingEnemies:setup_options_gui(node)
 	local new_item = node:create_item(data_node, params)
 
 	new_item:set_value(self:get_explosion_size())
+	node:add_item(new_item)
+
+	local params = {
+		name = "delay_slider",
+		callback = "_update_mutator_value",
+		text_id = "menu_mutator_creeps_delay",
+		update_callback = callback(self, self, "_update_explosion_delay")
+	}
+	local data_node = {
+		show_value = true,
+		min = 0,
+		step = 0.25,
+		type = "CoreMenuItemSlider.ItemSlider",
+		decimal_count = 2,
+		max = 3
+	}
+	local new_item = node:create_item(data_node, params)
+
+	new_item:set_value(self:explosion_delay())
 	node:add_item(new_item)
 
 	local params = {
@@ -140,6 +167,10 @@ function MutatorExplodingEnemies:_toggle_nuclear_bulldozers(item)
 	self:set_value("nuclear_dozers", item:value() == "on")
 end
 
+function MutatorExplodingEnemies:_update_explosion_delay(item)
+	self:set_value("explosion_delay", item:value())
+end
+
 function MutatorExplodingEnemies:reset_to_default()
 	self:clear_values()
 
@@ -148,6 +179,12 @@ function MutatorExplodingEnemies:reset_to_default()
 
 		if slider then
 			slider:set_value(self:get_explosion_size())
+		end
+
+		local slider = self._node:item("delay_slider")
+
+		if slider then
+			slider:set_value(self:explosion_delay())
 		end
 
 		local toggle = self._node:item("nuclear_dozers_toggle")
@@ -164,77 +201,105 @@ end
 
 function MutatorExplodingEnemies:update(t, dt)
 	for i = #self._explosions, 1, -1 do
-		local data = self._explosions[i]
-		data.t = data.t - dt
+		local entry = self._explosions[i]
+		entry.t = entry.t - dt
 
-		if data.t < 0 then
-			self:_detonate(data.cop_damage, data.attack_data)
+		if entry.t < 0 then
+			self:_detonate(entry.data)
 			table.remove(self._explosions, i)
 		end
 	end
 end
 
-function MutatorExplodingEnemies:explode(cop_damage, attack_data)
-	if not Network:is_server() then
-		return
-	end
+function MutatorExplodingEnemies:explode(unit, attack_data)
+	local attacker, can_sync = self:_get_attacker_unit_and_sync(attack_data.attacker_unit)
+	local data = {
+		unit = unit,
+		attacker_unit = attacker,
+		can_sync = can_sync,
+		is_nuclear = self:_chk_nuclear(unit),
+		m_com = unit:movement() and unit:movement():m_com(),
+		damage = math.max(attack_data.raw_damage or attack_data.damage or unit:character_damage() and unit:character_damage().init_health or 8, 0)
+	}
+	local explosion_delay = self:explosion_delay()
 
-	if self:explosion_delay() <= 0 then
-		self:_detonate(cop_damage, attack_data)
+	if explosion_delay <= 0 then
+		self:_detonate(data)
 	else
 		table.insert(self._explosions, {
-			cop_damage = cop_damage,
-			attack_data = attack_data,
-			t = self:explosion_delay()
+			data = data,
+			t = explosion_delay
 		})
 	end
 end
 
-function MutatorExplodingEnemies:_detonate(cop_damage, attack_data)
-	if Network:is_server() then
-		local pos = attack_data.pos
+function MutatorExplodingEnemies:_chk_nuclear(unit)
+	if not self:use_nuclear_bulldozers() then
+		return false
+	end
 
-		if (self:explosion_delay() > 0 or not pos) and alive(cop_damage._unit) then
-			pos = cop_damage._unit:get_object(Idstring("Spine2")):position() or pos
+	local base_ext = unit:base()
+
+	if base_ext and base_ext.has_tag and base_ext:has_tag("tank") then
+		return true
+	end
+
+	return false
+end
+
+function MutatorExplodingEnemies:_get_attacker_unit_and_sync(attacker)
+	local is_local_player = false
+	local base_ext = alive(attacker) and attacker:base()
+
+	if base_ext then
+		if base_ext.thrower_unit then
+			attacker = base_ext:thrower_unit()
+			base_ext = alive(attacker) and attacker:base()
 		end
 
-		local range = self:get_explosion_size() * 100
-		local damage = math.max(attack_data.raw_damage or attack_data.damage or cop_damage._HEALTH_INIT, 0)
-		local ply_damage = damage * 0.5
-		local normal = attack_data.attack_dir or math.UP
-		local slot_mask = managers.slot:get_mask("explosion_targets")
-		local curve_pow = 4
-		local unit_tweak = alive(cop_damage._unit) and cop_damage._unit:base()._tweak_table
+		is_local_player = base_ext and base_ext.is_local_player
+	end
 
-		if unit_tweak and unit_tweak == "tank" and self:use_nuclear_bulldozers() then
-			range = 2000
-			damage = damage * 2.5
-			ply_damage = damage * 0.5
-			curve_pow = 6
-		end
+	attacker = alive(attacker) and attacker or nil
+	local can_deal_and_sync_damage = nil
+	can_deal_and_sync_damage = (not Network:is_server() or base_ext and base_ext.is_husk_player and false and false) and (is_local_player or false)
 
+	return attacker, can_deal_and_sync_damage
+end
+
+function MutatorExplodingEnemies:_detonate(data)
+	local pos = mvector3.copy(data.m_com)
+	local range = data.is_nuclear and 2000 or self:get_explosion_size() * 100
+	local damage = data.damage * (data.is_nuclear and 2.5 or 1)
+	local ply_damage = damage * 0.5
+	local normal = math.UP
+	local curve_pow = data.is_nuclear and 6 or 4
+	local effect = data.is_nuclear and "effects/payday2/particles/explosions/bag_explosion" or "effects/payday2/particles/explosions/grenade_explosion"
+	local effect_params = {
+		sound_event = "grenade_explode",
+		camera_shake_max_mul = 4,
+		sound_muffle_effect = true,
+		effect = effect,
+		feedback_range = range * 2
+	}
+
+	managers.explosion:give_local_player_dmg(pos, range, ply_damage)
+	managers.explosion:play_sound_and_effects(pos, normal, range, effect_params)
+
+	if data.can_sync then
 		local damage_params = {
-			no_raycast_check_characters = false,
+			no_raycast_check_characters = true,
 			hit_pos = pos,
 			range = range,
-			collision_slotmask = slot_mask,
+			collision_slotmask = managers.slot:get_mask("explosion_targets"),
 			curve_pow = curve_pow,
 			damage = damage,
 			player_damage = ply_damage,
-			ignore_unit = cop_damage._unit,
-			user = attack_data.attacker_unit
-		}
-		local effect_params = {
-			sound_event = "grenade_explode",
-			effect = "effects/payday2/particles/explosions/grenade_explosion",
-			camera_shake_max_mul = 4,
-			sound_muffle_effect = true,
-			feedback_range = range * 2
+			ignore_unit = alive(data.unit) and data.unit or nil,
+			user = alive(data.attacker_unit) and data.attacker_unit or nil
 		}
 
-		managers.explosion:give_local_player_dmg(pos, range, ply_damage)
-		managers.explosion:play_sound_and_effects(pos, normal, range, effect_params)
 		managers.explosion:detect_and_give_dmg(damage_params)
-		managers.network:session():send_to_peers_synched("sync_explosion_to_client", attack_data.attacker_unit, pos, normal, ply_damage, range, curve_pow)
+		managers.network:session():send_to_peers_synched("element_explode_on_client", pos, normal, damage, range, curve_pow)
 	end
 end

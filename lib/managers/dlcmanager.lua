@@ -671,7 +671,7 @@ function GenericDLCManager:has_pd2_clan()
 end
 
 function GenericDLCManager:has_john_wick_character()
-	return self:is_dlc_unlocked("john_wick_character")
+	return Global.dlc_manager.all_dlc_data.john_wick_character and Global.dlc_manager.all_dlc_data.john_wick_character.verified and self:is_dlc_unlocked("pd2_clan")
 end
 
 function GenericDLCManager:has_raidww2_clan()

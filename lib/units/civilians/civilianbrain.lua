@@ -268,4 +268,8 @@ function CivilianBrain:save(save_data)
 	if self._following_hostage_contour_id then
 		my_save_data.following_hostage_contour = true
 	end
+
+	if self._logic_data.is_tied then
+		my_save_data.is_civilian_tied = true
+	end
 end

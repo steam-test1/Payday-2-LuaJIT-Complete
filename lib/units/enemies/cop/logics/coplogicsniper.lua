@@ -78,7 +78,7 @@ function CopLogicSniper.enter(data, new_logic_name, enter_params)
 
 		my_data.weapon_laser_on = true
 
-		managers.enemy:_destroy_unit_gfx_lod_data(data.key)
+		data.unit:base():prevent_main_bones_disabling(true)
 		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", data.unit, "brain", HuskCopBrain._NET_EVENTS.weapon_laser_on)
 	end
 end
@@ -105,10 +105,7 @@ function CopLogicSniper.exit(data, new_logic_name, enter_params)
 		end
 
 		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", data.unit, "brain", HuskCopBrain._NET_EVENTS.weapon_laser_off)
-
-		if new_logic_name ~= "inactive" then
-			managers.enemy:_create_unit_gfx_lod_data(data.unit)
-		end
+		data.unit:base():prevent_main_bones_disabling(false)
 	end
 end
 
@@ -185,7 +182,7 @@ function CopLogicSniper.action_complete_clbk(data, action)
 	elseif action_type == "walk" then
 		my_data.advacing = nil
 
-		if action.expired then
+		if action:expired() then
 			my_data.reposition = nil
 		end
 	elseif action_type == "hurt" and (action:body_part() == 1 or action:body_part() == 2) and data.objective and data.objective.pos then

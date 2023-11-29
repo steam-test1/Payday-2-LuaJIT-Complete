@@ -412,7 +412,7 @@ function CopLogicTravel._update_cover(ignore_this, data)
 end
 
 function CopLogicTravel._chk_request_action_turn_to_cover(data, my_data)
-	local fwd = data.unit:movement():m_rot():y()
+	local fwd = data.unit:movement():m_fwd()
 
 	mvector3.set(tmp_vec1, my_data.best_cover[1][2])
 	mvector3.negate(tmp_vec1)
@@ -833,7 +833,7 @@ function CopLogicTravel._determine_destination_occupation(data, objective)
 			threat_pos = data.attention_obj.nav_tracker:field_position()
 		end
 
-		local cover = managers.navigation:find_cover_in_nav_seg_3(dest_area.nav_segs, nil, follow_pos, threat_pos)
+		local cover = threat_pos and managers.navigation:find_cover_in_nav_seg_3(dest_area.nav_segs, nil, follow_pos, threat_pos)
 
 		if cover then
 			local cover_entry = {
@@ -863,7 +863,7 @@ function CopLogicTravel._determine_destination_occupation(data, objective)
 		local revive_u_rot = is_local_player and Rotation(0, 0, 0) or revive_u_mv:m_rot()
 		local revive_u_fwd = revive_u_rot:y()
 		local revive_u_right = revive_u_rot:x()
-		local revive_u_pos = revive_u_tracker:lost() and revive_u_tracker:field_position() or revive_u_mv:m_pos()
+		local revive_u_pos = revive_u_tracker:lost() and revive_u_tracker:field_position() or revive_u_mv:m_newest_pos()
 		local ray_params = {
 			trace = true,
 			tracker_from = revive_u_tracker
@@ -989,7 +989,7 @@ function CopLogicTravel._get_pos_on_wall(from_pos, max_dist, step_offset, is_rec
 			local is_free = nav_manager:is_pos_free(rsrv_desc)
 
 			if is_free then
-				fail_position = to_pos
+				fail_position = rsrv_desc.position
 			end
 		end
 
@@ -1256,9 +1256,7 @@ function CopLogicTravel._find_cover(data, search_nav_seg, near_pos)
 	local cover = nil
 	local search_area = managers.groupai:state():get_area_from_nav_seg_id(search_nav_seg)
 
-	if data.unit:movement():cool() then
-		cover = managers.navigation:find_cover_in_nav_seg_1(search_area.nav_segs)
-	else
+	if not data.unit:movement():cool() then
 		local optimal_threat_dis, threat_pos = nil
 
 		if data.objective.attitude == "engage" then

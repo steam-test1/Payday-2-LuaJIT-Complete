@@ -31,6 +31,9 @@ function TeamAILogicTravel.enter(data, new_logic_name, enter_params)
 	}
 
 	if old_internal_data then
+		my_data.turning = old_internal_data.turning
+		my_data.firing = old_internal_data.firing
+		my_data.shooting = old_internal_data.shooting
 		my_data.attention_unit = old_internal_data.attention_unit
 
 		if old_internal_data.nearest_cover then

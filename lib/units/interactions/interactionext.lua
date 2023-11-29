@@ -674,7 +674,10 @@ end
 
 function BaseInteractionExt:set_outline_flash_state(state, sync)
 	if self._contour_id then
-		self._unit:contour():flash(self._contour_id, state and self._tweak_data.contour_flash_interval or nil)
+		if self._unit:contour() then
+			self._unit:contour():flash_by_id(self._contour_id, state and self._tweak_data.contour_flash_interval or nil)
+		end
+
 		self:set_active(self._active, sync)
 	end
 end
@@ -723,8 +726,8 @@ function BaseInteractionExt:load(data)
 			self:set_tweak_data(state.tweak_data)
 		end
 
-		if state.is_flashing and self._contour_id then
-			self._unit:contour():flash(self._contour_id, self._tweak_data.contour_flash_interval)
+		if state.is_flashing and self._contour_id and self._unit:contour() then
+			self._unit:contour():flash_by_id(self._contour_id, self._tweak_data.contour_flash_interval)
 		end
 	end
 end
@@ -815,10 +818,8 @@ function UseInteractionExt:interact(player)
 	end
 
 	self:_check_achievements()
-	print("Trying to OFF")
 
 	if not self.keep_active_after_interaction then
-		print("OFF")
 		self:set_active(false)
 	end
 
@@ -1784,8 +1785,8 @@ function IntimitateInteractionExt:interact(player)
 
 			self._unit:brain():on_alarm_pager_interaction("complete", player)
 
-			if alive(managers.interaction:active_unit()) then
-				managers.interaction:active_unit():interaction():selected()
+			if managers.interaction:active_unit() == self._unit then
+				self:set_text_dirty(true)
 			end
 		else
 			managers.groupai:state():sync_alarm_pager_bluff()

@@ -149,6 +149,27 @@ function UnitNetworkHandler:set_arm_setting(unit, setting_id, setting_param, sen
 	end
 end
 
+function UnitNetworkHandler:action_turn(unit, rot_yaw)
+	if not self._verify_character(unit) or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local mov_ext = unit:movement()
+
+	if not mov_ext or not mov_ext.action_request then
+		return
+	end
+
+	local action_desc = {
+		block_type = "walk",
+		body_part = 2,
+		type = "turn",
+		rotation = Rotation(360 * rot_yaw / 255, 0, 0)
+	}
+
+	mov_ext:action_request(action_desc)
+end
+
 function UnitNetworkHandler:action_walk_start(unit, first_nav_point, nav_link_yaw, nav_link_act_index, from_idle, haste_code, end_yaw, no_walk, no_strafe, pose_code, end_pose_code)
 	if not self._verify_character(unit) or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
@@ -399,7 +420,7 @@ function UnitNetworkHandler:damage_explosion_stun(subject_unit, attacker_unit, d
 	end
 end
 
-function UnitNetworkHandler:damage_fire(subject_unit, attacker_unit, damage, start_dot_dance_antimation, death, direction, weapon_type, weapon_unit, healed, sender)
+function UnitNetworkHandler:damage_fire(subject_unit, attacker_unit, damage, death, direction, i_result, is_molotov, sender)
 	if not self._verify_character_and_sender(subject_unit, sender) or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
@@ -408,10 +429,10 @@ function UnitNetworkHandler:damage_fire(subject_unit, attacker_unit, damage, sta
 		attacker_unit = nil
 	end
 
-	subject_unit:character_damage():sync_damage_fire(attacker_unit, damage, start_dot_dance_antimation, death, direction, weapon_type, weapon_unit, healed)
+	subject_unit:character_damage():sync_damage_fire(attacker_unit, damage, death, direction, i_result, is_molotov)
 end
 
-function UnitNetworkHandler:damage_dot(subject_unit, attacker_unit, damage, death, variant, hurt_animation, weapon_id, sender)
+function UnitNetworkHandler:damage_dot(subject_unit, attacker_unit, damage, death, i_dot_variant, i_result, weapon_id, sender)
 	if not self._verify_character_and_sender(subject_unit, sender) or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
@@ -420,7 +441,11 @@ function UnitNetworkHandler:damage_dot(subject_unit, attacker_unit, damage, deat
 		attacker_unit = nil
 	end
 
-	subject_unit:character_damage():sync_damage_dot(attacker_unit, damage, death, variant, hurt_animation, weapon_id)
+	if weapon_id == "" then
+		weapon_id = nil
+	end
+
+	subject_unit:character_damage():sync_damage_dot(attacker_unit, damage, death, i_dot_variant, i_result, weapon_id)
 end
 
 function UnitNetworkHandler:damage_tase(subject_unit, attacker_unit, damage, variant, death, sender)
@@ -1227,17 +1252,21 @@ function UnitNetworkHandler:action_idle_start(unit, body_part, sender)
 		return
 	end
 
-	unit:movement():action_request({
-		type = "idle",
-		body_part = body_part
-	})
+	local mov_ext = unit:movement()
+
+	if mov_ext and mov_ext.action_request then
+		mov_ext:action_request({
+			type = "idle",
+			body_part = body_part
+		})
+	end
 end
 
-function UnitNetworkHandler:action_act_start(unit, act_index, blocks_hurt, clamp_to_graph, needs_full_blend)
-	self:action_act_start_align(unit, act_index, blocks_hurt, clamp_to_graph, needs_full_blend, nil, nil)
+function UnitNetworkHandler:action_act_start(unit, act_index, body_part, blocks_hurt, clamp_to_graph, needs_full_blend)
+	self:action_act_start_align(unit, act_index, body_part, blocks_hurt, clamp_to_graph, needs_full_blend, nil, nil)
 end
 
-function UnitNetworkHandler:action_act_start_align(unit, act_index, blocks_hurt, clamp_to_graph, needs_full_blend, start_yaw, start_pos)
+function UnitNetworkHandler:action_act_start_align(unit, act_index, body_part, blocks_hurt, clamp_to_graph, needs_full_blend, start_yaw, start_pos)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_character(unit) then
 		return
 	end
@@ -1248,15 +1277,23 @@ function UnitNetworkHandler:action_act_start_align(unit, act_index, blocks_hurt,
 		start_rot = Rotation(360 * (start_yaw - 1) / 254, 0, 0)
 	end
 
-	unit:movement():sync_action_act_start(act_index, blocks_hurt, clamp_to_graph, needs_full_blend, start_rot, start_pos)
+	local mov_ext = unit:movement()
+
+	if mov_ext and mov_ext.sync_action_act_start then
+		mov_ext:sync_action_act_start(act_index, body_part, blocks_hurt, clamp_to_graph, needs_full_blend, start_rot, start_pos)
+	end
 end
 
-function UnitNetworkHandler:action_act_end(unit)
-	if not alive(unit) or unit:character_damage():dead() then
+function UnitNetworkHandler:action_act_end(unit, body_part)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_character(unit) then
 		return
 	end
 
-	unit:movement():sync_action_act_end()
+	local mov_ext = unit:movement()
+
+	if mov_ext and mov_ext.sync_action_act_end then
+		mov_ext:sync_action_act_end(body_part)
+	end
 end
 
 function UnitNetworkHandler:action_dodge_start(unit, body_part, variation, side, rotation, speed, shoot_acc)
@@ -1264,7 +1301,11 @@ function UnitNetworkHandler:action_dodge_start(unit, body_part, variation, side,
 		return
 	end
 
-	unit:movement():sync_action_dodge_start(body_part, variation, side, rotation, speed, shoot_acc)
+	local mov_ext = unit:movement()
+
+	if mov_ext and mov_ext.sync_action_dodge_start then
+		mov_ext:sync_action_dodge_start(body_part, variation, side, rotation, speed, shoot_acc)
+	end
 end
 
 function UnitNetworkHandler:action_dodge_end(unit)
@@ -1272,7 +1313,11 @@ function UnitNetworkHandler:action_dodge_end(unit)
 		return
 	end
 
-	unit:movement():sync_action_dodge_end()
+	local mov_ext = unit:movement()
+
+	if mov_ext and mov_ext.sync_action_dodge_end then
+		mov_ext:sync_action_dodge_end()
+	end
 end
 
 function UnitNetworkHandler:action_tase_event(taser_unit, event_id, sender)
@@ -2164,12 +2209,40 @@ function UnitNetworkHandler:sync_remove_one_teamAI(name, replace_with_player)
 	managers.groupai:state():sync_remove_one_teamAI(name, replace_with_player)
 end
 
-function UnitNetworkHandler:sync_smoke_grenade(detonate_pos, shooter_pos, duration, flashbang)
+function UnitNetworkHandler:sync_flash_grenade_data(flash_unit, shooter_pos, instant)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
 
-	managers.groupai:state():sync_smoke_grenade(detonate_pos, shooter_pos, duration, flashbang)
+	local base_ext = alive(flash_unit) and flash_unit:base()
+
+	if not base_ext then
+		return
+	end
+
+	if mvector3.is_zero(shooter_pos) then
+		shooter_pos = nil
+	end
+
+	if instant then
+		if base_ext.activate_immediately then
+			base_ext:activate_immediately(shooter_pos)
+		end
+	elseif base_ext.activate then
+		base_ext:activate(shooter_pos)
+	end
+end
+
+function UnitNetworkHandler:sync_smoke_grenade(detonate_pos, shooter_pos, duration, flashbang, instant)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	if mvector3.is_zero(shooter_pos) then
+		shooter_pos = nil
+	end
+
+	managers.groupai:state():sync_smoke_grenade(detonate_pos, shooter_pos, duration, flashbang, instant)
 end
 
 function UnitNetworkHandler:sync_smoke_grenade_kill()
@@ -2180,12 +2253,16 @@ function UnitNetworkHandler:sync_smoke_grenade_kill()
 	managers.groupai:state():sync_smoke_grenade_kill()
 end
 
-function UnitNetworkHandler:sync_cs_grenade(detonate_pos, shooter_pos, duration)
+function UnitNetworkHandler:sync_cs_grenade(detonate_pos, shooter_pos, duration, instant)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
 
-	managers.groupai:state():sync_cs_grenade(detonate_pos, shooter_pos, duration)
+	if mvector3.is_zero(shooter_pos) then
+		shooter_pos = nil
+	end
+
+	managers.groupai:state():sync_cs_grenade(detonate_pos, shooter_pos, duration, instant)
 end
 
 function UnitNetworkHandler:sync_cs_grenade_kill()
@@ -2803,10 +2880,104 @@ function UnitNetworkHandler:sync_detonate_molotov_grenade(unit, ext_name, event_
 	extension:sync_detonate_molotov_grenade(event_id, normal, peer)
 end
 
-function UnitNetworkHandler:sync_add_doted_enemy(enemy_unit, fire_damage_received_time, weapon_unit, dot_length, dot_damage, user_unit, is_molotov, rpc)
-	local peer = self._verify_sender(rpc)
+function UnitNetworkHandler:sync_add_doted_enemy(target_unit, attacker_unit, weapon_unit, is_melee, hurt_anim, tweak_sync_idx, selection_idx, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
 
-	managers.fire:sync_add_fire_dot(enemy_unit, fire_damage_received_time, weapon_unit, dot_length, dot_damage, user_unit, peer, is_molotov)
+	local peer = self._verify_sender(sender_rpc)
+
+	if not peer then
+		return
+	end
+
+	if not self._verify_character(target_unit) then
+		return
+	end
+
+	if not target_unit:character_damage() or not target_unit:character_damage().damage_dot then
+		Application:error("[UnitNetworkHandler:sync_add_doted_enemy] Target unit lacks 'character_damage' extension or said extension lacks 'damage_dot' function.", target_unit)
+
+		return
+	end
+
+	local dot_tweak_name = tweak_data.dot:get_name_from_sync_index(tweak_sync_idx)
+
+	if not dot_tweak_name then
+		Application:error("[UnitNetworkHandler:sync_add_doted_enemy] No tweak name found from sync index: ", tweak_sync_idx)
+
+		return
+	end
+
+	local dot_data = tweak_data.dot:get_dot_data(dot_tweak_name)
+
+	if not dot_data then
+		Application:error("[UnitNetworkHandler:sync_add_doted_enemy] No dot data found with tweak name '" .. tostring(dot_tweak_name) .. "'.")
+
+		return
+	end
+
+	attacker_unit = alive(attacker_unit) and attacker_unit or nil
+	weapon_unit = alive(weapon_unit) and weapon_unit or nil
+	local inv_ext = nil
+
+	if not weapon_unit and attacker_unit and selection_idx ~= 0 then
+		inv_ext = attacker_unit:inventory()
+
+		if inv_ext and inv_ext.unit_by_selection then
+			weapon_unit = inv_ext:unit_by_selection(selection_idx)
+			weapon_unit = alive(weapon_unit) and weapon_unit or nil
+		end
+	end
+
+	local weapon_id = nil
+
+	if weapon_unit then
+		local base_ext = weapon_unit:base()
+		weapon_id = base_ext and base_ext.get_name_id and base_ext:get_name_id()
+	end
+
+	if is_melee then
+		if attacker_unit then
+			weapon_id = inv_ext and inv_ext.get_melee_weapon_id and inv_ext:get_melee_weapon_id()
+
+			if not weapon_id then
+				local base_ext = attacker_unit:base()
+				weapon_id = base_ext and base_ext.melee_weapon and base_ext:melee_weapon()
+			end
+		end
+
+		weapon_id = weapon_id or peer:unit() == attacker_unit and peer:melee_id()
+	end
+
+	local modified_length = nil
+
+	if dot_data.use_weapon_falloff and attacker_unit then
+		local weap_base = weapon_unit and weapon_unit:base()
+
+		if weap_base and weap_base.get_damage_falloff then
+			local fake_ray = {
+				unit = target_unit
+			}
+			modified_length = weap_base:get_damage_falloff(dot_data.dot_length, fake_ray, attacker_unit)
+		end
+	end
+
+	local data = {
+		unit = target_unit,
+		dot_data = dot_data,
+		modified_length = modified_length,
+		hurt_animation = hurt_anim,
+		weapon_id = weapon_id,
+		weapon_unit = weapon_unit,
+		attacker_unit = attacker_unit
+	}
+
+	if managers.fire:should_sync_dot_through_here(dot_tweak_name) then
+		managers.fire:sync_add_dot(data)
+	else
+		managers.dot:sync_add_dot(data)
+	end
 end
 
 function UnitNetworkHandler:server_secure_loot(carry_id, multiplier_level, peer_id, sender)
@@ -3144,6 +3315,12 @@ function UnitNetworkHandler:mark_minion(unit, minion_owner_peer_id, convert_enem
 
 	if is_local_owner then
 		managers.player:count_up_player_minions()
+	end
+
+	local brain_ext = unit:brain()
+
+	if brain_ext and brain_ext.sync_converted then
+		brain_ext:sync_converted()
 	end
 end
 
@@ -3584,7 +3761,7 @@ function UnitNetworkHandler:remove_unit(unit, sender)
 	end
 
 	if unit:id() ~= -1 then
-		Network:detach_unit(unit)
+		detach_unit_from_network(unit)
 	end
 
 	unit:set_slot(0)
@@ -3983,8 +4160,30 @@ function UnitNetworkHandler:sync_fall_position(unit, pos, rot)
 	end
 end
 
-function UnitNetworkHandler:sync_spawn_extra_ammo(unit)
-	managers.player:spawn_extra_ammo(unit)
+function UnitNetworkHandler:sync_spawn_extra_ammo(unit, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local peer = self._verify_sender(sender_rpc)
+
+	if not peer then
+		return
+	end
+
+	if alive(unit) then
+		local char_dmg_ext = unit:character_damage()
+
+		if not char_dmg_ext or not char_dmg_ext.drop_pickup then
+			return
+		end
+	elseif not unit then
+		return
+	else
+		unit = nil
+	end
+
+	managers.player:spawn_extra_ammo(unit, peer)
 end
 
 function UnitNetworkHandler:sync_stored_pos(unit, sync, pos, rot)
@@ -4017,19 +4216,39 @@ function UnitNetworkHandler:sync_damage_achievements(unit, weapon_unit, attacker
 	end
 end
 
-function UnitNetworkHandler:sync_medic_heal(unit, sender)
+function UnitNetworkHandler:sync_medic_heal(medic_unit, sender)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
 		return
 	end
 
-	if alive(unit) and unit:movement() then
-		local action_data = {
-			body_part = 3,
-			type = "heal",
-			client_interrupt = Network:is_client()
-		}
+	MedicActionHeal.check_achievements()
 
-		unit:movement():action_request(action_data)
+	if not self._verify_character(medic_unit) then
+		return
+	end
+
+	local char_dmg_ext = medic_unit:character_damage()
+
+	if char_dmg_ext and char_dmg_ext.sync_heal_action then
+		char_dmg_ext:sync_heal_action()
+	end
+end
+
+function UnitNetworkHandler:sync_action_healed(healed_unit, do_action, sender)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender) then
+		return
+	end
+
+	if not self._verify_character(healed_unit) then
+		return
+	end
+
+	local char_dmg_ext = healed_unit:character_damage()
+
+	if do_action and char_dmg_ext.do_medic_heal_and_action then
+		char_dmg_ext:do_medic_heal_and_action()
+	elseif char_dmg_ext.do_medic_heal then
+		char_dmg_ext:do_medic_heal()
 	end
 end
 
@@ -4273,15 +4492,32 @@ function UnitNetworkHandler:sync_enemy_buff(enemy_unit, buff_category, buff_tota
 	enemy_unit:base():_sync_buff_total(buff_category, buff_total)
 end
 
-function UnitNetworkHandler:sync_tear_gas_grenade_properties(grenade, radius, damage, duration)
-	grenade:base():set_properties({
-		radius = radius,
-		damage = damage * 0.1
-	})
+function UnitNetworkHandler:sync_tear_gas_grenade_properties(grenade, diameter, damage, duration, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender_rpc) then
+		return
+	end
+
+	local base_ext = alive(grenade) and grenade:base()
+
+	if base_ext and base_ext.set_properties then
+		base_ext:set_properties({
+			radius = diameter * 0.01 * 0.5 * 100,
+			damage = damage * 0.01,
+			duration = duration * 0.1
+		})
+	end
 end
 
-function UnitNetworkHandler:sync_tear_gas_grenade_detonate(grenade)
-	grenade:base():detonate()
+function UnitNetworkHandler:sync_tear_gas_grenade_detonate(grenade, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender_rpc) then
+		return
+	end
+
+	local base_ext = alive(grenade) and grenade:base()
+
+	if base_ext and base_ext.detonate then
+		base_ext:detonate()
+	end
 end
 
 function UnitNetworkHandler:sync_spawn_smoke_screen(unit, dodge_bonus)
@@ -4355,6 +4591,10 @@ function UnitNetworkHandler:sync_shotgun_push(unit, hit_pos, dir, distance, atta
 
 	if not alive(unit) then
 		return
+	end
+
+	if not alive(attacker) then
+		attacker = nil
 	end
 
 	managers.game_play_central:_do_shotgun_push(unit, hit_pos, dir, distance, attacker, sender)
@@ -4540,6 +4780,32 @@ function UnitNetworkHandler:request_shield_unit_link(parent_unit, sender_rpc)
 
 	if shield_unit and shield_unit:id() ~= -1 then
 		sender_rpc:sync_shield_unit_link(shield_unit, parent_unit)
+	end
+end
+
+function UnitNetworkHandler:sync_shield_flash_start(shield_unit, event_idx, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender_rpc) then
+		return
+	end
+
+	local base_ext = alive(shield_unit) and shield_unit:base()
+
+	if base_ext and base_ext.sync_flash_start then
+		base_ext:sync_flash_start(event_idx)
+	end
+end
+
+function UnitNetworkHandler:sync_shield_flash_counter_stun(shield_unit, attacker_unit, hit_pos, hit_normal, event_idx, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender_rpc) then
+		return
+	end
+
+	local base_ext = alive(shield_unit) and shield_unit:base()
+
+	if base_ext and base_ext.sync_flash_counter_stun then
+		attacker_unit = alive(attacker_unit) and attacker_unit or nil
+
+		base_ext:sync_flash_counter_stun(attacker_unit, hit_pos, hit_normal, event_idx)
 	end
 end
 

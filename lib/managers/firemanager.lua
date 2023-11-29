@@ -3,232 +3,229 @@ local idstr_small_light_fire = Idstring("effects/particles/fire/small_light_fire
 local idstr_explosion_std = Idstring("explosion_std")
 local empty_idstr = Idstring("")
 local molotov_effect = "effects/payday2/particles/explosions/molotov_grenade"
-local tmp_vec3 = Vector3()
 
 function FireManager:init()
-	self._enemies_on_fire = {}
 	self._dozers_on_fire = {}
-	self._doted_enemies = {}
-	self._fire_dot_grace_period = 1
-	self._fire_dot_tick_period = 1
-	self.predicted_dot_info = {}
+	self._enemies_on_fire = {}
 end
 
-function FireManager:update(t, dt)
-	for index = #self._doted_enemies, 1, -1 do
-		local dot_info = self._doted_enemies[index]
+function FireManager:_on_dot_removed(dot_info, var_info)
+	if self._dozers_on_fire[dot_info.unit_key] and self._dozers_on_fire[dot_info.unit_key][var_info.variant] then
+		self._dozers_on_fire[dot_info.unit_key][var_info.variant] = nil
 
-		if t > dot_info.fire_damage_received_time + self._fire_dot_grace_period and dot_info.fire_dot_counter >= 0.5 then
-			self:_damage_fire_dot(dot_info)
+		if not next(self._dozers_on_fire[dot_info.unit_key]) then
+			self._dozers_on_fire[dot_info.unit_key] = nil
+		end
+	end
 
-			dot_info.fire_dot_counter = 0
+	if self._enemies_on_fire[dot_info.unit_key] and self._enemies_on_fire[dot_info.unit_key][var_info.variant] then
+		self._enemies_on_fire[dot_info.unit_key][var_info.variant] = nil
+
+		if not next(self._enemies_on_fire[dot_info.unit_key]) then
+			self._enemies_on_fire[dot_info.unit_key] = nil
+		end
+	end
+end
+
+function FireManager:check_achievements(unit, var_info)
+	unit = var_info.check_achievements and alive(unit) and unit or nil
+	local u_key = unit and unit:key()
+	local base_ext = unit and unit:base()
+
+	if u_key and tweak_data.achievement.disco_inferno then
+		self._enemies_on_fire[u_key] = self._enemies_on_fire[u_key] or {}
+		self._enemies_on_fire[u_key][var_info.variant] = true
+
+		if table.size(self._enemies_on_fire) >= 10 then
+			managers.achievment:award(tweak_data.achievement.disco_inferno)
+		end
+	end
+
+	if tweak_data.achievement.overgrill then
+		local t = TimerManager:game():time()
+
+		if u_key and (not self._dozers_on_fire[u_key] or not self._dozers_on_fire[u_key][var_info.variant]) and base_ext and base_ext.has_tag and base_ext:has_tag("tank") then
+			self._dozers_on_fire[u_key] = self._dozers_on_fire[u_key] or {}
+			self._dozers_on_fire[u_key][var_info.variant] = t
 		end
 
-		if t > dot_info.fire_damage_received_time + dot_info.dot_length then
-			if dot_info.fire_effects then
-				for _, fire_effect_id in ipairs(dot_info.fire_effects) do
-					World:effect_manager():fade_kill(fire_effect_id)
+		for u_key, var_entries in pairs(self._dozers_on_fire) do
+			for var, added_t in pairs(var_entries) do
+				if t - added_t >= 10 then
+					managers.achievment:award(tweak_data.achievement.overgrill)
+
+					break
 				end
 			end
-
-			self:_remove_flame_effects_from_doted_unit(dot_info.enemy_unit)
-			self:_stop_burn_body_sound(dot_info.sound_source)
-			table.remove(self._doted_enemies, index)
-
-			if dot_info.enemy_unit and alive(dot_info.enemy_unit) then
-				self._dozers_on_fire[dot_info.enemy_unit:id()] = nil
-			end
-		else
-			dot_info.fire_dot_counter = dot_info.fire_dot_counter + dt
 		end
 	end
 end
 
-function FireManager:check_achievemnts(unit, t)
-	if not unit and not alive(unit) then
-		return
-	end
-
-	if not unit:base() or not unit:base()._tweak_table then
-		return
-	end
-
-	if CopDamage.is_civilian(unit:base()._tweak_table) then
-		return
-	end
-
-	for i = #self._enemies_on_fire, 1, -1 do
-		local data = self._enemies_on_fire[i]
-
-		if t - data.t > 5 or data.unit == unit then
-			table.remove(self._enemies_on_fire, i)
-		end
-	end
-
-	table.insert(self._enemies_on_fire, {
-		unit = unit,
-		t = t
-	})
-
-	local count = #self._enemies_on_fire
-
-	if count >= 10 and tweak_data.achievement.disco_inferno then
-		managers.achievment:award(tweak_data.achievement.disco_inferno)
-	end
-
-	local unit_type = unit:base()._tweak_table
-	local unit_id = unit:id()
-
-	if unit_type == "tank" or unit_type == "tank_hw" then
-		self._dozers_on_fire[unit_id] = self._dozers_on_fire[unit_id] or {
-			t = t,
-			unit = unit
-		}
-	end
-
-	for dozer_id, dozer_info in pairs(self._dozers_on_fire) do
-		if t - dozer_info.t >= 10 and tweak_data.achievement.overgrill then
-			managers.achievment:award(tweak_data.achievement.overgrill)
-		end
-	end
+function FireManager:is_set_on_fire(unit, variant)
+	return managers.dot:is_enemy_doted(unit, variant or "fire")
 end
 
-function FireManager:remove_dead_dozer_from_overgrill(dozer_id)
-	self._dozers_on_fire[dozer_id] = nil
+function FireManager:_chk_add_clbks_to_data(data)
+	data.on_added_clbk = data.on_added_clbk or callback(self, self, "_clbk_on_dot_var_added")
+	data.on_updated_clbk = data.on_updated_clbk or callback(self, self, "_clbk_on_dot_var_updated")
+	data.on_updated_override_clbk = data.on_updated_override_clbk or callback(self, self, "_clbk_on_dot_var_updated_override")
+	data.on_removed_clbk = data.on_removed_clbk or callback(self, self, "_clbk_on_dot_var_removed")
+	data.check_achivements_clbk = data.check_achivements_clbk or callback(self, self, "check_achievements")
 end
 
-function FireManager:is_set_on_fire(unit)
-	for key, dot_info in ipairs(self._doted_enemies) do
-		if dot_info.enemy_unit == unit then
-			return true
-		end
+function FireManager:add_doted_enemy(...)
+	self:_chk_add_clbks_to_data(...)
+	managers.dot:add_doted_enemy(...)
+end
+
+function FireManager:sync_add_dot(...)
+	self:_chk_add_clbks_to_data(...)
+	managers.dot:sync_add_dot(...)
+end
+
+function FireManager:should_sync_dot_through_here(...)
+	if tweak_data.fire:has_dot(...) then
+		return true
 	end
 
 	return false
 end
 
-function FireManager:_add_doted_enemy(enemy_unit, fire_damage_received_time, weapon_unit, dot_length, dot_damage, user_unit, is_molotov)
-	if not self._doted_enemies then
-		return
+function FireManager:_clbk_on_dot_var_added(dot_info, var_info, data)
+	var_info.burn_sound_name = data.dot_data.burn_sound_name
+	var_info.burn_fade_sound_name = data.dot_data.burn_fade_sound_name
+	var_info.fire_effect_variant = data.dot_data.fire_effect_variant
+
+	if not var_info.burn_sound_source and var_info.burn_sound_name ~= "no_sound" then
+		self:start_burn_body_sound(dot_info.unit, var_info, nil)
 	end
 
-	local dot_info = nil
+	if not var_info.fire_effects then
+		self:_start_enemy_fire_effect(dot_info.unit, var_info)
+	end
+end
 
-	for _, cur_dot_info in ipairs(self._doted_enemies) do
-		if cur_dot_info.enemy_unit == enemy_unit then
-			dot_info = cur_dot_info
+function FireManager:_clbk_on_dot_var_updated(dot_info, var_info, data)
+	local cur_sound = var_info.burn_sound_name or var_info.burn_sound_source and var_info.burn_sound_source.burn_sound_name
+	var_info.burn_sound_name = data.dot_data.burn_sound_name
+	var_info.burn_fade_sound_name = data.dot_data.burn_fade_sound_name
 
+	if cur_sound ~= var_info.burn_sound_name then
+		if var_info.burn_sound_source then
+			var_info.burn_sound_source.destroyed = true
+
+			self:stop_burn_body_sound(var_info.burn_sound_source)
+
+			var_info.burn_sound_source = nil
+		end
+
+		if var_info.burn_sound_name ~= "no_sound" then
+			self:start_burn_body_sound(dot_info.unit, var_info, nil)
+		end
+	end
+
+	local cur_effect = var_info.fire_effect_variant
+	var_info.fire_effect_variant = data.dot_data.fire_effect_variant
+
+	if cur_effect ~= var_info.fire_effect_variant then
+		if var_info.fire_effects then
+			self:stop_enemy_fire_effects(var_info, false)
+
+			var_info.fire_effects = nil
+		end
+
+		self:_start_enemy_fire_effect(dot_info.unit, var_info)
+	end
+end
+
+function FireManager:_clbk_on_dot_var_updated_override(...)
+	self:_clbk_on_dot_var_updated(...)
+end
+
+function FireManager:_clbk_on_dot_var_removed(dot_info, var_info, destroyed)
+	self:_on_dot_removed(dot_info, var_info)
+
+	if var_info.fire_effects then
+		self:stop_enemy_fire_effects(var_info, destroyed)
+
+		var_info.fire_effects = nil
+	end
+
+	if var_info.burn_sound_source then
+		var_info.burn_sound_source.destroyed = destroyed
+
+		self:stop_burn_body_sound(var_info.burn_sound_source)
+
+		var_info.burn_sound_source = nil
+	end
+end
+
+function FireManager:stop_enemy_fire_effects(entry, destroyed)
+	if entry.fire_effects then
+		local effect_m = World:effect_manager()
+		local kill_f = destroyed and effect_m.kill or effect_m.fade_kill
+
+		for _, effect_id in ipairs(entry.fire_effects) do
+			kill_f(effect_m, effect_id)
+		end
+	end
+end
+
+function FireManager:start_burn_body_sound(unit, entry, delay)
+	local sound_loop_burn_body = SoundDevice:create_source("FireBurnBody")
+	local found_bone = nil
+
+	for idx, sound_bone in ipairs(tweak_data.fire.fire_bones_sound) do
+		found_bone = unit:get_object(Idstring(sound_bone))
+
+		if found_bone then
 			break
 		end
 	end
 
-	if dot_info then
-		dot_info.fire_damage_received_time = fire_damage_received_time
-		dot_info.weapon_unit = weapon_unit
-		dot_info.user_unit = user_unit
-		dot_info.is_molotov = is_molotov
-		dot_info.dot_damage = dot_damage
-		dot_info.dot_length = dot_length
+	if found_bone then
+		sound_loop_burn_body:link(found_bone)
 	else
-		dot_info = {
-			fire_dot_counter = 0,
-			enemy_unit = enemy_unit,
-			fire_damage_received_time = fire_damage_received_time,
-			weapon_unit = weapon_unit,
-			dot_length = dot_length,
-			dot_damage = dot_damage,
-			user_unit = user_unit,
-			is_molotov = is_molotov
-		}
-
-		table.insert(self._doted_enemies, dot_info)
-
-		local has_delayed_info = false
-
-		for index, delayed_dot in pairs(self.predicted_dot_info) do
-			if enemy_unit == delayed_dot.enemy_unit then
-				dot_info.sound_source = delayed_dot.sound_source
-				dot_info.fire_effects = delayed_dot.fire_effects
-
-				table.remove(self.predicted_dot_info, index)
-
-				has_delayed_info = true
-			end
-		end
-
-		if not has_delayed_info then
-			self:_start_enemy_fire_effect(dot_info)
-			self:start_burn_body_sound(dot_info)
-		end
+		sound_loop_burn_body:set_position(unit:position())
 	end
 
-	self:check_achievemnts(enemy_unit, fire_damage_received_time)
-end
+	sound_loop_burn_body:post_event(entry.burn_sound_name or "burn_loop_body")
 
-function FireManager:sync_add_fire_dot(enemy_unit, fire_damage_received_time, weapon_unit, dot_length, dot_damage, user_unit, is_molotov)
-	if enemy_unit then
-		local t = TimerManager:game():time()
-
-		self:_add_doted_enemy(enemy_unit, t, weapon_unit, dot_length, dot_damage, user_unit, is_molotov)
-	end
-end
-
-function FireManager:add_doted_enemy(enemy_unit, fire_damage_received_time, weapon_unit, dot_length, dot_damage, user_unit, is_molotov)
-	local dot_info = self:_add_doted_enemy(enemy_unit, fire_damage_received_time, weapon_unit, dot_length, dot_damage, user_unit, is_molotov)
-
-	managers.network:session():send_to_peers_synched("sync_add_doted_enemy", enemy_unit, fire_damage_received_time, weapon_unit, dot_length, dot_damage, user_unit, is_molotov)
-end
-
-function FireManager:_remove_flame_effects_from_doted_unit(enemy_unit)
-	if self._doted_enemies then
-		for _, dot_info in ipairs(self._doted_enemies) do
-			if dot_info.fire_effects then
-				for __, fire_effect_id in ipairs(dot_info.fire_effects) do
-					World:effect_manager():fade_kill(fire_effect_id)
-				end
-			end
-		end
-	end
-end
-
-function FireManager:cop_hurt_fire_prediction(enemy_unit)
-	local already_activated = false
-
-	for _, dot_info in ipairs(self._doted_enemies) do
-		if dot_info.enemy_unit == enemy_unit then
-			already_activated = true
-		end
-	end
-
-	if not already_activated then
-		local dot_info = {
-			enemy_unit = enemy_unit
-		}
-
-		self:_start_enemy_fire_effect(dot_info)
-		self:start_burn_body_sound(dot_info)
-		table.insert(self.predicted_dot_info, dot_info)
-	end
-end
-
-function FireManager:start_burn_body_sound(dot_info, delay)
-	local sound_loop_burn_body = SoundDevice:create_source("FireBurnBody")
-
-	sound_loop_burn_body:set_position(dot_info.enemy_unit:position())
-	sound_loop_burn_body:post_event("burn_loop_body")
-
-	dot_info.sound_source = sound_loop_burn_body
+	local key_str = tostring(unit:key())
+	local data = {
+		sound_source = sound_loop_burn_body,
+		key_str = key_str,
+		burn_sound_name = entry.burn_sound_name,
+		burn_fade_sound_name = entry.burn_fade_sound_name
+	}
+	entry.burn_sound_name = nil
+	entry.burn_fade_sound_name = nil
+	entry.burn_sound_source = data
 
 	if delay then
-		managers.enemy:add_delayed_clbk("FireBurnBody", callback(self, self, "_stop_burn_body_sound", sound_loop_burn_body), TimerManager:game():time() + delay - 0.5)
+		data.stop_clbk_id = "FireBurnBody" .. key_str
+
+		managers.enemy:add_delayed_clbk(data.stop_clbk_id, callback(self, self, "stop_burn_body_sound", data), TimerManager:game():time() + delay - 0.5)
 	end
 end
 
-function FireManager:_stop_burn_body_sound(sound_source)
-	sound_source:post_event("burn_loop_body_stop")
-	managers.enemy:add_delayed_clbk("FireBurnBodyFade", callback(self, self, "_release_sound_source", {
-		sound_source = sound_source
-	}), TimerManager:game():time() + 0.5)
+function FireManager:stop_burn_body_sound(data)
+	if data.stop_clbk_id then
+		if managers.enemy:is_clbk_registered(data.stop_clbk_id) then
+			managers.enemy:remove_delayed_clbk(data.stop_clbk_id)
+		end
+
+		data.stop_clbk_id = nil
+	end
+
+	if data.destroyed or data.burn_fade_sound_name == "no_sound" then
+		data.sound_source:stop()
+	else
+		data.sound_source:post_event(data.burn_fade_sound_name or "burn_loop_body_stop")
+		managers.enemy:add_delayed_clbk("FireBurnBodyFade" .. data.key_str, callback(self, self, "_release_sound_source", {
+			sound_source = data.sound_source
+		}), TimerManager:game():time() + 0.5)
+	end
 end
 
 function FireManager:_release_sound_source(...)
@@ -236,88 +233,60 @@ end
 
 local tmp_used_flame_objects = nil
 
-function FireManager:_start_enemy_fire_effect(dot_info)
-	local num_objects = #tweak_data.fire.fire_bones
-	local num_effects = math.random(3, num_objects)
+function FireManager:_start_enemy_fire_effect(unit, entry)
+	local fire_td = tweak_data.fire
+	local fire_bones = fire_td.fire_bones
 
 	if not tmp_used_flame_objects then
 		tmp_used_flame_objects = {}
 
-		for _, effect in ipairs(tweak_data.fire.fire_bones) do
+		for _, effect in ipairs(fire_bones) do
 			table.insert(tmp_used_flame_objects, false)
 		end
 	end
 
+	local effect_category = entry.fire_effect_variant and fire_td.effects[entry.fire_effect_variant] or fire_td.effects.endless
+	local num_objects = #fire_bones
+	local num_effects = num_objects == 0 and 0 or num_objects <= 3 and math.random(num_objects) or math.random(3, num_objects)
+	local effects_table = {}
+	local costs = fire_td.effects_cost
+	local get_object_f = unit.get_object
+	local effect_m = World:effect_manager()
+	local spawn_f = effect_m.spawn
 	local idx = 1
 	local effect_id = nil
-	local effects_table = {}
 
 	for i = 1, num_effects do
 		while tmp_used_flame_objects[idx] do
-			idx = math.random(1, num_objects)
+			idx = math.random(num_objects)
 		end
 
-		local fire_variant = alive(dot_info.weapon_unit) and (tweak_data.weapon[dot_info.weapon_unit:base():get_name_id()] or tweak_data.weapon.amcar).fire_variant
-		local effect_suffix = fire_variant and "_" .. fire_variant or ""
-		local effect = tweak_data.fire.effects["endless" .. effect_suffix][tweak_data.fire.effects_cost[i]]
-		local bone = dot_info.enemy_unit:get_object(Idstring(tweak_data.fire.fire_bones[idx]))
+		local effect_name = effect_category[costs[i] or "cheap"]
 
-		if bone then
-			effect_id = World:effect_manager():spawn({
-				effect = Idstring(effect),
-				parent = bone
-			})
+		if effect_name then
+			local bone = get_object_f(unit, Idstring(fire_bones[idx]))
 
-			table.insert(effects_table, effect_id)
+			if bone then
+				effect_id = spawn_f(effect_m, {
+					effect = Idstring(effect_name),
+					parent = bone
+				})
+
+				table.insert(effects_table, effect_id)
+			end
 		end
 
 		tmp_used_flame_objects[idx] = true
 	end
 
-	dot_info.fire_effects = effects_table
+	entry.fire_effects = effects_table
 
 	for idx, _ in ipairs(tmp_used_flame_objects) do
 		tmp_used_flame_objects[idx] = false
 	end
 end
 
-function FireManager:_chk_user_authority(attacker_unit)
-	if not attacker_unit then
-		return Network:is_server()
-	end
-
-	if Network:is_server() then
-		if not attacker_unit:base() or not attacker_unit:base().is_husk_player then
-			return true
-		end
-	elseif attacker_unit:base() and attacker_unit:base().is_local_player then
-		return true
-	end
-
-	return false
-end
-
-function FireManager:_damage_fire_dot(dot_info)
-	local attacker_unit = alive(dot_info.user_unit) and dot_info.user_unit or nil
-
-	if not self:_chk_user_authority(attacker_unit) then
-		return
-	end
-
-	local col_ray = {
-		unit = dot_info.enemy_unit
-	}
-	local damage = dot_info.dot_damage
-	local ignite_character = false
-	local variant = "fire"
-	local weapon_unit = alive(dot_info.weapon_unit) and dot_info.weapon_unit or nil
-	local is_fire_dot_damage = true
-	local is_molotov = dot_info.is_molotov
-
-	FlameBulletBase:give_fire_damage_dot(col_ray, weapon_unit, attacker_unit, damage, is_fire_dot_damage, is_molotov)
-end
-
-function FireManager:give_local_player_dmg(pos, range, damage, ignite_character)
+function FireManager:give_local_player_dmg(pos, range, damage)
 	local player = managers.player:player_unit()
 
 	if player then
@@ -325,8 +294,7 @@ function FireManager:give_local_player_dmg(pos, range, damage, ignite_character)
 			variant = "fire",
 			position = pos,
 			range = range,
-			damage = damage,
-			ignite_character = ignite_character
+			damage = damage
 		})
 	end
 end
@@ -344,7 +312,7 @@ function FireManager:detect_and_give_dmg(params)
 	local alert_filter = params.alert_filter or managers.groupai:state():get_unit_type_filter("civilians_enemies")
 	local owner = params.owner
 	local push_units = false
-	local fire_dot_data = params.fire_dot_data
+	local dot_data = params.dot_data
 	local results = {}
 	local is_molotov = params.is_molotov
 
@@ -359,8 +327,7 @@ function FireManager:detect_and_give_dmg(params)
 			variant = "fire",
 			position = hit_pos,
 			range = range,
-			damage = player_dmg,
-			ignite_character = params.ignite_character
+			damage = player_dmg
 		})
 	end
 
@@ -485,25 +452,24 @@ function FireManager:detect_and_give_dmg(params)
 
 			if character then
 				local dead_before = hit_unit:character_damage():dead()
+				local col_ray = {
+					unit = hit_unit,
+					position = hit_body:position(),
+					ray = dir
+				}
 				local action_data = {
 					variant = "fire",
 					damage = damage,
 					attacker_unit = user_unit,
 					weapon_unit = owner,
-					ignite_character = params.ignite_character,
-					col_ray = self._col_ray or {
-						position = hit_body:position(),
-						ray = dir
-					},
-					is_fire_dot_damage = false,
-					fire_dot_data = fire_dot_data,
+					col_ray = col_ray,
 					is_molotov = is_molotov
 				}
 				local t = TimerManager:game():time()
+				local defense_data = hit_unit:character_damage():damage_fire(action_data)
+				local dead_now = hit_unit:character_damage():dead()
 
-				hit_unit:character_damage():damage_fire(action_data)
-
-				if not dead_before and hit_unit:base() and hit_unit:base()._tweak_table and hit_unit:character_damage():dead() then
+				if not dead_before and hit_unit:base() and hit_unit:base()._tweak_table and dead_now then
 					type = hit_unit:base()._tweak_table
 
 					if CopDamage.is_civilian(type) then
@@ -514,6 +480,16 @@ function FireManager:detect_and_give_dmg(params)
 						if type ~= "american" then
 							count_cop_kills = count_cop_kills + 1
 						end
+					end
+				end
+
+				if dot_data and not dead_now and defense_data and defense_data ~= "friendly_fire" and hit_unit:character_damage().damage_dot then
+					local damage_class = CoreSerialize.string_to_classtable(dot_data.damage_class)
+
+					if damage_class then
+						damage_class:start_dot_damage(col_ray, owner, dot_data, nil, user_unit, defense_data)
+					else
+						Application:error("[FireManager:detect_and_give_dmg] No '" .. tostring(dot_data.damage_class) .. "' class found for dot tweak with name '" .. tostring(dot_data.name) .. "'.")
 					end
 				end
 			end

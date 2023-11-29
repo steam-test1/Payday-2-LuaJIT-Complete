@@ -9,10 +9,8 @@ function TeamAIBase:post_init()
 	self:set_anim_lod(1)
 
 	self._lod_stage = 1
-	self._allow_invisible = true
 
 	self:_register()
-	managers.occlusion:remove_occlusion(self._unit)
 end
 
 function TeamAIBase:nick_name()
@@ -134,9 +132,6 @@ function TeamAIBase:unregister()
 		self._char_name = managers.criminals:character_name_by_unit(self._unit)
 		self._registered = nil
 	end
-end
-
-function TeamAIBase:chk_freeze_anims()
 end
 
 function TeamAIBase:character_name()

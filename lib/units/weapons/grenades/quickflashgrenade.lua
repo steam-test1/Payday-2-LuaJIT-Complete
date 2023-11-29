@@ -1,19 +1,19 @@
+local tmp_vec1 = Vector3()
 QuickFlashGrenade = QuickFlashGrenade or class()
 QuickFlashGrenade.States = {
 	{
 		"_state_launched",
-		1
+		0.5
 	},
 	{
-		"_state_bounced"
+		"_state_bounced",
+		0.5
 	},
 	{
-		"_state_detonated",
-		3
+		"_state_armed"
 	},
 	{
-		"_state_destroy",
-		0
+		"_state_detonated"
 	}
 }
 QuickFlashGrenade.Events = {
@@ -24,29 +24,25 @@ QuickFlashGrenade.Events = {
 function QuickFlashGrenade:init(unit)
 	self._unit = unit
 	self._state = 0
-	self._armed = false
-
-	for i, state in ipairs(QuickFlashGrenade.States) do
-		if state[2] == nil then
-			QuickFlashGrenade.States[i][2] = tweak_data.group_ai.flash_grenade.timer
-		end
-	end
+	local td = tweak_data.group_ai.flash_grenade
+	self._range = td.range
+	self._light_range = td.light_range
+	self._light_color = td.light_color
+	self._light_specular = td.light_specular
+	self._beep_mul = td.beep_multi
+	self._beep_fade_speed = td.beep_fade_speed
+	self._beep_speeds = td.beep_speed
+	QuickFlashGrenade.States[3][3] = QuickFlashGrenade.States[3][3] or td.timer
 
 	if Network:is_client() then
-		self:activate(self._unit:position(), tweak_data.group_ai.flash_grenade_lifetime)
+		self._unit:set_enabled(false)
 	end
+
+	self._unit:set_extension_update_enabled(Idstring("base"), false)
 end
 
 function QuickFlashGrenade:update(unit, t, dt)
-	if self._destroyed_t then
-		self._destroyed_t = self._destroyed_t - dt
-
-		if self._destroyed_t <= 0 then
-			self:destroy_unit()
-		end
-	end
-
-	if self._destroyed or not self._armed then
+	if self._destroyed then
 		return
 	end
 
@@ -67,23 +63,19 @@ function QuickFlashGrenade:update(unit, t, dt)
 		end
 	end
 
-	if self._state == 2 then
-		if self._beep_t then
-			self._beep_t = self._beep_t - dt
+	if self._beep_t then
+		self._beep_t = self._beep_t - dt
 
-			if self._beep_t < 0 then
-				self:_beep()
-			end
-		else
+		if self._beep_t < 0 then
 			self:_beep()
 		end
 	end
 
 	if alive(self._light) then
-		self._light_multiplier = math.clamp(self._light_multiplier - dt * tweak_data.group_ai.flash_grenade.beep_fade_speed, 0, 1)
+		self._light_multiplier = math.clamp(self._light_multiplier - dt * self._beep_fade_speed, 0, 1)
 
 		self._light:set_multiplier(self._light_multiplier)
-		self._light:set_far_range(tweak_data.group_ai.flash_grenade.light_range * self._light_multiplier)
+		self._light:set_far_range(self._light_range * self._light_multiplier)
 	end
 end
 
@@ -91,7 +83,7 @@ function QuickFlashGrenade:_beep()
 	self._unit:sound_source():post_event("pfn_beep")
 
 	self._beep_t = self:_get_next_beep_time()
-	self._light_multiplier = tweak_data.group_ai.flash_grenade.beep_multi
+	self._light_multiplier = self._beep_mul
 end
 
 function QuickFlashGrenade:timer(new)
@@ -105,53 +97,61 @@ function QuickFlashGrenade:timer(new)
 end
 
 function QuickFlashGrenade:_get_next_beep_time()
-	local beep_speed = tweak_data.group_ai.flash_grenade.beep_speed
+	local beep_speeds = self._beep_speeds
 
-	return self:timer() / beep_speed[1] * beep_speed[2]
+	return self:timer() / beep_speeds[1] * beep_speeds[2]
 end
 
-function QuickFlashGrenade:activate(position, duration)
-	self:_activate(0, 0, position, duration)
+function QuickFlashGrenade:activate(position)
+	self:_activate(0, 0, position)
 end
 
-function QuickFlashGrenade:activate_immediately(position, duration)
-	self:_activate(2, 0, position, duration)
+function QuickFlashGrenade:activate_immediately(position)
+	self:_activate(4, nil, position)
+	self:_state_detonated()
 end
 
-function QuickFlashGrenade:_activate(state, timer, position, duration)
-	self._armed = true
+function QuickFlashGrenade:_activate(state, timer, position)
+	self._state = state
 	self._timer = timer
 	self._shoot_position = position
-	self._duration = duration
+
+	if Network:is_client() then
+		self._unit:set_enabled(true)
+	end
+
+	self._unit:set_extension_update_enabled(Idstring("base"), true)
 end
 
 function QuickFlashGrenade:_state_launched()
 	self._unit:damage():run_sequence_simple("insert")
 
-	local sound_source = SoundDevice:create_source("grenade_fire_source")
+	if self._shoot_position then
+		local sound_source = SoundDevice:create_source("grenade_fire_source")
 
-	sound_source:set_position(self._shoot_position)
-	sound_source:post_event("grenade_gas_npc_fire")
+		sound_source:set_position(self._shoot_position)
+		sound_source:post_event("grenade_gas_npc_fire", callback(self, self, "sound_playback_complete_clbk"), sound_source, "end_of_event")
+	end
 end
 
 function QuickFlashGrenade:_state_bounced()
+	self._unit:sound_source():post_event("flashbang_bounce")
+end
+
+function QuickFlashGrenade:_state_armed()
 	self._unit:damage():run_sequence_simple("activate")
+	self:_beep()
 
-	local bounce_point = Vector3()
+	local pos = tmp_vec1
 
-	mvector3.lerp(bounce_point, self._shoot_position, self._unit:position(), 0.65)
-
-	local sound_source = SoundDevice:create_source("grenade_bounce_source")
-
-	sound_source:set_position(bounce_point)
-	sound_source:post_event("flashbang_bounce", callback(self, self, "sound_playback_complete_clbk"), sound_source, "end_of_event")
+	self._unit:m_position(pos)
 
 	local light = World:create_light("omni|specular")
 
-	light:set_far_range(tweak_data.group_ai.flash_grenade.light_range)
-	light:set_color(tweak_data.group_ai.flash_grenade.light_color)
-	light:set_position(self._unit:position())
-	light:set_specular_multiplier(tweak_data.group_ai.flash_grenade.light_specular)
+	light:set_far_range(self._light_range)
+	light:set_color(self._light_color)
+	light:set_position(pos)
+	light:set_specular_multiplier(self._light_specular)
 	light:set_enable(true)
 	light:set_multiplier(0)
 	light:set_falloff_exponent(0.5)
@@ -161,20 +161,22 @@ function QuickFlashGrenade:_state_bounced()
 end
 
 function QuickFlashGrenade:_state_detonated()
+	self._beep_t = nil
 	local detonate_pos = self._unit:position()
 
-	self:make_flash(detonate_pos, tweak_data.group_ai.flash_grenade.range)
-	managers.groupai:state():propagate_alert({
-		"aggression",
-		detonate_pos,
-		10000,
-		managers.groupai:state():get_unit_type_filter("civilians_enemies")
-	})
-	self._unit:damage():run_sequence_simple("detonate")
-end
+	self:make_flash(detonate_pos, self._range)
 
-function QuickFlashGrenade:_state_destroy()
-	self:destroy_unit()
+	if Network:is_server() then
+		managers.groupai:state():propagate_alert({
+			"aggression",
+			detonate_pos,
+			10000,
+			managers.groupai:state():get_unit_type_filter("civilians_enemies")
+		})
+	end
+
+	self._unit:damage():run_sequence_simple("detonate")
+	self:_handle_hiding_and_destroying(true, 3)
 end
 
 function QuickFlashGrenade:make_flash(detonate_pos, range, ignore_units)
@@ -195,7 +197,7 @@ function QuickFlashGrenade:make_flash(detonate_pos, range, ignore_units)
 	local affected, line_of_sight, travel_dis, linear_dis = self:_chk_dazzle_local_player(detonate_pos, range, ignore_units)
 
 	if affected then
-		managers.environment_controller:set_flashbang(detonate_pos, line_of_sight, travel_dis, linear_dis, tweak_data.character.flashbang_multiplier)
+		managers.environment_controller:set_flashbang(detonate_pos, line_of_sight, travel_dis, linear_dis, tweak_data.character.flashbang_multiplier, nil, true)
 
 		local sound_eff_mul = math.clamp(1 - (travel_dis or linear_dis) / range, 0.3, 1)
 
@@ -277,15 +279,36 @@ function QuickFlashGrenade:sound_playback_complete_clbk(event_instance, sound_so
 end
 
 function QuickFlashGrenade:preemptive_kill()
-	self:destroy_unit()
+	self:_handle_hiding_and_destroying(true)
 end
 
-function QuickFlashGrenade:destroy_unit()
-	if Network:is_server() then
+function QuickFlashGrenade:_handle_hiding_and_destroying(destroy, destruction_delay)
+	self._beep_t = nil
+	self._destroyed = true
+
+	self._unit:set_extension_update_enabled(Idstring("base"), false)
+	self:remove_light()
+	self._unit:set_visible(false)
+	self._unit:set_enabled(false)
+
+	if destroy and (Network:is_server() or self._unit:id() == -1) then
+		if destruction_delay then
+			if not self._destroy_clbk_id then
+				self._destroy_clbk_id = "quick_flash_destroy" .. tostring(self._unit:key())
+
+				managers.enemy:add_delayed_clbk(self._destroy_clbk_id, callback(self, self, "_clbk_destroy"), TimerManager:game():time() + destruction_delay)
+			end
+		else
+			self._unit:set_slot(0)
+		end
+	end
+end
+
+function QuickFlashGrenade:_clbk_destroy()
+	self._destroy_clbk_id = nil
+
+	if alive(self._unit) then
 		self._unit:set_slot(0)
-	else
-		self._unit:set_visible(false)
-		self._unit:set_enabled(false)
 	end
 end
 
@@ -297,25 +320,19 @@ function QuickFlashGrenade:remove_light()
 	end
 end
 
-function QuickFlashGrenade:destroy()
-	self:remove_light()
-end
-
 function QuickFlashGrenade:on_flashbang_destroyed(prevent_network)
 	if self._destroyed then
 		return
 	end
+
+	self._destroyed = true
 
 	if not prevent_network then
 		managers.network:session():send_to_peers_synched("sync_flashbang_event", self._unit, QuickFlashGrenade.Events.DestroyedByPlayer)
 	end
 
 	self._unit:sound_source():post_event("pfn_beep_end")
-
-	self._destroyed = true
-	self._destroyed_t = 1
-
-	self:remove_light()
+	self:_handle_hiding_and_destroying(true, 3)
 end
 
 function QuickFlashGrenade:on_network_event(event_id)
@@ -325,5 +342,15 @@ function QuickFlashGrenade:on_network_event(event_id)
 		self[event](self, true)
 	else
 		Application:error("Received a network event id that is not mapped!")
+	end
+end
+
+function QuickFlashGrenade:destroy()
+	self:remove_light()
+
+	if self._destroy_clbk_id then
+		managers.enemy:remove_delayed_clbk(self._destroy_clbk_id)
+
+		self._destroy_clbk_id = nil
 	end
 end

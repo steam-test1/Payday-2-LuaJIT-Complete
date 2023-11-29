@@ -1,6 +1,10 @@
 HuskCopBrain = HuskCopBrain or class()
 HuskCopBrain._NET_EVENTS = {
+	surrender_cop_tied = 3,
+	surrender_civilian_tied = 5,
 	weapon_laser_off = 2,
+	surrender_civilian_untied = 6,
+	surrender_cop_untied = 4,
 	weapon_laser_on = 1
 }
 HuskCopBrain._ENABLE_LASER_TIME = 3
@@ -8,29 +12,41 @@ HuskCopBrain._get_radio_id = CopBrain._get_radio_id
 
 function HuskCopBrain:init(unit)
 	self._unit = unit
+	self._is_hostage = false
+	self._surrendered = false
+	self._converted = false
+	self._is_civilian = self._unit:in_slot(managers.slot:get_mask("civilians"))
+	self._is_criminal = self._unit:in_slot(managers.slot:get_mask("all_criminals"))
+
+	unit:set_extension_update_enabled(Idstring("brain"), false)
 end
 
 function HuskCopBrain:post_init()
-	self._alert_listen_key = "HuskCopBrain" .. tostring(self._unit:key())
-	local alert_listen_filter = managers.groupai:state():get_unit_type_filter("criminal")
-
-	managers.groupai:state():add_alert_listener(self._alert_listen_key, callback(self, self, "on_alert"), alert_listen_filter, {
-		aggression = true,
-		bullet = true,
-		vo_intimidate = true,
-		explosion = true,
-		footstep = true,
-		vo_cbt = true
-	}, self._unit:movement():m_head_pos())
-
-	self._last_alert_t = 0
-
 	self._unit:character_damage():add_listener("HuskCopBrain_death" .. tostring(self._unit:key()), {
 		"death"
 	}, callback(self, self, "clbk_death"))
+	self:_setup_fake_attention_handler()
 
 	self._post_init_complete = true
-	self._surrendered = false
+end
+
+function HuskCopBrain:_setup_fake_attention_handler()
+	local handler = {
+		get_attention_m_pos = function (handler)
+			return self._unit:movement():m_head_pos()
+		end,
+		get_detection_m_pos = function (handler)
+			return self._unit:movement():m_head_pos()
+		end,
+		get_ground_m_pos = function (handler)
+			return self._unit:movement():m_pos()
+		end
+	}
+	self._attention_handler = handler
+end
+
+function HuskCopBrain:attention_handler()
+	return self._attention_handler
 end
 
 function HuskCopBrain:interaction_voice()
@@ -46,14 +62,22 @@ function HuskCopBrain:on_intimidated(amount, aggressor_unit)
 end
 
 function HuskCopBrain:clbk_death(my_unit, damage_info)
+	self._dead = true
+	self._is_hostage = false
+	self._surrendered = false
+	self._converted = false
+	self._add_laser_t = nil
+
+	self._unit:set_extension_update_enabled(Idstring("brain"), false)
+
+	if self._weapon_laser_on then
+		self:disable_weapon_laser()
+	end
+
 	if self._alert_listen_key then
 		managers.groupai:state():remove_alert_listener(self._alert_listen_key)
 
 		self._alert_listen_key = nil
-	end
-
-	if self._unit:inventory():equipped_unit() then
-		self._unit:inventory():equipped_unit():base():set_laser_enabled(false)
 	end
 
 	if self._following_hostage_contour_id then
@@ -62,7 +86,7 @@ function HuskCopBrain:clbk_death(my_unit, damage_info)
 		self._following_hostage_contour_id = nil
 	end
 
-	self._unit:movement():set_attention()
+	self._unit:movement():synch_attention()
 end
 
 function HuskCopBrain:set_interaction_voice(voice)
@@ -71,6 +95,7 @@ end
 
 function HuskCopBrain:load(load_data)
 	local my_load_data = load_data.brain
+	self._dead = my_load_data.dead
 
 	self:set_interaction_voice(my_load_data.interaction_voice)
 
@@ -87,6 +112,12 @@ function HuskCopBrain:load(load_data)
 	end
 
 	self._surrendered = my_load_data.surrendered
+
+	if my_load_data.is_civilian_tied then
+		self:sync_net_event(self._NET_EVENTS.surrender_civilian_tied)
+	elseif my_load_data.is_cop_tied then
+		self:sync_net_event(self._NET_EVENTS.surrender_cop_tied)
+	end
 end
 
 function HuskCopBrain:on_tied(aggressor_unit, not_tied, can_flee)
@@ -122,6 +153,10 @@ function HuskCopBrain:on_alert(alert_data)
 end
 
 function HuskCopBrain:sync_surrender(surrendered)
+	if self._dead then
+		return
+	end
+
 	self._surrendered = surrendered
 end
 
@@ -129,7 +164,19 @@ function HuskCopBrain:surrendered()
 	return self._surrendered
 end
 
+function HuskCopBrain:is_tied()
+	return self._is_hostage
+end
+
+function HuskCopBrain:is_hostage()
+	return self._is_hostage
+end
+
 function HuskCopBrain:sync_converted()
+	if self._dead then
+		return
+	end
+
 	self._converted = true
 end
 
@@ -168,38 +215,75 @@ function HuskCopBrain:update(unit, t, dt)
 end
 
 function HuskCopBrain:sync_net_event(event_id)
+	if self._dead then
+		return
+	end
+
 	if event_id == self._NET_EVENTS.weapon_laser_on then
 		self._add_laser_t = HuskCopBrain._ENABLE_LASER_TIME
+
+		self._unit:set_extension_update_enabled(Idstring("brain"), true)
 	elseif event_id == self._NET_EVENTS.weapon_laser_off then
-		self:disable_weapon_laser()
+		if self._weapon_laser_on then
+			self:disable_weapon_laser()
+		elseif self._add_laser_t then
+			self._add_laser_t = nil
+
+			self._unit:set_extension_update_enabled(Idstring("brain"), false)
+		end
+	elseif event_id == self._NET_EVENTS.surrender_cop_tied then
+		self._is_hostage = true
+
+		self._unit:inventory():destroy_all_items()
+		self._unit:base():set_slot(self._unit, 22)
+	elseif event_id == self._NET_EVENTS.surrender_civilian_tied then
+		self._surrendered = true
+		self._is_hostage = true
+
+		self._unit:inventory():destroy_all_items()
+		self._unit:base():set_slot(self._unit, 22)
+	elseif event_id == self._NET_EVENTS.surrender_cop_untied then
+		self._is_hostage = false
+
+		self._unit:base():set_slot(self._unit, 22)
+	elseif event_id == self._NET_EVENTS.surrender_civilian_untied then
+		self._surrendered = false
+		self._is_hostage = false
+
+		self._unit:base():set_slot(self._unit, 21)
 	end
 end
 
 function HuskCopBrain:enable_weapon_laser()
+	self._add_laser_t = nil
 	self._weapon_laser_on = true
+	local weapon = self._unit:inventory():equipped_unit()
+	local weap_base_ext = weapon and weapon:base()
 
-	self._unit:inventory():equipped_unit():base():set_laser_enabled(true)
-	managers.enemy:_destroy_unit_gfx_lod_data(self._unit:key())
+	if weap_base_ext and weap_base_ext.set_laser_enabled then
+		weap_base_ext:set_laser_enabled(true)
+	end
+
+	self._unit:base():prevent_main_bones_disabling(true)
+	self._unit:set_extension_update_enabled(Idstring("brain"), false)
 end
 
 function HuskCopBrain:disable_weapon_laser()
+	self._add_laser_t = nil
 	self._weapon_laser_on = nil
+	local weapon = self._unit:inventory():equipped_unit()
+	local weap_base_ext = weapon and weapon:base()
 
-	if self._unit:inventory():equipped_unit() then
-		self._unit:inventory():equipped_unit():base():set_laser_enabled(false)
+	if weap_base_ext and weap_base_ext.set_laser_enabled then
+		weap_base_ext:set_laser_enabled(false)
 	end
 
-	if not self._unit:character_damage():dead() then
-		managers.enemy:_create_unit_gfx_lod_data(self._unit)
-	end
+	self._unit:base():prevent_main_bones_disabling(false)
+	self._unit:set_extension_update_enabled(Idstring("brain"), false)
 end
 
 function HuskCopBrain:pre_destroy()
-	if Network:is_server() then
-		self._unit:movement():set_attention()
-	else
-		self._unit:movement():synch_attention()
-	end
+	self._unit:movement():synch_attention()
 
 	if self._alert_listen_key then
 		managers.groupai:state():remove_alert_listener(self._alert_listen_key)
@@ -207,7 +291,9 @@ function HuskCopBrain:pre_destroy()
 		self._alert_listen_key = nil
 	end
 
+	self._add_laser_t = nil
+
 	if self._weapon_laser_on then
-		self:sync_net_event(self._NET_EVENTS.weapon_laser_off)
+		self:disable_weapon_laser()
 	end
 end

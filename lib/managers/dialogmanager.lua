@@ -30,6 +30,8 @@ end
 
 function DialogManager:queue_dialog(id, params)
 	if not params.skip_idle_check and managers.platform:presence() == "Idle" then
+		self:_call_done_callback(params and params.done_cbk, "idle")
+
 		return
 	end
 
@@ -50,6 +52,8 @@ function DialogManager:queue_dialog(id, params)
 		else
 			debug_pause(error_message)
 		end
+
+		self:_call_done_callback(params and params.done_cbk, "unexistent")
 
 		return false
 	end
@@ -81,6 +85,8 @@ function DialogManager:queue_dialog(id, params)
 			}
 		else
 			self:_call_done_callback(params and params.done_cbk, "skipped")
+
+			return false
 		end
 	end
 
@@ -196,7 +202,11 @@ function DialogManager:_play_dialog(dialog, params, line)
 			self._current_dialog.line = line or 1
 
 			unit:drama():play_sound(dialog.sounds[self._current_dialog.line], dialog.sound_source)
+		else
+			self:_call_done_callback(params and params.done_cbk, "no sound")
 		end
+	else
+		self:_call_done_callback(params and params.done_cbk, "no unit")
 	end
 end
 

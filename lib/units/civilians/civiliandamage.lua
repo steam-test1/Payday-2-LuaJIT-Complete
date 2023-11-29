@@ -6,7 +6,22 @@ function CivilianDamage:init(unit)
 	self._pickup = nil
 end
 
-function CivilianDamage:die(variant)
+function CivilianDamage:check_medic_heal(...)
+end
+
+function CivilianDamage:do_medic_heal(...)
+end
+
+function CivilianDamage:do_medic_heal_and_action(...)
+end
+
+function CivilianDamage:healed(...)
+	return false
+end
+
+function CivilianDamage:die(attack_data)
+	managers.modifiers:run_func("OnCivilianKilled", self._unit)
+	self:_remove_debug_gui()
 	self._unit:base():set_slot(self._unit, 17)
 	self:drop_pickup()
 
@@ -20,13 +35,6 @@ function CivilianDamage:die(variant)
 		end
 	end
 
-	managers.modifiers:run_func("OnCivilianKilled", self._unit)
-
-	if alive(managers.interaction:active_unit()) then
-		managers.interaction:active_unit():interaction():selected()
-	end
-
-	variant = variant or "bullet"
 	self._health = 0
 	self._health_ratio = 0
 	self._dead = true
