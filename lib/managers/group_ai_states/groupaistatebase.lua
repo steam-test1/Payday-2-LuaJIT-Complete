@@ -3948,7 +3948,7 @@ function GroupAIStateBase:detonate_world_smoke_grenade(id, sync)
 		self:_update_smoke_end_t(TimerManager:game():time() + data.duration)
 	end
 
-	if sync and not flashbang and Network:is_server() then
+	if sync and not data.flashbang and Network:is_server() then
 		managers.network:session():send_to_peers_synched("sync_smoke_grenade", data.detonate_pos, data.shooter_pos or Vector3(), data.duration, data.flashbang and true or false, data.instant and true or false)
 	end
 end
