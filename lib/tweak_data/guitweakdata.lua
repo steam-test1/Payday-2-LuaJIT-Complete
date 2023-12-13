@@ -5204,9 +5204,15 @@ function GuiTweakData:init(tweak_data)
 		}
 	}
 	self.new_heists = {
-		limit = 5
+		limit = 6
 	}
 
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_dgs_03",
+		texture_path = "guis/dlcs/dgs/textures/pd2/new_heists/dgs_03_e",
+		epic_url = "https://t.paydaythegame.com/c/30hw2x",
+		url = "https://t.paydaythegame.com/c/8lgjc2"
+	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_pda10_04",
 		texture_path = "guis/dlcs/pda10/textures/pd2/new_heists/pda10_04",

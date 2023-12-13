@@ -17,7 +17,7 @@ function ModifierCloakerTearGas:OnEnemyDied(unit, damage_info)
 
 			if tracker then
 				if tracker:lost() then
-					tracker:m_field_position(pos)
+					tracker:field_m_position(pos)
 				else
 					tracker:m_position(pos)
 				end

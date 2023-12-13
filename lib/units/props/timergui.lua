@@ -861,10 +861,6 @@ function TimerGui:post_event(event)
 		elseif self._skill == 2 then
 			sound_event = sound_event .. "_basic"
 		end
-	elseif event == self._jam_event and self._skill == 3 and managers.groupai:state():whisper_mode() then
-		self._unit:sound_source():stop()
-
-		return
 	end
 
 	local clbk, cookie = nil

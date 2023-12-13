@@ -359,5 +359,5 @@ function EnvironmentFire:load(data)
 	local added_time = state.added_time
 	local range_multiplier = state.range_multiplier
 
-	self:on_spawn(data, normal, self._user_unit, added_time, range_multiplier)
+	self:on_spawn(data, normal, self._user_unit, self._weapon_unit, added_time, range_multiplier)
 end
