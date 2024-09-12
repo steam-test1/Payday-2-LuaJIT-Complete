@@ -1745,7 +1745,9 @@ Play the full version soon to get your full PAYDAY!]],
 			lock = "pal"
 		},
 		{
-			track = "track_44"
+			track = "track_44",
+			hide_unavailable = true,
+			lock = "mad"
 		},
 		{
 			track = "track_45",
@@ -1916,7 +1918,9 @@ Play the full version soon to get your full PAYDAY!]],
 			track = "kosugi_music"
 		},
 		{
-			track = "music_dark"
+			track = "music_dark",
+			hide_unavailable = true,
+			lock = "mad"
 		},
 		{
 			track = "music_fish",
@@ -1995,28 +1999,32 @@ Play the full version soon to get your full PAYDAY!]],
 		{
 			track = "pb_do_you_wanna",
 			hide_unavailable = true,
-			lock = "berry"
+			lock = "locked"
 		},
 		{
 			track = "pb_i_need_your_love",
 			hide_unavailable = true,
-			lock = "berry"
+			lock = "locked"
 		},
 		{
 			track = "pb_still_breathing",
 			hide_unavailable = true,
-			lock = "berry"
+			lock = "locked"
 		},
 		{
 			track = "pb_take_me_down",
 			hide_unavailable = true,
-			lock = "berry"
+			lock = "locked"
 		},
 		{
-			track = "biting_elbows_bad_motherfucker"
+			track = "biting_elbows_bad_motherfucker",
+			hide_unavailable = true,
+			lock = "locked"
 		},
 		{
-			track = "biting_elbows_for_the_kill"
+			track = "biting_elbows_for_the_kill",
+			hide_unavailable = true,
+			lock = "locked"
 		},
 		{
 			track = "half_passed_wicked",

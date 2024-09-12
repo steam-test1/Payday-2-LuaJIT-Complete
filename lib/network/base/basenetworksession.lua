@@ -1336,6 +1336,21 @@ function BaseNetworkSession:check_peer_preferred_character(preferred_character)
 		end
 	end
 
+	local character, character_name, character_table, global_value, lootdrop_tweak, hide_unavailable = nil
+
+	for i = #free_characters, 1, -1 do
+		character = free_characters[i]
+		character_name = CriminalsManager.convert_old_to_new_character_workname(character)
+		character_table = tweak_data.blackmarket.characters[character] or tweak_data.blackmarket.characters.locked[character_name]
+		global_value = character_table and character_table.dlc and managers.dlc:dlc_to_global_value(character_table.dlc)
+		lootdrop_tweak = global_value and tweak_data.lootdrop.global_values[global_value]
+		hide_unavailable = lootdrop_tweak and lootdrop_tweak.hide_unavailable
+
+		if hide_unavailable then
+			table.delete(free_characters, character)
+		end
+	end
+
 	local character = free_characters[math.random(#free_characters)]
 
 	print("Player will be", character, "instead of", preferred_character)

@@ -8,7 +8,7 @@ end
 local function filter_hide_unavailable_items(item)
 	local dlc = tweak_data:get_raw_value("skilltree", "specializations", item.specialization_id, "dlc")
 
-	if dlc and not managers.dlc:is_dlc_unlocked(dlc) and tweak_data:get_raw_value("lootdrop", "global_values", dlc, "hide_unavailable") then
+	if dlc and not managers.dlc:is_dlc_unlocked(dlc) and managers.dlc:should_hide_unavailable(dlc) then
 		return false
 	end
 
@@ -426,7 +426,7 @@ function SpecializationGuiNew:update_detail_panels(item)
 		if dlc and not managers.dlc:is_dlc_unlocked(dlc) then
 			local unlock_id = tweak_data:get_raw_value("lootdrop", "global_values", dlc, "unlock_id") or "bm_menu_dlc_locked"
 
-			if tweak_data:get_raw_value("lootdrop", "global_values", dlc, "hide_unavailable") then
+			if managers.dlc:should_hide_unavailable(dlc) then
 				unlock_id = "bm_menu_dlc_locked"
 			end
 

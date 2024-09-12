@@ -1592,7 +1592,7 @@ function MenuCallbackHandler:get_latest_dlc_locked()
 	for _, dlc in ipairs(dlcs) do
 		has_dlc = managers.dlc:is_dlc_unlocked(dlc)
 
-		if not has_dlc then
+		if not has_dlc and not managers.dlc:should_hide_unavailable(dlc) then
 			return dlc
 		end
 	end
@@ -6259,39 +6259,47 @@ function MenuCrimeNetContactInfoInitiator:modify_node(original_node, data)
 		codex.name_localized = codex_string .. (self.COUNT_ITEMS and " (" .. tostring(#codex_d) .. ")" or "")
 
 		for _, info_data in ipairs(codex_d) do
-			local data = {
-				id = info_data.id,
-				name_localized = managers.localization:to_upper_text(info_data.name_id),
-				files = {},
-				sub_text = self.USE_SUBTEXT and codex_string or nil
-			}
+			local add_info = true
 
-			for page, file_data in ipairs(info_data) do
-				local file = {
-					desc_localized = file_data.desc_id and managers.localization:text(file_data.desc_id) or "",
-					post_event = file_data.post_event,
-					videos = file_data.videos and deep_clone(file_data.videos) or {},
-					lock = file_data.lock,
-					icon = file_data.icon,
-					icon_rect = file_data.icon_rect
-				}
-
-				if file_data.video then
-					table.insert(file.videos, file_data.video)
-				end
-
-				if self.ALLOW_IMAGES then
-					file.images = file_data.images and deep_clone(file_data.images) or {}
-
-					if file_data.image then
-						table.insert(file.images, file_data.image)
-					end
-				end
-
-				table.insert(data.files, file)
+			if info_data.dlc and not managers.dlc:is_dlc_unlocked(info_data.dlc) and managers.dlc:should_hide_unavailable(info_data.dlc) then
+				add_info = false
 			end
 
-			table.insert(codex, data)
+			if add_info then
+				local data = {
+					id = info_data.id,
+					name_localized = managers.localization:to_upper_text(info_data.name_id),
+					files = {},
+					sub_text = self.USE_SUBTEXT and codex_string or nil
+				}
+
+				for page, file_data in ipairs(info_data) do
+					local file = {
+						desc_localized = file_data.desc_id and managers.localization:text(file_data.desc_id) or "",
+						post_event = file_data.post_event,
+						videos = file_data.videos and deep_clone(file_data.videos) or {},
+						lock = file_data.lock,
+						icon = file_data.icon,
+						icon_rect = file_data.icon_rect
+					}
+
+					if file_data.video then
+						table.insert(file.videos, file_data.video)
+					end
+
+					if self.ALLOW_IMAGES then
+						file.images = file_data.images and deep_clone(file_data.images) or {}
+
+						if file_data.image then
+							table.insert(file.images, file_data.image)
+						end
+					end
+
+					table.insert(data.files, file)
+				end
+
+				table.insert(codex, data)
+			end
 		end
 
 		table.insert(codex_data, codex)

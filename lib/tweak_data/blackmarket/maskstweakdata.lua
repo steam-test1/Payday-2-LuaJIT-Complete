@@ -1515,27 +1515,32 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		type = "glasses",
 		skip_mask_on_sequence = true,
 		global_value = "infamous",
-		dlc = "john_wick_character"
+		dlc = "john_wick_character",
+		unlock_dlc = "pd2_clan"
 	}
 	self.masks.stoneface = {
 		unit = "units/pd2_crimefest_2014/oct22/masks/stoneface/msk_stoneface",
 		name_id = "bm_msk_stoneface",
 		pcs = {},
 		value = 0,
-		dlc = "pd2_clan",
 		type = "glasses",
 		skip_mask_on_sequence = true,
-		sort_number = 7
+		sort_number = 7,
+		global_value = "pd2_clan",
+		dlc = "john_wick_character",
+		unlock_dlc = "pd2_clan"
 	}
 	self.masks.wayfarer = {
 		unit = "units/pd2_crimefest_2014/oct22/masks/wayfarer/msk_wayfarer",
 		name_id = "bm_msk_wayfarer",
 		pcs = {},
 		value = 0,
-		dlc = "pd2_clan",
 		type = "glasses",
 		skip_mask_on_sequence = true,
-		sort_number = 7
+		sort_number = 7,
+		global_value = "pd2_clan",
+		dlc = "john_wick_character",
+		unlock_dlc = "pd2_clan"
 	}
 	self.masks.smiley = {
 		unit = "units/pd2_crimefest_2014/oct23/masks/smiley/msk_smiley",
@@ -2968,6 +2973,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 			40
 		},
 		value = 0,
+		dlc = "coco",
 		global_value = "infamous",
 		texture_bundle_folder = "coco",
 		sort_number = 16
@@ -2977,6 +2983,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		name_id = "bm_msk_jimmy_duct",
 		pcs = {},
 		value = 0,
+		dlc = "coco",
 		global_value = "infamous",
 		texture_bundle_folder = "coco",
 		sort_number = 16
@@ -3743,6 +3750,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		value = 0,
 		texture_bundle_folder = "sha",
 		sort_number = 40,
+		dlc = "sha",
 		global_value = "sha"
 	}
 	self.masks.sha_02 = {
@@ -3757,6 +3765,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		value = 0,
 		texture_bundle_folder = "sha",
 		sort_number = 40,
+		dlc = "sha",
 		global_value = "sha"
 	}
 	self.masks.sha_03 = {
@@ -3771,6 +3780,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		value = 0,
 		texture_bundle_folder = "sha",
 		sort_number = 40,
+		dlc = "sha",
 		global_value = "sha"
 	}
 	self.masks.sha_04 = {
@@ -3785,6 +3795,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		value = 0,
 		texture_bundle_folder = "sha",
 		sort_number = 40,
+		dlc = "sha",
 		global_value = "sha"
 	}
 	self.masks.spa_01 = {
@@ -4843,6 +4854,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		texture_bundle_folder = "ant",
 		sort_number = 50,
 		type = "helmet",
+		dlc = "ant_free",
 		global_value = "ant_free"
 	}
 	self.masks.ant_06 = {
@@ -4864,6 +4876,7 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		texture_bundle_folder = "ant",
 		sort_number = 50,
 		type = "helmet",
+		dlc = "ant_free",
 		global_value = "ant_free"
 	}
 	self.masks.ant_08 = {

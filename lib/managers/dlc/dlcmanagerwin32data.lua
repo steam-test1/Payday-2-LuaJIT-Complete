@@ -402,6 +402,11 @@ function WINDLCManager:init_dlc_data()
 		app_id = "489570",
 		external = true
 	}
+	Global.dlc_manager.all_dlc_data.ant_free = {
+		app_id = "218620",
+		no_install = true,
+		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
+	}
 	Global.dlc_manager.all_dlc_data.pn2 = {
 		app_id = "618940",
 		no_install = true,
@@ -533,5 +538,21 @@ function WINDLCManager:init_dlc_data()
 		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06"
 	}
 	Global.dlc_manager.all_dlc_data.chico_or_mrwi_deck = deep_clone(Global.dlc_manager.all_dlc_data.chico)
+	Global.dlc_manager.all_dlc_data.chico_or_mrwi_deck.external = true
 	Global.dlc_manager.all_dlc_data.ecp_or_mrwi_deck = deep_clone(Global.dlc_manager.all_dlc_data.ecp)
+	Global.dlc_manager.all_dlc_data.hlm_dlc = {
+		app_id = "3188980",
+		no_install = true,
+		epic_id = "968cb34c96d54720a6c5f8244c7901b1"
+	}
+	Global.dlc_manager.all_dlc_data.coco = {
+		app_id = "3126680",
+		no_install = true,
+		epic_id = "671c8e78c2434bbfa360340f89924019"
+	}
+	Global.dlc_manager.all_dlc_data.mad = {
+		app_id = "3126680",
+		no_install = true,
+		epic_id = "671c8e78c2434bbfa360340f89924019"
+	}
 end

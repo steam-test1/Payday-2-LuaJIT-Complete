@@ -1852,7 +1852,7 @@ function GuiTweakData:init(tweak_data)
 			icon = "sidebar_filters"
 		},
 		{
-			visible_callback = "clbk_visible_multiplayer",
+			visible_callback = "clbk_visible_multiplayer_epic_mm",
 			name_id = "menu_cn_search_lobby_code",
 			callback = "clbk_search_lobby_code",
 			id = "search_lobby_code",
@@ -2059,8 +2059,9 @@ function GuiTweakData:init(tweak_data)
 						"jimmy1"
 					}
 				},
+				id = "jimmy_contact",
 				name_id = "menu_jimmy",
-				id = "jimmy_contact"
+				dlc = "coco"
 			},
 			{
 				{
@@ -2070,8 +2071,9 @@ function GuiTweakData:init(tweak_data)
 						"continental1"
 					}
 				},
+				id = "continental_contact",
 				name_id = "menu_continental",
-				id = "continental_contact"
+				dlc = "spa"
 			},
 			{
 				{
@@ -2182,8 +2184,9 @@ function GuiTweakData:init(tweak_data)
 						"jowi4"
 					}
 				},
+				id = "jowi",
 				name_id = "menu_jowi",
-				id = "jowi"
+				dlc = "john_wick_character"
 			},
 			{
 				{
@@ -2285,8 +2288,9 @@ function GuiTweakData:init(tweak_data)
 						"bodhi1"
 					}
 				},
+				id = "bodhi",
 				name_id = "menu_bodhi",
-				id = "bodhi"
+				dlc = "rvd"
 			},
 			{
 				{
@@ -2296,8 +2300,9 @@ function GuiTweakData:init(tweak_data)
 						"jimmy1"
 					}
 				},
+				id = "jimmy",
 				name_id = "menu_jimmy",
-				id = "jimmy"
+				dlc = "coco"
 			},
 			{
 				{
@@ -2329,8 +2334,9 @@ function GuiTweakData:init(tweak_data)
 						"chico1"
 					}
 				},
+				id = "chico",
 				name_id = "menu_chico",
-				id = "chico"
+				dlc = "chico"
 			},
 			{
 				{
@@ -5204,15 +5210,9 @@ function GuiTweakData:init(tweak_data)
 		}
 	}
 	self.new_heists = {
-		limit = 6
+		limit = 5
 	}
 
-	table.insert(self.new_heists, {
-		name_id = "menu_nh_dgs_03",
-		texture_path = "guis/dlcs/dgs/textures/pd2/new_heists/dgs_03_e",
-		epic_url = "https://t.paydaythegame.com/c/30hw2x",
-		url = "https://t.paydaythegame.com/c/8lgjc2"
-	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_pda10_04",
 		texture_path = "guis/dlcs/pda10/textures/pd2/new_heists/pda10_04",

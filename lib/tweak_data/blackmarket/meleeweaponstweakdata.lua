@@ -907,7 +907,7 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.boxing_gloves.name_id = "bm_melee_boxing_gloves"
 	self.melee_weapons.boxing_gloves.free = nil
 	self.melee_weapons.boxing_gloves.type = "fists"
-	self.melee_weapons.boxing_gloves.dlc = nil
+	self.melee_weapons.boxing_gloves.dlc = "pd2_clan"
 	self.melee_weapons.boxing_gloves.texture_bundle_folder = "pd2_hw_boxing"
 	self.melee_weapons.boxing_gloves.align_objects = {
 		"a_weapon_left",
@@ -1879,6 +1879,7 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 		},
 		anim_global_param = "melee_boxcutter",
 		texture_bundle_folder = "rip",
+		dlc = "rvd",
 		free = nil,
 		type = "knife",
 		align_objects = {
@@ -2196,7 +2197,7 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 	self.melee_weapons.nin.melee_damage_delay = 0.1
 	self.melee_weapons.ballistic = deep_clone(self.melee_weapons.kabar)
 	self.melee_weapons.ballistic.name_id = "bm_melee_ballistic"
-	self.melee_weapons.ballistic.dlc = nil
+	self.melee_weapons.ballistic.dlc = "coco"
 	self.melee_weapons.ballistic.texture_bundle_folder = "coco"
 	self.melee_weapons.ballistic.free = nil
 	self.melee_weapons.ballistic.anim_global_param = "melee_ballistic"
@@ -2231,6 +2232,7 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 		tase_strength = "light"
 	}
 	self.melee_weapons.zeus.texture_bundle_folder = "mad"
+	self.melee_weapons.zeus.dlc = "mad"
 	self.melee_weapons.zeus.free = nil
 	self.melee_weapons.zeus.align_objects = {
 		"a_weapon_left",
@@ -2787,6 +2789,7 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 			"var2"
 		},
 		anim_global_param = "melee_clean",
+		dlc = "rvd",
 		texture_bundle_folder = "rvd",
 		type = "knife",
 		align_objects = {

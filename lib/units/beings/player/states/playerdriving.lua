@@ -767,15 +767,19 @@ end
 function PlayerDriving:on_inventory_event(unit, event)
 	local weapon = self._unit:inventory():equipped_unit()
 
-	table.insert(weapon:base()._setup.ignore_units, self._vehicle_unit)
+	if weapon then
+		table.insert(weapon:base()._setup.ignore_units, self._vehicle_unit)
 
-	if alive(self._current_weapon) then
-		table.delete(self._current_weapon:base()._setup.ignore_units, self._vehicle_unit)
+		if alive(self._current_weapon) then
+			table.delete(self._current_weapon:base()._setup.ignore_units, self._vehicle_unit)
+		end
+
+		self._current_weapon = weapon
+
+		weapon:base():set_visibility_state(true)
+	else
+		self._current_weapon = false
 	end
-
-	self._current_weapon = weapon
-
-	weapon:base():set_visibility_state(true)
 end
 
 function PlayerDriving:smoothstep(a, b, step, n)

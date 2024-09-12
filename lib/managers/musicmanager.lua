@@ -262,6 +262,43 @@ function MusicManager:jukebox_ghost_specific()
 	return "heist"
 end
 
+function MusicManager:_verify_tracks()
+	self:_heist_sah_track_fix()
+
+	local track_name = nil
+	local tracks_locked = self:get_tracks_locked()
+
+	for i = #Global.music_manager.custom_playlist, 1, -1 do
+		track_name = Global.music_manager.custom_playlist[i]
+
+		if tracks_locked[track_name] then
+			table.remove(Global.music_manager.custom_playlist, i)
+		end
+	end
+
+	for i = #Global.music_manager.custom_menu_playlist, 1, -1 do
+		track_name = Global.music_manager.custom_menu_playlist[i]
+
+		if tracks_locked[track_name] then
+			table.remove(Global.music_manager.custom_menu_playlist, i)
+		end
+	end
+
+	for i = #Global.music_manager.custom_ghost_playlist, 1, -1 do
+		track_name = Global.music_manager.custom_ghost_playlist[i]
+
+		if tracks_locked[track_name] then
+			table.remove(Global.music_manager.custom_ghost_playlist, i)
+		end
+	end
+
+	for name, track_name in pairs(Global.music_manager.track_attachment) do
+		if tracks_locked[track_name] then
+			Global.music_manager.track_attachment[name] = "all"
+		end
+	end
+end
+
 function MusicManager:_heist_sah_track_fix()
 	for _, data in ipairs(tweak_data.music.track_ghost_list) do
 		if Global.music_manager.track_attachment.heist_sah == data.track then
@@ -293,8 +330,8 @@ function MusicManager:load_settings(data)
 		Global.music_manager.track_attachment = state.track_attachment or {}
 		Global.music_manager.unlocked_tracks = state.unlocked_tracks or {}
 
+		self:_verify_tracks()
 		self:_set_default_values()
-		self:_heist_sah_track_fix()
 	end
 
 	if managers.network and SystemInfo:distribution() == Idstring("STEAM") and not self._added_overlay_listeners then
@@ -751,21 +788,38 @@ function MusicManager:get_lock_data()
 		soundtrack = managers.dlc:has_soundtrack_or_cce(),
 		thebomb = managers.dlc:has_dlc_or_soundtrack_or_cce("the_bomb"),
 		xmas = managers.dlc:is_dlc_unlocked("xmas_soundtrack"),
-		berry = managers.dlc:has_dlc_or_soundtrack_or_cce("berry"),
+		berry = managers.dlc:is_dlc_unlocked("berry"),
 		peta = managers.dlc:has_dlc_or_soundtrack_or_cce("peta"),
 		pal = managers.dlc:has_dlc_or_soundtrack_or_cce("pal"),
 		born = managers.dlc:has_dlc_or_soundtrack_or_cce("born"),
 		born_wild = managers.dlc:has_dlc_or_soundtrack_or_cce("born") or managers.dlc:is_dlc_unlocked("wild"),
-		friend = managers.dlc:has_dlc_or_soundtrack_or_cce("friend"),
-		spa = managers.dlc:has_dlc_or_soundtrack_or_cce("spa"),
-		fish = managers.dlc:has_dlc_or_soundtrack_or_cce("spa"),
-		rvd = managers.dlc:has_dlc_or_soundtrack_or_cce("rvd"),
-		tma1 = managers.dlc:is_dlc_unlocked("tma1")
+		friend = managers.dlc:is_dlc_unlocked("friend"),
+		spa = managers.dlc:is_dlc_unlocked("spa"),
+		fish = managers.dlc:is_dlc_unlocked("spa"),
+		rvd = managers.dlc:is_dlc_unlocked("rvd"),
+		tma1 = managers.dlc:is_dlc_unlocked("tma1"),
+		mad = managers.dlc:is_dlc_unlocked("mad")
 	}
 	self._lock_data.infamy = managers.experience:current_rank() > 0
 	self._lock_data.deathwish = managers.experience:current_rank() > 0 or tweak_data.difficulty_level_locks[tweak_data:difficulty_to_index("overkill_290")] <= managers.experience:current_level()
 
 	return self._lock_data
+end
+
+function MusicManager:get_tracks_locked()
+	local tracks_locked = {}
+
+	local function add_locked(track_list)
+		local _, locked = self:_jukebox_get_tracks(track_list)
+
+		table.map_append(tracks_locked, locked)
+	end
+
+	add_locked(tweak_data.music.track_list)
+	add_locked(tweak_data.music.track_menu_list)
+	add_locked(tweak_data.music.track_ghost_list)
+
+	return tracks_locked
 end
 
 function MusicManager:_jukebox_get_tracks(track_list)

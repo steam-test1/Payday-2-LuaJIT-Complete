@@ -2069,7 +2069,7 @@ function SkillTreeGui:update_spec_descriptions(item)
 	if dlc and not managers.dlc:is_dlc_unlocked(dlc) then
 		local unlock_id = tweak_data:get_raw_value("lootdrop", "global_values", dlc, "unlock_id") or "bm_menu_dlc_locked"
 
-		if tweak_data:get_raw_value("lootdrop", "global_values", dlc, "hide_unavailable") then
+		if managers.dlc:should_hide_unavailable(dlc) then
 			unlock_id = "bm_menu_dlc_locked"
 		end
 
@@ -3568,7 +3568,7 @@ function SkillTreeGui:refresh_btns()
 			table.insert(btns, "add_points")
 			table.insert(btns, "remove_points")
 		end
-	elseif not tweak_data:get_raw_value("lootdrop", "global_values", dlc, "hide_unavailable") then
+	elseif not managers.dlc:should_hide_unavailable(dlc) then
 		table.insert(btns, "buy_dlc")
 	end
 

@@ -1096,6 +1096,22 @@ function LootDropTweakData:init(tweak_data)
 		sort_number = 111,
 		category = "dlc"
 	}
+	self.global_values.coco = {
+		unlock_id = "bm_global_value_coco_unlock",
+		name_id = "bm_global_value_coco",
+		desc_id = "menu_l_global_value_coco",
+		color = dlc_color,
+		dlc = true,
+		category = "dlc",
+		chance = 1,
+		value_multiplier = tweak_data:get_value("money_manager", "global_value_multipliers", "coco"),
+		durability_multiplier = 1,
+		hide_unavailable = "coco",
+		unique_lock_color = Color(255, 255, 51, 51) / 255,
+		drops = true,
+		track = true,
+		sort_number = 113
+	}
 	self.global_values.mad = {
 		name_id = "bm_global_value_mad",
 		desc_id = "menu_l_global_value_mad",
@@ -1105,6 +1121,8 @@ function LootDropTweakData:init(tweak_data)
 		chance = 1,
 		value_multiplier = 1,
 		durability_multiplier = 1,
+		hide_unavailable = "mad",
+		unique_lock_color = Color(255, 255, 51, 51) / 255,
 		drops = true,
 		track = true,
 		sort_number = 114,
@@ -1294,7 +1312,7 @@ function LootDropTweakData:init(tweak_data)
 		chance = 1,
 		value_multiplier = 1,
 		durability_multiplier = 1,
-		hide_unavailable = true,
+		hide_unavailable = "friend",
 		drops = true,
 		track = true,
 		sort_number = 301,
@@ -1304,6 +1322,7 @@ function LootDropTweakData:init(tweak_data)
 		name_id = "bm_global_value_rvd",
 		desc_id = "menu_l_global_value_rvd",
 		color = dlc_color,
+		unique_lock_color = Color(255, 255, 51, 51) / 255,
 		chance = 1,
 		value_multiplier = 1,
 		durability_multiplier = 1,
@@ -1322,7 +1341,7 @@ function LootDropTweakData:init(tweak_data)
 		chance = 1,
 		value_multiplier = 1,
 		durability_multiplier = 1,
-		hide_unavailable = true,
+		hide_unavailable = "john_wick_character",
 		drops = true,
 		track = true,
 		sort_number = 301,
@@ -1354,6 +1373,7 @@ function LootDropTweakData:init(tweak_data)
 		drops = true,
 		track = true,
 		sort_number = 302,
+		hide_unavailable = true,
 		unlock_id = "bm_global_value_sha_unlock",
 		color = dlc_color,
 		category = "collaboration",
@@ -1741,6 +1761,7 @@ function LootDropTweakData:init(tweak_data)
 		name_id = "bm_global_value_pda8",
 		desc_id = "menu_l_global_value_pda8",
 		unlock_id = "bm_wpn_money_event_ended",
+		unavailable_id = "bm_wpn_money_event_ended",
 		color = tweak_data.screen_colors.event_color,
 		dlc = true,
 		free = false,
@@ -1757,6 +1778,7 @@ function LootDropTweakData:init(tweak_data)
 		name_id = "bm_global_value_pda10",
 		desc_id = "menu_l_global_value_pda10",
 		unlock_id = "bm_wpn_money_event_ended",
+		unavailable_id = "bm_wpn_money_event_ended",
 		color = tweak_data.screen_colors.event_color,
 		dlc = true,
 		free = false,
@@ -1773,6 +1795,7 @@ function LootDropTweakData:init(tweak_data)
 		name_id = "bm_global_value_pda10",
 		desc_id = "menu_l_global_value_pda10",
 		unlock_id = "bm_wpn_money_event_ended",
+		unavailable_id = "bm_wpn_money_event_ended",
 		color = tweak_data.screen_colors.event_color,
 		dlc = true,
 		free = false,
@@ -1789,6 +1812,7 @@ function LootDropTweakData:init(tweak_data)
 		name_id = "bm_global_value_xmas_snowball",
 		desc_id = "menu_l_global_value_xm21",
 		unlock_id = "bm_wpn_money_event_ended",
+		unavailable_id = "bm_wpn_money_event_ended",
 		color = tweak_data.screen_colors.event_color,
 		dlc = true,
 		free = false,
@@ -1888,6 +1912,8 @@ function LootDropTweakData:init(tweak_data)
 		"berry",
 		"peta",
 		"pal",
+		"coco",
+		"mad",
 		"dbd_clan",
 		"dbd_deluxe",
 		"pim",
@@ -1926,10 +1952,9 @@ function LootDropTweakData:init(tweak_data)
 
 	self:init_generated(tweak_data)
 
-	if self.global_values.srtr then
-		self.global_values.srtr.unique_lock_icon = "guis/textures/pd2/blackmarket/money_lock"
-	end
-
+	self.global_values.srtr.unique_lock_icon = "guis/textures/pd2/blackmarket/money_lock"
+	self.global_values.sbzac2.unique_lock_icon = "guis/textures/pd2/lock_community"
+	self.global_values.sbzac2.unique_lock_color = Color(255, 59, 174, 254) / 255
 	self.global_values.sbzac_elegantteeth = self.global_values.sbzac2
 	self.global_values.sbzac_wpn_fps_upg_charm_skullz = self.global_values.sbzac2
 	self.global_values.sbzac_elegantscarf = self.global_values.sbzac2
@@ -1937,9 +1962,12 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.rat_oilbaron = self.global_values.rat
 	self.global_values.rat_ranchdiesel = self.global_values.rat
 	self.global_values.rat_mocow = self.global_values.rat
+	self.global_values.prim.unique_lock_icon = "guis/textures/pd2/lock_community"
+	self.global_values.prim.unique_lock_color = Color(255, 59, 174, 254) / 255
 	self.global_values.prim_darkmat = self.global_values.prim
 	self.global_values.prim_primtime = self.global_values.prim
 	self.global_values.prim_newhorizon = self.global_values.prim
+	self.global_values.a11th.unique_lock_icon = "guis/textures/pd2/lock_community"
 	self.global_values.a11th_homburg = self.global_values.a11th
 	self.global_values.a11th_homburg_grey = self.global_values.a11th
 	self.global_values.a11th_corl = self.global_values.a11th
@@ -1964,6 +1992,9 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.dot_roclogrip_glv = self.global_values.dot
 	self.global_values.dot_roclown_msk = self.global_values.dot
 	self.global_values.chico_or_mrwi_deck = self.global_values.chico
+	self.global_values.chico_or_mrwi_deck.name_id = "bm_global_value_rvd"
+	self.global_values.chico_or_mrwi_deck.desc_id = "menu_l_global_value_rvd"
+	self.global_values.chico_or_mrwi_deck.unlock_id = "bm_global_value_rvd_unlock"
 	self.global_values.ecp_or_mrwi_deck = self.global_values.ecp
 
 	self:_create_global_value_list_map()

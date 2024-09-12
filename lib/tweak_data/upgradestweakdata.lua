@@ -12193,6 +12193,7 @@ function UpgradesTweakData:_melee_weapon_definitions()
 		category = "melee_weapon"
 	}
 	self.definitions.boxcutter = {
+		dlc = "rvd",
 		category = "melee_weapon"
 	}
 	self.definitions.selfie = {
@@ -12232,9 +12233,11 @@ function UpgradesTweakData:_melee_weapon_definitions()
 		category = "melee_weapon"
 	}
 	self.definitions.ballistic = {
+		dlc = "coco",
 		category = "melee_weapon"
 	}
 	self.definitions.zeus = {
+		dlc = "mad",
 		category = "melee_weapon"
 	}
 	self.definitions.wing = {
@@ -12286,6 +12289,7 @@ function UpgradesTweakData:_melee_weapon_definitions()
 		category = "melee_weapon"
 	}
 	self.definitions.clean = {
+		dlc = "rvd",
 		category = "melee_weapon"
 	}
 	self.definitions.meter = {
@@ -15534,7 +15538,7 @@ end
 
 function UpgradesTweakData:_kabartanto_definitions()
 	self.definitions.kabartanto = {
-		dlc = "pd2_clan",
+		dlc = "john_wick_character",
 		category = "melee_weapon"
 	}
 end
@@ -15763,6 +15767,7 @@ end
 
 function UpgradesTweakData:_model70_weapon_definitions()
 	self.definitions.model70 = {
+		dlc = "rvd",
 		factory_id = "wpn_fps_snp_model70",
 		weapon_id = "model70",
 		category = "weapon"
@@ -15798,6 +15803,7 @@ end
 
 function UpgradesTweakData:_sr2_weapon_definitions()
 	self.definitions.sr2 = {
+		dlc = "coco",
 		factory_id = "wpn_fps_smg_sr2",
 		weapon_id = "sr2",
 		category = "weapon"
@@ -15806,6 +15812,7 @@ end
 
 function UpgradesTweakData:_x_sr2_weapon_definitions()
 	self.definitions.x_sr2 = {
+		dlc = "coco",
 		factory_id = "wpn_fps_smg_x_sr2",
 		weapon_id = "x_sr2",
 		category = "weapon"
@@ -15814,6 +15821,7 @@ end
 
 function UpgradesTweakData:_pl14_weapon_definitions()
 	self.definitions.pl14 = {
+		dlc = "mad",
 		factory_id = "wpn_fps_pis_pl14",
 		weapon_id = "pl14",
 		category = "weapon"
@@ -16348,6 +16356,7 @@ end
 
 function UpgradesTweakData:_corgi_weapon_definitions()
 	self.definitions.corgi = {
+		dlc = "rvd",
 		factory_id = "wpn_fps_ass_corgi",
 		weapon_id = "corgi",
 		category = "weapon"

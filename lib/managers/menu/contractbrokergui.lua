@@ -185,8 +185,13 @@ function ContractBrokerGui:_create_job_data()
 			include_job = include_job and contact_tweak and not contact_tweak.hidden
 		end
 
+		dlc = not job_tweak.dlc or managers.dlc:is_dlc_unlocked(job_tweak.dlc)
+
+		if not dlc then
+			include_job = not managers.dlc:should_hide_unavailable(job_tweak.dlc)
+		end
+
 		if include_job then
-			dlc = not job_tweak.dlc or managers.dlc:is_dlc_unlocked(job_tweak.dlc)
 			dlc = dlc and not tweak_data.narrative:is_job_locked(job_id)
 			date_value = job_tweak.date_added and job_tweak.date_added[1] * 30 * 12 + job_tweak.date_added[2] * 30 + job_tweak.date_added[3] - current_date_value or false
 

@@ -101,6 +101,7 @@ function BlackMarketTweakData:_init_weapon_mods(tweak_data)
 			pcs = data.pcs,
 			dlc = data.dlc,
 			dlcs = data.dlcs,
+			unlock_dlc = data.unlock_dlc,
 			name_id = data.name_id,
 			desc_id = data.desc_id,
 			infamous = data.infamous,
@@ -194,6 +195,7 @@ function BlackMarketTweakData:_init_characters(tweak_data)
 	}
 	self.characters.locked.jowi = {
 		sequence = "var_mtr_john_wick",
+		global_value = "pd2_clan",
 		dlc = "john_wick_character",
 		material_config = {
 			fps = "units/payday2/characters/fps_criminals_suit_1/mtr_john_wick",
@@ -261,6 +263,7 @@ function BlackMarketTweakData:_init_characters(tweak_data)
 	}
 	self.characters.locked.jimmy = {
 		texture_bundle_folder = "coco",
+		dlc = "coco",
 		mask_on_sequence = "mask_on_jimmy",
 		mask_off_sequence = "mask_off_jimmy",
 		sequence = "var_mtr_jimmy",

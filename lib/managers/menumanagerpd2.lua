@@ -3446,9 +3446,8 @@ function MenuCallbackHandler:is_weapon_color_option_visible(item_option)
 	local id = item_option:value()
 	local color_tweak = tweak_data.blackmarket.weapon_skins[id]
 	local global_value = color_tweak.global_value or managers.dlc:dlc_to_global_value(color_tweak.dlc)
-	local gvalue_tweak = tweak_data.lootdrop.global_values[global_value]
 
-	if gvalue_tweak and gvalue_tweak.hide_unavailable and not self:is_weapon_color_option_unlocked(item_option) then
+	if managers.dlc:should_hide_unavailable(global_value, true) and not self:is_weapon_color_option_unlocked(item_option) then
 		return false
 	end
 
@@ -3471,6 +3470,7 @@ function MenuCallbackHandler:get_weapon_color_disabled_icon(item_option)
 	local id = item_option:value()
 	local color_tweak = tweak_data.blackmarket.weapon_skins[id]
 	local dlc = color_tweak.dlc or managers.dlc:global_value_to_dlc(color_tweak.global_value)
+	local global_value = managers.dlc:dlc_to_global_value(dlc)
 	local unlocked = item_option:get_parameter("unlocked")
 	local have_color = item_option:get_parameter("have_color")
 
@@ -3480,6 +3480,12 @@ function MenuCallbackHandler:get_weapon_color_disabled_icon(item_option)
 		if dlc_data then
 			if dlc_data.source_id then
 				return "guis/textures/pd2/lock_community"
+			end
+
+			local gvalue_tweak = tweak_data.lootdrop.global_values[global_value]
+
+			if gvalue_tweak and gvalue_tweak.unique_lock_icon then
+				return gvalue_tweak.unique_lock_icon
 			end
 
 			return "guis/textures/pd2/lock_dlc"

@@ -29757,11 +29757,12 @@ end
 
 function WeaponFactoryTweakData:_init_g26()
 	self.parts.wpn_fps_pis_g26_b_custom = {
-		unit = "units/pd2_crimefest_2014/oct22/weapons/wpn_fps_pis_g26_pts/wpn_fps_pis_g26_b_custom",
-		dlc = "pd2_clan",
+		dlc = "john_wick_character",
 		type = "slide",
-		name_id = "bm_wp_g26_b_custom",
 		a_obj = "a_b",
+		unlock_dlc = "pd2_clan",
+		name_id = "bm_wp_g26_b_custom",
+		unit = "units/pd2_crimefest_2014/oct22/weapons/wpn_fps_pis_g26_pts/wpn_fps_pis_g26_b_custom",
 		pcs = {
 			10,
 			20,
@@ -29796,10 +29797,11 @@ function WeaponFactoryTweakData:_init_g26()
 	}
 	self.parts.wpn_fps_pis_g26_body_custom = {
 		unit = "units/pd2_crimefest_2014/oct22/weapons/wpn_fps_pis_g26_pts/wpn_fps_pis_g26_body_custom",
-		dlc = "pd2_clan",
+		dlc = "john_wick_character",
 		type = "lower_reciever",
 		name_id = "bm_wp_g26_body_salient",
 		a_obj = "a_body",
+		unlock_dlc = "pd2_clan",
 		pcs = {
 			10,
 			20,
@@ -29832,10 +29834,11 @@ function WeaponFactoryTweakData:_init_g26()
 	}
 	self.parts.wpn_fps_pis_g26_g_gripforce = {
 		unit = "units/pd2_crimefest_2014/oct22/weapons/wpn_fps_pis_g26_pts/wpn_fps_pis_g26_g_gripforce",
-		dlc = "pd2_clan",
+		dlc = "john_wick_character",
 		type = "grip",
 		name_id = "bm_wp_pis_g_beavertail",
 		a_obj = "a_g",
+		unlock_dlc = "pd2_clan",
 		pcs = {
 			10,
 			20,
@@ -29851,9 +29854,10 @@ function WeaponFactoryTweakData:_init_g26()
 	}
 	self.parts.wpn_fps_pis_g26_g_laser = {
 		type = "grip",
+		unlock_dlc = "pd2_clan",
 		a_obj = "a_g",
 		sub_type = "laser",
-		dlc = "pd2_clan",
+		dlc = "john_wick_character",
 		name_id = "bm_wp_pis_g_laser",
 		unit = "units/pd2_crimefest_2014/oct22/weapons/wpn_fps_pis_g26_pts/wpn_fps_pis_g26_g_laser",
 		pcs = {
@@ -29873,9 +29877,10 @@ function WeaponFactoryTweakData:_init_g26()
 		}
 	}
 	self.parts.wpn_fps_pis_g26_m_contour = {
-		type = "magazine",
+		unlock_dlc = "pd2_clan",
 		a_obj = "a_m",
-		dlc = "pd2_clan",
+		type = "magazine",
+		dlc = "john_wick_character",
 		name_id = "bm_wp_g26_m_custom",
 		unit = "units/pd2_crimefest_2014/oct22/weapons/wpn_fps_pis_g26_pts/wpn_fps_pis_g26_m_contour",
 		pcs = {
@@ -29918,11 +29923,12 @@ function WeaponFactoryTweakData:_init_g26()
 		}
 	}
 	self.parts.wpn_fps_upg_fl_pis_crimson = {
-		sub_type = "laser",
-		dlc = "pd2_clan",
 		type = "gadget",
-		name_id = "bm_wp_upg_fl_crimson",
+		unlock_dlc = "pd2_clan",
 		a_obj = "a_fl",
+		sub_type = "laser",
+		dlc = "john_wick_character",
+		name_id = "bm_wp_upg_fl_crimson",
 		unit = "units/pd2_crimefest_2014/oct22/weapons/wpn_fps_upg_fl_pis_crimson/wpn_fps_upg_fl_pis_crimson",
 		pcs = {
 			10,
@@ -29939,7 +29945,8 @@ function WeaponFactoryTweakData:_init_g26()
 	}
 	self.parts.wpn_fps_upg_fl_pis_x400v = {
 		type = "gadget",
-		dlc = "pd2_clan",
+		dlc = "john_wick_character",
+		unlock_dlc = "pd2_clan",
 		a_obj = "a_fl",
 		sub_type = "laser",
 		name_id = "bm_wp_upg_fl_x400v",
@@ -29966,8 +29973,9 @@ function WeaponFactoryTweakData:_init_g26()
 	self.parts.wpn_fps_upg_ns_pis_large_kac = {
 		type = "barrel_ext",
 		sub_type = "silencer",
-		dlc = "pd2_clan",
+		dlc = "john_wick_character",
 		a_obj = "a_ns",
+		unlock_dlc = "pd2_clan",
 		parent = "slide",
 		name_id = "bm_wp_upg_ns_large_kac",
 		unit = "units/pd2_crimefest_2014/oct22/weapons/wpn_fps_upg_ns_pis_large_kac/wpn_fps_upg_ns_pis_large_kac",
@@ -29996,8 +30004,9 @@ function WeaponFactoryTweakData:_init_g26()
 	self.parts.wpn_fps_upg_ns_pis_medium_gem = {
 		type = "barrel_ext",
 		sub_type = "silencer",
-		dlc = "pd2_clan",
+		dlc = "john_wick_character",
 		a_obj = "a_ns",
+		unlock_dlc = "pd2_clan",
 		parent = "slide",
 		name_id = "bm_wp_upg_ns_medium_gem",
 		unit = "units/pd2_crimefest_2014/oct22/weapons/wpn_fps_upg_ns_pis_medium_gem/wpn_fps_upg_ns_pis_medium_gem",
@@ -30024,11 +30033,12 @@ function WeaponFactoryTweakData:_init_g26()
 		}
 	}
 	self.parts.wpn_fps_upg_ns_pis_meatgrinder = {
-		parent = "slide",
-		dlc = "pd2_clan",
 		type = "barrel_ext",
-		name_id = "bm_wp_upg_ns_meatgrinder",
+		unlock_dlc = "pd2_clan",
 		a_obj = "a_co",
+		parent = "slide",
+		dlc = "john_wick_character",
+		name_id = "bm_wp_upg_ns_meatgrinder",
 		unit = "units/pd2_crimefest_2014/oct22/weapons/wpn_fps_upg_ns_pis_meatgrinder/wpn_fps_upg_ns_pis_meatgrinder",
 		pcs = {
 			10,
@@ -30045,11 +30055,12 @@ function WeaponFactoryTweakData:_init_g26()
 		}
 	}
 	self.parts.wpn_fps_upg_ns_pis_ipsccomp = {
-		parent = "slide",
-		dlc = "pd2_clan",
 		type = "barrel_ext",
-		name_id = "bm_wp_upg_ns_ipsccomp",
+		unlock_dlc = "pd2_clan",
 		a_obj = "a_co",
+		parent = "slide",
+		dlc = "john_wick_character",
+		name_id = "bm_wp_upg_ns_ipsccomp",
 		unit = "units/pd2_crimefest_2014/oct22/weapons/wpn_fps_upg_ns_pis_ipsccomp/wpn_fps_upg_ns_pis_ipsccomp",
 		pcs = {
 			10,
@@ -42073,11 +42084,12 @@ function WeaponFactoryTweakData:_init_model70()
 		}
 	}
 	self.parts.wpn_fps_snp_model70_ns_suppressor = {
-		a_obj = "a_ns",
+		type = "barrel_ext",
 		texture_bundle_folder = "berry",
 		sub_type = "silencer",
-		type = "barrel_ext",
+		a_obj = "a_ns",
 		parent = "barrel",
+		dlc = "rvd",
 		name_id = "bm_wp_model70_ns_suppressor",
 		unit = "units/pd2_dlc_berry/weapons/wpn_fps_snp_model70_pts/wpn_fps_snp_model70_ns_suppressor",
 		pcs = {
@@ -42166,8 +42178,9 @@ function WeaponFactoryTweakData:_init_model70()
 	self.parts.wpn_fps_snp_model70_iron_sight = {
 		is_a_unlockable = true,
 		texture_bundle_folder = "berry",
-		a_obj = "a_o",
 		type = "sight",
+		a_obj = "a_o",
+		dlc = "rvd",
 		name_id = "bm_wp_model70_iron_sight",
 		unit = "units/pd2_dlc_berry/weapons/wpn_fps_snp_model70_pts/wpn_fps_snp_model70_iron_sight",
 		pcs = {
@@ -44250,10 +44263,11 @@ function WeaponFactoryTweakData:_init_sr2()
 	}
 	self.parts.wpn_fps_smg_sr2_s_unfolded = {
 		texture_bundle_folder = "coco",
-		a_obj = "a_s",
+		dlc = "coco",
 		type = "stock",
 		name_id = "bm_wp_sr2_s_unfolded",
 		unit = "units/pd2_dlc_coco/weapons/wpn_fps_smg_sr2_parts/wpn_fps_smg_sr2_s_unfolded",
+		a_obj = "a_s",
 		pcs = {
 			10,
 			20,
@@ -44277,8 +44291,9 @@ function WeaponFactoryTweakData:_init_sr2()
 	self.parts.wpn_fps_smg_sr2_ns_silencer = {
 		type = "barrel_ext",
 		texture_bundle_folder = "coco",
-		sub_type = "silencer",
+		dlc = "coco",
 		a_obj = "a_ns",
+		sub_type = "silencer",
 		parent = "barrel",
 		name_id = "bm_wp_sr2_ns_silencer",
 		unit = "units/pd2_dlc_coco/weapons/wpn_fps_smg_sr2_parts/wpn_fps_smg_sr2_ns_silencer",
@@ -44538,11 +44553,12 @@ end
 
 function WeaponFactoryTweakData:_init_pl14()
 	self.parts.wpn_fps_pis_pl14_b_comp = {
-		texture_bundle_folder = "mad",
-		unit = "units/pd2_dlc_mad/weapons/wpn_fps_pis_pl14_pts/wpn_fps_pis_pl14_b_comp",
 		type = "barrel",
-		name_id = "bm_wp_pl14_b_comp",
+		texture_bundle_folder = "mad",
 		a_obj = "a_b",
+		dlc = "mad",
+		name_id = "bm_wp_pl14_b_comp",
+		unit = "units/pd2_dlc_mad/weapons/wpn_fps_pis_pl14_pts/wpn_fps_pis_pl14_b_comp",
 		pcs = {
 			10,
 			20,
@@ -44586,11 +44602,12 @@ function WeaponFactoryTweakData:_init_pl14()
 		}
 	}
 	self.parts.wpn_fps_pis_pl14_m_extended = {
-		texture_bundle_folder = "mad",
 		type = "magazine",
+		texture_bundle_folder = "mad",
+		a_obj = "a_m",
+		dlc = "mad",
 		name_id = "bm_wp_pl14_m_extended",
 		unit = "units/pd2_dlc_mad/weapons/wpn_fps_pis_pl14_pts/wpn_fps_pis_pl14_m_extended",
-		a_obj = "a_m",
 		pcs = {
 			10,
 			20,
@@ -57413,10 +57430,11 @@ function WeaponFactoryTweakData:_init_corgi()
 	}
 	self.parts.wpn_fps_ass_corgi_body_lower_strap = {
 		texture_bundle_folder = "rvd",
-		a_obj = "a_body",
+		dlc = "rvd",
 		type = "lower_reciever",
 		name_id = "bm_wp_corgi_body_strap",
 		unit = "units/pd2_dlc_rvd/weapons/wpn_fps_ass_corgi_pts/wpn_fps_ass_corgi_body_lower_strap",
+		a_obj = "a_body",
 		pcs = {
 			10,
 			20,
@@ -57449,10 +57467,11 @@ function WeaponFactoryTweakData:_init_corgi()
 	}
 	self.parts.wpn_fps_ass_corgi_b_short = {
 		texture_bundle_folder = "rvd",
-		a_obj = "a_b",
+		dlc = "rvd",
 		type = "barrel",
 		name_id = "bm_wp_corgi_b_short",
 		unit = "units/pd2_dlc_rvd/weapons/wpn_fps_ass_corgi_pts/wpn_fps_ass_corgi_b_short",
+		a_obj = "a_b",
 		pcs = {
 			10,
 			20,

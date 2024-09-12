@@ -3,6 +3,7 @@ MolotovGrenade = MolotovGrenade or class(FragGrenade)
 function MolotovGrenade:_setup_from_tweak_data()
 	local tweak_entry = MolotovGrenade.super._setup_from_tweak_data(self)
 	self._dot_data = tweak_entry.dot_data_name and tweak_data.dot:get_dot_data(tweak_entry.dot_data_name)
+	self._init_timer = tweak_entry.init_timer or nil
 end
 
 function MolotovGrenade:_detonate(tag, unit, body, other_unit, other_body, position, normal, collision_velocity, velocity, other_velocity, new_velocity, direction, damage, ...)

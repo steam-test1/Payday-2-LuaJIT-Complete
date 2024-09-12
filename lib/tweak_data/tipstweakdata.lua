@@ -1169,32 +1169,37 @@ function TipsTweakData:init()
 		{
 			cat_index = 2,
 			image = "heister_jimmy",
-			consoles = true,
-			category = "trivia"
+			dlc = "coco",
+			category = "trivia",
+			consoles = true
 		},
 		{
 			cat_index = 3,
 			image = "heister_jimmy",
-			consoles = true,
-			category = "trivia"
+			dlc = "coco",
+			category = "trivia",
+			consoles = true
 		},
 		{
 			cat_index = 4,
 			image = "heister_jimmy",
-			consoles = true,
-			category = "trivia"
+			dlc = "coco",
+			category = "trivia",
+			consoles = true
 		},
 		{
 			cat_index = 5,
 			image = "heister_jimmy",
-			consoles = true,
-			category = "trivia"
+			dlc = "coco",
+			category = "trivia",
+			consoles = true
 		},
 		{
 			cat_index = 6,
 			image = "heister_jimmy",
-			consoles = false,
-			category = "trivia"
+			dlc = "coco",
+			category = "trivia",
+			consoles = false
 		},
 		{
 			cat_index = 7,
@@ -1223,26 +1228,30 @@ function TipsTweakData:init()
 		{
 			cat_index = 11,
 			image = "heister_scarface",
-			consoles = true,
-			category = "trivia"
+			dlc = "chico",
+			category = "trivia",
+			consoles = true
 		},
 		{
 			cat_index = 12,
 			image = "heister_scarface",
-			consoles = true,
-			category = "trivia"
+			dlc = "chico",
+			category = "trivia",
+			consoles = true
 		},
 		{
 			cat_index = 13,
 			image = "heister_scarface",
-			consoles = true,
-			category = "trivia"
+			dlc = "chico",
+			category = "trivia",
+			consoles = true
 		},
 		{
 			cat_index = 14,
 			image = "heister_scarface",
-			consoles = true,
-			category = "trivia"
+			dlc = "chico",
+			category = "trivia",
+			consoles = true
 		},
 		{
 			cat_index = 15,
@@ -1295,26 +1304,30 @@ function TipsTweakData:init()
 		{
 			cat_index = 23,
 			image = "heister_wick",
-			consoles = true,
-			category = "trivia"
+			dlc = "john_wick_character",
+			category = "trivia",
+			consoles = true
 		},
 		{
 			cat_index = 24,
 			image = "heister_wick",
-			consoles = true,
-			category = "trivia"
+			dlc = "john_wick_character",
+			category = "trivia",
+			consoles = true
 		},
 		{
 			cat_index = 25,
 			image = "heister_wick",
-			consoles = true,
-			category = "trivia"
+			dlc = "john_wick_character",
+			category = "trivia",
+			consoles = true
 		},
 		{
 			cat_index = 26,
 			image = "heister_wick",
-			consoles = true,
-			category = "trivia"
+			dlc = "john_wick_character",
+			category = "trivia",
+			consoles = true
 		},
 		{
 			cat_index = 27,
@@ -1391,26 +1404,30 @@ function TipsTweakData:init()
 		{
 			cat_index = 39,
 			image = "heister_bodhi",
-			consoles = true,
-			category = "trivia"
+			dlc = "rvd",
+			category = "trivia",
+			consoles = true
 		},
 		{
 			cat_index = 40,
 			image = "heister_bodhi",
-			consoles = true,
-			category = "trivia"
+			dlc = "rvd",
+			category = "trivia",
+			consoles = true
 		},
 		{
 			cat_index = 41,
 			image = "heister_bodhi",
-			consoles = true,
-			category = "trivia"
+			dlc = "rvd",
+			category = "trivia",
+			consoles = true
 		},
 		{
 			cat_index = 42,
 			image = "heister_bodhi",
-			consoles = true,
-			category = "trivia"
+			dlc = "rvd",
+			category = "trivia",
+			consoles = true
 		},
 		{
 			cat_index = 43,
@@ -1715,8 +1732,9 @@ function TipsTweakData:init()
 		{
 			cat_index = 93,
 			image = "heister_bodhi",
-			consoles = true,
-			category = "trivia"
+			dlc = "rvd",
+			category = "trivia",
+			consoles = true
 		},
 		{
 			cat_index = 94,
@@ -1765,7 +1783,20 @@ function TipsTweakData:init()
 end
 
 function TipsTweakData:get_a_tip()
-	local tip = self.tips[math.random(#self.tips)]
+	local tip_index = math.random(#self.tips)
+	local tip = nil
+
+	while not tip do
+		tip = self.tips[tip_index]
+
+		if tip.dlc and managers.dlc and not managers.dlc:is_dlc_unlocked(tip.dlc) and managers.dlc:should_hide_unavailable(tip.dlc) then
+			print(tip_index, tip.dlc, tip_index % #self.tips + 1)
+
+			tip = nil
+			tip_index = tip_index % #self.tips + 1
+		end
+	end
+
 	local image_exists = DB:has(Idstring("texture"), "guis/textures/loading/hints/" .. tip.image)
 
 	if not image_exists then
@@ -1790,23 +1821,27 @@ function TipsTweakData:get_all_tips()
 	local all_tips = {}
 
 	for _, tip in ipairs(self.tips) do
-		local image_exists = DB:has(Idstring("texture"), "guis/textures/loading/hints/" .. tip.image)
+		local should_hide_unavailable = tip.dlc and managers.dlc and not managers.dlc:is_dlc_unlocked(tip.dlc) and managers.dlc:should_hide_unavailable(tip.dlc)
 
-		if not image_exists then
-			Application:error("Warning: missing loading hint image: " .. tip.image)
+		if not should_hide_unavailable then
+			local image_exists = DB:has(Idstring("texture"), "guis/textures/loading/hints/" .. tip.image)
 
-			return nil
+			if not image_exists then
+				Application:error("Warning: missing loading hint image: " .. tip.image)
+
+				return nil
+			end
+
+			local title_id = "loading_" .. tip.category .. "_title"
+			local text_id = "loading_" .. tip.category .. "_" .. tip.cat_index
+
+			table.insert(all_tips, {
+				image = tip.image,
+				index = tip.cat_index,
+				title_id = title_id,
+				text_id = text_id
+			})
 		end
-
-		local title_id = "loading_" .. tip.category .. "_title"
-		local text_id = "loading_" .. tip.category .. "_" .. tip.cat_index
-
-		table.insert(all_tips, {
-			image = tip.image,
-			index = tip.cat_index,
-			title_id = title_id,
-			text_id = text_id
-		})
 	end
 
 	return all_tips

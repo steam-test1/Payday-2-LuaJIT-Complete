@@ -1615,6 +1615,8 @@ function CrewManagementGui:populate_primaries(henchman_index, data, gui)
 			v.unlocked = false
 			v.lock_texture = "guis/textures/pd2/lock_incompatible"
 			v.lock_text = managers.localization:text("menu_data_crew_not_allowed")
+		elseif not v.unlocked then
+			v.buttons = {}
 		elseif v.equipped then
 			v.buttons = {
 				"w_unequip"
@@ -1652,11 +1654,14 @@ function CrewManagementGui:populate_masks(henchman_index, data, gui)
 
 	for k, v in ipairs(data) do
 		v.equipped = loadout.mask_slot == v.slot
+		local unlocked = nil
 
 		if not v.empty_slot then
-			v.buttons = {
-				"m_equip"
-			}
+			v.buttons = {}
+
+			if not v.equipped and v.unlocked then
+				table.insert(v.buttons, "m_equip")
+			end
 		end
 	end
 end

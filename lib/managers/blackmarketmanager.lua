@@ -1718,13 +1718,13 @@ function BlackMarketManager:preferred_henchmen(index)
 	return not index and self._global._preferred_henchmen or self._global._preferred_henchmen[index]
 end
 
-function BlackMarketManager:set_preferred_henchmen(index, character_name)
+function BlackMarketManager:set_preferred_henchmen(index, character)
 	self._global._preferred_henchmen = self._global._preferred_henchmen or {}
 	local current_num = #self._global._preferred_henchmen
 	index = math.clamp(index, 1, current_num + 1)
 
 	for i, name in pairs(self._global._preferred_henchmen) do
-		if name == character_name and i ~= index then
+		if name == character and i ~= index then
 			self:set_preferred_henchmen(i, nil)
 
 			if i < index then
@@ -1733,8 +1733,16 @@ function BlackMarketManager:set_preferred_henchmen(index, character_name)
 		end
 	end
 
-	if character_name then
-		self._global._preferred_henchmen[index] = character_name
+	local character_name = CriminalsManager.convert_old_to_new_character_workname(character)
+	local character_table = tweak_data.blackmarket.characters[character] or tweak_data.blackmarket.characters.locked[character_name]
+	local unlocked = not character_table or not character_table.dlc or managers.dlc:is_dlc_unlocked(character_table.dlc)
+
+	if not unlocked then
+		character = nil
+	end
+
+	if character then
+		self._global._preferred_henchmen[index] = character
 	elseif index <= current_num then
 		table.remove(self._global._preferred_henchmen, index)
 	end
@@ -3275,7 +3283,7 @@ function BlackMarketManager:get_dropable_mods_by_weapon_id(weapon_id, weapon_dat
 								part_dropable = true
 
 								break
-							elseif tweak_data.lootdrop.global_values[dlc].hide_unavailable then
+							elseif managers.dlc:should_hide_unavailable(dlc) then
 								part_dropable = false
 								global_value = dlc
 							else
@@ -4036,7 +4044,7 @@ function BlackMarketManager:get_sorted_melee_weapons(hide_locked, id_list_only)
 		td = tweak_data.blackmarket.melee_weapons[id]
 		global_value = td.dlc or td.global_value or "normal"
 		category = td.type or "unknown"
-		local add_item = item.unlocked or item.equipped or not hide_locked and not tweak_data:get_raw_value("lootdrop", "global_values", global_value, "hide_unavailable")
+		local add_item = item.unlocked or item.equipped or not hide_locked and not managers.dlc:should_hide_unavailable(global_value, true)
 
 		if add_item then
 			table.insert(items, {
@@ -4372,7 +4380,11 @@ function BlackMarketManager:crafted_mask_unlocked(slot)
 		return nil
 	end
 
-	local is_locked = tweak_data.lootdrop.global_values[crafted.global_value] and tweak_data.lootdrop.global_values[crafted.global_value].dlc and not managers.dlc:is_dlc_unlocked(crafted.global_value)
+	local mask_tweak_data = tweak_data.blackmarket.masks[crafted.mask_id]
+	local crafted_dlc = managers.dlc:global_value_to_dlc(crafted.global_value)
+	local mask_dlc = mask_tweak_data and mask_tweak_data.dlc
+	local is_locked = crafted_dlc and not managers.dlc:is_dlc_unlocked(crafted_dlc)
+	is_locked = is_locked or mask_dlc and not managers.dlc:is_dlc_unlocked(mask_dlc)
 	local locked_parts = {}
 	local mask_is_locked = is_locked
 	local locked_global_value = nil
@@ -4383,7 +4395,7 @@ function BlackMarketManager:crafted_mask_unlocked(slot)
 			color = "colors",
 			material = "materials"
 		}
-		local default_blueprint = tweak_data.blackmarket.masks[crafted.mask_id] and tweak_data.blackmarket.masks[crafted.mask_id].default_blueprint or {}
+		local default_blueprint = mask_tweak_data and mask_tweak_data.default_blueprint or {}
 
 		for type, part in pairs(crafted.blueprint) do
 			if default_blueprint[type] ~= part.id and default_blueprint[name_converter[type]] ~= part.id and tweak_data.lootdrop.global_values[part.global_value] and tweak_data.lootdrop.global_values[part.global_value].dlc and not managers.dlc:is_dlc_unlocked(part.global_value) then
@@ -5488,7 +5500,7 @@ function BlackMarketManager:get_sorted_grenades(hide_locked)
 	for id, grenade_data in pairs(Global.blackmarket_manager.grenades) do
 		local gv = m_tweak_data[id].global_value or m_tweak_data[id].dlc or "normal"
 
-		if grenade_data.unlocked or not hide_locked and (not l_tweak_data[gv] or not l_tweak_data[gv].hide_unavailable) then
+		if grenade_data.unlocked or not hide_locked and not managers.dlc:should_hide_unavailable(gv, true) then
 			table.insert(sort_data, {
 				id,
 				grenade_data
@@ -9304,6 +9316,7 @@ function BlackMarketManager:_verfify_equipped()
 	self:_verfify_equipped_category("armors")
 	self:_verfify_equipped_category("grenades")
 	self:_verfify_equipped_category("melee_weapons")
+	self:verify_preferred_henchmen()
 	self:verfify_crew_loadout()
 	self:_verfify_equipped_player_style()
 	self:_verify_equipped_gloves()
@@ -9329,6 +9342,18 @@ function BlackMarketManager:_verify_equipped_gloves()
 
 	if not self:glove_id_unlocked(equipped_glove_id) then
 		self:set_equipped_glove_id(self:get_default_glove_id(), true)
+	end
+end
+
+function BlackMarketManager:verify_preferred_henchmen()
+	if not self._global._preferred_henchmen then
+		return
+	end
+
+	local preferred_henchmen = clone(self._global._preferred_henchmen)
+
+	for i = 1, #preferred_henchmen do
+		self:set_preferred_henchmen(i, preferred_henchmen[i])
 	end
 end
 
@@ -9418,9 +9443,10 @@ function BlackMarketManager:_verify_crew_mask(npc_mask_id, slot)
 	end
 
 	local found = managers.blackmarket:get_crafted_category_slot("masks", slot)
+	local unlocked = managers.blackmarket:crafted_mask_unlocked(slot)
 	local mask_id = found and found.mask_id
 
-	return mask_id == npc_mask_id
+	return mask_id == npc_mask_id and unlocked
 end
 
 function BlackMarketManager:_verify_crew_weapon(category, npc_factory_id, slot)
@@ -9429,9 +9455,10 @@ function BlackMarketManager:_verify_crew_weapon(category, npc_factory_id, slot)
 	end
 
 	local found = managers.blackmarket:get_crafted_category_slot(category, slot)
+	local unlocked, part_dlc_lock = managers.blackmarket:weapon_unlocked_by_crafted(category, slot)
 	local npc_name = found and found.factory_id .. "_npc"
 
-	return npc_name == npc_factory_id and self:is_weapon_allowed_for_crew(found.weapon_id)
+	return npc_name == npc_factory_id and managers.blackmarket:is_weapon_allowed_for_crew(found.weapon_id) and unlocked
 end
 
 function BlackMarketManager:verify_is_crew_suit(player_style, material_variation)

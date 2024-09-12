@@ -200,4 +200,5 @@ end
 
 function CopInventory:destroy_all_items()
 	CopInventory.super.destroy_all_items(self)
+	self:_call_listeners("unequip")
 end

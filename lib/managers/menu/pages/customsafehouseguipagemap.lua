@@ -149,11 +149,18 @@ function CustomSafehouseGuiPageMap:_setup_map()
 		floor_map:hide()
 
 		for _, id in pairs(floor.rooms) do
-			local point = CustomSafehouseMapPoint:new(self, self._map_panel, id)
+			local data = table.find_value(tweak_data.safehouse.rooms, function (v)
+				return v.room_id == id
+			end)
+			local should_hide_unavailable = data.dlc and not managers.dlc:is_dlc_unlocked(data.dlc) and managers.dlc:should_hide_unavailable(data.dlc)
 
-			floor_map:add_point(point)
-			table.insert(self._all_points, point)
-			point:hide()
+			if not should_hide_unavailable then
+				local point = CustomSafehouseMapPoint:new(self, self._map_panel, id)
+
+				floor_map:add_point(point)
+				table.insert(self._all_points, point)
+				point:hide()
+			end
 		end
 
 		self._floors[i] = floor_map

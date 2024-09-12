@@ -311,9 +311,9 @@ function DLCTweakData:init(tweak_data)
 	}
 	self.pd2_clan_johnwick = {
 		content = {},
-		dlc = "has_pd2_clan"
+		dlc = "has_john_wick_character"
 	}
-	self.pd2_clan_johnwick.content.loot_global_value = "pd2_clan"
+	self.pd2_clan_johnwick.content.loot_global_value = "john_wick_character"
 	self.pd2_clan_johnwick.content.loot_drops = {
 		{
 			type_items = "weapon_mods",
@@ -349,20 +349,7 @@ function DLCTweakData:init(tweak_data)
 			type_items = "weapon_mods",
 			item_entry = "wpn_fps_upg_ns_pis_medium_gem",
 			amount = 1
-		},
-		{
-			type_items = "masks",
-			item_entry = "stoneface",
-			amount = 1
-		},
-		{
-			type_items = "masks",
-			item_entry = "wayfarer",
-			amount = 1
 		}
-	}
-	self.pd2_clan_johnwick.content.upgrades = {
-		"kabartanto"
 	}
 	self.pd2_clan_crimefest_oct23 = {
 		content = {},
@@ -2278,6 +2265,7 @@ function DLCTweakData:init(tweak_data)
 	}
 	self.hl_miami.content.loot_drops = {}
 	self.hlm_game = {
+		dlc = "has_hlm_game",
 		content = {}
 	}
 	self.hlm_game.content.loot_drops = {
@@ -4602,13 +4590,12 @@ function DLCTweakData:init(tweak_data)
 	}
 	self.rip_free = {
 		content = {},
-		free = true
+		dlc = "has_rvd"
 	}
-	self.rip_free.content.loot_global_value = "infamous"
+	self.rip_free.content.loot_global_value = "rvd"
 	self.rip_free.content.loot_drops = {
 		{
 			type_items = "weapon_mods",
-			global_value = "normal",
 			item_entry = "wpn_fps_snp_model70_iron_sight",
 			amount = 1
 		}
@@ -4928,20 +4915,20 @@ function DLCTweakData:init(tweak_data)
 		}
 	}
 	self.coco = {
+		dlc = "has_coco",
 		content = {}
 	}
 	self.coco.content.loot_drops = {
 		{
 			type_items = "masks",
+			global_value = "infamous",
 			item_entry = "jimmy_duct",
 			amount = 1
 		}
 	}
-	self.coco.free = true
-	self.coco.content.loot_global_value = "infamous"
 	self.mad = {
-		content = {},
-		free = true
+		dlc = "has_mad",
+		content = {}
 	}
 	self.mad.content.loot_drops = {
 		{
@@ -5338,7 +5325,21 @@ function DLCTweakData:init(tweak_data)
 		content = {}
 	}
 	self.john_wick_character.content.loot_global_value = "pd2_clan"
-	self.john_wick_character.content.loot_drops = {}
+	self.john_wick_character.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "stoneface",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "wayfarer",
+			amount = 1
+		}
+	}
+	self.john_wick_character.content.upgrades = {
+		"kabartanto"
+	}
 	self.dbd_boo_0_award = {
 		dlc = "has_dbd_clan",
 		content = {}
@@ -5949,7 +5950,7 @@ function DLCTweakData:init(tweak_data)
 		}
 	}
 	self.sha_bundle = {
-		free = true,
+		dlc = "has_sha",
 		content = {}
 	}
 	self.sha_bundle.content.loot_global_value = "sha"
@@ -6313,7 +6314,7 @@ function DLCTweakData:init(tweak_data)
 		}
 	}
 	self.ant_free = {
-		free = true,
+		dlc = "has_ant_free",
 		content = {}
 	}
 	self.ant_free.content.loot_drops = {

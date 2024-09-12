@@ -72,9 +72,14 @@ function NewsFeedGui:update(t, dt)
 end
 
 function NewsFeedGui:make_news_request()
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if SystemInfo:distribution() == Idstring("STEAM") or SystemInfo:distribution() == Idstring("EPIC") then
 		print("make_news_request()")
-		HttpRequest:get("http://steamcommunity.com/games/218620/rss", callback(self, self, "news_result"))
+
+		local headers = {
+			["Content-Type"] = "text/xml"
+		}
+
+		HttpRequest:get("https://www.paydaythegame.com/feed/", callback(self, self, "news_result"), headers)
 	end
 end
 
@@ -87,7 +92,7 @@ function NewsFeedGui:news_result(success, body)
 
 	if success then
 		self._titles = self:_get_text_block(body, "<title>", "</title>", self.MAX_NEWS)
-		self._links = self:_get_text_block(body, "<link><![CDATA[", "]]></link>", self.MAX_NEWS)
+		self._links = self:_get_text_block(body, "<link>", "</link>", self.MAX_NEWS)
 		self._news = {
 			i = 0
 		}
@@ -162,8 +167,19 @@ function NewsFeedGui:_get_text_block(s, sp, ep, max_results)
 		end
 
 		local s2, e2 = string.find(s, ep, e1, true)
+		local text_string = string.sub(s, e1 + 1, s2 - 1)
+		local override = {
+			["8211"] = "-"
+		}
+		text_string = string.gsub(text_string, "–", "-")
+		text_string = string.gsub(text_string, "%b&;", function (word)
+			local char = string.sub(word, 3, -2)
+			local replacement = override[char] or utf8.char(char)
 
-		table.insert(result, string.sub(s, e1 + 1, s2 - 1))
+			return replacement
+		end)
+
+		table.insert(result, text_string)
 	end
 
 	while i < len and max_results > #result do

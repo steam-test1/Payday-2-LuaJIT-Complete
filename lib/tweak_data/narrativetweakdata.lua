@@ -4105,6 +4105,7 @@ function NarrativeTweakData:init(tweak_data)
 	self.stages.dark = {
 		type = "d",
 		type_id = "heist_type_assault",
+		dlc = "mad",
 		level_id = "dark"
 	}
 	self.jobs.dark = {
@@ -4113,6 +4114,7 @@ function NarrativeTweakData:init(tweak_data)
 		contact = "jimmy",
 		region = "street",
 		jc = 30,
+		dlc = "mad",
 		chain = {
 			self.stages.dark
 		},
@@ -4166,6 +4168,7 @@ function NarrativeTweakData:init(tweak_data)
 	self.stages.mad = {
 		type = "d",
 		type_id = "heist_type_assault",
+		dlc = "mad",
 		level_id = "mad"
 	}
 	self.jobs.mad = {
@@ -4174,6 +4177,7 @@ function NarrativeTweakData:init(tweak_data)
 		contact = "jimmy",
 		region = "street",
 		jc = 30,
+		dlc = "mad",
 		chain = {
 			self.stages.mad
 		},
@@ -5168,11 +5172,13 @@ function NarrativeTweakData:init(tweak_data)
 	self.stages.rvd_1 = {
 		type = "d",
 		type_id = "heist_type_assault",
+		dlc = "rvd",
 		level_id = "rvd1"
 	}
 	self.stages.rvd_2 = {
 		type = "d",
 		type_id = "heist_type_assault",
+		dlc = "rvd",
 		level_id = "rvd2"
 	}
 	self.jobs.rvd = {
@@ -5975,16 +5981,18 @@ function NarrativeTweakData:init(tweak_data)
 	}
 	self.stages.mex = {
 		type = "d",
-		type_id = "heist_type_assault",
+		dlc = "mex",
 		level_id = "mex",
+		type_id = "heist_type_assault",
 		mission_filter = {
 			1
 		}
 	}
 	self.stages.mex_cooking = {
 		type = "d",
-		type_id = "heist_type_assault",
+		dlc = "mex",
 		level_id = "mex_cooking",
+		type_id = "heist_type_assault",
 		mission_filter = {
 			2
 		}
@@ -6121,8 +6129,9 @@ function NarrativeTweakData:init(tweak_data)
 	}
 	self.stages.bex = {
 		type = "d",
-		type_id = "heist_type_assault",
+		dlc = "bex",
 		level_id = "bex",
+		type_id = "heist_type_assault",
 		mission_filter = {
 			1
 		}
@@ -6196,8 +6205,9 @@ function NarrativeTweakData:init(tweak_data)
 	}
 	self.stages.pex = {
 		type = "d",
-		type_id = "heist_type_assault",
+		dlc = "pex",
 		level_id = "pex",
+		type_id = "heist_type_assault",
 		mission_filter = {
 			1
 		}
@@ -6269,8 +6279,9 @@ function NarrativeTweakData:init(tweak_data)
 	}
 	self.stages.fex = {
 		type = "d",
-		type_id = "heist_type_assault",
+		dlc = "fex",
 		level_id = "fex",
+		type_id = "heist_type_assault",
 		mission_filter = {
 			1
 		}
@@ -6342,8 +6353,9 @@ function NarrativeTweakData:init(tweak_data)
 	}
 	self.stages.chas = {
 		type = "d",
-		type_id = "heist_type_assault",
+		dlc = "chas",
 		level_id = "chas",
+		type_id = "heist_type_assault",
 		mission_filter = {
 			1
 		}
@@ -6415,8 +6427,9 @@ function NarrativeTweakData:init(tweak_data)
 	}
 	self.stages.sand = {
 		type = "d",
-		type_id = "heist_type_assault",
+		dlc = "sand",
 		level_id = "sand",
+		type_id = "heist_type_assault",
 		mission_filter = {
 			1
 		}
@@ -6488,8 +6501,9 @@ function NarrativeTweakData:init(tweak_data)
 	}
 	self.stages.chca = {
 		type = "d",
-		type_id = "heist_type_assault",
+		dlc = "chca",
 		level_id = "chca",
+		type_id = "heist_type_assault",
 		mission_filter = {
 			1
 		}
@@ -6561,8 +6575,9 @@ function NarrativeTweakData:init(tweak_data)
 	}
 	self.stages.pent = {
 		type = "d",
-		type_id = "heist_type_assault",
+		dlc = "pent",
 		level_id = "pent",
+		type_id = "heist_type_assault",
 		mission_filter = {
 			1
 		}
@@ -6634,8 +6649,9 @@ function NarrativeTweakData:init(tweak_data)
 	}
 	self.stages.ranc = {
 		type = "d",
-		type_id = "heist_type_assault",
+		dlc = "ranc",
 		level_id = "ranc",
+		type_id = "heist_type_assault",
 		mission_filter = {
 			1
 		}
@@ -6707,8 +6723,9 @@ function NarrativeTweakData:init(tweak_data)
 	}
 	self.stages.trai = {
 		type = "d",
-		type_id = "heist_type_assault",
+		dlc = "trai",
 		level_id = "trai",
+		type_id = "heist_type_assault",
 		mission_filter = {
 			1
 		}
@@ -6780,8 +6797,9 @@ function NarrativeTweakData:init(tweak_data)
 	}
 	self.stages.corp = {
 		type = "d",
-		type_id = "heist_type_assault",
+		dlc = "corp",
 		level_id = "corp",
+		type_id = "heist_type_assault",
 		mission_filter = {
 			1
 		}
@@ -6853,8 +6871,9 @@ function NarrativeTweakData:init(tweak_data)
 	}
 	self.stages.deep = {
 		type = "d",
-		type_id = "heist_type_assault",
+		dlc = "deep",
 		level_id = "deep",
+		type_id = "heist_type_assault",
 		mission_filter = {
 			1
 		}
@@ -6926,8 +6945,9 @@ function NarrativeTweakData:init(tweak_data)
 	}
 	self.stages.bossp = {
 		type = "d",
-		type_id = "heist_type_assault",
+		dlc = "deep",
 		level_id = "boss",
+		type_id = "heist_type_assault",
 		mission_filter = {
 			1
 		}
@@ -7134,6 +7154,7 @@ function NarrativeTweakData:init(tweak_data)
 	self.stages.nmh = {
 		type = "d",
 		type_id = "heist_type_assault",
+		dlc = "nmh_ipcontent",
 		level_id = "nmh"
 	}
 	self.jobs.nmh = {

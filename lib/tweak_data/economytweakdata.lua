@@ -1983,6 +1983,7 @@ function EconomyTweakData:init(tweak_data)
 	}
 
 	self:_init_armor_skins()
+	self:_init_ip_content(tweak_data)
 	self:_init_rarity_contents(tweak_data)
 end
 
@@ -2008,6 +2009,83 @@ function EconomyTweakData:_add_content(data, content, tweaks)
 	end
 end
 
+function EconomyTweakData:_init_ip_content(tweak_data)
+	self.safes.wac_01.ip_content = true
+	self.safes.surf_01.ip_content = true
+	self.safes.cola_01.ip_content = true
+	self.safes.sfs_01.ip_content = true
+	self.safes.sfs_01.first_file_extra = 0
+	local weapon_skins_tweak = tweak_data.blackmarket.weapon_skins
+	local add_ip_content = nil
+
+	function add_ip_content(content)
+		content.ip_content = true
+
+		if content.contains and content.contains.contents then
+			content.removed_items = content.removed_items or {}
+			content.removed_items.contents = content.removed_items.contents or {}
+
+			for _, content_content in ipairs(content.contains.contents) do
+				add_ip_content(self.contents[content_content])
+				table.insert(content.removed_items.contents, content_content)
+			end
+
+			content.contains.contents = {}
+		end
+	end
+
+	local content, skin_tweak = nil
+
+	for safe_id, safe_data in pairs(self.safes) do
+		if safe_data.ip_content then
+			add_ip_content(self.contents[safe_data.content])
+		end
+	end
+
+	local weapon_id, weapon_tweak, should_hide_unavailable = nil
+
+	local function set_marketable_weapon_skins(data)
+		local weapon_skins = data.contains.weapon_skins
+
+		for _, skin_id in ipairs(weapon_skins) do
+			skin_tweak = weapon_skins_tweak[skin_id]
+
+			if skin_tweak then
+				weapon_id = skin_tweak.weapon_ids and skin_tweak.weapon_ids[1] or skin_tweak.weapon_id
+				weapon_tweak = weapon_id and tweak_data.weapon[weapon_id]
+				should_hide_unavailable = tweak_data:get_raw_value("lootdrop", "global_values", weapon_tweak and weapon_tweak.global_value or false, "hide_unavailable")
+
+				if should_hide_unavailable or data.ip_content then
+					data.removed_items = data.removed_items or {}
+					data.removed_items.weapon_skins = data.removed_items.weapon_skins or {}
+
+					table.insert(data.removed_items.weapon_skins, skin_id)
+				end
+			end
+		end
+
+		if data.removed_items and data.removed_items.weapon_skins and #data.removed_items.weapon_skins > 0 then
+			for _, skin_id in ipairs(data.removed_items.weapon_skins) do
+				table.delete(weapon_skins, skin_id)
+
+				skin_tweak = weapon_skins_tweak[skin_id]
+
+				if skin_tweak then
+					skin_tweak.is_marketable = false
+				end
+			end
+		end
+	end
+
+	for id, data in pairs(self.contents) do
+		for content_type, items in pairs(data.contains or {}) do
+			if content_type == "weapon_skins" then
+				set_marketable_weapon_skins(data)
+			end
+		end
+	end
+end
+
 function EconomyTweakData:_init_rarity_contents(tweak_data)
 	local weapon_skin_tweak = tweak_data.blackmarket.weapon_skins
 	local armor_skin_tweak = self.armor_skins
@@ -2018,7 +2096,7 @@ function EconomyTweakData:_init_rarity_contents(tweak_data)
 	local contents = {}
 
 	for safe_id, safe_data in pairs(self.safes) do
-		if not safe_data.promo then
+		if not safe_data.promo and not safe_data.ip_content then
 			local content = self.contents[safe_data.content]
 			contents[safe_id] = {}
 

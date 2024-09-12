@@ -395,6 +395,10 @@ function CrimeNetSidebarGui:clbk_visible_multiplayer()
 	return not managers.network:session() and not Global.game_settings.single_player
 end
 
+function CrimeNetSidebarGui:clbk_visible_multiplayer_epic_mm()
+	return CrimeNetSidebarGui:clbk_visible_multiplayer() and SystemInfo:matchmaking() == Idstring("MM_EPIC")
+end
+
 function CrimeNetSidebarGui:clbk_visible_singleplayer()
 	return Global.game_settings.single_player
 end

@@ -483,7 +483,7 @@ function StoryMissionsGui:_update_info(mission)
 				end
 
 				if (not mission.completed or objective.basic) and (not objective.completed or objective.basic) and objective.levels and (not objective.basic or not Network:is_server()) and not Network:is_client() and mission.completed == mission.rewarded then
-					if not owned and gvalue_tweak and gvalue_tweak.hide_unavailable then
+					if not owned and managers.dlc:should_hide_unavailable(global_value, true) then
 						placer:add_right(canvas:fine_text({
 							text = managers.localization:to_upper_text("menu_sm_dlc_unavailable"),
 							font = small_font,
@@ -544,7 +544,7 @@ function StoryMissionsGui:_update_info(mission)
 							1
 						}
 					})
-				elseif objective.completed or owned or not gvalue_tweak or not gvalue_tweak.hide_unavailable then
+				elseif objective.completed or owned or not managers.dlc:should_hide_unavailable(global_value, true) then
 					local texture = "guis/textures/menu_tickbox"
 					local texture_rect = {
 						objective.completed and 24 or 0,

@@ -344,8 +344,6 @@ end
 
 function NetworkManager:start_network()
 	if not self._started then
-		Global.category_print.multiplayer_base = true
-
 		self:register_handler("connection", ConnectionNetworkHandler)
 		self:register_handler("packet", PacketNetworkHandler)
 		managers.network:register_handler("unit", UnitNetworkHandler)
@@ -417,7 +415,6 @@ function NetworkManager:stop_network(clean)
 		end
 
 		cat_print("multiplayer_base", "[NetworkManager:stop_network]")
-		print("---------------------------------------------------------")
 	end
 end
 

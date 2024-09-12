@@ -2374,8 +2374,8 @@ function CopMovement:clbk_inventory(unit, event)
 				local reload_times = HuskPlayerMovement.reload_times
 
 				for i, hold_type in ipairs(weap_tweak.hold) do
-					self._machine:set_global("hold_" .. hold_type, self:get_hold_type_weight(hold_type) or num - i)
-					table.insert(self._weapon_hold, "hold_" .. hold_type)
+					self._machine:set_global(hold_type, self:get_hold_type_weight(hold_type) or num - i)
+					table.insert(self._weapon_hold, hold_type)
 
 					if not reload_hold_param and reload_times[hold_type] then
 						reload_hold_param = hold_type

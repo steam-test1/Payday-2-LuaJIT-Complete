@@ -3471,8 +3471,10 @@ function WeaponTweakData:_init_data_shak12_crew()
 	self.shak12_crew.NR_CLIPS_MAX = 5
 	self.shak12_crew.pull_magazine_during_reload = "rifle"
 	self.shak12_crew.auto.fire_rate = 0.07
-	self.shak12_crew.hold = "rifle"
-	self.shak12_crew.hold = "bullpup"
+	self.shak12_crew.hold = {
+		"bullpup",
+		"rifle"
+	}
 	self.shak12_crew.alert_size = 5000
 	self.shak12_crew.suppression = 1
 	self.shak12_crew.FIRE_MODE = "auto"
@@ -4553,10 +4555,8 @@ function WeaponTweakData:_init_data_qbu88_crew()
 	self.qbu88_crew.NR_CLIPS_MAX = 4
 	self.qbu88_crew.pull_magazine_during_reload = "rifle"
 	self.qbu88_crew.auto.fire_rate = 0.5
-	self.qbu88_crew.hold = {
-		"bullpup",
-		"rifle"
-	}
+	self.qbu88_crew.hold = "rifle"
+	self.qbu88_crew.reload = "bullpup"
 	self.qbu88_crew.alert_size = 5000
 	self.qbu88_crew.suppression = 1
 	self.qbu88_crew.FIRE_MODE = "single"
@@ -14115,6 +14115,7 @@ function WeaponTweakData:_init_g26(weapon_data)
 	self.g26.desc_id = "bm_wp_pis_g26_desc"
 	self.g26.description_id = "des_g26"
 	self.g26.global_value = "john_wick_character"
+	self.g26.unlock_dlc = "pd2_clan"
 	self.g26.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.g26.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.g26.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
@@ -19082,6 +19083,7 @@ function WeaponTweakData:_init_model70(weapon_data)
 	self.model70.desc_id = "bm_w_model70_desc"
 	self.model70.description_id = "des_model70"
 	self.model70.texture_bundle_folder = "berry"
+	self.model70.global_value = "rvd"
 	self.model70.muzzleflash = "effects/payday2/particles/weapons/big_762_auto_fps"
 	self.model70.shell_ejection = "effects/payday2/particles/weapons/shells/shell_sniper"
 	self.model70.use_data = {
@@ -19565,6 +19567,7 @@ function WeaponTweakData:_init_sr2(weapon_data)
 	self.sr2.desc_id = "bm_w_sr2_desc"
 	self.sr2.description_id = "des_sr2"
 	self.sr2.texture_bundle_folder = "coco"
+	self.sr2.global_value = "coco"
 	self.sr2.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.sr2.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.sr2.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
@@ -19673,6 +19676,7 @@ function WeaponTweakData:_init_x_sr2(weapon_data)
 	self.x_sr2.desc_id = "bm_w_x_sr2_desc"
 	self.x_sr2.description_id = "des_x_sr2"
 	self.x_sr2.texture_bundle_folder = "coco"
+	self.x_sr2.global_value = "coco"
 	self.x_sr2.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.x_sr2.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.x_sr2.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
@@ -19782,6 +19786,7 @@ function WeaponTweakData:_init_pl14(weapon_data)
 	self.pl14.desc_id = "bm_w_pl14_desc"
 	self.pl14.description_id = "des_pl14"
 	self.pl14.texture_bundle_folder = "mad"
+	self.pl14.global_value = "mad"
 	self.pl14.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
 	self.pl14.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
 	self.pl14.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
@@ -25043,6 +25048,7 @@ function WeaponTweakData:_init_corgi(weapon_data)
 		equip_id = "equip_corgi",
 		recoil_steelsight = true
 	}
+	self.corgi.global_value = "rvd"
 	self.corgi.texture_bundle_folder = "rvd"
 	self.corgi.panic_suppression_chance = 0.2
 	self.corgi.stats = {

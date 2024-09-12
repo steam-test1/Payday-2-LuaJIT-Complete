@@ -450,6 +450,7 @@ function CustomSafehouseTweakData:_init_safehouse_rooms(tweak_data)
 	table.insert(self.rooms, {
 		title_id = "menu_cs_title_jowi",
 		tier_max = 3,
+		dlc = "john_wick_character",
 		name_id = "menu_jowi",
 		room_id = "jowi",
 		help_id = "menu_cs_help_jowi",
@@ -534,6 +535,7 @@ function CustomSafehouseTweakData:_init_safehouse_rooms(tweak_data)
 	table.insert(self.rooms, {
 		title_id = "menu_cs_title_bodhi",
 		tier_max = 3,
+		dlc = "rvd",
 		name_id = "menu_bodhi",
 		room_id = "bodhi",
 		help_id = "menu_cs_help_bodhi",
@@ -546,6 +548,7 @@ function CustomSafehouseTweakData:_init_safehouse_rooms(tweak_data)
 	table.insert(self.rooms, {
 		title_id = "menu_cs_title_jimmy",
 		tier_max = 3,
+		dlc = "mad",
 		name_id = "menu_jimmy",
 		room_id = "jimmy",
 		help_id = "menu_cs_help_jimmy",
@@ -582,6 +585,7 @@ function CustomSafehouseTweakData:_init_safehouse_rooms(tweak_data)
 	table.insert(self.rooms, {
 		title_id = "menu_cs_title_terry",
 		tier_max = 3,
+		dlc = "chico",
 		name_id = "menu_terry",
 		room_id = "terry",
 		help_id = "menu_cs_help_terry",

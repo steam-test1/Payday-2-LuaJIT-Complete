@@ -14,6 +14,7 @@ function CrimeSpreeManager:_setup()
 
 	self._global = Global.crime_spree
 
+	self:_setup_mission_lists()
 	self:_setup_temporary_job()
 	self:_setup_modifiers()
 
@@ -524,12 +525,10 @@ function CrimeSpreeManager:get_mission(mission_id)
 end
 
 function CrimeSpreeManager:get_random_missions(prev_missions)
-	local mission_lists = tweak_data.crime_spree.missions
-
 	return {
-		table.random(mission_lists[1]),
-		table.random(mission_lists[2]),
-		table.random(mission_lists[3])
+		table.random(self._global.mission_lists[1]),
+		table.random(self._global.mission_lists[2]),
+		table.random(self._global.mission_lists[3])
 	}
 end
 
@@ -1154,6 +1153,24 @@ end
 function CrimeSpreeManager:on_gage_asset_event(event_id, asset_id, peer)
 	if event_id == CrimeSpreeManager.GageAssetEvents.Unlock then
 		self:_on_asset_unlocked(asset_id, peer)
+	end
+end
+
+function CrimeSpreeManager:_setup_mission_lists()
+	self._global.mission_lists = {}
+	local dlc_unlocked, should_hide_unavailable = nil
+
+	for index, mission_list in ipairs(tweak_data.crime_spree.missions) do
+		self._global.mission_lists[index] = {}
+
+		for _, mission in ipairs(mission_list) do
+			dlc_unlocked = not mission.level.dlc or managers.dlc:is_dlc_unlocked(mission.level.dlc)
+			should_hide_unavailable = mission.level.dlc and managers.dlc:should_hide_unavailable(mission.level.dlc) or false
+
+			if dlc_unlocked or not should_hide_unavailable then
+				table.insert(self._global.mission_lists[index], mission)
+			end
+		end
 	end
 end
 

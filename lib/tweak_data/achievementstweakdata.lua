@@ -811,8 +811,8 @@ function AchievementsTweakData:init(tweak_data)
 			in_steelsight = false,
 			count_in_row = 10,
 			award = "berry_5",
-			weapon = "model70",
-			in_head = true
+			in_head = true,
+			weapon_type = "snp"
 		},
 		assault_rifle_kills = {
 			weapon_type = "assault_rifle",
@@ -1306,7 +1306,6 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		rvd_12 = {
 			job = "rvd",
-			melee_id = "clean",
 			result = "death",
 			stat = "rvd_12_stats",
 			difficulty = overkill_and_above,
@@ -2785,11 +2784,9 @@ function AchievementsTweakData:init(tweak_data)
 			},
 			difficulty = overkill_and_above,
 			equipped_team = {
-				num_skills = 0,
 				armor = "level_1",
-				primaries = {
-					"wpn_fps_snp_model70"
-				},
+				num_skills = 0,
+				primary_category = "snp",
 				secondaries = {
 					"wpn_fps_pis_judge"
 				}
@@ -4210,12 +4207,10 @@ function AchievementsTweakData:init(tweak_data)
 			award = "rvd_8",
 			job = "rvd",
 			difficulty = overkill_and_above,
-			weapons_used = {
-				"corgi"
-			},
+			weapons_used = tweak_data.weapons_by_category.assault_rifle,
 			equipped = {
 				primaries = {
-					weapon_id = "corgi"
+					category = "assault_rifle"
 				}
 			}
 		},

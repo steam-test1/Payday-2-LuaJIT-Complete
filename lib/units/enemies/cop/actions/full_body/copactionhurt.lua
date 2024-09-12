@@ -1317,7 +1317,9 @@ function CopActionHurt:on_exit()
 	if self._shooting_hurt then
 		self._shooting_hurt = false
 
-		self._weapon_unit:base():stop_autofire()
+		if self._weapon_unit then
+			self._weapon_unit:base():stop_autofire()
+		end
 	end
 
 	if self._delayed_shooting_hurt_clbk_id then
@@ -1473,6 +1475,11 @@ function CopActionHurt:_upd_taser_tased(t)
 end
 
 function CopActionHurt:_upd_hurt(t)
+	if self._shooting_hurt and not alive(self._weapon_unit) then
+		self._shooting_hurt = false
+		self._weapon_unit = false
+	end
+
 	local dt = TimerManager:game():delta_time()
 
 	if self._ext_anim.hurt or self._ext_anim.death then
@@ -1719,7 +1726,9 @@ function CopActionHurt:on_death_exit()
 	if self._shooting_hurt then
 		self._shooting_hurt = false
 
-		self._weapon_unit:base():stop_autofire()
+		if self._weapon_unit then
+			self._weapon_unit:base():stop_autofire()
+		end
 	end
 
 	if not self._ragdolled then
@@ -1740,7 +1749,10 @@ function CopActionHurt:on_death_drop(unit, stage)
 
 	if self._shooting_hurt then
 		if stage == 2 then
-			self._weapon_unit:base():stop_autofire()
+			if self._weapon_unit then
+				self._weapon_unit:base():stop_autofire()
+			end
+
 			self._ext_inventory:drop_weapon()
 
 			self._weapon_dropped = true
@@ -1945,7 +1957,9 @@ function CopActionHurt:on_destroy()
 	if self._shooting_hurt then
 		self._shooting_hurt = false
 
-		self._weapon_unit:base():stop_autofire()
+		if self._weapon_unit then
+			self._weapon_unit:base():stop_autofire()
+		end
 	end
 
 	if self._delayed_shooting_hurt_clbk_id then

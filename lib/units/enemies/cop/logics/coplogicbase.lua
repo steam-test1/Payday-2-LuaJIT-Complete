@@ -1742,19 +1742,8 @@ function CopLogicBase._chk_alert_obstructed(my_listen_pos, alert_data)
 
 		local ray = World:raycast("ray", my_listen_pos, alert_epicenter, "slot_mask", managers.slot:get_mask("AI_visibility"), "ray_type", "ai_vision", "report")
 
-		if ray then
-			if alert_data[1] == "footstep" then
-				return true
-			end
-
-			local my_dis_sq = mvec3_dis_sq(my_listen_pos, alert_epicenter)
-			local dampening = alert_data[1] == "bullet" and 0.5 or 0.25
-			local effective_dis_sq = alert_data[3] * dampening
-			effective_dis_sq = effective_dis_sq * effective_dis_sq
-
-			if my_dis_sq > effective_dis_sq then
-				return true
-			end
+		if ray and alert_data[1] == "footstep" then
+			return true
 		end
 	end
 end

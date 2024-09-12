@@ -311,6 +311,10 @@ function GenericDLCManager:give_dlc_and_verify_blackmarket()
 	else
 		Application:error("[GenericDLCManager] _load_done(): BlackMarketManager not yet initialized!")
 	end
+
+	if managers.crime_spree then
+		managers.crime_spree:_setup_mission_lists()
+	end
 end
 
 function GenericDLCManager:_load_done(...)
@@ -563,6 +567,35 @@ function GenericDLCManager:is_global_value_unlocked(global_value)
 	return not dlc or self:is_dlc_unlocked(dlc)
 end
 
+function GenericDLCManager:should_hide_unavailable(dlc_or_gv, is_global_value, alt_tweak_data)
+	alt_tweak_data = alt_tweak_data or tweak_data
+	local global_value = is_global_value and dlc_or_gv or self:dlc_to_global_value(dlc_or_gv)
+	local lootdrop_tweak = global_value and alt_tweak_data.lootdrop.global_values[global_value] or {}
+
+	if not lootdrop_tweak.hide_unavailable then
+		return false
+	end
+
+	if type(lootdrop_tweak.hide_unavailable) == "string" then
+		local dlc = lootdrop_tweak.hide_unavailable
+		local is_unlocked = not Global.dlc_manager.all_dlc_data[dlc] or Global.dlc_manager.all_dlc_data[dlc].verified
+
+		if not is_unlocked then
+			return true
+		end
+
+		return false
+	end
+
+	return true
+end
+
+function GenericDLCManager:get_unavailable_id(global_value)
+	local lootdrop_tweak = global_value and tweak_data.lootdrop.global_values[global_value]
+
+	return lootdrop_tweak and lootdrop_tweak.unavailable_id or "bm_menu_dlc_locked"
+end
+
 function GenericDLCManager:is_dlcs_unlocked(list_of_dlcs)
 	for _, dlc in ipairs(list_of_dlcs) do
 		if not self:is_dlc_unlocked(dlc) then
@@ -691,15 +724,22 @@ function GenericDLCManager:has_dragon()
 end
 
 function GenericDLCManager:has_dbd_clan()
-	return self:is_dlc_unlocked("dbd_clan")
+	local verified = self:is_dlc_unlocked("dbd_clan")
+
+	return verified
 end
 
 function GenericDLCManager:has_dbd_deluxe()
-	return Global.dlc_manager.all_dlc_data.dbd_deluxe and Global.dlc_manager.all_dlc_data.dbd_deluxe.verified or Global.dlc_manager.all_dlc_data.dbd_regular and Global.dlc_manager.all_dlc_data.dbd_regular.verified
+	local verified = Global.dlc_manager.all_dlc_data.dbd_deluxe and Global.dlc_manager.all_dlc_data.dbd_deluxe.verified
+	verified = verified or Global.dlc_manager.all_dlc_data.dbd_regular and Global.dlc_manager.all_dlc_data.dbd_regular.verified
+
+	return verified
 end
 
 function GenericDLCManager:has_solus_clan()
-	return self:is_dlc_unlocked("solus_clan")
+	local verified = self:is_dlc_unlocked("solus_clan")
+
+	return verified
 end
 
 function GenericDLCManager:has_tango()
@@ -746,8 +786,24 @@ function GenericDLCManager:has_mp2()
 	return self:is_dlc_unlocked("mp2")
 end
 
+function GenericDLCManager:has_ant_free()
+	local verified = Global.dlc_manager.all_dlc_data.ant_free and Global.dlc_manager.all_dlc_data.ant_free.verified
+
+	return verified
+end
+
 function GenericDLCManager:has_ant()
-	return Global.dlc_manager.all_dlc_data.ant and Global.dlc_manager.all_dlc_data.ant.verified
+	local verified = Global.dlc_manager.all_dlc_data.ant and Global.dlc_manager.all_dlc_data.ant.verified
+
+	return verified
+end
+
+function GenericDLCManager:has_coco()
+	return Global.dlc_manager.all_dlc_data.coco and Global.dlc_manager.all_dlc_data.coco.verified
+end
+
+function GenericDLCManager:has_mad()
+	return Global.dlc_manager.all_dlc_data.mad and Global.dlc_manager.all_dlc_data.mad.verified
 end
 
 function GenericDLCManager:has_pn2()
@@ -892,12 +948,27 @@ function GenericDLCManager:has_armored_transport_and_intel(data)
 	return self:is_dlc_unlocked("armored_transport") and self:has_achievement(data)
 end
 
+function GenericDLCManager:has_hlm_game()
+	local verified = Global.dlc_manager.all_dlc_data.hlm_game and Global.dlc_manager.all_dlc_data.hlm_game.verified
+	verified = verified or Global.dlc_manager.all_dlc_data.hlm_dlc and Global.dlc_manager.all_dlc_data.hlm_dlc.verified
+
+	return verified
+end
+
 function GenericDLCManager:has_hlm2()
-	return Global.dlc_manager.all_dlc_data.hlm2 and Global.dlc_manager.all_dlc_data.hlm2.verified or self:is_dlc_unlocked("hlm2_aus")
+	local verified = Global.dlc_manager.all_dlc_data.hlm2 and Global.dlc_manager.all_dlc_data.hlm2.verified
+	verified = verified or Global.dlc_manager.all_dlc_data.hlm2_aus and Global.dlc_manager.all_dlc_data.hlm2_aus.verified
+	verified = verified or Global.dlc_manager.all_dlc_data.hlm_dlc and Global.dlc_manager.all_dlc_data.hlm_dlc.verified
+
+	return verified
 end
 
 function GenericDLCManager:has_hlm2_deluxe()
-	return Global.dlc_manager.all_dlc_data.hlm2_deluxe and Global.dlc_manager.all_dlc_data.hlm2_deluxe.verified or self:is_dlc_unlocked("hlm2_aus")
+	local verified = Global.dlc_manager.all_dlc_data.hlm2_deluxe and Global.dlc_manager.all_dlc_data.hlm2_deluxe.verified
+	verified = verified or Global.dlc_manager.all_dlc_data.hlm2_aus and Global.dlc_manager.all_dlc_data.hlm2_aus.verified
+	verified = verified or Global.dlc_manager.all_dlc_data.hlm_dlc and Global.dlc_manager.all_dlc_data.hlm_dlc.verified
+
+	return verified
 end
 
 function GenericDLCManager:has_sawp_dlc_or_achievement(data)
@@ -905,7 +976,10 @@ function GenericDLCManager:has_sawp_dlc_or_achievement(data)
 end
 
 function GenericDLCManager:has_srtr_or_srtr2()
-	return Global.dlc_manager.all_dlc_data.srtr and Global.dlc_manager.all_dlc_data.srtr.verified or Global.dlc_manager.all_dlc_data.srtr2 and Global.dlc_manager.all_dlc_data.srtr2.verified
+	local verified = Global.dlc_manager.all_dlc_data.srtr and Global.dlc_manager.all_dlc_data.srtr.verified
+	verified = verified or Global.dlc_manager.all_dlc_data.srtr2 and Global.dlc_manager.all_dlc_data.srtr2.verified
+
+	return verified
 end
 
 function GenericDLCManager:has_parent_dlc(data)
@@ -1963,8 +2037,6 @@ function WINDLCManager:chk_content_updated()
 end
 
 function WINDLCManager:set_entitlements(entitlements)
-	print("WINDLCManager:set_entitlements", inspect(entitlements))
-
 	Global.dlc_manager.entitlements = table.list_to_set(entitlements or {})
 	Global.dlc_manager.received_entitlements = true
 
