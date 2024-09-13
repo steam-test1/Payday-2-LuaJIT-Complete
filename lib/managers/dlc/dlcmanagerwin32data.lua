@@ -546,13 +546,13 @@ function WINDLCManager:init_dlc_data()
 		epic_id = "968cb34c96d54720a6c5f8244c7901b1"
 	}
 	Global.dlc_manager.all_dlc_data.coco = {
-		app_id = "3126680",
+		app_id = "2596140",
 		no_install = true,
-		epic_id = "671c8e78c2434bbfa360340f89924019"
+		epic_id = "379e51448cb44304b5482dd9d8ee8e9e"
 	}
 	Global.dlc_manager.all_dlc_data.mad = {
-		app_id = "3126680",
+		app_id = "2596140",
 		no_install = true,
-		epic_id = "671c8e78c2434bbfa360340f89924019"
+		epic_id = "379e51448cb44304b5482dd9d8ee8e9e"
 	}
 end
