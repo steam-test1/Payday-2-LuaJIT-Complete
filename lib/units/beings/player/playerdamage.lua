@@ -724,20 +724,27 @@ function PlayerDamage:is_regenerating_armor()
 	return self._current_state == self._update_regenerate_timer
 end
 
-function PlayerDamage:_inline_RIP1()
-end
-
 function PlayerDamage:restore_health(health_restored, is_static, chk_health_ratio)
+	if not health_restored then
+		Application:warn("[PlayerDamage:restore_health] Attempted to restore health without health_restored", health_restored)
+
+		return false
+	end
+
 	if chk_health_ratio and managers.player:is_damage_health_ratio_active(self:health_ratio()) then
 		return false
 	end
 
-	if is_static then
-		return self:change_health(health_restored * self._healing_reduction)
-	else
-		local max_health = self:_max_health()
+	local change = health_restored * self._healing_reduction
 
-		return self:change_health(max_health * health_restored * self._healing_reduction)
+	if change ~= 0 then
+		if is_static then
+			return self:change_health(change)
+		else
+			local max_health = self:_max_health()
+
+			return self:change_health(max_health * change)
+		end
 	end
 end
 

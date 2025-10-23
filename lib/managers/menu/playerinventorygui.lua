@@ -2741,9 +2741,9 @@ function PlayerInventoryGui:_update_stats(name)
 				local cosmetics = managers.blackmarket:get_weapon_cosmetics(box.params.mod_data.category, box.params.mod_data.slot)
 
 				if cosmetics then
-					local c_td = tweak_data.blackmarket.weapon_skins[cosmetics.id] or {}
+					local skin_data = tweak_data.blackmarket.weapon_skins[cosmetics.id]
 
-					if c_td.default_blueprint then
+					if skin_data and skin_data.default_blueprint then
 						self:set_weapon_stats(self._info_panel, stats)
 					end
 
@@ -3104,18 +3104,18 @@ function PlayerInventoryGui:_update_info_weapon(name)
 end
 
 function PlayerInventoryGui:_update_info_weapon_cosmetics(name, cosmetics)
-	local c_td = tweak_data.blackmarket.weapon_skins[cosmetics.id] or {}
+	local skin_data = tweak_data.blackmarket.weapon_skins[cosmetics.id] or {}
 	local quality_text = managers.localization:text(tweak_data.economy.qualities[cosmetics.quality].name_id)
-	local name_text = managers.localization:text(c_td.name_id)
+	local name_text = managers.localization:text(skin_data.name_id)
 	local info_text = managers.localization:to_upper_text("menu_cash_safe_result", {
 		quality = quality_text,
 		name = name_text
 	})
 
 	if cosmetics.bonus then
-		local bonus = tweak_data.blackmarket.weapon_skins[cosmetics.id] and tweak_data.blackmarket.weapon_skins[cosmetics.id].bonus
+		local bonus = skin_data.bonus
 
-		if bonus and not c_td.default_blueprint then
+		if bonus and not skin_data.default_blueprint then
 			local bonus_tweak = tweak_data.economy.bonuses[bonus]
 			local bonus_value = bonus_tweak.exp_multiplier and bonus_tweak.exp_multiplier * 100 - 100 .. "%" or bonus_tweak.money_multiplier and bonus_tweak.money_multiplier * 100 - 100 .. "%"
 			info_text = info_text .. "\n" .. managers.localization:text("dialog_new_tradable_item_bonus", {
@@ -3127,15 +3127,15 @@ function PlayerInventoryGui:_update_info_weapon_cosmetics(name, cosmetics)
 	end
 
 	self:set_info_text(info_text, {
-		tweak_data.economy.rarities[c_td.rarity].color,
+		tweak_data.economy.rarities[skin_data.rarity].color,
 		add_colors_to_text_object = true
 	})
 
-	if c_td.default_blueprint then
+	if skin_data.default_blueprint then
 		local box = self._boxes_by_name[name]
 		local category = box.params.mod_data.category
 		local slot = box.params.mod_data.slot
-		local base_stats, mods_stats, skill_stats = WeaponDescription._get_stats(c_td.weapon_id, category, slot, c_td.default_blueprint)
+		local base_stats, mods_stats, skill_stats = WeaponDescription._get_stats(skin_data.weapon_id, category, slot, skin_data.default_blueprint)
 		local crafted = managers.blackmarket:get_crafted_category_slot(category, slot)
 		local tweak_stats = tweak_data.weapon.stats
 		local modifier_stats = tweak_data.weapon[crafted.weapon_id].stats_modifiers

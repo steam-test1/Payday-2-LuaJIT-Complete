@@ -530,14 +530,15 @@ function CarryTweakData:init(tweak_data)
 		visual_unit_name = "units/payday2/characters/npc_acc_cage_bag_1/npc_acc_cage_bag_1"
 	}
 	self.unknown = {
+		visual_unit_name = "units/payday2/characters/npc_acc_cage_bag_1/npc_acc_cage_bag_1",
+		skip_exit_secure = false,
 		type = "heavy",
 		name_id = "hud_carry_???",
-		skip_exit_secure = false,
+		unit = "units/payday2/pickups/gen_pku_cage_bag/gen_pku_cage_bag",
+		bag_value = "unknown",
 		AI_carry = {
 			SO_category = "enemies"
-		},
-		unit = "units/payday2/pickups/gen_pku_cage_bag/gen_pku_cage_bag",
-		visual_unit_name = "units/payday2/characters/npc_acc_cage_bag_1/npc_acc_cage_bag_1"
+		}
 	}
 	self.safe_wpn = {
 		type = "slightly_very_heavy",
@@ -791,11 +792,11 @@ function CarryTweakData:init(tweak_data)
 		}
 	}
 	self.drone_control_helmet = {
+		visual_unit_name = "units/payday2/characters/npc_acc_cage_bag_1/npc_acc_cage_bag_1",
 		type = "light",
 		name_id = "hud_carry_helmet",
-		bag_value = "mad_master_server_value_4",
 		unit = "units/payday2/pickups/gen_pku_cage_bag/gen_pku_cage_bag",
-		visual_unit_name = "units/payday2/characters/npc_acc_cage_bag_1/npc_acc_cage_bag_1",
+		bag_value = "drone_control_helmet",
 		AI_carry = {
 			SO_category = "enemies"
 		}

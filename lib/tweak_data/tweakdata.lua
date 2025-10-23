@@ -381,6 +381,16 @@ function TweakData:init()
 		80,
 		80
 	}
+	self.difficulty_name_ids = {
+		easy = "menu_difficulty_easy",
+		normal = "menu_difficulty_normal",
+		hard = "menu_difficulty_hard",
+		overkill = "menu_difficulty_very_hard",
+		overkill_145 = "menu_difficulty_overkill",
+		easy_wish = "menu_difficulty_easy_wish",
+		overkill_290 = "menu_difficulty_apocalypse",
+		sm_wish = "menu_difficulty_sm_wish"
+	}
 	self.permissions = {
 		"public",
 		"friends_only",
@@ -402,16 +412,6 @@ function TweakData:init()
 		"blackmarket_mask",
 		"payday",
 		"custom_safehouse"
-	}
-	self.difficulty_name_ids = {
-		easy = "menu_difficulty_easy",
-		normal = "menu_difficulty_normal",
-		hard = "menu_difficulty_hard",
-		overkill = "menu_difficulty_very_hard",
-		overkill_145 = "menu_difficulty_overkill",
-		easy_wish = "menu_difficulty_easy_wish",
-		overkill_290 = "menu_difficulty_apocalypse",
-		sm_wish = "menu_difficulty_sm_wish"
 	}
 	self.criminals = {
 		characters = {

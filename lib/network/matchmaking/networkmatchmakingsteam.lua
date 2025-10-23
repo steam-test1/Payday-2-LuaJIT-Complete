@@ -392,13 +392,17 @@ function NetworkMatchMakingSTEAM:set_difficulty_filter(filter)
 end
 
 function NetworkMatchMakingSTEAM:_make_room_info(lobby)
-	return {
+	local owner_name = lobby:key_value("owner_name")
+	local sanitized_name = managers.network:sanitize_peer_name(owner_name)
+	local room_info = {
 		owner_id = lobby:key_value("owner_id"),
-		owner_name = lobby:key_value("owner_name"),
+		owner_name = sanitized_name,
 		owner_account_id = lobby:key_value("owner_id"),
 		room_id = lobby:id(),
 		owner_level = lobby:key_value("owner_level")
 	}
+
+	return room_info
 end
 
 function NetworkMatchMakingSTEAM:lobby_search_reset()
@@ -437,7 +441,11 @@ function NetworkMatchMakingSTEAM:search_lobby(friends_only, no_filters)
 
 			if lobbies then
 				for _, lobby in ipairs(lobbies) do
-					if self._difficulty_filter == 0 or self._difficulty_filter == tonumber(lobby:key_value("difficulty")) then
+					local owner_name = lobby:key_value("owner_name")
+					local difficulty = tonumber(lobby:key_value("difficulty"))
+					local filters_passed = utf8.len(owner_name) <= NetworkManager.MAX_PEER_NAME_LENGTH and (self._difficulty_filter == 0 or self._difficulty_filter == difficulty)
+
+					if filters_passed then
 						table.insert(info.room_list, self:_make_room_info(lobby))
 
 						local attributes_data = {
@@ -453,6 +461,8 @@ function NetworkMatchMakingSTEAM:search_lobby(friends_only, no_filters)
 						}
 
 						table.insert(info.attribute_list, attributes_data)
+					else
+						Application:error("[NetworkMatchMakingSTEAM:search_lobby] found lobby failed filter checks")
 					end
 				end
 			end
@@ -567,7 +577,10 @@ function NetworkMatchMakingSTEAM:search_lobby_done()
 end
 
 function NetworkMatchMakingSTEAM:game_owner_name()
-	return managers.network.matchmake.lobby_handler:get_lobby_data("owner_name")
+	local owner_name = managers.network.matchmake.lobby_handler:get_lobby_data("owner_name")
+	local sanitized_name = managers.network:sanitize_peer_name(owner_name)
+
+	return sanitized_name
 end
 
 function NetworkMatchMakingSTEAM:game_owner_account_type_str()

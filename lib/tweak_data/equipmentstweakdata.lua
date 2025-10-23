@@ -416,7 +416,7 @@ function EquipmentsTweakData:init()
 		},
 		blood_sample = {
 			sync_possession = true,
-			icon = "equipment_vial",
+			icon = "equipment_bloodvial",
 			text_id = "debug_equipment_blood_sample"
 		},
 		acid = {
@@ -427,7 +427,7 @@ function EquipmentsTweakData:init()
 		},
 		blood_sample_verified = {
 			sync_possession = true,
-			icon = "equipment_vialOK",
+			icon = "equipment_bloodvialok",
 			text_id = "debug_equipment_blood_sample_valid"
 		},
 		caustic_soda = {
@@ -948,7 +948,7 @@ function EquipmentsTweakData:init()
 		transfer_quantity = 1,
 		text_id = "hud_equipment_int_deep_oil_sample",
 		max_quantity = 1,
-		icon = "equipment_vial",
+		icon = "equipment_oil_sample",
 		quantity = 1
 	}
 end

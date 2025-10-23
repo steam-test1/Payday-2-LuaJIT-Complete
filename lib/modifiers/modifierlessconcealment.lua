@@ -13,10 +13,16 @@ function ModifierLessConcealment:init(...)
 end
 
 function ModifierLessConcealment:modify_value(id, value)
+	if not managers.groupai then
+		return value
+	end
+
+	local enemy_weapons_hot = managers.groupai:state():enemy_weapons_hot()
+
 	if not self._checked_weapons_hot then
 		self._checked_weapons_hot = true
 
-		if not managers.groupai:state():enemy_weapons_hot() and not self._weapons_hot_listener_id then
+		if not enemy_weapons_hot and not self._weapons_hot_listener_id then
 			self._weapons_hot_listener_id = "ModifierLessConcealment"
 
 			managers.groupai:state():add_listener(self._weapons_hot_listener_id, {
@@ -25,7 +31,7 @@ function ModifierLessConcealment:modify_value(id, value)
 		end
 	end
 
-	if id == "BlackMarketManager:GetConcealment" and not managers.groupai:state():enemy_weapons_hot() then
+	if id == "BlackMarketManager:GetConcealment" and not enemy_weapons_hot then
 		return value + self:value()
 	end
 

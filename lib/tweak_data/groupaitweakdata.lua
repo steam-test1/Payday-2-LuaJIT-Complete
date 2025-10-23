@@ -1,4 +1,12 @@
 GroupAITweakData = GroupAITweakData or class()
+local DIFF_ID_1_EASY = 1
+local DIFF_ID_2_NORMAL = 2
+local DIFF_ID_3_HARD = 3
+local DIFF_ID_4_VERYHARD = 4
+local DIFF_ID_5_OVERKILL = 5
+local DIFF_ID_6_MAYHEM = 6
+local DIFF_ID_7_DEATHWISH = 7
+local DIFF_ID_8_DEATHSENT = 8
 
 function GroupAITweakData:init(tweak_data)
 	local difficulty = Global.game_settings and Global.game_settings.difficulty or "normal"
@@ -199,7 +207,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 		walk = true
 	}
 
-	if difficulty_index <= 2 then
+	if difficulty_index <= DIFF_ID_2_NORMAL then
 		self.special_unit_spawn_limits = {
 			shield = 2,
 			medic = 3,
@@ -207,7 +215,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 			tank = 1,
 			spooc = 0
 		}
-	elseif difficulty_index == 3 then
+	elseif difficulty_index == DIFF_ID_3_HARD then
 		self.special_unit_spawn_limits = {
 			shield = 4,
 			medic = 3,
@@ -215,7 +223,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 			tank = 2,
 			spooc = 0
 		}
-	elseif difficulty_index == 4 then
+	elseif difficulty_index == DIFF_ID_4_VERYHARD then
 		self.special_unit_spawn_limits = {
 			shield = 4,
 			medic = 3,
@@ -223,7 +231,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 			tank = 2,
 			spooc = 2
 		}
-	elseif difficulty_index == 5 then
+	elseif difficulty_index == DIFF_ID_5_OVERKILL then
 		self.special_unit_spawn_limits = {
 			shield = 4,
 			medic = 3,
@@ -231,7 +239,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 			tank = 2,
 			spooc = 2
 		}
-	elseif difficulty_index == 6 then
+	elseif difficulty_index == DIFF_ID_6_MAYHEM then
 		self.special_unit_spawn_limits = {
 			shield = 4,
 			medic = 3,
@@ -239,7 +247,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 			tank = 2,
 			spooc = 2
 		}
-	elseif difficulty_index == 7 then
+	elseif difficulty_index == DIFF_ID_7_DEATHWISH then
 		self.special_unit_spawn_limits = {
 			shield = 4,
 			medic = 3,
@@ -247,7 +255,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 			tank = 2,
 			spooc = 2
 		}
-	elseif difficulty_index == 8 then
+	elseif difficulty_index == DIFF_ID_8_DEATHSENT then
 		self.special_unit_spawn_limits = {
 			shield = 4,
 			medic = 3,
@@ -267,7 +275,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 
 	self.unit_categories = {}
 
-	if difficulty_index == 8 then
+	if difficulty_index == DIFF_ID_8_DEATHSENT then
 		self.unit_categories.spooc = {
 			special_type = "spooc",
 			unit_types = {
@@ -362,7 +370,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 		access = access_type_walk_only
 	}
 
-	if difficulty_index == 8 then
+	if difficulty_index == DIFF_ID_8_DEATHSENT then
 		self.unit_categories.CS_swat_MP5 = {
 			unit_types = {
 				america = {
@@ -446,7 +454,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 		}
 	end
 
-	if difficulty_index == 8 then
+	if difficulty_index == DIFF_ID_8_DEATHSENT then
 		self.unit_categories.CS_heavy_M4 = {
 			unit_types = {
 				america = {
@@ -570,7 +578,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 		}
 	end
 
-	if difficulty_index == 8 then
+	if difficulty_index == DIFF_ID_8_DEATHSENT then
 		self.unit_categories.CS_tazer = {
 			special_type = "taser",
 			unit_types = {
@@ -708,7 +716,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 		access = access_type_all
 	}
 
-	if difficulty_index < 6 then
+	if difficulty_index < DIFF_ID_6_MAYHEM then
 		self.unit_categories.FBI_swat_M4 = {
 			unit_types = {
 				america = {
@@ -729,7 +737,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 			},
 			access = access_type_all
 		}
-	elseif difficulty_index < 8 then
+	elseif difficulty_index < DIFF_ID_8_DEATHSENT then
 		self.unit_categories.FBI_swat_M4 = {
 			unit_types = {
 				america = {
@@ -773,7 +781,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 		}
 	end
 
-	if difficulty_index < 6 then
+	if difficulty_index < DIFF_ID_6_MAYHEM then
 		self.unit_categories.FBI_swat_R870 = {
 			unit_types = {
 				america = {
@@ -794,7 +802,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 			},
 			access = access_type_all
 		}
-	elseif difficulty_index < 8 then
+	elseif difficulty_index < DIFF_ID_8_DEATHSENT then
 		self.unit_categories.FBI_swat_R870 = {
 			unit_types = {
 				america = {
@@ -838,7 +846,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 		}
 	end
 
-	if difficulty_index < 6 then
+	if difficulty_index < DIFF_ID_6_MAYHEM then
 		self.unit_categories.FBI_heavy_G36 = {
 			unit_types = {
 				america = {
@@ -859,7 +867,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 			},
 			access = access_type_all
 		}
-	elseif difficulty_index < 8 then
+	elseif difficulty_index < DIFF_ID_8_DEATHSENT then
 		self.unit_categories.FBI_heavy_G36 = {
 			unit_types = {
 				america = {
@@ -903,7 +911,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 		}
 	end
 
-	if difficulty_index < 6 then
+	if difficulty_index < DIFF_ID_6_MAYHEM then
 		self.unit_categories.FBI_heavy_R870 = {
 			unit_types = {
 				america = {
@@ -924,7 +932,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 			},
 			access = access_type_all
 		}
-	elseif difficulty_index < 8 then
+	elseif difficulty_index < DIFF_ID_8_DEATHSENT then
 		self.unit_categories.FBI_heavy_R870 = {
 			unit_types = {
 				america = {
@@ -968,7 +976,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 		}
 	end
 
-	if difficulty_index < 8 then
+	if difficulty_index < DIFF_ID_8_DEATHSENT then
 		self.unit_categories.FBI_heavy_G36_w = {
 			unit_types = {
 				america = {
@@ -1012,7 +1020,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 		}
 	end
 
-	if difficulty_index < 6 then
+	if difficulty_index < DIFF_ID_6_MAYHEM then
 		self.unit_categories.FBI_shield = {
 			special_type = "shield",
 			unit_types = {
@@ -1034,7 +1042,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 			},
 			access = access_type_walk_only
 		}
-	elseif difficulty_index < 8 then
+	elseif difficulty_index < DIFF_ID_8_DEATHSENT then
 		self.unit_categories.FBI_shield = {
 			special_type = "shield",
 			unit_types = {
@@ -1516,7 +1524,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 	}
 	self.enemy_spawn_groups = {}
 
-	if difficulty_index <= 2 then
+	if difficulty_index <= DIFF_ID_2_NORMAL then
 		self.enemy_spawn_groups.tac_swat_shotgun_rush = {
 			amount = {
 				3,
@@ -1541,7 +1549,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 3 then
+	elseif difficulty_index == DIFF_ID_3_HARD then
 		self.enemy_spawn_groups.tac_swat_shotgun_rush = {
 			amount = {
 				4,
@@ -1566,7 +1574,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 4 then
+	elseif difficulty_index == DIFF_ID_4_VERYHARD then
 		self.enemy_spawn_groups.tac_swat_shotgun_rush = {
 			amount = {
 				4,
@@ -1591,7 +1599,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 5 then
+	elseif difficulty_index == DIFF_ID_5_OVERKILL then
 		self.enemy_spawn_groups.tac_swat_shotgun_rush = {
 			amount = {
 				4,
@@ -1624,7 +1632,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 6 then
+	elseif difficulty_index == DIFF_ID_6_MAYHEM then
 		self.enemy_spawn_groups.tac_swat_shotgun_rush = {
 			amount = {
 				4,
@@ -1657,7 +1665,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 7 then
+	elseif difficulty_index == DIFF_ID_7_DEATHWISH then
 		self.enemy_spawn_groups.tac_swat_shotgun_rush = {
 			amount = {
 				4,
@@ -1727,7 +1735,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 
 	self.enemy_spawn_groups = {}
 
-	if difficulty_index <= 2 then
+	if difficulty_index <= DIFF_ID_2_NORMAL then
 		self.enemy_spawn_groups.tac_swat_shotgun_flank = {
 			amount = {
 				3,
@@ -1752,7 +1760,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 3 then
+	elseif difficulty_index == DIFF_ID_3_HARD then
 		self.enemy_spawn_groups.tac_swat_shotgun_flank = {
 			amount = {
 				4,
@@ -1777,7 +1785,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 4 then
+	elseif difficulty_index == DIFF_ID_4_VERYHARD then
 		self.enemy_spawn_groups.tac_swat_shotgun_flank = {
 			amount = {
 				4,
@@ -1802,7 +1810,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 5 then
+	elseif difficulty_index == DIFF_ID_5_OVERKILL then
 		self.enemy_spawn_groups.tac_swat_shotgun_flank = {
 			amount = {
 				4,
@@ -1835,7 +1843,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 6 then
+	elseif difficulty_index == DIFF_ID_6_MAYHEM then
 		self.enemy_spawn_groups.tac_swat_shotgun_flank = {
 			amount = {
 				4,
@@ -1868,7 +1876,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 7 then
+	elseif difficulty_index == DIFF_ID_7_DEATHWISH then
 		self.enemy_spawn_groups.tac_swat_shotgun_flank = {
 			amount = {
 				4,
@@ -1938,7 +1946,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 
 	self.enemy_spawn_groups = {}
 
-	if difficulty_index <= 2 then
+	if difficulty_index <= DIFF_ID_2_NORMAL then
 		self.enemy_spawn_groups.tac_swat_rifle = {
 			amount = {
 				3,
@@ -1963,7 +1971,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 3 then
+	elseif difficulty_index == DIFF_ID_3_HARD then
 		self.enemy_spawn_groups.tac_swat_rifle = {
 			amount = {
 				4,
@@ -1988,7 +1996,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 4 then
+	elseif difficulty_index == DIFF_ID_4_VERYHARD then
 		self.enemy_spawn_groups.tac_swat_rifle = {
 			amount = {
 				4,
@@ -2013,7 +2021,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 5 then
+	elseif difficulty_index == DIFF_ID_5_OVERKILL then
 		self.enemy_spawn_groups.tac_swat_rifle = {
 			amount = {
 				4,
@@ -2046,7 +2054,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 6 then
+	elseif difficulty_index == DIFF_ID_6_MAYHEM then
 		self.enemy_spawn_groups.tac_swat_rifle = {
 			amount = {
 				4,
@@ -2079,7 +2087,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 7 then
+	elseif difficulty_index == DIFF_ID_7_DEATHWISH then
 		self.enemy_spawn_groups.tac_swat_rifle = {
 			amount = {
 				4,
@@ -2149,7 +2157,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 
 	self.enemy_spawn_groups = {}
 
-	if difficulty_index <= 2 then
+	if difficulty_index <= DIFF_ID_2_NORMAL then
 		self.enemy_spawn_groups.tac_swat_rifle_flank = {
 			amount = {
 				3,
@@ -2174,7 +2182,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 3 then
+	elseif difficulty_index == DIFF_ID_3_HARD then
 		self.enemy_spawn_groups.tac_swat_rifle_flank = {
 			amount = {
 				4,
@@ -2199,7 +2207,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 4 then
+	elseif difficulty_index == DIFF_ID_4_VERYHARD then
 		self.enemy_spawn_groups.tac_swat_rifle_flank = {
 			amount = {
 				4,
@@ -2224,7 +2232,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 5 then
+	elseif difficulty_index == DIFF_ID_5_OVERKILL then
 		self.enemy_spawn_groups.tac_swat_rifle_flank = {
 			amount = {
 				4,
@@ -2257,7 +2265,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 6 then
+	elseif difficulty_index == DIFF_ID_6_MAYHEM then
 		self.enemy_spawn_groups.tac_swat_rifle_flank = {
 			amount = {
 				4,
@@ -2290,7 +2298,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 7 then
+	elseif difficulty_index == DIFF_ID_7_DEATHWISH then
 		self.enemy_spawn_groups.tac_swat_rifle_flank = {
 			amount = {
 				4,
@@ -2358,7 +2366,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 		}
 	end
 
-	if difficulty_index <= 2 then
+	if difficulty_index <= DIFF_ID_2_NORMAL then
 		self.enemy_spawn_groups.tac_shield_wall_ranged = {
 			amount = {
 				4,
@@ -2383,7 +2391,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 3 then
+	elseif difficulty_index == DIFF_ID_3_HARD then
 		self.enemy_spawn_groups.tac_shield_wall_ranged = {
 			amount = {
 				4,
@@ -2408,7 +2416,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 4 then
+	elseif difficulty_index == DIFF_ID_4_VERYHARD then
 		self.enemy_spawn_groups.tac_shield_wall_ranged = {
 			amount = {
 				4,
@@ -2433,7 +2441,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 5 then
+	elseif difficulty_index == DIFF_ID_5_OVERKILL then
 		self.enemy_spawn_groups.tac_shield_wall_ranged = {
 			amount = {
 				4,
@@ -2466,7 +2474,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 6 then
+	elseif difficulty_index == DIFF_ID_6_MAYHEM then
 		self.enemy_spawn_groups.tac_shield_wall_ranged = {
 			amount = {
 				4,
@@ -2499,7 +2507,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 7 then
+	elseif difficulty_index == DIFF_ID_7_DEATHWISH then
 		self.enemy_spawn_groups.tac_shield_wall_ranged = {
 			amount = {
 				4,
@@ -2567,7 +2575,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 		}
 	end
 
-	if difficulty_index <= 2 then
+	if difficulty_index <= DIFF_ID_2_NORMAL then
 		self.enemy_spawn_groups.tac_shield_wall_charge = {
 			amount = {
 				4,
@@ -2592,7 +2600,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 3 then
+	elseif difficulty_index == DIFF_ID_3_HARD then
 		self.enemy_spawn_groups.tac_shield_wall_charge = {
 			amount = {
 				4,
@@ -2617,7 +2625,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 4 then
+	elseif difficulty_index == DIFF_ID_4_VERYHARD then
 		self.enemy_spawn_groups.tac_shield_wall_charge = {
 			amount = {
 				4,
@@ -2642,7 +2650,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 5 then
+	elseif difficulty_index == DIFF_ID_5_OVERKILL then
 		self.enemy_spawn_groups.tac_shield_wall_charge = {
 			amount = {
 				4,
@@ -2675,7 +2683,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 6 then
+	elseif difficulty_index == DIFF_ID_6_MAYHEM then
 		self.enemy_spawn_groups.tac_shield_wall_charge = {
 			amount = {
 				4,
@@ -2708,7 +2716,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 7 then
+	elseif difficulty_index == DIFF_ID_7_DEATHWISH then
 		self.enemy_spawn_groups.tac_shield_wall_charge = {
 			amount = {
 				4,
@@ -2776,7 +2784,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 		}
 	end
 
-	if difficulty_index <= 2 then
+	if difficulty_index <= DIFF_ID_2_NORMAL then
 		self.enemy_spawn_groups.tac_shield_wall = {
 			amount = {
 				4,
@@ -2793,7 +2801,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 3 then
+	elseif difficulty_index == DIFF_ID_3_HARD then
 		self.enemy_spawn_groups.tac_shield_wall = {
 			amount = {
 				4,
@@ -2810,7 +2818,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 4 then
+	elseif difficulty_index == DIFF_ID_4_VERYHARD then
 		self.enemy_spawn_groups.tac_shield_wall = {
 			amount = {
 				4,
@@ -2827,7 +2835,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 5 then
+	elseif difficulty_index == DIFF_ID_5_OVERKILL then
 		self.enemy_spawn_groups.tac_shield_wall = {
 			amount = {
 				4,
@@ -2852,7 +2860,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 6 then
+	elseif difficulty_index == DIFF_ID_6_MAYHEM then
 		self.enemy_spawn_groups.tac_shield_wall = {
 			amount = {
 				4,
@@ -2877,7 +2885,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 7 then
+	elseif difficulty_index == DIFF_ID_7_DEATHWISH then
 		self.enemy_spawn_groups.tac_shield_wall = {
 			amount = {
 				4,
@@ -2929,7 +2937,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 		}
 	end
 
-	if difficulty_index <= 2 then
+	if difficulty_index <= DIFF_ID_2_NORMAL then
 		self.enemy_spawn_groups.tac_tazer_flanking = {
 			amount = {
 				1,
@@ -2946,7 +2954,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 3 then
+	elseif difficulty_index == DIFF_ID_3_HARD then
 		self.enemy_spawn_groups.tac_tazer_flanking = {
 			amount = {
 				1,
@@ -2963,7 +2971,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 4 then
+	elseif difficulty_index == DIFF_ID_4_VERYHARD then
 		self.enemy_spawn_groups.tac_tazer_flanking = {
 			amount = {
 				1,
@@ -2980,7 +2988,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 5 then
+	elseif difficulty_index == DIFF_ID_5_OVERKILL then
 		self.enemy_spawn_groups.tac_tazer_flanking = {
 			amount = {
 				1,
@@ -2997,7 +3005,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 6 then
+	elseif difficulty_index == DIFF_ID_6_MAYHEM then
 		self.enemy_spawn_groups.tac_tazer_flanking = {
 			amount = {
 				1,
@@ -3049,7 +3057,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 		}
 	end
 
-	if difficulty_index <= 2 then
+	if difficulty_index <= DIFF_ID_2_NORMAL then
 		self.enemy_spawn_groups.tac_tazer_charge = {
 			amount = {
 				1,
@@ -3066,7 +3074,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 3 then
+	elseif difficulty_index == DIFF_ID_3_HARD then
 		self.enemy_spawn_groups.tac_tazer_charge = {
 			amount = {
 				1,
@@ -3083,7 +3091,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 4 then
+	elseif difficulty_index == DIFF_ID_4_VERYHARD then
 		self.enemy_spawn_groups.tac_tazer_charge = {
 			amount = {
 				1,
@@ -3100,7 +3108,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 5 then
+	elseif difficulty_index == DIFF_ID_5_OVERKILL then
 		self.enemy_spawn_groups.tac_tazer_charge = {
 			amount = {
 				1,
@@ -3117,7 +3125,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 6 then
+	elseif difficulty_index == DIFF_ID_6_MAYHEM then
 		self.enemy_spawn_groups.tac_tazer_charge = {
 			amount = {
 				1,
@@ -3169,7 +3177,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 		}
 	end
 
-	if difficulty_index <= 2 then
+	if difficulty_index <= DIFF_ID_2_NORMAL then
 		self.enemy_spawn_groups.tac_bull_rush = {
 			amount = {
 				1,
@@ -3186,7 +3194,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 3 then
+	elseif difficulty_index == DIFF_ID_3_HARD then
 		self.enemy_spawn_groups.tac_bull_rush = {
 			amount = {
 				1,
@@ -3203,7 +3211,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 4 then
+	elseif difficulty_index == DIFF_ID_4_VERYHARD then
 		self.enemy_spawn_groups.tac_bull_rush = {
 			amount = {
 				1,
@@ -3220,7 +3228,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 5 then
+	elseif difficulty_index == DIFF_ID_5_OVERKILL then
 		self.enemy_spawn_groups.tac_bull_rush = {
 			amount = {
 				1,
@@ -3237,7 +3245,7 @@ function GroupAITweakData:_init_enemy_spawn_groups(difficulty_index)
 				}
 			}
 		}
-	elseif difficulty_index == 6 then
+	elseif difficulty_index == DIFF_ID_6_MAYHEM then
 		self.enemy_spawn_groups.tac_bull_rush = {
 			amount = {
 				1,
@@ -3463,7 +3471,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 		0.5
 	}
 
-	if difficulty_index < 6 then
+	if difficulty_index < DIFF_ID_6_MAYHEM then
 		self.smoke_and_flash_grenade_timeout = {
 			10,
 			20
@@ -3475,7 +3483,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 		}
 	end
 
-	if difficulty_index < 6 then
+	if difficulty_index < DIFF_ID_6_MAYHEM then
 		self.smoke_grenade_lifetime = 7.5
 	else
 		self.smoke_grenade_lifetime = 12
@@ -3496,10 +3504,10 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 		}
 	}
 
-	if difficulty_index < 6 then
-		self.flash_grenade.timer = 3
-	else
+	if DIFF_ID_6_MAYHEM <= difficulty_index then
 		self.flash_grenade.timer = 2
+	else
+		self.flash_grenade.timer = 3
 	end
 
 	self.flash_shields = {
@@ -3546,7 +3554,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 		3
 	}
 
-	if difficulty_index <= 2 then
+	if difficulty_index <= DIFF_ID_2_NORMAL then
 		self.besiege.recurring_group_SO = {
 			recurring_cloaker_spawn = {
 				retire_delay = 30,
@@ -3562,7 +3570,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 				}
 			}
 		}
-	elseif difficulty_index == 3 then
+	elseif difficulty_index == DIFF_ID_3_HARD then
 		self.besiege.recurring_group_SO = {
 			recurring_cloaker_spawn = {
 				retire_delay = 30,
@@ -3578,7 +3586,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 				}
 			}
 		}
-	elseif difficulty_index == 4 then
+	elseif difficulty_index == DIFF_ID_4_VERYHARD then
 		self.besiege.recurring_group_SO = {
 			recurring_cloaker_spawn = {
 				retire_delay = 30,
@@ -3594,7 +3602,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 				}
 			}
 		}
-	elseif difficulty_index == 5 then
+	elseif difficulty_index == DIFF_ID_5_OVERKILL then
 		self.besiege.recurring_group_SO = {
 			recurring_cloaker_spawn = {
 				retire_delay = 30,
@@ -3668,25 +3676,25 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 		fade_duration = 5
 	}
 
-	if difficulty_index <= 2 then
+	if difficulty_index <= DIFF_ID_2_NORMAL then
 		self.besiege.assault.delay = {
 			60,
 			45,
 			30
 		}
-	elseif difficulty_index == 3 then
+	elseif difficulty_index == DIFF_ID_3_HARD then
 		self.besiege.assault.delay = {
 			45,
 			35,
 			25
 		}
-	elseif difficulty_index == 4 then
+	elseif difficulty_index == DIFF_ID_4_VERYHARD then
 		self.besiege.assault.delay = {
 			40,
 			30,
 			20
 		}
-	elseif difficulty_index == 5 then
+	elseif difficulty_index == DIFF_ID_5_OVERKILL then
 		self.besiege.assault.delay = {
 			30,
 			20,
@@ -3739,7 +3747,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 	end
 
 	if is_console then
-		if difficulty_index <= 2 then
+		if difficulty_index <= DIFF_ID_2_NORMAL then
 			self.besiege.assault.force_balance_mul = {
 				1,
 				1.1,
@@ -3752,7 +3760,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 				1.2,
 				1.3
 			}
-		elseif difficulty_index == 3 then
+		elseif difficulty_index == DIFF_ID_3_HARD then
 			self.besiege.assault.force_balance_mul = {
 				1.2,
 				1.4,
@@ -3765,7 +3773,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 				1.6,
 				1.8
 			}
-		elseif difficulty_index == 4 then
+		elseif difficulty_index == DIFF_ID_4_VERYHARD then
 			self.besiege.assault.force_balance_mul = {
 				1.6,
 				1.8,
@@ -3778,7 +3786,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 				2.2,
 				2.4
 			}
-		elseif difficulty_index == 5 then
+		elseif difficulty_index == DIFF_ID_5_OVERKILL then
 			self.besiege.assault.force_balance_mul = {
 				1.8,
 				2.1,
@@ -3805,7 +3813,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 				2.8
 			}
 		end
-	elseif difficulty_index <= 2 then
+	elseif difficulty_index <= DIFF_ID_2_NORMAL then
 		self.besiege.assault.force_balance_mul = {
 			1,
 			2,
@@ -3818,7 +3826,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 			3,
 			4
 		}
-	elseif difficulty_index == 3 then
+	elseif difficulty_index == DIFF_ID_3_HARD then
 		self.besiege.assault.force_balance_mul = {
 			1,
 			2,
@@ -3831,7 +3839,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 			3,
 			4
 		}
-	elseif difficulty_index == 4 then
+	elseif difficulty_index == DIFF_ID_4_VERYHARD then
 		self.besiege.assault.force_balance_mul = {
 			1,
 			2,
@@ -3844,7 +3852,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 			3,
 			4
 		}
-	elseif difficulty_index == 5 then
+	elseif difficulty_index == DIFF_ID_5_OVERKILL then
 		self.besiege.assault.force_balance_mul = {
 			1,
 			2,
@@ -3857,7 +3865,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 			3,
 			4
 		}
-	elseif difficulty_index == 6 then
+	elseif difficulty_index == DIFF_ID_6_MAYHEM then
 		self.besiege.assault.force_balance_mul = {
 			1,
 			2,
@@ -3870,7 +3878,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 			3,
 			4
 		}
-	elseif difficulty_index == 7 then
+	elseif difficulty_index == DIFF_ID_7_DEATHWISH then
 		self.besiege.assault.force_balance_mul = {
 			1,
 			2,
@@ -3898,7 +3906,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 		}
 	end
 
-	if difficulty_index <= 2 then
+	if difficulty_index <= DIFF_ID_2_NORMAL then
 		self.besiege.assault.groups = {
 			tac_swat_shotgun_rush = {
 				0.2,
@@ -3956,7 +3964,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 				0
 			}
 		}
-	elseif difficulty_index == 3 then
+	elseif difficulty_index == DIFF_ID_3_HARD then
 		self.besiege.assault.groups = {
 			tac_swat_shotgun_rush = {
 				0.1,
@@ -4014,7 +4022,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 				0
 			}
 		}
-	elseif difficulty_index == 4 then
+	elseif difficulty_index == DIFF_ID_4_VERYHARD then
 		self.besiege.assault.groups = {
 			tac_swat_shotgun_rush = {
 				0.19,
@@ -4072,7 +4080,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 				0.04
 			}
 		}
-	elseif difficulty_index == 5 then
+	elseif difficulty_index == DIFF_ID_5_OVERKILL then
 		self.besiege.assault.groups = {
 			tac_swat_shotgun_rush = {
 				0.19,
@@ -4130,7 +4138,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 				0.04
 			}
 		}
-	elseif difficulty_index == 6 then
+	elseif difficulty_index == DIFF_ID_6_MAYHEM then
 		self.besiege.assault.groups = {
 			tac_swat_shotgun_rush = {
 				0.18,
@@ -4188,7 +4196,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 				0.05
 			}
 		}
-	elseif difficulty_index == 7 then
+	elseif difficulty_index == DIFF_ID_7_DEATHWISH then
 		self.besiege.assault.groups = {
 			tac_swat_shotgun_rush = {
 				0.18,
@@ -4246,7 +4254,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 				0.05
 			}
 		}
-	elseif difficulty_index == 8 then
+	elseif difficulty_index == DIFF_ID_8_DEATHSENT then
 		self.besiege.assault.groups = {
 			tac_swat_shotgun_rush = {
 				0.18,
@@ -4395,7 +4403,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 		30
 	}
 
-	if difficulty_index <= 2 then
+	if difficulty_index <= DIFF_ID_2_NORMAL then
 		self.besiege.reenforce.groups = {
 			tac_swat_shotgun_rush = {
 				0,
@@ -4418,7 +4426,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 				0
 			}
 		}
-	elseif difficulty_index == 3 then
+	elseif difficulty_index == DIFF_ID_3_HARD then
 		self.besiege.reenforce.groups = {
 			tac_swat_shotgun_rush = {
 				0,
@@ -4441,7 +4449,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 				0
 			}
 		}
-	elseif difficulty_index == 4 then
+	elseif difficulty_index == DIFF_ID_4_VERYHARD then
 		self.besiege.reenforce.groups = {
 			tac_swat_shotgun_rush = {
 				0,
@@ -4464,7 +4472,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 				0
 			}
 		}
-	elseif difficulty_index == 5 then
+	elseif difficulty_index == DIFF_ID_5_OVERKILL then
 		self.besiege.reenforce.groups = {
 			tac_swat_shotgun_rush = {
 				0,
@@ -4519,7 +4527,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 	}
 	self.besiege.recon.interval_variation = 40
 
-	if difficulty_index < 6 then
+	if difficulty_index < DIFF_ID_6_MAYHEM then
 		self.besiege.recon.force = {
 			2,
 			4,
@@ -4533,7 +4541,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 		}
 	end
 
-	if difficulty_index <= 2 then
+	if difficulty_index <= DIFF_ID_2_NORMAL then
 		self.besiege.recon.groups = {
 			tac_swat_shotgun_rush = {
 				0.1,
@@ -4556,7 +4564,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 				0.1
 			}
 		}
-	elseif difficulty_index == 3 then
+	elseif difficulty_index == DIFF_ID_3_HARD then
 		self.besiege.recon.groups = {
 			tac_swat_shotgun_rush = {
 				0.1,
@@ -4579,7 +4587,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 				0.1
 			}
 		}
-	elseif difficulty_index == 4 then
+	elseif difficulty_index == DIFF_ID_4_VERYHARD then
 		self.besiege.recon.groups = {
 			tac_swat_shotgun_rush = {
 				0.1,
@@ -4602,7 +4610,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 				0.1
 			}
 		}
-	elseif difficulty_index == 5 then
+	elseif difficulty_index == DIFF_ID_5_OVERKILL then
 		self.besiege.recon.groups = {
 			tac_swat_shotgun_rush = {
 				0.1,
@@ -4711,7 +4719,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 	self.phalanx.check_spawn_intervall = 120
 	self.phalanx.chance_increase_intervall = 120
 
-	if difficulty_index == 4 then
+	if difficulty_index == DIFF_ID_4_VERYHARD then
 		self.phalanx.spawn_chance = {
 			decrease = 0.7,
 			start = 0,
@@ -4719,7 +4727,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 			increase = 0.05,
 			max = 1
 		}
-	elseif difficulty_index == 5 then
+	elseif difficulty_index == DIFF_ID_5_OVERKILL then
 		self.phalanx.spawn_chance = {
 			decrease = 0.7,
 			start = 0.01,
@@ -4727,7 +4735,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 			increase = 0.09,
 			max = 1
 		}
-	elseif difficulty_index == 6 then
+	elseif difficulty_index == DIFF_ID_6_MAYHEM then
 		self.phalanx.spawn_chance = {
 			decrease = 1,
 			start = 0.05,
@@ -4735,7 +4743,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 			increase = 0.09,
 			max = 1
 		}
-	elseif difficulty_index == 7 then
+	elseif difficulty_index == DIFF_ID_7_DEATHWISH then
 		self.phalanx.spawn_chance = {
 			decrease = 1,
 			start = 0.05,
@@ -4743,7 +4751,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 			increase = 0.09,
 			max = 1
 		}
-	elseif difficulty_index == 8 then
+	elseif difficulty_index == DIFF_ID_8_DEATHSENT then
 		self.phalanx.spawn_chance = {
 			decrease = 1,
 			start = 0.05,

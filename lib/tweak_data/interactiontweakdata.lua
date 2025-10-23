@@ -545,13 +545,13 @@ function InteractionTweakData:init(tweak_data)
 		action_text_id = "hud_action_placing_drill"
 	}
 	self.drill_upgrade = {
-		icon = "equipment_drill",
+		sound_start = "bar_drill_apply",
+		timer = 3,
 		contour = "upgradable",
 		text_id = "hud_int_equipment_drill_upgrade",
-		timer = 10,
-		sound_start = "bar_drill_apply",
-		sound_interupt = "bar_drill_apply_cancel",
 		sound_done = "bar_drill_apply_finished",
+		icon = "equipment_drill",
+		sound_interupt = "bar_drill_apply_cancel",
 		action_text_id = "hud_action_upgrading_drill"
 	}
 	self.drill_jammed = {
@@ -606,13 +606,13 @@ function InteractionTweakData:init(tweak_data)
 		block_upgrade = true
 	}
 	self.lance_upgrade = {
-		icon = "equipment_drill",
+		sound_start = "bar_drill_apply",
+		timer = 3,
 		contour = "upgradable",
 		text_id = "hud_int_equipment_lance_upgrade",
-		timer = 10,
-		sound_start = "bar_drill_apply",
-		sound_interupt = "bar_drill_apply_cancel",
 		sound_done = "bar_drill_apply_finished",
+		icon = "equipment_drill",
+		sound_interupt = "bar_drill_apply_cancel",
 		action_text_id = "hud_action_upgrading_lance"
 	}
 	self.glass_cutter = {
@@ -3716,13 +3716,13 @@ function InteractionTweakData:init(tweak_data)
 	self.gen_int_saw_jammed = deep_clone(self.apartment_saw_jammed)
 	self.gen_int_saw_jammed.timer = 10
 	self.gen_int_saw_upgrade = {
+		action_text_id = "hud_action_upgrading_saw",
+		timer = 3,
 		contour = "upgradable",
 		text_id = "hud_int_equipment_saw_upgrade",
-		action_text_id = "hud_action_upgrading_saw",
-		timer = 10,
 		sound_start = "bar_drill_apply",
-		sound_interupt = "bar_drill_apply_cancel",
-		sound_done = "bar_drill_apply_finished"
+		sound_done = "bar_drill_apply_finished",
+		sound_interupt = "bar_drill_apply_cancel"
 	}
 	self.safe_carry_drop = {
 		icon = "develop",

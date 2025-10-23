@@ -20965,6 +20965,7 @@ function WeaponFactoryTweakData:_init_pxp4_mods()
 		desc_id = "bm_wp_uupg_o_schmidt_desc",
 		type = "sight",
 		unit = "units/pd2_dlc_pxp4/weapons/wpn_fps_upg_o_schmidt/wpn_fps_upg_o_schmidt",
+		reticle_obj = "g_reddot",
 		a_obj = "a_o",
 		dlc = "pxp4",
 		name_id = "bm_wp_uupg_o_schmidt",
@@ -21052,6 +21053,13 @@ function WeaponFactoryTweakData:_init_pxp4_mods()
 			"wpn_fps_upg_o_xpsg33_magnifier",
 			"wpn_fps_upg_o_sig",
 			"wpn_fps_ass_shak12_o_carry_dummy"
+		},
+		texture_switch = {
+			channel = "diffuse_texture",
+			material = {
+				"gfx_reddot",
+				"screen"
+			}
 		},
 		visibility = {
 			{
@@ -30686,6 +30694,7 @@ function WeaponFactoryTweakData:_init_x_deagle()
 			"wpn_fps_upg_fl_pis_m3x",
 			"wpn_fps_upg_ns_ass_filter",
 			"wpn_fps_upg_ns_pis_jungle",
+			"wpn_fps_pis_deagle_b_legend",
 			"wpn_fps_pis_deagle_b_modern",
 			"wpn_fps_pis_deagle_ck",
 			"wpn_fps_pis_deagle_o_adapter_ck",
@@ -43180,12 +43189,12 @@ function WeaponFactoryTweakData:_init_legendary()
 		}
 	}
 	self.parts.wpn_fps_pis_1911_fl_legendary = {
-		sub_type = "laser",
 		type = "gadget",
+		a_obj = "a_fl",
+		unatainable = true,
+		sub_type = "laser",
 		name_id = "bm_wp_1911_fl_legendary",
 		unit = "units/payday2_cash/safes/flake/weapons/wpn_fps_pis_1911_fl_legendary/wpn_fps_pis_1911_fl_legendary",
-		unatainable = true,
-		a_obj = "a_fl",
 		stats = {
 			spread = 3,
 			recoil = 1,
@@ -43194,6 +43203,12 @@ function WeaponFactoryTweakData:_init_legendary()
 		},
 		perks = {
 			"gadget"
+		},
+		stance_mod = {
+			wpn_fps_pis_1911 = {
+				translation = Vector3(0.9253, -5.7221, -11.7221),
+				rotation = Rotation(0, 0, -24)
+			}
 		}
 	}
 	self.parts.wpn_fps_pis_1911_g_legendary.third_unit = "units/payday2_cash/safes/flake/weapons/wpn_fps_pis_1911_g_legendary/wpn_third_pis_1911_g_legendary"

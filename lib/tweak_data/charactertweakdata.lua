@@ -415,6 +415,7 @@ function CharacterTweakData:_init_medic(presets)
 	self.medic.steal_loot = false
 	self.medic.priority_shout = "f47"
 	self.medic.use_animation_on_fire_damage = false
+	self.medic.target_priority = 10
 
 	table.insert(self._enemy_list, "medic")
 end
@@ -3390,9 +3391,6 @@ function CharacterTweakData:_init_phalanx_vip(presets)
 	self.phalanx_vip.HEALTH_INIT = 300
 	self.phalanx_vip.DAMAGE_CLAMP_BULLET = 100
 	self.phalanx_vip.DAMAGE_CLAMP_EXPLOSION = self.phalanx_vip.DAMAGE_CLAMP_BULLET
-	self.phalanx_vip.can_be_tased = false
-	self.phalanx_vip.immune_to_knock_down = true
-	self.phalanx_vip.immune_to_concussion = true
 
 	table.insert(self._enemy_list, "phalanx_vip")
 end

@@ -81,25 +81,32 @@ function InventoryIconCreator:_create_weapon(factory_id, blueprint, weapon_skin_
 		cosmetics = weapon_skin_or_cosmetics
 	end
 
-	self._current_texture_name = factory_id .. (cosmetics and "_" .. cosmetics.id or "")
-	local unit_name = tweak_data.weapon.factory[factory_id].unit
+	local n = ""
+	n = factory_id
+	n = n .. (cosmetics and "_" .. cosmetics.id or "")
+	self._current_texture_name = n
+	local factory_data = tweak_data.weapon.factory[factory_id]
 
-	managers.dyn_resource:load(Idstring("unit"), Idstring(unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
+	if factory_data then
+		local unit_name = factory_data.unit
 
-	local thisrot = self._item_rotation
-	local rot = Rotation(thisrot[1] + 180, thisrot[2], thisrot[3])
-	self._wait_for_assemble = true
-	self._ignore_first_assemble_complete = true
-	self._weapon_unit = World:spawn_unit(Idstring(unit_name), self._item_position, rot)
+		managers.dyn_resource:load(Idstring("unit"), Idstring(unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 
-	self._weapon_unit:base():set_factory_data(factory_id)
-	self._weapon_unit:base():assemble_from_blueprint(factory_id, blueprint, callback(self, self, "_assemble_completed", {
-		cosmetics = cosmetics or {},
-		clbk = assembled_clbk or function ()
-		end
-	}))
-	self._weapon_unit:set_moving(true)
-	self._weapon_unit:base():on_enabled()
+		local thisrot = self._item_rotation
+		local rot = thisrot and Rotation(thisrot[1] + 180, thisrot[2], thisrot[3]) or Rotation(180, 0, 0)
+		self._wait_for_assemble = true
+		self._ignore_first_assemble_complete = true
+		self._weapon_unit = World:spawn_unit(Idstring(unit_name), self._item_position, rot)
+
+		self._weapon_unit:base():set_factory_data(factory_id)
+		self._weapon_unit:base():assemble_from_blueprint(factory_id, blueprint, callback(self, self, "_assemble_completed", {
+			cosmetics = cosmetics or {},
+			clbk = assembled_clbk or function ()
+			end
+		}))
+		self._weapon_unit:set_moving(true)
+		self._weapon_unit:base():on_enabled()
+	end
 end
 
 function InventoryIconCreator:_create_mask(mask_id, blueprint)
@@ -113,10 +120,6 @@ function InventoryIconCreator:_create_mask(mask_id, blueprint)
 	managers.dyn_resource:load(Idstring("unit"), Idstring(mask_unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 
 	self._mask_unit = World:spawn_unit(Idstring(mask_unit_name), self._item_position, rot)
-
-	if not tweak_data.blackmarket.masks[mask_id].type then
-		-- Nothing
-	end
 
 	if blueprint then
 		self._mask_unit:base():apply_blueprint(blueprint)
@@ -251,6 +254,8 @@ function InventoryIconCreator:_assemble_completed(data)
 end
 
 function InventoryIconCreator:start_jobs(jobs)
+	Application:debug("[InventoryIconCreator] Start Jobs", jobs and #jobs)
+
 	self._current_job = 0
 	self._jobs = jobs
 
@@ -260,7 +265,7 @@ end
 function InventoryIconCreator:start_all_weapons_skin(test)
 	local filter = self._filter:get_value()
 
-	if not filter or #filter == 0 then
+	if not filter then
 		EWS:message_box(Global.frame_panel, "Search filter empty!", "Error", "OK,ICON_ERROR", Vector3(-1, -1, 0))
 
 		return
@@ -277,10 +282,12 @@ function InventoryIconCreator:start_all_weapons_skin(test)
 		}
 	else
 		weapons = self:_get_all_weapons()
+
+		table.delete(weapons, "wpn_fps_ass_akm_gold")
 	end
 
 	local jobs = {}
-	local search_string = "_" .. filter .. "$"
+	local search_string = #filter > 0 and "_" .. filter .. "$"
 
 	for _, factory_id in ipairs(weapons) do
 		local blueprint = managers.weapon_factory:get_default_blueprint_by_factory_id(factory_id)
@@ -289,7 +296,11 @@ function InventoryIconCreator:start_all_weapons_skin(test)
 		for name, item_data in pairs(tweak_data.blackmarket.weapon_skins) do
 			local match_weapon_id = item_data.weapon_id or item_data.weapon_ids[1]
 
-			if match_weapon_id == weapon_id and string.find(name, search_string) then
+			if match_weapon_id == weapon_id then
+				if search_string and not string.find(name, search_string) then
+					-- Nothing
+				end
+
 				local bp = name and tweak_data.blackmarket.weapon_skins[name].default_blueprint or blueprint
 
 				table.insert(jobs, {
@@ -327,9 +338,8 @@ function InventoryIconCreator:start_all_weapons(test)
 
 	if test then
 		weapons = {
-			"wpn_fps_rpg7",
-			"wpn_fps_snp_r93",
-			"wpn_fps_pis_x_g17"
+			"wpn_fps_smg_p90",
+			"wpn_fps_smg_x_p90"
 		}
 	else
 		weapons = self:_get_all_weapons()
@@ -351,31 +361,58 @@ end
 
 function InventoryIconCreator:start_all_weapon_skins()
 	local factory_id = self._ctrlrs.weapon.factory_id:get_value()
+	local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(factory_id)
 	local blueprint = managers.weapon_factory:get_default_blueprint_by_factory_id(factory_id)
 	local jobs = {}
 
 	for _, weapon_skin in ipairs(self:_get_weapon_skins()) do
 		weapon_skin = weapon_skin ~= "none" and weapon_skin
+		local skin_data = weapon_skin and tweak_data.blackmarket.weapon_skins[weapon_skin]
+		local blueprint = weapon_skin and tweak_data.blackmarket.weapon_skins[weapon_skin].default_blueprint
 
-		if weapon_skin then
-			blueprint = tweak_data.blackmarket.weapon_skins[weapon_skin].default_blueprint or blueprint
+		for _, id in ipairs(skin_data and skin_data.weapon_ids or {
+			weapon_id
+		}) do
+			local alt_factory_id = managers.weapon_factory:get_factory_id_by_weapon_id(id)
+			local blueprint_custom = blueprint and deep_clone(blueprint)
+
+			if blueprint and skin_data.special_blueprint and skin_data.special_blueprint[id] then
+				for _, part in ipairs(skin_data.special_blueprint[id]) do
+					table.insert(blueprint_custom, part)
+				end
+			end
+
+			blueprint_custom = blueprint_custom or self:_get_blueprint_from_ui()
+
+			table.insert(jobs, {
+				factory_id = alt_factory_id,
+				blueprint = blueprint_custom,
+				weapon_skin = weapon_skin
+			})
 		end
-
-		table.insert(jobs, {
-			factory_id = factory_id,
-			blueprint = blueprint,
-			weapon_skin = weapon_skin
-		})
 	end
 
+	Application:debug("[InventoryIconCreator] Start All Weapons -- Yes, every one of them!", #jobs)
 	self:start_jobs(jobs)
 end
 
 function InventoryIconCreator:start_one_weapon()
 	local factory_id = self._ctrlrs.weapon.factory_id:get_value()
+	local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(factory_id)
 	local weapon_skin = self._ctrlrs.weapon.weapon_skin:get_value()
+
+	Application:debug("[InventoryIconCreator] Start Weapon", factory_id, weapon_skin)
+
 	weapon_skin = weapon_skin ~= "none" and weapon_skin
+	local skin_data = weapon_skin and tweak_data.blackmarket.weapon_skins[weapon_skin]
 	local blueprint = weapon_skin and tweak_data.blackmarket.weapon_skins[weapon_skin].default_blueprint
+
+	if blueprint and skin_data.special_blueprint and skin_data.special_blueprint[weapon_id] then
+		for _, part in ipairs(skin_data.special_blueprint[weapon_id]) do
+			table.insert(blueprint, part)
+		end
+	end
+
 	blueprint = blueprint or self:_get_blueprint_from_ui()
 	local cosmetics = self:_make_current_weapon_cosmetics()
 
@@ -390,9 +427,18 @@ end
 
 function InventoryIconCreator:preview_one_weapon()
 	local factory_id = self._ctrlrs.weapon.factory_id:get_value()
+	local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(factory_id)
 	local weapon_skin = self._ctrlrs.weapon.weapon_skin:get_value()
 	weapon_skin = weapon_skin ~= "none" and weapon_skin
+	local skin_data = weapon_skin and tweak_data.blackmarket.weapon_skins[weapon_skin]
 	local blueprint = weapon_skin and tweak_data.blackmarket.weapon_skins[weapon_skin].default_blueprint
+
+	if blueprint and skin_data.special_blueprint and skin_data.special_blueprint[weapon_id] then
+		for _, part in ipairs(skin_data.special_blueprint[weapon_id]) do
+			table.insert(blueprint, part)
+		end
+	end
+
 	blueprint = blueprint or self:_get_blueprint_from_ui()
 	local cosmetics = self:_make_current_weapon_cosmetics()
 
@@ -401,9 +447,16 @@ end
 
 function InventoryIconCreator:export_one_weapon()
 	local factory_id = self._ctrlrs.weapon.factory_id:get_value()
-	local weapon_skin = self._ctrlrs.weapon.weapon_skin:get_value()
-	weapon_skin = weapon_skin ~= "none" and weapon_skin
+	local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(factory_id)
+	local skin_data = weapon_skin and tweak_data.blackmarket.weapon_skins[weapon_skin]
 	local blueprint = weapon_skin and tweak_data.blackmarket.weapon_skins[weapon_skin].default_blueprint
+
+	if blueprint and skin_data.special_blueprint and skin_data.special_blueprint[weapon_id] then
+		for _, part in ipairs(skin_data.special_blueprint[weapon_id]) do
+			table.insert(blueprint, part)
+		end
+	end
+
 	blueprint = blueprint or self:_get_blueprint_from_ui()
 	local cosmetics = self:_make_current_weapon_cosmetics()
 
@@ -433,9 +486,9 @@ function InventoryIconCreator:_make_current_weapon_cosmetics()
 		return self:_make_weapon_cosmetics(weapon_skin, quality)
 	elseif weapon_color ~= "none" then
 		return self:_make_weapon_cosmetics(weapon_color, quality, color_index, pattern_scale)
+	else
+		return nil
 	end
-
-	return nil
 end
 
 function InventoryIconCreator:_make_weapon_cosmetics(id, quality, color_index, pattern_scale)
@@ -502,10 +555,12 @@ function InventoryIconCreator:_get_weapon_skins()
 	}
 
 	for name, item_data in pairs(tweak_data.blackmarket.weapon_skins) do
-		local match_weapon_id = not item_data.is_a_color_skin and (item_data.weapon_id or item_data.weapon_ids[1])
+		if not item_data.is_a_color_skin then
+			local match_weapon_id = item_data.weapon_id or item_data.weapon_ids[1]
 
-		if match_weapon_id == weapon_id then
-			table.insert(t, name)
+			if item_data.weapon_ids and table.contains(item_data.weapon_ids, weapon_id) or match_weapon_id == weapon_id then
+				table.insert(t, name)
+			end
 		end
 	end
 
@@ -1029,6 +1084,7 @@ function InventoryIconCreator:start_create()
 	managers.environment_controller:set_dof_setting("none")
 	managers.environment_controller:set_base_chromatic_amount(0)
 	managers.environment_controller:set_base_contrast(0)
+	managers.editor._light:set_enable(true)
 
 	self._steps = {}
 	self._current_step = 0
@@ -1054,6 +1110,7 @@ function InventoryIconCreator:end_create()
 	managers.editor:_set_appwin_fixed_resolution(nil)
 	managers.environment_controller:set_base_chromatic_amount(self._old_data.base_chromatic_amount)
 	managers.environment_controller:set_base_contrast(self._old_data.base_contrast)
+	managers.editor._light:set_enable(false)
 
 	self._has_job = false
 end
@@ -1061,7 +1118,7 @@ end
 function InventoryIconCreator:_create_backdrop()
 	self:_destroy_backdrop()
 
-	self._backdrop = safe_spawn_unit(Idstring("units/test/jocke/oneplanetorulethemall"), self._backdrop_position, self._backdrop_rotation)
+	self._backdrop = safe_spawn_unit(Idstring("units/test/jocke/plane_black_temp"), self._backdrop_position, self._backdrop_rotation)
 end
 
 function InventoryIconCreator:_destroy_backdrop()

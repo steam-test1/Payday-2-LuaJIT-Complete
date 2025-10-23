@@ -6,6 +6,11 @@ require("lib/managers/menu/ExtendedPanel")
 require("lib/utils/gui/FineText")
 require("lib/managers/menu/UiPlacer")
 
+local IDS_0 = Idstring("0")
+local IDS_1 = Idstring("1")
+local IDS_2 = Idstring("2")
+local IDS_3 = Idstring("3")
+local IDS_4 = Idstring("4")
 local is_win32 = SystemInfo:platform() == Idstring("WIN32")
 local NOT_WIN_32 = not is_win32
 local WIDTH_MULTIPLIER = NOT_WIN_32 and 0.68 or 0.71
@@ -651,7 +656,7 @@ function BlackMarketGuiTabItem:mouse_pressed(button, x, y)
 			slot_selected = math.max(slot_selected - num_per_page, 1)
 
 			return self:select_slot(slot_selected)
-		elseif button == Idstring("0") then
+		elseif button == IDS_0 then
 			local child_name = nil
 
 			for _, child in ipairs(self._tab_pages_panel:children()) do
@@ -682,7 +687,7 @@ function BlackMarketGuiTabItem:mouse_pressed(button, x, y)
 		end
 	end
 
-	if button ~= Idstring("0") or button == Idstring("1") then
+	if button ~= IDS_0 or button == IDS_1 then
 		return
 	end
 
@@ -1069,17 +1074,13 @@ function BlackMarketGuiSlotItem:init(main_panel, data, x, y, w, h)
 
 		custom_name_text:grow(-(custom_name_text:w() * (data.custom_name_text_width or 0.5)), 0)
 
-		local _, _, w, h = custom_name_text:text_rect()
+		local _, _, w, _ = custom_name_text:text_rect()
 
 		if custom_name_text:w() < w then
 			custom_name_text:set_font_scale(custom_name_text:font_scale() * custom_name_text:w() / w)
 		end
 
 		custom_name_text:set_right(right)
-	end
-
-	if data.hide_bg then
-		-- Nothing
 	end
 
 	if data.mid_text and type(data.mid_text) == "table" then
@@ -1662,10 +1663,6 @@ function BlackMarketGuiSlotItem:init(main_panel, data, x, y, w, h)
 				self._lock_bitmap:move(x, y)
 			end
 		end
-	end
-
-	if number_text then
-		-- Nothing
 	end
 
 	self:deselect(true)
@@ -8649,7 +8646,7 @@ function BlackMarketGui:mouse_pressed(button, x, y)
 	end
 
 	if alive(self._context_panel) then
-		if self._context_btn_selected and button == Idstring("0") then
+		if self._context_btn_selected and button == IDS_0 then
 			local data = self._visible_btns[self._context_btn_selected]._data
 
 			if data.callback then
@@ -8666,7 +8663,7 @@ function BlackMarketGui:mouse_pressed(button, x, y)
 	if self._extra_options_data then
 		local selected_slot = nil
 
-		if button == Idstring("0") or button == Idstring("1") then
+		if button == IDS_0 or button == IDS_1 then
 			self._extra_options_data.selected = self._extra_options_data.selected or 1
 
 			for i = 1, self._extra_options_data.num_panels do
@@ -8712,7 +8709,7 @@ function BlackMarketGui:mouse_pressed(button, x, y)
 
 			return
 		end
-	elseif self._steam_inventory_extra_data and button == Idstring("0") and alive(self._steam_inventory_extra_data.gui_panel) and not self._input_wait_t then
+	elseif self._steam_inventory_extra_data and button == IDS_0 and alive(self._steam_inventory_extra_data.gui_panel) and not self._input_wait_t then
 		local extra_data = self._steam_inventory_extra_data
 
 		if Global.blackmarket_manager.tradable_inventory_sort > 1 and extra_data.arrow_left:inside(x, y) then
@@ -8768,7 +8765,7 @@ function BlackMarketGui:mouse_pressed(button, x, y)
 		end
 	end
 
-	if button ~= Idstring("0") or button == Idstring("1") then
+	if button ~= IDS_0 or button == IDS_1 then
 		return
 	end
 
@@ -8909,7 +8906,7 @@ function BlackMarketGui:mouse_pressed(button, x, y)
 		self._selected_slot._equipped_rect:set_alpha(0.6)
 	end
 
-	if _G.IS_VR and button == Idstring("0") and self._selected_slot._panel:inside(x, y) then
+	if _G.IS_VR and button == IDS_0 and self._selected_slot._panel:inside(x, y) then
 		self:press_first_btn(button)
 	end
 end
@@ -8919,7 +8916,7 @@ function BlackMarketGui:mouse_released(button, x, y)
 		return
 	end
 
-	if button == Idstring("1") and (not alive(self._context_panel) or not self._context_panel:inside(x, y)) then
+	if button == IDS_1 and (not alive(self._context_panel) or not self._context_panel:inside(x, y)) then
 		local selected_tab = self._tabs[self._selected]
 
 		if selected_tab then
@@ -8979,7 +8976,7 @@ function BlackMarketGui:mouse_double_click(o, button, x, y)
 		return
 	end
 
-	if button == Idstring("0") then
+	if button == IDS_0 then
 		if not self._selected_slot._panel:inside(x, y) then
 			return
 		end
@@ -9040,13 +9037,15 @@ function BlackMarketGui:press_first_btn(button)
 	local first_btn_prio = 999
 	local first_btn_visible = false
 
-	if button == Idstring("0") then
+	if button == IDS_0 then
 		if self._slot_data.invalid_double_click then
 			self:flash()
 			managers.menu_component:post_event("menu_error")
 
 			return true
 		end
+
+		print("pressed on", inspect(self._slot_data))
 
 		if self._slot_data.double_click_btn then
 			local btn = self._btns[self._slot_data.double_click_btn]
@@ -9080,8 +9079,6 @@ function BlackMarketGui:press_first_btn(button)
 		else
 			self:flash()
 		end
-	elseif button == Idstring("1") then
-		-- Nothing
 	end
 
 	return false
@@ -9095,7 +9092,7 @@ function BlackMarketGui:press_second_btn(button)
 	local first_btn_prio = 999
 	local first_btn_visible = false
 
-	if button == Idstring("0") then
+	if button == IDS_0 then
 		if self._slot_data.double_click_btn then
 			local btn = self._btns[self._slot_data.double_click_btn]
 
@@ -9129,8 +9126,6 @@ function BlackMarketGui:press_second_btn(button)
 		else
 			self:flash()
 		end
-	elseif button == Idstring("1") then
-		-- Nothing
 	end
 
 	return false
@@ -9571,7 +9566,7 @@ function BlackMarketGui:confirm_pressed()
 	end
 
 	if managers.menu:is_pc_controller() and not managers.menu:is_steam_controller() then
-		return self:press_first_btn(Idstring("0"))
+		return self:press_first_btn(IDS_0)
 	else
 		return self:press_button("BTN_A")
 	end
@@ -12998,15 +12993,15 @@ end
 
 local function make_cosmetic_data(data, cosmetic_id, unlocked, quality, bonus, equipped)
 	local crafted = managers.blackmarket:get_crafted_category(data.category)[data.prev_node_data and data.prev_node_data.slot]
-	local my_cd = tweak_data.blackmarket.weapon_skins[cosmetic_id]
+	local cosmetic_data = tweak_data.blackmarket.weapon_skins[cosmetic_id]
 	local new_data = {
 		name = cosmetic_id,
-		name_localized = my_cd and my_cd.name_id and managers.localization:text(my_cd.name_id) or managers.localization:text("bm_menu_no_mod"),
-		desc_id = my_cd and my_cd.desc_id,
-		lock_text_id = my_cd and my_cd.lock_id,
+		name_localized = cosmetic_data and cosmetic_data.name_id and managers.localization:text(cosmetic_data.name_id) or managers.localization:text("bm_menu_no_mod"),
+		desc_id = cosmetic_data and cosmetic_data.desc_id,
+		lock_text_id = cosmetic_data and cosmetic_data.lock_id,
 		category = data.category or data.prev_node_data and data.prev_node_data.category,
-		default_blueprint = my_cd and my_cd.default_blueprint,
-		locked_cosmetics = my_cd and my_cd.locked
+		default_blueprint = cosmetic_data and cosmetic_data.default_blueprint,
+		locked_cosmetics = cosmetic_data and cosmetic_data.locked
 	}
 	local bitmap_texture, bg_texture = managers.blackmarket:get_weapon_icon_path(data.prev_node_data.name, {
 		id = cosmetic_id
@@ -13022,11 +13017,11 @@ local function make_cosmetic_data(data, cosmetic_id, unlocked, quality, bonus, e
 	end
 
 	new_data.slot = data.slot or data.prev_node_data and data.prev_node_data.slot
-	new_data.global_value = my_cd and my_cd.global_value or "normal"
+	new_data.global_value = cosmetic_data and cosmetic_data.global_value or "normal"
 	new_data.akimbo_gui_data = tweak_data.weapon[crafted.weapon_id] and tweak_data.weapon[crafted.weapon_id].akimbo_gui_data
 	new_data.cosmetic_id = cosmetic_id
 	new_data.cosmetic_quality = quality
-	new_data.cosmetic_rarity = my_cd and my_cd.rarity or "common"
+	new_data.cosmetic_rarity = cosmetic_data and cosmetic_data.rarity or "common"
 	new_data.cosmetic_bonus = bonus
 	new_data.unlocked = unlocked
 	new_data.equipped = equipped
@@ -13064,7 +13059,7 @@ local function make_cosmetic_data(data, cosmetic_id, unlocked, quality, bonus, e
 			table.insert(new_data, "wcc_preview")
 		end
 
-		if not crafted.previewing and not my_cd.is_a_unlockable and managers.menu:is_pc_controller() then
+		if not crafted.previewing and not cosmetic_data.is_a_unlockable and managers.menu:is_pc_controller() then
 			table.insert(new_data, "wcc_market")
 		end
 
@@ -13088,7 +13083,7 @@ local function make_cosmetic_data(data, cosmetic_id, unlocked, quality, bonus, e
 			blend_mode = "normal",
 			bottom = 1,
 			right = 1,
-			texture = lock_icon or my_cd.is_a_unlockable and "guis/textures/pd2/skilltree/padlock" or "guis/textures/pd2/lock_dlc",
+			texture = lock_icon or cosmetic_data.is_a_unlockable and "guis/textures/pd2/skilltree/padlock" or "guis/textures/pd2/lock_dlc",
 			color = tweak_data.screen_colors.important_1
 		})
 	end
@@ -13099,7 +13094,7 @@ end
 function BlackMarketGui:populate_weapon_cosmetics(data)
 	local crafted = managers.blackmarket:get_crafted_category(data.category)[data.prev_node_data and data.prev_node_data.slot]
 	local cosmetics_data = tweak_data.blackmarket.weapon_skins
-	local my_cd, new_data, bitmap_texture, bg_texture = nil
+	local cosmetic_data, new_data, bitmap_texture, bg_texture = nil
 	local inventory_tradable = managers.blackmarket:get_inventory_tradable()
 	local cosmetics_instances = data.on_create_data.instances or {}
 	local all_cosmetics = data.on_create_data.cosmetics or {}
@@ -13232,10 +13227,10 @@ function BlackMarketGui:populate_weapon_cosmetics(data)
 	for _, cosm_data in ipairs(all_cosmetics) do
 		cosmetic_id = cosm_data.id
 		cosmetic_data = cosm_data.data
-		my_cd = cosmetics_data[cosmetic_id]
+		cosmetic_data = cosmetics_data[cosmetic_id]
 
-		if not my_cd.is_template then
-			local global_value = my_cd and my_cd.global_value or "normal"
+		if not cosmetic_data.is_template then
+			local global_value = cosmetic_data and cosmetic_data.global_value or "normal"
 			local unlocked = managers.blackmarket:get_item_amount(global_value, "weapon_skins", cosmetic_id, true) > 0
 			local equipped = crafted and crafted.cosmetics and crafted.cosmetics.instance_id == cosmetic_id
 			new_data = make_cosmetic_data(data, cosmetic_id, unlocked, "mint", nil, equipped)
@@ -13674,16 +13669,6 @@ function BlackMarketGui:populate_mods(data)
 							blend = "add",
 							color = colors[secondary_sub_type] or Color(1, 0, 1)
 						})
-					end
-				end
-			end
-
-			if not data[equipped].conflict then
-				if false then
-					if data[equipped].default_mod then
-						data[equipped].comparision_data = managers.blackmarket:get_weapon_stats_with_mod(data[equipped].category, data[equipped].slot, data[equipped].default_mod)
-					else
-						data[equipped].comparision_data = managers.blackmarket:get_weapon_stats_without_mod(data[equipped].category, data[equipped].slot, data[equipped].name)
 					end
 				end
 			end
@@ -15006,13 +14991,13 @@ function BlackMarketGui:extra_option_key_press(panel, s)
 
 	local slot = nil
 
-	if s == Idstring("1") then
+	if s == IDS_1 then
 		slot = 1
-	elseif s == Idstring("2") then
+	elseif s == IDS_2 then
 		slot = 2
-	elseif s == Idstring("3") then
+	elseif s == IDS_3 then
 		slot = 3
-	elseif s == Idstring("4") then
+	elseif s == IDS_4 then
 		slot = 4
 	end
 
@@ -15561,7 +15546,8 @@ end
 
 function BlackMarketGui:_weapon_cosmetics_callback(data, add, yes_clbk)
 	local cosmetic_id = data.equip_weapon_cosmetics and data.equip_weapon_cosmetics.entry
-	local cosmetic_name_id = cosmetic_id and tweak_data.blackmarket.weapon_skins[cosmetic_id].name_id
+	local cosmetic_data = cosmetic_id and tweak_data.blackmarket.weapon_skins[cosmetic_id]
+	local cosmetic_name_id = cosmetic_data and cosmetic_data.name_id
 	local name_localized = cosmetic_name_id and managers.localization:text(cosmetic_name_id) or data.name_localized or data.name
 	local crafted = managers.blackmarket:get_crafted_category(data.category)[data.slot]
 	local crafted_cosmetic_id = crafted.cosmetics and crafted.cosmetics.id

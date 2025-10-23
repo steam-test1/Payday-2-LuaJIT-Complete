@@ -64,7 +64,7 @@ function ConcussionGrenade:_detonate(tag, unit, body, other_unit, other_body, po
 		verify_callback = callback(self, self, "_can_stun_unit")
 	})
 
-	if self._unit:id() ~= -1 then
+	if self._unit:id() ~= -1 and managers.network:session() then
 		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", GrenadeBase.EVENT_IDS.detonate)
 	end
 

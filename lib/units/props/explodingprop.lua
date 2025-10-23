@@ -47,7 +47,7 @@ function ExplodingProp:detonate(pos, range, damage, player_damage)
 
 		if self._unit[self.EXTENSION](self._unit) ~= self then
 			Application:error("Invalid extension name on ExplodingProp-extension. Should be \"" .. self.EXTENSION .. "\". Unit: " .. tostring(self._unit:name():t()))
-		else
+		elseif managers.network:session() then
 			managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, self.EXTENSION, ExplodingProp.DETONATE_EVENT_ID)
 		end
 	else

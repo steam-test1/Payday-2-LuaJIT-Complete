@@ -157,6 +157,7 @@ function CopDamage:init(unit)
 	unit:set_extension_update_enabled(Idstring("character_damage"), false)
 
 	local char_tweak = tweak_data.character[unit:base()._tweak_table]
+	self._char_tweak = char_tweak
 	self._immune_to_knockback = char_tweak.damage.immune_to_knockback
 	self._HEALTH_INIT = char_tweak.HEALTH_INIT
 	self._HEALTH_INIT = managers.modifiers:modify_value("CopDamage:InitialHealth", self._HEALTH_INIT, unit:base()._tweak_table)
@@ -180,7 +181,6 @@ function CopDamage:init(unit)
 		self:set_invulnerable(true)
 	end
 
-	self._char_tweak = char_tweak
 	self._spine2_obj = unit:get_object(Idstring("Spine2"))
 
 	if self._head_body_name then
@@ -392,7 +392,7 @@ function CopDamage:chk_body_hit_priority(old_body_hit, new_body_hit)
 	end
 
 	if not self._priority_bodies_ids then
-		if self._ids_plate_name and old_body_hit:name() == self._ids_plate_name and new_body_hit:name() ~= self._ids_plate_name then
+		if self._ids_plate_name and self._ids_plate_name == old_body_hit:name() and self._ids_plate_name ~= new_body_hit:name() then
 			return true
 		else
 			return false
@@ -416,8 +416,6 @@ function CopDamage:chk_body_hit_priority(old_body_hit, new_body_hit)
 end
 
 function CopDamage:_dismember_body_part(attack_data)
-	Application:debug("CopDamage:_dismember_body_part( attack_data )")
-
 	local hit_body_part = attack_data.body_name
 	hit_body_part = hit_body_part or attack_data.col_ray.body:name()
 	local sound = "split_gen_head"
@@ -426,7 +424,6 @@ function CopDamage:_dismember_body_part(attack_data)
 		sound = "split_gen_body"
 	end
 
-	Application:trace("CopDamage:_dismember_body_part( attack_data ) - sound: ", inspect(sound))
 	self._unit:sound():play(sound, nil, nil)
 
 	local dismembers = {
@@ -452,9 +449,10 @@ function CopDamage:_dismember_body_part(attack_data)
 		[Idstring("rag_RightLeg"):key()] = "dismember_r_lower_leg",
 		[Idstring("rag_LeftLeg"):key()] = "dismember_l_lower_leg"
 	}
+	local sequence_name = dismembers[hit_body_part:key()]
 
-	if self._unit:damage():has_sequence(dismembers[hit_body_part:key()]) then
-		self._unit:damage():run_sequence_simple(dismembers[hit_body_part:key()])
+	if sequence_name and self._unit:damage():has_sequence(sequence_name) then
+		self._unit:damage():run_sequence_simple(sequence_name)
 	end
 end
 
@@ -4569,22 +4567,40 @@ function CopDamage:save(data)
 end
 
 function CopDamage:load(data)
-	if not data.char_dmg then
+	local char_dmg = data.char_dmg
+
+	if not char_dmg then
 		return
 	end
 
-	if data.char_dmg.health then
-		self._health = data.char_dmg.health
-		self._HEALTH_INIT = data.char_dmg.health_init or self._HEALTH_INIT
+	local contour_ext = self._unit:contour() or nil
+	local allow_contours = false
+
+	if contour_ext then
+		allow_contours = true
+		local tweak_name = alive(self._unit) and self._unit:base() and self._unit:base()._tweak_table
+
+		if tweak_name then
+			local char_tweak_data = tweak_data.character[tweak_name]
+
+			if char_tweak_data then
+				allow_contours = not char_tweak_data.ignores_contours
+			end
+		end
+	end
+
+	if char_dmg.health then
+		self._health = char_dmg.health
+		self._HEALTH_INIT = char_dmg.health_init or self._HEALTH_INIT
 		self._health_ratio = self._health / self._HEALTH_INIT
 		self._HEALTH_INIT_PRECENT = self._HEALTH_INIT / self._HEALTH_GRANULARITY
 
 		self:_update_debug_ws()
 	end
 
-	if data.char_dmg.invulnerable then
+	if char_dmg.invulnerable then
 		local old_state = self._invulnerable and true or false
-		self._invulnerable = data.char_dmg.invulnerable
+		self._invulnerable = char_dmg.invulnerable
 		local new_state = self._invulnerable and true or false
 
 		if old_state ~= new_state and self._invul_impact_override then
@@ -4596,61 +4612,50 @@ function CopDamage:load(data)
 		end
 	end
 
-	if data.char_dmg.tmp_invulnerable_t then
-		self:set_invulnerable_tmp(data.char_dmg.tmp_invulnerable_t)
+	if char_dmg.tmp_invulnerable_t then
+		self:set_invulnerable_tmp(char_dmg.tmp_invulnerable_t)
 
-		if self._unit:contour() then
-			self._unit:contour():add("tmp_invulnerable", false, data.char_dmg.tmp_invulnerable_t, nil, false)
-			self._unit:contour():flash("tmp_invulnerable", 0.2)
+		if allow_contours then
+			contour_ext:add("tmp_invulnerable", false, char_dmg.tmp_invulnerable_t, nil, false)
+			contour_ext:flash("tmp_invulnerable", 0.2)
 		end
 	end
 
-	self._immortal = data.char_dmg.immortal or self._immortal
+	self._immortal = char_dmg.immortal or self._immortal or nil
 
-	if data.char_dmg.accuracy_multiplier then
-		self:set_accuracy_multiplier(data.char_dmg.accuracy_multiplier)
+	if char_dmg.accuracy_multiplier then
+		self:set_accuracy_multiplier(char_dmg.accuracy_multiplier)
 	end
 
-	if data.char_dmg.set_stun_exit_clbk then
+	if char_dmg.set_stun_exit_clbk then
 		self:_create_stun_exit_clbk()
 	end
 
-	if data.char_dmg.stun_accuracy_penalty_t then
-		self:_apply_stun_accuracy_penalty(TimerManager:game():time() + data.char_dmg.stun_accuracy_penalty_t)
+	if char_dmg.stun_accuracy_penalty_t then
+		self:_apply_stun_accuracy_penalty(TimerManager:game():time() + char_dmg.stun_accuracy_penalty_t)
 	end
 
-	if data.char_dmg.is_converted then
+	if char_dmg.is_converted then
 		self._converted = true
 
 		self._unit:set_slot(16)
-		managers.groupai:state():sync_converted_enemy(self._unit, data.char_dmg.converted_owner_peer_id)
+		managers.groupai:state():sync_converted_enemy(self._unit, char_dmg.converted_owner_peer_id)
 		self:set_mover_collision_state(false)
 
-		local add_contour = true
-		local tweak_name = alive(self._unit) and self._unit:base() and self._unit:base()._tweak_table
-
-		if tweak_name then
-			local char_tweak_data = tweak_data.character[tweak_name]
-
-			if char_tweak_data then
-				add_contour = not char_tweak_data.ignores_contours
-			end
-		end
-
-		if add_contour then
-			self._unit:contour():add("friendly", false)
+		if allow_contours then
+			contour_ext:add("friendly", false)
 		end
 	end
 
-	if data.char_dmg.damage_reduction_multiplier then
-		self._damage_reduction_multiplier = data.char_dmg.damage_reduction_multiplier
+	if char_dmg.damage_reduction_multiplier then
+		self._damage_reduction_multiplier = char_dmg.damage_reduction_multiplier
 	end
 
-	if data.char_dmg.lower_health_percentage_limit then
-		self:_set_lower_health_percentage_limit(data.char_dmg.lower_health_percentage_limit)
+	if char_dmg.lower_health_percentage_limit then
+		self:_set_lower_health_percentage_limit(char_dmg.lower_health_percentage_limit)
 	end
 
-	if data.char_dmg.is_dead then
+	if char_dmg.is_dead then
 		self._dead = true
 
 		self:_remove_debug_gui()
@@ -4669,7 +4674,7 @@ function CopDamage:load(data)
 		end
 	end
 
-	if data.char_dmg.remove_head_gear then
+	if char_dmg.remove_head_gear then
 		self:hide_head_gear()
 
 		self._head_gear_spawned = true

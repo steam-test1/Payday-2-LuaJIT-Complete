@@ -848,6 +848,8 @@ function ProjectileBase:destroy(...)
 	self:_warning_fx_vfx_remove()
 end
 
+local ids_unit = Idstring("unit")
+
 function ProjectileBase.throw_projectile(projectile_type, pos, dir, owner_peer_id)
 	if not ProjectileBase.check_time_cheat(projectile_type, owner_peer_id) then
 		return
@@ -855,6 +857,11 @@ function ProjectileBase.throw_projectile(projectile_type, pos, dir, owner_peer_i
 
 	local tweak_entry = tweak_data.blackmarket.projectiles[projectile_type]
 	local unit_name = Idstring(not Network:is_server() and tweak_entry.local_unit or tweak_entry.unit)
+
+	if not PackageManager:has(ids_unit, unit_name) then
+		return
+	end
+
 	local unit = World:spawn_unit(unit_name, pos, Rotation(dir, math.UP))
 
 	if owner_peer_id and managers.network:session() then

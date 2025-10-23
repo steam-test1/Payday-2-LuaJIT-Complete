@@ -368,6 +368,9 @@ end
 
 NPCAkimboWeaponBase = NPCAkimboWeaponBase or class(NewNPCRaycastWeaponBase)
 NPCAkimboWeaponBase.AKIMBO = true
+local ID_TRYFIRE = 0
+local ID_FIRE_PRIMARY = 1
+local ID_FIRE_SECONDARY = 2
 
 function NPCAkimboWeaponBase:init(...)
 	NPCAkimboWeaponBase.super.init(self, ...)
@@ -407,7 +410,7 @@ function NPCAkimboWeaponBase:get_fire_time()
 end
 
 function NPCAkimboWeaponBase:fire_blank(direction, impact, sub_id, override_direction)
-	if sub_id == 0 then
+	if sub_id == ID_TRYFIRE then
 		if not self._manual_fire_second_gun then
 			NPCAkimboWeaponBase.super.fire_blank(self, direction, impact, sub_id, override_direction)
 
@@ -434,9 +437,9 @@ function NPCAkimboWeaponBase:fire_blank(direction, impact, sub_id, override_dire
 
 			self._fire_second_gun_next = true
 		end
-	elseif sub_id == 1 then
+	elseif sub_id == ID_FIRE_PRIMARY then
 		NPCAkimboWeaponBase.super.fire_blank(self, direction, impact, sub_id, override_direction)
-	elseif sub_id == 2 then
+	elseif sub_id == ID_FIRE_SECONDARY then
 		NPCAkimboWeaponBase.super.fire_blank(self._second_gun:base(), direction, impact, sub_id, override_direction)
 	end
 end
@@ -448,7 +451,7 @@ function NPCAkimboWeaponBase:_fire_blank_second(params)
 end
 
 function NPCAkimboWeaponBase:auto_fire_blank(direction, impact, sub_ids, override_direction)
-	if not sub_ids or sub_ids == 0 then
+	if not sub_ids or sub_ids == ID_TRYFIRE then
 		NPCAkimboWeaponBase.super.auto_fire_blank(self, direction, impact, sub_ids, override_direction)
 
 		if alive(self._second_gun) and impact then
@@ -464,11 +467,11 @@ function NPCAkimboWeaponBase:auto_fire_blank(direction, impact, sub_ids, overrid
 		end
 	end
 
-	if bit.band(sub_ids, 1) == 1 then
+	if bit.band(sub_ids, 1) == ID_FIRE_PRIMARY then
 		NPCAkimboWeaponBase.super.auto_fire_blank(self, direction, impact, 1, override_direction)
 	end
 
-	if bit.band(sub_ids, 2) == 2 then
+	if bit.band(sub_ids, 2) == ID_FIRE_SECONDARY then
 		NPCAkimboWeaponBase.super.auto_fire_blank(self._second_gun:base(), direction, impact, 1, override_direction)
 	end
 
@@ -482,7 +485,7 @@ function NPCAkimboWeaponBase:_auto_fire_blank_second(params)
 end
 
 function NPCAkimboWeaponBase:start_autofire(nr_shots, sub_id)
-	if not sub_id or sub_id == 0 then
+	if not sub_id or sub_id == ID_TRYFIRE then
 		NPCAkimboWeaponBase.super.start_autofire(self, nr_shots)
 
 		if alive(self._second_gun) then
@@ -493,11 +496,11 @@ function NPCAkimboWeaponBase:start_autofire(nr_shots, sub_id)
 		end
 	end
 
-	if sub_id == 1 then
+	if sub_id == ID_FIRE_PRIMARY then
 		NPCAkimboWeaponBase.super.start_autofire(self, nr_shots)
 	end
 
-	if sub_id == 2 then
+	if sub_id == ID_FIRE_SECONDARY then
 		self._next_fire_allowed = math.max(self._next_fire_allowed, Application:time())
 
 		NPCAkimboWeaponBase.super.start_autofire(self._second_gun:base(), nr_shots)
@@ -520,9 +523,9 @@ function NPCAkimboWeaponBase:stop_autofire(sub_id)
 				callback = callback(self, self, "_stop_autofire_second")
 			})
 		end
-	elseif sub_id == 1 then
+	elseif sub_id == ID_FIRE_PRIMARY then
 		NPCAkimboWeaponBase.super.stop_autofire(self)
-	elseif sub_id == 2 then
+	elseif sub_id == ID_FIRE_SECONDARY then
 		NPCAkimboWeaponBase.super.stop_autofire(self._second_gun:base())
 	end
 end

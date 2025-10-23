@@ -190,6 +190,14 @@ function BaseNetworkSession:peer_by_user_id(user_id)
 	end
 end
 
+function BaseNetworkSession:peer_by_account_id(account_id)
+	for peer_id, peer in pairs(self._peers_all) do
+		if peer:account_id() == account_id then
+			return peer
+		end
+	end
+end
+
 function BaseNetworkSession:peer_by_unit(unit)
 	local wanted_key = unit:key()
 
@@ -1156,7 +1164,6 @@ function BaseNetworkSession:send_windistrib_p2p_msgs(wall_t)
 
 	for peer_id, peer in pairs(self._peers) do
 		if peer ~= self._server_peer and (not peer:next_windistrib_p2p_send_t() or peer:next_windistrib_p2p_send_t() < wall_t) then
-			print("pinging peer ", peer_id)
 			peer:rpc():windistrib_p2p_ping()
 			peer:set_next_windistrib_p2p_send_t(wall_t + self._WINDISTRIB_P2P_SEND_INTERVAL)
 		end

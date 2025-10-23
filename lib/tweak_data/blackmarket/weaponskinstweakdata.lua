@@ -345,10 +345,10 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_pis_beretta_body_beretta",
 			"wpn_fps_pis_beretta_b_std",
 			"wpn_fps_pis_beretta_m_std",
-			"wpn_fps_pis_beretta_o_std",
 			"wpn_fps_upg_ns_pis_large",
 			"wpn_fps_pis_beretta_g_ergo",
-			"wpn_fps_pis_beretta_sl_brigadier"
+			"wpn_fps_pis_beretta_sl_brigadier",
+			"wpn_fps_pis_beretta_o_std"
 		},
 		parts = {
 			wpn_fps_pis_beretta_body_beretta = {
@@ -901,8 +901,12 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_pis_ppk_body_standard",
 			"wpn_fps_pis_ppk_m_standard",
 			"wpn_fps_pis_ppk_b_long",
-			"wpn_fps_upg_o_rmr",
 			"wpn_fps_pis_ppk_g_laser"
+		},
+		special_blueprint = {
+			ppk = {
+				"wpn_fps_upg_o_rmr"
+			}
 		}
 	}
 	self.weapon_skins.plainsrider_linked = {
@@ -1026,8 +1030,12 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_pis_deagle_body_standard",
 			"wpn_fps_pis_deagle_m_standard",
 			"wpn_fps_pis_deagle_b_legend",
-			"wpn_fps_pis_deagle_g_ergo",
-			"wpn_fps_upg_o_rmr"
+			"wpn_fps_pis_deagle_g_ergo"
+		},
+		special_blueprint = {
+			deagle = {
+				"wpn_fps_upg_o_rmr"
+			}
 		},
 		parts = {
 			wpn_fps_pis_deagle_g_ergo = {
@@ -1608,10 +1616,10 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		default_blueprint = {
 			"wpn_fps_pis_beretta_body_beretta",
 			"wpn_fps_pis_beretta_b_std",
-			"wpn_fps_pis_beretta_sl_brigadier",
 			"wpn_fps_pis_beretta_m_extended",
 			"wpn_fps_pis_beretta_g_engraved",
 			"wpn_fps_upg_ns_pis_jungle",
+			"wpn_fps_pis_beretta_sl_brigadier",
 			"wpn_fps_pis_beretta_o_std"
 		}
 	}
@@ -2264,11 +2272,18 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		default_blueprint = {
 			"wpn_fps_pis_beretta_body_beretta",
 			"wpn_fps_pis_beretta_b_std",
-			"wpn_fps_pis_beretta_sl_brigadier",
 			"wpn_fps_pis_beretta_m_extended",
-			"wpn_fps_upg_o_rmr",
 			"wpn_fps_pis_beretta_g_engraved",
-			"wpn_fps_pis_beretta_co_co1"
+			"wpn_fps_pis_beretta_co_co1",
+			"wpn_fps_pis_beretta_sl_brigadier"
+		},
+		special_blueprint = {
+			b92fs = {
+				"wpn_fps_upg_o_rmr"
+			},
+			x_b92fs = {
+				"wpn_fps_pis_beretta_o_std"
+			}
 		},
 		parts = {
 			wpn_fps_pis_beretta_body_beretta = {
@@ -2591,6 +2606,13 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 					pattern_pos = Vector3(-0.130736, 0.121138, 0),
 					uv_offset_rot = Vector3(-0.136895, 0, 0),
 					pattern_tweak = Vector3(4.02099, 0, 1)
+				}
+			},
+			wpn_fps_shot_r870_s_solid = {
+				[Idstring("solid"):key()] = {
+					pattern_pos = Vector3(0.216075, -0.327689, 0),
+					pattern = Idstring("units/payday2_cash/safes/red/pattern/pattern_fleur_de_lis_df"),
+					pattern_tweak = Vector3(3.30551, 0.139361, 1)
 				}
 			},
 			wpn_fps_shot_r870_b_short = {
@@ -3714,8 +3736,15 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_smg_p90_body_p90",
 			"wpn_fps_smg_p90_m_std",
 			"wpn_fps_smg_p90_b_legend",
-			"wpn_fps_upg_o_cmore",
 			"wpn_fps_upg_fl_ass_utg"
+		},
+		special_blueprint = {
+			p90 = {
+				"wpn_fps_upg_o_cmore"
+			},
+			x_p90 = {
+				"wpn_upg_o_marksmansight_rear_vanilla"
+			}
 		},
 		parts = {
 			wpn_fps_smg_p90_body_p90 = {
@@ -3989,9 +4018,17 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_smg_polymer_fg_standard",
 			"wpn_fps_smg_polymer_barrel_standard",
 			"wpn_fps_smg_polymer_m_standard",
-			"wpn_fps_upg_ass_ns_surefire",
-			"wpn_fps_upg_o_reflex",
-			"wpn_fps_upg_m4_s_mk46"
+			"wpn_fps_upg_ass_ns_surefire"
+		},
+		special_blueprint = {
+			polymer = {
+				"wpn_fps_upg_o_reflex",
+				"wpn_fps_upg_m4_s_mk46"
+			},
+			x_polymer = {
+				"wpn_fps_smg_polymer_o_iron",
+				"wpn_fps_smg_polymer_s_standard"
+			}
 		},
 		parts = {
 			wpn_fps_smg_polymer_body_standard = {
@@ -4600,9 +4637,13 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_upg_fl_pis_crimson",
 			"wpn_fps_pis_g18c_g_ergo",
 			"wpn_fps_pis_g18c_m_mag_33rnd",
-			"wpn_fps_upg_o_rmr",
 			"wpn_fps_pis_g22c_b_standard",
 			"wpn_fps_upg_ns_pis_ipsccomp"
+		},
+		special_blueprint = {
+			g22c = {
+				"wpn_fps_upg_o_rmr"
+			}
 		},
 		parts = {
 			wpn_fps_pis_g22c_b_standard = {
@@ -4769,12 +4810,17 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_smg_akmsu_body_lowerreceiver",
 			"wpn_fps_ass_akm_body_upperreceiver_vanilla",
 			"wpn_fps_smg_akmsu_b_standard",
-			"wpn_fps_upg_o_cmore",
 			"wpn_fps_upg_ass_ns_surefire",
-			"wpn_fps_upg_o_ak_scopemount",
 			"wpn_fps_smg_akmsu_fg_rail",
-			"wpn_fps_upg_ak_s_solidstock",
-			"wpn_fps_upg_ak_m_quad"
+			"wpn_fps_upg_ak_m_quad",
+			"wpn_upg_ak_g_standard"
+		},
+		special_blueprint = {
+			akmsu = {
+				"wpn_fps_upg_ak_s_solidstock",
+				"wpn_fps_upg_o_ak_scopemount",
+				"wpn_fps_upg_o_cmore"
+			}
 		},
 		parts = {
 			wpn_fps_upg_m4_s_ubr = {
@@ -6886,8 +6932,12 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		default_blueprint = {
 			"wpn_fps_pis_hs2000_body_standard",
 			"wpn_fps_pis_hs2000_m_extended",
-			"wpn_fps_upg_o_rmr",
 			"wpn_fps_pis_hs2000_sl_long"
+		},
+		special_blueprint = {
+			hs2000 = {
+				"wpn_fps_upg_o_rmr"
+			}
 		},
 		parts = {
 			wpn_fps_pis_hs2000_sl_custom = {
@@ -6956,10 +7006,18 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_upg_m4_g_hgrip",
 			"wpn_fps_upg_ass_m4_lower_reciever_core",
 			"wpn_fps_upg_m4_m_quad",
-			"wpn_fps_upg_m4_s_ubr",
 			"wpn_fps_upg_ass_m4_upper_reciever_ballos",
-			"wpn_fps_amcar_bolt_standard",
-			"wpn_fps_upg_o_rx30"
+			"wpn_fps_amcar_bolt_standard"
+		},
+		special_blueprint = {
+			x_olympic = {
+				"wpn_fps_ass_m16_o_handle_sight",
+				"wpn_fps_smg_olympic_s_short_vanilla"
+			},
+			olympic = {
+				"wpn_fps_upg_o_rx30",
+				"wpn_fps_upg_m4_s_ubr"
+			}
 		},
 		parts = {
 			wpn_fps_m4_lower_reciever = {
@@ -8246,8 +8304,12 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_pis_g17_b_standard",
 			"wpn_fps_pis_g17_m_standard",
 			"wpn_fps_pis_g26_g_laser",
-			"wpn_fps_upg_o_rmr",
 			"wpn_fps_upg_ns_pis_ipsccomp"
+		},
+		special_blueprint = {
+			glock_17 = {
+				"wpn_fps_upg_o_rmr"
+			}
 		},
 		parts = {
 			wpn_fps_pis_g18c_m_mag_33rnd = {
@@ -9016,10 +9078,6 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		name_id = "bm_wskn_saw_buck",
 		desc_id = "bm_wskn_saw_buck_desc",
 		weapon_id = "saw",
-		weapon_ids = {
-			"saw",
-			"saw_secondary"
-		},
 		rarity = "uncommon",
 		bonus = "concealment_p1",
 		reserve_quality = true,
@@ -9124,8 +9182,12 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_upg_ass_ns_surefire",
 			"wpn_fps_smg_m45_g_ergo",
 			"wpn_fps_smg_m45_m_extended",
-			"wpn_fps_upg_o_reflex",
 			"wpn_fps_smg_m45_body_green"
+		},
+		special_blueprint = {
+			m45 = {
+				"wpn_fps_upg_o_reflex"
+			}
 		},
 		parts = {
 			wpn_fps_smg_m45_g_bling = {
@@ -9573,11 +9635,18 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		base_gradient = Idstring("units/payday2_cash/safes/buck/base_gradient/base_buck_014_df"),
 		default_blueprint = {
 			"wpn_fps_smg_mp5_body_mp5",
-			"wpn_fps_smg_mp5_s_solid",
 			"wpn_fps_upg_ass_ns_surefire",
 			"wpn_fps_smg_mp5_fg_mp5a5",
-			"wpn_fps_smg_mp5_m_straight",
-			"wpn_fps_upg_o_cmore"
+			"wpn_fps_smg_mp5_m_straight"
+		},
+		special_blueprint = {
+			x_mp5 = {
+				"wpn_fps_smg_mp5_s_ring_vanilla"
+			},
+			new_mp5 = {
+				"wpn_fps_smg_mp5_s_solid",
+				"wpn_fps_upg_o_cmore"
+			}
 		},
 		parts = {
 			wpn_fps_smg_mp5_s_adjust = {
@@ -9762,9 +9831,16 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_smg_thompson_drummag",
 			"wpn_fps_smg_thompson_foregrip",
 			"wpn_fps_smg_thompson_grip",
-			"wpn_fps_smg_thompson_stock",
 			"wpn_fps_smg_thompson_barrel_long",
 			"wpn_fps_upg_ass_ns_surefire"
+		},
+		special_blueprint = {
+			x_m1928 = {
+				"wpn_fps_smg_thompson_stock_nostock_vanilla"
+			},
+			m1928 = {
+				"wpn_fps_smg_thompson_stock"
+			}
 		},
 		parts = {
 			wpn_fps_smg_thompson_stock_nostock = {
@@ -10169,10 +10245,17 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_pis_beretta_b_std",
 			"wpn_fps_pis_beretta_m_extended",
 			"wpn_fps_pis_beretta_sl_brigadier",
-			"wpn_upg_o_marksmansight_rear",
 			"wpn_fps_pis_beretta_g_ergo",
 			"wpn_fps_upg_fl_pis_crimson",
 			"wpn_fps_upg_ns_pis_jungle"
+		},
+		special_blueprint = {
+			b92fs = {
+				"wpn_upg_o_marksmansight_rear"
+			},
+			x_b92fs = {
+				"wpn_upg_o_marksmansight_rear_vanilla"
+			}
 		},
 		parts = {
 			wpn_fps_upg_ns_pis_jungle = {
@@ -12053,10 +12136,10 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_pis_beretta_body_beretta",
 			"wpn_fps_pis_beretta_b_std",
 			"wpn_fps_pis_beretta_m_std",
-			"wpn_fps_pis_beretta_o_std",
 			"wpn_fps_upg_ns_pis_ipsccomp",
 			"wpn_fps_pis_beretta_g_ergo",
-			"wpn_fps_pis_beretta_sl_brigadier"
+			"wpn_fps_pis_beretta_sl_brigadier",
+			"wpn_fps_pis_beretta_o_std"
 		},
 		parts = {
 			wpn_fps_upg_ns_pis_ipsccomp = {
@@ -12307,11 +12390,16 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_ass_akm_body_upperreceiver_vanilla",
 			"wpn_fps_smg_akmsu_b_standard",
 			"wpn_fps_upg_ass_ns_surefire",
-			"wpn_fps_upg_o_ak_scopemount",
 			"wpn_fps_smg_akmsu_fg_rail",
-			"wpn_fps_upg_ak_s_solidstock",
 			"wpn_fps_upg_ak_m_quad",
-			"wpn_fps_upg_o_acog"
+			"wpn_upg_ak_g_standard"
+		},
+		special_blueprint = {
+			akmsu = {
+				"wpn_fps_upg_ak_s_solidstock",
+				"wpn_fps_upg_o_ak_scopemount",
+				"wpn_fps_upg_o_acog"
+			}
 		},
 		parts = {
 			wpn_fps_upg_m4_s_mk46 = {
@@ -12986,8 +13074,12 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_pis_sparrow_b_threaded",
 			"wpn_fps_upg_ns_pis_ipsccomp",
 			"wpn_fps_upg_fl_pis_crimson",
-			"wpn_fps_pis_sparrow_body_941",
-			"wpn_fps_upg_o_rmr"
+			"wpn_fps_pis_sparrow_body_941"
+		},
+		special_blueprint = {
+			mac10 = {
+				"wpn_fps_upg_o_rmr"
+			}
 		},
 		parts = {
 			wpn_fps_pis_sparrow_g_cowboy = {
@@ -13088,8 +13180,12 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_pis_judge_b_standard",
 			"wpn_fps_pis_judge_g_standard",
 			"wpn_fps_upg_ns_shot_shark",
-			"wpn_fps_upg_o_reflex",
 			"wpn_fps_upg_fl_ass_smg_sho_peqbox"
+		},
+		special_blueprint = {
+			judge = {
+				"wpn_fps_upg_o_reflex"
+			}
 		},
 		parts = {
 			wpn_fps_upg_ns_shot_shark = {
@@ -13172,11 +13268,18 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		pattern_tweak = Vector3(1.58836, 0, 0.212974),
 		default_blueprint = {
 			"wpn_fps_smg_mp5_body_mp5",
-			"wpn_fps_smg_mp5_s_ring_vanilla",
 			"wpn_fps_smg_mp5_m_std",
 			"wpn_fps_upg_ass_ns_surefire",
 			"wpn_fps_upg_fl_ass_smg_sho_peqbox",
 			"wpn_fps_smg_mp5_fg_mp5a5"
+		},
+		special_blueprint = {
+			x_mp5 = {
+				"wpn_fps_smg_mp5_s_ring_vanilla"
+			},
+			new_mp5 = {
+				"wpn_fps_smg_mp5_s_solid"
+			}
 		},
 		parts = {
 			wpn_fps_upg_ass_ns_linear = {
@@ -13303,11 +13406,16 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_ass_akm_body_upperreceiver_vanilla",
 			"wpn_fps_smg_akmsu_b_standard",
 			"wpn_fps_upg_ass_ns_surefire",
-			"wpn_fps_upg_o_ak_scopemount",
 			"wpn_fps_smg_akmsu_fg_rail",
-			"wpn_fps_upg_ak_s_solidstock",
 			"wpn_fps_upg_ak_m_quad",
-			"wpn_fps_upg_o_cs"
+			"wpn_upg_ak_g_standard"
+		},
+		special_blueprint = {
+			akmsu = {
+				"wpn_fps_upg_ak_s_solidstock",
+				"wpn_fps_upg_o_ak_scopemount",
+				"wpn_fps_upg_o_cs"
+			}
 		},
 		parts = {
 			wpn_fps_upg_m4_s_mk46 = {
@@ -14516,10 +14624,14 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		default_blueprint = {
 			"wpn_fps_pis_hs2000_body_standard",
 			"wpn_fps_pis_hs2000_m_extended",
-			"wpn_fps_upg_o_rmr",
 			"wpn_fps_pis_hs2000_sl_custom",
 			"wpn_fps_upg_ns_pis_large",
 			"wpn_fps_upg_fl_pis_m3x"
+		},
+		special_blueprint = {
+			hs2000 = {
+				"wpn_fps_upg_o_rmr"
+			}
 		},
 		parts = {
 			wpn_fps_upg_fl_pis_m3x = {
@@ -14608,10 +14720,6 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		name_id = "bm_wskn_saw_smosh",
 		desc_id = "bm_wskn_saw_smosh_desc",
 		weapon_id = "saw",
-		weapon_ids = {
-			"saw",
-			"saw_secondary"
-		},
 		rarity = "uncommon",
 		bonus = "concealment_p1",
 		reserve_quality = true,
@@ -15099,10 +15207,18 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_smg_polymer_fg_standard",
 			"wpn_fps_smg_polymer_barrel_standard",
 			"wpn_fps_smg_polymer_m_standard",
-			"wpn_fps_upg_o_cs",
-			"wpn_fps_upg_m4_s_ubr",
 			"wpn_fps_upg_ns_ass_smg_medium",
 			"wpn_fps_upg_fl_ass_utg"
+		},
+		special_blueprint = {
+			polymer = {
+				"wpn_fps_upg_o_cs",
+				"wpn_fps_upg_m4_s_ubr"
+			},
+			x_polymer = {
+				"wpn_fps_smg_polymer_o_iron",
+				"wpn_fps_smg_polymer_s_standard"
+			}
 		},
 		parts = {
 			wpn_fps_upg_m4_s_mk46 = {
@@ -17377,10 +17493,14 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_smg_mp7_b_standard",
 			"wpn_fps_smg_mp7_body_standard",
 			"wpn_fps_smg_mp7_m_extended",
-			"wpn_fps_upg_o_reflex",
 			"wpn_fps_smg_mp7_s_long",
 			"wpn_fps_upg_fl_ass_utg",
 			"wpn_fps_upg_ass_ns_surefire"
+		},
+		special_blueprint = {
+			mp7 = {
+				"wpn_fps_upg_o_reflex"
+			}
 		},
 		parts = {
 			wpn_fps_upg_ns_ass_smg_medium = {
@@ -17627,10 +17747,17 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		default_blueprint = {
 			"wpn_fps_smg_mp5_body_mp5",
 			"wpn_fps_smg_mp5_m_std",
-			"wpn_fps_smg_mp5_s_ring_vanilla",
 			"wpn_fps_smg_mp5_fg_mp5a5",
 			"wpn_fps_upg_ass_ns_surefire",
 			"wpn_fps_upg_fl_ass_peq15"
+		},
+		special_blueprint = {
+			x_mp5 = {
+				"wpn_fps_smg_mp5_s_ring_vanilla"
+			},
+			new_mp5 = {
+				"wpn_fps_smg_mp5_s_solid"
+			}
 		},
 		parts = {
 			wpn_fps_smg_mp5_fg_mp5a5 = {
@@ -17810,6 +17937,11 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_upg_ass_ns_surefire",
 			"wpn_fps_upg_ak_m_uspalm",
 			"wpn_fps_smg_akmsu_fg_rail"
+		},
+		special_blueprint = {
+			akmsu = {
+				"wpn_fps_upg_ak_s_solidstock"
+			}
 		},
 		parts = {
 			wpn_fps_smg_akmsu_fg_standard = {
@@ -18442,10 +18574,6 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		name_id = "bm_wskn_saw_cs3",
 		desc_id = "bm_wskn_saw_cs3_desc",
 		weapon_id = "saw",
-		weapon_ids = {
-			"saw",
-			"saw_secondary"
-		},
 		rarity = "uncommon",
 		bonus = "concealment_p1",
 		reserve_quality = true,
@@ -21465,15 +21593,6 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		reserve_quality = true,
 		texture_bundle_folder = "cash/safes/cs4",
 		base_gradient = "units/payday2_cash/safes/cs4/base_gradient/base_cs4_002_b_df",
-		default_blueprint = {
-			"wpn_fps_ass_l85a2_body_standard",
-			"wpn_fps_m4_uupg_m_std_vanilla",
-			"wpn_fps_ass_l85a2_fg_medium",
-			"wpn_fps_ass_l85a2_b_medium",
-			"wpn_fps_ass_l85a2_g_standard",
-			"wpn_fps_ass_l85a2_ns_standard",
-			"wpn_fps_ass_l85a2_o_standard"
-		},
 		parts = {
 			wpn_fps_ass_l85a2_body_standard = {
 				[Idstring("mtr_body"):key()] = {
@@ -21902,18 +22021,6 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		pattern = "units/payday2_cash/safes/cs4/pattern/cs4_pattern_005_df",
 		pattern_tweak = Vector3(0.872886, 0.184315, 1),
 		pattern_pos = Vector3(-2, -2, 0),
-		default_blueprint = {
-			"wpn_fps_m4_lower_reciever",
-			"wpn_fps_m4_upper_reciever_round",
-			"wpn_fps_amcar_bolt_standard",
-			"wpn_fps_m4_uupg_draghandle",
-			"wpn_fps_upg_m4_m_straight_vanilla",
-			"wpn_fps_upg_m4_g_standard_vanilla",
-			"wpn_fps_m16_fg_standard",
-			"wpn_fps_m4_uupg_b_medium_vanilla",
-			"wpn_fps_ass_m16_o_handle_sight",
-			"wpn_fps_m16_s_solid_vanilla"
-		},
 		parts = {
 			wpn_fps_upg_m4_s_mk46 = {
 				[Idstring("mtr_crane_mk46"):key()] = {
@@ -22178,13 +22285,6 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		reserve_quality = true,
 		texture_bundle_folder = "cash/safes/cs4",
 		base_gradient = "units/payday2_cash/safes/cs4/base_gradient/base_cs4_008_df",
-		default_blueprint = {
-			"wpn_fps_shot_r870_body_standard",
-			"wpn_fps_shot_r870_b_short",
-			"wpn_fps_shot_r870_fg_small",
-			"wpn_fps_shot_r870_s_nostock_vanilla",
-			"wpn_fps_upg_m4_g_standard"
-		},
 		parts = {
 			wpn_fps_upg_m4_s_mk46 = {
 				[Idstring("mtr_crane_mk46"):key()] = {
@@ -23418,12 +23518,6 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		reserve_quality = true,
 		texture_bundle_folder = "cash/safes/cs4",
 		base_gradient = "units/payday2_cash/safes/cs4/base_gradient/base_cs4_019_df",
-		default_blueprint = {
-			"wpn_fps_smg_mac10_body_mac10",
-			"wpn_fps_smg_mac10_b_dummy",
-			"wpn_fps_smg_mac10_m_short",
-			"wpn_fps_smg_mac10_s_fold"
-		},
 		parts = {
 			wpn_fps_smg_mac10_body_modern = {
 				[Idstring("mtr_body_modern"):key()] = {
@@ -23471,11 +23565,18 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_smg_thompson_drummag",
 			"wpn_fps_upg_ass_ns_surefire",
 			"wpn_fps_smg_thompson_barrel",
-			"wpn_fps_smg_thompson_stock",
 			"wpn_fps_smg_thompson_grip",
 			"wpn_fps_smg_thompson_foregrip",
-			"wpn_fps_upg_fl_ass_peq15",
-			"wpn_fps_upg_o_docter"
+			"wpn_fps_upg_fl_ass_peq15"
+		},
+		special_blueprint = {
+			x_m1928 = {
+				"wpn_fps_smg_thompson_stock_nostock_vanilla"
+			},
+			m1928 = {
+				"wpn_fps_smg_thompson_stock",
+				"wpn_fps_upg_o_docter"
+			}
 		},
 		parts = {
 			wpn_fps_smg_thompson_grip = {
@@ -23909,8 +24010,12 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_pis_1911_body_standard",
 			"wpn_fps_pis_1911_g_standard",
 			"wpn_fps_pis_1911_b_long",
-			"wpn_upg_o_marksmansight_rear",
 			"wpn_fps_pis_1911_m_extended"
+		},
+		special_blueprint = {
+			colt_1911 = {
+				"wpn_upg_o_marksmansight_rear"
+			}
 		},
 		parts = {
 			wpn_fps_pis_1911_body_standard = {
@@ -24116,18 +24221,6 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		texture_bundle_folder = "cash/safes/skf",
 		base_gradient = "units/payday2_cash/safes/skf/base_gradient/base_skf_001_df",
 		pattern_gradient = "units/payday2_cash/safes/skf/pattern_gradient/gradient_skf_001_df",
-		default_blueprint = {
-			"wpn_fps_upg_m4_g_standard_vanilla",
-			"wpn_fps_m4_lower_reciever",
-			"wpn_fps_m4_upper_reciever_round",
-			"wpn_fps_amcar_bolt_standard",
-			"wpn_fps_m4_uupg_b_medium_vanilla",
-			"wpn_fps_m4_uupg_fg_rail",
-			"wpn_fps_m4_uupg_m_std_vanilla",
-			"wpn_fps_upg_m4_s_standard_vanilla",
-			"wpn_fps_m4_uupg_draghandle",
-			"wpn_fps_m4_uupg_o_flipup"
-		},
 		parts = {
 			wpn_fps_upg_ass_m4_lower_reciever_core = {
 				[Idstring("mtr_lower"):key()] = {
@@ -24291,16 +24384,6 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		base_gradient = "units/payday2_cash/safes/skf/base_gradient/base_skf_003_df",
 		pattern_gradient = "units/payday2_cash/safes/skf/pattern_gradient/gradient_skf_003_df",
 		pattern = "units/payday2_cash/safes/skf/pattern/skf_pattern_003_df",
-		default_blueprint = {
-			"wpn_fps_m4_uupg_b_medium_vanilla",
-			"wpn_fps_m4_lower_reciever",
-			"wpn_fps_amcar_uupg_body_upperreciever",
-			"wpn_fps_amcar_bolt_standard",
-			"wpn_fps_amcar_uupg_fg_amcar",
-			"wpn_fps_upg_m4_m_straight_vanilla",
-			"wpn_fps_upg_m4_s_standard_vanilla",
-			"wpn_fps_upg_m4_g_standard_vanilla"
-		},
 		parts = {
 			wpn_fps_m4_uupg_b_medium_vanilla = {
 				[Idstring("m4_barrel"):key()] = {
@@ -24445,12 +24528,6 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		reserve_quality = true,
 		texture_bundle_folder = "cash/safes/skf",
 		base_gradient = "units/payday2_cash/safes/skf/base_gradient/base_skf_004_df",
-		default_blueprint = {
-			"wpn_fps_pis_ppk_b_standard",
-			"wpn_fps_pis_ppk_body_standard",
-			"wpn_fps_pis_ppk_g_standard",
-			"wpn_fps_pis_ppk_m_standard"
-		},
 		parts = {
 			wpn_fps_upg_ns_ass_filter = {
 				[Idstring("mtr_filter"):key()] = {
@@ -24557,13 +24634,6 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		pattern_gradient = Idstring("units/payday2_cash/safes/grunt/pattern_gradient/gradient_grunt_002_df"),
 		pattern_tweak = Vector3(1, 0, 0),
 		cubemap_pattern_control = Vector3(0, 0.001, 0),
-		default_blueprint = {
-			"wpn_fps_aug_body_aug",
-			"wpn_fps_aug_b_medium",
-			"wpn_fps_upg_vg_ass_smg_verticalgrip",
-			"wpn_fps_aug_m_pmag",
-			"wpn_upg_o_marksmansight_rear_vanilla"
-		},
 		parts = {
 			wpn_fps_upg_vg_ass_smg_verticalgrip = {
 				[Idstring("mtr_vertical_grip"):key()] = {
@@ -24738,13 +24808,6 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		reserve_quality = true,
 		texture_bundle_folder = "cash/safes/skf",
 		base_gradient = "units/payday2_cash/safes/skf/base_gradient/base_skf_006_b_df",
-		default_blueprint = {
-			"wpn_fps_pis_lemming_b_standard",
-			"wpn_fps_pis_lemming_body",
-			"wpn_fps_pis_lemming_m_standard",
-			"wpn_fps_pis_lemming_mag_release",
-			"wpn_fps_pis_lemming_sl_standard"
-		},
 		parts = {
 			wpn_fps_upg_ns_pis_ipsccomp = {
 				[Idstring("mtr_comp"):key()] = {
@@ -24841,11 +24904,6 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		texture_bundle_folder = "cash/safes/skf",
 		base_gradient = "units/payday2_cash/safes/skf/base_gradient/base_skf_007_df",
 		pattern_gradient = "units/payday2_cash/safes/skf/pattern_gradient/gradient_skf_007_df",
-		default_blueprint = {
-			"wpn_fps_pis_g26_b_standard",
-			"wpn_fps_pis_g26_body_stardard",
-			"wpn_fps_pis_g26_m_standard"
-		},
 		parts = {
 			wpn_fps_pis_g18c_m_mag_33rnd = {
 				[Idstring("mtr_mag_extended"):key()] = {}
@@ -24917,17 +24975,6 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		texture_bundle_folder = "cash/safes/skf",
 		base_gradient = "units/payday2_cash/safes/skf/base_gradient/base_skf_008_b_df",
 		pattern_gradient = "units/payday2_cash/safes/skf/pattern_gradient/gradient_skf_008_df",
-		default_blueprint = {
-			"wpn_fps_ass_ching_b_standard",
-			"wpn_fps_ass_ching_body_standard",
-			"wpn_fps_ass_ching_bolt_standard",
-			"wpn_fps_ass_ching_dh_standard",
-			"wpn_fps_ass_ching_extra_swiwel",
-			"wpn_fps_ass_ching_extra1_swiwel",
-			"wpn_fps_ass_ching_fg_standard",
-			"wpn_fps_ass_ching_m_standard",
-			"wpn_fps_ass_ching_s_standard"
-		},
 		parts = {
 			wpn_fps_upg_o_specter = {
 				[Idstring("mtr_specter"):key()] = {
@@ -25021,10 +25068,14 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		default_blueprint = {
 			"wpn_fps_smg_mp7_b_standard",
 			"wpn_fps_smg_mp7_body_standard",
-			"wpn_fps_upg_o_eotech",
 			"wpn_fps_smg_mp7_s_long",
 			"wpn_fps_smg_mp7_m_extended",
 			"wpn_fps_upg_ass_ns_jprifles"
+		},
+		special_blueprint = {
+			mp7 = {
+				"wpn_fps_upg_o_eotech"
+			}
 		},
 		parts = {
 			wpn_fps_upg_o_aimpoint_2 = {
@@ -25086,17 +25137,6 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		reserve_quality = true,
 		texture_bundle_folder = "cash/safes/skf",
 		base_gradient = "units/payday2_cash/safes/skf/base_gradient/base_skf_010_df",
-		default_blueprint = {
-			"wpn_fps_gre_ray_body",
-			"wpn_fps_gre_ray_bolt",
-			"wpn_fps_gre_ray_magazine",
-			"wpn_fps_gre_ray_magazine_handle",
-			"wpn_fps_gre_ray_ring_back",
-			"wpn_fps_gre_ray_ring_front",
-			"wpn_fps_gre_ray_sight",
-			"wpn_fps_gre_ray_sight_lid",
-			"wpn_fps_gre_ray_barrel"
-		},
 		parts = {
 			wpn_fps_gre_ray_body = {
 				[Idstring("mtr_m202"):key()] = {
@@ -25203,13 +25243,6 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		reserve_quality = true,
 		texture_bundle_folder = "cash/safes/skf",
 		base_gradient = "units/payday2_cash/safes/skf/base_gradient/base_skf_012_df",
-		default_blueprint = {
-			"wpn_fps_ass_ak5_b_std",
-			"wpn_fps_ass_ak5_body_ak5",
-			"wpn_fps_ass_ak5_fg_ak5a",
-			"wpn_fps_ass_ak5_s_ak5a",
-			"wpn_fps_m4_uupg_m_std_vanilla"
-		},
 		parts = {
 			wpn_fps_upg_m4_m_straight = {
 				[Idstring("straight"):key()] = {
@@ -25771,8 +25804,12 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_upg_ns_ass_smg_tank",
 			"wpn_fps_upg_fl_ass_smg_sho_peqbox",
 			"wpn_fps_smg_mac10_m_extended",
-			"wpn_fps_upg_o_eotech",
 			"wpn_fps_smg_mac10_s_skel"
+		},
+		special_blueprint = {
+			mac10 = {
+				"wpn_fps_upg_o_eotech"
+			}
 		},
 		parts = {
 			wpn_fps_smg_mac10_s_skel = {
@@ -26651,11 +26688,6 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		texture_bundle_folder = "cash/safes/css",
 		base_gradient = "units/payday2_cash/safes/css/base_gradient/base_css_009_df",
 		pattern_gradient = "units/payday2_cash/safes/css/pattern_gradient/gradient_css_009_df",
-		default_blueprint = {
-			"wpn_fps_pis_g26_b_standard",
-			"wpn_fps_pis_g26_body_stardard",
-			"wpn_fps_pis_g26_m_standard"
-		},
 		parts = {
 			wpn_fps_pis_g26_body_custom = {
 				[Idstring("mtr_frame_salient"):key()] = {
@@ -26851,9 +26883,17 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_upg_fl_ass_peq15",
 			"wpn_fps_smg_polymer_ns_silencer",
 			"wpn_fps_smg_polymer_bolt_standard",
-			"wpn_fps_smg_polymer_bolt_standard",
-			"wpn_fps_upg_m4_s_ubr",
-			"wpn_fps_upg_o_eotech_xps"
+			"wpn_fps_smg_polymer_bolt_standard"
+		},
+		special_blueprint = {
+			polymer = {
+				"wpn_fps_upg_o_eotech_xps",
+				"wpn_fps_upg_m4_s_ubr"
+			},
+			x_polymer = {
+				"wpn_fps_smg_polymer_o_iron",
+				"wpn_fps_smg_polymer_s_standard"
+			}
 		},
 		parts = {
 			wpn_fps_upg_m4_s_mk46 = {
@@ -27488,9 +27528,13 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_pis_lemming_mag_release",
 			"wpn_fps_pis_lemming_sl_standard",
 			"wpn_fps_pis_lemming_m_ext",
-			"wpn_fps_upg_o_rmr",
 			"wpn_fps_upg_ns_pis_medium",
 			"wpn_fps_upg_fl_pis_crimson"
+		},
+		special_blueprint = {
+			lemming = {
+				"wpn_fps_upg_o_rmr"
+			}
 		},
 		parts = {
 			wpn_fps_upg_ns_pis_medium = {
@@ -27535,12 +27579,6 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		reserve_quality = true,
 		texture_bundle_folder = "cash/safes/css",
 		base_gradient = "units/payday2_cash/safes/css/base_gradient/base_css_016_df",
-		default_blueprint = {
-			"wpn_fps_pis_ppk_b_standard",
-			"wpn_fps_pis_ppk_body_standard",
-			"wpn_fps_pis_ppk_g_standard",
-			"wpn_fps_pis_ppk_m_standard"
-		},
 		parts = {
 			wpn_fps_pis_ppk_b_long = {
 				[Idstring("mtr_slide_long"):key()] = {
@@ -30078,10 +30116,6 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		desc_id = "bm_wskn_tam_desc",
 		lock_id = "bm_wskn_tam_locked",
 		weapon_id = "saw",
-		weapon_ids = {
-			"saw",
-			"saw_secondary"
-		},
 		global_value = "tam",
 		is_a_unlockable = true,
 		rarity = "epic",
@@ -32235,13 +32269,6 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		reserve_quality = true,
 		texture_bundle_folder = "cash/safes/cat",
 		base_gradient = "units/payday2_cash/safes/cat/base_gradient/base_cat_008_df",
-		default_blueprint = {
-			"wpn_fps_shot_r870_body_standard",
-			"wpn_fps_shot_r870_b_short",
-			"wpn_fps_shot_r870_fg_small",
-			"wpn_fps_shot_r870_s_nostock_vanilla",
-			"wpn_fps_upg_m4_g_standard"
-		},
 		parts = {
 			wpn_fps_upg_ns_shot_shark = {
 				[Idstring("shark"):key()] = {
@@ -32437,12 +32464,19 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		pattern_gradient = "units/payday2_cash/safes/cat/pattern_gradient/gradient_cat_011_df",
 		default_blueprint = {
 			"wpn_fps_smg_mp5_body_mp5",
-			"wpn_fps_upg_o_eotech",
 			"wpn_fps_smg_mp5_m_straight",
 			"wpn_fps_upg_fl_ass_peq15",
-			"wpn_fps_smg_mp5_s_solid",
 			"wpn_fps_smg_mp5_fg_mp5a4",
 			"wpn_fps_upg_ass_ns_surefire"
+		},
+		special_blueprint = {
+			x_mp5 = {
+				"wpn_fps_smg_mp5_s_ring_vanilla"
+			},
+			new_mp5 = {
+				"wpn_fps_upg_o_eotech",
+				"wpn_fps_smg_mp5_s_solid"
+			}
 		},
 		parts = {
 			wpn_fps_smg_mp5_s_adjust = {
@@ -32720,8 +32754,15 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_smg_erma_bolt_standard",
 			"wpn_fps_smg_erma_mag_standard",
 			"wpn_fps_upg_ass_ns_surefire",
-			"wpn_fps_smg_erma_s_unfolded",
 			"wpn_fps_smg_erma_o_ironsight_standard"
+		},
+		special_blueprint = {
+			erma = {
+				"wpn_fps_smg_erma_s_unfolded"
+			},
+			x_erma = {
+				"wpn_fps_smg_erma_s_folded_vanilla"
+			}
 		},
 		parts = {
 			wpn_fps_upg_o_rx01 = {
@@ -32938,6 +32979,12 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 				}
 			},
 			wpn_fps_smg_erma_s_folded = {
+				[Idstring("mat_body"):key()] = {
+					pattern = "units/payday2_cash/safes/cat/pattern/cat_pattern_014_a_df",
+					pattern_gradient = "units/payday2_cash/safes/cat/pattern_gradient/gradient_cat_014_a_df"
+				}
+			},
+			wpn_fps_smg_erma_s_folded_vanilla = {
 				[Idstring("mat_body"):key()] = {
 					pattern = "units/payday2_cash/safes/cat/pattern/cat_pattern_014_a_df",
 					pattern_gradient = "units/payday2_cash/safes/cat/pattern_gradient/gradient_cat_014_a_df"
@@ -33842,10 +33889,13 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_pis_deagle_b_standard",
 			"wpn_fps_pis_deagle_m_standard",
 			"wpn_fps_upg_ns_pis_medium_gem",
-			"wpn_fps_upg_bonus_concealment_p1",
 			"wpn_fps_upg_fl_pis_crimson",
-			"wpn_fps_pis_deagle_g_bling",
-			"wpn_fps_upg_o_rmr"
+			"wpn_fps_pis_deagle_g_bling"
+		},
+		special_blueprint = {
+			deagle = {
+				"wpn_fps_upg_o_rmr"
+			}
 		},
 		parts = {
 			wpn_fps_pis_deagle_b_modern = {
@@ -34536,8 +34586,12 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_pis_lemming_b_nitride",
 			"wpn_fps_upg_ns_pis_ipsccomp",
 			"wpn_fps_upg_fl_pis_crimson",
-			"wpn_fps_pis_lemming_m_ext",
-			"wpn_fps_upg_o_rmr"
+			"wpn_fps_pis_lemming_m_ext"
+		},
+		special_blueprint = {
+			lemming = {
+				"wpn_fps_upg_o_rmr"
+			}
 		},
 		parts = {
 			wpn_fps_upg_ns_pis_large_kac = {
@@ -35829,8 +35883,12 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_pis_deagle_m_extended",
 			"wpn_fps_pis_deagle_b_modern",
 			"wpn_fps_pis_deagle_co_long",
-			"wpn_upg_o_marksmansight_rear",
 			"wpn_fps_pis_deagle_g_bling"
+		},
+		special_blueprint = {
+			deagle = {
+				"wpn_upg_o_marksmansight_rear"
+			}
 		},
 		parts = {
 			wpn_fps_upg_o_rms = {
@@ -36491,38 +36549,42 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 			"wpn_fps_smg_scorpion_m_extended",
 			"wpn_fps_upg_ns_ass_smg_medium",
 			"wpn_fps_upg_fl_pis_laser",
-			"wpn_fps_smg_scorpion_s_standard",
+			"wpn_fps_smg_scorpion_s_standard"
+		}
+	}
+	self.weapon_skins.scorpion_burn.special_blueprint = {
+		scorpion = {
 			"wpn_fps_upg_o_docter"
-		},
-		parts = {
-			wpn_fps_smg_scorpion_body_standard = {
-				["11f00d59e01de219"] = {
-					pattern = Idstring("units/payday2_cash/safes/nin/pattern/nin_pattern_008_01_df")
-				},
-				ce53cb869d779872 = {
-					pattern = Idstring("units/payday2_cash/safes/nin/pattern/nin_pattern_008_01_df")
-				}
+		}
+	}
+	self.weapon_skins.scorpion_nin.parts = {
+		wpn_fps_smg_scorpion_body_standard = {
+			["11f00d59e01de219"] = {
+				pattern = Idstring("units/payday2_cash/safes/nin/pattern/nin_pattern_008_01_df")
 			},
-			wpn_fps_smg_scorpion_m_extended = {
-				["5a59c88e60c2af0b"] = {
-					pattern_tweak = Vector3(1.73146, 0, 1),
-					pattern_pos = Vector3(0.0705188, -0.0342591, 0),
-					pattern = Idstring("units/payday2_cash/safes/nin/pattern/nin_pattern_008_02_df"),
-					pattern_gradient = Idstring("units/payday2_cash/safes/nin/pattern_gradient/nin_pattern_gradient_008_01_df")
-				}
-			},
-			wpn_fps_smg_scorpion_m_standard = {
-				["5a59c88e60c2af0b"] = {
-					pattern_pos = Vector3(-0.0510371, -0.0701165, 0),
-					pattern = Idstring("units/payday2_cash/safes/nin/pattern/nin_pattern_008_02_df"),
-					pattern_gradient = Idstring("units/payday2_cash/safes/nin/pattern_gradient/nin_pattern_gradient_008_01_df")
-				}
+			ce53cb869d779872 = {
+				pattern = Idstring("units/payday2_cash/safes/nin/pattern/nin_pattern_008_01_df")
 			}
 		},
-		types = {
-			barrel_ext = {
-				pattern = Idstring("units/payday2_cash/safes/nin/pattern/nin_pattern_008_02_df")
+		wpn_fps_smg_scorpion_m_extended = {
+			["5a59c88e60c2af0b"] = {
+				pattern_tweak = Vector3(1.73146, 0, 1),
+				pattern_pos = Vector3(0.0705188, -0.0342591, 0),
+				pattern = Idstring("units/payday2_cash/safes/nin/pattern/nin_pattern_008_02_df"),
+				pattern_gradient = Idstring("units/payday2_cash/safes/nin/pattern_gradient/nin_pattern_gradient_008_01_df")
 			}
+		},
+		wpn_fps_smg_scorpion_m_standard = {
+			["5a59c88e60c2af0b"] = {
+				pattern_pos = Vector3(-0.0510371, -0.0701165, 0),
+				pattern = Idstring("units/payday2_cash/safes/nin/pattern/nin_pattern_008_02_df"),
+				pattern_gradient = Idstring("units/payday2_cash/safes/nin/pattern_gradient/nin_pattern_gradient_008_01_df")
+			}
+		}
+	}
+	self.weapon_skins.scorpion_nin.types = {
+		barrel_ext = {
+			pattern = Idstring("units/payday2_cash/safes/nin/pattern/nin_pattern_008_02_df")
 		}
 	}
 	self.weapon_skins.akm_nin = {
@@ -37186,10 +37248,6 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		name_id = "bm_wskn_saw_nin",
 		desc_id = "bm_wskn_saw_nin_desc",
 		weapon_id = "saw",
-		weapon_ids = {
-			"saw",
-			"saw_secondary"
-		},
 		rarity = "legendary",
 		bonus = "concealment_p1",
 		reserve_quality = true,
@@ -37401,6 +37459,26 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 				}
 			}
 		}
+	}
+	self.weapon_skins.saw_buck.weapon_ids = {
+		"saw",
+		"saw_secondary"
+	}
+	self.weapon_skins.saw_smosh.weapon_ids = {
+		"saw",
+		"saw_secondary"
+	}
+	self.weapon_skins.saw_nin.weapon_ids = {
+		"saw",
+		"saw_secondary"
+	}
+	self.weapon_skins.saw_cs3.weapon_ids = {
+		"saw",
+		"saw_secondary"
+	}
+	self.weapon_skins.saw_tam.weapon_ids = {
+		"saw",
+		"saw_secondary"
 	}
 
 	self:_setup_weapon_color_skins(tweak_data)

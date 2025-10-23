@@ -100,7 +100,7 @@ function MoneyTweakData:init(tweak_data)
 		weapon_glock = 2000,
 		weapon_scar = 2000,
 		drk_bomb_part = 9000,
-		drone_control_helmet = 18000,
+		drone_control_helmet = 20000,
 		toothbrush = 18000,
 		cloaker_gold = 2000,
 		cloaker_money = 1750,

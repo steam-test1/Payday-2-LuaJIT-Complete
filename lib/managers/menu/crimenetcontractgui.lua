@@ -900,80 +900,78 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 		add_line("menu_toggle_drop_in", drop_in[server_data.drop_in])
 	end
 
-	if job_data.mods then
-		local mods_presence = job_data.mods
+	local mods_presence = job_data.mods
 
-		if mods_presence and mods_presence ~= "" and mods_presence ~= "1" then
-			local content_panel = add_tab("menu_cn_game_mods")
-			self._mods_tab = self._tabs[#self._tabs]
-			self._mods_scroll = ScrollablePanel:new(content_panel, "mods_scroll", {
-				padding = 0
+	if mods_presence and mods_presence ~= "" and mods_presence ~= "1" and (not managers.network.matchmake.no_mod_string or mods_presence ~= managers.network.matchmake:no_mod_string()) then
+		local content_panel = add_tab("menu_cn_game_mods")
+		self._mods_tab = self._tabs[#self._tabs]
+		self._mods_scroll = ScrollablePanel:new(content_panel, "mods_scroll", {
+			padding = 0
+		})
+		self._mod_items = {}
+		local _y = 7
+		local add_back = true
+
+		local function add_line(id, text, ignore_back)
+			local canvas = self._mods_scroll:canvas()
+
+			if add_back and not ignore_back then
+				canvas:rect({
+					x = 8,
+					layer = -1,
+					y = _y,
+					h = tweak_data.menu.pd2_small_font_size,
+					w = canvas:w() - 18,
+					color = Color.black:with_alpha(0.7)
+				})
+			end
+
+			add_back = not add_back
+			text = string.upper(text)
+			local left_text = canvas:text({
+				align = "left",
+				name = id,
+				font = tweak_data.menu.pd2_small_font,
+				font_size = tweak_data.menu.pd2_small_font_size,
+				text = text,
+				x = padding,
+				y = _y,
+				h = tweak_data.menu.pd2_small_font_size,
+				w = canvas:w() - double_padding,
+				color = Color(0.8, 0.8, 0.8)
 			})
-			self._mod_items = {}
-			local _y = 7
-			local add_back = true
+			local highlight_text = canvas:text({
+				blend_mode = "add",
+				align = "left",
+				visible = false,
+				name = id,
+				font = tweak_data.menu.pd2_small_font,
+				font_size = tweak_data.menu.pd2_small_font_size,
+				text = text,
+				x = padding,
+				y = _y,
+				h = tweak_data.menu.pd2_small_font_size,
+				w = canvas:w() - double_padding,
+				color = tweak_data.screen_colors.button_stage_2
+			})
+			_y = left_text:bottom() + 2
 
-			local function add_line(id, text, ignore_back)
-				local canvas = self._mods_scroll:canvas()
-
-				if add_back and not ignore_back then
-					canvas:rect({
-						x = 8,
-						layer = -1,
-						y = _y,
-						h = tweak_data.menu.pd2_small_font_size,
-						w = canvas:w() - 18,
-						color = Color.black:with_alpha(0.7)
-					})
-				end
-
-				add_back = not add_back
-				text = string.upper(text)
-				local left_text = canvas:text({
-					align = "left",
-					name = id,
-					font = tweak_data.menu.pd2_small_font,
-					font_size = tweak_data.menu.pd2_small_font_size,
-					text = text,
-					x = padding,
-					y = _y,
-					h = tweak_data.menu.pd2_small_font_size,
-					w = canvas:w() - double_padding,
-					color = Color(0.8, 0.8, 0.8)
-				})
-				local highlight_text = canvas:text({
-					blend_mode = "add",
-					align = "left",
-					visible = false,
-					name = id,
-					font = tweak_data.menu.pd2_small_font,
-					font_size = tweak_data.menu.pd2_small_font_size,
-					text = text,
-					x = padding,
-					y = _y,
-					h = tweak_data.menu.pd2_small_font_size,
-					w = canvas:w() - double_padding,
-					color = tweak_data.screen_colors.button_stage_2
-				})
-				_y = left_text:bottom() + 2
-
-				return left_text, highlight_text
-			end
-
-			local splits = string.split(mods_presence, "|")
-
-			for i = 1, #splits, 2 do
-				local text, highlight = add_line(splits[i + 1] or "", splits[i] or "")
-
-				table.insert(self._mod_items, {
-					text,
-					highlight
-				})
-			end
-
-			add_line("spacer", "", true)
-			self._mods_scroll:update_canvas_size()
+			return left_text, highlight_text
 		end
+
+		local splits = string.split(mods_presence, "|")
+
+		for i = 1, #splits, 2 do
+			local text, highlight = add_line(splits[i + 1] or "", splits[i] or "")
+
+			table.insert(self._mod_items, {
+				text,
+				highlight
+			})
+		end
+
+		add_line("spacer", "", true)
+		self._mods_scroll:update_canvas_size()
 	end
 
 	local days_multiplier = 0

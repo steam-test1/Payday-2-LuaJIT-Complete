@@ -49,12 +49,6 @@ function NetworkPeer:init(name, rpc, id, loading, synced, in_lobby, character, u
 	self._synced = synced
 	self._waiting_for_player_ready = false
 	self._ip_verified = false
-	self._dlcs = {
-		dlc2 = false,
-		dlc3 = false,
-		dlc1 = false,
-		dlc4 = false
-	}
 
 	self:chk_enable_queue()
 
@@ -127,6 +121,8 @@ function NetworkPeer:begin_ticket_session(ticket)
 		self._begin_ticket_session_called = true
 		local result = Steam:begin_ticket_session(self._account_id, ticket, callback(self, self, "on_verify_ticket"))
 		self._begin_ticket_session_called = nil
+
+		print("[NetworkPeer:begin_ticket_session] ticket session began", result)
 
 		return result
 	end
@@ -240,12 +236,10 @@ function NetworkPeer:_verify_outfit_data()
 
 	local outfit = self:blackmarket_outfit()
 	local mask_blueprint_lookup = {
-		color = "colors",
-		pattern = "textures",
+		color_b = "mask_colors",
 		material = "materials",
 		color_a = "mask_colors",
-		color_b = "mask_colors",
-		color = nil
+		pattern = "textures"
 	}
 
 	for item_type, item in pairs(outfit) do
@@ -551,18 +545,6 @@ function NetworkPeer:tradable_verification_failed(group, outfit)
 	end
 end
 
-function NetworkPeer:set_dlcs(dlcs)
-	local i_dlcs = string.split(dlcs, " ")
-
-	for _, dlc in ipairs(i_dlcs) do
-		self._dlcs[dlc] = true
-	end
-end
-
-function NetworkPeer:has_dlc(dlc)
-	return self._dlcs[dlc]
-end
-
 function NetworkPeer:load(data)
 	print("[NetworkPeer:load] data:", inspect(data))
 
@@ -598,7 +580,6 @@ function NetworkPeer:load(data)
 	self._character = data.character
 	self._ip_verified = data.ip_verified
 	self._creation_t = data.creation_t
-	self._dlcs = data.dlcs
 	self._handshakes = data.handshakes
 	self._loaded = data.loaded
 	self._loading = data.loading
@@ -654,7 +635,6 @@ function NetworkPeer:save(data)
 	data.character = self._character
 	data.ip_verified = self._ip_verified
 	data.creation_t = self._creation_t
-	data.dlcs = self._dlcs
 	data.handshakes = self._handshakes
 	data.loaded = self._loaded
 	data.loading = self._loading

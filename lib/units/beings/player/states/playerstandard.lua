@@ -4739,7 +4739,7 @@ PlayerStandard._primary_action_funcs = {
 		auto = function (self, t, input, params, weap_unit, weap_base, impact)
 			if weap_base.third_person_important and weap_base:third_person_important() then
 				self._ext_network:send("shot_blank_reliable", impact, 0)
-			elseif weap_base.akimbo or weap_base:weapon_tweak_data().allow_akimbo_autofire then
+			elseif weap_base.akimbo and not weap_base:weapon_tweak_data().allow_akimbo_autofire then
 				self._ext_network:send("shot_blank", impact, 0)
 			end
 

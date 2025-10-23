@@ -860,16 +860,6 @@ function UnitNetworkHandler:sync_interacted(unit, unit_id, tweak_setting, status
 		return
 	end
 
-	if Network:is_server() and unit_id ~= -2 then
-		if alive(unit) and unit:interaction() and unit:interaction().tweak_data == tweak_setting and unit:interaction():active() then
-			sender:sync_interaction_reply(true)
-		else
-			sender:sync_interaction_reply(false)
-
-			return
-		end
-	end
-
 	if alive(unit) and unit:interaction() then
 		if unit:interaction()._special_equipment and unit:interaction().apply_item_pickup then
 			managers.network:session():send_to_peer(peer, "special_eq_response", unit)
@@ -882,6 +872,48 @@ function UnitNetworkHandler:sync_interacted(unit, unit_id, tweak_setting, status
 		local char_unit = managers.criminals:character_unit_by_peer_id(peer:id())
 
 		unit:interaction():sync_interacted(peer, char_unit, status)
+	end
+end
+
+function UnitNetworkHandler:sync_carry_interacted(unit, unit_id, tweak_id, carry_id, sender)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local peer = self._verify_sender(sender)
+
+	if not peer then
+		return
+	end
+
+	if Network:is_server() and unit_id ~= -2 then
+		if alive(unit) and unit:interaction().tweak_data == tweak_id and unit:interaction():active() then
+			sender:carry_interaction_reply(true, carry_id)
+		else
+			sender:carry_interaction_reply(false, carry_id)
+
+			return
+		end
+	end
+
+	if alive(unit) then
+		unit:interaction():sync_interacted(peer)
+	end
+end
+
+function UnitNetworkHandler:carry_interaction_reply(status, carry_id)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local player_unit = managers.player:player_unit()
+
+	if alive(player_unit) then
+		player_unit:movement():set_carry_restriction(false)
+	end
+
+	if not status and carry_id then
+		managers.player:clear_carry()
 	end
 end
 
@@ -910,25 +942,15 @@ function UnitNetworkHandler:sync_interacted_by_id(unit_id, tweak_setting, sender
 
 	local u_data = managers.enemy:get_corpse_unit_data_from_id(unit_id)
 
-	if not u_data then
-		sender:sync_interaction_reply(false)
+	if u_data then
+		sender:carry_interaction_reply(true, nil)
+	else
+		sender:carry_interaction_reply(false, nil)
 
 		return
 	end
 
 	self:sync_interacted(u_data.unit, unit_id, tweak_setting, 1, sender)
-end
-
-function UnitNetworkHandler:sync_interaction_reply(status)
-	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
-		return
-	end
-
-	if not alive(managers.player:player_unit()) then
-		return
-	end
-
-	managers.player:from_server_interaction_reply(status)
 end
 
 function UnitNetworkHandler:interaction_set_active(unit, u_id, active, tweak_data, flash, sender)
@@ -2209,12 +2231,12 @@ function UnitNetworkHandler:sync_remove_one_teamAI(name, replace_with_player)
 	managers.groupai:state():sync_remove_one_teamAI(name, replace_with_player)
 end
 
-function UnitNetworkHandler:sync_flash_grenade_data(flash_unit, shooter_pos, instant)
+function UnitNetworkHandler:sync_flash_grenade_data(unit, shooter_pos, instant)
 	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
 		return
 	end
 
-	local base_ext = alive(flash_unit) and flash_unit:base()
+	local base_ext = alive(unit) and unit:base()
 
 	if not base_ext then
 		return
@@ -2698,6 +2720,11 @@ function UnitNetworkHandler:request_throw_projectile(projectile_type_index, posi
 
 	local peer_id = peer:id()
 	local projectile_type = tweak_data.blackmarket:get_projectile_name_from_index(projectile_type_index)
+
+	if not projectile_type then
+		return
+	end
+
 	local no_cheat_count = tweak_data.blackmarket.projectiles[projectile_type].no_cheat_count
 
 	if not no_cheat_count and not managers.player:verify_grenade(peer_id) then
@@ -4300,8 +4327,10 @@ function UnitNetworkHandler:sync_flashbang_event(unit, event_id, sender)
 		return
 	end
 
-	if alive(unit) then
-		unit:base():on_network_event(event_id)
+	local base_ext = alive(unit) and unit:base()
+
+	if base_ext and base_ext.on_network_event then
+		base_ext:on_network_event(event_id)
 	end
 end
 
@@ -4589,7 +4618,9 @@ function UnitNetworkHandler:sync_shotgun_push(unit, hit_pos, dir, distance, atta
 		return
 	end
 
-	if not alive(unit) then
+	if not alive(unit) or not hit_pos or not dir or not distance then
+		Application:warn("[UnitNetworkHandler:sync_shotgun_push] Lacks requires params", unit, hit_pos, dir, distance)
+
 		return
 	end
 
@@ -4617,11 +4648,9 @@ function UnitNetworkHandler:action_teleport(unit, position, sender)
 		return
 	end
 
-	if not alive(unit) then
-		return
+	if alive(unit) and unit:movement() and unit:movement().sync_action_teleport then
+		unit:movement():sync_action_teleport(position)
 	end
-
-	unit:movement():sync_action_teleport(position)
 end
 
 function UnitNetworkHandler:sync_tag_team(tagged, owner, sender)

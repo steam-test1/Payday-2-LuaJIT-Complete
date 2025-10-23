@@ -20,6 +20,7 @@ local mvec3_dist_sq = mvector3.distance_sq
 local mvec3_dist = mvector3.distance
 local mvec3_dot = mvector3.dot
 GamePlayCentralManager = GamePlayCentralManager or class()
+GamePlayCentralManager.MAX_BULLET_HITS_PERFRAME = 5
 
 function GamePlayCentralManager:init()
 	self._bullet_hits = {}
@@ -28,6 +29,7 @@ function GamePlayCentralManager:init()
 	self._footsteps = {}
 	self._queue_fire_raycast = {}
 	self._projectile_trails = {}
+	self._bullet_hits_max_frame = 0
 	self._effect_manager = World:effect_manager()
 	self._slotmask_flesh = managers.slot:get_mask("flesh")
 	self._slotmask_world_geometry = managers.slot:get_mask("world_geometry")
@@ -269,9 +271,7 @@ function GamePlayCentralManager:end_update(t, dt)
 end
 
 function GamePlayCentralManager:play_impact_sound_and_effects(params)
-	if params.immediate then
-		self:_play_bullet_hit(params)
-	else
+	if params and not table.empty(params) then
 		table.insert(self._bullet_hits, params)
 	end
 end
@@ -423,8 +423,16 @@ function GamePlayCentralManager:spawn_pickup(params)
 end
 
 function GamePlayCentralManager:_flush_bullet_hits()
-	if #self._bullet_hits > 0 then
+	while not table.empty(self._bullet_hits) do
 		self:_play_bullet_hit(table.remove(self._bullet_hits, 1))
+
+		if not self._bullet_hits_max_frame or GamePlayCentralManager.MAX_BULLET_HITS_PERFRAME < self._bullet_hits_max_frame then
+			self._bullet_hits_max_frame = 0
+
+			break
+		else
+			self._bullet_hits_max_frame = self._bullet_hits_max_frame + 1
+		end
 	end
 end
 
@@ -638,6 +646,8 @@ function GamePlayCentralManager:flashlights_on()
 end
 
 function GamePlayCentralManager:on_simulation_ended()
+	self._bullet_hits = {}
+
 	self:set_flashlights_on(false)
 	self:set_flashlights_on_player_on(false)
 	self:stop_heist_timer()
@@ -765,15 +775,14 @@ end
 
 function GamePlayCentralManager:queue_fire_raycast(expire_t, weapon_unit, ...)
 	self._queue_fire_raycast = self._queue_fire_raycast or {}
-	local data = {
+
+	table.insert(self._queue_fire_raycast, {
 		expire_t = expire_t,
 		weapon_unit = weapon_unit,
 		data = {
 			...
 		}
-	}
-
-	table.insert(self._queue_fire_raycast, data)
+	})
 end
 
 function GamePlayCentralManager:_flush_queue_fire_raycast()
@@ -786,9 +795,9 @@ function GamePlayCentralManager:_flush_queue_fire_raycast()
 			table.remove(self._queue_fire_raycast, i)
 
 			local data = ray_data.data
-			local user_unit = data[1]
+			local player_unit = data[1]
 
-			if alive(ray_data.weapon_unit) and alive(user_unit) then
+			if alive(ray_data.weapon_unit) and alive(player_unit) then
 				ray_data.weapon_unit:base():_fire_raycast(unpack(data))
 			end
 		else
@@ -841,7 +850,7 @@ function GamePlayCentralManager:do_shotgun_push(unit, hit_pos, dir, distance, at
 		return
 	end
 
-	if unit:id() ~= -1 then
+	if unit:id() ~= -1 and managers.network:session() then
 		local sync_attacker = alive(attacker) and attacker:id() ~= -1 and attacker or nil
 
 		managers.network:session():send_to_peers_synched("sync_shotgun_push", unit, hit_pos, dir, distance, sync_attacker)

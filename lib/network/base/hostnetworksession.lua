@@ -13,6 +13,23 @@ HostNetworkSession._STATES = {
 	game_end = HostStateGameEnd,
 	closing = HostStateClosing
 }
+HostNetworkSession.JOIN_REPLY = {
+	BANNED = 9,
+	MODS_DISALLOWED = 10,
+	LOW_LEVEL = 6,
+	DO_NOT_OWN_HEIST = 4,
+	SHUB_BLOCKED = 11,
+	AUTH_FAILED = 8,
+	GAME_FULL = 5,
+	WRONG_VERSION = 7,
+	HOST_LOADING = 13,
+	OK = 1,
+	GAME_STARTED = 3,
+	ALREADY_JOINED = 14,
+	SHUB_NOT_FRIEND = 12,
+	FAILED_CONNECT = 0,
+	KICKED = 2
+}
 HostNetworkSession._DEAD_CONNECTION_REPORT_PROCESS_DELAY = math.max(HostNetworkSession.CONNECTION_TIMEOUT, HostNetworkSession.LOADING_CONNECTION_TIMEOUT) + 1.5
 HostNetworkSession._LOAD_COUNTER_LIMITS = {
 	1,
@@ -46,8 +63,20 @@ function HostNetworkSession:create_local_peer(load_outfit)
 	end
 end
 
-function HostNetworkSession:on_join_request_received(peer_name, peer_account_type_str, peer_account_id, is_invite, preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender)
-	return self._state.on_join_request_received and self._state:on_join_request_received(self._state_data, peer_name, peer_account_type_str, peer_account_id, is_invite, preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender)
+function HostNetworkSession:on_join_request_received(peer_name, peer_account_type_str, peer_account_id, is_invite, preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, sender)
+	if not self._state.on_join_request_received then
+		return
+	end
+
+	return self._state:on_join_request_received(self._state_data, peer_name, peer_account_type_str, peer_account_id, is_invite, preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, sender)
+end
+
+function HostNetworkSession:on_join_auth_received(auth_ticket, sender)
+	if not self._state.on_join_auth_received then
+		return
+	end
+
+	return self._state:on_join_auth_received(self._state_data, auth_ticket, sender)
 end
 
 function HostNetworkSession:send_to_host(...)

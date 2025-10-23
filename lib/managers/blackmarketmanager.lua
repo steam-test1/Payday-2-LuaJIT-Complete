@@ -4788,14 +4788,18 @@ function BlackMarketManager:on_sell_weapon_part(part_id, global_value)
 end
 
 function BlackMarketManager:add_crafted_weapon_blueprint_to_inventory(category, slot, ignore_blueprint)
-	if not self._global.crafted_items[category] or not self._global.crafted_items[category][slot] then
+	local crafted = self._global.crafted_items[category] and self._global.crafted_items[category][slot]
+
+	if not crafted then
+		Application:warn("[BlackMarketManager:add_crafted_weapon_blueprint_to_inventory] CANCEL - Not crafted in categories/slot", category, slot, "- returned:", crafted)
+
 		return
 	end
 
 	local parts_tweak_data = tweak_data.weapon.factory.parts
-	local global_values = self._global.crafted_items[category][slot].global_values or {}
-	local blueprint = self._global.crafted_items[category][slot].blueprint
-	local default_blueprint = managers.weapon_factory:get_default_blueprint_by_factory_id(self._global.crafted_items[category][slot].factory_id)
+	local global_values = crafted.global_values or {}
+	local blueprint = crafted.blueprint
+	local default_blueprint = managers.weapon_factory:get_default_blueprint_by_factory_id(crafted.factory_id)
 
 	for _, default_part in ipairs(default_blueprint) do
 		table.delete(blueprint, default_part)
@@ -5204,13 +5208,24 @@ function BlackMarketManager:view_weapon_with_cosmetics(category, slot, cosmetics
 	end
 
 	local weapon = self._global.crafted_items[category][slot]
+	local weapon_id = weapon.weapon_id
+	local factory_id = weapon.factory_id
 	local blueprint = weapon.blueprint
 
 	if cosmetics and tweak_data.blackmarket.weapon_skins[cosmetics.id] then
-		if tweak_data.blackmarket.weapon_skins[cosmetics.id].default_blueprint then
-			blueprint = tweak_data.blackmarket.weapon_skins[cosmetics.id].default_blueprint
-		elseif weapon.cosmetics and weapon.cosmetics.id and tweak_data.blackmarket.weapon_skins[weapon.cosmetics.id] and tweak_data.blackmarket.weapon_skins[weapon.cosmetics.id].default_blueprint then
-			blueprint = deep_clone(managers.weapon_factory:get_default_blueprint_by_factory_id(weapon.factory_id))
+		local weapon_skin_data = tweak_data.blackmarket.weapon_skins[cosmetics.id]
+		local weapon_skin_default_blueprint = weapon_skin_data.default_blueprint
+
+		if weapon_skin_default_blueprint then
+			local tbl = deep_clone(weapon_skin_default_blueprint)
+
+			if weapon_skin_data.special_blueprint then
+				for _, v in ipairs(weapon_skin_data.special_blueprint[weapon_id] or {}) do
+					table.insert(tbl, v)
+				end
+			end
+
+			blueprint = tbl
 		end
 
 		self._last_viewed_cosmetic_id = cosmetics.id
@@ -5224,7 +5239,7 @@ function BlackMarketManager:view_weapon_with_cosmetics(category, slot, cosmetics
 
 	local texture_switches = self:get_weapon_texture_switches(category, slot, weapon)
 
-	self:preload_weapon_blueprint("preview", weapon.factory_id, blueprint, spawn_workbench)
+	self:preload_weapon_blueprint("preview", factory_id, blueprint, spawn_workbench)
 
 	if spawn_workbench then
 		table.insert(self._preloading_list, {
@@ -5236,7 +5251,7 @@ function BlackMarketManager:view_weapon_with_cosmetics(category, slot, cosmetics
 
 	table.insert(self._preloading_list, {
 		done_cb = function ()
-			managers.menu_scene:spawn_item_weapon(weapon.factory_id, blueprint, cosmetics, texture_switches, custom_data)
+			managers.menu_scene:spawn_item_weapon(factory_id, blueprint, cosmetics, texture_switches, custom_data)
 		end
 	})
 	table.insert(self._preloading_list, {
@@ -5249,8 +5264,19 @@ function BlackMarketManager:view_weapon_platform_with_cosmetics(weapon_id, cosme
 	local blueprint = deep_clone(managers.weapon_factory:get_default_blueprint_by_factory_id(factory_id))
 
 	if cosmetics and tweak_data.blackmarket.weapon_skins[cosmetics.id] then
-		if tweak_data.blackmarket.weapon_skins[cosmetics.id].default_blueprint then
-			blueprint = tweak_data.blackmarket.weapon_skins[cosmetics.id].default_blueprint
+		local weapon_skin_data = tweak_data.blackmarket.weapon_skins[cosmetics.id]
+		local weapon_skin_default_blueprint = weapon_skin_data.default_blueprint
+
+		if weapon_skin_default_blueprint then
+			local tbl = deep_clone(weapon_skin_default_blueprint)
+
+			if weapon_skin_data.special_blueprint then
+				for _, v in ipairs(weapon_skin_data.special_blueprint[weapon_id] or {}) do
+					table.insert(tbl, v)
+				end
+			end
+
+			blueprint = tbl
 		end
 
 		self._last_viewed_cosmetic_id = cosmetics.id
@@ -7511,12 +7537,14 @@ function BlackMarketManager:on_equip_weapon_cosmetics(category, slot, instance_i
 	end
 
 	if item_data then
-		self:_set_weapon_cosmetics(category, slot, {
-			id = item_data.entry,
+		local cosmetic_data = {
 			instance_id = instance_id,
+			id = item_data.entry,
 			quality = item_data.quality,
 			bonus = item_data.bonus or false
-		}, true)
+		}
+
+		self:_set_weapon_cosmetics(category, slot, cosmetic_data, true)
 	end
 end
 
@@ -7532,35 +7560,55 @@ function BlackMarketManager:on_equip_weapon_color(category, slot, cosmetics, upd
 end
 
 function BlackMarketManager:_set_weapon_cosmetics(category, slot, cosmetics, update_weapon_unit)
-	local crafted = self._global.crafted_items[category][slot]
+	local crafted = self._global.crafted_items[category] and self._global.crafted_items[category][slot]
 
 	if not crafted then
+		Application:warn("[BlackMarketManager:_set_weapon_cosmetics] CANCEL - Not crafted in categories/slot", category, slot, "- returned:", crafted)
+
 		return
 	end
 
 	if not self:weapon_cosmetics_type_check(crafted.weapon_id, cosmetics.id) then
+		Application:warn("[BlackMarketManager:_set_weapon_cosmetics] CANCEL - Failed cosmetics type check on weapon/cosmetic ID:", crafted.weapon_id, cosmetics.id)
+
 		return
 	end
 
 	local weapon_skin_data = tweak_data.blackmarket.weapon_skins[cosmetics.id]
 
 	if not weapon_skin_data then
+		Application:warn("[BlackMarketManager:_set_weapon_cosmetics] CANCEL - No weapon skin data for cosmetic ID:", cosmetics.id)
+
 		return
 	end
+
+	print("[BlackMarketManager:_set_weapon_cosmetics] SETUP - starting to make", inspect(cosmetics), inspect(crafted))
 
 	local old_cosmetic_id = crafted.cosmetics and crafted.cosmetics.id
 	local old_cosmetic_data = old_cosmetic_id and tweak_data.blackmarket.weapon_skins[old_cosmetic_id]
 	local old_cosmetic_default_blueprint = old_cosmetic_data and old_cosmetic_data.default_blueprint
-	local blueprint = weapon_skin_data.default_blueprint
+	local new_cosmetic_default_blueprint = weapon_skin_data.default_blueprint
 
-	if blueprint then
+	if new_cosmetic_default_blueprint then
+		print("[BlackMarketManager:_set_weapon_cosmetics] BLUEPRINT - New BP", inspect(new_cosmetic_default_blueprint))
 		self:add_crafted_weapon_blueprint_to_inventory(category, slot, old_cosmetic_default_blueprint)
 
-		crafted.blueprint = deep_clone(blueprint)
+		local tbl = deep_clone(new_cosmetic_default_blueprint)
+
+		if weapon_skin_data.special_blueprint then
+			for _, v in ipairs(weapon_skin_data.special_blueprint[crafted.weapon_id] or {}) do
+				table.insert(tbl, v)
+			end
+		end
+
+		crafted.blueprint = tbl
 	elseif old_cosmetic_default_blueprint then
+		print("[BlackMarketManager:_set_weapon_cosmetics] BLUEPRINT - Old BP", inspect(old_cosmetic_default_blueprint))
 		self:add_crafted_weapon_blueprint_to_inventory(category, slot, old_cosmetic_default_blueprint)
 
 		crafted.blueprint = deep_clone(managers.weapon_factory:get_default_blueprint_by_factory_id(crafted.factory_id))
+	else
+		print("[BlackMarketManager:_set_weapon_cosmetics] BLUEPRINT - No BP")
 	end
 
 	crafted.customize_locked = weapon_skin_data.locked

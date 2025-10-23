@@ -171,8 +171,10 @@ end
 function PlayerBase:set_visible(visible)
 	self._unit:set_visible(visible)
 
-	if not _G.IS_VR then
-		self._unit:camera():camera_unit():set_visible(visible)
+	local camera_unit = self._unit:camera():camera_unit()
+
+	if camera_unit:base() and not _G.IS_VR then
+		camera_unit:base():set_visible(visible)
 	end
 
 	if visible then

@@ -2067,12 +2067,12 @@ function MenuManager:show_confirm_preplanning_rebuy(params)
 
 	local category_list = {}
 
-	for _, asset in ipairs(params.rebuy_assets) do
-		local cat_name = utf8.to_upper(managers.preplanning:get_category_name_by_type(asset.type))
+	for _, asset in ipairs(params.rebuy_assets or {}) do
+		local category_name = utf8.to_upper(managers.preplanning:get_category_name_by_type(asset.type))
 		local create_new_category = true
 
 		for _, category in ipairs(category_list) do
-			if cat_name == category.category then
+			if category_name == category.category then
 				table.insert(category.assets, {
 					type = asset.type,
 					id = asset.id,
@@ -2085,7 +2085,7 @@ function MenuManager:show_confirm_preplanning_rebuy(params)
 
 		if create_new_category then
 			table.insert(category_list, {
-				category = cat_name,
+				category = category_name,
 				assets = {
 					{
 						type = asset.type,
@@ -2100,7 +2100,7 @@ function MenuManager:show_confirm_preplanning_rebuy(params)
 	for _, category in ipairs(category_list) do
 		dialog_data.text = dialog_data.text .. category.category .. " \n"
 
-		for _, asset in ipairs(category.assets) do
+		for _, asset in ipairs(category.assets or {}) do
 			local money_cost = managers.preplanning:get_type_cost(asset.type)
 			local favor_cost = managers.preplanning:get_type_budget_cost(asset.type)
 			local td = managers.preplanning:get_tweak_data_by_type(asset.type)

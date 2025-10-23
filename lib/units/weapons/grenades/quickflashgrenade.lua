@@ -1,5 +1,7 @@
 local tmp_vec1 = Vector3()
 QuickFlashGrenade = QuickFlashGrenade or class()
+local VALUE_FUNC = 1
+local VALUE_TIME = 2
 QuickFlashGrenade.States = {
 	{
 		"_state_launched",
@@ -24,15 +26,15 @@ QuickFlashGrenade.Events = {
 function QuickFlashGrenade:init(unit)
 	self._unit = unit
 	self._state = 0
-	local td = tweak_data.group_ai.flash_grenade
-	self._range = td.range
-	self._light_range = td.light_range
-	self._light_color = td.light_color
-	self._light_specular = td.light_specular
-	self._beep_mul = td.beep_multi
-	self._beep_fade_speed = td.beep_fade_speed
-	self._beep_speeds = td.beep_speed
-	QuickFlashGrenade.States[3][3] = QuickFlashGrenade.States[3][3] or td.timer
+	local flash_grenade_data = tweak_data.group_ai.flash_grenade
+	self._range = flash_grenade_data.range
+	self._light_range = flash_grenade_data.light_range
+	self._light_color = flash_grenade_data.light_color
+	self._light_specular = flash_grenade_data.light_specular
+	self._beep_mul = flash_grenade_data.beep_multi
+	self._beep_fade_speed = flash_grenade_data.beep_fade_speed
+	self._beep_speeds = flash_grenade_data.beep_speed
+	QuickFlashGrenade.States[3][VALUE_TIME] = QuickFlashGrenade.States[3][VALUE_TIME] or flash_grenade_data.timer
 
 	if Network:is_client() then
 		self._unit:set_enabled(false)
@@ -54,9 +56,9 @@ function QuickFlashGrenade:update(unit, t, dt)
 			local state = QuickFlashGrenade.States[self._state]
 
 			if state then
-				self[state[1]](self)
+				self[state[VALUE_FUNC]](self)
 
-				self._timer = state[2]
+				self._timer = state[VALUE_TIME]
 			else
 				self._timer = nil
 			end
@@ -180,7 +182,11 @@ function QuickFlashGrenade:_state_detonated()
 end
 
 function QuickFlashGrenade:make_flash(detonate_pos, range, ignore_units)
-	local range = range or 1000
+	range = range or 1000
+	ignore_units = ignore_units or {}
+
+	table.insert(ignore_units, self._unit)
+
 	local effect_params = {
 		sound_event = "flashbang_explosion",
 		effect = "effects/particles/explosions/explosion_flash_grenade",
@@ -189,10 +195,6 @@ function QuickFlashGrenade:make_flash(detonate_pos, range, ignore_units)
 	}
 
 	managers.explosion:play_sound_and_effects(detonate_pos, math.UP, range, effect_params)
-
-	ignore_units = ignore_units or {}
-
-	table.insert(ignore_units, self._unit)
 
 	local affected, line_of_sight, travel_dis, linear_dis = self:_chk_dazzle_local_player(detonate_pos, range, ignore_units)
 
@@ -336,7 +338,7 @@ function QuickFlashGrenade:on_flashbang_destroyed(prevent_network)
 end
 
 function QuickFlashGrenade:on_network_event(event_id)
-	local event = QuickFlashGrenade.Events[event_id]
+	local event = self.Events[event_id]
 
 	if event and self[event] then
 		self[event](self, true)

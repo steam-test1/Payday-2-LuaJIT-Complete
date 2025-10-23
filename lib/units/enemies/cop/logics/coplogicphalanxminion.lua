@@ -201,7 +201,7 @@ function CopLogicPhalanxMinion.breakup(remote_call)
 			local brain = unit:brain()
 
 			if brain and brain:objective() then
-				print("CopLogicPhalanxMinion.breakup current objective type: ", brain:objective().type)
+				print("[PHALANX] CopLogicPhalanxMinion.breakup current objective type: ", brain:objective().type)
 				brain:set_objective(nil)
 			end
 		end

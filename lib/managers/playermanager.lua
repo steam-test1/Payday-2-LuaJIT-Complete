@@ -3374,14 +3374,6 @@ function PlayerManager:get_synced_carry(peer_id)
 	return self._global.synced_carry[peer_id]
 end
 
-function PlayerManager:from_server_interaction_reply(status)
-	self:player_unit():movement():set_carry_restriction(false)
-
-	if not status then
-		self:clear_carry()
-	end
-end
-
 function PlayerManager:get_all_synced_carry()
 	return self._global.synced_carry
 end
@@ -4025,12 +4017,14 @@ function PlayerManager:peer_dropped_out(peer)
 	if Network:is_server() then
 		self:transfer_special_equipment(peer_id, true, true)
 
-		if self._global.synced_carry[peer_id] and self._global.synced_carry[peer_id].approved then
-			local carry_id = self._global.synced_carry[peer_id].carry_id
-			local carry_multiplier = self._global.synced_carry[peer_id].multiplier
-			local dye_initiated = self._global.synced_carry[peer_id].dye_initiated
-			local has_dye_pack = self._global.synced_carry[peer_id].has_dye_pack
-			local dye_value_multiplier = self._global.synced_carry[peer_id].dye_value_multiplier
+		local synced_carry_data = self:get_synced_carry(peer_id)
+
+		if synced_carry_data and synced_carry_data.approved then
+			local carry_id = synced_carry_data.carry_id
+			local carry_multiplier = synced_carry_data.multiplier
+			local dye_initiated = synced_carry_data.dye_initiated
+			local has_dye_pack = synced_carry_data.has_dye_pack
+			local dye_value_multiplier = synced_carry_data.dye_value_multiplier
 			local peer_unit = peer:unit()
 			local position = Vector3()
 

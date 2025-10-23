@@ -10,6 +10,7 @@ function ClientNetworkSession:request_join_host(host_rpc, is_invite, result_cb)
 	local host_name = managers.network.matchmake:game_owner_name()
 	local host_account_type_str = managers.network.matchmake:game_owner_account_type_str()
 	local host_account_id = managers.network.matchmake:game_owner_account_id()
+	host_name = managers.network:sanitize_peer_name(host_name)
 	local drop_in_name = host_name
 
 	if host_account_type_str == "STEAM" then
@@ -31,7 +32,6 @@ function ClientNetworkSession:request_join_host(host_rpc, is_invite, result_cb)
 
 	peer:set_name_drop_in(drop_in_name)
 
-	local ticket = peer:create_ticket(self._local_peer:account_id())
 	self._server_peer = peer
 
 	Network:set_multiplayer(true)
@@ -41,34 +41,119 @@ function ClientNetworkSession:request_join_host(host_rpc, is_invite, result_cb)
 	local lvl = managers.experience:current_level()
 	local rank = managers.experience:current_rank()
 	local join_stinger_index = managers.infamy:selected_join_stinger_index()
-	local gameversion = managers.network.matchmake.GAMEVERSION or -1
 	local join_req_id = self:_get_join_attempt_identifier()
 	self._join_request_params = {
 		host_rpc = host_rpc,
 		params = {
 			self._local_peer:name(),
-			self._local_peer:account_type_str(),
 			self._local_peer:account_id(),
 			is_invite,
 			managers.blackmarket:get_preferred_character_string(),
-			managers.dlc:dlcs_string(),
 			xuid,
 			lvl,
 			rank,
 			join_stinger_index,
-			gameversion,
-			join_req_id,
-			ticket
+			join_req_id
 		}
 	}
+	local account_type = self._local_peer:account_type_str()
 
-	host_rpc:request_join(unpack(self._join_request_params.params))
+	if account_type == "EPIC" then
+		host_rpc:request_join_epic(unpack(self._join_request_params.params))
+	elseif account_type == "STEAM" then
+		host_rpc:request_join_steam(unpack(self._join_request_params.params))
+	end
 
 	self._first_join_request_t = TimerManager:wall():time()
 	self._last_join_request_t = self._first_join_request_t
 end
 
-function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_character, level_index, difficulty_index, one_down, state_index, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, sender)
+function ClientNetworkSession:on_auth_request_received(reply, auth_ticket, sender)
+	print("[ClientNetworkSession:on_auth_request_received] response", reply)
+
+	if not sender then
+		print("[ClientNetworkSession:on_auth_request_received] Invalid sender")
+
+		return
+	end
+
+	print("[ClientNetworkSession:on_auth_request_received] ", self._server_peer and self._server_peer:user_id(), sender:ip_at_index(0), sender:protocol_at_index(0))
+
+	if not self._server_peer or not self._cb_find_game then
+		return
+	end
+
+	if self._server_peer:ip() and sender:ip_at_index(0) ~= self._server_peer:ip() then
+		print("[ClientNetworkSession:on_auth_request_received] wrong host replied", self._server_peer:ip(), sender:ip_at_index(0))
+
+		return
+	end
+
+	local cb = self._cb_find_game
+	self._last_join_request_t = TimerManager:wall():time()
+
+	if reply == HostNetworkSession.JOIN_REPLY.OK then
+		self._host_sanity_send_t = TimerManager:wall():time() + self.HOST_SANITY_CHECK_INTERVAL
+
+		if not self._server_peer:begin_ticket_session(auth_ticket) then
+			self._cb_find_game = nil
+
+			self:remove_peer(self._server_peer, 1)
+			cb("AUTH_HOST_FAILED")
+
+			return
+		end
+
+		self._join_request_params.ticket = self._server_peer:create_ticket(self._local_peer:account_id())
+
+		sender:auth_request_reply(self._join_request_params.ticket)
+
+		return
+	elseif reply == HostNetworkSession.JOIN_REPLY.FAILED_CONNECT then
+		self:remove_peer(self._server_peer, 1)
+		cb("FAILED_CONNECT")
+	elseif reply == HostNetworkSession.JOIN_REPLY.KICKED then
+		self:remove_peer(self._server_peer, 1)
+		cb("KICKED")
+	elseif reply == HostNetworkSession.JOIN_REPLY.GAME_STARTED then
+		self:remove_peer(self._server_peer, 1)
+		cb("GAME_STARTED")
+	elseif reply == HostNetworkSession.JOIN_REPLY.DO_NOT_OWN_HEIST then
+		self:remove_peer(self._server_peer, 1)
+		cb("DO_NOT_OWN_HEIST")
+	elseif reply == HostNetworkSession.JOIN_REPLY.GAME_FULL then
+		self:remove_peer(self._server_peer, 1)
+		cb("GAME_FULL")
+	elseif reply == HostNetworkSession.JOIN_REPLY.LOW_LEVEL then
+		self:remove_peer(self._server_peer, 1)
+		cb("LOW_LEVEL")
+	elseif reply == HostNetworkSession.JOIN_REPLY.WRONG_VERSION then
+		self:remove_peer(self._server_peer, 1)
+		cb("WRONG_VERSION")
+	elseif reply == HostNetworkSession.JOIN_REPLY.BANNED then
+		self:remove_peer(self._server_peer, 1)
+		cb("BANNED")
+	elseif reply == HostNetworkSession.JOIN_REPLY.MODS_DISALLOWED then
+		self:remove_peer(self._server_peer, 1)
+		cb("MODS_DISALLOWED")
+	elseif reply == HostNetworkSession.JOIN_REPLY.SHUB_BLOCKED then
+		self:remove_peer(self._server_peer, 1)
+		cb("SHUB_BLOCKED")
+	elseif reply == HostNetworkSession.JOIN_REPLY.SHUB_NOT_FRIEND then
+		self:remove_peer(self._server_peer, 1)
+		cb("SHUB_NOT_FRIEND")
+	elseif reply == HostNetworkSession.JOIN_REPLY.HOST_LOADING then
+		self:remove_peer(self._server_peer, 1)
+		cb("HOST_LOADING")
+	elseif reply == HostNetworkSession.JOIN_REPLY.ALREADY_JOINED then
+		self:remove_peer(self._server_peer, 1)
+		cb("ALREADY_JOINED")
+	end
+
+	self._cb_find_game = nil
+end
+
+function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_character, level_index, difficulty_index, one_down, state_index, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, sender)
 	if not sender then
 		print("[ClientNetworkSession:on_join_request_reply] Invalid sender")
 
@@ -88,6 +173,7 @@ function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_charac
 	end
 
 	self._last_join_request_t = nil
+	self._join_request_params = nil
 
 	if SystemInfo:platform() == self._ids_WIN32 then
 		if self._server_peer:user_id() and user_id ~= self._server_peer:user_id() then
@@ -113,7 +199,7 @@ function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_charac
 	local cb = self._cb_find_game
 	self._cb_find_game = nil
 
-	if reply == 1 then
+	if reply == HostNetworkSession.JOIN_REPLY.OK then
 		self._host_sanity_send_t = TimerManager:wall():time() + self.HOST_SANITY_CHECK_INTERVAL
 		Global.game_settings.level_id = tweak_data.levels:get_level_name_from_index(level_index)
 		Global.game_settings.difficulty = tweak_data:index_to_difficulty(difficulty_index)
@@ -136,21 +222,8 @@ function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_charac
 		self:register_local_peer(my_peer_id)
 		self._local_peer:set_character(my_character)
 		self._server_peer:set_id(1)
-
-		if not self._server_peer:begin_ticket_session(auth_ticket) then
-			self:remove_peer(self._server_peer, 1)
-			cb("AUTH_HOST_FAILED")
-
-			return
-		end
-
 		self._server_peer:set_in_lobby_soft(state_index == 1)
 		self._server_peer:set_synched_soft(state_index ~= 1)
-
-		if SystemInfo:platform() == Idstring("PS3") then
-			-- Nothing
-		end
-
 		self:_chk_send_proactive_outfit_loaded()
 
 		if job_id_index ~= 0 then
@@ -181,46 +254,13 @@ function ClientNetworkSession:on_join_request_reply(reply, my_peer_id, my_charac
 		}
 
 		cb(unpack(params))
-	elseif reply == 2 then
-		self:remove_peer(self._server_peer, 1)
-		cb("KICKED")
-	elseif reply == 0 then
+	elseif reply == HostNetworkSession.JOIN_REPLY.FAILED_CONNECT then
 		self:remove_peer(self._server_peer, 1)
 		cb("FAILED_CONNECT")
-	elseif reply == 3 then
-		self:remove_peer(self._server_peer, 1)
-		cb("GAME_STARTED")
-	elseif reply == 4 then
-		self:remove_peer(self._server_peer, 1)
-		cb("DO_NOT_OWN_HEIST")
-	elseif reply == 5 then
-		self:remove_peer(self._server_peer, 1)
-		cb("GAME_FULL")
-	elseif reply == 6 then
-		self:remove_peer(self._server_peer, 1)
-		cb("LOW_LEVEL")
-	elseif reply == 7 then
-		self:remove_peer(self._server_peer, 1)
-		cb("WRONG_VERSION")
-	elseif reply == 8 then
+	elseif reply == HostNetworkSession.JOIN_REPLY.AUTH_FAILED then
 		self:remove_peer(self._server_peer, 1)
 		cb("AUTH_FAILED")
-	elseif reply == 9 then
-		self:remove_peer(self._server_peer, 1)
-		cb("BANNED")
-	elseif reply == 10 then
-		self:remove_peer(self._server_peer, 1)
-		cb("MODS_DISALLOWED")
-	elseif reply == 11 then
-		self:remove_peer(self._server_peer, 1)
-		cb("SHUB_BLOCKED")
-	elseif reply == 12 then
-		self:remove_peer(self._server_peer, 1)
-		cb("SHUB_NOT_FRIEND")
-	elseif reply == 13 then
-		self:remove_peer(self._server_peer, 1)
-		cb("HOST_LOADING")
-	elseif reply == 14 then
+	elseif reply == HostNetworkSession.JOIN_REPLY.ALREADY_JOINED then
 		self:remove_peer(self._server_peer, 1)
 		cb("ALREADY_JOINED")
 	end
@@ -358,6 +398,7 @@ function ClientNetworkSession:peer_handshake(name, peer_id, peer_user_id, peer_a
 		peer_user_id = false
 	end
 
+	name = managers.network:sanitize_peer_name(name)
 	local drop_in_name = name
 
 	if peer_account_type_str == "STEAM" then
@@ -596,23 +637,33 @@ function ClientNetworkSession:_get_join_attempt_identifier()
 end
 
 function ClientNetworkSession:_upd_request_join_resend(wall_time)
-	if self._last_join_request_t then
-		if ClientNetworkSession.JOIN_REQUEST_TIMEOUT < wall_time - self._first_join_request_t and self._server_peer and self._cb_find_game then
-			self._last_join_request_t = nil
-			local cb = self._cb_find_game
-			self._cb_find_game = nil
+	if not self._last_join_request_t then
+		return
+	end
 
-			self:remove_peer(self._server_peer, 1)
-			cb("FAILED_CONNECT")
+	if ClientNetworkSession.JOIN_REQUEST_TIMEOUT < wall_time - self._first_join_request_t and self._server_peer and self._cb_find_game then
+		self._last_join_request_t = nil
+		local cb = self._cb_find_game
+		self._cb_find_game = nil
 
-			return
+		self:remove_peer(self._server_peer, 1)
+		cb("FAILED_CONNECT")
+
+		return
+	end
+
+	if ClientNetworkSession.HOST_REQUEST_JOIN_INTERVAL < wall_time - self._last_join_request_t then
+		local account_type = self._local_peer:account_type_str()
+
+		if self._join_request_params.ticket then
+			self._join_request_params.host_rpc:auth_request_reply(self._join_request_params.ticket)
+		elseif account_type == "EPIC" then
+			self._join_request_params.host_rpc:request_join_epic(unpack(self._join_request_params.params))
+		elseif account_type == "STEAM" then
+			self._join_request_params.host_rpc:request_join_steam(unpack(self._join_request_params.params))
 		end
 
-		if self._last_join_request_t and ClientNetworkSession.HOST_REQUEST_JOIN_INTERVAL < wall_time - self._last_join_request_t then
-			self._join_request_params.host_rpc:request_join(unpack(self._join_request_params.params))
-
-			self._last_join_request_t = wall_time
-		end
+		self._last_join_request_t = wall_time
 	end
 end
 

@@ -270,7 +270,9 @@ end
 function MutatorExplodingEnemies:_detonate(data)
 	local pos = mvector3.copy(data.m_com)
 	local range = data.is_nuclear and 2000 or self:get_explosion_size() * 100
+	range = math.clamp(range, 0, 4000)
 	local damage = data.damage * (data.is_nuclear and 2.5 or 1)
+	damage = math.clamp(damage, 0, 100)
 	local ply_damage = damage * 0.5
 	local normal = math.UP
 	local curve_pow = data.is_nuclear and 6 or 4

@@ -39,7 +39,7 @@ CopLogicPhalanxVip.allowed_transitional_actions = {
 }
 
 function CopLogicPhalanxVip.enter(data, new_logic_name, enter_params)
-	print("CopLogicPhalanxVip.enter")
+	print("[PHALANX] CopLogicPhalanxVip.enter")
 	CopLogicBase.enter(data, new_logic_name, enter_params)
 
 	local my_data = {
@@ -194,39 +194,42 @@ function CopLogicPhalanxVip._chk_should_breakup(data)
 end
 
 function CopLogicPhalanxVip.breakup(remote_call)
-	print("CopLogicPhalanxVip.breakup")
+	local group_ai_state = managers.groupai:state()
+	local phalanx_vip = group_ai_state:phalanx_vip()
 
-	local groupai = managers.groupai:state()
-	local phalanx_vip = groupai:phalanx_vip()
-
-	if phalanx_vip and alive(phalanx_vip) then
-		groupai:unit_leave_group(phalanx_vip, false)
-		managers.groupai:state():unregister_phalanx_vip()
-
-		local nav_seg = phalanx_vip:movement():nav_tracker():nav_segment()
-		local flee_pos = managers.groupai:state():flee_point(nav_seg)
-
-		if flee_pos then
-			local flee_nav_seg = managers.navigation:get_nav_seg_from_pos(flee_pos)
-			local new_objective = {
-				attitude = "avoid",
-				type = "flee",
-				pos = flee_pos,
-				nav_seg = flee_nav_seg
-			}
-
-			if phalanx_vip:brain():objective() then
-				print("Setting VIP flee objective!")
-				phalanx_vip:brain():set_objective(new_objective)
-				phalanx_vip:sound():say("cpw_a04", true, true)
-			end
-		else
-			print("No flee_pos for VIP found, cannot set flee objective!")
+	if phalanx_vip then
+		if alive(phalanx_vip) then
+			group_ai_state:unit_leave_group(phalanx_vip, false)
+			CopLogicPhalanxVip.do_vip_flee(phalanx_vip)
 		end
+
+		group_ai_state:unregister_phalanx_vip()
 	end
 
 	if not remote_call then
 		CopLogicPhalanxMinion.breakup(true)
+	end
+end
+
+function CopLogicPhalanxVip.do_vip_flee(unit)
+	if not alive(unit) then
+		return
+	end
+
+	local group_ai_state = managers.groupai:state()
+	local nav_seg = unit:movement():nav_tracker():nav_segment()
+	local flee_pos = group_ai_state:flee_point(nav_seg)
+
+	if flee_pos then
+		local flee_nav_seg = managers.navigation:get_nav_seg_from_pos(flee_pos)
+
+		unit:brain():set_objective({
+			forced = true,
+			attitude = "avoid",
+			type = "flee",
+			pos = flee_pos,
+			nav_seg = flee_nav_seg
+		})
 	end
 end
 

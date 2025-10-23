@@ -42,22 +42,46 @@ function ConnectionNetworkHandler:discover_host_reply(sender_name, level_id, lev
 	managers.network:on_discover_host_reply(sender, sender_name, level_name, my_ip, state, difficulty)
 end
 
-function ConnectionNetworkHandler:request_join(peer_name, peer_account_type_str, peer_account_id, is_invite, preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender)
-	if not self._verify_in_server_session() then
+function ConnectionNetworkHandler:request_join_steam(peer_name, peer_account_id, is_invite, preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, sender)
+	if not self._verify_in_server_session() or not managers.network:session() or not managers.network:session().on_join_request_received then
 		return
 	end
 
-	managers.network:session():on_join_request_received(peer_name, peer_account_type_str, peer_account_id, is_invite, preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender)
+	managers.network:session():on_join_request_received(peer_name, "STEAM", peer_account_id, is_invite, preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, sender)
 end
 
-function ConnectionNetworkHandler:join_request_reply(reply_id, my_peer_id, my_character, level_index, difficulty_index, one_down, state, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, sender)
-	print(" 1 ConnectionNetworkHandler:join_request_reply", reply_id, my_peer_id, my_character, level_index, difficulty_index, one_down, state, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, sender)
-
-	if not self._verify_in_client_session() then
+function ConnectionNetworkHandler:request_join_epic(peer_name, peer_account_id, is_invite, preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, sender)
+	if not self._verify_in_server_session() or not managers.network:session() or not managers.network:session().on_join_request_received then
 		return
 	end
 
-	managers.network:session():on_join_request_reply(reply_id, my_peer_id, my_character, level_index, difficulty_index, one_down, state, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, auth_ticket, sender)
+	managers.network:session():on_join_request_received(peer_name, "EPIC", peer_account_id, is_invite, preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, sender)
+end
+
+function ConnectionNetworkHandler:auth_request_reply(auth_ticket, sender)
+	if not self._verify_in_server_session() or not managers.network:session() or not managers.network:session().on_join_auth_received then
+		return
+	end
+
+	managers.network:session():on_join_auth_received(auth_ticket, sender)
+end
+
+function ConnectionNetworkHandler:request_join_auth(reply_id, auth_ticket, sender)
+	if not self._verify_in_client_session() or not managers.network:session() or not managers.network:session().on_auth_request_received then
+		return
+	end
+
+	managers.network:session():on_auth_request_received(reply_id, auth_ticket, sender)
+end
+
+function ConnectionNetworkHandler:join_request_reply(reply_id, my_peer_id, my_character, level_index, difficulty_index, one_down, state, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, sender)
+	print("[ConnectionNetworkHandler:join_request_reply]", reply_id, my_peer_id, my_character, level_index, difficulty_index, one_down, state, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, sender)
+
+	if not self._verify_in_client_session() or not managers.network:session() or not managers.network:session().on_join_request_reply then
+		return
+	end
+
+	managers.network:session():on_join_request_reply(reply_id, my_peer_id, my_character, level_index, difficulty_index, one_down, state, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, sender)
 end
 
 function ConnectionNetworkHandler:peer_handshake(name, peer_id, peer_user_id, peer_account_type_str, peer_account_id, in_lobby, loading, synched, character, slot, mask_set, xuid, xnaddr)
@@ -69,26 +93,6 @@ function ConnectionNetworkHandler:peer_handshake(name, peer_id, peer_user_id, pe
 
 	print(" 2 ConnectionNetworkHandler:peer_handshake")
 	managers.network:session():peer_handshake(name, peer_id, peer_user_id, peer_account_type_str, peer_account_id, in_lobby, loading, synched, character, slot, mask_set, xuid, xnaddr)
-end
-
-function ConnectionNetworkHandler:request_player_name(sender)
-	if not self._verify_sender(sender) then
-		return
-	end
-
-	local name = managers.network:session():local_peer():name()
-
-	sender:request_player_name_reply(name)
-end
-
-function ConnectionNetworkHandler:request_player_name_reply(name, sender)
-	local sender_peer = self._verify_sender(sender)
-
-	if not sender_peer then
-		return
-	end
-
-	sender_peer:set_name(name)
 end
 
 function ConnectionNetworkHandler:peer_exchange_info(peer_id, sender)
@@ -674,8 +678,6 @@ function ConnectionNetworkHandler:sync_profile(level, rank, sender)
 end
 
 function ConnectionNetworkHandler:windistrib_p2p_ping(sender)
-	print("[ConnectionNetworkHandler:windistrib_p2p_ping] from", sender:ip_at_index(0), sender:protocol_at_index(0))
-
 	local session = managers.network:session()
 
 	if not session or session:closing() then

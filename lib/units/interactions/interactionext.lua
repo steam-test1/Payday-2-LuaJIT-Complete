@@ -2175,29 +2175,31 @@ function CarryInteractionExt:interact(player)
 	CarryInteractionExt.super.super.interact(self, player)
 
 	local peer_id = managers.network:session():local_peer():id()
+	local carry_data = self._unit:carry_data()
+	local carry_id = carry_data:carry_id()
 
-	if self._has_modified_timer and not self._unit:carry_data():is_linked_to_unit() then
+	if self._has_modified_timer and not carry_data:is_linked_to_unit() then
 		managers.achievment:award("murphys_laws")
 
-		if self._unit:carry_data():latest_peer_id() == peer_id then
+		if carry_data:latest_peer_id() == peer_id then
 			local kill_count_no_carry = managers.job:get_memory("kill_count_no_carry", true) or 0
 			local peta_4_data = tweak_data.achievement.peta_4
 
-			if peta_4_data and self._unit:carry_data():carry_id() == peta_4_data.carry_id and peta_4_data.count <= kill_count_no_carry then
+			if peta_4_data and carry_id == peta_4_data.carry_id and peta_4_data.count <= kill_count_no_carry then
 				managers.achievment:award(peta_4_data.award)
 			end
 		end
 	end
 
-	managers.player:set_carry(self._unit:carry_data():carry_id(), self._unit:carry_data():multiplier(), self._unit:carry_data():dye_pack_data())
+	managers.player:set_carry(carry_id, carry_data:multiplier(), carry_data:dye_pack_data())
 
-	if self._unit:carry_data():carry_id() == "person" then
+	if carry_id == "person" then
 		managers.mission:call_global_event("player_pickup_bodybag")
 	end
 
-	managers.network:session():send_to_peers_synched_except(peer_id, "sync_interacted", self._unit, self._unit:id(), self.tweak_data, 1)
+	managers.network:session():send_to_peers_synched("sync_carry_interacted", self._unit, self._unit:id(), self.tweak_data, carry_id)
 	self:sync_interacted(nil, player)
-	managers.player:register_carry(managers.network:session():local_peer(), self._unit:carry_data() and self._unit:carry_data():carry_id())
+	managers.player:register_carry(managers.network:session():local_peer(), carry_id)
 
 	if Network:is_client() then
 		player:movement():set_carry_restriction(true)

@@ -3,6 +3,7 @@ NewsFeedGui.PRESENT_TIME = 0.5
 NewsFeedGui.SUSTAIN_TIME = 6
 NewsFeedGui.REMOVE_TIME = 0.5
 NewsFeedGui.MAX_NEWS = 5
+NewsFeedGui.BOTTOM_OFFSET = 18
 
 function NewsFeedGui:init(ws)
 	self._ws = ws
@@ -18,8 +19,9 @@ function NewsFeedGui:update(t, dt)
 
 	if self._news and #self._titles > 0 then
 		local color = math.lerp(tweak_data.screen_colors.button_stage_2, tweak_data.screen_colors.button_stage_3, (1 + math.sin(t * 360)) / 2)
+		local title_panel_item = self._title_panel:child("title")
 
-		self._title_panel:child("title"):set_color(self._mouse_over and tweak_data.screen_colors.button_stage_2 or color)
+		title_panel_item:set_color(self._mouse_over and tweak_data.screen_colors.button_stage_2 or color)
 
 		if self._next then
 			self._next = nil
@@ -29,11 +31,11 @@ function NewsFeedGui:update(t, dt)
 				self._news.i = 1
 			end
 
-			self._title_panel:child("title"):set_text(utf8.to_upper("(" .. self._news.i .. "/" .. #self._titles .. ") " .. self._titles[self._news.i]))
+			title_panel_item:set_text(utf8.to_upper("(" .. self._news.i .. "/" .. #self._titles .. ") " .. self._titles[self._news.i]))
 
-			local _, _, w, h = self._title_panel:child("title"):text_rect()
+			local _, _, w, h = title_panel_item:text_rect()
 
-			self._title_panel:child("title"):set_h(h)
+			title_panel_item:set_h(h)
 			self._title_panel:set_w(w + 10)
 			self._title_panel:set_h(h)
 			self._title_panel:set_left(self._panel:w())
@@ -73,7 +75,7 @@ end
 
 function NewsFeedGui:make_news_request()
 	if SystemInfo:distribution() == Idstring("STEAM") or SystemInfo:distribution() == Idstring("EPIC") then
-		print("make_news_request()")
+		Application:debug("[NewsFeedGui] make_news_request()")
 
 		local headers = {
 			["Content-Type"] = "text/xml"
@@ -84,7 +86,7 @@ function NewsFeedGui:make_news_request()
 end
 
 function NewsFeedGui:news_result(success, body)
-	print("news_result()", success)
+	Application:debug("[NewsFeedGui] news_result()", success)
 
 	if not alive(self._panel) then
 		return
@@ -97,8 +99,9 @@ function NewsFeedGui:news_result(success, body)
 			i = 0
 		}
 		self._next = true
+		local show_announcements = #self._titles > 0
 
-		self._panel:child("title_announcement"):set_visible(#self._titles > 0)
+		self._panel:child("title_announcement"):set_visible(show_announcements)
 	end
 end
 
@@ -110,6 +113,7 @@ function NewsFeedGui:_create_gui()
 		w = size.width / 2
 	})
 
+	self._panel:set_bottom(self._panel:parent():h() - NewsFeedGui.BOTTOM_OFFSET)
 	self._panel:bitmap({
 		texture = "guis/textures/textboxbg",
 		name = "bg_bitmap",
@@ -121,12 +125,11 @@ function NewsFeedGui:_create_gui()
 	})
 	self._panel:text({
 		visible = false,
-		name = "title_announcement",
 		vertical = "top",
+		name = "title_announcement",
 		hvertical = "top",
 		align = "left",
 		halign = "left",
-		rotation = 360,
 		text = managers.localization:to_upper_text("menu_announcements"),
 		font = tweak_data.menu.pd2_small_font,
 		font_size = tweak_data.menu.pd2_small_font_size,
@@ -141,17 +144,15 @@ function NewsFeedGui:_create_gui()
 	self._title_panel:text({
 		name = "title",
 		vertical = "bottom",
-		hvertical = "bottom",
 		align = "left",
 		text = "",
+		hvertical = "bottom",
 		halign = "left",
-		rotation = 360,
 		font = tweak_data.menu.pd2_medium_font,
 		font_size = tweak_data.menu.pd2_medium_font_size,
 		color = Color(0.75, 0.75, 0.75)
 	})
 	self._title_panel:set_right(-10)
-	self._panel:set_bottom(self._panel:parent():h())
 end
 
 function NewsFeedGui:_get_text_block(s, sp, ep, max_results)

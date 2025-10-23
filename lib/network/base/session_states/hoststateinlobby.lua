@@ -1,10 +1,12 @@
 HostStateInLobby = HostStateInLobby or class(HostStateBase)
 
-function HostStateInLobby:on_join_request_received(data, peer_name, peer_account_type_str, peer_account_id, is_invite, client_preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender)
-	print("[HostStateInLobby:on_join_request_received]", data, peer_name, peer_account_type_str, peer_account_id, is_invite, client_preferred_character, dlcs, xuid, peer_level, peer_rank, peer_stinger_index, gameversion, join_attempt_identifier, auth_ticket, sender:ip_at_index(0))
-
+function HostStateInLobby:on_join_request_received(data, peer_name, peer_account_type_str, peer_account_id, is_invite, client_preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, sender)
 	local peer_id = sender:ip_at_index(0)
+	local my_user_id = data.local_peer:user_id() or ""
+	peer_name = managers.network:sanitize_peer_name(peer_name)
 	local drop_in_name = peer_name
+
+	print("[HostStateInLobby:on_join_request_received]", data, peer_name, peer_account_type_str, peer_account_id, is_invite, client_preferred_character, xuid, peer_level, peer_rank, peer_stinger_index, join_attempt_identifier, peer_id)
 
 	if peer_account_type_str == "STEAM" then
 		local temp = peer_name
@@ -20,22 +22,20 @@ function HostStateInLobby:on_join_request_received(data, peer_name, peer_account
 		end
 	end
 
-	local my_user_id = data.local_peer:user_id() or ""
-
 	if SocialHubFriends:is_blocked(peer_id) then
-		self:_send_request_denied(sender, 11, my_user_id)
+		self:_send_request_denied(sender, HostNetworkSession.JOIN_REPLY.SHUB_BLOCKED, my_user_id)
 
 		return
 	end
 
 	if not is_invite and managers.network.matchmake:get_lobby_type() == "friend" then
-		print("[HostStateInLobby:on_join_request_received] lobby type friend only, check if friend")
+		print("[HostStateInGame:on_join_request_received] lobby type friend only, check if friend")
 
 		if SocialHubFriends:is_friend_global(peer_id, peer_account_type_str, peer_account_id) then
-			print("[HostStateInLobby:on_join_request_received] ok we are friend with ", peer_name)
+			print("[HostStateInGame:on_join_request_received] ok we are friend with ", peer_name)
 		else
-			print("[HostStateInLobby:on_join_request_received] we are NOT friend with ", peer_name, " deny request")
-			self:_send_request_denied(sender, 12, my_user_id)
+			print("[HostStateInGame:on_join_request_received] we are NOT friend with ", peer_name, " deny request")
+			self:_send_request_denied(sender, HostNetworkSession.JOIN_REPLY.SHUB_NOT_FRIEND, my_user_id)
 
 			return
 		end
@@ -47,8 +47,14 @@ function HostStateInLobby:on_join_request_received(data, peer_name, peer_account
 		return
 	end
 
+	if Global.game_settings.single_player then
+		self:_send_request_denied(sender, HostNetworkSession.JOIN_REPLY.FAILED_CONNECT, my_user_id)
+
+		return
+	end
+
 	if self:_is_banned(peer_name, peer_account_id) then
-		self:_send_request_denied(sender, 9, my_user_id)
+		self:_send_request_denied(sender, HostNetworkSession.JOIN_REPLY.BANNED, my_user_id)
 
 		return
 	end
@@ -57,7 +63,7 @@ function HostStateInLobby:on_join_request_received(data, peer_name, peer_account
 		local is_modded = false
 
 		if SystemInfo:distribution() == Idstring("STEAM") and peer_account_type_str == "STEAM" then
-			local user = Steam:user(sender:ip_at_index(0))
+			local user = Steam:user(peer_id)
 			is_modded = user:rich_presence("is_modded") == "1"
 		end
 
@@ -66,32 +72,26 @@ function HostStateInLobby:on_join_request_received(data, peer_name, peer_account
 		end
 
 		if is_modded then
-			self:_send_request_denied(sender, 10, my_user_id)
+			self:_send_request_denied(sender, HostNetworkSession.JOIN_REPLY.MODS_DISALLOWED, my_user_id)
 
 			return
 		end
 	end
 
 	if peer_level < Global.game_settings.reputation_permission then
-		self:_send_request_denied(sender, 6, my_user_id)
-
-		return
-	end
-
-	if gameversion ~= -1 and gameversion ~= managers.network.matchmake.GAMEVERSION then
-		self:_send_request_denied(sender, 7, my_user_id)
+		self:_send_request_denied(sender, HostNetworkSession.JOIN_REPLY.LOW_LEVEL, my_user_id)
 
 		return
 	end
 
 	if data.wants_to_load_level then
-		self:_send_request_denied(sender, 13, my_user_id)
+		self:_send_request_denied(sender, HostNetworkSession.JOIN_REPLY.HOST_LOADING, my_user_id)
 
 		return
 	end
 
 	if not managers.network:session():local_peer() then
-		self:_send_request_denied(sender, 0, my_user_id)
+		self:_send_request_denied(sender, HostNetworkSession.JOIN_REPLY.FAILED_CONNECT, my_user_id)
 
 		return
 	end
@@ -100,16 +100,20 @@ function HostStateInLobby:on_join_request_received(data, peer_name, peer_account
 
 	if old_peer then
 		if join_attempt_identifier ~= old_peer:join_attempt_identifier() then
-			self:_send_request_denied(sender, 14, my_user_id)
+			self:_send_request_denied(sender, HostNetworkSession.JOIN_REPLY.ALREADY_JOINED, my_user_id)
 			data.session:remove_peer(old_peer, old_peer:id(), "lost")
 		end
 
 		return
 	end
 
+	if data.session:peer_by_account_id(peer_account_id) then
+		self:_send_request_denied(sender, HostNetworkSession.JOIN_REPLY.FAILED_CONNECT, my_user_id)
+	end
+
 	if table.size(data.peers) >= tweak_data.max_players - 1 then
 		print("server is full")
-		self:_send_request_denied(sender, 5, my_user_id)
+		self:_send_request_denied(sender, HostNetworkSession.JOIN_REPLY.GAME_FULL, my_user_id)
 
 		return
 	end
@@ -118,22 +122,15 @@ function HostStateInLobby:on_join_request_received(data, peer_name, peer_account
 
 	local character = managers.network:session():check_peer_preferred_character(client_preferred_character)
 	local xnaddr = ""
-
-	if SystemInfo:platform() == Idstring("X360") or SystemInfo:platform() == Idstring("XB1") then
-		xnaddr = managers.network.matchmake:external_address(sender)
-	end
-
-	local new_peer_id, new_peer = nil
-	new_peer_id, new_peer = data.session:add_peer(peer_name, nil, true, false, false, nil, character, sender:ip_at_index(0), peer_account_type_str, peer_account_id, xuid, xnaddr)
+	local new_peer_id, new_peer = data.session:add_peer(peer_name, nil, true, false, false, nil, character, sender:ip_at_index(0), peer_account_type_str, peer_account_id, xuid, xnaddr)
 
 	if not new_peer_id then
 		print("there was no clean peer_id")
-		self:_send_request_denied(sender, 0, my_user_id)
+		self:_send_request_denied(sender, HostNetworkSession.JOIN_REPLY.FAILED_CONNECT, my_user_id)
 
 		return
 	end
 
-	new_peer:set_dlcs(dlcs)
 	new_peer:set_xuid(xuid)
 	new_peer:set_name_drop_in(drop_in_name)
 	new_peer:set_join_attempt_identifier(join_attempt_identifier)
@@ -149,6 +146,25 @@ function HostStateInLobby:on_join_request_received(data, peer_name, peer_account
 	new_peer:set_rpc(new_peer_rpc)
 	new_peer:set_ip_verified(true)
 	Network:add_client(new_peer:rpc())
+	new_peer:set_entering_lobby(true)
+	new_peer:set_join_stinger_index(peer_stinger_index)
+
+	local ticket = new_peer:create_ticket(data.local_peer:account_id())
+
+	new_peer:send("request_join_auth", HostNetworkSession.JOIN_REPLY.OK, ticket)
+end
+
+function HostStateInLobby:on_join_auth_received(data, auth_ticket, sender)
+	print("[HostStateInLobby:on_join_auth_received] auth ticket received")
+
+	local new_peer = data.session:chk_peer_already_in(sender)
+	local my_user_id = data.local_peer:user_id() or ""
+
+	if not new_peer then
+		self:_send_request_denied(sender, HostNetworkSession.JOIN_REPLY.FAILED_CONNECT, my_user_id)
+
+		return
+	end
 
 	if not new_peer:begin_ticket_session(auth_ticket) then
 		self:_send_request_denied(sender, 8, my_user_id)
@@ -156,10 +172,6 @@ function HostStateInLobby:on_join_request_received(data, peer_name, peer_account
 
 		return
 	end
-
-	local ticket = new_peer:create_ticket(data.local_peer:account_id())
-
-	new_peer:set_entering_lobby(true)
 
 	local level_index = tweak_data.levels:get_index_from_level_id(Global.game_settings.level_id)
 	local difficulty_index = tweak_data:difficulty_to_index(Global.game_settings.difficulty)
@@ -176,11 +188,13 @@ function HostStateInLobby:on_join_request_received(data, peer_name, peer_account
 		interupt_job_stage_level_index = interupt_stage_level and tweak_data.levels:get_index_from_level_id(interupt_stage_level) or 0
 	end
 
-	local server_xuid = (SystemInfo:platform() == Idstring("X360") or SystemInfo:platform() == Idstring("XB1")) and managers.network.account:player_id() or ""
+	local server_xuid = ""
+	local new_peer_id = new_peer:id()
+	local peer_stinger_index = new_peer:join_stinger_index()
 	local params = {
-		1,
+		HostNetworkSession.JOIN_REPLY.OK,
 		new_peer_id,
-		character,
+		new_peer:character(),
 		level_index,
 		difficulty_index,
 		Global.game_settings.one_down,
@@ -192,19 +206,13 @@ function HostStateInLobby:on_join_request_received(data, peer_name, peer_account
 		job_stage,
 		alternative_job_stage,
 		interupt_job_stage_level_index,
-		server_xuid,
-		ticket
+		server_xuid
 	}
 
 	new_peer:send("join_request_reply", unpack(params))
 	new_peer:send("set_loading_state", false, data.session:load_counter())
-
-	if SystemInfo:platform() == Idstring("X360") or SystemInfo:platform() == Idstring("XB1") then
-		new_peer:send("request_player_name_reply", managers.network:session():local_peer():name())
-	end
-
 	managers.vote:sync_server_kick_option(new_peer)
-	self:_introduce_new_peer_to_old_peers(data, new_peer, false, peer_name, new_peer:character(), "remove", new_peer:xuid(), new_peer:xnaddr())
+	self:_introduce_new_peer_to_old_peers(data, new_peer, false, new_peer:name(), new_peer:character(), "remove", new_peer:xuid(), new_peer:xnaddr())
 	self:_introduce_old_peers_to_new_peer(data, new_peer)
 	self:on_handshake_confirmation(data, new_peer, 1)
 	managers.network:session():local_peer():sync_lobby_data(new_peer)

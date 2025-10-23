@@ -214,7 +214,7 @@ function FPCameraPlayerBase:break_recoil()
 end
 
 function FPCameraPlayerBase:recoil_kick(up, down, left, right)
-	if math.abs(self._recoil_kick.accumulated) < 20 then
+	if math.abs(self._recoil_kick.accumulated or 0) < 20 then
 		local v = math.lerp(up, down, math.random())
 		self._recoil_kick.accumulated = (self._recoil_kick.accumulated or 0) + v
 	end
@@ -1586,20 +1586,34 @@ function FPCameraPlayerBase:play_anim_melee_item(tweak_name)
 		self._melee_item_anim = nil
 	end
 
-	local ids = anim_data.anim and Idstring(anim_data.anim)
+	local anim_ids = anim_data.anim and Idstring(anim_data.anim)
 
-	if ids then
+	if anim_ids then
 		for _, unit in ipairs(self._melee_item_units) do
-			local length = unit:anim_length(ids)
+			local anim_length = unit:anim_length(anim_ids)
 
 			if anim_data.loop then
-				unit:anim_play_loop(ids, 0, length, 1)
+				unit:anim_play_loop(anim_ids, 0, anim_length, 1)
 			else
-				unit:anim_play_to(ids, length, 1)
+				if anim_data.from then
+					unit:anim_set_time(anim_ids, anim_data.from)
+				end
+
+				unit:anim_play_to(anim_ids, anim_length, 1)
+			end
+
+			if type(anim_data.start_time) == "number" then
+				local start_time = anim_data.start_time
+
+				if start_time == -1 then
+					start_time = anim_length
+				end
+
+				unit:anim_set_time(start_time)
 			end
 		end
 
-		self._melee_item_anim = ids
+		self._melee_item_anim = anim_ids
 	end
 end
 
@@ -2053,6 +2067,14 @@ function FPCameraPlayerBase:smoothstep(a, b, step, n)
 	local x = a * (1 - v) + b * v
 
 	return x
+end
+
+function FPCameraPlayerBase:set_visible(visible)
+	self._unit:set_visible(false)
+
+	if self._unit:spawn_manager() then
+		self._unit:spawn_manager():set_visibility_state(visible)
+	end
 end
 
 function FPCameraPlayerBase:_update_fadeout(mover_position, head_position, rotation, t, dt)

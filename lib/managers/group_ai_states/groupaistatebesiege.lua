@@ -1516,8 +1516,6 @@ function GroupAIStateBesiege:_perform_group_spawning(spawn_task, force, use_last
 		end
 
 		if hopeless then
-			debug_pause("[GroupAIStateBesiege:_upd_group_spawning] spawn group", spawn_task.spawn_group.id, "failed to spawn unit", u_type_name)
-
 			return true
 		end
 	end
@@ -4106,7 +4104,6 @@ function GroupAIStateBesiege:_check_phalanx_group_has_spawned()
 					pos = pos
 				}
 
-				print("Phalanx spawn finished, setting phalanx objective!")
 				self:_set_objective_to_enemy_group(self._phalanx_spawn_group, grp_objective)
 
 				self._phalanx_spawn_group.set_to_phalanx_group_obj = true

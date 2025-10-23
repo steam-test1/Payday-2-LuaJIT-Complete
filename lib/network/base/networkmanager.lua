@@ -45,6 +45,7 @@ else
 end
 
 NetworkManager.DROPIN_ENABLED = true
+NetworkManager.MAX_PEER_NAME_LENGTH = 32
 
 function NetworkManager:init()
 	self.OVERWRITEABLE_MSGS = {
@@ -571,6 +572,17 @@ end
 
 function NetworkManager:spawn_point(sp_id)
 	return self._spawn_points[sp_id]
+end
+
+function NetworkManager:sanitize_peer_name(name)
+	if not name then
+		return "[unknown]"
+	end
+
+	name = name:gsub("[%c]", "")
+	name = utf8.sub(name, 1, self.MAX_PEER_NAME_LENGTH)
+
+	return name
 end
 
 function NetworkManager:_register_PSN_matchmaking_callbacks()

@@ -363,8 +363,8 @@ function HUDAssaultCorner:_update_noreturn(id)
 	local y = noreturn_data.texture_rect or {}
 	local texture_rects_match = x[1] == y[1] and x[2] == y[2] and x[3] == y[3] and x[4] == y[4]
 
-	if noreturn_data.texture ~= self._noreturn_data.texture or not texture_rects_match then
-		icon_noreturnbox:set_image(noreturn_data.texture, unpack(noreturn_data.texture_rect))
+	if noreturn_data.icon_texture ~= self._noreturn_data.icon_texture or not texture_rects_match then
+		icon_noreturnbox:set_image(noreturn_data.icon_texture, unpack(noreturn_data.icon_texture_rect))
 	end
 
 	if noreturn_data.text_id ~= self._noreturn_data.text_id then

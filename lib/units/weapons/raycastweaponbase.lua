@@ -1945,6 +1945,7 @@ function RaycastWeaponBase:on_reload(amount)
 	managers.job:set_memory("kill_count_no_reload_" .. tostring(self._name_id), nil, true)
 
 	self._reload_ammo_base = nil
+	self._next_fire_allowed = self._unit:timer():time()
 end
 
 function RaycastWeaponBase:ammo_max()

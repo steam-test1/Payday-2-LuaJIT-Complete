@@ -281,6 +281,14 @@ function GrenadeCrateDeployableBase:init(unit)
 	GrenadeCrateDeployableBase.super.init(self, unit, false)
 end
 
+function GrenadeCrateDeployableBase:set_server_information(peer_id)
+	self._server_information = {
+		owner_peer_id = peer_id
+	}
+
+	managers.network:session():peer(peer_id):set_used_deployable(true)
+end
+
 function GrenadeCrateDeployableBase:setup()
 	self._max_grenade_amount = 4
 

@@ -111,11 +111,18 @@ function CrimenetSearchLobbyCodeGui:on_search_lobby_fetched(first, second, third
 		self.search_item = nil
 	end
 
-	self.search_item = SocialHubLobbyItem:new(self.scroll:canvas(), third)
+	local owner_name = third.OWNER_NAME
 
-	self.scroll:add_item(self.search_item, nil)
-	self.scroll:place_items_in_order(nil, true, true)
-	self.scroll:select_item(self.search_item)
+	if owner_name and utf8.len(owner_name) <= NetworkManager.MAX_PEER_NAME_LENGTH then
+		third.OWNER_NAME = managers.network:sanitize_peer_name(owner_name)
+		self.search_item = SocialHubLobbyItem:new(self.scroll:canvas(), third)
+
+		self.scroll:add_item(self.search_item, nil)
+		self.scroll:place_items_in_order(nil, true, true)
+		self.scroll:select_item(self.search_item)
+	else
+		Application:error("[CrimenetSearchLobbyCodeGui:on_search_lobby_fetched] found lobby failed filter checks")
+	end
 end
 
 function CrimenetSearchLobbyCodeGui:on_user_lobby_pressed(first, second, third)

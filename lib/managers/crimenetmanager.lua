@@ -3047,7 +3047,9 @@ function CrimeNetGui:_create_job_gui(data, type, fixed_x, fixed_y, fixed_locatio
 		local x = 0
 		local y = 0
 		local job_stars = math.ceil(tweak_data.narrative:job_data(data.job_id).jc / 10)
-		local difficulty_stars = data.difficulty_id - 2
+		local difficulty_star_offset = 2
+		local difficulty_id_number = tonumber(data.difficulty_id) or 0
+		local difficulty_stars = math.max(0, difficulty_id_number - difficulty_star_offset)
 		local job_and_difficulty_stars = job_stars + difficulty_stars
 		local start_difficulty = 1
 		local num_difficulties = Global.SKIP_OVERKILL_290 and 5 or 6

@@ -509,8 +509,18 @@ function ExplosionManager:_damage_characters(detect_results, params, variant, da
 	end
 
 	local dir, len, type, count_table, hit_body = nil
+	local characters_hit_list = {}
+	local characters_key_list = {}
 
 	for key, unit in pairs(detect_results.characters_hit) do
+		table.insert(characters_hit_list, unit)
+		table.insert(characters_key_list, key)
+	end
+
+	ExplosionManager.sort_units_target_prio(characters_hit_list)
+
+	for i, unit in ipairs(characters_hit_list) do
+		local key = characters_key_list[i]
 		hit_body = get_first_body_hit(detect_results.bodies_hit[key])
 		dir = hit_body and hit_body:center_of_mass() or alive(unit) and unit:position()
 		len = mvector3.direction(dir, hit_pos, dir)
@@ -521,10 +531,10 @@ function ExplosionManager:_damage_characters(detect_results, params, variant, da
 		end
 
 		if alive(unit) and can_damage then
-			if unit:character_damage()[damage_func_name] then
-				local action_data = {
-					variant = variant or "explosion"
-				}
+			local damage_func = unit:character_damage()[damage_func_name]
+
+			if damage_func then
+				local action_data = {}
 
 				if damage > 0 then
 					action_data.damage = math.max(damage * math.pow(math.clamp(1 - len / range, 0, 1), curve_pow), 1)
@@ -532,6 +542,7 @@ function ExplosionManager:_damage_characters(detect_results, params, variant, da
 					action_data.damage = 0
 				end
 
+				action_data.variant = variant or "explosion"
 				action_data.attacker_unit = user_unit
 				action_data.weapon_unit = owner
 				action_data.col_ray = col_ray or {
@@ -539,7 +550,7 @@ function ExplosionManager:_damage_characters(detect_results, params, variant, da
 					ray = dir
 				}
 
-				unit:character_damage()[damage_func_name](unit:character_damage(), action_data)
+				damage_func(unit:character_damage(), action_data)
 			else
 				debug_pause("unit: ", unit, " is missing " .. tostring(damage_func_name) .. " implementation")
 			end
@@ -739,4 +750,22 @@ function ExplosionManager:detect_and_give_dmg(params)
 	end
 
 	return detect_results.units_hit, detect_results.splinters, results
+end
+
+function ExplosionManager.sort_units_target_prio(units)
+	table.sort(units, function (unit_a, unit_b)
+		local base_a_ext = unit_a:base()
+		local base_b_ext = unit_b:base()
+
+		if base_a_ext and base_b_ext then
+			local char_a_tweak = base_a_ext._char_tweak or nil
+			local char_b_tweak = base_b_ext._char_tweak or nil
+			local priority_a = char_a_tweak and char_a_tweak.target_priority or 0
+			local priority_b = char_b_tweak and char_b_tweak.target_priority or 0
+
+			return priority_a > priority_b
+		end
+
+		return false
+	end)
 end

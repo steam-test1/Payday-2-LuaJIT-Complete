@@ -1,23 +1,11 @@
 SniperGrazeDamage = SniperGrazeDamage or {}
 
 function SniperGrazeDamage:on_weapon_fired(weapon_unit, result)
-	if not alive(weapon_unit) then
+	if not alive(weapon_unit) or not weapon_unit:base():is_category("snp") or weapon_unit ~= managers.player:equipped_weapon_unit() then
 		return
 	end
 
-	if not weapon_unit:base():is_category("snp") then
-		return
-	end
-
-	if weapon_unit ~= managers.player:equipped_weapon_unit() then
-		return
-	end
-
-	if not result.hit_enemy then
-		return
-	end
-
-	if not result.rays then
+	if not result.hit_enemy or not result.rays then
 		return
 	end
 
@@ -25,16 +13,14 @@ function SniperGrazeDamage:on_weapon_fired(weapon_unit, result)
 	local upgrade_value = managers.player:upgrade_value("snp", "graze_damage")
 	local enemies_hit = {}
 	local best_damage = 0
-	local sentry_mask = managers.slot:get_mask("sentry_gun")
-	local ally_mask = managers.slot:get_mask("all_criminals")
+
+	SniperGrazeDamage.sort_units_target_prio(result.rays)
 
 	for i, hit in ipairs(result.rays) do
 		if alive(hit.unit) then
-			local is_turret = hit.unit:in_slot(sentry_mask)
-			local is_ally = hit.unit:in_slot(ally_mask)
 			local is_valid_hit = hit.damage_result and hit.damage_result.attack_data and true or false
 
-			if not is_turret and not is_ally and is_valid_hit then
+			if is_valid_hit then
 				local result = hit.damage_result
 				local attack_data = result.attack_data
 				local headshot_kill = attack_data.headshot and (result.type == "death" or result.type == "healed")
@@ -54,9 +40,11 @@ function SniperGrazeDamage:on_weapon_fired(weapon_unit, result)
 		return
 	end
 
+	local world_geo_mask = managers.slot:get_mask("world_geometry")
+	local enemies_mask = managers.slot:get_mask("enemies")
 	local radius = upgrade_value.radius
 	local from = mvector3.copy(furthest_hit.position)
-	local stopped_by_geometry = furthest_hit.unit:in_slot(managers.slot:get_mask("world_geometry"))
+	local stopped_by_geometry = furthest_hit.unit:in_slot(world_geo_mask)
 	local distance = stopped_by_geometry and furthest_hit.distance - radius * 2 or weapon_unit:base():weapon_range() - radius
 
 	mvector3.add_scaled(from, furthest_hit.ray, -furthest_hit.distance)
@@ -66,7 +54,7 @@ function SniperGrazeDamage:on_weapon_fired(weapon_unit, result)
 
 	mvector3.add_scaled(to, furthest_hit.ray, distance)
 
-	local hits = World:raycast_all("ray", from, to, "sphere_cast_radius", radius, "disable_inner_ray", "slot_mask", managers.slot:get_mask("enemies"))
+	local hits = World:raycast_all("ray", from, to, "sphere_cast_radius", radius, "disable_inner_ray", "slot_mask", enemies_mask)
 
 	for i, hit in ipairs(hits) do
 		local key = hit.unit:key()
@@ -88,4 +76,22 @@ function SniperGrazeDamage:on_weapon_fired(weapon_unit, result)
 			attack_dir = -hit.normal
 		})
 	end
+end
+
+function SniperGrazeDamage.sort_units_target_prio(rays)
+	table.sort(rays, function (rays_a, rays_b)
+		local base_a_ext = rays_a.unit and rays_a.unit:base()
+		local base_b_ext = rays_b.unit and rays_b.unit:base()
+
+		if base_a_ext and base_b_ext then
+			local char_a_tweak = base_a_ext._char_tweak or nil
+			local char_b_tweak = base_b_ext._char_tweak or nil
+			local priority_a = char_a_tweak and char_a_tweak.target_priority or 0
+			local priority_b = char_b_tweak and char_b_tweak.target_priority or 0
+
+			return priority_a > priority_b
+		end
+
+		return false
+	end)
 end
