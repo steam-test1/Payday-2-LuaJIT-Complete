@@ -71,6 +71,10 @@ PlayerStandard.projectile_throw_delays = {
 	projectile_dynamite = 0.86656761169434,
 	projectile_molotov = 0.86867332458496
 }
+PlayerStandard._MELEE_VARS = {
+	"player_melee",
+	"player_melee_var2"
+}
 PlayerStandard.debug_bipod = nil
 
 function PlayerStandard:init(unit)
@@ -2258,7 +2262,7 @@ function PlayerStandard:_end_action_interact()
 end
 
 function PlayerStandard:_interacting()
-	return self._interact_expire_t
+	return self._interact_expire_t ~= nil
 end
 
 function PlayerStandard:interupt_interact()
@@ -2408,10 +2412,10 @@ function PlayerStandard:_start_action_melee(t, input, instant)
 	self._state_data.meleeing = true
 	self._state_data.melee_start_t = nil
 	local melee_entry = managers.blackmarket:equipped_melee_weapon()
+	local bayonet_melee = false
 	local primary = managers.blackmarket:equipped_primary()
 	local primary_id = primary.weapon_id
 	local bayonet_id = managers.blackmarket:equipped_bayonet(primary_id)
-	local bayonet_melee = false
 
 	if bayonet_id and melee_entry == "weapon" and self._equipped_unit:base():selection_index() == 2 then
 		bayonet_melee = true
@@ -2488,11 +2492,6 @@ function PlayerStandard:_get_melee_charge_lerp_value(t, offset)
 
 	return math.clamp(t - self._state_data.melee_start_t - offset, 0, max_charge_time) / max_charge_time
 end
-
-local melee_vars = {
-	"player_melee",
-	"player_melee_var2"
-}
 
 function PlayerStandard:_do_action_melee(t, input, skip_damage)
 	self._state_data.meleeing = nil
@@ -2592,7 +2591,7 @@ function PlayerStandard:_do_melee_damage(t, bayonet_melee, melee_hit_ray, melee_
 	local melee_damage_delay = tweak_data.blackmarket.melee_weapons[melee_entry].melee_damage_delay or 0
 	local charge_lerp_value = instant_hit and 0 or self:_get_melee_charge_lerp_value(t, melee_damage_delay)
 
-	self._ext_camera:play_shaker(melee_vars[math.random(#melee_vars)], math.max(0.3, charge_lerp_value))
+	self._ext_camera:play_shaker(table.random(PlayerStandard._MELEE_VARS), math.max(0.3, charge_lerp_value))
 
 	local sphere_cast_radius = 20
 	local col_ray = nil
@@ -3848,8 +3847,11 @@ function PlayerStandard:_start_action_intimidate(t, secondary)
 		elseif voice_type == "mark_camera" then
 			sound_name = "f39_any"
 			interact_type = "cmd_point"
+			local contour_ext = prime_target.unit:contour()
 
-			prime_target.unit:contour():add("mark_unit", true, self._highlight_special_mul)
+			if contour_ext then
+				contour_ext:add("mark_unit", true, self._highlight_special_mul)
+			end
 		elseif voice_type == "mark_turret" then
 			sound_name = "f44x_any"
 			interact_type = "cmd_point"
@@ -3858,7 +3860,7 @@ function PlayerStandard:_start_action_intimidate(t, secondary)
 			if contour_ext then
 				local type = prime_target.unit:base().get_type and prime_target.unit:base():get_type()
 
-				prime_target.unit:contour():add(managers.player:get_contour_for_marked_enemy(type), true, self._highlight_special_mul)
+				contour_ext:add(managers.player:get_contour_for_marked_enemy(type), true, self._highlight_special_mul)
 			end
 		elseif voice_type == "ai_stay" then
 			sound_name = "f48x_any"
@@ -5043,7 +5045,8 @@ function PlayerStandard:_check_action_primary_attack(t, input, params)
 
 						local recoil_multiplier = (weap_base:recoil() + weap_base:recoil_addend()) * weap_base:recoil_multiplier()
 						local kick_tweak_data = weap_tweak_data.kick[fire_mode] or weap_tweak_data.kick
-						local up, down, left, right = unpack(kick_tweak_data[self._state_data.in_steelsight and "steelsight" or self._state_data.ducking and "crouching" or "standing"])
+						local kick_id = self._state_data.in_steelsight and "steelsight" or self._state_data.ducking and "crouching" or "standing"
+						local up, down, left, right = unpack(kick_tweak_data[kick_id])
 
 						self._camera_unit:base():recoil_kick(up * recoil_multiplier, down * recoil_multiplier, left * recoil_multiplier, right * recoil_multiplier)
 

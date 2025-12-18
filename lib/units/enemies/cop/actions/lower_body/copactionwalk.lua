@@ -455,7 +455,7 @@ function CopActionWalk:_init()
 			end
 		end
 
-		if not action_desc.interrupted or not self._nav_path[1].x then
+		if not action_desc.interrupted or not self._nav_path or not self._nav_path[1].x then
 			t_ins(self._nav_path, 1, mvec3_cpy(common_data.pos))
 		else
 			self._nav_path[1] = mvec3_cpy(common_data.pos)

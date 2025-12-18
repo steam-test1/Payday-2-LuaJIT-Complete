@@ -6461,6 +6461,8 @@ end
 
 function GroupAIStateBase:register_phalanx_vip(unit)
 	self._phalanx_data.vip = unit
+
+	print("[PHALANX] register vip", unit)
 end
 
 function GroupAIStateBase:unregister_phalanx_minion(unit_key)
@@ -6468,15 +6470,10 @@ function GroupAIStateBase:unregister_phalanx_minion(unit_key)
 end
 
 function GroupAIStateBase:unregister_phalanx_vip()
-	local phalanx_unit = self._phalanx_data.vip
 	self._phalanx_data.vip = nil
 
 	if self.set_assault_endless then
 		self:set_assault_endless(false)
-
-		if alive(phalanx_unit) and phalanx_unit:sound() then
-			phalanx_unit:sound():say("cpw_a04", true, true)
-		end
 	end
 end
 

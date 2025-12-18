@@ -104,7 +104,9 @@ function ShotgunBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoo
 			local char_dmg_ext = hit.unit:character_damage()
 
 			if not char_dmg_ext then
-				if not hit.unit:in_slot(self.shield_mask) then
+				local base_ext = hit.unit:base()
+
+				if not hit.unit:in_slot(self.shield_mask) or not base_ext then
 					all_hits[#all_hits + 1] = hit
 
 					if alert_rays then
@@ -118,19 +120,15 @@ function ShotgunBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoo
 						alert_rays_lookup[unit_key] = #alert_rays + 1
 						alert_rays[#alert_rays + 1] = hit
 					end
-				else
-					local base_ext = hit.unit:base()
+				elseif base_ext and base_ext.chk_body_hit_priority and base_ext:chk_body_hit_priority(all_hits[all_hits_lookup[unit_key]].body, hit.body) then
+					hit_effects[#hit_effects + 1] = all_hits[all_hits_lookup[unit_key]]
+					all_hits[all_hits_lookup[unit_key]] = hit
 
-					if base_ext and base_ext.chk_body_hit_priority and base_ext:chk_body_hit_priority(all_hits[all_hits_lookup[unit_key]].body, hit.body) then
-						hit_effects[#hit_effects + 1] = all_hits[all_hits_lookup[unit_key]]
-						all_hits[all_hits_lookup[unit_key]] = hit
-
-						if alert_rays then
-							alert_rays[alert_rays_lookup[unit_key]] = hit
-						end
-					else
-						hit_effects[#hit_effects + 1] = hit
+					if alert_rays then
+						alert_rays[alert_rays_lookup[unit_key]] = hit
 					end
+				else
+					hit_effects[#hit_effects + 1] = hit
 				end
 			elseif not all_hits_lookup[unit_key] then
 				all_hits_lookup[unit_key] = #all_hits + 1

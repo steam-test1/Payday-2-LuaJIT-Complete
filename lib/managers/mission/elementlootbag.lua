@@ -8,6 +8,32 @@ function ElementLootBag:init(...)
 	self._triggers = {}
 end
 
+function ElementLootBag:on_script_activated()
+	if not Network:is_server() then
+		return
+	end
+
+	if self._values.zipline_unit_id then
+		local unit = nil
+
+		if Application:editor() then
+			unit = managers.editor:unit_with_id(self._values.zipline_unit_id)
+		else
+			unit = managers.worlddefinition:get_unit_on_load(self._values.zipline_unit_id, callback(self, self, "load_unit"))
+		end
+
+		if alive(unit) and unit:zipline() and unit:zipline():is_usage_type_bag() then
+			self._zipline_unit = unit
+		end
+	end
+end
+
+function ElementLootBag:load_unit(unit)
+	if alive(unit) and unit:zipline() and unit:zipline():is_usage_type_bag() then
+		self._zipline_unit = unit
+	end
+end
+
 function ElementLootBag:client_on_executed(...)
 end
 
@@ -18,16 +44,15 @@ function ElementLootBag:on_executed(instigator)
 
 	local unit = nil
 	local pos, rot = self:get_orientation()
+	local dir = self._values.push_multiplier and self._values.spawn_dir * self._values.push_multiplier or Vector3(0, 0, 0)
 
 	if self._values.carry_id ~= "none" then
-		local dir = self._values.push_multiplier and self._values.spawn_dir * self._values.push_multiplier or Vector3(0, 0, 0)
-		unit = managers.player:server_drop_carry(self._values.carry_id, 1, true, false, 1, pos, rot, dir, 0, nil, nil)
+		unit = managers.player:server_drop_carry(self._values.carry_id, 1, true, false, 1, pos, rot, dir, 0, self._zipline_unit, nil)
 	elseif self._values.from_respawn then
 		local loot = managers.loot:get_respawn()
 
 		if loot then
-			local dir = self._values.push_multiplier and self._values.spawn_dir * self._values.push_multiplier or Vector3(0, 0, 0)
-			unit = managers.player:server_drop_carry(loot.carry_id, loot.multiplier, true, false, 1, pos, rot, dir, 0, nil, nil)
+			unit = managers.player:server_drop_carry(loot.carry_id, loot.multiplier, true, false, 1, pos, rot, dir, 0, self._zipline_unit, nil)
 		else
 			print("NO MORE LOOT TO RESPAWN")
 		end
@@ -35,8 +60,7 @@ function ElementLootBag:on_executed(instigator)
 		local loot = managers.loot:get_distribute()
 
 		if loot then
-			local dir = self._values.push_multiplier and self._values.spawn_dir * self._values.push_multiplier or Vector3(0, 0, 0)
-			unit = managers.player:server_drop_carry(loot.carry_id, loot.multiplier, true, false, 1, pos, rot, dir, 0, nil, nil)
+			unit = managers.player:server_drop_carry(loot.carry_id, loot.multiplier, true, false, 1, pos, rot, dir, 0, self._zipline_unit, nil)
 		else
 			print("NO MORE LOOT TO DISTRIBUTE")
 		end

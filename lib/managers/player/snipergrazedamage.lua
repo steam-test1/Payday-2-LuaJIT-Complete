@@ -80,8 +80,8 @@ end
 
 function SniperGrazeDamage.sort_units_target_prio(rays)
 	table.sort(rays, function (rays_a, rays_b)
-		local base_a_ext = rays_a.unit and rays_a.unit:base()
-		local base_b_ext = rays_b.unit and rays_b.unit:base()
+		local base_a_ext = alive(rays_a.unit) and rays_a.unit:base()
+		local base_b_ext = alive(rays_b.unit) and rays_b.unit:base()
 
 		if base_a_ext and base_b_ext then
 			local char_a_tweak = base_a_ext._char_tweak or nil

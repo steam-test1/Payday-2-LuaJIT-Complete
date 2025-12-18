@@ -1020,22 +1020,43 @@ function CopLogicIdle._chk_relocate(data)
 			return
 		end
 
-		if data.is_tied and data.objective.lose_track_dis and data.objective.lose_track_dis * data.objective.lose_track_dis < mvector3.distance_sq(data.m_pos, data.objective.follow_unit:movement():m_newest_pos()) then
-			data.brain:set_objective(nil)
+		local follow_unit = data.objective.follow_unit
+		local follow_tracker = follow_unit:movement():nav_tracker()
+		local follow_pos = follow_tracker:lost() and follow_tracker:field_position() or follow_unit:movement():m_newest_pos()
 
-			return true
+		if data.is_tied then
+			local distance_to_follow_unit = mvector3.distance_sq(data.m_pos, follow_pos)
+			local lose_track_dis_sq = data.objective.lose_track_dis or 100000000
+
+			if distance_to_follow_unit > lose_track_dis_sq then
+				data.objective.in_place = nil
+
+				data.brain:set_objective(nil)
+
+				return true
+			end
+
+			local follow_distance = data.objective.distance or 22500
+
+			if distance_to_follow_unit > follow_distance and not data.unit:anim_data().move then
+				data.objective.in_place = nil
+
+				data.logic._exit(data.unit, "travel")
+
+				return true
+			end
 		end
 
-		local relocate = nil
-		local follow_unit = data.objective.follow_unit
 		local advance_pos = follow_unit:brain() and follow_unit:brain():is_advancing()
-		local follow_unit_pos = advance_pos or follow_unit:movement():m_newest_pos()
+		local follow_unit_pos = advance_pos or follow_pos
 
-		if data.objective.relocated_to and mvector3.distance_sq(data.objective.relocated_to, follow_unit_pos) > 1 then
+		if data.objective.relocated_to and mvector3.distance_sq(data.objective.relocated_to, follow_unit_pos) <= 1 then
 			return
 		end
 
-		if data.objective.distance and data.objective.distance < mvector3.distance(data.m_pos, follow_unit_pos) then
+		local relocate = nil
+
+		if data.objective.distance and data.objective.distance < mvector3.distance_sq(data.m_pos, follow_unit_pos) then
 			relocate = true
 		end
 

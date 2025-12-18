@@ -52,6 +52,7 @@ if not Global.category_print_initialized.coredebug then
 	Global.category_print.controller_manager = false
 	Global.category_print.game_state_machine = false
 	Global.category_print.subtitle_manager = false
+	Global.category_print.accelbyte = true
 	Global.category_print_initialized.coredebug = true
 end
 

@@ -3267,12 +3267,18 @@ function NewLoadoutTab:create_weapon_loadout(category)
 
 		table.insert(new_node_data, {
 			prev_node_data = false,
+			allow_buy = false,
+			allow_move = false,
+			allow_sell = false,
 			allow_preview = false,
+			on_create_func_name = "populate_weapon_category_new",
+			allow_modify = false,
+			equip_immediately = false,
+			allow_skinning = false,
 			name = category,
 			category = category,
 			start_i = start_i,
 			name_localized = name_id,
-			on_create_func = callback(self, self, "populate_category"),
 			on_create_data = item_data,
 			identifier = BlackMarketGui.identifiers.weapon,
 			override_slots = {
@@ -3285,6 +3291,7 @@ function NewLoadoutTab:create_weapon_loadout(category)
 	new_node_data.is_loadout = true
 	new_node_data.selected_tab = selected_tab
 	new_node_data.scroll_tab_anywhere = true
+	new_node_data.search_box_disconnect_callback_name = "on_search_item"
 	new_node_data.topic_id = "menu_loadout_blackmarket"
 	new_node_data.topic_params = {
 		category = managers.localization:text("bm_menu_" .. category)

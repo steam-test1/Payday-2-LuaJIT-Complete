@@ -3366,14 +3366,14 @@ function MenuSceneManager:spawn_melee_weapon_clbk(melee_weapon_id)
 
 	mrotation.set_zero(self._item_rot)
 
-	local new_unit = World:spawn_unit(ids_unit_name, self._item_pos, self._item_rot)
+	local unit = World:spawn_unit(ids_unit_name, self._item_pos, self._item_rot)
 
-	self:_set_item_unit(new_unit, nil, nil, nil, nil, {
+	self:_set_item_unit(unit, nil, nil, nil, nil, {
 		id = melee_weapon_id
 	})
 
-	if alive(new_unit) and new_unit:damage() and new_unit:damage():has_sequence("menu") then
-		new_unit:damage():run_sequence_simple("menu")
+	if alive(unit) and unit:damage() and unit:damage():has_sequence("menu") then
+		unit:damage():run_sequence_simple("menu")
 	end
 
 	mrotation.set_yaw_pitch_roll(self._item_rot_mod, -90, 0, 0)
@@ -3382,33 +3382,37 @@ function MenuSceneManager:spawn_melee_weapon_clbk(melee_weapon_id)
 
 	if anim then
 		local anim_ids = Idstring(anim)
-		local anim_length = new_unit:anim_length(anim_ids)
-		local anim_params = melee_weapon.menu_scene_params or {}
+		local anim_length = unit:anim_length(anim_ids)
+		local anim_data = melee_weapon.menu_scene_params or {}
 
-		if anim_params.loop then
-			new_unit:anim_play_loop(anim_ids, 0, anim_length, anim_params.speed or 1)
+		if anim_data.loop then
+			unit:anim_play_loop(anim_ids, 0, anim_length, 1)
 		else
-			new_unit:anim_play(anim_ids, anim_params.speed or 1)
+			if anim_data.from then
+				unit:anim_set_time(anim_ids, anim_data.from)
+			end
+
+			unit:anim_play_to(anim_ids, anim_length, 1)
 		end
 
-		if anim_params.start_time then
-			local start_time = anim_params.start_time
+		if type(anim_data.start_time) == "number" then
+			local start_time = anim_data.start_time
 
 			if start_time == -1 then
 				start_time = anim_length
 			end
 
-			new_unit:anim_set_time(start_time)
+			unit:anim_set_time(start_time)
 		end
 
-		new_unit:set_visible(false)
+		unit:set_visible(false)
 
 		local anim_time = 0.03333333333333333
 
 		self:add_callback(callback(self, self, "_show_item_unit"), anim_time)
 	end
 
-	return new_unit
+	return unit
 end
 
 function MenuSceneManager:destroy_melee_weapon()

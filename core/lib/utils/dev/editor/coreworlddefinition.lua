@@ -713,7 +713,7 @@ function WorldDefinition:_create_massunit(data, offset)
 		for _, name in ipairs(l) do
 			if DB:has(Idstring("unit"), name:id()) then
 				CoreEngineAccess._editor_load(Idstring("unit"), name:id())
-			elseif not table.has(self._massunit_replace_names, name:s()) then
+			elseif not self._massunit_replace_names[name:s()] then
 				managers.editor:output("Unit " .. name:s() .. " does not exist")
 
 				local old_name = name:s()
@@ -931,7 +931,7 @@ end
 function WorldDefinition:preload_unit(name)
 	local is_editor = Application:editor()
 
-	if table.has(self._replace_names, name) then
+	if self._replace_names[name] then
 		name = self._replace_names[name]
 	elseif is_editor and (not DB:has(Idstring("unit"), name:id()) or CoreEngineAccess._editor_unit_data(name:id()):type():id() == Idstring("deleteme")) then
 		if not DB:has(Idstring("unit"), name:id()) then
@@ -961,7 +961,7 @@ function WorldDefinition:make_unit(data, offset)
 		return nil
 	end
 
-	if table.has(self._replace_names, name) then
+	if self._replace_names[name] then
 		name = self._replace_names[name]
 	end
 

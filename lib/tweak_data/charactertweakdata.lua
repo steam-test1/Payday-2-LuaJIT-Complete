@@ -388,7 +388,7 @@ function CharacterTweakData:_init_medic(presets)
 	self.medic.headshot_dmg_mul = 2
 	self.medic.damage.hurt_severity = presets.hurt_severities.only_light_hurt
 	self.medic.suppression = nil
-	self.medic.surrender = presets.surrender.special
+	self.medic.surrender = presets.surrender.never
 	self.medic.move_speed = presets.move_speed.very_fast
 	self.medic.surrender_break_time = {
 		7,
@@ -415,6 +415,7 @@ function CharacterTweakData:_init_medic(presets)
 	self.medic.steal_loot = false
 	self.medic.priority_shout = "f47"
 	self.medic.use_animation_on_fire_damage = false
+	self.medic.can_be_healed = false
 	self.medic.target_priority = 10
 
 	table.insert(self._enemy_list, "medic")
@@ -2736,7 +2737,7 @@ function CharacterTweakData:_init_tank(presets)
 	self.tank.detection = presets.detection.normal
 	self.tank.HEALTH_INIT = 200
 	self.tank.headshot_dmg_mul = 5
-	self.tank.damage.explosion_damage_mul = 1.1
+	self.tank.damage.explosion_damage_mul = 2
 	self.tank.move_speed = presets.move_speed.slow
 	self.tank.allowed_stances = {
 		cbt = true
@@ -2795,6 +2796,8 @@ function CharacterTweakData:_init_tank(presets)
 	self.tank_hw.damage.explosion_damage_mul = 1
 	self.tank_hw.DAMAGE_CLAMP_BULLET = 235
 	self.tank_medic = deep_clone(self.tank)
+	self.tank_medic.can_be_healed = false
+	self.tank_medic.target_priority = 10
 
 	table.insert(self.tank_medic.tags, "medic")
 
@@ -2962,12 +2965,8 @@ function CharacterTweakData:_init_spooc(presets)
 	self.spooc.no_retreat = true
 	self.spooc.no_arrest = true
 	self.spooc.damage.hurt_severity = presets.hurt_severities.only_poison_and_light_hurt
-	self.spooc.surrender_break_time = {
-		4,
-		6
-	}
+	self.spooc.surrender = nil
 	self.spooc.suppression = nil
-	self.spooc.surrender = presets.surrender.special
 	self.spooc.priority_shout = "f33"
 	self.spooc.priority_shout_max_dis = 700
 	self.spooc.rescue_hostages = false
@@ -3034,12 +3033,8 @@ function CharacterTweakData:_init_shadow_spooc(presets)
 	self.shadow_spooc.no_retreat = true
 	self.shadow_spooc.no_arrest = true
 	self.shadow_spooc.damage.hurt_severity = presets.hurt_severities.only_poison_and_light_hurt
-	self.shadow_spooc.surrender_break_time = {
-		4,
-		6
-	}
-	self.shadow_spooc.suppression = nil
 	self.shadow_spooc.surrender = nil
+	self.shadow_spooc.suppression = nil
 	self.shadow_spooc.silent_priority_shout = "f37"
 	self.shadow_spooc.priority_shout_max_dis = 700
 	self.shadow_spooc.rescue_hostages = false
@@ -3532,7 +3527,7 @@ function CharacterTweakData:_init_taser(presets)
 	self.taser.move_speed = presets.move_speed.fast
 	self.taser.no_retreat = true
 	self.taser.no_arrest = true
-	self.taser.surrender = presets.surrender.special
+	self.taser.surrender = presets.surrender.never
 	self.taser.ecm_vulnerability = 0.9
 	self.taser.ecm_hurts = {
 		ears = 7
@@ -10834,25 +10829,6 @@ function CharacterTweakData:_presets(tweak_data)
 					[300.0] = 0.1,
 					[1000.0] = 0
 				}
-			}
-		},
-		special = {
-			base_chance = 0.25,
-			significant_chance = 0.25,
-			violence_timeout = 2,
-			reasons = {
-				pants_down = 0.6,
-				weapon_down = 0.02,
-				health = {
-					[0.5] = 0,
-					[0.2] = 0.25
-				}
-			},
-			factors = {
-				enemy_weap_cold = 0.05,
-				unaware_of_aggressor = 0.02,
-				isolated = 0.05,
-				flanked = 0.015
 			}
 		}
 	}

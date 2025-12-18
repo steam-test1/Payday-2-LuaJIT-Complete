@@ -25,6 +25,8 @@ function WINDLCManager:init_entitlements()
 	Global.dlc_manager.all_dlc_data.pn2.external = true
 	Global.dlc_manager.all_dlc_data.wcc_s01.entitlement_id = "9397f308ad1c4d7e80d87ee7c726561e"
 	Global.dlc_manager.all_dlc_data.wcc_s01.external = true
+	Global.dlc_manager.all_dlc_data.wcc_s02.entitlement_id = "9397f308ad1c4d7e80d87ee7c726561e"
+	Global.dlc_manager.all_dlc_data.wcc_s02.external = true
 	Global.dlc_manager.all_dlc_data.svc.entitlement_id = "9397f308ad1c4d7e80d87ee7c726561e"
 	Global.dlc_manager.all_dlc_data.svc.external = true
 	Global.dlc_manager.all_dlc_data.ant.entitlement_id = "e30351a32d8048ebb14fff2c9e581431"

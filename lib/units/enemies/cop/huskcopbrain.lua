@@ -243,9 +243,14 @@ function HuskCopBrain:sync_net_event(event_id)
 		self._unit:inventory():destroy_all_items()
 		self._unit:base():set_slot(self._unit, 22)
 	elseif event_id == self._NET_EVENTS.surrender_cop_untied then
+		self._surrendered = false
 		self._is_hostage = false
 
-		self._unit:base():set_slot(self._unit, 22)
+		if self._converted then
+			self._unit:base():set_slot(self._unit, 16)
+		else
+			self._unit:base():set_slot(self._unit, 12)
+		end
 	elseif event_id == self._NET_EVENTS.surrender_civilian_untied then
 		self._surrendered = false
 		self._is_hostage = false

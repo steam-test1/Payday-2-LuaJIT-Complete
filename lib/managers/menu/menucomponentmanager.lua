@@ -3863,7 +3863,6 @@ function MenuComponentManager:create_weapon_mod_icon_list(weapon, category, fact
 		local mods = {}
 		local mods_sorted = {}
 		local types = {}
-		local type = nil
 
 		if not crafted or not crafted.customize_locked then
 			for id, data in pairs(mods_all) do

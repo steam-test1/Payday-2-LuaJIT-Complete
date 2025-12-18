@@ -129,6 +129,7 @@ require("lib/units/editor/EnvironmentOperatorElement")
 require("lib/units/editor/AreaDespawnElement")
 require("lib/utils/dev/tools/InventoryIconCreator")
 require("lib/utils/dev/tools/PreplanningHelper")
+require("lib/utils/dev/tools/EwsTools")
 
 WorldEditor = WorldEditor or class(CoreEditor)
 
@@ -311,6 +312,9 @@ function WorldEditor:project_clear_layers()
 end
 
 function WorldEditor:project_recreate_layers()
+end
+
+function WorldEditor:_project_add_menubar()
 end
 
 function WorldEditor:_project_add_left_upper_toolbar_tool()

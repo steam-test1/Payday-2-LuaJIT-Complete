@@ -610,6 +610,14 @@ function NetworkMatchMakingSTEAM:is_server_ok(friends_only, room, attributes_lis
 		return false, 1
 	end
 
+	local server_difficulty = tweak_data:index_to_difficulty(attributes_numbers[2])
+
+	if not server_difficulty then
+		Application:debug("NetworkMatchMakingEPIC:is_server_ok() server rejected. INVALID DIFFICULTY")
+
+		return false, 1
+	end
+
 	if managers.experience:current_level() < attributes_numbers[7] then
 		Application:debug("NetworkMatchMakingSTEAM:is_server_ok() server rejected. REPUTATION CAP")
 

@@ -372,40 +372,45 @@ function MissionLayer:update(time, rel_time)
 	for _, unit in ipairs(self._created_units) do
 		if unit:mission_element_data().script == current_script and not current_continent_locked or self._show_all_scripts then
 			local distance = mvector3.distance_sq(unit:position(), cam_pos)
-			unit:mission_element()._distance_to_camera = distance
-			local update_selected_on = unit:mission_element():update_selected_on()
+			local element = unit:mission_element()
+			element._distance_to_camera = distance
 
-			if update_selected_on then
-				update_selected_on_brush:unit(unit)
-			end
+			if not self._only_draw_selected_connections or self._selected_unit then
+				local update_selected_on = element:update_selected_on()
 
-			local update_selected = self._update_all or update_selected_on
-			local selected_unit = unit == self._selected_unit
-
-			if update_selected or selected_unit then
-				unit:mission_element():update_selected(time, rel_time, self._only_draw_selected_connections and self._selected_unit, all_units)
-			elseif self._override_lod_draw or self._only_draw_selected_connections and alive(self._selected_unit) or distance < lod_draw_distance then
-				unit:mission_element():update_unselected(time, rel_time, self._only_draw_selected_connections and self._selected_unit, all_units)
-
-				if not self._only_draw_selected_connections or not self._selected_unit then
-					unit:mission_element():draw_links_unselected(time, rel_time, self._only_draw_selected_connections and self._selected_unit, all_units)
+				if update_selected_on then
+					update_selected_on_brush:unit(unit)
 				end
-			end
 
-			if self._override_lod_draw or self._only_draw_selected_connections and alive(self._selected_unit) or distance < lod_draw_distance then
-				unit:mission_element():draw_links(time, rel_time, self._only_draw_selected_connections and self._selected_unit, all_units)
-			end
+				local update_selected = self._update_all or update_selected_on
+				local only_draw_selected_connections_unit = self._only_draw_selected_connections and self._selected_unit
+				local selected_unit = unit == self._selected_unit
 
-			if selected_unit then
-				unit:mission_element():draw_links_selected(time, rel_time, self._only_draw_selected_connections and self._selected_unit)
+				if update_selected or selected_unit then
+					element:update_selected(time, rel_time, only_draw_selected_connections_unit, all_units)
+				elseif self._override_lod_draw or self._only_draw_selected_connections and alive(unit) or distance < lod_draw_distance then
+					element:update_unselected(time, rel_time, only_draw_selected_connections_unit, all_units)
 
-				if self._editing_mission_element then
-					if unit:mission_element().base_update_editing then
-						unit:mission_element():base_update_editing(time, rel_time, self._current_pos)
+					if not self._only_draw_selected_connections or not self._selected_unit then
+						element:draw_links_unselected(time, rel_time, only_draw_selected_connections_unit, all_units)
 					end
+				end
 
-					if unit:mission_element().update_editing then
-						unit:mission_element():update_editing(time, rel_time, self._current_pos)
+				if self._override_lod_draw or only_draw_selected_connections_unit or distance < lod_draw_distance then
+					element:draw_links(time, rel_time, only_draw_selected_connections_unit, all_units)
+				end
+
+				if selected_unit then
+					element:draw_links_selected(time, rel_time, only_draw_selected_connections_unit)
+
+					if self._editing_mission_element then
+						if element.base_update_editing then
+							element:base_update_editing(time, rel_time, self._current_pos)
+						end
+
+						if element.update_editing then
+							element:update_editing(time, rel_time, self._current_pos)
+						end
 					end
 				end
 			end

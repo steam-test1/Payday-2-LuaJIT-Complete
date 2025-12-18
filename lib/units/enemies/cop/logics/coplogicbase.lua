@@ -1366,7 +1366,8 @@ function CopLogicBase._evaluate_reason_to_surrender(data, my_data, aggressor_uni
 				end
 
 				if health_ratio < max_setting.k then
-					hold_chance = hold_chance * (1 - math.lerp(min_setting.v, max_setting.v, math.max(0, health_ratio - min_setting.k) / (max_setting.k - min_setting.k)))
+					local health_ratio_multi = 1 - math.lerp(min_setting.v, max_setting.v, math.max(0, health_ratio - min_setting.k) / (max_setting.k - min_setting.k))
+					hold_chance = hold_chance * health_ratio_multi
 				end
 			end
 		end,
@@ -1391,7 +1392,8 @@ function CopLogicBase._evaluate_reason_to_surrender(data, my_data, aggressor_uni
 			end
 
 			if agg_dis < max_setting.k then
-				hold_chance = hold_chance * (1 - math.lerp(min_setting.v, max_setting.v, math.max(0, agg_dis - min_setting.k) / (max_setting.k - min_setting.k)))
+				local aggro_distance_multi = 1 - math.lerp(min_setting.v, max_setting.v, math.max(0, agg_dis - min_setting.k) / (max_setting.k - min_setting.k))
+				hold_chance = hold_chance * aggro_distance_multi
 			end
 		end,
 		weapon_down = function (weap_down_surrender)
@@ -1405,7 +1407,7 @@ function CopLogicBase._evaluate_reason_to_surrender(data, my_data, aggressor_uni
 				hold_chance = hold_chance * (1 - weap_down_surrender)
 			end
 
-			local ammo_max, ammo = data.unit:inventory():equipped_unit():base():ammo_info()
+			local _, ammo = data.unit:inventory():equipped_unit():base():ammo_info()
 
 			if ammo == 0 then
 				hold_chance = hold_chance * (1 - weap_down_surrender)
@@ -1465,7 +1467,9 @@ function CopLogicBase._evaluate_reason_to_surrender(data, my_data, aggressor_uni
 		surrender_chk[reason](reason_data)
 	end
 
-	if hold_chance >= 1 - (surrender_tweak.significant_chance or 0) then
+	local significant_tipping = 1 - (surrender_tweak.significant_chance or 0)
+
+	if hold_chance >= significant_tipping then
 		return 1
 	end
 
@@ -1474,7 +1478,8 @@ function CopLogicBase._evaluate_reason_to_surrender(data, my_data, aggressor_uni
 	end
 
 	if data.surrender_window then
-		hold_chance = hold_chance * (1 - data.surrender_window.chance_mul)
+		local surrender_window_multi = 1 - data.surrender_window.chance_mul
+		hold_chance = hold_chance * surrender_window_multi
 	end
 
 	if surrender_tweak.violence_timeout then
@@ -1484,7 +1489,8 @@ function CopLogicBase._evaluate_reason_to_surrender(data, my_data, aggressor_uni
 			local violence_dt = t - violence_t
 
 			if violence_dt < surrender_tweak.violence_timeout then
-				hold_chance = hold_chance + (1 - hold_chance) * (1 - violence_dt / surrender_tweak.violence_timeout)
+				local violence_timeout_multi = 1 - violence_dt / surrender_tweak.violence_timeout
+				hold_chance = hold_chance + (1 - hold_chance) * violence_timeout_multi
 			end
 		end
 	end

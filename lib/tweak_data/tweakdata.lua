@@ -795,16 +795,10 @@ function TweakData:init()
 	self.custom_colors = {
 		defaults = {}
 	}
-	self.custom_colors.defaults.laser = Color(0, 0.4, 0)
 	self.custom_colors.defaults.flashlight = Color(1, 1, 1)
-	self.custom_colors.defaults.laser_alpha = 0.2
+	self.custom_colors.defaults.laser = Color(0, 0.4, 0)
+	self.custom_colors.defaults.laser_alpha = 0.5
 	self.EFFECT_QUALITY = 0.5
-
-	if SystemInfo:platform() == Idstring("X360") then
-		self.EFFECT_QUALITY = 0.5
-	elseif SystemInfo:platform() == Idstring("PS3") then
-		self.EFFECT_QUALITY = 0.5
-	end
 
 	self:set_scale()
 	self:_init_pd2()

@@ -235,13 +235,7 @@ function table.get_key(map, wanted_key_value)
 end
 
 function table.has(v, k)
-	for key, _ in pairs(v) do
-		if key == k then
-			return true
-		end
-	end
-
-	return false
+	return not not v[k]
 end
 
 function table.size(v)
@@ -690,23 +684,41 @@ function table.map_append(t, ...)
 	return t
 end
 
-function table.print_data(data, t)
-	if type(data) == "table" then
-		t = t or ""
+local __print_data_do_not_read = {
+	__module__ = true
+}
 
-		for k, v in pairs(data) do
-			if type(v) ~= "userdata" then
-				CoreDebug.cat_debug("debug", t .. tostring(k) .. "=" .. tostring(v))
-			else
-				CoreDebug.cat_debug("debug", t .. tostring(k) .. "=" .. CoreClass.type_name(v))
-			end
+function table.print_data(data, depth_limit, t)
+	depth_limit = depth_limit or 10
 
-			if type(v) == "table" then
-				table.print_data(v, t .. "\t")
+	if depth_limit > 0 then
+		if type(data) == "table" then
+			t = t or ""
+
+			for k, v in pairs(data) do
+				local k_str = tostring(k)
+
+				if __print_data_do_not_read[k_str] then
+					CoreDebug.cat_debug("debug", t .. k_str .. " ERR: Do not read")
+				else
+					local v_type = type(v)
+
+					if v_type ~= "userdata" then
+						CoreDebug.cat_debug("debug", t .. k_str .. "=" .. tostring(v))
+					else
+						CoreDebug.cat_debug("debug", t .. k_str .. "=" .. CoreClass.type_name(v))
+					end
+
+					if v_type == "table" then
+						table.print_data(v, depth_limit - 1, t .. "\t")
+					end
+				end
 			end
+		else
+			CoreDebug.cat_debug("debug", CoreClass.type_name(data), tostring(data))
 		end
 	else
-		CoreDebug.cat_debug("debug", CoreClass.type_name(data), tostring(data))
+		CoreDebug.cat_debug("debug", t .. "ERR: Dug too deep")
 	end
 end
 

@@ -25,11 +25,11 @@ function ZipLine.set_debug(state)
 	end
 end
 
-local ids_rope_obj = Idstring("rope")
+local IDS_ROPE = Idstring("rope")
 
 function ZipLine:init(unit)
 	self._unit = unit
-	self._rope_obj = unit:get_object(ids_rope_obj)
+	self._rope_obj = unit:get_object(IDS_ROPE)
 	self._debug = ZipLine.DEBUG
 	ZipLine.debug_brush_1 = ZipLine.debug_brush_1 or Draw:brush(Color.white:with_alpha(0.5))
 	ZipLine.debug_brush_2 = ZipLine.debug_brush_2 or Draw:brush(Color.green:with_alpha(0.5))
@@ -264,6 +264,8 @@ function ZipLine:on_interacted(unit)
 		else
 			self:_client_request_access(unit)
 		end
+
+		return
 	end
 end
 
@@ -459,7 +461,16 @@ function ZipLine:set_usage_type(usage_type)
 		return
 	end
 
+	if usage_type ~= "person" then
+		usage_type = "bag"
+	end
+
 	self._usage_type = usage_type
+	local color_seq = "set_motor_color_" .. usage_type
+
+	if self._unit:damage() and self._unit:damage():has_sequence(color_seq) then
+		self._unit:damage():run_sequence_simple(color_seq)
+	end
 
 	self._unit:interaction():set_tweak_data(self:is_usage_type_bag() and "bag_zipline" or "player_zipline")
 end

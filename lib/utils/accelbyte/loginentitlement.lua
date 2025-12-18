@@ -138,7 +138,7 @@ function Login:LoginWithEpicToken(ticket, callback)
 
 	local function login_callback(error_code, status_code, response_body)
 		cat_print("accelbyte", "[AccelByte] Callback LoginWithEpicToken : " .. IamEpicPlatformUrl)
-		cat_print("accelbyte", "[AccelByte] Error_code : " .. error_code)
+		cat_print("accelbyte", "[AccelByte] Error_code : " .. error_code .. (error_code == 1 and " OK" or ""))
 		cat_print("accelbyte", "[AccelByte] Status_code : " .. status_code)
 		cat_print("accelbyte", "[AccelByte] Response Body : " .. tostring(response_body))
 
@@ -172,7 +172,7 @@ function Login:LoginWithSteamToken(ticket, callback)
 
 	local function login_callback(error_code, status_code, response_body)
 		cat_print("accelbyte", "[AccelByte] Callback LoginWithSteamToken : " .. IamSteamPlatformUrl)
-		cat_print("accelbyte", "[AccelByte] Error_code : " .. error_code)
+		cat_print("accelbyte", "[AccelByte] Error_code : " .. error_code .. (error_code == 1 and " OK" or ""))
 		cat_print("accelbyte", "[AccelByte] Status_code : " .. status_code)
 
 		local response_json = nil
@@ -212,9 +212,9 @@ function Login:LoginWithUsernamePassword(username, password)
 
 	local function callback(error_code, status_code, response_body)
 		cat_print("accelbyte", "[AccelByte] Callback LoginWithUsernamePassword : " .. IamServerUrl)
-		cat_print("accelbyte", "[AccelByte] Error_code : " .. error_code)
+		cat_print("accelbyte", "[AccelByte] Error_code : " .. error_code .. (error_code == 1 and " OK" or ""))
 		cat_print("accelbyte", "[AccelByte] Status_code : " .. status_code)
-		cat_print("accelbyte", "Response Body : " .. response_body)
+		cat_print("accelbyte", "[AccelByte] Response Body : " .. response_body)
 
 		local response_json = json.decode(response_body)
 
@@ -238,12 +238,12 @@ function Login:LoginWithClientCredentials(callback)
 
 	local function credentials_callback(error_code, status_code, response_body)
 		cat_print("accelbyte", "[AccelByte] Callback LoginWithClientCredentials : " .. IamServerUrl)
-		cat_print("accelbyte", "[AccelByte] Error_code : " .. error_code)
+		cat_print("accelbyte", "[AccelByte] Error_code : " .. error_code .. (error_code == 1 and " OK" or ""))
 		cat_print("accelbyte", "[AccelByte] Status_code : " .. status_code)
 
 		local response_body_str = response_body or ""
 
-		cat_print("accelbyte", "Response Body : " .. response_body_str)
+		cat_print("accelbyte", "[AccelByte] Response Body : " .. response_body_str)
 
 		local response_json = response_body and json.decode(response_body_str) or false
 
@@ -819,7 +819,7 @@ function Entitlement:CheckAndVerifyUserEntitlement(callback)
 	end
 
 	local function check_platform_callback(success)
-		cat_print("accelbyte", "Callback Platform Check")
+		cat_print("accelbyte", "Callback Platform Check -- Success: " .. tostring(success))
 
 		if success then
 			Login.has_account = true
@@ -827,8 +827,8 @@ function Entitlement:CheckAndVerifyUserEntitlement(callback)
 			cat_print("accelbyte", "[AccelByte] Linked Starbreeze User for this Platform ID is found")
 
 			if SystemInfo:distribution() == Idstring("STEAM") then
-				local function get_steamticket_callback(steam_ticket)
-					if steam_ticket == "" then
+				local function get_steamticket_callback(ticket)
+					if ticket == "" then
 						cat_print("accelbyte", "[AccelByte] Failed to authenticate Steam Ticket, reason : " .. reason)
 
 						return
@@ -843,8 +843,8 @@ function Entitlement:CheckAndVerifyUserEntitlement(callback)
 						end
 					end
 
-					Steam:bind_steam_ticket_validate_callback(player_id, login_with_steam_callback, steam_ticket)
-					Login:LoginWithSteamToken(steam_ticket, login_callback)
+					Steam:bind_steam_ticket_validate_callback(player_id, login_with_steam_callback, ticket)
+					Login:LoginWithSteamToken(ticket, login_callback)
 				end
 
 				Utility:get_steamticket(get_steamticket_callback)

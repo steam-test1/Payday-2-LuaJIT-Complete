@@ -830,8 +830,6 @@ function Setup:block_exec()
 	local result = false
 
 	if self._packages_to_unload then
-		print("BLOCKED BY UNLOADING PACKAGES")
-
 		result = true
 	elseif not self._packages_to_unload_gathered then
 		self._packages_to_unload_gathered = true
@@ -841,24 +839,23 @@ function Setup:block_exec()
 		result = true
 	end
 
-	if not managers.network:is_ready_to_load() then
-		print("BLOCKED BY STOPPING NETWORK")
-
+	if not result and not managers.network:is_ready_to_load() then
 		result = true
 	end
 
-	if not managers.dyn_resource:is_ready_to_close() then
-		print("BLOCKED BY DYNAMIC RESOURCE MANAGER")
+	if not result and not managers.dyn_resource:is_ready_to_close() then
+		local t = Application:time()
+
 		managers.dyn_resource:set_file_streaming_chunk_size_mul(1, 1)
 
 		result = true
 	end
 
-	if managers.system_menu:block_exec() then
+	if not result and managers.system_menu:block_exec() then
 		result = true
 	end
 
-	if managers.savefile:is_active() then
+	if not result and managers.savefile:is_active() then
 		result = true
 	end
 

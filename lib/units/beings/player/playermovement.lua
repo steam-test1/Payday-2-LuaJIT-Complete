@@ -30,6 +30,7 @@ if _G.IS_VR then
 	require("lib/units/beings/player/states/vr/PlayerParachutingVR")
 end
 
+local IDS_NONE = Idstring("")
 PlayerMovement = PlayerMovement or class()
 PlayerMovement._STAMINA_INIT = tweak_data.player.movement_state.stamina.STAMINA_INIT or 10
 PlayerMovement.OUT_OF_WORLD_Z = -4000
@@ -356,13 +357,13 @@ end
 function PlayerMovement:play_redirect(redirect_name, at_time)
 	local result = self._unit:play_redirect(Idstring(redirect_name), at_time)
 
-	return result ~= Idstring("") and result
+	return result ~= IDS_NONE and result
 end
 
 function PlayerMovement:play_state(state_name, at_time)
 	local result = self._unit:play_state(Idstring(state_name), at_time)
 
-	return result ~= Idstring("") and result
+	return result ~= IDS_NONE and result
 end
 
 function PlayerMovement:chk_action_forbidden(action_type)

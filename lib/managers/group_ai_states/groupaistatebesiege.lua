@@ -1,5 +1,6 @@
 GroupAIStateBesiege = GroupAIStateBesiege or class(GroupAIStateBase)
 GroupAIStateBesiege._MAX_SIMULTANEOUS_SPAWNS = 3
+GroupAIStateBesiege._HOSTAGE_TASK_DELAY = 0.125
 
 function GroupAIStateBesiege:init(group_ai_state)
 	GroupAIStateBesiege.super.init(self)
@@ -1159,7 +1160,8 @@ function GroupAIStateBesiege:_choose_best_group(best_groups, total_weight)
 		rand_wgt = rand_wgt - candidate.wght
 
 		if rand_wgt <= 0 then
-			self._spawn_group_timers[spawn_group_id(candidate.group)] = TimerManager:game():time() + 5
+			local cooldown = TimerManager:game():time() + math.random(15, 20)
+			self._spawn_group_timers[spawn_group_id(candidate.group)] = cooldown
 
 			math.random(3)
 
@@ -2469,35 +2471,31 @@ function GroupAIStateBesiege:can_hostage_flee()
 end
 
 function GroupAIStateBesiege:add_to_surrendered(unit, update)
-	local hos_data = self._hostage_data
-	local nr_entries = #hos_data
-	local entry = {
+	table.insert(self._hostage_data, {
 		u_key = unit:key(),
 		clbk = update
-	}
+	})
 
 	if not self._hostage_upd_key then
 		self._hostage_upd_key = "GroupAIStateBesiege:_upd_hostage_task"
 
-		managers.enemy:queue_task(self._hostage_upd_key, self._upd_hostage_task, self, self._t + 1)
+		managers.enemy:queue_task(self._hostage_upd_key, self._upd_hostage_task, self, self._t + GroupAIStateBesiege._HOSTAGE_TASK_DELAY)
 	end
-
-	table.insert(hos_data, entry)
 end
 
 function GroupAIStateBesiege:remove_from_surrendered(unit)
-	local hos_data = self._hostage_data
+	local hostage_data = self._hostage_data
 	local u_key = unit:key()
 
-	for i, entry in ipairs(hos_data) do
+	for i, entry in ipairs(hostage_data) do
 		if u_key == entry.u_key then
-			table.remove(hos_data, i)
+			table.remove(hostage_data, i)
 
 			break
 		end
 	end
 
-	if #hos_data == 0 then
+	if #hostage_data == 0 then
 		managers.enemy:unqueue_task(self._hostage_upd_key)
 
 		self._hostage_upd_key = nil
@@ -2506,16 +2504,16 @@ end
 
 function GroupAIStateBesiege:_upd_hostage_task()
 	self._hostage_upd_key = nil
-	local hos_data = self._hostage_data
-	local first_entry = hos_data[1]
+	local hostage_data = self._hostage_data
+	local hostage_task = hostage_data[1]
 
-	table.remove(hos_data, 1)
-	first_entry.clbk()
+	table.remove(hostage_data, 1)
+	hostage_task.clbk()
 
-	if not self._hostage_upd_key and #hos_data > 0 then
+	if not self._hostage_upd_key and #hostage_data > 0 then
 		self._hostage_upd_key = "GroupAIStateBesiege:_upd_hostage_task"
 
-		managers.enemy:queue_task(self._hostage_upd_key, self._upd_hostage_task, self, self._t + 1)
+		managers.enemy:queue_task(self._hostage_upd_key, self._upd_hostage_task, self, self._t + GroupAIStateBesiege._HOSTAGE_TASK_DELAY)
 	end
 end
 
@@ -4202,11 +4200,7 @@ end
 function GroupAIStateBesiege:set_assault_endless(enabled)
 	self._hunt_mode = enabled
 
-	if enabled then
-		managers.hud:sync_set_assault_mode("phalanx")
-	else
-		managers.hud:sync_set_assault_mode("normal")
-	end
+	managers.hud:sync_set_assault_mode(enabled and "phalanx" or "normal")
 
 	if Network:is_server() then
 		managers.network:session():send_to_peers_synched("sync_assault_endless", enabled)

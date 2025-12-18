@@ -1972,8 +1972,6 @@ function PlayerManager:crew_ability_upgrade_value(upgrade, default)
 	local level = self._global.upgrades.team[upgrade]
 	local value = tweak_data.upgrades.values.team[upgrade][level]
 
-	print(level, value, ai_level)
-
 	return value and value[ai_level] or default
 end
 
@@ -4401,15 +4399,21 @@ function PlayerManager:check_equipment_placement_valid(player, equipment)
 		return false
 	end
 
-	if equipment_data.equipment == "trip_mine" or equipment_data.equipment == "ecm_jammer" then
-		return player:equipment():valid_look_at_placement(tweak_data.equipments[equipment_data.equipment]) and true or false
-	elseif equipment_data.equipment == "sentry_gun" or equipment_data.equipment == "ammo_bag" or equipment_data.equipment == "sentry_gun_silent" or equipment_data.equipment == "doctor_bag" or equipment_data.equipment == "first_aid_kit" or equipment_data.equipment == "bodybags_bag" or equipment_data.equipment == "grenade_crate" then
-		return player:equipment():valid_shape_placement(equipment_data.equipment, tweak_data.equipments[equipment_data.equipment]) and true or false
-	elseif equipment_data.equipment == "armor_kit" then
+	local equipment_id = equipment_data.equipment
+
+	if equipment_id == "trip_mine" or equipment_id == "ecm_jammer" then
+		return player:equipment():valid_look_at_placement(tweak_data.equipments[equipment_id]) and true or false
+	end
+
+	if equipment_id == "sentry_gun" or equipment_id == "ammo_bag" or equipment_id == "sentry_gun_silent" or equipment_id == "doctor_bag" or equipment_id == "first_aid_kit" or equipment_id == "bodybags_bag" or equipment_id == "grenade_crate" then
+		return player:equipment():valid_shape_placement(equipment_id, tweak_data.equipments[equipment_id]) and true or false
+	end
+
+	if equipment_id == "armor_kit" then
 		return true
 	end
 
-	return player:equipment():valid_placement(tweak_data.equipments[equipment_data.equipment]) and true or false
+	return player:equipment():valid_placement(tweak_data.equipments[equipment_id]) and true or false
 end
 
 function PlayerManager:check_selected_equipment_placement_valid(player)
@@ -6030,16 +6034,19 @@ function PlayerManager:_attempt_pocket_ecm_jammer()
 end
 
 function PlayerManager:_attempt_tag_team()
+	local tagged = nil
 	local player = managers.player:player_unit()
 	local player_eye = player:camera():position()
 	local player_fwd = player:camera():rotation():y()
-	local tagged = nil
 	local heisters_slot_mask = World:make_slot_mask(2, 3, 4, 5, 16, 24)
 	local cone_camera = player:camera():camera_object()
 	local cone_center = Vector3(0, 0)
 	local cone_radius = managers.player:upgrade_value("player", "tag_team_base").radius
 	local tag_distance = managers.player:upgrade_value("player", "tag_team_base").distance * 100
 	local heisters = World:find_units("camera_cone", cone_camera, cone_center, cone_radius, tag_distance, heisters_slot_mask)
+
+	print("[TAGKERS]", inspect(heisters))
+
 	local best_dot = -1
 
 	for _, heister in ipairs(heisters) do

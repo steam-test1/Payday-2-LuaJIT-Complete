@@ -1973,7 +1973,9 @@ function CopActionAct:save(save_data)
 end
 
 function CopActionAct:need_upd()
-	return (self._waiting_full_blend or self._action_desc.clamp_to_graph and not self._ext_anim.can_freeze or self._look_trans or self._ik_type and self._attention and self._attention.unit) and true or false
+	local need_upd = self._waiting_full_blend or self._expired or self._action_desc.clamp_to_graph and not self._ext_anim.can_freeze or self._look_trans or self._ik_type and self._attention and self._attention.unit
+
+	return need_upd and true or false
 end
 
 function CopActionAct:chk_block(action_type, t)

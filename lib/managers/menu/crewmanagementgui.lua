@@ -1346,6 +1346,7 @@ function CrewManagementGui:open_weapon_category_menu(category, henchman_index)
 	new_node_data.topic_params = {
 		weapon_category = managers.localization:text("bm_menu_weapons")
 	}
+	new_node_data.search_box_disconnect_callback_name = "on_search_item"
 
 	managers.menu:open_node("blackmarket_node", {
 		new_node_data
@@ -1423,6 +1424,7 @@ function CrewManagementGui:open_mask_category_menu(henchman_index)
 	new_node_data.topic_params = {
 		weapon_category = managers.localization:text("bm_menu_masks")
 	}
+	new_node_data.search_box_disconnect_callback_name = "on_search_item"
 
 	managers.menu:open_node("blackmarket_node", {
 		new_node_data
@@ -1523,6 +1525,7 @@ function CrewManagementGui:open_suit_menu(henchman_index)
 		weapon_category = managers.localization:text("bm_menu_player_styles")
 	}
 	new_node_data.back_callback = callback(MenuCallbackHandler, MenuCallbackHandler, "reset_henchmen_player_override")
+	new_node_data.search_box_disconnect_callback_name = "on_search_item"
 
 	managers.menu_scene:set_henchmen_player_override(henchman_index)
 	managers.menu:open_node("blackmarket_outfit_node", {

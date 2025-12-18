@@ -164,6 +164,8 @@ function AmmoBagBase:take_ammo(unit)
 
 	if self._bullet_storm_level and self._bullet_storm_level > 0 then
 		bullet_storm = self._BULLET_STORM[self._bullet_storm_level] * taken
+
+		print("[BULLETSTORM] bullet_storm", bullet_storm, " - take ", taken)
 	end
 
 	return taken > 0, bullet_storm
@@ -203,7 +205,7 @@ function AmmoBagBase:_take_ammo(unit)
 			self._ammo_amount = self:round_value(self._ammo_amount - took)
 
 			if self._ammo_amount <= 0 then
-				taken = self._max_ammo_amount
+				taken = 2
 
 				self:_set_empty()
 

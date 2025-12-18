@@ -55,6 +55,12 @@ function UnitNetworkHandler:set_equipped_weapon(unit, item_index, blueprint_stri
 		return
 	end
 
+	if not unit:inventory() or not unit:inventory().synch_equipped_weapon then
+		Application:error("[UnitNetworkHandler:set_equipped_weapon] unit unable to sync equipped weapon:", inspect(unit), inspect(unit:inventory()), type(unit:inventory()))
+
+		return
+	end
+
 	unit:inventory():synch_equipped_weapon(item_index, blueprint_string, cosmetics_string, peer)
 end
 

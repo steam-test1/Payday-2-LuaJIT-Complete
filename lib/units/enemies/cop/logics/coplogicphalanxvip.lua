@@ -39,7 +39,6 @@ CopLogicPhalanxVip.allowed_transitional_actions = {
 }
 
 function CopLogicPhalanxVip.enter(data, new_logic_name, enter_params)
-	print("[PHALANX] CopLogicPhalanxVip.enter")
 	CopLogicBase.enter(data, new_logic_name, enter_params)
 
 	local my_data = {
@@ -94,7 +93,7 @@ function CopLogicPhalanxVip.enter(data, new_logic_name, enter_params)
 	CopLogicPhalanxVip._perform_objective_action(data, my_data, objective)
 	managers.groupai:state():phalanx_damage_reduction_enable()
 	CopLogicPhalanxVip._set_final_health_limit(data)
-	data.unit:sound():say("cpw_a01", true, true)
+	data.unit:sound():say("cpw_a05", true, true)
 end
 
 function CopLogicPhalanxVip.exit(data, new_logic_name, enter_params)
@@ -189,7 +188,7 @@ function CopLogicPhalanxVip._chk_should_breakup(data)
 	local vip_health_ratio = data.unit:character_damage():health_ratio()
 
 	if vip_health_ratio <= flee_health_ratio then
-		CopLogicPhalanxVip.breakup()
+		CopLogicPhalanxVip.breakup(nil)
 	end
 end
 
@@ -199,6 +198,16 @@ function CopLogicPhalanxVip.breakup(remote_call)
 
 	if phalanx_vip then
 		if alive(phalanx_vip) then
+			local brain = phalanx_vip:brain()
+
+			if brain and brain:objective() then
+				brain:set_objective(nil)
+			end
+
+			if phalanx_vip:sound() then
+				phalanx_vip:sound():say("cpw_a04", true, true)
+			end
+
 			group_ai_state:unit_leave_group(phalanx_vip, false)
 			CopLogicPhalanxVip.do_vip_flee(phalanx_vip)
 		end
@@ -284,5 +293,17 @@ function CopLogicPhalanxVip.on_criminal_neutralized(data, criminal_key)
 
 	if my_data.last_violent_attention and my_data.last_violent_attention.u_key == criminal_key then
 		data.unit:sound():say("cpw_a02", true, true)
+	end
+end
+
+function CopLogicPhalanxVip.on_area_safety(data, nav_seg, safe, event)
+	CopLogicBase.on_area_safety(data, nav_seg, safe, event)
+
+	local my_data = data.internal_data
+
+	if not safe and not data.internal_data._vip_shouted_contact and not data.unit:sound():speaking(TimerManager:game():time()) then
+		data.unit:sound():say("cpw_a01", true, true)
+
+		my_data._vip_shouted_contact = true
 	end
 end

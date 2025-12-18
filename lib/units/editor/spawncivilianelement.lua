@@ -106,33 +106,41 @@ end
 
 function SpawnCivilianUnitElement:_load_pickup()
 	if self._hed.force_pickup ~= "none" then
-		local unit_name = tweak_data.pickups[self._hed.force_pickup].unit
+		local pickup_tweak = tweak_data.pickups[self._hed.force_pickup]
 
-		CoreUnit.editor_load_unit(unit_name)
+		if pickup_tweak then
+			local unit_name = tweak_data.pickups[self._hed.force_pickup].unit
+
+			CoreUnit.editor_load_unit(unit_name)
+		end
 	end
 end
 
 function SpawnCivilianUnitElement:add_to_mission_package()
 	if self._hed.force_pickup ~= "none" then
-		local unit_name = tweak_data.pickups[self._hed.force_pickup].unit
+		local pickup_tweak = tweak_data.pickups[self._hed.force_pickup]
 
-		managers.editor:add_to_world_package({
-			category = "units",
-			name = unit_name:s(),
-			continent = self._unit:unit_data().continent
-		})
+		if pickup_tweak then
+			local unit_name = tweak_data.pickups[self._hed.force_pickup].unit
 
-		local sequence_files = {}
-
-		CoreEditorUtils.get_sequence_files_by_unit_name(unit_name, sequence_files)
-
-		for _, file in ipairs(sequence_files) do
 			managers.editor:add_to_world_package({
-				init = true,
-				category = "script_data",
-				name = file:s() .. ".sequence_manager",
+				category = "units",
+				name = unit_name:s(),
 				continent = self._unit:unit_data().continent
 			})
+
+			local sequence_files = {}
+
+			CoreEditorUtils.get_sequence_files_by_unit_name(unit_name, sequence_files)
+
+			for _, file in ipairs(sequence_files) do
+				managers.editor:add_to_world_package({
+					init = true,
+					category = "script_data",
+					name = file:s() .. ".sequence_manager",
+					continent = self._unit:unit_data().continent
+				})
+			end
 		end
 	end
 end

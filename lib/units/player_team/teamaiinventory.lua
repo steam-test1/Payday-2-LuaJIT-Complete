@@ -22,6 +22,10 @@ function TeamAIInventory:is_mask_unit_loaded()
 end
 
 function TeamAIInventory:add_unit_by_name(new_unit_name, equip)
+	if not new_unit_name then
+		return
+	end
+
 	local new_unit = World:spawn_unit(new_unit_name, Vector3(), Rotation())
 	local ignore_units = {
 		self._unit,
@@ -35,12 +39,12 @@ function TeamAIInventory:add_unit_by_name(new_unit_name, equip)
 	end
 
 	local setup_data = {
+		expend_ammo = false,
+		alert_AI = true,
 		user_unit = self._unit,
 		ignore_units = ignore_units,
-		expend_ammo = false,
 		hit_slotmask = managers.slot:get_mask("bullet_impact_targets"),
 		user_sound_variant = tweak_data.character[self._unit:base()._tweak_table].weapon_voice,
-		alert_AI = true,
 		alert_filter = self._unit:brain():SO_access()
 	}
 

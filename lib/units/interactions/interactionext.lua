@@ -298,7 +298,7 @@ function BaseInteractionExt:update_show_interact(player, locator)
 end
 
 function BaseInteractionExt:get_text_id(player, locator)
-	return self._tweak_data.text_id or alive(self._unit) and self._unit:base().interaction_text_id and self._unit:base():interaction_text_id(player, locator)
+	return self._tweak_data and self._tweak_data.text_id or alive(self._unit) and self._unit:base() and self._unit:base().interaction_text_id and self._unit:base():interaction_text_id(player, locator)
 end
 
 function BaseInteractionExt:_add_string_macros(macros)

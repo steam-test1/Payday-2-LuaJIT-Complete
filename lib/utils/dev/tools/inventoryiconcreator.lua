@@ -284,30 +284,35 @@ function InventoryIconCreator:start_all_weapons_skin(test)
 		weapons = self:_get_all_weapons()
 
 		table.delete(weapons, "wpn_fps_ass_akm_gold")
+		table.delete(weapons, "wpn_fps_fla_money")
 	end
 
 	local jobs = {}
 	local search_string = #filter > 0 and "_" .. filter .. "$"
 
-	for _, factory_id in ipairs(weapons) do
-		local blueprint = managers.weapon_factory:get_default_blueprint_by_factory_id(factory_id)
-		local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(factory_id)
+	for name, item_data in pairs(tweak_data.blackmarket.weapon_skins) do
+		for _, weapon_id in ipairs(item_data.weapon_ids or {
+			item_data.weapon_id
+		}) do
+			if (not search_string or string.find(name, search_string)) and not string.find(name, "_tam$") then
+				local factory_id = managers.weapon_factory:get_factory_id_by_weapon_id(weapon_id)
 
-		for name, item_data in pairs(tweak_data.blackmarket.weapon_skins) do
-			local match_weapon_id = item_data.weapon_id or item_data.weapon_ids[1]
+				if table.contains(weapons, factory_id) then
+					local blueprint = name and tweak_data.blackmarket.weapon_skins[name].default_blueprint or managers.weapon_factory:get_default_blueprint_by_factory_id(factory_id)
+					local blueprint_custom = blueprint and deep_clone(blueprint)
 
-			if match_weapon_id == weapon_id then
-				if search_string and not string.find(name, search_string) then
-					-- Nothing
+					if blueprint and item_data.special_blueprint and item_data.special_blueprint[weapon_id] then
+						for _, part in ipairs(item_data.special_blueprint[weapon_id]) do
+							table.insert(blueprint_custom, part)
+						end
+					end
+
+					table.insert(jobs, {
+						factory_id = factory_id,
+						blueprint = blueprint_custom,
+						weapon_skin = name
+					})
 				end
-
-				local bp = name and tweak_data.blackmarket.weapon_skins[name].default_blueprint or blueprint
-
-				table.insert(jobs, {
-					factory_id = factory_id,
-					blueprint = bp,
-					weapon_skin = name
-				})
 			end
 		end
 	end
@@ -393,7 +398,6 @@ function InventoryIconCreator:start_all_weapon_skins()
 	end
 
 	Application:debug("[InventoryIconCreator] Start All Weapons -- Yes, every one of them!", #jobs)
-	self:start_jobs(jobs)
 end
 
 function InventoryIconCreator:start_one_weapon()
@@ -1084,10 +1088,9 @@ function InventoryIconCreator:start_create()
 	managers.environment_controller:set_dof_setting("none")
 	managers.environment_controller:set_base_chromatic_amount(0)
 	managers.environment_controller:set_base_contrast(0)
-	managers.editor._light:set_enable(true)
 
 	self._steps = {}
-	self._current_step = 0
+	self._current_step = -10
 
 	table.insert(self._steps, callback(self, self, "_take_screen_shot_1"))
 	table.insert(self._steps, callback(self, self, "_pre_screen_shot_2"))
@@ -1200,7 +1203,9 @@ function InventoryIconCreator:_next_step()
 
 	local func = self._steps[self._current_step]
 
-	func()
+	if func then
+		func()
+	end
 end
 
 function InventoryIconCreator:_take_screen_shot_1()

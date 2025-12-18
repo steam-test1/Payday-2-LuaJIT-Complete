@@ -510,7 +510,7 @@ function BlackMarketManager:weapon_unlocked_by_crafted(category, slot)
 	local weapon_id = crafted.weapon_id
 	local cosmetics = crafted.cosmetics
 	local cosmetics_data = cosmetics and cosmetics.id and tweak_data.blackmarket.weapon_skins[cosmetics.id]
-	local cosmetic_blueprint = cosmetics_data and cosmetics_data.default_blueprint or {}
+	local cosmetic_blueprint = cosmetics_data and managers.weapon_factory:get_cosmetics_blueprint_by_weapon_id(weapon_id, cosmetics.id) or {}
 	local data = Global.blackmarket_manager.weapons[weapon_id]
 	local unlocked = data.unlocked
 
@@ -2329,6 +2329,9 @@ function BlackMarketManager:add_to_inventory(global_value, category, id, not_new
 
 		return
 	end
+
+	print("[BlackMarketManager:add_to_inventory] global_value, category, id, not_new:", global_value, category, id, not_new)
+	Application:stack_dump()
 
 	self._global.inventory[global_value] = self._global.inventory[global_value] or {}
 	self._global.inventory[global_value][category] = self._global.inventory[global_value][category] or {}
@@ -4810,6 +4813,10 @@ function BlackMarketManager:add_crafted_weapon_blueprint_to_inventory(category, 
 	end
 
 	for _, part_id in pairs(blueprint) do
+		if not global_values[part_id] then
+			print("[BlackMarketManager] missing partid", part_id, inspect(global_values))
+		end
+
 		local global_value = global_values[part_id] or "normal"
 
 		if parts_tweak_data[part_id] and not parts_tweak_data[part_id].is_a_unlockable then
@@ -4825,9 +4832,9 @@ function BlackMarketManager:on_sell_weapon(category, slot, skip_verification)
 	end
 
 	local crafted = self._global.crafted_items[category][slot]
-	local cosmetics_blueprint = crafted and crafted.cosmetics and crafted.cosmetics.id and tweak_data.blackmarket.weapon_skins[crafted.cosmetics.id] and tweak_data.blackmarket.weapon_skins[crafted.cosmetics.id].default_blueprint
+	local cosmetic_blueprint = crafted and crafted.cosmetics and crafted.cosmetics.id and managers.weapon_factory:get_cosmetics_blueprint_by_weapon_id(crafted.weapon_id, crafted.cosmetics.id)
 
-	self:add_crafted_weapon_blueprint_to_inventory(category, slot, cosmetics_blueprint)
+	self:add_crafted_weapon_blueprint_to_inventory(category, slot, cosmetic_blueprint)
 	managers.money:on_sell_weapon(category, slot)
 
 	self._global.crafted_items[category][slot] = nil
@@ -4891,10 +4898,30 @@ function BlackMarketManager:get_weapon_icon_path(weapon_id, cosmetics)
 		local bundle_folder = weapon_tweak.texture_bundle_folder
 
 		if bundle_folder then
-			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
+			guis_catalog = guis_catalog .. "dlcs/"
+
+			if use_cosmetics then
+				guis_catalog = guis_catalog .. "cash/safes/"
+			end
+
+			guis_catalog = guis_catalog .. tostring(bundle_folder) .. "/"
 		end
 
-		local texture_name = weapon_tweak.texture_name or tostring(id)
+		local texture_name = nil
+
+		if use_cosmetics then
+			local skin_data = tweak_data.blackmarket.weapon_skins[cosmetics.id]
+			local is_cosmetic_base_weapon_id = skin_data.weapon_id == weapon_id
+
+			if is_cosmetic_base_weapon_id then
+				texture_name = cosmetics.id
+			else
+				texture_name = cosmetics.id .. "_" .. weapon_id
+			end
+		elseif not weapon_tweak.texture_name then
+			texture_name = tostring(id)
+		end
+
 		texture_path = guis_catalog .. path .. texture_name
 
 		if use_cosmetics then
@@ -5308,7 +5335,7 @@ function BlackMarketManager:last_previewed_cosmetic()
 	return self._last_viewed_cosmetic_id
 end
 
-function BlackMarketManager:is_previewing_legendary_skin()
+function BlackMarketManager:is_previewing_legendary_skin(mod_type)
 	return tweak_data.blackmarket.weapon_skins[self._last_viewed_cosmetic_id] and tweak_data.blackmarket.weapon_skins[self._last_viewed_cosmetic_id].locked or false
 end
 
@@ -6391,6 +6418,8 @@ function BlackMarketManager:get_texture_switch_from_data(data_string, part_id)
 	else
 		texture = weapon_texture_switch .. "_" .. color
 	end
+
+	print("[BlackMarketManager:get_texture_switch_from_data] reticle:", texture)
 
 	return texture
 end
@@ -7482,16 +7511,23 @@ function BlackMarketManager:get_weapon_skins(weapon_id)
 end
 
 function BlackMarketManager:on_remove_weapon_cosmetics(category, slot, skip_update)
+	print("[BlackMarketManager:on_remove_weapon_cosmetics]")
+
 	local crafted = self._global.crafted_items[category][slot]
 
 	if not crafted then
 		return
 	end
 
-	if crafted.cosmetics and crafted.cosmetics.id and tweak_data.blackmarket.weapon_skins[crafted.cosmetics.id] and tweak_data.blackmarket.weapon_skins[crafted.cosmetics.id].default_blueprint then
-		self:add_crafted_weapon_blueprint_to_inventory(category, slot, tweak_data.blackmarket.weapon_skins[crafted.cosmetics.id].default_blueprint)
+	if crafted.cosmetics and crafted.cosmetics.id then
+		local cosmetics_blueprint = managers.weapon_factory:get_cosmetics_blueprint_by_weapon_id(crafted.weapon_id, crafted.cosmetics.id)
 
-		crafted.blueprint = deep_clone(managers.weapon_factory:get_default_blueprint_by_factory_id(crafted.factory_id))
+		if not table.empty(cosmetics_blueprint) then
+			print("[BlackMarketManager:on_remove_weapon_cosmetics] removing blueprint skin parts", crafted.cosmetics.id, inspect(cosmetics_blueprint))
+			self:add_crafted_weapon_blueprint_to_inventory(category, slot, cosmetics_blueprint)
+
+			crafted.blueprint = deep_clone(managers.weapon_factory:get_default_blueprint_by_factory_id(crafted.factory_id))
+		end
 	end
 
 	crafted.customize_locked = nil
@@ -7593,14 +7629,7 @@ function BlackMarketManager:_set_weapon_cosmetics(category, slot, cosmetics, upd
 		print("[BlackMarketManager:_set_weapon_cosmetics] BLUEPRINT - New BP", inspect(new_cosmetic_default_blueprint))
 		self:add_crafted_weapon_blueprint_to_inventory(category, slot, old_cosmetic_default_blueprint)
 
-		local tbl = deep_clone(new_cosmetic_default_blueprint)
-
-		if weapon_skin_data.special_blueprint then
-			for _, v in ipairs(weapon_skin_data.special_blueprint[crafted.weapon_id] or {}) do
-				table.insert(tbl, v)
-			end
-		end
-
+		local tbl = managers.weapon_factory:get_cosmetics_blueprint_by_weapon_id(crafted.weapon_id, cosmetics.id)
 		crafted.blueprint = tbl
 	elseif old_cosmetic_default_blueprint then
 		print("[BlackMarketManager:_set_weapon_cosmetics] BLUEPRINT - Old BP", inspect(old_cosmetic_default_blueprint))
@@ -7808,8 +7837,8 @@ function BlackMarketManager:tradable_add_item(instance_id, category, entry, qual
 	if self._global.inventory_tradable[instance_id] then
 		local item = self._global.inventory_tradable[instance_id]
 
-		if item.category == category and item.entry ~= entry then
-			-- Nothing
+		if item.category ~= category or item.entry ~= entry then
+			Application:error("[BlackMarketManager:tradable_add_item] Item is wrong!")
 		end
 
 		item.amount = amount
@@ -8484,6 +8513,30 @@ function BlackMarketManager:load(data)
 		end
 
 		self._global._has_given_infamy_clrs = true
+	end
+end
+
+function BlackMarketManager:_on_load_update_crafted_items()
+	local crafted = self._global.crafted_items
+
+	if not crafted then
+		return
+	end
+
+	for category, category_crafts in pairs(crafted) do
+		for i, crafted in ipairs(category_crafts) do
+			if crafted.customize_locked and type(crafted.customize_locked) == "boolean" then
+				print("[BlackMarketManager:_on_load_update_crafted_items] Old crafted.customize_locked", category, i)
+
+				if crafted.cosmetics and crafted.cosmetics.id then
+					local skin_data = tweak_data.blackmarket.weapon_skins[crafted.cosmetics.id]
+
+					print("[BlackMarketManager:_on_load_update_crafted_items] Now setting as", crafted.cosmetics.id, inspect(skin_data))
+
+					crafted.customize_locked = skin_data.locked
+				end
+			end
+		end
 	end
 end
 

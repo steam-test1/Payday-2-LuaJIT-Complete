@@ -2,6 +2,8 @@ local ids_unit = Idstring("unit")
 local ids_NORMAL = Idstring("NORMAL")
 NetworkPeer = NetworkPeer or class()
 NetworkPeer.PRE_HANDSHAKE_CHK_TIME = 8
+local IDS_STEAM = Idstring("STEAM")
+local IDS_EPIC = Idstring("EPIC")
 
 function NetworkPeer:init(name, rpc, id, loading, synced, in_lobby, character, user_id, account_type_str, account_id)
 	self._name = name or managers.localization:text("menu_" .. tostring(character or "russian"))
@@ -11,7 +13,7 @@ function NetworkPeer:init(name, rpc, id, loading, synced, in_lobby, character, u
 	self._account_type_str = account_type_str
 	self._account_id = account_id or user_id
 	self._xuid = ""
-	self._need_steam_ticket = account_type_str == "STEAM" and (SystemInfo:distribution() == Idstring("STEAM") or SystemInfo:matchmaking() == Idstring("MM_STEAM"))
+	self._need_steam_ticket = account_type_str == "STEAM" and (SystemInfo:distribution() == IDS_STEAM or SystemInfo:matchmaking() == Idstring("MM_STEAM"))
 	local is_local_peer = nil
 
 	if self._rpc then
@@ -190,7 +192,7 @@ function NetworkPeer:verify_job(job)
 		return
 	end
 
-	if SystemInfo:distribution() == Idstring("STEAM") and not Steam:is_user_product_owned(self._account_id, dlc_data.app_id) then
+	if SystemInfo:distribution() == IDS_STEAM and not Steam:is_user_product_owned(self._account_id, dlc_data.app_id) then
 		self:mark_cheater(VoteManager.REASON.invalid_job, Network:is_server())
 	end
 end
@@ -216,7 +218,7 @@ function NetworkPeer:verify_character()
 		return
 	end
 
-	if SystemInfo:distribution() == Idstring("STEAM") and not Steam:is_user_product_owned(self._account_id, dlc_data.app_id) then
+	if SystemInfo:distribution() == IDS_STEAM and not Steam:is_user_product_owned(self._account_id, dlc_data.app_id) then
 		self:mark_cheater(VoteManager.REASON.invalid_character, Network:is_server())
 	end
 end
@@ -230,7 +232,9 @@ function NetworkPeer:verify_outfit()
 end
 
 function NetworkPeer:_verify_outfit_data()
-	if not managers.network:session() or self._id == managers.network:session():local_peer():id() then
+	if not managers.network:session() or managers.network:session():local_peer():id() == self._id then
+		print("[NetworkPeer] Cannot verify myself or anyone without a session. Session exists:", not not managers.network:session())
+
 		return nil
 	end
 
@@ -262,23 +266,32 @@ function NetworkPeer:_verify_outfit_data()
 				end
 			end
 		elseif item_type == "primary" or item_type == "secondary" then
-			if not self:_verify_content("weapon", managers.weapon_factory:get_weapon_id_by_factory_id(item.factory_id)) then
+			local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(item.factory_id)
+
+			if not self:_verify_content("weapon", weapon_id) then
 				return self:_verify_cheated_outfit("weapon", item.factory_id, VoteManager.REASON.invalid_weapon)
 			end
 
+			local safe_blueprint = {}
 			local cosmetics_id = outfit[item_type].cosmetics and outfit[item_type].cosmetics.id
-			local cosmetics_tweak = tweak_data.blackmarket.weapon_skins[cosmetics_id]
-			local blueprint = managers.weapon_factory:get_default_blueprint_by_factory_id(item.factory_id)
-			local skin_blueprint = cosmetics_tweak and cosmetics_tweak.default_blueprint or {}
+			local skin_blueprint, is_a_color_skin = managers.weapon_factory:get_cosmetics_blueprint_by_weapon_id(weapon_id, cosmetics_id)
+
+			table.list_append(safe_blueprint, skin_blueprint, managers.weapon_factory:get_default_blueprint_by_factory_id(item.factory_id))
 
 			for _, mod_item in pairs(item.blueprint) do
-				if not table.contains(blueprint, mod_item) and not table.contains(skin_blueprint, mod_item) and not self:_verify_content("weapon_mods", mod_item) then
+				local safe_blueprint_contains_mod_item = table.contains(safe_blueprint, mod_item)
+
+				if not safe_blueprint_contains_mod_item and not self:_verify_content("weapon_mods", mod_item) then
 					return self:_verify_cheated_outfit("weapon_mods", mod_item, VoteManager.REASON.invalid_weapon)
 				end
 			end
 
-			if cosmetics_tweak and cosmetics_tweak.is_a_color_skin and not self:_verify_item_data(cosmetics_tweak) then
-				return self:_verify_cheated_outfit("weapon_colors", cosmetics_id, VoteManager.REASON.invalid_weapon_color)
+			if is_a_color_skin then
+				local cosmetics_tweak = tweak_data.blackmarket.weapon_skins[cosmetics_id]
+
+				if cosmetics_tweak and cosmetics_tweak.is_a_color_skin and not self:_verify_item_data(cosmetics_tweak) then
+					return self:_verify_cheated_outfit("weapon_colors", cosmetics_id, VoteManager.REASON.invalid_weapon_color)
+				end
 			end
 		elseif item_type == "melee_weapon" and not self:_verify_content("melee_weapons", item) then
 			return self:_verify_cheated_outfit("melee_weapons", item, VoteManager.REASON.invalid_weapon)
@@ -296,7 +309,7 @@ function NetworkPeer:_verify_cheated_outfit(item_type, item_id, result)
 		return
 	end
 
-	print("[NetworkPeer:_verify_cheated_outfit] Invalid item '" .. tostring(item_id) .. "' on peer '" .. tostring(self._name) .. "'.")
+	print("[NetworkPeer:_verify_cheated_outfit] Invalid " .. tostring(item_type) .. " '" .. tostring(item_id) .. "' on peer '" .. tostring(self._name) .. "'.")
 
 	self._cheated_items[item] = true
 
@@ -321,7 +334,7 @@ function NetworkPeer:_verify_content(item_type, item_id)
 		return false
 	end
 
-	if item_data.unatainable or item_data.unattainable then
+	if item_data.unatainable then
 		return false
 	end
 
@@ -348,7 +361,7 @@ function NetworkPeer:_verify_item_data(item_data)
 	for _, dlc in pairs(dlc_list) do
 		local dlc_data = dlc and Global.dlc_manager.all_dlc_data[dlc]
 
-		if dlc_data and dlc_data.app_id and not dlc_data.external and SystemInfo:distribution() == Idstring("STEAM") and not Steam:is_user_product_owned(self._account_id, dlc_data.app_id) then
+		if dlc_data and dlc_data.app_id and not dlc_data.external and SystemInfo:distribution() == IDS_STEAM and self:account_type() == IDS_STEAM and not Steam:is_user_product_owned(self._account_id, dlc_data.app_id) then
 			return false
 		end
 	end
@@ -493,7 +506,7 @@ function NetworkPeer:on_verify_tradable_outfit(outfit_version, error, list)
 
 	if error then
 		self:tradable_verification_failed(nil, outfit)
-		Application:error("[NetworkPeer:on_verify_tradable_outfit] Failed to verify tradable inventory (" .. tostring(error) .. ")")
+		Application:error("[NetworkPeer:VERIFICAT] Failed to verify tradable inventory with error code (" .. tostring(error) .. ")")
 
 		return
 	end
@@ -508,14 +521,16 @@ function NetworkPeer:on_verify_tradable_outfit(outfit_version, error, list)
 end
 
 function NetworkPeer:tradable_verification_failed(group, outfit)
-	Application:error("[NetworkPeer:tradable_verification_failed] Failed to verify peer " .. tostring(self._id) .. "'s tradable item.", group)
+	Application:error("[NetworkPeer:VERIFICATION] Failed to verify peer " .. tostring(self._id) .. "'s tradable item.", group)
 
 	if not group or group == "primary_skin" then
 		outfit.primary.cosmetics = nil
+		outfit.primary.blueprint = managers.weapon_factory:get_default_blueprint_by_factory_id(outfit.primary.factory_id)
 	end
 
 	if not group or group == "secondary_skin" then
 		outfit.secondary.cosmetics = nil
+		outfit.secondary.blueprint = managers.weapon_factory:get_default_blueprint_by_factory_id(outfit.secondary.factory_id)
 	end
 
 	self._profile.outfit_string = managers.blackmarket:outfit_string_from_list(outfit)
@@ -551,12 +566,12 @@ function NetworkPeer:load(data)
 	self._name = data.name
 	self._account_type_str = data.account_type_str
 	self._account_id = data.account_id
-	self._need_steam_ticket = self._account_type_str == "STEAM" and (SystemInfo:distribution() == Idstring("STEAM") or SystemInfo:matchmaking() == Idstring("MM_STEAM"))
+	self._need_steam_ticket = self._account_type_str == "STEAM" and (SystemInfo:distribution() == IDS_STEAM or SystemInfo:matchmaking() == Idstring("MM_STEAM"))
 
 	if self._account_type_str == "STEAM" then
 		local temp = self._name
 
-		if SystemInfo:distribution() == Idstring("STEAM") then
+		if SystemInfo:distribution() == IDS_STEAM then
 			self._name = managers.network.account:username_by_id(self._account_id)
 		elseif SystemInfo:matchmaking() == Idstring("MM_STEAM") then
 			self._name = managers.network.matchmake:username_by_id(self._account_id)
@@ -678,7 +693,7 @@ function NetworkPeer:rpc()
 end
 
 function NetworkPeer:connection_info()
-	return self._name, self._id, self._user_id or "", self._account_type_str, self._account_id, self._in_lobby, self._loading, self._synced, self._character, "remove", self._xuid, self._xnaddr
+	return self._name, self._id, self._user_id or "", self._account_type_str, self._account_id, self._in_lobby, self._loading, self._synced, self._character, self._xuid, self._xnaddr
 end
 
 function NetworkPeer:synched()
@@ -762,12 +777,12 @@ function NetworkPeer:set_ip_verified(state)
 
 	local is_modded = self:is_modded()
 
-	if SystemInfo:distribution() == Idstring("STEAM") and self:account_type_str() == "STEAM" then
+	if SystemInfo:distribution() == IDS_STEAM and self:account_type_str() == "STEAM" then
 		local user = Steam:user(self:ip())
 		is_modded = is_modded or user and user:rich_presence("is_modded") == "1"
 	end
 
-	if SystemInfo:distribution() == Idstring("EPIC") and self:account_type_str() == "EPIC" then
+	if SystemInfo:distribution() == IDS_EPIC and self:account_type_str() == "EPIC" then
 		-- Nothing
 	end
 

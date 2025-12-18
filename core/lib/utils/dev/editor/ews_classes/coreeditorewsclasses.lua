@@ -1734,6 +1734,11 @@ function ReplaceUnit:init(name, types)
 	end
 
 	local btn_sizer = EWS:BoxSizer("HORIZONTAL")
+	self._remember_cb = EWS:CheckBox(self._panel, "Remember choice", "", "ALIGN_RIGHT")
+
+	self._remember_cb:set_value(false)
+	btn_sizer:add(self._remember_cb, 0, 5, "TOP,RIGHT")
+
 	local ok_btn = EWS:Button(self._panel, "OK", "_ok_dialog", "BU_EXACTFIT,NO_BORDER")
 
 	ok_btn:connect("EVT_COMMAND_BUTTON_CLICKED", callback(self, self, "close_replace_unit"), {
@@ -1750,6 +1755,16 @@ function ReplaceUnit:init(name, types)
 	self._panel_sizer:add(btn_sizer, 0, 0, "ALIGN_RIGHT")
 	self._dialog_sizer:add(self._panel, 1, 0, "EXPAND")
 	self:show_modal()
+end
+
+function ReplaceUnit:show_modal()
+	if not self._remember_replace_choice then
+		self._dialog:show_modal()
+	end
+end
+
+function ReplaceUnit:reset()
+	self._remember_replace_choice = nil
 end
 
 function ReplaceUnit:replace_unit_name(units)
@@ -1787,6 +1802,7 @@ end
 
 function ReplaceUnit:close_replace_unit(data)
 	self._made_replace_choice = data.value
+	self._remember_replace_choice = self._remember_cb:get_value()
 
 	self:end_modal()
 end
@@ -1993,100 +2009,89 @@ function LayerReplaceUnit:reset()
 	self:update_list()
 end
 
-MoveTransformTypeIn = MoveTransformTypeIn or class(CoreEditorEwsDialog)
+UnitTransformDialog = UnitTransformDialog or class(CoreEditorEwsDialog)
 
-function MoveTransformTypeIn:init()
-	CoreEditorEwsDialog.init(self, nil, "Move transform type-in", "", Vector3(761, 67, 0), Vector3(264, 111, 0), "DEFAULT_DIALOG_STYLE,RESIZE_BORDER,STAY_ON_TOP")
-	self:create_panel("HORIZONTAL")
+function UnitTransformDialog:init()
+	CoreEditorEwsDialog.init(self, nil, "Unit Transform", "", Vector3(761, 67, 0), Vector3(500, 195, 0), "DEFAULT_DIALOG_STYLE,RESIZE_BORDER")
+	self._dialog:set_min_size(Vector3(480, 195, 0))
+	self:create_panel("VERTICAL")
 
 	self._min = -100000000
 	self._max = 100000000
-	local world_sizer = EWS:StaticBoxSizer(self._panel, "VERTICAL", "Absolut:World")
-	self._ax = self:_create_ctrl("X:", "x", 0, "absolut", world_sizer)
-	self._ay = self:_create_ctrl("Y:", "y", 0, "absolut", world_sizer)
-	self._az = self:_create_ctrl("Z:", "z", 0, "absolut", world_sizer)
+	local position_sizer = EWS:StaticBoxSizer(self._panel, "HORIZONTAL", "Position")
+	self._ax = self:_create_ctrl_position("X", "x", 0, position_sizer)
+	self._ay = self:_create_ctrl_position("Y", "y", 0, position_sizer)
+	self._az = self:_create_ctrl_position("Z", "z", 0, position_sizer)
+	local actions_toolbar = EWS:ToolBar(self._panel, "", "TB_FLAT,TB_NODIVIDER")
 
-	self._panel_sizer:add(world_sizer, 1, 0, "EXPAND")
+	actions_toolbar:add_tool("COPY_POSITION", "Copy position", CoreEws.image_path("toolbar\\copy_16x16.png"))
+	actions_toolbar:connect("COPY_POSITION", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_copy_position"), nil)
+	actions_toolbar:add_tool("PASTE_POSITION", "Paste position", CoreEws.image_path("toolbar\\paste_16x16.png"))
+	actions_toolbar:connect("PASTE_POSITION", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_paste_position"), nil)
+	actions_toolbar:realize()
+	position_sizer:add(actions_toolbar, 0, 1, "EXPAND,LEFT")
+	self._panel_sizer:add(position_sizer, 0, 1, "EXPAND")
 
-	local offset_sizer = EWS:StaticBoxSizer(self._panel, "VERTICAL", "Offset")
-	self._ox = self:_create_ctrl("X:", "x", 0, "offset", offset_sizer)
-	self._oy = self:_create_ctrl("Y:", "y", 0, "offset", offset_sizer)
-	self._oz = self:_create_ctrl("Z:", "z", 0, "offset", offset_sizer)
+	local rotation_sizer = EWS:StaticBoxSizer(self._panel, "HORIZONTAL", "Rotation")
+	self._rx = self:_create_ctrl_rotation("Yaw", "x", 0, rotation_sizer)
+	self._ry = self:_create_ctrl_rotation("Pitch", "y", 0, rotation_sizer)
+	self._rz = self:_create_ctrl_rotation("Roll", "z", 0, rotation_sizer)
+	local actions_toolbar = EWS:ToolBar(self._panel, "", "TB_FLAT,TB_NODIVIDER")
 
-	self._panel_sizer:add(offset_sizer, 1, 0, "EXPAND")
-	self._dialog_sizer:add(self._panel, 1, 0, "EXPAND")
+	actions_toolbar:add_tool("COPY_ROTATION", "Copy rotation", CoreEws.image_path("toolbar\\copy_16x16.png"))
+	actions_toolbar:connect("COPY_ROTATION", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_copy_rotation"), nil)
+	actions_toolbar:add_tool("PASTE_ROTATION", "Paste rotation", CoreEws.image_path("toolbar\\paste_16x16.png"))
+	actions_toolbar:connect("PASTE_ROTATION", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_paste_rotation"), nil)
+	actions_toolbar:realize()
+	rotation_sizer:add(actions_toolbar, 0, 1, "EXPAND,LEFT")
+	self._panel_sizer:add(rotation_sizer, 0, 1, "EXPAND")
+	self._dialog_sizer:add(self._panel, 1, 5, "EXPAND,ALL")
 	self._panel:set_enabled(false)
 end
 
-function MoveTransformTypeIn:_create_ctrl(name, coor, value, type, sizer)
-	local ctrl_sizer = EWS:BoxSizer("HORIZONTAL")
-
-	ctrl_sizer:add(EWS:StaticText(self._panel, name, "", "ALIGN_LEFT"), 0, 0, "EXPAND")
-
+function UnitTransformDialog:_create_ctrl_position(name, coor, value, sizer)
+	local ctrl_sizer = EWS:BoxSizer("VERTICAL")
 	local ctrl = EWS:TextCtrl(self._panel, value, "", "TE_PROCESS_ENTER")
 
-	ctrl:set_tool_tip("Type in " .. type .. " " .. coor .. "-coordinate in meters")
-	ctrl:set_min_size(Vector3(-1, 10, 0))
+	ctrl:set_tool_tip(name .. " Absolute")
 	ctrl:connect("EVT_CHAR", callback(nil, _G, "verify_number"), ctrl)
-
-	if type == "offset" then
-		ctrl:connect("EVT_COMMAND_TEXT_ENTER", callback(self, self, "update_offset"), {
-			ctrl = ctrl,
-			coor = coor
-		})
-		ctrl:connect("EVT_KILL_FOCUS", callback(self, self, "update_offset"), {
-			ctrl = ctrl,
-			coor = coor
-		})
-	else
-		ctrl:connect("EVT_COMMAND_TEXT_ENTER", callback(self, self, "update_absolut"), {
-			ctrl = ctrl,
-			coor = coor
-		})
-		ctrl:connect("EVT_KILL_FOCUS", callback(self, self, "update_absolut"), {
-			ctrl = ctrl,
-			coor = coor
-		})
-	end
-
+	ctrl:connect("EVT_COMMAND_TEXT_ENTER", callback(self, self, "update_absolut_position"), {
+		ctrl = ctrl,
+		coor = coor
+	})
+	ctrl:connect("EVT_KILL_FOCUS", callback(self, self, "update_absolut_position"), {
+		ctrl = ctrl,
+		coor = coor
+	})
 	ctrl_sizer:add(ctrl, 1, 0, "EXPAND")
 
-	local spin = EWS:SpinButton(self._panel, "", "SP_VERTICAL")
+	local offset = EWS:TextCtrl(self._panel, value, "", "TE_PROCESS_ENTER")
 
-	spin:set_min_size(Vector3(-1, 10, 0))
-
-	local c = ctrl
-
-	if type == "offset" then
-		c = self["_a" .. coor]
-	end
-
-	spin:connect("EVT_SCROLL_LINEUP", callback(self, self, "update_spin"), {
-		step = 0.1,
-		ctrl = c,
+	offset:set_tool_tip(name .. " Offset")
+	offset:connect("EVT_COMMAND_TEXT_ENTER", callback(self, self, "update_offset_position"), {
+		ctrl = offset,
 		coor = coor
 	})
-	spin:connect("EVT_SCROLL_LINEDOWN", callback(self, self, "update_spin"), {
-		step = -0.1,
-		ctrl = c,
+	offset:connect("EVT_KILL_FOCUS", callback(self, self, "update_offset_position"), {
+		ctrl = offset,
 		coor = coor
 	})
-	ctrl_sizer:add(spin, 0, 0, "EXPAND")
-	sizer:add(ctrl_sizer, 1, 10, "EXPAND,LEFT,RIGHT")
+	ctrl_sizer:add(offset, 0, 0, "EXPAND")
+	sizer:add(ctrl_sizer, 1, 0, "EXPAND,LEFT,RIGHT")
 
 	return ctrl
 end
 
-function MoveTransformTypeIn:update_spin(data)
+function UnitTransformDialog:update_spin_position(data)
 	if not tonumber(data.ctrl:get_value()) then
 		data.ctrl:set_value(0)
 	end
 
-	data.ctrl:set_value(string.format("%.2f", data.ctrl:get_value() + data.step))
-	self:update_absolut(data)
+	data.ctrl:set_value(string.format("%.3f", data.ctrl:get_value() + data.step))
+	self:update_absolut_position(data)
 end
 
-function MoveTransformTypeIn:update_absolut(data)
+function UnitTransformDialog:update_absolut_position(data)
 	local value = tonumber(data.ctrl:get_value()) or 0
 
 	if self._min == value then
@@ -2099,22 +2104,28 @@ function MoveTransformTypeIn:update_absolut(data)
 		local pos = self._unit:position()
 		pos = pos["with_" .. data.coor](pos, value)
 
-		data.ctrl:change_value(string.format("%.2f", value / 100))
+		data.ctrl:change_value(string.format("%.3f", value / 100))
 		data.ctrl:set_selection(-1, -1)
 		managers.editor:set_selected_units_position(pos)
 	end
 end
 
-function MoveTransformTypeIn:update_offset(data, event)
+function UnitTransformDialog:update_offset_position(data, event)
 	local value = tonumber(data.ctrl:get_value()) or 0
 
 	if alive(self._unit) then
-		local local_rot = managers.editor:is_coordinate_system("Local")
 		local pos = self._unit:position()
-		local rot = Rotation()
+		local rot = nil
+		local coor_sys = managers.editor:coordinate_system()
 
-		if local_rot then
+		if coor_sys == "Local" then
 			rot = self._unit:rotation()
+		elseif coor_sys == "Anchor" then
+			rot = Rotation()
+		elseif coor_sys == "Camera" then
+			rot = managers.editor:camera():rotation()
+		else
+			rot = Rotation()
 		end
 
 		value = value * 100
@@ -2126,124 +2137,49 @@ function MoveTransformTypeIn:update_offset(data, event)
 	end
 end
 
-function MoveTransformTypeIn:set_unit(unit)
-	self._unit = unit
-
-	self._panel:set_enabled(alive(self._unit))
-end
-
-function MoveTransformTypeIn:update(t, dt)
-	if alive(self._unit) then
-		local pos = self._unit:position()
-
-		if not self._ax:in_focus() then
-			self._ax:change_value(string.format("%.2f", pos.x / 100))
-		end
-
-		if not self._ay:in_focus() then
-			self._ay:change_value(string.format("%.2f", pos.y / 100))
-		end
-
-		if not self._az:in_focus() then
-			self._az:change_value(string.format("%.2f", pos.z / 100))
-		end
-	end
-end
-
-RotateTransformTypeIn = RotateTransformTypeIn or class(CoreEditorEwsDialog)
-
-function RotateTransformTypeIn:init()
-	CoreEditorEwsDialog.init(self, nil, "Rotate transform type-in", "", Vector3(761, 180, 0), Vector3(264, 111, 0), "DEFAULT_DIALOG_STYLE,RESIZE_BORDER,STAY_ON_TOP")
-	self:create_panel("HORIZONTAL")
-
-	self._min = -100000000
-	self._max = 100000000
-	local world_sizer = EWS:StaticBoxSizer(self._panel, "VERTICAL", "Absolut:World")
-	self._ax = self:_create_ctrl("X:", "x", 0, "absolut", world_sizer)
-	self._ay = self:_create_ctrl("Y:", "y", 0, "absolut", world_sizer)
-	self._az = self:_create_ctrl("Z:", "z", 0, "absolut", world_sizer)
-
-	self._panel_sizer:add(world_sizer, 1, 0, "EXPAND")
-
-	local offset_sizer = EWS:StaticBoxSizer(self._panel, "VERTICAL", "Offset")
-	self._ox = self:_create_ctrl("X:", "x", 0, "offset", offset_sizer)
-	self._oy = self:_create_ctrl("Y:", "y", 0, "offset", offset_sizer)
-	self._oz = self:_create_ctrl("Z:", "z", 0, "offset", offset_sizer)
-
-	self._panel_sizer:add(offset_sizer, 1, 0, "EXPAND")
-	self._dialog_sizer:add(self._panel, 1, 0, "EXPAND")
-	self._panel:set_enabled(false)
-end
-
-function RotateTransformTypeIn:_create_ctrl(name, coor, value, type, sizer)
-	local ctrl_sizer = EWS:BoxSizer("HORIZONTAL")
-
-	ctrl_sizer:add(EWS:StaticText(self._panel, name, "", "ALIGN_LEFT"), 0, 0, "EXPAND")
-
+function UnitTransformDialog:_create_ctrl_rotation(name, coor, value, sizer)
+	local ctrl_sizer = EWS:BoxSizer("VERTICAL")
 	local ctrl = EWS:TextCtrl(self._panel, value, "", "TE_PROCESS_ENTER")
 
-	ctrl:set_tool_tip("Type in " .. type .. " " .. coor .. "-rotation in degrees")
-	ctrl:set_min_size(Vector3(-1, 10, 0))
+	ctrl:set_tool_tip(name .. " Absolute")
 	ctrl:connect("EVT_CHAR", callback(nil, _G, "verify_number"), ctrl)
-
-	if type == "offset" then
-		ctrl:connect("EVT_COMMAND_TEXT_ENTER", callback(self, self, "update_offset"), {
-			ctrl = ctrl,
-			coor = coor
-		})
-		ctrl:connect("EVT_KILL_FOCUS", callback(self, self, "update_offset"), {
-			ctrl = ctrl,
-			coor = coor
-		})
-	else
-		ctrl:connect("EVT_COMMAND_TEXT_ENTER", callback(self, self, "update_absolut"), {
-			ctrl = ctrl,
-			coor = coor
-		})
-		ctrl:connect("EVT_KILL_FOCUS", callback(self, self, "update_absolut"), {
-			ctrl = ctrl,
-			coor = coor
-		})
-	end
-
+	ctrl:connect("EVT_COMMAND_TEXT_ENTER", callback(self, self, "update_absolut_rotation"), {
+		ctrl = ctrl,
+		coor = coor
+	})
+	ctrl:connect("EVT_KILL_FOCUS", callback(self, self, "update_absolut_rotation"), {
+		ctrl = ctrl,
+		coor = coor
+	})
 	ctrl_sizer:add(ctrl, 1, 0, "EXPAND")
 
-	local spin = EWS:SpinButton(self._panel, "", "SP_VERTICAL")
+	local offset = EWS:TextCtrl(self._panel, value, "", "TE_PROCESS_ENTER")
 
-	spin:set_min_size(Vector3(-1, 10, 0))
-
-	local c = ctrl
-
-	if type == "offset" then
-		c = self["_a" .. coor]
-	end
-
-	spin:connect("EVT_SCROLL_LINEUP", callback(self, self, "update_spin"), {
-		step = 0.1,
-		ctrl = c,
+	offset:set_tool_tip(name .. " Offset")
+	offset:connect("EVT_COMMAND_TEXT_ENTER", callback(self, self, "update_offset_rotation"), {
+		ctrl = offset,
 		coor = coor
 	})
-	spin:connect("EVT_SCROLL_LINEDOWN", callback(self, self, "update_spin"), {
-		step = -0.1,
-		ctrl = c,
+	offset:connect("EVT_KILL_FOCUS", callback(self, self, "update_offset_rotation"), {
+		ctrl = offset,
 		coor = coor
 	})
-	ctrl_sizer:add(spin, 0, 0, "EXPAND")
-	sizer:add(ctrl_sizer, 1, 10, "EXPAND,LEFT,RIGHT")
+	ctrl_sizer:add(offset, 0, 0, "EXPAND")
+	sizer:add(ctrl_sizer, 1, 0, "EXPAND,LEFT,RIGHT")
 
 	return ctrl
 end
 
-function RotateTransformTypeIn:update_spin(data)
+function UnitTransformDialog:update_spin_rotation(data)
 	if not tonumber(data.ctrl:get_value()) then
 		data.ctrl:set_value(0)
 	end
 
-	data.ctrl:set_value(string.format("%.2f", data.ctrl:get_value() + data.step))
-	self:update_absolut(data)
+	data.ctrl:set_value(string.format("%.3f", data.ctrl:get_value() + data.step))
+	self:update_absolut_rotation(data)
 end
 
-function RotateTransformTypeIn:update_absolut(data)
+function UnitTransformDialog:update_absolut_rotation(data)
 	local value = tonumber(data.ctrl:get_value()) or 0
 
 	if self._min == value then
@@ -2261,25 +2197,31 @@ function RotateTransformTypeIn:update_absolut(data)
 			rot = Rotation(rot:yaw(), rot:pitch(), value)
 		end
 
-		data.ctrl:change_value(string.format("%.2f", value))
+		data.ctrl:change_value(string.format("%.3f", value))
 		data.ctrl:set_selection(-1, -1)
 		managers.editor:set_selected_units_rotation(rot * self._unit:rotation():inverse())
 	end
 end
 
-function RotateTransformTypeIn:update_offset(data, event)
+function UnitTransformDialog:update_offset_rotation(data, event)
 	local value = tonumber(data.ctrl:get_value()) or 0
 
 	if alive(self._unit) then
-		local local_rot = managers.editor:is_coordinate_system("Local")
-		local rot = Rotation()
-		local rot_axis = rot[data.coor](rot)
-		local u_rot = self._unit:rotation()
+		local rot = nil
+		local coor_sys = managers.editor:coordinate_system()
 
-		if local_rot then
-			rot_axis = u_rot[data.coor](u_rot)
+		if coor_sys == "Local" then
+			rot = self._unit:rotation()
+		elseif coor_sys == "Anchor" then
+			rot = Rotation()
+		elseif coor_sys == "Camera" then
+			rot = managers.editor:camera():rotation()
+		else
+			rot = Rotation()
 		end
 
+		local rot_axis = rot[data.coor](rot)
+		local u_rot = self._unit:rotation()
 		rot = Rotation(rot_axis, value)
 
 		managers.editor:set_selected_units_rotation(rot)
@@ -2288,26 +2230,73 @@ function RotateTransformTypeIn:update_offset(data, event)
 	end
 end
 
-function RotateTransformTypeIn:set_unit(unit)
+function UnitTransformDialog:on_copy_position()
+	if alive(self._unit) then
+		self._clipboard_position = self._unit:position()
+	end
+end
+
+function UnitTransformDialog:on_paste_position()
+	if alive(self._unit) and self._clipboard_position then
+		local pos = self._clipboard_position
+
+		managers.editor:set_selected_units_position(pos)
+		self._ax:change_value(string.format("%.3f", pos.x / 100))
+		self._ay:change_value(string.format("%.3f", pos.y / 100))
+		self._az:change_value(string.format("%.3f", pos.z / 100))
+	end
+end
+
+function UnitTransformDialog:on_copy_rotation()
+	if alive(self._unit) then
+		self._clipboard_rotation = self._unit:rotation()
+	end
+end
+
+function UnitTransformDialog:on_paste_rotation()
+	if alive(self._unit) and self._clipboard_rotation then
+		local rot = self._clipboard_rotation
+
+		managers.editor:set_selected_units_rotation(rot * self._unit:rotation():inverse())
+		self._rx:change_value(string.format("%.3f", rot:yaw()))
+		self._ry:change_value(string.format("%.3f", rot:pitch()))
+		self._rz:change_value(string.format("%.3f", rot:roll()))
+	end
+end
+
+function UnitTransformDialog:set_unit(unit)
 	self._unit = unit
 
 	self._panel:set_enabled(alive(self._unit))
 end
 
-function RotateTransformTypeIn:update(t, dt)
+function UnitTransformDialog:update(t, dt)
 	if alive(self._unit) then
+		local pos = self._unit:position()
 		local rot = self._unit:rotation()
 
 		if not self._ax:in_focus() then
-			self._ax:change_value(string.format("%.2f", rot:yaw()))
+			self._ax:change_value(string.format("%.3f", pos.x / 100))
 		end
 
 		if not self._ay:in_focus() then
-			self._ay:change_value(string.format("%.2f", rot:pitch()))
+			self._ay:change_value(string.format("%.3f", pos.y / 100))
 		end
 
 		if not self._az:in_focus() then
-			self._az:change_value(string.format("%.2f", rot:roll()))
+			self._az:change_value(string.format("%.3f", pos.z / 100))
+		end
+
+		if not self._rx:in_focus() then
+			self._rx:change_value(string.format("%.3f", rot:yaw()))
+		end
+
+		if not self._ry:in_focus() then
+			self._ry:change_value(string.format("%.3f", rot:pitch()))
+		end
+
+		if not self._rz:in_focus() then
+			self._rz:change_value(string.format("%.3f", rot:roll()))
 		end
 	end
 end

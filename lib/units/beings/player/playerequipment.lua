@@ -1,4 +1,5 @@
 PlayerEquipment = PlayerEquipment or class()
+local IDS_BODY = Idstring("body")
 
 function PlayerEquipment:init(unit)
 	self._unit = unit
@@ -397,7 +398,7 @@ function PlayerEquipment:valid_shape_placement(equipment_id, equipment_data)
 		local bodies = self._dummy_unit:find_bodies("intersect", "capsule", find_start_pos, find_end_pos, find_radius, managers.slot:get_mask("trip_mine_placeables") + 14 + 25)
 
 		for _, body in ipairs(bodies) do
-			if body:unit() ~= self._dummy_unit and body:has_ray_type(Idstring("body")) then
+			if body:unit() ~= self._dummy_unit and body:has_ray_type(IDS_BODY) then
 				valid = false
 
 				break

@@ -42,14 +42,14 @@ function CoreEditor:build_toolbar()
 		select = false,
 		move = true
 	})
-	Global.frame:connect("TB WIDGET MOVE", "EVT_COMMAND_TOOL_RCLICKED", callback(self, self, "on_move_transform_type_in"), nil)
+	Global.frame:connect("TB WIDGET MOVE", "EVT_COMMAND_TOOL_RCLICKED", callback(self, self, "on_unit_transform"), nil)
 	self._toolbar:add_radio_tool("TB WIDGET ROTATE", "Select and Rotate (" .. self:ctrl_menu_binding("rotate") .. ")", icons_path .. "widget_rotation.bmp", "Select and Rotate")
 	Global.frame:connect("TB WIDGET ROTATE", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "set_widget"), {
 		rotate = true,
 		select = false,
 		move = false
 	})
-	Global.frame:connect("TB WIDGET ROTATE", "EVT_COMMAND_TOOL_RCLICKED", callback(self, self, "on_rotate_transform_type_in"), nil)
+	Global.frame:connect("TB WIDGET ROTATE", "EVT_COMMAND_TOOL_RCLICKED", callback(self, self, "on_unit_transform"), nil)
 	self:build_ref_coordinate_system()
 	self._toolbar:add_check_tool("TB_SURFACE_MOVE", "Surface move (" .. self:ctrl_binding("surface_move_toggle") .. ")", CoreEWS.image_path("world_editor\\surface_move_16x16.png"), "Toggle surface move on and off")
 	self._toolbar:set_tool_state("TB_SURFACE_MOVE", self._use_surface_move)
@@ -184,12 +184,8 @@ function CoreEditor:change_snaprot_axis(data)
 	end
 end
 
-function CoreEditor:on_move_transform_type_in()
-	self._move_transform_type_in:set_visible(true)
-end
-
-function CoreEditor:on_rotate_transform_type_in()
-	self._rotate_transform_type_in:set_visible(true)
+function CoreEditor:on_unit_transform()
+	self._unit_transform:set_visible(true)
 end
 
 function CoreEditor:on_camera_transform_type_in()

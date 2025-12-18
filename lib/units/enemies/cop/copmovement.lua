@@ -685,12 +685,11 @@ function CopMovement:_upd_actions(t)
 					end
 				end
 			else
-				need_upd = need_upd or action.need_upd and action:need_upd()
-
 				if action.update then
 					action:update(t)
 				end
 
+				need_upd = need_upd or action.need_upd and action:need_upd()
 				has_no_action = nil
 			end
 		end

@@ -183,6 +183,28 @@ function WeaponFactoryManager:get_default_blueprint_by_factory_id(factory_id)
 	return tweak_data.weapon.factory[factory_id] and tweak_data.weapon.factory[factory_id].default_blueprint or {}
 end
 
+function WeaponFactoryManager:get_cosmetics_blueprint_by_weapon_id(weapon_id, cosmetic_id)
+	local skin_blueprint = {}
+	local is_a_color_skin = false
+	local cosmetics_tweak = tweak_data.blackmarket.weapon_skins[cosmetic_id]
+
+	if cosmetics_tweak then
+		if cosmetics_tweak.is_a_color_skin then
+			is_a_color_skin = cosmetics_tweak.is_a_color_skin
+		end
+
+		if not is_a_color_skin and cosmetics_tweak.default_blueprint then
+			table.list_append(skin_blueprint, cosmetics_tweak.default_blueprint)
+
+			if cosmetics_tweak.special_blueprint and cosmetics_tweak.special_blueprint[weapon_id] then
+				table.list_append(skin_blueprint, cosmetics_tweak.special_blueprint[weapon_id])
+			end
+		end
+	end
+
+	return skin_blueprint, is_a_color_skin
+end
+
 function WeaponFactoryManager:create_limited_blueprints(factory_id)
 	local i_table = self:_indexed_parts(factory_id)
 	local all_parts_used_once = {}
@@ -1634,9 +1656,14 @@ function WeaponFactoryManager:get_perks_from_part_id(part_id)
 end
 
 function WeaponFactoryManager:get_perks(factory_id, blueprint)
+	local perks = {}
+
+	if not factory_id or not blueprint then
+		return perks
+	end
+
 	local factory = tweak_data.weapon.factory
 	local forbidden = self:_get_forbidden_parts(factory_id, blueprint)
-	local perks = {}
 
 	for _, part_id in ipairs(blueprint) do
 		if not forbidden[part_id] then

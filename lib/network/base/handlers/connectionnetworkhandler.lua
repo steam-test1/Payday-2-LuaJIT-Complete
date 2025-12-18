@@ -84,15 +84,15 @@ function ConnectionNetworkHandler:join_request_reply(reply_id, my_peer_id, my_ch
 	managers.network:session():on_join_request_reply(reply_id, my_peer_id, my_character, level_index, difficulty_index, one_down, state, server_character, user_id, mission, job_id_index, job_stage, alternative_job_stage, interupt_job_stage_level_index, xuid, sender)
 end
 
-function ConnectionNetworkHandler:peer_handshake(name, peer_id, peer_user_id, peer_account_type_str, peer_account_id, in_lobby, loading, synched, character, slot, mask_set, xuid, xnaddr)
-	print(" 1 ConnectionNetworkHandler:peer_handshake", name, peer_id, peer_user_id, peer_account_type_str, peer_account_id, in_lobby, loading, synched, character, slot, mask_set, xuid, xnaddr)
+function ConnectionNetworkHandler:peer_handshake(name, peer_id, peer_user_id, peer_account_type_str, peer_account_id, in_lobby, loading, synched, character, slot, xuid, xnaddr)
+	print(" 1 ConnectionNetworkHandler:peer_handshake", name, peer_id, peer_user_id, peer_account_type_str, peer_account_id, in_lobby, loading, synched, character, slot, xuid, xnaddr)
 
 	if not self._verify_in_client_session() then
 		return
 	end
 
 	print(" 2 ConnectionNetworkHandler:peer_handshake")
-	managers.network:session():peer_handshake(name, peer_id, peer_user_id, peer_account_type_str, peer_account_id, in_lobby, loading, synched, character, slot, mask_set, xuid, xnaddr)
+	managers.network:session():peer_handshake(name, peer_id, peer_user_id, peer_account_type_str, peer_account_id, in_lobby, loading, synched, character, slot, xuid, xnaddr)
 end
 
 function ConnectionNetworkHandler:peer_exchange_info(peer_id, sender)

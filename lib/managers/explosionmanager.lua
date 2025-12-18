@@ -509,18 +509,12 @@ function ExplosionManager:_damage_characters(detect_results, params, variant, da
 	end
 
 	local dir, len, type, count_table, hit_body = nil
-	local characters_hit_list = {}
-	local characters_key_list = {}
-
-	for key, unit in pairs(detect_results.characters_hit) do
-		table.insert(characters_hit_list, unit)
-		table.insert(characters_key_list, key)
-	end
+	local characters_hit_list = table.map_values(detect_results.characters_hit)
 
 	ExplosionManager.sort_units_target_prio(characters_hit_list)
 
 	for i, unit in ipairs(characters_hit_list) do
-		local key = characters_key_list[i]
+		local key = unit:key()
 		hit_body = get_first_body_hit(detect_results.bodies_hit[key])
 		dir = hit_body and hit_body:center_of_mass() or alive(unit) and unit:position()
 		len = mvector3.direction(dir, hit_pos, dir)
@@ -754,8 +748,8 @@ end
 
 function ExplosionManager.sort_units_target_prio(units)
 	table.sort(units, function (unit_a, unit_b)
-		local base_a_ext = unit_a:base()
-		local base_b_ext = unit_b:base()
+		local base_a_ext = alive(unit_a) and unit_a:base()
+		local base_b_ext = alive(unit_b) and unit_b:base()
 
 		if base_a_ext and base_b_ext then
 			local char_a_tweak = base_a_ext._char_tweak or nil

@@ -5001,26 +5001,27 @@ function GuiTweakData:init(tweak_data)
 		print("Generating new spawn points for crimenet")
 	end
 
-	local wts = {}
-	local dlc_1_folder = "units/pd2_dlc1/weapons/wpn_effects_textures/"
-	local butch_folder = "units/pd2_dlc_butcher_mods/weapons/wpn_effects_textures/"
-	wts.color_indexes = {
-		{
-			color = "red"
-		},
-		{
-			color = "blue",
-			dlc = "gage_pack_jobs"
-		},
-		{
-			color = "green",
-			dlc = "gage_pack_jobs"
-		},
-		{
-			color = "yellow",
-			dlc = "gage_pack_jobs"
+	local wts = {
+		color_indexes = {
+			{
+				color = "red"
+			},
+			{
+				color = "blue",
+				dlc = "gage_pack_jobs"
+			},
+			{
+				color = "green",
+				dlc = "gage_pack_jobs"
+			},
+			{
+				color = "yellow",
+				dlc = "gage_pack_jobs"
+			}
 		}
 	}
+	local dlc_1_folder = "units/pd2_dlc1/weapons/wpn_effects_textures/"
+	local butch_folder = "units/pd2_dlc_butcher_mods/weapons/wpn_effects_textures/"
 	wts.types = {
 		sight = {
 			{
@@ -5213,6 +5214,18 @@ function GuiTweakData:init(tweak_data)
 		limit = 5
 	}
 
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_xm25_01",
+		texture_path = "guis/dlcs/xm25/textures/pd2/new_heists/xm25_01",
+		epic_url = "https://pd2.link/XM25Merch",
+		url = "https://pd2.link/XM25Merch"
+	})
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_xm25_02",
+		texture_path = "guis/dlcs/xm25/textures/pd2/new_heists/xm25_02",
+		epic_url = "https://pd2.link/XM25TeddyMoo",
+		url = "https://pd2.link/XM25TeddyMoo"
+	})
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_pda10_04",
 		texture_path = "guis/dlcs/pda10/textures/pd2/new_heists/pda10_04",

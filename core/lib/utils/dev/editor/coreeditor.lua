@@ -788,8 +788,7 @@ function CoreEditor:pickup_tool()
 		Global.application_window:connect("EVT_SIZE", callback(self, self, "appwin_size_event"))
 
 		self._resizing_appwin = true
-		self._move_transform_type_in = MoveTransformTypeIn:new()
-		self._rotate_transform_type_in = RotateTransformTypeIn:new()
+		self._unit_transform = UnitTransformDialog:new()
 		self._camera_transform_type_in = CameraTransformTypeIn:new()
 
 		self:load_layout()
@@ -1452,12 +1451,8 @@ function CoreEditor:on_selected_unit(unit)
 end
 
 function CoreEditor:on_reference_unit(unit)
-	if self._move_transform_type_in then
-		self._move_transform_type_in:set_unit(unit)
-	end
-
-	if self._rotate_transform_type_in then
-		self._rotate_transform_type_in:set_unit(unit)
+	if self._unit_transform then
+		self._unit_transform:set_unit(unit)
 	end
 end
 
@@ -2654,8 +2649,7 @@ function CoreEditor:update(time, rel_time)
 				Application:draw_cylinder(from, to, 50, 1, 1, 1)
 			end
 
-			self._move_transform_type_in:update(time, rel_time)
-			self._rotate_transform_type_in:update(time, rel_time)
+			self._unit_transform:update(time, rel_time)
 			self._camera_transform_type_in:update(time, rel_time)
 
 			if self._mission_graph then

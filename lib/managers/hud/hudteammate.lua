@@ -1644,8 +1644,8 @@ function HUDTeammate:set_ammo_amount_by_type(type, max_clip, current_clip, curre
 end
 
 function HUDTeammate:set_health(data)
+	local prev_data = self._health_data
 	self._health_data = data
-	local teammate_panel = self._panel:child("player")
 	local radial_health_panel = self._radial_health_panel
 	local radial_health = radial_health_panel:child("radial_health")
 	local radial_rip = radial_health_panel:child("radial_rip")
@@ -1670,7 +1670,7 @@ function HUDTeammate:set_health(data)
 
 	radial_health:stop()
 
-	if red < radial_health:color().red then
+	if data.current < prev_data.current then
 		self:_damage_taken()
 		radial_health:set_color(Color(1, red, 1, 1))
 

@@ -44,14 +44,14 @@ function CivilianLogicSurrender.enter(data, new_logic_name, enter_params)
 	my_data.submission_max = math.lerp(submission_max[1], submission_max[2], math.random())
 	my_data.scare_meter = 0
 	my_data.submission_meter = 0
-	my_data.last_upd_t = data.t
 	my_data.nr_random_screams = 0
+	my_data.last_upd_t = data.t
 	data.run_away_next_chk_t = nil
 
 	data.unit:brain():set_update_enabled_state(false)
 	data.unit:movement():set_allow_fire(false)
 
-	if not data.is_tied then
+	if not my_data.surrender_clbk_registered then
 		managers.groupai:state():add_to_surrendered(data.unit, callback(CivilianLogicSurrender, CivilianLogicSurrender, "queued_update", data))
 
 		my_data.surrender_clbk_registered = true
@@ -64,14 +64,11 @@ function CivilianLogicSurrender.enter(data, new_logic_name, enter_params)
 		return
 	end
 
-	local attention_settings = nil
-	attention_settings = {
+	data.unit:brain():set_attention_settings({
 		"civ_enemy_cbt",
 		"civ_civ_cbt",
 		"civ_murderer_cbt"
-	}
-
-	data.unit:brain():set_attention_settings(attention_settings)
+	})
 
 	if not data.been_outlined and data.char_tweak.outline_on_discover then
 		my_data.outline_detection_task_key = "CivilianLogicIdle._upd_outline_detection" .. tostring(data.key)
@@ -95,26 +92,21 @@ function CivilianLogicSurrender.enter(data, new_logic_name, enter_params)
 		local anim_data = data.unit:anim_data()
 
 		if not anim_data.drop then
-			local action_data = nil
-
 			if not anim_data.panic then
-				action_data = {
+				data.unit:brain():action_request({
 					clamp_to_graph = true,
 					variant = "panic",
 					body_part = 1,
 					type = "act"
-				}
-
-				data.unit:brain():action_request(action_data)
+				})
 			end
 
-			action_data = {
+			local action_res = data.unit:brain():action_request({
 				clamp_to_graph = true,
 				variant = "drop",
 				body_part = 1,
 				type = "act"
-			}
-			local action_res = data.unit:brain():action_request(action_data)
+			})
 		end
 	end
 end
@@ -170,13 +162,11 @@ function CivilianLogicSurrender.queued_update(rubbish, data)
 
 	if my_data.submission_meter == 0 and not data.is_tied and (not data.unit:anim_data().react_enter or not not data.unit:anim_data().idle) then
 		if data.unit:anim_data().drop then
-			local new_action = {
+			data.unit:brain():action_request({
 				variant = "stand",
 				body_part = 1,
 				type = "act"
-			}
-
-			data.unit:brain():action_request(new_action)
+			})
 		end
 
 		my_data.surrender_clbk_registered = false

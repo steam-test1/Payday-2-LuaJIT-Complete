@@ -241,7 +241,7 @@ function HostStateInGame:on_join_auth_received(data, auth_ticket, sender)
 end
 
 function HostStateInGame:on_peer_finished_loading(data, peer)
-	self:_introduce_new_peer_to_old_peers(data, peer, false, peer:name(), peer:character(), "remove", peer:xuid(), peer:xnaddr())
+	self:_introduce_new_peer_to_old_peers(data, peer, false, peer:name(), peer:character(), peer:xuid(), peer:xnaddr())
 	self:_introduce_old_peers_to_new_peer(data, peer)
 
 	if data.game_started then

@@ -1712,7 +1712,7 @@ function WeaponTweakData:_init_data_contender_crew()
 	}
 	self.contender_crew.sounds.prefix = "tcg2_npc"
 	self.contender_crew.use_data.selection_index = SELECTION.SECONDARY
-	self.contender_crew.DAMAGE = 2
+	self.contender_crew.DAMAGE = 8.7
 	self.contender_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
 	self.contender_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
 	self.contender_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
@@ -1733,7 +1733,7 @@ function WeaponTweakData:_init_data_hcar_crew()
 	}
 	self.hcar_crew.sounds.prefix = "hcar_npc"
 	self.hcar_crew.use_data.selection_index = SELECTION.PRIMARY
-	self.hcar_crew.DAMAGE = 8.7
+	self.hcar_crew.DAMAGE = 2
 	self.hcar_crew.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.hcar_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556"
 	self.hcar_crew.CLIP_AMMO_MAX = 30
@@ -5630,16 +5630,17 @@ function WeaponTweakData:_init_data_r700_crew()
 	self.r700_crew.categories = clone(self.r700.categories)
 	self.r700_crew.sounds.prefix = "r700_npc"
 	self.r700_crew.use_data.selection_index = SELECTION.PRIMARY
-	self.r700_crew.DAMAGE = 0.99
+	self.r700_crew.DAMAGE = 18
 	self.r700_crew.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
 	self.r700_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
-	self.r700_crew.CLIP_AMMO_MAX = 200
-	self.r700_crew.NR_CLIPS_MAX = 2
-	self.r700_crew.auto.fire_rate = 0.066
+	self.r700_crew.CLIP_AMMO_MAX = 10
+	self.r700_crew.NR_CLIPS_MAX = 4
+	self.r700_crew.pull_magazine_during_reload = "rifle"
+	self.r700_crew.auto.fire_rate = 1.2
 	self.r700_crew.hold = "rifle"
 	self.r700_crew.alert_size = 5000
 	self.r700_crew.suppression = 1
-	self.r700_crew.FIRE_MODE = "auto"
+	self.r700_crew.FIRE_MODE = "single"
 end
 
 function WeaponTweakData:_init_data_player_weapons(tweak_data)

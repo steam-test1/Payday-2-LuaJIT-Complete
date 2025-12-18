@@ -21,6 +21,13 @@ local material_variables = {
 	pattern_tweak = "pattern_tweak",
 	wear_and_tear = (managers.blackmarket and managers.blackmarket:skin_editor() and managers.blackmarket:skin_editor():active() or Application:production_build()) and "wear_tear_value" or nil
 }
+local IDS_MATERIAL_CONFIG = Idstring("material_config")
+local IDS_MATERIAL = Idstring("material")
+local IDS_TEXTURE = Idstring("texture")
+local IDS_NORMAL = Idstring("normal")
+local IDS_PATTERN_TWEAK = Idstring("pattern_tweak")
+local IDS_UV_SCALE = Idstring("uv_scale")
+local IDS_WEAR_TEAR_VALUE = Idstring("wear_tear_value")
 
 function NewRaycastWeaponBase:change_cosmetics(cosmetics, async_clbk)
 	self:set_cosmetics_data(cosmetics)
@@ -152,15 +159,13 @@ function NewRaycastWeaponBase:_update_materials()
 
 	if is_thq or use_cc_material_config then
 		if not self._materials then
-			local material_config_ids = Idstring("material_config")
-
 			for part_id, part in pairs(self._parts) do
 				local part_data = managers.weapon_factory:get_part_data_by_part_id_from_weapon(part_id, self._factory_id, self._blueprint)
 
 				if part_data and (not self:_third_person() or not part_data.skip_third_thq) then
 					local new_material_config_ids = self:_material_config_name(part_id, part_data, use_cc_material_config)
 
-					if part.unit:material_config() ~= new_material_config_ids and DB:has(material_config_ids, new_material_config_ids) then
+					if part.unit:material_config() ~= new_material_config_ids and DB:has(IDS_MATERIAL_CONFIG, new_material_config_ids) then
 						part.unit:set_material_config(new_material_config_ids, true)
 					end
 				end
@@ -171,27 +176,25 @@ function NewRaycastWeaponBase:_update_materials()
 				self._materials_default = {}
 
 				for part_id, part in pairs(self._parts) do
-					local materials = part.unit:get_objects_by_type(Idstring("material"))
+					local materials = part.unit:get_objects_by_type(IDS_MATERIAL)
 
-					for _, m in ipairs(materials) do
-						if m:variable_exists(Idstring("wear_tear_value")) then
+					for _, material in ipairs(materials) do
+						if material:variable_exists(IDS_WEAR_TEAR_VALUE) then
 							self._materials[part_id] = self._materials[part_id] or {}
-							self._materials[part_id][m:key()] = m
+							self._materials[part_id][material:key()] = material
 						end
 					end
 				end
 			end
 		end
 	elseif self._materials then
-		local material_config_ids = Idstring("material_config")
-
 		for part_id, part in pairs(self._parts) do
 			local part_data = managers.weapon_factory:get_part_data_by_part_id_from_weapon(part_id, self._factory_id, self._blueprint)
 
 			if part_data then
 				local new_material_config_ids = self:is_npc() and part_data.third_material_config or part_data.material_config or Idstring(self:is_npc() and part_data.third_unit or part_data.unit)
 
-				if part.unit:material_config() ~= new_material_config_ids and DB:has(material_config_ids, new_material_config_ids) then
+				if part.unit:material_config() ~= new_material_config_ids and DB:has(IDS_MATERIAL_CONFIG, new_material_config_ids) then
 					part.unit:set_material_config(new_material_config_ids, true)
 				end
 			end
@@ -237,8 +240,8 @@ function NewRaycastWeaponBase:_apply_cosmetics(async_clbk)
 
 	for part_id, materials in pairs(self._materials) do
 		for _, material in pairs(materials) do
-			material:set_variable(Idstring("wear_tear_value"), wear_tear_value)
-			material:set_variable(Idstring("pattern_tweak"), pattern_tweak_value)
+			material:set_variable(IDS_WEAR_TEAR_VALUE, wear_tear_value)
+			material:set_variable(IDS_PATTERN_TWEAK, pattern_tweak_value)
 
 			p_type = managers.weapon_factory:get_type_from_part_id(part_id)
 
@@ -288,7 +291,7 @@ function NewRaycastWeaponBase:_apply_cosmetics(async_clbk)
 	for tex_key, texture_data in pairs(self._textures) do
 		if async_clbk then
 			if not texture_data.ready then
-				if DB:has(Idstring("texture"), texture_data.name) then
+				if DB:has(IDS_TEXTURE, texture_data.name) then
 					TextureCache:request(texture_data.name, "normal", texture_load_result_clbk, 90)
 				else
 					Application:error("[NewRaycastWeaponBase:_apply_cosmetics] Weapon cosmetics tried to use no-existing texture!", "texture", texture_data.name)
@@ -357,7 +360,7 @@ function NewRaycastWeaponBase:_set_material_textures()
 						value = Idstring(value)
 					end
 
-					Application:set_material_texture(material, Idstring(material_texture), value, Idstring("normal"))
+					Application:set_material_texture(material, Idstring(material_texture), value, IDS_NORMAL)
 				end
 			end
 		end
@@ -392,11 +395,10 @@ function NewRaycastWeaponBase:spawn_magazine_unit(pos, rot, hide_bullets)
 	rot = rot or Rotation()
 	local is_thq = managers.weapon_factory:use_thq_weapon_parts()
 	local use_cc_material_config = is_thq and self:get_cosmetics_data() and true or false
-	local material_config_ids = Idstring("material_config")
 	local mag_unit = World:spawn_unit(part_data.name, pos, rot)
 	local new_material_config_ids = self:_material_config_name(mag_id, mag_data, use_cc_material_config, true)
 
-	if mag_unit:material_config() ~= new_material_config_ids and DB:has(material_config_ids, new_material_config_ids) then
+	if mag_unit:material_config() ~= new_material_config_ids and DB:has(IDS_MATERIAL_CONFIG, new_material_config_ids) then
 		mag_unit:set_material_config(new_material_config_ids, true)
 	end
 
@@ -418,11 +420,11 @@ function NewRaycastWeaponBase:spawn_magazine_unit(pos, rot, hide_bullets)
 	end
 
 	local materials = {}
-	local unit_materials = mag_unit:get_objects_by_type(Idstring("material")) or {}
+	local unit_materials = mag_unit:get_objects_by_type(IDS_MATERIAL) or {}
 
-	for _, m in ipairs(unit_materials) do
-		if m:variable_exists(Idstring("wear_tear_value")) then
-			table.insert(materials, m)
+	for _, material in ipairs(unit_materials) do
+		if material:variable_exists(IDS_WEAR_TEAR_VALUE) then
+			table.insert(materials, material)
 		end
 	end
 
@@ -433,8 +435,8 @@ function NewRaycastWeaponBase:spawn_magazine_unit(pos, rot, hide_bullets)
 	local uv_scale_value = self._cosmetics_pattern_scale and tweak_data.blackmarket.weapon_color_pattern_scales[self._cosmetics_pattern_scale] and tweak_data.blackmarket.weapon_color_pattern_scales[self._cosmetics_pattern_scale].uv_scale or Vector3(1, 1, 1)
 
 	for _, material in pairs(materials) do
-		material:set_variable(Idstring("wear_tear_value"), wear_tear_value)
-		material:set_variable(Idstring("uv_scale"), uv_scale_value)
+		material:set_variable(IDS_WEAR_TEAR_VALUE, wear_tear_value)
+		material:set_variable(IDS_UV_SCALE, uv_scale_value)
 
 		p_type = managers.weapon_factory:get_type_from_part_id(mag_id)
 
@@ -454,7 +456,7 @@ function NewRaycastWeaponBase:spawn_magazine_unit(pos, rot, hide_bullets)
 					value = Idstring(value)
 				end
 
-				Application:set_material_texture(material, Idstring(material_texture), value, Idstring("normal"))
+				Application:set_material_texture(material, Idstring(material_texture), value, IDS_NORMAL)
 			end
 		end
 	end
@@ -535,9 +537,10 @@ function NewRaycastWeaponBase:drop_magazine_object()
 			mvec3_set(tmp_vec2, dropped_mag:position())
 			mvec3_add(tmp_vec2, tmp_vec1)
 
-			local dropped_col = World:spawn_unit(NewRaycastWeaponBase.magazine_collisions[mag_size][1], tmp_vec2, part_data.unit:rotation())
+			local mag_collision_data = NewRaycastWeaponBase.magazine_collisions[mag_size]
+			local dropped_col = World:spawn_unit(mag_collision_data[1], tmp_vec2, part_data.unit:rotation())
 
-			dropped_col:link(NewRaycastWeaponBase.magazine_collisions[mag_size][2], dropped_mag)
+			dropped_col:link(mag_collision_data[2], dropped_mag)
 			mvec3_set(tmp_vec3, -rot:z())
 			mvec3_mul(tmp_vec3, 100)
 			dropped_col:push(20, tmp_vec3)

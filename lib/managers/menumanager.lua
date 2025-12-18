@@ -334,6 +334,8 @@ function MenuManager:open_menu(menu_name, position, ...)
 end
 
 function MenuManager:open_node(node_name, parameter_list)
+	print("[MenuManager:open_node] Opening", node_name, parameter_list and inspect(parameter_list))
+
 	local active_menu = self._open_menus[#self._open_menus]
 
 	if active_menu then

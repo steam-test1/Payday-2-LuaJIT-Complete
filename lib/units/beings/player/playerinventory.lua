@@ -504,20 +504,21 @@ function PlayerInventory:equip_selection(selection_index, instant)
 end
 
 function PlayerInventory:_send_equipped_weapon()
-	local eq_weap_name = self:equipped_unit():base()._factory_id or self:equipped_unit():name()
-	local index = self._get_weapon_sync_index(eq_weap_name)
+	local equipped_unit_base = self:equipped_unit():base()
+	local equipped_unit_name = equipped_unit_base._factory_id or self:equipped_unit():name()
+	local item_index = self._get_weapon_sync_index(equipped_unit_name)
 
-	if not index then
-		debug_pause("[PlayerInventory:_send_equipped_weapon] cannot sync weapon", eq_weap_name, self._unit)
+	if not item_index then
+		debug_pause("[PlayerInventory:_send_equipped_weapon] cannot sync weapon", equipped_unit_name, self._unit)
 
 		return
 	end
 
-	local blueprint_string = self:equipped_unit():base()._blueprint and self:equipped_unit():base().blueprint_to_string and self:equipped_unit():base():blueprint_to_string() or ""
-	local cosmetics_data = self:equipped_unit():base().get_cosmetics and self:equipped_unit():base():get_cosmetics()
+	local blueprint_string = equipped_unit_base._blueprint and equipped_unit_base.blueprint_to_string and equipped_unit_base:blueprint_to_string() or ""
+	local cosmetics_data = equipped_unit_base.get_cosmetics and equipped_unit_base:get_cosmetics()
 	local cosmetics_string = managers.blackmarket:outfit_string_from_cosmetics(cosmetics_data)
 
-	self._unit:network():send("set_equipped_weapon", index, blueprint_string, cosmetics_string)
+	self._unit:network():send("set_equipped_weapon", item_index, blueprint_string, cosmetics_string)
 end
 
 function PlayerInventory:unequip_selection(selection_index, instant)

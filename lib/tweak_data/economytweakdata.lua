@@ -393,9 +393,7 @@ function EconomyTweakData:init(tweak_data)
 				"x_1911_baaah",
 				"ksg_baaah"
 			},
-			contents = {
-				"event_bah_legendary"
-			}
+			contents = {}
 		},
 		type = "limited"
 	}

@@ -116,7 +116,12 @@ function ScrollablePanel:init(parent_panel, name, data)
 		layer = layer - 1,
 		h = bar_h
 	})
-	self._scroll_bar_box_class = BoxGuiObject:new(self._scroll_bar, {
+	local scroll_bar_inside_panel = self._scroll_bar:panel({
+		w = 4,
+		name = "scroll_bar_inside_panel",
+		halign = "right"
+	})
+	self._scroll_bar_box_class = BoxGuiObject:new(scroll_bar_inside_panel, {
 		sides = {
 			2,
 			2,
@@ -129,6 +134,7 @@ function ScrollablePanel:init(parent_panel, name, data)
 	self._scroll_bar:set_w(data.scroll_w or 8)
 	self._scroll_bar:set_bottom(scroll_down_indicator_arrow:top())
 	self._scroll_bar:set_center_x(scroll_down_indicator_arrow:center_x())
+	scroll_bar_inside_panel:set_center_x(self._scroll_bar:w() / 2)
 
 	self._bar_minimum_size = data.bar_minimum_size or 5
 	self._thread = self._panel:animate(function (o, self)
@@ -630,7 +636,12 @@ function HorizontalScrollablePanel:init(parent_panel, name, data)
 		layer = layer - 1,
 		w = bar_w
 	})
-	self._scroll_bar_box_class = BoxGuiObject:new(self._scroll_bar, {
+	local scroll_bar_inside_panel = self._scroll_bar:panel({
+		name = "scroll_bar_inside_panel",
+		h = 4,
+		valign = "top"
+	})
+	self._scroll_bar_box_class = BoxGuiObject:new(scroll_bar_inside_panel, {
 		sides = {
 			0,
 			0,
@@ -643,6 +654,7 @@ function HorizontalScrollablePanel:init(parent_panel, name, data)
 	self._scroll_bar:set_h(data.scroll_h or 8)
 	self._scroll_bar:set_right(scroll_right_indicator_arrow:left())
 	self._scroll_bar:set_center_y(scroll_right_indicator_arrow:center_y())
+	scroll_bar_inside_panel:set_center_y(self._scroll_bar:h() / 2)
 
 	self._bar_minimum_size = data.bar_minimum_size or 5
 	self._thread = self._panel:animate(function (o, self)

@@ -156,6 +156,7 @@ function FreeFlight:_setup_actions()
 	local FFA = CoreFreeFlightAction.FreeFlightAction
 	local FFAT = CoreFreeFlightAction.FreeFlightActionToggle
 	local dp = FFA:new("DROP PLAYER", callback(self, self, "_drop_player"))
+	local ri = FFA:new("RAY INSPECT", callback(self, self, "_ray_inspect"))
 	local hp = FFAT:new("HIDE PLAYER", "SHOW PLAYER", callback(self, self, "_hide_player"), callback(self, self, "_show_player"))
 	local au = FFA:new("ATTACH TO UNIT", callback(self, self, "_attach_unit"))
 	local pd = FFA:new("POSITION DEBUG", callback(self, self, "_position_debug"))
@@ -166,6 +167,7 @@ function FreeFlight:_setup_actions()
 	self._actions = {
 		ps,
 		dp,
+		ri,
 		hp,
 		au,
 		pd,
@@ -633,6 +635,18 @@ function FreeFlight:_update_camera(t, dt)
 
 	if not CoreApp.arg_supplied("-vpslave") then
 		self:_set_camera(pos_new, rot_new)
+	end
+end
+
+function FreeFlight:_ray_inspect()
+	local cam = self._camera_object
+	local ray = World:raycast("ray", cam:position(), cam:position() + cam:rotation():y() * 10000)
+
+	if ray then
+		print("ray hit", ray.unit:name():s(), ray.body:name())
+		World:select_unit(ray.unit)
+	else
+		World:select_unit(nil)
 	end
 end
 

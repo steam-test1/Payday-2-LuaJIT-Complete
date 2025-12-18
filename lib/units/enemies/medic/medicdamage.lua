@@ -67,6 +67,10 @@ function MedicDamage:is_available_for_healing(requesting_unit)
 		return false
 	end
 
+	if self._unit:character_damage():tased() then
+		return false
+	end
+
 	if TimerManager:game():time() <= self._heal_cooldown_t then
 		return false
 	end

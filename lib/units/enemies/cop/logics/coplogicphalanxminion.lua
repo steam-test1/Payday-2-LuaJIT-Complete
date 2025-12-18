@@ -166,14 +166,15 @@ function CopLogicPhalanxMinion.chk_should_breakup()
 	local min_count_minions = tweak_data.group_ai.phalanx.minions.min_count
 
 	if phalanx_minion_count > 0 and phalanx_minion_count <= min_count_minions then
-		CopLogicPhalanxMinion.breakup()
+		CopLogicPhalanxMinion.breakup(nil)
 	end
 end
 
 function CopLogicPhalanxMinion.chk_should_reposition()
 	local phalanx_minion_count = managers.groupai:state():get_phalanx_minion_count()
+	local min_count_minions = tweak_data.group_ai.phalanx.minions.min_count
 
-	if phalanx_minion_count > 1 then
+	if min_count_minions < phalanx_minion_count then
 		CopLogicPhalanxMinion._reposition_phalanx(nil)
 	end
 end
@@ -187,13 +188,12 @@ function CopLogicPhalanxMinion.breakup(remote_call)
 		local phalanx_center_pos = groupai._phalanx_center_pos
 		local phalanx_center_nav_seg = managers.navigation:get_nav_seg_from_pos(phalanx_center_pos)
 		local phalanx_area = groupai:get_area_from_nav_seg_id(phalanx_center_nav_seg)
-		local grp_objective = {
+
+		groupai:_set_objective_to_enemy_group(phalanx_spawn_group, {
 			type = "hunt",
 			area = phalanx_area,
 			nav_seg = phalanx_center_nav_seg
-		}
-
-		groupai:_set_objective_to_enemy_group(phalanx_spawn_group, grp_objective)
+		})
 	end
 
 	for unit_key, unit in pairs(phalanx_minions) do
@@ -201,7 +201,6 @@ function CopLogicPhalanxMinion.breakup(remote_call)
 			local brain = unit:brain()
 
 			if brain and brain:objective() then
-				print("[PHALANX] CopLogicPhalanxMinion.breakup current objective type: ", brain:objective().type)
 				brain:set_objective(nil)
 			end
 		end

@@ -1753,7 +1753,7 @@ function CopDamage:damage_fire(attack_data)
 	end
 
 	local result = nil
-	local damage = attack_data.damage
+	local damage = attack_data.damage * (self._char_tweak.damage.fire_damage_mul or 1)
 	local is_civilian = CopDamage.is_civilian(self._unit:base()._tweak_table)
 	local head = self._head_body_name and attack_data.col_ray.body and attack_data.col_ray.body:name() == self._ids_head_body_name
 	local headshot_multiplier = 1
@@ -1779,6 +1779,8 @@ function CopDamage:damage_fire(attack_data)
 				managers.hud:on_hit_confirmed(damage_scale)
 			end
 		end
+
+		headshot_multiplier = managers.player:upgrade_value("weapon", "passive_headshot_damage_multiplier", 1)
 
 		if managers.groupai:state():is_enemy_special(self._unit) then
 			damage = damage * managers.player:upgrade_value("weapon", "special_damage_taken_multiplier", 1)
@@ -2501,6 +2503,8 @@ function CopDamage:damage_tase(attack_data)
 	end
 
 	if result.type == "taser_tased" and (attack_data.forced or not self._unit:anim_data() or not self._unit:anim_data().act) then
+		self.is_tased = true
+
 		if self._tase_effect then
 			World:effect_manager():fade_kill(self._tase_effect)
 		end
@@ -2586,6 +2590,12 @@ function CopDamage:on_tase_ended()
 
 		self._tase_effect = nil
 	end
+
+	self.is_tased = nil
+end
+
+function CopDamage:tased()
+	return self.is_tased or false
 end
 
 function CopDamage:_dismember_condition(attack_data)

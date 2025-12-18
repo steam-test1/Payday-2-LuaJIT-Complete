@@ -912,7 +912,7 @@ function WINDLCManager:init_generated()
 	}
 	Global.dlc_manager.all_dlc_data.tma1 = {
 		app_id = "2076560",
-		epic_id = "abbe65f5f6804324bea8f9cd0740b085",
+		epic_id = "59ea2b8bd95743dc869b70903c6c143a",
 		no_install = true,
 		webpage = "https://pd2.link/TijuanaMusicPackYB"
 	}

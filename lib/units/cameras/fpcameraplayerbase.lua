@@ -2070,7 +2070,7 @@ function FPCameraPlayerBase:smoothstep(a, b, step, n)
 end
 
 function FPCameraPlayerBase:set_visible(visible)
-	self._unit:set_visible(false)
+	self._unit:set_visible(visible)
 
 	if self._unit:spawn_manager() then
 		self._unit:spawn_manager():set_visibility_state(visible)

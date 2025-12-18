@@ -153,6 +153,7 @@ function DLCTweakData:init(tweak_data)
 		"frag",
 		"dynamite"
 	}
+	local lootdrops = {}
 	local all_normal_masks = {
 		"alienware",
 		"babyrhino",
@@ -193,9 +194,8 @@ function DLCTweakData:init(tweak_data)
 		"zipper",
 		"zombie"
 	}
-	local lootdrops = {}
 
-	for i, mask_id in ipairs(all_normal_masks) do
+	for _, mask_id in ipairs(all_normal_masks) do
 		table.insert(lootdrops, {
 			type_items = "masks",
 			amount = 1,
@@ -657,6 +657,7 @@ function DLCTweakData:init(tweak_data)
 	}
 	self.soundtrack.content.loot_drops = {}
 	self.poetry_soundtrack = {
+		free = true,
 		dlc = "has_soundtrack_or_cce",
 		content = {}
 	}
@@ -1005,22 +1006,18 @@ function DLCTweakData:init(tweak_data)
 		"scar",
 		"p226"
 	}
-
-	if SystemInfo:distribution() == Idstring("STEAM") then
-		self.gage_pack_shotgun_free = {
-			free = true,
-			content = {}
+	self.gage_pack_shotgun_free = {
+		free = true,
+		content = {}
+	}
+	self.gage_pack_shotgun_free.content.loot_global_value = "normal"
+	self.gage_pack_shotgun_free.content.loot_drops = {
+		{
+			type_items = "weapon_mods",
+			item_entry = "wpn_fps_upg_a_custom_free",
+			amount = 2
 		}
-		self.gage_pack_shotgun_free.content.loot_global_value = "normal"
-		self.gage_pack_shotgun_free.content.loot_drops = {
-			{
-				type_items = "weapon_mods",
-				item_entry = "wpn_fps_upg_a_custom_free",
-				amount = 2
-			}
-		}
-	end
-
+	}
 	self.gage_pack_shotgun = {
 		content = {}
 	}
@@ -2082,8 +2079,8 @@ function DLCTweakData:init(tweak_data)
 		}
 	}
 	self.charliesierra = {
-		content = {},
-		free = true
+		free = true,
+		content = {}
 	}
 	self.charliesierra.content.loot_global_value = "normal"
 	self.charliesierra.content.loot_drops = {
@@ -2094,8 +2091,10 @@ function DLCTweakData:init(tweak_data)
 		}
 	}
 	self.xmas_soundtrack = {
+		free = true,
 		content = {}
 	}
+	self.xmas_soundtrack.content.loot_global_value = "xmas_soundtrack"
 	self.xmas_soundtrack.content.loot_drops = {
 		{
 			{
@@ -2149,8 +2148,8 @@ function DLCTweakData:init(tweak_data)
 		}
 	}
 	self.twitch_pack2 = {
-		content = {},
-		dlc = "has_twitch_pack"
+		dlc = "has_twitch_pack",
+		content = {}
 	}
 	self.twitch_pack2.content.loot_global_value = "twitch_pack"
 	self.twitch_pack2.content.loot_drops = {
@@ -2727,32 +2726,29 @@ function DLCTweakData:init(tweak_data)
 	self.gage_pack_historical.content.upgrades = {
 		"swagger"
 	}
-
-	if SystemInfo:distribution() == Idstring("STEAM") then
-		self.alienware_alpha = {
-			content = {}
+	self.alienware_alpha = {
+		dlc = "alienware_alpha",
+		content = {}
+	}
+	self.alienware_alpha.content.loot_drops = {
+		{
+			type_items = "masks",
+			item_entry = "area51",
+			amount = 1
+		},
+		{
+			type_items = "masks",
+			item_entry = "alien_helmet",
+			amount = 1
 		}
-		self.alienware_alpha.content.loot_drops = {
-			{
-				type_items = "masks",
-				item_entry = "area51",
-				amount = 1
-			},
-			{
-				type_items = "masks",
-				item_entry = "alien_helmet",
-				amount = 1
-			}
-		}
-		self.alienware_alpha_promo = {
-			content = {}
-		}
-		self.alienware_alpha_promo.content.loot_drops = {}
-		self.alienware_alpha_promo.content.upgrades = {
-			"alien_maul"
-		}
-	end
-
+	}
+	self.alienware_alpha_promo = {
+		content = {}
+	}
+	self.alienware_alpha_promo.content.loot_drops = {}
+	self.alienware_alpha_promo.content.upgrades = {
+		"alien_maul"
+	}
 	self.goty_weapon_bundle_2014 = {
 		dlc = "has_goty_weapon_bundle_2014",
 		content = {}

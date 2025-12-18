@@ -364,8 +364,8 @@ function ClientNetworkSession:load_lobby(...)
 	self:_load_lobby(...)
 end
 
-function ClientNetworkSession:peer_handshake(name, peer_id, peer_user_id, peer_account_type_str, peer_account_id, in_lobby, loading, synched, character, mask_set, xuid, xnaddr)
-	print("ClientNetworkSession:peer_handshake", name, peer_id, peer_user_id, peer_account_type_str, peer_account_id, in_lobby, loading, synched, character, mask_set, xuid, xnaddr)
+function ClientNetworkSession:peer_handshake(name, peer_id, peer_user_id, peer_account_type_str, peer_account_id, in_lobby, loading, synched, character, xuid, xnaddr)
+	print("ClientNetworkSession:peer_handshake", name, peer_id, peer_user_id, peer_account_type_str, peer_account_id, in_lobby, loading, synched, character, xuid, xnaddr)
 
 	if self._peers[peer_id] then
 		print("ALREADY HAD PEER returns here")

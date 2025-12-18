@@ -350,7 +350,8 @@ function PlayerTweakData:init()
 		start_t = 3.5,
 		interval_t = 1,
 		sense_radius = 1000,
-		target_resense_t = 15
+		target_resense_t = 15,
+		sense_exit_sq = 4900
 	}
 
 	self:_init_parachute()

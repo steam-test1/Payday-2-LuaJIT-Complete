@@ -11461,12 +11461,12 @@ function HudIconsTweakData:init()
 		}
 	}
 	self.sidebar_lobby_search = {
-		texture = "guis/dlcs/shub/textures/search_icon",
+		texture = "guis/dlcs/shub/textures/crimenet_sidebar_lobby_search",
 		texture_rect = {
 			0,
 			0,
-			128,
-			128
+			64,
+			64
 		}
 	}
 	self.C_Locke_H_AlsDeal_AllDiffs_D0 = {

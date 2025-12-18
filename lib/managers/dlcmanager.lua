@@ -730,8 +730,10 @@ function GenericDLCManager:has_dbd_clan()
 end
 
 function GenericDLCManager:has_dbd_deluxe()
-	local verified = Global.dlc_manager.all_dlc_data.dbd_deluxe and Global.dlc_manager.all_dlc_data.dbd_deluxe.verified
-	verified = verified or Global.dlc_manager.all_dlc_data.dbd_regular and Global.dlc_manager.all_dlc_data.dbd_regular.verified
+	local dbd_deluxe_data = Global.dlc_manager.all_dlc_data.dbd_deluxe
+	local dbd_regular_data = Global.dlc_manager.all_dlc_data.dbd_regular
+	local verified = dbd_deluxe_data and dbd_deluxe_data.verified
+	verified = verified or dbd_regular_data and dbd_regular_data.verified
 
 	return verified
 end
@@ -938,10 +940,25 @@ end
 
 function GenericDLCManager:has_freed_old_hoxton(data)
 	if SystemInfo:platform() == Idstring("WIN32") then
-		return self:is_dlc_unlocked("pd2_clan") and self:has_achievement(data)
+		if self:is_dlc_unlocked("pd2_clan") then
+			if self:has_achievement(data) then
+				return true
+			else
+				local stats_sessions = managers.statistics._global.sessions
+				local stats_hox_2 = stats_sessions.hox_2
+
+				if stats_hox_2 and stats_hox_2.completed and stats_hox_2.completed > 0 then
+					Application:warn("[GenericDLCManager:has_freed_old_hoxton] Tripped the double check", inspect(data))
+
+					return true
+				end
+			end
+		end
+	else
+		return true
 	end
 
-	return true
+	return false
 end
 
 function GenericDLCManager:has_armored_transport_and_intel(data)

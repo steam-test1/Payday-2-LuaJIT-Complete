@@ -1299,8 +1299,9 @@ function HUDAssaultCorner:_animate_wave_completed(panel, assault_hud)
 end
 
 function HUDAssaultCorner:get_completed_waves_string()
+	local current_wave = managers.network:session() and managers.network:session():is_host() and managers.groupai:state():get_assault_number()
 	local macro = {
-		current = managers.network:session():is_host() and managers.groupai:state():get_assault_number() or self._wave_number,
+		current = current_wave or self._wave_number,
 		max = self._max_waves or 0
 	}
 
@@ -1308,16 +1309,18 @@ function HUDAssaultCorner:get_completed_waves_string()
 end
 
 function HUDAssaultCorner:wave_popup_string_start()
+	local current_wave = managers.network:session() and managers.network:session():is_host() and managers.groupai:state():get_assault_number()
 	local macro = {
-		current = managers.network:session():is_host() and managers.groupai:state():get_assault_number() or self._wave_number
+		current = current_wave or self._wave_number
 	}
 
 	return managers.localization:to_upper_text("hud_skirmish_wave_start", macro)
 end
 
 function HUDAssaultCorner:wave_popup_string_end()
+	local current_wave = managers.network:session() and managers.network:session():is_host() and managers.groupai:state():get_assault_number()
 	local macro = {
-		current = managers.network:session():is_host() and managers.groupai:state():get_assault_number() or self._wave_number
+		current = current_wave or self._wave_number
 	}
 
 	return managers.localization:to_upper_text("hud_skirmish_wave_end", macro)

@@ -9,6 +9,7 @@ function LootBagUnitElement:init(unit)
 	self._hed.push_multiplier = 0
 	self._hed.carry_id = "none"
 	self._hed.from_respawn = false
+	self._hed.zipline_unit_id = nil
 end
 
 function LootBagUnitElement:save(list)
@@ -19,6 +20,25 @@ function LootBagUnitElement:save(list)
 
 	list.carry_id = self._hed.carry_id
 	list.from_respawn = self._hed.from_respawn
+	list.zipline_unit_id = self._hed.zipline_unit_id
+end
+
+function LootBagUnitElement:layer_finished()
+	MissionElement.layer_finished(self)
+
+	if self._hed.zipline_unit_id then
+		local unit = managers.worlddefinition:get_unit_on_load(self._hed.zipline_unit_id, callback(self, self, "load_unit"))
+
+		if alive(unit) and unit:zipline() and unit:zipline():is_usage_type_bag() then
+			self._zipline_unit = unit
+		end
+	end
+end
+
+function LootBagUnitElement:load_unit(unit)
+	if alive(unit) and unit:zipline() and unit:zipline():is_usage_type_bag() then
+		self._zipline_unit = unit
+	end
 end
 
 function LootBagUnitElement:test_element()
@@ -35,9 +55,14 @@ function LootBagUnitElement:test_element()
 
 	table.insert(self._test_units, unit)
 
-	local push_value = self._hed.push_multiplier and self._hed.spawn_dir * self._hed.push_multiplier or 0
+	if alive(self._zipline_unit) then
+		unit:carry_data():set_carry_id(self._hed.carry_id)
+		self._zipline_unit:zipline():attach_bag(unit)
+	else
+		local push_value = self._hed.push_multiplier and self._hed.spawn_dir * self._hed.push_multiplier or 0
 
-	unit:push(100, 600 * push_value * throw_distance_multiplier)
+		unit:push(100, 600 * push_value * throw_distance_multiplier)
+	end
 end
 
 function LootBagUnitElement:stop_test_element()
@@ -52,6 +77,22 @@ end
 
 function LootBagUnitElement:update_selected(time, rel_time)
 	Application:draw_arrow(self._unit:position(), self._unit:position() + self._hed.spawn_dir * 50, 0.75, 0.75, 0.75, 0.1)
+
+	if alive(self._zipline_unit) then
+		local params = {
+			g = 0.5,
+			b = 0,
+			r = 0,
+			from_unit = self._unit,
+			to_unit = self._zipline_unit
+		}
+
+		self:_draw_link(params)
+		Application:draw(self._zipline_unit, 0, 0.5, 0)
+	else
+		self._zipline_unit = nil
+		self._hed.zipline_unit_id = nil
+	end
 end
 
 function LootBagUnitElement:update_editing(time, rel_time)
@@ -85,6 +126,38 @@ function LootBagUnitElement:update_editing(time, rel_time)
 	if ray and ray.unit then
 		Application:draw_sphere(ray.position, 25, 1, 0, 0)
 	end
+end
+
+function LootBagUnitElement:select_unit()
+	local ray = managers.editor:unit_by_raycast({
+		ray_type = "body editor",
+		sample = true,
+		mask = managers.slot:get_mask("all")
+	})
+
+	if ray and ray.unit and ray.unit:zipline() and ray.unit:zipline():is_usage_type_bag() then
+		local unit = ray.unit
+
+		if self._zipline_unit == unit then
+			self:_remove_unit(unit)
+		else
+			self:_add_unit(unit)
+		end
+	end
+end
+
+function LootBagUnitElement:_add_unit(unit)
+	self._zipline_unit = unit
+	self._hed.zipline_unit_id = unit:unit_data().unit_id
+end
+
+function LootBagUnitElement:_remove_unit(unit)
+	self._zipline_unit = nil
+	self._hed.zipline_unit_id = nil
+end
+
+function LootBagUnitElement:add_triggers(vc)
+	vc:add_trigger(Idstring("lmb"), callback(self, self, "select_unit"))
 end
 
 function LootBagUnitElement:_build_panel(panel, panel_sizer)

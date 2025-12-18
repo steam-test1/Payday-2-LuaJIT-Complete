@@ -329,12 +329,9 @@ function CivilianLogicIdle.on_new_objective(data, old_objective, params)
 	end
 
 	if new_objective and new_objective.stance then
-		if new_objective.stance == "ntl" then
-			data.unit:movement():set_cool(true)
-		else
-			data.unit:movement():set_cool(false)
-		end
+		local stance_cool = new_objective.stance == "ntl"
 
+		data.unit:movement():set_cool(stance_cool)
 		data.unit:movement():set_stance(new_objective.stance)
 	end
 

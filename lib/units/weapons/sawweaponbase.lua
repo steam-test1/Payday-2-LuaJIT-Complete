@@ -69,7 +69,9 @@ function SawWeaponBase:setup(setup_data)
 	SawWeaponBase.super.setup(self, setup_data)
 
 	self._no_hit_alert_size = self._alert_size
-	self._hit_alert_size = tweak_data.weapon.stats.alert_size[math.clamp(self:check_stats().alert_size - (self:weapon_tweak_data().hit_alert_size_increase or 0), 1, #tweak_data.weapon.stats.alert_size)]
+	local hit_alert_size_increase = self:weapon_tweak_data().hit_alert_size_increase or 0
+	local alert_size_index = math.clamp(self:check_stats().alert_size - hit_alert_size_increase, 1, #tweak_data.weapon.stats.alert_size)
+	self._hit_alert_size = tweak_data.weapon.stats.alert_size[alert_size_index]
 end
 
 function SawWeaponBase:fire(from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul, target_unit)
@@ -86,11 +88,7 @@ function SawWeaponBase:fire(from_pos, direction, dmg_mul, shoot_player, spread_m
 		local ammo_usage = 5
 
 		if ray_res.hit_enemy then
-			if managers.player:has_category_upgrade("saw", "enemy_slicer") then
-				ammo_usage = managers.player:upgrade_value("saw", "enemy_slicer", 10)
-			else
-				ammo_usage = 15
-			end
+			ammo_usage = managers.player:upgrade_value("saw", "enemy_slicer", 5)
 		end
 
 		ammo_usage = ammo_usage + math.ceil(math.random() * 10)
@@ -243,12 +241,14 @@ function SawHit:on_collision(col_ray, weapon_unit, user_unit, damage)
 	local result = InstantBulletBase.on_collision(self, col_ray, weapon_unit, user_unit, damage)
 
 	if hit_unit:damage() and col_ray.body:extension() and col_ray.body:extension().damage then
-		damage = math.clamp(damage * managers.player:upgrade_value("saw", "lock_damage_multiplier", 1) * 4, 0, 200)
+		local lock_damage = damage
+		lock_damage = damage * managers.player:upgrade_value("saw", "lock_damage_multiplier", 1) * 4
+		lock_damage = math.clamp(lock_damage, 0, 200)
 
-		col_ray.body:extension().damage:damage_lock(user_unit, col_ray.normal, col_ray.position, col_ray.direction, damage)
+		col_ray.body:extension().damage:damage_lock(user_unit, col_ray.normal, col_ray.position, col_ray.direction, lock_damage)
 
 		if hit_unit:id() ~= -1 then
-			managers.network:session():send_to_peers_synched("sync_body_damage_lock", col_ray.body, damage)
+			managers.network:session():send_to_peers_synched("sync_body_damage_lock", col_ray.body, lock_damage)
 		end
 	end
 

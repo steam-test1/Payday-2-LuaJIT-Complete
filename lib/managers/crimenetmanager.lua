@@ -1270,8 +1270,12 @@ function CrimeNetManager:join_quick_play_game()
 				skip_level = true
 			end
 
-			if not skip_level and difficulty and difficulty ~= tweak_data:index_to_difficulty(attributes_numbers[2]) then
-				skip_level = true
+			if not skip_level and difficulty then
+				local server_difficulty = tweak_data:index_to_difficulty(attributes_numbers[2])
+
+				if not server_difficulty or difficulty ~= server_difficulty then
+					skip_level = true
+				end
 			end
 
 			if not skip_level and managers.ban_list:banned(room.owner_id) then

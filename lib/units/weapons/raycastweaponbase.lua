@@ -1437,10 +1437,6 @@ function RaycastWeaponBase:_get_tweak_data_weapon_animation(anim)
 end
 
 function RaycastWeaponBase:_get_anim_start_offset(anim)
-	if anim == "reload" and self:ammo_base():get_ammo_remaining_in_clip() <= (self.AKIMBO and 1 or 0) and self:weapon_tweak_data().animations.magazine_empty then
-		return 0.033
-	end
-
 	return false
 end
 
