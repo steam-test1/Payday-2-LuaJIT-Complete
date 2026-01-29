@@ -3863,18 +3863,21 @@ function MenuComponentManager:create_weapon_mod_icon_list(weapon, category, fact
 		local mods = {}
 		local mods_sorted = {}
 		local types = {}
+		local customize_locked_parts = crafted and crafted.customize_locked or {}
 
-		if not crafted or not crafted.customize_locked then
+		if type(customize_locked_parts) == "table" or not customize_locked_parts then
 			for id, data in pairs(mods_all) do
-				mods[id] = mods[id] or {}
+				if not customize_locked_parts[id] then
+					mods[id] = mods[id] or {}
 
-				for _, mod in ipairs(data) do
-					table.insert(mods[id], clone(mod))
+					for _, mod in ipairs(data) do
+						table.insert(mods[id], clone(mod))
+					end
+
+					table.insert(mods_sorted, id)
+
+					types[id] = true
 				end
-
-				table.insert(mods_sorted, id)
-
-				types[id] = true
 			end
 		end
 

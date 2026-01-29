@@ -389,7 +389,8 @@ function NarrativeTweakData:init(tweak_data)
 		description_id = "heist_contact_hoxton_description",
 		package = "packages/contact_hoxton",
 		assets_gui = Idstring("guis/mission_briefing/preload_contact_hoxton"),
-		hidden = true
+		hidden = true,
+		ignore_heat = true
 	}
 	self.contacts.the_continental = {
 		name_id = "heist_contact_continental",

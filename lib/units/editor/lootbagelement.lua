@@ -29,14 +29,14 @@ function LootBagUnitElement:layer_finished()
 	if self._hed.zipline_unit_id then
 		local unit = managers.worlddefinition:get_unit_on_load(self._hed.zipline_unit_id, callback(self, self, "load_unit"))
 
-		if alive(unit) and unit:zipline() and unit:zipline():is_usage_type_bag() then
+		if alive(unit) and unit:zipline() and (unit:zipline():is_usage_type_bag() or ray.unit:zipline():is_usage_type_both()) then
 			self._zipline_unit = unit
 		end
 	end
 end
 
 function LootBagUnitElement:load_unit(unit)
-	if alive(unit) and unit:zipline() and unit:zipline():is_usage_type_bag() then
+	if alive(unit) and unit:zipline() and (unit:zipline():is_usage_type_bag() or ray.unit:zipline():is_usage_type_both()) then
 		self._zipline_unit = unit
 	end
 end
@@ -135,7 +135,7 @@ function LootBagUnitElement:select_unit()
 		mask = managers.slot:get_mask("all")
 	})
 
-	if ray and ray.unit and ray.unit:zipline() and ray.unit:zipline():is_usage_type_bag() then
+	if ray and ray.unit and ray.unit:zipline() and (ray.unit:zipline():is_usage_type_bag() or ray.unit:zipline():is_usage_type_both()) then
 		local unit = ray.unit
 
 		if self._zipline_unit == unit then

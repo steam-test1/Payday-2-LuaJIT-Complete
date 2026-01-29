@@ -369,6 +369,7 @@ function Telemetry:update(t, dt)
 	end
 
 	if self._global._logged_in and send_period < self._dt then
+		self:send_on_player_heartbeat()
 		self:send_telemetry(self._global._telemetries_to_send_arr)
 		clear_table(self._global._telemetries_to_send_arr)
 
@@ -914,6 +915,7 @@ function Telemetry:send_on_player_heartbeat()
 		infamyLevel = managers.experience:current_rank()
 	}
 
+	cat_print("telemetry", "heartbeat *budump* " .. inspect(telemetry_payload))
 	self:send("player_heartbeat", telemetry_payload)
 end
 

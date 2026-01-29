@@ -685,7 +685,7 @@ function CarryData:set_carry_id(carry_id, is_init)
 
 	if carry_id then
 		self._value = managers.money:get_bag_value(self._carry_id, self._multiplier)
-		local carry_tweak = carry_tweaks[self._carry_id]
+		local carry_tweak = carry_tweaks[self._carry_id] or carry_tweaks.money
 		local carry_type_tweak = carry_tweaks.types[carry_tweak.type]
 
 		if Network:is_server() then

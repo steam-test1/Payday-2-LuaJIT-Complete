@@ -149,9 +149,9 @@ function CivilianBrain:on_hostage_move_interaction(instigator_unit, command)
 		self._unit:movement():set_stance("cbt", nil, true)
 		self:set_objective({
 			interrupt_health = 0,
-			distance = 30625,
+			distance = 175,
 			type = "follow",
-			lose_track_dis = 4000000,
+			lose_track_dis = 2000,
 			stance = "cbt",
 			interrupt_dis = 0,
 			follow_unit = instigator_unit,

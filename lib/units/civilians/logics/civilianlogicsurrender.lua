@@ -488,10 +488,10 @@ function CivilianLogicSurrender.on_alert(data, alert_data)
 		if alert_dis_sq < max_scare_dis_sq then
 			rand = math.lerp(rand, rand * 2, math.min(alert_dis_sq) / 4000000)
 			local scare_mul = (max_scare_dis_sq - alert_dis_sq) / max_scare_dis_sq
-			local max_nr_random_screams = 8
+			local max_nr_random_screams = 4
 			scare_mul = scare_mul * math.lerp(1, 0.3, my_data.nr_random_screams / max_nr_random_screams)
-			local chance_voice_1 = 0.3 * scare_mul
-			local chance_voice_2 = 0.3 * scare_mul
+			local chance_voice_1 = 0.1 * scare_mul
+			local chance_voice_2 = 0.1 * scare_mul
 
 			if data.char_tweak.female then
 				chance_voice_1 = chance_voice_1 * 1.2

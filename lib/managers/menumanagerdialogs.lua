@@ -1161,8 +1161,12 @@ function MenuManager:show_new_tradable_item_received(params)
 	local tweak_group = tweak_data.economy[item.category] or tweak_data.blackmarket[item.category]
 
 	if tweak_group then
-		local guis_catalog = "guis/"
-		local bundle_folder = tweak_group[item.entry].texture_bundle_folder
+		local cosmetic = tweak_group[item.entry]
+		local bundle_folder = cosmetic.texture_bundle_folder
+
+		if cosmetic.texture_bundle_folder_is_short then
+			bundle_folder = "cash/safes/" .. bundle_folder
+		end
 
 		if bundle_folder then
 			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
@@ -1875,20 +1879,21 @@ function MenuManager:show_confirm_weapon_cosmetics(params)
 		dialog_data.text = dialog_data.text .. "\n\n" .. l_local:text("dialog_weapon_cosmetics_locked")
 	end
 
+	dialog_data.button_list = {}
 	local yes_button = {
 		text = managers.localization:text("dialog_apply"),
 		callback_func = params.yes_func
 	}
+
+	table.insert(dialog_data.button_list, yes_button)
+
 	local no_button = {
 		text = managers.localization:text("dialog_no"),
 		callback_func = params.no_func,
 		cancel_button = true
 	}
-	dialog_data.button_list = {
-		yes_button,
-		no_button
-	}
 
+	table.insert(dialog_data.button_list, no_button)
 	managers.system_menu:show(dialog_data)
 end
 

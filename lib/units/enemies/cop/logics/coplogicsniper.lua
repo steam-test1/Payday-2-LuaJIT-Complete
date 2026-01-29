@@ -53,7 +53,7 @@ function CopLogicSniper.enter(data, new_logic_name, enter_params)
 	local key_str = tostring(data.unit:key())
 	my_data.detection_task_key = "CopLogicSniper._upd_enemy_detection" .. key_str
 
-	CopLogicBase.queue_task(my_data, my_data.detection_task_key, CopLogicSniper._upd_enemy_detection, data)
+	CopLogicBase.queue_task(my_data, my_data.detection_task_key, CopLogicSniper._upd_enemy_detection, data, data.t)
 
 	if objective then
 		my_data.wanted_stance = objective.stance
@@ -67,6 +67,7 @@ function CopLogicSniper.enter(data, new_logic_name, enter_params)
 		return
 	end
 
+	CopLogicIdle._chk_has_old_action(data, my_data)
 	data.unit:brain():set_attention_settings({
 		cbt = true
 	})
@@ -81,6 +82,8 @@ function CopLogicSniper.enter(data, new_logic_name, enter_params)
 		data.unit:base():prevent_main_bones_disabling(true)
 		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", data.unit, "brain", HuskCopBrain._NET_EVENTS.weapon_laser_on)
 	end
+
+	data.unit:brain():set_update_enabled_state(true)
 end
 
 function CopLogicSniper.exit(data, new_logic_name, enter_params)
@@ -109,7 +112,27 @@ function CopLogicSniper.exit(data, new_logic_name, enter_params)
 	end
 end
 
+function CopLogicSniper.update(data)
+	local my_data = data.internal_data
+
+	if my_data.has_old_action then
+		CopLogicAttack._upd_stop_old_action(data, my_data)
+	end
+
+	data.unit:brain():set_update_enabled_state(false)
+end
+
 function CopLogicSniper._upd_enemy_detection(data)
+	local my_data = data.internal_data
+
+	if my_data.has_old_action then
+		CopLogicAttack._upd_stop_old_action(data, my_data)
+
+		if my_data.has_old_action then
+			return
+		end
+	end
+
 	managers.groupai:state():on_unit_detection_updated(data.unit)
 
 	data.t = TimerManager:game():time()

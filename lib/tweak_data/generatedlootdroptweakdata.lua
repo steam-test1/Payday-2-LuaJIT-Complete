@@ -1726,6 +1726,22 @@ function LootDropTweakData:init_generated(tweak_data)
 		sort_number = 515,
 		category = "global_event"
 	}
+	self.global_values.xm25 = {
+		name_id = "bm_global_value_xm25",
+		desc_id = "menu_l_global_value_xm25",
+		unlock_id = "bm_global_value_xm25_unlock",
+		color = tweak_data.screen_colors.dlc_color,
+		dlc = true,
+		free = false,
+		hide_unavailable = false,
+		chance = 1,
+		value_multiplier = 1,
+		durability_multiplier = 1,
+		drops = true,
+		track = true,
+		sort_number = 300,
+		category = "normal"
+	}
 	self.global_values.xmn = {
 		name_id = "bm_global_value_xmn",
 		desc_id = "menu_l_global_value_xmn",

@@ -53,7 +53,7 @@ function ElementPlayerState:set_state(instigator)
 		end
 	end
 
-	if (not self._values.use_instigator or instigator == player_unit) and (not requires_alive_player or alive(player_unit)) then
+	if (not self._values.use_instigator or instigator and player_unit and instigator == player_unit) and (not requires_alive_player or alive(player_unit)) then
 		if self._values.state ~= "none" then
 			managers.player:set_player_state(state)
 		elseif Application:editor() then

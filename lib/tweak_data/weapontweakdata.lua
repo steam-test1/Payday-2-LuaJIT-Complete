@@ -548,11 +548,13 @@ function WeaponTweakData:_init_data_sko12_conc_npc()
 	self.sko12_conc_npc.spread = 3
 	self.sko12_conc_npc.bullet_class = "ConcussiveInstantBulletBase"
 	self.sko12_conc_npc.concussion_data = {
-		mul = 0.2,
+		distance_max = 800,
+		mul = 0.1,
+		mul_min = 0.01,
 		sound_duration = {
-			min = 2,
-			mul = 0.3,
-			additional = 2
+			min = 1.7,
+			mul = 0.2,
+			additional = 1.7
 		}
 	}
 end
@@ -6619,7 +6621,6 @@ function WeaponTweakData:_init_new_m4(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.new_m4.DAMAGE = 1
-	self.new_m4.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_LOW
 	self.new_m4.CLIP_AMMO_MAX = 30
 	self.new_m4.NR_CLIPS_MAX = 5
 	self.new_m4.AMMO_MAX = self.new_m4.CLIP_AMMO_MAX * self.new_m4.NR_CLIPS_MAX
@@ -7164,7 +7165,6 @@ function WeaponTweakData:_init_amcar(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.amcar.DAMAGE = 1
-	self.amcar.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_LOW
 	self.amcar.CLIP_AMMO_MAX = 20
 	self.amcar.NR_CLIPS_MAX = 11
 	self.amcar.AMMO_MAX = self.amcar.CLIP_AMMO_MAX * self.amcar.NR_CLIPS_MAX
@@ -7268,7 +7268,6 @@ function WeaponTweakData:_init_m16(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.m16.DAMAGE = 1
-	self.m16.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_MEDIUM
 	self.m16.CLIP_AMMO_MAX = 30
 	self.m16.NR_CLIPS_MAX = 3
 	self.m16.AMMO_MAX = self.m16.CLIP_AMMO_MAX * self.m16.NR_CLIPS_MAX
@@ -7480,7 +7479,6 @@ function WeaponTweakData:_init_ak74(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.ak74.DAMAGE = 1
-	self.ak74.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_LOW
 	self.ak74.CLIP_AMMO_MAX = 30
 	self.ak74.NR_CLIPS_MAX = 5
 	self.ak74.AMMO_MAX = self.ak74.CLIP_AMMO_MAX * self.ak74.NR_CLIPS_MAX
@@ -7584,7 +7582,6 @@ function WeaponTweakData:_init_akm(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.akm.DAMAGE = 1.25
-	self.akm.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_MEDIUM
 	self.akm.CLIP_AMMO_MAX = 30
 	self.akm.NR_CLIPS_MAX = 3
 	self.akm.AMMO_MAX = self.akm.CLIP_AMMO_MAX * self.akm.NR_CLIPS_MAX
@@ -7688,7 +7685,6 @@ function WeaponTweakData:_init_akm_gold(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.akm_gold.DAMAGE = 1.25
-	self.akm_gold.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_MEDIUM
 	self.akm_gold.CLIP_AMMO_MAX = 30
 	self.akm_gold.NR_CLIPS_MAX = 3
 	self.akm_gold.AMMO_MAX = self.akm_gold.CLIP_AMMO_MAX * self.akm_gold.NR_CLIPS_MAX
@@ -8008,7 +8004,6 @@ function WeaponTweakData:_init_tkb(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.tkb.DAMAGE = 1.25
-	self.tkb.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_MEDIUM
 	self.tkb.CLIP_AMMO_MAX = 90
 	self.tkb.NR_CLIPS_MAX = 2
 	self.tkb.AMMO_MAX = self.tkb.CLIP_AMMO_MAX * self.tkb.NR_CLIPS_MAX
@@ -8600,7 +8595,6 @@ function WeaponTweakData:_init_ak5(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.ak5.DAMAGE = 1
-	self.ak5.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_LOW
 	self.ak5.CLIP_AMMO_MAX = 30
 	self.ak5.NR_CLIPS_MAX = 5
 	self.ak5.AMMO_MAX = self.ak5.CLIP_AMMO_MAX * self.ak5.NR_CLIPS_MAX
@@ -8702,7 +8696,6 @@ function WeaponTweakData:_init_aug(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.aug.DAMAGE = 1
-	self.aug.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_LOW
 	self.aug.CLIP_AMMO_MAX = 30
 	self.aug.NR_CLIPS_MAX = 5
 	self.aug.AMMO_MAX = self.aug.CLIP_AMMO_MAX * self.aug.NR_CLIPS_MAX
@@ -8803,7 +8796,6 @@ function WeaponTweakData:_init_g36(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.g36.DAMAGE = 1
-	self.g36.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_LOW
 	self.g36.CLIP_AMMO_MAX = 30
 	self.g36.NR_CLIPS_MAX = 8
 	self.g36.AMMO_MAX = self.g36.CLIP_AMMO_MAX * self.g36.NR_CLIPS_MAX
@@ -9001,7 +8993,6 @@ function WeaponTweakData:_init_new_m14(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.new_m14.DAMAGE = 2
-	self.new_m14.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_HIGH
 	self.new_m14.CLIP_AMMO_MAX = 10
 	self.new_m14.NR_CLIPS_MAX = 7
 	self.new_m14.AMMO_MAX = self.new_m14.CLIP_AMMO_MAX * self.new_m14.NR_CLIPS_MAX
@@ -10694,7 +10685,6 @@ function WeaponTweakData:_init_s552(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.s552.DAMAGE = 1
-	self.s552.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_LOW
 	self.s552.CLIP_AMMO_MAX = 30
 	self.s552.NR_CLIPS_MAX = 8
 	self.s552.AMMO_MAX = self.s552.CLIP_AMMO_MAX * self.s552.NR_CLIPS_MAX
@@ -11001,7 +10991,6 @@ function WeaponTweakData:_init_scar(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.scar.DAMAGE = 1
-	self.scar.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_MEDIUM
 	self.scar.CLIP_AMMO_MAX = 30
 	self.scar.NR_CLIPS_MAX = 3.333
 	self.scar.AMMO_MAX = self.scar.CLIP_AMMO_MAX * self.scar.NR_CLIPS_MAX
@@ -12533,7 +12522,6 @@ function WeaponTweakData:_init_fal(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.fal.DAMAGE = 1
-	self.fal.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_MEDIUM
 	self.fal.CLIP_AMMO_MAX = 20
 	self.fal.NR_CLIPS_MAX = 5
 	self.fal.AMMO_MAX = self.fal.CLIP_AMMO_MAX * self.fal.NR_CLIPS_MAX
@@ -13077,7 +13065,6 @@ function WeaponTweakData:_init_g3(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.g3.DAMAGE = 1
-	self.g3.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_MEDIUM
 	self.g3.CLIP_AMMO_MAX = 30
 	self.g3.NR_CLIPS_MAX = 3.333
 	self.g3.AMMO_MAX = self.g3.CLIP_AMMO_MAX * self.g3.NR_CLIPS_MAX
@@ -13178,7 +13165,6 @@ function WeaponTweakData:_init_galil(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.galil.DAMAGE = 1
-	self.galil.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_LOW
 	self.galil.CLIP_AMMO_MAX = 35
 	self.galil.NR_CLIPS_MAX = 5
 	self.galil.AMMO_MAX = self.galil.CLIP_AMMO_MAX * self.galil.NR_CLIPS_MAX
@@ -13281,7 +13267,6 @@ function WeaponTweakData:_init_famas(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.famas.DAMAGE = 1
-	self.famas.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_LOW
 	self.famas.CLIP_AMMO_MAX = 30
 	self.famas.NR_CLIPS_MAX = 8
 	self.famas.AMMO_MAX = self.famas.CLIP_AMMO_MAX * self.famas.NR_CLIPS_MAX
@@ -15007,7 +14992,6 @@ function WeaponTweakData:_init_l85a2(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.l85a2.DAMAGE = 1
-	self.l85a2.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_LOW
 	self.l85a2.CLIP_AMMO_MAX = 30
 	self.l85a2.NR_CLIPS_MAX = 5
 	self.l85a2.AMMO_MAX = self.l85a2.CLIP_AMMO_MAX * self.l85a2.NR_CLIPS_MAX
@@ -15114,7 +15098,6 @@ function WeaponTweakData:_init_vhs(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.vhs.DAMAGE = 1
-	self.vhs.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_LOW
 	self.vhs.CLIP_AMMO_MAX = 30
 	self.vhs.NR_CLIPS_MAX = 6
 	self.vhs.AMMO_MAX = self.vhs.CLIP_AMMO_MAX * self.vhs.NR_CLIPS_MAX
@@ -17036,7 +17019,6 @@ function WeaponTweakData:_init_asval(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.asval.DAMAGE = 1
-	self.asval.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_LOW
 	self.asval.CLIP_AMMO_MAX = 30
 	self.asval.NR_CLIPS_MAX = 7.333
 	self.asval.AMMO_MAX = self.asval.CLIP_AMMO_MAX * self.asval.NR_CLIPS_MAX
@@ -17140,7 +17122,6 @@ function WeaponTweakData:_init_sub2000(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.sub2000.DAMAGE = 2
-	self.sub2000.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_HIGH
 	self.sub2000.CLIP_AMMO_MAX = 33
 	self.sub2000.NR_CLIPS_MAX = 2
 	self.sub2000.AMMO_MAX = self.sub2000.CLIP_AMMO_MAX * self.sub2000.NR_CLIPS_MAX
@@ -17909,7 +17890,6 @@ function WeaponTweakData:_init_groza(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.groza.DAMAGE = 1
-	self.groza.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_LOW
 	self.groza.CLIP_AMMO_MAX = 20
 	self.groza.NR_CLIPS_MAX = 4
 	self.groza.AMMO_MAX = self.groza.CLIP_AMMO_MAX * self.groza.NR_CLIPS_MAX
@@ -18408,7 +18388,6 @@ function WeaponTweakData:_init_shak12(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.shak12.DAMAGE = 1
-	self.shak12.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_HIGH
 	self.shak12.CLIP_AMMO_MAX = 30
 	self.shak12.NR_CLIPS_MAX = 3
 	self.shak12.AMMO_MAX = self.shak12.CLIP_AMMO_MAX * self.shak12.NR_CLIPS_MAX
@@ -20674,7 +20653,6 @@ function WeaponTweakData:_init_tecci(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.tecci.DAMAGE = 1
-	self.tecci.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_LOW
 	self.tecci.CLIP_AMMO_MAX = 100
 	self.tecci.NR_CLIPS_MAX = 2
 	self.tecci.AMMO_MAX = self.tecci.CLIP_AMMO_MAX * self.tecci.NR_CLIPS_MAX
@@ -21804,7 +21782,6 @@ function WeaponTweakData:_init_contraband(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.contraband.DAMAGE = 1
-	self.contraband.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_HIGH
 	self.contraband.CLIP_AMMO_MAX = 20
 	self.contraband.NR_CLIPS_MAX = 3
 	self.contraband.AMMO_MAX = self.contraband.CLIP_AMMO_MAX * self.contraband.NR_CLIPS_MAX
@@ -22102,7 +22079,7 @@ function WeaponTweakData:_init_ray(weapon_data)
 	self.ray.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 62,
+		damage = 39,
 		alert_size = 7,
 		spread = 25,
 		spread_moving = 25,
@@ -22506,7 +22483,6 @@ function WeaponTweakData:_init_flint(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.flint.DAMAGE = 1
-	self.flint.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_MEDIUM
 	self.flint.CLIP_AMMO_MAX = 35
 	self.flint.NR_CLIPS_MAX = 3
 	self.flint.AMMO_MAX = self.flint.CLIP_AMMO_MAX * self.flint.NR_CLIPS_MAX
@@ -23254,7 +23230,6 @@ function WeaponTweakData:_init_rsh12(weapon_data)
 		selection_index = SELECTION.SECONDARY
 	}
 	self.rsh12.DAMAGE = 2
-	self.rsh12.damage_falloff = FALLOFF_TEMPLATE.PISTOL_FALL_SUPER
 	self.rsh12.CLIP_AMMO_MAX = 5
 	self.rsh12.NR_CLIPS_MAX = 8
 	self.rsh12.AMMO_MAX = self.rsh12.CLIP_AMMO_MAX * self.rsh12.NR_CLIPS_MAX
@@ -24242,7 +24217,6 @@ function WeaponTweakData:_init_ching(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.ching.DAMAGE = 2
-	self.ching.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_HIGH
 	self.ching.CLIP_AMMO_MAX = 8
 	self.ching.NR_CLIPS_MAX = 9
 	self.ching.AMMO_MAX = self.ching.CLIP_AMMO_MAX * self.ching.NR_CLIPS_MAX
@@ -24525,7 +24499,7 @@ function WeaponTweakData:_init_ecp(weapon_data)
 		extra_ammo = 51,
 		reload = 11,
 		suppression = 14,
-		concealment = 5
+		concealment = 6
 	}
 	self.ecp.stats_modifiers = {
 		damage = 10
@@ -24997,7 +24971,6 @@ function WeaponTweakData:_init_corgi(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.corgi.DAMAGE = 1
-	self.corgi.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_LOW
 	self.corgi.CLIP_AMMO_MAX = 30
 	self.corgi.NR_CLIPS_MAX = 5
 	self.corgi.AMMO_MAX = self.corgi.CLIP_AMMO_MAX * self.corgi.NR_CLIPS_MAX
@@ -25095,7 +25068,7 @@ function WeaponTweakData:_init_slap(weapon_data)
 		leave_steelsight = "secondary_steel_sight_exit"
 	}
 	self.slap.timers = {
-		reload_not_empty = 2.5
+		reload_not_empty = 3.1
 	}
 	self.slap.timers.reload_empty = self.slap.timers.reload_not_empty
 	self.slap.timers.unequip = 0.6
@@ -28849,7 +28822,6 @@ function WeaponTweakData:_init_komodo(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.komodo.DAMAGE = 1
-	self.komodo.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_LOW
 	self.komodo.CLIP_AMMO_MAX = 30
 	self.komodo.NR_CLIPS_MAX = 5
 	self.komodo.AMMO_MAX = self.komodo.CLIP_AMMO_MAX * self.komodo.NR_CLIPS_MAX
@@ -32663,7 +32635,6 @@ function WeaponTweakData:_init_ranc_heavy_machine_gun()
 		equip = 0.6
 	}
 	self.ranc_heavy_machine_gun.name_id = "bm_w_ranc_hmg"
-	self.ranc_heavy_machine_gun.damage_falloff = FALLOFF_TEMPLATE.ASSAULT_FALL_LOW
 	self.ranc_heavy_machine_gun.can_shoot_through_shield = true
 	self.ranc_heavy_machine_gun.can_shoot_through_enemy = true
 	self.ranc_heavy_machine_gun.can_shoot_through_wall = true

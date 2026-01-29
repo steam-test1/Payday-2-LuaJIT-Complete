@@ -130,8 +130,8 @@ function SawWeaponBase:fire(from_pos, direction, dmg_mul, shoot_player, spread_m
 	return ray_res
 end
 
-local function ray_table_contains(table, unit)
-	for i, hit in pairs(table) do
+local function ray_table_contains(tbl, unit)
+	for _, hit in pairs(tbl) do
 		if hit.unit == unit then
 			return true
 		end
@@ -140,8 +140,8 @@ local function ray_table_contains(table, unit)
 	return false
 end
 
-local function ray_copy(table, ray)
-	for i, hit in pairs(table) do
+local function ray_copy(tbl, ray)
+	for _, hit in pairs(tbl) do
 		if hit.unit == ray.unit then
 			hit.body = ray.body
 			hit.distance = ray.distance
@@ -192,7 +192,7 @@ function SawWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, sh
 			end
 		end
 
-		for i, hit in pairs(hits) do
+		for _, hit in pairs(hits) do
 			hit_unit = SawHit:on_collision(hit, self._unit, user_unit, damage, direction)
 		end
 

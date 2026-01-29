@@ -13320,17 +13320,39 @@ function BlackMarketGui:populate_mods(data)
 		new_data.unlock_tracker = achievement_tracker[new_data.name] or false
 		new_data.dlc = new_data.global_value and managers.dlc:global_value_to_dlc(new_data.global_value)
 		new_data.unlock_dlc = mod_tweak and mod_tweak.unlock_dlc or new_data.dlc
-		new_data.unlocked = not crafted.customize_locked and part_is_from_cosmetic and 1 or mod_default or managers.blackmarket:get_item_amount(new_data.global_value, "weapon_mods", new_data.name, true)
+
+		if crafted.customize_locked then
+			if type(crafted.customize_locked) == "boolean" then
+				new_data.unlocked = not crafted.customize_locked
+
+				if crafted.customize_locked then
+					new_data.lock_texture = "guis/textures/pd2/skilltree/padlock"
+					new_data.dlc_locked = "bm_menu_cosmetic_locked_weapon"
+				end
+			else
+				local part_type = weapon_factory_tweak[new_data.name].type
+				local part_locked = crafted.customize_locked[part_type]
+
+				if part_locked then
+					new_data.dlc_locked = "bm_menu_cosmetic_locked_weapon"
+					new_data.lock_texture = "guis/textures/pd2/skilltree/padlock"
+					local cosmetic_tweakdata = tweak_data.blackmarket.weapon_skins[crafted.cosmetics.id]
+					local color = tweak_data.economy.rarities[cosmetic_tweakdata.rarity or "legendary"].color
+					new_data.lock_color = color
+					new_data.unlocked = false
+				else
+					new_data.unlocked = part_is_from_cosmetic and 1 or mod_default or managers.blackmarket:get_item_amount(new_data.global_value, "weapon_mods", new_data.name, true)
+				end
+			end
+		else
+			new_data.unlocked = part_is_from_cosmetic and 1 or mod_default or managers.blackmarket:get_item_amount(new_data.global_value, "weapon_mods", new_data.name, true)
+		end
+
 		is_dlc_unlocked = not new_data.dlc or managers.dlc:is_dlc_unlocked(new_data.dlc)
 		new_data.hide_unavailable = not is_dlc_unlocked and managers.dlc:should_hide_unavailable(new_data.dlc)
 		dlc_global_value, dlc_global_value_tweak, dlc_unlock_id = nil
 
-		if crafted.customize_locked then
-			new_data.unlocked = type(new_data.unlocked) == "number" and -math.abs(new_data.unlocked) or new_data.unlocked
-			new_data.unlocked = new_data.unlocked ~= 0 and new_data.unlocked or false
-			new_data.lock_texture = "guis/textures/pd2/lock_incompatible"
-			new_data.dlc_locked = "bm_menu_cosmetic_locked_weapon"
-		elseif not part_is_from_cosmetic and not is_dlc_unlocked then
+		if not part_is_from_cosmetic and not is_dlc_unlocked then
 			dlc_global_value = new_data.unlock_dlc and managers.dlc:dlc_to_global_value(new_data.unlock_dlc)
 			dlc_global_value_tweak = dlc_global_value and tweak_data.lootdrop.global_values[dlc_global_value]
 			dlc_unlock_id = dlc_global_value_tweak and tweak_data.lootdrop.global_values[dlc_global_value].unlock_id or managers.dlc:get_unavailable_id(new_data.global_value)
@@ -13469,8 +13491,22 @@ function BlackMarketGui:populate_mods(data)
 
 		local active = true
 		local can_apply = not crafted.previewing
-		local preview_forbidden = managers.blackmarket:is_previewing_legendary_skin() or managers.blackmarket:preview_mod_forbidden(new_data.category, new_data.slot, new_data.name)
-		local is_customize_locked = crafted.customize_locked
+		local mod_type = weapon_factory_tweak[new_data.name].type
+		local preview_forbidden = managers.blackmarket:is_previewing_legendary_skin(mod_type) or managers.blackmarket:preview_mod_forbidden(new_data.category, new_data.slot, new_data.name)
+		local is_customize_locked = false
+
+		if crafted.customize_locked then
+			if type(crafted.customize_locked) == "boolean" then
+				is_customize_locked = crafted.customize_locked
+			else
+				local part_type = weapon_factory_tweak[new_data.name].type
+				local part_locked = crafted.customize_locked[part_type]
+
+				if part_locked then
+					is_customize_locked = true
+				end
+			end
+		end
 
 		if mod_name and not is_customize_locked and active then
 			if new_data.unlocked and (type(new_data.unlocked) ~= "number" or new_data.unlocked > 0) and can_apply then
@@ -13547,7 +13583,22 @@ function BlackMarketGui:populate_mods(data)
 	local function update_equipped()
 		if equipped then
 			local equipped_data = data[equipped]
-			local is_customize_locked = crafted.customize_locked
+			local is_customize_locked = false
+
+			if crafted.customize_locked then
+				if type(crafted.customize_locked) == "boolean" then
+					is_customize_locked = crafted.customize_locked
+				else
+					local weapon_factory_tweak = tweak_data.weapon.factory.parts
+					local part_type = weapon_factory_tweak[equipped_data.name].type
+					local part_locked = crafted.customize_locked[part_type]
+
+					if part_locked then
+						is_customize_locked = true
+					end
+				end
+			end
+
 			equipped_data.equipped = true
 			equipped_data.unlocked = not is_customize_locked and (equipped_data.unlocked or true)
 			equipped_data.mid_text = is_customize_locked and (equipped_data.mid_text or nil)
@@ -13565,7 +13616,8 @@ function BlackMarketGui:populate_mods(data)
 				table.insert(equipped_data, "wm_remove_buy")
 
 				if not equipped_data.is_internal then
-					local preview_forbidden = managers.blackmarket:is_previewing_legendary_skin() or managers.blackmarket:preview_mod_forbidden(equipped_data.category, equipped_data.slot, equipped_data.name)
+					local mod_type = weapon_factory_tweak[equipped_data.name].type
+					local preview_forbidden = managers.blackmarket:is_previewing_legendary_skin(mod_type) or managers.blackmarket:preview_mod_forbidden(equipped_data.category, equipped_data.slot, equipped_data.name)
 
 					if managers.blackmarket:is_previewing_any_mod() then
 						table.insert(equipped_data, "wm_clear_mod_preview")

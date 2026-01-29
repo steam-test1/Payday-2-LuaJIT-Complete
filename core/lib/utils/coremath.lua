@@ -207,6 +207,17 @@ function math.rand(a, b)
 	end
 end
 
+function math.rand_bool()
+	return math.random(2) == 1
+end
+
+function math.rand_color(a, b)
+	a = a or 0
+	b = b or 1
+
+	return Color(math.rand(a, b), math.rand(a, b), math.rand(a, b))
+end
+
 function math.round(n, precision)
 	precision = precision or 1
 

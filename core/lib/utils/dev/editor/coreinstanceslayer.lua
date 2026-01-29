@@ -1293,11 +1293,18 @@ function InstancesLayer:_create_overlay_gui()
 
 	self._workspace:hide()
 
+	self._colors = {}
+
+	for i = 0, 100 do
+		table.insert(self._colors, math.rand_color(0.4, 0.6))
+	end
+
+	local height = 10
 	self._gui_panel = self._workspace:panel():panel({
 		halign = "scale",
 		valign = "scale",
-		h = 16,
-		y = self._workspace:panel():h() - 16
+		y = self._workspace:panel():h() - height,
+		h = height
 	})
 end
 
@@ -1309,37 +1316,34 @@ function InstancesLayer:_update_overlay_gui()
 		color = Color.black
 	})
 
-	if #self._selected_instances > 0 then
-		for idx, instance_data in ipairs(self._selected_instances) do
-			local tot_w = self._workspace:panel():w()
-			local tot_indices = 70000
-			local start_indices, end_indices = managers.world_instance:get_used_indices(managers.editor:current_continent():name())
+	local instance_data = self._selected_instance and self._selected_instance:data()
+	local tot_w = self._workspace:panel():w()
+	local tot_indices = 70000
+	local start_indices, end_indices = managers.world_instance:get_used_indices(managers.editor:current_continent():name())
 
-			for i, start_index in ipairs(start_indices) do
-				local x = start_index * tot_w / tot_indices
-				local w = end_indices[i] * tot_w / tot_indices - x
+	for i, start_index in ipairs(start_indices) do
+		local x = start_index * tot_w / tot_indices
+		local w = end_indices[i] * tot_w / tot_indices - x
 
-				self._gui_panel:rect({
-					layer = 2,
-					x = x,
-					w = w,
-					color = Color.green
-				})
-			end
+		self._gui_panel:rect({
+			layer = 2,
+			x = math.max(x, 1),
+			w = math.max(w, 1),
+			color = self._colors[i % #self._colors]
+		})
+	end
 
-			if instance_data.data then
-				local x = instance_data.data.start_index * tot_w / tot_indices
-				local w = instance_data.data.index_size * tot_w / tot_indices
-				local col = idx == 1 and Color.blue or Color.yellow
+	if instance_data then
+		local x = instance_data.start_index * tot_w / tot_indices
+		local w = instance_data.index_size * tot_w / tot_indices
 
-				self._gui_panel:rect({
-					layer = 3,
-					x = x,
-					w = w,
-					color = col
-				})
-			end
-		end
+		self._gui_panel:rect({
+			layer = 3,
+			x = math.max(x, 1),
+			w = math.max(w, 1),
+			h = self._gui_panel:h() / 4,
+			color = Color.white
+		})
 	end
 end
 

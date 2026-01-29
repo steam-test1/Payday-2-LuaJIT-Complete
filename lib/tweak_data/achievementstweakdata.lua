@@ -4774,13 +4774,10 @@ function AchievementsTweakData:init(tweak_data)
 		},
 		cac_27 = {
 			everyone_killed_by_grenade = 0,
+			everyone_killed_by_melee = 0,
 			award = "cac_27",
 			job = "wwh",
-			everyone_used_weapon_category = "flamethrower",
-			everyone_killed_by_melee = 0,
-			equipped_team = {
-				primary_category = "flamethrower"
-			}
+			everyone_used_weapon_category = "flamethrower"
 		},
 		cac_31 = {
 			loud = true,

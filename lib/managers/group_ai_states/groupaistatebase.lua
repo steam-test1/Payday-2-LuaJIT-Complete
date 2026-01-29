@@ -329,6 +329,7 @@ function GroupAIStateBase:_init_misc_data()
 	self._nr_successful_alarm_pager_bluffs = 0
 	self._enemy_loot_drop_points = {}
 	self._assault_number = 0
+	self._spawn_group_timers = {}
 	local drama_tweak = tweak_data.drama
 	self._drama_data = {
 		amount = 0,
@@ -1462,54 +1463,11 @@ function GroupAIStateBase:on_enemy_unregistered(unit)
 
 	if e_data.group then
 		self:_remove_group_member(e_data.group, u_key, dead)
-	end
 
-	if e_data.assigned_area and dead then
-		local spawn_point = unit:unit_data().mission_element
+		if e_data.assigned_area and dead then
+			local spawn_point = unit:unit_data().mission_element
 
-		if spawn_point then
-			local spawn_pos = spawn_point:value("position")
-			local u_pos = e_data.m_pos
-
-			if mvector3.distance(spawn_pos, u_pos) < 700 and math.abs(spawn_pos.z - u_pos.z) < 300 then
-				local found = nil
-
-				for area_id, area_data in pairs(self._area_data) do
-					local area_spawn_points = area_data.spawn_points
-
-					if area_spawn_points then
-						for _, sp_data in ipairs(area_spawn_points) do
-							if sp_data.spawn_point == spawn_point then
-								found = true
-								sp_data.delay_t = math.max(sp_data.delay_t, self._t + math.random(30, 60))
-
-								break
-							end
-						end
-
-						if found then
-							break
-						end
-					end
-
-					local area_spawn_points = area_data.spawn_groups
-
-					if area_spawn_points then
-						for _, sp_data in ipairs(area_spawn_points) do
-							if sp_data.spawn_point == spawn_point then
-								found = true
-								sp_data.delay_t = math.max(sp_data.delay_t, self._t + math.random(30, 60))
-
-								break
-							end
-						end
-
-						if found then
-							break
-						end
-					end
-				end
-			end
+			self:_chk_spawn_point_camped(spawn_point, e_data.m_pos)
 		end
 	end
 end
@@ -5299,6 +5257,66 @@ function GroupAIStateBase:chk_enemy_calling_in_area(area, except_key)
 	end
 end
 
+function GroupAIStateBase:_chk_spawn_point_camped(spawn_point, unit_pos)
+	if not spawn_point then
+		return
+	end
+
+	local spawn_pos = spawn_point:value("position")
+	local distance = mvector3.distance(spawn_pos, unit_pos)
+	local z_distance = math.abs(spawn_pos.z - unit_pos.z)
+
+	if tweak_data.group_ai.ai_spawn_camp_distance < distance or tweak_data.group_ai.ai_spawn_camp_z_distance < z_distance then
+		return
+	end
+
+	local delay = self:_get_balancing_multiplier(tweak_data.group_ai.ai_spawn_camp_added_delay)
+
+	for area_id, area_data in pairs(self._area_data) do
+		local area_spawn_points = area_data.spawn_points
+
+		if area_spawn_points then
+			for _, sp_data in ipairs(area_spawn_points) do
+				if sp_data.spawn_point == spawn_point then
+					sp_data.delay_t = math.max(sp_data.delay_t, self._t + delay)
+					local id = spawn_point:id()
+
+					if self._spawn_group_timers[id] then
+						self._spawn_group_timers[id] = self._spawn_group_timers[id] + delay
+
+						print("CAMPER")
+
+						return
+					end
+				end
+			end
+		end
+
+		local area_spawn_groups = area_data.spawn_groups
+
+		if area_spawn_groups then
+			for _, sp_data in ipairs(area_spawn_groups) do
+				if sp_data.spawn_pts then
+					for _, spawn_pt in ipairs(sp_data.spawn_pts) do
+						if spawn_pt.mission_element == spawn_point then
+							sp_data.delay_t = math.max(sp_data.delay_t, self._t + delay)
+							local id = sp_data.mission_element:id()
+
+							if self._spawn_group_timers[id] then
+								self._spawn_group_timers[id] = self._spawn_group_timers[id] + delay
+
+								print("CAMPER")
+
+								return
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
 function GroupAIStateBase:register_security_camera(unit, state)
 	self._security_cameras[unit:key()] = state and unit or nil
 end
@@ -6263,8 +6281,11 @@ function GroupAIStateBase:_get_balancing_multiplier(balance_multipliers)
 		end
 	end
 
-	nr_players = nr_players == 1 and nr_players + math.max(0, nr_ai - 1) or nr_players + nr_ai
-	nr_players = math.clamp(nr_players, 1, 4)
+	if nr_ai > 0 then
+		nr_players = nr_players + math.max(1, math.floor(nr_ai / 2))
+	end
+
+	nr_players = math.clamp(nr_players, 1, #balance_multipliers)
 
 	return balance_multipliers[nr_players]
 end

@@ -12,6 +12,14 @@ function WeaponFactoryManager:init()
 	self:set_use_thq_weapon_parts(managers.user:get_setting("use_thq_weapon_parts"))
 end
 
+function WeaponFactoryManager:init_finalize()
+	tweak_data.weapon.factory:factory_part_post_process()
+end
+
+function WeaponFactoryManager:on_tweak_data_reloaded()
+	tweak_data.weapon.factory:factory_part_post_process()
+end
+
 function WeaponFactoryManager:_setup()
 	if not Global.weapon_factory then
 		Global.weapon_factory = {}
@@ -131,6 +139,16 @@ function WeaponFactoryManager:get_weapon_unit(factory_id, blueprint)
 	end
 
 	return factory_weapon.unit
+end
+
+function WeaponFactoryManager:is_factory_id_real_weapon_id(factory_id)
+	local upgrade = managers.upgrades:weapon_upgrade_by_factory_id(factory_id)
+
+	if not upgrade then
+		return false, nil
+	end
+
+	return not not upgrade.weapon_id, upgrade.weapon_id
 end
 
 function WeaponFactoryManager:get_weapon_id_by_factory_id(factory_id)

@@ -71,10 +71,12 @@ function InventoryDescription._add_line_break(ingame_format)
 	return ingame_format and "\n" or "\\n"
 end
 
-function InventoryDescription._create_list(list, ingame_format)
+function InventoryDescription._create_list(list, ingame_format, dont_sort)
 	local list_text = ""
 
-	table.sort(list)
+	if not dont_sort then
+		table.sort(list)
+	end
 
 	for i, text in ipairs(list) do
 		list_text = ingame_format and list_text .. (i > 1 and ", " or "") .. text or list_text .. "[*]" .. text
@@ -218,10 +220,10 @@ function InventoryDescription.create_description_item(item, tweak, colors, ingam
 		local formatted_text = managers.localization:text(tweak.name_id .. "_desc")
 
 		if not ingame_format then
+			formatted_text = string.gsub(formatted_text, "\n", "\\n")
 			formatted_text = string.gsub(formatted_text, "\"", "'")
 		end
 
-		formatted_text = string.gsub(formatted_text, "\n", "\\n")
 		local desc_string = func_color_text(formatted_text, color_default, ingame_format)
 		desc = desc .. func_add_lb(ingame_format) .. func_add_lb(ingame_format) .. desc_string
 	end
@@ -269,18 +271,37 @@ function InventoryDescription.create_description_item(item, tweak, colors, ingam
 
 	if tweak.default_blueprint then
 		local mods_title = func_color_text(managers.localization:text("steam_inventory_mods_included"), color_mods_title, ingame_format)
-		local list = {}
+		local default_parts = {}
+		local special_parts = {}
 
 		for _, blueprint in pairs(tweak.default_blueprint) do
 			local blueprint_tweak = tweak_data.blackmarket.weapon_mods[blueprint]
 
-			if blueprint_tweak and blueprint_tweak.pcs then
-				table.insert(list, managers.localization:text(blueprint_tweak.name_id))
+			if blueprint_tweak and blueprint_tweak.pcs and blueprint_tweak.name_id then
+				table.insert(default_parts, managers.localization:text(blueprint_tweak.name_id))
+			end
+
+			table.sort(default_parts)
+		end
+
+		if tweak.special_blueprint then
+			for weapon_id, data in pairs(tweak.special_blueprint) do
+				for _, blueprint in pairs(data) do
+					local blueprint_tweak = tweak_data.blackmarket.weapon_mods[blueprint]
+
+					if blueprint_tweak and blueprint_tweak.pcs and blueprint_tweak.name_id then
+						table.insert(special_parts, managers.localization:text(blueprint_tweak.name_id) .. "*")
+					end
+
+					table.sort(special_parts)
+				end
 			end
 		end
 
-		if #list > 0 then
-			local mods_string = (ingame_format and "\n" or "") .. func_color_text(func_create_list(list, ingame_format), color_mods, ingame_format)
+		table.list_append(default_parts, special_parts)
+
+		if #default_parts > 0 then
+			local mods_string = (ingame_format and "\n" or "") .. func_color_text(func_create_list(default_parts, ingame_format, true), color_mods, ingame_format)
 			desc = desc .. func_add_lb(ingame_format) .. func_add_lb(ingame_format) .. mods_title .. mods_string
 		end
 	end

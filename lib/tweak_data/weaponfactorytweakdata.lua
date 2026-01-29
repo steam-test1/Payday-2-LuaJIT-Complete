@@ -343,6 +343,53 @@ function WeaponFactoryTweakData:init()
 	self:_set_inaccessibles()
 end
 
+function WeaponFactoryTweakData:factory_part_post_process()
+	local smallify_scopes = self:_get_smallify_scopes()
+
+	for factory_id, weapon_data in pairs(self) do
+		if weapon_data.default_blueprint then
+			local is_weapon, weapon_id = managers.weapon_factory:is_factory_id_real_weapon_id(factory_id)
+
+			if is_weapon and tweak_data.weapon[weapon_id] and tweak_data.weapon[weapon_id].categories and table.contains(tweak_data.weapon[weapon_id].categories, "snp") then
+				for _, part_id in ipairs(smallify_scopes) do
+					local original_stats = self.parts[part_id].stats and deep_clone(self.parts[part_id].stats) or {}
+					weapon_data.override = weapon_data.override or {}
+					weapon_data.override[part_id] = weapon_data.override[part_id] or {}
+					weapon_data.override[part_id].stats = weapon_data.override[part_id].stats or original_stats
+					weapon_data.override[part_id].stats.concealment = original_stats.concealment + 2
+				end
+			end
+		end
+	end
+end
+
+function WeaponFactoryTweakData:_get_smallify_scopes()
+	return {
+		"wpn_fps_upg_o_aimpoint_2",
+		"wpn_fps_upg_o_eotech",
+		"wpn_fps_upg_o_t1micro",
+		"wpn_fps_upg_o_docter",
+		"wpn_fps_upg_o_acog",
+		"wpn_fps_upg_o_aimpoint",
+		"wpn_fps_upg_o_specter",
+		"wpn_fps_upg_o_cmore",
+		"wpn_fps_upg_o_cs",
+		"wpn_fps_upg_o_eotech_xps",
+		"wpn_fps_upg_o_reflex",
+		"wpn_fps_upg_o_rx01",
+		"wpn_fps_upg_o_rx30",
+		"wpn_fps_upg_o_spot",
+		"wpn_fps_upg_o_tf90",
+		"wpn_fps_upg_o_fc1",
+		"wpn_fps_upg_o_uh",
+		"wpn_fps_upg_o_hamr",
+		"wpn_fps_upg_o_health",
+		"wpn_fps_upg_o_bmg",
+		"wpn_fps_upg_o_atibal",
+		"wpn_fps_upg_o_poe"
+	}
+end
+
 function WeaponFactoryTweakData:_set_inaccessibles()
 	for part_id, part_data in pairs(self.parts) do
 		if not part_data.pcs and not part_data.pc then
@@ -2600,7 +2647,7 @@ function WeaponFactoryTweakData:_init_sights()
 				translation = Vector3(0, -24, -7.3)
 			},
 			wpn_fps_ass_l85a2 = {
-				translation = Vector3(0, 2, 4.95)
+				translation = Vector3(0, 2, -1.22)
 			},
 			wpn_fps_ass_vhs = {
 				translation = Vector3(-0.01, -3, -4.305)
@@ -2944,7 +2991,7 @@ function WeaponFactoryTweakData:_init_sights()
 				translation = Vector3(0, -24, -7.4)
 			},
 			wpn_fps_ass_l85a2 = {
-				translation = Vector3(0, 2, 5.05)
+				translation = Vector3(0, 2, -1.38)
 			},
 			wpn_fps_ass_vhs = {
 				translation = Vector3(-0.01, -3, -4.405)
@@ -13991,6 +14038,23 @@ function WeaponFactoryTweakData:_init_mac10()
 			value = 1
 		}
 	}
+	self.parts.wpn_fps_smg_mac10_s_fold2 = {
+		unit = "units/payday2/weapons/wpn_fps_smg_mac10_pts/wpn_fps_smg_mac10_s_fold2",
+		a_obj = "a_s",
+		type = "stock",
+		name_id = "bm_wp_mac10_s_fold",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		stats = {
+			value = 1,
+			recoil = -2,
+			concealment = 1
+		}
+	}
 	self.parts.wpn_fps_smg_mac10_s_skel = {
 		unit = "units/payday2/weapons/wpn_fps_smg_mac10_pts/wpn_fps_smg_mac10_s_skel",
 		a_obj = "a_s",
@@ -14016,6 +14080,7 @@ function WeaponFactoryTweakData:_init_mac10()
 	self.parts.wpn_fps_smg_mac10_m_extended.third_unit = "units/payday2/weapons/wpn_third_smg_mac10_pts/wpn_third_smg_mac10_m_extended"
 	self.parts.wpn_fps_smg_mac10_m_short.third_unit = "units/payday2/weapons/wpn_third_smg_mac10_pts/wpn_third_smg_mac10_m_short"
 	self.parts.wpn_fps_smg_mac10_s_fold.third_unit = "units/payday2/weapons/wpn_third_smg_mac10_pts/wpn_third_smg_mac10_s_fold"
+	self.parts.wpn_fps_smg_mac10_s_fold2.third_unit = "units/payday2/weapons/wpn_third_smg_mac10_pts/wpn_third_smg_mac10_s_fold2"
 	self.parts.wpn_fps_smg_mac10_s_skel.third_unit = "units/payday2/weapons/wpn_third_smg_mac10_pts/wpn_third_smg_mac10_s_skel"
 	self.wpn_fps_smg_mac10 = {
 		unit = "units/payday2/weapons/wpn_fps_smg_mac10/wpn_fps_smg_mac10",
@@ -14116,6 +14181,7 @@ function WeaponFactoryTweakData:_init_mac10()
 			"wpn_fps_smg_mac10_m_short",
 			"wpn_fps_smg_mac10_body_mac10",
 			"wpn_fps_smg_mac10_s_fold",
+			"wpn_fps_smg_mac10_s_fold2",
 			"wpn_fps_smg_mac10_s_skel",
 			"wpn_fps_upg_o_specter",
 			"wpn_fps_upg_o_aimpoint",
@@ -15953,6 +16019,10 @@ function WeaponFactoryTweakData:_init_korth()
 			value = 1,
 			spread = -4,
 			recoil = -3
+		},
+		custom_stats = {
+			ammo_pickup_max_mul = 0.75,
+			ammo_pickup_min_mul = 0.75
 		},
 		animations = {
 			reload_not_empty = "reload_not_empty",
@@ -28791,19 +28861,18 @@ function WeaponFactoryTweakData:create_ammunition()
 		stats = {
 			value = 5,
 			total_ammo_mod = -3,
-			damage = 15,
-			moving_spread = 2,
-			spread = 2
+			damage = 20,
+			spread = 4,
+			spread_moving = 1
 		},
 		custom_stats = {
 			armor_piercing_add = 1,
 			can_shoot_through_shield = true,
-			damage_far_mul = 2,
 			can_shoot_through_wall = true,
-			damage_near_mul = 10,
 			can_shoot_through_enemy = true,
 			rays = 1,
-			check_additional_achievements = true
+			check_additional_achievements = true,
+			falloff_override = FALLOFF_TEMPLATE.SNIPER_FALL_LOW
 		}
 	}
 	self.parts.wpn_fps_upg_a_custom = {
@@ -28820,11 +28889,13 @@ function WeaponFactoryTweakData:create_ammunition()
 		pcs = {},
 		stats = {
 			value = 5,
+			total_ammo_mod = -3,
 			damage = 15
 		},
 		custom_stats = {
-			damage_near_mul = 1,
-			damage_far_mul = 1
+			near_damage_mul = 1.1,
+			rays = 9,
+			falloff_mul = 0.95
 		}
 	}
 	self.parts.wpn_fps_upg_a_custom_free = deep_clone(self.parts.wpn_fps_upg_a_custom)
@@ -28845,16 +28916,14 @@ function WeaponFactoryTweakData:create_ammunition()
 		stats = {
 			value = 5,
 			total_ammo_mod = -2,
-			damage = 3,
-			moving_spread = 3,
-			spread = -3
+			damage = 25,
+			spread = 2
 		},
 		custom_stats = {
 			ignore_statistic = true,
-			damage_far_mul = 1.4,
-			damage_near_mul = 1,
 			bullet_class = "InstantExplosiveBulletBase",
-			rays = 1
+			rays = 1,
+			falloff_mul = 1.5
 		}
 	}
 	self.parts.wpn_fps_upg_a_piercing = {
@@ -28875,9 +28944,8 @@ function WeaponFactoryTweakData:create_ammunition()
 			damage = -3
 		},
 		custom_stats = {
-			damage_near_mul = 3,
 			armor_piercing_add = 1,
-			damage_far_mul = 1
+			falloff_mul = 1.75
 		}
 	}
 	self.parts.wpn_fps_upg_a_dragons_breath = {
@@ -42815,7 +42883,6 @@ function WeaponFactoryTweakData:_init_scout()
 			"bolt",
 			"exclusive_set"
 		},
-		adds = {},
 		adds = {
 			wpn_fps_upg_o_specter = {
 				"wpn_fps_snp_scout_o_rail"
@@ -43043,8 +43110,8 @@ function WeaponFactoryTweakData:_init_legendary()
 		a_obj = "a_b",
 		stats = {
 			spread = 2,
-			concealment = -10,
-			damage = 2,
+			concealment = -3,
+			damage = 4,
 			value = 1,
 			recoil = 3
 		},
@@ -43063,8 +43130,7 @@ function WeaponFactoryTweakData:_init_legendary()
 		unatainable = true,
 		stats = {
 			value = 1,
-			total_ammo_mod = 5,
-			damage = -2
+			damage = 1
 		},
 		animations = {
 			reload_not_empty = "reload",
@@ -43125,7 +43191,10 @@ function WeaponFactoryTweakData:_init_legendary()
 		unatainable = true,
 		a_obj = "a_b",
 		stats = {
-			value = 1
+			value = 1,
+			recoil = 3,
+			damage = 6,
+			spread = 3
 		}
 	}
 	self.parts.wpn_fps_shot_r870_b_legendary = {
@@ -43138,7 +43207,7 @@ function WeaponFactoryTweakData:_init_legendary()
 		stats = {
 			value = 1,
 			recoil = 10,
-			damage = 3,
+			damage = 2,
 			extra_ammo = 2
 		},
 		stance_mod = {
@@ -43252,9 +43321,10 @@ function WeaponFactoryTweakData:_init_legendary()
 		unatainable = true,
 		a_obj = "a_b",
 		stats = {
-			spread = 3,
-			recoil = 3,
-			value = 1
+			value = 1,
+			recoil = 2,
+			damage = 2,
+			spread = 2
 		}
 	}
 	self.parts.wpn_fps_lmg_svinet_s_legend = {
@@ -43285,10 +43355,11 @@ function WeaponFactoryTweakData:_init_legendary()
 		}
 	}
 	self.parts.wpn_fps_ass_m16_fg_legend = {
-		type = "gadget",
-		third_unit = "units/payday2_cash/safes/cola/weapons/wpn_fps_ass_m16_legendary/wpn_third_ass_m16_fg_legend",
-		a_obj = "a_fg",
 		unatainable = true,
+		type = "gadget",
+		a_obj = "a_fg",
+		third_unit = "units/payday2_cash/safes/cola/weapons/wpn_fps_ass_m16_legendary/wpn_third_ass_m16_fg_legend",
+		sub_type = "laser",
 		name_id = "bm_wp_m16_fg_legend",
 		unit = "units/payday2_cash/safes/cola/weapons/wpn_fps_ass_m16_legendary/wpn_fps_ass_m16_fg_legend",
 		stats = {
@@ -43313,7 +43384,7 @@ function WeaponFactoryTweakData:_init_legendary()
 		stats = {
 			value = 1,
 			concealment = -6,
-			damage = 3,
+			damage = 4,
 			spread = 6,
 			recoil = 10
 		},
@@ -43437,10 +43508,11 @@ function WeaponFactoryTweakData:_init_legendary()
 		unatainable = true,
 		a_obj = "a_b",
 		stats = {
-			spread = 4,
-			recoil = 3,
 			value = 1,
-			concealment = 4
+			concealment = 4,
+			damage = 1,
+			spread = 4,
+			recoil = 3
 		},
 		perks = {
 			"gadget"
@@ -43470,11 +43542,15 @@ function WeaponFactoryTweakData:_init_legendary()
 	self.parts.wpn_fps_ass_tecci_fg_legend.third_unit = "units/payday2_cash/safes/grunt/weapons/wpn_third_ass_tecci_legendary/wpn_third_ass_tecci_fg_legend"
 	self.parts.wpn_fps_ass_tecci_s_legend.third_unit = "units/payday2_cash/safes/grunt/weapons/wpn_third_ass_tecci_legendary/wpn_third_ass_tecci_s_legend"
 	self.parts.wpn_fps_shot_shorty_b_legendary = {
-		a_obj = "a_b",
 		type = "barrel",
 		name_id = "bm_wp_shorty_b_legend",
 		unit = "units/payday2_cash/safes/lones/weapons/wpn_fps_shot_shorty_legendary_pts/wpn_fps_shot_shorty_b_legendary",
 		unatainable = true,
+		a_obj = "a_b",
+		forbids = {
+			"wpn_fps_upg_ns_shot_thick",
+			"wpn_fps_upg_ns_sho_salvo_large"
+		},
 		stats = {
 			spread = -1,
 			recoil = 5,
@@ -43541,10 +43617,12 @@ function WeaponFactoryTweakData:_init_legendary()
 		}
 	}
 	self.parts.wpn_fps_ass_m14_body_upper_legendary = {
-		a_obj = "a_body",
+		unit = "units/payday2/weapons/wpn_fps_ass_m14_pts/wpn_fps_ass_m14_body_upper",
+		third_unit = "units/payday2/weapons/wpn_third_ass_m14_pts/wpn_third_ass_m14_body_upper",
 		type = "upper_body",
 		name_id = "bm_wp_m14_upper_legend",
-		unit = "units/payday2_cash/safes/lones/weapons/wpn_fps_ass_m14_legendary_pts/wpn_fps_ass_m14_body_upper_legendary",
+		unatainable = true,
+		a_obj = "a_body",
 		stats = {
 			value = 1
 		},
@@ -43555,17 +43633,17 @@ function WeaponFactoryTweakData:_init_legendary()
 		}
 	}
 	self.parts.wpn_fps_ass_m14_body_lower_legendary = {
+		unit = "units/payday2_cash/safes/lones/weapons/wpn_fps_ass_m14_legendary_pts/wpn_fps_ass_m14_body_lower_legendary",
 		a_obj = "a_body",
 		type = "lower_body",
 		name_id = "bm_wp_m14_body_lower_legend",
-		unit = "units/payday2_cash/safes/lones/weapons/wpn_fps_ass_m14_legendary_pts/wpn_fps_ass_m14_body_lower_legendary",
+		unatainable = true,
 		stats = {
 			value = 1
 		}
 	}
 	self.parts.wpn_fps_ass_m14_b_legendary.third_unit = "units/payday2_cash/safes/lones/weapons/wpn_fps_ass_m14_legendary_pts/wpn_third_ass_m14_b_legendary"
 	self.parts.wpn_fps_ass_m14_body_legendary.third_unit = "units/payday2_cash/safes/lones/weapons/wpn_fps_ass_m14_legendary_pts/wpn_third_ass_m14_body_legendary"
-	self.parts.wpn_fps_ass_m14_body_upper_legendary.third_unit = "units/payday2_cash/safes/lones/weapons/wpn_fps_ass_m14_legendary_pts/wpn_third_ass_m14_body_upper_legendary"
 	self.parts.wpn_fps_ass_m14_body_lower_legendary.third_unit = "units/payday2_cash/safes/lones/weapons/wpn_fps_ass_m14_legendary_pts/wpn_third_ass_m14_body_lower_legendary"
 end
 
@@ -56374,7 +56452,7 @@ function WeaponFactoryTweakData:_init_ecp()
 		stats = {
 			value = 1,
 			recoil = -2,
-			concealment = 2
+			concealment = 3
 		}
 	}
 	self.parts.wpn_fps_bow_ecp_b_dummy = {
@@ -58473,9 +58551,12 @@ function WeaponFactoryTweakData:_init_x_mac10()
 			},
 			wpn_fps_smg_mac10_m_quick = {
 				stats = {
+					extra_ammo = 8,
 					value = 2,
-					reload = 10,
-					extra_ammo = 8
+					recoil = -2,
+					spread = -1,
+					concealment = -1,
+					reload = 10
 				}
 			},
 			wpn_fps_upg_ns_pis_putnik = {
@@ -58497,6 +58578,7 @@ function WeaponFactoryTweakData:_init_x_mac10()
 			"wpn_fps_smg_mac10_m_short",
 			"wpn_fps_smg_mac10_body_mac10",
 			"wpn_fps_smg_mac10_s_fold",
+			"wpn_fps_smg_mac10_s_fold2",
 			"wpn_fps_smg_mac10_s_skel",
 			"wpn_fps_upg_ns_ass_smg_large",
 			"wpn_fps_upg_ns_ass_smg_medium",

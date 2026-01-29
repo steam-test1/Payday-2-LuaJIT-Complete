@@ -3186,6 +3186,12 @@ function DLCTweakData:init_generated()
 	}
 	self.xm22_bundle.content.loot_global_value = "xm22"
 	self.xm22_bundle.content.loot_drops = {}
+	self.xm25_bundle = {
+		dlc = "has_xm25",
+		content = {}
+	}
+	self.xm25_bundle.content.loot_global_value = "xm25"
+	self.xm25_bundle.content.loot_drops = {}
 	self.xmn_bundle = {
 		free = true,
 		content = {}

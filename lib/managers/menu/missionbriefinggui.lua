@@ -2447,18 +2447,12 @@ function TeamLoadoutItem:set_slot_outfit(slot, criminal_name, outfit)
 	end
 
 	if outfit.melee_weapon then
-		local guis_catalog = "guis/"
-		local bundle_folder = tweak_data.blackmarket.melee_weapons[outfit.melee_weapon] and tweak_data.blackmarket.melee_weapons[outfit.melee_weapon].texture_bundle_folder
-
-		if bundle_folder then
-			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-		end
-
+		local texture = managers.blackmarket:get_melee_weapon_icon(outfit.melee_weapon)
 		local melee_weapon_bitmap = player_slot.panel:bitmap({
 			alpha = 0.8,
-			texture = guis_catalog .. "textures/pd2/blackmarket/icons/melee_weapons/" .. outfit.melee_weapon,
 			w = w,
 			h = h,
+			texture = texture,
 			rotation = math.random(2) - 1.5
 		})
 		aspect = melee_weapon_bitmap:texture_width() / math.max(1, melee_weapon_bitmap:texture_height())
@@ -2469,18 +2463,12 @@ function TeamLoadoutItem:set_slot_outfit(slot, criminal_name, outfit)
 	end
 
 	if outfit.grenade and false then
-		local guis_catalog = "guis/"
-		local bundle_folder = tweak_data.blackmarket.projectiles[outfit.grenade] and tweak_data.blackmarket.projectiles[outfit.grenade].texture_bundle_folder
-
-		if bundle_folder then
-			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-		end
-
+		local texture = managers.blackmarket:get_throwable_icon(outfit.grenade)
 		local grenade_bitmap = player_slot.panel:bitmap({
 			alpha = 0.8,
-			texture = guis_catalog .. "textures/pd2/blackmarket/icons/grenades/" .. outfit.grenade,
 			w = w,
 			h = h,
+			texture = texture,
 			rotation = math.random(2) - 1.5
 		})
 		aspect = grenade_bitmap:texture_width() / math.max(1, grenade_bitmap:texture_height())
@@ -2491,18 +2479,12 @@ function TeamLoadoutItem:set_slot_outfit(slot, criminal_name, outfit)
 	end
 
 	if outfit.armor then
-		local guis_catalog = "guis/"
-		local bundle_folder = tweak_data.blackmarket.armors[outfit.armor] and tweak_data.blackmarket.armors[outfit.armor].texture_bundle_folder
-
-		if bundle_folder then
-			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-		end
-
+		local texture = managers.blackmarket:get_armor_icon(outfit.armor)
 		local armor_bitmap = player_slot.panel:bitmap({
 			alpha = 0.8,
-			texture = guis_catalog .. "textures/pd2/blackmarket/icons/armors/" .. outfit.armor,
 			w = w,
 			h = h,
+			texture = texture,
 			rotation = math.random(2) - 1.5
 		})
 		aspect = armor_bitmap:texture_width() / math.max(1, armor_bitmap:texture_height())
@@ -2513,18 +2495,12 @@ function TeamLoadoutItem:set_slot_outfit(slot, criminal_name, outfit)
 	end
 
 	if outfit.deployable and outfit.deployable ~= "nil" then
-		local guis_catalog = "guis/"
-		local bundle_folder = tweak_data.blackmarket.deployables[outfit.deployable] and tweak_data.blackmarket.deployables[outfit.deployable].texture_bundle_folder
-
-		if bundle_folder then
-			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-		end
-
+		local texture = managers.blackmarket:get_deployable_icon(outfit.deployable)
 		local deployable_bitmap = player_slot.panel:bitmap({
 			alpha = 0.8,
-			texture = guis_catalog .. "textures/pd2/blackmarket/icons/deployables/" .. outfit.deployable,
 			w = w,
 			h = h,
+			texture = texture,
 			rotation = math.random(2) - 1.5
 		})
 		aspect = deployable_bitmap:texture_width() / math.max(1, deployable_bitmap:texture_height())

@@ -40,9 +40,12 @@ end
 
 function CoreEditorGroups:remove(name)
 	table.delete(self._group_names, name)
-	self._groups[name]:remove()
 
-	self._groups[name] = nil
+	if self._groups[name] then
+		self._groups[name]:remove()
+
+		self._groups[name] = nil
+	end
 end
 
 function CoreEditorGroups:clear()

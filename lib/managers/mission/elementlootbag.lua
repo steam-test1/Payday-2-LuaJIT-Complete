@@ -22,14 +22,14 @@ function ElementLootBag:on_script_activated()
 			unit = managers.worlddefinition:get_unit_on_load(self._values.zipline_unit_id, callback(self, self, "load_unit"))
 		end
 
-		if alive(unit) and unit:zipline() and unit:zipline():is_usage_type_bag() then
+		if alive(unit) and unit:zipline() and (unit:zipline():is_usage_type_bag() or ray.unit:zipline():is_usage_type_both()) then
 			self._zipline_unit = unit
 		end
 	end
 end
 
 function ElementLootBag:load_unit(unit)
-	if alive(unit) and unit:zipline() and unit:zipline():is_usage_type_bag() then
+	if alive(unit) and unit:zipline() and (unit:zipline():is_usage_type_bag() or ray.unit:zipline():is_usage_type_both()) then
 		self._zipline_unit = unit
 	end
 end

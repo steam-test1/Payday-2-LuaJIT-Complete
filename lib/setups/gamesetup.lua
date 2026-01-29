@@ -595,6 +595,7 @@ function GameSetup:init_game()
 		end
 
 		managers.worlddefinition:init_done()
+		Application:resource_soft_reset()
 	end
 
 	return gsm

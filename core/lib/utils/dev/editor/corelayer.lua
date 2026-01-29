@@ -1506,7 +1506,9 @@ function Layer:check_unit_dependencies(unit_name)
 
 	for key, value in pairs(depended_effects) do
 		if value == false then
-			error("Missing effect dependency " .. key .. " on unit " .. unit_name:s() .. ".unit")
+			EWS:message_box(Global.frame_panel, "Missing effect dependency:\n" .. key .. "\nIn unit:\n" .. unit_name:s() .. ".unit\n\nFix this dependency issue before using this unit!", "Continent", "OK,ICON_QUESTION", Vector3(-1, -1, 0))
+
+			return
 		end
 	end
 end

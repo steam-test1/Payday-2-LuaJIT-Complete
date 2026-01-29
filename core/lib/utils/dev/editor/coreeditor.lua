@@ -1098,6 +1098,15 @@ function CoreEditor:_show_error_log()
 	end
 end
 
+function CoreEditor:show_text_box(title, text)
+	local dialog = EWS:Dialog(nil, title, "", Vector3(400, 200, 0), Vector3(400, 400, 0), "DEFAULT_DIALOG_STYLE,RESIZE_BORDER,STAY_ON_TOP,MAXIMIZE_BOX")
+	local dialog_sizer = EWS:BoxSizer("VERTICAL")
+
+	dialog:set_sizer(dialog_sizer)
+	dialog_sizer:add(EWS:TextCtrl(dialog, text, "", "TE_MULTILINE,TE_NOHIDESEL,TE_RICH2,TE_DONTWRAP,TE_READONLY"), 1, 0, "EXPAND")
+	dialog:set_visible(true)
+end
+
 function CoreEditor:connect_slave()
 	if not self._slave_host_name or self._slave_host_name == "" then
 		self:on_configuration()
@@ -3197,6 +3206,23 @@ function CoreEditor:do_save(path, dir, save_continents, autosaving)
 		end
 	end
 
+	local errors = self:check_duplicate_names_exist()
+
+	if errors then
+		Application:error("Duplicate names exist in the world, something is incorrect!")
+		self:show_text_box("DUPLICATES", errors)
+
+		local txt = [[
+Trying to save with duplicates!
+Please check the listed duplicates on the second popup window before selecting.
+
+Press YES to save.]]
+
+		if EWS:MessageDialog(Global.frame_panel, txt, "This might not be good!", "YES_NO,NO_DEFAULT,ICON_EXCLAMATION"):show_modal() == "ID_NO" then
+			return
+		end
+	end
+
 	self._world_package_table = {}
 	self._world_init_package_table = {}
 	self._continent_package_table = {}
@@ -3254,6 +3280,50 @@ function CoreEditor:do_save(path, dir, save_continents, autosaving)
 
 	self:output("Saved to " .. path)
 	cat_debug("editor", "Saved to ", path)
+end
+
+function CoreEditor:check_duplicate_names_exist()
+	local res, found = nil
+
+	Application:debug("[MissionManager:check_duplicate_names_exist]")
+
+	res = ""
+	res = res .. "Continent and/or Mission Script found duplicate names.\n"
+	res = res .. "Please rename the following items to something unique!\n\n"
+	local count_map = {}
+
+	for _, unit in pairs(self:layers().Mission._created_units) do
+		local name = unit:unit_data().continent._name .. "/" .. unit:unit_data().name_id
+
+		if not count_map[name] then
+			count_map[name] = {
+				unit = unit,
+				count = 1
+			}
+		else
+			count_map[name].count = count_map[name].count + 1
+		end
+	end
+
+	local count = 0
+
+	for name, unit_data in pairs(count_map) do
+		if unit_data.count > 1 then
+			count = count + 1
+			res = res .. name .. "\n"
+			found = true
+		end
+
+		if count > 100 then
+			res = res .. "More elements with same name exists. Fix this ones, and try to resave to get new list..."
+
+			break
+		end
+	end
+
+	if found then
+		return res
+	end
 end
 
 function CoreEditor:_recompile(dir)
@@ -4227,7 +4297,16 @@ function CoreEditor:unit_in_layer_name(unit)
 end
 
 function CoreEditor:delete_unit(unit)
-	self:unit_in_layer(unit):delete_unit(unit)
+	local layer = self:unit_in_layer(unit)
+
+	if layer then
+		layer:delete_unit(unit)
+	elseif alive(unit) then
+		Application:error("[CoreEditor:delete_unit] Unit was not in layer, destroying!", unit)
+		unit:set_slot(0)
+	else
+		Application:error("[CoreEditor:delete_unit] Unit was not alive.", unit)
+	end
 end
 
 function CoreEditor:delete_selected_unit()

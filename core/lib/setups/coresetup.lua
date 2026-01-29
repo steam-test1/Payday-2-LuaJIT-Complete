@@ -433,6 +433,7 @@ function CoreSetup:__end_frame(t, dt)
 		end
 
 		World:unload_all_units()
+		Application:resource_soft_reset()
 
 		if managers.menu_scene then
 			managers.menu_scene:unload()

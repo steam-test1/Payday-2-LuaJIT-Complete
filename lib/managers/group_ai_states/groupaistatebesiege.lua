@@ -10,7 +10,6 @@ function GroupAIStateBesiege:init(group_ai_state)
 	end
 
 	self._tweak_data = tweak_data.group_ai[group_ai_state]
-	self._spawn_group_timers = {}
 	self._graph_distance_cache = {}
 end
 
@@ -1086,12 +1085,14 @@ function GroupAIStateBesiege:_find_spawn_group_near_area(target_area, allowed_gr
 		return
 	end
 
-	local time = TimerManager:game():time()
+	if self._spawn_group_timers then
+		for id in pairs(valid_spawn_groups) do
+			local cooldown = self._spawn_group_timers[id]
 
-	for id in pairs(valid_spawn_groups) do
-		if self._spawn_group_timers[id] and time < self._spawn_group_timers[id] then
-			valid_spawn_groups[id] = nil
-			valid_spawn_group_distances[id] = nil
+			if cooldown and self._t < cooldown then
+				valid_spawn_groups[id] = nil
+				valid_spawn_group_distances[id] = nil
+			end
 		end
 	end
 
@@ -1102,7 +1103,7 @@ function GroupAIStateBesiege:_find_spawn_group_near_area(target_area, allowed_gr
 	local total_weight = 0
 	local candidate_groups = {}
 	self._debug_weights = {}
-	local dis_limit = 5000
+	local dis_limit = tweak_data.group_ai.ai_spawn_distance_limit
 
 	for i, dis in pairs(valid_spawn_group_distances) do
 		local my_wgt = math.lerp(1, 0.2, math.min(1, dis / dis_limit)) * 5
@@ -1155,13 +1156,18 @@ end
 function GroupAIStateBesiege:_choose_best_group(best_groups, total_weight)
 	local rand_wgt = total_weight * math.random()
 	local best_grp, best_grp_type = nil
+	local drama_low = self._drama_data.zone == "low"
+	local cooldown_table = tweak_data.group_ai.ai_spawn_group_cooldowns[drama_low and "fast" or "regular"]
+	local cooldown_min, cooldown_max = unpack(self:_get_balancing_multiplier(cooldown_table))
 
-	for i, candidate in ipairs(best_groups) do
+	for _, candidate in ipairs(best_groups) do
 		rand_wgt = rand_wgt - candidate.wght
 
 		if rand_wgt <= 0 then
-			local cooldown = TimerManager:game():time() + math.random(15, 20)
-			self._spawn_group_timers[spawn_group_id(candidate.group)] = cooldown
+			local delay = cooldown_min + math.random() * (cooldown_max - cooldown_min)
+			local cooldown = self._t + delay
+			local id = spawn_group_id(candidate.group)
+			self._spawn_group_timers[id] = cooldown
 
 			math.random(3)
 

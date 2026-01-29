@@ -2148,17 +2148,47 @@ function MenuCallbackHandler:hold_to_duck(item)
 	managers.user:set_setting("hold_to_duck", hold)
 end
 
-function MenuCallbackHandler:toggle_fullscreen(item)
-	local fullscreen = item:value() == "on"
+function MenuCallbackHandler:choice_choose_window_mode(item)
+	local option_value = item:value()
+	local windowed = true
+	local borderless = false
 
-	if managers.viewport:is_fullscreen() == fullscreen then
-		return
+	if option_value == "borderless" then
+		borderless = true
+	elseif option_value == "fullscreen" then
+		windowed = false
 	end
 
-	managers.viewport:set_fullscreen(fullscreen)
+	local previous_fullscreen = managers.viewport:is_fullscreen()
+	local previous_borderless = managers.viewport:is_borderless()
+
+	managers.viewport:set_fullscreen(not windowed)
+	managers.viewport:set_borderless(borderless)
+
+	if borderless then
+		local resolutions = clone(RenderSettings.modes)
+
+		table.sort(resolutions)
+
+		local highest_resolution = resolutions[#resolutions]
+
+		managers.viewport:set_resolution(highest_resolution)
+		managers.viewport:set_aspect_ratio(highest_resolution.x / highest_resolution.y)
+	end
+
 	managers.menu:show_accept_gfx_settings_dialog(function ()
-		managers.viewport:set_fullscreen(not fullscreen)
-		item:set_value(not fullscreen and "on" or "off")
+		managers.viewport:set_fullscreen(previous_fullscreen)
+		managers.viewport:set_borderless(previous_borderless)
+
+		local value = "windowed"
+
+		if previous_borderless then
+			value = "borderless"
+		elseif previous_fullscreen then
+			value = "fullscreen"
+		end
+
+		item:set_value(value)
 		self:refresh_node()
 	end)
 	self:refresh_node()
@@ -3271,6 +3301,25 @@ end
 
 function MenuCallbackHandler:choice_choose_video_adapter(item)
 	managers.viewport:set_adapter_index(item:value())
+
+	local fullscreen_ws = managers.menu_component and managers.menu_component._fullscreen_ws
+
+	if alive(fullscreen_ws) then
+		local panel = fullscreen_ws:panel()
+
+		panel:animate(function (o)
+			wait(0.025)
+
+			local resolutions = clone(RenderSettings.modes)
+
+			table.sort(resolutions)
+
+			local highest_resolution = resolutions[#resolutions]
+
+			managers.viewport:set_resolution(highest_resolution)
+			managers.viewport:set_aspect_ratio(highest_resolution.x / highest_resolution.y)
+		end)
+	end
 end
 
 function MenuCallbackHandler:apply_and_save_render_settings()
@@ -5467,7 +5516,11 @@ function MenuResolutionCreator:modify_node(node)
 	local new_node = deep_clone(node)
 
 	if SystemInfo:platform() == Idstring("WIN32") then
-		for _, res in ipairs(RenderSettings.modes) do
+		local resolutions = clone(RenderSettings.modes)
+
+		table.sort(resolutions)
+
+		for _, res in ipairs(resolutions) do
 			local res_string = string.format("%d x %d", res.x, res.y)
 
 			if not new_node:item(res_string) then
@@ -10231,6 +10284,10 @@ function MenuOptionInitiator:modify_adv_video(node)
 end
 
 function MenuOptionInitiator:modify_video(node)
+	local resolution_item = node:item("resolution")
+
+	resolution_item:set_enabled(not managers.viewport:is_borderless())
+
 	local adapter_item = node:item("choose_video_adapter")
 
 	if adapter_item and adapter_item:visible() then
@@ -10249,18 +10306,20 @@ function MenuOptionInitiator:modify_video(node)
 
 		adapter_item:visible()
 		adapter_item:set_value(RenderSettings.adapter_index)
-		adapter_item:set_enabled(managers.viewport:is_fullscreen())
+		adapter_item:set_enabled(managers.viewport:is_fullscreen() or managers.viewport:is_borderless())
 	end
 
-	local option_value = "off"
-	local fs_item = node:item("toggle_fullscreen")
+	local option_value = "windowed"
+	local window_item = node:item("window_mode")
 
-	if fs_item then
+	if window_item then
 		if managers.viewport:is_fullscreen() then
-			option_value = "on"
+			option_value = "fullscreen"
+		elseif managers.viewport:is_borderless() then
+			option_value = "borderless"
 		end
 
-		fs_item:set_value(option_value)
+		window_item:set_value(option_value)
 	end
 
 	local br_item = node:item("brightness")
@@ -11798,14 +11857,14 @@ function MenuCustomizeGadgetInitiator:setup_node(node, data)
 				show_value = true
 			})
 			self:create_slider(node, {
+				min = 0.1,
 				name = "laser_val",
 				max = 1,
 				callback = "set_gadget_laser_val",
 				step = 0.02,
 				text_id = "bm_menu_laser_val",
 				default_value = 1,
-				show_value = true,
-				min = tweak_data.custom_colors.defaults.laser_alpha
+				show_value = true
 			})
 			self:create_divider(node, "laser_divider", nil, 64)
 		end

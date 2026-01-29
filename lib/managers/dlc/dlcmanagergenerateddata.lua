@@ -430,6 +430,10 @@ function GenericDLCManager:has_xm22()
 	return self:is_dlc_unlocked("xm22")
 end
 
+function GenericDLCManager:has_xm25()
+	return self:is_dlc_unlocked("xm25")
+end
+
 function GenericDLCManager:has_xmn()
 	return self:is_dlc_unlocked("xmn")
 end
@@ -1006,6 +1010,11 @@ function WINDLCManager:init_generated()
 		no_install = true
 	}
 	Global.dlc_manager.all_dlc_data.xm22 = {
+		app_id = "218620",
+		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
+		no_install = true
+	}
+	Global.dlc_manager.all_dlc_data.xm25 = {
 		app_id = "218620",
 		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
 		no_install = true

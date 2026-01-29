@@ -4919,14 +4919,26 @@ function MenuNodeOpenContainerGui:setup(half_fade)
 
 	local contents = {}
 
-	for category, content_data in pairs(content_td.contains) do
-		for _, entry in ipairs(content_data) do
-			table.insert(contents, {
-				category = category,
-				entry = entry
-			})
+	local function insert_skins(list, container)
+		for category, content_data in pairs(container) do
+			for _, entry in ipairs(content_data) do
+				if category == "contents" then
+					local contents_data = tweak_data.economy.contents[entry]
+
+					if contents_data.contains then
+						insert_skins(list, contents_data.contains)
+					end
+				else
+					table.insert(list, {
+						category = category,
+						entry = entry
+					})
+				end
+			end
 		end
 	end
+
+	insert_skins(contents, content_td.contains)
 
 	local x_td, y_td, x_rtd, y_rtd = nil
 
@@ -4961,9 +4973,8 @@ function MenuNodeOpenContainerGui:setup(half_fade)
 
 	for i, content in ipairs(contents) do
 		local is_weapon_skin = content.category == "weapon_skins"
-		local show_skins = is_weapon_skin
 		local is_armor_skin = content.category == "armor_skins"
-		show_skins = show_skins or is_armor_skin
+		local show_skins = is_weapon_skin or is_armor_skin
 		c_td = (content.category == "weapon_skins" and tweak_data.blackmarket.weapon_skins or tweak_data.economy[content.category])[content.entry]
 		new_content = content_panel:panel({
 			layer = 1,

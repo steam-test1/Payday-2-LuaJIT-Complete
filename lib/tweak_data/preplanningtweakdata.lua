@@ -4103,7 +4103,7 @@ function PrePlanningTweakData:_create_locations(tweak_data)
 			map_size = 1,
 			map_x = 0,
 			x1 = -11500,
-			map_y = 45,
+			map_y = 0,
 			name_id = "menu_pp_trai_bpr_loc_a",
 			y2 = 12500,
 			y1 = -3500,
@@ -4115,9 +4115,9 @@ function PrePlanningTweakData:_create_locations(tweak_data)
 		default_plans = {},
 		start_location = {
 			group = "a",
-			zoom = 1,
-			x = 512,
-			y = 512
+			zoom = 0.8,
+			x = 1024,
+			y = 1024
 		}
 	}
 	self.locations.corp = {

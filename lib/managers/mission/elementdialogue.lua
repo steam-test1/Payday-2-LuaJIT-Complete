@@ -49,7 +49,15 @@ ElementDialogue.MutedDialogs = {
 	"snp_",
 	"play_snp_",
 	"com_",
-	"play_com_"
+	"play_com_",
+	"gem_",
+	"play_gem_",
+	"kee_",
+	"play_kee_",
+	"mch_",
+	"play_mch_",
+	"cha_",
+	"play_cha_"
 }
 
 function ElementDialogue:init(...)

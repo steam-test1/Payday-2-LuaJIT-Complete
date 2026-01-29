@@ -4387,7 +4387,9 @@ function UnitNetworkHandler:sync_underbarrel_switch(selection_index, underbarrel
 		return
 	end
 
-	unit:inventory():set_weapon_underbarrel(selection_index, underbarrel_id, is_on)
+	if unit:inventory() then
+		unit:inventory():set_weapon_underbarrel(selection_index, underbarrel_id, is_on)
+	end
 end
 
 function UnitNetworkHandler:sync_ai_throw_bag(unit, carry_unit, target_unit, sender)
@@ -4395,7 +4397,7 @@ function UnitNetworkHandler:sync_ai_throw_bag(unit, carry_unit, target_unit, sen
 		return
 	end
 
-	if alive(unit) and alive(carry_unit) then
+	if alive(unit) and alive(carry_unit) and unit:movement() then
 		unit:movement():sync_throw_bag(carry_unit, target_unit)
 	end
 end
@@ -4425,7 +4427,7 @@ function UnitNetworkHandler:sync_carried_bag_unit(ai_unit, carry_unit, sender)
 		return
 	end
 
-	if alive(ai_unit) and alive(carry_unit) then
+	if alive(ai_unit) and alive(carry_unit) and ai_unit:movement() and carry_unit:carry_data() then
 		ai_unit:movement():set_carrying_bag(carry_unit)
 		carry_unit:carry_data():link_to(ai_unit)
 	end
@@ -4576,7 +4578,9 @@ function UnitNetworkHandler:sync_melee_start(unit, hand, sender)
 		return
 	end
 
-	unit:movement():sync_melee_start(hand)
+	if unit:movement() then
+		unit:movement():sync_melee_start(hand)
+	end
 end
 
 function UnitNetworkHandler:sync_melee_stop(unit, sender)
@@ -4588,7 +4592,9 @@ function UnitNetworkHandler:sync_melee_stop(unit, sender)
 		return
 	end
 
-	unit:movement():sync_melee_stop()
+	if unit:movement() then
+		unit:movement():sync_melee_stop()
+	end
 end
 
 function UnitNetworkHandler:sync_melee_discharge(unit, sender)
@@ -4600,7 +4606,9 @@ function UnitNetworkHandler:sync_melee_discharge(unit, sender)
 		return
 	end
 
-	unit:movement():sync_melee_discharge()
+	if unit:movement() then
+		unit:movement():sync_melee_discharge()
+	end
 end
 
 function UnitNetworkHandler:sync_interaction_anim(unit, is_start, tweak_data, sender)
@@ -4612,10 +4620,12 @@ function UnitNetworkHandler:sync_interaction_anim(unit, is_start, tweak_data, se
 		return
 	end
 
-	if is_start then
-		unit:movement():sync_interaction_anim_start(tweak_data)
-	else
-		unit:movement():sync_interaction_anim_end()
+	if unit:movement() then
+		if is_start then
+			unit:movement():sync_interaction_anim_start(tweak_data)
+		else
+			unit:movement():sync_interaction_anim_end()
+		end
 	end
 end
 

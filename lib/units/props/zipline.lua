@@ -1,7 +1,8 @@
 ZipLine = ZipLine or class()
 ZipLine.TYPES = {
 	"person",
-	"bag"
+	"bag",
+	"both"
 }
 ZipLine.NET_EVENTS = {
 	request_access = 1,
@@ -267,6 +268,28 @@ function ZipLine:on_interacted(unit)
 
 		return
 	end
+
+	if self:is_usage_type_both() then
+		if managers.player:is_carrying() then
+			if Network:is_server() then
+				managers.player:drop_carry(self._unit)
+			else
+				self:_client_request_attach_bag(unit)
+			end
+
+			return
+		else
+			if Network:is_server() then
+				if not alive(self._user_unit) then
+					self:set_user(unit)
+				end
+			else
+				self:_client_request_access(unit)
+			end
+
+			return
+		end
+	end
 end
 
 function ZipLine:_client_request_attach_bag(player)
@@ -461,10 +484,6 @@ function ZipLine:set_usage_type(usage_type)
 		return
 	end
 
-	if usage_type ~= "person" then
-		usage_type = "bag"
-	end
-
 	self._usage_type = usage_type
 	local color_seq = "set_motor_color_" .. usage_type
 
@@ -485,6 +504,10 @@ end
 
 function ZipLine:is_usage_type_bag()
 	return self._usage_type == "bag"
+end
+
+function ZipLine:is_usage_type_both()
+	return self._usage_type == "both"
 end
 
 function ZipLine:current_time()

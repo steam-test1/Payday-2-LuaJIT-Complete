@@ -2725,7 +2725,7 @@ Play the full version soon to get your full PAYDAY!]],
 	self.projectiles.launcher_m203 = deep_clone(self.projectiles.launcher_frag)
 	self.projectiles.launcher_m203.projectile_trail = true
 	self.projectiles.rocket_ray_frag = deep_clone(self.projectiles.launcher_rocket)
-	self.projectiles.rocket_ray_frag.damage = 620
+	self.projectiles.rocket_ray_frag.damage = 390
 	self.projectiles.rocket_ray_frag.projectile_trail = true
 	self.projectiles.rocket_ray_frag.adjust_z = 0
 	self.projectiles.rocket_ray_frag.push_at_body_index = 0

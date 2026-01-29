@@ -3763,7 +3763,7 @@ function BlackMarketManager:player_loadout_data(show_all_icons)
 
 	if primary then
 		primary_akimbo = tweak_data.weapon[primary.weapon_id] and tweak_data.weapon[primary.weapon_id].akimbo_gui_data
-		primary_texture, primary_bg_texture = managers.blackmarket:get_weapon_icon_path(primary.weapon_id, primary.cosmetics)
+		primary_texture, primary_bg_texture = self:get_weapon_icon_path(primary.weapon_id, primary.cosmetics)
 		local equipped_weapon = self:equipped_primary()
 		local equipped_slot = self:equipped_weapon_slot("primaries")
 		primary_string = self:get_weapon_name_by_category_slot("primaries", equipped_slot)
@@ -3784,7 +3784,7 @@ function BlackMarketManager:player_loadout_data(show_all_icons)
 
 	if secondary then
 		secondary_akimbo = tweak_data.weapon[secondary.weapon_id] and tweak_data.weapon[secondary.weapon_id].akimbo_gui_data
-		secondary_texture, secondary_bg_texture = managers.blackmarket:get_weapon_icon_path(secondary.weapon_id, secondary.cosmetics)
+		secondary_texture, secondary_bg_texture = self:get_weapon_icon_path(secondary.weapon_id, secondary.cosmetics)
 		local equipped_weapon = self:equipped_secondary()
 		local equipped_slot = self:equipped_weapon_slot("secondaries")
 		secondary_string = self:get_weapon_name_by_category_slot("secondaries", equipped_slot)
@@ -3804,74 +3804,32 @@ function BlackMarketManager:player_loadout_data(show_all_icons)
 	end
 
 	if melee_weapon then
-		local guis_catalog = "guis/"
-		local bundle_folder = tweak_data.blackmarket.melee_weapons[melee_weapon] and tweak_data.blackmarket.melee_weapons[melee_weapon].texture_bundle_folder
-
-		if bundle_folder then
-			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-		end
-
-		melee_weapon_texture = guis_catalog .. "textures/pd2/blackmarket/icons/melee_weapons/" .. tostring(melee_weapon)
+		melee_weapon_texture = self:get_melee_weapon_icon(melee_weapon)
 		melee_weapon_string = managers.localization:text(tweak_data.blackmarket.melee_weapons[melee_weapon].name_id)
 	end
 
 	if grenade and grenade_amount > 0 then
-		local guis_catalog = "guis/"
-		local bundle_folder = tweak_data.blackmarket.projectiles[grenade] and tweak_data.blackmarket.projectiles[grenade].texture_bundle_folder
-
-		if bundle_folder then
-			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-		end
-
-		grenade_texture = guis_catalog .. "textures/pd2/blackmarket/icons/grenades/" .. tostring(grenade)
+		grenade_texture = self:get_throwable_icon(grenade)
 		grenade_string = managers.localization:text(tweak_data.blackmarket.projectiles[grenade].name_id)
 	end
 
 	if armor then
-		local guis_catalog = "guis/"
-		local bundle_folder = tweak_data.blackmarket.armors[armor].texture_bundle_folder
-
-		if bundle_folder then
-			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-		end
-
-		armor_texture = guis_catalog .. "textures/pd2/blackmarket/icons/armors/" .. tostring(armor)
+		armor_texture = self:get_armor_icon(armor)
 		armor_string = managers.localization:text(tweak_data.blackmarket.armors[armor].name_id)
 	end
 
 	if player_style then
-		local guis_catalog = "guis/"
-		local bundle_folder = tweak_data.blackmarket.player_styles[player_style].texture_bundle_folder
-
-		if bundle_folder then
-			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-		end
-
-		player_style_texture = guis_catalog .. "textures/pd2/blackmarket/icons/player_styles/" .. tostring(player_style)
+		player_style_texture = self:get_player_style_icon(player_style)
 		player_style_string = managers.localization:text(tweak_data.blackmarket.player_styles[player_style].name_id)
 	end
 
 	if glove_id then
-		local guis_catalog = "guis/"
-		local bundle_folder = tweak_data.blackmarket.gloves[glove_id].texture_bundle_folder
-
-		if bundle_folder then
-			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-		end
-
-		glove_texture = guis_catalog .. "textures/pd2/blackmarket/icons/gloves/" .. tostring(glove_id)
+		glove_texture = self:get_glove_icon(glove_id)
 		glove_string = managers.localization:text(tweak_data.blackmarket.gloves[glove_id].name_id)
 	end
 
 	if deployable then
-		local guis_catalog = "guis/"
-		local bundle_folder = tweak_data.blackmarket.deployables[deployable] and tweak_data.blackmarket.deployables[deployable].texture_bundle_folder
-
-		if bundle_folder then
-			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-		end
-
-		deployable_texture = guis_catalog .. "textures/pd2/blackmarket/icons/deployables/" .. tostring(deployable)
+		deployable_texture = self:get_deployable_icon(deployable)
 		deployable_string = managers.localization:text(tweak_data.upgrades.definitions[deployable].name_id)
 	else
 		deployable_texture = "guis/textures/pd2/add_icon"
@@ -3889,18 +3847,11 @@ function BlackMarketManager:player_loadout_data(show_all_icons)
 	end
 
 	if secondary_deployable then
-		local guis_catalog = "guis/"
-		local bundle_folder = tweak_data.blackmarket.deployables[secondary_deployable] and tweak_data.blackmarket.deployables[secondary_deployable].texture_bundle_folder
-
-		if bundle_folder then
-			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-		end
-
-		secondary_deployable_texture = guis_catalog .. "textures/pd2/blackmarket/icons/deployables/" .. tostring(secondary_deployable)
+		secondary_deployable_texture = self:get_deployable_icon(secondary_deployable)
 		secondary_deployable_string = managers.localization:text(tweak_data.upgrades.definitions[secondary_deployable].name_id)
 	end
 
-	local primary = {
+	local primary_data = {
 		item_texture = primary_texture or false,
 		item_bg_texture = primary_bg_texture,
 		info_text = primary_string,
@@ -3908,7 +3859,7 @@ function BlackMarketManager:player_loadout_data(show_all_icons)
 		info_text_color = primary_color,
 		akimbo_gui_data = primary_akimbo
 	}
-	local secondary = {
+	local secondary_data = {
 		item_texture = secondary_texture or false,
 		item_bg_texture = secondary_bg_texture,
 		info_text = secondary_string,
@@ -3916,74 +3867,74 @@ function BlackMarketManager:player_loadout_data(show_all_icons)
 		info_text_color = secondary_color,
 		akimbo_gui_data = secondary_akimbo
 	}
-	local melee_weapon = {
+	local melee_weapon_data = {
 		item_texture = melee_weapon_texture or false,
 		info_text = melee_weapon_string,
 		dual_texture_1 = primary_texture or false,
 		dual_texture_2 = secondary_texture or false
 	}
-	local grenade = {
+	local grenade_data = {
 		item_texture = grenade_texture or false,
 		info_text = grenade_string
 	}
-	local armor = {
+	local armor_data = {
 		item_texture = armor_texture or false,
 		info_text = armor_string
 	}
-	local deployable = {
+	local deployable_data = {
 		item_texture = deployable_texture or false,
 		info_text = deployable_string
 	}
-	local mask = {
+	local mask_data = {
 		item_texture = mask_texture or false,
 		info_text = mask_string
 	}
-	local character = {
+	local character_data = {
 		item_texture = character_texture or false,
 		info_text = character_string
 	}
-	local outfit = {
-		armor = armor
+	local outfit_data = {
+		armor = armor_data
 	}
 
 	if player_style ~= self:get_default_player_style() then
-		outfit.player_style = {
+		outfit_data.player_style = {
 			item_texture = player_style_texture or false,
 			info_text = player_style_string
 		}
 	end
 
 	if glove_id ~= self:get_default_glove_id() then
-		outfit.glove_id = {
+		outfit_data.glove_id = {
 			item_texture = glove_texture or false,
 			info_text = glove_string
 		}
 	end
 
 	if secondary_deployable then
-		local secondary_deployable = {
+		local secondary_deployable_data = {
 			item_texture = secondary_deployable_texture or false,
 			info_text = secondary_deployable_string
 		}
-		deployable.secondary = secondary_deployable
+		deployable_data.secondary = secondary_deployable_data
 	elseif managers.player:has_category_upgrade("player", "second_deployable") then
-		local secondary_deployable = {
+		local secondary_deployable_data = {
 			item_texture = "guis/textures/pd2/add_icon",
 			info_text = secondary_deployable_string
 		}
-		deployable.secondary = secondary_deployable
+		deployable_data.secondary = secondary_deployable_data
 	end
 
 	local data = {
-		primary = primary,
-		secondary = secondary,
-		melee_weapon = melee_weapon,
-		grenade = grenade,
-		armor = armor,
-		deployable = deployable,
-		mask = mask,
-		character = character,
-		outfit = outfit
+		primary = primary_data,
+		secondary = secondary_data,
+		melee_weapon = melee_weapon_data,
+		grenade = grenade_data,
+		armor = armor_data,
+		deployable = deployable_data,
+		mask = mask_data,
+		character = character_data,
+		outfit = outfit_data
 	}
 
 	return data
@@ -3995,6 +3946,67 @@ end
 
 function BlackMarketManager:get_character_icon(character)
 	return tweak_data.blackmarket:get_character_icon(character)
+end
+
+function BlackMarketManager:_get_item_icon(item_id, tweak_table, path)
+	local item_tweak = tweak_table[item_id]
+
+	if not item_tweak then
+		return
+	end
+
+	local guis_catalog = "guis/"
+	local bundle_folder = item_tweak.texture_bundle_folder
+
+	if bundle_folder then
+		guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
+	end
+
+	local texture_path = guis_catalog .. path .. item_id
+
+	return texture_path
+end
+
+function BlackMarketManager:get_melee_weapon_icon(melee_id)
+	local tweak_table = tweak_data.blackmarket.melee_weapons
+	local path = "textures/pd2/blackmarket/icons/melee_weapons/"
+
+	return self:_get_item_icon(melee_id, tweak_table, path)
+end
+
+function BlackMarketManager:get_throwable_icon(throwable_id)
+	local tweak_table = tweak_data.blackmarket.projectiles
+	local path = "textures/pd2/blackmarket/icons/grenades/"
+
+	return self:_get_item_icon(throwable_id, tweak_table, path)
+end
+
+function BlackMarketManager:get_armor_icon(armor_id)
+	local tweak_table = tweak_data.blackmarket.armors
+	local path = "textures/pd2/blackmarket/icons/armors/"
+
+	return self:_get_item_icon(armor_id, tweak_table, path)
+end
+
+function BlackMarketManager:get_player_style_icon(style_id)
+	local tweak_table = tweak_data.blackmarket.player_styles
+	local path = "textures/pd2/blackmarket/icons/player_styles/"
+
+	return self:_get_item_icon(style_id, tweak_table, path)
+end
+
+function BlackMarketManager:get_glove_icon(style_id)
+	local tweak_table = tweak_data.blackmarket.gloves
+	local path = "textures/pd2/blackmarket/icons/gloves/"
+
+	return self:_get_item_icon(style_id, tweak_table, path)
+end
+
+function BlackMarketManager:get_deployable_icon(deployable_id)
+	local tweak_table = tweak_data.blackmarket.deployables
+	local path = "textures/pd2/blackmarket/icons/deployables/"
+
+	return self:_get_item_icon(deployable_id, tweak_table, path)
 end
 
 function BlackMarketManager:equip_previous_weapon(category)
@@ -4900,7 +4912,7 @@ function BlackMarketManager:get_weapon_icon_path(weapon_id, cosmetics)
 		if bundle_folder then
 			guis_catalog = guis_catalog .. "dlcs/"
 
-			if use_cosmetics then
+			if use_cosmetics and not cosmetics.texture_bundle_folder_is_short then
 				guis_catalog = guis_catalog .. "cash/safes/"
 			end
 
@@ -5336,7 +5348,23 @@ function BlackMarketManager:last_previewed_cosmetic()
 end
 
 function BlackMarketManager:is_previewing_legendary_skin(mod_type)
-	return tweak_data.blackmarket.weapon_skins[self._last_viewed_cosmetic_id] and tweak_data.blackmarket.weapon_skins[self._last_viewed_cosmetic_id].locked or false
+	if not self._last_viewed_cosmetic_id then
+		return false
+	end
+
+	local locked_parts = tweak_data.blackmarket.weapon_skins[self._last_viewed_cosmetic_id]
+
+	if not locked_parts then
+		return false
+	elseif type(locked_parts) == "boolean" then
+		return true
+	end
+
+	if mod_type and locked_parts.locked and locked_parts.locked[mod_type] then
+		return true
+	end
+
+	return false
 end
 
 function BlackMarketManager:preview_grenade(grenade_id)
@@ -8211,6 +8239,13 @@ function BlackMarketManager:save(data)
 	save_data.masks = nil
 	save_data.weapon_upgrades = nil
 	save_data.weapons = nil
+
+	for key, _ in pairs(save_data.tradable_items_received) do
+		if not save_data.inventory_tradable[key] then
+			save_data.tradable_items_received[key] = nil
+		end
+	end
+
 	data.blackmarket = save_data
 end
 
@@ -8374,6 +8409,8 @@ function BlackMarketManager:load(data)
 		self:_setup_gloves()
 
 		self._global.crafted_items = self._global.crafted_items or {}
+
+		self:_on_load_update_crafted_items()
 
 		if not self._global.unlocked_mask_slots then
 			self:_setup_unlocked_mask_slots()

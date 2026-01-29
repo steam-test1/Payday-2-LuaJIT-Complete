@@ -4532,8 +4532,6 @@ function MenuSceneManager:_clbk_saferoom_unit_loaded(saferoom_data)
 end
 
 function MenuSceneManager:_check_safe_data_loaded()
-	print(inspect(self._safe_scene_data))
-
 	if not self._safe_scene_data.drill_data.ready then
 		return false
 	end

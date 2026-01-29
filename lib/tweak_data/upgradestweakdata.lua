@@ -1958,10 +1958,11 @@ function UpgradesTweakData:_init_pd2_values()
 		25
 	}
 	self.cocaine_stacks_dmg_absorption_value = 0.1
-	self.cocaine_stacks_tick_t = 4
+	self.cocaine_stacks_tick_rounding = 4
+	self.cocaine_stacks_tick_t = self.cocaine_stacks_tick_rounding
 	self.max_cocaine_stacks_per_tick = 240
 	self.max_total_cocaine_stacks = 600
-	self.cocaine_stacks_decay_t = 8
+	self.cocaine_stacks_decay_t = self.cocaine_stacks_tick_rounding * 2
 	self.cocaine_stacks_decay_amount_per_tick = 80
 	self.cocaine_stacks_decay_percentage_per_tick = 0.6
 	self.values.player.cocaine_stacking = {

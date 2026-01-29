@@ -171,14 +171,14 @@ function EconomyTweakData:init(tweak_data)
 	}
 	self.contents.overkill_01_legendary = {
 		def_id = 10002,
+		rarity = "legendary",
 		contains = {
 			weapon_skins = {
 				"flamethrower_mk2_fire",
 				"rpg7_boom",
 				"m134_bulletstorm"
 			}
-		},
-		rarity = "legendary"
+		}
 	}
 	self.contents.event_01 = {
 		def_id = 10003,
@@ -207,12 +207,12 @@ function EconomyTweakData:init(tweak_data)
 	}
 	self.contents.event_01_legendary = {
 		def_id = 10004,
+		rarity = "legendary",
 		contains = {
 			weapon_skins = {
 				"deagle_bling"
 			}
-		},
-		rarity = "legendary"
+		}
 	}
 	self.contents.weapon_01 = {
 		def_id = 10005,
@@ -241,6 +241,7 @@ function EconomyTweakData:init(tweak_data)
 	}
 	self.contents.event_red = {
 		def_id = 10006,
+		type = "limited",
 		contains = {
 			weapon_skins = {
 				"p90_golddigger",
@@ -257,8 +258,7 @@ function EconomyTweakData:init(tweak_data)
 			contents = {
 				"event_01_legendary"
 			}
-		},
-		type = "limited"
+		}
 	}
 	self.contents.event_dinner = {
 		def_id = 10007,
@@ -657,21 +657,21 @@ function EconomyTweakData:init(tweak_data)
 	}
 	self.contents.lones_01_legendary = {
 		def_id = 10029,
+		rarity = "legendary",
 		contains = {
 			weapon_skins = {
 				"serbu_lones"
 			}
-		},
-		rarity = "legendary"
+		}
 	}
 	self.contents.lones_01_legendary_02 = {
 		def_id = 10030,
+		rarity = "legendary",
 		contains = {
 			weapon_skins = {
 				"new_m14_lones"
 			}
-		},
-		rarity = "legendary"
+		}
 	}
 	self.contents.smosh_01 = {
 		def_id = 10031,
@@ -700,12 +700,12 @@ function EconomyTweakData:init(tweak_data)
 	}
 	self.contents.smosh_01_legendary = {
 		def_id = 10032,
+		rarity = "legendary",
 		contains = {
 			weapon_skins = {
 				"new_raging_bull_smosh"
 			}
-		},
-		rarity = "legendary"
+		}
 	}
 	self.bundles.smosh_01 = {
 		def_id = 30001,
@@ -1015,12 +1015,12 @@ function EconomyTweakData:init(tweak_data)
 	}
 	self.contents.wwt_01_legendary = {
 		def_id = 10046,
+		rarity = "legendary",
 		contains = {
 			weapon_skins = {
 				"colt_1911_wwt"
 			}
-		},
-		rarity = "legendary"
+		}
 	}
 	self.contents.skf_01 = {
 		def_id = 10047,
@@ -1049,12 +1049,12 @@ function EconomyTweakData:init(tweak_data)
 	}
 	self.contents.skf_01_legendary = {
 		def_id = 10048,
+		rarity = "legendary",
 		contains = {
 			weapon_skins = {
 				"mac10_skf"
 			}
-		},
-		rarity = "legendary"
+		}
 	}
 	self.bundles.skf_01 = {
 		def_id = 30004,
@@ -1184,12 +1184,12 @@ function EconomyTweakData:init(tweak_data)
 	}
 	self.contents.dss_01_legendary = {
 		def_id = 10053,
+		rarity = "legendary",
 		contains = {
 			weapon_skins = {
 				"shrew_dss"
 			}
-		},
-		rarity = "legendary"
+		}
 	}
 	self.contents.cat_01 = {
 		def_id = 10054,
@@ -1218,12 +1218,12 @@ function EconomyTweakData:init(tweak_data)
 	}
 	self.contents.cat_01_legendary = {
 		def_id = 10055,
+		rarity = "legendary",
 		contains = {
 			weapon_skins = {
 				"p226_cat"
 			}
-		},
-		rarity = "legendary"
+		}
 	}
 	self.bundles.cat_01 = {
 		def_id = 30007,
@@ -1261,12 +1261,12 @@ function EconomyTweakData:init(tweak_data)
 	}
 	self.contents.ait_01_legendary = {
 		def_id = 10057,
+		rarity = "legendary",
 		contains = {
 			weapon_skins = {
 				"scar_ait"
 			}
-		},
-		rarity = "legendary"
+		}
 	}
 	self.bundles.ait_01 = {
 		def_id = 30008,
@@ -1304,12 +1304,12 @@ function EconomyTweakData:init(tweak_data)
 	}
 	self.contents.nin_01_legendary = {
 		def_id = 10059,
+		rarity = "legendary",
 		contains = {
 			weapon_skins = {
 				"saw_nin"
 			}
-		},
-		rarity = "legendary"
+		}
 	}
 	self.bundles.nin_01 = {
 		def_id = 30009,

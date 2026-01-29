@@ -6032,7 +6032,8 @@ function InteractionTweakData:init(tweak_data)
 		sound_start = "bar_bag_money",
 		sound_interupt = "bar_bag_money_cancel",
 		sound_done = "bar_bag_money_finished",
-		blocked_hint = "carry_block"
+		blocked_hint = "carry_block",
+		set_contour_refreshes_mats = true
 	}
 	self.bex_safe_door = {
 		icon = "equipment_bank_manager_key",

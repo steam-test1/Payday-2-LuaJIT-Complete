@@ -340,6 +340,7 @@ function LevelsTweakData:init()
 		ghost_bonus = 0.15,
 		max_bags = 14,
 		ai_group_type = america,
+		sniper_laser_distance = 15000,
 		load_screen = "guis/dlcs/pic/textures/loading/job_bigoil_01"
 	}
 	self.welcome_to_the_jungle_1_night = deep_clone(self.welcome_to_the_jungle_1)
@@ -640,7 +641,8 @@ function LevelsTweakData:init()
 		cube = "cube_apply_heist_bank",
 		ghost_bonus = 0.15,
 		max_bags = 21,
-		ai_group_type = america
+		ai_group_type = america,
+		sniper_laser_distance = 20000
 	}
 	self.crojob3 = {
 		name_id = "heist_crojob3_hl",
@@ -655,7 +657,8 @@ function LevelsTweakData:init()
 		},
 		cube = "cube_apply_heist_bank",
 		max_bags = 16,
-		ai_group_type = america
+		ai_group_type = america,
+		sniper_laser_distance = 30000
 	}
 	self.crojob3_night = deep_clone(self.crojob3)
 	self.crojob3_night.env_params = {
@@ -780,7 +783,8 @@ function LevelsTweakData:init()
 		bonus_escape = true,
 		max_bags = 30,
 		ghost_bonus = 0.1,
-		ai_group_type = america
+		ai_group_type = america,
+		sniper_laser_distance = 20000
 	}
 	self.family = {
 		name_id = "heist_family_hl",
@@ -797,6 +801,7 @@ function LevelsTweakData:init()
 		cube = "cube_apply_heist_bank",
 		ghost_bonus = 0.05,
 		max_bags = 24,
+		sniper_laser_distance = 13000,
 		ai_group_type = america,
 		load_screen = "guis/dlcs/pic/textures/loading/job_diamondstore"
 	}
@@ -817,6 +822,7 @@ function LevelsTweakData:init()
 		cube = "cube_apply_heist_bank",
 		ghost_bonus = 0.15,
 		max_bags = 28,
+		sniper_laser_distance = 20000,
 		ai_group_type = america
 	}
 	self.roberts = {
@@ -835,6 +841,7 @@ function LevelsTweakData:init()
 		cube = "cube_apply_heist_bank",
 		ghost_bonus = 0.1,
 		max_bags = 14,
+		sniper_laser_distance = 20000,
 		ai_group_type = america
 	}
 	self.mia_1 = {
@@ -1097,7 +1104,8 @@ function LevelsTweakData:init()
 		package = "packages/vlad_shout",
 		cube = "cube_apply_heist_bank",
 		max_bags = 20,
-		ai_group_type = america
+		ai_group_type = america,
+		sniper_laser_distance = 20000
 	}
 	self.arena = {
 		name_id = "heist_arena_hl",
@@ -1268,6 +1276,7 @@ function LevelsTweakData:init()
 		package = "packages/narr_peta",
 		cube = "cube_apply_heist_bank",
 		ai_group_type = america,
+		sniper_laser_distance = 20000,
 		load_screen = "guis/dlcs/pic/textures/loading/job_goatsim_01"
 	}
 	self.peta2 = {
@@ -1281,6 +1290,7 @@ function LevelsTweakData:init()
 		package = "packages/narr_peta2",
 		cube = "cube_apply_heist_bank",
 		ai_group_type = america,
+		sniper_laser_distance = 20000,
 		repossess_bags = true,
 		load_screen = "guis/dlcs/pic/textures/loading/job_goatsim_02"
 	}
@@ -1341,6 +1351,7 @@ function LevelsTweakData:init()
 		package = "packages/lvl_mad",
 		cube = "cube_apply_heist_bank",
 		ai_group_type = russia,
+		sniper_laser_distance = 15000,
 		prevent_carry_disposal = table.list_to_set({
 			"person"
 		})
@@ -1718,6 +1729,7 @@ function LevelsTweakData:init()
 		package = "packages/job_rvd2",
 		cube = "cube_apply_heist_bank",
 		ai_group_type = america,
+		sniper_laser_distance = 20000,
 		max_bags = 30,
 		load_screen = "guis/dlcs/rvd/textures/loading/job_rvd_02_df"
 	}
@@ -1755,6 +1767,7 @@ function LevelsTweakData:init()
 		player_style = "winter_suit",
 		max_bags = 12,
 		ai_group_type = america,
+		sniper_laser_distance = 15000,
 		drop_pickups_to_ground = true
 	}
 	self.brb = {
@@ -1769,6 +1782,7 @@ function LevelsTweakData:init()
 		cube = "cube_apply_heist_bank",
 		max_bags = 26,
 		narrator = "locke",
+		sniper_laser_distance = 15000,
 		load_screen = "guis/dlcs/brb/textures/loading/job_brb_df"
 	}
 	self.tag = {
@@ -2095,6 +2109,7 @@ function LevelsTweakData:init()
 		ai_group_type = federales,
 		narrator = "locke",
 		ghost_bonus = 0.15,
+		sniper_laser_distance = 15000,
 		load_screen = "guis/dlcs/bex/textures/loading/job_bex_01_df"
 	}
 	self.pex = {
@@ -2305,6 +2320,7 @@ function LevelsTweakData:init()
 		package = "packages/job_trai",
 		cube = "cube_apply_heist_bank",
 		ai_group_type = america,
+		sniper_laser_distance = 15000,
 		ai_marshal_spawns_fast = true,
 		narrator = "locke",
 		ghost_bonus = 0.15,

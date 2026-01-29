@@ -424,7 +424,7 @@ function PlayerManager:_on_enter_trigger_happy_event(unit, attack_data)
 		local data = self:upgrade_value("pistol", "stacking_hit_damage_multiplier", 0)
 
 		if data ~= 0 then
-			self._coroutine_mgr:add_coroutine("trigger_happy", PlayerAction.TriggerHappy, self, data.damage_bonus, data.max_stacks, Application:time() + data.max_time)
+			self._coroutine_mgr:add_coroutine("trigger_happy", PlayerAction.TriggerHappy, self, data.damage_bonus, data.max_stacks, data.max_time)
 		end
 	end
 end
@@ -1664,22 +1664,28 @@ function PlayerManager:_update_damage_dealt(t, dt)
 
 	self._damage_dealt_to_cops_t = self._damage_dealt_to_cops_t or t + (tweak_data.upgrades.cocaine_stacks_tick_t or 1)
 	self._damage_dealt_to_cops_decay_t = self._damage_dealt_to_cops_decay_t or t + (tweak_data.upgrades.cocaine_stacks_decay_t or 5)
+	local cocaine_stacks_tick_rounding = tweak_data.upgrades.cocaine_stacks_tick_rounding or 1
+	self._damage_dealt_to_cops_t = math.round(self._damage_dealt_to_cops_t, cocaine_stacks_tick_rounding)
+	self._damage_dealt_to_cops_decay_t = math.round(self._damage_dealt_to_cops_decay_t, cocaine_stacks_tick_rounding)
 	local cocaine_stack = self:get_synced_cocaine_stacks(local_peer_id)
 	local amount = cocaine_stack and cocaine_stack.amount or 0
 	local new_amount = amount
+	local decay = nil
 
-	if self._damage_dealt_to_cops_t <= t then
-		self._damage_dealt_to_cops_t = t + (tweak_data.upgrades.cocaine_stacks_tick_t or 1)
-		local new_stacks = (self._damage_dealt_to_cops or 0) * (tweak_data.gui.stats_present_multiplier or 10) * self:upgrade_value("player", "cocaine_stacking", 0)
-		self._damage_dealt_to_cops = 0
-		new_amount = new_amount + math.min(new_stacks, tweak_data.upgrades.max_cocaine_stacks_per_tick or 20)
-	end
-
-	if self._damage_dealt_to_cops_decay_t <= t then
+	if math.floor(self._damage_dealt_to_cops_decay_t) <= t and amount > 0 then
 		self._damage_dealt_to_cops_decay_t = t + (tweak_data.upgrades.cocaine_stacks_decay_t or 5)
-		local decay = amount * (tweak_data.upgrades.cocaine_stacks_decay_percentage_per_tick or 0)
+		decay = amount * (tweak_data.upgrades.cocaine_stacks_decay_percentage_per_tick or 0)
 		decay = decay + (tweak_data.upgrades.cocaine_stacks_decay_amount_per_tick or 20) * self:upgrade_value("player", "cocaine_stacks_decay_multiplier", 1)
 		new_amount = new_amount - decay
+	end
+
+	if math.floor(self._damage_dealt_to_cops_t) <= t then
+		self._damage_dealt_to_cops_t = t + (tweak_data.upgrades.cocaine_stacks_tick_t or 1)
+		local new_stacks = (self._damage_dealt_to_cops or 0) * (tweak_data.gui.stats_present_multiplier or 10) * self:upgrade_value("player", "cocaine_stacking", 0)
+		local gain_limit = tweak_data.upgrades.max_cocaine_stacks_per_tick or 20
+		new_stacks = math.min(new_stacks, gain_limit + (decay or 0))
+		self._damage_dealt_to_cops = 0
+		new_amount = new_amount + new_stacks
 	end
 
 	new_amount = math.clamp(math.floor(new_amount), 0, tweak_data.upgrades.max_total_cocaine_stacks or 2047)
@@ -4592,13 +4598,14 @@ function PlayerManager:add_special(params)
 	end
 
 	local unit = self:player_unit()
-	local respawn = params.amount and true or false
 	local equipment = tweak_data.equipments.specials[name]
 	local special_equipment = self._equipment.specials[name]
+	local respawn = params.amount and true or false
 	local amount = params.amount or equipment.quantity
 	local extra = self:_equipped_upgrade_value(equipment) + self:upgrade_value(name, "quantity")
+	local is_cable_tie = name == "cable_tie"
 
-	if name == "cable_tie" then
+	if is_cable_tie then
 		extra = self:upgrade_value(name, "quantity_1") + self:upgrade_value(name, "quantity_2")
 	end
 
@@ -4653,7 +4660,6 @@ function PlayerManager:add_special(params)
 		end
 	end
 
-	local is_cable_tie = name == "cable_tie"
 	local quantity = nil
 
 	if is_cable_tie or not params.transfer and not params.dropped_out then

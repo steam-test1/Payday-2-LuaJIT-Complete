@@ -133,12 +133,18 @@ function MultiProfileManager:load_current()
 	end
 end
 
-function MultiProfileManager:current_profile_name()
-	if not self:current_profile() then
+function MultiProfileManager:profile_name(index)
+	local profile = self:profile(index)
+
+	if not profile then
 		return "Error"
 	end
 
-	return self:current_profile().name or "Profile " .. self._global._current_profile
+	return profile.name or "Profile " .. index
+end
+
+function MultiProfileManager:current_profile_name()
+	return self:profile_name(self._global._current_profile)
 end
 
 function MultiProfileManager:profile_count()

@@ -24,6 +24,7 @@ function GroupAITweakData:init(tweak_data)
 	self:_init_enemy_tactics(difficulty_index)
 	self:_init_enemy_spawn_groups(difficulty_index)
 	self:_init_enemy_spawn_groups_level(tweak_data, difficulty_index)
+	self:_init_enemy_spawn_cooldowns(difficulty_index)
 end
 
 function GroupAITweakData:_init_chatter_data()
@@ -274,55 +275,36 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 		}
 	end
 
-	self.unit_categories = {}
+	self.unit_categories = {
+		spooc = {
+			special_type = "spooc",
+			access = access_type_all,
+			unit_types = {
+				america = {},
+				russia = {
+					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_spooc_asval_smg/ene_akan_fbi_spooc_asval_smg")
+				},
+				zombie = {
+					Idstring("units/pd2_dlc_hvh/characters/ene_spook_hvh_1/ene_spook_hvh_1")
+				},
+				murkywater = {
+					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_cloaker/ene_murkywater_cloaker")
+				},
+				federales = {
+					Idstring("units/pd2_dlc_bex/characters/ene_swat_cloaker_policia_federale/ene_swat_cloaker_policia_federale")
+				}
+			}
+		}
+	}
 
 	if difficulty_index == DIFF_ID_8_DEATHSENT then
-		self.unit_categories.spooc = {
-			special_type = "spooc",
-			unit_types = {
-				america = {
-					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_cloaker/ene_zeal_cloaker")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_spooc_asval_smg/ene_akan_fbi_spooc_asval_smg")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_spook_hvh_1/ene_spook_hvh_1")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_cloaker/ene_murkywater_cloaker")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_cloaker_policia_federale/ene_swat_cloaker_policia_federale")
-				}
-			},
-			access = access_type_all
-		}
+		table.insert(self.unit_categories.spooc.unit_types.america, Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_cloaker/ene_zeal_cloaker"))
 	else
-		self.unit_categories.spooc = {
-			special_type = "spooc",
-			unit_types = {
-				america = {
-					Idstring("units/payday2/characters/ene_spook_1/ene_spook_1")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_spooc_asval_smg/ene_akan_fbi_spooc_asval_smg")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_spook_hvh_1/ene_spook_hvh_1")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_cloaker/ene_murkywater_cloaker")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_cloaker_policia_federale/ene_swat_cloaker_policia_federale")
-				}
-			},
-			access = access_type_all
-		}
+		table.insert(self.unit_categories.spooc.unit_types.america, Idstring("units/payday2/characters/ene_spook_1/ene_spook_1"))
 	end
 
 	self.unit_categories.CS_cop_C45_R870 = {
+		access = access_type_walk_only,
 		unit_types = {
 			america = {
 				Idstring("units/payday2/characters/ene_cop_1/ene_cop_1"),
@@ -347,8 +329,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				Idstring("units/payday2/characters/ene_cop_3/ene_cop_3"),
 				Idstring("units/payday2/characters/ene_cop_4/ene_cop_4")
 			}
-		},
-		access = access_type_walk_only
+		}
 	}
 	self.unit_categories.CS_cop_stealth_MP5 = {
 		unit_types = {
@@ -373,6 +354,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 
 	if difficulty_index == DIFF_ID_8_DEATHSENT then
 		self.unit_categories.CS_swat_MP5 = {
+			access = access_type_all,
 			unit_types = {
 				america = {
 					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_swat/ene_zeal_swat")
@@ -389,31 +371,11 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				federales = {
 					Idstring("units/pd2_dlc_bex/characters/ene_swat_policia_federale/ene_swat_policia_federale")
 				}
-			},
-			access = access_type_all
-		}
-		self.unit_categories.CS_swat_R870 = {
-			unit_types = {
-				america = {
-					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_swat/ene_zeal_swat")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_swat_r870/ene_akan_cs_swat_r870")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_swat_hvh_2/ene_swat_hvh_2")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_light/ene_murkywater_light")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_policia_federale/ene_swat_policia_federale")
-				}
-			},
-			access = access_type_all
+			}
 		}
 	else
 		self.unit_categories.CS_swat_MP5 = {
+			access = access_type_all,
 			unit_types = {
 				america = {
 					Idstring("units/payday2/characters/ene_swat_1/ene_swat_1")
@@ -430,10 +392,34 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				federales = {
 					Idstring("units/pd2_dlc_bex/characters/ene_swat_policia_federale/ene_swat_policia_federale")
 				}
-			},
-			access = access_type_all
+			}
 		}
+	end
+
+	if difficulty_index == DIFF_ID_8_DEATHSENT then
 		self.unit_categories.CS_swat_R870 = {
+			access = access_type_all,
+			unit_types = {
+				america = {
+					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_swat/ene_zeal_swat")
+				},
+				russia = {
+					Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_swat_r870/ene_akan_cs_swat_r870")
+				},
+				zombie = {
+					Idstring("units/pd2_dlc_hvh/characters/ene_swat_hvh_2/ene_swat_hvh_2")
+				},
+				murkywater = {
+					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_light/ene_murkywater_light")
+				},
+				federales = {
+					Idstring("units/pd2_dlc_bex/characters/ene_swat_policia_federale/ene_swat_policia_federale")
+				}
+			}
+		}
+	else
+		self.unit_categories.CS_swat_R870 = {
+			access = access_type_all,
 			unit_types = {
 				america = {
 					Idstring("units/payday2/characters/ene_swat_2/ene_swat_2")
@@ -450,13 +436,13 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				federales = {
 					Idstring("units/pd2_dlc_bex/characters/ene_swat_policia_federale_r870/ene_swat_policia_federale_r870")
 				}
-			},
-			access = access_type_all
+			}
 		}
 	end
 
 	if difficulty_index == DIFF_ID_8_DEATHSENT then
 		self.unit_categories.CS_heavy_M4 = {
+			access = access_type_all,
 			unit_types = {
 				america = {
 					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_swat_heavy/ene_zeal_swat_heavy")
@@ -473,51 +459,11 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				federales = {
 					Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale/ene_swat_heavy_policia_federale")
 				}
-			},
-			access = access_type_all
-		}
-		self.unit_categories.CS_heavy_R870 = {
-			unit_types = {
-				america = {
-					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_swat_heavy/ene_zeal_swat_heavy")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_heavy_r870/ene_akan_cs_heavy_r870")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_swat_heavy_hvh_r870/ene_swat_heavy_hvh_r870")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_heavy/ene_murkywater_heavy")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale_r870/ene_swat_heavy_policia_federale_r870")
-				}
-			},
-			access = access_type_all
-		}
-		self.unit_categories.CS_heavy_M4_w = {
-			unit_types = {
-				america = {
-					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_swat_heavy/ene_zeal_swat_heavy")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_heavy_ak47_ass/ene_akan_cs_heavy_ak47_ass")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_swat_heavy_hvh_1/ene_swat_heavy_hvh_1")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_heavy/ene_murkywater_heavy")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale/ene_swat_heavy_policia_federale")
-				}
-			},
-			access = access_type_walk_only
+			}
 		}
 	else
 		self.unit_categories.CS_heavy_M4 = {
+			access = access_type_all,
 			unit_types = {
 				america = {
 					Idstring("units/payday2/characters/ene_swat_heavy_1/ene_swat_heavy_1")
@@ -534,10 +480,78 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				federales = {
 					Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale/ene_swat_heavy_policia_federale")
 				}
-			},
-			access = access_type_all
+			}
 		}
+	end
+
+	if difficulty_index == DIFF_ID_8_DEATHSENT then
+		self.unit_categories.CS_heavy_M4_w = {
+			access = access_type_walk_only,
+			unit_types = {
+				america = {
+					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_swat_heavy/ene_zeal_swat_heavy")
+				},
+				russia = {
+					Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_heavy_ak47_ass/ene_akan_cs_heavy_ak47_ass")
+				},
+				zombie = {
+					Idstring("units/pd2_dlc_hvh/characters/ene_swat_heavy_hvh_1/ene_swat_heavy_hvh_1")
+				},
+				murkywater = {
+					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_heavy/ene_murkywater_heavy")
+				},
+				federales = {
+					Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale/ene_swat_heavy_policia_federale")
+				}
+			}
+		}
+	else
+		self.unit_categories.CS_heavy_M4_w = {
+			access = access_type_walk_only,
+			unit_types = {
+				america = {
+					Idstring("units/payday2/characters/ene_swat_heavy_1/ene_swat_heavy_1")
+				},
+				russia = {
+					Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_heavy_ak47_ass/ene_akan_cs_heavy_ak47_ass")
+				},
+				zombie = {
+					Idstring("units/pd2_dlc_hvh/characters/ene_swat_heavy_hvh_1/ene_swat_heavy_hvh_1")
+				},
+				murkywater = {
+					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_heavy/ene_murkywater_heavy")
+				},
+				federales = {
+					Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale/ene_swat_heavy_policia_federale")
+				}
+			}
+		}
+	end
+
+	if difficulty_index == DIFF_ID_8_DEATHSENT then
 		self.unit_categories.CS_heavy_R870 = {
+			access = access_type_all,
+			unit_types = {
+				america = {
+					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_swat_heavy/ene_zeal_swat_heavy")
+				},
+				russia = {
+					Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_heavy_r870/ene_akan_cs_heavy_r870")
+				},
+				zombie = {
+					Idstring("units/pd2_dlc_hvh/characters/ene_swat_heavy_hvh_r870/ene_swat_heavy_hvh_r870")
+				},
+				murkywater = {
+					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_heavy/ene_murkywater_heavy")
+				},
+				federales = {
+					Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale_r870/ene_swat_heavy_policia_federale_r870")
+				}
+			}
+		}
+	else
+		self.unit_categories.CS_heavy_R870 = {
+			access = access_type_all,
 			unit_types = {
 				america = {
 					Idstring("units/payday2/characters/ene_swat_heavy_r870/ene_swat_heavy_r870")
@@ -554,79 +568,39 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				federales = {
 					Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale_r870/ene_swat_heavy_policia_federale_r870")
 				}
-			},
-			access = access_type_all
-		}
-		self.unit_categories.CS_heavy_M4_w = {
-			unit_types = {
-				america = {
-					Idstring("units/payday2/characters/ene_swat_heavy_1/ene_swat_heavy_1")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_heavy_ak47_ass/ene_akan_cs_heavy_ak47_ass")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_swat_heavy_hvh_1/ene_swat_heavy_hvh_1")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_heavy/ene_murkywater_heavy")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale/ene_swat_heavy_policia_federale")
-				}
-			},
-			access = access_type_walk_only
+			}
 		}
 	end
 
+	self.unit_categories.CS_tazer = {
+		special_type = "taser",
+		access = access_type_all,
+		unit_types = {
+			america = {},
+			russia = {
+				Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_tazer_ak47_ass/ene_akan_cs_tazer_ak47_ass")
+			},
+			zombie = {
+				Idstring("units/pd2_dlc_hvh/characters/ene_tazer_hvh_1/ene_tazer_hvh_1")
+			},
+			murkywater = {
+				Idstring("units/pd2_dlc_bph/characters/ene_murkywater_tazer/ene_murkywater_tazer")
+			},
+			federales = {
+				Idstring("units/pd2_dlc_bex/characters/ene_swat_tazer_policia_federale/ene_swat_tazer_policia_federale")
+			}
+		}
+	}
+
 	if difficulty_index == DIFF_ID_8_DEATHSENT then
-		self.unit_categories.CS_tazer = {
-			special_type = "taser",
-			unit_types = {
-				america = {
-					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_tazer/ene_zeal_tazer")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_tazer_ak47_ass/ene_akan_cs_tazer_ak47_ass")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_tazer_hvh_1/ene_tazer_hvh_1")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_tazer/ene_murkywater_tazer")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_tazer_policia_federale/ene_swat_tazer_policia_federale")
-				}
-			},
-			access = access_type_all
-		}
+		table.insert(self.unit_categories.CS_tazer.unit_types.america, Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_tazer/ene_zeal_tazer"))
 	else
-		self.unit_categories.CS_tazer = {
-			special_type = "taser",
-			unit_types = {
-				america = {
-					Idstring("units/payday2/characters/ene_tazer_1/ene_tazer_1")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_cs_tazer_ak47_ass/ene_akan_cs_tazer_ak47_ass")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_tazer_hvh_1/ene_tazer_hvh_1")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_tazer/ene_murkywater_tazer")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_tazer_policia_federale/ene_swat_tazer_policia_federale")
-				}
-			},
-			access = access_type_all
-		}
+		table.insert(self.unit_categories.CS_tazer.unit_types.america, Idstring("units/payday2/characters/ene_tazer_1/ene_tazer_1"))
 	end
 
 	self.unit_categories.CS_shield = {
 		special_type = "shield",
+		access = access_type_walk_only,
 		unit_types = {
 			america = {
 				Idstring("units/payday2/characters/ene_shield_2/ene_shield_2")
@@ -643,10 +617,10 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 			federales = {
 				Idstring("units/pd2_dlc_bex/characters/ene_swat_shield_policia_federale_c45/ene_swat_shield_policia_federale_c45")
 			}
-		},
-		access = access_type_walk_only
+		}
 	}
 	self.unit_categories.FBI_suit_C45_M4 = {
+		access = access_type_all,
 		unit_types = {
 			america = {
 				Idstring("units/payday2/characters/ene_fbi_1/ene_fbi_1"),
@@ -668,10 +642,10 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				Idstring("units/payday2/characters/ene_fbi_1/ene_fbi_1"),
 				Idstring("units/payday2/characters/ene_fbi_1/ene_fbi_2")
 			}
-		},
-		access = access_type_all
+		}
 	}
 	self.unit_categories.FBI_suit_M4_MP5 = {
+		access = access_type_all,
 		unit_types = {
 			america = {
 				Idstring("units/payday2/characters/ene_fbi_2/ene_fbi_2"),
@@ -693,8 +667,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				Idstring("units/payday2/characters/ene_fbi_1/ene_fbi_2"),
 				Idstring("units/payday2/characters/ene_fbi_1/ene_fbi_3")
 			}
-		},
-		access = access_type_all
+		}
 	}
 	self.unit_categories.FBI_suit_stealth_MP5 = {
 		unit_types = {
@@ -716,269 +689,233 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 		},
 		access = access_type_all
 	}
+	local unit_types = {}
+	self.unit_categories.FBI_swat_M4 = {
+		access = access_type_all,
+		unit_types = unit_types
+	}
 
-	if difficulty_index < DIFF_ID_6_MAYHEM then
-		self.unit_categories.FBI_swat_M4 = {
-			unit_types = {
-				america = {
-					Idstring("units/payday2/characters/ene_fbi_swat_1/ene_fbi_swat_1")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_swat_ak47_ass/ene_akan_fbi_swat_ak47_ass")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_fbi_swat_hvh_1/ene_fbi_swat_hvh_1")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_light_fbi/ene_murkywater_light_fbi")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_policia_federale_fbi/ene_swat_policia_federale_fbi")
-				}
-			},
-			access = access_type_all
+	if difficulty_index <= DIFF_ID_5_OVERKILL then
+		unit_types.america = {
+			Idstring("units/payday2/characters/ene_fbi_swat_1/ene_fbi_swat_1")
 		}
-	elseif difficulty_index < DIFF_ID_8_DEATHSENT then
-		self.unit_categories.FBI_swat_M4 = {
-			unit_types = {
-				america = {
-					Idstring("units/payday2/characters/ene_city_swat_1/ene_city_swat_1")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_swat_dw_ak47_ass/ene_akan_fbi_swat_dw_ak47_ass")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_fbi_swat_hvh_1/ene_fbi_swat_hvh_1")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_light_city/ene_murkywater_light_city")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_policia_federale_city/ene_swat_policia_federale_city")
-				}
-			},
-			access = access_type_all
+		unit_types.russia = {
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_swat_ak47_ass/ene_akan_fbi_swat_ak47_ass")
+		}
+		unit_types.zombie = {
+			Idstring("units/pd2_dlc_hvh/characters/ene_fbi_swat_hvh_1/ene_fbi_swat_hvh_1")
+		}
+		unit_types.murkywater = {
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_light_fbi/ene_murkywater_light_fbi")
+		}
+		unit_types.federales = {
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_policia_federale_fbi/ene_swat_policia_federale_fbi")
+		}
+	elseif difficulty_index <= DIFF_ID_7_DEATHWISH then
+		unit_types.america = {
+			Idstring("units/payday2/characters/ene_city_swat_1/ene_city_swat_1")
+		}
+		unit_types.russia = {
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_swat_dw_ak47_ass/ene_akan_fbi_swat_dw_ak47_ass")
+		}
+		unit_types.zombie = {
+			Idstring("units/pd2_dlc_hvh/characters/ene_fbi_swat_hvh_1/ene_fbi_swat_hvh_1")
+		}
+		unit_types.murkywater = {
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_light_city/ene_murkywater_light_city")
+		}
+		unit_types.federales = {
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_policia_federale_city/ene_swat_policia_federale_city")
 		}
 	else
-		self.unit_categories.FBI_swat_M4 = {
-			unit_types = {
-				america = {
-					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_swat/ene_zeal_swat")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_swat_dw_ak47_ass/ene_akan_fbi_swat_dw_ak47_ass")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_fbi_swat_hvh_1/ene_fbi_swat_hvh_1")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_light/ene_murkywater_light")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_policia_federale/ene_swat_policia_federale")
-				}
-			},
-			access = access_type_all
+		unit_types.america = {
+			Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_swat/ene_zeal_swat")
+		}
+		unit_types.russia = {
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_swat_dw_ak47_ass/ene_akan_fbi_swat_dw_ak47_ass")
+		}
+		unit_types.zombie = {
+			Idstring("units/pd2_dlc_hvh/characters/ene_fbi_swat_hvh_1/ene_fbi_swat_hvh_1")
+		}
+		unit_types.murkywater = {
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_light/ene_murkywater_light")
+		}
+		unit_types.federales = {
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_policia_federale/ene_swat_policia_federale")
 		}
 	end
 
+	local unit_types = {}
+	self.unit_categories.FBI_swat_R870 = {
+		access = access_type_all,
+		unit_types = unit_types
+	}
+
 	if difficulty_index < DIFF_ID_6_MAYHEM then
-		self.unit_categories.FBI_swat_R870 = {
-			unit_types = {
-				america = {
-					Idstring("units/payday2/characters/ene_fbi_swat_2/ene_fbi_swat_2")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_swat_r870/ene_akan_fbi_swat_r870")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_fbi_swat_hvh_2/ene_fbi_swat_hvh_2")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_light_r870/ene_murkywater_light_r870")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_policia_federale_r870/ene_swat_policia_federale_r870")
-				}
-			},
-			access = access_type_all
+		unit_types.america = {
+			Idstring("units/payday2/characters/ene_fbi_swat_2/ene_fbi_swat_2")
+		}
+		unit_types.russia = {
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_swat_r870/ene_akan_fbi_swat_r870")
+		}
+		unit_types.zombie = {
+			Idstring("units/pd2_dlc_hvh/characters/ene_fbi_swat_hvh_2/ene_fbi_swat_hvh_2")
+		}
+		unit_types.murkywater = {
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_light_r870/ene_murkywater_light_r870")
+		}
+		unit_types.federales = {
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_policia_federale_r870/ene_swat_policia_federale_r870")
 		}
 	elseif difficulty_index < DIFF_ID_8_DEATHSENT then
-		self.unit_categories.FBI_swat_R870 = {
-			unit_types = {
-				america = {
-					Idstring("units/payday2/characters/ene_city_swat_r870/ene_city_swat_r870")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_swat_dw_r870/ene_akan_fbi_swat_dw_r870")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_fbi_swat_hvh_2/ene_fbi_swat_hvh_2")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_light_city_r870/ene_murkywater_light_city_r870")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_policia_federale_city_r870/ene_swat_policia_federale_city_r870")
-				}
-			},
-			access = access_type_all
+		unit_types.america = {
+			Idstring("units/payday2/characters/ene_city_swat_r870/ene_city_swat_r870")
+		}
+		unit_types.russia = {
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_swat_dw_r870/ene_akan_fbi_swat_dw_r870")
+		}
+		unit_types.zombie = {
+			Idstring("units/pd2_dlc_hvh/characters/ene_fbi_swat_hvh_2/ene_fbi_swat_hvh_2")
+		}
+		unit_types.murkywater = {
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_light_city_r870/ene_murkywater_light_city_r870")
+		}
+		unit_types.federales = {
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_policia_federale_city_r870/ene_swat_policia_federale_city_r870")
 		}
 	else
-		self.unit_categories.FBI_swat_R870 = {
-			unit_types = {
-				america = {
-					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_swat/ene_zeal_swat")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_swat_dw_r870/ene_akan_fbi_swat_dw_r870")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_fbi_swat_hvh_2/ene_fbi_swat_hvh_2")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_light/ene_murkywater_light")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_policia_federale/ene_swat_policia_federale")
-				}
-			},
-			access = access_type_all
+		unit_types.america = {
+			Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_swat/ene_zeal_swat")
+		}
+		unit_types.russia = {
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_swat_dw_r870/ene_akan_fbi_swat_dw_r870")
+		}
+		unit_types.zombie = {
+			Idstring("units/pd2_dlc_hvh/characters/ene_fbi_swat_hvh_2/ene_fbi_swat_hvh_2")
+		}
+		unit_types.murkywater = {
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_light/ene_murkywater_light")
+		}
+		unit_types.federales = {
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_policia_federale/ene_swat_policia_federale")
 		}
 	end
 
+	local unit_types = {}
+	self.unit_categories.FBI_heavy_G36 = {
+		access = access_type_all,
+		unit_types = unit_types
+	}
+
 	if difficulty_index < DIFF_ID_6_MAYHEM then
-		self.unit_categories.FBI_heavy_G36 = {
-			unit_types = {
-				america = {
-					Idstring("units/payday2/characters/ene_fbi_heavy_1/ene_fbi_heavy_1")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_heavy_g36/ene_akan_fbi_heavy_g36")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_fbi_heavy_hvh_1/ene_fbi_heavy_hvh_1")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_heavy_g36/ene_murkywater_heavy_g36")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale_fbi_g36/ene_swat_heavy_policia_federale_fbi_g36")
-				}
-			},
-			access = access_type_all
+		unit_types.america = {
+			Idstring("units/payday2/characters/ene_fbi_heavy_1/ene_fbi_heavy_1")
+		}
+		unit_types.russia = {
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_heavy_g36/ene_akan_fbi_heavy_g36")
+		}
+		unit_types.zombie = {
+			Idstring("units/pd2_dlc_hvh/characters/ene_fbi_heavy_hvh_1/ene_fbi_heavy_hvh_1")
+		}
+		unit_types.murkywater = {
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_heavy_g36/ene_murkywater_heavy_g36")
+		}
+		unit_types.federales = {
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale_fbi_g36/ene_swat_heavy_policia_federale_fbi_g36")
 		}
 	elseif difficulty_index < DIFF_ID_8_DEATHSENT then
-		self.unit_categories.FBI_heavy_G36 = {
-			unit_types = {
-				america = {
-					Idstring("units/payday2/characters/ene_city_heavy_g36/ene_city_heavy_g36")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_heavy_g36/ene_akan_fbi_heavy_g36")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_fbi_heavy_hvh_1/ene_fbi_heavy_hvh_1")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_heavy_g36/ene_murkywater_heavy_g36")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale_fbi_g36/ene_swat_heavy_policia_federale_fbi_g36")
-				}
-			},
-			access = access_type_all
+		unit_types.america = {
+			Idstring("units/payday2/characters/ene_city_heavy_g36/ene_city_heavy_g36")
+		}
+		unit_types.russia = {
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_heavy_g36/ene_akan_fbi_heavy_g36")
+		}
+		unit_types.zombie = {
+			Idstring("units/pd2_dlc_hvh/characters/ene_fbi_heavy_hvh_1/ene_fbi_heavy_hvh_1")
+		}
+		unit_types.murkywater = {
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_heavy_g36/ene_murkywater_heavy_g36")
+		}
+		unit_types.federales = {
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale_fbi_g36/ene_swat_heavy_policia_federale_fbi_g36")
 		}
 	else
-		self.unit_categories.FBI_heavy_G36 = {
-			unit_types = {
-				america = {
-					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_swat_heavy/ene_zeal_swat_heavy")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_heavy_g36/ene_akan_fbi_heavy_g36")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_fbi_heavy_hvh_1/ene_fbi_heavy_hvh_1")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_heavy/ene_murkywater_heavy")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale/ene_swat_heavy_policia_federale")
-				}
-			},
-			access = access_type_all
+		unit_types.america = {
+			Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_swat_heavy/ene_zeal_swat_heavy")
+		}
+		unit_types.russia = {
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_heavy_g36/ene_akan_fbi_heavy_g36")
+		}
+		unit_types.zombie = {
+			Idstring("units/pd2_dlc_hvh/characters/ene_fbi_heavy_hvh_1/ene_fbi_heavy_hvh_1")
+		}
+		unit_types.murkywater = {
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_heavy/ene_murkywater_heavy")
+		}
+		unit_types.federales = {
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale/ene_swat_heavy_policia_federale")
 		}
 	end
 
+	local unit_types = {}
+	self.unit_categories.FBI_heavy_R870 = {
+		access = access_type_all,
+		unit_types = unit_types
+	}
+
 	if difficulty_index < DIFF_ID_6_MAYHEM then
-		self.unit_categories.FBI_heavy_R870 = {
-			unit_types = {
-				america = {
-					Idstring("units/payday2/characters/ene_fbi_heavy_r870/ene_fbi_heavy_r870")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_heavy_r870/ene_akan_fbi_heavy_r870")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_fbi_heavy_hvh_r870/ene_fbi_heavy_hvh_r870")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_heavy_shotgun/ene_murkywater_heavy_shotgun")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale_fbi_r870/ene_swat_heavy_policia_federale_fbi_r870")
-				}
-			},
-			access = access_type_all
+		unit_types.america = {
+			Idstring("units/payday2/characters/ene_fbi_heavy_r870/ene_fbi_heavy_r870")
+		}
+		unit_types.russia = {
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_heavy_r870/ene_akan_fbi_heavy_r870")
+		}
+		unit_types.zombie = {
+			Idstring("units/pd2_dlc_hvh/characters/ene_fbi_heavy_hvh_r870/ene_fbi_heavy_hvh_r870")
+		}
+		unit_types.murkywater = {
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_heavy_shotgun/ene_murkywater_heavy_shotgun")
+		}
+		unit_types.federales = {
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale_fbi_r870/ene_swat_heavy_policia_federale_fbi_r870")
 		}
 	elseif difficulty_index < DIFF_ID_8_DEATHSENT then
-		self.unit_categories.FBI_heavy_R870 = {
-			unit_types = {
-				america = {
-					Idstring("units/payday2/characters/ene_city_heavy_r870/ene_city_heavy_r870")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_heavy_r870/ene_akan_fbi_heavy_r870")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_fbi_heavy_hvh_r870/ene_fbi_heavy_hvh_r870")
-				},
-				murkywater = {
-					Idstring("units/payday2/characters/ene_city_heavy_r870/ene_city_heavy_r870")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale_fbi_r870/ene_swat_heavy_policia_federale_fbi_r870")
-				}
-			},
-			access = access_type_all
+		unit_types.america = {
+			Idstring("units/payday2/characters/ene_city_heavy_r870/ene_city_heavy_r870")
+		}
+		unit_types.russia = {
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_heavy_r870/ene_akan_fbi_heavy_r870")
+		}
+		unit_types.zombie = {
+			Idstring("units/pd2_dlc_hvh/characters/ene_fbi_heavy_hvh_r870/ene_fbi_heavy_hvh_r870")
+		}
+		unit_types.murkywater = {
+			Idstring("units/payday2/characters/ene_city_heavy_r870/ene_city_heavy_r870")
+		}
+		unit_types.federales = {
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale_fbi_r870/ene_swat_heavy_policia_federale_fbi_r870")
 		}
 	else
-		self.unit_categories.FBI_heavy_R870 = {
-			unit_types = {
-				america = {
-					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_swat_heavy/ene_zeal_swat_heavy")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_heavy_r870/ene_akan_fbi_heavy_r870")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_fbi_heavy_hvh_r870/ene_fbi_heavy_hvh_r870")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_heavy/ene_murkywater_heavy")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale_fbi_r870/ene_swat_heavy_policia_federale_fbi_r870")
-				}
-			},
-			access = access_type_all
+		unit_types.america = {
+			Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_swat_heavy/ene_zeal_swat_heavy")
+		}
+		unit_types.russia = {
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_heavy_r870/ene_akan_fbi_heavy_r870")
+		}
+		unit_types.zombie = {
+			Idstring("units/pd2_dlc_hvh/characters/ene_fbi_heavy_hvh_r870/ene_fbi_heavy_hvh_r870")
+		}
+		unit_types.murkywater = {
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_heavy/ene_murkywater_heavy")
+		}
+		unit_types.federales = {
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale_fbi_r870/ene_swat_heavy_policia_federale_fbi_r870")
 		}
 	end
 
 	if difficulty_index < DIFF_ID_8_DEATHSENT then
 		self.unit_categories.FBI_heavy_G36_w = {
+			access = access_type_walk_only,
 			unit_types = {
 				america = {
 					Idstring("units/payday2/characters/ene_fbi_heavy_1/ene_fbi_heavy_1")
@@ -995,11 +932,11 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				federales = {
 					Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale/ene_swat_heavy_policia_federale")
 				}
-			},
-			access = access_type_walk_only
+			}
 		}
 	else
 		self.unit_categories.FBI_heavy_G36_w = {
+			access = access_type_walk_only,
 			unit_types = {
 				america = {
 					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_swat_heavy/ene_zeal_swat_heavy")
@@ -1016,243 +953,209 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				federales = {
 					Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale/ene_swat_heavy_policia_federale")
 				}
-			},
-			access = access_type_walk_only
+			}
 		}
 	end
+
+	local unit_types = {}
+	self.unit_categories.FBI_shield = {
+		special_type = "shield",
+		access = access_type_walk_only,
+		unit_types = unit_types
+	}
 
 	if difficulty_index < DIFF_ID_6_MAYHEM then
-		self.unit_categories.FBI_shield = {
-			special_type = "shield",
-			unit_types = {
-				america = {
-					Idstring("units/payday2/characters/ene_shield_1/ene_shield_1")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_shield_sr2_smg/ene_akan_fbi_shield_sr2_smg")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_shield_hvh_1/ene_shield_hvh_1")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_shield/ene_murkywater_shield")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_shield_policia_federale_mp9/ene_swat_shield_policia_federale_mp9")
-				}
-			},
-			access = access_type_walk_only
+		unit_types.america = {
+			Idstring("units/payday2/characters/ene_shield_1/ene_shield_1")
+		}
+		unit_types.russia = {
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_shield_sr2_smg/ene_akan_fbi_shield_sr2_smg")
+		}
+		unit_types.zombie = {
+			Idstring("units/pd2_dlc_hvh/characters/ene_shield_hvh_1/ene_shield_hvh_1")
+		}
+		unit_types.murkywater = {
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_shield/ene_murkywater_shield")
+		}
+		unit_types.federales = {
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_shield_policia_federale_mp9/ene_swat_shield_policia_federale_mp9")
 		}
 	elseif difficulty_index < DIFF_ID_8_DEATHSENT then
-		self.unit_categories.FBI_shield = {
-			special_type = "shield",
-			unit_types = {
-				america = {
-					Idstring("units/payday2/characters/ene_city_shield/ene_city_shield")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_shield_dw_sr2_smg/ene_akan_fbi_shield_dw_sr2_smg")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_shield_hvh_1/ene_shield_hvh_1")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_shield/ene_murkywater_shield")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_shield_policia_federale_mp9/ene_swat_shield_policia_federale_mp9")
-				}
-			},
-			access = access_type_walk_only
+		unit_types.america = {
+			Idstring("units/payday2/characters/ene_city_shield/ene_city_shield")
+		}
+		unit_types.russia = {
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_shield_dw_sr2_smg/ene_akan_fbi_shield_dw_sr2_smg")
+		}
+		unit_types.zombie = {
+			Idstring("units/pd2_dlc_hvh/characters/ene_shield_hvh_1/ene_shield_hvh_1")
+		}
+		unit_types.murkywater = {
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_shield/ene_murkywater_shield")
+		}
+		unit_types.federales = {
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_shield_policia_federale_mp9/ene_swat_shield_policia_federale_mp9")
 		}
 	else
-		self.unit_categories.FBI_shield = {
-			special_type = "shield",
-			unit_types = {
-				america = {
-					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_swat_shield/ene_zeal_swat_shield")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_shield_dw_sr2_smg/ene_akan_fbi_shield_dw_sr2_smg")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_shield_hvh_1/ene_shield_hvh_1")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_shield/ene_murkywater_shield")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_shield_policia_federale_mp9/ene_swat_shield_policia_federale_mp9")
-				}
-			},
-			access = access_type_walk_only
+		unit_types.america = {
+			Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_swat_shield/ene_zeal_swat_shield")
+		}
+		unit_types.russia = {
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_shield_dw_sr2_smg/ene_akan_fbi_shield_dw_sr2_smg")
+		}
+		unit_types.zombie = {
+			Idstring("units/pd2_dlc_hvh/characters/ene_shield_hvh_1/ene_shield_hvh_1")
+		}
+		unit_types.murkywater = {
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_shield/ene_murkywater_shield")
+		}
+		unit_types.federales = {
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_shield_policia_federale_mp9/ene_swat_shield_policia_federale_mp9")
 		}
 	end
 
-	if difficulty_index <= 3 then
-		self.unit_categories.FBI_tank = {
-			special_type = "tank",
-			unit_types = {
-				america = {
-					Idstring("units/payday2/characters/ene_bulldozer_1/ene_bulldozer_1")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_r870/ene_akan_fbi_tank_r870")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_1/ene_bulldozer_hvh_1")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_2/ene_murkywater_bulldozer_2")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_r870/ene_swat_dozer_policia_federale_r870")
-				}
-			},
-			access = access_type_all
+	local unit_types = {}
+	self.unit_categories.FBI_tank = {
+		special_type = "tank",
+		access = access_type_walk_only,
+		unit_types = unit_types
+	}
+
+	if difficulty_index <= DIFF_ID_3_HARD then
+		unit_types.america = {
+			Idstring("units/payday2/characters/ene_bulldozer_1/ene_bulldozer_1")
 		}
-	elseif difficulty_index <= 5 then
-		self.unit_categories.FBI_tank = {
-			special_type = "tank",
-			unit_types = {
-				america = {
-					Idstring("units/payday2/characters/ene_bulldozer_1/ene_bulldozer_1"),
-					Idstring("units/payday2/characters/ene_bulldozer_2/ene_bulldozer_2")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_saiga/ene_akan_fbi_tank_saiga"),
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_r870/ene_akan_fbi_tank_r870")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_1/ene_bulldozer_hvh_1"),
-					Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_2/ene_bulldozer_hvh_2")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_2/ene_murkywater_bulldozer_2"),
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_3/ene_murkywater_bulldozer_3")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_r870/ene_swat_dozer_policia_federale_r870"),
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_saiga/ene_swat_dozer_policia_federale_saiga")
-				}
-			},
-			access = access_type_all
+		unit_types.russia = {
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_r870/ene_akan_fbi_tank_r870")
 		}
-	elseif difficulty_index <= 6 then
-		self.unit_categories.FBI_tank = {
-			special_type = "tank",
-			unit_types = {
-				america = {
-					Idstring("units/payday2/characters/ene_bulldozer_1/ene_bulldozer_1"),
-					Idstring("units/payday2/characters/ene_bulldozer_2/ene_bulldozer_2"),
-					Idstring("units/payday2/characters/ene_bulldozer_3/ene_bulldozer_3")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_saiga/ene_akan_fbi_tank_saiga"),
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_r870/ene_akan_fbi_tank_r870"),
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_rpk_lmg/ene_akan_fbi_tank_rpk_lmg")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_1/ene_bulldozer_hvh_1"),
-					Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_2/ene_bulldozer_hvh_2"),
-					Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_3/ene_bulldozer_hvh_3")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_2/ene_murkywater_bulldozer_2"),
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_3/ene_murkywater_bulldozer_3"),
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_4/ene_murkywater_bulldozer_4")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_r870/ene_swat_dozer_policia_federale_r870"),
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_saiga/ene_swat_dozer_policia_federale_saiga"),
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_m249/ene_swat_dozer_policia_federale_m249")
-				}
-			},
-			access = access_type_all
+		unit_types.zombie = {
+			Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_1/ene_bulldozer_hvh_1")
 		}
-	elseif difficulty_index <= 7 then
-		self.unit_categories.FBI_tank = {
-			special_type = "tank",
-			unit_types = {
-				america = {
-					Idstring("units/payday2/characters/ene_bulldozer_1/ene_bulldozer_1"),
-					Idstring("units/payday2/characters/ene_bulldozer_2/ene_bulldozer_2"),
-					Idstring("units/payday2/characters/ene_bulldozer_3/ene_bulldozer_3"),
-					Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_minigun_classic/ene_bulldozer_minigun_classic")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_r870/ene_akan_fbi_tank_r870"),
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_saiga/ene_akan_fbi_tank_saiga"),
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_rpk_lmg/ene_akan_fbi_tank_rpk_lmg"),
-					Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_minigun_classic/ene_bulldozer_minigun_classic")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_1/ene_bulldozer_hvh_1"),
-					Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_2/ene_bulldozer_hvh_2"),
-					Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_3/ene_bulldozer_hvh_3"),
-					Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_minigun_classic/ene_bulldozer_minigun_classic")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_1/ene_murkywater_bulldozer_1"),
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_2/ene_murkywater_bulldozer_2"),
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_3/ene_murkywater_bulldozer_3"),
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_4/ene_murkywater_bulldozer_4")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_r870/ene_swat_dozer_policia_federale_r870"),
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_saiga/ene_swat_dozer_policia_federale_saiga"),
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_m249/ene_swat_dozer_policia_federale_m249"),
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_minigun/ene_swat_dozer_policia_federale_minigun")
-				}
-			},
-			access = access_type_all
+		unit_types.murkywater = {
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_2/ene_murkywater_bulldozer_2")
+		}
+		unit_types.federales = {
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_r870/ene_swat_dozer_policia_federale_r870")
+		}
+	elseif difficulty_index <= DIFF_ID_5_OVERKILL then
+		unit_types.america = {
+			Idstring("units/payday2/characters/ene_bulldozer_1/ene_bulldozer_1"),
+			Idstring("units/payday2/characters/ene_bulldozer_2/ene_bulldozer_2")
+		}
+		unit_types.russia = {
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_saiga/ene_akan_fbi_tank_saiga"),
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_r870/ene_akan_fbi_tank_r870")
+		}
+		unit_types.zombie = {
+			Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_1/ene_bulldozer_hvh_1"),
+			Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_2/ene_bulldozer_hvh_2")
+		}
+		unit_types.murkywater = {
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_2/ene_murkywater_bulldozer_2"),
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_3/ene_murkywater_bulldozer_3")
+		}
+		unit_types.federales = {
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_r870/ene_swat_dozer_policia_federale_r870"),
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_saiga/ene_swat_dozer_policia_federale_saiga")
+		}
+	elseif difficulty_index <= DIFF_ID_6_MAYHEM then
+		unit_types.america = {
+			Idstring("units/payday2/characters/ene_bulldozer_1/ene_bulldozer_1"),
+			Idstring("units/payday2/characters/ene_bulldozer_2/ene_bulldozer_2"),
+			Idstring("units/payday2/characters/ene_bulldozer_3/ene_bulldozer_3")
+		}
+		unit_types.russia = {
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_saiga/ene_akan_fbi_tank_saiga"),
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_r870/ene_akan_fbi_tank_r870"),
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_rpk_lmg/ene_akan_fbi_tank_rpk_lmg")
+		}
+		unit_types.zombie = {
+			Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_1/ene_bulldozer_hvh_1"),
+			Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_2/ene_bulldozer_hvh_2"),
+			Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_3/ene_bulldozer_hvh_3")
+		}
+		unit_types.murkywater = {
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_2/ene_murkywater_bulldozer_2"),
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_3/ene_murkywater_bulldozer_3"),
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_4/ene_murkywater_bulldozer_4")
+		}
+		unit_types.federales = {
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_r870/ene_swat_dozer_policia_federale_r870"),
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_saiga/ene_swat_dozer_policia_federale_saiga"),
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_m249/ene_swat_dozer_policia_federale_m249")
+		}
+	elseif difficulty_index <= DIFF_ID_7_DEATHWISH then
+		unit_types.america = {
+			Idstring("units/payday2/characters/ene_bulldozer_1/ene_bulldozer_1"),
+			Idstring("units/payday2/characters/ene_bulldozer_2/ene_bulldozer_2"),
+			Idstring("units/payday2/characters/ene_bulldozer_3/ene_bulldozer_3"),
+			Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_minigun_classic/ene_bulldozer_minigun_classic")
+		}
+		unit_types.russia = {
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_r870/ene_akan_fbi_tank_r870"),
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_saiga/ene_akan_fbi_tank_saiga"),
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_rpk_lmg/ene_akan_fbi_tank_rpk_lmg"),
+			Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_minigun_classic/ene_bulldozer_minigun_classic")
+		}
+		unit_types.zombie = {
+			Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_1/ene_bulldozer_hvh_1"),
+			Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_2/ene_bulldozer_hvh_2"),
+			Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_3/ene_bulldozer_hvh_3"),
+			Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_minigun_classic/ene_bulldozer_minigun_classic")
+		}
+		unit_types.murkywater = {
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_1/ene_murkywater_bulldozer_1"),
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_2/ene_murkywater_bulldozer_2"),
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_3/ene_murkywater_bulldozer_3"),
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_4/ene_murkywater_bulldozer_4")
+		}
+		unit_types.federales = {
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_r870/ene_swat_dozer_policia_federale_r870"),
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_saiga/ene_swat_dozer_policia_federale_saiga"),
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_m249/ene_swat_dozer_policia_federale_m249"),
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_minigun/ene_swat_dozer_policia_federale_minigun")
 		}
 	else
-		self.unit_categories.FBI_tank = {
-			special_type = "tank",
-			unit_types = {
-				america = {
-					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_bulldozer/ene_zeal_bulldozer"),
-					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_bulldozer_2/ene_zeal_bulldozer_2"),
-					Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_bulldozer_3/ene_zeal_bulldozer_3"),
-					Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_medic/ene_bulldozer_medic"),
-					Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_minigun/ene_bulldozer_minigun")
-				},
-				russia = {
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_r870/ene_akan_fbi_tank_r870"),
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_saiga/ene_akan_fbi_tank_saiga"),
-					Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_rpk_lmg/ene_akan_fbi_tank_rpk_lmg"),
-					Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_medic/ene_bulldozer_medic"),
-					Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_minigun/ene_bulldozer_minigun")
-				},
-				zombie = {
-					Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_1/ene_bulldozer_hvh_1"),
-					Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_2/ene_bulldozer_hvh_2"),
-					Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_3/ene_bulldozer_hvh_3"),
-					Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_medic/ene_bulldozer_medic"),
-					Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_minigun/ene_bulldozer_minigun")
-				},
-				murkywater = {
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_1/ene_murkywater_bulldozer_1"),
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_2/ene_murkywater_bulldozer_2"),
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_3/ene_murkywater_bulldozer_3"),
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_4/ene_murkywater_bulldozer_4"),
-					Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_medic/ene_murkywater_bulldozer_medic")
-				},
-				federales = {
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_r870/ene_swat_dozer_policia_federale_r870"),
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_saiga/ene_swat_dozer_policia_federale_saiga"),
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_m249/ene_swat_dozer_policia_federale_m249"),
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_minigun/ene_swat_dozer_policia_federale_minigun"),
-					Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_medic_policia_federale/ene_swat_dozer_medic_policia_federale")
-				}
-			},
-			access = access_type_all
+		unit_types.america = {
+			Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_bulldozer/ene_zeal_bulldozer"),
+			Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_bulldozer_2/ene_zeal_bulldozer_2"),
+			Idstring("units/pd2_dlc_gitgud/characters/ene_zeal_bulldozer_3/ene_zeal_bulldozer_3"),
+			Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_medic/ene_bulldozer_medic"),
+			Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_minigun/ene_bulldozer_minigun")
+		}
+		unit_types.russia = {
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_r870/ene_akan_fbi_tank_r870"),
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_saiga/ene_akan_fbi_tank_saiga"),
+			Idstring("units/pd2_dlc_mad/characters/ene_akan_fbi_tank_rpk_lmg/ene_akan_fbi_tank_rpk_lmg"),
+			Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_medic/ene_bulldozer_medic"),
+			Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_minigun/ene_bulldozer_minigun")
+		}
+		unit_types.zombie = {
+			Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_1/ene_bulldozer_hvh_1"),
+			Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_2/ene_bulldozer_hvh_2"),
+			Idstring("units/pd2_dlc_hvh/characters/ene_bulldozer_hvh_3/ene_bulldozer_hvh_3"),
+			Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_medic/ene_bulldozer_medic"),
+			Idstring("units/pd2_dlc_drm/characters/ene_bulldozer_minigun/ene_bulldozer_minigun")
+		}
+		unit_types.murkywater = {
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_1/ene_murkywater_bulldozer_1"),
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_2/ene_murkywater_bulldozer_2"),
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_3/ene_murkywater_bulldozer_3"),
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_4/ene_murkywater_bulldozer_4"),
+			Idstring("units/pd2_dlc_bph/characters/ene_murkywater_bulldozer_medic/ene_murkywater_bulldozer_medic")
+		}
+		unit_types.federales = {
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_r870/ene_swat_dozer_policia_federale_r870"),
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_saiga/ene_swat_dozer_policia_federale_saiga"),
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_m249/ene_swat_dozer_policia_federale_m249"),
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_policia_federale_minigun/ene_swat_dozer_policia_federale_minigun"),
+			Idstring("units/pd2_dlc_bex/characters/ene_swat_dozer_medic_policia_federale/ene_swat_dozer_medic_policia_federale")
 		}
 	end
 
 	self.unit_categories.medic_M4 = {
 		special_type = "medic",
+		access = access_type_all,
 		unit_types = {
 			america = {
 				Idstring("units/payday2/characters/ene_medic_m4/ene_medic_m4")
@@ -1269,11 +1172,11 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 			federales = {
 				Idstring("units/pd2_dlc_bex/characters/ene_swat_medic_policia_federale/ene_swat_medic_policia_federale")
 			}
-		},
-		access = access_type_all
+		}
 	}
 	self.unit_categories.medic_R870 = {
 		special_type = "medic",
+		access = access_type_all,
 		unit_types = {
 			america = {
 				Idstring("units/payday2/characters/ene_medic_r870/ene_medic_r870")
@@ -1290,12 +1193,12 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 			federales = {
 				Idstring("units/pd2_dlc_bex/characters/ene_swat_medic_policia_federale_r870/ene_swat_medic_policia_federale_r870")
 			}
-		},
-		access = access_type_all
+		}
 	}
 	self.unit_categories.Phalanx_minion = {
-		is_captain = true,
 		special_type = "shield",
+		is_captain = true,
+		access = access_type_walk_only,
 		unit_types = {
 			america = {
 				Idstring("units/pd2_dlc_vip/characters/ene_phalanx_1/ene_phalanx_1")
@@ -1312,12 +1215,12 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 			federales = {
 				Idstring("units/pd2_dlc_vip/characters/ene_phalanx_1/ene_phalanx_1")
 			}
-		},
-		access = access_type_walk_only
+		}
 	}
 	self.unit_categories.Phalanx_vip = {
-		is_captain = true,
 		special_type = "shield",
+		is_captain = true,
+		access = access_type_walk_only,
 		unit_types = {
 			america = {
 				Idstring("units/pd2_dlc_vip/characters/ene_vip_1/ene_vip_1")
@@ -1329,15 +1232,15 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 				Idstring("units/pd2_dlc_vip/characters/ene_vip_1/ene_vip_1")
 			},
 			murkywater = {
-				Idstring("units/pd2_dlc_vip/characters/ene_phalanx_1/ene_phalanx_1")
+				Idstring("units/pd2_dlc_vip/characters/ene_vip_1/ene_vip_1")
 			},
 			federales = {
-				Idstring("units/pd2_dlc_vip/characters/ene_phalanx_1/ene_phalanx_1")
+				Idstring("units/pd2_dlc_vip/characters/ene_vip_1/ene_vip_1")
 			}
-		},
-		access = access_type_walk_only
+		}
 	}
 	self.unit_categories.marshal_marksman = {
+		access = access_type_all,
 		unit_types = {
 			america = {
 				Idstring("units/pd2_dlc_usm1/characters/ene_male_marshal_marksman_1/ene_male_marshal_marksman_1")
@@ -1354,10 +1257,10 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 			federales = {
 				Idstring("units/pd2_dlc_usm1/characters/ene_male_marshal_marksman_2/ene_male_marshal_marksman_2")
 			}
-		},
-		access = access_type_all
+		}
 	}
 	self.unit_categories.marshal_shield = {
+		access = access_type_walk_only,
 		unit_types = {
 			america = {
 				Idstring("units/pd2_dlc_usm2/characters/ene_male_marshal_shield_1/ene_male_marshal_shield_1")
@@ -1374,10 +1277,10 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 			federales = {
 				Idstring("units/pd2_dlc_usm2/characters/ene_male_marshal_shield_2/ene_male_marshal_shield_2")
 			}
-		},
-		access = access_type_walk_only
+		}
 	}
 	self.unit_categories.snowman_boss = {
+		access = access_type_all,
 		unit_types = {
 			america = {
 				Idstring("units/pd2_dlc_cg22/characters/ene_snowman_boss/ene_snowman_boss")
@@ -1394,10 +1297,10 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 			federales = {
 				Idstring("units/pd2_dlc_cg22/characters/ene_snowman_boss/ene_snowman_boss")
 			}
-		},
-		access = access_type_all
+		}
 	}
 	self.unit_categories.piggydozer = {
+		access = access_type_all,
 		unit_types = {
 			america = {
 				Idstring("units/pd2_dlc_pda10/characters/ene_dozer_piggy/ene_dozer_piggy")
@@ -1414,8 +1317,7 @@ function GroupAITweakData:_init_unit_categories(difficulty_index)
 			federales = {
 				Idstring("units/pd2_dlc_pda10/characters/ene_dozer_piggy/ene_dozer_piggy")
 			}
-		},
-		access = access_type_all
+		}
 	}
 end
 
@@ -1461,7 +1363,7 @@ function GroupAITweakData:_init_enemy_tactics(difficulty_index)
 		shield_wall_charge = {
 			"shield",
 			"charge",
-			"provide_support "
+			"provide_support"
 		},
 		shield_support_charge = {
 			"shield_cover",
@@ -1477,7 +1379,7 @@ function GroupAITweakData:_init_enemy_tactics(difficulty_index)
 			"deathguard"
 		},
 		tazer_flanking = {
-			"flanking",
+			"flank",
 			"charge",
 			"provide_coverfire",
 			"smoke_grenade",
@@ -2519,75 +2421,113 @@ function GroupAITweakData:_init_enemy_spawn_groups_level(tweak_data, difficulty_
 		end
 	end
 
-	if lvl_tweak_data and not lvl_tweak_data.ai_marshal_spawns_disabled then
+	if lvl_tweak_data and not lvl_tweak_data.ai_marshal_spawns_disabled and DIFF_ID_5_OVERKILL <= difficulty_index then
+		local marshal_squad = {
+			amount = {
+				2,
+				2
+			},
+			spawn = {
+				{
+					respawn_cooldown = 30,
+					amount_min = 1,
+					rank = 2,
+					freq = 1,
+					unit = "marshal_shield",
+					tactics = self._tactics.marshal_shield
+				},
+				{
+					respawn_cooldown = 30,
+					amount_min = 1,
+					rank = 1,
+					freq = 1,
+					unit = "marshal_marksman",
+					tactics = self._tactics.marshal_marksman
+				}
+			},
+			spawn_point_chk_ref = table.list_to_set({
+				"tac_shield_wall",
+				"tac_shield_wall_ranged",
+				"tac_shield_wall_charge"
+			})
+		}
+		self.enemy_spawn_groups.marshal_squad = marshal_squad
+
+		if difficulty_index <= DIFF_ID_5_OVERKILL then
+			print("[MARSHAL_BALANCE] Overkill")
+
+			marshal_squad.spawn_cooldown = 90
+			marshal_squad.max_nr_simultaneous_groups = 1
+			marshal_squad.initial_spawn_delay = 540
+		elseif difficulty_index == DIFF_ID_6_MAYHEM then
+			print("[MARSHAL_BALANCE] Mayhem")
+
+			marshal_squad.spawn_cooldown = 75
+			marshal_squad.max_nr_simultaneous_groups = 1
+			marshal_squad.initial_spawn_delay = 480
+		elseif DIFF_ID_7_DEATHWISH <= difficulty_index then
+			print("[MARSHAL_BALANCE] Deathwish+")
+
+			marshal_squad.spawn_cooldown = 60
+			marshal_squad.max_nr_simultaneous_groups = 2
+			marshal_squad.initial_spawn_delay = 480
+		end
+
 		if lvl_tweak_data.ai_marshal_spawns_fast then
-			self.enemy_spawn_groups.marshal_squad = {
-				spawn_cooldown = 60,
-				max_nr_simultaneous_groups = 2,
-				initial_spawn_delay = 90,
-				amount = {
-					2,
-					2
-				},
-				spawn = {
-					{
-						respawn_cooldown = 30,
-						amount_min = 1,
-						rank = 2,
-						freq = 1,
-						unit = "marshal_shield",
-						tactics = self._tactics.marshal_shield
-					},
-					{
-						respawn_cooldown = 30,
-						amount_min = 1,
-						rank = 1,
-						freq = 1,
-						unit = "marshal_marksman",
-						tactics = self._tactics.marshal_marksman
-					}
-				},
-				spawn_point_chk_ref = table.list_to_set({
-					"tac_shield_wall",
-					"tac_shield_wall_ranged",
-					"tac_shield_wall_charge"
-				})
-			}
-		else
-			self.enemy_spawn_groups.marshal_squad = {
-				spawn_cooldown = 60,
-				max_nr_simultaneous_groups = 2,
-				initial_spawn_delay = 480,
-				amount = {
-					2,
-					2
-				},
-				spawn = {
-					{
-						respawn_cooldown = 30,
-						amount_min = 1,
-						rank = 2,
-						freq = 1,
-						unit = "marshal_shield",
-						tactics = self._tactics.marshal_shield
-					},
-					{
-						respawn_cooldown = 30,
-						amount_min = 1,
-						rank = 1,
-						freq = 1,
-						unit = "marshal_marksman",
-						tactics = self._tactics.marshal_marksman
-					}
-				},
-				spawn_point_chk_ref = table.list_to_set({
-					"tac_shield_wall",
-					"tac_shield_wall_ranged",
-					"tac_shield_wall_charge"
-				})
-			}
+			local min_spawn_delay = 60
+			marshal_squad.initial_spawn_delay = math.max(min_spawn_delay, marshal_squad.initial_spawn_delay * 0.25)
 		end
 	end
+end
+
+function GroupAITweakData:_init_enemy_spawn_cooldowns(difficulty_index)
+	self.ai_spawn_distance_limit = 5000
+	self.ai_spawn_group_cooldowns = {
+		regular = {
+			{
+				10,
+				15
+			},
+			{
+				8,
+				12
+			},
+			{
+				8,
+				10.5
+			},
+			{
+				7.5,
+				10
+			}
+		},
+		fast = {
+			{
+				10,
+				12
+			},
+			{
+				7,
+				12
+			},
+			{
+				7,
+				9.5
+			},
+			{
+				6,
+				8
+			}
+		}
+	}
+	self.ai_spawn_camp_added_delay = {
+		2.5,
+		2.5,
+		2,
+		1.75
+	}
+	self.ai_spawn_camp_distance = 650
+	self.ai_spawn_camp_z_distance = 300
 end
 
 function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
@@ -2848,137 +2788,18 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 		}
 	end
 
-	if is_console then
-		self.besiege.assault.force = {
-			3,
-			7,
-			10
-		}
-		self.besiege.assault.force_pool = {
-			0,
-			60,
-			100
-		}
-	else
-		self.besiege.assault.force = {
-			14,
-			16,
-			18
-		}
-		self.besiege.assault.force_pool = {
-			150,
-			175,
-			225
-		}
-	end
+	self.besiege.assault.force = {
+		15,
+		17,
+		18
+	}
+	self.besiege.assault.force_pool = {
+		150,
+		175,
+		225
+	}
 
-	if is_console then
-		if difficulty_index <= DIFF_ID_2_NORMAL then
-			self.besiege.assault.force_balance_mul = {
-				1,
-				1.1,
-				1.2,
-				1.3
-			}
-			self.besiege.assault.force_pool_balance_mul = {
-				1,
-				1.1,
-				1.2,
-				1.3
-			}
-		elseif difficulty_index == DIFF_ID_3_HARD then
-			self.besiege.assault.force_balance_mul = {
-				1.2,
-				1.4,
-				1.6,
-				1.8
-			}
-			self.besiege.assault.force_pool_balance_mul = {
-				1.2,
-				1.4,
-				1.6,
-				1.8
-			}
-		elseif difficulty_index == DIFF_ID_4_VERYHARD then
-			self.besiege.assault.force_balance_mul = {
-				1.6,
-				1.8,
-				2,
-				2.2
-			}
-			self.besiege.assault.force_pool_balance_mul = {
-				1.7,
-				2,
-				2.2,
-				2.4
-			}
-		elseif difficulty_index == DIFF_ID_5_OVERKILL then
-			self.besiege.assault.force_balance_mul = {
-				1.8,
-				2.1,
-				2.4,
-				2.8
-			}
-			self.besiege.assault.force_pool_balance_mul = {
-				2.2,
-				2.4,
-				2.6,
-				2.8
-			}
-		else
-			self.besiege.assault.force_balance_mul = {
-				1.8,
-				2.1,
-				2.4,
-				2.8
-			}
-			self.besiege.assault.force_pool_balance_mul = {
-				2.2,
-				2.4,
-				2.6,
-				2.8
-			}
-		end
-	elseif difficulty_index <= DIFF_ID_2_NORMAL then
-		self.besiege.assault.force_balance_mul = {
-			1,
-			2,
-			3,
-			4
-		}
-		self.besiege.assault.force_pool_balance_mul = {
-			1,
-			2,
-			3,
-			4
-		}
-	elseif difficulty_index == DIFF_ID_3_HARD then
-		self.besiege.assault.force_balance_mul = {
-			1,
-			2,
-			3,
-			4
-		}
-		self.besiege.assault.force_pool_balance_mul = {
-			1,
-			2,
-			3,
-			4
-		}
-	elseif difficulty_index == DIFF_ID_4_VERYHARD then
-		self.besiege.assault.force_balance_mul = {
-			1,
-			2,
-			3,
-			4
-		}
-		self.besiege.assault.force_pool_balance_mul = {
-			1,
-			2,
-			3,
-			4
-		}
-	elseif difficulty_index == DIFF_ID_5_OVERKILL then
+	if difficulty_index <= DIFF_ID_5_OVERKILL then
 		self.besiege.assault.force_balance_mul = {
 			1,
 			2,
@@ -2993,29 +2814,29 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 		}
 	elseif difficulty_index == DIFF_ID_6_MAYHEM then
 		self.besiege.assault.force_balance_mul = {
-			1,
-			2,
-			3,
-			4
+			1.1,
+			2.25,
+			3.25,
+			4.5
 		}
 		self.besiege.assault.force_pool_balance_mul = {
-			1,
-			2,
-			3,
-			4
+			1.1,
+			2.25,
+			3.25,
+			4.5
 		}
 	elseif difficulty_index == DIFF_ID_7_DEATHWISH then
 		self.besiege.assault.force_balance_mul = {
-			1,
-			2,
-			3,
-			4
+			1.2,
+			2.5,
+			3.75,
+			5
 		}
 		self.besiege.assault.force_pool_balance_mul = {
-			1,
-			2,
-			3,
-			4
+			1.2,
+			2.5,
+			3.75,
+			5
 		}
 	else
 		self.besiege.assault.force_balance_mul = {
@@ -3557,7 +3378,7 @@ function GroupAITweakData:_init_task_data(difficulty_index, difficulty)
 	}
 	self.besiege.recon.interval_variation = 40
 
-	if difficulty_index < DIFF_ID_6_MAYHEM then
+	if difficulty_index <= DIFF_ID_5_OVERKILL then
 		self.besiege.recon.force = {
 			2,
 			4,

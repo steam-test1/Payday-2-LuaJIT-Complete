@@ -190,8 +190,6 @@ end
 function BaseInteractionExt:update(distance_to_player)
 end
 
-local is_PS3 = SystemInfo:platform() == Idstring("PS3")
-
 function BaseInteractionExt:_btn_interact()
 	if _G.IS_VR then
 		local button = self._hand_id == PlayerHand.LEFT and "interact_left" or "interact_right"
@@ -270,22 +268,32 @@ function BaseInteractionExt:update_show_interact(player, locator)
 	local text = managers.localization:text(text_id, string_macros)
 	local icon = self._tweak_data.icon
 
-	if self._tweak_data.special_equipment and not managers.player:has_special_equipment(self._tweak_data.special_equipment) then
-		local has_special_equipment = false
+	print("[BaseInteractionExt:update_show_interact] This used?", inspect(self._tweak_data))
 
-		if self._tweak_data.possible_special_equipment then
-			for i, special_equipment in ipairs(self._tweak_data.possible_special_equipment) do
-				if managers.player:has_special_equipment(special_equipment) then
-					has_special_equipment = true
+	if self._tweak_data.special_equipment then
+		local equipment_data = managers.player:has_special_equipment(self._tweak_data.special_equipment)
 
-					break
+		print("[BaseInteractionExt:update_show_interact] equipment_data", equipment_data and inspect(equipment_data))
+
+		if not equipment_data then
+			local has_special_equipment = false
+
+			if self._tweak_data.possible_special_equipment then
+				for i, special_equipment in ipairs(self._tweak_data.possible_special_equipment) do
+					equipment_data = managers.player:has_special_equipment(special_equipment)
+
+					if equipment_data then
+						has_special_equipment = true
+
+						break
+					end
 				end
 			end
-		end
 
-		if not has_special_equipment then
-			text = managers.localization:text(self._tweak_data.equipment_text_id, string_macros)
-			icon = self.no_equipment_icon or self._tweak_data.no_equipment_icon or icon
+			if not has_special_equipment then
+				text = managers.localization:text(self._tweak_data.equipment_text_id, string_macros)
+				icon = self.no_equipment_icon or self._tweak_data.no_equipment_icon or icon
+			end
 		end
 	end
 
@@ -577,7 +585,9 @@ function BaseInteractionExt:can_interact(player)
 		return true
 	end
 
-	return managers.player:has_special_equipment(self._tweak_data.special_equipment)
+	local special_equipment_data = managers.player:has_special_equipment(self._tweak_data.special_equipment)
+
+	return special_equipment_data
 end
 
 function BaseInteractionExt:_interact_blocked(player)
@@ -688,6 +698,10 @@ local ids_contour_opacity = Idstring("contour_opacity")
 function BaseInteractionExt:set_contour(color, opacity)
 	if self._tweak_data.no_contour or self._contour_override then
 		return
+	end
+
+	if self._tweak_data.set_contour_refreshes_mats then
+		self:refresh_material()
 	end
 
 	for _, m in ipairs(self._materials) do
@@ -946,7 +960,9 @@ end
 
 function MultipleChoiceInteractionExt:sync_net_event(event_id, player)
 	if self._unit:damage() then
-		self._unit:damage():run_sequence_simple("wrong", {
+		local seq_name = "wrong"
+
+		self._unit:damage():run_sequence_simple(seq_name, {
 			unit = player
 		})
 	end
@@ -1727,6 +1743,18 @@ end
 function ZipLineInteractionExt:interact(player)
 	ZipLineInteractionExt.super.super.interact(self, player)
 	self._unit:zipline():on_interacted(player)
+end
+
+function ZipLineInteractionExt:selected(player)
+	if self._unit:zipline():is_usage_type_both() then
+		if managers.player:is_carrying() then
+			self._tweak_data.text_id = "hud_int_bag_zipline"
+		else
+			self._tweak_data.text_id = "hud_int_use_zipline"
+		end
+	end
+
+	return ZipLineInteractionExt.super.selected(self, player)
 end
 
 IntimitateInteractionExt = IntimitateInteractionExt or class(BaseInteractionExt)
@@ -2666,14 +2694,20 @@ function SpecialEquipmentInteractionExt:sync_interacted(peer, player, status, sk
 end
 
 function SpecialEquipmentInteractionExt:set_give_special_equipment(special_equipment)
-	self._special_equipment = special_equipment
+	if special_equipment and special_equipment ~= "" then
+		self._special_equipment = special_equipment
+	else
+		self._special_equipment = nil
+	end
 end
 
 function SpecialEquipmentInteractionExt:apply_item_pickup()
 	if self._special_equipment then
-		managers.player:add_special({
+		local t = {
 			name = self._special_equipment
-		})
+		}
+
+		managers.player:add_special(t)
 	end
 end
 

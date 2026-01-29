@@ -25,14 +25,23 @@ function UnoAchievementChallenge:init_finalize()
 end
 
 function UnoAchievementChallenge:generate_challenge(trigger_save)
-	local pool = tweak_data.safehouse.uno_achievements_pool
-	local challenge = table.shuffled_copy(pool)
+	local dlc_checklist = tweak_data.safehouse.uno_achievements_pool_ip
+	local uno_achievements_pool = tweak_data.safehouse.uno_achievements_pool
+	local gen_achievements_pool = table.shuffled_copy(uno_achievements_pool)
 
-	for i = self.CHALLENGE_COUNT + 1, #pool do
-		challenge[i] = nil
+	for global_value, achievements in pairs(dlc_checklist) do
+		if not managers.dlc:is_dlc_unlocked(global_value) then
+			for _, id in pairs(achievements) do
+				table.delete(gen_achievements_pool, id)
+			end
+		end
 	end
 
-	self._global.challenge = challenge
+	while self.CHALLENGE_COUNT < #gen_achievements_pool do
+		table.remove(gen_achievements_pool)
+	end
+
+	self._global.challenge = gen_achievements_pool
 
 	if trigger_save == nil or trigger_save then
 		managers.savefile:save_progress()

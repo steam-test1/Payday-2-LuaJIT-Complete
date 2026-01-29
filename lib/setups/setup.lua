@@ -542,6 +542,7 @@ function Setup:init_game()
 end
 
 function Setup:init_finalize()
+	print("[Setup:init_finalize]")
 	Setup.super.init_finalize(self)
 	game_state_machine:init_finilize()
 	managers.dlc:init_finalize()
@@ -555,6 +556,7 @@ function Setup:init_finalize()
 	end
 
 	managers.player:init_finalize()
+	managers.weapon_factory:init_finalize()
 	managers.blackmarket:init_finalize()
 
 	if SystemInfo:platform() == Idstring("WIN32") then
@@ -693,6 +695,7 @@ end
 
 function Setup:on_tweak_data_reloaded()
 	managers.dlc:on_tweak_data_reloaded()
+	managers.weapon_factory:on_tweak_data_reloaded()
 end
 
 function Setup:destroy()

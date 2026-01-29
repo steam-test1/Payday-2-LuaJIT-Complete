@@ -352,6 +352,21 @@ function ViewportManager:set_fullscreen(fullscreen)
 	end
 end
 
+function ViewportManager:set_borderless(borderless)
+	if not RenderSettings.borderless ~= not borderless or self._render_settings_change_map and not self._render_settings_change_map.borderless ~= not borderless then
+		self._render_settings_change_map = self._render_settings_change_map or {}
+		self._render_settings_change_map.borderless = not not borderless
+	end
+end
+
+function ViewportManager:is_borderless()
+	if self._render_settings_change_map and self._render_settings_change_map.borderless ~= nil then
+		return self._render_settings_change_map.borderless
+	else
+		return RenderSettings.borderless
+	end
+end
+
 function ViewportManager:set_aspect_ratio(aspect_ratio)
 	if RenderSettings.aspect_ratio ~= aspect_ratio or self._render_settings_change_map and self._render_settings_change_map.aspect_ratio ~= aspect_ratio then
 		self._render_settings_change_map = self._render_settings_change_map or {}
