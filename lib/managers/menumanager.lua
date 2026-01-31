@@ -10286,7 +10286,9 @@ end
 function MenuOptionInitiator:modify_video(node)
 	local resolution_item = node:item("resolution")
 
-	resolution_item:set_enabled(not managers.viewport:is_borderless())
+	if resolution_item then
+		resolution_item:set_enabled(true)
+	end
 
 	local adapter_item = node:item("choose_video_adapter")
 

@@ -217,7 +217,7 @@ function UpgradesTweakData:_init_pd2_values()
 	}
 	self.explosive_bullet = {
 		curve_pow = 0.5,
-		player_dmg_mul = 0.1,
+		player_dmg_mul = 0.036,
 		range = 200
 	}
 	self.explosive_bullet.feedback_range = self.explosive_bullet.range

@@ -356,7 +356,10 @@ function WeaponFactoryTweakData:factory_part_post_process()
 					weapon_data.override = weapon_data.override or {}
 					weapon_data.override[part_id] = weapon_data.override[part_id] or {}
 					weapon_data.override[part_id].stats = weapon_data.override[part_id].stats or original_stats
-					weapon_data.override[part_id].stats.concealment = original_stats.concealment + 2
+
+					if weapon_data.override[part_id].stats.concealment then
+						weapon_data.override[part_id].stats.concealment = (original_stats.concealment or 0) + 2
+					end
 				end
 			end
 		end
@@ -9154,6 +9157,10 @@ function WeaponFactoryTweakData:_init_mxm_mods()
 			},
 			wpn_fps_snp_victor = {
 				translation = Vector3(0, -10, -1.6),
+				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_snp_msr = {
+				translation = Vector3(0, -11, -4.79),
 				rotation = Rotation(0, 0, 0)
 			}
 		},
