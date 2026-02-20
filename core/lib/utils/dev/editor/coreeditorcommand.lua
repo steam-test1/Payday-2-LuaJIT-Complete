@@ -412,7 +412,7 @@ function MissionElementAddOnExecutedCommand:execute(mission_element, unit, exist
 	end
 
 	mission_element:append_elements_sorted()
-	mission_element:set_on_executed_element(unit)
+	mission_element:set_on_executed_element(#mission_element._hed.on_executed)
 
 	self._values.params = params
 end

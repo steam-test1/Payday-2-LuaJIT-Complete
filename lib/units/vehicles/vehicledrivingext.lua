@@ -161,6 +161,7 @@ function VehicleDrivingExt:set_tweak_data(data)
 	self._tweak_data = data
 	self._seats = deep_clone(self._tweak_data.seats)
 	self._loot_points = deep_clone(self._tweak_data.loot_points)
+	self._secure_loot = self._tweak_data.secure_loot
 
 	for _, seat in pairs(self._seats) do
 		seat.occupant = nil
@@ -384,10 +385,8 @@ function VehicleDrivingExt:add_loot(carry_id, multiplier)
 
 	local bag_type_seq = "action_add_bag_" .. carry_id
 
-	if self._unit:damage():has_sequence(bag_type_seq) then
-		self._unit:damage():run_sequence_simple(bag_type_seq)
-	elseif self._unit:damage():has_sequence("action_add_bag") then
-		self._unit:damage():run_sequence_simple("action_add_bag")
+	if not self._unit:damage():has_then_run_sequence_simple(bag_type_seq) then
+		self._unit:damage():has_then_run_sequence_simple("action_add_bag")
 	end
 end
 
@@ -406,10 +405,8 @@ function VehicleDrivingExt:sync_loot(carry_id, multiplier)
 	local bag_type_seq_carry = "int_seq_sync_slot_" .. count .. "_" .. carry_id
 	local bag_type_seq = "int_seq_sync_slot_" .. count
 
-	if self._unit:damage():has_sequence(bag_type_seq_carry) then
-		self._unit:damage():run_sequence_simple(bag_type_seq_carry)
-	elseif self._unit:damage():has_sequence(bag_type_seq) then
-		self._unit:damage():run_sequence_simple(bag_type_seq)
+	if not self._unit:damage():has_then_run_sequence_simple(bag_type_seq_carry) then
+		self._unit:damage():has_then_run_sequence_simple(bag_type_seq)
 	end
 end
 
@@ -426,10 +423,8 @@ function VehicleDrivingExt:remove_loot(carry_id, multiplier)
 
 			local bag_type_seq = "action_remove_bag_" .. carry_id
 
-			if self._unit:damage():has_sequence(bag_type_seq) then
-				self._unit:damage():run_sequence_simple(bag_type_seq)
-			elseif self._unit:damage():has_sequence("action_remove_bag") then
-				self._unit:damage():run_sequence_simple("action_remove_bag")
+			if not self._unit:damage():has_then_run_sequence_simple(bag_type_seq) then
+				self._unit:damage():has_then_run_sequence_simple("action_remove_bag")
 			end
 
 			local display_bag = true
@@ -448,15 +443,15 @@ function VehicleDrivingExt:remove_loot(carry_id, multiplier)
 end
 
 function VehicleDrivingExt:get_random_loot()
-	local entry = math.random(#self._loot)
-
-	return entry
+	return math.random(#self._loot)
 end
 
 function VehicleDrivingExt:get_loot()
-	local entry = #self._loot
+	return #self._loot
+end
 
-	return entry
+function VehicleDrivingExt:get_loot_data()
+	return self._loot[#self._loot]
 end
 
 function VehicleDrivingExt:give_vehicle_loot_to_player(peer_id)
@@ -468,7 +463,7 @@ function VehicleDrivingExt:give_vehicle_loot_to_player(peer_id)
 end
 
 function VehicleDrivingExt:server_give_vehicle_loot_to_player(peer_id)
-	local loot = self._loot[self:get_loot()]
+	local loot = self:get_loot_data()
 
 	if loot then
 		managers.network:session():send_to_peers_synched("sync_give_vehicle_loot_to_player", self._unit, loot.carry_id, loot.multiplier, peer_id)
@@ -495,7 +490,7 @@ function VehicleDrivingExt:drop_loot()
 		return
 	end
 
-	local loot = self._loot[self:get_loot()]
+	local loot = self:get_loot_data()
 
 	if loot then
 		local pos = self._unit:get_object(Idstring(self._tweak_data.loot_drop_point)):position()
@@ -505,9 +500,6 @@ function VehicleDrivingExt:drop_loot()
 		mvector3.multiply(velocity, -300)
 
 		local drop_point = pos + velocity
-
-		Application:debug("dropping loot    " .. inspect(self._unit:position()) .. "      " .. inspect(drop_point))
-
 		local rot = self._unit:rotation()
 		local dir = Vector3(0, 0, 0)
 
@@ -551,10 +543,7 @@ function VehicleDrivingExt:sync_store_loot_in_vehicle(unit, carry_id, multiplier
 	self:add_loot(carry_id, multiplier)
 	unit:set_slot(0)
 	carry_ext:set_value(0)
-
-	if unit:damage():has_sequence("secured") then
-		unit:damage():run_sequence_simple("secured")
-	end
+	unit:damage():has_then_run_sequence_simple("secured")
 end
 
 function VehicleDrivingExt:_loot_filter_func(carry_data)
@@ -571,8 +560,6 @@ function VehicleDrivingExt:_loot_filter_func(carry_data)
 	elseif tweak_data.carry[carry_data:carry_id()].is_unique_loot then
 		return true
 	end
-
-	return false
 end
 
 function VehicleDrivingExt:_catch_loot()
@@ -583,12 +570,12 @@ function VehicleDrivingExt:_catch_loot()
 	for _, loot_point in pairs(self._loot_points) do
 		if loot_point.object then
 			local pos = loot_point.object:position()
-			local equipement = World:find_units_quick("sphere", pos, 100, 14)
+			local caught_units = World:find_units_quick("sphere", pos, 100, 14)
 
-			for _, unit in ipairs(equipement) do
+			for _, unit in ipairs(caught_units) do
 				local carry_data = unit:carry_data()
 
-				if carry_data and self:_loot_filter_func(carry_data) then
+				if carry_data and carry_data:can_secure() and self:_loot_filter_func(carry_data) then
 					self:_store_loot(unit)
 
 					break
@@ -1813,6 +1800,50 @@ function VehicleDrivingExt:_interact_trunk()
 		self._trunk_open = true
 		self._interaction_loot = true
 	end
+end
+
+function VehicleDrivingExt:enable_loot_interaction()
+	if Network:is_server() then
+		managers.network:session():send_to_peers_synched("sync_vehicle_loot_enabled", self._unit, true)
+	end
+
+	self._loot_interaction_enabled = true
+end
+
+function VehicleDrivingExt:disable_loot_interaction()
+	if Network:is_server() then
+		managers.network:session():send_to_peers_synched("sync_vehicle_loot_enabled", self._unit, false)
+	end
+
+	self._loot_interaction_enabled = false
+end
+
+function VehicleDrivingExt:is_loot_interaction_enabled()
+	return self._loot_interaction_enabled and not self._secure_loot
+end
+
+function VehicleDrivingExt:enable_accepting_loot()
+	Application:trace("[VehicleDrivingExt][enable_accepting_loot] Accepting loot enabled")
+
+	if Network:is_server() then
+		managers.network:session():send_to_peers_synched("sync_vehicle_accepting_loot", self._unit, true)
+	end
+
+	self._accepting_loot_enabled = true
+end
+
+function VehicleDrivingExt:disable_accepting_loot()
+	Application:trace("[VehicleDrivingExt][enable_accepting_loot] Accepting loot disabled")
+
+	if Network:is_server() then
+		managers.network:session():send_to_peers_synched("sync_vehicle_accepting_loot", self._unit, false)
+	end
+
+	self._accepting_loot_enabled = false
+end
+
+function VehicleDrivingExt:is_accepting_loot_enabled()
+	return self._accepting_loot_enabled
 end
 
 function VehicleDrivingExt:_number_in_the_vehicle()

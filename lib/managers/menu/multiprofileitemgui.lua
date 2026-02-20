@@ -9,12 +9,8 @@ function MultiProfileItemGui:init(ws, panel)
 	self._ws = ws
 	local panel_w = self.profile_panel_w
 	local panel_h = self.profile_panel_h
-
-	if managers.menu:is_pc_controller() then
-		panel_w = self.quick_panel_w + self.padding + self.profile_panel_w
-		panel_h = math.max(self.quick_panel_h, self.profile_panel_h)
-	end
-
+	panel_w = self.quick_panel_w + self.padding + self.profile_panel_w
+	panel_h = math.max(self.quick_panel_h, self.profile_panel_h)
 	self._panel = self._panel or panel:panel({
 		w = panel_w,
 		h = panel_h
@@ -32,81 +28,95 @@ function MultiProfileItemGui:init(ws, panel)
 	self._profile_panel:set_top(math.round(self._profile_panel:top()))
 
 	local box_panel_w = self._profile_panel:w()
+	self._quick_select_panel = self._quick_select_panel or self._panel:panel({
+		w = self.quick_panel_w,
+		h = self.quick_panel_h
+	})
 
-	if managers.menu:is_pc_controller() then
-		self._quick_select_panel = self._quick_select_panel or self._panel:panel({
-			w = self.quick_panel_w,
-			h = self.quick_panel_h
-		})
+	self._quick_select_panel:set_left(self._profile_panel:right() + self.padding)
+	self._quick_select_panel:set_center_y(self._panel:h() / 2)
+	self._quick_select_panel:set_top(math.round(self._quick_select_panel:top()))
 
-		self._quick_select_panel:set_left(self._profile_panel:right() + self.padding)
-		self._quick_select_panel:set_center_y(self._panel:h() / 2)
-		self._quick_select_panel:set_top(math.round(self._quick_select_panel:top()))
+	if not self._quick_select_panel_elements then
+		self._quick_select_panel_elements = {}
 
-		if not self._quick_select_panel_elements then
-			self._quick_select_panel_elements = {}
+		table.insert(self._quick_select_panel_elements, self._quick_select_panel:rect({
+			h = 3,
+			y = 7,
+			w = 5,
+			x = 5,
+			color = tweak_data.screen_colors.button_stage_3
+		}))
+		table.insert(self._quick_select_panel_elements, self._quick_select_panel:rect({
+			h = 3,
+			y = 7,
+			w = 16,
+			x = 12,
+			color = tweak_data.screen_colors.button_stage_3
+		}))
+		table.insert(self._quick_select_panel_elements, self._quick_select_panel:rect({
+			h = 3,
+			y = 13,
+			w = 5,
+			x = 5,
+			color = tweak_data.screen_colors.button_stage_3
+		}))
+		table.insert(self._quick_select_panel_elements, self._quick_select_panel:rect({
+			h = 3,
+			y = 13,
+			w = 16,
+			x = 12,
+			color = tweak_data.screen_colors.button_stage_3
+		}))
+		table.insert(self._quick_select_panel_elements, self._quick_select_panel:rect({
+			h = 3,
+			y = 19,
+			w = 5,
+			x = 5,
+			color = tweak_data.screen_colors.button_stage_3
+		}))
+		table.insert(self._quick_select_panel_elements, self._quick_select_panel:rect({
+			h = 3,
+			y = 19,
+			w = 16,
+			x = 12,
+			color = tweak_data.screen_colors.button_stage_3
+		}))
+		table.insert(self._quick_select_panel_elements, self._quick_select_panel:rect({
+			h = 3,
+			y = 25,
+			w = 5,
+			x = 5,
+			color = tweak_data.screen_colors.button_stage_3
+		}))
+		table.insert(self._quick_select_panel_elements, self._quick_select_panel:rect({
+			h = 3,
+			y = 25,
+			w = 16,
+			x = 12,
+			color = tweak_data.screen_colors.button_stage_3
+		}))
 
-			table.insert(self._quick_select_panel_elements, self._quick_select_panel:rect({
-				h = 3,
-				y = 7,
-				w = 5,
-				x = 5,
-				color = tweak_data.screen_colors.button_stage_3
-			}))
-			table.insert(self._quick_select_panel_elements, self._quick_select_panel:rect({
-				h = 3,
-				y = 7,
-				w = 16,
-				x = 12,
-				color = tweak_data.screen_colors.button_stage_3
-			}))
-			table.insert(self._quick_select_panel_elements, self._quick_select_panel:rect({
-				h = 3,
-				y = 13,
-				w = 5,
-				x = 5,
-				color = tweak_data.screen_colors.button_stage_3
-			}))
-			table.insert(self._quick_select_panel_elements, self._quick_select_panel:rect({
-				h = 3,
-				y = 13,
-				w = 16,
-				x = 12,
-				color = tweak_data.screen_colors.button_stage_3
-			}))
-			table.insert(self._quick_select_panel_elements, self._quick_select_panel:rect({
-				h = 3,
-				y = 19,
-				w = 5,
-				x = 5,
-				color = tweak_data.screen_colors.button_stage_3
-			}))
-			table.insert(self._quick_select_panel_elements, self._quick_select_panel:rect({
-				h = 3,
-				y = 19,
-				w = 16,
-				x = 12,
-				color = tweak_data.screen_colors.button_stage_3
-			}))
-			table.insert(self._quick_select_panel_elements, self._quick_select_panel:rect({
-				h = 3,
-				y = 25,
-				w = 5,
-				x = 5,
-				color = tweak_data.screen_colors.button_stage_3
-			}))
-			table.insert(self._quick_select_panel_elements, self._quick_select_panel:rect({
-				h = 3,
-				y = 25,
-				w = 16,
-				x = 12,
-				color = tweak_data.screen_colors.button_stage_3
-			}))
+		if not managers.menu:is_pc_controller() then
+			local BTN_STICK_R = managers.localization:get_default_macro("STICK_R")
+			local right_stick = self._quick_select_panel:text({
+				name = "right_stick",
+				vertical = "center",
+				h = 24,
+				w = 24,
+				align = "center",
+				layer = 1,
+				text = BTN_STICK_R,
+				font = tweak_data.menu.pd2_small_font,
+				font_size = tweak_data.menu.pd2_small_font_size
+			})
+
+			right_stick:set_right(self._quick_select_panel:w())
+			right_stick:set_bottom(self._quick_select_panel:h())
 		end
-
-		box_panel_w = box_panel_w + self.quick_panel_w + self.padding
 	end
 
+	box_panel_w = box_panel_w + self.quick_panel_w + self.padding
 	self._box_panel = self._panel:panel()
 
 	self._box_panel:rect({
@@ -362,8 +372,7 @@ function MultiProfileItemGui:mouse_pressed(button, x, y)
 
 			return
 		elseif self:arrow_selection() == "quick" then
-			managers.multi_profile:open_quick_select()
-			managers.menu_component:post_event("menu_enter")
+			managers.menu:open_node("profile_switch", {})
 
 			return
 		end

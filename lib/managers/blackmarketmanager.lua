@@ -10,26 +10,21 @@ local INV_REMOVE = Idstring("remove_from_inventory")
 local CRAFT_ADD = Idstring("add_to_crafted")
 local CRAFT_REMOVE = Idstring("remove_from_crafted")
 local MASK_COLOR_CONVERT_MAP = {
-	color_b = "mask_colors",
-	material = "materials",
-	color_a = "mask_colors",
-	pattern = "textures"
-}
-local DEFAULT_MASK_BLUEPRINT = {
-	color = {
-		id = "nothing",
-		global_value = "normal"
-	},
-	pattern = {
-		id = "no_color_no_material",
-		global_value = "normal"
-	},
-	material = {
-		id = "plastic",
-		global_value = "normal"
-	}
+	pattern = "textures",
+	color_c = "materials",
+	color_a = "materials",
+	color_b = "materials",
+	material = "materials"
 }
 local DEFAULT_CUSTOMIZE_MASK_BLUEPRINT = {
+	materials = {
+		id = "plastic",
+		global_value = "normal"
+	},
+	textures = {
+		id = "no_color_full_material",
+		global_value = "normal"
+	},
 	mask_colors = {
 		id = "nothing",
 		global_value = "normal"
@@ -42,12 +37,8 @@ local DEFAULT_CUSTOMIZE_MASK_BLUEPRINT = {
 		id = "nothing",
 		global_value = "normal"
 	},
-	textures = {
-		id = "no_color_full_material",
-		global_value = "normal"
-	},
-	materials = {
-		id = "plastic",
+	color_c = {
+		id = "strip_paint",
 		global_value = "normal"
 	}
 }
@@ -439,6 +430,10 @@ function BlackMarketManager:_separate_mask_colors()
 				id = color_tweak_data.color_ids[2],
 				global_value = crafted_item.blueprint.color.global_value
 			}
+			crafted_item.blueprint.color_c = {
+				id = "strip_paint",
+				global_value = "normal"
+			}
 			crafted_item.blueprint.color = nil
 		else
 			crafted_item.blueprint.color_a = {
@@ -447,6 +442,10 @@ function BlackMarketManager:_separate_mask_colors()
 			}
 			crafted_item.blueprint.color_b = {
 				id = "nothing",
+				global_value = "normal"
+			}
+			crafted_item.blueprint.color_c = {
+				id = "strip_paint",
 				global_value = "normal"
 			}
 			crafted_item.blueprint.color = nil
@@ -1294,9 +1293,9 @@ end
 
 function BlackMarketManager:mask_blueprint_from_outfit_string(outfit_string)
 	local data = string.split(outfit_string or "", " ")
-	local color_id = data[self:outfit_string_index("mask_color")] or "nothing"
-	local pattern_id = data[self:outfit_string_index("mask_pattern")] or "no_color_no_material"
 	local material_id = data[self:outfit_string_index("mask_material")] or "plastic"
+	local pattern_id = data[self:outfit_string_index("mask_pattern")] or "no_color_no_material"
+	local color_id = data[self:outfit_string_index("mask_color")] or "nothing"
 	local blueprint = {}
 	local colors = string.split(color_id, "-")
 
@@ -1306,17 +1305,20 @@ function BlackMarketManager:mask_blueprint_from_outfit_string(outfit_string)
 		end
 	end
 
+	blueprint.material = {
+		id = material_id
+	}
+	blueprint.pattern = {
+		id = pattern_id
+	}
 	blueprint.color_a = {
 		id = colors[1] or "nothing"
 	}
 	blueprint.color_b = {
 		id = colors[2] or "nothing"
 	}
-	blueprint.pattern = {
-		id = pattern_id
-	}
-	blueprint.material = {
-		id = material_id
+	blueprint.color_c = {
+		id = colors[3] or "strip_paint"
 	}
 
 	return blueprint
@@ -1333,9 +1335,13 @@ function BlackMarketManager:_outfit_string_mask()
 		s = s .. " " .. "plastic"
 	else
 		s = s .. " " .. equipped.mask_id
-		s = s .. " " .. equipped.blueprint.color_a.id .. "-" .. equipped.blueprint.color_b.id
-		s = s .. " " .. equipped.blueprint.pattern.id
 		s = s .. " " .. equipped.blueprint.material.id
+		s = s .. " " .. equipped.blueprint.pattern.id
+		equipped.blueprint.color_c = equipped.blueprint.color_c or {
+			id = "strip_paint",
+			global_value = "normal"
+		}
+		s = s .. " " .. equipped.blueprint.color_a.id .. "-" .. equipped.blueprint.color_b.id .. "-" .. equipped.blueprint.color_c.id
 	end
 
 	return s
@@ -1399,9 +1405,9 @@ local BM_STRING_TO_INDEX = {
 	secondary_cosmetics = 20,
 	armor = 5,
 	character = 6,
-	mask_material = 4,
+	mask_material = 2,
 	primary = 7,
-	mask_color = 2
+	mask_color = 4
 }
 
 function BlackMarketManager:outfit_string_index(type)
@@ -1592,9 +1598,9 @@ end
 function BlackMarketManager:outfit_string_from_list(outfit)
 	local s = ""
 	s = s .. outfit.mask.mask_id
-	s = s .. " " .. outfit.mask.blueprint.color_a.id .. "-" .. outfit.mask.blueprint.color_b.id
-	s = s .. " " .. outfit.mask.blueprint.pattern.id
 	s = s .. " " .. outfit.mask.blueprint.material.id
+	s = s .. " " .. outfit.mask.blueprint.pattern.id
+	s = s .. " " .. outfit.mask.blueprint.color_a.id .. "-" .. outfit.mask.blueprint.color_b.id .. "-" .. outfit.mask.blueprint.color_c.id
 	s = s .. " " .. outfit.armor .. "-" .. outfit.armor_current .. "-" .. outfit.armor_current_state
 	s = s .. "-" .. tostring(outfit.armor_skin)
 	s = s .. "-" .. tostring(outfit.player_style) .. "-" .. tostring(outfit.suit_variation)
@@ -1658,9 +1664,9 @@ function BlackMarketManager:henchman_loadout_string_from_loadout(loadout)
 		mask_blueprint = crafted and crafted.blueprint
 	end
 
-	s = s .. " " .. get_string(mask_blueprint, "color_a", "id") .. "-" .. get_string(mask_blueprint, "color_b", "id")
-	s = s .. " " .. get_string(mask_blueprint, "pattern", "id")
 	s = s .. " " .. get_string(mask_blueprint, "material", "id")
+	s = s .. " " .. get_string(mask_blueprint, "pattern", "id")
+	s = s .. " " .. get_string(mask_blueprint, "color_a", "id") .. "-" .. get_string(mask_blueprint, "color_b", "id") .. "-" .. get_string(mask_blueprint, "color_c", "id")
 	s = s .. " " .. tostring(loadout.primary)
 	s = s .. " " .. tostring(loadout.ability)
 	s = s .. " " .. tostring(loadout.skill)
@@ -1685,12 +1691,15 @@ function BlackMarketManager:unpack_henchman_loadout_string(string)
 
 	rtn.mask = get_data()
 	rtn.mask_blueprint = {
+		material = {},
+		pattern = {},
 		color_a = {},
 		color_b = {},
-		pattern = {},
-		material = {}
+		color_c = {}
 	}
-	local colors = string.split(get_data() or "nothing-nothing", "-")
+	rtn.mask_blueprint.material.id = get_data() or "plastic"
+	rtn.mask_blueprint.pattern.id = get_data() or "no_color_no_material"
+	local colors = string.split(get_data() or "nothing-nothing-strip_paint", "-")
 
 	for k, v in pairs(colors) do
 		if v == "nil" or v == "" then
@@ -1700,8 +1709,7 @@ function BlackMarketManager:unpack_henchman_loadout_string(string)
 
 	rtn.mask_blueprint.color_a.id = colors[1] or "nothing"
 	rtn.mask_blueprint.color_b.id = colors[2] or "nothing"
-	rtn.mask_blueprint.pattern.id = get_data() or "no_color_no_material"
-	rtn.mask_blueprint.material.id = get_data() or "plastic"
+	rtn.mask_blueprint.color_c.id = colors[3] or "strip_paint"
 	rtn.primary = get_data()
 	rtn.ability = get_data()
 	rtn.skill = get_data()
@@ -2330,9 +2338,6 @@ function BlackMarketManager:add_to_inventory(global_value, category, id, not_new
 		return
 	end
 
-	print("[BlackMarketManager:add_to_inventory] global_value, category, id, not_new:", global_value, category, id, not_new)
-	Application:stack_dump()
-
 	self._global.inventory[global_value] = self._global.inventory[global_value] or {}
 	self._global.inventory[global_value][category] = self._global.inventory[global_value][category] or {}
 	self._global.inventory[global_value][category][id] = (self._global.inventory[global_value][category][id] or 0) + 1
@@ -2560,18 +2565,16 @@ function BlackMarketManager:got_new_drop(global_value, category, id)
 			end
 		end
 	elseif category_ids == Idstring("mask_mods") then
+		local got_table = {}
 		local textures = managers.blackmarket:get_inventory_category("textures")
 		local colors = managers.blackmarket:get_inventory_category("colors")
-		local got_table = {}
 
 		for _, mmod in ipairs({
 			"colors",
 			"materials",
 			"textures"
 		}) do
-			if self:check_new_drop_category("normal", mmod) then
-				got_table[mmod] = true
-			elseif self:check_new_drop_category("infamous", mmod) then
+			if self:check_new_drop_category("normal", mmod) or self:check_new_drop_category("infamous", mmod) then
 				got_table[mmod] = true
 			end
 		end
@@ -3372,42 +3375,6 @@ function BlackMarketManager:_sell_item(item_data)
 	print("Sold for", money, "! (", pc, value_multiplier, managers.plater:upgrade_value("player", "sell_cost_multiplier", 1), ")")
 end
 
-function BlackMarketManager:apply_mask_craft_on_unit(unit, blueprint)
-	local materials = unit:get_objects_by_type(Idstring("material"))
-	local material = materials[#materials]
-
-	print("apply_mask_craft_on_unit material", material, inspect(materials))
-
-	local tint_color_a = Vector3(0, 0, 0)
-	local tint_color_b = Vector3(0, 0, 0)
-	local pattern_id = blueprint and blueprint.pattern.id or "no_color_no_material"
-	local material_id = blueprint and blueprint.material.id or "plastic"
-
-	if blueprint then
-		local color_data_a = tweak_data.blackmarket.mask_colors[blueprint.color_a.id]
-		local color_data_b = tweak_data.blackmarket.mask_colors[blueprint.color_b.id]
-		tint_color_a = Vector3(color_data_a.color:unpack())
-		tint_color_b = Vector3(color_data_b.color:unpack())
-	end
-
-	material:set_variable(Idstring("tint_color_a"), tint_color_a)
-	material:set_variable(Idstring("tint_color_b"), tint_color_b)
-
-	local pattern = tweak_data.blackmarket.textures[pattern_id].texture
-	local material_texture = TextureCache:retrieve(pattern, "normal")
-
-	Application:set_material_texture(material, Idstring("material_texture"), material_texture)
-
-	local reflection = tweak_data.blackmarket.materials[material_id].texture
-	local material_amount = tweak_data.blackmarket.materials[material_id].material_amount or 1
-	local reflection_texture = TextureCache:retrieve(reflection, "normal")
-
-	Application:set_material_texture(material, Idstring("reflection_texture"), reflection_texture)
-	material:set_variable(Idstring("material_amount"), material_amount)
-
-	return material_texture, reflection_texture
-end
-
 function BlackMarketManager:test_craft_mask(slot)
 	slot = slot or 1
 	local blueprint = {}
@@ -3423,16 +3390,20 @@ function BlackMarketManager:test_craft_mask(slot)
 		id = entry.id,
 		global_value = entry.global_value
 	}
-	local colors = managers.blackmarket:get_inventory_category("mask_colors")
-	local entry_a = colors[math.random(#colors)]
-	local entry_b = colors[math.random(#colors)]
+	local entry_a = materials[math.random(#materials)]
+	local entry_b = materials[math.random(#materials)]
+	local entry_c = materials[math.random(#materials)]
 	blueprint.color_a = {
 		id = entry_a.id,
-		global_value = entry.global_value
+		global_value = entry_a.global_value
 	}
 	blueprint.color_b = {
 		id = entry_b.id,
-		global_value = entry.global_value
+		global_value = entry_b.global_value
+	}
+	blueprint.color_c = {
+		id = entry_c.id,
+		global_value = entry_c.global_value
 	}
 	local textures = managers.blackmarket:get_inventory_category("textures")
 	local entry = textures[math.random(#textures)]
@@ -3942,6 +3913,10 @@ end
 
 function BlackMarketManager:get_mask_icon(mask_id, character)
 	return tweak_data.blackmarket:get_mask_icon(mask_id, character or self:get_preferred_character())
+end
+
+function BlackMarketManager:get_mask_materials_icon(material_id)
+	return tweak_data.blackmarket:get_mask_materials_icon(material_id)
 end
 
 function BlackMarketManager:get_character_icon(character)
@@ -6548,9 +6523,8 @@ function BlackMarketManager:get_custom_colors_from_string(data_string)
 end
 
 function BlackMarketManager:aquire_default_masks()
-	print("BlackMarketManager:aquire_default_masks()", self._global.crafted_items.masks)
-
 	if not self._global.crafted_items.masks then
+		print("[BlackMarketManager:aquire_default_masks] Crafted masks was NIL, making default...")
 		self:on_buy_mask(self._defaults.mask, "normal", 1, nil)
 	end
 end
@@ -6566,8 +6540,6 @@ function BlackMarketManager:can_modify_mask(slot)
 end
 
 function BlackMarketManager:start_customize_mask(slot)
-	print("start_customize_mask", slot)
-
 	local mask = managers.blackmarket:get_crafted_category("masks")[slot]
 	self._customize_mask = {
 		slot = slot,
@@ -6575,17 +6547,14 @@ function BlackMarketManager:start_customize_mask(slot)
 		global_value = mask.global_value,
 		default_blueprint = self:get_mask_default_blueprint(mask.mask_id) or {}
 	}
+	local default_material = self._customize_mask.default_blueprint.material or {}
+	local default_pattern = self._customize_mask.default_blueprint.pattern or {}
 	local default_color_a = self._customize_mask.default_blueprint.color_a or {}
 	local default_color_b = self._customize_mask.default_blueprint.color_b or {}
-	local default_pattern = self._customize_mask.default_blueprint.pattern or {}
-	local default_material = self._customize_mask.default_blueprint.material or {}
+	local default_color_c = self._customize_mask.default_blueprint.color_c or {}
 
-	if default_color_a.id ~= "nothing" then
-		self._customize_mask.color_a = default_color_a
-	end
-
-	if default_color_b.id ~= "nothing" then
-		self._customize_mask.color_b = default_color_b
+	if default_material.id ~= "plastic" then
+		self._customize_mask.materials = default_material
 	end
 
 	if default_pattern.id ~= "no_color_no_material" then
@@ -6597,8 +6566,16 @@ function BlackMarketManager:start_customize_mask(slot)
 		}
 	end
 
-	if default_material.id ~= "plastic" then
-		self._customize_mask.materials = default_material
+	if default_color_a.id ~= "nothing" then
+		self._customize_mask.color_a = default_color_a
+	end
+
+	if default_color_b.id ~= "nothing" then
+		self._customize_mask.color_b = default_color_b
+	end
+
+	if default_color_c.id ~= "strip_paint" then
+		self._customize_mask.color_c = default_color_c
 	end
 
 	local offset = Vector3(0, 5, 0)
@@ -6638,7 +6615,7 @@ function BlackMarketManager:customize_mask_category_id(category)
 end
 
 function BlackMarketManager:customize_mask_category_default(category, include_color)
-	local is_a_color_category = category == "color_a" or category == "color_b" or category == "mask_colors"
+	local is_a_color_category = category == "color_a" or category == "color_b" or category == "color_c" or category == "mask_colors"
 
 	if is_a_color_category and not include_color then
 		return
@@ -6652,6 +6629,14 @@ end
 function BlackMarketManager:get_mask_default_blueprint(mask_id)
 	local mask_tweak_data = tweak_data.blackmarket.masks[mask_id]
 	local default_blueprint = {
+		material = {
+			id = "plastic",
+			global_value = "normal"
+		},
+		pattern = {
+			id = "no_color_no_material",
+			global_value = "normal"
+		},
 		color_a = {
 			id = "nothing",
 			global_value = "normal"
@@ -6660,20 +6645,18 @@ function BlackMarketManager:get_mask_default_blueprint(mask_id)
 			id = "nothing",
 			global_value = "normal"
 		},
-		pattern = {
-			id = "no_color_no_material",
-			global_value = "normal"
-		},
-		material = {
-			id = "plastic",
+		color_c = {
+			id = "strip_paint",
 			global_value = "normal"
 		}
 	}
-	default_blueprint.mask_colors = default_blueprint.color_a
-	default_blueprint.textures = default_blueprint.pattern
 	default_blueprint.materials = default_blueprint.material
+	default_blueprint.textures = default_blueprint.pattern
+	default_blueprint.mask_colors = default_blueprint.color_a
 
 	if not mask_tweak_data then
+		Application:error("[BlackMarketManager:get_mask_default_blueprint] mask not found in blackmarket tweakdata", "mask_id", mask_id)
+
 		return default_blueprint
 	end
 
@@ -6689,9 +6672,10 @@ function BlackMarketManager:get_mask_default_blueprint(mask_id)
 		local got_material = false
 		local got_pattern = false
 		local got_color = false
-		local got_color_a, got_color_b = nil
+		local got_color_a, got_color_b, got_color_c = nil
+		local td_bm_colors = tweak_data.blackmarket.materials
 		local color_id = mask_default_blueprint.color_a
-		local color_tweak_data = color_id and tweak_data.blackmarket.mask_colors[color_id]
+		local color_tweak_data = color_id and td_bm_colors[color_id]
 
 		if color_tweak_data then
 			local global_value = get_global_value_func(color_tweak_data)
@@ -6704,7 +6688,7 @@ function BlackMarketManager:get_mask_default_blueprint(mask_id)
 		end
 
 		color_id = mask_default_blueprint.color_b
-		color_tweak_data = color_id and tweak_data.blackmarket.mask_colors[color_id]
+		color_tweak_data = color_id and td_bm_colors[color_id]
 
 		if color_tweak_data then
 			local global_value = get_global_value_func(color_tweak_data)
@@ -6716,7 +6700,20 @@ function BlackMarketManager:get_mask_default_blueprint(mask_id)
 			got_color_b = true
 		end
 
-		got_color = got_color_a and got_color_b
+		color_id = mask_default_blueprint.color_c
+		color_tweak_data = color_id and td_bm_colors[color_id]
+
+		if color_tweak_data then
+			local global_value = get_global_value_func(color_tweak_data)
+			local color = color_tweak_data and {
+				id = color_id,
+				global_value = global_value
+			}
+			default_blueprint.color_c = color or default_blueprint.color_c
+			got_color_c = true
+		end
+
+		got_color = got_color_a and got_color_b and got_color_c
 		local texture_id = mask_default_blueprint.pattern or mask_default_blueprint.textures
 		local texture_tweak_data = texture_id and tweak_data.blackmarket.textures[texture_id]
 
@@ -6800,37 +6797,53 @@ function BlackMarketManager:get_info_from_mask_blueprint(blueprint, mask_id)
 	local got_pattern = blueprint.pattern
 	local got_color_a = blueprint.color_a
 	local got_color_b = blueprint.color_b
+	local got_color_c = blueprint.color_c
+	local td_bm_textures = tweak_data.blackmarket.textures
 	local status = {}
 
 	table.insert(status, {
 		name = "materials",
-		text = got_material and tweak_data.blackmarket.materials[blueprint.material.id].name_id or "bm_menu_materials",
+		text = got_material and tweak_data.blackmarket.materials[blueprint.material.id].name_id or "bm_menu_lic_materials",
 		color = got_material and tweak_data.screen_colors.text or tweak_data.screen_colors.important_1,
 		id = got_material and blueprint.material.id,
 		is_good = got_material and true or false
 	})
 	table.insert(status, {
 		name = "textures",
-		text = got_pattern and tweak_data.blackmarket.textures[blueprint.pattern.id].name_id or "bm_menu_textures",
+		text = got_pattern and td_bm_textures[blueprint.pattern.id].name_id or "bm_menu_textures",
 		color = got_pattern and tweak_data.screen_colors.text or tweak_data.screen_colors.important_1,
 		id = got_pattern and blueprint.pattern.id,
 		is_good = got_pattern and true or false
 	})
-	table.insert(status, {
+
+	local is_same_abc = (got_color_a and blueprint.color_a.id) == (got_color_b and blueprint.color_b.id) and (got_color_b and blueprint.color_b.id) == (got_color_c and blueprint.color_c.id) and (got_color_c and blueprint.color_c.id) == (got_color_a and blueprint.color_a.id)
+	local status_a = {
 		name = "color_a",
-		text = got_color_a and tweak_data.blackmarket.mask_colors[blueprint.color_a.id].name_id or "bm_menu_color_a",
+		text = got_color_a and tweak_data.blackmarket.materials[blueprint.color_a.id].name_id or "bm_menu_lic_color_a",
 		color = got_color_a and tweak_data.screen_colors.text or tweak_data.screen_colors.important_1,
 		id = got_color_a and blueprint.color_a.id,
 		is_good = got_color_a and true or false
-	})
-	table.insert(status, {
+	}
+	local status_b = {
 		name = "color_b",
-		text = got_color_b and tweak_data.blackmarket.mask_colors[blueprint.color_b.id].name_id or "bm_menu_color_b",
+		text = got_color_b and tweak_data.blackmarket.materials[blueprint.color_b.id].name_id or "bm_menu_lic_color_b",
 		color = got_color_b and tweak_data.screen_colors.text or tweak_data.screen_colors.important_1,
 		id = got_color_b and blueprint.color_b.id,
 		is_good = got_color_b and true or false,
-		is_same = (got_color_a and blueprint.color_a.id) == (got_color_b and blueprint.color_b.id)
-	})
+		is_same = is_same_abc
+	}
+	local status_c = {
+		name = "color_c",
+		is_good = true,
+		text = got_color_c and tweak_data.blackmarket.materials[blueprint.color_c.id].name_id or tweak_data.blackmarket.materials.strip_paint.name_id,
+		color = got_color_c and tweak_data.screen_colors.text or tweak_data.screen_colors.important_1,
+		id = got_color_c and blueprint.color_c.id or "strip_paint",
+		is_same = is_same_abc
+	}
+
+	table.insert(status, status_a)
+	table.insert(status, status_b)
+	table.insert(status, status_c)
 
 	if got_material then
 		status[1].price = managers.money:get_mask_part_price_modified("materials", blueprint.material.id, blueprint.material.global_value, mask_id)
@@ -6841,27 +6854,27 @@ function BlackMarketManager:get_info_from_mask_blueprint(blueprint, mask_id)
 	end
 
 	if got_color_a then
-		status[3].price = managers.money:get_mask_part_price_modified("mask_colors", blueprint.color_a.id, blueprint.color_a.global_value, mask_id)
+		status[3].price = managers.money:get_mask_part_price_modified("materials", blueprint.color_a.id, blueprint.color_a.global_value, mask_id)
 	end
 
 	if got_color_b then
-		status[4].price = managers.money:get_mask_part_price_modified("mask_colors", blueprint.color_b.id, blueprint.color_b.global_value, mask_id)
+		status[4].price = managers.money:get_mask_part_price_modified("materials", blueprint.color_b.id, blueprint.color_b.global_value, mask_id)
 	end
 
-	if status[2].is_good and Idstring(blueprint.pattern.id) == Idstring("no_color_full_material") then
-		status[2].override = "colors"
-		status[3].overwritten = true
-		status[4].overwritten = true
+	if got_color_c then
+		status[5].price = managers.money:get_mask_part_price_modified("materials", blueprint.color_c.id, blueprint.color_c.global_value, mask_id)
 	end
 
-	if status[2].is_good and Idstring(blueprint.pattern.id) == Idstring("solidfirst") then
-		status[2].override = "materials"
-		status[1].overwritten = true
-	end
+	if status[2].is_good then
+		local pattern_overwrites = td_bm_textures[blueprint.pattern.id].overwrites
 
-	if status[2].is_good and Idstring(blueprint.pattern.id) == Idstring("solidsecond") then
-		status[2].override = "materials"
-		status[1].overwritten = true
+		if pattern_overwrites then
+			status[2].override = pattern_overwrites.materials and "materials" or "colors"
+			status[1].overwritten = pattern_overwrites.materials or nil
+			status[3].overwritten = pattern_overwrites.color_a or nil
+			status[4].overwritten = pattern_overwrites.color_b or nil
+			status[5].overwritten = pattern_overwrites.color_c or nil
+		end
 	end
 
 	return status
@@ -6872,7 +6885,8 @@ function BlackMarketManager:get_customize_mask_blueprint()
 		material = self._customize_mask.materials,
 		pattern = self._customize_mask.textures,
 		color_a = self._customize_mask.color_a,
-		color_b = self._customize_mask.color_b
+		color_b = self._customize_mask.color_b,
+		color_c = self._customize_mask.color_c
 	}
 end
 
@@ -6881,7 +6895,7 @@ function BlackMarketManager:info_customize_mask()
 end
 
 function BlackMarketManager:can_view_customized_mask()
-	return self:can_finish_customize_mask()
+	return self:can_finish_customize_mask(false)
 end
 
 function BlackMarketManager:can_view_mask_blueprint(blueprint)
@@ -6894,14 +6908,21 @@ function BlackMarketManager:can_view_mask_blueprint(blueprint)
 	end
 
 	local pattern_ids = Idstring(blueprint.pattern.id)
+	local pattern_data = tweak_data.blackmarket.textures[blueprint.pattern.id]
 
-	if not blueprint.material and pattern_ids ~= Idstring("solidfirst") and pattern_ids ~= Idstring("solidsecond") then
-		return false
-	end
+	if pattern_data.overwrites then
+		if not blueprint.material and not pattern_data.overwrites.materials then
+			return false
+		end
 
-	local nothing_ids = Idstring("nothing")
+		if not blueprint.color_a and not pattern_data.overwrites.color_a then
+			return false
+		end
 
-	if (not blueprint.color_a or Idstring(blueprint.color_a.id) == nothing_ids or not blueprint.color_b or Idstring(blueprint.color_b.id) == nothing_ids) and pattern_ids ~= Idstring("no_color_full_material") then
+		if not blueprint.color_b and not pattern_data.overwrites.color_b then
+			return false
+		end
+	elseif not blueprint.material then
 		return false
 	end
 
@@ -6927,7 +6948,7 @@ function BlackMarketManager:can_view_customized_mask_with_mod(category, id, glob
 		return false
 	end
 
-	if (not modded.color_a or not modded.color_b) and Idstring(modded.textures.id) ~= Idstring("no_color_full_material") then
+	if (not modded.color_a or not modded.color_b or not modded.color_c) and Idstring(modded.textures.id) ~= Idstring("no_color_full_material") then
 		return false
 	end
 
@@ -6946,15 +6967,17 @@ function BlackMarketManager:view_customized_mask_with_mod(category, id)
 		id = id
 	}
 	local slot = modded.slot
+	blueprint.material = modded.materials
+	blueprint.pattern = modded.textures
 	blueprint.color_a = modded.color_a
 	blueprint.color_b = modded.color_b
-	blueprint.pattern = modded.textures
-	blueprint.material = modded.materials
+	blueprint.color_c = modded.color_c
 
 	if not blueprint.color then
 		blueprint.pattern = self:customize_mask_category_default("textures")
 		blueprint.color_a = self:customize_mask_category_default("color_a", true)
 		blueprint.color_b = self:customize_mask_category_default("color_b", true)
+		blueprint.color_c = self:customize_mask_category_default("color_c", true)
 	end
 
 	self:view_mask_with_blueprint(slot, blueprint)
@@ -6962,10 +6985,11 @@ end
 
 function BlackMarketManager:get_customized_mask_blueprint()
 	local blueprint = {
+		material = self._customize_mask.materials,
+		pattern = self._customize_mask.textures,
 		color_a = self._customize_mask.color_a,
 		color_b = self._customize_mask.color_b,
-		pattern = self._customize_mask.textures,
-		material = self._customize_mask.materials
+		color_c = self._customize_mask.color_c
 	}
 	local default_blueprint = self._customize_mask.default_blueprint or {}
 
@@ -6983,6 +7007,13 @@ function BlackMarketManager:get_customized_mask_blueprint()
 		}
 	end
 
+	if not blueprint.color_c then
+		blueprint.color_c = default_blueprint.color_c or {
+			id = "strip_paint",
+			global_value = "normal"
+		}
+	end
+
 	if Idstring(blueprint.pattern.id) == Idstring("no_color_full_material") then
 		blueprint.color_a = default_blueprint.color_a or {
 			id = "nothing",
@@ -6992,18 +7023,8 @@ function BlackMarketManager:get_customized_mask_blueprint()
 			id = "nothing",
 			global_value = "normal"
 		}
-	end
-
-	if Idstring(blueprint.pattern.id) == Idstring("solidfirst") then
-		blueprint.material = default_blueprint.material or {
-			id = "plastic",
-			global_value = "normal"
-		}
-	end
-
-	if Idstring(blueprint.pattern.id) == Idstring("solidsecond") then
-		blueprint.material = default_blueprint.material or {
-			id = "plastic",
+		blueprint.color_c = default_blueprint.color_c or {
+			id = "strip_paint",
 			global_value = "normal"
 		}
 	end
@@ -7043,11 +7064,24 @@ function BlackMarketManager:can_finish_customize_mask(check_money)
 		return false
 	end
 
-	if not self._customize_mask.materials and Idstring(self._customize_mask.textures.id) ~= Idstring("solidfirst") and Idstring(self._customize_mask.textures.id) ~= Idstring("solidsecond") then
+	local pattern_data = tweak_data.blackmarket.textures[self._customize_mask.textures.id]
+	local overwrites = pattern_data.overwrites or {}
+
+	if not self._customize_mask.materials and not overwrites.materials then
+		print("[BlackMarketManager:Mask] Requires a base material")
+
 		return false
 	end
 
-	if (not self._customize_mask.color_a or not self._customize_mask.color_b) and Idstring(self._customize_mask.textures.id) ~= Idstring("no_color_full_material") then
+	if not self._customize_mask.color_a and not overwrites.color_a then
+		print("[BlackMarketManager:Mask] Requires a color A")
+
+		return false
+	end
+
+	if not self._customize_mask.color_b and not overwrites.color_b then
+		print("[BlackMarketManager:Mask] Requires a color B")
+
 		return false
 	end
 
@@ -7059,7 +7093,7 @@ function BlackMarketManager:can_finish_customize_mask(check_money)
 end
 
 function BlackMarketManager:finish_customize_mask()
-	print("finish_customize_mask", inspect(self._customize_mask))
+	print("[BlackMarketManager:finish_customize_mask]", inspect(self._customize_mask))
 
 	local blueprint = self:get_customized_mask_blueprint()
 	local default_blueprint = self._customize_mask.default_blueprint or {}
@@ -7075,43 +7109,39 @@ function BlackMarketManager:finish_customize_mask()
 		id = "plastic",
 		global_value = "normal"
 	}
-	local pattern_ids = Idstring(blueprint.pattern.id)
+	local pattern_overwrites = tweak_data.blackmarket.textures[blueprint.pattern.id].overwrites or {}
 
-	if pattern_ids ~= Idstring("no_color_full_material") then
-		local default_color_a = self:customize_mask_category_default("color_a", true) or {}
-
-		if blueprint.color_a.id ~= default_color_a.id then
-			self:remove_item(blueprint.color_a.global_value, "mask_colors", blueprint.color_a.id)
-			self:alter_global_value_item(blueprint.color_a.global_value, "colors", slot, blueprint.color_a.id, INV_TO_CRAFT)
-		end
-
-		local default_color_b = self:customize_mask_category_default("color_b", true) or {}
-
-		if blueprint.color_b.id ~= default_color_b.id then
-			self:remove_item(blueprint.color_b.global_value, "mask_colors", blueprint.color_b.id)
-			self:alter_global_value_item(blueprint.color_b.global_value, "colors", slot, blueprint.color_b.id, INV_TO_CRAFT)
-		end
-
-		local default_pattern = self:customize_mask_category_default("textures", true) or {}
-
-		if blueprint.pattern.id ~= default_pattern.id then
-			self:remove_item(blueprint.pattern.global_value, "textures", blueprint.pattern.id)
-			self:alter_global_value_item(blueprint.pattern.global_value, "textures", slot, blueprint.pattern.id, INV_TO_CRAFT)
-		else
-			Application:debug("default pattern", blueprint.pattern.id)
-		end
+	if not pattern_overwrites.color_a then
+		self:remove_item(blueprint.color_a.global_value, "materials", blueprint.color_a.id)
+		self:alter_global_value_item(blueprint.color_a.global_value, "colors", slot, blueprint.color_a.id, INV_TO_CRAFT)
 	else
 		blueprint.color_a = default_blueprint.color_a or {
 			id = "nothing",
 			global_value = "normal"
 		}
+	end
+
+	if not pattern_overwrites.color_b then
+		self:remove_item(blueprint.color_b.global_value, "materials", blueprint.color_b.id)
+		self:alter_global_value_item(blueprint.color_b.global_value, "colors", slot, blueprint.color_b.id, INV_TO_CRAFT)
+	else
 		blueprint.color_b = default_blueprint.color_b or {
 			id = "nothing",
 			global_value = "normal"
 		}
 	end
 
-	if Idstring(blueprint.pattern.id) ~= Idstring("solidfirst") and Idstring(blueprint.pattern.id) ~= Idstring("solidsecond") then
+	if not pattern_overwrites.color_c then
+		self:remove_item(blueprint.color_c.global_value, "materials", blueprint.color_c.id)
+		self:alter_global_value_item(blueprint.color_c.global_value, "colors", slot, blueprint.color_c.id, INV_TO_CRAFT)
+	else
+		blueprint.color_c = default_blueprint.color_c or {
+			id = "strip_paint",
+			global_value = "normal"
+		}
+	end
+
+	if not pattern_overwrites.material then
 		local default_material = self:customize_mask_category_default("materials", true) or {}
 
 		if blueprint.material.id ~= default_material.id then
@@ -7141,6 +7171,7 @@ function BlackMarketManager:finish_customize_mask()
 		end
 	end
 
+	print("[BlackMarketManager] Finished mask blueprint", inspect(blueprint))
 	managers.achievment:award("masked_villain")
 end
 
@@ -7155,6 +7186,14 @@ function BlackMarketManager:on_buy_mask(mask_id, global_value, slot, item_id)
 	self._global.crafted_items[category] = self._global.crafted_items[category] or {}
 	local default_blueprint = self:get_mask_default_blueprint(mask_id)
 	local blueprint = {
+		material = default_blueprint.material or {
+			id = "plastic",
+			global_value = "normal"
+		},
+		pattern = default_blueprint.pattern or {
+			id = "no_color_no_material",
+			global_value = "normal"
+		},
 		color_a = default_blueprint.color_a or {
 			id = "nothing",
 			global_value = "normal"
@@ -7163,12 +7202,8 @@ function BlackMarketManager:on_buy_mask(mask_id, global_value, slot, item_id)
 			id = "nothing",
 			global_value = "normal"
 		},
-		pattern = default_blueprint.pattern or {
-			id = "no_color_no_material",
-			global_value = "normal"
-		},
-		material = default_blueprint.material or {
-			id = "plastic",
+		color_c = default_blueprint.color_c or {
+			id = "strip_paint",
 			global_value = "normal"
 		}
 	}
@@ -7185,6 +7220,14 @@ end
 
 function BlackMarketManager:get_default_mask_blueprint()
 	local blueprint = {
+		material = {
+			id = "plastic",
+			global_value = "normal"
+		},
+		pattern = {
+			id = "no_color_no_material",
+			global_value = "normal"
+		},
 		color_a = {
 			id = "nothing",
 			global_value = "normal"
@@ -7193,12 +7236,8 @@ function BlackMarketManager:get_default_mask_blueprint()
 			id = "nothing",
 			global_value = "normal"
 		},
-		pattern = {
-			id = "no_color_no_material",
-			global_value = "normal"
-		},
-		material = {
-			id = "plastic",
+		color_c = {
+			id = "strip_paint",
 			global_value = "normal"
 		}
 	}
@@ -7208,6 +7247,14 @@ end
 
 function BlackMarketManager:on_sell_inventory_mask(mask_id, global_value)
 	local blueprint = {
+		material = {
+			id = "plastic",
+			global_value = "normal"
+		},
+		pattern = {
+			id = "no_color_no_material",
+			global_value = "normal"
+		},
 		color_a = {
 			id = "nothing",
 			global_value = "normal"
@@ -7216,12 +7263,8 @@ function BlackMarketManager:on_sell_inventory_mask(mask_id, global_value)
 			id = "nothing",
 			global_value = "normal"
 		},
-		pattern = {
-			id = "no_color_no_material",
-			global_value = "normal"
-		},
-		material = {
-			id = "plastic",
+		color_c = {
+			id = "strip_paint",
 			global_value = "normal"
 		}
 	}
@@ -7252,8 +7295,9 @@ function BlackMarketManager:on_sell_mask(slot, skip_verification)
 		self:alter_global_value_item(part.global_value, converted_category, slot, part.id, CRAFT_REMOVE)
 
 		local default = self:customize_mask_category_default(converted_category, true) or {}
+		local part_unlimited = tweak_data.blackmarket[converted_category] and tweak_data.blackmarket[converted_category][part.id] and tweak_data.blackmarket[converted_category][part.id].unlimited or false
 
-		if default.id ~= part.id and part.id ~= "no_color_no_material" and managers.money:get_mask_part_price(converted_category, part.id, part.global_value) == 0 then
+		if default.id ~= part.id and not part_unlimited and managers.money:get_mask_part_price(converted_category, part.id, part.global_value) == 0 then
 			managers.blackmarket:add_to_inventory(part.global_value, converted_category, part.id, true)
 		end
 	end
@@ -7307,14 +7351,18 @@ function BlackMarketManager:view_mask_with_blueprint(slot, blueprint)
 	local data = self._global.crafted_items[category][slot]
 	local mask_id = data.mask_id
 
-	if not self:can_view_mask_blueprint(blueprint) then
-		managers.menu_scene:spawn_or_update_mask(mask_id, data.blueprint)
-	else
+	if self:can_view_mask_blueprint(blueprint) then
+		print("[BlackMarketManager] Can view mask BP")
 		managers.menu_scene:spawn_or_update_mask(mask_id, blueprint)
+	else
+		print("[BlackMarketManager] Cannot view mask BP")
+		managers.menu_scene:spawn_or_update_mask(mask_id, data.blueprint)
 	end
 end
 
 function BlackMarketManager:set_mask_blueprint(slot, blueprint)
+	print("[BlackMarketManager:set_mask_blueprint]", slot, inspect(blueprint))
+
 	local category = "masks"
 
 	if not self._global.crafted_items[category] or not self._global.crafted_items[category][slot] then
@@ -8784,13 +8832,12 @@ function BlackMarketManager:_cleanup_blackmarket()
 		end
 	end
 
-	local crafted_masks = crafted_items.masks
-
 	local function chk_global_value_func(global_value, data, real_global_value)
 		return tweak_data.lootdrop.global_values[global_value or "normal"] and true or false
 	end
 
 	local cleanup_mask = false
+	local crafted_masks = crafted_items.masks
 
 	for i, mask in pairs(crafted_masks) do
 		local mask_data = tweak_data.blackmarket.masks[mask.mask_id]
@@ -8799,13 +8846,39 @@ function BlackMarketManager:_cleanup_blackmarket()
 		local blueprint = mask.blueprint or {}
 
 		if not cleanup_mask then
+			if not blueprint.color_c then
+				print("[BlackMarketManager:LICConverter] Mask was missing a color_c, adding...")
+
+				blueprint.color_c = {
+					id = "strip_paint",
+					global_value = "normal"
+				}
+			end
+
 			for part_type, data in pairs(blueprint) do
 				local converted_category = MASK_COLOR_CONVERT_MAP[part_type] or part_type
-				local part_data = tweak_data.blackmarket[converted_category][data.id]
+				local part_data = tweak_data.blackmarket[converted_category] and tweak_data.blackmarket[converted_category][data.id]
+
+				if converted_category == "materials" and (part_type == "color_a" or part_type == "color_b") and not part_data then
+					print("[BlackMarketManager:LICConverter] Has convert color?", data.id, tweak_data.blackmarket.mask_colors[data.id] and tweak_data.blackmarket.mask_colors[data.id].convert_to_material)
+
+					local convert_to_material = tweak_data.blackmarket.mask_colors[data.id] and tweak_data.blackmarket.mask_colors[data.id].convert_to_material or "plastic"
+					part_data = tweak_data.blackmarket.materials[convert_to_material]
+
+					print("[BlackMarketManager:LICConverter] Converting material to " .. convert_to_material, data.id, inspect(part_data or {}))
+
+					if part_data then
+						data.id = convert_to_material
+						data.global_value = part_data.infamous and "infamous" or part_data.global_value or "normal"
+					end
+				end
+
 				cleanup_mask = not part_data
 				cleanup_mask = cleanup_mask or not chk_global_value_func(data.global_value, data, part_data.infamous and "infamous" or part_data.dlc or part_data.global_value)
 
 				if cleanup_mask then
+					print("[BlackMarketManager:LICConverter] Mask added to cleanup due to", converted_category, part_type, "-", data.id)
+
 					break
 				end
 			end
@@ -9073,6 +9146,24 @@ function BlackMarketManager:_cleanup_blackmarket()
 		Application:error("BlackMarketManager:_cleanup_blackmarket() Invalid inventory item detected", "global_value", global_value, "category", category, "item", item)
 	end
 
+	local function convert_color_to_material_item_func(global_value, category, item, num_owned, material_id)
+		print("[BlackMarketManager:LICConverter] Trying...", global_value, category, item, num_owned, material_id)
+
+		local inventory = self._global.inventory
+		local material_tweak_data = tweak_data.blackmarket.materials[material_id] or tweak_data.blackmarket.materials.plastic
+
+		if material_tweak_data then
+			local material_global_value = material_tweak_data.global_value or material_tweak_data.infamous and "infamous" or "normal"
+			inventory[material_global_value] = inventory[material_global_value] or {}
+			inventory[material_global_value].materials = inventory[material_global_value].materials or {}
+			inventory[material_global_value].materials[material_id] = num_owned
+
+			print("[BlackMarketManager:LICConverter]", item, "into", material_id, num_owned)
+		end
+
+		add_invalid_item_func(global_value, category, item)
+	end
+
 	if self._global.inventory.normal and self._global.inventory.normal.masks and self._global.inventory.normal.masks.arch_nemesis then
 		self._global.inventory.normal.masks.arch_nemesis = nil
 	end
@@ -9090,6 +9181,8 @@ function BlackMarketManager:_cleanup_blackmarket()
 
 						if not item_tweak_data then
 							add_invalid_item_func(global_value, category, item)
+						elseif category == "mask_colors" and item_tweak_data.convert_to_material then
+							convert_color_to_material_item_func(global_value, category, item, num, item_tweak_data.convert_to_material)
 						elseif item_tweak_data.inaccessible then
 							add_invalid_item_func(global_value, category, item)
 						elseif category ~= "mask_colors" then

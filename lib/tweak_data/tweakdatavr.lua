@@ -378,6 +378,9 @@ function TweakDataVR:init(tweak_data)
 				hidden_objects = {
 					Idstring("g_sheet")
 				}
+			},
+			funder_strike = {
+				position = Vector3(0, -2, 0)
 			}
 		},
 		bayonets = {

@@ -159,16 +159,19 @@ function SkirmishWeeklyContractMenuComponent:init(ws, fullscreen_ws, node)
 				end
 
 				if reward_type == "textures" then
+					local textures_data = tweak_data.blackmarket.textures[reward_id]
 					icon_data = {
 						render_template = "VertexColorTexturedPatterns",
-						texture = tweak_data.blackmarket.textures[reward_id].texture
+						texture = textures_data.texture
 					}
 					text_id = tweak_data.blackmarket.textures[reward_id].name_id
 				elseif reward_type == "materials" then
+					local materials_data = tweak_data.blackmarket.materials[reward_id]
 					icon_data = {
-						texture = guis_catalog .. "textures/pd2/blackmarket/icons/materials/" .. reward_id
+						texture = guis_catalog .. "textures/pd2/blackmarket/icons/materials/" .. reward_id,
+						color = materials_data.color
 					}
-					text_id = tweak_data.blackmarket.materials[reward_id].name_id
+					text_id = materials_data.name_id
 				elseif reward_type == "masks" then
 					icon_data = {
 						texture = guis_catalog .. "textures/pd2/blackmarket/icons/masks/" .. reward_id
@@ -186,7 +189,7 @@ function SkirmishWeeklyContractMenuComponent:init(ws, fullscreen_ws, node)
 				texture = icon_data.texture,
 				texture_rect = icon_data.texture_rect,
 				render_template = icon_data.render_template,
-				color = color
+				color = icon_data.color or color
 			})
 
 			ExtendedPanel.make_bitmap_fit(reward_icon, milestone_panel:w(), milestone_panel:h())

@@ -393,6 +393,14 @@ function CarryData:can_explode()
 	return true
 end
 
+function CarryData:can_secure()
+	if self._disarmed then
+		return false
+	end
+
+	return true
+end
+
 function CarryData:can_poof()
 	if not Network:is_server() or not self._can_poof or self._linked_to or self._zipline_unit or self._explode_t then
 		return false

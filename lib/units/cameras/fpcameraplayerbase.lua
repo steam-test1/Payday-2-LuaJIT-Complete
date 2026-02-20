@@ -1714,52 +1714,12 @@ function FPCameraPlayerBase:spawn_mask()
 		end
 
 		self._mask_unit = World:spawn_unit(Idstring(mask_unit_name), align_obj_r:position(), align_obj_r:rotation())
-		local glass_id_string = Idstring("glass")
-		local mtr_hair_solid_id_string = Idstring("mtr_hair_solid")
-		local mtr_hair_effect_id_string = Idstring("mtr_hair_effect")
-		local mtr_bloom_glow_id_string = Idstring("mtr_bloom_glow")
-		local mtr_opacity = Idstring("mtr_opacity")
-		local mtr_feathers = Idstring("mtr_feathers")
-		local glow_id_strings = {}
-
-		for i = 1, 5 do
-			glow_id_strings[Idstring("glow" .. tostring(i)):key()] = true
-		end
-
-		local sweep_id_strings = {}
-
-		for i = 1, 5 do
-			sweep_id_strings[Idstring("sweep" .. tostring(i)):key()] = true
-		end
-
-		for _, material in ipairs(self._mask_unit:get_objects_by_type(Idstring("material"))) do
-			if material:name() == glass_id_string then
-				material:set_render_template(Idstring("opacity:CUBE_ENVIRONMENT_MAPPING:CUBE_FRESNEL:DIFFUSE_TEXTURE:FPS"))
-			elseif material:name() == mtr_hair_solid_id_string then
-				-- Nothing
-			elseif material:name() == mtr_opacity then
-				-- Nothing
-			elseif material:name() == mtr_feathers then
-				-- Nothing
-			elseif material:name() == mtr_hair_effect_id_string then
-				-- Nothing
-			elseif material:name() == mtr_bloom_glow_id_string then
-				material:set_render_template(Idstring("generic:DEPTH_SCALING:DIFFUSE_TEXTURE:SELF_ILLUMINATION:SELF_ILLUMINATION_BLOOM"))
-			elseif glow_id_strings[material:name():key()] then
-				material:set_render_template(Idstring("effect:BLEND_ADD:DIFFUSE0_TEXTURE"))
-			elseif sweep_id_strings[material:name():key()] then
-				material:set_render_template(Idstring("effect:BLEND_ADD:DIFFUSE0_TEXTURE:DIFFUSE0_THRESHOLD_SWEEP"))
-			else
-				material:set_render_template(Idstring("solid_mask:DEPTH_SCALING"))
-			end
-		end
 
 		if blueprint then
-			print("FPCameraPlayerBase:spawn_mask", inspect(blueprint))
-			self._mask_unit:base():apply_blueprint(blueprint)
+			self._mask_unit:base():swap_to_fps()
+			self._mask_unit:base():apply_blueprint(blueprint, nil)
 		end
 
-		print(inspect(self._mask_unit:get_objects_by_type(Idstring("material"))))
 		self._mask_unit:set_timer(managers.player:player_timer())
 		self._mask_unit:set_animation_timer(managers.player:player_timer())
 		self._mask_unit:anim_stop()
@@ -1830,7 +1790,7 @@ function FPCameraPlayerBase:spawn_taser_hooks()
 
 		self._taser_hooks_unit:set_timer(managers.player:player_timer())
 		self._taser_hooks_unit:set_animation_timer(managers.player:player_timer())
-		self._taser_hooks_unit:anim_play(Idstring("taser_hooks"))
+		self._taser_hooks_unit:anim_play(Idstring("taser_hooks"), 1.5)
 		self._unit:link(hooks_align:name(), self._taser_hooks_unit, self._taser_hooks_unit:orientation_object():name())
 	end
 end

@@ -178,12 +178,17 @@ function MovieTheaterGui:_create_movie_list()
 	})
 
 	local canvas = self._scroll:canvas()
+	local index = 1
 
 	if tweak_data.movies then
-		for i, item in ipairs(tweak_data.movies) do
-			item.index = i
+		for _, item in ipairs(tweak_data.movies) do
+			if item.file and DB:has(Idstring("movie"), item.file) then
+				item.index = index
 
-			self._scroll:add_item(MovieListItem:new(canvas, item, self), true)
+				self._scroll:add_item(MovieListItem:new(canvas, item, self), true)
+
+				index = index + 1
+			end
 		end
 	end
 end

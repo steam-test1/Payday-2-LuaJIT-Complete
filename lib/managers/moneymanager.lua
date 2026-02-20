@@ -942,19 +942,15 @@ function MoneyManager:get_mask_part_price(category, id, global_value, mask_id)
 		materials = "material",
 		textures = "pattern"
 	}
-	part_name_converter.color_a = part_name_converter.colors
-	part_name_converter.color_b = part_name_converter.colors
-	part_name_converter.mask_colors = part_name_converter.colors
+	part_name_converter.color_a = part_name_converter.materials
+	part_name_converter.color_b = part_name_converter.materials
+	part_name_converter.color_c = part_name_converter.materials
+	part_name_converter.mask_colors = part_name_converter.materials
 	part_name_converter.colors = nil
 	local gv_tweak_data = tweak_data.lootdrop.global_values[global_value or "normal"]
 	local gv_multiplier = gv_tweak_data and gv_tweak_data.value_multiplier or 1
-
-	if category == "mask_colors" then
-		gv_multiplier = gv_multiplier * 0.5
-	end
-
 	local value = tweak_data.blackmarket[category] and tweak_data.blackmarket[category][id] and tweak_data.blackmarket[category][id].value or 1
-	local part_value = value > 0 and self:get_tweak_value("money_manager", "masks", part_name_converter[category] .. "_value", value) or 0
+	local part_value = value > 0 and self:get_tweak_value("money_manager", "masks", tostring(part_name_converter[category]) .. "_value", value) or 0
 	local price = math.round(part_value * gv_multiplier)
 	self._cached_mask_part_prices[cached_part_id] = price
 
@@ -992,11 +988,16 @@ function MoneyManager:get_mask_crafting_price(mask_id, global_value, blueprint, 
 
 	local pattern_price = get_part_price("textures", blueprint.pattern)
 	local material_price = get_part_price("materials", blueprint.material)
-	local color_a_price = get_part_price("mask_colors", blueprint.color_a)
-	local color_b_price = get_part_price("mask_colors", blueprint.color_b)
+	local color_a_price = get_part_price("materials", blueprint.color_a)
+	local color_b_price = get_part_price("materials", blueprint.color_b)
+	local color_c_price = get_part_price("materials", blueprint.color_c)
 
 	if blueprint.color_a and blueprint.color_b and blueprint.color_a.id == blueprint.color_b.id then
 		color_b_price = 0
+
+		if blueprint.color_c and blueprint.color_b.id == blueprint.color_c.id then
+			color_c_price = 0
+		end
 	end
 
 	local parts_value = pattern_price + material_price + color_a_price + color_b_price

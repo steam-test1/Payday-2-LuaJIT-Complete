@@ -217,7 +217,7 @@ function UpgradesTweakData:_init_pd2_values()
 	}
 	self.explosive_bullet = {
 		curve_pow = 0.5,
-		player_dmg_mul = 0.036,
+		player_dmg_mul = 0.0885,
 		range = 200
 	}
 	self.explosive_bullet.feedback_range = self.explosive_bullet.range
@@ -5144,7 +5144,8 @@ function UpgradesTweakData:init(tweak_data)
 				"erma",
 				"x_breech",
 				"x_erma",
-				"sap"
+				"sap",
+				"funder_strike"
 			}
 		},
 		[26] = {
@@ -12312,6 +12313,9 @@ function UpgradesTweakData:_melee_weapon_definitions()
 	}
 	self.definitions.chac = {
 		dlc = "bex",
+		category = "melee_weapon"
+	}
+	self.definitions.funder_strike = {
 		category = "melee_weapon"
 	}
 end

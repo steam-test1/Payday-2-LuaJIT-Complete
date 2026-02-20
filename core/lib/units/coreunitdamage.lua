@@ -1668,6 +1668,16 @@ function CoreUnitDamage:has_sequence(sequence_name)
 	return self._unit_element and self._unit_element:has_sequence(sequence_name)
 end
 
+function CoreUnitDamage:has_then_run_sequence_simple(sequence_name, params)
+	if self:has_sequence(sequence_name) then
+		self:run_sequence_simple(sequence_name, params)
+
+		return true
+	end
+
+	return nil
+end
+
 function CoreUnitDamage:set_variable(key, val)
 	self._variables = self._variables or {}
 	self._variables[key] = val

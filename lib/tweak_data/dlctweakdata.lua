@@ -602,8 +602,13 @@ function DLCTweakData:init(tweak_data)
 	}
 	self.preorder.content.loot_drops = {
 		{
-			type_items = "colors",
-			item_entry = "red_black",
+			type_items = "materials",
+			item_entry = "solid_flat_red",
+			amount = 1
+		},
+		{
+			type_items = "materials",
+			item_entry = "solid_flat_black",
 			amount = 1
 		},
 		{
@@ -3633,6 +3638,20 @@ function DLCTweakData:init(tweak_data)
 			type_items = "weapon_mods",
 			item_entry = "wpn_fps_smg_cobray_body_upper_jacket",
 			amount = 1
+		}
+	}
+	self.hlm2_deluxe_addon_1 = {
+		dlc = "has_parent_dlc",
+		parent_dlc = "hlm2_deluxe",
+		content = {
+			loot_global_value = "hlm2_deluxe",
+			loot_drops = {
+				{
+					type_items = "masks",
+					item_entry = "mega_richard_returns",
+					amount = 1
+				}
+			}
 		}
 	}
 	self.ach_fort_4 = {
@@ -7025,444 +7044,70 @@ function DLCTweakData:init(tweak_data)
 		},
 		{
 			{
-				type_items = "colors",
-				item_entry = "red_gray"
+				type_items = "materials",
+				item_entry = "solid_flat_white",
+				amount = 1
 			},
 			{
-				type_items = "colors",
-				item_entry = "red_scary_green"
+				type_items = "materials",
+				item_entry = "solid_flat_gray",
+				amount = 1
 			},
 			{
-				type_items = "colors",
-				item_entry = "red_dark_gray"
-			},
-			{
-				type_items = "colors",
-				item_entry = "red_orange"
+				type_items = "materials",
+				item_entry = "solid_flat_black",
+				amount = 1
 			}
 		},
 		{
 			{
-				type_items = "colors",
-				item_entry = "coral_red_white"
+				type_items = "materials",
+				item_entry = "solid_flat_red",
+				amount = 1
 			},
 			{
-				type_items = "colors",
-				item_entry = "coral_red_dark_gray"
+				type_items = "materials",
+				item_entry = "solid_flat_green",
+				amount = 1
 			},
 			{
-				type_items = "colors",
-				item_entry = "coral_red_black"
-			},
-			{
-				type_items = "colors",
-				item_entry = "coral_red_light_gray"
-			},
-			{
-				type_items = "colors",
-				item_entry = "coral_red_solid"
+				type_items = "materials",
+				item_entry = "solid_flat_blue",
+				amount = 1
 			}
 		},
 		{
 			{
-				type_items = "colors",
-				item_entry = "dark_red_red"
+				type_items = "materials",
+				item_entry = "solid_flat_yellow",
+				amount = 1
 			},
 			{
-				type_items = "colors",
-				item_entry = "dark_red_bright_yellow"
+				type_items = "materials",
+				item_entry = "solid_flat_purple",
+				amount = 1
 			},
 			{
-				type_items = "colors",
-				item_entry = "dark_red_black"
-			},
-			{
-				type_items = "colors",
-				item_entry = "dark_red_gray"
-			},
-			{
-				type_items = "colors",
-				item_entry = "blood_red_toxic_green"
-			},
-			{
-				type_items = "colors",
-				item_entry = "blood_red_cobalt_blue"
+				type_items = "materials",
+				item_entry = "solid_flat_orange",
+				amount = 1
 			}
 		},
 		{
 			{
-				type_items = "colors",
-				item_entry = "pink_yellow"
+				type_items = "materials",
+				item_entry = "solid_flat_dark_red",
+				amount = 1
 			},
 			{
-				type_items = "colors",
-				item_entry = "pink_cobalt_blue"
+				type_items = "materials",
+				item_entry = "solid_flat_dark_green",
+				amount = 1
 			},
 			{
-				type_items = "colors",
-				item_entry = "pink_black"
-			},
-			{
-				type_items = "colors",
-				item_entry = "pink_white"
-			},
-			{
-				type_items = "colors",
-				item_entry = "pink_navy_blue"
-			},
-			{
-				type_items = "colors",
-				item_entry = "pink_gray"
-			}
-		},
-		{
-			{
-				type_items = "colors",
-				item_entry = "turquoise_black"
-			},
-			{
-				type_items = "colors",
-				item_entry = "turquoise_warm_yellow"
-			},
-			{
-				type_items = "colors",
-				item_entry = "turquoise_gray"
-			},
-			{
-				type_items = "colors",
-				item_entry = "turquoise_black"
-			},
-			{
-				type_items = "colors",
-				item_entry = "turquoise_white"
-			},
-			{
-				type_items = "colors",
-				item_entry = "turquoise_solid"
-			}
-		},
-		{
-			{
-				type_items = "colors",
-				item_entry = "light_blue_black"
-			},
-			{
-				type_items = "colors",
-				item_entry = "light_blue_white"
-			},
-			{
-				type_items = "colors",
-				item_entry = "light_blue_bright_yellow"
-			},
-			{
-				type_items = "colors",
-				item_entry = "light_blue_coral_red"
-			},
-			{
-				type_items = "colors",
-				item_entry = "light_blue_navy_blue"
-			},
-			{
-				type_items = "colors",
-				item_entry = "light_blue_orange"
-			}
-		},
-		{
-			{
-				type_items = "colors",
-				item_entry = "cobalt_blue_solid"
-			},
-			{
-				type_items = "colors",
-				item_entry = "cobalt_blue_warm_yellow"
-			},
-			{
-				type_items = "colors",
-				item_entry = "cobalt_blue_gray"
-			},
-			{
-				type_items = "colors",
-				item_entry = "cobalt_blue_orange"
-			},
-			{
-				type_items = "colors",
-				item_entry = "cobalt_blue_black"
-			}
-		},
-		{
-			{
-				type_items = "colors",
-				item_entry = "blue_white"
-			},
-			{
-				type_items = "colors",
-				item_entry = "blue_black"
-			},
-			{
-				type_items = "colors",
-				item_entry = "blue_navy_blue"
-			},
-			{
-				type_items = "colors",
-				item_entry = "blue_gray"
-			}
-		},
-		{
-			{
-				type_items = "colors",
-				item_entry = "white_yellow"
-			},
-			{
-				type_items = "colors",
-				item_entry = "white_orange"
-			},
-			{
-				type_items = "colors",
-				item_entry = "white_dark_red"
-			},
-			{
-				type_items = "colors",
-				item_entry = "white_cyan"
-			},
-			{
-				type_items = "colors",
-				item_entry = "white_scary_green"
-			}
-		},
-		{
-			{
-				type_items = "colors",
-				item_entry = "black_cyan"
-			},
-			{
-				type_items = "colors",
-				item_entry = "black_green"
-			},
-			{
-				type_items = "colors",
-				item_entry = "black_yellow"
-			},
-			{
-				type_items = "colors",
-				item_entry = "black_gray"
-			}
-		},
-		{
-			{
-				type_items = "colors",
-				item_entry = "dark_gray_white"
-			},
-			{
-				type_items = "colors",
-				item_entry = "dark_gray_black"
-			},
-			{
-				type_items = "colors",
-				item_entry = "dark_gray_coral_red"
-			},
-			{
-				type_items = "colors",
-				item_entry = "dark_gray_cobalt_blue"
-			},
-			{
-				type_items = "colors",
-				item_entry = "dark_gray_turquoise"
-			},
-			{
-				type_items = "colors",
-				item_entry = "dark_gray_green"
-			}
-		},
-		{
-			{
-				type_items = "colors",
-				item_entry = "dark_gray_yellow"
-			},
-			{
-				type_items = "colors",
-				item_entry = "dark_gray_magenta"
-			},
-			{
-				type_items = "colors",
-				item_entry = "dark_gray_dark_red"
-			},
-			{
-				type_items = "colors",
-				item_entry = "dark_gray_purple"
-			},
-			{
-				type_items = "colors",
-				item_entry = "dark_gray_bright_yellow"
-			}
-		},
-		{
-			{
-				type_items = "colors",
-				item_entry = "gray_white"
-			},
-			{
-				type_items = "colors",
-				item_entry = "gray_purple"
-			},
-			{
-				type_items = "colors",
-				item_entry = "gray_cobalt_blue"
-			},
-			{
-				type_items = "colors",
-				item_entry = "gray_turquoise"
-			},
-			{
-				type_items = "colors",
-				item_entry = "gray_green"
-			},
-			{
-				type_items = "colors",
-				item_entry = "gray_yellow"
-			}
-		},
-		{
-			{
-				type_items = "colors",
-				item_entry = "gray_dark_red"
-			},
-			{
-				type_items = "colors",
-				item_entry = "gray_magenta"
-			},
-			{
-				type_items = "colors",
-				item_entry = "gray_orange"
-			},
-			{
-				type_items = "colors",
-				item_entry = "gray_red"
-			},
-			{
-				type_items = "colors",
-				item_entry = "gray_bright_yellow"
-			}
-		},
-		{
-			{
-				type_items = "colors",
-				item_entry = "light_brown_black"
-			},
-			{
-				type_items = "colors",
-				item_entry = "light_brown_white"
-			},
-			{
-				type_items = "colors",
-				item_entry = "light_brown_gray"
-			}
-		},
-		{
-			{
-				type_items = "colors",
-				item_entry = "purple_black"
-			},
-			{
-				type_items = "colors",
-				item_entry = "purple_white"
-			},
-			{
-				type_items = "colors",
-				item_entry = "purple_cyan"
-			}
-		},
-		{
-			{
-				type_items = "colors",
-				item_entry = "leaf_green_black"
-			},
-			{
-				type_items = "colors",
-				item_entry = "leaf_green_dark_green"
-			},
-			{
-				type_items = "colors",
-				item_entry = "dark_green_leaf_green"
-			}
-		},
-		{
-			{
-				type_items = "colors",
-				item_entry = "magenta_black"
-			},
-			{
-				type_items = "colors",
-				item_entry = "magenta_white"
-			},
-			{
-				type_items = "colors",
-				item_entry = "magenta_yellow"
-			},
-			{
-				type_items = "colors",
-				item_entry = "magenta_warm_yellow"
-			},
-			{
-				type_items = "colors",
-				item_entry = "magenta_dark_gray"
-			}
-		},
-		{
-			{
-				type_items = "colors",
-				item_entry = "yellow_black"
-			},
-			{
-				type_items = "colors",
-				item_entry = "yellow_white"
-			},
-			{
-				type_items = "colors",
-				item_entry = "yellow_gray"
-			},
-			{
-				type_items = "colors",
-				item_entry = "yellow_dark_gray"
-			},
-			{
-				type_items = "colors",
-				item_entry = "yellow_red"
-			}
-		},
-		{
-			{
-				type_items = "colors",
-				item_entry = "orange_gray"
-			},
-			{
-				type_items = "colors",
-				item_entry = "orange_turquoise"
-			},
-			{
-				type_items = "colors",
-				item_entry = "bright_yellow_solid"
-			},
-			{
-				type_items = "colors",
-				item_entry = "bright_yellow_dark_red"
-			}
-		},
-		{
-			{
-				type_items = "colors",
-				item_entry = "warm_yellow_light_blue"
-			},
-			{
-				type_items = "colors",
-				item_entry = "warm_yellow_purple"
-			},
-			{
-				type_items = "colors",
-				item_entry = "warm_yellow_dark_red"
-			},
-			{
-				type_items = "colors",
-				item_entry = "warm_yellow_solid"
+				type_items = "materials",
+				item_entry = "solid_flat_dark_slate_blue",
+				amount = 1
 			}
 		},
 		{

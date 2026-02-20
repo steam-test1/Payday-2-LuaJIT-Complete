@@ -1316,7 +1316,7 @@ function AchievementsTweakData:init(tweak_data)
 		cac_6 = {
 			award = "cac_6",
 			melee_id = "moneybundle",
-			enemy = "fbi_female",
+			enemy = "cop_female",
 			job = "rvd"
 		},
 		cac_14 = {

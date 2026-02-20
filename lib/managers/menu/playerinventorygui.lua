@@ -4599,6 +4599,7 @@ function PlayerInventoryGui:open_melee_menu()
 
 	new_node_data.selected_tab = selected_tab
 	new_node_data.scroll_tab_anywhere = true
+	new_node_data.search_box_disconnect_callback_name = "on_search_item"
 	new_node_data.topic_id = "bm_menu_melee_weapons"
 	new_node_data.topic_params = {
 		weapon_category = managers.localization:text("bm_menu_melee_weapons")
@@ -5412,18 +5413,34 @@ function PlayerInventoryGui:_move(dir, box)
 end
 
 function PlayerInventoryGui:move_left()
+	if not self._enabled then
+		return false
+	end
+
 	self:_move("left")
 end
 
 function PlayerInventoryGui:move_right()
+	if not self._enabled then
+		return false
+	end
+
 	self:_move("right")
 end
 
 function PlayerInventoryGui:move_up()
+	if not self._enabled then
+		return false
+	end
+
 	self:_move("up")
 end
 
 function PlayerInventoryGui:move_down()
+	if not self._enabled then
+		return false
+	end
+
 	self:_move("down")
 end
 
@@ -5444,6 +5461,10 @@ function PlayerInventoryGui:previous_page()
 end
 
 function PlayerInventoryGui:special_btn_pressed(button)
+	if not self._enabled then
+		return false
+	end
+
 	if button == Idstring("menu_preview_item_alt") then
 		local box = self:_get_selected_box()
 
@@ -5468,6 +5489,8 @@ function PlayerInventoryGui:special_btn_pressed(button)
 		managers.multi_profile:next_profile()
 	elseif button == Idstring("menu_change_profile_left") and managers.multi_profile:has_previous() then
 		managers.multi_profile:previous_profile()
+	elseif button == Idstring("menu_preview_item") and not managers.menu:is_pc_controller() then
+		managers.menu:open_node("profile_switch", {})
 	end
 
 	for _, text_button in ipairs(self._text_buttons) do
@@ -5479,6 +5502,10 @@ function PlayerInventoryGui:special_btn_pressed(button)
 end
 
 function PlayerInventoryGui:confirm_pressed()
+	if not self._enabled then
+		return false
+	end
+
 	local box = self:_get_selected_box()
 
 	if box and box.panel:tree_visible() and box.clbks and box.clbks.left then
@@ -5487,6 +5514,10 @@ function PlayerInventoryGui:confirm_pressed()
 end
 
 function PlayerInventoryGui:input_focus()
+	if not self._enabled then
+		return false
+	end
+
 	return self._panel:visible() and self._input_focus
 end
 
@@ -5497,6 +5528,10 @@ function PlayerInventoryGui:mouse_moved(o, x, y)
 
 	if not self._panel:visible() then
 		return false, "arrow"
+	end
+
+	if not self._enabled then
+		return
 	end
 
 	local used = false
@@ -5585,6 +5620,10 @@ function PlayerInventoryGui:mouse_pressed(button, x, y)
 		return false
 	end
 
+	if not self._enabled then
+		return
+	end
+
 	local left_clicked = button == Idstring("0")
 	local right_clicked = button == Idstring("1")
 	local scroll_up = button == Idstring("mouse wheel up")
@@ -5646,6 +5685,14 @@ function PlayerInventoryGui:unretrieve_box_textures(box)
 			end
 		end
 	end
+end
+
+function PlayerInventoryGui:enable()
+	self._enabled = true
+end
+
+function PlayerInventoryGui:disable()
+	self._enabled = false
 end
 
 function PlayerInventoryGui:close()

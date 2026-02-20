@@ -269,7 +269,7 @@ function ZipLine:on_interacted(unit)
 		return
 	end
 
-	if self:is_usage_type_both() then
+	if self.is_usage_type_both and self:is_usage_type_both() then
 		if managers.player:is_carrying() then
 			if Network:is_server() then
 				managers.player:drop_carry(self._unit)

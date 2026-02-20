@@ -2359,6 +2359,16 @@ Play the full version soon to get your full PAYDAY!]],
 		dynamite = {
 			fire = false
 		},
+		sticky_grenade = {
+			explosion = false
+		},
+		wpn_gre_electric = {
+			explosion = false,
+			tase = false
+		},
+		poison_gas_grenade = {
+			explosion = false
+		},
 		launcher_frag_arbiter = {
 			explosion = false,
 			fire = false
@@ -2367,9 +2377,9 @@ Play the full version soon to get your full PAYDAY!]],
 			explosion = false,
 			fire = false
 		},
-		wpn_gre_electric = {
+		launcher_frag_china = {
 			explosion = false,
-			tase = false
+			fire = false
 		},
 		launcher_electric = {
 			explosion = false,
@@ -2390,21 +2400,6 @@ Play the full version soon to get your full PAYDAY!]],
 		launcher_electric_arbiter = {
 			explosion = false,
 			tase = false
-		},
-		underbarrel_electric = {
-			explosion = false,
-			tase = false
-		},
-		underbarrel_electric_groza = {
-			explosion = false,
-			tase = false
-		},
-		underbarrel_m203_groza = {
-			explosion = false,
-			tase = false
-		},
-		poison_gas_grenade = {
-			explosion = false
 		},
 		launcher_poison = {
 			explosion = false
@@ -2445,8 +2440,17 @@ Play the full version soon to get your full PAYDAY!]],
 			explosion = false,
 			tase = false
 		},
-		sticky_grenade = {
-			explosion = false
+		underbarrel_electric = {
+			explosion = false,
+			tase = false
+		},
+		underbarrel_electric_groza = {
+			explosion = false,
+			tase = false
+		},
+		underbarrel_m203_groza = {
+			explosion = false,
+			tase = false
 		}
 	}
 	self.projectiles = {
@@ -3058,19 +3062,29 @@ Play the full version soon to get your full PAYDAY!]],
 end
 
 function TweakData:load_movie_list()
-	local CONFIG_PATH = "gamedata/movie_theater"
-	local FILE_EXTENSION = "movie_theater"
-	self.movies = {}
-	local movie_data = PackageManager:xml_data(FILE_EXTENSION:id(), CONFIG_PATH:id())
+	self.movies = {
+		{
+			type = "movie_theater_type_cinematic",
+			title = "Somewhere in Mexico",
+			duration = "02:15",
+			file = "movies/the_end"
+		}
+	}
+	local has_all_movies = MenuCallbackHandler:has_all_movies()
 
-	if movie_data then
-		for i = 0, movie_data:num_children() - 1 do
-			local item = movie_data:child(i):parameter_map()
-
-			if (not item.visible_callback or callback(MenuCallbackHandler, MenuCallbackHandler, item.visible_callback)()) and item.file and DB:has(Idstring("movie"), item.file) then
-				table.insert(self.movies, item)
-			end
-		end
+	if has_all_movies then
+		table.insert(self.movies, {
+			type = "movie_theater_type_cinematic",
+			title = "Offshore Payday",
+			duration = "07:32",
+			file = "movies/offshore1"
+		})
+		table.insert(self.movies, {
+			type = "movie_theater_type_cinematic",
+			title = "Rumors and Stories",
+			duration = "05:20",
+			file = "movies/offshore2"
+		})
 	end
 end
 

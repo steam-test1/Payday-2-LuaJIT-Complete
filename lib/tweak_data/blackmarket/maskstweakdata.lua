@@ -2113,6 +2113,15 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		value = 0,
 		type = "helmet"
 	}
+	self.masks.mega_richard_returns = {
+		unit = "units/pd2_dlc_hotline2/masks/mega_richard_returns/msk_mega_richard_returns",
+		texture_bundle_folder = "hlm2",
+		dlc = "hlm2_deluxe",
+		type = "helmet",
+		name_id = "bm_msk_mega_richard_returns",
+		value = 0,
+		pcs = {}
+	}
 	self.masks.simpson = {
 		unit = "units/pd2_dlc_cage/masks/simpson/msk_simpson",
 		name_id = "bm_msk_simpson",

@@ -895,6 +895,37 @@ function BlackMarketTweakData:get_mask_icon(mask_id, character)
 	return guis_catalog .. "textures/pd2/blackmarket/icons/masks/" .. tostring(mask_id)
 end
 
+function BlackMarketTweakData:get_mask_materials_icon(material_id)
+	local td_bm_mats = tweak_data.blackmarket.materials[material_id]
+
+	if not td_bm_mats then
+		return "guis/dlcs/lic/textures/pd2/blackmarket/icons/materials/nothing", Color.white
+	end
+
+	local guis_catalog = "guis/"
+	local bundle_folder = td_bm_mats.texture_bundle_folder
+
+	if bundle_folder then
+		guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
+	end
+
+	local gui_icon_color, gui_icon_path = nil
+
+	if td_bm_mats.tintable_gui then
+		gui_icon_path = td_bm_mats.tintable_gui
+		gui_icon_color = td_bm_mats.color
+	else
+		gui_icon_path = guis_catalog .. "textures/pd2/blackmarket/icons/materials/" .. material_id
+	end
+
+	if not DB:has(Idstring("texture"), gui_icon_path) then
+		gui_icon_path = "guis/textures/pd2/blackmarket/icons/materials/plastic"
+		gui_icon_color = td_bm_mats.color
+	end
+
+	return gui_icon_path, gui_icon_color
+end
+
 function BlackMarketTweakData:get_character_icon(character)
 	local character_name = CriminalsManager.convert_old_to_new_character_workname(character)
 	local guis_catalog = "guis/"

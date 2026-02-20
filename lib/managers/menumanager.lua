@@ -9192,11 +9192,6 @@ function MenuCrimeNetCasinoInitiator:_create_items(node, options)
 			text_id = "menu_casino_stat_textures",
 			_meta = "option"
 		},
-		{
-			value = "colors",
-			text_id = "menu_casino_stat_colors",
-			_meta = "option"
-		},
 		type = "MenuItemMultiChoice"
 	}
 	local preferred_params = {
@@ -9257,10 +9252,9 @@ function MenuCrimeNetCasinoInitiator:_create_items(node, options)
 	}
 	local infamous_items = {
 		textures = true,
-		colors = false,
+		masks = true,
 		materials = true,
-		weapon_mods = false,
-		masks = true
+		weapon_mods = false
 	}
 	local preferred_value = preferred_item:value()
 	local infamous_item = node:create_item(infamous_data, infamous_params)
@@ -10927,6 +10921,111 @@ end
 function MenuCallbackHandler:unsuspend_skill_switch_dialog_yes(skill_switch)
 	managers.skilltree:unsuspend_skill_switch(skill_switch)
 	self:refresh_node()
+end
+
+MultiProfileSwitchInitiator = MultiProfileSwitchInitiator or class()
+
+function MultiProfileSwitchInitiator:modify_node(node, data)
+	node:clean_items()
+
+	local hightlight_color, row_item_color, callback = nil
+
+	self:create_divider(node, "title", "menu_multi_profile_switch_title_name", nil, tweak_data.screen_colors.text)
+
+	local profile_count = managers.multi_profile:profile_count()
+	local current_profile_index = managers.multi_profile:current_profile_index()
+
+	for i = 1, profile_count do
+		local profile_name = managers.multi_profile:profile_name(i)
+
+		if i == current_profile_index then
+			hightlight_color = tweak_data.screen_colors.text
+			row_item_color = tweak_data.screen_colors.text
+		else
+			hightlight_color = tweak_data.screen_colors.button_stage_2
+			row_item_color = tweak_data.screen_colors.button_stage_3
+		end
+
+		self:create_item(node, {
+			enabled = true,
+			callback = "set_active_multi_profile",
+			localize = false,
+			name = i,
+			text_id = profile_name,
+			hightlight_color = hightlight_color,
+			row_item_color = row_item_color,
+			disabled_color = row_item_color
+		})
+	end
+
+	self:add_back_button(node)
+	node:set_default_item_name(current_profile_index)
+
+	return node
+end
+
+function MultiProfileSwitchInitiator:refresh_node(node, data)
+	local selected_item = node:selected_item() and node:selected_item():name()
+	node = self:modify_node(node, data)
+
+	if selected_item then
+		node:select_item(selected_item)
+	end
+
+	return node
+end
+
+function MultiProfileSwitchInitiator:create_item(node, params)
+	local data_node = {}
+	local new_item = node:create_item(data_node, params)
+
+	new_item:set_enabled(params.enabled)
+	node:add_item(new_item)
+end
+
+function MultiProfileSwitchInitiator:create_divider(node, id, text_id, size, color)
+	local params = {
+		name = "divider_" .. id,
+		no_text = not text_id,
+		text_id = text_id,
+		size = size or 8,
+		color = color
+	}
+	local data_node = {
+		type = "MenuItemDivider"
+	}
+	local new_item = node:create_item(data_node, params)
+
+	node:add_item(new_item)
+end
+
+function MultiProfileSwitchInitiator:add_back_button(node)
+	node:delete_item("back")
+
+	local params = {
+		visible_callback = "is_pc_controller",
+		name = "back",
+		pd2_corner = true,
+		text_id = "menu_back",
+		gui_node_custom = true,
+		align = "left",
+		last_item = true,
+		previous_node = true
+	}
+	local new_item = node:create_item(nil, params)
+
+	node:add_item(new_item)
+end
+
+function MenuCallbackHandler:set_active_multi_profile(item)
+	local active_node_gui = managers.menu:active_menu().renderer:active_node_gui()
+
+	if active_node_gui and active_node_gui.is_moving_profile and active_node_gui:is_moving_profile() then
+		return false
+	end
+
+	managers.multi_profile:set_current_profile(item:parameters().name)
+	managers.menu:back()
 end
 
 function MenuCallbackHandler:has_installed_mods()

@@ -76,6 +76,10 @@ function BaseInteractionExt:_upd_interaction_topology()
 	local rotation = self._interact_obj and self._interact_obj:rotation() or self._unit:rotation()
 	self._interact_axis = self._tweak_data.axis and rotation[self._tweak_data.axis](rotation) or nil
 
+	if self._tweak_data.dot_limit then
+		self:set_dot_limit(self._tweak_data.dot_limit)
+	end
+
 	self:_update_interact_position()
 	self:_setup_ray_objects()
 end
@@ -124,6 +128,20 @@ end
 
 function BaseInteractionExt:dirty()
 	return self._dirty
+end
+
+function BaseInteractionExt:set_dot_limit(limit)
+	self._dot_limit = limit
+end
+
+function BaseInteractionExt:dot_limit()
+	local dot = self._dot_limit or tweak_data.interaction.DEFAULT_INTERACTION_DOT or 0.9
+
+	if _G.IS_VR then
+		dot = dot * 0.8
+	end
+
+	return dot
 end
 
 function BaseInteractionExt:set_text_dirty(dirty)
@@ -1746,7 +1764,7 @@ function ZipLineInteractionExt:interact(player)
 end
 
 function ZipLineInteractionExt:selected(player)
-	if self._unit:zipline():is_usage_type_both() then
+	if self._unit:zipline().is_usage_type_both and self._unit:zipline():is_usage_type_both() then
 		if managers.player:is_carrying() then
 			self._tweak_data.text_id = "hud_int_bag_zipline"
 		else

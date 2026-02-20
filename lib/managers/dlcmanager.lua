@@ -441,7 +441,7 @@ function GenericDLCManager:give_missing_package()
 					if (loot_drop.type_items == "weapon_mods" or loot_drop.type_items == "weapon_skins") and entry.is_a_unlockable then
 						has_item = managers.blackmarket:get_item_amount(global_value, loot_drop.type_items, loot_drop.item_entry, true) > 0
 						passed = not has_item
-					elseif loot_drop.type_items ~= "weapon_mods" and entry.value == 0 then
+					elseif loot_drop.type_items ~= "weapon_mods" and entry.value and entry.value == 0 then
 						has_item = managers.blackmarket:get_item_amount(global_value, loot_drop.type_items, loot_drop.item_entry, true) > 0
 
 						if not has_item then
@@ -966,24 +966,59 @@ function GenericDLCManager:has_armored_transport_and_intel(data)
 end
 
 function GenericDLCManager:has_hlm_game()
-	local verified = Global.dlc_manager.all_dlc_data.hlm_game and Global.dlc_manager.all_dlc_data.hlm_game.verified
-	verified = verified or Global.dlc_manager.all_dlc_data.hlm_dlc and Global.dlc_manager.all_dlc_data.hlm_dlc.verified
+	local verified = false
+
+	for _, id in ipairs({
+		"hlm_game",
+		"hlm_dlc"
+	}) do
+		local dlc_data = Global.dlc_manager.all_dlc_data[id]
+		verified = dlc_data and dlc_data.verified
+
+		if verified then
+			break
+		end
+	end
 
 	return verified
 end
 
 function GenericDLCManager:has_hlm2()
-	local verified = Global.dlc_manager.all_dlc_data.hlm2 and Global.dlc_manager.all_dlc_data.hlm2.verified
-	verified = verified or Global.dlc_manager.all_dlc_data.hlm2_aus and Global.dlc_manager.all_dlc_data.hlm2_aus.verified
-	verified = verified or Global.dlc_manager.all_dlc_data.hlm_dlc and Global.dlc_manager.all_dlc_data.hlm_dlc.verified
+	local verified = false
+
+	for _, id in ipairs({
+		"hlm2",
+		"hlm_dlc",
+		"hlm2_aus",
+		"hlm26"
+	}) do
+		local dlc_data = Global.dlc_manager.all_dlc_data[id]
+		verified = dlc_data and dlc_data.verified
+
+		if verified then
+			break
+		end
+	end
 
 	return verified
 end
 
 function GenericDLCManager:has_hlm2_deluxe()
-	local verified = Global.dlc_manager.all_dlc_data.hlm2_deluxe and Global.dlc_manager.all_dlc_data.hlm2_deluxe.verified
-	verified = verified or Global.dlc_manager.all_dlc_data.hlm2_aus and Global.dlc_manager.all_dlc_data.hlm2_aus.verified
-	verified = verified or Global.dlc_manager.all_dlc_data.hlm_dlc and Global.dlc_manager.all_dlc_data.hlm_dlc.verified
+	local verified = false
+
+	for _, id in ipairs({
+		"hlm2_deluxe",
+		"hlm_dlc",
+		"hlm2_aus",
+		"hlm26"
+	}) do
+		local dlc_data = Global.dlc_manager.all_dlc_data[id]
+		verified = dlc_data and dlc_data.verified
+
+		if verified then
+			break
+		end
+	end
 
 	return verified
 end

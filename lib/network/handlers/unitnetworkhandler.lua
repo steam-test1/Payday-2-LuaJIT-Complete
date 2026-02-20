@@ -2114,7 +2114,7 @@ function UnitNetworkHandler:place_deployable_bag(class_name, pos, rot, upgrade_l
 
 	local class = CoreSerialize.string_to_classtable(class_name)
 
-	if class then
+	if class and class.spawn then
 		local unit = class.spawn(pos, rot, upgrade_lvl, peer:id())
 
 		unit:base():set_server_information(peer:id())

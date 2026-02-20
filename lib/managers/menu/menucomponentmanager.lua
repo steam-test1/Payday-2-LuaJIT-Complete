@@ -3972,6 +3972,51 @@ function MenuComponentManager:create_weapon_mod_icon_list(weapon, category, fact
 	return icon_list
 end
 
+function MenuComponentManager:create_melee_status_icon_list(melee_weapon)
+	local icon_list = {}
+	local melee_data = tweak_data.blackmarket.melee_weapons[melee_weapon]
+
+	if not melee_data then
+		return icon_list
+	end
+
+	local shock_weapon = melee_data.tase_data
+	local fire_weapon = false
+	local poison_weapon = false
+
+	local function check_dot(dot_name)
+		if dot_name then
+			local dot_data = tweak_data.dot:get_dot_data(dot_name)
+			fire_weapon = dot_data.variant == "fire"
+			poison_weapon = dot_data.variant == "poison"
+		end
+	end
+
+	if melee_data.random_special_effects then
+		for _, effect in ipairs(melee_data.random_special_effects) do
+			shock_weapon = shock_weapon or effect.tase_data
+
+			check_dot(effect.dot_data_name)
+		end
+	else
+		check_dot(melee_data.dot_data_name)
+	end
+
+	if shock_weapon then
+		table.insert(icon_list, "guis/textures/pd2/blackmarket/inv_mod_ammo_electric")
+	end
+
+	if fire_weapon then
+		table.insert(icon_list, "guis/textures/pd2/blackmarket/inv_mod_ammo_dragons_breath")
+	end
+
+	if poison_weapon then
+		table.insert(icon_list, "guis/textures/pd2/blackmarket/inv_mod_ammo_poison")
+	end
+
+	return icon_list
+end
+
 function MenuComponentManager:create_game_installing_gui()
 	if self._game_installing then
 		return
@@ -4053,10 +4098,25 @@ function MenuComponentManager:_create_inventory_gui(node)
 	self:close_inventory_gui()
 
 	self._player_inventory_gui = PlayerInventoryGui:new(self._ws, self._fullscreen_ws, node)
+
+	self:enable_inventory_gui()
+
 	local active_menu = managers.menu:active_menu()
 
 	if active_menu then
 		active_menu.input:set_force_input(true)
+	end
+end
+
+function MenuComponentManager:enable_inventory_gui()
+	if self._player_inventory_gui then
+		self._player_inventory_gui:enable()
+	end
+end
+
+function MenuComponentManager:disable_inventory_gui()
+	if self._player_inventory_gui then
+		self._player_inventory_gui:disable()
 	end
 end
 

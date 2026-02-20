@@ -4405,27 +4405,52 @@ function PlayerStandard:_interupt_action_cash_inspect(t)
 end
 
 function PlayerStandard:_update_omniscience(t, dt)
-	local action_forbidden = not managers.player:has_category_upgrade("player", "standstill_omniscience") or managers.player:current_state() == "civilian" or self:_interacting() or self._ext_movement:has_carry_restriction() or self:is_deploying() or self:_changing_weapon() or self:_is_throwing_projectile() or self:_is_meleeing() or self:_on_zipline() or self._moving or self:running() or self:_is_reloading() or self:in_air() or self:in_steelsight() or self:is_equipping() or self:shooting() or not managers.groupai:state():whisper_mode() or not tweak_data.player.omniscience
+	local omniscience_settings = tweak_data.player.omniscience
+
+	if not omniscience_settings then
+		return
+	end
+
+	local action_forbidden = not managers.player:has_category_upgrade("player", "standstill_omniscience") or managers.player:current_state() == "civilian" or self:_interacting() or self._ext_movement:has_carry_restriction() or self:is_deploying() or self:_is_throwing_projectile() or self:_is_meleeing() or self:_on_zipline() or self:running() or self:in_air() or self:shooting() or not managers.groupai:state():whisper_mode()
 
 	if action_forbidden then
 		if self._state_data.omniscience_t then
 			self._state_data.omniscience_t = nil
+			self._state_data.omniscience_pos = nil
 		end
 
 		return
 	end
 
-	self._state_data.omniscience_t = self._state_data.omniscience_t or t + tweak_data.player.omniscience.start_t
+	local player_m_pos = self._unit:movement():m_pos()
+
+	if self._moving and self._state_data.omniscience_pos and omniscience_settings.sense_exit_sq < mvec3_dis_sq(player_m_pos, self._state_data.omniscience_pos) then
+		if self._state_data.omniscience_t then
+			self._state_data.omniscience_t = nil
+			self._state_data.omniscience_pos = nil
+		end
+
+		return
+	end
+
+	if not self._moving and not self._state_data.omniscience_pos then
+		self._state_data.omniscience_pos = self._state_data.omniscience_pos or Vector3()
+
+		mvec3_set(self._state_data.omniscience_pos, player_m_pos)
+	end
+
+	self._state_data.omniscience_t = self._state_data.omniscience_t or t + omniscience_settings.start_t
 
 	if self._state_data.omniscience_t <= t then
-		local sensed_targets = World:find_units_quick("sphere", self._unit:movement():m_pos(), tweak_data.player.omniscience.sense_radius, managers.slot:get_mask("trip_mine_targets"))
+		local sensed_targets = World:find_units_quick("sphere", player_m_pos, omniscience_settings.sense_radius, managers.slot:get_mask("trip_mine_targets"))
 
 		for _, unit in ipairs(sensed_targets) do
 			if alive(unit) and not unit:base():char_tweak().is_escort then
 				self._state_data.omniscience_units_detected = self._state_data.omniscience_units_detected or {}
+				local unit_detected = self._state_data.omniscience_units_detected[unit:key()]
 
-				if not self._state_data.omniscience_units_detected[unit:key()] or self._state_data.omniscience_units_detected[unit:key()] <= t then
-					self._state_data.omniscience_units_detected[unit:key()] = t + tweak_data.player.omniscience.target_resense_t
+				if not unit_detected or unit_detected <= t then
+					unit_detected = t + omniscience_settings.target_resense_t
 
 					managers.game_play_central:auto_highlight_enemy(unit, true)
 
@@ -4434,7 +4459,11 @@ function PlayerStandard:_update_omniscience(t, dt)
 			end
 		end
 
-		self._state_data.omniscience_t = t + tweak_data.player.omniscience.interval_t
+		self._state_data.omniscience_t = t + omniscience_settings.interval_t
+
+		if self._state_data.omniscience_pos then
+			mvec3_set(self._state_data.omniscience_pos, player_m_pos)
+		end
 	end
 end
 

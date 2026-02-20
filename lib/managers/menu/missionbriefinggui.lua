@@ -2141,7 +2141,7 @@ function TeamLoadoutItem:set_slot_outfit(slot, criminal_name, outfit)
 	local aspect = nil
 	local x = player_slot.panel:w() / 2
 	local y = player_slot.panel:h() / 18
-	local w = slot_h / 5 * 0.95
+	local w = slot_h / 5 * 0.92
 	local h = w
 	local slot_color = tweak_data.chat_colors[slot] or tweak_data.chat_colors[#tweak_data.chat_colors]
 	local criminal_text = player_slot.panel:text({
@@ -2152,12 +2152,6 @@ function TeamLoadoutItem:set_slot_outfit(slot, criminal_name, outfit)
 		color = slot_color,
 		text = managers.localization:to_upper_text("menu_" .. tostring(criminal_name))
 	})
-
-	if SystemInfo:platform() == Idstring("WIN32") then
-		criminal_text:move(5, 5)
-	end
-
-	local primary_texture, secondary_texture = nil
 
 	if outfit.primary.factory_id then
 		local primary_id = managers.weapon_factory:get_weapon_id_by_factory_id(outfit.primary.factory_id)
@@ -2229,10 +2223,9 @@ function TeamLoadoutItem:set_slot_outfit(slot, criminal_name, outfit)
 			local sh = math.min(ph, pw / (tw / th))
 
 			rarity_bitmap:set_size(math.round(sw), math.round(sh))
-			rarity_bitmap:set_center(x, y * 3)
+			rarity_bitmap:set_center(primary_bitmap:center())
 		end
 
-		primary_texture = texture
 		local perk_index = 0
 		local perks = managers.blackmarket:get_perks_from_weapon_blueprint(outfit.primary.factory_id, outfit.primary.blueprint)
 
@@ -2362,7 +2355,6 @@ function TeamLoadoutItem:set_slot_outfit(slot, criminal_name, outfit)
 			rarity_bitmap:set_center(secondary_bitmap:center())
 		end
 
-		secondary_texture = texture
 		local perk_index = 0
 		local perks = managers.blackmarket:get_perks_from_weapon_blueprint(outfit.secondary.factory_id, outfit.secondary.blueprint)
 
@@ -2460,21 +2452,54 @@ function TeamLoadoutItem:set_slot_outfit(slot, criminal_name, outfit)
 		melee_weapon_bitmap:set_w(melee_weapon_bitmap:h() * aspect)
 		melee_weapon_bitmap:set_center_x(x)
 		melee_weapon_bitmap:set_center_y(y * 9)
+
+		local icon_list = managers.menu_component:create_melee_status_icon_list(outfit.melee_weapon)
+		local icon_index = 0
+
+		for _, texture in ipairs(icon_list) do
+			if DB:has(Idstring("texture"), texture) then
+				local status_object = player_slot.panel:bitmap({
+					alpha = 0.8,
+					h = 16,
+					w = 16,
+					layer = 2,
+					texture = texture,
+					rotation = math.random(2) - 1.5
+				})
+
+				status_object:set_rightbottom(melee_weapon_bitmap:right() - icon_index * 16, melee_weapon_bitmap:bottom() - 5)
+
+				icon_index = icon_index + 1
+			end
+		end
 	end
 
-	if outfit.grenade and false then
+	if outfit.grenade then
 		local texture = managers.blackmarket:get_throwable_icon(outfit.grenade)
 		local grenade_bitmap = player_slot.panel:bitmap({
 			alpha = 0.8,
-			w = w,
-			h = h,
+			w = w * 0.9,
+			h = h * 0.9,
 			texture = texture,
 			rotation = math.random(2) - 1.5
 		})
 		aspect = grenade_bitmap:texture_width() / math.max(1, grenade_bitmap:texture_height())
 
 		grenade_bitmap:set_w(grenade_bitmap:h() * aspect)
-		grenade_bitmap:set_center_x(x)
+		grenade_bitmap:set_center_x(x - x / 2)
+		grenade_bitmap:set_center_y(y * 12)
+	else
+		local grenade_bitmap = player_slot.panel:bitmap({
+			texture = "guis/textures/pd2/none_icon",
+			alpha = 0.8,
+			w = w,
+			h = h,
+			rotation = math.random(2) - 1.5
+		})
+		aspect = grenade_bitmap:texture_width() / math.max(1, grenade_bitmap:texture_height())
+
+		grenade_bitmap:set_w(grenade_bitmap:h() * aspect)
+		grenade_bitmap:set_center_x(x - x / 2)
 		grenade_bitmap:set_center_y(y * 12)
 	end
 
@@ -2490,7 +2515,7 @@ function TeamLoadoutItem:set_slot_outfit(slot, criminal_name, outfit)
 		aspect = armor_bitmap:texture_width() / math.max(1, armor_bitmap:texture_height())
 
 		armor_bitmap:set_w(armor_bitmap:h() * aspect)
-		armor_bitmap:set_center_x(x)
+		armor_bitmap:set_center_x(x + x / 2)
 		armor_bitmap:set_center_y(y * 12)
 	end
 
@@ -2507,7 +2532,7 @@ function TeamLoadoutItem:set_slot_outfit(slot, criminal_name, outfit)
 
 		deployable_bitmap:set_w(deployable_bitmap:h() * aspect)
 		deployable_bitmap:set_center_x(x)
-		deployable_bitmap:set_center_y(y * 15)
+		deployable_bitmap:set_center_y(y * 15.5)
 
 		local deployable_amount = tonumber(outfit.deployable_amount) or 0
 
@@ -2524,6 +2549,44 @@ function TeamLoadoutItem:set_slot_outfit(slot, criminal_name, outfit)
 			deployable_text:set_size(w, h)
 			deployable_text:set_rightbottom(player_slot.panel:w(), player_slot.panel:h())
 			deployable_text:set_position(math.round(deployable_text:x()) - 16, math.round(deployable_text:y()) - 5)
+
+			if outfit.secondary_deployable then
+				deployable_text:set_right(x - 4)
+			end
+		end
+
+		if outfit.secondary_deployable then
+			local secondary_texture = managers.blackmarket:get_deployable_icon(outfit.secondary_deployable)
+			local secondary_deployable_bitmap = player_slot.panel:bitmap({
+				alpha = 0.8,
+				w = w,
+				h = h,
+				texture = secondary_texture,
+				rotation = math.random(2) - 1.5
+			})
+			aspect = secondary_deployable_bitmap:texture_width() / math.max(1, secondary_deployable_bitmap:texture_height())
+
+			secondary_deployable_bitmap:set_w(secondary_deployable_bitmap:h() * aspect)
+			secondary_deployable_bitmap:set_x(x + 5)
+			secondary_deployable_bitmap:set_center_y(y * 15.5)
+			deployable_bitmap:set_right(x - 5)
+
+			local secondary_deployable_amount = tonumber(outfit.secondary_deployable_amount) or 0
+
+			if secondary_deployable_amount > 1 then
+				local deployable_text = player_slot.panel:text({
+					text = "x" .. tostring(secondary_deployable_amount),
+					font_size = tweak_data.menu.pd2_small_font_size,
+					font = tweak_data.menu.pd2_small_font,
+					rotation = deployable_bitmap:rotation(),
+					color = tweak_data.screen_colors.text
+				})
+				local _, _, w, h = deployable_text:text_rect()
+
+				deployable_text:set_size(w, h)
+				deployable_text:set_rightbottom(player_slot.panel:w(), player_slot.panel:h())
+				deployable_text:set_position(math.round(deployable_text:x()) - 16, math.round(deployable_text:y()) - 5)
+			end
 		end
 	else
 		local deployable_bitmap = player_slot.panel:bitmap({
@@ -2537,7 +2600,7 @@ function TeamLoadoutItem:set_slot_outfit(slot, criminal_name, outfit)
 
 		deployable_bitmap:set_w(deployable_bitmap:h() * aspect)
 		deployable_bitmap:set_center_x(x)
-		deployable_bitmap:set_center_y(y * 15)
+		deployable_bitmap:set_center_y(y * 15.5)
 	end
 
 	player_slot.box = BoxGuiObject:new(player_slot.panel, {
@@ -3344,6 +3407,7 @@ function NewLoadoutTab:create_melee_weapon_loadout()
 	new_node_data.selected_tab = selected_tab
 	new_node_data.is_loadout = true
 	new_node_data.scroll_tab_anywhere = true
+	new_node_data.search_box_disconnect_callback_name = "on_search_item"
 	new_node_data.topic_id = "bm_menu_melee_weapons"
 	new_node_data.topic_params = {
 		weapon_category = managers.localization:text("bm_menu_melee_weapons")
@@ -4580,6 +4644,8 @@ function MissionBriefingGui:special_btn_pressed(button)
 		managers.multi_profile:next_profile()
 	elseif button == Idstring("menu_change_profile_left") and managers.multi_profile:has_previous() then
 		managers.multi_profile:previous_profile()
+	elseif button == Idstring("menu_preview_item") then
+		managers.menu:open_node("profile_switch", {})
 	end
 
 	if self._lobby_code_text then

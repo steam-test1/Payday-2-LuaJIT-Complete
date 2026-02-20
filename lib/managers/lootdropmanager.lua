@@ -851,12 +851,11 @@ end
 function LootDropManager:specific_fake_loot_pc(preferred)
 	local to_drop = {
 		cash = 3,
-		materials = 5,
+		textures = 7,
 		xp = 4,
 		weapon_mods = 2,
-		colors = 6,
-		masks = 1,
-		textures = 7
+		materials = 9,
+		masks = 1
 	}
 
 	return to_drop[preferred] or 1
@@ -866,12 +865,11 @@ function LootDropManager:new_fake_loot_pc(debug_pc, skip_mods)
 	local sum = 0
 	local to_drop = {
 		cash = 3,
-		materials = 5,
+		textures = 7,
 		xp = 4,
 		weapon_mods = 2,
-		colors = 6,
-		masks = 1,
-		textures = 7
+		materials = 9,
+		masks = 1
 	}
 
 	for skip, value in pairs(skip_mods) do
@@ -905,8 +903,6 @@ function LootDropManager:debug_check_items(check_type)
 	for type, data in pairs(tweak_data.blackmarket) do
 		if not check_type or type == check_type then
 			for id, item_data in pairs(data) do
-				print("id", id)
-
 				if not item_data.pc and not item_data.pcs then
 					print("Item", id, "of type", type, "hasn't been assigned a pay class")
 					table.insert(t, id)

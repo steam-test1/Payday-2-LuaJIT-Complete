@@ -22,6 +22,7 @@ require("lib/managers/menu/renderers/MenuNodeLobbyCountdownGui")
 require("lib/managers/menu/renderers/MenuNodeCustomizeGadgetGui")
 require("lib/managers/menu/renderers/MenuNodeAchievementFilterGui")
 require("lib/managers/menu/renderers/MenuNodeCustomizeWeaponColorGui")
+require("lib/managers/menu/renderers/MenuNodeMultiProfileSwitchGui")
 
 MenuRenderer = MenuRenderer or class(CoreMenuRenderer.Renderer)
 

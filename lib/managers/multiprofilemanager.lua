@@ -140,11 +140,17 @@ function MultiProfileManager:profile_name(index)
 		return "Error"
 	end
 
-	return profile.name or "Profile " .. index
+	return profile.name or managers.localization:text("menu_multi_profile_switch_default", {
+		PROFILE = index
+	})
 end
 
 function MultiProfileManager:current_profile_name()
 	return self:profile_name(self._global._current_profile)
+end
+
+function MultiProfileManager:current_profile_index()
+	return self._global._current_profile
 end
 
 function MultiProfileManager:profile_count()
@@ -195,6 +201,32 @@ end
 
 function MultiProfileManager:has_previous()
 	return self._global._current_profile > 1
+end
+
+function MultiProfileManager:move_profile(old_index, new_index)
+	local profile = self:profile(old_index)
+
+	if not profile then
+		return
+	end
+
+	table.remove(self._global._profiles, old_index)
+	table.insert(self._global._profiles, new_index, profile)
+
+	local current_index = self._global._current_profile
+	local change_start = math.min(old_index, new_index)
+	local change_end = math.max(old_index, new_index)
+
+	if current_index == old_index then
+		self._global._current_profile = new_index
+
+		self:save_current()
+	elseif change_start <= current_index and current_index <= change_end then
+		local index_change = old_index < new_index and -1 or 1
+		self._global._current_profile = self._global._current_profile + index_change
+
+		self:save_current()
+	end
 end
 
 function MultiProfileManager:open_quick_select()

@@ -669,8 +669,6 @@ function GameSetup:update(t, dt)
 	if script_data.level_script and script_data.level_script.update then
 		script_data.level_script:update(t, dt)
 	end
-
-	self:_update_debug_input()
 end
 
 function GameSetup:paused_update(t, dt)
@@ -680,8 +678,6 @@ function GameSetup:paused_update(t, dt)
 	if script_data.level_script and script_data.level_script.paused_update then
 		script_data.level_script:paused_update(t, dt)
 	end
-
-	self:_update_debug_input()
 end
 
 function GameSetup:destroy()
@@ -753,9 +749,6 @@ function GameSetup:load(data)
 	managers.skirmish:sync_load(data)
 	managers.mutators:sync_load(data)
 	managers.worlddefinition:sync_load(data)
-end
-
-function GameSetup:_update_debug_input()
 end
 
 return GameSetup

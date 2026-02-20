@@ -44,7 +44,7 @@ function MissionElementListFlow:init(...)
 	self._selected_list:connect("EVT_KEY_DOWN", callback(self, self, "key_cancel"), "")
 
 	local lists_sizer = EWS:BoxSizer("HORIZONTAL")
-	self._executers_list = EWS:ListCtrl(self._panel, "", "LC_REPORT,LC_SORT_ASCENDING")
+	self._executers_list = EWS:ListCtrl(self._panel, "", "LC_REPORT")
 
 	self._executers_list:clear_all()
 	self._executers_list:append_column("Name")
@@ -53,7 +53,7 @@ function MissionElementListFlow:init(...)
 	self._executers_list:append_column("Delay")
 	lists_sizer:add(self._executers_list, 1, 0, "EXPAND")
 
-	self._on_executed_list = EWS:ListCtrl(self._panel, "", "LC_REPORT,LC_SORT_ASCENDING")
+	self._on_executed_list = EWS:ListCtrl(self._panel, "", "LC_REPORT")
 
 	self._on_executed_list:clear_all()
 	self._on_executed_list:append_column("Name")

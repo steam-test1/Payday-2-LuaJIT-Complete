@@ -186,34 +186,24 @@ function CoreMissionElement:build_default_gui(panel, sizer)
 
 	on_executed_sizer:add(element_sizer, 0, 1, "EXPAND,LEFT")
 
-	self._elements_params = {
-		name = "Element:",
-		name_proportions = 1,
-		tooltip = "Select an element from the combobox",
-		sorted = true,
-		sizer_proportions = 1,
-		ctrlr_proportions = 2,
-		panel = panel,
-		sizer = element_sizer,
-		options = {}
-	}
-	local elements = CoreEWS.combobox(self._elements_params)
+	local element_toolbar = EWS:ToolBar(panel, "", "TB_FLAT,TB_VERTICAL,TB_NODIVIDER")
 
-	elements:connect("EVT_COMMAND_COMBOBOX_SELECTED", callback(self, self, "on_executed_element_selected"), nil)
+	element_toolbar:add_tool("ADD_ELEMENT", "Add an element", CoreEws.image_path("world_editor\\unit_by_name_list.png"), nil)
+	element_toolbar:connect("ADD_ELEMENT", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "_on_toolbar_add_element"), nil)
+	element_toolbar:add_tool("DELETE_SELECTED", "Remove selected element", CoreEws.image_path("toolbar\\delete_16x16.png"), nil)
+	element_toolbar:connect("DELETE_SELECTED", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "_on_toolbar_remove"), nil)
+	element_toolbar:add_tool("MOVE_UP", "Move selected up", CoreEws.image_path("toolbar\\up_16x16.png"), nil)
+	element_toolbar:connect("MOVE_UP", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "_on_toolbar_up_element"), nil)
+	element_toolbar:add_tool("MOVE_DOWN", "Move selected down", CoreEws.image_path("toolbar\\down_16x16.png"), nil)
+	element_toolbar:connect("MOVE_DOWN", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "_on_toolbar_down_element"), nil)
+	element_toolbar:realize()
+	element_sizer:add(element_toolbar, 0, 0, "EXPAND")
 
-	self._add_elements_toolbar = EWS:ToolBar(panel, "", "TB_FLAT,TB_NODIVIDER")
+	self._elements_list = EWS:ListBox(panel, "Elements List", "LB_SINGLE,LB_HSCROLL,LB_NEEDED_SB")
 
-	self._add_elements_toolbar:add_tool("ADD_ELEMENT", "Add an element", CoreEws.image_path("world_editor\\unit_by_name_list.png"), nil)
-	self._add_elements_toolbar:connect("ADD_ELEMENT", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "_on_toolbar_add_element"), nil)
-	self._add_elements_toolbar:realize()
-	element_sizer:add(self._add_elements_toolbar, 0, 1, "EXPAND,LEFT")
-
-	self._elements_toolbar = EWS:ToolBar(panel, "", "TB_FLAT,TB_NODIVIDER")
-
-	self._elements_toolbar:add_tool("DELETE_SELECTED", "Remove selected element", CoreEws.image_path("toolbar\\delete_16x16.png"), nil)
-	self._elements_toolbar:connect("DELETE_SELECTED", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "_on_toolbar_remove"), nil)
-	self._elements_toolbar:realize()
-	element_sizer:add(self._elements_toolbar, 0, 1, "EXPAND,LEFT")
+	self._elements_list:set_min_size(Vector3(10, 80, 0))
+	self._elements_list:connect("EVT_COMMAND_LISTBOX_SELECTED", callback(self, self, "on_executed_element_selected"), nil)
+	element_sizer:add(self._elements_list, 1, 0, "EXPAND")
 
 	if not self.ON_EXECUTED_ALTERNATIVES and self._create_dynamic_on_executed_alternatives then
 		self:_create_dynamic_on_executed_alternatives()
@@ -519,6 +509,40 @@ end
 
 function CoreMissionElement:_on_toolbar_remove()
 	self:remove_on_execute(self:_current_element_unit())
+end
+
+function CoreMissionElement:_on_toolbar_up_element()
+	local current_index = self:_current_element_index()
+
+	if current_index <= 1 then
+		return
+	end
+
+	local data = table.remove(self._hed.on_executed, current_index)
+	local unit = table.remove(self._on_executed_units, current_index)
+	current_index = current_index - 1
+
+	table.insert(self._hed.on_executed, current_index, data)
+	table.insert(self._on_executed_units, current_index, unit)
+	self:append_elements_sorted()
+	self:set_on_executed_element(current_index)
+end
+
+function CoreMissionElement:_on_toolbar_down_element()
+	local current_index = self:_current_element_index()
+
+	if current_index <= 0 or current_index >= #self._hed.on_executed then
+		return
+	end
+
+	local data = table.remove(self._hed.on_executed, current_index)
+	local unit = table.remove(self._on_executed_units, current_index)
+	current_index = current_index + 1
+
+	table.insert(self._hed.on_executed, current_index, data)
+	table.insert(self._on_executed_units, current_index, unit)
+	self:append_elements_sorted()
+	self:set_on_executed_element(current_index)
 end
 
 function CoreMissionElement:set_element_data(data)
@@ -1112,29 +1136,24 @@ function CoreMissionElement:delete_unit(units)
 	managers.editor:register_undo_command(command)
 end
 
-function CoreMissionElement:set_on_executed_element(unit, id)
-	unit = unit or self:on_execute_unit_by_id(id)
-
-	if not alive(unit) then
+function CoreMissionElement:set_on_executed_element(index)
+	if not index or index <= 0 or index > #self._hed.on_executed then
 		self:_set_on_execute_ctrlrs_enabled(false)
 		self:_set_first_executed_element()
 
 		return
 	end
 
-	self:_set_on_execute_ctrlrs_enabled(true)
-
-	if self._elements_params then
-		local name = self:combobox_name(unit)
-
-		CoreEWS.change_combobox_value(self._elements_params, name)
+	if self._elements_list then
+		self:_set_on_execute_ctrlrs_enabled(true)
+		self._elements_list:select_index(index - 1)
 		self:set_on_executed_data()
 	end
 end
 
 function CoreMissionElement:set_on_executed_data()
-	local id = self:combobox_id(self._elements_params.value)
-	local params = self:_get_on_executed(id)
+	local index = self:_current_element_index()
+	local params = self._hed.on_executed[index]
 
 	CoreEWS.change_entered_number(self._element_delay_params, params.delay)
 	CoreEWS.change_entered_number(self._element_delay_rand_params, params.delay_rand or 0)
@@ -1150,13 +1169,7 @@ end
 
 function CoreMissionElement:_set_first_executed_element()
 	if #self._hed.on_executed > 0 then
-		local unit = self:on_execute_unit_by_id(self._hed.on_executed[1].id)
-
-		if alive(unit) then
-			self:set_on_executed_element(unit)
-		else
-			print("could not set first executed element! ", self._hed.on_executed[1].id, unit)
-		end
+		self:set_on_executed_element(1)
 	end
 end
 
@@ -1187,12 +1200,19 @@ function CoreMissionElement:_get_on_executed(id)
 	end
 end
 
-function CoreMissionElement:_current_element_id()
-	if not self._elements_params or not self._elements_params.value then
-		return nil
+function CoreMissionElement:_current_element_index()
+	if not self._elements_list then
+		return -1
 	end
 
-	return self:combobox_id(self._elements_params.value)
+	return self._elements_list:selected_index() + 1
+end
+
+function CoreMissionElement:_current_element_id()
+	local index = self:_current_element_index()
+	local params = self._hed.on_executed[index]
+
+	return params and params.id
 end
 
 function CoreMissionElement:_current_element_unit()
@@ -1212,51 +1232,51 @@ function CoreMissionElement:_current_element_unit()
 end
 
 function CoreMissionElement:on_executed_element_delay()
-	local id = self:combobox_id(self._elements_params.value)
-	local params = self:_get_on_executed(id)
-	params.delay = self._element_delay_params.value
+	local index = self:_current_element_index()
+	local params = self._hed.on_executed[index]
 
-	if self._timeline then
-		self._timeline:delay_updated(params)
+	if params then
+		params.delay = self._element_delay_params.value
+
+		if self._timeline then
+			self._timeline:delay_updated(params)
+		end
 	end
 end
 
 function CoreMissionElement:on_executed_element_delay_rand()
-	local id = self:combobox_id(self._elements_params.value)
-	local params = self:_get_on_executed(id)
-	params.delay_rand = self._element_delay_rand_params.value > 0 and self._element_delay_rand_params.value or nil
+	local index = self:_current_element_index()
+	local params = self._hed.on_executed[index]
+
+	if params then
+		params.delay_rand = self._element_delay_rand_params.value > 0 and self._element_delay_rand_params.value or nil
+	end
 end
 
 function CoreMissionElement:on_executed_alternatives_types()
-	local id = self:combobox_id(self._elements_params.value)
-	local params = self:_get_on_executed(id)
+	local index = self:_current_element_index()
+	local params = self._hed.on_executed[index]
 
-	print("self._on_executed_alternatives_params.value", self._on_executed_alternatives_params.value)
+	if params then
+		print("self._on_executed_alternatives_params.value", self._on_executed_alternatives_params.value)
 
-	params.alternative = self._on_executed_alternatives_params.value
+		params.alternative = self._on_executed_alternatives_params.value
+	end
 end
 
 function CoreMissionElement:append_elements_sorted()
-	if not self._elements_params then
+	if not self._elements_list then
 		return
 	end
 
-	local id = self:_current_element_id()
-	local found = false
+	local element_names = self:_combobox_names_names(self._on_executed_units)
+	local index = self:_current_element_index()
 
-	for _, data in ipairs(self._hed.on_executed) do
-		if data.id == id then
-			found = true
+	self._elements_list:clear()
 
-			break
-		end
+	for _, option in ipairs(element_names) do
+		self._elements_list:append(option)
 	end
-
-	if not found and #self._hed.on_executed > 0 then
-		id = self._hed.on_executed[1].id
-	end
-
-	CoreEWS.update_combobox_options(self._elements_params, self:_combobox_names_names(self._on_executed_units))
 
 	if #self._hed.on_executed < 1 then
 		self:_set_on_execute_ctrlrs_enabled(false)
@@ -1264,28 +1284,11 @@ function CoreMissionElement:append_elements_sorted()
 		return
 	end
 
-	self:set_on_executed_element(nil, id)
+	self:set_on_executed_element(index)
 end
 
 function CoreMissionElement:combobox_name(unit)
 	return unit:unit_data().name_id .. " (" .. unit:unit_data().unit_id .. ")"
-end
-
-function CoreMissionElement:combobox_id(name)
-	local s = nil
-	local e = string.len(name) - 1
-
-	for i = string.len(name), 0, -1 do
-		local t = string.sub(name, i, i)
-
-		if t == "(" then
-			s = i + 1
-
-			break
-		end
-	end
-
-	return tonumber(string.sub(name, s, e))
 end
 
 function CoreMissionElement:on_execute_unit_by_id(id)

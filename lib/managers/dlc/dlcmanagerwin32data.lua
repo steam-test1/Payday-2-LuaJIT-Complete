@@ -108,6 +108,12 @@ function WINDLCManager:init_dlc_data()
 		app_id = "338951",
 		external = true
 	}
+	Global.dlc_manager.all_dlc_data.hlm26 = {
+		app_id = "3188980",
+		no_install = true,
+		external = true,
+		epic_id = "968cb34c96d54720a6c5f8244c7901b1"
+	}
 	Global.dlc_manager.all_dlc_data.speedrunners = {
 		no_install = true,
 		app_id = "207140",

@@ -1002,7 +1002,9 @@ function HUDManager:add_waypoint(id, data)
 		position = data.position,
 		unit = data.unit,
 		no_sync = data.no_sync,
-		radius = data.radius or 160
+		radius = data.radius or 160,
+		waypoint_type = data.waypoint_type or nil,
+		waypoint_origin = data.waypoint_origin or nil
 	}
 	self._hud.waypoints[id].init_data.position = data.position or data.unit:position()
 	local slot = 1
@@ -1687,7 +1689,9 @@ function HUDManager:_update_waypoints(t, dt)
 				data.text:set_color(data.text:color():with_alpha(data.text_alpha))
 			end
 
-			data.position = data.unit and data.unit:position() or data.position
+			if not data.waypoint_origin or data.waypoint_origin ~= "waypoint_extension" then
+				data.position = data.unit and data.unit:position() or data.position
+			end
 
 			mvector3.set(wp_pos, self._saferect:world_to_screen(cam, data.position))
 			mvector3.set(wp_dir, data.position)

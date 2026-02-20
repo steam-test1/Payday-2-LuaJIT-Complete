@@ -240,10 +240,11 @@ function NetworkPeer:_verify_outfit_data()
 
 	local outfit = self:blackmarket_outfit()
 	local mask_blueprint_lookup = {
-		color_b = "mask_colors",
-		material = "materials",
-		color_a = "mask_colors",
-		pattern = "textures"
+		pattern = "textures",
+		color_c = "materials",
+		color_a = "materials",
+		color_b = "materials",
+		material = "materials"
 	}
 
 	for item_type, item in pairs(outfit) do
@@ -276,10 +277,16 @@ function NetworkPeer:_verify_outfit_data()
 			local cosmetics_id = outfit[item_type].cosmetics and outfit[item_type].cosmetics.id
 			local skin_blueprint, is_a_color_skin = managers.weapon_factory:get_cosmetics_blueprint_by_weapon_id(weapon_id, cosmetics_id)
 
-			table.list_append(safe_blueprint, skin_blueprint, managers.weapon_factory:get_default_blueprint_by_factory_id(item.factory_id))
+			for _, part_id in ipairs(skin_blueprint) do
+				safe_blueprint[part_id] = true
+			end
+
+			for _, part_id in ipairs(managers.weapon_factory:get_default_blueprint_by_factory_id(item.factory_id)) do
+				safe_blueprint[part_id] = true
+			end
 
 			for _, mod_item in pairs(item.blueprint) do
-				local safe_blueprint_contains_mod_item = table.contains(safe_blueprint, mod_item)
+				local safe_blueprint_contains_mod_item = safe_blueprint[mod_item]
 
 				if not safe_blueprint_contains_mod_item and not self:_verify_content("weapon_mods", mod_item) then
 					return self:_verify_cheated_outfit("weapon_mods", mod_item, VoteManager.REASON.invalid_weapon)
@@ -498,15 +505,19 @@ end
 function NetworkPeer:on_verify_tradable_outfit(outfit_version, error, list)
 	self._wait_for_verify_tradable_outfit = nil
 
-	if outfit_version ~= self._outfit_version then
+	if outfit_version and self._outfit_version and outfit_version ~= self._outfit_version then
+		Application:warn("[NetworkPeer:VERIFICATION] Failed to verify tradable inventory with outdated outfit version:", outfit_version, "current:", self._outfit_version)
+
 		return
 	end
+
+	print("[NetworkPeer:VERIFICATION]", outfit_version, "/", error, "/", list)
 
 	local outfit = self:blackmarket_outfit()
 
 	if error then
 		self:tradable_verification_failed(nil, outfit)
-		Application:error("[NetworkPeer:VERIFICAT] Failed to verify tradable inventory with error code (" .. tostring(error) .. ")")
+		Application:error("[NetworkPeer:VERIFICATION] Failed to verify tradable inventory with error code (" .. tostring(error) .. ")")
 
 		return
 	end
@@ -521,8 +532,6 @@ function NetworkPeer:on_verify_tradable_outfit(outfit_version, error, list)
 end
 
 function NetworkPeer:tradable_verification_failed(group, outfit)
-	Application:error("[NetworkPeer:VERIFICATION] Failed to verify peer " .. tostring(self._id) .. "'s tradable item.", group)
-
 	if not group or group == "primary_skin" then
 		outfit.primary.cosmetics = nil
 		outfit.primary.blueprint = managers.weapon_factory:get_default_blueprint_by_factory_id(outfit.primary.factory_id)

@@ -369,6 +369,10 @@ function GageAssignmentManager:do_spawn(position, rotation)
 		return nil
 	end
 
+	if not position or not rotation then
+		return nil
+	end
+
 	local weighted_assignments = {}
 	local weight = 0
 	local total_weight = 0

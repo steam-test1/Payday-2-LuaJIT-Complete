@@ -1059,6 +1059,7 @@ function CarryTweakData:init(tweak_data)
 		bag_value = "turret_part",
 		unit = "units/pd2_dlc_ranc/pickups/ranc_pku_turretbag/turret_bag",
 		visual_unit_name = "units/pd2_dlc_ranc/pickups/ranc_pku_turretbag/npc_ranc_turret_bag",
+		skip_exit_secure = true,
 		AI_carry = {
 			SO_category = "enemies"
 		}

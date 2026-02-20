@@ -3090,6 +3090,68 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 			anim = "charge"
 		}
 	}
+	local funder_strike_stats = {
+		weapon_type = "blunt",
+		range = 200,
+		remove_weapon_movement_penalty = true,
+		max_damage_effect = 1,
+		max_damage = 2,
+		charge_time = 3.5,
+		min_damage = 2,
+		min_damage_effect = 1,
+		concealment = 30
+	}
+	local funder_strike_sounds = {
+		hit_body = "buzzer_detector_hit_body",
+		hit_air = "buzzer_detector_hit_air",
+		hit_gen = "buzzer_detector_hit_gen",
+		charge = "buzzer_charge",
+		equip = "buzzer_detector_equip"
+	}
+	local anim_start_no_loop = {
+		loop = false,
+		anim = "menu",
+		start_time = 0.2
+	}
+	local anim_attack_snap_end = {
+		from = 1,
+		anim = "menu"
+	}
+	self.melee_weapons.funder_strike = {
+		name_id = "bm_melee_funder_strike",
+		texture_bundle_folder = "fun",
+		melee_damage_delay = 0.13333333333333333,
+		type = "blunt",
+		menu_scene_anim = "menu",
+		anim_global_param = "melee_machete",
+		unit = "units/pd2_dlc_fun/weapons/wpn_fps_mel_funder_strike/wpn_fps_mel_funder_strike",
+		info_id = "bm_melee_funder_strike_info",
+		third_unit = "units/pd2_dlc_fun/weapons/wpn_tps_mel_funder_strike/wpn_tps_mel_funder_strike",
+		repeat_expire_t = 0.7,
+		expire_t = 1,
+		sounds = funder_strike_sounds,
+		stats = funder_strike_stats,
+		tase_data = {
+			tase_strength = "light"
+		},
+		anim_attack_vars = {
+			"var1",
+			"var2",
+			"var3",
+			"var4"
+		},
+		anims = {
+			charge = anim_start_no_loop,
+			var1_attack = anim_attack_snap_end,
+			var2_attack = anim_attack_snap_end,
+			var3_attack = anim_attack_snap_end,
+			var4_attack = anim_attack_snap_end
+		},
+		align_objects = {
+			"a_weapon_right"
+		},
+		menu_scene_params = anim_attack_snap_end
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.melee_weapons) do

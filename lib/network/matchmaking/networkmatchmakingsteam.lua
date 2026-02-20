@@ -1052,12 +1052,14 @@ end
 
 function NetworkMatchMakingSTEAM:build_mods_list()
 	if MenuCallbackHandler:is_modded_client() then
-		local mods = nil
-		mods = MenuCallbackHandler:build_mods_list()
+		local mods = MenuCallbackHandler:build_mods_list()
 		local mods_str = ""
 
 		for _, data in ipairs(mods) do
-			mods_str = mods_str .. string.format("%s|%s|", unpack(data))
+			local name, id = unpack(data)
+			name = string.gsub(name, "|", "_")
+			id = string.gsub(id, "|", "_")
+			mods_str = mods_str .. string.format("%s|%s|", name, id)
 		end
 
 		return mods_str

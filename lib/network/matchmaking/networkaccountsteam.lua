@@ -616,6 +616,8 @@ function NetworkAccountSTEAM:_chk_inventory_outfit_refresh()
 end
 
 function NetworkAccountSTEAM:inventory_outfit_verify(steam_id, outfit_data, outfit_callback)
+	print("[NetworkAccountSTEAM:inventory_outfit_verify]", steam_id, "/", outfit_data, "/", outfit_callback)
+
 	if outfit_data == "" then
 		return outfit_callback and outfit_callback(nil, false, {})
 	end

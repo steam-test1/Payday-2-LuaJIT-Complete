@@ -1057,6 +1057,9 @@ function Layer:set_drag_select()
 	end
 
 	self._drag_select = true
+
+	self:remove_polyline()
+
 	self._polyline = managers.editor._gui:polyline({
 		color = Color(0.5, 1, 1, 1)
 	})

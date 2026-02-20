@@ -246,19 +246,14 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 	local active_unit = nil
 
 	if #close_units_list > 0 and not blocked then
-		local dot_limit = 0.9
-		local current_dot = last_dot or dot_limit
-		local closest_locator = nil
+		local current_dot, closest_locator = nil
 		local has_distance_passed = false
 		local current_distance = 10000
 		local player_fwd, camera_pos = nil
 
 		if _G.IS_VR then
-			local rot = hand_unit:rotation()
-			player_fwd = rot:y()
+			player_fwd = hand_unit:rotation():y()
 			camera_pos = hand_unit:position()
-			dot_limit = 0.7
-			current_dot = last_dot or dot_limit
 		end
 
 		if not _G.IS_VR then
@@ -280,8 +275,12 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 			close_units_list[self._close_test_index]
 		} or close_units_list) do
 			if alive(unit) then
-				if unit:interaction():ray_objects() and (unit:vehicle_driving() or unit:interaction().use_locators and unit:interaction():use_locators()) then
-					for _, locator in pairs(unit:interaction():ray_objects()) do
+				local dot_limit = unit:interaction():dot_limit()
+				current_dot = last_dot or dot_limit
+				local int_ray_objects = unit:interaction():ray_objects()
+
+				if int_ray_objects and (unit:vehicle_driving() or unit:interaction().use_locators and unit:interaction():use_locators()) then
+					for _, locator in pairs(int_ray_objects) do
 						mvector3.set(mvec1, locator:position())
 						mvector3.subtract(mvec1, camera_pos)
 						mvector3.normalize(mvec1)
@@ -307,7 +306,7 @@ function ObjectInteractionManager:_update_targeted(player_pos, player_unit, hand
 					end
 
 					self._active_locator = closest_locator
-				elseif unit:interaction():can_select(player_unit) and unit:interaction():can_select(player_unit) then
+				elseif unit:interaction():can_select(player_unit) then
 					mvector3.set(mvec1, unit:interaction():interact_position())
 					mvector3.subtract(mvec1, camera_pos)
 

@@ -1,9 +1,10 @@
 WaypointExt = WaypointExt or class()
+local EXTENSION_IDS = Idstring("waypoint")
 
 function WaypointExt:init(unit)
 	self._unit = unit
 
-	unit:set_extension_update_enabled(Idstring("waypoint"), false)
+	unit:set_extension_update_enabled(EXTENSION_IDS, false)
 
 	WaypointExt.debug_ext = self
 	self._is_active = false
@@ -21,32 +22,36 @@ function WaypointExt:add_waypoint(icon_name, pos_z_offset, pos_locator, map_icon
 	self._icon_name = icon_name or "pd2_goto"
 	self._pos_z_offset = pos_z_offset and Vector3(0, 0, pos_z_offset) or Vector3(0, 0, 0)
 	self._pos_locator = pos_locator
+	self._pos_locator_ids = pos_locator and Idstring(self._pos_locator)
 	self._map_icon = map_icon
 	self._show_on_hud = show_on_hud
-	local rotation = self._pos_locator and self._unit:get_object(Idstring(self._pos_locator)):rotation() or self._unit:rotation()
-	local position = self._pos_locator and self._unit:get_object(Idstring(self._pos_locator)):position() or self._unit:position()
+	local rotation = self._pos_locator and self._unit:get_object(self._pos_locator_ids):rotation() or self._unit:rotation()
+	local position = self._pos_locator and self._unit:get_object(self._pos_locator_ids):position() or self._unit:position()
 	position = position + self._pos_z_offset
-	self._icon_pos = position
+	self._icon_pos = Vector3()
+
+	mvector3.set(self._icon_pos, position)
+
 	self._icon_rot = rotation
 	self._waypoint_data = {
-		present_timer = 0,
 		radius = 200,
 		waypoint_origin = "waypoint_extension",
+		waypoint_type = "unit_waypoint",
 		blend_mode = "add",
 		no_sync = true,
-		waypoint_type = "unit_waypoint",
+		present_timer = 0,
 		icon = self._icon_name,
 		map_icon = map_icon,
 		unit = self._unit,
-		position = position,
-		rotation = rotation,
+		position = self._icon_pos,
+		rotation = self._icon_rot,
 		color = Color(1, 1, 1),
 		show_on_screen = show_on_hud or show_on_hud == nil and true
 	}
 	self._icon_id = tostring(self._unit:key())
 
 	managers.hud:add_waypoint(self._icon_id, self._waypoint_data)
-	self._unit:set_extension_update_enabled(Idstring("waypoint"), true)
+	self._unit:set_extension_update_enabled(EXTENSION_IDS, true)
 
 	self._is_active = true
 end
@@ -60,19 +65,22 @@ function WaypointExt:remove_waypoint()
 		self._waypoint_data = nil
 	end
 
-	self._unit:set_extension_update_enabled(Idstring("waypoint"), false)
+	self._unit:set_extension_update_enabled(EXTENSION_IDS, false)
 
 	self._is_active = false
 end
 
 function WaypointExt:update(t, dt)
 	if self._icon_pos then
-		local position = self._pos_locator and self._unit:get_object(Idstring(self._pos_locator)):position() or self._unit:position()
-		position = position + self._pos_z_offset
+		local position = self._pos_locator and self._unit:get_object(self._pos_locator_ids):position() or self._unit:position()
 
 		mvector3.set(self._icon_pos, position)
 
-		local rotation = self._pos_locator and self._unit:get_object(Idstring(self._pos_locator)):rotation() or self._unit:rotation()
+		if self._pos_z_offset then
+			mvector3.add(self._icon_pos, self._pos_z_offset)
+		end
+
+		local rotation = self._pos_locator and self._unit:get_object(self._pos_locator_ids):rotation() or self._unit:rotation()
 
 		mrotation.set_yaw_pitch_roll(self._icon_rot, rotation:yaw(), rotation:pitch(), rotation:roll())
 	end

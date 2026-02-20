@@ -126,15 +126,7 @@ function LootDropTweakData:init(tweak_data)
 			50,
 			45
 		},
-		colors = {
-			6,
-			11
-		},
 		textures = {
-			7,
-			12
-		},
-		materials = {
 			7,
 			12
 		},
@@ -145,13 +137,16 @@ function LootDropTweakData:init(tweak_data)
 		xp = {
 			8,
 			0
+		},
+		materials = {
+			9,
+			14
 		}
 	}
 
 	for i = min, max, 10 do
 		local cash = math.lerp(range.cash[1], range.cash[2], i / max)
 		local weapon_mods = math.lerp(range.weapon_mods[1], range.weapon_mods[2], i / max)
-		local colors = math.lerp(range.colors[1], range.colors[2], i / max)
 		local textures = math.lerp(range.textures[1], range.textures[2], i / max)
 		local materials = math.lerp(range.materials[1], range.materials[2], i / max)
 		local masks = math.lerp(range.masks[1], range.masks[2], i / max)
@@ -159,13 +154,11 @@ function LootDropTweakData:init(tweak_data)
 		self.WEIGHTED_TYPE_CHANCE[i] = {
 			cash = cash,
 			weapon_mods = weapon_mods,
-			colors = colors,
 			textures = textures,
 			materials = materials,
 			masks = masks,
 			xp = xp
 		}
-		self.WEIGHTED_TYPE_CHANCE[i].mask_colors = self.WEIGHTED_TYPE_CHANCE[i].colors
 	end
 
 	self.DEFAULT_WEIGHT = 1

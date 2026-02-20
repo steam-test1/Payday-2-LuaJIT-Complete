@@ -3206,20 +3206,22 @@ function CoreEditor:do_save(path, dir, save_continents, autosaving)
 		end
 	end
 
-	local errors = self:check_duplicate_names_exist()
+	if not autosaving then
+		local errors = self:check_duplicate_names_exist()
 
-	if errors then
-		Application:error("Duplicate names exist in the world, something is incorrect!")
-		self:show_text_box("DUPLICATES", errors)
+		if errors then
+			Application:error("Duplicate names exist in the world, something is incorrect!")
+			self:show_text_box("DUPLICATES", errors)
 
-		local txt = [[
+			local txt = [[
 Trying to save with duplicates!
 Please check the listed duplicates on the second popup window before selecting.
 
 Press YES to save.]]
 
-		if EWS:MessageDialog(Global.frame_panel, txt, "This might not be good!", "YES_NO,NO_DEFAULT,ICON_EXCLAMATION"):show_modal() == "ID_NO" then
-			return
+			if EWS:MessageDialog(Global.frame_panel, txt, "This might not be good!", "YES_NO,NO_DEFAULT,ICON_EXCLAMATION"):show_modal() == "ID_NO" then
+				return
+			end
 		end
 	end
 
