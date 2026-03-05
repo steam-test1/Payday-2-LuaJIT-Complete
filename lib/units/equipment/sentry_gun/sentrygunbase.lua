@@ -730,7 +730,7 @@ function SentryGunBase:on_death()
 end
 
 function SentryGunBase:enable_shield()
-	if self._unit:damage():has_sequence_simple("shield_on") then
+	if self._unit:damage():has_sequence("shield_on") then
 		self._has_shield = true
 
 		self._unit:damage():run_sequence_simple("shield_on")
