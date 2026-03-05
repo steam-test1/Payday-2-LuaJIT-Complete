@@ -646,6 +646,9 @@ function CharacterTweakData:_init_sniper(presets)
 	self.sniper.chatter = presets.enemy_chatter.no_chatter
 	self.sniper.steal_loot = nil
 	self.sniper.rescue_hostages = false
+	self.sniper.allowed_poses = {
+		stand = true
+	}
 
 	table.insert(self._enemy_list, "sniper")
 end

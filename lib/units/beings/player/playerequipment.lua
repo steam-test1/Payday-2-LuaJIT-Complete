@@ -246,7 +246,7 @@ function PlayerEquipment:use_grenade_crate()
 		local rot = self:_m_deploy_rot()
 		rot = Rotation(rot:yaw(), 0, 0)
 
-		managers.statistics:use_body_bag()
+		managers.statistics:use_grenade_crate()
 
 		local amount_upgrade_lvl = 0
 

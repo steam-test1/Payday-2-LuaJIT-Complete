@@ -859,6 +859,8 @@ function ProjectileBase.throw_projectile(projectile_type, pos, dir, owner_peer_i
 	local unit_name = Idstring(not Network:is_server() and tweak_entry.local_unit or tweak_entry.unit)
 
 	if not PackageManager:has(ids_unit, unit_name) then
+		Application:error("[ProjectileBase.throw_projectile] Trying to spawn an unloaded projectile:", unit_name)
+
 		return
 	end
 

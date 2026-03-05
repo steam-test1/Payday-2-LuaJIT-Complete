@@ -98,10 +98,6 @@ function GenericDLCManager:has_flm()
 	return self:is_dlc_unlocked("flm")
 end
 
-function GenericDLCManager:has_fun()
-	return self:is_dlc_unlocked("fun")
-end
-
 function GenericDLCManager:has_gdtp()
 	return self:is_dlc_unlocked("gdtp")
 end
@@ -160,10 +156,6 @@ end
 
 function GenericDLCManager:has_lawp()
 	return self:is_dlc_unlocked("lawp")
-end
-
-function GenericDLCManager:has_lic()
-	return self:is_dlc_unlocked("lic")
 end
 
 function GenericDLCManager:has_lrfo()
@@ -578,11 +570,6 @@ function WINDLCManager:init_generated()
 		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
 		no_install = true
 	}
-	Global.dlc_manager.all_dlc_data.fun = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
-		no_install = true
-	}
 	Global.dlc_manager.all_dlc_data.gdtp = {
 		app_id = "1907080",
 		epic_id = "7dbb0cef2df84bc898bc8c208999898b",
@@ -657,11 +644,6 @@ function WINDLCManager:init_generated()
 	Global.dlc_manager.all_dlc_data.lawp = {
 		app_id = "1901420",
 		epic_id = "ca4528520efe4b89a5df2850989ab111",
-		no_install = true
-	}
-	Global.dlc_manager.all_dlc_data.lic = {
-		app_id = "218620",
-		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
 		no_install = true
 	}
 	Global.dlc_manager.all_dlc_data.lrfo = {

@@ -72,7 +72,7 @@ local function flip_card_animation(panel, item_type)
 		card:set_center(cx, cy)
 	end)
 
-	local texture, rect = tweak_data.hud_icons:get_icon_data(item_type or "downcard_overkill_deck")
+	local texture, rect = tweak_data.hud_icons:get_icon_data(item_type or tweak_data.lootdrop.type_to_card_fallback)
 
 	card:set_image(texture)
 	card:set_texture_rect(unpack(rect))

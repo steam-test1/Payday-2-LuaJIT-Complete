@@ -329,8 +329,7 @@ function PlayerManager:check_skills()
 
 	if self:has_category_upgrade("player", "dodge_shot_gain") then
 		local last_gain_time = 0
-		local dodge_gain = self:upgrade_value("player", "dodge_shot_gain")[1]
-		local cooldown = self:upgrade_value("player", "dodge_shot_gain")[2]
+		local dodge_gain, cooldown = unpack(self:upgrade_value("player", "dodge_shot_gain"))
 
 		local function on_player_damage(attack_data)
 			local t = TimerManager:game():time()
@@ -357,9 +356,7 @@ function PlayerManager:check_skills()
 
 	if managers.blackmarket:equipped_grenade() == "smoke_screen_grenade" then
 		local function speed_up_on_kill()
-			if #managers.player:smoke_screens() == 0 then
-				managers.player:speed_up_grenade_cooldown(1)
-			end
+			managers.player:speed_up_grenade_cooldown(1)
 		end
 
 		self:register_message(Message.OnEnemyKilled, "speed_up_smoke_grenade", speed_up_on_kill)

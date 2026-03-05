@@ -238,7 +238,7 @@ end
 
 function CrimeSpreeRewardsMenuComponent:create_card(panel, icon, size)
 	local rotation = math.rand(-10, 10)
-	local texture, rect, coords = tweak_data.hud_icons:get_icon_data(icon or "downcard_overkill_deck")
+	local texture, rect, coords = tweak_data.hud_icons:get_icon_data(icon or tweak_data.lootdrop.type_to_card_fallback)
 	local upcard = panel:bitmap({
 		name = "upcard",
 		halign = "scale",
@@ -883,7 +883,7 @@ function CrimeSpreeRewardsMenuComponent:flip_item_card(card, item_type, delay)
 		card:set_center(cx, cy)
 	end)
 
-	local texture, rect, coords = tweak_data.hud_icons:get_icon_data(item_type or "downcard_overkill_deck")
+	local texture, rect, coords = tweak_data.hud_icons:get_icon_data(item_type or tweak_data.lootdrop.type_to_card_fallback)
 
 	card:set_image(texture)
 	card:set_texture_rect(unpack(rect))

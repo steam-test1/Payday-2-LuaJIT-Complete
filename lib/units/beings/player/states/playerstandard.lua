@@ -4424,13 +4424,18 @@ function PlayerStandard:_update_omniscience(t, dt)
 
 	local player_m_pos = self._unit:movement():m_pos()
 
-	if self._moving and self._state_data.omniscience_pos and omniscience_settings.sense_exit_sq < mvec3_dis_sq(player_m_pos, self._state_data.omniscience_pos) then
-		if self._state_data.omniscience_t then
+	if self._moving then
+		if self._state_data.omniscience_pos and omniscience_settings.sense_exit_sq < mvec3_dis_sq(player_m_pos, self._state_data.omniscience_pos) then
 			self._state_data.omniscience_t = nil
 			self._state_data.omniscience_pos = nil
+			self._state_data.omniscience_units_detected = nil
+
+			return
 		end
 
-		return
+		if not self._state_data.omniscience_pos then
+			return
+		end
 	end
 
 	if not self._moving and not self._state_data.omniscience_pos then
@@ -4439,9 +4444,11 @@ function PlayerStandard:_update_omniscience(t, dt)
 		mvec3_set(self._state_data.omniscience_pos, player_m_pos)
 	end
 
-	self._state_data.omniscience_t = self._state_data.omniscience_t or t + omniscience_settings.start_t
+	if not self._state_data.omniscience_t then
+		self._state_data.omniscience_t = t + omniscience_settings.start_t
+	end
 
-	if self._state_data.omniscience_t <= t then
+	if self._state_data.omniscience_pos and self._state_data.omniscience_t <= t then
 		local sensed_targets = World:find_units_quick("sphere", player_m_pos, omniscience_settings.sense_radius, managers.slot:get_mask("trip_mine_targets"))
 
 		for _, unit in ipairs(sensed_targets) do
@@ -4451,6 +4458,7 @@ function PlayerStandard:_update_omniscience(t, dt)
 
 				if not unit_detected or unit_detected <= t then
 					unit_detected = t + omniscience_settings.target_resense_t
+					self._state_data.omniscience_units_detected[unit:key()] = unit_detected
 
 					managers.game_play_central:auto_highlight_enemy(unit, true)
 
@@ -4744,7 +4752,7 @@ PlayerStandard._primary_action_funcs = {
 			if not self._state_data.in_steelsight then
 				state = self._ext_camera:play_redirect(self:get_animation("recoil"), weap_base:fire_rate_multiplier())
 			elseif weap_base:weapon_tweak_data().animations.recoil_steelsight then
-				state = self._ext_camera:play_redirect(weap_base:is_second_sight_on() and self:get_animation("recoil") or self:get_animation("recoil_steelsight"), 1)
+				state = self._ext_camera:play_redirect(self:get_animation("recoil_steelsight"), weap_base:fire_rate_multiplier())
 			end
 
 			if state then

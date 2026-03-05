@@ -1276,7 +1276,7 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 				if not self._state_data.in_steelsight then
 					self._ext_camera:play_redirect(self:get_animation("recoil"), weap_base:fire_rate_multiplier())
 				elseif weap_tweak_data.animations.recoil_steelsight then
-					self._ext_camera:play_redirect(weap_base:is_second_sight_on() and self:get_animation("recoil") or self:get_animation("recoil_steelsight"), 1)
+					self._ext_camera:play_redirect(self:get_animation("recoil_steelsight"), weap_base:fire_rate_multiplier())
 				end
 			end
 

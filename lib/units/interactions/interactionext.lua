@@ -286,8 +286,6 @@ function BaseInteractionExt:update_show_interact(player, locator)
 	local text = managers.localization:text(text_id, string_macros)
 	local icon = self._tweak_data.icon
 
-	print("[BaseInteractionExt:update_show_interact] This used?", inspect(self._tweak_data))
-
 	if self._tweak_data.special_equipment then
 		local equipment_data = managers.player:has_special_equipment(self._tweak_data.special_equipment)
 

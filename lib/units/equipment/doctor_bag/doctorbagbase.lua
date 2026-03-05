@@ -1,10 +1,10 @@
 DoctorBagBase = DoctorBagBase or class(UnitBase)
 DoctorBagBase.amount_upgrade_lvl_shift = 2
 DoctorBagBase.damage_reduce_lvl_shift = 4
+local IDS_MEDIC_BAG = Idstring("units/payday2/equipment/gen_equipment_medicbag/gen_equipment_medicbag")
 
 function DoctorBagBase.spawn(pos, rot, bits, peer_id)
-	local unit_name = "units/payday2/equipment/gen_equipment_medicbag/gen_equipment_medicbag"
-	local unit = World:spawn_unit(Idstring(unit_name), pos, rot)
+	local unit = World:spawn_unit(IDS_MEDIC_BAG, pos, rot)
 
 	managers.network:session():send_to_peers_synched("sync_equipment_setup", unit, bits, peer_id or 0)
 	unit:base():setup(bits)
@@ -24,6 +24,10 @@ function DoctorBagBase:server_information()
 	return self._server_information
 end
 
+function DoctorBagBase:get_name_id()
+	return "doctor_bag"
+end
+
 function DoctorBagBase:init(unit)
 	UnitBase.init(self, unit, false)
 
@@ -41,10 +45,6 @@ function DoctorBagBase:init(unit)
 	end
 
 	self._damage_reduction_upgrade = false
-end
-
-function DoctorBagBase:get_name_id()
-	return "doctor_bag"
 end
 
 function DoctorBagBase:_clbk_validate()
@@ -71,7 +71,8 @@ end
 function DoctorBagBase:setup(bits)
 	local amount_upgrade_lvl, dmg_reduction_lvl = self:_get_upgrade_levels(bits)
 	self._damage_reduction_upgrade = dmg_reduction_lvl ~= 0
-	self._amount = tweak_data.upgrades.doctor_bag_base + managers.player:upgrade_value_by_level("doctor_bag", "amount_increase", amount_upgrade_lvl)
+	local doctor_bag_amount_increase = managers.player:upgrade_value_by_level("doctor_bag", "amount_increase", amount_upgrade_lvl)
+	self._amount = tweak_data.upgrades.doctor_bag_base + doctor_bag_amount_increase
 
 	self:_set_visual_stage()
 
@@ -168,6 +169,21 @@ function DoctorBagBase:take(unit)
 	return taken > 0
 end
 
+function DoctorBagBase:_take(unit)
+	local taken = 1
+	self._amount = self._amount - taken
+
+	unit:character_damage():recover_health()
+
+	local rally_skill_data = unit:movement():rally_skill_data()
+
+	if rally_skill_data then
+		rally_skill_data.morale_boost_delay_t = (managers.player:has_category_upgrade("player", "morale_boost") or managers.player:has_enabled_cooldown_upgrade("cooldown", "long_dis_revive")) and 0 or nil
+	end
+
+	return taken
+end
+
 function DoctorBagBase:_set_visual_stage()
 	local percentage = self._amount / self._max_amount
 
@@ -188,21 +204,6 @@ function DoctorBagBase:sync_taken(amount)
 	else
 		self:_set_visual_stage()
 	end
-end
-
-function DoctorBagBase:_take(unit)
-	local taken = 1
-	self._amount = self._amount - taken
-
-	unit:character_damage():recover_health()
-
-	local rally_skill_data = unit:movement():rally_skill_data()
-
-	if rally_skill_data then
-		rally_skill_data.morale_boost_delay_t = (managers.player:has_category_upgrade("player", "morale_boost") or managers.player:has_enabled_cooldown_upgrade("cooldown", "long_dis_revive")) and 0 or nil
-	end
-
-	return taken
 end
 
 function DoctorBagBase:_set_empty()

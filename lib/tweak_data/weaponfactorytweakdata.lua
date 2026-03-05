@@ -216,7 +216,6 @@ function WeaponFactoryTweakData:init()
 	self:_init_arblast()
 	self:_init_frankish()
 	self:_init_long()
-	self:_init_legendary()
 	self:_init_par()
 	self:_init_sparrow()
 	self:_init_model70()
@@ -333,6 +332,7 @@ function WeaponFactoryTweakData:init()
 	self:_init_atw_mod()
 	self:_init_m60()
 	self:_init_r700()
+	self:_init_legendary()
 	self:create_ammunition()
 	self:_init_cc_material_config()
 	self:_init_bipods()
@@ -403,9 +403,10 @@ end
 
 function WeaponFactoryTweakData:_init_silencers()
 	self.parts.wpn_fps_upg_ns_ass_smg_large = {
-		type = "barrel_ext",
 		sub_type = "silencer",
 		a_obj = "a_ns",
+		type = "barrel_ext",
+		third_unit = "units/payday2/weapons/wpn_third_upg_ns_ass_smg_large/wpn_third_upg_ns_ass_smg_large",
 		parent = "barrel",
 		name_id = "bm_wp_upg_ns_ass_smg_large",
 		unit = "units/payday2/weapons/wpn_fps_upg_ns_ass_smg_large/wpn_fps_upg_ns_ass_smg_large",
@@ -414,6 +415,12 @@ function WeaponFactoryTweakData:_init_silencers()
 			20,
 			30,
 			40
+		},
+		perks = {
+			"silencer"
+		},
+		sound_switch = {
+			suppressed = "suppressed_c"
 		},
 		stats = {
 			alert_size = 12,
@@ -424,18 +431,13 @@ function WeaponFactoryTweakData:_init_silencers()
 			recoil = 1,
 			spread = 2,
 			concealment = -3
-		},
-		perks = {
-			"silencer"
-		},
-		sound_switch = {
-			suppressed = "suppressed_c"
 		}
 	}
 	self.parts.wpn_fps_upg_ns_ass_smg_medium = {
-		type = "barrel_ext",
 		sub_type = "silencer",
 		a_obj = "a_ns",
+		type = "barrel_ext",
+		third_unit = "units/payday2/weapons/wpn_third_upg_ns_ass_smg_medium/wpn_third_upg_ns_ass_smg_medium",
 		parent = "barrel",
 		name_id = "bm_wp_upg_ns_ass_smg_medium",
 		unit = "units/payday2/weapons/wpn_fps_upg_ns_ass_smg_medium/wpn_fps_upg_ns_ass_smg_medium",
@@ -445,6 +447,12 @@ function WeaponFactoryTweakData:_init_silencers()
 			30,
 			40
 		},
+		perks = {
+			"silencer"
+		},
+		sound_switch = {
+			suppressed = "suppressed_b"
+		},
 		stats = {
 			alert_size = 12,
 			spread_moving = -2,
@@ -453,18 +461,13 @@ function WeaponFactoryTweakData:_init_silencers()
 			value = 2,
 			recoil = 1,
 			concealment = -2
-		},
-		perks = {
-			"silencer"
-		},
-		sound_switch = {
-			suppressed = "suppressed_b"
 		}
 	}
 	self.parts.wpn_fps_upg_ns_ass_smg_small = {
-		type = "barrel_ext",
 		sub_type = "silencer",
 		a_obj = "a_ns",
+		type = "barrel_ext",
+		third_unit = "units/payday2/weapons/wpn_third_upg_ns_ass_smg_small/wpn_third_upg_ns_ass_smg_small",
 		parent = "barrel",
 		name_id = "bm_wp_upg_ns_ass_smg_small",
 		unit = "units/payday2/weapons/wpn_fps_upg_ns_ass_smg_small/wpn_fps_upg_ns_ass_smg_small",
@@ -474,6 +477,12 @@ function WeaponFactoryTweakData:_init_silencers()
 			30,
 			40
 		},
+		perks = {
+			"silencer"
+		},
+		sound_switch = {
+			suppressed = "suppressed_a"
+		},
 		stats = {
 			alert_size = 12,
 			spread_moving = -1,
@@ -482,18 +491,13 @@ function WeaponFactoryTweakData:_init_silencers()
 			value = 3,
 			recoil = 0,
 			concealment = 0
-		},
-		perks = {
-			"silencer"
-		},
-		sound_switch = {
-			suppressed = "suppressed_a"
 		}
 	}
 	self.parts.wpn_fps_upg_ns_pis_large = {
-		type = "barrel_ext",
 		sub_type = "silencer",
 		a_obj = "a_ns",
+		type = "barrel_ext",
+		third_unit = "units/payday2/weapons/wpn_third_upg_ns_pis_large/wpn_third_upg_ns_pis_large",
 		parent = "slide",
 		name_id = "bm_wp_upg_ns_pis_large",
 		unit = "units/payday2/weapons/wpn_fps_upg_ns_pis_large/wpn_fps_upg_ns_pis_large",
@@ -503,6 +507,12 @@ function WeaponFactoryTweakData:_init_silencers()
 			30,
 			40
 		},
+		perks = {
+			"silencer"
+		},
+		sound_switch = {
+			suppressed = "suppressed_c"
+		},
 		stats = {
 			alert_size = 12,
 			spread_moving = -2,
@@ -511,18 +521,13 @@ function WeaponFactoryTweakData:_init_silencers()
 			value = 5,
 			recoil = 2,
 			concealment = -3
-		},
-		perks = {
-			"silencer"
-		},
-		sound_switch = {
-			suppressed = "suppressed_c"
 		}
 	}
 	self.parts.wpn_fps_upg_ns_pis_medium = {
-		type = "barrel_ext",
 		sub_type = "silencer",
 		a_obj = "a_ns",
+		type = "barrel_ext",
+		third_unit = "units/payday2/weapons/wpn_third_upg_ns_pis_medium/wpn_third_upg_ns_pis_medium",
 		parent = "slide",
 		name_id = "bm_wp_upg_ns_pis_medium",
 		unit = "units/payday2/weapons/wpn_fps_upg_ns_pis_medium/wpn_fps_upg_ns_pis_medium",
@@ -532,6 +537,12 @@ function WeaponFactoryTweakData:_init_silencers()
 			30,
 			40
 		},
+		perks = {
+			"silencer"
+		},
+		sound_switch = {
+			suppressed = "suppressed_b"
+		},
 		stats = {
 			alert_size = 12,
 			spread_moving = -2,
@@ -540,18 +551,13 @@ function WeaponFactoryTweakData:_init_silencers()
 			value = 1,
 			recoil = 1,
 			concealment = -2
-		},
-		perks = {
-			"silencer"
-		},
-		sound_switch = {
-			suppressed = "suppressed_b"
 		}
 	}
 	self.parts.wpn_fps_upg_ns_pis_small = {
-		type = "barrel_ext",
 		sub_type = "silencer",
 		a_obj = "a_ns",
+		type = "barrel_ext",
+		third_unit = "units/payday2/weapons/wpn_third_upg_ns_pis_small/wpn_third_upg_ns_pis_small",
 		parent = "slide",
 		name_id = "bm_wp_upg_ns_pis_small",
 		unit = "units/payday2/weapons/wpn_fps_upg_ns_pis_small/wpn_fps_upg_ns_pis_small",
@@ -561,6 +567,12 @@ function WeaponFactoryTweakData:_init_silencers()
 			30,
 			40
 		},
+		perks = {
+			"silencer"
+		},
+		sound_switch = {
+			suppressed = "suppressed_a"
+		},
 		stats = {
 			alert_size = 12,
 			spread_moving = -1,
@@ -569,18 +581,13 @@ function WeaponFactoryTweakData:_init_silencers()
 			value = 3,
 			recoil = 0,
 			concealment = 0
-		},
-		perks = {
-			"silencer"
-		},
-		sound_switch = {
-			suppressed = "suppressed_a"
 		}
 	}
 	self.parts.wpn_fps_upg_ns_shot_thick = {
-		type = "barrel_ext",
 		sub_type = "silencer",
 		a_obj = "a_ns",
+		type = "barrel_ext",
+		third_unit = "units/payday2/weapons/wpn_third_upg_ns_shot_thick/wpn_third_upg_ns_shot_thick",
 		parent = "barrel",
 		name_id = "bm_wp_upg_ns_shot_thick",
 		unit = "units/payday2/weapons/wpn_fps_upg_ns_shot_thick/wpn_fps_upg_ns_shot_thick",
@@ -590,6 +597,12 @@ function WeaponFactoryTweakData:_init_silencers()
 			30,
 			40
 		},
+		perks = {
+			"silencer"
+		},
+		sound_switch = {
+			suppressed = "suppressed_a"
+		},
 		stats = {
 			alert_size = 12,
 			spread_moving = -2,
@@ -598,21 +611,8 @@ function WeaponFactoryTweakData:_init_silencers()
 			value = 7,
 			recoil = 1,
 			concealment = -2
-		},
-		perks = {
-			"silencer"
-		},
-		sound_switch = {
-			suppressed = "suppressed_a"
 		}
 	}
-	self.parts.wpn_fps_upg_ns_ass_smg_large.third_unit = "units/payday2/weapons/wpn_third_upg_ns_ass_smg_large/wpn_third_upg_ns_ass_smg_large"
-	self.parts.wpn_fps_upg_ns_ass_smg_medium.third_unit = "units/payday2/weapons/wpn_third_upg_ns_ass_smg_medium/wpn_third_upg_ns_ass_smg_medium"
-	self.parts.wpn_fps_upg_ns_ass_smg_small.third_unit = "units/payday2/weapons/wpn_third_upg_ns_ass_smg_small/wpn_third_upg_ns_ass_smg_small"
-	self.parts.wpn_fps_upg_ns_pis_large.third_unit = "units/payday2/weapons/wpn_third_upg_ns_pis_large/wpn_third_upg_ns_pis_large"
-	self.parts.wpn_fps_upg_ns_pis_medium.third_unit = "units/payday2/weapons/wpn_third_upg_ns_pis_medium/wpn_third_upg_ns_pis_medium"
-	self.parts.wpn_fps_upg_ns_pis_small.third_unit = "units/payday2/weapons/wpn_third_upg_ns_pis_small/wpn_third_upg_ns_pis_small"
-	self.parts.wpn_fps_upg_ns_shot_thick.third_unit = "units/payday2/weapons/wpn_third_upg_ns_shot_thick/wpn_third_upg_ns_shot_thick"
 end
 
 function WeaponFactoryTweakData:_init_nozzles()
@@ -621,6 +621,7 @@ function WeaponFactoryTweakData:_init_nozzles()
 		unit = "units/payday2/weapons/wpn_fps_upg_ns_ass_smg_firepig/wpn_fps_upg_ns_ass_smg_firepig",
 		type = "barrel_ext",
 		name_id = "bm_wp_upg_ns_ass_smg_firepig",
+		third_unit = "units/payday2/weapons/wpn_third_upg_ns_ass_smg_firepig/wpn_third_upg_ns_ass_smg_firepig",
 		a_obj = "a_ns",
 		pcs = {
 			10,
@@ -696,7 +697,6 @@ function WeaponFactoryTweakData:_init_nozzles()
 			recoil = 2
 		}
 	}
-	self.parts.wpn_fps_upg_ns_ass_smg_firepig.third_unit = "units/payday2/weapons/wpn_third_upg_ns_ass_smg_firepig/wpn_third_upg_ns_ass_smg_firepig"
 	self.parts.wpn_fps_upg_ns_ass_smg_stubby.third_unit = "units/payday2/weapons/wpn_third_upg_ns_ass_smg_stubby/wpn_third_upg_ns_ass_smg_stubby"
 	self.parts.wpn_fps_upg_ns_ass_smg_tank.third_unit = "units/payday2/weapons/wpn_third_upg_ns_ass_smg_tank/wpn_third_upg_ns_ass_smg_tank"
 	self.parts.wpn_fps_upg_ns_shot_shark.third_unit = "units/payday2/weapons/wpn_third_upg_ns_shot_shark/wpn_third_upg_ns_shot_shark"
@@ -833,15 +833,19 @@ end
 
 function WeaponFactoryTweakData:_init_sights()
 	self.parts.wpn_fps_upg_o_specter = {
+		has_description = true,
 		type = "sight",
 		desc_id = "bm_wp_upg_o_piggyback_desc",
 		unit = "units/payday2/weapons/wpn_fps_upg_o_specter/wpn_fps_upg_o_specter",
 		a_obj = "a_o",
+		third_unit = "units/payday2/weapons/wpn_third_upg_o_specter/wpn_third_upg_o_specter",
 		name_id = "bm_wp_upg_o_specter",
-		has_description = true,
 		pcs = {
 			30,
 			40
+		},
+		perks = {
+			"scope"
 		},
 		stats = {
 			zoom = 4,
@@ -849,9 +853,6 @@ function WeaponFactoryTweakData:_init_sights()
 			concealment = -3,
 			value = 8,
 			spread_moving = -3
-		},
-		perks = {
-			"scope"
 		},
 		adds = {
 			"wpn_fps_upg_o_specter_piggyback"
@@ -891,12 +892,10 @@ function WeaponFactoryTweakData:_init_sights()
 				translation = Vector3(-0.028, -20, -3)
 			},
 			wpn_fps_ass_ak5 = {
-				translation = Vector3(0, 0, -3.5),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 0, -3.5)
 			},
 			wpn_fps_smg_vityaz = {
-				translation = Vector3(0, 0, -3.25),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 0, -3.25)
 			},
 			wpn_fps_ass_aug = {
 				translation = Vector3(0, 0, -2.8)
@@ -966,8 +965,7 @@ function WeaponFactoryTweakData:_init_sights()
 				translation = Vector3(0, -10, -5.2)
 			},
 			wpn_fps_smg_tec9 = {
-				translation = Vector3(0, -8, -5),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, -8, -5)
 			},
 			wpn_fps_smg_uzi = {
 				translation = Vector3(0, -8, -5.1)
@@ -1003,68 +1001,53 @@ function WeaponFactoryTweakData:_init_sights()
 				translation = Vector3(-0.01, -3, -1.205)
 			},
 			wpn_fps_rpg7 = {
-				translation = Vector3(0, 5, 0.04),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 5, 0.04)
 			},
 			wpn_fps_sho_aa12 = {
-				translation = Vector3(-0.01, 0, 0.07),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(-0.01, 0, 0.07)
 			},
 			wpn_fps_gre_m32 = {
-				translation = Vector3(0, 5, -3.5),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 5, -3.5)
 			},
 			wpn_fps_smg_polymer = {
-				translation = Vector3(0, 2, -0.65),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 2, -0.65)
 			},
 			wpn_fps_snp_wa2000 = {
-				translation = Vector3(0, -10, 0.75),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, -10, 0.75)
 			},
 			wpn_fps_snp_model70 = {
-				translation = Vector3(0, -10, -4.05),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, -10, -4.05)
 			},
 			wpn_fps_snp_r700 = {
-				translation = Vector3(0, -15, -3.8),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, -15, -3.8)
 			},
 			wpn_fps_shot_m37 = {
-				translation = Vector3(0, -10, -4.05),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, -10, -4.05)
 			},
 			wpn_fps_shot_m1897 = {
-				translation = Vector3(0, -10, -4.05),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, -10, -4.05)
 			},
 			wpn_fps_sho_m590 = {
 				translation = Vector3(-0.24, -3.5, -3.9),
 				rotation = Rotation(0, -0.5, 0)
 			},
 			wpn_fps_smg_sr2 = {
-				translation = Vector3(0, 5, -4.6),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 5, -4.6)
 			},
 			wpn_fps_ass_tecci = {
-				translation = Vector3(-0.01, 0, -1.7),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(-0.01, 0, -1.7)
 			},
 			wpn_fps_smg_hajk = {
-				translation = Vector3(0, 5, -0.5),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 5, -0.5)
 			},
 			wpn_fps_ass_groza = {
-				translation = Vector3(0, 5, -5),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 5, -5)
 			},
 			wpn_fps_snp_qbu88 = {
-				translation = Vector3(0, -20, 0.3),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, -20, 0.3)
 			},
 			wpn_fps_smg_pm9 = {
-				translation = Vector3(0.2, -2, -5.3),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0.2, -2, -5.3)
 			},
 			wpn_fps_ass_shak12 = {
 				translation = Vector3(0, -8, 1.5),
@@ -1078,96 +1061,75 @@ function WeaponFactoryTweakData:_init_sights()
 				rotation = Rotation(0, -0.5, 0)
 			},
 			wpn_fps_snp_desertfox = {
-				translation = Vector3(0, -12, -3.9),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, -12, -3.9)
 			},
 			wpn_fps_smg_schakal = {
-				translation = Vector3(0, 0, -2.8),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 0, -2.8)
 			},
 			wpn_fps_lmg_hk51b = {
 				translation = Vector3(0.05, 0, -2.15),
 				rotation = Rotation(0.1, -1, 0)
 			},
 			wpn_fps_snp_scout = {
-				translation = Vector3(0.01, -15, 0.5),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0.01, -15, 0.5)
 			},
 			wpn_fps_gre_ms3gl = {
 				translation = Vector3(0, 5, 2.5),
 				rotation = Rotation(0, -6, 0)
 			},
 			wpn_fps_sho_sko12 = {
-				translation = Vector3(0, 0, -2.81),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 0, -2.81)
 			},
 			wpn_fps_sho_rota = {
-				translation = Vector3(0, 0, -0.4),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 0, -0.4)
 			},
 			wpn_fps_gre_arbiter = {
-				translation = Vector3(0, 0, -0.4),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 0, -0.4)
 			},
 			wpn_fps_ass_contraband = {
-				translation = Vector3(-0.01, -9, -1.7),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(-0.01, -9, -1.7)
 			},
 			wpn_fps_snp_tti = {
-				translation = Vector3(0, 5, -0.1),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 5, -0.1)
 			},
 			wpn_fps_snp_siltstone = {
-				translation = Vector3(0, 5, -4.04),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 5, -4.04)
 			},
 			wpn_fps_ass_flint = {
-				translation = Vector3(0, -15, -2.65),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, -15, -2.65)
 			},
 			wpn_fps_smg_coal = {
-				translation = Vector3(0, 5, -4),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 5, -4)
 			},
 			wpn_fps_smg_shepheard = {
-				translation = Vector3(0, 5, -0.45),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 5, -0.45)
 			},
 			wpn_fps_ass_ching = {
-				translation = Vector3(0, -15, -2.77),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, -15, -2.77)
 			},
 			wpn_fps_smg_erma = {
-				translation = Vector3(0, 5, -3.85),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 5, -3.85)
 			},
 			wpn_fps_bow_ecp = {
-				translation = Vector3(0, 5, -3.35),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 5, -3.35)
 			},
 			wpn_fps_sho_basset = {
-				translation = Vector3(0, 5, -0.68),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 5, -0.68)
 			},
 			wpn_fps_ass_corgi = {
-				translation = Vector3(0, 0, -2.3),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 0, -2.3)
 			},
 			wpn_fps_gre_slap = {
-				translation = Vector3(0, 0, -1.9),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 0, -1.9)
 			},
 			wpn_fps_bow_elastic = {
-				translation = Vector3(0, 0, -1.5),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 0, -1.5)
 			},
 			wpn_fps_ass_komodo = {
-				translation = Vector3(0, 3, 0.1),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, 3, 0.1)
 			},
 			wpn_fps_pis_korth = {
-				translation = Vector3(0.15, 0, -3.35),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0.15, 0, -3.35)
 			},
 			wpn_fps_snp_victor = {
 				translation = Vector3(0, 0, -0.325)
@@ -1180,8 +1142,7 @@ function WeaponFactoryTweakData:_init_sights()
 				translation = Vector3(0, 4, -2.69)
 			},
 			wpn_fps_snp_contender = {
-				translation = Vector3(0, -15, -3.3),
-				rotation = Rotation(0, 0, 0)
+				translation = Vector3(0, -15, -3.3)
 			},
 			wpn_fps_snp_awp = {
 				translation = Vector3(0, 24, 0.8)
@@ -3360,7 +3321,6 @@ function WeaponFactoryTweakData:_init_sights()
 		a_obj = "a_o_f",
 		type = "extra"
 	}
-	self.parts.wpn_fps_upg_o_specter.third_unit = "units/payday2/weapons/wpn_third_upg_o_specter/wpn_third_upg_o_specter"
 	self.parts.wpn_fps_upg_o_docter.third_unit = "units/payday2/weapons/wpn_third_upg_o_docter/wpn_third_upg_o_docter"
 	self.parts.wpn_fps_upg_o_aimpoint.third_unit = "units/payday2/weapons/wpn_third_upg_o_aimpoint/wpn_third_upg_o_aimpoint"
 	self.parts.wpn_fps_upg_o_aimpoint_2.third_unit = "units/payday2/weapons/wpn_third_upg_o_aimpoint/wpn_third_upg_o_aimpoint_preorder"
@@ -9074,6 +9034,110 @@ function WeaponFactoryTweakData:_init_mxm_mods()
 		unit = "units/pd2_dlc_mxm/weapons/wpn_fps_upg_mbus_pro/wpn_fps_upg_o_mbus_pro_front",
 		a_obj = "a_o_f",
 		type = "sight_special"
+	}
+	self.parts.wpn_fps_upg_o_mbus_pro = {
+		is_a_unlockable = true,
+		texture_bundle_folder = "mxm",
+		type = "sight",
+		a_obj = "a_o",
+		dlc = "mxm",
+		name_id = "bm_wp_upg_o_mbus_pro_rail",
+		unit = "units/pd2_dlc_mxm/weapons/wpn_fps_upg_mbus_pro/wpn_fps_upg_o_mbus_pro_railraiser",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		stats = {
+			concealment = 2,
+			recoil = -1,
+			value = 3
+		},
+		stance_mod = {
+			wpn_fps_snp_msr = {
+				translation = Vector3(0, -10, -5.1),
+				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_snp_scout = {
+				translation = Vector3(0, -20, -0.25),
+				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_snp_r700 = {
+				translation = Vector3(0, -10, -5.1),
+				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_snp_sbl = {
+				translation = Vector3(0, -10, -5.1),
+				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_snp_qbu88 = {
+				translation = Vector3(0, -20, -1),
+				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_snp_model70 = {
+				translation = Vector3(0, -10, -5.5),
+				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_snp_wa2000 = {
+				translation = Vector3(0, -10, -0.5),
+				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_snp_desertfox = {
+				translation = Vector3(0, -20, -5.4),
+				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_snp_tti = {
+				translation = Vector3(0, -5, -1.4),
+				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_snp_r93 = {
+				translation = Vector3(0, -12, -5.1),
+				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_snp_winchester = {
+				translation = Vector3(0, -15, -4.8),
+				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_snp_siltstone = {
+				translation = Vector3(0, 0, -5.3),
+				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_snp_mosin = {
+				translation = Vector3(0, -30, -5.8),
+				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_snp_m95 = {
+				translation = Vector3(0, -5, -5.1),
+				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_snp_contender = {
+				translation = Vector3(-1.4, -10, -4.5),
+				rotation = Rotation(0, 0, 0)
+			},
+			wpn_fps_snp_victor = {
+				translation = Vector3(0, -10, -1.6),
+				rotation = Rotation(0, 0, 0)
+			}
+		},
+		forbids = {
+			"wpn_fps_upg_o_xpsg33_magnifier",
+			"wpn_fps_upg_o_sig"
+		},
+		adds = {
+			"wpn_fps_upg_o_mbus_pro_rear",
+			"wpn_fps_upg_o_mbus_pro_front"
+		},
+		override = {
+			wpn_fps_upg_o_mbus_pro_rear = {
+				a_obj = "a_o_r",
+				parent = "sight"
+			},
+			wpn_fps_upg_o_mbus_pro_front = {
+				a_obj = "a_o_f",
+				parent = "sight"
+			}
+		}
 	}
 	self.parts.wpn_fps_upg_o_mbus_pro = {
 		is_a_unlockable = true,
@@ -17514,10 +17578,9 @@ function WeaponFactoryTweakData:_init_s552()
 		},
 		stats = {
 			spread = 1,
-			concealment = -4,
+			value = 4,
 			damage = 1,
-			value = 6,
-			spread_moving = -1
+			concealment = -3
 		}
 	}
 	self.parts.wpn_fps_ass_s552_body_standard = {
@@ -17550,9 +17613,9 @@ function WeaponFactoryTweakData:_init_s552()
 		},
 		stats = {
 			spread = -1,
-			value = 7,
+			value = 5,
 			damage = 1,
-			concealment = 4
+			concealment = 2
 		},
 		animations = {
 			fire = "recoil",
@@ -17575,8 +17638,8 @@ function WeaponFactoryTweakData:_init_s552()
 		dlc = "armored_transport",
 		type = "foregrip",
 		name_id = "bm_wp_ass_s552_fg_standard_green",
-		a_obj = "a_fg",
 		unit = "units/pd2_dlc1/weapons/wpn_fps_ass_s552_pts/wpn_fps_ass_s552_fg_standard_green",
+		a_obj = "a_fg",
 		pcs = {
 			10,
 			20,
@@ -17585,8 +17648,8 @@ function WeaponFactoryTweakData:_init_s552()
 		},
 		stats = {
 			spread = 1,
-			value = 1,
-			concealment = -4
+			value = 3,
+			concealment = -2
 		}
 	}
 	self.parts.wpn_fps_ass_s552_fg_railed = {
@@ -17603,9 +17666,9 @@ function WeaponFactoryTweakData:_init_s552()
 			40
 		},
 		stats = {
-			value = 7,
-			recoil = 5,
-			concealment = -2
+			value = 3,
+			recoil = 2,
+			concealment = -1
 		},
 		forbids = {
 			"wpn_fps_addon_ris"
@@ -17626,8 +17689,8 @@ function WeaponFactoryTweakData:_init_s552()
 		dlc = "armored_transport",
 		type = "grip",
 		name_id = "bm_wp_ass_s552_g_standard_green",
-		a_obj = "a_g",
 		unit = "units/pd2_dlc1/weapons/wpn_fps_ass_s552_pts/wpn_fps_ass_s552_g_standard_green",
+		a_obj = "a_g",
 		pcs = {
 			10,
 			20,

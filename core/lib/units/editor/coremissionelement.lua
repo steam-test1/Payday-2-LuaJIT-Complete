@@ -508,7 +508,11 @@ function CoreMissionElement:_on_toolbar_add_element()
 end
 
 function CoreMissionElement:_on_toolbar_remove()
-	self:remove_on_execute(self:_current_element_unit())
+	local unit = self:_current_element_unit()
+
+	if alive(unit) then
+		self:remove_on_execute(unit)
+	end
 end
 
 function CoreMissionElement:_on_toolbar_up_element()
@@ -1145,15 +1149,19 @@ function CoreMissionElement:set_on_executed_element(index)
 	end
 
 	if self._elements_list then
+		self:set_on_executed_data()
 		self:_set_on_execute_ctrlrs_enabled(true)
 		self._elements_list:select_index(index - 1)
-		self:set_on_executed_data()
 	end
 end
 
 function CoreMissionElement:set_on_executed_data()
 	local index = self:_current_element_index()
 	local params = self._hed.on_executed[index]
+
+	if not params then
+		return
+	end
 
 	CoreEWS.change_entered_number(self._element_delay_params, params.delay)
 	CoreEWS.change_entered_number(self._element_delay_rand_params, params.delay_rand or 0)

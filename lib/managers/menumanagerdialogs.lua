@@ -1959,15 +1959,41 @@ end
 function MenuManager:show_confirm_blackmarket_finalize(params)
 	local dialog_data = {
 		title = managers.localization:text("dialog_bm_mask_custom_final_title"),
-		text = managers.localization:text("dialog_blackmarket_finalize_item", {
-			money = params.money,
+		text = managers.localization:text("dialog_blackmarket_lic_finalize_warn", {
 			ITEM = managers.localization:text("dialog_blackmarket_slot_item", {
 				item = params.name,
 				slot = params.slot
 			})
-		}),
-		focus_button = 2
+		})
 	}
+	dialog_data.text = dialog_data.text .. "\n" .. managers.localization:text("menu_cash_costs") .. ": " .. params.money .. "\n\n" .. managers.localization:text("dialog_blackmarket_lic_finalize_uses")
+	local blueprint = managers.blackmarket:get_customized_mask_blueprint()
+	local material_text = managers.localization:to_upper_text("bm_menu_lic_materials") .. ": "
+	local pattern_text = managers.localization:to_upper_text("bm_menu_textures") .. ": "
+	local colors_text = managers.localization:to_upper_text("bm_menu_lic_colors") .. ": "
+	local point = "\n » "
+
+	if blueprint.material and blueprint.material.id and tweak_data.blackmarket.materials[blueprint.material.id] and not tweak_data.blackmarket.materials[blueprint.material.id].unlimited then
+		dialog_data.text = dialog_data.text .. point .. material_text .. managers.localization:text(tweak_data.blackmarket.materials[blueprint.material.id].name_id)
+	end
+
+	if blueprint.pattern and blueprint.pattern.id and blueprint.pattern.id ~= "no_color_full_material" and tweak_data.blackmarket.textures[blueprint.pattern.id] and not tweak_data.blackmarket.textures[blueprint.pattern.id].unlimited then
+		dialog_data.text = dialog_data.text .. point .. pattern_text .. managers.localization:text(tweak_data.blackmarket.textures[blueprint.pattern.id].name_id)
+
+		if blueprint.color_a and blueprint.color_a.id and blueprint.color_a.id ~= "nothing" and tweak_data.blackmarket.materials[blueprint.color_a.id] and not tweak_data.blackmarket.materials[blueprint.color_a.id].unlimited then
+			dialog_data.text = dialog_data.text .. point .. colors_text .. managers.localization:text(tweak_data.blackmarket.materials[blueprint.color_a.id].name_id)
+		end
+
+		if blueprint.color_b and blueprint.color_b.id and blueprint.color_b.id ~= "nothing" and tweak_data.blackmarket.materials[blueprint.color_b.id] and not tweak_data.blackmarket.materials[blueprint.color_b.id].unlimited then
+			dialog_data.text = dialog_data.text .. point .. colors_text .. managers.localization:text(tweak_data.blackmarket.materials[blueprint.color_b.id].name_id)
+		end
+
+		if blueprint.color_c and blueprint.color_c.id and blueprint.color_c.id ~= "nothing" and tweak_data.blackmarket.materials[blueprint.color_c.id] and not tweak_data.blackmarket.materials[blueprint.color_c.id].unlimited then
+			dialog_data.text = dialog_data.text .. point .. colors_text .. managers.localization:text(tweak_data.blackmarket.materials[blueprint.color_c.id].name_id)
+		end
+	end
+
+	dialog_data.focus_button = 2
 	local yes_button = {
 		text = managers.localization:text("dialog_yes"),
 		callback_func = params.yes_func

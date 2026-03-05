@@ -464,13 +464,15 @@ function HuskPlayerMovement:set_visual_carry(carry_id)
 	self._carry_id = carry_id
 
 	if carry_id then
-		if tweak_data.carry[carry_id].visual_unit_name then
-			self:_create_carry_unit(tweak_data.carry[carry_id].visual_unit_name)
+		local carry_tweak = tweak_data.carry[carry_id]
+
+		if carry_tweak and carry_tweak.visual_unit_name then
+			self:_create_carry_unit(carry_tweak.visual_unit_name)
 
 			return
 		end
 
-		local object_name = tweak_data.carry[carry_id].visual_object or "g_lootbag"
+		local object_name = carry_tweak and carry_tweak.visual_object or "g_lootbag"
 		self._current_visual_carry_object = self._unit:get_object(Idstring(object_name))
 
 		self._current_visual_carry_object:set_visibility(true)
@@ -498,7 +500,15 @@ end
 function HuskPlayerMovement:_create_carry_unit(unit_name)
 	self:_destroy_current_carry_unit()
 
-	self._current_carry_unit_name = Idstring(unit_name)
+	local ids_carry = Idstring(unit_name)
+
+	if not PackageManager:has(ids_unit, ids_carry) then
+		Application:error("[HuskPlayerMovement:_create_carry_unit] Trying to spawn an unloaded bag:", unit_name)
+
+		ids_carry = Idstring(tweak_data.carry.default_visual_unit)
+	end
+
+	self._current_carry_unit_name = ids_carry
 	self._current_carry_unit = World:spawn_unit(self._current_carry_unit_name, self._unit:position())
 	local objects = {
 		"Spine",
@@ -517,6 +527,8 @@ function HuskPlayerMovement:_create_carry_unit(unit_name)
 		self._current_carry_unit:get_object(Idstring(o_name)):set_position(self._unit:get_object(Idstring(o_name)):position())
 		self._current_carry_unit:get_object(Idstring(o_name)):set_rotation(self._unit:get_object(Idstring(o_name)):rotation())
 	end
+
+	return true
 end
 
 function HuskPlayerMovement:set_movement_updator(func)

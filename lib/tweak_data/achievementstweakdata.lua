@@ -1188,7 +1188,8 @@ function AchievementsTweakData:init(tweak_data)
 			stat = "sawp_stat",
 			melee_weapons = {
 				"taser",
-				"zeus"
+				"zeus",
+				"funder_strike"
 			},
 			player_style = {
 				variation = "default",

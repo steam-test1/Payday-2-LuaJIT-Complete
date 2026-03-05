@@ -70,6 +70,7 @@ function MaskExt:swap_to_fps()
 	local mtr_bloom_glow_id_string = Idstring("mtr_bloom_glow")
 	local mtr_opacity = Idstring("mtr_opacity")
 	local mtr_feathers = Idstring("mtr_feathers")
+	local mat_shadow = Idstring("mat_shadow")
 	local glow_id_strings = {}
 	local sweep_id_strings = {}
 	local glow_tint_stat_id_strings = {}
@@ -88,6 +89,9 @@ function MaskExt:swap_to_fps()
 				-- Nothing
 			elseif material:name() == glass_id_string then
 				material:set_render_template(Idstring("opacity:CUBE_ENVIRONMENT_MAPPING:CUBE_FRESNEL:DIFFUSE_TEXTURE:FPS"))
+			elseif material:name() == mat_shadow then
+				print("[MASK]  SHADOW MATERIAL")
+				material:set_render_template(Idstring("effect:DIFFUSE0_TEXTURE:FPS:INTERSECTION_FADEOUT"))
 			elseif material:name() == mtr_bloom_glow_id_string then
 				material:set_render_template(Idstring("generic:DEPTH_SCALING:DIFFUSE_TEXTURE:SELF_ILLUMINATION:SELF_ILLUMINATION_BLOOM"))
 			elseif glow_id_strings[material:name():key()] then
@@ -234,11 +238,10 @@ function MaskExt:apply_blueprint(blueprint, async_clbk)
 	self._material_amount = material_data.material_amount or MATCAP_MODE_MATCAP
 	self._material_amounts = Vector3(color_a_data and color_a_data.material_amount or MATCAP_MODE_MATCAP, color_b_data and color_b_data.material_amount or MATCAP_MODE_MATCAP, color_c_data and color_c_data.material_amount or MATCAP_MODE_MATCAP)
 
-	if (not blueprint.color_a or blueprint.color_a.id ~= "nothing") and self._mat_tintables_a then
+	if (not blueprint.color_a or blueprint.color_a.id ~= "nothing") and self._mat_tintables_a and not color_a_data.does_not_apply_color then
 		for mat_name, value_id in pairs(self._mat_tintables_a) do
 			local material = self._unit:material(Idstring(mat_name))
 
-			print("[MaskExt] Setting A:", value_id, self._tint_color_a)
 			material:set_variable(Idstring(value_id), self._tint_color_a)
 		end
 	elseif self._mat_tintables_a_default then
@@ -250,11 +253,10 @@ function MaskExt:apply_blueprint(blueprint, async_clbk)
 		end
 	end
 
-	if (not blueprint.color_b or blueprint.color_b.id ~= "nothing") and self._mat_tintables_b then
+	if (not blueprint.color_b or blueprint.color_b.id ~= "nothing") and self._mat_tintables_b and not color_b_data.does_not_apply_color then
 		for mat_name, value_id in pairs(self._mat_tintables_b) do
 			local material = self._unit:material(Idstring(mat_name))
 
-			print("[MaskExt] Setting B:", value_id, self._tint_color_b)
 			material:set_variable(Idstring(value_id), self._tint_color_b)
 		end
 	elseif self._mat_tintables_b_default then

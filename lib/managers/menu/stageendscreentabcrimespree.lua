@@ -384,7 +384,7 @@ function CrimeSpreeResultTabItem:_create_rewards(total_w)
 
 	local function create_card(idx, panel, icon, rotation)
 		local scale = 0.65
-		local texture, rect, coords = tweak_data.hud_icons:get_icon_data(idx == 1 and (icon or "downcard_overkill_deck") or "downcard_overkill_deck")
+		local texture, rect, coords = tweak_data.hud_icons:get_icon_data(idx == 1 and (icon or tweak_data.lootdrop.type_to_card_fallback) or tweak_data.lootdrop.type_to_card_fallback)
 		local upcard = panel:bitmap({
 			name = "upcard",
 			halign = "scale",

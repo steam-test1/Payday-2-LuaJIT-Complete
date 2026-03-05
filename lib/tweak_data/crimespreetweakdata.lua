@@ -855,7 +855,7 @@ function CrimeSpreeTweakData:get_reward_icon(reward)
 		end
 	end
 
-	return "downcard_overkill_deck"
+	return tweak_data.lootdrop.type_to_card_fallback
 end
 
 function CrimeSpreeTweakData:init_rewards(tweak_data)

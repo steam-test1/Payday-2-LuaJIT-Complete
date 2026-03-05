@@ -19419,7 +19419,7 @@ function WeaponTweakData:_init_china(weapon_data)
 	}
 	self.china.timers = {
 		shotgun_reload_enter = 0.83,
-		shotgun_reload_exit_empty = 2,
+		shotgun_reload_exit_empty = 1.28,
 		shotgun_reload_exit_not_empty = 1,
 		shotgun_reload_shell = 0.83,
 		shotgun_reload_first_shell_offset = 0,

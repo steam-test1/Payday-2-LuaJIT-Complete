@@ -209,9 +209,9 @@ function BlackMarketManager:_setup_grenades()
 	for grenade_id, grenade in pairs(tweak_data.blackmarket.projectiles) do
 		if grenade.throwable then
 			grenades[grenade_id] = {
-				equipped = false,
-				amount = 0,
 				unlocked = false,
+				amount = 0,
+				equipped = false,
 				skill_based = false,
 				level = 0
 			}
@@ -223,8 +223,8 @@ function BlackMarketManager:_setup_grenades()
 		if grenade.ability or grenade.base_cooldown then
 			grenades[grenade_id] = {
 				amount = 0,
-				equipped = false,
 				unlocked = false,
+				equipped = false,
 				skill_based = true,
 				level = 0,
 				ability = not grenade.ignore_auto_equip
@@ -243,10 +243,10 @@ function BlackMarketManager:_setup_melee_weapons()
 
 	for melee_weapon, _ in pairs(tweak_data.blackmarket.melee_weapons) do
 		melee_weapons[melee_weapon] = {
-			unlocked = false,
+			equipped = false,
 			owned = false,
 			durability = 1,
-			equipped = false,
+			unlocked = false,
 			skill_based = false,
 			level = 0
 		}
@@ -1577,7 +1577,7 @@ function BlackMarketManager:outfit_string()
 		end
 
 		local amount = (deployable_tweak_data.quantity[1] or 0) + managers.player:equiptment_upgrade_value(secondary_deployable, "quantity")
-		s = s .. " " .. tostring(amount)
+		s = s .. " " .. tostring(math.ceil(amount / 2))
 	else
 		s = s .. " " .. "nil" .. " " .. "0"
 	end
@@ -6930,7 +6930,9 @@ function BlackMarketManager:can_view_mask_blueprint(blueprint)
 end
 
 function BlackMarketManager:can_view_customized_mask_with_mod(category, id, global_value)
-	if not self._customize_mask then
+	local blueprint = self._customize_mask
+
+	if not blueprint then
 		return false
 	end
 
@@ -6944,11 +6946,36 @@ function BlackMarketManager:can_view_customized_mask_with_mod(category, id, glob
 		return false
 	end
 
-	if not modded.materials and Idstring(modded.textures.id) ~= Idstring("solidfirst") and Idstring(modded.textures.id) ~= Idstring("solidsecond") then
+	local pattern_ids = Idstring(modded.pattern.id)
+	local pattern_data = tweak_data.blackmarket.textures[modded.pattern.id]
+
+	if pattern_data.overwrites then
+		if not modded.material and not pattern_data.overwrites.materials then
+			print("[BlackMarketManager:Mask] Requires base material")
+
+			return false
+		end
+
+		if not modded.color_a and not pattern_data.overwrites.color_a then
+			print("[BlackMarketManager:Mask] Requires A material")
+
+			return false
+		end
+
+		if not modded.color_b and not pattern_data.overwrites.color_b then
+			print("[BlackMarketManager:MaskModding] Requires B material")
+
+			return false
+		end
+	elseif not modded.material then
+		print("[BlackMarketManager:Mask] Requires base material (no overrides)")
+
 		return false
 	end
 
 	if (not modded.color_a or not modded.color_b or not modded.color_c) and Idstring(modded.textures.id) ~= Idstring("no_color_full_material") then
+		print("[BlackMarketManager:Mask] Other")
+
 		return false
 	end
 
@@ -7055,6 +7082,33 @@ function BlackMarketManager:can_afford_customize_mask()
 	return true
 end
 
+function BlackMarketManager:get_item_owned_stock_string(inv_type, global_value, id)
+	if tweak_data.blackmarket[inv_type] and tweak_data.blackmarket[inv_type][id] and tweak_data.blackmarket[inv_type][id].unlimited then
+		return managers.localization:text("bm_menu_item_unlocked")
+	end
+
+	local data = managers.blackmarket._global.inventory
+	data = data and data[global_value]
+
+	if not data then
+		return managers.localization:text("bm_menu_item_locked")
+	end
+
+	data = data and data[inv_type]
+
+	if not data then
+		return managers.localization:text("bm_menu_item_locked")
+	end
+
+	data = data and data[id]
+
+	if not data then
+		return managers.localization:text("bm_menu_item_locked")
+	end
+
+	return tostring(data)
+end
+
 function BlackMarketManager:can_finish_customize_mask(check_money)
 	if not self._customize_mask then
 		return false
@@ -7068,20 +7122,14 @@ function BlackMarketManager:can_finish_customize_mask(check_money)
 	local overwrites = pattern_data.overwrites or {}
 
 	if not self._customize_mask.materials and not overwrites.materials then
-		print("[BlackMarketManager:Mask] Requires a base material")
-
 		return false
 	end
 
 	if not self._customize_mask.color_a and not overwrites.color_a then
-		print("[BlackMarketManager:Mask] Requires a color A")
-
 		return false
 	end
 
 	if not self._customize_mask.color_b and not overwrites.color_b then
-		print("[BlackMarketManager:Mask] Requires a color B")
-
 		return false
 	end
 
@@ -7111,35 +7159,12 @@ function BlackMarketManager:finish_customize_mask()
 	}
 	local pattern_overwrites = tweak_data.blackmarket.textures[blueprint.pattern.id].overwrites or {}
 
-	if not pattern_overwrites.color_a then
-		self:remove_item(blueprint.color_a.global_value, "materials", blueprint.color_a.id)
-		self:alter_global_value_item(blueprint.color_a.global_value, "colors", slot, blueprint.color_a.id, INV_TO_CRAFT)
-	else
-		blueprint.color_a = default_blueprint.color_a or {
-			id = "nothing",
-			global_value = "normal"
-		}
-	end
-
-	if not pattern_overwrites.color_b then
-		self:remove_item(blueprint.color_b.global_value, "materials", blueprint.color_b.id)
-		self:alter_global_value_item(blueprint.color_b.global_value, "colors", slot, blueprint.color_b.id, INV_TO_CRAFT)
-	else
-		blueprint.color_b = default_blueprint.color_b or {
-			id = "nothing",
-			global_value = "normal"
-		}
-	end
-
-	if not pattern_overwrites.color_c then
-		self:remove_item(blueprint.color_c.global_value, "materials", blueprint.color_c.id)
-		self:alter_global_value_item(blueprint.color_c.global_value, "colors", slot, blueprint.color_c.id, INV_TO_CRAFT)
-	else
-		blueprint.color_c = default_blueprint.color_c or {
-			id = "strip_paint",
-			global_value = "normal"
-		}
-	end
+	self:remove_item(blueprint.color_a.global_value, "materials", blueprint.color_a.id)
+	self:alter_global_value_item(blueprint.color_a.global_value, "colors", slot, blueprint.color_a.id, INV_TO_CRAFT)
+	self:remove_item(blueprint.color_b.global_value, "materials", blueprint.color_b.id)
+	self:alter_global_value_item(blueprint.color_b.global_value, "colors", slot, blueprint.color_b.id, INV_TO_CRAFT)
+	self:remove_item(blueprint.color_c.global_value, "materials", blueprint.color_c.id)
+	self:alter_global_value_item(blueprint.color_c.global_value, "colors", slot, blueprint.color_c.id, INV_TO_CRAFT)
 
 	if not pattern_overwrites.material then
 		local default_material = self:customize_mask_category_default("materials", true) or {}

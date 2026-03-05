@@ -2,6 +2,10 @@ require("lib/managers/menu/MenuBackdropGUI")
 
 HUDLootScreen = HUDLootScreen or class()
 
+local function peer_id_str(peer_id)
+	return "peer" .. tostring(peer_id)
+end
+
 function HUDLootScreen:init(hud, workspace, saved_lootdrop, saved_selected, saved_chosen, saved_setup)
 	self._backdrop = MenuBackdropGUI:new(workspace)
 
@@ -108,7 +112,7 @@ function HUDLootScreen:init(hud, workspace, saved_lootdrop, saved_selected, save
 	end
 
 	local local_peer_id = self:get_local_peer_id()
-	local panel = self._peers_panel:child("peer" .. tostring(local_peer_id))
+	local panel = self._peers_panel:child(peer_id_str(local_peer_id))
 	local peer_info_panel = panel:child("peer_info")
 	local peer_name = peer_info_panel:child("peer_name")
 	local peer_name_string = tostring(managers.network.account:username() or managers.blackmarket:get_preferred_character_real_name())
@@ -159,7 +163,7 @@ function HUDLootScreen:create_peer(peers_panel, peer_id)
 	local panel = peers_panel:panel({
 		h = 110,
 		x = 0,
-		name = "peer" .. tostring(peer_id),
+		name = peer_id_str(peer_id),
 		y = (peer_id - 1) * 110,
 		w = peers_panel:w()
 	})
@@ -341,7 +345,7 @@ function HUDLootScreen:set_num_visible(peers_num)
 	self._num_visible = math.max(self._num_visible, peers_num)
 
 	for i = 1, tweak_data.max_players do
-		self._peers_panel:child("peer" .. i):set_visible(i <= self._num_visible)
+		self._peers_panel:child(peer_id_str(i)):set_visible(i <= self._num_visible)
 	end
 
 	self._peers_panel:set_h(self._num_visible * 110)
@@ -360,7 +364,7 @@ function HUDLootScreen:make_fine_text(text)
 end
 
 function HUDLootScreen:create_selected_panel(peer_id)
-	local panel = self._peers_panel:child("peer" .. peer_id)
+	local panel = self._peers_panel:child(peer_id_str(peer_id))
 	local selected_panel = panel:panel({
 		w = 100,
 		name = "selected_panel",
@@ -403,7 +407,7 @@ function HUDLootScreen:create_selected_panel(peer_id)
 end
 
 function HUDLootScreen:set_selected(peer_id, selected)
-	local panel = self._peers_panel:child("peer" .. peer_id)
+	local panel = self._peers_panel:child(peer_id_str(peer_id))
 	local selected_panel = panel:child("selected_panel") or self:create_selected_panel(peer_id)
 	local card_panel = panel:child("card" .. selected)
 
@@ -458,7 +462,7 @@ end
 function HUDLootScreen:remove_peer(peer_id, reason)
 	Application:debug("HUDLootScreen:remove_peer( peer_id, reason )", peer_id, reason)
 
-	local panel = self._peers_panel:child("peer" .. tostring(peer_id))
+	local panel = self._peers_panel:child(peer_id_str(peer_id))
 
 	panel:stop()
 	panel:child("card_info"):hide()
@@ -589,7 +593,7 @@ function HUDLootScreen:make_cards(peer, max_pc, left_card, right_card)
 		[8] = right_card
 	}
 	self._peer_data[peer_id].active = true
-	local panel = self._peers_panel:child("peer" .. tostring(peer_id))
+	local panel = self._peers_panel:child(peer_id_str(peer_id))
 	local peer_info_panel = panel:child("peer_info")
 	local peer_name = peer_info_panel:child("peer_name")
 	local max_quality = peer_info_panel:child("max_quality")
@@ -672,7 +676,7 @@ function HUDLootScreen:make_lootdrop(lootdrop_data)
 	self._peer_data[peer_id].lootdrops = lootdrop_data
 	self._peer_data[peer_id].active = true
 	self._peer_data[peer_id].wait_for_lootdrop = nil
-	local panel = self._peers_panel:child("peer" .. tostring(peer_id))
+	local panel = self._peers_panel:child(peer_id_str(peer_id))
 	local item_panel = panel:child("item")
 	local item_id = lootdrop_data[4]
 	local category = lootdrop_data[3]
@@ -855,7 +859,7 @@ function HUDLootScreen:texture_loaded_clbk(params, texture_idstring)
 
 	local peer_id = params[1]
 	local is_pattern = params[2]
-	local panel = self._peers_panel:child("peer" .. tostring(peer_id)):child("item")
+	local panel = self._peers_panel:child(peer_id_str(peer_id)):child("item")
 	local item = panel:bitmap({
 		blend_mode = "normal",
 		layer = 1,
@@ -917,7 +921,7 @@ function HUDLootScreen:begin_choose_card(peer_id, card_id)
 
 	print("YOU CHOSE " .. card_id .. ", mr." .. peer_id)
 
-	local panel = self._peers_panel:child("peer" .. tostring(peer_id))
+	local panel = self._peers_panel:child(peer_id_str(peer_id))
 
 	panel:stop()
 	panel:set_alpha(1)
@@ -954,43 +958,14 @@ function HUDLootScreen:begin_choose_card(peer_id, card_id)
 	local card_three = #cards + 1
 	cards[card_three] = right_pc
 	self._peer_data[peer_id].chosen_card_id = wait_for_lootdrop and card_id
-	local type_to_card = {
-		weapon_mods = 2,
-		materials = 5,
-		colors = 6,
-		safes = 8,
-		cash = 3,
-		masks = 1,
-		xp = 4,
-		textures = 7,
-		drills = 9,
-		weapon_bonus = 10
-	}
-	local card_nums = {
-		"upcard_mask",
-		"upcard_weapon",
-		"upcard_cash",
-		"upcard_xp",
-		"upcard_material",
-		"upcard_color",
-		"upcard_pattern",
-		"upcard_safe",
-		"upcard_drill",
-		"upcard_weapon_bonus"
-	}
-
-	table.insert(card_nums, "upcard_cosmetic")
-
-	type_to_card.weapon_skins = #card_nums
-	type_to_card.armor_skins = #card_nums
 
 	for i, pc in ipairs(cards) do
 		local my_card = i == card_id
 		local card_panel = panel:child("card" .. i)
 		local downcard = card_panel:child("downcard")
 		local joker = pc == 0 and tweak_data.lootdrop.joker_chance > 0
-		local card_i = my_card and type_to_card[item_category] or math.max(pc, 1)
-		local texture, rect, coords = tweak_data.hud_icons:get_icon_data(card_nums[card_i] or "downcard_overkill_deck")
+		local card_id = tweak_data.lootdrop.type_to_card[my_card and item_category or table.random(tweak_data.lootdrop.card_fakes)]
+		local texture, rect, coords = tweak_data.hud_icons:get_icon_data(card_id or tweak_data.lootdrop.type_to_card_fallback)
 		local upcard = card_panel:bitmap({
 			name = "upcard",
 			halign = "scale",
@@ -1031,35 +1006,6 @@ end
 
 function HUDLootScreen:begin_flip_card(peer_id)
 	self._peer_data[peer_id].wait_t = 5
-	local type_to_card = {
-		weapon_mods = 2,
-		materials = 5,
-		colors = 6,
-		safes = 8,
-		cash = 3,
-		masks = 1,
-		xp = 4,
-		textures = 7,
-		drills = 9,
-		weapon_bonus = 10
-	}
-	local card_nums = {
-		"upcard_mask",
-		"upcard_weapon",
-		"upcard_cash",
-		"upcard_xp",
-		"upcard_material",
-		"upcard_color",
-		"upcard_pattern",
-		"upcard_safe",
-		"upcard_drill",
-		"upcard_weapon_bonus"
-	}
-
-	table.insert(card_nums, "upcard_cosmetic")
-
-	type_to_card.weapon_skins = #card_nums
-	type_to_card.armor_skins = #card_nums
 	local lootdrop_data = self._peer_data[peer_id].lootdrops
 	local item_category = lootdrop_data[3]
 	local item_id = lootdrop_data[4]
@@ -1069,9 +1015,9 @@ function HUDLootScreen:begin_flip_card(peer_id)
 		item_category = "weapon_bonus"
 	end
 
-	local card_i = type_to_card[item_category] or math.max(item_pc, 1)
-	local texture, rect, coords = tweak_data.hud_icons:get_icon_data(card_nums[card_i] or "downcard_overkill_deck")
-	local panel = self._peers_panel:child("peer" .. tostring(peer_id))
+	local card_id = tweak_data.lootdrop.type_to_card[item_category or table.random(tweak_data.lootdrop.card_fakes)]
+	local texture, rect, coords = tweak_data.hud_icons:get_icon_data(card_id or tweak_data.lootdrop.type_to_card_fallback)
+	local panel = self._peers_panel:child(peer_id_str(peer_id))
 	local card_info_panel = panel:child("card_info")
 	local main_text = card_info_panel:child("main_text")
 
@@ -1254,7 +1200,7 @@ function HUDLootScreen:show_item(peer_id)
 		return
 	end
 
-	local panel = self._peers_panel:child("peer" .. peer_id)
+	local panel = self._peers_panel:child(peer_id_str(peer_id))
 
 	if panel:child("item") then
 		panel:child("item"):set_center(panel:child("selected_panel"):center())
@@ -1361,7 +1307,7 @@ function HUDLootScreen:update(t, dt)
 	for peer_id = 1, tweak_data.max_players do
 		if self._peer_data[peer_id].wait_t then
 			self._peer_data[peer_id].wait_t = math.max(self._peer_data[peer_id].wait_t - dt, 0)
-			local panel = self._peers_panel:child("peer" .. tostring(peer_id))
+			local panel = self._peers_panel:child(peer_id_str(peer_id))
 			local card_info_panel = panel:child("card_info")
 			local main_text = card_info_panel:child("main_text")
 
@@ -1477,7 +1423,7 @@ end
 
 function HUDLootScreen:check_inside_local_peer(x, y)
 	local peer_id = self:get_local_peer_id()
-	local panel = self._peers_panel:child("peer" .. tostring(peer_id))
+	local panel = self._peers_panel:child(peer_id_str(peer_id))
 	x, y = managers.gui_data:safe_to_full_16_9(x, y)
 
 	for i = 1, 3 do

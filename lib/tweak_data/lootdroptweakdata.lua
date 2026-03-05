@@ -3,6 +3,8 @@ LootDropTweakData = LootDropTweakData or class()
 require("lib/tweak_data/GeneratedLootDropTweakData")
 
 function LootDropTweakData:init(tweak_data)
+	self:_init_card_types()
+
 	self.PC_STEP = 10
 	self.no_drop = {
 		BASE = 35,
@@ -1991,6 +1993,30 @@ function LootDropTweakData:init(tweak_data)
 	self.global_values.ecp_or_mrwi_deck = self.global_values.ecp
 
 	self:_create_global_value_list_map()
+end
+
+function LootDropTweakData:_init_card_types()
+	self.type_to_card_fallback = "upcard_random"
+	self.type_to_card = {
+		weapon_mods = "upcard_weapon",
+		materials = "upcard_material",
+		cash = "upcard_cash",
+		armor_skins = "upcard_cosmetic",
+		masks = "upcard_mask",
+		xp = "upcard_xp",
+		textures = "upcard_pattern",
+		weapon_skins = "upcard_cosmetic",
+		weapon_bonus = "upcard_weapon_bonus"
+	}
+	self.card_fakes = {
+		"masks",
+		"weapon_mods",
+		"cash",
+		"xp",
+		"materials",
+		"textures",
+		"weapon_bonus"
+	}
 end
 
 function LootDropTweakData:_create_global_value_list_map()

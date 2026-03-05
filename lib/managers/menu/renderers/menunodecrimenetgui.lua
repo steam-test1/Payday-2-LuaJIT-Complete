@@ -355,7 +355,7 @@ function MenuNodeCrimenetCasinoGui:_get_sizes(safe_width, safe_height)
 end
 
 function MenuNodeCrimenetCasinoGui:_set_cards(amount, card)
-	local texture, rect, coords = tweak_data.hud_icons:get_icon_data(card or "downcard_overkill_deck")
+	local texture, rect, coords = tweak_data.hud_icons:get_icon_data(card or tweak_data.lootdrop.type_to_card_fallback)
 	local offset = 20
 	local count = amount == 0 and 3 or amount
 	local height = nil

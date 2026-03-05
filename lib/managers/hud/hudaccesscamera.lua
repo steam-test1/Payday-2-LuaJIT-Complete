@@ -13,124 +13,114 @@ function HUDAccessCamera:init(hud, full_hud)
 		name = "legend_rect_bg",
 		h = 32,
 		valign = "bottom",
-		layer = 0,
-		color = Color.black,
-		w = self._hud_panel:w() / 2,
 		x = self._hud_panel:w() / 4,
-		y = hud.panel:h() - 64
+		y = hud.panel:h() - 64,
+		w = self._hud_panel:w() / 2,
+		color = Color.black
 	})
 	local legend_prev = self._hud_panel:text({
-		vertical = "bottom",
-		name = "legend_prev",
-		layer = 1,
-		text_id = "hud_prev_camera",
 		font_size = 28,
-		align = "left",
+		name = "legend_prev",
+		text_id = "hud_prev_camera",
 		wrap = false,
 		word_wrap = false,
+		align = "left",
+		vertical = "bottom",
+		layer = 1,
 		y = -32,
 		valign = "bottom",
 		x = legend_rect_bg:x() + 10,
-		font = tweak_data.hud.medium_font,
-		color = Color.white
+		font = tweak_data.hud.medium_font
 	})
 	local legend_next = self._hud_panel:text({
-		vertical = "bottom",
-		name = "legend_next",
-		layer = 1,
-		wrap = false,
 		font_size = 28,
-		align = "right",
+		name = "legend_next",
+		vertical = "bottom",
+		wrap = false,
 		word_wrap = false,
+		align = "right",
+		layer = 1,
 		text = "[MOUSE 1]>",
 		y = -32,
 		valign = "bottom",
 		x = legend_rect_bg:right() - 10,
-		font = tweak_data.hud.medium_font,
-		color = Color.white
+		font = tweak_data.hud.medium_font
 	})
 
 	legend_next:set_right(legend_rect_bg:right() - 10)
 
 	local legend_exit = self._hud_panel:text({
-		vertical = "bottom",
-		name = "legend_exit",
-		layer = 1,
-		wrap = false,
 		font_size = 28,
-		align = "center",
+		name = "legend_exit",
+		vertical = "bottom",
+		wrap = false,
 		word_wrap = false,
+		align = "center",
+		layer = 1,
 		text = "EXIT[SPACE]",
 		y = -32,
-		x = 0,
 		valign = "bottom",
-		font = tweak_data.hud.medium_font,
-		color = Color.white
+		font = tweak_data.hud.medium_font
 	})
 
 	legend_exit:set_center_x(legend_rect_bg:center_x())
 	self._hud_panel:text({
+		font_size = 32,
 		name = "camera_name",
 		vertical = "bottom",
-		layer = 1,
 		wrap = false,
-		font_size = 32,
-		align = "left",
 		word_wrap = false,
+		align = "left",
+		layer = 1,
 		text = "",
 		x = 10,
 		valign = "bottom",
-		font = tweak_data.hud.medium_font,
-		color = Color.white
+		font = tweak_data.hud.medium_font
 	})
 	self._hud_panel:text({
+		font_size = 32,
 		name = "date",
 		vertical = "bottom",
-		layer = 1,
 		wrap = false,
-		font_size = 32,
-		align = "right",
 		word_wrap = false,
+		align = "right",
+		layer = 1,
 		text = "",
 		x = -10,
 		valign = "bottom",
-		font = tweak_data.hud.medium_font,
-		color = Color.white
+		font = tweak_data.hud.medium_font
 	})
 	self._hud_panel:rect({
-		valign = "bottom",
 		name = "rect_bg",
 		h = 32,
-		layer = 0,
-		color = Color.black,
-		y = hud.panel:h() - 32
+		valign = "bottom",
+		y = hud.panel:h() - 32,
+		color = Color.black
 	})
 	self._hud_panel:rect({
 		name = "destroyed_rect_bg",
 		h = 32,
 		visible = false,
-		layer = 0,
 		color = Color.black
 	})
 	self._hud_panel:text({
-		vertical = "top",
-		name = "destroyed_text",
-		word_wrap = false,
-		wrap = false,
 		font_size = 32,
+		name = "destroyed_text",
+		vertical = "top",
+		wrap = false,
+		word_wrap = false,
 		align = "left",
 		text = "FEED LOST",
 		visible = false,
 		x = 10,
 		layer = 1,
-		font = tweak_data.hud.medium_font,
-		color = Color.white
+		font = tweak_data.hud.medium_font
 	})
 	self._full_hud_panel:rect({
-		valign = "scale",
+		layer = -1,
 		name = "destroyed_rect",
 		visible = false,
-		layer = -1,
+		valign = "scale",
 		color = Color(0.5, 0.5, 0.5)
 	})
 
@@ -140,28 +130,36 @@ function HUDAccessCamera:init(hud, full_hud)
 		texture = "core/textures/noise",
 		name = "noise",
 		valign = "scale",
+		layer = 3,
 		wrap_mode = "wrap",
 		halign = "scale",
-		layer = 3,
-		color = Color(0.2, 0, 0, 0),
 		w = size,
-		h = size
+		h = size,
+		texture_rect = {
+			0,
+			0,
+			size,
+			size
+		},
+		color = Color.black:with_alpha(0.2)
 	})
-	self._full_hud_panel:child("noise"):set_texture_rect(0, 0, size, size)
 	self._full_hud_panel:bitmap({
 		texture = "core/textures/noise",
 		name = "noise2",
 		valign = "scale",
-		halign = "scale",
-		wrap_mode = "wrap",
-		y = 0,
-		x = 0,
 		layer = 3,
-		color = Color(0.2, 0, 0, 0),
+		wrap_mode = "wrap",
+		halign = "scale",
 		w = size,
-		h = size
+		h = size,
+		texture_rect = {
+			0,
+			0,
+			size,
+			size
+		},
+		color = Color.black:with_alpha(0.2)
 	})
-	self._full_hud_panel:child("noise2"):set_texture_rect(0, 0, size, size)
 end
 
 function HUDAccessCamera:start()

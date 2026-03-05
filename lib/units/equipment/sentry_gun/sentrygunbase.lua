@@ -644,8 +644,6 @@ function SentryGunBase:add_string_macros(macroes)
 end
 
 function SentryGunBase:sync_net_event(event_id, peer)
-	print("SentryGunBase:sync_net_event", event_id, inspect(peer), Network:is_server())
-
 	local player = peer:unit()
 	local ammo_ratio = refill_ratios[event_id]
 
@@ -732,9 +730,11 @@ function SentryGunBase:on_death()
 end
 
 function SentryGunBase:enable_shield()
-	self._has_shield = true
+	if self._unit:damage():has_sequence_simple("shield_on") then
+		self._has_shield = true
 
-	self._unit:damage():run_sequence_simple("shield_on")
+		self._unit:damage():run_sequence_simple("shield_on")
+	end
 end
 
 function SentryGunBase:has_shield()

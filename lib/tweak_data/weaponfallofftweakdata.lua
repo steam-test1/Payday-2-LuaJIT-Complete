@@ -228,3 +228,15 @@ function WeaponFalloffTemplate.setup_weapon_falloff_templates()
 
 	return weapon_falloff_templates
 end
+
+function WeaponFalloffTemplate:print_nicely()
+	local weapon_falloff_templates = WeaponFalloffTemplate.setup_weapon_falloff_templates()
+
+	for k, v in pairs(weapon_falloff_templates) do
+		local nearest_distance = v.optimal_distance - v.near_falloff
+		local optimal_end_distance = v.optimal_distance + v.optimal_range
+		local farest_distance = v.optimal_distance + v.optimal_range + v.far_falloff
+
+		print(k, "" .. v.near_multiplier .. "x @ " .. nearest_distance .. "-" .. v.optimal_distance, "" .. 1 .. "x @ " .. v.optimal_distance .. "-" .. optimal_end_distance, "" .. v.far_multiplier .. "x @ " .. optimal_end_distance .. "-" .. farest_distance)
+	end
+end

@@ -28,6 +28,7 @@ function CopLogicIdle.enter(data, new_logic_name, enter_params)
 		unit = data.unit
 	}
 	local is_cool = data.unit:movement():cool()
+	local objective = data.objective
 
 	if is_cool then
 		my_data.detection = data.char_tweak.detection.ntl
@@ -78,8 +79,6 @@ function CopLogicIdle.enter(data, new_logic_name, enter_params)
 
 		CopLogicBase.add_delayed_clbk(my_data, my_data.cover_update_task_key, callback(CopLogicTravel, CopLogicTravel, "_update_cover", data), data.t + 1)
 	end
-
-	local objective = data.objective
 
 	if objective then
 		if (objective.nav_seg or objective.type == "follow") and not objective.in_place then

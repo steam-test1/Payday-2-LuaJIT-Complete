@@ -2657,7 +2657,7 @@ function InstantBulletBase:give_impact_damage(col_ray, weapon_unit, user_unit, d
 		col_ray = col_ray,
 		armor_piercing = armor_piercing,
 		shield_knock = shield_knock,
-		origin = user_unit:position(),
+		origin = alive(user_unit) and user_unit:position() or Vector3(),
 		knock_down = knock_down,
 		stagger = stagger
 	}
@@ -3139,7 +3139,7 @@ function DragonBreathBulletBase:give_impact_damage(col_ray, weapon_unit, user_un
 		col_ray = col_ray,
 		armor_piercing = armor_piercing,
 		shield_knock = shield_knock,
-		origin = user_unit:position(),
+		origin = alive(user_unit) and user_unit:position() or Vector3(),
 		knock_down = knock_down,
 		stagger = stagger
 	}
@@ -3335,7 +3335,7 @@ InstantSnowballBase.RANGE = tweak_data.projectiles.xmas_snowball.range
 InstantSnowballBase.ALERT_RADIUS = tweak_data.projectiles.xmas_snowball.alert_radius
 InstantSnowballBase.EFFECT_PARAMS = {
 	on_unit = true,
-	sound_muffle_effect = true,
+	sound_muffle_effect = false,
 	effect = tweak_data.projectiles.xmas_snowball.effect_name,
 	sound_event = tweak_data.projectiles.xmas_snowball.sound_event,
 	feedback_range = tweak_data.projectiles.xmas_snowball.feedback_range,
