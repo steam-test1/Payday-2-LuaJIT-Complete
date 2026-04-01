@@ -418,6 +418,10 @@ function GenericDLCManager:has_wcs()
 	return self:is_dlc_unlocked("wcs")
 end
 
+function GenericDLCManager:has_wel()
+	return self:is_dlc_unlocked("wel")
+end
+
 function GenericDLCManager:has_xm20()
 	return self:is_dlc_unlocked("xm20")
 end
@@ -998,6 +1002,11 @@ function WINDLCManager:init_generated()
 		epic_id = "d8480500d20b4e9480cc921248f34758",
 		no_install = true,
 		webpage = "https://pd2.link/bexwcp1yb"
+	}
+	Global.dlc_manager.all_dlc_data.wel = {
+		app_id = "218620",
+		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
+		no_install = true
 	}
 	Global.dlc_manager.all_dlc_data.xm20 = {
 		app_id = "218620",

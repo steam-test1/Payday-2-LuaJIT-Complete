@@ -672,180 +672,156 @@ end
 
 function HUDLootScreen:make_lootdrop(lootdrop_data)
 	local peer = lootdrop_data[1]
+	local category = lootdrop_data[3]
+	local item_id = lootdrop_data[4]
 	local peer_id = peer and peer:id() or 1
-	self._peer_data[peer_id].lootdrops = lootdrop_data
-	self._peer_data[peer_id].active = true
-	self._peer_data[peer_id].wait_for_lootdrop = nil
+	local peer_data = self._peer_data[peer_id]
+	peer_data.lootdrops = lootdrop_data
+	peer_data.active = true
+	peer_data.wait_for_lootdrop = nil
 	local panel = self._peers_panel:child(peer_id_str(peer_id))
 	local item_panel = panel:child("item")
-	local item_id = lootdrop_data[4]
-	local category = lootdrop_data[3]
 
 	if category == "weapon_mods" or category == "weapon_bonus" then
 		category = "mods"
 	end
 
-	if category == "colors" then
-		local colors = tweak_data.blackmarket.colors[item_id].colors
-		local bg = item_panel:bitmap({
-			texture = "guis/textures/pd2/blackmarket/icons/colors/color_bg",
-			layer = 1,
-			w = panel:h(),
-			h = panel:h()
-		})
-		local c1 = item_panel:bitmap({
-			texture = "guis/textures/pd2/blackmarket/icons/colors/color_01",
-			layer = 0,
-			w = panel:h(),
-			h = panel:h()
-		})
-		local c2 = item_panel:bitmap({
-			texture = "guis/textures/pd2/blackmarket/icons/colors/color_02",
-			layer = 0,
-			w = panel:h(),
-			h = panel:h()
-		})
+	local texture_loaded_clbk = callback(self, self, "texture_loaded_clbk", {
+		peer_id,
+		category == "textures" and true or false
+	})
+	local texture_path, rarity_path = nil
 
-		c1:set_color(colors[1])
-		c2:set_color(colors[2])
+	if category == "textures" then
+		texture_path = tweak_data.blackmarket.textures[item_id].texture
+
+		if not texture_path then
+			Application:error("Pattern missing", "PEER", peer_id)
+
+			return
+		end
+	elseif category == "cash" then
+		texture_path = "guis/textures/pd2/blackmarket/cash_drop"
+	elseif category == "xp" then
+		texture_path = "guis/textures/pd2/blackmarket/xp_drop"
+	elseif category == "safes" then
+		local td = tweak_data.economy[category] and tweak_data.economy[category][item_id]
+
+		if td then
+			local guis_catalog = "guis/"
+			local bundle_folder = td.texture_bundle_folder
+
+			if bundle_folder then
+				guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
+			end
+
+			local path = category .. "/"
+			texture_path = guis_catalog .. path .. item_id
+			peer_data.steam_drop = true
+			peer_data.effects = {
+				show_wait = "lootdrop_safe_drop_show_wait",
+				show_item = "lootdrop_safe_drop_show_item",
+				flip_card = "lootdrop_safe_drop_flip_card"
+			}
+		else
+			texture_path = "guis/dlcs/cash/safes/default/safes/default_01"
+		end
+	elseif category == "weapon_skins" then
+		local weapon_id = managers.blackmarket:get_weapon_id_by_cosmetic_id(item_id)
+		texture_path, rarity_path = managers.blackmarket:get_weapon_icon_path(weapon_id, {
+			id = item_id
+		})
+	elseif category == "armor_skins" then
+		local skin_tweak = tweak_data.economy.armor_skins[item_id]
+		local guis_catalog = "guis/"
+		local bundle_folder = skin_tweak.texture_bundle_folder
+
+		if bundle_folder then
+			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
+		end
+
+		texture_path = guis_catalog .. "armor_skins/" .. item_id
+		rarity_path = managers.blackmarket:get_cosmetic_rarity_bg(skin_tweak.rarity or "common")
+	elseif category == "drills" then
+		local td = tweak_data.economy[category] and tweak_data.economy[category][item_id]
+
+		if td then
+			local guis_catalog = "guis/"
+			local bundle_folder = td.texture_bundle_folder
+
+			if bundle_folder then
+				guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
+			end
+
+			local path = category .. "/"
+			texture_path = guis_catalog .. path .. item_id
+			peer_data.steam_drop = true
+			peer_data.effects = {
+				show_wait = "lootdrop_drill_drop_show_wait",
+				show_item = "lootdrop_drill_drop_show_item",
+				flip_card = "lootdrop_drill_drop_flip_card"
+			}
+		else
+			texture_path = "guis/dlcs/cash/safes/default/drills/default_01"
+		end
 	else
-		local texture_loaded_clbk = callback(self, self, "texture_loaded_clbk", {
-			peer_id,
-			category == "textures" and true or false
-		})
-		local texture_path, rarity_path = nil
+		local guis_catalog = "guis/"
+		local tweak_data_category = category == "mods" and "weapon_mods" or category
+		local guis_id = item_id
 
-		if category == "textures" then
-			texture_path = tweak_data.blackmarket.textures[item_id].texture
-
-			if not texture_path then
-				Application:error("Pattern missing", "PEER", peer_id)
-
-				return
-			end
-		elseif category == "cash" then
-			texture_path = "guis/textures/pd2/blackmarket/cash_drop"
-		elseif category == "xp" then
-			texture_path = "guis/textures/pd2/blackmarket/xp_drop"
-		elseif category == "safes" then
-			local td = tweak_data.economy[category] and tweak_data.economy[category][item_id]
-
-			if td then
-				local guis_catalog = "guis/"
-				local bundle_folder = td.texture_bundle_folder
-
-				if bundle_folder then
-					guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-				end
-
-				local path = category .. "/"
-				texture_path = guis_catalog .. path .. item_id
-				self._peer_data[peer_id].steam_drop = true
-				self._peer_data[peer_id].effects = {
-					show_wait = "lootdrop_safe_drop_show_wait",
-					show_item = "lootdrop_safe_drop_show_item",
-					flip_card = "lootdrop_safe_drop_flip_card"
-				}
-			else
-				texture_path = "guis/dlcs/cash/safes/default/safes/default_01"
-			end
-		elseif category == "weapon_skins" then
-			local weapon_id = managers.blackmarket:get_weapon_id_by_cosmetic_id(item_id)
-			texture_path, rarity_path = managers.blackmarket:get_weapon_icon_path(weapon_id, {
-				id = item_id
-			})
-		elseif category == "armor_skins" then
-			local skin_tweak = tweak_data.economy.armor_skins[item_id]
-			local guis_catalog = "guis/"
-			local bundle_folder = skin_tweak.texture_bundle_folder
-
-			if bundle_folder then
-				guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-			end
-
-			texture_path = guis_catalog .. "armor_skins/" .. item_id
-			rarity_path = managers.blackmarket:get_cosmetic_rarity_bg(skin_tweak.rarity or "common")
-		elseif category == "drills" then
-			local td = tweak_data.economy[category] and tweak_data.economy[category][item_id]
-
-			if td then
-				local guis_catalog = "guis/"
-				local bundle_folder = td.texture_bundle_folder
-
-				if bundle_folder then
-					guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-				end
-
-				local path = category .. "/"
-				texture_path = guis_catalog .. path .. item_id
-				self._peer_data[peer_id].steam_drop = true
-				self._peer_data[peer_id].effects = {
-					show_wait = "lootdrop_drill_drop_show_wait",
-					show_item = "lootdrop_drill_drop_show_item",
-					flip_card = "lootdrop_drill_drop_flip_card"
-				}
-			else
-				texture_path = "guis/dlcs/cash/safes/default/drills/default_01"
-			end
-		else
-			local guis_catalog = "guis/"
-			local tweak_data_category = category == "mods" and "weapon_mods" or category
-			local guis_id = item_id
-
-			if tweak_data.blackmarket[tweak_data_category] and tweak_data.blackmarket[tweak_data_category][item_id] and tweak_data.blackmarket[tweak_data_category][item_id].guis_id then
-				guis_id = tweak_data.blackmarket[tweak_data_category][item_id].guis_id
-			end
-
-			local bundle_folder = tweak_data.blackmarket[tweak_data_category] and tweak_data.blackmarket[tweak_data_category][guis_id] and tweak_data.blackmarket[tweak_data_category][guis_id].texture_bundle_folder
-
-			if bundle_folder then
-				guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-			end
-
-			texture_path = guis_catalog .. "textures/pd2/blackmarket/icons/" .. tostring(category) .. "/" .. tostring(guis_id)
+		if tweak_data.blackmarket[tweak_data_category] and tweak_data.blackmarket[tweak_data_category][item_id] and tweak_data.blackmarket[tweak_data_category][item_id].guis_id then
+			guis_id = tweak_data.blackmarket[tweak_data_category][item_id].guis_id
 		end
 
-		if rarity_path then
-			local rarity_bitmap = item_panel:bitmap({
-				blend_mode = "add",
-				texture = rarity_path
-			})
-			local texture_width = rarity_bitmap:texture_width()
-			local texture_height = rarity_bitmap:texture_height()
-			local panel_width = item_panel:w()
-			local panel_height = item_panel:h()
-			local tw = texture_width
-			local th = texture_height
-			local pw = panel_width
-			local ph = panel_height
+		local bundle_folder = tweak_data.blackmarket[tweak_data_category] and tweak_data.blackmarket[tweak_data_category][guis_id] and tweak_data.blackmarket[tweak_data_category][guis_id].texture_bundle_folder
 
-			if tw == 0 or th == 0 then
-				Application:error("[MenuNodeOpenContainerGui] BG Texture size error!:", "width", tw, "height", th)
-
-				tw = 1
-				th = 1
-			end
-
-			local sw = math.min(pw, ph * tw / th)
-			local sh = math.min(ph, pw / (tw / th))
-
-			rarity_bitmap:set_size(math.round(sw) * 2, math.round(sh) * 2)
-			rarity_bitmap:set_center(item_panel:w() * 0.5, item_panel:h() * 0.5)
+		if bundle_folder then
+			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
 		end
 
-		Application:debug("Requesting Texture", texture_path, "PEER", peer_id)
-
-		if DB:has(Idstring("texture"), texture_path) then
-			TextureCache:request(texture_path, "NORMAL", texture_loaded_clbk, 100)
-		else
-			Application:error("[HUDLootScreen]", "Texture not in DB", texture_path, peer_id)
-			item_panel:rect({
-				color = Color.red
-			})
-		end
+		texture_path = guis_catalog .. "textures/pd2/blackmarket/icons/" .. tostring(category) .. "/" .. tostring(guis_id)
 	end
 
-	if not self._peer_data[peer_id].wait_for_choice then
+	if rarity_path then
+		local rarity_bitmap = item_panel:bitmap({
+			blend_mode = "add",
+			texture = rarity_path
+		})
+		local texture_width = rarity_bitmap:texture_width()
+		local texture_height = rarity_bitmap:texture_height()
+		local panel_width = item_panel:w()
+		local panel_height = item_panel:h()
+		local tw = texture_width
+		local th = texture_height
+		local pw = panel_width
+		local ph = panel_height
+
+		if tw == 0 or th == 0 then
+			Application:error("[MenuNodeOpenContainerGui] BG Texture size error!:", "width", tw, "height", th)
+
+			tw = 1
+			th = 1
+		end
+
+		local sw = math.min(pw, ph * tw / th)
+		local sh = math.min(ph, pw / (tw / th))
+
+		rarity_bitmap:set_size(math.round(sw) * 2, math.round(sh) * 2)
+		rarity_bitmap:set_center(item_panel:w() * 0.5, item_panel:h() * 0.5)
+	end
+
+	Application:debug("Requesting Texture", texture_path, "PEER", peer_id)
+
+	if DB:has(Idstring("texture"), texture_path) then
+		TextureCache:request(texture_path, "NORMAL", texture_loaded_clbk, 100)
+	else
+		Application:error("[HUDLootScreen]", "Texture not in DB", texture_path, peer_id)
+		item_panel:rect({
+			color = Color.red
+		})
+	end
+
+	if not peer_data.wait_for_choice then
 		self:begin_flip_card(peer_id)
 	end
 end
@@ -913,21 +889,21 @@ function HUDLootScreen:texture_loaded_clbk(params, texture_idstring)
 end
 
 function HUDLootScreen:begin_choose_card(peer_id, card_id)
-	if not self._peer_data[peer_id].active then
-		self._peer_data[peer_id].delayed_card_id = card_id
+	local peer_data = self._peer_data[peer_id]
+
+	if not peer_data.active then
+		peer_data.delayed_card_id = card_id
 
 		return
 	end
-
-	print("YOU CHOSE " .. card_id .. ", mr." .. peer_id)
 
 	local panel = self._peers_panel:child(peer_id_str(peer_id))
 
 	panel:stop()
 	panel:set_alpha(1)
 
-	local wait_for_lootdrop = self._peer_data[peer_id].wait_for_lootdrop
-	self._peer_data[peer_id].wait_t = not wait_for_lootdrop and 5
+	local wait_for_lootdrop = peer_data.wait_for_lootdrop
+	peer_data.wait_t = not wait_for_lootdrop and 5
 	local card_info_panel = panel:child("card_info")
 	local main_text = card_info_panel:child("main_text")
 
@@ -939,7 +915,7 @@ function HUDLootScreen:begin_choose_card(peer_id, card_id)
 
 	main_text:set_h(hh + 2)
 
-	local lootdrop_data = self._peer_data[peer_id].lootdrops
+	local lootdrop_data = peer_data.lootdrops
 	local item_category = lootdrop_data[3]
 	local item_id = lootdrop_data[4]
 	local item_pc = lootdrop_data[6]
@@ -957,14 +933,15 @@ function HUDLootScreen:begin_choose_card(peer_id, card_id)
 	cards[card_two] = left_pc
 	local card_three = #cards + 1
 	cards[card_three] = right_pc
-	self._peer_data[peer_id].chosen_card_id = wait_for_lootdrop and card_id
+	peer_data.chosen_card_id = wait_for_lootdrop and card_id
+	local possible_fakes = tweak_data.lootdrop.card_fakes
 
 	for i, pc in ipairs(cards) do
 		local my_card = i == card_id
 		local card_panel = panel:child("card" .. i)
 		local downcard = card_panel:child("downcard")
-		local joker = pc == 0 and tweak_data.lootdrop.joker_chance > 0
-		local card_id = tweak_data.lootdrop.type_to_card[my_card and item_category or table.random(tweak_data.lootdrop.card_fakes)]
+		local card_idx = my_card and item_category or possible_fakes[pc]
+		local card_id = tweak_data.lootdrop.type_to_card[card_idx]
 		local texture, rect, coords = tweak_data.hud_icons:get_icon_data(card_id or tweak_data.lootdrop.type_to_card_fallback)
 		local upcard = card_panel:bitmap({
 			name = "upcard",
@@ -979,10 +956,6 @@ function HUDLootScreen:begin_choose_card(peer_id, card_id)
 
 		upcard:set_rotation(downcard:rotation())
 		upcard:set_shape(downcard:shape())
-
-		if joker then
-			upcard:set_color(Color(1, 0.8, 0.8))
-		end
 
 		if coords then
 			local tl = Vector3(coords[1][1], coords[1][2], 0)
@@ -1001,12 +974,13 @@ function HUDLootScreen:begin_choose_card(peer_id, card_id)
 	panel:child("card" .. card_two):animate(callback(self, self, "flipcard"), 5)
 	panel:child("card" .. card_three):animate(callback(self, self, "flipcard"), 5)
 
-	self._peer_data[peer_id].wait_for_choice = nil
+	peer_data.wait_for_choice = nil
 end
 
 function HUDLootScreen:begin_flip_card(peer_id)
-	self._peer_data[peer_id].wait_t = 5
-	local lootdrop_data = self._peer_data[peer_id].lootdrops
+	local peer_data = self._peer_data[peer_id]
+	peer_data.wait_t = 5
+	local lootdrop_data = peer_data.lootdrops
 	local item_category = lootdrop_data[3]
 	local item_id = lootdrop_data[4]
 	local item_pc = lootdrop_data[6]
@@ -1029,7 +1003,7 @@ function HUDLootScreen:begin_flip_card(peer_id)
 
 	main_text:set_h(hh + 2)
 
-	local card_panel = panel:child("card" .. self._peer_data[peer_id].chosen_card_id)
+	local card_panel = panel:child("card" .. peer_data.chosen_card_id)
 	local upcard = card_panel:child("upcard")
 
 	upcard:set_image(texture)
@@ -1045,7 +1019,7 @@ function HUDLootScreen:begin_flip_card(peer_id)
 		upcard:set_texture_rect(unpack(rect))
 	end
 
-	self._peer_data[peer_id].chosen_card_id = nil
+	peer_data.chosen_card_id = nil
 end
 
 function HUDLootScreen:debug_flip()

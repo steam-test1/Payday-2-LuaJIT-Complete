@@ -845,7 +845,7 @@ function CoreEditor:run_simulation(with_mission)
 		local file = self._simulation_path .. "/test_level.world"
 		local save_continents = true
 
-		self:do_save(file, self._simulation_path, save_continents)
+		self:do_save(file, self._simulation_path, save_continents, false, true)
 
 		self._world_holder = WorldHolder:new({
 			file_type = "world",
@@ -3155,7 +3155,7 @@ function CoreEditor:save_incremental(dir, f_name, autosaving)
 	self:do_save(path, dir, save_continents, autosaving)
 end
 
-function CoreEditor:do_save(path, dir, save_continents, autosaving)
+function CoreEditor:do_save(path, dir, save_continents, autosaving, starting_simulation)
 	if not path and not dir then
 		Application:error("No path or dir specified when trying to save")
 
@@ -3206,7 +3206,7 @@ function CoreEditor:do_save(path, dir, save_continents, autosaving)
 		end
 	end
 
-	if not autosaving then
+	if not autosaving and not starting_simulation then
 		local errors = self:check_duplicate_names_exist()
 
 		if errors then
@@ -4614,7 +4614,7 @@ end
 
 function CoreEditor:get_special_unit_with_id(id)
 	for _, data in pairs(self._special_units) do
-		if data.unit:unit_data().unit_id == id then
+		if alive(data.unit) and data.unit:unit_data().unit_id == id then
 			return data.unit
 		end
 	end

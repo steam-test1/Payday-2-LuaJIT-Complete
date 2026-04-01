@@ -1406,6 +1406,7 @@ end
 function SentryGunInteractionExt:interact(player)
 	SentryGunInteractionExt.super.super.interact(self, player)
 	self._unit:base():on_interaction()
+	self:set_active(false)
 
 	return true
 end

@@ -9,7 +9,8 @@ local default_event_namespace = "payday2"
 local geolocation_endpoint = "/game-telemetry/v1/protected/location"
 local get_playtime_endpoint_steam = "/game-telemetry/v1/protected/steamIds/{steamId}/playtime"
 local update_playtime_endpoint_steam = "/game-telemetry/v1/protected/steamIds/{steamId}/playtime/{playtime}"
-local send_period = 5
+local beats_period = 30
+local login_period = 5
 local log_name = "[Telemetry]"
 local login_retry_limit = 50
 local connection_errors = {
@@ -69,12 +70,8 @@ local function build_payload(event_name, payload, event_namespace)
 end
 
 local function get_platform_name()
-	if SystemInfo:platform() == Idstring("X360") then
-		return "X360"
-	elseif SystemInfo:platform() == Idstring("WIN32") then
+	if SystemInfo:platform() == Idstring("WIN32") then
 		return "WIN32"
-	elseif SystemInfo:platform() == Idstring("PS3") then
-		return "PS3"
 	elseif SystemInfo:platform() == Idstring("XB1") then
 		return "XB1"
 	elseif SystemInfo:platform() == Idstring("PS4") then
@@ -352,7 +349,7 @@ function Telemetry:update(t, dt)
 
 	self._dt = self._dt + dt
 
-	if Global.telemetry._login_screen_passed and not self._global._logged_in and send_period < self._dt then
+	if Global.telemetry._login_screen_passed and not self._global._logged_in and login_period < self._dt then
 		self._dt = 0
 
 		if not Global.telemetry._login_inprogress and managers.menu:is_open("menu_main") then
@@ -368,7 +365,7 @@ function Telemetry:update(t, dt)
 		return
 	end
 
-	if self._global._logged_in and send_period < self._dt then
+	if self._global._logged_in and beats_period < self._dt then
 		self:send_on_player_heartbeat()
 		self:send_telemetry(self._global._telemetries_to_send_arr)
 		clear_table(self._global._telemetries_to_send_arr)
@@ -891,28 +888,8 @@ function Telemetry:send_on_player_heartbeat()
 		return
 	end
 
-	local map_name = "invalid map name"
-
-	if managers.menu:active_menu() then
-		map_name = managers.menu:active_menu().id
-	elseif managers.job:current_level_data() then
-		map_name = managers.job:current_level_data().name_id
-	end
-
-	local game_mode = Global.game_settings.gamemode
-
-	if managers.skirmish:is_skirmish() then
-		game_mode = managers.job:current_level_data().group_ai_state
-	end
-
 	local telemetry_payload = {
-		mapName = map_name,
-		gameMode = game_mode,
-		gameState = game_state_machine:current_state_name(),
-		gameSessionGUID = self._global._session_uuid,
-		playerState = managers.player:current_state(),
-		playerLevel = managers.experience:current_level(),
-		infamyLevel = managers.experience:current_rank()
+		gameSessionGUID = self._global._session_uuid
 	}
 
 	cat_print("telemetry", "heartbeat *budump* " .. inspect(telemetry_payload))

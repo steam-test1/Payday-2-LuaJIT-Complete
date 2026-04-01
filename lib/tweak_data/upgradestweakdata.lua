@@ -2467,6 +2467,34 @@ function UpgradesTweakData:_init_pd2_values()
 	self.values.team.crew_ai_ap_ammo = {
 		true
 	}
+	self.values.team.crew_ai_cable_ties = {
+		{
+			2,
+			3,
+			4
+		}
+	}
+	self.values.team.crew_ai_flashbang = {
+		{
+			360,
+			240,
+			120
+		}
+	}
+	self.values.team.crew_ai_counter_strike = {
+		{
+			360,
+			240,
+			120
+		}
+	}
+	self.values.team.crew_ai_counter_tase = {
+		{
+			180,
+			120,
+			60
+		}
+	}
 	local editable_crew_descrition = {
 		crew_healthy = {
 			"60"
@@ -2506,6 +2534,22 @@ function UpgradesTweakData:_init_pd2_values()
 		crew_interact = {
 			"25%",
 			"+25%"
+		},
+		crew_ai_cable_ties = {
+			"+2",
+			"+1"
+		},
+		crew_ai_flashbang = {
+			"6",
+			"2"
+		},
+		crew_ai_counter_strike = {
+			"6",
+			"2"
+		},
+		crew_ai_counter_tase = {
+			"3",
+			"1"
 		}
 	}
 	self.crew_descs = {}
@@ -5215,7 +5259,8 @@ function UpgradesTweakData:init(tweak_data)
 				"shuno",
 				"holt",
 				"x_holt",
-				"x_korth"
+				"x_korth",
+				"welrod"
 			}
 		},
 		[31] = {
@@ -5867,6 +5912,7 @@ function UpgradesTweakData:init(tweak_data)
 	self:_x_holt_weapon_definitions()
 	self:_m60_weapon_definitions()
 	self:_r700_weapon_definitions()
+	self:_welrod_weapon_definitions()
 	self:_melee_weapon_definitions()
 	self:_grenades_definitions()
 	self:_carry_definitions()
@@ -13792,6 +13838,22 @@ function UpgradesTweakData:_crew_definitions()
 		name_id = "menu_crew_ai_ap_ammo",
 		icon = "ability_4"
 	}
+	self.crew_ability_definitions.crew_ai_cable_ties = {
+		name_id = "menu_crew_ai_cable_ties",
+		icon = "ability_5"
+	}
+	self.crew_ability_definitions.crew_ai_flashbang = {
+		name_id = "menu_crew_ai_flashbang",
+		icon = "ability_6"
+	}
+	self.crew_ability_definitions.crew_ai_counter_strike = {
+		name_id = "menu_crew_ai_counter_strike",
+		icon = "ability_7"
+	}
+	self.crew_ability_definitions.crew_ai_counter_tase = {
+		name_id = "menu_crew_ai_counter_tase",
+		icon = "ability_8"
+	}
 end
 
 function UpgradesTweakData:_temporary_definitions()
@@ -16784,6 +16846,14 @@ function UpgradesTweakData:_r700_weapon_definitions()
 		dlc = "atw",
 		factory_id = "wpn_fps_snp_r700",
 		weapon_id = "r700",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_welrod_weapon_definitions()
+	self.definitions.welrod = {
+		factory_id = "wpn_fps_pis_welrod",
+		weapon_id = "welrod",
 		category = "weapon"
 	}
 end

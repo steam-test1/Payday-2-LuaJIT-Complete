@@ -189,7 +189,7 @@ function EquipmentsTweakData:init()
 		cable_tie = {
 			quantity = 2,
 			text_id = "debug_equipment_cable_tie",
-			max_quantity = 9,
+			max_quantity = 10,
 			icon = "equipment_cable_ties",
 			extra_quantity = {
 				upgrade = "quantity",

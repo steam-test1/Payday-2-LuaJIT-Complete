@@ -1,9 +1,9 @@
+local tmp_vec1 = Vector3()
 local tmp_rot1 = Rotation()
 UnitNetworkHandler = UnitNetworkHandler or class(BaseNetworkHandler)
 
 function UnitNetworkHandler:set_unit(unit, character_name, outfit_string, outfit_version, peer_id, team_id, visual_seed)
 	print("[UnitNetworkHandler:set_unit]", unit, character_name, peer_id, team_id, visual_seed)
-	Application:stack_dump()
 
 	if not alive(unit) then
 		return
@@ -41,7 +41,11 @@ function UnitNetworkHandler:switch_weapon(unit, unequip_multiplier, equip_multip
 		return
 	end
 
-	unit:movement():sync_switch_weapon(unequip_multiplier, equip_multiplier)
+	local movement_ext = unit:movement()
+
+	if movement_ext and movement_ext.sync_switch_weapon then
+		movement_ext:sync_switch_weapon(unequip_multiplier, equip_multiplier)
+	end
 end
 
 function UnitNetworkHandler:set_equipped_weapon(unit, item_index, blueprint_string, cosmetics_string, sender)
@@ -55,13 +59,15 @@ function UnitNetworkHandler:set_equipped_weapon(unit, item_index, blueprint_stri
 		return
 	end
 
-	if not unit:inventory() or not unit:inventory().synch_equipped_weapon then
-		Application:error("[UnitNetworkHandler:set_equipped_weapon] unit unable to sync equipped weapon:", inspect(unit), inspect(unit:inventory()), type(unit:inventory()))
+	local inventory_ext = unit:inventory()
+
+	if not inventory_ext or not inventory_ext.synch_equipped_weapon then
+		Application:error("[UnitNetworkHandler:set_equipped_weapon] unit unable to sync equipped weapon:", inspect(unit))
 
 		return
 	end
 
-	unit:inventory():synch_equipped_weapon(item_index, blueprint_string, cosmetics_string, peer)
+	inventory_ext:synch_equipped_weapon(item_index, blueprint_string, cosmetics_string, peer)
 end
 
 function UnitNetworkHandler:set_weapon_gadget_state(unit, gadget_state, sender)
@@ -69,7 +75,11 @@ function UnitNetworkHandler:set_weapon_gadget_state(unit, gadget_state, sender)
 		return
 	end
 
-	unit:inventory():synch_weapon_gadget_state(gadget_state)
+	local inventory_ext = unit:inventory()
+
+	if inventory_ext and inventory_ext.synch_weapon_gadget_state then
+		inventory_ext:synch_weapon_gadget_state(gadget_state)
+	end
 end
 
 function UnitNetworkHandler:set_weapon_gadget_color(unit, red, green, blue, sender)
@@ -77,12 +87,10 @@ function UnitNetworkHandler:set_weapon_gadget_color(unit, red, green, blue, send
 		return
 	end
 
-	unit:inventory():sync_weapon_gadget_color(Color(red / 255, green / 255, blue / 255))
-end
+	local inventory_ext = unit:inventory()
 
-function UnitNetworkHandler:first_aid_kit_sync(unit, min_distance)
-	if min_distance ~= 0 then
-		unit:base():sync_auto_recovery(min_distance)
+	if inventory_ext and inventory_ext.sync_weapon_gadget_color then
+		inventory_ext:sync_weapon_gadget_color(Color(red / 255, green / 255, blue / 255))
 	end
 end
 
@@ -91,17 +99,29 @@ function UnitNetworkHandler:set_look_dir(unit, yaw_in, pitch_in, sender)
 		return
 	end
 
-	local dir = Vector3()
+	local movement_ext = unit:movement()
+
+	if not movement_ext or not movement_ext.sync_look_dir then
+		return
+	end
+
+	local dir = tmp_vec1
 	local yaw = 360 * yaw_in / 255
 	local pitch = math.lerp(-85, 85, pitch_in / 127)
 	local rot = Rotation(yaw, pitch, 0)
 
 	mrotation.y(rot, dir)
-	unit:movement():sync_look_dir(dir, yaw, pitch)
+	movement_ext:sync_look_dir(dir, yaw, pitch)
 end
 
 function UnitNetworkHandler:set_arm_pose(unit, frame_index, rs, ra, rf, rh, ls, la, lf, lh, sender)
 	if not self._verify_character_and_sender(unit, sender) then
+		return
+	end
+
+	local movement_ext = unit:movement()
+
+	if not movement_ext or not movement_ext.sync_arm_frame_pose then
 		return
 	end
 
@@ -124,7 +144,7 @@ function UnitNetworkHandler:set_arm_pose(unit, frame_index, rs, ra, rf, rh, ls, 
 		}
 	}
 
-	unit:movement():sync_arm_frame_pose(frame_index, pose)
+	movement_ext:sync_arm_frame_pose(frame_index, pose)
 end
 
 function UnitNetworkHandler:set_primary_hand(unit, hand, sender)
@@ -132,7 +152,11 @@ function UnitNetworkHandler:set_primary_hand(unit, hand, sender)
 		return
 	end
 
-	unit:movement():set_primary_hand(hand)
+	local movement_ext = unit:movement()
+
+	if movement_ext and movement_ext.set_primary_hand then
+		movement_ext:set_primary_hand(hand)
+	end
 end
 
 function UnitNetworkHandler:set_arm_setting(unit, setting_id, setting_param, sender)
@@ -181,6 +205,12 @@ function UnitNetworkHandler:action_walk_start(unit, first_nav_point, nav_link_ya
 		return
 	end
 
+	local mov_ext = unit:movement()
+
+	if not mov_ext or not mov_ext.action_request then
+		return
+	end
+
 	local end_rot = nil
 
 	if end_yaw ~= 0 then
@@ -191,7 +221,7 @@ function UnitNetworkHandler:action_walk_start(unit, first_nav_point, nav_link_ya
 
 	if nav_link_act_index ~= 0 then
 		local nav_link_rot = 360 * nav_link_yaw / 255
-		local nav_link = unit:movement()._actions.walk.synthesize_nav_link(first_nav_point, nav_link_rot, unit:movement()._actions.act:_get_act_name_from_index(nav_link_act_index), from_idle)
+		local nav_link = mov_ext._actions.walk.synthesize_nav_link(first_nav_point, nav_link_rot, mov_ext._actions.act:_get_act_name_from_index(nav_link_act_index), from_idle)
 
 		function nav_link.element.value(element, name)
 			return element[name]
@@ -242,7 +272,7 @@ function UnitNetworkHandler:action_walk_start(unit, first_nav_point, nav_link_ya
 		}
 	}
 
-	unit:movement():action_request(action_desc)
+	mov_ext:action_request(action_desc)
 end
 
 function UnitNetworkHandler:action_walk_nav_point(unit, nav_point, sender)
@@ -250,7 +280,11 @@ function UnitNetworkHandler:action_walk_nav_point(unit, nav_point, sender)
 		return
 	end
 
-	unit:movement():sync_action_walk_nav_point(nav_point)
+	local mov_ext = unit:movement()
+
+	if mov_ext and mov_ext.sync_action_walk_nav_point then
+		mov_ext:sync_action_walk_nav_point(nav_point)
+	end
 end
 
 function UnitNetworkHandler:player_action_walk_nav_point(unit, nav_point, speed, sender)
@@ -258,7 +292,11 @@ function UnitNetworkHandler:player_action_walk_nav_point(unit, nav_point, speed,
 		return
 	end
 
-	unit:movement():sync_action_walk_nav_point(nav_point, speed)
+	local mov_ext = unit:movement()
+
+	if mov_ext and mov_ext.sync_action_walk_nav_point then
+		unit:movement():sync_action_walk_nav_point(nav_point, speed)
+	end
 end
 
 function UnitNetworkHandler:action_change_run(unit, is_running, sender)
@@ -266,7 +304,11 @@ function UnitNetworkHandler:action_change_run(unit, is_running, sender)
 		return
 	end
 
-	unit:movement():sync_action_change_run(is_running)
+	local mov_ext = unit:movement()
+
+	if mov_ext and mov_ext.sync_action_change_run then
+		mov_ext:sync_action_change_run(is_running)
+	end
 end
 
 function UnitNetworkHandler:action_change_speed(unit, speed, sender)
@@ -274,7 +316,11 @@ function UnitNetworkHandler:action_change_speed(unit, speed, sender)
 		return
 	end
 
-	unit:movement():sync_action_change_speed(speed)
+	local mov_ext = unit:movement()
+
+	if mov_ext and mov_ext.sync_action_change_speed then
+		mov_ext:sync_action_change_speed(speed)
+	end
 end
 
 function UnitNetworkHandler:action_walk_stop(unit)
@@ -282,7 +328,11 @@ function UnitNetworkHandler:action_walk_stop(unit)
 		return
 	end
 
-	unit:movement():sync_action_walk_stop()
+	local mov_ext = unit:movement()
+
+	if mov_ext and mov_ext.sync_action_walk_stop then
+		mov_ext:sync_action_walk_stop()
+	end
 end
 
 function UnitNetworkHandler:action_walk_nav_link(unit, pos, yaw, anim_index, from_idle)
@@ -290,9 +340,15 @@ function UnitNetworkHandler:action_walk_nav_link(unit, pos, yaw, anim_index, fro
 		return
 	end
 
+	local mov_ext = unit:movement()
+
+	if not mov_ext or not mov_ext.sync_action_walk_nav_link then
+		return
+	end
+
 	local rot = 360 * yaw / 255
 
-	unit:movement():sync_action_walk_nav_link(pos, rot, anim_index, from_idle)
+	mov_ext:sync_action_walk_nav_link(pos, rot, anim_index, from_idle)
 end
 
 function UnitNetworkHandler:action_change_pose(unit, pose_code, pos)
@@ -300,11 +356,21 @@ function UnitNetworkHandler:action_change_pose(unit, pose_code, pos)
 		return
 	end
 
-	unit:movement():sync_action_change_pose(pose_code, pos)
+	local mov_ext = unit:movement()
+
+	if mov_ext and mov_ext.sync_action_change_pose then
+		mov_ext:sync_action_change_pose(pose_code, pos)
+	end
 end
 
 function UnitNetworkHandler:action_spooc_start(unit, target_u_pos, flying_strike, action_id)
 	if not self._verify_character(unit) or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local mov_ext = unit:movement()
+
+	if not mov_ext or not mov_ext.action_request then
 		return
 	end
 
@@ -334,7 +400,7 @@ function UnitNetworkHandler:action_spooc_start(unit, target_u_pos, flying_strike
 		action_desc.blocks.expl_hurt = -1
 	end
 
-	unit:movement():action_request(action_desc)
+	mov_ext:action_request(action_desc)
 end
 
 function UnitNetworkHandler:action_spooc_stop(unit, pos, nav_index, action_id, sender)
@@ -342,7 +408,11 @@ function UnitNetworkHandler:action_spooc_stop(unit, pos, nav_index, action_id, s
 		return
 	end
 
-	unit:movement():sync_action_spooc_stop(pos, nav_index, action_id)
+	local mov_ext = unit:movement()
+
+	if mov_ext and mov_ext.sync_action_spooc_stop then
+		mov_ext:sync_action_spooc_stop(pos, nav_index, action_id)
+	end
 end
 
 function UnitNetworkHandler:action_spooc_nav_point(unit, pos, action_id, sender)
@@ -350,7 +420,11 @@ function UnitNetworkHandler:action_spooc_nav_point(unit, pos, action_id, sender)
 		return
 	end
 
-	unit:movement():sync_action_spooc_nav_point(pos, action_id)
+	local mov_ext = unit:movement()
+
+	if mov_ext and mov_ext.sync_action_spooc_nav_point then
+		mov_ext:sync_action_spooc_nav_point(pos, action_id)
+	end
 end
 
 function UnitNetworkHandler:action_spooc_strike(unit, pos, action_id, sender)
@@ -358,11 +432,21 @@ function UnitNetworkHandler:action_spooc_strike(unit, pos, action_id, sender)
 		return
 	end
 
-	unit:movement():sync_action_spooc_strike(pos, action_id)
+	local mov_ext = unit:movement()
+
+	if mov_ext and mov_ext.sync_action_spooc_strike then
+		mov_ext:sync_action_spooc_strike(pos, action_id)
+	end
 end
 
 function UnitNetworkHandler:action_warp_start(unit, has_pos, pos, has_rot, yaw, sender)
 	if not self._verify_character(unit) or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local mov_ext = unit:movement()
+
+	if not mov_ext or not mov_ext.sync_action_spooc_strike then
 		return
 	end
 
@@ -373,7 +457,7 @@ function UnitNetworkHandler:action_warp_start(unit, has_pos, pos, has_rot, yaw, 
 		rotation = has_rot and Rotation(360 * (yaw - 1) / 254, 0, 0)
 	}
 
-	unit:movement():action_request(action_desc)
+	mov_ext:action_request(action_desc)
 end
 
 function UnitNetworkHandler:friendly_fire_hit(subject_unit)
@@ -381,7 +465,11 @@ function UnitNetworkHandler:friendly_fire_hit(subject_unit)
 		return
 	end
 
-	subject_unit:character_damage():friendly_fire_hit()
+	local damage_ext = subject_unit:character_damage()
+
+	if damage_ext and damage_ext.friendly_fire_hit then
+		damage_ext:friendly_fire_hit()
+	end
 end
 
 function UnitNetworkHandler:damage_bullet(subject_unit, attacker_unit, damage, i_body, height_offset, variant, death, sender)
@@ -389,11 +477,17 @@ function UnitNetworkHandler:damage_bullet(subject_unit, attacker_unit, damage, i
 		return
 	end
 
+	local damage_ext = subject_unit:character_damage()
+
+	if not damage_ext or not damage_ext.sync_damage_bullet then
+		return
+	end
+
 	if not alive(attacker_unit) or attacker_unit:key() == subject_unit:key() then
 		attacker_unit = nil
 	end
 
-	subject_unit:character_damage():sync_damage_bullet(attacker_unit, damage, i_body, height_offset, variant, death)
+	damage_ext:sync_damage_bullet(attacker_unit, damage, i_body, height_offset, variant, death)
 end
 
 function UnitNetworkHandler:damage_explosion_fire(subject_unit, attacker_unit, damage, i_attack_variant, death, direction, weapon_unit, sender)
@@ -2825,10 +2919,15 @@ function UnitNetworkHandler:sync_attach_projectile(unit, instant_dynamic_pickup,
 		return
 	end
 
+	local projectile_type = tweak_data.blackmarket:get_projectile_name_from_index(projectile_type_index)
+
+	if not projectile_type then
+		return
+	end
+
 	local world_position = parent_object and local_pos:rotate_with(parent_object:rotation()) + parent_object:position() or local_pos
 
 	if Network:is_server() then
-		local projectile_type = tweak_data.blackmarket:get_projectile_name_from_index(projectile_type_index)
 		local tweak_entry = tweak_data.blackmarket.projectiles[projectile_type]
 		local unit_name = Idstring(tweak_entry.unit)
 		local synced_unit = World:spawn_unit(unit_name, world_position, Rotation(dir, math.UP))
@@ -2838,8 +2937,6 @@ function UnitNetworkHandler:sync_attach_projectile(unit, instant_dynamic_pickup,
 		synced_unit:base():set_projectile_entry(projectile_type)
 		synced_unit:base():sync_attach_to_unit(instant_dynamic_pickup, parent_unit, parent_body, parent_object, local_pos, dir)
 	elseif unit then
-		local projectile_type = tweak_data.blackmarket:get_projectile_name_from_index(projectile_type_index)
-
 		unit:set_position(world_position)
 		unit:base():set_thrower_unit_by_peer_id(peer_id)
 		unit:base():set_projectile_entry(projectile_type)

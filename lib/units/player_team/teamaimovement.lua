@@ -106,6 +106,21 @@ function TeamAIMovement:on_cuffed()
 end
 
 function TeamAIMovement:on_SPOOCed(enemy_unit)
+	local cooldown_id = "crew_ai_counter_strike"
+
+	if managers.player:is_custom_cooldown_not_active("team", cooldown_id) then
+		local cooldown = managers.player:crew_ability_upgrade_value(cooldown_id, tweak_data.upgrades.values.team.crew_ai_counter_strike[1][1])
+
+		managers.player:start_custom_cooldown("team", cooldown_id, cooldown)
+
+		local melee_weapon = self._unit:base():melee_weapon()
+		local is_weapon = melee_weapon == "weapon"
+
+		self:play_redirect(is_weapon and "melee" or "melee_item")
+
+		return "countered"
+	end
+
 	local state = "incapacitated"
 	state = managers.modifiers:modify_value("TeamAIMovement:OnSpooked", state)
 

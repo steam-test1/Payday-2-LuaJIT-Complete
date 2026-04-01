@@ -1044,7 +1044,7 @@ function PlayerMovement:subtract_stamina(value)
 			for i = 1, 2 do
 				local weapon = self._unit:inventory():unit_by_selection(i):base()
 
-				if weapon:fire_mode() == "auto" then
+				if weapon:fire_mode() == "auto" or weapon:fire_mode() == "burst" then
 					local ammo = math.ceil(weapon:get_ammo_max() * ammo_refill)
 
 					weapon:add_ammo_to_pool(ammo, i)

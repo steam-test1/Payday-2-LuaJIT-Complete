@@ -11743,9 +11743,6 @@ function BlackMarketGui:populate_masks_new(data)
 					crafted.blueprint.color_c.id
 				}) do
 					local gui_icon_path, gui_icon_color = managers.blackmarket:get_mask_materials_icon(material_id)
-
-					print("[AAA]", material_id, gui_icon_path, gui_icon_color)
-
 					local right = 0
 					local bottom = 0
 					local w = 24

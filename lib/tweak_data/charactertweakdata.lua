@@ -12478,12 +12478,7 @@ function CharacterTweakData:_set_overkill()
 end
 
 function CharacterTweakData:_set_overkill_145()
-	if SystemInfo:platform() == Idstring("PS3") then
-		self:_multiply_all_hp(3, 3)
-	else
-		self:_multiply_all_hp(3, 3)
-	end
-
+	self:_multiply_all_hp(3, 3)
 	self:_multiply_all_speeds(2.05, 2.1)
 
 	self.marshal_marksman.HEALTH_INIT = 72
@@ -12676,11 +12671,7 @@ function CharacterTweakData:_set_overkill_145()
 end
 
 function CharacterTweakData:_set_easy_wish()
-	if SystemInfo:platform() == Idstring("PS3") then
-		self:_multiply_all_hp(6, 2)
-	else
-		self:_multiply_all_hp(6, 2)
-	end
+	self:_multiply_all_hp(6, 2)
 
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[1].dmg_mul = 1.55
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[2].dmg_mul = 2.5
@@ -13308,11 +13299,7 @@ function CharacterTweakData:_set_overkill_290()
 end
 
 function CharacterTweakData:_set_sm_wish()
-	if SystemInfo:platform() == Idstring("PS3") then
-		self:_multiply_all_hp(6, 1.5)
-	else
-		self:_multiply_all_hp(6, 1.5)
-	end
+	self:_multiply_all_hp(6, 1.5)
 
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[1].dmg_mul = 3.5
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[2].dmg_mul = 7
@@ -13331,8 +13318,8 @@ function CharacterTweakData:_set_sm_wish()
 	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[4].dmg_mul = 4
 	self.marshal_shield_break.weapon.is_shotgun_mag.FALLOFF[5].dmg_mul = 2.5
 	self.tank.HEALTH_INIT = 2400
-	self.tank_mini.HEALTH_INIT = 4800
 	self.tank_medic.HEALTH_INIT = 2400
+	self.tank_mini.HEALTH_INIT = 4800
 	self.hector_boss.weapon.is_shotgun_mag.FALLOFF = {
 		{
 			dmg_mul = 3.14,

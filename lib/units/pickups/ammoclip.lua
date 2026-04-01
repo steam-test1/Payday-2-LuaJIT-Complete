@@ -82,46 +82,8 @@ function AmmoClip:_pickup(unit)
 			end
 
 			if not self._projectile_id and not self._weapon_category then
-				local restored_health = nil
-
-				if not unit:character_damage():is_downed() and player_manager:has_category_upgrade("temporary", "loose_ammo_restore_health") and not player_manager:has_activate_temporary_upgrade("temporary", "loose_ammo_restore_health") then
-					player_manager:activate_temporary_upgrade("temporary", "loose_ammo_restore_health")
-
-					local values = player_manager:temporary_upgrade_value("temporary", "loose_ammo_restore_health", 0)
-
-					if values ~= 0 then
-						local restore_value = math.random(values[1], values[2])
-						local num_more_hp = 1
-
-						if player_manager:num_connected_players() > 0 then
-							num_more_hp = player_manager:num_players_with_more_health()
-						end
-
-						local base = tweak_data.upgrades.loose_ammo_restore_health_values.base
-						local sync_value = math.round(math.clamp(restore_value - base, 0, 13))
-						restore_value = restore_value * (tweak_data.upgrades.loose_ammo_restore_health_values.multiplier or 0.1)
-						local percent_inc = player_manager:upgrade_value("player", "gain_life_per_players", 0) * num_more_hp + 1
-
-						print("[AmmoClip:_pickup] Percent increase for health pickup is: ", percent_inc - 1)
-
-						restore_value = restore_value * percent_inc
-						local damage_ext = unit:character_damage()
-
-						if not damage_ext:need_revive() and not damage_ext:dead() and not damage_ext:is_berserker() then
-							damage_ext:restore_health(restore_value, true)
-							unit:sound():play("pickup_ammo_health_boost", nil, true)
-						end
-
-						if player_manager:has_category_upgrade("player", "loose_ammo_restore_health_give_team") then
-							managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "pickup", 2 + sync_value)
-						end
-					end
-				end
-
-				if player_manager:has_category_upgrade("temporary", "loose_ammo_give_team") and not player_manager:has_activate_temporary_upgrade("temporary", "loose_ammo_give_team") then
-					player_manager:activate_temporary_upgrade("temporary", "loose_ammo_give_team")
-					managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "pickup", AmmoClip.EVENT_IDS.bonnie_share_ammo)
-				end
+				self:_chk_loose_ammo_restore_health(unit)
+				self:_chk_loose_ammo_give_team()
 			elseif self._projectile_id then
 				player_manager:register_grenade(managers.network:session():local_peer():id())
 				managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "pickup", AmmoClip.EVENT_IDS.register_grenade)
@@ -143,6 +105,50 @@ function AmmoClip:_pickup(unit)
 	end
 
 	return false
+end
+
+function AmmoClip:_chk_loose_ammo_restore_health(unit)
+	local player_manager = managers.player
+
+	if not unit:character_damage():is_downed() and player_manager:has_category_upgrade("temporary", "loose_ammo_restore_health") and not player_manager:has_activate_temporary_upgrade("temporary", "loose_ammo_restore_health") then
+		player_manager:activate_temporary_upgrade("temporary", "loose_ammo_restore_health")
+
+		local values = player_manager:temporary_upgrade_value("temporary", "loose_ammo_restore_health", 0)
+
+		if values ~= 0 then
+			local restore_value = math.random(values[1], values[2])
+			local num_more_hp = 1
+
+			if player_manager:num_connected_players() > 0 then
+				num_more_hp = player_manager:num_players_with_more_health()
+			end
+
+			local base = tweak_data.upgrades.loose_ammo_restore_health_values.base
+			local sync_value = math.round(math.clamp(restore_value - base, 0, 13))
+			local percent_inc = player_manager:upgrade_value("player", "gain_life_per_players", 0) * num_more_hp + 1
+			restore_value = restore_value * (tweak_data.upgrades.loose_ammo_restore_health_values.multiplier or 0.1)
+			restore_value = restore_value * percent_inc
+			local damage_ext = unit:character_damage()
+
+			if not damage_ext:need_revive() and not damage_ext:dead() and not damage_ext:is_berserker() then
+				damage_ext:restore_health(restore_value, true)
+				unit:sound():play("pickup_ammo_health_boost", nil, true)
+			end
+
+			if player_manager:has_category_upgrade("player", "loose_ammo_restore_health_give_team") then
+				managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "pickup", 2 + sync_value)
+			end
+		end
+	end
+end
+
+function AmmoClip:_chk_loose_ammo_give_team()
+	local player_manager = managers.player
+
+	if player_manager:has_category_upgrade("temporary", "loose_ammo_give_team") and not player_manager:has_activate_temporary_upgrade("temporary", "loose_ammo_give_team") then
+		player_manager:activate_temporary_upgrade("temporary", "loose_ammo_give_team")
+		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "pickup", AmmoClip.EVENT_IDS.bonnie_share_ammo)
+	end
 end
 
 function AmmoClip:sync_net_event(event, peer)

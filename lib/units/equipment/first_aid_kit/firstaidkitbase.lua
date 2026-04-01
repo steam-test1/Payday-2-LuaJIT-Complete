@@ -69,14 +69,6 @@ function FirstAidKitBase:init(unit)
 	end
 end
 
-function FirstAidKitBase:sync_auto_recovery(min_distance)
-	if min_distance ~= 0 then
-		self._min_distance = min_distance
-
-		FirstAidKitBase.Add(self, self._unit:position(), min_distance)
-	end
-end
-
 function FirstAidKitBase:_get_upgrade_levels(bits)
 	local auto_recovery = Bitwise:rshift(bits, FirstAidKitBase.auto_recovery_shift)
 	local upgrade_lvl = Bitwise:rshift(bits, FirstAidKitBase.upgrade_lvl_shift) % 2^FirstAidKitBase.upgrade_lvl_shift

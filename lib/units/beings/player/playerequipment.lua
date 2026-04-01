@@ -3,6 +3,7 @@ local IDS_BODY = Idstring("body")
 
 function PlayerEquipment:init(unit)
 	self._unit = unit
+	self._slotmask = managers.slot:get_mask("trip_mine_placeables")
 end
 
 function PlayerEquipment:_m_deploy_rot()
@@ -20,7 +21,7 @@ end
 function PlayerEquipment:valid_look_at_placement(equipment_data)
 	local from = self._unit:movement():m_head_pos()
 	local to = from + self._unit:movement():m_head_rot():y() * 200
-	local ray = self._unit:raycast("ray", from, to, "slot_mask", managers.slot:get_mask("trip_mine_placeables"), "ignore_unit", {}, "ray_type", "equipment_placement")
+	local ray = self._unit:raycast("ray", from, to, "slot_mask", self._slotmask, "ignore_unit", {}, "ray_type", "equipment_placement")
 
 	if ray and equipment_data and equipment_data.dummy_unit then
 		local pos = ray.position
@@ -361,7 +362,7 @@ end
 function PlayerEquipment:valid_shape_placement(equipment_id, equipment_data)
 	local from = self._unit:movement():m_head_pos()
 	local to = from + self._unit:movement():m_head_rot():y() * 220
-	local ray = self._unit:raycast("ray", from, to, "slot_mask", managers.slot:get_mask("trip_mine_placeables"), "ignore_unit", {}, "ray_type", "equipment_placement")
+	local ray = self._unit:raycast("ray", from, to, "slot_mask", self._slotmask, "ignore_unit", {}, "ray_type", "equipment_placement")
 	local valid = ray and true or false
 
 	if ray then
@@ -395,7 +396,7 @@ function PlayerEquipment:valid_shape_placement(equipment_id, equipment_data)
 			find_radius = 17
 		end
 
-		local bodies = self._dummy_unit:find_bodies("intersect", "capsule", find_start_pos, find_end_pos, find_radius, managers.slot:get_mask("trip_mine_placeables") + 14 + 25)
+		local bodies = self._dummy_unit:find_bodies("intersect", "capsule", find_start_pos, find_end_pos, find_radius, self._slotmask + 14 + 25)
 
 		for _, body in ipairs(bodies) do
 			if body:unit() ~= self._dummy_unit and body:has_ray_type(IDS_BODY) then

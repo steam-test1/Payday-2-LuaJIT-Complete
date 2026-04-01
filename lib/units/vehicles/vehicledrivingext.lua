@@ -368,7 +368,7 @@ function VehicleDrivingExt:block()
 	self:set_state(VehicleDrivingExt.STATE_BLOCKED)
 end
 
-function VehicleDrivingExt:add_loot(carry_id, multiplier)
+function VehicleDrivingExt:add_loot(carry_id, multiplier, instigator)
 	if not carry_id or carry_id == "" then
 		return false
 	end
@@ -385,8 +385,12 @@ function VehicleDrivingExt:add_loot(carry_id, multiplier)
 
 	local bag_type_seq = "action_add_bag_" .. carry_id
 
-	if not self._unit:damage():has_then_run_sequence_simple(bag_type_seq) then
-		self._unit:damage():has_then_run_sequence_simple("action_add_bag")
+	if not self._unit:damage():has_then_run_sequence_simple(bag_type_seq, {
+		unit = instigator
+	}) then
+		self._unit:damage():has_then_run_sequence_simple("action_add_bag", {
+			unit = instigator
+		})
 	end
 end
 
@@ -540,7 +544,7 @@ function VehicleDrivingExt:sync_store_loot_in_vehicle(unit, carry_id, multiplier
 	local carry_ext = unit:carry_data()
 
 	carry_ext:disarm()
-	self:add_loot(carry_id, multiplier)
+	self:add_loot(carry_id, multiplier, unit)
 	unit:set_slot(0)
 	carry_ext:set_value(0)
 	unit:damage():has_then_run_sequence_simple("secured")
@@ -573,12 +577,14 @@ function VehicleDrivingExt:_catch_loot()
 			local caught_units = World:find_units_quick("sphere", pos, 100, 14)
 
 			for _, unit in ipairs(caught_units) do
-				local carry_data = unit:carry_data()
+				if alive(unit) then
+					local carry_data = unit:carry_data()
 
-				if carry_data and carry_data:can_secure() and self:_loot_filter_func(carry_data) then
-					self:_store_loot(unit)
+					if carry_data and carry_data:can_secure() and self:_loot_filter_func(carry_data) then
+						self:_store_loot(unit)
 
-					break
+						break
+					end
 				end
 			end
 		end

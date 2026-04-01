@@ -1010,7 +1010,7 @@ function InteractionTweakData:init(tweak_data)
 	self.sentry_gun_revive = {
 		icon = "equipment_ammo_bag",
 		requires_upgrade = {
-			upgrade = "can_revive",
+			upgrade = "can_reload",
 			category = "sentry_gun"
 		},
 		timer = 3.5,

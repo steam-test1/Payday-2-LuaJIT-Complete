@@ -50,6 +50,10 @@ function TeamAIDamage:init(unit)
 		effect = Idstring("effects/payday2/particles/character/taser_hittarget"),
 		parent = self._unit:get_object(Idstring("e_taser"))
 	}
+
+	if managers.player:crew_ability_upgrade_value_botless("crew_ai_flashbang", false) then
+		self:_dyn_load_crew_ai_flashbang()
+	end
 end
 
 function TeamAIDamage:update(unit, t, dt)
@@ -350,14 +354,24 @@ function TeamAIDamage:damage_tase(attack_data)
 		World:effect_manager():fade_kill(self._tase_effect)
 	end
 
+	self._countering_tase = nil
+	self._taser_unit = attack_data.attacker_unit
 	self._tase_effect = World:effect_manager():spawn(self._tase_effect_table)
 
 	if Network:is_server() then
-		if math.random() < 0.25 then
-			self._unit:sound():say("s07x_sin", true)
+		local cooldown_id = "crew_ai_counter_tase"
+
+		if self._taser_unit and managers.player:is_custom_cooldown_not_active("team", cooldown_id) and not self._to_counter_tase_clbk_id then
+			self._to_counter_tase_clbk_id = "TeamAIDamage_to_counter_tase" .. tostring(self._unit:key())
+
+			managers.enemy:add_delayed_clbk(self._to_counter_tase_clbk_id, callback(self, self, "clbk_to_counter_tase"), TimerManager:game():time() + self._char_dmg_tweak.TASED_TIME * 0.1)
 		end
 
 		if not self._to_incapacitated_clbk_id then
+			if math.random() < 0.25 then
+				self._unit:sound():say("s07x_sin", true)
+			end
+
 			self._to_incapacitated_clbk_id = "TeamAIDamage_to_incapacitated" .. tostring(self._unit:key())
 
 			managers.enemy:add_delayed_clbk(self._to_incapacitated_clbk_id, callback(self, self, "clbk_exit_to_incapacitated"), TimerManager:game():time() + self._char_dmg_tweak.TASED_TIME)
@@ -371,6 +385,40 @@ function TeamAIDamage:damage_tase(attack_data)
 	end
 
 	return damage_info
+end
+
+function TeamAIDamage:give_shock_to_taser_no_damage()
+	local taser_unit = self._taser_unit
+	local char_dmg_ext = alive(taser_unit) and taser_unit:character_damage()
+
+	if not char_dmg_ext or not char_dmg_ext.force_hurt or char_dmg_ext:dead() then
+		return
+	end
+
+	self._countering_tase = true
+	local pos = mvector3.copy(taser_unit:movement():m_head_pos())
+	local damage_info = {
+		damage = 0,
+		variant = "counter_tased",
+		pos = pos,
+		attack_dir = -taser_unit:movement()._action_common_data.fwd,
+		col_ray = {
+			unit = taser_unit,
+			position = pos
+		},
+		result = {
+			variant = "counter_tased",
+			type = "counter_tased"
+		}
+	}
+
+	char_dmg_ext:force_hurt(damage_info)
+
+	local sound_ext = taser_unit:sound()
+
+	if sound_ext then
+		sound_ext:play("tase_counter_attack", nil, true)
+	end
 end
 
 function TeamAIDamage:damage_dot(attack_data)
@@ -520,11 +568,48 @@ function TeamAIDamage:_check_bleed_out()
 
 		if Network:is_server() then
 			managers.groupai:state():report_criminal_downed(self._unit)
+			self:_do_crew_ai_flashbang()
 		end
 
 		self._unit:interaction():set_tweak_data("revive")
 		self._unit:interaction():set_active(true, false)
 		managers.hud:set_mugshot_downed(self._unit:unit_data().mugshot_id)
+	end
+end
+
+function TeamAIDamage:_dyn_load_crew_ai_flashbang(clbk1, clbk2)
+	if not self._crew_ai_flashbang_unit_loaded then
+		managers.dyn_resource:load(Idstring("unit"), Idstring(tweak_data.blackmarket.projectiles.concussion.unit), managers.dyn_resource.DYN_RESOURCES_PACKAGE, clbk1)
+
+		self._crew_ai_flashbang_unit_loaded = true
+	end
+
+	if not self._crew_ai_flashbang_sprint_unit_loaded then
+		managers.dyn_resource:load(Idstring("unit"), Idstring(tweak_data.blackmarket.projectiles.concussion.sprint_unit), managers.dyn_resource.DYN_RESOURCES_PACKAGE, clbk2)
+
+		self._crew_ai_flashbang_sprint_unit_loaded = true
+	end
+end
+
+function TeamAIDamage:_do_crew_ai_flashbang()
+	local cooldown_id = "crew_ai_flashbang"
+
+	if managers.player:is_custom_cooldown_not_active("team", cooldown_id) then
+		if not self._crew_ai_flashbang_unit_loaded or not self._crew_ai_flashbang_sprint_unit_loaded then
+			debug_pause_unit(self._unit, "_do_crew_ai_flashbang: Unit, Sprint", self._crew_ai_flashbang_unit_loaded, self._crew_ai_flashbang_sprint_unit_loaded)
+
+			return
+		end
+
+		print("[TeamAIDamage:_do_crew_ai_flashbang] I THROW CONCUSSION NOW!")
+		ProjectileBase.throw_projectile("concussion", self._unit:movement():m_pos() + math.UP * 100, math.UP * 0.1)
+
+		local cooldown = managers.player:crew_ability_upgrade_value(cooldown_id, tweak_data.upgrades.values.team.crew_ai_flashbang[1][1])
+
+		managers.player:start_custom_cooldown("team", cooldown_id, cooldown)
+		print("[TeamAIDamage:_do_crew_ai_flashbang] Fired! Cooldown:", cooldown)
+	else
+		print("[TeamAIDamage:_do_crew_ai_flashbang] Still on cooldown:", managers.player:get_custom_cooldown_left("team", cooldown_id) or 0)
 	end
 end
 
@@ -1135,6 +1220,8 @@ function TeamAIDamage:on_tase_ended(force_recovery)
 		World:effect_manager():fade_kill(self._tase_effect)
 	end
 
+	self._taser_unit = nil
+
 	if force_recovery or self._to_incapacitated_clbk_id then
 		self._regenerate_t = TimerManager:game():time() + self._char_dmg_tweak.REGENERATE_TIME
 
@@ -1175,6 +1262,21 @@ function TeamAIDamage:clbk_exit_to_incapacitated()
 	end
 end
 
+function TeamAIDamage:clbk_to_counter_tase()
+	self:give_shock_to_taser_no_damage()
+
+	if self._countering_tase then
+		local cooldown_id = "crew_ai_counter_tase"
+		local cooldown = managers.player:crew_ability_upgrade_value(cooldown_id, tweak_data.upgrades.values.team.crew_ai_counter_tase[1][1])
+
+		managers.player:start_custom_cooldown("team", cooldown_id, cooldown)
+
+		self._to_incapacitated_prevent = true
+	end
+
+	self._to_counter_tase_clbk_id = nil
+end
+
 function TeamAIDamage:on_incapacitated()
 	if self:_cannot_take_damage() then
 		return
@@ -1188,6 +1290,7 @@ function TeamAIDamage:_on_incapacitated()
 		World:effect_manager():fade_kill(self._tase_effect)
 
 		self._tase_effect = nil
+		self._taser_unit = nil
 	end
 
 	if self._to_incapacitated_clbk_id then
@@ -1241,6 +1344,18 @@ end
 
 function TeamAIDamage:pre_destroy()
 	self:_clear_damage_transition_callbacks()
+
+	if self._crew_ai_flashbang_unit_loaded then
+		managers.dyn_resource:unload(Idstring("unit"), Idstring(tweak_data.blackmarket.projectiles.concussion.unit), DynamicResourceManager.DYN_RESOURCES_PACKAGE, nil)
+
+		self._crew_ai_flashbang_unit_loaded = false
+	end
+
+	if self._crew_ai_flashbang_sprint_unit_loaded then
+		managers.dyn_resource:unload(Idstring("unit"), Idstring(tweak_data.blackmarket.projectiles.concussion.sprint_unit), DynamicResourceManager.DYN_RESOURCES_PACKAGE, nil)
+
+		self._crew_ai_flashbang_sprint_unit_loaded = false
+	end
 end
 
 function TeamAIDamage:_cannot_take_damage()

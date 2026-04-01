@@ -9,7 +9,9 @@ VehicleOperatorUnitElement.ACTIONS = {
 	"damage",
 	"activate",
 	"deactivate",
-	"block"
+	"block",
+	"enable_player_exit",
+	"disable_player_exit"
 }
 
 table.list_append(VehicleOperatorUnitElement.ACTIONS, {

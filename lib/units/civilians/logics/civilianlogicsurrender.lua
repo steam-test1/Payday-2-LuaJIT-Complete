@@ -462,6 +462,12 @@ function CivilianLogicSurrender.on_alert(data, alert_data)
 		scare_modifier = scare_modifier * 4
 	end
 
+	if data.is_tied then
+		local delta_t = data.t - (my_data.last_upd_t or data.t)
+		my_data.scare_meter = math.max(0, my_data.scare_meter - delta_t)
+		my_data.last_upd_t = data.t
+	end
+
 	my_data.scare_meter = math.min(my_data.scare_max, my_data.scare_meter + scare_modifier)
 
 	if my_data.scare_meter == my_data.scare_max and data.t - my_data.state_enter_t > 5 then

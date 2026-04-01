@@ -281,6 +281,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_x_holt_crew()
 	self:_init_data_m60_crew()
 	self:_init_data_r700_crew()
+	self:_init_data_welrod_crew()
 	self:_init_ranc_heavy_machine_gun()
 	self:_precalculate_values()
 end
@@ -843,11 +844,11 @@ function WeaponTweakData:_init_data_saiga_npc()
 	self.saiga_npc.categories = clone(self.saiga.categories)
 	self.saiga_npc.sounds.prefix = "saiga_npc"
 	self.saiga_npc.use_data.selection_index = SELECTION.PRIMARY
-	self.saiga_npc.DAMAGE = 3
+	self.saiga_npc.DAMAGE = 2
 	self.saiga_npc.muzzleflash = "effects/payday2/particles/weapons/762_auto"
 	self.saiga_npc.shell_ejection = "effects/payday2/particles/weapons/shells/shell_slug"
 	self.saiga_npc.auto.fire_rate = 0.14
-	self.saiga_npc.CLIP_AMMO_MAX = 7
+	self.saiga_npc.CLIP_AMMO_MAX = 20
 	self.saiga_npc.NR_CLIPS_MAX = 10
 	self.saiga_npc.hold = "rifle"
 	self.saiga_npc.alert_size = 4500
@@ -5645,6 +5646,24 @@ function WeaponTweakData:_init_data_r700_crew()
 	self.r700_crew.FIRE_MODE = "single"
 end
 
+function WeaponTweakData:_init_data_welrod_crew()
+	self.welrod_crew.categories = clone(self.welrod.categories)
+	self.welrod_crew.sounds.prefix = "welrod_npc"
+	self.welrod_crew.use_data.selection_index = SELECTION.SECONDARY
+	self.welrod_crew.DAMAGE = 18
+	self.welrod_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.welrod_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.welrod_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_welrod"
+	self.welrod_crew.CLIP_AMMO_MAX = 10
+	self.welrod_crew.NR_CLIPS_MAX = 4
+	self.welrod_crew.pull_magazine_during_reload = "pistol"
+	self.welrod_crew.auto.fire_rate = 1.2
+	self.welrod_crew.hold = "pistol"
+	self.welrod_crew.alert_size = 5000
+	self.welrod_crew.suppression = 1
+	self.welrod_crew.FIRE_MODE = "single"
+end
+
 function WeaponTweakData:_init_data_player_weapons(tweak_data)
 	local autohit_rifle_default, autohit_pistol_default, autohit_shotgun_default, autohit_lmg_default, autohit_snp_default, autohit_smg_default, autohit_minigun_default, aim_assist_rifle_default, aim_assist_pistol_default, aim_assist_shotgun_default, aim_assist_lmg_default, aim_assist_snp_default, aim_assist_smg_default, aim_assist_minigun_default = nil
 
@@ -6587,6 +6606,7 @@ function WeaponTweakData:_init_new_weapons(weapon_data)
 	self:_init_x_holt(weapon_data)
 	self:_init_m60(weapon_data)
 	self:_init_r700(weapon_data)
+	self:_init_welrod(weapon_data)
 end
 
 function WeaponTweakData:_init_new_m4(weapon_data)
@@ -28270,7 +28290,7 @@ function WeaponTweakData:_init_x_judge(weapon_data)
 		selection_index = SELECTION.PRIMARY
 	}
 	self.x_judge.DAMAGE = 4
-	self.x_judge.damage_falloff = FALLOFF_TEMPLATE.AKI_SHOTGUN_FALL_HIGH
+	self.x_judge.damage_falloff = FALLOFF_TEMPLATE.AKI_SHOTGUN_FALL_VERYHIGH
 	self.x_judge.damage_near = 2000
 	self.x_judge.damage_far = 3000
 	self.x_judge.rays = 10
@@ -30983,6 +31003,118 @@ function WeaponTweakData:_init_r700(weapon_data)
 	}
 end
 
+function WeaponTweakData:_init_welrod(weapon_data)
+	self.welrod = {
+		categories = {
+			"pistol"
+		},
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.welrod.sounds.fire = "welrod_fire"
+	self.welrod.sounds.enter_steelsight = "pistol_steel_sight_enter"
+	self.welrod.sounds.leave_steelsight = "pistol_steel_sight_exit"
+	self.welrod.sounds.dryfire = "secondary_dryfire"
+	self.welrod.sounds.magazine_empty = "wp_pistol_slide_lock"
+	self.welrod.timers = {
+		reload_not_empty = 3.33,
+		reload_empty = 3.33,
+		unequip = 0.5,
+		equip = 0.35
+	}
+	self.welrod.name_id = "bm_w_welrod"
+	self.welrod.desc_id = "bm_w_welrod_desc"
+	self.welrod.description_id = "des_welrod"
+	self.welrod.global_value = "wel"
+	self.welrod.texture_bundle_folder = "wel"
+	self.welrod.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
+	self.welrod.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
+	self.welrod.shell_ejection = "effects/payday2/particles/weapons/shells/shell_welrod"
+	self.welrod.use_data = {
+		selection_index = SELECTION.SECONDARY
+	}
+	self.welrod.can_shoot_through_enemy = true
+	self.welrod.DAMAGE = 1
+	self.welrod.damage_falloff = {
+		far_falloff = 2400,
+		far_multiplier = 0.5,
+		near_multiplier = 1.25,
+		optimal_distance = 800,
+		optimal_range = 800,
+		near_falloff = 400
+	}
+	self.welrod.CLIP_AMMO_MAX = 5
+	self.welrod.NR_CLIPS_MAX = 5
+	self.welrod.AMMO_MAX = self.welrod.CLIP_AMMO_MAX * self.welrod.NR_CLIPS_MAX
+	self.welrod.AMMO_PICKUP = self:_pickup_chance(self.welrod.AMMO_MAX, PICKUP.SNIPER_LOW_DAMAGE)
+	self.welrod.FIRE_MODE = "single"
+	self.welrod.fire_mode_data = {
+		fire_rate = 2.233
+	}
+	self.welrod.single = {
+		fire_rate = 2.233
+	}
+	self.welrod.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight
+	}
+	self.welrod.kick = {
+		standing = self.glock_17.kick.standing
+	}
+	self.welrod.kick.crouching = self.welrod.kick.standing
+	self.welrod.kick.steelsight = self.welrod.kick.standing
+	self.welrod.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.welrod.crosshair.standing.offset = 0.1
+	self.welrod.crosshair.standing.moving_offset = 0.4
+	self.welrod.crosshair.standing.kick_offset = 0.3
+	self.welrod.crosshair.crouching.offset = 0.1
+	self.welrod.crosshair.crouching.moving_offset = 0.5
+	self.welrod.crosshair.crouching.kick_offset = 0.2
+	self.welrod.crosshair.steelsight.hidden = true
+	self.welrod.crosshair.steelsight.offset = 0
+	self.welrod.crosshair.steelsight.moving_offset = 0
+	self.welrod.crosshair.steelsight.kick_offset = 0.1
+	self.welrod.shake = {
+		fire_multiplier = 1,
+		fire_steelsight_multiplier = -1
+	}
+	self.welrod.autohit = weapon_data.autohit_pistol_default
+	self.welrod.aim_assist = weapon_data.aim_assist_pistol_default
+	self.welrod.weapon_hold = "welrod"
+	self.welrod.animations = {
+		equip_id = "equip_welrod",
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
+	}
+	self.welrod.panic_suppression_chance = 0.2
+	self.welrod.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 123,
+		alert_size = 7,
+		spread = 18,
+		spread_moving = 18,
+		recoil = 4,
+		value = 10,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 15,
+		concealment = 27
+	}
+	self.welrod.stats_modifiers = {
+		damage = 2
+	}
+end
+
 function WeaponTweakData:_create_table_structure()
 	self.c45_npc = {
 		usage = "is_pistol",
@@ -32590,6 +32722,12 @@ function WeaponTweakData:_create_table_structure()
 	self.ranc_heavy_machine_gun = {
 		usage = "is_pistol",
 		anim_usage = "is_pistol",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.welrod_crew = {
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}

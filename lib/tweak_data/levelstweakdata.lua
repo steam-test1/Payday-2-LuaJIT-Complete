@@ -4,8 +4,6 @@ LevelsTweakData.LevelType = {
 	Russia = "russia",
 	Zombie = "zombie",
 	Murkywater = "murkywater",
-	Federales = "federales",
-	Federales = "federales",
 	Federales = "federales"
 }
 
@@ -15,16 +13,12 @@ function LevelsTweakData:init()
 	local zombie = LevelsTweakData.LevelType.Zombie
 	local murkywater = LevelsTweakData.LevelType.Murkywater
 	local federales = LevelsTweakData.LevelType.Federales
-	local federales = LevelsTweakData.LevelType.Federales
-	local federales = LevelsTweakData.LevelType.Federales
 	self.ai_groups = {
 		default = america,
 		america = america,
 		russia = russia,
 		zombie = zombie,
 		murkywater = murkywater,
-		federales = federales,
-		federales = federales,
 		federales = federales
 	}
 	self.framing_frame_1 = {

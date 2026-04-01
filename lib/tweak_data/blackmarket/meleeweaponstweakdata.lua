@@ -3123,7 +3123,7 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 		melee_damage_delay = 0.13333333333333333,
 		type = "blunt",
 		menu_scene_anim = "menu",
-		anim_global_param = "melee_machete",
+		anim_global_param = "melee_axe",
 		unit = "units/pd2_dlc_fun/weapons/wpn_fps_mel_funder_strike/wpn_fps_mel_funder_strike",
 		info_id = "bm_melee_funder_strike_info",
 		third_unit = "units/pd2_dlc_fun/weapons/wpn_tps_mel_funder_strike/wpn_tps_mel_funder_strike",

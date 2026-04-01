@@ -803,6 +803,7 @@ function InstancesLayer:build_panel(notebook, settings)
 
 	self._sizer:add(instances_sizer, 3, 0, "EXPAND")
 
+	local toolbar_sizer = EWS:BoxSizer("HORIZONTAL")
 	local toolbar = EWS:ToolBar(self._ews_panel, "", "TB_FLAT,TB_NODIVIDER")
 
 	toolbar:add_tool("OPEN", "Open world file", CoreEws.image_path("folder_open_16x16.png"), "Open selected instance world")
@@ -811,8 +812,20 @@ function InstancesLayer:build_panel(notebook, settings)
 	toolbar:connect("RENAME", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "_on_gui_rename_instance"), nil)
 	toolbar:add_tool("DELETE", "Delete instance", CoreEws.image_path("toolbar\\delete_16x16.png"), "Delete instance")
 	toolbar:connect("DELETE", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "_on_gui_delete_instance"), nil)
+	toolbar_sizer:add(toolbar, 0, 1, "EXPAND,BOTTOM")
+
+	local divider = EWS:StaticText(self._ews_panel, " ", 0, "ALIGN_CENTRE")
+
+	toolbar_sizer:add(divider, 1, 0, "ALIGN_CENTER_VERTICAL")
+
+	local right_toolbar = EWS:ToolBar(self._ews_panel, "", "TB_FLAT,TB_NODIVIDER")
+
+	right_toolbar:add_tool("REINDEX", "Reindex Instances", CoreEws.image_path("toolbar\\refresh_16x16.png"), "Reindex Instances")
+	right_toolbar:connect("REINDEX", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "_on_gui_reindex_instances"), nil)
+	toolbar_sizer:add(right_toolbar, 0, 1, "EXPAND,BOTTOM")
 	toolbar:realize()
-	instances_sizer:add(toolbar, 0, 1, "EXPAND,BOTTOM")
+	right_toolbar:realize()
+	instances_sizer:add(toolbar_sizer, 0, 1, "EXPAND,BOTTOM")
 
 	self._instances_listbox = EWS:ListBox(self._ews_panel, "", "LB_EXTENDED,LB_HSCROLL,LB_NEEDED_SB,LB_SORT")
 
@@ -900,8 +913,10 @@ function InstancesLayer:_add_predefined_instances_notebook_pages()
 	local style = "LC_REPORT,LC_NO_HEADER,LC_SORT_ASCENDING,LC_SINGLE_SEL"
 	self._predefined_instances_notebook_lists = {}
 	local predefined_data_by_category = self:_predefined_data_by_category()
+	local sorted_categories = table.map_keys(predefined_data_by_category)
 
-	for c, names in pairs(predefined_data_by_category) do
+	for _, category_name in ipairs(sorted_categories) do
+		local names = predefined_data_by_category[category_name]
 		local panel = EWS:Panel(self._predefined_instances_notebook, "", "TAB_TRAVERSAL")
 		local instance_sizer = EWS:BoxSizer("VERTICAL")
 
@@ -932,7 +947,7 @@ function InstancesLayer:_add_predefined_instances_notebook_pages()
 			category = c
 		})
 
-		local page_name = c
+		local page_name = category_name
 		self._predefined_instances_notebook_lists[page_name] = {
 			instances = instances,
 			filter = instance_filter
@@ -1058,6 +1073,29 @@ end
 function InstancesLayer:_on_gui_delete_instance()
 	if #self._selected_instances > 0 then
 		self:delete_all_selected_instances()
+	end
+end
+
+function InstancesLayer:_on_gui_reindex_instances()
+	if EWS:MessageDialog(Global.frame_panel, "This will change the indexes for all instances!", "Are you sure!", "YES_NO,NO_DEFAULT,ICON_EXCLAMATION"):show_modal() == "ID_NO" then
+		return
+	end
+
+	local instance_data = managers.world_instance:instance_data()
+
+	if not instance_data then
+		return
+	end
+
+	local current_index = 0
+
+	for _, data in ipairs(instance_data) do
+		local id, amount = managers.world_instance:check_highest_id({
+			folder = data.folder
+		})
+		data.start_index = current_index
+		data.index_size = id + 10
+		current_index = current_index + data.index_size
 	end
 end
 

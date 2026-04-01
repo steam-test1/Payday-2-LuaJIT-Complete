@@ -1225,6 +1225,7 @@ function PlayerTweakData:_init_new_stances()
 	self:_init_x_holt()
 	self:_init_m60()
 	self:_init_r700()
+	self:_init_welrod()
 end
 
 function PlayerTweakData:_init_hs2000()
@@ -6810,4 +6811,30 @@ function PlayerTweakData:_init_r700()
 	self.stances.r700.crouched.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
 	self.stances.r700.crouched.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
 	self.stances.r700.crouched.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -30, 0)
+end
+
+function PlayerTweakData:_init_welrod()
+	self.stances.welrod = deep_clone(self.stances.default)
+	local pivot_shoulder_translation = Vector3(8.44539, 46.3056, -4.95)
+	local pivot_shoulder_rotation = Rotation(0.100026, -0.68821, 0.629665)
+	local pivot_head_translation = Vector3(6.5, 32, -3)
+	local pivot_head_rotation = Rotation(0, 0, 0)
+	self.stances.welrod.standard.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
+	self.stances.welrod.standard.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
+	self.stances.welrod.standard.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -36, 0)
+	local pivot_head_translation = Vector3(0, 27.62, 0)
+	local pivot_head_rotation = Rotation(0, 0, 0)
+	self.stances.welrod.steelsight.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
+	self.stances.welrod.steelsight.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
+	self.stances.welrod.steelsight.zoom_fov = false
+	self.stances.welrod.steelsight.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -36, 0)
+	self.stances.welrod.steelsight.vel_overshot.yaw_neg = 5
+	self.stances.welrod.steelsight.vel_overshot.yaw_pos = -5
+	self.stances.welrod.steelsight.vel_overshot.pitch_neg = -12
+	self.stances.welrod.steelsight.vel_overshot.pitch_pos = 12
+	local pivot_head_translation = Vector3(5.5, 31, -4)
+	local pivot_head_rotation = Rotation(0, 0, 0)
+	self.stances.welrod.crouched.shoulders.translation = pivot_head_translation - pivot_shoulder_translation:rotate_with(pivot_shoulder_rotation:inverse()):rotate_with(pivot_head_rotation)
+	self.stances.welrod.crouched.shoulders.rotation = pivot_head_rotation * pivot_shoulder_rotation:inverse()
+	self.stances.welrod.crouched.vel_overshot.pivot = pivot_shoulder_translation + Vector3(0, -36, 0)
 end

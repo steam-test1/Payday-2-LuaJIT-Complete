@@ -347,7 +347,7 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 		throwable = true,
 		texture_bundle_folder = "born",
 		dlc = "born",
-		max_amount = 3,
+		max_amount = 6,
 		anim_global_param = "projectile_four",
 		throw_allowed_expire_t = 0.15,
 		expire_t = 1.1,

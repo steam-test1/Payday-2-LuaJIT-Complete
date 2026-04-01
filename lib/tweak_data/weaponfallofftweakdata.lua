@@ -137,50 +137,47 @@ function WeaponFalloffTemplate.setup_weapon_falloff_templates()
 			optimal_distance = 850,
 			optimal_range = 850,
 			near_falloff = 425
+		},
+		PISTOL_FALL_AUTO = {
+			far_falloff = 1500,
+			far_multiplier = 0.75,
+			near_multiplier = 1.1,
+			optimal_distance = 500,
+			optimal_range = 500,
+			near_falloff = 250
+		},
+		PISTOL_FALL_LOW = {
+			far_falloff = 1800,
+			far_multiplier = 0.75,
+			near_multiplier = 1.1,
+			optimal_distance = 600,
+			optimal_range = 600,
+			near_falloff = 300
+		},
+		PISTOL_FALL_MEDIUM = {
+			far_falloff = 2100,
+			far_multiplier = 0.75,
+			near_multiplier = 1.1,
+			optimal_distance = 700,
+			optimal_range = 700,
+			near_falloff = 350
+		},
+		PISTOL_FALL_HIGH = {
+			far_falloff = 2400,
+			far_multiplier = 0.75,
+			near_multiplier = 1.1,
+			optimal_distance = 800,
+			optimal_range = 800,
+			near_falloff = 400
+		},
+		PISTOL_FALL_VERYHIGH = {
+			far_falloff = 2550,
+			far_multiplier = 0.75,
+			near_multiplier = 1.1,
+			optimal_distance = 850,
+			optimal_range = 850,
+			near_falloff = 425
 		}
-	}
-	weapon_falloff_templates.AKI_SHOTGUN_FALL_LOW = deep_clone(weapon_falloff_templates.SHOTGUN_FALL_PRIMARY_LOW)
-	weapon_falloff_templates.AKI_SHOTGUN_FALL_MEDIUM = deep_clone(weapon_falloff_templates.SHOTGUN_FALL_PRIMARY_MEDIUM)
-	weapon_falloff_templates.AKI_SHOTGUN_FALL_HIGH = deep_clone(weapon_falloff_templates.SHOTGUN_FALL_PRIMARY_HIGH)
-	weapon_falloff_templates.PISTOL_FALL_AUTO = {
-		far_falloff = 1500,
-		far_multiplier = 0.75,
-		near_multiplier = 1.1,
-		optimal_distance = 500,
-		optimal_range = 500,
-		near_falloff = 250
-	}
-	weapon_falloff_templates.PISTOL_FALL_LOW = {
-		far_falloff = 1800,
-		far_multiplier = 0.75,
-		near_multiplier = 1.1,
-		optimal_distance = 600,
-		optimal_range = 600,
-		near_falloff = 300
-	}
-	weapon_falloff_templates.PISTOL_FALL_MEDIUM = {
-		far_falloff = 2100,
-		far_multiplier = 0.75,
-		near_multiplier = 1.1,
-		optimal_distance = 700,
-		optimal_range = 700,
-		near_falloff = 350
-	}
-	weapon_falloff_templates.PISTOL_FALL_HIGH = {
-		far_falloff = 2400,
-		far_multiplier = 0.75,
-		near_multiplier = 1.1,
-		optimal_distance = 800,
-		optimal_range = 800,
-		near_falloff = 400
-	}
-	weapon_falloff_templates.PISTOL_FALL_VERYHIGH = {
-		far_falloff = 2550,
-		far_multiplier = 0.75,
-		near_multiplier = 1.1,
-		optimal_distance = 850,
-		optimal_range = 850,
-		near_falloff = 425
 	}
 	weapon_falloff_templates.SMG_FALL_LOW = deep_clone(weapon_falloff_templates.AKI_SMG_FALL_LOW)
 	weapon_falloff_templates.SMG_FALL_MEDIUM = deep_clone(weapon_falloff_templates.AKI_SMG_FALL_MEDIUM)
@@ -225,6 +222,10 @@ function WeaponFalloffTemplate.setup_weapon_falloff_templates()
 		optimal_range = 1500,
 		near_falloff = 0
 	}
+	weapon_falloff_templates.AKI_SHOTGUN_FALL_LOW = deep_clone(weapon_falloff_templates.SHOTGUN_FALL_SECONDARY_LOW)
+	weapon_falloff_templates.AKI_SHOTGUN_FALL_MEDIUM = deep_clone(weapon_falloff_templates.SHOTGUN_FALL_SECONDARY_MEDIUM)
+	weapon_falloff_templates.AKI_SHOTGUN_FALL_HIGH = deep_clone(weapon_falloff_templates.SHOTGUN_FALL_SECONDARY_HIGH)
+	weapon_falloff_templates.AKI_SHOTGUN_FALL_VERYHIGH = deep_clone(weapon_falloff_templates.SHOTGUN_FALL_SECONDARY_VERYHIGH)
 
 	return weapon_falloff_templates
 end

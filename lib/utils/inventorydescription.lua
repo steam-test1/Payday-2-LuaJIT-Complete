@@ -883,7 +883,7 @@ function WeaponDescription._get_stats(name, category, slot, blueprint)
 		if equipped_mods then
 			silencer = managers.weapon_factory:has_perk("silencer", factory_id, equipped_mods)
 			single_mod = managers.weapon_factory:has_perk("fire_mode_single", factory_id, equipped_mods)
-			auto_mod = managers.weapon_factory:has_perk("fire_mode_auto", factory_id, equipped_mods)
+			auto_mod = managers.weapon_factory:has_perk("fire_mode_auto", factory_id, equipped_mods) or managers.weapon_factory:has_perk("fire_mode_burst", factory_id, equipped_mods)
 		end
 	end
 

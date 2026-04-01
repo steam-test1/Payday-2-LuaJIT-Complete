@@ -188,7 +188,7 @@ function CoreParticleEditor:create_main_frame()
 	file_menu:append_item("OPEN", "Open effect...", "")
 	file_menu:append_item("SAVE", "Save\tctrl-s", "")
 	file_menu:append_item("SAVE_AS", "Save As...", "")
-	file_menu:append_item("CLOSE_EFFECT", "Close", "")
+	file_menu:append_item("CLOSE_EFFECT", "Close\tctrl-w", "")
 	file_menu:append_item("EXIT", "Exit", "")
 	menu_bar:append(file_menu, "File")
 
@@ -208,7 +208,7 @@ function CoreParticleEditor:create_main_frame()
 	local gizmo_menu = EWS:Menu("")
 	self._gizmo_menu = gizmo_menu
 
-	gizmo_menu:append_item("MOVE_TO_ORIGO", "Move Effect Gizmo To Origin")
+	gizmo_menu:append_item("MOVE_TO_ORIGO", "Move Effect Gizmo To Origo")
 	gizmo_menu:append_item("MOVE_TO_CAMERA", "Move Effect Gizmo In Front Of Camera")
 	gizmo_menu:append_item("MOVE_TO_PLAYER", "Move Effect Gizmo To Player")
 	gizmo_menu:append_separator()
@@ -216,7 +216,12 @@ function CoreParticleEditor:create_main_frame()
 	gizmo_menu:append_radio_item("PARENT_JUMP", "Move Effect Gizmo In Jump Pattern")
 	gizmo_menu:append_radio_item("PARENT_SMOOTH", "Move Effect Gizmo In Smooth Pattern")
 	gizmo_menu:append_radio_item("PARENT_CIRCLE", "Move Effect Gizmo In Circle Pattern")
+	gizmo_menu:append_radio_item("PARENT_CIRCLE_INV", "Move Effect Gizmo In Backwards Circle Pattern")
 	gizmo_menu:set_checked("PARENT_NO_MOVE", true)
+	gizmo_menu:append_separator()
+	gizmo_menu:append_item("SPEED_SLOW", "Slow motion speed")
+	gizmo_menu:append_item("SPEED_MEDIUM", "Medium motion speed")
+	gizmo_menu:append_item("SPEED_FAST", "Fast motion speed")
 	gizmo_menu:append_separator()
 	gizmo_menu:append_item("ZERO_ROTATION", "Zero Effect Gizmo Rotation")
 	gizmo_menu:append_item("SET_POSITIVE_Y", "Effect Gizmo Rotation Z To Positive Y")
@@ -262,7 +267,11 @@ function CoreParticleEditor:create_main_frame()
 	self._main_frame:connect("PARENT_NO_MOVE", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_automove_gizmo_no_move"), "")
 	self._main_frame:connect("PARENT_JUMP", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_automove_gizmo_jump"), "")
 	self._main_frame:connect("PARENT_SMOOTH", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_automove_gizmo_smooth"), "")
-	self._main_frame:connect("PARENT_CIRCLE", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_automove_gizmo_circle"), "")
+	self._main_frame:connect("PARENT_CIRCLE", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_automove_gizmo_circle", true), "")
+	self._main_frame:connect("PARENT_CIRCLE_INV", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_automove_gizmo_circle"), "")
+	self._main_frame:connect("SPEED_SLOW", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_automove_speed", 50), "")
+	self._main_frame:connect("SPEED_MEDIUM", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_automove_speed", 300), "")
+	self._main_frame:connect("SPEED_FAST", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_automove_speed", 900), "")
 	self._main_frame:connect("DEBUG_DRAWING", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_debug_draw"), "")
 	self._main_frame:connect("EFFECT_STATS", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_effect_stats"), "")
 	self._main_frame:connect("SHOW_STACK_OVERVIEW", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_show_stack_overview"), "")
@@ -476,7 +485,7 @@ function CoreParticleEditor:on_automove_gizmo_smooth()
 	self._gizmo_accum = 0
 end
 
-function CoreParticleEditor:on_automove_gizmo_circle()
+function CoreParticleEditor:on_automove_gizmo_circle(inverted)
 	self._gizmo_menu:set_checked("PARENT_NO_MOVE", false)
 	self._gizmo_menu:set_checked("PARENT_SMOOTH", false)
 	self._gizmo_menu:set_checked("PARENT_JUMP", false)
@@ -484,6 +493,15 @@ function CoreParticleEditor:on_automove_gizmo_circle()
 	self._gizmo_movement = "CIRCLE"
 	self._gizmo_anchor = self:effect_gizmo():position()
 	self._gizmo_accum = 0
+	self._gizmo_inverted = inverted
+end
+
+function CoreParticleEditor:on_automove_speed(speed)
+	self._gizmo_menu:set_checked("SPEED_SLOW", false)
+	self._gizmo_menu:set_checked("SPEED_MEDIUM", false)
+	self._gizmo_menu:set_checked("SPEED_FAST", false)
+
+	self._gizmo_speed = speed
 end
 
 function CoreParticleEditor:on_move_gizmo_to_origo()
@@ -570,14 +588,21 @@ function CoreParticleEditor:update(t, dt)
 		cur_effect:update(t, dt)
 	end
 
+	local speed = (self._gizmo_speed or 1) * dt
+
 	if self._gizmo_movement == "SMOOTH" then
 		local gizmo = self:effect_gizmo()
-		self._gizmo_accum = self._gizmo_accum + dt * 360 / 4
+		self._gizmo_accum = self._gizmo_accum + dt * speed
 		local a = self._gizmo_accum
 		local r = 500
 
 		gizmo:set_position(self._gizmo_anchor + Vector3(r, 0, 0) * math.cos(a) + Vector3(0, r, 0) * math.sin(a) + Vector3(0, 0, r / 5) * math.cos(5 * a))
-		gizmo:set_rotation(Rotation(Vector3(0, 0, 1), a) * Rotation(Vector3(1, 0, 0), 45 * math.cos(5 * a)) + Rotation(Vector3(1, 0, 0), -90))
+
+		local rot1 = Rotation(Vector3(0, 0, 1), a)
+		local rot2 = Rotation(Vector3(1, 0, 0), 45 * math.cos(5 * a))
+		local rot3 = Rotation(Vector3(1, 0, 0), -90)
+
+		gizmo:set_rotation(rot1)
 	elseif self._gizmo_movement == "JUMP" then
 		local gizmo = self:effect_gizmo()
 		self._gizmo_accum = self._gizmo_accum + dt
@@ -587,9 +612,9 @@ function CoreParticleEditor:update(t, dt)
 		gizmo:set_position(self._gizmo_anchor + Vector3(100 * s, 0, 0))
 	elseif self._gizmo_movement == "CIRCLE" then
 		local gizmo = self:effect_gizmo()
-		self._gizmo_accum = self._gizmo_accum + dt * 360 / 16
+		self._gizmo_accum = self._gizmo_accum + speed * (self._gizmo_inverted and -1 or 1)
 		local a = self._gizmo_accum
-		local r = 500
+		local r = 1000
 
 		gizmo:set_position(self._gizmo_anchor + Vector3(r, 0, 0) * math.cos(a) + Vector3(0, r, 0) * math.sin(a))
 		gizmo:set_rotation(Rotation(Vector3(0, 0, 1), a) * Rotation(Vector3(1, 0, 0), -90))

@@ -4887,7 +4887,7 @@ function BlackMarketManager:get_weapon_icon_path(weapon_id, cosmetics)
 		if bundle_folder then
 			guis_catalog = guis_catalog .. "dlcs/"
 
-			if use_cosmetics and not cosmetics.texture_bundle_folder_is_short then
+			if use_cosmetics and weapon_tweak.texture_bundle_folder_is_short then
 				guis_catalog = guis_catalog .. "cash/safes/"
 			end
 
@@ -10001,7 +10001,7 @@ function BlackMarketManager:accuracy_addend(name, categories, spread_index, sile
 
 		if fire_mode == "single" and table.contains_any(tweak_data.upgrades.sharpshooter_categories, categories) then
 			index = index + managers.player:upgrade_value("weapon", "single_spread_index_addend", 0)
-		elseif fire_mode == "auto" then
+		elseif fire_mode == "auto" or fire_mode == "burst" then
 			index = index + managers.player:upgrade_value("weapon", "auto_spread_index_addend", 0)
 		end
 
@@ -10040,7 +10040,7 @@ function BlackMarketManager:accuracy_index_addend(name, categories, silencer, cu
 
 	if fire_mode == "single" and table.contains_any(tweak_data.upgrades.sharpshooter_categories, categories) then
 		index = index + managers.player:upgrade_value("weapon", "single_spread_index_addend", 0)
-	elseif fire_mode == "auto" then
+	elseif fire_mode == "auto" or fire_mode == "burst" then
 		index = index + managers.player:upgrade_value("weapon", "auto_spread_index_addend", 0)
 	end
 

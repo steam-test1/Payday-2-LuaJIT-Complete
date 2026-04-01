@@ -1656,6 +1656,10 @@ function PlayerStandard:_check_action_throw_projectile(t, input)
 		self._state_data.projectile_throw_wanted = nil
 		self._state_data.projectile_idle_wanted = nil
 
+		if self._state_data.throwing_projectile then
+			self:_interupt_action_throw_projectile(t)
+		end
+
 		return
 	end
 
@@ -1695,6 +1699,7 @@ function PlayerStandard:_start_action_throw_projectile(t, input)
 	self._state_data.throwing_projectile = true
 	self._state_data.projectile_start_t = nil
 	local projectile_entry = managers.blackmarket:equipped_projectile()
+	local projectile_tweak = tweak_data.blackmarket.projectiles[projectile_entry]
 
 	self:_stance_entered()
 
@@ -1702,12 +1707,12 @@ function PlayerStandard:_start_action_throw_projectile(t, input)
 		self._camera_unit:anim_state_machine():set_global(self._state_data.projectile_global_value, 0)
 	end
 
-	self._state_data.projectile_global_value = tweak_data.blackmarket.projectiles[projectile_entry].anim_global_param or "projectile_frag"
+	self._state_data.projectile_global_value = projectile_tweak.anim_global_param or "projectile_frag"
 
 	self._camera_unit:anim_state_machine():set_global(self._state_data.projectile_global_value, 1)
 
 	local current_state_name = self._camera_unit:anim_state_machine():segment_state(self:get_animation("base"))
-	local throw_allowed_expire_t = tweak_data.blackmarket.projectiles[projectile_entry].throw_allowed_expire_t or 0.15
+	local throw_allowed_expire_t = projectile_tweak.throw_allowed_expire_t or 0.15
 	self._state_data.projectile_throw_allowed_t = t + (current_state_name ~= self:get_animation("projectile_throw_state") and throw_allowed_expire_t or 0)
 
 	if current_state_name == self:get_animation("projectile_throw_state") then
@@ -1749,6 +1754,7 @@ function PlayerStandard:_do_action_throw_projectile(t, input, drop_projectile)
 	self._state_data.throwing_projectile = nil
 	local projectile_entry = managers.blackmarket:equipped_projectile()
 	local projectile_data = tweak_data.blackmarket.projectiles[projectile_entry]
+	self._state_data.projectile_start_t = nil
 	self._state_data.projectile_expire_t = t + projectile_data.expire_t
 	self._state_data.projectile_repeat_expire_t = t + math.min(projectile_data.repeat_expire_t, projectile_data.expire_t)
 
@@ -1766,6 +1772,7 @@ function PlayerStandard:_interupt_action_throw_projectile(t)
 		return
 	end
 
+	self._state_data.projectile_start_t = nil
 	self._state_data.projectile_idle_wanted = nil
 	self._state_data.projectile_expire_t = nil
 	self._state_data.projectile_throw_allowed_t = nil
@@ -4244,7 +4251,7 @@ function PlayerStandard:_check_action_deploy_bipod(t, input)
 		return
 	end
 
-	action_forbidden = self:in_steelsight() or self:_on_zipline() or self:_is_throwing_projectile() or self:_is_meleeing() or self:is_equipping() or self:_changing_weapon()
+	action_forbidden = self:in_steelsight() or self:_on_zipline() or self:_is_throwing_projectile() or self:_is_meleeing() or self:is_equipping() or self:_changing_weapon() or not self._camera_unit:base():is_stance_done()
 
 	if not action_forbidden then
 		local weapon = self._equipped_unit:base()
@@ -4423,6 +4430,10 @@ function PlayerStandard:_update_omniscience(t, dt)
 	end
 
 	local player_m_pos = self._unit:movement():m_pos()
+
+	if not player_m_pos then
+		return
+	end
 
 	if self._moving then
 		if self._state_data.omniscience_pos and omniscience_settings.sense_exit_sq < mvec3_dis_sq(player_m_pos, self._state_data.omniscience_pos) then

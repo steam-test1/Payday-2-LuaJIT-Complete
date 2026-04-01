@@ -25,7 +25,11 @@ local crew_abilities = {
 	"crew_interact",
 	"crew_inspire",
 	"crew_scavenge",
-	"crew_ai_ap_ammo"
+	"crew_ai_ap_ammo",
+	"crew_ai_cable_ties",
+	"crew_ai_flashbang",
+	"crew_ai_counter_strike",
+	"crew_ai_counter_tase"
 }
 
 local function make_fine_text(text)

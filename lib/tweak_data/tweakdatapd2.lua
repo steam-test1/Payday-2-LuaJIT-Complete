@@ -1268,4 +1268,21 @@ function TweakData:_setup_scene_poses()
 			"pool"
 		}
 	}
+	self.scene_environments = {
+		standard = {
+			angle = 0,
+			environment = "environments/env_menu/env_menu",
+			color_grading = "color_matrix"
+		},
+		safe = {
+			angle = -135,
+			environment = "environments/pd2_cash/env_cash_01",
+			color_grading = "color_off"
+		},
+		crafting = {
+			angle = -135,
+			environment = "environments/pd2_cash/env_cash_02",
+			color_grading = "color_off"
+		}
+	}
 end

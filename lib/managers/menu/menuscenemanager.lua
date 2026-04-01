@@ -960,22 +960,7 @@ function MenuSceneManager:_set_up_templates()
 end
 
 function MenuSceneManager:_set_up_environments()
-	self._environments = {
-		standard = {}
-	}
-	self._environments.standard.environment = "environments/env_menu/env_menu"
-	self._environments.standard.color_grading = "color_matrix"
-	self._environments.standard.angle = 0
-	self._environments.safe = {
-		environment = "environments/pd2_cash/env_cash_01",
-		color_grading = "color_off",
-		angle = -135
-	}
-	self._environments.crafting = {
-		environment = "environments/pd2_cash/env_cash_02",
-		color_grading = "color_off",
-		angle = -135
-	}
+	self._environments = tweak_data.scene_environments
 end
 
 function MenuSceneManager:_use_environment(name)

@@ -336,6 +336,24 @@ function HudIconsTweakData:init()
 			18
 		}
 	}
+	self.firemode_burst = {
+		texture = "guis/textures/pd2/hud_fireselector",
+		texture_rect = {
+			52,
+			0,
+			8,
+			18
+		}
+	}
+	self.firemode_burst_locked = {
+		texture = "guis/textures/pd2/hud_fireselector",
+		texture_rect = {
+			72,
+			0,
+			8,
+			18
+		}
+	}
 	self.firemode_volley_auto = {
 		texture = "guis/dlcs/pxp2/textures/pd2/hud_fireselector_volley",
 		texture_rect = {
@@ -11414,6 +11432,10 @@ function HudIconsTweakData:init()
 	self.ability_2 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_abilities")
 	self.ability_3 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_abilities")
 	self.ability_4 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_abilities")
+	self.ability_5 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_abilities")
+	self.ability_6 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_abilities")
+	self.ability_7 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_abilities")
+	self.ability_8 = self:create_next_icon("guis/dlcs/mom/textures/pd2/ai_abilities")
 
 	self:create_grid_atlas("guis/dlcs/mom/textures/pd2/ai_skills", 512, 512, 128, 128)
 

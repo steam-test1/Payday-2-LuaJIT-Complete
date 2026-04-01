@@ -207,8 +207,6 @@ function TradeManager:update(t, dt)
 	self._pause_t = math.max(0, self._pause_t - dt)
 
 	if (self._trade_countdown or is_auto_assault_ai_trade) and is_trade_allowed and self._pause_t <= 0 and not managers.player:_is_all_in_custody() then
-		print("so ")
-
 		local trade = self:get_criminal_to_trade(true)
 		local is_ai_trade_possible = managers.groupai:state():is_ai_trade_possible()
 
@@ -222,8 +220,6 @@ function TradeManager:update(t, dt)
 			if is_ai_trade_possible then
 				self:clbk_begin_hostage_trade_dialog(1)
 			else
-				print("so far so good")
-
 				local respawn_t = self._t + math.random(2, 5)
 				self._hostage_trade_clbk = "TradeManager"
 

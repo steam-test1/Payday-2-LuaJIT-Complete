@@ -5213,6 +5213,16 @@ function GuiTweakData:init(tweak_data)
 	self.new_heists = {
 		limit = 5
 	}
+	local distribution_id = SystemInfo:distribution()
+
+	if distribution_id == Idstring("STEAM") then
+		table.insert(self.new_heists, {
+			name_id = "menu_nh_acsbzbanner_sub",
+			texture_path = "guis/dlcs/acsbzbanners/textures/pd2/new_heists/subscription_banner",
+			epic_url = "",
+			url = "https://store.steampowered.com/app/3847540/"
+		})
+	end
 
 	table.insert(self.new_heists, {
 		name_id = "menu_nh_xm25_01",

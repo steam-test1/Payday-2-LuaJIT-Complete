@@ -886,10 +886,10 @@ function TweakData:init()
 
 	self:set_menu_scale()
 
-	local orange = Vector3(204, 161, 102) / 255
 	local green = Vector3(194, 252, 151) / 255
-	local brown = Vector3(178, 104, 89) / 255
 	local blue = Vector3(120, 183, 204) / 255
+	local brown = Vector3(178, 104, 89) / 255
+	local orange = Vector3(204, 161, 102) / 255
 	local team_ai = Vector3(0.2, 0.8, 1)
 	self.peer_vector_colors = {
 		green,

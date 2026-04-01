@@ -694,7 +694,7 @@ function BlackMarketTweakData:_init_xp()
 		value_id = "xp15",
 		multiplier = 1,
 		pcs = {
-			15,
+			20,
 			40
 		}
 	}

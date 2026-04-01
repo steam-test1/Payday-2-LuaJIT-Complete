@@ -163,8 +163,6 @@ function FeatureManager:announce_feature(feature_id)
 	end
 
 	if self._global.announced[feature_id] then
-		print("[FeatureManager:announce_feature] Feture already announced.", feature_id)
-
 		return
 	end
 

@@ -628,15 +628,17 @@ end
 function CopLogicTravel.is_available_for_assignment(data, new_objective)
 	if new_objective and new_objective.forced then
 		return true
-	elseif data.objective and data.objective.type == "act" then
+	end
+
+	if data.objective and data.objective.type == "act" then
 		if (not new_objective or new_objective and new_objective.type == "free") and data.objective.interrupt_dis == -1 then
 			return true
 		end
 
 		return
-	else
-		return CopLogicAttack.is_available_for_assignment(data, new_objective)
 	end
+
+	return CopLogicAttack.is_available_for_assignment(data, new_objective)
 end
 
 function CopLogicTravel.is_advancing(data)

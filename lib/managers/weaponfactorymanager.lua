@@ -652,6 +652,8 @@ function WeaponFactoryManager:_update_task(task)
 end
 
 function WeaponFactoryManager:_add_parts(p_unit, factory_id, factory_weapon, blueprint, forbidden, third_person, npc, done_cb, skip_queue)
+	print("[WeaponFactoryManager:_add_parts] ", p_unit, factory_id, factory_weapon, blueprint, forbidden, third_person, done_cb, skip_queue)
+
 	self._tasks = self._tasks or {}
 	local parts = {}
 	local need_parent = {}

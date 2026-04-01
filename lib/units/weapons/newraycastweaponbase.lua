@@ -829,7 +829,7 @@ function NewRaycastWeaponBase:blueprint_to_string()
 end
 
 function NewRaycastWeaponBase:_update_fire_object()
-	local fire = managers.weapon_factory:get_part_from_weapon_by_type("barrel_ext", self._parts) or managers.weapon_factory:get_part_from_weapon_by_type("slide", self._parts) or managers.weapon_factory:get_part_from_weapon_by_type("barrel", self._parts)
+	local fire = managers.weapon_factory:get_part_from_weapon_by_type("barrel_ext", self._parts) or managers.weapon_factory:get_part_from_weapon_by_type("slide", self._parts) or managers.weapon_factory:get_part_from_weapon_by_type("barrel", self._parts) or managers.weapon_factory:get_part_from_weapon_by_type("lower_body", self._parts)
 
 	if not fire then
 		debug_pause("[NewRaycastWeaponBase:_update_fire_object] Weapon \"" .. tostring(self._factory_id) .. "\" is missing fire object !")
@@ -1202,7 +1202,7 @@ function NewRaycastWeaponBase:is_weak_hit(distance, user_unit)
 end
 
 function NewRaycastWeaponBase:get_add_head_shot_mul()
-	if self:is_category("smg", "lmg", "assault_rifle", "minigun") and self._fire_mode == ids_auto or self:is_category("bow", "saw") then
+	if self:is_category("smg", "lmg", "assault_rifle", "minigun") and (self._fire_mode == ids_auto or self._fire_mode == ids_burst) or self:is_category("bow", "saw") then
 		return managers.player:upgrade_value("weapon", "automatic_head_shot_add", nil)
 	end
 
@@ -1877,7 +1877,7 @@ end
 function NewRaycastWeaponBase:fire(...)
 	local ray_res = NewRaycastWeaponBase.super.fire(self, ...)
 
-	if self._fire_mode == ids_burst and self._bullets_fired > 1 and not self:weapon_tweak_data().sounds.fire_single then
+	if self._fire_mode == ids_burst and self._bullets_fired and self._bullets_fired > 1 and not self:weapon_tweak_data().sounds.fire_single then
 		self:_fire_sound()
 	end
 
@@ -2781,6 +2781,10 @@ function NewRaycastWeaponBase:recoil_multiplier()
 
 	if self._alt_fire_active and self._alt_fire_data then
 		multiplier = multiplier * (self._alt_fire_data.recoil_mul or 1)
+	end
+
+	if self._shooting_count and self._shooting_count >= 1 then
+		multiplier = multiplier * 1 / (self._shooting_count + 1)
 	end
 
 	return multiplier

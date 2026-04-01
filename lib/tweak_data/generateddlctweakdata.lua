@@ -3112,6 +3112,12 @@ function DLCTweakData:init_generated()
 			amount = 1
 		}
 	}
+	self.wel_bundle = {
+		free = true,
+		content = {}
+	}
+	self.wel_bundle.content.loot_global_value = "wel"
+	self.wel_bundle.content.loot_drops = {}
 	self.xm20_bundle = {
 		free = true,
 		content = {}

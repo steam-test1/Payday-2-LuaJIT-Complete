@@ -466,7 +466,7 @@ function PlayerManager:_on_enter_shock_and_awe_event()
 		local data = self:upgrade_value("player", "automatic_faster_reload", nil)
 		local is_grenade_launcher = equipped_unit:base():is_category("grenade_launcher")
 
-		if data and equipped_unit and not is_grenade_launcher and (equipped_unit:base():fire_mode() == "auto" or equipped_unit:base():is_category("bow", "flamethrower")) then
+		if data and equipped_unit and not is_grenade_launcher and (equipped_unit:base():fire_mode() == "auto" or equipped_unit:base():fire_mode() == "burst" or equipped_unit:base():is_category("bow", "flamethrower")) then
 			self._coroutine_mgr:add_and_run_coroutine("automatic_faster_reload", PlayerAction.ShockAndAwe, self, data.target_enemies, data.max_reload_increase, data.min_reload_increase, data.penalty, data.min_bullets, equipped_unit)
 		end
 	end
@@ -1988,6 +1988,23 @@ end
 
 function PlayerManager:get_custom_cooldown_left(category, upgrade)
 	return self:get_timer_remaining(category .. "_" .. upgrade)
+end
+
+function PlayerManager:crew_ability_upgrade_value_botless(upgrade, default)
+	if self:upgrade_value("team", "crew_active", 0) > 0 then
+		return self:crew_ability_upgrade_value(upgrade, default)
+	end
+
+	local team_upgrade_values = tweak_data.upgrades.values.team
+
+	if not team_upgrade_values or not team_upgrade_values[upgrade] or not managers.criminals then
+		return default or 0
+	end
+
+	local ai_level = managers.network:session() and managers.criminals.MAX_NR_TEAM_AI - table.size(managers.network:session():peers()) or managers.criminals.MAX_NR_TEAM_AI
+	local value = team_upgrade_values[upgrade][1][ai_level]
+
+	return value or default
 end
 
 function PlayerManager:consumable_upgrade_value(upgrade, default)
@@ -4588,6 +4605,8 @@ end
 function PlayerManager:add_special(params)
 	local name = params.equipment or params.name
 
+	print("[PlayerManager:add_special] Add " .. tostring(name))
+
 	if not tweak_data.equipments.specials[name] then
 		Application:error("Special equipment " .. name .. " doesn't exist!")
 
@@ -4603,7 +4622,7 @@ function PlayerManager:add_special(params)
 	local is_cable_tie = name == "cable_tie"
 
 	if is_cable_tie then
-		extra = self:upgrade_value(name, "quantity_1") + self:upgrade_value(name, "quantity_2")
+		extra = self:upgrade_value(name, "quantity_1") + self:upgrade_value(name, "quantity_2") + managers.player:crew_ability_upgrade_value_botless("crew_ai_cable_ties", 0)
 	end
 
 	if special_equipment then
