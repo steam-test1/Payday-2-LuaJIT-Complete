@@ -105,8 +105,12 @@ function CorePlayEffectUnitElement:add_to_mission_package()
 end
 
 CoreStopEffectUnitElement = CoreStopEffectUnitElement or class(MissionElement)
-CoreStopEffectUnitElement.LINK_ELEMENTS = {
-	"elements"
+CoreStopEffectUnitElement.LINK_VALUES = {
+	{
+		output = true,
+		table_value = "elements",
+		type = "operator"
+	}
 }
 StopEffectUnitElement = StopEffectUnitElement or class(CoreStopEffectUnitElement)
 
@@ -141,11 +145,6 @@ function CoreStopEffectUnitElement:draw_links(t, dt, selected_unit, all_units)
 			})
 		end
 	end
-end
-
-function CoreStopEffectUnitElement:get_links_to_unit(...)
-	CoreStopEffectUnitElement.super.get_links_to_unit(self, ...)
-	self:_get_links_of_type_from_elements(self._hed.elements, "operator", ...)
 end
 
 function CoreStopEffectUnitElement:update_editing()

@@ -320,6 +320,15 @@ end
 
 CoreInstanceInputEventUnitElement = CoreInstanceInputEventUnitElement or class(InstanceEventUnitElement)
 InstanceInputEventUnitElement = InstanceInputEventUnitElement or class(CoreInstanceInputEventUnitElement)
+InstanceInputEventUnitElement.LINK_VALUES = {
+	{
+		output = true,
+		type = "input",
+		table_key = "instance",
+		table_value = "event_list",
+		layer = "Instances"
+	}
+}
 
 function InstanceInputEventUnitElement:init(...)
 	InstanceInputEventUnitElement.super.init(self, "input", ...)
@@ -327,6 +336,14 @@ end
 
 CoreInstanceOutputEventUnitElement = CoreInstanceOutputEventUnitElement or class(InstanceEventUnitElement)
 InstanceOutputEventUnitElement = InstanceOutputEventUnitElement or class(CoreInstanceOutputEventUnitElement)
+InstanceOutputEventUnitElement.LINK_VALUES = {
+	{
+		layer = "Instances",
+		table_key = "instance",
+		table_value = "event_list",
+		type = "output"
+	}
+}
 
 function InstanceOutputEventUnitElement:init(...)
 	InstanceOutputEventUnitElement.super.init(self, "output", ...)
@@ -334,6 +351,14 @@ end
 
 CoreInstancePointUnitElement = CoreInstancePointUnitElement or class(MissionElement)
 InstancePointUnitElement = InstancePointUnitElement or class(CoreInstancePointUnitElement)
+InstancePointUnitElement.LINK_VALUES = {
+	{
+		value = "instance",
+		output = true,
+		layer = "Instances",
+		type = "spawn_point"
+	}
+}
 
 function InstancePointUnitElement:init(...)
 	InstancePointUnitElement.super.init(self, ...)
@@ -670,6 +695,14 @@ end
 
 CoreInstanceSetParamsUnitElement = CoreInstanceSetParamsUnitElement or class(MissionElement)
 InstanceSetParamsUnitElement = InstanceSetParamsUnitElement or class(CoreInstanceSetParamsUnitElement)
+InstanceSetParamsUnitElement.LINK_VALUES = {
+	{
+		value = "instance",
+		output = true,
+		layer = "Instances",
+		type = "params"
+	}
+}
 
 function InstanceSetParamsUnitElement:init(...)
 	InstanceSetParamsUnitElement.super.init(self, ...)

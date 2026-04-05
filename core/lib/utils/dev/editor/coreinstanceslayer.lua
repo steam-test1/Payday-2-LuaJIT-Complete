@@ -944,7 +944,7 @@ function InstancesLayer:_add_predefined_instances_notebook_pages()
 		instance_filter:connect("EVT_COMMAND_TEXT_UPDATED", callback(self, self, "_on_gui_instances_update_filter"), {
 			filter = instance_filter,
 			instances = instances,
-			category = c
+			category = category_name
 		})
 
 		local page_name = category_name
@@ -1409,6 +1409,8 @@ function InstancesLayer:update_unit_settings(...)
 	for i, instance_data in ipairs(self._selected_instances) do
 		managers.editor:on_reference_unit(instance_data.instance)
 	end
+
+	managers.editor:on_selected_instance(self._selected_instance)
 end
 
 function InstancesLayer:activate()

@@ -1,6 +1,12 @@
 CoreRandomUnitElement = CoreRandomUnitElement or class(MissionElement)
 CoreRandomUnitElement.SAVE_UNIT_POSITION = false
 CoreRandomUnitElement.SAVE_UNIT_ROTATION = false
+CoreRandomUnitElement.LINK_VALUES = {
+	{
+		value = "counter_id",
+		type = "counter"
+	}
+}
 RandomUnitElement = RandomUnitElement or class(CoreRandomUnitElement)
 
 function RandomUnitElement:init(...)

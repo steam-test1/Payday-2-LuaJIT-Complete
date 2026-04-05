@@ -72,6 +72,11 @@ require("core/lib/units/editor/mission/CoreInstance")
 require("core/lib/units/editor/CoreDebug")
 
 CoreEditor = CoreEditor or class()
+CoreEditor.SIMULATION_MODE = {
+	BRIEFING = 3,
+	GAMEPLAY = 1,
+	MISSION = 2
+}
 
 require("core/lib/utils/dev/editor/CoreEditorMenubar")
 require("core/lib/utils/dev/editor/CoreEditorToolbar")
@@ -452,11 +457,12 @@ end
 function CoreEditor:_init_title_messages()
 	self._title_messages = {}
 
-	self:add_title_message("Ask yourself, is this good for the company? ")
-	self:add_title_message("Hatarakazaru mono, kuu bekarazu. ")
-	self:add_title_message("Those who do not work, should not eat. ")
-	self:add_title_message("Don't waste you time or time will waste you. ")
-	self:add_title_message("Fill your head with rock. ")
+	self:add_title_message("Wonderful! You did it! ")
+	self:add_title_message("Keep it up! You're almost there! ")
+	self:add_title_message("Don't blame the tool, Blame the tool wielding the tool. ")
+	self:add_title_message("Application has crashed: C++ exception ")
+	self:add_title_message("Don't forget to add your files! ")
+	self:add_title_message("Yeah, fo sho! ")
 end
 
 function CoreEditor:_init_edit_unit_dialog()
@@ -836,7 +842,7 @@ function CoreEditor:run_simulation_callback(...)
 	self:run_simulation(...)
 end
 
-function CoreEditor:run_simulation(with_mission)
+function CoreEditor:run_simulation(simulation_mode)
 	if not Global.running_simulation then
 		if self._lastdir then
 			-- Nothing
@@ -855,6 +861,8 @@ function CoreEditor:run_simulation(with_mission)
 	end
 
 	if not Global.running_simulation then
+		local with_mission = simulation_mode == self.SIMULATION_MODE.MISSION or simulation_mode == self.SIMULATION_MODE.BRIEFING
+
 		self:_interupt_frustum_freeze()
 
 		self._saved_simulation_values = {}
@@ -903,7 +911,7 @@ function CoreEditor:run_simulation(with_mission)
 		managers.sequence:set_collisions_enabled(true)
 		managers.sequence:set_proximity_enabled(true)
 		self:_simulation_disable_continents()
-		self:project_run_simulation(with_mission)
+		self:project_run_simulation(simulation_mode)
 
 		if self._session_state then
 			self._session_state:player_slots():primary_slot():request_debug_local_user_binding()
@@ -1390,7 +1398,7 @@ function CoreEditor:deleted_unit(unit)
 		self._dialogs.hide_by_name:deleted_unit(unit)
 	end
 
-	for name, dialog in pairs(self._layer_replace_dialogs) do
+	for _, dialog in pairs(self._layer_replace_dialogs) do
 		if dialog:visible() then
 			dialog:deleted_unit(unit)
 		end
@@ -1456,6 +1464,16 @@ function CoreEditor:on_selected_unit(unit)
 
 	for _, callback_func in ipairs(self._selected_unit_callbacks or {}) do
 		callback_func(unit)
+	end
+
+	if self._element_flow and self._element_flow:visible() then
+		self._element_flow:on_unit_selected(self:selected_unit() or unit)
+	end
+end
+
+function CoreEditor:on_selected_instance(instance)
+	if self._element_flow and self._element_flow:visible() then
+		self._element_flow:on_instance_selected(instance)
 	end
 end
 
@@ -4308,6 +4326,10 @@ function CoreEditor:delete_unit(unit)
 		unit:set_slot(0)
 	else
 		Application:error("[CoreEditor:delete_unit] Unit was not alive.", unit)
+	end
+
+	if self._element_flow and self._element_flow:visible() then
+		self._element_flow:on_unit_selected(self:selected_unit())
 	end
 end
 

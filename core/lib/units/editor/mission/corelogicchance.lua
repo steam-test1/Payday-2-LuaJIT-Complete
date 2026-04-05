@@ -31,6 +31,13 @@ CoreLogicChanceOperatorUnitElement.LINK_ELEMENTS = {
 	"elements"
 }
 LogicChanceOperatorUnitElement = LogicChanceOperatorUnitElement or class(CoreLogicChanceOperatorUnitElement)
+CoreLogicChanceOperatorUnitElement.LINK_VALUES = {
+	{
+		output = true,
+		table_value = "elements",
+		type = "operator"
+	}
+}
 
 function LogicChanceOperatorUnitElement:init(...)
 	LogicChanceOperatorUnitElement.super.init(self, ...)
@@ -65,11 +72,6 @@ function CoreLogicChanceOperatorUnitElement:draw_links(t, dt, selected_unit, all
 			})
 		end
 	end
-end
-
-function CoreLogicChanceOperatorUnitElement:get_links_to_unit(...)
-	CoreLogicChanceOperatorUnitElement.super.get_links_to_unit(self, ...)
-	self:_get_links_of_type_from_elements(self._hed.elements, "operator", ...)
 end
 
 function CoreLogicChanceOperatorUnitElement:update_editing()
@@ -126,6 +128,12 @@ CoreLogicChanceTriggerUnitElement.LINK_ELEMENTS = {
 	"elements"
 }
 LogicChanceTriggerUnitElement = LogicChanceTriggerUnitElement or class(CoreLogicChanceTriggerUnitElement)
+CoreLogicChanceTriggerUnitElement.LINK_VALUES = {
+	{
+		table_value = "elements",
+		type = "trigger"
+	}
+}
 
 function LogicChanceTriggerUnitElement:init(...)
 	LogicChanceTriggerUnitElement.super.init(self, ...)
@@ -158,11 +166,6 @@ function CoreLogicChanceTriggerUnitElement:draw_links(t, dt, selected_unit, all_
 			})
 		end
 	end
-end
-
-function CoreLogicChanceTriggerUnitElement:get_links_to_unit(...)
-	CoreLogicChanceTriggerUnitElement.super.get_links_to_unit(self, ...)
-	self:_get_links_of_type_from_elements(self._hed.elements, "trigger", ...)
 end
 
 function CoreLogicChanceTriggerUnitElement:update_editing()

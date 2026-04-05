@@ -192,8 +192,12 @@ CoreCounterOperatorUnitElement.INSTANCE_VAR_NAMES = {
 		type = "number"
 	}
 }
-CoreCounterOperatorUnitElement.LINK_ELEMENTS = {
-	"elements"
+CoreCounterOperatorUnitElement.LINK_VALUES = {
+	{
+		output = true,
+		table_value = "elements",
+		type = "operator"
+	}
 }
 CounterOperatorUnitElement = CounterOperatorUnitElement or class(CoreCounterOperatorUnitElement)
 
@@ -230,11 +234,6 @@ function CoreCounterOperatorUnitElement:draw_links(t, dt, selected_unit, all_uni
 			})
 		end
 	end
-end
-
-function CoreCounterOperatorUnitElement:get_links_to_unit(...)
-	CoreCounterOperatorUnitElement.super.get_links_to_unit(self, ...)
-	self:_get_links_of_type_from_elements(self._hed.elements, "operator", ...)
 end
 
 function CoreCounterOperatorUnitElement:update_editing()
@@ -288,8 +287,11 @@ end
 CoreCounterTriggerUnitElement = CoreCounterTriggerUnitElement or class(MissionElement)
 CoreCounterTriggerUnitElement.SAVE_UNIT_POSITION = false
 CoreCounterTriggerUnitElement.SAVE_UNIT_ROTATION = false
-CoreCounterTriggerUnitElement.LINK_ELEMENTS = {
-	"elements"
+CoreCounterTriggerUnitElement.LINK_VALUES = {
+	{
+		table_value = "elements",
+		type = "trigger"
+	}
 }
 CounterTriggerUnitElement = CounterTriggerUnitElement or class(CoreCounterTriggerUnitElement)
 
@@ -326,11 +328,6 @@ function CoreCounterTriggerUnitElement:draw_links(t, dt, selected_unit, all_unit
 			})
 		end
 	end
-end
-
-function CoreCounterTriggerUnitElement:get_links_to_unit(...)
-	CoreCounterTriggerUnitElement.super.get_links_to_unit(self, ...)
-	self:_get_links_of_type_from_elements(self._hed.elements, "trigger", ...)
 end
 
 function CoreCounterTriggerUnitElement:update_editing()
@@ -384,8 +381,12 @@ end
 CoreCounterFilterUnitElement = CoreCounterFilterUnitElement or class(MissionElement)
 CoreCounterFilterUnitElement.SAVE_UNIT_POSITION = false
 CoreCounterFilterUnitElement.SAVE_UNIT_ROTATION = false
-CoreCounterFilterUnitElement.LINK_ELEMENTS = {
-	"elements"
+CoreCounterFilterUnitElement.LINK_VALUES = {
+	{
+		output = true,
+		table_value = "elements",
+		type = "filter"
+	}
 }
 CounterFilterUnitElement = CounterFilterUnitElement or class(CoreCounterFilterUnitElement)
 
@@ -424,11 +425,6 @@ function CoreCounterFilterUnitElement:draw_links(t, dt, selected_unit, all_units
 			})
 		end
 	end
-end
-
-function CoreCounterFilterUnitElement:get_links_to_unit(...)
-	CoreCounterFilterUnitElement.super.get_links_to_unit(self, ...)
-	self:_get_links_of_type_from_elements(self._hed.elements, "filter", ...)
 end
 
 function CoreCounterFilterUnitElement:update_editing()

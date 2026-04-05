@@ -188,10 +188,6 @@ function MissionLayer:set_select_unit(unit, ...)
 	if not self:_add_on_executed(unit) then
 		MissionLayer.super.set_select_unit(self, unit, ...)
 	end
-
-	if self._list_flow and self._list_flow:visible() then
-		self._list_flow:on_unit_selected(self._selected_unit)
-	end
 end
 
 function MissionLayer:_add_on_executed(unit)
@@ -254,16 +250,6 @@ end
 function MissionLayer:delete_unit(del_unit, prevent_undo)
 	if not self._editing_mission_element then
 		MissionLayer.super.delete_unit(self, del_unit, prevent_undo)
-	end
-
-	if self._list_flow then
-		self._list_flow:on_unit_selected(self._selected_unit)
-	end
-end
-
-function MissionLayer:refresh_list_flow()
-	if self._list_flow and self._list_flow:visible() then
-		self._list_flow:on_unit_selected(self._selected_unit)
 	end
 end
 
@@ -684,22 +670,10 @@ function MissionLayer:add_btns_to_toolbar(...)
 		class = self
 	})
 	self._btn_toolbar:add_separator()
-	self._btn_toolbar:add_tool("SHOW_LIST_FLOW", "Opens mission flow dialog", CoreEws.image_path("world_editor\\he_timeline_16x16.png"), "Opens mission flow dialog")
-	self._btn_toolbar:connect("SHOW_LIST_FLOW", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "_show_list_flow"), {})
 end
 
 function MissionLayer:toggle_persistent_debug(params)
 	managers.mission:set_persistent_debug_enabled(self._btn_toolbar:tool_state("PERSISTENT_DEBUG"))
-end
-
-function MissionLayer:_show_list_flow()
-	self._list_flow = self._list_flow or _G.MissionElementListFlow:new()
-
-	if not self._list_flow:visible() then
-		self._list_flow:set_visible(true)
-	end
-
-	self._list_flow:on_unit_selected(self._selected_unit)
 end
 
 function MissionLayer:_on_activate_on_parsed()
@@ -990,10 +964,6 @@ function MissionLayer:clear()
 	MissionLayer.super.clear(self)
 	self:_reset_scripts()
 	self:update_unit_settings()
-
-	if self._list_flow then
-		self._list_flow:on_unit_selected(nil)
-	end
 end
 
 function MissionLayer:simulate_with_current_script()
@@ -1011,26 +981,6 @@ function MissionLayer:get_unit_links(to_unit)
 	end
 
 	return links
-end
-
-function MissionLayer:activate(...)
-	MissionLayer.super.activate(self, ...)
-
-	if self._list_flow then
-		self._list_flow:set_visible(self._was_list_flow_visible)
-
-		self._was_list_flow_visible = nil
-	end
-end
-
-function MissionLayer:deactivate(...)
-	MissionLayer.super.deactivate(self, ...)
-
-	if self._list_flow then
-		self._was_list_flow_visible = self._list_flow:visible()
-
-		self._list_flow:set_visible(false)
-	end
 end
 
 function MissionLayer:add_triggers()

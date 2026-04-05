@@ -1990,23 +1990,6 @@ function PlayerManager:get_custom_cooldown_left(category, upgrade)
 	return self:get_timer_remaining(category .. "_" .. upgrade)
 end
 
-function PlayerManager:crew_ability_upgrade_value_botless(upgrade, default)
-	if self:upgrade_value("team", "crew_active", 0) > 0 then
-		return self:crew_ability_upgrade_value(upgrade, default)
-	end
-
-	local team_upgrade_values = tweak_data.upgrades.values.team
-
-	if not team_upgrade_values or not team_upgrade_values[upgrade] or not managers.criminals then
-		return default or 0
-	end
-
-	local ai_level = managers.network:session() and managers.criminals.MAX_NR_TEAM_AI - table.size(managers.network:session():peers()) or managers.criminals.MAX_NR_TEAM_AI
-	local value = team_upgrade_values[upgrade][1][ai_level]
-
-	return value or default
-end
-
 function PlayerManager:consumable_upgrade_value(upgrade, default)
 	if self._consumable_upgrades[upgrade] then
 		local amount = self._consumable_upgrades[upgrade].amount
@@ -4622,7 +4605,7 @@ function PlayerManager:add_special(params)
 	local is_cable_tie = name == "cable_tie"
 
 	if is_cable_tie then
-		extra = self:upgrade_value(name, "quantity_1") + self:upgrade_value(name, "quantity_2") + managers.player:crew_ability_upgrade_value_botless("crew_ai_cable_ties", 0)
+		extra = self:upgrade_value(name, "quantity_1") + self:upgrade_value(name, "quantity_2")
 	end
 
 	if special_equipment then
@@ -4820,6 +4803,54 @@ function PlayerManager:remove_special(name)
 		if equipment.player_rule then
 			self:set_player_rule(equipment.player_rule, false)
 		end
+	end
+end
+
+function PlayerManager:crew_ai_flashbang(value)
+	if value then
+		if not self._crew_ai_flashbang_unit_loaded then
+			managers.dyn_resource:load(Idstring("unit"), Idstring(tweak_data.blackmarket.projectiles.concussion.unit), managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
+
+			self._crew_ai_flashbang_unit_loaded = true
+		end
+
+		if not self._crew_ai_flashbang_sprint_unit_loaded then
+			managers.dyn_resource:load(Idstring("unit"), Idstring(tweak_data.blackmarket.projectiles.concussion.sprint_unit), managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
+
+			self._crew_ai_flashbang_sprint_unit_loaded = true
+		end
+	else
+		if self._crew_ai_flashbang_unit_loaded then
+			managers.dyn_resource:unload(Idstring("unit"), Idstring(tweak_data.blackmarket.projectiles.concussion.unit), DynamicResourceManager.DYN_RESOURCES_PACKAGE, nil)
+
+			self._crew_ai_flashbang_unit_loaded = false
+		end
+
+		if self._crew_ai_flashbang_sprint_unit_loaded then
+			managers.dyn_resource:unload(Idstring("unit"), Idstring(tweak_data.blackmarket.projectiles.concussion.sprint_unit), DynamicResourceManager.DYN_RESOURCES_PACKAGE, nil)
+
+			self._crew_ai_flashbang_sprint_unit_loaded = false
+		end
+	end
+end
+
+function PlayerManager:crew_ai_flashbang_unit_loaded()
+	return self._crew_ai_flashbang_unit_loaded, self._crew_ai_flashbang_sprint_unit_loaded
+end
+
+function PlayerManager:crew_ai_cable_ties(value)
+	if not self._added_bot_boost_ties then
+		managers.enemy:add_delayed_clbk("PlayerManager:crew_ai_cable_ties", callback(self, self, "_clbk_crew_ai_cable_ties"), TimerManager:game():time() + 1)
+	end
+end
+
+function PlayerManager:_clbk_crew_ai_cable_ties()
+	local amount = self:crew_ability_upgrade_value("crew_ai_cable_ties", 0)
+
+	if amount > 0 then
+		self:add_cable_ties(amount)
+
+		self._added_bot_boost_ties = true
 	end
 end
 

@@ -50,10 +50,6 @@ function TeamAIDamage:init(unit)
 		effect = Idstring("effects/payday2/particles/character/taser_hittarget"),
 		parent = self._unit:get_object(Idstring("e_taser"))
 	}
-
-	if managers.player:crew_ability_upgrade_value_botless("crew_ai_flashbang", false) then
-		self:_dyn_load_crew_ai_flashbang()
-	end
 end
 
 function TeamAIDamage:update(unit, t, dt)
@@ -355,7 +351,7 @@ function TeamAIDamage:damage_tase(attack_data)
 	end
 
 	self._countering_tase = nil
-	self._taser_unit = attack_data.attacker_unit
+	self._taser_unit = attack_data and attack_data.attacker_unit or nil
 	self._tase_effect = World:effect_manager():spawn(self._tase_effect_table)
 
 	if Network:is_server() then
@@ -577,39 +573,23 @@ function TeamAIDamage:_check_bleed_out()
 	end
 end
 
-function TeamAIDamage:_dyn_load_crew_ai_flashbang(clbk1, clbk2)
-	if not self._crew_ai_flashbang_unit_loaded then
-		managers.dyn_resource:load(Idstring("unit"), Idstring(tweak_data.blackmarket.projectiles.concussion.unit), managers.dyn_resource.DYN_RESOURCES_PACKAGE, clbk1)
-
-		self._crew_ai_flashbang_unit_loaded = true
-	end
-
-	if not self._crew_ai_flashbang_sprint_unit_loaded then
-		managers.dyn_resource:load(Idstring("unit"), Idstring(tweak_data.blackmarket.projectiles.concussion.sprint_unit), managers.dyn_resource.DYN_RESOURCES_PACKAGE, clbk2)
-
-		self._crew_ai_flashbang_sprint_unit_loaded = true
-	end
-end
-
 function TeamAIDamage:_do_crew_ai_flashbang()
 	local cooldown_id = "crew_ai_flashbang"
 
 	if managers.player:is_custom_cooldown_not_active("team", cooldown_id) then
-		if not self._crew_ai_flashbang_unit_loaded or not self._crew_ai_flashbang_sprint_unit_loaded then
-			debug_pause_unit(self._unit, "_do_crew_ai_flashbang: Unit, Sprint", self._crew_ai_flashbang_unit_loaded, self._crew_ai_flashbang_sprint_unit_loaded)
+		local flashbang_unit_loaded, flashbang_sprint_unit_loaded = managers.player:crew_ai_flashbang_unit_loaded()
+
+		if not flashbang_unit_loaded or not flashbang_sprint_unit_loaded then
+			debug_pause_unit(self._unit, "_do_crew_ai_flashbang: Unit, Sprint", flashbang_unit_loaded, flashbang_sprint_unit_loaded)
 
 			return
 		end
 
-		print("[TeamAIDamage:_do_crew_ai_flashbang] I THROW CONCUSSION NOW!")
 		ProjectileBase.throw_projectile("concussion", self._unit:movement():m_pos() + math.UP * 100, math.UP * 0.1)
 
 		local cooldown = managers.player:crew_ability_upgrade_value(cooldown_id, tweak_data.upgrades.values.team.crew_ai_flashbang[1][1])
 
 		managers.player:start_custom_cooldown("team", cooldown_id, cooldown)
-		print("[TeamAIDamage:_do_crew_ai_flashbang] Fired! Cooldown:", cooldown)
-	else
-		print("[TeamAIDamage:_do_crew_ai_flashbang] Still on cooldown:", managers.player:get_custom_cooldown_left("team", cooldown_id) or 0)
 	end
 end
 

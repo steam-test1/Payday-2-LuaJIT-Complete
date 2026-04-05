@@ -1,6 +1,14 @@
 CoreUnitSequenceTriggerUnitElement = CoreUnitSequenceTriggerUnitElement or class(MissionElement)
 CoreUnitSequenceTriggerUnitElement.SAVE_UNIT_POSITION = false
 CoreUnitSequenceTriggerUnitElement.SAVE_UNIT_ROTATION = false
+CoreUnitSequenceTriggerUnitElement.LINK_VALUES = {
+	{
+		layer = "Statics",
+		table_key = "unit_id",
+		table_value = "sequence_list",
+		type = "trigger"
+	}
+}
 UnitSequenceTriggerUnitElement = UnitSequenceTriggerUnitElement or class(CoreUnitSequenceTriggerUnitElement)
 
 function UnitSequenceTriggerUnitElement:init(...)
@@ -96,19 +104,6 @@ function CoreUnitSequenceTriggerUnitElement:draw_links_unselected(...)
 
 		self:_draw_link(params)
 		Application:draw(unit, 0, 0, 0.5)
-	end
-end
-
-function CoreUnitSequenceTriggerUnitElement:get_links_to_unit(to_unit, links, all_units)
-	CoreUnitSequenceTriggerUnitElement.super.get_links_to_unit(self, to_unit, links, all_units)
-
-	if to_unit == self._unit then
-		for id, unit in pairs(self._sequence_units) do
-			table.insert(links.executers, {
-				alternative = "unit",
-				unit = unit
-			})
-		end
 	end
 end
 

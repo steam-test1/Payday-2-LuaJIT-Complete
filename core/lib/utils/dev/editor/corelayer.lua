@@ -744,6 +744,7 @@ function Layer:update_unit_settings()
 	end
 
 	self:set_reference_unit(self._selected_unit)
+	managers.editor:refresh_list_flow()
 end
 
 function Layer:activate()
@@ -1784,15 +1785,22 @@ function Layer:_hide_units(units, hide)
 end
 
 function Layer:clear()
-	for _, unit in ipairs(self._created_units) do
+	while #self._created_units > 0 do
+		local unit = self._created_units[1]
+
 		if alive(unit) then
+			self._created_units_pairs[unit:unit_data().unit_id] = nil
+
 			self:remove_unit(unit)
 		end
+
+		table.remove(self._created_units, 1)
 	end
 
 	self._move_widget:set_enabled(false)
 	self:set_reference_unit(nil)
 	self:clear_selected_units_table()
+	managers.editor:refresh_list_flow()
 
 	self._created_units = {}
 	self._created_units_pairs = {}

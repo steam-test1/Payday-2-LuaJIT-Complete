@@ -134,7 +134,7 @@ function CoreEditor:build_toolbar()
 	self._toolbar:connect("TB_GENERATE_ALL_PROJECTION_LIGHT", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "create_projection_light"), "all")
 	self._toolbar:add_separator()
 
-	local s = "Burton Leon Reynolds, Jr.[2] (born February 11, 1936) is an Oscar-nominated and Emmy Award-winning American actor."
+	local s = "Burton Leon Reynolds, Jr.[2] (February 11, 1936 - September 6, 2018) was an Oscar-nominated and Emmy Award-winning American actor."
 
 	self._toolbar:add_tool("TB_HELP", "Burt Reynolds guide to using the editor", icons_path .. "burt.bmp", s)
 	self._toolbar:connect("TB_HELP", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "on_using_the_editor"), "")

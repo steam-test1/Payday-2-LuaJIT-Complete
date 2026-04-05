@@ -57,6 +57,8 @@ function CoreEditor:build_left_toolbar()
 
 	self._left_toolbar = EWS:ToolBar(left_panel, "", "TB_FLAT,TB_VERTICAL,TB_NODIVIDER")
 
+	self._left_toolbar:add_tool("LTB_LIST_FLOW", "Opens mission flow dialog", CoreEws.image_path("world_editor\\he_timeline_16x16.png"), "Element Flow Dialog")
+	self._left_toolbar:connect("LTB_LIST_FLOW", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "show_element_flow"), {})
 	self:add_edit_buttons()
 	self._left_toolbar:add_tool("LTB_EDIT_UNIT", "Show edit unit dialog", CoreEWS.image_path("world_editor\\edit_settings_16x16.png"), "Help")
 	self._left_toolbar:connect("LTB_EDIT_UNIT", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "show_edit_unit"), nil)
@@ -71,6 +73,22 @@ function CoreEditor:build_left_toolbar()
 end
 
 function CoreEditor:_project_add_left_upper_toolbar_tool()
+end
+
+function CoreEditor:show_element_flow()
+	self._element_flow = self._element_flow or _G.MissionElementListFlow:new()
+
+	self._element_flow:set_visible(not self._element_flow:visible())
+
+	if self._element_flow:visible() then
+		self._element_flow:on_unit_selected(self:selected_unit())
+	end
+end
+
+function CoreEditor:refresh_list_flow()
+	if self._element_flow and self._element_flow:visible() then
+		self._element_flow:on_unit_selected(self:selected_unit())
+	end
 end
 
 function CoreEditor:show_edit_unit()

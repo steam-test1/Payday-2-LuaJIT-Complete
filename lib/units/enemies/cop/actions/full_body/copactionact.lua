@@ -49,7 +49,6 @@ CopActionAct._act_redirects = {
 		"sabotage_device_mid",
 		"sabotage_device_high",
 		"so_civ_dummy_act_loop",
-		"distraction_dazed",
 		"dizzy"
 	},
 	enemy_spawn = {

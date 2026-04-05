@@ -1,4 +1,12 @@
 CoreUnitSequenceUnitElement = CoreUnitSequenceUnitElement or class(MissionElement)
+CoreUnitSequenceUnitElement.LINK_VALUES = {
+	{
+		output = true,
+		table_key = "notify_unit_id",
+		table_value = "trigger_list",
+		layer = "Statics"
+	}
+}
 UnitSequenceUnitElement = UnitSequenceUnitElement or class(CoreUnitSequenceUnitElement)
 
 function UnitSequenceUnitElement:init(...)
@@ -28,23 +36,10 @@ end
 
 function CoreUnitSequenceUnitElement:verify_trigger_units()
 	for i = #self._hed.trigger_list, 1, -1 do
-		local unit = managers.editor:unit_with_id(self._hed.trigger_list[i].notify_unit)
+		local unit = managers.editor:unit_with_id(self._hed.trigger_list[i].notify_unit_id)
 
 		if not alive(unit) then
 			table.remove(self._hed.trigger_list, i)
-		end
-	end
-end
-
-function CoreUnitSequenceUnitElement:get_links_to_unit(to_unit, links, all_units)
-	CoreUnitSequenceUnitElement.super.get_links_to_unit(self, to_unit, links, all_units)
-
-	if to_unit == self._unit then
-		for _, unit in ipairs(self:_get_sequence_units()) do
-			table.insert(links.on_executed, {
-				alternative = "unit",
-				unit = unit
-			})
 		end
 	end
 end
@@ -106,23 +101,25 @@ function CoreUnitSequenceUnitElement:_set_trigger_list()
 	local triggers = managers.sequence:get_trigger_list(self._unit:name())
 
 	if #triggers > 0 then
-		local trigger_name_list = self._unit:damage():get_trigger_name_list()
+		local trigger_name_list = self._unit:damage():get_trigger_name_list() or {}
 
-		if trigger_name_list then
-			for _, trigger_name in ipairs(trigger_name_list) do
-				local trigger_data = self._unit:damage():get_trigger_data_list(trigger_name)
+		for _, trigger_name in ipairs(trigger_name_list) do
+			local trigger_data = self._unit:damage():get_trigger_data_list(trigger_name)
 
-				if trigger_data and #trigger_data > 0 then
-					for _, data in ipairs(trigger_data) do
-						if alive(data.notify_unit) then
-							table.insert(self._hed.trigger_list, {
-								name = data.trigger_name,
-								id = data.id,
-								notify_unit_id = data.notify_unit:unit_data().unit_id,
-								time = data.time,
-								notify_unit_sequence = data.notify_unit_sequence
-							})
-						end
+			if trigger_data and #trigger_data > 0 then
+				for _, data in ipairs(trigger_data) do
+					local notify_unit_data = data.notify_unit:unit_data()
+
+					if notify_unit_data.instance then
+						Application:warn("[CoreUnitSequenceUnitElement] Attempted to store an instanced unit to this element", self._unit:name(), " - notify unit ID:", notify_unit_data.unit_id)
+					else
+						table.insert(self._hed.trigger_list, {
+							name = data.trigger_name,
+							id = data.id,
+							notify_unit_id = notify_unit_data.unit_id,
+							time = data.time,
+							notify_unit_sequence = data.notify_unit_sequence
+						})
 					end
 				end
 			end

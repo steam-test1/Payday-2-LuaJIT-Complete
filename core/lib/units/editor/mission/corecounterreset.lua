@@ -1,6 +1,10 @@
 CoreCounterResetUnitElement = CoreCounterResetUnitElement or class(MissionElement)
-CoreCounterResetUnitElement.LINK_ELEMENTS = {
-	"elements"
+CoreCounterResetUnitElement.LINK_VALUES = {
+	{
+		output = true,
+		table_value = "elements",
+		type = "reset"
+	}
 }
 CounterResetUnitElement = CounterResetUnitElement or class(CoreCounterResetUnitElement)
 

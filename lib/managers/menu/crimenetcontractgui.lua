@@ -614,7 +614,18 @@ function CrimeNetContractGui:init(ws, fullscreen_ws, node)
 	}
 	local contract_visuals = job_data.contract_visuals or {}
 	local cy = experience_title:center_y()
-	local xp_min = contract_visuals.min_mission_xp and (type(contract_visuals.min_mission_xp) == "table" and contract_visuals.min_mission_xp[difficulty_stars + 1] or contract_visuals.min_mission_xp[1]) or 0
+	local xp_min = 0
+
+	if contract_visuals.min_mission_xp then
+		local min_mission_xp = contract_visuals.min_mission_xp
+
+		if type(min_mission_xp) == "table" then
+			xp_min = min_mission_xp[difficulty_stars + 1] or min_mission_xp[1]
+		elseif type(min_mission_xp) == "number" then
+			xp_min = min_mission_xp
+		end
+	end
+
 	local total_xp, dissected_xp = managers.experience:get_contract_xp_by_stars(job_data.job_id, job_stars, difficulty_stars, narrative.professional, #narrative_chains, {
 		ignore_heat = job_heat_value > 0 and self._customizable,
 		mission_xp = xp_min

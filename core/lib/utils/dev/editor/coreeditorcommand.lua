@@ -413,6 +413,7 @@ function MissionElementAddOnExecutedCommand:execute(mission_element, unit, exist
 
 	mission_element:append_elements_sorted()
 	mission_element:set_on_executed_element(#mission_element._hed.on_executed)
+	managers.editor:refresh_list_flow()
 
 	self._values.params = params
 end
@@ -448,6 +449,7 @@ function MissionElementRemoveOnExecutedCommand:execute(mission_element, unit)
 			table.delete(mission_element._hed.on_executed, on_executed)
 			table.delete(mission_element._on_executed_units, unit)
 			mission_element:append_elements_sorted()
+			managers.editor:refresh_list_flow()
 
 			return true
 		end

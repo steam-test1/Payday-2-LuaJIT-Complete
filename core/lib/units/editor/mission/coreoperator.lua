@@ -1,8 +1,12 @@
 CoreOperatorUnitElement = CoreOperatorUnitElement or class(MissionElement)
 CoreOperatorUnitElement.SAVE_UNIT_POSITION = false
 CoreOperatorUnitElement.SAVE_UNIT_ROTATION = false
-CoreOperatorUnitElement.LINK_ELEMENTS = {
-	"elements"
+CoreOperatorUnitElement.LINK_VALUES = {
+	{
+		output = true,
+		table_value = "elements",
+		type = "operator"
+	}
 }
 OperatorUnitElement = OperatorUnitElement or class(CoreOperatorUnitElement)
 
@@ -42,11 +46,6 @@ function CoreOperatorUnitElement:draw_links(t, dt, selected_unit, all_units)
 			end
 		end
 	end
-end
-
-function CoreOperatorUnitElement:get_links_to_unit(...)
-	CoreOperatorUnitElement.super.get_links_to_unit(self, ...)
-	self:_get_links_of_type_from_elements(self._hed.elements, "operator", ...)
 end
 
 function CoreOperatorUnitElement:update_editing()
