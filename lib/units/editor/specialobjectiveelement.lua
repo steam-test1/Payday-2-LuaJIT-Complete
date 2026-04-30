@@ -15,6 +15,17 @@ SpecialObjectiveUnitElement._AI_SO_types = {
 	"AI_sniper",
 	"AI_phalanx"
 }
+SpecialObjectiveUnitElement.LINK_VALUES = {
+	{
+		output = true,
+		table_value = "followup_elements",
+		type = "followup"
+	},
+	{
+		table_value = "spawn_instigator_ids",
+		type = "instigator"
+	}
+}
 
 function SpecialObjectiveUnitElement:init(unit)
 	SpecialObjectiveUnitElement.super.init(self, unit)

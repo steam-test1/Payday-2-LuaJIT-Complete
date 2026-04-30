@@ -70,19 +70,7 @@ function IngameAccessCamera:cb_leave_vr()
 end
 
 function IngameAccessCamera:_get_cameras()
-	self._cameras = {}
-
-	for _, script in pairs(managers.mission:scripts()) do
-		local access_cameras = script:element_group("ElementAccessCamera")
-
-		if access_cameras then
-			for _, access_camera in ipairs(access_cameras) do
-				table.insert(self._cameras, {
-					access_camera = access_camera
-				})
-			end
-		end
-	end
+	self._cameras = managers.game_play_central:get_access_cameras(self._channel.id)
 end
 
 function IngameAccessCamera:_next_index()
@@ -127,6 +115,26 @@ function IngameAccessCamera:_next_camera()
 	self:_show_camera()
 end
 
+function IngameAccessCamera:_set_camera(camera)
+	if self._no_feeds then
+		return
+	end
+
+	for i, data in ipairs(self._cameras) do
+		if data and data.access_camera == camera then
+			self._camera_data.index = i
+
+			break
+		end
+	end
+
+	if self._camera_data.index == 0 then
+		self:_next_index()
+	end
+
+	self:_show_camera()
+end
+
 function IngameAccessCamera:on_destroyed()
 	local access_camera = self._cameras[self._camera_data.index].access_camera
 
@@ -162,10 +170,11 @@ function IngameAccessCamera:_show_camera()
 
 	local text_id = access_camera:value("text_id") ~= "debug_none" and access_camera:value("text_id") or "hud_cam_access_camera_test_generated"
 	local number = (self._camera_data.index < 10 and "0" or "") .. self._camera_data.index
+	local text_macros = access_camera:value("text_macros") or {}
+	text_macros.NUMBER = number
 
-	managers.hud:set_access_camera_name(managers.localization:text(text_id, {
-		NUMBER = number
-	}))
+	managers.hud:set_access_camera_name(managers.localization:text(text_id, text_macros))
+	managers.hud:set_access_camera_theme(access_camera:value("theme"))
 end
 
 function IngameAccessCamera:update(t, dt)
@@ -284,19 +293,35 @@ function IngameAccessCamera:update_player_stamina(t, dt)
 end
 
 function IngameAccessCamera:_player_damage(info)
+	managers.hud:set_access_damage_taken()
+end
+
+function IngameAccessCamera:_player_fatal_damage(info)
 	self:cb_leave()
 end
 
-function IngameAccessCamera:at_enter(old_state, ...)
+function IngameAccessCamera:at_enter(old_state, params)
+	local channel_id = params and params.channel_id or "default"
+	self._channel = tweak_data.camera_channels[channel_id] or tweak_data.camera_channels.default
 	local player = managers.player:player_unit()
 
 	if player then
 		player:base():set_enabled(false)
 		player:base():set_visible(false)
-		player:character_damage():add_listener("IngameAccessCamera", {
-			"hurt",
+
+		if self._channel.leave_on_hurt then
+			player:character_damage():add_listener("IngameAccessCamera:hurt", {
+				"hurt"
+			}, callback(self, self, "_player_fatal_damage"))
+		else
+			player:character_damage():add_listener("IngameAccessCamera:hurt", {
+				"hurt"
+			}, callback(self, self, "_player_damage"))
+		end
+
+		player:character_damage():add_listener("IngameAccessCamera:death", {
 			"death"
-		}, callback(self, self, "_player_damage"))
+		}, callback(self, self, "_player_fatal_damage"))
 		SoundDevice:set_rtpc("stamina", 100)
 	end
 
@@ -322,6 +347,10 @@ function IngameAccessCamera:at_enter(old_state, ...)
 
 	self._cam_unit = CoreUnit.safe_spawn_unit("units/gui/background_camera_01/access_camera", Vector3(), Rotation())
 
+	if self._channel.camera_near_range then
+		self._cam_unit:camera():set_near_range(self._channel.camera_near_range)
+	end
+
 	self:_get_cameras()
 
 	self._camera_data = {
@@ -331,6 +360,8 @@ function IngameAccessCamera:at_enter(old_state, ...)
 
 	if self._no_feeds then
 		managers.hud:set_access_camera_destroyed(true, true)
+	elseif params and params.starting_camera then
+		self:_set_camera(params.starting_camera)
 	else
 		self:_next_camera()
 	end
@@ -388,7 +419,8 @@ function IngameAccessCamera:at_exit()
 	if player then
 		player:base():set_enabled(true)
 		player:base():set_visible(true)
-		player:character_damage():remove_listener("IngameAccessCamera")
+		player:character_damage():remove_listener("IngameAccessCamera:hurt")
+		player:character_damage():remove_listener("IngameAccessCamera:death")
 	end
 
 	if _G.IS_VR then

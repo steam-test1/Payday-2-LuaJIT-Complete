@@ -1,4 +1,22 @@
 AIAttentionElement = AIAttentionElement or class(MissionElement)
+AIAttentionElement.LINK_VALUES = {
+	{
+		value = "parent_u_id",
+		output = true,
+		layer = "Statics",
+		type = "parent"
+	},
+	{
+		table_value = "instigator_ids",
+		type = "instigator"
+	},
+	{
+		value = "att_obj_u_id",
+		output = true,
+		layer = "Statics",
+		type = "operator"
+	}
+}
 
 function AIAttentionElement:init(unit)
 	AIAttentionElement.super.init(self, unit)

@@ -226,7 +226,8 @@ function WorldEditor:project_prestart_up(with_mission)
 	managers.hud:on_simulation_started()
 end
 
-function WorldEditor:project_run_simulation(with_mission)
+function WorldEditor:project_run_simulation(simulation_mode)
+	local with_mission = simulation_mode == self.SIMULATION_MODE.MISSION or simulation_mode == self.SIMULATION_MODE.BRIEFING
 	Global.game_settings.difficulty = self._mission_difficulty
 
 	managers.network:host_game()
@@ -252,7 +253,13 @@ function WorldEditor:project_run_simulation(with_mission)
 	end
 
 	managers.network:session():on_load_complete(true)
-	managers.network:session():spawn_players()
+
+	if simulation_mode == self.SIMULATION_MODE.BRIEFING then
+		game_state_machine:change_state_by_name("ingame_waiting_for_players")
+	else
+		managers.network:session():spawn_players()
+	end
+
 	managers.mission:set_mission_filter(self:layer("Level Settings"):get_mission_filter())
 
 	local level_id = self:layer("Level Settings"):get_setting("simulation_level_id")
@@ -271,6 +278,8 @@ function WorldEditor:project_stop_simulation()
 	managers.menu:close_menu("menu_pause")
 	managers.objectives:reset()
 	setup:freeflight():disable()
+	managers.platform:set_presence("Idle")
+	managers.platform:set_playing(false)
 	managers.groupai:on_simulation_ended()
 	managers.enemy:on_simulation_ended()
 	managers.navigation:on_simulation_ended()

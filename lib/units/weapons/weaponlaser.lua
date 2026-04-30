@@ -423,3 +423,100 @@ function WeaponMultiLaser:destroy(unit)
 		World:delete_light(light_glow)
 	end
 end
+
+WatchLaser = WatchLaser or class()
+WatchLaser.MAX_DISTANCE = 68
+local mrot1 = Rotation()
+
+function WatchLaser:init(unit)
+	self._unit = unit
+	self._active = false
+
+	if self._laser_obj_name and self._impact_obj_name and self._impact_effect_name then
+		self._laser_obj = self._unit:get_object(Idstring(self._laser_obj_name))
+		self._impact_obj = self._unit:get_object(Idstring(self._impact_obj_name))
+		self._impact_effect = self._unit:effect_spawner(Idstring(self._impact_effect_name))
+	end
+
+	if self._impact_sound_source_name then
+		self._impact_sound_source = self._unit:sound_source(Idstring(self._impact_sound_source_name))
+	end
+
+	self._projectile_data = tweak_data.blackmarket.projectiles[self._tweak_projectile_entry or "laser_watch"]
+	self._slotmask = managers.slot:get_mask("bullet_impact_targets")
+
+	self._unit:set_extension_update_enabled(Idstring("base"), false)
+end
+
+function WatchLaser:set_enabled(enabled)
+	local has_laser = not not self._impact_effect
+
+	self._unit:set_extension_update_enabled(Idstring("base"), enabled and has_laser)
+
+	local event = self._projectile_data.sounds and self._projectile_data.sounds[enabled and "activate" or "deactivate"]
+
+	if event then
+		self._unit:sound_source():post_event(event)
+	end
+
+	if not enabled and has_laser then
+		self._active = false
+
+		self._impact_effect:kill_effect()
+
+		local event = self._projectile_data.sounds and self._projectile_data.sounds.impact_stop
+
+		if event and self._impact_sound_source then
+			self._impact_sound_source:post_event(event)
+		end
+	end
+end
+
+function WatchLaser:update(unit, t, dt)
+	local rotation = self._laser_obj:rotation()
+
+	mrotation.x(rotation, mvec_l_dir)
+
+	local from = mvec1
+
+	mvector3.set(from, self._laser_obj:position())
+
+	local to = mvec2
+
+	mvector3.set(to, -mvec_l_dir)
+	mvector3.multiply(to, self.MAX_DISTANCE)
+	mvector3.add(to, from)
+
+	local ray = self._unit:raycast("ray", from, to, "slot_mask", self._slotmask)
+
+	if ray then
+		local normal = ray.normal
+		local position = ray.position + ray.normal
+
+		mrotation.set_look_at(mrot1, normal, math.UP)
+		self._impact_obj:set_position(position)
+		self._impact_obj:set_rotation(mrot1)
+
+		if not self._active then
+			self._active = true
+
+			self._impact_effect:activate()
+
+			local event = self._projectile_data.sounds and self._projectile_data.sounds.impact_start
+
+			if event and self._impact_sound_source then
+				self._impact_sound_source:post_event(event)
+			end
+		end
+	elseif self._active then
+		self._active = false
+
+		self._impact_effect:kill_effect()
+
+		local event = self._projectile_data.sounds and self._projectile_data.sounds.impact_stop
+
+		if event and self._impact_sound_source then
+			self._impact_sound_source:post_event(event)
+		end
+	end
+end

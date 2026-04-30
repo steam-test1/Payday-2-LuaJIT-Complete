@@ -18,7 +18,7 @@ function PlayerArrested:enter(state_data, enter_data)
 	if tweak_data.blackmarket.projectiles[projectile_entry].is_a_grenade then
 		self:_interupt_action_throw_grenade()
 	else
-		self:_interupt_action_throw_projectile()
+		self:_interupt_action_throw_projectile(managers.player:player_timer():time())
 	end
 
 	self:_interupt_action_steelsight()

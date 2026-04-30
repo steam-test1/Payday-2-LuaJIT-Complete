@@ -251,6 +251,12 @@ function ArrowBase:_switch_to_pickup(dynamic)
 
 	self:_remove_switch_to_pickup_clbk()
 
+	if self._death_listener_id and alive(self._col_ray.unit) then
+		self._col_ray.unit:character_damage():remove_listener(self._death_listener_id)
+	end
+
+	self._death_listener_id = nil
+
 	if dynamic then
 		self._unit:unlink()
 	end
@@ -750,4 +756,96 @@ function ArrowBase:reload_contour()
 			self._unit:contour():remove("deployable_selected")
 		end
 	end
+end
+
+DartArrowBase = DartArrowBase or class(ArrowBase)
+
+function DartArrowBase:_switch_to_pickup(dynamic)
+	DartArrowBase.super._switch_to_pickup(self, dynamic)
+	self._unit:set_slot(18)
+end
+
+ReviveDartArrowBase = ReviveDartArrowBase or class(DartArrowBase)
+
+function ReviveDartArrowBase:init(unit)
+	ReviveDartArrowBase.super.init(self, unit)
+
+	self._slot_mask = managers.slot:get_mask("arrow_impact_targets") - 17
+	self._criminals_slotmask = managers.slot:get_mask("harmless_criminals") + 3
+	local projectile_entry = self._tweak_projectile_entry or "frag"
+	local tweak_entry = tweak_data.projectiles[projectile_entry]
+	self._criminal_sphere_cast_radius = tweak_entry.sweep_radius or 80
+end
+
+function ReviveDartArrowBase:update(unit, t, dt)
+	if self._sweep_data and not self._collided then
+		self._unit:m_position(self._sweep_data.current_pos)
+
+		local col_ray = self:_check_revive_targets()
+
+		if col_ray then
+			mvector3.direction(mvec1, self._sweep_data.last_pos, self._sweep_data.current_pos)
+			mvector3.add(mvec1, col_ray.position)
+			self._unit:set_position(mvec1)
+			self._unit:set_position(mvec1)
+
+			col_ray.velocity = self._unit:velocity()
+			self._collided = true
+
+			self:_on_collision(col_ray)
+		end
+	end
+
+	ReviveDartArrowBase.super.update(self, unit, t, dt)
+end
+
+function ReviveDartArrowBase:_check_revive_targets()
+	if not self._sweep_data then
+		return
+	end
+
+	local col_ray = self._unit:raycast("ray", self._sweep_data.last_pos, self._sweep_data.current_pos, "slot_mask", self._criminals_slotmask, "sphere_cast_radius", self._criminal_sphere_cast_radius)
+
+	if not col_ray or not alive(col_ray.unit) or not col_ray.unit:base() then
+		return
+	end
+
+	local hit_unit = col_ray.unit
+	local needs_revive = false
+
+	if hit_unit:base() and hit_unit:base().is_husk_player then
+		needs_revive = hit_unit:interaction():active() and hit_unit:movement():need_revive() and hit_unit:movement():current_state_name() ~= "arrested"
+	elseif hit_unit:character_damage() and hit_unit:character_damage().need_revive then
+		needs_revive = hit_unit:character_damage():need_revive()
+	end
+
+	if not needs_revive then
+		return
+	end
+
+	local check_slotmask = managers.slot:get_mask("world_geometry")
+	local check_ray = self._unit:raycast("ray", self._sweep_data.current_pos, col_ray.position, "ignore_unit", col_ray.unit, "slot_mask", check_slotmask, "report")
+
+	return not check_ray and col_ray
+end
+
+function ReviveDartArrowBase:clbk_impact(tag, unit, body, other_unit, other_body, position, ...)
+	if self._sweep_data and not self._collided then
+		self._sweep_data.current_pos = position
+		local col_ray = self:_check_revive_targets()
+
+		if col_ray then
+			mvector3.direction(mvec1, self._sweep_data.last_pos, self._sweep_data.current_pos)
+			mvector3.add(mvec1, col_ray.position)
+			self._unit:set_position(mvec1)
+			self._unit:set_position(mvec1)
+
+			col_ray.velocity = self._unit:velocity()
+			self._collided = true
+
+			self:_on_collision(col_ray)
+		end
+	end
+
+	ReviveDartArrowBase.super.clbk_impact(self, tag, unit, body, other_unit, other_body, position, ...)
 end

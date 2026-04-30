@@ -1,6 +1,10 @@
 SetOutlineElement = SetOutlineElement or class(MissionElement)
-SetOutlineElement.LINK_ELEMENTS = {
-	"elements"
+SetOutlineElement.LINK_VALUES = {
+	{
+		output = true,
+		table_value = "elements",
+		type = "outline"
+	}
 }
 
 function SetOutlineElement:init(unit)

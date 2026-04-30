@@ -1,6 +1,14 @@
 VehicleBoardingElement = VehicleBoardingElement or class(MissionElement)
 VehicleBoardingElement.SAVE_UNIT_POSITION = false
 VehicleBoardingElement.SAVE_UNIT_ROTATION = false
+VehicleBoardingElement.LINK_VALUES = {
+	{
+		value = "vehicle",
+		output = true,
+		layer = "Statics",
+		type = "operator"
+	}
+}
 
 function VehicleBoardingElement:init(unit)
 	VehicleBoardingElement.super.init(self, unit)

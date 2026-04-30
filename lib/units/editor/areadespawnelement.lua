@@ -1,6 +1,9 @@
 AreaDespawnElement = AreaDespawnElement or class(ShapeUnitElement)
-AreaDespawnElement.LINK_ELEMENTS = {
-	"shape_elements"
+AreaDespawnElement.LINK_VALUES = {
+	{
+		table_value = "shape_elements",
+		type = "shape"
+	}
 }
 
 function AreaDespawnElement:init(unit)

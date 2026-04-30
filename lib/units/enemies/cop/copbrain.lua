@@ -267,6 +267,108 @@ function CopBrain:set_followup_objective(followup_objective)
 	end
 end
 
+function CopBrain:set_distract_objective(params)
+	if not self._logic_data.cool then
+		return
+	end
+
+	if self._logic_data.distract_objective then
+		return
+	end
+
+	local old_objective = self._logic_data.objective
+	local return_objective = {
+		action_duration = 1,
+		type = "act",
+		stance = "ntl",
+		followup_objective = old_objective,
+		action = {
+			body_part = 1,
+			type = "idle"
+		}
+	}
+	local t = TimerManager:game():time()
+	local duration = params.duration
+
+	if self._logic_data.distract_penalty_t and t < self._logic_data.distract_penalty_t then
+		duration = duration and duration * 0.5
+	end
+
+	local distract_objective = {
+		type = "act",
+		stance = "ntl",
+		haste = "walk",
+		interrupt_dis = -1,
+		attitude = "avoid",
+		distraction = true,
+		followup_objective = return_objective,
+		detection = params.detection,
+		action_duration = duration,
+		fail_clbk = callback(self, self, "clbk_distract_objective_failed"),
+		complete_clbk = callback(self, self, "clbk_distract_objective_complete"),
+		action = {
+			align_sync = true,
+			needs_full_blend = true,
+			type = "act",
+			body_part = 1,
+			variant = params.act,
+			blocks = {
+				light_hurt = -1,
+				hurt = -1,
+				action = -1,
+				heavy_hurt = -1,
+				aim = -1,
+				walk = -1
+			}
+		}
+	}
+
+	if self:is_available_for_assignment(distract_objective) then
+		if old_objective and old_objective.path_data and self:is_advancing() then
+			local path = {
+				points = {}
+			}
+
+			for _, point in ipairs(self._logic_data.internal_data.advancing._simplified_path) do
+				table.insert(path.points, {
+					position = point
+				})
+			end
+
+			table.remove(path.points, 1)
+
+			old_objective.path_data = path
+		end
+
+		self._logic_data.distract_objective = true
+
+		if params.penalty_duration then
+			self._logic_data.distract_penalty_t = t + params.penalty_duration
+		end
+
+		self._unit:sound():say("a07a", true)
+		self._unit:contour():add("friendly", true)
+		self:set_objective(distract_objective)
+	end
+end
+
+function CopBrain:clbk_distract_objective_failed(unit)
+	self._logic_data.distract_objective = false
+
+	self._unit:contour():remove("friendly", true)
+end
+
+function CopBrain:clbk_distract_objective_complete(unit)
+	self._logic_data.distract_objective = false
+
+	self._unit:contour():remove("friendly", true)
+	self._unit:sound():say("a07b", true)
+end
+
+function CopBrain:is_distracted()
+	return self._logic_data.distract_objective
+end
+
 function CopBrain:save(save_data)
 	local my_save_data = {}
 

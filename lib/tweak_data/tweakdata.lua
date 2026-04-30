@@ -919,6 +919,9 @@ function TweakData:init()
 		Color("ffff7800"),
 		Color("ffffff00")
 	}
+
+	self:_setup_access_cameras()
+
 	self.dialog = {
 		WIDTH = 400,
 		HEIGHT = 300,
@@ -2935,6 +2938,27 @@ Play the full version soon to get your full PAYDAY!]],
 			color = Vector3(0, 0, 255)
 		}
 	}
+	self.projectiles.dart_poison = {
+		mass_look_up_modifier = 1.25,
+		push_at_body_index = 0,
+		damage = 30,
+		projectile_trail = true,
+		adjust_z = -100,
+		bullet_class = "PoisonBulletBase",
+		launch_speed = 2500
+	}
+	self.projectiles.dart_daze = deep_clone(self.projectiles.dart_poison)
+	self.projectiles.dart_daze.damage = 1.2
+	self.projectiles.dart_daze.bullet_class = "DazingInstantBulletBase"
+	self.projectiles.dart_revive = deep_clone(self.projectiles.dart_poison)
+	self.projectiles.dart_revive.damage = 0
+	self.projectiles.dart_revive.sweep_radius = 72
+	self.projectiles.dart_revive.bullet_class = "ReviveInstantBulletBase"
+	self.projectiles.laser_watch = {
+		name_id = "bm_prj_laser_watch",
+		range = 68,
+		damage = 12
+	}
 	self.voting = {
 		timeout = 30,
 		cooldown = 50,
@@ -3618,6 +3642,49 @@ function TweakData:set_hud_values()
 		Color(255, 91, 87, 87) / 255,
 		Color(255, 91, 87, 87) / 255
 	}
+end
+
+function TweakData:_setup_access_cameras()
+	self.camera_channels = {
+		bravo = true,
+		charlie = true,
+		alpha = true,
+		delta = true,
+		default = {
+			enter_event = "camera_monitor_engage",
+			leave_on_hurt = true,
+			leave_event = "camera_monitor_leave",
+			change_event = "camera_monitor_change",
+			id = "default"
+		},
+		spy_cameras = {
+			id = "spy_cameras",
+			leave_on_hurt = false,
+			camera_near_range = 1
+		}
+	}
+	self.camera_themes = {
+		default = {
+			noise_texture = "core/textures/noise",
+			noise2_texture = "core/textures/noise",
+			noise_color = Color.black:with_alpha(0.2),
+			noise2_color = Color.black:with_alpha(0.2),
+			tint_color = Color.transparent
+		},
+		spy_camera = {
+			noise_texture = "guis/dlcs/chill/textures/pd2/rooms/safehouse_room_preview_effect",
+			noise2_texture = "guis/dlcs/chill/textures/pd2/rooms/safehouse_room_preview_effect",
+			noise_color = Color.black,
+			noise2_color = Color.black:with_alpha(0.5),
+			tint_color = self.chat_colors[#self.chat_colors]
+		}
+	}
+
+	for i = 1, #self.chat_colors - 1 do
+		local theme_id = "spy_camera_peer_" .. i
+		self.camera_themes[theme_id] = clone(self.camera_themes.spy_camera)
+		self.camera_themes[theme_id].tint_color = self.chat_colors[i]:with_alpha(0.2)
+	end
 end
 
 function TweakData:resolution_changed()

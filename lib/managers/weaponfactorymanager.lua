@@ -827,6 +827,7 @@ function WeaponFactoryManager:_add_part(p_unit, factory_id, part_id, forbidden, 
 			animation_effects = part.animation_effects
 		}
 
+		print("sending request", ids_unit_name)
 		managers.dyn_resource:load(ids_unit, ids_unit_name, "packages/dyn_resources", callback(self, self, "clbk_part_unit_loaded", async_task_data))
 	else
 		if not package then

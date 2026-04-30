@@ -1,4 +1,11 @@
 AIForceAttentionOperatorElement = AIForceAttentionOperatorElement or class(MissionElement)
+AIForceAttentionOperatorElement.LINK_VALUES = {
+	{
+		value = "element_id",
+		output = true,
+		type = "operator"
+	}
+}
 local element_unit_name_id = Idstring("units/dev_tools/mission_elements/ai_force_attention/ai_force_attention")
 local valid_operations = {
 	"disable"

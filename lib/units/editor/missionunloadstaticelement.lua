@@ -1,6 +1,13 @@
 MissionUnloadStaticElement = MissionUnloadStaticElement or class(MissionElement)
 MissionUnloadStaticElement.SAVE_UNIT_POSITION = false
 MissionUnloadStaticElement.SAVE_UNIT_ROTATION = false
+MissionUnloadStaticElement.LINK_VALUES = {
+	{
+		output = true,
+		table_value = "unit_ids",
+		type = "unload"
+	}
+}
 
 function MissionUnloadStaticElement:init(unit)
 	MissionUnloadStaticElement.super.init(self, unit)

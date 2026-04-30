@@ -1,4 +1,12 @@
 AccessCameraUnitElement = AccessCameraUnitElement or class(MissionElement)
+AccessCameraUnitElement.LINK_VALUES = {
+	{
+		value = "camera_u_id",
+		output = true,
+		layer = "Statics",
+		type = "filter"
+	}
+}
 
 function AccessCameraUnitElement:init(unit)
 	AccessCameraUnitElement.super.init(self, unit)

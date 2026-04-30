@@ -921,13 +921,6 @@ function CopActionHurt:init(action_desc, common_data)
 		if Network:is_server() then
 			local radius, filter_name = nil
 			local default_radius = managers.groupai:state():whisper_mode() and tweak_data.upgrades.cop_hurt_alert_radius_whisper or tweak_data.upgrades.cop_hurt_alert_radius
-
-			if action_desc.attacker_unit and alive(action_desc.attacker_unit) and action_desc.attacker_unit:base().upgrade_value then
-				radius = action_desc.attacker_unit:base():upgrade_value("player", "silent_kill") or default_radius
-			elseif action_desc.attacker_unit and alive(action_desc.attacker_unit) and action_desc.attacker_unit:base().is_local_player then
-				radius = managers.player:upgrade_value("player", "silent_kill", default_radius)
-			end
-
 			local new_alert = {
 				"vo_distress",
 				common_data.ext_movement:m_head_pos(),

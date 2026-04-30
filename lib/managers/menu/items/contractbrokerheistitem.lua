@@ -364,7 +364,7 @@ function ContractBrokerHeistItem:get_dlc_name_and_color(job_tweak)
 		local global_value = managers.dlc:dlc_to_global_value(job_tweak.dlc)
 		local gv_tweak = tweak_data.lootdrop.global_values[global_value] or {}
 		local is_gv_dlc = gv_tweak.dlc and true or false
-		local is_dlc_free = not tweak_data.dlc[job_tweak.dlc] or tweak_data.dlc[job_tweak.dlc].free
+		local is_dlc_free = tweak_data.dlc[job_tweak.dlc] and tweak_data.dlc[job_tweak.dlc].free
 
 		if is_gv_dlc and not is_dlc_free then
 			if job_tweak.dlc == "pd2_clan" then

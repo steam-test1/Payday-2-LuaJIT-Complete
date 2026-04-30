@@ -272,6 +272,10 @@ function MenuSceneManager:init()
 		"husk_akimbo1",
 		"husk_akimbo2"
 	}
+	self._global_poses.x_pmm = {
+		"husk_akimbo1",
+		"husk_akimbo2"
+	}
 
 	self:_init_lobby_poses()
 
@@ -3304,7 +3308,10 @@ function MenuSceneManager:spawn_grenade_clbk(grenade_id)
 	self:_set_item_unit(new_unit, nil, nil, nil, nil, {
 		id = grenade_id
 	})
-	mrotation.set_yaw_pitch_roll(self._item_rot_mod, -90, 0, 0)
+
+	local yaw = grenade.menu_scene_yaw or -90
+
+	mrotation.set_yaw_pitch_roll(self._item_rot_mod, yaw, 0, 0)
 
 	return new_unit
 end

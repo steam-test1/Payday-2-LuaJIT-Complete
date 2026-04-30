@@ -43,21 +43,32 @@ function ECMJammerBase:init(unit)
 	self._unit = unit
 	self._position = self._unit:position()
 	self._rotation = self._unit:rotation()
-	self._g_glow_jammer_green = self._unit:get_object(Idstring("g_glow_func1_green"))
-	self._g_glow_jammer_red = self._unit:get_object(Idstring("g_glow_func1_red"))
-	self._g_glow_feedback_green = self._unit:get_object(Idstring("g_glow_func2_green"))
-	self._g_glow_feedback_red = self._unit:get_object(Idstring("g_glow_func2_red"))
+
+	self:_setup_glows()
+
 	self._max_battery_life = tweak_data.upgrades.ecm_jammer_base_battery_life
 	self._battery_life = self._max_battery_life
 	self._low_battery_life = tweak_data.upgrades.ecm_jammer_base_low_battery_life
 	self._feedback_active = false
 	self._jammer_active = false
+	self._duration_multiplier = 1
 
 	if Network:is_client() then
 		self._validate_clbk_id = "ecm_jammer_validate" .. tostring(unit:key())
 
 		managers.enemy:add_delayed_clbk(self._validate_clbk_id, callback(self, self, "_clbk_validate"), Application:time() + 60)
 	end
+end
+
+function ECMJammerBase:_setup_glows()
+	local glow_f1_on = Idstring("g_glow_func1_green")
+	local glow_f1_off = Idstring("g_glow_func1_red")
+	local glow_f2_on = Idstring("g_glow_func2_green")
+	local glow_f2_off = Idstring("g_glow_func2_red")
+	self._g_glow_jammer_green = self._unit:get_object(glow_f1_on) or nil
+	self._g_glow_jammer_red = self._unit:get_object(glow_f1_off) or nil
+	self._g_glow_feedback_green = self._unit:get_object(glow_f2_on) or nil
+	self._g_glow_feedback_red = self._unit:get_object(glow_f2_off) or nil
 end
 
 function ECMJammerBase:_clbk_validate()
@@ -96,6 +107,20 @@ function ECMJammerBase:set_owner(owner)
 		if peer then
 			self._owner_id = peer:id()
 		end
+	end
+
+	if alive(owner) then
+		local duration_mul = 1
+
+		if self._owner_id == 1 then
+			duration_mul = duration_mul * managers.player:upgrade_value("ecm_jammer", "feedback_duration_boost", 1)
+			duration_mul = duration_mul * managers.player:upgrade_value("ecm_jammer", "feedback_duration_boost_2", 1)
+		else
+			duration_mul = duration_mul * (owner:base():upgrade_value("ecm_jammer", "feedback_duration_boost") or 1)
+			duration_mul = duration_mul * (owner:base():upgrade_value("ecm_jammer", "feedback_duration_boost_2") or 1)
+		end
+
+		self._duration_multiplier = duration_mul
 	end
 
 	self:contour_interaction()
@@ -281,8 +306,14 @@ end
 function ECMJammerBase:_set_battery_empty()
 	self._battery_empty = true
 
-	self._g_glow_jammer_green:set_visibility(false)
-	self._g_glow_jammer_red:set_visibility(false)
+	if self._g_glow_jammer_green then
+		self._g_glow_jammer_green:set_visibility(false)
+	end
+
+	if self._g_glow_jammer_red then
+		self._g_glow_jammer_red:set_visibility(false)
+	end
+
 	self:set_active(false)
 
 	if Network:is_server() then
@@ -303,7 +334,9 @@ end
 function ECMJammerBase:_set_battery_low()
 	self._battery_low = true
 
-	self._g_glow_jammer_red:set_visibility(true)
+	if self._g_glow_jammer_red then
+		self._g_glow_jammer_red:set_visibility(true)
+	end
 
 	if not self._unit:contour():is_flashing() then
 		self._unit:contour():flash("deployable_active", 0.15)
@@ -357,17 +390,7 @@ function ECMJammerBase:_set_feedback_active(state)
 			self._feedback_clbk_id = "ecm_feedback" .. tostring(self._unit:key())
 			self._feedback_interval = tweak_data.upgrades.ecm_feedback_interval or 1.5
 			self._feedback_range = tweak_data.upgrades.ecm_jammer_base_range
-			local duration_mul = 1
-
-			if self._owner_id == 1 then
-				duration_mul = duration_mul * managers.player:upgrade_value("ecm_jammer", "feedback_duration_boost", 1)
-				duration_mul = duration_mul * managers.player:upgrade_value("ecm_jammer", "feedback_duration_boost_2", 1)
-			else
-				duration_mul = duration_mul * (self:owner():base():upgrade_value("ecm_jammer", "feedback_duration_boost") or 1)
-				duration_mul = duration_mul * (self:owner():base():upgrade_value("ecm_jammer", "feedback_duration_boost_2") or 1)
-			end
-
-			self._feedback_duration = math.lerp(tweak_data.upgrades.ecm_feedback_min_duration or 15, tweak_data.upgrades.ecm_feedback_max_duration or 20, math.random()) * duration_mul
+			self._feedback_duration = math.lerp(tweak_data.upgrades.ecm_feedback_min_duration or 15, tweak_data.upgrades.ecm_feedback_max_duration or 20, math.random()) * self._duration_multiplier
 			self._feedback_expire_t = t + self._feedback_duration
 			local first_impact_t = t + math.lerp(0.1, 1, math.random())
 
@@ -399,7 +422,6 @@ function ECMJammerBase:_set_feedback_active(state)
 	end
 
 	if state then
-		print("PUKE!")
 		self._g_glow_feedback_green:set_visibility(true)
 		self._g_glow_feedback_red:set_visibility(false)
 

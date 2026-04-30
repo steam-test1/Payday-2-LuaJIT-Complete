@@ -845,6 +845,12 @@ function TweakDataVR:init(tweak_data)
 			},
 			elastic = {
 				grip = "grip_wpn"
+			},
+			pmm = {
+				position = Vector3(-0.5, 2, 1)
+			},
+			x_pmm = {
+				position = Vector3(-0.5, 2, 1)
 			}
 		}
 	}
@@ -891,6 +897,11 @@ function TweakDataVR:init(tweak_data)
 			grip = "grip_wpn",
 			position = Vector3(0, 0, 3),
 			rotation = Rotation(180, 110, -40)
+		},
+		laser_watch = {
+			grip = "grip_wpn",
+			position = Vector3(0, 0, 4.5),
+			rotation = Rotation(0, -90, 0)
 		}
 	}
 	self.magazine_offsets = {
@@ -5115,6 +5126,147 @@ function TweakDataVR:init(tweak_data)
 							from = 3
 						}
 					}
+				}
+			}
+		},
+		welrod = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_welrod_mag_flick"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, -5, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_welrod_mag_contact",
+					visible = true,
+					pos = Vector3(0, -5, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, -2, -7)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, -2, -7)
+				},
+				{
+					time = 0.6,
+					sound = "wp_welrod_bolt_lock",
+					pos = Vector3()
+				}
+			}
+		},
+		pmm = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_g17_clip_slide_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, -5, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_g17_clip_slide_in",
+					visible = true,
+					pos = Vector3(0, -5, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, -2.5, -10)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, -2.5, -10)
+				},
+				{
+					time = 0.6,
+					sound = "wp_g17_lever_release",
+					pos = Vector3()
+				}
+			}
+		},
+		x_pmm = {
+			start = {
+				{
+					time = 0,
+					sound = "wp_g17_clip_slide_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, -5, -20)
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_g17_clip_slide_in",
+					visible = true,
+					pos = Vector3(0, -5, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, -2.5, -10)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, -2.5, -10)
+				},
+				{
+					time = 0.6,
+					sound = "wp_g17_lever_release",
+					pos = Vector3()
+				}
+			}
+		},
+		speen = {
+			start = {
+				{
+					time = 0,
+					sound = "sub2k_mag_out"
+				},
+				{
+					drop_mag = true,
+					time = 0.05,
+					visible = false,
+					pos = Vector3(0, -5, -20),
+					rot = Rotation()
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "sub2k_mag_in",
+					visible = true,
+					pos = Vector3(0, -7, -20)
+				},
+				{
+					time = 0.1,
+					pos = Vector3(0, -1.5, -4.5)
+				},
+				{
+					time = 0.56,
+					pos = Vector3(0, -1.5, -4.5)
+				},
+				{
+					time = 0.6,
+					sound = "sub2k_release_lever",
+					pos = Vector3()
 				}
 			}
 		},

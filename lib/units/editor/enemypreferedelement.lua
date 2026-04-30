@@ -1,9 +1,17 @@
 EnemyPreferedAddUnitElement = EnemyPreferedAddUnitElement or class(MissionElement)
 EnemyPreferedAddUnitElement.SAVE_UNIT_POSITION = false
 EnemyPreferedAddUnitElement.SAVE_UNIT_ROTATION = false
-EnemyPreferedAddUnitElement.LINK_ELEMENTS = {
-	"spawn_points",
-	"spawn_groups"
+EnemyPreferedAddUnitElement.LINK_VALUES = {
+	{
+		output = true,
+		table_value = "spawn_groups",
+		type = "spawn_group"
+	},
+	{
+		output = true,
+		table_value = "spawn_points",
+		type = "spawn_point"
+	}
 }
 
 function EnemyPreferedAddUnitElement:init(unit)
@@ -94,18 +102,6 @@ function EnemyPreferedAddUnitElement:_delete_id_from_table(id, table_name)
 	end
 end
 
-function EnemyPreferedAddUnitElement:get_links_to_unit(...)
-	EnemyPreferedAddUnitElement.super.get_links_to_unit(self, ...)
-
-	if self._hed.spawn_groups then
-		self:_get_links_of_type_from_elements(self._hed.spawn_groups, "spawn_group", ...)
-	end
-
-	if self._hed.spawn_points then
-		self:_get_links_of_type_from_elements(self._hed.spawn_points, "spawn_point", ...)
-	end
-end
-
 function EnemyPreferedAddUnitElement:add_triggers(vc)
 	vc:add_trigger(Idstring("lmb"), callback(self, self, "add_element"))
 end
@@ -185,8 +181,12 @@ end
 EnemyPreferedRemoveUnitElement = EnemyPreferedRemoveUnitElement or class(MissionElement)
 EnemyPreferedRemoveUnitElement.SAVE_UNIT_POSITION = false
 EnemyPreferedRemoveUnitElement.SAVE_UNIT_ROTATION = false
-EnemyPreferedRemoveUnitElement.LINK_ELEMENTS = {
-	"elements"
+EnemyPreferedRemoveUnitElement.LINK_VALUES = {
+	{
+		output = true,
+		table_value = "elements",
+		type = "operator"
+	}
 }
 
 function EnemyPreferedRemoveUnitElement:init(unit)
@@ -233,14 +233,6 @@ function EnemyPreferedRemoveUnitElement:add_element()
 		else
 			table.insert(self._hed.elements, id)
 		end
-	end
-end
-
-function EnemyPreferedRemoveUnitElement:get_links_to_unit(...)
-	EnemyPreferedRemoveUnitElement.super.get_links_to_unit(self, ...)
-
-	if self._hed.elements then
-		self:_get_links_of_type_from_elements(self._hed.elements, "operator", ...)
 	end
 end
 

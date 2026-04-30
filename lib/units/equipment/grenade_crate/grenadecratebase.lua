@@ -122,13 +122,18 @@ function GrenadeCrateBase:take_grenade(unit)
 
 	if can_take_grenade == 1 then
 		unit:sound():play("pickup_ammo")
-		managers.player:add_grenade_amount(1)
+
+		local grenade_id = managers.blackmarket:equipped_grenade()
+		local grenade_tweak = tweak_data.blackmarket.projectiles[grenade_id]
+		local pickup_amount = grenade_tweak.pickup_amount or 1
+
+		managers.player:add_grenade_amount(pickup_amount)
 		managers.network:session():send_to_peers_synched("sync_unit_event_id_16", self._unit, "base", 1)
 		managers.player:register_grenade(managers.network:session():local_peer():id())
 
 		self._grenade_amount = self._grenade_amount - 1
 
-		print("Took " .. 1 .. " grenades, " .. self._grenade_amount .. " left")
+		print("Took " .. pickup_amount .. " grenades, " .. self._grenade_amount .. " left")
 	end
 
 	if self._grenade_amount <= 0 then

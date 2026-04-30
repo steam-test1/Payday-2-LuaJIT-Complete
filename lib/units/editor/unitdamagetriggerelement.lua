@@ -1,4 +1,11 @@
 UnitDamageTriggerUnitElement = UnitDamageTriggerUnitElement or class(MissionElement)
+UnitDamageTriggerUnitElement.LINK_VALUES = {
+	{
+		layer = "Statics",
+		table_value = "unit_ids",
+		type = "trigger"
+	}
+}
 
 function UnitDamageTriggerUnitElement:init(unit)
 	UnitDamageTriggerUnitElement.super.init(self, unit)

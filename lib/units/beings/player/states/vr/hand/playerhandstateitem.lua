@@ -152,6 +152,8 @@ function PlayerHandStateItem:at_enter(prev_state, params)
 			self._dynamic_geometry:set_visibility(true)
 		end
 
+		local projectile_entry = managers.blackmarket:equipped_projectile()
+		self._throwable_data = tweak_data.blackmarket.projectiles[projectile_entry]
 		local offset = tweak_data.vr:get_offset_by_id(managers.blackmarket:equipped_grenade())
 
 		if offset then
@@ -291,7 +293,7 @@ function PlayerHandStateItem:update(t, dt)
 
 	local controller = managers.vr:hand_state_machine():controller()
 
-	if controller:get_input_pressed("use_item_vr") and self._item_type == "throwable" and not managers.player:player_unit():hand():check_hand_through_wall(self:hsm():hand_id()) then
+	if controller:get_input_pressed("use_item_vr") and self._item_type == "throwable" and not managers.player:player_unit():hand():check_hand_through_wall(self:hsm():hand_id()) and (not self._throwable_data or not self._throwable_data.reuse_expire_t) then
 		managers.player:player_unit():equipment():throw_projectile(self._hand_unit)
 
 		if not managers.vr:get_setting("keep_items_in_hand") or not managers.player:can_throw_grenade() then
@@ -326,6 +328,26 @@ function PlayerHandStateItem:update(t, dt)
 			self._hand_unit:damage():run_sequence_simple("ready_warning")
 		else
 			self._hand_unit:damage():run_sequence_simple("ready")
+		end
+	elseif self._item_type == "throwable" then
+		if self._throwable_reuse_t and self._throwable_reuse_t <= t then
+			local player = managers.player:player_unit()
+			local reuse_expire_t = player:equipment():use_throwable(self._item_unit)
+
+			if not managers.player:can_throw_grenade() then
+				self:_remove_unit()
+				self:hsm():change_to_default()
+			elseif controller:get_input_bool("use_item_vr") then
+				self._throwable_reuse_t = t + reuse_expire_t
+			elseif alive(self._item_unit) then
+				self._throwable_reuse_t = nil
+
+				self._item_unit:damage():has_then_run_sequence_simple("deactivate")
+			end
+		elseif self._throwable_data and self._throwable_data.reuse_expire_t and alive(self._item_unit) and controller:get_input_pressed("use_item_vr") then
+			self._throwable_reuse_t = t + self._throwable_data.reuse_expire_t
+
+			self._item_unit:damage():has_then_run_sequence_simple("activate")
 		end
 	elseif self._item_type == "magazine" then
 		local player = managers.player:player_unit()

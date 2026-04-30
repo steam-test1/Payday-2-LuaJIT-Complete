@@ -180,7 +180,7 @@ function UpgradesTweakData:_init_pd2_values()
 	self.grenade_crate_base = 3
 	self.max_grenade_amount = 3
 	self.bodybag_crate_base = 3
-	self.cop_hurt_alert_radius_whisper = 600
+	self.cop_hurt_alert_radius_whisper = 1
 	self.cop_hurt_alert_radius = 400
 	self.drill_alert_radius = 2500
 	self.taser_malfunction_min = 5
@@ -597,7 +597,7 @@ function UpgradesTweakData:_init_pd2_values()
 		1.4
 	}
 	self.values.saw.enemy_slicer = {
-		7
+		1
 	}
 	self.values.player.melee_damage_health_ratio_multiplier = {
 		2.5
@@ -2629,7 +2629,7 @@ function UpgradesTweakData:_init_pd2_values()
 		carbon_blade = {
 			{
 				"20%",
-				"50%"
+				"80%"
 			},
 			{
 				"50%",
@@ -5156,7 +5156,8 @@ function UpgradesTweakData:init(tweak_data)
 				"cs",
 				"brick",
 				"ostry",
-				"r700"
+				"r700",
+				"laser_watch"
 			}
 		},
 		[24] = {
@@ -5260,7 +5261,11 @@ function UpgradesTweakData:init(tweak_data)
 				"holt",
 				"x_holt",
 				"x_korth",
-				"welrod"
+				"welrod",
+				"pmm",
+				"x_pmm",
+				"speen",
+				"dart"
 			}
 		},
 		[31] = {
@@ -5683,6 +5688,7 @@ function UpgradesTweakData:init(tweak_data)
 	self:_first_aid_kit_definitions()
 	self:_bodybags_bag_definitions()
 	self:_grenade_crate_definitions()
+	self:_spy_camera_definitions()
 	self:_rep_definitions()
 	self:_jowi_definitions()
 	self:_x_1911_definitions()
@@ -5913,6 +5919,9 @@ function UpgradesTweakData:init(tweak_data)
 	self:_m60_weapon_definitions()
 	self:_r700_weapon_definitions()
 	self:_welrod_weapon_definitions()
+	self:_pmm_weapon_definitions()
+	self:_speen_weapon_definitions()
+	self:_dart_weapon_definitions()
 	self:_melee_weapon_definitions()
 	self:_grenades_definitions()
 	self:_carry_definitions()
@@ -12453,6 +12462,10 @@ function UpgradesTweakData:_grenades_definitions()
 		dlc = "mxm",
 		category = "grenade"
 	}
+	self.definitions.laser_watch = {
+		dlc = "esp",
+		category = "grenade"
+	}
 end
 
 function UpgradesTweakData:_weapon_definitions()
@@ -14171,10 +14184,10 @@ function UpgradesTweakData.mrwi_deck9_options()
 			tier = 7
 		},
 		{
+			desc_id = "menu_deck23_9_3_desc",
 			short_id = "menu_deck23_9_3_short",
 			tier = 1,
 			tree = 3,
-			desc_id = "menu_deck23_9_3_desc",
 			upgrades = {
 				"player_tier_armor_multiplier_3",
 				"player_armor_regen_timer_multiplier_passive"
@@ -14204,15 +14217,8 @@ function UpgradesTweakData.mrwi_deck9_options()
 		},
 		{
 			desc_id = "menu_deck23_9_7_desc",
-			short_id = "menu_deck23_9_7_short",
 			name_id = "menu_deck7_7",
-			upgrades = {
-				"player_tier_dodge_chance_1",
-				"player_stand_still_crouch_camouflage_bonus_1",
-				"player_stand_still_crouch_camouflage_bonus_2",
-				"player_stand_still_crouch_camouflage_bonus_3",
-				"player_alarm_pager_speed_multiplier"
-			},
+			short_id = "menu_deck23_9_7_short",
 			custom_editable_descs = {
 				"20%",
 				"20%",
@@ -14221,6 +14227,13 @@ function UpgradesTweakData.mrwi_deck9_options()
 			icon_xy = {
 				1,
 				4
+			},
+			upgrades = {
+				"player_tier_dodge_chance_1",
+				"player_stand_still_crouch_camouflage_bonus_1",
+				"player_stand_still_crouch_camouflage_bonus_2",
+				"player_stand_still_crouch_camouflage_bonus_3",
+				"player_alarm_pager_speed_multiplier"
 			}
 		},
 		{
@@ -14303,7 +14316,7 @@ function UpgradesTweakData.mrwi_deck9_options()
 				"temporary_armor_break_invulnerable_2"
 			},
 			custom_editable_descs = {
-				[2.0] = "30"
+				[2.0] = "45"
 			}
 		},
 		{
@@ -15559,6 +15572,16 @@ function UpgradesTweakData:_grenade_crate_definitions()
 		dlc = "mxm",
 		category = "equipment",
 		name_id = "menu_equipment_grenade_crate"
+	}
+end
+
+function UpgradesTweakData:_spy_camera_definitions()
+	self.definitions.spy_camera = {
+		equipment_id = "spy_camera",
+		slot = 1,
+		dlc = "esp",
+		category = "equipment",
+		name_id = "menu_equipment_spy_camera"
 	}
 end
 
@@ -16854,6 +16877,39 @@ function UpgradesTweakData:_welrod_weapon_definitions()
 	self.definitions.welrod = {
 		factory_id = "wpn_fps_pis_welrod",
 		weapon_id = "welrod",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_pmm_weapon_definitions()
+	self.definitions.pmm = {
+		dlc = "esp",
+		factory_id = "wpn_fps_pis_pmm",
+		weapon_id = "pmm",
+		category = "weapon"
+	}
+	self.definitions.x_pmm = {
+		dlc = "esp",
+		factory_id = "wpn_fps_pis_x_pmm",
+		weapon_id = "x_pmm",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_speen_weapon_definitions()
+	self.definitions.speen = {
+		dlc = "esp",
+		factory_id = "wpn_fps_smg_speen",
+		weapon_id = "speen",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_dart_weapon_definitions()
+	self.definitions.dart = {
+		dlc = "esp",
+		factory_id = "wpn_fps_spe_dart",
+		weapon_id = "dart",
 		category = "weapon"
 	}
 end

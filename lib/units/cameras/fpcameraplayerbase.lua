@@ -1541,6 +1541,16 @@ function FPCameraPlayerBase:throw_grenade(unit)
 	end
 end
 
+function FPCameraPlayerBase:anim_clbk_grenade_sequence(unit, sequence)
+	if alive(self._grenade_unit) then
+		local grenade_damage_ext = self._grenade_unit:damage()
+
+		if grenade_damage_ext and grenade_damage_ext:has_sequence(sequence) then
+			grenade_damage_ext:run_sequence_simple(sequence)
+		end
+	end
+end
+
 function FPCameraPlayerBase:spawn_grenade()
 	if alive(self._grenade_unit) then
 		return

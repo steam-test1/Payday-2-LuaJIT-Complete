@@ -1,6 +1,13 @@
 MissionLoadDelayedElement = MissionLoadDelayedElement or class(MissionElement)
 MissionLoadDelayedElement.SAVE_UNIT_POSITION = false
 MissionLoadDelayedElement.SAVE_UNIT_ROTATION = false
+MissionLoadDelayedElement.LINK_VALUES = {
+	{
+		output = true,
+		table_value = "unit_ids",
+		type = "load"
+	}
+}
 
 function MissionLoadDelayedElement:init(unit)
 	MissionLoadDelayedElement.super.init(self, unit)

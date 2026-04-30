@@ -290,6 +290,25 @@ function WeaponColorTemplates._setup_color_skin_weapons(tweak_data)
 	weapons.wa2000.pattern_tweak = Vector3(1.92225, 0, 0)
 	weapons.winchester1874.pattern_pos = Vector3(-0.451705, 0.301932, 0)
 	weapons.winchester1874.pattern_tweak = Vector3(1.30217, 0, 0)
+	weapons.pmm.pattern_tweak = Vector3(2, 0, 0)
+	weapons.pmm.types = {
+		slide = {
+			pattern_tweak = Vector3(1.5, 0, 1)
+		},
+		grip = {
+			pattern_tweak = Vector3(0.9, 0, 1)
+		}
+	}
+	weapons.pmm.parts = {
+		wpn_fps_pis_pmm_flashlight_mount = {
+			[Idstring("mat_mount"):key()] = {
+				pattern_tweak = Vector3(0.5, 0, 1)
+			}
+		}
+	}
+	weapons.x_pmm.pattern_tweak = deep_clone(weapons.pmm.pattern_tweak)
+	weapons.x_pmm.types = deep_clone(weapons.pmm.types)
+	weapons.x_pmm.parts = deep_clone(weapons.pmm.parts)
 	weapons.peacemaker.pattern_tweak = Vector3(1, 0, 0)
 	weapons.peacemaker.uv_scale = Vector3(1, 1, 0.131887)
 	weapons.x_judge.pattern_tweak = Vector3(1, 0, 0)

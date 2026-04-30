@@ -3848,7 +3848,7 @@ local material_variables = {
 
 function HuskPlayerMovement:_spawn_magazine_unit(part_id, unit_name, pos, rot)
 	local equipped_weapon = self._unit:inventory():equipped_unit()
-	local is_thq = managers.weapon_factory:use_thq_weapon_parts()
+	local is_thq = self:allow_dropped_magazines()
 	local use_cc_material_config = is_thq and equipped_weapon and equipped_weapon:base()._cosmetics_data and true or false
 	local material_config_ids = Idstring("material_config")
 	local magazine_unit = World:spawn_unit(unit_name, pos, rot)
@@ -5409,6 +5409,8 @@ function HuskPlayerMovement:sync_interaction_anim_start(tweak)
 
 	if tweak == "revive" then
 		self:play_redirect("revive_enter")
+	elseif tweak == "laser_watch" then
+		self:play_redirect("laser_watch_enter")
 	else
 		self:play_redirect("interact_enter")
 	end
@@ -5419,6 +5421,8 @@ function HuskPlayerMovement:sync_interaction_anim_end()
 
 	if self._interaction_tweak == "revive" then
 		self:play_redirect("revive_exit")
+	elseif self._interaction_tweak == "laser_watch" then
+		self:play_redirect("laser_watch_exit")
 	else
 		self:play_redirect("interact_exit")
 	end
@@ -5434,6 +5438,9 @@ HuskPlayerMovement._gadgets = {
 	},
 	needle = {
 		Idstring("units/payday2/characters/npc_acc_syringe/npc_acc_syringe")
+	},
+	laser_watch = {
+		Idstring("units/pd2_dlc_esp/weapons/wpn_prj_watch_husk/wpn_prj_watch_husk")
 	}
 }
 
@@ -5446,6 +5453,8 @@ function HuskPlayerMovement:spawn_wanted_items()
 		self._wanted_items = nil
 	end
 end
+
+local ids_unit = Idstring("unit")
 
 function HuskPlayerMovement:_equip_item(item_type, align_place, droppable)
 	local align_name = self._gadgets.aligns[align_place]
@@ -5466,6 +5475,13 @@ function HuskPlayerMovement:_equip_item(item_type, align_place, droppable)
 	end
 
 	local item_name = available_items[math.random(available_items)]
+
+	if not PackageManager:has(ids_unit, item_name) then
+		Application:error("[HuskPlayerMovement:_equip_item] Trying to spawn an unloaded item:", item_name)
+
+		return
+	end
+
 	local item_unit = World:spawn_unit(item_name, align_obj:position(), align_obj:rotation())
 
 	self._unit:link(align_name, item_unit, item_unit:orientation_object():name())

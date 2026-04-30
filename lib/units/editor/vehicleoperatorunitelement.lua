@@ -19,6 +19,15 @@ table.list_append(VehicleOperatorUnitElement.ACTIONS, {
 	"disable_player_exit"
 })
 
+VehicleOperatorUnitElement.LINK_VALUES = {
+	{
+		layer = "Statics",
+		output = true,
+		table_value = "elements",
+		type = "operator"
+	}
+}
+
 function VehicleOperatorUnitElement:init(unit)
 	VehicleOperatorUnitElement.super.init(self, unit)
 

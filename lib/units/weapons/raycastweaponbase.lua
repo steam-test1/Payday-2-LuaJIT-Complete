@@ -3343,3 +3343,279 @@ InstantSnowballBase.EFFECT_PARAMS = {
 	idstr_decal = tweak_data.projectiles.xmas_snowball.idstr_decal,
 	idstr_effect = tweak_data.projectiles.xmas_snowball.idstr_effect
 }
+DazingInstantBulletBase = DazingInstantBulletBase or class(InstantBulletBase)
+DazingInstantBulletBase.id = "daze"
+
+function DazingInstantBulletBase:_get_sound_and_effects_params(...)
+	local params = DazingInstantBulletBase.super._get_sound_and_effects_params(self, ...)
+	params.no_decal = true
+
+	return params
+end
+
+function DazingInstantBulletBase:on_collision(col_ray, weapon_unit, user_unit, damage, blank, no_sound)
+	local hit_unit = col_ray.unit
+	user_unit = alive(user_unit) and user_unit or nil
+
+	if user_unit and self:chk_friendly_fire(hit_unit, user_unit) then
+		return "friendly_fire"
+	end
+
+	weapon_unit = alive(weapon_unit) and weapon_unit or nil
+	local dmg_ext = hit_unit:character_damage()
+	local play_impact_flesh = not dmg_ext or not dmg_ext._no_blood
+
+	if play_impact_flesh then
+		self:play_impact_sound_and_effects(weapon_unit, col_ray, no_sound)
+	end
+
+	if not blank and weapon_unit and dmg_ext then
+		if CopDamage.is_civilian(hit_unit:base()._tweak_table) then
+			local action_data = {
+				damage = 0,
+				variant = "hurt_sick",
+				attacker_unit = user_unit,
+				origin = alive(user_unit) and user_unit:position() or Vector3(),
+				weapon_unit = weapon_unit,
+				col_ray = col_ray
+			}
+
+			hit_unit:character_damage():damage_bullet(action_data)
+
+			return {
+				variant = "bullet",
+				col_ray = col_ray
+			}
+		end
+
+		if Network:is_server() then
+			DazingInstantBulletBase.sync_on_collision(col_ray, weapon_unit, user_unit)
+		else
+			local selection_index = nil
+
+			if weapon_unit then
+				local base_ext = weapon_unit:base()
+				selection_index = base_ext and base_ext.selection_index and base_ext:selection_index()
+				weapon_unit = weapon_unit:id() ~= -1 and weapon_unit or nil
+			end
+
+			if selection_index and selection_index > 0 then
+				managers.network:session():send_to_host("sync_projectile_special_collision", user_unit, weapon_unit, selection_index, hit_unit, col_ray.body, col_ray.position, col_ray.ray, col_ray.normal)
+			end
+		end
+
+		return {
+			variant = "daze",
+			col_ray = col_ray
+		}
+	end
+
+	return nil
+end
+
+function DazingInstantBulletBase.sync_on_collision(col_ray, weapon_unit, user_unit)
+	if not Network:is_server() then
+		return
+	end
+
+	local hit_unit = col_ray.unit
+
+	if not hit_unit then
+		return
+	end
+
+	local my_team = hit_unit:movement():team()
+
+	if my_team.friends.criminal1 then
+		return false
+	end
+
+	local weapons_hot = managers.groupai:state():enemy_weapons_hot()
+	local base_ext = hit_unit:base()
+
+	if weapons_hot or not hit_unit:movement():cool() then
+		if hit_unit:character_damage().stun_hit then
+			local can_stun = true
+			local brain_ext = hit_unit:brain()
+
+			if brain_ext and brain_ext.is_hostage and brain_ext:is_hostage() then
+				can_stun = false
+			end
+
+			if base_ext and base_ext.char_tweak and base_ext:char_tweak().immune_to_concussion then
+				can_stun = false
+			end
+
+			if can_stun then
+				local action_data = {
+					damage = 0,
+					variant = "stun",
+					attacker_unit = user_unit,
+					weapon_unit = weapon_unit,
+					col_ray = col_ray
+				}
+
+				hit_unit:character_damage():stun_hit(action_data)
+			end
+		end
+
+		return
+	end
+
+	if base_ext and base_ext.char_tweak and base_ext:char_tweak().immune_to_daze then
+		return
+	end
+
+	local brain_ext = hit_unit:brain()
+
+	if brain_ext and brain_ext.set_distract_objective then
+		local base_ext = hit_unit:base()
+		local char_tweak = base_ext:char_tweak()
+		local objective = {
+			act = "distraction_dazed",
+			duration = 6,
+			penalty_duration = 40,
+			detection = char_tweak.detection.dazed
+		}
+
+		brain_ext:set_distract_objective(objective)
+
+		local alert_rad = 260
+		local access_flag = managers.groupai:state():get_unit_type_filter("law_enforcer")
+		local new_alert = {
+			"aggression",
+			col_ray.position,
+			alert_rad,
+			access_flag,
+			hit_unit
+		}
+
+		managers.groupai:state():propagate_alert(new_alert)
+	end
+end
+
+ReviveInstantBulletBase = ReviveInstantBulletBase or class(InstantBulletBase)
+ReviveInstantBulletBase.GENEROCITY_RADIUS = 130
+ReviveInstantBulletBase.GENEROCITY_DOT = 0.82
+ReviveInstantBulletBase.id = "revive"
+
+function ReviveInstantBulletBase:_get_sound_and_effects_params(...)
+	local params = ReviveInstantBulletBase.super._get_sound_and_effects_params(self, ...)
+	params.no_decal = true
+
+	return params
+end
+
+function ReviveInstantBulletBase:on_collision(col_ray, weapon_unit, user_unit, damage, blank, no_sound)
+	local hit_unit = col_ray.unit
+	user_unit = alive(user_unit) and user_unit or nil
+
+	if user_unit and self:chk_friendly_fire(hit_unit, user_unit) then
+		return "friendly_fire"
+	end
+
+	weapon_unit = alive(weapon_unit) and weapon_unit or nil
+	local dmg_ext = hit_unit:character_damage()
+
+	if not dmg_ext then
+		local slotmask = managers.slot:get_mask("criminals_no_deployables")
+		local criminals = World:find_units("sphere", col_ray.position, self.GENEROCITY_RADIUS, slotmask)
+
+		for _, criminal_unit in ipairs(criminals) do
+			local needs_revive = false
+
+			if criminal_unit:base() and criminal_unit:base().is_husk_player then
+				needs_revive = criminal_unit:interaction():active() and criminal_unit:movement():need_revive() and criminal_unit:movement():current_state_name() ~= "arrested"
+			elseif criminal_unit:character_damage() and criminal_unit:character_damage().need_revive then
+				needs_revive = criminal_unit:character_damage():need_revive()
+			end
+
+			if needs_revive then
+				mvector3.set(tmp_vec1, criminal_unit:position())
+				mvector3.subtract(tmp_vec1, col_ray.position)
+				mvector3.normalize(tmp_vec1)
+
+				local criminal_fwd = -criminal_unit:rotation():y()
+				local dot = mvector3.dot(criminal_fwd, tmp_vec1)
+
+				if self.GENEROCITY_DOT <= dot then
+					hit_unit = criminal_unit
+					dmg_ext = hit_unit:character_damage()
+					col_ray.position = criminal_unit:position()
+					col_ray.unit = criminal_unit
+					col_ray.body = nil
+
+					break
+				end
+			end
+		end
+	end
+
+	local play_impact_flesh = not dmg_ext or not dmg_ext._no_blood
+
+	if play_impact_flesh then
+		self:play_impact_sound_and_effects(weapon_unit, col_ray, no_sound)
+	end
+
+	if not blank and weapon_unit and dmg_ext then
+		ReviveInstantBulletBase:give_revive_damage(hit_unit, user_unit)
+
+		return {
+			variant = "revive",
+			col_ray = col_ray
+		}
+	end
+
+	return nil
+end
+
+function ReviveInstantBulletBase:give_revive_damage(hit_unit, user_unit)
+	if not hit_unit then
+		return
+	end
+
+	local base_ext = hit_unit:base()
+	local dmg_ext = hit_unit:character_damage()
+
+	if not base_ext or not dmg_ext then
+		return
+	end
+
+	if dmg_ext:dead() then
+		return
+	end
+
+	local needs_revive = nil
+
+	if base_ext.is_husk_player then
+		needs_revive = hit_unit:interaction():active() and hit_unit:movement():need_revive() and hit_unit:movement():current_state_name() ~= "arrested"
+	elseif dmg_ext.need_revive then
+		needs_revive = dmg_ext:need_revive()
+	end
+
+	if needs_revive then
+		hit_unit:interaction():interact(user_unit)
+
+		return
+	end
+
+	if not hit_unit:movement().cool or hit_unit:movement():cool() then
+		return
+	end
+
+	local my_team = hit_unit:movement():team()
+
+	if my_team.friends.criminal1 then
+		return
+	end
+
+	local char_tweak = base_ext and base_ext.char_tweak and base_ext:char_tweak()
+
+	if not char_tweak or char_tweak.can_be_healed == false then
+		return false
+	end
+
+	if dmg_ext and dmg_ext.do_medic_heal_and_action then
+		dmg_ext:do_medic_heal_and_action(true)
+	end
+end

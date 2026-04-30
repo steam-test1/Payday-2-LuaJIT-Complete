@@ -200,6 +200,7 @@ end
 
 function MissionAssetsManager:on_simulation_ended()
 	self:reset()
+	self:reload_textures()
 end
 
 function MissionAssetsManager:on_profile_switch()

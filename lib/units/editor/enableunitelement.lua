@@ -1,4 +1,12 @@
 EnableUnitUnitElement = EnableUnitUnitElement or class(MissionElement)
+EnableUnitUnitElement.LINK_VALUES = {
+	{
+		layer = "Statics",
+		output = true,
+		table_value = "unit_ids",
+		type = "enable"
+	}
+}
 
 function EnableUnitUnitElement:init(unit)
 	EnableUnitUnitElement.super.init(self, unit)

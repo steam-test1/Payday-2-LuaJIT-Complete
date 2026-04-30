@@ -5213,6 +5213,14 @@ function GuiTweakData:init(tweak_data)
 	self.new_heists = {
 		limit = 5
 	}
+
+	table.insert(self.new_heists, {
+		name_id = "menu_nh_esp_dlc",
+		texture_path = "guis/dlcs/esp/textures/pd2/new_heists/esp_dlc_banner",
+		epic_url = "https://pd2.link/EspionageWeaponPackE",
+		url = "https://pd2.link/EspionageWeaponPackS"
+	})
+
 	local distribution_id = SystemInfo:distribution()
 
 	if distribution_id == Idstring("STEAM") then

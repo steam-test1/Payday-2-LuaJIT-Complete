@@ -160,6 +160,15 @@ function HUDAccessCamera:init(hud, full_hud)
 		},
 		color = Color.black:with_alpha(0.2)
 	})
+	self._full_hud_panel:rect({
+		blend_mode = "add",
+		name = "tint",
+		halign = "scale",
+		valign = "scale",
+		w = size,
+		h = size,
+		color = Color.transparent
+	})
 end
 
 function HUDAccessCamera:start()
@@ -187,6 +196,7 @@ end
 
 function HUDAccessCamera:set_destroyed(destroyed, no_feed)
 	self._full_hud_panel:child("destroyed_rect"):set_visible(destroyed)
+	self._full_hud_panel:child("tint"):set_visible(not destroyed)
 	self._hud_panel:child("destroyed_rect_bg"):set_visible(destroyed)
 	self._hud_panel:child("destroyed_text"):set_text(managers.localization:text(no_feed and "hud_access_camera_no_feed" or "hud_access_camera_feed_lost"))
 	self._hud_panel:child("destroyed_text"):set_visible(destroyed)
@@ -194,6 +204,53 @@ end
 
 function HUDAccessCamera:set_camera_name(name)
 	self._hud_panel:child("camera_name"):set_text(utf8.to_upper(name))
+end
+
+function HUDAccessCamera:set_camera_theme(theme)
+	local theme_data = tweak_data.camera_themes[theme] or tweak_data.camera_themes.default
+
+	if not theme_data then
+		return
+	end
+
+	if self._theme == theme then
+		return
+	end
+
+	self._theme = theme
+	local size = self._full_hud_panel:w() + 50
+	local tint = self._full_hud_panel:child("tint")
+	local noise = self._full_hud_panel:child("noise")
+	local noise2 = self._full_hud_panel:child("noise2")
+
+	noise:set_image(theme_data.noise_texture, 0, 0, size, size)
+	noise:set_color(theme_data.noise_color)
+	noise2:set_image(theme_data.noise2_texture, 0, 0, size, size)
+	noise2:set_color(theme_data.noise2_color)
+	tint:set_color(theme_data.tint_color)
+end
+
+function HUDAccessCamera:damage_taken()
+	local tint = self._full_hud_panel:child("tint")
+
+	tint:stop()
+	tint:animate(callback(self, self, "_animate_damage_taken"))
+end
+
+function HUDAccessCamera:_animate_damage_taken(o)
+	local total_t = 0.16
+	local t = (1 - o:alpha()) * total_t
+	local multiplier = 0.5
+
+	while t < total_t do
+		local dt = coroutine.yield()
+		t = t + dt
+		local progress = 1 - t / total_t
+
+		o:set_alpha(progress * multiplier + 1)
+	end
+
+	o:set_alpha(1)
 end
 
 function HUDAccessCamera:set_date(date)

@@ -875,6 +875,11 @@ function BlackMarketTweakData:_init_deployables(tweak_data)
 		dlc = "mxm",
 		texture_bundle_folder = "mxm"
 	}
+	self.deployables.spy_camera = {
+		name_id = "bm_equipment_spy_camera",
+		texture_bundle_folder = "esp",
+		dlc = "esp"
+	}
 
 	self:_add_desc_from_name_macro(self.deployables)
 end

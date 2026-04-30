@@ -71,6 +71,9 @@ function SawWeaponBase:setup(setup_data)
 	self._no_hit_alert_size = self._alert_size
 	local hit_alert_size_increase = self:weapon_tweak_data().hit_alert_size_increase or 0
 	local alert_size_index = math.clamp(self:check_stats().alert_size - hit_alert_size_increase, 1, #tweak_data.weapon.stats.alert_size)
+
+	print("[SawWeaponBase:setup] janika", self:check_stats().alert_size, hit_alert_size_increase, alert_size_index)
+
 	self._hit_alert_size = tweak_data.weapon.stats.alert_size[alert_size_index]
 end
 
@@ -88,18 +91,7 @@ function SawWeaponBase:fire(from_pos, direction, dmg_mul, shoot_player, spread_m
 		local ammo_usage = 5
 
 		if ray_res.hit_enemy then
-			ammo_usage = managers.player:upgrade_value("saw", "enemy_slicer", 5)
-		end
-
-		ammo_usage = ammo_usage + math.ceil(math.random() * 10)
-
-		if managers.player:has_category_upgrade("saw", "consume_no_ammo_chance") then
-			local roll = math.rand(1)
-			local chance = managers.player:upgrade_value("saw", "consume_no_ammo_chance", 0)
-
-			if roll < chance then
-				ammo_usage = 0
-			end
+			ammo_usage = math.ceil(managers.player:upgrade_value("saw", "enemy_slicer", 5))
 		end
 
 		if managers.player:has_active_temporary_property("bullet_storm") then
@@ -164,13 +156,11 @@ local mvec_spread_direction = Vector3()
 function SawWeaponBase:_fire_raycast(user_unit, from_pos, direction, dmg_mul, shoot_player, spread_mul, autohit_mul, suppr_mul)
 	local result = {}
 	local hit_unit = nil
-	from_pos = self._obj_fire:position()
-	direction = self._obj_fire:rotation():y()
 
 	mvec3_add(from_pos, direction * -30)
 	mvector3.set(mvec_spread_direction, direction)
 	mvector3.set(mvec_to, mvec_spread_direction)
-	mvector3.multiply(mvec_to, 100)
+	mvector3.multiply(mvec_to, 140)
 	mvector3.add(mvec_to, from_pos)
 
 	local damage = self:_get_current_damage(dmg_mul)
@@ -229,20 +219,21 @@ function SawWeaponBase:can_reload()
 end
 
 SawHit = SawHit or class(InstantBulletBase)
+SawHit.TAG_DAMAGE_MULTIPLIER_TANK = 1.5
 
 function SawHit:on_collision(col_ray, weapon_unit, user_unit, damage)
 	local hit_unit = col_ray.unit
 	local base_ext = hit_unit:base()
 
 	if base_ext and base_ext.has_tag and base_ext:has_tag("tank") then
-		damage = damage + 50
+		damage = damage * SawHit.TAG_DAMAGE_MULTIPLIER_TANK
 	end
 
 	local result = InstantBulletBase.on_collision(self, col_ray, weapon_unit, user_unit, damage)
 
 	if hit_unit:damage() and col_ray.body:extension() and col_ray.body:extension().damage then
 		local lock_damage = damage
-		lock_damage = damage * managers.player:upgrade_value("saw", "lock_damage_multiplier", 1) * 4
+		lock_damage = damage * managers.player:upgrade_value("saw", "lock_damage_multiplier", 1)
 		lock_damage = math.clamp(lock_damage, 0, 200)
 
 		col_ray.body:extension().damage:damage_lock(user_unit, col_ray.normal, col_ray.position, col_ray.direction, lock_damage)

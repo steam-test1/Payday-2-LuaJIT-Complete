@@ -2222,705 +2222,1233 @@ function BlackMarketTweakData:_init_materials(tweak_data)
 	local tintable_gui_plastic = "guis/textures/pd2/blackmarket/icons/materials/plastic"
 	self.materials.solid_flat_warm_yellow = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_warm_yellow_df",
-		name_id = "bm_mclr_warm_yellow",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_warm_yellow",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.98039221763611, 0.61568629741669, 0.027450982481241),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_lime_green = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_lime_green_df",
-		name_id = "bm_mclr_lime_green",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_lime_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0, 0.65098041296005, 0.31764706969261),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_purple = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_purple_df",
-		name_id = "bm_mclr_purple",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_purple",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.60392159223557, 0.26666668057442, 0.86274516582489),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_light_brown = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_light_brown_df",
-		name_id = "bm_mclr_light_brown",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_light_brown",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.80000007152557, 0.45098042488098, 0.13725490868092),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_sea_blue = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_sea_blue_df",
-		name_id = "bm_mclr_sea_blue",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_sea_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.023529414087534, 0.21568629145622, 0.21960785984993),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_cyan = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_cyan_df",
-		name_id = "bm_mclr_cyan",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_cyan",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0, 1, 1),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_coral_red = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_coral_red_df",
-		name_id = "bm_mclr_coral_red",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_coral_red",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.83529418706894, 0.14117647707462, 0.20784315466881),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_bravo_blue = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_bravo_blue_df",
-		name_id = "bm_mclr_bravo_blue",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_bravo_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.82745105028152, 0.89019614458084, 0.95294123888016),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_twilight_lavender = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_twilight_lavender_df",
-		name_id = "bm_mclr_twilight_lavender",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_twilight_lavender",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.5137255191803, 0.26666668057442, 0.43529415130615),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_mindaro = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_mindaro_df",
-		name_id = "bm_mclr_mindaro",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_mindaro",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.90588241815567, 1, 0.53725492954254),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_leaf_green = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_leaf_green_df",
-		name_id = "bm_mclr_leaf_green",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_leaf_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.4078431725502, 0.74901962280273, 0.21176472306252),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_may_green = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_may_green_df",
-		name_id = "bm_mclr_may_green",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_may_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.27843138575554, 0.55294120311737, 0.27843138575554),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_white = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_white_df",
-		name_id = "bm_mclr_white",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_white",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(1, 1, 1),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_tickle_pink = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_tickle_pink_df",
-		name_id = "bm_mclr_tickle_pink",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_tickle_pink",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(1, 0.5137255191803, 0.70980393886566),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_orange = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_orange_df",
-		name_id = "bm_mclr_orange",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_orange",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(1, 0.36862745881081, 0.05882353335619),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_blithe_blue = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_blithe_blue_df",
-		name_id = "bm_mclr_blithe_blue",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_blithe_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.56470590829849, 0.74901962280273, 0.74901962280273),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_guppie_green = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_guppie_green_df",
-		name_id = "bm_mclr_guppie_green",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_guppie_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0, 1, 0.48627454042435),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_congo_pink = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_congo_pink_df",
-		name_id = "bm_mclr_congo_pink",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_congo_pink",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(1, 0.53333336114883, 0.4588235616684),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_fern_green = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_fern_green_df",
-		name_id = "bm_mclr_fern_green",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_fern_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.33333334326744, 0.49803924560547, 0.23529413342476),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_blood_red = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_blood_red_df",
-		name_id = "bm_mclr_blood_red",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_blood_red",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.54117649793625, 0.066666670143604, 0.035294119268656),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_gray = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_gray_df",
-		name_id = "bm_mclr_gray",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_gray",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.50196081399918, 0.50196081399918, 0.50196081399918),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_deep_aquamarine = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_deep_aquamarine_df",
-		name_id = "bm_mclr_deep_aquamarine",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_deep_aquamarine",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.26274511218071, 0.54509806632996, 0.47450983524323),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_mud = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_mud_df",
-		name_id = "bm_mclr_mud",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_mud",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.41176474094391, 0.33725491166115, 0.29411765933037),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_olive_green = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_olive_green_df",
-		name_id = "bm_mclr_olive_green",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_olive_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.28235295414925, 0.35294118523598, 0.19607844948769),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_rifle_green = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_rifle_green_df",
-		name_id = "bm_mclr_rifle_green",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_rifle_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.27843138575554, 0.30196079611778, 0.24705883860588),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_green = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_green_df",
-		name_id = "bm_mclr_green",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0, 1, 0),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_magenta = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_magenta_df",
-		name_id = "bm_mclr_magenta",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_magenta",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(1, 0, 1),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_dark_red = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_dark_red_df",
-		name_id = "bm_mclr_dark_red",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_dark_red",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.43137258291245, 0.05882353335619, 0.086274512112141),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_turquoise = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_turquoise_df",
-		name_id = "bm_mclr_turquoise",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_turquoise",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0, 0.81960791349411, 0.61568629741669),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_deep_green = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_deep_green_df",
-		name_id = "bm_mclr_deep_green",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_deep_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.17254902422428, 0.20000001788139, 0.098039224743843),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_parisian_patina = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_parisian_patina_df",
-		name_id = "bm_mclr_parisian_patina",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_parisian_patina",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.48627454042435, 0.64705884456635, 0.50980395078659),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_sand = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_sand_df",
-		name_id = "bm_mclr_sand",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_sand",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.6745098233223, 0.55294120311737, 0.48235297203064),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_heliotrope = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_heliotrope_df",
-		name_id = "bm_mclr_heliotrope",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_heliotrope",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.89411771297455, 0.47450983524323, 1),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_gray_blue = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_gray_blue_df",
-		name_id = "bm_mclr_gray_blue",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_gray_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.047058828175068, 0.26666668057442, 0.32941177487373),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_sea_green = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_sea_green_df",
-		name_id = "bm_mclr_sea_green",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_sea_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0, 1, 0.74901962280273),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_neon_red = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_neon_red_df",
-		name_id = "bm_mclr_neon_red",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_neon_red",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(1, 0, 0.23529413342476),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_electric_indigo = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_electric_indigo_df",
-		name_id = "bm_mclr_electric_indigo",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_electric_indigo",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.37647062540054, 0, 1),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_chartreuse = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_chartreuse_df",
-		name_id = "bm_mclr_chartreuse",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_chartreuse",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.49803924560547, 1, 0),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_toxic_green = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_toxic_green_df",
-		name_id = "bm_mclr_toxic_green",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_toxic_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.65490198135376, 0.97254908084869, 0.34117648005486),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_matte_purple = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_matte_purple_df",
-		name_id = "bm_mclr_matte_purple",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_matte_purple",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.41960787773132, 0.32941177487373, 0.56470590829849),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_maximum_purple = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_maximum_purple_df",
-		name_id = "bm_mclr_maximum_purple",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_maximum_purple",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.4627451300621, 0.25098040699959, 0.51764708757401),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_french_sky_blue = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_french_sky_blue_df",
-		name_id = "bm_mclr_french_sky_blue",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_french_sky_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.47843140363693, 0.61568629741669, 1),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_shadow_yellow = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_shadow_yellow_df",
-		name_id = "bm_mclr_shadow_yellow",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_shadow_yellow",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.63529413938522, 0.63529413938522, 0.38039219379425),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_dark_green = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_dark_green_df",
-		name_id = "bm_mclr_dark_green",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_dark_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.027450982481241, 0.23921570181847, 0.035294119268656),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_pink = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_pink_df",
-		name_id = "bm_mclr_pink",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_pink",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(1, 0.47843140363693, 0.90196084976196),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_dark_gray = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_dark_gray_df",
-		name_id = "bm_mclr_dark_gray",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_dark_gray",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.25098040699959, 0.25098040699959, 0.25098040699959),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_branch_green = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_branch_green_df",
-		name_id = "bm_mclr_branch_green",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_branch_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.3647058904171, 0.3647058904171, 0.19215688109398),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_brown = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_brown_df",
-		name_id = "bm_mclr_brown",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_brown",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.50196081399918, 0.27450981736183, 0.050980396568775),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_dark_slate_blue = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_dark_slate_blue_df",
-		name_id = "bm_mclr_dark_slate_blue",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_dark_slate_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.28627452254295, 0.28627452254295, 0.57647061347961),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_coffee = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_coffee_df",
-		name_id = "bm_mclr_coffee",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_coffee",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.41960787773132, 0.32549020648003, 0.21568629145622),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_dark_puce = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_dark_puce_df",
-		name_id = "bm_mclr_dark_puce",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_dark_puce",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.31764706969261, 0.16862745583057, 0.22745099663734),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_light_gray = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_light_gray_df",
-		name_id = "bm_mclr_light_gray",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_light_gray",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.74901962280273, 0.74901962280273, 0.74901962280273),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_haven = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_haven_df",
-		name_id = "bm_mclr_haven",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_haven",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.64705884456635, 0.73333334922791, 0.56078433990479),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_cordovan = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_cordovan_df",
-		name_id = "bm_mclr_cordovan",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_cordovan",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.51764708757401, 0.24705883860588, 0.27450981736183),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_aquamarine = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_aquamarine_df",
-		name_id = "bm_mclr_aquamarine",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_aquamarine",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.49019610881805, 1, 0.8705883026123),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_brandeis_blue = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_brandeis_blue_df",
-		name_id = "bm_mclr_brandeis_blue",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_brandeis_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0, 0.46666669845581, 1),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_black = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_black_df",
-		name_id = "bm_mclr_black",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_black",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.1, 0.1, 0.1),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_scary_green = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_scary_green_df",
-		name_id = "bm_mclr_scary_green",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_scary_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.36078432202339, 1, 0.4588235616684),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_skin_pink = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_skin_pink_df",
-		name_id = "bm_mclr_skin_pink",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_skin_pink",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.90196084976196, 0.57647061347961, 0.54901963472366),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_dark_purple = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_dark_purple_df",
-		name_id = "bm_mclr_dark_purple",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_dark_purple",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.41960787773132, 0, 0.29019609093666),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_yellow = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_yellow_df",
-		name_id = "bm_mclr_yellow",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_yellow",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(1, 1, 0),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_red = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_red_df",
-		name_id = "bm_mclr_red",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_red",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(1, 0, 0),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_blue_bell = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_blue_bell_df",
-		name_id = "bm_mclr_blue_bell",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_blue_bell",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.65882354974747, 0.61960786581039, 0.8156863451004),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_fashion_fuchsia = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_fashion_fuchsia_df",
-		name_id = "bm_mclr_fashion_fuchsia",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_fashion_fuchsia",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(1, 0, 0.69019609689713),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_matte_blue = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_matte_blue_df",
-		name_id = "bm_mclr_matte_blue",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_matte_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.21960785984993, 0.38039219379425, 0.65882354974747),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_shadow_blue = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_shadow_blue_df",
-		name_id = "bm_mclr_shadow_blue",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_shadow_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.47450983524323, 0.54901963472366, 0.63529413938522),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_heat_wave = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_heat_wave_df",
-		name_id = "bm_mclr_heat_wave",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_heat_wave",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(1, 0.47450983524323, 0),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_coyote_brown = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_coyote_brown_df",
-		name_id = "bm_mclr_coyote_brown",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_coyote_brown",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.47450983524323, 0.41176474094391, 0.23137256503105),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_mellow_green = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_mellow_green_df",
-		name_id = "bm_mclr_mellow_green",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_mellow_green",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.80392163991928, 0.80392163991928, 0.56078433990479),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_vivid_raspberry = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_vivid_raspberry_df",
-		name_id = "bm_mclr_vivid_raspberry",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_vivid_raspberry",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(1, 0, 0.039215687662363),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_slate_blue = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_slate_blue_df",
-		name_id = "bm_mclr_slate_blue",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_slate_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.49803924560547, 0.49803924560547, 1),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_blue = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_blue_df",
-		name_id = "bm_mclr_blue",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0, 0, 1),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_lavender = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_lavender_df",
-		name_id = "bm_mclr_lavender",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_lavender",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.68627452850342, 0.49411767721176, 1),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_kilim_beige = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_kilim_beige_df",
-		name_id = "bm_mclr_kilim_beige",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_kilim_beige",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.84705889225006, 0.7607843875885, 0.68235296010971),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_navy_blue = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_navy_blue_df",
-		name_id = "bm_mclr_navy_blue",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_navy_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.15686275064945, 0.2039215862751, 0.33725491166115),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_baroness = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_baroness_df",
-		name_id = "bm_mclr_baroness",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_baroness",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.678431391716, 0.52549022436142, 0.6745098233223),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_russian_violet = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_russian_violet_df",
-		name_id = "bm_mclr_russian_violet",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_russian_violet",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.23529413342476, 0.14901961386204, 0.29803922772408),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_pastel_yellow = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_pastel_yellow_df",
-		name_id = "bm_mclr_pastel_yellow",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_pastel_yellow",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(1, 1, 0.52156865596771),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_imperial_purple = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_imperial_purple_df",
-		name_id = "bm_mclr_imperial_purple",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_imperial_purple",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.42352944612503, 0, 0.29019609093666),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_rosebay = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_rosebay_df",
-		name_id = "bm_mclr_rosebay",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_rosebay",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.78823536634445, 0.58823531866074, 0.72549021244049),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_vivid_sky_blue = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_vivid_sky_blue_df",
-		name_id = "bm_mclr_vivid_sky_blue",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_vivid_sky_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0, 0.77647066116333, 1),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_vivid_orchid = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_vivid_orchid_df",
-		name_id = "bm_mclr_vivid_orchid",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_vivid_orchid",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.80000007152557, 0, 1),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_vivid_blue = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_vivid_blue_df",
-		name_id = "bm_mclr_vivid_blue",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_vivid_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0, 0.26274511218071, 1),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_bone_white = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_bone_white_df",
-		name_id = "bm_mclr_bone_white",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_bone_white",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(1, 0.93333339691162, 0.59215688705444),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_bright_yellow = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_bright_yellow_df",
-		name_id = "bm_mclr_bright_yellow",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_bright_yellow",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(1, 0.8117647767067, 0.29803922772408),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_light_blue = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_light_blue_df",
-		name_id = "bm_mclr_light_blue",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_light_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.49411767721176, 0.77647066116333, 0.93333339691162),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_upsdell_red = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_upsdell_red_df",
-		name_id = "bm_mclr_upsdell_red",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_upsdell_red",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0.65098041296005, 0.12156863510609, 0.17254902422428),
 		tintable_gui = tintable_gui_plastic
 	}
 	self.materials.solid_flat_cobalt_blue = {
 		texture = "units/pd2_dlc_lic/masks/materials/matcap_cobalt_blue_df",
-		name_id = "bm_mclr_cobalt_blue",
-		material_amount = 0,
 		value = 1,
+		material_amount = 0,
+		name_id = "bm_mclr_cobalt_blue",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color(0, 0.3647058904171, 0.78039222955704),
 		tintable_gui = tintable_gui_plastic
 	}
@@ -2930,6 +3458,12 @@ function BlackMarketTweakData:_init_materials(tweak_data)
 		material_amount = 0,
 		name_id = "bm_mclr_stg_orange",
 		value = 1,
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
 		color = Color("fc4c02"),
 		tintable_gui = tintable_gui_plastic
 	}

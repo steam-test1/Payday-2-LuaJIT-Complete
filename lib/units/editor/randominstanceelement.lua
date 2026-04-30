@@ -1,9 +1,6 @@
 RandomInstanceElement = RandomInstanceElement or class(MissionElement)
 RandomInstanceElement.SAVE_UNIT_POSITION = false
 RandomInstanceElement.SAVE_UNIT_ROTATION = false
-RandomInstanceElement.LINK_ELEMENTS = {
-	"instances"
-}
 RandomInstanceElement._type = "input"
 
 function RandomInstanceElement:init(unit)
@@ -288,5 +285,22 @@ end
 
 RandomInstanceElementInputEvent = RandomInstanceElementInputEvent or class(RandomInstanceElement)
 RandomInstanceElementInputEvent._type = "input"
+RandomInstanceElementInputEvent.LINK_VALUES = {
+	{
+		output = true,
+		type = "input",
+		table_key = "instance",
+		table_value = "instances",
+		layer = "Instances"
+	}
+}
 RandomInstanceElementOutputEvent = RandomInstanceElementOutputEvent or class(RandomInstanceElement)
 RandomInstanceElementOutputEvent._type = "output"
+RandomInstanceElementOutputEvent.LINK_VALUES = {
+	{
+		layer = "Instances",
+		table_key = "instance",
+		table_value = "instances",
+		type = "output"
+	}
+}

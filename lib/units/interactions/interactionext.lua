@@ -2697,6 +2697,10 @@ function SpecialEquipmentInteractionExt:sync_interacted(peer, player, status, sk
 		self._unit:damage():run_sequence_simple("load")
 	end
 
+	if self._unit:damage():has_sequence("interact") then
+		self._unit:damage():run_sequence_simple("interact")
+	end
+
 	if self._global_event and Network:is_server() then
 		managers.mission:call_global_event(self._global_event, player)
 	end
@@ -3687,4 +3691,77 @@ function CustomUnitInteractionExt:interact(player, locator)
 	end
 
 	return true
+end
+
+SpyCameraInteractionExt = SpyCameraInteractionExt or class(UseInteractionExt)
+
+function SpyCameraInteractionExt:interact(player)
+	SpyCameraInteractionExt.super.super.interact(self, player)
+	self._unit:base():on_interaction()
+	self:set_active(false)
+
+	return true
+end
+
+SpyAccessCameraInteractionExt = SpyAccessCameraInteractionExt or class(UseInteractionExt)
+
+function SpyAccessCameraInteractionExt:interact(player)
+	SpyAccessCameraInteractionExt.super.super.interact(self, player)
+
+	local camera_base = self._unit:base()
+
+	if not camera_base then
+		return false
+	end
+
+	local channel_id = tweak_data.equipments.spy_camera.access_channel
+	local params = {
+		channel_id = channel_id,
+		starting_camera = camera_base
+	}
+
+	game_state_machine:change_state_by_name("ingame_access_camera", params)
+
+	return true
+end
+
+function SpyAccessCameraInteractionExt:dot_limit()
+	local player_unit = managers.player:player_unit()
+	local dot = SpyAccessCameraInteractionExt.super.dot_limit(self)
+
+	if alive(player_unit) then
+		local max_distance = self:max_interact_distance()
+		local distance = mvector3.distance(self._interact_position, player_unit:position())
+		local dot_ratio = math.min(max_distance / distance, 1)
+		dot_ratio = dot_ratio * dot_ratio
+		dot = math.lerp(1, dot, dot_ratio)
+	end
+
+	return dot
+end
+
+function SpyAccessCameraInteractionExt:active()
+	if SpyAccessCameraInteractionExt.super.active(self) then
+		local player_unit = managers.player:player_unit()
+
+		if self:_interact_blocked(player_unit) then
+			return false
+		end
+
+		return true
+	else
+		return false
+	end
+end
+
+function SpyAccessCameraInteractionExt:_interact_blocked(player)
+	if alive(player) and player:movement() and player:movement():in_air() then
+		return true
+	end
+
+	return SpyAccessCameraInteractionExt.super._interact_blocked(self, player)
+end
+
+function SpyAccessCameraInteractionExt:_get_modified_timer()
+	return self:_timer_value()
 end

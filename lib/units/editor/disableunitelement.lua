@@ -1,4 +1,12 @@
 DisableUnitUnitElement = DisableUnitUnitElement or class(MissionElement)
+DisableUnitUnitElement.LINK_VALUES = {
+	{
+		layer = "Statics",
+		output = true,
+		table_value = "unit_ids",
+		type = "disable"
+	}
+}
 
 function DisableUnitUnitElement:init(unit)
 	DisableUnitUnitElement.super.init(self, unit)

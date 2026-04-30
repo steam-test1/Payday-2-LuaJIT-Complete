@@ -1,4 +1,11 @@
 HeistTimerOperatorUnitElement = HeistTimerOperatorUnitElement or class(TimerOperatorUnitElement)
+HeistTimerOperatorUnitElement.LINK_VALUES = {
+	{
+		output = true,
+		table_value = "elements",
+		type = "operator"
+	}
+}
 
 function HeistTimerOperatorUnitElement:add_element()
 	local ray = managers.editor:unit_by_raycast({
@@ -18,6 +25,12 @@ function HeistTimerOperatorUnitElement:add_element()
 end
 
 HeistTimerTriggerUnitElement = HeistTimerTriggerUnitElement or class(TimerTriggerUnitElement)
+HeistTimerTriggerUnitElement.LINK_VALUES = {
+	{
+		table_value = "elements",
+		type = "trigger"
+	}
+}
 
 function HeistTimerTriggerUnitElement:add_element()
 	local ray = managers.editor:unit_by_raycast({

@@ -70,6 +70,10 @@ function GenericDLCManager:has_dot()
 	return self:is_dlc_unlocked("dot")
 end
 
+function GenericDLCManager:has_esp()
+	return self:is_dlc_unlocked("esp")
+end
+
 function GenericDLCManager:has_ess()
 	return self:is_dlc_unlocked("ess")
 end
@@ -536,6 +540,11 @@ function WINDLCManager:init_generated()
 	Global.dlc_manager.all_dlc_data.dot = {
 		app_id = "218620",
 		epic_id = "c9e33efd38a7409e8aeee22f7a6f2e06",
+		no_install = true
+	}
+	Global.dlc_manager.all_dlc_data.esp = {
+		app_id = "4543600",
+		epic_id = "ae3c8e32b54f49b29988ed77dc43965a",
 		no_install = true
 	}
 	Global.dlc_manager.all_dlc_data.ess = {

@@ -1,6 +1,10 @@
 DisableShoutElement = DisableShoutElement or class(MissionElement)
-DisableShoutElement.LINK_ELEMENTS = {
-	"elements"
+DisableShoutElement.LINK_VALUES = {
+	{
+		output = true,
+		table_value = "elements",
+		type = "operator"
+	}
 }
 
 function DisableShoutElement:init(unit)

@@ -2202,6 +2202,8 @@ function CopMovement:spawn_wanted_items()
 	end
 end
 
+local ids_unit = Idstring("unit")
+
 function CopMovement:_equip_item(item_type, align_place, droppable)
 	local align_name = self._gadgets.aligns[align_place]
 
@@ -2223,6 +2225,12 @@ function CopMovement:_equip_item(item_type, align_place, droppable)
 	local item_name = available_items[math.random(available_items)]
 
 	if self._spawneditems[item_type] ~= nil then
+		return
+	end
+
+	if not PackageManager:has(ids_unit, item_name) then
+		Application:error("[CopMovement:_equip_item] Trying to spawn an unloaded item:", item_name)
+
 		return
 	end
 

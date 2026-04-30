@@ -30,6 +30,10 @@ function ElementAccessCamera:on_script_activated()
 	self._has_fetched_units = true
 
 	self._mission_script:add_save_state_cb(self._id)
+
+	local channel_id = self._values.channel_id or "default"
+
+	managers.game_play_central:add_access_camera(channel_id, self)
 end
 
 function ElementAccessCamera:_load_unit(unit)

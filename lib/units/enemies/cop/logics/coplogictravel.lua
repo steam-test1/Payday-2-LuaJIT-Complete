@@ -630,6 +630,10 @@ function CopLogicTravel.is_available_for_assignment(data, new_objective)
 		return true
 	end
 
+	if new_objective and new_objective.distraction then
+		return true
+	end
+
 	if data.objective and data.objective.type == "act" then
 		if (not new_objective or new_objective and new_objective.type == "free") and data.objective.interrupt_dis == -1 then
 			return true

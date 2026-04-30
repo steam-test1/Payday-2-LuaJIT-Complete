@@ -282,6 +282,9 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_m60_crew()
 	self:_init_data_r700_crew()
 	self:_init_data_welrod_crew()
+	self:_init_data_pmm_crew()
+	self:_init_data_dart_crew()
+	self:_init_data_speen_crew()
 	self:_init_ranc_heavy_machine_gun()
 	self:_precalculate_values()
 end
@@ -5664,6 +5667,75 @@ function WeaponTweakData:_init_data_welrod_crew()
 	self.welrod_crew.FIRE_MODE = "single"
 end
 
+function WeaponTweakData:_init_data_pmm_crew()
+	self.pmm_crew.categories = clone(self.pmm.categories)
+	self.pmm_crew.sounds.prefix = "pmm_npc"
+	self.pmm_crew.use_data.selection_index = SELECTION.SECONDARY
+	self.pmm_crew.DAMAGE = 1
+	self.pmm_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.pmm_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.pmm_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.pmm_crew.CLIP_AMMO_MAX = 8
+	self.pmm_crew.NR_CLIPS_MAX = 7
+	self.pmm_crew.pull_magazine_during_reload = "pistol"
+	self.pmm_crew.auto.fire_rate = 0.125
+	self.pmm_crew.hold = "pistol"
+	self.pmm_crew.alert_size = 2500
+	self.pmm_crew.suppression = 1
+	self.pmm_crew.FIRE_MODE = "single"
+	self.x_pmm_crew.categories = clone(self.x_pmm.categories)
+	self.x_pmm_crew.sounds.prefix = "pmm_npc"
+	self.x_pmm_crew.use_data.selection_index = SELECTION.PRIMARY
+	self.x_pmm_crew.DAMAGE = 1
+	self.x_pmm_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.x_pmm_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.x_pmm_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.x_pmm_crew.CLIP_AMMO_MAX = 16
+	self.x_pmm_crew.NR_CLIPS_MAX = 5
+	self.x_pmm_crew.auto.fire_rate = 0.125
+	self.x_pmm_crew.pull_magazine_during_reload = "pistol"
+	self.x_pmm_crew.hold = "akimbo_pistol"
+	self.x_pmm_crew.alert_size = 2500
+	self.x_pmm_crew.suppression = 1
+	self.x_pmm_crew.FIRE_MODE = "single"
+end
+
+function WeaponTweakData:_init_data_dart_crew()
+	self.dart_crew.categories = clone(self.pmm.categories)
+	self.dart_crew.sounds.prefix = "dart_npc"
+	self.dart_crew.use_data.selection_index = SELECTION.SECONDARY
+	self.dart_crew.DAMAGE = 18
+	self.dart_crew.muzzleflash = "effects/payday2/particles/weapons/big_762_auto"
+	self.dart_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_556_lmg"
+	self.dart_crew.CLIP_AMMO_MAX = 1
+	self.dart_crew.NR_CLIPS_MAX = 24
+	self.dart_crew.looped_reload_speed = 0.1
+	self.dart_crew.reload = "looped"
+	self.dart_crew.auto.fire_rate = 3.6
+	self.dart_crew.hold = "pistol"
+	self.dart_crew.alert_size = 5000
+	self.dart_crew.suppression = 1
+	self.dart_crew.FIRE_MODE = "single"
+end
+
+function WeaponTweakData:_init_data_speen_crew()
+	self.speen_crew.categories = clone(self.speen.categories)
+	self.speen_crew.sounds.prefix = "pivot_npc"
+	self.speen_crew.use_data.selection_index = SELECTION.SECONDARY
+	self.speen_crew.DAMAGE = 1.28
+	self.speen_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto"
+	self.speen_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.speen_crew.CLIP_AMMO_MAX = 17
+	self.speen_crew.NR_CLIPS_MAX = 3
+	self.speen_crew.pull_magazine_during_reload = "smg"
+	self.speen_crew.auto.fire_rate = 0.082
+	self.speen_crew.hold = "rifle"
+	self.speen_crew.reload = "uzi"
+	self.speen_crew.alert_size = 5000
+	self.speen_crew.suppression = 1
+	self.speen_crew.FIRE_MODE = "single"
+end
+
 function WeaponTweakData:_init_data_player_weapons(tweak_data)
 	local autohit_rifle_default, autohit_pistol_default, autohit_shotgun_default, autohit_lmg_default, autohit_snp_default, autohit_smg_default, autohit_minigun_default, aim_assist_rifle_default, aim_assist_pistol_default, aim_assist_shotgun_default, aim_assist_lmg_default, aim_assist_snp_default, aim_assist_smg_default, aim_assist_minigun_default = nil
 
@@ -6607,6 +6679,9 @@ function WeaponTweakData:_init_new_weapons(weapon_data)
 	self:_init_m60(weapon_data)
 	self:_init_r700(weapon_data)
 	self:_init_welrod(weapon_data)
+	self:_init_pmm(weapon_data)
+	self:_init_speen(weapon_data)
+	self:_init_dart(weapon_data)
 end
 
 function WeaponTweakData:_init_new_m4(weapon_data)
@@ -10153,8 +10228,8 @@ function WeaponTweakData:_init_saw(weapon_data)
 	self.saw.use_data = {
 		selection_index = SELECTION.PRIMARY
 	}
-	self.saw.DAMAGE = 0.2
-	self.saw.CLIP_AMMO_MAX = 150
+	self.saw.DAMAGE = 0.4
+	self.saw.CLIP_AMMO_MAX = 100
 	self.saw.NR_CLIPS_MAX = 2
 	self.saw.AMMO_MAX = self.saw.CLIP_AMMO_MAX * self.saw.NR_CLIPS_MAX
 	self.saw.AMMO_PICKUP = {
@@ -10178,22 +10253,28 @@ function WeaponTweakData:_init_saw(weapon_data)
 	}
 	self.saw.kick = {
 		standing = {
-			1,
-			-1,
-			-1,
-			1
+			0.2,
+			-0.2,
+			-0.1,
+			0.1
 		},
 		crouching = {
-			1,
-			-1,
-			-1,
-			1
+			0.2,
+			-0.2,
+			-0.1,
+			0.1
 		},
 		steelsight = {
-			0.725,
-			-0.725,
-			-0.725,
-			0.725
+			0.2,
+			-0.2,
+			-0.1,
+			0.1
+		},
+		on_hit = {
+			1.4,
+			-0.5,
+			-0.4,
+			0.4
 		}
 	}
 	self.saw.crosshair = {
@@ -10212,8 +10293,8 @@ function WeaponTweakData:_init_saw(weapon_data)
 	self.saw.crosshair.steelsight.moving_offset = 0
 	self.saw.crosshair.steelsight.kick_offset = 0
 	self.saw.shake = {
-		fire_multiplier = 1,
-		fire_steelsight_multiplier = 1
+		fire_multiplier = 0.05,
+		fire_steelsight_multiplier = 0.05
 	}
 	self.saw.autohit = weapon_data.autohit_pistol_default
 	self.saw.aim_assist = weapon_data.aim_assist_pistol_default
@@ -10227,8 +10308,8 @@ function WeaponTweakData:_init_saw(weapon_data)
 	self.saw.stats = {
 		zoom = 1,
 		total_ammo_mod = 21,
-		damage = 23,
-		alert_size = 9,
+		damage = 92,
+		alert_size = 10,
 		spread = 3,
 		spread_moving = 7,
 		value = 1,
@@ -10238,7 +10319,7 @@ function WeaponTweakData:_init_saw(weapon_data)
 		suppression = 7,
 		concealment = 16
 	}
-	self.saw.hit_alert_size_increase = 4
+	self.saw.hit_alert_size_increase = 2
 	self.saw_secondary = deep_clone(self.saw)
 	self.saw_secondary.parent_weapon_id = "saw"
 	self.saw_secondary.use_data.selection_index = SELECTION.SECONDARY
@@ -31115,6 +31196,371 @@ function WeaponTweakData:_init_welrod(weapon_data)
 	}
 end
 
+function WeaponTweakData:_init_pmm(weapon_data)
+	self.pmm = {
+		categories = {
+			"pistol"
+		},
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {}
+	}
+	self.pmm.sounds.fire = "pmm_fire"
+	self.pmm.sounds.enter_steelsight = "pistol_steel_sight_enter"
+	self.pmm.sounds.leave_steelsight = "pistol_steel_sight_exit"
+	self.pmm.sounds.dryfire = "secondary_dryfire"
+	self.pmm.sounds.magazine_empty = "wp_pistol_slide_lock"
+	self.pmm.timers = {
+		reload_not_empty = 1.47,
+		reload_empty = 2.12,
+		unequip = 0.5,
+		equip = 0.35
+	}
+	self.pmm.name_id = "bm_w_pmm"
+	self.pmm.desc_id = "bm_w_pmm_desc"
+	self.pmm.description_id = "des_pmm"
+	self.pmm.global_value = "esp"
+	self.pmm.texture_bundle_folder = "esp"
+	self.pmm.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
+	self.pmm.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
+	self.pmm.shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm"
+	self.pmm.use_data = {
+		selection_index = SELECTION.SECONDARY
+	}
+	self.pmm.DAMAGE = 1
+	self.pmm.damage_falloff = FALLOFF_TEMPLATE.PISTOL_FALL_HIGH
+	self.pmm.CLIP_AMMO_MAX = 8
+	self.pmm.NR_CLIPS_MAX = 7
+	self.pmm.AMMO_MAX = self.pmm.CLIP_AMMO_MAX * self.pmm.NR_CLIPS_MAX
+	self.pmm.AMMO_PICKUP = self:_pickup_chance(self.pmm.AMMO_MAX, PICKUP.PISTOL_HIGH_CAPACITY)
+	self.pmm.FIRE_MODE = "single"
+	self.pmm.fire_mode_data = {
+		fire_rate = 0.125
+	}
+	self.pmm.single = {
+		fire_rate = 0.125
+	}
+	self.pmm.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight
+	}
+	self.pmm.kick = {
+		standing = self.glock_17.kick.standing
+	}
+	self.pmm.kick.crouching = self.pmm.kick.standing
+	self.pmm.kick.steelsight = self.pmm.kick.standing
+	self.pmm.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	self.pmm.crosshair.standing.offset = 0.1
+	self.pmm.crosshair.standing.moving_offset = 0.4
+	self.pmm.crosshair.standing.kick_offset = 0.3
+	self.pmm.crosshair.crouching.offset = 0.1
+	self.pmm.crosshair.crouching.moving_offset = 0.5
+	self.pmm.crosshair.crouching.kick_offset = 0.2
+	self.pmm.crosshair.steelsight.hidden = true
+	self.pmm.crosshair.steelsight.offset = 0
+	self.pmm.crosshair.steelsight.moving_offset = 0
+	self.pmm.crosshair.steelsight.kick_offset = 0.1
+	self.pmm.shake = {
+		fire_multiplier = 1,
+		fire_steelsight_multiplier = -1
+	}
+	self.pmm.autohit = weapon_data.autohit_pistol_default
+	self.pmm.aim_assist = weapon_data.aim_assist_pistol_default
+	self.pmm.weapon_hold = "pmm"
+	self.pmm.animations = {
+		equip_id = "equip_pmm",
+		magazine_empty = "last_recoil",
+		recoil_steelsight = true
+	}
+	self.pmm.panic_suppression_chance = 0.2
+	self.pmm.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 120,
+		alert_size = 7,
+		spread = 15,
+		recoil = 9,
+		spread_moving = 15,
+		value = 4,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 15,
+		concealment = 28
+	}
+	self.x_pmm = deep_clone(self.pmm)
+	self.x_pmm.name_id = "bm_w_x_pmm"
+	self.x_pmm.desc_id = "bm_w_x_pmm_desc"
+	self.x_pmm.description_id = "des_x_pmm"
+	self.x_pmm.categories = {
+		"akimbo",
+		"pistol"
+	}
+	self.x_pmm.use_data.selection_index = SELECTION.PRIMARY
+	self.x_pmm.damage_falloff = FALLOFF_TEMPLATE.AKI_PISTOL_FALL_HIGH
+	self.x_pmm.timers.reload_not_empty = 3.17
+	self.x_pmm.timers.reload_empty = 4
+	self.x_pmm.timers.unequip = 0.5
+	self.x_pmm.timers.equip = 0.5
+	self.x_pmm.CLIP_AMMO_MAX = 16
+	self.x_pmm.NR_CLIPS_MAX = 5
+	self.x_pmm.AMMO_MAX = self.x_pmm.CLIP_AMMO_MAX * self.x_pmm.NR_CLIPS_MAX
+	self.x_pmm.AMMO_PICKUP = self:_pickup_chance(self.x_pmm.AMMO_MAX, PICKUP.OTHER)
+	self.x_pmm.kick.standing = self.x_g17.kick.standing
+	self.x_pmm.kick.crouching = self.pmm.kick.standing
+	self.x_pmm.kick.steelsight = self.pmm.kick.standing
+	self.x_pmm.animations.second_gun_versions = {
+		reload_not_empty = "reload_not_empty_left",
+		reload = "reload_left"
+	}
+	self.x_pmm.animations.has_steelsight_stance = true
+	self.x_pmm.weapon_hold = "jowi_pistol"
+	self.x_pmm.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 120,
+		alert_size = 7,
+		spread = 15,
+		recoil = 7,
+		spread_moving = 15,
+		value = 4,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 15,
+		concealment = 23
+	}
+end
+
+function WeaponTweakData:_init_speen(weapon_data)
+	self.speen = {
+		categories = {
+			"smg"
+		},
+		damage_melee = weapon_data.damage_melee_default,
+		damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default,
+		sounds = {
+			dryfire = "secondary_dryfire",
+			fire = "pivot_fire",
+			leave_steelsight = "primary_steel_sight_exit",
+			enter_steelsight = "primary_steel_sight_enter"
+		},
+		timers = {
+			reload_empty = 2.5,
+			reload_not_empty = 1.6,
+			equip = 0.9,
+			unequip = 1.15
+		},
+		name_id = "bm_w_speen",
+		desc_id = "bm_w_speen_desc",
+		description_id = "des_speen",
+		global_value = "esp",
+		texture_bundle_folder = "esp",
+		muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps",
+		muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps",
+		shell_ejection = "effects/payday2/particles/weapons/shells/shell_9mm",
+		use_data = {
+			selection_index = SELECTION.SECONDARY
+		},
+		DAMAGE = 1,
+		CLIP_AMMO_MAX = 15,
+		NR_CLIPS_MAX = 3
+	}
+	self.speen.AMMO_MAX = self.speen.CLIP_AMMO_MAX * self.speen.NR_CLIPS_MAX
+	self.speen.AMMO_PICKUP = self:_pickup_chance(self.speen.AMMO_MAX, PICKUP.AR_LOW_CAPACITY)
+	self.speen.FIRE_MODE = "single"
+	self.speen.CAN_TOGGLE_FIREMODE = false
+	self.speen.fire_mode_data = {
+		fire_rate = 0.12
+	}
+	self.speen.single = {
+		fire_rate = 0.12
+	}
+	self.speen.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight
+	}
+	self.speen.kick = {
+		standing = self.new_m4.kick.standing,
+		crouching = self.ching.kick.crouching,
+		steelsight = self.ching.kick.steelsight
+	}
+	self.speen.crosshair = {
+		standing = {
+			moving_offset = 0.4,
+			kick_offset = 0.3,
+			offset = 0.1
+		},
+		crouching = {
+			moving_offset = 0.5,
+			kick_offset = 0.2,
+			offset = 0.1
+		},
+		steelsight = {
+			hidden = true,
+			kick_offset = 0.1,
+			offset = 0,
+			moving_offset = 0
+		}
+	}
+	self.speen.shake = {
+		fire_steelsight_multiplier = -0.5,
+		fire_multiplier = 1
+	}
+	self.speen.autohit = weapon_data.autohit_rifle_default
+	self.speen.aim_assist = weapon_data.aim_assist_rifle_default
+	self.speen.weapon_hold = "speen"
+	self.speen.animations = {
+		recoil_steelsight = true,
+		equip_id = "speen_equip",
+		magazine_empty = "last_recoil"
+	}
+	self.speen.panic_suppression_chance = 0.2
+	self.speen.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 120,
+		alert_size = 7,
+		spread = 17,
+		recoil = 14,
+		spread_moving = 17,
+		value = 1,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 13,
+		concealment = 21
+	}
+end
+
+function WeaponTweakData:_init_dart(weapon_data)
+	local data = {}
+	self.dart = data
+	data.categories = {
+		"crossbow"
+	}
+	data.projectile_type = "dart_poison"
+	data.damage_melee = weapon_data.damage_melee_default
+	data.damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default
+	data.sounds = {
+		charge = "dart_charge",
+		charge_release = "dart_release",
+		charge_release_fail = "dart_release_fail",
+		charge_cancel = "dart_charge_cancel",
+		enter_steelsight = "secondary_steel_sight_enter",
+		leave_steelsight = "secondary_steel_sight_exit",
+		dryfire = "secondary_dryfire"
+	}
+	data.timers = {
+		reload_not_empty = 3.5,
+		reload_empty = 3.5,
+		unequip = 0.43,
+		equip = 0.4
+	}
+	data.name_id = "bm_w_dart"
+	data.desc_id = "bm_w_dart_desc"
+	data.description_id = "des_dart"
+	data.has_description = true
+	data.global_value = "esp"
+	data.texture_bundle_folder = "esp"
+	data.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_fps"
+	data.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence_fps"
+	data.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	data.use_data = {
+		selection_index = SELECTION.SECONDARY
+	}
+	data.DAMAGE = 1
+	data.CLIP_AMMO_MAX = 1
+	data.NR_CLIPS_MAX = 24
+	data.AMMO_MAX = data.CLIP_AMMO_MAX * data.NR_CLIPS_MAX
+	data.AMMO_PICKUP = self:_pickup_chance(0, PICKUP.OTHER)
+	data.ammo_default_sub_type = "ammo_poison"
+	data.FIRE_MODE = "single"
+	data.CAN_TOGGLE_FIREMODE = false
+	data.fire_mode_data = {
+		fire_rate = 3.6
+	}
+	data.single = {
+		fire_rate = 3.6
+	}
+	data.charge_data = {
+		max_t = 1
+	}
+	data.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight
+	}
+	data.kick = {
+		standing = self.glock_17.kick.standing
+	}
+	data.kick.crouching = data.kick.standing
+	data.kick.steelsight = data.kick.standing
+	data.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	data.crosshair.standing.offset = 0.1
+	data.crosshair.standing.moving_offset = 0.4
+	data.crosshair.standing.kick_offset = 0.3
+	data.crosshair.crouching.offset = 0.1
+	data.crosshair.crouching.moving_offset = 0.5
+	data.crosshair.crouching.kick_offset = 0.2
+	data.crosshair.steelsight.hidden = true
+	data.crosshair.steelsight.offset = 0
+	data.crosshair.steelsight.moving_offset = 0
+	data.crosshair.steelsight.kick_offset = 0.1
+	data.shake = {
+		fire_multiplier = 1,
+		fire_steelsight_multiplier = -1
+	}
+	data.autohit = weapon_data.autohit_pistol_default
+	data.aim_assist = weapon_data.aim_assist_pistol_default
+	data.weapon_hold = "dart"
+	data.animations = {
+		equip_id = "dart_equip",
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
+	}
+	data.panic_suppression_chance = 0
+	data.ignore_damage_upgrades = true
+	data.upgrade_blocks = {
+		weapon = {
+			"clip_ammo_increase"
+		}
+	}
+	data.stats_modifiers = {
+		damage = 10
+	}
+	data.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 12,
+		alert_size = 18,
+		spread = 24,
+		recoil = 18,
+		spread_moving = 24,
+		value = 1,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 14,
+		concealment = 21
+	}
+end
+
 function WeaponTweakData:_create_table_structure()
 	self.c45_npc = {
 		usage = "is_pistol",
@@ -32732,6 +33178,30 @@ function WeaponTweakData:_create_table_structure()
 		use_data = {},
 		auto = {}
 	}
+	self.pmm_crew = {
+		usage = "is_pistol",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.x_pmm_crew = {
+		usage = "akimbo_pistol",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.dart_crew = {
+		usage = "is_revolver",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.speen_crew = {
+		usage = "is_smg",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
 end
 
 function WeaponTweakData:_init_ranc_heavy_machine_gun()
@@ -32877,6 +33347,7 @@ function WeaponTweakData:get_akimbo_mappings()
 		judge = "x_judge",
 		type54 = "x_type54",
 		m45 = "x_m45",
+		pmm = "x_pmm",
 		saw = "saw_secondary",
 		ppk = "x_ppk",
 		baka = "x_baka",

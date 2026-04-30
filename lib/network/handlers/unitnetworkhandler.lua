@@ -5188,3 +5188,167 @@ function UnitNetworkHandler:sync_cg22_spawned_units(tree_unit, sled_unit, shredd
 		mutator:client_sync_spawned_units(tree_unit, sled_unit, shredder_unit, santa_unit)
 	end
 end
+
+function UnitNetworkHandler:sync_projectile_special_collision(attacker_unit, weapon_unit, selection_idx, hit_unit, hit_body, impact_pos, impact_dir, impact_normal, sender)
+	if not self._verify_character_and_sender(attacker_unit, sender) or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	attacker_unit = alive(attacker_unit) and attacker_unit or nil
+	weapon_unit = alive(weapon_unit) and weapon_unit or nil
+	local inv_ext = nil
+
+	if not weapon_unit and attacker_unit and selection_idx ~= 0 then
+		inv_ext = attacker_unit:inventory()
+
+		if inv_ext and inv_ext.unit_by_selection then
+			weapon_unit = inv_ext:unit_by_selection(selection_idx)
+			weapon_unit = alive(weapon_unit) and weapon_unit or nil
+		end
+	end
+
+	if not weapon_unit or not weapon_unit:base() then
+		return
+	end
+
+	local ammo_data = weapon_unit:base():ammo_data()
+
+	if not ammo_data or not ammo_data.launcher_grenade then
+		return
+	end
+
+	local projectile_tweak = tweak_data.projectiles[ammo_data.launcher_grenade]
+
+	if not projectile_tweak or not projectile_tweak.bullet_class then
+		return
+	end
+
+	local bullet_class = CoreSerialize.string_to_classtable(projectile_tweak.bullet_class)
+
+	if not bullet_class or not bullet_class.sync_on_collision then
+		return
+	end
+
+	local col_ray = {
+		unit = hit_unit,
+		body = hit_body or hit_unit:body(0),
+		position = impact_pos,
+		ray = impact_dir,
+		normal = impact_normal
+	}
+
+	bullet_class.sync_on_collision(col_ray, weapon_unit, attacker_unit)
+end
+
+function UnitNetworkHandler:request_place_spy_camera(positon, normal, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local peer = self._verify_sender(sender_rpc)
+
+	if not peer then
+		return
+	end
+
+	local peer_id = peer:id()
+
+	if not managers.player:verify_equipment(peer_id, "spy_camera") then
+		return
+	end
+
+	local owner_unit = peer:unit()
+
+	if not alive(owner_unit) or owner_unit:id() == -1 then
+		sender_rpc:from_server_spy_camera_place_result_failed()
+
+		return
+	end
+
+	local rotation = Rotation(normal, math.UP)
+	local camera_unit = SpyCameraBase.spawn(positon, rotation, owner_unit, peer_id)
+
+	if not alive(camera_unit) then
+		sender_rpc:from_server_spy_camera_place_result_failed()
+
+		return
+	end
+
+	local base_ext = camera_unit:base()
+
+	base_ext:set_server_information(peer_id)
+	base_ext:link_attachment()
+	sender_rpc:from_server_spy_camera_place_result(camera_unit)
+end
+
+function UnitNetworkHandler:from_server_spy_camera_place_result(camera_unit, sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender_rpc) then
+		return
+	end
+
+	camera_unit = alive(camera_unit) and camera_unit or nil
+	local player_unit = managers.player:player_unit()
+
+	if player_unit then
+		player_unit:equipment():from_server_spy_camera_placement_result(camera_unit and true or false)
+	end
+
+	if not alive(camera_unit) then
+		return
+	end
+
+	local base_ext = camera_unit:base()
+
+	if base_ext and base_ext.set_owner then
+		camera_unit:base():set_owner(player_unit)
+	end
+end
+
+function UnitNetworkHandler:from_server_spy_camera_place_result_failed(sender_rpc)
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not self._verify_sender(sender_rpc) then
+		return
+	end
+
+	local player_unit = managers.player:player_unit()
+
+	if player_unit then
+		player_unit:equipment():from_server_spy_camera_placement_result(false)
+	end
+end
+
+function UnitNetworkHandler:sync_spy_camera_interaction(unit, access_unit, owner_id)
+	if not alive(unit) or not self._verify_gamestate(self._gamestate_filter.any_ingame) then
+		return
+	end
+
+	local base_ext = unit:base()
+
+	if base_ext and base_ext.interaction_setup then
+		unit:base():interaction_setup(access_unit, owner_id)
+	end
+end
+
+function UnitNetworkHandler:picked_up_spy_camera(unit, rpc)
+	local peer = self._verify_sender(rpc)
+
+	if not alive(unit) or not self._verify_gamestate(self._gamestate_filter.any_ingame) or not peer then
+		return
+	end
+
+	local base_ext = unit:base()
+
+	if base_ext and base_ext.remove then
+		managers.network:session():send_to_peer(peer, "picked_up_spy_camera_response", unit:id())
+		unit:base():remove()
+	end
+end
+
+function UnitNetworkHandler:picked_up_spy_camera_response(camera_uid, rpc)
+	local peer = self._verify_sender(rpc)
+
+	if not self._verify_gamestate(self._gamestate_filter.any_ingame) or not peer then
+		return
+	end
+
+	SpyCameraBase.on_picked_up(camera_uid)
+end

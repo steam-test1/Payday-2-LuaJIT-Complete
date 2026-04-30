@@ -323,6 +323,11 @@ function IngameWaitingForPlayersState:at_enter()
 
 	self._started_from_beginning = true
 
+	if Application:editor() then
+		self._blackscreen_started = nil
+		self._starting_game_intro = nil
+	end
+
 	if Global.job_manager.current_job and Global.job_manager.current_job.current_stage == 1 then
 		Global.statistics_manager.playing_from_start = true
 	end

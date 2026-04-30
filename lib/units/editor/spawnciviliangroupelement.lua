@@ -1,6 +1,10 @@
 SpawnCivilianGroupUnitElement = SpawnCivilianGroupUnitElement or class(MissionElement)
-SpawnCivilianGroupUnitElement.LINK_ELEMENTS = {
-	"elements"
+SpawnCivilianGroupUnitElement.LINK_VALUES = {
+	{
+		output = true,
+		table_value = "elements",
+		type = "spawn_point"
+	}
 }
 
 function SpawnCivilianGroupUnitElement:init(unit)
@@ -58,11 +62,6 @@ function SpawnCivilianGroupUnitElement:add_element()
 			table.insert(self._hed.elements, id)
 		end
 	end
-end
-
-function SpawnCivilianGroupUnitElement:get_links_to_unit(...)
-	SpawnCivilianGroupUnitElement.super.get_links_to_unit(self, ...)
-	self:_get_links_of_type_from_elements(self._hed.elements, "spawn_point", ...)
 end
 
 function SpawnCivilianGroupUnitElement:add_triggers(vc)

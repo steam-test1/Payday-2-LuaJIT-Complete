@@ -4404,7 +4404,7 @@ function PlayerManager:check_equipment_placement_valid(player, equipment)
 
 	local equipment_id = equipment_data.equipment
 
-	if equipment_id == "trip_mine" or equipment_id == "ecm_jammer" then
+	if equipment_id == "trip_mine" or equipment_id == "ecm_jammer" or equipment_id == "spy_camera" then
 		return player:equipment():valid_look_at_placement(tweak_data.equipments[equipment_id]) and true or false
 	end
 
@@ -4580,6 +4580,31 @@ function PlayerManager:add_sentry_gun(num, sentry_type)
 		})
 		self:update_deployable_equipment_amount_to_peers(equipment.equipment, new_amount)
 	elseif self._equipment.selected_index and self._equipment.selections[self._equipment.selected_index].equipment == sentry_type then
+		managers.hud:set_item_amount(index, new_amount)
+		self:update_deployable_equipment_amount_to_peers(equipment.equipment, new_amount)
+	end
+end
+
+function PlayerManager:add_spy_camera()
+	local equipment, index = self:equipment_data_by_name("spy_camera")
+	local new_amount = Application:digest_value(equipment.amount[1], false) + 1
+	equipment.amount[1] = Application:digest_value(new_amount, true)
+	local update_hud = false
+
+	if self._equipment.selected_index and self._equipment.selections[self._equipment.selected_index].equipment ~= "spy_camera" and Application:digest_value(self._equipment.selections[self._equipment.selected_index].amount[1], false) == 0 then
+		self._equipment.selected_index = index
+		update_hud = true
+	elseif _G.IS_VR then
+		self._equipment.selected_index = index
+	end
+
+	if update_hud and equipment then
+		managers.hud:add_item({
+			amount = Application:digest_value(equipment.amount[1], false),
+			icon = equipment.icon
+		})
+		self:update_deployable_equipment_amount_to_peers(equipment.equipment, new_amount)
+	elseif self._equipment.selected_index and self._equipment.selections[self._equipment.selected_index].equipment == "spy_camera" then
 		managers.hud:set_item_amount(index, new_amount)
 		self:update_deployable_equipment_amount_to_peers(equipment.equipment, new_amount)
 	end

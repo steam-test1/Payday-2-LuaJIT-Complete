@@ -1573,14 +1573,10 @@ function CopActionWalk._calculate_simplified_path(good_pos, original_path, nr_it
 		if nav_point.x and i_nav_point ~= original_path_size and (i_nav_point == 1 or simplified_path[#simplified_path].x) then
 			local pos_from = simplified_path[#simplified_path]
 			local pos_to = CopActionWalk._nav_point_pos(original_path[i_nav_point + 1])
-			local add_point = z_test and math.abs(nav_point.z - pos_from.z - (nav_point.z - pos_to.z)) > 60
+			local add_point = z_test and math.abs(nav_point.z - pos_from.z + nav_point.z - pos_to.z) > 60
 			add_point = add_point or CopActionWalk._chk_shortcut_pos_to_pos(pos_from, pos_to)
 
 			if add_point then
-				if add_point then
-					-- Nothing
-				end
-
 				table.insert(simplified_path, mvec3_cpy(nav_point))
 			end
 		else
@@ -2469,7 +2465,7 @@ function CopActionWalk:_upd_nav_link(t)
 				self._next_is_nav_link = nil
 			end
 
-			self:_send_nav_point(self._simplified_path[2])
+			self:_send_nav_point(self._nav_point_pos(self._simplified_path[2]))
 
 			if self._nav_link.element:nav_link_delay() > 0 then
 				self._nav_link.c_class:set_delay_time(0)

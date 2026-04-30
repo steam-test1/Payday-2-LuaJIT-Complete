@@ -1,6 +1,9 @@
 EnemyDummyTriggerUnitElement = EnemyDummyTriggerUnitElement or class(MissionElement)
-EnemyDummyTriggerUnitElement.LINK_ELEMENTS = {
-	"elements"
+EnemyDummyTriggerUnitElement.LINK_VALUES = {
+	{
+		table_value = "elements",
+		type = "trigger"
+	}
 }
 
 function EnemyDummyTriggerUnitElement:init(unit)
@@ -30,11 +33,6 @@ function EnemyDummyTriggerUnitElement:draw_links(t, dt, selected_unit, all_units
 			})
 		end
 	end
-end
-
-function EnemyDummyTriggerUnitElement:get_links_to_unit(...)
-	EnemyDummyTriggerUnitElement.super.get_links_to_unit(self, ...)
-	self:_get_links_of_type_from_elements(self._hed.elements, "trigger", ...)
 end
 
 function EnemyDummyTriggerUnitElement:update_editing()

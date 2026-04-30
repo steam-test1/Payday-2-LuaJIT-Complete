@@ -216,6 +216,7 @@ function CharacterTweakData:_init_security(presets)
 	self.mute_security_undominatable = deep_clone(self.security)
 	self.mute_security_undominatable.suppression = nil
 	self.mute_security_undominatable.surrender = nil
+	self.mute_security_undominatable.immune_to_daze = true
 	self.mute_security_undominatable.has_alarm_pager = false
 	self.mute_security_undominatable.chatter = presets.enemy_chatter.no_chatter
 	self.mute_security_undominatable.weapon_voice = "3"
@@ -2528,7 +2529,7 @@ function CharacterTweakData:_init_tank(presets)
 		autofire_rounds = presets.weapon.deathwish.is_rifle.autofire_rounds,
 		FALLOFF = {
 			{
-				dmg_mul = 2,
+				dmg_mul = 4.5,
 				r = 100,
 				acc = {
 					0.6,
@@ -2546,7 +2547,7 @@ function CharacterTweakData:_init_tank(presets)
 				}
 			},
 			{
-				dmg_mul = 1.75,
+				dmg_mul = 2,
 				r = 500,
 				acc = {
 					0.6,
@@ -2564,7 +2565,7 @@ function CharacterTweakData:_init_tank(presets)
 				}
 			},
 			{
-				dmg_mul = 1.5,
+				dmg_mul = 1.75,
 				r = 1000,
 				acc = {
 					0.4,
@@ -2582,7 +2583,7 @@ function CharacterTweakData:_init_tank(presets)
 				}
 			},
 			{
-				dmg_mul = 1.25,
+				dmg_mul = 1.5,
 				r = 2000,
 				acc = {
 					0.4,
@@ -2600,7 +2601,7 @@ function CharacterTweakData:_init_tank(presets)
 				}
 			},
 			{
-				dmg_mul = 1,
+				dmg_mul = 1.25,
 				r = 3000,
 				acc = {
 					0.1,
@@ -9715,7 +9716,8 @@ function CharacterTweakData:_presets(tweak_data)
 			combat = {},
 			recon = {},
 			guard = {},
-			ntl = {}
+			ntl = {},
+			dazed = {}
 		}
 	}
 	presets.detection.normal.idle.dis_max = 10000
@@ -9751,6 +9753,13 @@ function CharacterTweakData:_presets(tweak_data)
 		0.2,
 		2
 	}
+	presets.detection.normal.dazed.dis_max = 2000
+	presets.detection.normal.dazed.angle_max = 60
+	presets.detection.normal.dazed.delay = {
+		1,
+		6
+	}
+	presets.detection.normal.dazed.use_uncover_range = true
 	presets.detection.guard = {
 		idle = {},
 		combat = {},
@@ -9786,6 +9795,7 @@ function CharacterTweakData:_presets(tweak_data)
 		0
 	}
 	presets.detection.guard.ntl = presets.detection.normal.ntl
+	presets.detection.guard.dazed = presets.detection.normal.dazed
 	presets.detection.sniper = {
 		idle = {},
 		combat = {},

@@ -1,4 +1,13 @@
 NavObstacleElement = NavObstacleElement or class(MissionElement)
+NavObstacleElement.LINK_VALUES = {
+	{
+		output = true,
+		type = "obstacle",
+		table_key = "unit_id",
+		table_value = "obstacle_list",
+		layer = "Statics"
+	}
+}
 
 function NavObstacleElement:init(unit)
 	NavObstacleElement.super.init(self, unit)

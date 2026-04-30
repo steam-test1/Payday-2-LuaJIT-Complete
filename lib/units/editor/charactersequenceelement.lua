@@ -1,8 +1,12 @@
 CharacterSequenceElement = SequenceCharacterElement or class(MissionElement)
 CharacterSequenceElement.SAVE_UNIT_POSITION = false
 CharacterSequenceElement.SAVE_UNIT_ROTATION = false
-CharacterSequenceElement.LINK_ELEMENTS = {
-	"elements"
+CharacterSequenceElement.LINK_VALUES = {
+	{
+		output = true,
+		table_value = "elements",
+		type = "operator"
+	}
 }
 
 function CharacterSequenceElement:init(unit)

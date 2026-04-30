@@ -1,4 +1,19 @@
 AIForceAttentionElement = AIForceAttentionElement or class(MissionElement)
+AIForceAttentionElement.LINK_VALUES = {
+	{
+		value = "att_unit_id",
+		output = true,
+		type = "operator"
+	},
+	{
+		table_value = "included_units",
+		type = "included_unit"
+	},
+	{
+		table_value = "excluded_units",
+		type = "excluded_unit"
+	}
+}
 local att_unit_label_base = "Selected Unit: "
 local included_units_label_base = "Included Units: "
 local excluded_units_label_base = "Excluded Units: "

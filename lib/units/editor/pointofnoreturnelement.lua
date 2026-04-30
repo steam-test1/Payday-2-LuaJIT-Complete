@@ -1,6 +1,9 @@
 PointOfNoReturnElement = PointOfNoReturnElement or class(MissionElement)
-PointOfNoReturnElement.LINK_ELEMENTS = {
-	"elements"
+PointOfNoReturnElement.LINK_VALUES = {
+	{
+		table_value = "elements",
+		type = "trigger"
+	}
 }
 
 function PointOfNoReturnElement:init(unit)

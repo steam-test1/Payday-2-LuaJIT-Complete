@@ -1,4 +1,12 @@
 ChangeVanSkinUnitElement = ChangeVanSkinUnitElement or class(MissionElement)
+ChangeVanSkinUnitElement.LINK_VALUES = {
+	{
+		layer = "Statics",
+		output = true,
+		table_value = "unit_ids",
+		type = "operator"
+	}
+}
 
 function ChangeVanSkinUnitElement:init(unit)
 	ChangeVanSkinUnitElement.super.init(self, unit)

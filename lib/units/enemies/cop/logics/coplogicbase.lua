@@ -1164,6 +1164,11 @@ function CopLogicBase._upd_suspicion(data, my_data, attention_obj)
 			local range_max = (attention_obj.settings.suspicion_range - (attention_obj.settings.uncover_range or 0)) * susp_settings.range_mul
 			local range_min = (attention_obj.settings.uncover_range or 0) * susp_settings.range_mul
 			local mul = 1 - (dis - range_min) / range_max
+
+			if my_data.detection and my_data.detection.suspicion_mul then
+				mul = mul * my_data.detection.suspicion_mul
+			end
+
 			local progress = dt * mul * susp_settings.buildup_mul / attention_obj.settings.suspicion_duration
 			attention_obj.uncover_progress = (attention_obj.uncover_progress or 0) + progress
 

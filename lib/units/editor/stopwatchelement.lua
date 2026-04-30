@@ -1,5 +1,13 @@
 StopwatchUnitElement = StopwatchUnitElement or class(MissionElement)
 StopwatchUnitElement.ELEMENT_NAME = "units/dev_tools/mission_elements/logic_stopwatch/logic_stopwatch"
+StopwatchUnitElement.LINK_VALUES = {
+	{
+		layer = "Statics",
+		output = true,
+		table_value = "digital_gui_unit_ids",
+		type = "guis"
+	}
+}
 
 function StopwatchUnitElement:init(unit)
 	StopwatchUnitElement.super.init(self, unit)
@@ -170,8 +178,12 @@ StopwatchOperatorUnitElement = StopwatchOperatorUnitElement or class(MissionElem
 StopwatchOperatorUnitElement.RANDOMS = {
 	"time"
 }
-StopwatchOperatorUnitElement.LINK_ELEMENTS = {
-	"elements"
+StopwatchOperatorUnitElement.LINK_VALUES = {
+	{
+		output = true,
+		table_value = "elements",
+		type = "operator"
+	}
 }
 
 function StopwatchOperatorUnitElement:init(unit)
@@ -215,11 +227,6 @@ function StopwatchOperatorUnitElement:draw_links(t, dt, selected_unit, all_units
 			self:remove_link_element("elements", id)
 		end
 	end
-end
-
-function StopwatchOperatorUnitElement:get_links_to_unit(...)
-	StopwatchOperatorUnitElement.super.get_links_to_unit(self, ...)
-	self:_get_links_of_type_from_elements(self._hed.elements, "operator", ...)
 end
 
 function StopwatchOperatorUnitElement:update_editing()
@@ -344,8 +351,11 @@ function StopwatchOperatorUnitElement:_build_panel(panel, panel_sizer)
 end
 
 StopwatchTriggerUnitElement = StopwatchTriggerUnitElement or class(MissionElement)
-StopwatchTriggerUnitElement.LINK_ELEMENTS = {
-	"elements"
+StopwatchTriggerUnitElement.LINK_VALUES = {
+	{
+		table_value = "elements",
+		type = "trigger"
+	}
 }
 
 function StopwatchTriggerUnitElement:init(unit)
@@ -380,11 +390,6 @@ function StopwatchTriggerUnitElement:draw_links(t, dt, selected_unit, all_units)
 			self:remove_link_element("elements", id)
 		end
 	end
-end
-
-function StopwatchTriggerUnitElement:get_links_to_unit(...)
-	StopwatchTriggerUnitElement.super.get_links_to_unit(self, ...)
-	self:_get_links_of_type_from_elements(self._hed.elements, "trigger", ...)
 end
 
 function StopwatchTriggerUnitElement:update_editing()
@@ -435,8 +440,11 @@ end
 StopwatchFilterUnitElement = StopwatchFilterUnitElement or class(MissionElement)
 StopwatchFilterUnitElement.SAVE_UNIT_POSITION = false
 StopwatchFilterUnitElement.SAVE_UNIT_ROTATION = false
-StopwatchFilterUnitElement.LINK_ELEMENTS = {
-	"elements"
+StopwatchFilterUnitElement.LINK_VALUES = {
+	{
+		table_value = "elements",
+		type = "filter"
+	}
 }
 
 function StopwatchFilterUnitElement:init(unit)
@@ -485,11 +493,6 @@ function StopwatchFilterUnitElement:draw_links(t, dt, selected_unit, all_units)
 	for _, id in ipairs(self._hed.stopwatch_value_ids) do
 		draw_link_element("stopwatch_value_ids", id, 0.01, 0.85, 0.85)
 	end
-end
-
-function StopwatchFilterUnitElement:get_links_to_unit(...)
-	StopwatchFilterUnitElement.super.get_links_to_unit(self, ...)
-	self:_get_links_of_type_from_elements(self._hed.elements, "filter", ...)
 end
 
 function StopwatchFilterUnitElement:update_editing()

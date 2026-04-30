@@ -1,4 +1,10 @@
 CharacterDamageTriggerUnitElement = CharacterDamageTriggerUnitElement or class(MissionElement)
+CharacterDamageTriggerUnitElement.LINK_VALUES = {
+	{
+		table_value = "elements",
+		type = "trigger"
+	}
+}
 
 function CharacterDamageTriggerUnitElement:init(unit)
 	CharacterDamageTriggerUnitElement.super.init(self, unit)
@@ -29,11 +35,6 @@ function CharacterDamageTriggerUnitElement:draw_links(t, dt, selected_unit, all_
 			})
 		end
 	end
-end
-
-function CharacterDamageTriggerUnitElement:get_links_to_unit(...)
-	CharacterDamageTriggerUnitElement.super.get_links_to_unit(self, ...)
-	self:_get_links_of_type_from_elements(self._hed.elements, "trigger", ...)
 end
 
 function CharacterDamageTriggerUnitElement:update_editing()

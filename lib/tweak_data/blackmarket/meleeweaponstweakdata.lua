@@ -3128,7 +3128,7 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 		info_id = "bm_melee_funder_strike_info",
 		third_unit = "units/pd2_dlc_fun/weapons/wpn_tps_mel_funder_strike/wpn_tps_mel_funder_strike",
 		repeat_expire_t = 0.7,
-		expire_t = 1,
+		expire_t = 0.7,
 		sounds = funder_strike_sounds,
 		stats = funder_strike_stats,
 		tase_data = {

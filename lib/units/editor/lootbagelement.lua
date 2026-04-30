@@ -1,5 +1,12 @@
 LootBagUnitElement = LootBagUnitElement or class(MissionElement)
 LootBagUnitElement.USES_POINT_ORIENTATION = true
+LootBagUnitElement.LINK_VALUES = {
+	{
+		value = "zipline_unit_id",
+		layer = "Statics",
+		type = "zipline"
+	}
+}
 
 function LootBagUnitElement:init(unit)
 	MissionElement.init(self, unit)
@@ -179,8 +186,11 @@ end
 LootBagTriggerUnitElement = LootBagTriggerUnitElement or class(MissionElement)
 LootBagTriggerUnitElement.SAVE_UNIT_POSITION = false
 LootBagTriggerUnitElement.SAVE_UNIT_ROTATION = false
-LootBagTriggerUnitElement.LINK_ELEMENTS = {
-	"elements"
+LootBagTriggerUnitElement.LINK_VALUES = {
+	{
+		table_value = "elements",
+		type = "trigger"
+	}
 }
 
 function LootBagTriggerUnitElement:init(unit)

@@ -344,6 +344,12 @@ function DLCTweakData:init_generated()
 	}
 	self.dot_bundle.content.loot_global_value = "dot"
 	self.dot_bundle.content.loot_drops = {}
+	self.esp_bundle = {
+		dlc = "has_esp",
+		content = {}
+	}
+	self.esp_bundle.content.loot_global_value = "esp"
+	self.esp_bundle.content.loot_drops = {}
 	self.ess_bundle = {
 		dlc = "has_ess",
 		content = {}

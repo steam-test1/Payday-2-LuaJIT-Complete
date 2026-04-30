@@ -1779,6 +1779,14 @@ function HUDManager:set_access_camera_name(name)
 	self._hud_access_camera:set_camera_name(name)
 end
 
+function HUDManager:set_access_camera_theme(theme)
+	self._hud_access_camera:set_camera_theme(theme)
+end
+
+function HUDManager:set_access_damage_taken()
+	self._hud_access_camera:damage_taken()
+end
+
 function HUDManager:set_access_camera_destroyed(destroyed, no_feed)
 	self._hud_access_camera:set_destroyed(destroyed, no_feed)
 end

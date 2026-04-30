@@ -4,8 +4,12 @@ SpawnEnemyGroupUnitElement.SAVE_UNIT_ROTATION = false
 SpawnEnemyGroupUnitElement.RANDOMS = {
 	"amount"
 }
-SpawnEnemyGroupUnitElement.LINK_ELEMENTS = {
-	"elements"
+SpawnEnemyGroupUnitElement.LINK_VALUES = {
+	{
+		output = true,
+		table_value = "elements",
+		type = "spawn_point"
+	}
 }
 
 function SpawnEnemyGroupUnitElement:init(unit)
@@ -94,11 +98,6 @@ function SpawnEnemyGroupUnitElement:add_element()
 			table.insert(self._hed.elements, id)
 		end
 	end
-end
-
-function SpawnEnemyGroupUnitElement:get_links_to_unit(...)
-	SpawnEnemyGroupUnitElement.super.get_links_to_unit(self, ...)
-	self:_get_links_of_type_from_elements(self._hed.elements, "spawn_point", ...)
 end
 
 function SpawnEnemyGroupUnitElement:add_triggers(vc)

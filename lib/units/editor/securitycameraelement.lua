@@ -1,6 +1,14 @@
 SecurityCameraUnitElement = SecurityCameraUnitElement or class(MissionElement)
 SecurityCameraUnitElement.SAVE_UNIT_POSITION = false
 SecurityCameraUnitElement.SAVE_UNIT_ROTATION = false
+SecurityCameraUnitElement.LINK_VALUES = {
+	{
+		value = "camera_u_id",
+		output = true,
+		layer = "Statics",
+		type = "operator"
+	}
+}
 SecurityCameraUnitElement._object_original_rotations = {}
 
 function SecurityCameraUnitElement:init(unit)

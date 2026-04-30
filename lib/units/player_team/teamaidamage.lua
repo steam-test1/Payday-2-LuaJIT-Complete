@@ -1324,18 +1324,6 @@ end
 
 function TeamAIDamage:pre_destroy()
 	self:_clear_damage_transition_callbacks()
-
-	if self._crew_ai_flashbang_unit_loaded then
-		managers.dyn_resource:unload(Idstring("unit"), Idstring(tweak_data.blackmarket.projectiles.concussion.unit), DynamicResourceManager.DYN_RESOURCES_PACKAGE, nil)
-
-		self._crew_ai_flashbang_unit_loaded = false
-	end
-
-	if self._crew_ai_flashbang_sprint_unit_loaded then
-		managers.dyn_resource:unload(Idstring("unit"), Idstring(tweak_data.blackmarket.projectiles.concussion.sprint_unit), DynamicResourceManager.DYN_RESOURCES_PACKAGE, nil)
-
-		self._crew_ai_flashbang_sprint_unit_loaded = false
-	end
 end
 
 function TeamAIDamage:_cannot_take_damage()

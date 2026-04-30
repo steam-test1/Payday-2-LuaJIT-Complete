@@ -1265,7 +1265,7 @@ function VehicleDrivingExt:_detect_invalid_possition(t, dt)
 	local velocity = self._vehicle:velocity():length()
 
 	if velocity < 10 and not self._stopped_since then
-		self._sstopped_since = t
+		self._stopped_since = t
 	elseif velocity >= 10 and self._stopped_since then
 		self._stopped_since = nil
 	end

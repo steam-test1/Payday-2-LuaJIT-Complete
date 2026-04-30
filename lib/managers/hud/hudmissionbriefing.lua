@@ -211,6 +211,10 @@ function HUDMissionBriefing:init(hud, workspace)
 		show_contact_gui = false
 	end
 
+	if Application:editor() then
+		show_contact_gui = false
+	end
+
 	if show_contact_gui then
 		local contact_gui = self._background_layer_two:gui(self._current_contact_data.assets_gui, {})
 		local contact_pattern = contact_gui:has_script() and contact_gui:script().pattern

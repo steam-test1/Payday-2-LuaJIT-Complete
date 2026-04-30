@@ -1,8 +1,12 @@
 CharacterTeamElement = CharacterTeamElement or class(MissionElement)
 CharacterTeamElement.SAVE_UNIT_POSITION = false
 CharacterTeamElement.SAVE_UNIT_ROTATION = false
-CharacterTeamElement.LINK_ELEMENTS = {
-	"elements"
+CharacterTeamElement.LINK_VALUES = {
+	{
+		output = true,
+		table_value = "elements",
+		type = "operator"
+	}
 }
 
 function CharacterTeamElement:init(unit)

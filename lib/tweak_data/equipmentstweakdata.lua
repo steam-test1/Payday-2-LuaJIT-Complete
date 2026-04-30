@@ -185,6 +185,26 @@ function EquipmentsTweakData:init()
 			1
 		}
 	}
+	self.spy_camera = {
+		deploy_time = 0.5,
+		dummy_unit = "units/pd2_dlc_esp/equipment/esp_equipment_spy_camera/esp_equipment_spy_camera_dummy",
+		use_function_name = "use_spy_camera",
+		text_id = "bm_equipment_spy_camera",
+		yaw_limit = 14,
+		pitch_limit = 12,
+		access_channel = "spy_cameras",
+		icon = "equipment_spy_camera",
+		description_id = "des_ammo_bag",
+		visual_object = "g_toolbag",
+		quantity = {
+			2
+		},
+		deploy_check_settings = {
+			block_ray_type = "bag",
+			radius = 12,
+			block_ray_tolerance = 20
+		}
+	}
 	self.specials = {
 		cable_tie = {
 			quantity = 2,
@@ -636,12 +656,13 @@ function EquipmentsTweakData:init()
 		ammo_bag = 2,
 		grenades = 4,
 		asset_ammo_bag = 4,
-		asset_grenade_crate = 3,
+		spy_camera = -1,
 		first_aid_kit = 14,
 		grenade_crate = 1,
 		bodybags_bag = 2,
-		asset_bodybags_bag = 3,
+		asset_grenade_crate = 3,
 		doctor_bag = 2,
+		asset_bodybags_bag = 3,
 		sentry_gun = -1
 	}
 	self.class_name_to_deployable_id = {
@@ -649,6 +670,7 @@ function EquipmentsTweakData:init()
 		GrenadeCrateDeployableBase = "grenade_crate",
 		AmmoBagBase = "ammo_bag",
 		DoctorBagBase = "doctor_bag",
+		SpyCameraDeployableBase = "spy_camera",
 		FirstAidKitBase = "first_aid_kit"
 	}
 	self.specials.hand = {

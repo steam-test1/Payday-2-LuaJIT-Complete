@@ -1,6 +1,10 @@
 InvulnerableUnitElement = InvulnerableUnitElement or class(MissionElement)
-InvulnerableUnitElement.LINK_ELEMENTS = {
-	"elements"
+InvulnerableUnitElement.LINK_VALUES = {
+	{
+		output = true,
+		table_value = "elements",
+		type = "invulnerable"
+	}
 }
 
 function InvulnerableUnitElement:init(unit)
@@ -32,11 +36,6 @@ function InvulnerableUnitElement:draw_links(t, dt, selected_unit, all_units)
 			})
 		end
 	end
-end
-
-function InvulnerableUnitElement:get_links_to_unit(...)
-	InvulnerableUnitElement.super.get_links_to_unit(self, ...)
-	self:_get_links_of_type_from_elements(self._hed.elements, "trigger", ...)
 end
 
 function InvulnerableUnitElement:update_editing()

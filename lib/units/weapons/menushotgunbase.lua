@@ -14,3 +14,4 @@ AkimboWeaponBase.AKIMBO = true
 AkimboShotgunBase = AkimboShotgunBase or class(AkimboWeaponBase)
 BowWeaponBase = BowWeaponBase or class(NewRaycastWeaponBase)
 CrossbowWeaponBase = CrossbowWeaponBase or class(NewRaycastWeaponBase)
+DartWeaponBase = DartWeaponBase or class(NewRaycastWeaponBase)

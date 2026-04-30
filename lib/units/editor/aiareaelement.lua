@@ -1,5 +1,12 @@
 AIAreaElement = AIAreaElement or class(MissionElement)
 AIAreaElement.SAVE_UNIT_ROTATION = false
+AIAreaElement.LINK_VALUES = {
+	{
+		output = true,
+		table_value = "nav_segs",
+		layer = "Ai"
+	}
+}
 
 function AIAreaElement:init(unit)
 	AIAreaElement.super.init(self, unit)

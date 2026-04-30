@@ -8692,6 +8692,16 @@ function DLCTweakData:init(tweak_data)
 		"sticky_grenade",
 		"grenade_crate"
 	}
+	self.esp_upgrades = {
+		dlc = "has_esp",
+		content = {
+			loot_global_value = "esp",
+			loot_drops = {},
+			upgrades = {
+				"spy_camera"
+			}
+		}
+	}
 	self.victor_mods_pack_1 = {
 		content = {},
 		dlc = "has_victor_mods_pack_1"

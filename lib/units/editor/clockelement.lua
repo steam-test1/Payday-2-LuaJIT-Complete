@@ -1,8 +1,22 @@
 ClockUnitElement = ClockUnitElement or class(MissionElement)
 ClockUnitElement.SAVE_UNIT_POSITION = false
 ClockUnitElement.SAVE_UNIT_ROTATION = false
-ClockUnitElement.LINK_ELEMENTS = {
-	"elements"
+ClockUnitElement.LINK_VALUES = {
+	{
+		output = true,
+		table_value = "hour_elements",
+		type = "operator"
+	},
+	{
+		output = true,
+		table_value = "minute_elements",
+		type = "operator"
+	},
+	{
+		output = true,
+		table_value = "second_elements",
+		type = "operator"
+	}
 }
 ClockUnitElement.HOUR_COLOR = Color(0.34901960784313724, 0.16470588235294117, 0.44313725490196076)
 ClockUnitElement.MINUTE_COLOR = Color(0.47843137254901963, 0.6196078431372549, 0.20784313725490197)

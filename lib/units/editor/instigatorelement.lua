@@ -18,8 +18,12 @@ end
 InstigatorOperatorUnitElement = InstigatorOperatorUnitElement or class(MissionElement)
 InstigatorOperatorUnitElement.SAVE_UNIT_POSITION = false
 InstigatorOperatorUnitElement.SAVE_UNIT_ROTATION = false
-InstigatorOperatorUnitElement.LINK_ELEMENTS = {
-	"elements"
+InstigatorOperatorUnitElement.LINK_VALUES = {
+	{
+		output = true,
+		table_value = "elements",
+		type = "operator"
+	}
 }
 
 function InstigatorOperatorUnitElement:init(unit)
@@ -51,11 +55,6 @@ function InstigatorOperatorUnitElement:draw_links(t, dt, selected_unit, all_unit
 			})
 		end
 	end
-end
-
-function InstigatorOperatorUnitElement:get_links_to_unit(...)
-	InstigatorOperatorUnitElement.super.get_links_to_unit(self, ...)
-	self:_get_links_of_type_from_elements(self._hed.elements, "operator", ...)
 end
 
 function InstigatorOperatorUnitElement:update_editing()
@@ -110,8 +109,11 @@ end
 InstigatorTriggerUnitElement = InstigatorTriggerUnitElement or class(MissionElement)
 InstigatorTriggerUnitElement.SAVE_UNIT_POSITION = false
 InstigatorTriggerUnitElement.SAVE_UNIT_ROTATION = false
-InstigatorTriggerUnitElement.LINK_ELEMENTS = {
-	"elements"
+InstigatorTriggerUnitElement.LINK_VALUES = {
+	{
+		table_value = "elements",
+		type = "trigger"
+	}
 }
 
 function InstigatorTriggerUnitElement:init(unit)
@@ -141,11 +143,6 @@ function InstigatorTriggerUnitElement:draw_links(t, dt, selected_unit, all_units
 			})
 		end
 	end
-end
-
-function InstigatorTriggerUnitElement:get_links_to_unit(...)
-	InstigatorTriggerUnitElement.super.get_links_to_unit(self, ...)
-	self:_get_links_of_type_from_elements(self._hed.elements, "trigger", ...)
 end
 
 function InstigatorTriggerUnitElement:update_editing()

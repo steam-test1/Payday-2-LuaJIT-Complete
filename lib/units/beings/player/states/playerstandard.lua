@@ -247,11 +247,13 @@ end
 function PlayerStandard:_enter(enter_data)
 	self._unit:base():set_slot(self._unit, 2)
 
-	if Network:is_server() and self._ext_movement:nav_tracker() then
+	local nav_tracker = self._ext_movement:nav_tracker()
+
+	if Network:is_server() and nav_tracker then
 		managers.groupai:state():on_player_weapons_hot()
 	end
 
-	if self._ext_movement:nav_tracker() then
+	if nav_tracker then
 		managers.groupai:state():on_criminal_recovered(self._unit)
 	end
 
@@ -281,8 +283,8 @@ function PlayerStandard:_enter(enter_data)
 
 	self._ext_camera:camera_unit():base():set_target_tilt(0)
 
-	if self._ext_movement:nav_tracker() then
-		self._standing_nav_seg_id = self._ext_movement:nav_tracker():nav_segment()
+	if nav_tracker then
+		self._standing_nav_seg_id = nav_tracker:nav_segment()
 		local metadata = managers.navigation:get_nav_seg_metadata(self._standing_nav_seg_id)
 		local location_id = metadata.location_id
 
@@ -1728,6 +1730,14 @@ function PlayerStandard:_start_action_throw_projectile(t, input)
 		offset = (1 - segment_relative_time) * 0.9
 	end
 
+	if projectile_tweak.reuse_expire_t then
+		self._state_data.projectile_reuse_t = t + throw_allowed_expire_t + projectile_tweak.reuse_expire_t
+	end
+
+	if projectile_tweak.use_interact_anim then
+		self._unit:network():send("sync_interaction_anim", true, projectile_entry)
+	end
+
 	self._ext_camera:play_redirect(self:get_animation("projectile_enter"), nil, offset)
 end
 
@@ -1757,12 +1767,18 @@ function PlayerStandard:_do_action_throw_projectile(t, input, drop_projectile)
 	self._state_data.projectile_start_t = nil
 	self._state_data.projectile_expire_t = t + projectile_data.expire_t
 	self._state_data.projectile_repeat_expire_t = t + math.min(projectile_data.repeat_expire_t, projectile_data.expire_t)
-
-	managers.network:session():send_to_peers_synched("play_distance_interact_redirect", self._unit, "throw_grenade")
-
 	self._state_data.projectile_global_value = projectile_data.anim_global_param or "projectile_frag"
 
 	self._camera_unit:anim_state_machine():set_global(self._state_data.projectile_global_value, 1)
+
+	self._state_data.projectile_reuse_t = nil
+
+	if projectile_data.use_interact_anim then
+		self._unit:network():send("sync_interaction_anim", false, projectile_entry)
+	else
+		managers.network:session():send_to_peers_synched("play_distance_interact_redirect", self._unit, "throw_grenade")
+	end
+
 	self._ext_camera:play_redirect(self:get_animation("projectile_throw"))
 	self:_stance_entered()
 end
@@ -1778,13 +1794,23 @@ function PlayerStandard:_interupt_action_throw_projectile(t)
 	self._state_data.projectile_throw_allowed_t = nil
 	self._state_data.throwing_projectile = nil
 	self._camera_unit_anim_data.throwing = nil
+	self._state_data.projectile_reuse_t = nil
+	local projectile_entry = managers.blackmarket:equipped_projectile()
+	local projectile_data = tweak_data.blackmarket.projectiles[projectile_entry]
 
-	self._ext_camera:play_redirect(self:get_animation("equip"))
-	self._equipped_unit:base():tweak_data_anim_stop("unequip")
-	self._equipped_unit:base():tweak_data_anim_play("equip")
-	self._camera_unit:base():unspawn_grenade()
-	self._camera_unit:base():show_weapon()
-	self:_stance_entered()
+	if projectile_data.use_interact_anim then
+		self._ext_camera:play_redirect(self:get_animation("projectile_throw"))
+
+		self._state_data.projectile_expire_t = t + projectile_data.expire_t
+		self._state_data.projectile_repeat_expire_t = t + math.min(projectile_data.repeat_expire_t, projectile_data.expire_t)
+	else
+		self._ext_camera:play_redirect(self:get_animation("equip"))
+		self._equipped_unit:base():tweak_data_anim_stop("unequip")
+		self._equipped_unit:base():tweak_data_anim_play("equip")
+		self._camera_unit:base():unspawn_grenade()
+		self._camera_unit:base():show_weapon()
+		self:_stance_entered()
+	end
 end
 
 function PlayerStandard:_update_throw_projectile_timers(t, input)
@@ -1816,6 +1842,18 @@ function PlayerStandard:_update_throw_projectile_timers(t, input)
 		if self._equipped_unit and input.btn_steelsight_state then
 			self._steelsight_wanted = true
 		end
+	end
+
+	if self._state_data.projectile_reuse_t and self._state_data.projectile_reuse_t <= t then
+		local reuse_expire_t = self._unit:equipment():use_throwable()
+
+		if reuse_expire_t then
+			self._state_data.projectile_reuse_t = t + reuse_expire_t
+		end
+	end
+
+	if self._state_data.projectile_start_t and not managers.player:can_throw_grenade() then
+		self:_interupt_action_throw_projectile(t)
 	end
 end
 
@@ -2214,7 +2252,8 @@ function PlayerStandard:_play_equip_animation()
 end
 
 function PlayerStandard:_play_unequip_animation()
-	self._ext_camera:play_redirect(self:get_animation("unequip"))
+	local result = self._ext_camera:play_redirect(self:get_animation("unequip"))
+
 	self._equipped_unit:base():tweak_data_anim_stop("equip")
 	self._equipped_unit:base():tweak_data_anim_play("unequip")
 end
@@ -5094,6 +5133,17 @@ function PlayerStandard:_check_action_primary_attack(t, input, params)
 						local recoil_multiplier = (weap_base:recoil() + weap_base:recoil_addend()) * weap_base:recoil_multiplier()
 						local kick_tweak_data = weap_tweak_data.kick[fire_mode] or weap_tweak_data.kick
 						local kick_id = self._state_data.in_steelsight and "steelsight" or self._state_data.ducking and "crouching" or "standing"
+
+						if kick_tweak_data.on_hit and fired and fired.rays then
+							for _, ray in ipairs(fired.rays) do
+								if ray and not table.empty(ray) then
+									kick_id = "on_hit"
+
+									break
+								end
+							end
+						end
+
 						local up, down, left, right = unpack(kick_tweak_data[kick_id])
 
 						self._camera_unit:base():recoil_kick(up * recoil_multiplier, down * recoil_multiplier, left * recoil_multiplier, right * recoil_multiplier)

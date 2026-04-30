@@ -57,6 +57,7 @@ function DOTTweakData:_init_dot_entries_poison(entries)
 	poison_entries.ammo_proj_long = clone(poison_entries.ammo_proj_bow)
 	poison_entries.ammo_proj_ecp = clone(poison_entries.ammo_proj_bow)
 	poison_entries.ammo_proj_elastic = clone(poison_entries.ammo_proj_bow)
+	poison_entries.ammo_proj_dart = clone(poison_entries.ammo_proj_bow)
 	poison_entries.ammo_rip = {
 		use_weapon_damage_falloff = true,
 		dot_damage = 12,

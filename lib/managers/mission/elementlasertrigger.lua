@@ -16,6 +16,41 @@ ElementLaserTrigger.COLORS = {
 		0,
 		0,
 		1
+	},
+	cyan = {
+		0,
+		1,
+		1
+	},
+	yellow = {
+		1,
+		1,
+		0
+	},
+	magenta = {
+		1,
+		0,
+		1
+	},
+	orange = {
+		1,
+		0.5,
+		0
+	},
+	pink = {
+		1,
+		0.4,
+		0.7
+	},
+	purple = {
+		0.5,
+		0,
+		0.5
+	},
+	white = {
+		1,
+		1,
+		1
 	}
 }
 

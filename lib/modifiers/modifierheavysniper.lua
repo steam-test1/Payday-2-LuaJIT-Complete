@@ -3,6 +3,7 @@ ModifierHeavySniper._type = "ModifierHeavySniper"
 ModifierHeavySniper.name_id = "none"
 ModifierHeavySniper.desc_id = "menu_cs_modifier_heavy_sniper"
 ModifierHeavySniper.default_value = "spawn_chance"
+ModifierHeavySniper.heavy_sniper_unit = Idstring("units/pd2_dlc_drm/characters/ene_zeal_swat_heavy_sniper/ene_zeal_swat_heavy_sniper")
 ModifierHeavySniper.heavy_units = {
 	Idstring("units/payday2/characters/ene_swat_heavy_1/ene_swat_heavy_1"),
 	Idstring("units/payday2/characters/ene_fbi_heavy_1/ene_fbi_heavy_1"),
@@ -17,21 +18,19 @@ ModifierHeavySniper.heavy_units = {
 	Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale/ene_swat_heavy_policia_federale"),
 	Idstring("units/pd2_dlc_bex/characters/ene_swat_heavy_policia_federale_fbi_g36/ene_swat_heavy_policia_federale_fbi_g36")
 }
-local tmp_lookup = {}
+ModifierHeavySniper.heavy_units_map = {}
 
-for i, unit_ids in ipairs(ModifierHeavySniper.heavy_units) do
-	tmp_lookup[unit_ids:key()] = true
+for _, ids in ipairs(ModifierHeavySniper.heavy_units) do
+	ModifierHeavySniper.heavy_units_map[ids:key()] = true
 end
-
-ModifierHeavySniper.heavy_units = tmp_lookup
-tmp_lookup = nil
 
 function ModifierHeavySniper:modify_value(id, value)
 	if id == "GroupAIStateBesiege:SpawningUnit" then
-		local is_heavy = ModifierHeavySniper.heavy_units[value:key()]
+		local is_heavy = ModifierHeavySniper.heavy_units_map[value:key()]
+		local rng = math.random()
 
-		if is_heavy and math.random() < self:value() * 0.01 then
-			return Idstring("units/pd2_dlc_drm/characters/ene_zeal_swat_heavy_sniper/ene_zeal_swat_heavy_sniper")
+		if is_heavy and rng < self:value() * 0.01 then
+			return ModifierHeavySniper.heavy_sniper_unit
 		end
 	end
 

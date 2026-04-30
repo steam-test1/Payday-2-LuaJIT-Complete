@@ -8260,4 +8260,29 @@ function InteractionTweakData:init(tweak_data)
 		axis = "y",
 		timer = 0
 	}
+	self.spy_camera_pickup = {
+		sound_done = "bar_bag_generic_finished",
+		sound_start = "bar_bag_generic",
+		interact_distance = 200,
+		text_id = "hud_interact_pickup_spy_camera",
+		verify_owner = true,
+		timer = 0.5,
+		contour = "deployable",
+		action_text_id = "hud_action_pickup_spy_camera",
+		icon = "equipment_ammo_bag",
+		sound_interupt = "bar_bag_generic_cancel"
+	}
+	self.spy_camera_access = {
+		sound_done = "bar_disarm_c4_loop_finished",
+		sound_start = "bar_disarm_c4_loop_start",
+		interact_distance = 6000,
+		text_id = "hud_interact_enter_spy_camera",
+		dot_limit = 0.9,
+		timer = 0.15,
+		contour = "deployable",
+		action_text_id = "hud_action_spy_camera_enter",
+		max_interact_distance = 200,
+		icon = "equipment_ammo_bag",
+		sound_interupt = "bar_disarm_c4_loop_cancel"
+	}
 end

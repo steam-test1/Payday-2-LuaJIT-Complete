@@ -203,7 +203,7 @@ function CopLogicSniper.action_complete_clbk(data, action)
 	elseif action_type == "shoot" then
 		my_data.shooting = nil
 	elseif action_type == "walk" then
-		my_data.advacing = nil
+		my_data.advancing = nil
 
 		if action:expired() then
 			my_data.reposition = nil

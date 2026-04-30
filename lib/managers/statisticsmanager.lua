@@ -478,6 +478,10 @@ function StatisticsManager:use_grenade_crate()
 	self:_increment_misc("deploy_grenadecrate", 1)
 end
 
+function StatisticsManager:use_spy_camera()
+	self:_increment_misc("deploy_spycamera", 1)
+end
+
 function StatisticsManager:in_custody()
 	self:_increment_misc("in_custody", 1)
 end
