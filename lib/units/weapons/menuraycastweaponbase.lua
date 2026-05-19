@@ -388,7 +388,7 @@ function NewRaycastWeaponBase:_update_stats_values()
 	local modifier_stats = self:weapon_tweak_data().stats_modifiers
 
 	if stats.zoom then
-		stats.zoom = math.min(stats.zoom + managers.player:upgrade_value(self:weapon_tweak_data().categories[1], "zoom_increase", 0), #tweak_data.zoom)
+		stats.zoom = math.min(stats.zoom + managers.player:upgrade_value(self:categories()[1], "zoom_increase", 0), #tweak_data.zoom)
 	end
 
 	for stat, _ in pairs(stats) do
@@ -558,7 +558,7 @@ function NewRaycastWeaponBase:check_stats()
 	local stats = deep_clone(base_stats)
 	local tweak_data = tweak_data.weapon.stats
 	local modifier_stats = self:weapon_tweak_data().stats_modifiers
-	stats.zoom = math.min(stats.zoom + managers.player:upgrade_value(self:weapon_tweak_data().categories[1], "zoom_increase", 0), #tweak_data.zoom)
+	stats.zoom = math.min(stats.zoom + managers.player:upgrade_value(self:categories()[1], "zoom_increase", 0), #tweak_data.zoom)
 
 	for stat, _ in pairs(stats) do
 		if parts_stats[stat] then

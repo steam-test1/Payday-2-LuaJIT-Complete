@@ -381,6 +381,12 @@ function TweakDataVR:init(tweak_data)
 			},
 			funder_strike = {
 				position = Vector3(0, -2, 0)
+			},
+			bonk = {
+				position = Vector3(0, 0, 0)
+			},
+			bonk2 = {
+				position = Vector3(0, 0, 0)
 			}
 		},
 		bayonets = {
@@ -5168,7 +5174,7 @@ function TweakDataVR:init(tweak_data)
 			start = {
 				{
 					time = 0,
-					sound = "wp_g17_clip_slide_out"
+					sound = "wp_pmm_reload_mag_out"
 				},
 				{
 					drop_mag = true,
@@ -5180,7 +5186,7 @@ function TweakDataVR:init(tweak_data)
 			finish = {
 				{
 					time = 0,
-					sound = "wp_g17_clip_slide_in",
+					sound = "wp_pmm_reload_mag_in",
 					visible = true,
 					pos = Vector3(0, -5, -20)
 				},
@@ -5194,7 +5200,7 @@ function TweakDataVR:init(tweak_data)
 				},
 				{
 					time = 0.6,
-					sound = "wp_g17_lever_release",
+					sound = "wp_pmm_reload_bolt_release",
 					pos = Vector3()
 				}
 			}
@@ -5203,7 +5209,7 @@ function TweakDataVR:init(tweak_data)
 			start = {
 				{
 					time = 0,
-					sound = "wp_g17_clip_slide_out"
+					sound = "wp_pmm_reload_mag_out"
 				},
 				{
 					drop_mag = true,
@@ -5215,7 +5221,7 @@ function TweakDataVR:init(tweak_data)
 			finish = {
 				{
 					time = 0,
-					sound = "wp_g17_clip_slide_in",
+					sound = "wp_pmm_reload_mag_in",
 					visible = true,
 					pos = Vector3(0, -5, -20)
 				},
@@ -5229,7 +5235,7 @@ function TweakDataVR:init(tweak_data)
 				},
 				{
 					time = 0.6,
-					sound = "wp_g17_lever_release",
+					sound = "wp_pmm_reload_bolt_release",
 					pos = Vector3()
 				}
 			}
@@ -5238,7 +5244,7 @@ function TweakDataVR:init(tweak_data)
 			start = {
 				{
 					time = 0,
-					sound = "sub2k_mag_out"
+					sound = "wp_pivot_reload_mag_out"
 				},
 				{
 					drop_mag = true,
@@ -5251,7 +5257,7 @@ function TweakDataVR:init(tweak_data)
 			finish = {
 				{
 					time = 0,
-					sound = "sub2k_mag_in",
+					sound = "wp_pivot_reload_mag_in",
 					visible = true,
 					pos = Vector3(0, -7, -20)
 				},
@@ -5265,8 +5271,96 @@ function TweakDataVR:init(tweak_data)
 				},
 				{
 					time = 0.6,
-					sound = "sub2k_release_lever",
+					sound = "wp_pivot_reload_bolt_close",
 					pos = Vector3()
+				}
+			}
+		},
+		dart = {
+			reload_part_type = "ammo",
+			custom_mag_unit = "units/pd2_dlc_esp/weapons/wpn_fps_spe_dart_pts/ammos/wpn_fps_spe_dart_ammo_poison",
+			start = {
+				{
+					{
+						time = 0.2,
+						sound = "wp_dart_reload_chamber_open"
+					},
+					visible = false,
+					time = 0,
+					sound = "wp_dart_reload_valve_close",
+					anims = {
+						{
+							anim_group = "reload",
+							part = "lower_body"
+						}
+					}
+				}
+			},
+			finish = {
+				{
+					sound = "wp_dart_reload_dart_in",
+					time = 0,
+					visible = true
+				},
+				{
+					time = 0.25,
+					sound = "wp_dart_reload_chamber_close"
+				},
+				{
+					time = 0.5,
+					sound = "wp_dart_reload_valve_open"
+				}
+			}
+		},
+		flun = {
+			reload_part_type = "ammo",
+			start = {
+				{
+					time = 0,
+					sound = "wp_model3_cylinder_out",
+					anims = {
+						{
+							anim_group = "reload",
+							part = "lower_body",
+							from = 0,
+							to = 1.3333333333333333,
+							visible = {
+								visible = false,
+								parts = {
+									lower_body = {
+										"g_g",
+										"g_bullet_1"
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			finish = {
+				{
+					time = 0,
+					sound = "wp_model3_insert"
+				},
+				{
+					time = 0.5,
+					sound = "wp_model3_cylinder_in",
+					anims = {
+						{
+							anim_group = "reload",
+							part = "lower_body",
+							from = 2,
+							visible = {
+								visible = true,
+								parts = {
+									lower_body = {
+										"g_g",
+										"g_bullet_1"
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 		},

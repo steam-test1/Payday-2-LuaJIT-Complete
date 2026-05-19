@@ -4,10 +4,10 @@ AmmoBagBase._BULLET_STORM = {
 	10
 }
 local dec_mul = 10000
-local unit_name = "units/payday2/equipment/gen_equipment_ammobag/gen_equipment_ammobag"
+local UNIT_IDS = Idstring("units/payday2/equipment/gen_equipment_ammobag/gen_equipment_ammobag")
 
 function AmmoBagBase.spawn(pos, rot, ammo_upgrade_lvl, peer_id, bullet_storm_level)
-	local unit = World:spawn_unit(Idstring(unit_name), pos, rot)
+	local unit = World:spawn_unit(UNIT_IDS, pos, rot)
 
 	managers.network:session():send_to_peers_synched("sync_ammo_bag_setup", unit, ammo_upgrade_lvl, peer_id or 0, bullet_storm_level or 0)
 	unit:base():setup(ammo_upgrade_lvl, bullet_storm_level)
@@ -71,7 +71,7 @@ end
 
 function AmmoBagBase:setup(ammo_upgrade_lvl, bullet_storm_level)
 	self._bullet_storm_level = bullet_storm_level
-	self._ammo_amount = tweak_data.upgrades.ammo_bag_base + managers.player:upgrade_value_by_level("ammo_bag", "ammo_increase", ammo_upgrade_lvl)
+	self._ammo_amount = self._ammo_amount or tweak_data.upgrades.ammo_bag_base + managers.player:upgrade_value_by_level("ammo_bag", "ammo_increase", ammo_upgrade_lvl)
 
 	self:_set_visual_stage()
 

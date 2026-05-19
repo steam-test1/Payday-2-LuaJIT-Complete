@@ -968,6 +968,10 @@ function MenuSceneManager:_set_up_environments()
 end
 
 function MenuSceneManager:_use_environment(name)
+	if not self._environments then
+		self:_set_up_environments()
+	end
+
 	local setting = self._environments[name]
 
 	if not setting then

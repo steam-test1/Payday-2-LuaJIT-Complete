@@ -58,7 +58,7 @@ function AmmoClip:_pickup(unit)
 			local success, add_amount = nil
 
 			for _, weapon in ipairs(available_selections) do
-				if not self._weapon_category or self._weapon_category == weapon.unit:base():weapon_tweak_data().categories[1] then
+				if not self._weapon_category or self._weapon_category == weapon.unit:base():categories()[1] then
 					success, add_amount = weapon.unit:base():add_ammo(1, self._ammo_count)
 					picked_up = success or picked_up
 

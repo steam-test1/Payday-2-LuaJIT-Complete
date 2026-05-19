@@ -4230,6 +4230,18 @@ function BlackMarketTweakData:_init_textures(tweak_data)
 			color_c = true
 		}
 	}
+	self.textures.unk_1 = {
+		name_id = "bm_txt_unk_1",
+		texture = "units/pd2_dlc_unk/masks/patterns/pattern_unk_1_df",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		dlc = "unk",
+		value = 2
+	}
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.textures) do

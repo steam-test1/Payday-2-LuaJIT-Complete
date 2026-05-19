@@ -336,6 +336,7 @@ function WeaponFactoryTweakData:init()
 	self:_init_pmm()
 	self:_init_speen()
 	self:_init_dart()
+	self:_init_flun()
 	self:_init_legendary()
 	self:create_ammunition()
 	self:_init_cc_material_config()
@@ -28361,7 +28362,8 @@ function WeaponFactoryTweakData:create_bonuses(tweak_data, weapon_skins)
 			wpn_fps_upg_bonus_spread_p1 = {},
 			wpn_fps_upg_bonus_spread_n1 = {
 				category = {
-					"shotgun"
+					"shotgun",
+					"grenade_launcher"
 				}
 			},
 			wpn_fps_upg_bonus_damage_p1 = {
@@ -29602,6 +29604,35 @@ function WeaponFactoryTweakData:create_ammunition()
 		stats = {},
 		custom_stats = {}
 	}
+	local flun_shotgun_ammos = {
+		"wpn_fps_upg_a_piercing",
+		"wpn_fps_upg_a_slug"
+	}
+
+	for _, ammo_id in ipairs(flun_shotgun_ammos) do
+		local ammo_override = self.wpn_fps_spe_flun.override[ammo_id] or {}
+		ammo_override.parent = "lower_body"
+		ammo_override.a_obj = "a_shell"
+		ammo_override.unit = "units/pd2_dlc_unk/weapons/wpn_fps_spe_flun_pts/ammos/wpn_fps_upg_a_flun_shot"
+		ammo_override.bullet_objects = {
+			amount = 1,
+			prefix = "g_bullet_"
+		}
+		ammo_override.sound_switch = {
+			suppressed = "regular_b"
+		}
+		ammo_override.stats = deep_clone(self.parts[ammo_id].stats)
+		ammo_override.stats.total_ammo_mod = (ammo_override.stats.total_ammo_mod or 0) + 10
+		ammo_override.custom_stats = deep_clone(self.parts[ammo_id].custom_stats)
+		ammo_override.custom_stats.weapon_unit = "units/pd2_dlc_unk/weapons/wpn_fps_spe_flun/wpn_fps_sho_flun"
+		ammo_override.custom_stats.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
+		ammo_override.custom_stats.ammo_pickup_min_mul = ammo_override.custom_stats.ammo_pickup_min_mul and ammo_override.custom_stats.ammo_pickup_min_mul * 2 or 2
+		ammo_override.custom_stats.ammo_pickup_max_mul = ammo_override.custom_stats.ammo_pickup_max_mul and ammo_override.custom_stats.ammo_pickup_max_mul * 2 or 2
+		ammo_override.custom_stats.falloff_override = ammo_override.custom_stats.falloff_override or FALLOFF_TEMPLATE.SHOTGUN_FALL_SECONDARY_HIGH
+		self.wpn_fps_spe_flun.override[ammo_id] = ammo_override
+
+		table.insert(self.wpn_fps_spe_flun.uses_parts, ammo_id)
+	end
 end
 
 function WeaponFactoryTweakData:_add_bullet_belt_to_part(parent_id, parent_a_obj, belt_data)
@@ -67334,6 +67365,8 @@ function WeaponFactoryTweakData:_init_pmm()
 			recoil = -2
 		},
 		custom_stats = {
+			ammo_pickup_max_mul = 1.071428,
+			ammo_pickup_min_mul = 1.071428,
 			fire_rate_multiplier = 0.8333
 		},
 		animations = {
@@ -67738,8 +67771,8 @@ function WeaponFactoryTweakData:_init_speen()
 		stats = {
 			value = 3,
 			recoil = -1,
-			damage = 2,
-			concealment = -3
+			damage = 12,
+			concealment = -4
 		},
 		forbids = {}
 	}
@@ -67869,4 +67902,96 @@ function WeaponFactoryTweakData:_init_speen()
 	})
 	self.wpn_fps_smg_speen_npc = deep_clone(self.wpn_fps_smg_speen)
 	self.wpn_fps_smg_speen_npc.unit = self.wpn_fps_smg_speen_npc.unit .. "_npc"
+end
+
+function WeaponFactoryTweakData:_init_flun()
+	local path_to_fps = "units/pd2_dlc_unk/weapons/wpn_fps_spe_flun_pts/"
+	local path_to_tps = "units/pd2_dlc_unk/weapons/wpn_third_spe_flun_pts/"
+	local FALLOFF_TEMPLATE = WeaponFalloffTemplate.setup_weapon_falloff_templates()
+	self.parts.wpn_fps_spe_flun_lower_body_standard = {
+		a_obj = "a_body",
+		type = "lower_body",
+		name_id = "bm_wp_flun_lower_body_std",
+		unit = path_to_fps .. "lower_bodies/wpn_fps_spe_flun_lower_body_standard",
+		third_unit = path_to_tps .. "lower_bodies/wpn_third_spe_flun_lower_body_standard",
+		stats = {
+			value = 1
+		},
+		forbids = {},
+		animations = {
+			reload = "reload",
+			recoil = "recoil",
+			equip = "equip"
+		}
+	}
+	self.parts.wpn_fps_upg_a_flun_flare = {
+		type = "ammo",
+		texture_bundle_folder = "unk",
+		parent = "lower_body",
+		a_obj = "a_shell",
+		third_unit = "units/payday2/weapons/wpn_upg_dummy/wpn_upg_dummy",
+		sub_type = "ammo_dragons_breath",
+		name_id = "bm_wp_upg_a_flun_flare",
+		unit = path_to_fps .. "ammos/wpn_fps_upg_a_flun_flare",
+		custom_stats = {
+			dot_data_name = "ammo_proj_flun",
+			launcher_grenade = "flun_flare"
+		}
+	}
+	self.parts.wpn_fps_upg_a_flun_shell = {
+		texture_bundle_folder = "unk",
+		type = "ammo",
+		desc_id = "bm_wp_upg_a_flun_shell_desc",
+		sub_type = "ammo_custom",
+		a_obj = "a_shell",
+		third_unit = "units/payday2/weapons/wpn_upg_dummy/wpn_upg_dummy",
+		parent = "lower_body",
+		dlc = "unk",
+		name_id = "bm_wp_upg_a_flun_shell",
+		sort_number = -1000,
+		has_description = true,
+		unit = path_to_fps .. "ammos/wpn_fps_upg_a_flun_shot",
+		pcs = {
+			10,
+			20,
+			30,
+			40
+		},
+		bullet_objects = {
+			amount = 1,
+			prefix = "g_bullet_"
+		},
+		sound_switch = {
+			suppressed = "regular_b"
+		},
+		stats = {
+			value = 5,
+			total_ammo_mod = 20,
+			spread = -6
+		},
+		custom_stats = {
+			ammo_pickup_min_mul = 2,
+			weapon_unit = "units/pd2_dlc_unk/weapons/wpn_fps_spe_flun/wpn_fps_sho_flun",
+			muzzleflash = "effects/payday2/particles/weapons/762_auto_fps",
+			ammo_pickup_max_mul = 2,
+			rays = 12,
+			damage_falloff = FALLOFF_TEMPLATE.SHOTGUN_FALL_SECONDARY_HIGH
+		}
+	}
+	self.wpn_fps_spe_flun = {
+		unit = "units/pd2_dlc_unk/weapons/wpn_fps_spe_flun/wpn_fps_spe_flun",
+		optional_types = {
+			"ammo"
+		},
+		default_blueprint = {
+			"wpn_fps_spe_flun_lower_body_standard",
+			"wpn_fps_upg_a_flun_flare"
+		},
+		override = {}
+	}
+	self.wpn_fps_spe_flun.uses_parts = table.list_add(self.wpn_fps_spe_flun.default_blueprint, {
+		"wpn_fps_upg_a_flun_shell"
+	})
+	self.wpn_fps_spe_flun_npc = deep_clone(self.wpn_fps_spe_flun)
+	self.wpn_fps_spe_flun_npc.unit = self.wpn_fps_spe_flun_npc.unit .. "_npc"
 end

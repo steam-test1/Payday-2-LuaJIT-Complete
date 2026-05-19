@@ -375,9 +375,10 @@ function NewRaycastWeaponBase:_set_material_textures()
 	end
 end
 
-function NewRaycastWeaponBase:spawn_magazine_unit(pos, rot, hide_bullets)
+function NewRaycastWeaponBase:spawn_magazine_unit(pos, rot, hide_bullets, part_type)
+	part_type = part_type or "magazine"
 	local mag_data = nil
-	local mag_list = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("magazine", self._factory_id, self._blueprint)
+	local mag_list = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk(part_type, self._factory_id, self._blueprint)
 	local mag_id = mag_list and mag_list[1]
 
 	if not mag_id then
@@ -507,6 +508,10 @@ local mvec3_sub = mvector3.subtract
 local mvec3_mul = mvector3.multiply
 
 function NewRaycastWeaponBase:drop_magazine_object()
+	if not managers.weapon_factory:use_thq_weapon_parts() then
+		return
+	end
+
 	if not self._name_id then
 		return
 	end
@@ -526,10 +531,10 @@ function NewRaycastWeaponBase:drop_magazine_object()
 	for part_id, part_data in pairs(self._parts) do
 		local part = tweak_data.weapon.factory.parts[part_id]
 
-		if part and part.type == "magazine" then
+		if part and self.is_part_type_dropped and self:is_part_type_dropped(part.type) then
 			local pos = part_data.unit:position()
 			local rot = part_data.unit:rotation()
-			local dropped_mag = self:spawn_magazine_unit(pos, rot, true)
+			local dropped_mag = self:spawn_magazine_unit(pos, rot, true, part.type)
 			local mag_size = w_td_crew and w_td_crew.pull_magazine_during_reload or "medium"
 
 			mvec3_set(tmp_vec1, dropped_mag:oobb():center())
@@ -546,5 +551,25 @@ function NewRaycastWeaponBase:drop_magazine_object()
 			dropped_col:push(20, tmp_vec3)
 			managers.enemy:add_magazine(dropped_mag, dropped_col)
 		end
+	end
+end
+
+function NewRaycastWeaponBase:is_part_type_dropped(type)
+	if not managers.weapon_factory:use_thq_weapon_parts() then
+		return false
+	end
+
+	if self._reload_part_types then
+		return table.contains(self._reload_part_types, type)
+	else
+		return type == "magazine"
+	end
+end
+
+function NewRaycastWeaponBase:get_part_type_dropped()
+	if self._reload_part_types then
+		return self._reload_part_types[1]
+	else
+		return "magazine"
 	end
 end

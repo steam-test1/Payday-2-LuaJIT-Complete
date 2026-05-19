@@ -936,7 +936,7 @@ function CopDamage:_check_damage_achievements(attack_data, head)
 	local weapon_category = {}
 
 	if attack_weapon:base().weapon_tweak_data then
-		weapon_category = attack_weapon:base():weapon_tweak_data().categories
+		weapon_category = attack_weapon:base():categories()
 	end
 
 	for achievement, achievement_data in pairs(achievements) do

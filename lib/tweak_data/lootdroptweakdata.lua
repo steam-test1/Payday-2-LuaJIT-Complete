@@ -180,11 +180,22 @@ function LootDropTweakData:init(tweak_data)
 				table.insert(crafted_weapons, weapon.factory_id)
 			end
 
-			table.list_union(crafted_weapons)
+			crafted_weapons = table.list_union(crafted_weapons)
 
 			for _, factory_id in pairs(weapons) do
 				if table.contains(crafted_weapons, factory_id) then
 					return 2
+				end
+			end
+
+			return 1
+		end,
+		masks = function (global_value, category, id)
+			local mask_inventory = managers.blackmarket:get_inventory_category("masks") or {}
+
+			for _, data in pairs(mask_inventory) do
+				if global_value == data.global_value and id == data.id then
+					return 0.5
 				end
 			end
 

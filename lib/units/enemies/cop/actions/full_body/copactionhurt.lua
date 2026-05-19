@@ -919,12 +919,11 @@ function CopActionHurt:init(action_desc, common_data)
 		end
 
 		if Network:is_server() then
-			local radius, filter_name = nil
-			local default_radius = managers.groupai:state():whisper_mode() and tweak_data.upgrades.cop_hurt_alert_radius_whisper or tweak_data.upgrades.cop_hurt_alert_radius
+			local default_radius = managers.groupai:state():whisper_mode() and tweak_data.upgrades.enemy_hurt_alert_radius_whisper or tweak_data.upgrades.enemy_hurt_alert_radius
 			local new_alert = {
 				"vo_distress",
 				common_data.ext_movement:m_head_pos(),
-				radius or default_radius,
+				default_radius,
 				self._unit:brain():SO_access(),
 				self._unit
 			}

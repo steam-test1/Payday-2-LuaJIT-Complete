@@ -307,7 +307,7 @@ function Drill:set_powered(powered)
 end
 
 function Drill:_register_sabotage_SO()
-	if self._sabotage_SO_id or not managers.navigation:is_data_ready() or not self._unit:timer_gui() or not self._unit:timer_gui()._can_jam or not self._sabotage_align_obj_name then
+	if self._sabotage_SO_id or not managers.navigation:is_data_ready() or not self._unit:timer_gui() or not self._unit:timer_gui()._can_jam or not self._sabotage_align_obj_name or not self._nav_tracker then
 		return
 	end
 

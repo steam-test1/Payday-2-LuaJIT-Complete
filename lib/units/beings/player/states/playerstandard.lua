@@ -2650,7 +2650,7 @@ function PlayerStandard:_do_melee_damage(t, bayonet_melee, melee_hit_ray, melee_
 
 	if col_ray and alive(col_ray.unit) then
 		local damage, damage_effect = managers.blackmarket:equipped_melee_weapon_damage_info(charge_lerp_value)
-		local damage_effect_mul = math.max(managers.player:upgrade_value("player", "melee_knockdown_mul", 1), managers.player:upgrade_value(self._equipped_unit:base():weapon_tweak_data().categories and self._equipped_unit:base():weapon_tweak_data().categories[1], "melee_knockdown_mul", 1))
+		local damage_effect_mul = math.max(managers.player:upgrade_value("player", "melee_knockdown_mul", 1), managers.player:upgrade_value(self._equipped_unit:base():categories() and self._equipped_unit:base():categories()[1], "melee_knockdown_mul", 1))
 		damage = damage * managers.player:get_melee_dmg_multiplier()
 		damage_effect = damage_effect * damage_effect_mul
 		col_ray.sphere_cast_radius = sphere_cast_radius
@@ -5324,8 +5324,10 @@ function PlayerStandard:_start_action_reload_enter(t)
 			weapon:cache_reload_speed_multiplier()
 
 			local speed_multiplier = weapon:reload_speed_multiplier()
+			local tweak_data = weapon:weapon_tweak_data()
+			local reload_name_id = tweak_data.animations.reload_name_id or weapon.name_id
 
-			self._ext_camera:play_redirect(Idstring("reload_enter_" .. weapon.name_id), speed_multiplier)
+			self._ext_camera:play_redirect(Idstring("reload_enter_" .. reload_name_id), speed_multiplier)
 
 			self._state_data.reload_enter_expire_t = t + base_reload_enter_expire_t / speed_multiplier
 

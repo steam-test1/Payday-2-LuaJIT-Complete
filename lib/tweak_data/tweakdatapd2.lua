@@ -736,10 +736,10 @@ function TweakData:_init_pd2()
 	self.hud_icons.poison_gas_grenade = {
 		texture = "guis/dlcs/pxp1/textures/pd2/hud_poison_gas_grenade",
 		texture_rect = {
-			64,
 			0,
-			128,
-			128
+			0,
+			32,
+			32
 		}
 	}
 	self.hud_icons.sticky_grenade = {

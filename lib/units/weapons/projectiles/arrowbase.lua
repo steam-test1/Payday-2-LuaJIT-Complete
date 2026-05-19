@@ -578,8 +578,11 @@ function ArrowBase:_tweak_data_play_sound(entry)
 	local tweak_entry = tweak_data.projectiles[self._tweak_projectile_entry]
 	local event = tweak_entry.sounds and tweak_entry.sounds[entry]
 	event = event or ArrowBase.DEFUALT_SOUNDS[entry]
+	local snd_src = self._unit:sound_source(Idstring("snd"))
 
-	self._unit:sound_source(Idstring("snd")):post_event(event)
+	if snd_src then
+		snd_src:post_event(event)
+	end
 end
 
 function ArrowBase:save(data)

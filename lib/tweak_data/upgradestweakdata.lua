@@ -180,8 +180,8 @@ function UpgradesTweakData:_init_pd2_values()
 	self.grenade_crate_base = 3
 	self.max_grenade_amount = 3
 	self.bodybag_crate_base = 3
-	self.cop_hurt_alert_radius_whisper = 1
-	self.cop_hurt_alert_radius = 400
+	self.enemy_hurt_alert_radius_whisper = 1
+	self.enemy_hurt_alert_radius = 400
 	self.drill_alert_radius = 2500
 	self.taser_malfunction_min = 5
 	self.taser_malfunction_max = 30
@@ -5051,7 +5051,8 @@ function UpgradesTweakData:init(tweak_data)
 				"road",
 				"legacy",
 				"x_legacy",
-				"fmg9"
+				"fmg9",
+				"flun"
 			}
 		},
 		[16] = {
@@ -5190,7 +5191,9 @@ function UpgradesTweakData:init(tweak_data)
 				"x_breech",
 				"x_erma",
 				"sap",
-				"funder_strike"
+				"funder_strike",
+				"bonk",
+				"bonk2"
 			}
 		},
 		[26] = {
@@ -5922,6 +5925,7 @@ function UpgradesTweakData:init(tweak_data)
 	self:_pmm_weapon_definitions()
 	self:_speen_weapon_definitions()
 	self:_dart_weapon_definitions()
+	self:_flun_weapon_definitions()
 	self:_melee_weapon_definitions()
 	self:_grenades_definitions()
 	self:_carry_definitions()
@@ -12373,6 +12377,12 @@ function UpgradesTweakData:_melee_weapon_definitions()
 	self.definitions.funder_strike = {
 		category = "melee_weapon"
 	}
+	self.definitions.bonk = {
+		category = "melee_weapon"
+	}
+	self.definitions.bonk2 = {
+		category = "melee_weapon"
+	}
 end
 
 function UpgradesTweakData:_grenades_definitions()
@@ -16910,6 +16920,14 @@ function UpgradesTweakData:_dart_weapon_definitions()
 		dlc = "esp",
 		factory_id = "wpn_fps_spe_dart",
 		weapon_id = "dart",
+		category = "weapon"
+	}
+end
+
+function UpgradesTweakData:_flun_weapon_definitions()
+	self.definitions.flun = {
+		factory_id = "wpn_fps_spe_flun",
+		weapon_id = "flun",
 		category = "weapon"
 	}
 end

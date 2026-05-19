@@ -285,6 +285,7 @@ function WeaponTweakData:init(tweak_data)
 	self:_init_data_pmm_crew()
 	self:_init_data_dart_crew()
 	self:_init_data_speen_crew()
+	self:_init_data_flun_crew()
 	self:_init_ranc_heavy_machine_gun()
 	self:_precalculate_values()
 end
@@ -4723,7 +4724,7 @@ end
 function WeaponTweakData:_init_data_slap_crew()
 	self.slap_crew.categories = clone(self.slap.categories)
 	self.slap_crew.sounds.prefix = "slap_npc"
-	self.slap_crew.use_data.selection_index = SELECTION.PRIMARY
+	self.slap_crew.use_data.selection_index = SELECTION.SECONDARY
 	self.slap_crew.DAMAGE = 1
 	self.slap_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_silence"
 	self.slap_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
@@ -5736,6 +5737,26 @@ function WeaponTweakData:_init_data_speen_crew()
 	self.speen_crew.FIRE_MODE = "single"
 end
 
+function WeaponTweakData:_init_data_flun_crew()
+	self.flun_crew.categories = clone(self.flun.categories)
+	self.flun_crew.sounds.prefix = "flare_npc"
+	self.flun_crew.use_data.selection_index = SELECTION.SECONDARY
+	self.flun_crew.DAMAGE = 1.28
+	self.flun_crew.muzzleflash = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.flun_crew.muzzleflash_silenced = "effects/payday2/particles/weapons/9mm_auto_silence"
+	self.flun_crew.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	self.flun_crew.no_trail = true
+	self.flun_crew.CLIP_AMMO_MAX = 1
+	self.flun_crew.NR_CLIPS_MAX = 6
+	self.flun_crew.pull_magazine_during_reload = "smg"
+	self.flun_crew.reload = "revolver"
+	self.flun_crew.auto.fire_rate = 2.66666
+	self.flun_crew.hold = "pistol"
+	self.flun_crew.alert_size = 5000
+	self.flun_crew.suppression = 1
+	self.flun_crew.FIRE_MODE = "single"
+end
+
 function WeaponTweakData:_init_data_player_weapons(tweak_data)
 	local autohit_rifle_default, autohit_pistol_default, autohit_shotgun_default, autohit_lmg_default, autohit_snp_default, autohit_smg_default, autohit_minigun_default, aim_assist_rifle_default, aim_assist_pistol_default, aim_assist_shotgun_default, aim_assist_lmg_default, aim_assist_snp_default, aim_assist_smg_default, aim_assist_minigun_default = nil
 
@@ -6682,6 +6703,7 @@ function WeaponTweakData:_init_new_weapons(weapon_data)
 	self:_init_pmm(weapon_data)
 	self:_init_speen(weapon_data)
 	self:_init_dart(weapon_data)
+	self:_init_flun(weapon_data)
 end
 
 function WeaponTweakData:_init_new_m4(weapon_data)
@@ -31369,11 +31391,22 @@ function WeaponTweakData:_init_speen(weapon_data)
 			selection_index = SELECTION.SECONDARY
 		},
 		DAMAGE = 1,
+		damage_falloff = {
+			far_falloff = 3000,
+			far_multiplier = 1,
+			near_multiplier = 1.05,
+			optimal_distance = 1000,
+			optimal_range = 850,
+			near_falloff = 150
+		},
 		CLIP_AMMO_MAX = 15,
 		NR_CLIPS_MAX = 3
 	}
 	self.speen.AMMO_MAX = self.speen.CLIP_AMMO_MAX * self.speen.NR_CLIPS_MAX
-	self.speen.AMMO_PICKUP = self:_pickup_chance(self.speen.AMMO_MAX, PICKUP.AR_LOW_CAPACITY)
+	self.speen.AMMO_PICKUP = {
+		3,
+		5
+	}
 	self.speen.FIRE_MODE = "single"
 	self.speen.CAN_TOGGLE_FIREMODE = false
 	self.speen.fire_mode_data = {
@@ -31438,7 +31471,7 @@ function WeaponTweakData:_init_speen(weapon_data)
 		extra_ammo = 51,
 		reload = 11,
 		suppression = 13,
-		concealment = 21
+		concealment = 25
 	}
 end
 
@@ -31446,7 +31479,7 @@ function WeaponTweakData:_init_dart(weapon_data)
 	local data = {}
 	self.dart = data
 	data.categories = {
-		"crossbow"
+		"dartgun"
 	}
 	data.projectile_type = "dart_poison"
 	data.damage_melee = weapon_data.damage_melee_default
@@ -31558,6 +31591,131 @@ function WeaponTweakData:_init_dart(weapon_data)
 		reload = 11,
 		suppression = 14,
 		concealment = 21
+	}
+end
+
+function WeaponTweakData:_init_flun(weapon_data)
+	local data = {}
+	self.flun = data
+	data.categories = {
+		"grenade_launcher"
+	}
+	data.projectile_type = "flun_flare"
+	data.projectile_types = {}
+	data.damage_melee = weapon_data.damage_melee_default
+	data.damage_melee_effect_mul = weapon_data.damage_melee_effect_multiplier_default
+	data.sounds = {
+		fire = "flare_fire",
+		dryfire = "secondary_dryfire",
+		enter_steelsight = "secondary_steel_sight_enter",
+		leave_steelsight = "secondary_steel_sight_exit"
+	}
+	data.timers = {
+		reload_not_empty = 2.5
+	}
+	data.timers.reload_empty = data.timers.reload_not_empty
+	data.timers.unequip = 0.45
+	data.timers.equip = 0.5
+	data.name_id = "bm_w_flun"
+	data.desc_id = "bm_w_flun_desc"
+	data.description_id = "bm_w_flun_desc"
+	data.has_description = true
+	data.global_value = "unk"
+	data.texture_bundle_folder = "unk"
+	data.muzzleflash = "effects/payday2/particles/weapons/762_auto_fps"
+	data.muzzleflash_silenced = "effects/payday2/particles/weapons/762_auto_fps"
+	data.shell_ejection = "effects/payday2/particles/weapons/shells/shell_empty"
+	data.use_data = {
+		align_place = "right_hand",
+		selection_index = SELECTION.SECONDARY
+	}
+	data.DAMAGE = 6
+	data.damage_near = 2000
+	data.damage_far = 3000
+	data.rays = 6
+	data.damage_falloff = FALLOFF_TEMPLATE.SHOTGUN_FALL_SECONDARY_LOW
+	data.CLIP_AMMO_MAX = 1
+	data.NR_CLIPS_MAX = 6
+	data.AMMO_MAX = data.CLIP_AMMO_MAX * data.NR_CLIPS_MAX
+	data.AMMO_PICKUP = {
+		0.2,
+		0.4
+	}
+	data.ammo_default_sub_type = "ammo_dragons_breath"
+	data.part_drop_types = {
+		"ammo"
+	}
+	data.FIRE_MODE = "single"
+	data.CAN_TOGGLE_FIREMODE = false
+	data.fire_mode_data = {
+		fire_rate = 2.66666
+	}
+	data.single = {
+		fire_rate = 2.66666
+	}
+	data.charge_data = {
+		max_t = 1
+	}
+	data.spread = {
+		standing = self.new_m4.spread.standing,
+		crouching = self.new_m4.spread.crouching,
+		steelsight = self.new_m4.spread.steelsight,
+		moving_standing = self.new_m4.spread.moving_standing,
+		moving_crouching = self.new_m4.spread.moving_crouching,
+		moving_steelsight = self.new_m4.spread.moving_steelsight
+	}
+	data.kick = {
+		standing = self.glock_17.kick.standing
+	}
+	data.kick.crouching = data.kick.standing
+	data.kick.steelsight = data.kick.standing
+	data.crosshair = {
+		standing = {},
+		crouching = {},
+		steelsight = {}
+	}
+	data.crosshair.standing.offset = 0.1
+	data.crosshair.standing.moving_offset = 0.4
+	data.crosshair.standing.kick_offset = 0.3
+	data.crosshair.crouching.offset = 0.1
+	data.crosshair.crouching.moving_offset = 0.5
+	data.crosshair.crouching.kick_offset = 0.2
+	data.crosshair.steelsight.hidden = true
+	data.crosshair.steelsight.offset = 0
+	data.crosshair.steelsight.moving_offset = 0
+	data.crosshair.steelsight.kick_offset = 0.1
+	data.shake = {
+		fire_multiplier = 1,
+		fire_steelsight_multiplier = -1
+	}
+	data.autohit = weapon_data.autohit_pistol_default
+	data.aim_assist = weapon_data.aim_assist_pistol_default
+	data.weapon_hold = "flun"
+	data.animations = {
+		equip_id = "flun_equip",
+		recoil_steelsight = true,
+		magazine_empty = "last_recoil"
+	}
+	data.panic_suppression_chance = 0
+	data.ignore_damage_upgrades = true
+	data.upgrade_blocks = {
+		weapon = {
+			"clip_ammo_increase"
+		}
+	}
+	data.stats = {
+		zoom = 1,
+		total_ammo_mod = 21,
+		damage = 155,
+		alert_size = 18,
+		spread = 19,
+		recoil = 18,
+		spread_moving = 19,
+		value = 1,
+		extra_ammo = 51,
+		reload = 11,
+		suppression = 14,
+		concealment = 27
 	}
 end
 
@@ -33198,6 +33356,12 @@ function WeaponTweakData:_create_table_structure()
 	}
 	self.speen_crew = {
 		usage = "is_smg",
+		sounds = {},
+		use_data = {},
+		auto = {}
+	}
+	self.flun_crew = {
+		usage = "is_pistol",
 		sounds = {},
 		use_data = {},
 		auto = {}

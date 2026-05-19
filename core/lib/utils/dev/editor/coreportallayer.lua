@@ -5,6 +5,8 @@ core:import("CoreEws")
 core:import("CorePortalManager")
 
 PortalLayer = PortalLayer or class(CoreStaticLayer.StaticLayer)
+local IDS_ADD_TO_PORTAL_UNIT_GROUP = Idstring("add_to_portal_unit_group")
+local portal_brush_alpha = 0.22
 
 function PortalLayer:init(owner)
 	PortalLayer.super.init(self, owner, "portal", {
@@ -162,6 +164,8 @@ function PortalLayer:update(time, rel_time)
 		if self._current_group then
 			self._current_group:draw(time, rel_time, 1, self._dont_draw_boxes, self._dont_draw_units)
 		end
+
+		self:hover_highlight()
 	end
 
 	if self._draw_units_in_no_portal_state then
@@ -573,7 +577,7 @@ function PortalLayer:clone_edited_values(unit, source)
 end
 
 function PortalLayer:click_select_unit()
-	if self._ctrl:down(Idstring("add_to_portal_unit_group")) and self._current_group then
+	if self._ctrl:down(IDS_ADD_TO_PORTAL_UNIT_GROUP) and self._current_group then
 		local ray = managers.editor:unit_by_raycast({
 			ray_type = "body editor",
 			sample = true,
@@ -588,6 +592,27 @@ function PortalLayer:click_select_unit()
 	end
 
 	PortalLayer.super.click_select_unit(self)
+end
+
+function PortalLayer:hover_highlight()
+	if self._ctrl:down(IDS_ADD_TO_PORTAL_UNIT_GROUP) and self._current_group then
+		local ray = managers.editor:unit_by_raycast({
+			ray_type = "body editor",
+			sample = true,
+			mask = 1
+		})
+
+		if ray and ray.unit then
+			local is_in = self._current_group:unit_in_group(ray.unit)
+			local alpha = portal_brush_alpha * 4
+			local rgb = is_in and Color(1, 0.3, 0.3) or Color(0.7, 0.6, 1)
+
+			self._portal_brush:set_color(rgb:with_alpha(alpha))
+			self._portal_brush:unit(ray.unit)
+		end
+
+		return
+	end
 end
 
 function PortalLayer:set_select_unit(unit)

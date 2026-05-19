@@ -21,7 +21,7 @@ function PlayerHandStateWeapon:_link_weapon(weapon_unit)
 	end
 
 	if not alive(self._weapon_unit) then
-		if table.contains(weapon_unit:base():weapon_tweak_data().categories, "bow") then
+		if table.contains(weapon_unit:base():categories(), "bow") then
 			self:hsm():other_hand():set_default_state("bow")
 
 			self._is_bow = true

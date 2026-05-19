@@ -38,6 +38,7 @@ function RaycastWeaponBase:init(unit)
 
 	self:replenish()
 
+	self._reload_part_types = td.part_drop_types
 	self._aim_assist_data = td.aim_assist
 	self._autohit_data = td.autohit
 	self._autohit_current = self._autohit_data and self._autohit_data.INIT_RATIO
@@ -164,6 +165,10 @@ function RaycastWeaponBase:has_part(part_id)
 end
 
 function RaycastWeaponBase:categories()
+	if self.custom_categories and type(self.custom_categories) == "table" then
+		return self.custom_categories
+	end
+
 	return self:weapon_tweak_data().categories
 end
 
@@ -209,7 +214,7 @@ function RaycastWeaponBase:get_stance_id()
 end
 
 function RaycastWeaponBase:movement_penalty()
-	local primary_category = self:weapon_tweak_data().categories and self:weapon_tweak_data().categories[1]
+	local primary_category = self:categories() and self:categories()[1]
 
 	return tweak_data.upgrades.weapon_movement_penalty[primary_category] or 1
 end
@@ -517,7 +522,7 @@ function RaycastWeaponBase:fire(from_pos, direction, dmg_mul, shoot_player, spre
 		end
 
 		if is_player then
-			for _, category in ipairs(self:weapon_tweak_data().categories) do
+			for _, category in ipairs(self:categories()) do
 				if managers.player:has_category_upgrade(category, "consume_no_ammo_chance") then
 					local roll = math.rand(1)
 					local chance = managers.player:upgrade_value(category, "consume_no_ammo_chance", 0)
@@ -1634,7 +1639,7 @@ end
 function RaycastWeaponBase:replenish()
 	local ammo_max_multiplier = managers.player:upgrade_value("player", "extra_ammo_multiplier", 1)
 
-	for _, category in ipairs(self:weapon_tweak_data().categories) do
+	for _, category in ipairs(self:categories()) do
 		ammo_max_multiplier = ammo_max_multiplier * managers.player:upgrade_value(category, "extra_ammo_multiplier", 1)
 	end
 
@@ -1723,7 +1728,7 @@ end
 function RaycastWeaponBase:reload_speed_multiplier()
 	local multiplier = 1
 
-	for _, category in ipairs(self:weapon_tweak_data().categories) do
+	for _, category in ipairs(self:categories()) do
 		multiplier = multiplier * managers.player:upgrade_value(category, "reload_speed_multiplier", 1)
 	end
 
@@ -1741,7 +1746,7 @@ end
 function RaycastWeaponBase:damage_multiplier()
 	local multiplier = 1
 
-	for _, category in ipairs(self:weapon_tweak_data().categories) do
+	for _, category in ipairs(self:categories()) do
 		multiplier = multiplier * managers.player:upgrade_value(category, "damage_multiplier", 1)
 	end
 
@@ -1757,7 +1762,7 @@ end
 function RaycastWeaponBase:spread_multiplier()
 	local multiplier = 1
 
-	for _, category in ipairs(self:weapon_tweak_data().categories) do
+	for _, category in ipairs(self:categories()) do
 		multiplier = multiplier * managers.player:upgrade_value(category, "spread_multiplier", 1)
 	end
 
@@ -1770,7 +1775,7 @@ end
 function RaycastWeaponBase:exit_run_speed_multiplier()
 	local multiplier = 1
 
-	for _, category in ipairs(self:weapon_tweak_data().categories) do
+	for _, category in ipairs(self:categories()) do
 		multiplier = multiplier * managers.player:upgrade_value(category, "exit_run_speed_multiplier", 1)
 	end
 
@@ -1786,7 +1791,7 @@ end
 function RaycastWeaponBase:recoil_multiplier()
 	local multiplier = 1
 
-	for _, category in ipairs(self:weapon_tweak_data().categories) do
+	for _, category in ipairs(self:categories()) do
 		multiplier = multiplier * managers.player:upgrade_value(category, "recoil_multiplier", 1)
 
 		if managers.player:has_team_category_upgrade(category, "recoil_multiplier") then
@@ -1804,7 +1809,7 @@ end
 function RaycastWeaponBase:enter_steelsight_speed_multiplier()
 	local multiplier = 1
 
-	for _, category in ipairs(self:weapon_tweak_data().categories) do
+	for _, category in ipairs(self:categories()) do
 		multiplier = multiplier * managers.player:upgrade_value(category, "enter_steelsight_speed_multiplier", 1)
 	end
 
@@ -2094,17 +2099,25 @@ end
 
 function RaycastWeaponBase:add_ammo_from_bag(available)
 	local function process_ammo(ammo_base, amount_available)
+		if not amount_available then
+			return 0
+		end
+
 		if ammo_base:get_ammo_max() == ammo_base:get_ammo_total() then
 			return 0
 		end
 
 		local ammo_max = ammo_base:get_ammo_max()
 		local ammo_total = ammo_base:get_ammo_total()
+
+		if not ammo_max or not ammo_total then
+			return 0
+		end
+
 		local wanted = 1 - ammo_total / ammo_max
 		local can_have = math.min(wanted, amount_available)
 
 		ammo_base:set_ammo_total(math.min(ammo_max, ammo_total + math.ceil(can_have * ammo_max)))
-		print(wanted, can_have, math.ceil(can_have * ammo_max), ammo_base:get_ammo_total())
 
 		return can_have
 	end
@@ -2253,7 +2266,7 @@ function RaycastWeaponBase:_get_spread(user_unit)
 	local current_state = user_unit:movement()._current_state
 
 	if current_state._moving then
-		for _, category in ipairs(self:weapon_tweak_data().categories) do
+		for _, category in ipairs(self:categories()) do
 			spread_multiplier = spread_multiplier * managers.player:upgrade_value(category, "move_spread_multiplier", 1)
 		end
 	end
@@ -2262,7 +2275,7 @@ function RaycastWeaponBase:_get_spread(user_unit)
 		return self._spread * tweak_data.weapon[self._name_id].spread[current_state._moving and "moving_steelsight" or "steelsight"] * spread_multiplier
 	end
 
-	for _, category in ipairs(self:weapon_tweak_data().categories) do
+	for _, category in ipairs(self:categories()) do
 		spread_multiplier = spread_multiplier * managers.player:upgrade_value(category, "hip_fire_spread_multiplier", 1)
 	end
 
@@ -3433,7 +3446,7 @@ function DazingInstantBulletBase.sync_on_collision(col_ray, weapon_unit, user_un
 	local weapons_hot = managers.groupai:state():enemy_weapons_hot()
 	local base_ext = hit_unit:base()
 
-	if weapons_hot or not hit_unit:movement():cool() then
+	if weapons_hot or not hit_unit:movement().cool or not hit_unit:movement():cool() then
 		if hit_unit:character_damage().stun_hit then
 			local can_stun = true
 			local brain_ext = hit_unit:brain()
@@ -3518,7 +3531,7 @@ function ReviveInstantBulletBase:on_collision(col_ray, weapon_unit, user_unit, d
 	local dmg_ext = hit_unit:character_damage()
 
 	if not dmg_ext then
-		local slotmask = managers.slot:get_mask("criminals_no_deployables")
+		local slotmask = managers.slot:get_mask("harmless_criminals") + 3
 		local criminals = World:find_units("sphere", col_ray.position, self.GENEROCITY_RADIUS, slotmask)
 
 		for _, criminal_unit in ipairs(criminals) do

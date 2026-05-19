@@ -34,7 +34,7 @@ function NewRaycastWeaponBase:init(unit)
 	self._gadgets = nil
 	self._armor_piercing_chance = self:weapon_tweak_data().armor_piercing_chance or 0
 	self._use_shotgun_reload = self:weapon_tweak_data().use_shotgun_reload
-	self._movement_penalty = tweak_data.upgrades.weapon_movement_penalty[self:weapon_tweak_data().categories[1]] or 1
+	self._movement_penalty = tweak_data.upgrades.weapon_movement_penalty[self:categories()[1]] or 1
 	self._deploy_speed_multiplier = 1
 	self._textures = {}
 	self._cosmetics_data = nil
@@ -869,7 +869,8 @@ function NewRaycastWeaponBase:_update_stats_values(disallow_replenish, ammo_data
 	self._can_shoot_through_enemy = tweak_data.weapon[self._name_id].can_shoot_through_enemy
 	self._can_shoot_through_wall = tweak_data.weapon[self._name_id].can_shoot_through_wall
 	self._armor_piercing_chance = self:weapon_tweak_data().armor_piercing_chance or 0
-	local primary_category = self:weapon_tweak_data().categories and self:weapon_tweak_data().categories[1]
+	local categories = self:categories()
+	local primary_category = categories and categories[1]
 	self._movement_penalty = tweak_data.upgrades.weapon_movement_penalty[primary_category] or 1
 	self._burst_count = self:weapon_tweak_data().BURST_COUNT or 3
 	local fire_mode_data = self:weapon_tweak_data().fire_mode_data or {}
@@ -1123,7 +1124,7 @@ function NewRaycastWeaponBase:_update_stats_values(disallow_replenish, ammo_data
 
 	local user_unit = self._setup and self._setup.user_unit
 	local current_state = alive(user_unit) and user_unit:movement() and user_unit:movement()._current_state
-	self._fire_rate_multiplier = managers.blackmarket:fire_rate_multiplier(self._name_id, self:weapon_tweak_data().categories, self._silencer, nil, current_state, self._blueprint)
+	self._fire_rate_multiplier = managers.blackmarket:fire_rate_multiplier(self._name_id, categories, self._silencer, nil, current_state, self._blueprint)
 
 	if self._ammo_data.fire_rate_multiplier then
 		self._fire_rate_multiplier = self._fire_rate_multiplier + self._ammo_data.fire_rate_multiplier
@@ -1143,7 +1144,7 @@ function NewRaycastWeaponBase:get_damage_falloff(damage, col_ray, user_unit)
 	local near_mul = self._near_multiplier
 	local optimal_mul = 1
 	local far_mul = self._far_multiplier
-	local primary_category = self:weapon_tweak_data().categories and self:weapon_tweak_data().categories[1]
+	local primary_category = self:categories() and self:categories()[1]
 	local current_state = user_unit and user_unit:movement() and user_unit:movement()._current_state
 
 	if current_state and current_state:in_steelsight() then
@@ -1178,7 +1179,7 @@ function NewRaycastWeaponBase:is_weak_hit(distance, user_unit)
 
 	local near_distance = self._optimal_distance - self._near_falloff
 	local far_distance = self._optimal_distance + self._optimal_range + self._far_falloff
-	local primary_category = self:weapon_tweak_data().categories and self:weapon_tweak_data().categories[1]
+	local primary_category = self:categories() and self:categories()[1]
 	local current_state = user_unit and user_unit:movement() and user_unit:movement()._current_state
 
 	if current_state and current_state:in_steelsight() then
@@ -1289,14 +1290,16 @@ function NewRaycastWeaponBase:zoom()
 end
 
 function NewRaycastWeaponBase:_check_sound_switch()
-	local suppressed_switch = managers.weapon_factory:get_sound_switch("suppressed", self._factory_id, self._blueprint)
-	local override_gadget = self:gadget_overrides_weapon_functions()
+	if self._sound_fire then
+		local suppressed_switch = managers.weapon_factory:get_sound_switch("suppressed", self._factory_id, self._blueprint)
+		local override_gadget = self:gadget_overrides_weapon_functions()
 
-	if override_gadget then
-		suppressed_switch = nil
+		if override_gadget then
+			suppressed_switch = nil
+		end
+
+		self._sound_fire:set_switch("suppressed", suppressed_switch or "regular")
 	end
-
-	self._sound_fire:set_switch("suppressed", suppressed_switch or "regular")
 end
 
 function NewRaycastWeaponBase:stance_id()
@@ -1310,7 +1313,7 @@ end
 function NewRaycastWeaponBase:replenish()
 	local ammo_max_multiplier = managers.player:upgrade_value("player", "extra_ammo_multiplier", 1)
 
-	for _, category in ipairs(self:weapon_tweak_data().categories) do
+	for _, category in ipairs(self:categories()) do
 		ammo_max_multiplier = ammo_max_multiplier * managers.player:upgrade_value(category, "extra_ammo_multiplier", 1)
 	end
 
@@ -1478,7 +1481,7 @@ function NewRaycastWeaponBase:tweak_data_anim_play(anim, speed_multiplier)
 		self._unit:anim_stop(ids_anim_name)
 		self._unit:anim_play_to(ids_anim_name, length, speed_multiplier)
 
-		local offset = self:_get_anim_start_offset(anim_name)
+		local offset = self:_get_anim_start_offset(anim_name, length)
 
 		if offset then
 			self._unit:anim_set_time(ids_anim_name, offset)
@@ -2532,7 +2535,7 @@ function NewRaycastWeaponBase:check_stats()
 	local stats = deep_clone(base_stats)
 	local tweak_data = tweak_data.weapon.stats
 	local modifier_stats = self:weapon_tweak_data().stats_modifiers
-	local primary_category = self:weapon_tweak_data().categories and self:weapon_tweak_data().categories[1]
+	local primary_category = self:categories() and self:categories()[1]
 	stats.zoom = math.min(stats.zoom + managers.player:upgrade_value(primary_category, "zoom_increase", 0), #tweak_data.zoom)
 
 	for stat, _ in pairs(stats) do
@@ -2733,13 +2736,13 @@ function NewRaycastWeaponBase:damage_addend()
 	local user_unit = self._setup and self._setup.user_unit
 	local current_state = alive(user_unit) and user_unit:movement() and user_unit:movement()._current_state
 
-	return managers.blackmarket:damage_addend(self._name_id, self:weapon_tweak_data().categories, self._silencer, nil, current_state, self._blueprint)
+	return managers.blackmarket:damage_addend(self._name_id, self:categories(), self._silencer, nil, current_state, self._blueprint)
 end
 
 function NewRaycastWeaponBase:damage_multiplier()
 	local user_unit = self._setup and self._setup.user_unit
 	local current_state = alive(user_unit) and user_unit:movement() and user_unit:movement()._current_state
-	local multiplier = managers.blackmarket:damage_multiplier(self._name_id, self:weapon_tweak_data().categories, self._silencer, nil, current_state, self._blueprint)
+	local multiplier = managers.blackmarket:damage_multiplier(self._name_id, self:categories(), self._silencer, nil, current_state, self._blueprint)
 
 	if self._alt_fire_active and self._alt_fire_data then
 		multiplier = multiplier * (self._alt_fire_data.damage_mul or 1)
@@ -2761,7 +2764,7 @@ function NewRaycastWeaponBase:spread_index_addend(current_state)
 end
 
 function NewRaycastWeaponBase:spread_multiplier(current_state)
-	local multiplier = managers.blackmarket:accuracy_multiplier(self._name_id, self:weapon_tweak_data().categories, self._silencer, current_state, self._spread_moving, self:fire_mode(), self._blueprint, self:is_single_shot())
+	local multiplier = managers.blackmarket:accuracy_multiplier(self._name_id, self:categories(), self._silencer, current_state, self._spread_moving, self:fire_mode(), self._blueprint, self:is_single_shot())
 
 	if self._alt_fire_active and self._alt_fire_data then
 		multiplier = multiplier * (self._alt_fire_data.spread_mul or 1)
@@ -2774,7 +2777,7 @@ function NewRaycastWeaponBase:recoil_addend()
 	local user_unit = self._setup and self._setup.user_unit
 	local current_state = alive(user_unit) and user_unit:movement() and user_unit:movement()._current_state
 
-	return managers.blackmarket:recoil_addend(self._name_id, self:weapon_tweak_data().categories, self._current_stats_indices and self._current_stats_indices.recoil, self._silencer, self._blueprint, current_state, self:is_single_shot())
+	return managers.blackmarket:recoil_addend(self._name_id, self:categories(), self._current_stats_indices and self._current_stats_indices.recoil, self._silencer, self._blueprint, current_state, self:is_single_shot())
 end
 
 function NewRaycastWeaponBase:recoil_multiplier()
@@ -2785,7 +2788,7 @@ function NewRaycastWeaponBase:recoil_multiplier()
 		is_moving = alive(user_unit) and user_unit:movement() and user_unit:movement()._current_state and user_unit:movement()._current_state._moving
 	end
 
-	local multiplier = managers.blackmarket:recoil_multiplier(self._name_id, self:weapon_tweak_data().categories, self._silencer, self._blueprint, is_moving)
+	local multiplier = managers.blackmarket:recoil_multiplier(self._name_id, self:categories(), self._silencer, self._blueprint, is_moving)
 
 	if self._alt_fire_active and self._alt_fire_data then
 		multiplier = multiplier * (self._alt_fire_data.recoil_mul or 1)
@@ -2800,7 +2803,7 @@ end
 
 function NewRaycastWeaponBase:enter_steelsight_speed_multiplier()
 	local multiplier = 1
-	local categories = self:weapon_tweak_data().categories
+	local categories = self:categories()
 
 	for _, category in ipairs(categories) do
 		multiplier = multiplier + 1 - managers.player:upgrade_value(category, "enter_steelsight_speed_multiplier", 1)
@@ -2828,7 +2831,7 @@ function NewRaycastWeaponBase:reload_speed_multiplier()
 
 	local multiplier = 1
 
-	for _, category in ipairs(self:weapon_tweak_data().categories) do
+	for _, category in ipairs(self:categories()) do
 		multiplier = multiplier + 1 - managers.player:upgrade_value(category, "reload_speed_multiplier", 1)
 	end
 

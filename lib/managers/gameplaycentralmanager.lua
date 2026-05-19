@@ -689,6 +689,7 @@ end
 
 function GamePlayCentralManager:on_simulation_ended()
 	self._bullet_hits = {}
+	self._access_cameras = {}
 
 	self:set_flashlights_on(false)
 	self:set_flashlights_on_player_on(false)
@@ -1010,6 +1011,71 @@ function GamePlayCentralManager:_update_projectile_trails(t, dt)
 	end
 end
 
+function GamePlayCentralManager:server_spawn_pubg_cargos(airdrop_unit, from_pos, owner_pos)
+	print("[PUBGDROP] I am flun drop! Existing drops?", self._pubg_cargos_spawned, from_pos, owner_pos)
+
+	local DROP_LIMIT = 1
+
+	if self._pubg_cargos_spawned and DROP_LIMIT <= self._pubg_cargos_spawned then
+		print("[PUBGDROP] FAIL: Max drops", self._pubg_cargos_spawned .. "/" .. DROP_LIMIT)
+
+		return
+	end
+
+	if from_pos.z < owner_pos.z + 7500 then
+		print("[PUBGDROP] FAIL: Too short", from_pos.z .. "/" .. owner_pos.z + 7500)
+
+		return
+	end
+
+	local mover_radius = 60
+	local tmp_vector3 = Vector3()
+	local cargo_drop_ids = Idstring(airdrop_unit)
+	local slotmask_gnd_ray = managers.slot:get_mask("player_ground_check")
+
+	mvector3.set(tmp_vector3, from_pos)
+	mvector3.add(tmp_vector3, math.DOWN * 20000)
+
+	local ray_data_sky_to_ground = World:raycast("ray", from_pos, tmp_vector3, "slot_mask", slotmask_gnd_ray, "sphere_cast_radius", mover_radius, "ray_type", "walk")
+
+	if not ray_data_sky_to_ground or ray_data_sky_to_ground.distance < 2000 then
+		print("[PUBGDROP] FAIL: No ground - distance from ground", ray_data_sky_to_ground and ray_data_sky_to_ground.distance)
+
+		return
+	end
+
+	mvector3.set(tmp_vector3, from_pos)
+	mvector3.add(tmp_vector3, math.UP * 10000)
+
+	local ray_data_hit_to_sky = World:raycast("ray", ray_data_sky_to_ground.hit_position, tmp_vector3, "slot_mask", slotmask_gnd_ray, "sphere_cast_radius", mover_radius, "ray_type", "walk")
+
+	if ray_data_hit_to_sky then
+		print("[PUBGDROP] FAIL: hit a ceiling, cant fall through buildings")
+
+		return
+	end
+
+	print("[PUBGDROP] Attempting to spawn", cargo_drop_ids)
+
+	local data = {
+		cargo_drop_ids,
+		from_pos,
+		Rotation(math.random() * 360, 0, 0)
+	}
+	local cargo_unit = World:spawn_unit(unpack(data))
+
+	print("[PUBGDROP] Done! Dropping cargo_unit", cargo_unit)
+
+	if cargo_unit:base().server_set_dynamic then
+		cargo_unit:base():server_set_dynamic()
+	end
+
+	self._pubg_cargos_spawned = (self._pubg_cargos_spawned or 0) + 1
+	self._pubg_cargos_spawned_units = self._pubg_cargos_spawned_units or {}
+
+	table.insert(self._pubg_cargos_spawned_units, airdrop_unit)
+end
+
 function GamePlayCentralManager:announcer_say(event)
 	if not self._announcer_sound_source then
 		self._announcer_sound_source = SoundDevice:create_source("announcer")
@@ -1024,7 +1090,9 @@ function GamePlayCentralManager:save(data)
 		mission_disabled_units = self._mission_disabled_units,
 		flashlights_on_player_on = self._flashlights_on_player_on,
 		heist_timer = Application:time() - self._heist_timer.start_time,
-		heist_timer_running = self._heist_timer.running
+		heist_timer_running = self._heist_timer.running,
+		pubg_cargos_spawned = self._pubg_cargos_spawned,
+		pubg_cargos_spawned_units = self._pubg_cargos_spawned_units
 	}
 	data.GamePlayCentralManager = state
 end
@@ -1045,6 +1113,15 @@ function GamePlayCentralManager:load(data)
 		self._heist_timer.offset_time = state.heist_timer
 		self._heist_timer.start_time = Application:time()
 		self._heist_timer.running = state.heist_timer_running
+	end
+
+	if state.pubg_cargos_spawned and state.pubg_cargos_spawned > 0 then
+		self._pubg_cargos_spawned = state.pubg_cargos_spawned
+		self._pubg_cargos_spawned_units = state.pubg_cargos_spawned_units
+
+		for _, unit in ipairs(self._pubg_cargos_spawned_units) do
+			managers.dyn_resource:load(Idstring("unit"), Idstring(unit), managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
+		end
 	end
 end
 

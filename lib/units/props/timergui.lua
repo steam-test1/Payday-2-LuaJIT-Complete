@@ -154,9 +154,9 @@ function TimerGui:init(unit)
 	self._can_jam = false
 	self._show_seconds = true
 	self._gui_start = self._gui_start or "prop_timer_gui_start"
-	self._gui_working = "prop_timer_gui_working"
-	self._gui_malfunction = "prop_timer_gui_malfunction"
-	self._gui_done = "prop_timer_gui_done"
+	self._gui_working = self._gui_working or "prop_timer_gui_working"
+	self._gui_malfunction = self._gui_malfunction or "prop_timer_gui_malfunction"
+	self._gui_done = self._gui_done or "prop_timer_gui_done"
 	self._cull_distance = self._cull_distance or 5000
 	self._size_multiplier = self._size_multiplier or 1
 	self._gui_object = self._gui_object or "gui_name"
@@ -386,7 +386,11 @@ function TimerGui:_start(timer, current_timer)
 		self._gui_script.time_text:set_text(math.floor(self._time_left or self._current_timer))
 	end
 
-	self._unit:base():start()
+	if self._unit:base() then
+		self._unit:base():start()
+	else
+		Application:error("[TimerGui:_start] Missing a base for the unit")
+	end
 
 	if Network:is_client() then
 		return
@@ -665,6 +669,10 @@ function TimerGui:_set_powered(powered, enable_interaction)
 	self._powered = powered
 
 	if not self._powered then
+		if self._started then
+			self:post_event(self._power_off_event or self._jam_event)
+		end
+
 		for _, child in ipairs(self._gui_script.panel:children()) do
 			if child.children then
 				for _, grandchild in ipairs(child:children()) do
@@ -681,8 +689,6 @@ function TimerGui:_set_powered(powered, enable_interaction)
 			end
 		end
 
-		self:post_event(self._power_off_event or self._jam_event)
-
 		if enable_interaction and self._unit:interaction() then
 			self._powered_interaction_enabled = enable_interaction
 
@@ -692,9 +698,11 @@ function TimerGui:_set_powered(powered, enable_interaction)
 
 			self._unit:interaction():set_active(true)
 		end
-
-		self:post_event(self._power_off_event or self._jam_event)
 	else
+		if self._started then
+			self:post_event(self._resume_event)
+		end
+
 		for _, child in ipairs(self._gui_script.panel:children()) do
 			if child.children then
 				for _, grandchild in ipairs(child:children()) do
@@ -704,8 +712,6 @@ function TimerGui:_set_powered(powered, enable_interaction)
 				child:set_color(self._original_colors[child:key()])
 			end
 		end
-
-		self:post_event(self._resume_event)
 
 		if self._powered_interaction_enabled then
 			self._powered_interaction_enabled = nil

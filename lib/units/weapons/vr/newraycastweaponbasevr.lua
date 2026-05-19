@@ -364,7 +364,7 @@ function NewRaycastWeaponBaseVR:spawn_belt_magazine_unit(pos)
 		return World:spawn_unit(belt_mag_unit_id, pos or Vector3(), Rotation())
 	end
 
-	return self:spawn_magazine_unit(pos)
+	return self:spawn_magazine_unit(pos, nil, false, self:get_part_type_dropped())
 end
 
 function NewRaycastWeaponBaseVR:reload_object_name()

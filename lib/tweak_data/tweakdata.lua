@@ -2959,6 +2959,25 @@ Play the full version soon to get your full PAYDAY!]],
 		range = 68,
 		damage = 12
 	}
+	self.projectiles.flun_flare = {
+		sound_event = "white_explosion",
+		range = 350,
+		curve_pow = 0.1,
+		player_damage = 5,
+		damage = 3,
+		adjust_z = 0,
+		effect_name = "effects/payday2/particles/explosions/flare_incendiary_explosion_with_flare",
+		airdrop_unit = "units/pd2_dlc_unk/weapons/wpn_prj_flun_flare_airdrop/wpn_prj_flun_flare_airdrop",
+		alert_radius = 5000,
+		impact_effect_name = "effects/payday2/particles/explosions/flare_incendiary_explosion",
+		name_id = "bm_grenade_flun_flare",
+		dot_data_name = "proj_fire_com",
+		launch_speed = 75,
+		sounds = {
+			flyby = "flare_flyby",
+			flyby_stop = "flare_flyby_stop"
+		}
+	}
 	self.voting = {
 		timeout = 30,
 		cooldown = 50,

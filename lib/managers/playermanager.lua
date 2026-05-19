@@ -1747,16 +1747,19 @@ function PlayerManager:on_headshot_dealt()
 
 	self._on_headshot_dealt_t = t + (tweak_data.upgrades.on_headshot_dealt_cooldown or 0)
 	local damage_ext = player_unit:character_damage()
-	local regen_armor_bonus = managers.player:upgrade_value("player", "headshot_regen_armor_bonus", 0)
 
-	if damage_ext and regen_armor_bonus > 0 then
-		damage_ext:restore_armor(regen_armor_bonus)
-	end
+	if damage_ext then
+		local regen_armor_bonus = managers.player:upgrade_value("player", "headshot_regen_armor_bonus", 0)
 
-	local regen_health_bonus = managers.player:upgrade_value("player", "headshot_regen_health_bonus", 0)
+		if regen_armor_bonus > 0 then
+			damage_ext:restore_armor(regen_armor_bonus)
+		end
 
-	if damage_ext and regen_health_bonus > 0 then
-		damage_ext:restore_health(regen_health_bonus, true)
+		local regen_health_bonus = managers.player:upgrade_value("player", "headshot_regen_health_bonus", 0)
+
+		if regen_health_bonus > 0 then
+			damage_ext:restore_health(regen_health_bonus, true)
+		end
 	end
 end
 

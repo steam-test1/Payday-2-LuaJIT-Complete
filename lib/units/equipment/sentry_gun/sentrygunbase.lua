@@ -74,7 +74,7 @@ function SentryGunBase:is_category(...)
 	local arg = {
 		...
 	}
-	local categories = self:weapon_tweak_data().categories
+	local categories = self:categories()
 
 	if not categories then
 		return false

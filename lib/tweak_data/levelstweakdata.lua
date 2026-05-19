@@ -270,6 +270,7 @@ function LevelsTweakData:init()
 		music = "heist",
 		package = "packages/narr_firestarter1",
 		cube = "cube_apply_heist_bank",
+		ghost_bonus = 0.1,
 		max_bags = 16,
 		ai_group_type = america,
 		load_screen = "guis/dlcs/pic/textures/loading/job_firestarter_01"
@@ -1193,7 +1194,8 @@ function LevelsTweakData:init()
 		},
 		cube = "cube_apply_heist_bank",
 		max_bags = 20,
-		ai_group_type = america
+		ai_group_type = america,
+		player_style = "slaughterhouse"
 	}
 	self.pbr = {
 		name_id = "heist_pbr_hl",

@@ -212,6 +212,7 @@ function AssetsTweakData:_init_assets(tweak_data)
 			"welcome_to_the_jungle_2",
 			"election_day_1",
 			"election_day_2",
+			"firestarter_1",
 			"firestarter_2",
 			"ukrainian_job",
 			"jewelry_store",

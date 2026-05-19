@@ -2315,7 +2315,27 @@ function BlackMarketManager:update(t, dt)
 	end
 end
 
+function BlackMarketManager:get_loot_drop_xp_value_scaled(value_id)
+	local value = tweak_data:get_value("experience_manager", "loot_drop_value", value_id) or 0
+
+	return value
+end
+
+function BlackMarketManager:get_loot_drop_cash_value_scaled(value_id)
+	local value = tweak_data:get_value("money_manager", "loot_drop_cash", value_id) or 100
+
+	return value
+end
+
 function BlackMarketManager:add_to_inventory(global_value, category, id, not_new)
+	print("[BlackMarketManager:add_to_inventory] global_value, category, id, not_new", global_value, category, id, not_new)
+
+	if not global_value or not category or not id then
+		Application:stack_dump_error("[BlackMarketManager:add_to_inventory] Cannot call without required params 'global_value', 'category', 'id'", global_value, category, id)
+
+		return
+	end
+
 	if category == "cash" then
 		local value_id = tweak_data.blackmarket[category][id].value_id
 
@@ -8161,8 +8181,11 @@ end
 function BlackMarketManager:tradable_achievement(category, entry)
 	if SystemInfo:distribution() == Idstring("STEAM") then
 		local tweak_item = tweak_data.economy[category][entry]
+		local cat_entry = category .. "_" .. entry
 
-		if tweak_item.def_id and tweak_item.achievement and not self._global.tradable_dlcs[category .. "_" .. entry] and managers.achievment.handler:has_achievement(tweak_item.achievement) then
+		print("[ECOCHECK] cat_entry", cat_entry)
+
+		if tweak_item.def_id and tweak_item.achievement and not self._global.tradable_dlcs[cat_entry] and managers.achievment.handler:has_achievement(tweak_item.achievement) then
 			print("[BlackMarketManager:tradable_achievement]", category, entry, tweak_item.def_id)
 			managers.network.account:inventory_reward_dlc(tweak_item.def_id, callback(self, self, "_clbk_tradable_dlcs"))
 		end
@@ -8184,6 +8207,8 @@ function BlackMarketManager:tradable_dlcs()
 end
 
 function BlackMarketManager:_clbk_tradable_dlcs(error, tradable_list)
+	print("[BlackMarketManager:_clbk_tradable_reward]" .. tostring(error), tradable_list)
+
 	if error then
 		Application:error("[BlackMarketManager:_clbk_tradable_reward] Failed to reward item (" .. tostring(error) .. ")")
 
@@ -8635,16 +8660,9 @@ function BlackMarketManager:_on_load_update_crafted_items()
 
 	for category, category_crafts in pairs(crafted) do
 		for i, crafted in ipairs(category_crafts) do
-			if crafted.customize_locked and type(crafted.customize_locked) == "boolean" then
-				print("[BlackMarketManager:_on_load_update_crafted_items] Old crafted.customize_locked", category, i)
-
-				if crafted.cosmetics and crafted.cosmetics.id then
-					local skin_data = tweak_data.blackmarket.weapon_skins[crafted.cosmetics.id]
-
-					print("[BlackMarketManager:_on_load_update_crafted_items] Now setting as", crafted.cosmetics.id, inspect(skin_data))
-
-					crafted.customize_locked = skin_data.locked
-				end
+			if crafted.customize_locked and type(crafted.customize_locked) == "boolean" and crafted.cosmetics and crafted.cosmetics.id then
+				local skin_data = tweak_data.blackmarket.weapon_skins[crafted.cosmetics.id]
+				crafted.customize_locked = skin_data and skin_data.locked or false
 			end
 		end
 	end

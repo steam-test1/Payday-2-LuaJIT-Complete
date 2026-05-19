@@ -23,7 +23,7 @@ function PlayerTasedVR:exit(...)
 			self._equipped_unit:base()._second_gun:base():stop_shooting()
 		end
 
-		if table.contains(self._equipped_unit:base():weapon_tweak_data().categories, "bow") then
+		if table.contains(self._equipped_unit:base():categories(), "bow") then
 			self:_start_action_reload_enter(TimerManager:game():time())
 		end
 	end
@@ -213,7 +213,7 @@ function PlayerTasedVR:_check_fire_per_weapon(t, pressed, held, released, weap_b
 		end
 
 		local health_ratio = self._ext_damage:health_ratio()
-		local primary_category = weap_base:weapon_tweak_data().categories[1]
+		local primary_category = weap_base:categories()[1]
 		local damage_health_ratio = managers.player:get_damage_health_ratio(health_ratio, primary_category)
 
 		if damage_health_ratio > 0 then
@@ -252,7 +252,7 @@ function PlayerTasedVR:_check_fire_per_weapon(t, pressed, held, released, weap_b
 			fired = weap_base:trigger_held(self:get_fire_weapon_position(), self:get_fire_weapon_direction(), dmg_mul, nil, spread_mul, autohit_mul, suppression_mul)
 		end
 
-		local charging_weapon = weap_base:charging() and not table.contains(weap_base:weapon_tweak_data().categories, "bow")
+		local charging_weapon = weap_base:charging() and not table.contains(weap_base:categories(), "bow")
 
 		if not self._state_data.charging_weapon and charging_weapon then
 			self:_start_action_charging_weapon(t)

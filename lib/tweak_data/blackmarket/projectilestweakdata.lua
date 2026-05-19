@@ -784,6 +784,15 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 			deactivate = "watch_stop"
 		}
 	}
+	self.projectiles.flun_flare = {
+		impact_detonation = true,
+		is_explosive = true,
+		local_unit = "units/pd2_dlc_unk/weapons/wpn_prj_flun_flare/wpn_prj_flun_flare_local",
+		time_cheat = 1.5,
+		no_cheat_count = true,
+		unit = "units/pd2_dlc_unk/weapons/wpn_prj_flun_flare/wpn_prj_flun_flare",
+		weapon_id = "flun"
+	}
 	self._projectiles_index = {
 		"frag",
 		"launcher_frag",
@@ -863,7 +872,8 @@ function BlackMarketTweakData:_init_projectiles(tweak_data)
 		"dart_poison",
 		"dart_daze",
 		"dart_revive",
-		"laser_watch"
+		"laser_watch",
+		"flun_flare"
 	}
 	local free_dlcs = tweak_data:free_dlc_list()
 

@@ -109,20 +109,6 @@ function ECMJammerBase:set_owner(owner)
 		end
 	end
 
-	if alive(owner) then
-		local duration_mul = 1
-
-		if self._owner_id == 1 then
-			duration_mul = duration_mul * managers.player:upgrade_value("ecm_jammer", "feedback_duration_boost", 1)
-			duration_mul = duration_mul * managers.player:upgrade_value("ecm_jammer", "feedback_duration_boost_2", 1)
-		else
-			duration_mul = duration_mul * (owner:base():upgrade_value("ecm_jammer", "feedback_duration_boost") or 1)
-			duration_mul = duration_mul * (owner:base():upgrade_value("ecm_jammer", "feedback_duration_boost_2") or 1)
-		end
-
-		self._duration_multiplier = duration_mul
-	end
-
 	self:contour_interaction()
 end
 
@@ -176,11 +162,25 @@ function ECMJammerBase:setup(battery_life_upgrade_lvl, owner)
 	self._battery_life = self._max_battery_life
 	self._owner = owner
 
-	if owner then
+	if alive(owner) then
 		local peer = managers.network:session():peer_by_unit(owner)
 
 		if peer then
 			self._owner_id = peer:id()
+		end
+
+		if alive(owner) then
+			local duration_mul = 1
+
+			if self._owner_id == 1 then
+				duration_mul = duration_mul * managers.player:upgrade_value("ecm_jammer", "feedback_duration_boost", 1)
+				duration_mul = duration_mul * managers.player:upgrade_value("ecm_jammer", "feedback_duration_boost_2", 1)
+			else
+				duration_mul = duration_mul * (owner:base():upgrade_value("ecm_jammer", "feedback_duration_boost") or 1)
+				duration_mul = duration_mul * (owner:base():upgrade_value("ecm_jammer", "feedback_duration_boost_2") or 1)
+			end
+
+			self._duration_multiplier = duration_mul
 		end
 	end
 end

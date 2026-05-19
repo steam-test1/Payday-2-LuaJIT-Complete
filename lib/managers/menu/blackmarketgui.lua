@@ -10501,15 +10501,7 @@ function BlackMarketGui:populate_preferred_character_options(panel)
 
 		if character then
 			local character_name = CriminalsManager.convert_old_to_new_character_workname(character)
-			local guis_catalog = "guis/"
-			local character_table = tweak_data.blackmarket.characters[character] or tweak_data.blackmarket.characters.locked[character_name]
-			local bundle_folder = character_table and character_table.texture_bundle_folder
-
-			if bundle_folder then
-				guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-			end
-
-			local bitmap_texture = guis_catalog .. "textures/pd2/blackmarket/icons/characters/" .. character_name
+			local bitmap_texture = managers.blackmarket:get_character_icon(character_name)
 			local image = char_panel:bitmap({
 				name = "image",
 				blend_mode = "add",
@@ -10664,18 +10656,11 @@ function BlackMarketGui:populate_grenades(data)
 	end
 
 	local index = 0
-	local guis_catalog, g_tweak_data, grenade_id = nil
+	local g_tweak_data, grenade_id = nil
 
 	for i, grenades_data in ipairs(sort_data) do
 		grenade_id = grenades_data[1]
 		g_tweak_data = tweak_data.blackmarket.projectiles[grenades_data[1]] or {}
-		guis_catalog = "guis/"
-		local bundle_folder = g_tweak_data.texture_bundle_folder
-
-		if bundle_folder then
-			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-		end
-
 		new_data = {
 			name = grenade_id
 		}
@@ -10719,7 +10704,7 @@ function BlackMarketGui:populate_grenades(data)
 			new_data.dlc_locked = tweak_data.lootdrop.global_values[new_data.global_value].unlock_id or managers.dlc:get_unavailable_id(new_data.global_value)
 		end
 
-		new_data.bitmap_texture = guis_catalog .. "textures/pd2/blackmarket/icons/grenades/" .. tostring(new_data.name)
+		new_data.bitmap_texture = managers.blackmarket:get_throwable_icon(new_data.name)
 
 		if managers.blackmarket:got_new_drop("normal", "grenades", grenade_id) then
 			new_data.mini_icons = new_data.mini_icons or {}
@@ -10845,19 +10830,11 @@ function BlackMarketGui:populate_melee_weapons(data)
 		data[i] = nil
 	end
 
-	local index = 0
-	local guis_catalog, m_tweak_data, melee_weapon_id = nil
+	local m_tweak_data, melee_weapon_id = nil
 
 	for i, melee_weapon_data in ipairs(sort_data) do
 		melee_weapon_id = melee_weapon_data[1]
-		m_tweak_data = tweak_data.blackmarket.melee_weapons[melee_weapon_data[1]] or {}
-		guis_catalog = "guis/"
-		local bundle_folder = m_tweak_data.texture_bundle_folder
-
-		if bundle_folder then
-			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-		end
-
+		m_tweak_data = tweak_data.blackmarket.melee_weapons[melee_weapon_id] or {}
 		new_data = {
 			name = melee_weapon_id
 		}
@@ -10898,7 +10875,7 @@ function BlackMarketGui:populate_melee_weapons(data)
 			new_data.dlc_locked = tweak_data.lootdrop.global_values[new_data.global_value].unlock_id or managers.dlc:get_unavailable_id(new_data.global_value)
 		end
 
-		new_data.bitmap_texture = guis_catalog .. "textures/pd2/blackmarket/icons/melee_weapons/" .. tostring(new_data.name)
+		new_data.bitmap_texture = managers.blackmarket:get_melee_weapon_icon(new_data.name)
 
 		if managers.blackmarket:got_new_drop("normal", "melee_weapons", melee_weapon_id) then
 			new_data.mini_icons = new_data.mini_icons or {}
@@ -10932,7 +10909,6 @@ function BlackMarketGui:populate_melee_weapons(data)
 		end
 
 		data[i] = new_data
-		index = i
 	end
 
 	for i = 1, max_items do
@@ -10959,38 +10935,26 @@ function BlackMarketGui:populate_deployables(data)
 		data[i] = nil
 	end
 
-	local guis_catalog = "guis/"
 	local is_sentry_gun = false
 	local can_switch_fire_mode = managers.player:has_category_upgrade("sentry_gun", "ap_bullets")
-	local index = 0
 	local second_deployable = managers.player:has_category_upgrade("player", "second_deployable")
-	local d_tweak_data = nil
+	local count = second_deployable and 2 or 1
+	local deployable_id, d_tweak_data = nil
 
 	for i, deployable_data in ipairs(sort_data) do
-		d_tweak_data = tweak_data.blackmarket.deployables[deployable_data[1]]
+		deployable_id = deployable_data[1]
+		d_tweak_data = tweak_data.blackmarket.deployables[deployable_id]
 		new_data = {
-			name = deployable_data[1],
+			name = deployable_id,
 			name_localized = managers.localization:text(d_tweak_data.name_id),
-			category = "deployables"
+			category = "deployables",
+			slot = i,
+			level = 0
 		}
-		guis_catalog = "guis/"
-		local bundle_folder = d_tweak_data.texture_bundle_folder
-
-		if bundle_folder then
-			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-		end
-
-		new_data.bitmap_texture = guis_catalog .. "textures/pd2/blackmarket/icons/deployables/" .. tostring(new_data.name)
-		new_data.slot = i
+		new_data.bitmap_texture = managers.blackmarket:get_deployable_icon(new_data.name)
 		new_data.unlocked = table.contains(managers.player:availible_equipment(1), new_data.name)
-		new_data.level = 0
 		new_data.equipped = managers.blackmarket:equipped_deployable() == new_data.name
 		local slot = 0
-		local count = 1
-
-		if second_deployable then
-			count = 2
-		end
 
 		for i = 1, count do
 			if managers.player:equipment_in_slot(i) == new_data.name then
@@ -11011,9 +10975,7 @@ function BlackMarketGui:populate_deployables(data)
 			if slot == 2 then
 				new_data.equipped_text = managers.localization:to_upper_text("bm_menu_secondaries")
 			end
-		end
-
-		if not new_data.unlocked then
+		elseif not new_data.unlocked then
 			new_data.equipped_text = ""
 		end
 
@@ -11030,32 +10992,25 @@ function BlackMarketGui:populate_deployables(data)
 
 		new_data.lock_texture = self:get_lock_icon(new_data)
 
-		if new_data.unlocked and not new_data.equipped and not second_deployable then
-			table.insert(new_data, "lo_d_equip")
-		end
-
-		if new_data.unlocked and not new_data.equipped and second_deployable then
-			table.insert(new_data, "lo_d_equip_primary")
-		end
-
-		if second_deployable and managers.blackmarket:equipped_deployable(1) and new_data.unlocked and not new_data.equipped then
-			table.insert(new_data, "lo_d_equip_secondary")
-		end
-
 		if new_data.equipped then
 			table.insert(new_data, "lo_d_unequip")
+		elseif new_data.unlocked then
+			local equip_text_id = second_deployable and "lo_d_equip_primary" or "lo_d_equip"
+
+			table.insert(new_data, equip_text_id)
+
+			if second_deployable and managers.blackmarket:equipped_deployable(1) then
+				table.insert(new_data, "lo_d_equip_secondary")
+			end
 		end
 
 		is_sentry_gun = new_data.name == "sentry_gun" or new_data.name == "sentry_gun_silent"
 
 		if new_data.unlocked and is_sentry_gun and can_switch_fire_mode then
 			local is_ap_rounds = managers.player:get_equipment_setting(new_data.name, "fire_mode") == 2
+			local rounds_icon = is_ap_rounds and "lo_d_sentry_default_rounds" or "lo_d_sentry_ap_rounds"
 
-			if is_ap_rounds then
-				table.insert(new_data, "lo_d_sentry_default_rounds")
-			else
-				table.insert(new_data, "lo_d_sentry_ap_rounds")
-			end
+			table.insert(new_data, rounds_icon)
 
 			local texture = managers.player:get_equipment_setting(new_data.name, "fire_mode") == 2 and "guis/textures/pd2/blackmarket/inv_mod_singlefire" or "guis/textures/pd2/blackmarket/inv_mod_autofire"
 			new_data.mini_icons = new_data.mini_icons or {}
@@ -11071,18 +11026,17 @@ function BlackMarketGui:populate_deployables(data)
 		end
 
 		data[i] = new_data
-		index = i
 	end
 
 	for i = 1, max_items do
 		if not data[i] then
 			new_data = {
-				name = "empty",
 				name_localized = "",
+				name = "empty",
 				category = "deployables",
-				slot = i,
+				equipped = false,
 				unlocked = true,
-				equipped = false
+				slot = i
 			}
 			data[i] = new_data
 		end
@@ -11096,19 +11050,11 @@ end
 function BlackMarketGui:populate_armors(data)
 	local new_data = {}
 	local sort_data, armor_level_data = managers.blackmarket:get_sorted_armors()
-	local guis_catalog = "guis/"
 	local index = 0
 
 	for i, armor_id in ipairs(sort_data) do
 		local name_id = tweak_data.blackmarket.armors[armor_id] and tweak_data.blackmarket.armors[armor_id].name_id or ""
 		local bm_data = Global.blackmarket_manager.armors[armor_id]
-		guis_catalog = "guis/"
-		local bundle_folder = tweak_data.blackmarket.armors[armor_id] and tweak_data.blackmarket.armors[armor_id].texture_bundle_folder
-
-		if bundle_folder then
-			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-		end
-
 		index = index + 1
 		new_data = {
 			name = armor_id,
@@ -11121,9 +11067,9 @@ function BlackMarketGui:populate_armors(data)
 		new_data.skill_based = new_data.level == 0
 		new_data.equipped = bm_data.equipped
 		new_data.skill_name = new_data.level == 0 and "bm_menu_skill_locked_" .. new_data.name
-		new_data.bitmap_texture = guis_catalog .. "textures/pd2/blackmarket/icons/armors/" .. new_data.name
-		new_data.comparision_data = {}
+		new_data.bitmap_texture = managers.blackmarket:get_armor_icon(new_data.name)
 		new_data.lock_texture = self:get_lock_icon(new_data)
+		new_data.comparision_data = {}
 
 		if i ~= 1 and managers.blackmarket:got_new_drop("normal", "armors", armor_id) then
 			new_data.mini_icons = new_data.mini_icons or {}
@@ -11132,8 +11078,8 @@ function BlackMarketGui:populate_armors(data)
 				texture = "guis/textures/pd2/blackmarket/inv_newdrop",
 				name = "new_drop",
 				h = 16,
-				w = 16,
 				top = 0,
+				w = 16,
 				layer = 1,
 				stream = false,
 				right = 0
@@ -11162,12 +11108,12 @@ function BlackMarketGui:populate_armors(data)
 	for i = 1, max_armors do
 		if not data[i] then
 			new_data = {
-				name = "empty",
 				name_localized = "",
+				name = "empty",
 				category = "armors",
-				slot = i,
+				equipped = false,
 				unlocked = true,
-				equipped = false
+				slot = i
 			}
 			data[i] = new_data
 		end
@@ -11307,7 +11253,7 @@ function BlackMarketGui:populate_player_styles(data)
 	local sort_data = {}
 	local tweak, hide_unavailable = nil
 
-	for i, player_style in ipairs(tweak_data.blackmarket.player_style_list) do
+	for _, player_style in ipairs(tweak_data.blackmarket.player_style_list) do
 		tweak = tweak_data.blackmarket.player_styles[player_style]
 		hide_unavailable = managers.dlc:should_hide_unavailable(tweak.global_value)
 
@@ -11356,7 +11302,7 @@ function BlackMarketGui:populate_player_styles(data)
 	local mannequin_player_style = data.mannequin_player_style or managers.menu_scene and managers.menu_scene:get_player_style() or "none"
 	local default_player_style = managers.blackmarket:get_default_player_style()
 	sort_data = self:get_filtered_search_list(sort_data, tweak_data.blackmarket.player_styles, "player_style")
-	local new_data, allow_preview, allow_customize, player_style, player_style_data, guis_catalog, bundle_folder, customize_alpha = nil
+	local new_data, allow_preview, allow_customize, player_style, player_style_data, customize_alpha = nil
 	local equipped_player_style = data.equipped_player_style or managers.blackmarket:equipped_player_style()
 	local max_items = self:calc_max_items(#sort_data, data.override_slots)
 
@@ -11371,13 +11317,6 @@ function BlackMarketGui:populate_player_styles(data)
 		if player_style then
 			allow_preview = true
 			player_style_data = tweak_data.blackmarket.player_styles[player_style]
-			guis_catalog = "guis/"
-			bundle_folder = player_style_data.texture_bundle_folder
-
-			if bundle_folder then
-				guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-			end
-
 			new_data.name = player_style
 			new_data.name_localized = managers.localization:text(player_style_data.name_id)
 			new_data.global_value = player_style_data.global_value or "normal"
@@ -11387,17 +11326,18 @@ function BlackMarketGui:populate_player_styles(data)
 			allow_customize = not data.customize_equipped_only or new_data.equipped
 
 			if player_style ~= default_player_style then
-				new_data.bitmap_texture = guis_catalog .. "textures/pd2/blackmarket/icons/player_styles/" .. player_style
+				new_data.bitmap_texture = managers.blackmarket:get_player_style_icon(player_style)
 			else
 				new_data.button_text = managers.localization:to_upper_text("menu_default")
 			end
 
-			local is_dlc_locked = tweak_data.lootdrop.global_values[new_data.global_value] and tweak_data.lootdrop.global_values[new_data.global_value].dlc and not managers.dlc:is_dlc_unlocked(new_data.global_value)
+			local global_value = tweak_data.lootdrop.global_values[new_data.global_value]
+			local is_dlc_locked = global_value and global_value.dlc and not managers.dlc:is_dlc_unlocked(new_data.global_value)
 
 			if is_dlc_locked then
 				new_data.unlocked = false
 				new_data.lock_texture = self:get_lock_icon(new_data, "guis/textures/pd2/lock_dlc")
-				new_data.dlc_locked = tweak_data.lootdrop.global_values[new_data.global_value] and tweak_data.lootdrop.global_values[new_data.global_value].unlock_id or managers.dlc:get_unavailable_id(new_data.global_value)
+				new_data.dlc_locked = global_value and global_value.unlock_id or managers.dlc:get_unavailable_id(new_data.global_value)
 			elseif not new_data.unlocked then
 				new_data.lock_texture = "guis/textures/pd2/skilltree/padlock"
 
@@ -11448,9 +11388,9 @@ function BlackMarketGui:populate_player_styles(data)
 					texture = "guis/dlcs/trd/textures/pd2/blackmarket/paintbrush_icon",
 					top = 5,
 					h = 16,
-					layer = 1,
-					w = 16,
 					blend_mode = "add",
+					w = 16,
+					layer = 1,
 					right = 5,
 					alpha = customize_alpha
 				})
@@ -11492,7 +11432,7 @@ function BlackMarketGui:populate_suit_variations(data)
 	local material_variations = player_style_data and player_style_data.material_variations or {}
 	local mannequin_suit_variation = managers.menu_scene and managers.menu_scene:get_suit_variation() or "default"
 	local equipped_suit_variation = data.suit_variation or managers.blackmarket:get_suit_variation(player_style)
-	local new_data, allow_preview, guis_catalog, bundle_folder, texture_path, suit_variation, suit_variation_data = nil
+	local new_data, allow_preview, texture_path, suit_variation, suit_variation_data = nil
 	local sort_data = managers.blackmarket:get_all_suit_variations(player_style)
 	local max_items = self:calc_max_items(#sort_data, data.override_slots)
 
@@ -11507,20 +11447,13 @@ function BlackMarketGui:populate_suit_variations(data)
 		if suit_variation then
 			allow_preview = true
 			suit_variation_data = material_variations[suit_variation]
-			guis_catalog = "guis/"
-			bundle_folder = suit_variation_data and suit_variation_data.texture_bundle_folder or player_style_data.texture_bundle_folder
-
-			if bundle_folder then
-				guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-			end
-
 			new_data.name = suit_variation
 			new_data.name_localized = suit_variation_data and managers.localization:text(suit_variation_data.name_id) or managers.localization:text("menu_default")
 			new_data.global_value = suit_variation_data and suit_variation_data.global_value or "normal"
 			new_data.unlocked = managers.blackmarket:suit_variation_unlocked(player_style, suit_variation)
 			new_data.equipped = equipped_suit_variation == suit_variation
 			new_data.lock_color = self:get_lock_color(new_data)
-			texture_path = guis_catalog .. "textures/pd2/blackmarket/icons/player_styles/" .. player_style
+			texture_path = managers.blackmarket:get_player_style_icon(player_style)
 
 			if suit_variation_data then
 				texture_path = texture_path .. "_" .. suit_variation or texture_path
@@ -11749,7 +11682,7 @@ function BlackMarketGui:populate_gloves(data)
 			new_data.lock_color = self:get_lock_color(new_data)
 
 			if glove_id ~= default_glove_id then
-				new_data.bitmap_texture = guis_catalog .. "textures/pd2/blackmarket/icons/gloves/" .. glove_id
+				new_data.bitmap_texture = managers.blackmarket:get_glove_icon(glove_id)
 			else
 				new_data.button_text = managers.localization:to_upper_text("menu_default")
 			end
@@ -12580,18 +12513,11 @@ function BlackMarketGui:populate_melee_weapons_new(data)
 	end
 
 	local index = 0
-	local guis_catalog, m_tweak_data, melee_weapon_id = nil
+	local m_tweak_data, melee_weapon_id = nil
 
 	for i, melee_weapon_data in ipairs(data.on_create_data) do
 		melee_weapon_id = melee_weapon_data[1]
 		m_tweak_data = tweak_data.blackmarket.melee_weapons[melee_weapon_id] or {}
-		guis_catalog = "guis/"
-		local bundle_folder = m_tweak_data.texture_bundle_folder
-
-		if bundle_folder then
-			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-		end
-
 		new_data = {
 			name = melee_weapon_id
 		}
@@ -12670,7 +12596,7 @@ function BlackMarketGui:populate_melee_weapons_new(data)
 			new_data.lock_color = self:get_lock_color(new_data)
 		end
 
-		new_data.bitmap_texture = guis_catalog .. "textures/pd2/blackmarket/icons/melee_weapons/" .. tostring(new_data.name)
+		new_data.bitmap_texture = managers.blackmarket:get_melee_weapon_icon(new_data.name)
 
 		if managers.blackmarket:got_new_drop("normal", "melee_weapons", melee_weapon_id) then
 			new_data.mini_icons = new_data.mini_icons or {}
@@ -13777,7 +13703,6 @@ end
 
 function BlackMarketGui:populate_buy_mask(data)
 	local new_data = {}
-	local guis_catalog = "guis/"
 	local mask_list = data.on_create_data
 	mask_list = self:get_filtered_search_list(mask_list, tweak_data.blackmarket.masks, "mask_id")
 	local num_prev_data = #data
@@ -13798,13 +13723,6 @@ function BlackMarketGui:populate_buy_mask(data)
 			guis_mask_id = mask_tweak.guis_id
 		end
 
-		guis_catalog = "guis/"
-		local bundle_folder = mask_tweak and mask_tweak.texture_bundle_folder
-
-		if bundle_folder then
-			guis_catalog = guis_catalog .. "dlcs/" .. tostring(bundle_folder) .. "/"
-		end
-
 		new_data = {
 			name = mask_list[i].mask_id,
 			name_localized = managers.localization:text(mask_tweak.name_id),
@@ -13818,7 +13736,7 @@ function BlackMarketGui:populate_buy_mask(data)
 		new_data.unlocked = managers.blackmarket:get_item_amount(new_data.global_value, "masks", new_data.name, true) or 0
 		new_data.equipped = false
 		new_data.num_backs = data.prev_node_data.num_backs + 1
-		new_data.bitmap_texture = guis_catalog .. "textures/pd2/blackmarket/icons/masks/" .. guis_mask_id
+		new_data.bitmap_texture = managers.blackmarket:get_mask_icon(guis_mask_id)
 		new_data.stream = true
 
 		if not new_data.global_value then

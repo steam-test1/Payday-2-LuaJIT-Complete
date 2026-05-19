@@ -1705,11 +1705,18 @@ end
 function WeaponFactoryManager:get_sound_switch(switch_group, factory_id, blueprint)
 	local factory = tweak_data.weapon.factory
 	local forbidden = self:_get_forbidden_parts(factory_id, blueprint)
+	local overrides = factory[factory_id] and factory[factory_id].override
 	local t = {}
 
 	for _, part_id in ipairs(blueprint) do
-		if not forbidden[part_id] and factory.parts[part_id].sound_switch and factory.parts[part_id].sound_switch[switch_group] and not table.contains(t, part_id) then
-			table.insert(t, part_id)
+		if not forbidden[part_id] then
+			local part = factory.parts[part_id]
+			local has_switch = part and part.sound_switch and part.sound_switch[switch_group]
+			has_switch = has_switch or overrides and overrides[part_id] and overrides[part_id].sound_switch and overrides[part_id].sound_switch[switch_group]
+
+			if has_switch and not table.contains(t, part_id) then
+				table.insert(t, part_id)
+			end
 		end
 	end
 
@@ -1733,7 +1740,10 @@ function WeaponFactoryManager:get_sound_switch(switch_group, factory_id, bluepri
 			end)
 		end
 
-		return factory.parts[t[1]].sound_switch[switch_group]
+		local part_id = t[1]
+		local part_override = overrides and overrides[part_id]
+
+		return part_override and part_override.sound_switch and part_override.sound_switch[switch_group] or factory.parts[part_id].sound_switch[switch_group]
 	end
 
 	return nil

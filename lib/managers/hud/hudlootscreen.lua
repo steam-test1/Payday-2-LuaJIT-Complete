@@ -686,11 +686,7 @@ function HUDLootScreen:make_lootdrop(lootdrop_data)
 		category = "mods"
 	end
 
-	local texture_loaded_clbk = callback(self, self, "texture_loaded_clbk", {
-		peer_id,
-		category == "textures" and true or false
-	})
-	local texture_path, rarity_path = nil
+	local texture_path, rarity_path, texture_color = nil
 
 	if category == "textures" then
 		texture_path = tweak_data.blackmarket.textures[item_id].texture
@@ -700,6 +696,8 @@ function HUDLootScreen:make_lootdrop(lootdrop_data)
 
 			return
 		end
+	elseif category == "materials" then
+		texture_path, texture_color = managers.blackmarket:get_mask_materials_icon(item_id)
 	elseif category == "cash" then
 		texture_path = "guis/textures/pd2/blackmarket/cash_drop"
 	elseif category == "xp" then
@@ -812,12 +810,18 @@ function HUDLootScreen:make_lootdrop(lootdrop_data)
 
 	Application:debug("Requesting Texture", texture_path, "PEER", peer_id)
 
+	local texture_loaded_clbk = callback(self, self, "texture_loaded_clbk", {
+		peer_id = peer_id,
+		category = category,
+		color = texture_color
+	})
+
 	if DB:has(Idstring("texture"), texture_path) then
 		TextureCache:request(texture_path, "NORMAL", texture_loaded_clbk, 100)
 	else
 		Application:error("[HUDLootScreen]", "Texture not in DB", texture_path, peer_id)
 		item_panel:rect({
-			color = Color.red
+			color = texture_color or Color.red
 		})
 	end
 
@@ -833,13 +837,15 @@ function HUDLootScreen:texture_loaded_clbk(params, texture_idstring)
 		return
 	end
 
-	local peer_id = params[1]
-	local is_pattern = params[2]
+	local peer_id = params.peer_id
+	local is_pattern = params.category and params.category == "textures" or false
+	local texture_color = params.color
 	local panel = self._peers_panel:child(peer_id_str(peer_id)):child("item")
 	local item = panel:bitmap({
 		blend_mode = "normal",
 		layer = 1,
-		texture = texture_idstring
+		texture = texture_idstring,
+		color = texture_color
 	})
 
 	TextureCache:unretrieve(texture_idstring)
@@ -855,8 +861,6 @@ function HUDLootScreen:texture_loaded_clbk(params, texture_idstring)
 	local panel_height = 100
 
 	if texture_width == 0 or texture_height == 0 or panel_width == 0 or panel_height == 0 then
-		Application:error("HUDLootScreen:texture_loaded_clbk():", texture_idstring)
-		Application:debug("HUDLootScreen:", "texture_width " .. texture_width, "texture_height " .. texture_height, "panel_width " .. panel_width, "panel_height " .. panel_height)
 		panel:remove(item)
 
 		local rect = panel:rect({
@@ -864,7 +868,7 @@ function HUDLootScreen:texture_loaded_clbk(params, texture_idstring)
 			w = 100,
 			h = 100,
 			rotation = 360,
-			color = Color.red
+			color = texture_color or Color.red
 		})
 
 		rect:set_center(panel:w() * 0.5, panel:h() * 0.5)
@@ -876,7 +880,6 @@ function HUDLootScreen:texture_loaded_clbk(params, texture_idstring)
 	local dw = texture_width / s
 	local dh = texture_height / s
 
-	Application:debug("Got texture: ", texture_idstring, peer_id)
 	item:set_size(math.round(dw * panel_width), math.round(dh * panel_height))
 	item:set_rotation(360)
 	item:set_center(panel:w() * 0.5, panel:h() * 0.5)
@@ -1006,17 +1009,19 @@ function HUDLootScreen:begin_flip_card(peer_id)
 	local card_panel = panel:child("card" .. peer_data.chosen_card_id)
 	local upcard = card_panel:child("upcard")
 
-	upcard:set_image(texture)
+	if alive(upcard) then
+		upcard:set_image(texture)
 
-	if coords then
-		local tl = Vector3(coords[1][1], coords[1][2], 0)
-		local tr = Vector3(coords[2][1], coords[2][2], 0)
-		local bl = Vector3(coords[3][1], coords[3][2], 0)
-		local br = Vector3(coords[4][1], coords[4][2], 0)
+		if coords then
+			local tl = Vector3(coords[1][1], coords[1][2], 0)
+			local tr = Vector3(coords[2][1], coords[2][2], 0)
+			local bl = Vector3(coords[3][1], coords[3][2], 0)
+			local br = Vector3(coords[4][1], coords[4][2], 0)
 
-		upcard:set_texture_coordinates(tl, tr, bl, br)
-	else
-		upcard:set_texture_rect(unpack(rect))
+			upcard:set_texture_coordinates(tl, tr, bl, br)
+		else
+			upcard:set_texture_rect(unpack(rect))
+		end
 	end
 
 	peer_data.chosen_card_id = nil

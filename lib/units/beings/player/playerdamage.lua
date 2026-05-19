@@ -703,18 +703,17 @@ function PlayerDamage:replenish()
 	managers.player:remove_copr_risen_cooldown()
 end
 
-function PlayerDamage:regenerate_armor(no_sound)
-	self:_regenerate_armor(no_sound)
-end
-
 function PlayerDamage:_regenerate_armor(no_sound)
-	if self._unit:sound() and not no_sound then
+	local max_armor = self:_max_armor()
+	local armor = not no_sound and self:get_real_armor()
+
+	if self._unit:sound() and armor and armor < max_armor then
 		self._unit:sound():play("shield_full_indicator")
 	end
 
 	self._regenerate_speed = nil
 
-	self:set_armor(self:_max_armor())
+	self:set_armor(max_armor)
 	self:_send_set_armor()
 
 	self._current_state = nil
@@ -760,7 +759,7 @@ function PlayerDamage:restore_armor(armor_restored)
 	self:set_armor(new_armor)
 	self:_send_set_armor()
 
-	if self._unit:sound() and new_armor ~= armor and new_armor == max_armor then
+	if self._unit:sound() and armor < new_armor and new_armor == max_armor then
 		self._unit:sound():play("shield_full_indicator")
 	end
 end
@@ -874,11 +873,11 @@ function PlayerDamage:got_messiah_charges()
 end
 
 function PlayerDamage:get_real_health()
-	return Application:digest_value(self._health, false)
+	return self._health and Application:digest_value(self._health, false)
 end
 
 function PlayerDamage:get_real_armor()
-	return Application:digest_value(self._armor, false)
+	return self._armor and Application:digest_value(self._armor, false)
 end
 
 function PlayerDamage:_check_update_max_health()

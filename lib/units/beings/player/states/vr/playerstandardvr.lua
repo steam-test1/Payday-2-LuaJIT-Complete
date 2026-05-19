@@ -1063,7 +1063,7 @@ function PlayerStandardVR:_check_action_primary_attack(t, input)
 			local weapon_hand_id = self._unit:hand():get_active_hand_id("weapon")
 
 			if self._equipped_unit then
-				if table.contains(self._equipped_unit:base():weapon_tweak_data().categories, "bow") then
+				if table.contains(self._equipped_unit:base():categories(), "bow") then
 					local bow_hand_id = self._unit:hand():get_active_hand_id("bow")
 
 					if not bow_hand_id or not self._unit:hand():current_hand_state(bow_hand_id):can_grip_string() then
@@ -1200,7 +1200,7 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 		end
 
 		local health_ratio = self._ext_damage:health_ratio()
-		local primary_category = weap_base:weapon_tweak_data().categories[1]
+		local primary_category = weap_base:categories()[1]
 		local damage_health_ratio = managers.player:get_damage_health_ratio(health_ratio, primary_category)
 
 		if damage_health_ratio > 0 then
@@ -1245,7 +1245,7 @@ function PlayerStandardVR:_check_fire_per_weapon(t, pressed, held, released, wea
 			end
 		end
 
-		local charging_weapon = weap_base:charging() and not table.contains(weap_base:weapon_tweak_data().categories, "bow")
+		local charging_weapon = weap_base:charging() and not table.contains(weap_base:categories(), "bow")
 
 		if not self._state_data.charging_weapon and charging_weapon then
 			self:_start_action_charging_weapon(t)

@@ -1004,6 +1004,10 @@ function ProjectileBase:_handle_hiding_and_destroying(destroy, destruction_delay
 	end
 end
 
+function ProjectileBase:_destruct_delay()
+	return nil
+end
+
 function ProjectileBase:_clbk_destroy()
 	self._destroy_clbk_id = nil
 

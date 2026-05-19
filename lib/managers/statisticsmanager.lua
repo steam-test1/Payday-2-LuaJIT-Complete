@@ -732,6 +732,10 @@ function StatisticsManager:publish_to_steam(session, success, completion)
 		type = "int",
 		value = session.misc.deploy_grenadecrate or 0
 	}
+	stats.gadget_used_spy_camera = {
+		type = "int",
+		value = session.misc.deploy_spycamera or 0
+	}
 
 	if completion then
 		local primary = managers.blackmarket:equipped_primary()

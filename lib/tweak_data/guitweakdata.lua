@@ -740,6 +740,7 @@ function GuiTweakData:init(tweak_data)
 		grenade_launcher = "wpn_special",
 		bow = "wpn_special",
 		crossbow = "wpn_special",
+		dartgun = "wpn_special",
 		minigun = "wpn_special",
 		saw = "wpn_special"
 	}

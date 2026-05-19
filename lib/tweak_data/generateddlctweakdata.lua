@@ -2880,6 +2880,12 @@ function DLCTweakData:init_generated()
 			amount = 1
 		}
 	}
+	self.unk_bundle = {
+		free = true,
+		content = {}
+	}
+	self.unk_bundle.content.loot_global_value = "unk"
+	self.unk_bundle.content.loot_drops = {}
 	self.wcc_bundle = {
 		dlc = "has_wcc",
 		content = {}

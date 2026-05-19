@@ -3152,6 +3152,51 @@ function BlackMarketTweakData:_init_melee_weapons(tweak_data)
 		},
 		menu_scene_params = anim_attack_snap_end
 	}
+	self.melee_weapons.bonk = {
+		info_id = "bm_melee_bonk_info",
+		texture_bundle_folder = "unk",
+		melee_damage_delay = 0.2,
+		type = "blunt",
+		third_unit = "units/pd2_dlc_unk/weapons/wpn_fps_mel_bonk/wpn_tps_mel_bonk",
+		repeat_expire_t = 0.7,
+		dlc = "unk",
+		anim_global_param = "melee_baseballbat",
+		name_id = "bm_melee_bonk",
+		unit = "units/pd2_dlc_unk/weapons/wpn_fps_mel_bonk/wpn_fps_mel_bonk",
+		expire_t = 1,
+		stats = {
+			remove_weapon_movement_penalty = true,
+			range = 175,
+			weapon_type = "blunt",
+			max_damage_effect = 1.125,
+			max_damage = 40,
+			charge_time = 3,
+			min_damage = 7,
+			min_damage_effect = 2.142,
+			concealment = 28
+		},
+		sounds = {
+			hit_body = "bonk_hit_body",
+			hit_air = "bonk_hit_air",
+			hit_gen = "bonk_hit_gen",
+			charge = "bonk_charge",
+			equip = "bonk_equip"
+		},
+		anim_attack_vars = {
+			"var1",
+			"var2",
+			"var3",
+			"var4"
+		},
+		align_objects = {
+			"a_weapon_right"
+		}
+	}
+	self.melee_weapons.bonk2 = deep_clone(self.melee_weapons.bonk)
+	self.melee_weapons.bonk2.name_id = "bm_melee_bonk2"
+	self.melee_weapons.bonk2.info_id = "bm_melee_bonk2_info"
+	self.melee_weapons.bonk2.unit = "units/pd2_dlc_unk/weapons/wpn_fps_mel_bonk2/wpn_fps_mel_bonk2"
+	self.melee_weapons.bonk2.third_unit = "units/pd2_dlc_unk/weapons/wpn_fps_mel_bonk2/wpn_tps_mel_bonk2"
 	local free_dlcs = tweak_data:free_dlc_list()
 
 	for _, data in pairs(self.melee_weapons) do
