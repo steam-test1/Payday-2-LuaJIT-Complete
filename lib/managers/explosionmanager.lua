@@ -2,7 +2,7 @@ ExplosionManager = ExplosionManager or class()
 
 local idstr_small_light_fire = Idstring("effects/particles/fire/small_light_fire")
 local idstr_explosion_std = Idstring("explosion_std")
-local empty_idstr = Idstring("")
+local empty_idstr = IDS_EMPTY
 local molotov_effect = "effects/payday2/particles/explosions/molotov_grenade"
 local tmp_vec3 = Vector3()
 

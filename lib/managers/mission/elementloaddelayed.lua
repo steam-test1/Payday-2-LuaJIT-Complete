@@ -16,9 +16,7 @@ function ElementLoadDelayed:on_executed(instigator)
 	end
 
 	if not Application:editor() then
-		for _, unit_id in ipairs(self._values.unit_ids) do
-			managers.worlddefinition:create_delayed_unit(unit_id)
-		end
+		managers.worlddefinition:create_delayed_unit(self._values.unit_ids)
 	end
 
 	ElementLoadDelayed.super.on_executed(self, instigator)

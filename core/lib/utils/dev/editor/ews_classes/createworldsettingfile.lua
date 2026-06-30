@@ -77,20 +77,14 @@ function CreateWorldSettingFile:on_create()
 end
 
 function CreateWorldSettingFile:_compile(path)
-	local t = {
-		preprocessor_definitions = "preprocessor_definitions",
+	Application:data_compile({
 		send_idstrings = false,
-		target_db_name = "all",
 		verbose = false,
-		platform = string.lower(SystemInfo:platform():s()),
-		source_root = managers.database:root_path() .. "/assets",
-		target_db_root = Application:base_path() .. "assets",
+		build_profile = Application:build_profile_path(),
 		source_files = {
 			managers.database:entry_path_with_properties(path)
 		}
-	}
-
-	Application:data_compile(t)
+	})
 	DB:reload()
 	managers.database:clear_all_cached_indices()
 end

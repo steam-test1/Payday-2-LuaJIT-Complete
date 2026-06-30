@@ -62,7 +62,7 @@ function Manager:update(t, dt)
 		self._suite:update(t, dt)
 
 		if self._suite:is_done() then
-			if SystemInfo:platform() == Idstring("WIN32") then
+			if IS_WIN32 then
 				self._reporter:begin_substep("shutdown")
 				CoreEngineAccess._quit()
 			else

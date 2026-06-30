@@ -3,7 +3,7 @@ VehicleManager = VehicleManager or class()
 function VehicleManager:init()
 	self._vehicles = {}
 	self._listener_holder = EventListenerHolder:new()
-	self._debug = SystemInfo:platform() == Idstring("WIN32") and Application:production_build()
+	self._debug = IS_PC and Application:production_build()
 	self._draw_enabled = false
 end
 
@@ -157,6 +157,7 @@ function VehicleManager:update_vehicles_data_to_peer(peer)
 				loot_index = loot_index + 1
 
 				local loot2 = {
+					carry_id = nil,
 					multiplier = 0
 				}
 
@@ -167,6 +168,7 @@ function VehicleManager:update_vehicles_data_to_peer(peer)
 				loot_index = loot_index + 1
 
 				local loot3 = {
+					carry_id = nil,
 					multiplier = 0
 				}
 

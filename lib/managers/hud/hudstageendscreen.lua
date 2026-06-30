@@ -1594,36 +1594,34 @@ function HUDStageEndScreen:stage_money_counter_init(t, dt)
 
 	self._is_fail_video = not is_success
 
-	if SystemInfo:platform() ~= Idstring("X360") then
-		local gui_width, gui_height = managers.gui_data:get_base_res()
+	local gui_width, gui_height = managers.gui_data:get_base_res()
 
-		if self._is_fail_video then
-			local variant = math.random(2)
-			local video = self._background_layer_full:video({
-				alpha = 0,
-				blend_mode = "add",
-				loop = false,
-				name = "money_video",
-				video = "movies/fail_stage" .. tostring(variant),
-				width = gui_width,
-				height = gui_height
-			})
+	if self._is_fail_video then
+		local variant = math.random(2)
+		local video = self._background_layer_full:video({
+			alpha = 0,
+			blend_mode = "add",
+			loop = false,
+			name = "money_video",
+			video = "movies/fail_stage" .. tostring(variant),
+			width = gui_width,
+			height = gui_height
+		})
 
-			video:animate(callback(self, self, "_wait_for_video"), nil)
-		else
-			local variant = 0
-			local video = self._background_layer_full:video({
-				alpha = 0,
-				blend_mode = "add",
-				loop = true,
-				name = "money_video",
-				video = "movies/money_count" .. tostring(variant),
-				width = gui_width,
-				height = gui_height
-			})
+		video:animate(callback(self, self, "_wait_for_video"), nil)
+	else
+		local variant = 0
+		local video = self._background_layer_full:video({
+			alpha = 0,
+			blend_mode = "add",
+			loop = true,
+			name = "money_video",
+			video = "movies/money_count" .. tostring(variant),
+			width = gui_width,
+			height = gui_height
+		})
 
-			video:animate(callback(self, self, "spawn_animation"), 1, false)
-		end
+		video:animate(callback(self, self, "spawn_animation"), 1, false)
 	end
 
 	self._money_panel = self._lp_forepanel:panel({

@@ -19,12 +19,6 @@ function CopSound:init(unit)
 	unit:base():post_init()
 end
 
-function CopSound:destroy(unit)
-	if alive(unit) and unit:base() then
-		unit:base():pre_destroy(unit)
-	end
-end
-
 function CopSound:set_voice_prefix(index)
 	local char_tweak = tweak_data.character[self._unit:base()._tweak_table]
 	local nr_variations = char_tweak.speech_prefix_count

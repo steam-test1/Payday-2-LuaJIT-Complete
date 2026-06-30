@@ -11,7 +11,7 @@ local IDS_1 = Idstring("1")
 local IDS_2 = Idstring("2")
 local IDS_3 = Idstring("3")
 local IDS_4 = Idstring("4")
-local is_win32 = SystemInfo:platform() == Idstring("WIN32")
+local is_win32 = IS_PC
 local NOT_WIN_32 = not is_win32
 local WIDTH_MULTIPLIER = NOT_WIN_32 and 0.68 or 0.71
 local BOX_GAP = 13.5
@@ -3033,36 +3033,42 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			w_move = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_move_weapon",
+				pc_btn = nil,
 				prio = managers.menu:is_pc_controller() and 5 or 1,
 				callback = callback(self, self, "pickup_crafted_item_callback")
 			},
 			w_place = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_place_weapon",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "place_crafted_item_callback")
 			},
 			w_swap = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_swap_weapon",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "place_crafted_item_callback")
 			},
 			m_move = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_move_mask",
+				pc_btn = nil,
 				prio = 5,
 				callback = callback(self, self, "pickup_crafted_item_callback")
 			},
 			m_place = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_place_mask",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "place_crafted_item_callback")
 			},
 			m_swap = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_swap_mask",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "place_crafted_item_callback")
 			},
@@ -3090,6 +3096,7 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			w_equip = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_equip_weapon",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "equip_weapon_callback")
 			},
@@ -3117,6 +3124,7 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			w_unequip = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_unequip_weapon",
+				pc_btn = nil,
 				prio = 1,
 				callback = function()
 					return
@@ -3125,18 +3133,21 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			ew_unlock = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_buy_weapon_slot",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "choose_weapon_slot_unlock_callback")
 			},
 			ew_buy = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_buy_new_weapon",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "choose_weapon_buy_callback")
 			},
 			bw_buy = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_buy_selected_weapon",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "buy_weapon_callback")
 			},
@@ -3157,6 +3168,7 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			bw_buy_dlc = {
 				btn = "BTN_A",
 				name = "bm_menu_buy_dlc",
+				pc_btn = nil,
 				prio = 1,
 				color = tweak_data.screen_colors.dlc_buy_color,
 				callback = callback(self, self, "show_buy_dlc_callback")
@@ -3171,12 +3183,14 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			mt_choose = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_choose",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "choose_mod_callback")
 			},
 			wm_buy = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_craft_mod",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "buy_mod_callback")
 			},
@@ -3225,6 +3239,7 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			wm_reticle_switch_menu = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_switch_reticle",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "open_reticle_switch_menu")
 			},
@@ -3245,30 +3260,35 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			wm_customize_gadget = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_customize_gadget",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "open_customize_gadget_menu")
 			},
 			wcs_equip = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_equip_weapon_cosmetic",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "equip_weapon_color_callback")
 			},
 			wcs_customize_color = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_customize_weapon_color",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "open_customize_weapon_color_menu")
 			},
 			wcc_equip = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_equip_weapon_cosmetic",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "equip_weapon_cosmetics_callback")
 			},
 			wcc_choose = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_choose_weapon_cosmetic",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "choose_weapon_cosmetics_callback")
 			},
@@ -3289,6 +3309,7 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			wcc_buy_equip_weapon = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_buy_new_weapon",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "buy_equip_weapon_cosmetics_callback")
 			},
@@ -3309,6 +3330,7 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			it_wcc_choose_equip = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_equip_weapon_cosmetic",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "choose_equip_weapon_cosmetics_callback")
 			},
@@ -3322,6 +3344,7 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			it_copen = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_open_container",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "start_open_tradable_container_callback")
 			},
@@ -3342,6 +3365,7 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			a_equip = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_equip_armor",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "equip_armor_callback")
 			},
@@ -3355,6 +3379,7 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			as_equip = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_equip_armor_skin",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "equip_armor_skin_callback")
 			},
@@ -3375,6 +3400,7 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			trd_equip = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_equip_player_style",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "equip_player_style_callback")
 			},
@@ -3395,6 +3421,7 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			trd_mod_equip = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_equip_suit_variation",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "equip_suit_variation_callback")
 			},
@@ -3408,6 +3435,7 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			hnd_equip = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_equip_gloves",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "equip_gloves_callback")
 			},
@@ -3421,6 +3449,7 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			m_equip = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_equip_mask",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "equip_mask_callback")
 			},
@@ -3455,18 +3484,21 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			em_gv = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_buy_new_mask",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "choose_mask_global_value_callback")
 			},
 			em_buy = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_buy_new_mask",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "choose_mask_buy_callback")
 			},
 			em_unlock = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_buy_mask_slot",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "choose_mask_slot_unlock_callback")
 			},
@@ -3480,24 +3512,28 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			mm_choose_textures = {
 				btn = "BTN_A",
 				name = "bm_menu_choose_pattern",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "choose_mask_mod_callback", "textures")
 			},
 			mm_choose_materials = {
 				btn = "BTN_A",
 				name = "bm_menu_lic_choose_material",
+				pc_btn = nil,
 				prio = 2,
 				callback = callback(self, self, "choose_mask_mod_callback", "materials")
 			},
 			mm_choose_colors = {
 				btn = "BTN_A",
 				name = "bm_menu_lic_choose_color",
+				pc_btn = nil,
 				prio = 3,
 				callback = callback(self, self, "choose_mask_mod_callback", "colors")
 			},
 			mm_choose = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_choose_mask_mod",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "choose_mask_type_callback")
 			},
@@ -3518,6 +3554,7 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			mp_choose = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_choose_mask_mod",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "choose_mask_part_callback")
 			},
@@ -3538,24 +3575,28 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			mp_choose_first = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_lic_choose_color_a",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "choose_mask_color_a_callback")
 			},
 			mp_choose_second = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_lic_choose_color_b",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "choose_mask_color_b_callback")
 			},
 			mp_choose_third = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_lic_choose_color_c",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "choose_mask_color_c_callback")
 			},
 			bm_buy = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_buy_selected_mask",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "buy_mask_callback")
 			},
@@ -3576,18 +3617,21 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			c_equip = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_set_preferred",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "set_preferred_character_callback")
 			},
 			c_swap_slots = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_swap_preferred_slots",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "swap_preferred_character_to_slot_callback")
 			},
 			c_equip_to_slot = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_set_preferred_to_slot",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "set_preferred_character_to_slot_callback")
 			},
@@ -3601,18 +3645,21 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			lo_w_equip = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_equip_weapon",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "equip_weapon_callback")
 			},
 			lo_d_equip = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_equip_deployable",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "lo_equip_deployable_callback")
 			},
 			lo_d_equip_primary = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_equip_primary_deployable",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "lo_equip_deployable_callback")
 			},
@@ -3647,6 +3694,7 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			lo_mw_equip = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_equip_melee_weapon",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "lo_equip_melee_weapon_callback")
 			},
@@ -3674,6 +3722,7 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			lo_g_equip = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_equip_grenade",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "lo_equip_grenade_callback")
 			},
@@ -3687,6 +3736,7 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			custom_select = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_select",
+				pc_btn = nil,
 				prio = 1,
 				callback = function()
 					return
@@ -3695,6 +3745,7 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			custom_unselect = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_unselect",
+				pc_btn = nil,
 				prio = 1,
 				callback = function()
 					return
@@ -3703,6 +3754,7 @@ function BlackMarketGui:_setup(is_start_page, component_data)
 			ci_unlock = {
 				btn = "BTN_A",
 				name = "bm_menu_btn_unlock_crew_item",
+				pc_btn = nil,
 				prio = 1,
 				callback = callback(self, self, "buy_crew_item_callback")
 			}
@@ -6418,6 +6470,7 @@ function BlackMarketGui:show_stats()
 					end
 
 					local color_range_min = {
+						color = nil,
 						start = 0,
 						stop = utf8.len(total_min_text)
 					}
@@ -6443,6 +6496,8 @@ function BlackMarketGui:show_stats()
 					end
 
 					local color_range_max = {
+						color = nil,
+						stop = nil,
 						start = color_range_min.stop + 1
 					}
 
@@ -6469,6 +6524,7 @@ function BlackMarketGui:show_stats()
 					end
 
 					local color_range = {
+						color = nil,
 						start = 0,
 						stop = utf8.len(total_text)
 					}
@@ -9737,6 +9793,10 @@ function BlackMarketGui:move_up()
 		return
 	end
 
+	if self._searchbox and self._searchbox:input_focus() then
+		return
+	end
+
 	self:move(0, -1)
 end
 
@@ -9750,6 +9810,10 @@ function BlackMarketGui:move_down()
 	end
 
 	if alive(self._context_panel) then
+		return
+	end
+
+	if self._searchbox and self._searchbox:input_focus() then
 		return
 	end
 
@@ -9769,6 +9833,10 @@ function BlackMarketGui:move_left()
 		return
 	end
 
+	if self._searchbox and self._searchbox:input_focus() then
+		return
+	end
+
 	self:move(-1, 0)
 end
 
@@ -9782,6 +9850,10 @@ function BlackMarketGui:move_right()
 	end
 
 	if alive(self._context_panel) then
+		return
+	end
+
+	if self._searchbox and self._searchbox:input_focus() then
 		return
 	end
 
@@ -11321,7 +11393,7 @@ function BlackMarketGui:populate_armor_skins(data)
 	local inventory_tradable = managers.blackmarket:get_inventory_tradable()
 
 	do
-		local is_steam = SystemInfo:distribution() == Idstring("STEAM")
+		local is_steam = IS_STEAM
 
 		for skin_id, skin_data in pairs(tweak_data.economy.armor_skins) do
 			if (is_steam or not skin_data.steam_economy) and skin_data.sorted == nil or skin_data.sorted then
@@ -13874,9 +13946,13 @@ end
 
 function BlackMarketGui:on_search_item(search_string)
 	if self._data then
+		local old_search = self._data.search_string
+
 		self._data.search_string = search_string
 
-		self:reload()
+		if not old_search or old_search ~= search_string then
+			self:reload()
+		end
 	end
 end
 
@@ -14777,7 +14853,7 @@ function BlackMarketGui:choose_weapon_mods_callback(data)
 		local bmm = managers.blackmarket
 		local is_tam_f = bmm.is_weapon_skin_tam
 		local all_skins_td = tweak_data.blackmarket.weapon_skins
-		local is_steam = SystemInfo:distribution() == Idstring("STEAM")
+		local is_steam = IS_STEAM
 		local cosmetic_td
 
 		for id, data in pairs(all_cosmetics) do
@@ -17589,6 +17665,7 @@ function BlackMarketGui:lo_unequip_deployable_callback(data)
 		}
 
 		managers.blackmarket:equip_deployable({
+			name = nil,
 			target_slot = 2
 		})
 		managers.blackmarket:equip_deployable(secondary_data)

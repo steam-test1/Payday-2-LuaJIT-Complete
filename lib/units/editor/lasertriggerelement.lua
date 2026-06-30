@@ -443,6 +443,25 @@ function LaserTriggerUnitElement:_move_connection_down()
 	self:_on_clicked_connections_box()
 end
 
+function LaserTriggerUnitElement:_delete_connection()
+	print("LaserTriggerUnitElement:_delete_connection()")
+
+	if not self._selected_connection then
+		return
+	end
+
+	local selected_index = self._connections_box:selected_index()
+
+	if selected_index then
+		table.remove(self._hed.connections, selected_index + 1)
+		self:_fill_connections_box()
+
+		if self._selected_connection and self._selected_connection == selected_index then
+			self._selected_connection = nil
+		end
+	end
+end
+
 function LaserTriggerUnitElement:set_element_data(params, ...)
 	LaserTriggerUnitElement.super.set_element_data(self, params, ...)
 
@@ -497,10 +516,12 @@ function LaserTriggerUnitElement:_build_panel(panel, panel_sizer)
 
 	local toolbar = EWS:ToolBar(panel, "", "TB_FLAT,TB_NODIVIDER,TB_VERTICAL")
 
-	toolbar:add_tool("MOVE_UP", "Move up", CoreEws.image_path("world_editor\\unit_by_name_list.png"), nil)
+	toolbar:add_tool("MOVE_UP", "Move up", CoreEws.image_path("toolbar\\up_16x16.png"), nil)
 	toolbar:connect("MOVE_UP", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "_move_connection_up"), nil)
-	toolbar:add_tool("MOVE_DOWN", "Move down", CoreEws.image_path("toolbar\\delete_16x16.png"), nil)
+	toolbar:add_tool("MOVE_DOWN", "Move down", CoreEws.image_path("toolbar\\down_16x16.png"), nil)
 	toolbar:connect("MOVE_DOWN", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "_move_connection_down"), nil)
+	toolbar:add_tool("DELETE_SELECTED", "Remove selected connection", CoreEws.image_path("toolbar\\delete_16x16.png"), nil)
+	toolbar:connect("DELETE_SELECTED", "EVT_COMMAND_MENU_SELECTED", callback(self, self, "_delete_connection"), nil)
 	toolbar:realize()
 	connections_sizer:add(toolbar, 0, 1, "EXPAND,LEFT,ALIGN_RIGHT")
 

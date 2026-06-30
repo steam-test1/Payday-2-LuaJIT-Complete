@@ -12,23 +12,16 @@ function LocalizationManager:init()
 	self:set_default_macro("NL", "\n")
 	self:set_default_macro("EMPTY", "")
 
-	local platform_id = SystemInfo:platform()
-	local distribution_id = SystemInfo:distribution()
-
-	if platform_id == Idstring("X360") then
+	if IS_XB1 then
 		self._platform = "X360"
-	elseif platform_id == Idstring("PS3") then
-		self._platform = "PS3"
-	elseif platform_id == Idstring("XB1") then
-		self._platform = "X360"
-	elseif platform_id == Idstring("PS4") then
+	elseif IS_PS4 then
 		self._platform = "PS3"
 	else
 		self._platform = "WIN32"
 
-		if distribution_id == Idstring("STEAM") then
+		if IS_STEAM then
 			self._distribution = "steam"
-		elseif distribution_id == Idstring("EPIC") then
+		elseif IS_EPIC then
 			self._distribution = "epic"
 		end
 	end

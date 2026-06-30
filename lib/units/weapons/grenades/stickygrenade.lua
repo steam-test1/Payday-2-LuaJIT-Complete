@@ -605,8 +605,3 @@ function StickyGrenade:pre_destroy(unit)
 		ArrowBase._arrow_units[self._owner_peer_id][self._unit:key()] = nil
 	end
 end
-
-function StickyGrenade:destroy(unit)
-	self:pre_destroy(unit)
-	StickyGrenade.super.destroy(self, unit)
-end

@@ -1,19 +1,8 @@
 BaseNetworkSession = BaseNetworkSession or class()
 BaseNetworkSession.TIMEOUT_CHK_INTERVAL = 5
-
-if SystemInfo:platform() == Idstring("X360") then
-	BaseNetworkSession.CONNECTION_TIMEOUT = 15
-elseif SystemInfo:platform() == Idstring("PS4") then
-	BaseNetworkSession.CONNECTION_TIMEOUT = 10
-elseif SystemInfo:platform() == Idstring("XB1") then
-	BaseNetworkSession.CONNECTION_TIMEOUT = 10
-else
-	BaseNetworkSession.CONNECTION_TIMEOUT = 10
-end
-
-BaseNetworkSession.LOADING_CONNECTION_TIMEOUT = SystemInfo:platform() == Idstring("WIN32") and 20 or 20
+BaseNetworkSession.CONNECTION_TIMEOUT = 30
+BaseNetworkSession.LOADING_CONNECTION_TIMEOUT = 60
 BaseNetworkSession._LOAD_WAIT_TIME = 3
-BaseNetworkSession._WINDISTRIB_P2P_SEND_INTERVAL = 1
 
 function BaseNetworkSession:init()
 	print("[BaseNetworkSession:init]")
@@ -38,7 +27,7 @@ end
 function BaseNetworkSession:create_local_peer(load_outfit)
 	local my_name = managers.network.matchmake:username()
 	local my_user_id = managers.network.matchmake:userid()
-	local my_account_type_str = NetworkPeer:account_type_str_from_type(SystemInfo:distribution())
+	local my_account_type_str = NetworkPeer:account_type_str_from_type(Distribution:type())
 	local my_account_id = managers.network.account:player_id()
 
 	self._local_peer = NetworkPeer:new(my_name, Network:self(SystemInfo:matchmaking_protocol()), 0, false, false, false, managers.blackmarket:get_preferred_character(), my_user_id, my_account_type_str, my_account_id)
@@ -254,7 +243,7 @@ function BaseNetworkSession:add_peer(name, rpc, in_lobby, loading, synched, id, 
 
 	peer:set_xuid(xuid)
 
-	if SystemInfo:platform() == Idstring("X360") or self:is_host() then
+	if self:is_host() then
 		peer:set_xnaddr(xnaddr)
 	end
 
@@ -417,14 +406,14 @@ function BaseNetworkSession:_on_peer_removed(peer, peer_id, reason)
 
 	peer:unit_delete()
 
-	local peer_ident = SystemInfo:platform() == Idstring("WIN32") and peer:user_id() or peer:name()
+	local peer_ident = IS_PC and peer:user_id() or peer:name()
 
 	if Network:is_server() then
 		self:check_start_game_intro()
 	end
 
 	if Network:multiplayer() then
-		if SystemInfo:platform() == Idstring("X360") or SystemInfo:platform() == Idstring("XB1") or SystemInfo:platform() == Idstring("PS4") then
+		if IS_XB1 or IS_PS4 then
 			managers.network.matchmake:on_peer_removed(peer)
 		end
 
@@ -567,7 +556,7 @@ end
 function BaseNetworkSession:on_peer_kicked(peer, peer_id, message_id)
 	if peer ~= self._local_peer then
 		if message_id == 0 or message_id == 6 then
-			local ident = self._ids_WIN32 == SystemInfo:platform() and peer:user_id() or peer:name()
+			local ident = IS_PC and peer:user_id() or peer:name()
 
 			self._kicked_list[ident] = true
 		end
@@ -648,7 +637,6 @@ function BaseNetworkSession:update()
 	end
 
 	self:upd_trash_connections(wall_time)
-	self:send_windistrib_p2p_msgs(wall_time)
 end
 
 function BaseNetworkSession:end_update()
@@ -982,12 +970,8 @@ function BaseNetworkSession:on_load_complete(simulation)
 		end
 	end
 
-	if not setup.IS_START_MENU then
-		if SystemInfo:platform() == Idstring("PS3") then
-			PSN:set_online_callback(callback(self, self, "ps3_disconnect"))
-		elseif SystemInfo:platform() == Idstring("PS4") then
-			PSN:set_online_callback(callback(self, self, "ps4_disconnect"))
-		end
+	if not setup.IS_START_MENU and IS_PS4 then
+		PSN:set_online_callback(callback(self, self, "ps4_disconnect"))
 	end
 end
 
@@ -1051,43 +1035,8 @@ function BaseNetworkSession:ps3_disconnect(connected)
 	end
 end
 
-function BaseNetworkSession:on_windistrib_p2p_ping(sender_rpc)
-	local user_id = sender_rpc:ip_at_index(0)
-	local peer = self:peer_by_user_id(user_id)
-
-	if not peer then
-		print("[BaseNetworkSession:on_windistrib_p2p_ping] unknown peer", user_id)
-
-		return
-	end
-
-	if self._server_protocol ~= "TCP_IP" then
-		return
-	end
-
-	local final_rpc = self:resolve_new_peer_rpc(peer)
-
-	if not final_rpc then
-		return
-	end
-
-	if peer:rpc() and final_rpc:ip_at_index(0) == peer:rpc():ip_at_index(0) and final_rpc:protocol_at_index(0) == peer:rpc():protocol_at_index(0) then
-		local sender_ip = Network:get_ip_address_from_user_id(user_id)
-
-		print("[BaseNetworkSession:on_windistrib_p2p_ping] already had IP", peer:rpc():ip_at_index(0), peer:rpc():protocol_at_index(0))
-
-		return
-	end
-
-	peer:set_rpc(final_rpc)
-	Network:add_co_client(final_rpc)
-	self:remove_connection_from_trash(final_rpc)
-	self:remove_connection_from_soft_remove_peers(final_rpc)
-	self:chk_send_connection_established(nil, user_id)
-end
-
 function BaseNetworkSession:chk_send_connection_established(name, user_id, peer)
-	if SystemInfo:platform() == Idstring("PS3") or SystemInfo:platform() == Idstring("PS4") then
+	if IS_PS4 then
 		peer = self:peer_by_name(name)
 
 		if not peer then
@@ -1122,7 +1071,7 @@ function BaseNetworkSession:chk_send_connection_established(name, user_id, peer)
 		Network:add_co_client(rpc)
 		self:remove_connection_from_trash(rpc)
 		self:remove_connection_from_soft_remove_peers(rpc)
-	elseif SystemInfo:platform() == Idstring("XB1") then
+	elseif IS_XB1 then
 		local xnaddr = managers.network.matchmake:internal_address(peer:xuid())
 
 		if not xnaddr then
@@ -1168,48 +1117,8 @@ function BaseNetworkSession:chk_send_connection_established(name, user_id, peer)
 	end
 end
 
-function BaseNetworkSession:send_windistrib_p2p_msgs(wall_t)
-	if SystemInfo:platform() ~= self._ids_WIN32 then
-		return
-	end
-
-	for peer_id, peer in pairs(self._peers) do
-		if peer ~= self._server_peer and (not peer:next_windistrib_p2p_send_t() or wall_t > peer:next_windistrib_p2p_send_t()) then
-			peer:rpc():windistrib_p2p_ping()
-			peer:set_next_windistrib_p2p_send_t(wall_t + self._WINDISTRIB_P2P_SEND_INTERVAL)
-		end
-	end
-end
-
 function BaseNetworkSession:resolve_new_peer_rpc(new_peer, incomming_rpc)
-	if SystemInfo:platform() ~= self._ids_WIN32 then
-		return incomming_rpc
-	end
-
-	local new_peer_ip_address = Network:get_ip_address_from_user_id(new_peer:user_id())
-
-	print("new_peer_ip_address", new_peer_ip_address)
-
-	if new_peer_ip_address then
-		local new_peer_ip_address_split = string.split(new_peer_ip_address, ":")
-		local new_peer_ip = new_peer_ip_address_split[1]
-		local new_peer_port = new_peer_ip_address_split[2]
-		local connect_port = new_peer_port
-
-		print("new_peer_ip", new_peer_ip, "new_peer_port", new_peer_port)
-
-		if string.begins(new_peer_ip, "192.168.") then
-			print("using internal port", NetworkManager.DEFAULT_PORT)
-
-			connect_port = NetworkManager.DEFAULT_PORT
-		end
-
-		return Network:handshake(new_peer_ip, connect_port, "TCP_IP")
-	else
-		Application:error("[BaseNetworkSession:resolve_new_peer_rpc] could not resolve IP address!!!")
-
-		return incomming_rpc
-	end
+	return incomming_rpc
 end
 
 function BaseNetworkSession:are_peers_done_streaming()
@@ -1714,17 +1623,21 @@ function BaseNetworkSession:on_statistics_recieved(peer_id, peer_kills, peer_spe
 	local total_specials_kills = 0
 	local total_head_shots = 0
 	local best_killer = {
+		peer_id = nil,
 		score = 0
 	}
 	local best_special_killer = {
+		peer_id = nil,
 		score = 0
 	}
 	local best_accuracy = {
+		peer_id = nil,
 		score = 0
 	}
 	local group_accuracy = 0
 	local group_downs = 0
 	local most_downs = {
+		peer_id = nil,
 		score = 0
 	}
 

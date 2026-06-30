@@ -452,7 +452,7 @@ function SkinEditor:get_texture_list(skin, path)
 	local file_list = SystemFS:list(path, false)
 
 	local function valid_ext(filename)
-		local dot_index = string.find(filename, ".[^.]*$")
+		local dot_index = string.find(filename, "%.[^%.]*$")
 
 		if dot_index == 1 then
 			return false

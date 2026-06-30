@@ -241,7 +241,7 @@ function NewRaycastWeaponBase:_cosmetics_applied(clbk)
 	end
 end
 
-local material_type_ids = Idstring("material")
+local material_type_ids = IDS_MATERIAL
 
 function NewRaycastWeaponBase:apply_material_parameters()
 	local parts_tweak = tweak_data.weapon.factory.parts
@@ -289,7 +289,7 @@ function NewRaycastWeaponBase:apply_texture_switches()
 
 				if texture_switch and part_data then
 					unit = part_data.unit
-					material_config = unit:get_objects_by_type(Idstring("material"))
+					material_config = unit:get_objects_by_type(IDS_MATERIAL)
 
 					local ids = {}
 

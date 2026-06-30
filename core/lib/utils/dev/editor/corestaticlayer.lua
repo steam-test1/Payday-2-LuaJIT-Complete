@@ -530,7 +530,6 @@ function StaticLayer:build_panel(notebook, settings)
 	self._ews_panel = EWS:ScrolledWindow(notebook, "", "VSCROLL")
 
 	self._ews_panel:set_scroll_rate(Vector3(0, 20, 0))
-	self._ews_panel:set_virtual_size_hints(Vector3(0, 0, 0), Vector3(1, -1, -1))
 
 	self._main_sizer = EWS:BoxSizer("VERTICAL")
 

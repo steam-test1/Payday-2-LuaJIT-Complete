@@ -59,7 +59,7 @@ function ElementInventoryDummy:assemble_weapon(factory_id, blueprint, position, 
 
 	local unit_name = tweak_data.weapon.factory[factory_id].unit
 
-	managers.dyn_resource:load(Idstring("unit"), Idstring(unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
+	managers.dyn_resource:load(IDS_UNIT, Idstring(unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 
 	self._weapon_unit = World:spawn_unit(Idstring(unit_name), position, rotation)
 	self._parts, self._blueprint = managers.weapon_factory:assemble_from_blueprint(factory_id, self._weapon_unit, blueprint, true, true, callback(self, self, "_assemble_completed"))
@@ -103,7 +103,7 @@ function ElementInventoryDummy:assemble_mask(mask_id, blueprint, position, rotat
 
 	local mask_unit_name = managers.blackmarket:mask_unit_name_by_mask_id(mask_id)
 
-	managers.dyn_resource:load(Idstring("unit"), Idstring(mask_unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
+	managers.dyn_resource:load(IDS_UNIT, Idstring(mask_unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 
 	self._mask_unit = World:spawn_unit(Idstring(mask_unit_name), position, rotation)
 
@@ -131,7 +131,7 @@ function ElementInventoryDummy:_destroy_weapon()
 
 		self._weapon_unit:base():set_slot(self._weapon_unit, 0)
 		World:delete_unit(self._weapon_unit)
-		managers.dyn_resource:unload(Idstring("unit"), name, DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
+		managers.dyn_resource:unload(IDS_UNIT, name, DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 	end
 end
 
@@ -145,6 +145,6 @@ function ElementInventoryDummy:_destroy_mask()
 		local name = self._mask_unit:name()
 
 		World:delete_unit(self._mask_unit)
-		managers.dyn_resource:unload(Idstring("unit"), name, DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
+		managers.dyn_resource:unload(IDS_UNIT, name, DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 	end
 end

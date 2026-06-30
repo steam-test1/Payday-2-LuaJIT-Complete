@@ -382,7 +382,7 @@ function SideJobEventManager:load(cache, version)
 		state.version = 3
 
 		self:load(cache, 3)
-	elseif SystemInfo:distribution() == Idstring("STEAM") and state and state.version == 1 and self.save_version == 3 then
+	elseif IS_STEAM and state and state.version == 1 and self.save_version == 3 then
 		for idx, saved_challenge in ipairs(state.challenges or {}) do
 			local challenge = self:get_challenge(saved_challenge.id)
 

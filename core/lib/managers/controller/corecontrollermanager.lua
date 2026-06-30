@@ -20,12 +20,14 @@ function ControllerManager:init(path, default_settings_path)
 	ControllerManager.super.init(self, "controller")
 
 	if not Global.controller_manager then
-		Global.controller_manager = {}
+		Global.controller_manager = {
+			default_controller_connected = nil
+		}
 	end
 
 	self._skip_controller_map = {}
 
-	if SystemInfo:platform() ~= Idstring("WIN32") then
+	if IS_CONSOLE then
 		self._skip_controller_map.win32_keyboard = true
 		self._skip_controller_map.win32_mouse = true
 	end
@@ -44,21 +46,18 @@ function ControllerManager:init(path, default_settings_path)
 	self._next_controller_wrapper_id = 1
 	self._supported_wrapper_types = {}
 
-	if SystemInfo:platform() == Idstring("WIN32") then
+	if IS_PC then
 		self._supported_wrapper_types[CoreControllerWrapperPC.ControllerWrapperPC.TYPE] = CoreControllerWrapperPC.ControllerWrapperPC
-		self._supported_wrapper_types[CoreControllerWrapperXbox360.ControllerWrapperXbox360.TYPE] = CoreControllerWrapperXbox360.ControllerWrapperXbox360
+		self._supported_wrapper_types[CoreControllerWrapperXB1.ControllerWrapperXB1.TYPE] = CoreControllerWrapperXB1.ControllerWrapperXB1
+		self._supported_wrapper_types[CoreControllerWrapperPS4.ControllerWrapperPS4.TYPE] = CoreControllerWrapperPS4.ControllerWrapperPS4
 
 		if _G.IS_VR then
 			self._supported_wrapper_types[CoreControllerWrapperVR.ControllerWrapperVR.TYPE] = CoreControllerWrapperVR.ControllerWrapperVR
 		end
-	elseif SystemInfo:platform() == Idstring("PS3") then
-		self._supported_wrapper_types[CoreControllerWrapperPS3.ControllerWrapperPS3.TYPE] = CoreControllerWrapperPS3.ControllerWrapperPS3
-	elseif SystemInfo:platform() == Idstring("PS4") then
+	elseif IS_PS4 then
 		self._supported_wrapper_types[CoreControllerWrapperPS4.ControllerWrapperPS4.TYPE] = CoreControllerWrapperPS4.ControllerWrapperPS4
-	elseif SystemInfo:platform() == Idstring("XB1") then
+	elseif IS_XB1 then
 		self._supported_wrapper_types[CoreControllerWrapperXB1.ControllerWrapperXB1.TYPE] = CoreControllerWrapperXB1.ControllerWrapperXB1
-	elseif SystemInfo:platform() == Idstring("X360") then
-		self._supported_wrapper_types[CoreControllerWrapperXbox360.ControllerWrapperXbox360.TYPE] = CoreControllerWrapperXbox360.ControllerWrapperXbox360
 	end
 
 	self._supported_controller_type_map = {}
@@ -98,7 +97,7 @@ function ControllerManager:setup_default_controller_list()
 
 			table.insert(self._default_controller_list, controller)
 
-			if not self._controller_device_id and controller:type() == "xb1_controller" and SystemInfo:platform() == Idstring("XB1") then
+			if not self._controller_device_id and controller:type() == "xb1_controller" and IS_XB1 then
 				self._controller_device_id = controller:device_id()
 			end
 		end
@@ -152,7 +151,7 @@ function ControllerManager:replace_active_controller(replacement_ctrl_index, rep
 end
 
 function ControllerManager:check_connect_change()
-	if SystemInfo:platform() == Idstring("WIN32") then
+	if IS_PC then
 		if self._default_controller_list then
 			local connected
 
@@ -170,7 +169,7 @@ function ControllerManager:check_connect_change()
 				Global.controller_manager.default_controller_connected = connected
 			end
 		end
-	elseif SystemInfo:platform() == Idstring("PS4") then
+	elseif IS_PS4 then
 		if self._default_controller_list then
 			local connected = true
 
@@ -189,7 +188,7 @@ function ControllerManager:check_connect_change()
 				Global.controller_manager.default_controller_connected = connected
 			end
 		end
-	elseif SystemInfo:platform() == Idstring("XB1") and self._default_controller_list then
+	elseif IS_XB1 and self._default_controller_list then
 		local connected = true
 
 		for _, controller in ipairs(self._default_controller_list) do
@@ -712,8 +711,10 @@ function ControllerManager:verify_parsed_controller_setup_map(parsed_controller_
 	local result = true
 	local connection_map = {}
 	local last_wrapper_type
+	local wrapper_types = table.map_keys(parsed_controller_setup_map)
 
-	for wrapper_type, setup in pairs(parsed_controller_setup_map) do
+	for _, wrapper_type in ipairs(wrapper_types) do
+		local setup = parsed_controller_setup_map[wrapper_type]
 		local current_connection_map = setup:get_connection_map()
 
 		for connection_name, connection in pairs(current_connection_map) do

@@ -855,7 +855,7 @@ function ProjectileBase:destroy(...)
 	self:_warning_fx_vfx_remove()
 end
 
-local ids_unit = Idstring("unit")
+local ids_unit = IDS_UNIT
 
 function ProjectileBase.throw_projectile(projectile_type, pos, dir, owner_peer_id)
 	if not ProjectileBase.check_time_cheat(projectile_type, owner_peer_id) then

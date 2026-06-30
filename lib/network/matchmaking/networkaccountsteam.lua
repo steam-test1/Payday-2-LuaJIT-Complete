@@ -30,11 +30,9 @@ function NetworkAccountSTEAM:init()
 	Steam:error_listener(NetworkAccountSTEAM._on_disconnected, NetworkAccountSTEAM._on_ipc_fail, NetworkAccountSTEAM._on_connect_fail)
 	Steam:overlay_listener(callback(self, self, "_on_open_overlay"), callback(self, self, "_on_close_overlay"))
 
-	if SystemInfo:matchmaking() == Idstring("MM_EPIC") and Steam.set_connect_string then
-		self.connect_string = "-join_game"
+	self.connect_string = "-join_game"
 
-		Steam:set_connect_string(self.connect_string)
-	end
+	Distribution:set_connect_string(self.connect_string)
 
 	self._gamepad_text_listeners = {}
 
@@ -413,7 +411,7 @@ function NetworkAccountSTEAM:username_by_id(id)
 end
 
 function NetworkAccountSTEAM:player_id()
-	return Steam:userid()
+	return Distribution:local_account_id()
 end
 
 function NetworkAccountSTEAM:is_connected()

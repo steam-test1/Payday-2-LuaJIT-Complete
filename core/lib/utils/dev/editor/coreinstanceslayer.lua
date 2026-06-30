@@ -800,7 +800,6 @@ function InstancesLayer:build_panel(notebook, settings)
 	self._ews_panel = EWS:ScrolledWindow(notebook, "", "VSCROLL")
 
 	self._ews_panel:set_scroll_rate(Vector3(0, 1, 0))
-	self._ews_panel:set_virtual_size_hints(Vector3(0, 0, 0), Vector3(1, -1, -1))
 
 	self._main_sizer = EWS:BoxSizer("VERTICAL")
 
@@ -1275,13 +1274,9 @@ end
 
 function InstancesLayer:_on_gui_reload_predefined_instances_file()
 	local t = {
-		preprocessor_definitions = "preprocessor_definitions",
 		send_idstrings = false,
-		target_db_name = "all",
 		verbose = false,
-		platform = string.lower(SystemInfo:platform():s()),
-		source_root = managers.database:base_path(),
-		target_db_root = Application:base_path() .. "assets",
+		build_profile = Application:build_profile_path(),
 		source_files = {
 			self._predefined_instances_file .. ".xml"
 		}

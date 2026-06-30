@@ -79,6 +79,37 @@ function HostNetworkSession:on_join_auth_received(auth_ticket, sender)
 	return self._state:on_join_auth_received(self._state_data, auth_ticket, sender)
 end
 
+function HostNetworkSession:on_join_request_reply_auth_chunk_received(chunk, total_chunks, total_length, ticket, sender)
+	print("[HostNetworkSession:on_join_request_reply_auth_chunk_received]")
+
+	if type(chunk) ~= "number" or type(total_chunks) ~= "number" or type(total_length) ~= "number" or type(ticket) ~= "string" then
+		return
+	end
+
+	print("[HostNetworkSession:on_join_request_reply_auth_chunk_received] chunk: " .. tostring(chunk) .. "/" .. tostring(total_chunks) .. " total_length: " .. tostring(total_length) .. " chunk_length: " .. tostring(string.len(ticket)))
+
+	self._ticket_chunks = self._ticket_chunks or {}
+	self._ticket_chunks[sender:to_string()] = self._ticket_chunks[sender:to_string()] or {}
+
+	local sender_chunks = self._ticket_chunks[sender:to_string()]
+
+	sender_chunks[chunk + 1] = ticket
+
+	print("[HostNetworkSession:on_join_request_reply_auth_chunk_received] Have " .. #sender_chunks .. " chunks from " .. sender:to_string())
+
+	if #sender_chunks == total_chunks then
+		local ticket = ""
+
+		for i = 1, total_chunks do
+			ticket = ticket .. sender_chunks[i]
+		end
+
+		self._ticket_chunks[sender:to_string()] = nil
+
+		self:on_join_auth_received(ticket, sender)
+	end
+end
+
 function HostNetworkSession:send_to_host(...)
 	debug_pause("[HostNetworkSession:send_to_host] This is dumb. call the function directly instead of sending it...")
 end

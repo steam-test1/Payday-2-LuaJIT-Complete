@@ -45,7 +45,7 @@ function CoreSpawnUnitCutsceneKey:is_valid_unit_category(unit_category)
 	if not Application:ews_enabled() then
 		return true
 	else
-		return unit_category ~= nil and table.contains(managers.database:list_unit_types(), unit_category)
+		return unit_category ~= nil and managers.database:list_unit_types()[unit_category]
 	end
 end
 
@@ -77,7 +77,7 @@ function CoreSpawnUnitCutsceneKey:refresh_control_for_unit_category(control)
 
 	local value = self:unit_category()
 
-	for _, unit_category in ipairs(managers.database:list_unit_types()) do
+	for unit_category in pairs(managers.database:list_unit_types()) do
 		control:append(unit_category)
 
 		if unit_category == value then

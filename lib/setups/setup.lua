@@ -11,7 +11,7 @@ core:register_module("lib/utils/game_state_machine/GameState")
 core:register_module("lib/utils/dev/FreeFlight")
 
 Global.DEBUG_MENU_ON = Application:debug_enabled()
-Global.SKIP_OVERKILL_290 = SystemInfo:platform() == Idstring("PS3")
+Global.SKIP_OVERKILL_290 = false
 Global.DISCORD_APP_ID = "364785249202208768"
 
 core:import("CoreSetup")
@@ -212,10 +212,10 @@ function Setup:init_category_print()
 end
 
 function Setup:load_packages()
-	PackageManager:set_resource_loaded_clbk(Idstring("unit"), nil)
+	PackageManager:set_resource_loaded_clbk(IDS_UNIT, nil)
 	TextureCache:set_streaming_enabled(true)
 
-	if SystemInfo:platform() == Idstring("PS4") or SystemInfo:platform() == Idstring("XB1") then
+	if IS_PS4 or IS_XB1 then
 		TextureCache:set_LOD_streaming_enabled(false)
 	else
 		TextureCache:set_LOD_streaming_enabled(true)
@@ -485,7 +485,7 @@ function Setup:_start_loading_screen()
 		res = RenderSettings.resolution,
 		layer = tweak_data.gui.LOADING_SCREEN_LAYER,
 		load_level_data = load_level_data,
-		is_win32 = SystemInfo:platform() == Idstring("WIN32"),
+		is_win32 = IS_PC,
 		vr_overlays = Global.__vr_overlays
 	}
 
@@ -543,7 +543,7 @@ function Setup:init_game()
 
 	local scene_gui = Overlay:gui()
 
-	self._main_thread_loading_screen_gui_script = LightLoadingScreenGuiScript:new(scene_gui, RenderSettings.resolution, -1, tweak_data.gui.LOADING_SCREEN_LAYER, SystemInfo:platform() == Idstring("WIN32"))
+	self._main_thread_loading_screen_gui_script = LightLoadingScreenGuiScript:new(scene_gui, RenderSettings.resolution, -1, tweak_data.gui.LOADING_SCREEN_LAYER, IS_PC)
 	self._main_thread_loading_screen_gui_visible = true
 
 	return game_state_machine
@@ -567,7 +567,7 @@ function Setup:init_finalize()
 	managers.weapon_factory:init_finalize()
 	managers.blackmarket:init_finalize()
 
-	if SystemInfo:platform() == Idstring("WIN32") then
+	if IS_PC then
 		AnimationManager:set_anim_cache_size(10485760, 0)
 	end
 
@@ -782,7 +782,7 @@ end
 
 function Setup:exec(context)
 	if managers.network then
-		if SystemInfo:platform() == Idstring("PS4") then
+		if IS_PS4 then
 			PSN:set_matchmaking_callback("session_destroyed", function()
 				return
 			end)
@@ -797,7 +797,7 @@ function Setup:exec(context)
 		end
 	end
 
-	if SystemInfo:platform() == Idstring("WIN32") then
+	if IS_PC then
 		self:set_fps_cap(30)
 	end
 

@@ -237,7 +237,7 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 		self._detail = detail
 	end
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		local friend_list = placer:add_right(ScrollableList:new(self, {
 			input = true,
 			scrollbar_padding = 5,
@@ -340,7 +340,7 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 		end
 
 		if managers.network.account:signin_state() == "signed in" then
-			if SystemInfo:distribution() == Idstring("STEAM") then
+			if IS_STEAM then
 				local total_friends = Steam:friends()
 				local unlocked_friends = {}
 
@@ -395,7 +395,7 @@ function AchievementDetailGui:init(parent, achievement_data_or_id, back_callback
 						end
 					end)
 				end)
-			elseif SystemInfo:distribution() == Idstring("EPIC") then
+			elseif IS_EPIC then
 				-- Nothing
 			end
 		end

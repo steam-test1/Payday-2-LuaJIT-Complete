@@ -224,6 +224,7 @@ function BaseMutator:register_value(key, default, network_key)
 	end
 
 	self._values[key] = {
+		host = nil,
 		current = default,
 		default = default,
 		network_key = network_key

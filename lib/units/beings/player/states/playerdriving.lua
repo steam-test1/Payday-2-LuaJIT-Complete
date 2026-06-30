@@ -456,6 +456,7 @@ function PlayerDriving:_start_action_exit_vehicle(t)
 	local text = managers.localization:text("hud_action_exit_vehicle")
 
 	managers.hud:show_progress_timer({
+		icon = nil,
 		text = text
 	})
 	self:_chk_tap_to_interact_enable(t, deploy_timer, nil)

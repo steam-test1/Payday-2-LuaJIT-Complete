@@ -251,7 +251,7 @@ function MenuNodeUpdatesGui:setup()
 		h = panel:w() / 4
 	})
 
-	if SystemInfo:platform() ~= Idstring("WIN32") then
+	if IS_CONSOLE then
 		latest_update_panel:set_w(latest_update_panel:w() * 0.8)
 		latest_update_panel:set_h(latest_update_panel:w() * 0.5)
 	end
@@ -279,8 +279,8 @@ function MenuNodeUpdatesGui:setup()
 	self._select_x = 1
 
 	local w = panel:w()
-	local padding = SystemInfo:platform() == Idstring("WIN32") and 30 or 5
-	local dech_panel_h = SystemInfo:platform() == Idstring("WIN32") and latest_update_panel:h() or panel:h() / 2
+	local padding = IS_PC and 30 or 5
+	local dech_panel_h = IS_PC and latest_update_panel:h() or panel:h() / 2
 	local latest_desc_panel = panel:panel({
 		name = "latest_description",
 		w = panel:w() - latest_update_panel:w() - padding,
@@ -743,13 +743,13 @@ function MenuNodeUpdatesGui:open(content_update)
 
 	local play_sound = true
 
-	if SystemInfo:platform() == Idstring("WIN32") then
+	if IS_PC then
 		if content_update.webpage then
 			play_sound = managers.network.account:overlay_activate("url", content_update.webpage)
 		elseif content_update.store then
-			if SystemInfo:distribution() == Idstring("STEAM") then
+			if IS_STEAM then
 				play_sound = managers.network.account:overlay_activate("store", content_update.store)
-			elseif SystemInfo:distribution() == Idstring("EPIC") then
+			elseif IS_EPIC then
 				-- Nothing
 			end
 		elseif content_update.use_db then
@@ -760,12 +760,6 @@ function MenuNodeUpdatesGui:open(content_update)
 			else
 				play_sound = false
 			end
-		else
-			play_sound = false
-		end
-	elseif SystemInfo:platform() == Idstring("PS3") then
-		if true or not managers.dlc:is_dlc_unlocked(content_update.id) then
-			managers.dlc:buy_product(content_update.id)
 		else
 			play_sound = false
 		end

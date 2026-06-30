@@ -17,6 +17,7 @@ function MousePointerManager:_setup()
 	self._ws = managers.gui_data:create_fullscreen_workspace()
 
 	self:_setup_mouse_pointer(self._ws)
+	self._ws:set_absolute_mouse(1, 1, 0, 0)
 	self._ws:hide()
 
 	self._resolution_changed_callback_id = managers.viewport:add_resolution_changed_func(callback(self, self, "resolution_changed"))
@@ -270,6 +271,10 @@ function MousePointerManager:_activate()
 
 	if not _G.IS_VR then
 		self._ws:connect_mouse(managers.controller:get_mouse_controller())
+
+		if managers.controller:get_mouse_controller().set_lock_mouse then
+			managers.controller:get_mouse_controller():set_lock_mouse(false)
+		end
 	end
 
 	self._ws:feed_mouse_position(self._mouse:world_position())
@@ -291,6 +296,10 @@ end
 function MousePointerManager:_deactivate()
 	self._active = false
 	self._enabled = nil
+
+	if managers.controller:get_mouse_controller().set_lock_mouse then
+		managers.controller:get_mouse_controller():set_lock_mouse(true)
+	end
 
 	if alive(self._ws) then
 		self._ws:hide()

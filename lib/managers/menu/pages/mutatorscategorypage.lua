@@ -271,7 +271,9 @@ function MutatorsCategoryPage:_setup_help_panel()
 	if not managers.menu:is_pc_controller() then
 		table.insert(buttons, {
 			btn = "BTN_A",
+			callback = nil,
 			name_id = "menu_mutators_toggle",
+			pc_btn = nil,
 			prio = 10
 		})
 		table.insert(buttons, {

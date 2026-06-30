@@ -1,10 +1,8 @@
 NavFieldBuilder = NavFieldBuilder or class()
 NavFieldBuilder._VERSION = 5
+NavFieldBuilder._HELPER_SLOT = 15
 
 function NavFieldBuilder:init()
-	self._door_access_types = {
-		walk = 1
-	}
 	self._opposite_side_str = {
 		x_neg = "x_pos",
 		x_pos = "x_neg",
@@ -89,6 +87,93 @@ function NavFieldBuilder:clear()
 	self._new_blockers = nil
 end
 
+function NavFieldBuilder:load(data)
+	local t_ins = table.insert
+	local grid_size = self._grid_size
+
+	self._rooms = {}
+	self._visibility_groups = data.vis_groups
+	self._helper_blockers = data.helper_blockers
+
+	if not data.room_borders_x_pos then
+		return
+	end
+
+	for i_room = 1, #data.room_borders_x_pos do
+		local room = {
+			borders = {
+				x_pos = data.room_borders_x_pos[i_room] * grid_size,
+				x_neg = data.room_borders_x_neg[i_room] * grid_size,
+				y_pos = data.room_borders_y_pos[i_room] * grid_size,
+				y_neg = data.room_borders_y_neg[i_room] * grid_size
+			},
+			height = {
+				xp_yp = data.room_heights_xp_yp[i_room],
+				xp_yn = data.room_heights_xp_yn[i_room],
+				xn_yp = data.room_heights_xn_yp[i_room],
+				xn_yn = data.room_heights_xn_yn[i_room]
+			},
+			doors = {
+				x_pos = {},
+				x_neg = {},
+				y_pos = {},
+				y_neg = {}
+			},
+			vis_group = data.room_vis_groups[i_room]
+		}
+
+		t_ins(self._rooms, room)
+	end
+
+	Application:check_termination()
+
+	self._room_doors = {}
+
+	for i_door = 1, #data.door_low_pos do
+		local door = {
+			pos = data.door_low_pos[i_door] * grid_size,
+			pos1 = data.door_high_pos[i_door] * grid_size,
+			rooms = {
+				data.door_low_rooms[i_door],
+				data.door_high_rooms[i_door]
+			}
+		}
+
+		t_ins(self._room_doors, door)
+
+		local door_dimention = door.pos.y == door.pos1.y and "x" or "y"
+		local neg_side = door_dimention .. "_neg"
+		local pos_side = door_dimention .. "_pos"
+		local low_room = self._rooms[door.rooms[1]]
+		local high_room = self._rooms[door.rooms[2]]
+
+		table.insert(low_room.doors[pos_side], i_door)
+		table.insert(high_room.doors[neg_side], i_door)
+	end
+
+	Application:check_termination()
+
+	if data.vis_groups and next(data.vis_groups) then
+		self:_reconstruct_geographic_segments()
+	end
+
+	self._nav_segments = data.nav_segments
+
+	for _, nav_seg in pairs(self._nav_segments) do
+		local new_neighbours_list = {}
+
+		for other_nav_seg_id, door_list in pairs(nav_seg.neighbours) do
+			new_neighbours_list[other_nav_seg_id] = clone(door_list)
+		end
+
+		nav_seg.neighbours = new_neighbours_list
+	end
+end
+
+function NavFieldBuilder:is_data_complete()
+	return next(self._visibility_groups) and true
+end
+
 function NavFieldBuilder:update(t, dt)
 	if self._building then
 		if self._progress_dialog_cancel then
@@ -121,12 +206,6 @@ function NavFieldBuilder:_destroy_progress_bar()
 	end
 end
 
-function NavFieldBuilder:set_field_data(data)
-	for i, k in pairs(data) do
-		self[i] = k
-	end
-end
-
 function NavFieldBuilder:set_segment_state(id, state)
 	self._nav_segments[id].no_access = not state and true or nil
 end
@@ -139,8 +218,11 @@ function NavFieldBuilder:build_nav_segments(build_settings, complete_clbk)
 	for i_room, room in ipairs(self._rooms) do
 		if not room.segment then
 			room.segment = all_vis_groups[room.vis_group].seg
+			room.vis_group = nil
 		end
 	end
+
+	self._visibility_groups = {}
 
 	for index, segment_settings in ipairs(build_settings) do
 		self:delete_segment(segment_settings.id)
@@ -396,11 +478,10 @@ function NavFieldBuilder:start_build_nav_segment(build_settings, segment_index)
 		pos = build_seg.position,
 		vis_groups = {},
 		neighbours = {},
-		location_id = build_seg.location_id,
-		build_seg.strategic_area_id
+		location_id = build_seg.location_id
 	}
 
-	local all_blockers = World:find_units_quick("all", 15)
+	local all_blockers = World:find_units_quick("all", self._HELPER_SLOT)
 	local to_remove = {}
 
 	for u_id, segment in pairs(self._helper_blockers) do
@@ -545,7 +626,6 @@ function NavFieldBuilder:_expand_rooms()
 				else
 					Application:error("! Error. NavFieldBuilder:_expand_rooms() ground ray failed! segment", segment[1], segment[2])
 					Application:draw_cylinder(new_enter_pos + self._up_vec, new_enter_pos + self._down_vec, self._gnd_ray_rad, 1, 0, 0)
-					managers.navigation:_draw_room(room, true)
 					Application:set_pause(true)
 
 					progress = false
@@ -1492,7 +1572,10 @@ end
 
 function NavFieldBuilder:_generate_geographic_segments()
 	self:_update_progress_bar(8, "Creating geographic segments")
+	self:_reconstruct_geographic_segments()
+end
 
+function NavFieldBuilder:_reconstruct_geographic_segments()
 	local tab_ins = table.insert
 	local m_ceil = math.ceil
 	local segments = {}
@@ -1749,10 +1832,6 @@ function NavFieldBuilder:_analyse_room(enter_dir_str, enter_pos)
 	room.segment = self._building.id
 
 	self:_add_room(room)
-
-	if managers.navigation._draw_data then
-		managers.navigation:_draw_room(room, true)
-	end
 
 	return i_room
 end
@@ -2671,7 +2750,7 @@ function NavFieldBuilder:_reenable_all_blockers()
 end
 
 function NavFieldBuilder:_disable_all_blockers()
-	local all_blockers = World:find_units_quick("all", 15)
+	local all_blockers = World:find_units_quick("all", self._HELPER_SLOT)
 
 	self._disabled_blockers = self._disabled_blockers or {}
 

@@ -29,7 +29,6 @@ function ElementUnloadStatic:on_executed(instigator)
 
 			if alive(unit) then
 				print("[Mission] unload unit ", unit_id, unit)
-				World:delete_unit_free_assets(unit)
 			end
 		end
 	end

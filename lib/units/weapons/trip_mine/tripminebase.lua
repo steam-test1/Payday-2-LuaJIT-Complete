@@ -38,7 +38,7 @@ function TripMineBase:init(unit)
 	self._ids_laser = Idstring("laser")
 	self._g_laser = self._unit:get_object(Idstring("g_laser"))
 	self._g_laser_sensor = self._unit:get_object(Idstring("g_laser_sensor"))
-	self._use_draw_laser = SystemInfo:platform() == Idstring("PS3")
+	self._use_draw_laser = false
 
 	if self._use_draw_laser then
 		self._laser_color = Color(0.15, 1, 0, 0)

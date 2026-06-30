@@ -625,6 +625,7 @@ end
 
 function PlayerManager:_setup()
 	self._equipment = {
+		selected_index = nil,
 		selections = {},
 		specials = {}
 	}
@@ -4907,25 +4908,25 @@ end
 function PlayerManager:crew_ai_flashbang(value)
 	if value then
 		if not self._crew_ai_flashbang_unit_loaded then
-			managers.dyn_resource:load(Idstring("unit"), Idstring(tweak_data.blackmarket.projectiles.concussion.unit), managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
+			managers.dyn_resource:load(IDS_UNIT, Idstring(tweak_data.blackmarket.projectiles.concussion.unit), managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
 
 			self._crew_ai_flashbang_unit_loaded = true
 		end
 
 		if not self._crew_ai_flashbang_sprint_unit_loaded then
-			managers.dyn_resource:load(Idstring("unit"), Idstring(tweak_data.blackmarket.projectiles.concussion.sprint_unit), managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
+			managers.dyn_resource:load(IDS_UNIT, Idstring(tweak_data.blackmarket.projectiles.concussion.sprint_unit), managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
 
 			self._crew_ai_flashbang_sprint_unit_loaded = true
 		end
 	else
 		if self._crew_ai_flashbang_unit_loaded then
-			managers.dyn_resource:unload(Idstring("unit"), Idstring(tweak_data.blackmarket.projectiles.concussion.unit), DynamicResourceManager.DYN_RESOURCES_PACKAGE, nil)
+			managers.dyn_resource:unload(IDS_UNIT, Idstring(tweak_data.blackmarket.projectiles.concussion.unit), DynamicResourceManager.DYN_RESOURCES_PACKAGE, nil)
 
 			self._crew_ai_flashbang_unit_loaded = false
 		end
 
 		if self._crew_ai_flashbang_sprint_unit_loaded then
-			managers.dyn_resource:unload(Idstring("unit"), Idstring(tweak_data.blackmarket.projectiles.concussion.sprint_unit), DynamicResourceManager.DYN_RESOURCES_PACKAGE, nil)
+			managers.dyn_resource:unload(IDS_UNIT, Idstring(tweak_data.blackmarket.projectiles.concussion.sprint_unit), DynamicResourceManager.DYN_RESOURCES_PACKAGE, nil)
 
 			self._crew_ai_flashbang_sprint_unit_loaded = false
 		end
@@ -5691,6 +5692,7 @@ function PlayerManager:soft_reset()
 	self:reset_used_body_bag()
 
 	self._equipment = {
+		selected_index = nil,
 		selections = {},
 		specials = {}
 	}
@@ -6212,33 +6214,29 @@ function PlayerManager:_attempt_tag_team()
 	local player = managers.player:player_unit()
 	local player_eye = player:camera():position()
 	local player_fwd = player:camera():rotation():y()
+	local statics_slot_mask = managers.slot:get_mask("statics")
 	local heisters_slot_mask = World:make_slot_mask(2, 3, 4, 5, 16, 24)
 	local cone_camera = player:camera():camera_object()
 	local cone_center = Vector3(0, 0)
 	local cone_radius = managers.player:upgrade_value("player", "tag_team_base").radius
 	local tag_distance = managers.player:upgrade_value("player", "tag_team_base").distance * 100
 	local heisters = World:find_units("camera_cone", cone_camera, cone_center, cone_radius, tag_distance, heisters_slot_mask)
-
-	print("[TAGKERS]", inspect(heisters))
-
 	local best_dot = -1
 
 	for _, heister in ipairs(heisters) do
 		local heister_center = heister:oobb():center()
 		local heister_dir = heister_center - player_eye
-		local distance_pass = mvector3.length_sq(heister_dir) <= tag_distance * tag_distance
 		local raycast
 
-		if distance_pass then
-			mvector3.normalize(heister_dir)
+		mvector3.normalize(heister_dir)
 
-			local heister_dot = Vector3.dot(player_fwd, heister_dir)
+		local heister_dot = Vector3.dot(player_fwd, heister_dir)
 
-			if best_dot < heister_dot then
-				best_dot = heister_dot
-				raycast = World:raycast(player_eye, heister_center)
-				tagged = raycast and raycast.unit:in_slot(heisters_slot_mask) and heister
-			end
+		if best_dot < heister_dot then
+			best_dot = heister_dot
+			raycast = World:raycast("ray", player_eye, heister_center, "slot_mask", statics_slot_mask)
+			raycast = not raycast and World:raycast("ray", player_eye, heister_center, "slot_mask", heisters_slot_mask)
+			tagged = raycast and raycast.unit:in_slot(heisters_slot_mask) and heister or tagged
 		end
 	end
 

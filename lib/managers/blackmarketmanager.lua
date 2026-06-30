@@ -66,7 +66,13 @@ function BlackMarketManager:_setup()
 	end
 
 	self._defaults.henchman = {
-		mask = "character_locked"
+		ability = nil,
+		glove_id = nil,
+		mask = "character_locked",
+		player_style = nil,
+		primary = nil,
+		skill = nil,
+		suit_variation = nil
 	}
 
 	if not Global.blackmarket_manager then
@@ -1096,7 +1102,7 @@ function BlackMarketManager:equip_weapon(category, slot, skip_outfit)
 	if not skip_outfit then
 		MenuCallbackHandler:_update_outfit_information()
 
-		if SystemInfo:distribution() == Idstring("STEAM") then
+		if IS_STEAM then
 			managers.statistics:publish_equipped_to_steam()
 		end
 	end
@@ -1132,7 +1138,7 @@ function BlackMarketManager:equip_deployable(data, loading)
 	if not loading then
 		MenuCallbackHandler:_update_outfit_information()
 
-		if SystemInfo:distribution() == Idstring("STEAM") then
+		if IS_STEAM then
 			managers.statistics:publish_equipped_to_steam()
 		end
 	end
@@ -1151,7 +1157,7 @@ function BlackMarketManager:equip_character(character_name)
 
 	MenuCallbackHandler:_update_outfit_information()
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		managers.statistics:publish_equipped_to_steam()
 	end
 end
@@ -1177,7 +1183,7 @@ function BlackMarketManager:equip_armor(armor_id)
 		self:set_equipped_armor_skin(tweak_data.economy:get_real_armor_skin_id(self:equipped_armor_skin()))
 	end
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		managers.statistics:publish_equipped_to_steam()
 	end
 end
@@ -1189,7 +1195,7 @@ function BlackMarketManager:equip_grenade(grenade_id)
 
 	MenuCallbackHandler:_update_outfit_information()
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		managers.statistics:publish_equipped_to_steam()
 	end
 end
@@ -1202,17 +1208,13 @@ function BlackMarketManager:equip_melee_weapon(melee_weapon_id)
 	self:_check_achievements("melee_weapons")
 	MenuCallbackHandler:_update_outfit_information()
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		managers.statistics:publish_equipped_to_steam()
 	end
 end
 
 function BlackMarketManager:_update_cached_mask()
 	do return end
-
-	if SystemInfo:platform() ~= Idstring("X360") then
-		return
-	end
 
 	Application:debug("[BlackMarketManager:_update_cached_mask()]")
 
@@ -1225,7 +1227,7 @@ function BlackMarketManager:_update_cached_mask()
 		local pattern = Idstring(tweak_data.blackmarket.textures[pattern_id].texture)
 		local reflection = Idstring(tweak_data.blackmarket.materials[material_id].texture)
 
-		managers.dyn_resource:unload(Idstring("unit"), Idstring(tweak_data.blackmarket.masks[old_cached_mask.mask_id].unit), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
+		managers.dyn_resource:unload(IDS_UNIT, Idstring(tweak_data.blackmarket.masks[old_cached_mask.mask_id].unit), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 		TextureCache:unretrieve(pattern)
 		TextureCache:unretrieve(reflection)
 	end
@@ -1256,41 +1258,9 @@ function BlackMarketManager:equip_mask(slot)
 		managers.menu_scene:set_character_mask_by_id(new_mask_data.mask_id, new_mask_data.blueprint)
 	end
 
-	if SystemInfo:platform() == Idstring("X360") and false then
-		local old_cached_mask = Global.cached_player_mask
-
-		Global.cached_player_mask = new_mask_data
-
-		Application:debug("[BlackMarketManager:equip_mask()] Set cached mask")
-
-		if new_mask_data and new_mask_data.mask_id ~= "character_locked" then
-			local blueprint = new_mask_data.blueprint
-			local pattern_id = blueprint.pattern.id
-			local material_id = blueprint.material.id
-			local pattern = tweak_data.blackmarket.textures[pattern_id].texture
-			local reflection = tweak_data.blackmarket.materials[material_id].texture
-
-			managers.dyn_resource:load(Idstring("unit"), Idstring(tweak_data.blackmarket.masks[new_mask_data.mask_id].unit), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
-			TextureCache:retrieve(pattern, "NORMAL")
-			TextureCache:retrieve(reflection, "NORMAL")
-		end
-
-		if old_cached_mask and old_cached_mask.mask_id ~= "character_locked" then
-			local blueprint = old_cached_mask.blueprint
-			local pattern_id = blueprint.pattern.id
-			local material_id = blueprint.material.id
-			local pattern = Idstring(tweak_data.blackmarket.textures[pattern_id].texture)
-			local reflection = Idstring(tweak_data.blackmarket.materials[material_id].texture)
-
-			managers.dyn_resource:unload(Idstring("unit"), Idstring(tweak_data.blackmarket.masks[old_cached_mask.mask_id].unit), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
-			TextureCache:unretrieve(pattern)
-			TextureCache:unretrieve(reflection)
-		end
-	end
-
 	MenuCallbackHandler:_update_outfit_information()
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		managers.statistics:publish_equipped_to_steam()
 	end
 
@@ -1997,7 +1967,7 @@ function BlackMarketManager:preload_weapon_blueprint(category, factory_id, bluep
 	}
 
 	for part_id, part in pairs(parts) do
-		if part.package or not managers.dyn_resource:is_resource_ready(Idstring("unit"), part.name, managers.dyn_resource.DYN_RESOURCES_PACKAGE) then
+		if part.package or not managers.dyn_resource:is_resource_ready(IDS_UNIT, part.name, managers.dyn_resource.DYN_RESOURCES_PACKAGE) then
 			local new_loading = {}
 
 			if part.package then
@@ -2037,7 +2007,7 @@ function BlackMarketManager:resource_loaded_callback(category, loaded_table, par
 				if unload.package then
 					managers.weapon_factory:unload_package(unload.package)
 				else
-					managers.dyn_resource:unload(unload.type or Idstring("unit"), unload.name, managers.dyn_resource.DYN_RESOURCES_PACKAGE, false)
+					managers.dyn_resource:unload(unload.type or IDS_UNIT, unload.name, managers.dyn_resource.DYN_RESOURCES_PACKAGE, false)
 				end
 			end
 		end
@@ -2052,7 +2022,7 @@ function BlackMarketManager:release_preloaded_category(category)
 			if unload.package then
 				managers.weapon_factory:unload_package(unload.package)
 			else
-				managers.dyn_resource:unload(unload.type or Idstring("unit"), unload.name, managers.dyn_resource.DYN_RESOURCES_PACKAGE, false)
+				managers.dyn_resource:unload(unload.type or IDS_UNIT, unload.name, managers.dyn_resource.DYN_RESOURCES_PACKAGE, false)
 			end
 		end
 
@@ -2066,7 +2036,7 @@ function BlackMarketManager:release_preloaded_blueprints()
 			if unload.package then
 				managers.weapon_factory:unload_package(unload.package)
 			else
-				managers.dyn_resource:unload(unload.type or Idstring("unit"), unload.name, managers.dyn_resource.DYN_RESOURCES_PACKAGE, false)
+				managers.dyn_resource:unload(unload.type or IDS_UNIT, unload.name, managers.dyn_resource.DYN_RESOURCES_PACKAGE, false)
 			end
 		end
 	end
@@ -2339,7 +2309,7 @@ function BlackMarketManager:update(t, dt)
 
 						self._streaming_preload = true
 
-						managers.dyn_resource:load(next_in_line.load_me.type or Idstring("unit"), next_in_line.load_me.name, managers.dyn_resource.DYN_RESOURCES_PACKAGE, f)
+						managers.dyn_resource:load(next_in_line.load_me.type or IDS_UNIT, next_in_line.load_me.name, managers.dyn_resource.DYN_RESOURCES_PACKAGE, f)
 					end
 				elseif is_done_cb then
 					if self._preload_ws then
@@ -4951,7 +4921,7 @@ function BlackMarketManager:on_sell_weapon(category, slot, skip_verification)
 
 		MenuCallbackHandler:_update_outfit_information()
 
-		if SystemInfo:distribution() == Idstring("STEAM") then
+		if IS_STEAM then
 			managers.statistics:publish_equipped_to_steam()
 		end
 	end
@@ -5577,13 +5547,13 @@ function BlackMarketManager:view_player_style(player_style, material_variation, 
 
 		table.insert(self._preloading_list, {
 			load_me = {
-				type = Idstring("material_config"),
+				type = IDS_MATERIAL_CONFIG,
 				name = material_name
 			}
 		})
 
 		resources[material_name:key()] = {
-			type = Idstring("material_config"),
+			type = IDS_MATERIAL_CONFIG,
 			name = material_name
 		}
 	else
@@ -5870,7 +5840,7 @@ function BlackMarketManager:_is_armor_skin_valid(skin_id)
 		return false
 	end
 
-	if td.steam_economy and SystemInfo:distribution() ~= Idstring("STEAM") then
+	if td.steam_economy and not IS_STEAM then
 		return false
 	end
 
@@ -6059,7 +6029,7 @@ function BlackMarketManager:set_equipped_player_style(player_style, loading)
 
 			MenuCallbackHandler:_update_outfit_information()
 
-			if SystemInfo:distribution() == Idstring("STEAM") then
+			if IS_STEAM then
 				managers.statistics:publish_equipped_to_steam()
 			end
 		end
@@ -6095,7 +6065,7 @@ function BlackMarketManager:set_suit_variation(player_style, material_variation,
 
 			MenuCallbackHandler:_update_outfit_information()
 
-			if SystemInfo:distribution() == Idstring("STEAM") then
+			if IS_STEAM then
 				managers.statistics:publish_equipped_to_steam()
 			end
 		end
@@ -6252,7 +6222,7 @@ function BlackMarketManager:set_equipped_glove_id(glove_id, loading)
 
 			MenuCallbackHandler:_update_outfit_information()
 
-			if SystemInfo:distribution() == Idstring("STEAM") then
+			if IS_STEAM then
 				managers.statistics:publish_equipped_to_steam()
 			end
 		end
@@ -6354,7 +6324,7 @@ function BlackMarketManager:_update_preferred_character(update_character)
 		end
 	end
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		managers.statistics:publish_equipped_to_steam()
 	end
 
@@ -7818,7 +7788,7 @@ end
 function BlackMarketManager:on_equip_weapon_cosmetics(category, slot, instance_id)
 	local item_data
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		item_data = self:get_inventory_tradable()[instance_id]
 	end
 
@@ -7835,6 +7805,8 @@ function BlackMarketManager:on_equip_weapon_cosmetics(category, slot, instance_i
 	end
 
 	if item_data then
+		print("[BlackMarketManager:on_equip_weapon_cosmetics]", category, slot, instance_id, inspect(item_data))
+
 		local cosmetic_data = {
 			instance_id = instance_id,
 			id = item_data.entry,
@@ -7886,22 +7858,27 @@ function BlackMarketManager:_set_weapon_cosmetics(category, slot, cosmetics, upd
 	local old_cosmetic_id = crafted.cosmetics and crafted.cosmetics.id
 	local old_cosmetic_data = old_cosmetic_id and tweak_data.blackmarket.weapon_skins[old_cosmetic_id]
 	local old_cosmetic_default_blueprint = old_cosmetic_data and old_cosmetic_data.default_blueprint
-	local new_cosmetic_default_blueprint = weapon_skin_data.default_blueprint
 
-	if new_cosmetic_default_blueprint then
-		print("[BlackMarketManager:_set_weapon_cosmetics] BLUEPRINT - New BP", inspect(new_cosmetic_default_blueprint))
-		self:add_crafted_weapon_blueprint_to_inventory(category, slot, old_cosmetic_default_blueprint)
+	if old_cosmetic_id ~= cosmetics.id then
+		print("[BlackMarketManager:_set_weapon_cosmetics] Changed skin ID", old_cosmetic_id, cosmetics.id)
 
-		local tbl = managers.weapon_factory:get_cosmetics_blueprint_by_weapon_id(crafted.weapon_id, cosmetics.id)
+		local new_cosmetic_default_blueprint = weapon_skin_data.default_blueprint
 
-		crafted.blueprint = tbl
-	elseif old_cosmetic_default_blueprint then
-		print("[BlackMarketManager:_set_weapon_cosmetics] BLUEPRINT - Old BP", inspect(old_cosmetic_default_blueprint))
-		self:add_crafted_weapon_blueprint_to_inventory(category, slot, old_cosmetic_default_blueprint)
+		if new_cosmetic_default_blueprint then
+			print("[BlackMarketManager:_set_weapon_cosmetics] BLUEPRINT - New BP", inspect(new_cosmetic_default_blueprint))
+			self:add_crafted_weapon_blueprint_to_inventory(category, slot, old_cosmetic_default_blueprint)
 
-		crafted.blueprint = deep_clone(managers.weapon_factory:get_default_blueprint_by_factory_id(crafted.factory_id))
-	else
-		print("[BlackMarketManager:_set_weapon_cosmetics] BLUEPRINT - No BP")
+			local tbl = managers.weapon_factory:get_cosmetics_blueprint_by_weapon_id(crafted.weapon_id, cosmetics.id)
+
+			crafted.blueprint = tbl
+		elseif old_cosmetic_default_blueprint then
+			print("[BlackMarketManager:_set_weapon_cosmetics] BLUEPRINT - Old BP", inspect(old_cosmetic_default_blueprint))
+			self:add_crafted_weapon_blueprint_to_inventory(category, slot, old_cosmetic_default_blueprint)
+
+			crafted.blueprint = deep_clone(managers.weapon_factory:get_default_blueprint_by_factory_id(crafted.factory_id))
+		else
+			print("[BlackMarketManager:_set_weapon_cosmetics] BLUEPRINT - No BP")
+		end
 	end
 
 	crafted.customize_locked = weapon_skin_data.locked
@@ -8278,7 +8255,7 @@ function BlackMarketManager:_remove_unowned_armor_skin(loading)
 	local a_td = tweak_data.economy.armor_skins[skin_id]
 
 	if a_td and a_td.steam_economy then
-		if SystemInfo:distribution() == Idstring("STEAM") then
+		if IS_STEAM then
 			for instance_id, item in pairs(self._global.inventory_tradable) do
 				if item.entry == skin_id then
 					remove_armor = false
@@ -8299,31 +8276,11 @@ function BlackMarketManager:_remove_unowned_armor_skin(loading)
 end
 
 function BlackMarketManager:tradable_verify(category, entry, quality, bonus, tradable_list)
-	local tweak = tweak_data.blackmarket[category] and tweak_data.blackmarket[category][entry]
-
-	if tweak and (tweak.is_a_unlockable or tweak.unlocked) then
-		return true
-	end
-
-	if not tradable_list then
-		return false
-	end
-
-	print("[BlackMarketManager:tradable_verify]", "category", category, "entry", entry, "quality", quality, "bonus", bonus, "tradable_list", inspect(tradable_list))
-
-	for _, item in pairs(tradable_list) do
-		if item.category == category and item.entry == entry and item.quality == quality and item.bonus == bonus then
-			return true
-		end
-	end
-
-	print("[BlackMarketManager:tradable_verify] Verification FAILED")
-
-	return false
+	return true
 end
 
 function BlackMarketManager:tradable_achievement(category, entry)
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		local tweak_item = tweak_data.economy[category][entry]
 		local cat_entry = category .. "_" .. entry
 
@@ -8457,7 +8414,7 @@ function BlackMarketManager:reset_equipped()
 	self:aquire_default_weapons(true)
 	self:_verfify_equipped()
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		managers.statistics:publish_equipped_to_steam()
 	end
 
@@ -8697,9 +8654,6 @@ function BlackMarketManager:load(data)
 
 		self._global.new_drops = self._global.new_drops or {}
 		self._global.new_item_type_unlocked = self._global.new_item_type_unlocked or {}
-
-		print("self._global.new_drops ", inspect(self._global.new_drops))
-		print("self._global.new_item_type_unlocked ", inspect(self._global.new_item_type_unlocked))
 
 		local old_drops = {}
 
@@ -9004,7 +8958,7 @@ function BlackMarketManager:verify_dlc_items()
 	self:_verify_dlc_items()
 	self:_load_done()
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		managers.statistics:publish_equipped_to_steam()
 	end
 
@@ -10603,8 +10557,8 @@ function BlackMarketManager:equip_weapon_in_game(category, slot, force_equip, do
 	local factory_weapon = tweak_data.weapon.factory[self._global.crafted_items[category][slot].factory_id]
 	local ids_unit_name = Idstring(factory_weapon.unit)
 
-	if not managers.dyn_resource:is_resource_ready(Idstring("unit"), ids_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE) then
-		managers.dyn_resource:load(Idstring("unit"), ids_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
+	if not managers.dyn_resource:is_resource_ready(IDS_UNIT, ids_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE) then
+		managers.dyn_resource:load(IDS_UNIT, ids_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
 	end
 
 	local selection_categories = {

@@ -32,6 +32,7 @@ function CriminalsManager:_create_characters()
 		local character_data = {
 			peer_id = 0,
 			taken = false,
+			unit = nil,
 			name = character.name,
 			static_data = static_data,
 			data = {},
@@ -202,7 +203,7 @@ function CriminalsManager:_remove(id)
 	end
 
 	if char_data.safe_loaded_assets then
-		local ids_unit = Idstring("unit")
+		local ids_unit = IDS_UNIT
 
 		for type, asset_ids in pairs(char_data.safe_loaded_assets) do
 			managers.dyn_resource:unload(ids_unit, asset_ids, managers.dyn_resource.DYN_RESOURCES_PACKAGE, false)
@@ -285,7 +286,7 @@ function CriminalsManager:add_character(name, unit, peer_id, ai, ai_loadout)
 end
 
 function CriminalsManager:safe_load_asset(character, asset_name, type)
-	local ids_unit = Idstring("unit")
+	local ids_unit = IDS_UNIT
 	local asset_ids = Idstring(asset_name)
 
 	managers.dyn_resource:load(ids_unit, asset_ids, managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)

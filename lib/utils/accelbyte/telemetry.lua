@@ -25,8 +25,62 @@ Telemetry.event_actions = {
 	piggybank_fed = 1
 }
 
-local is_steam = SystemInfo:distribution() == Idstring("STEAM")
-local is_epic = SystemInfo:distribution() == Idstring("EPIC")
+local is_steam = IS_STEAM
+local is_epic = IS_EPIC
+
+local function generate_uuid()
+	local hex_chars = {
+		"0",
+		"1",
+		"2",
+		"3",
+		"4",
+		"5",
+		"6",
+		"7",
+		"8",
+		"9",
+		"a",
+		"b",
+		"c",
+		"d",
+		"e",
+		"f"
+	}
+	local uuid = ""
+
+	math.randomseed()
+
+	for i = 1, 8 do
+		uuid = uuid .. hex_chars[math.random(#hex_chars)]
+	end
+
+	uuid = uuid .. "-"
+
+	for i = 1, 4 do
+		uuid = uuid .. hex_chars[math.random(#hex_chars)]
+	end
+
+	uuid = uuid .. "-"
+
+	for i = 1, 4 do
+		uuid = uuid .. hex_chars[math.random(#hex_chars)]
+	end
+
+	uuid = uuid .. "-4"
+
+	for i = 1, 3 do
+		uuid = uuid .. hex_chars[math.random(#hex_chars)]
+	end
+
+	uuid = uuid .. "-"
+
+	for i = 1, 12 do
+		uuid = uuid .. hex_chars[math.random(#hex_chars)]
+	end
+
+	return uuid
+end
 
 local function multiline(s)
 	if s:sub(-1) ~= "\n" then
@@ -75,11 +129,11 @@ local function build_payload(event_name, payload, event_namespace)
 end
 
 local function get_platform_name()
-	if SystemInfo:platform() == Idstring("WIN32") then
+	if IS_PC then
 		return "WIN32"
-	elseif SystemInfo:platform() == Idstring("XB1") then
+	elseif IS_XB1 then
 		return "XB1"
-	elseif SystemInfo:platform() == Idstring("PS4") then
+	elseif IS_PS4 then
 		return "PS4"
 	end
 end
@@ -182,13 +236,13 @@ local function get_geolocation()
 	end
 
 	if not Global.telemetry._geolocation then
-		Global.telemetry._bearer_token = Global.telemetry._bearer_token or Utility:generate_token()
+		Global.telemetry._bearer_token = Global.telemetry._bearer_token or SystemInfo:unique_machine_identifier()
 
 		local headers = {}
 
 		headers.Authorization = "Bearer " .. Global.telemetry._bearer_token
 
-		HttpRequest:get(Utility:get_telemetry_url() .. geolocation_endpoint, on_geolocation_retrieved, headers)
+		HttpRequest:get(base_url .. geolocation_endpoint, on_geolocation_retrieved, headers)
 	end
 end
 
@@ -237,13 +291,13 @@ local function update_total_playtime(new_playtime)
 		return
 	end
 
-	Global.telemetry._bearer_token = Global.telemetry._bearer_token or Utility:generate_token()
+	Global.telemetry._bearer_token = Global.telemetry._bearer_token or SystemInfo:unique_machine_identifier()
 
 	local headers = {}
 
 	headers.Authorization = "Bearer " .. Global.telemetry._bearer_token
 
-	HttpRequest:put(Utility:get_telemetry_url() .. endpoint, on_playtime_updated, payload_content_type, nil, headers)
+	HttpRequest:put(base_url .. endpoint, on_playtime_updated, payload_content_type, nil, headers)
 end
 
 local function gather_player_skill_information()
@@ -465,7 +519,7 @@ function Telemetry:send_telemetry(telemetry_body, callback)
 
 		local headers = {}
 
-		Global.telemetry._bearer_token = Global.telemetry._bearer_token or Utility:generate_token()
+		Global.telemetry._bearer_token = Global.telemetry._bearer_token or SystemInfo:unique_machine_identifier()
 		headers.Authorization = "Bearer " .. Global.telemetry._bearer_token
 
 		HttpRequest:post(base_url .. telemetry_endpoint, callback, payload_content_type, telemetry_json, headers)
@@ -530,10 +584,10 @@ function Telemetry:send_gamesight_telemetry_immediately(event_name, payload, eve
 
 		local headers = {}
 
-		Global.telemetry._bearer_token = Global.telemetry._bearer_token or Utility:generate_token()
+		Global.telemetry._bearer_token = Global.telemetry._bearer_token or SystemInfo:unique_machine_identifier()
 		headers.Authorization = "Bearer " .. Global.telemetry._bearer_token
 
-		HttpRequest:post(Utility:get_telemetry_url() .. "/game-telemetry/v1/protected/events", callback, payload_content_type, telemetry_json, headers)
+		HttpRequest:post(base_url .. "/game-telemetry/v1/protected/events", callback, payload_content_type, telemetry_json, headers)
 	else
 		error("error on JSON encoding, cannot send telemetry")
 	end
@@ -566,7 +620,7 @@ function Telemetry:send_on_player_logged_in(reason)
 		return
 	end
 
-	self._global._session_uuid = self._global._session_uuid or Utility:generate_uuid()
+	self._global._session_uuid = self._global._session_uuid or generate_uuid()
 
 	local rev = Application:version()
 
@@ -687,7 +741,7 @@ function Telemetry:on_start_heist()
 	if managers.network.matchmake.lobby_handler then
 		self._heist_id = managers.network.matchmake.lobby_handler:id()
 	else
-		self._heist_id = Utility:generate_uuid()
+		self._heist_id = generate_uuid()
 	end
 
 	self._heist_name = "invalid heist name"
@@ -992,18 +1046,7 @@ function Telemetry:send_on_player_hardware_survey()
 	local telemetry_payload = {}
 
 	telemetry_payload.gameSessionGUID = self._global._session_uuid
-	telemetry_payload.os = Utility:get_os_acrhitecture()
-	telemetry_payload.osVersion = Utility:get_os_version()
-	telemetry_payload.gpuName = Utility:get_gpu_brand()
-	telemetry_payload.gpuType = Utility:get_gpu_model()
-	telemetry_payload.gpuMemory = Utility:get_gpu_memory_gb()
-	telemetry_payload.ram = Utility:get_ram_gb()
-	telemetry_payload.processorType = Utility:get_cpu_vendor()
-	telemetry_payload.processor = Utility:get_cpu_freq_ghz()
-	telemetry_payload.cpu = Utility:get_cpu_model()
-	telemetry_payload.hardDriveSizeTotal = Utility:get_strg_capacity()
-	telemetry_payload.hardDriveSizeAvailable = Utility:get_strg_freespace()
-	telemetry_payload.hardDriveType = Utility:get_strg_type()
+	telemetry_payload.os = SystemInfo:operating_system()
 	telemetry_payload.vrHardware = _G.IS_VR
 
 	self:send("player_hardware_survey", telemetry_payload)
@@ -1066,7 +1109,7 @@ function Telemetry:send_on_game_launch()
 
 	gamesight_identifiers.resolution = resolution
 
-	local os_name = Utility:get_os_name()
+	local os_name = SystemInfo:operating_system()
 
 	if os_name == "error" then
 		cat_print("telemetry", log_name, "problem on getting OS Name.")
@@ -1076,7 +1119,7 @@ function Telemetry:send_on_game_launch()
 
 	gamesight_identifiers.os = os_name
 
-	local os_language = Utility:get_current_language()
+	local os_language = SystemInfo:system_language()
 
 	if string.len(os_language) > 6 then
 		cat_print("telemetry", log_name, os_language)
@@ -1086,7 +1129,7 @@ function Telemetry:send_on_game_launch()
 
 	gamesight_identifiers.language = os_language
 
-	local os_timezone = Utility:get_current_timezone()
+	local os_timezone = SystemInfo:current_timezone()
 
 	if os_timezone == -1 then
 		cat_print("telemetry", log_name, "Unable to get the timezone properly")
@@ -1100,7 +1143,7 @@ function Telemetry:send_on_game_launch()
 	telemetry_payload.type = event_name
 	telemetry_payload.identifiers = gamesight_identifiers or {}
 
-	self:send_gamesight_telemetry_immediately(event_name, telemetry_payload, Utility:get_telemetry_namespace(), telemetry_callback)
+	self:send_gamesight_telemetry_immediately(event_name, telemetry_payload, default_event_namespace, telemetry_callback)
 end
 
 function Telemetry:send_on_player_heist_objective_start()

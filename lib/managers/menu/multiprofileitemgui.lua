@@ -462,27 +462,11 @@ end
 function MultiProfileItemGui:_update_caret()
 	local text = self._name_text
 	local caret = self._caret
-	local s, e = text:selection()
-	local x, y, w, h = text:selection_rect()
+	local blink = InputUtils.common_text_input_update_caret(text, caret, self._editing, nil, {
+		y = 6
+	})
 
-	if s == 0 and e == 0 and utf8.len(text:text()) == 0 then
-		x = text:world_center()
-		y = text:world_y() + 6
-	end
-
-	h = text:line_height()
-
-	if w < 3 then
-		w = 3
-	end
-
-	if not self._editing then
-		w = 0
-		h = 0
-	end
-
-	caret:set_world_shape(x, y + 2, w, h, -8)
-	self:set_blinking(s == e and self._editing)
+	self:set_blinking(blink)
 end
 
 function MultiProfileItemGui:update_key_down(o, k)
@@ -562,35 +546,7 @@ function MultiProfileItemGui:handle_key(k, pressed)
 	local d = math.abs(e - s)
 
 	if pressed then
-		if k == Idstring("backspace") then
-			if s == e and s > 0 then
-				text:set_selection(s - 1, e)
-			end
-
-			text:replace_text("")
-		elseif k == Idstring("delete") then
-			if s == e and s < n then
-				text:set_selection(s, e + 1)
-			end
-
-			text:replace_text("")
-		elseif k == Idstring("left") then
-			if s < e then
-				text:set_selection(s, s)
-			elseif s > 0 then
-				text:set_selection(s - 1, s - 1)
-			end
-		elseif k == Idstring("right") then
-			if s < e then
-				text:set_selection(e, e)
-			elseif s < n then
-				text:set_selection(s + 1, s + 1)
-			end
-		elseif k == Idstring("home") then
-			text:set_selection(0, 0)
-		elseif k == Idstring("end") then
-			text:set_selection(n, n)
-		end
+		InputUtils.common_text_input_key_press(text, k, nil, false, nil, nil, nil)
 	elseif k == Idstring("enter") then
 		self:trigger()
 	elseif k == Idstring("esc") then

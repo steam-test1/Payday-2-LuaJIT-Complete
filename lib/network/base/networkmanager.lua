@@ -34,11 +34,9 @@ require("lib/units/beings/player/PlayerMovement")
 
 NetworkManager = NetworkManager or class()
 
-if SystemInfo:platform() == Idstring("X360") then
-	NetworkManager.DEFAULT_PORT = 1000
-elseif SystemInfo:platform() == Idstring("XB1") then
+if IS_XB1 then
 	NetworkManager.DEFAULT_PORT = 43210
-elseif SystemInfo:platform() == Idstring("PS4") then
+elseif IS_PS4 then
 	NetworkManager.DEFAULT_PORT = 22222
 else
 	NetworkManager.DEFAULT_PORT = 9899
@@ -63,13 +61,9 @@ function NetworkManager:init()
 	}
 	self._event_listener_holder = EventListenerHolder:new()
 
-	if SystemInfo:platform() == Idstring("PS3") then
-		self._is_ps3 = true
-	elseif SystemInfo:platform() == Idstring("X360") then
-		self._is_x360 = true
-	elseif SystemInfo:platform() == Idstring("PS4") then
+	if IS_PS4 then
 		self._is_ps4 = true
-	elseif SystemInfo:platform() == Idstring("XB1") then
+	elseif IS_XB1 then
 		self._is_xb1 = true
 	else
 		self._is_win32 = true
@@ -97,21 +91,8 @@ function NetworkManager:init()
 		self.account = NetworkAccountXBL:new()
 		self.voice_chat = NetworkVoiceChatXBL:new()
 	elseif self._is_win32 then
-		if SystemInfo:distribution() == Idstring("STEAM") then
-			self.account = NetworkAccountSTEAM:new()
-
-			if SystemInfo:matchmaking() == Idstring("MM_STEAM") then
-				self.voice_chat = NetworkVoiceChatSTEAM:new()
-			else
-				self.voice_chat = NetworkVoiceChatDisabled:new()
-			end
-		elseif SystemInfo:distribution() == Idstring("EPIC") then
-			self.account = NetworkAccountEPIC:new()
-			self.voice_chat = NetworkVoiceChatDisabled:new()
-		else
-			self.account = NetworkAccount:new()
-			self.voice_chat = NetworkVoiceChatDisabled:new()
-		end
+		self.account = NetworkAccountSTEAM:new()
+		self.voice_chat = NetworkVoiceChatSTEAM:new()
 	elseif self._is_x360 then
 		self.account = NetworkAccountXBL:new()
 		self.voice_chat = NetworkVoiceChatXBL:new()
@@ -140,13 +121,7 @@ function NetworkManager:_create_lobby()
 	if self._is_win32 then
 		cat_print("lobby", "Online Lobby is PC")
 
-		if SystemInfo:matchmaking() == Idstring("MM_STEAM") then
-			self.matchmake = NetworkMatchMakingSTEAM:new()
-		elseif SystemInfo:matchmaking() == Idstring("MM_EPIC") then
-			self.matchmake = NetworkMatchMakingEPIC:new()
-		else
-			self.matchmake = NetworkMatchMaking:new()
-		end
+		self.matchmake = NetworkMatchMakingSTEAM:new()
 	elseif self._is_ps4 then
 		cat_print("lobby", "Online Lobby is PS4")
 
@@ -162,24 +137,6 @@ function NetworkManager:_create_lobby()
 
 		self._shared_update = self.shared_psn
 	elseif self._is_xb1 then
-		self.friends = NetworkFriendsXBL:new()
-		self.matchmake = NetworkMatchMakingXBL:new()
-	elseif self._is_ps3 then
-		cat_print("lobby", "Online Lobby is PS3")
-
-		self.friends = NetworkFriendsPSN:new()
-		self.group = NetworkGroupLobbyPSN:new()
-		self.matchmake = NetworkMatchMakingPSN:new()
-		self.shared_psn = NetworkGenericPSN:new()
-		self.shared = self.shared_psn
-		self.account = NetworkAccountPSN:new()
-		self.match = nil
-
-		print("voice chat _create_lobby")
-		self:ps3_determine_voice()
-
-		self._shared_update = self.shared_psn
-	elseif self._is_x360 then
 		self.friends = NetworkFriendsXBL:new()
 		self.matchmake = NetworkMatchMakingXBL:new()
 	else
@@ -495,9 +452,7 @@ function NetworkManager:on_discover_host_received(sender)
 
 	print("on_discover_host_received", level_id)
 
-	local my_name
-
-	my_name = SystemInfo:platform() == Idstring("PS3") and "Player 1" or Network:hostname()
+	local my_name = Network:hostname()
 
 	sender:discover_host_reply(my_name, level_id, level_name, sender:ip_at_index(0), state, difficulty)
 end
@@ -666,7 +621,7 @@ function NetworkManager:on_peer_added(peer, peer_id)
 		managers.network.matchmake:set_num_players(managers.network:session():amount_of_players())
 	end
 
-	if SystemInfo:platform() == Idstring("X360") or SystemInfo:platform() == Idstring("XB1") then
+	if IS_XB1 then
 		managers.network.matchmake:on_peer_added(peer)
 	end
 

@@ -1,6 +1,6 @@
 InventoryList = InventoryList or class()
 
-local NOT_WIN_32 = SystemInfo:platform() ~= Idstring("WIN32")
+local NOT_WIN_32 = not IS_PC
 local WIDTH_MULTIPLIER = NOT_WIN_32 and 0.69 or 0.75
 local BOX_GAP = 13.5
 local GRID_H_MUL = (NOT_WIN_32 and 7 or 6) / 8

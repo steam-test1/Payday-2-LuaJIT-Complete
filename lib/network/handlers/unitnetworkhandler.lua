@@ -4609,7 +4609,7 @@ function UnitNetworkHandler:sync_special_character_material(character_unit, mate
 
 	local mtr_ids = Idstring(material_name)
 
-	if DB:has(Idstring("material_config"), mtr_ids) then
+	if DB:has(IDS_MATERIAL_CONFIG, mtr_ids) then
 		character_unit:set_material_config(mtr_ids, true)
 
 		if character_unit:armor_skin() then

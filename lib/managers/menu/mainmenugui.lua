@@ -1,6 +1,6 @@
 require("lib/managers/menu/PlayerInventoryGui")
 
-local IS_WIN_32 = SystemInfo:platform() == Idstring("WIN32")
+local IS_WIN_32 = IS_PC
 local NOT_WIN_32 = not IS_WIN_32
 
 local function make_fine_text(text)

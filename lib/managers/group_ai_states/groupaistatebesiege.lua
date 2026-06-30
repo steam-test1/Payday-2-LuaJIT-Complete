@@ -801,80 +801,6 @@ function GroupAIStateBesiege:_upd_regroup_task()
 	end
 end
 
-function GroupAIStateBesiege:_find_nearest_safe_area(start_area, start_pos)
-	local to_search_areas = {
-		group.objective.area
-	}
-	local found_areas = {
-		[group.objective.area] = "init"
-	}
-
-	repeat
-		local search_area = table.remove(to_search_areas, 1)
-
-		if next(search_area.criminal.units) then
-			assault_area = search_area
-
-			break
-		else
-			for other_area_id, other_area in pairs(search_area.neighbours) do
-				if not found_areas[other_area] then
-					table.insert(to_search_areas, other_area)
-
-					found_areas[other_area] = search_area
-				end
-			end
-		end
-	until #to_search_areas == 0
-
-	local mvec3_dis_sq = mvector3.distance_sq
-	local all_areas = self._area_data
-	local all_nav_segs = managers.navigation._nav_segments
-	local all_doors = managers.navigation._room_doors
-	local my_enemy_pos, my_enemy_dis_sq
-
-	for c_key, c_data in pairs(self._criminals) do
-		local my_dis = mvec3_dis_sq(start_pos, c_data.m_pos)
-
-		if (not my_enemy_pos or my_enemy_dis_sq < my_dis) and math.abs(mvector3.z(c_data.m_pos) - mvector3.z(start_pos)) < 300 then
-			my_enemy_pos = c_data.m_pos
-			my_enemy_dis_sq = my_dis
-		end
-	end
-
-	if not my_enemy_pos or my_enemy_dis_sq > 9000000 then
-		return
-	end
-
-	local closest_dis, closest_safe_nav_seg_id, closest_area
-	local start_neighbours = all_nav_segs[nav_seg_id].neighbours
-
-	for neighbour_seg_id, door_list in pairs(start_neighbours) do
-		local neighbour_area = self:get_area_from_nav_seg_id(neighbour_seg_id)
-
-		if not next(neighbour_area.criminal.units) then
-			local neighbour_nav_seg = all_nav_segs[neighbour_seg_id]
-
-			if not neighbour_nav_seg.disabled and my_enemy_dis_sq < mvec3_dis_sq(my_enemy_pos, neighbour_nav_seg.pos) then
-				for _, i_door in ipairs(door_list) do
-					if type(i_door) == "number" then
-						local door = all_doors[i_door]
-						local my_dis = mvec3_dis_sq(door.center, start_pos)
-
-						if not closest_dis or my_dis < closest_dis then
-							closest_dis = my_dis
-							closest_safe_nav_seg_id = neighbour_seg_id
-							closest_area = neighbour_area
-						end
-					end
-				end
-			end
-		end
-	end
-
-	return closest_area, closest_safe_nav_seg_id
-end
-
 function GroupAIStateBesiege:_upd_recon_tasks()
 	local task_data = self._task_data.recon.tasks[1]
 
@@ -1846,7 +1772,6 @@ function GroupAIStateBesiege:on_cop_jobless(unit)
 	end
 
 	local nav_seg = unit:movement():nav_tracker():nav_segment()
-	local new_occupation = self:find_occupation_in_area(nav_seg)
 	local area = self:get_area_from_nav_seg_id(nav_seg)
 	local force_factor = area.factors.force
 	local demand = force_factor and force_factor.force
@@ -2175,83 +2100,6 @@ function GroupAIStateBesiege:_draw_enemy_activity(t)
 
 			group_id_texts[group_id] = nil
 		end
-	end
-end
-
-function GroupAIStateBesiege:find_occupation_in_area(nav_seg)
-	local doors = managers.navigation:find_segment_doors(nav_seg, callback(self, self, "filter_nav_seg_unsafe"))
-
-	if not next(doors) then
-		return
-	end
-
-	for other_seg, door_list in ipairs(doors) do
-		for i_door, door_data in ipairs(door_list) do
-			door_data.weight = 0
-		end
-	end
-
-	local tmp_vec1 = Vector3()
-	local tmp_vec2 = Vector3()
-	local math_max = math.max
-	local mvec3_lerp = mvector3.lerp
-	local mvec3_dis_sq = mvector3.distance_sq
-	local nav_manager = managers.navigation
-	local area_data = self:get_area_from_nav_seg_id(nav_seg)
-	local area_police = area_data.police.units
-	local unit_data = self._police
-	local guarded_doors = {}
-
-	for u_key, _ in pairs(area_police) do
-		local objective = unit_data[u_key].unit:brain():objective()
-
-		if objective and objective.guard_obj then
-			local door_list = doors[objective.from_seg]
-
-			if door_list then
-				mvec3_lerp(tmp_vec1, objective.guard_obj.door.low_pos, objective.guard_obj.door.high_pos, 0.5)
-
-				for i_door, door_data in ipairs(door_list) do
-					mvec3_lerp(tmp_vec2, door_data.low_pos, door_dataoor.high_pos, 0.5)
-
-					local weight = 1 / math_max(1, mvec3_dis_sq(tmp_vec1, tmp_vec2))
-
-					door_data.weight = door_data.weight + weight
-				end
-			end
-		end
-	end
-
-	local best_door, best_door_weight, best_door_nav_seg
-
-	for other_seg, door_list in ipairs(doors) do
-		for i_door, door_data in ipairs(door_list) do
-			if not best_door or best_door_weight > door_data.weight then
-				best_door = door_data.center
-				best_door_weight = door_data.weight
-				best_door_nav_seg = other_seg
-			end
-		end
-	end
-
-	for other_seg, door_list in ipairs(doors) do
-		for i_door, door_data in ipairs(door_list) do
-			door_data.weight = nil
-		end
-	end
-
-	if best_door then
-		local center = mvector3.copy(best_door.low_pos)
-
-		mvec3_lerp(center, center, best_door.heigh_pos, 0.5)
-
-		best_door.center = center
-
-		return {
-			type = "guard",
-			door = best_door,
-			from_seg = best_door_nav_seg
-		}
 	end
 end
 
@@ -3528,12 +3376,12 @@ function GroupAIStateBesiege:_chk_group_use_smoke_grenade(group, task_data, deto
 						local area = self:get_area_from_nav_seg_id(neighbour_nav_seg_id)
 
 						if task_data.target_areas[1].nav_segs[neighbour_nav_seg_id] or next(area.criminal.units) then
-							local random_door_id = door_list[math.random(#door_list)]
+							local door = door_list[math.random(#door_list)]
 
-							if type(random_door_id) == "number" then
-								detonate_pos = managers.navigation._room_doors[random_door_id].center
+							if door.x then
+								detonate_pos = door
 							else
-								detonate_pos = random_door_id:script_data().element:nav_link_end_pos()
+								detonate_pos = door:script_data().element:nav_link_end_pos()
 							end
 
 							shooter_pos = mvector3.copy(u_data.m_pos)
@@ -3574,12 +3422,12 @@ function GroupAIStateBesiege:_chk_group_use_flash_grenade(group, task_data, deto
 
 					for neighbour_nav_seg_id, door_list in pairs(nav_seg.neighbours) do
 						if task_data.target_areas[1].nav_segs[neighbour_nav_seg_id] then
-							local random_door_id = door_list[math.random(#door_list)]
+							local door = door_list[math.random(#door_list)]
 
-							if type(random_door_id) == "number" then
-								detonate_pos = managers.navigation._room_doors[random_door_id].center
+							if door.x then
+								detonate_pos = door
 							else
-								detonate_pos = random_door_id:script_data().element:nav_link_end_pos()
+								detonate_pos = door:script_data().element:nav_link_end_pos()
 							end
 
 							shooter_pos = mvector3.copy(u_data.m_pos)

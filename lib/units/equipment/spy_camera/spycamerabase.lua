@@ -2,7 +2,7 @@ SpyCameraBase = SpyCameraBase or class(UnitBase)
 SpyCameraBase.UPDATE_RATE = 1.5
 SpyCameraBase.WHISPER_UPDATE_RATE = 4
 
-local IDS_MATERIAL = Idstring("material")
+local IDS_MATERIAL = IDS_MATERIAL
 local IDS_UV0_SPEED = Idstring("uv0_speed")
 
 function SpyCameraBase.spawn(position, rotation, owner, peer_id)
@@ -138,14 +138,16 @@ function SpyCameraBase:on_whisper_mode_changed()
 end
 
 function SpyCameraBase:_update_materials()
-	self._material_clbk_id = nil
+	if alive(self._unit) then
+		self._material_clbk_id = nil
 
-	local uv0_speed = Vector3(1 / (self._update_rate or 1), 0, 0)
+		local uv0_speed = Vector3(1 / (self._update_rate or 1), 0, 0)
 
-	for _, material in ipairs(self._unit:get_objects_by_type(IDS_MATERIAL)) do
-		if material:variable_exists(IDS_UV0_SPEED) then
-			material:set_variable(IDS_UV0_SPEED, uv0_speed)
-			material:set_time(0)
+		for _, material in ipairs(self._unit:get_objects_by_type(IDS_MATERIAL)) do
+			if material:variable_exists(IDS_UV0_SPEED) then
+				material:set_variable(IDS_UV0_SPEED, uv0_speed)
+				material:set_time(0)
+			end
 		end
 	end
 end
@@ -346,6 +348,12 @@ function SpyCameraBase:destroy(unit)
 		managers.enemy:remove_delayed_clbk(self._dropin_clbk_id)
 
 		self._dropin_clbk_id = nil
+	end
+
+	if self._material_clbk_id then
+		managers.enemy:remove_delayed_clbk(self._material_clbk_id)
+
+		self._material_clbk_id = nil
 	end
 
 	if self._whisper_listener then

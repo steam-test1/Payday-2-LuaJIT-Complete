@@ -185,8 +185,6 @@ function HUDManager:remove_chatinput_changed_callback(callback_func)
 	self._chatinput_changed_callback_handler:remove(callback_func)
 end
 
-local is_PS3 = SystemInfo:platform() == Idstring("PS3")
-
 function HUDManager:init_finalize()
 	if not self:exists(self.WAITING_FOR_PLAYERS_SAFERECT) then
 		managers.hud:load_hud(self.WAITING_FOR_PLAYERS_SAFERECT, false, true, true, {})
@@ -443,17 +441,13 @@ end
 
 function HUDManager:_recompile(dir)
 	local source_files = self:_source_files(dir)
-	local t = {
-		send_idstrings = false,
-		target_db_name = "all",
-		verbose = false,
-		platform = string.lower(SystemInfo:platform():s()),
-		source_root = managers.database:root_path() .. "/assets",
-		target_db_root = Application:base_path() .. "assets",
-		source_files = source_files
-	}
 
-	Application:data_compile(t)
+	Application:data_compile({
+		send_idstrings = false,
+		verbose = false,
+		build_profile = Application:build_profile_path(),
+		source_files = source_files
+	})
 	DB:reload()
 	managers.database:clear_all_cached_indices()
 

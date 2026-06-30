@@ -77,6 +77,7 @@ function SkillTreeManager:_setup_skill_switches()
 
 		for i = 1, #tweak_data.skilltree.skill_switches do
 			self._global.skill_switches[i] = {
+				name = nil,
 				specialization = false,
 				unlocked = i == 1,
 				points = Application:digest_value(0, true)
@@ -424,7 +425,7 @@ function SkillTreeManager:unlock(skill_id)
 
 	self:_aquire_skill(skill, skill_id, false)
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		managers.statistics:publish_skills_to_steam()
 	end
 
@@ -720,7 +721,7 @@ function SkillTreeManager:on_respec_tree(tree, forced_respec_multiplier)
 
 	MenuCallbackHandler:_update_outfit_information()
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		managers.statistics:publish_skills_to_steam()
 	end
 end
@@ -1122,7 +1123,7 @@ function SkillTreeManager:version_reset_skilltrees(points_aquired_during_load)
 	self._global.reset_message = true
 	self._global.times_respeced = 1
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		managers.statistics:publish_skills_to_steam()
 	end
 end
@@ -1254,7 +1255,7 @@ function SkillTreeManager:infamy_reset()
 		end
 	end
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		managers.statistics:publish_skills_to_steam()
 	end
 end
@@ -2089,7 +2090,7 @@ function SkillTreeManager:set_current_specialization(tree)
 	self:_check_achievements()
 	MenuCallbackHandler:_update_outfit_information()
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		managers.statistics:publish_skills_to_steam()
 	end
 
@@ -2246,7 +2247,7 @@ function SkillTreeManager:reset()
 
 	self:_setup()
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		managers.statistics:publish_skills_to_steam()
 	end
 end

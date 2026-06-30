@@ -1,4 +1,4 @@
-local ids_unit = Idstring("unit")
+local ids_unit = IDS_UNIT
 
 WeaponFactoryManager = WeaponFactoryManager or class()
 WeaponFactoryManager._uses_tasks = false

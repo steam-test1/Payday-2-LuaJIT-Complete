@@ -122,7 +122,6 @@ function CoreMissionElement:_add_default_saves()
 	self._hed.enabled = true
 	self._hed.debug = nil
 	self._hed.execute_on_startup = false
-	self._hed.execute_on_restart = nil
 	self._hed.base_delay = 0
 	self._hed.base_delay_rand = nil
 	self._hed.trigger_times = 0
@@ -132,6 +131,7 @@ function CoreMissionElement:_add_default_saves()
 		self._hed.orientation_elements = nil
 		self._hed.use_orientation_sequenced = nil
 		self._hed.disable_orientation_on_use = nil
+		self._hed.execute_orientation_on_use = nil
 	end
 
 	if self.USES_INSTIGATOR_RULES then
@@ -152,6 +152,7 @@ function CoreMissionElement:_add_default_saves()
 	table.insert(self._save_values, "orientation_elements")
 	table.insert(self._save_values, "use_orientation_sequenced")
 	table.insert(self._save_values, "disable_orientation_on_use")
+	table.insert(self._save_values, "execute_orientation_on_use")
 	table.insert(self._save_values, "rules_elements")
 	table.insert(self._save_values, "instance_var_names")
 end
@@ -326,6 +327,15 @@ function CoreMissionElement:_build_point_orientation(panel)
 	})
 	sizer:add(disable_orientation_on_use, 0, 4, "EXPAND,LEFT")
 
+	local execute_orientation_on_use = EWS:CheckBox(panel, "Orientation exec on use", "")
+
+	execute_orientation_on_use:set_value(self._hed.execute_orientation_on_use)
+	execute_orientation_on_use:connect("EVT_COMMAND_CHECKBOX_CLICKED", callback(self, self, "set_element_data"), {
+		value = "execute_orientation_on_use",
+		ctrlr = execute_orientation_on_use
+	})
+	sizer:add(execute_orientation_on_use, 0, 4, "EXPAND,LEFT")
+
 	return sizer
 end
 
@@ -463,8 +473,7 @@ end
 function CoreMissionElement:_add_panel(parent, parent_sizer)
 	local panel = EWS:ScrolledWindow(parent, "", "VSCROLL,TAB_TRAVERSAL")
 
-	panel:set_scroll_rate(Vector3(0, 20, 0))
-	panel:set_virtual_size_hints(Vector3(0, 0, 0), Vector3(1, -1, -1))
+	panel:set_scroll_rate(Vector3(1, 20, 0))
 
 	local panel_sizer = EWS:BoxSizer("VERTICAL")
 
@@ -481,27 +490,37 @@ end
 
 function CoreMissionElement:add_help_text(data)
 	if data.panel and data.sizer then
-		local text = EWS:TextCtrl(data.panel, data.text, 0, "TE_MULTILINE,TE_READONLY,TE_WORDWRAP,TE_CENTRE")
+		local help_text = EWS:TextCtrl(data.panel, data.text, 0, "TE_MULTILINE,TE_READONLY,TE_WORDWRAP,TE_CENTRE")
 
-		data.sizer:add(text, 0, 5, "EXPAND,TOP,BOTTOM")
+		data.sizer:add(help_text, 0, 5, "EXPAND,TOP,BOTTOM")
 
-		return text
+		return help_text
 	end
 end
 
 function CoreMissionElement:_add_help_text(text)
-	local help = {
+	return self:add_help_text({
 		panel = self._panel,
 		sizer = self._panel_sizer,
 		text = text
-	}
+	})
+end
 
-	return self:add_help_text(help)
+function CoreMissionElement:_set_help_text(help_text, text)
+	if help_text then
+		help_text:set_value(text or "")
+	else
+		Application:warn("[CoreMissionElement] Tried to set help text without a text control panel", help_text, text)
+	end
 end
 
 function CoreMissionElement:_on_toolbar_add_element()
 	local function f(unit)
-		return unit:type() == Idstring("mission_element") and unit ~= self._unit
+		if unit:type() == Idstring("mission_element") and unit ~= self._unit and managers.editor:current_continent() and unit:unit_data().continent and managers.editor:current_continent() == unit:unit_data().continent then
+			return true
+		end
+
+		return false
 	end
 
 	local dialog = SelectUnitByNameModal:new("Add/Remove element", f)
@@ -512,11 +531,7 @@ function CoreMissionElement:_on_toolbar_add_element()
 end
 
 function CoreMissionElement:_on_toolbar_remove()
-	local unit = self:_current_element_unit()
-
-	if alive(unit) then
-		self:remove_on_execute(unit)
-	end
+	self:remove_on_execute(self:_current_element_unit())
 end
 
 function CoreMissionElement:_on_toolbar_up_element()
@@ -615,6 +630,10 @@ end
 
 function CoreMissionElement:selected()
 	self:append_elements_sorted()
+end
+
+function CoreMissionElement:on_unselected()
+	return
 end
 
 function CoreMissionElement:update_selected()

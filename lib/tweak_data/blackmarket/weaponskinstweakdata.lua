@@ -6220,8 +6220,8 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 		wpn_fps_aug_body_f90 = {
 			[Idstring("mtr_f90"):key()] = {
 				sticker = Idstring("units/payday2_cash/safes/pack/sticker/sticker_vargtimmer_df"),
-				uv_scale = Vector3(4.64875, 20, 0.489626),
-				uv_offset_rot = Vector3(0.0825188, 0.962172, 0)
+				uv_offset_rot = Vector3(0.367789, 1.40708, 3.15133),
+				uv_scale = Vector3(5, 24, 0.489626)
 			}
 		},
 		wpn_fps_aug_fg_a3 = {
@@ -24756,9 +24756,9 @@ function BlackMarketTweakData:_init_weapon_skins(tweak_data)
 				pattern = "units/payday2_cash/safes/skf/pattern/skf_pattern_005_b_df",
 				sticker = "units/payday2_cash/safes/skf/sticker/skf_sticker_005_df",
 				pattern_tweak = Vector3(1.20878, 3.00148, 1),
-				uv_scale = Vector3(7.11353, 0.0100002, 0.425233),
 				pattern_pos = Vector3(0.0748201, -0.260911, 0),
-				uv_offset_rot = Vector3(-0.27999, 1.08419, 0)
+				uv_scale = Vector3(8.82891, 1.42094, 0.425233),
+				uv_offset_rot = Vector3(-0.308609, 1.00641, 0)
 			},
 			[Idstring("aug"):key()] = {
 				pattern = "units/payday2_cash/safes/skf/pattern/skf_pattern_005_b_df",

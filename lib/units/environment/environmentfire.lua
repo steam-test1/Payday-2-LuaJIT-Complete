@@ -324,6 +324,10 @@ function EnvironmentFire:_do_damage()
 	self._burn_tick_counter = 0
 end
 
+function EnvironmentFire:pre_destroy(unit)
+	return
+end
+
 function EnvironmentFire:destroy(unit)
 	for _, damage_effect_entry in pairs(self._molotov_damage_effect_table) do
 		World:effect_manager():fade_kill(damage_effect_entry.effect_id)

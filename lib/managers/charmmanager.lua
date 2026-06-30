@@ -30,7 +30,7 @@ local next = next
 local pairs = pairs
 
 CharmManager = CharmManager or class()
-CharmManager.fps = SystemInfo:platform() ~= Idstring("WIN32") and 30 or 45
+CharmManager.fps = IS_PC and 45 or 30
 CharmManager.beta = 0.8
 CharmManager.inertia_factor = 15
 CharmManager.inertia_duration = 0.16666666666666666

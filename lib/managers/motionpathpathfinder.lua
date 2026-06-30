@@ -71,6 +71,7 @@ function MotionPathPathFinder:_add_path(path)
 		end
 
 		local node = {
+			came_from = nil,
 			g_score = 0,
 			heuristic = 1000000,
 			path = path,

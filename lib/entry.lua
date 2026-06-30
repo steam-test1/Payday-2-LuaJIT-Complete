@@ -1,4 +1,5 @@
 require("lib/utils/Version")
+require("lib/utils/DistributionWrapper")
 
 local selected_setup
 

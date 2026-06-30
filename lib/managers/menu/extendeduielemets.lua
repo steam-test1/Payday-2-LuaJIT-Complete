@@ -426,13 +426,11 @@ function ScrollItemList:mouse_moved(button, x, y)
 			if self._selected_item ~= v then
 				self:select_item(v)
 			end
-
-			if used then
-				return used, pointer
-			end
-
-			break
 		end
+	end
+
+	if used then
+		return used, pointer
 	end
 
 	return ScrollItemList.super.mouse_moved(self, button, x, y)
@@ -518,10 +516,22 @@ function ScrollItemList:select_item(item)
 		self._selected_item = nil
 	end
 
+	if self._selected_item and self._selected_item._hover_changed then
+		self._selected_item:_hover_changed(false)
+
+		self._selected_item = nil
+	end
+
 	if item and item.set_selected then
 		self._selected_item = item
 
 		item:set_selected(true)
+	end
+
+	if item and item._hover_changed then
+		self._selected_item = item
+
+		item:_hover_changed(true)
 	end
 
 	self:_on_selected_changed(item)

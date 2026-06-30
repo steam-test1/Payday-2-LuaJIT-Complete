@@ -510,7 +510,7 @@ function MenuComponentManager:_setup_controller_input()
 
 		self._controller_connected = true
 
-		if SystemInfo:platform() == Idstring("WIN32") then
+		if IS_PC then
 			self._fullscreen_ws:connect_keyboard(Input:keyboard())
 			self._fullscreen_ws:panel():key_press(callback(self, self, "key_press_controller_support"))
 		end
@@ -527,7 +527,7 @@ function MenuComponentManager:_destroy_controller_input()
 
 		self._controller_connected = nil
 
-		if SystemInfo:platform() == Idstring("WIN32") then
+		if IS_PC then
 			self._fullscreen_ws:disconnect_keyboard()
 			self._fullscreen_ws:panel():key_press(nil)
 		end
@@ -2462,7 +2462,7 @@ function MenuComponentManager:close_weapon_box()
 end
 
 function MenuComponentManager:_create_chat_gui()
-	if SystemInfo:platform() == Idstring("WIN32") and MenuCallbackHandler:is_multiplayer() and managers.network:session() then
+	if IS_PC and MenuCallbackHandler:is_multiplayer() and managers.network:session() then
 		self._preplanning_chat_gui_active = false
 		self._lobby_chat_gui_active = false
 		self._crimenet_chat_gui_active = false
@@ -2481,7 +2481,7 @@ function MenuComponentManager:_create_chat_gui()
 end
 
 function MenuComponentManager:_create_lobby_chat_gui()
-	if SystemInfo:platform() == Idstring("WIN32") and MenuCallbackHandler:is_multiplayer() and managers.network:session() then
+	if IS_PC and MenuCallbackHandler:is_multiplayer() and managers.network:session() then
 		self._preplanning_chat_gui_active = false
 		self._lobby_chat_gui_active = true
 		self._crimenet_chat_gui_active = false
@@ -2500,7 +2500,7 @@ function MenuComponentManager:_create_lobby_chat_gui()
 end
 
 function MenuComponentManager:_create_crimenet_chats_gui()
-	if SystemInfo:platform() == Idstring("WIN32") and MenuCallbackHandler:is_multiplayer() and managers.network:session() then
+	if IS_PC and MenuCallbackHandler:is_multiplayer() and managers.network:session() then
 		self._preplanning_chat_gui_active = false
 		self._crimenet_chat_gui_active = true
 		self._lobby_chat_gui_active = false
@@ -2519,7 +2519,7 @@ function MenuComponentManager:_create_crimenet_chats_gui()
 end
 
 function MenuComponentManager:_create_preplanning_chats_gui()
-	if SystemInfo:platform() == Idstring("WIN32") and MenuCallbackHandler:is_multiplayer() and managers.network:session() then
+	if IS_PC and MenuCallbackHandler:is_multiplayer() and managers.network:session() then
 		self._preplanning_chat_gui_active = true
 		self._crimenet_chat_gui_active = false
 		self._lobby_chat_gui_active = false
@@ -2538,7 +2538,7 @@ function MenuComponentManager:_create_preplanning_chats_gui()
 end
 
 function MenuComponentManager:_create_inventory_chats_gui(node)
-	if SystemInfo:platform() == Idstring("WIN32") and MenuCallbackHandler:is_multiplayer() and managers.network:session() then
+	if IS_PC and MenuCallbackHandler:is_multiplayer() and managers.network:session() then
 		self._preplanning_chat_gui_active = false
 		self._crimenet_chat_gui_active = false
 		self._lobby_chat_gui_active = false
@@ -2587,7 +2587,7 @@ function MenuComponentManager:create_chat_gui()
 end
 
 function MenuComponentManager:add_game_chat()
-	if SystemInfo:platform() == Idstring("WIN32") then
+	if IS_PC then
 		self._game_chat_gui = ChatGui:new(self._ws)
 
 		if self._game_chat_params then
@@ -2599,7 +2599,7 @@ function MenuComponentManager:add_game_chat()
 end
 
 function MenuComponentManager:set_max_lines_game_chat(max_lines)
-	if SystemInfo:platform() == Idstring("WIN32") then
+	if IS_PC then
 		if self._game_chat_gui then
 			self._game_chat_gui:set_max_lines(max_lines)
 		else
@@ -2700,7 +2700,7 @@ function MenuComponentManager:set_crimenet_chat_gui(state)
 end
 
 function MenuComponentManager:_create_friends_gui()
-	if SystemInfo:platform() == Idstring("WIN32") then
+	if IS_PC then
 		if self._friends_book then
 			self._friends_book:set_enabled(true)
 
@@ -4183,7 +4183,7 @@ end
 function MenuComponentManager:create_newsfeed_gui()
 	self:close_newsfeed_gui()
 
-	if SystemInfo:platform() == Idstring("WIN32") then
+	if IS_PC then
 		self._newsfeed_gui = NewsFeedGui:new(self._ws)
 	end
 end

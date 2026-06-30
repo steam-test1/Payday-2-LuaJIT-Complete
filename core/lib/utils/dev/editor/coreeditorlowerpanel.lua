@@ -293,7 +293,7 @@ end
 function CoreEditor:_unit_materials(unit)
 	local names = {}
 
-	for _, material in ipairs(unit:get_objects_by_type(Idstring("material"))) do
+	for _, material in ipairs(unit:get_objects_by_type(IDS_MATERIAL)) do
 		if not table.contains(names, material:name():s()) then
 			table.insert(names, material:name():s())
 		end

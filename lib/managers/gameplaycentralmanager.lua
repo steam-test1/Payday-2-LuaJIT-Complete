@@ -2,7 +2,7 @@ local tmp_vec1 = Vector3()
 local tmp_vec2 = Vector3()
 local tmp_vec3 = Vector3()
 local tmp_vec4 = Vector3()
-local empty_idstr = Idstring("")
+local empty_idstr = IDS_EMPTY
 local idstr_concrete = Idstring("concrete")
 local idstr_blood_spatter = Idstring("blood_spatter")
 local idstr_blood_screen = Idstring("effects/particles/character/player/blood_screen")
@@ -61,12 +61,8 @@ function GamePlayCentralManager:init()
 		start_time = 0
 	}
 	self._access_cameras = {}
-
-	local is_ps3 = SystemInfo:platform() == Idstring("PS3")
-	local is_x360 = SystemInfo:platform() == Idstring("X360")
-
-	self._block_bullet_decals = is_ps3 or is_x360
-	self._block_blood_decals = is_x360
+	self._block_bullet_decals = false
+	self._block_blood_decals = false
 	self._decal_unit_redirect = {}
 	self._impact_override = {}
 end
@@ -1145,7 +1141,7 @@ function GamePlayCentralManager:load(data)
 		self._pubg_cargos_spawned_units = state.pubg_cargos_spawned_units
 
 		for _, unit in ipairs(self._pubg_cargos_spawned_units) do
-			managers.dyn_resource:load(Idstring("unit"), Idstring(unit), managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
+			managers.dyn_resource:load(IDS_UNIT, Idstring(unit), managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
 		end
 	end
 end

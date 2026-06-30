@@ -65,7 +65,9 @@ function NetworkMatchMakingXBL:invite_accepted_callback(invitee_xuid)
 
 		Global.boot_invite[invitee_xuid_str] = nil
 
-		managers.menu:show_inactive_user_accepted_invite({})
+		managers.menu:show_inactive_user_accepted_invite({
+			ok_func = nil
+		})
 		managers.user:invite_accepted_by_inactive_user()
 
 		return
@@ -474,6 +476,7 @@ function NetworkMatchMakingXBL:_find_server_callback(cancel_id, servers, mode)
 
 		print(inspect(server))
 		table.insert(info.room_list, {
+			owner_id = nil,
 			owner_name = server.properties.GAMERHOSTNAME,
 			xuid = server.properties.GAMERHOSTXUID,
 			room_id = server.info:id(),
@@ -1419,7 +1422,7 @@ function NetworkMatchMakingXBL:on_peer_added(peer)
 
 	XboxLive:set_up_p2p_in_session(self._session)
 
-	if SystemInfo:platform() == Idstring("XB1") and not peer:xnaddr() then
+	if IS_XB1 and not peer:xnaddr() then
 		return
 	end
 

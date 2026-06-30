@@ -1,14 +1,10 @@
 core:module("CorePortableSessionCreator")
 core:import("CoreFakeSessionCreator")
 
-if SystemInfo:platform() == Idstring("X360") then
+if IS_PC then
 	Creator = CoreFakeSessionCreator.Creator
-elseif SystemInfo:platform() == Idstring("WIN32") then
+elseif IS_XB1 then
 	Creator = CoreFakeSessionCreator.Creator
-elseif SystemInfo:platform() == Idstring("PS3") then
-	Creator = CoreFakeSessionCreator.Creator
-elseif SystemInfo:platform() == Idstring("XB1") then
-	Creator = CoreFakeSessionCreator.Creator
-elseif SystemInfo:platform() == Idstring("PS4") then
+elseif IS_PS4 then
 	Creator = CoreFakeSessionCreator.Creator
 end

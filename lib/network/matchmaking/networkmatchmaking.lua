@@ -95,7 +95,7 @@ function NetworkMatchMaking:load_user_filters()
 	local in_lobby = managers.user:get_setting("crimenet_filter_in_lobby")
 	local max_servers = managers.user:get_setting("crimenet_filter_max_servers")
 
-	if SystemInfo:matchmaking() == Idstring("MM_EPIC") then
+	if IS_EPIC_MM then
 		local distance = managers.user:get_setting("crimenet_filter_distance_epic")
 	else
 		local distance = managers.user:get_setting("crimenet_filter_distance")
@@ -110,7 +110,7 @@ function NetworkMatchMaking:load_user_filters()
 	managers.network.matchmake:set_lobby_return_count(max_servers)
 	managers.network.matchmake:add_lobby_filter("num_players", new_servers, "equal")
 
-	if SystemInfo:matchmaking() == Idstring("MM_EPIC") then
+	if IS_EPIC_MM then
 		managers.network.matchmake:set_distance_filter(managers.user:get_setting("crimenet_filter_distance_epic"))
 	else
 		managers.network.matchmake:set_distance_filter(managers.user:get_setting("crimenet_filter_distance"))

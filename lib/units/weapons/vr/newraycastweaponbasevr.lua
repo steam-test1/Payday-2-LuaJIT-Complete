@@ -119,8 +119,8 @@ function NewRaycastWeaponBaseVR:start_reload(total_time)
 	if belt_mag_unit then
 		local belt_mag_unit_id = Idstring(belt_mag_unit)
 
-		if not managers.dyn_resource:is_resource_ready(Idstring("unit"), belt_mag_unit_id, managers.dyn_resource.DYN_RESOURCES_PACKAGE) then
-			managers.dyn_resource:load(Idstring("unit"), belt_mag_unit_id, managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
+		if not managers.dyn_resource:is_resource_ready(IDS_UNIT, belt_mag_unit_id, managers.dyn_resource.DYN_RESOURCES_PACKAGE) then
+			managers.dyn_resource:load(IDS_UNIT, belt_mag_unit_id, managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
 		end
 	end
 
@@ -361,8 +361,8 @@ function NewRaycastWeaponBaseVR:spawn_belt_magazine_unit(pos)
 	if belt_mag_unit then
 		local belt_mag_unit_id = Idstring(belt_mag_unit)
 
-		if not managers.dyn_resource:is_resource_ready(Idstring("unit"), belt_mag_unit_id, managers.dyn_resource.DYN_RESOURCES_PACKAGE) then
-			managers.dyn_resource:load(Idstring("unit"), belt_mag_unit_id, managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
+		if not managers.dyn_resource:is_resource_ready(IDS_UNIT, belt_mag_unit_id, managers.dyn_resource.DYN_RESOURCES_PACKAGE) then
+			managers.dyn_resource:load(IDS_UNIT, belt_mag_unit_id, managers.dyn_resource.DYN_RESOURCES_PACKAGE, nil)
 		end
 
 		return World:spawn_unit(belt_mag_unit_id, pos or Vector3(), Rotation())

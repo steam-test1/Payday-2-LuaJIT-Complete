@@ -263,7 +263,7 @@ function CoreSetup:__init()
 		local frame_resolution = SystemInfo:desktop_resolution()
 
 		aspect_ratio = frame_resolution.x / frame_resolution.y
-	elseif SystemInfo:platform() == Idstring("WIN32") then
+	elseif IS_WIN32 then
 		aspect_ratio = RenderSettings.aspect_ratio
 
 		if aspect_ratio == 0 then
@@ -391,7 +391,7 @@ end
 function CoreSetup:__paused_update(t, dt)
 	managers.viewport:paused_update(t, dt)
 
-	if SystemInfo:platform() == Idstring("XB1") then
+	if IS_XB1 then
 		managers.controller:update(t, dt)
 	else
 		managers.controller:paused_update(t, dt)
@@ -456,7 +456,6 @@ function CoreSetup:__end_frame(t, dt)
 		end
 
 		World:unload_all_units()
-		Application:resource_soft_reset()
 
 		if managers.menu_scene then
 			managers.menu_scene:unload()

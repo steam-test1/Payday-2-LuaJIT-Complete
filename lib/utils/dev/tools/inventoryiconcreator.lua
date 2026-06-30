@@ -91,7 +91,7 @@ function InventoryIconCreator:_create_weapon(factory_id, blueprint, weapon_skin_
 	if factory_data then
 		local unit_name = factory_data.unit
 
-		managers.dyn_resource:load(Idstring("unit"), Idstring(unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
+		managers.dyn_resource:load(IDS_UNIT, Idstring(unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 
 		local thisrot = self._item_rotation
 		local rot = thisrot and Rotation(thisrot[1] + 180, thisrot[2], thisrot[3]) or Rotation(180, 0, 0)
@@ -121,7 +121,7 @@ function InventoryIconCreator:_create_mask(mask_id, blueprint)
 	local rot = Rotation(thisrot[1] + 90, thisrot[2] + 90, thisrot[3])
 	local mask_unit_name = managers.blackmarket:mask_unit_name_by_mask_id(mask_id)
 
-	managers.dyn_resource:load(Idstring("unit"), Idstring(mask_unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
+	managers.dyn_resource:load(IDS_UNIT, Idstring(mask_unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 
 	self._mask_unit = World:spawn_unit(Idstring(mask_unit_name), self._item_position, rot)
 
@@ -146,7 +146,7 @@ function InventoryIconCreator:_create_melee(melee_id)
 	local melee_weapon = tweak_data.blackmarket.melee_weapons[melee_id]
 	local melee_unit_name = melee_weapon.unit
 
-	managers.dyn_resource:load(Idstring("unit"), Idstring(melee_unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
+	managers.dyn_resource:load(IDS_UNIT, Idstring(melee_unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 
 	self._melee_unit = World:spawn_unit(Idstring(melee_unit_name), self._item_position, rot)
 
@@ -194,7 +194,7 @@ function InventoryIconCreator:_create_throwable(throwable_id)
 	local rot = Rotation(thisrot[1], thisrot[2], thisrot[3])
 	local throwable_unit_name = tweak_data.blackmarket.projectiles[throwable_id].unit_dummy
 
-	managers.dyn_resource:load(Idstring("unit"), Idstring(throwable_unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
+	managers.dyn_resource:load(IDS_UNIT, Idstring(throwable_unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 
 	self._throwable_unit = World:spawn_unit(Idstring(throwable_unit_name), self._item_position, rot)
 
@@ -215,7 +215,7 @@ function InventoryIconCreator:_create_character(character_name, anim_pose, play_
 	local character_id = managers.blackmarket:get_character_id_by_character_name(character_name)
 	local unit_name = tweak_data.blackmarket.characters[character_id].menu_unit
 
-	managers.dyn_resource:load(Idstring("unit"), Idstring(unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
+	managers.dyn_resource:load(IDS_UNIT, Idstring(unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 
 	self._character_unit = World:spawn_unit(Idstring(unit_name), self._item_position, rot)
 
@@ -321,7 +321,7 @@ function InventoryIconCreator:_create_poser(params)
 
 		local mask_unit_name = managers.blackmarket:mask_unit_name_by_mask_id(params.mask_id)
 
-		managers.dyn_resource:load(Idstring("unit"), Idstring(mask_unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
+		managers.dyn_resource:load(IDS_UNIT, Idstring(mask_unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 		self._character_unit:base():set_mask_id(params.mask_id)
 
 		local mask_align = self._character_unit:get_object(Idstring("Head"))

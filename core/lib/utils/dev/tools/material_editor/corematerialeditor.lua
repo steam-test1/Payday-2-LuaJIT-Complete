@@ -484,13 +484,9 @@ function CoreMaterialEditor:_save_to_disk(path)
 	local global_file = self:_save_global_to_disk(false)
 
 	Application:data_compile({
-		preprocessor_definitions = "preprocessor_definitions",
 		send_idstrings = false,
-		target_db_name = "all",
 		verbose = false,
-		platform = string.lower(SystemInfo:platform():s()),
-		source_root = managers.database:base_path(),
-		target_db_root = Application:base_path() .. "assets",
+		build_profile = Application:build_profile_path(),
 		source_files = {
 			managers.database:entry_relative_path(path),
 			managers.database:entry_relative_path(global_file)
@@ -515,13 +511,9 @@ function CoreMaterialEditor:_save_global_to_disk(recompile)
 
 	if recompile then
 		Application:data_compile({
-			preprocessor_definitions = "preprocessor_definitions",
 			send_idstrings = false,
-			target_db_name = "all",
 			verbose = false,
-			platform = string.lower(SystemInfo:platform():s()),
-			source_root = managers.database:base_path(),
-			target_db_root = Application:base_path() .. "assets",
+			build_profile = Application:build_profile_path(),
 			source_files = {
 				managers.database:entry_relative_path(global_file)
 			}

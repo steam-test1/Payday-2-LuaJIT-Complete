@@ -3,7 +3,6 @@ MenuSceneManagerVR = MenuSceneManager or Application:error("MenuSceneManagerVR r
 local __init = MenuSceneManager.init
 local __update = MenuSceneManager.update
 local __destroy = MenuSceneManager.destroy
-local ids_unit = Idstring("unit")
 
 function MenuSceneManagerVR:init()
 	__init(self)

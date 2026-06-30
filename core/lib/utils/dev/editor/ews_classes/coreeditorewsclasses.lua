@@ -1180,7 +1180,6 @@ function GlobalSelectUnit:init(...)
 	local layers_scrollable_window = EWS:ScrolledWindow(self._panel, "", "VSCROLL")
 
 	layers_scrollable_window:set_scroll_rate(Vector3(0, 5, 0))
-	layers_scrollable_window:set_virtual_size_hints(Vector3(0, 0, 0), Vector3(1, -1, -1))
 	layers_scrollable_window:set_virtual_size(Vector3(200, 2000, 0))
 	horizontal_ctrlr_sizer:add(layers_scrollable_window, 1, 0, "EXPAND")
 
@@ -1435,7 +1434,7 @@ function GlobalSelectUnit:_all_unit_names()
 
 	for name, layer in pairs(layers) do
 		for unit_name, unit_resource in pairs(layer:get_unit_map()) do
-			names[unit_name] = unit_resource:type():s()
+			names[unit_name] = unit_resource
 		end
 	end
 
@@ -2739,7 +2738,6 @@ function UnitDuality:create_panel(orientation)
 	self._scrolled_window = EWS:ScrolledWindow(self._dialog, "", "VSCROLL")
 
 	self._scrolled_window:set_scroll_rate(Vector3(0, 1, 0))
-	self._scrolled_window:set_virtual_size_hints(Vector3(0, 0, 0), Vector3(1, -1, -1))
 
 	self._scrolled_main_sizer = EWS:StaticBoxSizer(self._scrolled_window, "VERTICAL", "")
 

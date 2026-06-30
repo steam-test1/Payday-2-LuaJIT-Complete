@@ -357,8 +357,12 @@ end
 function MissionManager:client_run_mission_element(id, unit, orientation_element_index, id_from)
 	for name, data in pairs(self._scripts) do
 		if data:element(id) then
-			data:element(id):set_synced_orientation_element_index(orientation_element_index)
-			data:element(id):client_on_executed(unit, nil, nil, id_from > 0 and id_from or nil)
+			if data:element(id).client_on_executed then
+				data:element(id):set_synced_orientation_element_index(orientation_element_index)
+				data:element(id):client_on_executed(unit)
+			else
+				debug_pause("[MissionManager:client_run_mission_element] Trying to run client_on_executed on an element that doesn't implement it:", data:element(id):editor_name(), mission_id, id, inspect(unit), orientation_element_index)
+			end
 
 			return
 		end
@@ -368,8 +372,9 @@ end
 function MissionManager:client_run_mission_element_end_screen(id, unit, orientation_element_index, id_from)
 	for name, data in pairs(self._scripts) do
 		if data:element(id) then
+			data:element(id):set_synced_orientation_element_index(orientation_element_index)
+
 			if data:element(id).client_on_executed_end_screen then
-				data:element(id):set_synced_orientation_element_index(orientation_element_index)
 				data:element(id):client_on_executed_end_screen(unit, nil, nil, id_from > 0 and id_from or nil)
 			end
 

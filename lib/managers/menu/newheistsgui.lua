@@ -384,17 +384,17 @@ function NewHeistsGui:mouse_pressed(button, x, y)
 		local heist_data = tweak_data.gui.new_heists[self._current_page]
 		local url = ""
 
-		if SystemInfo:distribution() == Idstring("STEAM") then
+		if IS_STEAM then
 			url = heist_data.url or ""
-		elseif SystemInfo:distribution() == Idstring("EPIC") then
+		elseif IS_EPIC then
 			url = heist_data.epic_url or ""
 		end
 
-		if SystemInfo:distribution() == Idstring("STEAM") and heist_data.append_steam_id and managers.user:get_setting("use_telemetry") then
+		if IS_STEAM and heist_data.append_steam_id and managers.user:get_setting("use_telemetry") then
 			url = url .. heist_data.append_steam_id .. managers.network.account:player_id()
 		end
 
-		if SystemInfo:distribution() == Idstring("EPIC") and heist_data.append_epic_id and managers.user:get_setting("use_telemetry") then
+		if IS_EPIC and heist_data.append_epic_id and managers.user:get_setting("use_telemetry") then
 			-- Nothing
 		end
 

@@ -320,7 +320,7 @@ end
 function ArmorSkinExt:_update_materials()
 	local use = self:use_cc()
 	local use_cc_material_config = use and self._cosmetics_data and not self._cosmetics_data.ignore_cc and true or false
-	local material_config_ids = Idstring("material_config")
+	local material_config_ids = IDS_MATERIAL_CONFIG
 
 	if use_cc_material_config then
 		local new_material_config_ids = self:_get_cc_material_config()
@@ -331,7 +331,7 @@ function ArmorSkinExt:_update_materials()
 
 		self._materials = {}
 
-		local materials = self._unit:get_objects_by_type(Idstring("material"))
+		local materials = self._unit:get_objects_by_type(IDS_MATERIAL)
 
 		for _, m in ipairs(materials) do
 			if m:variable_exists(Idstring("wear_tear_value")) then

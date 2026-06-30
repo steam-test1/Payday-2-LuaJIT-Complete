@@ -857,13 +857,9 @@ function CoreParticleEditorPanel:do_save(warn_on_overwrite)
 
 	if self._valid_effect then
 		Application:data_compile({
-			preprocessor_definitions = "preprocessor_definitions",
 			send_idstrings = false,
-			target_db_name = "all",
 			verbose = false,
-			platform = string.lower(SystemInfo:platform():s()),
-			source_root = managers.database:base_path(),
-			target_db_root = Application:base_path() .. "/assets",
+			build_profile = Application:build_profile_path(),
 			source_files = {
 				managers.database:entry_relative_path(self._effect:name())
 			}

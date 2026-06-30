@@ -12779,11 +12779,7 @@ function CharacterTweakData:_set_easy_wish()
 end
 
 function CharacterTweakData:_set_overkill_290()
-	if SystemInfo:platform() == Idstring("PS3") then
-		self:_multiply_all_hp(6, 1.5)
-	else
-		self:_multiply_all_hp(6, 1.5)
-	end
+	self:_multiply_all_hp(6, 1.5)
 
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[1].dmg_mul = 2.5
 	self.marshal_marksman.weapon.is_rifle.FALLOFF[2].dmg_mul = 5

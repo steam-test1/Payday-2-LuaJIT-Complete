@@ -7,7 +7,7 @@ PlayerInventory._all_event_types = {
 	"shield_unequip"
 }
 
-local ids_unit = Idstring("unit")
+local ids_unit = IDS_UNIT
 
 PlayerInventory._NET_EVENTS = {
 	feedback_start = 3,
@@ -119,7 +119,7 @@ function PlayerInventory:destroy_all_items()
 	end
 
 	if self._melee_weapon_unit_name then
-		managers.dyn_resource:unload(Idstring("unit"), self._melee_weapon_unit_name, DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
+		managers.dyn_resource:unload(IDS_UNIT, self._melee_weapon_unit_name, DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 
 		self._melee_weapon_unit_name = nil
 	end
@@ -933,7 +933,7 @@ function PlayerInventory:set_mask_visibility(state)
 
 	local mask_unit_name = managers.criminals:character_data_by_name(character_name).mask_obj
 
-	if not managers.dyn_resource:is_resource_ready(Idstring("unit"), mask_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE) then
+	if not managers.dyn_resource:is_resource_ready(IDS_UNIT, mask_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE) then
 		return
 	end
 
@@ -1034,7 +1034,7 @@ function PlayerInventory:set_melee_weapon(melee_weapon_id, is_npc)
 	end
 
 	if self._melee_weapon_unit_name then
-		managers.dyn_resource:load(Idstring("unit"), self._melee_weapon_unit_name, "packages/dyn_resources", false)
+		managers.dyn_resource:load(IDS_UNIT, self._melee_weapon_unit_name, "packages/dyn_resources", false)
 	end
 end
 

@@ -22,7 +22,7 @@ function LobbyCodeMenuComponent:init(ws, fullscreen_ws, node)
 	Global.lobby_code = Global.lobby_code or {}
 
 	if managers.network.matchmake.lobby_handler then
-		self._id_code = managers.network.matchmake.lobby_handler:id()
+		self._id_code = managers.network.matchmake.lobby_handler:lobby_hash()
 
 		self:create_hub_panel()
 
@@ -46,7 +46,7 @@ function LobbyCodeMenuComponent:create_hub_panel()
 	local panel_w, panel_h = 0, 0
 
 	self._lobby_id_text = self._panel:text({
-		layer = 101,
+		layer = 2,
 		name = "lobby_id_text",
 		y = 5,
 		font = medium_font,
@@ -59,7 +59,7 @@ function LobbyCodeMenuComponent:create_hub_panel()
 
 	self._id_text = self._panel:text({
 		align = "center",
-		layer = 101,
+		layer = 3,
 		name = "title",
 		y = 5,
 		font = medium_font,
@@ -67,11 +67,11 @@ function LobbyCodeMenuComponent:create_hub_panel()
 		text = self._id_code,
 		x = self._lobby_id_text:right(),
 		h = medium_font_size,
-		color = Color(1, 0.5, 0.5, 0.5)
+		color = Color(1, 0.7, 0.7, 0.7)
 	})
 	self._code_hidden_text = self._panel:text({
 		align = "center",
-		layer = 106,
+		layer = 3,
 		name = "title",
 		y = 5,
 		font = medium_font,
@@ -79,7 +79,7 @@ function LobbyCodeMenuComponent:create_hub_panel()
 		text = managers.localization:text("menu_lobby_code_hidden"),
 		x = self._lobby_id_text:right(),
 		h = medium_font_size,
-		color = Color(1, 0.5, 0.5, 0.5)
+		color = Color(1, 0.7, 0.7, 0.7)
 	})
 
 	local _, _, id_width, id_height = self._id_text:text_rect()
@@ -92,8 +92,8 @@ function LobbyCodeMenuComponent:create_hub_panel()
 
 	self._code_hider = self._panel:rect({
 		alpha = 0.5,
-		layer = 105,
-		visible = false,
+		layer = 2,
+		visible = true,
 		x = self._id_text:x(),
 		y = self._id_text:y(),
 		w = self._id_text:w(),
@@ -102,7 +102,7 @@ function LobbyCodeMenuComponent:create_hub_panel()
 	})
 	self._button_panel = self._panel:panel({
 		h = 32,
-		layer = 101,
+		layer = 2,
 		w = 32
 	})
 
@@ -110,7 +110,7 @@ function LobbyCodeMenuComponent:create_hub_panel()
 	self._button_panel:set_center_y(self._id_text:center_y())
 
 	self._copy_icon = self._button_panel:bitmap({
-		layer = 101,
+		layer = 2,
 		texture = "guis/dlcs/shub/textures/copy_icon",
 		w = self._button_panel:w(),
 		h = self._button_panel:h()
@@ -118,7 +118,7 @@ function LobbyCodeMenuComponent:create_hub_panel()
 
 	if not managers.menu:is_pc_controller() then
 		self._copy_button_prompt = self._button_panel:text({
-			layer = 101,
+			layer = 2,
 			name = "copy_button_prompt",
 			font = medium_font,
 			font_size = medium_font_size,
@@ -133,13 +133,13 @@ function LobbyCodeMenuComponent:create_hub_panel()
 
 	self._lower_panel = self._panel:panel({
 		halign = "grow",
-		layer = 101,
+		layer = 2,
 		name = "lower_panel",
 		y = self._id_text:bottom() + 2,
 		h = medium_font_size
 	})
 	self._hide_code_text = self._lower_panel:text({
-		layer = 101,
+		layer = 2,
 		name = "hide_code_text",
 		font = medium_font,
 		font_size = medium_font_size,
@@ -151,7 +151,7 @@ function LobbyCodeMenuComponent:create_hub_panel()
 
 	self._copied_alpha_timer = 0
 	self._copied_code_text = self._panel:text({
-		layer = 101,
+		layer = 2,
 		name = "copied_code_text",
 		y = 32,
 		font = small_font,
@@ -199,7 +199,6 @@ end
 function LobbyCodeMenuComponent:set_code_hidden(hidden_state)
 	Global.lobby_code.state = hidden_state
 
-	self._code_hider:set_visible(hidden_state)
 	self._id_text:set_visible(not hidden_state)
 	self._code_hidden_text:set_visible(hidden_state)
 
@@ -218,7 +217,11 @@ function LobbyCodeMenuComponent:copy_code()
 	if managers.network.matchmake.lobby_handler then
 		self._copied_alpha_timer = 2
 
-		Application:set_clipboard(managers.network.matchmake.lobby_handler:id())
+		if shift() then
+			Application:set_clipboard(managers.network.matchmake.lobby_handler:id())
+		else
+			Application:set_clipboard(managers.network.matchmake.lobby_handler:lobby_hash())
+		end
 	end
 end
 
@@ -248,7 +251,7 @@ function LobbyCodeMenuComponent:mouse_pressed(button, x, y)
 	end
 
 	if alive(self._lower_panel) and self._lower_panel:inside(x, y) then
-		self:set_code_hidden(not self._code_hider:visible())
+		self:set_code_hidden(not self._code_hidden_text:visible())
 
 		return true
 	end
@@ -264,7 +267,7 @@ function LobbyCodeMenuComponent:special_btn_pressed(button)
 	if button == Idstring("menu_unlocked_achievement") then
 		self:copy_code()
 	elseif self._code_hider and button == Idstring("menu_preview_item") then
-		self:set_code_hidden(not self._code_hider:visible())
+		self:set_code_hidden(not self._code_hidden_text:visible())
 	end
 end
 

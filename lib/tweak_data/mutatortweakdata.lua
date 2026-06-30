@@ -19,9 +19,14 @@ function MutatorTweakData:init_piggybank(tweak_data)
 			piggy_unit_index = 1,
 			range = 200,
 			sequre_zone_index = 1,
-			dialogs = {},
+			dialogs = {
+				explode = nil,
+				show = nil
+			},
 			sequences = {
-				grow = "anim_pig_idle"
+				explode = nil,
+				grow = "anim_pig_idle",
+				show = nil
 			}
 		},
 		{
@@ -88,12 +93,14 @@ function MutatorTweakData:init_piggybank(tweak_data)
 			bag_requirement = 560,
 			piggy_unit_index = 4,
 			range = 0,
+			sequre_zone_index = nil,
 			dialogs = {
 				explode = "Play_alm_pda9_16",
 				show = "Play_alm_pda9_10"
 			},
 			sequences = {
 				explode = "anim_pig_explode",
+				grow = nil,
 				show = "show_eyes"
 			}
 		}
@@ -296,9 +303,14 @@ end
 function MutatorTweakData:init_piggyrevenge(tweak_data)
 	self.piggyrevenge = {}
 
-	local dialog_1 = {}
+	local dialog_1 = {
+		explode = nil,
+		show = nil
+	}
 	local sequence_1 = {
-		grow = "anim_pig_idle"
+		explode = nil,
+		grow = "anim_pig_idle",
+		show = nil
 	}
 	local reward_1
 	local dialog_2 = {
@@ -367,6 +379,7 @@ function MutatorTweakData:init_piggyrevenge(tweak_data)
 	}
 	local sequence_6 = {
 		explode = "anim_pig_explode",
+		grow = nil,
 		show = "show_eyes"
 	}
 	local reward_6 = {
@@ -451,6 +464,7 @@ function MutatorTweakData:init_piggyrevenge(tweak_data)
 			bag_requirement = 560,
 			piggy_unit_index = 4,
 			range = 0,
+			secure_zone_index = nil,
 			rewards = reward_6,
 			dialogs = dialog_6,
 			sequences = sequence_6,

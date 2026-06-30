@@ -15,8 +15,9 @@ function AiLayer:init(owner)
 	self._graph_types = {
 		surface = "surface"
 	}
-	self._unit_graph_types = {}
-	self._unit_graph_types.surface = Idstring("core/units/nav_surface/nav_surface")
+	self._unit_graph_types = {
+		surface = Idstring("core/units/nav_surface/nav_surface")
+	}
 	self._nav_surface_unit = Idstring("core/units/nav_surface/nav_surface")
 	self._patrol_point_unit = Idstring("core/units/patrol_point/patrol_point")
 
@@ -25,8 +26,9 @@ function AiLayer:init(owner)
 
 	self._patrol_path_brush = Draw:brush()
 	self._only_draw_selected_patrol_path = false
-	self._default_values = {}
-	self._default_values.all_visible = true
+	self._default_values = {
+		all_visible = true
+	}
 end
 
 function AiLayer:load(world_holder, offset)
@@ -42,6 +44,7 @@ function AiLayer:load(world_holder, offset)
 	self:_update_patrol_paths_list()
 	self:_update_motion_paths_list()
 	self:_update_settings()
+	self:_apply_visualization_options()
 end
 
 function AiLayer:save(save_params)
@@ -175,12 +178,13 @@ end
 function AiLayer:_draw_surface(unit, t, dt, a, r, g, b)
 	local rot1 = Rotation(math.sin(t * 10) * 180, 0, 0)
 	local rot2 = rot1 * Rotation(90, 0, 0)
-	local pos1 = unit:position() - rot1:y() * 100
-	local pos2 = unit:position() - rot2:y() * 100
+	local pos1 = unit:position() - rot1:y() * 100 + rot1:z()
+	local pos2 = unit:position() - rot2:y() * 100 + rot2:z()
 
+	self._brush:quad(pos1, pos2, pos1 + rot1:y() * 200, pos2 + rot2:y() * 200)
 	Application:draw_line(pos1, pos1 + rot1:y() * 200, r, g, b)
 	Application:draw_line(pos2, pos2 + rot2:y() * 200, r, g, b)
-	self._brush:quad(pos1, pos2, pos1 + rot1:y() * 200, pos2 + rot2:y() * 200)
+	Application:draw(unit, r, g, b)
 end
 
 function AiLayer:_draw_patrol_paths(t, dt)
@@ -245,7 +249,10 @@ function AiLayer:draw_patrol_path_externaly(name)
 end
 
 function AiLayer:build_panel(notebook)
-	AiLayer.super.build_panel(self, notebook)
+	AiLayer.super.build_panel(self, notebook, {
+		units_noteboook_proportion = 0,
+		units_notebook_min_size = Vector3(-1, 160, 0)
+	})
 
 	local ai_sizer = EWS:BoxSizer("VERTICAL")
 	local graphs_sizer = EWS:StaticBoxSizer(self._ews_panel, "VERTICAL", "Graphs")
@@ -335,25 +342,33 @@ function AiLayer:build_panel(notebook)
 	graphs_sizer:add(build_settings, 0, 0, "EXPAND")
 
 	local visualize_sizer = EWS:StaticBoxSizer(self._ews_panel, "VERTICAL", "Visualize")
+	local filter_sizer = EWS:BoxSizer("HORIZONTAL")
+	local opt1_sizer = EWS:BoxSizer("VERTICAL")
+	local opt2_sizer = EWS:BoxSizer("VERTICAL")
 
-	self._debug_draw = EWS:CheckBox(self._ews_panel, "Debug draw", "", "ALIGN_LEFT")
+	local function create_nav_checkbox(sizer, name)
+		local ctrl = EWS:CheckBox(self._ews_panel, name, "", "ALIGN_LEFT")
 
-	visualize_sizer:add(self._debug_draw, 0, 0, "EXPAND")
-	self._debug_draw:connect("EVT_COMMAND_CHECKBOX_CLICKED", callback(self, self, "_toggle_debug_draw"), self._debug_draw)
+		ctrl:connect("EVT_COMMAND_CHECKBOX_CLICKED", callback(self, self, "_apply_visualization_options"))
+		sizer:add(ctrl, 0, 0, "EXPAND")
 
-	self._debug_buttons = {}
-	self._debug_buttons.doors = EWS:RadioButton(self._ews_panel, "Doors", "draw_debug", "")
-	self._debug_buttons.vis_graph = EWS:RadioButton(self._ews_panel, "Vis graph", "draw_debug", "")
-	self._debug_buttons.coarse_graph = EWS:RadioButton(self._ews_panel, "Coarse graph", "draw_debug", "")
-	self._debug_buttons.blockers = EWS:RadioButton(self._ews_panel, "Blockers", "draw_debug", "")
-
-	self._debug_buttons.doors:set_value(true)
-
-	for _, ctrlr in pairs(self._debug_buttons) do
-		visualize_sizer:add(ctrlr, 0, 0, "")
+		return ctrl
 	end
 
-	self._ews_panel:connect("draw_debug", "EVT_COMMAND_RADIOBUTTON_SELECTED", callback(self, self, "_set_debug_options"), nil)
+	self._nav_visualization_checkboxes = {
+		quads = create_nav_checkbox(opt1_sizer, "Quads"),
+		doors = create_nav_checkbox(opt1_sizer, "Doors"),
+		segments = create_nav_checkbox(opt1_sizer, "Segments"),
+		coarse_graph = create_nav_checkbox(opt1_sizer, "Coarse Graph"),
+		visibility_graph = create_nav_checkbox(opt2_sizer, "Visibility Graph"),
+		blockers = create_nav_checkbox(opt2_sizer, "Splitters"),
+		covers = create_nav_checkbox(opt2_sizer, "Covers"),
+		sectors = create_nav_checkbox(opt2_sizer, "Sectors")
+	}
+
+	filter_sizer:add(opt1_sizer, 1, 0, "EXPAND")
+	filter_sizer:add(opt2_sizer, 1, 0, "EXPAND")
+	visualize_sizer:add(filter_sizer, 1, 0, "EXPAND")
 	graphs_sizer:add(visualize_sizer, 0, 0, "EXPAND")
 
 	self._status_text = EWS:TextCtrl(self._ews_panel, "", 0, "TE_NOHIDESEL,TE_RICH2,TE_DONTWRAP,TE_READONLY,TE_CENTRE")
@@ -807,29 +822,17 @@ function AiLayer:_get_units(type, build_type)
 	return units
 end
 
-function AiLayer:_toggle_debug_draw(debug)
-	local show = debug:get_value()
+function AiLayer:_apply_visualization_options()
+	local options = {}
 
-	if not show then
-		managers.navigation:set_debug_draw_state(false)
-
-		return
-	end
-
-	self:_set_debug_options()
-end
-
-function AiLayer:_set_debug_options()
-	if not self._debug_draw:get_value() then
-		return
-	end
-
-	local options = {
-		quads = true
-	}
-
-	for name, ctrl in pairs(self._debug_buttons) do
+	for name, ctrl in pairs(self._nav_visualization_checkboxes) do
 		options[name] = ctrl:get_value()
+	end
+
+	managers.navigation:_unregister_cover_units()
+
+	if options.covers then
+		managers.navigation:register_cover_units()
 	end
 
 	managers.navigation:set_debug_draw_state(options)

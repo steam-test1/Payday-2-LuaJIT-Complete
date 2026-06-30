@@ -480,7 +480,7 @@ function MenuManager:show_internet_connection_required()
 end
 
 function MenuManager:show_err_no_chat_parental_control()
-	if SystemInfo:platform() == Idstring("PS4") then
+	if IS_PS4 then
 		PSN:show_chat_parental_control()
 	else
 		local dialog_data = {}
@@ -3418,7 +3418,7 @@ function MenuManager:show_accept_gamesight_telemetry(params)
 	local privacy_button = {}
 	local license_button = {}
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		privacy_button.text = managers.localization:text("dialog_privacy")
 		privacy_button.no_close = true
 
@@ -3456,7 +3456,7 @@ function MenuManager:show_accept_gamesight_telemetry(params)
 	ok_button.callback_func = params.accept_func
 	ok_button.cancel_button = true
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		dialog_data.button_list = {
 			privacy_button,
 			license_button,
@@ -3490,7 +3490,7 @@ function MenuManager:show_policy_seen(params)
 	local privacy_button = {}
 	local license_button = {}
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		privacy_button.text = managers.localization:text("dialog_privacy")
 		privacy_button.no_close = true
 
@@ -3511,7 +3511,7 @@ function MenuManager:show_policy_seen(params)
 	ok_button.text = managers.localization:text("dialog_ok")
 	ok_button.cancel_button = true
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		dialog_data.button_list = {
 			privacy_button,
 			license_button,
@@ -3535,7 +3535,7 @@ function MenuManager:show_accept_policy_new(params)
 	local privacy_button = {}
 	local license_button = {}
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		privacy_button.text = managers.localization:text("dialog_privacy")
 		privacy_button.no_close = true
 
@@ -3732,7 +3732,7 @@ function MenuManager:show_eos_no_connect_dialog(params)
 
 	local button_list = {}
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if Distribution:type() == Idstring("STEAM") then
 		local play_offline_button = {}
 
 		play_offline_button.text = managers.localization:text("dialog_eos_play_offline")

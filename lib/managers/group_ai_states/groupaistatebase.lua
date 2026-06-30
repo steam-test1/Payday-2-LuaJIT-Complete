@@ -6,7 +6,7 @@ local mvec3_dir = mvector3.direction
 local mvec3_l_sq = mvector3.length_sq
 local tmp_vec1 = Vector3()
 local tmp_vec2 = Vector3()
-local ids_unit = Idstring("unit")
+local ids_unit = IDS_UNIT
 
 GroupAIStateBase = GroupAIStateBase or class()
 GroupAIStateBase._nr_important_cops = 3
@@ -393,6 +393,7 @@ function GroupAIStateBase:_init_misc_data()
 	self:_init_team_tables()
 
 	self._phalanx_data = {
+		vip = nil,
 		minions = {}
 	}
 end
@@ -1218,54 +1219,67 @@ function GroupAIStateBase:on_enemy_engaging(unit, other_u_key)
 		return
 	end
 
-	local sighting = self._criminals[other_u_key]
-	local force = sighting.engaged_force + 1
+	local record = self._criminals[other_u_key]
 
-	sighting.engaged_force = force
-	sighting.engaged[u_key] = e_data
+	if not record then
+		return
+	end
+
+	record.engaged_force = record.engaged_force + 1
+	record.engaged[u_key] = e_data
 end
 
 function GroupAIStateBase:on_enemy_disengaging(unit, other_u_key)
 	local u_key = unit:key()
-	local sighting = self._criminals[other_u_key]
-	local force = sighting.engaged_force - 1
+	local record = self._criminals[other_u_key]
 
-	sighting.engaged_force = force
-	sighting.engaged[u_key] = nil
+	if not record then
+		return
+	end
+
+	record.engaged_force = record.engaged_force - 1
+	record.engaged[u_key] = nil
 end
 
 function GroupAIStateBase:on_tase_start(cop_key, criminal_key)
-	self._criminals[criminal_key].being_tased = cop_key
+	local record = self._criminals[criminal_key]
+
+	if record then
+		record.being_tased = cop_key
+	end
 end
 
 function GroupAIStateBase:on_tase_end(criminal_key)
 	local record = self._criminals[criminal_key]
 
 	if record then
-		self._criminals[criminal_key].being_tased = nil
+		record.being_tased = nil
 	end
 end
 
 function GroupAIStateBase:on_arrest_start(enemy_key, criminal_key)
-	local sighting = self._criminals[criminal_key]
-	local arrest = sighting.being_arrested
+	local record = self._criminals[criminal_key]
 
-	if arrest then
-		sighting.being_arrested[enemy_key] = true
-	else
-		sighting.being_arrested = {
-			[enemy_key] = true
-		}
+	if record then
+		if record.being_arrested then
+			record.being_arrested[enemy_key] = true
+		else
+			record.being_arrested = {
+				[enemy_key] = true
+			}
+		end
 	end
 end
 
 function GroupAIStateBase:on_arrest_end(enemy_key, criminal_key)
-	local sighting = self._criminals[criminal_key]
+	local record = self._criminals[criminal_key]
 
-	sighting.being_arrested[enemy_key] = nil
+	if record then
+		record.being_arrested[enemy_key] = nil
 
-	if not next(sighting.being_arrested) then
-		sighting.being_arrested = nil
+		if not next(record.being_arrested) then
+			record.being_arrested = nil
+		end
 	end
 end
 
@@ -3448,14 +3462,6 @@ function GroupAIStateBase:set_assault_mode(enabled)
 			end
 		end
 	end
-
-	if SystemInfo:platform() == Idstring("WIN32") and managers.network.account:has_alienware() then
-		if self._assault_mode then
-			LightFX:set_lamps(255, 0, 0, 255)
-		else
-			LightFX:set_lamps(0, 255, 0, 255)
-		end
-	end
 end
 
 function GroupAIStateBase:sync_assault_mode(enabled)
@@ -3464,14 +3470,6 @@ function GroupAIStateBase:sync_assault_mode(enabled)
 
 		self:set_ambience_flag()
 		SoundDevice:set_state("wave_flag", enabled and "assault" or "control")
-	end
-
-	if SystemInfo:platform() == Idstring("WIN32") and managers.network and managers.network.account:has_alienware() then
-		if self._assault_mode then
-			LightFX:set_lamps(255, 0, 0, 255)
-		else
-			LightFX:set_lamps(0, 255, 0, 255)
-		end
 	end
 end
 
@@ -4740,7 +4738,7 @@ function GroupAIStateBase:add_area(area_id, nav_segs, area_pos)
 	local all_nav_segs = managers.navigation._nav_segments
 
 	for _, seg_id in ipairs(nav_segs) do
-		local nav_seg = all_nav_segs[seg_id]
+		local nav_seg = all_nav_segs[tostring(seg_id)]
 
 		if nav_seg then
 			if not nav_seg.disabled then

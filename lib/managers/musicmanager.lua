@@ -26,9 +26,7 @@ function MusicManager:on_steam_overlay_open()
 end
 
 function MusicManager:on_steam_overlay_close()
-	if SystemInfo:platform() ~= Idstring("X360") then
-		self:clbk_game_has_music_control(true)
-	end
+	self:clbk_game_has_music_control(true)
 end
 
 function MusicManager:stop()
@@ -336,7 +334,7 @@ function MusicManager:load_settings(data)
 		self:_set_default_values()
 	end
 
-	if managers.network and SystemInfo:distribution() == Idstring("STEAM") and not self._added_overlay_listeners then
+	if managers.network and IS_STEAM and not self._added_overlay_listeners then
 		managers.network.account:add_overlay_listener("steam_music_manager_open", {
 			"overlay_open"
 		}, callback(self, self, "on_steam_overlay_open"))

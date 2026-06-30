@@ -46,11 +46,7 @@ function HostStateBase:_send_request_denied(sender, reason, my_user_id)
 end
 
 function HostStateBase:_has_peer_left_PSN(peer_name)
-	if SystemInfo:platform() == Idstring("PS3") and managers.network.matchmake:check_peer_join_request_remove(peer_name) then
-		print("this CLIENT has left us from PSN, ignore his request", peer_name)
-
-		return
-	end
+	return
 end
 
 function HostStateBase:_is_in_server_state()
@@ -58,7 +54,7 @@ function HostStateBase:_is_in_server_state()
 end
 
 function HostStateBase:_introduce_new_peer_to_old_peers(data, new_peer, loading, peer_name, character, xuid, xnaddr)
-	local new_peer_user_id = SystemInfo:platform() == Idstring("WIN32") and new_peer:user_id() or ""
+	local new_peer_user_id = IS_PC and new_peer:user_id() or ""
 	local new_peer_id = new_peer:id()
 
 	for old_pid, old_peer in pairs(data.peers) do
@@ -128,7 +124,7 @@ function HostStateBase:on_handshake_confirmation(data, peer, introduced_peer_id)
 end
 
 function HostStateBase:_is_kicked(data, peer_name, peer_rpc)
-	local ident = SystemInfo:platform() == Idstring("WIN32") and peer_rpc:ip_at_index(0) or peer_name
+	local ident = IS_PC and peer_rpc:ip_at_index(0) or peer_name
 
 	if data.kicked_list[ident] then
 		return true
@@ -136,7 +132,7 @@ function HostStateBase:_is_kicked(data, peer_name, peer_rpc)
 end
 
 function HostStateBase:_is_banned(peer_name, account_id)
-	local identifier = SystemInfo:platform() == Idstring("WIN32") and account_id or peer_name
+	local identifier = IS_PC and account_id or peer_name
 
 	if managers.ban_list and managers.ban_list:banned(identifier) then
 		return true

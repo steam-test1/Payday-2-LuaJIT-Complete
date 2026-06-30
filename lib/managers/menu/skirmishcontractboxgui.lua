@@ -56,9 +56,11 @@ function SkirmishContractBoxGui:create_contract_box()
 	local font_size = tweak_data.menu.pd2_small_font_size
 
 	if contact_data then
+		local job_title = utf8.to_upper(managers.localization:text(self:_is_weekly() and "menu_weekly_skirmish" or "menu_skirmish") .. ": " .. managers.localization:text(job_data.name_id))
+
 		self._contract_text_header = self._panel:text({
 			blend_mode = "add",
-			text = managers.localization:to_upper_text(self:_is_weekly() and "menu_weekly_skirmish" or "menu_skirmish"),
+			text = job_title,
 			h = tweak_data.menu.pd2_medium_font_size,
 			font_size = tweak_data.menu.pd2_medium_font_size,
 			font = tweak_data.menu.pd2_medium_font,

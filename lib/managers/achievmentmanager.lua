@@ -15,111 +15,29 @@ function AchievmentManager:init()
 		none = 0
 	}
 	self.script_data = {}
+	self.oldest_achievement_callback_handler = CoreEvent.CallbackEventHandler:new()
+	AchievmentManager.do_award = AchievmentManager.award_steam
 
-	if SystemInfo:platform() == Idstring("WIN32") then
-		self.oldest_achievement_callback_handler = CoreEvent.CallbackEventHandler:new()
+	if not Global.achievment_manager then
+		self.handler = Steam:sa_handler()
 
-		if SystemInfo:distribution() == Idstring("STEAM") then
-			AchievmentManager.do_award = AchievmentManager.award_steam
+		local distribution = IS_STEAM and "Steam" or IS_EPIC and "Epic" or IS_PS4 and "PS4" or IS_XB1 and "XB1" or nil
 
-			if not Global.achievment_manager then
-				self.handler = Steam:sa_handler()
-
-				self:_parse_achievments("Steam")
-				self.handler:initialized_callback(AchievmentManager.fetch_achievments)
-				self.handler:init()
-
-				Global.achievment_manager = {
-					handler = self.handler,
-					achievments = self.achievments
-				}
-			else
-				self.handler = Global.achievment_manager.handler
-				self.achievments = Global.achievment_manager.achievments
-			end
-		elseif SystemInfo:distribution() == Idstring("EPIC") then
-			AchievmentManager.do_award = AchievmentManager.award_epic
-
-			if not Global.achievment_manager then
-				self.handler = EpicAchievementHandler
-
-				self:_parse_achievments("Epic")
-
-				local init_called = false
-
-				self.handler:initialized_callback(function()
-					AchievmentManager.fetch_achievments("success")
-				end)
-
-				if EpicMM:logged_on() then
-					init_called = true
-
-					self.handler:init()
-				end
-
-				Global.achievment_manager = {
-					handler = self.handler,
-					achievments = self.achievments,
-					init_called = init_called
-				}
-			else
-				self.handler = Global.achievment_manager.handler
-				self.achievments = Global.achievment_manager.achievments
-			end
-		else
-			AchievmentManager.do_award = AchievmentManager.award_none
-
-			self:_parse_achievments()
-
-			if not Global.achievment_manager then
-				Global.achievment_manager = {
-					achievments = self.achievments
-				}
-			end
-
-			self.achievments = Global.achievment_manager.achievments
-		end
-	elseif SystemInfo:platform() == Idstring("PS3") then
-		if not Global.achievment_manager then
-			Global.achievment_manager = {
-				trophy_requests = {}
-			}
+		if not distribution then
+			Application:error("[AchievmentManager:init] Unsupported platform")
 		end
 
-		self:_parse_achievments("PSN")
+		self:_parse_achievments(distribution)
+		self.handler:initialized_callback(AchievmentManager.fetch_achievments)
+		self.handler:init()
 
-		AchievmentManager.do_award = AchievmentManager.award_psn
-	elseif SystemInfo:platform() == Idstring("PS4") then
-		if not Global.achievment_manager then
-			self:_parse_achievments("PS4")
-
-			Global.achievment_manager = {
-				trophy_requests = {},
-				achievments = self.achievments
-			}
-		else
-			self.achievments = Global.achievment_manager.achievments
-		end
-
-		AchievmentManager.do_award = AchievmentManager.award_psn
-	elseif SystemInfo:platform() == Idstring("X360") then
-		self:_parse_achievments("X360")
-
-		AchievmentManager.do_award = AchievmentManager.award_x360
-	elseif SystemInfo:platform() == Idstring("XB1") then
-		if not Global.achievment_manager then
-			self:_parse_achievments("XB1")
-
-			Global.achievment_manager = {
-				achievments = self.achievments
-			}
-		else
-			self.achievments = Global.achievment_manager.achievments
-		end
-
-		AchievmentManager.do_award = AchievmentManager.award_x360
+		Global.achievment_manager = {
+			handler = self.handler,
+			achievments = self.achievments
+		}
 	else
-		Application:error("[AchievmentManager:init] Unsupported platform")
+		self.handler = Global.achievment_manager.handler
+		self.achievments = Global.achievment_manager.achievments
 	end
 
 	self._forced = Global.achievment_manager.forced or {}
@@ -220,7 +138,7 @@ function AchievmentManager:init_finalize()
 end
 
 function AchievmentManager:fetch_trophies()
-	if SystemInfo:platform() == Idstring("PS3") or SystemInfo:platform() == Idstring("PS4") then
+	if IS_PS4 then
 		Trophies:get_unlockstate(AchievmentManager.unlockstate_result)
 	end
 end
@@ -320,7 +238,7 @@ function AchievmentManager:check_gsu_01_achievement()
 end
 
 function AchievmentManager:_load_done()
-	if SystemInfo:platform() == Idstring("XB1") then
+	if IS_XB1 then
 		print("[AchievmentManager] _load_done()")
 
 		self._is_fetching_achievments = XboxLive:achievements(0, 1000, true, callback(self, self, "_achievments_loaded"))
@@ -352,7 +270,7 @@ function AchievmentManager:_achievments_loaded(achievment_list)
 end
 
 function AchievmentManager:on_user_signout()
-	if SystemInfo:platform() == Idstring("XB1") then
+	if IS_XB1 then
 		print("[AchievmentManager] on_user_signout()")
 
 		self._is_fetching_achievments = nil
@@ -779,10 +697,10 @@ function AchievmentManager:award_progress(stat, value)
 
 	print("[AchievmentManager] award_progress: ", stat .. " increased by " .. tostring(value or 1))
 
-	if SystemInfo:platform() == Idstring("WIN32") then
-		if self.handler and SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_WIN32 then
+		if self.handler and IS_STEAM then
 			self.handler:achievement_store_callback(AchievmentManager.steam_unlock_result)
-		elseif SystemInfo:distribution() == Idstring("EPIC") then
+		elseif IS_EPIC then
 			self.handler:achievement_store_callback(AchievmentManager.epic_unlock_result)
 		end
 	end
@@ -823,7 +741,7 @@ function AchievmentManager:award_progress(stat, value)
 end
 
 function AchievmentManager:get_stat(stat)
-	if SystemInfo:platform() == Idstring("WIN32") then
+	if IS_WIN32 then
 		return managers.network.account:get_stat(stat)
 	end
 
@@ -1025,7 +943,7 @@ function AchievmentManager:check_complete_heist_stats_achivements()
 end
 
 function AchievmentManager:check_autounlock_achievements()
-	if SystemInfo:platform() == Idstring("WIN32") then
+	if IS_WIN32 then
 		self:_check_autounlock_complete_heist()
 		self:_check_autounlock_difficulties()
 	end

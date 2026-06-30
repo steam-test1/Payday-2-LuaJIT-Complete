@@ -1,6 +1,6 @@
 FPCameraPlayerBase = FPCameraPlayerBase or class(UnitBase)
 FPCameraPlayerBase.IDS_EMPTY = Idstring("empty")
-FPCameraPlayerBase.IDS_NOSTRING = Idstring("")
+FPCameraPlayerBase.IDS_NOSTRING = IDS_EMPTY
 FPCameraPlayerBase.bipod_location = nil
 FPCameraPlayerBase.camera_last_pos = nil
 
@@ -1784,7 +1784,7 @@ function FPCameraPlayerBase:spawn_mask()
 		if not tweak_data.blackmarket.masks[mask_id].type then
 			local backside = World:spawn_unit(Idstring("units/payday2/masks/msk_fps_back_straps/msk_fps_back_straps"), align_obj_r:position(), align_obj_r:rotation())
 
-			for _, material in ipairs(backside:get_objects_by_type(Idstring("material"))) do
+			for _, material in ipairs(backside:get_objects_by_type(IDS_MATERIAL)) do
 				material:set_render_template(Idstring("generic:DEPTH_SCALING:DIFFUSE_TEXTURE:NORMALMAP:SKINNED_3WEIGHTS"))
 			end
 
@@ -1842,7 +1842,7 @@ function FPCameraPlayerBase:spawn_taser_hooks()
 		local hooks_align = self._unit:get_object(Idstring("a_weapon_right"))
 		local taser_hooks_unit_name = "units/payday2/weapons/wpn_fps_taser_hooks/wpn_fps_taser_hooks"
 
-		managers.dyn_resource:load(Idstring("unit"), Idstring(taser_hooks_unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
+		managers.dyn_resource:load(IDS_UNIT, Idstring(taser_hooks_unit_name), DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 
 		self._taser_hooks_unit = World:spawn_unit(Idstring(taser_hooks_unit_name), hooks_align:position(), hooks_align:rotation())
 
@@ -1860,7 +1860,7 @@ function FPCameraPlayerBase:unspawn_taser_hooks()
 		local name = self._taser_hooks_unit:name()
 
 		World:delete_unit(self._taser_hooks_unit)
-		managers.dyn_resource:unload(Idstring("unit"), name, DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
+		managers.dyn_resource:unload(IDS_UNIT, name, DynamicResourceManager.DYN_RESOURCES_PACKAGE, false)
 
 		self._taser_hooks_unit = nil
 	end

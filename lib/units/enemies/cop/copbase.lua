@@ -573,9 +573,6 @@ function CopBase:pre_destroy(unit)
 		self._headwear_unit = nil
 	end
 
-	unit:brain():pre_destroy(unit)
-	self._ext_movement:pre_destroy()
-	self._unit:inventory():pre_destroy()
 	UnitBase.pre_destroy(self, unit)
 
 	self._tweak_data_listener_holder = nil

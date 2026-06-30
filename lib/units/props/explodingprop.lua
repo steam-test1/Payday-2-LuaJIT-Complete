@@ -34,6 +34,7 @@ function ExplodingProp:detonate(pos, range, damage, player_damage)
 			curve_pow = 3,
 			no_raycast_check_characters = false,
 			player_damage = 0,
+			user = nil,
 			hit_pos = pos,
 			range = range,
 			collision_slotmask = slot_mask,

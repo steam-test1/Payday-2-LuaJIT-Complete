@@ -322,7 +322,7 @@ function GenericDialog:force_close()
 end
 
 function GenericDialog:dialog_cancel_callback()
-	if SystemInfo:platform() ~= Idstring("WIN32") then
+	if IS_CONSOLE then
 		return
 	end
 

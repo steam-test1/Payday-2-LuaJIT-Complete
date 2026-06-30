@@ -74,6 +74,29 @@ function Array.from_node(node)
 	return nil
 end
 
+function Array.from_script_data(script_data)
+	local width = script_data.width
+	local height = script_data.height
+	local name = script_data.name
+	local array_data = script_data.data
+
+	if width and height then
+		width = tonumber(width)
+		height = tonumber(height)
+
+		local data = {}
+		local items = array_data:split(" ")
+
+		for i, v in ipairs(items) do
+			data[i] = tonumber(v)
+		end
+
+		return Array:new(data, height, width, name)
+	end
+
+	return nil
+end
+
 function Array.random(height, width, out)
 	local data = out and out._data or {}
 

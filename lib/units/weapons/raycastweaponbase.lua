@@ -2776,7 +2776,7 @@ InstantExplosiveBulletBase.EFFECT_PARAMS = {
 	feedback_range = tweak_data.upgrades.explosive_bullet.feedback_range,
 	camera_shake_max_mul = tweak_data.upgrades.explosive_bullet.camera_shake_max_mul,
 	idstr_decal = Idstring("explosion_round"),
-	idstr_effect = Idstring("")
+	idstr_effect = IDS_EMPTY
 }
 
 function InstantExplosiveBulletBase:bullet_slotmask()
@@ -2820,6 +2820,7 @@ function InstantExplosiveBulletBase:on_collision(col_ray, weapon_unit, user_unit
 		self:on_collision_server(tmp_vec1, col_ray.normal, damage, user_unit, weapon_unit, managers.network:session():local_peer():id())
 
 		return {
+			type = nil,
 			variant = "explosion",
 			col_ray = col_ray
 		}
@@ -2908,7 +2909,7 @@ FlameBulletBase.EFFECT_PARAMS = {
 	feedback_range = tweak_data.upgrades.flame_bullet.feedback_range,
 	camera_shake_max_mul = tweak_data.upgrades.flame_bullet.camera_shake_max_mul,
 	idstr_decal = Idstring("explosion_round"),
-	idstr_effect = Idstring(""),
+	idstr_effect = IDS_EMPTY,
 	pushunits = tweak_data.upgrades.flame_bullet.push_units
 }
 FlameBulletBase.VARIANT = "fire"

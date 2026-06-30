@@ -349,10 +349,6 @@ function PlayerBase:pre_destroy(unit)
 			peer:set_unit(nil)
 		end
 	end
-
-	unit:movement():pre_destroy(unit)
-	unit:inventory():pre_destroy(unit)
-	unit:character_damage():pre_destroy()
 end
 
 function PlayerBase:upgrade_value(category, upgrade)

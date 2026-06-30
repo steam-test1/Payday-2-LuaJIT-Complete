@@ -417,60 +417,7 @@ function MenuItemInput:update_key_down(row_item, o, k)
 	local text = row_item.gui_text
 
 	while self._key_pressed == k do
-		local s, e = text:selection()
-		local n = utf8.len(text:text())
-		local d = math.abs(e - s)
-
-		if self._key_pressed == Idstring("backspace") then
-			if s == e and s > 0 then
-				text:set_selection(s - 1, e)
-			end
-
-			text:replace_text("")
-
-			if utf8.len(text:text()) < 1 and type(self._esc_released_callback) ~= "number" then
-				-- Nothing
-			end
-		elseif self._key_pressed == Idstring("delete") then
-			if s == e and s < n then
-				text:set_selection(s, e + 1)
-			end
-
-			text:replace_text("")
-
-			if utf8.len(text:text()) < 1 and type(self._esc_released_callback) ~= "number" then
-				-- Nothing
-			end
-		elseif self._key_pressed == Idstring("insert") then
-			local clipboard = Application:get_clipboard() or ""
-
-			text:replace_text(clipboard)
-
-			local lbs = text:line_breaks()
-
-			if #lbs > 1 then
-				local s = lbs[2]
-				local e = utf8.len(text:text())
-
-				text:set_selection(s, e)
-				text:replace_text("")
-			end
-		elseif self._key_pressed == Idstring("left") then
-			if s < e then
-				text:set_selection(s, s)
-			elseif s > 0 then
-				text:set_selection(s - 1, s - 1)
-			end
-		elseif self._key_pressed == Idstring("right") then
-			if s < e then
-				text:set_selection(e, e)
-			elseif s < n then
-				text:set_selection(s + 1, s + 1)
-			end
-		else
-			self._key_pressed = false
-		end
-
+		InputUtils.common_text_input_key_press(text, k, nil, false, nil, nil, nil)
 		self:_layout(row_item)
 		wait(0.03)
 	end
@@ -510,60 +457,8 @@ function MenuItemInput:key_press(row_item, o, k)
 
 	text:stop()
 	text:animate(callback(self, self, "update_key_down", row_item), k)
-
-	if k == Idstring("backspace") then
-		if s == e and s > 0 then
-			text:set_selection(s - 1, e)
-		end
-
-		text:replace_text("")
-
-		if utf8.len(text:text()) < 1 and type(self._esc_released_callback) ~= "number" then
-			-- Nothing
-		end
-	elseif k == Idstring("delete") then
-		if s == e and s < n then
-			text:set_selection(s, e + 1)
-		end
-
-		text:replace_text("")
-
-		if utf8.len(text:text()) < 1 and type(self._esc_released_callback) ~= "number" then
-			-- Nothing
-		end
-	elseif k == Idstring("insert") then
-		local clipboard = Application:get_clipboard() or ""
-
-		text:replace_text(clipboard)
-
-		local lbs = text:line_breaks()
-
-		if #lbs > 1 then
-			local s = lbs[2]
-			local e = utf8.len(text:text())
-
-			text:set_selection(s, e)
-			text:replace_text("")
-		end
-	elseif k == Idstring("left") then
-		if s < e then
-			text:set_selection(s, s)
-		elseif s > 0 then
-			text:set_selection(s - 1, s - 1)
-		end
-	elseif k == Idstring("right") then
-		if s < e then
-			text:set_selection(e, e)
-		elseif s < n then
-			text:set_selection(s + 1, s + 1)
-		end
-	elseif self._key_pressed == Idstring("end") then
-		text:set_selection(n, n)
-	elseif self._key_pressed == Idstring("home") then
-		text:set_selection(0, 0)
-	elseif k == Idstring("enter") then
+	InputUtils.common_text_input_key_press(text, k, nil, false, function()
 		self._should_disable = true
-	end
-
+	end, nil, nil)
 	self:_layout(row_item)
 end

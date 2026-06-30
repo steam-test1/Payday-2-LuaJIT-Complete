@@ -1551,7 +1551,7 @@ function CopLogicAttack._get_expected_attention_position(data, my_data)
 				local found_doors = managers.navigation:find_segment_doors(from_nav_seg, callback(CopLogicAttack, CopLogicAttack, "_chk_is_right_segment", to_nav_seg))
 
 				for _, door in pairs(found_doors) do
-					mvec3_set(temp_vec1, door.center)
+					mvec3_set(temp_vec1, door)
 
 					local dis = mvec3_dis_sq(e_pos, temp_vec1)
 
@@ -1562,12 +1562,12 @@ function CopLogicAttack._get_expected_attention_position(data, my_data)
 				end
 
 				if closest_door then
-					mvec3_set(temp_vec1, closest_door.center)
+					mvec3_set(temp_vec1, closest_door)
 					mvec3_sub(temp_vec1, data.m_pos)
 					mvec3_set_z(temp_vec1, 0)
 
 					if min_point_dis_sq < mvector3.length_sq(temp_vec1) then
-						mvec3_set(temp_vec1, closest_door.center)
+						mvec3_set(temp_vec1, closest_door)
 						mvec3_set_z(temp_vec1, temp_vec1.z + 140)
 
 						return temp_vec1

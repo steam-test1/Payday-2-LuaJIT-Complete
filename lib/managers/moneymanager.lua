@@ -1383,7 +1383,7 @@ end
 function MoneyManager:_set_total(value)
 	self._global.total = Application:digest_value(value, true)
 
-	if SystemInfo:platform() == Idstring("XB1") then
+	if IS_XB1 then
 		XboxLive:write_hero_stat("cash", value)
 	end
 end
@@ -1403,7 +1403,7 @@ end
 function MoneyManager:_set_offshore(value)
 	self._global.offshore = Application:digest_value(value, true)
 
-	if SystemInfo:platform() == Idstring("XB1") then
+	if IS_XB1 then
 		XboxLive:write_hero_stat("offshore", value)
 	end
 end
@@ -1670,7 +1670,7 @@ function MoneyManager:load(data)
 	self._global.offshore = state.offshore and Application:digest_value(math.max(0, Application:digest_value(state.offshore, false)), true) or self._global.offshore
 	self._global.total_spent = state.total_spent and Application:digest_value(math.max(0, Application:digest_value(state.total_spent, false)), true) or self._global.total_spent
 
-	if SystemInfo:platform() == Idstring("XB1") then
+	if IS_XB1 then
 		XboxLive:write_hero_stat("cash", self._global.total)
 		XboxLive:write_hero_stat("offshore", self._global.offshore)
 	end

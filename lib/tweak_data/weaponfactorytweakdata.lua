@@ -1,4 +1,4 @@
-local ids_unit = Idstring("unit")
+local ids_unit = IDS_UNIT
 
 function preload_all()
 	for id, part in pairs(tweak_data.weapon.factory.parts) do
@@ -90,7 +90,7 @@ function print_parts_without_texture()
 	Application:debug("---------------------------")
 end
 
-local is_win_32 = SystemInfo:platform() == Idstring("WIN32")
+local is_win_32 = IS_PC
 local is_not_win_32 = not is_win_32
 
 WeaponFactoryTweakData = WeaponFactoryTweakData or class()
@@ -5439,12 +5439,11 @@ function WeaponFactoryTweakData:_init_m4()
 			concealment = -4,
 			damage = 2,
 			recoil = 2,
-			spread = 3,
+			spread = 4,
 			suppression = 12,
 			value = 4
 		},
 		perks = {
-			"fire_mode_auto",
 			"silencer"
 		},
 		sound_switch = {
@@ -5484,8 +5483,6 @@ function WeaponFactoryTweakData:_init_m4()
 			"wpn_fps_upg_fg_smr",
 			"wpn_fps_upg_ass_m4_fg_moe",
 			"wpn_fps_upg_ass_m4_fg_lvoa",
-			"wpn_fps_upg_i_singlefire",
-			"wpn_fps_upg_i_autofire",
 			"wpn_fps_upg_ns_ass_smg_v6",
 			"wpn_fps_lmg_hk51b_ns_jcomp",
 			"wpn_fps_ass_shak12_ns_suppressor",
@@ -67486,6 +67483,7 @@ function WeaponFactoryTweakData:_init_speen()
 		animations = {
 			equip = "equip",
 			reload = "reload",
+			reload_not_empty = nil,
 			unequip = "unequip"
 		}
 	}

@@ -38,6 +38,7 @@ function NewNPCRaycastWeaponBase:init(unit)
 
 	self._damage = td.DAMAGE
 	self._shoot_through_data = {
+		has_hit_wall = nil,
 		from = Vector3()
 	}
 	self._next_fire_allowed = -1000
@@ -52,7 +53,7 @@ function NewNPCRaycastWeaponBase:init(unit)
 		effect = self._muzzle_effect,
 		parent = self._obj_fire
 	}
-	self._use_shell_ejection_effect = SystemInfo:platform() == Idstring("WIN32")
+	self._use_shell_ejection_effect = IS_PC
 
 	if self._use_shell_ejection_effect then
 		self._obj_shell_ejection = self._unit:get_object(Idstring("a_shell"))

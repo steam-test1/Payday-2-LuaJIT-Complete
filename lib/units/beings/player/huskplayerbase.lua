@@ -184,8 +184,7 @@ function HuskPlayerBase:upgrade_level(category, upgrade)
 end
 
 function HuskPlayerBase:pre_destroy(unit)
-	self._unit:movement():pre_destroy(unit)
-	self._unit:inventory():pre_destroy(self._unit)
+	self._unit:movement():attention_handler():set_attention(nil)
 	managers.groupai:state():unregister_criminal(self._unit)
 
 	if managers.network:session() then

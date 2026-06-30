@@ -922,7 +922,7 @@ function CoreOldWorldDefinition:load_massunit(path, offset)
 		local l = MassUnitManager:list(path:id())
 
 		for _, name in ipairs(l) do
-			if DB:has(Idstring("unit"), name:id()) then
+			if DB:has(IDS_UNIT, name:id()) then
 				CoreUnit.editor_load_unit(name)
 			elseif not self._massunit_replace_names[name:s()] then
 				managers.editor:output("Unit " .. name:s() .. " does not exist")
@@ -931,7 +931,7 @@ function CoreOldWorldDefinition:load_massunit(path, offset)
 
 				name = managers.editor:show_replace_massunit()
 
-				if name and DB:has(Idstring("unit"), name:id()) then
+				if name and DB:has(IDS_UNIT, name:id()) then
 					CoreUnit.editor_load_unit(name)
 				end
 
@@ -970,8 +970,8 @@ function CoreOldWorldDefinition:preload_unit(name)
 
 	if self._replace_names[name] then
 		name = self._replace_names[name]
-	elseif is_editor and (not DB:has(Idstring("unit"), name:id()) or CoreEngineAccess._editor_unit_data(name:id()):type():id() == Idstring("deleteme")) then
-		if not DB:has(Idstring("unit"), name:id()) then
+	elseif is_editor and (not DB:has(IDS_UNIT, name:id()) or CoreEngineAccess._editor_unit_data(name:id()):type():id() == Idstring("deleteme")) then
+		if not DB:has(IDS_UNIT, name:id()) then
 			managers.editor:output_info("Unit " .. name .. " does not exist")
 		else
 			managers.editor:output_info("Unit " .. name .. " is of type " .. CoreEngineAccess._editor_unit_data(name:id()):type():t())

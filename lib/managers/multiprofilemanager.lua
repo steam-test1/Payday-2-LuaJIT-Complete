@@ -131,7 +131,7 @@ function MultiProfileManager:load_current()
 
 	MenuCallbackHandler:_update_outfit_information()
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		managers.statistics:publish_equipped_to_steam()
 	end
 end

@@ -31,10 +31,6 @@ function TeamAIBase:pre_destroy(unit)
 	self:remove_upgrades()
 	self:unregister()
 	UnitBase.pre_destroy(self, unit)
-	unit:brain():pre_destroy(unit)
-	unit:movement():pre_destroy()
-	unit:inventory():pre_destroy(unit)
-	unit:character_damage():pre_destroy()
 end
 
 function TeamAIBase:set_loadout(loadout)

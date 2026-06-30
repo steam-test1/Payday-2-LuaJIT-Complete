@@ -611,13 +611,13 @@ function DLCTweakData:init(tweak_data)
 		"player_crime_net_deal"
 	}
 
-	if SystemInfo:platform() == Idstring("PS4") then
+	if IS_PS4 then
 		table.insert(self.preorder.content.loot_drops, {
 			amount = 1,
 			item_entry = "finger",
 			type_items = "masks"
 		})
-	elseif SystemInfo:platform() == Idstring("XB1") then
+	elseif IS_XB1 then
 		table.insert(self.preorder.content.loot_drops, {
 			amount = 1,
 			item_entry = "instinct",

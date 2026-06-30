@@ -6,9 +6,7 @@ UserManager = UserManager or class()
 UserManager.PLATFORM_CLASS_MAP = {}
 
 function UserManager:new(...)
-	local platform = SystemInfo:platform()
-
-	return (self.PLATFORM_CLASS_MAP[platform:key()] or GenericUserManager):new(...)
+	return (self.PLATFORM_CLASS_MAP[Idstring("WIN32"):key()] or GenericUserManager):new(...)
 end
 
 GenericUserManager = GenericUserManager or class()
@@ -26,7 +24,10 @@ function GenericUserManager:init()
 
 	if not self:is_global_initialized() then
 		Global.user_manager = {
+			active_user_state_change_quit = nil,
 			initializing = true,
+			storage_changed = nil,
+			user_index = nil,
 			setting_map = {},
 			setting_data_map = {},
 			setting_data_id_to_name_map = {},
@@ -47,10 +48,8 @@ function GenericUserManager:is_global_initialized()
 	return Global.user_manager and not Global.user_manager.initializing
 end
 
-local is_ps3 = SystemInfo:platform() == Idstring("PS3")
-local is_x360 = SystemInfo:platform() == Idstring("X360")
-local is_ps4 = SystemInfo:platform() == Idstring("PS4")
-local is_xb1 = SystemInfo:platform() == Idstring("XB1")
+local is_ps4 = IS_PS4
+local is_xb1 = IS_XB1
 
 function GenericUserManager:setup_setting_map()
 	self:setup_setting(1, "invert_camera_x", false)
@@ -62,7 +61,7 @@ function GenericUserManager:setup_setting_map()
 	self:setup_setting(7, "subtitle", true)
 	self:setup_setting(8, "brightness", 1)
 	self:setup_setting(9, "hold_to_steelsight", true)
-	self:setup_setting(10, "hold_to_run", not is_ps3 and not is_x360 and not is_ps4 and not is_xb1 and true)
+	self:setup_setting(10, "hold_to_run", not is_ps4 and not is_xb1 and true)
 	self:setup_setting(11, "voice_volume", 0.8)
 	self:setup_setting(12, "controller_mod", {})
 	self:setup_setting(13, "alienware_mask", true)
@@ -72,7 +71,7 @@ function GenericUserManager:setup_setting_map()
 	self:setup_setting(17, "hold_to_duck", false)
 	self:setup_setting(18, "video_color_grading", nil)
 	self:setup_setting(19, "video_anti_alias", "AA")
-	self:setup_setting(20, "video_animation_lod", not is_ps3 and not is_x360 and 3 or 2)
+	self:setup_setting(20, "video_animation_lod", 3)
 	self:setup_setting(21, "video_streaks", true)
 	self:setup_setting(22, "mask_set", "clowns")
 	self:setup_setting(23, "use_lightfx", false)
@@ -116,7 +115,7 @@ function GenericUserManager:setup_setting_map()
 	self:setup_setting(61, "crimenet_filter_mutators", false)
 	self:setup_setting(62, "crimenet_filter_tactic", -1)
 	self:setup_setting(63, "crimenet_filter_max_servers", 30)
-	self:setup_setting(64, "crimenet_filter_distance", 1)
+	self:setup_setting(64, "crimenet_filter_distance", 2)
 	self:setup_setting(65, "crimenet_filter_difficulty", -1)
 	self:setup_setting(66, "crimenet_filter_contract", -1)
 	self:setup_setting(67, "crimenet_filter_kick", -1)
@@ -597,7 +596,7 @@ function GenericUserManager:check_user_state_change(old_user_data, user_data, ig
 end
 
 function GenericUserManager:active_user_change_state(old_user_data, user_data)
-	if self:get_active_user_state_change_quit() or is_x360 and managers.savefile:is_in_loading_sequence() then
+	if self:get_active_user_state_change_quit() then
 		print("-- Cause loading", self:get_active_user_state_change_quit(), managers.savefile:is_in_loading_sequence())
 
 		local dialog_data = {}
@@ -882,15 +881,6 @@ function GenericUserManager:load(data, cache_version)
 		self:set_setting_map(data)
 	else
 		self:set_setting_map(data.UserManager)
-	end
-
-	if SystemInfo:platform() ~= Idstring("PS3") then
-		local NEWEST_THEME = "zombie"
-
-		if self:get_setting("newest_theme") ~= NEWEST_THEME then
-			self:set_setting("newest_theme", NEWEST_THEME)
-			self:set_setting("menu_theme", NEWEST_THEME)
-		end
 	end
 
 	if Global.DEBUG_MENU_ON then
@@ -1282,7 +1272,7 @@ end
 WinUserManager = WinUserManager or class(GenericUserManager)
 UserManager.PLATFORM_CLASS_MAP[Idstring("WIN32"):key()] = WinUserManager
 
-local is_epic = SystemInfo:distribution() == Idstring("EPIC")
+local is_epic = IS_EPIC
 
 function WinUserManager:init()
 	self._init_finalize_index = not self:is_global_initialized()
@@ -1319,7 +1309,7 @@ function WinUserManager:set_index(user_index)
 end
 
 function WinUserManager:check_user(callback_func, show_select_user_question_dialog)
-	if is_epic and not self._epic_logged_in_and_ready then
+	if false and not self._epic_logged_in_and_ready then
 		if not self._epic_check_user_params then
 			self._epic_dlcs_checked = false
 			self._epic_achievements_fetched = false
@@ -1337,7 +1327,7 @@ function WinUserManager:check_user(callback_func, show_select_user_question_dial
 end
 
 function WinUserManager:update(t, dt)
-	if is_epic and self._epic_check_user_params and EpicMM:logged_on() then
+	if false and self._epic_check_user_params and DistributionMatchmaking:logged_on() then
 		if not Global.dlc_manager.ownership_check_called then
 			Global.dlc_manager.ownership_check_called = true
 

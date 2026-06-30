@@ -2,14 +2,7 @@ DLCManager = DLCManager or class()
 DLCManager.PLATFORM_CLASS_MAP = {}
 
 function DLCManager:new(...)
-	local platform = SystemInfo:platform()
-	local platform_key = platform:key()
-
-	if platform == Idstring("WIN32") then
-		platform_key = SystemInfo:distribution():key()
-	end
-
-	return (self.PLATFORM_CLASS_MAP[platform_key] or GenericDLCManager):new(...)
+	return (self.PLATFORM_CLASS_MAP[Idstring("STEAM"):key()] or GenericDLCManager):new(...)
 end
 
 GenericDLCManager = GenericDLCManager or class()
@@ -132,7 +125,7 @@ function GenericDLCManager:_create_infamy_locked_content_table()
 end
 
 function GenericDLCManager:_modify_locked_content()
-	if SystemInfo:platform() == Idstring("WIN32") then
+	if IS_PC then
 		return
 	end
 
@@ -657,7 +650,7 @@ function GenericDLCManager:is_trial()
 end
 
 function GenericDLCManager:is_installing()
-	if not DB:is_bundled() or SystemInfo:platform() == Idstring("WIN32") then
+	if not DB:is_bundled() or IS_PC then
 		return false, 1
 	end
 
@@ -948,7 +941,7 @@ function GenericDLCManager:has_soundtrack_or_cce()
 end
 
 function GenericDLCManager:has_freed_old_hoxton(data)
-	if SystemInfo:platform() == Idstring("WIN32") then
+	if IS_PC then
 		if self:is_dlc_unlocked("pd2_clan") then
 			if self:has_achievement(data) then
 				return true
@@ -1319,7 +1312,8 @@ function X360DLCManager:init()
 			},
 			preorder = {
 				index = 1,
-				is_default = false
+				is_default = false,
+				verified = nil
 			}
 		}
 
@@ -1961,10 +1955,19 @@ function WINDLCManager:init()
 		self:init_generated()
 		self:init_entitlements()
 		self:_chk_blocked()
-		self:_verify_dlcs()
 	end
 
-	self:_init_promoted_dlc_list()
+	self._promoted_dlc_list = {}
+
+	if Distribution:logged_on() then
+		self:_verify_dlcs()
+		self:_init_promoted_dlc_list()
+	else
+		Distribution:add_login_callback(function()
+			self:_verify_dlcs()
+			self:_init_promoted_dlc_list()
+		end)
+	end
 end
 
 function WINDLCManager:_chk_blocked()
@@ -2079,22 +2082,7 @@ function WINDLCManager:_check_dlc_data(dlc_data)
 end
 
 function WINDLCManager:chk_content_updated()
-	local has_content
-	local content_updated = false
-
-	for dlc_name, dlc_data in pairs(Global.dlc_manager.all_dlc_data) do
-		has_content = self:_check_dlc_data(dlc_data)
-		content_updated = content_updated or has_content ~= dlc_data.verified
-		dlc_data.verified = has_content
-	end
-
-	if content_updated then
-		if (game_state_machine and game_state_machine:current_state_name()) == "menu_main" then
-			self:give_dlc_and_verify_blackmarket()
-		else
-			Global.dlc_manager.verify_content_update = true
-		end
-	end
+	return
 end
 
 function WINDLCManager:set_entitlements(entitlements)
@@ -2149,6 +2137,9 @@ function WinSteamDLCManager:has_stat(data)
 	return sa_handler:get_stat(data.stat_id) >= (data.stat_value or 1)
 end
 
+local IDS_STEAM = Idstring("STEAM")
+local IDS_EPIC = Idstring("EPIC")
+
 function WinSteamDLCManager:_check_dlc_data(dlc_data)
 	if dlc_data.blocked then
 		return false
@@ -2156,18 +2147,28 @@ function WinSteamDLCManager:_check_dlc_data(dlc_data)
 
 	local had_verification = false
 
-	if dlc_data.app_id then
+	if dlc_data.app_id or dlc_data.epic_id then
 		had_verification = true
 
+		local app_id
+
+		if Distribution:type() == IDS_STEAM then
+			app_id = dlc_data.app_id
+		elseif Distribution:type() == IDS_EPIC then
+			app_id = dlc_data.epic_id
+		end
+
+		app_id = app_id or ""
+
 		if dlc_data.no_install then
-			if Steam:is_product_owned(dlc_data.app_id) then
+			if Distribution:is_product_owned(app_id) then
 				if not dlc_data.verify_all then
 					return true
 				end
 			elseif dlc_data.verify_all then
 				return false
 			end
-		elseif Steam:is_product_installed(dlc_data.app_id) then
+		elseif Distribution:is_product_installed(dlc_data.app_id) then
 			if not dlc_data.verify_all then
 				return true
 			end
@@ -2176,7 +2177,7 @@ function WinSteamDLCManager:_check_dlc_data(dlc_data)
 		end
 	end
 
-	if dlc_data.source_id then
+	if dlc_data.source_id and Distribution:type() == IDS_STEAM then
 		had_verification = true
 
 		if Steam:is_user_in_source(Steam:userid(), dlc_data.source_id) then
@@ -2212,6 +2213,12 @@ function WinSteamDLCManager:_verify_dlcs()
 end
 
 function WinSteamDLCManager:check_pdth(clbk)
+	if Distribution:type() ~= Idstring("STEAM") then
+		clbk(false, false)
+
+		return
+	end
+
 	if not self._check_pdth_request and clbk and Global.dlc_manager.has_pdth ~= nil then
 		clbk(Global.dlc_manager.has_pdth, Global.dlc_manager.pdth_tester)
 
@@ -2298,7 +2305,7 @@ function WinEpicDLCManager:init()
 end
 
 function WinEpicDLCManager:check_ownerships()
-	if EpicMM:logged_on() and not Global.dlc_manager.catalog_ownerships then
+	if DistributionMatchmaking:logged_on() and not Global.dlc_manager.catalog_ownerships then
 		local catalog_item_ids = {}
 
 		local function chk_func(chk_id)
@@ -2391,7 +2398,7 @@ function WinEpicDLCManager:_verify_dlcs()
 	WinEpicDLCManager.super._verify_dlcs(self)
 end
 
-if SystemInfo:platform() == Idstring("WIN32") then
+if IS_PC then
 	require("lib/managers/dlc/DLCManagerWin32Data")
 	require("lib/managers/dlc/DLCManagerEntitlementData")
 end

@@ -13,8 +13,8 @@ function SkirmishContractMenuComponent:init(ws, fullscreen_ws, node)
 		layer = 50
 	})
 
-	local is_win_32 = SystemInfo:platform() == Idstring("WIN32")
-	local is_nextgen = SystemInfo:platform() == Idstring("PS4") or SystemInfo:platform() == Idstring("XB1")
+	local is_win_32 = IS_PC
+	local is_nextgen = IS_PS4 or IS_XB1
 	local bg_overlay = BlurSheet:new(self._fullscreen_panel, {
 		layer = 1,
 		name = "bg_overlay",

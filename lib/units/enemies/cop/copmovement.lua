@@ -1003,12 +1003,12 @@ function CopMovement:play_redirect(redirect_name, at_time)
 
 	local result = self._unit:play_redirect(Idstring(redirect_name), at_time)
 
-	result = result ~= Idstring("") and result
+	result = result ~= IDS_EMPTY and result
 
 	if result and replay_redir then
 		local replay_result = self._unit:play_redirect(Idstring(replay_redir), replay_t)
 
-		if replay_speed and replay_result ~= Idstring("") then
+		if replay_speed and replay_result ~= IDS_EMPTY then
 			self._machine:set_speed(replay_result, replay_speed)
 		end
 	end
@@ -1033,7 +1033,7 @@ function CopMovement:play_state(state_name, at_time)
 		self._ext_base:chk_freeze_anims()
 	end
 
-	return result ~= Idstring("") and result
+	return result ~= IDS_EMPTY and result
 end
 
 function CopMovement:play_state_idstr(state_name, at_time)
@@ -1049,7 +1049,7 @@ function CopMovement:play_state_idstr(state_name, at_time)
 		self._ext_base:chk_freeze_anims()
 	end
 
-	return result ~= Idstring("") and result
+	return result ~= IDS_EMPTY and result
 end
 
 function CopMovement:set_root_blend(state)
@@ -2223,7 +2223,7 @@ function CopMovement:spawn_wanted_items()
 	end
 end
 
-local ids_unit = Idstring("unit")
+local ids_unit = IDS_UNIT
 
 function CopMovement:_equip_item(item_type, align_place, droppable)
 	local align_name = self._gadgets.aligns[align_place]
@@ -3611,7 +3611,7 @@ function CopMovement:_spawn_magazine_unit(part_id, unit_name, pos, rot)
 	local equipped_weapon = self._unit:inventory():equipped_unit()
 	local is_thq = managers.weapon_factory:use_thq_weapon_parts()
 	local use_cc_material_config = is_thq and equipped_weapon and equipped_weapon:base()._cosmetics_data and true or false
-	local material_config_ids = Idstring("material_config")
+	local material_config_ids = IDS_MATERIAL_CONFIG
 	local magazine_unit = World:spawn_unit(unit_name, pos, rot)
 	local new_material_config_ids = self:_material_config_name(part_id, magazine_unit, use_cc_material_config)
 
@@ -3620,7 +3620,7 @@ function CopMovement:_spawn_magazine_unit(part_id, unit_name, pos, rot)
 	end
 
 	local materials = {}
-	local unit_materials = magazine_unit:get_objects_by_type(Idstring("material")) or {}
+	local unit_materials = magazine_unit:get_objects_by_type(IDS_MATERIAL) or {}
 
 	for _, m in ipairs(unit_materials) do
 		if m:variable_exists(Idstring("wear_tear_value")) then

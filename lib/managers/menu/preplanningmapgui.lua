@@ -2943,7 +2943,7 @@ function PrePlanningMapGui:create_text_button(params)
 	local texture_rect_off = params.texture_rect_off
 	local color = params.color
 	local name = params.name
-	local is_win32 = SystemInfo:platform() == Idstring("WIN32")
+	local is_win32 = IS_PC
 	local button_panel = panel:panel({
 		x = left,
 		y = top,

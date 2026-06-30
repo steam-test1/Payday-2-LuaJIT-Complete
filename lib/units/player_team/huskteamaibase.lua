@@ -30,8 +30,6 @@ end
 
 function HuskTeamAIBase:pre_destroy(unit)
 	self:remove_upgrades()
-	unit:movement():pre_destroy()
-	unit:inventory():pre_destroy(unit)
 	TeamAIBase.unregister(self)
 	UnitBase.pre_destroy(self, unit)
 end

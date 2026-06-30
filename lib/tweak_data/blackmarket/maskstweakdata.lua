@@ -1,4 +1,4 @@
-local is_nextgen_console = SystemInfo:platform() == Idstring("PS4") or SystemInfo:platform() == Idstring("XB1")
+local is_nextgen_console = IS_PS4 or IS_XB1
 local allow_halloween_lootdrop = is_nextgen_console
 
 allow_halloween_lootdrop = true
@@ -77,6 +77,16 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 	self.masks.dallas_clean.infamous = true
 	self.masks.dallas_clean.value = 10
 	self.masks.dallas_clean.qlvl = 0
+	self.masks.dallas_clean.offsets = {
+		jacket = {
+			Vector3(0, 0, 0.554498),
+			Rotation(0, 0, -0)
+		},
+		joy = {
+			Vector3(0, 0, 0.554498),
+			Rotation(-0, -0, -0)
+		}
+	}
 	self.masks.chains_clean = {}
 	self.masks.chains_clean.unit = "units/payday2/masks/msk_chains_clean/msk_chains_clean"
 	self.masks.chains_clean.name_id = "bm_msk_chains_clean"
@@ -286,6 +296,12 @@ function BlackMarketTweakData:_init_masks(tweak_data)
 		40
 	}
 	self.masks.troll.value = 3
+	self.masks.troll.offsets = {
+		joy = {
+			Vector3(0, 0, 0.554498),
+			Rotation(-0, -0, -0)
+		}
+	}
 	self.masks.gagball = {}
 	self.masks.gagball.unit = "units/payday2/masks/msk_gagball/msk_gagball"
 	self.masks.gagball.name_id = "bm_msk_gagball"

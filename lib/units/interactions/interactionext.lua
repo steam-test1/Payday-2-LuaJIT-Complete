@@ -16,8 +16,8 @@ BaseInteractionExt.INFO_IDS = {
 	64,
 	128
 }
-BaseInteractionExt.is_steam = SystemInfo:distribution() == Idstring("STEAM")
-BaseInteractionExt.is_epic = SystemInfo:distribution() == Idstring("EPIC")
+BaseInteractionExt.is_steam = IS_STEAM
+BaseInteractionExt.is_epic = IS_EPIC
 
 function BaseInteractionExt:init(unit)
 	self._unit = unit
@@ -43,7 +43,7 @@ function BaseInteractionExt:is_owner()
 	return self._owner_id and self._owner_id == managers.network:session():local_peer():id()
 end
 
-local ids_material = Idstring("material")
+local ids_material = IDS_MATERIAL
 
 function BaseInteractionExt:refresh_material()
 	self._materials = {}
@@ -1194,7 +1194,7 @@ function ReviveInteractionExt:get_waypoint_time()
 	return nil
 end
 
-local is_win32 = SystemInfo:platform() == Idstring("WIN32")
+local is_win32 = IS_PC
 
 function ReviveInteractionExt:set_active(active, sync, down_time)
 	ReviveInteractionExt.super.set_active(self, active)
@@ -2412,7 +2412,7 @@ function CarryInteractionExt:_collision_callback(tag, unit, body, other_unit, ot
 	for i = 0, self._unit:num_bodies() - 1 do
 		local body = self._unit:body(i)
 
-		body:set_collision_script_tag(Idstring(""))
+		body:set_collision_script_tag(IDS_EMPTY)
 	end
 end
 

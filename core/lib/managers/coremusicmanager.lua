@@ -52,14 +52,6 @@ function CoreMusicManager:init()
 end
 
 function CoreMusicManager:init_finalize()
-	if SystemInfo:platform() == Idstring("X360") then
-		self._has_music_control = XboxLive:app_has_playback_control()
-
-		print("[CoreMusicManager:init_finalize]", self._has_music_control)
-		managers.platform:add_event_callback("media_player_control", callback(self, self, "clbk_game_has_music_control"))
-		self:set_volume(Global.music_manager.volume)
-	end
-
 	managers.savefile:add_load_sequence_done_callback_handler(callback(self, self, "on_load_complete"))
 end
 

@@ -1006,7 +1006,7 @@ function NetworkMatchMakingEPIC:set_attributes(settings)
 	local lobby_attributes = {
 		owner_name = self:username(),
 		owner_id = self:userid(),
-		owner_account_type = NetworkPeer:account_type_str_from_type(SystemInfo:distribution()),
+		owner_account_type = NetworkPeer:account_type_str_from_type(DISTRIBUTION),
 		owner_account_id = managers.network.account:player_id(),
 		owner_level = managers.experience:current_level(),
 		level = level_index,

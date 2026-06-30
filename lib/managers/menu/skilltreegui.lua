@@ -2,7 +2,7 @@ require("lib/managers/menu/WalletGuiObject")
 
 SkillTreeLogic = SkillTreeLogic or class()
 
-local NOT_WIN_32 = SystemInfo:platform() ~= Idstring("WIN32")
+local NOT_WIN_32 = not IS_PC
 local WIDTH_MULTIPLIER = NOT_WIN_32 and 0.6 or 0.6
 local SPEC_WIDTH_MULTIPLIER = NOT_WIN_32 and 0.7 or 0.7
 local CONSOLE_PAGE_ADJUSTMENT = NOT_WIN_32 and 0 or 0
@@ -1361,11 +1361,14 @@ function SkillTreeGui:_setup(add_skilltree, add_specialization)
 			},
 			add_points = {
 				btn = "BTN_A",
+				callback = nil,
 				name = "menu_st_add_spec_points",
+				pc_btn = nil,
 				prio = 2
 			},
 			remove_points = {
 				btn = "BTN_X",
+				callback = nil,
 				name = "menu_st_remove_spec_points",
 				pc_btn = "menu_remove_item",
 				prio = 3
@@ -1380,6 +1383,7 @@ function SkillTreeGui:_setup(add_skilltree, add_specialization)
 			buy_dlc = {
 				btn = "BTN_A",
 				name = "bm_menu_buy_dlc",
+				pc_btn = nil,
 				prio = 1,
 				color = tweak_data.screen_colors.dlc_buy_color,
 				callback = callback(self, self, "show_dlc_store")

@@ -1165,8 +1165,8 @@ function CarryData:link_to(parent_unit)
 
 	if self._has_body_activation_clbk and self._has_body_activation_clbk[self._link_body:key()] then
 		self._unit:remove_body_activation_callback(self._has_body_activation_clbk[self._link_body:key()])
-		self._link_body:set_activate_tag(Idstring(""))
-		self._link_body:set_deactivate_tag(Idstring(""))
+		self._link_body:set_activate_tag(IDS_EMPTY)
+		self._link_body:set_deactivate_tag(IDS_EMPTY)
 
 		self._has_body_activation_clbk = nil
 	end

@@ -1,7 +1,7 @@
 MenuArmourBase = MenuArmourBase or class(UnitBase)
 
-local ids_unit = Idstring("unit")
-local ids_material_config = Idstring("material_config")
+local ids_unit = IDS_UNIT
+local ids_material_config = IDS_MATERIAL_CONFIG
 local ids_NORMAL = Idstring("NORMAL")
 
 MenuArmourBase.material_defaults = {
@@ -487,7 +487,7 @@ function MenuArmourBase:_chk_load_complete(cosmetics)
 	if cosmetics.state.armor_skin then
 		self._materials = {}
 
-		local materials = self._unit:get_objects_by_type(Idstring("material"))
+		local materials = self._unit:get_objects_by_type(IDS_MATERIAL)
 
 		for _, m in ipairs(materials) do
 			if m:variable_exists(Idstring("wear_tear_value")) then

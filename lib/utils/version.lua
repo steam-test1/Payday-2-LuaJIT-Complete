@@ -1,4 +1,4 @@
-local VERSION = "payday2_v1.152.269"
+local VERSION = "payday2_v3_beta_01"
 
 function pd2_version()
 	return VERSION

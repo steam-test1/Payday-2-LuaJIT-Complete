@@ -239,28 +239,15 @@ function dump_mesh(units, name, get_objects_string)
 	units = units or World:find_units_quick("all", managers.slot:get_mask("dump_mesh"))
 
 	local objects = {}
-	local lods = {
-		"e",
-		"_e",
-		"d",
-		"_d",
-		"c",
-		"_c",
-		"b",
-		"_b",
-		"a",
-		"_a"
-	}
 
-	cat_print("editor", "Starting dump mesh")
+	cat_print("editor", "Starting dump on: " .. name .. " -> " .. get_objects_string)
 	cat_print("editor", "  Dumping from " .. #units .. " units")
 
 	for _, u in ipairs(units) do
-		local i = 1
 		local objs = {}
 
 		if #objs == 0 then
-			cat_print("editor", "getting gfx instead of lod for unit " .. u:name():s())
+			cat_print("editor", "getting " .. get_objects_string .. " instead of lod for unit " .. u:name():s())
 
 			objs = u:get_objects(get_objects_string)
 		end

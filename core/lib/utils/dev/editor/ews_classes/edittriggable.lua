@@ -53,7 +53,6 @@ function EditUnitTriggable:_build_scrolled_window()
 	self._scrolled_window = EWS:ScrolledWindow(self._panel, "", "VSCROLL")
 
 	self._scrolled_window:set_scroll_rate(Vector3(0, 1, 0))
-	self._scrolled_window:set_virtual_size_hints(Vector3(0, 0, 0), Vector3(1, -1, -1))
 
 	self._scrolled_main_sizer = EWS:StaticBoxSizer(self._scrolled_window, "VERTICAL", "Trigger Sequences")
 

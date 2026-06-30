@@ -410,7 +410,7 @@ function StatisticsManager:stop_session(data)
 		Global.statistics_manager.playing_from_start = nil
 	end
 
-	if SystemInfo:distribution() == Idstring("STEAM") then
+	if IS_STEAM then
 		self:publish_to_steam(self._global.session, success, completion)
 
 		if data and data.quit then

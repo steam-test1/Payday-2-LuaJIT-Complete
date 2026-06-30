@@ -619,7 +619,7 @@ function PlayerStandard:_create_on_controller_disabled_input()
 	return input
 end
 
-local win32 = SystemInfo:platform() == Idstring("WIN32")
+local win32 = IS_PC
 
 function PlayerStandard:_get_input(t, dt, paused)
 	if self._state_data.controller_enabled ~= self._controller:enabled() then
@@ -2169,10 +2169,12 @@ function PlayerStandard:_check_tap_to_interact_inputs(t, pressed, released, hold
 				self:_show_tap_to_interact_text("hud_int_release_cancel", alive(obj) and obj)
 			elseif self._start_standard_expire_t then
 				managers.hud:show_progress_timer({
+					icon = nil,
 					text = managers.localization:text("hud_starting_heist")
 				})
 			elseif self._exit_vehicle_expire_t then
 				managers.hud:show_progress_timer({
+					icon = nil,
 					text = managers.localization:text("hud_action_exit_vehicle")
 				})
 			else
@@ -3227,6 +3229,7 @@ function PlayerStandard:_update_use_item_timers(t, input)
 				})
 
 				managers.hud:show_progress_timer({
+					icon = nil,
 					text = text
 				})
 			end
@@ -3269,6 +3272,7 @@ function PlayerStandard:_start_action_use_item(t)
 	})
 
 	managers.hud:show_progress_timer({
+		icon = nil,
 		text = text
 	})
 

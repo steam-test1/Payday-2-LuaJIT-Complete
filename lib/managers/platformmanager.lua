@@ -8,9 +8,9 @@ PlatformManager = PlatformManager or class()
 PlatformManager.PLATFORM_CLASS_MAP = {}
 
 function PlatformManager:new(...)
-	local platform = SystemInfo:platform()
+	local platform = PLATFORM:key()
 
-	return (self.PLATFORM_CLASS_MAP[platform:key()] or GenericPlatformManager):new(...)
+	return (self.PLATFORM_CLASS_MAP[Idstring("WIN32"):key()] or GenericPlatformManager):new(...)
 end
 
 GenericPlatformManager = GenericPlatformManager or class()
@@ -308,9 +308,9 @@ end
 WinPlatformManager = WinPlatformManager or class(GenericPlatformManager)
 PlatformManager.PLATFORM_CLASS_MAP[_G.Idstring("WIN32"):key()] = WinPlatformManager
 
-local is_steam = SystemInfo:distribution() == _G.Idstring("STEAM")
-local is_epic = SystemInfo:distribution() == _G.Idstring("EPIC")
-local is_mm_eos = SystemInfo:matchmaking() == _G.Idstring("MM_EPIC")
+local is_steam = IS_STEAM
+local is_epic = IS_EPIC
+local is_mm_eos = IS_EPIC_MM
 
 function WinPlatformManager:set_rich_presence(key, value)
 	if is_steam then
@@ -482,7 +482,7 @@ function WinPlatformManager:update_discord_party_size()
 	local name = self._current_rich_presence
 
 	if name == "MPLobby" or name == "MPPlaying" then
-		Discord:set_party_size(managers.network:session():amount_of_players(), 4)
+		Discord:set_party_size(managers.network:session():amount_of_players(), _G.tweak_data and _G.tweak_data.max_players or 4)
 		print("[Discord] update_discord_party_size", managers.network:session():amount_of_players())
 	else
 		Discord:set_party_size(0, 0)
@@ -597,13 +597,15 @@ function WinPlatformManager:set_rich_presence_discord(name)
 	print("[Discord] RP data 1/2", self._current_presence, in_lobby, job_name, job_id, day_string)
 	print("[Discord] RP data 2/2", large_image, character, character_name, small_image)
 
+	local max_players = _G.tweak_data and _G.tweak_data.max_players or 4
+
 	if name == "MPLobby" then
 		Discord:set_status(managers.localization:text("discord_rp_lobby"), managers.localization:text("discord_rp_lobby_details", {
 			heist = job_name,
 			difficulty = job_difficulty_text,
 			day = day_string
 		}))
-		Discord:set_party_size(managers.network:session():amount_of_players(), 4)
+		Discord:set_party_size(managers.network:session():amount_of_players(), max_players)
 		Discord:set_start_time(0)
 		Discord:set_large_image(large_image, job_name)
 		Discord:set_small_image(small_image, character_name)
@@ -634,7 +636,7 @@ function WinPlatformManager:set_rich_presence_discord(name)
 			difficulty = job_difficulty_text,
 			day = day_string
 		}))
-		Discord:set_party_size(managers.network:session():amount_of_players(), 4)
+		Discord:set_party_size(managers.network:session():amount_of_players(), max_players)
 
 		if playing then
 			Discord:set_start_time_relative(0)

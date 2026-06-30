@@ -2,12 +2,7 @@ HttpRequest = HttpRequest or class()
 
 function HttpRequest:init()
 	self._requests = self._requests or {}
-
-	if SystemInfo:distribution() == Idstring("STEAM") then
-		self.handler = Steam
-	else
-		self.handler = HttpCurl
-	end
+	self.handler = Steam
 
 	if table.size(self._requests) > 0 then
 		self:check_requests()
@@ -97,13 +92,21 @@ function HttpRequest:create_request(method, url, clbk, content_type, body, heade
 end
 
 function HttpRequest:get(url, clbk, headers, key)
-	self:create_request("get", url, clbk, nil, nil, headers, key)
+	local function new_clbk(error_code, status_code, response_body)
+		if status_code >= 200 and status_code <= 206 then
+			clbk(true, response_body)
+		else
+			clbk(false)
+		end
+	end
+
+	Distribution:make_http_request("GET", url, new_clbk, headers)
 end
 
 function HttpRequest:post(url, clbk, content_type, body, headers, key)
-	self:create_request("post", url, clbk, content_type, body, headers, key)
+	Distribution:make_http_request("POST", url, clbk, headers, content_type, body, string.len(body))
 end
 
 function HttpRequest:put(url, clbk, content_type, body, headers, key)
-	self:create_request("put", url, clbk, content_type, body, headers, key)
+	Distribution:make_http_request("PUT", url, clbk, headers, content_type, body, string.len(body))
 end

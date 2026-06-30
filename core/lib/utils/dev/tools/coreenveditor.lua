@@ -410,7 +410,6 @@ function CoreEnvEditor:create_tab(tab)
 		self._tabs[tab].scrolled_window = EWS:ScrolledWindow(self._tabs[tab].panel, "", "VSCROLL")
 
 		self._tabs[tab].scrolled_window:set_scroll_rate(Vector3(0, 1, 0))
-		self._tabs[tab].scrolled_window:set_virtual_size_hints(Vector3(0, 0, 0), Vector3(1, -1, -1))
 		self._tabs[tab].scrolled_window:set_virtual_size(Vector3(200, 2000, 0))
 
 		self._tabs[tab].box = EWS:BoxSizer("VERTICAL")
